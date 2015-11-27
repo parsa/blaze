@@ -51,6 +51,7 @@
 #include <blaze/util/policies/ArrayDelete.h>
 #include <blaze/util/UniqueArray.h>
 #include <blazetest/mathtest/symmetricmatrix/DenseNumericTest.h>
+#include <blazetest/system/LAPACK.h>
 
 
 namespace blazetest {
@@ -88,6 +89,7 @@ DenseNumericTest::DenseNumericTest()
    testReserve();
    testTranspose();
    testCTranspose();
+   testInvert();
    testSwap();
    testIsDefault();
    testSubmatrix();
@@ -7330,6 +7332,103 @@ void DenseNumericTest::testCTranspose()
          throw std::runtime_error( oss.str() );
       }
    }
+}
+//*************************************************************************************************
+
+
+//*************************************************************************************************
+/*!\brief Test of the \c invert() function with the SymmetricMatrix specialization.
+//
+// \return void
+// \exception std::runtime_error Error detected.
+//
+// This function performs a test of the \c invert() function with the SymmetricMatrix
+// specialization. In case an error is detected, a \a std::runtime_error exception is thrown.
+*/
+void DenseNumericTest::testInvert()
+{
+#if BLAZETEST_MATHTEST_LAPACK_MODE
+
+   //=====================================================================================
+   // Row-major matrix tests
+   //=====================================================================================
+
+   {
+      test_ = "Row-major SymmetricMatrix inversion";
+
+      blaze::SymmetricMatrix< blaze::DynamicMatrix<double,blaze::rowMajor> > mat( 3UL );
+      mat(0,0) = 1.0;
+      mat(0,2) = 1.0;
+      mat(1,1) = 1.0;
+      mat(1,2) = 1.0;
+      mat(2,2) = 1.0;
+
+      invert( mat );
+
+      checkRows    ( mat, 3UL );
+      checkColumns ( mat, 3UL );
+      checkCapacity( mat, 9UL );
+      checkNonZeros( mat, 7UL );
+      checkNonZeros( mat, 0UL, 2UL );
+      checkNonZeros( mat, 1UL, 2UL );
+      checkNonZeros( mat, 2UL, 3UL );
+
+      if( mat(0,0) !=  0.0 || mat(0,1) != -1.0 || mat(0,2) !=  1.0 ||
+          mat(1,0) != -1.0 || mat(1,1) !=  0.0 || mat(1,2) !=  1.0 ||
+          mat(2,0) !=  1.0 || mat(2,1) !=  1.0 || mat(2,2) != -1.0 ) {
+         std::ostringstream oss;
+         oss << " Test: " << test_ << "\n"
+             << " Error: Inversion failed\n"
+             << " Details:\n"
+             << "   Result:\n" << mat << "\n"
+             << "   Expected result:\n(  0 -1  1 )\n"
+                                     "( -1  0  1 )\n"
+                                     "(  1  1 -1 )\n";
+         throw std::runtime_error( oss.str() );
+      }
+   }
+
+
+   //=====================================================================================
+   // Column-major matrix tests
+   //=====================================================================================
+
+   {
+      test_ = "Column-major SymmetricMatrix inversion";
+
+      blaze::SymmetricMatrix< blaze::DynamicMatrix<double,blaze::columnMajor> > mat( 3UL );
+      mat(0,0) = 1.0;
+      mat(0,2) = 1.0;
+      mat(1,1) = 1.0;
+      mat(1,2) = 1.0;
+      mat(2,2) = 1.0;
+
+      invert( mat );
+
+      checkRows    ( mat, 3UL );
+      checkColumns ( mat, 3UL );
+      checkCapacity( mat, 9UL );
+      checkNonZeros( mat, 7UL );
+      checkNonZeros( mat, 0UL, 2UL );
+      checkNonZeros( mat, 1UL, 2UL );
+      checkNonZeros( mat, 2UL, 3UL );
+
+      if( mat(0,0) !=  0.0 || mat(0,1) != -1.0 || mat(0,2) !=  1.0 ||
+          mat(1,0) != -1.0 || mat(1,1) !=  0.0 || mat(1,2) !=  1.0 ||
+          mat(2,0) !=  1.0 || mat(2,1) !=  1.0 || mat(2,2) != -1.0 ) {
+         std::ostringstream oss;
+         oss << " Test: " << test_ << "\n"
+             << " Error: Inversion failed\n"
+             << " Details:\n"
+             << "   Result:\n" << mat << "\n"
+             << "   Expected result:\n(  0 -1  1 )\n"
+                                     "( -1  0  1 )\n"
+                                     "(  1  1 -1 )\n";
+         throw std::runtime_error( oss.str() );
+      }
+   }
+
+#endif
 }
 //*************************************************************************************************
 
