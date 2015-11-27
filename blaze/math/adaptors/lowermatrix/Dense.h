@@ -729,6 +729,9 @@ class LowerMatrix<MT,SO,true>
    template< typename MT2, bool SO2, bool DF2 >
    friend bool isDefault( const LowerMatrix<MT2,SO2,DF2>& m );
 
+   template< typename MT2, bool SO2 >
+   friend void invert( LowerMatrix<MT2,SO2,true>& m );
+
    template< typename MT2, bool SO2, bool DF2 >
    friend MT2& derestrict( LowerMatrix<MT2,SO2,DF2>& m );
    //**********************************************************************************************
