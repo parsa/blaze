@@ -45,6 +45,7 @@
 #include <blaze/math/constraints/ColumnMajorMatrix.h>
 #include <blaze/math/constraints/Computation.h>
 #include <blaze/math/constraints/DenseMatrix.h>
+#include <blaze/math/constraints/MutableDataAccess.h>
 #include <blaze/math/constraints/RequiresEvaluation.h>
 #include <blaze/math/constraints/RowMajorMatrix.h>
 #include <blaze/math/constraints/SparseMatrix.h>
@@ -11499,6 +11500,43 @@ inline bool isSame( const DenseSubmatrix<MT,AF,SO>& a, const DenseSubmatrix<MT,A
             ( a.row_ == b.row_ ) && ( a.column_ == b.column_ ) &&
             ( a.m_ == b.m_ ) && ( a.n_ == b.n_ ) );
 }
+//*************************************************************************************************
+
+
+//*************************************************************************************************
+/*! \cond BLAZE_INTERNAL */
+/*!\brief In-place inversion of the given submatrix.
+// \ingroup dense_submatrix
+//
+// \param dm The dense submatrix to be inverted.
+// \return void
+// \exception std::invalid_argument Inversion of singular matrix failed.
+//
+// This function inverts the given dense submatrix by means of LAPACK kernels. The matrix
+// inversion fails if the given submatrix is singular and not invertible. In this cases a
+// \a std::invalid_argument exception is thrown.
+//
+// \note This function does not provide any exception safety guarantee, i.e. in case an exception
+// is thrown, \c dm may already have been modified.
+// \note This function can only be used if the fitting LAPACK library is available and linked to
+// the executable. Otherwise a linker error will be created.
+*/
+template< typename MT  // Type of the dense matrix
+        , bool AF      // Alignment flag
+        , bool SO >    // Storage order
+inline typename DisableIf< HasMutableDataAccess<MT> >::Type
+   invert( DenseSubmatrix<MT,AF,SO>& dm )
+{
+   typedef typename DenseSubmatrix<MT,AF,SO>::ResultType  RT;
+
+   BLAZE_CONSTRAINT_MUST_NOT_REQUIRE_EVALUATION  ( RT );
+   BLAZE_CONSTRAINT_MUST_HAVE_MUTABLE_DATA_ACCESS( RT );
+
+   RT tmp( dm );
+   invert( tmp );
+   dm = tmp;
+}
+/*! \endcond */
 //*************************************************************************************************
 
 
