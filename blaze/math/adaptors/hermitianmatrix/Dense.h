@@ -751,6 +751,9 @@ class HermitianMatrix<MT,SO,true>
    //**Friend declarations*************************************************************************
    template< typename MT2, bool SO2, bool DF2 >
    friend bool isDefault( const HermitianMatrix<MT2,SO2,DF2>& m );
+
+   template< typename MT2, bool SO2 >
+   friend void invert( HermitianMatrix<MT2,SO2,true>& m );
    //**********************************************************************************************
 
    //**Compile time checks*************************************************************************
