@@ -1,6 +1,6 @@
 //=================================================================================================
 /*!
-//  \file blazemark/system/MathTest.h
+//  \file blazetest/system/MathTest.h
 //  \brief General settings for the math tests of the blaze test suite
 //
 //  Copyright (C) 2013 Klaus Iglberger - All Rights Reserved
@@ -32,8 +32,8 @@
 */
 //=================================================================================================
 
-#ifndef _BLAZEMARK_SYSTEM_MATHTEST_H_
-#define _BLAZEMARK_SYSTEM_MATHTEST_H_
+#ifndef _BLAZETEST_SYSTEM_MATHTEST_H_
+#define _BLAZETEST_SYSTEM_MATHTEST_H_
 
 
 //*************************************************************************************************
