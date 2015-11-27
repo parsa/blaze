@@ -8360,7 +8360,7 @@ void DenseComplexTest::testTranspose()
    //=====================================================================================
 
    {
-      test_ = "Row-major self-transpose via HermitianMatrix::transpose()";
+      test_ = "Row-major self-transpose via transpose()";
 
       HT herm( 4UL );
       herm(0,0) = cplx(1, 0);
@@ -8371,7 +8371,7 @@ void DenseComplexTest::testTranspose()
       herm(2,2) = cplx(6, 0);
       herm(2,3) = cplx(7, 1);
 
-      herm.transpose();
+      transpose( herm );
 
       checkRows    ( herm,  4UL );
       checkColumns ( herm,  4UL );
@@ -8445,7 +8445,7 @@ void DenseComplexTest::testTranspose()
    //=====================================================================================
 
    {
-      test_ = "Column-major self-transpose via HermitianMatrix::transpose()";
+      test_ = "Column-major self-transpose via transpose()";
 
       OHT herm( 4UL );
       herm(0,0) = cplx(1, 0);
@@ -8456,7 +8456,7 @@ void DenseComplexTest::testTranspose()
       herm(2,2) = cplx(6, 0);
       herm(2,3) = cplx(7, 1);
 
-      herm.transpose();
+      transpose( herm );
 
       checkRows    ( herm,  4UL );
       checkColumns ( herm,  4UL );
@@ -8544,7 +8544,7 @@ void DenseComplexTest::testCTranspose()
    //=====================================================================================
 
    {
-      test_ = "Row-major self-transpose via HermitianMatrix::ctranspose()";
+      test_ = "Row-major self-transpose via ctranspose()";
 
       HT herm( 4UL );
       herm(0,0) = cplx(1, 0);
@@ -8555,7 +8555,7 @@ void DenseComplexTest::testCTranspose()
       herm(2,2) = cplx(6, 0);
       herm(2,3) = cplx(7, 1);
 
-      herm.ctranspose();
+      ctranspose( herm );
 
       checkRows    ( herm,  4UL );
       checkColumns ( herm,  4UL );
@@ -8629,7 +8629,7 @@ void DenseComplexTest::testCTranspose()
    //=====================================================================================
 
    {
-      test_ = "Column-major self-transpose via HermitianMatrix::ctranspose()";
+      test_ = "Column-major self-transpose via ctranspose()";
 
       OHT herm( 4UL );
       herm(0,0) = cplx(1, 0);
@@ -8640,7 +8640,7 @@ void DenseComplexTest::testCTranspose()
       herm(2,2) = cplx(6, 0);
       herm(2,3) = cplx(7, 1);
 
-      herm.ctranspose();
+      ctranspose( herm );
 
       checkRows    ( herm,  4UL );
       checkColumns ( herm,  4UL );

@@ -8635,7 +8635,7 @@ void ClassTest::testTranspose()
    //=====================================================================================
 
    {
-      test_ = "Row-major self-transpose via CompressedMatrix::transpose()";
+      test_ = "Row-major self-transpose via transpose()";
 
       // Self-transpose of a 3x5 matrix
       {
@@ -8649,7 +8649,7 @@ void ClassTest::testTranspose()
          mat(2,2) = 7;
          mat(2,4) = 8;
 
-         mat.transpose();
+         transpose( mat );
 
          checkRows    ( mat, 5UL );
          checkColumns ( mat, 3UL );
@@ -8685,7 +8685,7 @@ void ClassTest::testTranspose()
          mat(4,0) = 3;
          mat(4,2) = 8;
 
-         mat.transpose();
+         transpose( mat );
 
          checkRows    ( mat, 3UL );
          checkColumns ( mat, 5UL );
@@ -8790,7 +8790,7 @@ void ClassTest::testTranspose()
    //=====================================================================================
 
    {
-      test_ = "Column-major self-transpose via CompressedMatrix::transpose()";
+      test_ = "Column-major self-transpose via transpose()";
 
       // Self-transpose of a 3x5 matrix
       {
@@ -8804,7 +8804,7 @@ void ClassTest::testTranspose()
          mat(2,2) = 7;
          mat(2,4) = 8;
 
-         mat.transpose();
+         transpose( mat );
 
          checkRows    ( mat, 5UL );
          checkColumns ( mat, 3UL );
@@ -8838,7 +8838,7 @@ void ClassTest::testTranspose()
          mat(4,0) = 3;
          mat(4,2) = 8;
 
-         mat.transpose();
+         transpose( mat );
 
          checkRows    ( mat, 3UL );
          checkColumns ( mat, 5UL );
@@ -8913,7 +8913,7 @@ void ClassTest::testTranspose()
          mat(4,0) = 3;
          mat(4,2) = 8;
 
-         mat.transpose();
+         mat = trans( mat );
 
          checkRows    ( mat, 3UL );
          checkColumns ( mat, 5UL );
@@ -8959,7 +8959,7 @@ void ClassTest::testCTranspose()
    //=====================================================================================
 
    {
-      test_ = "Row-major self-transpose via CompressedMatrix::ctranspose()";
+      test_ = "Row-major self-transpose via ctranspose()";
 
       typedef blaze::complex<int>  cplx;
 
@@ -8975,7 +8975,7 @@ void ClassTest::testCTranspose()
          mat(2,2) = cplx(7,-7);
          mat(2,4) = cplx(8,-8);
 
-         mat.ctranspose();
+         ctranspose( mat );
 
          checkRows    ( mat, 5UL );
          checkColumns ( mat, 3UL );
@@ -9018,7 +9018,7 @@ void ClassTest::testCTranspose()
          mat(4,0) = cplx(3,-3);
          mat(4,2) = cplx(8,-8);
 
-         mat.ctranspose();
+         ctranspose( mat );
 
          checkRows    ( mat, 3UL );
          checkColumns ( mat, 5UL );
@@ -9136,7 +9136,7 @@ void ClassTest::testCTranspose()
    //=====================================================================================
 
    {
-      test_ = "Column-major self-transpose via CompressedMatrix::ctranspose()";
+      test_ = "Column-major self-transpose via ctranspose()";
 
       typedef blaze::complex<int>  cplx;
 
@@ -9152,7 +9152,7 @@ void ClassTest::testCTranspose()
          mat(2,2) = cplx(7,-7);
          mat(2,4) = cplx(8,-8);
 
-         mat.ctranspose();
+         ctranspose( mat );
 
          checkRows    ( mat, 5UL );
          checkColumns ( mat, 3UL );
@@ -9193,7 +9193,7 @@ void ClassTest::testCTranspose()
          mat(4,0) = cplx(3,-3);
          mat(4,2) = cplx(8,-8);
 
-         mat.ctranspose();
+         ctranspose( mat );
 
          checkRows    ( mat, 3UL );
          checkColumns ( mat, 5UL );

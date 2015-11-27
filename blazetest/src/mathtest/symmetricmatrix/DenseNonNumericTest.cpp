@@ -6604,7 +6604,7 @@ void DenseNonNumericTest::testTranspose()
    //=====================================================================================
 
    {
-      test_ = "Row-major self-transpose via SymmetricMatrix::transpose()";
+      test_ = "Row-major self-transpose via transpose()";
 
       ST sym( 3UL );
       sym(0,0) = vec( 1 );
@@ -6613,7 +6613,7 @@ void DenseNonNumericTest::testTranspose()
       sym(1,2) = vec( 4 );
       sym(2,2) = vec( 5 );
 
-      sym.transpose();
+      transpose( sym );
 
       checkRows    ( sym, 3UL );
       checkColumns ( sym, 3UL );
@@ -6679,7 +6679,7 @@ void DenseNonNumericTest::testTranspose()
    //=====================================================================================
 
    {
-      test_ = "Column-major self-transpose via SymmetricMatrix::transpose()";
+      test_ = "Column-major self-transpose via transpose()";
 
       OST sym( 3UL );
       sym(0,0) = vec( 1 );
@@ -6688,7 +6688,7 @@ void DenseNonNumericTest::testTranspose()
       sym(1,2) = vec( 4 );
       sym(2,2) = vec( 5 );
 
-      sym.transpose();
+      transpose( sym );
 
       checkRows    ( sym, 3UL );
       checkColumns ( sym, 3UL );
@@ -6768,7 +6768,7 @@ void DenseNonNumericTest::testCTranspose()
    //=====================================================================================
 
    {
-      test_ = "Row-major self-transpose via SymmetricMatrix::ctranspose()";
+      test_ = "Row-major self-transpose via ctranspose()";
 
       ST sym( 3UL );
       sym(0,0) = vec( 1 );
@@ -6777,7 +6777,7 @@ void DenseNonNumericTest::testCTranspose()
       sym(1,2) = vec( 4 );
       sym(2,2) = vec( 5 );
 
-      sym.ctranspose();
+      ctranspose( sym );
 
       checkRows    ( sym, 3UL );
       checkColumns ( sym, 3UL );
@@ -6843,7 +6843,7 @@ void DenseNonNumericTest::testCTranspose()
    //=====================================================================================
 
    {
-      test_ = "Column-major self-transpose via SymmetricMatrix::ctranspose()";
+      test_ = "Column-major self-transpose via ctranspose()";
 
       OST sym( 3UL );
       sym(0,0) = vec( 1 );
@@ -6852,7 +6852,7 @@ void DenseNonNumericTest::testCTranspose()
       sym(1,2) = vec( 4 );
       sym(2,2) = vec( 5 );
 
-      sym.ctranspose();
+      ctranspose( sym );
 
       checkRows    ( sym, 3UL );
       checkColumns ( sym, 3UL );

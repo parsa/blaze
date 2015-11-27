@@ -6890,7 +6890,7 @@ void DenseRealTest::testTranspose()
    //=====================================================================================
 
    {
-      test_ = "Row-major self-transpose via HermitianMatrix::transpose()";
+      test_ = "Row-major self-transpose via transpose()";
 
       HT herm( 4UL );
       herm(0,0) = 1;
@@ -6901,7 +6901,7 @@ void DenseRealTest::testTranspose()
       herm(2,2) = 6;
       herm(2,3) = 7;
 
-      herm.transpose();
+      transpose( herm );
 
       checkRows    ( herm,  4UL );
       checkColumns ( herm,  4UL );
@@ -6969,7 +6969,7 @@ void DenseRealTest::testTranspose()
    //=====================================================================================
 
    {
-      test_ = "Column-major self-transpose via HermitianMatrix::transpose()";
+      test_ = "Column-major self-transpose via transpose()";
 
       OHT herm( 4UL );
       herm(0,0) = 1;
@@ -6980,7 +6980,7 @@ void DenseRealTest::testTranspose()
       herm(2,2) = 6;
       herm(2,3) = 7;
 
-      herm.transpose();
+      transpose( herm );
 
       checkRows    ( herm,  4UL );
       checkColumns ( herm,  4UL );
@@ -7062,7 +7062,7 @@ void DenseRealTest::testCTranspose()
    //=====================================================================================
 
    {
-      test_ = "Row-major self-transpose via HermitianMatrix::ctranspose()";
+      test_ = "Row-major self-transpose via ctranspose()";
 
       HT herm( 4UL );
       herm(0,0) = 1;
@@ -7073,7 +7073,7 @@ void DenseRealTest::testCTranspose()
       herm(2,2) = 6;
       herm(2,3) = 7;
 
-      herm.ctranspose();
+      ctranspose( herm );
 
       checkRows    ( herm,  4UL );
       checkColumns ( herm,  4UL );
@@ -7141,7 +7141,7 @@ void DenseRealTest::testCTranspose()
    //=====================================================================================
 
    {
-      test_ = "Column-major self-transpose via HermitianMatrix::ctranspose()";
+      test_ = "Column-major self-transpose via ctranspose()";
 
       OHT herm( 4UL );
       herm(0,0) = 1;
@@ -7152,7 +7152,7 @@ void DenseRealTest::testCTranspose()
       herm(2,2) = 6;
       herm(2,3) = 7;
 
-      herm.ctranspose();
+      ctranspose( herm );
 
       checkRows    ( herm,  4UL );
       checkColumns ( herm,  4UL );

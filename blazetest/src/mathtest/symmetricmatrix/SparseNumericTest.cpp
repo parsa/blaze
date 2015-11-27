@@ -9481,7 +9481,7 @@ void SparseNumericTest::testTranspose()
    //=====================================================================================
 
    {
-      test_ = "Row-major self-transpose via SymmetricMatrix::transpose()";
+      test_ = "Row-major self-transpose via transpose()";
 
       ST sym( 4UL );
       sym(0,0) = 1;
@@ -9492,7 +9492,7 @@ void SparseNumericTest::testTranspose()
       sym(2,2) = 6;
       sym(2,3) = 7;
 
-      sym.transpose();
+      transpose( sym );
 
       checkRows    ( sym,  4UL );
       checkColumns ( sym,  4UL );
@@ -9560,7 +9560,7 @@ void SparseNumericTest::testTranspose()
    //=====================================================================================
 
    {
-      test_ = "Column-major self-transpose via SymmetricMatrix::transpose()";
+      test_ = "Column-major self-transpose via transpose()";
 
       OST sym( 4UL );
       sym(0,0) = 1;
@@ -9571,7 +9571,7 @@ void SparseNumericTest::testTranspose()
       sym(2,2) = 6;
       sym(2,3) = 7;
 
-      sym.transpose();
+      transpose( sym );
 
       checkRows    ( sym,  4UL );
       checkColumns ( sym,  4UL );
@@ -9653,7 +9653,7 @@ void SparseNumericTest::testCTranspose()
    //=====================================================================================
 
    {
-      test_ = "Row-major self-transpose via SymmetricMatrix::ctranspose()";
+      test_ = "Row-major self-transpose via ctranspose()";
 
       ST sym( 4UL );
       sym(0,0) = 1;
@@ -9664,7 +9664,7 @@ void SparseNumericTest::testCTranspose()
       sym(2,2) = 6;
       sym(2,3) = 7;
 
-      sym.ctranspose();
+      ctranspose( sym );
 
       checkRows    ( sym,  4UL );
       checkColumns ( sym,  4UL );
@@ -9732,7 +9732,7 @@ void SparseNumericTest::testCTranspose()
    //=====================================================================================
 
    {
-      test_ = "Column-major self-transpose via SymmetricMatrix::ctranspose()";
+      test_ = "Column-major self-transpose via ctranspose()";
 
       OST sym( 4UL );
       sym(0,0) = 1;
@@ -9743,7 +9743,7 @@ void SparseNumericTest::testCTranspose()
       sym(2,2) = 6;
       sym(2,3) = 7;
 
-      sym.ctranspose();
+      ctranspose( sym );
 
       checkRows    ( sym,  4UL );
       checkColumns ( sym,  4UL );

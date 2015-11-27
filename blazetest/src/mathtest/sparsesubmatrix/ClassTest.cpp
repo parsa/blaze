@@ -7661,13 +7661,13 @@ void ClassTest::testTranspose()
    //=====================================================================================
 
    {
-      test_ = "Row-major self-transpose via DenseSubmatrix::transpose()";
+      test_ = "Row-major self-transpose via transpose()";
 
       initialize();
 
       SMT sm = submatrix( mat_, 1UL, 0UL, 3UL, 3UL );
 
-      sm.transpose();
+      transpose( sm );
 
       checkRows    ( sm  ,  3UL );
       checkColumns ( sm  ,  3UL );
@@ -7760,13 +7760,13 @@ void ClassTest::testTranspose()
    //=====================================================================================
 
    {
-      test_ = "Column-major self-transpose via DenseSubmatrix::transpose()";
+      test_ = "Column-major self-transpose via transpose()";
 
       initialize();
 
       OSMT sm = submatrix( tmat_, 0UL, 1UL, 3UL, 3UL );
 
-      sm.transpose();
+      transpose( sm );
 
       checkRows    ( sm   ,  3UL );
       checkColumns ( sm   ,  3UL );
@@ -7869,13 +7869,13 @@ void ClassTest::testCTranspose()
    //=====================================================================================
 
    {
-      test_ = "Row-major self-transpose via DenseSubmatrix::ctranspose()";
+      test_ = "Row-major self-transpose via ctranspose()";
 
       initialize();
 
       SMT sm = submatrix( mat_, 1UL, 0UL, 3UL, 3UL );
 
-      sm.ctranspose();
+      ctranspose( sm );
 
       checkRows    ( sm  ,  3UL );
       checkColumns ( sm  ,  3UL );
@@ -7968,13 +7968,13 @@ void ClassTest::testCTranspose()
    //=====================================================================================
 
    {
-      test_ = "Column-major self-transpose via DenseSubmatrix::ctranspose()";
+      test_ = "Column-major self-transpose via ctranspose()";
 
       initialize();
 
       OSMT sm = submatrix( tmat_, 0UL, 1UL, 3UL, 3UL );
 
-      sm.ctranspose();
+      ctranspose( sm );
 
       checkRows    ( sm   ,  3UL );
       checkColumns ( sm   ,  3UL );

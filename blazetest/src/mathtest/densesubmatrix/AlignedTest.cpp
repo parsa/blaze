@@ -87,6 +87,7 @@ AlignedTest::AlignedTest()
    testClear();
    testTranspose();
    testCTranspose();
+   testInvert();
    testIsDefault();
    testIsSame();
    testSubmatrix();
@@ -4751,15 +4752,15 @@ void AlignedTest::testTranspose()
    //=====================================================================================
 
    {
-      test_ = "Row-major self-transpose via DenseSubmatrix::transpose()";
+      test_ = "Row-major self-transpose via transpose()";
 
       initialize();
 
       ASMT sm1 = submatrix<aligned>  ( mat1_, 8UL, 16UL, 8UL, 8UL );
       USMT sm2 = submatrix<unaligned>( mat2_, 8UL, 16UL, 8UL, 8UL );
 
-      sm1.transpose();
-      sm2.transpose();
+      transpose( sm1 );
+      transpose( sm2 );
 
       checkRows   ( sm1, 8UL );
       checkColumns( sm1, 8UL );
@@ -4810,15 +4811,15 @@ void AlignedTest::testTranspose()
    //=====================================================================================
 
    {
-      test_ = "Column-major self-transpose via DenseSubmatrix::transpose()";
+      test_ = "Column-major self-transpose via transpose()";
 
       initialize();
 
       AOSMT sm1 = submatrix<aligned>  ( tmat1_, 16UL, 8UL, 8UL, 8UL );
       UOSMT sm2 = submatrix<unaligned>( tmat2_, 16UL, 8UL, 8UL, 8UL );
 
-      sm1.transpose();
-      sm2.transpose();
+      transpose( sm1 );
+      transpose( sm2 );
 
       checkRows   ( sm1, 8UL );
       checkColumns( sm1, 8UL );
@@ -4888,15 +4889,15 @@ void AlignedTest::testCTranspose()
    //=====================================================================================
 
    {
-      test_ = "Row-major self-transpose via DenseSubmatrix::ctranspose()";
+      test_ = "Row-major self-transpose via ctranspose()";
 
       initialize();
 
       ASMT sm1 = submatrix<aligned>  ( mat1_, 8UL, 16UL, 8UL, 8UL );
       USMT sm2 = submatrix<unaligned>( mat2_, 8UL, 16UL, 8UL, 8UL );
 
-      sm1.ctranspose();
-      sm2.ctranspose();
+      ctranspose( sm1 );
+      ctranspose( sm2 );
 
       checkRows   ( sm1, 8UL );
       checkColumns( sm1, 8UL );
@@ -4947,15 +4948,15 @@ void AlignedTest::testCTranspose()
    //=====================================================================================
 
    {
-      test_ = "Column-major self-transpose via DenseSubmatrix::ctranspose()";
+      test_ = "Column-major self-transpose via ctranspose()";
 
       initialize();
 
       AOSMT sm1 = submatrix<aligned>  ( tmat1_, 16UL, 8UL, 8UL, 8UL );
       UOSMT sm2 = submatrix<unaligned>( tmat2_, 16UL, 8UL, 8UL, 8UL );
 
-      sm1.ctranspose();
-      sm2.ctranspose();
+      ctranspose( sm1 );
+      ctranspose( sm2 );
 
       checkRows   ( sm1, 8UL );
       checkColumns( sm1, 8UL );
