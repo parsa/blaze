@@ -560,6 +560,9 @@ inline typename ImagExprTrait< typename PT::RepresentedType >::Type
    imag( const Proxy<PT,RT>& proxy );
 
 template< typename PT, typename RT >
+inline void transpose( const Proxy<PT,RT>& proxy );
+
+template< typename PT, typename RT >
 inline bool isReal( const Proxy<PT,RT>& proxy );
 
 template< typename PT, typename RT >
@@ -678,6 +681,29 @@ inline typename ImagExprTrait< typename PT::RepresentedType >::Type
    using blaze::imag;
 
    return imag( (~proxy).get() );
+}
+//*************************************************************************************************
+
+
+//*************************************************************************************************
+/*!\brief In-place transpose of the represented matrix element.
+// \ingroup math
+//
+// \param proxy The given proxy instance.
+// \return void
+// \exception std::logic_error Matrix cannot be transposed.
+//
+// This function transposes the represented matrix in-place. The function fails if ...
+//
+//  - ... the represented matrix has a fixed size and is non-square;
+//  - ... the represented matrix is a triangular matrix.
+//
+// In all failure cases a \a std::logic_error exception is thrown.
+*/
+template< typename PT, typename RT >
+inline void transpose( const Proxy<PT,RT>& proxy )
+{
+   transpose( (~proxy).get() );
 }
 //*************************************************************************************************
 
