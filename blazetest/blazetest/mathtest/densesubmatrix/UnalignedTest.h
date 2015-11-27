@@ -99,6 +99,7 @@ class UnalignedTest
    void testClear       ();
    void testTranspose   ();
    void testCTranspose  ();
+   void testInvert      ();
    void testIsDefault   ();
    void testIsSame      ();
    void testSubmatrix   ();

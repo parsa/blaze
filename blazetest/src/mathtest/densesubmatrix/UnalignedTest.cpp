@@ -46,6 +46,7 @@
 #include <blaze/util/policies/Deallocate.h>
 #include <blaze/util/UniqueArray.h>
 #include <blazetest/mathtest/densesubmatrix/UnalignedTest.h>
+#include <blazetest/system/LAPACK.h>
 
 
 namespace blazetest {
@@ -82,6 +83,7 @@ UnalignedTest::UnalignedTest()
    testClear();
    testTranspose();
    testCTranspose();
+   testInvert();
    testIsDefault();
    testIsSame();
    testSubmatrix();
@@ -7209,13 +7211,13 @@ void UnalignedTest::testTranspose()
    //=====================================================================================
 
    {
-      test_ = "Row-major self-transpose via DenseSubmatrix::transpose()";
+      test_ = "Row-major self-transpose via transpose()";
 
       initialize();
 
       SMT sm = submatrix( mat_, 1UL, 0UL, 3UL, 3UL );
 
-      sm.transpose();
+      transpose( sm );
 
       checkRows    ( sm  ,  3UL );
       checkColumns ( sm  ,  3UL );
@@ -7308,13 +7310,13 @@ void UnalignedTest::testTranspose()
    //=====================================================================================
 
    {
-      test_ = "Column-major self-transpose via DenseSubmatrix::transpose()";
+      test_ = "Column-major self-transpose via transpose()";
 
       initialize();
 
       OSMT sm = submatrix( tmat_, 0UL, 1UL, 3UL, 3UL );
 
-      sm.transpose();
+      transpose( sm );
 
       checkRows    ( sm   ,  3UL );
       checkColumns ( sm   ,  3UL );
@@ -7417,13 +7419,13 @@ void UnalignedTest::testCTranspose()
    //=====================================================================================
 
    {
-      test_ = "Row-major self-transpose via DenseSubmatrix::ctranspose()";
+      test_ = "Row-major self-transpose via ctranspose()";
 
       initialize();
 
       SMT sm = submatrix( mat_, 1UL, 0UL, 3UL, 3UL );
 
-      sm.ctranspose();
+      ctranspose( sm );
 
       checkRows    ( sm  ,  3UL );
       checkColumns ( sm  ,  3UL );
@@ -7516,13 +7518,13 @@ void UnalignedTest::testCTranspose()
    //=====================================================================================
 
    {
-      test_ = "Column-major self-transpose via DenseSubmatrix::ctranspose()";
+      test_ = "Column-major self-transpose via ctranspose()";
 
       initialize();
 
       OSMT sm = submatrix( tmat_, 0UL, 1UL, 3UL, 3UL );
 
-      sm.ctranspose();
+      ctranspose( sm );
 
       checkRows    ( sm   ,  3UL );
       checkColumns ( sm   ,  3UL );
@@ -7601,6 +7603,131 @@ void UnalignedTest::testCTranspose()
                                      "(  0 -2  0 -3 -8 )\n"
                                      "(  0  0  4  5  9 )\n"
                                      "(  0  0  0 -6 10 )\n";
+         throw std::runtime_error( oss.str() );
+      }
+   }
+}
+//*************************************************************************************************
+
+
+//*************************************************************************************************
+/*!\brief Test of the \c invert() function with the DenseSubmatrix class template.
+//
+// \return void
+// \exception std::runtime_error Error detected.
+//
+// This function performs a test of the \c invert() function of the DenseSubmatrix class
+// template. In case an error is detected, a \a std::runtime_error exception is thrown.
+*/
+void UnalignedTest::testInvert()
+{
+   //=====================================================================================
+   // Row-major submatrix tests
+   //=====================================================================================
+
+   {
+      test_ = "Row-major DenseSubmatrix inversion";
+
+      blaze::DynamicMatrix<double,blaze::rowMajor> mat( 5UL, 4UL, 9.0 );
+      blaze::DenseSubmatrix< blaze::DynamicMatrix<double,blaze::rowMajor> > sm( mat, 2UL, 1UL, 3UL, 3UL );
+      sm = 0.0;
+      sm(0,0) = 1.0;
+      sm(1,1) = 1.0;
+      sm(2,0) = 1.0;
+      sm(2,1) = 1.0;
+      sm(2,2) = 1.0;
+
+      invert( sm );
+
+      checkRows    ( sm ,  3UL );
+      checkColumns ( sm ,  3UL );
+      checkNonZeros( sm ,  5UL );
+      checkRows    ( mat,  5UL );
+      checkColumns ( mat,  4UL );
+      checkNonZeros( mat, 16UL );
+
+      if( sm(0,0) !=  1.0 || sm(0,1) !=  0.0 || sm(0,2) != 0.0 ||
+          sm(1,0) !=  0.0 || sm(1,1) !=  1.0 || sm(1,2) != 0.0 ||
+          sm(2,0) != -1.0 || sm(2,1) != -1.0 || sm(2,2) != 1.0 ) {
+         std::ostringstream oss;
+         oss << " Test: " << test_ << "\n"
+             << " Error: Inversion failed\n"
+             << " Details:\n"
+             << "   Result:\n" << sm << "\n"
+             << "   Expected result:\n(  1  0  0 )\n(  0  1  0 )\n( -1 -1  1 )\n";
+         throw std::runtime_error( oss.str() );
+      }
+
+      if( mat(0,0) != 9.0 || mat(0,1) !=  9.0 || mat(0,2) !=  9.0 || mat(0,3) != 9.0 ||
+          mat(1,0) != 9.0 || mat(1,1) !=  9.0 || mat(1,2) !=  9.0 || mat(1,3) != 9.0 ||
+          mat(2,0) != 9.0 || mat(2,1) !=  1.0 || mat(2,2) !=  0.0 || mat(2,3) != 0.0 ||
+          mat(3,0) != 9.0 || mat(3,1) !=  0.0 || mat(3,2) !=  1.0 || mat(3,3) != 0.0 ||
+          mat(4,0) != 9.0 || mat(4,1) != -1.0 || mat(4,2) != -1.0 || mat(4,3) != 1.0 ) {
+         std::ostringstream oss;
+         oss << " Test: " << test_ << "\n"
+             << " Error: Inversion failed\n"
+             << " Details:\n"
+             << "   Result:\n" << mat << "\n"
+             << "   Expected result:\n( 9  9  9  9 )\n"
+                                     "( 9  9  9  9 )\n"
+                                     "( 9  1  0  0 )\n"
+                                     "( 9  0  1  0 )\n"
+                                     "( 9 -1 -1  1 )\n";
+         throw std::runtime_error( oss.str() );
+      }
+   }
+
+
+   //=====================================================================================
+   // Column-major submatrix tests
+   //=====================================================================================
+
+   {
+      test_ = "Column-major DenseSubmatrix inversion";
+
+      blaze::DynamicMatrix<double,blaze::columnMajor> mat( 4UL, 5UL, 9.0 );
+      blaze::DenseSubmatrix< blaze::DynamicMatrix<double,blaze::columnMajor> > sm( mat, 1UL, 2UL, 3UL, 3UL );
+      sm = 0.0;
+      sm(0,0) = 1.0;
+      sm(1,1) = 1.0;
+      sm(2,0) = 1.0;
+      sm(2,1) = 1.0;
+      sm(2,2) = 1.0;
+
+      invert( sm );
+
+      checkRows    ( sm ,  3UL );
+      checkColumns ( sm ,  3UL );
+      checkNonZeros( sm ,  5UL );
+      checkRows    ( mat,  4UL );
+      checkColumns ( mat,  5UL );
+      checkNonZeros( mat, 16UL );
+
+      if( sm(0,0) !=  1.0 || sm(0,1) !=  0.0 || sm(0,2) != 0.0 ||
+          sm(1,0) !=  0.0 || sm(1,1) !=  1.0 || sm(1,2) != 0.0 ||
+          sm(2,0) != -1.0 || sm(2,1) != -1.0 || sm(2,2) != 1.0 ) {
+         std::ostringstream oss;
+         oss << " Test: " << test_ << "\n"
+             << " Error: Inversion failed\n"
+             << " Details:\n"
+             << "   Result:\n" << sm << "\n"
+             << "   Expected result:\n(  1  0  0 )\n(  0  1  0 )\n( -1 -1  1 )\n";
+         throw std::runtime_error( oss.str() );
+      }
+
+      if( mat(0,0) != 9.0 || mat(0,1) != 9.0 || mat(0,2) !=  9.0 || mat(0,3) !=  9.0 || mat(0,4) != 9.0 ||
+          mat(1,0) != 9.0 || mat(1,1) != 9.0 || mat(1,2) !=  1.0 || mat(1,3) !=  0.0 || mat(1,4) != 0.0 ||
+          mat(2,0) != 9.0 || mat(2,1) != 9.0 || mat(2,2) !=  0.0 || mat(2,3) !=  1.0 || mat(2,4) != 0.0 ||
+          mat(3,0) != 9.0 || mat(3,1) != 9.0 || mat(3,2) != -1.0 || mat(3,3) != -1.0 || mat(3,4) != 1.0 ) {
+         std::ostringstream oss;
+         oss << " Test: " << test_ << "\n"
+             << " Error: Inversion failed\n"
+             << " Details:\n"
+             << "   Result:\n" << mat << "\n"
+             << "   Expected result:\n( 9  9  9  9  9 )\n"
+                                     "( 9  9  1  0  0 )\n"
+                                     "( 9  9  0  1  0 )\n"
+                                     "( 9 -9 -1 -1  1 )\n";
          throw std::runtime_error( oss.str() );
       }
    }
