@@ -55,7 +55,7 @@ noop: $(BIN)
 
 # Build rules
 OperationTest: OperationTest.o
-	@$(CXX) $(CXXFLAGS) -o $@ $< $(LIBRARIES) -llapack -lgfortran
+	@$(CXX) $(CXXFLAGS) -o $@ $< $(LIBRARIES)
 
 
 # Cleanup
