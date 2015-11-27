@@ -110,7 +110,6 @@ class SparseTest
    void testResize      ();
    void testReserve     ();
    void testTrim        ();
-   void testTranspose   ();
    void testSwap        ();
    void testFind        ();
    void testLowerBound  ();
