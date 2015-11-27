@@ -1788,7 +1788,7 @@ const typename MT::ElementType max( const DenseMatrix<MT,SO>& dm )
 // In all failure cases a \a std::invalid_argument exception is thrown.
 //
 // \note This function does not provide any exception safety guarantee, i.e. in case an exception
-// is thrown, \c dm may already have been modified.
+// is thrown \c dm may already have been modified.
 // \note This function can only be used if the fitting LAPACK library is available and linked to
 // the executable. Otherwise a linker error will be created.
 */
@@ -1827,7 +1827,7 @@ inline typename EnableIf< IsFloat<typename MT::ElementType> >::Type
 // In all failure cases a \a std::invalid_argument exception is thrown.
 //
 // \note This function does not provide any exception safety guarantee, i.e. in case an exception
-// is thrown, \c dm may already have been modified.
+// is thrown \c dm may already have been modified.
 // \note This function can only be used if the fitting LAPACK library is available and linked to
 // the executable. Otherwise a linker error will be created.
 */
@@ -1866,7 +1866,7 @@ inline typename EnableIf< IsDouble<typename MT::ElementType> >::Type
 // In all failure cases a \a std::invalid_argument exception is thrown.
 //
 // \note This function does not provide any exception safety guarantee, i.e. in case an exception
-// is thrown, \c dm may already have been modified.
+// is thrown \c dm may already have been modified.
 // \note This function can only be used if the fitting LAPACK library is available and linked to
 // the executable. Otherwise a linker error will be created.
 */
@@ -1905,7 +1905,7 @@ inline typename EnableIf< IsSame< typename MT::ElementType, complex<float> > >::
 // In all failure cases a \a std::invalid_argument exception is thrown.
 //
 // \note This function does not provide any exception safety guarantee, i.e. in case an exception
-// is thrown, \c dm may already have been modified.
+// is thrown \c dm may already have been modified.
 // \note This function can only be used if the fitting LAPACK library is available and linked to
 // the executable. Otherwise a linker error will be created.
 */
@@ -1940,14 +1940,11 @@ inline typename EnableIf< IsSame< typename MT::ElementType, complex<double> > >:
 //  - ... the given matrix is not a square matrix;
 //  - ... the given matrix is singular and not invertible.
 //
-// In case it is possible to detect the singularity failure can be detected at compile time, a compilation error is created, else a
-// \a std::invalid_argument exception is thrown.
-
 // In all failure cases either a compilation error is created if the failure can be predicted at
 // compile time or a \a std::invalid_argument exception is thrown.
 //
 // \note This function does not provide any exception safety guarantee, i.e. in case an exception
-// is thrown, \c dm may already have been modified.
+// is thrown \c dm may already have been modified.
 // \note This function can only be used if the fitting LAPACK library is available and linked to
 // the executable. Otherwise a linker error will be created.
 */
