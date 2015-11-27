@@ -294,7 +294,6 @@ void ClassTest::testAlignment( const std::string& type )
    // Static array alignment test
    //=====================================================================================
 
-#if BOOST_VERSION >= 105400
    {
       const boost::container::static_vector<RowMajorMatrixType,7UL> mats( 7UL );
 
@@ -344,7 +343,6 @@ void ClassTest::testAlignment( const std::string& type )
          }
       }
    }
-#endif
 
 
    //=====================================================================================
