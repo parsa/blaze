@@ -41,10 +41,12 @@
 //*************************************************************************************************
 
 #include <blaze/math/constraints/RequiresEvaluation.h>
+#include <blaze/math/constraints/StrictlyTriangular.h>
 #include <blaze/math/constraints/Triangular.h>
 #include <blaze/math/expressions/DenseMatrix.h>
 #include <blaze/math/expressions/SparseMatrix.h>
 #include <blaze/math/Functions.h>
+#include <blaze/math/lapack/Inversion.h>
 #include <blaze/math/shims/Conjugate.h>
 #include <blaze/math/shims/Equal.h>
 #include <blaze/math/shims/IsDefault.h>
@@ -72,8 +74,12 @@
 #include <blaze/util/mpl/If.h>
 #include <blaze/util/TrueType.h>
 #include <blaze/util/Types.h>
+#include <blaze/util/typetraits/IsDouble.h>
+#include <blaze/util/typetraits/IsFloat.h>
 #include <blaze/util/typetraits/IsNumeric.h>
+#include <blaze/util/typetraits/IsSame.h>
 #include <blaze/util/typetraits/RemoveReference.h>
+#include <blaze/util/UniqueArray.h>
 
 
 namespace blaze {
@@ -617,6 +623,9 @@ const typename MT::ElementType min( const DenseMatrix<MT,SO>& dm );
 
 template< typename MT, bool SO >
 const typename MT::ElementType max( const DenseMatrix<MT,SO>& dm );
+
+template< typename MT, bool SO >
+inline void invert( DenseMatrix<MT,SO>& dm );
 //@}
 //*************************************************************************************************
 
@@ -1757,6 +1766,203 @@ const typename MT::ElementType max( const DenseMatrix<MT,SO>& dm )
 
    return maximum;
 }
+//*************************************************************************************************
+
+
+//*************************************************************************************************
+/*! \cond BLAZE_INTERNAL */
+/*!\brief In-place inversion of the given dense matrix with single precision elements.
+// \ingroup dense_matrix
+//
+// \param dm The dense matrix to be inverted.
+// \return void
+// \exception std::invalid_argument Inversion of singular matrix failed.
+// \exception std::invalid_argument Invalid non-square matrix provided.
+//
+// This function inverts the given dense single precision matrix by means of LAPACK kernels. The
+// matrix inversion fails if ...
+//
+//  - ... the given matrix is not a square matrix;
+//  - ... the given matrix is singular and not invertible.
+//
+// In all failure cases a \a std::invalid_argument exception is thrown.
+//
+// \note This function does not provide any exception safety guarantee, i.e. in case an exception
+// is thrown, \c dm may already have been modified.
+// \note This function can only be used if the fitting LAPACK library is available and linked to
+// the executable. Otherwise a linker error will be created.
+*/
+template< typename MT  // Type of the dense matrix
+        , bool SO >    // Storage order of the dense matrix
+inline typename EnableIf< IsFloat<typename MT::ElementType> >::Type
+   invert_backend( DenseMatrix<MT,SO>& dm )
+{
+   const size_t M( (~dm).rows()    );
+   const size_t N( (~dm).columns() );
+
+   UniqueArray<int> ipiv( new int[min(M,N)] );
+   sgetrf( ~dm, ipiv.get() );
+   sgetri( ~dm, ipiv.get() );
+}
+/*! \endcond */
+//*************************************************************************************************
+
+
+//*************************************************************************************************
+/*! \cond BLAZE_INTERNAL */
+/*!\brief In-place inversion of the given dense matrix with double precision elements.
+// \ingroup dense_matrix
+//
+// \param dm The dense matrix to be inverted.
+// \return void
+// \exception std::invalid_argument Inversion of singular matrix failed.
+// \exception std::invalid_argument Invalid non-square matrix provided.
+//
+// This function inverts the given dense double precision matrix by means of LAPACK kernels.  The
+// matrix inversion fails if ...
+//
+//  - ... the given matrix is not a square matrix;
+//  - ... the given matrix is singular and not invertible.
+//
+// In all failure cases a \a std::invalid_argument exception is thrown.
+//
+// \note This function does not provide any exception safety guarantee, i.e. in case an exception
+// is thrown, \c dm may already have been modified.
+// \note This function can only be used if the fitting LAPACK library is available and linked to
+// the executable. Otherwise a linker error will be created.
+*/
+template< typename MT  // Type of the dense matrix
+        , bool SO >    // Storage order of the dense matrix
+inline typename EnableIf< IsDouble<typename MT::ElementType> >::Type
+   invert_backend( DenseMatrix<MT,SO>& dm )
+{
+   const size_t M( (~dm).rows()    );
+   const size_t N( (~dm).columns() );
+
+   UniqueArray<int> ipiv( new int[min(M,N)] );
+   dgetrf( ~dm, ipiv.get() );
+   dgetri( ~dm, ipiv.get() );
+}
+/*! \endcond */
+//*************************************************************************************************
+
+
+//*************************************************************************************************
+/*! \cond BLAZE_INTERNAL */
+/*!\brief In-place inversion of the given dense matrix with single precision complex elements.
+// \ingroup dense_matrix
+//
+// \param dm The dense matrix to be inverted.
+// \return void
+// \exception std::invalid_argument Inversion of singular matrix failed.
+// \exception std::invalid_argument Invalid non-square matrix provided.
+//
+// This function inverts the given dense single precision complex matrix by means of LAPACK
+// kernels.  The matrix inversion fails if ...
+//
+//  - ... the given matrix is not a square matrix;
+//  - ... the given matrix is singular and not invertible.
+//
+// In all failure cases a \a std::invalid_argument exception is thrown.
+//
+// \note This function does not provide any exception safety guarantee, i.e. in case an exception
+// is thrown, \c dm may already have been modified.
+// \note This function can only be used if the fitting LAPACK library is available and linked to
+// the executable. Otherwise a linker error will be created.
+*/
+template< typename MT  // Type of the dense matrix
+        , bool SO >    // Storage order of the dense matrix
+inline typename EnableIf< IsSame< typename MT::ElementType, complex<float> > >::Type
+   invert_backend( DenseMatrix<MT,SO>& dm )
+{
+   const size_t M( (~dm).rows()    );
+   const size_t N( (~dm).columns() );
+
+   UniqueArray<int> ipiv( new int[min(M,N)] );
+   cgetrf( ~dm, ipiv.get() );
+   cgetri( ~dm, ipiv.get() );
+}
+/*! \endcond */
+//*************************************************************************************************
+
+
+//*************************************************************************************************
+/*! \cond BLAZE_INTERNAL */
+/*!\brief In-place inversion of the given dense matrix with double precision complex elements.
+// \ingroup dense_matrix
+//
+// \param dm The dense matrix to be inverted.
+// \return void
+// \exception std::invalid_argument Inversion of singular matrix failed.
+// \exception std::invalid_argument Invalid non-square matrix provided.
+//
+// This function inverts the given dense double precision complex matrix by means of LAPACK
+// kernels. The matrix inversion fails if ...
+//
+//  - ... the given matrix is not a square matrix;
+//  - ... the given matrix is singular and not invertible.
+//
+// In all failure cases a \a std::invalid_argument exception is thrown.
+//
+// \note This function does not provide any exception safety guarantee, i.e. in case an exception
+// is thrown, \c dm may already have been modified.
+// \note This function can only be used if the fitting LAPACK library is available and linked to
+// the executable. Otherwise a linker error will be created.
+*/
+template< typename MT  // Type of the dense matrix
+        , bool SO >    // Storage order of the dense matrix
+inline typename EnableIf< IsSame< typename MT::ElementType, complex<double> > >::Type
+   invert_backend( DenseMatrix<MT,SO>& dm )
+{
+   const size_t M( (~dm).rows()    );
+   const size_t N( (~dm).columns() );
+
+   UniqueArray<int> ipiv( new int[min(M,N)] );
+   zgetrf( ~dm, ipiv.get() );
+   zgetri( ~dm, ipiv.get() );
+}
+/*! \endcond */
+//*************************************************************************************************
+
+
+//*************************************************************************************************
+/*!\brief In-place inversion of the given dense matrix.
+// \ingroup dense_matrix
+//
+// \param dm The dense matrix to be inverted.
+// \return void
+// \exception std::invalid_argument Inversion of singular matrix failed.
+// \exception std::invalid_argument Invalid non-square matrix provided.
+//
+// This function inverts the given dense matrix by means of LAPACK kernels. The matrix inversion
+// fails if ...
+//
+//  - ... the given matrix is not a square matrix;
+//  - ... the given matrix is singular and not invertible.
+//
+// In case it is possible to detect the singularity failure can be detected at compile time, a compilation error is created, else a
+// \a std::invalid_argument exception is thrown.
+
+// In all failure cases either a compilation error is created if the failure can be predicted at
+// compile time or a \a std::invalid_argument exception is thrown.
+//
+// \note This function does not provide any exception safety guarantee, i.e. in case an exception
+// is thrown, \c dm may already have been modified.
+// \note This function can only be used if the fitting LAPACK library is available and linked to
+// the executable. Otherwise a linker error will be created.
+*/
+template< typename MT  // Type of the dense matrix
+        , bool SO >    // Storage order of the dense matrix
+inline void invert( DenseMatrix<MT,SO>& dm )
+{
+   BLAZE_CONSTRAINT_MUST_NOT_BE_STRICTLY_TRIANGULAR_MATRIX_TYPE( MT );
+
+   if( !IsSquare<MT>::value && !isSquare( dm ) ) {
+      BLAZE_THROW_INVALID_ARGUMENT( "Invalid non-square matrix provided" );
+   }
+
+   invert_backend( ~dm );
+};
 //*************************************************************************************************
 
 } // namespace blaze
