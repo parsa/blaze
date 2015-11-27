@@ -107,7 +107,7 @@ class DenseTest
    void testResize      ();
    void testExtend      ();
    void testReserve     ();
-   void testTranspose   ();
+   void testInvert      ();
    void testSwap        ();
    void testIsDefault   ();
    void testSubmatrix   ();
