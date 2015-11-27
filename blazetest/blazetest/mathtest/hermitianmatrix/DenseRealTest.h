@@ -110,6 +110,7 @@ class DenseRealTest
    void testReserve     ();
    void testTranspose   ();
    void testCTranspose  ();
+   void testInvert      ();
    void testSwap        ();
    void testIsDefault   ();
    void testSubmatrix   ();
