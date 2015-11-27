@@ -35,7 +35,7 @@
 # Build rules
 default: all
 
-all: functions intrinsics typetraits \
+all: functions intrinsics lapack typetraits \
      densevector sparsevector densematrix sparsematrix \
      staticvector hybridvector dynamicvector customvector compressedvector \
      staticmatrix hybridmatrix dynamicmatrix custommatrix compressedmatrix \
@@ -63,7 +63,7 @@ essential: all
 
 single: all
 
-noop: functions intrinsics typetraits \
+noop: functions intrinsics lapack typetraits \
       densevector sparsevector densematrix sparsematrix \
       staticvector hybridvector dynamicvector customvector compressedvector \
       staticmatrix hybridmatrix dynamicmatrix custommatrix compressedmatrix \
@@ -86,6 +86,11 @@ functions:
 intrinsics:
 	@echo
 	@echo "Building the intrinsics operation tests..."
+	@$(MAKE) --no-print-directory -C ./intrinsics $(MAKECMDGOALS)
+
+lapack:
+	@echo
+	@echo "Building the LAPACK operation tests..."
 	@$(MAKE) --no-print-directory -C ./intrinsics $(MAKECMDGOALS)
 
 typetraits:
@@ -483,6 +488,7 @@ matrixserializer:
 clean:
 	@$(MAKE) --no-print-directory -C ./functions clean
 	@$(MAKE) --no-print-directory -C ./intrinsics clean
+	@$(MAKE) --no-print-directory -C ./lapack clean
 	@$(MAKE) --no-print-directory -C ./typetraits clean
 	@$(MAKE) --no-print-directory -C ./densevector clean
 	@$(MAKE) --no-print-directory -C ./sparsevector clean
@@ -566,7 +572,7 @@ clean:
 
 # Setting the independent commands
 .PHONY: default all essential single noop clean \
-        functions intrinsics typetraits \
+        functions intrinsics lapack typetraits \
         densevector sparsevector densematrix sparsematrix \
         staticvector hybridvector dynamicvector customvector compressedvector \
         staticmatrix hybridmatrix dynamicmatrix custommatrix compressedmatrix \
