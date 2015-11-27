@@ -104,6 +104,7 @@ class UnalignedUnpaddedTest
    void testClear       ();
    void testTranspose   ();
    void testCTranspose  ();
+   void testInvert      ();
    void testSwap        ();
    void testIsDefault   ();
 

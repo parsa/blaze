@@ -52,6 +52,7 @@
 #include <blazetest/mathtest/custommatrix/UnalignedUnpaddedTest.h>
 #include <blazetest/mathtest/RandomMaximum.h>
 #include <blazetest/mathtest/RandomMinimum.h>
+#include <blazetest/system/LAPACK.h>
 
 
 namespace blazetest {
@@ -86,6 +87,7 @@ UnalignedUnpaddedTest::UnalignedUnpaddedTest()
    testClear();
    testTranspose();
    testCTranspose();
+   testInvert();
    testSwap();
    testIsDefault();
 }
@@ -7069,7 +7071,7 @@ void UnalignedUnpaddedTest::testTranspose()
    //=====================================================================================
 
    {
-      test_ = "Row-major self-transpose via CustomMatrix::transpose()";
+      test_ = "Row-major self-transpose via transpose()";
 
       // Self-transpose of a 3x3 matrix
       {
@@ -7084,7 +7086,7 @@ void UnalignedUnpaddedTest::testTranspose()
          mat(2,1) = 0;
          mat(2,2) = 5;
 
-         mat.transpose();
+         transpose( mat );
 
          checkRows    ( mat, 3UL );
          checkColumns ( mat, 3UL );
@@ -7111,7 +7113,7 @@ void UnalignedUnpaddedTest::testTranspose()
       try {
          MT mat( new int[15UL], 3UL, 5UL, blaze::ArrayDelete() );
 
-         mat.transpose();
+         transpose( mat );
 
          std::ostringstream oss;
          oss << " Test: " << test_ << "\n"
@@ -7180,7 +7182,7 @@ void UnalignedUnpaddedTest::testTranspose()
    //=====================================================================================
 
    {
-      test_ = "Column-major self-transpose via CustomMatrix::transpose()";
+      test_ = "Column-major self-transpose via transpose()";
 
       // Self-transpose of a 3x3 matrix
       {
@@ -7195,7 +7197,7 @@ void UnalignedUnpaddedTest::testTranspose()
          mat(2,1) = 0;
          mat(2,2) = 5;
 
-         mat.transpose();
+         transpose( mat );
 
          checkRows    ( mat, 3UL );
          checkColumns ( mat, 3UL );
@@ -7222,7 +7224,7 @@ void UnalignedUnpaddedTest::testTranspose()
       try {
          OMT mat( new int[15UL], 5UL, 3UL, blaze::ArrayDelete() );
 
-         mat.transpose();
+         transpose( mat );
 
          std::ostringstream oss;
          oss << " Test: " << test_ << "\n"
@@ -7305,7 +7307,7 @@ void UnalignedUnpaddedTest::testCTranspose()
    //=====================================================================================
 
    {
-      test_ = "Row-major self-transpose via CustomMatrix::ctranspose()";
+      test_ = "Row-major self-transpose via ctranspose()";
 
       using blaze::unaligned;
       using blaze::unpadded;
@@ -7327,7 +7329,7 @@ void UnalignedUnpaddedTest::testCTranspose()
          mat(2,1) = cplx(0, 0);
          mat(2,2) = cplx(5,-5);
 
-         mat.ctranspose();
+         ctranspose( mat );
 
          checkRows    ( mat, 3UL );
          checkColumns ( mat, 3UL );
@@ -7356,7 +7358,7 @@ void UnalignedUnpaddedTest::testCTranspose()
       try {
          UnalignedUnpadded mat( new cplx[15UL], 3UL, 5UL, blaze::ArrayDelete() );
 
-         mat.ctranspose();
+         ctranspose( mat );
 
          std::ostringstream oss;
          oss << " Test: " << test_ << "\n"
@@ -7434,7 +7436,7 @@ void UnalignedUnpaddedTest::testCTranspose()
    //=====================================================================================
 
    {
-      test_ = "Column-major self-transpose via CustomMatrix::ctranspose()";
+      test_ = "Column-major self-transpose via ctranspose()";
 
       using blaze::unaligned;
       using blaze::unpadded;
@@ -7456,7 +7458,7 @@ void UnalignedUnpaddedTest::testCTranspose()
          mat(2,1) = cplx(0, 0);
          mat(2,2) = cplx(5,-5);
 
-         mat.ctranspose();
+         ctranspose( mat );
 
          checkRows    ( mat, 3UL );
          checkColumns ( mat, 3UL );
@@ -7481,11 +7483,11 @@ void UnalignedUnpaddedTest::testCTranspose()
          }
       }
 
-      // Try to self-transpose a 3x5 matrix
+      // Try to self-transpose a 5x3 matrix
       try {
-         UnalignedUnpadded mat( new cplx[15UL], 3UL, 5UL, blaze::ArrayDelete() );
+         UnalignedUnpadded mat( new cplx[15UL], 5UL, 3UL, blaze::ArrayDelete() );
 
-         mat.ctranspose();
+         ctranspose( mat );
 
          std::ostringstream oss;
          oss << " Test: " << test_ << "\n"
@@ -7543,9 +7545,9 @@ void UnalignedUnpaddedTest::testCTranspose()
          }
       }
 
-      // Try to self-transpose a 3x5 matrix
+      // Try to self-transpose a 5x3 matrix
       try {
-         UnalignedUnpadded mat( new cplx[15UL], 3UL, 5UL, blaze::ArrayDelete() );
+         UnalignedUnpadded mat( new cplx[15UL], 5UL, 3UL, blaze::ArrayDelete() );
 
          mat = ctrans( mat );
 
@@ -7556,6 +7558,115 @@ void UnalignedUnpaddedTest::testCTranspose()
       }
       catch( std::invalid_argument& ) {}
    }
+}
+//*************************************************************************************************
+
+
+//*************************************************************************************************
+/*!\brief Test of the \c invert() function with the CustomMatrix class template.
+//
+// \return void
+// \exception std::runtime_error Error detected.
+//
+// This function performs a test of the \c invert() function with the CustomMatrix class
+// template. In case an error is detected, a \a std::runtime_error exception is thrown.
+*/
+void UnalignedUnpaddedTest::testInvert()
+{
+#if BLAZETEST_MATHTEST_LAPACK_MODE
+
+   //=====================================================================================
+   // Row-major matrix tests
+   //=====================================================================================
+
+   {
+      test_ = "Row-major CustomMatrix inversion";
+
+      using blaze::unaligned;
+      using blaze::unpadded;
+      using blaze::rowMajor;
+
+      typedef blaze::CustomMatrix<double,unaligned,unpadded,rowMajor>  UnalignedUnpadded;
+      UnalignedUnpadded mat( new double[9UL], 3UL, 3UL, blaze::ArrayDelete() );
+      mat = 0.0;
+      mat(0,0) = 1.0;
+      mat(1,1) = 1.0;
+      mat(2,0) = 1.0;
+      mat(2,1) = 1.0;
+      mat(2,2) = 1.0;
+
+      invert( mat );
+
+      checkRows    ( mat, 3UL );
+      checkColumns ( mat, 3UL );
+      checkCapacity( mat, 9UL );
+      checkNonZeros( mat, 5UL );
+      checkNonZeros( mat, 0UL, 1UL );
+      checkNonZeros( mat, 1UL, 1UL );
+      checkNonZeros( mat, 2UL, 3UL );
+
+      if( mat(0,0) !=  1.0 || mat(0,1) !=  0.0 || mat(0,2) != 0.0 ||
+          mat(1,0) !=  0.0 || mat(1,1) !=  1.0 || mat(1,2) != 0.0 ||
+          mat(2,0) != -1.0 || mat(2,1) != -1.0 || mat(2,2) != 1.0 ) {
+         std::ostringstream oss;
+         oss << " Test: " << test_ << "\n"
+             << " Error: Inversion failed\n"
+             << " Details:\n"
+             << "   Result:\n" << mat << "\n"
+             << "   Expected result:\n(  1  0  0 )\n"
+                                     "(  0  1  0 )\n"
+                                     "( -1 -1  1 )\n";
+         throw std::runtime_error( oss.str() );
+      }
+   }
+
+
+   //=====================================================================================
+   // Column-major matrix tests
+   //=====================================================================================
+
+   {
+      test_ = "Column-major CustomMatrix inversion";
+
+      using blaze::unaligned;
+      using blaze::unpadded;
+      using blaze::columnMajor;
+
+      typedef blaze::CustomMatrix<double,unaligned,unpadded,columnMajor>  UnalignedUnpadded;
+      UnalignedUnpadded mat( new double[9UL], 3UL, 3UL, blaze::ArrayDelete() );
+      mat = 0.0;
+      mat(0,0) = 1.0;
+      mat(1,1) = 1.0;
+      mat(2,0) = 1.0;
+      mat(2,1) = 1.0;
+      mat(2,2) = 1.0;
+
+      invert( mat );
+
+      checkRows    ( mat, 3UL );
+      checkColumns ( mat, 3UL );
+      checkCapacity( mat, 9UL );
+      checkNonZeros( mat, 5UL );
+      checkNonZeros( mat, 0UL, 2UL );
+      checkNonZeros( mat, 1UL, 2UL );
+      checkNonZeros( mat, 2UL, 1UL );
+
+      if( mat(0,0) !=  1.0 || mat(0,1) !=  0.0 || mat(0,2) != 0.0 ||
+          mat(1,0) !=  0.0 || mat(1,1) !=  1.0 || mat(1,2) != 0.0 ||
+          mat(2,0) != -1.0 || mat(2,1) != -1.0 || mat(2,2) != 1.0 ) {
+         std::ostringstream oss;
+         oss << " Test: " << test_ << "\n"
+             << " Error: Inversion failed\n"
+             << " Details:\n"
+             << "   Result:\n" << mat << "\n"
+             << "   Expected result:\n(  1  0  0 )\n"
+                                     "(  0  1  0 )\n"
+                                     "( -1 -1  1 )\n";
+         throw std::runtime_error( oss.str() );
+      }
+   }
+
+#endif
 }
 //*************************************************************************************************
 

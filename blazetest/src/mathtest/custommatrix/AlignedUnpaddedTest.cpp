@@ -52,6 +52,7 @@
 #include <blazetest/mathtest/custommatrix/AlignedUnpaddedTest.h>
 #include <blazetest/mathtest/RandomMaximum.h>
 #include <blazetest/mathtest/RandomMinimum.h>
+#include <blazetest/system/LAPACK.h>
 
 
 namespace blazetest {
@@ -86,6 +87,7 @@ AlignedUnpaddedTest::AlignedUnpaddedTest()
    testClear();
    testTranspose();
    testCTranspose();
+   testInvert();
    testSwap();
    testIsDefault();
 }
@@ -7184,7 +7186,7 @@ void AlignedUnpaddedTest::testClear()
 
       checkRows    ( mat,  2UL );
       checkColumns ( mat,  3UL );
-      checkCapacity( mat, 32UL );
+      checkCapacity( mat, 48UL );
       checkNonZeros( mat,  5UL );
       checkNonZeros( mat,  0UL, 2UL );
       checkNonZeros( mat,  1UL, 2UL );
@@ -7229,7 +7231,7 @@ void AlignedUnpaddedTest::testTranspose()
    //=====================================================================================
 
    {
-      test_ = "Row-major self-transpose via CustomMatrix::transpose()";
+      test_ = "Row-major self-transpose via transpose()";
 
       // Self-transpose of a 3x3 matrix
       {
@@ -7244,7 +7246,7 @@ void AlignedUnpaddedTest::testTranspose()
          mat(2,1) = 0;
          mat(2,2) = 5;
 
-         mat.transpose();
+         transpose( mat );
 
          checkRows    ( mat,  3UL );
          checkColumns ( mat,  3UL );
@@ -7271,7 +7273,7 @@ void AlignedUnpaddedTest::testTranspose()
       try {
          MT mat( blaze::allocate<int>( 48UL ), 3UL, 5UL, 16UL, blaze::Deallocate() );
 
-         mat.transpose();
+         transpose( mat );
 
          std::ostringstream oss;
          oss << " Test: " << test_ << "\n"
@@ -7340,7 +7342,7 @@ void AlignedUnpaddedTest::testTranspose()
    //=====================================================================================
 
    {
-      test_ = "Column-major self-transpose via CustomMatrix::transpose()";
+      test_ = "Column-major self-transpose via transpose()";
 
       // Self-transpose of a 3x3 matrix
       {
@@ -7355,7 +7357,7 @@ void AlignedUnpaddedTest::testTranspose()
          mat(2,1) = 0;
          mat(2,2) = 5;
 
-         mat.transpose();
+         transpose( mat );
 
          checkRows    ( mat,  3UL );
          checkColumns ( mat,  3UL );
@@ -7382,7 +7384,7 @@ void AlignedUnpaddedTest::testTranspose()
       try {
          OMT mat( blaze::allocate<int>( 48UL ), 5UL, 3UL, 16UL, blaze::Deallocate() );
 
-         mat.transpose();
+         transpose( mat );
 
          std::ostringstream oss;
          oss << " Test: " << test_ << "\n"
@@ -7465,7 +7467,7 @@ void AlignedUnpaddedTest::testCTranspose()
    //=====================================================================================
 
    {
-      test_ = "Row-major self-transpose via CustomMatrix::ctranspose()";
+      test_ = "Row-major self-transpose via ctranspose()";
 
       using blaze::aligned;
       using blaze::unpadded;
@@ -7487,15 +7489,15 @@ void AlignedUnpaddedTest::testCTranspose()
          mat(2,1) = cplx(0, 0);
          mat(2,2) = cplx(5,-5);
 
-         mat.ctranspose();
+         ctranspose( mat );
 
-         checkRows    ( mat, 3UL );
-         checkColumns ( mat, 3UL );
-         checkCapacity( mat, 9UL );
-         checkNonZeros( mat, 5UL );
-         checkNonZeros( mat, 0UL, 2UL );
-         checkNonZeros( mat, 1UL, 1UL );
-         checkNonZeros( mat, 2UL, 2UL );
+         checkRows    ( mat,  3UL );
+         checkColumns ( mat,  3UL );
+         checkCapacity( mat, 48UL );
+         checkNonZeros( mat,  5UL );
+         checkNonZeros( mat,  0UL, 2UL );
+         checkNonZeros( mat,  1UL, 1UL );
+         checkNonZeros( mat,  2UL, 2UL );
 
          if( mat(0,0) != cplx(1,1) || mat(0,1) != cplx(0,0) || mat(0,2) != cplx(4,4) ||
              mat(1,0) != cplx(0,0) || mat(1,1) != cplx(3,3) || mat(1,2) != cplx(0,0) ||
@@ -7516,7 +7518,7 @@ void AlignedUnpaddedTest::testCTranspose()
       try {
          AlignedUnpadded mat( blaze::allocate<cplx>( 48UL ), 3UL, 5UL, 16UL, blaze::Deallocate() );
 
-         mat.ctranspose();
+         ctranspose( mat );
 
          std::ostringstream oss;
          oss << " Test: " << test_ << "\n"
@@ -7551,13 +7553,13 @@ void AlignedUnpaddedTest::testCTranspose()
 
          mat = ctrans( mat );
 
-         checkRows    ( mat, 3UL );
-         checkColumns ( mat, 3UL );
-         checkCapacity( mat, 9UL );
-         checkNonZeros( mat, 5UL );
-         checkNonZeros( mat, 0UL, 2UL );
-         checkNonZeros( mat, 1UL, 1UL );
-         checkNonZeros( mat, 2UL, 2UL );
+         checkRows    ( mat,  3UL );
+         checkColumns ( mat,  3UL );
+         checkCapacity( mat, 48UL );
+         checkNonZeros( mat,  5UL );
+         checkNonZeros( mat,  0UL, 2UL );
+         checkNonZeros( mat,  1UL, 1UL );
+         checkNonZeros( mat,  2UL, 2UL );
 
          if( mat(0,0) != cplx(1,1) || mat(0,1) != cplx(0,0) || mat(0,2) != cplx(4,4) ||
              mat(1,0) != cplx(0,0) || mat(1,1) != cplx(3,3) || mat(1,2) != cplx(0,0) ||
@@ -7594,7 +7596,7 @@ void AlignedUnpaddedTest::testCTranspose()
    //=====================================================================================
 
    {
-      test_ = "Column-major self-transpose via CustomMatrix::ctranspose()";
+      test_ = "Column-major self-transpose via ctranspose()";
 
       using blaze::aligned;
       using blaze::unpadded;
@@ -7616,15 +7618,15 @@ void AlignedUnpaddedTest::testCTranspose()
          mat(2,1) = cplx(0, 0);
          mat(2,2) = cplx(5,-5);
 
-         mat.ctranspose();
+         ctranspose( mat );
 
-         checkRows    ( mat, 3UL );
-         checkColumns ( mat, 3UL );
-         checkCapacity( mat, 9UL );
-         checkNonZeros( mat, 5UL );
-         checkNonZeros( mat, 0UL, 2UL );
-         checkNonZeros( mat, 1UL, 1UL );
-         checkNonZeros( mat, 2UL, 2UL );
+         checkRows    ( mat,  3UL );
+         checkColumns ( mat,  3UL );
+         checkCapacity( mat, 48UL );
+         checkNonZeros( mat,  5UL );
+         checkNonZeros( mat,  0UL, 2UL );
+         checkNonZeros( mat,  1UL, 1UL );
+         checkNonZeros( mat,  2UL, 2UL );
 
          if( mat(0,0) != cplx(1,1) || mat(0,1) != cplx(0,0) || mat(0,2) != cplx(4,4) ||
              mat(1,0) != cplx(0,0) || mat(1,1) != cplx(3,3) || mat(1,2) != cplx(0,0) ||
@@ -7641,11 +7643,11 @@ void AlignedUnpaddedTest::testCTranspose()
          }
       }
 
-      // Try to self-transpose a 3x5 matrix
+      // Try to self-transpose a 5x3 matrix
       try {
-         AlignedUnpadded mat( blaze::allocate<cplx>( 48UL ), 3UL, 5UL, 16UL, blaze::Deallocate() );
+         AlignedUnpadded mat( blaze::allocate<cplx>( 48UL ), 5UL, 3UL, 16UL, blaze::Deallocate() );
 
-         mat.ctranspose();
+         ctranspose( mat );
 
          std::ostringstream oss;
          oss << " Test: " << test_ << "\n"
@@ -7680,13 +7682,13 @@ void AlignedUnpaddedTest::testCTranspose()
 
          mat = ctrans( mat );
 
-         checkRows    ( mat, 3UL );
-         checkColumns ( mat, 3UL );
-         checkCapacity( mat, 9UL );
-         checkNonZeros( mat, 5UL );
-         checkNonZeros( mat, 0UL, 2UL );
-         checkNonZeros( mat, 1UL, 1UL );
-         checkNonZeros( mat, 2UL, 2UL );
+         checkRows    ( mat,  3UL );
+         checkColumns ( mat,  3UL );
+         checkCapacity( mat, 48UL );
+         checkNonZeros( mat,  5UL );
+         checkNonZeros( mat,  0UL, 2UL );
+         checkNonZeros( mat,  1UL, 1UL );
+         checkNonZeros( mat,  2UL, 2UL );
 
          if( mat(0,0) != cplx(1,1) || mat(0,1) != cplx(0,0) || mat(0,2) != cplx(4,4) ||
              mat(1,0) != cplx(0,0) || mat(1,1) != cplx(3,3) || mat(1,2) != cplx(0,0) ||
@@ -7703,9 +7705,9 @@ void AlignedUnpaddedTest::testCTranspose()
          }
       }
 
-      // Try to self-transpose a 3x5 matrix
+      // Try to self-transpose a 5x3 matrix
       try {
-         AlignedUnpadded mat( blaze::allocate<cplx>( 48UL ), 3UL, 5UL, 16UL, blaze::Deallocate() );
+         AlignedUnpadded mat( blaze::allocate<cplx>( 48UL ), 5UL, 3UL, 16UL, blaze::Deallocate() );
 
          mat = ctrans( mat );
 
@@ -7716,6 +7718,115 @@ void AlignedUnpaddedTest::testCTranspose()
       }
       catch( std::invalid_argument& ) {}
    }
+}
+//*************************************************************************************************
+
+
+//*************************************************************************************************
+/*!\brief Test of the \c invert() function with the CustomMatrix class template.
+//
+// \return void
+// \exception std::runtime_error Error detected.
+//
+// This function performs a test of the \c invert() function with the CustomMatrix class
+// template. In case an error is detected, a \a std::runtime_error exception is thrown.
+*/
+void AlignedUnpaddedTest::testInvert()
+{
+#if BLAZETEST_MATHTEST_LAPACK_MODE
+
+   //=====================================================================================
+   // Row-major matrix tests
+   //=====================================================================================
+
+   {
+      test_ = "Row-major CustomMatrix inversion";
+
+      using blaze::aligned;
+      using blaze::unpadded;
+      using blaze::rowMajor;
+
+      typedef blaze::CustomMatrix<double,aligned,unpadded,rowMajor>  AlignedUnpadded;
+      AlignedUnpadded mat( blaze::allocate<double>( 48UL ), 3UL, 3UL, 16UL, blaze::Deallocate() );
+      mat = 0.0;
+      mat(0,0) = 1.0;
+      mat(1,1) = 1.0;
+      mat(2,0) = 1.0;
+      mat(2,1) = 1.0;
+      mat(2,2) = 1.0;
+
+      invert( mat );
+
+      checkRows    ( mat, 3UL );
+      checkColumns ( mat, 3UL );
+      checkCapacity( mat, 9UL );
+      checkNonZeros( mat, 5UL );
+      checkNonZeros( mat, 0UL, 1UL );
+      checkNonZeros( mat, 1UL, 1UL );
+      checkNonZeros( mat, 2UL, 3UL );
+
+      if( mat(0,0) !=  1.0 || mat(0,1) !=  0.0 || mat(0,2) != 0.0 ||
+          mat(1,0) !=  0.0 || mat(1,1) !=  1.0 || mat(1,2) != 0.0 ||
+          mat(2,0) != -1.0 || mat(2,1) != -1.0 || mat(2,2) != 1.0 ) {
+         std::ostringstream oss;
+         oss << " Test: " << test_ << "\n"
+             << " Error: Inversion failed\n"
+             << " Details:\n"
+             << "   Result:\n" << mat << "\n"
+             << "   Expected result:\n(  1  0  0 )\n"
+                                     "(  0  1  0 )\n"
+                                     "( -1 -1  1 )\n";
+         throw std::runtime_error( oss.str() );
+      }
+   }
+
+
+   //=====================================================================================
+   // Column-major matrix tests
+   //=====================================================================================
+
+   {
+      test_ = "Column-major CustomMatrix inversion";
+
+      using blaze::aligned;
+      using blaze::unpadded;
+      using blaze::columnMajor;
+
+      typedef blaze::CustomMatrix<double,aligned,unpadded,columnMajor>  AlignedUnpadded;
+      AlignedUnpadded mat( blaze::allocate<double>( 48UL ), 3UL, 3UL, 16UL, blaze::Deallocate() );
+      mat = 0.0;
+      mat(0,0) = 1.0;
+      mat(1,1) = 1.0;
+      mat(2,0) = 1.0;
+      mat(2,1) = 1.0;
+      mat(2,2) = 1.0;
+
+      invert( mat );
+
+      checkRows    ( mat, 3UL );
+      checkColumns ( mat, 3UL );
+      checkCapacity( mat, 9UL );
+      checkNonZeros( mat, 5UL );
+      checkNonZeros( mat, 0UL, 2UL );
+      checkNonZeros( mat, 1UL, 2UL );
+      checkNonZeros( mat, 2UL, 1UL );
+
+      if( mat(0,0) !=  1.0 || mat(0,1) !=  0.0 || mat(0,2) != 0.0 ||
+          mat(1,0) !=  0.0 || mat(1,1) !=  1.0 || mat(1,2) != 0.0 ||
+          mat(2,0) != -1.0 || mat(2,1) != -1.0 || mat(2,2) != 1.0 ) {
+         std::ostringstream oss;
+         oss << " Test: " << test_ << "\n"
+             << " Error: Inversion failed\n"
+             << " Details:\n"
+             << "   Result:\n" << mat << "\n"
+             << "   Expected result:\n(  1  0  0 )\n"
+                                     "(  0  1  0 )\n"
+                                     "( -1 -1  1 )\n";
+         throw std::runtime_error( oss.str() );
+      }
+   }
+
+#endif
 }
 //*************************************************************************************************
 
