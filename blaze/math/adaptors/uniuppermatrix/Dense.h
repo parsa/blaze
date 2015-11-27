@@ -721,6 +721,9 @@ class UniUpperMatrix<MT,SO,true>
    //**********************************************************************************************
 
    //**Friend declarations*************************************************************************
+   template< typename MT2, bool SO2 >
+   friend void invert( UniUpperMatrix<MT2,SO2,true>& m );
+
    template< typename MT2, bool SO2, bool DF2 >
    friend MT2& derestrict( UniUpperMatrix<MT2,SO2,DF2>& m );
    //**********************************************************************************************

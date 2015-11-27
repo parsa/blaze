@@ -288,6 +288,34 @@ inline void swap( UniUpperMatrix<MT,SO,DF>& a, UniUpperMatrix<MT,SO,DF>& b ) /* 
 
 //*************************************************************************************************
 /*! \cond BLAZE_INTERNAL */
+/*!\brief In-place inversion of the given dense uniupper matrix.
+// \ingroup uniupper_matrix
+//
+// \param m The dense uniupper matrix to be inverted.
+// \return void
+// \exception std::invalid_argument Inversion of singular matrix failed.
+//
+// This function inverts the given dense uniupper matrix by means of LAPACK kernels. The matrix
+// inversion fails if the given uniupper matrix is singular and not invertible. In this case a
+// \a std::invalid_argument exception is thrown.
+//
+// \note This function does not provide any exception safety guarantee, i.e. in case an exception
+// is thrown, \c m may already have been modified.
+// \note This function can only be used if the fitting LAPACK library is available and linked to
+// the executable. Otherwise a linker error will be created.
+*/
+template< typename MT  // Type of the adapted matrix
+        , bool SO >    // Storage order of the adapted matrix
+inline void invert( UniUpperMatrix<MT,SO,true>& m )
+{
+   invert_backend( m.matrix_ );
+}
+/*! \endcond */
+//*************************************************************************************************
+
+
+//*************************************************************************************************
+/*! \cond BLAZE_INTERNAL */
 /*!\brief Predict invariant violations by the assignment of a dense vector to a uniupper matrix.
 // \ingroup uniupper_matrix
 //
