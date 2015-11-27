@@ -49,6 +49,7 @@
 #include <blaze/math/adaptors/uppermatrix/BaseTemplate.h>
 #include <blaze/math/constraints/RequiresEvaluation.h>
 #include <blaze/math/Forward.h>
+#include <blaze/math/shims/Invert.h>
 #include <blaze/math/shims/IsDefault.h>
 #include <blaze/math/traits/AddTrait.h>
 #include <blaze/math/traits/ColumnTrait.h>
@@ -75,6 +76,7 @@
 #include <blaze/math/typetraits/Rows.h>
 #include <blaze/util/Assert.h>
 #include <blaze/util/constraints/Numeric.h>
+#include <blaze/util/Exception.h>
 #include <blaze/util/typetraits/IsBuiltin.h>
 #include <blaze/util/Unused.h>
 #include <blaze/util/valuetraits/IsTrue.h>
@@ -247,6 +249,41 @@ inline void swap( DiagonalMatrix<MT,SO,DF>& a, DiagonalMatrix<MT,SO,DF>& b ) /* 
 {
    a.swap( b );
 }
+//*************************************************************************************************
+
+
+//*************************************************************************************************
+/*! \cond BLAZE_INTERNAL */
+/*!\brief In-place inversion of the given dense diagonal matrix.
+// \ingroup diagonal_matrix
+//
+// \param m The dense diagonal matrix to be inverted.
+// \return void
+// \exception std::invalid_argument Inversion of singular matrix failed.
+//
+// This function inverts the given dense diagonal matrix by means of LAPACK kernels. The matrix
+// inversion fails if the given diagonal matrix is singular and not invertible. In this case a
+// \a std::invalid_argument exception is thrown.
+//
+// \note This function does not provide any exception safety guarantee, i.e. in case an exception
+// is thrown, \c m may already have been modified.
+*/
+template< typename MT  // Type of the adapted matrix
+        , bool SO >    // Storage order of the adapted matrix
+inline void invert( DiagonalMatrix<MT,SO,true>& m )
+{
+   MT& A( m.matrix_ );
+
+   for( size_t i=0UL; i<A.rows(); ++i )
+   {
+      if( isDefault( A(i,i) ) ) {
+         BLAZE_THROW_INVALID_ARGUMENT( "Inversion of singular matrix failed" );
+      }
+
+      invert( A(i,i) );
+   }
+}
+/*! \endcond */
 //*************************************************************************************************
 
 
