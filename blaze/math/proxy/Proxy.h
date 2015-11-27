@@ -566,6 +566,9 @@ template< typename PT, typename RT >
 inline void ctranspose( const Proxy<PT,RT>& proxy );
 
 template< typename PT, typename RT >
+inline void invert( const Proxy<PT,RT>& proxy );
+
+template< typename PT, typename RT >
 inline bool isReal( const Proxy<PT,RT>& proxy );
 
 template< typename PT, typename RT >
@@ -730,6 +733,37 @@ template< typename PT, typename RT >
 inline void ctranspose( const Proxy<PT,RT>& proxy )
 {
    ctranspose( (~proxy).get() );
+}
+//*************************************************************************************************
+
+
+//*************************************************************************************************
+/*!\brief In-place inversion of the represented dense matrix.
+// \ingroup math
+//
+// \param proxy The given proxy instance.
+// \return void
+// \exception std::invalid_argument Inversion of singular matrix failed.
+// \exception std::invalid_argument Invalid non-square matrix provided.
+//
+// This function inverts the represented dense matrix by means of LAPACK kernels. The matrix
+// inversion fails if ...
+//
+//  - ... the given matrix is not a square matrix;
+//  - ... the given matrix is singular and not invertible.
+//
+// In all failure cases either a compilation error is created if the failure can be predicted at
+// compile time or a \a std::invalid_argument exception is thrown.
+//
+// \note This function does not provide any exception safety guarantee, i.e. in case an exception
+// is thrown the represented matrix may already have been modified.
+// \note This function can only be used if the fitting LAPACK library is available and linked to
+// the executable. Otherwise a linker error will be created.
+*/
+template< typename PT, typename RT >
+inline void invert( const Proxy<PT,RT>& proxy )
+{
+   invert( (~proxy).get() );
 }
 //*************************************************************************************************
 
