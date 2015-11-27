@@ -270,6 +270,8 @@ template< typename MT  // Type of the adapted matrix
 inline void invert( SymmetricMatrix<MT,SO,true,true>& m )
 {
    invert_backend( m.matrix_ );
+
+   BLAZE_INTERNAL_ASSERT( isIntact( m ), "Broken invariant detected" );
 }
 /*! \endcond */
 //*************************************************************************************************

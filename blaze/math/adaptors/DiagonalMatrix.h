@@ -282,6 +282,8 @@ inline void invert( DiagonalMatrix<MT,SO,true>& m )
 
       invert( A(i,i) );
    }
+
+   BLAZE_INTERNAL_ASSERT( isIntact( m ), "Broken invariant detected" );
 }
 /*! \endcond */
 //*************************************************************************************************
