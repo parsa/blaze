@@ -40,6 +40,7 @@
 #include <cstdlib>
 #include <iostream>
 #include <blazetest/mathtest/compressedvector/ProxyTest.h>
+#include <blazetest/system/LAPACK.h>
 
 
 namespace blazetest {
@@ -1787,6 +1788,8 @@ void ProxyTest::testCTranspose()
 */
 void ProxyTest::testInvert()
 {
+#if BLAZETEST_MATHTEST_LAPACK_MODE
+
    test_ = "invert( VectorAccessProxy )";
 
    blaze::CompressedVector< blaze::DynamicMatrix<double> > vec( 3UL, 1UL );
@@ -1809,6 +1812,8 @@ void ProxyTest::testInvert()
    checkColumns ( vec[1], 0UL );
    checkRows    ( vec[2], 0UL );
    checkColumns ( vec[2], 0UL );
+
+#endif
 }
 //*************************************************************************************************
 
