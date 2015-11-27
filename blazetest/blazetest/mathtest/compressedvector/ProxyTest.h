@@ -110,6 +110,7 @@ class ProxyTest
    void testTrim();
    void testTranspose();
    void testCTranspose();
+   void testInvert();
    void testSwap();
    void testFind();
    void testLowerBound();

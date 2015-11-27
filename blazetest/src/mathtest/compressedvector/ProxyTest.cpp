@@ -82,6 +82,7 @@ ProxyTest::ProxyTest()
    testTrim();
    testTranspose();
    testCTranspose();
+   testInvert();
    testSwap();
    testFind();
    testLowerBound();
@@ -1668,65 +1669,146 @@ void ProxyTest::testTrim()
 
 
 //*************************************************************************************************
-/*!\brief Test of the \c transpose() member function of the VectorAccessProxy class template.
+/*!\brief Test of the \c transpose() functions of the VectorAccessProxy class template.
 //
 // \return void
 // \exception std::runtime_error Error detected.
 //
-// This function performs a test of the \c transpose() member function of the VectorAccessProxy
-// class template. In case an error is detected, a \a std::runtime_error exception is thrown.
+// This function performs a test of the \c transpose() functions of the VectorAccessProxy class
+// template. In case an error is detected, a \a std::runtime_error exception is thrown.
 */
 void ProxyTest::testTranspose()
 {
-   test_ = "VectorAccessProxy::transpose()";
+   {
+      test_ = "VectorAccessProxy::transpose()";
 
-   DMV vec( 3UL, 1UL );
-   vec[0].resize( 5UL, 3UL );
-   vec[0].transpose();
+      DMV vec( 3UL, 1UL );
+      vec[0].resize( 5UL, 3UL );
+      vec[0].transpose();
 
-   checkSize    ( vec, 3UL );
-   checkCapacity( vec, 1UL );
-   checkNonZeros( vec, 1UL );
+      checkSize    ( vec, 3UL );
+      checkCapacity( vec, 1UL );
+      checkNonZeros( vec, 1UL );
 
-   checkRows    ( vec[0],  3UL );
-   checkColumns ( vec[0],  5UL );
-   checkCapacity( vec[0], 15UL );
-   checkRows    ( vec[1],  0UL );
-   checkColumns ( vec[1],  0UL );
-   checkRows    ( vec[2],  0UL );
-   checkColumns ( vec[2],  0UL );
+      checkRows    ( vec[0],  3UL );
+      checkColumns ( vec[0],  5UL );
+      checkCapacity( vec[0], 15UL );
+      checkRows    ( vec[1],  0UL );
+      checkColumns ( vec[1],  0UL );
+      checkRows    ( vec[2],  0UL );
+      checkColumns ( vec[2],  0UL );
+   }
+
+   {
+      test_ = "transpose( VectorAccessProxy )";
+
+      DMV vec( 3UL, 1UL );
+      vec[0].resize( 5UL, 3UL );
+      transpose( vec[0] );
+
+      checkSize    ( vec, 3UL );
+      checkCapacity( vec, 1UL );
+      checkNonZeros( vec, 1UL );
+
+      checkRows    ( vec[0],  3UL );
+      checkColumns ( vec[0],  5UL );
+      checkCapacity( vec[0], 15UL );
+      checkRows    ( vec[1],  0UL );
+      checkColumns ( vec[1],  0UL );
+      checkRows    ( vec[2],  0UL );
+      checkColumns ( vec[2],  0UL );
+   }
 }
 //*************************************************************************************************
 
 
 //*************************************************************************************************
-/*!\brief Test of the \c ctranspose() member function of the VectorAccessProxy class template.
+/*!\brief Test of the \c ctranspose() functions of the VectorAccessProxy class template.
 //
 // \return void
 // \exception std::runtime_error Error detected.
 //
-// This function performs a test of the \c ctranspose() member function of the VectorAccessProxy
-// class template. In case an error is detected, a \a std::runtime_error exception is thrown.
+// This function performs a test of the \c ctranspose() functions of the VectorAccessProxy class
+// template. In case an error is detected, a \a std::runtime_error exception is thrown.
 */
 void ProxyTest::testCTranspose()
 {
-   test_ = "VectorAccessProxy::ctranspose()";
+   {
+      test_ = "VectorAccessProxy::ctranspose()";
 
-   DMV vec( 3UL, 1UL );
-   vec[0].resize( 5UL, 3UL );
-   vec[0].ctranspose();
+      DMV vec( 3UL, 1UL );
+      vec[0].resize( 5UL, 3UL );
+      vec[0].ctranspose();
+
+      checkSize    ( vec, 3UL );
+      checkCapacity( vec, 1UL );
+      checkNonZeros( vec, 1UL );
+
+      checkRows    ( vec[0],  3UL );
+      checkColumns ( vec[0],  5UL );
+      checkCapacity( vec[0], 15UL );
+      checkRows    ( vec[1],  0UL );
+      checkColumns ( vec[1],  0UL );
+      checkRows    ( vec[2],  0UL );
+      checkColumns ( vec[2],  0UL );
+   }
+
+   {
+      test_ = "ctranspose( VectorAccessProxy )";
+
+      DMV vec( 3UL, 1UL );
+      vec[0].resize( 5UL, 3UL );
+      ctranspose( vec[0] );
+
+      checkSize    ( vec, 3UL );
+      checkCapacity( vec, 1UL );
+      checkNonZeros( vec, 1UL );
+
+      checkRows    ( vec[0],  3UL );
+      checkColumns ( vec[0],  5UL );
+      checkCapacity( vec[0], 15UL );
+      checkRows    ( vec[1],  0UL );
+      checkColumns ( vec[1],  0UL );
+      checkRows    ( vec[2],  0UL );
+      checkColumns ( vec[2],  0UL );
+   }
+}
+//*************************************************************************************************
+
+
+//*************************************************************************************************
+/*!\brief Test of the \c invert() function with the VectorAccessProxy class template.
+//
+// \return void
+// \exception std::runtime_error Error detected.
+//
+// This function performs a test of the \c invert() functions with the VectorAccessProxy class
+// template. In case an error is detected, a \a std::runtime_error exception is thrown.
+*/
+void ProxyTest::testInvert()
+{
+   test_ = "invert( VectorAccessProxy )";
+
+   blaze::CompressedVector< blaze::DynamicMatrix<double> > vec( 3UL, 1UL );
+   vec[0].resize( 3UL, 3UL );
+   vec[0] = 0.0;
+   vec[0](0,0) = 1.0;
+   vec[0](1,1) = 1.0;
+   vec[0](2,2) = 1.0;
+   invert( vec[0] );
 
    checkSize    ( vec, 3UL );
    checkCapacity( vec, 1UL );
    checkNonZeros( vec, 1UL );
 
-   checkRows    ( vec[0],  3UL );
-   checkColumns ( vec[0],  5UL );
-   checkCapacity( vec[0], 15UL );
-   checkRows    ( vec[1],  0UL );
-   checkColumns ( vec[1],  0UL );
-   checkRows    ( vec[2],  0UL );
-   checkColumns ( vec[2],  0UL );
+   checkRows    ( vec[0], 3UL );
+   checkColumns ( vec[0], 3UL );
+   checkCapacity( vec[0], 9UL );
+   checkNonZeros( vec[0], 3UL );
+   checkRows    ( vec[1], 0UL );
+   checkColumns ( vec[1], 0UL );
+   checkRows    ( vec[2], 0UL );
+   checkColumns ( vec[2], 0UL );
 }
 //*************************************************************************************************
 
