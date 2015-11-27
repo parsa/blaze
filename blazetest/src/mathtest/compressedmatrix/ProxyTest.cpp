@@ -40,6 +40,7 @@
 #include <cstdlib>
 #include <iostream>
 #include <blazetest/mathtest/compressedmatrix/ProxyTest.h>
+#include <blazetest/system/LAPACK.h>
 
 
 namespace blazetest {
@@ -3479,6 +3480,8 @@ void ProxyTest::testCTranspose()
 */
 void ProxyTest::testInvert()
 {
+#if BLAZETEST_MATHTEST_LAPACK_MODE
+
    //=====================================================================================
    // Row-major matrix tests
    //=====================================================================================
@@ -3543,6 +3546,8 @@ void ProxyTest::testInvert()
       checkCapacity( mat(1,1), 9UL );
       checkNonZeros( mat(1,1), 3UL );
    }
+
+#endif
 }
 //*************************************************************************************************
 
