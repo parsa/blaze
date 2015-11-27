@@ -54,12 +54,14 @@
 #include <blaze/math/shims/IsDefault.h>
 #include <blaze/math/traits/AddTrait.h>
 #include <blaze/math/traits/ColumnTrait.h>
+#include <blaze/math/traits/CTransExprTrait.h>
 #include <blaze/math/traits/DivTrait.h>
 #include <blaze/math/traits/MathTrait.h>
 #include <blaze/math/traits/MultTrait.h>
 #include <blaze/math/traits/RowTrait.h>
 #include <blaze/math/traits/SubmatrixTrait.h>
 #include <blaze/math/traits/SubTrait.h>
+#include <blaze/math/traits/TransExprTrait.h>
 #include <blaze/math/typetraits/Columns.h>
 #include <blaze/math/typetraits/HasConstDataAccess.h>
 #include <blaze/math/typetraits/HasMutableDataAccess.h>
@@ -91,11 +93,13 @@
 #include <blaze/util/DisableIf.h>
 #include <blaze/util/EnableIf.h>
 #include <blaze/util/Exception.h>
+#include <blaze/util/FalseType.h>
 #include <blaze/util/Memory.h>
 #include <blaze/util/mpl/NextMultiple.h>
 #include <blaze/util/mpl/SizeT.h>
 #include <blaze/util/StaticAssert.h>
 #include <blaze/util/Template.h>
+#include <blaze/util/TrueType.h>
 #include <blaze/util/Types.h>
 #include <blaze/util/typetraits/IsNumeric.h>
 #include <blaze/util/typetraits/IsSame.h>
@@ -462,6 +466,15 @@ class StaticMatrix : public DenseMatrix< StaticMatrix<Type,M,N,SO>, SO >
    //**********************************************************************************************
 
  private:
+   //**Utility functions***************************************************************************
+   /*! \cond BLAZE_INTERNAL */
+   inline void transpose ( TrueType  );
+   inline void transpose ( FalseType );
+   inline void ctranspose( TrueType  );
+   inline void ctranspose( FalseType );
+   /*! \endcond */
+   //**********************************************************************************************
+
    //**Member variables****************************************************************************
    /*!\name Member variables */
    //@{
@@ -1800,11 +1813,20 @@ inline StaticMatrix<Type,M,N,SO>& StaticMatrix<Type,M,N,SO>::operator=( const Ma
 {
    using blaze::assign;
 
+   typedef typename TransExprTrait<This>::Type   TT;
+   typedef typename CTransExprTrait<This>::Type  CT;
+
    if( (~rhs).rows() != M || (~rhs).columns() != N ) {
       BLAZE_THROW_INVALID_ARGUMENT( "Invalid assignment to static matrix" );
    }
 
-   if( (~rhs).canAlias( this ) ) {
+   if( IsSame<MT,TT>::value && (~rhs).isAliased( this ) ) {
+      transpose( typename IsSquare<This>::Type() );
+   }
+   else if( IsSame<MT,CT>::value && (~rhs).isAliased( this ) ) {
+      ctranspose( typename IsSquare<This>::Type() );
+   }
+   else if( (~rhs).canAlias( this ) ) {
       StaticMatrix tmp( ~rhs );
       assign( *this, tmp );
    }
@@ -2200,6 +2222,56 @@ inline StaticMatrix<Type,M,N,SO>& StaticMatrix<Type,M,N,SO>::transpose()
 
 
 //*************************************************************************************************
+/*! \cond BLAZE_INTERNAL */
+/*!\brief Helper function for self-transpose via the trans() function.
+//
+// \return void
+//
+// This function assists in the evaluation of self-transpose via the trans() function:
+
+   \code
+   blaze::StaticMatrix<int,3UL,3UL,blaze::rowMajor> A;
+
+   A = trans( A );
+   \endcode
+*/
+template< typename Type  // Data type of the matrix
+        , size_t M       // Number of rows
+        , size_t N       // Number of columns
+        , bool SO >      // Storage order
+inline void StaticMatrix<Type,M,N,SO>::transpose( TrueType )
+{
+   transpose();
+}
+/*! \endcond */
+//*************************************************************************************************
+
+
+//*************************************************************************************************
+/*! \cond BLAZE_INTERNAL */
+/*!\brief Helper function for self-transpose via the trans() function.
+//
+// \return void
+//
+// This function assists in the evaluation of self-transpose via the trans() function:
+
+   \code
+   blaze::StaticMatrix<int,3UL,3UL,blaze::rowMajor> A;
+
+   A = trans( A );
+   \endcode
+*/
+template< typename Type  // Data type of the matrix
+        , size_t M       // Number of rows
+        , size_t N       // Number of columns
+        , bool SO >      // Storage order
+inline void StaticMatrix<Type,M,N,SO>::transpose( FalseType )
+{}
+/*! \endcond */
+//*************************************************************************************************
+
+
+//*************************************************************************************************
 /*!\brief In-place conjugate transpose of the matrix.
 //
 // \return Reference to the transposed matrix.
@@ -2228,6 +2300,56 @@ inline StaticMatrix<Type,M,N,SO>& StaticMatrix<Type,M,N,SO>::ctranspose()
 
    return *this;
 }
+//*************************************************************************************************
+
+
+//*************************************************************************************************
+/*! \cond BLAZE_INTERNAL */
+/*!\brief Helper function for self-transpose via the ctrans() function.
+//
+// \return void
+//
+// This function assists in the evaluation of self-transpose via the ctrans() function:
+
+   \code
+   blaze::StaticMatrix<int,3UL,3UL,blaze::rowMajor> A;
+
+   A = ctrans( A );
+   \endcode
+*/
+template< typename Type  // Data type of the matrix
+        , size_t M       // Number of rows
+        , size_t N       // Number of columns
+        , bool SO >      // Storage order
+inline void StaticMatrix<Type,M,N,SO>::ctranspose( TrueType )
+{
+   ctranspose();
+}
+/*! \endcond */
+//*************************************************************************************************
+
+
+//*************************************************************************************************
+/*! \cond BLAZE_INTERNAL */
+/*!\brief Helper function for self-transpose via the ctrans() function.
+//
+// \return void
+//
+// This function assists in the evaluation of self-transpose via the ctrans() function:
+
+   \code
+   blaze::StaticMatrix<int,3UL,3UL,blaze::rowMajor> A;
+
+   A = ctrans( A );
+   \endcode
+*/
+template< typename Type  // Data type of the matrix
+        , size_t M       // Number of rows
+        , size_t N       // Number of columns
+        , bool SO >      // Storage order
+inline void StaticMatrix<Type,M,N,SO>::ctranspose( FalseType )
+{}
+/*! \endcond */
 //*************************************************************************************************
 
 
@@ -3504,6 +3626,15 @@ class StaticMatrix<Type,M,N,true> : public DenseMatrix< StaticMatrix<Type,M,N,tr
    //**********************************************************************************************
 
  private:
+   //**Utility functions***************************************************************************
+   /*! \cond BLAZE_INTERNAL */
+   inline void transpose ( TrueType  );
+   inline void transpose ( FalseType );
+   inline void ctranspose( TrueType  );
+   inline void ctranspose( FalseType );
+   /*! \endcond */
+   //**********************************************************************************************
+
    //**Member variables****************************************************************************
    /*!\name Member variables */
    //@{
@@ -4838,11 +4969,20 @@ inline StaticMatrix<Type,M,N,true>& StaticMatrix<Type,M,N,true>::operator=( cons
 {
    using blaze::assign;
 
+   typedef typename TransExprTrait<This>::Type   TT;
+   typedef typename CTransExprTrait<This>::Type  CT;
+
    if( (~rhs).rows() != M || (~rhs).columns() != N ) {
       BLAZE_THROW_INVALID_ARGUMENT( "Invalid assignment to static matrix" );
    }
 
-   if( (~rhs).canAlias( this ) ) {
+   if( IsSame<MT,TT>::value && (~rhs).isAliased( this ) ) {
+      transpose( typename IsSquare<This>::Type() );
+   }
+   else if( IsSame<MT,CT>::value && (~rhs).isAliased( this ) ) {
+      ctranspose( typename IsSquare<This>::Type() );
+   }
+   else if( (~rhs).canAlias( this ) ) {
       StaticMatrix tmp( ~rhs );
       assign( *this, tmp );
    }
@@ -5243,6 +5383,54 @@ inline StaticMatrix<Type,M,N,true>& StaticMatrix<Type,M,N,true>::transpose()
 
 //*************************************************************************************************
 /*! \cond BLAZE_INTERNAL */
+/*!\brief Helper function for self-transpose via the trans() function.
+//
+// \return void
+//
+// This function assists in the evaluation of self-transpose via the trans() function:
+
+   \code
+   blaze::StaticMatrix<int,3UL,3UL,blaze::columnMajor> A;
+
+   A = trans( A );
+   \endcode
+*/
+template< typename Type  // Data type of the matrix
+        , size_t M       // Number of rows
+        , size_t N >     // Number of columns
+inline void StaticMatrix<Type,M,N,true>::transpose( TrueType )
+{
+   transpose();
+}
+/*! \endcond */
+//*************************************************************************************************
+
+
+//*************************************************************************************************
+/*! \cond BLAZE_INTERNAL */
+/*!\brief Helper function for self-transpose via the trans() function.
+//
+// \return void
+//
+// This function assists in the evaluation of self-transpose via the trans() function:
+
+   \code
+   blaze::StaticMatrix<int,3UL,3UL,blaze::columnMajor> A;
+
+   A = trans( A );
+   \endcode
+*/
+template< typename Type  // Data type of the matrix
+        , size_t M       // Number of rows
+        , size_t N >     // Number of columns
+inline void StaticMatrix<Type,M,N,true>::transpose( FalseType )
+{}
+/*! \endcond */
+//*************************************************************************************************
+
+
+//*************************************************************************************************
+/*! \cond BLAZE_INTERNAL */
 /*!\brief In-place conjugate transpose of the matrix.
 //
 // \return Reference to the transposed matrix.
@@ -5270,6 +5458,54 @@ inline StaticMatrix<Type,M,N,true>& StaticMatrix<Type,M,N,true>::ctranspose()
 
    return *this;
 }
+/*! \endcond */
+//*************************************************************************************************
+
+
+//*************************************************************************************************
+/*! \cond BLAZE_INTERNAL */
+/*!\brief Helper function for self-transpose via the ctrans() function.
+//
+// \return void
+//
+// This function assists in the evaluation of self-transpose via the ctrans() function:
+
+   \code
+   blaze::StaticMatrix<int,3UL,3UL,blaze::columnMajor> A;
+
+   A = ctrans( A );
+   \endcode
+*/
+template< typename Type  // Data type of the matrix
+        , size_t M       // Number of rows
+        , size_t N >     // Number of columns
+inline void StaticMatrix<Type,M,N,true>::ctranspose( TrueType )
+{
+   ctranspose();
+}
+/*! \endcond */
+//*************************************************************************************************
+
+
+//*************************************************************************************************
+/*! \cond BLAZE_INTERNAL */
+/*!\brief Helper function for self-transpose via the ctrans() function.
+//
+// \return void
+//
+// This function assists in the evaluation of self-transpose via the ctrans() function:
+
+   \code
+   blaze::StaticMatrix<int,3UL,3UL,blaze::columnMajor> A;
+
+   A = ctrans( A );
+   \endcode
+*/
+template< typename Type  // Data type of the matrix
+        , size_t M       // Number of rows
+        , size_t N >     // Number of columns
+inline void StaticMatrix<Type,M,N,true>::ctranspose( FalseType )
+{}
 /*! \endcond */
 //*************************************************************************************************
 
