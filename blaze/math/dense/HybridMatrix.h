@@ -56,12 +56,14 @@
 #include <blaze/math/shims/IsDefault.h>
 #include <blaze/math/traits/AddTrait.h>
 #include <blaze/math/traits/ColumnTrait.h>
+#include <blaze/math/traits/CTransExprTrait.h>
 #include <blaze/math/traits/DivTrait.h>
 #include <blaze/math/traits/MathTrait.h>
 #include <blaze/math/traits/MultTrait.h>
 #include <blaze/math/traits/RowTrait.h>
 #include <blaze/math/traits/SubmatrixTrait.h>
 #include <blaze/math/traits/SubTrait.h>
+#include <blaze/math/traits/TransExprTrait.h>
 #include <blaze/math/typetraits/HasConstDataAccess.h>
 #include <blaze/math/typetraits/HasMutableDataAccess.h>
 #include <blaze/math/typetraits/IsAligned.h>
@@ -1222,11 +1224,20 @@ inline HybridMatrix<Type,M,N,SO>& HybridMatrix<Type,M,N,SO>::operator=( const Ma
 {
    using blaze::assign;
 
+   typedef typename TransExprTrait<This>::Type   TT;
+   typedef typename CTransExprTrait<This>::Type  CT;
+
    if( (~rhs).rows() > M || (~rhs).columns() > N ) {
       BLAZE_THROW_INVALID_ARGUMENT( "Invalid assignment to hybrid matrix" );
    }
 
-   if( (~rhs).canAlias( this ) ) {
+   if( IsSame<MT,TT>::value && (~rhs).isAliased( this ) ) {
+      transpose();
+   }
+   else if( IsSame<MT,CT>::value && (~rhs).isAliased( this ) ) {
+      ctranspose();
+   }
+   else if( (~rhs).canAlias( this ) ) {
       HybridMatrix tmp( ~rhs );
       resize( tmp.rows(), tmp.columns() );
       assign( *this, tmp );
@@ -3838,11 +3849,20 @@ inline HybridMatrix<Type,M,N,true>& HybridMatrix<Type,M,N,true>::operator=( cons
 {
    using blaze::assign;
 
+   typedef typename TransExprTrait<This>::Type   TT;
+   typedef typename CTransExprTrait<This>::Type  CT;
+
    if( (~rhs).rows() > M || (~rhs).columns() > N ) {
       BLAZE_THROW_INVALID_ARGUMENT( "Invalid assignment to hybrid matrix" );
    }
 
-   if( (~rhs).canAlias( this ) ) {
+   if( IsSame<MT,TT>::value && (~rhs).isAliased( this ) ) {
+      transpose();
+   }
+   else if( IsSame<MT,CT>::value && (~rhs).isAliased( this ) ) {
+      ctranspose();
+   }
+   else if( (~rhs).canAlias( this ) ) {
       HybridMatrix tmp( ~rhs );
       resize( tmp.rows(), tmp.columns() );
       assign( *this, tmp );
