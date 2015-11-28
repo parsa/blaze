@@ -64,6 +64,8 @@ namespace blaze {
 //
 //=================================================================================================
 
+//*************************************************************************************************
+/*! \cond BLAZE_INTERNAL */
 extern "C" {
 
 void sgetri_( int* n, float* a, int* lda, int* ipiv, float* work, int* lwork, int* info );
@@ -72,6 +74,8 @@ void cgetri_( int* n, float* a, int* lda, int* ipiv, float* work, int* lwork, in
 void zgetri_( int* n, double* a, int* lda, int* ipiv, double* work, int* lwork, int* info );
 
 }
+/*! \endcond */
+//*************************************************************************************************
 
 
 
@@ -105,6 +109,7 @@ inline void zgetri( DenseMatrix<MT,SO>& A, const int* ipiv );
 // \ingroup lapack
 //
 // \param A The matrix to be inverted.
+// \param ipiv Auxiliary array for the pivot indices; size >= min( M, N ).
 // \return void
 // \exception std::invalid_argument Inversion of singular matrix failed.
 // \exception std::invalid_argument Invalid non-square matrix provided.
@@ -169,6 +174,7 @@ inline void sgetri( DenseMatrix<MT,SO>& A, const int* ipiv )
 // \ingroup lapack
 //
 // \param A The matrix to be inverted.
+// \param ipiv Auxiliary array for the pivot indices; size >= min( M, N ).
 // \return void
 // \exception std::invalid_argument Inversion of singular matrix failed.
 // \exception std::invalid_argument Invalid non-square matrix provided.
@@ -233,6 +239,7 @@ inline void dgetri( DenseMatrix<MT,SO>& A, const int* ipiv )
 // \ingroup lapack
 //
 // \param A The matrix to be inverted.
+// \param ipiv Auxiliary array for the pivot indices; size >= min( M, N ).
 // \return void
 // \exception std::invalid_argument Inversion of singular matrix failed.
 // \exception std::invalid_argument Invalid non-square matrix provided.
@@ -299,6 +306,7 @@ inline void cgetri( DenseMatrix<MT,SO>& A, const int* ipiv )
 // \ingroup lapack
 //
 // \param A The matrix to be inverted.
+// \param ipiv Auxiliary array for the pivot indices; size >= min( M, N ).
 // \return void
 // \exception std::invalid_argument Inversion of singular matrix failed.
 // \exception std::invalid_argument Invalid non-square matrix provided.

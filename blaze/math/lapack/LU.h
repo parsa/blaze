@@ -60,6 +60,8 @@ namespace blaze {
 //
 //=================================================================================================
 
+//*************************************************************************************************
+/*! \cond BLAZE_INTERNAL */
 extern "C" {
 
 void sgetrf_( int* m, int* n, float* a, int* lda, int* ipiv, int* info );
@@ -68,6 +70,8 @@ void cgetrf_( int* m, int* n, float* a, int* lda, int* ipiv, int* info );
 void zgetrf_( int* m, int* n, double* a, int* lda, int* ipiv, int* info );
 
 }
+/*! \endcond */
+//*************************************************************************************************
 
 
 

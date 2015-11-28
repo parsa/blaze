@@ -3627,12 +3627,10 @@ class StaticMatrix<Type,M,N,true> : public DenseMatrix< StaticMatrix<Type,M,N,tr
 
  private:
    //**Utility functions***************************************************************************
-   /*! \cond BLAZE_INTERNAL */
    inline void transpose ( TrueType  );
    inline void transpose ( FalseType );
    inline void ctranspose( TrueType  );
    inline void ctranspose( FalseType );
-   /*! \endcond */
    //**********************************************************************************************
 
    //**Member variables****************************************************************************
