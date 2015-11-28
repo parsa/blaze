@@ -3230,7 +3230,7 @@ namespace blaze {}
 // \n \subsection matrix_operations_conjugate_transpose Conjugate Transpose
 //
 // The conjugate transpose of a dense or sparse matrix (also called adjoint matrix, Hermitian
-// conjugate, or transjugate) can be computed via the \a ctrans() function:
+// conjugate, or transjugate) can be computed via the \c ctrans() function:
 
    \code
    blaze::DynamicMatrix< complex<float>, rowMajor > M1( 5UL, 2UL );
@@ -3247,7 +3247,7 @@ namespace blaze {}
    M1 = conj( trans( M2 ) );  // Computing the conjugate transpose matrix
    \endcode
 
-// The 'ctranspose()' function can be used to perform an in-place conjugate transpose operation:
+// The \c ctranspose()' function can be used to perform an in-place conjugate transpose operation:
 
    \code
    blaze::DynamicMatrix<int,rowMajor> M( 5UL, 2UL );
@@ -3262,6 +3262,32 @@ namespace blaze {}
 //  - ... the given matrix is a triangular matrix;
 //  - ... the given submatrix affects the restricted parts of a triangular matrix;
 //  - ... the given submatrix would cause non-deterministic results in a symmetric/Hermitian matrix.
+//
+//
+// \n \subsection matrix_operations_matrix_inversion Matrix Inversion
+//
+// An in-place inversion of a dense matrix can be performed via the \c invert() function:
+
+   \code
+   blaze::DynamicMatrix<int,rowMajor> M( 5UL, 2UL );
+
+   invert( M );  // In-place matrix inversion.
+   \endcode
+
+// The matrix inversion fails if ...
+//
+//  - ... the given matrix is not a square matrix;
+//  - ... the given matrix is singular and not invertible.
+//
+// In all failure cases either a compilation error is created if the failure can be predicted at
+// compile time or a \c std::invalid_argument exception is thrown.
+//
+// \note This function does not provide any exception safety guarantee, i.e. in case an exception
+// is thrown \c dm may already have been modified.
+//
+// \note The function inverts the dense matrix by means of LAPACK kernels. Thus the function can
+// only be used if the fitting LAPACK library is available and linked to the executable. Otherwise
+// a linker error will be created.
 //
 //
 // \n \subsection matrix_operations_swap Swap
