@@ -698,8 +698,8 @@ namespace blaze {}
 //          respect to the available instruction set (SSE, AVX, ...) or not.
 //  - PF  : specified whether the represented, external arrays are properly padded with
 //          respect to the available instruction set (SSE, AVX, ...) or not.
-//  - TF  : specifies whether the vector is a row vector (\a blaze::rowVector) or a column
-//          vector (\a blaze::columnVector). The default value is \a blaze::columnVector.
+//  - TF  : specifies whether the vector is a row vector (\c blaze::rowVector) or a column
+//          vector (\c blaze::columnVector). The default value is \c blaze::columnVector.
 //
 // The blaze::CustomVector is the right choice if any external array needs to be represented as
 // a \b Blaze dense vector data structure or if a custom memory allocation strategy needs to be
@@ -845,7 +845,7 @@ namespace blaze {}
 
 // \n \subsection vector_types_custom_vector_alignment Alignment
 //
-// In case the custom vector is specified as \a aligned the passed array must be guaranteed to
+// In case the custom vector is specified as \c aligned the passed array must be guaranteed to
 // be aligned according to the requirements of the used instruction set (SSE, AVX, ...). For
 // instance, if AVX is active an array of integers must be 32-bit aligned:
 
@@ -859,7 +859,7 @@ namespace blaze {}
    CustomVector<int,aligned,unpadded> a( array, 5UL, Deallocate() );
    \endcode
 
-// In case the alignment requirements are violated, a \a std::invalid_argument exception is
+// In case the alignment requirements are violated, a \c std::invalid_argument exception is
 // thrown.
 //
 // \n \subsection vector_types_custom_vector_padding Padding
@@ -919,7 +919,7 @@ namespace blaze {}
 // guarantee that the capacity is a multiple of the intrinsic vector width. In case of unaligned
 // padded vectors \f$ N-1 \f$ additional padding elements are required, where \f$ N \f$ is the
 // intrinsic vector width. In case the padding is insufficient with respect to the available
-// instruction set, a \a std::invalid_argument exception is thrown.
+// instruction set, a \c std::invalid_argument exception is thrown.
 //
 // Please also note that \b Blaze will zero initialize the padding elements in order to achieve
 // maximum performance!
@@ -1494,8 +1494,8 @@ namespace blaze {}
    if( isnan( a ) ) { ... }
    \endcode
 
-// If at least one element of the vector is not-a-number, the function returns \a true, otherwise
-// it returns \a false. Please note that this function only works for vectors with floating point
+// If at least one element of the vector is not-a-number, the function returns \c true, otherwise
+// it returns \c false. Please note that this function only works for vectors with floating point
 // elements. The attempt to use it for a vector with a non-floating point element type results in
 // a compile time error.
 //
@@ -2123,7 +2123,7 @@ namespace blaze {}
 
 // \n \subsection matrix_types_custom_matrix_alignment Alignment
 //
-// In case the custom matrix is specified as \a aligned the passed array must adhere to some
+// In case the custom matrix is specified as \c aligned the passed array must adhere to some
 // alignment restrictions based on the alignment requirements of the used data type and the
 // used instruction set (SSE, AVX, ...). The restriction applies to the first element of each
 // row/column: In case of a row-major matrix the first element of each row must be properly
@@ -2145,7 +2145,7 @@ namespace blaze {}
 // In the example, the row-major matrix has six columns. However, since with AVX eight integer
 // values are loaded together the matrix is padded with two additional elements. This guarantees
 // that the first element of each row is 32-bit aligned. In case the alignment requirements are
-// violated, a \a std::invalid_argument exception is thrown.
+// violated, a \c std::invalid_argument exception is thrown.
 //
 // \n \subsection matrix_types_custom_matrix_padding Padding
 //
@@ -2206,7 +2206,7 @@ namespace blaze {}
 // vector width. In case of an unaligned padded matrix the number of padding elements can be
 // greater or equal the number of padding elements of an aligned padded custom matrix. In case
 // the padding is insufficient with respect to the available instruction set, a
-// \a std::invalid_argument exception is thrown.
+// \c std::invalid_argument exception is thrown.
 //
 //
 // \n \section matrix_types_compressed_matrix CompressedMatrix
@@ -2895,8 +2895,8 @@ namespace blaze {}
    if( isnan( A ) ) { ... }
    \endcode
 
-// If at least one element of the matrix is not-a-number, the function returns \a true, otherwise
-// it returns \a false. Please note that this function only works for matrices with floating point
+// If at least one element of the matrix is not-a-number, the function returns \c true, otherwise
+// it returns \c false. Please note that this function only works for matrices with floating point
 // elements. The attempt to use it for a matrix with a non-floating point element type results in
 // a compile time error.
 //
@@ -3283,7 +3283,7 @@ namespace blaze {}
 // compile time or a \c std::invalid_argument exception is thrown.
 //
 // \note This function does not provide any exception safety guarantee, i.e. in case an exception
-// is thrown \c dm may already have been modified.
+// is thrown the matrix may already have been modified.
 //
 // \note The function inverts the dense matrix by means of LAPACK kernels. Thus the function can
 // only be used if the fitting LAPACK library is available and linked to the executable. Otherwise
@@ -3615,7 +3615,7 @@ namespace blaze {}
    \endcode
 
 // The symmetry property is also enforced for symmetric custom matrices: In case the given array
-// of elements does not represent a symmetric matrix, a \a std::invalid_argument exception is
+// of elements does not represent a symmetric matrix, a \c std::invalid_argument exception is
 // thrown:
 
    \code
@@ -3673,7 +3673,7 @@ namespace blaze {}
 // The next example demonstrates the (compound) assignment to submatrices of symmetric matrices.
 // Since the modification of element \f$ a_{ij} \f$ of a symmetric matrix also modifies the
 // element \f$ a_{ji} \f$, the matrix to be assigned must be structured such that the symmetry
-// of the symmetric matrix is preserved. Otherwise a \a std::invalid_argument exception is
+// of the symmetric matrix is preserved. Otherwise a \c std::invalid_argument exception is
 // thrown:
 
    \code
@@ -3956,7 +3956,7 @@ namespace blaze {}
 // <hr>
 //
 // The HermitianMatrix class template is an adapter for existing dense and sparse matrix types.
-// It inherits the properties and the interface of the given matrix type \a MT and extends it by
+// It inherits the properties and the interface of the given matrix type \c MT and extends it by
 // enforcing the additional invariant of Hermitian symmetry (i.e. the matrix is always equal to
 // its conjugate transpose \f$ A = \overline{A^T} \f$). It can be included via the header file
 
@@ -3973,7 +3973,7 @@ namespace blaze {}
 
 // \c MT specifies the type of the matrix to be adapted. HermitianMatrix can be used with any
 // non-cv-qualified, non-reference, non-pointer, non-expression dense or sparse matrix type. Also,
-// the given matrix type must have numeric element types (i.e. all integral types except \a bool,
+// the given matrix type must have numeric element types (i.e. all integral types except \c bool,
 // floating point and complex types). Note that the given matrix type must be either resizable (as
 // for instance blaze::HybridMatrix or blaze::DynamicMatrix) or must be square at compile time (as
 // for instance blaze::StaticMatrix).
@@ -4003,7 +4003,7 @@ namespace blaze {}
    \endcode
 
 // The storage order of a Hermitian matrix is depending on the storage order of the adapted matrix
-// type \a MT. In case the adapted matrix is stored in a row-wise fashion (i.e. is specified as
+// type \c MT. In case the adapted matrix is stored in a row-wise fashion (i.e. is specified as
 // blaze::rowMajor), the Hermitian matrix will also be a row-major matrix. Otherwise, if the
 // adapted matrix is column-major (i.e. is specified as blaze::columnMajor), the Hermitian matrix
 // will also be a column-major matrix.
@@ -4022,7 +4022,7 @@ namespace blaze {}
 // and Hermitian matrices of real values are also symmetric.
 //
 // From an implementation point of view, \b Blaze restricts Hermitian matrices to numeric data
-// types (i.e. all integral types except \a bool, floating point and complex types), whereas
+// types (i.e. all integral types except \c bool, floating point and complex types), whereas
 // symmetric matrices can also be block structured (i.e. can have vector or matrix elements).
 // For built-in element types, the HermitianMatrix adaptor behaves exactly like the according
 // SymmetricMatrix implementation. For complex element types, however, the Hermitian property
@@ -4050,7 +4050,7 @@ namespace blaze {}
 // \n \section adaptors_hermitian_matrices_special_properties Special Properties of Hermitian Matrices
 // <hr>
 //
-// A Hermitian matrix is used exactly like a matrix of the underlying, adapted matrix type \a MT.
+// A Hermitian matrix is used exactly like a matrix of the underlying, adapted matrix type \c MT.
 // It also provides (nearly) the same interface as the underlying matrix type. However, there are
 // some important exceptions resulting from the Hermitian symmetry constraint:
 //
@@ -4201,7 +4201,7 @@ namespace blaze {}
    \endcode
 
 // The Hermitian property is also enforced for Hermitian custom matrices: In case the given array
-// of elements does not represent a Hermitian matrix, a \a std::invalid_argument exception is
+// of elements does not represent a Hermitian matrix, a \c std::invalid_argument exception is
 // thrown:
 
    \code
@@ -4261,7 +4261,7 @@ namespace blaze {}
 // The next example demonstrates the (compound) assignment to submatrices of Hermitian matrices.
 // Since the modification of element \f$ a_{ij} \f$ of a Hermitian matrix also modifies the
 // element \f$ a_{ji} \f$, the matrix to be assigned must be structured such that the Hermitian
-// symmetry of the matrix is preserved. Otherwise a \a std::invalid_argument exception is thrown:
+// symmetry of the matrix is preserved. Otherwise a \c std::invalid_argument exception is thrown:
 
    \code
    using blaze::DynamicMatrix;
@@ -4541,7 +4541,7 @@ namespace blaze {}
 // <hr>
 //
 // The blaze::LowerMatrix class template is an adapter for existing dense and sparse matrix types.
-// It inherits the properties and the interface of the given matrix type \a MT and extends it by
+// It inherits the properties and the interface of the given matrix type \c MT and extends it by
 // enforcing the additional invariant that all matrix elements above the diagonal are 0 (lower
 // triangular matrix):
 
@@ -4596,7 +4596,7 @@ namespace blaze {}
    \endcode
 
 // The storage order of a lower matrix is depending on the storage order of the adapted matrix
-// type \a MT. In case the adapted matrix is stored in a row-wise fashion (i.e. is specified
+// type \c MT. In case the adapted matrix is stored in a row-wise fashion (i.e. is specified
 // as blaze::rowMajor), the lower matrix will also be a row-major matrix. Otherwise, if the
 // adapted matrix is column-major (i.e. is specified as blaze::columnMajor), the lower matrix
 // will also be a column-major matrix.
@@ -4606,7 +4606,7 @@ namespace blaze {}
 // <hr>
 //
 // The blaze::UniLowerMatrix class template is an adapter for existing dense and sparse matrix
-// types. It inherits the properties and the interface of the given matrix type \a MT and extends
+// types. It inherits the properties and the interface of the given matrix type \c MT and extends
 // it by enforcing the additional invariant that all diagonal matrix elements are 1 and all matrix
 // elements above the diagonal are 0 (lower unitriangular matrix):
 
@@ -4633,7 +4633,7 @@ namespace blaze {}
 
 // \c MT specifies the type of the matrix to be adapted. blaze::UniLowerMatrix can be used with any
 // non-cv-qualified, non-reference, non-pointer, non-expression dense or sparse matrix type. Also,
-// the given matrix type must have numeric element types (i.e. all integral types except \a bool,
+// the given matrix type must have numeric element types (i.e. all integral types except \c bool,
 // floating point and complex types). Note that the given matrix type must be either resizable (as
 // for instance blaze::HybridMatrix or blaze::DynamicMatrix) or must be square at compile time (as
 // for instance blaze::StaticMatrix).
@@ -4655,7 +4655,7 @@ namespace blaze {}
    \endcode
 
 // The storage order of a lower unitriangular matrix is depending on the storage order of the
-// adapted matrix type \a MT. In case the adapted matrix is stored in a row-wise fashion (i.e.
+// adapted matrix type \c MT. In case the adapted matrix is stored in a row-wise fashion (i.e.
 // is specified as blaze::rowMajor), the unilower matrix will also be a row-major matrix.
 // Otherwise if the adapted matrix is column-major (i.e. is specified as blaze::columnMajor),
 // the unilower matrix will also be a column-major matrix.
@@ -4665,7 +4665,7 @@ namespace blaze {}
 // <hr>
 //
 // The blaze::StrictlyLowerMatrix class template is an adapter for existing dense and sparse matrix
-// types. It inherits the properties and the interface of the given matrix type \a MT and extends
+// types. It inherits the properties and the interface of the given matrix type \c MT and extends
 // it by enforcing the additional invariant that all diagonal matrix elements and all matrix
 // elements above the diagonal are 0 (strictly lower triangular matrix):
 
@@ -4713,7 +4713,7 @@ namespace blaze {}
    \endcode
 
 // The storage order of a strictly lower triangular matrix is depending on the storage order of
-// the adapted matrix type \a MT. In case the adapted matrix is stored in a row-wise fashion (i.e.
+// the adapted matrix type \c MT. In case the adapted matrix is stored in a row-wise fashion (i.e.
 // is specified as blaze::rowMajor), the strictly lower matrix will also be a row-major matrix.
 // Otherwise if the adapted matrix is column-major (i.e. is specified as blaze::columnMajor),
 // the strictly lower matrix will also be a column-major matrix.
@@ -4723,7 +4723,7 @@ namespace blaze {}
 // <hr>
 //
 // The blaze::UpperMatrix class template is an adapter for existing dense and sparse matrix types.
-// It inherits the properties and the interface of the given matrix type \a MT and extends it by
+// It inherits the properties and the interface of the given matrix type \c MT and extends it by
 // enforcing the additional invariant that all matrix elements below the diagonal are 0 (upper
 // triangular matrix):
 
@@ -4770,7 +4770,7 @@ namespace blaze {}
    \endcode
 
 // The storage order of an upper matrix is depending on the storage order of the adapted matrix
-// type \a MT. In case the adapted matrix is stored in a row-wise fashion (i.e. is specified
+// type \c MT. In case the adapted matrix is stored in a row-wise fashion (i.e. is specified
 // as blaze::rowMajor), the upper matrix will also be a row-major matrix. Otherwise, if the
 // adapted matrix is column-major (i.e. is specified as blaze::columnMajor), the upper matrix
 // will also be a column-major matrix.
@@ -4780,7 +4780,7 @@ namespace blaze {}
 // <hr>
 //
 // The blaze::UniUpperMatrix class template is an adapter for existing dense and sparse matrix
-// types. It inherits the properties and the interface of the given matrix type \a MT and extends
+// types. It inherits the properties and the interface of the given matrix type \c MT and extends
 // it by enforcing the additional invariant that all diagonal matrix elements are 1 and all matrix
 // elements below the diagonal are 0 (upper unitriangular matrix):
 
@@ -4807,7 +4807,7 @@ namespace blaze {}
 
 // \c MT specifies the type of the matrix to be adapted. blaze::UniUpperMatrix can be used with any
 // non-cv-qualified, non-reference, non-pointer, non-expression dense or sparse matrix type. Also,
-// the given matrix type must have numeric element types (i.e. all integral types except \a bool,
+// the given matrix type must have numeric element types (i.e. all integral types except \c bool,
 // floating point and complex types). Note that the given matrix type must be either resizable (as
 // for instance blaze::HybridMatrix or blaze::DynamicMatrix) or must be square at compile time (as
 // for instance blaze::StaticMatrix).
@@ -4829,7 +4829,7 @@ namespace blaze {}
    \endcode
 
 // The storage order of an upper unitriangular matrix is depending on the storage order of the
-// adapted matrix type \a MT. In case the adapted matrix is stored in a row-wise fashion (i.e.
+// adapted matrix type \c MT. In case the adapted matrix is stored in a row-wise fashion (i.e.
 // is specified as blaze::rowMajor), the uniupper matrix will also be a row-major matrix.
 // Otherwise, if the adapted matrix is column-major (i.e. is specified as blaze::columnMajor),
 // the uniupper matrix will also be a column-major matrix.
@@ -4839,7 +4839,7 @@ namespace blaze {}
 // <hr>
 //
 // The blaze::StrictlyUpperMatrix class template is an adapter for existing dense and sparse matrix
-// types. It inherits the properties and the interface of the given matrix type \a MT and extends
+// types. It inherits the properties and the interface of the given matrix type \c MT and extends
 // it by enforcing the additional invariant that all diagonal matrix elements and all matrix
 // elements below the diagonal are 0 (strictly upper triangular matrix):
 
@@ -4887,7 +4887,7 @@ namespace blaze {}
    \endcode
 
 // The storage order of a strictly upper triangular matrix is depending on the storage order of
-// the adapted matrix type \a MT. In case the adapted matrix is stored in a row-wise fashion (i.e.
+// the adapted matrix type \c MT. In case the adapted matrix is stored in a row-wise fashion (i.e.
 // is specified as blaze::rowMajor), the strictly upper matrix will also be a row-major matrix.
 // Otherwise, if the adapted matrix is column-major (i.e. is specified as blaze::columnMajor),
 // the strictly upper matrix will also be a column-major matrix.
@@ -4897,7 +4897,7 @@ namespace blaze {}
 // <hr>
 //
 // The blaze::DiagonalMatrix class template is an adapter for existing dense and sparse matrix
-// types. It inherits the properties and the interface of the given matrix type \a MT and extends
+// types. It inherits the properties and the interface of the given matrix type \c MT and extends
 // it by enforcing the additional invariant that all matrix elements above and below the diagonal
 // are 0 (diagonal matrix):
 
@@ -4944,7 +4944,7 @@ namespace blaze {}
    \endcode
 
 // The storage order of a diagonal matrix is depending on the storage order of the adapted matrix
-// type \a MT. In case the adapted matrix is stored in a row-wise fashion (i.e. is specified
+// type \c MT. In case the adapted matrix is stored in a row-wise fashion (i.e. is specified
 // as blaze::rowMajor), the diagonal matrix will also be a row-major matrix. Otherwise, if the
 // adapted matrix is column-major (i.e. is specified as blaze::columnMajor), the diagonal matrix
 // will also be a column-major matrix.
@@ -4953,7 +4953,7 @@ namespace blaze {}
 // \n \section adaptors_triangular_matrices_special_properties Special Properties of Triangular Matrices
 // <hr>
 //
-// A triangular matrix is used exactly like a matrix of the underlying, adapted matrix type \a MT.
+// A triangular matrix is used exactly like a matrix of the underlying, adapted matrix type \c MT.
 // It also provides (nearly) the same interface as the underlying matrix type. However, there are
 // some important exceptions resulting from the triangular matrix constraint:
 //
@@ -5064,7 +5064,7 @@ namespace blaze {}
 
 // The triangular property is also enforced during the construction of triangular custom matrices:
 // In case the given array of elements does not represent the according triangular matrix type, a
-// \a std::invalid_argument exception is thrown:
+// \c std::invalid_argument exception is thrown:
 
    \code
    using blaze::CustomMatrix;
@@ -5131,7 +5131,7 @@ namespace blaze {}
 // The next example demonstrates the (compound) assignment to rows/columns and submatrices of
 // triangular matrices. Since only lower/upper and potentially diagonal elements may be modified
 // the matrix to be assigned must be structured such that the triangular matrix invariant of the
-// matrix is preserved. Otherwise a \a std::invalid_argument exception is thrown:
+// matrix is preserved. Otherwise a \c std::invalid_argument exception is thrown:
 
    \code
    using blaze::DynamicMatrix;
@@ -5233,7 +5233,7 @@ namespace blaze {}
 // the zero elements guarantees maximum performance for many algorithms that perform vectorized
 // operations on the triangular matrices, which is especially true for small dense matrices.
 // Second, conceptually all triangular adaptors merely restrict the interface to the matrix type
-// \a MT and do not change the data layout or the underlying matrix type.
+// \c MT and do not change the data layout or the underlying matrix type.
 //
 // This property matters most for diagonal matrices. In order to achieve the perfect combination
 // of performance and memory consumption for a diagonal matrix it is recommended to use dense
@@ -6390,7 +6390,7 @@ namespace blaze {}
 // special restriction: The symmetry of the underlying symmetric matrix must not be broken!
 // Since the modification of element \f$ a_{ij} \f$ of a symmetric matrix also modifies the
 // element \f$ a_{ji} \f$, the matrix to be assigned must be structured such that the symmetry
-// of the symmetric matrix is preserved. Otherwise a \a std::invalid_argument exception is
+// of the symmetric matrix is preserved. Otherwise a \c std::invalid_argument exception is
 // thrown:
 
    \code
@@ -8103,7 +8103,7 @@ namespace blaze {}
 //    or floating point) and the size of the type must be exactly the same
 //  - when reconstituting a \c StaticVector, its size must match the size of the serialized vector
 //
-// In case an error is encountered during (de-)serialization, a \a std::runtime_exception is
+// In case an error is encountered during (de-)serialization, a \c std::runtime_exception is
 // thrown.
 //
 // \n Previous: \ref serialization &nbsp; &nbsp; Next: \ref matrix_serialization
@@ -8195,7 +8195,7 @@ namespace blaze {}
 //  - when reconstituting a \c StaticMatrix, the number of rows and columns must match those
 //    of the serialized matrix
 //
-// In case an error is encountered during (de-)serialization, a \a std::runtime_exception is
+// In case an error is encountered during (de-)serialization, a \c std::runtime_exception is
 // thrown.
 //
 // \n Previous: \ref vector_serialization &nbsp; &nbsp; Next: \ref configuration_files \n
@@ -8226,14 +8226,14 @@ namespace blaze {}
    \endcode
 
 // The header file <em>./blaze/config/TransposeFlag.h</em> allows the configuration of the default
-// vector storage (i.e. the default transpose flag of the vectors). Via the \a defaultTransposeFlag
+// vector storage (i.e. the default transpose flag of the vectors). Via the \c defaultTransposeFlag
 // value the default transpose flag for all vector of the \b Blaze library can be specified:
 
    \code
    const bool defaultTransposeFlag = columnVector;
    \endcode
 
-// Valid settings for the \a defaultTransposeFlag are blaze::rowVector and blaze::columnVector.
+// Valid settings for the \c defaultTransposeFlag are blaze::rowVector and blaze::columnVector.
 //
 //
 // \n \section storage_order Default Matrix Storage
@@ -8246,14 +8246,14 @@ namespace blaze {}
    \endcode
 
 // The header file <em>./blaze/config/StorageOrder.h</em> allows the configuration of the default
-// matrix storage order. Via the \a defaultStorageOrder value the default storage order for all
+// matrix storage order. Via the \c defaultStorageOrder value the default storage order for all
 // matrices of the \b Blaze library can be specified.
 
    \code
    const bool defaultStorageOrder = rowMajor;
    \endcode
 
-// Valid settings for the \a defaultStorageOrder are blaze::rowMajor and blaze::columnMajor.
+// Valid settings for the \c defaultStorageOrder are blaze::rowMajor and blaze::columnMajor.
 //
 //
 // \n \section vectorization Vectorization
@@ -8278,7 +8278,7 @@ namespace blaze {}
 // \n \section thresholds Thresholds
 //
 // \b Blaze provides several thresholds that can be adapted to the characteristics of the target
-// platform. For instance, the \a DMATDVECMULT_THRESHOLD specifies the threshold between the
+// platform. For instance, the \c DMATDVECMULT_THRESHOLD specifies the threshold between the
 // application of the custom \b Blaze kernels for small dense matrix/dense vector multiplications
 // and the BLAS kernels for large multiplications. All thresholds, including the thresholds for
 // the OpenMP-based parallelization, are contained within the configuration file
@@ -8300,8 +8300,8 @@ namespace blaze {}
    const bool usePadding = true;
    \endcode
 
-// If \a usePadding is set to \a true padding is enabled for all dense vectors and matrices, if
-// it is set to \a false padding is disabled. Note however that disabling padding can considerably
+// If \c usePadding is set to \c true padding is enabled for all dense vectors and matrices, if
+// it is set to \c false padding is disabled. Note however that disabling padding can considerably
 // reduce the performance of all dense vector and matrix operations!
 //
 //
@@ -8320,7 +8320,7 @@ namespace blaze {}
    const bool useStreaming = true;
    \endcode
 
-// If \a useStreaming is set to \a true streaming is enabled, if it is set to \a false streaming
+// If \c useStreaming is set to \c true streaming is enabled, if it is set to \c false streaming
 // is disabled. It is recommended to consult the target architecture's white papers to decide
 // whether streaming is beneficial or hurtful for performance.
 //
@@ -8351,7 +8351,7 @@ namespace blaze {}
 //
 // In some cases it might be necessary to adapt the entire error reporting mechanism and to
 // replace it by some other means to signal failure. The primary macro for this purpose is the
-// \a BLAZE_THROW macro:
+// \c BLAZE_THROW macro:
 
    \code
    #define BLAZE_THROW( EXCEPTION ) \
@@ -8362,7 +8362,7 @@ namespace blaze {}
 // kind. In order to customize the error reporing mechanism all that needs to be done is to
 // define the macro prior to including any \b Blaze header file. This will cause the \b Blaze
 // specific mechanism to be overridden. The following example demonstrates this by replacing
-// exceptions by a call to a \a log() function and a direct call to abort:
+// exceptions by a call to a \c log() function and a direct call to abort:
 
    \code
    #define BLAZE_THROW( EXCEPTION ) \
@@ -8372,7 +8372,7 @@ namespace blaze {}
    #include <blaze/Blaze.h>
    \endcode
 
-// Doing this will trigger a call to \a log() and an abort instead of throwing an exception
+// Doing this will trigger a call to \c log() and an abort instead of throwing an exception
 // whenever an error (such as an invalid argument) is detected.
 //
 // \note It is possible to execute several statements instead of executing a single statement to
@@ -8409,8 +8409,8 @@ namespace blaze {}
    \endcode
 
 // In order to customize the type of exception the according macro has to be defined prior to
-// including any \a Blaze header file. This will override the \b Blaze default behavior. The
-// following example demonstrates this by replacing \a std::invalid_argument by a custom
+// including any \b Blaze header file. This will override the \b Blaze default behavior. The
+// following example demonstrates this by replacing \c std::invalid_argument by a custom
 // exception type:
 
    \code
@@ -8428,8 +8428,8 @@ namespace blaze {}
    #include <blaze/Blaze.h>
    \endcode
 
-// By manually defining the macro, an \a InvalidArgument exception is thrown instead of a
-// \a std::invalid_argument exception. Note that it is recommended to define the macro such
+// By manually defining the macro, an \c InvalidArgument exception is thrown instead of a
+// \c std::invalid_argument exception. Note that it is recommended to define the macro such
 // that a subsequent semicolon is required!
 //
 // \warning These macros are provided with the intention to assist in adapting \b Blaze to
