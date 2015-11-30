@@ -7621,6 +7621,8 @@ void UnalignedTest::testCTranspose()
 */
 void UnalignedTest::testInvert()
 {
+#if BLAZETEST_MATHTEST_LAPACK_MODE
+
    //=====================================================================================
    // Row-major submatrix tests
    //=====================================================================================
@@ -7731,6 +7733,8 @@ void UnalignedTest::testInvert()
          throw std::runtime_error( oss.str() );
       }
    }
+
+#endif
 }
 //*************************************************************************************************
 

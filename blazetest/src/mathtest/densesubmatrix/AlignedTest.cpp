@@ -87,7 +87,6 @@ AlignedTest::AlignedTest()
    testClear();
    testTranspose();
    testCTranspose();
-   testInvert();
    testIsDefault();
    testIsSame();
    testSubmatrix();
