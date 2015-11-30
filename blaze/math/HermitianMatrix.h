@@ -320,14 +320,16 @@ inline void Rand< HermitianMatrix<MT,SO,DF> >::randomize( HermitianMatrix<MT,SO,
 {
    BLAZE_CONSTRAINT_MUST_BE_DENSE_MATRIX_TYPE( MT );
 
-   typedef typename MT::ElementType  ET;
+   typedef typename MT::ElementType            ET;
+   typedef typename BaseElementType<ET>::Type  BT;
 
    const size_t n( matrix.rows() );
 
    for( size_t i=0UL; i<n; ++i ) {
-      for( size_t j=0UL; j<=i; ++j ) {
+      for( size_t j=0UL; j<i; ++j ) {
          matrix(i,j) = rand<ET>();
       }
+      matrix(i,i) = rand<BT>();
    }
 }
 /*! \endcond */
@@ -348,7 +350,8 @@ inline void Rand< HermitianMatrix<MT,SO,DF> >::randomize( HermitianMatrix<MT,SO,
 {
    BLAZE_CONSTRAINT_MUST_BE_SPARSE_MATRIX_TYPE( MT );
 
-   typedef typename MT::ElementType  ET;
+   typedef typename MT::ElementType            ET;
+   typedef typename BaseElementType<ET>::Type  BT;
 
    const size_t n( matrix.rows() );
 
@@ -359,8 +362,15 @@ inline void Rand< HermitianMatrix<MT,SO,DF> >::randomize( HermitianMatrix<MT,SO,
    matrix.reset();
    matrix.reserve( nonzeros );
 
-   while( matrix.nonZeros() < nonzeros ) {
-      matrix( rand<size_t>( 0UL, n-1UL ), rand<size_t>( 0UL, n-1UL ) ) = rand<ET>();
+   while( matrix.nonZeros() < nonzeros )
+   {
+      const size_t row   ( rand<size_t>( 0UL, n-1UL ) );
+      const size_t column( rand<size_t>( 0UL, n-1UL ) );
+
+      if( row == column )
+         matrix(row,column) = rand<BT>();
+      else
+         matrix(row,column) = rand<ET>();
    }
 }
 /*! \endcond */
@@ -383,7 +393,8 @@ inline void Rand< HermitianMatrix<MT,SO,DF> >::randomize( HermitianMatrix<MT,SO,
 {
    BLAZE_CONSTRAINT_MUST_BE_SPARSE_MATRIX_TYPE( MT );
 
-   typedef typename MT::ElementType  ET;
+   typedef typename MT::ElementType            ET;
+   typedef typename BaseElementType<ET>::Type  BT;
 
    const size_t n( matrix.rows() );
 
@@ -395,8 +406,15 @@ inline void Rand< HermitianMatrix<MT,SO,DF> >::randomize( HermitianMatrix<MT,SO,
    matrix.reset();
    matrix.reserve( nonzeros );
 
-   while( matrix.nonZeros() < nonzeros ) {
-      matrix( rand<size_t>( 0UL, n-1UL ), rand<size_t>( 0UL, n-1UL ) ) = rand<ET>();
+   while( matrix.nonZeros() < nonzeros )
+   {
+      const size_t row   ( rand<size_t>( 0UL, n-1UL ) );
+      const size_t column( rand<size_t>( 0UL, n-1UL ) );
+
+      if( row == column )
+         matrix(row,column) = rand<BT>();
+      else
+         matrix(row,column) = rand<ET>();
    }
 }
 /*! \endcond */
@@ -443,14 +461,16 @@ inline void Rand< HermitianMatrix<MT,SO,DF> >::randomize( HermitianMatrix<MT,SO,
 {
    BLAZE_CONSTRAINT_MUST_BE_DENSE_MATRIX_TYPE( MT );
 
-   typedef typename MT::ElementType  ET;
+   typedef typename MT::ElementType            ET;
+   typedef typename BaseElementType<ET>::Type  BT;
 
    const size_t n( matrix.rows() );
 
    for( size_t i=0UL; i<n; ++i ) {
-      for( size_t j=0UL; j<=i; ++j ) {
+      for( size_t j=0UL; j<i; ++j ) {
          matrix(i,j) = rand<ET>( min, max );
       }
+      matrix(i,i) = rand<BT>( real( min ), real( max ) );
    }
 }
 /*! \endcond */
@@ -475,7 +495,8 @@ inline void Rand< HermitianMatrix<MT,SO,DF> >::randomize( HermitianMatrix<MT,SO,
 {
    BLAZE_CONSTRAINT_MUST_BE_SPARSE_MATRIX_TYPE( MT );
 
-   typedef typename MT::ElementType  ET;
+   typedef typename MT::ElementType            ET;
+   typedef typename BaseElementType<ET>::Type  BT;
 
    const size_t n( matrix.rows() );
 
@@ -486,8 +507,15 @@ inline void Rand< HermitianMatrix<MT,SO,DF> >::randomize( HermitianMatrix<MT,SO,
    matrix.reset();
    matrix.reserve( nonzeros );
 
-   while( matrix.nonZeros() < nonzeros ) {
-      matrix( rand<size_t>( 0UL, n-1UL ), rand<size_t>( 0UL, n-1UL ) ) = rand<ET>( min, max );
+   while( matrix.nonZeros() < nonzeros )
+   {
+      const size_t row   ( rand<size_t>( 0UL, n-1UL ) );
+      const size_t column( rand<size_t>( 0UL, n-1UL ) );
+
+      if( row == column )
+         matrix(row,column) = rand<BT>( real( min ), real( max ) );
+      else
+         matrix(row,column) = rand<ET>( min, max );
    }
 }
 /*! \endcond */
@@ -514,7 +542,8 @@ inline void Rand< HermitianMatrix<MT,SO,DF> >::randomize( HermitianMatrix<MT,SO,
 {
    BLAZE_CONSTRAINT_MUST_BE_SPARSE_MATRIX_TYPE( MT );
 
-   typedef typename MT::ElementType  ET;
+   typedef typename MT::ElementType            ET;
+   typedef typename BaseElementType<ET>::Type  BT;
 
    const size_t n( matrix.rows() );
 
@@ -526,8 +555,15 @@ inline void Rand< HermitianMatrix<MT,SO,DF> >::randomize( HermitianMatrix<MT,SO,
    matrix.reset();
    matrix.reserve( nonzeros );
 
-   while( matrix.nonZeros() < nonzeros ) {
-      matrix( rand<size_t>( 0UL, n-1UL ), rand<size_t>( 0UL, n-1UL ) ) = rand<ET>( min, max );
+   while( matrix.nonZeros() < nonzeros )
+   {
+      const size_t row   ( rand<size_t>( 0UL, n-1UL ) );
+      const size_t column( rand<size_t>( 0UL, n-1UL ) );
+
+      if( row == column )
+         matrix(row,column) = rand<BT>( real( min ), real( max ) );
+      else
+         matrix(row,column) = rand<ET>( min, max );
    }
 }
 /*! \endcond */
