@@ -68,7 +68,8 @@
 #include <blaze/math/typetraits/RemoveAdaptor.h>
 #include <blaze/math/typetraits/Rows.h>
 #include <blaze/util/Assert.h>
-#include <blaze/util/constraints/Numeric.h>
+#include <blaze/util/EnableIf.h>
+#include <blaze/util/typetraits/IsNumeric.h>
 #include <blaze/util/Unused.h>
 #include <blaze/util/valuetraits/IsTrue.h>
 
@@ -1296,17 +1297,15 @@ struct SubTrait< LowerMatrix<MT1,SO1,DF1>, LowerMatrix<MT2,SO2,DF2> >
 //*************************************************************************************************
 /*! \cond BLAZE_INTERNAL */
 template< typename MT, bool SO, bool DF, typename T >
-struct MultTrait< LowerMatrix<MT,SO,DF>, T >
+struct MultTrait< LowerMatrix<MT,SO,DF>, T, typename EnableIf< IsNumeric<T> >::Type >
 {
    typedef LowerMatrix< typename MultTrait<MT,T>::Type >  Type;
-   BLAZE_CONSTRAINT_MUST_BE_NUMERIC_TYPE( T );
 };
 
 template< typename T, typename MT, bool SO, bool DF >
-struct MultTrait< T, LowerMatrix<MT,SO,DF> >
+struct MultTrait< T, LowerMatrix<MT,SO,DF>, typename EnableIf< IsNumeric<T> >::Type >
 {
    typedef LowerMatrix< typename MultTrait<T,MT>::Type >  Type;
-   BLAZE_CONSTRAINT_MUST_BE_NUMERIC_TYPE( T );
 };
 
 template< typename MT, bool SO, bool DF, typename T, size_t N >
@@ -1473,10 +1472,9 @@ struct MultTrait< LowerMatrix<MT1,SO1,DF1>, LowerMatrix<MT2,SO2,DF2> >
 //*************************************************************************************************
 /*! \cond BLAZE_INTERNAL */
 template< typename MT, bool SO, bool DF, typename T >
-struct DivTrait< LowerMatrix<MT,SO,DF>, T >
+struct DivTrait< LowerMatrix<MT,SO,DF>, T, typename EnableIf< IsNumeric<T> >::Type >
 {
    typedef LowerMatrix< typename DivTrait<MT,T>::Type >  Type;
-   BLAZE_CONSTRAINT_MUST_BE_NUMERIC_TYPE( T );
 };
 /*! \endcond */
 //*************************************************************************************************
