@@ -82,7 +82,6 @@
 #include <blaze/util/Assert.h>
 #include <blaze/util/AlignmentCheck.h>
 #include <blaze/util/constraints/Const.h>
-#include <blaze/util/constraints/Numeric.h>
 #include <blaze/util/constraints/Pointer.h>
 #include <blaze/util/constraints/Reference.h>
 #include <blaze/util/constraints/Vectorizable.h>
@@ -5431,17 +5430,15 @@ struct SubTrait< DynamicMatrix<T1,SO1>, DynamicMatrix<T2,SO2> >
 //*************************************************************************************************
 /*! \cond BLAZE_INTERNAL */
 template< typename T1, bool SO, typename T2 >
-struct MultTrait< DynamicMatrix<T1,SO>, T2 >
+struct MultTrait< DynamicMatrix<T1,SO>, T2, typename EnableIf< IsNumeric<T2> >::Type >
 {
    typedef DynamicMatrix< typename MultTrait<T1,T2>::Type, SO >  Type;
-   BLAZE_CONSTRAINT_MUST_BE_NUMERIC_TYPE( T2 );
 };
 
 template< typename T1, typename T2, bool SO >
-struct MultTrait< T1, DynamicMatrix<T2,SO> >
+struct MultTrait< T1, DynamicMatrix<T2,SO>, typename EnableIf< IsNumeric<T1> >::Type >
 {
    typedef DynamicMatrix< typename MultTrait<T1,T2>::Type, SO >  Type;
-   BLAZE_CONSTRAINT_MUST_BE_NUMERIC_TYPE( T1 );
 };
 
 template< typename T1, bool SO, typename T2, size_t N >
@@ -5548,10 +5545,9 @@ struct MultTrait< DynamicMatrix<T1,SO1>, DynamicMatrix<T2,SO2> >
 //*************************************************************************************************
 /*! \cond BLAZE_INTERNAL */
 template< typename T1, bool SO, typename T2 >
-struct DivTrait< DynamicMatrix<T1,SO>, T2 >
+struct DivTrait< DynamicMatrix<T1,SO>, T2, typename EnableIf< IsNumeric<T2> >::Type >
 {
    typedef DynamicMatrix< typename DivTrait<T1,T2>::Type , SO >  Type;
-   BLAZE_CONSTRAINT_MUST_BE_NUMERIC_TYPE( T2 );
 };
 /*! \endcond */
 //*************************************************************************************************
