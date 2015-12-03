@@ -40,9 +40,7 @@
 // Includes
 //*************************************************************************************************
 
-#include <cstddef>
-#include <blaze/util/Complex.h>
-#include <blaze/util/InvalidType.h>
+#include <boost/typeof/typeof.hpp>
 #include <blaze/util/mpl/If.h>
 #include <blaze/util/mpl/Or.h>
 #include <blaze/util/typetraits/IsConst.h>
@@ -69,44 +67,26 @@ namespace blaze {
 // The SubTrait class template offers the possibility to select the resulting data type of a
 // generic subtraction operation between the two given types \a T1 and \a T2. SubTrait defines
 // the nested type \a Type, which represents the resulting data type of the subtraction. In case
-// the two types \a T1 and \a T2 cannot be subtracted, the resulting data type \a Type is set
-// to \a INVALID_TYPE. Note that \a const and \a volatile qualifiers and reference modifiers
-// are generally ignored.
+// the two types \a T1 and \a T2 cannot be subtracted, a compilation error is created. Note that
+// \c const and \c volatile qualifiers and reference modifiers are generally ignored.
 //
-// Per default, the SubTrait template provides specializations for the following built-in
-// data types:
-//
-// <ul>
-//    <li>Integral types</li>
-//    <ul>
-//       <li>unsigned char, signed char, char, wchar_t</li>
-//       <li>unsigned short, short</li>
-//       <li>unsigned int, int</li>
-//       <li>unsigned long, long</li>
-//       <li>std::size_t, std::ptrdiff_t (for certain 64-bit compilers)</li>
-//    </ul>
-//    <li>Floating point types</li>
-//    <ul>
-//       <li>float</li>
-//       <li>double</li>
-//       <li>long double</li>
-//    </ul>
-// </ul>
-//
-// Additionally, the Blaze library provides appropriate specializations for the following
-// user-defined arithmetic types:
+// Per default, SubTrait supports all built-in data types. Additionally, the Blaze library
+// provides appropriate specializations for the following user-defined arithmetic types:
 //
 // <ul>
 //    <li>std::complex</li>
 //    <li>blaze::StaticVector</li>
 //    <li>blaze::HybridVector</li>
 //    <li>blaze::DynamicVector</li>
+//    <li>blaze::CustomVector</li>
 //    <li>blaze::CompressedVector</li>
 //    <li>blaze::StaticMatrix</li>
 //    <li>blaze::HybridMatrix</li>
 //    <li>blaze::DynamicMatrix</li>
+//    <li>blaze::CustomMatrix</li>
 //    <li>blaze::CompressedMatrix</li>
 //    <li>blaze::SymmetricMatrix</li>
+//    <li>blaze::HermitianMatrix</li>
 //    <li>blaze::LowerMatrix</li>
 //    <li>blaze::UniLowerMatrix</li>
 //    <li>blaze::StrictlyLowerMatrix</li>
@@ -119,9 +99,12 @@ namespace blaze {
 //
 // \n \section subtrait_specializations Creating custom specializations
 //
-// It is possible to specialize the SubTrait template for additional user-defined data types.
-// The following example shows the according specialization for the subtraction between two
-// dynamic column vectors:
+// AddTrait is guaranteed to work for all data types that provide a subtraction operator (i.e.
+// \c operator-). In order to add support for user-defined data types that either don't provide
+// a subtraction operator or whose subtraction operator returns a proxy object instead of a
+// concrete type (as it is for instance common in expression template libraries) it is possible
+// to specialize the SubTrait template. The following example shows the according specialization
+// for the subtraction between two dynamic column vectors:
 
    \code
    template< typename T1, typename T2 >
@@ -139,27 +122,28 @@ namespace blaze {
    \code
    template< typename T1, typename T2 >  // The two generic types
    typename SubTrait<T1,T2>::Type        // The resulting generic return type
-   sub( T1 t1, T2 t2 )                   //
+   sub( const T1& t1, const T2& t2 )     //
    {                                     // The function 'sub' returns the
       return t1 - t2;                    // difference of the two given values
    }                                     //
    \endcode
 */
-template< typename T1    // Type of the left-hand side operand
-        , typename T2 >  // Type of the right-hand side operand
+template< typename T1        // Type of the left-hand side operand
+        , typename T2        // Type of the right-hand side operand
+        , typename = void >  // Restricting condition
 struct SubTrait
 {
  private:
    //**********************************************************************************************
    /*! \cond BLAZE_INTERNAL */
-   struct Failure { typedef INVALID_TYPE  Type; };
+   typedef typename RemoveReference< typename RemoveCV<T1>::Type >::Type  Type1;
+   typedef typename RemoveReference< typename RemoveCV<T2>::Type >::Type  Type2;
    /*! \endcond */
    //**********************************************************************************************
 
    //**********************************************************************************************
    /*! \cond BLAZE_INTERNAL */
-   typedef typename RemoveReference< typename RemoveCV<T1>::Type >::Type  Type1;
-   typedef typename RemoveReference< typename RemoveCV<T2>::Type >::Type  Type2;
+   struct SubType { typedef BOOST_TYPEOF_TPL( Type1() - Type2() )  Type; };
    /*! \endcond */
    //**********************************************************************************************
 
@@ -168,564 +152,10 @@ struct SubTrait
    /*! \cond BLAZE_INTERNAL */
    typedef typename If< Or< IsConst<T1>, IsVolatile<T1>, IsReference<T1>
                           , IsConst<T2>, IsVolatile<T2>, IsReference<T2> >
-                      , SubTrait<Type1,Type2>, Failure >::Type::Type  Type;
+                      , SubTrait<Type1,Type2>, SubType >::Type::Type  Type;
    /*! \endcond */
    //**********************************************************************************************
 };
-//*************************************************************************************************
-
-
-
-
-//=================================================================================================
-//
-//  SUBTRAIT SPECIALIZATION MACROS
-//
-//=================================================================================================
-
-//*************************************************************************************************
-/*! \cond BLAZE_INTERNAL */
-/*!\brief Macro for the creation of SubTrait specializations for the built-in data types.
-// \ingroup math_traits
-//
-// This macro is used for the setup of the SubTrait specializations for the built-in data types.
-*/
-#define BLAZE_CREATE_BUILTIN_SUBTRAIT_SPECIALIZATION(T1,T2,RES) \
-   template<> \
-   struct SubTrait< T1, T2 > \
-   { \
-      typedef RES  Type; \
-   }
-/*! \endcond */
-//*************************************************************************************************
-
-
-//*************************************************************************************************
-/*! \cond BLAZE_INTERNAL */
-/*!\brief Macro for the creation of SubTrait specializations for the complex data type.
-// \ingroup math_traits
-//
-// This macro is used for the setup of the SubTrait specializations for the complex data type.
-*/
-#define BLAZE_CREATE_COMPLEX_SUBTRAIT_SPECIALIZATION( T1 ) \
-   template< typename T2 > \
-   struct SubTrait< T1, complex<T2> > \
-   { \
-      typedef complex<typename SubTrait<T1,T2>::Type>  Type;  \
-   }; \
-   template< typename T2 > \
-   struct SubTrait< complex<T2>, T1 > \
-   { \
-      typedef complex<typename SubTrait<T2,T1>::Type>  Type;  \
-   }
-/*! \endcond */
-//*************************************************************************************************
-
-
-
-
-//=================================================================================================
-//
-//  UNSIGNED CHAR SPECIALIZATIONS
-//
-//=================================================================================================
-
-//*************************************************************************************************
-/*! \cond BLAZE_INTERNAL */
-BLAZE_CREATE_BUILTIN_SUBTRAIT_SPECIALIZATION( unsigned char , unsigned char , unsigned char  );
-BLAZE_CREATE_BUILTIN_SUBTRAIT_SPECIALIZATION( unsigned char , char          , char           );
-BLAZE_CREATE_BUILTIN_SUBTRAIT_SPECIALIZATION( unsigned char , signed char   , signed char    );
-BLAZE_CREATE_BUILTIN_SUBTRAIT_SPECIALIZATION( unsigned char , wchar_t       , wchar_t        );
-BLAZE_CREATE_BUILTIN_SUBTRAIT_SPECIALIZATION( unsigned char , unsigned short, unsigned short );
-BLAZE_CREATE_BUILTIN_SUBTRAIT_SPECIALIZATION( unsigned char , short         , short          );
-BLAZE_CREATE_BUILTIN_SUBTRAIT_SPECIALIZATION( unsigned char , unsigned int  , unsigned int   );
-BLAZE_CREATE_BUILTIN_SUBTRAIT_SPECIALIZATION( unsigned char , int           , int            );
-BLAZE_CREATE_BUILTIN_SUBTRAIT_SPECIALIZATION( unsigned char , unsigned long , unsigned long  );
-BLAZE_CREATE_BUILTIN_SUBTRAIT_SPECIALIZATION( unsigned char , long          , long           );
-#if defined(_WIN64)
-BLAZE_CREATE_BUILTIN_SUBTRAIT_SPECIALIZATION( unsigned char , std::size_t   , std::size_t    );
-BLAZE_CREATE_BUILTIN_SUBTRAIT_SPECIALIZATION( unsigned char , std::ptrdiff_t, std::ptrdiff_t );
-#endif
-BLAZE_CREATE_BUILTIN_SUBTRAIT_SPECIALIZATION( unsigned char , float         , float          );
-BLAZE_CREATE_BUILTIN_SUBTRAIT_SPECIALIZATION( unsigned char , double        , double         );
-BLAZE_CREATE_BUILTIN_SUBTRAIT_SPECIALIZATION( unsigned char , long double   , long double    );
-/*! \endcond */
-//*************************************************************************************************
-
-
-
-
-//=================================================================================================
-//
-//  CHAR SPECIALIZATIONS
-//
-//=================================================================================================
-
-//*************************************************************************************************
-/*! \cond BLAZE_INTERNAL */
-BLAZE_CREATE_BUILTIN_SUBTRAIT_SPECIALIZATION( char          , unsigned char , char           );
-BLAZE_CREATE_BUILTIN_SUBTRAIT_SPECIALIZATION( char          , char          , char           );
-BLAZE_CREATE_BUILTIN_SUBTRAIT_SPECIALIZATION( char          , signed char   , signed char    );
-BLAZE_CREATE_BUILTIN_SUBTRAIT_SPECIALIZATION( char          , wchar_t       , wchar_t        );
-BLAZE_CREATE_BUILTIN_SUBTRAIT_SPECIALIZATION( char          , unsigned short, unsigned short );
-BLAZE_CREATE_BUILTIN_SUBTRAIT_SPECIALIZATION( char          , short         , short          );
-BLAZE_CREATE_BUILTIN_SUBTRAIT_SPECIALIZATION( char          , unsigned int  , unsigned int   );
-BLAZE_CREATE_BUILTIN_SUBTRAIT_SPECIALIZATION( char          , int           , int            );
-BLAZE_CREATE_BUILTIN_SUBTRAIT_SPECIALIZATION( char          , unsigned long , unsigned long  );
-BLAZE_CREATE_BUILTIN_SUBTRAIT_SPECIALIZATION( char          , long          , long           );
-#if defined(_WIN64)
-BLAZE_CREATE_BUILTIN_SUBTRAIT_SPECIALIZATION( char          , std::size_t   , std::size_t    );
-BLAZE_CREATE_BUILTIN_SUBTRAIT_SPECIALIZATION( char          , std::ptrdiff_t, std::ptrdiff_t );
-#endif
-BLAZE_CREATE_BUILTIN_SUBTRAIT_SPECIALIZATION( char          , float         , float          );
-BLAZE_CREATE_BUILTIN_SUBTRAIT_SPECIALIZATION( char          , double        , double         );
-BLAZE_CREATE_BUILTIN_SUBTRAIT_SPECIALIZATION( char          , long double   , long double    );
-/*! \endcond */
-//*************************************************************************************************
-
-
-
-
-//=================================================================================================
-//
-//  SIGNED CHAR SPECIALIZATIONS
-//
-//=================================================================================================
-
-//*************************************************************************************************
-/*! \cond BLAZE_INTERNAL */
-BLAZE_CREATE_BUILTIN_SUBTRAIT_SPECIALIZATION( signed char   , unsigned char , signed char    );
-BLAZE_CREATE_BUILTIN_SUBTRAIT_SPECIALIZATION( signed char   , char          , signed char    );
-BLAZE_CREATE_BUILTIN_SUBTRAIT_SPECIALIZATION( signed char   , signed char   , signed char    );
-BLAZE_CREATE_BUILTIN_SUBTRAIT_SPECIALIZATION( signed char   , wchar_t       , wchar_t        );
-BLAZE_CREATE_BUILTIN_SUBTRAIT_SPECIALIZATION( signed char   , unsigned short, unsigned short );
-BLAZE_CREATE_BUILTIN_SUBTRAIT_SPECIALIZATION( signed char   , short         , short          );
-BLAZE_CREATE_BUILTIN_SUBTRAIT_SPECIALIZATION( signed char   , unsigned int  , unsigned int   );
-BLAZE_CREATE_BUILTIN_SUBTRAIT_SPECIALIZATION( signed char   , int           , int            );
-BLAZE_CREATE_BUILTIN_SUBTRAIT_SPECIALIZATION( signed char   , unsigned long , unsigned long  );
-BLAZE_CREATE_BUILTIN_SUBTRAIT_SPECIALIZATION( signed char   , long          , long           );
-#if defined(_WIN64)
-BLAZE_CREATE_BUILTIN_SUBTRAIT_SPECIALIZATION( signed char   , std::size_t   , std::size_t    );
-BLAZE_CREATE_BUILTIN_SUBTRAIT_SPECIALIZATION( signed char   , std::ptrdiff_t, std::ptrdiff_t );
-#endif
-BLAZE_CREATE_BUILTIN_SUBTRAIT_SPECIALIZATION( signed char   , float         , float          );
-BLAZE_CREATE_BUILTIN_SUBTRAIT_SPECIALIZATION( signed char   , double        , double         );
-BLAZE_CREATE_BUILTIN_SUBTRAIT_SPECIALIZATION( signed char   , long double   , long double    );
-/*! \endcond */
-//*************************************************************************************************
-
-
-
-
-//=================================================================================================
-//
-//  WCHAR_T SPECIALIZATIONS
-//
-//=================================================================================================
-
-//*************************************************************************************************
-/*! \cond BLAZE_INTERNAL */
-BLAZE_CREATE_BUILTIN_SUBTRAIT_SPECIALIZATION( wchar_t       , unsigned char , wchar_t        );
-BLAZE_CREATE_BUILTIN_SUBTRAIT_SPECIALIZATION( wchar_t       , char          , wchar_t        );
-BLAZE_CREATE_BUILTIN_SUBTRAIT_SPECIALIZATION( wchar_t       , signed char   , wchar_t        );
-BLAZE_CREATE_BUILTIN_SUBTRAIT_SPECIALIZATION( wchar_t       , wchar_t       , wchar_t        );
-BLAZE_CREATE_BUILTIN_SUBTRAIT_SPECIALIZATION( wchar_t       , unsigned short, unsigned short );
-BLAZE_CREATE_BUILTIN_SUBTRAIT_SPECIALIZATION( wchar_t       , short         , short          );
-BLAZE_CREATE_BUILTIN_SUBTRAIT_SPECIALIZATION( wchar_t       , unsigned int  , unsigned int   );
-BLAZE_CREATE_BUILTIN_SUBTRAIT_SPECIALIZATION( wchar_t       , int           , int            );
-BLAZE_CREATE_BUILTIN_SUBTRAIT_SPECIALIZATION( wchar_t       , unsigned long , unsigned long  );
-BLAZE_CREATE_BUILTIN_SUBTRAIT_SPECIALIZATION( wchar_t       , long          , long           );
-#if defined(_WIN64)
-BLAZE_CREATE_BUILTIN_SUBTRAIT_SPECIALIZATION( wchar_t       , std::size_t   , std::size_t    );
-BLAZE_CREATE_BUILTIN_SUBTRAIT_SPECIALIZATION( wchar_t       , std::ptrdiff_t, std::ptrdiff_t );
-#endif
-BLAZE_CREATE_BUILTIN_SUBTRAIT_SPECIALIZATION( wchar_t       , float         , float          );
-BLAZE_CREATE_BUILTIN_SUBTRAIT_SPECIALIZATION( wchar_t       , double        , double         );
-BLAZE_CREATE_BUILTIN_SUBTRAIT_SPECIALIZATION( wchar_t       , long double   , long double    );
-/*! \endcond */
-//*************************************************************************************************
-
-
-
-
-//=================================================================================================
-//
-//  UNSIGNED SHORT SPECIALIZATIONS
-//
-//=================================================================================================
-
-//*************************************************************************************************
-/*! \cond BLAZE_INTERNAL */
-BLAZE_CREATE_BUILTIN_SUBTRAIT_SPECIALIZATION( unsigned short, unsigned char , unsigned short );
-BLAZE_CREATE_BUILTIN_SUBTRAIT_SPECIALIZATION( unsigned short, char          , unsigned short );
-BLAZE_CREATE_BUILTIN_SUBTRAIT_SPECIALIZATION( unsigned short, signed char   , unsigned short );
-BLAZE_CREATE_BUILTIN_SUBTRAIT_SPECIALIZATION( unsigned short, wchar_t       , unsigned short );
-BLAZE_CREATE_BUILTIN_SUBTRAIT_SPECIALIZATION( unsigned short, unsigned short, unsigned short );
-BLAZE_CREATE_BUILTIN_SUBTRAIT_SPECIALIZATION( unsigned short, short         , short          );
-BLAZE_CREATE_BUILTIN_SUBTRAIT_SPECIALIZATION( unsigned short, unsigned int  , unsigned int   );
-BLAZE_CREATE_BUILTIN_SUBTRAIT_SPECIALIZATION( unsigned short, int           , int            );
-BLAZE_CREATE_BUILTIN_SUBTRAIT_SPECIALIZATION( unsigned short, unsigned long , unsigned long  );
-BLAZE_CREATE_BUILTIN_SUBTRAIT_SPECIALIZATION( unsigned short, long          , long           );
-#if defined(_WIN64)
-BLAZE_CREATE_BUILTIN_SUBTRAIT_SPECIALIZATION( unsigned short, std::size_t   , std::size_t    );
-BLAZE_CREATE_BUILTIN_SUBTRAIT_SPECIALIZATION( unsigned short, std::ptrdiff_t, std::ptrdiff_t );
-#endif
-BLAZE_CREATE_BUILTIN_SUBTRAIT_SPECIALIZATION( unsigned short, float         , float          );
-BLAZE_CREATE_BUILTIN_SUBTRAIT_SPECIALIZATION( unsigned short, double        , double         );
-BLAZE_CREATE_BUILTIN_SUBTRAIT_SPECIALIZATION( unsigned short, long double   , long double    );
-/*! \endcond */
-//*************************************************************************************************
-
-
-
-
-//=================================================================================================
-//
-//  SHORT SPECIALIZATIONS
-//
-//=================================================================================================
-
-//*************************************************************************************************
-/*! \cond BLAZE_INTERNAL */
-BLAZE_CREATE_BUILTIN_SUBTRAIT_SPECIALIZATION( short         , unsigned char , short          );
-BLAZE_CREATE_BUILTIN_SUBTRAIT_SPECIALIZATION( short         , char          , short          );
-BLAZE_CREATE_BUILTIN_SUBTRAIT_SPECIALIZATION( short         , signed char   , short          );
-BLAZE_CREATE_BUILTIN_SUBTRAIT_SPECIALIZATION( short         , wchar_t       , short          );
-BLAZE_CREATE_BUILTIN_SUBTRAIT_SPECIALIZATION( short         , unsigned short, short          );
-BLAZE_CREATE_BUILTIN_SUBTRAIT_SPECIALIZATION( short         , short         , short          );
-BLAZE_CREATE_BUILTIN_SUBTRAIT_SPECIALIZATION( short         , unsigned int  , unsigned int   );
-BLAZE_CREATE_BUILTIN_SUBTRAIT_SPECIALIZATION( short         , int           , int            );
-BLAZE_CREATE_BUILTIN_SUBTRAIT_SPECIALIZATION( short         , unsigned long , unsigned long  );
-BLAZE_CREATE_BUILTIN_SUBTRAIT_SPECIALIZATION( short         , long          , long           );
-#if defined(_WIN64)
-BLAZE_CREATE_BUILTIN_SUBTRAIT_SPECIALIZATION( short         , std::size_t   , std::size_t    );
-BLAZE_CREATE_BUILTIN_SUBTRAIT_SPECIALIZATION( short         , std::ptrdiff_t, std::ptrdiff_t );
-#endif
-BLAZE_CREATE_BUILTIN_SUBTRAIT_SPECIALIZATION( short         , float         , float          );
-BLAZE_CREATE_BUILTIN_SUBTRAIT_SPECIALIZATION( short         , double        , double         );
-BLAZE_CREATE_BUILTIN_SUBTRAIT_SPECIALIZATION( short         , long double   , long double    );
-/*! \endcond */
-//*************************************************************************************************
-
-
-
-
-//=================================================================================================
-//
-//  UNSIGNED INT SPECIALIZATIONS
-//
-//=================================================================================================
-
-//*************************************************************************************************
-/*! \cond BLAZE_INTERNAL */
-BLAZE_CREATE_BUILTIN_SUBTRAIT_SPECIALIZATION( unsigned int  , unsigned char , unsigned int   );
-BLAZE_CREATE_BUILTIN_SUBTRAIT_SPECIALIZATION( unsigned int  , char          , unsigned int   );
-BLAZE_CREATE_BUILTIN_SUBTRAIT_SPECIALIZATION( unsigned int  , signed char   , unsigned int   );
-BLAZE_CREATE_BUILTIN_SUBTRAIT_SPECIALIZATION( unsigned int  , wchar_t       , unsigned int   );
-BLAZE_CREATE_BUILTIN_SUBTRAIT_SPECIALIZATION( unsigned int  , unsigned short, unsigned int   );
-BLAZE_CREATE_BUILTIN_SUBTRAIT_SPECIALIZATION( unsigned int  , short         , unsigned int   );
-BLAZE_CREATE_BUILTIN_SUBTRAIT_SPECIALIZATION( unsigned int  , unsigned int  , unsigned int   );
-BLAZE_CREATE_BUILTIN_SUBTRAIT_SPECIALIZATION( unsigned int  , int           , int            );
-BLAZE_CREATE_BUILTIN_SUBTRAIT_SPECIALIZATION( unsigned int  , unsigned long , unsigned long  );
-BLAZE_CREATE_BUILTIN_SUBTRAIT_SPECIALIZATION( unsigned int  , long          , long           );
-#if defined(_WIN64)
-BLAZE_CREATE_BUILTIN_SUBTRAIT_SPECIALIZATION( unsigned int  , std::size_t   , std::size_t    );
-BLAZE_CREATE_BUILTIN_SUBTRAIT_SPECIALIZATION( unsigned int  , std::ptrdiff_t, std::ptrdiff_t );
-#endif
-BLAZE_CREATE_BUILTIN_SUBTRAIT_SPECIALIZATION( unsigned int  , float         , float          );
-BLAZE_CREATE_BUILTIN_SUBTRAIT_SPECIALIZATION( unsigned int  , double        , double         );
-BLAZE_CREATE_BUILTIN_SUBTRAIT_SPECIALIZATION( unsigned int  , long double   , long double    );
-/*! \endcond */
-//*************************************************************************************************
-
-
-
-
-//=================================================================================================
-//
-//  INT SPECIALIZATIONS
-//
-//=================================================================================================
-
-//*************************************************************************************************
-/*! \cond BLAZE_INTERNAL */
-BLAZE_CREATE_BUILTIN_SUBTRAIT_SPECIALIZATION( int           , unsigned char , int            );
-BLAZE_CREATE_BUILTIN_SUBTRAIT_SPECIALIZATION( int           , char          , int            );
-BLAZE_CREATE_BUILTIN_SUBTRAIT_SPECIALIZATION( int           , signed char   , int            );
-BLAZE_CREATE_BUILTIN_SUBTRAIT_SPECIALIZATION( int           , wchar_t       , int            );
-BLAZE_CREATE_BUILTIN_SUBTRAIT_SPECIALIZATION( int           , unsigned short, int            );
-BLAZE_CREATE_BUILTIN_SUBTRAIT_SPECIALIZATION( int           , short         , int            );
-BLAZE_CREATE_BUILTIN_SUBTRAIT_SPECIALIZATION( int           , unsigned int  , int            );
-BLAZE_CREATE_BUILTIN_SUBTRAIT_SPECIALIZATION( int           , int           , int            );
-BLAZE_CREATE_BUILTIN_SUBTRAIT_SPECIALIZATION( int           , unsigned long , unsigned long  );
-BLAZE_CREATE_BUILTIN_SUBTRAIT_SPECIALIZATION( int           , long          , long           );
-#if defined(_WIN64)
-BLAZE_CREATE_BUILTIN_SUBTRAIT_SPECIALIZATION( int           , std::size_t   , std::size_t    );
-BLAZE_CREATE_BUILTIN_SUBTRAIT_SPECIALIZATION( int           , std::ptrdiff_t, std::ptrdiff_t );
-#endif
-BLAZE_CREATE_BUILTIN_SUBTRAIT_SPECIALIZATION( int           , float         , float          );
-BLAZE_CREATE_BUILTIN_SUBTRAIT_SPECIALIZATION( int           , double        , double         );
-BLAZE_CREATE_BUILTIN_SUBTRAIT_SPECIALIZATION( int           , long double   , long double    );
-/*! \endcond */
-//*************************************************************************************************
-
-
-
-
-//=================================================================================================
-//
-//  UNSIGNED LONG SPECIALIZATIONS
-//
-//=================================================================================================
-
-//*************************************************************************************************
-/*! \cond BLAZE_INTERNAL */
-BLAZE_CREATE_BUILTIN_SUBTRAIT_SPECIALIZATION( unsigned long , unsigned char , unsigned long  );
-BLAZE_CREATE_BUILTIN_SUBTRAIT_SPECIALIZATION( unsigned long , char          , unsigned long  );
-BLAZE_CREATE_BUILTIN_SUBTRAIT_SPECIALIZATION( unsigned long , signed char   , unsigned long  );
-BLAZE_CREATE_BUILTIN_SUBTRAIT_SPECIALIZATION( unsigned long , wchar_t       , unsigned long  );
-BLAZE_CREATE_BUILTIN_SUBTRAIT_SPECIALIZATION( unsigned long , unsigned short, unsigned long  );
-BLAZE_CREATE_BUILTIN_SUBTRAIT_SPECIALIZATION( unsigned long , short         , unsigned long  );
-BLAZE_CREATE_BUILTIN_SUBTRAIT_SPECIALIZATION( unsigned long , unsigned int  , unsigned long  );
-BLAZE_CREATE_BUILTIN_SUBTRAIT_SPECIALIZATION( unsigned long , int           , unsigned long  );
-BLAZE_CREATE_BUILTIN_SUBTRAIT_SPECIALIZATION( unsigned long , unsigned long , unsigned long  );
-BLAZE_CREATE_BUILTIN_SUBTRAIT_SPECIALIZATION( unsigned long , long          , long           );
-#if defined(_WIN64)
-BLAZE_CREATE_BUILTIN_SUBTRAIT_SPECIALIZATION( unsigned long , std::size_t   , std::size_t    );
-BLAZE_CREATE_BUILTIN_SUBTRAIT_SPECIALIZATION( unsigned long , std::ptrdiff_t, std::ptrdiff_t );
-#endif
-BLAZE_CREATE_BUILTIN_SUBTRAIT_SPECIALIZATION( unsigned long , float         , float          );
-BLAZE_CREATE_BUILTIN_SUBTRAIT_SPECIALIZATION( unsigned long , double        , double         );
-BLAZE_CREATE_BUILTIN_SUBTRAIT_SPECIALIZATION( unsigned long , long double   , long double    );
-/*! \endcond */
-//*************************************************************************************************
-
-
-
-
-//=================================================================================================
-//
-//  LONG SPECIALIZATIONS
-//
-//=================================================================================================
-
-//*************************************************************************************************
-/*! \cond BLAZE_INTERNAL */
-BLAZE_CREATE_BUILTIN_SUBTRAIT_SPECIALIZATION( long          , unsigned char , long           );
-BLAZE_CREATE_BUILTIN_SUBTRAIT_SPECIALIZATION( long          , char          , long           );
-BLAZE_CREATE_BUILTIN_SUBTRAIT_SPECIALIZATION( long          , signed char   , long           );
-BLAZE_CREATE_BUILTIN_SUBTRAIT_SPECIALIZATION( long          , wchar_t       , long           );
-BLAZE_CREATE_BUILTIN_SUBTRAIT_SPECIALIZATION( long          , unsigned short, long           );
-BLAZE_CREATE_BUILTIN_SUBTRAIT_SPECIALIZATION( long          , short         , long           );
-BLAZE_CREATE_BUILTIN_SUBTRAIT_SPECIALIZATION( long          , unsigned int  , long           );
-BLAZE_CREATE_BUILTIN_SUBTRAIT_SPECIALIZATION( long          , int           , long           );
-BLAZE_CREATE_BUILTIN_SUBTRAIT_SPECIALIZATION( long          , unsigned long , long           );
-BLAZE_CREATE_BUILTIN_SUBTRAIT_SPECIALIZATION( long          , long          , long           );
-#if defined(_WIN64)
-BLAZE_CREATE_BUILTIN_SUBTRAIT_SPECIALIZATION( long          , std::size_t   , std::size_t    );
-BLAZE_CREATE_BUILTIN_SUBTRAIT_SPECIALIZATION( long          , std::ptrdiff_t, std::ptrdiff_t );
-#endif
-BLAZE_CREATE_BUILTIN_SUBTRAIT_SPECIALIZATION( long          , float         , float          );
-BLAZE_CREATE_BUILTIN_SUBTRAIT_SPECIALIZATION( long          , double        , double         );
-BLAZE_CREATE_BUILTIN_SUBTRAIT_SPECIALIZATION( long          , long double   , long double    );
-/*! \endcond */
-//*************************************************************************************************
-
-
-
-
-//=================================================================================================
-//
-//  SIZE_T SPECIALIZATIONS
-//
-//=================================================================================================
-
-//*************************************************************************************************
-#if defined(_WIN64)
-/*! \cond BLAZE_INTERNAL */
-BLAZE_CREATE_BUILTIN_SUBTRAIT_SPECIALIZATION( std::size_t   , unsigned char , std::size_t    );
-BLAZE_CREATE_BUILTIN_SUBTRAIT_SPECIALIZATION( std::size_t   , char          , std::size_t    );
-BLAZE_CREATE_BUILTIN_SUBTRAIT_SPECIALIZATION( std::size_t   , signed char   , std::size_t    );
-BLAZE_CREATE_BUILTIN_SUBTRAIT_SPECIALIZATION( std::size_t   , wchar_t       , std::size_t    );
-BLAZE_CREATE_BUILTIN_SUBTRAIT_SPECIALIZATION( std::size_t   , unsigned short, std::size_t    );
-BLAZE_CREATE_BUILTIN_SUBTRAIT_SPECIALIZATION( std::size_t   , short         , std::size_t    );
-BLAZE_CREATE_BUILTIN_SUBTRAIT_SPECIALIZATION( std::size_t   , unsigned int  , std::size_t    );
-BLAZE_CREATE_BUILTIN_SUBTRAIT_SPECIALIZATION( std::size_t   , int           , std::size_t    );
-BLAZE_CREATE_BUILTIN_SUBTRAIT_SPECIALIZATION( std::size_t   , unsigned long , std::size_t    );
-BLAZE_CREATE_BUILTIN_SUBTRAIT_SPECIALIZATION( std::size_t   , long          , std::size_t    );
-BLAZE_CREATE_BUILTIN_SUBTRAIT_SPECIALIZATION( std::size_t   , std::size_t   , std::size_t    );
-BLAZE_CREATE_BUILTIN_SUBTRAIT_SPECIALIZATION( std::size_t   , std::ptrdiff_t, std::ptrdiff_t );
-BLAZE_CREATE_BUILTIN_SUBTRAIT_SPECIALIZATION( std::size_t   , float         , float          );
-BLAZE_CREATE_BUILTIN_SUBTRAIT_SPECIALIZATION( std::size_t   , double        , double         );
-BLAZE_CREATE_BUILTIN_SUBTRAIT_SPECIALIZATION( std::size_t   , long double   , long double    );
-/*! \endcond */
-#endif
-//*************************************************************************************************
-
-
-
-
-//=================================================================================================
-//
-//  PTRDIFF_T SPECIALIZATIONS
-//
-//=================================================================================================
-
-//*************************************************************************************************
-#if defined(_WIN64)
-/*! \cond BLAZE_INTERNAL */
-BLAZE_CREATE_BUILTIN_SUBTRAIT_SPECIALIZATION( std::ptrdiff_t, unsigned char , std::ptrdiff_t );
-BLAZE_CREATE_BUILTIN_SUBTRAIT_SPECIALIZATION( std::ptrdiff_t, char          , std::ptrdiff_t );
-BLAZE_CREATE_BUILTIN_SUBTRAIT_SPECIALIZATION( std::ptrdiff_t, signed char   , std::ptrdiff_t );
-BLAZE_CREATE_BUILTIN_SUBTRAIT_SPECIALIZATION( std::ptrdiff_t, wchar_t       , std::ptrdiff_t );
-BLAZE_CREATE_BUILTIN_SUBTRAIT_SPECIALIZATION( std::ptrdiff_t, unsigned short, std::ptrdiff_t );
-BLAZE_CREATE_BUILTIN_SUBTRAIT_SPECIALIZATION( std::ptrdiff_t, short         , std::ptrdiff_t );
-BLAZE_CREATE_BUILTIN_SUBTRAIT_SPECIALIZATION( std::ptrdiff_t, unsigned int  , std::ptrdiff_t );
-BLAZE_CREATE_BUILTIN_SUBTRAIT_SPECIALIZATION( std::ptrdiff_t, int           , std::ptrdiff_t );
-BLAZE_CREATE_BUILTIN_SUBTRAIT_SPECIALIZATION( std::ptrdiff_t, unsigned long , std::ptrdiff_t );
-BLAZE_CREATE_BUILTIN_SUBTRAIT_SPECIALIZATION( std::ptrdiff_t, long          , std::ptrdiff_t );
-BLAZE_CREATE_BUILTIN_SUBTRAIT_SPECIALIZATION( std::ptrdiff_t, std::size_t   , std::ptrdiff_t );
-BLAZE_CREATE_BUILTIN_SUBTRAIT_SPECIALIZATION( std::ptrdiff_t, std::ptrdiff_t, std::ptrdiff_t );
-BLAZE_CREATE_BUILTIN_SUBTRAIT_SPECIALIZATION( std::ptrdiff_t, float         , float          );
-BLAZE_CREATE_BUILTIN_SUBTRAIT_SPECIALIZATION( std::ptrdiff_t, double        , double         );
-BLAZE_CREATE_BUILTIN_SUBTRAIT_SPECIALIZATION( std::ptrdiff_t, long double   , long double    );
-/*! \endcond */
-#endif
-//*************************************************************************************************
-
-
-
-
-//=================================================================================================
-//
-//  FLOAT SPECIALIZATIONS
-//
-//=================================================================================================
-
-//*************************************************************************************************
-/*! \cond BLAZE_INTERNAL */
-BLAZE_CREATE_BUILTIN_SUBTRAIT_SPECIALIZATION( float         , unsigned char , float          );
-BLAZE_CREATE_BUILTIN_SUBTRAIT_SPECIALIZATION( float         , char          , float          );
-BLAZE_CREATE_BUILTIN_SUBTRAIT_SPECIALIZATION( float         , signed char   , float          );
-BLAZE_CREATE_BUILTIN_SUBTRAIT_SPECIALIZATION( float         , wchar_t       , float          );
-BLAZE_CREATE_BUILTIN_SUBTRAIT_SPECIALIZATION( float         , unsigned short, float          );
-BLAZE_CREATE_BUILTIN_SUBTRAIT_SPECIALIZATION( float         , short         , float          );
-BLAZE_CREATE_BUILTIN_SUBTRAIT_SPECIALIZATION( float         , unsigned int  , float          );
-BLAZE_CREATE_BUILTIN_SUBTRAIT_SPECIALIZATION( float         , int           , float          );
-BLAZE_CREATE_BUILTIN_SUBTRAIT_SPECIALIZATION( float         , unsigned long , float          );
-BLAZE_CREATE_BUILTIN_SUBTRAIT_SPECIALIZATION( float         , long          , float          );
-#if defined(_WIN64)
-BLAZE_CREATE_BUILTIN_SUBTRAIT_SPECIALIZATION( float         , std::size_t   , float          );
-BLAZE_CREATE_BUILTIN_SUBTRAIT_SPECIALIZATION( float         , std::ptrdiff_t, float          );
-#endif
-BLAZE_CREATE_BUILTIN_SUBTRAIT_SPECIALIZATION( float         , float         , float          );
-BLAZE_CREATE_BUILTIN_SUBTRAIT_SPECIALIZATION( float         , double        , double         );
-BLAZE_CREATE_BUILTIN_SUBTRAIT_SPECIALIZATION( float         , long double   , long double    );
-/*! \endcond */
-//*************************************************************************************************
-
-
-
-
-//=================================================================================================
-//
-//  DOUBLE SPECIALIZATIONS
-//
-//=================================================================================================
-
-//*************************************************************************************************
-/*! \cond BLAZE_INTERNAL */
-BLAZE_CREATE_BUILTIN_SUBTRAIT_SPECIALIZATION( double        , unsigned char , double         );
-BLAZE_CREATE_BUILTIN_SUBTRAIT_SPECIALIZATION( double        , char          , double         );
-BLAZE_CREATE_BUILTIN_SUBTRAIT_SPECIALIZATION( double        , signed char   , double         );
-BLAZE_CREATE_BUILTIN_SUBTRAIT_SPECIALIZATION( double        , wchar_t       , double         );
-BLAZE_CREATE_BUILTIN_SUBTRAIT_SPECIALIZATION( double        , unsigned short, double         );
-BLAZE_CREATE_BUILTIN_SUBTRAIT_SPECIALIZATION( double        , short         , double         );
-BLAZE_CREATE_BUILTIN_SUBTRAIT_SPECIALIZATION( double        , unsigned int  , double         );
-BLAZE_CREATE_BUILTIN_SUBTRAIT_SPECIALIZATION( double        , int           , double         );
-BLAZE_CREATE_BUILTIN_SUBTRAIT_SPECIALIZATION( double        , unsigned long , double         );
-BLAZE_CREATE_BUILTIN_SUBTRAIT_SPECIALIZATION( double        , long          , double         );
-#if defined(_WIN64)
-BLAZE_CREATE_BUILTIN_SUBTRAIT_SPECIALIZATION( double        , std::size_t   , double         );
-BLAZE_CREATE_BUILTIN_SUBTRAIT_SPECIALIZATION( double        , std::ptrdiff_t, double         );
-#endif
-BLAZE_CREATE_BUILTIN_SUBTRAIT_SPECIALIZATION( double        , float         , double         );
-BLAZE_CREATE_BUILTIN_SUBTRAIT_SPECIALIZATION( double        , double        , double         );
-BLAZE_CREATE_BUILTIN_SUBTRAIT_SPECIALIZATION( double        , long double   , long double    );
-/*! \endcond */
-//*************************************************************************************************
-
-
-
-
-//=================================================================================================
-//
-//  LONG DOUBLE SPECIALIZATIONS
-//
-//=================================================================================================
-
-//*************************************************************************************************
-/*! \cond BLAZE_INTERNAL */
-BLAZE_CREATE_BUILTIN_SUBTRAIT_SPECIALIZATION( long double   , unsigned char , long double    );
-BLAZE_CREATE_BUILTIN_SUBTRAIT_SPECIALIZATION( long double   , char          , long double    );
-BLAZE_CREATE_BUILTIN_SUBTRAIT_SPECIALIZATION( long double   , signed char   , long double    );
-BLAZE_CREATE_BUILTIN_SUBTRAIT_SPECIALIZATION( long double   , wchar_t       , long double    );
-BLAZE_CREATE_BUILTIN_SUBTRAIT_SPECIALIZATION( long double   , unsigned short, long double    );
-BLAZE_CREATE_BUILTIN_SUBTRAIT_SPECIALIZATION( long double   , short         , long double    );
-BLAZE_CREATE_BUILTIN_SUBTRAIT_SPECIALIZATION( long double   , unsigned int  , long double    );
-BLAZE_CREATE_BUILTIN_SUBTRAIT_SPECIALIZATION( long double   , int           , long double    );
-BLAZE_CREATE_BUILTIN_SUBTRAIT_SPECIALIZATION( long double   , unsigned long , long double    );
-BLAZE_CREATE_BUILTIN_SUBTRAIT_SPECIALIZATION( long double   , long          , long double    );
-#if defined(_WIN64)
-BLAZE_CREATE_BUILTIN_SUBTRAIT_SPECIALIZATION( long double   , std::size_t   , long double    );
-BLAZE_CREATE_BUILTIN_SUBTRAIT_SPECIALIZATION( long double   , std::ptrdiff_t, long double    );
-#endif
-BLAZE_CREATE_BUILTIN_SUBTRAIT_SPECIALIZATION( long double   , float         , long double    );
-BLAZE_CREATE_BUILTIN_SUBTRAIT_SPECIALIZATION( long double   , double        , long double    );
-BLAZE_CREATE_BUILTIN_SUBTRAIT_SPECIALIZATION( long double   , long double   , long double    );
-/*! \endcond */
-//*************************************************************************************************
-
-
-
-
-//=================================================================================================
-//
-//  COMPLEX SPECIALIZATIONS
-//
-//=================================================================================================
-
-//*************************************************************************************************
-/*! \cond BLAZE_INTERNAL */
-BLAZE_CREATE_COMPLEX_SUBTRAIT_SPECIALIZATION( unsigned char  );
-BLAZE_CREATE_COMPLEX_SUBTRAIT_SPECIALIZATION( char           );
-BLAZE_CREATE_COMPLEX_SUBTRAIT_SPECIALIZATION( signed char    );
-BLAZE_CREATE_COMPLEX_SUBTRAIT_SPECIALIZATION( wchar_t        );
-BLAZE_CREATE_COMPLEX_SUBTRAIT_SPECIALIZATION( unsigned short );
-BLAZE_CREATE_COMPLEX_SUBTRAIT_SPECIALIZATION( short          );
-BLAZE_CREATE_COMPLEX_SUBTRAIT_SPECIALIZATION( unsigned int   );
-BLAZE_CREATE_COMPLEX_SUBTRAIT_SPECIALIZATION( int            );
-BLAZE_CREATE_COMPLEX_SUBTRAIT_SPECIALIZATION( unsigned long  );
-BLAZE_CREATE_COMPLEX_SUBTRAIT_SPECIALIZATION( long           );
-#if defined(_WIN64)
-BLAZE_CREATE_COMPLEX_SUBTRAIT_SPECIALIZATION( std::size_t    );
-BLAZE_CREATE_COMPLEX_SUBTRAIT_SPECIALIZATION( std::ptrdiff_t );
-#endif
-BLAZE_CREATE_COMPLEX_SUBTRAIT_SPECIALIZATION( float          );
-BLAZE_CREATE_COMPLEX_SUBTRAIT_SPECIALIZATION( double         );
-BLAZE_CREATE_COMPLEX_SUBTRAIT_SPECIALIZATION( long double    );
-/*! \endcond */
-//*************************************************************************************************
-
-
-//*************************************************************************************************
-/*! \cond BLAZE_INTERNAL */
-template< typename T1, typename T2 >
-struct SubTrait< complex<T1>, complex<T2> >
-{
-   typedef complex<typename SubTrait<T1,T2>::Type>  Type;
-};
-/*! \endcond */
 //*************************************************************************************************
 
 } // namespace blaze
