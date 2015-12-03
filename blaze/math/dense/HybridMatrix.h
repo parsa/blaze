@@ -85,7 +85,6 @@
 #include <blaze/util/Assert.h>
 #include <blaze/util/constraints/Const.h>
 #include <blaze/util/constraints/FloatingPoint.h>
-#include <blaze/util/constraints/Numeric.h>
 #include <blaze/util/constraints/Pointer.h>
 #include <blaze/util/constraints/Reference.h>
 #include <blaze/util/constraints/Vectorizable.h>
@@ -5932,17 +5931,15 @@ struct SubTrait< HybridMatrix<T1,M1,N1,SO1>, HybridMatrix<T2,M2,N2,SO2> >
 //*************************************************************************************************
 /*! \cond BLAZE_INTERNAL */
 template< typename T1, size_t M, size_t N, bool SO, typename T2 >
-struct MultTrait< HybridMatrix<T1,M,N,SO>, T2 >
+struct MultTrait< HybridMatrix<T1,M,N,SO>, T2, typename EnableIf< IsNumeric<T2> >::Type >
 {
    typedef HybridMatrix< typename MultTrait<T1,T2>::Type, M, N, SO >  Type;
-   BLAZE_CONSTRAINT_MUST_BE_NUMERIC_TYPE( T2 );
 };
 
 template< typename T1, typename T2, size_t M, size_t N, bool SO >
-struct MultTrait< T1, HybridMatrix<T2,M,N,SO> >
+struct MultTrait< T1, HybridMatrix<T2,M,N,SO>, typename EnableIf< IsNumeric<T1> >::Type >
 {
    typedef HybridMatrix< typename MultTrait<T1,T2>::Type, M, N, SO >  Type;
-   BLAZE_CONSTRAINT_MUST_BE_NUMERIC_TYPE( T1 );
 };
 
 template< typename T1, size_t M, size_t N, bool SO, typename T2, size_t K >
@@ -6037,10 +6034,9 @@ struct MultTrait< HybridMatrix<T1,M1,N1,SO1>, HybridMatrix<T2,M2,N2,SO2> >
 //*************************************************************************************************
 /*! \cond BLAZE_INTERNAL */
 template< typename T1, size_t M, size_t N, bool SO, typename T2 >
-struct DivTrait< HybridMatrix<T1,M,N,SO>, T2 >
+struct DivTrait< HybridMatrix<T1,M,N,SO>, T2, typename EnableIf< IsNumeric<T2> >::Type >
 {
    typedef HybridMatrix< typename DivTrait<T1,T2>::Type, M, N, SO >  Type;
-   BLAZE_CONSTRAINT_MUST_BE_NUMERIC_TYPE( T2 );
 };
 /*! \endcond */
 //*************************************************************************************************
