@@ -71,7 +71,6 @@
 #include <blaze/system/Thresholds.h>
 #include <blaze/util/Assert.h>
 #include <blaze/util/constraints/Const.h>
-#include <blaze/util/constraints/Numeric.h>
 #include <blaze/util/constraints/Pointer.h>
 #include <blaze/util/constraints/Reference.h>
 #include <blaze/util/constraints/SameSize.h>
@@ -5175,17 +5174,15 @@ struct SubTrait< CompressedMatrix<T1,SO1>, CompressedMatrix<T2,SO2> >
 //*************************************************************************************************
 /*! \cond BLAZE_INTERNAL */
 template< typename T1, bool SO, typename T2 >
-struct MultTrait< CompressedMatrix<T1,SO>, T2 >
+struct MultTrait< CompressedMatrix<T1,SO>, T2, typename EnableIf< IsNumeric<T2> >::Type >
 {
    typedef CompressedMatrix< typename MultTrait<T1,T2>::Type, SO >  Type;
-   BLAZE_CONSTRAINT_MUST_BE_NUMERIC_TYPE( T2 );
 };
 
 template< typename T1, typename T2, bool SO >
-struct MultTrait< T1, CompressedMatrix<T2,SO> >
+struct MultTrait< T1, CompressedMatrix<T2,SO>, typename EnableIf< IsNumeric<T1> >::Type >
 {
    typedef CompressedMatrix< typename MultTrait<T1,T2>::Type, SO >  Type;
-   BLAZE_CONSTRAINT_MUST_BE_NUMERIC_TYPE( T1 );
 };
 
 template< typename T1, bool SO, typename T2, size_t N >
@@ -5316,10 +5313,9 @@ struct MultTrait< CompressedMatrix<T1,SO1>, CompressedMatrix<T2,SO2> >
 //*************************************************************************************************
 /*! \cond BLAZE_INTERNAL */
 template< typename T1, bool SO, typename T2 >
-struct DivTrait< CompressedMatrix<T1,SO>, T2 >
+struct DivTrait< CompressedMatrix<T1,SO>, T2, typename EnableIf< IsNumeric<T2> >::Type >
 {
    typedef CompressedMatrix< typename DivTrait<T1,T2>::Type, SO >  Type;
-   BLAZE_CONSTRAINT_MUST_BE_NUMERIC_TYPE( T2 );
 };
 /*! \endcond */
 //*************************************************************************************************
