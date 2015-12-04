@@ -57,9 +57,9 @@
 #include <blaze/math/StaticMatrix.h>
 #include <blaze/math/traits/MultExprTrait.h>
 #include <blaze/math/traits/MultTrait.h>
-#include <blaze/math/typetraits/BaseElementType.h>
 #include <blaze/math/typetraits/IsRowMajorMatrix.h>
 #include <blaze/math/typetraits/NumericElementType.h>
+#include <blaze/math/typetraits/UnderlyingBuiltin.h>
 #include <blaze/math/Views.h>
 #include <blaze/util/constraints/Numeric.h>
 #include <blaze/util/constraints/SameType.h>
@@ -4918,8 +4918,8 @@ template< typename MT    // Type of the left-hand side sparse matrix
         , typename VT >  // Type of the right-hand side sparse vector
 void OperationTest<MT,VT>::initResults()
 {
-   const typename blaze::BaseElementType<SRE>::Type min( randmin );
-   const typename blaze::BaseElementType<SRE>::Type max( randmax );
+   const typename blaze::UnderlyingBuiltin<SRE>::Type min( randmin );
+   const typename blaze::UnderlyingBuiltin<SRE>::Type max( randmax );
 
    resize( sres_, rows( lhs_ ) );
    randomize( sres_, min, max );
@@ -4942,8 +4942,8 @@ template< typename MT    // Type of the left-hand side sparse matrix
         , typename VT >  // Type of the right-hand side sparse vector
 void OperationTest<MT,VT>::initTransposeResults()
 {
-   const typename blaze::BaseElementType<TSRE>::Type min( randmin );
-   const typename blaze::BaseElementType<TSRE>::Type max( randmax );
+   const typename blaze::UnderlyingBuiltin<TSRE>::Type min( randmin );
+   const typename blaze::UnderlyingBuiltin<TSRE>::Type max( randmax );
 
    resize( tsres_, rows( lhs_ ) );
    randomize( tsres_, min, max );

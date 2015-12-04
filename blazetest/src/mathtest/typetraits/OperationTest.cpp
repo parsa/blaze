@@ -55,7 +55,6 @@
 #include <blaze/math/StaticVector.h>
 #include <blaze/math/SymmetricMatrix.h>
 #include <blaze/math/UpperMatrix.h>
-#include <blaze/math/typetraits/BaseElementType.h>
 #include <blaze/math/typetraits/IsDiagonal.h>
 #include <blaze/math/typetraits/IsIdentity.h>
 #include <blaze/math/typetraits/IsLower.h>
@@ -65,6 +64,7 @@
 #include <blaze/math/typetraits/IsUpper.h>
 #include <blaze/math/typetraits/NumericElementType.h>
 #include <blaze/math/typetraits/RemoveAdaptor.h>
+#include <blaze/math/typetraits/UnderlyingBuiltin.h>
 #include <blaze/math/UpperMatrix.h>
 #include <blaze/util/Complex.h>
 #include <blaze/util/constraints/SameType.h>
@@ -91,7 +91,7 @@ namespace typetraits {
 */
 OperationTest::OperationTest()
 {
-   testBaseElementType();
+   testUnderlyingBuiltin();
    testNumericElementType();
    testIsSymmetric();
    testIsLower();
@@ -111,31 +111,31 @@ OperationTest::OperationTest()
 //=================================================================================================
 
 //*************************************************************************************************
-/*!\brief Test of the mathematical 'BaseElementType' type trait.
+/*!\brief Test of the mathematical 'UnderlyingBuiltin' type trait.
 //
 // \return void
 // \exception std::runtime_error Error detected.
 //
-// This function performs a compile time test of the mathematical 'BaseElementType' type trait.
+// This function performs a compile time test of the mathematical 'UnderlyingBuiltin' type trait.
 // In case an error is detected, a compilation error is created.
 */
-void OperationTest::testBaseElementType()
+void OperationTest::testUnderlyingBuiltin()
 {
    using blaze::complex;
    using blaze::StaticVector;
    using blaze::DynamicVector;
    using blaze::CompressedVector;
-   using blaze::BaseElementType;
+   using blaze::UnderlyingBuiltin;
 
    typedef double                                    Type1;  // Built-in data type
    typedef complex<float>                            Type2;  // Complex data type
    typedef StaticVector<int,3UL>                     Type3;  // Vector with built-in element type
    typedef CompressedVector< DynamicVector<float> >  Type4;  // Vector with vector element type
 
-   BLAZE_CONSTRAINT_MUST_BE_SAME_TYPE( BaseElementType<Type1>::Type, double );
-   BLAZE_CONSTRAINT_MUST_BE_SAME_TYPE( BaseElementType<Type2>::Type, float );
-   BLAZE_CONSTRAINT_MUST_BE_SAME_TYPE( BaseElementType<Type3>::Type, int );
-   BLAZE_CONSTRAINT_MUST_BE_SAME_TYPE( BaseElementType<Type4>::Type, float );
+   BLAZE_CONSTRAINT_MUST_BE_SAME_TYPE( UnderlyingBuiltin<Type1>::Type, double );
+   BLAZE_CONSTRAINT_MUST_BE_SAME_TYPE( UnderlyingBuiltin<Type2>::Type, float );
+   BLAZE_CONSTRAINT_MUST_BE_SAME_TYPE( UnderlyingBuiltin<Type3>::Type, int );
+   BLAZE_CONSTRAINT_MUST_BE_SAME_TYPE( UnderlyingBuiltin<Type4>::Type, float );
 }
 //*************************************************************************************************
 

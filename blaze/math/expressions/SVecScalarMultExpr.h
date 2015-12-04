@@ -55,7 +55,6 @@
 #include <blaze/math/traits/MultExprTrait.h>
 #include <blaze/math/traits/MultTrait.h>
 #include <blaze/math/traits/SubvectorExprTrait.h>
-#include <blaze/math/typetraits/BaseElementType.h>
 #include <blaze/math/typetraits/IsColumnMajorMatrix.h>
 #include <blaze/math/typetraits/IsColumnVector.h>
 #include <blaze/math/typetraits/IsComputation.h>
@@ -69,6 +68,7 @@
 #include <blaze/math/typetraits/IsTemporary.h>
 #include <blaze/math/typetraits/RequiresEvaluation.h>
 #include <blaze/math/typetraits/Size.h>
+#include <blaze/math/typetraits/UnderlyingBuiltin.h>
 #include <blaze/util/Assert.h>
 #include <blaze/util/constraints/FloatingPoint.h>
 #include <blaze/util/constraints/Numeric.h>
@@ -782,12 +782,12 @@ class SVecScalarMultExpr : public SparseVector< SVecScalarMultExpr<VT,ST,TF>, TF
 */
 template< typename VT  // Type of the sparse vector
         , bool TF >    // Transpose flag
-inline const SVecScalarMultExpr<VT,typename BaseElementType<VT>::Type,TF>
+inline const SVecScalarMultExpr<VT,typename UnderlyingBuiltin<VT>::Type,TF>
    operator-( const SparseVector<VT,TF>& sv )
 {
    BLAZE_FUNCTION_TRACE;
 
-   typedef typename BaseElementType<VT>::Type  ElementType;
+   typedef typename UnderlyingBuiltin<VT>::Type  ElementType;
    return SVecScalarMultExpr<VT,ElementType,TF>( ~sv, ElementType(-1) );
 }
 //*************************************************************************************************

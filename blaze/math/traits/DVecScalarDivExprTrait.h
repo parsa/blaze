@@ -42,10 +42,10 @@
 
 #include <blaze/math/expressions/Forward.h>
 #include <blaze/math/traits/DivTrait.h>
-#include <blaze/math/typetraits/BaseElementType.h>
 #include <blaze/math/typetraits/IsColumnVector.h>
 #include <blaze/math/typetraits/IsDenseVector.h>
 #include <blaze/math/typetraits/NumericElementType.h>
+#include <blaze/math/typetraits/UnderlyingBuiltin.h>
 #include <blaze/util/InvalidType.h>
 #include <blaze/util/mpl/And.h>
 #include <blaze/util/mpl/If.h>
@@ -83,7 +83,7 @@ struct DVecScalarDivExprTraitHelper
    //**********************************************************************************************
    typedef typename NumericElementType<VT>::Type  NET;
    typedef typename If< And< IsComplex<NET>, IsBuiltin<ST> >
-                      , typename BaseElementType<VT>::Type
+                      , typename UnderlyingBuiltin<VT>::Type
                       , typename DivTrait<NET,ST>::Type
                       >::Type  ElementType;
    //**********************************************************************************************

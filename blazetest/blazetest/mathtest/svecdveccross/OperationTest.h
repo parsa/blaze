@@ -55,8 +55,8 @@
 #include <blaze/math/StaticVector.h>
 #include <blaze/math/traits/CrossExprTrait.h>
 #include <blaze/math/traits/CrossTrait.h>
-#include <blaze/math/typetraits/BaseElementType.h>
 #include <blaze/math/typetraits/NumericElementType.h>
+#include <blaze/math/typetraits/UnderlyingBuiltin.h>
 #include <blaze/math/Views.h>
 #include <blaze/util/constraints/Numeric.h>
 #include <blaze/util/constraints/SameType.h>
@@ -3349,8 +3349,8 @@ template< typename VT1    // Type of the left-hand side sparse vector
         , typename VT2 >  // Type of the right-hand side dense vector
 void OperationTest<VT1,VT2>::initResults()
 {
-   const typename blaze::BaseElementType<DRE>::Type min( randmin );
-   const typename blaze::BaseElementType<DRE>::Type max( randmax );
+   const typename blaze::UnderlyingBuiltin<DRE>::Type min( randmin );
+   const typename blaze::UnderlyingBuiltin<DRE>::Type max( randmax );
 
    resize( dres_, 3UL );
    randomize( dres_, min, max );
@@ -3373,8 +3373,8 @@ template< typename VT1    // Type of the left-hand side sparse vector
         , typename VT2 >  // Type of the right-hand side dense vector
 void OperationTest<VT1,VT2>::initTransposeResults()
 {
-   const typename blaze::BaseElementType<TDRE>::Type min( randmin );
-   const typename blaze::BaseElementType<TDRE>::Type max( randmax );
+   const typename blaze::UnderlyingBuiltin<TDRE>::Type min( randmin );
+   const typename blaze::UnderlyingBuiltin<TDRE>::Type max( randmax );
 
    resize( tdres_, 3UL );
    randomize( tdres_, min, max );

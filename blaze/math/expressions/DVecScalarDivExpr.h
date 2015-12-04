@@ -54,7 +54,6 @@
 #include <blaze/math/traits/MultExprTrait.h>
 #include <blaze/math/traits/MultTrait.h>
 #include <blaze/math/traits/SubvectorExprTrait.h>
-#include <blaze/math/typetraits/BaseElementType.h>
 #include <blaze/math/typetraits/IsAligned.h>
 #include <blaze/math/typetraits/IsColumnVector.h>
 #include <blaze/math/typetraits/IsComputation.h>

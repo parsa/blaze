@@ -57,7 +57,6 @@
 #include <blaze/math/traits/MultTrait.h>
 #include <blaze/math/traits/RowExprTrait.h>
 #include <blaze/math/traits/SubmatrixExprTrait.h>
-#include <blaze/math/typetraits/BaseElementType.h>
 #include <blaze/math/typetraits/Columns.h>
 #include <blaze/math/typetraits/IsComputation.h>
 #include <blaze/math/typetraits/IsColumnMajorMatrix.h>

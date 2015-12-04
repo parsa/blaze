@@ -40,7 +40,6 @@
 // Includes
 //*************************************************************************************************
 
-#include <blaze/math/typetraits/BaseElementType.h>
 #include <blaze/math/typetraits/Columns.h>
 #include <blaze/math/typetraits/HasConstDataAccess.h>
 #include <blaze/math/typetraits/HasMutableDataAccess.h>
@@ -131,5 +130,6 @@
 #include <blaze/math/typetraits/Size.h>
 #include <blaze/math/typetraits/StorageOrder.h>
 #include <blaze/math/typetraits/TransposeFlag.h>
+#include <blaze/math/typetraits/UnderlyingBuiltin.h>
 
 #endif

@@ -57,7 +57,6 @@
 #include <blaze/math/traits/MultExprTrait.h>
 #include <blaze/math/traits/MultTrait.h>
 #include <blaze/math/traits/SubvectorExprTrait.h>
-#include <blaze/math/typetraits/BaseElementType.h>
 #include <blaze/math/typetraits/IsAligned.h>
 #include <blaze/math/typetraits/IsColumnMajorMatrix.h>
 #include <blaze/math/typetraits/IsColumnVector.h>
@@ -73,6 +72,7 @@
 #include <blaze/math/typetraits/IsTemporary.h>
 #include <blaze/math/typetraits/RequiresEvaluation.h>
 #include <blaze/math/typetraits/Size.h>
+#include <blaze/math/typetraits/UnderlyingBuiltin.h>
 #include <blaze/system/Inline.h>
 #include <blaze/system/Thresholds.h>
 #include <blaze/util/Assert.h>
@@ -949,12 +949,12 @@ class DVecScalarMultExpr : public DenseVector< DVecScalarMultExpr<VT,ST,TF>, TF 
 */
 template< typename VT  // Type of the dense vector
         , bool TF >    // Transpose flag
-inline const DVecScalarMultExpr<VT,typename BaseElementType<VT>::Type,TF>
+inline const DVecScalarMultExpr<VT,typename UnderlyingBuiltin<VT>::Type,TF>
    operator-( const DenseVector<VT,TF>& dv )
 {
    BLAZE_FUNCTION_TRACE;
 
-   typedef typename BaseElementType<VT>::Type  ElementType;
+   typedef typename UnderlyingBuiltin<VT>::Type  ElementType;
    return DVecScalarMultExpr<VT,ElementType,TF>( ~dv, ElementType(-1) );
 }
 //*************************************************************************************************

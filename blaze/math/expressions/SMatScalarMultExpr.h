@@ -57,7 +57,6 @@
 #include <blaze/math/traits/MultTrait.h>
 #include <blaze/math/traits/RowExprTrait.h>
 #include <blaze/math/traits/SubmatrixExprTrait.h>
-#include <blaze/math/typetraits/BaseElementType.h>
 #include <blaze/math/typetraits/Columns.h>
 #include <blaze/math/typetraits/IsColumnMajorMatrix.h>
 #include <blaze/math/typetraits/IsColumnVector.h>
@@ -78,6 +77,7 @@
 #include <blaze/math/typetraits/IsUpper.h>
 #include <blaze/math/typetraits/RequiresEvaluation.h>
 #include <blaze/math/typetraits/Rows.h>
+#include <blaze/math/typetraits/UnderlyingBuiltin.h>
 #include <blaze/util/Assert.h>
 #include <blaze/util/constraints/Numeric.h>
 #include <blaze/util/constraints/Reference.h>
@@ -772,12 +772,12 @@ class SMatScalarMultExpr : public SparseMatrix< SMatScalarMultExpr<MT,ST,SO>, SO
 */
 template< typename MT  // Data type of the sparse matrix
         , bool SO >    // Storage order
-inline const SMatScalarMultExpr<MT,typename BaseElementType<MT>::Type,SO>
+inline const SMatScalarMultExpr<MT,typename UnderlyingBuiltin<MT>::Type,SO>
    operator-( const SparseMatrix<MT,SO>& sm )
 {
    BLAZE_FUNCTION_TRACE;
 
-   typedef typename BaseElementType<MT>::Type  ElementType;
+   typedef typename UnderlyingBuiltin<MT>::Type  ElementType;
    return SMatScalarMultExpr<MT,ElementType,SO>( ~sm, ElementType(-1) );
 }
 //*************************************************************************************************

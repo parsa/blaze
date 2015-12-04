@@ -57,7 +57,6 @@
 #include <blaze/math/traits/MultTrait.h>
 #include <blaze/math/traits/RowExprTrait.h>
 #include <blaze/math/traits/SubmatrixExprTrait.h>
-#include <blaze/math/typetraits/BaseElementType.h>
 #include <blaze/math/typetraits/Columns.h>
 #include <blaze/math/typetraits/IsAligned.h>
 #include <blaze/math/typetraits/IsColumnMajorMatrix.h>
@@ -80,6 +79,7 @@
 #include <blaze/math/typetraits/IsUpper.h>
 #include <blaze/math/typetraits/RequiresEvaluation.h>
 #include <blaze/math/typetraits/Rows.h>
+#include <blaze/math/typetraits/UnderlyingBuiltin.h>
 #include <blaze/system/Inline.h>
 #include <blaze/system/Thresholds.h>
 #include <blaze/util/Assert.h>
@@ -934,12 +934,12 @@ class DMatScalarMultExpr : public DenseMatrix< DMatScalarMultExpr<MT,ST,SO>, SO 
 */
 template< typename MT  // Type of the dense matrix
         , bool SO >    // Storage order
-inline const DMatScalarMultExpr<MT,typename BaseElementType<MT>::Type,SO>
+inline const DMatScalarMultExpr<MT,typename UnderlyingBuiltin<MT>::Type,SO>
    operator-( const DenseMatrix<MT,SO>& dm )
 {
    BLAZE_FUNCTION_TRACE;
 
-   typedef typename BaseElementType<MT>::Type  ElementType;
+   typedef typename UnderlyingBuiltin<MT>::Type  ElementType;
    return DMatScalarMultExpr<MT,ElementType,SO>( ~dm, ElementType(-1) );
 }
 //*************************************************************************************************
