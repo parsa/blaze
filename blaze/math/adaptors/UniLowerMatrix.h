@@ -307,7 +307,7 @@ template< typename MT  // Type of the adapted matrix
         , bool SO >    // Storage order of the adapted matrix
 inline void invert( UniLowerMatrix<MT,SO,true>& m )
 {
-   invert_backend( m.matrix_ );
+   invert_backend( derestrict( m ) );
 
    BLAZE_INTERNAL_ASSERT( isIntact( m ), "Broken invariant detected" );
 }
