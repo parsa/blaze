@@ -48,7 +48,7 @@
 #include <blaze/math/DynamicVector.h>
 #include <blaze/math/StaticMatrix.h>
 #include <blaze/math/StaticVector.h>
-#include <blaze/math/typetraits/NumericElementType.h>
+#include <blaze/math/typetraits/UnderlyingNumeric.h>
 #include <blaze/util/constraints/Valid.h>
 #include <blaze/util/StaticAssert.h>
 #include <blaze/util/typetraits/IsNumeric.h>
@@ -104,20 +104,20 @@ using blaze::StaticVector;
 //*************************************************************************************************
 /*!\brief The numeric element type of TypeA.
 //
-// This type represents the numeric element type of the specified TypeA. It is used for vector
-// and matrix type that only support numeric data types.
+// This type represents the underlying numeric element type of the specified TypeA. It is used
+// for vector and matrix type that only support numeric data types.
 */
-typedef blaze::NumericElementType<TypeA>::Type  NumericA;
+typedef blaze::UnderlyingNumeric<TypeA>::Type  NumericA;
 //*************************************************************************************************
 
 
 //*************************************************************************************************
 /*!\brief The numeric element type of TypeB.
 //
-// This type represents the numeric element type of the specified TypeB. It is used for vector
-// and matrix type that only support numeric data types.
+// This type represents the underlying numeric element type of the specified TypeB. It is used
+// for vector and matrix type that only support numeric data types.
 */
-typedef blaze::NumericElementType<TypeB>::Type  NumericB;
+typedef blaze::UnderlyingNumeric<TypeB>::Type  NumericB;
 //*************************************************************************************************
 
 

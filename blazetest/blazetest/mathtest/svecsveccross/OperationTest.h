@@ -55,8 +55,8 @@
 #include <blaze/math/StaticVector.h>
 #include <blaze/math/traits/CrossExprTrait.h>
 #include <blaze/math/traits/CrossTrait.h>
-#include <blaze/math/typetraits/NumericElementType.h>
 #include <blaze/math/typetraits/UnderlyingBuiltin.h>
+#include <blaze/math/typetraits/UnderlyingNumeric.h>
 #include <blaze/math/Views.h>
 #include <blaze/util/constraints/Numeric.h>
 #include <blaze/util/constraints/SameType.h>
@@ -247,7 +247,7 @@ OperationTest<VT1,VT2>::OperationTest( const Creator<VT1>& creator1, const Creat
    , test_()             // Label of the currently performed test
    , error_()            // Description of the current error type
 {
-   typedef typename blaze::NumericElementType<DET>::Type  Scalar;
+   typedef typename blaze::UnderlyingNumeric<DET>::Type  Scalar;
 
    if( lhs_.size() != 3UL ) {
       throw std::runtime_error( "Invalid size of left-hand side operand" );

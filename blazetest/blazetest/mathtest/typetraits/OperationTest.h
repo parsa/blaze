@@ -74,7 +74,7 @@ class OperationTest
    /*!\name Test functions */
    //@{
    void testUnderlyingBuiltin();
-   void testNumericElementType();
+   void testUnderlyingNumeric();
    void testIsSymmetric();
    void testIsLower();
    void testIsUniLower();

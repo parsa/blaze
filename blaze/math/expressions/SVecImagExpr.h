@@ -63,8 +63,8 @@
 #include <blaze/math/typetraits/IsRowVector.h>
 #include <blaze/math/typetraits/IsSparseVector.h>
 #include <blaze/math/typetraits/IsTemporary.h>
-#include <blaze/math/typetraits/NumericElementType.h>
 #include <blaze/math/typetraits/RequiresEvaluation.h>
+#include <blaze/math/typetraits/UnderlyingNumeric.h>
 #include <blaze/math/typetraits/Size.h>
 #include <blaze/util/Assert.h>
 #include <blaze/util/constraints/Reference.h>
@@ -102,12 +102,12 @@ class SVecImagExpr : public SparseVector< SVecImagExpr<VT,TF>, TF >
 {
  private:
    //**Type definitions****************************************************************************
-   typedef typename VT::ResultType                RT;  //!< Result type of the sparse vector expression.
-   typedef typename VT::ReturnType                RN;  //!< Return type of the sparse vector expression.
-   typedef typename VT::CompositeType             CT;  //!< Composite type of the sparse vector expression.
-   typedef typename VT::TransposeType             TT;  //!< Transpose type of the sparse vector expression.
-   typedef typename VT::ElementType               ET;  //!< Element type of the sparse vector expression.
-   typedef typename NumericElementType<VT>::Type  NT;  //!< Numeric element type of the sparse vector expression.
+   typedef typename VT::ResultType               RT;  //!< Result type of the sparse vector expression.
+   typedef typename VT::ReturnType               RN;  //!< Return type of the sparse vector expression.
+   typedef typename VT::CompositeType            CT;  //!< Composite type of the sparse vector expression.
+   typedef typename VT::TransposeType            TT;  //!< Transpose type of the sparse vector expression.
+   typedef typename VT::ElementType              ET;  //!< Element type of the sparse vector expression.
+   typedef typename UnderlyingNumeric<VT>::Type  NT;  //!< Numeric element type of the sparse vector expression.
    //**********************************************************************************************
 
    //**Return type evaluation**********************************************************************

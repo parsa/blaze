@@ -74,8 +74,8 @@
 #include <blaze/math/typetraits/IsUniLower.h>
 #include <blaze/math/typetraits/IsUniUpper.h>
 #include <blaze/math/typetraits/IsUpper.h>
-#include <blaze/math/typetraits/NumericElementType.h>
 #include <blaze/math/typetraits/RequiresEvaluation.h>
+#include <blaze/math/typetraits/UnderlyingNumeric.h>
 #include <blaze/math/typetraits/Rows.h>
 #include <blaze/util/Assert.h>
 #include <blaze/util/constraints/Reference.h>
@@ -114,10 +114,10 @@ class SMatRealExpr : public SparseMatrix< SMatRealExpr<MT,SO>, SO >
 {
  private:
    //**Type definitions****************************************************************************
-   typedef typename MT::ResultType                RT;  //!< Result type of the sparse matrix expression.
-   typedef typename MT::ReturnType                RN;  //!< Return type of the sparse matrix expression.
-   typedef typename MT::CompositeType             CT;  //!< Composite type of the sparse matrix expression.
-   typedef typename NumericElementType<MT>::Type  NT;  //!< Numeric element type of the sparse matrix expression.
+   typedef typename MT::ResultType               RT;  //!< Result type of the sparse matrix expression.
+   typedef typename MT::ReturnType               RN;  //!< Return type of the sparse matrix expression.
+   typedef typename MT::CompositeType            CT;  //!< Composite type of the sparse matrix expression.
+   typedef typename UnderlyingNumeric<MT>::Type  NT;  //!< Numeric element type of the sparse matrix expression.
    //**********************************************************************************************
 
    //**Return type evaluation**********************************************************************

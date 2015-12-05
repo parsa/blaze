@@ -58,8 +58,8 @@
 #include <blaze/math/traits/MultExprTrait.h>
 #include <blaze/math/traits/MultTrait.h>
 #include <blaze/math/typetraits/IsRowMajorMatrix.h>
-#include <blaze/math/typetraits/NumericElementType.h>
 #include <blaze/math/typetraits/UnderlyingBuiltin.h>
+#include <blaze/math/typetraits/UnderlyingNumeric.h>
 #include <blaze/math/Views.h>
 #include <blaze/util/constraints/Numeric.h>
 #include <blaze/util/constraints/SameType.h>
@@ -285,7 +285,7 @@ OperationTest<MT,VT>::OperationTest( const Creator<MT>& creator1, const Creator<
    , test_()              // Label of the currently performed test
    , error_()             // Description of the current error type
 {
-   typedef typename blaze::NumericElementType<SET>::Type  Scalar;
+   typedef typename blaze::UnderlyingNumeric<SET>::Type  Scalar;
 
    testInitialStatus();
    testAssignment();

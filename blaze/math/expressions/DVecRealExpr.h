@@ -62,8 +62,8 @@
 #include <blaze/math/typetraits/IsExpression.h>
 #include <blaze/math/typetraits/IsRowVector.h>
 #include <blaze/math/typetraits/IsTemporary.h>
-#include <blaze/math/typetraits/NumericElementType.h>
 #include <blaze/math/typetraits/RequiresEvaluation.h>
+#include <blaze/math/typetraits/UnderlyingNumeric.h>
 #include <blaze/math/typetraits/Size.h>
 #include <blaze/system/Inline.h>
 #include <blaze/util/Assert.h>
@@ -101,9 +101,9 @@ class DVecRealExpr : public DenseVector< DVecRealExpr<VT,TF>, TF >
 {
  private:
    //**Type definitions****************************************************************************
-   typedef typename VT::ResultType                RT;  //!< Result type of the dense vector expression.
-   typedef typename VT::ReturnType                RN;  //!< Return type of the dense vector expression.
-   typedef typename NumericElementType<VT>::Type  NT;  //!< Numeric element type of the dense vector expression.
+   typedef typename VT::ResultType               RT;  //!< Result type of the dense vector expression.
+   typedef typename VT::ReturnType               RN;  //!< Return type of the dense vector expression.
+   typedef typename UnderlyingNumeric<VT>::Type  NT;  //!< Numeric element type of the dense vector expression.
    //**********************************************************************************************
 
    //**Return type evaluation**********************************************************************

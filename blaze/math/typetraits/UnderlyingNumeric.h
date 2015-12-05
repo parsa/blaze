@@ -1,7 +1,7 @@
 //=================================================================================================
 /*!
-//  \file blaze/math/typetraits/NumericElementType.h
-//  \brief Header file for the NumericElementType type trait
+//  \file blaze/math/typetraits/UnderlyingNumeric.h
+//  \brief Header file for the UnderlyingNumeric type trait
 //
 //  Copyright (C) 2013 Klaus Iglberger - All Rights Reserved
 //
@@ -32,8 +32,8 @@
 */
 //=================================================================================================
 
-#ifndef _BLAZE_MATH_TYPETRAITS_NUMERICELEMENTTYPE_H_
-#define _BLAZE_MATH_TYPETRAITS_NUMERICELEMENTTYPE_H_
+#ifndef _BLAZE_MATH_TYPETRAITS_UNDERLYINGNUMERIC_H_
+#define _BLAZE_MATH_TYPETRAITS_UNDERLYINGNUMERIC_H_
 
 
 //*************************************************************************************************
@@ -55,11 +55,11 @@ namespace blaze {
 //=================================================================================================
 
 //*************************************************************************************************
-/*!\brief Evaluation of the numeric element type of a given data type.
+/*!\brief Evaluation of the underlying numeric element type of a given data type.
 // \ingroup math_type_traits
 //
-// Via this type trait it is possible to evaluate the numeric (fundamental or complex) element
-// type at the heart of a given data type. Examples:
+// Via this type trait it is possible to evaluate the underlying numeric (fundamental or complex)
+// element type at the heart of a given data type. Examples:
 
    \code
    typedef double                                    Type1;  // Built-in data type
@@ -67,18 +67,18 @@ namespace blaze {
    typedef StaticVector<int,3UL>                     Type3;  // Vector with built-in element type
    typedef CompressedVector< DynamicVector<float> >  Type4;  // Vector with vector element type
 
-   blaze::NumericElementType< Type1 >::Type  // corresponds to double
-   blaze::NumericElementType< Type2 >::Type  // corresponds to complex<float>
-   blaze::NumericElementType< Type3 >::Type  // corresponds to int
-   blaze::NumericElementType< Type4 >::Type  // corresponds to float
+   blaze::UnderlyingNumeric< Type1 >::Type  // corresponds to double
+   blaze::UnderlyingNumeric< Type2 >::Type  // corresponds to complex<float>
+   blaze::UnderlyingNumeric< Type3 >::Type  // corresponds to int
+   blaze::UnderlyingNumeric< Type4 >::Type  // corresponds to float
    \endcode
 
-// Note that per default NumericElementType only supports fundamental/built-in data types,
-// complex, and data types with the nested type definition \a ElementType. Support for other
-// data types can be added by specializing the NumericElementType class template.
+// Note that per default UnderlyingNumeric only supports fundamental/built-in data types, complex,
+// and data types with the nested type definition \a ElementType. Support for other data types can
+// be added by specializing the UnderlyingNumeric class template.
 */
 template< typename T >
-struct NumericElementType
+struct UnderlyingNumeric
 {
  private:
    //**struct BuiltinOrComplex*********************************************************************
@@ -91,7 +91,7 @@ struct NumericElementType
    //**struct Other********************************************************************************
    /*! \cond BLAZE_INTERNAL */
    template< typename T2 >
-   struct Other { typedef typename NumericElementType<typename T2::ElementType>::Type  Type; };
+   struct Other { typedef typename UnderlyingNumeric<typename T2::ElementType>::Type  Type; };
    /*! \endcond */
    //**********************************************************************************************
 

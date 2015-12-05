@@ -73,8 +73,8 @@
 #include <blaze/math/typetraits/IsUniLower.h>
 #include <blaze/math/typetraits/IsUniUpper.h>
 #include <blaze/math/typetraits/IsUpper.h>
-#include <blaze/math/typetraits/NumericElementType.h>
 #include <blaze/math/typetraits/RequiresEvaluation.h>
+#include <blaze/math/typetraits/UnderlyingNumeric.h>
 #include <blaze/math/typetraits/Rows.h>
 #include <blaze/system/Inline.h>
 #include <blaze/util/Assert.h>
@@ -113,10 +113,10 @@ class DMatRealExpr : public DenseMatrix< DMatRealExpr<MT,SO>, SO >
 {
  private:
    //**Type definitions****************************************************************************
-   typedef typename MT::ResultType                RT;  //!< Result type of the dense matrix expression.
-   typedef typename MT::OppositeType              OT;  //!< Opposite type of the dense matrix expression.
-   typedef typename MT::ReturnType                RN;  //!< Return type of the dense matrix expression.
-   typedef typename NumericElementType<MT>::Type  NT;  //!< Numeric element type of the dense matrix expression.
+   typedef typename MT::ResultType               RT;  //!< Result type of the dense matrix expression.
+   typedef typename MT::OppositeType             OT;  //!< Opposite type of the dense matrix expression.
+   typedef typename MT::ReturnType               RN;  //!< Return type of the dense matrix expression.
+   typedef typename UnderlyingNumeric<MT>::Type  NT;  //!< Numeric element type of the dense matrix expression.
    //**********************************************************************************************
 
    //**Return type evaluation**********************************************************************

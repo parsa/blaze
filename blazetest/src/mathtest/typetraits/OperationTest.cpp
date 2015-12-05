@@ -62,9 +62,9 @@
 #include <blaze/math/typetraits/IsUniLower.h>
 #include <blaze/math/typetraits/IsUniUpper.h>
 #include <blaze/math/typetraits/IsUpper.h>
-#include <blaze/math/typetraits/NumericElementType.h>
 #include <blaze/math/typetraits/RemoveAdaptor.h>
 #include <blaze/math/typetraits/UnderlyingBuiltin.h>
+#include <blaze/math/typetraits/UnderlyingNumeric.h>
 #include <blaze/math/UpperMatrix.h>
 #include <blaze/util/Complex.h>
 #include <blaze/util/constraints/SameType.h>
@@ -92,7 +92,7 @@ namespace typetraits {
 OperationTest::OperationTest()
 {
    testUnderlyingBuiltin();
-   testNumericElementType();
+   testUnderlyingNumeric();
    testIsSymmetric();
    testIsLower();
    testIsUpper();
@@ -141,31 +141,31 @@ void OperationTest::testUnderlyingBuiltin()
 
 
 //*************************************************************************************************
-/*!\brief Test of the mathematical 'NumericElementType' type trait.
+/*!\brief Test of the mathematical 'UnderlyingNumeric' type trait.
 //
 // \return void
 // \exception std::runtime_error Error detected.
 //
-// This function performs a compile time test of the mathematical 'NumericElementType' type trait.
+// This function performs a compile time test of the mathematical 'UnderlyingNumeric' type trait.
 // In case an error is detected, a compilation error is created.
 */
-void OperationTest::testNumericElementType()
+void OperationTest::testUnderlyingNumeric()
 {
    using blaze::complex;
    using blaze::StaticVector;
    using blaze::DynamicVector;
    using blaze::CompressedVector;
-   using blaze::NumericElementType;
+   using blaze::UnderlyingNumeric;
 
    typedef double                                    Type1;  // Built-in data type
    typedef complex<float>                            Type2;  // Complex data type
    typedef StaticVector<int,3UL>                     Type3;  // Vector with built-in element type
    typedef CompressedVector< DynamicVector<float> >  Type4;  // Vector with vector element type
 
-   BLAZE_CONSTRAINT_MUST_BE_SAME_TYPE( NumericElementType<Type1>::Type, double );
-   BLAZE_CONSTRAINT_MUST_BE_SAME_TYPE( NumericElementType<Type2>::Type, complex<float> );
-   BLAZE_CONSTRAINT_MUST_BE_SAME_TYPE( NumericElementType<Type3>::Type, int );
-   BLAZE_CONSTRAINT_MUST_BE_SAME_TYPE( NumericElementType<Type4>::Type, float );
+   BLAZE_CONSTRAINT_MUST_BE_SAME_TYPE( UnderlyingNumeric<Type1>::Type, double );
+   BLAZE_CONSTRAINT_MUST_BE_SAME_TYPE( UnderlyingNumeric<Type2>::Type, complex<float> );
+   BLAZE_CONSTRAINT_MUST_BE_SAME_TYPE( UnderlyingNumeric<Type3>::Type, int );
+   BLAZE_CONSTRAINT_MUST_BE_SAME_TYPE( UnderlyingNumeric<Type4>::Type, float );
 }
 //*************************************************************************************************
 

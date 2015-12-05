@@ -44,8 +44,8 @@
 #include <blaze/math/traits/DivTrait.h>
 #include <blaze/math/typetraits/IsColumnMajorMatrix.h>
 #include <blaze/math/typetraits/IsSparseMatrix.h>
-#include <blaze/math/typetraits/NumericElementType.h>
 #include <blaze/math/typetraits/UnderlyingBuiltin.h>
+#include <blaze/math/typetraits/UnderlyingNumeric.h>
 #include <blaze/util/InvalidType.h>
 #include <blaze/util/mpl/And.h>
 #include <blaze/util/mpl/If.h>
@@ -81,7 +81,7 @@ struct TSMatScalarDivExprTraitHelper
 {
  private:
    //**********************************************************************************************
-   typedef typename NumericElementType<MT>::Type  NET;
+   typedef typename UnderlyingNumeric<MT>::Type  NET;
    typedef typename If< And< IsComplex<NET>, IsBuiltin<ST> >
                       , typename UnderlyingBuiltin<MT>::Type
                       , typename DivTrait<NET,ST>::Type
