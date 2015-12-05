@@ -272,7 +272,7 @@ template< typename MT  // Type of the adapted matrix
         , bool SO >    // Storage order of the adapted matrix
 inline void invert( DiagonalMatrix<MT,SO,true>& m )
 {
-   MT& A( m.matrix_ );
+   MT& A( derestrict( m ) );
 
    for( size_t i=0UL; i<A.rows(); ++i )
    {
