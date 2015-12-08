@@ -1797,12 +1797,18 @@ template< typename MT  // Type of the dense matrix
 inline typename EnableIf< IsFloat<typename MT::ElementType> >::Type
    invert_backend( DenseMatrix<MT,SO>& dm )
 {
-   const size_t M( (~dm).rows()    );
-   const size_t N( (~dm).columns() );
+   const size_t N( min( (~dm).rows(), (~dm).columns() ) );
+   UniqueArray<int> ipiv( new int[N] );
 
-   UniqueArray<int> ipiv( new int[min(M,N)] );
-   sgetrf( ~dm, ipiv.get() );
-   sgetri( ~dm, ipiv.get() );
+   if( IsUniTriangular<MT>::value ) {
+      for( size_t i=0UL; i<N; ++i )
+         ipiv[i] = static_cast<int>( i ) + 1;
+   }
+   else {
+      sgetrf( derestrict( ~dm ), ipiv.get() );
+   }
+
+   sgetri( derestrict( ~dm ), ipiv.get() );
 }
 /*! \endcond */
 //*************************************************************************************************
@@ -1836,12 +1842,18 @@ template< typename MT  // Type of the dense matrix
 inline typename EnableIf< IsDouble<typename MT::ElementType> >::Type
    invert_backend( DenseMatrix<MT,SO>& dm )
 {
-   const size_t M( (~dm).rows()    );
-   const size_t N( (~dm).columns() );
+   const size_t N( min( (~dm).rows(), (~dm).columns() ) );
+   UniqueArray<int> ipiv( new int[N] );
 
-   UniqueArray<int> ipiv( new int[min(M,N)] );
-   dgetrf( ~dm, ipiv.get() );
-   dgetri( ~dm, ipiv.get() );
+   if( IsUniTriangular<MT>::value ) {
+      for( size_t i=0UL; i<N; ++i )
+         ipiv[i] = static_cast<int>( i ) + 1;
+   }
+   else {
+      dgetrf( derestrict( ~dm ), ipiv.get() );
+   }
+
+   dgetri( derestrict( ~dm ), ipiv.get() );
 }
 /*! \endcond */
 //*************************************************************************************************
@@ -1875,12 +1887,18 @@ template< typename MT  // Type of the dense matrix
 inline typename EnableIf< IsSame< typename MT::ElementType, complex<float> > >::Type
    invert_backend( DenseMatrix<MT,SO>& dm )
 {
-   const size_t M( (~dm).rows()    );
-   const size_t N( (~dm).columns() );
+   const size_t N( min( (~dm).rows(), (~dm).columns() ) );
+   UniqueArray<int> ipiv( new int[N] );
 
-   UniqueArray<int> ipiv( new int[min(M,N)] );
-   cgetrf( ~dm, ipiv.get() );
-   cgetri( ~dm, ipiv.get() );
+   if( IsUniTriangular<MT>::value ) {
+      for( size_t i=0UL; i<N; ++i )
+         ipiv[i] = static_cast<int>( i ) + 1;
+   }
+   else {
+      cgetrf( derestrict( ~dm ), ipiv.get() );
+   }
+
+   cgetri( derestrict( ~dm ), ipiv.get() );
 }
 /*! \endcond */
 //*************************************************************************************************
@@ -1914,12 +1932,18 @@ template< typename MT  // Type of the dense matrix
 inline typename EnableIf< IsSame< typename MT::ElementType, complex<double> > >::Type
    invert_backend( DenseMatrix<MT,SO>& dm )
 {
-   const size_t M( (~dm).rows()    );
-   const size_t N( (~dm).columns() );
+   const size_t N( min( (~dm).rows(), (~dm).columns() ) );
+   UniqueArray<int> ipiv( new int[N] );
 
-   UniqueArray<int> ipiv( new int[min(M,N)] );
-   zgetrf( ~dm, ipiv.get() );
-   zgetri( ~dm, ipiv.get() );
+   if( IsUniTriangular<MT>::value ) {
+      for( size_t i=0UL; i<N; ++i )
+         ipiv[i] = static_cast<int>( i ) + 1;
+   }
+   else {
+      zgetrf( derestrict( ~dm ), ipiv.get() );
+   }
+
+   zgetri( derestrict( ~dm ), ipiv.get() );
 }
 /*! \endcond */
 //*************************************************************************************************
@@ -1954,11 +1978,13 @@ inline void invert( DenseMatrix<MT,SO>& dm )
 {
    BLAZE_CONSTRAINT_MUST_NOT_BE_STRICTLY_TRIANGULAR_MATRIX_TYPE( MT );
 
-   if( !IsSquare<MT>::value && !isSquare( dm ) ) {
+   if( !IsSquare<MT>::value && !isSquare( ~dm ) ) {
       BLAZE_THROW_INVALID_ARGUMENT( "Invalid non-square matrix provided" );
    }
 
    invert_backend( ~dm );
+
+   BLAZE_INTERNAL_ASSERT( isIntact( ~dm ), "Broken invariant detected" );
 };
 //*************************************************************************************************
 

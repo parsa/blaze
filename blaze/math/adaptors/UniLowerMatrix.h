@@ -287,36 +287,6 @@ inline void swap( UniLowerMatrix<MT,SO,DF>& a, UniLowerMatrix<MT,SO,DF>& b ) /* 
 
 //*************************************************************************************************
 /*! \cond BLAZE_INTERNAL */
-/*!\brief In-place inversion of the given dense unilower matrix.
-// \ingroup unilower_matrix
-//
-// \param m The dense unilower matrix to be inverted.
-// \return void
-// \exception std::invalid_argument Inversion of singular matrix failed.
-//
-// This function inverts the given dense unilower matrix by means of LAPACK kernels. The matrix
-// inversion fails if the given unilower matrix is singular and not invertible. In this case a
-// \a std::invalid_argument exception is thrown.
-//
-// \note This function does not provide any exception safety guarantee, i.e. in case an exception
-// is thrown, \c m may already have been modified.
-// \note This function can only be used if the fitting LAPACK library is available and linked to
-// the executable. Otherwise a linker error will be created.
-*/
-template< typename MT  // Type of the adapted matrix
-        , bool SO >    // Storage order of the adapted matrix
-inline void invert( UniLowerMatrix<MT,SO,true>& m )
-{
-   invert_backend( derestrict( m ) );
-
-   BLAZE_INTERNAL_ASSERT( isIntact( m ), "Broken invariant detected" );
-}
-/*! \endcond */
-//*************************************************************************************************
-
-
-//*************************************************************************************************
-/*! \cond BLAZE_INTERNAL */
 /*!\brief Predict invariant violations by the assignment of a dense vector to an unilower matrix.
 // \ingroup unilower_matrix
 //
