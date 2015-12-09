@@ -126,13 +126,7 @@ inline void zgeqrf( DenseMatrix<MT,SO>& A, complex<double>* tau );
 // \return void
 //
 // This function performs the dense matrix QR decomposition of a general \f$ M \times N \f$ matrix
-// based on the LAPACK sgeqrf() function. The \a info argument provides feedback on the success of
-// the function call:
-//
-//   - = 0: The decomposition finished successfully.
-//   - < 0: The i-th argument had an illegal value.
-//
-// The decomposition has the form
+// based on the LAPACK sgeqrf() function. The decomposition has the form
 
                               \f[ A = Q \dot R, \f]\n
 
@@ -144,19 +138,24 @@ inline void zgeqrf( DenseMatrix<MT,SO>& A, complex<double>* tau );
 
                           \f[ H(i) = I - tau * v * v^T, \f]\n
 
-// where \f$ tau \f$ is a real scalar, and \f$ v \f$ is a real vector with \f$ v(0:i-1) = 0 \f$
-// and \f$ v(i) = 1 \f$. \f$ v(i+1:m) \f$ is stored on exit in \f$ A(i+1:m,i) \f$, and \f$ tau \f$
-// in \a tau(i). Thus on exit the elements on and above the diagonal of the matrix contain the
+// where \c tau is a real scalar, and \c v is a real vector with <tt>v(0:i-1) = 0</tt> and
+// <tt>v(i) = 1</tt>. <tt>v(i+1:m)</tt> is stored on exit in <tt>A(i+1:m,i)</tt>, and \c tau
+// in \c tau(i). Thus on exit the elements on and above the diagonal of the matrix contain the
 // min(M,N)-by-N upper trapezoidal matrix R (R is upper triangular if m >= n); the elements
 // below the diagonal, with the array \a tau, represent the orthogonal matrix Q as a product
 // of min(M,N) elementary reflectors.
 //
-// For more information on the dgeqrf() function, see the LAPACK online documentation browser:
+// The \a info argument provides feedback on the success of the function call:
+//
+//   - = 0: The decomposition finished successfully.
+//   - < 0: The i-th argument had an illegal value.
+//
+// For more information on the sgeqrf() function, see the LAPACK online documentation browser:
 //
 //        http://www.netlib.org/lapack/explore-html/
 //
 // \note This function does not provide any exception safety guarantee, i.e. in case an exception
-// is thrown \c A may already have been modified.
+// is thrown \a A may already have been modified.
 // \note This function can only be used if the fitting LAPACK library is available and linked to
 // the executable. Otherwise a call to this function will result in a linker error.
 */
@@ -182,13 +181,7 @@ inline void sgeqrf( int* m, int* n, float* a, int* lda, float* tau, float* work,
 // \return void
 //
 // This function performs the dense matrix QR decomposition of a general \f$ M \times N \f$ matrix
-// based on the LAPACK dgeqrf() function. The \a info argument provides feedback on the success of
-// the function call:
-//
-//   - = 0: The decomposition finished successfully.
-//   - < 0: The i-th argument had an illegal value.
-//
-// The decomposition has the form
+// based on the LAPACK dgeqrf() function. The decomposition has the form
 
                               \f[ A = Q \dot R, \f]\n
 
@@ -200,19 +193,24 @@ inline void sgeqrf( int* m, int* n, float* a, int* lda, float* tau, float* work,
 
                           \f[ H(i) = I - tau * v * v^T, \f]\n
 
-// where \f$ tau \f$ is a real scalar, and \f$ v \f$ is a real vector with \f$ v(0:i-1) = 0 \f$
-// and \f$ v(i) = 1 \f$. \f$ v(i+1:m) \f$ is stored on exit in \f$ A(i+1:m,i) \f$, and \f$ tau \f$
-// in \a tau(i). Thus on exit the elements on and above the diagonal of the matrix contain the
+// where \c tau is a real scalar, and \c v is a real vector with <tt>v(0:i-1) = 0</tt> and
+// <tt>v(i) = 1</tt>. <tt>v(i+1:m)</tt> is stored on exit in <tt>A(i+1:m,i)</tt>, and \c tau
+// in \c tau(i). Thus on exit the elements on and above the diagonal of the matrix contain the
 // min(M,N)-by-N upper trapezoidal matrix R (R is upper triangular if m >= n); the elements
 // below the diagonal, with the array \a tau, represent the orthogonal matrix Q as a product
 // of min(M,N) elementary reflectors.
+//
+// The \a info argument provides feedback on the success of the function call:
+//
+//   - = 0: The decomposition finished successfully.
+//   - < 0: The i-th argument had an illegal value.
 //
 // For more information on the dgeqrf() function, see the LAPACK online documentation browser:
 //
 //        http://www.netlib.org/lapack/explore-html/
 //
 // \note This function does not provide any exception safety guarantee, i.e. in case an exception
-// is thrown \c A may already have been modified.
+// is thrown \a A may already have been modified.
 // \note This function can only be used if the fitting LAPACK library is available and linked to
 // the executable. Otherwise a call to this function will result in a linker error.
 */
@@ -238,13 +236,7 @@ inline void dgeqrf( int* m, int* n, double* a, int* lda, double* tau, double* wo
 // \return void
 //
 // This function performs the dense matrix QR decomposition of a general \f$ M \times N \f$ matrix
-// based on the LAPACK cgeqrf() function. The \a info argument provides feedback on the success of
-// the function call:
-//
-//   - = 0: The decomposition finished successfully.
-//   - < 0: The i-th argument had an illegal value.
-//
-// The decomposition has the form
+// based on the LAPACK cgeqrf() function. The decomposition has the form
 
                               \f[ A = Q \dot R, \f]\n
 
@@ -256,19 +248,24 @@ inline void dgeqrf( int* m, int* n, double* a, int* lda, double* tau, double* wo
 
                           \f[ H(i) = I - tau * v * v^T, \f]\n
 
-// where \f$ tau \f$ is a real scalar, and \f$ v \f$ is a real vector with \f$ v(0:i-1) = 0 \f$
-// and \f$ v(i) = 1 \f$. \f$ v(i+1:m) \f$ is stored on exit in \f$ A(i+1:m,i) \f$, and \f$ tau \f$
-// in \a tau(i). Thus on exit the elements on and above the diagonal of the matrix contain the
+// where \c tau is a real scalar, and \c v is a real vector with <tt>v(0:i-1) = 0</tt> and
+// <tt>v(i) = 1</tt>. <tt>v(i+1:m)</tt> is stored on exit in <tt>A(i+1:m,i)</tt>, and \c tau
+// in \c tau(i). Thus on exit the elements on and above the diagonal of the matrix contain the
 // min(M,N)-by-N upper trapezoidal matrix R (R is upper triangular if m >= n); the elements
 // below the diagonal, with the array \a tau, represent the orthogonal matrix Q as a product
 // of min(M,N) elementary reflectors.
 //
-// For more information on the dgeqrf() function, see the LAPACK online documentation browser:
+// The \a info argument provides feedback on the success of the function call:
+//
+//   - = 0: The decomposition finished successfully.
+//   - < 0: The i-th argument had an illegal value.
+//
+// For more information on the cgeqrf() function, see the LAPACK online documentation browser:
 //
 //        http://www.netlib.org/lapack/explore-html/
 //
 // \note This function does not provide any exception safety guarantee, i.e. in case an exception
-// is thrown \c A may already have been modified.
+// is thrown \a A may already have been modified.
 // \note This function can only be used if the fitting LAPACK library is available and linked to
 // the executable. Otherwise a call to this function will result in a linker error.
 */
@@ -298,13 +295,7 @@ inline void cgeqrf( int* m, int* n, complex<float>* a, int* lda, complex<float>*
 // \return void
 //
 // This function performs the dense matrix QR decomposition of a general \f$ M \times N \f$ matrix
-// based on the LAPACK zgeqrf() function. The \a info argument provides feedback on the success of
-// the function call:
-//
-//   - = 0: The decomposition finished successfully.
-//   - < 0: The i-th argument had an illegal value.
-//
-// The decomposition has the form
+// based on the LAPACK zgeqrf() function. The decomposition has the form
 
                               \f[ A = Q \dot R, \f]\n
 
@@ -316,19 +307,24 @@ inline void cgeqrf( int* m, int* n, complex<float>* a, int* lda, complex<float>*
 
                           \f[ H(i) = I - tau * v * v^T, \f]\n
 
-// where \f$ tau \f$ is a real scalar, and \f$ v \f$ is a real vector with \f$ v(0:i-1) = 0 \f$
-// and \f$ v(i) = 1 \f$. \f$ v(i+1:m) \f$ is stored on exit in \f$ A(i+1:m,i) \f$, and \f$ tau \f$
-// in \a tau(i). Thus on exit the elements on and above the diagonal of the matrix contain the
+// where \c tau is a real scalar, and \c v is a real vector with <tt>v(0:i-1) = 0</tt> and
+// <tt>v(i) = 1</tt>. <tt>v(i+1:m)</tt> is stored on exit in <tt>A(i+1:m,i)</tt>, and \c tau
+// in \c tau(i). Thus on exit the elements on and above the diagonal of the matrix contain the
 // min(M,N)-by-N upper trapezoidal matrix R (R is upper triangular if m >= n); the elements
 // below the diagonal, with the array \a tau, represent the orthogonal matrix Q as a product
 // of min(M,N) elementary reflectors.
 //
-// For more information on the dgeqrf() function, see the LAPACK online documentation browser:
+// The \a info argument provides feedback on the success of the function call:
+//
+//   - = 0: The decomposition finished successfully.
+//   - < 0: The i-th argument had an illegal value.
+//
+// For more information on the zgeqrf() function, see the LAPACK online documentation browser:
 //
 //        http://www.netlib.org/lapack/explore-html/
 //
 // \note This function does not provide any exception safety guarantee, i.e. in case an exception
-// is thrown \c A may already have been modified.
+// is thrown \a A may already have been modified.
 // \note This function can only be used if the fitting LAPACK library is available and linked to
 // the executable. Otherwise a call to this function will result in a linker error.
 */
@@ -368,19 +364,19 @@ inline void zgeqrf( int* m, int* n, complex<double>* a, int* lda, complex<double
 
                           \f[ H(i) = I - tau * v * v^T, \f]\n
 
-// where \f$ tau \f$ is a real scalar, and \f$ v \f$ is a real vector with \f$ v(0:i-1) = 0 \f$
-// and \f$ v(i) = 1 \f$. \f$ v(i+1:m) \f$ is stored on exit in \f$ A(i+1:m,i) \f$, and \f$ tau \f$
-// in \a tau(i). Thus on exit the elements on and above the diagonal of the matrix contain the
+// where \c tau is a real scalar, and \c v is a real vector with <tt>v(0:i-1) = 0</tt> and
+// <tt>v(i) = 1</tt>. <tt>v(i+1:m)</tt> is stored on exit in <tt>A(i+1:m,i)</tt>, and \c tau
+// in \c tau(i). Thus on exit the elements on and above the diagonal of the matrix contain the
 // min(M,N)-by-N upper trapezoidal matrix R (R is upper triangular if m >= n); the elements
 // below the diagonal, with the array \a tau, represent the orthogonal matrix Q as a product
 // of min(M,N) elementary reflectors.
 //
-// For more information on the dgeqrf() function, see the LAPACK online documentation browser:
+// For more information on the sgeqrf() function, see the LAPACK online documentation browser:
 //
 //        http://www.netlib.org/lapack/explore-html/
 //
 // \note This function does not provide any exception safety guarantee, i.e. in case an exception
-// is thrown \c A may already have been modified.
+// is thrown \a A may already have been modified.
 // \note This function can only be used if the fitting LAPACK library is available and linked to
 // the executable. Otherwise a call to this function will result in a linker error.
 */
@@ -435,9 +431,9 @@ inline void sgeqrf( DenseMatrix<MT,SO>& A, float* tau )
 
                           \f[ H(i) = I - tau * v * v^T, \f]\n
 
-// where \f$ tau \f$ is a real scalar, and \f$ v \f$ is a real vector with \f$ v(0:i-1) = 0 \f$
-// and \f$ v(i) = 1 \f$. \f$ v(i+1:m) \f$ is stored on exit in \f$ A(i+1:m,i) \f$, and \f$ tau \f$
-// in \a tau(i). Thus on exit the elements on and above the diagonal of the matrix contain the
+// where \c tau is a real scalar, and \c v is a real vector with <tt>v(0:i-1) = 0</tt> and
+// <tt>v(i) = 1</tt>. <tt>v(i+1:m)</tt> is stored on exit in <tt>A(i+1:m,i)</tt>, and \c tau
+// in \c tau(i). Thus on exit the elements on and above the diagonal of the matrix contain the
 // min(M,N)-by-N upper trapezoidal matrix R (R is upper triangular if m >= n); the elements
 // below the diagonal, with the array \a tau, represent the orthogonal matrix Q as a product
 // of min(M,N) elementary reflectors.
@@ -447,7 +443,7 @@ inline void sgeqrf( DenseMatrix<MT,SO>& A, float* tau )
 //        http://www.netlib.org/lapack/explore-html/
 //
 // \note This function does not provide any exception safety guarantee, i.e. in case an exception
-// is thrown \c A may already have been modified.
+// is thrown \a A may already have been modified.
 // \note This function can only be used if the fitting LAPACK library is available and linked to
 // the executable. Otherwise a call to this function will result in a linker error.
 */
@@ -502,19 +498,19 @@ inline void dgeqrf( DenseMatrix<MT,SO>& A, double* tau )
 
                           \f[ H(i) = I - tau * v * v^T, \f]\n
 
-// where \f$ tau \f$ is a real scalar, and \f$ v \f$ is a real vector with \f$ v(0:i-1) = 0 \f$
-// and \f$ v(i) = 1 \f$. \f$ v(i+1:m) \f$ is stored on exit in \f$ A(i+1:m,i) \f$, and \f$ tau \f$
-// in \a tau(i). Thus on exit the elements on and above the diagonal of the matrix contain the
+// where \c tau is a real scalar, and \c v is a real vector with <tt>v(0:i-1) = 0</tt> and
+// <tt>v(i) = 1</tt>. <tt>v(i+1:m)</tt> is stored on exit in <tt>A(i+1:m,i)</tt>, and \c tau
+// in \c tau(i). Thus on exit the elements on and above the diagonal of the matrix contain the
 // min(M,N)-by-N upper trapezoidal matrix R (R is upper triangular if m >= n); the elements
 // below the diagonal, with the array \a tau, represent the orthogonal matrix Q as a product
 // of min(M,N) elementary reflectors.
 //
-// For more information on the dgeqrf() function, see the LAPACK online documentation browser:
+// For more information on the cgeqrf() function, see the LAPACK online documentation browser:
 //
 //        http://www.netlib.org/lapack/explore-html/
 //
 // \note This function does not provide any exception safety guarantee, i.e. in case an exception
-// is thrown \c A may already have been modified.
+// is thrown \a A may already have been modified.
 // \note This function can only be used if the fitting LAPACK library is available and linked to
 // the executable. Otherwise a call to this function will result in a linker error.
 */
@@ -570,19 +566,19 @@ inline void cgeqrf( DenseMatrix<MT,SO>& A, complex<float>* tau )
 
                           \f[ H(i) = I - tau * v * v^T, \f]\n
 
-// where \f$ tau \f$ is a real scalar, and \f$ v \f$ is a real vector with \f$ v(0:i-1) = 0 \f$
-// and \f$ v(i) = 1 \f$. \f$ v(i+1:m) \f$ is stored on exit in \f$ A(i+1:m,i) \f$, and \f$ tau \f$
-// in \a tau(i). Thus on exit the elements on and above the diagonal of the matrix contain the
+// where \c tau is a real scalar, and \c v is a real vector with <tt>v(0:i-1) = 0</tt> and
+// <tt>v(i) = 1</tt>. <tt>v(i+1:m)</tt> is stored on exit in <tt>A(i+1:m,i)</tt>, and \c tau
+// in \c tau(i). Thus on exit the elements on and above the diagonal of the matrix contain the
 // min(M,N)-by-N upper trapezoidal matrix R (R is upper triangular if m >= n); the elements
 // below the diagonal, with the array \a tau, represent the orthogonal matrix Q as a product
 // of min(M,N) elementary reflectors.
 //
-// For more information on the dgeqrf() function, see the LAPACK online documentation browser:
+// For more information on the zgeqrf() function, see the LAPACK online documentation browser:
 //
 //        http://www.netlib.org/lapack/explore-html/
 //
 // \note This function does not provide any exception safety guarantee, i.e. in case an exception
-// is thrown \c A may already have been modified.
+// is thrown \a A may already have been modified.
 // \note This function can only be used if the fitting LAPACK library is available and linked to
 // the executable. Otherwise a call to this function will result in a linker error.
 */
