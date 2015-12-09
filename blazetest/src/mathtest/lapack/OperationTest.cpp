@@ -69,6 +69,7 @@ namespace lapack {
 OperationTest::OperationTest()
 {
    testLU();
+   testQR();
    testInversion();
 }
 //*************************************************************************************************
@@ -316,6 +317,249 @@ void OperationTest::testLU()
              << "   Expected result:\n( ( 2.0,0.0) ( 4.0,0.0) (6.0,0.0) )\n"
                                      "( (-0.5,0.0) ( 3.0,0.0) (6.0,0.0) )\n"
                                      "( (-1.0,0.0) (-1.0,0.0) (4.0,0.0) )\n";
+         throw std::runtime_error( oss.str() );
+      }
+   }
+
+#endif
+}
+//*************************************************************************************************
+
+
+//*************************************************************************************************
+/*!\brief Test of the QR factorization functionality.
+//
+// \return void
+// \exception std::runtime_error Error detected.
+//
+// This function performs a test of the QR factorization functions for various data types. In
+// case an error is detected, a \a std::runtime_error exception is thrown.
+*/
+void OperationTest::testQR()
+{
+#if BLAZETEST_MATHTEST_LAPACK_MODE
+
+   //=====================================================================================
+   // Row-major matrix tests
+   //=====================================================================================
+
+   // Single precision matrices
+   {
+      test_ = "Row-major QR factorization (single precision)";
+
+      blaze::StaticMatrix<float,3UL,3U,blaze::rowMajor> A( 1.0F, 0.0F, 0.0F,
+                                                           0.0F, 1.0F, 0.0F,
+                                                           1.0F, 1.0F, 1.0F );
+      blaze::StaticVector<float,3UL,blaze::columnVector> tau;
+
+      blaze::sgeqrf( A, tau.data() );
+
+      if( A(0,0) != 1.0F || A(0,1) != 0.0F || A(0,2) != 0.0F ||
+          A(1,0) != 0.0F || A(1,1) != 1.0F || A(1,2) != 0.0F ||
+          A(2,0) != 1.0F || A(2,1) != 1.0F || A(2,2) != 1.0F ) {
+         std::ostringstream oss;
+         oss << " Test: " << test_ << "\n"
+             << " Error: QR factorization failed\n"
+             << " Details:\n"
+             << "   Result:\n" << A << "\n"
+             << "   Expected result:\n( 1  0  0 )\n"
+                                     "( 0  1  0 )\n"
+                                     "( 1  1  1 )\n";
+         throw std::runtime_error( oss.str() );
+      }
+   }
+
+   // Double precision matrices
+   {
+      test_ = "Row-major QR factorization (double precision)";
+
+      blaze::StaticMatrix<double,3UL,3U,blaze::rowMajor> A( 1.0, 0.0, 0.0,
+                                                            0.0, 1.0, 0.0,
+                                                            1.0, 1.0, 1.0 );
+      blaze::StaticVector<double,3UL,blaze::columnVector> tau;
+
+      blaze::dgeqrf( A, tau.data() );
+
+      if( A(0,0) != 1.0 || A(0,1) != 0.0 || A(0,2) != 0.0 ||
+          A(1,0) != 0.0 || A(1,1) != 1.0 || A(1,2) != 0.0 ||
+          A(2,0) != 1.0 || A(2,1) != 1.0 || A(2,2) != 1.0 ) {
+         std::ostringstream oss;
+         oss << " Test: " << test_ << "\n"
+             << " Error: QR factorization failed\n"
+             << " Details:\n"
+             << "   Result:\n" << A << "\n"
+             << "   Expected result:\n( 1  0  0 )\n"
+                                     "( 0  1  0 )\n"
+                                     "( 1  1  1 )\n";
+         throw std::runtime_error( oss.str() );
+      }
+   }
+
+   // Single precision complex matrices
+   {
+      test_ = "Row-major QR factorization (single precision complex)";
+
+      typedef blaze::complex<float>  cplx;
+
+      blaze::StaticMatrix<cplx,3UL,3U,blaze::rowMajor> A( cplx( 1.0F ), cplx( 0.0F ), cplx( 0.0F ),
+                                                          cplx( 0.0F ), cplx( 1.0F ), cplx( 0.0F ),
+                                                          cplx( 1.0F ), cplx( 1.0F ), cplx( 1.0F ) );
+      blaze::StaticVector<cplx,3UL,blaze::columnVector> tau;
+
+      blaze::cgeqrf( A, tau.data() );
+
+      if( A(0,0) != cplx( 1.0F ) || A(0,1) != cplx( 0.0F ) || A(0,2) != cplx( 0.0F ) ||
+          A(1,0) != cplx( 0.0F ) || A(1,1) != cplx( 1.0F ) || A(1,2) != cplx( 0.0F ) ||
+          A(2,0) != cplx( 1.0F ) || A(2,1) != cplx( 1.0F ) || A(2,2) != cplx( 1.0F ) ) {
+         std::ostringstream oss;
+         oss << " Test: " << test_ << "\n"
+             << " Error: QR factorization failed\n"
+             << " Details:\n"
+             << "   Result:\n" << A << "\n"
+             << "   Expected result:\n( (1,0) (0,0) (0,0) )\n"
+                                     "( (0,0) (1,0) (0,0) )\n"
+                                     "( (1,0) (1,0) (1,0) )\n";
+         throw std::runtime_error( oss.str() );
+      }
+   }
+
+   // Double precision complex matrices
+   {
+      test_ = "Row-major QR factorization (double precision complex)";
+
+      typedef blaze::complex<double>  cplx;
+
+      blaze::StaticMatrix<cplx,3UL,3U,blaze::rowMajor> A( cplx( 1.0 ), cplx( 0.0 ), cplx( 0.0 ),
+                                                          cplx( 0.0 ), cplx( 1.0 ), cplx( 0.0 ),
+                                                          cplx( 1.0 ), cplx( 1.0 ), cplx( 1.0 ) );
+      blaze::StaticVector<cplx,3UL,blaze::columnVector> tau;
+
+      blaze::zgeqrf( A, tau.data() );
+
+      if( A(0,0) != cplx( 1.0 ) || A(0,1) != cplx( 0.0 ) || A(0,2) != cplx( 0.0 ) ||
+          A(1,0) != cplx( 0.0 ) || A(1,1) != cplx( 1.0 ) || A(1,2) != cplx( 0.0 ) ||
+          A(2,0) != cplx( 1.0 ) || A(2,1) != cplx( 1.0 ) || A(2,2) != cplx( 1.0 ) ) {
+         std::ostringstream oss;
+         oss << " Test: " << test_ << "\n"
+             << " Error: QR factorization failed\n"
+             << " Details:\n"
+             << "   Result:\n" << A << "\n"
+             << "   Expected result:\n( (1,0) (0,0) (0,0) )\n"
+                                     "( (0,0) (1,0) (0,0) )\n"
+                                     "( (1,0) (1,0) (1,0) )\n";
+         throw std::runtime_error( oss.str() );
+      }
+   }
+
+
+   //=====================================================================================
+   // Column-major matrix tests
+   //=====================================================================================
+
+   // Single precision matrices
+   {
+      test_ = "Row-major QR factorization (single precision)";
+
+      blaze::StaticMatrix<float,3UL,3U,blaze::columnMajor> A( 1.0F, 0.0F, 0.0F,
+                                                              0.0F, 1.0F, 0.0F,
+                                                              1.0F, 1.0F, 1.0F );
+      blaze::StaticVector<float,3UL,blaze::columnVector> tau;
+
+      blaze::sgeqrf( A, tau.data() );
+
+      if( A(0,0) != 1.0F || A(0,1) != 0.0F || A(0,2) != 1.0F ||
+          A(1,0) != 0.0F || A(1,1) != 1.0F || A(1,2) != 1.0F ||
+          A(2,0) != 0.0F || A(2,1) != 0.0F || A(2,2) != 1.0F ) {
+         std::ostringstream oss;
+         oss << " Test: " << test_ << "\n"
+             << " Error: QR factorization failed\n"
+             << " Details:\n"
+             << "   Result:\n" << A << "\n"
+             << "   Expected result:\n( 1  0  1 )\n"
+                                     "( 0  1  1 )\n"
+                                     "( 0  0  1 )\n";
+         throw std::runtime_error( oss.str() );
+      }
+   }
+
+   // Double precision matrices
+   {
+      test_ = "Row-major QR factorization (double precision)";
+
+      blaze::StaticMatrix<double,3UL,3U,blaze::columnMajor> A( 1.0, 0.0, 0.0,
+                                                               0.0, 1.0, 0.0,
+                                                               1.0, 1.0, 1.0 );
+      blaze::StaticVector<double,3UL,blaze::columnVector> tau;
+
+      blaze::dgeqrf( A, tau.data() );
+
+      if( A(0,0) != 1.0 || A(0,1) != 0.0 || A(0,2) != 1.0 ||
+          A(1,0) != 0.0 || A(1,1) != 1.0 || A(1,2) != 1.0 ||
+          A(2,0) != 0.0 || A(2,1) != 0.0 || A(2,2) != 1.0 ) {
+         std::ostringstream oss;
+         oss << " Test: " << test_ << "\n"
+             << " Error: QR factorization failed\n"
+             << " Details:\n"
+             << "   Result:\n" << A << "\n"
+             << "   Expected result:\n( 1  0  1 )\n"
+                                     "( 0  1  1 )\n"
+                                     "( 0  0  1 )\n";
+         throw std::runtime_error( oss.str() );
+      }
+   }
+
+   // Single precision complex matrices
+   {
+      test_ = "Row-major QR factorization (single precision complex)";
+
+      typedef blaze::complex<float>  cplx;
+
+      blaze::StaticMatrix<cplx,3UL,3U,blaze::columnMajor> A( cplx( 1.0F ), cplx( 0.0F ), cplx( 0.0F ),
+                                                             cplx( 0.0F ), cplx( 1.0F ), cplx( 0.0F ),
+                                                             cplx( 1.0F ), cplx( 1.0F ), cplx( 1.0F ) );
+      blaze::StaticVector<cplx,3UL,blaze::columnVector> tau;
+
+      blaze::cgeqrf( A, tau.data() );
+
+      if( A(0,0) != cplx( 1.0F ) || A(0,1) != cplx( 0.0F ) || A(0,2) != cplx( 1.0F ) ||
+          A(1,0) != cplx( 0.0F ) || A(1,1) != cplx( 1.0F ) || A(1,2) != cplx( 1.0F ) ||
+          A(2,0) != cplx( 0.0F ) || A(2,1) != cplx( 0.0F ) || A(2,2) != cplx( 1.0F ) ) {
+         std::ostringstream oss;
+         oss << " Test: " << test_ << "\n"
+             << " Error: QR factorization failed\n"
+             << " Details:\n"
+             << "   Result:\n" << A << "\n"
+             << "   Expected result:\n( (1,0) (0,0) (1,0) )\n"
+                                     "( (0,0) (1,0) (1,0) )\n"
+                                     "( (0,0) (0,0) (1,0) )\n";
+         throw std::runtime_error( oss.str() );
+      }
+   }
+
+   // Double precision complex matrices
+   {
+      test_ = "Row-major QR factorization (double precision complex)";
+
+      typedef blaze::complex<double>  cplx;
+
+      blaze::StaticMatrix<cplx,3UL,3U,blaze::columnMajor> A( cplx( 1.0 ), cplx( 0.0 ), cplx( 0.0 ),
+                                                             cplx( 0.0 ), cplx( 1.0 ), cplx( 0.0 ),
+                                                             cplx( 1.0 ), cplx( 1.0 ), cplx( 1.0 ) );
+      blaze::StaticVector<cplx,3UL,blaze::columnVector> tau;
+
+      blaze::zgeqrf( A, tau.data() );
+
+      if( A(0,0) != cplx( 1.0 ) || A(0,1) != cplx( 0.0 ) || A(0,2) != cplx( 1.0 ) ||
+          A(1,0) != cplx( 0.0 ) || A(1,1) != cplx( 1.0 ) || A(1,2) != cplx( 1.0 ) ||
+          A(2,0) != cplx( 0.0 ) || A(2,1) != cplx( 0.0 ) || A(2,2) != cplx( 1.0 ) ) {
+         std::ostringstream oss;
+         oss << " Test: " << test_ << "\n"
+             << " Error: QR factorization failed\n"
+             << " Details:\n"
+             << "   Result:\n" << A << "\n"
+             << "   Expected result:\n( (1,0) (0,0) (1,0) )\n"
+                                     "( (0,0) (1,0) (1,0) )\n"
+                                     "( (0,0) (0,0) (1,0) )\n";
          throw std::runtime_error( oss.str() );
       }
    }
