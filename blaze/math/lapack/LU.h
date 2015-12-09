@@ -50,6 +50,7 @@
 #include <blaze/util/constraints/Double.h>
 #include <blaze/util/constraints/Float.h>
 #include <blaze/util/Exception.h>
+#include <blaze/util/StaticAssert.h>
 
 
 namespace blaze {
@@ -64,9 +65,9 @@ namespace blaze {
 /*! \cond BLAZE_INTERNAL */
 extern "C" {
 
-void sgetrf_( int* m, int* n, float* a, int* lda, int* ipiv, int* info );
+void sgetrf_( int* m, int* n, float*  a, int* lda, int* ipiv, int* info );
 void dgetrf_( int* m, int* n, double* a, int* lda, int* ipiv, int* info );
-void cgetrf_( int* m, int* n, float* a, int* lda, int* ipiv, int* info );
+void cgetrf_( int* m, int* n, float*  a, int* lda, int* ipiv, int* info );
 void zgetrf_( int* m, int* n, double* a, int* lda, int* ipiv, int* info );
 
 }
@@ -85,6 +86,14 @@ void zgetrf_( int* m, int* n, double* a, int* lda, int* ipiv, int* info );
 //*************************************************************************************************
 /*!\name LAPACK LU decomposition functions */
 //@{
+inline void sgetrf( int* m, int* n, float* a, int* lda, int* ipiv, int* info );
+
+inline void dgetrf( int* m, int* n, double* a, int* lda, int* ipiv, int* info );
+
+inline void cgetrf( int* m, int* n, complex<float>* a, int* lda, int* ipiv, int* info );
+
+inline void zgetrf( int* m, int* n, complex<double>* a, int* lda, int* ipiv, int* info );
+
 template< typename MT, bool SO >
 inline void sgetrf( DenseMatrix<MT,SO>& A, int* ipiv );
 
@@ -97,6 +106,166 @@ inline void cgetrf( DenseMatrix<MT,SO>& A, int* ipiv );
 template< typename MT, bool SO >
 inline void zgetrf( DenseMatrix<MT,SO>& A, int* ipiv );
 //@}
+//*************************************************************************************************
+
+
+//*************************************************************************************************
+/*!\brief LAPACK kernel for the LU decomposition of the given dense single precision matrix.
+// \ingroup lapack
+//
+// \param m The number of rows of the given matrix \f$[0..\infty)\f$.
+// \param n The number of columns of the given matrix \f$[0..\infty)\f$.
+// \param a Pointer to the first element of the matrix.
+// \param lda The total number of elements between two rows/columns of the matrix \f$[0..\infty)\f$.
+// \param ipiv Auxiliary array for the pivot indices; size >= min( M, N ).
+// \param info Return code of the function call.
+// \return void
+//
+// This function performs the dense matrix LU decomposition of a general \f$ M \times N \f$ matrix
+// based on the LAPACK sgetrf() function, which uses partial pivoting with row interchanges. The
+// decomposition has the form
+
+                          \f[ A = P \dot L \dot U, \f]\n
+
+// where \c P is a permutation matrix, \c L is a lower unitriangular matrix, and \c U is an upper
+// triangular matrix. The \a info argument provides feedback on the success of the function call:
+//
+//   - = 0: The decomposition finished successfully.
+//   - < 0: If info = -i, the i-th argument had an illegal value.
+//   - > 0: If info = i, the decomposition has been completed, but the factor U(i,i) is singular.
+//
+// For more information on the sgetrf() function, see the LAPACK online documentation browser:
+//
+//        http://www.netlib.org/lapack/explore-html/
+//
+// \note This function can only be used if the fitting LAPACK library is available and linked to
+// the executable. Otherwise a call to this function will result in a linker error.
+*/
+inline void sgetrf( int* m, int* n, float* a, int* lda, int* ipiv, int* info )
+{
+   sgetrf_( m, n, a, lda, ipiv, info );
+}
+//*************************************************************************************************
+
+
+//*************************************************************************************************
+/*!\brief LAPACK kernel for the LU decomposition of the given dense double precision matrix.
+// \ingroup lapack
+//
+// \param m The number of rows of the given matrix \f$[0..\infty)\f$.
+// \param n The number of columns of the given matrix \f$[0..\infty)\f$.
+// \param a Pointer to the first element of the matrix.
+// \param lda The total number of elements between two rows/columns of the matrix \f$[0..\infty)\f$.
+// \param ipiv Auxiliary array for the pivot indices; size >= min( M, N ).
+// \param info Return code of the function call.
+// \return void
+//
+// This function performs the dense matrix LU decomposition of a general \f$ M \times N \f$ matrix
+// based on the LAPACK dgetrf() function, which uses partial pivoting with row interchanges. The
+// decomposition has the form
+
+                          \f[ A = P \dot L \dot U, \f]\n
+
+// where \c P is a permutation matrix, \c L is a lower unitriangular matrix, and \c U is an upper
+// triangular matrix. The \a info argument provides feedback on the success of the function call:
+//
+//   - = 0: The decomposition finished successfully.
+//   - < 0: If info = -i, the i-th argument had an illegal value.
+//   - > 0: If info = i, the decomposition has been completed, but the factor U(i,i) is singular.
+//
+// For more information on the sgetrf() function, see the LAPACK online documentation browser:
+//
+//        http://www.netlib.org/lapack/explore-html/
+//
+// \note This function can only be used if the fitting LAPACK library is available and linked to
+// the executable. Otherwise a call to this function will result in a linker error.
+*/
+inline void dgetrf( int* m, int* n, double* a, int* lda, int* ipiv, int* info )
+{
+   dgetrf_( m, n, a, lda, ipiv, info );
+}
+//*************************************************************************************************
+
+
+//*************************************************************************************************
+/*!\brief LAPACK kernel for the LU decomposition of the given dense single precision complex matrix.
+// \ingroup lapack
+//
+// \param m The number of rows of the given matrix \f$[0..\infty)\f$.
+// \param n The number of columns of the given matrix \f$[0..\infty)\f$.
+// \param a Pointer to the first element of the matrix.
+// \param lda The total number of elements between two rows/columns of the matrix \f$[0..\infty)\f$.
+// \param ipiv Auxiliary array for the pivot indices; size >= min( M, N ).
+// \param info Return code of the function call.
+// \return void
+//
+// This function performs the dense matrix LU decomposition of a general \f$ M \times N \f$ matrix
+// based on the LAPACK cgetrf() function, which uses partial pivoting with row interchanges. The
+// decomposition has the form
+
+                          \f[ A = P \dot L \dot U, \f]\n
+
+// where \c P is a permutation matrix, \c L is a lower unitriangular matrix, and \c U is an upper
+// triangular matrix. The \a info argument provides feedback on the success of the function call:
+//
+//   - = 0: The decomposition finished successfully.
+//   - < 0: If info = -i, the i-th argument had an illegal value.
+//   - > 0: If info = i, the decomposition has been completed, but the factor U(i,i) is singular.
+//
+// For more information on the sgetrf() function, see the LAPACK online documentation browser:
+//
+//        http://www.netlib.org/lapack/explore-html/
+//
+// \note This function can only be used if the fitting LAPACK library is available and linked to
+// the executable. Otherwise a call to this function will result in a linker error.
+*/
+inline void cgetrf( int* m, int* n, complex<float>* a, int* lda, int* ipiv, int* info )
+{
+   BLAZE_STATIC_ASSERT( sizeof( complex<float> ) == 2UL*sizeof( float ) );
+
+   cgetrf_( m, n, reinterpret_cast<float*>( a ), lda, ipiv, info );
+}
+//*************************************************************************************************
+
+
+//*************************************************************************************************
+/*!\brief LAPACK kernel for the LU decomposition of the given dense double precision complex matrix.
+// \ingroup lapack
+//
+// \param m The number of rows of the given matrix \f$[0..\infty)\f$.
+// \param n The number of columns of the given matrix \f$[0..\infty)\f$.
+// \param a Pointer to the first element of the matrix.
+// \param lda The total number of elements between two rows/columns of the matrix \f$[0..\infty)\f$.
+// \param ipiv Auxiliary array for the pivot indices; size >= min( M, N ).
+// \param info Return code of the function call.
+// \return void
+//
+// This function performs the dense matrix LU decomposition of a general \f$ M \times N \f$ matrix
+// based on the LAPACK zgetrf() function, which uses partial pivoting with row interchanges. The
+// decomposition has the form
+
+                          \f[ A = P \dot L \dot U, \f]\n
+
+// where \c P is a permutation matrix, \c L is a lower unitriangular matrix, and \c U is an upper
+// triangular matrix. The \a info argument provides feedback on the success of the function call:
+//
+//   - = 0: The decomposition finished successfully.
+//   - < 0: If info = -i, the i-th argument had an illegal value.
+//   - > 0: If info = i, the decomposition has been completed, but the factor U(i,i) is singular.
+//
+// For more information on the sgetrf() function, see the LAPACK online documentation browser:
+//
+//        http://www.netlib.org/lapack/explore-html/
+//
+// \note This function can only be used if the fitting LAPACK library is available and linked to
+// the executable. Otherwise a call to this function will result in a linker error.
+*/
+inline void zgetrf( int* m, int* n, complex<double>* a, int* lda, int* ipiv, int* info )
+{
+   BLAZE_STATIC_ASSERT( sizeof( complex<double> ) == 2UL*sizeof( double ) );
+
+   zgetrf_( m, n, reinterpret_cast<double*>( a ), lda, ipiv, info );
+}
 //*************************************************************************************************
 
 
@@ -130,7 +299,7 @@ inline void zgetrf( DenseMatrix<MT,SO>& A, int* ipiv );
 // \note This function does not provide any exception safety guarantee, i.e. in case an exception
 // is thrown \c A may already have been modified.
 // \note This function can only be used if the fitting LAPACK library is available and linked to
-// the executable. Otherwise a linker error will be created.
+// the executable. Otherwise a call to this function will result in a linker error.
 */
 template< typename MT  // Type of the dense matrix
         , bool SO >    // Storage order of the dense matrix
@@ -148,7 +317,7 @@ inline void sgetrf( DenseMatrix<MT,SO>& A, int* ipiv )
    int lda ( boost::numeric_cast<int>( (~A).spacing() ) );
    int info( 0 );
 
-   sgetrf_( &m, &n, (~A).data(), &lda, ipiv, &info );
+   sgetrf( &m, &n, (~A).data(), &lda, ipiv, &info );
 
    BLAZE_INTERNAL_ASSERT( info >= 0, "Invalid argument for LU decomposition" );
 
@@ -189,7 +358,7 @@ inline void sgetrf( DenseMatrix<MT,SO>& A, int* ipiv )
 // \note This function does not provide any exception safety guarantee, i.e. in case an exception
 // is thrown \c A may already have been modified.
 // \note This function can only be used if the fitting LAPACK library is available and linked to
-// the executable. Otherwise a linker error will be created.
+// the executable. Otherwise a call to this function will result in a linker error.
 */
 template< typename MT  // Type of the dense matrix
         , bool SO >    // Storage order of the dense matrix
@@ -207,7 +376,7 @@ inline void dgetrf( DenseMatrix<MT,SO>& A, int* ipiv )
    int lda ( boost::numeric_cast<int>( (~A).spacing() ) );
    int info( 0 );
 
-   dgetrf_( &m, &n, (~A).data(), &lda, ipiv, &info );
+   dgetrf( &m, &n, (~A).data(), &lda, ipiv, &info );
 
    BLAZE_INTERNAL_ASSERT( info >= 0, "Invalid argument for LU decomposition" );
 
@@ -248,7 +417,7 @@ inline void dgetrf( DenseMatrix<MT,SO>& A, int* ipiv )
 // \note This function does not provide any exception safety guarantee, i.e. in case an exception
 // is thrown \c A may already have been modified.
 // \note This function can only be used if the fitting LAPACK library is available and linked to
-// the executable. Otherwise a linker error will be created.
+// the executable. Otherwise a call to this function will result in a linker error.
 */
 template< typename MT  // Type of the dense matrix
         , bool SO >    // Storage order of the dense matrix
@@ -260,14 +429,14 @@ inline void cgetrf( DenseMatrix<MT,SO>& A, int* ipiv )
    BLAZE_CONSTRAINT_MUST_NOT_BE_COMPUTATION_TYPE( MT );
    BLAZE_CONSTRAINT_MUST_HAVE_MUTABLE_DATA_ACCESS( MT );
    BLAZE_CONSTRAINT_MUST_BE_COMPLEX_TYPE( typename MT::ElementType );
-   BLAZE_CONSTRAINT_MUST_BE_FLOAT_TYPE  ( typename MT::ElementType::value_type );
+   BLAZE_CONSTRAINT_MUST_BE_FLOAT_TYPE( typename MT::ElementType::value_type );
 
    int m   ( boost::numeric_cast<int>( (~A).rows()    ) );
    int n   ( boost::numeric_cast<int>( (~A).columns() ) );
    int lda ( boost::numeric_cast<int>( (~A).spacing() ) );
    int info( 0 );
 
-   cgetrf_( &m, &n, reinterpret_cast<float*>( (~A).data() ), &lda, ipiv, &info );
+   cgetrf( &m, &n, (~A).data(), &lda, ipiv, &info );
 
    BLAZE_INTERNAL_ASSERT( info >= 0, "Invalid argument for LU decomposition" );
 
@@ -308,7 +477,7 @@ inline void cgetrf( DenseMatrix<MT,SO>& A, int* ipiv )
 // \note This function does not provide any exception safety guarantee, i.e. in case an exception
 // is thrown \c A may already have been modified.
 // \note This function can only be used if the fitting LAPACK library is available and linked to
-// the executable. Otherwise a linker error will be created.
+// the executable. Otherwise a call to this function will result in a linker error.
 */
 template< typename MT  // Type of the dense matrix
         , bool SO >    // Storage order of the dense matrix
@@ -320,14 +489,14 @@ inline void zgetrf( DenseMatrix<MT,SO>& A, int* ipiv )
    BLAZE_CONSTRAINT_MUST_NOT_BE_COMPUTATION_TYPE( MT );
    BLAZE_CONSTRAINT_MUST_HAVE_MUTABLE_DATA_ACCESS( MT );
    BLAZE_CONSTRAINT_MUST_BE_COMPLEX_TYPE( typename MT::ElementType );
-   BLAZE_CONSTRAINT_MUST_BE_DOUBLE_TYPE ( typename MT::ElementType::value_type );
+   BLAZE_CONSTRAINT_MUST_BE_DOUBLE_TYPE( typename MT::ElementType::value_type );
 
    int m   ( boost::numeric_cast<int>( (~A).rows()    ) );
    int n   ( boost::numeric_cast<int>( (~A).columns() ) );
    int lda ( boost::numeric_cast<int>( (~A).spacing() ) );
    int info( 0 );
 
-   zgetrf_( &m, &n, reinterpret_cast<double*>( (~A).data() ), &lda, ipiv, &info );
+   zgetrf( &m, &n, (~A).data(), &lda, ipiv, &info );
 
    BLAZE_INTERNAL_ASSERT( info >= 0, "Invalid argument for LU decomposition" );
 
