@@ -128,7 +128,12 @@ inline void zgetrf( DenseMatrix<MT,SO>& A, int* ipiv );
                           \f[ A = P \dot L \dot U, \f]\n
 
 // where \c P is a permutation matrix, \c L is a lower unitriangular matrix, and \c U is an upper
-// triangular matrix. The \a info argument provides feedback on the success of the function call:
+// triangular matrix. The resulting decomposition is stored within \a A: In case of a column-major
+// matrix, \c L is stored in the lower part of \a A and \c U is stored in the upper part. The unit
+// diagonal elements of \c L are not stored. In case \a A is a row-major matrix the result is
+// transposed.
+//
+// The \a info argument provides feedback on the success of the function call:
 //
 //   - = 0: The decomposition finished successfully.
 //   - < 0: If info = -i, the i-th argument had an illegal value.
@@ -167,13 +172,18 @@ inline void sgetrf( int* m, int* n, float* a, int* lda, int* ipiv, int* info )
                           \f[ A = P \dot L \dot U, \f]\n
 
 // where \c P is a permutation matrix, \c L is a lower unitriangular matrix, and \c U is an upper
-// triangular matrix. The \a info argument provides feedback on the success of the function call:
+// triangular matrix. The resulting decomposition is stored within \a A: In case of a column-major
+// matrix, \c L is stored in the lower part of \a A and \c U is stored in the upper part. The unit
+// diagonal elements of \c L are not stored. In case \a A is a row-major matrix the result is
+// transposed.
+//
+// The \a info argument provides feedback on the success of the function call:
 //
 //   - = 0: The decomposition finished successfully.
 //   - < 0: If info = -i, the i-th argument had an illegal value.
 //   - > 0: If info = i, the decomposition has been completed, but the factor U(i,i) is singular.
 //
-// For more information on the sgetrf() function, see the LAPACK online documentation browser:
+// For more information on the dgetrf() function, see the LAPACK online documentation browser:
 //
 //        http://www.netlib.org/lapack/explore-html/
 //
@@ -206,13 +216,18 @@ inline void dgetrf( int* m, int* n, double* a, int* lda, int* ipiv, int* info )
                           \f[ A = P \dot L \dot U, \f]\n
 
 // where \c P is a permutation matrix, \c L is a lower unitriangular matrix, and \c U is an upper
-// triangular matrix. The \a info argument provides feedback on the success of the function call:
+// triangular matrix. The resulting decomposition is stored within \a A: In case of a column-major
+// matrix, \c L is stored in the lower part of \a A and \c U is stored in the upper part. The unit
+// diagonal elements of \c L are not stored. In case \a A is a row-major matrix the result is
+// transposed.
+//
+// The \a info argument provides feedback on the success of the function call:
 //
 //   - = 0: The decomposition finished successfully.
 //   - < 0: If info = -i, the i-th argument had an illegal value.
 //   - > 0: If info = i, the decomposition has been completed, but the factor U(i,i) is singular.
 //
-// For more information on the sgetrf() function, see the LAPACK online documentation browser:
+// For more information on the cgetrf() function, see the LAPACK online documentation browser:
 //
 //        http://www.netlib.org/lapack/explore-html/
 //
@@ -247,13 +262,18 @@ inline void cgetrf( int* m, int* n, complex<float>* a, int* lda, int* ipiv, int*
                           \f[ A = P \dot L \dot U, \f]\n
 
 // where \c P is a permutation matrix, \c L is a lower unitriangular matrix, and \c U is an upper
-// triangular matrix. The \a info argument provides feedback on the success of the function call:
+// triangular matrix. The resulting decomposition is stored within \a A: In case of a column-major
+// matrix, \c L is stored in the lower part of \a A and \c U is stored in the upper part. The unit
+// diagonal elements of \c L are not stored. In case \a A is a row-major matrix the result is
+// transposed.
+//
+// The \a info argument provides feedback on the success of the function call:
 //
 //   - = 0: The decomposition finished successfully.
 //   - < 0: If info = -i, the i-th argument had an illegal value.
 //   - > 0: If info = i, the decomposition has been completed, but the factor U(i,i) is singular.
 //
-// For more information on the sgetrf() function, see the LAPACK online documentation browser:
+// For more information on the zgetrf() function, see the LAPACK online documentation browser:
 //
 //        http://www.netlib.org/lapack/explore-html/
 //
@@ -289,15 +309,18 @@ inline void zgetrf( int* m, int* n, complex<double>* a, int* lda, int* ipiv, int
                           \f[ A = P \dot L \dot U, \f]\n
 
 // where \c P is a permutation matrix, \c L is a lower unitriangular matrix, and \c U is an upper
-// triangular matrix. The LU decomposition fails if \c A is a singular matrix, which cannot be
-// inverted. In this case a \a std::std::invalid_argument exception is thrown.
+// triangular matrix. The resulting decomposition is stored within \a A: In case of a column-major
+// matrix, \c L is stored in the lower part of \a A and \c U is stored in the upper part. The unit
+// diagonal elements of \c L are not stored. In case \a A is a row-major matrix the result is
+// transposed. The LU decomposition fails if \a A is a singular matrix, which cannot be inverted.
+// In this case a \a std::std::invalid_argument exception is thrown.
 //
 // For more information on the sgetrf() function, see the LAPACK online documentation browser:
 //
 //        http://www.netlib.org/lapack/explore-html/
 //
 // \note This function does not provide any exception safety guarantee, i.e. in case an exception
-// is thrown \c A may already have been modified.
+// is thrown \a A may already have been modified.
 // \note This function can only be used if the fitting LAPACK library is available and linked to
 // the executable. Otherwise a call to this function will result in a linker error.
 */
@@ -348,15 +371,18 @@ inline void sgetrf( DenseMatrix<MT,SO>& A, int* ipiv )
                           \f[ A = P \dot L \dot U, \f]\n
 
 // where \c P is a permutation matrix, \c L is a lower unitriangular matrix, and \c U is an upper
-// triangular matrix. The LU decomposition fails if \c A is a singular matrix, which cannot be
-// inverted. In this case a \a std::std::invalid_argument exception is thrown.
+// triangular matrix. The resulting decomposition is stored within \a A: In case of a column-major
+// matrix, \c L is stored in the lower part of \a A and \c U is stored in the upper part. The unit
+// diagonal elements of \c L are not stored. In case \a A is a row-major matrix the result is
+// transposed. The LU decomposition fails if \a A is a singular matrix, which cannot be inverted.
+// In this case a \a std::std::invalid_argument exception is thrown.
 //
 // For more information on the dgetrf() function, see the LAPACK online documentation browser:
 //
 //        http://www.netlib.org/lapack/explore-html/
 //
 // \note This function does not provide any exception safety guarantee, i.e. in case an exception
-// is thrown \c A may already have been modified.
+// is thrown \a A may already have been modified.
 // \note This function can only be used if the fitting LAPACK library is available and linked to
 // the executable. Otherwise a call to this function will result in a linker error.
 */
@@ -407,15 +433,18 @@ inline void dgetrf( DenseMatrix<MT,SO>& A, int* ipiv )
                           \f[ A = P \dot L \dot U, \f]\n
 
 // where \c P is a permutation matrix, \c L is a lower unitriangular matrix, and \c U is an upper
-// triangular matrix. The LU decomposition fails if \c A is a singular matrix, which cannot be
-// inverted. In this case a \a std::std::invalid_argument exception is thrown.
+// triangular matrix. The resulting decomposition is stored within \a A: In case of a column-major
+// matrix, \c L is stored in the lower part of \a A and \c U is stored in the upper part. The unit
+// diagonal elements of \c L are not stored. In case \a A is a row-major matrix the result is
+// transposed. The LU decomposition fails if \a A is a singular matrix, which cannot be inverted.
+// In this case a \a std::std::invalid_argument exception is thrown.
 //
-// For more information on the dgetrf() function, see the LAPACK online documentation browser:
+// For more information on the cgetrf() function, see the LAPACK online documentation browser:
 //
 //        http://www.netlib.org/lapack/explore-html/
 //
 // \note This function does not provide any exception safety guarantee, i.e. in case an exception
-// is thrown \c A may already have been modified.
+// is thrown \a A may already have been modified.
 // \note This function can only be used if the fitting LAPACK library is available and linked to
 // the executable. Otherwise a call to this function will result in a linker error.
 */
@@ -467,15 +496,18 @@ inline void cgetrf( DenseMatrix<MT,SO>& A, int* ipiv )
                           \f[ A = P \dot L \dot U, \f]\n
 
 // where \c P is a permutation matrix, \c L is a lower unitriangular matrix, and \c U is an upper
-// triangular matrix. The LU decomposition fails if \c A is a singular matrix, which cannot be
-// inverted. In this case a \a std::std::invalid_argument exception is thrown.
+// triangular matrix. The resulting decomposition is stored within \a A: In case of a column-major
+// matrix, \c L is stored in the lower part of \a A and \c U is stored in the upper part. The unit
+// diagonal elements of \c L are not stored. In case \a A is a row-major matrix the result is
+// transposed. The LU decomposition fails if \a A is a singular matrix, which cannot be inverted.
+// In this case a \a std::std::invalid_argument exception is thrown.
 //
-// For more information on the dgetrf() function, see the LAPACK online documentation browser:
+// For more information on the zgetrf() function, see the LAPACK online documentation browser:
 //
 //        http://www.netlib.org/lapack/explore-html/
 //
 // \note This function does not provide any exception safety guarantee, i.e. in case an exception
-// is thrown \c A may already have been modified.
+// is thrown \a A may already have been modified.
 // \note This function can only be used if the fitting LAPACK library is available and linked to
 // the executable. Otherwise a call to this function will result in a linker error.
 */
