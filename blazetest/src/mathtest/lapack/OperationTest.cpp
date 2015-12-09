@@ -68,8 +68,9 @@ namespace lapack {
 */
 OperationTest::OperationTest()
 {
-   testLU();
    testQR();
+   testLU();
+   testCholesky();
    testInversion();
 }
 //*************************************************************************************************
@@ -84,255 +85,12 @@ OperationTest::OperationTest()
 //=================================================================================================
 
 //*************************************************************************************************
-/*!\brief Test of the LU factorization functionality.
+/*!\brief Test of the QR decomposition functionality.
 //
 // \return void
 // \exception std::runtime_error Error detected.
 //
-// This function performs a test of the LU factorization functions for various data types. In
-// case an error is detected, a \a std::runtime_error exception is thrown.
-*/
-void OperationTest::testLU()
-{
-#if BLAZETEST_MATHTEST_LAPACK_MODE
-
-   //=====================================================================================
-   // Row-major matrix tests
-   //=====================================================================================
-
-   // Single precision matrices
-   {
-      test_ = "Row-major LU factorization (single precision)";
-
-      blaze::StaticMatrix<float,3UL,3U,blaze::rowMajor> A( 2.0F, -1.0F, -2.0F,
-                                                           4.0F,  1.0F, -7.0F,
-                                                           6.0F,  3.0F, -8.0F );
-      blaze::StaticVector<int,3UL,blaze::columnVector> ipiv;
-
-      blaze::sgetrf( A, ipiv.data() );
-
-      if( A(0,0) != 2.0F || A(0,1) != -0.5F || A(0,2) != -1.0F ||
-          A(1,0) != 4.0F || A(1,1) !=  3.0F || A(1,2) != -1.0F ||
-          A(2,0) != 6.0F || A(2,1) !=  6.0F || A(2,2) !=  4.0F ) {
-         std::ostringstream oss;
-         oss << " Test: " << test_ << "\n"
-             << " Error: LU factorization failed\n"
-             << " Details:\n"
-             << "   Result:\n" << A << "\n"
-             << "   Expected result:\n( 2.0 -0.5 -1.0 )\n"
-                                     "( 4.0  3.0 -1.0 )\n"
-                                     "( 6.0  6.0  4.0 )\n";
-         throw std::runtime_error( oss.str() );
-      }
-   }
-
-   // Double precision matrices
-   {
-      test_ = "Row-major LU factorization (double precision)";
-
-      blaze::StaticMatrix<double,3UL,3U,blaze::rowMajor> A( 2.0, -1.0, -2.0,
-                                                            4.0,  1.0, -7.0,
-                                                            6.0,  3.0, -8.0 );
-      blaze::StaticVector<int,3UL,blaze::columnVector> ipiv;
-
-      blaze::dgetrf( A, ipiv.data() );
-
-      if( A(0,0) != 2.0 || A(0,1) != -0.5 || A(0,2) != -1.0 ||
-          A(1,0) != 4.0 || A(1,1) !=  3.0 || A(1,2) != -1.0 ||
-          A(2,0) != 6.0 || A(2,1) !=  6.0 || A(2,2) !=  4.0 ) {
-         std::ostringstream oss;
-         oss << " Test: " << test_ << "\n"
-             << " Error: LU factorization failed\n"
-             << " Details:\n"
-             << "   Result:\n" << A << "\n"
-             << "   Expected result:\n( 2.0 -0.5 -1.0 )\n"
-                                     "( 4.0  3.0 -1.0 )\n"
-                                     "( 6.0  6.0  4.0 )\n";
-         throw std::runtime_error( oss.str() );
-      }
-   }
-
-   // Single precision complex matrices
-   {
-      test_ = "Row-major LU factorization (single precision complex)";
-
-      typedef blaze::complex<float>  cplx;
-
-      blaze::StaticMatrix<cplx,3UL,3U,blaze::rowMajor> A( cplx( 2.0F ), cplx( -1.0F ), cplx( -2.0F ),
-                                                          cplx( 4.0F ), cplx(  1.0F ), cplx( -7.0F ),
-                                                          cplx( 6.0F ), cplx(  3.0F ), cplx( -8.0F ) );
-      blaze::StaticVector<int,3UL,blaze::columnVector> ipiv;
-
-      blaze::cgetrf( A, ipiv.data() );
-
-      if( A(0,0) != cplx( 2.0F ) || A(0,1) != cplx( -0.5F ) || A(0,2) != cplx( -1.0F ) ||
-          A(1,0) != cplx( 4.0F ) || A(1,1) != cplx(  3.0F ) || A(1,2) != cplx( -1.0F ) ||
-          A(2,0) != cplx( 6.0F ) || A(2,1) != cplx(  6.0F ) || A(2,2) != cplx(  4.0F ) ) {
-         std::ostringstream oss;
-         oss << " Test: " << test_ << "\n"
-             << " Error: LU factorization failed\n"
-             << " Details:\n"
-             << "   Result:\n" << A << "\n"
-             << "   Expected result:\n( (2.0,0.0) (-0.5,0.0) (-1.0,0.0) )\n"
-                                     "( (4.0,0.0) ( 3.0,0.0) (-1.0,0.0) )\n"
-                                     "( (6.0,0.0) ( 6.0,0.0) ( 4.0,0.0) )\n";
-         throw std::runtime_error( oss.str() );
-      }
-   }
-
-   // Double precision complex matrices
-   {
-      test_ = "Row-major LU factorization (double precision complex)";
-
-      typedef blaze::complex<double>  cplx;
-
-      blaze::StaticMatrix<cplx,3UL,3U,blaze::rowMajor> A( cplx( 2.0 ), cplx( -1.0 ), cplx( -2.0 ),
-                                                          cplx( 4.0 ), cplx(  1.0 ), cplx( -7.0 ),
-                                                          cplx( 6.0 ), cplx(  3.0 ), cplx( -8.0 ) );
-      blaze::StaticVector<int,3UL,blaze::columnVector> ipiv;
-
-      blaze::zgetrf( A, ipiv.data() );
-
-      if( A(0,0) != cplx( 2.0 ) || A(0,1) != cplx( -0.5 ) || A(0,2) != cplx( -1.0 ) ||
-          A(1,0) != cplx( 4.0 ) || A(1,1) != cplx(  3.0 ) || A(1,2) != cplx( -1.0 ) ||
-          A(2,0) != cplx( 6.0 ) || A(2,1) != cplx(  6.0 ) || A(2,2) != cplx(  4.0 ) ) {
-         std::ostringstream oss;
-         oss << " Test: " << test_ << "\n"
-             << " Error: LU factorization failed\n"
-             << " Details:\n"
-             << "   Result:\n" << A << "\n"
-             << "   Expected result:\n( (2.0,0.0) (-0.5,0.0) (-1.0,0.0) )\n"
-                                     "( (4.0,0.0) ( 3.0,0.0) (-1.0,0.0) )\n"
-                                     "( (6.0,0.0) ( 6.0,0.0) ( 4.0,0.0) )\n";
-         throw std::runtime_error( oss.str() );
-      }
-   }
-
-
-   //=====================================================================================
-   // Column-major matrix tests
-   //=====================================================================================
-
-   // Single precision matrices
-   {
-      test_ = "Column-major LU factorization (single precision)";
-
-      blaze::StaticMatrix<float,3UL,3U,blaze::columnMajor> A( 2.0F, -1.0F, -2.0F,
-                                                              4.0F,  1.0F, -7.0F,
-                                                              6.0F,  3.0F, -8.0F );
-      blaze::StaticVector<int,3UL,blaze::columnVector> ipiv;
-
-      blaze::sgetrf( A, ipiv.data() );
-
-      if( A(0,0) !=  2.0F || A(0,1) !=  4.0F || A(0,2) != 6.0F ||
-          A(1,0) != -0.5F || A(1,1) !=  3.0F || A(1,2) != 6.0F ||
-          A(2,0) != -1.0F || A(2,1) != -1.0F || A(2,2) != 4.0F ) {
-         std::ostringstream oss;
-         oss << " Test: " << test_ << "\n"
-             << " Error: LU factorization failed\n"
-             << " Details:\n"
-             << "   Result:\n" << A << "\n"
-             << "   Expected result:\n(  2.0  4.0  6.0 )\n"
-                                     "( -0.5  3.0  6.0 )\n"
-                                     "( -1.0 -1.0  4.0 )\n";
-         throw std::runtime_error( oss.str() );
-      }
-   }
-
-   // Double precision matrices
-   {
-      test_ = "Column-major LU factorization (double precision)";
-
-      blaze::StaticMatrix<double,3UL,3U,blaze::columnMajor> A( 2.0, -1.0, -2.0,
-                                                               4.0,  1.0, -7.0,
-                                                               6.0,  3.0, -8.0 );
-      blaze::StaticVector<int,3UL,blaze::columnVector> ipiv;
-
-      blaze::dgetrf( A, ipiv.data() );
-
-      if( A(0,0) !=  2.0 || A(0,1) !=  4.0 || A(0,2) != 6.0 ||
-          A(1,0) != -0.5 || A(1,1) !=  3.0 || A(1,2) != 6.0 ||
-          A(2,0) != -1.0 || A(2,1) != -1.0 || A(2,2) != 4.0 ) {
-         std::ostringstream oss;
-         oss << " Test: " << test_ << "\n"
-             << " Error: LU factorization failed\n"
-             << " Details:\n"
-             << "   Result:\n" << A << "\n"
-             << "   Expected result:\n(  2.0  4.0  6.0 )\n"
-                                     "( -0.5  3.0  6.0 )\n"
-                                     "( -1.0 -1.0  4.0 )\n";
-         throw std::runtime_error( oss.str() );
-      }
-   }
-
-   // Single precision complex matrices
-   {
-      test_ = "Column-major LU factorization (single precision complex)";
-
-      typedef blaze::complex<float>  cplx;
-
-      blaze::StaticMatrix<cplx,3UL,3U,blaze::columnMajor> A( cplx( 2.0F ), cplx( -1.0F ), cplx( -2.0F ),
-                                                             cplx( 4.0F ), cplx(  1.0F ), cplx( -7.0F ),
-                                                             cplx( 6.0F ), cplx(  3.0F ), cplx( -8.0F ) );
-      blaze::StaticVector<int,3UL,blaze::columnVector> ipiv;
-
-      blaze::cgetrf( A, ipiv.data() );
-
-      if( A(0,0) != cplx(  2.0F ) || A(0,1) != cplx(  4.0F ) || A(0,2) != cplx( 6.0F ) ||
-          A(1,0) != cplx( -0.5F ) || A(1,1) != cplx(  3.0F ) || A(1,2) != cplx( 6.0F ) ||
-          A(2,0) != cplx( -1.0F ) || A(2,1) != cplx( -1.0F ) || A(2,2) != cplx( 4.0F ) ) {
-         std::ostringstream oss;
-         oss << " Test: " << test_ << "\n"
-             << " Error: LU factorization failed\n"
-             << " Details:\n"
-             << "   Result:\n" << A << "\n"
-             << "   Expected result:\n( ( 2.0,0.0) ( 4.0,0.0) (6.0,0.0) )\n"
-                                     "( (-0.5,0.0) ( 3.0,0.0) (6.0,0.0) )\n"
-                                     "( (-1.0,0.0) (-1.0,0.0) (4.0,0.0) )\n";
-         throw std::runtime_error( oss.str() );
-      }
-   }
-
-   // Double precision complex matrices
-   {
-      test_ = "Column-major LU factorization (double precision complex)";
-
-      typedef blaze::complex<double>  cplx;
-
-      blaze::StaticMatrix<cplx,3UL,3U,blaze::columnMajor> A( cplx( 2.0 ), cplx( -1.0 ), cplx( -2.0 ),
-                                                             cplx( 4.0 ), cplx(  1.0 ), cplx( -7.0 ),
-                                                             cplx( 6.0 ), cplx(  3.0 ), cplx( -8.0 ) );
-      blaze::StaticVector<int,3UL,blaze::columnVector> ipiv;
-
-      blaze::zgetrf( A, ipiv.data() );
-
-      if( A(0,0) != cplx(  2.0 ) || A(0,1) != cplx(  4.0 ) || A(0,2) != cplx( 6.0 ) ||
-          A(1,0) != cplx( -0.5 ) || A(1,1) != cplx(  3.0 ) || A(1,2) != cplx( 6.0 ) ||
-          A(2,0) != cplx( -1.0 ) || A(2,1) != cplx( -1.0 ) || A(2,2) != cplx( 4.0 ) ) {
-         std::ostringstream oss;
-         oss << " Test: " << test_ << "\n"
-             << " Error: LU factorization failed\n"
-             << " Details:\n"
-             << "   Result:\n" << A << "\n"
-             << "   Expected result:\n( ( 2.0,0.0) ( 4.0,0.0) (6.0,0.0) )\n"
-                                     "( (-0.5,0.0) ( 3.0,0.0) (6.0,0.0) )\n"
-                                     "( (-1.0,0.0) (-1.0,0.0) (4.0,0.0) )\n";
-         throw std::runtime_error( oss.str() );
-      }
-   }
-
-#endif
-}
-//*************************************************************************************************
-
-
-//*************************************************************************************************
-/*!\brief Test of the QR factorization functionality.
-//
-// \return void
-// \exception std::runtime_error Error detected.
-//
-// This function performs a test of the QR factorization functions for various data types. In
+// This function performs a test of the QR decomposition functions for various data types. In
 // case an error is detected, a \a std::runtime_error exception is thrown.
 */
 void OperationTest::testQR()
@@ -345,7 +103,7 @@ void OperationTest::testQR()
 
    // Single precision matrices
    {
-      test_ = "Row-major QR factorization (single precision)";
+      test_ = "Row-major QR decomposition (single precision)";
 
       blaze::StaticMatrix<float,3UL,3U,blaze::rowMajor> A( 1.0F, 0.0F, 0.0F,
                                                            0.0F, 1.0F, 0.0F,
@@ -359,7 +117,7 @@ void OperationTest::testQR()
           A(2,0) != 1.0F || A(2,1) != 1.0F || A(2,2) != 1.0F ) {
          std::ostringstream oss;
          oss << " Test: " << test_ << "\n"
-             << " Error: QR factorization failed\n"
+             << " Error: QR decomposition failed\n"
              << " Details:\n"
              << "   Result:\n" << A << "\n"
              << "   Expected result:\n( 1  0  0 )\n"
@@ -371,7 +129,7 @@ void OperationTest::testQR()
 
    // Double precision matrices
    {
-      test_ = "Row-major QR factorization (double precision)";
+      test_ = "Row-major QR decomposition (double precision)";
 
       blaze::StaticMatrix<double,3UL,3U,blaze::rowMajor> A( 1.0, 0.0, 0.0,
                                                             0.0, 1.0, 0.0,
@@ -385,7 +143,7 @@ void OperationTest::testQR()
           A(2,0) != 1.0 || A(2,1) != 1.0 || A(2,2) != 1.0 ) {
          std::ostringstream oss;
          oss << " Test: " << test_ << "\n"
-             << " Error: QR factorization failed\n"
+             << " Error: QR decomposition failed\n"
              << " Details:\n"
              << "   Result:\n" << A << "\n"
              << "   Expected result:\n( 1  0  0 )\n"
@@ -397,7 +155,7 @@ void OperationTest::testQR()
 
    // Single precision complex matrices
    {
-      test_ = "Row-major QR factorization (single precision complex)";
+      test_ = "Row-major QR decomposition (single precision complex)";
 
       typedef blaze::complex<float>  cplx;
 
@@ -413,7 +171,7 @@ void OperationTest::testQR()
           A(2,0) != cplx( 1.0F ) || A(2,1) != cplx( 1.0F ) || A(2,2) != cplx( 1.0F ) ) {
          std::ostringstream oss;
          oss << " Test: " << test_ << "\n"
-             << " Error: QR factorization failed\n"
+             << " Error: QR decomposition failed\n"
              << " Details:\n"
              << "   Result:\n" << A << "\n"
              << "   Expected result:\n( (1,0) (0,0) (0,0) )\n"
@@ -425,7 +183,7 @@ void OperationTest::testQR()
 
    // Double precision complex matrices
    {
-      test_ = "Row-major QR factorization (double precision complex)";
+      test_ = "Row-major QR decomposition (double precision complex)";
 
       typedef blaze::complex<double>  cplx;
 
@@ -441,7 +199,7 @@ void OperationTest::testQR()
           A(2,0) != cplx( 1.0 ) || A(2,1) != cplx( 1.0 ) || A(2,2) != cplx( 1.0 ) ) {
          std::ostringstream oss;
          oss << " Test: " << test_ << "\n"
-             << " Error: QR factorization failed\n"
+             << " Error: QR decomposition failed\n"
              << " Details:\n"
              << "   Result:\n" << A << "\n"
              << "   Expected result:\n( (1,0) (0,0) (0,0) )\n"
@@ -458,7 +216,7 @@ void OperationTest::testQR()
 
    // Single precision matrices
    {
-      test_ = "Row-major QR factorization (single precision)";
+      test_ = "Row-major QR decomposition (single precision)";
 
       blaze::StaticMatrix<float,3UL,3U,blaze::columnMajor> A( 1.0F, 0.0F, 0.0F,
                                                               0.0F, 1.0F, 0.0F,
@@ -472,7 +230,7 @@ void OperationTest::testQR()
           A(2,0) != 0.0F || A(2,1) != 0.0F || A(2,2) != 1.0F ) {
          std::ostringstream oss;
          oss << " Test: " << test_ << "\n"
-             << " Error: QR factorization failed\n"
+             << " Error: QR decomposition failed\n"
              << " Details:\n"
              << "   Result:\n" << A << "\n"
              << "   Expected result:\n( 1  0  1 )\n"
@@ -484,7 +242,7 @@ void OperationTest::testQR()
 
    // Double precision matrices
    {
-      test_ = "Row-major QR factorization (double precision)";
+      test_ = "Row-major QR decomposition (double precision)";
 
       blaze::StaticMatrix<double,3UL,3U,blaze::columnMajor> A( 1.0, 0.0, 0.0,
                                                                0.0, 1.0, 0.0,
@@ -498,7 +256,7 @@ void OperationTest::testQR()
           A(2,0) != 0.0 || A(2,1) != 0.0 || A(2,2) != 1.0 ) {
          std::ostringstream oss;
          oss << " Test: " << test_ << "\n"
-             << " Error: QR factorization failed\n"
+             << " Error: QR decomposition failed\n"
              << " Details:\n"
              << "   Result:\n" << A << "\n"
              << "   Expected result:\n( 1  0  1 )\n"
@@ -510,7 +268,7 @@ void OperationTest::testQR()
 
    // Single precision complex matrices
    {
-      test_ = "Row-major QR factorization (single precision complex)";
+      test_ = "Row-major QR decomposition (single precision complex)";
 
       typedef blaze::complex<float>  cplx;
 
@@ -526,7 +284,7 @@ void OperationTest::testQR()
           A(2,0) != cplx( 0.0F ) || A(2,1) != cplx( 0.0F ) || A(2,2) != cplx( 1.0F ) ) {
          std::ostringstream oss;
          oss << " Test: " << test_ << "\n"
-             << " Error: QR factorization failed\n"
+             << " Error: QR decomposition failed\n"
              << " Details:\n"
              << "   Result:\n" << A << "\n"
              << "   Expected result:\n( (1,0) (0,0) (1,0) )\n"
@@ -538,7 +296,7 @@ void OperationTest::testQR()
 
    // Double precision complex matrices
    {
-      test_ = "Row-major QR factorization (double precision complex)";
+      test_ = "Row-major QR decomposition (double precision complex)";
 
       typedef blaze::complex<double>  cplx;
 
@@ -554,12 +312,682 @@ void OperationTest::testQR()
           A(2,0) != cplx( 0.0 ) || A(2,1) != cplx( 0.0 ) || A(2,2) != cplx( 1.0 ) ) {
          std::ostringstream oss;
          oss << " Test: " << test_ << "\n"
-             << " Error: QR factorization failed\n"
+             << " Error: QR decomposition failed\n"
              << " Details:\n"
              << "   Result:\n" << A << "\n"
              << "   Expected result:\n( (1,0) (0,0) (1,0) )\n"
                                      "( (0,0) (1,0) (1,0) )\n"
                                      "( (0,0) (0,0) (1,0) )\n";
+         throw std::runtime_error( oss.str() );
+      }
+   }
+
+#endif
+}
+//*************************************************************************************************
+
+
+//*************************************************************************************************
+/*!\brief Test of the LU decomposition functionality.
+//
+// \return void
+// \exception std::runtime_error Error detected.
+//
+// This function performs a test of the LU decomposition functions for various data types. In
+// case an error is detected, a \a std::runtime_error exception is thrown.
+*/
+void OperationTest::testLU()
+{
+#if BLAZETEST_MATHTEST_LAPACK_MODE
+
+   //=====================================================================================
+   // Row-major matrix tests
+   //=====================================================================================
+
+   // Single precision matrices
+   {
+      test_ = "Row-major LU decomposition (single precision)";
+
+      blaze::StaticMatrix<float,3UL,3U,blaze::rowMajor> A( 2.0F, -1.0F, -2.0F,
+                                                           4.0F,  1.0F, -7.0F,
+                                                           6.0F,  3.0F, -8.0F );
+      blaze::StaticVector<int,3UL,blaze::columnVector> ipiv;
+
+      blaze::sgetrf( A, ipiv.data() );
+
+      if( A(0,0) != 2.0F || A(0,1) != -0.5F || A(0,2) != -1.0F ||
+          A(1,0) != 4.0F || A(1,1) !=  3.0F || A(1,2) != -1.0F ||
+          A(2,0) != 6.0F || A(2,1) !=  6.0F || A(2,2) !=  4.0F ) {
+         std::ostringstream oss;
+         oss << " Test: " << test_ << "\n"
+             << " Error: LU decomposition failed\n"
+             << " Details:\n"
+             << "   Result:\n" << A << "\n"
+             << "   Expected result:\n( 2.0 -0.5 -1.0 )\n"
+                                     "( 4.0  3.0 -1.0 )\n"
+                                     "( 6.0  6.0  4.0 )\n";
+         throw std::runtime_error( oss.str() );
+      }
+   }
+
+   // Double precision matrices
+   {
+      test_ = "Row-major LU decomposition (double precision)";
+
+      blaze::StaticMatrix<double,3UL,3U,blaze::rowMajor> A( 2.0, -1.0, -2.0,
+                                                            4.0,  1.0, -7.0,
+                                                            6.0,  3.0, -8.0 );
+      blaze::StaticVector<int,3UL,blaze::columnVector> ipiv;
+
+      blaze::dgetrf( A, ipiv.data() );
+
+      if( A(0,0) != 2.0 || A(0,1) != -0.5 || A(0,2) != -1.0 ||
+          A(1,0) != 4.0 || A(1,1) !=  3.0 || A(1,2) != -1.0 ||
+          A(2,0) != 6.0 || A(2,1) !=  6.0 || A(2,2) !=  4.0 ) {
+         std::ostringstream oss;
+         oss << " Test: " << test_ << "\n"
+             << " Error: LU decomposition failed\n"
+             << " Details:\n"
+             << "   Result:\n" << A << "\n"
+             << "   Expected result:\n( 2.0 -0.5 -1.0 )\n"
+                                     "( 4.0  3.0 -1.0 )\n"
+                                     "( 6.0  6.0  4.0 )\n";
+         throw std::runtime_error( oss.str() );
+      }
+   }
+
+   // Single precision complex matrices
+   {
+      test_ = "Row-major LU decomposition (single precision complex)";
+
+      typedef blaze::complex<float>  cplx;
+
+      blaze::StaticMatrix<cplx,3UL,3U,blaze::rowMajor> A( cplx( 2.0F ), cplx( -1.0F ), cplx( -2.0F ),
+                                                          cplx( 4.0F ), cplx(  1.0F ), cplx( -7.0F ),
+                                                          cplx( 6.0F ), cplx(  3.0F ), cplx( -8.0F ) );
+      blaze::StaticVector<int,3UL,blaze::columnVector> ipiv;
+
+      blaze::cgetrf( A, ipiv.data() );
+
+      if( A(0,0) != cplx( 2.0F ) || A(0,1) != cplx( -0.5F ) || A(0,2) != cplx( -1.0F ) ||
+          A(1,0) != cplx( 4.0F ) || A(1,1) != cplx(  3.0F ) || A(1,2) != cplx( -1.0F ) ||
+          A(2,0) != cplx( 6.0F ) || A(2,1) != cplx(  6.0F ) || A(2,2) != cplx(  4.0F ) ) {
+         std::ostringstream oss;
+         oss << " Test: " << test_ << "\n"
+             << " Error: LU decomposition failed\n"
+             << " Details:\n"
+             << "   Result:\n" << A << "\n"
+             << "   Expected result:\n( (2.0,0.0) (-0.5,0.0) (-1.0,0.0) )\n"
+                                     "( (4.0,0.0) ( 3.0,0.0) (-1.0,0.0) )\n"
+                                     "( (6.0,0.0) ( 6.0,0.0) ( 4.0,0.0) )\n";
+         throw std::runtime_error( oss.str() );
+      }
+   }
+
+   // Double precision complex matrices
+   {
+      test_ = "Row-major LU decomposition (double precision complex)";
+
+      typedef blaze::complex<double>  cplx;
+
+      blaze::StaticMatrix<cplx,3UL,3U,blaze::rowMajor> A( cplx( 2.0 ), cplx( -1.0 ), cplx( -2.0 ),
+                                                          cplx( 4.0 ), cplx(  1.0 ), cplx( -7.0 ),
+                                                          cplx( 6.0 ), cplx(  3.0 ), cplx( -8.0 ) );
+      blaze::StaticVector<int,3UL,blaze::columnVector> ipiv;
+
+      blaze::zgetrf( A, ipiv.data() );
+
+      if( A(0,0) != cplx( 2.0 ) || A(0,1) != cplx( -0.5 ) || A(0,2) != cplx( -1.0 ) ||
+          A(1,0) != cplx( 4.0 ) || A(1,1) != cplx(  3.0 ) || A(1,2) != cplx( -1.0 ) ||
+          A(2,0) != cplx( 6.0 ) || A(2,1) != cplx(  6.0 ) || A(2,2) != cplx(  4.0 ) ) {
+         std::ostringstream oss;
+         oss << " Test: " << test_ << "\n"
+             << " Error: LU decomposition failed\n"
+             << " Details:\n"
+             << "   Result:\n" << A << "\n"
+             << "   Expected result:\n( (2.0,0.0) (-0.5,0.0) (-1.0,0.0) )\n"
+                                     "( (4.0,0.0) ( 3.0,0.0) (-1.0,0.0) )\n"
+                                     "( (6.0,0.0) ( 6.0,0.0) ( 4.0,0.0) )\n";
+         throw std::runtime_error( oss.str() );
+      }
+   }
+
+
+   //=====================================================================================
+   // Column-major matrix tests
+   //=====================================================================================
+
+   // Single precision matrices
+   {
+      test_ = "Column-major LU decomposition (single precision)";
+
+      blaze::StaticMatrix<float,3UL,3U,blaze::columnMajor> A( 2.0F, -1.0F, -2.0F,
+                                                              4.0F,  1.0F, -7.0F,
+                                                              6.0F,  3.0F, -8.0F );
+      blaze::StaticVector<int,3UL,blaze::columnVector> ipiv;
+
+      blaze::sgetrf( A, ipiv.data() );
+
+      if( A(0,0) !=  2.0F || A(0,1) !=  4.0F || A(0,2) != 6.0F ||
+          A(1,0) != -0.5F || A(1,1) !=  3.0F || A(1,2) != 6.0F ||
+          A(2,0) != -1.0F || A(2,1) != -1.0F || A(2,2) != 4.0F ) {
+         std::ostringstream oss;
+         oss << " Test: " << test_ << "\n"
+             << " Error: LU decomposition failed\n"
+             << " Details:\n"
+             << "   Result:\n" << A << "\n"
+             << "   Expected result:\n(  2.0  4.0  6.0 )\n"
+                                     "( -0.5  3.0  6.0 )\n"
+                                     "( -1.0 -1.0  4.0 )\n";
+         throw std::runtime_error( oss.str() );
+      }
+   }
+
+   // Double precision matrices
+   {
+      test_ = "Column-major LU decomposition (double precision)";
+
+      blaze::StaticMatrix<double,3UL,3U,blaze::columnMajor> A( 2.0, -1.0, -2.0,
+                                                               4.0,  1.0, -7.0,
+                                                               6.0,  3.0, -8.0 );
+      blaze::StaticVector<int,3UL,blaze::columnVector> ipiv;
+
+      blaze::dgetrf( A, ipiv.data() );
+
+      if( A(0,0) !=  2.0 || A(0,1) !=  4.0 || A(0,2) != 6.0 ||
+          A(1,0) != -0.5 || A(1,1) !=  3.0 || A(1,2) != 6.0 ||
+          A(2,0) != -1.0 || A(2,1) != -1.0 || A(2,2) != 4.0 ) {
+         std::ostringstream oss;
+         oss << " Test: " << test_ << "\n"
+             << " Error: LU decomposition failed\n"
+             << " Details:\n"
+             << "   Result:\n" << A << "\n"
+             << "   Expected result:\n(  2.0  4.0  6.0 )\n"
+                                     "( -0.5  3.0  6.0 )\n"
+                                     "( -1.0 -1.0  4.0 )\n";
+         throw std::runtime_error( oss.str() );
+      }
+   }
+
+   // Single precision complex matrices
+   {
+      test_ = "Column-major LU decomposition (single precision complex)";
+
+      typedef blaze::complex<float>  cplx;
+
+      blaze::StaticMatrix<cplx,3UL,3U,blaze::columnMajor> A( cplx( 2.0F ), cplx( -1.0F ), cplx( -2.0F ),
+                                                             cplx( 4.0F ), cplx(  1.0F ), cplx( -7.0F ),
+                                                             cplx( 6.0F ), cplx(  3.0F ), cplx( -8.0F ) );
+      blaze::StaticVector<int,3UL,blaze::columnVector> ipiv;
+
+      blaze::cgetrf( A, ipiv.data() );
+
+      if( A(0,0) != cplx(  2.0F ) || A(0,1) != cplx(  4.0F ) || A(0,2) != cplx( 6.0F ) ||
+          A(1,0) != cplx( -0.5F ) || A(1,1) != cplx(  3.0F ) || A(1,2) != cplx( 6.0F ) ||
+          A(2,0) != cplx( -1.0F ) || A(2,1) != cplx( -1.0F ) || A(2,2) != cplx( 4.0F ) ) {
+         std::ostringstream oss;
+         oss << " Test: " << test_ << "\n"
+             << " Error: LU decomposition failed\n"
+             << " Details:\n"
+             << "   Result:\n" << A << "\n"
+             << "   Expected result:\n( ( 2.0,0.0) ( 4.0,0.0) (6.0,0.0) )\n"
+                                     "( (-0.5,0.0) ( 3.0,0.0) (6.0,0.0) )\n"
+                                     "( (-1.0,0.0) (-1.0,0.0) (4.0,0.0) )\n";
+         throw std::runtime_error( oss.str() );
+      }
+   }
+
+   // Double precision complex matrices
+   {
+      test_ = "Column-major LU decomposition (double precision complex)";
+
+      typedef blaze::complex<double>  cplx;
+
+      blaze::StaticMatrix<cplx,3UL,3U,blaze::columnMajor> A( cplx( 2.0 ), cplx( -1.0 ), cplx( -2.0 ),
+                                                             cplx( 4.0 ), cplx(  1.0 ), cplx( -7.0 ),
+                                                             cplx( 6.0 ), cplx(  3.0 ), cplx( -8.0 ) );
+      blaze::StaticVector<int,3UL,blaze::columnVector> ipiv;
+
+      blaze::zgetrf( A, ipiv.data() );
+
+      if( A(0,0) != cplx(  2.0 ) || A(0,1) != cplx(  4.0 ) || A(0,2) != cplx( 6.0 ) ||
+          A(1,0) != cplx( -0.5 ) || A(1,1) != cplx(  3.0 ) || A(1,2) != cplx( 6.0 ) ||
+          A(2,0) != cplx( -1.0 ) || A(2,1) != cplx( -1.0 ) || A(2,2) != cplx( 4.0 ) ) {
+         std::ostringstream oss;
+         oss << " Test: " << test_ << "\n"
+             << " Error: LU decomposition failed\n"
+             << " Details:\n"
+             << "   Result:\n" << A << "\n"
+             << "   Expected result:\n( ( 2.0,0.0) ( 4.0,0.0) (6.0,0.0) )\n"
+                                     "( (-0.5,0.0) ( 3.0,0.0) (6.0,0.0) )\n"
+                                     "( (-1.0,0.0) (-1.0,0.0) (4.0,0.0) )\n";
+         throw std::runtime_error( oss.str() );
+      }
+   }
+
+#endif
+}
+//*************************************************************************************************
+
+
+//*************************************************************************************************
+/*!\brief Test of the Cholesky decomposition functionality.
+//
+// \return void
+// \exception std::runtime_error Error detected.
+//
+// This function performs a test of the LU decomposition functions for various data types. In
+// case an error is detected, a \a std::runtime_error exception is thrown.
+*/
+void OperationTest::testCholesky()
+{
+#if BLAZETEST_MATHTEST_LAPACK_MODE
+
+   //=====================================================================================
+   // Row-major matrix tests
+   //=====================================================================================
+
+   // Single precision matrices (lower part)
+   {
+      test_ = "Row-major Cholesky decomposition (single precision, lower part)";
+
+      blaze::StaticMatrix<float,3UL,3U,blaze::rowMajor> A( 1.0F,  2.0F,  4.0F,
+                                                           2.0F, 13.0F, 23.0F,
+                                                           4.0F, 23.0F, 77.0F );
+      blaze::spotrf( A, 'L' );
+
+      if( A(0,0) != 1.0F || A(0,1) != 2.0F || A(0,2) !=  4.0F ||
+          A(1,0) != 2.0F || A(1,1) != 3.0F || A(1,2) != 23.0F ||
+          A(2,0) != 4.0F || A(2,1) != 5.0F || A(2,2) !=  6.0F ) {
+         std::ostringstream oss;
+         oss << " Test: " << test_ << "\n"
+             << " Error: Cholesky decomposition failed\n"
+             << " Details:\n"
+             << "   Result:\n" << A << "\n"
+             << "   Expected result:\n( 1  2  4 )\n"
+                                     "( 2  3 23 )\n"
+                                     "( 4  5  6 )\n";
+         throw std::runtime_error( oss.str() );
+      }
+   }
+
+   // Single precision matrices (upper part)
+   {
+      test_ = "Row-major Cholesky decomposition (single precision, upper part)";
+
+      blaze::StaticMatrix<float,3UL,3U,blaze::rowMajor> A( 1.0F,  2.0F,  4.0F,
+                                                           2.0F, 13.0F, 23.0F,
+                                                           4.0F, 23.0F, 77.0F );
+      blaze::spotrf( A, 'U' );
+
+      if( A(0,0) != 1.0F || A(0,1) !=  2.0F || A(0,2) != 4.0F ||
+          A(1,0) != 2.0F || A(1,1) !=  3.0F || A(1,2) != 5.0F ||
+          A(2,0) != 4.0F || A(2,1) != 23.0F || A(2,2) != 6.0F ) {
+         std::ostringstream oss;
+         oss << " Test: " << test_ << "\n"
+             << " Error: Cholesky decomposition failed\n"
+             << " Details:\n"
+             << "   Result:\n" << A << "\n"
+             << "   Expected result:\n( 1  2  4 )\n"
+                                     "( 2  3  5 )\n"
+                                     "( 4 23  6 )\n";
+         throw std::runtime_error( oss.str() );
+      }
+   }
+
+   // Double precision matrices (lower part)
+   {
+      test_ = "Row-major Cholesky decomposition (double precision, lower part)";
+
+      blaze::StaticMatrix<double,3UL,3U,blaze::rowMajor> A( 1.0,  2.0,  4.0,
+                                                            2.0, 13.0, 23.0,
+                                                            4.0, 23.0, 77.0 );
+      blaze::dpotrf( A, 'L' );
+
+      if( A(0,0) != 1.0 || A(0,1) != 2.0 || A(0,2) !=  4.0 ||
+          A(1,0) != 2.0 || A(1,1) != 3.0 || A(1,2) != 23.0 ||
+          A(2,0) != 4.0 || A(2,1) != 5.0 || A(2,2) !=  6.0 ) {
+         std::ostringstream oss;
+         oss << " Test: " << test_ << "\n"
+             << " Error: Cholesky decomposition failed\n"
+             << " Details:\n"
+             << "   Result:\n" << A << "\n"
+             << "   Expected result:\n( 1  2  4 )\n"
+                                     "( 2  3 23 )\n"
+                                     "( 4  5  6 )\n";
+         throw std::runtime_error( oss.str() );
+      }
+   }
+
+   // Double precision matrices (upper part)
+   {
+      test_ = "Row-major Cholesky decomposition (double precision, upper part)";
+
+      blaze::StaticMatrix<double,3UL,3U,blaze::rowMajor> A( 1.0,  2.0,  4.0,
+                                                            2.0, 13.0, 23.0,
+                                                            4.0, 23.0, 77.0 );
+      blaze::dpotrf( A, 'U' );
+
+      if( A(0,0) != 1.0 || A(0,1) !=  2.0 || A(0,2) != 4.0 ||
+          A(1,0) != 2.0 || A(1,1) !=  3.0 || A(1,2) != 5.0 ||
+          A(2,0) != 4.0 || A(2,1) != 23.0 || A(2,2) != 6.0 ) {
+         std::ostringstream oss;
+         oss << " Test: " << test_ << "\n"
+             << " Error: Cholesky decomposition failed\n"
+             << " Details:\n"
+             << "   Result:\n" << A << "\n"
+             << "   Expected result:\n( 1  2  4 )\n"
+                                     "( 2  3  5 )\n"
+                                     "( 4 23  6 )\n";
+         throw std::runtime_error( oss.str() );
+      }
+   }
+
+   // Single precision complex matrices (lower part)
+   {
+      test_ = "Row-major Cholesky decomposition (single precision, lower part)";
+
+      typedef blaze::complex<float>  cplx;
+
+      blaze::StaticMatrix<cplx,3UL,3U,blaze::rowMajor> A( cplx( 1.0F ), cplx(  2.0F ), cplx(  4.0F ),
+                                                          cplx( 2.0F ), cplx( 13.0F ), cplx( 23.0F ),
+                                                          cplx( 4.0F ), cplx( 23.0F ), cplx( 77.0F ) );
+      blaze::cpotrf( A, 'L' );
+
+      if( A(0,0) != cplx( 1.0F ) || A(0,1) != cplx( 2.0F ) || A(0,2) != cplx(  4.0F ) ||
+          A(1,0) != cplx( 2.0F ) || A(1,1) != cplx( 3.0F ) || A(1,2) != cplx( 23.0F ) ||
+          A(2,0) != cplx( 4.0F ) || A(2,1) != cplx( 5.0F ) || A(2,2) != cplx(  6.0F ) ) {
+         std::ostringstream oss;
+         oss << " Test: " << test_ << "\n"
+             << " Error: Cholesky decomposition failed\n"
+             << " Details:\n"
+             << "   Result:\n" << A << "\n"
+             << "   Expected result:\n( (1,0) (2,0) ( 4,0) )\n"
+                                     "( (2,0) (3,0) (23,0) )\n"
+                                     "( (4,0) (5,0) ( 6,0) )\n";
+         throw std::runtime_error( oss.str() );
+      }
+   }
+
+   // Single precision complex matrices (upper part)
+   {
+      test_ = "Row-major Cholesky decomposition (single precision, upper part)";
+
+      typedef blaze::complex<float>  cplx;
+
+      blaze::StaticMatrix<cplx,3UL,3U,blaze::rowMajor> A( cplx( 1.0F ), cplx(  2.0F ), cplx(  4.0F ),
+                                                          cplx( 2.0F ), cplx( 13.0F ), cplx( 23.0F ),
+                                                          cplx( 4.0F ), cplx( 23.0F ), cplx( 77.0F ) );
+      blaze::cpotrf( A, 'U' );
+
+      if( A(0,0) != cplx( 1.0F ) || A(0,1) != cplx(  2.0F ) || A(0,2) != cplx( 4.0F ) ||
+          A(1,0) != cplx( 2.0F ) || A(1,1) != cplx(  3.0F ) || A(1,2) != cplx( 5.0F ) ||
+          A(2,0) != cplx( 4.0F ) || A(2,1) != cplx( 23.0F ) || A(2,2) != cplx( 6.0F ) ) {
+         std::ostringstream oss;
+         oss << " Test: " << test_ << "\n"
+             << " Error: Cholesky decomposition failed\n"
+             << " Details:\n"
+             << "   Result:\n" << A << "\n"
+             << "   Expected result:\n( (1,0) ( 2,0) (4,0) )\n"
+                                     "( (2,0) ( 3,0) (5,0) )\n"
+                                     "( (4,0) (23,0) (6,0) )\n";
+         throw std::runtime_error( oss.str() );
+      }
+   }
+
+   // Double precision complex matrices (lower part)
+   {
+      test_ = "Row-major Cholesky decomposition (double precision, lower part)";
+
+      typedef blaze::complex<double>  cplx;
+
+      blaze::StaticMatrix<cplx,3UL,3U,blaze::rowMajor> A( cplx( 1.0 ), cplx(  2.0 ), cplx(  4.0 ),
+                                                          cplx( 2.0 ), cplx( 13.0 ), cplx( 23.0 ),
+                                                          cplx( 4.0 ), cplx( 23.0 ), cplx( 77.0 ) );
+      blaze::zpotrf( A, 'L' );
+
+      if( A(0,0) != cplx( 1.0 ) || A(0,1) != cplx( 2.0 ) || A(0,2) != cplx(  4.0 ) ||
+          A(1,0) != cplx( 2.0 ) || A(1,1) != cplx( 3.0 ) || A(1,2) != cplx( 23.0 ) ||
+          A(2,0) != cplx( 4.0 ) || A(2,1) != cplx( 5.0 ) || A(2,2) != cplx(  6.0 ) ) {
+         std::ostringstream oss;
+         oss << " Test: " << test_ << "\n"
+             << " Error: Cholesky decomposition failed\n"
+             << " Details:\n"
+             << "   Result:\n" << A << "\n"
+             << "   Expected result:\n( (1,0) (2,0) ( 4,0) )\n"
+                                     "( (2,0) (3,0) (23,0) )\n"
+                                     "( (4,0) (5,0) ( 6,0) )\n";
+         throw std::runtime_error( oss.str() );
+      }
+   }
+
+   // Double precision complex matrices (upper part)
+   {
+      test_ = "Row-major Cholesky decomposition (double precision, upper part)";
+
+      typedef blaze::complex<double>  cplx;
+
+      blaze::StaticMatrix<cplx,3UL,3U,blaze::rowMajor> A( cplx( 1.0 ), cplx(  2.0 ), cplx(  4.0 ),
+                                                          cplx( 2.0 ), cplx( 13.0 ), cplx( 23.0 ),
+                                                          cplx( 4.0 ), cplx( 23.0 ), cplx( 77.0 ) );
+      blaze::zpotrf( A, 'U' );
+
+      if( A(0,0) != cplx( 1.0 ) || A(0,1) != cplx(  2.0 ) || A(0,2) != cplx( 4.0 ) ||
+          A(1,0) != cplx( 2.0 ) || A(1,1) != cplx(  3.0 ) || A(1,2) != cplx( 5.0 ) ||
+          A(2,0) != cplx( 4.0 ) || A(2,1) != cplx( 23.0 ) || A(2,2) != cplx( 6.0 ) ) {
+         std::ostringstream oss;
+         oss << " Test: " << test_ << "\n"
+             << " Error: Cholesky decomposition failed\n"
+             << " Details:\n"
+             << "   Result:\n" << A << "\n"
+             << "   Expected result:\n( (1,0) ( 2,0) (4,0) )\n"
+                                     "( (2,0) ( 3,0) (5,0) )\n"
+                                     "( (4,0) (23,0) (6,0) )\n";
+         throw std::runtime_error( oss.str() );
+      }
+   }
+
+
+   //=====================================================================================
+   // Column-major matrix tests
+   //=====================================================================================
+
+   // Single precision matrices (lower part)
+   {
+      test_ = "Column-major Cholesky decomposition (single precision, lower part)";
+
+      blaze::StaticMatrix<float,3UL,3U,blaze::columnMajor> A( 1.0F,  2.0F,  4.0F,
+                                                              2.0F, 13.0F, 23.0F,
+                                                              4.0F, 23.0F, 77.0F );
+      blaze::spotrf( A, 'L' );
+
+      if( A(0,0) != 1.0F || A(0,1) != 2.0F || A(0,2) !=  4.0F ||
+          A(1,0) != 2.0F || A(1,1) != 3.0F || A(1,2) != 23.0F ||
+          A(2,0) != 4.0F || A(2,1) != 5.0F || A(2,2) !=  6.0F ) {
+         std::ostringstream oss;
+         oss << " Test: " << test_ << "\n"
+             << " Error: Cholesky decomposition failed\n"
+             << " Details:\n"
+             << "   Result:\n" << A << "\n"
+             << "   Expected result:\n( 1  2  4 )\n"
+                                     "( 2  3 23 )\n"
+                                     "( 4  5  6 )\n";
+         throw std::runtime_error( oss.str() );
+      }
+   }
+
+   // Single precision matrices (upper part)
+   {
+      test_ = "Column-major Cholesky decomposition (single precision, upper part)";
+
+      blaze::StaticMatrix<float,3UL,3U,blaze::columnMajor> A( 1.0F,  2.0F,  4.0F,
+                                                              2.0F, 13.0F, 23.0F,
+                                                              4.0F, 23.0F, 77.0F );
+      blaze::spotrf( A, 'U' );
+
+      if( A(0,0) != 1.0F || A(0,1) !=  2.0F || A(0,2) != 4.0F ||
+          A(1,0) != 2.0F || A(1,1) !=  3.0F || A(1,2) != 5.0F ||
+          A(2,0) != 4.0F || A(2,1) != 23.0F || A(2,2) != 6.0F ) {
+         std::ostringstream oss;
+         oss << " Test: " << test_ << "\n"
+             << " Error: Cholesky decomposition failed\n"
+             << " Details:\n"
+             << "   Result:\n" << A << "\n"
+             << "   Expected result:\n( 1  2  4 )\n"
+                                     "( 2  3  5 )\n"
+                                     "( 4 23  6 )\n";
+         throw std::runtime_error( oss.str() );
+      }
+   }
+
+   // Double precision matrices (lower part)
+   {
+      test_ = "Column-major Cholesky decomposition (double precision, lower part)";
+
+      blaze::StaticMatrix<double,3UL,3U,blaze::columnMajor> A( 1.0,  2.0,  4.0,
+                                                               2.0, 13.0, 23.0,
+                                                               4.0, 23.0, 77.0 );
+      blaze::dpotrf( A, 'L' );
+
+      if( A(0,0) != 1.0 || A(0,1) != 2.0 || A(0,2) !=  4.0 ||
+          A(1,0) != 2.0 || A(1,1) != 3.0 || A(1,2) != 23.0 ||
+          A(2,0) != 4.0 || A(2,1) != 5.0 || A(2,2) !=  6.0 ) {
+         std::ostringstream oss;
+         oss << " Test: " << test_ << "\n"
+             << " Error: Cholesky decomposition failed\n"
+             << " Details:\n"
+             << "   Result:\n" << A << "\n"
+             << "   Expected result:\n( 1  2  4 )\n"
+                                     "( 2  3 23 )\n"
+                                     "( 4  5  6 )\n";
+         throw std::runtime_error( oss.str() );
+      }
+   }
+
+   // Double precision matrices (upper part)
+   {
+      test_ = "Column-major Cholesky decomposition (double precision, upper part)";
+
+      blaze::StaticMatrix<double,3UL,3U,blaze::columnMajor> A( 1.0,  2.0,  4.0,
+                                                               2.0, 13.0, 23.0,
+                                                               4.0, 23.0, 77.0 );
+      blaze::dpotrf( A, 'U' );
+
+      if( A(0,0) != 1.0 || A(0,1) !=  2.0 || A(0,2) != 4.0 ||
+          A(1,0) != 2.0 || A(1,1) !=  3.0 || A(1,2) != 5.0 ||
+          A(2,0) != 4.0 || A(2,1) != 23.0 || A(2,2) != 6.0 ) {
+         std::ostringstream oss;
+         oss << " Test: " << test_ << "\n"
+             << " Error: Cholesky decomposition failed\n"
+             << " Details:\n"
+             << "   Result:\n" << A << "\n"
+             << "   Expected result:\n( 1  2  4 )\n"
+                                     "( 2  3  5 )\n"
+                                     "( 4 23  6 )\n";
+         throw std::runtime_error( oss.str() );
+      }
+   }
+
+   // Single precision complex matrices (lower part)
+   {
+      test_ = "Column-major Cholesky decomposition (single precision, lower part)";
+
+      typedef blaze::complex<float>  cplx;
+
+      blaze::StaticMatrix<cplx,3UL,3U,blaze::columnMajor> A( cplx( 1.0F ), cplx(  2.0F ), cplx(  4.0F ),
+                                                             cplx( 2.0F ), cplx( 13.0F ), cplx( 23.0F ),
+                                                             cplx( 4.0F ), cplx( 23.0F ), cplx( 77.0F ) );
+      blaze::cpotrf( A, 'L' );
+
+      if( A(0,0) != cplx( 1.0F ) || A(0,1) != cplx( 2.0F ) || A(0,2) != cplx(  4.0F ) ||
+          A(1,0) != cplx( 2.0F ) || A(1,1) != cplx( 3.0F ) || A(1,2) != cplx( 23.0F ) ||
+          A(2,0) != cplx( 4.0F ) || A(2,1) != cplx( 5.0F ) || A(2,2) != cplx(  6.0F ) ) {
+         std::ostringstream oss;
+         oss << " Test: " << test_ << "\n"
+             << " Error: Cholesky decomposition failed\n"
+             << " Details:\n"
+             << "   Result:\n" << A << "\n"
+             << "   Expected result:\n( (1,0) (2,0) ( 4,0) )\n"
+                                     "( (2,0) (3,0) (23,0) )\n"
+                                     "( (4,0) (5,0) ( 6,0) )\n";
+         throw std::runtime_error( oss.str() );
+      }
+   }
+
+   // Single precision complex matrices (upper part)
+   {
+      test_ = "Column-major Cholesky decomposition (single precision, upper part)";
+
+      typedef blaze::complex<float>  cplx;
+
+      blaze::StaticMatrix<cplx,3UL,3U,blaze::columnMajor> A( cplx( 1.0F ), cplx(  2.0F ), cplx(  4.0F ),
+                                                             cplx( 2.0F ), cplx( 13.0F ), cplx( 23.0F ),
+                                                             cplx( 4.0F ), cplx( 23.0F ), cplx( 77.0F ) );
+      blaze::cpotrf( A, 'U' );
+
+      if( A(0,0) != cplx( 1.0F ) || A(0,1) != cplx(  2.0F ) || A(0,2) != cplx( 4.0F ) ||
+          A(1,0) != cplx( 2.0F ) || A(1,1) != cplx(  3.0F ) || A(1,2) != cplx( 5.0F ) ||
+          A(2,0) != cplx( 4.0F ) || A(2,1) != cplx( 23.0F ) || A(2,2) != cplx( 6.0F ) ) {
+         std::ostringstream oss;
+         oss << " Test: " << test_ << "\n"
+             << " Error: Cholesky decomposition failed\n"
+             << " Details:\n"
+             << "   Result:\n" << A << "\n"
+             << "   Expected result:\n( (1,0) ( 2,0) (4,0) )\n"
+                                     "( (2,0) ( 3,0) (5,0) )\n"
+                                     "( (4,0) (23,0) (6,0) )\n";
+         throw std::runtime_error( oss.str() );
+      }
+   }
+
+   // Double precision complex matrices (lower part)
+   {
+      test_ = "Column-major Cholesky decomposition (double precision, lower part)";
+
+      typedef blaze::complex<double>  cplx;
+
+      blaze::StaticMatrix<cplx,3UL,3U,blaze::columnMajor> A( cplx( 1.0 ), cplx(  2.0 ), cplx(  4.0 ),
+                                                             cplx( 2.0 ), cplx( 13.0 ), cplx( 23.0 ),
+                                                             cplx( 4.0 ), cplx( 23.0 ), cplx( 77.0 ) );
+      blaze::zpotrf( A, 'L' );
+
+      if( A(0,0) != cplx( 1.0 ) || A(0,1) != cplx( 2.0 ) || A(0,2) != cplx(  4.0 ) ||
+          A(1,0) != cplx( 2.0 ) || A(1,1) != cplx( 3.0 ) || A(1,2) != cplx( 23.0 ) ||
+          A(2,0) != cplx( 4.0 ) || A(2,1) != cplx( 5.0 ) || A(2,2) != cplx(  6.0 ) ) {
+         std::ostringstream oss;
+         oss << " Test: " << test_ << "\n"
+             << " Error: Cholesky decomposition failed\n"
+             << " Details:\n"
+             << "   Result:\n" << A << "\n"
+             << "   Expected result:\n( (1,0) (2,0) ( 4,0) )\n"
+                                     "( (2,0) (3,0) (23,0) )\n"
+                                     "( (4,0) (5,0) ( 6,0) )\n";
+         throw std::runtime_error( oss.str() );
+      }
+   }
+
+   // Double precision complex matrices (upper part)
+   {
+      test_ = "Column-major Cholesky decomposition (double precision, upper part)";
+
+      typedef blaze::complex<double>  cplx;
+
+      blaze::StaticMatrix<cplx,3UL,3U,blaze::columnMajor> A( cplx( 1.0 ), cplx(  2.0 ), cplx(  4.0 ),
+                                                             cplx( 2.0 ), cplx( 13.0 ), cplx( 23.0 ),
+                                                             cplx( 4.0 ), cplx( 23.0 ), cplx( 77.0 ) );
+      blaze::zpotrf( A, 'U' );
+
+      if( A(0,0) != cplx( 1.0 ) || A(0,1) != cplx(  2.0 ) || A(0,2) != cplx( 4.0 ) ||
+          A(1,0) != cplx( 2.0 ) || A(1,1) != cplx(  3.0 ) || A(1,2) != cplx( 5.0 ) ||
+          A(2,0) != cplx( 4.0 ) || A(2,1) != cplx( 23.0 ) || A(2,2) != cplx( 6.0 ) ) {
+         std::ostringstream oss;
+         oss << " Test: " << test_ << "\n"
+             << " Error: Cholesky decomposition failed\n"
+             << " Details:\n"
+             << "   Result:\n" << A << "\n"
+             << "   Expected result:\n( (1,0) ( 2,0) (4,0) )\n"
+                                     "( (2,0) ( 3,0) (5,0) )\n"
+                                     "( (4,0) (23,0) (6,0) )\n";
          throw std::runtime_error( oss.str() );
       }
    }

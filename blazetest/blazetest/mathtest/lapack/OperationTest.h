@@ -79,8 +79,9 @@ class OperationTest
    //**Test functions******************************************************************************
    /*!\name Test functions */
    //@{
-   void testLU();
    void testQR();
+   void testLU();
+   void testCholesky();
    void testInversion();
    //@}
    //**********************************************************************************************
