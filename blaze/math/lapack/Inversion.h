@@ -46,6 +46,7 @@
 #include <blaze/math/constraints/MutableDataAccess.h>
 #include <blaze/math/expressions/DenseMatrix.h>
 #include <blaze/math/lapack/LU.h>
+#include <blaze/math/typetraits/IsRowMajorMatrix.h>
 #include <blaze/math/typetraits/IsSquare.h>
 #include <blaze/util/Assert.h>
 #include <blaze/util/Complex.h>
@@ -74,6 +75,11 @@ void dgetri_( int* n, double* a, int* lda, int* ipiv, double* work, int* lwork, 
 void cgetri_( int* n, float*  a, int* lda, int* ipiv, float*  work, int* lwork, int* info );
 void zgetri_( int* n, double* a, int* lda, int* ipiv, double* work, int* lwork, int* info );
 
+void spotri_( char* uplo, int* n, float*  a, int* lda, int* info );
+void dpotri_( char* uplo, int* n, double* a, int* lda, int* info );
+void cpotri_( char* uplo, int* n, float*  a, int* lda, int* info );
+void zpotri_( char* uplo, int* n, double* a, int* lda, int* info );
+
 }
 /*! \endcond */
 //*************************************************************************************************
@@ -83,12 +89,12 @@ void zgetri_( int* n, double* a, int* lda, int* ipiv, double* work, int* lwork, 
 
 //=================================================================================================
 //
-//  LAPACK INVERSION FUNCTIONS
+//  LAPACK LU-BASED INVERSION FUNCTIONS
 //
 //=================================================================================================
 
 //*************************************************************************************************
-/*!\name LAPACK inversion functions */
+/*!\name LAPACK LU-based inversion functions */
 //@{
 inline void sgetri( int* n, float* a, int* lda, int* ipiv, float* work, int* lwork, int* info );
 
@@ -391,7 +397,7 @@ inline void dgetri( DenseMatrix<MT,SO>& A, const int* ipiv )
    using boost::numeric_cast;
 
    BLAZE_CONSTRAINT_MUST_NOT_BE_ADAPTOR_TYPE( MT );
-   BLAZE_CONSTRAINT_MUST_NOT_BE_COMPUTATION_TYPE ( MT );
+   BLAZE_CONSTRAINT_MUST_NOT_BE_COMPUTATION_TYPE( MT );
    BLAZE_CONSTRAINT_MUST_HAVE_MUTABLE_DATA_ACCESS( MT );
    BLAZE_CONSTRAINT_MUST_BE_DOUBLE_TYPE( typename MT::ElementType );
 
@@ -456,10 +462,10 @@ inline void cgetri( DenseMatrix<MT,SO>& A, const int* ipiv )
    using boost::numeric_cast;
 
    BLAZE_CONSTRAINT_MUST_NOT_BE_ADAPTOR_TYPE( MT );
-   BLAZE_CONSTRAINT_MUST_NOT_BE_COMPUTATION_TYPE ( MT );
+   BLAZE_CONSTRAINT_MUST_NOT_BE_COMPUTATION_TYPE( MT );
    BLAZE_CONSTRAINT_MUST_HAVE_MUTABLE_DATA_ACCESS( MT );
    BLAZE_CONSTRAINT_MUST_BE_COMPLEX_TYPE( typename MT::ElementType );
-   BLAZE_CONSTRAINT_MUST_BE_FLOAT_TYPE  ( typename MT::ElementType::value_type );
+   BLAZE_CONSTRAINT_MUST_BE_FLOAT_TYPE( typename MT::ElementType::value_type );
 
    if( !IsSquare<MT>::value && !isSquare( ~A ) ) {
       BLAZE_THROW_INVALID_ARGUMENT( "Invalid non-square matrix provided" );
@@ -522,10 +528,10 @@ inline void zgetri( DenseMatrix<MT,SO>& A, const int* ipiv )
    using boost::numeric_cast;
 
    BLAZE_CONSTRAINT_MUST_NOT_BE_ADAPTOR_TYPE( MT );
-   BLAZE_CONSTRAINT_MUST_NOT_BE_COMPUTATION_TYPE ( MT );
+   BLAZE_CONSTRAINT_MUST_NOT_BE_COMPUTATION_TYPE( MT );
    BLAZE_CONSTRAINT_MUST_HAVE_MUTABLE_DATA_ACCESS( MT );
    BLAZE_CONSTRAINT_MUST_BE_COMPLEX_TYPE( typename MT::ElementType );
-   BLAZE_CONSTRAINT_MUST_BE_DOUBLE_TYPE ( typename MT::ElementType::value_type );
+   BLAZE_CONSTRAINT_MUST_BE_DOUBLE_TYPE( typename MT::ElementType::value_type );
 
    if( !IsSquare<MT>::value && !isSquare( ~A ) ) {
       BLAZE_THROW_INVALID_ARGUMENT( "Invalid non-square matrix provided" );
@@ -539,6 +545,488 @@ inline void zgetri( DenseMatrix<MT,SO>& A, const int* ipiv )
    const UniqueArray< complex<double> > work( new complex<double>[lwork] );
 
    zgetri( &n, (~A).data(), &lda, const_cast<int*>( ipiv ), work.get(), &lwork, &info );
+
+   BLAZE_INTERNAL_ASSERT( info >= 0, "Invalid argument for matrix inversion" );
+
+   if( info > 0 ) {
+      BLAZE_THROW_INVALID_ARGUMENT( "Inversion of singular matrix failed" );
+   }
+}
+//*************************************************************************************************
+
+
+
+
+//=================================================================================================
+//
+//  LAPACK CHOLESKY-BASED INVERSION FUNCTIONS
+//
+//=================================================================================================
+
+//*************************************************************************************************
+/*!\name LAPACK Cholesky-based inversion functions */
+//@{
+inline void spotri( char* uplo, int* n, float*  a, int* lda, int* info );
+
+inline void dpotri( char* uplo, int* n, double* a, int* lda, int* info );
+
+inline void cpotri( char* uplo, int* n, complex<float>*  a, int* lda, int* info );
+
+inline void zpotri( char* uplo, int* n, complex<double>* a, int* lda, int* info );
+
+template< typename MT, bool SO >
+inline void spotri( DenseMatrix<MT,SO>& A, char uplo );
+
+template< typename MT, bool SO >
+inline void dpotri( DenseMatrix<MT,SO>& A, char uplo );
+
+template< typename MT, bool SO >
+inline void cpotri( DenseMatrix<MT,SO>& A, char uplo );
+
+template< typename MT, bool SO >
+inline void zpotri( DenseMatrix<MT,SO>& A, char uplo );
+//@}
+//*************************************************************************************************
+
+
+//*************************************************************************************************
+/*!\brief LAPACK kernel for the inversion of the given dense positive-definite single precision
+//        matrix.
+// \ingroup lapack
+//
+// \param uplo \c 'L' to use the lower part of the matrix, \c 'U' to use the upper part.
+// \param n The number of rows/columns of the matrix \f$[0..\infty)\f$.
+// \param a Pointer to the first element of the matrix.
+// \param lda The total number of elements between two rows/columns of the matrix \f$[0..\infty)\f$.
+// \param info Return code of the function call.
+// \return void
+//
+// This function performs the dense matrix inversion based on the LAPACK spotri() function for
+// positive-definite single precision matrices that have already been factorized by the spotrf()
+// function. The resulting symmetric inverse of \a A is stored either in the lower part of \a A
+// (\a uplo = \c 'L') or in the upper part (\a uplo = \c 'U').
+//
+// The \a info argument provides feedback on the success of the function call:
+//
+//   - = 0: The inversion finished successfully.
+//   - < 0: If \a info = -i, the i-th argument had an illegal value.
+//   - > 0: If \a info = i, element (i,i) of U or L is zero and the inverse could not be computed.
+//
+// For more information on the spotri() function, see the LAPACK online documentation browser:
+//
+//        http://www.netlib.org/lapack/explore-html/
+//
+// \note This function can only be used if the fitting LAPACK library is available and linked to
+// the executable. Otherwise a call to this function will result in a linker error.
+*/
+inline void spotri( char* uplo, int* n, float* a, int* lda, int* info )
+{
+   spotri_( uplo, n, a, lda, info );
+}
+//*************************************************************************************************
+
+
+//*************************************************************************************************
+/*!\brief LAPACK kernel for the inversion of the given dense positive-definite double precision
+//        matrix.
+// \ingroup lapack
+//
+// \param uplo \c 'L' to use the lower part of the matrix, \c 'U' to use the upper part.
+// \param n The number of rows/columns of the matrix \f$[0..\infty)\f$.
+// \param a Pointer to the first element of the matrix.
+// \param lda The total number of elements between two rows/columns of the matrix \f$[0..\infty)\f$.
+// \param info Return code of the function call.
+// \return void
+//
+// This function performs the dense matrix inversion based on the LAPACK dpotri() function for
+// positive-definite double precision matrices that have already been factorized by the dpotrf()
+// function. The resulting symmetric inverse of \a A is stored either in the lower part of \a A
+// (\a uplo = \c 'L') or in the upper part (\a uplo = \c 'U').
+//
+// The \a info argument provides feedback on the success of the function call:
+//
+//   - = 0: The inversion finished successfully.
+//   - < 0: If \a info = -i, the i-th argument had an illegal value.
+//   - > 0: If \a info = i, element (i,i) of U or L is zero and the inverse could not be computed.
+//
+// For more information on the spotri() function, see the LAPACK online documentation browser:
+//
+//        http://www.netlib.org/lapack/explore-html/
+//
+// \note This function can only be used if the fitting LAPACK library is available and linked to
+// the executable. Otherwise a call to this function will result in a linker error.
+*/
+inline void dpotri( char* uplo, int* n, double* a, int* lda, int* info )
+{
+   dpotri_( uplo, n, a, lda, info );
+}
+//*************************************************************************************************
+
+
+//*************************************************************************************************
+/*!\brief LAPACK kernel for the inversion of the given dense positive-definite single precision
+//        complex matrix.
+// \ingroup lapack
+//
+// \param uplo \c 'L' to use the lower part of the matrix, \c 'U' to use the upper part.
+// \param n The number of rows/columns of the matrix \f$[0..\infty)\f$.
+// \param a Pointer to the first element of the matrix.
+// \param lda The total number of elements between two rows/columns of the matrix \f$[0..\infty)\f$.
+// \param info Return code of the function call.
+// \return void
+//
+// This function performs the dense matrix inversion based on the LAPACK cpotri() function for
+// positive-definite single precision complex matrices that have already been factorized by the
+// cpotrf() function. The resulting symmetric inverse of \a A is stored either in the lower part
+// of \a A (\a uplo = \c 'L') or in the upper part (\a uplo = \c 'U').
+//
+// The \a info argument provides feedback on the success of the function call:
+//
+//   - = 0: The inversion finished successfully.
+//   - < 0: If \a info = -i, the i-th argument had an illegal value.
+//   - > 0: If \a info = i, element (i,i) of U or L is zero and the inverse could not be computed.
+//
+// For more information on the cpotri() function, see the LAPACK online documentation browser:
+//
+//        http://www.netlib.org/lapack/explore-html/
+//
+// \note This function can only be used if the fitting LAPACK library is available and linked to
+// the executable. Otherwise a call to this function will result in a linker error.
+*/
+inline void cpotri( char* uplo, int* n, complex<float>* a, int* lda, int* info )
+{
+   BLAZE_STATIC_ASSERT( sizeof( complex<float> ) == 2UL*sizeof( float ) );
+
+   cpotri_( uplo, n, reinterpret_cast<float*>( a ), lda, info );
+}
+//*************************************************************************************************
+
+
+//*************************************************************************************************
+/*!\brief LAPACK kernel for the inversion of the given dense positive-definite double precision
+//        complex matrix.
+// \ingroup lapack
+//
+// \param uplo \c 'L' to use the lower part of the matrix, \c 'U' to use the upper part.
+// \param n The number of rows/columns of the matrix \f$[0..\infty)\f$.
+// \param a Pointer to the first element of the matrix.
+// \param lda The total number of elements between two rows/columns of the matrix \f$[0..\infty)\f$.
+// \param info Return code of the function call.
+// \return void
+//
+// This function performs the dense matrix inversion based on the LAPACK zpotri() function for
+// positive-definite double precision complex matrices that have already been factorized by the
+// zpotrf() function. The resulting symmetric inverse of \a A is stored either in the lower part
+// of \a A (\a uplo = \c 'L') or in the upper part (\a uplo = \c 'U').
+//
+// The \a info argument provides feedback on the success of the function call:
+//
+//   - = 0: The inversion finished successfully.
+//   - < 0: If \a info = -i, the i-th argument had an illegal value.
+//   - > 0: If \a info = i, element (i,i) of U or L is zero and the inverse could not be computed.
+//
+// For more information on the zpotri() function, see the LAPACK online documentation browser:
+//
+//        http://www.netlib.org/lapack/explore-html/
+//
+// \note This function can only be used if the fitting LAPACK library is available and linked to
+// the executable. Otherwise a call to this function will result in a linker error.
+*/
+inline void zpotri( char* uplo, int* n, complex<double>* a, int* lda, int* info )
+{
+   BLAZE_STATIC_ASSERT( sizeof( complex<double> ) == 2UL*sizeof( double ) );
+
+   zpotri_( uplo, n, reinterpret_cast<double*>( a ), lda, info );
+}
+//*************************************************************************************************
+
+
+//*************************************************************************************************
+/*!\brief LAPACK kernel for the inversion of the given dense positive-definite single precision
+//        matrix.
+// \ingroup lapack
+//
+// \param A The positive-definite matrix to be inverted.
+// \param uplo \c 'L' to use the lower part of the matrix, \c 'U' to use the upper part.
+// \return void
+// \exception std::invalid_argument Invalid argument provided.
+// \exception std::invalid_argument Inversion of singular matrix failed.
+//
+// This function performs the dense matrix inversion based on the LAPACK spotri() function for
+// positive-definite single precision matrices that have already been factorized by the spotrf()
+// function. The resulting symmetric inverse of \a A is stored either in the lower part of \a A
+// (\a uplo = \c 'L') or in the upper part (\a uplo = \c 'U'). Note that the function only works
+// for general, non-adapted matrices with \c float element type. The attempt to call the function
+// with adaptors or matrices of any other element type results in a compile time error!
+//
+// The function fails if ...
+//
+//  - ... the given matrix is not a square matrix;
+//  - ... the given \a uplo argument is neither 'L' nor 'U';
+//  - ... the given matrix is singular and not invertible.
+//
+// In all failure cases a \a std::invalid_argument exception is thrown.
+//
+// For more information on the spotri() function, see the LAPACK online documentation browser:
+//
+//        http://www.netlib.org/lapack/explore-html/
+//
+// \note This function does not provide any exception safety guarantee, i.e. in case an exception
+// is thrown \c A may already have been modified.
+// \note This function can only be used if the fitting LAPACK library is available and linked to
+// the executable. Otherwise a call to this function will result in a linker error.
+*/
+template< typename MT  // Type of the dense matrix
+        , bool SO >    // Storage order of the dense matrix
+inline void spotri( DenseMatrix<MT,SO>& A, char uplo )
+{
+   using boost::numeric_cast;
+
+   BLAZE_CONSTRAINT_MUST_NOT_BE_ADAPTOR_TYPE( MT );
+   BLAZE_CONSTRAINT_MUST_NOT_BE_COMPUTATION_TYPE( MT );
+   BLAZE_CONSTRAINT_MUST_HAVE_MUTABLE_DATA_ACCESS( MT );
+   BLAZE_CONSTRAINT_MUST_BE_FLOAT_TYPE( typename MT::ElementType );
+
+   if( !IsSquare<MT>::value && !isSquare( ~A ) ) {
+      BLAZE_THROW_INVALID_ARGUMENT( "Invalid non-square matrix provided" );
+   }
+
+   if( uplo != 'L' && uplo != 'U' ) {
+      BLAZE_THROW_INVALID_ARGUMENT( "Invalid uplo argument provided" );
+   }
+
+   int n   ( boost::numeric_cast<int>( (~A).columns() ) );
+   int lda ( boost::numeric_cast<int>( (~A).spacing() ) );
+   int info( 0 );
+
+   if( IsRowMajorMatrix<MT>::value ) {
+      ( uplo == 'L' )?( uplo = 'U' ):( uplo = 'L' );
+   }
+
+   spotri( &uplo, &n, (~A).data(), &lda, &info );
+
+   BLAZE_INTERNAL_ASSERT( info >= 0, "Invalid argument for matrix inversion" );
+
+   if( info > 0 ) {
+      BLAZE_THROW_INVALID_ARGUMENT( "Inversion of singular matrix failed" );
+   }
+}
+//*************************************************************************************************
+
+
+//*************************************************************************************************
+/*!\brief LAPACK kernel for the inversion of the given dense positive-definite double precision
+//        matrix.
+// \ingroup lapack
+//
+// \param A The positive-definite matrix to be inverted.
+// \param uplo \c 'L' to use the lower part of the matrix, \c 'U' to use the upper part.
+// \return void
+// \exception std::invalid_argument Invalid argument provided.
+// \exception std::invalid_argument Inversion of singular matrix failed.
+//
+// This function performs the dense matrix inversion based on the LAPACK dpotri() function for
+// positive-definite double precision matrices that have already been factorized by the dpotrf()
+// function. The resulting symmetric inverse of \a A is stored either in the lower part of \a A
+// (\a uplo = \c 'L') or in the upper part (\a uplo = \c 'U'). Note that the function only works
+// for general, non-adapted matrices with \c double element type. The attempt to call the function
+// with adaptors or matrices of any other element type results in a compile time error!
+//
+// The function fails if ...
+//
+//  - ... the given matrix is not a square matrix;
+//  - ... the given \a uplo argument is neither 'L' nor 'U';
+//  - ... the given matrix is singular and not invertible.
+//
+// In all failure cases a \a std::invalid_argument exception is thrown.
+//
+// For more information on the dpotri() function, see the LAPACK online documentation browser:
+//
+//        http://www.netlib.org/lapack/explore-html/
+//
+// \note This function does not provide any exception safety guarantee, i.e. in case an exception
+// is thrown \c A may already have been modified.
+// \note This function can only be used if the fitting LAPACK library is available and linked to
+// the executable. Otherwise a call to this function will result in a linker error.
+*/
+template< typename MT  // Type of the dense matrix
+        , bool SO >    // Storage order of the dense matrix
+inline void dpotri( DenseMatrix<MT,SO>& A, char uplo )
+{
+   using boost::numeric_cast;
+
+   BLAZE_CONSTRAINT_MUST_NOT_BE_ADAPTOR_TYPE( MT );
+   BLAZE_CONSTRAINT_MUST_NOT_BE_COMPUTATION_TYPE( MT );
+   BLAZE_CONSTRAINT_MUST_HAVE_MUTABLE_DATA_ACCESS( MT );
+   BLAZE_CONSTRAINT_MUST_BE_DOUBLE_TYPE( typename MT::ElementType );
+
+   if( !IsSquare<MT>::value && !isSquare( ~A ) ) {
+      BLAZE_THROW_INVALID_ARGUMENT( "Invalid non-square matrix provided" );
+   }
+
+   if( uplo != 'L' && uplo != 'U' ) {
+      BLAZE_THROW_INVALID_ARGUMENT( "Invalid uplo argument provided" );
+   }
+
+   int n   ( boost::numeric_cast<int>( (~A).columns() ) );
+   int lda ( boost::numeric_cast<int>( (~A).spacing() ) );
+   int info( 0 );
+
+   if( IsRowMajorMatrix<MT>::value ) {
+      ( uplo == 'L' )?( uplo = 'U' ):( uplo = 'L' );
+   }
+
+   dpotri( &uplo, &n, (~A).data(), &lda, &info );
+
+   BLAZE_INTERNAL_ASSERT( info >= 0, "Invalid argument for matrix inversion" );
+
+   if( info > 0 ) {
+      BLAZE_THROW_INVALID_ARGUMENT( "Inversion of singular matrix failed" );
+   }
+}
+//*************************************************************************************************
+
+
+//*************************************************************************************************
+/*!\brief LAPACK kernel for the inversion of the given dense positive-definite single precision
+//        complex matrix.
+// \ingroup lapack
+//
+// \param A The positive-definite matrix to be inverted.
+// \param uplo \c 'L' to use the lower part of the matrix, \c 'U' to use the upper part.
+// \return void
+// \exception std::invalid_argument Invalid argument provided.
+// \exception std::invalid_argument Inversion of singular matrix failed.
+//
+// This function performs the dense matrix inversion based on the LAPACK cpotri() function for
+// positive-definite single precision complex matrices that have already been factorized by the
+// cpotrf() function. The resulting symmetric inverse of \a A is stored either in the lower part
+// of \a A (\a uplo = \c 'L') or in the upper part (\a uplo = \c 'U'). Note that the function
+// only works for general, non-adapted matrices with \c complex<float> element type. The attempt
+// to call the function with adaptors or matrices of any other element type results in a compile
+// time error!
+//
+// The function fails if ...
+//
+//  - ... the given matrix is not a square matrix;
+//  - ... the given \a uplo argument is neither 'L' nor 'U';
+//  - ... the given matrix is singular and not invertible.
+//
+// In all failure cases a \a std::invalid_argument exception is thrown.
+//
+// For more information on the cpotri() function, see the LAPACK online documentation browser:
+//
+//        http://www.netlib.org/lapack/explore-html/
+//
+// \note This function does not provide any exception safety guarantee, i.e. in case an exception
+// is thrown \c A may already have been modified.
+// \note This function can only be used if the fitting LAPACK library is available and linked to
+// the executable. Otherwise a call to this function will result in a linker error.
+*/
+template< typename MT  // Type of the dense matrix
+        , bool SO >    // Storage order of the dense matrix
+inline void cpotri( DenseMatrix<MT,SO>& A, char uplo )
+{
+   using boost::numeric_cast;
+
+   BLAZE_CONSTRAINT_MUST_NOT_BE_ADAPTOR_TYPE( MT );
+   BLAZE_CONSTRAINT_MUST_NOT_BE_COMPUTATION_TYPE( MT );
+   BLAZE_CONSTRAINT_MUST_HAVE_MUTABLE_DATA_ACCESS( MT );
+   BLAZE_CONSTRAINT_MUST_BE_COMPLEX_TYPE( typename MT::ElementType );
+   BLAZE_CONSTRAINT_MUST_BE_FLOAT_TYPE( typename MT::ElementType::value_type );
+
+   if( !IsSquare<MT>::value && !isSquare( ~A ) ) {
+      BLAZE_THROW_INVALID_ARGUMENT( "Invalid non-square matrix provided" );
+   }
+
+   if( uplo != 'L' && uplo != 'U' ) {
+      BLAZE_THROW_INVALID_ARGUMENT( "Invalid uplo argument provided" );
+   }
+
+   int n   ( boost::numeric_cast<int>( (~A).columns() ) );
+   int lda ( boost::numeric_cast<int>( (~A).spacing() ) );
+   int info( 0 );
+
+   if( IsRowMajorMatrix<MT>::value ) {
+      ( uplo == 'L' )?( uplo = 'U' ):( uplo = 'L' );
+   }
+
+   cpotri( &uplo, &n, (~A).data(), &lda, &info );
+
+   BLAZE_INTERNAL_ASSERT( info >= 0, "Invalid argument for matrix inversion" );
+
+   if( info > 0 ) {
+      BLAZE_THROW_INVALID_ARGUMENT( "Inversion of singular matrix failed" );
+   }
+}
+//*************************************************************************************************
+
+
+//*************************************************************************************************
+/*!\brief LAPACK kernel for the inversion of the given dense positive-definite double precision
+//        complex matrix.
+// \ingroup lapack
+//
+// \param A The positive-definite matrix to be inverted.
+// \param uplo \c 'L' to use the lower part of the matrix, \c 'U' to use the upper part.
+// \return void
+// \exception std::invalid_argument Invalid argument provided.
+// \exception std::invalid_argument Inversion of singular matrix failed.
+//
+// This function performs the dense matrix inversion based on the LAPACK zpotri() function for
+// positive-definite double precision complex matrices that have already been factorized by the
+// zpotrf() function. The resulting symmetric inverse of \a A is stored either in the lower part
+// of \a A (\a uplo = \c 'L') or in the upper part (\a uplo = \c 'U'). Note that the function
+// only works for general, non-adapted matrices with \c complex<double> element type. The attempt
+// to call the function with adaptors or matrices of any other element type results in a compile
+// time error!
+//
+// The function fails if ...
+//
+//  - ... the given matrix is not a square matrix;
+//  - ... the given \a uplo argument is neither 'L' nor 'U';
+//  - ... the given matrix is singular and not invertible.
+//
+// In all failure cases a \a std::invalid_argument exception is thrown.
+//
+// For more information on the zpotri() function, see the LAPACK online documentation browser:
+//
+//        http://www.netlib.org/lapack/explore-html/
+//
+// \note This function does not provide any exception safety guarantee, i.e. in case an exception
+// is thrown \c A may already have been modified.
+// \note This function can only be used if the fitting LAPACK library is available and linked to
+// the executable. Otherwise a call to this function will result in a linker error.
+*/
+template< typename MT  // Type of the dense matrix
+        , bool SO >    // Storage order of the dense matrix
+inline void zpotri( DenseMatrix<MT,SO>& A, char uplo )
+{
+   using boost::numeric_cast;
+
+   BLAZE_CONSTRAINT_MUST_NOT_BE_ADAPTOR_TYPE( MT );
+   BLAZE_CONSTRAINT_MUST_NOT_BE_COMPUTATION_TYPE( MT );
+   BLAZE_CONSTRAINT_MUST_HAVE_MUTABLE_DATA_ACCESS( MT );
+   BLAZE_CONSTRAINT_MUST_BE_COMPLEX_TYPE( typename MT::ElementType );
+   BLAZE_CONSTRAINT_MUST_BE_DOUBLE_TYPE( typename MT::ElementType::value_type );
+
+   if( !IsSquare<MT>::value && !isSquare( ~A ) ) {
+      BLAZE_THROW_INVALID_ARGUMENT( "Invalid non-square matrix provided" );
+   }
+
+   if( uplo != 'L' && uplo != 'U' ) {
+      BLAZE_THROW_INVALID_ARGUMENT( "Invalid uplo argument provided" );
+   }
+
+   int n   ( boost::numeric_cast<int>( (~A).columns() ) );
+   int lda ( boost::numeric_cast<int>( (~A).spacing() ) );
+   int info( 0 );
+
+   if( IsRowMajorMatrix<MT>::value ) {
+      ( uplo == 'L' )?( uplo = 'U' ):( uplo = 'L' );
+   }
+
+   zpotri( &uplo, &n, (~A).data(), &lda, &info );
 
    BLAZE_INTERNAL_ASSERT( info >= 0, "Invalid argument for matrix inversion" );
 
