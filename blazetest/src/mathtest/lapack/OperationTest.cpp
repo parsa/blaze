@@ -97,6 +97,9 @@ void OperationTest::testQR()
 {
 #if BLAZETEST_MATHTEST_LAPACK_MODE
 
+   using blaze::equal;
+
+
    //=====================================================================================
    // Row-major matrix tests
    //=====================================================================================
@@ -112,9 +115,9 @@ void OperationTest::testQR()
 
       blaze::sgeqrf( A, tau.data() );
 
-      if( A(0,0) != 1.0F || A(0,1) != 0.0F || A(0,2) != 0.0F ||
-          A(1,0) != 0.0F || A(1,1) != 1.0F || A(1,2) != 0.0F ||
-          A(2,0) != 1.0F || A(2,1) != 1.0F || A(2,2) != 1.0F ) {
+      if( !equal( A(0,0), 1.0F ) || !equal( A(0,1), 0.0F ) || !equal( A(0,2), 0.0F ) ||
+          !equal( A(1,0), 0.0F ) || !equal( A(1,1), 1.0F ) || !equal( A(1,2), 0.0F ) ||
+          !equal( A(2,0), 1.0F ) || !equal( A(2,1), 1.0F ) || !equal( A(2,2), 1.0F ) ) {
          std::ostringstream oss;
          oss << " Test: " << test_ << "\n"
              << " Error: QR decomposition failed\n"
@@ -138,9 +141,9 @@ void OperationTest::testQR()
 
       blaze::dgeqrf( A, tau.data() );
 
-      if( A(0,0) != 1.0 || A(0,1) != 0.0 || A(0,2) != 0.0 ||
-          A(1,0) != 0.0 || A(1,1) != 1.0 || A(1,2) != 0.0 ||
-          A(2,0) != 1.0 || A(2,1) != 1.0 || A(2,2) != 1.0 ) {
+      if( !equal( A(0,0), 1.0 ) || !equal( A(0,1), 0.0 ) || !equal( A(0,2), 0.0 ) ||
+          !equal( A(1,0), 0.0 ) || !equal( A(1,1), 1.0 ) || !equal( A(1,2), 0.0 ) ||
+          !equal( A(2,0), 1.0 ) || !equal( A(2,1), 1.0 ) || !equal( A(2,2), 1.0 ) ) {
          std::ostringstream oss;
          oss << " Test: " << test_ << "\n"
              << " Error: QR decomposition failed\n"
@@ -166,9 +169,9 @@ void OperationTest::testQR()
 
       blaze::cgeqrf( A, tau.data() );
 
-      if( A(0,0) != cplx( 1.0F ) || A(0,1) != cplx( 0.0F ) || A(0,2) != cplx( 0.0F ) ||
-          A(1,0) != cplx( 0.0F ) || A(1,1) != cplx( 1.0F ) || A(1,2) != cplx( 0.0F ) ||
-          A(2,0) != cplx( 1.0F ) || A(2,1) != cplx( 1.0F ) || A(2,2) != cplx( 1.0F ) ) {
+      if( !equal( A(0,0), cplx( 1.0F ) ) || !equal( A(0,1), cplx( 0.0F ) ) || !equal( A(0,2), cplx( 0.0F ) ) ||
+          !equal( A(1,0), cplx( 0.0F ) ) || !equal( A(1,1), cplx( 1.0F ) ) || !equal( A(1,2), cplx( 0.0F ) ) ||
+          !equal( A(2,0), cplx( 1.0F ) ) || !equal( A(2,1), cplx( 1.0F ) ) || !equal( A(2,2), cplx( 1.0F ) ) ) {
          std::ostringstream oss;
          oss << " Test: " << test_ << "\n"
              << " Error: QR decomposition failed\n"
@@ -194,9 +197,9 @@ void OperationTest::testQR()
 
       blaze::zgeqrf( A, tau.data() );
 
-      if( A(0,0) != cplx( 1.0 ) || A(0,1) != cplx( 0.0 ) || A(0,2) != cplx( 0.0 ) ||
-          A(1,0) != cplx( 0.0 ) || A(1,1) != cplx( 1.0 ) || A(1,2) != cplx( 0.0 ) ||
-          A(2,0) != cplx( 1.0 ) || A(2,1) != cplx( 1.0 ) || A(2,2) != cplx( 1.0 ) ) {
+      if( !equal( A(0,0), cplx( 1.0 ) ) || !equal( A(0,1), cplx( 0.0 ) ) || !equal( A(0,2), cplx( 0.0 ) ) ||
+          !equal( A(1,0), cplx( 0.0 ) ) || !equal( A(1,1), cplx( 1.0 ) ) || !equal( A(1,2), cplx( 0.0 ) ) ||
+          !equal( A(2,0), cplx( 1.0 ) ) || !equal( A(2,1), cplx( 1.0 ) ) || !equal( A(2,2), cplx( 1.0 ) ) ) {
          std::ostringstream oss;
          oss << " Test: " << test_ << "\n"
              << " Error: QR decomposition failed\n"
@@ -225,9 +228,9 @@ void OperationTest::testQR()
 
       blaze::sgeqrf( A, tau.data() );
 
-      if( A(0,0) != 1.0F || A(0,1) != 0.0F || A(0,2) != 1.0F ||
-          A(1,0) != 0.0F || A(1,1) != 1.0F || A(1,2) != 1.0F ||
-          A(2,0) != 0.0F || A(2,1) != 0.0F || A(2,2) != 1.0F ) {
+      if( !equal( A(0,0), 1.0F ) || !equal( A(0,1), 0.0F ) || !equal( A(0,2), 1.0F ) ||
+          !equal( A(1,0), 0.0F ) || !equal( A(1,1), 1.0F ) || !equal( A(1,2), 1.0F ) ||
+          !equal( A(2,0), 0.0F ) || !equal( A(2,1), 0.0F ) || !equal( A(2,2), 1.0F ) ) {
          std::ostringstream oss;
          oss << " Test: " << test_ << "\n"
              << " Error: QR decomposition failed\n"
@@ -251,9 +254,9 @@ void OperationTest::testQR()
 
       blaze::dgeqrf( A, tau.data() );
 
-      if( A(0,0) != 1.0 || A(0,1) != 0.0 || A(0,2) != 1.0 ||
-          A(1,0) != 0.0 || A(1,1) != 1.0 || A(1,2) != 1.0 ||
-          A(2,0) != 0.0 || A(2,1) != 0.0 || A(2,2) != 1.0 ) {
+      if( !equal( A(0,0), 1.0 ) || !equal( A(0,1), 0.0 ) || !equal( A(0,2), 1.0 ) ||
+          !equal( A(1,0), 0.0 ) || !equal( A(1,1), 1.0 ) || !equal( A(1,2), 1.0 ) ||
+          !equal( A(2,0), 0.0 ) || !equal( A(2,1), 0.0 ) || !equal( A(2,2), 1.0 ) ) {
          std::ostringstream oss;
          oss << " Test: " << test_ << "\n"
              << " Error: QR decomposition failed\n"
@@ -279,9 +282,9 @@ void OperationTest::testQR()
 
       blaze::cgeqrf( A, tau.data() );
 
-      if( A(0,0) != cplx( 1.0F ) || A(0,1) != cplx( 0.0F ) || A(0,2) != cplx( 1.0F ) ||
-          A(1,0) != cplx( 0.0F ) || A(1,1) != cplx( 1.0F ) || A(1,2) != cplx( 1.0F ) ||
-          A(2,0) != cplx( 0.0F ) || A(2,1) != cplx( 0.0F ) || A(2,2) != cplx( 1.0F ) ) {
+      if( !equal( A(0,0), cplx( 1.0F ) ) || !equal( A(0,1), cplx( 0.0F ) ) || !equal( A(0,2), cplx( 1.0F ) ) ||
+          !equal( A(1,0), cplx( 0.0F ) ) || !equal( A(1,1), cplx( 1.0F ) ) || !equal( A(1,2), cplx( 1.0F ) ) ||
+          !equal( A(2,0), cplx( 0.0F ) ) || !equal( A(2,1), cplx( 0.0F ) ) || !equal( A(2,2), cplx( 1.0F ) ) ) {
          std::ostringstream oss;
          oss << " Test: " << test_ << "\n"
              << " Error: QR decomposition failed\n"
@@ -307,9 +310,9 @@ void OperationTest::testQR()
 
       blaze::zgeqrf( A, tau.data() );
 
-      if( A(0,0) != cplx( 1.0 ) || A(0,1) != cplx( 0.0 ) || A(0,2) != cplx( 1.0 ) ||
-          A(1,0) != cplx( 0.0 ) || A(1,1) != cplx( 1.0 ) || A(1,2) != cplx( 1.0 ) ||
-          A(2,0) != cplx( 0.0 ) || A(2,1) != cplx( 0.0 ) || A(2,2) != cplx( 1.0 ) ) {
+      if( !equal( A(0,0), cplx( 1.0 ) ) || !equal( A(0,1), cplx( 0.0 ) ) || !equal( A(0,2), cplx( 1.0 ) ) ||
+          !equal( A(1,0), cplx( 0.0 ) ) || !equal( A(1,1), cplx( 1.0 ) ) || !equal( A(1,2), cplx( 1.0 ) ) ||
+          !equal( A(2,0), cplx( 0.0 ) ) || !equal( A(2,1), cplx( 0.0 ) ) || !equal( A(2,2), cplx( 1.0 ) ) ) {
          std::ostringstream oss;
          oss << " Test: " << test_ << "\n"
              << " Error: QR decomposition failed\n"
@@ -340,6 +343,9 @@ void OperationTest::testLU()
 {
 #if BLAZETEST_MATHTEST_LAPACK_MODE
 
+   using blaze::equal;
+
+
    //=====================================================================================
    // Row-major matrix tests
    //=====================================================================================
@@ -355,9 +361,9 @@ void OperationTest::testLU()
 
       blaze::sgetrf( A, ipiv.data() );
 
-      if( A(0,0) != 2.0F || A(0,1) != -0.5F || A(0,2) != -1.0F ||
-          A(1,0) != 4.0F || A(1,1) !=  3.0F || A(1,2) != -1.0F ||
-          A(2,0) != 6.0F || A(2,1) !=  6.0F || A(2,2) !=  4.0F ) {
+      if( !equal( A(0,0), 2.0F ) || !equal( A(0,1), -0.5F ) || !equal( A(0,2), -1.0F ) ||
+          !equal( A(1,0), 4.0F ) || !equal( A(1,1),  3.0F ) || !equal( A(1,2), -1.0F ) ||
+          !equal( A(2,0), 6.0F ) || !equal( A(2,1),  6.0F ) || !equal( A(2,2),  4.0F ) ) {
          std::ostringstream oss;
          oss << " Test: " << test_ << "\n"
              << " Error: LU decomposition failed\n"
@@ -381,9 +387,9 @@ void OperationTest::testLU()
 
       blaze::dgetrf( A, ipiv.data() );
 
-      if( A(0,0) != 2.0 || A(0,1) != -0.5 || A(0,2) != -1.0 ||
-          A(1,0) != 4.0 || A(1,1) !=  3.0 || A(1,2) != -1.0 ||
-          A(2,0) != 6.0 || A(2,1) !=  6.0 || A(2,2) !=  4.0 ) {
+      if( !equal( A(0,0), 2.0 ) || !equal( A(0,1), -0.5 ) || !equal( A(0,2), -1.0 ) ||
+          !equal( A(1,0), 4.0 ) || !equal( A(1,1),  3.0 ) || !equal( A(1,2), -1.0 ) ||
+          !equal( A(2,0), 6.0 ) || !equal( A(2,1),  6.0 ) || !equal( A(2,2),  4.0 ) ) {
          std::ostringstream oss;
          oss << " Test: " << test_ << "\n"
              << " Error: LU decomposition failed\n"
@@ -409,9 +415,9 @@ void OperationTest::testLU()
 
       blaze::cgetrf( A, ipiv.data() );
 
-      if( A(0,0) != cplx( 2.0F ) || A(0,1) != cplx( -0.5F ) || A(0,2) != cplx( -1.0F ) ||
-          A(1,0) != cplx( 4.0F ) || A(1,1) != cplx(  3.0F ) || A(1,2) != cplx( -1.0F ) ||
-          A(2,0) != cplx( 6.0F ) || A(2,1) != cplx(  6.0F ) || A(2,2) != cplx(  4.0F ) ) {
+      if( !equal( A(0,0), cplx( 2.0F ) ) || !equal( A(0,1), cplx( -0.5F ) ) || !equal( A(0,2), cplx( -1.0F ) ) ||
+          !equal( A(1,0), cplx( 4.0F ) ) || !equal( A(1,1), cplx(  3.0F ) ) || !equal( A(1,2), cplx( -1.0F ) ) ||
+          !equal( A(2,0), cplx( 6.0F ) ) || !equal( A(2,1), cplx(  6.0F ) ) || !equal( A(2,2), cplx(  4.0F ) ) ) {
          std::ostringstream oss;
          oss << " Test: " << test_ << "\n"
              << " Error: LU decomposition failed\n"
@@ -437,9 +443,9 @@ void OperationTest::testLU()
 
       blaze::zgetrf( A, ipiv.data() );
 
-      if( A(0,0) != cplx( 2.0 ) || A(0,1) != cplx( -0.5 ) || A(0,2) != cplx( -1.0 ) ||
-          A(1,0) != cplx( 4.0 ) || A(1,1) != cplx(  3.0 ) || A(1,2) != cplx( -1.0 ) ||
-          A(2,0) != cplx( 6.0 ) || A(2,1) != cplx(  6.0 ) || A(2,2) != cplx(  4.0 ) ) {
+      if( !equal( A(0,0), cplx( 2.0 ) ) || !equal( A(0,1), cplx( -0.5 ) ) || !equal( A(0,2), cplx( -1.0 ) ) ||
+          !equal( A(1,0), cplx( 4.0 ) ) || !equal( A(1,1), cplx(  3.0 ) ) || !equal( A(1,2), cplx( -1.0 ) ) ||
+          !equal( A(2,0), cplx( 6.0 ) ) || !equal( A(2,1), cplx(  6.0 ) ) || !equal( A(2,2), cplx(  4.0 ) ) ) {
          std::ostringstream oss;
          oss << " Test: " << test_ << "\n"
              << " Error: LU decomposition failed\n"
@@ -468,9 +474,9 @@ void OperationTest::testLU()
 
       blaze::sgetrf( A, ipiv.data() );
 
-      if( A(0,0) !=  2.0F || A(0,1) !=  4.0F || A(0,2) != 6.0F ||
-          A(1,0) != -0.5F || A(1,1) !=  3.0F || A(1,2) != 6.0F ||
-          A(2,0) != -1.0F || A(2,1) != -1.0F || A(2,2) != 4.0F ) {
+      if( !equal( A(0,0),  2.0F ) || !equal( A(0,1),  4.0F ) || !equal( A(0,2), 6.0F ) ||
+          !equal( A(1,0), -0.5F ) || !equal( A(1,1),  3.0F ) || !equal( A(1,2), 6.0F ) ||
+          !equal( A(2,0), -1.0F ) || !equal( A(2,1), -1.0F ) || !equal( A(2,2), 4.0F ) ) {
          std::ostringstream oss;
          oss << " Test: " << test_ << "\n"
              << " Error: LU decomposition failed\n"
@@ -494,9 +500,9 @@ void OperationTest::testLU()
 
       blaze::dgetrf( A, ipiv.data() );
 
-      if( A(0,0) !=  2.0 || A(0,1) !=  4.0 || A(0,2) != 6.0 ||
-          A(1,0) != -0.5 || A(1,1) !=  3.0 || A(1,2) != 6.0 ||
-          A(2,0) != -1.0 || A(2,1) != -1.0 || A(2,2) != 4.0 ) {
+      if( !equal( A(0,0),  2.0 ) || !equal( A(0,1),  4.0 ) || !equal( A(0,2), 6.0 ) ||
+          !equal( A(1,0), -0.5 ) || !equal( A(1,1),  3.0 ) || !equal( A(1,2), 6.0 ) ||
+          !equal( A(2,0), -1.0 ) || !equal( A(2,1), -1.0 ) || !equal( A(2,2), 4.0 ) ) {
          std::ostringstream oss;
          oss << " Test: " << test_ << "\n"
              << " Error: LU decomposition failed\n"
@@ -522,9 +528,9 @@ void OperationTest::testLU()
 
       blaze::cgetrf( A, ipiv.data() );
 
-      if( A(0,0) != cplx(  2.0F ) || A(0,1) != cplx(  4.0F ) || A(0,2) != cplx( 6.0F ) ||
-          A(1,0) != cplx( -0.5F ) || A(1,1) != cplx(  3.0F ) || A(1,2) != cplx( 6.0F ) ||
-          A(2,0) != cplx( -1.0F ) || A(2,1) != cplx( -1.0F ) || A(2,2) != cplx( 4.0F ) ) {
+      if( !equal( A(0,0), cplx(  2.0F ) ) || !equal( A(0,1), cplx(  4.0F ) ) || !equal( A(0,2), cplx( 6.0F ) ) ||
+          !equal( A(1,0), cplx( -0.5F ) ) || !equal( A(1,1), cplx(  3.0F ) ) || !equal( A(1,2), cplx( 6.0F ) ) ||
+          !equal( A(2,0), cplx( -1.0F ) ) || !equal( A(2,1), cplx( -1.0F ) ) || !equal( A(2,2), cplx( 4.0F ) ) ) {
          std::ostringstream oss;
          oss << " Test: " << test_ << "\n"
              << " Error: LU decomposition failed\n"
@@ -550,9 +556,9 @@ void OperationTest::testLU()
 
       blaze::zgetrf( A, ipiv.data() );
 
-      if( A(0,0) != cplx(  2.0 ) || A(0,1) != cplx(  4.0 ) || A(0,2) != cplx( 6.0 ) ||
-          A(1,0) != cplx( -0.5 ) || A(1,1) != cplx(  3.0 ) || A(1,2) != cplx( 6.0 ) ||
-          A(2,0) != cplx( -1.0 ) || A(2,1) != cplx( -1.0 ) || A(2,2) != cplx( 4.0 ) ) {
+      if( !equal( A(0,0), cplx(  2.0 ) ) || !equal( A(0,1), cplx(  4.0 ) ) || !equal( A(0,2), cplx( 6.0 ) ) ||
+          !equal( A(1,0), cplx( -0.5 ) ) || !equal( A(1,1), cplx(  3.0 ) ) || !equal( A(1,2), cplx( 6.0 ) ) ||
+          !equal( A(2,0), cplx( -1.0 ) ) || !equal( A(2,1), cplx( -1.0 ) ) || !equal( A(2,2), cplx( 4.0 ) ) ) {
          std::ostringstream oss;
          oss << " Test: " << test_ << "\n"
              << " Error: LU decomposition failed\n"
@@ -583,22 +589,25 @@ void OperationTest::testCholesky()
 {
 #if BLAZETEST_MATHTEST_LAPACK_MODE
 
+   using blaze::equal;
+
+
    //=====================================================================================
-   // Row-major matrix tests
+   // Row-major matrix tests (lower part)
    //=====================================================================================
 
-   // Single precision matrices (lower part)
+   // Single precision matrices
    {
-      test_ = "Row-major Cholesky decomposition (single precision, lower part)";
+      test_ = "Row-major Cholesky decomposition (lower part, single precision)";
 
       blaze::StaticMatrix<float,3UL,3U,blaze::rowMajor> A( 1.0F,  2.0F,  4.0F,
                                                            2.0F, 13.0F, 23.0F,
                                                            4.0F, 23.0F, 77.0F );
       blaze::spotrf( A, 'L' );
 
-      if( A(0,0) != 1.0F || A(0,1) != 2.0F || A(0,2) !=  4.0F ||
-          A(1,0) != 2.0F || A(1,1) != 3.0F || A(1,2) != 23.0F ||
-          A(2,0) != 4.0F || A(2,1) != 5.0F || A(2,2) !=  6.0F ) {
+      if( !equal( A(0,0), 1.0F ) || !equal( A(0,1), 2.0F ) || !equal( A(0,2),  4.0F ) ||
+          !equal( A(1,0), 2.0F ) || !equal( A(1,1), 3.0F ) || !equal( A(1,2), 23.0F ) ||
+          !equal( A(2,0), 4.0F ) || !equal( A(2,1), 5.0F ) || !equal( A(2,2),  6.0F ) ) {
          std::ostringstream oss;
          oss << " Test: " << test_ << "\n"
              << " Error: Cholesky decomposition failed\n"
@@ -611,42 +620,18 @@ void OperationTest::testCholesky()
       }
    }
 
-   // Single precision matrices (upper part)
+   // Double precision matrices
    {
-      test_ = "Row-major Cholesky decomposition (single precision, upper part)";
-
-      blaze::StaticMatrix<float,3UL,3U,blaze::rowMajor> A( 1.0F,  2.0F,  4.0F,
-                                                           2.0F, 13.0F, 23.0F,
-                                                           4.0F, 23.0F, 77.0F );
-      blaze::spotrf( A, 'U' );
-
-      if( A(0,0) != 1.0F || A(0,1) !=  2.0F || A(0,2) != 4.0F ||
-          A(1,0) != 2.0F || A(1,1) !=  3.0F || A(1,2) != 5.0F ||
-          A(2,0) != 4.0F || A(2,1) != 23.0F || A(2,2) != 6.0F ) {
-         std::ostringstream oss;
-         oss << " Test: " << test_ << "\n"
-             << " Error: Cholesky decomposition failed\n"
-             << " Details:\n"
-             << "   Result:\n" << A << "\n"
-             << "   Expected result:\n( 1  2  4 )\n"
-                                     "( 2  3  5 )\n"
-                                     "( 4 23  6 )\n";
-         throw std::runtime_error( oss.str() );
-      }
-   }
-
-   // Double precision matrices (lower part)
-   {
-      test_ = "Row-major Cholesky decomposition (double precision, lower part)";
+      test_ = "Row-major Cholesky decomposition (lower part, double precision)";
 
       blaze::StaticMatrix<double,3UL,3U,blaze::rowMajor> A( 1.0,  2.0,  4.0,
                                                             2.0, 13.0, 23.0,
                                                             4.0, 23.0, 77.0 );
       blaze::dpotrf( A, 'L' );
 
-      if( A(0,0) != 1.0 || A(0,1) != 2.0 || A(0,2) !=  4.0 ||
-          A(1,0) != 2.0 || A(1,1) != 3.0 || A(1,2) != 23.0 ||
-          A(2,0) != 4.0 || A(2,1) != 5.0 || A(2,2) !=  6.0 ) {
+      if( !equal( A(0,0), 1.0 ) || !equal( A(0,1), 2.0 ) || !equal( A(0,2),  4.0 ) ||
+          !equal( A(1,0), 2.0 ) || !equal( A(1,1), 3.0 ) || !equal( A(1,2), 23.0 ) ||
+          !equal( A(2,0), 4.0 ) || !equal( A(2,1), 5.0 ) || !equal( A(2,2),  6.0 ) ) {
          std::ostringstream oss;
          oss << " Test: " << test_ << "\n"
              << " Error: Cholesky decomposition failed\n"
@@ -659,33 +644,9 @@ void OperationTest::testCholesky()
       }
    }
 
-   // Double precision matrices (upper part)
+   // Single precision complex matrices
    {
-      test_ = "Row-major Cholesky decomposition (double precision, upper part)";
-
-      blaze::StaticMatrix<double,3UL,3U,blaze::rowMajor> A( 1.0,  2.0,  4.0,
-                                                            2.0, 13.0, 23.0,
-                                                            4.0, 23.0, 77.0 );
-      blaze::dpotrf( A, 'U' );
-
-      if( A(0,0) != 1.0 || A(0,1) !=  2.0 || A(0,2) != 4.0 ||
-          A(1,0) != 2.0 || A(1,1) !=  3.0 || A(1,2) != 5.0 ||
-          A(2,0) != 4.0 || A(2,1) != 23.0 || A(2,2) != 6.0 ) {
-         std::ostringstream oss;
-         oss << " Test: " << test_ << "\n"
-             << " Error: Cholesky decomposition failed\n"
-             << " Details:\n"
-             << "   Result:\n" << A << "\n"
-             << "   Expected result:\n( 1  2  4 )\n"
-                                     "( 2  3  5 )\n"
-                                     "( 4 23  6 )\n";
-         throw std::runtime_error( oss.str() );
-      }
-   }
-
-   // Single precision complex matrices (lower part)
-   {
-      test_ = "Row-major Cholesky decomposition (single precision, lower part)";
+      test_ = "Row-major Cholesky decomposition (lower part, single precision)";
 
       typedef blaze::complex<float>  cplx;
 
@@ -694,9 +655,9 @@ void OperationTest::testCholesky()
                                                           cplx( 4.0F ), cplx( 23.0F ), cplx( 77.0F ) );
       blaze::cpotrf( A, 'L' );
 
-      if( A(0,0) != cplx( 1.0F ) || A(0,1) != cplx( 2.0F ) || A(0,2) != cplx(  4.0F ) ||
-          A(1,0) != cplx( 2.0F ) || A(1,1) != cplx( 3.0F ) || A(1,2) != cplx( 23.0F ) ||
-          A(2,0) != cplx( 4.0F ) || A(2,1) != cplx( 5.0F ) || A(2,2) != cplx(  6.0F ) ) {
+      if( !equal( A(0,0), cplx( 1.0F ) ) || !equal( A(0,1), cplx( 2.0F ) ) || !equal( A(0,2), cplx(  4.0F ) ) ||
+          !equal( A(1,0), cplx( 2.0F ) ) || !equal( A(1,1), cplx( 3.0F ) ) || !equal( A(1,2), cplx( 23.0F ) ) ||
+          !equal( A(2,0), cplx( 4.0F ) ) || !equal( A(2,1), cplx( 5.0F ) ) || !equal( A(2,2), cplx(  6.0F ) ) ) {
          std::ostringstream oss;
          oss << " Test: " << test_ << "\n"
              << " Error: Cholesky decomposition failed\n"
@@ -709,9 +670,88 @@ void OperationTest::testCholesky()
       }
    }
 
-   // Single precision complex matrices (upper part)
+   // Double precision complex matrices
    {
-      test_ = "Row-major Cholesky decomposition (single precision, upper part)";
+      test_ = "Row-major Cholesky decomposition (lower part, double precision)";
+
+      typedef blaze::complex<double>  cplx;
+
+      blaze::StaticMatrix<cplx,3UL,3U,blaze::rowMajor> A( cplx( 1.0 ), cplx(  2.0 ), cplx(  4.0 ),
+                                                          cplx( 2.0 ), cplx( 13.0 ), cplx( 23.0 ),
+                                                          cplx( 4.0 ), cplx( 23.0 ), cplx( 77.0 ) );
+      blaze::zpotrf( A, 'L' );
+
+      if( !equal( A(0,0), cplx( 1.0 ) ) || !equal( A(0,1), cplx( 2.0 ) ) || !equal( A(0,2), cplx(  4.0 ) ) ||
+          !equal( A(1,0), cplx( 2.0 ) ) || !equal( A(1,1), cplx( 3.0 ) ) || !equal( A(1,2), cplx( 23.0 ) ) ||
+          !equal( A(2,0), cplx( 4.0 ) ) || !equal( A(2,1), cplx( 5.0 ) ) || !equal( A(2,2), cplx(  6.0 ) ) ) {
+         std::ostringstream oss;
+         oss << " Test: " << test_ << "\n"
+             << " Error: Cholesky decomposition failed\n"
+             << " Details:\n"
+             << "   Result:\n" << A << "\n"
+             << "   Expected result:\n( (1,0) (2,0) ( 4,0) )\n"
+                                     "( (2,0) (3,0) (23,0) )\n"
+                                     "( (4,0) (5,0) ( 6,0) )\n";
+         throw std::runtime_error( oss.str() );
+      }
+   }
+
+
+   //=====================================================================================
+   // Row-major matrix tests (upper part)
+   //=====================================================================================
+
+   // Single precision matrices
+   {
+      test_ = "Row-major Cholesky decomposition (upper part, single precision)";
+
+      blaze::StaticMatrix<float,3UL,3U,blaze::rowMajor> A( 1.0F,  2.0F,  4.0F,
+                                                           2.0F, 13.0F, 23.0F,
+                                                           4.0F, 23.0F, 77.0F );
+      blaze::spotrf( A, 'U' );
+
+      if( !equal( A(0,0), 1.0F ) || !equal( A(0,1),  2.0F ) || !equal( A(0,2), 4.0F ) ||
+          !equal( A(1,0), 2.0F ) || !equal( A(1,1),  3.0F ) || !equal( A(1,2), 5.0F ) ||
+          !equal( A(2,0), 4.0F ) || !equal( A(2,1), 23.0F ) || !equal( A(2,2), 6.0F ) ) {
+         std::ostringstream oss;
+         oss << " Test: " << test_ << "\n"
+             << " Error: Cholesky decomposition failed\n"
+             << " Details:\n"
+             << "   Result:\n" << A << "\n"
+             << "   Expected result:\n( 1  2  4 )\n"
+                                     "( 2  3  5 )\n"
+                                     "( 4 23  6 )\n";
+         throw std::runtime_error( oss.str() );
+      }
+   }
+
+   // Double precision matrices
+   {
+      test_ = "Row-major Cholesky decomposition (upper part, double precision)";
+
+      blaze::StaticMatrix<double,3UL,3U,blaze::rowMajor> A( 1.0,  2.0,  4.0,
+                                                            2.0, 13.0, 23.0,
+                                                            4.0, 23.0, 77.0 );
+      blaze::dpotrf( A, 'U' );
+
+      if( !equal( A(0,0), 1.0 ) || !equal( A(0,1),  2.0 ) || !equal( A(0,2), 4.0 ) ||
+          !equal( A(1,0), 2.0 ) || !equal( A(1,1),  3.0 ) || !equal( A(1,2), 5.0 ) ||
+          !equal( A(2,0), 4.0 ) || !equal( A(2,1), 23.0 ) || !equal( A(2,2), 6.0 ) ) {
+         std::ostringstream oss;
+         oss << " Test: " << test_ << "\n"
+             << " Error: Cholesky decomposition failed\n"
+             << " Details:\n"
+             << "   Result:\n" << A << "\n"
+             << "   Expected result:\n( 1  2  4 )\n"
+                                     "( 2  3  5 )\n"
+                                     "( 4 23  6 )\n";
+         throw std::runtime_error( oss.str() );
+      }
+   }
+
+   // Single precision complex matrices
+   {
+      test_ = "Row-major Cholesky decomposition (upper part, single precision)";
 
       typedef blaze::complex<float>  cplx;
 
@@ -720,9 +760,9 @@ void OperationTest::testCholesky()
                                                           cplx( 4.0F ), cplx( 23.0F ), cplx( 77.0F ) );
       blaze::cpotrf( A, 'U' );
 
-      if( A(0,0) != cplx( 1.0F ) || A(0,1) != cplx(  2.0F ) || A(0,2) != cplx( 4.0F ) ||
-          A(1,0) != cplx( 2.0F ) || A(1,1) != cplx(  3.0F ) || A(1,2) != cplx( 5.0F ) ||
-          A(2,0) != cplx( 4.0F ) || A(2,1) != cplx( 23.0F ) || A(2,2) != cplx( 6.0F ) ) {
+      if( !equal( A(0,0), cplx( 1.0F ) ) || !equal( A(0,1), cplx(  2.0F ) ) || !equal( A(0,2), cplx( 4.0F ) ) ||
+          !equal( A(1,0), cplx( 2.0F ) ) || !equal( A(1,1), cplx(  3.0F ) ) || !equal( A(1,2), cplx( 5.0F ) ) ||
+          !equal( A(2,0), cplx( 4.0F ) ) || !equal( A(2,1), cplx( 23.0F ) ) || !equal( A(2,2), cplx( 6.0F ) ) ) {
          std::ostringstream oss;
          oss << " Test: " << test_ << "\n"
              << " Error: Cholesky decomposition failed\n"
@@ -735,35 +775,9 @@ void OperationTest::testCholesky()
       }
    }
 
-   // Double precision complex matrices (lower part)
+   // Double precision complex matrices
    {
-      test_ = "Row-major Cholesky decomposition (double precision, lower part)";
-
-      typedef blaze::complex<double>  cplx;
-
-      blaze::StaticMatrix<cplx,3UL,3U,blaze::rowMajor> A( cplx( 1.0 ), cplx(  2.0 ), cplx(  4.0 ),
-                                                          cplx( 2.0 ), cplx( 13.0 ), cplx( 23.0 ),
-                                                          cplx( 4.0 ), cplx( 23.0 ), cplx( 77.0 ) );
-      blaze::zpotrf( A, 'L' );
-
-      if( A(0,0) != cplx( 1.0 ) || A(0,1) != cplx( 2.0 ) || A(0,2) != cplx(  4.0 ) ||
-          A(1,0) != cplx( 2.0 ) || A(1,1) != cplx( 3.0 ) || A(1,2) != cplx( 23.0 ) ||
-          A(2,0) != cplx( 4.0 ) || A(2,1) != cplx( 5.0 ) || A(2,2) != cplx(  6.0 ) ) {
-         std::ostringstream oss;
-         oss << " Test: " << test_ << "\n"
-             << " Error: Cholesky decomposition failed\n"
-             << " Details:\n"
-             << "   Result:\n" << A << "\n"
-             << "   Expected result:\n( (1,0) (2,0) ( 4,0) )\n"
-                                     "( (2,0) (3,0) (23,0) )\n"
-                                     "( (4,0) (5,0) ( 6,0) )\n";
-         throw std::runtime_error( oss.str() );
-      }
-   }
-
-   // Double precision complex matrices (upper part)
-   {
-      test_ = "Row-major Cholesky decomposition (double precision, upper part)";
+      test_ = "Row-major Cholesky decomposition (upper part, double precision)";
 
       typedef blaze::complex<double>  cplx;
 
@@ -772,9 +786,9 @@ void OperationTest::testCholesky()
                                                           cplx( 4.0 ), cplx( 23.0 ), cplx( 77.0 ) );
       blaze::zpotrf( A, 'U' );
 
-      if( A(0,0) != cplx( 1.0 ) || A(0,1) != cplx(  2.0 ) || A(0,2) != cplx( 4.0 ) ||
-          A(1,0) != cplx( 2.0 ) || A(1,1) != cplx(  3.0 ) || A(1,2) != cplx( 5.0 ) ||
-          A(2,0) != cplx( 4.0 ) || A(2,1) != cplx( 23.0 ) || A(2,2) != cplx( 6.0 ) ) {
+      if( !equal( A(0,0), cplx( 1.0 ) ) || !equal( A(0,1), cplx(  2.0 ) ) || !equal( A(0,2), cplx( 4.0 ) ) ||
+          !equal( A(1,0), cplx( 2.0 ) ) || !equal( A(1,1), cplx(  3.0 ) ) || !equal( A(1,2), cplx( 5.0 ) ) ||
+          !equal( A(2,0), cplx( 4.0 ) ) || !equal( A(2,1), cplx( 23.0 ) ) || !equal( A(2,2), cplx( 6.0 ) ) ) {
          std::ostringstream oss;
          oss << " Test: " << test_ << "\n"
              << " Error: Cholesky decomposition failed\n"
@@ -789,21 +803,21 @@ void OperationTest::testCholesky()
 
 
    //=====================================================================================
-   // Column-major matrix tests
+   // Column-major matrix tests (lower part)
    //=====================================================================================
 
-   // Single precision matrices (lower part)
+   // Single precision matrices
    {
-      test_ = "Column-major Cholesky decomposition (single precision, lower part)";
+      test_ = "Column-major Cholesky decomposition (lower part, single precision)";
 
       blaze::StaticMatrix<float,3UL,3U,blaze::columnMajor> A( 1.0F,  2.0F,  4.0F,
                                                               2.0F, 13.0F, 23.0F,
                                                               4.0F, 23.0F, 77.0F );
       blaze::spotrf( A, 'L' );
 
-      if( A(0,0) != 1.0F || A(0,1) != 2.0F || A(0,2) !=  4.0F ||
-          A(1,0) != 2.0F || A(1,1) != 3.0F || A(1,2) != 23.0F ||
-          A(2,0) != 4.0F || A(2,1) != 5.0F || A(2,2) !=  6.0F ) {
+      if( !equal( A(0,0), 1.0F ) || !equal( A(0,1), 2.0F ) || !equal( A(0,2),  4.0F ) ||
+          !equal( A(1,0), 2.0F ) || !equal( A(1,1), 3.0F ) || !equal( A(1,2), 23.0F ) ||
+          !equal( A(2,0), 4.0F ) || !equal( A(2,1), 5.0F ) || !equal( A(2,2),  6.0F ) ) {
          std::ostringstream oss;
          oss << " Test: " << test_ << "\n"
              << " Error: Cholesky decomposition failed\n"
@@ -816,42 +830,18 @@ void OperationTest::testCholesky()
       }
    }
 
-   // Single precision matrices (upper part)
+   // Double precision matrices
    {
-      test_ = "Column-major Cholesky decomposition (single precision, upper part)";
-
-      blaze::StaticMatrix<float,3UL,3U,blaze::columnMajor> A( 1.0F,  2.0F,  4.0F,
-                                                              2.0F, 13.0F, 23.0F,
-                                                              4.0F, 23.0F, 77.0F );
-      blaze::spotrf( A, 'U' );
-
-      if( A(0,0) != 1.0F || A(0,1) !=  2.0F || A(0,2) != 4.0F ||
-          A(1,0) != 2.0F || A(1,1) !=  3.0F || A(1,2) != 5.0F ||
-          A(2,0) != 4.0F || A(2,1) != 23.0F || A(2,2) != 6.0F ) {
-         std::ostringstream oss;
-         oss << " Test: " << test_ << "\n"
-             << " Error: Cholesky decomposition failed\n"
-             << " Details:\n"
-             << "   Result:\n" << A << "\n"
-             << "   Expected result:\n( 1  2  4 )\n"
-                                     "( 2  3  5 )\n"
-                                     "( 4 23  6 )\n";
-         throw std::runtime_error( oss.str() );
-      }
-   }
-
-   // Double precision matrices (lower part)
-   {
-      test_ = "Column-major Cholesky decomposition (double precision, lower part)";
+      test_ = "Column-major Cholesky decomposition (lower part, double precision)";
 
       blaze::StaticMatrix<double,3UL,3U,blaze::columnMajor> A( 1.0,  2.0,  4.0,
                                                                2.0, 13.0, 23.0,
                                                                4.0, 23.0, 77.0 );
       blaze::dpotrf( A, 'L' );
 
-      if( A(0,0) != 1.0 || A(0,1) != 2.0 || A(0,2) !=  4.0 ||
-          A(1,0) != 2.0 || A(1,1) != 3.0 || A(1,2) != 23.0 ||
-          A(2,0) != 4.0 || A(2,1) != 5.0 || A(2,2) !=  6.0 ) {
+      if( !equal( A(0,0), 1.0 ) || !equal( A(0,1), 2.0 ) || !equal( A(0,2),  4.0 ) ||
+          !equal( A(1,0), 2.0 ) || !equal( A(1,1), 3.0 ) || !equal( A(1,2), 23.0 ) ||
+          !equal( A(2,0), 4.0 ) || !equal( A(2,1), 5.0 ) || !equal( A(2,2),  6.0 ) ) {
          std::ostringstream oss;
          oss << " Test: " << test_ << "\n"
              << " Error: Cholesky decomposition failed\n"
@@ -864,33 +854,9 @@ void OperationTest::testCholesky()
       }
    }
 
-   // Double precision matrices (upper part)
+   // Single precision complex matrices
    {
-      test_ = "Column-major Cholesky decomposition (double precision, upper part)";
-
-      blaze::StaticMatrix<double,3UL,3U,blaze::columnMajor> A( 1.0,  2.0,  4.0,
-                                                               2.0, 13.0, 23.0,
-                                                               4.0, 23.0, 77.0 );
-      blaze::dpotrf( A, 'U' );
-
-      if( A(0,0) != 1.0 || A(0,1) !=  2.0 || A(0,2) != 4.0 ||
-          A(1,0) != 2.0 || A(1,1) !=  3.0 || A(1,2) != 5.0 ||
-          A(2,0) != 4.0 || A(2,1) != 23.0 || A(2,2) != 6.0 ) {
-         std::ostringstream oss;
-         oss << " Test: " << test_ << "\n"
-             << " Error: Cholesky decomposition failed\n"
-             << " Details:\n"
-             << "   Result:\n" << A << "\n"
-             << "   Expected result:\n( 1  2  4 )\n"
-                                     "( 2  3  5 )\n"
-                                     "( 4 23  6 )\n";
-         throw std::runtime_error( oss.str() );
-      }
-   }
-
-   // Single precision complex matrices (lower part)
-   {
-      test_ = "Column-major Cholesky decomposition (single precision, lower part)";
+      test_ = "Column-major Cholesky decomposition (lower part, single precision)";
 
       typedef blaze::complex<float>  cplx;
 
@@ -899,9 +865,9 @@ void OperationTest::testCholesky()
                                                              cplx( 4.0F ), cplx( 23.0F ), cplx( 77.0F ) );
       blaze::cpotrf( A, 'L' );
 
-      if( A(0,0) != cplx( 1.0F ) || A(0,1) != cplx( 2.0F ) || A(0,2) != cplx(  4.0F ) ||
-          A(1,0) != cplx( 2.0F ) || A(1,1) != cplx( 3.0F ) || A(1,2) != cplx( 23.0F ) ||
-          A(2,0) != cplx( 4.0F ) || A(2,1) != cplx( 5.0F ) || A(2,2) != cplx(  6.0F ) ) {
+      if( !equal( A(0,0), cplx( 1.0F ) ) || !equal( A(0,1), cplx( 2.0F ) ) || !equal( A(0,2), cplx(  4.0F ) ) ||
+          !equal( A(1,0), cplx( 2.0F ) ) || !equal( A(1,1), cplx( 3.0F ) ) || !equal( A(1,2), cplx( 23.0F ) ) ||
+          !equal( A(2,0), cplx( 4.0F ) ) || !equal( A(2,1), cplx( 5.0F ) ) || !equal( A(2,2), cplx(  6.0F ) ) ) {
          std::ostringstream oss;
          oss << " Test: " << test_ << "\n"
              << " Error: Cholesky decomposition failed\n"
@@ -914,9 +880,88 @@ void OperationTest::testCholesky()
       }
    }
 
-   // Single precision complex matrices (upper part)
+   // Double precision complex matrices
    {
-      test_ = "Column-major Cholesky decomposition (single precision, upper part)";
+      test_ = "Column-major Cholesky decomposition (lower part, double precision)";
+
+      typedef blaze::complex<double>  cplx;
+
+      blaze::StaticMatrix<cplx,3UL,3U,blaze::columnMajor> A( cplx( 1.0 ), cplx(  2.0 ), cplx(  4.0 ),
+                                                             cplx( 2.0 ), cplx( 13.0 ), cplx( 23.0 ),
+                                                             cplx( 4.0 ), cplx( 23.0 ), cplx( 77.0 ) );
+      blaze::zpotrf( A, 'L' );
+
+      if( !equal( A(0,0), cplx( 1.0 ) ) || !equal( A(0,1), cplx( 2.0 ) ) || !equal( A(0,2), cplx(  4.0 ) ) ||
+          !equal( A(1,0), cplx( 2.0 ) ) || !equal( A(1,1), cplx( 3.0 ) ) || !equal( A(1,2), cplx( 23.0 ) ) ||
+          !equal( A(2,0), cplx( 4.0 ) ) || !equal( A(2,1), cplx( 5.0 ) ) || !equal( A(2,2), cplx(  6.0 ) ) ) {
+         std::ostringstream oss;
+         oss << " Test: " << test_ << "\n"
+             << " Error: Cholesky decomposition failed\n"
+             << " Details:\n"
+             << "   Result:\n" << A << "\n"
+             << "   Expected result:\n( (1,0) (2,0) ( 4,0) )\n"
+                                     "( (2,0) (3,0) (23,0) )\n"
+                                     "( (4,0) (5,0) ( 6,0) )\n";
+         throw std::runtime_error( oss.str() );
+      }
+   }
+
+
+   //=====================================================================================
+   // Column-major matrix tests (upper part)
+   //=====================================================================================
+
+   // Single precision matrices
+   {
+      test_ = "Column-major Cholesky decomposition (upper part, single precision)";
+
+      blaze::StaticMatrix<float,3UL,3U,blaze::columnMajor> A( 1.0F,  2.0F,  4.0F,
+                                                              2.0F, 13.0F, 23.0F,
+                                                              4.0F, 23.0F, 77.0F );
+      blaze::spotrf( A, 'U' );
+
+      if( !equal( A(0,0), 1.0F ) || !equal( A(0,1),  2.0F ) || !equal( A(0,2), 4.0F ) ||
+          !equal( A(1,0), 2.0F ) || !equal( A(1,1),  3.0F ) || !equal( A(1,2), 5.0F ) ||
+          !equal( A(2,0), 4.0F ) || !equal( A(2,1), 23.0F ) || !equal( A(2,2), 6.0F ) ) {
+         std::ostringstream oss;
+         oss << " Test: " << test_ << "\n"
+             << " Error: Cholesky decomposition failed\n"
+             << " Details:\n"
+             << "   Result:\n" << A << "\n"
+             << "   Expected result:\n( 1  2  4 )\n"
+                                     "( 2  3  5 )\n"
+                                     "( 4 23  6 )\n";
+         throw std::runtime_error( oss.str() );
+      }
+   }
+
+   // Double precision matrices
+   {
+      test_ = "Column-major Cholesky decomposition (upper part, double precision)";
+
+      blaze::StaticMatrix<double,3UL,3U,blaze::columnMajor> A( 1.0,  2.0,  4.0,
+                                                               2.0, 13.0, 23.0,
+                                                               4.0, 23.0, 77.0 );
+      blaze::dpotrf( A, 'U' );
+
+      if( !equal( A(0,0), 1.0 ) || !equal( A(0,1),  2.0 ) || !equal( A(0,2), 4.0 ) ||
+          !equal( A(1,0), 2.0 ) || !equal( A(1,1),  3.0 ) || !equal( A(1,2), 5.0 ) ||
+          !equal( A(2,0), 4.0 ) || !equal( A(2,1), 23.0 ) || !equal( A(2,2), 6.0 ) ) {
+         std::ostringstream oss;
+         oss << " Test: " << test_ << "\n"
+             << " Error: Cholesky decomposition failed\n"
+             << " Details:\n"
+             << "   Result:\n" << A << "\n"
+             << "   Expected result:\n( 1  2  4 )\n"
+                                     "( 2  3  5 )\n"
+                                     "( 4 23  6 )\n";
+         throw std::runtime_error( oss.str() );
+      }
+   }
+
+   // Single precision complex matrices
+   {
+      test_ = "Column-major Cholesky decomposition (upper part, single precision)";
 
       typedef blaze::complex<float>  cplx;
 
@@ -925,9 +970,9 @@ void OperationTest::testCholesky()
                                                              cplx( 4.0F ), cplx( 23.0F ), cplx( 77.0F ) );
       blaze::cpotrf( A, 'U' );
 
-      if( A(0,0) != cplx( 1.0F ) || A(0,1) != cplx(  2.0F ) || A(0,2) != cplx( 4.0F ) ||
-          A(1,0) != cplx( 2.0F ) || A(1,1) != cplx(  3.0F ) || A(1,2) != cplx( 5.0F ) ||
-          A(2,0) != cplx( 4.0F ) || A(2,1) != cplx( 23.0F ) || A(2,2) != cplx( 6.0F ) ) {
+      if( !equal( A(0,0), cplx( 1.0F ) ) || !equal( A(0,1), cplx(  2.0F ) ) || !equal( A(0,2), cplx( 4.0F ) ) ||
+          !equal( A(1,0), cplx( 2.0F ) ) || !equal( A(1,1), cplx(  3.0F ) ) || !equal( A(1,2), cplx( 5.0F ) ) ||
+          !equal( A(2,0), cplx( 4.0F ) ) || !equal( A(2,1), cplx( 23.0F ) ) || !equal( A(2,2), cplx( 6.0F ) ) ) {
          std::ostringstream oss;
          oss << " Test: " << test_ << "\n"
              << " Error: Cholesky decomposition failed\n"
@@ -940,35 +985,9 @@ void OperationTest::testCholesky()
       }
    }
 
-   // Double precision complex matrices (lower part)
+   // Double precision complex matrices
    {
-      test_ = "Column-major Cholesky decomposition (double precision, lower part)";
-
-      typedef blaze::complex<double>  cplx;
-
-      blaze::StaticMatrix<cplx,3UL,3U,blaze::columnMajor> A( cplx( 1.0 ), cplx(  2.0 ), cplx(  4.0 ),
-                                                             cplx( 2.0 ), cplx( 13.0 ), cplx( 23.0 ),
-                                                             cplx( 4.0 ), cplx( 23.0 ), cplx( 77.0 ) );
-      blaze::zpotrf( A, 'L' );
-
-      if( A(0,0) != cplx( 1.0 ) || A(0,1) != cplx( 2.0 ) || A(0,2) != cplx(  4.0 ) ||
-          A(1,0) != cplx( 2.0 ) || A(1,1) != cplx( 3.0 ) || A(1,2) != cplx( 23.0 ) ||
-          A(2,0) != cplx( 4.0 ) || A(2,1) != cplx( 5.0 ) || A(2,2) != cplx(  6.0 ) ) {
-         std::ostringstream oss;
-         oss << " Test: " << test_ << "\n"
-             << " Error: Cholesky decomposition failed\n"
-             << " Details:\n"
-             << "   Result:\n" << A << "\n"
-             << "   Expected result:\n( (1,0) (2,0) ( 4,0) )\n"
-                                     "( (2,0) (3,0) (23,0) )\n"
-                                     "( (4,0) (5,0) ( 6,0) )\n";
-         throw std::runtime_error( oss.str() );
-      }
-   }
-
-   // Double precision complex matrices (upper part)
-   {
-      test_ = "Column-major Cholesky decomposition (double precision, upper part)";
+      test_ = "Column-major Cholesky decomposition (upper part, double precision)";
 
       typedef blaze::complex<double>  cplx;
 
@@ -977,9 +996,9 @@ void OperationTest::testCholesky()
                                                              cplx( 4.0 ), cplx( 23.0 ), cplx( 77.0 ) );
       blaze::zpotrf( A, 'U' );
 
-      if( A(0,0) != cplx( 1.0 ) || A(0,1) != cplx(  2.0 ) || A(0,2) != cplx( 4.0 ) ||
-          A(1,0) != cplx( 2.0 ) || A(1,1) != cplx(  3.0 ) || A(1,2) != cplx( 5.0 ) ||
-          A(2,0) != cplx( 4.0 ) || A(2,1) != cplx( 23.0 ) || A(2,2) != cplx( 6.0 ) ) {
+      if( !equal( A(0,0), cplx( 1.0 ) ) || !equal( A(0,1), cplx(  2.0 ) ) || !equal( A(0,2), cplx( 4.0 ) ) ||
+          !equal( A(1,0), cplx( 2.0 ) ) || !equal( A(1,1), cplx(  3.0 ) ) || !equal( A(1,2), cplx( 5.0 ) ) ||
+          !equal( A(2,0), cplx( 4.0 ) ) || !equal( A(2,1), cplx( 23.0 ) ) || !equal( A(2,2), cplx( 6.0 ) ) ) {
          std::ostringstream oss;
          oss << " Test: " << test_ << "\n"
              << " Error: Cholesky decomposition failed\n"
@@ -1010,13 +1029,16 @@ void OperationTest::testInversion()
 {
 #if BLAZETEST_MATHTEST_LAPACK_MODE
 
+   using blaze::equal;
+
+
    //=====================================================================================
-   // Row-major matrix tests
+   // Row-major LU-based inversion
    //=====================================================================================
 
    // Single precision matrices
    {
-      test_ = "Row-major inversion (single precision)";
+      test_ = "Row-major inversion (LU, single precision)";
 
       blaze::StaticMatrix<float,3UL,3U,blaze::rowMajor> A( 1.0F, 0.0F, 0.0F,
                                                            0.0F, 1.0F, 0.0F,
@@ -1026,9 +1048,9 @@ void OperationTest::testInversion()
       blaze::sgetrf( A, ipiv.data() );
       blaze::sgetri( A, ipiv.data() );
 
-      if( A(0,0) !=  1.0F || A(0,1) !=  0.0F || A(0,2) != 0.0F ||
-          A(1,0) !=  0.0F || A(1,1) !=  1.0F || A(1,2) != 0.0F ||
-          A(2,0) != -1.0F || A(2,1) != -1.0F || A(2,2) != 1.0F ) {
+      if( !equal( A(0,0),  1.0F ) || !equal( A(0,1),  0.0F ) || !equal( A(0,2), 0.0F ) ||
+          !equal( A(1,0),  0.0F ) || !equal( A(1,1),  1.0F ) || !equal( A(1,2), 0.0F ) ||
+          !equal( A(2,0), -1.0F ) || !equal( A(2,1), -1.0F ) || !equal( A(2,2), 1.0F ) ) {
          std::ostringstream oss;
          oss << " Test: " << test_ << "\n"
              << " Error: Matrix inversion failed\n"
@@ -1043,7 +1065,7 @@ void OperationTest::testInversion()
 
    // Double precision matrices
    {
-      test_ = "Row-major inversion (double precision)";
+      test_ = "Row-major inversion (LU, double precision)";
 
       blaze::StaticMatrix<double,3UL,3U,blaze::rowMajor> A( 1.0, 0.0, 0.0,
                                                             0.0, 1.0, 0.0,
@@ -1053,9 +1075,9 @@ void OperationTest::testInversion()
       blaze::dgetrf( A, ipiv.data() );
       blaze::dgetri( A, ipiv.data() );
 
-      if( A(0,0) !=  1.0 || A(0,1) !=  0.0 || A(0,2) != 0.0 ||
-          A(1,0) !=  0.0 || A(1,1) !=  1.0 || A(1,2) != 0.0 ||
-          A(2,0) != -1.0 || A(2,1) != -1.0 || A(2,2) != 1.0 ) {
+      if( !equal( A(0,0),  1.0 ) || !equal( A(0,1),  0.0 ) || !equal( A(0,2), 0.0 ) ||
+          !equal( A(1,0),  0.0 ) || !equal( A(1,1),  1.0 ) || !equal( A(1,2), 0.0 ) ||
+          !equal( A(2,0), -1.0 ) || !equal( A(2,1), -1.0 ) || !equal( A(2,2), 1.0 ) ) {
          std::ostringstream oss;
          oss << " Test: " << test_ << "\n"
              << " Error: Matrix inversion failed\n"
@@ -1070,7 +1092,7 @@ void OperationTest::testInversion()
 
    // Single precision complex matrices
    {
-      test_ = "Row-major matrix inversion (single precision complex)";
+      test_ = "Row-major matrix inversion (LU, single precision complex)";
 
       typedef blaze::complex<float>  cplx;
 
@@ -1082,9 +1104,9 @@ void OperationTest::testInversion()
       blaze::cgetrf( A, ipiv.data() );
       blaze::cgetri( A, ipiv.data() );
 
-      if( A(0,0) != cplx(  1.0F ) || A(0,1) != cplx(  0.0F ) || A(0,2) != cplx( 0.0F ) ||
-          A(1,0) != cplx(  0.0F ) || A(1,1) != cplx(  1.0F ) || A(1,2) != cplx( 0.0F ) ||
-          A(2,0) != cplx( -1.0F ) || A(2,1) != cplx( -1.0F ) || A(2,2) != cplx( 1.0F ) ) {
+      if( !equal( A(0,0), cplx(  1.0F ) ) || !equal( A(0,1), cplx(  0.0F ) ) || !equal( A(0,2), cplx( 0.0F ) ) ||
+          !equal( A(1,0), cplx(  0.0F ) ) || !equal( A(1,1), cplx(  1.0F ) ) || !equal( A(1,2), cplx( 0.0F ) ) ||
+          !equal( A(2,0), cplx( -1.0F ) ) || !equal( A(2,1), cplx( -1.0F ) ) || !equal( A(2,2), cplx( 1.0F ) ) ) {
          std::ostringstream oss;
          oss << " Test: " << test_ << "\n"
              << " Error: Matrix inversion failed\n"
@@ -1099,7 +1121,7 @@ void OperationTest::testInversion()
 
    // Double precision complex matrices
    {
-      test_ = "Row-major matrix inversion (double precision complex)";
+      test_ = "Row-major matrix inversion (LU, double precision complex)";
 
       typedef blaze::complex<double>  cplx;
 
@@ -1111,9 +1133,9 @@ void OperationTest::testInversion()
       blaze::zgetrf( A, ipiv.data() );
       blaze::zgetri( A, ipiv.data() );
 
-      if( A(0,0) != cplx(  1.0 ) || A(0,1) != cplx(  0.0 ) || A(0,2) != cplx( 0.0 ) ||
-          A(1,0) != cplx(  0.0 ) || A(1,1) != cplx(  1.0 ) || A(1,2) != cplx( 0.0 ) ||
-          A(2,0) != cplx( -1.0 ) || A(2,1) != cplx( -1.0 ) || A(2,2) != cplx( 1.0 ) ) {
+      if( !equal( A(0,0), cplx(  1.0 ) ) || !equal( A(0,1), cplx(  0.0 ) ) || !equal( A(0,2), cplx( 0.0 ) ) ||
+          !equal( A(1,0), cplx(  0.0 ) ) || !equal( A(1,1), cplx(  1.0 ) ) || !equal( A(1,2), cplx( 0.0 ) ) ||
+          !equal( A(2,0), cplx( -1.0 ) ) || !equal( A(2,1), cplx( -1.0 ) ) || !equal( A(2,2), cplx( 1.0 ) ) ) {
          std::ostringstream oss;
          oss << " Test: " << test_ << "\n"
              << " Error: Matrix inversion failed\n"
@@ -1128,12 +1150,230 @@ void OperationTest::testInversion()
 
 
    //=====================================================================================
-   // Column-major matrix tests
+   // Row-major Cholesky-based inversion (lower part)
    //=====================================================================================
 
    // Single precision matrices
    {
-      test_ = "Column-major inversion (single precision)";
+      test_ = "Row-major inversion (Cholesky, lower part, single precision)";
+
+      blaze::StaticMatrix<float,3UL,3U,blaze::rowMajor> A( 1.0F, 1.0F, 1.0F,
+                                                           1.0F, 2.0F, 2.0F,
+                                                           1.0F, 2.0F, 4.0F );
+      blaze::spotrf( A, 'L' );
+      blaze::spotri( A, 'L' );
+
+      if( !equal( A(0,0),  2.0F ) || !equal( A(0,1),  1.0F ) || !equal( A(0,2), 1.0F ) ||
+          !equal( A(1,0), -1.0F ) || !equal( A(1,1),  1.5F ) || !equal( A(1,2), 2.0F ) ||
+          !equal( A(2,0),  0.0F ) || !equal( A(2,1), -0.5F ) || !equal( A(2,2), 0.5F ) ) {
+         std::ostringstream oss;
+         oss << " Test: " << test_ << "\n"
+             << " Error: Matrix inversion failed\n"
+             << " Details:\n"
+             << "   Result:\n" << A << "\n"
+             << "   Expected result:\n(  2.0  1.0  1.0 )\n"
+                                     "( -1.0  1.5  2.0 )\n"
+                                     "(  0.0 -0.5  0.5 )\n";
+         throw std::runtime_error( oss.str() );
+      }
+   }
+
+   // Double precision matrices
+   {
+      test_ = "Row-major inversion (Cholesky, lower part, single precision)";
+
+      blaze::StaticMatrix<double,3UL,3U,blaze::rowMajor> A( 1.0, 1.0, 1.0,
+                                                            1.0, 2.0, 2.0,
+                                                            1.0, 2.0, 4.0 );
+      blaze::dpotrf( A, 'L' );
+      blaze::dpotri( A, 'L' );
+
+      if( !equal( A(0,0),  2.0 ) || !equal( A(0,1),  1.0 ) || !equal( A(0,2), 1.0 ) ||
+          !equal( A(1,0), -1.0 ) || !equal( A(1,1),  1.5 ) || !equal( A(1,2), 2.0 ) ||
+          !equal( A(2,0),  0.0 ) || !equal( A(2,1), -0.5 ) || !equal( A(2,2), 0.5 ) ) {
+         std::ostringstream oss;
+         oss << " Test: " << test_ << "\n"
+             << " Error: Matrix inversion failed\n"
+             << " Details:\n"
+             << "   Result:\n" << A << "\n"
+             << "   Expected result:\n(  2.0  1.0  1.0 )\n"
+                                     "( -1.0  1.5  2.0 )\n"
+                                     "(  0.0 -0.5  0.5 )\n";
+         throw std::runtime_error( oss.str() );
+      }
+   }
+
+   // Single precision complex matrices
+   {
+      test_ = "Row-major inversion (Cholesky, lower part, single precision complex)";
+
+      typedef blaze::complex<float>  cplx;
+
+      blaze::StaticMatrix<cplx,3UL,3U,blaze::rowMajor> A( cplx( 1.0F ), cplx( 1.0F ), cplx( 1.0F ),
+                                                          cplx( 1.0F ), cplx( 2.0F ), cplx( 2.0F ),
+                                                          cplx( 1.0F ), cplx( 2.0F ), cplx( 4.0F ) );
+      blaze::cpotrf( A, 'L' );
+      blaze::cpotri( A, 'L' );
+
+      if( !equal( A(0,0), cplx(  2.0F ) ) || !equal( A(0,1), cplx(  1.0F ) ) || !equal( A(0,2), cplx( 1.0F ) ) ||
+          !equal( A(1,0), cplx( -1.0F ) ) || !equal( A(1,1), cplx(  1.5F ) ) || !equal( A(1,2), cplx( 2.0F ) ) ||
+          !equal( A(2,0), cplx(  0.0F ) ) || !equal( A(2,1), cplx( -0.5F ) ) || !equal( A(2,2), cplx( 0.5F ) ) ) {
+         std::ostringstream oss;
+         oss << " Test: " << test_ << "\n"
+             << " Error: Matrix inversion failed\n"
+             << " Details:\n"
+             << "   Result:\n" << A << "\n"
+             << "   Expected result:\n( ( 2.0,0.0) ( 1.0,0.0) (1.0,0.0) )\n"
+                                     "( (-1.0,0.0) ( 1.5,0.0) (2.0,0.0) )\n"
+                                     "( ( 0.0,0.0) (-0.5,0.0) (0.5,0.0) )\n";
+         throw std::runtime_error( oss.str() );
+      }
+   }
+
+   // Double precision complex matrices
+   {
+      test_ = "Row-major inversion (Cholesky, lower part, double precision complex)";
+
+      typedef blaze::complex<double>  cplx;
+
+      blaze::StaticMatrix<cplx,3UL,3U,blaze::rowMajor> A( cplx( 1.0 ), cplx( 1.0 ), cplx( 1.0 ),
+                                                          cplx( 1.0 ), cplx( 2.0 ), cplx( 2.0 ),
+                                                          cplx( 1.0 ), cplx( 2.0 ), cplx( 4.0 ) );
+      blaze::zpotrf( A, 'L' );
+      blaze::zpotri( A, 'L' );
+
+      if( !equal( A(0,0), cplx(  2.0 ) ) || !equal( A(0,1), cplx(  1.0 ) ) || !equal( A(0,2), cplx( 1.0 ) ) ||
+          !equal( A(1,0), cplx( -1.0 ) ) || !equal( A(1,1), cplx(  1.5 ) ) || !equal( A(1,2), cplx( 2.0 ) ) ||
+          !equal( A(2,0), cplx(  0.0 ) ) || !equal( A(2,1), cplx( -0.5 ) ) || !equal( A(2,2), cplx( 0.5 ) ) ) {
+         std::ostringstream oss;
+         oss << " Test: " << test_ << "\n"
+             << " Error: Matrix inversion failed\n"
+             << " Details:\n"
+             << "   Result:\n" << A << "\n"
+             << "   Expected result:\n( ( 2.0,0.0) ( 1.0,0.0) (1.0,0.0) )\n"
+                                     "( (-1.0,0.0) ( 1.5,0.0) (2.0,0.0) )\n"
+                                     "( ( 0.0,0.0) (-0.5,0.0) (0.5,0.0) )\n";
+         throw std::runtime_error( oss.str() );
+      }
+   }
+
+
+   //=====================================================================================
+   // Row-major Cholesky-based inversion (upper part)
+   //=====================================================================================
+
+   // Single precision matrices
+   {
+      test_ = "Row-major inversion (Cholesky, upper part, single precision)";
+
+      blaze::StaticMatrix<float,3UL,3U,blaze::rowMajor> A( 1.0F, 1.0F, 1.0F,
+                                                           1.0F, 2.0F, 2.0F,
+                                                           1.0F, 2.0F, 4.0F );
+      blaze::spotrf( A, 'U' );
+      blaze::spotri( A, 'U' );
+
+      if( !equal( A(0,0), 2.0F ) || !equal( A(0,1), -1.0F ) || !equal( A(0,2),  0.0F ) ||
+          !equal( A(1,0), 1.0F ) || !equal( A(1,1),  1.5F ) || !equal( A(1,2), -0.5F ) ||
+          !equal( A(2,0), 1.0F ) || !equal( A(2,1),  2.0F ) || !equal( A(2,2),  0.5F ) ) {
+         std::ostringstream oss;
+         oss << " Test: " << test_ << "\n"
+             << " Error: Matrix inversion failed\n"
+             << " Details:\n"
+             << "   Result:\n" << A << "\n"
+             << "   Expected result:\n( 2.0 -1.0  0.0 )\n"
+                                     "( 1.0  1.5 -0.5 )\n"
+                                     "( 1.0  2.0  0.5 )\n";
+         throw std::runtime_error( oss.str() );
+      }
+   }
+
+   // Double precision matrices
+   {
+      test_ = "Row-major inversion (Cholesky, upper part, double precision)";
+
+      blaze::StaticMatrix<double,3UL,3U,blaze::rowMajor> A( 1.0, 1.0, 1.0,
+                                                            1.0, 2.0, 2.0,
+                                                            1.0, 2.0, 4.0 );
+      blaze::dpotrf( A, 'U' );
+      blaze::dpotri( A, 'U' );
+
+      if( !equal( A(0,0), 2.0 ) || !equal( A(0,1), -1.0 ) || !equal( A(0,2),  0.0 ) ||
+          !equal( A(1,0), 1.0 ) || !equal( A(1,1),  1.5 ) || !equal( A(1,2), -0.5 ) ||
+          !equal( A(2,0), 1.0 ) || !equal( A(2,1),  2.0 ) || !equal( A(2,2),  0.5 ) ) {
+         std::ostringstream oss;
+         oss << " Test: " << test_ << "\n"
+             << " Error: Matrix inversion failed\n"
+             << " Details:\n"
+             << "   Result:\n" << A << "\n"
+             << "   Expected result:\n( 2.0 -1.0  0.0 )\n"
+                                     "( 1.0  1.5 -0.5 )\n"
+                                     "( 1.0  2.0  0.5 )\n";
+         throw std::runtime_error( oss.str() );
+      }
+   }
+
+   // Single precision complex matrices
+   {
+      test_ = "Row-major inversion (Cholesky, upper part, single precision complex)";
+
+      typedef blaze::complex<float>  cplx;
+
+      blaze::StaticMatrix<cplx,3UL,3U,blaze::rowMajor> A( cplx( 1.0F ), cplx( 1.0F ), cplx( 1.0F ),
+                                                          cplx( 1.0F ), cplx( 2.0F ), cplx( 2.0F ),
+                                                          cplx( 1.0F ), cplx( 2.0F ), cplx( 4.0F ) );
+      blaze::cpotrf( A, 'U' );
+      blaze::cpotri( A, 'U' );
+
+      if( !equal( A(0,0), cplx( 2.0F ) ) || !equal( A(0,1), cplx( -1.0F ) ) || !equal( A(0,2), cplx(  0.0F ) ) ||
+          !equal( A(1,0), cplx( 1.0F ) ) || !equal( A(1,1), cplx(  1.5F ) ) || !equal( A(1,2), cplx( -0.5F ) ) ||
+          !equal( A(2,0), cplx( 1.0F ) ) || !equal( A(2,1), cplx(  2.0F ) ) || !equal( A(2,2), cplx(  0.5F ) ) ) {
+         std::ostringstream oss;
+         oss << " Test: " << test_ << "\n"
+             << " Error: Matrix inversion failed\n"
+             << " Details:\n"
+             << "   Result:\n" << A << "\n"
+             << "   Expected result:\n( (2.0,0.0) (-1.0,0.0) ( 0.0,0.0) )\n"
+                                     "( (1.0,0.0) ( 1.5,0.0) (-0.5,0.0) )\n"
+                                     "( (1.0,0.0) ( 2.0,0.0) ( 0.5,0.0) )\n";
+         throw std::runtime_error( oss.str() );
+      }
+   }
+
+   // Double precision complex matrices
+   {
+      test_ = "Row-major inversion (Cholesky, upper part, double precision complex)";
+
+      typedef blaze::complex<double>  cplx;
+
+      blaze::StaticMatrix<cplx,3UL,3U,blaze::rowMajor> A( cplx( 1.0 ), cplx( 1.0 ), cplx( 1.0 ),
+                                                          cplx( 1.0 ), cplx( 2.0 ), cplx( 2.0 ),
+                                                          cplx( 1.0 ), cplx( 2.0 ), cplx( 4.0 ) );
+      blaze::zpotrf( A, 'U' );
+      blaze::zpotri( A, 'U' );
+
+      if( !equal( A(0,0), cplx( 2.0 ) ) || !equal( A(0,1), cplx( -1.0 ) ) || !equal( A(0,2), cplx(  0.0 ) ) ||
+          !equal( A(1,0), cplx( 1.0 ) ) || !equal( A(1,1), cplx(  1.5 ) ) || !equal( A(1,2), cplx( -0.5 ) ) ||
+          !equal( A(2,0), cplx( 1.0 ) ) || !equal( A(2,1), cplx(  2.0 ) ) || !equal( A(2,2), cplx(  0.5 ) ) ) {
+         std::ostringstream oss;
+         oss << " Test: " << test_ << "\n"
+             << " Error: Matrix inversion failed\n"
+             << " Details:\n"
+             << "   Result:\n" << A << "\n"
+             << "   Expected result:\n( (2.0,0.0) (-1.0,0.0) ( 0.0,0.0) )\n"
+                                     "( (1.0,0.0) ( 1.5,0.0) (-0.5,0.0) )\n"
+                                     "( (1.0,0.0) ( 2.0,0.0) ( 0.5,0.0) )\n";
+         throw std::runtime_error( oss.str() );
+      }
+   }
+
+
+   //=====================================================================================
+   // Column-major LU-based inversion
+   //=====================================================================================
+
+   // Single precision matrices
+   {
+      test_ = "Column-major inversion (LU, single precision)";
 
       blaze::StaticMatrix<float,3UL,3U,blaze::columnMajor> A( 1.0F, 0.0F, 1.0F,
                                                               0.0F, 1.0F, 1.0F,
@@ -1143,9 +1383,9 @@ void OperationTest::testInversion()
       blaze::sgetrf( A, ipiv.data() );
       blaze::sgetri( A, ipiv.data() );
 
-      if( A(0,0) !=  1.0F || A(0,1) !=  0.0F || A(0,2) != 0.0F ||
-          A(1,0) !=  0.0F || A(1,1) !=  1.0F || A(1,2) != 0.0F ||
-          A(2,0) != -1.0F || A(2,1) != -1.0F || A(2,2) != 1.0F ) {
+      if( !equal( A(0,0),  1.0F ) || !equal( A(0,1),  0.0F ) || !equal( A(0,2), 0.0F ) ||
+          !equal( A(1,0),  0.0F ) || !equal( A(1,1),  1.0F ) || !equal( A(1,2), 0.0F ) ||
+          !equal( A(2,0), -1.0F ) || !equal( A(2,1), -1.0F ) || !equal( A(2,2), 1.0F ) ) {
          std::ostringstream oss;
          oss << " Test: " << test_ << "\n"
              << " Error: Matrix inversion failed\n"
@@ -1160,7 +1400,7 @@ void OperationTest::testInversion()
 
    // Double precision matrices
    {
-      test_ = "Column-major inversion (double precision)";
+      test_ = "Column-major inversion (LU, double precision)";
 
       blaze::StaticMatrix<double,3UL,3U,blaze::columnMajor> A( 1.0, 0.0, 1.0,
                                                                0.0, 1.0, 1.0,
@@ -1170,9 +1410,9 @@ void OperationTest::testInversion()
       blaze::dgetrf( A, ipiv.data() );
       blaze::dgetri( A, ipiv.data() );
 
-      if( A(0,0) !=  1.0 || A(0,1) !=  0.0 || A(0,2) != 0.0 ||
-          A(1,0) !=  0.0 || A(1,1) !=  1.0 || A(1,2) != 0.0 ||
-          A(2,0) != -1.0 || A(2,1) != -1.0 || A(2,2) != 1.0 ) {
+      if( !equal( A(0,0),  1.0 ) || !equal( A(0,1),  0.0 ) || !equal( A(0,2), 0.0 ) ||
+          !equal( A(1,0),  0.0 ) || !equal( A(1,1),  1.0 ) || !equal( A(1,2), 0.0 ) ||
+          !equal( A(2,0), -1.0 ) || !equal( A(2,1), -1.0 ) || !equal( A(2,2), 1.0 ) ) {
          std::ostringstream oss;
          oss << " Test: " << test_ << "\n"
              << " Error: Matrix inversion failed\n"
@@ -1187,7 +1427,7 @@ void OperationTest::testInversion()
 
    // Single precision complex matrices
    {
-      test_ = "Column-major matrix inversion (single precision complex)";
+      test_ = "Column-major matrix inversion (LU, single precision complex)";
 
       typedef blaze::complex<float>  cplx;
 
@@ -1199,9 +1439,9 @@ void OperationTest::testInversion()
       blaze::cgetrf( A, ipiv.data() );
       blaze::cgetri( A, ipiv.data() );
 
-      if( A(0,0) != cplx(  1.0F ) || A(0,1) != cplx(  0.0F ) || A(0,2) != cplx( 0.0F ) ||
-          A(1,0) != cplx(  0.0F ) || A(1,1) != cplx(  1.0F ) || A(1,2) != cplx( 0.0F ) ||
-          A(2,0) != cplx( -1.0F ) || A(2,1) != cplx( -1.0F ) || A(2,2) != cplx( 1.0F ) ) {
+      if( !equal( A(0,0), cplx(  1.0F ) ) || !equal( A(0,1), cplx(  0.0F ) ) || !equal( A(0,2), cplx( 0.0F ) ) ||
+          !equal( A(1,0), cplx(  0.0F ) ) || !equal( A(1,1), cplx(  1.0F ) ) || !equal( A(1,2), cplx( 0.0F ) ) ||
+          !equal( A(2,0), cplx( -1.0F ) ) || !equal( A(2,1), cplx( -1.0F ) ) || !equal( A(2,2), cplx( 1.0F ) ) ) {
          std::ostringstream oss;
          oss << " Test: " << test_ << "\n"
              << " Error: Matrix inversion failed\n"
@@ -1216,7 +1456,7 @@ void OperationTest::testInversion()
 
    // Double precision complex matrices
    {
-      test_ = "Column-major matrix inversion (double precision complex)";
+      test_ = "Column-major matrix inversion (LU, double precision complex)";
 
       typedef blaze::complex<double>  cplx;
 
@@ -1228,9 +1468,9 @@ void OperationTest::testInversion()
       blaze::zgetrf( A, ipiv.data() );
       blaze::zgetri( A, ipiv.data() );
 
-      if( A(0,0) != cplx(  1.0 ) || A(0,1) != cplx(  0.0 ) || A(0,2) != cplx( 0.0 ) ||
-          A(1,0) != cplx(  0.0 ) || A(1,1) != cplx(  1.0 ) || A(1,2) != cplx( 0.0 ) ||
-          A(2,0) != cplx( -1.0 ) || A(2,1) != cplx( -1.0 ) || A(2,2) != cplx( 1.0 ) ) {
+      if( !equal( A(0,0), cplx(  1.0 ) ) || !equal( A(0,1), cplx(  0.0 ) ) || !equal( A(0,2), cplx( 0.0 ) ) ||
+          !equal( A(1,0), cplx(  0.0 ) ) || !equal( A(1,1), cplx(  1.0 ) ) || !equal( A(1,2), cplx( 0.0 ) ) ||
+          !equal( A(2,0), cplx( -1.0 ) ) || !equal( A(2,1), cplx( -1.0 ) ) || !equal( A(2,2), cplx( 1.0 ) ) ) {
          std::ostringstream oss;
          oss << " Test: " << test_ << "\n"
              << " Error: Matrix inversion failed\n"
@@ -1239,6 +1479,224 @@ void OperationTest::testInversion()
              << "   Expected result:\n( ( 1,0) ( 0,0) (0,0) )\n"
                                      "( ( 0,0) ( 3,0) (0,0) )\n"
                                      "( (-1,0) (-1,0) (1,0) )\n";
+         throw std::runtime_error( oss.str() );
+      }
+   }
+
+
+   //=====================================================================================
+   // Column-major Cholesky-based inversion (lower part)
+   //=====================================================================================
+
+   // Single precision matrices
+   {
+      test_ = "Column-major inversion (Cholesky, lower part, single precision)";
+
+      blaze::StaticMatrix<float,3UL,3U,blaze::columnMajor> A( 1.0F, 1.0F, 1.0F,
+                                                              1.0F, 2.0F, 2.0F,
+                                                              1.0F, 2.0F, 4.0F );
+      blaze::spotrf( A, 'L' );
+      blaze::spotri( A, 'L' );
+
+      if( !equal( A(0,0),  2.0F ) || !equal( A(0,1),  1.0F ) || !equal( A(0,2), 1.0F ) ||
+          !equal( A(1,0), -1.0F ) || !equal( A(1,1),  1.5F ) || !equal( A(1,2), 2.0F ) ||
+          !equal( A(2,0),  0.0F ) || !equal( A(2,1), -0.5F ) || !equal( A(2,2), 0.5F ) ) {
+         std::ostringstream oss;
+         oss << " Test: " << test_ << "\n"
+             << " Error: Matrix inversion failed\n"
+             << " Details:\n"
+             << "   Result:\n" << A << "\n"
+             << "   Expected result:\n(  2.0  1.0  1.0 )\n"
+                                     "( -1.0  1.5  2.0 )\n"
+                                     "(  0.0 -0.5  0.5 )\n";
+         throw std::runtime_error( oss.str() );
+      }
+   }
+
+   // Double precision matrices
+   {
+      test_ = "Column-major inversion (Cholesky, lower part, single precision)";
+
+      blaze::StaticMatrix<double,3UL,3U,blaze::columnMajor> A( 1.0, 1.0, 1.0,
+                                                               1.0, 2.0, 2.0,
+                                                               1.0, 2.0, 4.0 );
+      blaze::dpotrf( A, 'L' );
+      blaze::dpotri( A, 'L' );
+
+      if( !equal( A(0,0),  2.0 ) || !equal( A(0,1),  1.0 ) || !equal( A(0,2), 1.0 ) ||
+          !equal( A(1,0), -1.0 ) || !equal( A(1,1),  1.5 ) || !equal( A(1,2), 2.0 ) ||
+          !equal( A(2,0),  0.0 ) || !equal( A(2,1), -0.5 ) || !equal( A(2,2), 0.5 ) ) {
+         std::ostringstream oss;
+         oss << " Test: " << test_ << "\n"
+             << " Error: Matrix inversion failed\n"
+             << " Details:\n"
+             << "   Result:\n" << A << "\n"
+             << "   Expected result:\n(  2.0  1.0  1.0 )\n"
+                                     "( -1.0  1.5  2.0 )\n"
+                                     "(  0.0 -0.5  0.5 )\n";
+         throw std::runtime_error( oss.str() );
+      }
+   }
+
+   // Single precision complex matrices
+   {
+      test_ = "Column-major inversion (Cholesky, lower part, single precision complex)";
+
+      typedef blaze::complex<float>  cplx;
+
+      blaze::StaticMatrix<cplx,3UL,3U,blaze::columnMajor> A( cplx( 1.0F ), cplx( 1.0F ), cplx( 1.0F ),
+                                                             cplx( 1.0F ), cplx( 2.0F ), cplx( 2.0F ),
+                                                             cplx( 1.0F ), cplx( 2.0F ), cplx( 4.0F ) );
+      blaze::cpotrf( A, 'L' );
+      blaze::cpotri( A, 'L' );
+
+      if( !equal( A(0,0), cplx(  2.0F ) ) || !equal( A(0,1), cplx(  1.0F ) ) || !equal( A(0,2), cplx( 1.0F ) ) ||
+          !equal( A(1,0), cplx( -1.0F ) ) || !equal( A(1,1), cplx(  1.5F ) ) || !equal( A(1,2), cplx( 2.0F ) ) ||
+          !equal( A(2,0), cplx(  0.0F ) ) || !equal( A(2,1), cplx( -0.5F ) ) || !equal( A(2,2), cplx( 0.5F ) ) ) {
+         std::ostringstream oss;
+         oss << " Test: " << test_ << "\n"
+             << " Error: Matrix inversion failed\n"
+             << " Details:\n"
+             << "   Result:\n" << A << "\n"
+             << "   Expected result:\n( ( 2.0,0.0) ( 1.0,0.0) (1.0,0.0) )\n"
+                                     "( (-1.0,0.0) ( 1.5,0.0) (2.0,0.0) )\n"
+                                     "( ( 0.0,0.0) (-0.5,0.0) (0.5,0.0) )\n";
+         throw std::runtime_error( oss.str() );
+      }
+   }
+
+   // Double precision complex matrices
+   {
+      test_ = "Column-major inversion (Cholesky, lower part, double precision complex)";
+
+      typedef blaze::complex<double>  cplx;
+
+      blaze::StaticMatrix<cplx,3UL,3U,blaze::columnMajor> A( cplx( 1.0 ), cplx( 1.0 ), cplx( 1.0 ),
+                                                             cplx( 1.0 ), cplx( 2.0 ), cplx( 2.0 ),
+                                                             cplx( 1.0 ), cplx( 2.0 ), cplx( 4.0 ) );
+      blaze::zpotrf( A, 'L' );
+      blaze::zpotri( A, 'L' );
+
+      if( !equal( A(0,0), cplx(  2.0 ) ) || !equal( A(0,1), cplx(  1.0 ) ) || !equal( A(0,2), cplx( 1.0 ) ) ||
+          !equal( A(1,0), cplx( -1.0 ) ) || !equal( A(1,1), cplx(  1.5 ) ) || !equal( A(1,2), cplx( 2.0 ) ) ||
+          !equal( A(2,0), cplx(  0.0 ) ) || !equal( A(2,1), cplx( -0.5 ) ) || !equal( A(2,2), cplx( 0.5 ) ) ) {
+         std::ostringstream oss;
+         oss << " Test: " << test_ << "\n"
+             << " Error: Matrix inversion failed\n"
+             << " Details:\n"
+             << "   Result:\n" << A << "\n"
+             << "   Expected result:\n( ( 2.0,0.0) ( 1.0,0.0) (1.0,0.0) )\n"
+                                     "( (-1.0,0.0) ( 1.5,0.0) (2.0,0.0) )\n"
+                                     "( ( 0.0,0.0) (-0.5,0.0) (0.5,0.0) )\n";
+         throw std::runtime_error( oss.str() );
+      }
+   }
+
+
+   //=====================================================================================
+   // Column-major Cholesky-based inversion (upper part)
+   //=====================================================================================
+
+   // Single precision matrices
+   {
+      test_ = "Column-major inversion (Cholesky, upper part, single precision)";
+
+      blaze::StaticMatrix<float,3UL,3U,blaze::columnMajor> A( 1.0F, 1.0F, 1.0F,
+                                                              1.0F, 2.0F, 2.0F,
+                                                              1.0F, 2.0F, 4.0F );
+      blaze::spotrf( A, 'U' );
+      blaze::spotri( A, 'U' );
+
+      if( !equal( A(0,0), 2.0F ) || !equal( A(0,1), -1.0F ) || !equal( A(0,2),  0.0F ) ||
+          !equal( A(1,0), 1.0F ) || !equal( A(1,1),  1.5F ) || !equal( A(1,2), -0.5F ) ||
+          !equal( A(2,0), 1.0F ) || !equal( A(2,1),  2.0F ) || !equal( A(2,2),  0.5F ) ) {
+         std::ostringstream oss;
+         oss << " Test: " << test_ << "\n"
+             << " Error: Matrix inversion failed\n"
+             << " Details:\n"
+             << "   Result:\n" << A << "\n"
+             << "   Expected result:\n( 2.0 -1.0  0.0 )\n"
+                                     "( 1.0  1.5 -0.5 )\n"
+                                     "( 1.0  2.0  0.5 )\n";
+         throw std::runtime_error( oss.str() );
+      }
+   }
+
+   // Double precision matrices
+   {
+      test_ = "Column-major inversion (Cholesky, upper part, double precision)";
+
+      blaze::StaticMatrix<double,3UL,3U,blaze::columnMajor> A( 1.0, 1.0, 1.0,
+                                                               1.0, 2.0, 2.0,
+                                                               1.0, 2.0, 4.0 );
+      blaze::dpotrf( A, 'U' );
+      blaze::dpotri( A, 'U' );
+
+      if( !equal( A(0,0), 2.0 ) || !equal( A(0,1), -1.0 ) || !equal( A(0,2),  0.0 ) ||
+          !equal( A(1,0), 1.0 ) || !equal( A(1,1),  1.5 ) || !equal( A(1,2), -0.5 ) ||
+          !equal( A(2,0), 1.0 ) || !equal( A(2,1),  2.0 ) || !equal( A(2,2),  0.5 ) ) {
+         std::ostringstream oss;
+         oss << " Test: " << test_ << "\n"
+             << " Error: Matrix inversion failed\n"
+             << " Details:\n"
+             << "   Result:\n" << A << "\n"
+             << "   Expected result:\n( 2.0 -1.0  0.0 )\n"
+                                     "( 1.0  1.5 -0.5 )\n"
+                                     "( 1.0  2.0  0.5 )\n";
+         throw std::runtime_error( oss.str() );
+      }
+   }
+
+   // Single precision complex matrices
+   {
+      test_ = "Column-major inversion (Cholesky, upper part, single precision complex)";
+
+      typedef blaze::complex<float>  cplx;
+
+      blaze::StaticMatrix<cplx,3UL,3U,blaze::columnMajor> A( cplx( 1.0F ), cplx( 1.0F ), cplx( 1.0F ),
+                                                             cplx( 1.0F ), cplx( 2.0F ), cplx( 2.0F ),
+                                                             cplx( 1.0F ), cplx( 2.0F ), cplx( 4.0F ) );
+      blaze::cpotrf( A, 'U' );
+      blaze::cpotri( A, 'U' );
+
+      if( !equal( A(0,0), cplx( 2.0F ) ) || !equal( A(0,1), cplx( -1.0F ) ) || !equal( A(0,2), cplx(  0.0F ) ) ||
+          !equal( A(1,0), cplx( 1.0F ) ) || !equal( A(1,1), cplx(  1.5F ) ) || !equal( A(1,2), cplx( -0.5F ) ) ||
+          !equal( A(2,0), cplx( 1.0F ) ) || !equal( A(2,1), cplx(  2.0F ) ) || !equal( A(2,2), cplx(  0.5F ) ) ) {
+         std::ostringstream oss;
+         oss << " Test: " << test_ << "\n"
+             << " Error: Matrix inversion failed\n"
+             << " Details:\n"
+             << "   Result:\n" << A << "\n"
+             << "   Expected result:\n( (2.0,0.0) (-1.0,0.0) ( 0.0,0.0) )\n"
+                                     "( (1.0,0.0) ( 1.5,0.0) (-0.5,0.0) )\n"
+                                     "( (1.0,0.0) ( 2.0,0.0) ( 0.5,0.0) )\n";
+         throw std::runtime_error( oss.str() );
+      }
+   }
+
+   // Double precision complex matrices
+   {
+      test_ = "Column-major inversion (Cholesky, upper part, double precision complex)";
+
+      typedef blaze::complex<double>  cplx;
+
+      blaze::StaticMatrix<cplx,3UL,3U,blaze::columnMajor> A( cplx( 1.0 ), cplx( 1.0 ), cplx( 1.0 ),
+                                                             cplx( 1.0 ), cplx( 2.0 ), cplx( 2.0 ),
+                                                             cplx( 1.0 ), cplx( 2.0 ), cplx( 4.0 ) );
+      blaze::zpotrf( A, 'U' );
+      blaze::zpotri( A, 'U' );
+
+      if( !equal( A(0,0), cplx( 2.0 ) ) || !equal( A(0,1), cplx( -1.0 ) ) || !equal( A(0,2), cplx(  0.0 ) ) ||
+          !equal( A(1,0), cplx( 1.0 ) ) || !equal( A(1,1), cplx(  1.5 ) ) || !equal( A(1,2), cplx( -0.5 ) ) ||
+          !equal( A(2,0), cplx( 1.0 ) ) || !equal( A(2,1), cplx(  2.0 ) ) || !equal( A(2,2), cplx(  0.5 ) ) ) {
+         std::ostringstream oss;
+         oss << " Test: " << test_ << "\n"
+             << " Error: Matrix inversion failed\n"
+             << " Details:\n"
+             << "   Result:\n" << A << "\n"
+             << "   Expected result:\n( (2.0,0.0) (-1.0,0.0) ( 0.0,0.0) )\n"
+                                     "( (1.0,0.0) ( 1.5,0.0) (-0.5,0.0) )\n"
+                                     "( (1.0,0.0) ( 2.0,0.0) ( 0.5,0.0) )\n";
          throw std::runtime_error( oss.str() );
       }
    }
