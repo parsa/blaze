@@ -40,6 +40,7 @@
 // Includes
 //*************************************************************************************************
 
+#include <blaze/math/shims/Equal.h>
 #include <blaze/system/Inline.h>
 #include <blaze/util/DisableIf.h>
 #include <blaze/util/EnableIf.h>
@@ -80,7 +81,7 @@ template< typename Type >
 BLAZE_ALWAYS_INLINE typename EnableIf< IsNumeric<Type>, bool >::Type
    isZero( const Type& v )
 {
-   return v == Type(0);
+   return equal( v, Type(0) );
 }
 //*************************************************************************************************
 
