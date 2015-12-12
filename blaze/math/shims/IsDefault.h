@@ -40,6 +40,7 @@
 // Includes
 //*************************************************************************************************
 
+#include <blaze/math/shims/Equal.h>
 #include <blaze/system/Inline.h>
 
 
@@ -74,7 +75,7 @@ namespace blaze {
 template< typename Type >
 BLAZE_ALWAYS_INLINE bool isDefault( const Type& v )
 {
-   return v == Type();
+   return equal( v, Type() );
 }
 //*************************************************************************************************
 
