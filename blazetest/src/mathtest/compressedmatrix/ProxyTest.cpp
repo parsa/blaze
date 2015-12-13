@@ -3482,6 +3482,11 @@ void ProxyTest::testInvert()
 {
 #if BLAZETEST_MATHTEST_LAPACK_MODE
 
+   using blaze::invert;
+   using blaze::byLU;
+   using blaze::byCholesky;
+
+
    //=====================================================================================
    // Row-major matrix tests
    //=====================================================================================
@@ -3496,6 +3501,62 @@ void ProxyTest::testInvert()
       mat(1,1)(1,1) = 1.0;
       mat(1,1)(2,2) = 1.0;
       invert( mat(1,1) );
+
+      checkRows    ( mat, 2UL );
+      checkColumns ( mat, 2UL );
+      checkCapacity( mat, 1UL );
+      checkNonZeros( mat, 1UL );
+
+      checkRows    ( mat(0,0), 0UL );
+      checkColumns ( mat(0,0), 0UL );
+      checkRows    ( mat(0,1), 0UL );
+      checkColumns ( mat(0,1), 0UL );
+      checkRows    ( mat(1,0), 0UL );
+      checkColumns ( mat(1,0), 0UL );
+      checkRows    ( mat(1,1), 3UL );
+      checkColumns ( mat(1,1), 3UL );
+      checkCapacity( mat(1,1), 9UL );
+      checkNonZeros( mat(1,1), 3UL );
+   }
+
+   {
+      test_ = "Row-major invert<byLU>( MatrixAccessProxy )";
+
+      blaze::CompressedMatrix< blaze::DynamicMatrix<double>, blaze::rowMajor > mat( 2UL, 2UL, 1UL );
+      mat(1,1).resize( 3UL, 3UL );
+      mat(1,1) = 0.0;
+      mat(1,1)(0,0) = 1.0;
+      mat(1,1)(1,1) = 1.0;
+      mat(1,1)(2,2) = 1.0;
+      invert<byLU>( mat(1,1) );
+
+      checkRows    ( mat, 2UL );
+      checkColumns ( mat, 2UL );
+      checkCapacity( mat, 1UL );
+      checkNonZeros( mat, 1UL );
+
+      checkRows    ( mat(0,0), 0UL );
+      checkColumns ( mat(0,0), 0UL );
+      checkRows    ( mat(0,1), 0UL );
+      checkColumns ( mat(0,1), 0UL );
+      checkRows    ( mat(1,0), 0UL );
+      checkColumns ( mat(1,0), 0UL );
+      checkRows    ( mat(1,1), 3UL );
+      checkColumns ( mat(1,1), 3UL );
+      checkCapacity( mat(1,1), 9UL );
+      checkNonZeros( mat(1,1), 3UL );
+   }
+
+   {
+      test_ = "Row-major invert<byCholesky>( MatrixAccessProxy )";
+
+      blaze::CompressedMatrix< blaze::DynamicMatrix<double>, blaze::rowMajor > mat( 2UL, 2UL, 1UL );
+      mat(1,1).resize( 3UL, 3UL );
+      mat(1,1) = 0.0;
+      mat(1,1)(0,0) = 1.0;
+      mat(1,1)(1,1) = 1.0;
+      mat(1,1)(2,2) = 1.0;
+      invert<byCholesky>( mat(1,1) );
 
       checkRows    ( mat, 2UL );
       checkColumns ( mat, 2UL );
@@ -3529,6 +3590,62 @@ void ProxyTest::testInvert()
       mat(1,1)(1,1) = 1.0;
       mat(1,1)(2,2) = 1.0;
       invert( mat(1,1) );
+
+      checkRows    ( mat, 2UL );
+      checkColumns ( mat, 2UL );
+      checkCapacity( mat, 1UL );
+      checkNonZeros( mat, 1UL );
+
+      checkRows    ( mat(0,0), 0UL );
+      checkColumns ( mat(0,0), 0UL );
+      checkRows    ( mat(0,1), 0UL );
+      checkColumns ( mat(0,1), 0UL );
+      checkRows    ( mat(1,0), 0UL );
+      checkColumns ( mat(1,0), 0UL );
+      checkRows    ( mat(1,1), 3UL );
+      checkColumns ( mat(1,1), 3UL );
+      checkCapacity( mat(1,1), 9UL );
+      checkNonZeros( mat(1,1), 3UL );
+   }
+
+   {
+      test_ = "Column-major invert<byLU>( MatrixAccessProxy )";
+
+      blaze::CompressedMatrix< blaze::DynamicMatrix<double>, blaze::columnMajor > mat( 2UL, 2UL, 1UL );
+      mat(1,1).resize( 3UL, 3UL );
+      mat(1,1) = 0.0;
+      mat(1,1)(0,0) = 1.0;
+      mat(1,1)(1,1) = 1.0;
+      mat(1,1)(2,2) = 1.0;
+      invert<byLU>( mat(1,1) );
+
+      checkRows    ( mat, 2UL );
+      checkColumns ( mat, 2UL );
+      checkCapacity( mat, 1UL );
+      checkNonZeros( mat, 1UL );
+
+      checkRows    ( mat(0,0), 0UL );
+      checkColumns ( mat(0,0), 0UL );
+      checkRows    ( mat(0,1), 0UL );
+      checkColumns ( mat(0,1), 0UL );
+      checkRows    ( mat(1,0), 0UL );
+      checkColumns ( mat(1,0), 0UL );
+      checkRows    ( mat(1,1), 3UL );
+      checkColumns ( mat(1,1), 3UL );
+      checkCapacity( mat(1,1), 9UL );
+      checkNonZeros( mat(1,1), 3UL );
+   }
+
+   {
+      test_ = "Column-major invert<byCholesky>( MatrixAccessProxy )";
+
+      blaze::CompressedMatrix< blaze::DynamicMatrix<double>, blaze::columnMajor > mat( 2UL, 2UL, 1UL );
+      mat(1,1).resize( 3UL, 3UL );
+      mat(1,1) = 0.0;
+      mat(1,1)(0,0) = 1.0;
+      mat(1,1)(1,1) = 1.0;
+      mat(1,1)(2,2) = 1.0;
+      invert<byCholesky>( mat(1,1) );
 
       checkRows    ( mat, 2UL );
       checkColumns ( mat, 2UL );
