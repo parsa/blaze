@@ -43,6 +43,7 @@
 #include <sstream>
 #include <stdexcept>
 #include <string>
+#include <typeinfo>
 #include <boost/container/static_vector.hpp>
 #include <boost/container/vector.hpp>
 #include <blaze/math/constraints/DenseMatrix.h>
@@ -107,7 +108,6 @@ class ClassTest
    void testClear       ();
    void testTranspose   ();
    void testCTranspose  ();
-   void testInvert      ();
    void testSwap        ();
    void testIsDefault   ();
 
