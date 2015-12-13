@@ -40,6 +40,7 @@
 // Includes
 //*************************************************************************************************
 
+#include <blaze/math/DecompositionFlag.h>
 #include <blaze/math/proxy/ComplexProxy.h>
 #include <blaze/math/proxy/DefaultProxy.h>
 #include <blaze/math/proxy/DenseMatrixProxy.h>
@@ -568,6 +569,9 @@ inline void ctranspose( const Proxy<PT,RT>& proxy );
 template< typename PT, typename RT >
 inline void invert( const Proxy<PT,RT>& proxy );
 
+template< DecompositionFlag DF, typename PT, typename RT >
+inline void invert( const Proxy<PT,RT>& proxy );
+
 template< typename PT, typename RT >
 inline bool isReal( const Proxy<PT,RT>& proxy );
 
@@ -746,8 +750,47 @@ inline void ctranspose( const Proxy<PT,RT>& proxy )
 // \exception std::invalid_argument Inversion of singular matrix failed.
 // \exception std::invalid_argument Invalid non-square matrix provided.
 //
-// This function inverts the represented dense matrix by means of LAPACK kernels. The matrix
-// inversion fails if ...
+// This function inverts the represented dense square matrix. The matrix inversion fails if ...
+//
+//  - ... the represented matrix is not a square matrix;
+//  - ... the represented matrix is singular and not invertible.
+//
+// In all failure cases either a compilation error is created if the failure can be predicted at
+// compile time or a \a std::invalid_argument exception is thrown.
+//
+// \note This function does not provide any exception safety guarantee, i.e. in case an exception
+// is thrown \c dm may already have been modified.
+// \note This function can only be used if the fitting LAPACK library is available and linked to
+// the executable. Otherwise a linker error will be created.
+*/
+template< typename PT, typename RT >
+inline void invert( const Proxy<PT,RT>& proxy )
+{
+   invert( (~proxy).get() );
+}
+//*************************************************************************************************
+
+
+//*************************************************************************************************
+/*!\brief In-place inversion of the represented dense matrix.
+// \ingroup math
+//
+// \param proxy The given proxy instance.
+// \return void
+// \exception std::invalid_argument Inversion of singular matrix failed.
+// \exception std::invalid_argument Invalid non-square matrix provided.
+//
+// This function inverts the given dense matrix by means of the specified matrix decomposition
+// algorithm \ DF. In case the matrix is a symmetric positive-definite matrix it is recommended
+// to perform the inversion by means of a Cholesky decomposition, for a general square matrix
+// an LU decomposition should be used:
+
+   \code
+   invert<byLU>( A );        // Inversion of a general square matrix
+   invert<byCholesky>( A );  // Inversion of a positive definite matrix
+   \endcode
+
+// The matrix inversion fails if ...
 //
 //  - ... the given matrix is not a square matrix;
 //  - ... the given matrix is singular and not invertible.
@@ -756,14 +799,14 @@ inline void ctranspose( const Proxy<PT,RT>& proxy )
 // compile time or a \a std::invalid_argument exception is thrown.
 //
 // \note This function does not provide any exception safety guarantee, i.e. in case an exception
-// is thrown the represented matrix may already have been modified.
+// is thrown \c dm may already have been modified.
 // \note This function can only be used if the fitting LAPACK library is available and linked to
 // the executable. Otherwise a linker error will be created.
 */
-template< typename PT, typename RT >
+template< DecompositionFlag DF, typename PT, typename RT >
 inline void invert( const Proxy<PT,RT>& proxy )
 {
-   invert( (~proxy).get() );
+   invert<DF>( (~proxy).get() );
 }
 //*************************************************************************************************
 
