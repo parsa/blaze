@@ -52,7 +52,6 @@
 #include <blaze/util/policies/ArrayDelete.h>
 #include <blaze/util/UniqueArray.h>
 #include <blazetest/mathtest/diagonalmatrix/DenseTest.h>
-#include <blazetest/system/LAPACK.h>
 
 
 namespace blazetest {
@@ -88,7 +87,6 @@ DenseTest::DenseTest()
    testResize();
    testExtend();
    testReserve();
-   testInvert();
    testSwap();
    testIsDefault();
    testSubmatrix();
@@ -8519,99 +8517,6 @@ void DenseTest::testReserve()
       checkCapacity( diag, 20UL );
       checkNonZeros( diag,  0UL );
    }
-}
-//*************************************************************************************************
-
-
-//*************************************************************************************************
-/*!\brief Test of the \c invert() function with the DiagonalMatrix specialization.
-//
-// \return void
-// \exception std::runtime_error Error detected.
-//
-// This function performs a test of the \c invert() function with the DiagonalMatrix
-// specialization. In case an error is detected, a \a std::runtime_error exception is thrown.
-*/
-void DenseTest::testInvert()
-{
-#if BLAZETEST_MATHTEST_LAPACK_MODE
-
-   //=====================================================================================
-   // Row-major matrix tests
-   //=====================================================================================
-
-   {
-      test_ = "Row-major DiagonalMatrix inversion";
-
-      blaze::DiagonalMatrix< blaze::DynamicMatrix<double,blaze::rowMajor> > mat( 3UL, 0.0 );
-      mat(0,0) = 2.0;
-      mat(1,1) = 2.0;
-      mat(2,2) = 2.0;
-
-      invert( mat );
-
-      checkRows    ( mat, 3UL );
-      checkColumns ( mat, 3UL );
-      checkCapacity( mat, 9UL );
-      checkNonZeros( mat, 3UL );
-      checkNonZeros( mat, 0UL, 1UL );
-      checkNonZeros( mat, 1UL, 1UL );
-      checkNonZeros( mat, 2UL, 1UL );
-
-      if( mat(0,0) != 0.5 || mat(0,1) != 0.0 || mat(0,2) != 0.0 ||
-          mat(1,0) != 0.0 || mat(1,1) != 0.5 || mat(1,2) != 0.0 ||
-          mat(2,0) != 0.0 || mat(2,1) != 0.0 || mat(2,2) != 0.5 ) {
-         std::ostringstream oss;
-         oss << " Test: " << test_ << "\n"
-             << " Error: Inversion failed\n"
-             << " Details:\n"
-             << "   Result:\n" << mat << "\n"
-             << "   Expected result:\n( 0.5  0.0  0.0 )\n"
-                                     "( 0.0  0.5  0.0 )\n"
-                                     "( 0.0  0.0  0.5 )\n";
-         throw std::runtime_error( oss.str() );
-      }
-   }
-
-
-   //=====================================================================================
-   // Column-major matrix tests
-   //=====================================================================================
-
-   {
-      test_ = "Column-major DiagonalMatrix inversion";
-
-      blaze::DiagonalMatrix< blaze::DynamicMatrix<double,blaze::columnMajor> > mat( 3UL, 0.0 );
-      mat(0,0) = 2.0;
-      mat(1,1) = 2.0;
-      mat(2,2) = 2.0;
-
-      invert( mat );
-
-      checkRows    ( mat, 3UL );
-      checkColumns ( mat, 3UL );
-      checkCapacity( mat, 9UL );
-      checkNonZeros( mat, 3UL );
-      checkNonZeros( mat, 0UL, 1UL );
-      checkNonZeros( mat, 1UL, 1UL );
-      checkNonZeros( mat, 2UL, 1UL );
-
-      if( mat(0,0) != 0.5 || mat(0,1) != 0.0 || mat(0,2) != 0.0 ||
-          mat(1,0) != 0.0 || mat(1,1) != 0.5 || mat(1,2) != 0.0 ||
-          mat(2,0) != 0.0 || mat(2,1) != 0.0 || mat(2,2) != 0.5 ) {
-         std::ostringstream oss;
-         oss << " Test: " << test_ << "\n"
-             << " Error: Inversion failed\n"
-             << " Details:\n"
-             << "   Result:\n" << mat << "\n"
-             << "   Expected result:\n( 0.5  0.0  0.0 )\n"
-                                     "( 0.0  0.5  0.0 )\n"
-                                     "( 0.0  0.0  0.5 )\n";
-         throw std::runtime_error( oss.str() );
-      }
-   }
-
-#endif
 }
 //*************************************************************************************************
 
