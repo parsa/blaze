@@ -75,7 +75,6 @@
 #include <blaze/util/AlignmentCheck.h>
 #include <blaze/util/Assert.h>
 #include <blaze/util/constraints/Const.h>
-#include <blaze/util/constraints/Numeric.h>
 #include <blaze/util/constraints/Pointer.h>
 #include <blaze/util/constraints/Reference.h>
 #include <blaze/util/constraints/Vectorizable.h>
@@ -4779,17 +4778,15 @@ struct SubTrait< CustomVector<T1,AF1,PF1,TF>, CustomVector<T2,AF2,PF2,TF> >
 //*************************************************************************************************
 /*! \cond BLAZE_INTERNAL */
 template< typename T1, bool AF, bool PF, bool TF, typename T2 >
-struct MultTrait< CustomVector<T1,AF,PF,TF>, T2 >
+struct MultTrait< CustomVector<T1,AF,PF,TF>, T2, typename EnableIf< IsNumeric<T2> >::Type >
 {
    typedef DynamicVector< typename MultTrait<T1,T2>::Type, TF >  Type;
-   BLAZE_CONSTRAINT_MUST_BE_NUMERIC_TYPE( T2 );
 };
 
 template< typename T1, typename T2, bool AF, bool PF, bool TF >
-struct MultTrait< T1, CustomVector<T2,AF,PF,TF> >
+struct MultTrait< T1, CustomVector<T2,AF,PF,TF>, typename EnableIf< IsNumeric<T1> >::Type >
 {
    typedef DynamicVector< typename MultTrait<T1,T2>::Type, TF >  Type;
-   BLAZE_CONSTRAINT_MUST_BE_NUMERIC_TYPE( T1 );
 };
 
 template< typename T1, bool AF, bool PF, bool TF, typename T2, size_t N >
@@ -5015,10 +5012,9 @@ struct CrossTrait< CustomVector<T1,AF1,PF1,false>, CustomVector<T2,AF2,PF2,false
 //*************************************************************************************************
 /*! \cond BLAZE_INTERNAL */
 template< typename T1, bool AF, bool PF, bool TF, typename T2 >
-struct DivTrait< CustomVector<T1,AF,PF,TF>, T2 >
+struct DivTrait< CustomVector<T1,AF,PF,TF>, T2, typename EnableIf< IsNumeric<T2> >::Type >
 {
    typedef DynamicVector< typename DivTrait<T1,T2>::Type, TF >  Type;
-   BLAZE_CONSTRAINT_MUST_BE_NUMERIC_TYPE( T2 );
 };
 /*! \endcond */
 //*************************************************************************************************

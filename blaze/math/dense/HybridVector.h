@@ -62,7 +62,6 @@
 #include <blaze/util/AlignmentCheck.h>
 #include <blaze/util/Assert.h>
 #include <blaze/util/constraints/Const.h>
-#include <blaze/util/constraints/Numeric.h>
 #include <blaze/util/constraints/Pointer.h>
 #include <blaze/util/constraints/Reference.h>
 #include <blaze/util/constraints/Vectorizable.h>
@@ -2525,17 +2524,15 @@ struct SubTrait< HybridVector<T1,M,TF>, HybridVector<T2,N,TF> >
 //*************************************************************************************************
 /*! \cond BLAZE_INTERNAL */
 template< typename T1, size_t N, bool TF, typename T2 >
-struct MultTrait< HybridVector<T1,N,TF>, T2 >
+struct MultTrait< HybridVector<T1,N,TF>, T2, typename EnableIf< IsNumeric<T2> >::Type >
 {
    typedef HybridVector< typename MultTrait<T1,T2>::Type, N, TF >  Type;
-   BLAZE_CONSTRAINT_MUST_BE_NUMERIC_TYPE( T2 );
 };
 
 template< typename T1, typename T2, size_t N, bool TF >
-struct MultTrait< T1, HybridVector<T2,N,TF> >
+struct MultTrait< T1, HybridVector<T2,N,TF>, typename EnableIf< IsNumeric<T1> >::Type >
 {
    typedef HybridVector< typename MultTrait<T1,T2>::Type, N, TF >  Type;
-   BLAZE_CONSTRAINT_MUST_BE_NUMERIC_TYPE( T1 );
 };
 
 template< typename T1, size_t M, bool TF, typename T2, size_t N >
@@ -2649,10 +2646,9 @@ struct CrossTrait< HybridVector<T1,M,false>, HybridVector<T2,N,false> >
 //*************************************************************************************************
 /*! \cond BLAZE_INTERNAL */
 template< typename T1, size_t N, bool TF, typename T2 >
-struct DivTrait< HybridVector<T1,N,TF>, T2 >
+struct DivTrait< HybridVector<T1,N,TF>, T2, typename EnableIf< IsNumeric<T2> >::Type >
 {
    typedef HybridVector< typename DivTrait<T1,T2>::Type, N, TF >  Type;
-   BLAZE_CONSTRAINT_MUST_BE_NUMERIC_TYPE( T2 );
 };
 /*! \endcond */
 //*************************************************************************************************

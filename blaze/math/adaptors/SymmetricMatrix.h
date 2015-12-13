@@ -69,8 +69,9 @@
 #include <blaze/math/typetraits/RemoveAdaptor.h>
 #include <blaze/math/typetraits/Rows.h>
 #include <blaze/util/Assert.h>
-#include <blaze/util/constraints/Numeric.h>
+#include <blaze/util/EnableIf.h>
 #include <blaze/util/typetraits/IsBuiltin.h>
+#include <blaze/util/typetraits/IsNumeric.h>
 #include <blaze/util/Unused.h>
 #include <blaze/util/valuetraits/IsTrue.h>
 
@@ -816,17 +817,15 @@ struct SubTrait< SymmetricMatrix<MT1,SO1,DF1,NF1>, SymmetricMatrix<MT2,SO2,DF2,N
 //*************************************************************************************************
 /*! \cond BLAZE_INTERNAL */
 template< typename MT, bool SO, bool DF, bool NF, typename T >
-struct MultTrait< SymmetricMatrix<MT,SO,DF,NF>, T >
+struct MultTrait< SymmetricMatrix<MT,SO,DF,NF>, T, typename EnableIf< IsNumeric<T> >::Type >
 {
    typedef SymmetricMatrix< typename MultTrait<MT,T>::Type >  Type;
-   BLAZE_CONSTRAINT_MUST_BE_NUMERIC_TYPE( T );
 };
 
 template< typename T, typename MT, bool SO, bool DF, bool NF >
-struct MultTrait< T, SymmetricMatrix<MT,SO,DF,NF> >
+struct MultTrait< T, SymmetricMatrix<MT,SO,DF,NF>, typename EnableIf< IsNumeric<T> >::Type >
 {
    typedef SymmetricMatrix< typename MultTrait<T,MT>::Type >  Type;
-   BLAZE_CONSTRAINT_MUST_BE_NUMERIC_TYPE( T );
 };
 
 template< typename MT, bool SO, bool DF, bool NF, typename T, size_t N >
@@ -969,10 +968,9 @@ struct MultTrait< SymmetricMatrix<MT1,SO1,DF1,NF1>, SymmetricMatrix<MT2,SO2,DF2,
 //*************************************************************************************************
 /*! \cond BLAZE_INTERNAL */
 template< typename MT, bool SO, bool DF, bool NF, typename T >
-struct DivTrait< SymmetricMatrix<MT,SO,DF,NF>, T >
+struct DivTrait< SymmetricMatrix<MT,SO,DF,NF>, T, typename EnableIf< IsNumeric<T> >::Type >
 {
    typedef SymmetricMatrix< typename DivTrait<MT,T>::Type >  Type;
-   BLAZE_CONSTRAINT_MUST_BE_NUMERIC_TYPE( T );
 };
 /*! \endcond */
 //*************************************************************************************************
