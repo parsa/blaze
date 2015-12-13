@@ -41,10 +41,17 @@
 //*************************************************************************************************
 
 #include <blaze/math/constraints/StrictlyTriangular.h>
+#include <blaze/math/DecompositionFlag.h>
 #include <blaze/math/expressions/DenseMatrix.h>
 #include <blaze/math/Functions.h>
+#include <blaze/math/lapack/Cholesky.h>
 #include <blaze/math/lapack/Inversion.h>
+#include <blaze/math/lapack/LU.h>
+#include <blaze/math/shims/Invert.h>
+#include <blaze/math/shims/IsDefault.h>
+#include <blaze/math/traits/DerestrictTrait.h>
 #include <blaze/math/typetraits/IsSquare.h>
+#include <blaze/math/typetraits/IsTriangular.h>
 #include <blaze/math/typetraits/IsUniTriangular.h>
 #include <blaze/util/Assert.h>
 #include <blaze/util/Complex.h>
@@ -61,22 +68,83 @@ namespace blaze {
 
 //=================================================================================================
 //
-//  INVERSION FUNCTIONS
+//  CLASS INVERSION
 //
 //=================================================================================================
 
 //*************************************************************************************************
-/*!\name Inversion functions */
-//@{
-template< typename MT, bool SO >
-inline void invert( DenseMatrix<MT,SO>& dm );
-//@}
+/*! \cond BLAZE_INTERNAL */
+/*!\brief Auxiliary class template for the implementation of different inversion algorithms.
+// \ingroup dense_matrix
+//
+// This class template represents the base template for the implementation of different dense
+// matrix inversion algorithms. In order to implement a specific algorithm this base template
+// needs to be specialized for a specific dense matrix decomposition algorithm, as for instance
+// the LU decomposition or the Cholesky decomposition.
+*/
+template< DecompositionFlag DF >  // Decomposition algorithm
+class Inversion;
+/*! \endcond */
+//*************************************************************************************************
+
+
+
+
+//=================================================================================================
+//
+//  DENSE MATRIX INVERSION BASED ON THE LU DECOMPOSITION
+//
+//=================================================================================================
+
+//*************************************************************************************************
+/*! \cond BLAZE_INTERNAL */
+/*!\brief Specialization of the Inversion class template for LU decompositions.
+// \ingroup dense_matrix
+//
+// This specialization of the Inversion class template implements the mechanics of the dense
+// matrix inversion by means of the LU decomposition.
+*/
+template<>
+class Inversion<byLU>
+{
+ public:
+   //**Invert functions****************************************************************************
+   /*!\name Invert functions */
+   //@{
+   template< typename MT, bool SO >
+   static inline void invert( DenseMatrix<MT,SO>& dm );
+   //@}
+   //**********************************************************************************************
+
+ private:
+   //**Invert functions****************************************************************************
+   /*!\name Invert functions */
+   //@{
+   template< typename MT >
+   static inline typename EnableIf< IsFloat<typename MT::ElementType> >::Type
+      invertByLU( MT& A, int* ipiv );
+
+   template< typename MT >
+   static inline typename EnableIf< IsDouble<typename MT::ElementType> >::Type
+      invertByLU( MT& A, int* ipiv );
+
+   template< typename MT >
+   static inline typename EnableIf< IsSame< typename MT::ElementType, complex<float> > >::Type
+      invertByLU( MT& A, int* ipiv );
+
+   template< typename MT >
+   static inline typename EnableIf< IsSame< typename MT::ElementType, complex<double> > >::Type
+      invertByLU( MT& A, int* ipiv );
+   //@}
+   //**********************************************************************************************
+};
+/*! \endcond */
 //*************************************************************************************************
 
 
 //*************************************************************************************************
 /*! \cond BLAZE_INTERNAL */
-/*!\brief In-place inversion of the given dense matrix with single precision elements.
+/*!\brief In-place inversion of the given dense matrix.
 // \ingroup dense_matrix
 //
 // \param dm The dense matrix to be inverted.
@@ -84,8 +152,8 @@ inline void invert( DenseMatrix<MT,SO>& dm );
 // \exception std::invalid_argument Inversion of singular matrix failed.
 // \exception std::invalid_argument Invalid non-square matrix provided.
 //
-// This function inverts the given dense single precision matrix by means of LAPACK kernels. The
-// matrix inversion fails if ...
+// This function inverts the given dense matrix by means of a LU decomposition. The matrix
+// inversion fails if ...
 //
 //  - ... the given matrix is not a square matrix;
 //  - ... the given matrix is singular and not invertible.
@@ -99,8 +167,7 @@ inline void invert( DenseMatrix<MT,SO>& dm );
 */
 template< typename MT  // Type of the dense matrix
         , bool SO >    // Storage order of the dense matrix
-inline typename EnableIf< IsFloat<typename MT::ElementType> >::Type
-   invert_backend( DenseMatrix<MT,SO>& dm )
+inline void Inversion<byLU>::invert( DenseMatrix<MT,SO>& dm )
 {
    const size_t N( min( (~dm).rows(), (~dm).columns() ) );
    UniqueArray<int> ipiv( new int[N] );
@@ -109,11 +176,45 @@ inline typename EnableIf< IsFloat<typename MT::ElementType> >::Type
       for( size_t i=0UL; i<N; ++i )
          ipiv[i] = static_cast<int>( i ) + 1;
    }
-   else {
-      sgetrf( derestrict( ~dm ), ipiv.get() );
-   }
 
-   sgetri( derestrict( ~dm ), ipiv.get() );
+   typename DerestrictTrait<MT>::Type A( derestrict( ~dm ) );
+   invertByLU( A, ipiv.get() );
+}
+/*! \endcond */
+//*************************************************************************************************
+
+
+//*************************************************************************************************
+/*! \cond BLAZE_INTERNAL */
+/*!\brief In-place inversion of the given dense matrix with single precision elements.
+// \ingroup dense_matrix
+//
+// \param A The dense matrix to be inverted.
+// \param ipiv Auxiliary array for the pivot indices.
+// \return void
+// \exception std::invalid_argument Inversion of singular matrix failed.
+// \exception std::invalid_argument Invalid non-square matrix provided.
+//
+// This function inverts the given dense single precision matrix by means of a LU decomposition.
+// The matrix inversion fails if ...
+//
+//  - ... the given matrix is not a square matrix;
+//  - ... the given matrix is singular and not invertible.
+//
+// In all failure cases a \a std::invalid_argument exception is thrown.
+//
+// \note This function does not provide any exception safety guarantee, i.e. in case an exception
+// is thrown \c dm may already have been modified.
+// \note This function can only be used if the fitting LAPACK library is available and linked to
+// the executable. Otherwise a linker error will be created.
+*/
+template< typename MT >  // Type of the dense matrix
+inline typename EnableIf< IsFloat<typename MT::ElementType> >::Type
+   Inversion<byLU>::invertByLU( MT& A, int* ipiv )
+{
+   if( !IsUniTriangular<MT>::value )
+      sgetrf( A, ipiv );
+   sgetri( A, ipiv );
 }
 /*! \endcond */
 //*************************************************************************************************
@@ -124,13 +225,14 @@ inline typename EnableIf< IsFloat<typename MT::ElementType> >::Type
 /*!\brief In-place inversion of the given dense matrix with double precision elements.
 // \ingroup dense_matrix
 //
-// \param dm The dense matrix to be inverted.
+// \param A The dense matrix to be inverted.
+// \param ipiv Auxiliary array for the pivot indices.
 // \return void
 // \exception std::invalid_argument Inversion of singular matrix failed.
 // \exception std::invalid_argument Invalid non-square matrix provided.
 //
-// This function inverts the given dense double precision matrix by means of LAPACK kernels.  The
-// matrix inversion fails if ...
+// This function inverts the given dense double precision matrix by means of a LU decomposition.
+// The matrix inversion fails if ...
 //
 //  - ... the given matrix is not a square matrix;
 //  - ... the given matrix is singular and not invertible.
@@ -142,23 +244,13 @@ inline typename EnableIf< IsFloat<typename MT::ElementType> >::Type
 // \note This function can only be used if the fitting LAPACK library is available and linked to
 // the executable. Otherwise a linker error will be created.
 */
-template< typename MT  // Type of the dense matrix
-        , bool SO >    // Storage order of the dense matrix
+template< typename MT >  // Type of the dense matrix
 inline typename EnableIf< IsDouble<typename MT::ElementType> >::Type
-   invert_backend( DenseMatrix<MT,SO>& dm )
+   Inversion<byLU>::invertByLU( MT& A, int* ipiv )
 {
-   const size_t N( min( (~dm).rows(), (~dm).columns() ) );
-   UniqueArray<int> ipiv( new int[N] );
-
-   if( IsUniTriangular<MT>::value ) {
-      for( size_t i=0UL; i<N; ++i )
-         ipiv[i] = static_cast<int>( i ) + 1;
-   }
-   else {
-      dgetrf( derestrict( ~dm ), ipiv.get() );
-   }
-
-   dgetri( derestrict( ~dm ), ipiv.get() );
+   if( !IsUniTriangular<MT>::value )
+      dgetrf( A, ipiv );
+   dgetri( A, ipiv );
 }
 /*! \endcond */
 //*************************************************************************************************
@@ -169,13 +261,14 @@ inline typename EnableIf< IsDouble<typename MT::ElementType> >::Type
 /*!\brief In-place inversion of the given dense matrix with single precision complex elements.
 // \ingroup dense_matrix
 //
-// \param dm The dense matrix to be inverted.
+// \param A The dense matrix to be inverted.
+// \param ipiv Auxiliary array for the pivot indices.
 // \return void
 // \exception std::invalid_argument Inversion of singular matrix failed.
 // \exception std::invalid_argument Invalid non-square matrix provided.
 //
-// This function inverts the given dense single precision complex matrix by means of LAPACK
-// kernels.  The matrix inversion fails if ...
+// This function inverts the given dense single precision complex matrix by means of a LU
+// decomposition.  The matrix inversion fails if ...
 //
 //  - ... the given matrix is not a square matrix;
 //  - ... the given matrix is singular and not invertible.
@@ -187,23 +280,13 @@ inline typename EnableIf< IsDouble<typename MT::ElementType> >::Type
 // \note This function can only be used if the fitting LAPACK library is available and linked to
 // the executable. Otherwise a linker error will be created.
 */
-template< typename MT  // Type of the dense matrix
-        , bool SO >    // Storage order of the dense matrix
+template< typename MT >  // Type of the dense matrix
 inline typename EnableIf< IsSame< typename MT::ElementType, complex<float> > >::Type
-   invert_backend( DenseMatrix<MT,SO>& dm )
+   Inversion<byLU>::invertByLU( MT& A, int* ipiv )
 {
-   const size_t N( min( (~dm).rows(), (~dm).columns() ) );
-   UniqueArray<int> ipiv( new int[N] );
-
-   if( IsUniTriangular<MT>::value ) {
-      for( size_t i=0UL; i<N; ++i )
-         ipiv[i] = static_cast<int>( i ) + 1;
-   }
-   else {
-      cgetrf( derestrict( ~dm ), ipiv.get() );
-   }
-
-   cgetri( derestrict( ~dm ), ipiv.get() );
+   if( !IsUniTriangular<MT>::value )
+      cgetrf( A, ipiv );
+   cgetri( A, ipiv );
 }
 /*! \endcond */
 //*************************************************************************************************
@@ -214,13 +297,103 @@ inline typename EnableIf< IsSame< typename MT::ElementType, complex<float> > >::
 /*!\brief In-place inversion of the given dense matrix with double precision complex elements.
 // \ingroup dense_matrix
 //
+// \param A The dense matrix to be inverted.
+// \param ipiv Auxiliary array for the pivot indices.
+// \return void
+// \exception std::invalid_argument Inversion of singular matrix failed.
+// \exception std::invalid_argument Invalid non-square matrix provided.
+//
+// This function inverts the given dense double precision complex matrix by means of a LU
+// decomposition. The matrix inversion fails if ...
+//
+//  - ... the given matrix is not a square matrix;
+//  - ... the given matrix is singular and not invertible.
+//
+// In all failure cases a \a std::invalid_argument exception is thrown.
+//
+// \note This function does not provide any exception safety guarantee, i.e. in case an exception
+// is thrown \c dm may already have been modified.
+// \note This function can only be used if the fitting LAPACK library is available and linked to
+// the executable. Otherwise a linker error will be created.
+*/
+template< typename MT >  // Type of the dense matrix
+inline typename EnableIf< IsSame< typename MT::ElementType, complex<double> > >::Type
+   Inversion<byLU>::invertByLU( MT& A, int* ipiv )
+{
+   if( !IsUniTriangular<MT>::value )
+      zgetrf( A, ipiv );
+   zgetri( A, ipiv );
+}
+/*! \endcond */
+//*************************************************************************************************
+
+
+
+
+//=================================================================================================
+//
+//  DENSE MATRIX INVERSION BASED ON THE CHOLESKY DECOMPOSITION
+//
+//=================================================================================================
+
+//*************************************************************************************************
+/*! \cond BLAZE_INTERNAL */
+/*!\brief Specialization of the Inversion class template for Cholesky decompositions.
+// \ingroup dense_matrix
+//
+// This specialization of the Inversion class template implements the mechanics of the dense
+// matrix inversion by means of the Cholesky decomposition.
+*/
+template<>
+class Inversion<byCholesky>
+{
+ public:
+   //**Invert functions****************************************************************************
+   /*!\name Invert functions */
+   //@{
+   template< typename MT, bool SO >
+   static inline void invert( DenseMatrix<MT,SO>& dm );
+   //@}
+   //**********************************************************************************************
+
+ public:
+   //**Invert functions****************************************************************************
+   /*!\name Invert functions */
+   //@{
+   template< typename MT >
+   static inline typename EnableIf< IsFloat<typename MT::ElementType> >::Type
+      invertByCholesky( MT& A, char uplo );
+
+   template< typename MT >
+   static inline typename EnableIf< IsDouble<typename MT::ElementType> >::Type
+      invertByCholesky( MT& A, char uplo );
+
+   template< typename MT >
+   static inline typename EnableIf< IsSame< typename MT::ElementType, complex<float> > >::Type
+      invertByCholesky( MT& A, char uplo );
+
+   template< typename MT >
+   static inline typename EnableIf< IsSame< typename MT::ElementType, complex<double> > >::Type
+      invertByCholesky( MT& A, char uplo );
+   //@}
+   //**********************************************************************************************
+};
+/*! \endcond */
+//*************************************************************************************************
+
+
+//*************************************************************************************************
+/*! \cond BLAZE_INTERNAL */
+/*!\brief In-place inversion of the given dense matrix.
+// \ingroup dense_matrix
+//
 // \param dm The dense matrix to be inverted.
 // \return void
 // \exception std::invalid_argument Inversion of singular matrix failed.
 // \exception std::invalid_argument Invalid non-square matrix provided.
 //
-// This function inverts the given dense double precision complex matrix by means of LAPACK
-// kernels. The matrix inversion fails if ...
+// This function inverts the given dense matrix by means of a Cholesky decomposition. The matrix
+// inversion fails if ...
 //
 //  - ... the given matrix is not a square matrix;
 //  - ... the given matrix is singular and not invertible.
@@ -234,23 +407,210 @@ inline typename EnableIf< IsSame< typename MT::ElementType, complex<float> > >::
 */
 template< typename MT  // Type of the dense matrix
         , bool SO >    // Storage order of the dense matrix
-inline typename EnableIf< IsSame< typename MT::ElementType, complex<double> > >::Type
-   invert_backend( DenseMatrix<MT,SO>& dm )
+inline void Inversion<byCholesky>::invert( DenseMatrix<MT,SO>& dm )
 {
-   const size_t N( min( (~dm).rows(), (~dm).columns() ) );
-   UniqueArray<int> ipiv( new int[N] );
+   using blaze::invert;
 
-   if( IsUniTriangular<MT>::value ) {
-      for( size_t i=0UL; i<N; ++i )
-         ipiv[i] = static_cast<int>( i ) + 1;
-   }
-   else {
-      zgetrf( derestrict( ~dm ), ipiv.get() );
-   }
+   BLAZE_USER_ASSERT( isSymmetric( ~dm ), "Invalid non-symmetric matrix detected" );
+   BLAZE_INTERNAL_ASSERT( isSquare( ~dm ), "Non-square matrix detected" );
 
-   zgetri( derestrict( ~dm ), ipiv.get() );
+   if( IsUniTriangular<MT>::value )
+      return;
+
+   typename DerestrictTrait<MT>::Type A( derestrict( ~dm ) );
+
+   if( IsTriangular<MT>::value )
+   {
+      for( size_t i=0UL; i<A.rows(); ++i )
+      {
+         if( isDefault( A(i,i) ) ) {
+            BLAZE_THROW_INVALID_ARGUMENT( "Inversion of singular matrix failed" );
+         }
+
+         invert( A(i,i) );
+      }
+   }
+   else
+   {
+      invertByCholesky( A, ( SO )?( 'L' ):( 'U' ) );
+
+      if( SO ) {
+         for( size_t i=1UL; i<A.rows(); ++i ) {
+            for( size_t j=0UL; j<i; ++j ) {
+               A(j,i) = A(i,j);
+            }
+         }
+      }
+      else {
+         for( size_t j=1UL; j<A.columns(); ++j ) {
+            for( size_t i=0UL; i<j; ++i ) {
+               A(j,i) = A(i,j);
+            }
+         }
+      }
+   }
 }
 /*! \endcond */
+//*************************************************************************************************
+
+
+//*************************************************************************************************
+/*! \cond BLAZE_INTERNAL */
+/*!\brief In-place inversion of the given dense matrix with single precision elements.
+// \ingroup dense_matrix
+//
+// \param A The dense matrix to be inverted.
+// \param uplo \c 'L' to use the lower part of the matrix, \c 'U' to use the upper part.
+// \return void
+// \exception std::invalid_argument Inversion of singular matrix failed.
+// \exception std::invalid_argument Invalid non-square matrix provided.
+//
+// This function inverts the given dense matrix with single precision elements by means of a
+// Cholesky decomposition. The matrix inversion fails if ...
+//
+//  - ... the given matrix is not a square matrix;
+//  - ... the given matrix is singular and not invertible.
+//
+// In all failure cases a \a std::invalid_argument exception is thrown.
+//
+// \note This function does not provide any exception safety guarantee, i.e. in case an exception
+// is thrown \c dm may already have been modified.
+// \note This function can only be used if the fitting LAPACK library is available and linked to
+// the executable. Otherwise a linker error will be created.
+*/
+template< typename MT >  // Type of the dense matrix
+inline typename EnableIf< IsFloat<typename MT::ElementType> >::Type
+   Inversion<byCholesky>::invertByCholesky( MT& A, char uplo )
+{
+   spotrf( A, uplo );
+   spotri( A, uplo );
+}
+/*! \endcond */
+//*************************************************************************************************
+
+
+//*************************************************************************************************
+/*! \cond BLAZE_INTERNAL */
+/*!\brief In-place inversion of the given dense matrix with double precision elements.
+// \ingroup dense_matrix
+//
+// \param A The dense matrix to be inverted.
+// \param uplo \c 'L' to use the lower part of the matrix, \c 'U' to use the upper part.
+// \return void
+// \exception std::invalid_argument Inversion of singular matrix failed.
+// \exception std::invalid_argument Invalid non-square matrix provided.
+//
+// This function inverts the given dense matrix with double precision elements by means of a
+// Cholesky decomposition. The matrix inversion fails if ...
+//
+//  - ... the given matrix is not a square matrix;
+//  - ... the given matrix is singular and not invertible.
+//
+// In all failure cases a \a std::invalid_argument exception is thrown.
+//
+// \note This function does not provide any exception safety guarantee, i.e. in case an exception
+// is thrown \c dm may already have been modified.
+// \note This function can only be used if the fitting LAPACK library is available and linked to
+// the executable. Otherwise a linker error will be created.
+*/
+template< typename MT >  // Type of the dense matrix
+inline typename EnableIf< IsDouble<typename MT::ElementType> >::Type
+   Inversion<byCholesky>::invertByCholesky( MT& A, char uplo )
+{
+   dpotrf( A, uplo );
+   dpotri( A, uplo );
+}
+/*! \endcond */
+//*************************************************************************************************
+
+
+//*************************************************************************************************
+/*! \cond BLAZE_INTERNAL */
+/*!\brief In-place inversion of the given dense matrix with single precision complex elements.
+// \ingroup dense_matrix
+//
+// \param A The dense matrix to be inverted.
+// \param uplo \c 'L' to use the lower part of the matrix, \c 'U' to use the upper part.
+// \return void
+// \exception std::invalid_argument Inversion of singular matrix failed.
+// \exception std::invalid_argument Invalid non-square matrix provided.
+//
+// This function inverts the given dense matrix with single precision complex elements by means
+// of a Cholesky decomposition. The matrix inversion fails if ...
+//
+//  - ... the given matrix is not a square matrix;
+//  - ... the given matrix is singular and not invertible.
+//
+// In all failure cases a \a std::invalid_argument exception is thrown.
+//
+// \note This function does not provide any exception safety guarantee, i.e. in case an exception
+// is thrown \c dm may already have been modified.
+// \note This function can only be used if the fitting LAPACK library is available and linked to
+// the executable. Otherwise a linker error will be created.
+*/
+template< typename MT >  // Type of the dense matrix
+inline typename EnableIf< IsSame< typename MT::ElementType, complex<float> > >::Type
+   Inversion<byCholesky>::invertByCholesky( MT& A, char uplo )
+{
+   cpotrf( A, uplo );
+   cpotri( A, uplo );
+}
+/*! \endcond */
+//*************************************************************************************************
+
+
+//*************************************************************************************************
+/*! \cond BLAZE_INTERNAL */
+/*!\brief In-place inversion of the given dense matrix with double precision complex elements.
+// \ingroup dense_matrix
+//
+// \param A The dense matrix to be inverted.
+// \param uplo \c 'L' to use the lower part of the matrix, \c 'U' to use the upper part.
+// \return void
+// \exception std::invalid_argument Inversion of singular matrix failed.
+// \exception std::invalid_argument Invalid non-square matrix provided.
+//
+// This function inverts the given dense matrix with double precision complex elements by means
+// of a Cholesky decomposition. The matrix inversion fails if ...
+//
+//  - ... the given matrix is not a square matrix;
+//  - ... the given matrix is singular and not invertible.
+//
+// In all failure cases a \a std::invalid_argument exception is thrown.
+//
+// \note This function does not provide any exception safety guarantee, i.e. in case an exception
+// is thrown \c dm may already have been modified.
+// \note This function can only be used if the fitting LAPACK library is available and linked to
+// the executable. Otherwise a linker error will be created.
+*/
+template< typename MT >  // Type of the dense matrix
+inline typename EnableIf< IsSame< typename MT::ElementType, complex<double> > >::Type
+   Inversion<byCholesky>::invertByCholesky( MT& A, char uplo )
+{
+   zpotrf( A, uplo );
+   zpotri( A, uplo );
+}
+/*! \endcond */
+//*************************************************************************************************
+
+
+
+
+//=================================================================================================
+//
+//  INVERSION FUNCTIONS
+//
+//=================================================================================================
+
+//*************************************************************************************************
+/*!\name Inversion functions */
+//@{
+template< typename MT, bool SO >
+inline void invert( DenseMatrix<MT,SO>& dm );
+
+template< DecompositionFlag DF, typename MT, bool SO >
+inline void invert( DenseMatrix<MT,SO>& dm );
+//@}
 //*************************************************************************************************
 
 
@@ -263,8 +623,7 @@ inline typename EnableIf< IsSame< typename MT::ElementType, complex<double> > >:
 // \exception std::invalid_argument Inversion of singular matrix failed.
 // \exception std::invalid_argument Invalid non-square matrix provided.
 //
-// This function inverts the given dense matrix by means of LAPACK kernels. The matrix inversion
-// fails if ...
+// This function inverts the given dense square matrix. The matrix inversion fails if ...
 //
 //  - ... the given matrix is not a square matrix;
 //  - ... the given matrix is singular and not invertible.
@@ -281,13 +640,55 @@ template< typename MT  // Type of the dense matrix
         , bool SO >    // Storage order of the dense matrix
 inline void invert( DenseMatrix<MT,SO>& dm )
 {
+   invert<byLU>( ~dm );
+};
+//*************************************************************************************************
+
+
+//*************************************************************************************************
+/*!\brief In-place inversion of the given dense matrix.
+// \ingroup dense_matrix
+//
+// \param dm The dense matrix to be inverted.
+// \return void
+// \exception std::invalid_argument Inversion of singular matrix failed.
+// \exception std::invalid_argument Invalid non-square matrix provided.
+//
+// This function inverts the given dense matrix by means of the specified matrix decomposition
+// algorithm \ DF. In case the matrix is a symmetric positive-definite matrix it is recommended
+// to perform the inversion by means of a Cholesky decomposition, for a general square matrix
+// an LU decomposition should be used:
+
+   \code
+   invert<byLU>( A );        // Inversion of a general square matrix
+   invert<byCholesky>( A );  // Inversion of a positive definite matrix
+   \endcode
+
+// The matrix inversion fails if ...
+//
+//  - ... the given matrix is not a square matrix;
+//  - ... the given matrix is singular and not invertible.
+//
+// In all failure cases either a compilation error is created if the failure can be predicted at
+// compile time or a \a std::invalid_argument exception is thrown.
+//
+// \note This function does not provide any exception safety guarantee, i.e. in case an exception
+// is thrown \c dm may already have been modified.
+// \note This function can only be used if the fitting LAPACK library is available and linked to
+// the executable. Otherwise a linker error will be created.
+*/
+template< DecompositionFlag DF  // Decomposition algorithm
+        , typename MT           // Type of the dense matrix
+        , bool SO >             // Storage order of the dense matrix
+inline void invert( DenseMatrix<MT,SO>& dm )
+{
    BLAZE_CONSTRAINT_MUST_NOT_BE_STRICTLY_TRIANGULAR_MATRIX_TYPE( MT );
 
    if( !IsSquare<MT>::value && !isSquare( ~dm ) ) {
       BLAZE_THROW_INVALID_ARGUMENT( "Invalid non-square matrix provided" );
    }
 
-   invert_backend( ~dm );
+   Inversion<DF>::invert( ~dm );
 
    BLAZE_INTERNAL_ASSERT( isIntact( ~dm ), "Broken invariant detected" );
 };
