@@ -45,15 +45,12 @@
 #include <blaze/math/LowerMatrix.h>
 #include <blaze/math/UpperMatrix.h>
 #include <blaze/util/Complex.h>
-#include <blaze/util/Memory.h>
 #include <blaze/util/policies/ArrayDelete.h>
-#include <blaze/util/policies/Deallocate.h>
 #include <blaze/util/Random.h>
 #include <blaze/util/UniqueArray.h>
 #include <blazetest/mathtest/custommatrix/AlignedPaddedTest.h>
 #include <blazetest/mathtest/RandomMaximum.h>
 #include <blazetest/mathtest/RandomMinimum.h>
-#include <blazetest/system/LAPACK.h>
 
 
 namespace blazetest {
@@ -88,7 +85,6 @@ AlignedPaddedTest::AlignedPaddedTest()
    testClear();
    testTranspose();
    testCTranspose();
-   testInvert();
    testSwap();
    testIsDefault();
 }
@@ -7536,115 +7532,6 @@ void AlignedPaddedTest::testCTranspose()
       }
       catch( std::invalid_argument& ) {}
    }
-}
-//*************************************************************************************************
-
-
-//*************************************************************************************************
-/*!\brief Test of the \c invert() function with the CustomMatrix class template.
-//
-// \return void
-// \exception std::runtime_error Error detected.
-//
-// This function performs a test of the \c invert() function with the CustomMatrix class
-// template. In case an error is detected, a \a std::runtime_error exception is thrown.
-*/
-void AlignedPaddedTest::testInvert()
-{
-#if BLAZETEST_MATHTEST_LAPACK_MODE
-
-   //=====================================================================================
-   // Row-major matrix tests
-   //=====================================================================================
-
-   {
-      test_ = "Row-major CustomMatrix inversion";
-
-      using blaze::aligned;
-      using blaze::padded;
-      using blaze::rowMajor;
-
-      typedef blaze::CustomMatrix<double,aligned,padded,rowMajor>  AlignedPadded;
-      AlignedPadded mat( blaze::allocate<double>( 48UL ), 3UL, 3UL, 16UL, blaze::Deallocate() );
-      mat = 0.0;
-      mat(0,0) = 1.0;
-      mat(1,1) = 1.0;
-      mat(2,0) = 1.0;
-      mat(2,1) = 1.0;
-      mat(2,2) = 1.0;
-
-      invert( mat );
-
-      checkRows    ( mat, 3UL );
-      checkColumns ( mat, 3UL );
-      checkCapacity( mat, 9UL );
-      checkNonZeros( mat, 5UL );
-      checkNonZeros( mat, 0UL, 1UL );
-      checkNonZeros( mat, 1UL, 1UL );
-      checkNonZeros( mat, 2UL, 3UL );
-
-      if( mat(0,0) !=  1.0 || mat(0,1) !=  0.0 || mat(0,2) != 0.0 ||
-          mat(1,0) !=  0.0 || mat(1,1) !=  1.0 || mat(1,2) != 0.0 ||
-          mat(2,0) != -1.0 || mat(2,1) != -1.0 || mat(2,2) != 1.0 ) {
-         std::ostringstream oss;
-         oss << " Test: " << test_ << "\n"
-             << " Error: Inversion failed\n"
-             << " Details:\n"
-             << "   Result:\n" << mat << "\n"
-             << "   Expected result:\n(  1  0  0 )\n"
-                                     "(  0  1  0 )\n"
-                                     "( -1 -1  1 )\n";
-         throw std::runtime_error( oss.str() );
-      }
-   }
-
-
-   //=====================================================================================
-   // Column-major matrix tests
-   //=====================================================================================
-
-   {
-      test_ = "Column-major CustomMatrix inversion";
-
-      using blaze::aligned;
-      using blaze::padded;
-      using blaze::columnMajor;
-
-      typedef blaze::CustomMatrix<double,aligned,padded,columnMajor>  AlignedPadded;
-      AlignedPadded mat( blaze::allocate<double>( 48UL ), 3UL, 3UL, 16UL, blaze::Deallocate() );
-      mat = 0.0;
-      mat(0,0) = 1.0;
-      mat(1,1) = 1.0;
-      mat(2,0) = 1.0;
-      mat(2,1) = 1.0;
-      mat(2,2) = 1.0;
-
-      invert( mat );
-
-      checkRows    ( mat, 3UL );
-      checkColumns ( mat, 3UL );
-      checkCapacity( mat, 9UL );
-      checkNonZeros( mat, 5UL );
-      checkNonZeros( mat, 0UL, 2UL );
-      checkNonZeros( mat, 1UL, 2UL );
-      checkNonZeros( mat, 2UL, 1UL );
-
-      if( mat(0,0) !=  1.0 || mat(0,1) !=  0.0 || mat(0,2) != 0.0 ||
-          mat(1,0) !=  0.0 || mat(1,1) !=  1.0 || mat(1,2) != 0.0 ||
-          mat(2,0) != -1.0 || mat(2,1) != -1.0 || mat(2,2) != 1.0 ) {
-         std::ostringstream oss;
-         oss << " Test: " << test_ << "\n"
-             << " Error: Inversion failed\n"
-             << " Details:\n"
-             << "   Result:\n" << mat << "\n"
-             << "   Expected result:\n(  1  0  0 )\n"
-                                     "(  0  1  0 )\n"
-                                     "( -1 -1  1 )\n";
-         throw std::runtime_error( oss.str() );
-      }
-   }
-
-#endif
 }
 //*************************************************************************************************
 

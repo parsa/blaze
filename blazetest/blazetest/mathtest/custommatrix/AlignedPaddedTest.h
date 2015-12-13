@@ -50,6 +50,8 @@
 #include <blaze/math/CustomMatrix.h>
 #include <blaze/math/typetraits/IsRowMajorMatrix.h>
 #include <blaze/util/constraints/SameType.h>
+#include <blaze/util/Memory.h>
+#include <blaze/util/policies/Deallocate.h>
 #include <blazetest/system/Types.h>
 
 
@@ -104,7 +106,6 @@ class AlignedPaddedTest
    void testClear       ();
    void testTranspose   ();
    void testCTranspose  ();
-   void testInvert      ();
    void testSwap        ();
    void testIsDefault   ();
 
