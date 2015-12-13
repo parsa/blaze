@@ -11512,18 +11512,33 @@ inline bool isSame( const DenseSubmatrix<MT,AF,SO>& a, const DenseSubmatrix<MT,A
 // \return void
 // \exception std::invalid_argument Inversion of singular matrix failed.
 //
-// This function inverts the given dense submatrix by means of LAPACK kernels. The matrix
-// inversion fails if the given submatrix is singular and not invertible. In this cases a
-// \a std::invalid_argument exception is thrown.
+// This function inverts the given dense submatrix by means of the specified matrix decomposition
+// algorithm \a DF. In case the submatrix is a symmetric positive-definite matrix it is recommended
+// to perform the inversion by means of a Cholesky decomposition, for a general square submatrix
+// an LU decomposition should be used:
+
+   \code
+   invert<byLU>( A );        // Inversion of a general square matrix
+   invert<byCholesky>( A );  // Inversion of a positive definite matrix
+   \endcode
+
+// The matrix inversion fails if ...
+//
+//  - ... the given submatrix is not a square matrix;
+//  - ... the given submatrix is singular and not invertible.
+//
+// In all failure cases either a compilation error is created if the failure can be predicted at
+// compile time or a \a std::invalid_argument exception is thrown.
 //
 // \note This function does not provide any exception safety guarantee, i.e. in case an exception
-// is thrown, \c dm may already have been modified.
+// is thrown \c dm may already have been modified.
 // \note This function can only be used if the fitting LAPACK library is available and linked to
 // the executable. Otherwise a linker error will be created.
 */
-template< typename MT  // Type of the dense matrix
-        , bool AF      // Alignment flag
-        , bool SO >    // Storage order
+template< DecompositionFlag DF  // Decomposition algorithm
+        , typename MT           // Type of the dense matrix
+        , bool AF               // Alignment flag
+        , bool SO >             // Storage order
 inline typename DisableIf< HasMutableDataAccess<MT> >::Type
    invert( DenseSubmatrix<MT,AF,SO>& dm )
 {
@@ -11533,7 +11548,7 @@ inline typename DisableIf< HasMutableDataAccess<MT> >::Type
    BLAZE_CONSTRAINT_MUST_HAVE_MUTABLE_DATA_ACCESS( RT );
 
    RT tmp( dm );
-   invert( tmp );
+   invert<DF>( tmp );
    dm = tmp;
 }
 /*! \endcond */
