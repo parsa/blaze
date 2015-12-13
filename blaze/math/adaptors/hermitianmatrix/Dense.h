@@ -52,6 +52,7 @@
 #include <blaze/math/constraints/StorageOrder.h>
 #include <blaze/math/constraints/Symmetric.h>
 #include <blaze/math/constraints/Upper.h>
+#include <blaze/math/DecompositionFlag.h>
 #include <blaze/math/dense/DenseMatrix.h>
 #include <blaze/math/expressions/DenseMatrix.h>
 #include <blaze/math/expressions/Forward.h>
@@ -752,7 +753,7 @@ class HermitianMatrix<MT,SO,true>
    template< typename MT2, bool SO2, bool DF2 >
    friend bool isDefault( const HermitianMatrix<MT2,SO2,DF2>& m );
 
-   template< typename MT2, bool SO2 >
+   template< DecompositionFlag DF, typename MT2, bool SO2 >
    friend void invert( HermitianMatrix<MT2,SO2,true>& m );
    //**********************************************************************************************
 
