@@ -46,6 +46,7 @@
 #include <blaze/math/adaptors/symmetricmatrix/SparseNonNumeric.h>
 #include <blaze/math/adaptors/symmetricmatrix/SparseNumeric.h>
 #include <blaze/math/constraints/RequiresEvaluation.h>
+#include <blaze/math/DecompositionFlag.h>
 #include <blaze/math/Forward.h>
 #include <blaze/math/Functions.h>
 #include <blaze/math/traits/AddTrait.h>
@@ -256,20 +257,30 @@ inline void swap( SymmetricMatrix<MT,SO,DF,NF>& a, SymmetricMatrix<MT,SO,DF,NF>&
 // \return void
 // \exception std::invalid_argument Inversion of singular matrix failed.
 //
-// This function inverts the given dense symmetric matrix by means of LAPACK kernels. The matrix
-// inversion fails if the given symmetric matrix is singular and not invertible. In this case a
-// \a std::invalid_argument exception is thrown.
+// This function inverts the given dense matrix by means of the specified matrix decomposition
+// algorithm \a DF. In case the symmetric matrix is a positive-definite matrix it is recommended
+// to perform the inversion by means of a Cholesky decomposition, for a general symmetric matrix
+// an LU decomposition should be used:
+
+   \code
+   invert<byLU>( A );        // Inversion of a general symmetric matrix
+   invert<byCholesky>( A );  // Inversion of a positive definite matrix
+   \endcode
+
+// The matrix inversion fails if the given symmetric matrix is singular and not invertible. In
+// this case a \a std::invalid_argument exception is thrown.
 //
 // \note This function does not provide any exception safety guarantee, i.e. in case an exception
 // is thrown, \c m may already have been modified.
 // \note This function can only be used if the fitting LAPACK library is available and linked to
 // the executable. Otherwise a linker error will be created.
 */
-template< typename MT  // Type of the adapted matrix
-        , bool SO >    // Storage order of the adapted matrix
+template< DecompositionFlag DF  // Decomposition algorithm
+        , typename MT           // Type of the dense matrix
+        , bool SO >             // Storage order of the dense matrix
 inline void invert( SymmetricMatrix<MT,SO,true,true>& m )
 {
-   invert_backend( m.matrix_ );
+   Inversion<DF>::invert( m.matrix_ );
 
    BLAZE_INTERNAL_ASSERT( isIntact( m ), "Broken invariant detected" );
 }

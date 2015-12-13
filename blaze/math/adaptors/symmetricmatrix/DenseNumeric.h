@@ -52,6 +52,7 @@
 #include <blaze/math/constraints/StorageOrder.h>
 #include <blaze/math/constraints/Symmetric.h>
 #include <blaze/math/constraints/Upper.h>
+#include <blaze/math/DecompositionFlag.h>
 #include <blaze/math/dense/DenseMatrix.h>
 #include <blaze/math/expressions/DenseMatrix.h>
 #include <blaze/math/expressions/Forward.h>
@@ -736,7 +737,7 @@ class SymmetricMatrix<MT,SO,true,true>
    template< typename MT2, bool SO2, bool DF2, bool NF2 >
    friend bool isDefault( const SymmetricMatrix<MT2,SO2,DF2,NF2>& m );
 
-   template< typename MT2, bool SO2 >
+   template< DecompositionFlag DF, typename MT2, bool SO2 >
    friend void invert( SymmetricMatrix<MT2,SO2,true,true>& m );
    //**********************************************************************************************
 
