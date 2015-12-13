@@ -1790,28 +1790,85 @@ void ProxyTest::testInvert()
 {
 #if BLAZETEST_MATHTEST_LAPACK_MODE
 
-   test_ = "invert( VectorAccessProxy )";
+   using blaze::invert;
+   using blaze::byLU;
+   using blaze::byCholesky;
 
-   blaze::CompressedVector< blaze::DynamicMatrix<double> > vec( 3UL, 1UL );
-   vec[0].resize( 3UL, 3UL );
-   vec[0] = 0.0;
-   vec[0](0,0) = 1.0;
-   vec[0](1,1) = 1.0;
-   vec[0](2,2) = 1.0;
-   invert( vec[0] );
 
-   checkSize    ( vec, 3UL );
-   checkCapacity( vec, 1UL );
-   checkNonZeros( vec, 1UL );
+   {
+      test_ = "invert( VectorAccessProxy )";
 
-   checkRows    ( vec[0], 3UL );
-   checkColumns ( vec[0], 3UL );
-   checkCapacity( vec[0], 9UL );
-   checkNonZeros( vec[0], 3UL );
-   checkRows    ( vec[1], 0UL );
-   checkColumns ( vec[1], 0UL );
-   checkRows    ( vec[2], 0UL );
-   checkColumns ( vec[2], 0UL );
+      blaze::CompressedVector< blaze::DynamicMatrix<double> > vec( 3UL, 1UL );
+      vec[0].resize( 3UL, 3UL );
+      vec[0] = 0.0;
+      vec[0](0,0) = 1.0;
+      vec[0](1,1) = 1.0;
+      vec[0](2,2) = 1.0;
+      invert( vec[0] );
+
+      checkSize    ( vec, 3UL );
+      checkCapacity( vec, 1UL );
+      checkNonZeros( vec, 1UL );
+
+      checkRows    ( vec[0], 3UL );
+      checkColumns ( vec[0], 3UL );
+      checkCapacity( vec[0], 9UL );
+      checkNonZeros( vec[0], 3UL );
+      checkRows    ( vec[1], 0UL );
+      checkColumns ( vec[1], 0UL );
+      checkRows    ( vec[2], 0UL );
+      checkColumns ( vec[2], 0UL );
+   }
+
+   {
+      test_ = "invert<byLU>( VectorAccessProxy )";
+
+      blaze::CompressedVector< blaze::DynamicMatrix<double> > vec( 3UL, 1UL );
+      vec[0].resize( 3UL, 3UL );
+      vec[0] = 0.0;
+      vec[0](0,0) = 1.0;
+      vec[0](1,1) = 1.0;
+      vec[0](2,2) = 1.0;
+      invert<byLU>( vec[0] );
+
+      checkSize    ( vec, 3UL );
+      checkCapacity( vec, 1UL );
+      checkNonZeros( vec, 1UL );
+
+      checkRows    ( vec[0], 3UL );
+      checkColumns ( vec[0], 3UL );
+      checkCapacity( vec[0], 9UL );
+      checkNonZeros( vec[0], 3UL );
+      checkRows    ( vec[1], 0UL );
+      checkColumns ( vec[1], 0UL );
+      checkRows    ( vec[2], 0UL );
+      checkColumns ( vec[2], 0UL );
+   }
+
+   {
+      test_ = "invert<byCholesky>( VectorAccessProxy )";
+
+      blaze::CompressedVector< blaze::DynamicMatrix<double> > vec( 3UL, 1UL );
+      vec[0].resize( 3UL, 3UL );
+      vec[0] = 0.0;
+      vec[0](0,0) = 1.0;
+      vec[0](1,1) = 1.0;
+      vec[0](2,2) = 1.0;
+      invert<byCholesky>( vec[0] );
+
+      checkSize    ( vec, 3UL );
+      checkCapacity( vec, 1UL );
+      checkNonZeros( vec, 1UL );
+
+      checkRows    ( vec[0], 3UL );
+      checkColumns ( vec[0], 3UL );
+      checkCapacity( vec[0], 9UL );
+      checkNonZeros( vec[0], 3UL );
+      checkRows    ( vec[1], 0UL );
+      checkColumns ( vec[1], 0UL );
+      checkRows    ( vec[2], 0UL );
+      checkColumns ( vec[2], 0UL );
+   }
 
 #endif
 }
