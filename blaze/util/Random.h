@@ -150,8 +150,6 @@ class Random : private NonCreatable
    //**Friend declarations*************************************************************************
    /*! \cond BLAZE_INTERNAL */
    template< typename T > friend class Rand;
-//    template< typename T > friend T        rand();
-//    template< typename T > friend T        rand( T min, T max );
                           friend uint32_t getSeed();
                           friend void     setSeed( uint32_t seed );
    /*! \endcond */
