@@ -60,6 +60,7 @@
 #include <blaze/util/typetraits/IsCharacter.h>
 #include <blaze/util/typetraits/IsClass.h>
 #include <blaze/util/typetraits/IsComplex.h>
+#include <blaze/util/typetraits/IsComplexFloat.h>
 #include <blaze/util/typetraits/IsConst.h>
 #include <blaze/util/typetraits/IsConvertible.h>
 #include <blaze/util/typetraits/IsDouble.h>
