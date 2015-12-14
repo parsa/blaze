@@ -48,6 +48,7 @@
 #include <blaze/util/constraints/Class.h>
 #include <blaze/util/constraints/Comparable.h>
 #include <blaze/util/constraints/Complex.h>
+#include <blaze/util/constraints/ComplexDouble.h>
 #include <blaze/util/constraints/ComplexFloat.h>
 #include <blaze/util/constraints/Const.h>
 #include <blaze/util/constraints/Convertible.h>
