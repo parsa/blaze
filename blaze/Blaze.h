@@ -2833,7 +2833,7 @@ namespace blaze {}
 
    \code
    blaze::CompressedMatrix<int> M1( 4UL, 6UL );
-   M1.reserve( 1, 4 );  // Reserving enough space for four non-zero elements in row 4
+   M1.reserve( 1, 4 );  // Reserving enough space for four non-zero elements in row 1
    \endcode
 
 // \n \section matrix_operations_free_functions Free Functions
