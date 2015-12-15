@@ -113,7 +113,7 @@ void OperationTest::testQR()
                                                            1.0F, 1.0F, 1.0F );
       blaze::StaticVector<float,3UL,blaze::columnVector> tau;
 
-      blaze::sgeqrf( A, tau.data() );
+      blaze::geqrf( A, tau.data() );
 
       if( !equal( A(0,0), 1.0F ) || !equal( A(0,1), 0.0F ) || !equal( A(0,2), 0.0F ) ||
           !equal( A(1,0), 0.0F ) || !equal( A(1,1), 1.0F ) || !equal( A(1,2), 0.0F ) ||
@@ -139,7 +139,7 @@ void OperationTest::testQR()
                                                             1.0, 1.0, 1.0 );
       blaze::StaticVector<double,3UL,blaze::columnVector> tau;
 
-      blaze::dgeqrf( A, tau.data() );
+      blaze::geqrf( A, tau.data() );
 
       if( !equal( A(0,0), 1.0 ) || !equal( A(0,1), 0.0 ) || !equal( A(0,2), 0.0 ) ||
           !equal( A(1,0), 0.0 ) || !equal( A(1,1), 1.0 ) || !equal( A(1,2), 0.0 ) ||
@@ -167,7 +167,7 @@ void OperationTest::testQR()
                                                           cplx( 1.0F ), cplx( 1.0F ), cplx( 1.0F ) );
       blaze::StaticVector<cplx,3UL,blaze::columnVector> tau;
 
-      blaze::cgeqrf( A, tau.data() );
+      blaze::geqrf( A, tau.data() );
 
       if( !equal( A(0,0), cplx( 1.0F ) ) || !equal( A(0,1), cplx( 0.0F ) ) || !equal( A(0,2), cplx( 0.0F ) ) ||
           !equal( A(1,0), cplx( 0.0F ) ) || !equal( A(1,1), cplx( 1.0F ) ) || !equal( A(1,2), cplx( 0.0F ) ) ||
@@ -195,7 +195,7 @@ void OperationTest::testQR()
                                                           cplx( 1.0 ), cplx( 1.0 ), cplx( 1.0 ) );
       blaze::StaticVector<cplx,3UL,blaze::columnVector> tau;
 
-      blaze::zgeqrf( A, tau.data() );
+      blaze::geqrf( A, tau.data() );
 
       if( !equal( A(0,0), cplx( 1.0 ) ) || !equal( A(0,1), cplx( 0.0 ) ) || !equal( A(0,2), cplx( 0.0 ) ) ||
           !equal( A(1,0), cplx( 0.0 ) ) || !equal( A(1,1), cplx( 1.0 ) ) || !equal( A(1,2), cplx( 0.0 ) ) ||
@@ -226,7 +226,7 @@ void OperationTest::testQR()
                                                               1.0F, 1.0F, 1.0F );
       blaze::StaticVector<float,3UL,blaze::columnVector> tau;
 
-      blaze::sgeqrf( A, tau.data() );
+      blaze::geqrf( A, tau.data() );
 
       if( !equal( A(0,0), 1.0F ) || !equal( A(0,1), 0.0F ) || !equal( A(0,2), 1.0F ) ||
           !equal( A(1,0), 0.0F ) || !equal( A(1,1), 1.0F ) || !equal( A(1,2), 1.0F ) ||
@@ -252,7 +252,7 @@ void OperationTest::testQR()
                                                                1.0, 1.0, 1.0 );
       blaze::StaticVector<double,3UL,blaze::columnVector> tau;
 
-      blaze::dgeqrf( A, tau.data() );
+      blaze::geqrf( A, tau.data() );
 
       if( !equal( A(0,0), 1.0 ) || !equal( A(0,1), 0.0 ) || !equal( A(0,2), 1.0 ) ||
           !equal( A(1,0), 0.0 ) || !equal( A(1,1), 1.0 ) || !equal( A(1,2), 1.0 ) ||
@@ -280,7 +280,7 @@ void OperationTest::testQR()
                                                              cplx( 1.0F ), cplx( 1.0F ), cplx( 1.0F ) );
       blaze::StaticVector<cplx,3UL,blaze::columnVector> tau;
 
-      blaze::cgeqrf( A, tau.data() );
+      blaze::geqrf( A, tau.data() );
 
       if( !equal( A(0,0), cplx( 1.0F ) ) || !equal( A(0,1), cplx( 0.0F ) ) || !equal( A(0,2), cplx( 1.0F ) ) ||
           !equal( A(1,0), cplx( 0.0F ) ) || !equal( A(1,1), cplx( 1.0F ) ) || !equal( A(1,2), cplx( 1.0F ) ) ||
@@ -308,7 +308,7 @@ void OperationTest::testQR()
                                                              cplx( 1.0 ), cplx( 1.0 ), cplx( 1.0 ) );
       blaze::StaticVector<cplx,3UL,blaze::columnVector> tau;
 
-      blaze::zgeqrf( A, tau.data() );
+      blaze::geqrf( A, tau.data() );
 
       if( !equal( A(0,0), cplx( 1.0 ) ) || !equal( A(0,1), cplx( 0.0 ) ) || !equal( A(0,2), cplx( 1.0 ) ) ||
           !equal( A(1,0), cplx( 0.0 ) ) || !equal( A(1,1), cplx( 1.0 ) ) || !equal( A(1,2), cplx( 1.0 ) ) ||
@@ -359,7 +359,7 @@ void OperationTest::testLU()
                                                            6.0F,  3.0F, -8.0F );
       blaze::StaticVector<int,3UL,blaze::columnVector> ipiv;
 
-      blaze::sgetrf( A, ipiv.data() );
+      blaze::getrf( A, ipiv.data() );
 
       if( !equal( A(0,0), 2.0F ) || !equal( A(0,1), -0.5F ) || !equal( A(0,2), -1.0F ) ||
           !equal( A(1,0), 4.0F ) || !equal( A(1,1),  3.0F ) || !equal( A(1,2), -1.0F ) ||
@@ -385,7 +385,7 @@ void OperationTest::testLU()
                                                             6.0,  3.0, -8.0 );
       blaze::StaticVector<int,3UL,blaze::columnVector> ipiv;
 
-      blaze::dgetrf( A, ipiv.data() );
+      blaze::getrf( A, ipiv.data() );
 
       if( !equal( A(0,0), 2.0 ) || !equal( A(0,1), -0.5 ) || !equal( A(0,2), -1.0 ) ||
           !equal( A(1,0), 4.0 ) || !equal( A(1,1),  3.0 ) || !equal( A(1,2), -1.0 ) ||
@@ -413,7 +413,7 @@ void OperationTest::testLU()
                                                           cplx( 6.0F ), cplx(  3.0F ), cplx( -8.0F ) );
       blaze::StaticVector<int,3UL,blaze::columnVector> ipiv;
 
-      blaze::cgetrf( A, ipiv.data() );
+      blaze::getrf( A, ipiv.data() );
 
       if( !equal( A(0,0), cplx( 2.0F ) ) || !equal( A(0,1), cplx( -0.5F ) ) || !equal( A(0,2), cplx( -1.0F ) ) ||
           !equal( A(1,0), cplx( 4.0F ) ) || !equal( A(1,1), cplx(  3.0F ) ) || !equal( A(1,2), cplx( -1.0F ) ) ||
@@ -441,7 +441,7 @@ void OperationTest::testLU()
                                                           cplx( 6.0 ), cplx(  3.0 ), cplx( -8.0 ) );
       blaze::StaticVector<int,3UL,blaze::columnVector> ipiv;
 
-      blaze::zgetrf( A, ipiv.data() );
+      blaze::getrf( A, ipiv.data() );
 
       if( !equal( A(0,0), cplx( 2.0 ) ) || !equal( A(0,1), cplx( -0.5 ) ) || !equal( A(0,2), cplx( -1.0 ) ) ||
           !equal( A(1,0), cplx( 4.0 ) ) || !equal( A(1,1), cplx(  3.0 ) ) || !equal( A(1,2), cplx( -1.0 ) ) ||
@@ -472,7 +472,7 @@ void OperationTest::testLU()
                                                               6.0F,  3.0F, -8.0F );
       blaze::StaticVector<int,3UL,blaze::columnVector> ipiv;
 
-      blaze::sgetrf( A, ipiv.data() );
+      blaze::getrf( A, ipiv.data() );
 
       if( !equal( A(0,0),  2.0F ) || !equal( A(0,1),  4.0F ) || !equal( A(0,2), 6.0F ) ||
           !equal( A(1,0), -0.5F ) || !equal( A(1,1),  3.0F ) || !equal( A(1,2), 6.0F ) ||
@@ -498,7 +498,7 @@ void OperationTest::testLU()
                                                                6.0,  3.0, -8.0 );
       blaze::StaticVector<int,3UL,blaze::columnVector> ipiv;
 
-      blaze::dgetrf( A, ipiv.data() );
+      blaze::getrf( A, ipiv.data() );
 
       if( !equal( A(0,0),  2.0 ) || !equal( A(0,1),  4.0 ) || !equal( A(0,2), 6.0 ) ||
           !equal( A(1,0), -0.5 ) || !equal( A(1,1),  3.0 ) || !equal( A(1,2), 6.0 ) ||
@@ -526,7 +526,7 @@ void OperationTest::testLU()
                                                              cplx( 6.0F ), cplx(  3.0F ), cplx( -8.0F ) );
       blaze::StaticVector<int,3UL,blaze::columnVector> ipiv;
 
-      blaze::cgetrf( A, ipiv.data() );
+      blaze::getrf( A, ipiv.data() );
 
       if( !equal( A(0,0), cplx(  2.0F ) ) || !equal( A(0,1), cplx(  4.0F ) ) || !equal( A(0,2), cplx( 6.0F ) ) ||
           !equal( A(1,0), cplx( -0.5F ) ) || !equal( A(1,1), cplx(  3.0F ) ) || !equal( A(1,2), cplx( 6.0F ) ) ||
@@ -554,7 +554,7 @@ void OperationTest::testLU()
                                                              cplx( 6.0 ), cplx(  3.0 ), cplx( -8.0 ) );
       blaze::StaticVector<int,3UL,blaze::columnVector> ipiv;
 
-      blaze::zgetrf( A, ipiv.data() );
+      blaze::getrf( A, ipiv.data() );
 
       if( !equal( A(0,0), cplx(  2.0 ) ) || !equal( A(0,1), cplx(  4.0 ) ) || !equal( A(0,2), cplx( 6.0 ) ) ||
           !equal( A(1,0), cplx( -0.5 ) ) || !equal( A(1,1), cplx(  3.0 ) ) || !equal( A(1,2), cplx( 6.0 ) ) ||
@@ -603,7 +603,7 @@ void OperationTest::testCholesky()
       blaze::StaticMatrix<float,3UL,3U,blaze::rowMajor> A( 1.0F,  2.0F,  4.0F,
                                                            2.0F, 13.0F, 23.0F,
                                                            4.0F, 23.0F, 77.0F );
-      blaze::spotrf( A, 'L' );
+      blaze::potrf( A, 'L' );
 
       if( !equal( A(0,0), 1.0F ) || !equal( A(0,1), 2.0F ) || !equal( A(0,2),  4.0F ) ||
           !equal( A(1,0), 2.0F ) || !equal( A(1,1), 3.0F ) || !equal( A(1,2), 23.0F ) ||
@@ -627,7 +627,7 @@ void OperationTest::testCholesky()
       blaze::StaticMatrix<double,3UL,3U,blaze::rowMajor> A( 1.0,  2.0,  4.0,
                                                             2.0, 13.0, 23.0,
                                                             4.0, 23.0, 77.0 );
-      blaze::dpotrf( A, 'L' );
+      blaze::potrf( A, 'L' );
 
       if( !equal( A(0,0), 1.0 ) || !equal( A(0,1), 2.0 ) || !equal( A(0,2),  4.0 ) ||
           !equal( A(1,0), 2.0 ) || !equal( A(1,1), 3.0 ) || !equal( A(1,2), 23.0 ) ||
@@ -653,7 +653,7 @@ void OperationTest::testCholesky()
       blaze::StaticMatrix<cplx,3UL,3U,blaze::rowMajor> A( cplx( 1.0F ), cplx(  2.0F ), cplx(  4.0F ),
                                                           cplx( 2.0F ), cplx( 13.0F ), cplx( 23.0F ),
                                                           cplx( 4.0F ), cplx( 23.0F ), cplx( 77.0F ) );
-      blaze::cpotrf( A, 'L' );
+      blaze::potrf( A, 'L' );
 
       if( !equal( A(0,0), cplx( 1.0F ) ) || !equal( A(0,1), cplx( 2.0F ) ) || !equal( A(0,2), cplx(  4.0F ) ) ||
           !equal( A(1,0), cplx( 2.0F ) ) || !equal( A(1,1), cplx( 3.0F ) ) || !equal( A(1,2), cplx( 23.0F ) ) ||
@@ -679,7 +679,7 @@ void OperationTest::testCholesky()
       blaze::StaticMatrix<cplx,3UL,3U,blaze::rowMajor> A( cplx( 1.0 ), cplx(  2.0 ), cplx(  4.0 ),
                                                           cplx( 2.0 ), cplx( 13.0 ), cplx( 23.0 ),
                                                           cplx( 4.0 ), cplx( 23.0 ), cplx( 77.0 ) );
-      blaze::zpotrf( A, 'L' );
+      blaze::potrf( A, 'L' );
 
       if( !equal( A(0,0), cplx( 1.0 ) ) || !equal( A(0,1), cplx( 2.0 ) ) || !equal( A(0,2), cplx(  4.0 ) ) ||
           !equal( A(1,0), cplx( 2.0 ) ) || !equal( A(1,1), cplx( 3.0 ) ) || !equal( A(1,2), cplx( 23.0 ) ) ||
@@ -708,7 +708,7 @@ void OperationTest::testCholesky()
       blaze::StaticMatrix<float,3UL,3U,blaze::rowMajor> A( 1.0F,  2.0F,  4.0F,
                                                            2.0F, 13.0F, 23.0F,
                                                            4.0F, 23.0F, 77.0F );
-      blaze::spotrf( A, 'U' );
+      blaze::potrf( A, 'U' );
 
       if( !equal( A(0,0), 1.0F ) || !equal( A(0,1),  2.0F ) || !equal( A(0,2), 4.0F ) ||
           !equal( A(1,0), 2.0F ) || !equal( A(1,1),  3.0F ) || !equal( A(1,2), 5.0F ) ||
@@ -732,7 +732,7 @@ void OperationTest::testCholesky()
       blaze::StaticMatrix<double,3UL,3U,blaze::rowMajor> A( 1.0,  2.0,  4.0,
                                                             2.0, 13.0, 23.0,
                                                             4.0, 23.0, 77.0 );
-      blaze::dpotrf( A, 'U' );
+      blaze::potrf( A, 'U' );
 
       if( !equal( A(0,0), 1.0 ) || !equal( A(0,1),  2.0 ) || !equal( A(0,2), 4.0 ) ||
           !equal( A(1,0), 2.0 ) || !equal( A(1,1),  3.0 ) || !equal( A(1,2), 5.0 ) ||
@@ -758,7 +758,7 @@ void OperationTest::testCholesky()
       blaze::StaticMatrix<cplx,3UL,3U,blaze::rowMajor> A( cplx( 1.0F ), cplx(  2.0F ), cplx(  4.0F ),
                                                           cplx( 2.0F ), cplx( 13.0F ), cplx( 23.0F ),
                                                           cplx( 4.0F ), cplx( 23.0F ), cplx( 77.0F ) );
-      blaze::cpotrf( A, 'U' );
+      blaze::potrf( A, 'U' );
 
       if( !equal( A(0,0), cplx( 1.0F ) ) || !equal( A(0,1), cplx(  2.0F ) ) || !equal( A(0,2), cplx( 4.0F ) ) ||
           !equal( A(1,0), cplx( 2.0F ) ) || !equal( A(1,1), cplx(  3.0F ) ) || !equal( A(1,2), cplx( 5.0F ) ) ||
@@ -784,7 +784,7 @@ void OperationTest::testCholesky()
       blaze::StaticMatrix<cplx,3UL,3U,blaze::rowMajor> A( cplx( 1.0 ), cplx(  2.0 ), cplx(  4.0 ),
                                                           cplx( 2.0 ), cplx( 13.0 ), cplx( 23.0 ),
                                                           cplx( 4.0 ), cplx( 23.0 ), cplx( 77.0 ) );
-      blaze::zpotrf( A, 'U' );
+      blaze::potrf( A, 'U' );
 
       if( !equal( A(0,0), cplx( 1.0 ) ) || !equal( A(0,1), cplx(  2.0 ) ) || !equal( A(0,2), cplx( 4.0 ) ) ||
           !equal( A(1,0), cplx( 2.0 ) ) || !equal( A(1,1), cplx(  3.0 ) ) || !equal( A(1,2), cplx( 5.0 ) ) ||
@@ -813,7 +813,7 @@ void OperationTest::testCholesky()
       blaze::StaticMatrix<float,3UL,3U,blaze::columnMajor> A( 1.0F,  2.0F,  4.0F,
                                                               2.0F, 13.0F, 23.0F,
                                                               4.0F, 23.0F, 77.0F );
-      blaze::spotrf( A, 'L' );
+      blaze::potrf( A, 'L' );
 
       if( !equal( A(0,0), 1.0F ) || !equal( A(0,1), 2.0F ) || !equal( A(0,2),  4.0F ) ||
           !equal( A(1,0), 2.0F ) || !equal( A(1,1), 3.0F ) || !equal( A(1,2), 23.0F ) ||
@@ -837,7 +837,7 @@ void OperationTest::testCholesky()
       blaze::StaticMatrix<double,3UL,3U,blaze::columnMajor> A( 1.0,  2.0,  4.0,
                                                                2.0, 13.0, 23.0,
                                                                4.0, 23.0, 77.0 );
-      blaze::dpotrf( A, 'L' );
+      blaze::potrf( A, 'L' );
 
       if( !equal( A(0,0), 1.0 ) || !equal( A(0,1), 2.0 ) || !equal( A(0,2),  4.0 ) ||
           !equal( A(1,0), 2.0 ) || !equal( A(1,1), 3.0 ) || !equal( A(1,2), 23.0 ) ||
@@ -863,7 +863,7 @@ void OperationTest::testCholesky()
       blaze::StaticMatrix<cplx,3UL,3U,blaze::columnMajor> A( cplx( 1.0F ), cplx(  2.0F ), cplx(  4.0F ),
                                                              cplx( 2.0F ), cplx( 13.0F ), cplx( 23.0F ),
                                                              cplx( 4.0F ), cplx( 23.0F ), cplx( 77.0F ) );
-      blaze::cpotrf( A, 'L' );
+      blaze::potrf( A, 'L' );
 
       if( !equal( A(0,0), cplx( 1.0F ) ) || !equal( A(0,1), cplx( 2.0F ) ) || !equal( A(0,2), cplx(  4.0F ) ) ||
           !equal( A(1,0), cplx( 2.0F ) ) || !equal( A(1,1), cplx( 3.0F ) ) || !equal( A(1,2), cplx( 23.0F ) ) ||
@@ -889,7 +889,7 @@ void OperationTest::testCholesky()
       blaze::StaticMatrix<cplx,3UL,3U,blaze::columnMajor> A( cplx( 1.0 ), cplx(  2.0 ), cplx(  4.0 ),
                                                              cplx( 2.0 ), cplx( 13.0 ), cplx( 23.0 ),
                                                              cplx( 4.0 ), cplx( 23.0 ), cplx( 77.0 ) );
-      blaze::zpotrf( A, 'L' );
+      blaze::potrf( A, 'L' );
 
       if( !equal( A(0,0), cplx( 1.0 ) ) || !equal( A(0,1), cplx( 2.0 ) ) || !equal( A(0,2), cplx(  4.0 ) ) ||
           !equal( A(1,0), cplx( 2.0 ) ) || !equal( A(1,1), cplx( 3.0 ) ) || !equal( A(1,2), cplx( 23.0 ) ) ||
@@ -918,7 +918,7 @@ void OperationTest::testCholesky()
       blaze::StaticMatrix<float,3UL,3U,blaze::columnMajor> A( 1.0F,  2.0F,  4.0F,
                                                               2.0F, 13.0F, 23.0F,
                                                               4.0F, 23.0F, 77.0F );
-      blaze::spotrf( A, 'U' );
+      blaze::potrf( A, 'U' );
 
       if( !equal( A(0,0), 1.0F ) || !equal( A(0,1),  2.0F ) || !equal( A(0,2), 4.0F ) ||
           !equal( A(1,0), 2.0F ) || !equal( A(1,1),  3.0F ) || !equal( A(1,2), 5.0F ) ||
@@ -942,7 +942,7 @@ void OperationTest::testCholesky()
       blaze::StaticMatrix<double,3UL,3U,blaze::columnMajor> A( 1.0,  2.0,  4.0,
                                                                2.0, 13.0, 23.0,
                                                                4.0, 23.0, 77.0 );
-      blaze::dpotrf( A, 'U' );
+      blaze::potrf( A, 'U' );
 
       if( !equal( A(0,0), 1.0 ) || !equal( A(0,1),  2.0 ) || !equal( A(0,2), 4.0 ) ||
           !equal( A(1,0), 2.0 ) || !equal( A(1,1),  3.0 ) || !equal( A(1,2), 5.0 ) ||
@@ -968,7 +968,7 @@ void OperationTest::testCholesky()
       blaze::StaticMatrix<cplx,3UL,3U,blaze::columnMajor> A( cplx( 1.0F ), cplx(  2.0F ), cplx(  4.0F ),
                                                              cplx( 2.0F ), cplx( 13.0F ), cplx( 23.0F ),
                                                              cplx( 4.0F ), cplx( 23.0F ), cplx( 77.0F ) );
-      blaze::cpotrf( A, 'U' );
+      blaze::potrf( A, 'U' );
 
       if( !equal( A(0,0), cplx( 1.0F ) ) || !equal( A(0,1), cplx(  2.0F ) ) || !equal( A(0,2), cplx( 4.0F ) ) ||
           !equal( A(1,0), cplx( 2.0F ) ) || !equal( A(1,1), cplx(  3.0F ) ) || !equal( A(1,2), cplx( 5.0F ) ) ||
@@ -994,7 +994,7 @@ void OperationTest::testCholesky()
       blaze::StaticMatrix<cplx,3UL,3U,blaze::columnMajor> A( cplx( 1.0 ), cplx(  2.0 ), cplx(  4.0 ),
                                                              cplx( 2.0 ), cplx( 13.0 ), cplx( 23.0 ),
                                                              cplx( 4.0 ), cplx( 23.0 ), cplx( 77.0 ) );
-      blaze::zpotrf( A, 'U' );
+      blaze::potrf( A, 'U' );
 
       if( !equal( A(0,0), cplx( 1.0 ) ) || !equal( A(0,1), cplx(  2.0 ) ) || !equal( A(0,2), cplx( 4.0 ) ) ||
           !equal( A(1,0), cplx( 2.0 ) ) || !equal( A(1,1), cplx(  3.0 ) ) || !equal( A(1,2), cplx( 5.0 ) ) ||
@@ -1045,8 +1045,8 @@ void OperationTest::testInversion()
                                                            1.0F, 1.0F, 1.0F );
       blaze::StaticVector<int,3UL,blaze::columnVector> ipiv;
 
-      blaze::sgetrf( A, ipiv.data() );
-      blaze::sgetri( A, ipiv.data() );
+      blaze::getrf( A, ipiv.data() );
+      blaze::getri( A, ipiv.data() );
 
       if( !equal( A(0,0),  1.0F ) || !equal( A(0,1),  0.0F ) || !equal( A(0,2), 0.0F ) ||
           !equal( A(1,0),  0.0F ) || !equal( A(1,1),  1.0F ) || !equal( A(1,2), 0.0F ) ||
@@ -1072,8 +1072,8 @@ void OperationTest::testInversion()
                                                             1.0, 1.0, 1.0 );
       blaze::StaticVector<int,3UL,blaze::columnVector> ipiv;
 
-      blaze::dgetrf( A, ipiv.data() );
-      blaze::dgetri( A, ipiv.data() );
+      blaze::getrf( A, ipiv.data() );
+      blaze::getri( A, ipiv.data() );
 
       if( !equal( A(0,0),  1.0 ) || !equal( A(0,1),  0.0 ) || !equal( A(0,2), 0.0 ) ||
           !equal( A(1,0),  0.0 ) || !equal( A(1,1),  1.0 ) || !equal( A(1,2), 0.0 ) ||
@@ -1101,8 +1101,8 @@ void OperationTest::testInversion()
                                                           cplx( 1.0F ), cplx( 1.0F ), cplx( 1.0F ) );
       blaze::StaticVector<int,3UL,blaze::columnVector> ipiv;
 
-      blaze::cgetrf( A, ipiv.data() );
-      blaze::cgetri( A, ipiv.data() );
+      blaze::getrf( A, ipiv.data() );
+      blaze::getri( A, ipiv.data() );
 
       if( !equal( A(0,0), cplx(  1.0F ) ) || !equal( A(0,1), cplx(  0.0F ) ) || !equal( A(0,2), cplx( 0.0F ) ) ||
           !equal( A(1,0), cplx(  0.0F ) ) || !equal( A(1,1), cplx(  1.0F ) ) || !equal( A(1,2), cplx( 0.0F ) ) ||
@@ -1130,8 +1130,8 @@ void OperationTest::testInversion()
                                                           cplx( 1.0 ), cplx( 1.0 ), cplx( 1.0 ) );
       blaze::StaticVector<int,3UL,blaze::columnVector> ipiv;
 
-      blaze::zgetrf( A, ipiv.data() );
-      blaze::zgetri( A, ipiv.data() );
+      blaze::getrf( A, ipiv.data() );
+      blaze::getri( A, ipiv.data() );
 
       if( !equal( A(0,0), cplx(  1.0 ) ) || !equal( A(0,1), cplx(  0.0 ) ) || !equal( A(0,2), cplx( 0.0 ) ) ||
           !equal( A(1,0), cplx(  0.0 ) ) || !equal( A(1,1), cplx(  1.0 ) ) || !equal( A(1,2), cplx( 0.0 ) ) ||
@@ -1160,8 +1160,8 @@ void OperationTest::testInversion()
       blaze::StaticMatrix<float,3UL,3U,blaze::rowMajor> A( 1.0F, 1.0F, 1.0F,
                                                            1.0F, 2.0F, 2.0F,
                                                            1.0F, 2.0F, 4.0F );
-      blaze::spotrf( A, 'L' );
-      blaze::spotri( A, 'L' );
+      blaze::potrf( A, 'L' );
+      blaze::potri( A, 'L' );
 
       if( !equal( A(0,0),  2.0F ) || !equal( A(0,1),  1.0F ) || !equal( A(0,2), 1.0F ) ||
           !equal( A(1,0), -1.0F ) || !equal( A(1,1),  1.5F ) || !equal( A(1,2), 2.0F ) ||
@@ -1185,8 +1185,8 @@ void OperationTest::testInversion()
       blaze::StaticMatrix<double,3UL,3U,blaze::rowMajor> A( 1.0, 1.0, 1.0,
                                                             1.0, 2.0, 2.0,
                                                             1.0, 2.0, 4.0 );
-      blaze::dpotrf( A, 'L' );
-      blaze::dpotri( A, 'L' );
+      blaze::potrf( A, 'L' );
+      blaze::potri( A, 'L' );
 
       if( !equal( A(0,0),  2.0 ) || !equal( A(0,1),  1.0 ) || !equal( A(0,2), 1.0 ) ||
           !equal( A(1,0), -1.0 ) || !equal( A(1,1),  1.5 ) || !equal( A(1,2), 2.0 ) ||
@@ -1212,8 +1212,8 @@ void OperationTest::testInversion()
       blaze::StaticMatrix<cplx,3UL,3U,blaze::rowMajor> A( cplx( 1.0F ), cplx( 1.0F ), cplx( 1.0F ),
                                                           cplx( 1.0F ), cplx( 2.0F ), cplx( 2.0F ),
                                                           cplx( 1.0F ), cplx( 2.0F ), cplx( 4.0F ) );
-      blaze::cpotrf( A, 'L' );
-      blaze::cpotri( A, 'L' );
+      blaze::potrf( A, 'L' );
+      blaze::potri( A, 'L' );
 
       if( !equal( A(0,0), cplx(  2.0F ) ) || !equal( A(0,1), cplx(  1.0F ) ) || !equal( A(0,2), cplx( 1.0F ) ) ||
           !equal( A(1,0), cplx( -1.0F ) ) || !equal( A(1,1), cplx(  1.5F ) ) || !equal( A(1,2), cplx( 2.0F ) ) ||
@@ -1239,8 +1239,8 @@ void OperationTest::testInversion()
       blaze::StaticMatrix<cplx,3UL,3U,blaze::rowMajor> A( cplx( 1.0 ), cplx( 1.0 ), cplx( 1.0 ),
                                                           cplx( 1.0 ), cplx( 2.0 ), cplx( 2.0 ),
                                                           cplx( 1.0 ), cplx( 2.0 ), cplx( 4.0 ) );
-      blaze::zpotrf( A, 'L' );
-      blaze::zpotri( A, 'L' );
+      blaze::potrf( A, 'L' );
+      blaze::potri( A, 'L' );
 
       if( !equal( A(0,0), cplx(  2.0 ) ) || !equal( A(0,1), cplx(  1.0 ) ) || !equal( A(0,2), cplx( 1.0 ) ) ||
           !equal( A(1,0), cplx( -1.0 ) ) || !equal( A(1,1), cplx(  1.5 ) ) || !equal( A(1,2), cplx( 2.0 ) ) ||
@@ -1269,8 +1269,8 @@ void OperationTest::testInversion()
       blaze::StaticMatrix<float,3UL,3U,blaze::rowMajor> A( 1.0F, 1.0F, 1.0F,
                                                            1.0F, 2.0F, 2.0F,
                                                            1.0F, 2.0F, 4.0F );
-      blaze::spotrf( A, 'U' );
-      blaze::spotri( A, 'U' );
+      blaze::potrf( A, 'U' );
+      blaze::potri( A, 'U' );
 
       if( !equal( A(0,0), 2.0F ) || !equal( A(0,1), -1.0F ) || !equal( A(0,2),  0.0F ) ||
           !equal( A(1,0), 1.0F ) || !equal( A(1,1),  1.5F ) || !equal( A(1,2), -0.5F ) ||
@@ -1294,8 +1294,8 @@ void OperationTest::testInversion()
       blaze::StaticMatrix<double,3UL,3U,blaze::rowMajor> A( 1.0, 1.0, 1.0,
                                                             1.0, 2.0, 2.0,
                                                             1.0, 2.0, 4.0 );
-      blaze::dpotrf( A, 'U' );
-      blaze::dpotri( A, 'U' );
+      blaze::potrf( A, 'U' );
+      blaze::potri( A, 'U' );
 
       if( !equal( A(0,0), 2.0 ) || !equal( A(0,1), -1.0 ) || !equal( A(0,2),  0.0 ) ||
           !equal( A(1,0), 1.0 ) || !equal( A(1,1),  1.5 ) || !equal( A(1,2), -0.5 ) ||
@@ -1321,8 +1321,8 @@ void OperationTest::testInversion()
       blaze::StaticMatrix<cplx,3UL,3U,blaze::rowMajor> A( cplx( 1.0F ), cplx( 1.0F ), cplx( 1.0F ),
                                                           cplx( 1.0F ), cplx( 2.0F ), cplx( 2.0F ),
                                                           cplx( 1.0F ), cplx( 2.0F ), cplx( 4.0F ) );
-      blaze::cpotrf( A, 'U' );
-      blaze::cpotri( A, 'U' );
+      blaze::potrf( A, 'U' );
+      blaze::potri( A, 'U' );
 
       if( !equal( A(0,0), cplx( 2.0F ) ) || !equal( A(0,1), cplx( -1.0F ) ) || !equal( A(0,2), cplx(  0.0F ) ) ||
           !equal( A(1,0), cplx( 1.0F ) ) || !equal( A(1,1), cplx(  1.5F ) ) || !equal( A(1,2), cplx( -0.5F ) ) ||
@@ -1348,8 +1348,8 @@ void OperationTest::testInversion()
       blaze::StaticMatrix<cplx,3UL,3U,blaze::rowMajor> A( cplx( 1.0 ), cplx( 1.0 ), cplx( 1.0 ),
                                                           cplx( 1.0 ), cplx( 2.0 ), cplx( 2.0 ),
                                                           cplx( 1.0 ), cplx( 2.0 ), cplx( 4.0 ) );
-      blaze::zpotrf( A, 'U' );
-      blaze::zpotri( A, 'U' );
+      blaze::potrf( A, 'U' );
+      blaze::potri( A, 'U' );
 
       if( !equal( A(0,0), cplx( 2.0 ) ) || !equal( A(0,1), cplx( -1.0 ) ) || !equal( A(0,2), cplx(  0.0 ) ) ||
           !equal( A(1,0), cplx( 1.0 ) ) || !equal( A(1,1), cplx(  1.5 ) ) || !equal( A(1,2), cplx( -0.5 ) ) ||
@@ -1380,8 +1380,8 @@ void OperationTest::testInversion()
                                                               0.0F, 0.0F, 1.0F );
       blaze::StaticVector<int,3UL,blaze::columnVector> ipiv;
 
-      blaze::sgetrf( A, ipiv.data() );
-      blaze::sgetri( A, ipiv.data() );
+      blaze::getrf( A, ipiv.data() );
+      blaze::getri( A, ipiv.data() );
 
       if( !equal( A(0,0),  1.0F ) || !equal( A(0,1),  0.0F ) || !equal( A(0,2), 0.0F ) ||
           !equal( A(1,0),  0.0F ) || !equal( A(1,1),  1.0F ) || !equal( A(1,2), 0.0F ) ||
@@ -1407,8 +1407,8 @@ void OperationTest::testInversion()
                                                                0.0, 0.0, 1.0 );
       blaze::StaticVector<int,3UL,blaze::columnVector> ipiv;
 
-      blaze::dgetrf( A, ipiv.data() );
-      blaze::dgetri( A, ipiv.data() );
+      blaze::getrf( A, ipiv.data() );
+      blaze::getri( A, ipiv.data() );
 
       if( !equal( A(0,0),  1.0 ) || !equal( A(0,1),  0.0 ) || !equal( A(0,2), 0.0 ) ||
           !equal( A(1,0),  0.0 ) || !equal( A(1,1),  1.0 ) || !equal( A(1,2), 0.0 ) ||
@@ -1436,8 +1436,8 @@ void OperationTest::testInversion()
                                                              cplx( 0.0F ), cplx( 0.0F ), cplx( 1.0F ) );
       blaze::StaticVector<int,3UL,blaze::columnVector> ipiv;
 
-      blaze::cgetrf( A, ipiv.data() );
-      blaze::cgetri( A, ipiv.data() );
+      blaze::getrf( A, ipiv.data() );
+      blaze::getri( A, ipiv.data() );
 
       if( !equal( A(0,0), cplx(  1.0F ) ) || !equal( A(0,1), cplx(  0.0F ) ) || !equal( A(0,2), cplx( 0.0F ) ) ||
           !equal( A(1,0), cplx(  0.0F ) ) || !equal( A(1,1), cplx(  1.0F ) ) || !equal( A(1,2), cplx( 0.0F ) ) ||
@@ -1465,8 +1465,8 @@ void OperationTest::testInversion()
                                                              cplx( 0.0 ), cplx( 0.0 ), cplx( 1.0 ) );
       blaze::StaticVector<int,3UL,blaze::columnVector> ipiv;
 
-      blaze::zgetrf( A, ipiv.data() );
-      blaze::zgetri( A, ipiv.data() );
+      blaze::getrf( A, ipiv.data() );
+      blaze::getri( A, ipiv.data() );
 
       if( !equal( A(0,0), cplx(  1.0 ) ) || !equal( A(0,1), cplx(  0.0 ) ) || !equal( A(0,2), cplx( 0.0 ) ) ||
           !equal( A(1,0), cplx(  0.0 ) ) || !equal( A(1,1), cplx(  1.0 ) ) || !equal( A(1,2), cplx( 0.0 ) ) ||
@@ -1495,8 +1495,8 @@ void OperationTest::testInversion()
       blaze::StaticMatrix<float,3UL,3U,blaze::columnMajor> A( 1.0F, 1.0F, 1.0F,
                                                               1.0F, 2.0F, 2.0F,
                                                               1.0F, 2.0F, 4.0F );
-      blaze::spotrf( A, 'L' );
-      blaze::spotri( A, 'L' );
+      blaze::potrf( A, 'L' );
+      blaze::potri( A, 'L' );
 
       if( !equal( A(0,0),  2.0F ) || !equal( A(0,1),  1.0F ) || !equal( A(0,2), 1.0F ) ||
           !equal( A(1,0), -1.0F ) || !equal( A(1,1),  1.5F ) || !equal( A(1,2), 2.0F ) ||
@@ -1520,8 +1520,8 @@ void OperationTest::testInversion()
       blaze::StaticMatrix<double,3UL,3U,blaze::columnMajor> A( 1.0, 1.0, 1.0,
                                                                1.0, 2.0, 2.0,
                                                                1.0, 2.0, 4.0 );
-      blaze::dpotrf( A, 'L' );
-      blaze::dpotri( A, 'L' );
+      blaze::potrf( A, 'L' );
+      blaze::potri( A, 'L' );
 
       if( !equal( A(0,0),  2.0 ) || !equal( A(0,1),  1.0 ) || !equal( A(0,2), 1.0 ) ||
           !equal( A(1,0), -1.0 ) || !equal( A(1,1),  1.5 ) || !equal( A(1,2), 2.0 ) ||
@@ -1547,8 +1547,8 @@ void OperationTest::testInversion()
       blaze::StaticMatrix<cplx,3UL,3U,blaze::columnMajor> A( cplx( 1.0F ), cplx( 1.0F ), cplx( 1.0F ),
                                                              cplx( 1.0F ), cplx( 2.0F ), cplx( 2.0F ),
                                                              cplx( 1.0F ), cplx( 2.0F ), cplx( 4.0F ) );
-      blaze::cpotrf( A, 'L' );
-      blaze::cpotri( A, 'L' );
+      blaze::potrf( A, 'L' );
+      blaze::potri( A, 'L' );
 
       if( !equal( A(0,0), cplx(  2.0F ) ) || !equal( A(0,1), cplx(  1.0F ) ) || !equal( A(0,2), cplx( 1.0F ) ) ||
           !equal( A(1,0), cplx( -1.0F ) ) || !equal( A(1,1), cplx(  1.5F ) ) || !equal( A(1,2), cplx( 2.0F ) ) ||
@@ -1574,8 +1574,8 @@ void OperationTest::testInversion()
       blaze::StaticMatrix<cplx,3UL,3U,blaze::columnMajor> A( cplx( 1.0 ), cplx( 1.0 ), cplx( 1.0 ),
                                                              cplx( 1.0 ), cplx( 2.0 ), cplx( 2.0 ),
                                                              cplx( 1.0 ), cplx( 2.0 ), cplx( 4.0 ) );
-      blaze::zpotrf( A, 'L' );
-      blaze::zpotri( A, 'L' );
+      blaze::potrf( A, 'L' );
+      blaze::potri( A, 'L' );
 
       if( !equal( A(0,0), cplx(  2.0 ) ) || !equal( A(0,1), cplx(  1.0 ) ) || !equal( A(0,2), cplx( 1.0 ) ) ||
           !equal( A(1,0), cplx( -1.0 ) ) || !equal( A(1,1), cplx(  1.5 ) ) || !equal( A(1,2), cplx( 2.0 ) ) ||
@@ -1604,8 +1604,8 @@ void OperationTest::testInversion()
       blaze::StaticMatrix<float,3UL,3U,blaze::columnMajor> A( 1.0F, 1.0F, 1.0F,
                                                               1.0F, 2.0F, 2.0F,
                                                               1.0F, 2.0F, 4.0F );
-      blaze::spotrf( A, 'U' );
-      blaze::spotri( A, 'U' );
+      blaze::potrf( A, 'U' );
+      blaze::potri( A, 'U' );
 
       if( !equal( A(0,0), 2.0F ) || !equal( A(0,1), -1.0F ) || !equal( A(0,2),  0.0F ) ||
           !equal( A(1,0), 1.0F ) || !equal( A(1,1),  1.5F ) || !equal( A(1,2), -0.5F ) ||
@@ -1629,8 +1629,8 @@ void OperationTest::testInversion()
       blaze::StaticMatrix<double,3UL,3U,blaze::columnMajor> A( 1.0, 1.0, 1.0,
                                                                1.0, 2.0, 2.0,
                                                                1.0, 2.0, 4.0 );
-      blaze::dpotrf( A, 'U' );
-      blaze::dpotri( A, 'U' );
+      blaze::potrf( A, 'U' );
+      blaze::potri( A, 'U' );
 
       if( !equal( A(0,0), 2.0 ) || !equal( A(0,1), -1.0 ) || !equal( A(0,2),  0.0 ) ||
           !equal( A(1,0), 1.0 ) || !equal( A(1,1),  1.5 ) || !equal( A(1,2), -0.5 ) ||
@@ -1656,8 +1656,8 @@ void OperationTest::testInversion()
       blaze::StaticMatrix<cplx,3UL,3U,blaze::columnMajor> A( cplx( 1.0F ), cplx( 1.0F ), cplx( 1.0F ),
                                                              cplx( 1.0F ), cplx( 2.0F ), cplx( 2.0F ),
                                                              cplx( 1.0F ), cplx( 2.0F ), cplx( 4.0F ) );
-      blaze::cpotrf( A, 'U' );
-      blaze::cpotri( A, 'U' );
+      blaze::potrf( A, 'U' );
+      blaze::potri( A, 'U' );
 
       if( !equal( A(0,0), cplx( 2.0F ) ) || !equal( A(0,1), cplx( -1.0F ) ) || !equal( A(0,2), cplx(  0.0F ) ) ||
           !equal( A(1,0), cplx( 1.0F ) ) || !equal( A(1,1), cplx(  1.5F ) ) || !equal( A(1,2), cplx( -0.5F ) ) ||
@@ -1683,8 +1683,8 @@ void OperationTest::testInversion()
       blaze::StaticMatrix<cplx,3UL,3U,blaze::columnMajor> A( cplx( 1.0 ), cplx( 1.0 ), cplx( 1.0 ),
                                                              cplx( 1.0 ), cplx( 2.0 ), cplx( 2.0 ),
                                                              cplx( 1.0 ), cplx( 2.0 ), cplx( 4.0 ) );
-      blaze::zpotrf( A, 'U' );
-      blaze::zpotri( A, 'U' );
+      blaze::potrf( A, 'U' );
+      blaze::potri( A, 'U' );
 
       if( !equal( A(0,0), cplx( 2.0 ) ) || !equal( A(0,1), cplx( -1.0 ) ) || !equal( A(0,2), cplx(  0.0 ) ) ||
           !equal( A(1,0), cplx( 1.0 ) ) || !equal( A(1,1), cplx(  1.5 ) ) || !equal( A(1,2), cplx( -0.5 ) ) ||
