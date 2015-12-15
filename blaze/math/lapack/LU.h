@@ -46,11 +46,13 @@
 #include <blaze/math/constraints/MutableDataAccess.h>
 #include <blaze/math/expressions/DenseMatrix.h>
 #include <blaze/util/Assert.h>
-#include <blaze/util/constraints/Complex.h>
-#include <blaze/util/constraints/Double.h>
-#include <blaze/util/constraints/Float.h>
+#include <blaze/util/EnableIf.h>
 #include <blaze/util/Exception.h>
 #include <blaze/util/StaticAssert.h>
+#include <blaze/util/typetraits/IsComplexDouble.h>
+#include <blaze/util/typetraits/IsComplexFloat.h>
+#include <blaze/util/typetraits/IsFloat.h>
+#include <blaze/util/typetraits/IsDouble.h>
 
 
 namespace blaze {
@@ -86,25 +88,16 @@ void zgetrf_( int* m, int* n, double* a, int* lda, int* ipiv, int* info );
 //*************************************************************************************************
 /*!\name LAPACK LU decomposition functions */
 //@{
-inline void sgetrf( int* m, int* n, float* a, int* lda, int* ipiv, int* info );
+inline void getrf( int* m, int* n, float* a, int* lda, int* ipiv, int* info );
 
-inline void dgetrf( int* m, int* n, double* a, int* lda, int* ipiv, int* info );
+inline void getrf( int* m, int* n, double* a, int* lda, int* ipiv, int* info );
 
-inline void cgetrf( int* m, int* n, complex<float>* a, int* lda, int* ipiv, int* info );
+inline void getrf( int* m, int* n, complex<float>* a, int* lda, int* ipiv, int* info );
 
-inline void zgetrf( int* m, int* n, complex<double>* a, int* lda, int* ipiv, int* info );
-
-template< typename MT, bool SO >
-inline void sgetrf( DenseMatrix<MT,SO>& A, int* ipiv );
+inline void getrf( int* m, int* n, complex<double>* a, int* lda, int* ipiv, int* info );
 
 template< typename MT, bool SO >
-inline void dgetrf( DenseMatrix<MT,SO>& A, int* ipiv );
-
-template< typename MT, bool SO >
-inline void cgetrf( DenseMatrix<MT,SO>& A, int* ipiv );
-
-template< typename MT, bool SO >
-inline void zgetrf( DenseMatrix<MT,SO>& A, int* ipiv );
+inline void getrf( DenseMatrix<MT,SO>& A, int* ipiv );
 //@}
 //*************************************************************************************************
 
@@ -146,7 +139,7 @@ inline void zgetrf( DenseMatrix<MT,SO>& A, int* ipiv );
 // \note This function can only be used if the fitting LAPACK library is available and linked to
 // the executable. Otherwise a call to this function will result in a linker error.
 */
-inline void sgetrf( int* m, int* n, float* a, int* lda, int* ipiv, int* info )
+inline void getrf( int* m, int* n, float* a, int* lda, int* ipiv, int* info )
 {
    sgetrf_( m, n, a, lda, ipiv, info );
 }
@@ -190,7 +183,7 @@ inline void sgetrf( int* m, int* n, float* a, int* lda, int* ipiv, int* info )
 // \note This function can only be used if the fitting LAPACK library is available and linked to
 // the executable. Otherwise a call to this function will result in a linker error.
 */
-inline void dgetrf( int* m, int* n, double* a, int* lda, int* ipiv, int* info )
+inline void getrf( int* m, int* n, double* a, int* lda, int* ipiv, int* info )
 {
    dgetrf_( m, n, a, lda, ipiv, info );
 }
@@ -234,7 +227,7 @@ inline void dgetrf( int* m, int* n, double* a, int* lda, int* ipiv, int* info )
 // \note This function can only be used if the fitting LAPACK library is available and linked to
 // the executable. Otherwise a call to this function will result in a linker error.
 */
-inline void cgetrf( int* m, int* n, complex<float>* a, int* lda, int* ipiv, int* info )
+inline void getrf( int* m, int* n, complex<float>* a, int* lda, int* ipiv, int* info )
 {
    BLAZE_STATIC_ASSERT( sizeof( complex<float> ) == 2UL*sizeof( float ) );
 
@@ -280,7 +273,7 @@ inline void cgetrf( int* m, int* n, complex<float>* a, int* lda, int* ipiv, int*
 // \note This function can only be used if the fitting LAPACK library is available and linked to
 // the executable. Otherwise a call to this function will result in a linker error.
 */
-inline void zgetrf( int* m, int* n, complex<double>* a, int* lda, int* ipiv, int* info )
+inline void getrf( int* m, int* n, complex<double>* a, int* lda, int* ipiv, int* info )
 {
    BLAZE_STATIC_ASSERT( sizeof( complex<double> ) == 2UL*sizeof( double ) );
 
@@ -290,7 +283,8 @@ inline void zgetrf( int* m, int* n, complex<double>* a, int* lda, int* ipiv, int
 
 
 //*************************************************************************************************
-/*!\brief LAPACK kernel for the LU decomposition of the given dense single precision matrix.
+/*! \cond BLAZE_INTERNAL */
+/*!\brief LAPACK kernel for the LU decomposition of the given dense matrix.
 // \ingroup lapack
 //
 // \param A The matrix to be decomposed.
@@ -299,10 +293,10 @@ inline void zgetrf( int* m, int* n, complex<double>* a, int* lda, int* ipiv, int
 // \exception std::invalid_argument Decomposition of singular matrix failed.
 //
 // This function performs the dense matrix LU decomposition of a general \f$ M \times N \f$ matrix
-// based on the LAPACK sgetrf() function, which uses partial pivoting with row interchanges. Note
-// that the function only works for general, non-adapted matrices with \c float element type. The
-// attempt to call the function with adaptors or matrices of any other element type results in a
-// compile time error!\n
+// based on the LAPACK \c getrf() functions, which use partial pivoting with row interchanges.
+// Note that the function only works for general, non-adapted matrices with \c float, \c double,
+// \c complex<float>, or \c complex<double> element type. The attempt to call the function with
+// adaptors or matrices of any other element type results in a compile time error!\n
 //
 // The decomposition has the form
 
@@ -315,7 +309,8 @@ inline void zgetrf( int* m, int* n, complex<double>* a, int* lda, int* ipiv, int
 // transposed. The LU decomposition fails if \a A is a singular matrix, which cannot be inverted.
 // In this case a \a std::std::invalid_argument exception is thrown.
 //
-// For more information on the sgetrf() function, see the LAPACK online documentation browser:
+// For more information on the getrf() functions (i.e. sgetrf(), dgetrf(), cgetrf(), and zgetrf())
+// see the LAPACK online documentation browser:
 //
 //        http://www.netlib.org/lapack/explore-html/
 //
@@ -326,21 +321,20 @@ inline void zgetrf( int* m, int* n, complex<double>* a, int* lda, int* ipiv, int
 */
 template< typename MT  // Type of the dense matrix
         , bool SO >    // Storage order of the dense matrix
-inline void sgetrf( DenseMatrix<MT,SO>& A, int* ipiv )
+inline void getrf( DenseMatrix<MT,SO>& A, int* ipiv )
 {
    using boost::numeric_cast;
 
    BLAZE_CONSTRAINT_MUST_NOT_BE_ADAPTOR_TYPE( MT );
    BLAZE_CONSTRAINT_MUST_NOT_BE_COMPUTATION_TYPE( MT );
    BLAZE_CONSTRAINT_MUST_HAVE_MUTABLE_DATA_ACCESS( MT );
-   BLAZE_CONSTRAINT_MUST_BE_FLOAT_TYPE( typename MT::ElementType );
 
    int m   ( boost::numeric_cast<int>( (~A).rows()    ) );
    int n   ( boost::numeric_cast<int>( (~A).columns() ) );
    int lda ( boost::numeric_cast<int>( (~A).spacing() ) );
    int info( 0 );
 
-   sgetrf( &m, &n, (~A).data(), &lda, ipiv, &info );
+   getrf( &m, &n, (~A).data(), &lda, ipiv, &info );
 
    BLAZE_INTERNAL_ASSERT( info >= 0, "Invalid argument for LU decomposition" );
 
@@ -348,194 +342,7 @@ inline void sgetrf( DenseMatrix<MT,SO>& A, int* ipiv )
       BLAZE_THROW_INVALID_ARGUMENT( "Decomposition of singular matrix failed" );
    }
 }
-//*************************************************************************************************
-
-
-//*************************************************************************************************
-/*!\brief LAPACK kernel for the LU decomposition of the given dense double precision matrix.
-// \ingroup lapack
-//
-// \param A The matrix to be decomposed.
-// \param ipiv Auxiliary array for the pivot indices; size >= min( M, N ).
-// \return void
-// \exception std::invalid_argument Decomposition of singular matrix failed.
-//
-// This function performs the dense matrix LU decomposition of a general \f$ M \times N \f$ matrix
-// based on the LAPACK dgetrf() function, which uses partial pivoting with row interchanges. Note
-// that the function only works for general, non-adapted matrices with \c double element type. The
-// attempt to call the function with adaptors or matrices of any other element type results in a
-// compile time error!\n
-//
-// The decomposition has the form
-
-                          \f[ A = P \dot L \dot U, \f]\n
-
-// where \c P is a permutation matrix, \c L is a lower unitriangular matrix, and \c U is an upper
-// triangular matrix. The resulting decomposition is stored within \a A: In case of a column-major
-// matrix, \c L is stored in the lower part of \a A and \c U is stored in the upper part. The unit
-// diagonal elements of \c L are not stored. In case \a A is a row-major matrix the result is
-// transposed. The LU decomposition fails if \a A is a singular matrix, which cannot be inverted.
-// In this case a \a std::std::invalid_argument exception is thrown.
-//
-// For more information on the dgetrf() function, see the LAPACK online documentation browser:
-//
-//        http://www.netlib.org/lapack/explore-html/
-//
-// \note This function does not provide any exception safety guarantee, i.e. in case an exception
-// is thrown \a A may already have been modified.
-// \note This function can only be used if the fitting LAPACK library is available and linked to
-// the executable. Otherwise a call to this function will result in a linker error.
-*/
-template< typename MT  // Type of the dense matrix
-        , bool SO >    // Storage order of the dense matrix
-inline void dgetrf( DenseMatrix<MT,SO>& A, int* ipiv )
-{
-   using boost::numeric_cast;
-
-   BLAZE_CONSTRAINT_MUST_NOT_BE_ADAPTOR_TYPE( MT );
-   BLAZE_CONSTRAINT_MUST_NOT_BE_COMPUTATION_TYPE( MT );
-   BLAZE_CONSTRAINT_MUST_HAVE_MUTABLE_DATA_ACCESS( MT );
-   BLAZE_CONSTRAINT_MUST_BE_DOUBLE_TYPE( typename MT::ElementType );
-
-   int m   ( boost::numeric_cast<int>( (~A).rows()    ) );
-   int n   ( boost::numeric_cast<int>( (~A).columns() ) );
-   int lda ( boost::numeric_cast<int>( (~A).spacing() ) );
-   int info( 0 );
-
-   dgetrf( &m, &n, (~A).data(), &lda, ipiv, &info );
-
-   BLAZE_INTERNAL_ASSERT( info >= 0, "Invalid argument for LU decomposition" );
-
-   if( info > 0 ) {
-      BLAZE_THROW_INVALID_ARGUMENT( "Decomposition of singular matrix failed" );
-   }
-}
-//*************************************************************************************************
-
-
-//*************************************************************************************************
-/*!\brief LAPACK kernel for the LU decomposition of the given dense single precision complex matrix.
-// \ingroup lapack
-//
-// \param A The matrix to be decomposed.
-// \param ipiv Auxiliary array for the pivot indices; size >= min( M, N ).
-// \return void
-// \exception std::invalid_argument Decomposition of singular matrix failed.
-//
-// This function performs the dense matrix LU decomposition of a general \f$ M \times N \f$ matrix
-// based on the LAPACK cgetrf() function, which uses partial pivoting with row interchanges. Note
-// that the function only works for general, non-adapted matrices with \c complex<float> element
-// type. The attempt to call the function with adaptors or matrices of any other element type
-// results in a compile time error!\n
-//
-// The decomposition has the form
-
-                          \f[ A = P \dot L \dot U, \f]\n
-
-// where \c P is a permutation matrix, \c L is a lower unitriangular matrix, and \c U is an upper
-// triangular matrix. The resulting decomposition is stored within \a A: In case of a column-major
-// matrix, \c L is stored in the lower part of \a A and \c U is stored in the upper part. The unit
-// diagonal elements of \c L are not stored. In case \a A is a row-major matrix the result is
-// transposed. The LU decomposition fails if \a A is a singular matrix, which cannot be inverted.
-// In this case a \a std::std::invalid_argument exception is thrown.
-//
-// For more information on the cgetrf() function, see the LAPACK online documentation browser:
-//
-//        http://www.netlib.org/lapack/explore-html/
-//
-// \note This function does not provide any exception safety guarantee, i.e. in case an exception
-// is thrown \a A may already have been modified.
-// \note This function can only be used if the fitting LAPACK library is available and linked to
-// the executable. Otherwise a call to this function will result in a linker error.
-*/
-template< typename MT  // Type of the dense matrix
-        , bool SO >    // Storage order of the dense matrix
-inline void cgetrf( DenseMatrix<MT,SO>& A, int* ipiv )
-{
-   using boost::numeric_cast;
-
-   BLAZE_CONSTRAINT_MUST_NOT_BE_ADAPTOR_TYPE( MT );
-   BLAZE_CONSTRAINT_MUST_NOT_BE_COMPUTATION_TYPE( MT );
-   BLAZE_CONSTRAINT_MUST_HAVE_MUTABLE_DATA_ACCESS( MT );
-   BLAZE_CONSTRAINT_MUST_BE_COMPLEX_TYPE( typename MT::ElementType );
-   BLAZE_CONSTRAINT_MUST_BE_FLOAT_TYPE( typename MT::ElementType::value_type );
-
-   int m   ( boost::numeric_cast<int>( (~A).rows()    ) );
-   int n   ( boost::numeric_cast<int>( (~A).columns() ) );
-   int lda ( boost::numeric_cast<int>( (~A).spacing() ) );
-   int info( 0 );
-
-   cgetrf( &m, &n, (~A).data(), &lda, ipiv, &info );
-
-   BLAZE_INTERNAL_ASSERT( info >= 0, "Invalid argument for LU decomposition" );
-
-   if( info > 0 ) {
-      BLAZE_THROW_INVALID_ARGUMENT( "Decomposition of singular matrix failed" );
-   }
-}
-//*************************************************************************************************
-
-
-//*************************************************************************************************
-/*!\brief LAPACK kernel for the LU decomposition of the given dense double precision complex matrix.
-// \ingroup lapack
-//
-// \param A The matrix to be decomposed.
-// \param ipiv Auxiliary array for the pivot indices; size >= min( M, N ).
-// \return void
-// \exception std::invalid_argument Decomposition of singular matrix failed.
-//
-// This function performs the dense matrix LU decomposition of a general \f$ M \times N \f$ matrix
-// based on the LAPACK zgetrf() function, which uses partial pivoting with row interchanges. Note
-// that the function only works for general, non-adapted matrices with \c complex<double> element
-// type. The attempt to call the function with adaptors or matrices of any other element type
-// results in a compile time error!\n
-//
-// The decomposition has the form
-
-                          \f[ A = P \dot L \dot U, \f]\n
-
-// where \c P is a permutation matrix, \c L is a lower unitriangular matrix, and \c U is an upper
-// triangular matrix. The resulting decomposition is stored within \a A: In case of a column-major
-// matrix, \c L is stored in the lower part of \a A and \c U is stored in the upper part. The unit
-// diagonal elements of \c L are not stored. In case \a A is a row-major matrix the result is
-// transposed. The LU decomposition fails if \a A is a singular matrix, which cannot be inverted.
-// In this case a \a std::std::invalid_argument exception is thrown.
-//
-// For more information on the zgetrf() function, see the LAPACK online documentation browser:
-//
-//        http://www.netlib.org/lapack/explore-html/
-//
-// \note This function does not provide any exception safety guarantee, i.e. in case an exception
-// is thrown \a A may already have been modified.
-// \note This function can only be used if the fitting LAPACK library is available and linked to
-// the executable. Otherwise a call to this function will result in a linker error.
-*/
-template< typename MT  // Type of the dense matrix
-        , bool SO >    // Storage order of the dense matrix
-inline void zgetrf( DenseMatrix<MT,SO>& A, int* ipiv )
-{
-   using boost::numeric_cast;
-
-   BLAZE_CONSTRAINT_MUST_NOT_BE_ADAPTOR_TYPE( MT );
-   BLAZE_CONSTRAINT_MUST_NOT_BE_COMPUTATION_TYPE( MT );
-   BLAZE_CONSTRAINT_MUST_HAVE_MUTABLE_DATA_ACCESS( MT );
-   BLAZE_CONSTRAINT_MUST_BE_COMPLEX_TYPE( typename MT::ElementType );
-   BLAZE_CONSTRAINT_MUST_BE_DOUBLE_TYPE( typename MT::ElementType::value_type );
-
-   int m   ( boost::numeric_cast<int>( (~A).rows()    ) );
-   int n   ( boost::numeric_cast<int>( (~A).columns() ) );
-   int lda ( boost::numeric_cast<int>( (~A).spacing() ) );
-   int info( 0 );
-
-   zgetrf( &m, &n, (~A).data(), &lda, ipiv, &info );
-
-   BLAZE_INTERNAL_ASSERT( info >= 0, "Invalid argument for LU decomposition" );
-
-   if( info > 0 ) {
-      BLAZE_THROW_INVALID_ARGUMENT( "Decomposition of singular matrix failed" );
-   }
-}
+/*! \endcond */
 //*************************************************************************************************
 
 } // namespace blaze

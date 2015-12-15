@@ -47,11 +47,13 @@
 #include <blaze/math/expressions/DenseMatrix.h>
 #include <blaze/math/typetraits/IsRowMajorMatrix.h>
 #include <blaze/util/Assert.h>
-#include <blaze/util/constraints/Complex.h>
-#include <blaze/util/constraints/Double.h>
-#include <blaze/util/constraints/Float.h>
+#include <blaze/util/EnableIf.h>
 #include <blaze/util/Exception.h>
 #include <blaze/util/StaticAssert.h>
+#include <blaze/util/typetraits/IsComplexDouble.h>
+#include <blaze/util/typetraits/IsComplexFloat.h>
+#include <blaze/util/typetraits/IsFloat.h>
+#include <blaze/util/typetraits/IsDouble.h>
 
 
 namespace blaze {
@@ -87,25 +89,16 @@ void zpotrf_( char* uplo, int* n, double* a, int* lda, int* info );
 //*************************************************************************************************
 /*!\name LAPACK Cholesky decomposition functions */
 //@{
-inline void spotrf( char* uplo, int* n, float* a, int* lda, int* info );
+inline void potrf( char* uplo, int* n, float* a, int* lda, int* info );
 
-inline void dpotrf( char* uplo, int* n, double* a, int* lda, int* info );
+inline void potrf( char* uplo, int* n, double* a, int* lda, int* info );
 
-inline void cpotrf( char* uplo, int* n, complex<float>* a, int* lda, int* info );
+inline void potrf( char* uplo, int* n, complex<float>* a, int* lda, int* info );
 
-inline void zpotrf( char* uplo, int* n, complex<double>* a, int* lda, int* info );
-
-template< typename MT, bool SO >
-inline void spotrf( DenseMatrix<MT,SO>& A, char uplo );
+inline void potrf( char* uplo, int* n, complex<double>* a, int* lda, int* info );
 
 template< typename MT, bool SO >
-inline void dpotrf( DenseMatrix<MT,SO>& A, char uplo );
-
-template< typename MT, bool SO >
-inline void cpotrf( DenseMatrix<MT,SO>& A, char uplo );
-
-template< typename MT, bool SO >
-inline void zpotrf( DenseMatrix<MT,SO>& A, char uplo );
+inline void potrf( DenseMatrix<MT,SO>& A, char uplo );
 //@}
 //*************************************************************************************************
 
@@ -145,7 +138,7 @@ inline void zpotrf( DenseMatrix<MT,SO>& A, char uplo );
 // \note This function can only be used if the fitting LAPACK library is available and linked to
 // the executable. Otherwise a call to this function will result in a linker error.
 */
-inline void spotrf( char* uplo, int* n, float* a, int* lda, int* info )
+inline void potrf( char* uplo, int* n, float* a, int* lda, int* info )
 {
    spotrf_( uplo, n, a, lda, info );
 }
@@ -187,7 +180,7 @@ inline void spotrf( char* uplo, int* n, float* a, int* lda, int* info )
 // \note This function can only be used if the fitting LAPACK library is available and linked to
 // the executable. Otherwise a call to this function will result in a linker error.
 */
-inline void dpotrf( char* uplo, int* n, double* a, int* lda, int* info )
+inline void potrf( char* uplo, int* n, double* a, int* lda, int* info )
 {
    dpotrf_( uplo, n, a, lda, info );
 }
@@ -230,7 +223,7 @@ inline void dpotrf( char* uplo, int* n, double* a, int* lda, int* info )
 // \note This function can only be used if the fitting LAPACK library is available and linked to
 // the executable. Otherwise a call to this function will result in a linker error.
 */
-inline void cpotrf( char* uplo, int* n, complex<float>* a, int* lda, int* info )
+inline void potrf( char* uplo, int* n, complex<float>* a, int* lda, int* info )
 {
    BLAZE_STATIC_ASSERT( sizeof( complex<float> ) == 2UL*sizeof( float ) );
 
@@ -275,7 +268,7 @@ inline void cpotrf( char* uplo, int* n, complex<float>* a, int* lda, int* info )
 // \note This function can only be used if the fitting LAPACK library is available and linked to
 // the executable. Otherwise a call to this function will result in a linker error.
 */
-inline void zpotrf( char* uplo, int* n, complex<double>* a, int* lda, int* info )
+inline void potrf( char* uplo, int* n, complex<double>* a, int* lda, int* info )
 {
    BLAZE_STATIC_ASSERT( sizeof( complex<double> ) == 2UL*sizeof( double ) );
 
@@ -285,7 +278,7 @@ inline void zpotrf( char* uplo, int* n, complex<double>* a, int* lda, int* info 
 
 
 //*************************************************************************************************
-/*!\brief LAPACK kernel for the Cholesky decomposition of the given dense single precision matrix.
+/*!\brief LAPACK kernel for the Cholesky decomposition of the given dense matrix.
 // \ingroup lapack
 //
 // \param A The matrix to be decomposed.
@@ -295,9 +288,10 @@ inline void zpotrf( char* uplo, int* n, complex<double>* a, int* lda, int* info 
 // \exception std::invalid_argument Decomposition of singular matrix failed.
 //
 // This function performs the dense matrix Cholesky decomposition of a symmetric positive definite
-// matrix based on the LAPACK spotrf() function. Note that the function only works for general,
-// non-adapted matrices with \c float element type. The attempt to call the function with any
-// adapted matrix or matrices of any other element type results in a compile time error!\n
+// matrix based on the LAPACK potrf() functions. Note that the function only works for general,
+// non-adapted matrices with \c float, \c double, \c complex<float>, or \c complex<double> element
+// type. The attempt to call the function with any adapted matrix or matrices of any other element
+// type results in a compile time error!\n
 //
 // The decomposition has the form
 
@@ -308,7 +302,8 @@ inline void zpotrf( char* uplo, int* n, complex<double>* a, int* lda, int* info 
 // decomposition fails if the given matrix \a A is not a positive definite matrix. In this case
 // a \a std::std::invalid_argument exception is thrown.
 //
-// For more information on the spotrf() function, see the LAPACK online documentation browser:
+// For more information on the potrf() functions (i.e. spotrf(), dpotrf(), cpotrf(), and zpotrf())
+// see the LAPACK online documentation browser:
 //
 //        http://www.netlib.org/lapack/explore-html/
 //
@@ -319,16 +314,15 @@ inline void zpotrf( char* uplo, int* n, complex<double>* a, int* lda, int* info 
 */
 template< typename MT  // Type of the dense matrix
         , bool SO >    // Storage order of the dense matrix
-inline void spotrf( DenseMatrix<MT,SO>& A, char uplo )
+inline void potrf( DenseMatrix<MT,SO>& A, char uplo )
 {
    using boost::numeric_cast;
 
    BLAZE_CONSTRAINT_MUST_NOT_BE_ADAPTOR_TYPE( MT );
    BLAZE_CONSTRAINT_MUST_NOT_BE_COMPUTATION_TYPE( MT );
    BLAZE_CONSTRAINT_MUST_HAVE_MUTABLE_DATA_ACCESS( MT );
-   BLAZE_CONSTRAINT_MUST_BE_FLOAT_TYPE( typename MT::ElementType );
 
-   if( !IsSquare<MT>::value && !isSquare( ~A ) ) {
+   if( !isSquare( ~A ) ) {
       BLAZE_THROW_INVALID_ARGUMENT( "Invalid non-square matrix provided" );
    }
 
@@ -336,232 +330,15 @@ inline void spotrf( DenseMatrix<MT,SO>& A, char uplo )
       BLAZE_THROW_INVALID_ARGUMENT( "Invalid uplo argument provided" );
    }
 
-   int n   ( boost::numeric_cast<int>( (~A).rows()    ) );
-   int lda ( boost::numeric_cast<int>( (~A).spacing() ) );
-   int info( 0 );
-
    if( IsRowMajorMatrix<MT>::value ) {
       ( uplo == 'L' )?( uplo = 'U' ):( uplo = 'L' );
-   }
-
-   spotrf( &uplo, &n, (~A).data(), &lda, &info );
-
-   BLAZE_INTERNAL_ASSERT( info >= 0, "Invalid argument for Cholesky decomposition" );
-
-   if( info > 0 ) {
-      BLAZE_THROW_INVALID_ARGUMENT( "Decomposition of non-positive-definite matrix failed" );
-   }
-}
-//*************************************************************************************************
-
-
-//*************************************************************************************************
-/*!\brief LAPACK kernel for the Cholesky decomposition of the given dense double precision matrix.
-// \ingroup lapack
-//
-// \param A The matrix to be decomposed.
-// \param uplo \c 'L' to use the lower part of the matrix, \c 'U' to use the upper part.
-// \return void
-// \exception std::invalid_argument Invalid argument provided.
-// \exception std::invalid_argument Decomposition of singular matrix failed.
-//
-// This function performs the dense matrix Cholesky decomposition of a symmetric positive definite
-// matrix based on the LAPACK dpotrf() function. Note that the function only works for general,
-// non-adapted matrices with \c double element type. The attempt to call the function with any
-// adapted matrix or matrices of any other element type results in a compile time error!\n
-//
-// The decomposition has the form
-
-                      \f[ A = U**T * U, if uplo = 'U', \f] or\n
-                      \f[ A = L * L**T, if uplo = 'L', \f]
-
-// where \c U is an upper triangular matrix and \c L is a lower triangular matrix. The Cholesky
-// decomposition fails if the given matrix \a A is not a positive definite matrix. In this case
-// a \a std::std::invalid_argument exception is thrown.
-//
-// For more information on the dpotrf() function, see the LAPACK online documentation browser:
-//
-//        http://www.netlib.org/lapack/explore-html/
-//
-// \note This function does not provide any exception safety guarantee, i.e. in case an exception
-// is thrown \a A may already have been modified.
-// \note This function can only be used if the fitting LAPACK library is available and linked to
-// the executable. Otherwise a call to this function will result in a linker error.
-*/
-template< typename MT  // Type of the dense matrix
-        , bool SO >    // Storage order of the dense matrix
-inline void dpotrf( DenseMatrix<MT,SO>& A, char uplo )
-{
-   using boost::numeric_cast;
-
-   BLAZE_CONSTRAINT_MUST_NOT_BE_ADAPTOR_TYPE( MT );
-   BLAZE_CONSTRAINT_MUST_NOT_BE_COMPUTATION_TYPE( MT );
-   BLAZE_CONSTRAINT_MUST_HAVE_MUTABLE_DATA_ACCESS( MT );
-   BLAZE_CONSTRAINT_MUST_BE_DOUBLE_TYPE( typename MT::ElementType );
-
-   if( !IsSquare<MT>::value && !isSquare( ~A ) ) {
-      BLAZE_THROW_INVALID_ARGUMENT( "Invalid non-square matrix provided" );
-   }
-
-   if( uplo != 'L' && uplo != 'U' ) {
-      BLAZE_THROW_INVALID_ARGUMENT( "Invalid uplo argument provided" );
    }
 
    int n   ( boost::numeric_cast<int>( (~A).rows()    ) );
    int lda ( boost::numeric_cast<int>( (~A).spacing() ) );
    int info( 0 );
 
-   if( IsRowMajorMatrix<MT>::value ) {
-      ( uplo == 'L' )?( uplo = 'U' ):( uplo = 'L' );
-   }
-
-   dpotrf( &uplo, &n, (~A).data(), &lda, &info );
-
-   BLAZE_INTERNAL_ASSERT( info >= 0, "Invalid argument for Cholesky decomposition" );
-
-   if( info > 0 ) {
-      BLAZE_THROW_INVALID_ARGUMENT( "Decomposition of non-positive-definite matrix failed" );
-   }
-}
-//*************************************************************************************************
-
-
-//*************************************************************************************************
-/*!\brief LAPACK kernel for the Cholesky decomposition of the given dense single precision complex
-//        matrix.
-// \ingroup lapack
-//
-// \param A The matrix to be decomposed.
-// \param uplo \c 'L' to use the lower part of the matrix, \c 'U' to use the upper part.
-// \return void
-// \exception std::invalid_argument Invalid argument provided.
-// \exception std::invalid_argument Decomposition of singular matrix failed.
-//
-// This function performs the dense matrix Cholesky decomposition of a symmetric positive definite
-// matrix based on the LAPACK cpotrf() function. Note that the function only works for general,
-// non-adapted matrices with \c complex<float> element type. The attempt to call the function with
-// any adapted matrix or matrices of any other element type results in a compile time error!\n
-//
-// The decomposition has the form
-
-                      \f[ A = U**T * U, if uplo = 'U', \f] or\n
-                      \f[ A = L * L**T, if uplo = 'L', \f]
-
-// where \c U is an upper triangular matrix and \c L is a lower triangular matrix. The Cholesky
-// decomposition fails if the given matrix \a A is not a positive definite matrix. In this case
-// a \a std::std::invalid_argument exception is thrown.
-//
-// For more information on the cpotrf() function, see the LAPACK online documentation browser:
-//
-//        http://www.netlib.org/lapack/explore-html/
-//
-// \note This function does not provide any exception safety guarantee, i.e. in case an exception
-// is thrown \a A may already have been modified.
-// \note This function can only be used if the fitting LAPACK library is available and linked to
-// the executable. Otherwise a call to this function will result in a linker error.
-*/
-template< typename MT  // Type of the dense matrix
-        , bool SO >    // Storage order of the dense matrix
-inline void cpotrf( DenseMatrix<MT,SO>& A, char uplo )
-{
-   using boost::numeric_cast;
-
-   BLAZE_CONSTRAINT_MUST_NOT_BE_ADAPTOR_TYPE( MT );
-   BLAZE_CONSTRAINT_MUST_NOT_BE_COMPUTATION_TYPE( MT );
-   BLAZE_CONSTRAINT_MUST_HAVE_MUTABLE_DATA_ACCESS( MT );
-   BLAZE_CONSTRAINT_MUST_BE_COMPLEX_TYPE( typename MT::ElementType );
-   BLAZE_CONSTRAINT_MUST_BE_FLOAT_TYPE( typename MT::ElementType::value_type );
-
-   if( !IsSquare<MT>::value && !isSquare( ~A ) ) {
-      BLAZE_THROW_INVALID_ARGUMENT( "Invalid non-square matrix provided" );
-   }
-
-   if( uplo != 'L' && uplo != 'U' ) {
-      BLAZE_THROW_INVALID_ARGUMENT( "Invalid uplo argument provided" );
-   }
-
-   int n   ( boost::numeric_cast<int>( (~A).rows()    ) );
-   int lda ( boost::numeric_cast<int>( (~A).spacing() ) );
-   int info( 0 );
-
-   if( IsRowMajorMatrix<MT>::value ) {
-      ( uplo == 'L' )?( uplo = 'U' ):( uplo = 'L' );
-   }
-
-   cpotrf( &uplo, &n, (~A).data(), &lda, &info );
-
-   BLAZE_INTERNAL_ASSERT( info >= 0, "Invalid argument for Cholesky decomposition" );
-
-   if( info > 0 ) {
-      BLAZE_THROW_INVALID_ARGUMENT( "Decomposition of non-positive-definite matrix failed" );
-   }
-}
-//*************************************************************************************************
-
-
-//*************************************************************************************************
-/*!\brief LAPACK kernel for the Cholesky decomposition of the given dense double precision complex
-//        matrix.
-// \ingroup lapack
-//
-// \param A The matrix to be decomposed.
-// \param uplo \c 'L' to use the lower part of the matrix, \c 'U' to use the upper part.
-// \return void
-// \exception std::invalid_argument Invalid argument provided.
-// \exception std::invalid_argument Decomposition of singular matrix failed.
-//
-// This function performs the dense matrix Cholesky decomposition of a symmetric positive definite
-// matrix based on the LAPACK zpotrf() function. Note that the function only works for general,
-// non-adapted matrices with \c complex<double> element type. The attempt to call the function
-// with any adapted matrix or matrices of any other element type results in a compile time error!\n
-//
-// The decomposition has the form
-
-                      \f[ A = U**T * U, if uplo = 'U', \f] or\n
-                      \f[ A = L * L**T, if uplo = 'L', \f]
-
-// where \c U is an upper triangular matrix and \c L is a lower triangular matrix. The Cholesky
-// decomposition fails if the given matrix \a A is not a positive definite matrix. In this case
-// a \a std::std::invalid_argument exception is thrown.
-//
-// For more information on the zpotrf() function, see the LAPACK online documentation browser:
-//
-//        http://www.netlib.org/lapack/explore-html/
-//
-// \note This function does not provide any exception safety guarantee, i.e. in case an exception
-// is thrown \a A may already have been modified.
-// \note This function can only be used if the fitting LAPACK library is available and linked to
-// the executable. Otherwise a call to this function will result in a linker error.
-*/
-template< typename MT  // Type of the dense matrix
-        , bool SO >    // Storage order of the dense matrix
-inline void zpotrf( DenseMatrix<MT,SO>& A, char uplo )
-{
-   using boost::numeric_cast;
-
-   BLAZE_CONSTRAINT_MUST_NOT_BE_ADAPTOR_TYPE( MT );
-   BLAZE_CONSTRAINT_MUST_NOT_BE_COMPUTATION_TYPE( MT );
-   BLAZE_CONSTRAINT_MUST_HAVE_MUTABLE_DATA_ACCESS( MT );
-   BLAZE_CONSTRAINT_MUST_BE_COMPLEX_TYPE( typename MT::ElementType );
-   BLAZE_CONSTRAINT_MUST_BE_DOUBLE_TYPE( typename MT::ElementType::value_type );
-
-   if( !IsSquare<MT>::value && !isSquare( ~A ) ) {
-      BLAZE_THROW_INVALID_ARGUMENT( "Invalid non-square matrix provided" );
-   }
-
-   if( uplo != 'L' && uplo != 'U' ) {
-      BLAZE_THROW_INVALID_ARGUMENT( "Invalid uplo argument provided" );
-   }
-
-   int n   ( boost::numeric_cast<int>( (~A).rows()    ) );
-   int lda ( boost::numeric_cast<int>( (~A).spacing() ) );
-   int info( 0 );
-
-   if( IsRowMajorMatrix<MT>::value ) {
-      ( uplo == 'L' )?( uplo = 'U' ):( uplo = 'L' );
-   }
-
-   zpotrf( &uplo, &n, (~A).data(), &lda, &info );
+   potrf( &uplo, &n, (~A).data(), &lda, &info );
 
    BLAZE_INTERNAL_ASSERT( info >= 0, "Invalid argument for Cholesky decomposition" );
 

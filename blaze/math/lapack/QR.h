@@ -86,27 +86,18 @@ void zgeqrf_( int* m, int* n, double* a, int* lda, double* tau, double* work, in
 //*************************************************************************************************
 /*!\name LAPACK LU decomposition functions */
 //@{
-void sgeqrf( int* m, int* n, float* a, int* lda, float* tau, float*  work, int* lwork, int* info );
+void geqrf( int* m, int* n, float* a, int* lda, float* tau, float*  work, int* lwork, int* info );
 
-void dgeqrf( int* m, int* n, double* a, int* lda, double* tau, double* work, int* lwork, int* info );
+void geqrf( int* m, int* n, double* a, int* lda, double* tau, double* work, int* lwork, int* info );
 
-void cgeqrf( int* m, int* n, complex<float>* a, int* lda, complex<float>* tau,
-             complex<float>* work, int* lwork, int* info );
+void geqrf( int* m, int* n, complex<float>* a, int* lda, complex<float>* tau,
+            complex<float>* work, int* lwork, int* info );
 
-void zgeqrf( int* m, int* n, complex<double>* a, int* lda, complex<double>* tau,
-             complex<double>* work, int* lwork, int* info );
-
-template< typename MT, bool SO >
-inline void sgeqrf( DenseMatrix<MT,SO>& A, float* tau );
+void geqrf( int* m, int* n, complex<double>* a, int* lda, complex<double>* tau,
+            complex<double>* work, int* lwork, int* info );
 
 template< typename MT, bool SO >
-inline void dgeqrf( DenseMatrix<MT,SO>& A, double* tau );
-
-template< typename MT, bool SO >
-inline void cgeqrf( DenseMatrix<MT,SO>& A, complex<float>* tau );
-
-template< typename MT, bool SO >
-inline void zgeqrf( DenseMatrix<MT,SO>& A, complex<double>* tau );
+inline void geqrf( DenseMatrix<MT,SO>& A, typename MT::ElementType* tau );
 //@}
 //*************************************************************************************************
 
@@ -159,7 +150,7 @@ inline void zgeqrf( DenseMatrix<MT,SO>& A, complex<double>* tau );
 // \note This function can only be used if the fitting LAPACK library is available and linked to
 // the executable. Otherwise a call to this function will result in a linker error.
 */
-inline void sgeqrf( int* m, int* n, float* a, int* lda, float* tau, float* work, int* lwork, int* info )
+inline void geqrf( int* m, int* n, float* a, int* lda, float* tau, float* work, int* lwork, int* info )
 {
    sgeqrf_( m, n, a, lda, tau, work, lwork, info );
 }
@@ -214,7 +205,7 @@ inline void sgeqrf( int* m, int* n, float* a, int* lda, float* tau, float* work,
 // \note This function can only be used if the fitting LAPACK library is available and linked to
 // the executable. Otherwise a call to this function will result in a linker error.
 */
-inline void dgeqrf( int* m, int* n, double* a, int* lda, double* tau, double* work, int* lwork, int* info )
+inline void geqrf( int* m, int* n, double* a, int* lda, double* tau, double* work, int* lwork, int* info )
 {
    dgeqrf_( m, n, a, lda, tau, work, lwork, info );
 }
@@ -269,8 +260,8 @@ inline void dgeqrf( int* m, int* n, double* a, int* lda, double* tau, double* wo
 // \note This function can only be used if the fitting LAPACK library is available and linked to
 // the executable. Otherwise a call to this function will result in a linker error.
 */
-inline void cgeqrf( int* m, int* n, complex<float>* a, int* lda, complex<float>* tau,
-                    complex<float>* work, int* lwork, int* info )
+inline void geqrf( int* m, int* n, complex<float>* a, int* lda, complex<float>* tau,
+                   complex<float>* work, int* lwork, int* info )
 {
    BLAZE_STATIC_ASSERT( sizeof( complex<float> ) == 2UL*sizeof( float ) );
 
@@ -328,8 +319,8 @@ inline void cgeqrf( int* m, int* n, complex<float>* a, int* lda, complex<float>*
 // \note This function can only be used if the fitting LAPACK library is available and linked to
 // the executable. Otherwise a call to this function will result in a linker error.
 */
-inline void zgeqrf( int* m, int* n, complex<double>* a, int* lda, complex<double>* tau,
-                    complex<double>* work, int* lwork, int* info )
+inline void geqrf( int* m, int* n, complex<double>* a, int* lda, complex<double>* tau,
+                   complex<double>* work, int* lwork, int* info )
 {
    BLAZE_STATIC_ASSERT( sizeof( complex<double> ) == 2UL*sizeof( double ) );
 
@@ -340,7 +331,7 @@ inline void zgeqrf( int* m, int* n, complex<double>* a, int* lda, complex<double
 
 
 //*************************************************************************************************
-/*!\brief LAPACK kernel for the QR decomposition of the given dense single precision matrix.
+/*!\brief LAPACK kernel for the QR decomposition of the given dense matrix.
 // \ingroup lapack
 //
 // \param A The matrix to be decomposed.
@@ -348,9 +339,10 @@ inline void zgeqrf( int* m, int* n, complex<double>* a, int* lda, complex<double
 // \return void
 //
 // This function performs the dense matrix QR decomposition of a general \f$ M \times N \f$ matrix
-// based on the LAPACK sgeqrf() function. Note that this function can only be used for general,
-// non-adapted matrices with \c float element type. The attempt to call the function with any
-// adapted matrix or matrices of any other element type results in a compile time error!\n
+// based on the LAPACK geqrf() functions. Note that this function can only be used for general,
+// non-adapted matrices with \c float, \c double, \c complex<float>, or \c complex<double> element
+// type. The attempt to call the function with any adapted matrix or matrices of any other element
+// type results in a compile time error!\n
 //
 // The decomposition has the form
 
@@ -371,7 +363,8 @@ inline void zgeqrf( int* m, int* n, complex<double>* a, int* lda, complex<double
 // below the diagonal, with the array \a tau, represent the orthogonal matrix Q as a product
 // of min(M,N) elementary reflectors.
 //
-// For more information on the sgeqrf() function, see the LAPACK online documentation browser:
+// For more information on the geqrf() functions (i.e. sgeqrf(), dgeqrf(), cgeqrf(), and zgeqrf())
+// see the LAPACK online documentation browser:
 //
 //        http://www.netlib.org/lapack/explore-html/
 //
@@ -382,14 +375,15 @@ inline void zgeqrf( int* m, int* n, complex<double>* a, int* lda, complex<double
 */
 template< typename MT  // Type of the dense matrix
         , bool SO >    // Storage order of the dense matrix
-inline void sgeqrf( DenseMatrix<MT,SO>& A, float* tau )
+inline void geqrf( DenseMatrix<MT,SO>& A, typename MT::ElementType* tau )
 {
    using boost::numeric_cast;
 
    BLAZE_CONSTRAINT_MUST_NOT_BE_ADAPTOR_TYPE( MT );
    BLAZE_CONSTRAINT_MUST_NOT_BE_COMPUTATION_TYPE( MT );
    BLAZE_CONSTRAINT_MUST_HAVE_MUTABLE_DATA_ACCESS( MT );
-   BLAZE_CONSTRAINT_MUST_BE_FLOAT_TYPE( typename MT::ElementType );
+
+   typedef typename MT::ElementType  ET;
 
    int m    ( boost::numeric_cast<int>( (~A).rows()    ) );
    int n    ( boost::numeric_cast<int>( (~A).columns() ) );
@@ -397,212 +391,9 @@ inline void sgeqrf( DenseMatrix<MT,SO>& A, float* tau )
    int lwork( n*lda );
    int info ( 0 );
 
-   const UniqueArray<float> work( new float[lwork] );
+   const UniqueArray<ET> work( new ET[lwork] );
 
-   sgeqrf( &m, &n, (~A).data(), &lda, tau, work.get(), &lwork, &info );
-
-   BLAZE_INTERNAL_ASSERT( info >= 0, "Invalid argument for QR decomposition" );
-}
-//*************************************************************************************************
-
-
-//*************************************************************************************************
-/*!\brief LAPACK kernel for the QR decomposition of the given dense double precision matrix.
-// \ingroup lapack
-//
-// \param A The matrix to be decomposed.
-// \param tau Array for the scalar factors of the elementary reflectors; size >= min( M, N ).
-// \return void
-//
-// This function performs the dense matrix QR decomposition of a general \f$ M \times N \f$ matrix
-// based on the LAPACK dgeqrf() function. Note that this function can only be used for general,
-// non-adapted matrices with \c double element type. The attempt to call the function with any
-// adapted matrix or matrices of any other element type results in a compile time error!\n
-//
-// The decomposition has the form
-
-                              \f[ A = Q \dot R, \f]\n
-
-// where the \c Q is represented as a product of elementary reflectors
-
-                  \f[ Q = H(1) H(2) . . . H(k), with k = min(m,n).\f]\n
-
-// Each H(i) has the form
-
-                          \f[ H(i) = I - tau * v * v^T, \f]\n
-
-// where \c tau is a real scalar, and \c v is a real vector with <tt>v(0:i-1) = 0</tt> and
-// <tt>v(i) = 1</tt>. <tt>v(i+1:m)</tt> is stored on exit in <tt>A(i+1:m,i)</tt>, and \c tau
-// in \c tau(i). Thus on exit the elements on and above the diagonal of the matrix contain the
-// min(M,N)-by-N upper trapezoidal matrix R (R is upper triangular if m >= n); the elements
-// below the diagonal, with the array \a tau, represent the orthogonal matrix Q as a product
-// of min(M,N) elementary reflectors.
-//
-// For more information on the dgeqrf() function, see the LAPACK online documentation browser:
-//
-//        http://www.netlib.org/lapack/explore-html/
-//
-// \note This function does not provide any exception safety guarantee, i.e. in case an exception
-// is thrown \a A may already have been modified.
-// \note This function can only be used if the fitting LAPACK library is available and linked to
-// the executable. Otherwise a call to this function will result in a linker error.
-*/
-template< typename MT  // Type of the dense matrix
-        , bool SO >    // Storage order of the dense matrix
-inline void dgeqrf( DenseMatrix<MT,SO>& A, double* tau )
-{
-   using boost::numeric_cast;
-
-   BLAZE_CONSTRAINT_MUST_NOT_BE_ADAPTOR_TYPE( MT );
-   BLAZE_CONSTRAINT_MUST_NOT_BE_COMPUTATION_TYPE( MT );
-   BLAZE_CONSTRAINT_MUST_HAVE_MUTABLE_DATA_ACCESS( MT );
-   BLAZE_CONSTRAINT_MUST_BE_DOUBLE_TYPE( typename MT::ElementType );
-
-   int m    ( boost::numeric_cast<int>( (~A).rows()    ) );
-   int n    ( boost::numeric_cast<int>( (~A).columns() ) );
-   int lda  ( boost::numeric_cast<int>( (~A).spacing() ) );
-   int lwork( n*lda );
-   int info ( 0 );
-
-   const UniqueArray<double> work( new double[lwork] );
-
-   dgeqrf( &m, &n, (~A).data(), &lda, tau, work.get(), &lwork, &info );
-
-   BLAZE_INTERNAL_ASSERT( info >= 0, "Invalid argument for QR decomposition" );
-}
-//*************************************************************************************************
-
-
-//*************************************************************************************************
-/*!\brief LAPACK kernel for the QR decomposition of the given dense single precision complex matrix.
-// \ingroup lapack
-//
-// \param A The matrix to be decomposed.
-// \param tau Array for the scalar factors of the elementary reflectors; size >= min( M, N ).
-// \return void
-//
-// This function performs the dense matrix QR decomposition of a general \f$ M \times N \f$ matrix
-// based on the LAPACK cgeqrf() function. Note that this function can only be used for general,
-// non-adapted matrices with \c complex<float> element type. The attempt to call the function with
-// any adapted matrix or matrices of any other element type results in a compile time error!\n
-//
-// The decomposition has the form
-
-                              \f[ A = Q \dot R, \f]\n
-
-// where the \c Q is represented as a product of elementary reflectors
-
-                  \f[ Q = H(1) H(2) . . . H(k), with k = min(m,n).\f]\n
-
-// Each H(i) has the form
-
-                          \f[ H(i) = I - tau * v * v^T, \f]\n
-
-// where \c tau is a real scalar, and \c v is a real vector with <tt>v(0:i-1) = 0</tt> and
-// <tt>v(i) = 1</tt>. <tt>v(i+1:m)</tt> is stored on exit in <tt>A(i+1:m,i)</tt>, and \c tau
-// in \c tau(i). Thus on exit the elements on and above the diagonal of the matrix contain the
-// min(M,N)-by-N upper trapezoidal matrix R (R is upper triangular if m >= n); the elements
-// below the diagonal, with the array \a tau, represent the orthogonal matrix Q as a product
-// of min(M,N) elementary reflectors.
-//
-// For more information on the cgeqrf() function, see the LAPACK online documentation browser:
-//
-//        http://www.netlib.org/lapack/explore-html/
-//
-// \note This function does not provide any exception safety guarantee, i.e. in case an exception
-// is thrown \a A may already have been modified.
-// \note This function can only be used if the fitting LAPACK library is available and linked to
-// the executable. Otherwise a call to this function will result in a linker error.
-*/
-template< typename MT  // Type of the dense matrix
-        , bool SO >    // Storage order of the dense matrix
-inline void cgeqrf( DenseMatrix<MT,SO>& A, complex<float>* tau )
-{
-   using boost::numeric_cast;
-
-   BLAZE_CONSTRAINT_MUST_NOT_BE_ADAPTOR_TYPE( MT );
-   BLAZE_CONSTRAINT_MUST_NOT_BE_COMPUTATION_TYPE( MT );
-   BLAZE_CONSTRAINT_MUST_HAVE_MUTABLE_DATA_ACCESS( MT );
-   BLAZE_CONSTRAINT_MUST_BE_COMPLEX_TYPE( typename MT::ElementType );
-   BLAZE_CONSTRAINT_MUST_BE_FLOAT_TYPE  ( typename MT::ElementType::value_type );
-
-   int m    ( boost::numeric_cast<int>( (~A).rows()    ) );
-   int n    ( boost::numeric_cast<int>( (~A).columns() ) );
-   int lda  ( boost::numeric_cast<int>( (~A).spacing() ) );
-   int lwork( n*lda );
-   int info ( 0 );
-
-   const UniqueArray< complex<float> > work( new complex<float>[lwork] );
-
-   cgeqrf( &m, &n, (~A).data(), &lda, tau, work.get(), &lwork, &info );
-
-   BLAZE_INTERNAL_ASSERT( info >= 0, "Invalid argument for QR decomposition" );
-}
-//*************************************************************************************************
-
-
-//*************************************************************************************************
-/*!\brief LAPACK kernel for the QR decomposition of the given dense double precision complex matrix.
-// \ingroup lapack
-//
-// \param A The matrix to be decomposed.
-// \param tau Array for the scalar factors of the elementary reflectors; size >= min( M, N ).
-// \return void
-//
-// This function performs the dense matrix QR decomposition of a general \f$ M \times N \f$ matrix
-// based on the LAPACK zgeqrf() function. Note that this function can only be used for general,
-// non-adapted matrices with \c complex<double> element type. The attempt to call the function with
-// any adapted matrix or matrices of any other element type results in a compile time error!\n
-//
-// The decomposition has the form
-
-                              \f[ A = Q \dot R, \f]\n
-
-// where the \c Q is represented as a product of elementary reflectors
-
-                  \f[ Q = H(1) H(2) . . . H(k), with k = min(m,n).\f]\n
-
-// Each H(i) has the form
-
-                          \f[ H(i) = I - tau * v * v^T, \f]\n
-
-// where \c tau is a real scalar, and \c v is a real vector with <tt>v(0:i-1) = 0</tt> and
-// <tt>v(i) = 1</tt>. <tt>v(i+1:m)</tt> is stored on exit in <tt>A(i+1:m,i)</tt>, and \c tau
-// in \c tau(i). Thus on exit the elements on and above the diagonal of the matrix contain the
-// min(M,N)-by-N upper trapezoidal matrix R (R is upper triangular if m >= n); the elements
-// below the diagonal, with the array \a tau, represent the orthogonal matrix Q as a product
-// of min(M,N) elementary reflectors.
-//
-// For more information on the zgeqrf() function, see the LAPACK online documentation browser:
-//
-//        http://www.netlib.org/lapack/explore-html/
-//
-// \note This function does not provide any exception safety guarantee, i.e. in case an exception
-// is thrown \a A may already have been modified.
-// \note This function can only be used if the fitting LAPACK library is available and linked to
-// the executable. Otherwise a call to this function will result in a linker error.
-*/
-template< typename MT  // Type of the dense matrix
-        , bool SO >    // Storage order of the dense matrix
-inline void zgeqrf( DenseMatrix<MT,SO>& A, complex<double>* tau )
-{
-   using boost::numeric_cast;
-
-   BLAZE_CONSTRAINT_MUST_NOT_BE_ADAPTOR_TYPE( MT );
-   BLAZE_CONSTRAINT_MUST_NOT_BE_COMPUTATION_TYPE( MT );
-   BLAZE_CONSTRAINT_MUST_HAVE_MUTABLE_DATA_ACCESS( MT );
-   BLAZE_CONSTRAINT_MUST_BE_COMPLEX_TYPE( typename MT::ElementType );
-   BLAZE_CONSTRAINT_MUST_BE_DOUBLE_TYPE( typename MT::ElementType::value_type );
-
-   int m    ( boost::numeric_cast<int>( (~A).rows()    ) );
-   int n    ( boost::numeric_cast<int>( (~A).columns() ) );
-   int lda  ( boost::numeric_cast<int>( (~A).spacing() ) );
-   int lwork( n*lda );
-   int info ( 0 );
-
-   const UniqueArray< complex<double> > work( new complex<double>[lwork] );
-
-   zgeqrf( &m, &n, (~A).data(), &lda, tau, work.get(), &lwork, &info );
+   geqrf( &m, &n, (~A).data(), &lda, tau, work.get(), &lwork, &info );
 
    BLAZE_INTERNAL_ASSERT( info >= 0, "Invalid argument for QR decomposition" );
 }
