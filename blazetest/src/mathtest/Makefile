@@ -57,7 +57,7 @@ all: functions intrinsics lapack typetraits \
      dmatdmatadd dmatsmatadd smatdmatadd smatsmatadd \
      dmatdmatsub dmatsmatsub smatdmatsub smatsmatsub \
      dmatdmatmult dmatsmatmult smatdmatmult smatsmatmult \
-     inversion \
+     determinant inversion \
      vectorserializer matrixserializer
 
 essential: all
@@ -474,6 +474,11 @@ smatsmatmult:
 	@echo "Building the sparse matrix/sparse matrix multiplication tests..."
 	@$(MAKE) --no-print-directory -C ./smatsmatmult $(MAKECMDGOALS)
 
+determinant:
+	@echo
+	@echo "Building the matrix determinant tests..."
+	@$(MAKE) --no-print-directory -C ./determinant $(MAKECMDGOALS)
+
 inversion:
 	@echo
 	@echo "Building the matrix inversion tests..."
@@ -571,6 +576,7 @@ clean:
 	@$(MAKE) --no-print-directory -C ./dmatsmatmult clean
 	@$(MAKE) --no-print-directory -C ./smatdmatmult clean
 	@$(MAKE) --no-print-directory -C ./smatsmatmult clean
+	@$(MAKE) --no-print-directory -C ./determinant clean
 	@$(MAKE) --no-print-directory -C ./inversion clean
 	@$(MAKE) --no-print-directory -C ./vectorserializer clean
 	@$(MAKE) --no-print-directory -C ./matrixserializer clean
@@ -601,5 +607,5 @@ clean:
         dmatdmatadd dmatsmatadd smatdmatadd smatsmatadd \
         dmatdmatsub dmatsmatsub smatdmatsub smatsmatsub \
         dmatdmatmult dmatsmatmult smatdmatmult smatsmatmult \
-        inversion \
+        determinant inversion \
         vectorserializer matrixserializer
