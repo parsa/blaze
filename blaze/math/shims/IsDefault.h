@@ -40,7 +40,8 @@
 // Includes
 //*************************************************************************************************
 
-#include <blaze/math/shims/Equal.h>
+#include <cmath>
+#include <blaze/math/Accuracy.h>
 #include <blaze/system/Inline.h>
 
 
@@ -75,8 +76,89 @@ namespace blaze {
 template< typename Type >
 BLAZE_ALWAYS_INLINE bool isDefault( const Type& v )
 {
-   return equal( v, Type() );
+   return v == Type();
 }
+//*************************************************************************************************
+
+
+//*************************************************************************************************
+/*! \cond BLAZE_INTERNAL */
+/*!\brief Returns whether the given single precision floating point value is zero.
+// \ingroup math_shims
+//
+// \param v The single precision floating point value to be tested for zero.
+// \return \a true in case the given value is zero, \a false otherwise.
+//
+// This overload of the \a isDefault shim tests whether the given single precision floating point
+// value is exactly zero or within an epsilon range to zero. In case the value is zero or close
+// to zero the function returns \a true, otherwise it returns \a false.
+*/
+BLAZE_ALWAYS_INLINE bool isDefault( float v )
+{
+   return std::fabs( v ) <= accuracy;
+}
+/*! \endcond */
+//*************************************************************************************************
+
+
+//*************************************************************************************************
+/*! \cond BLAZE_INTERNAL */
+/*!\brief Returns whether the given double precision floating point value is zero.
+// \ingroup math_shims
+//
+// \param v The double precision floating point value to be tested for zero.
+// \return \a true in case the given value is zero, \a false otherwise.
+//
+// This overload of the \a isDefault shim tests whether the given double precision floating point
+// value is exactly zero or within an epsilon range to zero. In case the value is zero or close
+// to zero the function returns \a true, otherwise it returns \a false.
+*/
+BLAZE_ALWAYS_INLINE bool isDefault( double v )
+{
+   return std::fabs( v ) <= accuracy;
+}
+/*! \endcond */
+//*************************************************************************************************
+
+
+//*************************************************************************************************
+/*! \cond BLAZE_INTERNAL */
+/*!\brief Returns whether the given extended precision floating point value is zero.
+// \ingroup math_shims
+//
+// \param v The extended precision floating point value to be tested for zero.
+// \return \a true in case the given value is zero, \a false otherwise.
+//
+// This overload of the \a isDefault shim tests whether the given extended precision floating
+// point value is exactly zero or within an epsilon range to zero. In case the value is zero or
+// close to zero the function returns \a true, otherwise it returns \a false.
+*/
+BLAZE_ALWAYS_INLINE bool isDefault( long double v )
+{
+   return std::fabs( v ) <= accuracy;
+}
+/*! \endcond */
+//*************************************************************************************************
+
+
+//*************************************************************************************************
+/*! \cond BLAZE_INTERNAL */
+/*!\brief Returns whether the given complex number is zero.
+// \ingroup math_shims
+//
+// \param v The complex number to be tested for zero.
+// \return \a true in case the given value is zero, \a false otherwise.
+//
+// This overload of the \a isDefault shim tests whether both the real and the imaginary part of
+// the given complex number are exactly zero or within an epsilon range to zero. In case the both
+// parts are zero or close to zero the function returns \a true, otherwise it returns \a false.
+*/
+template< typename T >
+BLAZE_ALWAYS_INLINE bool isDefault( const complex<T>& v )
+{
+   return isDefault( real( v ) ) && isDefault( imag( v ) );
+}
+/*! \endcond */
 //*************************************************************************************************
 
 } // namespace blaze
