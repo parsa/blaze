@@ -56,8 +56,8 @@
 #include <blaze/math/shims/IsZero.h>
 #include <blaze/math/shims/Reset.h>
 #include <blaze/math/traits/ConjExprTrait.h>
-#include <blaze/math/typetraits/IsCustom.h>
 #include <blaze/util/constraints/Const.h>
+#include <blaze/util/constraints/Numeric.h>
 #include <blaze/util/constraints/Pointer.h>
 #include <blaze/util/constraints/Reference.h>
 #include <blaze/util/constraints/Volatile.h>
@@ -65,7 +65,6 @@
 #include <blaze/util/mpl/If.h>
 #include <blaze/util/Types.h>
 #include <blaze/util/typetraits/IsComplex.h>
-#include <blaze/util/typetraits/IsNumeric.h>
 
 
 namespace blaze {
@@ -212,7 +211,7 @@ class NumericProxy : public Proxy< NumericProxy<MT> >
    BLAZE_CONSTRAINT_MUST_NOT_BE_HERMITIAN_MATRIX_TYPE( MT );
    BLAZE_CONSTRAINT_MUST_NOT_BE_LOWER_MATRIX_TYPE    ( MT );
    BLAZE_CONSTRAINT_MUST_NOT_BE_UPPER_MATRIX_TYPE    ( MT );
-   BLAZE_STATIC_ASSERT( IsNumeric<RepresentedType>::value || IsCustom<MT>::value );
+   BLAZE_CONSTRAINT_MUST_BE_NUMERIC_TYPE             ( RepresentedType );
    /*! \endcond */
    //**********************************************************************************************
 };

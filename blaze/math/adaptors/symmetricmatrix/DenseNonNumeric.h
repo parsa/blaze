@@ -61,6 +61,7 @@
 #include <blaze/math/traits/MultTrait.h>
 #include <blaze/math/typetraits/Columns.h>
 #include <blaze/math/typetraits/IsComputation.h>
+#include <blaze/math/typetraits/IsCustom.h>
 #include <blaze/math/typetraits/IsSparseMatrix.h>
 #include <blaze/math/typetraits/IsSquare.h>
 #include <blaze/math/typetraits/IsSymmetric.h>
@@ -2179,7 +2180,8 @@ inline bool SymmetricMatrix<MT,SO,true,false>::isIntact() const
 {
    using blaze::isIntact;
 
-   return isIntact( matrix_ ) && ( SO ? isUpper( matrix_ ) : isLower( matrix_ ) );
+   return isIntact( matrix_ ) &&
+          ( IsCustom<MT>::value || ( SO ? isUpper( matrix_ ) : isLower( matrix_ ) ) );
 }
 /*! \endcond */
 //*************************************************************************************************
