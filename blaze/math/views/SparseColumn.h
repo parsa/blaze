@@ -96,6 +96,7 @@
 #include <blaze/util/typetraits/IsReference.h>
 #include <blaze/util/typetraits/RemoveReference.h>
 #include <blaze/util/Unused.h>
+#include <blaze/util/valuetraits/IsTrue.h>
 
 
 namespace blaze {
@@ -5551,11 +5552,8 @@ inline typename DerestrictTrait< SparseColumn<MT,SO,SF> >::Type
 //*************************************************************************************************
 /*! \cond BLAZE_INTERNAL */
 template< typename MT, bool SO, bool SF >
-struct IsRestricted< SparseColumn<MT,SO,SF> > : public If< IsRestricted<MT>, TrueType, FalseType >::Type
-{
-   enum { value = IsRestricted<MT>::value };
-   typedef typename If< IsRestricted<MT>, TrueType, FalseType >::Type  Type;
-};
+struct IsRestricted< SparseColumn<MT,SO,SF> > : public IsTrue< IsRestricted<MT>::value >
+{};
 /*! \endcond */
 //*************************************************************************************************
 
