@@ -407,40 +407,6 @@ inline bool trySubAssign( const SymmetricMatrix<MT1,SO1,DF,NF>& lhs,
 //*************************************************************************************************
 
 
-//*************************************************************************************************
-/*! \cond BLAZE_INTERNAL */
-/*!\brief Predict invariant violations by the in-place transposition of a square submatrix on a
-//        symmetric matrix.
-// \ingroup matrix
-//
-// \param matrix The affected symmetric matrix.
-// \param row The index of the first row of the submatrix to be transposed.
-// \param column The index of the first column of the submatrix to be transposed.
-// \param n The number of rows and columns of the submatrix.
-// \return \a true in case the in-place transposition would be successful, \a false if not.
-//
-// This function must \b NOT be called explicitly! It is used internally for the performance
-// optimized evaluation of expression templates. Calling this function explicitly might result
-// in erroneous results and/or in compilation errors.
-*/
-template< typename MT  // Type of the adapted matrix
-        , bool SO      // Storage order of the adapted matrix
-        , bool DF      // Density flag
-        , bool NF >    // Numeric flag
-inline bool tryTranspose( const SymmetricMatrix<MT,SO,DF,NF>& matrix,
-                          size_t row, size_t column, size_t n )
-{
-   BLAZE_INTERNAL_ASSERT( row + n <= (~matrix).rows(), "Invalid row access index" );
-   BLAZE_INTERNAL_ASSERT( column + n <= (~matrix).columns(), "Invalid column access index" );
-
-   UNUSED_PARAMETER( matrix );
-
-   return ( row == column ) || ( column + n <= row + 1UL ) || ( row + n <= column + 1UL );
-}
-/*! \endcond */
-//*************************************************************************************************
-
-
 
 
 //=================================================================================================
