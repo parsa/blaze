@@ -49,6 +49,7 @@
 #include <blaze/math/proxy/Proxy.h>
 #include <blaze/math/shims/Clear.h>
 #include <blaze/math/shims/Conjugate.h>
+#include <blaze/math/shims/Invert.h>
 #include <blaze/math/shims/IsDefault.h>
 #include <blaze/math/shims/IsNaN.h>
 #include <blaze/math/shims/IsOne.h>
@@ -165,8 +166,9 @@ class HermitianProxy : public Proxy< HermitianProxy<MT> >
    //**Utility functions***************************************************************************
    /*!\name Utility functions */
    //@{
-   inline void reset() const;
-   inline void clear() const;
+   inline void reset () const;
+   inline void clear () const;
+   inline void invert() const;
 
    inline ConstReference get() const;
    //@}
@@ -521,6 +523,23 @@ inline void HermitianProxy<MT>::clear() const
 
 
 //*************************************************************************************************
+/*!\brief In-place inversion of the represented element
+//
+// \return void
+*/
+template< typename MT >  // Type of the adapted matrix
+inline void HermitianProxy<MT>::invert() const
+{
+   using blaze::invert;
+
+   invert( value1_ );
+   if( !diagonal_ )
+      value2_ = conj( value1_ );
+}
+//*************************************************************************************************
+
+
+//*************************************************************************************************
 /*!\brief Returning the value of the accessed matrix element.
 //
 // \return Direct/raw reference to the accessed matrix element.
@@ -659,6 +678,9 @@ template< typename MT >
 inline void clear( const HermitianProxy<MT>& proxy );
 
 template< typename MT >
+inline void invert( const HermitianProxy<MT>& proxy );
+
+template< typename MT >
 inline bool isDefault( const HermitianProxy<MT>& proxy );
 
 template< typename MT >
@@ -730,6 +752,21 @@ template< typename MT >
 inline void clear( const HermitianProxy<MT>& proxy )
 {
    proxy.clear();
+}
+//*************************************************************************************************
+
+
+//*************************************************************************************************
+/*!\brief In-place inversion of the represented element.
+// \ingroup hermitian_matrix
+//
+// \param proxy The given proxy instance.
+// \return void
+*/
+template< typename MT >
+inline void invert( const HermitianProxy<MT>& proxy )
+{
+   proxy.invert();
 }
 //*************************************************************************************************
 
