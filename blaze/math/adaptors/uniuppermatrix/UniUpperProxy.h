@@ -49,6 +49,7 @@
 #include <blaze/math/proxy/Proxy.h>
 #include <blaze/math/shims/Clear.h>
 #include <blaze/math/shims/Conjugate.h>
+#include <blaze/math/shims/Invert.h>
 #include <blaze/math/shims/IsDefault.h>
 #include <blaze/math/shims/IsNaN.h>
 #include <blaze/math/shims/IsOne.h>
@@ -164,8 +165,9 @@ class UniUpperProxy : public Proxy< UniUpperProxy<MT> >
    //**Utility functions***************************************************************************
    /*!\name Utility functions */
    //@{
-   inline void reset() const;
-   inline void clear() const;
+   inline void reset () const;
+   inline void clear () const;
+   inline void invert() const;
 
    inline RepresentedType get()          const;
    inline bool            isRestricted() const;
@@ -458,6 +460,22 @@ inline void UniUpperProxy<MT>::clear() const
 
 
 //*************************************************************************************************
+/*!\brief In-place inversion of the represented element
+//
+// \return void
+*/
+template< typename MT >  // Type of the adapted matrix
+inline void UniUpperProxy<MT>::invert() const
+{
+   using blaze::invert;
+
+   if( row_ < column_ )
+      invert( value_ );
+}
+//*************************************************************************************************
+
+
+//*************************************************************************************************
 /*!\brief Returning the value of the accessed matrix element.
 //
 // \return Direct/raw reference to the accessed matrix element.
@@ -612,6 +630,9 @@ template< typename MT >
 inline void clear( const UniUpperProxy<MT>& proxy );
 
 template< typename MT >
+inline void invert( const UniUpperProxy<MT>& proxy );
+
+template< typename MT >
 inline bool isDefault( const UniUpperProxy<MT>& proxy );
 
 template< typename MT >
@@ -683,6 +704,21 @@ template< typename MT >
 inline void clear( const UniUpperProxy<MT>& proxy )
 {
    proxy.clear();
+}
+//*************************************************************************************************
+
+
+//*************************************************************************************************
+/*!\brief In-place inversion of the represented element.
+// \ingroup uniupper_matrix
+//
+// \param proxy The given access proxy.
+// \return void
+*/
+template< typename MT >
+inline void invert( const UniUpperProxy<MT>& proxy )
+{
+   proxy.invert();
 }
 //*************************************************************************************************
 
