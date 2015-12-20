@@ -49,6 +49,7 @@
 #include <blaze/math/proxy/Proxy.h>
 #include <blaze/math/shims/Clear.h>
 #include <blaze/math/shims/Conjugate.h>
+#include <blaze/math/shims/Invert.h>
 #include <blaze/math/shims/IsDefault.h>
 #include <blaze/math/shims/IsNaN.h>
 #include <blaze/math/shims/IsOne.h>
@@ -171,8 +172,9 @@ class HermitianValue : public Proxy< HermitianValue<MT> >
    //**Utility functions***************************************************************************
    /*!\name Utility functions */
    //@{
-   inline void reset() const;
-   inline void clear() const;
+   inline void reset () const;
+   inline void clear () const;
+   inline void invert() const;
 
    inline RepresentedType get() const;
    //@}
@@ -464,6 +466,30 @@ inline void HermitianValue<MT>::clear() const
 
 
 //*************************************************************************************************
+/*!\brief In-place inversion of the Hermitian value
+//
+// \return void
+*/
+template< typename MT >  // Type of the adapted matrix
+inline void HermitianValue<MT>::invert() const
+{
+   using blaze::invert;
+
+   invert( pos_->value() );
+
+   if( pos_->index() != index_ )
+   {
+      const size_t row   ( ( IsRowMajorMatrix<MT>::value )?( pos_->index() ):( index_ ) );
+      const size_t column( ( IsRowMajorMatrix<MT>::value )?( index_ ):( pos_->index() ) );
+      const IteratorType pos2( matrix_->find( row, column ) );
+
+      pos2->value() = conj( pos_->value() );
+   }
+}
+//*************************************************************************************************
+
+
+//*************************************************************************************************
 /*!\brief Access to the represented value.
 //
 // \return Copy of the represented value.
@@ -614,6 +640,9 @@ template< typename MT >
 inline void clear( const HermitianValue<MT>& value );
 
 template< typename MT >
+inline void invert( const HermitianValue<MT>& value );
+
+template< typename MT >
 inline bool isDefault( const HermitianValue<MT>& value );
 
 template< typename MT >
@@ -683,6 +712,21 @@ template< typename MT >
 inline void clear( const HermitianValue<MT>& value )
 {
    value.clear();
+}
+//*************************************************************************************************
+
+
+//*************************************************************************************************
+/*!\brief In-place inversion of the Hermitian value.
+// \ingroup hermitian_matrix
+//
+// \param value The given Hermitian value.
+// \return void
+*/
+template< typename MT >
+inline void invert( const HermitianValue<MT>& value )
+{
+   value.invert();
 }
 //*************************************************************************************************
 
