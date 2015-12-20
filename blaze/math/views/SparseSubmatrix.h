@@ -2082,12 +2082,12 @@ inline SparseSubmatrix<MT,AF,SO>& SparseSubmatrix<MT,AF,SO>::transpose()
       BLAZE_THROW_LOGIC_ERROR( "Invalid transpose of a non-quadratic submatrix" );
    }
 
-   if( !tryTranspose( matrix_, row_, column_, n_ ) ) {
+   if( !tryAssign( matrix_, trans( *this ), row_, column_ ) ) {
       BLAZE_THROW_LOGIC_ERROR( "Invalid transpose operation" );
    }
 
    typename DerestrictTrait<This>::Type left( derestrict( *this ) );
-   const ResultType tmp( trans(*this) );
+   const ResultType tmp( trans( *this ) );
    reset();
    assign( left, tmp );
 
@@ -2124,12 +2124,12 @@ inline SparseSubmatrix<MT,AF,SO>& SparseSubmatrix<MT,AF,SO>::ctranspose()
       BLAZE_THROW_LOGIC_ERROR( "Invalid transpose of a non-quadratic submatrix" );
    }
 
-   if( !tryTranspose( matrix_, row_, column_, n_ ) ) {
+   if( !tryAssign( matrix_, trans( *this ), row_, column_ ) ) {
       BLAZE_THROW_LOGIC_ERROR( "Invalid transpose operation" );
    }
 
    typename DerestrictTrait<This>::Type left( derestrict( *this ) );
-   const ResultType tmp( ctrans(*this) );
+   const ResultType tmp( ctrans( *this ) );
    reset();
    assign( left, tmp );
 
@@ -4391,12 +4391,12 @@ inline SparseSubmatrix<MT,AF,true>& SparseSubmatrix<MT,AF,true>::transpose()
       BLAZE_THROW_LOGIC_ERROR( "Invalid transpose of a non-quadratic submatrix" );
    }
 
-   if( !tryTranspose( matrix_, row_, column_, n_ ) ) {
+   if( !tryAssign( matrix_, trans( *this ), row_, column_ ) ) {
       BLAZE_THROW_LOGIC_ERROR( "Invalid transpose operation" );
    }
 
    typename DerestrictTrait<This>::Type left( derestrict( *this ) );
-   const ResultType tmp( trans(*this) );
+   const ResultType tmp( trans( *this ) );
    reset();
    assign( left, tmp );
 
@@ -4434,7 +4434,7 @@ inline SparseSubmatrix<MT,AF,true>& SparseSubmatrix<MT,AF,true>::ctranspose()
       BLAZE_THROW_LOGIC_ERROR( "Invalid transpose of a non-quadratic submatrix" );
    }
 
-   if( !tryTranspose( matrix_, row_, column_, n_ ) ) {
+   if( !tryAssign( matrix_, ctrans( *this ), row_, column_ ) ) {
       BLAZE_THROW_LOGIC_ERROR( "Invalid transpose operation" );
    }
 
