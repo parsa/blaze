@@ -2200,12 +2200,12 @@ inline DenseSubmatrix<MT,AF,SO>& DenseSubmatrix<MT,AF,SO>::transpose()
       BLAZE_THROW_LOGIC_ERROR( "Invalid transpose of a non-quadratic submatrix" );
    }
 
-   if( !tryTranspose( matrix_, row_, column_, n_ ) ) {
+   if( !tryAssign( matrix_, trans( *this ), row_, column_ ) ) {
       BLAZE_THROW_LOGIC_ERROR( "Invalid transpose operation" );
    }
 
    typename DerestrictTrait<This>::Type left( derestrict( *this ) );
-   const ResultType tmp( trans(*this) );
+   const ResultType tmp( trans( *this ) );
    smpAssign( left, tmp );
 
    return *this;
@@ -2239,12 +2239,12 @@ inline DenseSubmatrix<MT,AF,SO>& DenseSubmatrix<MT,AF,SO>::ctranspose()
       BLAZE_THROW_LOGIC_ERROR( "Invalid transpose of a non-quadratic submatrix" );
    }
 
-   if( !tryTranspose( matrix_, row_, column_, n_ ) ) {
+   if( !tryAssign( matrix_, ctrans( *this ), row_, column_ ) ) {
       BLAZE_THROW_LOGIC_ERROR( "Invalid transpose operation" );
    }
 
    typename DerestrictTrait<This>::Type left( derestrict( *this ) );
-   const ResultType tmp( ctrans(*this) );
+   const ResultType tmp( ctrans( *this ) );
    smpAssign( left, tmp );
 
    return *this;
@@ -4960,12 +4960,12 @@ inline DenseSubmatrix<MT,unaligned,true>& DenseSubmatrix<MT,unaligned,true>::tra
       BLAZE_THROW_LOGIC_ERROR( "Invalid transpose of a non-quadratic submatrix" );
    }
 
-   if( !tryTranspose( matrix_, row_, column_, n_ ) ) {
+   if( !tryAssign( matrix_, trans( *this ), row_, column_ ) ) {
       BLAZE_THROW_LOGIC_ERROR( "Invalid transpose operation" );
    }
 
    typename DerestrictTrait<This>::Type left( derestrict( *this ) );
-   const ResultType tmp( trans(*this) );
+   const ResultType tmp( trans( *this ) );
    smpAssign( left, tmp );
 
    return *this;
@@ -4999,12 +4999,12 @@ inline DenseSubmatrix<MT,unaligned,true>& DenseSubmatrix<MT,unaligned,true>::ctr
       BLAZE_THROW_LOGIC_ERROR( "Invalid transpose of a non-quadratic submatrix" );
    }
 
-   if( !tryTranspose( matrix_, row_, column_, n_ ) ) {
+   if( !tryAssign( matrix_, ctrans( *this ), row_, column_ ) ) {
       BLAZE_THROW_LOGIC_ERROR( "Invalid transpose operation" );
    }
 
    typename DerestrictTrait<This>::Type left( derestrict( *this ) );
-   const ResultType tmp( ctrans(*this) );
+   const ResultType tmp( ctrans( *this ) );
    smpAssign( left, tmp );
 
    return *this;
@@ -7425,12 +7425,12 @@ inline DenseSubmatrix<MT,aligned,false>& DenseSubmatrix<MT,aligned,false>::trans
       BLAZE_THROW_LOGIC_ERROR( "Invalid transpose of a non-quadratic submatrix" );
    }
 
-   if( !tryTranspose( matrix_, row_, column_, n_ ) ) {
+   if( !tryAssign( matrix_, trans( *this ), row_, column_ ) ) {
       BLAZE_THROW_LOGIC_ERROR( "Invalid transpose operation" );
    }
 
    typename DerestrictTrait<This>::Type left( derestrict( *this ) );
-   const ResultType tmp( trans(*this) );
+   const ResultType tmp( trans( *this ) );
    smpAssign( left, tmp );
 
    return *this;
@@ -7464,12 +7464,12 @@ inline DenseSubmatrix<MT,aligned,false>& DenseSubmatrix<MT,aligned,false>::ctran
       BLAZE_THROW_LOGIC_ERROR( "Invalid transpose of a non-quadratic submatrix" );
    }
 
-   if( !tryTranspose( matrix_, row_, column_, n_ ) ) {
+   if( !tryAssign( matrix_, ctrans( *this ), row_, column_ ) ) {
       BLAZE_THROW_LOGIC_ERROR( "Invalid transpose operation" );
    }
 
    typename DerestrictTrait<This>::Type left( derestrict( *this ) );
-   const ResultType tmp( ctrans(*this) );
+   const ResultType tmp( ctrans( *this ) );
    smpAssign( left, tmp );
 
    return *this;
@@ -9843,12 +9843,12 @@ inline DenseSubmatrix<MT,aligned,true>& DenseSubmatrix<MT,aligned,true>::transpo
       BLAZE_THROW_LOGIC_ERROR( "Invalid transpose of a non-quadratic submatrix" );
    }
 
-   if( !tryTranspose( matrix_, row_, column_, n_ ) ) {
+   if( !tryAssign( matrix_, trans( *this ), row_, column_ ) ) {
       BLAZE_THROW_LOGIC_ERROR( "Invalid transpose operation" );
    }
 
    typename DerestrictTrait<This>::Type left( derestrict( *this ) );
-   const ResultType tmp( trans(*this) );
+   const ResultType tmp( trans( *this ) );
    smpAssign( left, tmp );
 
    return *this;
@@ -9882,12 +9882,12 @@ inline DenseSubmatrix<MT,aligned,true>& DenseSubmatrix<MT,aligned,true>::ctransp
       BLAZE_THROW_LOGIC_ERROR( "Invalid transpose of a non-quadratic submatrix" );
    }
 
-   if( !tryTranspose( matrix_, row_, column_, n_ ) ) {
+   if( !tryAssign( matrix_, ctrans( *this ), row_, column_ ) ) {
       BLAZE_THROW_LOGIC_ERROR( "Invalid transpose operation" );
    }
 
    typename DerestrictTrait<This>::Type left( derestrict( *this ) );
-   const ResultType tmp( ctrans(*this) );
+   const ResultType tmp( ctrans( *this ) );
    smpAssign( left, tmp );
 
    return *this;
