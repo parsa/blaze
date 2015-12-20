@@ -49,6 +49,7 @@
 #include <blaze/math/proxy/Proxy.h>
 #include <blaze/math/shims/Clear.h>
 #include <blaze/math/shims/Conjugate.h>
+#include <blaze/math/shims/Invert.h>
 #include <blaze/math/shims/IsDefault.h>
 #include <blaze/math/shims/IsNaN.h>
 #include <blaze/math/shims/IsOne.h>
@@ -158,8 +159,9 @@ class UniUpperValue : public Proxy< UniUpperValue<MT> >
    //**Utility functions***************************************************************************
    /*!\name Utility functions */
    //@{
-   inline void reset() const;
-   inline void clear() const;
+   inline void reset () const;
+   inline void clear () const;
+   inline void invert() const;
 
    inline RepresentedType get() const;
    inline bool            isRestricted() const;
@@ -414,6 +416,22 @@ inline void UniUpperValue<MT>::clear() const
 
 
 //*************************************************************************************************
+/*!\brief In-place inversion of the uniupper value
+//
+// \return void
+*/
+template< typename MT >  // Type of the adapted matrix
+inline void UniUpperValue<MT>::invert() const
+{
+   using blaze::invert;
+
+   if( !diagonal_ )
+      invert( *value_ );
+}
+//*************************************************************************************************
+
+
+//*************************************************************************************************
 /*!\brief Access to the represented value.
 //
 // \return Copy of the represented value.
@@ -566,6 +584,9 @@ template< typename MT >
 inline void clear( const UniUpperValue<MT>& value );
 
 template< typename MT >
+inline void invert( const UniUpperValue<MT>& value );
+
+template< typename MT >
 inline bool isDefault( const UniUpperValue<MT>& value );
 
 template< typename MT >
@@ -635,6 +656,21 @@ template< typename MT >
 inline void clear( const UniUpperValue<MT>& value )
 {
    value.clear();
+}
+//*************************************************************************************************
+
+
+//*************************************************************************************************
+/*!\brief In-place inversion of the uniupper value.
+// \ingroup uniupper_matrix
+//
+// \param value The given uniupper value.
+// \return void
+*/
+template< typename MT >
+inline void invert( const UniUpperValue<MT>& value )
+{
+   value.invert();
 }
 //*************************************************************************************************
 
