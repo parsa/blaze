@@ -49,6 +49,7 @@
 #include <blaze/math/proxy/Proxy.h>
 #include <blaze/math/shims/Clear.h>
 #include <blaze/math/shims/Conjugate.h>
+#include <blaze/math/shims/Invert.h>
 #include <blaze/math/shims/IsDefault.h>
 #include <blaze/math/shims/IsNaN.h>
 #include <blaze/math/shims/IsOne.h>
@@ -165,8 +166,9 @@ class NumericProxy : public Proxy< NumericProxy<MT> >
    //**Utility functions***************************************************************************
    /*!\name Utility functions */
    //@{
-   inline void reset() const;
-   inline void clear() const;
+   inline void reset () const;
+   inline void clear () const;
+   inline void invert() const;
 
    inline ConstReference get() const;
    //@}
@@ -457,6 +459,23 @@ inline void NumericProxy<MT>::clear() const
 
 
 //*************************************************************************************************
+/*!\brief In-place inversion of the represented element
+//
+// \return void
+*/
+template< typename MT >  // Type of the adapted matrix
+inline void NumericProxy<MT>::invert() const
+{
+   using blaze::invert;
+
+   invert( matrix_(row_,column_) );
+   if( row_ != column_ )
+      matrix_(column_,row_) = matrix_(row_,column_);
+}
+//*************************************************************************************************
+
+
+//*************************************************************************************************
 /*!\brief Returning the value of the accessed matrix element.
 //
 // \return Direct/raw reference to the accessed matrix element.
@@ -589,6 +608,9 @@ template< typename MT >
 inline void clear( const NumericProxy<MT>& proxy );
 
 template< typename MT >
+inline void invert( const NumericProxy<MT>& proxy );
+
+template< typename MT >
 inline bool isDefault( const NumericProxy<MT>& proxy );
 
 template< typename MT >
@@ -660,6 +682,21 @@ template< typename MT >
 inline void clear( const NumericProxy<MT>& proxy )
 {
    proxy.clear();
+}
+//*************************************************************************************************
+
+
+//*************************************************************************************************
+/*!\brief In-place inversion of the represented element.
+// \ingroup symmetric_matrix
+//
+// \param proxy The given proxy instance.
+// \return void
+*/
+template< typename MT >
+inline void invert( const NumericProxy<MT>& proxy )
+{
+   proxy.invert();
 }
 //*************************************************************************************************
 
