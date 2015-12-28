@@ -54,11 +54,13 @@
 #include <blaze/math/typetraits/IsLower.h>
 #include <blaze/math/typetraits/IsSquare.h>
 #include <blaze/math/typetraits/IsTriangular.h>
+#include <blaze/math/typetraits/IsUniLower.h>
 #include <blaze/math/typetraits/IsUniTriangular.h>
 #include <blaze/util/Assert.h>
 #include <blaze/util/Complex.h>
 #include <blaze/util/EnableIf.h>
 #include <blaze/util/Exception.h>
+#include <blaze/util/mpl/And.h>
 #include <blaze/util/mpl/Not.h>
 #include <blaze/util/Types.h>
 #include <blaze/util/typetraits/IsDouble.h>
@@ -316,19 +318,21 @@ inline typename EnableIf< Not< IsLower<MT> > >::Type
 
    typedef typename MT::ElementType  ET;
 
-   const ET det( (~dm)(0,0)*(~dm)(1,1) - (~dm)(0,1)*(~dm)(1,0) );
+   typename DerestrictTrait<MT>::Type A( derestrict( ~dm ) );
+
+   const ET det( A(0,0)*A(1,1) - A(0,1)*A(1,0) );
 
    if( isDefault( det ) ) {
       BLAZE_THROW_INVALID_ARGUMENT( "Inversion of singular matrix failed" );
    }
 
    const ET idet( ET(1) / det );
-   const ET a11( (~dm)(0,0) * idet );
+   const ET a11( A(0,0) * idet );
 
-   (~dm)(0,0) =  (~dm)(1,1) * idet;
-   (~dm)(0,1) = -(~dm)(0,1) * idet;
-   (~dm)(1,0) = -(~dm)(1,0) * idet;
-   (~dm)(1,1) =  a11;
+   A(0,0) =  A(1,1) * idet;
+   A(0,1) = -A(0,1) * idet;
+   A(1,0) = -A(1,0) * idet;
+   A(1,1) =  a11;
 }
 /*! \endcond */
 //*************************************************************************************************
@@ -348,7 +352,7 @@ inline typename EnableIf< Not< IsLower<MT> > >::Type
 */
 template< typename MT  // Type of the dense matrix
         , bool SO >    // Storage order of the dense matrix
-inline typename EnableIf< IsLower<MT> >::Type
+inline typename EnableIf< And< IsLower<MT>, Not< IsUniLower<MT> > > >::Type
    invert2x2( DenseMatrix<MT,SO>& dm )
 {
    BLAZE_INTERNAL_ASSERT( (~dm).rows()    == 2UL, "Invalid number of rows detected"    );
@@ -377,6 +381,36 @@ inline typename EnableIf< IsLower<MT> >::Type
 
 //*************************************************************************************************
 /*! \cond BLAZE_INTERNAL */
+/*!\brief In-place inversion of the given unilower dense \f$ 2 \times 2 \f$ matrix.
+// \ingroup dense_matrix
+//
+// \param dm The unilower dense matrix to be inverted.
+// \return void
+//
+// This function inverts the given unilower dense \f$ 2 \times 2 \f$ matrix via the rule of
+// Sarrus. The matrix inversion fails if the given matrix is singular and not invertible. In
+// this case a \a std::invalid_argument exception is thrown.
+*/
+template< typename MT  // Type of the dense matrix
+        , bool SO >    // Storage order of the dense matrix
+inline typename EnableIf< IsUniLower<MT> >::Type
+   invert2x2( DenseMatrix<MT,SO>& dm )
+{
+   BLAZE_INTERNAL_ASSERT( (~dm).rows()    == 2UL, "Invalid number of rows detected"    );
+   BLAZE_INTERNAL_ASSERT( (~dm).columns() == 2UL, "Invalid number of columns detected" );
+
+   typedef typename MT::ElementType  ET;
+
+   typename DerestrictTrait<MT>::Type A( derestrict( ~dm ) );
+
+   A(1,0) = -A(1,0);
+}
+/*! \endcond */
+//*************************************************************************************************
+
+
+//*************************************************************************************************
+/*! \cond BLAZE_INTERNAL */
 /*!\brief In-place inversion of the given general dense \f$ 3 \times 3 \f$ matrix.
 // \ingroup dense_matrix
 //
@@ -398,25 +432,26 @@ inline typename EnableIf< Not< IsLower<MT> > >::Type
    typedef typename MT::ElementType  ET;
 
    const StaticMatrix<ET,3UL,3UL,SO> A( ~dm );
+   typename DerestrictTrait<MT>::Type B( derestrict( ~dm ) );
 
-   (~dm)(0,0) = A(1,1)*A(2,2) - A(1,2)*A(2,1);
-   (~dm)(1,0) = A(1,2)*A(2,0) - A(1,0)*A(2,2);
-   (~dm)(2,0) = A(1,0)*A(2,1) - A(1,1)*A(2,0);
+   B(0,0) = A(1,1)*A(2,2) - A(1,2)*A(2,1);
+   B(1,0) = A(1,2)*A(2,0) - A(1,0)*A(2,2);
+   B(2,0) = A(1,0)*A(2,1) - A(1,1)*A(2,0);
 
-   const ET det( A(0,0)*(~dm)(0,0) + A(0,1)*(~dm)(1,0) + A(0,2)*(~dm)(2,0) );
+   const ET det( A(0,0)*B(0,0) + A(0,1)*B(1,0) + A(0,2)*B(2,0) );
 
    if( isDefault( det ) ) {
       BLAZE_THROW_INVALID_ARGUMENT( "Inversion of singular matrix failed" );
    }
 
-   (~dm)(0,1) = A(0,2)*A(2,1) - A(0,1)*A(2,2);
-   (~dm)(0,2) = A(0,1)*A(1,2) - A(0,2)*A(1,1);
-   (~dm)(1,1) = A(0,0)*A(2,2) - A(0,2)*A(2,0);
-   (~dm)(1,2) = A(0,2)*A(1,0) - A(0,0)*A(1,2);
-   (~dm)(2,1) = A(0,1)*A(2,0) - A(0,0)*A(2,1);
-   (~dm)(2,2) = A(0,0)*A(1,1) - A(0,1)*A(1,0);
+   B(0,1) = A(0,2)*A(2,1) - A(0,1)*A(2,2);
+   B(0,2) = A(0,1)*A(1,2) - A(0,2)*A(1,1);
+   B(1,1) = A(0,0)*A(2,2) - A(0,2)*A(2,0);
+   B(1,2) = A(0,2)*A(1,0) - A(0,0)*A(1,2);
+   B(2,1) = A(0,1)*A(2,0) - A(0,0)*A(2,1);
+   B(2,2) = A(0,0)*A(1,1) - A(0,1)*A(1,0);
 
-   (~dm) /= det;
+   B /= det;
 }
 /*! \endcond */
 //*************************************************************************************************
@@ -424,19 +459,19 @@ inline typename EnableIf< Not< IsLower<MT> > >::Type
 
 //*************************************************************************************************
 /*! \cond BLAZE_INTERNAL */
-/*!\brief In-place inversion of the given general dense \f$ 3 \times 3 \f$ matrix.
+/*!\brief In-place inversion of the given lower dense \f$ 3 \times 3 \f$ matrix.
 // \ingroup dense_matrix
 //
-// \param dm The general dense matrix to be inverted.
+// \param dm The lower dense matrix to be inverted.
 // \return void
 //
-// This function inverts the given general dense \f$ 3 \times 3 \f$ matrix via the rule of Sarrus.
+// This function inverts the given lower dense \f$ 3 \times 3 \f$ matrix via the rule of Sarrus.
 // The matrix inversion fails if the given matrix is singular and not invertible. In this case a
 // \a std::invalid_argument exception is thrown.
 */
 template< typename MT  // Type of the dense matrix
         , bool SO >    // Storage order of the dense matrix
-inline typename EnableIf< IsLower<MT> >::Type
+inline typename EnableIf< And< IsLower<MT>, Not< IsUniLower<MT> > > >::Type
    invert3x3( DenseMatrix<MT,SO>& dm )
 {
    BLAZE_INTERNAL_ASSERT( (~dm).rows()    == 3UL, "Invalid number of rows detected"    );
@@ -470,6 +505,39 @@ inline typename EnableIf< IsLower<MT> >::Type
 
 //*************************************************************************************************
 /*! \cond BLAZE_INTERNAL */
+/*!\brief In-place inversion of the given unilower dense \f$ 3 \times 3 \f$ matrix.
+// \ingroup dense_matrix
+//
+// \param dm The unilower dense matrix to be inverted.
+// \return void
+//
+// This function inverts the given unilower dense \f$ 3 \times 3 \f$ matrix via the rule of
+// Sarrus. The matrix inversion fails if the given matrix is singular and not invertible. In
+// this case a \a std::invalid_argument exception is thrown.
+*/
+template< typename MT  // Type of the dense matrix
+        , bool SO >    // Storage order of the dense matrix
+inline typename EnableIf< IsUniLower<MT> >::Type
+   invert3x3( DenseMatrix<MT,SO>& dm )
+{
+   BLAZE_INTERNAL_ASSERT( (~dm).rows()    == 3UL, "Invalid number of rows detected"    );
+   BLAZE_INTERNAL_ASSERT( (~dm).columns() == 3UL, "Invalid number of columns detected" );
+
+   typedef typename MT::ElementType  ET;
+
+   const StaticMatrix<ET,3UL,3UL,SO> A( ~dm );
+   typename DerestrictTrait<MT>::Type B( derestrict( ~dm ) );
+
+   B(1,0) = - A(1,0);
+   B(2,0) =   A(1,0)*A(2,1) - A(2,0);
+   B(2,1) = - A(2,1);
+}
+/*! \endcond */
+//*************************************************************************************************
+
+
+//*************************************************************************************************
+/*! \cond BLAZE_INTERNAL */
 /*!\brief In-place inversion of the given general dense \f$ 4 \times 4 \f$ matrix.
 // \ingroup dense_matrix
 //
@@ -491,6 +559,7 @@ inline typename EnableIf< Not< IsLower<MT> > >::Type
    typedef typename MT::ElementType  ET;
 
    const StaticMatrix<ET,4UL,4UL,SO> A( ~dm );
+   typename DerestrictTrait<MT>::Type B( derestrict( ~dm ) );
 
    ET tmp1( A(2,2)*A(3,3) - A(2,3)*A(3,2) );
    ET tmp2( A(2,1)*A(3,3) - A(2,3)*A(3,1) );
@@ -499,14 +568,14 @@ inline typename EnableIf< Not< IsLower<MT> > >::Type
    ET tmp5( A(2,0)*A(3,2) - A(2,2)*A(3,0) );
    ET tmp6( A(2,0)*A(3,1) - A(2,1)*A(3,0) );
 
-   (~dm)(0,0) = A(1,1)*tmp1 - A(1,2)*tmp2 + A(1,3)*tmp3;
-   (~dm)(1,0) = A(1,2)*tmp4 - A(1,0)*tmp1 - A(1,3)*tmp5;
-   (~dm)(2,0) = A(1,0)*tmp2 - A(1,1)*tmp4 + A(1,3)*tmp6;
-   (~dm)(3,0) = A(1,1)*tmp5 - A(1,0)*tmp3 - A(1,2)*tmp6;
-   (~dm)(0,1) = A(0,2)*tmp2 - A(0,1)*tmp1 - A(0,3)*tmp3;
-   (~dm)(1,1) = A(0,0)*tmp1 - A(0,2)*tmp4 + A(0,3)*tmp5;
-   (~dm)(2,1) = A(0,1)*tmp4 - A(0,0)*tmp2 - A(0,3)*tmp6;
-   (~dm)(3,1) = A(0,0)*tmp3 - A(0,1)*tmp5 + A(0,2)*tmp6;
+   B(0,0) = A(1,1)*tmp1 - A(1,2)*tmp2 + A(1,3)*tmp3;
+   B(1,0) = A(1,2)*tmp4 - A(1,0)*tmp1 - A(1,3)*tmp5;
+   B(2,0) = A(1,0)*tmp2 - A(1,1)*tmp4 + A(1,3)*tmp6;
+   B(3,0) = A(1,1)*tmp5 - A(1,0)*tmp3 - A(1,2)*tmp6;
+   B(0,1) = A(0,2)*tmp2 - A(0,1)*tmp1 - A(0,3)*tmp3;
+   B(1,1) = A(0,0)*tmp1 - A(0,2)*tmp4 + A(0,3)*tmp5;
+   B(2,1) = A(0,1)*tmp4 - A(0,0)*tmp2 - A(0,3)*tmp6;
+   B(3,1) = A(0,0)*tmp3 - A(0,1)*tmp5 + A(0,2)*tmp6;
 
    tmp1 = A(0,2)*A(1,3) - A(0,3)*A(1,2);
    tmp2 = A(0,1)*A(1,3) - A(0,3)*A(1,1);
@@ -515,22 +584,22 @@ inline typename EnableIf< Not< IsLower<MT> > >::Type
    tmp5 = A(0,0)*A(1,2) - A(0,2)*A(1,0);
    tmp6 = A(0,0)*A(1,1) - A(0,1)*A(1,0);
 
-   (~dm)(0,2) = A(3,1)*tmp1 - A(3,2)*tmp2 + A(3,3)*tmp3;
-   (~dm)(1,2) = A(3,2)*tmp4 - A(3,0)*tmp1 - A(3,3)*tmp5;
-   (~dm)(2,2) = A(3,0)*tmp2 - A(3,1)*tmp4 + A(3,3)*tmp6;
-   (~dm)(3,2) = A(3,1)*tmp5 - A(3,0)*tmp3 - A(3,2)*tmp6;
-   (~dm)(0,3) = A(2,2)*tmp2 - A(2,1)*tmp1 - A(2,3)*tmp3;
-   (~dm)(1,3) = A(2,0)*tmp1 - A(2,2)*tmp4 + A(2,3)*tmp5;
-   (~dm)(2,3) = A(2,1)*tmp4 - A(2,0)*tmp2 - A(2,3)*tmp6;
-   (~dm)(3,3) = A(2,0)*tmp3 - A(2,1)*tmp5 + A(2,2)*tmp6;
+   B(0,2) = A(3,1)*tmp1 - A(3,2)*tmp2 + A(3,3)*tmp3;
+   B(1,2) = A(3,2)*tmp4 - A(3,0)*tmp1 - A(3,3)*tmp5;
+   B(2,2) = A(3,0)*tmp2 - A(3,1)*tmp4 + A(3,3)*tmp6;
+   B(3,2) = A(3,1)*tmp5 - A(3,0)*tmp3 - A(3,2)*tmp6;
+   B(0,3) = A(2,2)*tmp2 - A(2,1)*tmp1 - A(2,3)*tmp3;
+   B(1,3) = A(2,0)*tmp1 - A(2,2)*tmp4 + A(2,3)*tmp5;
+   B(2,3) = A(2,1)*tmp4 - A(2,0)*tmp2 - A(2,3)*tmp6;
+   B(3,3) = A(2,0)*tmp3 - A(2,1)*tmp5 + A(2,2)*tmp6;
 
-   const ET det( A(0,0)*(~dm)(0,0) + A(0,1)*(~dm)(1,0) + A(0,2)*(~dm)(2,0) + A(0,3)*(~dm)(3,0) );
+   const ET det( A(0,0)*B(0,0) + A(0,1)*B(1,0) + A(0,2)*B(2,0) + A(0,3)*B(3,0) );
 
    if( isDefault( det ) ) {
       BLAZE_THROW_INVALID_ARGUMENT( "Inversion of singular matrix failed" );
    }
 
-   (~dm) /= det;
+   B /= det;
 }
 /*! \endcond */
 //*************************************************************************************************
@@ -550,7 +619,7 @@ inline typename EnableIf< Not< IsLower<MT> > >::Type
 */
 template< typename MT  // Type of the dense matrix
         , bool SO >    // Storage order of the dense matrix
-inline typename EnableIf< IsLower<MT> >::Type
+inline typename EnableIf< And< IsLower<MT>, Not< IsUniLower<MT> > > >::Type
    invert4x4( DenseMatrix<MT,SO>& dm )
 {
    BLAZE_INTERNAL_ASSERT( (~dm).rows()    == 4UL, "Invalid number of rows detected"    );
@@ -591,6 +660,44 @@ inline typename EnableIf< IsLower<MT> >::Type
 
 //*************************************************************************************************
 /*! \cond BLAZE_INTERNAL */
+/*!\brief In-place inversion of the given unilower dense \f$ 4 \times 4 \f$ matrix.
+// \ingroup dense_matrix
+//
+// \param dm The unilower dense matrix to be inverted.
+// \return void
+//
+// This function inverts the given unilower dense \f$ 4 \times 4 \f$ matrix via the rule of
+// Sarrus. The matrix inversion fails if the given matrix is singular and not invertible. In
+// this case a \a std::invalid_argument exception is thrown.
+*/
+template< typename MT  // Type of the dense matrix
+        , bool SO >    // Storage order of the dense matrix
+inline typename EnableIf< IsUniLower<MT> >::Type
+   invert4x4( DenseMatrix<MT,SO>& dm )
+{
+   BLAZE_INTERNAL_ASSERT( (~dm).rows()    == 4UL, "Invalid number of rows detected"    );
+   BLAZE_INTERNAL_ASSERT( (~dm).columns() == 4UL, "Invalid number of columns detected" );
+
+   typedef typename MT::ElementType  ET;
+
+   const StaticMatrix<ET,4UL,4UL,SO> A( ~dm );
+   typename DerestrictTrait<MT>::Type B( derestrict( ~dm ) );
+
+   const ET tmp( A(2,1)*A(3,2) - A(3,1) );
+
+   B(1,0) = - A(1,0);
+   B(2,0) =   A(1,0)*A(2,1) - A(1,1)*A(2,0)*A(3,3);
+   B(3,0) =   A(1,1)*( A(2,0)*A(3,2) - A(2,2)*A(3,0) ) - A(1,0)*tmp;
+   B(2,1) = - A(0,0)*A(2,1);
+   B(3,1) =   A(0,0)*tmp;
+   B(3,2) = - A(3,2);
+}
+/*! \endcond */
+//*************************************************************************************************
+
+
+//*************************************************************************************************
+/*! \cond BLAZE_INTERNAL */
 /*!\brief In-place inversion of the given general dense \f$ 5 \times 5 \f$ matrix.
 // \ingroup dense_matrix
 //
@@ -612,6 +719,7 @@ inline typename EnableIf< Not< IsLower<MT> > >::Type
    typedef typename MT::ElementType  ET;
 
    const StaticMatrix<ET,5UL,5UL,SO> A( ~dm );
+   typename DerestrictTrait<MT>::Type B( derestrict( ~dm ) );
 
    ET tmp1 ( A(3,3)*A(4,4) - A(3,4)*A(4,3) );
    ET tmp2 ( A(3,2)*A(4,4) - A(3,4)*A(4,2) );
@@ -644,19 +752,19 @@ inline typename EnableIf< Not< IsLower<MT> > >::Type
    ET tmp28( A(1,0)*tmp5 - A(1,1)*tmp8 + A(1,3)*tmp10 );
    ET tmp29( A(2,0)*tmp6 - A(2,1)*tmp9 + A(2,2)*tmp10 );
 
-   (~dm)(0,0) =   A(1,1)*tmp11 - A(1,2)*tmp12 + A(1,3)*tmp13 - A(1,4)*tmp14;
-   (~dm)(0,1) = - A(0,1)*tmp11 + A(0,2)*tmp12 - A(0,3)*tmp13 + A(0,4)*tmp14;
-   (~dm)(0,2) =   A(0,1)*tmp15 - A(0,2)*tmp16 + A(0,3)*tmp17 - A(0,4)*tmp18;
-   (~dm)(1,0) = - A(1,0)*tmp11 + A(1,2)*tmp19 - A(1,3)*tmp20 + A(1,4)*tmp21;
-   (~dm)(1,1) =   A(0,0)*tmp11 - A(0,2)*tmp19 + A(0,3)*tmp20 - A(0,4)*tmp21;
-   (~dm)(1,2) = - A(0,0)*tmp15 + A(0,2)*tmp22 - A(0,3)*tmp23 + A(0,4)*tmp24;
-   (~dm)(2,0) =   A(1,0)*tmp12 - A(1,1)*tmp19 + A(1,3)*tmp25 - A(1,4)*tmp26;
-   (~dm)(2,1) = - A(0,0)*tmp12 + A(0,1)*tmp19 - A(0,3)*tmp25 + A(0,4)*tmp26;
-   (~dm)(2,2) =   A(0,0)*tmp16 - A(0,1)*tmp22 + A(0,3)*tmp27 - A(0,4)*tmp28;
-   (~dm)(3,0) = - A(1,0)*tmp13 + A(1,1)*tmp20 - A(1,2)*tmp25 + A(1,4)*tmp29;
-   (~dm)(3,1) =   A(0,0)*tmp13 - A(0,1)*tmp20 + A(0,2)*tmp25 - A(0,4)*tmp29;
-   (~dm)(4,0) =   A(1,0)*tmp14 - A(1,1)*tmp21 + A(1,2)*tmp26 - A(1,3)*tmp29;
-   (~dm)(4,1) = - A(0,0)*tmp14 + A(0,1)*tmp21 - A(0,2)*tmp26 + A(0,3)*tmp29;
+   B(0,0) =   A(1,1)*tmp11 - A(1,2)*tmp12 + A(1,3)*tmp13 - A(1,4)*tmp14;
+   B(0,1) = - A(0,1)*tmp11 + A(0,2)*tmp12 - A(0,3)*tmp13 + A(0,4)*tmp14;
+   B(0,2) =   A(0,1)*tmp15 - A(0,2)*tmp16 + A(0,3)*tmp17 - A(0,4)*tmp18;
+   B(1,0) = - A(1,0)*tmp11 + A(1,2)*tmp19 - A(1,3)*tmp20 + A(1,4)*tmp21;
+   B(1,1) =   A(0,0)*tmp11 - A(0,2)*tmp19 + A(0,3)*tmp20 - A(0,4)*tmp21;
+   B(1,2) = - A(0,0)*tmp15 + A(0,2)*tmp22 - A(0,3)*tmp23 + A(0,4)*tmp24;
+   B(2,0) =   A(1,0)*tmp12 - A(1,1)*tmp19 + A(1,3)*tmp25 - A(1,4)*tmp26;
+   B(2,1) = - A(0,0)*tmp12 + A(0,1)*tmp19 - A(0,3)*tmp25 + A(0,4)*tmp26;
+   B(2,2) =   A(0,0)*tmp16 - A(0,1)*tmp22 + A(0,3)*tmp27 - A(0,4)*tmp28;
+   B(3,0) = - A(1,0)*tmp13 + A(1,1)*tmp20 - A(1,2)*tmp25 + A(1,4)*tmp29;
+   B(3,1) =   A(0,0)*tmp13 - A(0,1)*tmp20 + A(0,2)*tmp25 - A(0,4)*tmp29;
+   B(4,0) =   A(1,0)*tmp14 - A(1,1)*tmp21 + A(1,2)*tmp26 - A(1,3)*tmp29;
+   B(4,1) = - A(0,0)*tmp14 + A(0,1)*tmp21 - A(0,2)*tmp26 + A(0,3)*tmp29;
 
    tmp1  = A(0,2)*A(1,3) - A(0,3)*A(1,2);
    tmp2  = A(0,1)*A(1,3) - A(0,3)*A(1,1);
@@ -687,26 +795,26 @@ inline typename EnableIf< Not< IsLower<MT> > >::Type
    tmp26 = A(3,0)*tmp1 - A(3,2)*tmp4 + A(3,3)*tmp5;
    tmp27 = A(3,0)*tmp2 - A(3,1)*tmp4 + A(3,3)*tmp6;
 
-   (~dm)(0,3) =   A(4,1)*tmp11 - A(4,2)*tmp12 + A(4,3)*tmp13 - A(4,4)*tmp14;
-   (~dm)(0,4) = - A(3,1)*tmp11 + A(3,2)*tmp12 - A(3,3)*tmp13 + A(3,4)*tmp14;
-   (~dm)(1,3) = - A(4,0)*tmp11 + A(4,2)*tmp15 - A(4,3)*tmp16 + A(4,4)*tmp17;
-   (~dm)(1,4) =   A(3,0)*tmp11 - A(3,2)*tmp15 + A(3,3)*tmp16 - A(3,4)*tmp17;
-   (~dm)(2,3) =   A(4,0)*tmp12 - A(4,1)*tmp15 + A(4,3)*tmp18 - A(4,4)*tmp19;
-   (~dm)(2,4) = - A(3,0)*tmp12 + A(3,1)*tmp15 - A(3,3)*tmp18 + A(3,4)*tmp19;
-   (~dm)(3,2) =   A(4,0)*tmp20 - A(4,1)*tmp21 + A(4,2)*tmp22 - A(4,4)*tmp23;
-   (~dm)(3,3) = - A(4,0)*tmp13 + A(4,1)*tmp16 - A(4,2)*tmp18 + A(4,4)*tmp24;
-   (~dm)(3,4) =   A(3,0)*tmp13 - A(3,1)*tmp16 + A(3,2)*tmp18 - A(3,4)*tmp24;
-   (~dm)(4,2) = - A(4,0)*tmp25 + A(4,1)*tmp26 - A(4,2)*tmp27 + A(4,3)*tmp23;
-   (~dm)(4,3) =   A(4,0)*tmp14 - A(4,1)*tmp17 + A(4,2)*tmp19 - A(4,3)*tmp24;
-   (~dm)(4,4) = - A(3,0)*tmp14 + A(3,1)*tmp17 - A(3,2)*tmp19 + A(3,3)*tmp24;
+   B(0,3) =   A(4,1)*tmp11 - A(4,2)*tmp12 + A(4,3)*tmp13 - A(4,4)*tmp14;
+   B(0,4) = - A(3,1)*tmp11 + A(3,2)*tmp12 - A(3,3)*tmp13 + A(3,4)*tmp14;
+   B(1,3) = - A(4,0)*tmp11 + A(4,2)*tmp15 - A(4,3)*tmp16 + A(4,4)*tmp17;
+   B(1,4) =   A(3,0)*tmp11 - A(3,2)*tmp15 + A(3,3)*tmp16 - A(3,4)*tmp17;
+   B(2,3) =   A(4,0)*tmp12 - A(4,1)*tmp15 + A(4,3)*tmp18 - A(4,4)*tmp19;
+   B(2,4) = - A(3,0)*tmp12 + A(3,1)*tmp15 - A(3,3)*tmp18 + A(3,4)*tmp19;
+   B(3,2) =   A(4,0)*tmp20 - A(4,1)*tmp21 + A(4,2)*tmp22 - A(4,4)*tmp23;
+   B(3,3) = - A(4,0)*tmp13 + A(4,1)*tmp16 - A(4,2)*tmp18 + A(4,4)*tmp24;
+   B(3,4) =   A(3,0)*tmp13 - A(3,1)*tmp16 + A(3,2)*tmp18 - A(3,4)*tmp24;
+   B(4,2) = - A(4,0)*tmp25 + A(4,1)*tmp26 - A(4,2)*tmp27 + A(4,3)*tmp23;
+   B(4,3) =   A(4,0)*tmp14 - A(4,1)*tmp17 + A(4,2)*tmp19 - A(4,3)*tmp24;
+   B(4,4) = - A(3,0)*tmp14 + A(3,1)*tmp17 - A(3,2)*tmp19 + A(3,3)*tmp24;
 
-   const ET det( A(0,0)*(~dm)(0,0) + A(0,1)*(~dm)(1,0) + A(0,2)*(~dm)(2,0) + A(0,3)*(~dm)(3,0) + A(0,4)*(~dm)(4,0) );
+   const ET det( A(0,0)*B(0,0) + A(0,1)*B(1,0) + A(0,2)*B(2,0) + A(0,3)*B(3,0) + A(0,4)*B(4,0) );
 
    if( isDefault( det ) ) {
       BLAZE_THROW_INVALID_ARGUMENT( "Inversion of singular matrix failed" );
    }
 
-   (~dm) /= det;
+   B /= det;
 }
 /*! \endcond */
 //*************************************************************************************************
@@ -726,7 +834,7 @@ inline typename EnableIf< Not< IsLower<MT> > >::Type
 */
 template< typename MT  // Type of the dense matrix
         , bool SO >    // Storage order of the dense matrix
-inline typename EnableIf< IsLower<MT> >::Type
+inline typename EnableIf< And< IsLower<MT>, Not< IsUniLower<MT> > > >::Type
    invert5x5( DenseMatrix<MT,SO>& dm )
 {
    BLAZE_INTERNAL_ASSERT( (~dm).rows()    == 5UL, "Invalid number of rows detected"    );
@@ -771,7 +879,51 @@ inline typename EnableIf< IsLower<MT> >::Type
       BLAZE_THROW_INVALID_ARGUMENT( "Inversion of singular matrix failed" );
    }
 
-   (~dm) /= det;
+   B /= det;
+}
+/*! \endcond */
+//*************************************************************************************************
+
+
+//*************************************************************************************************
+/*! \cond BLAZE_INTERNAL */
+/*!\brief In-place inversion of the given unilower dense \f$ 5 \times 5 \f$ matrix.
+// \ingroup dense_matrix
+//
+// \param dm The unilower dense matrix to be inverted.
+// \return void
+//
+// This function inverts the given unilower dense \f$ 5 \times 5 \f$ matrix via the rule of
+// Sarrus. The matrix inversion fails if the given matrix is singular and not invertible. In
+// this case a \a std::invalid_argument exception is thrown.
+*/
+template< typename MT  // Type of the dense matrix
+        , bool SO >    // Storage order of the dense matrix
+inline typename EnableIf< IsUniLower<MT> >::Type
+   invert5x5( DenseMatrix<MT,SO>& dm )
+{
+   BLAZE_INTERNAL_ASSERT( (~dm).rows()    == 5UL, "Invalid number of rows detected"    );
+   BLAZE_INTERNAL_ASSERT( (~dm).columns() == 5UL, "Invalid number of columns detected" );
+
+   typedef typename MT::ElementType  ET;
+
+   const StaticMatrix<ET,5UL,5UL,SO> A( ~dm );
+   typename DerestrictTrait<MT>::Type B( derestrict( ~dm ) );
+
+   const ET tmp1( A(3,2)*A(4,3) - A(4,2) );
+   const ET tmp2( A(2,1)*A(3,2) - A(3,1) );
+   const ET tmp3( A(2,1)*tmp1 - A(3,1)*A(4,3) + A(4,1) );
+
+   B(1,0) = - A(1,0);
+   B(2,0) =   A(1,0)*A(2,1) - A(2,0);
+   B(3,0) = - A(1,0)*tmp2 + A(2,0)*A(3,2) - A(3,0);
+   B(4,0) =   A(1,0)*tmp3 - A(2,0)*tmp1 + A(3,0)*A(4,3) - A(4,0);
+   B(2,1) = - A(2,1);
+   B(3,1) =   tmp2;
+   B(4,1) = - tmp3;
+   B(3,2) = - A(3,2);
+   B(4,2) =   A(4,3)*A(3,2) - A(4,2);
+   B(4,3) = - A(4,3);
 }
 /*! \endcond */
 //*************************************************************************************************
@@ -800,6 +952,7 @@ inline typename EnableIf< Not< IsLower<MT> > >::Type
    typedef typename MT::ElementType  ET;
 
    const StaticMatrix<ET,6UL,6UL,SO> A( ~dm );
+   typename DerestrictTrait<MT>::Type B( derestrict( ~dm ) );
 
    ET tmp1 ( A(4,4)*A(5,5) - A(4,5)*A(5,4) );
    ET tmp2 ( A(4,3)*A(5,5) - A(4,5)*A(5,3) );
@@ -869,24 +1022,24 @@ inline typename EnableIf< Not< IsLower<MT> > >::Type
    ET tmp64( A(2,0)*tmp25 - A(2,1)*tmp31 + A(2,2)*tmp34 - A(2,3)*tmp35 );
    ET tmp65( A(1,0)*tmp25 - A(1,1)*tmp31 + A(1,2)*tmp34 - A(1,3)*tmp35 );
 
-   (~dm)(0,0) =   A(1,1)*tmp36 - A(1,2)*tmp37 + A(1,3)*tmp38 - A(1,4)*tmp39 + A(1,5)*tmp40;
-   (~dm)(0,1) = - A(0,1)*tmp36 + A(0,2)*tmp37 - A(0,3)*tmp38 + A(0,4)*tmp39 - A(0,5)*tmp40;
-   (~dm)(0,2) =   A(0,1)*tmp41 - A(0,2)*tmp42 + A(0,3)*tmp43 - A(0,4)*tmp44 + A(0,5)*tmp45;
-   (~dm)(1,0) = - A(1,0)*tmp36 + A(1,2)*tmp46 - A(1,3)*tmp47 + A(1,4)*tmp48 - A(1,5)*tmp49;
-   (~dm)(1,1) =   A(0,0)*tmp36 - A(0,2)*tmp46 + A(0,3)*tmp47 - A(0,4)*tmp48 + A(0,5)*tmp49;
-   (~dm)(1,2) = - A(0,0)*tmp41 + A(0,2)*tmp50 - A(0,3)*tmp51 + A(0,4)*tmp52 - A(0,5)*tmp53;
-   (~dm)(2,0) =   A(1,0)*tmp37 - A(1,1)*tmp46 + A(1,3)*tmp54 - A(1,4)*tmp55 + A(1,5)*tmp56;
-   (~dm)(2,1) = - A(0,0)*tmp37 + A(0,1)*tmp46 - A(0,3)*tmp54 + A(0,4)*tmp55 - A(0,5)*tmp56;
-   (~dm)(2,2) =   A(0,0)*tmp42 - A(0,1)*tmp50 + A(0,3)*tmp57 - A(0,4)*tmp58 + A(0,5)*tmp59;
-   (~dm)(3,0) = - A(1,0)*tmp38 + A(1,1)*tmp47 - A(1,2)*tmp54 + A(1,4)*tmp60 - A(1,5)*tmp61;
-   (~dm)(3,1) =   A(0,0)*tmp38 - A(0,1)*tmp47 + A(0,2)*tmp54 - A(0,4)*tmp60 + A(0,5)*tmp61;
-   (~dm)(3,2) = - A(0,0)*tmp43 + A(0,1)*tmp51 - A(0,2)*tmp57 + A(0,4)*tmp62 - A(0,5)*tmp63;
-   (~dm)(4,0) =   A(1,0)*tmp39 - A(1,1)*tmp48 + A(1,2)*tmp55 - A(1,3)*tmp60 + A(1,5)*tmp64;
-   (~dm)(4,1) = - A(0,0)*tmp39 + A(0,1)*tmp48 - A(0,2)*tmp55 + A(0,3)*tmp60 - A(0,5)*tmp64;
-   (~dm)(4,2) =   A(0,0)*tmp44 - A(0,1)*tmp52 + A(0,2)*tmp58 - A(0,3)*tmp62 + A(0,5)*tmp65;
-   (~dm)(5,0) = - A(1,0)*tmp40 + A(1,1)*tmp49 - A(1,2)*tmp56 + A(1,3)*tmp61 - A(1,4)*tmp64;
-   (~dm)(5,1) =   A(0,0)*tmp40 - A(0,1)*tmp49 + A(0,2)*tmp56 - A(0,3)*tmp61 + A(0,4)*tmp64;
-   (~dm)(5,2) = - A(0,0)*tmp45 + A(0,1)*tmp53 - A(0,2)*tmp59 + A(0,3)*tmp63 - A(0,4)*tmp65;
+   B(0,0) =   A(1,1)*tmp36 - A(1,2)*tmp37 + A(1,3)*tmp38 - A(1,4)*tmp39 + A(1,5)*tmp40;
+   B(0,1) = - A(0,1)*tmp36 + A(0,2)*tmp37 - A(0,3)*tmp38 + A(0,4)*tmp39 - A(0,5)*tmp40;
+   B(0,2) =   A(0,1)*tmp41 - A(0,2)*tmp42 + A(0,3)*tmp43 - A(0,4)*tmp44 + A(0,5)*tmp45;
+   B(1,0) = - A(1,0)*tmp36 + A(1,2)*tmp46 - A(1,3)*tmp47 + A(1,4)*tmp48 - A(1,5)*tmp49;
+   B(1,1) =   A(0,0)*tmp36 - A(0,2)*tmp46 + A(0,3)*tmp47 - A(0,4)*tmp48 + A(0,5)*tmp49;
+   B(1,2) = - A(0,0)*tmp41 + A(0,2)*tmp50 - A(0,3)*tmp51 + A(0,4)*tmp52 - A(0,5)*tmp53;
+   B(2,0) =   A(1,0)*tmp37 - A(1,1)*tmp46 + A(1,3)*tmp54 - A(1,4)*tmp55 + A(1,5)*tmp56;
+   B(2,1) = - A(0,0)*tmp37 + A(0,1)*tmp46 - A(0,3)*tmp54 + A(0,4)*tmp55 - A(0,5)*tmp56;
+   B(2,2) =   A(0,0)*tmp42 - A(0,1)*tmp50 + A(0,3)*tmp57 - A(0,4)*tmp58 + A(0,5)*tmp59;
+   B(3,0) = - A(1,0)*tmp38 + A(1,1)*tmp47 - A(1,2)*tmp54 + A(1,4)*tmp60 - A(1,5)*tmp61;
+   B(3,1) =   A(0,0)*tmp38 - A(0,1)*tmp47 + A(0,2)*tmp54 - A(0,4)*tmp60 + A(0,5)*tmp61;
+   B(3,2) = - A(0,0)*tmp43 + A(0,1)*tmp51 - A(0,2)*tmp57 + A(0,4)*tmp62 - A(0,5)*tmp63;
+   B(4,0) =   A(1,0)*tmp39 - A(1,1)*tmp48 + A(1,2)*tmp55 - A(1,3)*tmp60 + A(1,5)*tmp64;
+   B(4,1) = - A(0,0)*tmp39 + A(0,1)*tmp48 - A(0,2)*tmp55 + A(0,3)*tmp60 - A(0,5)*tmp64;
+   B(4,2) =   A(0,0)*tmp44 - A(0,1)*tmp52 + A(0,2)*tmp58 - A(0,3)*tmp62 + A(0,5)*tmp65;
+   B(5,0) = - A(1,0)*tmp40 + A(1,1)*tmp49 - A(1,2)*tmp56 + A(1,3)*tmp61 - A(1,4)*tmp64;
+   B(5,1) =   A(0,0)*tmp40 - A(0,1)*tmp49 + A(0,2)*tmp56 - A(0,3)*tmp61 + A(0,4)*tmp64;
+   B(5,2) = - A(0,0)*tmp45 + A(0,1)*tmp53 - A(0,2)*tmp59 + A(0,3)*tmp63 - A(0,4)*tmp65;
 
    tmp1  = A(0,3)*A(1,4) - A(0,4)*A(1,3);
    tmp2  = A(0,2)*A(1,4) - A(0,4)*A(1,2);
@@ -956,33 +1109,33 @@ inline typename EnableIf< Not< IsLower<MT> > >::Type
    tmp64 = A(4,0)*tmp25 - A(4,1)*tmp31 + A(4,2)*tmp34 - A(4,3)*tmp35;
    tmp65 = A(3,0)*tmp25 - A(3,1)*tmp31 + A(3,2)*tmp34 - A(3,3)*tmp35;
 
-   (~dm)(0,3) =   A(5,1)*tmp36 - A(5,2)*tmp37 + A(5,3)*tmp38 - A(5,4)*tmp39 + A(5,5)*tmp40;
-   (~dm)(0,4) = - A(5,1)*tmp41 + A(5,2)*tmp42 - A(5,3)*tmp43 + A(5,4)*tmp44 - A(5,5)*tmp45;
-   (~dm)(0,5) =   A(4,1)*tmp41 - A(4,2)*tmp42 + A(4,3)*tmp43 - A(4,4)*tmp44 + A(4,5)*tmp45;
-   (~dm)(1,3) = - A(5,0)*tmp36 + A(5,2)*tmp46 - A(5,3)*tmp47 + A(5,4)*tmp48 - A(5,5)*tmp49;
-   (~dm)(1,4) =   A(5,0)*tmp41 - A(5,2)*tmp50 + A(5,3)*tmp51 - A(5,4)*tmp52 + A(5,5)*tmp53;
-   (~dm)(1,5) = - A(4,0)*tmp41 + A(4,2)*tmp50 - A(4,3)*tmp51 + A(4,4)*tmp52 - A(4,5)*tmp53;
-   (~dm)(2,3) =   A(5,0)*tmp37 - A(5,1)*tmp46 + A(5,3)*tmp54 - A(5,4)*tmp55 + A(5,5)*tmp56;
-   (~dm)(2,4) = - A(5,0)*tmp42 + A(5,1)*tmp50 - A(5,3)*tmp57 + A(5,4)*tmp58 - A(5,5)*tmp59;
-   (~dm)(2,5) =   A(4,0)*tmp42 - A(4,1)*tmp50 + A(4,3)*tmp57 - A(4,4)*tmp58 + A(4,5)*tmp59;
-   (~dm)(3,3) = - A(5,0)*tmp38 + A(5,1)*tmp47 - A(5,2)*tmp54 + A(5,4)*tmp60 - A(5,5)*tmp61;
-   (~dm)(3,4) =   A(5,0)*tmp43 - A(5,1)*tmp51 + A(5,2)*tmp57 - A(5,4)*tmp62 + A(5,5)*tmp63;
-   (~dm)(3,5) = - A(4,0)*tmp43 + A(4,1)*tmp51 - A(4,2)*tmp57 + A(4,4)*tmp62 - A(4,5)*tmp63;
-   (~dm)(4,3) =   A(5,0)*tmp39 - A(5,1)*tmp48 + A(5,2)*tmp55 - A(5,3)*tmp60 + A(5,5)*tmp64;
-   (~dm)(4,4) = - A(5,0)*tmp44 + A(5,1)*tmp52 - A(5,2)*tmp58 + A(5,3)*tmp62 - A(5,5)*tmp65;
-   (~dm)(4,5) =   A(4,0)*tmp44 - A(4,1)*tmp52 + A(4,2)*tmp58 - A(4,3)*tmp62 + A(4,5)*tmp65;
-   (~dm)(5,3) = - A(5,0)*tmp40 + A(5,1)*tmp49 - A(5,2)*tmp56 + A(5,3)*tmp61 - A(5,4)*tmp64;
-   (~dm)(5,4) =   A(5,0)*tmp45 - A(5,1)*tmp53 + A(5,2)*tmp59 - A(5,3)*tmp63 + A(5,4)*tmp65;
-   (~dm)(5,5) = - A(4,0)*tmp45 + A(4,1)*tmp53 - A(4,2)*tmp59 + A(4,3)*tmp63 - A(4,4)*tmp65;
+   B(0,3) =   A(5,1)*tmp36 - A(5,2)*tmp37 + A(5,3)*tmp38 - A(5,4)*tmp39 + A(5,5)*tmp40;
+   B(0,4) = - A(5,1)*tmp41 + A(5,2)*tmp42 - A(5,3)*tmp43 + A(5,4)*tmp44 - A(5,5)*tmp45;
+   B(0,5) =   A(4,1)*tmp41 - A(4,2)*tmp42 + A(4,3)*tmp43 - A(4,4)*tmp44 + A(4,5)*tmp45;
+   B(1,3) = - A(5,0)*tmp36 + A(5,2)*tmp46 - A(5,3)*tmp47 + A(5,4)*tmp48 - A(5,5)*tmp49;
+   B(1,4) =   A(5,0)*tmp41 - A(5,2)*tmp50 + A(5,3)*tmp51 - A(5,4)*tmp52 + A(5,5)*tmp53;
+   B(1,5) = - A(4,0)*tmp41 + A(4,2)*tmp50 - A(4,3)*tmp51 + A(4,4)*tmp52 - A(4,5)*tmp53;
+   B(2,3) =   A(5,0)*tmp37 - A(5,1)*tmp46 + A(5,3)*tmp54 - A(5,4)*tmp55 + A(5,5)*tmp56;
+   B(2,4) = - A(5,0)*tmp42 + A(5,1)*tmp50 - A(5,3)*tmp57 + A(5,4)*tmp58 - A(5,5)*tmp59;
+   B(2,5) =   A(4,0)*tmp42 - A(4,1)*tmp50 + A(4,3)*tmp57 - A(4,4)*tmp58 + A(4,5)*tmp59;
+   B(3,3) = - A(5,0)*tmp38 + A(5,1)*tmp47 - A(5,2)*tmp54 + A(5,4)*tmp60 - A(5,5)*tmp61;
+   B(3,4) =   A(5,0)*tmp43 - A(5,1)*tmp51 + A(5,2)*tmp57 - A(5,4)*tmp62 + A(5,5)*tmp63;
+   B(3,5) = - A(4,0)*tmp43 + A(4,1)*tmp51 - A(4,2)*tmp57 + A(4,4)*tmp62 - A(4,5)*tmp63;
+   B(4,3) =   A(5,0)*tmp39 - A(5,1)*tmp48 + A(5,2)*tmp55 - A(5,3)*tmp60 + A(5,5)*tmp64;
+   B(4,4) = - A(5,0)*tmp44 + A(5,1)*tmp52 - A(5,2)*tmp58 + A(5,3)*tmp62 - A(5,5)*tmp65;
+   B(4,5) =   A(4,0)*tmp44 - A(4,1)*tmp52 + A(4,2)*tmp58 - A(4,3)*tmp62 + A(4,5)*tmp65;
+   B(5,3) = - A(5,0)*tmp40 + A(5,1)*tmp49 - A(5,2)*tmp56 + A(5,3)*tmp61 - A(5,4)*tmp64;
+   B(5,4) =   A(5,0)*tmp45 - A(5,1)*tmp53 + A(5,2)*tmp59 - A(5,3)*tmp63 + A(5,4)*tmp65;
+   B(5,5) = - A(4,0)*tmp45 + A(4,1)*tmp53 - A(4,2)*tmp59 + A(4,3)*tmp63 - A(4,4)*tmp65;
 
-   const ET det( A(0,0)*(~dm)(0,0) + A(0,1)*(~dm)(1,0) + A(0,2)*(~dm)(2,0) +
-                 A(0,3)*(~dm)(3,0) + A(0,4)*(~dm)(4,0) + A(0,5)*(~dm)(5,0) );
+   const ET det( A(0,0)*B(0,0) + A(0,1)*B(1,0) + A(0,2)*B(2,0) +
+                 A(0,3)*B(3,0) + A(0,4)*B(4,0) + A(0,5)*B(5,0) );
 
    if( isDefault( det ) ) {
       BLAZE_THROW_INVALID_ARGUMENT( "Inversion of singular matrix failed" );
    }
 
-   (~dm) /= det;
+   B /= det;
 }
 /*! \endcond */
 //*************************************************************************************************
@@ -1002,7 +1155,7 @@ inline typename EnableIf< Not< IsLower<MT> > >::Type
 */
 template< typename MT  // Type of the dense matrix
         , bool SO >    // Storage order of the dense matrix
-inline typename EnableIf< IsLower<MT> >::Type
+inline typename EnableIf< And< IsLower<MT>, Not< IsUniLower<MT> > > >::Type
    invert6x6( DenseMatrix<MT,SO>& dm )
 {
    BLAZE_INTERNAL_ASSERT( (~dm).rows()    == 6UL, "Invalid number of rows detected"    );
@@ -1062,7 +1215,59 @@ inline typename EnableIf< IsLower<MT> >::Type
       BLAZE_THROW_INVALID_ARGUMENT( "Inversion of singular matrix failed" );
    }
 
-   (~dm) /= det;
+   B /= det;
+}
+/*! \endcond */
+//*************************************************************************************************
+
+
+//*************************************************************************************************
+/*! \cond BLAZE_INTERNAL */
+/*!\brief In-place inversion of the given unilower dense \f$ 6 \times 6 \f$ matrix.
+// \ingroup dense_matrix
+//
+// \param dm The unilower dense matrix to be inverted.
+// \return void
+//
+// This function inverts the given unilower dense \f$ 6 \times 6 \f$ matrix via the rule of
+// Sarrus. The matrix inversion fails if the given matrix is singular and not invertible. In
+// this case a \a std::invalid_argument exception is thrown.
+*/
+template< typename MT  // Type of the dense matrix
+        , bool SO >    // Storage order of the dense matrix
+inline typename EnableIf< IsUniLower<MT> >::Type
+   invert6x6( DenseMatrix<MT,SO>& dm )
+{
+   BLAZE_INTERNAL_ASSERT( (~dm).rows()    == 6UL, "Invalid number of rows detected"    );
+   BLAZE_INTERNAL_ASSERT( (~dm).columns() == 6UL, "Invalid number of columns detected" );
+
+   typedef typename MT::ElementType  ET;
+
+   const StaticMatrix<ET,6UL,6UL,SO> A( ~dm );
+   typename DerestrictTrait<MT>::Type B( derestrict( ~dm ) );
+
+   const ET tmp1( A(4,3)*A(5,4) - A(5,3) );
+   const ET tmp2( A(3,2)*A(4,3) - A(4,2) );
+   const ET tmp3( A(3,2)*tmp1 - A(4,2)*A(5,4) + A(5,2) );
+   const ET tmp4( A(2,1)*A(3,2) - A(3,1) );
+   const ET tmp5( A(2,1)*tmp2 - A(3,1)*A(4,3) + A(4,1) );
+   const ET tmp6( A(2,1)*tmp3 - A(3,1)*tmp1 + A(4,1)*A(5,4) - A(5,1) );
+
+   B(1,0) = - A(1,0);
+   B(2,0) =   A(1,0)*A(2,1) - A(2,0);
+   B(3,0) = - A(1,0)*tmp4 + A(2,0)*A(3,2) - A(3,0);
+   B(4,0) =   A(1,0)*tmp5 - A(2,0)*tmp2 + A(3,0)*A(4,3) - A(4,0);
+   B(5,0) = - A(1,0)*tmp6 + A(2,0)*tmp3 - A(3,0)*tmp1 + A(4,0)*A(5,4) - A(5,0);
+   B(2,1) = - A(2,1);
+   B(3,1) =   tmp4;
+   B(4,1) = - tmp5;
+   B(5,1) =   tmp6;
+   B(3,2) = - A(3,2);
+   B(4,2) =   tmp2;
+   B(5,2) = - tmp3;
+   B(4,3) =   A(5,3)*A(4,5) - A(4,3);
+   B(5,3) =   A(5,4)*A(4,3) - A(5,3);
+   B(5,4) =   A(5,3)*A(3,4) - A(5,4);
 }
 /*! \endcond */
 //*************************************************************************************************
