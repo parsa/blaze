@@ -55,6 +55,7 @@
 #include <blaze/math/typetraits/IsSquare.h>
 #include <blaze/math/typetraits/IsTriangular.h>
 #include <blaze/math/typetraits/IsUniLower.h>
+#include <blaze/math/typetraits/IsUniUpper.h>
 #include <blaze/math/typetraits/IsUniTriangular.h>
 #include <blaze/math/typetraits/IsUpper.h>
 #include <blaze/util/Assert.h>
@@ -424,7 +425,7 @@ inline typename EnableIf< IsUniLower<MT> >::Type
 */
 template< typename MT  // Type of the dense matrix
         , bool SO >    // Storage order of the dense matrix
-inline typename EnableIf< IsUpper<MT> >::Type
+inline typename EnableIf< And< IsUpper<MT>, Not< IsUniUpper<MT> > > >::Type
    invert2x2( DenseMatrix<MT,SO>& dm )
 {
    BLAZE_INTERNAL_ASSERT( (~dm).rows()    == 2UL, "Invalid number of rows detected"    );
@@ -446,6 +447,36 @@ inline typename EnableIf< IsUpper<MT> >::Type
    A(0,0) =  A(1,1) * idet;
    A(0,1) = -A(0,1) * idet;
    A(1,1) =  a11;
+}
+/*! \endcond */
+//*************************************************************************************************
+
+
+//*************************************************************************************************
+/*! \cond BLAZE_INTERNAL */
+/*!\brief In-place inversion of the given uniupper dense \f$ 2 \times 2 \f$ matrix.
+// \ingroup dense_matrix
+//
+// \param dm The uniupper dense matrix to be inverted.
+// \return void
+//
+// This function inverts the given uniupper dense \f$ 2 \times 2 \f$ matrix via the rule of
+// Sarrus. The matrix inversion fails if the given matrix is singular and not invertible. In
+// this case a \a std::invalid_argument exception is thrown.
+*/
+template< typename MT  // Type of the dense matrix
+        , bool SO >    // Storage order of the dense matrix
+inline typename EnableIf< IsUniUpper<MT> >::Type
+   invert2x2( DenseMatrix<MT,SO>& dm )
+{
+   BLAZE_INTERNAL_ASSERT( (~dm).rows()    == 2UL, "Invalid number of rows detected"    );
+   BLAZE_INTERNAL_ASSERT( (~dm).columns() == 2UL, "Invalid number of columns detected" );
+
+   typedef typename MT::ElementType  ET;
+
+   typename DerestrictTrait<MT>::Type A( derestrict( ~dm ) );
+
+   A(0,1) = -A(0,1);
 }
 /*! \endcond */
 //*************************************************************************************************
@@ -591,7 +622,7 @@ inline typename EnableIf< IsUniLower<MT> >::Type
 */
 template< typename MT  // Type of the dense matrix
         , bool SO >    // Storage order of the dense matrix
-inline typename EnableIf< IsUpper<MT> >::Type
+inline typename EnableIf< And< IsUpper<MT>, Not< IsUniUpper<MT> > > >::Type
    invert3x3( DenseMatrix<MT,SO>& dm )
 {
    BLAZE_INTERNAL_ASSERT( (~dm).rows()    == 3UL, "Invalid number of rows detected"    );
@@ -617,6 +648,39 @@ inline typename EnableIf< IsUpper<MT> >::Type
    B(2,2) =   A(0,0)*A(1,1);
 
    B /= det;
+}
+/*! \endcond */
+//*************************************************************************************************
+
+
+//*************************************************************************************************
+/*! \cond BLAZE_INTERNAL */
+/*!\brief In-place inversion of the given uniupper dense \f$ 3 \times 3 \f$ matrix.
+// \ingroup dense_matrix
+//
+// \param dm The uniupper dense matrix to be inverted.
+// \return void
+//
+// This function inverts the given uniupper dense \f$ 3 \times 3 \f$ matrix via the rule of
+// Sarrus. The matrix inversion fails if the given matrix is singular and not invertible. In
+// this case a \a std::invalid_argument exception is thrown.
+*/
+template< typename MT  // Type of the dense matrix
+        , bool SO >    // Storage order of the dense matrix
+inline typename EnableIf< IsUniUpper<MT> >::Type
+   invert3x3( DenseMatrix<MT,SO>& dm )
+{
+   BLAZE_INTERNAL_ASSERT( (~dm).rows()    == 3UL, "Invalid number of rows detected"    );
+   BLAZE_INTERNAL_ASSERT( (~dm).columns() == 3UL, "Invalid number of columns detected" );
+
+   typedef typename MT::ElementType  ET;
+
+   const StaticMatrix<ET,3UL,3UL,SO> A( ~dm );
+   typename DerestrictTrait<MT>::Type B( derestrict( ~dm ) );
+
+   B(0,1) = - A(0,1);
+   B(0,2) =   A(0,1)*A(1,2) - A(0,2);
+   B(1,2) = - A(1,2);
 }
 /*! \endcond */
 //*************************************************************************************************
@@ -772,10 +836,10 @@ inline typename EnableIf< IsUniLower<MT> >::Type
    const ET tmp( A(2,1)*A(3,2) - A(3,1) );
 
    B(1,0) = - A(1,0);
-   B(2,0) =   A(1,0)*A(2,1) - A(1,1)*A(2,0)*A(3,3);
-   B(3,0) =   A(1,1)*( A(2,0)*A(3,2) - A(2,2)*A(3,0) ) - A(1,0)*tmp;
-   B(2,1) = - A(0,0)*A(2,1);
-   B(3,1) =   A(0,0)*tmp;
+   B(2,0) =   A(1,0)*A(2,1) - A(2,0);
+   B(3,0) =   A(2,0)*A(3,2) - A(3,0) - A(1,0)*tmp;
+   B(2,1) = - A(2,1);
+   B(3,1) =   tmp;
    B(3,2) = - A(3,2);
 }
 /*! \endcond */
@@ -796,7 +860,7 @@ inline typename EnableIf< IsUniLower<MT> >::Type
 */
 template< typename MT  // Type of the dense matrix
         , bool SO >    // Storage order of the dense matrix
-inline typename EnableIf< IsUpper<MT> >::Type
+inline typename EnableIf< And< IsUpper<MT>, Not< IsUniUpper<MT> > > >::Type
    invert4x4( DenseMatrix<MT,SO>& dm )
 {
    BLAZE_INTERNAL_ASSERT( (~dm).rows()    == 4UL, "Invalid number of rows detected"    );
@@ -830,6 +894,44 @@ inline typename EnableIf< IsUpper<MT> >::Type
    B(3,3) =   A(2,2)*tmp4;
 
    B /= det;
+}
+/*! \endcond */
+//*************************************************************************************************
+
+
+//*************************************************************************************************
+/*! \cond BLAZE_INTERNAL */
+/*!\brief In-place inversion of the given uniupper dense \f$ 4 \times 4 \f$ matrix.
+// \ingroup dense_matrix
+//
+// \param dm The uniupper dense matrix to be inverted.
+// \return void
+//
+// This function inverts the given uniupper dense \f$ 4 \times 4 \f$ matrix via the rule of Sarrus.
+// The matrix inversion fails if the given matrix is singular and not invertible. In this case a
+// \a std::invalid_argument exception is thrown.
+*/
+template< typename MT  // Type of the dense matrix
+        , bool SO >    // Storage order of the dense matrix
+inline typename EnableIf< IsUniUpper<MT> >::Type
+   invert4x4( DenseMatrix<MT,SO>& dm )
+{
+   BLAZE_INTERNAL_ASSERT( (~dm).rows()    == 4UL, "Invalid number of rows detected"    );
+   BLAZE_INTERNAL_ASSERT( (~dm).columns() == 4UL, "Invalid number of columns detected" );
+
+   typedef typename MT::ElementType  ET;
+
+   const StaticMatrix<ET,4UL,4UL,SO> A( ~dm );
+   typename DerestrictTrait<MT>::Type B( derestrict( ~dm ) );
+
+   ET tmp( A(0,1)*A(1,2) - A(0,2) );
+
+   B(0,1) = - A(0,1);
+   B(0,2) =   tmp;
+   B(1,2) = - A(1,2);
+   B(0,3) =   A(0,1)*A(1,3) - A(0,3) - A(2,3)*tmp;
+   B(1,3) =   A(2,3)*A(1,2) - A(1,3);
+   B(2,3) = - A(2,3);
 }
 /*! \endcond */
 //*************************************************************************************************
@@ -1082,7 +1184,7 @@ inline typename EnableIf< IsUniLower<MT> >::Type
 */
 template< typename MT  // Type of the dense matrix
         , bool SO >    // Storage order of the dense matrix
-inline typename EnableIf< IsUpper<MT> >::Type
+inline typename EnableIf< And< IsUpper<MT>, Not< IsUniUpper<MT> > > >::Type
    invert5x5( DenseMatrix<MT,SO>& dm )
 {
    BLAZE_INTERNAL_ASSERT( (~dm).rows()    == 5UL, "Invalid number of rows detected"    );
@@ -1129,6 +1231,52 @@ inline typename EnableIf< IsUpper<MT> >::Type
    }
 
    B /= det;
+}
+/*! \endcond */
+//*************************************************************************************************
+
+
+//*************************************************************************************************
+/*! \cond BLAZE_INTERNAL */
+/*!\brief In-place inversion of the given uniupper dense \f$ 5 \times 5 \f$ matrix.
+// \ingroup dense_matrix
+//
+// \param dm The uniupper dense matrix to be inverted.
+// \return void
+//
+// This function inverts the given uniupper dense \f$ 5 \times 5 \f$ matrix via the rule of
+// Sarrus. The matrix inversion fails if the given matrix is singular and not invertible. In
+// this case a \a std::invalid_argument exception is thrown.
+*/
+template< typename MT  // Type of the dense matrix
+        , bool SO >    // Storage order of the dense matrix
+inline typename EnableIf< IsUniUpper<MT> >::Type
+   invert5x5( DenseMatrix<MT,SO>& dm )
+{
+   BLAZE_INTERNAL_ASSERT( (~dm).rows()    == 5UL, "Invalid number of rows detected"    );
+   BLAZE_INTERNAL_ASSERT( (~dm).columns() == 5UL, "Invalid number of columns detected" );
+
+   typedef typename MT::ElementType  ET;
+
+   const StaticMatrix<ET,5UL,5UL,SO> A( ~dm );
+   typename DerestrictTrait<MT>::Type B( derestrict( ~dm ) );
+
+   const ET tmp2( A(0,1)*A(1,2) - A(0,2) );
+
+   const ET tmp8 ( A(2,3)*tmp2 - A(0,1)*A(1,3) + A(0,3) );
+   const ET tmp9 ( A(2,3)*A(1,2) - A(1,3) );
+   const ET tmp10( A(2,3) );
+
+   B(0,1) = - A(0,1);
+   B(0,2) =   A(0,1)*A(1,2) - A(0,2);
+   B(1,2) = - A(1,2);
+   B(0,3) = - tmp8;
+   B(1,3) =   tmp9;
+   B(2,3) = - A(2,3);
+   B(0,4) =   A(3,4)*tmp8 - A(2,4)*tmp2 + A(0,1)*A(1,4) - A(0,4);
+   B(1,4) =   A(2,4)*A(1,2) - A(1,4) - A(3,4)*tmp9;
+   B(2,4) =   A(3,4)*A(2,3) - A(2,4);
+   B(3,4) = - A(3,4);
 }
 /*! \endcond */
 //*************************************************************************************************
@@ -1490,7 +1638,7 @@ inline typename EnableIf< IsUniLower<MT> >::Type
 */
 template< typename MT  // Type of the dense matrix
         , bool SO >    // Storage order of the dense matrix
-inline typename EnableIf< IsUpper<MT> >::Type
+inline typename EnableIf< And< IsUpper<MT>, Not< IsUniUpper<MT> > > >::Type
    invert6x6( DenseMatrix<MT,SO>& dm )
 {
    BLAZE_INTERNAL_ASSERT( (~dm).rows()    == 6UL, "Invalid number of rows detected"    );
@@ -1549,6 +1697,58 @@ inline typename EnableIf< IsUpper<MT> >::Type
    }
 
    B /= det;
+}
+/*! \endcond */
+//*************************************************************************************************
+
+
+//*************************************************************************************************
+/*! \cond BLAZE_INTERNAL */
+/*!\brief In-place inversion of the given uniupper dense \f$ 6 \times 6 \f$ matrix.
+// \ingroup dense_matrix
+//
+// \param dm The uniupper dense matrix to be inverted.
+// \return void
+//
+// This function inverts the given uniupper dense \f$ 6 \times 6 \f$ matrix via the rule of
+// Sarrus. The matrix inversion fails if the given matrix is singular and not invertible. In
+// this case a \a std::invalid_argument exception is thrown.
+*/
+template< typename MT  // Type of the dense matrix
+        , bool SO >    // Storage order of the dense matrix
+inline typename EnableIf< IsUniUpper<MT> >::Type
+   invert6x6( DenseMatrix<MT,SO>& dm )
+{
+   BLAZE_INTERNAL_ASSERT( (~dm).rows()    == 6UL, "Invalid number of rows detected"    );
+   BLAZE_INTERNAL_ASSERT( (~dm).columns() == 6UL, "Invalid number of columns detected" );
+
+   typedef typename MT::ElementType  ET;
+
+   const StaticMatrix<ET,6UL,6UL,SO> A( ~dm );
+   typename DerestrictTrait<MT>::Type B( derestrict( ~dm ) );
+
+   const ET tmp1( A(0,1)*A(1,2) - A(0,2) );
+   const ET tmp2( A(2,3)*tmp1 - A(0,1)*A(1,3) + A(0,3) );
+   const ET tmp3( A(2,3)*A(1,2) - A(1,3) );
+   const ET tmp4( A(2,4)*tmp1 - A(0,1)*A(1,4) + A(0,4) - A(3,4)*tmp2 );
+   const ET tmp5( A(2,4)*A(1,2) - A(1,4) - A(3,4)*tmp3 );
+   const ET tmp6( A(2,4) - A(3,4)*A(2,3) );
+
+   B(0,1) = - A(0,1);
+   B(0,2) =   A(0,1)*A(1,2) - A(0,2);
+   B(1,2) = - A(1,2);
+   B(0,3) = - tmp2;
+   B(1,3) =   tmp3;
+   B(2,3) = - A(2,3);
+   B(0,4) = - tmp4;
+   B(1,4) =   tmp5;
+   B(2,4) = - tmp6;
+   B(3,4) = - A(3,4);
+   B(0,5) = - A(2,5)*tmp1 + A(0,1)*A(1,5) - A(0,5) + A(3,5)*tmp2 + A(4,5)*tmp4;
+   B(1,5) =   A(2,5)*A(1,2) - A(1,5) - A(3,5)*tmp3 - A(4,5)*tmp5;
+   B(2,5) = - A(2,5) + A(3,5)*A(2,3) + A(4,5)*tmp6;
+   B(3,5) = - A(3,5) + A(4,5)*A(3,4);
+   B(4,5) = - A(4,5);
 }
 /*! \endcond */
 //*************************************************************************************************
