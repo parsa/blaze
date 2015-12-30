@@ -338,11 +338,14 @@ inline void getri( DenseMatrix<MT,SO>& A, const int* ipiv )
       BLAZE_THROW_INVALID_ARGUMENT( "Invalid non-square matrix provided" );
    }
 
-   int n    ( boost::numeric_cast<int>( (~A).columns() ) );
-   int lda  ( boost::numeric_cast<int>( (~A).spacing() ) );
-   int lwork( n*lda );
-   int info ( 0 );
+   int n   ( boost::numeric_cast<int>( (~A).columns() ) );
+   int lda ( boost::numeric_cast<int>( (~A).spacing() ) );
+   int info( 0 );
 
+   if( n == 0 )
+      return;
+
+   int lwork( n*lda );
    const UniqueArray<ET> work( new ET[lwork] );
 
    getri( &n, (~A).data(), &lda, const_cast<int*>( ipiv ), work.get(), &lwork, &info );
@@ -587,13 +590,17 @@ inline void potri( DenseMatrix<MT,SO>& A, char uplo )
       BLAZE_THROW_INVALID_ARGUMENT( "Invalid uplo argument provided" );
    }
 
-   if( IsRowMajorMatrix<MT>::value ) {
-      ( uplo == 'L' )?( uplo = 'U' ):( uplo = 'L' );
-   }
-
    int n   ( boost::numeric_cast<int>( (~A).columns() ) );
    int lda ( boost::numeric_cast<int>( (~A).spacing() ) );
    int info( 0 );
+
+   if( n == 0 ) {
+      return;
+   }
+
+   if( IsRowMajorMatrix<MT>::value ) {
+      ( uplo == 'L' )?( uplo = 'U' ):( uplo = 'L' );
+   }
 
    potri( &uplo, &n, (~A).data(), &lda, &info );
 

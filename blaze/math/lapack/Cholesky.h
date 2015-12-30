@@ -330,13 +330,17 @@ inline void potrf( DenseMatrix<MT,SO>& A, char uplo )
       BLAZE_THROW_INVALID_ARGUMENT( "Invalid uplo argument provided" );
    }
 
-   if( IsRowMajorMatrix<MT>::value ) {
-      ( uplo == 'L' )?( uplo = 'U' ):( uplo = 'L' );
-   }
-
    int n   ( boost::numeric_cast<int>( (~A).rows()    ) );
    int lda ( boost::numeric_cast<int>( (~A).spacing() ) );
    int info( 0 );
+
+   if( n == 0 ) {
+      return;
+   }
+
+   if( IsRowMajorMatrix<MT>::value ) {
+      ( uplo == 'L' )?( uplo = 'U' ):( uplo = 'L' );
+   }
 
    potrf( &uplo, &n, (~A).data(), &lda, &info );
 

@@ -385,12 +385,16 @@ inline void geqrf( DenseMatrix<MT,SO>& A, typename MT::ElementType* tau )
 
    typedef typename MT::ElementType  ET;
 
-   int m    ( boost::numeric_cast<int>( (~A).rows()    ) );
-   int n    ( boost::numeric_cast<int>( (~A).columns() ) );
-   int lda  ( boost::numeric_cast<int>( (~A).spacing() ) );
-   int lwork( n*lda );
-   int info ( 0 );
+   int m   ( boost::numeric_cast<int>( (~A).rows()    ) );
+   int n   ( boost::numeric_cast<int>( (~A).columns() ) );
+   int lda ( boost::numeric_cast<int>( (~A).spacing() ) );
+   int info( 0 );
 
+   if( m == 0 || n == 0 ) {
+      return;
+   }
+
+   int lwork( n*lda );
    const UniqueArray<ET> work( new ET[lwork] );
 
    geqrf( &m, &n, (~A).data(), &lda, tau, work.get(), &lwork, &info );

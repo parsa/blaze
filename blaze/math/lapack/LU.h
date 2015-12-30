@@ -334,6 +334,10 @@ inline void getrf( DenseMatrix<MT,SO>& A, int* ipiv )
    int lda ( boost::numeric_cast<int>( (~A).spacing() ) );
    int info( 0 );
 
+   if( m == 0 || n == 0 ) {
+      return;
+   }
+
    getrf( &m, &n, (~A).data(), &lda, ipiv, &info );
 
    BLAZE_INTERNAL_ASSERT( info >= 0, "Invalid argument for LU decomposition" );
