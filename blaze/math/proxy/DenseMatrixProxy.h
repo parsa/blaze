@@ -45,9 +45,13 @@
 #include <blaze/math/shims/Clear.h>
 #include <blaze/math/shims/Reset.h>
 #include <blaze/math/typetraits/IsColumnMajorMatrix.h>
+#include <blaze/math/typetraits/IsResizable.h>
+#include <blaze/math/typetraits/IsSquare.h>
 #include <blaze/system/Inline.h>
+#include <blaze/util/EnableIf.h>
 #include <blaze/util/Exception.h>
 #include <blaze/util/Types.h>
+#include <blaze/util/Unused.h>
 
 
 namespace blaze {
@@ -668,6 +672,9 @@ template< typename PT, typename MT >
 BLAZE_ALWAYS_INLINE size_t nonZeros( const DenseMatrixProxy<PT,MT>& proxy, size_t i );
 
 template< typename PT, typename MT >
+BLAZE_ALWAYS_INLINE void resize( const DenseMatrixProxy<PT,MT>& proxy, size_t m, size_t n, bool preserve=true );
+
+template< typename PT, typename MT >
 BLAZE_ALWAYS_INLINE void reset( const DenseMatrixProxy<PT,MT>& proxy );
 
 template< typename PT, typename MT >
@@ -877,6 +884,125 @@ template< typename PT    // Type of the proxy
 BLAZE_ALWAYS_INLINE size_t nonZeros( const DenseMatrixProxy<PT,MT>& proxy, size_t i )
 {
    return proxy.nonZeros(i);
+}
+//*************************************************************************************************
+
+
+//*************************************************************************************************
+/*! \cond BLAZE_INTERNAL */
+/*!\brief Backend implementation of the \c resize() function for non-resizable matrices.
+// \ingroup math
+//
+// \param proxy The given access proxy.
+// \param m The new number of rows of the matrix.
+// \param n The new number of columns of the matrix.
+// \param preserve \a true if the old values of the matrix should be preserved, \a false if not.
+// \return void
+// \exception std::invalid_argument Matrix cannot be resized.
+//
+// This function tries to change the number of rows and columns of a non-resizable matrix. Since
+// the matrix cannot be resized, in case the specified number of rows and columns is not identical
+// to the current number of rows and columns of the matrix, a \a std::invalid_argument exception
+// is thrown.
+*/
+template< typename PT    // Type of the proxy
+        , typename MT >  // Type of the dense matrix
+BLAZE_ALWAYS_INLINE typename DisableIf< IsResizable<MT> >::Type
+   resize_backend( const DenseMatrixProxy<PT,MT>& proxy, size_t m, size_t n, bool preserve )
+{
+   UNUSED_PARAMETER( preserve );
+
+   if( proxy.rows() != m || proxy.columns() != n ) {
+      BLAZE_THROW_INVALID_ARGUMENT( "Matrix cannot be resized" );
+   }
+}
+/*! \endcond */
+//*************************************************************************************************
+
+
+//*************************************************************************************************
+/*! \cond BLAZE_INTERNAL */
+/*!\brief Backend implementation of the \c resize() function for resizable, non-square matrices.
+// \ingroup math
+//
+// \param proxy The given access proxy.
+// \param m The new number of rows of the matrix.
+// \param n The new number of columns of the matrix.
+// \param preserve \a true if the old values of the matrix should be preserved, \a false if not.
+// \return void
+//
+// This function changes the number of rows and columns of the given resizable, non-square matrix.
+*/
+template< typename PT    // Type of the proxy
+        , typename MT >  // Type of the dense matrix
+BLAZE_ALWAYS_INLINE typename EnableIf< And< IsResizable<MT>, Not< IsSquare<MT> > > >::Type
+   resize_backend( const DenseMatrixProxy<PT,MT>& proxy, size_t m, size_t n, bool preserve )
+{
+   proxy.resize( m, n, preserve );
+}
+/*! \endcond */
+//*************************************************************************************************
+
+
+//*************************************************************************************************
+/*! \cond BLAZE_INTERNAL */
+/*!\brief Backend implementation of the \c resize() function for resizable, square matrices.
+// \ingroup math
+//
+// \param proxy The given access proxy.
+// \param m The new number of rows of the matrix.
+// \param n The new number of columns of the matrix.
+// \param preserve \a true if the old values of the matrix should be preserved, \a false if not.
+// \return void
+// \exception std::invalid_argument Invalid resize arguments for square matrix.
+//
+// This function changes the number of rows and columns of the given resizable, square matrix.
+*/
+template< typename PT    // Type of the proxy
+        , typename MT >  // Type of the dense matrix
+BLAZE_ALWAYS_INLINE typename EnableIf< And< IsResizable<MT>, IsSquare<MT> > >::Type
+   resize_backend( const DenseMatrixProxy<PT,MT>& proxy, size_t m, size_t n, bool preserve )
+{
+   if( m != n ) {
+      BLAZE_THROW_INVALID_ARGUMENT( "Invalid resize arguments for square matrix" );
+   }
+
+   proxy.resize( m, preserve );
+}
+/*! \endcond */
+//*************************************************************************************************
+
+
+//*************************************************************************************************
+/*!\brief Changing the size of the represented matrix.
+// \ingroup math
+//
+// \param proxy The given access proxy.
+// \param m The new number of rows of the matrix.
+// \param n The new number of columns of the matrix.
+// \param preserve \a true if the old values of the matrix should be preserved, \a false if not.
+// \return void
+// \exception std::invalid_argument Invalid resize arguments for square matrix.
+// \exception std::invalid_argument Matrix cannot be resized.
+//
+// This function resizes the represented matrix to the specified dimensions. In contrast to
+// the \c resize() member function, which is only available on resizable matrix types, this
+// function can be used on both resizable and non-resizable matrices. In case the given matrix
+// of type \a MT is resizable (i.e. provides a \c resize function) the type-specific \c resize()
+// member function is called. Depending on the type \a MT, this may result in the allocation of
+// new dynamic memory and the invalidation of existing views (submatrices, rows, columns, ...).
+// Note that in case the matrix is a compile time square matrix (as for instance the
+// blaze::SymmetricMatrix adaptor, ...) the specified number of rows must be identical to the
+// number of columns. Otherwise a \a std::invalid_argument exception is thrown. If the matrix
+// type \a MT is non-resizable (i.e. does not provide a \c resize() function) and if the specified
+// number of rows and columns is not identical to the current number of rows and columns of the
+// matrix, a \a std::invalid_argument exception is thrown.
+*/
+template< typename PT    // Type of the proxy
+        , typename MT >  // Type of the dense matrix
+BLAZE_ALWAYS_INLINE void resize( const DenseMatrixProxy<PT,MT>& proxy, size_t m, size_t n, bool preserve )
+{
+   resize_backend( proxy, m, n, preserve );
 }
 //*************************************************************************************************
 
