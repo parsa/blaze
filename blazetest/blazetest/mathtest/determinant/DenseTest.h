@@ -43,15 +43,8 @@
 #include <sstream>
 #include <stdexcept>
 #include <string>
-#include <blaze/math/DenseSubmatrix.h>
-#include <blaze/math/DiagonalMatrix.h>
-#include <blaze/math/HermitianMatrix.h>
-#include <blaze/math/LowerMatrix.h>
+#include <typeinfo>
 #include <blaze/math/shims/Equal.h>
-#include <blaze/math/SymmetricMatrix.h>
-#include <blaze/math/UniLowerMatrix.h>
-#include <blaze/math/UniUpperMatrix.h>
-#include <blaze/math/UpperMatrix.h>
 #include <blazetest/system/LAPACK.h>
 
 
@@ -158,6 +151,10 @@ void DenseTest::testRandom2x2()
       oss << " Test: " << test_ << "\n"
           << " Error: Invalid determinant evaluation\n"
           << " Details:\n"
+          << "   Matrix type:\n"
+          << "     " << typeid( Type ).name() << "\n"
+          << "   Element type:\n"
+          << "     " << typeid( ET ).name() << "\n"
           << "   Result det   (): " << res1 << "\n"
           << "   Result det2x2(): " << res2 << "\n"
           << "   Result detNxN(): " << res3 << "\n";
@@ -196,6 +193,10 @@ void DenseTest::testRandom3x3()
       oss << " Test: " << test_ << "\n"
           << " Error: Invalid determinant evaluation\n"
           << " Details:\n"
+          << "   Matrix type:\n"
+          << "     " << typeid( Type ).name() << "\n"
+          << "   Element type:\n"
+          << "     " << typeid( ET ).name() << "\n"
           << "   Result det   (): " << res1 << "\n"
           << "   Result det3x3(): " << res2 << "\n"
           << "   Result detNxN(): " << res3 << "\n";
@@ -234,6 +235,10 @@ void DenseTest::testRandom4x4()
       oss << " Test: " << test_ << "\n"
           << " Error: Invalid determinant evaluation\n"
           << " Details:\n"
+          << "   Matrix type:\n"
+          << "     " << typeid( Type ).name() << "\n"
+          << "   Element type:\n"
+          << "     " << typeid( ET ).name() << "\n"
           << "   Result det   (): " << res1 << "\n"
           << "   Result det4x4(): " << res2 << "\n"
           << "   Result detNxN(): " << res3 << "\n";
@@ -272,6 +277,10 @@ void DenseTest::testRandom5x5()
       oss << " Test: " << test_ << "\n"
           << " Error: Invalid determinant evaluation\n"
           << " Details:\n"
+          << "   Matrix type:\n"
+          << "     " << typeid( Type ).name() << "\n"
+          << "   Element type:\n"
+          << "     " << typeid( ET ).name() << "\n"
           << "   Result det   (): " << res1 << "\n"
           << "   Result det5x5(): " << res2 << "\n"
           << "   Result detNxN(): " << res3 << "\n";
@@ -310,6 +319,10 @@ void DenseTest::testRandom6x6()
       oss << " Test: " << test_ << "\n"
           << " Error: Invalid determinant evaluation\n"
           << " Details:\n"
+          << "   Matrix type:\n"
+          << "     " << typeid( Type ).name() << "\n"
+          << "   Element type:\n"
+          << "     " << typeid( ET ).name() << "\n"
           << "   Result det   (): " << res1 << "\n"
           << "   Result det6x6(): " << res2 << "\n"
           << "   Result detNxN(): " << res3 << "\n";

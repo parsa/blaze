@@ -42,9 +42,7 @@
 #include <blaze/math/DiagonalMatrix.h>
 #include <blaze/math/DynamicMatrix.h>
 #include <blaze/math/HermitianMatrix.h>
-#include <blaze/math/HybridMatrix.h>
 #include <blaze/math/LowerMatrix.h>
-#include <blaze/math/StaticMatrix.h>
 #include <blaze/math/SymmetricMatrix.h>
 #include <blaze/math/UniLowerMatrix.h>
 #include <blaze/math/UniUpperMatrix.h>
@@ -79,6 +77,7 @@ DenseTest::DenseTest()
    using blaze::UniLowerMatrix;
    using blaze::UpperMatrix;
    using blaze::UniUpperMatrix;
+   using blaze::DiagonalMatrix;
    using blaze::rowMajor;
    using blaze::columnMajor;
 
@@ -113,6 +112,7 @@ DenseTest::DenseTest()
    testRandom2x2< UniLowerMatrix< DynamicMatrix<double,rowMajor>  > >();
    testRandom2x2< UpperMatrix< DynamicMatrix<double,rowMajor>     > >();
    testRandom2x2< UniUpperMatrix< DynamicMatrix<double,rowMajor>  > >();
+   testRandom2x2< DiagonalMatrix< DynamicMatrix<double,rowMajor>  > >();
 
    testRandom2x2< SymmetricMatrix< DynamicMatrix<double,columnMajor> > >();
    testRandom2x2< HermitianMatrix< DynamicMatrix<double,columnMajor> > >();
@@ -120,6 +120,7 @@ DenseTest::DenseTest()
    testRandom2x2< UniLowerMatrix< DynamicMatrix<double,columnMajor>  > >();
    testRandom2x2< UpperMatrix< DynamicMatrix<double,columnMajor>     > >();
    testRandom2x2< UniUpperMatrix< DynamicMatrix<double,columnMajor>  > >();
+   testRandom2x2< DiagonalMatrix< DynamicMatrix<double,columnMajor>  > >();
 
 
    //=====================================================================================
@@ -142,6 +143,7 @@ DenseTest::DenseTest()
    testRandom3x3< UniLowerMatrix< DynamicMatrix<double,rowMajor>  > >();
    testRandom3x3< UpperMatrix< DynamicMatrix<double,rowMajor>     > >();
    testRandom3x3< UniUpperMatrix< DynamicMatrix<double,rowMajor>  > >();
+   testRandom3x3< DiagonalMatrix< DynamicMatrix<double,rowMajor>  > >();
 
    testRandom3x3< SymmetricMatrix< DynamicMatrix<double,columnMajor> > >();
    testRandom3x3< HermitianMatrix< DynamicMatrix<double,columnMajor> > >();
@@ -149,6 +151,7 @@ DenseTest::DenseTest()
    testRandom3x3< UniLowerMatrix< DynamicMatrix<double,columnMajor>  > >();
    testRandom3x3< UpperMatrix< DynamicMatrix<double,columnMajor>     > >();
    testRandom3x3< UniUpperMatrix< DynamicMatrix<double,columnMajor>  > >();
+   testRandom3x3< DiagonalMatrix< DynamicMatrix<double,columnMajor>  > >();
 
 
    //=====================================================================================
@@ -171,6 +174,7 @@ DenseTest::DenseTest()
    testRandom4x4< UniLowerMatrix< DynamicMatrix<double,rowMajor>  > >();
    testRandom4x4< UpperMatrix< DynamicMatrix<double,rowMajor>     > >();
    testRandom4x4< UniUpperMatrix< DynamicMatrix<double,rowMajor>  > >();
+   testRandom4x4< DiagonalMatrix< DynamicMatrix<double,rowMajor>  > >();
 
    testRandom4x4< SymmetricMatrix< DynamicMatrix<double,columnMajor> > >();
    testRandom4x4< HermitianMatrix< DynamicMatrix<double,columnMajor> > >();
@@ -178,6 +182,7 @@ DenseTest::DenseTest()
    testRandom4x4< UniLowerMatrix< DynamicMatrix<double,columnMajor>  > >();
    testRandom4x4< UpperMatrix< DynamicMatrix<double,columnMajor>     > >();
    testRandom4x4< UniUpperMatrix< DynamicMatrix<double,columnMajor>  > >();
+   testRandom4x4< DiagonalMatrix< DynamicMatrix<double,columnMajor>  > >();
 
 
    //=====================================================================================
@@ -200,6 +205,7 @@ DenseTest::DenseTest()
    testRandom5x5< UniLowerMatrix< DynamicMatrix<double,rowMajor>  > >();
    testRandom5x5< UpperMatrix< DynamicMatrix<double,rowMajor>     > >();
    testRandom5x5< UniUpperMatrix< DynamicMatrix<double,rowMajor>  > >();
+   testRandom5x5< DiagonalMatrix< DynamicMatrix<double,rowMajor>  > >();
 
    testRandom5x5< SymmetricMatrix< DynamicMatrix<double,columnMajor> > >();
    testRandom5x5< HermitianMatrix< DynamicMatrix<double,columnMajor> > >();
@@ -207,6 +213,7 @@ DenseTest::DenseTest()
    testRandom5x5< UniLowerMatrix< DynamicMatrix<double,columnMajor>  > >();
    testRandom5x5< UpperMatrix< DynamicMatrix<double,columnMajor>     > >();
    testRandom5x5< UniUpperMatrix< DynamicMatrix<double,columnMajor>  > >();
+   testRandom5x5< DiagonalMatrix< DynamicMatrix<double,columnMajor>  > >();
 
 
    //=====================================================================================
@@ -229,6 +236,7 @@ DenseTest::DenseTest()
    testRandom6x6< UniLowerMatrix< DynamicMatrix<double,rowMajor>  > >();
    testRandom6x6< UpperMatrix< DynamicMatrix<double,rowMajor>     > >();
    testRandom6x6< UniUpperMatrix< DynamicMatrix<double,rowMajor>  > >();
+   testRandom6x6< DiagonalMatrix< DynamicMatrix<double,rowMajor>  > >();
 
    testRandom6x6< SymmetricMatrix< DynamicMatrix<double,columnMajor> > >();
    testRandom6x6< HermitianMatrix< DynamicMatrix<double,columnMajor> > >();
@@ -236,6 +244,7 @@ DenseTest::DenseTest()
    testRandom6x6< UniLowerMatrix< DynamicMatrix<double,columnMajor>  > >();
    testRandom6x6< UpperMatrix< DynamicMatrix<double,columnMajor>     > >();
    testRandom6x6< UniUpperMatrix< DynamicMatrix<double,columnMajor>  > >();
+   testRandom6x6< DiagonalMatrix< DynamicMatrix<double,columnMajor>  > >();
 }
 //*************************************************************************************************
 
