@@ -1428,6 +1428,22 @@ void ProxyTest::testResize()
       checkSize    ( vec[2],  0UL );
    }
 
+   {
+      test_ = "resize( VectorAccessProxy, size_t )";
+
+      DVV vec( 3UL, 1UL );
+      resize( vec[1], 10UL );
+
+      checkSize    ( vec, 3UL );
+      checkCapacity( vec, 1UL );
+      checkNonZeros( vec, 1UL );
+
+      checkSize    ( vec[0],  0UL );
+      checkSize    ( vec[1], 10UL );
+      checkCapacity( vec[1], 10UL );
+      checkSize    ( vec[2],  0UL );
+   }
+
 
    //=====================================================================================
    // Matrix elements
@@ -1438,6 +1454,25 @@ void ProxyTest::testResize()
 
       DMV vec( 3UL, 1UL );
       vec[1].resize( 5UL, 5UL );
+
+      checkSize    ( vec, 3UL );
+      checkCapacity( vec, 1UL );
+      checkNonZeros( vec, 1UL );
+
+      checkRows    ( vec[0],  0UL );
+      checkColumns ( vec[0],  0UL );
+      checkRows    ( vec[1],  5UL );
+      checkColumns ( vec[1],  5UL );
+      checkCapacity( vec[1], 25UL );
+      checkRows    ( vec[2],  0UL );
+      checkColumns ( vec[2],  0UL );
+   }
+
+   {
+      test_ = "resize( VectorAccessProxy, size_t, size_t )";
+
+      DMV vec( 3UL, 1UL );
+      resize( vec[1], 5UL, 5UL );
 
       checkSize    ( vec, 3UL );
       checkCapacity( vec, 1UL );
