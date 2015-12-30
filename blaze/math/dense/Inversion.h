@@ -51,8 +51,11 @@
 #include <blaze/math/shims/Invert.h>
 #include <blaze/math/shims/IsDefault.h>
 #include <blaze/math/traits/DerestrictTrait.h>
+#include <blaze/math/typetraits/IsGeneral.h>
+#include <blaze/math/typetraits/IsHermitian.h>
 #include <blaze/math/typetraits/IsLower.h>
 #include <blaze/math/typetraits/IsSquare.h>
+#include <blaze/math/typetraits/IsSymmetric.h>
 #include <blaze/math/typetraits/IsTriangular.h>
 #include <blaze/math/typetraits/IsUniLower.h>
 #include <blaze/math/typetraits/IsUniUpper.h>
@@ -312,7 +315,7 @@ inline void invert( DenseMatrix<MT,SO>& dm );
 */
 template< typename MT  // Type of the dense matrix
         , bool SO >    // Storage order of the dense matrix
-inline typename EnableIf< Not< IsTriangular<MT> > >::Type
+inline typename EnableIf< IsGeneral<MT> >::Type
    invert2x2( DenseMatrix<MT,SO>& dm )
 {
    BLAZE_INTERNAL_ASSERT( (~dm).rows()    == 2UL, "Invalid number of rows detected"    );
@@ -332,9 +335,50 @@ inline typename EnableIf< Not< IsTriangular<MT> > >::Type
    const ET a11( A(0,0) * idet );
 
    A(0,0) =  A(1,1) * idet;
-   A(0,1) = -A(0,1) * idet;
    A(1,0) = -A(1,0) * idet;
+   A(0,1) = -A(0,1) * idet;
    A(1,1) =  a11;
+}
+/*! \endcond */
+//*************************************************************************************************
+
+
+//*************************************************************************************************
+/*! \cond BLAZE_INTERNAL */
+/*!\brief In-place inversion of the given symmetric/Hermitian dense \f$ 2 \times 2 \f$ matrix.
+// \ingroup dense_matrix
+//
+// \param dm The symmetric/Hermitian dense matrix to be inverted.
+// \return void
+//
+// This function inverts the given symmetric/Hermitian dense \f$ 2 \times 2 \f$ matrix via the
+// rule of Sarrus. The matrix inversion fails if the given matrix is singular and not invertible.
+// In this case a \a std::invalid_argument exception is thrown.
+*/
+template< typename MT  // Type of the dense matrix
+        , bool SO >    // Storage order of the dense matrix
+inline typename EnableIf< Or< IsSymmetric<MT>, IsHermitian<MT> > >::Type
+   invert2x2( DenseMatrix<MT,SO>& dm )
+{
+   BLAZE_INTERNAL_ASSERT( (~dm).rows()    == 2UL, "Invalid number of rows detected"    );
+   BLAZE_INTERNAL_ASSERT( (~dm).columns() == 2UL, "Invalid number of columns detected" );
+
+   typedef typename MT::ElementType  ET;
+
+   const MT& A( ~dm );
+
+   const ET det( A(0,0)*A(1,1) - A(0,1)*A(1,0) );
+
+   if( isDefault( det ) ) {
+      BLAZE_THROW_INVALID_ARGUMENT( "Inversion of singular matrix failed" );
+   }
+
+   const ET idet( ET(1) / det );
+   const ET a11( A(0,0) * idet );
+
+   (~dm)(0,0) =  A(1,1) * idet;
+   (~dm)(1,0) = -A(1,0) * idet;
+   (~dm)(1,1) =  a11;
 }
 /*! \endcond */
 //*************************************************************************************************
@@ -496,7 +540,7 @@ inline typename EnableIf< IsUniUpper<MT> >::Type
 */
 template< typename MT  // Type of the dense matrix
         , bool SO >    // Storage order of the dense matrix
-inline typename EnableIf< Not< IsTriangular<MT> > >::Type
+inline typename EnableIf< IsGeneral<MT> >::Type
    invert3x3( DenseMatrix<MT,SO>& dm )
 {
    BLAZE_INTERNAL_ASSERT( (~dm).rows()    == 3UL, "Invalid number of rows detected"    );
@@ -518,13 +562,58 @@ inline typename EnableIf< Not< IsTriangular<MT> > >::Type
    }
 
    B(0,1) = A(0,2)*A(2,1) - A(0,1)*A(2,2);
-   B(0,2) = A(0,1)*A(1,2) - A(0,2)*A(1,1);
    B(1,1) = A(0,0)*A(2,2) - A(0,2)*A(2,0);
-   B(1,2) = A(0,2)*A(1,0) - A(0,0)*A(1,2);
    B(2,1) = A(0,1)*A(2,0) - A(0,0)*A(2,1);
+   B(0,2) = A(0,1)*A(1,2) - A(0,2)*A(1,1);
+   B(1,2) = A(0,2)*A(1,0) - A(0,0)*A(1,2);
    B(2,2) = A(0,0)*A(1,1) - A(0,1)*A(1,0);
 
    B /= det;
+}
+/*! \endcond */
+//*************************************************************************************************
+
+
+//*************************************************************************************************
+/*! \cond BLAZE_INTERNAL */
+/*!\brief In-place inversion of the given symmetric/Hermitian dense \f$ 3 \times 3 \f$ matrix.
+// \ingroup dense_matrix
+//
+// \param dm The general dense matrix to be inverted.
+// \return void
+//
+// This function inverts the given symmetric/Hermitian dense \f$ 3 \times 3 \f$ matrix via the
+// rule of Sarrus. The matrix inversion fails if the given matrix is singular and not invertible.
+// In this case a \a std::invalid_argument exception is thrown.
+*/
+template< typename MT  // Type of the dense matrix
+        , bool SO >    // Storage order of the dense matrix
+inline typename EnableIf< Or< IsSymmetric<MT>, IsHermitian<MT> > >::Type
+   invert3x3( DenseMatrix<MT,SO>& dm )
+{
+   BLAZE_INTERNAL_ASSERT( (~dm).rows()    == 3UL, "Invalid number of rows detected"    );
+   BLAZE_INTERNAL_ASSERT( (~dm).columns() == 3UL, "Invalid number of columns detected" );
+
+   typedef typename MT::ElementType  ET;
+
+   const StaticMatrix<ET,3UL,3UL,SO> A( ~dm );
+
+   (~dm)(0,0) = A(1,1)*A(2,2) - A(1,2)*A(2,1);
+   (~dm)(1,0) = A(1,2)*A(2,0) - A(1,0)*A(2,2);
+   (~dm)(2,0) = A(1,0)*A(2,1) - A(1,1)*A(2,0);
+
+   const MT& B( ~dm );
+   const ET det( A(0,0)*B(0,0) + A(0,1)*B(1,0) + A(0,2)*B(2,0) );
+
+   if( isDefault( det ) ) {
+      BLAZE_THROW_INVALID_ARGUMENT( "Inversion of singular matrix failed" );
+   }
+
+   (~dm)(1,1) = A(0,0)*A(2,2) - A(0,2)*A(2,0);
+   (~dm)(1,2) = A(0,2)*A(1,0) - A(0,0)*A(1,2);
+   (~dm)(2,2) = A(0,0)*A(1,1) - A(0,1)*A(1,0);
+
+   (~dm) /= det;
 }
 /*! \endcond */
 //*************************************************************************************************
@@ -642,8 +731,8 @@ inline typename EnableIf< And< IsUpper<MT>, Not< IsUniUpper<MT> > > >::Type
 
    B(0,0) = tmp;
    B(0,1) = - A(0,1)*A(2,2);
-   B(0,2) =   A(0,1)*A(1,2) - A(0,2)*A(1,1);
    B(1,1) =   A(0,0)*A(2,2);
+   B(0,2) =   A(0,1)*A(1,2) - A(0,2)*A(1,1);
    B(1,2) = - A(0,0)*A(1,2);
    B(2,2) =   A(0,0)*A(1,1);
 
@@ -700,7 +789,7 @@ inline typename EnableIf< IsUniUpper<MT> >::Type
 */
 template< typename MT  // Type of the dense matrix
         , bool SO >    // Storage order of the dense matrix
-inline typename EnableIf< Not< IsTriangular<MT> > >::Type
+inline typename EnableIf< IsGeneral<MT> >::Type
    invert4x4( DenseMatrix<MT,SO>& dm )
 {
    BLAZE_INTERNAL_ASSERT( (~dm).rows()    == 4UL, "Invalid number of rows detected"    );
@@ -750,6 +839,68 @@ inline typename EnableIf< Not< IsTriangular<MT> > >::Type
    }
 
    B /= det;
+}
+/*! \endcond */
+//*************************************************************************************************
+
+
+//*************************************************************************************************
+/*! \cond BLAZE_INTERNAL */
+/*!\brief In-place inversion of the given symmetric/Hermitian dense \f$ 4 \times 4 \f$ matrix.
+// \ingroup dense_matrix
+//
+// \param dm The symmetric/Hermitian dense matrix to be inverted.
+// \return void
+//
+// This function inverts the given symmetric/Hermitian dense \f$ 4 \times 4 \f$ matrix via the
+// rule of Sarrus. The matrix inversion fails if the given matrix is singular and not invertible.
+// In this case a \a std::invalid_argument exception is thrown.
+*/
+template< typename MT  // Type of the dense matrix
+        , bool SO >    // Storage order of the dense matrix
+inline typename EnableIf< Or< IsSymmetric<MT>, IsHermitian<MT> > >::Type
+   invert4x4( DenseMatrix<MT,SO>& dm )
+{
+   BLAZE_INTERNAL_ASSERT( (~dm).rows()    == 4UL, "Invalid number of rows detected"    );
+   BLAZE_INTERNAL_ASSERT( (~dm).columns() == 4UL, "Invalid number of columns detected" );
+
+   typedef typename MT::ElementType  ET;
+
+   const StaticMatrix<ET,4UL,4UL,SO> A( ~dm );
+
+   ET tmp1( A(2,2)*A(3,3) - A(2,3)*A(3,2) );
+   ET tmp2( A(2,1)*A(3,3) - A(2,3)*A(3,1) );
+   ET tmp3( A(2,1)*A(3,2) - A(2,2)*A(3,1) );
+   ET tmp4( A(2,0)*A(3,3) - A(2,3)*A(3,0) );
+   ET tmp5( A(2,0)*A(3,2) - A(2,2)*A(3,0) );
+   ET tmp6( A(2,0)*A(3,1) - A(2,1)*A(3,0) );
+
+   (~dm)(0,0) = A(1,1)*tmp1 - A(1,2)*tmp2 + A(1,3)*tmp3;
+   (~dm)(1,0) = A(1,2)*tmp4 - A(1,0)*tmp1 - A(1,3)*tmp5;
+   (~dm)(2,0) = A(1,0)*tmp2 - A(1,1)*tmp4 + A(1,3)*tmp6;
+   (~dm)(3,0) = A(1,1)*tmp5 - A(1,0)*tmp3 - A(1,2)*tmp6;
+   (~dm)(1,1) = A(0,0)*tmp1 - A(0,2)*tmp4 + A(0,3)*tmp5;
+   (~dm)(2,1) = A(0,1)*tmp4 - A(0,0)*tmp2 - A(0,3)*tmp6;
+   (~dm)(3,1) = A(0,0)*tmp3 - A(0,1)*tmp5 + A(0,2)*tmp6;
+
+   tmp1 = A(0,1)*A(1,3) - A(0,3)*A(1,1);
+   tmp2 = A(0,1)*A(1,2) - A(0,2)*A(1,1);
+   tmp3 = A(0,0)*A(1,3) - A(0,3)*A(1,0);
+   tmp4 = A(0,0)*A(1,2) - A(0,2)*A(1,0);
+   tmp5 = A(0,0)*A(1,1) - A(0,1)*A(1,0);
+
+   (~dm)(2,2) = A(3,0)*tmp1 - A(3,1)*tmp3 + A(3,3)*tmp5;
+   (~dm)(3,2) = A(3,1)*tmp4 - A(3,0)*tmp2 - A(3,2)*tmp5;
+   (~dm)(3,3) = A(2,0)*tmp2 - A(2,1)*tmp4 + A(2,2)*tmp5;
+
+   const MT& B( ~dm );
+   const ET det( A(0,0)*B(0,0) + A(0,1)*B(1,0) + A(0,2)*B(2,0) + A(0,3)*B(3,0) );
+
+   if( isDefault( det ) ) {
+      BLAZE_THROW_INVALID_ARGUMENT( "Inversion of singular matrix failed" );
+   }
+
+   (~dm) /= det;
 }
 /*! \endcond */
 //*************************************************************************************************
@@ -951,7 +1102,7 @@ inline typename EnableIf< IsUniUpper<MT> >::Type
 */
 template< typename MT  // Type of the dense matrix
         , bool SO >    // Storage order of the dense matrix
-inline typename EnableIf< Not< IsTriangular<MT> > >::Type
+inline typename EnableIf< IsGeneral<MT> >::Type
    invert5x5( DenseMatrix<MT,SO>& dm )
 {
    BLAZE_INTERNAL_ASSERT( (~dm).rows()    == 5UL, "Invalid number of rows detected"    );
@@ -994,18 +1145,18 @@ inline typename EnableIf< Not< IsTriangular<MT> > >::Type
    ET tmp29( A(2,0)*tmp6 - A(2,1)*tmp9 + A(2,2)*tmp10 );
 
    B(0,0) =   A(1,1)*tmp11 - A(1,2)*tmp12 + A(1,3)*tmp13 - A(1,4)*tmp14;
-   B(0,1) = - A(0,1)*tmp11 + A(0,2)*tmp12 - A(0,3)*tmp13 + A(0,4)*tmp14;
-   B(0,2) =   A(0,1)*tmp15 - A(0,2)*tmp16 + A(0,3)*tmp17 - A(0,4)*tmp18;
    B(1,0) = - A(1,0)*tmp11 + A(1,2)*tmp19 - A(1,3)*tmp20 + A(1,4)*tmp21;
-   B(1,1) =   A(0,0)*tmp11 - A(0,2)*tmp19 + A(0,3)*tmp20 - A(0,4)*tmp21;
-   B(1,2) = - A(0,0)*tmp15 + A(0,2)*tmp22 - A(0,3)*tmp23 + A(0,4)*tmp24;
    B(2,0) =   A(1,0)*tmp12 - A(1,1)*tmp19 + A(1,3)*tmp25 - A(1,4)*tmp26;
-   B(2,1) = - A(0,0)*tmp12 + A(0,1)*tmp19 - A(0,3)*tmp25 + A(0,4)*tmp26;
-   B(2,2) =   A(0,0)*tmp16 - A(0,1)*tmp22 + A(0,3)*tmp27 - A(0,4)*tmp28;
    B(3,0) = - A(1,0)*tmp13 + A(1,1)*tmp20 - A(1,2)*tmp25 + A(1,4)*tmp29;
-   B(3,1) =   A(0,0)*tmp13 - A(0,1)*tmp20 + A(0,2)*tmp25 - A(0,4)*tmp29;
    B(4,0) =   A(1,0)*tmp14 - A(1,1)*tmp21 + A(1,2)*tmp26 - A(1,3)*tmp29;
+   B(0,1) = - A(0,1)*tmp11 + A(0,2)*tmp12 - A(0,3)*tmp13 + A(0,4)*tmp14;
+   B(1,1) =   A(0,0)*tmp11 - A(0,2)*tmp19 + A(0,3)*tmp20 - A(0,4)*tmp21;
+   B(2,1) = - A(0,0)*tmp12 + A(0,1)*tmp19 - A(0,3)*tmp25 + A(0,4)*tmp26;
+   B(3,1) =   A(0,0)*tmp13 - A(0,1)*tmp20 + A(0,2)*tmp25 - A(0,4)*tmp29;
    B(4,1) = - A(0,0)*tmp14 + A(0,1)*tmp21 - A(0,2)*tmp26 + A(0,3)*tmp29;
+   B(0,2) =   A(0,1)*tmp15 - A(0,2)*tmp16 + A(0,3)*tmp17 - A(0,4)*tmp18;
+   B(1,2) = - A(0,0)*tmp15 + A(0,2)*tmp22 - A(0,3)*tmp23 + A(0,4)*tmp24;
+   B(2,2) =   A(0,0)*tmp16 - A(0,1)*tmp22 + A(0,3)*tmp27 - A(0,4)*tmp28;
 
    tmp1  = A(0,2)*A(1,3) - A(0,3)*A(1,2);
    tmp2  = A(0,1)*A(1,3) - A(0,3)*A(1,1);
@@ -1026,27 +1177,27 @@ inline typename EnableIf< Not< IsTriangular<MT> > >::Type
    tmp16 = A(2,0)*tmp7  - A(2,2)*tmp9 + A(2,4)*tmp5;
    tmp17 = A(2,0)*tmp1  - A(2,2)*tmp4 + A(2,3)*tmp5;
    tmp18 = A(2,0)*tmp8  - A(2,1)*tmp9 + A(2,4)*tmp6;
-   tmp19 = A(2,0)*tmp2 - A(2,1)*tmp4 + A(2,3)*tmp6;
-   tmp20 = A(3,1)*tmp7 - A(3,2)*tmp8 + A(3,4)*tmp3;
-   tmp21 = A(3,0)*tmp7 - A(3,2)*tmp9 + A(3,4)*tmp5;
-   tmp22 = A(3,0)*tmp8 - A(3,1)*tmp9 + A(3,4)*tmp6;
-   tmp23 = A(3,0)*tmp3 - A(3,1)*tmp5 + A(3,2)*tmp6;
-   tmp24 = A(2,0)*tmp3 - A(2,1)*tmp5 + A(2,2)*tmp6;
-   tmp25 = A(3,1)*tmp1 - A(3,2)*tmp2 + A(3,3)*tmp3;
-   tmp26 = A(3,0)*tmp1 - A(3,2)*tmp4 + A(3,3)*tmp5;
-   tmp27 = A(3,0)*tmp2 - A(3,1)*tmp4 + A(3,3)*tmp6;
+   tmp19 = A(2,0)*tmp2  - A(2,1)*tmp4 + A(2,3)*tmp6;
+   tmp20 = A(3,1)*tmp7  - A(3,2)*tmp8 + A(3,4)*tmp3;
+   tmp21 = A(3,0)*tmp7  - A(3,2)*tmp9 + A(3,4)*tmp5;
+   tmp22 = A(3,0)*tmp8  - A(3,1)*tmp9 + A(3,4)*tmp6;
+   tmp23 = A(3,0)*tmp3  - A(3,1)*tmp5 + A(3,2)*tmp6;
+   tmp24 = A(2,0)*tmp3  - A(2,1)*tmp5 + A(2,2)*tmp6;
+   tmp25 = A(3,1)*tmp1  - A(3,2)*tmp2 + A(3,3)*tmp3;
+   tmp26 = A(3,0)*tmp1  - A(3,2)*tmp4 + A(3,3)*tmp5;
+   tmp27 = A(3,0)*tmp2  - A(3,1)*tmp4 + A(3,3)*tmp6;
 
-   B(0,3) =   A(4,1)*tmp11 - A(4,2)*tmp12 + A(4,3)*tmp13 - A(4,4)*tmp14;
-   B(0,4) = - A(3,1)*tmp11 + A(3,2)*tmp12 - A(3,3)*tmp13 + A(3,4)*tmp14;
-   B(1,3) = - A(4,0)*tmp11 + A(4,2)*tmp15 - A(4,3)*tmp16 + A(4,4)*tmp17;
-   B(1,4) =   A(3,0)*tmp11 - A(3,2)*tmp15 + A(3,3)*tmp16 - A(3,4)*tmp17;
-   B(2,3) =   A(4,0)*tmp12 - A(4,1)*tmp15 + A(4,3)*tmp18 - A(4,4)*tmp19;
-   B(2,4) = - A(3,0)*tmp12 + A(3,1)*tmp15 - A(3,3)*tmp18 + A(3,4)*tmp19;
    B(3,2) =   A(4,0)*tmp20 - A(4,1)*tmp21 + A(4,2)*tmp22 - A(4,4)*tmp23;
-   B(3,3) = - A(4,0)*tmp13 + A(4,1)*tmp16 - A(4,2)*tmp18 + A(4,4)*tmp24;
-   B(3,4) =   A(3,0)*tmp13 - A(3,1)*tmp16 + A(3,2)*tmp18 - A(3,4)*tmp24;
    B(4,2) = - A(4,0)*tmp25 + A(4,1)*tmp26 - A(4,2)*tmp27 + A(4,3)*tmp23;
+   B(0,3) =   A(4,1)*tmp11 - A(4,2)*tmp12 + A(4,3)*tmp13 - A(4,4)*tmp14;
+   B(1,3) = - A(4,0)*tmp11 + A(4,2)*tmp15 - A(4,3)*tmp16 + A(4,4)*tmp17;
+   B(2,3) =   A(4,0)*tmp12 - A(4,1)*tmp15 + A(4,3)*tmp18 - A(4,4)*tmp19;
+   B(3,3) = - A(4,0)*tmp13 + A(4,1)*tmp16 - A(4,2)*tmp18 + A(4,4)*tmp24;
    B(4,3) =   A(4,0)*tmp14 - A(4,1)*tmp17 + A(4,2)*tmp19 - A(4,3)*tmp24;
+   B(0,4) = - A(3,1)*tmp11 + A(3,2)*tmp12 - A(3,3)*tmp13 + A(3,4)*tmp14;
+   B(1,4) =   A(3,0)*tmp11 - A(3,2)*tmp15 + A(3,3)*tmp16 - A(3,4)*tmp17;
+   B(2,4) = - A(3,0)*tmp12 + A(3,1)*tmp15 - A(3,3)*tmp18 + A(3,4)*tmp19;
+   B(3,4) =   A(3,0)*tmp13 - A(3,1)*tmp16 + A(3,2)*tmp18 - A(3,4)*tmp24;
    B(4,4) = - A(3,0)*tmp14 + A(3,1)*tmp17 - A(3,2)*tmp19 + A(3,3)*tmp24;
 
    const ET det( A(0,0)*B(0,0) + A(0,1)*B(1,0) + A(0,2)*B(2,0) + A(0,3)*B(3,0) + A(0,4)*B(4,0) );
@@ -1056,6 +1207,111 @@ inline typename EnableIf< Not< IsTriangular<MT> > >::Type
    }
 
    B /= det;
+}
+/*! \endcond */
+//*************************************************************************************************
+
+
+//*************************************************************************************************
+/*! \cond BLAZE_INTERNAL */
+/*!\brief In-place inversion of the given symmetric/Hermitian dense \f$ 5 \times 5 \f$ matrix.
+// \ingroup dense_matrix
+//
+// \param dm The symmetric/Hermitian dense matrix to be inverted.
+// \return void
+//
+// This function inverts the given symmetric/Hermitian dense \f$ 5 \times 5 \f$ matrix via the
+// rule of Sarrus. The matrix inversion fails if the given matrix is singular and not invertible.
+// In this case a \a std::invalid_argument exception is thrown.
+*/
+template< typename MT  // Type of the dense matrix
+        , bool SO >    // Storage order of the dense matrix
+inline typename EnableIf< Or< IsSymmetric<MT>, IsHermitian<MT> > >::Type
+   invert5x5( DenseMatrix<MT,SO>& dm )
+{
+   BLAZE_INTERNAL_ASSERT( (~dm).rows()    == 5UL, "Invalid number of rows detected"    );
+   BLAZE_INTERNAL_ASSERT( (~dm).columns() == 5UL, "Invalid number of columns detected" );
+
+   typedef typename MT::ElementType  ET;
+
+   const StaticMatrix<ET,5UL,5UL,SO> A( ~dm );
+
+   ET tmp1 ( A(3,3)*A(4,4) - A(3,4)*A(4,3) );
+   ET tmp2 ( A(3,2)*A(4,4) - A(3,4)*A(4,2) );
+   ET tmp3 ( A(3,2)*A(4,3) - A(3,3)*A(4,2) );
+   ET tmp4 ( A(3,1)*A(4,4) - A(3,4)*A(4,1) );
+   ET tmp5 ( A(3,1)*A(4,3) - A(3,3)*A(4,1) );
+   ET tmp6 ( A(3,1)*A(4,2) - A(3,2)*A(4,1) );
+   ET tmp7 ( A(3,0)*A(4,4) - A(3,4)*A(4,0) );
+   ET tmp8 ( A(3,0)*A(4,3) - A(3,3)*A(4,0) );
+   ET tmp9 ( A(3,0)*A(4,2) - A(3,2)*A(4,0) );
+   ET tmp10( A(3,0)*A(4,1) - A(3,1)*A(4,0) );
+
+   ET tmp11( A(2,2)*tmp1 - A(2,3)*tmp2 + A(2,4)*tmp3  );
+   ET tmp12( A(2,1)*tmp1 - A(2,3)*tmp4 + A(2,4)*tmp5  );
+   ET tmp13( A(2,1)*tmp2 - A(2,2)*tmp4 + A(2,4)*tmp6  );
+   ET tmp14( A(2,1)*tmp3 - A(2,2)*tmp5 + A(2,3)*tmp6  );
+   ET tmp15( A(1,1)*tmp1 - A(1,3)*tmp4 + A(1,4)*tmp5  );
+   ET tmp16( A(2,0)*tmp1 - A(2,3)*tmp7 + A(2,4)*tmp8  );
+   ET tmp17( A(2,0)*tmp2 - A(2,2)*tmp7 + A(2,4)*tmp9  );
+   ET tmp18( A(2,0)*tmp3 - A(2,2)*tmp8 + A(2,3)*tmp9  );
+   ET tmp19( A(1,0)*tmp1 - A(1,3)*tmp7 + A(1,4)*tmp8  );
+   ET tmp20( A(2,0)*tmp4 - A(2,1)*tmp7 + A(2,4)*tmp10 );
+   ET tmp21( A(2,0)*tmp5 - A(2,1)*tmp8 + A(2,3)*tmp10 );
+   ET tmp22( A(1,0)*tmp4 - A(1,1)*tmp7 + A(1,4)*tmp10 );
+   ET tmp23( A(1,0)*tmp5 - A(1,1)*tmp8 + A(1,3)*tmp10 );
+   ET tmp24( A(2,0)*tmp6 - A(2,1)*tmp9 + A(2,2)*tmp10 );
+
+   (~dm)(0,0) =   A(1,1)*tmp11 - A(1,2)*tmp12 + A(1,3)*tmp13 - A(1,4)*tmp14;
+   (~dm)(1,0) = - A(1,0)*tmp11 + A(1,2)*tmp16 - A(1,3)*tmp17 + A(1,4)*tmp18;
+   (~dm)(2,0) =   A(1,0)*tmp12 - A(1,1)*tmp16 + A(1,3)*tmp20 - A(1,4)*tmp21;
+   (~dm)(3,0) = - A(1,0)*tmp13 + A(1,1)*tmp17 - A(1,2)*tmp20 + A(1,4)*tmp24;
+   (~dm)(4,0) =   A(1,0)*tmp14 - A(1,1)*tmp18 + A(1,2)*tmp21 - A(1,3)*tmp24;
+   (~dm)(1,1) =   A(0,0)*tmp11 - A(0,2)*tmp16 + A(0,3)*tmp17 - A(0,4)*tmp18;
+   (~dm)(2,1) = - A(0,0)*tmp12 + A(0,1)*tmp16 - A(0,3)*tmp20 + A(0,4)*tmp21;
+   (~dm)(3,1) =   A(0,0)*tmp13 - A(0,1)*tmp17 + A(0,2)*tmp20 - A(0,4)*tmp24;
+   (~dm)(4,1) = - A(0,0)*tmp14 + A(0,1)*tmp18 - A(0,2)*tmp21 + A(0,3)*tmp24;
+   (~dm)(2,2) =   A(0,0)*tmp15 - A(0,1)*tmp19 + A(0,3)*tmp22 - A(0,4)*tmp23;
+
+   tmp1 = A(0,2)*A(1,3) - A(0,3)*A(1,2);
+   tmp2 = A(0,1)*A(1,3) - A(0,3)*A(1,1);
+   tmp3 = A(0,1)*A(1,2) - A(0,2)*A(1,1);
+   tmp4 = A(0,0)*A(1,3) - A(0,3)*A(1,0);
+   tmp5 = A(0,0)*A(1,2) - A(0,2)*A(1,0);
+   tmp6 = A(0,0)*A(1,1) - A(0,1)*A(1,0);
+   tmp7 = A(0,2)*A(1,4) - A(0,4)*A(1,2);
+   tmp8 = A(0,1)*A(1,4) - A(0,4)*A(1,1);
+   tmp9 = A(0,0)*A(1,4) - A(0,4)*A(1,0);
+
+   tmp11 = A(2,1)*tmp7 - A(2,2)*tmp8 + A(2,4)*tmp3;
+   tmp12 = A(2,1)*tmp1 - A(2,2)*tmp2 + A(2,3)*tmp3;
+   tmp13 = A(2,0)*tmp7 - A(2,2)*tmp9 + A(2,4)*tmp5;
+   tmp14 = A(2,0)*tmp1 - A(2,2)*tmp4 + A(2,3)*tmp5;
+   tmp15 = A(2,0)*tmp8 - A(2,1)*tmp9 + A(2,4)*tmp6;
+   tmp16 = A(2,0)*tmp2 - A(2,1)*tmp4 + A(2,3)*tmp6;
+   tmp17 = A(3,1)*tmp7 - A(3,2)*tmp8 + A(3,4)*tmp3;
+   tmp18 = A(3,0)*tmp7 - A(3,2)*tmp9 + A(3,4)*tmp5;
+   tmp19 = A(3,0)*tmp8 - A(3,1)*tmp9 + A(3,4)*tmp6;
+   tmp20 = A(3,0)*tmp3 - A(3,1)*tmp5 + A(3,2)*tmp6;
+   tmp21 = A(2,0)*tmp3 - A(2,1)*tmp5 + A(2,2)*tmp6;
+   tmp22 = A(3,1)*tmp1 - A(3,2)*tmp2 + A(3,3)*tmp3;
+   tmp23 = A(3,0)*tmp1 - A(3,2)*tmp4 + A(3,3)*tmp5;
+   tmp24 = A(3,0)*tmp2 - A(3,1)*tmp4 + A(3,3)*tmp6;
+
+   (~dm)(3,2) =   A(4,0)*tmp17 - A(4,1)*tmp18 + A(4,2)*tmp19 - A(4,4)*tmp20;
+   (~dm)(4,2) = - A(4,0)*tmp22 + A(4,1)*tmp23 - A(4,2)*tmp24 + A(4,3)*tmp20;
+   (~dm)(3,3) = - A(4,0)*tmp11 + A(4,1)*tmp13 - A(4,2)*tmp15 + A(4,4)*tmp21;
+   (~dm)(4,3) =   A(4,0)*tmp12 - A(4,1)*tmp14 + A(4,2)*tmp16 - A(4,3)*tmp21;
+   (~dm)(4,4) = - A(3,0)*tmp12 + A(3,1)*tmp14 - A(3,2)*tmp16 + A(3,3)*tmp21;
+
+   const MT& B( ~dm );
+   const ET det( A(0,0)*B(0,0) + A(0,1)*B(1,0) + A(0,2)*B(2,0) + A(0,3)*B(3,0) + A(0,4)*B(4,0) );
+
+   if( isDefault( det ) ) {
+      BLAZE_THROW_INVALID_ARGUMENT( "Inversion of singular matrix failed" );
+   }
+
+   (~dm) /= det;
 }
 /*! \endcond */
 //*************************************************************************************************
@@ -1296,7 +1552,7 @@ inline typename EnableIf< IsUniUpper<MT> >::Type
 */
 template< typename MT  // Type of the dense matrix
         , bool SO >    // Storage order of the dense matrix
-inline typename EnableIf< Not< IsTriangular<MT> > >::Type
+inline typename EnableIf< IsGeneral<MT> >::Type
    invert6x6( DenseMatrix<MT,SO>& dm )
 {
    BLAZE_INTERNAL_ASSERT( (~dm).rows()    == 6UL, "Invalid number of rows detected"    );
@@ -1376,22 +1632,22 @@ inline typename EnableIf< Not< IsTriangular<MT> > >::Type
    ET tmp65( A(1,0)*tmp25 - A(1,1)*tmp31 + A(1,2)*tmp34 - A(1,3)*tmp35 );
 
    B(0,0) =   A(1,1)*tmp36 - A(1,2)*tmp37 + A(1,3)*tmp38 - A(1,4)*tmp39 + A(1,5)*tmp40;
-   B(0,1) = - A(0,1)*tmp36 + A(0,2)*tmp37 - A(0,3)*tmp38 + A(0,4)*tmp39 - A(0,5)*tmp40;
-   B(0,2) =   A(0,1)*tmp41 - A(0,2)*tmp42 + A(0,3)*tmp43 - A(0,4)*tmp44 + A(0,5)*tmp45;
    B(1,0) = - A(1,0)*tmp36 + A(1,2)*tmp46 - A(1,3)*tmp47 + A(1,4)*tmp48 - A(1,5)*tmp49;
-   B(1,1) =   A(0,0)*tmp36 - A(0,2)*tmp46 + A(0,3)*tmp47 - A(0,4)*tmp48 + A(0,5)*tmp49;
-   B(1,2) = - A(0,0)*tmp41 + A(0,2)*tmp50 - A(0,3)*tmp51 + A(0,4)*tmp52 - A(0,5)*tmp53;
    B(2,0) =   A(1,0)*tmp37 - A(1,1)*tmp46 + A(1,3)*tmp54 - A(1,4)*tmp55 + A(1,5)*tmp56;
-   B(2,1) = - A(0,0)*tmp37 + A(0,1)*tmp46 - A(0,3)*tmp54 + A(0,4)*tmp55 - A(0,5)*tmp56;
-   B(2,2) =   A(0,0)*tmp42 - A(0,1)*tmp50 + A(0,3)*tmp57 - A(0,4)*tmp58 + A(0,5)*tmp59;
    B(3,0) = - A(1,0)*tmp38 + A(1,1)*tmp47 - A(1,2)*tmp54 + A(1,4)*tmp60 - A(1,5)*tmp61;
-   B(3,1) =   A(0,0)*tmp38 - A(0,1)*tmp47 + A(0,2)*tmp54 - A(0,4)*tmp60 + A(0,5)*tmp61;
-   B(3,2) = - A(0,0)*tmp43 + A(0,1)*tmp51 - A(0,2)*tmp57 + A(0,4)*tmp62 - A(0,5)*tmp63;
    B(4,0) =   A(1,0)*tmp39 - A(1,1)*tmp48 + A(1,2)*tmp55 - A(1,3)*tmp60 + A(1,5)*tmp64;
-   B(4,1) = - A(0,0)*tmp39 + A(0,1)*tmp48 - A(0,2)*tmp55 + A(0,3)*tmp60 - A(0,5)*tmp64;
-   B(4,2) =   A(0,0)*tmp44 - A(0,1)*tmp52 + A(0,2)*tmp58 - A(0,3)*tmp62 + A(0,5)*tmp65;
    B(5,0) = - A(1,0)*tmp40 + A(1,1)*tmp49 - A(1,2)*tmp56 + A(1,3)*tmp61 - A(1,4)*tmp64;
+   B(0,1) = - A(0,1)*tmp36 + A(0,2)*tmp37 - A(0,3)*tmp38 + A(0,4)*tmp39 - A(0,5)*tmp40;
+   B(1,1) =   A(0,0)*tmp36 - A(0,2)*tmp46 + A(0,3)*tmp47 - A(0,4)*tmp48 + A(0,5)*tmp49;
+   B(2,1) = - A(0,0)*tmp37 + A(0,1)*tmp46 - A(0,3)*tmp54 + A(0,4)*tmp55 - A(0,5)*tmp56;
+   B(3,1) =   A(0,0)*tmp38 - A(0,1)*tmp47 + A(0,2)*tmp54 - A(0,4)*tmp60 + A(0,5)*tmp61;
+   B(4,1) = - A(0,0)*tmp39 + A(0,1)*tmp48 - A(0,2)*tmp55 + A(0,3)*tmp60 - A(0,5)*tmp64;
    B(5,1) =   A(0,0)*tmp40 - A(0,1)*tmp49 + A(0,2)*tmp56 - A(0,3)*tmp61 + A(0,4)*tmp64;
+   B(0,2) =   A(0,1)*tmp41 - A(0,2)*tmp42 + A(0,3)*tmp43 - A(0,4)*tmp44 + A(0,5)*tmp45;
+   B(1,2) = - A(0,0)*tmp41 + A(0,2)*tmp50 - A(0,3)*tmp51 + A(0,4)*tmp52 - A(0,5)*tmp53;
+   B(2,2) =   A(0,0)*tmp42 - A(0,1)*tmp50 + A(0,3)*tmp57 - A(0,4)*tmp58 + A(0,5)*tmp59;
+   B(3,2) = - A(0,0)*tmp43 + A(0,1)*tmp51 - A(0,2)*tmp57 + A(0,4)*tmp62 - A(0,5)*tmp63;
+   B(4,2) =   A(0,0)*tmp44 - A(0,1)*tmp52 + A(0,2)*tmp58 - A(0,3)*tmp62 + A(0,5)*tmp65;
    B(5,2) = - A(0,0)*tmp45 + A(0,1)*tmp53 - A(0,2)*tmp59 + A(0,3)*tmp63 - A(0,4)*tmp65;
 
    tmp1  = A(0,3)*A(1,4) - A(0,4)*A(1,3);
@@ -1463,22 +1719,22 @@ inline typename EnableIf< Not< IsTriangular<MT> > >::Type
    tmp65 = A(3,0)*tmp25 - A(3,1)*tmp31 + A(3,2)*tmp34 - A(3,3)*tmp35;
 
    B(0,3) =   A(5,1)*tmp36 - A(5,2)*tmp37 + A(5,3)*tmp38 - A(5,4)*tmp39 + A(5,5)*tmp40;
-   B(0,4) = - A(5,1)*tmp41 + A(5,2)*tmp42 - A(5,3)*tmp43 + A(5,4)*tmp44 - A(5,5)*tmp45;
-   B(0,5) =   A(4,1)*tmp41 - A(4,2)*tmp42 + A(4,3)*tmp43 - A(4,4)*tmp44 + A(4,5)*tmp45;
    B(1,3) = - A(5,0)*tmp36 + A(5,2)*tmp46 - A(5,3)*tmp47 + A(5,4)*tmp48 - A(5,5)*tmp49;
-   B(1,4) =   A(5,0)*tmp41 - A(5,2)*tmp50 + A(5,3)*tmp51 - A(5,4)*tmp52 + A(5,5)*tmp53;
-   B(1,5) = - A(4,0)*tmp41 + A(4,2)*tmp50 - A(4,3)*tmp51 + A(4,4)*tmp52 - A(4,5)*tmp53;
    B(2,3) =   A(5,0)*tmp37 - A(5,1)*tmp46 + A(5,3)*tmp54 - A(5,4)*tmp55 + A(5,5)*tmp56;
-   B(2,4) = - A(5,0)*tmp42 + A(5,1)*tmp50 - A(5,3)*tmp57 + A(5,4)*tmp58 - A(5,5)*tmp59;
-   B(2,5) =   A(4,0)*tmp42 - A(4,1)*tmp50 + A(4,3)*tmp57 - A(4,4)*tmp58 + A(4,5)*tmp59;
    B(3,3) = - A(5,0)*tmp38 + A(5,1)*tmp47 - A(5,2)*tmp54 + A(5,4)*tmp60 - A(5,5)*tmp61;
-   B(3,4) =   A(5,0)*tmp43 - A(5,1)*tmp51 + A(5,2)*tmp57 - A(5,4)*tmp62 + A(5,5)*tmp63;
-   B(3,5) = - A(4,0)*tmp43 + A(4,1)*tmp51 - A(4,2)*tmp57 + A(4,4)*tmp62 - A(4,5)*tmp63;
    B(4,3) =   A(5,0)*tmp39 - A(5,1)*tmp48 + A(5,2)*tmp55 - A(5,3)*tmp60 + A(5,5)*tmp64;
-   B(4,4) = - A(5,0)*tmp44 + A(5,1)*tmp52 - A(5,2)*tmp58 + A(5,3)*tmp62 - A(5,5)*tmp65;
-   B(4,5) =   A(4,0)*tmp44 - A(4,1)*tmp52 + A(4,2)*tmp58 - A(4,3)*tmp62 + A(4,5)*tmp65;
    B(5,3) = - A(5,0)*tmp40 + A(5,1)*tmp49 - A(5,2)*tmp56 + A(5,3)*tmp61 - A(5,4)*tmp64;
+   B(0,4) = - A(5,1)*tmp41 + A(5,2)*tmp42 - A(5,3)*tmp43 + A(5,4)*tmp44 - A(5,5)*tmp45;
+   B(1,4) =   A(5,0)*tmp41 - A(5,2)*tmp50 + A(5,3)*tmp51 - A(5,4)*tmp52 + A(5,5)*tmp53;
+   B(2,4) = - A(5,0)*tmp42 + A(5,1)*tmp50 - A(5,3)*tmp57 + A(5,4)*tmp58 - A(5,5)*tmp59;
+   B(3,4) =   A(5,0)*tmp43 - A(5,1)*tmp51 + A(5,2)*tmp57 - A(5,4)*tmp62 + A(5,5)*tmp63;
+   B(4,4) = - A(5,0)*tmp44 + A(5,1)*tmp52 - A(5,2)*tmp58 + A(5,3)*tmp62 - A(5,5)*tmp65;
    B(5,4) =   A(5,0)*tmp45 - A(5,1)*tmp53 + A(5,2)*tmp59 - A(5,3)*tmp63 + A(5,4)*tmp65;
+   B(0,5) =   A(4,1)*tmp41 - A(4,2)*tmp42 + A(4,3)*tmp43 - A(4,4)*tmp44 + A(4,5)*tmp45;
+   B(1,5) = - A(4,0)*tmp41 + A(4,2)*tmp50 - A(4,3)*tmp51 + A(4,4)*tmp52 - A(4,5)*tmp53;
+   B(2,5) =   A(4,0)*tmp42 - A(4,1)*tmp50 + A(4,3)*tmp57 - A(4,4)*tmp58 + A(4,5)*tmp59;
+   B(3,5) = - A(4,0)*tmp43 + A(4,1)*tmp51 - A(4,2)*tmp57 + A(4,4)*tmp62 - A(4,5)*tmp63;
+   B(4,5) =   A(4,0)*tmp44 - A(4,1)*tmp52 + A(4,2)*tmp58 - A(4,3)*tmp62 + A(4,5)*tmp65;
    B(5,5) = - A(4,0)*tmp45 + A(4,1)*tmp53 - A(4,2)*tmp59 + A(4,3)*tmp63 - A(4,4)*tmp65;
 
    const ET det( A(0,0)*B(0,0) + A(0,1)*B(1,0) + A(0,2)*B(2,0) +
@@ -1489,6 +1745,193 @@ inline typename EnableIf< Not< IsTriangular<MT> > >::Type
    }
 
    B /= det;
+}
+/*! \endcond */
+//*************************************************************************************************
+
+
+//*************************************************************************************************
+/*! \cond BLAZE_INTERNAL */
+/*!\brief In-place inversion of the given symmetric/Hermitian dense \f$ 6 \times 6 \f$ matrix.
+// \ingroup dense_matrix
+//
+// \param dm The symmetric/Hermitian dense matrix to be inverted.
+// \return void
+//
+// This function inverts the given symmetric/Hermitian dense \f$ 6 \times 6 \f$ matrix via the
+// rule of Sarrus. The matrix inversion fails if the given matrix is singular and not invertible.
+// In this case a \a std::invalid_argument exception is thrown.
+*/
+template< typename MT  // Type of the dense matrix
+        , bool SO >    // Storage order of the dense matrix
+inline typename EnableIf< Or< IsSymmetric<MT>, IsHermitian<MT> > >::Type
+   invert6x6( DenseMatrix<MT,SO>& dm )
+{
+   BLAZE_INTERNAL_ASSERT( (~dm).rows()    == 6UL, "Invalid number of rows detected"    );
+   BLAZE_INTERNAL_ASSERT( (~dm).columns() == 6UL, "Invalid number of columns detected" );
+
+   typedef typename MT::ElementType  ET;
+
+   const StaticMatrix<ET,6UL,6UL,SO> A( ~dm );
+
+   ET tmp1 ( A(4,4)*A(5,5) - A(4,5)*A(5,4) );
+   ET tmp2 ( A(4,3)*A(5,5) - A(4,5)*A(5,3) );
+   ET tmp3 ( A(4,3)*A(5,4) - A(4,4)*A(5,3) );
+   ET tmp4 ( A(4,2)*A(5,5) - A(4,5)*A(5,2) );
+   ET tmp5 ( A(4,2)*A(5,4) - A(4,4)*A(5,2) );
+   ET tmp6 ( A(4,2)*A(5,3) - A(4,3)*A(5,2) );
+   ET tmp7 ( A(4,1)*A(5,5) - A(4,5)*A(5,1) );
+   ET tmp8 ( A(4,1)*A(5,4) - A(4,4)*A(5,1) );
+   ET tmp9 ( A(4,1)*A(5,3) - A(4,3)*A(5,1) );
+   ET tmp10( A(4,1)*A(5,2) - A(4,2)*A(5,1) );
+   ET tmp11( A(4,0)*A(5,5) - A(4,5)*A(5,0) );
+   ET tmp12( A(4,0)*A(5,4) - A(4,4)*A(5,0) );
+   ET tmp13( A(4,0)*A(5,3) - A(4,3)*A(5,0) );
+   ET tmp14( A(4,0)*A(5,2) - A(4,2)*A(5,0) );
+   ET tmp15( A(4,0)*A(5,1) - A(4,1)*A(5,0) );
+
+   ET tmp16( A(3,3)*tmp1  - A(3,4)*tmp2  + A(3,5)*tmp3  );
+   ET tmp17( A(3,2)*tmp1  - A(3,4)*tmp4  + A(3,5)*tmp5  );
+   ET tmp18( A(3,2)*tmp2  - A(3,3)*tmp4  + A(3,5)*tmp6  );
+   ET tmp19( A(3,2)*tmp3  - A(3,3)*tmp5  + A(3,4)*tmp6  );
+   ET tmp20( A(3,1)*tmp1  - A(3,4)*tmp7  + A(3,5)*tmp8  );
+   ET tmp21( A(3,1)*tmp2  - A(3,3)*tmp7  + A(3,5)*tmp9  );
+   ET tmp22( A(3,1)*tmp3  - A(3,3)*tmp8  + A(3,4)*tmp9  );
+   ET tmp23( A(3,1)*tmp4  - A(3,2)*tmp7  + A(3,5)*tmp10 );
+   ET tmp24( A(3,1)*tmp5  - A(3,2)*tmp8  + A(3,4)*tmp10 );
+   ET tmp25( A(3,1)*tmp6  - A(3,2)*tmp9  + A(3,3)*tmp10 );
+   ET tmp26( A(3,0)*tmp1  - A(3,4)*tmp11 + A(3,5)*tmp12 );
+   ET tmp27( A(3,0)*tmp2  - A(3,3)*tmp11 + A(3,5)*tmp13 );
+   ET tmp28( A(3,0)*tmp3  - A(3,3)*tmp12 + A(3,4)*tmp13 );
+   ET tmp29( A(3,0)*tmp4  - A(3,2)*tmp11 + A(3,5)*tmp14 );
+   ET tmp30( A(3,0)*tmp5  - A(3,2)*tmp12 + A(3,4)*tmp14 );
+   ET tmp31( A(3,0)*tmp6  - A(3,2)*tmp13 + A(3,3)*tmp14 );
+   ET tmp32( A(3,0)*tmp7  - A(3,1)*tmp11 + A(3,5)*tmp15 );
+   ET tmp33( A(3,0)*tmp8  - A(3,1)*tmp12 + A(3,4)*tmp15 );
+   ET tmp34( A(3,0)*tmp9  - A(3,1)*tmp13 + A(3,3)*tmp15 );
+   ET tmp35( A(3,0)*tmp10 - A(3,1)*tmp14 + A(3,2)*tmp15 );
+
+   ET tmp36( A(2,2)*tmp16 - A(2,3)*tmp17 + A(2,4)*tmp18 - A(2,5)*tmp19 );
+   ET tmp37( A(2,1)*tmp16 - A(2,3)*tmp20 + A(2,4)*tmp21 - A(2,5)*tmp22 );
+   ET tmp38( A(2,1)*tmp17 - A(2,2)*tmp20 + A(2,4)*tmp23 - A(2,5)*tmp24 );
+   ET tmp39( A(2,1)*tmp18 - A(2,2)*tmp21 + A(2,3)*tmp23 - A(2,5)*tmp25 );
+   ET tmp40( A(2,1)*tmp19 - A(2,2)*tmp22 + A(2,3)*tmp24 - A(2,4)*tmp25 );
+   ET tmp41( A(1,1)*tmp16 - A(1,3)*tmp20 + A(1,4)*tmp21 - A(1,5)*tmp22 );
+   ET tmp42( A(1,1)*tmp17 - A(1,2)*tmp20 + A(1,4)*tmp23 - A(1,5)*tmp24 );
+   ET tmp43( A(1,1)*tmp18 - A(1,2)*tmp21 + A(1,3)*tmp23 - A(1,5)*tmp25 );
+   ET tmp44( A(1,1)*tmp19 - A(1,2)*tmp22 + A(1,3)*tmp24 - A(1,4)*tmp25 );
+   ET tmp45( A(2,0)*tmp16 - A(2,3)*tmp26 + A(2,4)*tmp27 - A(2,5)*tmp28 );
+   ET tmp46( A(2,0)*tmp17 - A(2,2)*tmp26 + A(2,4)*tmp29 - A(2,5)*tmp30 );
+   ET tmp47( A(2,0)*tmp18 - A(2,2)*tmp27 + A(2,3)*tmp29 - A(2,5)*tmp31 );
+   ET tmp48( A(2,0)*tmp19 - A(2,2)*tmp28 + A(2,3)*tmp30 - A(2,4)*tmp31 );
+   ET tmp49( A(1,0)*tmp16 - A(1,3)*tmp26 + A(1,4)*tmp27 - A(1,5)*tmp28 );
+   ET tmp50( A(1,0)*tmp17 - A(1,2)*tmp26 + A(1,4)*tmp29 - A(1,5)*tmp30 );
+   ET tmp51( A(1,0)*tmp18 - A(1,2)*tmp27 + A(1,3)*tmp29 - A(1,5)*tmp31 );
+   ET tmp52( A(1,0)*tmp19 - A(1,2)*tmp28 + A(1,3)*tmp30 - A(1,4)*tmp31 );
+   ET tmp53( A(2,0)*tmp20 - A(2,1)*tmp26 + A(2,4)*tmp32 - A(2,5)*tmp33 );
+   ET tmp54( A(2,0)*tmp21 - A(2,1)*tmp27 + A(2,3)*tmp32 - A(2,5)*tmp34 );
+   ET tmp55( A(2,0)*tmp22 - A(2,1)*tmp28 + A(2,3)*tmp33 - A(2,4)*tmp34 );
+   ET tmp56( A(1,0)*tmp20 - A(1,1)*tmp26 + A(1,4)*tmp32 - A(1,5)*tmp33 );
+   ET tmp57( A(1,0)*tmp21 - A(1,1)*tmp27 + A(1,3)*tmp32 - A(1,5)*tmp34 );
+   ET tmp58( A(1,0)*tmp22 - A(1,1)*tmp28 + A(1,3)*tmp33 - A(1,4)*tmp34 );
+   ET tmp59( A(2,0)*tmp23 - A(2,1)*tmp29 + A(2,2)*tmp32 - A(2,5)*tmp35 );
+   ET tmp60( A(2,0)*tmp24 - A(2,1)*tmp30 + A(2,2)*tmp33 - A(2,4)*tmp35 );
+   ET tmp61( A(1,0)*tmp23 - A(1,1)*tmp29 + A(1,2)*tmp32 - A(1,5)*tmp35 );
+   ET tmp62( A(1,0)*tmp24 - A(1,1)*tmp30 + A(1,2)*tmp33 - A(1,4)*tmp35 );
+   ET tmp63( A(2,0)*tmp25 - A(2,1)*tmp31 + A(2,2)*tmp34 - A(2,3)*tmp35 );
+   ET tmp64( A(1,0)*tmp25 - A(1,1)*tmp31 + A(1,2)*tmp34 - A(1,3)*tmp35 );
+
+   (~dm)(0,0) =   A(1,1)*tmp36 - A(1,2)*tmp37 + A(1,3)*tmp38 - A(1,4)*tmp39 + A(1,5)*tmp40;
+   (~dm)(1,0) = - A(1,0)*tmp36 + A(1,2)*tmp45 - A(1,3)*tmp46 + A(1,4)*tmp47 - A(1,5)*tmp48;
+   (~dm)(2,0) =   A(1,0)*tmp37 - A(1,1)*tmp45 + A(1,3)*tmp53 - A(1,4)*tmp54 + A(1,5)*tmp55;
+   (~dm)(3,0) = - A(1,0)*tmp38 + A(1,1)*tmp46 - A(1,2)*tmp53 + A(1,4)*tmp59 - A(1,5)*tmp60;
+   (~dm)(4,0) =   A(1,0)*tmp39 - A(1,1)*tmp47 + A(1,2)*tmp54 - A(1,3)*tmp59 + A(1,5)*tmp63;
+   (~dm)(5,0) = - A(1,0)*tmp40 + A(1,1)*tmp48 - A(1,2)*tmp55 + A(1,3)*tmp60 - A(1,4)*tmp63;
+   (~dm)(1,1) =   A(0,0)*tmp36 - A(0,2)*tmp45 + A(0,3)*tmp46 - A(0,4)*tmp47 + A(0,5)*tmp48;
+   (~dm)(2,1) = - A(0,0)*tmp37 + A(0,1)*tmp45 - A(0,3)*tmp53 + A(0,4)*tmp54 - A(0,5)*tmp55;
+   (~dm)(3,1) =   A(0,0)*tmp38 - A(0,1)*tmp46 + A(0,2)*tmp53 - A(0,4)*tmp59 + A(0,5)*tmp60;
+   (~dm)(4,1) = - A(0,0)*tmp39 + A(0,1)*tmp47 - A(0,2)*tmp54 + A(0,3)*tmp59 - A(0,5)*tmp63;
+   (~dm)(5,1) =   A(0,0)*tmp40 - A(0,1)*tmp48 + A(0,2)*tmp55 - A(0,3)*tmp60 + A(0,4)*tmp63;
+   (~dm)(2,2) =   A(0,0)*tmp41 - A(0,1)*tmp49 + A(0,3)*tmp56 - A(0,4)*tmp57 + A(0,5)*tmp58;
+   (~dm)(3,2) = - A(0,0)*tmp42 + A(0,1)*tmp50 - A(0,2)*tmp56 + A(0,4)*tmp61 - A(0,5)*tmp62;
+   (~dm)(4,2) =   A(0,0)*tmp43 - A(0,1)*tmp51 + A(0,2)*tmp57 - A(0,3)*tmp61 + A(0,5)*tmp64;
+   (~dm)(5,2) = - A(0,0)*tmp44 + A(0,1)*tmp52 - A(0,2)*tmp58 + A(0,3)*tmp62 - A(0,4)*tmp64;
+
+   tmp1  = A(0,3)*A(1,4) - A(0,4)*A(1,3);
+   tmp2  = A(0,2)*A(1,4) - A(0,4)*A(1,2);
+   tmp3  = A(0,2)*A(1,3) - A(0,3)*A(1,2);
+   tmp4  = A(0,1)*A(1,4) - A(0,4)*A(1,1);
+   tmp5  = A(0,1)*A(1,3) - A(0,3)*A(1,1);
+   tmp6  = A(0,1)*A(1,2) - A(0,2)*A(1,1);
+   tmp7  = A(0,0)*A(1,4) - A(0,4)*A(1,0);
+   tmp8  = A(0,0)*A(1,3) - A(0,3)*A(1,0);
+   tmp9  = A(0,0)*A(1,2) - A(0,2)*A(1,0);
+   tmp10 = A(0,0)*A(1,1) - A(0,1)*A(1,0);
+   tmp11 = A(0,3)*A(1,5) - A(0,5)*A(1,3);
+   tmp12 = A(0,2)*A(1,5) - A(0,5)*A(1,2);
+   tmp13 = A(0,1)*A(1,5) - A(0,5)*A(1,1);
+   tmp14 = A(0,0)*A(1,5) - A(0,5)*A(1,0);
+   tmp15 = A(0,4)*A(1,5) - A(0,5)*A(1,4);
+
+   tmp16 = A(2,3)*tmp15 - A(2,4)*tmp11 + A(2,5)*tmp1;
+   tmp17 = A(2,2)*tmp15 - A(2,4)*tmp12 + A(2,5)*tmp2;
+   tmp18 = A(2,2)*tmp11 - A(2,3)*tmp12 + A(2,5)*tmp3;
+   tmp19 = A(2,2)*tmp1  - A(2,3)*tmp2  + A(2,4)*tmp3;
+   tmp20 = A(2,1)*tmp15 - A(2,4)*tmp13 + A(2,5)*tmp4;
+   tmp21 = A(2,1)*tmp11 - A(2,3)*tmp13 + A(2,5)*tmp5;
+   tmp22 = A(2,1)*tmp1  - A(2,3)*tmp4  + A(2,4)*tmp5;
+   tmp23 = A(2,1)*tmp12 - A(2,2)*tmp13 + A(2,5)*tmp6;
+   tmp24 = A(2,1)*tmp2  - A(2,2)*tmp4  + A(2,4)*tmp6;
+   tmp25 = A(2,1)*tmp3  - A(2,2)*tmp5  + A(2,3)*tmp6;
+   tmp26 = A(2,0)*tmp15 - A(2,4)*tmp14 + A(2,5)*tmp7;
+   tmp27 = A(2,0)*tmp11 - A(2,3)*tmp14 + A(2,5)*tmp8;
+   tmp28 = A(2,0)*tmp1  - A(2,3)*tmp7  + A(2,4)*tmp8;
+   tmp29 = A(2,0)*tmp12 - A(2,2)*tmp14 + A(2,5)*tmp9;
+   tmp30 = A(2,0)*tmp2  - A(2,2)*tmp7  + A(2,4)*tmp9;
+   tmp31 = A(2,0)*tmp3  - A(2,2)*tmp8  + A(2,3)*tmp9;
+   tmp32 = A(2,0)*tmp13 - A(2,1)*tmp14 + A(2,5)*tmp10;
+   tmp33 = A(2,0)*tmp4  - A(2,1)*tmp7  + A(2,4)*tmp10;
+   tmp34 = A(2,0)*tmp5  - A(2,1)*tmp8  + A(2,3)*tmp10;
+   tmp35 = A(2,0)*tmp6  - A(2,1)*tmp9  + A(2,2)*tmp10;
+
+   tmp36 = A(4,1)*tmp17 - A(4,2)*tmp20 + A(4,4)*tmp23 - A(4,5)*tmp24;
+   tmp37 = A(4,1)*tmp18 - A(4,2)*tmp21 + A(4,3)*tmp23 - A(4,5)*tmp25;
+   tmp38 = A(4,1)*tmp19 - A(4,2)*tmp22 + A(4,3)*tmp24 - A(4,4)*tmp25;
+   tmp39 = A(3,1)*tmp18 - A(3,2)*tmp21 + A(3,3)*tmp23 - A(3,5)*tmp25;
+   tmp40 = A(3,1)*tmp19 - A(3,2)*tmp22 + A(3,3)*tmp24 - A(3,4)*tmp25;
+   tmp41 = A(4,0)*tmp17 - A(4,2)*tmp26 + A(4,4)*tmp29 - A(4,5)*tmp30;
+   tmp42 = A(4,0)*tmp18 - A(4,2)*tmp27 + A(4,3)*tmp29 - A(4,5)*tmp31;
+   tmp43 = A(4,0)*tmp19 - A(4,2)*tmp28 + A(4,3)*tmp30 - A(4,4)*tmp31;
+   tmp44 = A(3,0)*tmp18 - A(3,2)*tmp27 + A(3,3)*tmp29 - A(3,5)*tmp31;
+   tmp45 = A(3,0)*tmp19 - A(3,2)*tmp28 + A(3,3)*tmp30 - A(3,4)*tmp31;
+   tmp46 = A(4,0)*tmp20 - A(4,1)*tmp26 + A(4,4)*tmp32 - A(4,5)*tmp33;
+   tmp47 = A(4,0)*tmp21 - A(4,1)*tmp27 + A(4,3)*tmp32 - A(4,5)*tmp34;
+   tmp48 = A(4,0)*tmp22 - A(4,1)*tmp28 + A(4,3)*tmp33 - A(4,4)*tmp34;
+   tmp49 = A(3,0)*tmp21 - A(3,1)*tmp27 + A(3,3)*tmp32 - A(3,5)*tmp34;
+   tmp50 = A(3,0)*tmp22 - A(3,1)*tmp28 + A(3,3)*tmp33 - A(3,4)*tmp34;
+   tmp51 = A(4,0)*tmp23 - A(4,1)*tmp29 + A(4,2)*tmp32 - A(4,5)*tmp35;
+   tmp52 = A(4,0)*tmp24 - A(4,1)*tmp30 + A(4,2)*tmp33 - A(4,4)*tmp35;
+   tmp53 = A(3,0)*tmp23 - A(3,1)*tmp29 + A(3,2)*tmp32 - A(3,5)*tmp35;
+   tmp54 = A(3,0)*tmp24 - A(3,1)*tmp30 + A(3,2)*tmp33 - A(3,4)*tmp35;
+   tmp55 = A(4,0)*tmp25 - A(4,1)*tmp31 + A(4,2)*tmp34 - A(4,3)*tmp35;
+   tmp56 = A(3,0)*tmp25 - A(3,1)*tmp31 + A(3,2)*tmp34 - A(3,3)*tmp35;
+
+   (~dm)(3,3) = - A(5,0)*tmp36 + A(5,1)*tmp41 - A(5,2)*tmp46 + A(5,4)*tmp51 - A(5,5)*tmp52;
+   (~dm)(4,3) =   A(5,0)*tmp37 - A(5,1)*tmp42 + A(5,2)*tmp47 - A(5,3)*tmp51 + A(5,5)*tmp55;
+   (~dm)(5,3) = - A(5,0)*tmp38 + A(5,1)*tmp43 - A(5,2)*tmp48 + A(5,3)*tmp52 - A(5,4)*tmp55;
+   (~dm)(4,4) = - A(5,0)*tmp39 + A(5,1)*tmp44 - A(5,2)*tmp49 + A(5,3)*tmp53 - A(5,5)*tmp56;
+   (~dm)(5,4) =   A(5,0)*tmp40 - A(5,1)*tmp45 + A(5,2)*tmp50 - A(5,3)*tmp54 + A(5,4)*tmp56;
+   (~dm)(5,5) = - A(4,0)*tmp40 + A(4,1)*tmp45 - A(4,2)*tmp50 + A(4,3)*tmp54 - A(4,4)*tmp56;
+
+   const MT& B( ~dm );
+   const ET det( A(0,0)*B(0,0) + A(0,1)*B(1,0) + A(0,2)*B(2,0) +
+                 A(0,3)*B(3,0) + A(0,4)*B(4,0) + A(0,5)*B(5,0) );
+
+   if( isDefault( det ) ) {
+      BLAZE_THROW_INVALID_ARGUMENT( "Inversion of singular matrix failed" );
+   }
+
+   (~dm) /= det;
 }
 /*! \endcond */
 //*************************************************************************************************
