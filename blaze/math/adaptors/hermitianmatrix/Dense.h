@@ -754,7 +754,7 @@ class HermitianMatrix<MT,SO,true>
    friend bool isDefault( const HermitianMatrix<MT2,SO2,DF2>& m );
 
    template< DecompositionFlag DF, typename MT2, bool SO2 >
-   friend void invert( HermitianMatrix<MT2,SO2,true>& m );
+   friend void invertNxN( HermitianMatrix<MT2,SO2,true>& m );
    //**********************************************************************************************
 
    //**Compile time checks*************************************************************************

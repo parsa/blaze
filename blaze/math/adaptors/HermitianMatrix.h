@@ -254,14 +254,14 @@ inline void swap( HermitianMatrix<MT,SO,DF>& a, HermitianMatrix<MT,SO,DF>& b ) /
 // \return void
 // \exception std::invalid_argument Inversion of singular matrix failed.
 //
-// This function inverts the given dense matrix by means of the specified matrix decomposition
-// algorithm \a DF. In case the Hermitian matrix is a positive-definite matrix it is recommended
-// to perform the inversion by means of a Cholesky decomposition, for a general Hermitian matrix
-// an LU decomposition should be used:
+// This function inverts the given dense Hermitian matrix via the specified matrix decomposition
+// algorithm \a DF. In case the given matrix is a positive-definite matrix it is recommended
+// to perform the inversion by means of a Cholesky decomposition, for a general matrix an LU
+// decomposition should be used:
 
    \code
-   invert<byLU>( A );        // Inversion of a general Hermitian matrix
-   invert<byCholesky>( A );  // Inversion of a positive definite matrix
+   invertNxN<byLU>( A );        // Inversion of a general Hermitian matrix
+   invertNxN<byCholesky>( A );  // Inversion of a positive definite matrix
    \endcode
 
 // The matrix inversion fails if the given Hermitian matrix is singular and not invertible. In
@@ -275,7 +275,7 @@ inline void swap( HermitianMatrix<MT,SO,DF>& a, HermitianMatrix<MT,SO,DF>& b ) /
 template< DecompositionFlag DF  // Decomposition algorithm
         , typename MT           // Type of the dense matrix
         , bool SO >             // Storage order of the dense matrix
-inline void invert( HermitianMatrix<MT,SO,true>& m )
+inline void invertNxN( HermitianMatrix<MT,SO,true>& m )
 {
    Inversion<DF>::invert( m.matrix_ );
 
