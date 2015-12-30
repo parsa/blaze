@@ -93,7 +93,9 @@ inline typename MT::ElementType det2x2( const DenseMatrix<MT,SO>& dm )
    BLAZE_INTERNAL_ASSERT( (~dm).rows()    == 2UL, "Invalid number of rows detected"    );
    BLAZE_INTERNAL_ASSERT( (~dm).columns() == 2UL, "Invalid number of columns detected" );
 
-   return (~dm)(0,0)*(~dm)(1,1) - (~dm)(0,1)*(~dm)(1,0);
+   typename MT::CompositeType A( ~dm );
+
+   return A(0,0)*A(1,1) - A(0,1)*A(1,0);
 }
 /*! \endcond */
 //*************************************************************************************************
@@ -117,9 +119,11 @@ inline typename MT::ElementType det3x3( const DenseMatrix<MT,SO>& dm )
    BLAZE_INTERNAL_ASSERT( (~dm).rows()    == 3UL, "Invalid number of rows detected"    );
    BLAZE_INTERNAL_ASSERT( (~dm).columns() == 3UL, "Invalid number of columns detected" );
 
-   return (~dm)(0,0) * ( (~dm)(1,1)*(~dm)(2,2) - (~dm)(1,2)*(~dm)(2,1) ) +
-          (~dm)(0,1) * ( (~dm)(1,2)*(~dm)(2,0) - (~dm)(1,0)*(~dm)(2,2) ) +
-          (~dm)(0,2) * ( (~dm)(1,0)*(~dm)(2,1) - (~dm)(1,1)*(~dm)(2,0) );
+   typename MT::CompositeType A( ~dm );
+
+   return A(0,0) * ( A(1,1)*A(2,2) - A(1,2)*A(2,1) ) +
+          A(0,1) * ( A(1,2)*A(2,0) - A(1,0)*A(2,2) ) +
+          A(0,2) * ( A(1,0)*A(2,1) - A(1,1)*A(2,0) );
 }
 /*! \endcond */
 //*************************************************************************************************
@@ -140,22 +144,24 @@ template< typename MT  // Type of the dense matrix
         , bool SO >    // Storage order of the dense matrix
 inline typename MT::ElementType det4x4( const DenseMatrix<MT,SO>& dm )
 {
-   typedef typename MT::ElementType  ET;
-
    BLAZE_INTERNAL_ASSERT( (~dm).rows()    == 4UL, "Invalid number of rows detected"    );
    BLAZE_INTERNAL_ASSERT( (~dm).columns() == 4UL, "Invalid number of columns detected" );
 
-   const ET tmp1( (~dm)(2,2)*(~dm)(3,3) - (~dm)(2,3)*(~dm)(3,2) );
-   const ET tmp2( (~dm)(2,1)*(~dm)(3,3) - (~dm)(2,3)*(~dm)(3,1) );
-   const ET tmp3( (~dm)(2,1)*(~dm)(3,2) - (~dm)(2,2)*(~dm)(3,1) );
-   const ET tmp4( (~dm)(2,0)*(~dm)(3,3) - (~dm)(2,3)*(~dm)(3,0) );
-   const ET tmp5( (~dm)(2,0)*(~dm)(3,2) - (~dm)(2,2)*(~dm)(3,0) );
-   const ET tmp6( (~dm)(2,0)*(~dm)(3,1) - (~dm)(2,1)*(~dm)(3,0) );
+   typedef typename MT::ElementType  ET;
 
-   return (~dm)(0,0) * ( (~dm)(1,1) * tmp1 - (~dm)(1,2) * tmp2 + (~dm)(1,3) * tmp3 ) -
-          (~dm)(0,1) * ( (~dm)(1,0) * tmp1 - (~dm)(1,2) * tmp4 + (~dm)(1,3) * tmp5 ) +
-          (~dm)(0,2) * ( (~dm)(1,0) * tmp2 - (~dm)(1,1) * tmp4 + (~dm)(1,3) * tmp6 ) -
-          (~dm)(0,3) * ( (~dm)(1,0) * tmp3 - (~dm)(1,1) * tmp5 + (~dm)(1,2) * tmp6 );
+   typename MT::CompositeType A( ~dm );
+
+   const ET tmp1( A(2,2)*A(3,3) - A(2,3)*A(3,2) );
+   const ET tmp2( A(2,1)*A(3,3) - A(2,3)*A(3,1) );
+   const ET tmp3( A(2,1)*A(3,2) - A(2,2)*A(3,1) );
+   const ET tmp4( A(2,0)*A(3,3) - A(2,3)*A(3,0) );
+   const ET tmp5( A(2,0)*A(3,2) - A(2,2)*A(3,0) );
+   const ET tmp6( A(2,0)*A(3,1) - A(2,1)*A(3,0) );
+
+   return A(0,0) * ( A(1,1) * tmp1 - A(1,2) * tmp2 + A(1,3) * tmp3 ) -
+          A(0,1) * ( A(1,0) * tmp1 - A(1,2) * tmp4 + A(1,3) * tmp5 ) +
+          A(0,2) * ( A(1,0) * tmp2 - A(1,1) * tmp4 + A(1,3) * tmp6 ) -
+          A(0,3) * ( A(1,0) * tmp3 - A(1,1) * tmp5 + A(1,2) * tmp6 );
 }
 /*! \endcond */
 //*************************************************************************************************
@@ -176,38 +182,40 @@ template< typename MT  // Type of the dense matrix
         , bool SO >    // Storage order of the dense matrix
 inline typename MT::ElementType det5x5( const DenseMatrix<MT,SO>& dm )
 {
-   typedef typename MT::ElementType  ET;
-
    BLAZE_INTERNAL_ASSERT( (~dm).rows()    == 5UL, "Invalid number of rows detected"    );
    BLAZE_INTERNAL_ASSERT( (~dm).columns() == 5UL, "Invalid number of columns detected" );
 
-   const ET tmp1 ( (~dm)(3,3)*(~dm)(4,4) - (~dm)(3,4)*(~dm)(4,3) );
-   const ET tmp2 ( (~dm)(3,2)*(~dm)(4,4) - (~dm)(3,4)*(~dm)(4,2) );
-   const ET tmp3 ( (~dm)(3,2)*(~dm)(4,3) - (~dm)(3,3)*(~dm)(4,2) );
-   const ET tmp4 ( (~dm)(3,1)*(~dm)(4,4) - (~dm)(3,4)*(~dm)(4,1) );
-   const ET tmp5 ( (~dm)(3,1)*(~dm)(4,3) - (~dm)(3,3)*(~dm)(4,1) );
-   const ET tmp6 ( (~dm)(3,1)*(~dm)(4,2) - (~dm)(3,2)*(~dm)(4,1) );
-   const ET tmp7 ( (~dm)(3,0)*(~dm)(4,4) - (~dm)(3,4)*(~dm)(4,0) );
-   const ET tmp8 ( (~dm)(3,0)*(~dm)(4,3) - (~dm)(3,3)*(~dm)(4,0) );
-   const ET tmp9 ( (~dm)(3,0)*(~dm)(4,2) - (~dm)(3,2)*(~dm)(4,0) );
-   const ET tmp10( (~dm)(3,0)*(~dm)(4,1) - (~dm)(3,1)*(~dm)(4,0) );
+   typedef typename MT::ElementType  ET;
 
-   const ET tmp11( (~dm)(2,2)*tmp1 - (~dm)(2,3)*tmp2 + (~dm)(2,4)*tmp3 );
-   const ET tmp12( (~dm)(2,1)*tmp1 - (~dm)(2,3)*tmp4 + (~dm)(2,4)*tmp5 );
-   const ET tmp13( (~dm)(2,1)*tmp2 - (~dm)(2,2)*tmp4 + (~dm)(2,4)*tmp6 );
-   const ET tmp14( (~dm)(2,1)*tmp3 - (~dm)(2,2)*tmp5 + (~dm)(2,3)*tmp6 );
-   const ET tmp15( (~dm)(2,0)*tmp1 - (~dm)(2,3)*tmp7 + (~dm)(2,4)*tmp8 );
-   const ET tmp16( (~dm)(2,0)*tmp2 - (~dm)(2,2)*tmp7 + (~dm)(2,4)*tmp9 );
-   const ET tmp17( (~dm)(2,0)*tmp3 - (~dm)(2,2)*tmp8 + (~dm)(2,3)*tmp9 );
-   const ET tmp18( (~dm)(2,0)*tmp4 - (~dm)(2,1)*tmp7 + (~dm)(2,4)*tmp10 );
-   const ET tmp19( (~dm)(2,0)*tmp5 - (~dm)(2,1)*tmp8 + (~dm)(2,3)*tmp10 );
-   const ET tmp20( (~dm)(2,0)*tmp6 - (~dm)(2,1)*tmp9 + (~dm)(2,2)*tmp10 );
+   typename MT::CompositeType A( ~dm );
 
-   return (~dm)(0,0) * ( (~dm)(1,1)*tmp11 - (~dm)(1,2)*tmp12 + (~dm)(1,3)*tmp13 - (~dm)(1,4)*tmp14 ) -
-          (~dm)(0,1) * ( (~dm)(1,0)*tmp11 - (~dm)(1,2)*tmp15 + (~dm)(1,3)*tmp16 - (~dm)(1,4)*tmp17 ) +
-          (~dm)(0,2) * ( (~dm)(1,0)*tmp12 - (~dm)(1,1)*tmp15 + (~dm)(1,3)*tmp18 - (~dm)(1,4)*tmp19 ) -
-          (~dm)(0,3) * ( (~dm)(1,0)*tmp13 - (~dm)(1,1)*tmp16 + (~dm)(1,2)*tmp18 - (~dm)(1,4)*tmp20 ) +
-          (~dm)(0,4) * ( (~dm)(1,0)*tmp14 - (~dm)(1,1)*tmp17 + (~dm)(1,2)*tmp19 - (~dm)(1,3)*tmp20 );
+   const ET tmp1 ( A(3,3)*A(4,4) - A(3,4)*A(4,3) );
+   const ET tmp2 ( A(3,2)*A(4,4) - A(3,4)*A(4,2) );
+   const ET tmp3 ( A(3,2)*A(4,3) - A(3,3)*A(4,2) );
+   const ET tmp4 ( A(3,1)*A(4,4) - A(3,4)*A(4,1) );
+   const ET tmp5 ( A(3,1)*A(4,3) - A(3,3)*A(4,1) );
+   const ET tmp6 ( A(3,1)*A(4,2) - A(3,2)*A(4,1) );
+   const ET tmp7 ( A(3,0)*A(4,4) - A(3,4)*A(4,0) );
+   const ET tmp8 ( A(3,0)*A(4,3) - A(3,3)*A(4,0) );
+   const ET tmp9 ( A(3,0)*A(4,2) - A(3,2)*A(4,0) );
+   const ET tmp10( A(3,0)*A(4,1) - A(3,1)*A(4,0) );
+
+   const ET tmp11( A(2,2)*tmp1 - A(2,3)*tmp2 + A(2,4)*tmp3 );
+   const ET tmp12( A(2,1)*tmp1 - A(2,3)*tmp4 + A(2,4)*tmp5 );
+   const ET tmp13( A(2,1)*tmp2 - A(2,2)*tmp4 + A(2,4)*tmp6 );
+   const ET tmp14( A(2,1)*tmp3 - A(2,2)*tmp5 + A(2,3)*tmp6 );
+   const ET tmp15( A(2,0)*tmp1 - A(2,3)*tmp7 + A(2,4)*tmp8 );
+   const ET tmp16( A(2,0)*tmp2 - A(2,2)*tmp7 + A(2,4)*tmp9 );
+   const ET tmp17( A(2,0)*tmp3 - A(2,2)*tmp8 + A(2,3)*tmp9 );
+   const ET tmp18( A(2,0)*tmp4 - A(2,1)*tmp7 + A(2,4)*tmp10 );
+   const ET tmp19( A(2,0)*tmp5 - A(2,1)*tmp8 + A(2,3)*tmp10 );
+   const ET tmp20( A(2,0)*tmp6 - A(2,1)*tmp9 + A(2,2)*tmp10 );
+
+   return A(0,0) * ( A(1,1)*tmp11 - A(1,2)*tmp12 + A(1,3)*tmp13 - A(1,4)*tmp14 ) -
+          A(0,1) * ( A(1,0)*tmp11 - A(1,2)*tmp15 + A(1,3)*tmp16 - A(1,4)*tmp17 ) +
+          A(0,2) * ( A(1,0)*tmp12 - A(1,1)*tmp15 + A(1,3)*tmp18 - A(1,4)*tmp19 ) -
+          A(0,3) * ( A(1,0)*tmp13 - A(1,1)*tmp16 + A(1,2)*tmp18 - A(1,4)*tmp20 ) +
+          A(0,4) * ( A(1,0)*tmp14 - A(1,1)*tmp17 + A(1,2)*tmp19 - A(1,3)*tmp20 );
 }
 /*! \endcond */
 //*************************************************************************************************
@@ -228,70 +236,72 @@ template< typename MT  // Type of the dense matrix
         , bool SO >    // Storage order of the dense matrix
 inline typename MT::ElementType det6x6( const DenseMatrix<MT,SO>& dm )
 {
-   typedef typename MT::ElementType  ET;
-
    BLAZE_INTERNAL_ASSERT( (~dm).rows()    == 6UL, "Invalid number of rows detected"    );
    BLAZE_INTERNAL_ASSERT( (~dm).columns() == 6UL, "Invalid number of columns detected" );
 
-   const ET tmp1 ( (~dm)(4,4)*(~dm)(5,5) - (~dm)(4,5)*(~dm)(5,4) );
-   const ET tmp2 ( (~dm)(4,3)*(~dm)(5,5) - (~dm)(4,5)*(~dm)(5,3) );
-   const ET tmp3 ( (~dm)(4,3)*(~dm)(5,4) - (~dm)(4,4)*(~dm)(5,3) );
-   const ET tmp4 ( (~dm)(4,2)*(~dm)(5,5) - (~dm)(4,5)*(~dm)(5,2) );
-   const ET tmp5 ( (~dm)(4,2)*(~dm)(5,4) - (~dm)(4,4)*(~dm)(5,2) );
-   const ET tmp6 ( (~dm)(4,2)*(~dm)(5,3) - (~dm)(4,3)*(~dm)(5,2) );
-   const ET tmp7 ( (~dm)(4,1)*(~dm)(5,5) - (~dm)(4,5)*(~dm)(5,1) );
-   const ET tmp8 ( (~dm)(4,1)*(~dm)(5,4) - (~dm)(4,4)*(~dm)(5,1) );
-   const ET tmp9 ( (~dm)(4,1)*(~dm)(5,3) - (~dm)(4,3)*(~dm)(5,1) );
-   const ET tmp10( (~dm)(4,1)*(~dm)(5,2) - (~dm)(4,2)*(~dm)(5,1) );
-   const ET tmp11( (~dm)(4,0)*(~dm)(5,5) - (~dm)(4,5)*(~dm)(5,0) );
-   const ET tmp12( (~dm)(4,0)*(~dm)(5,4) - (~dm)(4,4)*(~dm)(5,0) );
-   const ET tmp13( (~dm)(4,0)*(~dm)(5,3) - (~dm)(4,3)*(~dm)(5,0) );
-   const ET tmp14( (~dm)(4,0)*(~dm)(5,2) - (~dm)(4,2)*(~dm)(5,0) );
-   const ET tmp15( (~dm)(4,0)*(~dm)(5,1) - (~dm)(4,1)*(~dm)(5,0) );
+   typedef typename MT::ElementType  ET;
 
-   const ET tmp16( (~dm)(3,3)*tmp1 - (~dm)(3,4)*tmp2 + (~dm)(3,5)*tmp3 );
-   const ET tmp17( (~dm)(3,2)*tmp1 - (~dm)(3,4)*tmp4 + (~dm)(3,5)*tmp5 );
-   const ET tmp18( (~dm)(3,2)*tmp2 - (~dm)(3,3)*tmp4 + (~dm)(3,5)*tmp6 );
-   const ET tmp19( (~dm)(3,2)*tmp3 - (~dm)(3,3)*tmp5 + (~dm)(3,4)*tmp6 );
-   const ET tmp20( (~dm)(3,1)*tmp1 - (~dm)(3,4)*tmp7 + (~dm)(3,5)*tmp8 );
-   const ET tmp21( (~dm)(3,1)*tmp2 - (~dm)(3,3)*tmp7 + (~dm)(3,5)*tmp9 );
-   const ET tmp22( (~dm)(3,1)*tmp3 - (~dm)(3,3)*tmp8 + (~dm)(3,4)*tmp9 );
-   const ET tmp23( (~dm)(3,1)*tmp4 - (~dm)(3,2)*tmp7 + (~dm)(3,5)*tmp10 );
-   const ET tmp24( (~dm)(3,1)*tmp5 - (~dm)(3,2)*tmp8 + (~dm)(3,4)*tmp10 );
-   const ET tmp25( (~dm)(3,1)*tmp6 - (~dm)(3,2)*tmp9 + (~dm)(3,3)*tmp10 );
-   const ET tmp26( (~dm)(3,0)*tmp1 - (~dm)(3,4)*tmp11 + (~dm)(3,5)*tmp12 );
-   const ET tmp27( (~dm)(3,0)*tmp2 - (~dm)(3,3)*tmp11 + (~dm)(3,5)*tmp13 );
-   const ET tmp28( (~dm)(3,0)*tmp3 - (~dm)(3,3)*tmp12 + (~dm)(3,4)*tmp13 );
-   const ET tmp29( (~dm)(3,0)*tmp4 - (~dm)(3,2)*tmp11 + (~dm)(3,5)*tmp14 );
-   const ET tmp30( (~dm)(3,0)*tmp5 - (~dm)(3,2)*tmp12 + (~dm)(3,4)*tmp14 );
-   const ET tmp31( (~dm)(3,0)*tmp6 - (~dm)(3,2)*tmp13 + (~dm)(3,3)*tmp14 );
-   const ET tmp32( (~dm)(3,0)*tmp7 - (~dm)(3,1)*tmp11 + (~dm)(3,5)*tmp15 );
-   const ET tmp33( (~dm)(3,0)*tmp8 - (~dm)(3,1)*tmp12 + (~dm)(3,4)*tmp15 );
-   const ET tmp34( (~dm)(3,0)*tmp9 - (~dm)(3,1)*tmp13 + (~dm)(3,3)*tmp15 );
-   const ET tmp35( (~dm)(3,0)*tmp10 - (~dm)(3,1)*tmp14 + (~dm)(3,2)*tmp15 );
+   typename MT::CompositeType A( ~dm );
 
-   const ET tmp36( (~dm)(2,2)*tmp16 - (~dm)(2,3)*tmp17 + (~dm)(2,4)*tmp18 - (~dm)(2,5)*tmp19 );
-   const ET tmp37( (~dm)(2,1)*tmp16 - (~dm)(2,3)*tmp20 + (~dm)(2,4)*tmp21 - (~dm)(2,5)*tmp22 );
-   const ET tmp38( (~dm)(2,1)*tmp17 - (~dm)(2,2)*tmp20 + (~dm)(2,4)*tmp23 - (~dm)(2,5)*tmp24 );
-   const ET tmp39( (~dm)(2,1)*tmp18 - (~dm)(2,2)*tmp21 + (~dm)(2,3)*tmp23 - (~dm)(2,5)*tmp25 );
-   const ET tmp40( (~dm)(2,1)*tmp19 - (~dm)(2,2)*tmp22 + (~dm)(2,3)*tmp24 - (~dm)(2,4)*tmp25 );
-   const ET tmp41( (~dm)(2,0)*tmp16 - (~dm)(2,3)*tmp26 + (~dm)(2,4)*tmp27 - (~dm)(2,5)*tmp28 );
-   const ET tmp42( (~dm)(2,0)*tmp17 - (~dm)(2,2)*tmp26 + (~dm)(2,4)*tmp29 - (~dm)(2,5)*tmp30 );
-   const ET tmp43( (~dm)(2,0)*tmp18 - (~dm)(2,2)*tmp27 + (~dm)(2,3)*tmp29 - (~dm)(2,5)*tmp31 );
-   const ET tmp44( (~dm)(2,0)*tmp19 - (~dm)(2,2)*tmp28 + (~dm)(2,3)*tmp30 - (~dm)(2,4)*tmp31 );
-   const ET tmp45( (~dm)(2,0)*tmp20 - (~dm)(2,1)*tmp26 + (~dm)(2,4)*tmp32 - (~dm)(2,5)*tmp33 );
-   const ET tmp46( (~dm)(2,0)*tmp21 - (~dm)(2,1)*tmp27 + (~dm)(2,3)*tmp32 - (~dm)(2,5)*tmp34 );
-   const ET tmp47( (~dm)(2,0)*tmp22 - (~dm)(2,1)*tmp28 + (~dm)(2,3)*tmp33 - (~dm)(2,4)*tmp34 );
-   const ET tmp48( (~dm)(2,0)*tmp23 - (~dm)(2,1)*tmp29 + (~dm)(2,2)*tmp32 - (~dm)(2,5)*tmp35 );
-   const ET tmp49( (~dm)(2,0)*tmp24 - (~dm)(2,1)*tmp30 + (~dm)(2,2)*tmp33 - (~dm)(2,4)*tmp35 );
-   const ET tmp50( (~dm)(2,0)*tmp25 - (~dm)(2,1)*tmp31 + (~dm)(2,2)*tmp34 - (~dm)(2,3)*tmp35 );
+   const ET tmp1 ( A(4,4)*A(5,5) - A(4,5)*A(5,4) );
+   const ET tmp2 ( A(4,3)*A(5,5) - A(4,5)*A(5,3) );
+   const ET tmp3 ( A(4,3)*A(5,4) - A(4,4)*A(5,3) );
+   const ET tmp4 ( A(4,2)*A(5,5) - A(4,5)*A(5,2) );
+   const ET tmp5 ( A(4,2)*A(5,4) - A(4,4)*A(5,2) );
+   const ET tmp6 ( A(4,2)*A(5,3) - A(4,3)*A(5,2) );
+   const ET tmp7 ( A(4,1)*A(5,5) - A(4,5)*A(5,1) );
+   const ET tmp8 ( A(4,1)*A(5,4) - A(4,4)*A(5,1) );
+   const ET tmp9 ( A(4,1)*A(5,3) - A(4,3)*A(5,1) );
+   const ET tmp10( A(4,1)*A(5,2) - A(4,2)*A(5,1) );
+   const ET tmp11( A(4,0)*A(5,5) - A(4,5)*A(5,0) );
+   const ET tmp12( A(4,0)*A(5,4) - A(4,4)*A(5,0) );
+   const ET tmp13( A(4,0)*A(5,3) - A(4,3)*A(5,0) );
+   const ET tmp14( A(4,0)*A(5,2) - A(4,2)*A(5,0) );
+   const ET tmp15( A(4,0)*A(5,1) - A(4,1)*A(5,0) );
 
-   return (~dm)(0,0) * ( (~dm)(1,1)*tmp36 - (~dm)(1,2)*tmp37 + (~dm)(1,3)*tmp38 - (~dm)(1,4)*tmp39 + (~dm)(1,5)*tmp40 ) -
-          (~dm)(0,1) * ( (~dm)(1,0)*tmp36 - (~dm)(1,2)*tmp41 + (~dm)(1,3)*tmp42 - (~dm)(1,4)*tmp43 + (~dm)(1,5)*tmp44 ) +
-          (~dm)(0,2) * ( (~dm)(1,0)*tmp37 - (~dm)(1,1)*tmp41 + (~dm)(1,3)*tmp45 - (~dm)(1,4)*tmp46 + (~dm)(1,5)*tmp47 ) -
-          (~dm)(0,3) * ( (~dm)(1,0)*tmp38 - (~dm)(1,1)*tmp42 + (~dm)(1,2)*tmp45 - (~dm)(1,4)*tmp48 + (~dm)(1,5)*tmp49 ) +
-          (~dm)(0,4) * ( (~dm)(1,0)*tmp39 - (~dm)(1,1)*tmp43 + (~dm)(1,2)*tmp46 - (~dm)(1,3)*tmp48 + (~dm)(1,5)*tmp50 ) -
-          (~dm)(0,5) * ( (~dm)(1,0)*tmp40 - (~dm)(1,1)*tmp44 + (~dm)(1,2)*tmp47 - (~dm)(1,3)*tmp49 + (~dm)(1,4)*tmp50 );
+   const ET tmp16( A(3,3)*tmp1 - A(3,4)*tmp2 + A(3,5)*tmp3 );
+   const ET tmp17( A(3,2)*tmp1 - A(3,4)*tmp4 + A(3,5)*tmp5 );
+   const ET tmp18( A(3,2)*tmp2 - A(3,3)*tmp4 + A(3,5)*tmp6 );
+   const ET tmp19( A(3,2)*tmp3 - A(3,3)*tmp5 + A(3,4)*tmp6 );
+   const ET tmp20( A(3,1)*tmp1 - A(3,4)*tmp7 + A(3,5)*tmp8 );
+   const ET tmp21( A(3,1)*tmp2 - A(3,3)*tmp7 + A(3,5)*tmp9 );
+   const ET tmp22( A(3,1)*tmp3 - A(3,3)*tmp8 + A(3,4)*tmp9 );
+   const ET tmp23( A(3,1)*tmp4 - A(3,2)*tmp7 + A(3,5)*tmp10 );
+   const ET tmp24( A(3,1)*tmp5 - A(3,2)*tmp8 + A(3,4)*tmp10 );
+   const ET tmp25( A(3,1)*tmp6 - A(3,2)*tmp9 + A(3,3)*tmp10 );
+   const ET tmp26( A(3,0)*tmp1 - A(3,4)*tmp11 + A(3,5)*tmp12 );
+   const ET tmp27( A(3,0)*tmp2 - A(3,3)*tmp11 + A(3,5)*tmp13 );
+   const ET tmp28( A(3,0)*tmp3 - A(3,3)*tmp12 + A(3,4)*tmp13 );
+   const ET tmp29( A(3,0)*tmp4 - A(3,2)*tmp11 + A(3,5)*tmp14 );
+   const ET tmp30( A(3,0)*tmp5 - A(3,2)*tmp12 + A(3,4)*tmp14 );
+   const ET tmp31( A(3,0)*tmp6 - A(3,2)*tmp13 + A(3,3)*tmp14 );
+   const ET tmp32( A(3,0)*tmp7 - A(3,1)*tmp11 + A(3,5)*tmp15 );
+   const ET tmp33( A(3,0)*tmp8 - A(3,1)*tmp12 + A(3,4)*tmp15 );
+   const ET tmp34( A(3,0)*tmp9 - A(3,1)*tmp13 + A(3,3)*tmp15 );
+   const ET tmp35( A(3,0)*tmp10 - A(3,1)*tmp14 + A(3,2)*tmp15 );
+
+   const ET tmp36( A(2,2)*tmp16 - A(2,3)*tmp17 + A(2,4)*tmp18 - A(2,5)*tmp19 );
+   const ET tmp37( A(2,1)*tmp16 - A(2,3)*tmp20 + A(2,4)*tmp21 - A(2,5)*tmp22 );
+   const ET tmp38( A(2,1)*tmp17 - A(2,2)*tmp20 + A(2,4)*tmp23 - A(2,5)*tmp24 );
+   const ET tmp39( A(2,1)*tmp18 - A(2,2)*tmp21 + A(2,3)*tmp23 - A(2,5)*tmp25 );
+   const ET tmp40( A(2,1)*tmp19 - A(2,2)*tmp22 + A(2,3)*tmp24 - A(2,4)*tmp25 );
+   const ET tmp41( A(2,0)*tmp16 - A(2,3)*tmp26 + A(2,4)*tmp27 - A(2,5)*tmp28 );
+   const ET tmp42( A(2,0)*tmp17 - A(2,2)*tmp26 + A(2,4)*tmp29 - A(2,5)*tmp30 );
+   const ET tmp43( A(2,0)*tmp18 - A(2,2)*tmp27 + A(2,3)*tmp29 - A(2,5)*tmp31 );
+   const ET tmp44( A(2,0)*tmp19 - A(2,2)*tmp28 + A(2,3)*tmp30 - A(2,4)*tmp31 );
+   const ET tmp45( A(2,0)*tmp20 - A(2,1)*tmp26 + A(2,4)*tmp32 - A(2,5)*tmp33 );
+   const ET tmp46( A(2,0)*tmp21 - A(2,1)*tmp27 + A(2,3)*tmp32 - A(2,5)*tmp34 );
+   const ET tmp47( A(2,0)*tmp22 - A(2,1)*tmp28 + A(2,3)*tmp33 - A(2,4)*tmp34 );
+   const ET tmp48( A(2,0)*tmp23 - A(2,1)*tmp29 + A(2,2)*tmp32 - A(2,5)*tmp35 );
+   const ET tmp49( A(2,0)*tmp24 - A(2,1)*tmp30 + A(2,2)*tmp33 - A(2,4)*tmp35 );
+   const ET tmp50( A(2,0)*tmp25 - A(2,1)*tmp31 + A(2,2)*tmp34 - A(2,3)*tmp35 );
+
+   return A(0,0) * ( A(1,1)*tmp36 - A(1,2)*tmp37 + A(1,3)*tmp38 - A(1,4)*tmp39 + A(1,5)*tmp40 ) -
+          A(0,1) * ( A(1,0)*tmp36 - A(1,2)*tmp41 + A(1,3)*tmp42 - A(1,4)*tmp43 + A(1,5)*tmp44 ) +
+          A(0,2) * ( A(1,0)*tmp37 - A(1,1)*tmp41 + A(1,3)*tmp45 - A(1,4)*tmp46 + A(1,5)*tmp47 ) -
+          A(0,3) * ( A(1,0)*tmp38 - A(1,1)*tmp42 + A(1,2)*tmp45 - A(1,4)*tmp48 + A(1,5)*tmp49 ) +
+          A(0,4) * ( A(1,0)*tmp39 - A(1,1)*tmp43 + A(1,2)*tmp46 - A(1,3)*tmp48 + A(1,5)*tmp50 ) -
+          A(0,5) * ( A(1,0)*tmp40 - A(1,1)*tmp44 + A(1,2)*tmp47 - A(1,3)*tmp49 + A(1,4)*tmp50 );
 }
 /*! \endcond */
 //*************************************************************************************************
@@ -312,6 +322,8 @@ template< typename MT  // Type of the dense matrix
         , bool SO >    // Storage order of the dense matrix
 typename MT::ElementType detNxN( const DenseMatrix<MT,SO>& dm )
 {
+   BLAZE_INTERNAL_ASSERT( isSquare( ~dm ), "Non-square symmetric matrix detected" );
+
    typedef typename MT::ResultType           RT;
    typedef typename MT::ElementType          ET;
    typedef typename RemoveAdaptor<RT>::Type  URT;
@@ -319,8 +331,6 @@ typename MT::ElementType detNxN( const DenseMatrix<MT,SO>& dm )
    BLAZE_CONSTRAINT_MUST_BE_DENSE_MATRIX_TYPE( URT );
    BLAZE_CONSTRAINT_MUST_NOT_REQUIRE_EVALUATION( URT );
    BLAZE_CONSTRAINT_MUST_HAVE_MUTABLE_DATA_ACCESS( URT );
-
-   BLAZE_INTERNAL_ASSERT( isSquare( ~dm ), "Non-square symmetric matrix detected" );
 
    URT A( ~dm );
 
