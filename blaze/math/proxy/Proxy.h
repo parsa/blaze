@@ -65,6 +65,7 @@
 #include <blaze/math/typetraits/IsProxy.h>
 #include <blaze/math/typetraits/IsVector.h>
 #include <blaze/util/DisableIf.h>
+#include <blaze/util/Exception.h>
 #include <blaze/util/mpl/If.h>
 #include <blaze/util/typetraits/IsComplex.h>
 
@@ -702,18 +703,24 @@ inline typename ImagExprTrait< typename PT::RepresentedType >::Type
 //
 // \param proxy The given proxy instance.
 // \return void
+// \exception std::invalid_argument Invalid access to restricted element.
 // \exception std::logic_error Matrix cannot be transposed.
 //
-// This function transposes the represented matrix in-place. The function fails if ...
+// This function transposes the represented matrix in-place. The transpose operation fails if ...
 //
 //  - ... the represented matrix has a fixed size and is non-square;
 //  - ... the represented matrix is a triangular matrix.
 //
-// In all failure cases a \a std::logic_error exception is thrown.
+// In all failure cases a \a std::logic_error exception is thrown. Additionally, in case the
+// represented matrix cannot be modified, a \a std::invalid_argument exception is thrown.
 */
 template< typename PT, typename RT >
 inline void transpose( const Proxy<PT,RT>& proxy )
 {
+   if( (~proxy).isRestricted() ) {
+      BLAZE_THROW_INVALID_ARGUMENT( "Invalid access to restricted element" );
+   }
+
    transpose( (~proxy).get() );
 }
 //*************************************************************************************************
@@ -725,18 +732,24 @@ inline void transpose( const Proxy<PT,RT>& proxy )
 //
 // \param proxy The given proxy instance.
 // \return void
+// \exception std::invalid_argument Invalid access to restricted element.
 // \exception std::logic_error Matrix cannot be transposed.
 //
-// This function transposes the represented matrix in-place. The function fails if ...
+// This function transposes the represented matrix in-place. The transpose operation fails if ...
 //
 //  - ... the represented matrix has a fixed size and is non-square;
 //  - ... the represented matrix is a triangular matrix.
 //
-// In all failure cases a \a std::logic_error exception is thrown.
+// In all failure cases a \a std::logic_error exception is thrown. Additionally, in case the
+// represented matrix cannot be modified, a \a std::invalid_argument exception is thrown.
 */
 template< typename PT, typename RT >
 inline void ctranspose( const Proxy<PT,RT>& proxy )
 {
+   if( (~proxy).isRestricted() ) {
+      BLAZE_THROW_INVALID_ARGUMENT( "Invalid access to restricted element" );
+   }
+
    ctranspose( (~proxy).get() );
 }
 //*************************************************************************************************
@@ -748,6 +761,7 @@ inline void ctranspose( const Proxy<PT,RT>& proxy )
 //
 // \param proxy The given proxy instance.
 // \return void
+// \exception std::invalid_argument Invalid access to restricted element.
 // \exception std::invalid_argument Inversion of singular matrix failed.
 // \exception std::invalid_argument Invalid non-square matrix provided.
 //
@@ -758,7 +772,8 @@ inline void ctranspose( const Proxy<PT,RT>& proxy )
 //  - ... is singular and not invertible.
 //
 // In all failure cases either a compilation error is created if the failure can be predicted at
-// compile time or a \a std::invalid_argument exception is thrown.
+// compile time or a \a std::invalid_argument exception is thrown. Additionally, in case the
+// represented scalar or matrix cannot be modified, a \a std::invalid_argument exception is thrown.
 //
 // \note In case the represented element is a dense matrix, this function does not provide any
 // exception safety guarantee, i.e. in case an exception is thrown the matrix may already have
@@ -770,6 +785,10 @@ inline void ctranspose( const Proxy<PT,RT>& proxy )
 template< typename PT, typename RT >
 inline void invert( const Proxy<PT,RT>& proxy )
 {
+   if( (~proxy).isRestricted() ) {
+      BLAZE_THROW_INVALID_ARGUMENT( "Invalid access to restricted element" );
+   }
+
    invert( (~proxy).get() );
 }
 //*************************************************************************************************
@@ -781,6 +800,7 @@ inline void invert( const Proxy<PT,RT>& proxy )
 //
 // \param proxy The given proxy instance.
 // \return void
+// \exception std::invalid_argument Invalid access to restricted element.
 // \exception std::invalid_argument Inversion of singular matrix failed.
 // \exception std::invalid_argument Invalid non-square matrix provided.
 //
@@ -800,7 +820,8 @@ inline void invert( const Proxy<PT,RT>& proxy )
 //  - ... is singular and not invertible.
 //
 // In all failure cases either a compilation error is created if the failure can be predicted at
-// compile time or a \a std::invalid_argument exception is thrown.
+// compile time or a \a std::invalid_argument exception is thrown. Additionally, in case the
+// represented scalar or matrix cannot be modified, a \a std::invalid_argument exception is thrown.
 //
 // \note In case the represented element is a dense matrix, this function does not provide any
 // exception safety guarantee, i.e. in case an exception is thrown the matrix may already have
@@ -812,6 +833,10 @@ inline void invert( const Proxy<PT,RT>& proxy )
 template< DecompositionFlag DF, typename PT, typename RT >
 inline void invert( const Proxy<PT,RT>& proxy )
 {
+   if( (~proxy).isRestricted() ) {
+      BLAZE_THROW_INVALID_ARGUMENT( "Invalid access to restricted element" );
+   }
+
    invert<DF>( (~proxy).get() );
 }
 //*************************************************************************************************
