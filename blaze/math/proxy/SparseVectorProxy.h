@@ -48,6 +48,7 @@
 #include <blaze/system/Inline.h>
 #include <blaze/util/Exception.h>
 #include <blaze/util/Types.h>
+#include <blaze/util/Unused.h>
 
 
 namespace blaze {
@@ -656,6 +657,9 @@ template< typename PT, typename VT >
 BLAZE_ALWAYS_INLINE size_t nonZeros( const SparseVectorProxy<PT,VT>& proxy );
 
 template< typename PT, typename VT >
+BLAZE_ALWAYS_INLINE void resize( const SparseVectorProxy<PT,VT>& proxy, size_t n, bool preserve=true );
+
+template< typename PT, typename VT >
 BLAZE_ALWAYS_INLINE void reset( const SparseVectorProxy<PT,VT>& proxy );
 
 template< typename PT, typename VT >
@@ -779,6 +783,26 @@ template< typename PT    // Type of the proxy
 BLAZE_ALWAYS_INLINE size_t nonZeros( const SparseVectorProxy<PT,VT>& proxy )
 {
    return proxy.nonZeros();
+}
+//*************************************************************************************************
+
+
+//*************************************************************************************************
+/*!\brief Changing the size of the represented vector.
+// \ingroup math
+//
+// \param proxy The given access proxy.
+// \param n The new size of the vector.
+// \param preserve \a true if the old values of the vector should be preserved, \a false if not.
+// \return void
+//
+// This function resizes the represented vector to the specified \a size.
+*/
+template< typename PT    // Type of the proxy
+        , typename VT >  // Type of the sparse vector
+BLAZE_ALWAYS_INLINE void resize( const SparseVectorProxy<PT,VT>& proxy, size_t n, bool preserve )
+{
+   proxy.resize( n, preserve );
 }
 //*************************************************************************************************
 
