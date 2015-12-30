@@ -463,11 +463,18 @@ inline void UniUpperProxy<MT>::clear() const
 /*!\brief In-place inversion of the represented element
 //
 // \return void
+// \exception std::invalid_argument Invalid inversion of upper matrix element.
+//
+// In case the proxy represents a lower element, a \a std::invalid_argument exception is thrown.
 */
 template< typename MT >  // Type of the adapted matrix
 inline void UniUpperProxy<MT>::invert() const
 {
    using blaze::invert;
+
+   if( column_ < row_ ) {
+      BLAZE_THROW_INVALID_ARGUMENT( "Invalid inversion of lower matrix element" );
+   }
 
    if( row_ < column_ )
       invert( value_ );
