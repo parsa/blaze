@@ -46,7 +46,7 @@
 #include <blaze/math/constraints/RequiresEvaluation.h>
 #include <blaze/math/DecompositionFlag.h>
 #include <blaze/math/expressions/DenseMatrix.h>
-#include <blaze/math/lapack/LU.h>
+#include <blaze/math/lapack/PLU.h>
 #include <blaze/math/typetraits/IsSquare.h>
 #include <blaze/math/typetraits/IsStrictlyTriangular.h>
 #include <blaze/math/typetraits/IsTriangular.h>
@@ -315,7 +315,7 @@ inline typename MT::ElementType det6x6( const DenseMatrix<MT,SO>& dm )
 // \param dm The given dense matrix.
 // \return The determinant of the given matrix.
 //
-// This function computes the determinant of the given dense square matrix via an LU decomposition
+// This function computes the determinant of the given dense square matrix via a PLU decomposition
 // of the matrix.
 */
 template< typename MT  // Type of the dense matrix

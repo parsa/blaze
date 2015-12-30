@@ -84,7 +84,7 @@ void zgeqrf_( int* m, int* n, double* a, int* lda, double* tau, double* work, in
 //=================================================================================================
 
 //*************************************************************************************************
-/*!\name LAPACK LU decomposition functions */
+/*!\name LAPACK QR decomposition functions */
 //@{
 void geqrf( int* m, int* n, float* a, int* lda, float* tau, float*  work, int* lwork, int* info );
 

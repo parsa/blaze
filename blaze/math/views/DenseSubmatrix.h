@@ -11515,10 +11515,10 @@ inline bool isSame( const DenseSubmatrix<MT,AF,SO>& a, const DenseSubmatrix<MT,A
 // This function inverts the given dense submatrix by means of the specified matrix decomposition
 // algorithm \a DF. In case the submatrix is a symmetric positive-definite matrix it is recommended
 // to perform the inversion by means of a Cholesky decomposition, for a general square submatrix
-// an LU decomposition should be used:
+// a PLU decomposition should be used:
 
    \code
-   invert<byLU>( A );        // Inversion of a general square matrix
+   invert<byPLU>( A );       // Inversion of a general square matrix
    invert<byCholesky>( A );  // Inversion of a positive definite matrix
    \endcode
 

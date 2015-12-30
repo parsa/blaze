@@ -51,20 +51,20 @@ namespace blaze {
 // The DecompositionFlag type enumeration represents the different types of matrix decomposition
 // that are available within the Blaze library. The following flags are available:
 //
-//  - \a byLU: The default decomposition algorithm for general square matrices. It decomposes a
-//             matrix into a lower unitriangular matrix \c L, an upper triangular matrix \c U,
-//             and a permutation matrix \c P (\f$ A = L U P \f$). If no permutations are required,
-//             \c P is the identity matrix.
+//  - \a byPLU: The default decomposition algorithm for general square matrices. It decomposes a
+//          matrix into a lower unitriangular matrix \c L, an upper triangular matrix \c U, and
+//          a permutation matrix \c P (\f$ A = P L U \f$). If no permutations are required, \c P
+//          is the identity matrix.
 //  - \a byCholesky: An optimized decomposition for symmetric positive definite matrices. It
-//             decomposes a given matrix into either \f$ A = L^T L \f$, where \c L is a lower
-//             triangular matrix, or \f$ A = U^T U \f$, where \c U is an upper triangular matrix.
+//          decomposes a given matrix into either \f$ A = L^T L \f$, where \c L is a lower
+//          triangular matrix, or \f$ A = U^T U \f$, where \c U is an upper triangular matrix.
 //  - \a byQR: A very general decomposition for M-by-N matrices. It decomposes the matrix into
-//             \f$ A = Q R \f$, where \c Q is an orthogonal matrix of size M-by-M, and \c R is
-//             an upper triangular matrix of size M-by-N.
+//          \f$ A = Q R \f$, where \c Q is an orthogonal matrix of size M-by-M, and \c R is an
+//          upper triangular matrix of size M-by-N.
 */
 enum DecompositionFlag
 {
-   byLU       = 0,  //!< Flag for the LU decomposition.
+   byPLU      = 0,  //!< Flag for the PLU decomposition.
    byCholesky = 1,  //!< Flag for the Cholesky decomposition.
    byQR       = 2   //!< Flag for the QR decomposition.
 };

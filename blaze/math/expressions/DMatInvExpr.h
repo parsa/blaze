@@ -47,7 +47,7 @@
 #include <blaze/math/Functions.h>
 #include <blaze/math/lapack/Cholesky.h>
 #include <blaze/math/lapack/Inversion.h>
-#include <blaze/math/lapack/LU.h>
+#include <blaze/math/lapack/PLU.h>
 #include <blaze/math/shims/Invert.h>
 #include <blaze/math/shims/IsDefault.h>
 #include <blaze/math/traits/DerestrictTrait.h>
@@ -76,7 +76,7 @@ namespace blaze {
 // This class template represents the base template for the implementation of different dense
 // matrix inversion algorithms. In order to implement a specific algorithm this base template
 // needs to be specialized for a specific dense matrix decomposition algorithm, as for instance
-// the LU decomposition or the Cholesky decomposition.
+// the PLU decomposition or the Cholesky decomposition.
 */
 template< DecompositionFlag DF >  // Decomposition algorithm
 struct Inversion;
@@ -88,20 +88,20 @@ struct Inversion;
 
 //=================================================================================================
 //
-//  DENSE MATRIX INVERSION BASED ON THE LU DECOMPOSITION
+//  DENSE MATRIX INVERSION BASED ON THE PLU DECOMPOSITION
 //
 //=================================================================================================
 
 //*************************************************************************************************
 /*! \cond BLAZE_INTERNAL */
-/*!\brief Specialization of the Inversion class template for LU decompositions.
+/*!\brief Specialization of the Inversion class template for PLU decompositions.
 // \ingroup dense_matrix
 //
 // This specialization of the Inversion class template implements the mechanics of the dense
-// matrix inversion by means of the LU decomposition.
+// matrix inversion by means of the PLU decomposition.
 */
 template<>
-struct Inversion<byLU>
+struct Inversion<byPLU>
 {
    //**Invert functions****************************************************************************
    /*!\name Invert functions */
@@ -125,7 +125,7 @@ struct Inversion<byLU>
 // \exception std::invalid_argument Inversion of singular matrix failed.
 // \exception std::invalid_argument Invalid non-square matrix provided.
 //
-// This function inverts the given dense matrix by means of a LU decomposition. The matrix
+// This function inverts the given dense matrix by means of a PLU decomposition. The matrix
 // inversion fails if ...
 //
 //  - ... the given matrix is not a square matrix;
@@ -140,7 +140,7 @@ struct Inversion<byLU>
 */
 template< typename MT  // Type of the dense matrix
         , bool SO >    // Storage order of the dense matrix
-inline void Inversion<byLU>::invert( DenseMatrix<MT,SO>& dm )
+inline void Inversion<byPLU>::invert( DenseMatrix<MT,SO>& dm )
 {
    const size_t N( min( (~dm).rows(), (~dm).columns() ) );
    UniqueArray<int> ipiv( new int[N] );
@@ -807,11 +807,11 @@ inline void invert6x6( DenseMatrix<MT,SO>& dm )
 //
 // This function inverts the given dense square matrix via the specified matrix decomposition
 // algorithm \a DF. In case the given matrix is a positive-definite matrix it is recommended
-// to perform the inversion by means of a Cholesky decomposition, for a general matrix an LU
+// to perform the inversion by means of a Cholesky decomposition, for a general matrix a PLU
 // decomposition should be used:
 
    \code
-   invertNxN<byLU>( A );        // Inversion of a general matrix
+   invertNxN<byPLU>( A );       // Inversion of a general matrix
    invertNxN<byCholesky>( A );  // Inversion of a positive definite matrix
    \endcode
 
@@ -866,7 +866,7 @@ template< typename MT  // Type of the dense matrix
         , bool SO >    // Storage order of the dense matrix
 inline void invert( DenseMatrix<MT,SO>& dm )
 {
-   invert<byLU>( ~dm );
+   invert<byPLU>( ~dm );
 };
 //*************************************************************************************************
 
@@ -883,10 +883,10 @@ inline void invert( DenseMatrix<MT,SO>& dm )
 // This function inverts the given dense matrix by means of the specified matrix decomposition
 // algorithm \ DF. In case the matrix is a symmetric positive-definite matrix it is recommended
 // to perform the inversion by means of a Cholesky decomposition, for a general square matrix
-// an LU decomposition should be used:
+// a PLU decomposition should be used:
 
    \code
-   invert<byLU>( A );        // Inversion of a general square matrix
+   invert<byPLU>( A );       // Inversion of a general square matrix
    invert<byCholesky>( A );  // Inversion of a positive definite matrix
    \endcode
 

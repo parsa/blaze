@@ -744,7 +744,7 @@ inline void invert6x6( HermitianMatrix<MT,SO,true>& m )
 // decomposition should be used:
 
    \code
-   invertNxN<byLU>( A );        // Inversion of a general Hermitian matrix
+   invertNxN<byPLU>( A );       // Inversion of a general Hermitian matrix
    invertNxN<byCholesky>( A );  // Inversion of a positive definite matrix
    \endcode
 

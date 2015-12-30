@@ -747,7 +747,7 @@ inline void invert6x6( SymmetricMatrix<MT,SO,true,true>& m )
 // decomposition should be used:
 
    \code
-   invertNxN<byLU>( A );        // Inversion of a general symmetric matrix
+   invertNxN<byPLU>( A );       // Inversion of a general symmetric matrix
    invertNxN<byCholesky>( A );  // Inversion of a positive definite matrix
    \endcode
 

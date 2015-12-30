@@ -807,10 +807,10 @@ inline void invert( const Proxy<PT,RT>& proxy )
 // This function inverts the represented scalar or dense matrix element by means of the specified
 // matrix decomposition algorithm \ DF. In case the element is a symmetric positive-definite matrix
 // it is recommended to perform the inversion by means of a Cholesky decomposition, for a general
-// square matrix an LU decomposition should be used:
+// square matrix a PLU decomposition should be used:
 
    \code
-   invert<byLU>( A );        // Inversion of a general square matrix
+   invert<byPLU>( A );       // Inversion of a general square matrix
    invert<byCholesky>( A );  // Inversion of a positive definite matrix
    \endcode
 
