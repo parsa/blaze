@@ -338,6 +338,8 @@ inline typename EnableIf< IsGeneral<MT> >::Type
    A(1,0) = -A(1,0) * idet;
    A(0,1) = -A(0,1) * idet;
    A(1,1) =  a11;
+
+   BLAZE_INTERNAL_ASSERT( isIntact( ~dm ), "Broken invariant detected" );
 }
 /*! \endcond */
 //*************************************************************************************************
@@ -379,6 +381,8 @@ inline typename EnableIf< Or< IsSymmetric<MT>, IsHermitian<MT> > >::Type
    (~dm)(0,0) =  A(1,1) * idet;
    (~dm)(1,0) = -A(1,0) * idet;
    (~dm)(1,1) =  a11;
+
+   BLAZE_INTERNAL_ASSERT( isIntact( ~dm ), "Broken invariant detected" );
 }
 /*! \endcond */
 //*************************************************************************************************
@@ -420,6 +424,8 @@ inline typename EnableIf< And< IsLower<MT>, Not< IsUniLower<MT> > > >::Type
    A(0,0) =  A(1,1) * idet;
    A(1,0) = -A(1,0) * idet;
    A(1,1) =  a11;
+
+   BLAZE_INTERNAL_ASSERT( isIntact( ~dm ), "Broken invariant detected" );
 }
 /*! \endcond */
 //*************************************************************************************************
@@ -450,6 +456,8 @@ inline typename EnableIf< IsUniLower<MT> >::Type
    typename DerestrictTrait<MT>::Type A( derestrict( ~dm ) );
 
    A(1,0) = -A(1,0);
+
+   BLAZE_INTERNAL_ASSERT( isIntact( ~dm ), "Broken invariant detected" );
 }
 /*! \endcond */
 //*************************************************************************************************
@@ -491,6 +499,8 @@ inline typename EnableIf< And< IsUpper<MT>, Not< IsUniUpper<MT> > > >::Type
    A(0,0) =  A(1,1) * idet;
    A(0,1) = -A(0,1) * idet;
    A(1,1) =  a11;
+
+   BLAZE_INTERNAL_ASSERT( isIntact( ~dm ), "Broken invariant detected" );
 }
 /*! \endcond */
 //*************************************************************************************************
@@ -521,6 +531,8 @@ inline typename EnableIf< IsUniUpper<MT> >::Type
    typename DerestrictTrait<MT>::Type A( derestrict( ~dm ) );
 
    A(0,1) = -A(0,1);
+
+   BLAZE_INTERNAL_ASSERT( isIntact( ~dm ), "Broken invariant detected" );
 }
 /*! \endcond */
 //*************************************************************************************************
@@ -569,6 +581,8 @@ inline typename EnableIf< IsGeneral<MT> >::Type
    B(2,2) = A(0,0)*A(1,1) - A(0,1)*A(1,0);
 
    B /= det;
+
+   BLAZE_INTERNAL_ASSERT( isIntact( ~dm ), "Broken invariant detected" );
 }
 /*! \endcond */
 //*************************************************************************************************
@@ -614,6 +628,8 @@ inline typename EnableIf< Or< IsSymmetric<MT>, IsHermitian<MT> > >::Type
    (~dm)(2,2) = A(0,0)*A(1,1) - A(0,1)*A(1,0);
 
    (~dm) /= det;
+
+   BLAZE_INTERNAL_ASSERT( isIntact( ~dm ), "Broken invariant detected" );
 }
 /*! \endcond */
 //*************************************************************************************************
@@ -659,6 +675,8 @@ inline typename EnableIf< And< IsLower<MT>, Not< IsUniLower<MT> > > >::Type
    B(2,2) =   A(0,0)*A(1,1);
 
    B /= det;
+
+   BLAZE_INTERNAL_ASSERT( isIntact( ~dm ), "Broken invariant detected" );
 }
 /*! \endcond */
 //*************************************************************************************************
@@ -692,6 +710,8 @@ inline typename EnableIf< IsUniLower<MT> >::Type
    B(1,0) = - A(1,0);
    B(2,0) =   A(1,0)*A(2,1) - A(2,0);
    B(2,1) = - A(2,1);
+
+   BLAZE_INTERNAL_ASSERT( isIntact( ~dm ), "Broken invariant detected" );
 }
 /*! \endcond */
 //*************************************************************************************************
@@ -737,6 +757,8 @@ inline typename EnableIf< And< IsUpper<MT>, Not< IsUniUpper<MT> > > >::Type
    B(2,2) =   A(0,0)*A(1,1);
 
    B /= det;
+
+   BLAZE_INTERNAL_ASSERT( isIntact( ~dm ), "Broken invariant detected" );
 }
 /*! \endcond */
 //*************************************************************************************************
@@ -770,6 +792,8 @@ inline typename EnableIf< IsUniUpper<MT> >::Type
    B(0,1) = - A(0,1);
    B(0,2) =   A(0,1)*A(1,2) - A(0,2);
    B(1,2) = - A(1,2);
+
+   BLAZE_INTERNAL_ASSERT( isIntact( ~dm ), "Broken invariant detected" );
 }
 /*! \endcond */
 //*************************************************************************************************
@@ -839,6 +863,8 @@ inline typename EnableIf< IsGeneral<MT> >::Type
    }
 
    B /= det;
+
+   BLAZE_INTERNAL_ASSERT( isIntact( ~dm ), "Broken invariant detected" );
 }
 /*! \endcond */
 //*************************************************************************************************
@@ -901,6 +927,8 @@ inline typename EnableIf< Or< IsSymmetric<MT>, IsHermitian<MT> > >::Type
    }
 
    (~dm) /= det;
+
+   BLAZE_INTERNAL_ASSERT( isIntact( ~dm ), "Broken invariant detected" );
 }
 /*! \endcond */
 //*************************************************************************************************
@@ -954,6 +982,8 @@ inline typename EnableIf< And< IsLower<MT>, Not< IsUniLower<MT> > > >::Type
    B(3,3) =   A(2,2)*tmp4;
 
    B /= det;
+
+   BLAZE_INTERNAL_ASSERT( isIntact( ~dm ), "Broken invariant detected" );
 }
 /*! \endcond */
 //*************************************************************************************************
@@ -992,6 +1022,8 @@ inline typename EnableIf< IsUniLower<MT> >::Type
    B(2,1) = - A(2,1);
    B(3,1) =   tmp;
    B(3,2) = - A(3,2);
+
+   BLAZE_INTERNAL_ASSERT( isIntact( ~dm ), "Broken invariant detected" );
 }
 /*! \endcond */
 //*************************************************************************************************
@@ -1045,6 +1077,8 @@ inline typename EnableIf< And< IsUpper<MT>, Not< IsUniUpper<MT> > > >::Type
    B(3,3) =   A(2,2)*tmp4;
 
    B /= det;
+
+   BLAZE_INTERNAL_ASSERT( isIntact( ~dm ), "Broken invariant detected" );
 }
 /*! \endcond */
 //*************************************************************************************************
@@ -1083,6 +1117,8 @@ inline typename EnableIf< IsUniUpper<MT> >::Type
    B(0,3) =   A(0,1)*A(1,3) - A(0,3) - A(2,3)*tmp;
    B(1,3) =   A(2,3)*A(1,2) - A(1,3);
    B(2,3) = - A(2,3);
+
+   BLAZE_INTERNAL_ASSERT( isIntact( ~dm ), "Broken invariant detected" );
 }
 /*! \endcond */
 //*************************************************************************************************
@@ -1207,6 +1243,8 @@ inline typename EnableIf< IsGeneral<MT> >::Type
    }
 
    B /= det;
+
+   BLAZE_INTERNAL_ASSERT( isIntact( ~dm ), "Broken invariant detected" );
 }
 /*! \endcond */
 //*************************************************************************************************
@@ -1312,6 +1350,8 @@ inline typename EnableIf< Or< IsSymmetric<MT>, IsHermitian<MT> > >::Type
    }
 
    (~dm) /= det;
+
+   BLAZE_INTERNAL_ASSERT( isIntact( ~dm ), "Broken invariant detected" );
 }
 /*! \endcond */
 //*************************************************************************************************
@@ -1377,6 +1417,8 @@ inline typename EnableIf< And< IsLower<MT>, Not< IsUniLower<MT> > > >::Type
    }
 
    B /= det;
+
+   BLAZE_INTERNAL_ASSERT( isIntact( ~dm ), "Broken invariant detected" );
 }
 /*! \endcond */
 //*************************************************************************************************
@@ -1421,6 +1463,8 @@ inline typename EnableIf< IsUniLower<MT> >::Type
    B(3,2) = - A(3,2);
    B(4,2) =   A(4,3)*A(3,2) - A(4,2);
    B(4,3) = - A(4,3);
+
+   BLAZE_INTERNAL_ASSERT( isIntact( ~dm ), "Broken invariant detected" );
 }
 /*! \endcond */
 //*************************************************************************************************
@@ -1487,6 +1531,8 @@ inline typename EnableIf< And< IsUpper<MT>, Not< IsUniUpper<MT> > > >::Type
    }
 
    B /= det;
+
+   BLAZE_INTERNAL_ASSERT( isIntact( ~dm ), "Broken invariant detected" );
 }
 /*! \endcond */
 //*************************************************************************************************
@@ -1533,6 +1579,8 @@ inline typename EnableIf< IsUniUpper<MT> >::Type
    B(1,4) =   A(2,4)*A(1,2) - A(1,4) - A(3,4)*tmp9;
    B(2,4) =   A(3,4)*A(2,3) - A(2,4);
    B(3,4) = - A(3,4);
+
+   BLAZE_INTERNAL_ASSERT( isIntact( ~dm ), "Broken invariant detected" );
 }
 /*! \endcond */
 //*************************************************************************************************
@@ -1745,6 +1793,8 @@ inline typename EnableIf< IsGeneral<MT> >::Type
    }
 
    B /= det;
+
+   BLAZE_INTERNAL_ASSERT( isIntact( ~dm ), "Broken invariant detected" );
 }
 /*! \endcond */
 //*************************************************************************************************
@@ -1932,6 +1982,8 @@ inline typename EnableIf< Or< IsSymmetric<MT>, IsHermitian<MT> > >::Type
    }
 
    (~dm) /= det;
+
+   BLAZE_INTERNAL_ASSERT( isIntact( ~dm ), "Broken invariant detected" );
 }
 /*! \endcond */
 //*************************************************************************************************
@@ -2010,6 +2062,8 @@ inline typename EnableIf< And< IsLower<MT>, Not< IsUniLower<MT> > > >::Type
    }
 
    B /= det;
+
+   BLAZE_INTERNAL_ASSERT( isIntact( ~dm ), "Broken invariant detected" );
 }
 /*! \endcond */
 //*************************************************************************************************
@@ -2062,6 +2116,8 @@ inline typename EnableIf< IsUniLower<MT> >::Type
    B(4,3) =   A(5,3)*A(4,5) - A(4,3);
    B(5,3) =   A(5,4)*A(4,3) - A(5,3);
    B(5,4) =   A(5,3)*A(3,4) - A(5,4);
+
+   BLAZE_INTERNAL_ASSERT( isIntact( ~dm ), "Broken invariant detected" );
 }
 /*! \endcond */
 //*************************************************************************************************
@@ -2140,6 +2196,8 @@ inline typename EnableIf< And< IsUpper<MT>, Not< IsUniUpper<MT> > > >::Type
    }
 
    B /= det;
+
+   BLAZE_INTERNAL_ASSERT( isIntact( ~dm ), "Broken invariant detected" );
 }
 /*! \endcond */
 //*************************************************************************************************
@@ -2192,6 +2250,8 @@ inline typename EnableIf< IsUniUpper<MT> >::Type
    B(2,5) = - A(2,5) + A(3,5)*A(2,3) + A(4,5)*tmp6;
    B(3,5) = - A(3,5) + A(4,5)*A(3,4);
    B(4,5) = - A(4,5);
+
+   BLAZE_INTERNAL_ASSERT( isIntact( ~dm ), "Broken invariant detected" );
 }
 /*! \endcond */
 //*************************************************************************************************
@@ -2231,6 +2291,8 @@ inline void invertNxN( DenseMatrix<MT,SO>& dm )
    BLAZE_INTERNAL_ASSERT( isSquare( ~dm ), "Non-square matrix detected" );
 
    Inversion<DF>::invert( ~dm );
+
+   BLAZE_INTERNAL_ASSERT( isIntact( ~dm ), "Broken invariant detected" );
 }
 /*! \endcond */
 //*************************************************************************************************
