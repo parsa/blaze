@@ -2718,6 +2718,24 @@ void ProxyTest::testResize()
       checkSize    ( mat(1,1), 0UL );
    }
 
+   {
+      test_ = "Row-major resize( MatrixAccessProxy, size_t )";
+
+      DVM mat( 2UL, 2UL, 1UL );
+      resize( mat(0,0), 5UL );
+
+      checkRows    ( mat, 2UL );
+      checkColumns ( mat, 2UL );
+      checkCapacity( mat, 1UL );
+      checkNonZeros( mat, 1UL );
+
+      checkSize    ( mat(0,0), 5UL );
+      checkCapacity( mat(0,0), 5UL );
+      checkSize    ( mat(0,1), 0UL );
+      checkSize    ( mat(1,0), 0UL );
+      checkSize    ( mat(1,1), 0UL );
+   }
+
 
    //=====================================================================================
    // Row-major matrix tests with matrix elements
@@ -2728,6 +2746,28 @@ void ProxyTest::testResize()
 
       DMM mat( 2UL, 2UL, 1UL );
       mat(0,0).resize( 5UL, 5UL );
+
+      checkRows    ( mat, 2UL );
+      checkColumns ( mat, 2UL );
+      checkCapacity( mat, 1UL );
+      checkNonZeros( mat, 1UL );
+
+      checkRows    ( mat(0,0),  5UL );
+      checkColumns ( mat(0,0),  5UL );
+      checkCapacity( mat(0,0), 25UL );
+      checkRows    ( mat(0,1),  0UL );
+      checkColumns ( mat(0,1),  0UL );
+      checkRows    ( mat(1,0),  0UL );
+      checkColumns ( mat(1,0),  0UL );
+      checkRows    ( mat(1,1),  0UL );
+      checkColumns ( mat(1,1),  0UL );
+   }
+
+   {
+      test_ = "Row-major resize( MatrixAccessProxy, size_t, size_t )";
+
+      DMM mat( 2UL, 2UL, 1UL );
+      resize( mat(0,0), 5UL, 5UL );
 
       checkRows    ( mat, 2UL );
       checkColumns ( mat, 2UL );
@@ -2768,6 +2808,24 @@ void ProxyTest::testResize()
       checkSize    ( mat(1,1), 0UL );
    }
 
+   {
+      test_ = "Row-major resize( MatrixAccessProxy, size_t )";
+
+      ODVM mat( 2UL, 2UL, 1UL );
+      resize( mat(0,0), 5UL );
+
+      checkRows    ( mat, 2UL );
+      checkColumns ( mat, 2UL );
+      checkCapacity( mat, 1UL );
+      checkNonZeros( mat, 1UL );
+
+      checkSize    ( mat(0,0), 5UL );
+      checkCapacity( mat(0,0), 5UL );
+      checkSize    ( mat(0,1), 0UL );
+      checkSize    ( mat(1,0), 0UL );
+      checkSize    ( mat(1,1), 0UL );
+   }
+
 
    //=====================================================================================
    // Column-major matrix tests with matrix elements
@@ -2778,6 +2836,28 @@ void ProxyTest::testResize()
 
       ODMM mat( 2UL, 2UL, 1UL );
       mat(0,0).resize( 5UL, 5UL );
+
+      checkRows    ( mat, 2UL );
+      checkColumns ( mat, 2UL );
+      checkCapacity( mat, 1UL );
+      checkNonZeros( mat, 1UL );
+
+      checkRows    ( mat(0,0),  5UL );
+      checkColumns ( mat(0,0),  5UL );
+      checkCapacity( mat(0,0), 25UL );
+      checkRows    ( mat(0,1),  0UL );
+      checkColumns ( mat(0,1),  0UL );
+      checkRows    ( mat(1,0),  0UL );
+      checkColumns ( mat(1,0),  0UL );
+      checkRows    ( mat(1,1),  0UL );
+      checkColumns ( mat(1,1),  0UL );
+   }
+
+   {
+      test_ = "Column-major MatrixAccessProxy::resize( size_t, size_t )";
+
+      ODMM mat( 2UL, 2UL, 1UL );
+      resize( mat(0,0), 5UL, 5UL );
 
       checkRows    ( mat, 2UL );
       checkColumns ( mat, 2UL );
