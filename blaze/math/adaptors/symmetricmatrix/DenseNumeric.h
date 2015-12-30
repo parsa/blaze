@@ -737,6 +737,21 @@ class SymmetricMatrix<MT,SO,true,true>
    template< typename MT2, bool SO2, bool DF2, bool NF2 >
    friend bool isDefault( const SymmetricMatrix<MT2,SO2,DF2,NF2>& m );
 
+   template< typename MT2, bool SO2 >
+   friend void invert2x2( SymmetricMatrix<MT2,SO2,true,true>& m );
+
+   template< typename MT2, bool SO2 >
+   friend void invert3x3( SymmetricMatrix<MT2,SO2,true,true>& m );
+
+   template< typename MT2, bool SO2 >
+   friend void invert4x4( SymmetricMatrix<MT2,SO2,true,true>& m );
+
+   template< typename MT2, bool SO2 >
+   friend void invert5x5( SymmetricMatrix<MT2,SO2,true,true>& m );
+
+   template< typename MT2, bool SO2 >
+   friend void invert6x6( SymmetricMatrix<MT2,SO2,true,true>& m );
+
    template< DecompositionFlag DF, typename MT2, bool SO2 >
    friend void invertNxN( SymmetricMatrix<MT2,SO2,true,true>& m );
    //**********************************************************************************************

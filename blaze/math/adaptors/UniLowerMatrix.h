@@ -45,6 +45,7 @@
 #include <blaze/math/adaptors/unilowermatrix/Dense.h>
 #include <blaze/math/adaptors/unilowermatrix/Sparse.h>
 #include <blaze/math/constraints/RequiresEvaluation.h>
+#include <blaze/math/dense/StaticMatrix.h>
 #include <blaze/math/Forward.h>
 #include <blaze/math/Functions.h>
 #include <blaze/math/shims/IsDefault.h>
@@ -283,6 +284,208 @@ inline void swap( UniLowerMatrix<MT,SO,DF>& a, UniLowerMatrix<MT,SO,DF>& b ) /* 
 {
    a.swap( b );
 }
+//*************************************************************************************************
+
+
+//*************************************************************************************************
+/*! \cond BLAZE_INTERNAL */
+/*!\brief In-place inversion of the given unilower dense \f$ 2 \times 2 \f$ matrix.
+// \ingroup unilower_matrix
+//
+// \param m The unilower dense matrix to be inverted.
+// \return void
+//
+// This function inverts the given unilower dense \f$ 2 \times 2 \f$ matrix via the rule of
+// Sarrus. The matrix inversion fails if the given matrix is singular and not invertible. In
+// this case a \a std::invalid_argument exception is thrown.
+*/
+template< typename MT  // Type of the dense matrix
+        , bool SO >    // Storage order of the dense matrix
+inline void invert2x2( UniLowerMatrix<MT,SO,true>& m )
+{
+   BLAZE_INTERNAL_ASSERT( m.rows()    == 2UL, "Invalid number of rows detected"    );
+   BLAZE_INTERNAL_ASSERT( m.columns() == 2UL, "Invalid number of columns detected" );
+
+   typedef typename MT::ElementType  ET;
+
+   typename DerestrictTrait<MT>::Type A( derestrict( m ) );
+
+   A(1,0) = -A(1,0);
+
+   BLAZE_INTERNAL_ASSERT( isIntact( m ), "Broken invariant detected" );
+}
+/*! \endcond */
+//*************************************************************************************************
+
+
+//*************************************************************************************************
+/*! \cond BLAZE_INTERNAL */
+/*!\brief In-place inversion of the given unilower dense \f$ 3 \times 3 \f$ matrix.
+// \ingroup unilower_matrix
+//
+// \param m The unilower dense matrix to be inverted.
+// \return void
+//
+// This function inverts the given unilower dense \f$ 3 \times 3 \f$ matrix via the rule of
+// Sarrus. The matrix inversion fails if the given matrix is singular and not invertible. In
+// this case a \a std::invalid_argument exception is thrown.
+*/
+template< typename MT  // Type of the dense matrix
+        , bool SO >    // Storage order of the dense matrix
+inline void invert3x3( UniLowerMatrix<MT,SO,true>& m )
+{
+   BLAZE_INTERNAL_ASSERT( m.rows()    == 3UL, "Invalid number of rows detected"    );
+   BLAZE_INTERNAL_ASSERT( m.columns() == 3UL, "Invalid number of columns detected" );
+
+   typedef typename MT::ElementType  ET;
+
+   const StaticMatrix<ET,3UL,3UL,SO> A( m );
+   typename DerestrictTrait<MT>::Type B( derestrict( m ) );
+
+   B(1,0) = - A(1,0);
+   B(2,0) =   A(1,0)*A(2,1) - A(2,0);
+   B(2,1) = - A(2,1);
+
+   BLAZE_INTERNAL_ASSERT( isIntact( m ), "Broken invariant detected" );
+}
+/*! \endcond */
+//*************************************************************************************************
+
+
+//*************************************************************************************************
+/*! \cond BLAZE_INTERNAL */
+/*!\brief In-place inversion of the given unilower dense \f$ 4 \times 4 \f$ matrix.
+// \ingroup unilower_matrix
+//
+// \param m The unilower dense matrix to be inverted.
+// \return void
+//
+// This function inverts the given unilower dense \f$ 4 \times 4 \f$ matrix via the rule of
+// Sarrus. The matrix inversion fails if the given matrix is singular and not invertible. In
+// this case a \a std::invalid_argument exception is thrown.
+*/
+template< typename MT  // Type of the dense matrix
+        , bool SO >    // Storage order of the dense matrix
+inline void invert4x4( UniLowerMatrix<MT,SO,true>& m )
+{
+   BLAZE_INTERNAL_ASSERT( m.rows()    == 4UL, "Invalid number of rows detected"    );
+   BLAZE_INTERNAL_ASSERT( m.columns() == 4UL, "Invalid number of columns detected" );
+
+   typedef typename MT::ElementType  ET;
+
+   const StaticMatrix<ET,4UL,4UL,SO> A( m );
+   typename DerestrictTrait<MT>::Type B( derestrict( m ) );
+
+   const ET tmp( A(2,1)*A(3,2) - A(3,1) );
+
+   B(1,0) = - A(1,0);
+   B(2,0) =   A(1,0)*A(2,1) - A(2,0);
+   B(3,0) =   A(2,0)*A(3,2) - A(3,0) - A(1,0)*tmp;
+   B(2,1) = - A(2,1);
+   B(3,1) =   tmp;
+   B(3,2) = - A(3,2);
+
+   BLAZE_INTERNAL_ASSERT( isIntact( m ), "Broken invariant detected" );
+}
+/*! \endcond */
+//*************************************************************************************************
+
+
+//*************************************************************************************************
+/*! \cond BLAZE_INTERNAL */
+/*!\brief In-place inversion of the given unilower dense \f$ 5 \times 5 \f$ matrix.
+// \ingroup unilower_matrix
+//
+// \param m The unilower dense matrix to be inverted.
+// \return void
+//
+// This function inverts the given unilower dense \f$ 5 \times 5 \f$ matrix via the rule of
+// Sarrus. The matrix inversion fails if the given matrix is singular and not invertible. In
+// this case a \a std::invalid_argument exception is thrown.
+*/
+template< typename MT  // Type of the dense matrix
+        , bool SO >    // Storage order of the dense matrix
+inline void invert5x5( UniLowerMatrix<MT,SO,true>& m )
+{
+   BLAZE_INTERNAL_ASSERT( m.rows()    == 5UL, "Invalid number of rows detected"    );
+   BLAZE_INTERNAL_ASSERT( m.columns() == 5UL, "Invalid number of columns detected" );
+
+   typedef typename MT::ElementType  ET;
+
+   const StaticMatrix<ET,5UL,5UL,SO> A( m );
+   typename DerestrictTrait<MT>::Type B( derestrict( m ) );
+
+   const ET tmp1( A(3,2)*A(4,3) - A(4,2) );
+   const ET tmp2( A(2,1)*A(3,2) - A(3,1) );
+   const ET tmp3( A(2,1)*tmp1 - A(3,1)*A(4,3) + A(4,1) );
+
+   B(1,0) = - A(1,0);
+   B(2,0) =   A(1,0)*A(2,1) - A(2,0);
+   B(3,0) = - A(1,0)*tmp2 + A(2,0)*A(3,2) - A(3,0);
+   B(4,0) =   A(1,0)*tmp3 - A(2,0)*tmp1 + A(3,0)*A(4,3) - A(4,0);
+   B(2,1) = - A(2,1);
+   B(3,1) =   tmp2;
+   B(4,1) = - tmp3;
+   B(3,2) = - A(3,2);
+   B(4,2) =   A(4,3)*A(3,2) - A(4,2);
+   B(4,3) = - A(4,3);
+
+   BLAZE_INTERNAL_ASSERT( isIntact( m ), "Broken invariant detected" );
+}
+/*! \endcond */
+//*************************************************************************************************
+
+
+//*************************************************************************************************
+/*! \cond BLAZE_INTERNAL */
+/*!\brief In-place inversion of the given unilower dense \f$ 6 \times 6 \f$ matrix.
+// \ingroup unilower_matrix
+//
+// \param m The unilower dense matrix to be inverted.
+// \return void
+//
+// This function inverts the given unilower dense \f$ 6 \times 6 \f$ matrix via the rule of
+// Sarrus. The matrix inversion fails if the given matrix is singular and not invertible. In
+// this case a \a std::invalid_argument exception is thrown.
+*/
+template< typename MT  // Type of the dense matrix
+        , bool SO >    // Storage order of the dense matrix
+inline void invert6x6( UniLowerMatrix<MT,SO,true>& m )
+{
+   BLAZE_INTERNAL_ASSERT( m.rows()    == 6UL, "Invalid number of rows detected"    );
+   BLAZE_INTERNAL_ASSERT( m.columns() == 6UL, "Invalid number of columns detected" );
+
+   typedef typename MT::ElementType  ET;
+
+   const StaticMatrix<ET,6UL,6UL,SO> A( m );
+   typename DerestrictTrait<MT>::Type B( derestrict( m ) );
+
+   const ET tmp1( A(4,3)*A(5,4) - A(5,3) );
+   const ET tmp2( A(3,2)*A(4,3) - A(4,2) );
+   const ET tmp3( A(3,2)*tmp1 - A(4,2)*A(5,4) + A(5,2) );
+   const ET tmp4( A(2,1)*A(3,2) - A(3,1) );
+   const ET tmp5( A(2,1)*tmp2 - A(3,1)*A(4,3) + A(4,1) );
+   const ET tmp6( A(2,1)*tmp3 - A(3,1)*tmp1 + A(4,1)*A(5,4) - A(5,1) );
+
+   B(1,0) = - A(1,0);
+   B(2,0) =   A(1,0)*A(2,1) - A(2,0);
+   B(3,0) = - A(1,0)*tmp4 + A(2,0)*A(3,2) - A(3,0);
+   B(4,0) =   A(1,0)*tmp5 - A(2,0)*tmp2 + A(3,0)*A(4,3) - A(4,0);
+   B(5,0) = - A(1,0)*tmp6 + A(2,0)*tmp3 - A(3,0)*tmp1 + A(4,0)*A(5,4) - A(5,0);
+   B(2,1) = - A(2,1);
+   B(3,1) =   tmp4;
+   B(4,1) = - tmp5;
+   B(5,1) =   tmp6;
+   B(3,2) = - A(3,2);
+   B(4,2) =   tmp2;
+   B(5,2) = - tmp3;
+   B(4,3) =   A(5,3)*A(4,5) - A(4,3);
+   B(5,3) =   A(5,4)*A(4,3) - A(5,3);
+   B(5,4) =   A(5,3)*A(3,4) - A(5,4);
+
+   BLAZE_INTERNAL_ASSERT( isIntact( m ), "Broken invariant detected" );
+}
+/*! \endcond */
 //*************************************************************************************************
 
 
