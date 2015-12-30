@@ -41,11 +41,11 @@
 //*************************************************************************************************
 
 #include <blaze/math/dense/DenseMatrix.h>
-#include <blaze/math/dense/Determinant.h>
 #include <blaze/math/dense/Inversion.h>
 #include <blaze/math/expressions/DenseMatrix.h>
 #include <blaze/math/expressions/DMatAbsExpr.h>
 #include <blaze/math/expressions/DMatConjExpr.h>
+#include <blaze/math/expressions/DMatDetExpr.h>
 #include <blaze/math/expressions/DMatDMatAddExpr.h>
 #include <blaze/math/expressions/DMatDMatMultExpr.h>
 #include <blaze/math/expressions/DMatDMatSubExpr.h>

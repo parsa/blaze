@@ -1,7 +1,7 @@
 //=================================================================================================
 /*!
-//  \file blaze/math/dense/Determinant.h
-//  \brief Header file for the dense matrix determinant functionality
+//  \file blaze/math/expressions/DMatDetExpr.h
+//  \brief Header file for the dense matrix determinant expression
 //
 //  Copyright (C) 2013 Klaus Iglberger - All Rights Reserved
 //
@@ -32,8 +32,8 @@
 */
 //=================================================================================================
 
-#ifndef _BLAZE_MATH_DENSE_DETERMINANT_H_
-#define _BLAZE_MATH_DENSE_DETERMINANT_H_
+#ifndef _BLAZE_MATH_EXPRESSIONS_DMATDETEXPR_H_
+#define _BLAZE_MATH_EXPRESSIONS_DMATDETEXPR_H_
 
 
 //*************************************************************************************************
