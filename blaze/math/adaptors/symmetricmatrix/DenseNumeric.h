@@ -738,7 +738,7 @@ class SymmetricMatrix<MT,SO,true,true>
    friend bool isDefault( const SymmetricMatrix<MT2,SO2,DF2,NF2>& m );
 
    template< DecompositionFlag DF, typename MT2, bool SO2 >
-   friend void invert( SymmetricMatrix<MT2,SO2,true,true>& m );
+   friend void invertNxN( SymmetricMatrix<MT2,SO2,true,true>& m );
    //**********************************************************************************************
 
    //**Compile time checks*************************************************************************

@@ -258,14 +258,14 @@ inline void swap( SymmetricMatrix<MT,SO,DF,NF>& a, SymmetricMatrix<MT,SO,DF,NF>&
 // \return void
 // \exception std::invalid_argument Inversion of singular matrix failed.
 //
-// This function inverts the given dense matrix by means of the specified matrix decomposition
-// algorithm \a DF. In case the symmetric matrix is a positive-definite matrix it is recommended
-// to perform the inversion by means of a Cholesky decomposition, for a general symmetric matrix
-// an LU decomposition should be used:
+// This function inverts the given dense symmetric matrix via the specified matrix decomposition
+// algorithm \a DF. In case the given matrix is a positive-definite matrix it is recommended
+// to perform the inversion by means of a Cholesky decomposition, for a general matrix an LU
+// decomposition should be used:
 
    \code
-   invert<byLU>( A );        // Inversion of a general symmetric matrix
-   invert<byCholesky>( A );  // Inversion of a positive definite matrix
+   invertNxN<byLU>( A );        // Inversion of a general symmetric matrix
+   invertNxN<byCholesky>( A );  // Inversion of a positive definite matrix
    \endcode
 
 // The matrix inversion fails if the given symmetric matrix is singular and not invertible. In
@@ -279,7 +279,7 @@ inline void swap( SymmetricMatrix<MT,SO,DF,NF>& a, SymmetricMatrix<MT,SO,DF,NF>&
 template< DecompositionFlag DF  // Decomposition algorithm
         , typename MT           // Type of the dense matrix
         , bool SO >             // Storage order of the dense matrix
-inline void invert( SymmetricMatrix<MT,SO,true,true>& m )
+inline void invertNxN( SymmetricMatrix<MT,SO,true,true>& m )
 {
    Inversion<DF>::invert( m.matrix_ );
 
