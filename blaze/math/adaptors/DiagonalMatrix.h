@@ -256,6 +256,198 @@ inline void swap( DiagonalMatrix<MT,SO,DF>& a, DiagonalMatrix<MT,SO,DF>& b ) /* 
 
 //*************************************************************************************************
 /*! \cond BLAZE_INTERNAL */
+/*!\brief In-place inversion of the given diagonal dense \f$ 2 \times 2 \f$ matrix.
+// \ingroup diagonal_matrix
+//
+// \param m The diagonal dense matrix to be inverted.
+// \return void
+//
+// This function inverts the given diagonal dense \f$ 2 \times 2 \f$ matrix via the rule of Sarrus.
+// The matrix inversion fails if the given matrix is singular and not invertible. In this case a
+// \a std::invalid_argument exception is thrown.
+*/
+template< typename MT  // Type of the dense matrix
+        , bool SO >    // Storage order of the dense matrix
+inline void invert2x2( DiagonalMatrix<MT,SO,true>& m )
+{
+   BLAZE_INTERNAL_ASSERT( m.rows()    == 2UL, "Invalid number of rows detected"    );
+   BLAZE_INTERNAL_ASSERT( m.columns() == 2UL, "Invalid number of columns detected" );
+
+   typedef typename MT::ElementType  ET;
+
+   typename DerestrictTrait<MT>::Type A( derestrict( m ) );
+
+   if( isDefault( A(0,0) ) || isDefault( A(1,1) ) ) {
+      BLAZE_THROW_INVALID_ARGUMENT( "Inversion of singular matrix failed" );
+   }
+
+   invert( A(0,0) );
+   invert( A(1,1) );
+
+   BLAZE_INTERNAL_ASSERT( isIntact( m ), "Broken invariant detected" );
+}
+/*! \endcond */
+//*************************************************************************************************
+
+
+//*************************************************************************************************
+/*! \cond BLAZE_INTERNAL */
+/*!\brief In-place inversion of the given diagonal dense \f$ 3 \times 3 \f$ matrix.
+// \ingroup diagonal_matrix
+//
+// \param m The diagonal dense matrix to be inverted.
+// \return void
+//
+// This function inverts the given diagonal dense \f$ 3 \times 3 \f$ matrix via the rule of Sarrus.
+// The matrix inversion fails if the given matrix is singular and not invertible. In this case a
+// \a std::invalid_argument exception is thrown.
+*/
+template< typename MT  // Type of the dense matrix
+        , bool SO >    // Storage order of the dense matrix
+inline void invert3x3( DiagonalMatrix<MT,SO,true>& m )
+{
+   BLAZE_INTERNAL_ASSERT( m.rows()    == 3UL, "Invalid number of rows detected"    );
+   BLAZE_INTERNAL_ASSERT( m.columns() == 3UL, "Invalid number of columns detected" );
+
+   typedef typename MT::ElementType  ET;
+
+   typename DerestrictTrait<MT>::Type A( derestrict( m ) );
+
+   if( isDefault( A(0,0) ) || isDefault( A(1,1) ) || isDefault( A(2,2) ) ) {
+      BLAZE_THROW_INVALID_ARGUMENT( "Inversion of singular matrix failed" );
+   }
+
+   invert( A(0,0) );
+   invert( A(1,1) );
+   invert( A(2,2) );
+
+   BLAZE_INTERNAL_ASSERT( isIntact( m ), "Broken invariant detected" );
+}
+/*! \endcond */
+//*************************************************************************************************
+
+
+//*************************************************************************************************
+/*! \cond BLAZE_INTERNAL */
+/*!\brief In-place inversion of the given diagonal dense \f$ 4 \times 4 \f$ matrix.
+// \ingroup diagonal_matrix
+//
+// \param m The diagonal dense matrix to be inverted.
+// \return void
+//
+// This function inverts the given diagonal dense \f$ 4 \times 4 \f$ matrix via the rule of Sarrus.
+// The matrix inversion fails if the given matrix is singular and not invertible. In this case a
+// \a std::invalid_argument exception is thrown.
+*/
+template< typename MT  // Type of the dense matrix
+        , bool SO >    // Storage order of the dense matrix
+inline void invert4x4( DiagonalMatrix<MT,SO,true>& m )
+{
+   BLAZE_INTERNAL_ASSERT( m.rows()    == 4UL, "Invalid number of rows detected"    );
+   BLAZE_INTERNAL_ASSERT( m.columns() == 4UL, "Invalid number of columns detected" );
+
+   typedef typename MT::ElementType  ET;
+
+   typename DerestrictTrait<MT>::Type A( derestrict( m ) );
+
+   if( isDefault( A(0,0) ) || isDefault( A(1,1) ) || isDefault( A(2,2) ) || isDefault( A(3,3) ) ) {
+      BLAZE_THROW_INVALID_ARGUMENT( "Inversion of singular matrix failed" );
+   }
+
+   invert( A(0,0) );
+   invert( A(1,1) );
+   invert( A(2,2) );
+   invert( A(3,3) );
+
+   BLAZE_INTERNAL_ASSERT( isIntact( m ), "Broken invariant detected" );
+}
+/*! \endcond */
+//*************************************************************************************************
+
+
+//*************************************************************************************************
+/*! \cond BLAZE_INTERNAL */
+/*!\brief In-place inversion of the given diagonal dense \f$ 5 \times 5 \f$ matrix.
+// \ingroup diagonal_matrix
+//
+// \param m The diagonal dense matrix to be inverted.
+// \return void
+//
+// This function inverts the given diagonal dense \f$ 5 \times 5 \f$ matrix via the rule of Sarrus.
+// The matrix inversion fails if the given matrix is singular and not invertible. In this case a
+// \a std::invalid_argument exception is thrown.
+*/
+template< typename MT  // Type of the dense matrix
+        , bool SO >    // Storage order of the dense matrix
+inline void invert5x5( DiagonalMatrix<MT,SO,true>& m )
+{
+   BLAZE_INTERNAL_ASSERT( m.rows()    == 5UL, "Invalid number of rows detected"    );
+   BLAZE_INTERNAL_ASSERT( m.columns() == 5UL, "Invalid number of columns detected" );
+
+   typedef typename MT::ElementType  ET;
+
+   typename DerestrictTrait<MT>::Type A( derestrict( m ) );
+
+   if( isDefault( A(0,0) ) || isDefault( A(1,1) ) || isDefault( A(2,2) ) ||
+       isDefault( A(3,3) ) || isDefault( A(4,4) ) ) {
+      BLAZE_THROW_INVALID_ARGUMENT( "Inversion of singular matrix failed" );
+   }
+
+   invert( A(0,0) );
+   invert( A(1,1) );
+   invert( A(2,2) );
+   invert( A(3,3) );
+   invert( A(4,4) );
+
+   BLAZE_INTERNAL_ASSERT( isIntact( m ), "Broken invariant detected" );
+}
+/*! \endcond */
+//*************************************************************************************************
+
+
+//*************************************************************************************************
+/*! \cond BLAZE_INTERNAL */
+/*!\brief In-place inversion of the given diagonal dense \f$ 6 \times 6 \f$ matrix.
+// \ingroup diagonal_matrix
+//
+// \param m The diagonal dense matrix to be inverted.
+// \return void
+//
+// This function inverts the given diagonal dense \f$ 6 \times 6 \f$ matrix via the rule of Sarrus.
+// The matrix inversion fails if the given matrix is singular and not invertible. In this case a
+// \a std::invalid_argument exception is thrown.
+*/
+template< typename MT  // Type of the dense matrix
+        , bool SO >    // Storage order of the dense matrix
+inline void invert6x6( DiagonalMatrix<MT,SO,true>& m )
+{
+   BLAZE_INTERNAL_ASSERT( m.rows()    == 6UL, "Invalid number of rows detected"    );
+   BLAZE_INTERNAL_ASSERT( m.columns() == 6UL, "Invalid number of columns detected" );
+
+   typedef typename MT::ElementType  ET;
+
+   typename DerestrictTrait<MT>::Type A( derestrict( m ) );
+
+   if( isDefault( A(0,0) ) || isDefault( A(1,1) ) || isDefault( A(2,2) ) ||
+       isDefault( A(3,3) ) || isDefault( A(4,4) ) || isDefault( A(5,5) ) ) {
+      BLAZE_THROW_INVALID_ARGUMENT( "Inversion of singular matrix failed" );
+   }
+
+   invert( A(0,0) );
+   invert( A(1,1) );
+   invert( A(2,2) );
+   invert( A(3,3) );
+   invert( A(4,4) );
+   invert( A(5,5) );
+
+   BLAZE_INTERNAL_ASSERT( isIntact( m ), "Broken invariant detected" );
+}
+/*! \endcond */
+//*************************************************************************************************
+
+
+//*************************************************************************************************
+/*! \cond BLAZE_INTERNAL */
 /*!\brief In-place inversion of the given dense diagonal matrix.
 // \ingroup diagonal_matrix
 //
