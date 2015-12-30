@@ -47,7 +47,6 @@
 #include <blaze/math/expressions/DenseMatrix.h>
 #include <blaze/util/Assert.h>
 #include <blaze/util/EnableIf.h>
-#include <blaze/util/Exception.h>
 #include <blaze/util/StaticAssert.h>
 #include <blaze/util/typetraits/IsComplexDouble.h>
 #include <blaze/util/typetraits/IsComplexFloat.h>
@@ -290,7 +289,6 @@ inline void getrf( int* m, int* n, complex<double>* a, int* lda, int* ipiv, int*
 // \param A The matrix to be decomposed.
 // \param ipiv Auxiliary array for the pivot indices; size >= min( M, N ).
 // \return void
-// \exception std::invalid_argument Decomposition of singular matrix failed.
 //
 // This function performs the dense matrix LU decomposition of a general \f$ M \times N \f$ matrix
 // based on the LAPACK \c getrf() functions, which use partial pivoting with row interchanges.
@@ -306,14 +304,16 @@ inline void getrf( int* m, int* n, complex<double>* a, int* lda, int* ipiv, int*
 // triangular matrix. The resulting decomposition is stored within \a A: In case of a column-major
 // matrix, \c L is stored in the lower part of \a A and \c U is stored in the upper part. The unit
 // diagonal elements of \c L are not stored. In case \a A is a row-major matrix the result is
-// transposed. The LU decomposition fails if \a A is a singular matrix, which cannot be inverted.
-// In this case a \a std::std::invalid_argument exception is thrown.
+// transposed.
 //
 // For more information on the getrf() functions (i.e. sgetrf(), dgetrf(), cgetrf(), and zgetrf())
 // see the LAPACK online documentation browser:
 //
 //        http://www.netlib.org/lapack/explore-html/
 //
+// \note The LU decomposition will never fail, even for singular matrices. However, in case of a
+// singular matrix the resulting decomposition cannot be used for a matrix inversion or solving
+// a linear system of equations.
 // \note This function does not provide any exception safety guarantee, i.e. in case an exception
 // is thrown \a A may already have been modified.
 // \note This function can only be used if the fitting LAPACK library is available and linked to
@@ -341,10 +341,6 @@ inline void getrf( DenseMatrix<MT,SO>& A, int* ipiv )
    getrf( &m, &n, (~A).data(), &lda, ipiv, &info );
 
    BLAZE_INTERNAL_ASSERT( info >= 0, "Invalid argument for LU decomposition" );
-
-   if( info > 0 ) {
-      BLAZE_THROW_INVALID_ARGUMENT( "Decomposition of singular matrix failed" );
-   }
 }
 /*! \endcond */
 //*************************************************************************************************
