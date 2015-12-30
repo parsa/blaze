@@ -1,7 +1,7 @@
 //=================================================================================================
 /*!
-//  \file blaze/math/dense/Inversion.h
-//  \brief Header file for the dense matrix inversion functionality
+//  \file blaze/math/expressions/DMatInvExpr.h
+//  \brief Header file for the dense matrix inversion expression
 //
 //  Copyright (C) 2013 Klaus Iglberger - All Rights Reserved
 //
@@ -32,8 +32,8 @@
 */
 //=================================================================================================
 
-#ifndef _BLAZE_MATH_DENSE_INVERSION_H_
-#define _BLAZE_MATH_DENSE_INVERSION_H_
+#ifndef _BLAZE_MATH_EXPRESSIONS_DMATINVEXPR_H_
+#define _BLAZE_MATH_EXPRESSIONS_DMATINVEXPR_H_
 
 
 //*************************************************************************************************
