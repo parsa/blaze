@@ -44,10 +44,14 @@
 #include <blaze/math/expressions/DenseVector.h>
 #include <blaze/math/shims/Clear.h>
 #include <blaze/math/shims/Reset.h>
+#include <blaze/math/typetraits/IsResizable.h>
 #include <blaze/math/typetraits/IsRowVector.h>
 #include <blaze/system/Inline.h>
+#include <blaze/util/DisableIf.h>
+#include <blaze/util/EnableIf.h>
 #include <blaze/util/Exception.h>
 #include <blaze/util/Types.h>
+#include <blaze/util/Unused.h>
 
 
 namespace blaze {
@@ -466,6 +470,9 @@ template< typename PT, typename VT >
 BLAZE_ALWAYS_INLINE size_t nonZeros( const DenseVectorProxy<PT,VT>& proxy );
 
 template< typename PT, typename VT >
+BLAZE_ALWAYS_INLINE void resize( const DenseVectorProxy<PT,VT>& proxy, size_t n, bool preserve=true );
+
+template< typename PT, typename VT >
 BLAZE_ALWAYS_INLINE void reset( const DenseVectorProxy<PT,VT>& proxy );
 
 template< typename PT, typename VT >
@@ -589,6 +596,88 @@ template< typename PT    // Type of the proxy
 BLAZE_ALWAYS_INLINE size_t nonZeros( const DenseVectorProxy<PT,VT>& proxy )
 {
    return proxy.nonZeros();
+}
+//*************************************************************************************************
+
+
+//*************************************************************************************************
+/*! \cond BLAZE_INTERNAL */
+/*!\brief Backend implementation of the \c resize() function for non-resizable vectors.
+// \ingroup math
+//
+// \param proxy The given access proxy
+// \param n The new size of the vector.
+// \param preserve \a true if the old values of the vector should be preserved, \a false if not.
+// \return void
+// \exception std::invalid_argument Vector cannot be resized.
+//
+// This function tries to change the number of rows and columns of a non-resizable vector. Since
+// the vector cannot be resized, in case the specified size is not identical to the current size
+// of the vector, a \a std::invalid_argument exception is thrown.
+*/
+template< typename PT    // Type of the proxy
+        , typename VT >  // Type of the dense vector
+BLAZE_ALWAYS_INLINE typename DisableIf< IsResizable<VT> >::Type
+   resize_backend( const DenseVectorProxy<PT,VT>& proxy, size_t n, bool preserve )
+{
+   UNUSED_PARAMETER( preserve );
+
+   if( proxy.size() != n ) {
+      BLAZE_THROW_INVALID_ARGUMENT( "Vector cannot be resized" );
+   }
+}
+/*! \endcond */
+//*************************************************************************************************
+
+
+//*************************************************************************************************
+/*! \cond BLAZE_INTERNAL */
+/*!\brief Backend implementation of the \c resize() function for resizable vectors.
+// \ingroup math
+//
+// \param proxy The given access proxy
+// \param n The new size of the vector.
+// \param preserve \a true if the old values of the vector should be preserved, \a false if not.
+// \return void
+//
+// This function changes the size of the given resizable vector.
+*/
+template< typename PT    // Type of the proxy
+        , typename VT >  // Type of the dense vector
+BLAZE_ALWAYS_INLINE typename EnableIf< IsResizable<VT> >::Type
+   resize_backend( const DenseVectorProxy<PT,VT>& proxy, size_t n, bool preserve )
+{
+   proxy.resize( n, preserve );
+}
+/*! \endcond */
+//*************************************************************************************************
+
+
+//*************************************************************************************************
+/*!\brief Changing the size of the represented vector.
+// \ingroup math
+//
+// \param proxy The given access proxy.
+// \param n The new size of the vector.
+// \param preserve \a true if the old values of the vector should be preserved, \a false if not.
+// \return void
+// \exception std::invalid_argument Vector cannot be resized.
+//
+// This function resizes the represented vector to the specified \a size. Note that in contrast
+// to the \c resize() member function, which is only available on resizable vector types, this
+// function can be used on both resizable and non-resizable vectors. In case the type \a VT of
+// the represented vector is resizable (i.e. provides a \c resize() function), the type-specific
+// \c resize() member function is called. Depending on the type \a VT, this may result in the
+// allocation of new dynamic memory and the invalidation of existing views (subvectors, ...). In
+// case \a VT is non-resizable (i.e. does not provide a \c resize() function) and if the specified
+// size is not identical to the current size of the vector, a \a std::invalid_argument exception
+// is thrown.
+*/
+template< typename PT    // Type of the proxy
+        , typename VT >  // Type of the dense vector
+BLAZE_ALWAYS_INLINE void resize( const DenseVectorProxy<PT,VT>& proxy, size_t n, bool preserve )
+{
+   resize_backend( proxy, n, preserve );
 }
 //*************************************************************************************************
 
