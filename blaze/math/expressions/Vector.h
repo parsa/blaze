@@ -327,6 +327,7 @@ BLAZE_ALWAYS_INLINE typename DisableIf< IsResizable<VT> >::Type
 //
 // \param vector The given vector to be resized.
 // \param n The new size of the vector.
+// \param preserve \a true if the old values of the vector should be preserved, \a false if not.
 // \return void
 //
 // This function changes the size of the given resizable vector.

@@ -412,6 +412,7 @@ BLAZE_ALWAYS_INLINE size_t nonZeros( const Matrix<MT,SO>& matrix, size_t i )
 // \param matrix The given matrix to be resized.
 // \param m The new number of rows of the matrix.
 // \param n The new number of columns of the matrix.
+// \param preserve \a true if the old values of the matrix should be preserved, \a false if not.
 // \return void
 // \exception std::invalid_argument Matrix cannot be resized.
 //
@@ -443,6 +444,7 @@ BLAZE_ALWAYS_INLINE typename DisableIf< IsResizable<MT> >::Type
 // \param matrix The given matrix to be resized.
 // \param m The new number of rows of the matrix.
 // \param n The new number of columns of the matrix.
+// \param preserve \a true if the old values of the matrix should be preserved, \a false if not.
 // \return void
 //
 // This function changes the number of rows and columns of the given resizable, non-square matrix.
@@ -466,6 +468,7 @@ BLAZE_ALWAYS_INLINE typename EnableIf< And< IsResizable<MT>, Not< IsSquare<MT> >
 // \param matrix The given matrix to be resized.
 // \param m The new number of rows of the matrix.
 // \param n The new number of columns of the matrix.
+// \param preserve \a true if the old values of the matrix should be preserved, \a false if not.
 // \return void
 // \exception std::invalid_argument Invalid resize arguments for square matrix.
 //
