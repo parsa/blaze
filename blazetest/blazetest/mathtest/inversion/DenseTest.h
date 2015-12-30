@@ -44,15 +44,12 @@
 #include <stdexcept>
 #include <string>
 #include <typeinfo>
+#include <blaze/math/DenseMatrix.h>
 #include <blaze/math/DenseSubmatrix.h>
-#include <blaze/math/DiagonalMatrix.h>
-#include <blaze/math/HermitianMatrix.h>
-#include <blaze/math/LowerMatrix.h>
-#include <blaze/math/SymmetricMatrix.h>
-#include <blaze/math/UniLowerMatrix.h>
-#include <blaze/math/UniUpperMatrix.h>
-#include <blaze/math/UpperMatrix.h>
+#include <blaze/math/shims/IsDefault.h>
+#include <blaze/util/Random.h>
 #include <blazetest/system/LAPACK.h>
+#include <blazetest/system/Types.h>
 
 
 namespace blazetest {
@@ -92,31 +89,36 @@ class DenseTest
    //**Test functions******************************************************************************
    /*!\name Test functions */
    //@{
+   void testSpecific();
+
    template< typename Type >
-   void testInversion();
+   void testRandom1x1();
+
+   template< typename Type >
+   void testRandom2x2();
+
+   template< typename Type >
+   void testRandom3x3();
+
+   template< typename Type >
+   void testRandom4x4();
+
+   template< typename Type >
+   void testRandom5x5();
+
+   template< typename Type >
+   void testRandom6x6();
+
+   template< typename Type >
+   void testRandomNxN();
    //@}
    //**********************************************************************************************
 
    //**Utility functions***************************************************************************
    /*!\name Utility functions */
    //@{
-   template< typename MT, bool SO > void initializeForLU( blaze::DenseMatrix<MT,SO>& matrix );
-   template< typename MT >          void initializeForLU( blaze::SymmetricMatrix<MT>& sym );
-   template< typename MT >          void initializeForLU( blaze::HermitianMatrix<MT>& herm );
-   template< typename MT >          void initializeForLU( blaze::LowerMatrix<MT>& lower );
-   template< typename MT >          void initializeForLU( blaze::UniLowerMatrix<MT>& lower );
-   template< typename MT >          void initializeForLU( blaze::UpperMatrix<MT>& upper );
-   template< typename MT >          void initializeForLU( blaze::UniUpperMatrix<MT>& upper );
-   template< typename MT >          void initializeForLU( blaze::DiagonalMatrix<MT>& diag );
-
-   template< typename MT, bool SO > void initializeForCholesky( blaze::DenseMatrix<MT,SO>& matrix );
-   template< typename MT >          void initializeForCholesky( blaze::SymmetricMatrix<MT>& sym );
-   template< typename MT >          void initializeForCholesky( blaze::HermitianMatrix<MT>& herm );
-   template< typename MT >          void initializeForCholesky( blaze::LowerMatrix<MT>& lower );
-   template< typename MT >          void initializeForCholesky( blaze::UniLowerMatrix<MT>& lower );
-   template< typename MT >          void initializeForCholesky( blaze::UpperMatrix<MT>& upper );
-   template< typename MT >          void initializeForCholesky( blaze::UniUpperMatrix<MT>& upper );
-   template< typename MT >          void initializeForCholesky( blaze::DiagonalMatrix<MT>& diag );
+   template< typename MT, bool SO >
+   void initialize( blaze::DenseMatrix<MT,SO>& matrix );
    //@}
    //**********************************************************************************************
 
@@ -139,23 +141,319 @@ class DenseTest
 //=================================================================================================
 
 //*************************************************************************************************
-/*!\brief Test of the QR decomposition functionality.
+/*!\brief Test of the inversion functionality with random 1x1 matrices.
 //
 // \return void
 // \exception std::runtime_error Error detected.
 //
-// This function performs a test of the invert() function for a specific matrix type. In case an
-// error is detected, a \a std::runtime_error exception is thrown.
+// This function tests the dense matrix inversion for random 1x1 matrices. In case an error is
+// detected, a \a std::runtime_error exception is thrown.
 */
 template< typename Type >
-void DenseTest::testInversion()
+void DenseTest::testRandom1x1()
+{
+#if BLAZETEST_MATHTEST_LAPACK_MODE
+
+   test_ = "Matrix inversion (1x1)";
+
+   Type A;
+   resize( A, 1UL, 1UL );
+
+   do {
+      randomize( A );
+   } while( blaze::isDefault( det( A ) ) );
+
+   Type B( A );
+
+   blaze::invert( A );
+   blaze::invertNxN<blaze::byLU>( B );
+
+   if( A != B ) {
+      std::ostringstream oss;
+      oss << " Test: " << test_ << "\n"
+          << " Error: Matrix inversion failed\n"
+          << " Details:\n"
+          << "   Matrix type:\n"
+          << "     " << typeid( Type ).name() << "\n"
+          << "   Element type:\n"
+          << "     " << typeid( typename Type::ElementType ).name() << "\n"
+          << "   Result invert   ():\n" << A << "\n"
+          << "   Result invertNxN():\n" << B << "\n";
+      throw std::runtime_error( oss.str() );
+   }
+
+#endif
+}
+//*************************************************************************************************
+
+
+//*************************************************************************************************
+/*!\brief Test of the inversion functionality with random 2x2 matrices.
+//
+// \return void
+// \exception std::runtime_error Error detected.
+//
+// This function tests the dense matrix inversion for random 2x2 matrices. In case an error is
+// detected, a \a std::runtime_error exception is thrown.
+*/
+template< typename Type >
+void DenseTest::testRandom2x2()
+{
+#if BLAZETEST_MATHTEST_LAPACK_MODE
+
+   test_ = "Matrix inversion (2x2)";
+
+   Type A;
+   resize( A, 2UL, 2UL );
+
+   do {
+      randomize( A );
+   } while( blaze::isDefault( det( A ) ) );
+
+   Type B( A );
+   Type C( A );
+
+   blaze::invert( A );
+   blaze::invert2x2( B );
+   blaze::invertNxN<blaze::byLU>( C );
+
+   if( A != B || A != C ) {
+      std::ostringstream oss;
+      oss << " Test: " << test_ << "\n"
+          << " Error: Matrix inversion failed\n"
+          << " Details:\n"
+          << "   Matrix type:\n"
+          << "     " << typeid( Type ).name() << "\n"
+          << "   Element type:\n"
+          << "     " << typeid( typename Type::ElementType ).name() << "\n"
+          << "   Result invert   ():\n" << A << "\n"
+          << "   Result invert2x2():\n" << B << "\n"
+          << "   Result invertNxN():\n" << C << "\n";
+      throw std::runtime_error( oss.str() );
+   }
+
+#endif
+}
+//*************************************************************************************************
+
+
+//*************************************************************************************************
+/*!\brief Test of the inversion functionality with random 3x3 matrices.
+//
+// \return void
+// \exception std::runtime_error Error detected.
+//
+// This function tests the dense matrix inversion for random 3x3 matrices. In case an error is
+// detected, a \a std::runtime_error exception is thrown.
+*/
+template< typename Type >
+void DenseTest::testRandom3x3()
+{
+#if BLAZETEST_MATHTEST_LAPACK_MODE
+
+   test_ = "Matrix inversion (3x3)";
+
+   Type A;
+   resize( A, 3UL, 3UL );
+
+   do {
+      randomize( A );
+   } while( blaze::isDefault( det( A ) ) );
+
+   Type B( A );
+   Type C( A );
+
+   blaze::invert( A );
+   blaze::invert3x3( B );
+   blaze::invertNxN<blaze::byLU>( C );
+
+   if( A != B || A != C ) {
+      std::ostringstream oss;
+      oss << " Test: " << test_ << "\n"
+          << " Error: Matrix inversion failed\n"
+          << " Details:\n"
+          << "   Matrix type:\n"
+          << "     " << typeid( Type ).name() << "\n"
+          << "   Element type:\n"
+          << "     " << typeid( typename Type::ElementType ).name() << "\n"
+          << "   Result invert   ():\n" << A << "\n"
+          << "   Result invert3x3():\n" << B << "\n"
+          << "   Result invertNxN():\n" << C << "\n";
+      throw std::runtime_error( oss.str() );
+   }
+
+#endif
+}
+//*************************************************************************************************
+
+
+//*************************************************************************************************
+/*!\brief Test of the inversion functionality with random 4x4 matrices.
+//
+// \return void
+// \exception std::runtime_error Error detected.
+//
+// This function tests the dense matrix inversion for random 4x4 matrices. In case an error is
+// detected, a \a std::runtime_error exception is thrown.
+*/
+template< typename Type >
+void DenseTest::testRandom4x4()
+{
+#if BLAZETEST_MATHTEST_LAPACK_MODE
+
+   test_ = "Matrix inversion (4x4)";
+
+   Type A;
+   resize( A, 4UL, 4UL );
+
+   do {
+      randomize( A );
+   } while( blaze::isDefault( det( A ) ) );
+
+   Type B( A );
+   Type C( A );
+
+   blaze::invert( A );
+   blaze::invert4x4( B );
+   blaze::invertNxN<blaze::byLU>( C );
+
+   if( A != B || A != C ) {
+      std::ostringstream oss;
+      oss << " Test: " << test_ << "\n"
+          << " Error: Matrix inversion failed\n"
+          << " Details:\n"
+          << "   Matrix type:\n"
+          << "     " << typeid( Type ).name() << "\n"
+          << "   Element type:\n"
+          << "     " << typeid( typename Type::ElementType ).name() << "\n"
+          << "   Result invert   ():\n" << A << "\n"
+          << "   Result invert4x4():\n" << B << "\n"
+          << "   Result invertNxN():\n" << C << "\n";
+      throw std::runtime_error( oss.str() );
+   }
+
+#endif
+}
+//*************************************************************************************************
+
+
+//*************************************************************************************************
+/*!\brief Test of the inversion functionality with random 5x5 matrices.
+//
+// \return void
+// \exception std::runtime_error Error detected.
+//
+// This function tests the dense matrix inversion for random 5x5 matrices. In case an error is
+// detected, a \a std::runtime_error exception is thrown.
+*/
+template< typename Type >
+void DenseTest::testRandom5x5()
+{
+#if BLAZETEST_MATHTEST_LAPACK_MODE
+
+   test_ = "Matrix inversion (5x5)";
+
+   Type A;
+   resize( A, 5UL, 5UL );
+
+   do {
+      randomize( A );
+   } while( blaze::isDefault( det( A ) ) );
+
+   Type B( A );
+   Type C( A );
+
+   blaze::invert( A );
+   blaze::invert5x5( B );
+   blaze::invertNxN<blaze::byLU>( C );
+
+   if( A != B || A != C ) {
+      std::ostringstream oss;
+      oss << " Test: " << test_ << "\n"
+          << " Error: Matrix inversion failed\n"
+          << " Details:\n"
+          << "   Matrix type:\n"
+          << "     " << typeid( Type ).name() << "\n"
+          << "   Element type:\n"
+          << "     " << typeid( typename Type::ElementType ).name() << "\n"
+          << "   Result invert   ():\n" << A << "\n"
+          << "   Result invert5x5():\n" << B << "\n"
+          << "   Result invertNxN():\n" << C << "\n";
+      throw std::runtime_error( oss.str() );
+   }
+
+#endif
+}
+//*************************************************************************************************
+
+
+//*************************************************************************************************
+/*!\brief Test of the inversion functionality with random 6x6 matrices.
+//
+// \return void
+// \exception std::runtime_error Error detected.
+//
+// This function tests the dense matrix inversion for random 6x6 matrices. In case an error is
+// detected, a \a std::runtime_error exception is thrown.
+*/
+template< typename Type >
+void DenseTest::testRandom6x6()
+{
+#if BLAZETEST_MATHTEST_LAPACK_MODE
+
+   test_ = "Matrix inversion (6x6)";
+
+   Type A;
+   resize( A, 6UL, 6UL );
+
+   do {
+      randomize( A );
+   } while( blaze::isDefault( det( A ) ) );
+
+   Type B( A );
+   Type C( A );
+
+   blaze::invert( A );
+   blaze::invert6x6( B );
+   blaze::invertNxN<blaze::byLU>( C );
+
+   if( A != B || A != C ) {
+      std::ostringstream oss;
+      oss << " Test: " << test_ << "\n"
+          << " Error: Matrix inversion failed\n"
+          << " Details:\n"
+          << "   Matrix type:\n"
+          << "     " << typeid( Type ).name() << "\n"
+          << "   Element type:\n"
+          << "     " << typeid( typename Type::ElementType ).name() << "\n"
+          << "   Result invert   ():\n" << A << "\n"
+          << "   Result invert6x6():\n" << B << "\n"
+          << "   Result invertNxN():\n" << C << "\n";
+      throw std::runtime_error( oss.str() );
+   }
+
+#endif
+}
+//*************************************************************************************************
+
+
+//*************************************************************************************************
+/*!\brief Test of the inversion functionality with random \f$ N \times N \f$ matrices.
+//
+// \return void
+// \exception std::runtime_error Error detected.
+//
+// This function tests the dense matrix inversion for random \f$ N \times N \f$ matrices. In case
+// an error is detected, a \a std::runtime_error exception is thrown.
+*/
+template< typename Type >
+void DenseTest::testRandomNxN()
 {
 #if BLAZETEST_MATHTEST_LAPACK_MODE
 
    using blaze::invert;
    using blaze::byLU;
    using blaze::byCholesky;
-   using blaze::equal;
 
    typedef typename Type::ElementType  ET;
 
@@ -168,7 +466,7 @@ void DenseTest::testInversion()
       test_ = "Matrix inversion (LU)";
 
       Type A;
-      initializeForLU( A );
+      initialize( A );
       Type B( A );
 
       invert<byLU>( B );
@@ -192,10 +490,10 @@ void DenseTest::testInversion()
       test_ = "Submatrix inversion (LU)";
 
       Type A;
-      initializeForLU( A );
+      initialize( A );
       Type B( A );
 
-      blaze::DenseSubmatrix<Type> sub( B, 0UL, 0UL, 3UL, 3UL );
+      blaze::DenseSubmatrix<Type> sub( B, 0UL, 0UL, A.rows(), A.columns() );
       invert<byLU>( sub );
 
       if( !isIdentity( A * sub ) ) {
@@ -222,7 +520,7 @@ void DenseTest::testInversion()
       test_ = "Matrix inversion (Cholesky)";
 
       Type A;
-      initializeForCholesky( A );
+      initialize( A );
       Type B( A );
 
       invert<byCholesky>( B );
@@ -246,10 +544,10 @@ void DenseTest::testInversion()
       test_ = "Submatrix inversion (Cholesky)";
 
       Type A;
-      initializeForCholesky( A );
+      initialize( A );
       Type B( A );
 
-      blaze::DenseSubmatrix<Type> sub( B, 0UL, 0UL, 3UL, 3UL );
+      blaze::DenseSubmatrix<Type> sub( B, 0UL, 0UL, A.rows(), A.columns() );
       invert<byCholesky>( sub );
 
       if( !isIdentity( A * sub ) ) {
@@ -281,332 +579,23 @@ void DenseTest::testInversion()
 //=================================================================================================
 
 //*************************************************************************************************
-/*!\brief Initialization of the given matrix for a LU-based matrix inversion.
+/*!\brief Initialization of the given dense matrix for a matrix inversion.
 //
 // \return void
 */
 template< typename MT, bool SO >
-void DenseTest::initializeForLU( blaze::DenseMatrix<MT,SO>& matrix )
+void DenseTest::initialize( blaze::DenseMatrix<MT,SO>& matrix )
 {
    typedef typename MT::ElementType  ET;
 
-   resize( ~matrix, 3UL, 3UL );
+   const size_t size( blaze::rand<size_t>( 7UL, 25UL ) );
+
+   resize( ~matrix, size, size );
    reset( ~matrix );
 
-   (~matrix)(0,0) = ET(1);
-   (~matrix)(1,1) = ET(1);
-   (~matrix)(2,0) = ET(1);
-   (~matrix)(2,1) = ET(1);
-   (~matrix)(2,2) = ET(1);
-}
-//*************************************************************************************************
-
-
-//*************************************************************************************************
-/*!\brief Initialization of the given symmetric matrix for a LU-based matrix inversion.
-//
-// \return void
-*/
-template< typename MT >
-void DenseTest::initializeForLU( blaze::SymmetricMatrix<MT>& sym )
-{
-   typedef typename blaze::SymmetricMatrix<MT>::ElementType  ET;
-
-   resize( sym, 3UL, 3UL );
-   reset( sym );
-
-   sym(0,0) = ET(1);
-   sym(0,2) = ET(1);
-   sym(1,1) = ET(1);
-   sym(1,2) = ET(1);
-   sym(2,2) = ET(1);
-}
-//*************************************************************************************************
-
-
-//*************************************************************************************************
-/*!\brief Initialization of the given Hermitian matrix for a LU-based matrix inversion.
-//
-// \return void
-*/
-template< typename MT >
-void DenseTest::initializeForLU( blaze::HermitianMatrix<MT>& herm )
-{
-   typedef typename blaze::HermitianMatrix<MT>::ElementType  ET;
-
-   resize( herm, 3UL, 3UL );
-   reset( herm );
-
-   herm(0,0) = ET(1);
-   herm(0,2) = ET(1);
-   herm(1,1) = ET(1);
-   herm(1,2) = ET(1);
-   herm(2,2) = ET(1);
-}
-//*************************************************************************************************
-
-
-//*************************************************************************************************
-/*!\brief Initialization of the given lower matrix for a LU-based matrix inversion.
-//
-// \return void
-*/
-template< typename MT >
-void DenseTest::initializeForLU( blaze::LowerMatrix<MT>& lower )
-{
-   typedef typename blaze::LowerMatrix<MT>::ElementType  ET;
-
-   resize( lower, 3UL, 3UL );
-   reset( lower );
-
-   lower(0,0) = ET(1);
-   lower(1,1) = ET(1);
-   lower(2,0) = ET(1);
-   lower(2,1) = ET(1);
-   lower(2,2) = ET(1);
-}
-//*************************************************************************************************
-
-
-//*************************************************************************************************
-/*!\brief Initialization of the given unilower matrix for a LU-based matrix inversion.
-//
-// \return void
-*/
-template< typename MT >
-void DenseTest::initializeForLU( blaze::UniLowerMatrix<MT>& lower )
-{
-   typedef typename blaze::UniLowerMatrix<MT>::ElementType  ET;
-
-   resize( lower, 3UL, 3UL );
-   reset( lower );
-
-   lower(2,0) = ET(1);
-   lower(2,1) = ET(1);
-}
-//*************************************************************************************************
-
-
-//*************************************************************************************************
-/*!\brief Initialization of the given upper matrix for a LU-based matrix inversion.
-//
-// \return void
-*/
-template< typename MT >
-void DenseTest::initializeForLU( blaze::UpperMatrix<MT>& upper )
-{
-   typedef typename blaze::UpperMatrix<MT>::ElementType  ET;
-
-   resize( upper, 3UL, 3UL );
-   reset( upper );
-
-   upper(0,0) = ET(1);
-   upper(0,2) = ET(1);
-   upper(1,1) = ET(1);
-   upper(1,2) = ET(1);
-   upper(2,2) = ET(1);
-}
-//*************************************************************************************************
-
-
-//*************************************************************************************************
-/*!\brief Initialization of the given uniupper matrix for a LU-based matrix inversion.
-//
-// \return void
-*/
-template< typename MT >
-void DenseTest::initializeForLU( blaze::UniUpperMatrix<MT>& upper )
-{
-   typedef typename blaze::UniUpperMatrix<MT>::ElementType  ET;
-
-   resize( upper, 3UL, 3UL );
-   reset( upper );
-
-   upper(0,2) = ET(1);
-   upper(1,2) = ET(1);
-}
-//*************************************************************************************************
-
-
-//*************************************************************************************************
-/*!\brief Initialization of the given diagonal matrix for a LU-based matrix inversion.
-//
-// \return void
-*/
-template< typename MT >
-void DenseTest::initializeForLU( blaze::DiagonalMatrix<MT>& diag )
-{
-   typedef typename blaze::DiagonalMatrix<MT>::ElementType  ET;
-
-   resize( diag, 3UL, 3UL );
-   reset( diag );
-
-   diag(0,0) = ET(4);
-   diag(1,1) = ET(4);
-   diag(2,2) = ET(4);
-}
-//*************************************************************************************************
-
-
-//*************************************************************************************************
-/*!\brief Initialization of the given matrix for a Cholesky-based matrix inversion.
-//
-// \return void
-*/
-template< typename MT, bool SO >
-void DenseTest::initializeForCholesky( blaze::DenseMatrix<MT,SO>& matrix )
-{
-   typedef typename MT::ElementType  ET;
-
-   resize( ~matrix, 3UL, 3UL );
-
-   (~matrix)(0,0) = ET(1);
-   (~matrix)(0,1) = ET(1);
-   (~matrix)(0,2) = ET(1);
-   (~matrix)(1,0) = ET(1);
-   (~matrix)(1,1) = ET(2);
-   (~matrix)(1,2) = ET(2);
-   (~matrix)(2,0) = ET(1);
-   (~matrix)(2,1) = ET(2);
-   (~matrix)(2,2) = ET(4);
-}
-//*************************************************************************************************
-
-
-//*************************************************************************************************
-/*!\brief Initialization of the given symmetric matrix for a Cholesky-based matrix inversion.
-//
-// \return void
-*/
-template< typename MT >
-void DenseTest::initializeForCholesky( blaze::SymmetricMatrix<MT>& sym )
-{
-   typedef typename blaze::SymmetricMatrix<MT>::ElementType  ET;
-
-   resize( sym, 3UL, 3UL );
-   reset( sym );
-
-   sym(0,0) = ET(1);
-   sym(0,1) = ET(1);
-   sym(0,2) = ET(1);
-   sym(1,1) = ET(2);
-   sym(1,2) = ET(2);
-   sym(2,2) = ET(4);
-}
-//*************************************************************************************************
-
-
-//*************************************************************************************************
-/*!\brief Initialization of the given Hermitian matrix for a Cholesky-based matrix inversion.
-//
-// \return void
-*/
-template< typename MT >
-void DenseTest::initializeForCholesky( blaze::HermitianMatrix<MT>& herm )
-{
-   typedef typename blaze::HermitianMatrix<MT>::ElementType  ET;
-
-   resize( herm, 3UL, 3UL );
-   reset( herm );
-
-   herm(0,0) = ET(1);
-   herm(0,1) = ET(1);
-   herm(0,2) = ET(1);
-   herm(1,1) = ET(2);
-   herm(1,2) = ET(2);
-   herm(2,2) = ET(4);
-}
-//*************************************************************************************************
-
-
-//*************************************************************************************************
-/*!\brief Initialization of the given lower matrix for a Cholesky-based matrix inversion.
-//
-// \return void
-*/
-template< typename MT >
-void DenseTest::initializeForCholesky( blaze::LowerMatrix<MT>& lower )
-{
-   typedef typename blaze::LowerMatrix<MT>::ElementType  ET;
-
-   resize( lower, 3UL, 3UL );
-   reset( lower );
-
-   lower(0,0) = ET(4);
-   lower(1,1) = ET(4);
-   lower(2,2) = ET(4);
-}
-//*************************************************************************************************
-
-
-//*************************************************************************************************
-/*!\brief Initialization of the given unilower matrix for a Cholesky-based matrix inversion.
-//
-// \return void
-*/
-template< typename MT >
-void DenseTest::initializeForCholesky( blaze::UniLowerMatrix<MT>& lower )
-{
-   typedef typename blaze::UniLowerMatrix<MT>::ElementType  ET;
-
-   resize( lower, 3UL, 3UL );
-   reset( lower );
-}
-//*************************************************************************************************
-
-
-//*************************************************************************************************
-/*!\brief Initialization of the given upper matrix for a Cholesky-based matrix inversion.
-//
-// \return void
-*/
-template< typename MT >
-void DenseTest::initializeForCholesky( blaze::UpperMatrix<MT>& upper )
-{
-   typedef typename blaze::UpperMatrix<MT>::ElementType  ET;
-
-   resize( upper, 3UL, 3UL );
-   reset( upper );
-
-   upper(0,0) = ET(4);
-   upper(1,1) = ET(4);
-   upper(2,2) = ET(4);
-}
-//*************************************************************************************************
-
-
-//*************************************************************************************************
-/*!\brief Initialization of the given uniupper matrix for a Cholesky-based matrix inversion.
-//
-// \return void
-*/
-template< typename MT >
-void DenseTest::initializeForCholesky( blaze::UniUpperMatrix<MT>& upper )
-{
-   typedef typename blaze::UniUpperMatrix<MT>::ElementType  ET;
-
-   resize( upper, 3UL, 3UL );
-   reset( upper );
-}
-//*************************************************************************************************
-
-
-//*************************************************************************************************
-/*!\brief Initialization of the given diagonal matrix for a Cholesky-based matrix inversion.
-//
-// \return void
-*/
-template< typename MT >
-void DenseTest::initializeForCholesky( blaze::DiagonalMatrix<MT>& diag )
-{
-   typedef typename blaze::DiagonalMatrix<MT>::ElementType  ET;
-
-   resize( diag, 3UL, 3UL );
-   reset( diag );
-
-   diag(0,0) = ET(4);
-   diag(1,1) = ET(4);
-   diag(2,2) = ET(4);
+   for( size_t i=0UL; i<size; ++i ) {
+      (~matrix)(i,i) = ET(4);
+   }
 }
 //*************************************************************************************************
 

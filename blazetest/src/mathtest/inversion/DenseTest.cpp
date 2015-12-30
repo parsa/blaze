@@ -39,10 +39,14 @@
 
 #include <cstdlib>
 #include <iostream>
+#include <blaze/math/DiagonalMatrix.h>
 #include <blaze/math/DynamicMatrix.h>
-#include <blaze/math/HybridMatrix.h>
+#include <blaze/math/HermitianMatrix.h>
 #include <blaze/math/LowerMatrix.h>
-#include <blaze/math/StaticMatrix.h>
+#include <blaze/math/SymmetricMatrix.h>
+#include <blaze/math/UniLowerMatrix.h>
+#include <blaze/math/UniUpperMatrix.h>
+#include <blaze/math/UpperMatrix.h>
 #include <blaze/util/Complex.h>
 #include <blazetest/mathtest/inversion/DenseTest.h>
 
@@ -66,101 +70,316 @@ namespace inversion {
 */
 DenseTest::DenseTest()
 {
+   using blaze::DynamicMatrix;
+   using blaze::SymmetricMatrix;
+   using blaze::HermitianMatrix;
+   using blaze::LowerMatrix;
+   using blaze::UniLowerMatrix;
+   using blaze::UpperMatrix;
+   using blaze::UniUpperMatrix;
+   using blaze::DiagonalMatrix;
    using blaze::rowMajor;
    using blaze::columnMajor;
 
    typedef blaze::complex<float>   cfloat;
    typedef blaze::complex<double>  cdouble;
 
-   testInversion< blaze::StaticMatrix<float,3UL,3UL,rowMajor> >();
-   testInversion< blaze::StaticMatrix<float,3UL,3UL,columnMajor> >();
-   testInversion< blaze::StaticMatrix<double,3UL,3UL,rowMajor> >();
-   testInversion< blaze::StaticMatrix<double,3UL,3UL,columnMajor> >();
-   testInversion< blaze::StaticMatrix<cfloat,3UL,3UL,rowMajor> >();
-   testInversion< blaze::StaticMatrix<cfloat,3UL,3UL,columnMajor> >();
-   testInversion< blaze::StaticMatrix<cdouble,3UL,3UL,rowMajor> >();
-   testInversion< blaze::StaticMatrix<cdouble,3UL,3UL,columnMajor> >();
 
-   testInversion< blaze::HybridMatrix<float,3UL,3UL,rowMajor> >();
-   testInversion< blaze::HybridMatrix<float,3UL,3UL,columnMajor> >();
-   testInversion< blaze::HybridMatrix<double,3UL,3UL,rowMajor> >();
-   testInversion< blaze::HybridMatrix<double,3UL,3UL,columnMajor> >();
-   testInversion< blaze::HybridMatrix<cfloat,3UL,3UL,rowMajor> >();
-   testInversion< blaze::HybridMatrix<cfloat,3UL,3UL,columnMajor> >();
-   testInversion< blaze::HybridMatrix<cdouble,3UL,3UL,rowMajor> >();
-   testInversion< blaze::HybridMatrix<cdouble,3UL,3UL,columnMajor> >();
+   //=====================================================================================
+   // Specific matrix tests
+   //=====================================================================================
 
-   testInversion< blaze::DynamicMatrix<float,rowMajor> >();
-   testInversion< blaze::DynamicMatrix<float,columnMajor> >();
-   testInversion< blaze::DynamicMatrix<double,rowMajor> >();
-   testInversion< blaze::DynamicMatrix<double,columnMajor> >();
-   testInversion< blaze::DynamicMatrix<cfloat,rowMajor> >();
-   testInversion< blaze::DynamicMatrix<cfloat,columnMajor> >();
-   testInversion< blaze::DynamicMatrix<cdouble,rowMajor> >();
-   testInversion< blaze::DynamicMatrix<cdouble,columnMajor> >();
+   testSpecific();
 
-   testInversion< blaze::SymmetricMatrix< blaze::DynamicMatrix<float,rowMajor> > >();
-   testInversion< blaze::SymmetricMatrix< blaze::DynamicMatrix<float,columnMajor> > >();
-   testInversion< blaze::SymmetricMatrix< blaze::DynamicMatrix<double,rowMajor> > >();
-   testInversion< blaze::SymmetricMatrix< blaze::DynamicMatrix<double,columnMajor> > >();
-   testInversion< blaze::SymmetricMatrix< blaze::DynamicMatrix<cfloat,rowMajor> > >();
-   testInversion< blaze::SymmetricMatrix< blaze::DynamicMatrix<cfloat,columnMajor> > >();
-   testInversion< blaze::SymmetricMatrix< blaze::DynamicMatrix<cdouble,rowMajor> > >();
-   testInversion< blaze::SymmetricMatrix< blaze::DynamicMatrix<cdouble,columnMajor> > >();
 
-   testInversion< blaze::HermitianMatrix< blaze::DynamicMatrix<float,rowMajor> > >();
-   testInversion< blaze::HermitianMatrix< blaze::DynamicMatrix<float,columnMajor> > >();
-   testInversion< blaze::HermitianMatrix< blaze::DynamicMatrix<double,rowMajor> > >();
-   testInversion< blaze::HermitianMatrix< blaze::DynamicMatrix<double,columnMajor> > >();
-   testInversion< blaze::HermitianMatrix< blaze::DynamicMatrix<cfloat,rowMajor> > >();
-   testInversion< blaze::HermitianMatrix< blaze::DynamicMatrix<cfloat,columnMajor> > >();
-   testInversion< blaze::HermitianMatrix< blaze::DynamicMatrix<cdouble,rowMajor> > >();
-   testInversion< blaze::HermitianMatrix< blaze::DynamicMatrix<cdouble,columnMajor> > >();
+   //=====================================================================================
+   // Random 1x1 matrix tests
+   //=====================================================================================
 
-   testInversion< blaze::LowerMatrix< blaze::DynamicMatrix<float,rowMajor> > >();
-   testInversion< blaze::LowerMatrix< blaze::DynamicMatrix<float,columnMajor> > >();
-   testInversion< blaze::LowerMatrix< blaze::DynamicMatrix<double,rowMajor> > >();
-   testInversion< blaze::LowerMatrix< blaze::DynamicMatrix<double,columnMajor> > >();
-   testInversion< blaze::LowerMatrix< blaze::DynamicMatrix<cfloat,rowMajor> > >();
-   testInversion< blaze::LowerMatrix< blaze::DynamicMatrix<cfloat,columnMajor> > >();
-   testInversion< blaze::LowerMatrix< blaze::DynamicMatrix<cdouble,rowMajor> > >();
-   testInversion< blaze::LowerMatrix< blaze::DynamicMatrix<cdouble,columnMajor> > >();
+   testRandom1x1< DynamicMatrix<double ,rowMajor> >();
+   testRandom1x1< DynamicMatrix<cdouble,rowMajor> >();
 
-   testInversion< blaze::UniLowerMatrix< blaze::DynamicMatrix<float,rowMajor> > >();
-   testInversion< blaze::UniLowerMatrix< blaze::DynamicMatrix<float,columnMajor> > >();
-   testInversion< blaze::UniLowerMatrix< blaze::DynamicMatrix<double,rowMajor> > >();
-   testInversion< blaze::UniLowerMatrix< blaze::DynamicMatrix<double,columnMajor> > >();
-   testInversion< blaze::UniLowerMatrix< blaze::DynamicMatrix<cfloat,rowMajor> > >();
-   testInversion< blaze::UniLowerMatrix< blaze::DynamicMatrix<cfloat,columnMajor> > >();
-   testInversion< blaze::UniLowerMatrix< blaze::DynamicMatrix<cdouble,rowMajor> > >();
-   testInversion< blaze::UniLowerMatrix< blaze::DynamicMatrix<cdouble,columnMajor> > >();
+   testRandom1x1< DynamicMatrix<double ,columnMajor> >();
+   testRandom1x1< DynamicMatrix<cdouble,columnMajor> >();
 
-   testInversion< blaze::UpperMatrix< blaze::DynamicMatrix<float,rowMajor> > >();
-   testInversion< blaze::UpperMatrix< blaze::DynamicMatrix<float,columnMajor> > >();
-   testInversion< blaze::UpperMatrix< blaze::DynamicMatrix<double,rowMajor> > >();
-   testInversion< blaze::UpperMatrix< blaze::DynamicMatrix<double,columnMajor> > >();
-   testInversion< blaze::UpperMatrix< blaze::DynamicMatrix<cfloat,rowMajor> > >();
-   testInversion< blaze::UpperMatrix< blaze::DynamicMatrix<cfloat,columnMajor> > >();
-   testInversion< blaze::UpperMatrix< blaze::DynamicMatrix<cdouble,rowMajor> > >();
-   testInversion< blaze::UpperMatrix< blaze::DynamicMatrix<cdouble,columnMajor> > >();
+   testRandom1x1< SymmetricMatrix< DynamicMatrix<double,rowMajor> > >();
+   testRandom1x1< HermitianMatrix< DynamicMatrix<cdouble,rowMajor> > >();
+   testRandom1x1< LowerMatrix< DynamicMatrix<double,rowMajor> > >();
+   testRandom1x1< UniLowerMatrix< DynamicMatrix<double,rowMajor> > >();
+   testRandom1x1< UpperMatrix< DynamicMatrix<double,rowMajor> > >();
+   testRandom1x1< UniUpperMatrix< DynamicMatrix<double,rowMajor> > >();
+   testRandom1x1< DiagonalMatrix< DynamicMatrix<double,rowMajor> > >();
 
-   testInversion< blaze::UniUpperMatrix< blaze::DynamicMatrix<float,rowMajor> > >();
-   testInversion< blaze::UniUpperMatrix< blaze::DynamicMatrix<float,columnMajor> > >();
-   testInversion< blaze::UniUpperMatrix< blaze::DynamicMatrix<double,rowMajor> > >();
-   testInversion< blaze::UniUpperMatrix< blaze::DynamicMatrix<double,columnMajor> > >();
-   testInversion< blaze::UniUpperMatrix< blaze::DynamicMatrix<cfloat,rowMajor> > >();
-   testInversion< blaze::UniUpperMatrix< blaze::DynamicMatrix<cfloat,columnMajor> > >();
-   testInversion< blaze::UniUpperMatrix< blaze::DynamicMatrix<cdouble,rowMajor> > >();
-   testInversion< blaze::UniUpperMatrix< blaze::DynamicMatrix<cdouble,columnMajor> > >();
+   testRandom1x1< SymmetricMatrix< DynamicMatrix<double,columnMajor> > >();
+   testRandom1x1< HermitianMatrix< DynamicMatrix<cdouble,columnMajor> > >();
+   testRandom1x1< LowerMatrix< DynamicMatrix<double,columnMajor> > >();
+   testRandom1x1< UniLowerMatrix< DynamicMatrix<double,columnMajor> > >();
+   testRandom1x1< UpperMatrix< DynamicMatrix<double,columnMajor> > >();
+   testRandom1x1< UniUpperMatrix< DynamicMatrix<double,columnMajor> > >();
+   testRandom1x1< DiagonalMatrix< DynamicMatrix<double,columnMajor> > >();
 
-   testInversion< blaze::DiagonalMatrix< blaze::DynamicMatrix<float,rowMajor> > >();
-   testInversion< blaze::DiagonalMatrix< blaze::DynamicMatrix<float,columnMajor> > >();
-   testInversion< blaze::DiagonalMatrix< blaze::DynamicMatrix<double,rowMajor> > >();
-   testInversion< blaze::DiagonalMatrix< blaze::DynamicMatrix<double,columnMajor> > >();
-   testInversion< blaze::DiagonalMatrix< blaze::DynamicMatrix<cfloat,rowMajor> > >();
-   testInversion< blaze::DiagonalMatrix< blaze::DynamicMatrix<cfloat,columnMajor> > >();
-   testInversion< blaze::DiagonalMatrix< blaze::DynamicMatrix<cdouble,rowMajor> > >();
-   testInversion< blaze::DiagonalMatrix< blaze::DynamicMatrix<cdouble,columnMajor> > >();
+
+   //=====================================================================================
+   // Random 2x2 matrix tests
+   //=====================================================================================
+
+   testRandom2x2< DynamicMatrix<double ,rowMajor> >();
+   testRandom2x2< DynamicMatrix<cdouble,rowMajor> >();
+
+   testRandom2x2< DynamicMatrix<double ,columnMajor> >();
+   testRandom2x2< DynamicMatrix<cdouble,columnMajor> >();
+
+   testRandom2x2< SymmetricMatrix< DynamicMatrix<double,rowMajor> > >();
+   testRandom2x2< HermitianMatrix< DynamicMatrix<cdouble,rowMajor> > >();
+   testRandom2x2< LowerMatrix< DynamicMatrix<double,rowMajor> > >();
+   testRandom2x2< UniLowerMatrix< DynamicMatrix<double,rowMajor> > >();
+   testRandom2x2< UpperMatrix< DynamicMatrix<double,rowMajor> > >();
+   testRandom2x2< UniUpperMatrix< DynamicMatrix<double,rowMajor> > >();
+   testRandom2x2< DiagonalMatrix< DynamicMatrix<double,rowMajor> > >();
+
+   testRandom2x2< SymmetricMatrix< DynamicMatrix<double,columnMajor> > >();
+   testRandom2x2< HermitianMatrix< DynamicMatrix<cdouble,columnMajor> > >();
+   testRandom2x2< LowerMatrix< DynamicMatrix<double,columnMajor> > >();
+   testRandom2x2< UniLowerMatrix< DynamicMatrix<double,columnMajor> > >();
+   testRandom2x2< UpperMatrix< DynamicMatrix<double,columnMajor> > >();
+   testRandom2x2< UniUpperMatrix< DynamicMatrix<double,columnMajor> > >();
+   testRandom2x2< DiagonalMatrix< DynamicMatrix<double,columnMajor> > >();
+
+
+   //=====================================================================================
+   // Random 3x3 matrix tests
+   //=====================================================================================
+
+   testRandom3x3< DynamicMatrix<double ,rowMajor> >();
+   testRandom3x3< DynamicMatrix<cdouble,rowMajor> >();
+
+   testRandom3x3< DynamicMatrix<double ,columnMajor> >();
+   testRandom3x3< DynamicMatrix<cdouble,columnMajor> >();
+
+   testRandom3x3< SymmetricMatrix< DynamicMatrix<double,rowMajor> > >();
+   testRandom3x3< HermitianMatrix< DynamicMatrix<cdouble,rowMajor> > >();
+   testRandom3x3< LowerMatrix< DynamicMatrix<double,rowMajor> > >();
+   testRandom3x3< UniLowerMatrix< DynamicMatrix<double,rowMajor> > >();
+   testRandom3x3< UpperMatrix< DynamicMatrix<double,rowMajor> > >();
+   testRandom3x3< UniUpperMatrix< DynamicMatrix<double,rowMajor> > >();
+   testRandom3x3< DiagonalMatrix< DynamicMatrix<double,rowMajor> > >();
+
+   testRandom3x3< SymmetricMatrix< DynamicMatrix<double,columnMajor> > >();
+   testRandom3x3< HermitianMatrix< DynamicMatrix<cdouble,columnMajor> > >();
+   testRandom3x3< LowerMatrix< DynamicMatrix<double,columnMajor> > >();
+   testRandom3x3< UniLowerMatrix< DynamicMatrix<double,columnMajor> > >();
+   testRandom3x3< UpperMatrix< DynamicMatrix<double,columnMajor> > >();
+   testRandom3x3< UniUpperMatrix< DynamicMatrix<double,columnMajor> > >();
+   testRandom3x3< DiagonalMatrix< DynamicMatrix<double,columnMajor> > >();
+
+
+   //=====================================================================================
+   // Random 4x4 matrix tests
+   //=====================================================================================
+
+   testRandom4x4< DynamicMatrix<double ,rowMajor> >();
+   testRandom4x4< DynamicMatrix<cdouble,rowMajor> >();
+
+   testRandom4x4< DynamicMatrix<double ,columnMajor> >();
+   testRandom4x4< DynamicMatrix<cdouble,columnMajor> >();
+
+   testRandom4x4< SymmetricMatrix< DynamicMatrix<double,rowMajor> > >();
+   testRandom4x4< HermitianMatrix< DynamicMatrix<cdouble,rowMajor> > >();
+   testRandom4x4< LowerMatrix< DynamicMatrix<double,rowMajor> > >();
+   testRandom4x4< UniLowerMatrix< DynamicMatrix<double,rowMajor> > >();
+   testRandom4x4< UpperMatrix< DynamicMatrix<double,rowMajor> > >();
+   testRandom4x4< UniUpperMatrix< DynamicMatrix<double,rowMajor> > >();
+   testRandom4x4< DiagonalMatrix< DynamicMatrix<double,rowMajor> > >();
+
+   testRandom4x4< SymmetricMatrix< DynamicMatrix<double,columnMajor> > >();
+   testRandom4x4< HermitianMatrix< DynamicMatrix<cdouble,columnMajor> > >();
+   testRandom4x4< LowerMatrix< DynamicMatrix<double,columnMajor> > >();
+   testRandom4x4< UniLowerMatrix< DynamicMatrix<double,columnMajor> > >();
+   testRandom4x4< UpperMatrix< DynamicMatrix<double,columnMajor> > >();
+   testRandom4x4< UniUpperMatrix< DynamicMatrix<double,columnMajor> > >();
+   testRandom4x4< DiagonalMatrix< DynamicMatrix<double,columnMajor> > >();
+
+
+   //=====================================================================================
+   // Random 5x5 matrix tests
+   //=====================================================================================
+
+   testRandom5x5< DynamicMatrix<double ,rowMajor> >();
+   testRandom5x5< DynamicMatrix<cdouble,rowMajor> >();
+
+   testRandom5x5< DynamicMatrix<double ,columnMajor> >();
+   testRandom5x5< DynamicMatrix<cdouble,columnMajor> >();
+
+   testRandom5x5< SymmetricMatrix< DynamicMatrix<double,rowMajor> > >();
+   testRandom5x5< HermitianMatrix< DynamicMatrix<cdouble,rowMajor> > >();
+   testRandom5x5< LowerMatrix< DynamicMatrix<double,rowMajor> > >();
+   testRandom5x5< UniLowerMatrix< DynamicMatrix<double,rowMajor> > >();
+   testRandom5x5< UpperMatrix< DynamicMatrix<double,rowMajor> > >();
+   testRandom5x5< UniUpperMatrix< DynamicMatrix<double,rowMajor> > >();
+   testRandom5x5< DiagonalMatrix< DynamicMatrix<double,rowMajor> > >();
+
+   testRandom5x5< SymmetricMatrix< DynamicMatrix<double,columnMajor> > >();
+   testRandom5x5< HermitianMatrix< DynamicMatrix<cdouble,columnMajor> > >();
+   testRandom5x5< LowerMatrix< DynamicMatrix<double,columnMajor> > >();
+   testRandom5x5< UniLowerMatrix< DynamicMatrix<double,columnMajor> > >();
+   testRandom5x5< UpperMatrix< DynamicMatrix<double,columnMajor> > >();
+   testRandom5x5< UniUpperMatrix< DynamicMatrix<double,columnMajor> > >();
+   testRandom5x5< DiagonalMatrix< DynamicMatrix<double,columnMajor> > >();
+
+
+   //=====================================================================================
+   // Random 6x6 matrix tests
+   //=====================================================================================
+
+   testRandom6x6< DynamicMatrix<double ,rowMajor> >();
+   testRandom6x6< DynamicMatrix<cdouble,rowMajor> >();
+
+   testRandom6x6< DynamicMatrix<double ,columnMajor> >();
+   testRandom6x6< DynamicMatrix<cdouble,columnMajor> >();
+
+   testRandom6x6< SymmetricMatrix< DynamicMatrix<double,rowMajor> > >();
+   testRandom6x6< HermitianMatrix< DynamicMatrix<cdouble,rowMajor> > >();
+   testRandom6x6< LowerMatrix< DynamicMatrix<double,rowMajor> > >();
+   testRandom6x6< UniLowerMatrix< DynamicMatrix<double,rowMajor> > >();
+   testRandom6x6< UpperMatrix< DynamicMatrix<double,rowMajor> > >();
+   testRandom6x6< UniUpperMatrix< DynamicMatrix<double,rowMajor> > >();
+   testRandom6x6< DiagonalMatrix< DynamicMatrix<double,rowMajor> > >();
+
+   testRandom6x6< SymmetricMatrix< DynamicMatrix<double,columnMajor> > >();
+   testRandom6x6< HermitianMatrix< DynamicMatrix<cdouble,columnMajor> > >();
+   testRandom6x6< LowerMatrix< DynamicMatrix<double,columnMajor> > >();
+   testRandom6x6< UniLowerMatrix< DynamicMatrix<double,columnMajor> > >();
+   testRandom6x6< UpperMatrix< DynamicMatrix<double,columnMajor> > >();
+   testRandom6x6< UniUpperMatrix< DynamicMatrix<double,columnMajor> > >();
+   testRandom6x6< DiagonalMatrix< DynamicMatrix<double,columnMajor> > >();
+
+
+   //=====================================================================================
+   // Random NxN matrix tests
+   //=====================================================================================
+
+   testRandomNxN< DynamicMatrix<double ,rowMajor> >();
+   testRandomNxN< DynamicMatrix<cdouble,rowMajor> >();
+
+   testRandomNxN< DynamicMatrix<double ,columnMajor> >();
+   testRandomNxN< DynamicMatrix<cdouble,columnMajor> >();
+
+   testRandomNxN< SymmetricMatrix< DynamicMatrix<double,rowMajor> > >();
+   testRandomNxN< HermitianMatrix< DynamicMatrix<cdouble,rowMajor> > >();
+   testRandomNxN< LowerMatrix< DynamicMatrix<double,rowMajor> > >();
+   testRandomNxN< UpperMatrix< DynamicMatrix<double,rowMajor> > >();
+   testRandomNxN< DiagonalMatrix< DynamicMatrix<double,rowMajor> > >();
+
+   testRandomNxN< SymmetricMatrix< DynamicMatrix<double,columnMajor> > >();
+   testRandomNxN< HermitianMatrix< DynamicMatrix<cdouble,columnMajor> > >();
+   testRandomNxN< LowerMatrix< DynamicMatrix<double,columnMajor> > >();
+   testRandomNxN< UpperMatrix< DynamicMatrix<double,columnMajor> > >();
+   testRandomNxN< DiagonalMatrix< DynamicMatrix<double,columnMajor> > >();
+}
+//*************************************************************************************************
+
+
+
+
+//=================================================================================================
+//
+//  TEST FUNCTIONS
+//
+//=================================================================================================
+
+//*************************************************************************************************
+/*!\brief Test of the determinant functionality with specific, predetermined matrices.
+//
+// \return void
+// \exception std::runtime_error Error detected.
+//
+// This function computes determinants for specific, predetermined matrices. In case an error is
+// detected, a \a std::runtime_error exception is thrown.
+*/
+void DenseTest::testSpecific()
+{
+   //=====================================================================================
+   // Row-major matrix tests
+   //=====================================================================================
+
+   {
+      {
+         test_ = "Row-major dense matrix inversion (0x0)";
+
+         blaze::DynamicMatrix<double,blaze::rowMajor> A;
+
+         invert( A );
+
+         if( A.rows() != 0UL || A.columns() != 0UL ) {
+            std::ostringstream oss;
+            oss << " Test: " << test_ << "\n"
+                << " Error: Matrix inversion failed\n"
+                << " Details:\n"
+                << "   Result:\n" << A << "\n";
+            throw std::runtime_error( oss.str() );
+         }
+      }
+
+      {
+         test_ = "Row-major dense matrix inversion (non-square)";
+
+         blaze::DynamicMatrix<double,blaze::rowMajor> A( 2UL, 3UL );
+
+         try {
+            invert( A );
+
+            std::ostringstream oss;
+            oss << " Test: " << test_ << "\n"
+                << " Error: Inversion of a non-square matrix succeeded\n"
+                << " Details:\n"
+                << "   Result:\n" << A << "\n";
+            throw std::runtime_error( oss.str() );
+         }
+         catch( std::invalid_argument& ) {}
+      }
+   }
+
+
+   //=====================================================================================
+   // Column-major matrix tests
+   //=====================================================================================
+
+   {
+      {
+         test_ = "Column-major dense matrix inversion (0x0)";
+
+         blaze::DynamicMatrix<double,blaze::columnMajor> A;
+
+         invert( A );
+
+         if( A.rows() != 0UL || A.columns() != 0UL ) {
+            std::ostringstream oss;
+            oss << " Test: " << test_ << "\n"
+                << " Error: Matrix inversion failed\n"
+                << " Details:\n"
+                << "   Result:\n" << A << "\n";
+            throw std::runtime_error( oss.str() );
+         }
+      }
+
+      {
+         test_ = "Column-major dense matrix inversion (non-square)";
+
+         blaze::DynamicMatrix<double,blaze::columnMajor> A( 2UL, 3UL );
+
+         try {
+            invert( A );
+
+            std::ostringstream oss;
+            oss << " Test: " << test_ << "\n"
+                << " Error: Inversion of a non-square matrix succeeded\n"
+                << " Details:\n"
+                << "   Result:\n" << A << "\n";
+            throw std::runtime_error( oss.str() );
+         }
+         catch( std::invalid_argument& ) {}
+      }
+   }
 }
 //*************************************************************************************************
 
