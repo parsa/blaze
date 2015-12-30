@@ -40,6 +40,7 @@
 // Includes
 //*************************************************************************************************
 
+#include <blaze/math/shims/IsDefault.h>
 #include <blaze/system/Inline.h>
 #include <blaze/util/Complex.h>
 #include <blaze/util/DisableIf.h>
@@ -88,7 +89,7 @@ BLAZE_ALWAYS_INLINE typename EnableIf< IsBuiltin<Type>, bool >::Type
 template< typename Type >
 BLAZE_ALWAYS_INLINE bool isReal_backend( const complex<Type>& v )
 {
-   return v.imag() == Type(0);
+   return isDefault( v.imag() );
 }
 /*! \endcond */
 //*************************************************************************************************
