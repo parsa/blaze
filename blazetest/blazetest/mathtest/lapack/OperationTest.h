@@ -80,7 +80,7 @@ class OperationTest
    /*!\name Test functions */
    //@{
    void testQR();
-   void testLU();
+   void testPLU();
    void testCholesky();
    void testInversion();
    //@}

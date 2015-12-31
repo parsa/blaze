@@ -69,7 +69,7 @@ namespace lapack {
 OperationTest::OperationTest()
 {
    testQR();
-   testLU();
+   testPLU();
    testCholesky();
    testInversion();
 }
@@ -331,15 +331,15 @@ void OperationTest::testQR()
 
 
 //*************************************************************************************************
-/*!\brief Test of the LU decomposition functionality.
+/*!\brief Test of the PLU decomposition functionality.
 //
 // \return void
 // \exception std::runtime_error Error detected.
 //
-// This function performs a test of the LU decomposition functions for various data types. In
+// This function performs a test of the PLU decomposition functions for various data types. In
 // case an error is detected, a \a std::runtime_error exception is thrown.
 */
-void OperationTest::testLU()
+void OperationTest::testPLU()
 {
 #if BLAZETEST_MATHTEST_LAPACK_MODE
 
@@ -352,7 +352,7 @@ void OperationTest::testLU()
 
    // Single precision matrices
    {
-      test_ = "Row-major LU decomposition (single precision)";
+      test_ = "Row-major PLU decomposition (single precision)";
 
       blaze::StaticMatrix<float,3UL,3U,blaze::rowMajor> A( 2.0F, -1.0F, -2.0F,
                                                            4.0F,  1.0F, -7.0F,
@@ -366,7 +366,7 @@ void OperationTest::testLU()
           !equal( A(2,0), 6.0F ) || !equal( A(2,1),  6.0F ) || !equal( A(2,2),  4.0F ) ) {
          std::ostringstream oss;
          oss << " Test: " << test_ << "\n"
-             << " Error: LU decomposition failed\n"
+             << " Error: PLU decomposition failed\n"
              << " Details:\n"
              << "   Result:\n" << A << "\n"
              << "   Expected result:\n( 2.0 -0.5 -1.0 )\n"
@@ -378,7 +378,7 @@ void OperationTest::testLU()
 
    // Double precision matrices
    {
-      test_ = "Row-major LU decomposition (double precision)";
+      test_ = "Row-major PLU decomposition (double precision)";
 
       blaze::StaticMatrix<double,3UL,3U,blaze::rowMajor> A( 2.0, -1.0, -2.0,
                                                             4.0,  1.0, -7.0,
@@ -392,7 +392,7 @@ void OperationTest::testLU()
           !equal( A(2,0), 6.0 ) || !equal( A(2,1),  6.0 ) || !equal( A(2,2),  4.0 ) ) {
          std::ostringstream oss;
          oss << " Test: " << test_ << "\n"
-             << " Error: LU decomposition failed\n"
+             << " Error: PLU decomposition failed\n"
              << " Details:\n"
              << "   Result:\n" << A << "\n"
              << "   Expected result:\n( 2.0 -0.5 -1.0 )\n"
@@ -404,7 +404,7 @@ void OperationTest::testLU()
 
    // Single precision complex matrices
    {
-      test_ = "Row-major LU decomposition (single precision complex)";
+      test_ = "Row-major PLU decomposition (single precision complex)";
 
       typedef blaze::complex<float>  cplx;
 
@@ -420,7 +420,7 @@ void OperationTest::testLU()
           !equal( A(2,0), cplx( 6.0F ) ) || !equal( A(2,1), cplx(  6.0F ) ) || !equal( A(2,2), cplx(  4.0F ) ) ) {
          std::ostringstream oss;
          oss << " Test: " << test_ << "\n"
-             << " Error: LU decomposition failed\n"
+             << " Error: PLU decomposition failed\n"
              << " Details:\n"
              << "   Result:\n" << A << "\n"
              << "   Expected result:\n( (2.0,0.0) (-0.5,0.0) (-1.0,0.0) )\n"
@@ -432,7 +432,7 @@ void OperationTest::testLU()
 
    // Double precision complex matrices
    {
-      test_ = "Row-major LU decomposition (double precision complex)";
+      test_ = "Row-major PLU decomposition (double precision complex)";
 
       typedef blaze::complex<double>  cplx;
 
@@ -448,7 +448,7 @@ void OperationTest::testLU()
           !equal( A(2,0), cplx( 6.0 ) ) || !equal( A(2,1), cplx(  6.0 ) ) || !equal( A(2,2), cplx(  4.0 ) ) ) {
          std::ostringstream oss;
          oss << " Test: " << test_ << "\n"
-             << " Error: LU decomposition failed\n"
+             << " Error: PLU decomposition failed\n"
              << " Details:\n"
              << "   Result:\n" << A << "\n"
              << "   Expected result:\n( (2.0,0.0) (-0.5,0.0) (-1.0,0.0) )\n"
@@ -465,7 +465,7 @@ void OperationTest::testLU()
 
    // Single precision matrices
    {
-      test_ = "Column-major LU decomposition (single precision)";
+      test_ = "Column-major PLU decomposition (single precision)";
 
       blaze::StaticMatrix<float,3UL,3U,blaze::columnMajor> A( 2.0F, -1.0F, -2.0F,
                                                               4.0F,  1.0F, -7.0F,
@@ -479,7 +479,7 @@ void OperationTest::testLU()
           !equal( A(2,0), -1.0F ) || !equal( A(2,1), -1.0F ) || !equal( A(2,2), 4.0F ) ) {
          std::ostringstream oss;
          oss << " Test: " << test_ << "\n"
-             << " Error: LU decomposition failed\n"
+             << " Error: PLU decomposition failed\n"
              << " Details:\n"
              << "   Result:\n" << A << "\n"
              << "   Expected result:\n(  2.0  4.0  6.0 )\n"
@@ -491,7 +491,7 @@ void OperationTest::testLU()
 
    // Double precision matrices
    {
-      test_ = "Column-major LU decomposition (double precision)";
+      test_ = "Column-major PLU decomposition (double precision)";
 
       blaze::StaticMatrix<double,3UL,3U,blaze::columnMajor> A( 2.0, -1.0, -2.0,
                                                                4.0,  1.0, -7.0,
@@ -505,7 +505,7 @@ void OperationTest::testLU()
           !equal( A(2,0), -1.0 ) || !equal( A(2,1), -1.0 ) || !equal( A(2,2), 4.0 ) ) {
          std::ostringstream oss;
          oss << " Test: " << test_ << "\n"
-             << " Error: LU decomposition failed\n"
+             << " Error: PLU decomposition failed\n"
              << " Details:\n"
              << "   Result:\n" << A << "\n"
              << "   Expected result:\n(  2.0  4.0  6.0 )\n"
@@ -517,7 +517,7 @@ void OperationTest::testLU()
 
    // Single precision complex matrices
    {
-      test_ = "Column-major LU decomposition (single precision complex)";
+      test_ = "Column-major PLU decomposition (single precision complex)";
 
       typedef blaze::complex<float>  cplx;
 
@@ -533,7 +533,7 @@ void OperationTest::testLU()
           !equal( A(2,0), cplx( -1.0F ) ) || !equal( A(2,1), cplx( -1.0F ) ) || !equal( A(2,2), cplx( 4.0F ) ) ) {
          std::ostringstream oss;
          oss << " Test: " << test_ << "\n"
-             << " Error: LU decomposition failed\n"
+             << " Error: PLU decomposition failed\n"
              << " Details:\n"
              << "   Result:\n" << A << "\n"
              << "   Expected result:\n( ( 2.0,0.0) ( 4.0,0.0) (6.0,0.0) )\n"
@@ -545,7 +545,7 @@ void OperationTest::testLU()
 
    // Double precision complex matrices
    {
-      test_ = "Column-major LU decomposition (double precision complex)";
+      test_ = "Column-major PLU decomposition (double precision complex)";
 
       typedef blaze::complex<double>  cplx;
 
@@ -561,7 +561,7 @@ void OperationTest::testLU()
           !equal( A(2,0), cplx( -1.0 ) ) || !equal( A(2,1), cplx( -1.0 ) ) || !equal( A(2,2), cplx( 4.0 ) ) ) {
          std::ostringstream oss;
          oss << " Test: " << test_ << "\n"
-             << " Error: LU decomposition failed\n"
+             << " Error: PLU decomposition failed\n"
              << " Details:\n"
              << "   Result:\n" << A << "\n"
              << "   Expected result:\n( ( 2.0,0.0) ( 4.0,0.0) (6.0,0.0) )\n"
@@ -582,8 +582,8 @@ void OperationTest::testLU()
 // \return void
 // \exception std::runtime_error Error detected.
 //
-// This function performs a test of the LU decomposition functions for various data types. In
-// case an error is detected, a \a std::runtime_error exception is thrown.
+// This function performs a test of the Cholesky decomposition functions for various data types.
+// In case an error is detected, a \a std::runtime_error exception is thrown.
 */
 void OperationTest::testCholesky()
 {
@@ -1033,12 +1033,12 @@ void OperationTest::testInversion()
 
 
    //=====================================================================================
-   // Row-major LU-based inversion
+   // Row-major PLU-based inversion
    //=====================================================================================
 
    // Single precision matrices
    {
-      test_ = "Row-major inversion (LU, single precision)";
+      test_ = "Row-major inversion (PLU, single precision)";
 
       blaze::StaticMatrix<float,3UL,3U,blaze::rowMajor> A( 1.0F, 0.0F, 0.0F,
                                                            0.0F, 1.0F, 0.0F,
@@ -1065,7 +1065,7 @@ void OperationTest::testInversion()
 
    // Double precision matrices
    {
-      test_ = "Row-major inversion (LU, double precision)";
+      test_ = "Row-major inversion (PLU, double precision)";
 
       blaze::StaticMatrix<double,3UL,3U,blaze::rowMajor> A( 1.0, 0.0, 0.0,
                                                             0.0, 1.0, 0.0,
@@ -1092,7 +1092,7 @@ void OperationTest::testInversion()
 
    // Single precision complex matrices
    {
-      test_ = "Row-major matrix inversion (LU, single precision complex)";
+      test_ = "Row-major matrix inversion (PLU, single precision complex)";
 
       typedef blaze::complex<float>  cplx;
 
@@ -1121,7 +1121,7 @@ void OperationTest::testInversion()
 
    // Double precision complex matrices
    {
-      test_ = "Row-major matrix inversion (LU, double precision complex)";
+      test_ = "Row-major matrix inversion (PLU, double precision complex)";
 
       typedef blaze::complex<double>  cplx;
 
@@ -1368,12 +1368,12 @@ void OperationTest::testInversion()
 
 
    //=====================================================================================
-   // Column-major LU-based inversion
+   // Column-major PLU-based inversion
    //=====================================================================================
 
    // Single precision matrices
    {
-      test_ = "Column-major inversion (LU, single precision)";
+      test_ = "Column-major inversion (PLU, single precision)";
 
       blaze::StaticMatrix<float,3UL,3U,blaze::columnMajor> A( 1.0F, 0.0F, 1.0F,
                                                               0.0F, 1.0F, 1.0F,
@@ -1400,7 +1400,7 @@ void OperationTest::testInversion()
 
    // Double precision matrices
    {
-      test_ = "Column-major inversion (LU, double precision)";
+      test_ = "Column-major inversion (PLU, double precision)";
 
       blaze::StaticMatrix<double,3UL,3U,blaze::columnMajor> A( 1.0, 0.0, 1.0,
                                                                0.0, 1.0, 1.0,
@@ -1427,7 +1427,7 @@ void OperationTest::testInversion()
 
    // Single precision complex matrices
    {
-      test_ = "Column-major matrix inversion (LU, single precision complex)";
+      test_ = "Column-major matrix inversion (PLU, single precision complex)";
 
       typedef blaze::complex<float>  cplx;
 
@@ -1456,7 +1456,7 @@ void OperationTest::testInversion()
 
    // Double precision complex matrices
    {
-      test_ = "Column-major matrix inversion (LU, double precision complex)";
+      test_ = "Column-major matrix inversion (PLU, double precision complex)";
 
       typedef blaze::complex<double>  cplx;
 

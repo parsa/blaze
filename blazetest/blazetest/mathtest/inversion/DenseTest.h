@@ -166,7 +166,7 @@ void DenseTest::testRandom1x1()
    Type B( A );
 
    blaze::invert( A );
-   blaze::invertNxN<blaze::byLU>( B );
+   blaze::invertNxN<blaze::byPLU>( B );
 
    if( A != B ) {
       std::ostringstream oss;
@@ -215,7 +215,7 @@ void DenseTest::testRandom2x2()
 
    blaze::invert( A );
    blaze::invert2x2( B );
-   blaze::invertNxN<blaze::byLU>( C );
+   blaze::invertNxN<blaze::byPLU>( C );
 
    if( A != B || A != C ) {
       std::ostringstream oss;
@@ -265,7 +265,7 @@ void DenseTest::testRandom3x3()
 
    blaze::invert( A );
    blaze::invert3x3( B );
-   blaze::invertNxN<blaze::byLU>( C );
+   blaze::invertNxN<blaze::byPLU>( C );
 
    if( A != B || A != C ) {
       std::ostringstream oss;
@@ -315,7 +315,7 @@ void DenseTest::testRandom4x4()
 
    blaze::invert( A );
    blaze::invert4x4( B );
-   blaze::invertNxN<blaze::byLU>( C );
+   blaze::invertNxN<blaze::byPLU>( C );
 
    if( A != B || A != C ) {
       std::ostringstream oss;
@@ -365,7 +365,7 @@ void DenseTest::testRandom5x5()
 
    blaze::invert( A );
    blaze::invert5x5( B );
-   blaze::invertNxN<blaze::byLU>( C );
+   blaze::invertNxN<blaze::byPLU>( C );
 
    if( A != B || A != C ) {
       std::ostringstream oss;
@@ -415,7 +415,7 @@ void DenseTest::testRandom6x6()
 
    blaze::invert( A );
    blaze::invert6x6( B );
-   blaze::invertNxN<blaze::byLU>( C );
+   blaze::invertNxN<blaze::byPLU>( C );
 
    if( A != B || A != C ) {
       std::ostringstream oss;
@@ -452,24 +452,24 @@ void DenseTest::testRandomNxN()
 #if BLAZETEST_MATHTEST_LAPACK_MODE
 
    using blaze::invert;
-   using blaze::byLU;
+   using blaze::byPLU;
    using blaze::byCholesky;
 
    typedef typename Type::ElementType  ET;
 
 
    //=====================================================================================
-   // Matrix inversion by LU decomposition
+   // Matrix inversion by PLU decomposition
    //=====================================================================================
 
    {
-      test_ = "Matrix inversion (LU)";
+      test_ = "Matrix inversion (PLU)";
 
       Type A;
       initialize( A );
       Type B( A );
 
-      invert<byLU>( B );
+      invert<byPLU>( B );
 
       if( !isIdentity( A * B ) ) {
          std::ostringstream oss;
@@ -487,14 +487,14 @@ void DenseTest::testRandomNxN()
    }
 
    {
-      test_ = "Submatrix inversion (LU)";
+      test_ = "Submatrix inversion (PLU)";
 
       Type A;
       initialize( A );
       Type B( A );
 
       blaze::DenseSubmatrix<Type> sub( B, 0UL, 0UL, A.rows(), A.columns() );
-      invert<byLU>( sub );
+      invert<byPLU>( sub );
 
       if( !isIdentity( A * sub ) ) {
          std::ostringstream oss;
