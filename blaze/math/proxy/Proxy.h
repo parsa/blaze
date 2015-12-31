@@ -55,9 +55,13 @@
 #include <blaze/math/shims/IsZero.h>
 #include <blaze/math/shims/Real.h>
 #include <blaze/math/traits/AbsExprTrait.h>
+#include <blaze/math/traits/AddExprTrait.h>
 #include <blaze/math/traits/CTransExprTrait.h>
+#include <blaze/math/traits/DivExprTrait.h>
 #include <blaze/math/traits/ImagExprTrait.h>
+#include <blaze/math/traits/MultExprTrait.h>
 #include <blaze/math/traits/RealExprTrait.h>
+#include <blaze/math/traits/SubExprTrait.h>
 #include <blaze/math/traits/TransExprTrait.h>
 #include <blaze/math/typetraits/IsDenseMatrix.h>
 #include <blaze/math/typetraits/IsDenseVector.h>
@@ -144,6 +148,54 @@ class Proxy : public If< IsVector<RT>
 /*!\name Proxy operators */
 //@{
 template< typename PT1, typename RT1, typename PT2, typename RT2 >
+inline typename AddExprTrait<RT1,RT2>::Type
+   operator+( const Proxy<PT1,RT1>& lhs, const Proxy<PT2,RT2>& rhs );
+
+template< typename PT, typename RT, typename T >
+inline typename DisableIf< IsProxy<T>, typename AddExprTrait<RT,T>::Type >::Type
+   operator+( const Proxy<PT,RT>& lhs, const T& rhs );
+
+template< typename T, typename PT, typename RT >
+inline typename DisableIf< IsProxy<T>, typename AddExprTrait<T,RT>::Type >::Type
+   operator+( const T& lhs, const Proxy<PT,RT>& rhs );
+
+template< typename PT1, typename RT1, typename PT2, typename RT2 >
+inline typename SubExprTrait<RT1,RT2>::Type
+   operator-( const Proxy<PT1,RT1>& lhs, const Proxy<PT2,RT2>& rhs );
+
+template< typename PT, typename RT, typename T >
+inline typename DisableIf< IsProxy<T>, typename SubExprTrait<RT,T>::Type >::Type
+   operator-( const Proxy<PT,RT>& lhs, const T& rhs );
+
+template< typename T, typename PT, typename RT >
+inline typename DisableIf< IsProxy<T>, typename SubExprTrait<T,RT>::Type >::Type
+   operator-( const T& lhs, const Proxy<PT,RT>& rhs );
+
+template< typename PT1, typename RT1, typename PT2, typename RT2 >
+inline typename MultExprTrait<RT1,RT2>::Type
+   operator*( const Proxy<PT1,RT1>& lhs, const Proxy<PT2,RT2>& rhs );
+
+template< typename PT, typename RT, typename T >
+inline typename DisableIf< IsProxy<T>, typename MultExprTrait<RT,T>::Type >::Type
+   operator*( const Proxy<PT,RT>& lhs, const T& rhs );
+
+template< typename T, typename PT, typename RT >
+inline typename DisableIf< IsProxy<T>, typename MultExprTrait<T,RT>::Type >::Type
+   operator*( const T& lhs, const Proxy<PT,RT>& rhs );
+
+template< typename PT1, typename RT1, typename PT2, typename RT2 >
+inline typename DivExprTrait<RT1,RT2>::Type
+   operator/( const Proxy<PT1,RT1>& lhs, const Proxy<PT2,RT2>& rhs );
+
+template< typename PT, typename RT, typename T >
+inline typename DisableIf< IsProxy<T>, typename DivExprTrait<RT,T>::Type >::Type
+   operator/( const Proxy<PT,RT>& lhs, const T& rhs );
+
+template< typename T, typename PT, typename RT >
+inline typename DisableIf< IsProxy<T>, typename DivExprTrait<T,RT>::Type >::Type
+   operator/( const T& lhs, const Proxy<PT,RT>& rhs );
+
+template< typename PT1, typename RT1, typename PT2, typename RT2 >
 inline bool operator==( const Proxy<PT1,RT1>& lhs, const Proxy<PT2,RT2>& rhs );
 
 template< typename PT, typename RT, typename T >
@@ -212,6 +264,210 @@ inline typename DisableIf< IsProxy<T>, bool >::Type
 template< typename PT, typename RT >
 inline std::ostream& operator<<( std::ostream& os, const Proxy<PT,RT>& proxy );
 //@}
+//*************************************************************************************************
+
+
+//*************************************************************************************************
+/*!\brief Addition between two Proxy objects.
+// \ingroup math
+//
+// \param lhs The left-hand side Proxy object.
+// \param rhs The right-hand side Proxy object.
+// \return The result of the addition.
+*/
+template< typename PT1, typename RT1, typename PT2, typename RT2 >
+inline typename AddExprTrait<RT1,RT2>::Type
+   operator+( const Proxy<PT1,RT1>& lhs, const Proxy<PT2,RT2>& rhs )
+{
+   return (~lhs).get() + (~rhs).get();
+}
+//*************************************************************************************************
+
+
+//*************************************************************************************************
+/*!\brief Addition between a Proxy object and an object of different type.
+// \ingroup math
+//
+// \param lhs The left-hand side Proxy object.
+// \param rhs The right-hand side object of other type.
+// \return The result of the addition.
+*/
+template< typename PT, typename RT, typename T >
+inline typename DisableIf< IsProxy<T>, typename AddExprTrait<RT,T>::Type >::Type
+   operator+( const Proxy<PT,RT>& lhs, const T& rhs )
+{
+   return (~lhs).get() + rhs;
+}
+//*************************************************************************************************
+
+
+//*************************************************************************************************
+/*!\brief Addition between an object of different type and a Proxy object.
+// \ingroup math
+//
+// \param lhs The left-hand side object of other type.
+// \param rhs The right-hand side Proxy object.
+// \return The result of the addition.
+*/
+template< typename T, typename PT, typename RT >
+inline typename DisableIf< IsProxy<T>, typename AddExprTrait<T,RT>::Type >::Type
+   operator+( const T& lhs, const Proxy<PT,RT>& rhs )
+{
+   return lhs + (~rhs).get();
+}
+//*************************************************************************************************
+
+
+//*************************************************************************************************
+/*!\brief Subtraction between two Proxy objects.
+// \ingroup math
+//
+// \param lhs The left-hand side Proxy object.
+// \param rhs The right-hand side Proxy object.
+// \return The result of the subtraction.
+*/
+template< typename PT1, typename RT1, typename PT2, typename RT2 >
+inline typename SubExprTrait<RT1,RT2>::Type
+   operator-( const Proxy<PT1,RT1>& lhs, const Proxy<PT2,RT2>& rhs )
+{
+   return (~lhs).get() - (~rhs).get();
+}
+//*************************************************************************************************
+
+
+//*************************************************************************************************
+/*!\brief Subtraction between a Proxy object and an object of different type.
+// \ingroup math
+//
+// \param lhs The left-hand side Proxy object.
+// \param rhs The right-hand side object of other type.
+// \return The result of the subtraction.
+*/
+template< typename PT, typename RT, typename T >
+inline typename DisableIf< IsProxy<T>, typename SubExprTrait<RT,T>::Type >::Type
+   operator-( const Proxy<PT,RT>& lhs, const T& rhs )
+{
+   return (~lhs).get() - rhs;
+}
+//*************************************************************************************************
+
+
+//*************************************************************************************************
+/*!\brief Subtraction between an object of different type and a Proxy object.
+// \ingroup math
+//
+// \param lhs The left-hand side object of other type.
+// \param rhs The right-hand side Proxy object.
+// \return The result of the subtraction.
+*/
+template< typename T, typename PT, typename RT >
+inline typename DisableIf< IsProxy<T>, typename SubExprTrait<T,RT>::Type >::Type
+   operator-( const T& lhs, const Proxy<PT,RT>& rhs )
+{
+   return lhs - (~rhs).get();
+}
+//*************************************************************************************************
+
+
+//*************************************************************************************************
+/*!\brief Multiplication between two Proxy objects.
+// \ingroup math
+//
+// \param lhs The left-hand side Proxy object.
+// \param rhs The right-hand side Proxy object.
+// \return The result of the multiplication.
+*/
+template< typename PT1, typename RT1, typename PT2, typename RT2 >
+inline typename MultExprTrait<RT1,RT2>::Type
+   operator*( const Proxy<PT1,RT1>& lhs, const Proxy<PT2,RT2>& rhs )
+{
+   return (~lhs).get() * (~rhs).get();
+}
+//*************************************************************************************************
+
+
+//*************************************************************************************************
+/*!\brief Multiplication between a Proxy object and an object of different type.
+// \ingroup math
+//
+// \param lhs The left-hand side Proxy object.
+// \param rhs The right-hand side object of other type.
+// \return The result of the multiplication.
+*/
+template< typename PT, typename RT, typename T >
+inline typename DisableIf< IsProxy<T>, typename MultExprTrait<RT,T>::Type >::Type
+   operator*( const Proxy<PT,RT>& lhs, const T& rhs )
+{
+   return (~lhs).get() * rhs;
+}
+//*************************************************************************************************
+
+
+//*************************************************************************************************
+/*!\brief Multiplication between an object of different type and a Proxy object.
+// \ingroup math
+//
+// \param lhs The left-hand side object of other type.
+// \param rhs The right-hand side Proxy object.
+// \return The result of the multiplication.
+*/
+template< typename T, typename PT, typename RT >
+inline typename DisableIf< IsProxy<T>, typename MultExprTrait<T,RT>::Type >::Type
+   operator*( const T& lhs, const Proxy<PT,RT>& rhs )
+{
+   return lhs * (~rhs).get();
+}
+//*************************************************************************************************
+
+
+//*************************************************************************************************
+/*!\brief Division between two Proxy objects.
+// \ingroup math
+//
+// \param lhs The left-hand side Proxy object.
+// \param rhs The right-hand side Proxy object.
+// \return The result of the division.
+*/
+template< typename PT1, typename RT1, typename PT2, typename RT2 >
+inline typename DivExprTrait<RT1,RT2>::Type
+   operator/( const Proxy<PT1,RT1>& lhs, const Proxy<PT2,RT2>& rhs )
+{
+   return (~lhs).get() / (~rhs).get();
+}
+//*************************************************************************************************
+
+
+//*************************************************************************************************
+/*!\brief Division between a Proxy object and an object of different type.
+// \ingroup math
+//
+// \param lhs The left-hand side Proxy object.
+// \param rhs The right-hand side object of other type.
+// \return The result of the division.
+*/
+template< typename PT, typename RT, typename T >
+inline typename DisableIf< IsProxy<T>, typename DivExprTrait<RT,T>::Type >::Type
+   operator/( const Proxy<PT,RT>& lhs, const T& rhs )
+{
+   return (~lhs).get() / rhs;
+}
+//*************************************************************************************************
+
+
+//*************************************************************************************************
+/*!\brief Division between an object of different type and a Proxy object.
+// \ingroup math
+//
+// \param lhs The left-hand side object of other type.
+// \param rhs The right-hand side Proxy object.
+// \return The result of the division.
+*/
+template< typename T, typename PT, typename RT >
+inline typename DisableIf< IsProxy<T>, typename DivExprTrait<T,RT>::Type >::Type
+   operator/( const T& lhs, const Proxy<PT,RT>& rhs )
+{
+   return lhs / (~rhs).get();
+}
 //*************************************************************************************************
 
 
