@@ -89,6 +89,8 @@
 #include <blaze/util/SelectType.h>
 #include <blaze/util/Types.h>
 #include <blaze/util/typetraits/IsComplex.h>
+#include <blaze/util/typetraits/IsComplexDouble.h>
+#include <blaze/util/typetraits/IsComplexFloat.h>
 #include <blaze/util/typetraits/IsDouble.h>
 #include <blaze/util/typetraits/IsFloat.h>
 #include <blaze/util/typetraits/IsNumeric.h>
@@ -200,16 +202,15 @@ class DMatDVecMultExpr : public DenseVector< DMatDVecMultExpr<MT,VT>, false >
        to 1, otherwise it will be 0. */
    template< typename T1, typename T2, typename T3 >
    struct UseSinglePrecisionComplexKernel {
-      typedef complex<float>  Type;
       enum { value = BLAZE_BLAS_MODE &&
                      HasMutableDataAccess<T1>::value &&
                      HasConstDataAccess<T2>::value &&
                      HasConstDataAccess<T3>::value &&
                      !IsDiagonal<T2>::value &&
                      T1::vectorizable && T2::vectorizable && T3::vectorizable &&
-                     IsSame<typename T1::ElementType,Type>::value &&
-                     IsSame<typename T2::ElementType,Type>::value &&
-                     IsSame<typename T3::ElementType,Type>::value };
+                     IsComplexFloat<typename T1::ElementType>::value &&
+                     IsComplexFloat<typename T2::ElementType>::value &&
+                     IsComplexFloat<typename T3::ElementType>::value };
    };
    /*! \endcond */
    //**********************************************************************************************
@@ -222,16 +223,15 @@ class DMatDVecMultExpr : public DenseVector< DMatDVecMultExpr<MT,VT>, false >
        to 1, otherwise it will be 0. */
    template< typename T1, typename T2, typename T3 >
    struct UseDoublePrecisionComplexKernel {
-      typedef complex<double>  Type;
       enum { value = BLAZE_BLAS_MODE &&
                      HasMutableDataAccess<T1>::value &&
                      HasConstDataAccess<T2>::value &&
                      HasConstDataAccess<T3>::value &&
                      !IsDiagonal<T2>::value &&
                      T1::vectorizable && T2::vectorizable && T3::vectorizable &&
-                     IsSame<typename T1::ElementType,Type>::value &&
-                     IsSame<typename T2::ElementType,Type>::value &&
-                     IsSame<typename T3::ElementType,Type>::value };
+                     IsComplexDouble<typename T1::ElementType>::value &&
+                     IsComplexDouble<typename T2::ElementType>::value &&
+                     IsComplexDouble<typename T3::ElementType>::value };
    };
    /*! \endcond */
    //**********************************************************************************************
@@ -3106,16 +3106,15 @@ class DVecScalarMultExpr< DMatDVecMultExpr<MT,VT>, ST, false >
        1, otherwise it will be 0. */
    template< typename T1, typename T2, typename T3 >
    struct UseSinglePrecisionComplexKernel {
-      typedef complex<float>  Type;
       enum { value = BLAZE_BLAS_MODE &&
                      HasMutableDataAccess<T1>::value &&
                      HasConstDataAccess<T2>::value &&
                      HasConstDataAccess<T3>::value &&
                      !IsDiagonal<T2>::value &&
                      T1::vectorizable && T2::vectorizable && T3::vectorizable &&
-                     IsSame<typename T1::ElementType,Type>::value &&
-                     IsSame<typename T2::ElementType,Type>::value &&
-                     IsSame<typename T3::ElementType,Type>::value };
+                     IsComplexFloat<typename T1::ElementType>::value &&
+                     IsComplexFloat<typename T2::ElementType>::value &&
+                     IsComplexFloat<typename T3::ElementType>::value };
    };
    //**********************************************************************************************
 
@@ -3126,16 +3125,15 @@ class DVecScalarMultExpr< DMatDVecMultExpr<MT,VT>, ST, false >
        1, otherwise it will be 0. */
    template< typename T1, typename T2, typename T3 >
    struct UseDoublePrecisionComplexKernel {
-      typedef complex<double>  Type;
       enum { value = BLAZE_BLAS_MODE &&
                      HasMutableDataAccess<T1>::value &&
                      HasConstDataAccess<T2>::value &&
                      HasConstDataAccess<T3>::value &&
                      !IsDiagonal<T2>::value &&
                      T1::vectorizable && T2::vectorizable && T3::vectorizable &&
-                     IsSame<typename T1::ElementType,Type>::value &&
-                     IsSame<typename T2::ElementType,Type>::value &&
-                     IsSame<typename T3::ElementType,Type>::value };
+                     IsComplexDouble<typename T1::ElementType>::value &&
+                     IsComplexDouble<typename T2::ElementType>::value &&
+                     IsComplexDouble<typename T3::ElementType>::value };
    };
    //**********************************************************************************************
 
