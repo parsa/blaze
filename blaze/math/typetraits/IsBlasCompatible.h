@@ -40,13 +40,13 @@
 // Includes
 //*************************************************************************************************
 
-#include <blaze/util/Complex.h>
 #include <blaze/util/FalseType.h>
 #include <blaze/util/SelectType.h>
 #include <blaze/util/TrueType.h>
+#include <blaze/util/typetraits/IsComplexDouble.h>
+#include <blaze/util/typetraits/IsComplexFloat.h>
 #include <blaze/util/typetraits/IsDouble.h>
 #include <blaze/util/typetraits/IsFloat.h>
-#include <blaze/util/typetraits/IsSame.h>
 
 
 namespace blaze {
@@ -66,8 +66,8 @@ template< typename T >
 struct IsBlasCompatibleHelper
 {
    //**********************************************************************************************
-   enum { value = ( IsFloat<T>::value  || IsSame<complex<float>,T>::value ||
-                    IsDouble<T>::value || IsSame<complex<double>,T>::value ) };
+   enum { value = ( IsFloat<T>::value  || IsComplexFloat<T>::value ||
+                    IsDouble<T>::value || IsComplexDouble<T>::value ) };
    typedef typename SelectType<value,TrueType,FalseType>::Type  Type;
    //**********************************************************************************************
 };
