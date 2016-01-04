@@ -3247,7 +3247,7 @@ namespace blaze {}
    M1 = conj( trans( M2 ) );  // Computing the conjugate transpose matrix
    \endcode
 
-// The \c ctranspose()' function can be used to perform an in-place conjugate transpose operation:
+// The \c ctranspose() function can be used to perform an in-place conjugate transpose operation:
 
    \code
    blaze::DynamicMatrix<int,rowMajor> M( 5UL, 2UL );
@@ -3266,15 +3266,47 @@ namespace blaze {}
 //
 // \n \subsection matrix_operations_matrix_inversion Matrix Inversion
 //
-// An in-place inversion of a dense matrix can be performed via the \c invert() function:
+// The inverse of a square dense matrix can be computed via the \c inv() function:
 
    \code
-   blaze::DynamicMatrix<int,rowMajor> M( 5UL, 2UL );
-
-   invert( M );  // In-place matrix inversion.
+   blaze::DynamicMatrix<float,blaze::rowMajor> A, B;
+   // ... Resizing and initialization
+   B = inv( A );  // Compute the inverse of A
    \endcode
 
-// The matrix inversion fails if ...
+// Alternatively, an in-place inversion of a dense matrix can be performed via the \c invert()
+// function:
+
+   \code
+   blaze::DynamicMatrix<int,blaze::rowMajor> A;
+   // ... Resizing and initialization
+   invert( A );  // In-place matrix inversion
+   \endcode
+
+// By default, both the \c inv and the \c invert function perform the dense matrix inversion by
+// means of a PLU decomposition. However, via the \c invert() function it is possible to explicitly
+// specify the matrix decomposition algorithm that should be used in the inversion process:
+
+   \code
+   using blaze::byPLU;
+   using blaze::byCholesky;
+
+   // In-place inversion with default decomposition algorithm (PLU)
+   invert( A );
+
+   // In-place inversion of a general matrix by means of a PLU decomposition
+   invert<byPLU>( A );
+
+   // In-place inversion of a positive definite matrix by means of a Cholesky decomposition
+   invert<byCholesky>( A );
+   \endcode
+
+// Whereas the inversion by PLU works for every general square matrix, the inversion by Cholesky
+// only works for positive definite matrices. Please note that it is in the responsibility of the
+// function caller to guarantee that the given matrix is a positive definite matrix. In case this
+// precondition is violated the result will not represent the inverse of the given matrix!
+//
+// For both the \c inv and \c invert function the matrix inversion fails if ...
 //
 //  - ... the given matrix is not a square matrix;
 //  - ... the given matrix is singular and not invertible.
@@ -3282,12 +3314,16 @@ namespace blaze {}
 // In all failure cases either a compilation error is created if the failure can be predicted at
 // compile time or a \c std::invalid_argument exception is thrown.
 //
-// \note This function does not provide any exception safety guarantee, i.e. in case an exception
-// is thrown the matrix may already have been modified.
+// \note The matrix inversion can only be used for dense matrices with \c float, \c double,
+// \c complex<float> or \c complex<double> element type. The attempt to call the function with
+// matrices of any other element type or with a sparse matrix results in a compile time error!
 //
 // \note The function inverts the dense matrix by means of LAPACK kernels. Thus the function can
 // only be used if the fitting LAPACK library is available and linked to the executable. Otherwise
 // a linker error will be created.
+//
+// \note This function does not provide any exception safety guarantee, i.e. in case an exception
+// is thrown the matrix may already have been modified.
 //
 //
 // \n \subsection matrix_operations_swap Swap
@@ -3296,8 +3332,8 @@ namespace blaze {}
 // of the same type:
 
    \code
-   blaze::DynamicMatrix<int,rowMajor> M1( 10UL, 15UL );
-   blaze::DynamicMatrix<int,rowMajor> M2( 20UL, 10UL );
+   blaze::DynamicMatrix<int,blaze::rowMajor> M1( 10UL, 15UL );
+   blaze::DynamicMatrix<int,blaze::rowMajor> M2( 20UL, 10UL );
 
    swap( M1, M2 );  // Swapping the contents of M1 and M2
    \endcode
