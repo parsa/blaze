@@ -131,6 +131,7 @@
 #include <blaze/math/typetraits/StorageOrder.h>
 #include <blaze/math/typetraits/TransposeFlag.h>
 #include <blaze/math/typetraits/UnderlyingBuiltin.h>
+#include <blaze/math/typetraits/UnderlyingElement.h>
 #include <blaze/math/typetraits/UnderlyingNumeric.h>
 
 #endif
