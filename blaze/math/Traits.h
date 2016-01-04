@@ -100,6 +100,7 @@
 #include <blaze/math/traits/EvalExprTrait.h>
 #include <blaze/math/traits/ImagExprTrait.h>
 #include <blaze/math/traits/ImagTrait.h>
+#include <blaze/math/traits/InvExprTrait.h>
 #include <blaze/math/traits/MathTrait.h>
 #include <blaze/math/traits/MultExprTrait.h>
 #include <blaze/math/traits/MultTrait.h>
