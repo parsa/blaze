@@ -761,7 +761,7 @@ template< DecompositionFlag DF  // Decomposition algorithm
         , bool SO >             // Storage order of the dense matrix
 inline void invertNxN( HermitianMatrix<MT,SO,true>& m )
 {
-   Inversion<DF>::invert( m.matrix_ );
+   invertNxN<DF>( m.matrix_ );
 
    BLAZE_INTERNAL_ASSERT( isIntact( m ), "Broken invariant detected" );
 }
