@@ -131,7 +131,7 @@ typedef double  TypeB;
 // operation. The following example demonstrates this by means of the vector addition:
 
    \code
-   blaze::DynamicVector<double,false> a, b, ;
+   blaze::DynamicVector<double,false> a, b;
    blaze::DynamicVector<double,true> c;
    c = trans( a + b );  // Transpose vector addition
    \endcode
@@ -256,6 +256,31 @@ typedef double  TypeB;
 //   - 2: The \a imag tests are included in the compilation process and executed
 */
 #define BLAZETEST_MATHTEST_TEST_IMAG_OPERATION 0
+//*************************************************************************************************
+
+
+//*************************************************************************************************
+/*!\brief Compilation switch for the inversion tests.
+//
+// This compilation switch triggers the inversion tests for all test scenarios. In case the
+// inversion tests are activated, each operation is tested in combination with an inversion
+// operation. The following example demonstrates this by means of the matrix addition:
+
+   \code
+   blaze::DynamicMatrix<double,false> A, B, C;
+   C = inv( A + B );  // Inverted matrix addition
+   \endcode
+
+// The following settings are possible:
+//
+//   - 0: The inversion tests are not included in the compilation process and not executed
+//   - 1: The inversion tests are included in the compilation process, but not executed
+//   - 2: The inversion tests are included in the compilation process and executed
+//
+// \note In case the inversion tests are activated both \a TypeA and \a TypeB must be set to
+// BLAS compatible data types (i.e. float, double, complex<float>, or complex<double>).
+*/
+#define BLAZETEST_MATHTEST_TEST_INV_OPERATION 0
 //*************************************************************************************************
 
 
