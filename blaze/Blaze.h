@@ -3264,6 +3264,28 @@ namespace blaze {}
 //  - ... the given submatrix would cause non-deterministic results in a symmetric/Hermitian matrix.
 //
 //
+// \n \subsection matrix_operations_matrix_determinant Matrix Determinant
+//
+// The determinant of a square dense matrix can be computed by means of the \c det() function:
+
+   \code
+   blaze::DynamicMatrix<double,blaze::rowMajor> A;
+   // ... Resizing and initialization
+   double d = det( A );  // Compute the determinant of A
+   \endcode
+
+// In case the given dense matrix is not a square matrix, a \c std::invalid_argument exception is
+// thrown.
+//
+// \note The \c det() function can only be used for dense matrices with \c float, \c double,
+// \c complex<float> or \c complex<double> element type. The attempt to call the function with
+// matrices of any other element type or with a sparse matrix results in a compile time error!
+//
+// \note The function is depending on LAPACK kernels. Thus the function can only be used if the
+// fitting LAPACK library is available and linked to the executable. Otherwise a linker error
+// will be created.
+//
+//
 // \n \subsection matrix_operations_matrix_inversion Matrix Inversion
 //
 // The inverse of a square dense matrix can be computed via the \c inv() function:
