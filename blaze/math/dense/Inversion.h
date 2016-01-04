@@ -40,6 +40,7 @@
 // Includes
 //*************************************************************************************************
 
+#include <blaze/math/constraints/BlasCompatible.h>
 #include <blaze/math/constraints/StrictlyTriangular.h>
 #include <blaze/math/DecompositionFlag.h>
 #include <blaze/math/dense/StaticMatrix.h>
@@ -142,6 +143,8 @@ template< typename MT  // Type of the dense matrix
         , bool SO >    // Storage order of the dense matrix
 inline void InvertHelper<byPLU>::invert( DenseMatrix<MT,SO>& dm )
 {
+   BLAZE_CONSTRAINT_MUST_BE_BLAS_COMPATIBLE_TYPE( typename MT::ElementType );
+
    const size_t N( min( (~dm).rows(), (~dm).columns() ) );
    UniqueArray<int> ipiv( new int[N] );
 
@@ -220,6 +223,8 @@ template< typename MT  // Type of the dense matrix
 inline void InvertHelper<byCholesky>::invert( DenseMatrix<MT,SO>& dm )
 {
    using blaze::invert;
+
+   BLAZE_CONSTRAINT_MUST_BE_BLAS_COMPATIBLE_TYPE( typename MT::ElementType );
 
    BLAZE_USER_ASSERT( isSymmetric( ~dm ), "Invalid non-symmetric matrix detected" );
    BLAZE_INTERNAL_ASSERT( isSquare( ~dm ), "Non-square matrix detected" );

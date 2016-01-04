@@ -41,6 +41,7 @@
 //*************************************************************************************************
 
 #include <boost/cast.hpp>
+#include <blaze/math/constraints/BlasCompatible.h>
 #include <blaze/math/constraints/DenseMatrix.h>
 #include <blaze/math/constraints/MutableDataAccess.h>
 #include <blaze/math/constraints/RequiresEvaluation.h>
@@ -331,6 +332,7 @@ typename MT::ElementType detNxN( const DenseMatrix<MT,SO>& dm )
    BLAZE_CONSTRAINT_MUST_BE_DENSE_MATRIX_TYPE( URT );
    BLAZE_CONSTRAINT_MUST_NOT_REQUIRE_EVALUATION( URT );
    BLAZE_CONSTRAINT_MUST_HAVE_MUTABLE_DATA_ACCESS( URT );
+   BLAZE_CONSTRAINT_MUST_BE_BLAS_COMPATIBLE_TYPE( ET );
 
    URT A( ~dm );
 
