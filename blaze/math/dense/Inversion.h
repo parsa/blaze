@@ -1,7 +1,7 @@
 //=================================================================================================
 /*!
-//  \file blaze/math/expressions/DMatInvExpr.h
-//  \brief Header file for the dense matrix inversion expression
+//  \file blaze/math/dense/Inversion.h
+//  \brief Header file for the dense matrix in-place inversion kernels
 //
 //  Copyright (C) 2013 Klaus Iglberger - All Rights Reserved
 //
@@ -32,8 +32,8 @@
 */
 //=================================================================================================
 
-#ifndef _BLAZE_MATH_EXPRESSIONS_DMATINVEXPR_H_
-#define _BLAZE_MATH_EXPRESSIONS_DMATINVEXPR_H_
+#ifndef _BLAZE_MATH_DENSE_INVERSION_H_
+#define _BLAZE_MATH_DENSE_INVERSION_H_
 
 
 //*************************************************************************************************
@@ -79,7 +79,7 @@ namespace blaze {
 // the PLU decomposition or the Cholesky decomposition.
 */
 template< DecompositionFlag DF >  // Decomposition algorithm
-struct Inversion;
+struct InvertHelper;
 /*! \endcond */
 //*************************************************************************************************
 
@@ -94,14 +94,14 @@ struct Inversion;
 
 //*************************************************************************************************
 /*! \cond BLAZE_INTERNAL */
-/*!\brief Specialization of the Inversion class template for PLU decompositions.
+/*!\brief Specialization of the InvertHelper class template for PLU decompositions.
 // \ingroup dense_matrix
 //
-// This specialization of the Inversion class template implements the mechanics of the dense
+// This specialization of the InvertHelper class template implements the mechanics of the dense
 // matrix inversion by means of the PLU decomposition.
 */
 template<>
-struct Inversion<byPLU>
+struct InvertHelper<byPLU>
 {
    //**Invert functions****************************************************************************
    /*!\name Invert functions */
@@ -140,7 +140,7 @@ struct Inversion<byPLU>
 */
 template< typename MT  // Type of the dense matrix
         , bool SO >    // Storage order of the dense matrix
-inline void Inversion<byPLU>::invert( DenseMatrix<MT,SO>& dm )
+inline void InvertHelper<byPLU>::invert( DenseMatrix<MT,SO>& dm )
 {
    const size_t N( min( (~dm).rows(), (~dm).columns() ) );
    UniqueArray<int> ipiv( new int[N] );
@@ -171,14 +171,14 @@ inline void Inversion<byPLU>::invert( DenseMatrix<MT,SO>& dm )
 
 //*************************************************************************************************
 /*! \cond BLAZE_INTERNAL */
-/*!\brief Specialization of the Inversion class template for Cholesky decompositions.
+/*!\brief Specialization of the InvertHelper class template for Cholesky decompositions.
 // \ingroup dense_matrix
 //
-// This specialization of the Inversion class template implements the mechanics of the dense
+// This specialization of the InvertHelper class template implements the mechanics of the dense
 // matrix inversion by means of the Cholesky decomposition.
 */
 template<>
-struct Inversion<byCholesky>
+struct InvertHelper<byCholesky>
 {
    //**Invert functions****************************************************************************
    /*!\name Invert functions */
@@ -217,7 +217,7 @@ struct Inversion<byCholesky>
 */
 template< typename MT  // Type of the dense matrix
         , bool SO >    // Storage order of the dense matrix
-inline void Inversion<byCholesky>::invert( DenseMatrix<MT,SO>& dm )
+inline void InvertHelper<byCholesky>::invert( DenseMatrix<MT,SO>& dm )
 {
    using blaze::invert;
 
@@ -832,7 +832,7 @@ inline void invertNxN( DenseMatrix<MT,SO>& dm )
 
    BLAZE_INTERNAL_ASSERT( isSquare( ~dm ), "Non-square matrix detected" );
 
-   Inversion<DF>::invert( ~dm );
+   InvertHelper<DF>::invert( ~dm );
 
    BLAZE_INTERNAL_ASSERT( isIntact( ~dm ), "Broken invariant detected" );
 }

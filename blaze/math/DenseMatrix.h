@@ -41,6 +41,7 @@
 //*************************************************************************************************
 
 #include <blaze/math/dense/DenseMatrix.h>
+#include <blaze/math/dense/Inversion.h>
 #include <blaze/math/expressions/DenseMatrix.h>
 #include <blaze/math/expressions/DMatAbsExpr.h>
 #include <blaze/math/expressions/DMatConjExpr.h>
@@ -51,7 +52,6 @@
 #include <blaze/math/expressions/DMatDVecMultExpr.h>
 #include <blaze/math/expressions/DMatEvalExpr.h>
 #include <blaze/math/expressions/DMatImagExpr.h>
-#include <blaze/math/expressions/DMatInvExpr.h>
 #include <blaze/math/expressions/DMatRealExpr.h>
 #include <blaze/math/expressions/DMatScalarDivExpr.h>
 #include <blaze/math/expressions/DMatScalarMultExpr.h>
