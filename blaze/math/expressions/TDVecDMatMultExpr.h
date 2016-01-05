@@ -1013,10 +1013,10 @@ class TDVecDMatMultExpr : public DenseVector< TDVecDMatMultExpr<VT,MT>, true >
    {
       if( IsTriangular<MT1>::value ) {
          assign( y, x );
-         strmv( y, A, ( IsLower<MT1>::value )?( CblasLower ):( CblasUpper ) );
+         trmv( y, A, ( IsLower<MT1>::value )?( CblasLower ):( CblasUpper ) );
       }
       else {
-         sgemv( y, x, A, 1.0F, 0.0F );
+         gemv( y, x, A, 1.0F, 0.0F );
       }
    }
    /*! \endcond */
@@ -1046,10 +1046,10 @@ class TDVecDMatMultExpr : public DenseVector< TDVecDMatMultExpr<VT,MT>, true >
    {
       if( IsTriangular<MT1>::value ) {
          assign( y, x );
-         dtrmv( y, A, ( IsLower<MT1>::value )?( CblasLower ):( CblasUpper ) );
+         trmv( y, A, ( IsLower<MT1>::value )?( CblasLower ):( CblasUpper ) );
       }
       else {
-         dgemv( y, x, A, 1.0, 0.0 );
+         gemv( y, x, A, 1.0, 0.0 );
       }
    }
    /*! \endcond */
@@ -1079,10 +1079,10 @@ class TDVecDMatMultExpr : public DenseVector< TDVecDMatMultExpr<VT,MT>, true >
    {
       if( IsTriangular<MT1>::value ) {
          assign( y, x );
-         ctrmv( y, A, ( IsLower<MT1>::value )?( CblasLower ):( CblasUpper ) );
+         trmv( y, A, ( IsLower<MT1>::value )?( CblasLower ):( CblasUpper ) );
       }
       else {
-         cgemv( y, x, A, complex<float>( 1.0F ), complex<float>( 0.0F ) );
+         gemv( y, x, A, complex<float>( 1.0F ), complex<float>( 0.0F ) );
       }
    }
    /*! \endcond */
@@ -1112,10 +1112,10 @@ class TDVecDMatMultExpr : public DenseVector< TDVecDMatMultExpr<VT,MT>, true >
    {
       if( IsTriangular<MT1>::value ) {
          assign( y, x );
-         ztrmv( y, A, ( IsLower<MT1>::value )?( CblasLower ):( CblasUpper ) );
+         trmv( y, A, ( IsLower<MT1>::value )?( CblasLower ):( CblasUpper ) );
       }
       else {
-         zgemv( y, x, A, complex<double>( 1.0 ), complex<double>( 0.0 ) );
+         gemv( y, x, A, complex<double>( 1.0 ), complex<double>( 0.0 ) );
       }
    }
    /*! \endcond */
@@ -1708,11 +1708,11 @@ class TDVecDMatMultExpr : public DenseVector< TDVecDMatMultExpr<VT,MT>, true >
    {
       if( IsTriangular<MT1>::value ) {
          typename VT1::ResultType tmp( x );
-         strmv( tmp, A, ( IsLower<MT1>::value )?( CblasLower ):( CblasUpper ) );
+         trmv( tmp, A, ( IsLower<MT1>::value )?( CblasLower ):( CblasUpper ) );
          addAssign( y, tmp );
       }
       else {
-         sgemv( y, x, A, 1.0F, 1.0F );
+         gemv( y, x, A, 1.0F, 1.0F );
       }
    }
    /*! \endcond */
@@ -1742,11 +1742,11 @@ class TDVecDMatMultExpr : public DenseVector< TDVecDMatMultExpr<VT,MT>, true >
    {
       if( IsTriangular<MT1>::value ) {
          typename VT1::ResultType tmp( x );
-         dtrmv( tmp, A, ( IsLower<MT1>::value )?( CblasLower ):( CblasUpper ) );
+         trmv( tmp, A, ( IsLower<MT1>::value )?( CblasLower ):( CblasUpper ) );
          addAssign( y, tmp );
       }
       else {
-         dgemv( y, x, A, 1.0, 1.0 );
+         gemv( y, x, A, 1.0, 1.0 );
       }
    }
    /*! \endcond */
@@ -1776,11 +1776,11 @@ class TDVecDMatMultExpr : public DenseVector< TDVecDMatMultExpr<VT,MT>, true >
    {
       if( IsTriangular<MT1>::value ) {
          typename VT1::ResultType tmp( x );
-         ctrmv( tmp, A, ( IsLower<MT1>::value )?( CblasLower ):( CblasUpper ) );
+         trmv( tmp, A, ( IsLower<MT1>::value )?( CblasLower ):( CblasUpper ) );
          addAssign( y, tmp );
       }
       else {
-         cgemv( y, x, A, complex<float>( 1.0F ), complex<float>( 1.0F ) );
+         gemv( y, x, A, complex<float>( 1.0F ), complex<float>( 1.0F ) );
       }
    }
    /*! \endcond */
@@ -1810,11 +1810,11 @@ class TDVecDMatMultExpr : public DenseVector< TDVecDMatMultExpr<VT,MT>, true >
    {
       if( IsTriangular<MT1>::value ) {
          typename VT1::ResultType tmp( x );
-         ztrmv( tmp, A, ( IsLower<MT1>::value )?( CblasLower ):( CblasUpper ) );
+         trmv( tmp, A, ( IsLower<MT1>::value )?( CblasLower ):( CblasUpper ) );
          addAssign( y, tmp );
       }
       else {
-         zgemv( y, x, A, complex<double>( 1.0 ), complex<double>( 1.0 ) );
+         gemv( y, x, A, complex<double>( 1.0 ), complex<double>( 1.0 ) );
       }
    }
    /*! \endcond */
@@ -2383,11 +2383,11 @@ class TDVecDMatMultExpr : public DenseVector< TDVecDMatMultExpr<VT,MT>, true >
    {
       if( IsTriangular<MT1>::value ) {
          typename VT1::ResultType tmp( x );
-         strmv( tmp, A, ( IsLower<MT1>::value )?( CblasLower ):( CblasUpper ) );
+         trmv( tmp, A, ( IsLower<MT1>::value )?( CblasLower ):( CblasUpper ) );
          subAssign( y, tmp );
       }
       else {
-         sgemv( y, x, A, -1.0F, 1.0F );
+         gemv( y, x, A, -1.0F, 1.0F );
       }
    }
    /*! \endcond */
@@ -2417,11 +2417,11 @@ class TDVecDMatMultExpr : public DenseVector< TDVecDMatMultExpr<VT,MT>, true >
    {
       if( IsTriangular<MT1>::value ) {
          typename VT1::ResultType tmp( x );
-         dtrmv( tmp, A, ( IsLower<MT1>::value )?( CblasLower ):( CblasUpper ) );
+         trmv( tmp, A, ( IsLower<MT1>::value )?( CblasLower ):( CblasUpper ) );
          subAssign( y, tmp );
       }
       else {
-         dgemv( y, x, A, -1.0, 1.0 );
+         gemv( y, x, A, -1.0, 1.0 );
       }
    }
    /*! \endcond */
@@ -2451,11 +2451,11 @@ class TDVecDMatMultExpr : public DenseVector< TDVecDMatMultExpr<VT,MT>, true >
    {
       if( IsTriangular<MT1>::value ) {
          typename VT1::ResultType tmp( x );
-         ctrmv( tmp, A, ( IsLower<MT1>::value )?( CblasLower ):( CblasUpper ) );
+         trmv( tmp, A, ( IsLower<MT1>::value )?( CblasLower ):( CblasUpper ) );
          subAssign( y, tmp );
       }
       else {
-         cgemv( y, x, A, complex<float>( -1.0F ), complex<float>( 1.0F ) );
+         gemv( y, x, A, complex<float>( -1.0F ), complex<float>( 1.0F ) );
       }
    }
    /*! \endcond */
@@ -2485,11 +2485,11 @@ class TDVecDMatMultExpr : public DenseVector< TDVecDMatMultExpr<VT,MT>, true >
    {
       if( IsTriangular<MT1>::value ) {
          typename VT1::ResultType tmp( x );
-         ztrmv( tmp, A, ( IsLower<MT1>::value )?( CblasLower ):( CblasUpper ) );
+         trmv( tmp, A, ( IsLower<MT1>::value )?( CblasLower ):( CblasUpper ) );
          subAssign( y, tmp );
       }
       else {
-         zgemv( y, x, A, complex<double>( -1.0 ), complex<double>( 1.0 ) );
+         gemv( y, x, A, complex<double>( -1.0 ), complex<double>( 1.0 ) );
       }
    }
    /*! \endcond */
@@ -3641,10 +3641,10 @@ class DVecScalarMultExpr< TDVecDMatMultExpr<VT,MT>, ST, true >
    {
       if( IsTriangular<MT1>::value ) {
          assign( y, scalar * x );
-         strmv( y, A, ( IsLower<MT1>::value )?( CblasLower ):( CblasUpper ) );
+         trmv( y, A, ( IsLower<MT1>::value )?( CblasLower ):( CblasUpper ) );
       }
       else {
-         sgemv( y, x, A, scalar, 0.0F );
+         gemv( y, x, A, scalar, 0.0F );
       }
    }
 #endif
@@ -3674,10 +3674,10 @@ class DVecScalarMultExpr< TDVecDMatMultExpr<VT,MT>, ST, true >
    {
       if( IsTriangular<MT1>::value ) {
          assign( y, scalar * x );
-         dtrmv( y, A, ( IsLower<MT1>::value )?( CblasLower ):( CblasUpper ) );
+         trmv( y, A, ( IsLower<MT1>::value )?( CblasLower ):( CblasUpper ) );
       }
       else {
-         dgemv( y, x, A, scalar, 0.0 );
+         gemv( y, x, A, scalar, 0.0 );
       }
    }
 #endif
@@ -3707,10 +3707,10 @@ class DVecScalarMultExpr< TDVecDMatMultExpr<VT,MT>, ST, true >
    {
       if( IsTriangular<MT1>::value ) {
          assign( y, scalar * x );
-         ctrmv( y, A, ( IsLower<MT1>::value )?( CblasLower ):( CblasUpper ) );
+         trmv( y, A, ( IsLower<MT1>::value )?( CblasLower ):( CblasUpper ) );
       }
       else {
-         cgemv( y, x, A, complex<float>( scalar ), complex<float>( 0.0F ) );
+         gemv( y, x, A, complex<float>( scalar ), complex<float>( 0.0F ) );
       }
    }
 #endif
@@ -3740,10 +3740,10 @@ class DVecScalarMultExpr< TDVecDMatMultExpr<VT,MT>, ST, true >
    {
       if( IsTriangular<MT1>::value ) {
          assign( y, scalar * x );
-         ztrmv( y, A, ( IsLower<MT1>::value )?( CblasLower ):( CblasUpper ) );
+         trmv( y, A, ( IsLower<MT1>::value )?( CblasLower ):( CblasUpper ) );
       }
       else {
-         zgemv( y, x, A, complex<double>( scalar ), complex<double>( 0.0 ) );
+         gemv( y, x, A, complex<double>( scalar ), complex<double>( 0.0 ) );
       }
    }
 #endif
@@ -4298,11 +4298,11 @@ class DVecScalarMultExpr< TDVecDMatMultExpr<VT,MT>, ST, true >
    {
       if( IsTriangular<MT1>::value ) {
          typename VT1::ResultType tmp( scalar * x );
-         strmv( tmp, A, ( IsLower<MT1>::value )?( CblasLower ):( CblasUpper ) );
+         trmv( tmp, A, ( IsLower<MT1>::value )?( CblasLower ):( CblasUpper ) );
          addAssign( y, tmp );
       }
       else {
-         sgemv( y, x, A, scalar, 1.0F );
+         gemv( y, x, A, scalar, 1.0F );
       }
    }
 #endif
@@ -4332,11 +4332,11 @@ class DVecScalarMultExpr< TDVecDMatMultExpr<VT,MT>, ST, true >
    {
       if( IsTriangular<MT1>::value ) {
          typename VT1::ResultType tmp( scalar * x );
-         dtrmv( tmp, A, ( IsLower<MT1>::value )?( CblasLower ):( CblasUpper ) );
+         trmv( tmp, A, ( IsLower<MT1>::value )?( CblasLower ):( CblasUpper ) );
          addAssign( y, tmp );
       }
       else {
-         dgemv( y, x, A, scalar, 1.0 );
+         gemv( y, x, A, scalar, 1.0 );
       }
    }
 #endif
@@ -4366,11 +4366,11 @@ class DVecScalarMultExpr< TDVecDMatMultExpr<VT,MT>, ST, true >
    {
       if( IsTriangular<MT1>::value ) {
          typename VT1::ResultType tmp( scalar * x );
-         ctrmv( tmp, A, ( IsLower<MT1>::value )?( CblasLower ):( CblasUpper ) );
+         trmv( tmp, A, ( IsLower<MT1>::value )?( CblasLower ):( CblasUpper ) );
          addAssign( y, tmp );
       }
       else {
-         cgemv( y, x, A, complex<float>( scalar ), complex<float>( 1.0F ) );
+         gemv( y, x, A, complex<float>( scalar ), complex<float>( 1.0F ) );
       }
    }
 #endif
@@ -4400,11 +4400,11 @@ class DVecScalarMultExpr< TDVecDMatMultExpr<VT,MT>, ST, true >
    {
       if( IsTriangular<MT1>::value ) {
          typename VT1::ResultType tmp( scalar * x );
-         ztrmv( tmp, A, ( IsLower<MT1>::value )?( CblasLower ):( CblasUpper ) );
+         trmv( tmp, A, ( IsLower<MT1>::value )?( CblasLower ):( CblasUpper ) );
          addAssign( y, tmp );
       }
       else {
-         zgemv( y, x, A, complex<double>( scalar ), complex<double>( 1.0 ) );
+         gemv( y, x, A, complex<double>( scalar ), complex<double>( 1.0 ) );
       }
    }
 #endif
@@ -4935,11 +4935,11 @@ class DVecScalarMultExpr< TDVecDMatMultExpr<VT,MT>, ST, true >
    {
       if( IsTriangular<MT1>::value ) {
          typename VT1::ResultType tmp( scalar * x );
-         strmv( tmp, A, ( IsLower<MT1>::value )?( CblasLower ):( CblasUpper ) );
+         trmv( tmp, A, ( IsLower<MT1>::value )?( CblasLower ):( CblasUpper ) );
          subAssign( y, tmp );
       }
       else {
-         sgemv( y, x, A, -scalar, 1.0F );
+         gemv( y, x, A, -scalar, 1.0F );
       }
    }
 #endif
@@ -4969,11 +4969,11 @@ class DVecScalarMultExpr< TDVecDMatMultExpr<VT,MT>, ST, true >
    {
       if( IsTriangular<MT1>::value ) {
          typename VT1::ResultType tmp( scalar * x );
-         dtrmv( tmp, A, ( IsLower<MT1>::value )?( CblasLower ):( CblasUpper ) );
+         trmv( tmp, A, ( IsLower<MT1>::value )?( CblasLower ):( CblasUpper ) );
          subAssign( y, tmp );
       }
       else {
-         dgemv( y, x, A, -scalar, 1.0 );
+         gemv( y, x, A, -scalar, 1.0 );
       }
    }
 #endif
@@ -5003,11 +5003,11 @@ class DVecScalarMultExpr< TDVecDMatMultExpr<VT,MT>, ST, true >
    {
       if( IsTriangular<MT1>::value ) {
          typename VT1::ResultType tmp( scalar * x );
-         ctrmv( tmp, A, ( IsLower<MT1>::value )?( CblasLower ):( CblasUpper ) );
+         trmv( tmp, A, ( IsLower<MT1>::value )?( CblasLower ):( CblasUpper ) );
          subAssign( y, tmp );
       }
       else {
-         cgemv( y, x, A, complex<float>( -scalar ), complex<float>( 1.0F ) );
+         gemv( y, x, A, complex<float>( -scalar ), complex<float>( 1.0F ) );
       }
    }
 #endif
@@ -5037,11 +5037,11 @@ class DVecScalarMultExpr< TDVecDMatMultExpr<VT,MT>, ST, true >
    {
       if( IsTriangular<MT1>::value ) {
          typename VT1::ResultType tmp( scalar * x );
-         ztrmv( tmp, A, ( IsLower<MT1>::value )?( CblasLower ):( CblasUpper ) );
+         trmv( tmp, A, ( IsLower<MT1>::value )?( CblasLower ):( CblasUpper ) );
          subAssign( y, tmp );
       }
       else {
-         zgemv( y, x, A, complex<double>( -scalar ), complex<double>( 1.0 ) );
+         gemv( y, x, A, complex<double>( -scalar ), complex<double>( 1.0 ) );
       }
    }
 #endif
