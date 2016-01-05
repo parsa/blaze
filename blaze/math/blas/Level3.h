@@ -41,6 +41,7 @@
 //*************************************************************************************************
 
 #include <boost/cast.hpp>
+#include <blaze/math/constraints/BlasCompatible.h>
 #include <blaze/math/constraints/Computation.h>
 #include <blaze/math/constraints/ConstDataAccess.h>
 #include <blaze/math/constraints/MutableDataAccess.h>
@@ -51,9 +52,6 @@
 #include <blaze/system/Inline.h>
 #include <blaze/util/Assert.h>
 #include <blaze/util/Complex.h>
-#include <blaze/util/constraints/Complex.h>
-#include <blaze/util/constraints/Double.h>
-#include <blaze/util/constraints/Float.h>
 
 
 namespace blaze {
@@ -69,37 +67,49 @@ namespace blaze {
 //@{
 #if BLAZE_BLAS_MODE
 
-template< typename MT1, bool SO1, typename MT2, bool SO2, typename MT3, bool SO3 >
-BLAZE_ALWAYS_INLINE void sgemm( DenseMatrix<MT1,SO1>& C, const DenseMatrix<MT2,SO2>& A,
-                                const DenseMatrix<MT3,SO3>& B, float alpha, float beta );
+BLAZE_ALWAYS_INLINE void gemm( CBLAS_ORDER order, CBLAS_TRANSPOSE transA, CBLAS_TRANSPOSE transB,
+                               int M, int N, int K, float alpha, const float* A, int lda,
+                               const float* B, int ldb, float beta, float* C, int ldc );
 
-template< typename MT1, bool SO1, typename MT2, bool SO2, typename MT3, bool SO3 >
-BLAZE_ALWAYS_INLINE void dgemm( DenseMatrix<MT1,SO1>& C, const DenseMatrix<MT2,SO2>& A,
-                                const DenseMatrix<MT3,SO3>& B, double alpha, double beta );
+BLAZE_ALWAYS_INLINE void gemm( CBLAS_ORDER order, CBLAS_TRANSPOSE transA, CBLAS_TRANSPOSE transB,
+                               int M, int N, int K, double alpha, const double* A, int lda,
+                               const double* B, int ldb, double beta, float* C, int ldc );
 
-template< typename MT1, bool SO1, typename MT2, bool SO2, typename MT3, bool SO3 >
-BLAZE_ALWAYS_INLINE void cgemm( DenseMatrix<MT1,SO1>& C, const DenseMatrix<MT2,SO2>& A,
-                                const DenseMatrix<MT3,SO3>& B, complex<float> alpha, complex<float> beta );
+BLAZE_ALWAYS_INLINE void gemm( CBLAS_ORDER order, CBLAS_TRANSPOSE transA, CBLAS_TRANSPOSE transB,
+                               int M, int N, int K, complex<float> alpha, const complex<float>* A,
+                               int lda, const complex<float>* B, int ldb, complex<float> beta,
+                               float* C, int ldc );
 
-template< typename MT1, bool SO1, typename MT2, bool SO2, typename MT3, bool SO3 >
-BLAZE_ALWAYS_INLINE void zgemm( DenseMatrix<MT1,SO1>& C, const DenseMatrix<MT2,SO2>& A,
-                                const DenseMatrix<MT3,SO3>& B, complex<double> alpha, complex<double> beta );
+BLAZE_ALWAYS_INLINE void gemm( CBLAS_ORDER order, CBLAS_TRANSPOSE transA, CBLAS_TRANSPOSE transB,
+                               int M, int N, int K, complex<double> alpha, const complex<double>* A,
+                               int lda, const complex<double>* B, int ldb, complex<double> beta,
+                               float* C, int ldc );
 
-template< typename MT1, bool SO1, typename MT2, bool SO2 >
-BLAZE_ALWAYS_INLINE void strmm( DenseMatrix<MT1,SO1>& B, const DenseMatrix<MT2,SO2>& A,
-                                CBLAS_SIDE side, CBLAS_UPLO uplo, float alpha );
+template< typename MT1, bool SO1, typename MT2, bool SO2, typename MT3, bool SO3, typename ST >
+BLAZE_ALWAYS_INLINE void gemm( DenseMatrix<MT1,SO1>& C, const DenseMatrix<MT2,SO2>& A,
+                               const DenseMatrix<MT3,SO3>& B, ST alpha, ST beta );
 
-template< typename MT1, bool SO1, typename MT2, bool SO2 >
-BLAZE_ALWAYS_INLINE void dtrmm( DenseMatrix<MT1,SO1>& B, const DenseMatrix<MT2,SO2>& A,
-                                CBLAS_SIDE side, CBLAS_UPLO uplo, double alpha );
+BLAZE_ALWAYS_INLINE void trmm( CBLAS_ORDER order, CBLAS_SIDE side, CBLAS_UPLO uplo,
+                               CBLAS_TRANSPOSE transA, CBLAS_DIAG diag, int M, int N,
+                               float alpha, const float* A, int lda, float* B, int ldb );
 
-template< typename MT1, bool SO1, typename MT2, bool SO2 >
-BLAZE_ALWAYS_INLINE void ctrmm( DenseMatrix<MT1,SO1>& B, const DenseMatrix<MT2,SO2>& A,
-                                CBLAS_SIDE side, CBLAS_UPLO uplo, complex<float> alpha );
+BLAZE_ALWAYS_INLINE void trmm( CBLAS_ORDER order, CBLAS_SIDE side, CBLAS_UPLO uplo,
+                               CBLAS_TRANSPOSE transA, CBLAS_DIAG diag, int M, int N,
+                               double alpha, const double* A, int lda, double* B, int ldb );
 
-template< typename MT1, bool SO1, typename MT2, bool SO2 >
-BLAZE_ALWAYS_INLINE void ztrmm( DenseMatrix<MT1,SO1>& B, const DenseMatrix<MT2,SO2>& A,
-                                CBLAS_SIDE side, CBLAS_UPLO uplo, complex<double> alpha );
+BLAZE_ALWAYS_INLINE void trmm( CBLAS_ORDER order, CBLAS_SIDE side, CBLAS_UPLO uplo,
+                               CBLAS_TRANSPOSE transA, CBLAS_DIAG diag, int M, int N,
+                               complex<float> alpha, const complex<float>* A, int lda,
+                               complex<float>* B, int ldb );
+
+BLAZE_ALWAYS_INLINE void trmm( CBLAS_ORDER order, CBLAS_SIDE side, CBLAS_UPLO uplo,
+                               CBLAS_TRANSPOSE transA, CBLAS_DIAG diag, int M, int N,
+                               complex<double> alpha, const complex<double>* A, int lda,
+                               complex<double>* B, int ldb );
+
+template< typename MT1, bool SO1, typename MT2, bool SO2, typename ST >
+BLAZE_ALWAYS_INLINE void trmm( DenseMatrix<MT1,SO1>& B, const DenseMatrix<MT2,SO2>& A,
+                               CBLAS_SIDE side, CBLAS_UPLO uplo, ST alpha );
 
 #endif
 //@}
@@ -112,66 +122,30 @@ BLAZE_ALWAYS_INLINE void ztrmm( DenseMatrix<MT1,SO1>& B, const DenseMatrix<MT2,S
 //        matrices (\f$ C=\alpha*A*B+\beta*C \f$).
 // \ingroup math
 //
-// \param C The target left-hand side dense matrix.
-// \param A The left-hand side multiplication operand.
-// \param B The right-hand side multiplication operand.
+// \param order Specifies the storage order of matrix \a A (\a CblasColMajor or \a CblasColMajor).
+// \param transA Specifies whether to transpose matrix \a A (\a CblasNoTrans or \a CblasTrans).
+// \param transB Specifies whether to transpose matrix \a B (\a CblasNoTrans or \a CblasTrans).
+// \param M The number of rows of matrix \a A and \a C \f$[0..\infty)\f$.
+// \param N The number of columns of matrix \a B and \a C \f$[0..\infty)\f$.
+// \param K The number of columns of matrix \a A and rows in matrix \a B \f$[0..\infty)\f$.
 // \param alpha The scaling factor for \f$ A*B \f$.
+// \param A Pointer to the first element of matrix \a A.
+// \param lda The total number of elements between two rows/columns of matrix \a A \f$[0..\infty)\f$.
+// \param B Pointer to the first element of matrix \a B.
+// \param ldb The total number of elements between two rows/columns of matrix \a B \f$[0..\infty)\f$.
 // \param beta The scaling factor for \f$ C \f$.
+// \param C Pointer to the first element of matrix \a C.
+// \param ldc The total number of elements between two rows/columns of matrix \a C \f$[0..\infty)\f$.
 // \return void
 //
 // This function performs the dense matrix/dense matrix multiplication for single precision
-// matrices based on the BLAS cblas_sgemm() and cblas_ssymm() functions. Note that the function
-// only works for matrices with \c float element type. The attempt to call the function with
-// matrices of any other element type results in a compile time error.
+// matrices based on the BLAS cblas_sgemm() function.
 */
-template< typename MT1  // Type of the left-hand side target matrix
-        , bool SO1      // Storage order of the left-hand side target matrix
-        , typename MT2  // Type of the left-hand side matrix operand
-        , bool SO2      // Storage order of the left-hand side matrix operand
-        , typename MT3  // Type of the right-hand side matrix operand
-        , bool SO3 >    // Storage order of the right-hand side matrix operand
-BLAZE_ALWAYS_INLINE void sgemm( DenseMatrix<MT1,SO1>& C, const DenseMatrix<MT2,SO2>& A,
-                                const DenseMatrix<MT3,SO3>& B, float alpha, float beta )
+BLAZE_ALWAYS_INLINE void gemm( CBLAS_ORDER order, CBLAS_TRANSPOSE transA, CBLAS_TRANSPOSE transB,
+                               int M, int N, int K, float alpha, const float* A, int lda,
+                               const float* B, int ldb, float beta, float* C, int ldc )
 {
-   using boost::numeric_cast;
-
-   BLAZE_CONSTRAINT_MUST_NOT_BE_COMPUTATION_TYPE( MT1 );
-   BLAZE_CONSTRAINT_MUST_NOT_BE_COMPUTATION_TYPE( MT2 );
-   BLAZE_CONSTRAINT_MUST_NOT_BE_COMPUTATION_TYPE( MT3 );
-
-   BLAZE_CONSTRAINT_MUST_HAVE_MUTABLE_DATA_ACCESS( MT1 );
-   BLAZE_CONSTRAINT_MUST_HAVE_CONST_DATA_ACCESS  ( MT2 );
-   BLAZE_CONSTRAINT_MUST_HAVE_CONST_DATA_ACCESS  ( MT3 );
-
-   BLAZE_CONSTRAINT_MUST_BE_FLOAT_TYPE( typename MT1::ElementType );
-   BLAZE_CONSTRAINT_MUST_BE_FLOAT_TYPE( typename MT2::ElementType );
-   BLAZE_CONSTRAINT_MUST_BE_FLOAT_TYPE( typename MT3::ElementType );
-
-   const int M  ( numeric_cast<int>( (~A).rows() )    );
-   const int N  ( numeric_cast<int>( (~B).columns() ) );
-   const int K  ( numeric_cast<int>( (~A).columns() ) );
-   const int lda( numeric_cast<int>( (~A).spacing() ) );
-   const int ldb( numeric_cast<int>( (~B).spacing() ) );
-   const int ldc( numeric_cast<int>( (~C).spacing() ) );
-
-   if( IsSymmetric<MT2>::value && ( SO1 == SO3 ) ) {
-      cblas_ssymm( ( IsRowMajorMatrix<MT1>::value )?( CblasRowMajor ):( CblasColMajor ),
-                   CblasLeft,
-                   ( IsRowMajorMatrix<MT2>::value )?( CblasLower ):( CblasUpper ),
-                   M, N, alpha, (~A).data(), lda, (~B).data(), ldb, beta, (~C).data(), ldc );
-   }
-   else if( IsSymmetric<MT3>::value && ( SO1 == SO2 ) ) {
-      cblas_ssymm( ( IsRowMajorMatrix<MT1>::value )?( CblasRowMajor ):( CblasColMajor ),
-                   CblasRight,
-                   ( IsRowMajorMatrix<MT3>::value )?( CblasLower ):( CblasUpper ),
-                   M, N, alpha, (~B).data(), ldb, (~A).data(), lda, beta, (~C).data(), ldc );
-   }
-   else {
-      cblas_sgemm( ( IsRowMajorMatrix<MT1>::value )?( CblasRowMajor ):( CblasColMajor ),
-                   ( SO1 == SO2 )?( CblasNoTrans ):( CblasTrans ),
-                   ( SO1 == SO3 )?( CblasNoTrans ):( CblasTrans ),
-                   M, N, K, alpha, (~A).data(), lda, (~B).data(), ldb, beta, (~C).data(), ldc );
-   }
+   cblas_sgemm( order, transA, transB, M, N, K, alpha, A, lda, B, ldb, beta, C, ldc );
 }
 #endif
 //*************************************************************************************************
@@ -183,66 +157,30 @@ BLAZE_ALWAYS_INLINE void sgemm( DenseMatrix<MT1,SO1>& C, const DenseMatrix<MT2,S
 //        matrices (\f$ C=\alpha*A*B+\beta*C \f$).
 // \ingroup math
 //
-// \param C The target left-hand side dense matrix.
-// \param A The left-hand side multiplication operand.
-// \param B The right-hand side multiplication operand.
+// \param order Specifies the storage order of matrix \a A (\a CblasColMajor or \a CblasColMajor).
+// \param transA Specifies whether to transpose matrix \a A (\a CblasNoTrans or \a CblasTrans).
+// \param transB Specifies whether to transpose matrix \a B (\a CblasNoTrans or \a CblasTrans).
+// \param M The number of rows of matrix \a A and \a C \f$[0..\infty)\f$.
+// \param N The number of columns of matrix \a B and \a C \f$[0..\infty)\f$.
+// \param K The number of columns of matrix \a A and rows in matrix \a B \f$[0..\infty)\f$.
 // \param alpha The scaling factor for \f$ A*B \f$.
+// \param A Pointer to the first element of matrix \a A.
+// \param lda The total number of elements between two rows/columns of matrix \a A \f$[0..\infty)\f$.
+// \param B Pointer to the first element of matrix \a B.
+// \param ldb The total number of elements between two rows/columns of matrix \a B \f$[0..\infty)\f$.
 // \param beta The scaling factor for \f$ C \f$.
+// \param C Pointer to the first element of matrix \a C.
+// \param ldc The total number of elements between two rows/columns of matrix \a C \f$[0..\infty)\f$.
 // \return void
 //
 // This function performs the dense matrix/dense matrix multiplication for double precision
-// matrices based on the BLAS cblas_dgemm() and cblas_dsymm() functions. Note that the function
-// only works for matrices with \c double element type. The attempt to call the function with
-// matrices of any other element type results in a compile time error.
+// matrices based on the BLAS cblas_dgemm() function.
 */
-template< typename MT1  // Type of the left-hand side target matrix
-        , bool SO1      // Storage order of the left-hand side target matrix
-        , typename MT2  // Type of the left-hand side matrix operand
-        , bool SO2      // Storage order of the left-hand side matrix operand
-        , typename MT3  // Type of the right-hand side matrix operand
-        , bool SO3 >    // Storage order of the right-hand side matrix operand
-BLAZE_ALWAYS_INLINE void dgemm( DenseMatrix<MT1,SO1>& C, const DenseMatrix<MT2,SO2>& A,
-                                const DenseMatrix<MT3,SO3>& B, double alpha, double beta )
+BLAZE_ALWAYS_INLINE void gemm( CBLAS_ORDER order, CBLAS_TRANSPOSE transA, CBLAS_TRANSPOSE transB,
+                               int M, int N, int K, double alpha, const double* A, int lda,
+                               const double* B, int ldb, double beta, double* C, int ldc )
 {
-   using boost::numeric_cast;
-
-   BLAZE_CONSTRAINT_MUST_NOT_BE_COMPUTATION_TYPE( MT1 );
-   BLAZE_CONSTRAINT_MUST_NOT_BE_COMPUTATION_TYPE( MT2 );
-   BLAZE_CONSTRAINT_MUST_NOT_BE_COMPUTATION_TYPE( MT3 );
-
-   BLAZE_CONSTRAINT_MUST_HAVE_MUTABLE_DATA_ACCESS( MT1 );
-   BLAZE_CONSTRAINT_MUST_HAVE_CONST_DATA_ACCESS  ( MT2 );
-   BLAZE_CONSTRAINT_MUST_HAVE_CONST_DATA_ACCESS  ( MT3 );
-
-   BLAZE_CONSTRAINT_MUST_BE_DOUBLE_TYPE( typename MT1::ElementType );
-   BLAZE_CONSTRAINT_MUST_BE_DOUBLE_TYPE( typename MT2::ElementType );
-   BLAZE_CONSTRAINT_MUST_BE_DOUBLE_TYPE( typename MT3::ElementType );
-
-   const int M  ( numeric_cast<int>( (~A).rows() )    );
-   const int N  ( numeric_cast<int>( (~B).columns() ) );
-   const int K  ( numeric_cast<int>( (~A).columns() ) );
-   const int lda( numeric_cast<int>( (~A).spacing() ) );
-   const int ldb( numeric_cast<int>( (~B).spacing() ) );
-   const int ldc( numeric_cast<int>( (~C).spacing() ) );
-
-   if( IsSymmetric<MT2>::value && ( SO1 == SO3 ) ) {
-      cblas_dsymm( ( IsRowMajorMatrix<MT1>::value )?( CblasRowMajor ):( CblasColMajor ),
-                   CblasLeft,
-                   ( IsRowMajorMatrix<MT2>::value )?( CblasLower ):( CblasUpper ),
-                   M, N, alpha, (~A).data(), lda, (~B).data(), ldb, beta, (~C).data(), ldc );
-   }
-   else if( IsSymmetric<MT3>::value && ( SO1 == SO2 ) ) {
-      cblas_dsymm( ( IsRowMajorMatrix<MT1>::value )?( CblasRowMajor ):( CblasColMajor ),
-                   CblasRight,
-                   ( IsRowMajorMatrix<MT3>::value )?( CblasLower ):( CblasUpper ),
-                   M, N, alpha, (~B).data(), ldb, (~A).data(), lda, beta, (~C).data(), ldc );
-   }
-   else {
-      cblas_dgemm( ( IsRowMajorMatrix<MT1>::value )?( CblasRowMajor ):( CblasColMajor ),
-                   ( SO1 == SO2 )?( CblasNoTrans ):( CblasTrans ),
-                   ( SO1 == SO3 )?( CblasNoTrans ):( CblasTrans ),
-                   M, N, K, alpha, (~A).data(), lda, (~B).data(), ldb, beta, (~C).data(), ldc );
-   }
+   cblas_dgemm( order, transA, transB, M, N, K, alpha, A, lda, B, ldb, beta, C, ldc );
 }
 #endif
 //*************************************************************************************************
@@ -251,72 +189,34 @@ BLAZE_ALWAYS_INLINE void dgemm( DenseMatrix<MT1,SO1>& C, const DenseMatrix<MT2,S
 //*************************************************************************************************
 #if BLAZE_BLAS_MODE
 /*!\brief BLAS kernel for a dense matrix/dense matrix multiplication with single precision
-//        complex matrices (\f$ C=\alpha*A*B+\beta*C \f$).
+//        matrices (\f$ C=\alpha*A*B+\beta*C \f$).
 // \ingroup math
 //
-// \param C The target left-hand side dense matrix.
-// \param A The left-hand side multiplication operand.
-// \param B The right-hand side multiplication operand.
+// \param order Specifies the storage order of matrix \a A (\a CblasColMajor or \a CblasColMajor).
+// \param transA Specifies whether to transpose matrix \a A (\a CblasNoTrans or \a CblasTrans).
+// \param transB Specifies whether to transpose matrix \a B (\a CblasNoTrans or \a CblasTrans).
+// \param M The number of rows of matrix \a A and \a C \f$[0..\infty)\f$.
+// \param N The number of columns of matrix \a B and \a C \f$[0..\infty)\f$.
+// \param K The number of columns of matrix \a A and rows in matrix \a B \f$[0..\infty)\f$.
 // \param alpha The scaling factor for \f$ A*B \f$.
+// \param A Pointer to the first element of matrix \a A.
+// \param lda The total number of elements between two rows/columns of matrix \a A \f$[0..\infty)\f$.
+// \param B Pointer to the first element of matrix \a B.
+// \param ldb The total number of elements between two rows/columns of matrix \a B \f$[0..\infty)\f$.
 // \param beta The scaling factor for \f$ C \f$.
+// \param C Pointer to the first element of matrix \a C.
+// \param ldc The total number of elements between two rows/columns of matrix \a C \f$[0..\infty)\f$.
 // \return void
 //
 // This function performs the dense matrix/dense matrix multiplication for single precision
-// complex matrices based on the BLAS cblas_cgemm() and cblas_csymm() functions. Note that
-// the function only works for matrices with \c complex<float> element type. The attempt to
-// call the function with matrices of any other element type results in a compile time error.
+// complex matrices based on the BLAS cblas_cgemm() function.
 */
-template< typename MT1  // Type of the left-hand side target matrix
-        , bool SO1      // Storage order of the left-hand side target matrix
-        , typename MT2  // Type of the left-hand side matrix operand
-        , bool SO2      // Storage order of the left-hand side matrix operand
-        , typename MT3  // Type of the right-hand side matrix operand
-        , bool SO3 >    // Storage order of the right-hand side matrix operand
-BLAZE_ALWAYS_INLINE void cgemm( DenseMatrix<MT1,SO1>& C, const DenseMatrix<MT2,SO2>& A,
-                                const DenseMatrix<MT3,SO3>& B, complex<float> alpha, complex<float> beta )
+BLAZE_ALWAYS_INLINE void gemm( CBLAS_ORDER order, CBLAS_TRANSPOSE transA, CBLAS_TRANSPOSE transB,
+                               int M, int N, int K, complex<float> alpha, const complex<float>* A,
+                               int lda, const complex<float>* B, int ldb, complex<float> beta,
+                               complex<float>* C, int ldc )
 {
-   using boost::numeric_cast;
-
-   BLAZE_CONSTRAINT_MUST_NOT_BE_COMPUTATION_TYPE( MT1 );
-   BLAZE_CONSTRAINT_MUST_NOT_BE_COMPUTATION_TYPE( MT2 );
-   BLAZE_CONSTRAINT_MUST_NOT_BE_COMPUTATION_TYPE( MT3 );
-
-   BLAZE_CONSTRAINT_MUST_HAVE_MUTABLE_DATA_ACCESS( MT1 );
-   BLAZE_CONSTRAINT_MUST_HAVE_CONST_DATA_ACCESS  ( MT2 );
-   BLAZE_CONSTRAINT_MUST_HAVE_CONST_DATA_ACCESS  ( MT3 );
-
-   BLAZE_CONSTRAINT_MUST_BE_COMPLEX_TYPE( typename MT1::ElementType );
-   BLAZE_CONSTRAINT_MUST_BE_COMPLEX_TYPE( typename MT2::ElementType );
-   BLAZE_CONSTRAINT_MUST_BE_COMPLEX_TYPE( typename MT3::ElementType );
-   BLAZE_CONSTRAINT_MUST_BE_FLOAT_TYPE  ( typename MT1::ElementType::value_type );
-   BLAZE_CONSTRAINT_MUST_BE_FLOAT_TYPE  ( typename MT2::ElementType::value_type );
-   BLAZE_CONSTRAINT_MUST_BE_FLOAT_TYPE  ( typename MT3::ElementType::value_type );
-
-   const int M  ( numeric_cast<int>( (~A).rows() )    );
-   const int N  ( numeric_cast<int>( (~B).columns() ) );
-   const int K  ( numeric_cast<int>( (~A).columns() ) );
-   const int lda( numeric_cast<int>( (~A).spacing() ) );
-   const int ldb( numeric_cast<int>( (~B).spacing() ) );
-   const int ldc( numeric_cast<int>( (~C).spacing() ) );
-
-   if( IsSymmetric<MT2>::value && ( SO1 == SO3 ) ) {
-      cblas_csymm( ( IsRowMajorMatrix<MT1>::value )?( CblasRowMajor ):( CblasColMajor ),
-                   CblasLeft,
-                   ( IsRowMajorMatrix<MT2>::value )?( CblasLower ):( CblasUpper ),
-                   M, N, &alpha, (~A).data(), lda, (~B).data(), ldb, &beta, (~C).data(), ldc );
-   }
-   else if( IsSymmetric<MT3>::value && ( SO1 == SO2 ) ) {
-      cblas_csymm( ( IsRowMajorMatrix<MT1>::value )?( CblasRowMajor ):( CblasColMajor ),
-                   CblasRight,
-                   ( IsRowMajorMatrix<MT3>::value )?( CblasLower ):( CblasUpper ),
-                   M, N, &alpha, (~B).data(), ldb, (~A).data(), lda, &beta, (~C).data(), ldc );
-   }
-   else {
-      cblas_cgemm( ( IsRowMajorMatrix<MT1>::value )?( CblasRowMajor ):( CblasColMajor ),
-                   ( SO1 == SO2 )?( CblasNoTrans ):( CblasTrans ),
-                   ( SO1 == SO3 )?( CblasNoTrans ):( CblasTrans ),
-                   M, N, K, &alpha, (~A).data(), lda, (~B).data(), ldb, &beta, (~C).data(), ldc );
-   }
+   cblas_cgemm( order, transA, transB, M, N, K, &alpha, A, lda, B, ldb, &beta, C, ldc );
 }
 #endif
 //*************************************************************************************************
@@ -325,7 +225,42 @@ BLAZE_ALWAYS_INLINE void cgemm( DenseMatrix<MT1,SO1>& C, const DenseMatrix<MT2,S
 //*************************************************************************************************
 #if BLAZE_BLAS_MODE
 /*!\brief BLAS kernel for a dense matrix/dense matrix multiplication with double precision
-//        complex matrices (\f$ C=\alpha*A*B+\beta*C \f$).
+//        matrices (\f$ C=\alpha*A*B+\beta*C \f$).
+// \ingroup math
+//
+// \param order Specifies the storage order of matrix \a A (\a CblasColMajor or \a CblasColMajor).
+// \param transA Specifies whether to transpose matrix \a A (\a CblasNoTrans or \a CblasTrans).
+// \param transB Specifies whether to transpose matrix \a B (\a CblasNoTrans or \a CblasTrans).
+// \param M The number of rows of matrix \a A and \a C \f$[0..\infty)\f$.
+// \param N The number of columns of matrix \a B and \a C \f$[0..\infty)\f$.
+// \param K The number of columns of matrix \a A and rows in matrix \a B \f$[0..\infty)\f$.
+// \param alpha The scaling factor for \f$ A*B \f$.
+// \param A Pointer to the first element of matrix \a A.
+// \param lda The total number of elements between two rows/columns of matrix \a A \f$[0..\infty)\f$.
+// \param B Pointer to the first element of matrix \a B.
+// \param ldb The total number of elements between two rows/columns of matrix \a B \f$[0..\infty)\f$.
+// \param beta The scaling factor for \f$ C \f$.
+// \param C Pointer to the first element of matrix \a C.
+// \param ldc The total number of elements between two rows/columns of matrix \a C \f$[0..\infty)\f$.
+// \return void
+//
+// This function performs the dense matrix/dense matrix multiplication for double precision
+// complex matrices based on the BLAS cblas_zgemm() function.
+*/
+BLAZE_ALWAYS_INLINE void gemm( CBLAS_ORDER order, CBLAS_TRANSPOSE transA, CBLAS_TRANSPOSE transB,
+                               int M, int N, int K, complex<double> alpha, const complex<double>* A,
+                               int lda, const complex<double>* B, int ldb, complex<double> beta,
+                               complex<double>* C, int ldc )
+{
+   cblas_zgemm( order, transA, transB, M, N, K, &alpha, A, lda, B, ldb, &beta, C, ldc );
+}
+#endif
+//*************************************************************************************************
+
+
+//*************************************************************************************************
+#if BLAZE_BLAS_MODE
+/*!\brief BLAS kernel for a dense matrix/dense matrix multiplication (\f$ C=\alpha*A*B+\beta*C \f$).
 // \ingroup math
 //
 // \param C The target left-hand side dense matrix.
@@ -335,19 +270,20 @@ BLAZE_ALWAYS_INLINE void cgemm( DenseMatrix<MT1,SO1>& C, const DenseMatrix<MT2,S
 // \param beta The scaling factor for \f$ C \f$.
 // \return void
 //
-// This function performs the dense matrix/dense matrix multiplication for double precision
-// complex matrices based on the BLAS cblas_zgemm() and cblas_zsymm() functions. Note that
-// the function only works for matrices with \c complex<double> element type. The attempt to
-// call the function with matrices of any other element type results in a compile time error.
+// This function performs the dense matrix/dense matrix multiplication based on the BLAS
+// gemm() functions. Note that the function only works for matrices with \c float, \c double,
+// \c complex<float>, and \c complex<double> element type. The attempt to call the function
+// with matrices of any other element type results in a compile time error.
 */
-template< typename MT1  // Type of the left-hand side target matrix
-        , bool SO1      // Storage order of the left-hand side target matrix
-        , typename MT2  // Type of the left-hand side matrix operand
-        , bool SO2      // Storage order of the left-hand side matrix operand
-        , typename MT3  // Type of the right-hand side matrix operand
-        , bool SO3 >    // Storage order of the right-hand side matrix operand
-BLAZE_ALWAYS_INLINE void zgemm( DenseMatrix<MT1,SO1>& C, const DenseMatrix<MT2,SO2>& A,
-                                const DenseMatrix<MT3,SO3>& B, complex<double> alpha, complex<double> beta )
+template< typename MT1   // Type of the left-hand side target matrix
+        , bool SO1       // Storage order of the left-hand side target matrix
+        , typename MT2   // Type of the left-hand side matrix operand
+        , bool SO2       // Storage order of the left-hand side matrix operand
+        , typename MT3   // Type of the right-hand side matrix operand
+        , bool SO3       // Storage order of the right-hand side matrix operand
+        , typename ST >  // Type of the scalar factors
+BLAZE_ALWAYS_INLINE void gemm( DenseMatrix<MT1,SO1>& C, const DenseMatrix<MT2,SO2>& A,
+                               const DenseMatrix<MT3,SO3>& B, ST alpha, ST beta )
 {
    using boost::numeric_cast;
 
@@ -359,12 +295,9 @@ BLAZE_ALWAYS_INLINE void zgemm( DenseMatrix<MT1,SO1>& C, const DenseMatrix<MT2,S
    BLAZE_CONSTRAINT_MUST_HAVE_CONST_DATA_ACCESS  ( MT2 );
    BLAZE_CONSTRAINT_MUST_HAVE_CONST_DATA_ACCESS  ( MT3 );
 
-   BLAZE_CONSTRAINT_MUST_BE_COMPLEX_TYPE( typename MT1::ElementType );
-   BLAZE_CONSTRAINT_MUST_BE_COMPLEX_TYPE( typename MT2::ElementType );
-   BLAZE_CONSTRAINT_MUST_BE_COMPLEX_TYPE( typename MT3::ElementType );
-   BLAZE_CONSTRAINT_MUST_BE_DOUBLE_TYPE ( typename MT1::ElementType::value_type );
-   BLAZE_CONSTRAINT_MUST_BE_DOUBLE_TYPE ( typename MT2::ElementType::value_type );
-   BLAZE_CONSTRAINT_MUST_BE_DOUBLE_TYPE ( typename MT3::ElementType::value_type );
+   BLAZE_CONSTRAINT_MUST_BE_BLAS_COMPATIBLE_TYPE( typename MT1::ElementType );
+   BLAZE_CONSTRAINT_MUST_BE_BLAS_COMPATIBLE_TYPE( typename MT2::ElementType );
+   BLAZE_CONSTRAINT_MUST_BE_BLAS_COMPATIBLE_TYPE( typename MT3::ElementType );
 
    const int M  ( numeric_cast<int>( (~A).rows() )    );
    const int N  ( numeric_cast<int>( (~B).columns() ) );
@@ -373,24 +306,144 @@ BLAZE_ALWAYS_INLINE void zgemm( DenseMatrix<MT1,SO1>& C, const DenseMatrix<MT2,S
    const int ldb( numeric_cast<int>( (~B).spacing() ) );
    const int ldc( numeric_cast<int>( (~C).spacing() ) );
 
-   if( IsSymmetric<MT2>::value && ( SO1 == SO3 ) ) {
-      cblas_zsymm( ( IsRowMajorMatrix<MT1>::value )?( CblasRowMajor ):( CblasColMajor ),
-                   CblasLeft,
-                   ( IsRowMajorMatrix<MT2>::value )?( CblasLower ):( CblasUpper ),
-                   M, N, &alpha, (~A).data(), lda, (~B).data(), ldb, &beta, (~C).data(), ldc );
-   }
-   else if( IsSymmetric<MT3>::value && ( SO1 == SO2 ) ) {
-      cblas_zsymm( ( IsRowMajorMatrix<MT1>::value )?( CblasRowMajor ):( CblasColMajor ),
-                   CblasRight,
-                   ( IsRowMajorMatrix<MT3>::value )?( CblasLower ):( CblasUpper ),
-                   M, N, &alpha, (~B).data(), ldb, (~A).data(), lda, &beta, (~C).data(), ldc );
-   }
-   else {
-      cblas_zgemm( ( IsRowMajorMatrix<MT1>::value )?( CblasRowMajor ):( CblasColMajor ),
-                   ( SO1 == SO2 )?( CblasNoTrans ):( CblasTrans ),
-                   ( SO1 == SO3 )?( CblasNoTrans ):( CblasTrans ),
-                   M, N, K, &alpha, (~A).data(), lda, (~B).data(), ldb, &beta, (~C).data(), ldc );
-   }
+   gemm( ( IsRowMajorMatrix<MT1>::value )?( CblasRowMajor ):( CblasColMajor ),
+         ( SO1 == SO2 )?( CblasNoTrans ):( CblasTrans ),
+         ( SO1 == SO3 )?( CblasNoTrans ):( CblasTrans ),
+         M, N, K, alpha, (~A).data(), lda, (~B).data(), ldb, beta, (~C).data(), ldc );
+}
+#endif
+//*************************************************************************************************
+
+
+//*************************************************************************************************
+#if BLAZE_BLAS_MODE
+/*!\brief BLAS kernel for a triangular dense matrix/dense matrix multiplication with single
+//        precision matrices (\f$ B=\alpha*A*B \f$ or \f$ B=\alpha*B*A \f$).
+// \ingroup math
+//
+// \param order Specifies the storage order of matrix \a A (\a CblasColMajor or \a CblasColMajor).
+// \param side \a CblasLeft to compute \f$ B=\alpha*A*B \f$, \a CblasRight to compute \f$ B=\alpha*B*A \f$.
+// \param uplo \a CblasLower to use the lower triangle from \a A, \a CblasUpper to use the upper triangle.
+// \param transA Specifies whether to transpose matrix \a A (\a CblasNoTrans or \a CblasTrans).
+// \param diag Specifies whether \a A is unitriangular (\a CblasNonUnit or \a CblasUnit).
+// \param M The number of rows of matrix \a B \f$[0..\infty)\f$.
+// \param N The number of columns of matrix \a B \f$[0..\infty)\f$.
+// \param alpha The scaling factor for \f$ A*B \f$ or \f$ B*A \f$.
+// \param A Pointer to the first element of the triangular matrix \a A.
+// \param lda The total number of elements between two rows/columns of matrix \a A \f$[0..\infty)\f$.
+// \param B Pointer to the first element of matrix \a B.
+// \param ldb The total number of elements between two rows/columns of matrix \a B \f$[0..\infty)\f$.
+// \return void
+//
+// This function performs the scaling and multiplication of a triangular matrix by a matrix
+// based on the cblas_strmm() function. Note that matrix \a A is expected to be a square matrix.
+*/
+BLAZE_ALWAYS_INLINE void trmm( CBLAS_ORDER order, CBLAS_SIDE side, CBLAS_UPLO uplo,
+                               CBLAS_TRANSPOSE transA, CBLAS_DIAG diag, int M, int N,
+                               float alpha, const float* A, int lda, float* B, int ldb )
+{
+   cblas_strmm( order, side, uplo, transA, diag, M, N, alpha, A, lda, B, ldb );
+}
+#endif
+//*************************************************************************************************
+
+
+//*************************************************************************************************
+#if BLAZE_BLAS_MODE
+/*!\brief BLAS kernel for a triangular dense matrix/dense matrix multiplication with double
+//        precision matrices (\f$ B=\alpha*A*B \f$ or \f$ B=\alpha*B*A \f$).
+// \ingroup math
+//
+// \param order Specifies the storage order of matrix \a A (\a CblasColMajor or \a CblasColMajor).
+// \param side \a CblasLeft to compute \f$ B=\alpha*A*B \f$, \a CblasRight to compute \f$ B=\alpha*B*A \f$.
+// \param uplo \a CblasLower to use the lower triangle from \a A, \a CblasUpper to use the upper triangle.
+// \param transA Specifies whether to transpose matrix \a A (\a CblasNoTrans or \a CblasTrans).
+// \param diag Specifies whether \a A is unitriangular (\a CblasNonUnit or \a CblasUnit).
+// \param M The number of rows of matrix \a B \f$[0..\infty)\f$.
+// \param N The number of columns of matrix \a B \f$[0..\infty)\f$.
+// \param alpha The scaling factor for \f$ A*B \f$ or \f$ B*A \f$.
+// \param A Pointer to the first element of the triangular matrix \a A.
+// \param lda The total number of elements between two rows/columns of matrix \a A \f$[0..\infty)\f$.
+// \param B Pointer to the first element of matrix \a B.
+// \param ldb The total number of elements between two rows/columns of matrix \a B \f$[0..\infty)\f$.
+// \return void
+//
+// This function performs the scaling and multiplication of a triangular matrix by a matrix
+// based on the cblas_dtrmm() function. Note that matrix \a A is expected to be a square matrix.
+*/
+BLAZE_ALWAYS_INLINE void trmm( CBLAS_ORDER order, CBLAS_SIDE side, CBLAS_UPLO uplo,
+                               CBLAS_TRANSPOSE transA, CBLAS_DIAG diag, int M, int N,
+                               double alpha, const double* A, int lda, double* B, int ldb )
+{
+   cblas_dtrmm( order, side, uplo, transA, diag, M, N, alpha, A, lda, B, ldb );
+}
+#endif
+//*************************************************************************************************
+
+
+//*************************************************************************************************
+#if BLAZE_BLAS_MODE
+/*!\brief BLAS kernel for a triangular dense matrix/dense matrix multiplication with single
+//        precision complex matrices (\f$ B=\alpha*A*B \f$ or \f$ B=\alpha*B*A \f$).
+// \ingroup math
+//
+// \param order Specifies the storage order of matrix \a A (\a CblasColMajor or \a CblasColMajor).
+// \param side \a CblasLeft to compute \f$ B=\alpha*A*B \f$, \a CblasRight to compute \f$ B=\alpha*B*A \f$.
+// \param uplo \a CblasLower to use the lower triangle from \a A, \a CblasUpper to use the upper triangle.
+// \param transA Specifies whether to transpose matrix \a A (\a CblasNoTrans or \a CblasTrans).
+// \param diag Specifies whether \a A is unitriangular (\a CblasNonUnit or \a CblasUnit).
+// \param M The number of rows of matrix \a B \f$[0..\infty)\f$.
+// \param N The number of columns of matrix \a B \f$[0..\infty)\f$.
+// \param alpha The scaling factor for \f$ A*B \f$ or \f$ B*A \f$.
+// \param A Pointer to the first element of the triangular matrix \a A.
+// \param lda The total number of elements between two rows/columns of matrix \a A \f$[0..\infty)\f$.
+// \param B Pointer to the first element of matrix \a B.
+// \param ldb The total number of elements between two rows/columns of matrix \a B \f$[0..\infty)\f$.
+// \return void
+//
+// This function performs the scaling and multiplication of a triangular matrix by a matrix
+// based on the cblas_ctrmm() function. Note that matrix \a A is expected to be a square matrix.
+*/
+BLAZE_ALWAYS_INLINE void trmm( CBLAS_ORDER order, CBLAS_SIDE side, CBLAS_UPLO uplo,
+                               CBLAS_TRANSPOSE transA, CBLAS_DIAG diag, int M, int N,
+                               complex<float> alpha, const complex<float>* A, int lda,
+                               complex<float>* B, int ldb )
+{
+   cblas_ctrmm( order, side, uplo, transA, diag, M, N, &alpha, A, lda, B, ldb );
+}
+#endif
+//*************************************************************************************************
+
+
+//*************************************************************************************************
+#if BLAZE_BLAS_MODE
+/*!\brief BLAS kernel for a triangular dense matrix/dense matrix multiplication with double
+//        precision complex matrices (\f$ B=\alpha*A*B \f$ or \f$ B=\alpha*B*A \f$).
+// \ingroup math
+//
+// \param order Specifies the storage order of matrix \a A (\a CblasColMajor or \a CblasColMajor).
+// \param side \a CblasLeft to compute \f$ B=\alpha*A*B \f$, \a CblasRight to compute \f$ B=\alpha*B*A \f$.
+// \param uplo \a CblasLower to use the lower triangle from \a A, \a CblasUpper to use the upper triangle.
+// \param transA Specifies whether to transpose matrix \a A (\a CblasNoTrans or \a CblasTrans).
+// \param diag Specifies whether \a A is unitriangular (\a CblasNonUnit or \a CblasUnit).
+// \param M The number of rows of matrix \a B \f$[0..\infty)\f$.
+// \param N The number of columns of matrix \a B \f$[0..\infty)\f$.
+// \param alpha The scaling factor for \f$ A*B \f$ or \f$ B*A \f$.
+// \param A Pointer to the first element of the triangular matrix \a A.
+// \param lda The total number of elements between two rows/columns of matrix \a A \f$[0..\infty)\f$.
+// \param B Pointer to the first element of matrix \a B.
+// \param ldb The total number of elements between two rows/columns of matrix \a B \f$[0..\infty)\f$.
+// \return void
+//
+// This function performs the scaling and multiplication of a triangular matrix by a matrix
+// based on the cblas_ztrmm() function. Note that matrix \a A is expected to be a square matrix.
+*/
+BLAZE_ALWAYS_INLINE void trmm( CBLAS_ORDER order, CBLAS_SIDE side, CBLAS_UPLO uplo,
+                               CBLAS_TRANSPOSE transA, CBLAS_DIAG diag, int M, int N,
+                               complex<double> alpha, const complex<double>* A, int lda,
+                               complex<double>* B, int ldb )
+{
+   cblas_ztrmm( order, side, uplo, transA, diag, M, N, &alpha, A, lda, B, ldb );
 }
 #endif
 //*************************************************************************************************
@@ -414,12 +467,13 @@ BLAZE_ALWAYS_INLINE void zgemm( DenseMatrix<MT1,SO1>& C, const DenseMatrix<MT2,S
 // \c float element type. The attempt to call the function with matrices of any other element
 // type results in a compile time error. Also, matrix \a A is expected to be a square matrix.
 */
-template< typename MT1  // Type of the left-hand side target matrix
-        , bool SO1      // Storage order of the left-hand side target matrix
-        , typename MT2  // Type of the left-hand side matrix operand
-        , bool SO2 >    // Storage order of the left-hand side matrix operand
-BLAZE_ALWAYS_INLINE void strmm( DenseMatrix<MT1,SO1>& B, const DenseMatrix<MT2,SO2>& A,
-                                CBLAS_SIDE side, CBLAS_UPLO uplo, float alpha )
+template< typename MT1   // Type of the left-hand side target matrix
+        , bool SO1       // Storage order of the left-hand side target matrix
+        , typename MT2   // Type of the left-hand side matrix operand
+        , bool SO2       // Storage order of the left-hand side matrix operand
+        , typename ST >  // Type of the scalar factors
+BLAZE_ALWAYS_INLINE void trmm( DenseMatrix<MT1,SO1>& B, const DenseMatrix<MT2,SO2>& A,
+                               CBLAS_SIDE side, CBLAS_UPLO uplo, ST alpha )
 {
    using boost::numeric_cast;
 
@@ -429,8 +483,8 @@ BLAZE_ALWAYS_INLINE void strmm( DenseMatrix<MT1,SO1>& B, const DenseMatrix<MT2,S
    BLAZE_CONSTRAINT_MUST_HAVE_MUTABLE_DATA_ACCESS( MT1 );
    BLAZE_CONSTRAINT_MUST_HAVE_CONST_DATA_ACCESS  ( MT2 );
 
-   BLAZE_CONSTRAINT_MUST_BE_FLOAT_TYPE( typename MT1::ElementType );
-   BLAZE_CONSTRAINT_MUST_BE_FLOAT_TYPE( typename MT2::ElementType );
+   BLAZE_CONSTRAINT_MUST_BE_BLAS_COMPATIBLE_TYPE( typename MT1::ElementType );
+   BLAZE_CONSTRAINT_MUST_BE_BLAS_COMPATIBLE_TYPE( typename MT2::ElementType );
 
    BLAZE_INTERNAL_ASSERT( (~A).rows() == (~A).columns(), "Non-square triangular matrix detected" );
    BLAZE_INTERNAL_ASSERT( side == CblasLeft  || side == CblasRight, "Invalid side argument detected" );
@@ -441,190 +495,12 @@ BLAZE_ALWAYS_INLINE void strmm( DenseMatrix<MT1,SO1>& B, const DenseMatrix<MT2,S
    const int lda( numeric_cast<int>( (~A).spacing() ) );
    const int ldb( numeric_cast<int>( (~B).spacing() ) );
 
-   cblas_strmm( ( IsRowMajorMatrix<MT1>::value )?( CblasRowMajor ):( CblasColMajor ),
-                side,
-                ( SO1 == SO2 )?( uplo )
-                              :( ( uplo == CblasLower )?( CblasUpper ):( CblasLower ) ),
-                ( SO1 == SO2 )?( CblasNoTrans ):( CblasTrans ),
-                CblasNonUnit,
-                M, N, alpha, (~A).data(), lda, (~B).data(), ldb );
-}
-#endif
-//*************************************************************************************************
-
-
-//*************************************************************************************************
-#if BLAZE_BLAS_MODE
-/*!\brief BLAS kernel for a triangular dense matrix/dense matrix multiplication with double
-//        precision matrices (\f$ B=\alpha*A*B \f$ or \f$ B=\alpha*B*A \f$).
-// \ingroup math
-//
-// \param B The target dense matrix.
-// \param A The dense matrix multiplication operand.
-// \param side \a CblasLeft to compute \f$ B=\alpha*A*B \f$, \a CblasRight to compute \f$ B=\alpha*B*A \f$.
-// \param uplo \a CblasLower to use the lower triangle from \a A, \a CblasUpper to use the upper triangle.
-// \param alpha The scaling factor for \f$ A*B \f$ or \f$ B*A \f$.
-// \return void
-//
-// This function performs the scaling and multiplication of a triangular matrix by a matrix
-// based on the cblas_dtrmm() function. Note that the function only works for matrices with
-// \c double element type. The attempt to call the function with matrices of any other element
-// type results in a compile time error. Also, matrix \a A is expected to be a square matrix.
-*/
-template< typename MT1  // Type of the left-hand side target matrix
-        , bool SO1      // Storage order of the left-hand side target matrix
-        , typename MT2  // Type of the left-hand side matrix operand
-        , bool SO2 >    // Storage order of the left-hand side matrix operand
-BLAZE_ALWAYS_INLINE void dtrmm( DenseMatrix<MT1,SO1>& B, const DenseMatrix<MT2,SO2>& A,
-                                CBLAS_SIDE side, CBLAS_UPLO uplo, double alpha )
-{
-   using boost::numeric_cast;
-
-   BLAZE_CONSTRAINT_MUST_NOT_BE_COMPUTATION_TYPE( MT1 );
-   BLAZE_CONSTRAINT_MUST_NOT_BE_COMPUTATION_TYPE( MT2 );
-
-   BLAZE_CONSTRAINT_MUST_HAVE_MUTABLE_DATA_ACCESS( MT1 );
-   BLAZE_CONSTRAINT_MUST_HAVE_CONST_DATA_ACCESS  ( MT2 );
-
-   BLAZE_CONSTRAINT_MUST_BE_DOUBLE_TYPE( typename MT1::ElementType );
-   BLAZE_CONSTRAINT_MUST_BE_DOUBLE_TYPE( typename MT2::ElementType );
-
-   BLAZE_INTERNAL_ASSERT( (~A).rows() == (~A).columns(), "Non-square triangular matrix detected" );
-   BLAZE_INTERNAL_ASSERT( side == CblasLeft  || side == CblasRight, "Invalid side argument detected" );
-   BLAZE_INTERNAL_ASSERT( uplo == CblasLower || uplo == CblasUpper, "Invalid uplo argument detected" );
-
-   const int M  ( numeric_cast<int>( (~B).rows() )    );
-   const int N  ( numeric_cast<int>( (~B).columns() ) );
-   const int lda( numeric_cast<int>( (~A).spacing() ) );
-   const int ldb( numeric_cast<int>( (~B).spacing() ) );
-
-   cblas_dtrmm( ( IsRowMajorMatrix<MT1>::value )?( CblasRowMajor ):( CblasColMajor ),
-                side,
-                ( SO1 == SO2 )?( uplo )
-                              :( ( uplo == CblasLower )?( CblasUpper ):( CblasLower ) ),
-                ( SO1 == SO2 )?( CblasNoTrans ):( CblasTrans ),
-                CblasNonUnit,
-                M, N, alpha, (~A).data(), lda, (~B).data(), ldb );
-}
-#endif
-//*************************************************************************************************
-
-
-//*************************************************************************************************
-#if BLAZE_BLAS_MODE
-/*!\brief BLAS kernel for a triangular dense matrix/dense matrix multiplication with single
-//        precision complex matrices (\f$ B=\alpha*A*B \f$ or \f$ B=\alpha*B*A \f$).
-// \ingroup math
-//
-// \param B The target dense matrix.
-// \param A The dense matrix multiplication operand.
-// \param side \a CblasLeft to compute \f$ B=\alpha*A*B \f$, \a CblasRight to compute \f$ B=\alpha*B*A \f$.
-// \param uplo \a CblasLower to use the lower triangle from \a A, \a CblasUpper to use the upper triangle.
-// \param alpha The scaling factor for \f$ A*B \f$ or \f$ B*A \f$.
-// \return void
-//
-// This function performs the scaling and multiplication of a triangular matrix by a matrix
-// based on the cblas_ctrmm() function. Note that the function only works for matrices with
-// \c complex<float> element type. The attempt to call the function with matrices of any
-// other element type results in a compile time error. Also, matrix \a A is expected to be
-// a square matrix.
-*/
-template< typename MT1  // Type of the left-hand side target matrix
-        , bool SO1      // Storage order of the left-hand side target matrix
-        , typename MT2  // Type of the left-hand side matrix operand
-        , bool SO2 >    // Storage order of the left-hand side matrix operand
-BLAZE_ALWAYS_INLINE void ctrmm( DenseMatrix<MT1,SO1>& B, const DenseMatrix<MT2,SO2>& A,
-                                CBLAS_SIDE side, CBLAS_UPLO uplo, complex<float> alpha )
-{
-   using boost::numeric_cast;
-
-   BLAZE_CONSTRAINT_MUST_NOT_BE_COMPUTATION_TYPE( MT1 );
-   BLAZE_CONSTRAINT_MUST_NOT_BE_COMPUTATION_TYPE( MT2 );
-
-   BLAZE_CONSTRAINT_MUST_HAVE_MUTABLE_DATA_ACCESS( MT1 );
-   BLAZE_CONSTRAINT_MUST_HAVE_CONST_DATA_ACCESS  ( MT2 );
-
-   BLAZE_CONSTRAINT_MUST_BE_COMPLEX_TYPE( typename MT1::ElementType );
-   BLAZE_CONSTRAINT_MUST_BE_COMPLEX_TYPE( typename MT2::ElementType );
-   BLAZE_CONSTRAINT_MUST_BE_FLOAT_TYPE  ( typename MT1::ElementType::value_type );
-   BLAZE_CONSTRAINT_MUST_BE_FLOAT_TYPE  ( typename MT2::ElementType::value_type );
-
-   BLAZE_INTERNAL_ASSERT( (~A).rows() == (~A).columns(), "Non-square triangular matrix detected" );
-   BLAZE_INTERNAL_ASSERT( side == CblasLeft  || side == CblasRight, "Invalid side argument detected" );
-   BLAZE_INTERNAL_ASSERT( uplo == CblasLower || uplo == CblasUpper, "Invalid uplo argument detected" );
-
-   const int M  ( numeric_cast<int>( (~B).rows() )    );
-   const int N  ( numeric_cast<int>( (~B).columns() ) );
-   const int lda( numeric_cast<int>( (~A).spacing() ) );
-   const int ldb( numeric_cast<int>( (~B).spacing() ) );
-
-   cblas_ctrmm( ( IsRowMajorMatrix<MT1>::value )?( CblasRowMajor ):( CblasColMajor ),
-                side,
-                ( SO1 == SO2 )?( uplo )
-                              :( ( uplo == CblasLower )?( CblasUpper ):( CblasLower ) ),
-                ( SO1 == SO2 )?( CblasNoTrans ):( CblasTrans ),
-                CblasNonUnit,
-                M, N, &alpha, (~A).data(), lda, (~B).data(), ldb );
-}
-#endif
-//*************************************************************************************************
-
-
-//*************************************************************************************************
-#if BLAZE_BLAS_MODE
-/*!\brief BLAS kernel for a triangular dense matrix/dense matrix multiplication with double
-//        precision complex matrices (\f$ B=\alpha*A*B \f$ or \f$ B=\alpha*B*A \f$).
-// \ingroup math
-//
-// \param B The target dense matrix.
-// \param A The dense matrix multiplication operand.
-// \param side \a CblasLeft to compute \f$ B=\alpha*A*B \f$, \a CblasRight to compute \f$ B=\alpha*B*A \f$.
-// \param uplo \a CblasLower to use the lower triangle from \a A, \a CblasUpper to use the upper triangle.
-// \param alpha The scaling factor for \f$ A*B \f$ or \f$ B*A \f$.
-// \return void
-//
-// This function performs the scaling and multiplication of a triangular matrix by a matrix
-// based on the cblas_ztrmm() function. Note that the function only works for matrices with
-// \c complex<double> element type. The attempt to call the function with matrices of any
-// other element type results in a compile time error. Also, matrix \a A is expected to be
-// a square matrix.
-*/
-template< typename MT1  // Type of the left-hand side target matrix
-        , bool SO1      // Storage order of the left-hand side target matrix
-        , typename MT2  // Type of the left-hand side matrix operand
-        , bool SO2 >    // Storage order of the left-hand side matrix operand
-BLAZE_ALWAYS_INLINE void ztrmm( DenseMatrix<MT1,SO1>& B, const DenseMatrix<MT2,SO2>& A,
-                                CBLAS_SIDE side, CBLAS_UPLO uplo, complex<double> alpha )
-{
-   using boost::numeric_cast;
-
-   BLAZE_CONSTRAINT_MUST_NOT_BE_COMPUTATION_TYPE( MT1 );
-   BLAZE_CONSTRAINT_MUST_NOT_BE_COMPUTATION_TYPE( MT2 );
-
-   BLAZE_CONSTRAINT_MUST_HAVE_MUTABLE_DATA_ACCESS( MT1 );
-   BLAZE_CONSTRAINT_MUST_HAVE_CONST_DATA_ACCESS  ( MT2 );
-
-   BLAZE_CONSTRAINT_MUST_BE_COMPLEX_TYPE( typename MT1::ElementType );
-   BLAZE_CONSTRAINT_MUST_BE_COMPLEX_TYPE( typename MT2::ElementType );
-   BLAZE_CONSTRAINT_MUST_BE_DOUBLE_TYPE ( typename MT1::ElementType::value_type );
-   BLAZE_CONSTRAINT_MUST_BE_DOUBLE_TYPE ( typename MT2::ElementType::value_type );
-
-   BLAZE_INTERNAL_ASSERT( (~A).rows() == (~A).columns(), "Non-square triangular matrix detected" );
-   BLAZE_INTERNAL_ASSERT( side == CblasLeft  || side == CblasRight, "Invalid side argument detected" );
-   BLAZE_INTERNAL_ASSERT( uplo == CblasLower || uplo == CblasUpper, "Invalid uplo argument detected" );
-
-   const int M  ( numeric_cast<int>( (~B).rows() )    );
-   const int N  ( numeric_cast<int>( (~B).columns() ) );
-   const int lda( numeric_cast<int>( (~A).spacing() ) );
-   const int ldb( numeric_cast<int>( (~B).spacing() ) );
-
-   cblas_ztrmm( ( IsRowMajorMatrix<MT1>::value )?( CblasRowMajor ):( CblasColMajor ),
-                side,
-                ( SO1 == SO2 )?( uplo )
-                              :( ( uplo == CblasLower )?( CblasUpper ):( CblasLower ) ),
-                ( SO1 == SO2 )?( CblasNoTrans ):( CblasTrans ),
-                CblasNonUnit,
-                M, N, &alpha, (~A).data(), lda, (~B).data(), ldb );
+   trmm( ( IsRowMajorMatrix<MT1>::value )?( CblasRowMajor ):( CblasColMajor ),
+         side,
+         ( SO1 == SO2 )?( uplo ):( ( uplo == CblasLower )?( CblasUpper ):( CblasLower ) ),
+         ( SO1 == SO2 )?( CblasNoTrans ):( CblasTrans ),
+         CblasNonUnit,
+         M, N, alpha, (~A).data(), lda, (~B).data(), ldb );
 }
 #endif
 //*************************************************************************************************
