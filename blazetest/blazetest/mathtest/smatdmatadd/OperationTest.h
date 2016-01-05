@@ -67,6 +67,7 @@
 #include <blaze/util/constraints/Numeric.h>
 #include <blaze/util/constraints/SameType.h>
 #include <blaze/util/mpl/If.h>
+#include <blazetest/system/LAPACK.h>
 #include <blazetest/system/MathTest.h>
 #include <blazetest/mathtest/Creator.h>
 #include <blazetest/mathtest/IsEqual.h>
@@ -5035,7 +5036,7 @@ template< typename MT1    // Type of the left-hand side sparse matrix
         , typename MT2 >  // Type of the right-hand side dense matrix
 void OperationTest<MT1,MT2>::testInvOperation()
 {
-#if BLAZETEST_MATHTEST_TEST_INV_OPERATION
+#if BLAZETEST_MATHTEST_TEST_INV_OPERATION && BLAZETEST_MATHTEST_LAPACK_MODE
    if( BLAZETEST_MATHTEST_TEST_INV_OPERATION > 1 )
    {
       if( !isSquare( lhs_ + rhs_ ) || blaze::isDefault( det( lhs_ + rhs_ ) ) )
