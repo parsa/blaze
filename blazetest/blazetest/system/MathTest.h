@@ -135,6 +135,8 @@ namespace {
 
 BLAZE_STATIC_ASSERT( blaze::IsNumeric<TypeA>::value || blaze::IsVector<TypeA>::value || blaze::IsMatrix<TypeA>::value );
 BLAZE_STATIC_ASSERT( blaze::IsNumeric<TypeB>::value || blaze::IsVector<TypeB>::value || blaze::IsMatrix<TypeB>::value );
+BLAZE_STATIC_ASSERT( !BLAZETEST_MATHTEST_TEST_INV_OPERATION || blaze::IsBlasCompatible<TypeA>::value );
+BLAZE_STATIC_ASSERT( !BLAZETEST_MATHTEST_TEST_INV_OPERATION || blaze::IsBlasCompatible<TypeB>::value );
 BLAZE_STATIC_ASSERT( blaze::IsNumeric<NumericA>::value );
 BLAZE_STATIC_ASSERT( blaze::IsNumeric<NumericB>::value );
 BLAZE_STATIC_ASSERT( !( BLAZETEST_MATHTEST_TEST_BASIC_OPERATION < 0 ) );
