@@ -142,7 +142,7 @@ typedef double  TypeB;
 //   - 1: The transpose tests are included in the compilation process, but not executed
 //   - 2: The transpose tests are included in the compilation process and executed
 */
-#define BLAZETEST_MATHTEST_TEST_TRANSPOSE_OPERATION 0
+#define BLAZETEST_MATHTEST_TEST_TRANS_OPERATION 0
 //*************************************************************************************************
 
 

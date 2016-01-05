@@ -151,7 +151,7 @@ class OperationTest
                           void testBasicOperation    ();
                           void testNegatedOperation  ();
    template< typename T > void testScaledOperation   ( T scalar );
-                          void testTransposeOperation();
+                          void testTransOperation    ();
                           void testAbsOperation      ();
                           void testConjOperation     ();
                           void testCTransOperation   ();
@@ -298,7 +298,7 @@ OperationTest<VT,MT>::OperationTest( const Creator<VT>& creator1, const Creator<
    testScaledOperation( 2.0F );
    testScaledOperation( 2.0 );
    testScaledOperation( Scalar( 2 ) );
-   testTransposeOperation();
+   testTransOperation();
    testAbsOperation();
    testConjOperation();
    testCTransOperation();
@@ -2212,10 +2212,10 @@ void OperationTest<VT,MT>::testScaledOperation( T scalar )
 */
 template< typename VT    // Type of the left-hand side dense vector
         , typename MT >  // Type of the right-hand side dense matrix
-void OperationTest<VT,MT>::testTransposeOperation()
+void OperationTest<VT,MT>::testTransOperation()
 {
-#if BLAZETEST_MATHTEST_TEST_TRANSPOSE_OPERATION
-   if( BLAZETEST_MATHTEST_TEST_TRANSPOSE_OPERATION > 1 )
+#if BLAZETEST_MATHTEST_TEST_TRANS_OPERATION
+   if( BLAZETEST_MATHTEST_TEST_TRANS_OPERATION > 1 )
    {
       //=====================================================================================
       // Transpose multiplication
