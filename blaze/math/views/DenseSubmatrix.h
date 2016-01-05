@@ -53,6 +53,7 @@
 #include <blaze/math/constraints/Symmetric.h>
 #include <blaze/math/constraints/TransExpr.h>
 #include <blaze/math/constraints/UniTriangular.h>
+#include <blaze/math/DecompositionFlag.h>
 #include <blaze/math/expressions/DenseMatrix.h>
 #include <blaze/math/expressions/Submatrix.h>
 #include <blaze/math/Functions.h>
