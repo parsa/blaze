@@ -45,6 +45,7 @@
 #include <blaze/math/adaptors/symmetricmatrix/DenseNumeric.h>
 #include <blaze/math/adaptors/symmetricmatrix/SparseNonNumeric.h>
 #include <blaze/math/adaptors/symmetricmatrix/SparseNumeric.h>
+#include <blaze/math/constraints/BlasCompatible.h>
 #include <blaze/math/constraints/RequiresEvaluation.h>
 #include <blaze/math/DecompositionFlag.h>
 #include <blaze/math/dense/StaticMatrix.h>
@@ -267,6 +268,8 @@ template< typename MT  // Type of the dense matrix
         , bool SO >    // Storage order of the dense matrix
 inline void invert2x2( SymmetricMatrix<MT,SO,true,true>& m )
 {
+   BLAZE_CONSTRAINT_MUST_BE_BLAS_COMPATIBLE_TYPE( typename MT::ElementType );
+
    BLAZE_INTERNAL_ASSERT( m.rows()    == 2UL, "Invalid number of rows detected"    );
    BLAZE_INTERNAL_ASSERT( m.columns() == 2UL, "Invalid number of columns detected" );
 
@@ -311,6 +314,8 @@ template< typename MT  // Type of the dense matrix
         , bool SO >    // Storage order of the dense matrix
 inline void invert3x3( SymmetricMatrix<MT,SO,true,true>& m )
 {
+   BLAZE_CONSTRAINT_MUST_BE_BLAS_COMPATIBLE_TYPE( typename MT::ElementType );
+
    BLAZE_INTERNAL_ASSERT( m.rows()    == 3UL, "Invalid number of rows detected"    );
    BLAZE_INTERNAL_ASSERT( m.columns() == 3UL, "Invalid number of columns detected" );
 
@@ -360,6 +365,8 @@ template< typename MT  // Type of the dense matrix
         , bool SO >    // Storage order of the dense matrix
 inline void invert4x4( SymmetricMatrix<MT,SO,true,true>& m )
 {
+   BLAZE_CONSTRAINT_MUST_BE_BLAS_COMPATIBLE_TYPE( typename MT::ElementType );
+
    BLAZE_INTERNAL_ASSERT( m.rows()    == 4UL, "Invalid number of rows detected"    );
    BLAZE_INTERNAL_ASSERT( m.columns() == 4UL, "Invalid number of columns detected" );
 
@@ -429,6 +436,8 @@ template< typename MT  // Type of the dense matrix
         , bool SO >    // Storage order of the dense matrix
 inline void invert5x5( SymmetricMatrix<MT,SO,true,true>& m )
 {
+   BLAZE_CONSTRAINT_MUST_BE_BLAS_COMPATIBLE_TYPE( typename MT::ElementType );
+
    BLAZE_INTERNAL_ASSERT( m.rows()    == 5UL, "Invalid number of rows detected"    );
    BLAZE_INTERNAL_ASSERT( m.columns() == 5UL, "Invalid number of columns detected" );
 
@@ -545,6 +554,8 @@ template< typename MT  // Type of the dense matrix
         , bool SO >    // Storage order of the dense matrix
 inline void invert6x6( SymmetricMatrix<MT,SO,true,true>& m )
 {
+   BLAZE_CONSTRAINT_MUST_BE_BLAS_COMPATIBLE_TYPE( typename MT::ElementType );
+
    BLAZE_INTERNAL_ASSERT( m.rows()    == 6UL, "Invalid number of rows detected"    );
    BLAZE_INTERNAL_ASSERT( m.columns() == 6UL, "Invalid number of columns detected" );
 
@@ -764,6 +775,8 @@ template< DecompositionFlag DF  // Decomposition algorithm
         , bool SO >             // Storage order of the dense matrix
 inline void invertNxN( SymmetricMatrix<MT,SO,true,true>& m )
 {
+   BLAZE_CONSTRAINT_MUST_BE_BLAS_COMPATIBLE_TYPE( typename MT::ElementType );
+
    invertNxN<DF>( m.matrix_ );
 
    BLAZE_INTERNAL_ASSERT( isIntact( m ), "Broken invariant detected" );
