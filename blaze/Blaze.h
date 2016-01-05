@@ -133,6 +133,7 @@ namespace blaze {}
 //          <li> \ref matrix_serialization </li>
 //       </ul>
 //    </li>
+//    <li> \ref lapack_functions </li>
 //    <li> \ref configuration_files </li>
 //    <li> \ref error_reporting_customization </li>
 //    <li> \ref intra_statement_optimization </li>
@@ -8256,7 +8257,198 @@ namespace blaze {}
 // In case an error is encountered during (de-)serialization, a \c std::runtime_exception is
 // thrown.
 //
-// \n Previous: \ref vector_serialization &nbsp; &nbsp; Next: \ref configuration_files \n
+// \n Previous: \ref vector_serialization &nbsp; &nbsp; Next: \ref lapack_functions \n
+*/
+//*************************************************************************************************
+
+
+//**LAPACK Functions*******************************************************************************
+/*!\page lapack_functions LAPACK Functions
+//
+// \tableofcontents
+//
+//
+// The \b Blaze library makes extensive use of the LAPACK functionality for the decomposition,
+// inversion and the computation of the determinant of dense matrices. For this purpose, \b Blaze
+// implements several convenient C++ wrapper functions for all required LAPACK functions. The
+// following sections give a complete overview of all available LAPACK wrapper functions. For
+// more details on the individual LAPACK functions beyond the \b Blaze function documentation,
+// see the LAPACK online documentation browser:
+//
+//        http://www.netlib.org/lapack/explore-html/
+//
+// \note All functions can only be used if the fitting LAPACK library is available and linked to
+// the final executable. Otherwise a call to this function will result in a linker error.
+//
+// \note For performance reasons, all functions do not provide any exception safety guarantee, i.e.
+// in case an exception is thrown the given matrix may already have been modified.
+//
+//
+// \section lapack_PLU_decomposition PLU Decomposition
+// <hr>
+//
+// The following functions provide an interface for the LAPACK functions \c sgetrf(), \c dgetrf(),
+// \c cgetrf(), and \c zgetrf():
+
+   \code
+   void getrf( int* m, int* n, float* a, int* lda, int* ipiv, int* info );
+
+   void getrf( int* m, int* n, double* a, int* lda, int* ipiv, int* info );
+
+   void getrf( int* m, int* n, complex<float>* a, int* lda, int* ipiv, int* info );
+
+   void getrf( int* m, int* n, complex<double>* a, int* lda, int* ipiv, int* info );
+
+   template< typename MT, bool SO >
+   void getrf( DenseMatrix<MT,SO>& A, int* ipiv );
+   \endcode
+
+// The decomposition has the form
+
+                          \f[ A = P \dot L \dot U, \f]\n
+
+// where \c P is a permutation matrix, \c L is a lower unitriangular matrix, and \c U is an upper
+// triangular matrix. The resulting decomposition is stored within \a A: In case of a column-major
+// matrix, \c L is stored in the lower part of \a A and \c U is stored in the upper part. The unit
+// diagonal elements of \c L are not stored. In case \a A is a row-major matrix the result is
+// transposed.
+//
+// \note The PLU decomposition will never fail, even for singular matrices. However, in case of a
+// singular matrix the resulting decomposition cannot be used for a matrix inversion or solving
+// a linear system of equations.
+//
+//
+// \section lapack_cholesky_decomposition Cholesky Decomposition
+// <hr>
+//
+// The following functions provide an interface for the LAPACK functions \c spotrf(), \c dpotrf(),
+// \c cpotrf(), and \c zpotrf():
+
+   \code
+   void potrf( char* uplo, int* n, float* a, int* lda, int* info );
+
+   void potrf( char* uplo, int* n, double* a, int* lda, int* info );
+
+   void potrf( char* uplo, int* n, complex<float>* a, int* lda, int* info );
+
+   void potrf( char* uplo, int* n, complex<double>* a, int* lda, int* info );
+
+   template< typename MT, bool SO >
+   void potrf( DenseMatrix<MT,SO>& A, char uplo );
+   \endcode
+
+// The decomposition has the form
+
+                      \f[ A = U**T * U, if uplo = 'U', \f] or\n
+                      \f[ A = L * L**T, if uplo = 'L', \f]
+
+// where \c U is an upper triangular matrix and \c L is a lower triangular matrix. The Cholesky
+// decomposition fails if the given matrix \a A is not a positive definite matrix. In this case
+// the first four functions set the \c info argument accordingly, the fifth function throws a
+// \a std::std::invalid_argument exception.
+//
+//
+// \section lapack_QR_decomposition QR Decomposition
+// <hr>
+//
+// The following functions provide an interface for the LAPACK functions \c sgeqrf(), \c dgeqrf(),
+// \c cgeqrf(), and \c zgeqrf():
+
+   \code
+   void geqrf( int* m, int* n, float* a, int* lda, float* tau, float*  work, int* lwork, int* info );
+
+   void geqrf( int* m, int* n, double* a, int* lda, double* tau, double* work, int* lwork, int* info );
+
+   void geqrf( int* m, int* n, complex<float>* a, int* lda, complex<float>* tau,
+            complex<float>* work, int* lwork, int* info );
+
+   void geqrf( int* m, int* n, complex<double>* a, int* lda, complex<double>* tau,
+            complex<double>* work, int* lwork, int* info );
+
+   template< typename MT, bool SO >
+   void geqrf( DenseMatrix<MT,SO>& A, typename MT::ElementType* tau );
+   \endcode
+
+// The decomposition has the form
+
+                              \f[ A = Q \dot R, \f]\n
+
+// where the \c Q is represented as a product of elementary reflectors
+
+                  \f[ Q = H(1) H(2) . . . H(k), with k = min(m,n).\f]\n
+
+// Each H(i) has the form
+
+                          \f[ H(i) = I - tau * v * v^T, \f]\n
+
+// where \c tau is a real scalar, and \c v is a real vector with <tt>v(0:i-1) = 0</tt> and
+// <tt>v(i) = 1</tt>. <tt>v(i+1:m)</tt> is stored on exit in <tt>A(i+1:m,i)</tt>, and \c tau
+// in \c tau(i). Thus on exit the elements on and above the diagonal of the matrix contain the
+// min(M,N)-by-N upper trapezoidal matrix R (R is upper triangular if m >= n); the elements
+// below the diagonal, with the array \a tau, represent the orthogonal matrix Q as a product
+// of min(M,N) elementary reflectors.
+//
+//
+// \section lapack_PLU_inversion PLU-based Inversion
+// <hr>
+//
+// The following functions provide an interface for the LAPACK functions \c sgetri(), \c dgetri(),
+// \c cgetri(), and \c zgetri():
+
+   \code
+   void getri( int* n, float* a, int* lda, int* ipiv, float* work, int* lwork, int* info );
+
+   void getri( int* n, double* a, int* lda, int* ipiv, double* work, int* lwork, int* info );
+
+   void getri( int* n, complex<float>* a, int* lda, int* ipiv,
+               complex<float>* work, int* lwork, int* info );
+
+   void getri( int* n, complex<double>* a, int* lda, int* ipiv,
+               complex<double>* work, int* lwork, int* info );
+
+   template< typename MT, bool SO >
+   void getri( DenseMatrix<MT,SO>& A, const int* ipiv );
+   \endcode
+
+// The functions fail if ...
+//
+//  - ... the given matrix is not a square matrix;
+//  - ... the given matrix is singular and not invertible.
+//
+// The first four functions report failure via the \c info argument, the fifth function throws a
+// \a std::invalid_argument exception in case of an error.
+//
+//
+// \section lapack_cholesky_inversion Cholesky-based Inversion
+// <hr>
+//
+// The following functions provide an interface for the LAPACK functions \c spotri(), \c dpotri(),
+// \c cpotri(), and \c zpotri():
+
+   \code
+   void potri( char* uplo, int* n, float*  a, int* lda, int* info );
+
+   void potri( char* uplo, int* n, double* a, int* lda, int* info );
+
+   void potri( char* uplo, int* n, complex<float>*  a, int* lda, int* info );
+
+   void potri( char* uplo, int* n, complex<double>* a, int* lda, int* info );
+
+   template< typename MT, bool SO >
+   void potri( DenseMatrix<MT,SO>& A, char uplo );
+   \endcode
+
+// The functions fail if ...
+//
+//  - ... the given matrix is not a square matrix;
+//  - ... the given \a uplo argument is neither 'L' nor 'U';
+//  - ... the given matrix is singular and not invertible.
+//
+// The first four functions report failure via the \c info argument, the fifth function throws a
+// \a std::invalid_argument exception in case of an error.
+//
+//
+// \n Previous: \ref matrix_serialization &nbsp; &nbsp; Next: \ref configuration_files \n
 */
 //*************************************************************************************************
 
@@ -8383,7 +8575,7 @@ namespace blaze {}
 // whether streaming is beneficial or hurtful for performance.
 //
 //
-// \n Previous: \ref matrix_serialization &nbsp; &nbsp; Next: \ref error_reporting_customization \n
+// \n Previous: \ref lapack_functions &nbsp; &nbsp; Next: \ref error_reporting_customization \n
 */
 //*************************************************************************************************
 
