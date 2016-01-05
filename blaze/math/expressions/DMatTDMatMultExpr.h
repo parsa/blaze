@@ -109,6 +109,7 @@
 #include <blaze/util/mpl/Or.h>
 #include <blaze/util/SelectType.h>
 #include <blaze/util/Types.h>
+#include <blaze/util/typetraits/IsBuiltin.h>
 #include <blaze/util/typetraits/IsComplex.h>
 #include <blaze/util/typetraits/IsComplexDouble.h>
 #include <blaze/util/typetraits/IsComplexFloat.h>
@@ -176,96 +177,21 @@ class DMatTDMatMultExpr : public DenseMatrix< DMatTDMatMultExpr<MT1,MT2>, false 
    //**********************************************************************************************
    /*! \cond BLAZE_INTERNAL */
    //! Helper structure for the explicit application of the SFINAE principle.
-   /*! In case the data type of all three involved matrices is \a float and the single precision
-       kernel can be used, the nested \a value will be set to 1, otherwise it will be 0. */
+   /*! In case the types of all three involved matrices are suited for a BLAS kernel, the nested
+       \a value will be set to 1, otherwise it will be 0. */
    template< typename T1, typename T2, typename T3 >
-   struct UseSinglePrecisionKernel {
+   struct UseBlasKernel {
       enum { value = BLAZE_BLAS_MODE &&
                      HasMutableDataAccess<T1>::value &&
                      HasConstDataAccess<T2>::value &&
                      HasConstDataAccess<T3>::value &&
                      !IsDiagonal<T2>::value && !IsDiagonal<T3>::value &&
                      T1::vectorizable && T2::vectorizable && T3::vectorizable &&
-                     IsFloat<typename T1::ElementType>::value &&
-                     IsFloat<typename T2::ElementType>::value &&
-                     IsFloat<typename T3::ElementType>::value };
-   };
-   /*! \endcond */
-   //**********************************************************************************************
-
-   //**********************************************************************************************
-   /*! \cond BLAZE_INTERNAL */
-   //! Helper structure for the explicit application of the SFINAE principle.
-   /*! In case the data type of all three involved matrices is \a double and the double precision
-       kernel can be used, the nested \a value will be set to 1, otherwise it will be 0. */
-   template< typename T1, typename T2, typename T3 >
-   struct UseDoublePrecisionKernel {
-      enum { value = BLAZE_BLAS_MODE &&
-                     HasMutableDataAccess<T1>::value &&
-                     HasConstDataAccess<T2>::value &&
-                     HasConstDataAccess<T3>::value &&
-                     !IsDiagonal<T2>::value && !IsDiagonal<T3>::value &&
-                     T1::vectorizable && T2::vectorizable && T3::vectorizable &&
-                     IsDouble<typename T1::ElementType>::value &&
-                     IsDouble<typename T2::ElementType>::value &&
-                     IsDouble<typename T3::ElementType>::value };
-   };
-   /*! \endcond */
-   //**********************************************************************************************
-
-   //**********************************************************************************************
-   /*! \cond BLAZE_INTERNAL */
-   //! Helper structure for the explicit application of the SFINAE principle.
-   /*! In case the data type of all three involved matrices is \a complex<float> and the single
-       precision complex kernel can be used, the nested \a value will be set to 1, otherwise it
-       will be 0. */
-   template< typename T1, typename T2, typename T3 >
-   struct UseSinglePrecisionComplexKernel {
-      enum { value = BLAZE_BLAS_MODE &&
-                     HasMutableDataAccess<T1>::value &&
-                     HasConstDataAccess<T2>::value &&
-                     HasConstDataAccess<T3>::value &&
-                     !IsDiagonal<T2>::value && !IsDiagonal<T3>::value &&
-                     T1::vectorizable && T2::vectorizable && T3::vectorizable &&
-                     IsComplexFloat<typename T1::ElementType>::value &&
-                     IsComplexFloat<typename T2::ElementType>::value &&
-                     IsComplexFloat<typename T3::ElementType>::value };
-   };
-   /*! \endcond */
-   //**********************************************************************************************
-
-   //**********************************************************************************************
-   /*! \cond BLAZE_INTERNAL */
-   //! Helper structure for the explicit application of the SFINAE principle.
-   /*! In case the data type of all three involved matrices is \a complex<double> and the double
-       precision complex kernel can be used, the nested \a value will be set to 1, otherwise it
-       will be 0. */
-   template< typename T1, typename T2, typename T3 >
-   struct UseDoublePrecisionComplexKernel {
-      enum { value = BLAZE_BLAS_MODE &&
-                     HasMutableDataAccess<T1>::value &&
-                     HasConstDataAccess<T2>::value &&
-                     HasConstDataAccess<T3>::value &&
-                     !IsDiagonal<T2>::value && !IsDiagonal<T3>::value &&
-                     T1::vectorizable && T2::vectorizable && T3::vectorizable &&
-                     IsComplexDouble<typename T1::ElementType>::value &&
-                     IsComplexDouble<typename T2::ElementType>::value &&
-                     IsComplexDouble<typename T3::ElementType>::value };
-   };
-   /*! \endcond */
-   //**********************************************************************************************
-
-   //**********************************************************************************************
-   /*! \cond BLAZE_INTERNAL */
-   //! Helper structure for the explicit application of the SFINAE principle.
-   /*! In case no optimized BLAS kernel can be used, the nested \a value will be set to 1,
-       otherwise it will be 0. */
-   template< typename T1, typename T2, typename T3 >
-   struct UseDefaultKernel {
-      enum { value = !BLAZE_BLAS_MODE || ( !UseSinglePrecisionKernel<T1,T2,T3>::value &&
-                                           !UseDoublePrecisionKernel<T1,T2,T3>::value &&
-                                           !UseSinglePrecisionComplexKernel<T1,T2,T3>::value &&
-                                           !UseDoublePrecisionComplexKernel<T1,T2,T3>::value ) };
+                     IsBlasCompatible<typename T1::ElementType>::value &&
+                     IsBlasCompatible<typename T2::ElementType>::value &&
+                     IsBlasCompatible<typename T3::ElementType>::value &&
+                     IsSame< typename T1::ElementType, typename T2::ElementType >::value &&
+                     IsSame< typename T1::ElementType, typename T3::ElementType >::value };
    };
    /*! \endcond */
    //**********************************************************************************************
@@ -1611,7 +1537,7 @@ class DMatTDMatMultExpr : public DenseMatrix< DMatTDMatMultExpr<MT1,MT2>, false 
    template< typename MT3    // Type of the left-hand side target matrix
            , typename MT4    // Type of the left-hand side matrix operand
            , typename MT5 >  // Type of the right-hand side matrix operand
-   static inline typename EnableIf< UseDefaultKernel<MT3,MT4,MT5> >::Type
+   static inline typename DisableIf< UseBlasKernel<MT3,MT4,MT5> >::Type
       selectBlasAssignKernel( MT3& C, const MT4& A, const MT5& B )
    {
       selectLargeAssignKernel( C, A, B );
@@ -1619,11 +1545,11 @@ class DMatTDMatMultExpr : public DenseMatrix< DMatTDMatMultExpr<MT1,MT2>, false 
    /*! \endcond */
    //**********************************************************************************************
 
-   //**BLAS-based assignment to dense matrices (single precision)**********************************
+   //**BLAS-based assignment to dense matrices*****************************************************
 #if BLAZE_BLAS_MODE
    /*! \cond BLAZE_INTERNAL */
-   /*!\brief BLAS-based assignment of a dense matrix-transpose dense matrix multiplication for
-   //        single precision matrices (\f$ C=A*B \f$).
+   /*!\brief BLAS-based assignment of a dense matrix-transpose dense matrix multiplication
+   //        (\f$ C=A*B \f$).
    // \ingroup dense_matrix
    //
    // \param C The target left-hand side dense matrix.
@@ -1631,144 +1557,27 @@ class DMatTDMatMultExpr : public DenseMatrix< DMatTDMatMultExpr<MT1,MT2>, false 
    // \param B The right-hand side multiplication operand.
    // \return void
    //
-   // This function performs the dense matrix-transpose dense matrix multiplication for single
-   // precision matrices based on the according BLAS functionality.
+   // This function performs the dense matrix-transpose dense matrix multiplication precision
+   // matrices based on the according BLAS functionality.
    */
    template< typename MT3    // Type of the left-hand side target matrix
            , typename MT4    // Type of the left-hand side matrix operand
            , typename MT5 >  // Type of the right-hand side matrix operand
-   static inline typename EnableIf< UseSinglePrecisionKernel<MT3,MT4,MT5> >::Type
+   static inline typename EnableIf< UseBlasKernel<MT3,MT4,MT5> >::Type
       selectBlasAssignKernel( MT3& C, const MT4& A, const MT5& B )
    {
-      if( IsTriangular<MT4>::value ) {
-         assign( C, B );
-         trmm( C, A, CblasLeft, ( IsLower<MT4>::value )?( CblasLower ):( CblasUpper ), 1.0F );
-      }
-      else if( IsTriangular<MT5>::value ) {
-         assign( C, A );
-         trmm( C, B, CblasRight, ( IsLower<MT5>::value )?( CblasLower ):( CblasUpper ), 1.0F );
-      }
-      else {
-         gemm( C, A, B, 1.0F, 0.0F );
-      }
-   }
-   /*! \endcond */
-#endif
-   //**********************************************************************************************
+      typedef typename MT3::ElementType  ET;
 
-   //**BLAS-based assignment to dense matrices (double precision)**********************************
-#if BLAZE_BLAS_MODE
-   /*! \cond BLAZE_INTERNAL */
-   /*!\brief BLAS-based assignment of a dense matrix-transpose dense matrix multiplication for
-   //        double precision matrices (\f$ C=A*B \f$).
-   // \ingroup dense_matrix
-   //
-   // \param C The target left-hand side dense matrix.
-   // \param A The left-hand side multiplication operand.
-   // \param B The right-hand side multiplication operand.
-   // \return void
-   //
-   // This function performs the dense matrix-transpose dense matrix multiplication for double
-   // precision matrices based on the according BLAS functionality.
-   */
-   template< typename MT3    // Type of the left-hand side target matrix
-           , typename MT4    // Type of the left-hand side matrix operand
-           , typename MT5 >  // Type of the right-hand side matrix operand
-   static inline typename EnableIf< UseDoublePrecisionKernel<MT3,MT4,MT5> >::Type
-      selectBlasAssignKernel( MT3& C, const MT4& A, const MT5& B )
-   {
       if( IsTriangular<MT4>::value ) {
          assign( C, B );
-         trmm( C, A, CblasLeft, ( IsLower<MT4>::value )?( CblasLower ):( CblasUpper ), 1.0 );
+         trmm( C, A, CblasLeft, ( IsLower<MT4>::value )?( CblasLower ):( CblasUpper ), ET(1) );
       }
       else if( IsTriangular<MT5>::value ) {
          assign( C, A );
-         trmm( C, B, CblasRight, ( IsLower<MT5>::value )?( CblasLower ):( CblasUpper ), 1.0 );
+         trmm( C, B, CblasRight, ( IsLower<MT5>::value )?( CblasLower ):( CblasUpper ), ET(1) );
       }
       else {
-         gemm( C, A, B, 1.0, 0.0 );
-      }
-   }
-   /*! \endcond */
-#endif
-   //**********************************************************************************************
-
-   //**BLAS-based assignment to dense matrices (single precision complex)**************************
-#if BLAZE_BLAS_MODE
-   /*! \cond BLAZE_INTERNAL */
-   /*!\brief BLAS-based assignment of a dense matrix-transpose dense matrix multiplication for
-   //        single precision complex matrices (\f$ C=A*B \f$).
-   // \ingroup dense_matrix
-   //
-   // \param C The target left-hand side dense matrix.
-   // \param A The left-hand side multiplication operand.
-   // \param B The right-hand side multiplication operand.
-   // \return void
-   //
-   // This function performs the dense matrix-transpose dense matrix multiplication for single
-   // precision complex matrices based on the according BLAS functionality.
-   */
-   template< typename MT3    // Type of the left-hand side target matrix
-           , typename MT4    // Type of the left-hand side matrix operand
-           , typename MT5 >  // Type of the right-hand side matrix operand
-   static inline typename EnableIf< UseSinglePrecisionComplexKernel<MT3,MT4,MT5> >::Type
-      selectBlasAssignKernel( MT3& C, const MT4& A, const MT5& B )
-   {
-      if( IsTriangular<MT4>::value ) {
-         assign( C, B );
-         trmm( C, A, CblasLeft,
-               ( IsLower<MT4>::value )?( CblasLower ):( CblasUpper ),
-               complex<float>( 1.0F ) );
-      }
-      else if( IsTriangular<MT5>::value ) {
-         assign( C, A );
-         trmm( C, B, CblasRight,
-               ( IsLower<MT5>::value )?( CblasLower ):( CblasUpper ),
-               complex<float>( 1.0F ) );
-      }
-      else {
-         gemm( C, A, B, complex<float>( 1.0F ), complex<float>( 0.0F ) );
-      }
-   }
-   /*! \endcond */
-#endif
-   //**********************************************************************************************
-
-   //**BLAS-based assignment to dense matrices (double precision complex)**************************
-#if BLAZE_BLAS_MODE
-   /*! \cond BLAZE_INTERNAL */
-   /*!\brief BLAS-based assignment of a dense matrix-transpose dense matrix multiplication for
-   //        double precision complex matrices (\f$ C=A*B \f$).
-   // \ingroup dense_matrix
-   //
-   // \param C The target left-hand side dense matrix.
-   // \param A The left-hand side multiplication operand.
-   // \param B The right-hand side multiplication operand.
-   // \return void
-   //
-   // This function performs the dense matrix-transpose dense matrix multiplication for double
-   // precision complex matrices based on the according BLAS functionality.
-   */
-   template< typename MT3    // Type of the left-hand side target matrix
-           , typename MT4    // Type of the left-hand side matrix operand
-           , typename MT5 >  // Type of the right-hand side matrix operand
-   static inline typename EnableIf< UseDoublePrecisionComplexKernel<MT3,MT4,MT5> >::Type
-      selectBlasAssignKernel( MT3& C, const MT4& A, const MT5& B )
-   {
-      if( IsTriangular<MT4>::value ) {
-         assign( C, B );
-         trmm( C, A, CblasLeft,
-               ( IsLower<MT4>::value )?( CblasLower ):( CblasUpper ),
-               complex<double>( 1.0 ) );
-      }
-      else if( IsTriangular<MT5>::value ) {
-         assign( C, A );
-         trmm( C, B, CblasRight,
-               ( IsLower<MT5>::value )?( CblasLower ):( CblasUpper ),
-               complex<double>( 1.0 ) );
-      }
-      else {
-         gemm( C, A, B, complex<double>( 1.0 ), complex<double>( 0.0 ) );
+         gemm( C, A, B, ET(1), ET(0) );
       }
    }
    /*! \endcond */
@@ -2884,7 +2693,7 @@ class DMatTDMatMultExpr : public DenseMatrix< DMatTDMatMultExpr<MT1,MT2>, false 
    template< typename MT3    // Type of the left-hand side target matrix
            , typename MT4    // Type of the left-hand side matrix operand
            , typename MT5 >  // Type of the right-hand side matrix operand
-   static inline typename EnableIf< UseDefaultKernel<MT3,MT4,MT5> >::Type
+   static inline typename DisableIf< UseBlasKernel<MT3,MT4,MT5> >::Type
       selectBlasAddAssignKernel( MT3& C, const MT4& A, const MT5& B )
    {
       selectLargeAddAssignKernel( C, A, B );
@@ -2892,11 +2701,11 @@ class DMatTDMatMultExpr : public DenseMatrix< DMatTDMatMultExpr<MT1,MT2>, false 
    /*! \endcond */
    //**********************************************************************************************
 
-   //**BLAS-based addition assignment to dense matrices (single precision)*************************
+   //**BLAS-based addition assignment to dense matrices********************************************
 #if BLAZE_BLAS_MODE
    /*! \cond BLAZE_INTERNAL */
    /*!\brief BLAS-based addition assignment of a dense matrix-transpose dense matrix multiplication
-   //        for single precision matrices (\f$ C+=A*B \f$).
+   //        (\f$ C+=A*B \f$).
    // \ingroup dense_matrix
    //
    // \param C The target left-hand side dense matrix.
@@ -2904,152 +2713,29 @@ class DMatTDMatMultExpr : public DenseMatrix< DMatTDMatMultExpr<MT1,MT2>, false 
    // \param B The right-hand side multiplication operand.
    // \return void
    //
-   // This function performs the dense matrix-transpose dense matrix multiplication for single
-   // precision matrices based on the according BLAS functionality.
+   // This function performs the dense matrix-transpose dense matrix multiplication based on the
+   // according BLAS functionality.
    */
    template< typename MT3    // Type of the left-hand side target matrix
            , typename MT4    // Type of the left-hand side matrix operand
            , typename MT5 >  // Type of the right-hand side matrix operand
-   static inline typename EnableIf< UseSinglePrecisionKernel<MT3,MT4,MT5> >::Type
+   static inline typename EnableIf< UseBlasKernel<MT3,MT4,MT5> >::Type
       selectBlasAddAssignKernel( MT3& C, const MT4& A, const MT5& B )
    {
-      if( IsTriangular<MT4>::value ) {
-         typename MT3::ResultType tmp( B );
-         trmm( tmp, A, CblasLeft, ( IsLower<MT4>::value )?( CblasLower ):( CblasUpper ), 1.0F );
-         addAssign( C, tmp );
-      }
-      else if( IsTriangular<MT5>::value ) {
-         typename MT3::ResultType tmp( A );
-         trmm( tmp, B, CblasRight, ( IsLower<MT5>::value )?( CblasLower ):( CblasUpper ), 1.0F );
-         addAssign( C, tmp );
-      }
-      else {
-         gemm( C, A, B, 1.0F, 1.0F );
-      }
-   }
-   /*! \endcond */
-#endif
-   //**********************************************************************************************
+      typedef typename MT3::ElementType  ET;
 
-   //**BLAS-based addition assignment to dense matrices (double precision)*************************
-#if BLAZE_BLAS_MODE
-   /*! \cond BLAZE_INTERNAL */
-   /*!\brief BLAS-based addition assignment of a dense matrix-transpose dense matrix multiplication
-   //        for double precision matrices (\f$ C+=A*B \f$).
-   // \ingroup dense_matrix
-   //
-   // \param C The target left-hand side dense matrix.
-   // \param A The left-hand side multiplication operand.
-   // \param B The right-hand side multiplication operand.
-   // \return void
-   //
-   // This function performs the dense matrix-transpose dense matrix multiplication for double
-   // precision matrices based on the according BLAS functionality.
-   */
-   template< typename MT3    // Type of the left-hand side target matrix
-           , typename MT4    // Type of the left-hand side matrix operand
-           , typename MT5 >  // Type of the right-hand side matrix operand
-   static inline typename EnableIf< UseDoublePrecisionKernel<MT3,MT4,MT5> >::Type
-      selectBlasAddAssignKernel( MT3& C, const MT4& A, const MT5& B )
-   {
       if( IsTriangular<MT4>::value ) {
          typename MT3::ResultType tmp( B );
-         trmm( tmp, A, CblasLeft, ( IsLower<MT4>::value )?( CblasLower ):( CblasUpper ), 1.0 );
+         trmm( tmp, A, CblasLeft, ( IsLower<MT4>::value )?( CblasLower ):( CblasUpper ), ET(1) );
          addAssign( C, tmp );
       }
       else if( IsTriangular<MT5>::value ) {
          typename MT3::ResultType tmp( A );
-         trmm( tmp, B, CblasRight, ( IsLower<MT5>::value )?( CblasLower ):( CblasUpper ), 1.0 );
+         trmm( tmp, B, CblasRight, ( IsLower<MT5>::value )?( CblasLower ):( CblasUpper ), ET(1) );
          addAssign( C, tmp );
       }
       else {
-         gemm( C, A, B, 1.0, 1.0 );
-      }
-   }
-   /*! \endcond */
-#endif
-   //**********************************************************************************************
-
-   //**BLAS-based addition assignment to dense matrices (single precision complex)*****************
-#if BLAZE_BLAS_MODE
-   /*! \cond BLAZE_INTERNAL */
-   /*!\brief BLAS-based addition assignment of a dense matrix-transpose dense matrix multiplication
-   //        for single precision complex matrices (\f$ C+=A*B \f$).
-   // \ingroup dense_matrix
-   //
-   // \param C The target left-hand side dense matrix.
-   // \param A The left-hand side multiplication operand.
-   // \param B The right-hand side multiplication operand.
-   // \return void
-   //
-   // This function performs the dense matrix-transpose dense matrix multiplication for single
-   // precision complex matrices based on the according BLAS functionality.
-   */
-   template< typename MT3    // Type of the left-hand side target matrix
-           , typename MT4    // Type of the left-hand side matrix operand
-           , typename MT5 >  // Type of the right-hand side matrix operand
-   static inline typename EnableIf< UseSinglePrecisionComplexKernel<MT3,MT4,MT5> >::Type
-      selectBlasAddAssignKernel( MT3& C, const MT4& A, const MT5& B )
-   {
-      if( IsTriangular<MT4>::value ) {
-         typename MT3::ResultType tmp( B );
-         trmm( tmp, A, CblasLeft,
-               ( IsLower<MT4>::value )?( CblasLower ):( CblasUpper ),
-               complex<float>( 1.0F ) );
-         addAssign( C, tmp );
-      }
-      else if( IsTriangular<MT5>::value ) {
-         typename MT3::ResultType tmp( A );
-         trmm( tmp, B, CblasRight,
-               ( IsLower<MT5>::value )?( CblasLower ):( CblasUpper ),
-               complex<float>( 1.0F ) );
-         addAssign( C, tmp );
-      }
-      else {
-         gemm( C, A, B, complex<float>( 1.0F ), complex<float>( 1.0F ) );
-      }
-   }
-   /*! \endcond */
-#endif
-   //**********************************************************************************************
-
-   //**BLAS-based addition assignment to dense matrices (double precision complex)*****************
-#if BLAZE_BLAS_MODE
-   /*! \cond BLAZE_INTERNAL */
-   /*!\brief BLAS-based addition assignment of a dense matrix-transpose dense matrix multiplication
-   //        for double precision complex matrices (\f$ C+=A*B \f$).
-   // \ingroup dense_matrix
-   //
-   // \param C The target left-hand side dense matrix.
-   // \param A The left-hand side multiplication operand.
-   // \param B The right-hand side multiplication operand.
-   // \return void
-   //
-   // This function performs the dense matrix-transpose dense matrix multiplication for double
-   // precision complex matrices based on the according BLAS functionality.
-   */
-   template< typename MT3    // Type of the left-hand side target matrix
-           , typename MT4    // Type of the left-hand side matrix operand
-           , typename MT5 >  // Type of the right-hand side matrix operand
-   static inline typename EnableIf< UseDoublePrecisionComplexKernel<MT3,MT4,MT5> >::Type
-      selectBlasAddAssignKernel( MT3& C, const MT4& A, const MT5& B )
-   {
-      if( IsTriangular<MT4>::value ) {
-         typename MT3::ResultType tmp( B );
-         trmm( tmp, A, CblasLeft,
-               ( IsLower<MT4>::value )?( CblasLower ):( CblasUpper ),
-               complex<double>( 1.0 ) );
-         addAssign( C, tmp );
-      }
-      else if( IsTriangular<MT5>::value ) {
-         typename MT3::ResultType tmp( A );
-         trmm( tmp, B, CblasRight,
-               ( IsLower<MT5>::value )?( CblasLower ):( CblasUpper ),
-               complex<double>( 1.0 ) );
-         addAssign( C, tmp );
-      }
-      else {
-         gemm( C, A, B, complex<double>( 1.0 ), complex<double>( 1.0 ) );
+         gemm( C, A, B, ET(1), ET(1) );
       }
    }
    /*! \endcond */
@@ -4132,7 +3818,7 @@ class DMatTDMatMultExpr : public DenseMatrix< DMatTDMatMultExpr<MT1,MT2>, false 
    template< typename MT3    // Type of the left-hand side target matrix
            , typename MT4    // Type of the left-hand side matrix operand
            , typename MT5 >  // Type of the right-hand side matrix operand
-   static inline typename EnableIf< UseDefaultKernel<MT3,MT4,MT5> >::Type
+   static inline typename DisableIf< UseBlasKernel<MT3,MT4,MT5> >::Type
       selectBlasSubAssignKernel( MT3& C, const MT4& A, const MT5& B )
    {
       selectLargeSubAssignKernel( C, A, B );
@@ -4140,11 +3826,11 @@ class DMatTDMatMultExpr : public DenseMatrix< DMatTDMatMultExpr<MT1,MT2>, false 
    /*! \endcond */
    //**********************************************************************************************
 
-   //**BLAS-based subraction assignment to dense matrices (single precision)***********************
+   //**BLAS-based subraction assignment to dense matrices******************************************
 #if BLAZE_BLAS_MODE
    /*! \cond BLAZE_INTERNAL */
    /*!\brief BLAS-based subraction assignment of a dense matrix-transpose dense matrix
-   //        multiplication for single precision matrices (\f$ C-=A*B \f$).
+   //        multiplication (\f$ C-=A*B \f$).
    // \ingroup dense_matrix
    //
    // \param C The target left-hand side dense matrix.
@@ -4152,152 +3838,29 @@ class DMatTDMatMultExpr : public DenseMatrix< DMatTDMatMultExpr<MT1,MT2>, false 
    // \param B The right-hand side multiplication operand.
    // \return void
    //
-   // This function performs the dense matrix-transpose dense matrix multiplication for single
-   // precision matrices based on the according BLAS functionality.
+   // This function performs the dense matrix-transpose dense matrix multiplication based on the
+   // according BLAS functionality.
    */
    template< typename MT3    // Type of the left-hand side target matrix
            , typename MT4    // Type of the left-hand side matrix operand
            , typename MT5 >  // Type of the right-hand side matrix operand
-   static inline typename EnableIf< UseSinglePrecisionKernel<MT3,MT4,MT5> >::Type
+   static inline typename EnableIf< UseBlasKernel<MT3,MT4,MT5> >::Type
       selectBlasSubAssignKernel( MT3& C, const MT4& A, const MT5& B )
    {
-      if( IsTriangular<MT4>::value ) {
-         typename MT3::ResultType tmp( B );
-         trmm( tmp, A, CblasLeft, ( IsLower<MT4>::value )?( CblasLower ):( CblasUpper ), 1.0F );
-         subAssign( C, tmp );
-      }
-      else if( IsTriangular<MT5>::value ) {
-         typename MT3::ResultType tmp( A );
-         trmm( tmp, B, CblasRight, ( IsLower<MT5>::value )?( CblasLower ):( CblasUpper ), 1.0F );
-         subAssign( C, tmp );
-      }
-      else {
-         gemm( C, A, B, -1.0F, 1.0F );
-      }
-   }
-   /*! \endcond */
-#endif
-   //**********************************************************************************************
+      typedef typename MT3::ElementType  ET;
 
-   //**BLAS-based subraction assignment to dense matrices (double precision)***********************
-#if BLAZE_BLAS_MODE
-   /*! \cond BLAZE_INTERNAL */
-   /*!\brief BLAS-based subraction assignment of a dense matrix-transpose dense matrix
-   //        multiplication for double precision matrices (\f$ C-=A*B \f$).
-   // \ingroup dense_matrix
-   //
-   // \param C The target left-hand side dense matrix.
-   // \param A The left-hand side multiplication operand.
-   // \param B The right-hand side multiplication operand.
-   // \return void
-   //
-   // This function performs the dense matrix-transpose dense matrix multiplication for double
-   // precision matrices based on the according BLAS functionality.
-   */
-   template< typename MT3    // Type of the left-hand side target matrix
-           , typename MT4    // Type of the left-hand side matrix operand
-           , typename MT5 >  // Type of the right-hand side matrix operand
-   static inline typename EnableIf< UseDoublePrecisionKernel<MT3,MT4,MT5> >::Type
-      selectBlasSubAssignKernel( MT3& C, const MT4& A, const MT5& B )
-   {
       if( IsTriangular<MT4>::value ) {
          typename MT3::ResultType tmp( B );
-         trmm( tmp, A, CblasLeft, ( IsLower<MT4>::value )?( CblasLower ):( CblasUpper ), 1.0 );
+         trmm( tmp, A, CblasLeft, ( IsLower<MT4>::value )?( CblasLower ):( CblasUpper ), ET(1) );
          subAssign( C, tmp );
       }
       else if( IsTriangular<MT5>::value ) {
          typename MT3::ResultType tmp( A );
-         trmm( tmp, B, CblasRight, ( IsLower<MT5>::value )?( CblasLower ):( CblasUpper ), 1.0 );
+         trmm( tmp, B, CblasRight, ( IsLower<MT5>::value )?( CblasLower ):( CblasUpper ), ET(1) );
          subAssign( C, tmp );
       }
       else {
-         gemm( C, A, B, -1.0, 1.0 );
-      }
-   }
-   /*! \endcond */
-#endif
-   //**********************************************************************************************
-
-   //**BLAS-based subraction assignment to dense matrices (single precision complex)***************
-#if BLAZE_BLAS_MODE
-   /*! \cond BLAZE_INTERNAL */
-   /*!\brief BLAS-based subraction assignment of a dense matrix-transpose dense matrix
-   //        multiplication for single precision matrices (\f$ C-=A*B \f$).
-   // \ingroup dense_matrix
-   //
-   // \param C The target left-hand side dense matrix.
-   // \param A The left-hand side multiplication operand.
-   // \param B The right-hand side multiplication operand.
-   // \return void
-   //
-   // This function performs the dense matrix-transpose dense matrix multiplication for single
-   // precision complex matrices based on the according BLAS functionality.
-   */
-   template< typename MT3    // Type of the left-hand side target matrix
-           , typename MT4    // Type of the left-hand side matrix operand
-           , typename MT5 >  // Type of the right-hand side matrix operand
-   static inline typename EnableIf< UseSinglePrecisionComplexKernel<MT3,MT4,MT5> >::Type
-      selectBlasSubAssignKernel( MT3& C, const MT4& A, const MT5& B )
-   {
-      if( IsTriangular<MT4>::value ) {
-         typename MT3::ResultType tmp( B );
-         trmm( tmp, A, CblasLeft,
-               ( IsLower<MT4>::value )?( CblasLower ):( CblasUpper ),
-               complex<float>( 1.0F ) );
-         subAssign( C, tmp );
-      }
-      else if( IsTriangular<MT5>::value ) {
-         typename MT3::ResultType tmp( A );
-         trmm( tmp, B, CblasRight,
-               ( IsLower<MT5>::value )?( CblasLower ):( CblasUpper ),
-               complex<float>( 1.0F ) );
-         subAssign( C, tmp );
-      }
-      else {
-         gemm( C, A, B, complex<float>( -1.0F ), complex<float>( 1.0F ) );
-      }
-   }
-   /*! \endcond */
-#endif
-   //**********************************************************************************************
-
-   //**BLAS-based subraction assignment to dense matrices (double precision complex)***************
-#if BLAZE_BLAS_MODE
-   /*! \cond BLAZE_INTERNAL */
-   /*!\brief BLAS-based subraction assignment of a dense matrix-transpose dense matrix
-   //        multiplication for double precision matrices (\f$ C-=A*B \f$).
-   // \ingroup dense_matrix
-   //
-   // \param C The target left-hand side dense matrix.
-   // \param A The left-hand side multiplication operand.
-   // \param B The right-hand side multiplication operand.
-   // \return void
-   //
-   // This function performs the dense matrix-transpose dense matrix multiplication for double
-   // precision complex matrices based on the according BLAS functionality.
-   */
-   template< typename MT3    // Type of the left-hand side target matrix
-           , typename MT4    // Type of the left-hand side matrix operand
-           , typename MT5 >  // Type of the right-hand side matrix operand
-   static inline typename EnableIf< UseDoublePrecisionComplexKernel<MT3,MT4,MT5> >::Type
-      selectBlasSubAssignKernel( MT3& C, const MT4& A, const MT5& B )
-   {
-      if( IsTriangular<MT4>::value ) {
-         typename MT3::ResultType tmp( B );
-         trmm( tmp, A, CblasLeft,
-               ( IsLower<MT4>::value )?( CblasLower ):( CblasUpper ),
-               complex<double>( 1.0 ) );
-         subAssign( C, tmp );
-      }
-      else if( IsTriangular<MT5>::value ) {
-         typename MT3::ResultType tmp( A );
-         trmm( tmp, B, CblasRight,
-               ( IsLower<MT5>::value )?( CblasLower ):( CblasUpper ),
-               complex<double>( 1.0 ) );
-         subAssign( C, tmp );
-      }
-      else {
-         gemm( C, A, B, complex<double>( -1.0 ), complex<double>( 1.0 ) );
+         gemm( C, A, B, ET(-1), ET(1) );
       }
    }
    /*! \endcond */
@@ -4581,94 +4144,26 @@ class DMatScalarMultExpr< DMatTDMatMultExpr<MT1,MT2>, ST, false >
    //**********************************************************************************************
 
    //**********************************************************************************************
+   /*! \cond BLAZE_INTERNAL */
    //! Helper structure for the explicit application of the SFINAE principle.
-   /*! In case the data type of all three involved matrices is \a float, the scalar value is
-       not a complex data type and the single precision kernel can be used, the nested \a value
-       will be set to 1, otherwise it will be 0. */
+   /*! In case the types of all three involved matrices and the scalar type are suited for a BLAS
+       kernel, the nested \a value will be set to 1, otherwise it will be 0. */
    template< typename T1, typename T2, typename T3, typename T4 >
-   struct UseSinglePrecisionKernel {
+   struct UseBlasKernel {
       enum { value = BLAZE_BLAS_MODE &&
                      HasMutableDataAccess<T1>::value &&
                      HasConstDataAccess<T2>::value &&
                      HasConstDataAccess<T3>::value &&
                      !IsDiagonal<T2>::value && !IsDiagonal<T3>::value &&
                      T1::vectorizable && T2::vectorizable && T3::vectorizable &&
-                     IsFloat<typename T1::ElementType>::value &&
-                     IsFloat<typename T2::ElementType>::value &&
-                     IsFloat<typename T3::ElementType>::value &&
-                     !IsComplex<T4>::value };
+                     IsBlasCompatible<typename T1::ElementType>::value &&
+                     IsBlasCompatible<typename T2::ElementType>::value &&
+                     IsBlasCompatible<typename T3::ElementType>::value &&
+                     IsSame< typename T1::ElementType, typename T2::ElementType >::value &&
+                     IsSame< typename T1::ElementType, typename T3::ElementType >::value &&
+                     !( IsBuiltin<typename T1::ElementType>::value && IsComplex<T4>::value ) };
    };
-   //**********************************************************************************************
-
-   //**********************************************************************************************
-   //! Helper structure for the explicit application of the SFINAE principle.
-   /*! In case the data type of all three involved matrices is \a double, the scalar value is
-       not a complex data type and the double precision kernel can be used, the nested \a value
-       will be set to 1, otherwise it will be 0. */
-   template< typename T1, typename T2, typename T3, typename T4 >
-   struct UseDoublePrecisionKernel {
-      enum { value = BLAZE_BLAS_MODE &&
-                     HasMutableDataAccess<T1>::value &&
-                     HasConstDataAccess<T2>::value &&
-                     HasConstDataAccess<T3>::value &&
-                     !IsDiagonal<T2>::value && !IsDiagonal<T3>::value &&
-                     T1::vectorizable && T2::vectorizable && T3::vectorizable &&
-                     IsDouble<typename T1::ElementType>::value &&
-                     IsDouble<typename T2::ElementType>::value &&
-                     IsDouble<typename T3::ElementType>::value &&
-                     !IsComplex<T4>::value };
-   };
-   //**********************************************************************************************
-
-   //**********************************************************************************************
-   //! Helper structure for the explicit application of the SFINAE principle.
-   /*! In case the data type of all three involved matrices is \a complex<float> and the single
-       precision complex kernel can be used, the nested \a value will be set to 1, otherwise it
-       will be 0. */
-   template< typename T1, typename T2, typename T3 >
-   struct UseSinglePrecisionComplexKernel {
-      enum { value = BLAZE_BLAS_MODE &&
-                     HasMutableDataAccess<T1>::value &&
-                     HasConstDataAccess<T2>::value &&
-                     HasConstDataAccess<T3>::value &&
-                     !IsDiagonal<T2>::value && !IsDiagonal<T3>::value &&
-                     T1::vectorizable && T2::vectorizable && T3::vectorizable &&
-                     IsComplexFloat<typename T1::ElementType>::value &&
-                     IsComplexFloat<typename T2::ElementType>::value &&
-                     IsComplexFloat<typename T3::ElementType>::value };
-   };
-   //**********************************************************************************************
-
-   //**********************************************************************************************
-   //! Helper structure for the explicit application of the SFINAE principle.
-   /*! In case the data type of all three involved matrices is \a complex<double> and the double
-       precision complex kernel can be used, the nested \a value will be set to 1, otherwise it
-       will be 0. */
-   template< typename T1, typename T2, typename T3 >
-   struct UseDoublePrecisionComplexKernel {
-      enum { value = BLAZE_BLAS_MODE &&
-                     HasMutableDataAccess<T1>::value &&
-                     HasConstDataAccess<T2>::value &&
-                     HasConstDataAccess<T3>::value &&
-                     !IsDiagonal<T2>::value && !IsDiagonal<T3>::value &&
-                     T1::vectorizable && T2::vectorizable && T3::vectorizable &&
-                     IsComplexDouble<typename T1::ElementType>::value &&
-                     IsComplexDouble<typename T2::ElementType>::value &&
-                     IsComplexDouble<typename T3::ElementType>::value };
-   };
-   //**********************************************************************************************
-
-   //**********************************************************************************************
-   //! Helper structure for the explicit application of the SFINAE principle.
-   /*! In case no optimized BLAS kernel can be used, the nested \a value will be set to 1,
-       otherwise it will be 0. */
-   template< typename T1, typename T2, typename T3, typename T4 >
-   struct UseDefaultKernel {
-      enum { value = !BLAZE_BLAS_MODE || ( !UseSinglePrecisionKernel<T1,T2,T3,T4>::value &&
-                                           !UseDoublePrecisionKernel<T1,T2,T3,T4>::value &&
-                                           !UseSinglePrecisionComplexKernel<T1,T2,T3>::value &&
-                                           !UseDoublePrecisionComplexKernel<T1,T2,T3>::value ) };
-   };
+   /*! \endcond */
    //**********************************************************************************************
 
    //**********************************************************************************************
@@ -5974,17 +5469,17 @@ class DMatScalarMultExpr< DMatTDMatMultExpr<MT1,MT2>, ST, false >
            , typename MT4    // Type of the left-hand side matrix operand
            , typename MT5    // Type of the right-hand side matrix operand
            , typename ST2 >  // Type of the scalar value
-   static inline typename EnableIf< UseDefaultKernel<MT3,MT4,MT5,ST2> >::Type
+   static inline typename DisableIf< UseBlasKernel<MT3,MT4,MT5,ST2> >::Type
       selectBlasAssignKernel( MT3& C, const MT4& A, const MT5& B, ST2 scalar )
    {
       selectLargeAssignKernel( C, A, B, scalar );
    }
    //**********************************************************************************************
 
-   //**BLAS-based assignment to dense matrices (single precision)**********************************
+   //**BLAS-based assignment to dense matrices*****************************************************
 #if BLAZE_BLAS_MODE
    /*!\brief BLAS-based assignment of a scaled dense matrix-transpose dense matrix multiplication
-   //        for single precision matrices (\f$ C=s*A*B \f$).
+   //        (\f$ C=s*A*B \f$).
    // \ingroup dense_matrix
    //
    // \param C The target left-hand side dense matrix.
@@ -5993,145 +5488,28 @@ class DMatScalarMultExpr< DMatTDMatMultExpr<MT1,MT2>, ST, false >
    // \param scalar The scaling factor.
    // \return void
    //
-   // This function performs the scaled dense matrix-transpose dense matrix multiplication for
-   // single precision matrices based on the according BLAS functionality.
+   // This function performs the scaled dense matrix-transpose dense matrix multiplication based
+   // on the according BLAS functionality.
    */
    template< typename MT3    // Type of the left-hand side target matrix
            , typename MT4    // Type of the left-hand side matrix operand
            , typename MT5    // Type of the right-hand side matrix operand
            , typename ST2 >  // Type of the scalar value
-   static inline typename EnableIf< UseSinglePrecisionKernel<MT3,MT4,MT5,ST2> >::Type
+   static inline typename EnableIf< UseBlasKernel<MT3,MT4,MT5,ST2> >::Type
       selectBlasAssignKernel( MT3& C, const MT4& A, const MT5& B, ST2 scalar )
    {
-      if( IsTriangular<MT4>::value ) {
-         assign( C, B );
-         trmm( C, A, CblasLeft, ( IsLower<MT4>::value )?( CblasLower ):( CblasUpper ), scalar );
-      }
-      else if( IsTriangular<MT5>::value ) {
-         assign( C, A );
-         trmm( C, B, CblasRight, ( IsLower<MT5>::value )?( CblasLower ):( CblasUpper ), scalar );
-      }
-      else {
-         gemm( C, A, B, scalar, 0.0F );
-      }
-   }
-#endif
-   //**********************************************************************************************
+      typedef typename MT3::ElementType  ET;
 
-   //**BLAS-based assignment to dense matrices (double precision)**********************************
-#if BLAZE_BLAS_MODE
-   /*!\brief BLAS-based assignment of a scaled dense matrix-transpose dense matrix multiplication
-   //        for double precision matrices (\f$ C=s*A*B \f$).
-   // \ingroup dense_matrix
-   //
-   // \param C The target left-hand side dense matrix.
-   // \param A The left-hand side multiplication operand.
-   // \param B The right-hand side multiplication operand.
-   // \param scalar The scaling factor.
-   // \return void
-   //
-   // This function performs the scaled dense matrix-transpose dense matrix multiplication for
-   // double precision matrices based on the according BLAS functionality.
-   */
-   template< typename MT3    // Type of the left-hand side target matrix
-           , typename MT4    // Type of the left-hand side matrix operand
-           , typename MT5    // Type of the right-hand side matrix operand
-           , typename ST2 >  // Type of the scalar value
-   static inline typename EnableIf< UseDoublePrecisionKernel<MT3,MT4,MT5,ST2> >::Type
-      selectBlasAssignKernel( MT3& C, const MT4& A, const MT5& B, ST2 scalar )
-   {
       if( IsTriangular<MT4>::value ) {
          assign( C, B );
-         trmm( C, A, CblasLeft, ( IsLower<MT4>::value )?( CblasLower ):( CblasUpper ), scalar );
+         trmm( C, A, CblasLeft, ( IsLower<MT4>::value )?( CblasLower ):( CblasUpper ), ET(scalar) );
       }
       else if( IsTriangular<MT5>::value ) {
          assign( C, A );
-         trmm( C, B, CblasRight, ( IsLower<MT5>::value )?( CblasLower ):( CblasUpper ), scalar );
+         trmm( C, B, CblasRight, ( IsLower<MT5>::value )?( CblasLower ):( CblasUpper ), ET(scalar) );
       }
       else {
-         gemm( C, A, B, scalar, 0.0 );
-      }
-   }
-#endif
-   //**********************************************************************************************
-
-   //**BLAS-based assignment to dense matrices (single precision complex)**************************
-#if BLAZE_BLAS_MODE
-   /*!\brief BLAS-based assignment of a scaled dense matrix-transpose dense matrix multiplication
-   //        for single precision complex matrices (\f$ C=s*A*B \f$).
-   // \ingroup dense_matrix
-   //
-   // \param C The target left-hand side dense matrix.
-   // \param A The left-hand side multiplication operand.
-   // \param B The right-hand side multiplication operand.
-   // \param scalar The scaling factor.
-   // \return void
-   //
-   // This function performs the scaled dense matrix-transpose dense matrix multiplication for
-   // single precision complex matrices based on the according BLAS functionality.
-   */
-   template< typename MT3    // Type of the left-hand side target matrix
-           , typename MT4    // Type of the left-hand side matrix operand
-           , typename MT5    // Type of the right-hand side matrix operand
-           , typename ST2 >  // Type of the scalar value
-   static inline typename EnableIf< UseSinglePrecisionComplexKernel<MT3,MT4,MT5> >::Type
-      selectBlasAssignKernel( MT3& C, const MT4& A, const MT5& B, ST2 scalar )
-   {
-      if( IsTriangular<MT4>::value ) {
-         assign( C, B );
-         trmm( C, A, CblasLeft,
-               ( IsLower<MT4>::value )?( CblasLower ):( CblasUpper ),
-               complex<float>( scalar ) );
-      }
-      else if( IsTriangular<MT5>::value ) {
-         assign( C, A );
-         trmm( C, B, CblasRight,
-               ( IsLower<MT5>::value )?( CblasLower ):( CblasUpper ),
-               complex<float>( scalar ) );
-      }
-      else {
-         gemm( C, A, B, complex<float>( scalar ), complex<float>( 0.0F ) );
-      }
-   }
-#endif
-   //**********************************************************************************************
-
-   //**BLAS-based assignment to dense matrices (double precision complex)**************************
-#if BLAZE_BLAS_MODE
-   /*!\brief BLAS-based assignment of a scaled dense matrix-transpose dense matrix multiplication
-   //        for double precision complex matrices (\f$ C=s*A*B \f$).
-   // \ingroup dense_matrix
-   //
-   // \param C The target left-hand side dense matrix.
-   // \param A The left-hand side multiplication operand.
-   // \param B The right-hand side multiplication operand.
-   // \param scalar The scaling factor.
-   // \return void
-   //
-   // This function performs the scaled dense matrix-transpose dense matrix multiplication for
-   // double precision complex matrices based on the according BLAS functionality.
-   */
-   template< typename MT3    // Type of the left-hand side target matrix
-           , typename MT4    // Type of the left-hand side matrix operand
-           , typename MT5    // Type of the right-hand side matrix operand
-           , typename ST2 >  // Type of the scalar value
-   static inline typename EnableIf< UseDoublePrecisionComplexKernel<MT3,MT4,MT5> >::Type
-      selectBlasAssignKernel( MT3& C, const MT4& A, const MT5& B, ST2 scalar )
-   {
-      if( IsTriangular<MT4>::value ) {
-         assign( C, B );
-         trmm( C, A, CblasLeft,
-               ( IsLower<MT4>::value )?( CblasLower ):( CblasUpper ),
-               complex<double>( scalar ) );
-      }
-      else if( IsTriangular<MT5>::value ) {
-         assign( C, A );
-         trmm( C, B, CblasRight,
-               ( IsLower<MT5>::value )?( CblasLower ):( CblasUpper ),
-               complex<double>( scalar ) );
-      }
-      else {
-         gemm( C, A, B, complex<double>( scalar ), complex<double>( 0.0 ) );
+         gemm( C, A, B, ET(scalar), ET(0) );
       }
    }
 #endif
@@ -7109,17 +6487,17 @@ class DMatScalarMultExpr< DMatTDMatMultExpr<MT1,MT2>, ST, false >
            , typename MT4    // Type of the left-hand side matrix operand
            , typename MT5    // Type of the right-hand side matrix operand
            , typename ST2 >  // Type of the scalar value
-   static inline typename EnableIf< UseDefaultKernel<MT3,MT4,MT5,ST2> >::Type
+   static inline typename DisableIf< UseBlasKernel<MT3,MT4,MT5,ST2> >::Type
       selectBlasAddAssignKernel( MT3& C, const MT4& A, const MT5& B, ST2 scalar )
    {
       selectLargeAddAssignKernel( C, A, B, scalar );
    }
    //**********************************************************************************************
 
-   //**BLAS-based addition assignment to dense matrices (single precision)*************************
+   //**BLAS-based addition assignment to dense matrices********************************************
 #if BLAZE_BLAS_MODE
    /*!\brief BLAS-based addition assignment of a scaled dense matrix-transpose dense matrix
-   //        multiplication for single precision matrices (\f$ C+=s*A*B \f$).
+   //        multiplication (\f$ C+=s*A*B \f$).
    // \ingroup dense_matrix
    //
    // \param C The target left-hand side dense matrix.
@@ -7128,153 +6506,30 @@ class DMatScalarMultExpr< DMatTDMatMultExpr<MT1,MT2>, ST, false >
    // \param scalar The scaling factor.
    // \return void
    //
-   // This function performs the scaled dense matrix-transpose dense matrix multiplication for
-   // single precision matrices based on the according BLAS functionality.
+   // This function performs the scaled dense matrix-transpose dense matrix multiplication based
+   // on the according BLAS functionality.
    */
    template< typename MT3    // Type of the left-hand side target matrix
            , typename MT4    // Type of the left-hand side matrix operand
            , typename MT5    // Type of the right-hand side matrix operand
            , typename ST2 >  // Type of the scalar value
-   static inline typename EnableIf< UseSinglePrecisionKernel<MT3,MT4,MT5,ST2> >::Type
+   static inline typename EnableIf< UseBlasKernel<MT3,MT4,MT5,ST2> >::Type
       selectBlasAddAssignKernel( MT3& C, const MT4& A, const MT5& B, ST2 scalar )
    {
-      if( IsTriangular<MT4>::value ) {
-         typename MT3::ResultType tmp( B );
-         trmm( tmp, A, CblasLeft, ( IsLower<MT4>::value )?( CblasLower ):( CblasUpper ), scalar );
-         addAssign( C, tmp );
-      }
-      else if( IsTriangular<MT5>::value ) {
-         typename MT3::ResultType tmp( A );
-         trmm( tmp, B, CblasRight, ( IsLower<MT5>::value )?( CblasLower ):( CblasUpper ), scalar );
-         addAssign( C, tmp );
-      }
-      else {
-         gemm( C, A, B, scalar, 1.0F );
-      }
-   }
-#endif
-   //**********************************************************************************************
+      typedef typename MT3::ElementType  ET;
 
-   //**BLAS-based addition assignment to dense matrices (double precision)*************************
-#if BLAZE_BLAS_MODE
-   /*!\brief BLAS-based addition assignment of a scaled dense matrix-transpose dense matrix
-   //        multiplication for double precision matrices (\f$ C+=s*A*B \f$).
-   // \ingroup dense_matrix
-   //
-   // \param C The target left-hand side dense matrix.
-   // \param A The left-hand side multiplication operand.
-   // \param B The right-hand side multiplication operand.
-   // \param scalar The scaling factor
-   // \return void
-   //
-   // This function performs the scaled dense matrix-transpose dense matrix multiplication for
-   // double precision matrices based on the according BLAS functionality.
-   */
-   template< typename MT3    // Type of the left-hand side target matrix
-           , typename MT4    // Type of the left-hand side matrix operand
-           , typename MT5    // Type of the right-hand side matrix operand
-           , typename ST2 >  // Type of the scalar value
-   static inline typename EnableIf< UseDoublePrecisionKernel<MT3,MT4,MT5,ST2> >::Type
-      selectBlasAddAssignKernel( MT3& C, const MT4& A, const MT5& B, ST2 scalar )
-   {
       if( IsTriangular<MT4>::value ) {
          typename MT3::ResultType tmp( B );
-         trmm( tmp, A, CblasLeft, ( IsLower<MT4>::value )?( CblasLower ):( CblasUpper ), scalar );
+         trmm( tmp, A, CblasLeft, ( IsLower<MT4>::value )?( CblasLower ):( CblasUpper ), ET(scalar) );
          addAssign( C, tmp );
       }
       else if( IsTriangular<MT5>::value ) {
          typename MT3::ResultType tmp( A );
-         trmm( tmp, B, CblasRight, ( IsLower<MT5>::value )?( CblasLower ):( CblasUpper ), scalar );
+         trmm( tmp, B, CblasRight, ( IsLower<MT5>::value )?( CblasLower ):( CblasUpper ), ET(scalar) );
          addAssign( C, tmp );
       }
       else {
-         gemm( C, A, B, scalar, 1.0 );
-      }
-   }
-#endif
-   //**********************************************************************************************
-
-   //**BLAS-based addition assignment to dense matrices (single precision complex)*****************
-#if BLAZE_BLAS_MODE
-   /*!\brief BLAS-based addition assignment of a scaled dense matrix-transpose dense matrix
-   //        multiplication for single precision complex matrices (\f$ C+=s*A*B \f$).
-   // \ingroup dense_matrix
-   //
-   // \param C The target left-hand side dense matrix.
-   // \param A The left-hand side multiplication operand.
-   // \param B The right-hand side multiplication operand.
-   // \param scalar The scaling factor
-   // \return void
-   //
-   // This function performs the scaled dense matrix-transpose dense matrix multiplication for
-   // single precision complex matrices based on the according BLAS functionality.
-   */
-   template< typename MT3    // Type of the left-hand side target matrix
-           , typename MT4    // Type of the left-hand side matrix operand
-           , typename MT5    // Type of the right-hand side matrix operand
-           , typename ST2 >  // Type of the scalar value
-   static inline typename EnableIf< UseSinglePrecisionComplexKernel<MT3,MT4,MT5> >::Type
-      selectBlasAddAssignKernel( MT3& C, const MT4& A, const MT5& B, ST2 scalar )
-   {
-      if( IsTriangular<MT4>::value ) {
-         typename MT3::ResultType tmp( B );
-         trmm( tmp, A, CblasLeft,
-               ( IsLower<MT4>::value )?( CblasLower ):( CblasUpper ),
-               complex<float>( scalar ) );
-         addAssign( C, tmp );
-      }
-      else if( IsTriangular<MT5>::value ) {
-         typename MT3::ResultType tmp( A );
-         trmm( tmp, B, CblasRight,
-               ( IsLower<MT5>::value )?( CblasLower ):( CblasUpper ),
-               complex<float>( scalar ) );
-         addAssign( C, tmp );
-      }
-      else {
-         gemm( C, A, B, complex<float>( scalar ), complex<float>( 1.0F ) );
-      }
-   }
-#endif
-   //**********************************************************************************************
-
-   //**BLAS-based addition assignment to dense matrices (double precision complex)*****************
-#if BLAZE_BLAS_MODE
-   /*!\brief BLAS-based addition assignment of a scaled dense matrix-transpose dense matrix
-   //        multiplication for double precision complex matrices (\f$ C+=s*A*B \f$).
-   // \ingroup dense_matrix
-   //
-   // \param C The target left-hand side dense matrix.
-   // \param A The left-hand side multiplication operand.
-   // \param B The right-hand side multiplication operand.
-   // \param scalar The scaling factor
-   // \return void
-   //
-   // This function performs the scaled dense matrix-transpose dense matrix multiplication for
-   // double precision complex matrices based on the according BLAS functionality.
-   */
-   template< typename MT3    // Type of the left-hand side target matrix
-           , typename MT4    // Type of the left-hand side matrix operand
-           , typename MT5    // Type of the right-hand side matrix operand
-           , typename ST2 >  // Type of the scalar value
-   static inline typename EnableIf< UseDoublePrecisionComplexKernel<MT3,MT4,MT5> >::Type
-      selectBlasAddAssignKernel( MT3& C, const MT4& A, const MT5& B, ST2 scalar )
-   {
-      if( IsTriangular<MT4>::value ) {
-         typename MT3::ResultType tmp( B );
-         trmm( tmp, A, CblasLeft,
-               ( IsLower<MT4>::value )?( CblasLower ):( CblasUpper ),
-               complex<double>( scalar ) );
-         addAssign( C, tmp );
-      }
-      else if( IsTriangular<MT5>::value ) {
-         typename MT3::ResultType tmp( A );
-         trmm( tmp, B, CblasRight,
-               ( IsLower<MT5>::value )?( CblasLower ):( CblasUpper ),
-               complex<double>( scalar ) );
-         addAssign( C, tmp );
-      }
-      else {
-         gemm( C, A, B, complex<double>( scalar ), complex<double>( 1.0 ) );
+         gemm( C, A, B, ET(scalar), ET(1) );
       }
    }
 #endif
@@ -8224,17 +7479,17 @@ class DMatScalarMultExpr< DMatTDMatMultExpr<MT1,MT2>, ST, false >
            , typename MT4    // Type of the left-hand side matrix operand
            , typename MT5    // Type of the right-hand side matrix operand
            , typename ST2 >  // Type of the scalar value
-   static inline typename EnableIf< UseDefaultKernel<MT3,MT4,MT5,ST2> >::Type
+   static inline typename DisableIf< UseBlasKernel<MT3,MT4,MT5,ST2> >::Type
       selectBlasSubAssignKernel( MT3& C, const MT4& A, const MT5& B, ST2 scalar )
    {
       selectLargeSubAssignKernel( C, A, B, scalar );
    }
    //**********************************************************************************************
 
-   //**BLAS-based subraction assignment to dense matrices (single precision)***********************
+   //**BLAS-based subraction assignment to dense matrices******************************************
 #if BLAZE_BLAS_MODE
    /*!\brief BLAS-based subraction assignment of a scaled dense matrix-transpose dense matrix
-   //        multiplication for single precision matrices (\f$ C-=s*A*B \f$).
+   //        multiplication (\f$ C-=s*A*B \f$).
    // \ingroup dense_matrix
    //
    // \param C The target left-hand side dense matrix.
@@ -8243,153 +7498,30 @@ class DMatScalarMultExpr< DMatTDMatMultExpr<MT1,MT2>, ST, false >
    // \param scalar The scaling factor.
    // \return void
    //
-   // This function performs the scaled dense matrix-transpose dense matrix multiplication for
-   // single precision matrices based on the according BLAS functionality.
+   // This function performs the scaled dense matrix-transpose dense matrix multiplication based
+   // on the according BLAS functionality.
    */
    template< typename MT3    // Type of the left-hand side target matrix
            , typename MT4    // Type of the left-hand side matrix operand
            , typename MT5    // Type of the right-hand side matrix operand
            , typename ST2 >  // Type of the scalar value
-   static inline typename EnableIf< UseSinglePrecisionKernel<MT3,MT4,MT5,ST2> >::Type
+   static inline typename EnableIf< UseBlasKernel<MT3,MT4,MT5,ST2> >::Type
       selectBlasSubAssignKernel( MT3& C, const MT4& A, const MT5& B, ST2 scalar )
    {
-      if( IsTriangular<MT4>::value ) {
-         typename MT3::ResultType tmp( B );
-         trmm( tmp, A, CblasLeft, ( IsLower<MT4>::value )?( CblasLower ):( CblasUpper ), scalar );
-         subAssign( C, tmp );
-      }
-      else if( IsTriangular<MT5>::value ) {
-         typename MT3::ResultType tmp( A );
-         trmm( tmp, B, CblasRight, ( IsLower<MT5>::value )?( CblasLower ):( CblasUpper ), scalar );
-         subAssign( C, tmp );
-      }
-      else {
-         gemm( C, A, B, -scalar, 1.0F );
-      }
-   }
-#endif
-   //**********************************************************************************************
+      typedef typename MT3::ElementType  ET;
 
-   //**BLAS-based subraction assignment to dense matrices (double precision)***********************
-#if BLAZE_BLAS_MODE
-   /*!\brief BLAS-based subraction assignment of a scaled dense matrix-transpose dense matrix
-   //        multiplication for double precision matrices (\f$ C-=s*A*B \f$).
-   // \ingroup dense_matrix
-   //
-   // \param C The target left-hand side dense matrix.
-   // \param A The left-hand side multiplication operand.
-   // \param B The right-hand side multiplication operand.
-   // \param scalar The scaling factor.
-   // \return void
-   //
-   // This function performs the scaled dense matrix-transpose dense matrix multiplication for
-   // double precision matrices based on the according BLAS functionality.
-   */
-   template< typename MT3    // Type of the left-hand side target matrix
-           , typename MT4    // Type of the left-hand side matrix operand
-           , typename MT5    // Type of the right-hand side matrix operand
-           , typename ST2 >  // Type of the scalar value
-   static inline typename EnableIf< UseDoublePrecisionKernel<MT3,MT4,MT5,ST2> >::Type
-      selectBlasSubAssignKernel( MT3& C, const MT4& A, const MT5& B, ST2 scalar )
-   {
       if( IsTriangular<MT4>::value ) {
          typename MT3::ResultType tmp( B );
-         trmm( tmp, A, CblasLeft, ( IsLower<MT4>::value )?( CblasLower ):( CblasUpper ), scalar );
+         trmm( tmp, A, CblasLeft, ( IsLower<MT4>::value )?( CblasLower ):( CblasUpper ), ET(scalar) );
          subAssign( C, tmp );
       }
       else if( IsTriangular<MT5>::value ) {
          typename MT3::ResultType tmp( A );
-         trmm( tmp, B, CblasRight, ( IsLower<MT5>::value )?( CblasLower ):( CblasUpper ), scalar );
+         trmm( tmp, B, CblasRight, ( IsLower<MT5>::value )?( CblasLower ):( CblasUpper ), ET(scalar) );
          subAssign( C, tmp );
       }
       else {
-         gemm( C, A, B, -scalar, 1.0 );
-      }
-   }
-#endif
-   //**********************************************************************************************
-
-   //**BLAS-based subraction assignment to dense matrices (single precision complex)***************
-#if BLAZE_BLAS_MODE
-   /*!\brief BLAS-based subraction assignment of a scaled dense matrix-transpose dense matrix
-   //        multiplication for single precision complex matrices (\f$ C-=s*A*B \f$).
-   // \ingroup dense_matrix
-   //
-   // \param C The target left-hand side dense matrix.
-   // \param A The left-hand side multiplication operand.
-   // \param B The right-hand side multiplication operand.
-   // \param scalar The scaling factor.
-   // \return void
-   //
-   // This function performs the scaled dense matrix-transpose dense matrix multiplication for
-   // single precision complex matrices based on the according BLAS functionality.
-   */
-   template< typename MT3    // Type of the left-hand side target matrix
-           , typename MT4    // Type of the left-hand side matrix operand
-           , typename MT5    // Type of the right-hand side matrix operand
-           , typename ST2 >  // Type of the scalar value
-   static inline typename EnableIf< UseSinglePrecisionComplexKernel<MT3,MT4,MT5> >::Type
-      selectBlasSubAssignKernel( MT3& C, const MT4& A, const MT5& B, ST2 scalar )
-   {
-      if( IsTriangular<MT4>::value ) {
-         typename MT3::ResultType tmp( B );
-         trmm( tmp, A, CblasLeft,
-               ( IsLower<MT4>::value )?( CblasLower ):( CblasUpper ),
-               complex<float>( scalar ) );
-         subAssign( C, tmp );
-      }
-      else if( IsTriangular<MT5>::value ) {
-         typename MT3::ResultType tmp( A );
-         trmm( tmp, B, CblasRight,
-               ( IsLower<MT5>::value )?( CblasLower ):( CblasUpper ),
-               complex<float>( scalar ) );
-         subAssign( C, tmp );
-      }
-      else {
-         gemm( C, A, B, complex<float>( -scalar ), complex<float>( 1.0F ) );
-      }
-   }
-#endif
-   //**********************************************************************************************
-
-   //**BLAS-based subraction assignment to dense matrices (double precision complex)***************
-#if BLAZE_BLAS_MODE
-   /*!\brief BLAS-based subraction assignment of a scaled dense matrix-transpose dense matrix
-   //        multiplication for double precision complex matrices (\f$ C-=s*A*B \f$).
-   // \ingroup dense_matrix
-   //
-   // \param C The target left-hand side dense matrix.
-   // \param A The left-hand side multiplication operand.
-   // \param B The right-hand side multiplication operand.
-   // \param scalar The scaling factor.
-   // \return void
-   //
-   // This function performs the scaled dense matrix-transpose dense matrix multiplication for
-   // double precision complex matrices based on the according BLAS functionality.
-   */
-   template< typename MT3    // Type of the left-hand side target matrix
-           , typename MT4    // Type of the left-hand side matrix operand
-           , typename MT5    // Type of the right-hand side matrix operand
-           , typename ST2 >  // Type of the scalar value
-   static inline typename EnableIf< UseDoublePrecisionComplexKernel<MT3,MT4,MT5> >::Type
-      selectBlasSubAssignKernel( MT3& C, const MT4& A, const MT5& B, ST2 scalar )
-   {
-      if( IsTriangular<MT4>::value ) {
-         typename MT3::ResultType tmp( B );
-         trmm( tmp, A, CblasLeft,
-               ( IsLower<MT4>::value )?( CblasLower ):( CblasUpper ),
-               complex<double>( scalar ) );
-         subAssign( C, tmp );
-      }
-      else if( IsTriangular<MT5>::value ) {
-         typename MT3::ResultType tmp( A );
-         trmm( tmp, B, CblasRight,
-               ( IsLower<MT5>::value )?( CblasLower ):( CblasUpper ),
-               complex<double>( scalar ) );
-         subAssign( C, tmp );
-      }
-      else {
-         gemm( C, A, B, complex<double>( -scalar ), complex<double>( 1.0 ) );
+         gemm( C, A, B, ET(-scalar), ET(1) );
       }
    }
 #endif
