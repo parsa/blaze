@@ -89,6 +89,7 @@
 #include <blaze/util/logging/FunctionTrace.h>
 #include <blaze/util/SelectType.h>
 #include <blaze/util/Types.h>
+#include <blaze/util/typetraits/IsBuiltin.h>
 #include <blaze/util/typetraits/IsComplex.h>
 #include <blaze/util/typetraits/IsComplexDouble.h>
 #include <blaze/util/typetraits/IsComplexFloat.h>
@@ -145,7 +146,7 @@ class TDVecDMatMultExpr : public DenseVector< TDVecDMatMultExpr<VT,MT>, true >
    //! Helper structure for the explicit application of the SFINAE principle.
    /*! The UseSMPAssign struct is a helper struct for the selection of the parallel evaluation
        strategy. In case either the vector or the matrix operand requires an intermediate
-       evaluation, the nested \value will be set to 1, otherwise it will be 0. */
+       evaluation, the nested \a value will be set to 1, otherwise it will be 0. */
    template< typename T1 >
    struct UseSMPAssign {
       enum { value = ( evaluateVector || evaluateMatrix ) };
@@ -156,98 +157,21 @@ class TDVecDMatMultExpr : public DenseVector< TDVecDMatMultExpr<VT,MT>, true >
    //**********************************************************************************************
    /*! \cond BLAZE_INTERNAL */
    //! Helper structure for the explicit application of the SFINAE principle.
-   /*! In case the data type of the two involved vectors and the matrix is \a float and the
-       single precision kernel can be used, the nested \a value will be set to 1, otherwise it
-       will be 0. */
+   /*! In case the two involved vector types and the matrix type are suited for a BLAS kernel,
+       the nested \a value will be set to 1, otherwise it will be 0. */
    template< typename T1, typename T2, typename T3 >
-   struct UseSinglePrecisionKernel {
+   struct UseBlasKernel {
       enum { value = BLAZE_BLAS_MODE &&
                      HasMutableDataAccess<T1>::value &&
                      HasConstDataAccess<T2>::value &&
                      HasConstDataAccess<T3>::value &&
                      !IsDiagonal<T3>::value &&
                      T1::vectorizable && T2::vectorizable && T3::vectorizable &&
-                     IsFloat<typename T1::ElementType>::value &&
-                     IsFloat<typename T2::ElementType>::value &&
-                     IsFloat<typename T3::ElementType>::value };
-   };
-   /*! \endcond */
-   //**********************************************************************************************
-
-   //**********************************************************************************************
-   /*! \cond BLAZE_INTERNAL */
-   //! Helper structure for the explicit application of the SFINAE principle.
-   /*! In case the data type of the two involved vectors and the matrix is \a double and the
-       double precision kernel can be used, the nested \a value will be set to 1, otherwise it
-       will be 0. */
-   template< typename T1, typename T2, typename T3 >
-   struct UseDoublePrecisionKernel {
-      enum { value = BLAZE_BLAS_MODE &&
-                     HasMutableDataAccess<T1>::value &&
-                     HasConstDataAccess<T2>::value &&
-                     HasConstDataAccess<T3>::value &&
-                     !IsDiagonal<T3>::value &&
-                     T1::vectorizable && T2::vectorizable && T3::vectorizable &&
-                     IsDouble<typename T1::ElementType>::value &&
-                     IsDouble<typename T2::ElementType>::value &&
-                     IsDouble<typename T3::ElementType>::value };
-   };
-   /*! \endcond */
-   //**********************************************************************************************
-
-   //**********************************************************************************************
-   /*! \cond BLAZE_INTERNAL */
-   //! Helper structure for the explicit application of the SFINAE principle.
-   /*! In case the data type of the two involved vectors and the matrix is \a complex<float>
-       and the single precision complex kernel can be used, the nested \a value will be set
-       to 1, otherwise it will be 0. */
-   template< typename T1, typename T2, typename T3 >
-   struct UseSinglePrecisionComplexKernel {
-      enum { value = BLAZE_BLAS_MODE &&
-                     HasMutableDataAccess<T1>::value &&
-                     HasConstDataAccess<T2>::value &&
-                     HasConstDataAccess<T3>::value &&
-                     !IsDiagonal<T3>::value &&
-                     T1::vectorizable && T2::vectorizable && T3::vectorizable &&
-                     IsComplexFloat<typename T1::ElementType>::value &&
-                     IsComplexFloat<typename T2::ElementType>::value &&
-                     IsComplexFloat<typename T3::ElementType>::value };
-   };
-   /*! \endcond */
-   //**********************************************************************************************
-
-   //**********************************************************************************************
-   /*! \cond BLAZE_INTERNAL */
-   //! Helper structure for the explicit application of the SFINAE principle.
-   /*! In case the data type of the two involved vectors and the matrix is \a complex<double>
-       and the double precision complex kernel can be used, the nested \a value will be set
-       to 1, otherwise it will be 0. */
-   template< typename T1, typename T2, typename T3 >
-   struct UseDoublePrecisionComplexKernel {
-      enum { value = BLAZE_BLAS_MODE &&
-                     HasMutableDataAccess<T1>::value &&
-                     HasConstDataAccess<T2>::value &&
-                     HasConstDataAccess<T3>::value &&
-                     !IsDiagonal<T3>::value &&
-                     T1::vectorizable && T2::vectorizable && T3::vectorizable &&
-                     IsComplexDouble<typename T1::ElementType>::value &&
-                     IsComplexDouble<typename T2::ElementType>::value &&
-                     IsComplexDouble<typename T3::ElementType>::value };
-   };
-   /*! \endcond */
-   //**********************************************************************************************
-
-   //**********************************************************************************************
-   /*! \cond BLAZE_INTERNAL */
-   //! Helper structure for the explicit application of the SFINAE principle.
-   /*! In case no optimized BLAS kernel can be used, the nested \a value will be set to 1,
-       otherwise it will be 0. */
-   template< typename T1, typename T2, typename T3 >
-   struct UseDefaultKernel {
-      enum { value = !BLAZE_BLAS_MODE || ( !UseSinglePrecisionKernel<T1,T2,T3>::value &&
-                                           !UseDoublePrecisionKernel<T1,T2,T3>::value &&
-                                           !UseSinglePrecisionComplexKernel<T1,T2,T3>::value &&
-                                           !UseDoublePrecisionComplexKernel<T1,T2,T3>::value ) };
+                     IsBlasCompatible<typename T1::ElementType>::value &&
+                     IsBlasCompatible<typename T2::ElementType>::value &&
+                     IsBlasCompatible<typename T3::ElementType>::value &&
+                     IsSame< typename T1::ElementType, typename T2::ElementType >::value &&
+                     IsSame< typename T1::ElementType, typename T3::ElementType >::value };
    };
    /*! \endcond */
    //**********************************************************************************************
@@ -256,7 +180,7 @@ class TDVecDMatMultExpr : public DenseVector< TDVecDMatMultExpr<VT,MT>, true >
    /*! \cond BLAZE_INTERNAL */
    //! Helper structure for the explicit application of the SFINAE principle.
    /*! In case the two involved vector types and the matrix type are suited for a vectorized
-       computation of the vector/matrix multiplication, the nested \value will be set to 1,
+       computation of the vector/matrix multiplication, the nested \a value will be set to 1,
        otherwise it will be 0. */
    template< typename T1, typename T2, typename T3 >
    struct UseVectorizedDefaultKernel {
@@ -982,7 +906,7 @@ class TDVecDMatMultExpr : public DenseVector< TDVecDMatMultExpr<VT,MT>, true >
    template< typename VT1    // Type of the left-hand side target vector
            , typename VT2    // Type of the left-hand side vector operand
            , typename MT1 >  // Type of the right-hand side matrix operand
-   static inline typename EnableIf< UseDefaultKernel<VT1,VT2,MT1> >::Type
+   static inline typename DisableIf< UseBlasKernel<VT1,VT2,MT1> >::Type
       selectBlasAssignKernel( VT1& y, const VT2& x, const MT1& A )
    {
       selectLargeAssignKernel( y, x, A );
@@ -990,11 +914,11 @@ class TDVecDMatMultExpr : public DenseVector< TDVecDMatMultExpr<VT,MT>, true >
    /*! \endcond */
    //**********************************************************************************************
 
-   //**BLAS-based assignment to dense vectors (single precision)***********************************
+   //**BLAS-based assignment to dense vectors******************************************************
 #if BLAZE_BLAS_MODE
    /*! \cond BLAZE_INTERNAL */
-   /*!\brief BLAS-based assignment of a transpose dense vector-dense matrix multiplication for
-   //        single precision operands (\f$ \vec{y}^T=\vec{x}^T*A \f$).
+   /*!\brief BLAS-based assignment of a transpose dense vector-dense matrix multiplication
+   //        (\f$ \vec{y}^T=\vec{x}^T*A \f$).
    // \ingroup dense_vector
    //
    // \param y The target left-hand side dense vector.
@@ -1002,120 +926,23 @@ class TDVecDMatMultExpr : public DenseVector< TDVecDMatMultExpr<VT,MT>, true >
    // \param A The right-hand side dense matrix operand.
    // \return void
    //
-   // This function performs the transpose dense vector-dense matrix multiplication for single
-   // precision operands based on the according BLAS functionality.
+   // This function performs the transpose dense vector-dense matrix multiplication based on the
+   // according BLAS functionality.
    */
    template< typename VT1    // Type of the left-hand side target vector
            , typename VT2    // Type of the left-hand side vector operand
            , typename MT1 >  // Type of the right-hand side matrix operand
-   static inline typename EnableIf< UseSinglePrecisionKernel<VT1,VT2,MT1> >::Type
+   static inline typename EnableIf< UseBlasKernel<VT1,VT2,MT1> >::Type
       selectBlasAssignKernel( VT1& y, const VT2& x, const MT1& A )
    {
-      if( IsTriangular<MT1>::value ) {
-         assign( y, x );
-         trmv( y, A, ( IsLower<MT1>::value )?( CblasLower ):( CblasUpper ) );
-      }
-      else {
-         gemv( y, x, A, 1.0F, 0.0F );
-      }
-   }
-   /*! \endcond */
-#endif
-   //**********************************************************************************************
+      typedef typename VT1::ElementType  ET;
 
-   //**BLAS-based assignment to dense vectors (double precision)***********************************
-#if BLAZE_BLAS_MODE
-   /*! \cond BLAZE_INTERNAL */
-   /*!\brief BLAS-based assignment of a transpose dense vector-dense matrix multiplication for
-   //        double precision operands (\f$ \vec{y}^T=\vec{x}^T*A \f$).
-   // \ingroup dense_vector
-   //
-   // \param y The target left-hand side dense vector.
-   // \param x The left-hand side dense vector operand.
-   // \param A The right-hand side dense matrix operand.
-   // \return void
-   //
-   // This function performs the transpose dense vector-dense matrix multiplication for double
-   // precision operands based on the according BLAS functionality.
-   */
-   template< typename VT1    // Type of the left-hand side target vector
-           , typename VT2    // Type of the left-hand side vector operand
-           , typename MT1 >  // Type of the right-hand side matrix operand
-   static inline typename EnableIf< UseDoublePrecisionKernel<VT1,VT2,MT1> >::Type
-      selectBlasAssignKernel( VT1& y, const VT2& x, const MT1& A )
-   {
       if( IsTriangular<MT1>::value ) {
          assign( y, x );
          trmv( y, A, ( IsLower<MT1>::value )?( CblasLower ):( CblasUpper ) );
       }
       else {
-         gemv( y, x, A, 1.0, 0.0 );
-      }
-   }
-   /*! \endcond */
-#endif
-   //**********************************************************************************************
-
-   //**BLAS-based assignment to dense vectors (single precision complex)***************************
-#if BLAZE_BLAS_MODE
-   /*! \cond BLAZE_INTERNAL */
-   /*!\brief BLAS-based assignment of a transpose dense vector-dense matrix multiplication for
-   //        single precision complex operands (\f$ \vec{y}^T=\vec{x}^T*A \f$).
-   // \ingroup dense_vector
-   //
-   // \param y The target left-hand side dense vector.
-   // \param x The left-hand side dense vector operand.
-   // \param A The right-hand side dense matrix operand.
-   // \return void
-   //
-   // This function performs the transpose dense vector-dense matrix multiplication for single
-   // precision complex operands based on the according BLAS functionality.
-   */
-   template< typename VT1    // Type of the left-hand side target vector
-           , typename VT2    // Type of the left-hand side vector operand
-           , typename MT1 >  // Type of the right-hand side matrix operand
-   static inline typename EnableIf< UseSinglePrecisionComplexKernel<VT1,VT2,MT1> >::Type
-      selectBlasAssignKernel( VT1& y, const VT2& x, const MT1& A )
-   {
-      if( IsTriangular<MT1>::value ) {
-         assign( y, x );
-         trmv( y, A, ( IsLower<MT1>::value )?( CblasLower ):( CblasUpper ) );
-      }
-      else {
-         gemv( y, x, A, complex<float>( 1.0F ), complex<float>( 0.0F ) );
-      }
-   }
-   /*! \endcond */
-#endif
-   //**********************************************************************************************
-
-   //**BLAS-based assignment to dense vectors (double precision complex)***************************
-#if BLAZE_BLAS_MODE
-   /*! \cond BLAZE_INTERNAL */
-   /*!\brief BLAS-based assignment of a transpose dense vector-dense matrix multiplication for
-   //        double precision complex operands (\f$ \vec{y}^T=\vec{x}^T*A \f$).
-   // \ingroup dense_vector
-   //
-   // \param y The target left-hand side dense vector.
-   // \param x The left-hand side dense vector operand.
-   // \param A The right-hand side dense matrix operand.
-   // \return void
-   //
-   // This function performs the transpose dense vector-dense matrix multiplication for double
-   // precision complex operands based on the according BLAS functionality.
-   */
-   template< typename VT1    // Type of the left-hand side target vector
-           , typename VT2    // Type of the left-hand side vector operand
-           , typename MT1 >  // Type of the right-hand side matrix operand
-   static inline typename EnableIf< UseDoublePrecisionComplexKernel<VT1,VT2,MT1> >::Type
-      selectBlasAssignKernel( VT1& y, const VT2& x, const MT1& A )
-   {
-      if( IsTriangular<MT1>::value ) {
-         assign( y, x );
-         trmv( y, A, ( IsLower<MT1>::value )?( CblasLower ):( CblasUpper ) );
-      }
-      else {
-         gemv( y, x, A, complex<double>( 1.0 ), complex<double>( 0.0 ) );
+         gemv( y, x, A, ET(1), ET(0) );
       }
    }
    /*! \endcond */
@@ -1677,7 +1504,7 @@ class TDVecDMatMultExpr : public DenseVector< TDVecDMatMultExpr<VT,MT>, true >
    template< typename VT1    // Type of the left-hand side target vector
            , typename VT2    // Type of the left-hand side vector operand
            , typename MT1 >  // Type of the right-hand side matrix operand
-   static inline typename EnableIf< UseDefaultKernel<VT1,VT2,MT1> >::Type
+   static inline typename DisableIf< UseBlasKernel<VT1,VT2,MT1> >::Type
       selectBlasAddAssignKernel( VT1& y, const VT2& x, const MT1& A )
    {
       selectLargeAddAssignKernel( y, x, A );
@@ -1685,11 +1512,11 @@ class TDVecDMatMultExpr : public DenseVector< TDVecDMatMultExpr<VT,MT>, true >
    /*! \endcond */
    //**********************************************************************************************
 
-   //**BLAS-based addition assignment to dense vectors (single precision)**************************
+   //**BLAS-based addition assignment to dense vectors*********************************************
 #if BLAZE_BLAS_MODE
    /*! \cond BLAZE_INTERNAL */
    /*!\brief BLAS-based addition assignment of a transpose dense vector-dense matrix multiplication
-   //        for single precision operands (\f$ \vec{y}^T+=\vec{x}^T*A \f$).
+   //        (\f$ \vec{y}^T+=\vec{x}^T*A \f$).
    // \ingroup dense_vector
    //
    // \param y The target left-hand side dense vector.
@@ -1697,124 +1524,24 @@ class TDVecDMatMultExpr : public DenseVector< TDVecDMatMultExpr<VT,MT>, true >
    // \param A The right-hand side dense matrix operand.
    // \return void
    //
-   // This function performs the transpose dense vector-dense matrix multiplication for single
-   // precision operands based on the according BLAS functionality.
+   // This function performs the transpose dense vector-dense matrix multiplication based on the
+   // according BLAS functionality.
    */
    template< typename VT1    // Type of the left-hand side target vector
            , typename VT2    // Type of the left-hand side vector operand
            , typename MT1 >  // Type of the right-hand side matrix operand
-   static inline typename EnableIf< UseSinglePrecisionKernel<VT1,VT2,MT1> >::Type
+   static inline typename EnableIf< UseBlasKernel<VT1,VT2,MT1> >::Type
       selectBlasAddAssignKernel( VT1& y, const VT2& x, const MT1& A )
    {
-      if( IsTriangular<MT1>::value ) {
-         typename VT1::ResultType tmp( x );
-         trmv( tmp, A, ( IsLower<MT1>::value )?( CblasLower ):( CblasUpper ) );
-         addAssign( y, tmp );
-      }
-      else {
-         gemv( y, x, A, 1.0F, 1.0F );
-      }
-   }
-   /*! \endcond */
-#endif
-   //**********************************************************************************************
+      typedef typename VT1::ElementType  ET;
 
-   //**BLAS-based addition assignment to dense vectors (double precision)**************************
-#if BLAZE_BLAS_MODE
-   /*! \cond BLAZE_INTERNAL */
-   /*!\brief BLAS-based addition assignment of a transpose dense vector-dense matrix multiplication
-   //        for double precision operands (\f$ \vec{y}^T+=\vec{x}^T*A \f$).
-   // \ingroup dense_vector
-   //
-   // \param y The target left-hand side dense vector.
-   // \param x The left-hand side dense vector operand.
-   // \param A The right-hand side dense matrix operand.
-   // \return void
-   //
-   // This function performs the transpose dense vector-dense matrix multiplication for double
-   // precision operands based on the according BLAS functionality.
-   */
-   template< typename VT1    // Type of the left-hand side target vector
-           , typename VT2    // Type of the left-hand side vector operand
-           , typename MT1 >  // Type of the right-hand side matrix operand
-   static inline typename EnableIf< UseDoublePrecisionKernel<VT1,VT2,MT1> >::Type
-      selectBlasAddAssignKernel( VT1& y, const VT2& x, const MT1& A )
-   {
       if( IsTriangular<MT1>::value ) {
          typename VT1::ResultType tmp( x );
          trmv( tmp, A, ( IsLower<MT1>::value )?( CblasLower ):( CblasUpper ) );
          addAssign( y, tmp );
       }
       else {
-         gemv( y, x, A, 1.0, 1.0 );
-      }
-   }
-   /*! \endcond */
-#endif
-   //**********************************************************************************************
-
-   //**BLAS-based addition assignment to dense vectors (single precision complex)******************
-#if BLAZE_BLAS_MODE
-   /*! \cond BLAZE_INTERNAL */
-   /*!\brief BLAS-based addition assignment of a transpose dense vector-dense matrix multiplication
-   //        for single precision complex operands (\f$ \vec{y}^T+=\vec{x}^T*A \f$).
-   // \ingroup dense_vector
-   //
-   // \param y The target left-hand side dense vector.
-   // \param x The left-hand side dense vector operand.
-   // \param A The right-hand side dense matrix operand.
-   // \return void
-   //
-   // This function performs the transpose dense vector-dense matrix multiplication for single
-   // precision complex operands based on the according BLAS functionality.
-   */
-   template< typename VT1    // Type of the left-hand side target vector
-           , typename VT2    // Type of the left-hand side vector operand
-           , typename MT1 >  // Type of the right-hand side matrix operand
-   static inline typename EnableIf< UseSinglePrecisionComplexKernel<VT1,VT2,MT1> >::Type
-      selectBlasAddAssignKernel( VT1& y, const VT2& x, const MT1& A )
-   {
-      if( IsTriangular<MT1>::value ) {
-         typename VT1::ResultType tmp( x );
-         trmv( tmp, A, ( IsLower<MT1>::value )?( CblasLower ):( CblasUpper ) );
-         addAssign( y, tmp );
-      }
-      else {
-         gemv( y, x, A, complex<float>( 1.0F ), complex<float>( 1.0F ) );
-      }
-   }
-   /*! \endcond */
-#endif
-   //**********************************************************************************************
-
-   //**BLAS-based addition assignment to dense vectors (double precision complex)******************
-#if BLAZE_BLAS_MODE
-   /*! \cond BLAZE_INTERNAL */
-   /*!\brief BLAS-based addition assignment of a transpose dense vector-dense matrix multiplication
-   //        for double precision complex operands (\f$ \vec{y}^T+=\vec{x}^T*A \f$).
-   // \ingroup dense_vector
-   //
-   // \param y The target left-hand side dense vector.
-   // \param x The left-hand side dense vector operand.
-   // \param A The right-hand side dense matrix operand.
-   // \return void
-   //
-   // This function performs the transpose dense vector-dense matrix multiplication for double
-   // precision complex operands based on the according BLAS functionality.
-   */
-   template< typename VT1    // Type of the left-hand side target vector
-           , typename VT2    // Type of the left-hand side vector operand
-           , typename MT1 >  // Type of the right-hand side matrix operand
-   static inline typename EnableIf< UseDoublePrecisionComplexKernel<VT1,VT2,MT1> >::Type
-      selectBlasAddAssignKernel( VT1& y, const VT2& x, const MT1& A )
-   {
-      if( IsTriangular<MT1>::value ) {
-         typename VT1::ResultType tmp( x );
-         trmv( tmp, A, ( IsLower<MT1>::value )?( CblasLower ):( CblasUpper ) );
-         addAssign( y, tmp );
-      }
-      else {
-         gemv( y, x, A, complex<double>( 1.0 ), complex<double>( 1.0 ) );
+         gemv( y, x, A, ET(1), ET(1) );
       }
    }
    /*! \endcond */
@@ -2352,7 +2079,7 @@ class TDVecDMatMultExpr : public DenseVector< TDVecDMatMultExpr<VT,MT>, true >
    template< typename VT1    // Type of the left-hand side target vector
            , typename VT2    // Type of the left-hand side vector operand
            , typename MT1 >  // Type of the right-hand side matrix operand
-   static inline typename EnableIf< UseDefaultKernel<VT1,VT2,MT1> >::Type
+   static inline typename DisableIf< UseBlasKernel<VT1,VT2,MT1> >::Type
       selectBlasSubAssignKernel( VT1& y, const VT2& x, const MT1& A )
    {
       selectLargeSubAssignKernel( y, x, A );
@@ -2360,11 +2087,11 @@ class TDVecDMatMultExpr : public DenseVector< TDVecDMatMultExpr<VT,MT>, true >
    /*! \endcond */
    //**********************************************************************************************
 
-   //**BLAS-based subtraction assignment to dense vectors (single precision)***********************
+   //**BLAS-based subtraction assignment to dense vectors******************************************
 #if BLAZE_BLAS_MODE
    /*! \cond BLAZE_INTERNAL */
    /*!\brief BLAS-based subtraction assignment of a transpose dense vector-dense matrix
-   //        multiplication for single precision operands (\f$ \vec{y}^T-=\vec{x}^T*A \f$).
+   //        multiplication (\f$ \vec{y}^T-=\vec{x}^T*A \f$).
    // \ingroup dense_vector
    //
    // \param y The target left-hand side dense vector.
@@ -2372,124 +2099,24 @@ class TDVecDMatMultExpr : public DenseVector< TDVecDMatMultExpr<VT,MT>, true >
    // \param A The right-hand side dense matrix operand.
    // \return void
    //
-   // This function performs the transpose dense vector-dense matrix multiplication for single
-   // precision operands based on the according BLAS functionality.
+   // This function performs the transpose dense vector-dense matrix multiplication based on the
+   // according BLAS functionality.
    */
    template< typename VT1    // Type of the left-hand side target vector
            , typename VT2    // Type of the left-hand side vector operand
            , typename MT1 >  // Type of the right-hand side matrix operand
-   static inline typename EnableIf< UseSinglePrecisionKernel<VT1,VT2,MT1> >::Type
+   static inline typename EnableIf< UseBlasKernel<VT1,VT2,MT1> >::Type
       selectBlasSubAssignKernel( VT1& y, const VT2& x, const MT1& A )
    {
-      if( IsTriangular<MT1>::value ) {
-         typename VT1::ResultType tmp( x );
-         trmv( tmp, A, ( IsLower<MT1>::value )?( CblasLower ):( CblasUpper ) );
-         subAssign( y, tmp );
-      }
-      else {
-         gemv( y, x, A, -1.0F, 1.0F );
-      }
-   }
-   /*! \endcond */
-#endif
-   //**********************************************************************************************
+      typedef typename VT1::ElementType  ET;
 
-   //**BLAS-based subtraction assignment to dense vectors (double precision)***********************
-#if BLAZE_BLAS_MODE
-   /*! \cond BLAZE_INTERNAL */
-   /*!\brief BLAS-based subtraction assignment of a transpose dense vector-dense matrix
-   //        multiplication for double precision operands (\f$ \vec{y}^T-=\vec{x}^T*A \f$).
-   // \ingroup dense_vector
-   //
-   // \param y The target left-hand side dense vector.
-   // \param x The left-hand side dense vector operand.
-   // \param A The right-hand side dense matrix operand.
-   // \return void
-   //
-   // This function performs the transpose dense vector-dense matrix multiplication for double
-   // precision operands based on the according BLAS functionality.
-   */
-   template< typename VT1    // Type of the left-hand side target vector
-           , typename VT2    // Type of the left-hand side vector operand
-           , typename MT1 >  // Type of the right-hand side matrix operand
-   static inline typename EnableIf< UseDoublePrecisionKernel<VT1,VT2,MT1> >::Type
-      selectBlasSubAssignKernel( VT1& y, const VT2& x, const MT1& A )
-   {
       if( IsTriangular<MT1>::value ) {
          typename VT1::ResultType tmp( x );
          trmv( tmp, A, ( IsLower<MT1>::value )?( CblasLower ):( CblasUpper ) );
          subAssign( y, tmp );
       }
       else {
-         gemv( y, x, A, -1.0, 1.0 );
-      }
-   }
-   /*! \endcond */
-#endif
-   //**********************************************************************************************
-
-   //**BLAS-based subtraction assignment to dense vectors (single precision complex)***************
-#if BLAZE_BLAS_MODE
-   /*! \cond BLAZE_INTERNAL */
-   /*!\brief BLAS-based subtraction assignment of a transpose dense vector-dense matrix
-   //        multiplication for single precision complex operands (\f$ \vec{y}^T-=\vec{x}^T*A \f$).
-   // \ingroup dense_vector
-   //
-   // \param y The target left-hand side dense vector.
-   // \param x The left-hand side dense vector operand.
-   // \param A The right-hand side dense matrix operand.
-   // \return void
-   //
-   // This function performs the transpose dense vector-dense matrix multiplication for single
-   // precision complex operands based on the according BLAS functionality.
-   */
-   template< typename VT1    // Type of the left-hand side target vector
-           , typename VT2    // Type of the left-hand side vector operand
-           , typename MT1 >  // Type of the right-hand side matrix operand
-   static inline typename EnableIf< UseSinglePrecisionComplexKernel<VT1,VT2,MT1> >::Type
-      selectBlasSubAssignKernel( VT1& y, const VT2& x, const MT1& A )
-   {
-      if( IsTriangular<MT1>::value ) {
-         typename VT1::ResultType tmp( x );
-         trmv( tmp, A, ( IsLower<MT1>::value )?( CblasLower ):( CblasUpper ) );
-         subAssign( y, tmp );
-      }
-      else {
-         gemv( y, x, A, complex<float>( -1.0F ), complex<float>( 1.0F ) );
-      }
-   }
-   /*! \endcond */
-#endif
-   //**********************************************************************************************
-
-   //**BLAS-based subtraction assignment to dense vectors (double precision complex)***************
-#if BLAZE_BLAS_MODE
-   /*! \cond BLAZE_INTERNAL */
-   /*!\brief BLAS-based subtraction assignment of a transpose dense vector-dense matrix
-   //        multiplication for double precision complex operands (\f$ \vec{y}^T-=\vec{x}^T*A \f$).
-   // \ingroup dense_vector
-   //
-   // \param y The target left-hand side dense vector.
-   // \param x The left-hand side dense vector operand.
-   // \param A The right-hand side dense matrix operand.
-   // \return void
-   //
-   // This function performs the transpose dense vector-dense matrix multiplication for double
-   // precision complex operands based on the according BLAS functionality.
-   */
-   template< typename VT1    // Type of the left-hand side target vector
-           , typename VT2    // Type of the left-hand side vector operand
-           , typename MT1 >  // Type of the right-hand side matrix operand
-   static inline typename EnableIf< UseDoublePrecisionComplexKernel<VT1,VT2,MT1> >::Type
-      selectBlasSubAssignKernel( VT1& y, const VT2& x, const MT1& A )
-   {
-      if( IsTriangular<MT1>::value ) {
-         typename VT1::ResultType tmp( x );
-         trmv( tmp, A, ( IsLower<MT1>::value )?( CblasLower ):( CblasUpper ) );
-         subAssign( y, tmp );
-      }
-      else {
-         gemv( y, x, A, complex<double>( -1.0 ), complex<double>( 1.0 ) );
+         gemv( y, x, A, ET(-1), ET(1) );
       }
    }
    /*! \endcond */
@@ -2800,7 +2427,7 @@ class DVecScalarMultExpr< TDVecDMatMultExpr<VT,MT>, ST, true >
    //! Helper structure for the explicit application of the SFINAE principle.
    /*! The UseSMPAssign struct is a helper struct for the selection of the parallel evaluation
        strategy. In case either the vector or the matrix operand requires an intermediate
-       evaluation, the nested \value will be set to 1, otherwise it will be 0. */
+       evaluation, the nested \a value will be set to 1, otherwise it will be 0. */
    template< typename T1 >
    struct UseSMPAssign {
       enum { value = ( evaluateVector || evaluateMatrix ) };
@@ -2808,101 +2435,33 @@ class DVecScalarMultExpr< TDVecDMatMultExpr<VT,MT>, ST, true >
    //**********************************************************************************************
 
    //**********************************************************************************************
+   /*! \cond BLAZE_INTERNAL */
    //! Helper structure for the explicit application of the SFINAE principle.
-   /*! In case the data type of the two involved vectors and the matrix is \a float, the scalar
-       value is not a complex data type, and the single precision kernel can be used, the nested
-       \a value will be set to 1, otherwise it will be 0. */
+   /*! In case the two involved vector types, the matrix type, and the scalar type are suited
+       for a BLAS kernel, the nested \a value will be set to 1, otherwise it will be 0. */
    template< typename T1, typename T2, typename T3, typename T4 >
-   struct UseSinglePrecisionKernel {
+   struct UseBlasKernel {
       enum { value = BLAZE_BLAS_MODE &&
                      HasMutableDataAccess<T1>::value &&
                      HasConstDataAccess<T2>::value &&
                      HasConstDataAccess<T3>::value &&
                      !IsDiagonal<T3>::value &&
                      T1::vectorizable && T2::vectorizable && T3::vectorizable &&
-                     IsFloat<typename T1::ElementType>::value &&
-                     IsFloat<typename T2::ElementType>::value &&
-                     IsFloat<typename T3::ElementType>::value &&
-                     !IsComplex<T4>::value };
+                     IsBlasCompatible<typename T1::ElementType>::value &&
+                     IsBlasCompatible<typename T2::ElementType>::value &&
+                     IsBlasCompatible<typename T3::ElementType>::value &&
+                     IsSame< typename T1::ElementType, typename T2::ElementType >::value &&
+                     IsSame< typename T1::ElementType, typename T3::ElementType >::value &&
+                     !( IsBuiltin<typename T1::ElementType>::value && IsComplex<T4>::value ) };
    };
-   //**********************************************************************************************
-
-   //**********************************************************************************************
-   //! Helper structure for the explicit application of the SFINAE principle.
-   /*! In case the data type of the two involved vectors and the matrix is \a double, the scalar
-       value is not a complex data type and the double precision kernel can be used, the nested
-       \a value will be set to 1, otherwise it will be 0. */
-   template< typename T1, typename T2, typename T3, typename T4 >
-   struct UseDoublePrecisionKernel {
-      enum { value = BLAZE_BLAS_MODE &&
-                     HasMutableDataAccess<T1>::value &&
-                     HasConstDataAccess<T2>::value &&
-                     HasConstDataAccess<T3>::value &&
-                     !IsDiagonal<T3>::value &&
-                     T1::vectorizable && T2::vectorizable && T3::vectorizable &&
-                     IsDouble<typename T1::ElementType>::value &&
-                     IsDouble<typename T2::ElementType>::value &&
-                     IsDouble<typename T3::ElementType>::value &&
-                     !IsComplex<T4>::value };
-   };
-   //**********************************************************************************************
-
-   //**********************************************************************************************
-   //! Helper structure for the explicit application of the SFINAE principle.
-   /*! In case the data type of the two involved vectors and the matrix is \a complex<float>
-       and the single precision complex kernel can be used, the nested \a value will be set to
-       1, otherwise it will be 0. */
-   template< typename T1, typename T2, typename T3 >
-   struct UseSinglePrecisionComplexKernel {
-      enum { value = BLAZE_BLAS_MODE &&
-                     HasMutableDataAccess<T1>::value &&
-                     HasConstDataAccess<T2>::value &&
-                     HasConstDataAccess<T3>::value &&
-                     !IsDiagonal<T3>::value &&
-                     T1::vectorizable && T2::vectorizable && T3::vectorizable &&
-                     IsComplexFloat<typename T1::ElementType>::value &&
-                     IsComplexFloat<typename T2::ElementType>::value &&
-                     IsComplexFloat<typename T3::ElementType>::value };
-   };
-   //**********************************************************************************************
-
-   //**********************************************************************************************
-   //! Helper structure for the explicit application of the SFINAE principle.
-   /*! In case the data type of the two involved vectors and the matrix is \a complex<double>
-       and the double precision complex kernel can be used, the nested \a value will be set to
-       1, otherwise it will be 0. */
-   template< typename T1, typename T2, typename T3 >
-   struct UseDoublePrecisionComplexKernel {
-      enum { value = BLAZE_BLAS_MODE &&
-                     HasMutableDataAccess<T1>::value &&
-                     HasConstDataAccess<T2>::value &&
-                     HasConstDataAccess<T3>::value &&
-                     !IsDiagonal<T3>::value &&
-                     T1::vectorizable && T2::vectorizable && T3::vectorizable &&
-                     IsComplexDouble<typename T1::ElementType>::value &&
-                     IsComplexDouble<typename T2::ElementType>::value &&
-                     IsComplexDouble<typename T3::ElementType>::value };
-   };
-   //**********************************************************************************************
-
-   //**********************************************************************************************
-   //! Helper structure for the explicit application of the SFINAE principle.
-   /*! In case no optimized BLAS kernel can be used, the nested \a value will be set to 1,
-       otherwise it will be 0. */
-   template< typename T1, typename T2, typename T3, typename T4 >
-   struct UseDefaultKernel {
-      enum { value = !BLAZE_BLAS_MODE || ( !UseSinglePrecisionKernel<T1,T2,T3,T4>::value &&
-                                           !UseDoublePrecisionKernel<T1,T2,T3,T4>::value &&
-                                           !UseSinglePrecisionComplexKernel<T1,T2,T3>::value &&
-                                           !UseDoublePrecisionComplexKernel<T1,T2,T3>::value ) };
-   };
+   /*! \endcond */
    //**********************************************************************************************
 
    //**********************************************************************************************
    //! Helper structure for the explicit application of the SFINAE principle.
    /*! In case the two involved vector types, the matrix type, and the scalar type are suited
        for a vectorized computation of the scaled vector/matrix multiplication, the nested
-       \value will be set to 1, otherwise it will be 0. */
+       \a value will be set to 1, otherwise it will be 0. */
    template< typename T1, typename T2, typename T3, typename T4 >
    struct UseVectorizedDefaultKernel {
       enum { value = useOptimizedKernels &&
@@ -3610,17 +3169,17 @@ class DVecScalarMultExpr< TDVecDMatMultExpr<VT,MT>, ST, true >
            , typename VT2    // Type of the left-hand side vector operand
            , typename MT1    // Type of the right-hand side matrix operand
            , typename ST2 >  // Type of the scalar value
-   static inline typename EnableIf< UseDefaultKernel<VT1,VT2,MT1,ST2> >::Type
+   static inline typename DisableIf< UseBlasKernel<VT1,VT2,MT1,ST2> >::Type
       selectBlasAssignKernel( VT1& y, const VT2& x, const MT1& A, ST2 scalar )
    {
       selectLargeAssignKernel( y, x, A, scalar );
    }
    //**********************************************************************************************
 
-   //**BLAS-based assignment to dense vectors (single precision)***********************************
+   //**BLAS-based assignment to dense vectors******************************************************
 #if BLAZE_BLAS_MODE
    /*!\brief BLAS-based assignment of a scaled transpose dense vector-dense matrix multiplication
-   //        for single precision operands (\f$ \vec{y}^T=s*\vec{x}^T*A \f$).
+   //        (\f$ \vec{y}^T=s*\vec{x}^T*A \f$).
    // \ingroup dense_vector
    //
    // \param y The target left-hand side dense vector.
@@ -3629,121 +3188,24 @@ class DVecScalarMultExpr< TDVecDMatMultExpr<VT,MT>, ST, true >
    // \param scalar The scaling factor.
    // \return void
    //
-   // This function performs the scaled transpose dense vector-dense matrix multiplication for
-   // single precision operands based on the according BLAS functionality.
+   // This function performs the scaled transpose dense vector-dense matrix multiplication based
+   // on the according BLAS functionality.
    */
    template< typename VT1    // Type of the left-hand side target vector
            , typename VT2    // Type of the left-hand side vector operand
            , typename MT1    // Type of the right-hand side matrix operand
            , typename ST2 >  // Type of the scalar value
-   static inline typename EnableIf< UseSinglePrecisionKernel<VT1,VT2,MT1,ST2> >::Type
+   static inline typename EnableIf< UseBlasKernel<VT1,VT2,MT1,ST2> >::Type
       selectBlasAssignKernel( VT1& y, const VT2& x, const MT1& A, ST2 scalar )
    {
-      if( IsTriangular<MT1>::value ) {
-         assign( y, scalar * x );
-         trmv( y, A, ( IsLower<MT1>::value )?( CblasLower ):( CblasUpper ) );
-      }
-      else {
-         gemv( y, x, A, scalar, 0.0F );
-      }
-   }
-#endif
-   //**********************************************************************************************
+      typedef typename VT1::ElementType  ET;
 
-   //**BLAS-based assignment to dense vectors (double precision)***********************************
-#if BLAZE_BLAS_MODE
-   /*!\brief BLAS-based assignment of a scaled transpose dense vector-dense matrix multiplication
-   //        for double precision operands (\f$ \vec{y}^T=s*\vec{x}^T*A \f$).
-   // \ingroup dense_vector
-   //
-   // \param y The target left-hand side dense vector.
-   // \param x The left-hand side dense vector operand.
-   // \param A The right-hand side dense matrix operand.
-   // \param scalar The scaling factor.
-   // \return void
-   //
-   // This function performs the scaled transpose dense vector-dense matrix multiplication for
-   // double precision operands based on the according BLAS functionality.
-   */
-   template< typename VT1    // Type of the left-hand side target vector
-           , typename VT2    // Type of the left-hand side vector operand
-           , typename MT1    // Type of the right-hand side matrix operand
-           , typename ST2 >  // Type of the scalar value
-   static inline typename EnableIf< UseDoublePrecisionKernel<VT1,VT2,MT1,ST2> >::Type
-      selectBlasAssignKernel( VT1& y, const VT2& x, const MT1& A, ST2 scalar )
-   {
       if( IsTriangular<MT1>::value ) {
          assign( y, scalar * x );
          trmv( y, A, ( IsLower<MT1>::value )?( CblasLower ):( CblasUpper ) );
       }
       else {
-         gemv( y, x, A, scalar, 0.0 );
-      }
-   }
-#endif
-   //**********************************************************************************************
-
-   //**BLAS-based assignment to dense vectors (single precision complex)***************************
-#if BLAZE_BLAS_MODE
-   /*!\brief BLAS-based assignment of a scaled transpose dense vector-dense matrix multiplication
-   //        for single precision complex operands (\f$ \vec{y}^T=s*\vec{x}^T*A \f$).
-   // \ingroup dense_vector
-   //
-   // \param y The target left-hand side dense vector.
-   // \param x The left-hand side dense vector operand.
-   // \param A The right-hand side dense matrix operand.
-   // \param scalar The scaling factor.
-   // \return void
-   //
-   // This function performs the scaled transpose dense vector-dense matrix multiplication for
-   // single precision complex operands based on the according BLAS functionality.
-   */
-   template< typename VT1    // Type of the left-hand side target vector
-           , typename VT2    // Type of the left-hand side vector operand
-           , typename MT1    // Type of the right-hand side matrix operand
-           , typename ST2 >  // Type of the scalar value
-   static inline typename EnableIf< UseSinglePrecisionComplexKernel<VT1,VT2,MT1> >::Type
-      selectBlasAssignKernel( VT1& y, const VT2& x, const MT1& A, ST2 scalar )
-   {
-      if( IsTriangular<MT1>::value ) {
-         assign( y, scalar * x );
-         trmv( y, A, ( IsLower<MT1>::value )?( CblasLower ):( CblasUpper ) );
-      }
-      else {
-         gemv( y, x, A, complex<float>( scalar ), complex<float>( 0.0F ) );
-      }
-   }
-#endif
-   //**********************************************************************************************
-
-   //**BLAS-based assignment to dense vectors (double precision complex)***************************
-#if BLAZE_BLAS_MODE
-   /*!\brief BLAS-based assignment of a scaled transpose dense vector-dense matrix multiplication
-   //        for double precision complex operands (\f$ \vec{y}^T=s*\vec{x}^T*A \f$).
-   // \ingroup dense_vector
-   //
-   // \param y The target left-hand side dense vector.
-   // \param x The left-hand side dense vector operand.
-   // \param A The right-hand side dense matrix operand.
-   // \param scalar The scaling factor.
-   // \return void
-   //
-   // This function performs the scaled transpose dense vector-dense matrix multiplication for
-   // double precision complex operands based on the according BLAS functionality.
-   */
-   template< typename VT1    // Type of the left-hand side target vector
-           , typename VT2    // Type of the left-hand side vector operand
-           , typename MT1    // Type of the right-hand side matrix operand
-           , typename ST2 >  // Type of the scalar value
-   static inline typename EnableIf< UseDoublePrecisionComplexKernel<VT1,VT2,MT1> >::Type
-      selectBlasAssignKernel( VT1& y, const VT2& x, const MT1& A, ST2 scalar )
-   {
-      if( IsTriangular<MT1>::value ) {
-         assign( y, scalar * x );
-         trmv( y, A, ( IsLower<MT1>::value )?( CblasLower ):( CblasUpper ) );
-      }
-      else {
-         gemv( y, x, A, complex<double>( scalar ), complex<double>( 0.0 ) );
+         gemv( y, x, A, ET(scalar), ET(0) );
       }
    }
 #endif
@@ -4267,17 +3729,17 @@ class DVecScalarMultExpr< TDVecDMatMultExpr<VT,MT>, ST, true >
            , typename VT2    // Type of the left-hand side vector operand
            , typename MT1    // Type of the right-hand side matrix operand
            , typename ST2 >  // Type of the scalar value
-   static inline typename EnableIf< UseDefaultKernel<VT1,VT2,MT1,ST2> >::Type
+   static inline typename DisableIf< UseBlasKernel<VT1,VT2,MT1,ST2> >::Type
       selectBlasAddAssignKernel( VT1& y, const VT2& x, const MT1& A, ST2 scalar )
    {
       selectLargeAddAssignKernel( y, x, A, scalar );
    }
    //**********************************************************************************************
 
-   //**BLAS-based addition assignment to dense vectors (single precision)**************************
+   //**BLAS-based addition assignment to dense vectors*********************************************
 #if BLAZE_BLAS_MODE
    /*!\brief BLAS-based addition assignment of a scaled transpose dense vector-dense matrix
-   //        multiplication for single precision operands (\f$ \vec{y}^T+=s*\vec{x}^T*A \f$).
+   //        multiplication (\f$ \vec{y}^T+=s*\vec{x}^T*A \f$).
    // \ingroup dense_vector
    //
    // \param y The target left-hand side dense vector.
@@ -4286,125 +3748,25 @@ class DVecScalarMultExpr< TDVecDMatMultExpr<VT,MT>, ST, true >
    // \param scalar The scaling factor
    // \return void
    //
-   // This function performs the scaled transpose dense vector-dense matrix multiplication for
-   // single precision operands based on the according BLAS functionality.
+   // This function performs the scaled transpose dense vector-dense matrix multiplication based
+   // on the according BLAS functionality.
    */
    template< typename VT1    // Type of the left-hand side target vector
            , typename VT2    // Type of the left-hand side vector operand
            , typename MT1    // Type of the right-hand side matrix operand
            , typename ST2 >  // Type of the scalar value
-   static inline typename EnableIf< UseSinglePrecisionKernel<VT1,VT2,MT1,ST2> >::Type
+   static inline typename EnableIf< UseBlasKernel<VT1,VT2,MT1,ST2> >::Type
       selectBlasAddAssignKernel( VT1& y, const VT2& x, const MT1& A, ST2 scalar )
    {
-      if( IsTriangular<MT1>::value ) {
-         typename VT1::ResultType tmp( scalar * x );
-         trmv( tmp, A, ( IsLower<MT1>::value )?( CblasLower ):( CblasUpper ) );
-         addAssign( y, tmp );
-      }
-      else {
-         gemv( y, x, A, scalar, 1.0F );
-      }
-   }
-#endif
-   //**********************************************************************************************
+      typedef typename VT1::ElementType  ET;
 
-   //**BLAS-based addition assignment to dense vectors (double precision)**************************
-#if BLAZE_BLAS_MODE
-   /*!\brief BLAS-based addition assignment of a scaled transpose dense vector-dense matrix
-   //        multiplication for double precision operands (\f$ \vec{y}+=s*A*\vec{x} \f$).
-   // \ingroup dense_vector
-   //
-   // \param y The target left-hand side dense vector.
-   // \param x The left-hand side dense vector operand.
-   // \param A The right-hand side dense matrix operand.
-   // \param scalar The scaling factor.
-   // \return void
-   //
-   // This function performs the scaled transpose dense vector-dense matrix multiplication for
-   // double precision operands based on the according BLAS functionality.
-   */
-   template< typename VT1    // Type of the left-hand side target vector
-           , typename VT2    // Type of the left-hand side vector operand
-           , typename MT1    // Type of the right-hand side matrix operand
-           , typename ST2 >  // Type of the scalar value
-   static inline typename EnableIf< UseDoublePrecisionKernel<VT1,VT2,MT1,ST2> >::Type
-      selectBlasAddAssignKernel( VT1& y, const VT2& x, const MT1& A, ST2 scalar )
-   {
       if( IsTriangular<MT1>::value ) {
          typename VT1::ResultType tmp( scalar * x );
          trmv( tmp, A, ( IsLower<MT1>::value )?( CblasLower ):( CblasUpper ) );
          addAssign( y, tmp );
       }
       else {
-         gemv( y, x, A, scalar, 1.0 );
-      }
-   }
-#endif
-   //**********************************************************************************************
-
-   //**BLAS-based addition assignment to dense vectors (single precision complex)******************
-#if BLAZE_BLAS_MODE
-   /*!\brief BLAS-based addition assignment of a scaled transpose dense vector-dense matrix
-   //        multiplication for single precision complex operands (\f$ \vec{y}+=s*A*\vec{x} \f$).
-   // \ingroup dense_vector
-   //
-   // \param y The target left-hand side dense vector.
-   // \param x The left-hand side dense vector operand.
-   // \param A The right-hand side dense matrix operand.
-   // \param scalar The scaling factor.
-   // \return void
-   //
-   // This function performs the scaled transpose dense vector-dense matrix multiplication for
-   // single precision complex operands based on the according BLAS functionality.
-   */
-   template< typename VT1    // Type of the left-hand side target vector
-           , typename VT2    // Type of the left-hand side vector operand
-           , typename MT1    // Type of the right-hand side matrix operand
-           , typename ST2 >  // Type of the scalar value
-   static inline typename EnableIf< UseSinglePrecisionComplexKernel<VT1,VT2,MT1> >::Type
-      selectBlasAddAssignKernel( VT1& y, const VT2& x, const MT1& A, ST2 scalar )
-   {
-      if( IsTriangular<MT1>::value ) {
-         typename VT1::ResultType tmp( scalar * x );
-         trmv( tmp, A, ( IsLower<MT1>::value )?( CblasLower ):( CblasUpper ) );
-         addAssign( y, tmp );
-      }
-      else {
-         gemv( y, x, A, complex<float>( scalar ), complex<float>( 1.0F ) );
-      }
-   }
-#endif
-   //**********************************************************************************************
-
-   //**BLAS-based addition assignment to dense vectors (double precision complex)******************
-#if BLAZE_BLAS_MODE
-   /*!\brief BLAS-based addition assignment of a scaled transpose dense vector-dense matrix
-   //        multiplication for double precision complex operands (\f$ \vec{y}+=s*A*\vec{x} \f$).
-   // \ingroup dense_vector
-   //
-   // \param y The target left-hand side dense vector.
-   // \param x The left-hand side dense vector operand.
-   // \param A The right-hand side dense matrix operand.
-   // \param scalar The scaling factor.
-   // \return void
-   //
-   // This function performs the scaled transpose dense vector-dense matrix multiplication for
-   // double precision complex operands based on the according BLAS functionality.
-   */
-   template< typename VT1    // Type of the left-hand side target vector
-           , typename VT2    // Type of the left-hand side vector operand
-           , typename MT1    // Type of the right-hand side matrix operand
-           , typename ST2 >  // Type of the scalar value
-   static inline typename EnableIf< UseDoublePrecisionComplexKernel<VT1,VT2,MT1> >::Type
-      selectBlasAddAssignKernel( VT1& y, const VT2& x, const MT1& A, ST2 scalar )
-   {
-      if( IsTriangular<MT1>::value ) {
-         typename VT1::ResultType tmp( scalar * x );
-         trmv( tmp, A, ( IsLower<MT1>::value )?( CblasLower ):( CblasUpper ) );
-         addAssign( y, tmp );
-      }
-      else {
-         gemv( y, x, A, complex<double>( scalar ), complex<double>( 1.0 ) );
+         gemv( y, x, A, ET(scalar), ET(1) );
       }
    }
 #endif
@@ -4904,17 +4266,17 @@ class DVecScalarMultExpr< TDVecDMatMultExpr<VT,MT>, ST, true >
            , typename VT2    // Type of the left-hand side vector operand
            , typename MT1    // Type of the right-hand side matrix operand
            , typename ST2 >  // Type of the scalar value
-   static inline typename EnableIf< UseDefaultKernel<VT1,VT2,MT1,ST2> >::Type
+   static inline typename DisableIf< UseBlasKernel<VT1,VT2,MT1,ST2> >::Type
       selectBlasSubAssignKernel( VT1& y, const VT2& x, const MT1& A, ST2 scalar )
    {
       selectLargeSubAssignKernel( y, x, A, scalar );
    }
    //**********************************************************************************************
 
-   //**BLAS-based subtraction assignment to dense vectors (single precision)***********************
+   //**BLAS-based subtraction assignment to dense vectors******************************************
 #if BLAZE_BLAS_MODE
    /*!\brief BLAS-based subtraction assignment of a scaled transpose dense vector-dense matrix
-   //        multiplication for single precision operands (\f$ \vec{y}^T-=s*\vec{x}^T*A \f$).
+   //        multiplication (\f$ \vec{y}^T-=s*\vec{x}^T*A \f$).
    // \ingroup dense_vector
    //
    // \param y The target left-hand side dense vector.
@@ -4923,125 +4285,25 @@ class DVecScalarMultExpr< TDVecDMatMultExpr<VT,MT>, ST, true >
    // \param scalar The scaling factor.
    // \return void
    //
-   // This function performs the scaled transpose dense vector-dense matrix multiplication for
-   // single precision operands based on the according BLAS functionality.
+   // This function performs the scaled transpose dense vector-dense matrix multiplication based
+   // on the according BLAS functionality.
    */
    template< typename VT1    // Type of the left-hand side target vector
            , typename VT2    // Type of the left-hand side vector operand
            , typename MT1    // Type of the right-hand side matrix operand
            , typename ST2 >  // Type of the scalar value
-   static inline typename EnableIf< UseSinglePrecisionKernel<VT1,VT2,MT1,ST2> >::Type
+   static inline typename EnableIf< UseBlasKernel<VT1,VT2,MT1,ST2> >::Type
       selectBlasSubAssignKernel( VT1& y, const VT2& x, const MT1& A, ST2 scalar )
    {
-      if( IsTriangular<MT1>::value ) {
-         typename VT1::ResultType tmp( scalar * x );
-         trmv( tmp, A, ( IsLower<MT1>::value )?( CblasLower ):( CblasUpper ) );
-         subAssign( y, tmp );
-      }
-      else {
-         gemv( y, x, A, -scalar, 1.0F );
-      }
-   }
-#endif
-   //**********************************************************************************************
+      typedef typename VT1::ElementType  ET;
 
-   //**BLAS-based subtraction assignment to dense vectors (double precision)***********************
-#if BLAZE_BLAS_MODE
-   /*!\brief BLAS-based subtraction assignment of a scaled transpose dense vector-dense matrix
-   //        multiplication for double precision operands (\f$ \vec{y}-=s*A*\vec{x} \f$).
-   // \ingroup dense_vector
-   //
-   // \param y The target left-hand side dense vector.
-   // \param x The left-hand side dense vector operand.
-   // \param A The right-hand side dense matrix operand.
-   // \param scalar The scaling factor.
-   // \return void
-   //
-   // This function performs the scaled transpose dense vector-dense matrix multiplication for
-   // double precision operands based on the according BLAS functionality.
-   */
-   template< typename VT1    // Type of the left-hand side target vector
-           , typename VT2    // Type of the left-hand side vector operand
-           , typename MT1    // Type of the right-hand side matrix operand
-           , typename ST2 >  // Type of the scalar value
-   static inline typename EnableIf< UseDoublePrecisionKernel<VT1,VT2,MT1,ST2> >::Type
-      selectBlasSubAssignKernel( VT1& y, const VT2& x, const MT1& A, ST2 scalar )
-   {
       if( IsTriangular<MT1>::value ) {
          typename VT1::ResultType tmp( scalar * x );
          trmv( tmp, A, ( IsLower<MT1>::value )?( CblasLower ):( CblasUpper ) );
          subAssign( y, tmp );
       }
       else {
-         gemv( y, x, A, -scalar, 1.0 );
-      }
-   }
-#endif
-   //**********************************************************************************************
-
-   //**BLAS-based subtraction assignment to dense vectors (single precision complex)***************
-#if BLAZE_BLAS_MODE
-   /*!\brief BLAS-based subtraction assignment of a scaled transpose dense vector-dense matrix
-   //        multiplication for single precision complex operands (\f$ \vec{y}-=s*A*\vec{x} \f$).
-   // \ingroup dense_vector
-   //
-   // \param y The target left-hand side dense vector.
-   // \param x The left-hand side dense vector operand.
-   // \param A The right-hand side dense matrix operand.
-   // \param scalar The scaling factor.
-   // \return void
-   //
-   // This function performs the scaled transpose dense vector-dense matrix multiplication for
-   // single precision complex operands based on the according BLAS functionality.
-   */
-   template< typename VT1    // Type of the left-hand side target vector
-           , typename VT2    // Type of the left-hand side vector operand
-           , typename MT1    // Type of the right-hand side matrix operand
-           , typename ST2 >  // Type of the scalar value
-   static inline typename EnableIf< UseSinglePrecisionComplexKernel<VT1,VT2,MT1> >::Type
-      selectBlasSubAssignKernel( VT1& y, const VT2& x, const MT1& A, ST2 scalar )
-   {
-      if( IsTriangular<MT1>::value ) {
-         typename VT1::ResultType tmp( scalar * x );
-         trmv( tmp, A, ( IsLower<MT1>::value )?( CblasLower ):( CblasUpper ) );
-         subAssign( y, tmp );
-      }
-      else {
-         gemv( y, x, A, complex<float>( -scalar ), complex<float>( 1.0F ) );
-      }
-   }
-#endif
-   //**********************************************************************************************
-
-   //**BLAS-based subtraction assignment to dense vectors (double precision complex)***************
-#if BLAZE_BLAS_MODE
-   /*!\brief BLAS-based subtraction assignment of a scaled transpose dense vector-dense matrix
-   //        multiplication for double precision complex operands (\f$ \vec{y}-=s*A*\vec{x} \f$).
-   // \ingroup dense_vector
-   //
-   // \param y The target left-hand side dense vector.
-   // \param x The left-hand side dense vector operand.
-   // \param A The right-hand side dense matrix operand.
-   // \param scalar The scaling factor.
-   // \return void
-   //
-   // This function performs the scaled transpose dense vector-dense matrix multiplication for
-   // double precision complex operands based on the according BLAS functionality.
-   */
-   template< typename VT1    // Type of the left-hand side target vector
-           , typename VT2    // Type of the left-hand side vector operand
-           , typename MT1    // Type of the right-hand side matrix operand
-           , typename ST2 >  // Type of the scalar value
-   static inline typename EnableIf< UseDoublePrecisionComplexKernel<VT1,VT2,MT1> >::Type
-      selectBlasSubAssignKernel( VT1& y, const VT2& x, const MT1& A, ST2 scalar )
-   {
-      if( IsTriangular<MT1>::value ) {
-         typename VT1::ResultType tmp( scalar * x );
-         trmv( tmp, A, ( IsLower<MT1>::value )?( CblasLower ):( CblasUpper ) );
-         subAssign( y, tmp );
-      }
-      else {
-         gemv( y, x, A, complex<double>( -scalar ), complex<double>( 1.0 ) );
+         gemv( y, x, A, ET(-scalar), ET(1) );
       }
    }
 #endif
