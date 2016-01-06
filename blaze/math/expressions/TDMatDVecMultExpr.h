@@ -2434,7 +2434,6 @@ class DVecScalarMultExpr< TDMatDVecMultExpr<MT,VT>, ST, false >
    //**********************************************************************************************
 
    //**********************************************************************************************
-   /*! \cond BLAZE_INTERNAL */
    //! Helper structure for the explicit application of the SFINAE principle.
    /*! In case the matrix type, the two involved vector types, and the scalar type are suited
        for a BLAS kernel, the nested \a value will be set to 1, otherwise it will be 0. */
@@ -2453,7 +2452,6 @@ class DVecScalarMultExpr< TDMatDVecMultExpr<MT,VT>, ST, false >
                      IsSame< typename T1::ElementType, typename T3::ElementType >::value &&
                      !( IsBuiltin<typename T1::ElementType>::value && IsComplex<T4>::value ) };
    };
-   /*! \endcond */
    //**********************************************************************************************
 
    //**********************************************************************************************

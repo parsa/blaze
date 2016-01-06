@@ -118,7 +118,7 @@ inline void getrf( DenseMatrix<MT,SO>& A, int* ipiv );
 // based on the LAPACK sgetrf() function, which uses partial pivoting with row interchanges. The
 // decomposition has the form
 
-                          \f[ A = P \dot L \dot U, \f]\n
+                          \f[ A = P \cdot L \cdot U, \f]\n
 
 // where \c P is a permutation matrix, \c L is a lower unitriangular matrix, and \c U is an upper
 // triangular matrix. The resulting decomposition is stored within \a A: In case of a column-major
@@ -162,7 +162,7 @@ inline void getrf( int* m, int* n, float* a, int* lda, int* ipiv, int* info )
 // based on the LAPACK dgetrf() function, which uses partial pivoting with row interchanges. The
 // decomposition has the form
 
-                          \f[ A = P \dot L \dot U, \f]\n
+                          \f[ A = P \cdot L \cdot U, \f]\n
 
 // where \c P is a permutation matrix, \c L is a lower unitriangular matrix, and \c U is an upper
 // triangular matrix. The resulting decomposition is stored within \a A: In case of a column-major
@@ -206,7 +206,7 @@ inline void getrf( int* m, int* n, double* a, int* lda, int* ipiv, int* info )
 // based on the LAPACK cgetrf() function, which uses partial pivoting with row interchanges. The
 // decomposition has the form
 
-                          \f[ A = P \dot L \dot U, \f]\n
+                          \f[ A = P \cdot L \cdot U, \f]\n
 
 // where \c P is a permutation matrix, \c L is a lower unitriangular matrix, and \c U is an upper
 // triangular matrix. The resulting decomposition is stored within \a A: In case of a column-major
@@ -252,7 +252,7 @@ inline void getrf( int* m, int* n, complex<float>* a, int* lda, int* ipiv, int* 
 // based on the LAPACK zgetrf() function, which uses partial pivoting with row interchanges. The
 // decomposition has the form
 
-                          \f[ A = P \dot L \dot U, \f]\n
+                          \f[ A = P \cdot L \cdot U, \f]\n
 
 // where \c P is a permutation matrix, \c L is a lower unitriangular matrix, and \c U is an upper
 // triangular matrix. The resulting decomposition is stored within \a A: In case of a column-major
@@ -299,7 +299,7 @@ inline void getrf( int* m, int* n, complex<double>* a, int* lda, int* ipiv, int*
 //
 // The decomposition has the form
 
-                          \f[ A = P \dot L \dot U, \f]\n
+                          \f[ A = P \cdot L \cdot U, \f]\n
 
 // where \c P is a permutation matrix, \c L is a lower unitriangular matrix, and \c U is an upper
 // triangular matrix. The resulting decomposition is stored within \a A: In case of a column-major

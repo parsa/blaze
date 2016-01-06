@@ -118,8 +118,8 @@ inline void potrf( DenseMatrix<MT,SO>& A, char uplo );
 // This function performs the dense matrix Cholesky decomposition of a symmetric positive definite
 // matrix based on the LAPACK spotrf() function. The decomposition has the form
 
-                      \f[ A = U**T * U, if uplo = 'U', \f] or\n
-                      \f[ A = L * L**T, if uplo = 'L', \f]
+                      \f[ A = U^{T} U \texttt{ (if uplo = 'U'), or }
+                          A = L L^{T} \texttt{ (if uplo = 'L'), } \f]
 
 // where \c U is an upper triangular matrix and \c L is a lower triangular matrix. The resulting
 // decomposition is stored within \a A: In case \a uplo is set to \c 'L' the result is stored in
@@ -160,8 +160,8 @@ inline void potrf( char* uplo, int* n, float* a, int* lda, int* info )
 // This function performs the dense matrix Cholesky decomposition of a symmetric positive definite
 // matrix based on the LAPACK dpotrf() function. The decomposition has the form
 
-                      \f[ A = U**T * U, if uplo = 'U', \f] or\n
-                      \f[ A = L * L**T, if uplo = 'L', \f]
+                      \f[ A = U^{T} U \texttt{ (if uplo = 'U'), or }
+                          A = L L^{T} \texttt{ (if uplo = 'L'), } \f]
 
 // where \c U is an upper triangular matrix and \c L is a lower triangular matrix. The resulting
 // decomposition is stored within \a A: In case \a uplo is set to \c 'L' the result is stored in
@@ -203,8 +203,8 @@ inline void potrf( char* uplo, int* n, double* a, int* lda, int* info )
 // This function performs the dense matrix Cholesky decomposition of a symmetric positive definite
 // matrix based on the LAPACK cpotrf() function. The decomposition has the form
 
-                      \f[ A = U**T * U, if uplo = 'U', \f] or\n
-                      \f[ A = L * L**T, if uplo = 'L', \f]
+                      \f[ A = U^{T} U \texttt{ (if uplo = 'U'), or }
+                          A = L L^{T} \texttt{ (if uplo = 'L'), } \f]
 
 // where \c U is an upper triangular matrix and \c L is a lower triangular matrix. The resulting
 // decomposition is stored within \a A: In case \a uplo is set to \c 'L' the result is stored in
@@ -248,8 +248,8 @@ inline void potrf( char* uplo, int* n, complex<float>* a, int* lda, int* info )
 // This function performs the dense matrix Cholesky decomposition of a symmetric positive definite
 // matrix based on the LAPACK cpotrf() function. The decomposition has the form
 
-                      \f[ A = U**T * U, if uplo = 'U', \f] or\n
-                      \f[ A = L * L**T, if uplo = 'L', \f]
+                      \f[ A = U^{T} U \texttt{ (if uplo = 'U'), or }
+                          A = L L^{T} \texttt{ (if uplo = 'L'), } \f]
 
 // where \c U is an upper triangular matrix and \c L is a lower triangular matrix. The resulting
 // decomposition is stored within \a A: In case \a uplo is set to \c 'L' the result is stored in
@@ -296,8 +296,8 @@ inline void potrf( char* uplo, int* n, complex<double>* a, int* lda, int* info )
 //
 // The decomposition has the form
 
-                      \f[ A = U**T * U, if uplo = 'U', \f] or\n
-                      \f[ A = L * L**T, if uplo = 'L', \f]
+                      \f[ A = U^{T} U \texttt{ (if uplo = 'U'), or }
+                          A = L L^{T} \texttt{ (if uplo = 'L'), } \f]
 
 // where \c U is an upper triangular matrix and \c L is a lower triangular matrix. The Cholesky
 // decomposition fails if the given matrix \a A is not a positive definite matrix. In this case

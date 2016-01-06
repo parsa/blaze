@@ -120,15 +120,15 @@ inline void geqrf( DenseMatrix<MT,SO>& A, typename MT::ElementType* tau );
 // This function performs the dense matrix QR decomposition of a general \f$ M \times N \f$ matrix
 // based on the LAPACK sgeqrf() function. The decomposition has the form
 
-                              \f[ A = Q \dot R, \f]\n
+                              \f[ A = Q \cdot R, \f]
 
 // where the \c Q is represented as a product of elementary reflectors
 
-                  \f[ Q = H(1) H(2) . . . H(k), with k = min(m,n).\f]\n
+               \f[ Q = H(1) H(2) . . . H(k) \texttt{, with k = min(m,n).} \f]
 
 // Each H(i) has the form
 
-                          \f[ H(i) = I - tau * v * v^T, \f]\n
+                      \f[ H(i) = I - tau \cdot v \cdot v^T, \f]
 
 // where \c tau is a real scalar, and \c v is a real vector with <tt>v(0:i-1) = 0</tt> and
 // <tt>v(i) = 1</tt>. <tt>v(i+1:m)</tt> is stored on exit in <tt>A(i+1:m,i)</tt>, and \c tau
@@ -175,15 +175,15 @@ inline void geqrf( int* m, int* n, float* a, int* lda, float* tau, float* work, 
 // This function performs the dense matrix QR decomposition of a general \f$ M \times N \f$ matrix
 // based on the LAPACK dgeqrf() function. The decomposition has the form
 
-                              \f[ A = Q \dot R, \f]\n
+                              \f[ A = Q \cdot R, \f]
 
 // where the \c Q is represented as a product of elementary reflectors
 
-                  \f[ Q = H(1) H(2) . . . H(k), with k = min(m,n).\f]\n
+               \f[ Q = H(1) H(2) . . . H(k) \texttt{, with k = min(m,n).} \f]
 
 // Each H(i) has the form
 
-                          \f[ H(i) = I - tau * v * v^T, \f]\n
+                      \f[ H(i) = I - tau \cdot v \cdot v^T, \f]
 
 // where \c tau is a real scalar, and \c v is a real vector with <tt>v(0:i-1) = 0</tt> and
 // <tt>v(i) = 1</tt>. <tt>v(i+1:m)</tt> is stored on exit in <tt>A(i+1:m,i)</tt>, and \c tau
@@ -230,15 +230,15 @@ inline void geqrf( int* m, int* n, double* a, int* lda, double* tau, double* wor
 // This function performs the dense matrix QR decomposition of a general \f$ M \times N \f$ matrix
 // based on the LAPACK cgeqrf() function. The decomposition has the form
 
-                              \f[ A = Q \dot R, \f]\n
+                              \f[ A = Q \cdot R, \f]
 
 // where the \c Q is represented as a product of elementary reflectors
 
-                  \f[ Q = H(1) H(2) . . . H(k), with k = min(m,n).\f]\n
+               \f[ Q = H(1) H(2) . . . H(k) \texttt{, with k = min(m,n).} \f]
 
 // Each H(i) has the form
 
-                          \f[ H(i) = I - tau * v * v^T, \f]\n
+                      \f[ H(i) = I - tau \cdot v \cdot v^T, \f]
 
 // where \c tau is a real scalar, and \c v is a real vector with <tt>v(0:i-1) = 0</tt> and
 // <tt>v(i) = 1</tt>. <tt>v(i+1:m)</tt> is stored on exit in <tt>A(i+1:m,i)</tt>, and \c tau
@@ -289,15 +289,15 @@ inline void geqrf( int* m, int* n, complex<float>* a, int* lda, complex<float>* 
 // This function performs the dense matrix QR decomposition of a general \f$ M \times N \f$ matrix
 // based on the LAPACK zgeqrf() function. The decomposition has the form
 
-                              \f[ A = Q \dot R, \f]\n
+                              \f[ A = Q \cdot R, \f]
 
 // where the \c Q is represented as a product of elementary reflectors
 
-                  \f[ Q = H(1) H(2) . . . H(k), with k = min(m,n).\f]\n
+               \f[ Q = H(1) H(2) . . . H(k) \texttt{, with k = min(m,n).} \f]
 
 // Each H(i) has the form
 
-                          \f[ H(i) = I - tau * v * v^T, \f]\n
+                      \f[ H(i) = I - tau \cdot v \cdot v^T, \f]
 
 // where \c tau is a real scalar, and \c v is a real vector with <tt>v(0:i-1) = 0</tt> and
 // <tt>v(i) = 1</tt>. <tt>v(i+1:m)</tt> is stored on exit in <tt>A(i+1:m,i)</tt>, and \c tau
@@ -347,15 +347,15 @@ inline void geqrf( int* m, int* n, complex<double>* a, int* lda, complex<double>
 //
 // The decomposition has the form
 
-                              \f[ A = Q \dot R, \f]\n
+                              \f[ A = Q \cdot R, \f]
 
 // where the \c Q is represented as a product of elementary reflectors
 
-                  \f[ Q = H(1) H(2) . . . H(k), with k = min(m,n).\f]\n
+               \f[ Q = H(1) H(2) . . . H(k) \texttt{, with k = min(m,n).} \f]
 
 // Each H(i) has the form
 
-                          \f[ H(i) = I - tau * v * v^T, \f]\n
+                      \f[ H(i) = I - tau \cdot v \cdot v^T, \f]
 
 // where \c tau is a real scalar, and \c v is a real vector with <tt>v(0:i-1) = 0</tt> and
 // <tt>v(i) = 1</tt>. <tt>v(i+1:m)</tt> is stored on exit in <tt>A(i+1:m,i)</tt>, and \c tau
