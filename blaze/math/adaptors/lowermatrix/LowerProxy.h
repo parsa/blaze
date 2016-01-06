@@ -396,7 +396,7 @@ inline typename LowerProxy<MT>::RawReference LowerProxy<MT>::get() const
 
 
 //*************************************************************************************************
-/*!\brief Returns whether the proxy represents a restricted matrix element..
+/*!\brief Returns whether the proxy represents a restricted matrix element.
 //
 // \return \a true in case access to the matrix element is restricted, \a false if not.
 */
