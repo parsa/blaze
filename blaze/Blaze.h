@@ -133,6 +133,7 @@ namespace blaze {}
 //          <li> \ref matrix_serialization </li>
 //       </ul>
 //    </li>
+//    <li> \ref blas_functions </li>
 //    <li> \ref lapack_functions </li>
 //    <li> \ref configuration_files </li>
 //    <li> \ref error_reporting_customization </li>
@@ -8257,7 +8258,158 @@ namespace blaze {}
 // In case an error is encountered during (de-)serialization, a \c std::runtime_exception is
 // thrown.
 //
-// \n Previous: \ref vector_serialization &nbsp; &nbsp; Next: \ref lapack_functions \n
+// \n Previous: \ref vector_serialization &nbsp; &nbsp; Next: \ref blas_functions \n
+*/
+//*************************************************************************************************
+
+
+//**BLAS Functions*********************************************************************************
+/*!\page blas_functions BLAS Functions
+//
+// \tableofcontents
+//
+//
+// For matrix/vector and matrix/matrix multiplications with large dense matrices \b Blaze relies
+// on the efficiency of BLAS libraries. For this purpose, \b Blaze implements several convenient
+// C++ wrapper functions for several BLAS functions. The following sections give a complete
+// overview of all available BLAS level 2 and 3 functions.
+//
+//
+// \n \section blas_level_2 BLAS Level 2
+// <hr>
+//
+// \subsection blas_level_2_gemv General Matrix/Vector Multiplication (gemv)
+//
+// The following wrapper functions provide a generic interface for the BLAS functions for the
+// general matrix/vector multiplication (\c sgemv(), \c dgemv(), \c cgemv(), and \c zgemv()):
+
+   \code
+   namespace blaze {
+
+   void gemv( CBLAS_ORDER layout, CBLAS_TRANSPOSE transA, int M, int N, float alpha,
+              const float* A, int lda, const float* x, int incX,
+              float beta, float* y, int incY );
+
+   void gemv( CBLAS_ORDER layout, CBLAS_TRANSPOSE transA, int M, int N, double alpha,
+              const double* A, int lda, const double* x, int incX,
+              double beta, double* y, int incY );
+
+   void gemv( CBLAS_ORDER layout, CBLAS_TRANSPOSE transA, int M, int N, complex<float> alpha,
+              const complex<float>* A, int lda, const complex<float>* x, int incX,
+              complex<float> beta, complex<float>* y, int incY );
+
+   void gemv( CBLAS_ORDER layout, CBLAS_TRANSPOSE transA, int M, int N, complex<double> alpha,
+              const complex<double>* A, int lda, const complex<double>* x, int incX,
+              complex<double> beta, complex<double>* y, int incY );
+
+   template< typename VT1, typename MT1, bool SO, typename VT2, typename ST >
+   void gemv( DenseVector<VT1,false>& y, const DenseMatrix<MT1,SO>& A,
+              const DenseVector<VT2,false>& x, ST alpha, ST beta );
+
+   template< typename VT1, typename VT2, typename MT1, bool SO, typename ST >
+   void gemv( DenseVector<VT1,true>& y, const DenseVector<VT2,true>& x,
+              const DenseMatrix<MT1,SO>& A, ST alpha, ST beta );
+
+   } // namespace blaze
+   \endcode
+
+// \n \subsection blas_level_2_trmv Triangular Matrix/Vector Multiplication (trmv)
+//
+// The following wrapper functions provide a generic interface for the BLAS functions for the
+// matrix/vector multiplication with a triangular matrix (\c strmv(), \c dtrmv(), \c ctrmv(),
+// and \c ztrmv()):
+
+   \code
+   namespace blaze {
+
+   void trmv( CBLAS_ORDER order, CBLAS_UPLO uplo, CBLAS_TRANSPOSE transA, CBLAS_DIAG diag,
+              int N, const float* A, int lda, float* X, int incX );
+
+   void trmv( CBLAS_ORDER order, CBLAS_UPLO uplo, CBLAS_TRANSPOSE transA, CBLAS_DIAG diag,
+              int N, const double* A, int lda, double* X, int incX );
+
+   void trmv( CBLAS_ORDER order, CBLAS_UPLO uplo, CBLAS_TRANSPOSE transA, CBLAS_DIAG diag,
+              int N, const complex<float>* A, int lda, complex<float>* X, int incX );
+
+   void trmv( CBLAS_ORDER order, CBLAS_UPLO uplo, CBLAS_TRANSPOSE transA, CBLAS_DIAG diag,
+              int N, const complex<double>* A, int lda, complex<double>* X, int incX );
+
+   template< typename VT, typename MT, bool SO >
+   void trmv( DenseVector<VT,false>& y, const DenseMatrix<MT,SO>& A, CBLAS_UPLO uplo );
+
+   template< typename VT, typename MT, bool SO >
+   void trmv( DenseVector<VT,true>& y, const DenseMatrix<MT,SO>& A, CBLAS_UPLO uplo );
+
+   } // namespace blaze
+   \endcode
+
+// \n \section blas_level_3 BLAS Level 3
+// <hr>
+//
+// \subsection blas_level_3_gemm General Matrix/Matrix Multiplication (gemm)
+//
+// The following wrapper functions provide a generic interface for the BLAS functions for the
+// general matrix/matrix multiplication (\c sgemm(), \c dgemm(), \c cgemm(), and \c zgemm()):
+
+   \code
+   namespace blaze {
+
+   void gemm( CBLAS_ORDER order, CBLAS_TRANSPOSE transA, CBLAS_TRANSPOSE transB,
+              int M, int N, int K, float alpha, const float* A, int lda,
+              const float* B, int ldb, float beta, float* C, int ldc );
+
+   void gemm( CBLAS_ORDER order, CBLAS_TRANSPOSE transA, CBLAS_TRANSPOSE transB,
+              int M, int N, int K, double alpha, const double* A, int lda,
+              const double* B, int ldb, double beta, float* C, int ldc );
+
+   void gemm( CBLAS_ORDER order, CBLAS_TRANSPOSE transA, CBLAS_TRANSPOSE transB,
+              int M, int N, int K, complex<float> alpha, const complex<float>* A, int lda,
+              const complex<float>* B, int ldb, complex<float> beta, float* C, int ldc );
+
+   void gemm( CBLAS_ORDER order, CBLAS_TRANSPOSE transA, CBLAS_TRANSPOSE transB,
+              int M, int N, int K, complex<double> alpha, const complex<double>* A, int lda,
+              const complex<double>* B, int ldb, complex<double> beta, float* C, int ldc );
+
+   template< typename MT1, bool SO1, typename MT2, bool SO2, typename MT3, bool SO3, typename ST >
+   void gemm( DenseMatrix<MT1,SO1>& C, const DenseMatrix<MT2,SO2>& A,
+              const DenseMatrix<MT3,SO3>& B, ST alpha, ST beta );
+
+   } // namespace blaze
+   \endcode
+
+// \n \subsection blas_level_3_trmm Triangular Matrix/Matrix Multiplication (trmm)
+//
+// // The following wrapper functions provide a generic interface for the BLAS functions for the
+// matrix/matrix multiplication with a triangular matrix (\c strmm(), \c dtrmm(), \c ctrmm(), and
+// \c ztrmm()):
+
+   \code
+   namespace blaze {
+
+   void trmm( CBLAS_ORDER order, CBLAS_SIDE side, CBLAS_UPLO uplo, CBLAS_TRANSPOSE transA,
+              CBLAS_DIAG diag, int M, int N, float alpha, const float* A,
+              int lda, float* B, int ldb );
+
+   void trmm( CBLAS_ORDER order, CBLAS_SIDE side, CBLAS_UPLO uplo, CBLAS_TRANSPOSE transA,
+              CBLAS_DIAG diag, int M, int N, double alpha, const double* A,
+              int lda, double* B, int ldb );
+
+   void trmm( CBLAS_ORDER order, CBLAS_SIDE side, CBLAS_UPLO uplo, CBLAS_TRANSPOSE transA,
+              CBLAS_DIAG diag, int M, int N, complex<float> alpha, const complex<float>* A,
+              int lda, complex<float>* B, int ldb );
+
+   void trmm( CBLAS_ORDER order, CBLAS_SIDE side, CBLAS_UPLO uplo, CBLAS_TRANSPOSE transA,
+              CBLAS_DIAG diag, int M, int N, complex<double> alpha, const complex<double>* A,
+              int lda, complex<double>* B, int ldb );
+
+   template< typename MT1, bool SO1, typename MT2, bool SO2, typename ST >
+   void trmm( DenseMatrix<MT1,SO1>& B, const DenseMatrix<MT2,SO2>& A,
+              CBLAS_SIDE side, CBLAS_UPLO uplo, ST alpha );
+
+   } // namespace blaze
+   \endcode
+
+// \n Previous: \ref matrix_serialization &nbsp; &nbsp; Next: \ref lapack_functions \n
 */
 //*************************************************************************************************
 
@@ -8284,13 +8436,15 @@ namespace blaze {}
 // in case an exception is thrown the given matrix may already have been modified.
 //
 //
-// \section lapack_PLU_decomposition PLU Decomposition
+// \n \section lapack_PLU_decomposition PLU Decomposition
 // <hr>
 //
 // The following functions provide an interface for the LAPACK functions \c sgetrf(), \c dgetrf(),
 // \c cgetrf(), and \c zgetrf():
 
    \code
+   namespace blaze {
+
    void getrf( int* m, int* n, float* a, int* lda, int* ipiv, int* info );
 
    void getrf( int* m, int* n, double* a, int* lda, int* ipiv, int* info );
@@ -8301,11 +8455,13 @@ namespace blaze {}
 
    template< typename MT, bool SO >
    void getrf( DenseMatrix<MT,SO>& A, int* ipiv );
+
+   } // namespace blaze
    \endcode
 
 // The decomposition has the form
 
-                          \f[ A = P \dot L \dot U, \f]\n
+                          \f[ A = P \cdot L \cdot U, \f]\n
 
 // where \c P is a permutation matrix, \c L is a lower unitriangular matrix, and \c U is an upper
 // triangular matrix. The resulting decomposition is stored within \a A: In case of a column-major
@@ -8318,13 +8474,15 @@ namespace blaze {}
 // a linear system of equations.
 //
 //
-// \section lapack_cholesky_decomposition Cholesky Decomposition
+// \n \section lapack_cholesky_decomposition Cholesky Decomposition
 // <hr>
 //
 // The following functions provide an interface for the LAPACK functions \c spotrf(), \c dpotrf(),
 // \c cpotrf(), and \c zpotrf():
 
    \code
+   namespace blaze {
+
    void potrf( char* uplo, int* n, float* a, int* lda, int* info );
 
    void potrf( char* uplo, int* n, double* a, int* lda, int* info );
@@ -8335,26 +8493,29 @@ namespace blaze {}
 
    template< typename MT, bool SO >
    void potrf( DenseMatrix<MT,SO>& A, char uplo );
+
+   } // namespace blaze
    \endcode
 
-// The decomposition has the form
+The decomposition has the form
 
-                      \f[ A = U**T * U, if uplo = 'U', \f] or\n
-                      \f[ A = L * L**T, if uplo = 'L', \f]
+                      \f[ A = U^{T} U \texttt{ (if uplo = 'U'), or }
+                          A = L L^{T} \texttt{ (if uplo = 'L'), } \f]
 
 // where \c U is an upper triangular matrix and \c L is a lower triangular matrix. The Cholesky
 // decomposition fails if the given matrix \a A is not a positive definite matrix. In this case
-// the first four functions set the \c info argument accordingly, the fifth function throws a
-// \a std::std::invalid_argument exception.
+// a \a std::std::invalid_argument exception is thrown.
 //
 //
-// \section lapack_QR_decomposition QR Decomposition
+// \n \section lapack_QR_decomposition QR Decomposition
 // <hr>
 //
 // The following functions provide an interface for the LAPACK functions \c sgeqrf(), \c dgeqrf(),
 // \c cgeqrf(), and \c zgeqrf():
 
    \code
+   namespace blaze {
+
    void geqrf( int* m, int* n, float* a, int* lda, float* tau, float*  work, int* lwork, int* info );
 
    void geqrf( int* m, int* n, double* a, int* lda, double* tau, double* work, int* lwork, int* info );
@@ -8367,19 +8528,21 @@ namespace blaze {}
 
    template< typename MT, bool SO >
    void geqrf( DenseMatrix<MT,SO>& A, typename MT::ElementType* tau );
+
+   } // namespace blaze
    \endcode
 
 // The decomposition has the form
 
-                              \f[ A = Q \dot R, \f]\n
+                              \f[ A = Q \cdot R, \f]
 
 // where the \c Q is represented as a product of elementary reflectors
 
-                  \f[ Q = H(1) H(2) . . . H(k), with k = min(m,n).\f]\n
+               \f[ Q = H(1) H(2) . . . H(k) \texttt{, with k = min(m,n).} \f]
 
 // Each H(i) has the form
 
-                          \f[ H(i) = I - tau * v * v^T, \f]\n
+                      \f[ H(i) = I - tau \cdot v \cdot v^T, \f]
 
 // where \c tau is a real scalar, and \c v is a real vector with <tt>v(0:i-1) = 0</tt> and
 // <tt>v(i) = 1</tt>. <tt>v(i+1:m)</tt> is stored on exit in <tt>A(i+1:m,i)</tt>, and \c tau
@@ -8389,13 +8552,15 @@ namespace blaze {}
 // of min(M,N) elementary reflectors.
 //
 //
-// \section lapack_PLU_inversion PLU-based Inversion
+// \n \section lapack_PLU_inversion PLU-based Inversion
 // <hr>
 //
 // The following functions provide an interface for the LAPACK functions \c sgetri(), \c dgetri(),
 // \c cgetri(), and \c zgetri():
 
    \code
+   namespace blaze {
+
    void getri( int* n, float* a, int* lda, int* ipiv, float* work, int* lwork, int* info );
 
    void getri( int* n, double* a, int* lda, int* ipiv, double* work, int* lwork, int* info );
@@ -8408,6 +8573,8 @@ namespace blaze {}
 
    template< typename MT, bool SO >
    void getri( DenseMatrix<MT,SO>& A, const int* ipiv );
+
+   } // namespace blaze
    \endcode
 
 // The functions fail if ...
@@ -8419,13 +8586,15 @@ namespace blaze {}
 // \a std::invalid_argument exception in case of an error.
 //
 //
-// \section lapack_cholesky_inversion Cholesky-based Inversion
+// \n \section lapack_cholesky_inversion Cholesky-based Inversion
 // <hr>
 //
 // The following functions provide an interface for the LAPACK functions \c spotri(), \c dpotri(),
 // \c cpotri(), and \c zpotri():
 
    \code
+   namespace blaze {
+
    void potri( char* uplo, int* n, float*  a, int* lda, int* info );
 
    void potri( char* uplo, int* n, double* a, int* lda, int* info );
@@ -8436,6 +8605,8 @@ namespace blaze {}
 
    template< typename MT, bool SO >
    void potri( DenseMatrix<MT,SO>& A, char uplo );
+
+   } // namespace blaze
    \endcode
 
 // The functions fail if ...
@@ -8448,7 +8619,7 @@ namespace blaze {}
 // \a std::invalid_argument exception in case of an error.
 //
 //
-// \n Previous: \ref matrix_serialization &nbsp; &nbsp; Next: \ref configuration_files \n
+// \n Previous: \ref blas_functions &nbsp; &nbsp; Next: \ref configuration_files \n
 */
 //*************************************************************************************************
 
