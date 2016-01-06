@@ -329,6 +329,16 @@ class DMatTransposer : public DenseMatrix< DMatTransposer<MT,SO>, SO >
    }
    //**********************************************************************************************
 
+   //**IsIntact function***************************************************************************
+   /*!\brief Returns whether the invariants of the matrix are intact.
+   //
+   // \return \a true in case the matrix's invariants are intact, \a false otherwise.
+   */
+   inline bool isIntact() {
+      return isIntact( dm_ );
+   }
+   //**********************************************************************************************
+
    //**CanAliased function*************************************************************************
    /*!\brief Returns whether the matrix can alias with the given address \a alias.
    //
@@ -1152,6 +1162,16 @@ class DMatTransposer<MT,true> : public DenseMatrix< DMatTransposer<MT,true>, tru
    }
    //**********************************************************************************************
 
+   //**IsIntact function***************************************************************************
+   /*!\brief Returns whether the invariants of the matrix are intact.
+   //
+   // \return \a true in case the matrix's invariants are intact, \a false otherwise.
+   */
+   inline bool isIntact() {
+      return isIntact( dm_ );
+   }
+   //**********************************************************************************************
+
    //**CanAliased function*************************************************************************
    /*!\brief Returns whether the matrix can alias with the given address \a alias.
    //
@@ -1753,6 +1773,24 @@ template< typename MT  // Type of the dense matrix
 inline void reset( DMatTransposer<MT,SO>& m )
 {
    m.reset();
+}
+/*! \endcond */
+//*************************************************************************************************
+
+
+//*************************************************************************************************
+/*! \cond BLAZE_INTERNAL */
+/*!\brief Returns whether the invariants of the given DMatTransposer are intact.
+// \ingroup dense_matrix_expression
+//
+// \param m The dense matrix to be tested.
+// \return \a true in caes the given matrix's invariants are intact, \a false otherwise.
+*/
+template< typename MT  // Type of the dense matrix
+        , bool SO >    // Storage order
+inline void isIntact( const DMatTransposer<MT,SO>& m )
+{
+   return m.isIntact();
 }
 /*! \endcond */
 //*************************************************************************************************
