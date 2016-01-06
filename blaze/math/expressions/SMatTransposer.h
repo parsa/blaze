@@ -427,7 +427,7 @@ class SMatTransposer : public SparseMatrix< SMatTransposer<MT,SO>, SO >
    //
    // \return \a true in case the matrix's invariants are intact, \a false otherwise.
    */
-   inline bool isIntact() {
+   inline bool isIntact() const {
       return isIntact( sm_ );
    }
    //**********************************************************************************************
@@ -905,7 +905,7 @@ class SMatTransposer<MT,true> : public SparseMatrix< SMatTransposer<MT,true>, tr
    //
    // \return \a true in case the matrix's invariants are intact, \a false otherwise.
    */
-   inline bool isIntact() {
+   inline bool isIntact() const {
       return isIntact( sm_ );
    }
    //**********************************************************************************************
@@ -1078,7 +1078,7 @@ inline void reset( SMatTransposer<MT,SO>& m )
 */
 template< typename MT  // Type of the sparse matrix
         , bool SO >    // Storage order
-inline void isIntact( const SMatTransposer<MT,SO>& m )
+inline bool isIntact( const SMatTransposer<MT,SO>& m )
 {
    return m.isIntact();
 }

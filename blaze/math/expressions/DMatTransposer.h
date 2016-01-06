@@ -47,6 +47,7 @@
 #include <blaze/math/expressions/DenseMatrix.h>
 #include <blaze/math/intrinsics/IntrinsicTrait.h>
 #include <blaze/math/traits/SubmatrixTrait.h>
+#include <blaze/math/typetraits/HasMutableDataAccess.h>
 #include <blaze/math/typetraits/IsAligned.h>
 #include <blaze/math/typetraits/IsPadded.h>
 #include <blaze/system/Blocking.h>
@@ -334,7 +335,8 @@ class DMatTransposer : public DenseMatrix< DMatTransposer<MT,SO>, SO >
    //
    // \return \a true in case the matrix's invariants are intact, \a false otherwise.
    */
-   inline bool isIntact() {
+   inline bool isIntact() const {
+      using blaze::isIntact;
       return isIntact( dm_ );
    }
    //**********************************************************************************************
@@ -1167,7 +1169,8 @@ class DMatTransposer<MT,true> : public DenseMatrix< DMatTransposer<MT,true>, tru
    //
    // \return \a true in case the matrix's invariants are intact, \a false otherwise.
    */
-   inline bool isIntact() {
+   inline bool isIntact() const {
+      using blaze::isIntact;
       return isIntact( dm_ );
    }
    //**********************************************************************************************
@@ -1788,10 +1791,28 @@ inline void reset( DMatTransposer<MT,SO>& m )
 */
 template< typename MT  // Type of the dense matrix
         , bool SO >    // Storage order
-inline void isIntact( const DMatTransposer<MT,SO>& m )
+inline bool isIntact( const DMatTransposer<MT,SO>& m )
 {
    return m.isIntact();
 }
+/*! \endcond */
+//*************************************************************************************************
+
+
+
+
+//=================================================================================================
+//
+//  HASMUTABLEDATAACCESS SPECIALIZATIONS
+//
+//=================================================================================================
+
+//*************************************************************************************************
+/*! \cond BLAZE_INTERNAL */
+template< typename MT, bool SO >
+struct HasMutableDataAccess< DMatTransposer<MT,SO> >
+   : public IsTrue< HasMutableDataAccess<MT>::value >
+{};
 /*! \endcond */
 //*************************************************************************************************
 
