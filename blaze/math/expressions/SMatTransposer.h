@@ -428,7 +428,7 @@ class SMatTransposer : public SparseMatrix< SMatTransposer<MT,SO>, SO >
    // \return \a true in case the matrix's invariants are intact, \a false otherwise.
    */
    inline bool isIntact() {
-      return isIntact( dm_ );
+      return isIntact( sm_ );
    }
    //**********************************************************************************************
 
@@ -906,7 +906,7 @@ class SMatTransposer<MT,true> : public SparseMatrix< SMatTransposer<MT,true>, tr
    // \return \a true in case the matrix's invariants are intact, \a false otherwise.
    */
    inline bool isIntact() {
-      return isIntact( dm_ );
+      return isIntact( sm_ );
    }
    //**********************************************************************************************
 
