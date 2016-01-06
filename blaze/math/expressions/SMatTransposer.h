@@ -422,6 +422,16 @@ class SMatTransposer : public SparseMatrix< SMatTransposer<MT,SO>, SO >
    }
    //**********************************************************************************************
 
+   //**IsIntact function***************************************************************************
+   /*!\brief Returns whether the invariants of the matrix are intact.
+   //
+   // \return \a true in case the matrix's invariants are intact, \a false otherwise.
+   */
+   inline bool isIntact() {
+      return isIntact( dm_ );
+   }
+   //**********************************************************************************************
+
    //**********************************************************************************************
    /*!\brief Returns whether the matrix can alias with the given address \a alias.
    //
@@ -598,7 +608,7 @@ class SMatTransposer<MT,true> : public SparseMatrix< SMatTransposer<MT,true>, tr
    //**Constructor*********************************************************************************
    /*!\brief Constructor for the SMatTransposer class.
    //
-   // \param sm The dense sparse operand.
+   // \param sm The sparse matrix operand.
    */
    explicit inline SMatTransposer( MT& sm )
       : sm_( sm )  // The sparse matrix operand
@@ -890,6 +900,16 @@ class SMatTransposer<MT,true> : public SparseMatrix< SMatTransposer<MT,true>, tr
    }
    //**********************************************************************************************
 
+   //**IsIntact function***************************************************************************
+   /*!\brief Returns whether the invariants of the matrix are intact.
+   //
+   // \return \a true in case the matrix's invariants are intact, \a false otherwise.
+   */
+   inline bool isIntact() {
+      return isIntact( dm_ );
+   }
+   //**********************************************************************************************
+
    //**********************************************************************************************
    /*!\brief Returns whether the matrix can alias with the given address \a alias.
    //
@@ -1043,6 +1063,24 @@ template< typename MT  // Type of the sparse matrix
 inline void reset( SMatTransposer<MT,SO>& m )
 {
    m.reset();
+}
+/*! \endcond */
+//*************************************************************************************************
+
+
+//*************************************************************************************************
+/*! \cond BLAZE_INTERNAL */
+/*!\brief Returns whether the invariants of the given SMatTransposer are intact.
+// \ingroup sparse_matrix_expression
+//
+// \param m The sparse matrix to be tested.
+// \return \a true in caes the given matrix's invariants are intact, \a false otherwise.
+*/
+template< typename MT  // Type of the sparse matrix
+        , bool SO >    // Storage order
+inline void isIntact( const SMatTransposer<MT,SO>& m )
+{
+   return m.isIntact();
 }
 /*! \endcond */
 //*************************************************************************************************
