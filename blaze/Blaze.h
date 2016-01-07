@@ -167,8 +167,13 @@ namespace blaze {}
 // <a href="http://math-atlas.sourceforge.net">Atlas</a>,
 // <a href="http://www.tacc.utexas.edu/tacc-projects/gotoblas2">Goto</a>, ...). If you don't
 // have a BLAS library installed on your system, \b Blaze will still work and will not be reduced
-// in functionality, but performance may be severely limited. Thus it is strongly recommended to
-// install a BLAS library.
+// in functionality, but performance may be limited. Thus it is strongly recommended to install a
+// BLAS library.
+//
+// Furthermore, for computing the determinant of a dense matrix and for the dense matrix inversion
+// \b Blaze requires <a href="https://en.wikipedia.org/wiki/LAPACK">LAPACK</a>. When either of
+// these features is used it is necessary to link the LAPACK library to the final executable. If
+// no LAPACK library is available the use of these features will result in a linker error.
 //
 //
 // \n \section step_1_configuration Step 1: Configuration
