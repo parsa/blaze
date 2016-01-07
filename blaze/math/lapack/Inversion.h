@@ -125,9 +125,9 @@ inline void getri( DenseMatrix<MT,SO>& A, const int* ipiv );
 // \param n The number of rows/columns of the matrix \f$[0..\infty)\f$.
 // \param a Pointer to the first element of the matrix to be inverted.
 // \param lda The total number of elements between two rows/columns of the matrix \f$[0..\infty)\f$.
-// \param ipiv Auxiliary array for the pivot indices; size >= min( M, N ).
-// \param work Auxiliary array; size >= max( 1, lwork ).
-// \param lwork The dimension of the array \a work; size >= max( 1, N ).
+// \param ipiv Auxiliary array for the pivot indices; size >= min( \a m, \a n ).
+// \param work Auxiliary array; size >= max( 1, \a lwork ).
+// \param lwork The dimension of the array \a work; size >= max( 1, \a n ).
 // \param info Return code of the function call.
 // \return void
 //
@@ -166,9 +166,9 @@ inline void getri( int* n, float* a, int* lda, int* ipiv, float* work, int* lwor
 // \param n The number of rows/columns of the matrix \f$[0..\infty)\f$.
 // \param a Pointer to the first element of the matrix to be inverted.
 // \param lda The total number of elements between two rows/columns of the matrix \f$[0..\infty)\f$.
-// \param ipiv Auxiliary array for the pivot indices; size >= min( M, N ).
-// \param work Auxiliary array; size >= max( 1, lwork ).
-// \param lwork The dimension of the array \a work; size >= max( 1, N ).
+// \param ipiv Auxiliary array for the pivot indices; size >= min( \a m, \a n ).
+// \param work Auxiliary array; size >= max( 1, \a lwork ).
+// \param lwork The dimension of the array \a work; size >= max( 1, \a n ).
 // \param info Return code of the function call.
 // \return void
 //
@@ -207,9 +207,9 @@ inline void getri( int* n, double* a, int* lda, int* ipiv, double* work, int* lw
 // \param n The number of rows/columns of the matrix \f$[0..\infty)\f$.
 // \param a Pointer to the first element of the matrix to be inverted.
 // \param lda The total number of elements between two rows/columns of the matrix \f$[0..\infty)\f$.
-// \param ipiv Auxiliary array for the pivot indices; size >= min( M, N ).
-// \param work Auxiliary array; size >= max( 1, lwork ).
-// \param lwork The dimension of the array \a work; size >= max( 1, N ).
+// \param ipiv Auxiliary array for the pivot indices; size >= min( \a m, \a n ).
+// \param work Auxiliary array; size >= max( 1, \a lwork ).
+// \param lwork The dimension of the array \a work; size >= max( 1, \a n ).
 // \param info Return code of the function call.
 // \return void
 //
@@ -252,9 +252,9 @@ inline void getri( int* n, complex<float>* a, int* lda, int* ipiv,
 // \param n The number of rows/columns of the matrix \f$[0..\infty)\f$.
 // \param a Pointer to the first element of the matrix to be inverted.
 // \param lda The total number of elements between two rows/columns of the matrix \f$[0..\infty)\f$.
-// \param ipiv Auxiliary array for the pivot indices; size >= min( M, N ).
-// \param work Auxiliary array; size >= max( 1, lwork ).
-// \param lwork The dimension of the array \a work; size >= max( 1, N ).
+// \param ipiv Auxiliary array for the pivot indices; size >= min( \a m, \a n ).
+// \param work Auxiliary array; size >= max( 1, \a lwork ).
+// \param lwork The dimension of the array \a work; size >= max( 1, \a n ).
 // \param info Return code of the function call.
 // \return void
 //
@@ -295,7 +295,7 @@ inline void getri( int* n, complex<double>* a, int* lda, int* ipiv,
 // \ingroup lapack
 //
 // \param A The matrix to be inverted.
-// \param ipiv Auxiliary array for the pivot indices; size >= min( M, N ).
+// \param ipiv Auxiliary array for the pivot indices; size >= min( \a m, \a n ).
 // \return void
 // \exception std::invalid_argument Inversion of singular matrix failed.
 // \exception std::invalid_argument Invalid non-square matrix provided.

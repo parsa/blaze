@@ -110,15 +110,15 @@ inline void getrf( DenseMatrix<MT,SO>& A, int* ipiv );
 // \param n The number of columns of the given matrix \f$[0..\infty)\f$.
 // \param a Pointer to the first element of the matrix.
 // \param lda The total number of elements between two rows/columns of the matrix \f$[0..\infty)\f$.
-// \param ipiv Auxiliary array for the pivot indices; size >= min( M, N ).
+// \param ipiv Auxiliary array for the pivot indices; size >= min( \a m, \a n ).
 // \param info Return code of the function call.
 // \return void
 //
-// This function performs the dense matrix PLU decomposition of a general \f$ M \times N \f$ matrix
-// based on the LAPACK sgetrf() function, which uses partial pivoting with row interchanges. The
+// This function performs the dense matrix PLU decomposition of a general M-by-N matrix based on
+// the LAPACK sgetrf() function, which uses partial pivoting with row interchanges. The resulting
 // decomposition has the form
 
-                          \f[ A = P \cdot L \cdot U, \f]\n
+                          \f[ A = P \cdot L \cdot U, \f]
 
 // where \c P is a permutation matrix, \c L is a lower unitriangular matrix, and \c U is an upper
 // triangular matrix. The resulting decomposition is stored within \a A: In case of a column-major
@@ -154,15 +154,15 @@ inline void getrf( int* m, int* n, float* a, int* lda, int* ipiv, int* info )
 // \param n The number of columns of the given matrix \f$[0..\infty)\f$.
 // \param a Pointer to the first element of the matrix.
 // \param lda The total number of elements between two rows/columns of the matrix \f$[0..\infty)\f$.
-// \param ipiv Auxiliary array for the pivot indices; size >= min( M, N ).
+// \param ipiv Auxiliary array for the pivot indices; size >= min( \a m, \a n ).
 // \param info Return code of the function call.
 // \return void
 //
-// This function performs the dense matrix PLU decomposition of a general \f$ M \times N \f$ matrix
-// based on the LAPACK dgetrf() function, which uses partial pivoting with row interchanges. The
+// This function performs the dense matrix PLU decomposition of a general M-by-N matrix based on
+// the LAPACK dgetrf() function, which uses partial pivoting with row interchanges. The resulting
 // decomposition has the form
 
-                          \f[ A = P \cdot L \cdot U, \f]\n
+                          \f[ A = P \cdot L \cdot U, \f]
 
 // where \c P is a permutation matrix, \c L is a lower unitriangular matrix, and \c U is an upper
 // triangular matrix. The resulting decomposition is stored within \a A: In case of a column-major
@@ -198,15 +198,15 @@ inline void getrf( int* m, int* n, double* a, int* lda, int* ipiv, int* info )
 // \param n The number of columns of the given matrix \f$[0..\infty)\f$.
 // \param a Pointer to the first element of the matrix.
 // \param lda The total number of elements between two rows/columns of the matrix \f$[0..\infty)\f$.
-// \param ipiv Auxiliary array for the pivot indices; size >= min( M, N ).
+// \param ipiv Auxiliary array for the pivot indices; size >= min( \a m, \a n ).
 // \param info Return code of the function call.
 // \return void
 //
-// This function performs the dense matrix PLU decomposition of a general \f$ M \times N \f$ matrix
-// based on the LAPACK cgetrf() function, which uses partial pivoting with row interchanges. The
+// This function performs the dense matrix PLU decomposition of a general M-by-N matrix based on
+// the LAPACK cgetrf() function, which uses partial pivoting with row interchanges. The resulting
 // decomposition has the form
 
-                          \f[ A = P \cdot L \cdot U, \f]\n
+                          \f[ A = P \cdot L \cdot U, \f]
 
 // where \c P is a permutation matrix, \c L is a lower unitriangular matrix, and \c U is an upper
 // triangular matrix. The resulting decomposition is stored within \a A: In case of a column-major
@@ -244,15 +244,15 @@ inline void getrf( int* m, int* n, complex<float>* a, int* lda, int* ipiv, int* 
 // \param n The number of columns of the given matrix \f$[0..\infty)\f$.
 // \param a Pointer to the first element of the matrix.
 // \param lda The total number of elements between two rows/columns of the matrix \f$[0..\infty)\f$.
-// \param ipiv Auxiliary array for the pivot indices; size >= min( M, N ).
+// \param ipiv Auxiliary array for the pivot indices; size >= min( \a m, \a n ).
 // \param info Return code of the function call.
 // \return void
 //
-// This function performs the dense matrix PLU decomposition of a general \f$ M \times N \f$ matrix
-// based on the LAPACK zgetrf() function, which uses partial pivoting with row interchanges. The
+// This function performs the dense matrix PLU decomposition of a general M-by-N matrix based on
+// the LAPACK zgetrf() function, which uses partial pivoting with row interchanges. The resulting
 // decomposition has the form
 
-                          \f[ A = P \cdot L \cdot U, \f]\n
+                          \f[ A = P \cdot L \cdot U, \f]
 
 // where \c P is a permutation matrix, \c L is a lower unitriangular matrix, and \c U is an upper
 // triangular matrix. The resulting decomposition is stored within \a A: In case of a column-major
@@ -288,18 +288,18 @@ inline void getrf( int* m, int* n, complex<double>* a, int* lda, int* ipiv, int*
 // \ingroup lapack
 //
 // \param A The matrix to be decomposed.
-// \param ipiv Auxiliary array for the pivot indices; size >= min( M, N ).
+// \param ipiv Auxiliary array for the pivot indices; size >= min( \a m, \a n ).
 // \return void
 //
-// This function performs the dense matrix PLU decomposition of a general \f$ M \times N \f$ matrix
-// based on the LAPACK \c getrf() functions, which use partial pivoting with row interchanges.
-// Note that the function only works for general, non-adapted matrices with \c float, \c double,
-// \c complex<float>, or \c complex<double> element type. The attempt to call the function with
-// adaptors or matrices of any other element type results in a compile time error!\n
+// This function performs the dense matrix PLU decomposition of a general M-by-N matrix based
+// on the LAPACK \c getrf() functions, which use partial pivoting with row interchanges. Note
+// that the function only works for general, non-adapted matrices with \c float, \c double,
+// \c complex<float>, or \c complex<double> element type. The attempt to call the function
+// with adaptors or matrices of any other element type results in a compile time error!\n
 //
-// The decomposition has the form
+// The resulting decomposition has the form
 
-                          \f[ A = P \cdot L \cdot U, \f]\n
+                          \f[ A = P \cdot L \cdot U, \f]
 
 // where \c P is a permutation matrix, \c L is a lower unitriangular matrix, and \c U is an upper
 // triangular matrix. The resulting decomposition is stored within \a A: In case of a column-major

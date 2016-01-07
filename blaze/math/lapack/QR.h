@@ -113,14 +113,14 @@ inline void geqrf( DenseMatrix<MT,SO>& A, typename MT::ElementType* tau );
 // \param n The number of columns of the given matrix \f$[0..\infty)\f$.
 // \param a Pointer to the first element of the matrix.
 // \param lda The total number of elements between two rows/columns of the matrix \f$[0..\infty)\f$.
-// \param tau Array for the scalar factors of the elementary reflectors; size >= min( M, N ).
-// \param work Auxiliary array; size >= max( 1, lwork ).
-// \param lwork The dimension of the array \a work; size >= max( 1, N ).
+// \param tau Array for the scalar factors of the elementary reflectors; size >= min( \a m, \a n ).
+// \param work Auxiliary array; size >= max( 1, \a lwork ).
+// \param lwork The dimension of the array \a work; size >= max( 1, \a n ).
 // \param info Return code of the function call.
 // \return void
 //
-// This function performs the dense matrix QR decomposition of a general \f$ M \times N \f$ matrix
-// based on the LAPACK sgeqrf() function. The decomposition has the form
+// This function performs the dense matrix QR decomposition of a general M-by-N matrix based on
+// the LAPACK sgeqrf() function. The resulting decomposition has the form
 
                               \f[ A = Q \cdot R, \f]
 
@@ -169,14 +169,14 @@ inline void geqrf( int* m, int* n, float* a, int* lda, float* tau,
 // \param n The number of columns of the given matrix \f$[0..\infty)\f$.
 // \param a Pointer to the first element of the matrix.
 // \param lda The total number of elements between two rows/columns of the matrix \f$[0..\infty)\f$.
-// \param tau Array for the scalar factors of the elementary reflectors; size >= min( M, N ).
-// \param work Auxiliary array; size >= max( 1, lwork ).
-// \param lwork The dimension of the array \a work; size >= max( 1, N ).
+// \param tau Array for the scalar factors of the elementary reflectors; size >= min( \a m, \a n ).
+// \param work Auxiliary array; size >= max( 1, \a lwork ).
+// \param lwork The dimension of the array \a work; size >= max( 1, \a n ).
 // \param info Return code of the function call.
 // \return void
 //
-// This function performs the dense matrix QR decomposition of a general \f$ M \times N \f$ matrix
-// based on the LAPACK dgeqrf() function. The decomposition has the form
+// This function performs the dense matrix QR decomposition of a general M-by-N matrix based on
+// the LAPACK dgeqrf() function. The resulting decomposition has the form
 
                               \f[ A = Q \cdot R, \f]
 
@@ -225,14 +225,14 @@ inline void geqrf( int* m, int* n, double* a, int* lda, double* tau,
 // \param n The number of columns of the given matrix \f$[0..\infty)\f$.
 // \param a Pointer to the first element of the matrix.
 // \param lda The total number of elements between two rows/columns of the matrix \f$[0..\infty)\f$.
-// \param tau Array for the scalar factors of the elementary reflectors; size >= min( M, N ).
-// \param work Auxiliary array; size >= max( 1, lwork ).
-// \param lwork The dimension of the array \a work; size >= max( 1, N ).
+// \param tau Array for the scalar factors of the elementary reflectors; size >= min( \a m, \a n ).
+// \param work Auxiliary array; size >= max( 1, \a lwork ).
+// \param lwork The dimension of the array \a work; size >= max( 1, \a n ).
 // \param info Return code of the function call.
 // \return void
 //
-// This function performs the dense matrix QR decomposition of a general \f$ M \times N \f$ matrix
-// based on the LAPACK cgeqrf() function. The decomposition has the form
+// This function performs the dense matrix QR decomposition of a general M-by-N matrix based on
+// the LAPACK cgeqrf() function. The resulting decomposition has the form
 
                               \f[ A = Q \cdot R, \f]
 
@@ -284,14 +284,14 @@ inline void geqrf( int* m, int* n, complex<float>* a, int* lda, complex<float>* 
 // \param n The number of columns of the given matrix \f$[0..\infty)\f$.
 // \param a Pointer to the first element of the matrix.
 // \param lda The total number of elements between two rows/columns of the matrix \f$[0..\infty)\f$.
-// \param tau Array for the scalar factors of the elementary reflectors; size >= min( M, N ).
-// \param work Auxiliary array; size >= max( 1, lwork ).
-// \param lwork The dimension of the array \a work; size >= max( 1, N ).
+// \param tau Array for the scalar factors of the elementary reflectors; size >= min( \a m, \a n ).
+// \param work Auxiliary array; size >= max( 1, \a lwork ).
+// \param lwork The dimension of the array \a work; size >= max( 1, \a n ).
 // \param info Return code of the function call.
 // \return void
 //
-// This function performs the dense matrix QR decomposition of a general \f$ M \times N \f$ matrix
-// based on the LAPACK zgeqrf() function. The decomposition has the form
+// This function performs the dense matrix QR decomposition of a general M-by-N matrix based on
+// the LAPACK zgeqrf() function. The resulting decomposition has the form
 
                               \f[ A = Q \cdot R, \f]
 
@@ -340,16 +340,16 @@ inline void geqrf( int* m, int* n, complex<double>* a, int* lda, complex<double>
 // \ingroup lapack
 //
 // \param A The matrix to be decomposed.
-// \param tau Array for the scalar factors of the elementary reflectors; size >= min( M, N ).
+// \param tau Array for the scalar factors of the elementary reflectors; size >= min( \a m, \a n ).
 // \return void
 //
-// This function performs the dense matrix QR decomposition of a general \f$ M \times N \f$ matrix
-// based on the LAPACK geqrf() functions. Note that this function can only be used for general,
-// non-adapted matrices with \c float, \c double, \c complex<float>, or \c complex<double> element
-// type. The attempt to call the function with any adapted matrix or matrices of any other element
-// type results in a compile time error!\n
+// This function performs the dense matrix QR decomposition of a general M-by-N matrix based on
+// the LAPACK geqrf() functions. Note that this function can only be used for general, non-adapted
+// matrices with \c float, \c double, \c complex<float>, or \c complex<double> element type. The
+// attempt to call the function with any adapted matrix or matrices of any other element type
+// results in a compile time error!\n
 //
-// The decomposition has the form
+// The resulting decomposition has the form
 
                               \f[ A = Q \cdot R, \f]
 
