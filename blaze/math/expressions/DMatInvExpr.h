@@ -356,9 +356,13 @@ class DMatInvExpr : public DenseMatrix< DMatInvExpr<MT,SO>, SO >
    B = inv( A );
    \endcode
 
-// Note that it is not possible to use any kind of view on the expression object returned by the
-// \c inv() function. Also, it is not possible to access individual elements via the function call
-// operator on the expression object:
+// \note The matrix inversion can only be used for dense matrices with \c float, \c double,
+// \c complex<float> or \c complex<double> element type. The attempt to call the function with
+// matrices of any other element type results in a compile time error!
+//
+// \note It is not possible to use any kind of view on the expression object returned by the
+// \c inv() function. Also, it is not possible to access individual elements via the function
+// call operator on the expression object:
 
    \code
    row( inv( A ), 2UL );  // Compilation error: Views cannot be used on an inv() expression!

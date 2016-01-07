@@ -258,6 +258,10 @@ inline void swap( UpperMatrix<MT,SO,DF>& a, UpperMatrix<MT,SO,DF>& b ) /* throw(
 // This function inverts the given upper dense \f$ 2 \times 2 \f$ matrix via the rule of Sarrus.
 // The matrix inversion fails if the given matrix is singular and not invertible. In this case a
 // \a std::invalid_argument exception is thrown.
+//
+// \note The matrix inversion can only be used for dense matrices with \c float, \c double,
+// \c complex<float> or \c complex<double> element type. The attempt to call the function with
+// matrices of any other element type results in a compile time error!
 */
 template< typename MT  // Type of the dense matrix
         , bool SO >    // Storage order of the dense matrix
@@ -302,6 +306,10 @@ inline void invert2x2( UpperMatrix<MT,SO,true>& m )
 // This function inverts the given upper dense \f$ 3 \times 3 \f$ matrix via the rule of Sarrus.
 // The matrix inversion fails if the given matrix is singular and not invertible. In this case a
 // \a std::invalid_argument exception is thrown.
+//
+// \note The matrix inversion can only be used for dense matrices with \c float, \c double,
+// \c complex<float> or \c complex<double> element type. The attempt to call the function with
+// matrices of any other element type results in a compile time error!
 */
 template< typename MT  // Type of the dense matrix
         , bool SO >    // Storage order of the dense matrix
@@ -350,6 +358,10 @@ inline void invert3x3( UpperMatrix<MT,SO,true>& m )
 // This function inverts the given upper dense \f$ 4 \times 4 \f$ matrix via the rule of Sarrus.
 // The matrix inversion fails if the given matrix is singular and not invertible. In this case a
 // \a std::invalid_argument exception is thrown.
+//
+// \note The matrix inversion can only be used for dense matrices with \c float, \c double,
+// \c complex<float> or \c complex<double> element type. The attempt to call the function with
+// matrices of any other element type results in a compile time error!
 */
 template< typename MT  // Type of the dense matrix
         , bool SO >    // Storage order of the dense matrix
@@ -406,6 +418,10 @@ inline void invert4x4( UpperMatrix<MT,SO,true>& m )
 // This function inverts the given upper dense \f$ 5 \times 5 \f$ matrix via the rule of Sarrus.
 // The matrix inversion fails if the given matrix is singular and not invertible. In this case a
 // \a std::invalid_argument exception is thrown.
+//
+// \note The matrix inversion can only be used for dense matrices with \c float, \c double,
+// \c complex<float> or \c complex<double> element type. The attempt to call the function with
+// matrices of any other element type results in a compile time error!
 */
 template< typename MT  // Type of the dense matrix
         , bool SO >    // Storage order of the dense matrix
@@ -475,6 +491,10 @@ inline void invert5x5( UpperMatrix<MT,SO,true>& m )
 // This function inverts the given upper dense \f$ 6 \times 6 \f$ matrix via the rule of Sarrus.
 // The matrix inversion fails if the given matrix is singular and not invertible. In this case a
 // \a std::invalid_argument exception is thrown.
+//
+// \note The matrix inversion can only be used for dense matrices with \c float, \c double,
+// \c complex<float> or \c complex<double> element type. The attempt to call the function with
+// matrices of any other element type results in a compile time error!
 */
 template< typename MT  // Type of the dense matrix
         , bool SO >    // Storage order of the dense matrix

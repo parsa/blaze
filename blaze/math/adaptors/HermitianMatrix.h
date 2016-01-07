@@ -260,6 +260,10 @@ inline void swap( HermitianMatrix<MT,SO,DF>& a, HermitianMatrix<MT,SO,DF>& b ) /
 // This function inverts the given Hermitian dense \f$ 2 \times 2 \f$ matrix via the rule of
 // Sarrus. The matrix inversion fails if the given matrix is singular and not invertible. In
 // this case a \a std::invalid_argument exception is thrown.
+//
+// \note The matrix inversion can only be used for dense matrices with \c float, \c double,
+// \c complex<float> or \c complex<double> element type. The attempt to call the function with
+// matrices of any other element type results in a compile time error!
 */
 template< typename MT  // Type of the dense matrix
         , bool SO >    // Storage order of the dense matrix
@@ -306,6 +310,10 @@ inline void invert2x2( HermitianMatrix<MT,SO,true>& m )
 // This function inverts the given Hermitian dense \f$ 3 \times 3 \f$ matrix via the rule of
 // Sarrus. The matrix inversion fails if the given matrix is singular and not invertible. In
 // this case a \a std::invalid_argument exception is thrown.
+//
+// \note The matrix inversion can only be used for dense matrices with \c float, \c double,
+// \c complex<float> or \c complex<double> element type. The attempt to call the function with
+// matrices of any other element type results in a compile time error!
 */
 template< typename MT  // Type of the dense matrix
         , bool SO >    // Storage order of the dense matrix
@@ -357,6 +365,10 @@ inline void invert3x3( HermitianMatrix<MT,SO,true>& m )
 // This function inverts the given Hermitian dense \f$ 4 \times 4 \f$ matrix via the rule of
 // Sarrus. The matrix inversion fails if the given matrix is singular and not invertible. In
 // this case a \a std::invalid_argument exception is thrown.
+//
+// \note The matrix inversion can only be used for dense matrices with \c float, \c double,
+// \c complex<float> or \c complex<double> element type. The attempt to call the function with
+// matrices of any other element type results in a compile time error!
 */
 template< typename MT  // Type of the dense matrix
         , bool SO >    // Storage order of the dense matrix
@@ -428,6 +440,10 @@ inline void invert4x4( HermitianMatrix<MT,SO,true>& m )
 // This function inverts the given Hermitian dense \f$ 5 \times 5 \f$ matrix via the rule of
 // Sarrus. The matrix inversion fails if the given matrix is singular and not invertible. In
 // this case a \a std::invalid_argument exception is thrown.
+//
+// \note The matrix inversion can only be used for dense matrices with \c float, \c double,
+// \c complex<float> or \c complex<double> element type. The attempt to call the function with
+// matrices of any other element type results in a compile time error!
 */
 template< typename MT  // Type of the dense matrix
         , bool SO >    // Storage order of the dense matrix
@@ -546,6 +562,10 @@ inline void invert5x5( HermitianMatrix<MT,SO,true>& m )
 // This function inverts the given Hermitian dense \f$ 6 \times 6 \f$ matrix via the rule of
 // Sarrus. The matrix inversion fails if the given matrix is singular and not invertible. In
 // this case a \a std::invalid_argument exception is thrown.
+//
+// \note The matrix inversion can only be used for dense matrices with \c float, \c double,
+// \c complex<float> or \c complex<double> element type. The attempt to call the function with
+// matrices of any other element type results in a compile time error!
 */
 template< typename MT  // Type of the dense matrix
         , bool SO >    // Storage order of the dense matrix
@@ -762,10 +782,15 @@ inline void invert6x6( HermitianMatrix<MT,SO,true>& m )
 // The matrix inversion fails if the given Hermitian matrix is singular and not invertible. In
 // this case a \a std::invalid_argument exception is thrown.
 //
-// \note This function does not provide any exception safety guarantee, i.e. in case an exception
-// is thrown, \c m may already have been modified.
+// \note The matrix inversion can only be used for dense matrices with \c float, \c double,
+// \c complex<float> or \c complex<double> element type. The attempt to call the function with
+// matrices of any other element type results in a compile time error!
+//
 // \note This function can only be used if the fitting LAPACK library is available and linked to
 // the executable. Otherwise a linker error will be created.
+//
+// \note This function does not provide any exception safety guarantee, i.e. in case an exception
+// is thrown, \c m may already have been modified.
 */
 template< DecompositionFlag DF  // Decomposition algorithm
         , typename MT           // Type of the dense matrix
