@@ -355,6 +355,15 @@ class DMatInvExpr : public DenseMatrix< DMatInvExpr<MT,SO>, SO >
    // ... Resizing and initialization
    B = inv( A );
    \endcode
+
+// Note that it is not possible to use any kind of view on the expression object returned by the
+// \c inv() function. Also, it is not possible to access individual elements via the function call
+// operator on the expression object:
+
+   \code
+   row( inv( A ), 2UL );  // Compilation error: Views cannot be used on an inv() expression!
+   inv( A )(1,2);         // Compilation error: It is not possible to access individual elements!
+   \endcode
 */
 template< typename MT  // Type of the dense matrix
         , bool SO >    // Storage order
