@@ -87,15 +87,17 @@ void zgeqrf_( int* m, int* n, double* a, int* lda, double* tau, double* work, in
 //*************************************************************************************************
 /*!\name LAPACK QR decomposition functions */
 //@{
-void geqrf( int* m, int* n, float* a, int* lda, float* tau, float*  work, int* lwork, int* info );
+inline void geqrf( int* m, int* n, float* a, int* lda, float* tau,
+                   float* work, int* lwork, int* info );
 
-void geqrf( int* m, int* n, double* a, int* lda, double* tau, double* work, int* lwork, int* info );
+inline void geqrf( int* m, int* n, double* a, int* lda, double* tau,
+                   double* work, int* lwork, int* info );
 
-void geqrf( int* m, int* n, complex<float>* a, int* lda, complex<float>* tau,
-            complex<float>* work, int* lwork, int* info );
+inline void geqrf( int* m, int* n, complex<float>* a, int* lda, complex<float>* tau,
+                   complex<float>* work, int* lwork, int* info );
 
-void geqrf( int* m, int* n, complex<double>* a, int* lda, complex<double>* tau,
-            complex<double>* work, int* lwork, int* info );
+inline void geqrf( int* m, int* n, complex<double>* a, int* lda, complex<double>* tau,
+                   complex<double>* work, int* lwork, int* info );
 
 template< typename MT, bool SO >
 inline void geqrf( DenseMatrix<MT,SO>& A, typename MT::ElementType* tau );
@@ -151,7 +153,8 @@ inline void geqrf( DenseMatrix<MT,SO>& A, typename MT::ElementType* tau );
 // \note This function can only be used if the fitting LAPACK library is available and linked to
 // the executable. Otherwise a call to this function will result in a linker error.
 */
-inline void geqrf( int* m, int* n, float* a, int* lda, float* tau, float* work, int* lwork, int* info )
+inline void geqrf( int* m, int* n, float* a, int* lda, float* tau,
+                   float* work, int* lwork, int* info )
 {
    sgeqrf_( m, n, a, lda, tau, work, lwork, info );
 }
@@ -206,7 +209,8 @@ inline void geqrf( int* m, int* n, float* a, int* lda, float* tau, float* work, 
 // \note This function can only be used if the fitting LAPACK library is available and linked to
 // the executable. Otherwise a call to this function will result in a linker error.
 */
-inline void geqrf( int* m, int* n, double* a, int* lda, double* tau, double* work, int* lwork, int* info )
+inline void geqrf( int* m, int* n, double* a, int* lda, double* tau,
+                   double* work, int* lwork, int* info )
 {
    dgeqrf_( m, n, a, lda, tau, work, lwork, info );
 }
