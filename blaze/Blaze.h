@@ -136,6 +136,7 @@ namespace blaze {}
 //    <li> \ref blas_functions </li>
 //    <li> \ref lapack_functions </li>
 //    <li> \ref configuration_files </li>
+//    <li> \ref custom_data_types </li>
 //    <li> \ref error_reporting_customization </li>
 //    <li> \ref intra_statement_optimization </li>
 // </ul>
@@ -8390,7 +8391,7 @@ namespace blaze {}
 
 // \n \subsection blas_level_3_trmm Triangular Matrix/Matrix Multiplication (trmm)
 //
-// // The following wrapper functions provide a generic interface for the BLAS functions for the
+// The following wrapper functions provide a generic interface for the BLAS functions for the
 // matrix/matrix multiplication with a triangular matrix (\c strmm(), \c dtrmm(), \c ctrmm(), and
 // \c ztrmm()):
 
@@ -8757,7 +8758,115 @@ The decomposition has the form
 // whether streaming is beneficial or hurtful for performance.
 //
 //
-// \n Previous: \ref lapack_functions &nbsp; &nbsp; Next: \ref error_reporting_customization \n
+// \n Previous: \ref lapack_functions &nbsp; &nbsp; Next: \ref custom_data_types \n
+*/
+//*************************************************************************************************
+
+
+//**Custom Data Types******************************************************************************
+/*!\page custom_data_types Custom Data Types
+//
+//
+// The \b Blaze library tries hard to make the use of custom data types as convenient, easy and
+// intuitive as possible. However, unfortunately it is not possible to meet the requirements of
+// all possible data types. Thus it might be necessary to provide \b Blaze with some additional
+// information about the data type. The following sections give an overview of the necessary steps
+// to enable the use of the hypothetical custom data type \c custom::double_t for vector and
+// matrix operations. For example:
+
+   \code
+   blaze::DynamicVector<custom::double_t> a, b, c;
+   // ... Resizing and initialization
+   c = a + b;
+   \endcode
+
+// The \b Blaze library assumes that the \c custom::double_t data type provides \c operator+()
+// for additions, \c operator-() for subtractions, \c operator*() for multiplications and
+// \c operator/() for divisions. If any of these functions is missing it is necessary to implement
+// the operator to perform the according operation. For this example we assume that the custom
+// data type provides the four following functions instead of operators:
+
+   \code
+   namespace custom {
+
+   double_t add ( const double_t& a, const double_t b );
+   double_t sub ( const double_t& a, const double_t b );
+   double_t mult( const double_t& a, const double_t b );
+   double_t div ( const double_t& a, const double_t b );
+
+   } // namespace custom
+   \endcode
+
+// The following implementations will satisfy the requirements of the \b Blaze library:
+
+   \code
+   inline custom::double_t operator+( const custom::double_t& a, const custom::double_t& b )
+   {
+      return add( a, b );
+   }
+
+   inline custom::double_t operator-( const custom::double_t& a, const custom::double_t& b )
+   {
+      return sub( a, b );
+   }
+
+   inline custom::double_t operator*( const custom::double_t& a, const custom::double_t& b )
+   {
+      return mult( a, b );
+   }
+
+   inline custom::double_t operator/( const custom::double_t& a, const custom::double_t& b )
+   {
+      return div( a, b );
+   }
+   \endcode
+
+// \b Blaze will use all the information provided with these functions (for instance the return
+// type) to properly handle the operations. In the rare case that the return type cannot be
+// automatically determined from the operator it might be additionally necessary to provide a
+// specialization of the following four \b Blaze class templates:
+
+   \code
+   namespace blaze {
+
+   template<>
+   struct AddTrait<custom::double_t,custom::double_t> {
+      typedef custom::double_t  Type;
+   };
+
+   template<>
+   struct SubTrait<custom::double_t,custom::double_t> {
+      typedef custom::double_t  Type;
+   };
+
+   template<>
+   struct MultTrait<custom::double_t,custom::double_t> {
+      typedef custom::double_t  Type;
+   };
+
+   template<>
+   struct DivTrait<custom::double_t,custom::double_t> {
+      typedef custom::double_t  Type;
+   };
+
+   } // namespace blaze
+   \endcode
+
+// The same steps are necessary if several custom data types need to be combined (as for instance
+// \c custom::double_t and \c custom::float_t). Note that in this case both permutations need to
+// be taken into account:
+
+   \code
+   custom::double_t operator+( const custom::double_t& a, const custom::float_t& b );
+   custom::double_t operator+( const custom::float_t& a, const custom::double_t& b );
+   // ...
+   \endcode
+
+// Please note that only built-in data types apply for vectorization and thus custom data types
+// cannot achieve maximum performance!
+//
+//
+// \n Previous: \ref configuration_files &nbsp; &nbsp; Next: \ref error_reporting_customization \n
 */
 //*************************************************************************************************
 
@@ -8870,7 +8979,7 @@ The decomposition has the form
 // care!
 //
 //
-// \n Previous: \ref configuration_files &nbsp; &nbsp; Next: \ref intra_statement_optimization \n
+// \n Previous: \ref custom_data_types &nbsp; &nbsp; Next: \ref intra_statement_optimization \n
 */
 //*************************************************************************************************
 
