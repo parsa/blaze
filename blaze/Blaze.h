@@ -3307,9 +3307,11 @@ namespace blaze {}
    invert( A );  // In-place matrix inversion
    \endcode
 
-// By default, both the \c inv and the \c invert function perform the dense matrix inversion by
-// means of a PLU decomposition. However, via the \c invert() function it is possible to explicitly
-// specify the matrix decomposition algorithm that should be used in the inversion process:
+// For small matrices of up to 6x6, both the \c inv() and the \c invert() function uses manually
+// optimized kernels for maximum performance. For matrices larger than 6x6 the inversion is by
+// default performed by means of a PLU decomposition. However, via the \c invert() function it
+// is possible to explicitly specify the matrix decomposition algorithm that should be used in
+// the inversion process:
 
    \code
    using blaze::byPLU;
@@ -3330,7 +3332,7 @@ namespace blaze {}
 // function caller to guarantee that the given matrix is a positive definite matrix. In case this
 // precondition is violated the result will not represent the inverse of the given matrix!
 //
-// For both the \c inv and \c invert function the matrix inversion fails if ...
+// For both the \c inv() and \c invert() function the matrix inversion fails if ...
 //
 //  - ... the given matrix is not a square matrix;
 //  - ... the given matrix is singular and not invertible.
@@ -3346,6 +3348,15 @@ namespace blaze {}
 // only be used if the fitting LAPACK library is available and linked to the executable. Otherwise
 // a linker error will be created.
 //
+// \note It is not possible to use any kind of view on the expression object returned by the
+// \c inv() function. Also, it is not possible to access individual elements via the function call
+// operator on the expression object:
+
+   \code
+   row( inv( A ), 2UL );  // Compilation error: Views cannot be used on an inv() expression!
+   inv( A )(1,2);         // Compilation error: It is not possible to access individual elements!
+   \endcode
+
 // \note This function does not provide any exception safety guarantee, i.e. in case an exception
 // is thrown the matrix may already have been modified.
 //
