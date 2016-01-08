@@ -8303,19 +8303,19 @@ namespace blaze {}
    \code
    namespace blaze {
 
-   void gemv( CBLAS_ORDER layout, CBLAS_TRANSPOSE transA, int M, int N, float alpha,
+   void gemv( CBLAS_ORDER layout, CBLAS_TRANSPOSE transA, int m, int n, float alpha,
               const float* A, int lda, const float* x, int incX,
               float beta, float* y, int incY );
 
-   void gemv( CBLAS_ORDER layout, CBLAS_TRANSPOSE transA, int M, int N, double alpha,
+   void gemv( CBLAS_ORDER layout, CBLAS_TRANSPOSE transA, int m, int n, double alpha,
               const double* A, int lda, const double* x, int incX,
               double beta, double* y, int incY );
 
-   void gemv( CBLAS_ORDER layout, CBLAS_TRANSPOSE transA, int M, int N, complex<float> alpha,
+   void gemv( CBLAS_ORDER layout, CBLAS_TRANSPOSE transA, int m, int n, complex<float> alpha,
               const complex<float>* A, int lda, const complex<float>* x, int incX,
               complex<float> beta, complex<float>* y, int incY );
 
-   void gemv( CBLAS_ORDER layout, CBLAS_TRANSPOSE transA, int M, int N, complex<double> alpha,
+   void gemv( CBLAS_ORDER layout, CBLAS_TRANSPOSE transA, int m, int n, complex<double> alpha,
               const complex<double>* A, int lda, const complex<double>* x, int incX,
               complex<double> beta, complex<double>* y, int incY );
 
@@ -8340,22 +8340,22 @@ namespace blaze {}
    namespace blaze {
 
    void trmv( CBLAS_ORDER order, CBLAS_UPLO uplo, CBLAS_TRANSPOSE transA, CBLAS_DIAG diag,
-              int N, const float* A, int lda, float* X, int incX );
+              int n, const float* A, int lda, float* x, int incX );
 
    void trmv( CBLAS_ORDER order, CBLAS_UPLO uplo, CBLAS_TRANSPOSE transA, CBLAS_DIAG diag,
-              int N, const double* A, int lda, double* X, int incX );
+              int n, const double* A, int lda, double* x, int incX );
 
    void trmv( CBLAS_ORDER order, CBLAS_UPLO uplo, CBLAS_TRANSPOSE transA, CBLAS_DIAG diag,
-              int N, const complex<float>* A, int lda, complex<float>* X, int incX );
+              int n, const complex<float>* A, int lda, complex<float>* x, int incX );
 
    void trmv( CBLAS_ORDER order, CBLAS_UPLO uplo, CBLAS_TRANSPOSE transA, CBLAS_DIAG diag,
-              int N, const complex<double>* A, int lda, complex<double>* X, int incX );
+              int n, const complex<double>* A, int lda, complex<double>* x, int incX );
 
    template< typename VT, typename MT, bool SO >
-   void trmv( DenseVector<VT,false>& y, const DenseMatrix<MT,SO>& A, CBLAS_UPLO uplo );
+   void trmv( DenseVector<VT,false>& x, const DenseMatrix<MT,SO>& A, CBLAS_UPLO uplo );
 
    template< typename VT, typename MT, bool SO >
-   void trmv( DenseVector<VT,true>& y, const DenseMatrix<MT,SO>& A, CBLAS_UPLO uplo );
+   void trmv( DenseVector<VT,true>& x, const DenseMatrix<MT,SO>& A, CBLAS_UPLO uplo );
 
    } // namespace blaze
    \endcode
@@ -8372,19 +8372,19 @@ namespace blaze {}
    namespace blaze {
 
    void gemm( CBLAS_ORDER order, CBLAS_TRANSPOSE transA, CBLAS_TRANSPOSE transB,
-              int M, int N, int K, float alpha, const float* A, int lda,
+              int m, int n, int k, float alpha, const float* A, int lda,
               const float* B, int ldb, float beta, float* C, int ldc );
 
    void gemm( CBLAS_ORDER order, CBLAS_TRANSPOSE transA, CBLAS_TRANSPOSE transB,
-              int M, int N, int K, double alpha, const double* A, int lda,
+              int m, int n, int k, double alpha, const double* A, int lda,
               const double* B, int ldb, double beta, float* C, int ldc );
 
    void gemm( CBLAS_ORDER order, CBLAS_TRANSPOSE transA, CBLAS_TRANSPOSE transB,
-              int M, int N, int K, complex<float> alpha, const complex<float>* A, int lda,
+              int m, int n, int k, complex<float> alpha, const complex<float>* A, int lda,
               const complex<float>* B, int ldb, complex<float> beta, float* C, int ldc );
 
    void gemm( CBLAS_ORDER order, CBLAS_TRANSPOSE transA, CBLAS_TRANSPOSE transB,
-              int M, int N, int K, complex<double> alpha, const complex<double>* A, int lda,
+              int m, int n, int k, complex<double> alpha, const complex<double>* A, int lda,
               const complex<double>* B, int ldb, complex<double> beta, float* C, int ldc );
 
    template< typename MT1, bool SO1, typename MT2, bool SO2, typename MT3, bool SO3, typename ST >
@@ -8404,19 +8404,19 @@ namespace blaze {}
    namespace blaze {
 
    void trmm( CBLAS_ORDER order, CBLAS_SIDE side, CBLAS_UPLO uplo, CBLAS_TRANSPOSE transA,
-              CBLAS_DIAG diag, int M, int N, float alpha, const float* A,
+              CBLAS_DIAG diag, int m, int n, float alpha, const float* A,
               int lda, float* B, int ldb );
 
    void trmm( CBLAS_ORDER order, CBLAS_SIDE side, CBLAS_UPLO uplo, CBLAS_TRANSPOSE transA,
-              CBLAS_DIAG diag, int M, int N, double alpha, const double* A,
+              CBLAS_DIAG diag, int m, int n, double alpha, const double* A,
               int lda, double* B, int ldb );
 
    void trmm( CBLAS_ORDER order, CBLAS_SIDE side, CBLAS_UPLO uplo, CBLAS_TRANSPOSE transA,
-              CBLAS_DIAG diag, int M, int N, complex<float> alpha, const complex<float>* A,
+              CBLAS_DIAG diag, int m, int n, complex<float> alpha, const complex<float>* A,
               int lda, complex<float>* B, int ldb );
 
    void trmm( CBLAS_ORDER order, CBLAS_SIDE side, CBLAS_UPLO uplo, CBLAS_TRANSPOSE transA,
-              CBLAS_DIAG diag, int M, int N, complex<double> alpha, const complex<double>* A,
+              CBLAS_DIAG diag, int m, int n, complex<double> alpha, const complex<double>* A,
               int lda, complex<double>* B, int ldb );
 
    template< typename MT1, bool SO1, typename MT2, bool SO2, typename ST >
@@ -8462,13 +8462,13 @@ namespace blaze {}
    \code
    namespace blaze {
 
-   void getrf( int* m, int* n, float* a, int* lda, int* ipiv, int* info );
+   void getrf( int* m, int* n, float* A, int* lda, int* ipiv, int* info );
 
-   void getrf( int* m, int* n, double* a, int* lda, int* ipiv, int* info );
+   void getrf( int* m, int* n, double* A, int* lda, int* ipiv, int* info );
 
-   void getrf( int* m, int* n, complex<float>* a, int* lda, int* ipiv, int* info );
+   void getrf( int* m, int* n, complex<float>* A, int* lda, int* ipiv, int* info );
 
-   void getrf( int* m, int* n, complex<double>* a, int* lda, int* ipiv, int* info );
+   void getrf( int* m, int* n, complex<double>* A, int* lda, int* ipiv, int* info );
 
    template< typename MT, bool SO >
    void getrf( DenseMatrix<MT,SO>& A, int* ipiv );
@@ -8500,13 +8500,13 @@ namespace blaze {}
    \code
    namespace blaze {
 
-   void potrf( char* uplo, int* n, float* a, int* lda, int* info );
+   void potrf( char* uplo, int* n, float* A, int* lda, int* info );
 
-   void potrf( char* uplo, int* n, double* a, int* lda, int* info );
+   void potrf( char* uplo, int* n, double* A, int* lda, int* info );
 
-   void potrf( char* uplo, int* n, complex<float>* a, int* lda, int* info );
+   void potrf( char* uplo, int* n, complex<float>* A, int* lda, int* info );
 
-   void potrf( char* uplo, int* n, complex<double>* a, int* lda, int* info );
+   void potrf( char* uplo, int* n, complex<double>* A, int* lda, int* info );
 
    template< typename MT, bool SO >
    void potrf( DenseMatrix<MT,SO>& A, char uplo );
@@ -8533,14 +8533,14 @@ The decomposition has the form
    \code
    namespace blaze {
 
-   void geqrf( int* m, int* n, float* a, int* lda, float* tau, float*  work, int* lwork, int* info );
+   void geqrf( int* m, int* n, float* A, int* lda, float* tau, float*  work, int* lwork, int* info );
 
-   void geqrf( int* m, int* n, double* a, int* lda, double* tau, double* work, int* lwork, int* info );
+   void geqrf( int* m, int* n, double* A, int* lda, double* tau, double* work, int* lwork, int* info );
 
-   void geqrf( int* m, int* n, complex<float>* a, int* lda, complex<float>* tau,
+   void geqrf( int* m, int* n, complex<float>* A, int* lda, complex<float>* tau,
             complex<float>* work, int* lwork, int* info );
 
-   void geqrf( int* m, int* n, complex<double>* a, int* lda, complex<double>* tau,
+   void geqrf( int* m, int* n, complex<double>* A, int* lda, complex<double>* tau,
             complex<double>* work, int* lwork, int* info );
 
    template< typename MT, bool SO >
@@ -8578,14 +8578,14 @@ The decomposition has the form
    \code
    namespace blaze {
 
-   void getri( int* n, float* a, int* lda, int* ipiv, float* work, int* lwork, int* info );
+   void getri( int* n, float* A, int* lda, int* ipiv, float* work, int* lwork, int* info );
 
-   void getri( int* n, double* a, int* lda, int* ipiv, double* work, int* lwork, int* info );
+   void getri( int* n, double* A, int* lda, int* ipiv, double* work, int* lwork, int* info );
 
-   void getri( int* n, complex<float>* a, int* lda, int* ipiv,
+   void getri( int* n, complex<float>* A, int* lda, int* ipiv,
                complex<float>* work, int* lwork, int* info );
 
-   void getri( int* n, complex<double>* a, int* lda, int* ipiv,
+   void getri( int* n, complex<double>* A, int* lda, int* ipiv,
                complex<double>* work, int* lwork, int* info );
 
    template< typename MT, bool SO >
@@ -8612,13 +8612,13 @@ The decomposition has the form
    \code
    namespace blaze {
 
-   void potri( char* uplo, int* n, float*  a, int* lda, int* info );
+   void potri( char* uplo, int* n, float* A, int* lda, int* info );
 
-   void potri( char* uplo, int* n, double* a, int* lda, int* info );
+   void potri( char* uplo, int* n, double* A, int* lda, int* info );
 
-   void potri( char* uplo, int* n, complex<float>*  a, int* lda, int* info );
+   void potri( char* uplo, int* n, complex<float>* A, int* lda, int* info );
 
-   void potri( char* uplo, int* n, complex<double>* a, int* lda, int* info );
+   void potri( char* uplo, int* n, complex<double>* A, int* lda, int* info );
 
    template< typename MT, bool SO >
    void potri( DenseMatrix<MT,SO>& A, char uplo );
