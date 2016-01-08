@@ -40,7 +40,8 @@
 // Includes
 //*************************************************************************************************
 
-#include <blaze/math/blas/Level2.h>
+#include <blaze/math/blas/gemv.h>
+#include <blaze/math/blas/trmv.h>
 #include <blaze/math/constraints/ColumnMajorMatrix.h>
 #include <blaze/math/constraints/ColumnVector.h>
 #include <blaze/math/constraints/DenseMatrix.h>

@@ -40,7 +40,9 @@
 // Includes
 //*************************************************************************************************
 
-#include <blaze/math/blas/Level2.h>
-#include <blaze/math/blas/Level3.h>
+#include <blaze/math/blas/gemm.h>
+#include <blaze/math/blas/gemv.h>
+#include <blaze/math/blas/trmm.h>
+#include <blaze/math/blas/trmv.h>
 
 #endif
