@@ -46,9 +46,10 @@
 #include <blaze/math/dense/StaticMatrix.h>
 #include <blaze/math/expressions/DenseMatrix.h>
 #include <blaze/math/Functions.h>
-#include <blaze/math/lapack/Cholesky.h>
-#include <blaze/math/lapack/Inversion.h>
-#include <blaze/math/lapack/PLU.h>
+#include <blaze/math/lapack/getrf.h>
+#include <blaze/math/lapack/getri.h>
+#include <blaze/math/lapack/potrf.h>
+#include <blaze/math/lapack/potri.h>
 #include <blaze/math/shims/Invert.h>
 #include <blaze/math/shims/IsDefault.h>
 #include <blaze/math/traits/DerestrictTrait.h>

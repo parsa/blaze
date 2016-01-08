@@ -47,7 +47,7 @@
 #include <blaze/math/constraints/RequiresEvaluation.h>
 #include <blaze/math/DecompositionFlag.h>
 #include <blaze/math/expressions/DenseMatrix.h>
-#include <blaze/math/lapack/PLU.h>
+#include <blaze/math/lapack/getrf.h>
 #include <blaze/math/typetraits/IsSquare.h>
 #include <blaze/math/typetraits/IsStrictlyTriangular.h>
 #include <blaze/math/typetraits/IsTriangular.h>

@@ -40,9 +40,10 @@
 // Includes
 //*************************************************************************************************
 
-#include <blaze/math/lapack/Cholesky.h>
-#include <blaze/math/lapack/Inversion.h>
-#include <blaze/math/lapack/PLU.h>
-#include <blaze/math/lapack/QR.h>
+#include <blaze/math/lapack/geqrf.h>
+#include <blaze/math/lapack/getrf.h>
+#include <blaze/math/lapack/getri.h>
+#include <blaze/math/lapack/potrf.h>
+#include <blaze/math/lapack/potri.h>
 
 #endif
