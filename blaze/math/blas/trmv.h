@@ -100,7 +100,7 @@ BLAZE_ALWAYS_INLINE void trmv( DenseVector<VT,true>& x, const DenseMatrix<MT,SO>
 #if BLAZE_BLAS_MODE
 /*!\brief BLAS kernel for a triangular dense matrix/dense vector multiplication for single
 //        precision operands (\f$ \vec{x}=A*\vec{x} \f$).
-// \ingroup math
+// \ingroup blas
 //
 // \param order Specifies the storage order of matrix \a A (\a CblasColMajor or \a CblasColMajor).
 // \param uplo \a CblasLower to use the lower triangle from \a A, \a CblasUpper to use the upper triangle.
@@ -130,7 +130,7 @@ BLAZE_ALWAYS_INLINE void trmv( CBLAS_ORDER order, CBLAS_UPLO uplo, CBLAS_TRANSPO
 #if BLAZE_BLAS_MODE
 /*!\brief BLAS kernel for a triangular dense matrix/dense vector multiplication for double
 //        precision operands (\f$ \vec{x}=A*\vec{x} \f$).
-// \ingroup math
+// \ingroup blas
 //
 // \param order Specifies the storage order of matrix \a A (\a CblasColMajor or \a CblasColMajor).
 // \param uplo \a CblasLower to use the lower triangle from \a A, \a CblasUpper to use the upper triangle.
@@ -160,7 +160,7 @@ BLAZE_ALWAYS_INLINE void trmv( CBLAS_ORDER order, CBLAS_UPLO uplo, CBLAS_TRANSPO
 #if BLAZE_BLAS_MODE
 /*!\brief BLAS kernel for a triangular dense matrix/dense vector multiplication for single
 //        precision complex operands (\f$ \vec{x}=A*\vec{x} \f$).
-// \ingroup math
+// \ingroup blas
 //
 // \param order Specifies the storage order of matrix \a A (\a CblasColMajor or \a CblasColMajor).
 // \param uplo \a CblasLower to use the lower triangle from \a A, \a CblasUpper to use the upper triangle.
@@ -190,7 +190,7 @@ BLAZE_ALWAYS_INLINE void trmv( CBLAS_ORDER order, CBLAS_UPLO uplo, CBLAS_TRANSPO
 #if BLAZE_BLAS_MODE
 /*!\brief BLAS kernel for a triangular dense matrix/dense vector multiplication for double
 //        precision complex operands (\f$ \vec{x}=A*\vec{x} \f$).
-// \ingroup math
+// \ingroup blas
 //
 // \param order Specifies the storage order of matrix \a A (\a CblasColMajor or \a CblasColMajor).
 // \param uplo \a CblasLower to use the lower triangle from \a A, \a CblasUpper to use the upper triangle.
@@ -220,7 +220,7 @@ BLAZE_ALWAYS_INLINE void trmv( CBLAS_ORDER order, CBLAS_UPLO uplo, CBLAS_TRANSPO
 #if BLAZE_BLAS_MODE
 /*!\brief BLAS kernel for a triangular dense matrix/dense vector multiplication
 //        (\f$ \vec{x}=A*\vec{x} \f$).
-// \ingroup math
+// \ingroup blas
 //
 // \param x The target left-hand side dense vector.
 // \param A The dense matrix operand.
@@ -266,7 +266,7 @@ BLAZE_ALWAYS_INLINE void trmv( DenseVector<VT,false>& x, const DenseMatrix<MT,SO
 #if BLAZE_BLAS_MODE
 /*!\brief BLAS kernel for a transpose dense vector/triangular dense matrix multiplication
 //        (\f$ \vec{x}^T=\vec{x}^T*A \f$).
-// \ingroup math
+// \ingroup blas
 //
 // \param x The target left-hand side dense vector.
 // \param A The dense matrix operand.

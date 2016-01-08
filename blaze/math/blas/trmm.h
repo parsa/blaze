@@ -98,7 +98,7 @@ BLAZE_ALWAYS_INLINE void trmm( DenseMatrix<MT1,SO1>& B, const DenseMatrix<MT2,SO
 #if BLAZE_BLAS_MODE
 /*!\brief BLAS kernel for a triangular dense matrix/dense matrix multiplication with single
 //        precision matrices (\f$ B=\alpha*A*B \f$ or \f$ B=\alpha*B*A \f$).
-// \ingroup math
+// \ingroup blas
 //
 // \param order Specifies the storage order of matrix \a A (\a CblasColMajor or \a CblasColMajor).
 // \param side \a CblasLeft to compute \f$ B=\alpha*A*B \f$, \a CblasRight to compute \f$ B=\alpha*B*A \f$.
@@ -131,7 +131,7 @@ BLAZE_ALWAYS_INLINE void trmm( CBLAS_ORDER order, CBLAS_SIDE side, CBLAS_UPLO up
 #if BLAZE_BLAS_MODE
 /*!\brief BLAS kernel for a triangular dense matrix/dense matrix multiplication with double
 //        precision matrices (\f$ B=\alpha*A*B \f$ or \f$ B=\alpha*B*A \f$).
-// \ingroup math
+// \ingroup blas
 //
 // \param order Specifies the storage order of matrix \a A (\a CblasColMajor or \a CblasColMajor).
 // \param side \a CblasLeft to compute \f$ B=\alpha*A*B \f$, \a CblasRight to compute \f$ B=\alpha*B*A \f$.
@@ -164,7 +164,7 @@ BLAZE_ALWAYS_INLINE void trmm( CBLAS_ORDER order, CBLAS_SIDE side, CBLAS_UPLO up
 #if BLAZE_BLAS_MODE
 /*!\brief BLAS kernel for a triangular dense matrix/dense matrix multiplication with single
 //        precision complex matrices (\f$ B=\alpha*A*B \f$ or \f$ B=\alpha*B*A \f$).
-// \ingroup math
+// \ingroup blas
 //
 // \param order Specifies the storage order of matrix \a A (\a CblasColMajor or \a CblasColMajor).
 // \param side \a CblasLeft to compute \f$ B=\alpha*A*B \f$, \a CblasRight to compute \f$ B=\alpha*B*A \f$.
@@ -198,7 +198,7 @@ BLAZE_ALWAYS_INLINE void trmm( CBLAS_ORDER order, CBLAS_SIDE side, CBLAS_UPLO up
 #if BLAZE_BLAS_MODE
 /*!\brief BLAS kernel for a triangular dense matrix/dense matrix multiplication with double
 //        precision complex matrices (\f$ B=\alpha*A*B \f$ or \f$ B=\alpha*B*A \f$).
-// \ingroup math
+// \ingroup blas
 //
 // \param order Specifies the storage order of matrix \a A (\a CblasColMajor or \a CblasColMajor).
 // \param side \a CblasLeft to compute \f$ B=\alpha*A*B \f$, \a CblasRight to compute \f$ B=\alpha*B*A \f$.
@@ -232,7 +232,7 @@ BLAZE_ALWAYS_INLINE void trmm( CBLAS_ORDER order, CBLAS_SIDE side, CBLAS_UPLO up
 #if BLAZE_BLAS_MODE
 /*!\brief BLAS kernel for a triangular dense matrix/dense matrix multiplication with single
 //        precision matrices (\f$ B=\alpha*A*B \f$ or \f$ B=\alpha*B*A \f$).
-// \ingroup math
+// \ingroup blas
 //
 // \param B The target dense matrix.
 // \param A The dense matrix multiplication operand.

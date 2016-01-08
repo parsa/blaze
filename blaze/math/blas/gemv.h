@@ -102,7 +102,7 @@ BLAZE_ALWAYS_INLINE void gemv( DenseVector<VT1,true>& y, const DenseVector<VT2,t
 #if BLAZE_BLAS_MODE
 /*!\brief BLAS kernel for a dense matrix/dense vector multiplication for single precision operands
 //        (\f$ \vec{y}=\alpha*A*\vec{x}+\beta*\vec{y} \f$).
-// \ingroup math
+// \ingroup blas
 //
 // \param order Specifies the storage order of matrix \a A (\a CblasColMajor or \a CblasColMajor).
 // \param transA Specifies whether to transpose matrix \a A (\a CblasNoTrans or \a CblasTrans).
@@ -135,7 +135,7 @@ BLAZE_ALWAYS_INLINE void gemv( CBLAS_ORDER order, CBLAS_TRANSPOSE transA, int m,
 #if BLAZE_BLAS_MODE
 /*!\brief BLAS kernel for a dense matrix/dense vector multiplication for double precision operands
 //        (\f$ \vec{y}=\alpha*A*\vec{x}+\beta*\vec{y} \f$).
-// \ingroup math
+// \ingroup blas
 //
 // \param order Specifies the storage order of matrix \a A (\a CblasColMajor or \a CblasColMajor).
 // \param transA Specifies whether to transpose matrix \a A (\a CblasNoTrans or \a CblasTrans).
@@ -168,7 +168,7 @@ BLAZE_ALWAYS_INLINE void gemv( CBLAS_ORDER order, CBLAS_TRANSPOSE transA, int m,
 #if BLAZE_BLAS_MODE
 /*!\brief BLAS kernel for a dense matrix/dense vector multiplication for single precision complex
 //        operands (\f$ \vec{y}=\alpha*A*\vec{x}+\beta*\vec{y} \f$).
-// \ingroup math
+// \ingroup blas
 //
 // \param order Specifies the storage order of matrix \a A (\a CblasColMajor or \a CblasColMajor).
 // \param transA Specifies whether to transpose matrix \a A (\a CblasNoTrans or \a CblasTrans).
@@ -202,7 +202,7 @@ BLAZE_ALWAYS_INLINE void gemv( CBLAS_ORDER order, CBLAS_TRANSPOSE transA, int m,
 #if BLAZE_BLAS_MODE
 /*!\brief BLAS kernel for a dense matrix/dense vector multiplication for double precision complex
 //        operands (\f$ \vec{y}=\alpha*A*\vec{x}+\beta*\vec{y} \f$).
-// \ingroup math
+// \ingroup blas
 //
 // \param order Specifies the storage order of matrix \a A (\a CblasColMajor or \a CblasColMajor).
 // \param transA Specifies whether to transpose matrix \a A (\a CblasNoTrans or \a CblasTrans).
@@ -236,7 +236,7 @@ BLAZE_ALWAYS_INLINE void gemv( CBLAS_ORDER order, CBLAS_TRANSPOSE transA, int m,
 #if BLAZE_BLAS_MODE
 /*!\brief BLAS kernel for a dense matrix/dense vector multiplication
 //        (\f$ \vec{y}=\alpha*A*\vec{x}+\beta*\vec{y} \f$).
-// \ingroup math
+// \ingroup blas
 //
 // \param y The target left-hand side dense vector.
 // \param A The left-hand side dense matrix operand.
@@ -287,7 +287,7 @@ BLAZE_ALWAYS_INLINE void gemv( DenseVector<VT1,false>& y, const DenseMatrix<MT1,
 #if BLAZE_BLAS_MODE
 /*!\brief BLAS kernel for a transpose dense vector/dense matrix multiplication
 //        (\f$ \vec{y}^T=\alpha*\vec{x}^T*A+\beta*\vec{y}^T \f$).
-// \ingroup math
+// \ingroup blas
 //
 // \param y The target left-hand side dense vector.
 // \param x The left-hand side dense vector operand.

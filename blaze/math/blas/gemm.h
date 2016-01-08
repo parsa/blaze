@@ -98,7 +98,7 @@ BLAZE_ALWAYS_INLINE void gemm( DenseMatrix<MT1,SO1>& C, const DenseMatrix<MT2,SO
 #if BLAZE_BLAS_MODE
 /*!\brief BLAS kernel for a dense matrix/dense matrix multiplication with single precision
 //        matrices (\f$ C=\alpha*A*B+\beta*C \f$).
-// \ingroup math
+// \ingroup blas
 //
 // \param order Specifies the storage order of matrix \a A (\a CblasColMajor or \a CblasColMajor).
 // \param transA Specifies whether to transpose matrix \a A (\a CblasNoTrans or \a CblasTrans).
@@ -133,7 +133,7 @@ BLAZE_ALWAYS_INLINE void gemm( CBLAS_ORDER order, CBLAS_TRANSPOSE transA, CBLAS_
 #if BLAZE_BLAS_MODE
 /*!\brief BLAS kernel for a dense matrix/dense matrix multiplication with double precision
 //        matrices (\f$ C=\alpha*A*B+\beta*C \f$).
-// \ingroup math
+// \ingroup blas
 //
 // \param order Specifies the storage order of matrix \a A (\a CblasColMajor or \a CblasColMajor).
 // \param transA Specifies whether to transpose matrix \a A (\a CblasNoTrans or \a CblasTrans).
@@ -168,7 +168,7 @@ BLAZE_ALWAYS_INLINE void gemm( CBLAS_ORDER order, CBLAS_TRANSPOSE transA, CBLAS_
 #if BLAZE_BLAS_MODE
 /*!\brief BLAS kernel for a dense matrix/dense matrix multiplication with single precision
 //        matrices (\f$ C=\alpha*A*B+\beta*C \f$).
-// \ingroup math
+// \ingroup blas
 //
 // \param order Specifies the storage order of matrix \a A (\a CblasColMajor or \a CblasColMajor).
 // \param transA Specifies whether to transpose matrix \a A (\a CblasNoTrans or \a CblasTrans).
@@ -204,7 +204,7 @@ BLAZE_ALWAYS_INLINE void gemm( CBLAS_ORDER order, CBLAS_TRANSPOSE transA, CBLAS_
 #if BLAZE_BLAS_MODE
 /*!\brief BLAS kernel for a dense matrix/dense matrix multiplication with double precision
 //        matrices (\f$ C=\alpha*A*B+\beta*C \f$).
-// \ingroup math
+// \ingroup blas
 //
 // \param order Specifies the storage order of matrix \a A (\a CblasColMajor or \a CblasColMajor).
 // \param transA Specifies whether to transpose matrix \a A (\a CblasNoTrans or \a CblasTrans).
@@ -239,7 +239,7 @@ BLAZE_ALWAYS_INLINE void gemm( CBLAS_ORDER order, CBLAS_TRANSPOSE transA, CBLAS_
 //*************************************************************************************************
 #if BLAZE_BLAS_MODE
 /*!\brief BLAS kernel for a dense matrix/dense matrix multiplication (\f$ C=\alpha*A*B+\beta*C \f$).
-// \ingroup math
+// \ingroup blas
 //
 // \param C The target left-hand side dense matrix.
 // \param A The left-hand side multiplication operand.
