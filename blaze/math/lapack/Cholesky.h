@@ -69,10 +69,10 @@ namespace blaze {
 /*! \cond BLAZE_INTERNAL */
 extern "C" {
 
-void spotrf_( char* uplo, int* n, float*  a, int* lda, int* info );
-void dpotrf_( char* uplo, int* n, double* a, int* lda, int* info );
-void cpotrf_( char* uplo, int* n, float*  a, int* lda, int* info );
-void zpotrf_( char* uplo, int* n, double* a, int* lda, int* info );
+void spotrf_( char* uplo, int* n, float*  A, int* lda, int* info );
+void dpotrf_( char* uplo, int* n, double* A, int* lda, int* info );
+void cpotrf_( char* uplo, int* n, float*  A, int* lda, int* info );
+void zpotrf_( char* uplo, int* n, double* A, int* lda, int* info );
 
 }
 /*! \endcond */
@@ -90,13 +90,13 @@ void zpotrf_( char* uplo, int* n, double* a, int* lda, int* info );
 //*************************************************************************************************
 /*!\name LAPACK Cholesky decomposition functions */
 //@{
-inline void potrf( char* uplo, int* n, float* a, int* lda, int* info );
+inline void potrf( char* uplo, int* n, float* A, int* lda, int* info );
 
-inline void potrf( char* uplo, int* n, double* a, int* lda, int* info );
+inline void potrf( char* uplo, int* n, double* A, int* lda, int* info );
 
-inline void potrf( char* uplo, int* n, complex<float>* a, int* lda, int* info );
+inline void potrf( char* uplo, int* n, complex<float>* A, int* lda, int* info );
 
-inline void potrf( char* uplo, int* n, complex<double>* a, int* lda, int* info );
+inline void potrf( char* uplo, int* n, complex<double>* A, int* lda, int* info );
 
 template< typename MT, bool SO >
 inline void potrf( DenseMatrix<MT,SO>& A, char uplo );
@@ -110,7 +110,7 @@ inline void potrf( DenseMatrix<MT,SO>& A, char uplo );
 //
 // \param uplo \c 'L' to use the lower part of the matrix, \c 'U' to use the upper part.
 // \param n The number of rows/columns of the matrix \f$[0..\infty)\f$.
-// \param a Pointer to the first element of the matrix.
+// \param A Pointer to the first element of the matrix.
 // \param lda The total number of elements between two rows/columns of the matrix \f$[0..\infty)\f$.
 // \param info Return code of the function call.
 // \return void
@@ -139,9 +139,9 @@ inline void potrf( DenseMatrix<MT,SO>& A, char uplo );
 // \note This function can only be used if the fitting LAPACK library is available and linked to
 // the executable. Otherwise a call to this function will result in a linker error.
 */
-inline void potrf( char* uplo, int* n, float* a, int* lda, int* info )
+inline void potrf( char* uplo, int* n, float* A, int* lda, int* info )
 {
-   spotrf_( uplo, n, a, lda, info );
+   spotrf_( uplo, n, A, lda, info );
 }
 //*************************************************************************************************
 
@@ -152,7 +152,7 @@ inline void potrf( char* uplo, int* n, float* a, int* lda, int* info )
 //
 // \param uplo \c 'L' to use the lower part of the matrix, \c 'U' to use the upper part.
 // \param n The number of rows/columns of the matrix \f$[0..\infty)\f$.
-// \param a Pointer to the first element of the matrix.
+// \param A Pointer to the first element of the matrix.
 // \param lda The total number of elements between two rows/columns of the matrix \f$[0..\infty)\f$.
 // \param info Return code of the function call.
 // \return void
@@ -181,9 +181,9 @@ inline void potrf( char* uplo, int* n, float* a, int* lda, int* info )
 // \note This function can only be used if the fitting LAPACK library is available and linked to
 // the executable. Otherwise a call to this function will result in a linker error.
 */
-inline void potrf( char* uplo, int* n, double* a, int* lda, int* info )
+inline void potrf( char* uplo, int* n, double* A, int* lda, int* info )
 {
-   dpotrf_( uplo, n, a, lda, info );
+   dpotrf_( uplo, n, A, lda, info );
 }
 //*************************************************************************************************
 
@@ -195,7 +195,7 @@ inline void potrf( char* uplo, int* n, double* a, int* lda, int* info )
 //
 // \param uplo \c 'L' to use the lower part of the matrix, \c 'U' to use the upper part.
 // \param n The number of rows/columns of the matrix \f$[0..\infty)\f$.
-// \param a Pointer to the first element of the matrix.
+// \param A Pointer to the first element of the matrix.
 // \param lda The total number of elements between two rows/columns of the matrix \f$[0..\infty)\f$.
 // \param info Return code of the function call.
 // \return void
@@ -224,11 +224,11 @@ inline void potrf( char* uplo, int* n, double* a, int* lda, int* info )
 // \note This function can only be used if the fitting LAPACK library is available and linked to
 // the executable. Otherwise a call to this function will result in a linker error.
 */
-inline void potrf( char* uplo, int* n, complex<float>* a, int* lda, int* info )
+inline void potrf( char* uplo, int* n, complex<float>* A, int* lda, int* info )
 {
    BLAZE_STATIC_ASSERT( sizeof( complex<float> ) == 2UL*sizeof( float ) );
 
-   cpotrf_( uplo, n, reinterpret_cast<float*>( a ), lda, info );
+   cpotrf_( uplo, n, reinterpret_cast<float*>( A ), lda, info );
 }
 //*************************************************************************************************
 
@@ -240,7 +240,7 @@ inline void potrf( char* uplo, int* n, complex<float>* a, int* lda, int* info )
 //
 // \param uplo \c 'L' to use the lower part of the matrix, \c 'U' to use the upper part.
 // \param n The number of rows/columns of the matrix \f$[0..\infty)\f$.
-// \param a Pointer to the first element of the matrix.
+// \param A Pointer to the first element of the matrix.
 // \param lda The total number of elements between two rows/columns of the matrix \f$[0..\infty)\f$.
 // \param info Return code of the function call.
 // \return void
@@ -269,11 +269,11 @@ inline void potrf( char* uplo, int* n, complex<float>* a, int* lda, int* info )
 // \note This function can only be used if the fitting LAPACK library is available and linked to
 // the executable. Otherwise a call to this function will result in a linker error.
 */
-inline void potrf( char* uplo, int* n, complex<double>* a, int* lda, int* info )
+inline void potrf( char* uplo, int* n, complex<double>* A, int* lda, int* info )
 {
    BLAZE_STATIC_ASSERT( sizeof( complex<double> ) == 2UL*sizeof( double ) );
 
-   zpotrf_( uplo, n, reinterpret_cast<double*>( a ), lda, info );
+   zpotrf_( uplo, n, reinterpret_cast<double*>( A ), lda, info );
 }
 //*************************************************************************************************
 

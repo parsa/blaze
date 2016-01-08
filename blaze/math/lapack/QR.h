@@ -66,10 +66,10 @@ namespace blaze {
 /*! \cond BLAZE_INTERNAL */
 extern "C" {
 
-void sgeqrf_( int* m, int* n, float*  a, int* lda, float*  tau, float*  work, int* lwork, int* info );
-void dgeqrf_( int* m, int* n, double* a, int* lda, double* tau, double* work, int* lwork, int* info );
-void cgeqrf_( int* m, int* n, float*  a, int* lda, float*  tau, float*  work, int* lwork, int* info );
-void zgeqrf_( int* m, int* n, double* a, int* lda, double* tau, double* work, int* lwork, int* info );
+void sgeqrf_( int* m, int* n, float*  A, int* lda, float*  tau, float*  work, int* lwork, int* info );
+void dgeqrf_( int* m, int* n, double* A, int* lda, double* tau, double* work, int* lwork, int* info );
+void cgeqrf_( int* m, int* n, float*  A, int* lda, float*  tau, float*  work, int* lwork, int* info );
+void zgeqrf_( int* m, int* n, double* A, int* lda, double* tau, double* work, int* lwork, int* info );
 
 }
 /*! \endcond */
@@ -87,16 +87,16 @@ void zgeqrf_( int* m, int* n, double* a, int* lda, double* tau, double* work, in
 //*************************************************************************************************
 /*!\name LAPACK QR decomposition functions */
 //@{
-inline void geqrf( int* m, int* n, float* a, int* lda, float* tau,
+inline void geqrf( int* m, int* n, float* A, int* lda, float* tau,
                    float* work, int* lwork, int* info );
 
-inline void geqrf( int* m, int* n, double* a, int* lda, double* tau,
+inline void geqrf( int* m, int* n, double* A, int* lda, double* tau,
                    double* work, int* lwork, int* info );
 
-inline void geqrf( int* m, int* n, complex<float>* a, int* lda, complex<float>* tau,
+inline void geqrf( int* m, int* n, complex<float>* A, int* lda, complex<float>* tau,
                    complex<float>* work, int* lwork, int* info );
 
-inline void geqrf( int* m, int* n, complex<double>* a, int* lda, complex<double>* tau,
+inline void geqrf( int* m, int* n, complex<double>* A, int* lda, complex<double>* tau,
                    complex<double>* work, int* lwork, int* info );
 
 template< typename MT, bool SO >
@@ -111,7 +111,7 @@ inline void geqrf( DenseMatrix<MT,SO>& A, typename MT::ElementType* tau );
 //
 // \param m The number of rows of the given matrix \f$[0..\infty)\f$.
 // \param n The number of columns of the given matrix \f$[0..\infty)\f$.
-// \param a Pointer to the first element of the matrix.
+// \param A Pointer to the first element of the matrix.
 // \param lda The total number of elements between two rows/columns of the matrix \f$[0..\infty)\f$.
 // \param tau Array for the scalar factors of the elementary reflectors; size >= min( \a m, \a n ).
 // \param work Auxiliary array; size >= max( 1, \a lwork ).
@@ -153,10 +153,10 @@ inline void geqrf( DenseMatrix<MT,SO>& A, typename MT::ElementType* tau );
 // \note This function can only be used if the fitting LAPACK library is available and linked to
 // the executable. Otherwise a call to this function will result in a linker error.
 */
-inline void geqrf( int* m, int* n, float* a, int* lda, float* tau,
+inline void geqrf( int* m, int* n, float* A, int* lda, float* tau,
                    float* work, int* lwork, int* info )
 {
-   sgeqrf_( m, n, a, lda, tau, work, lwork, info );
+   sgeqrf_( m, n, A, lda, tau, work, lwork, info );
 }
 //*************************************************************************************************
 
@@ -167,7 +167,7 @@ inline void geqrf( int* m, int* n, float* a, int* lda, float* tau,
 //
 // \param m The number of rows of the given matrix \f$[0..\infty)\f$.
 // \param n The number of columns of the given matrix \f$[0..\infty)\f$.
-// \param a Pointer to the first element of the matrix.
+// \param A Pointer to the first element of the matrix.
 // \param lda The total number of elements between two rows/columns of the matrix \f$[0..\infty)\f$.
 // \param tau Array for the scalar factors of the elementary reflectors; size >= min( \a m, \a n ).
 // \param work Auxiliary array; size >= max( 1, \a lwork ).
@@ -209,10 +209,10 @@ inline void geqrf( int* m, int* n, float* a, int* lda, float* tau,
 // \note This function can only be used if the fitting LAPACK library is available and linked to
 // the executable. Otherwise a call to this function will result in a linker error.
 */
-inline void geqrf( int* m, int* n, double* a, int* lda, double* tau,
+inline void geqrf( int* m, int* n, double* A, int* lda, double* tau,
                    double* work, int* lwork, int* info )
 {
-   dgeqrf_( m, n, a, lda, tau, work, lwork, info );
+   dgeqrf_( m, n, A, lda, tau, work, lwork, info );
 }
 //*************************************************************************************************
 
@@ -223,7 +223,7 @@ inline void geqrf( int* m, int* n, double* a, int* lda, double* tau,
 //
 // \param m The number of rows of the given matrix \f$[0..\infty)\f$.
 // \param n The number of columns of the given matrix \f$[0..\infty)\f$.
-// \param a Pointer to the first element of the matrix.
+// \param A Pointer to the first element of the matrix.
 // \param lda The total number of elements between two rows/columns of the matrix \f$[0..\infty)\f$.
 // \param tau Array for the scalar factors of the elementary reflectors; size >= min( \a m, \a n ).
 // \param work Auxiliary array; size >= max( 1, \a lwork ).
@@ -265,12 +265,12 @@ inline void geqrf( int* m, int* n, double* a, int* lda, double* tau,
 // \note This function can only be used if the fitting LAPACK library is available and linked to
 // the executable. Otherwise a call to this function will result in a linker error.
 */
-inline void geqrf( int* m, int* n, complex<float>* a, int* lda, complex<float>* tau,
+inline void geqrf( int* m, int* n, complex<float>* A, int* lda, complex<float>* tau,
                    complex<float>* work, int* lwork, int* info )
 {
    BLAZE_STATIC_ASSERT( sizeof( complex<float> ) == 2UL*sizeof( float ) );
 
-   cgeqrf_( m, n, reinterpret_cast<float*>( a ), lda, reinterpret_cast<float*>( tau ),
+   cgeqrf_( m, n, reinterpret_cast<float*>( A ), lda, reinterpret_cast<float*>( tau ),
             reinterpret_cast<float*>( work ), lwork, info );
 }
 //*************************************************************************************************
@@ -282,7 +282,7 @@ inline void geqrf( int* m, int* n, complex<float>* a, int* lda, complex<float>* 
 //
 // \param m The number of rows of the given matrix \f$[0..\infty)\f$.
 // \param n The number of columns of the given matrix \f$[0..\infty)\f$.
-// \param a Pointer to the first element of the matrix.
+// \param A Pointer to the first element of the matrix.
 // \param lda The total number of elements between two rows/columns of the matrix \f$[0..\infty)\f$.
 // \param tau Array for the scalar factors of the elementary reflectors; size >= min( \a m, \a n ).
 // \param work Auxiliary array; size >= max( 1, \a lwork ).
@@ -324,12 +324,12 @@ inline void geqrf( int* m, int* n, complex<float>* a, int* lda, complex<float>* 
 // \note This function can only be used if the fitting LAPACK library is available and linked to
 // the executable. Otherwise a call to this function will result in a linker error.
 */
-inline void geqrf( int* m, int* n, complex<double>* a, int* lda, complex<double>* tau,
+inline void geqrf( int* m, int* n, complex<double>* A, int* lda, complex<double>* tau,
                    complex<double>* work, int* lwork, int* info )
 {
    BLAZE_STATIC_ASSERT( sizeof( complex<double> ) == 2UL*sizeof( double ) );
 
-   zgeqrf_( m, n, reinterpret_cast<double*>( a ), lda, reinterpret_cast<double*>( tau ),
+   zgeqrf_( m, n, reinterpret_cast<double*>( A ), lda, reinterpret_cast<double*>( tau ),
             reinterpret_cast<double*>( work ), lwork, info );
 }
 //*************************************************************************************************

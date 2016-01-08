@@ -67,20 +67,20 @@ namespace blaze {
 //@{
 #if BLAZE_BLAS_MODE
 
-BLAZE_ALWAYS_INLINE void gemv( CBLAS_ORDER layout, CBLAS_TRANSPOSE transA, int M, int N,
+BLAZE_ALWAYS_INLINE void gemv( CBLAS_ORDER layout, CBLAS_TRANSPOSE transA, int m, int n,
                                float alpha, const float* A, int lda, const float* x, int incX,
                                float beta, float* y, int incY );
 
-BLAZE_ALWAYS_INLINE void gemv( CBLAS_ORDER layout, CBLAS_TRANSPOSE transA, int M, int N,
+BLAZE_ALWAYS_INLINE void gemv( CBLAS_ORDER layout, CBLAS_TRANSPOSE transA, int m, int n,
                                double alpha, const double* A, int lda, const double* x, int incX,
                                double beta, double* y, int incY );
 
-BLAZE_ALWAYS_INLINE void gemv( CBLAS_ORDER layout, CBLAS_TRANSPOSE transA, int M, int N,
+BLAZE_ALWAYS_INLINE void gemv( CBLAS_ORDER layout, CBLAS_TRANSPOSE transA, int m, int n,
                                complex<float> alpha, const complex<float>* A, int lda,
                                const complex<float>* x, int incX, complex<float> beta,
                                complex<float>* y, int incY );
 
-BLAZE_ALWAYS_INLINE void gemv( CBLAS_ORDER layout, CBLAS_TRANSPOSE transA, int M, int N,
+BLAZE_ALWAYS_INLINE void gemv( CBLAS_ORDER layout, CBLAS_TRANSPOSE transA, int m, int n,
                                complex<double> alpha, const complex<double>* A, int lda,
                                const complex<double>* x, int incX, complex<double> beta,
                                complex<double>* y, int incY );
@@ -94,27 +94,27 @@ BLAZE_ALWAYS_INLINE void gemv( DenseVector<VT1,true>& y, const DenseVector<VT2,t
                                const DenseMatrix<MT1,SO>& A, ST alpha, ST beta );
 
 BLAZE_ALWAYS_INLINE void trmv( CBLAS_ORDER order, CBLAS_UPLO uplo, CBLAS_TRANSPOSE transA,
-                               CBLAS_DIAG diag, int N, const float* A, int lda, float* X,
+                               CBLAS_DIAG diag, int n, const float* A, int lda, float* x,
                                int incX );
 
 BLAZE_ALWAYS_INLINE void trmv( CBLAS_ORDER order, CBLAS_UPLO uplo, CBLAS_TRANSPOSE transA,
-                               CBLAS_DIAG diag, int N, const double* A, int lda, double* X,
+                               CBLAS_DIAG diag, int n, const double* A, int lda, double* x,
                                int incX );
 
 BLAZE_ALWAYS_INLINE void trmv( CBLAS_ORDER order, CBLAS_UPLO uplo, CBLAS_TRANSPOSE transA,
-                               CBLAS_DIAG diag, int N, const complex<float>* A, int lda,
-                               complex<float>* X, int incX );
+                               CBLAS_DIAG diag, int n, const complex<float>* A, int lda,
+                               complex<float>* x, int incX );
 
 BLAZE_ALWAYS_INLINE void trmv( CBLAS_ORDER order, CBLAS_UPLO uplo, CBLAS_TRANSPOSE transA,
-                               CBLAS_DIAG diag, int N, const complex<double>* A, int lda,
-                               complex<double>* X, int incX );
+                               CBLAS_DIAG diag, int n, const complex<double>* A, int lda,
+                               complex<double>* x, int incX );
 
 template< typename VT, typename MT, bool SO >
-BLAZE_ALWAYS_INLINE void trmv( DenseVector<VT,false>& y, const DenseMatrix<MT,SO>& A,
+BLAZE_ALWAYS_INLINE void trmv( DenseVector<VT,false>& x, const DenseMatrix<MT,SO>& A,
                                CBLAS_UPLO uplo );
 
 template< typename VT, typename MT, bool SO >
-BLAZE_ALWAYS_INLINE void trmv( DenseVector<VT,true>& y, const DenseMatrix<MT,SO>& A,
+BLAZE_ALWAYS_INLINE void trmv( DenseVector<VT,true>& x, const DenseMatrix<MT,SO>& A,
                                CBLAS_UPLO uplo );
 
 #endif
@@ -130,8 +130,8 @@ BLAZE_ALWAYS_INLINE void trmv( DenseVector<VT,true>& y, const DenseMatrix<MT,SO>
 //
 // \param order Specifies the storage order of matrix \a A (\a CblasColMajor or \a CblasColMajor).
 // \param transA Specifies whether to transpose matrix \a A (\a CblasNoTrans or \a CblasTrans).
-// \param M The number of rows of matrix \a A \f$[0..\infty)\f$.
-// \param N The number of columns of matrix \a A \f$[0..\infty)\f$.
+// \param m The number of rows of matrix \a A \f$[0..\infty)\f$.
+// \param n The number of columns of matrix \a A \f$[0..\infty)\f$.
 // \param alpha The scaling factor for \f$ A*\vec{x} \f$.
 // \param A Pointer to the first element of matrix \a A.
 // \param lda The total number of elements between two rows/columns of matrix \a A \f$[0..\infty)\f$.
@@ -145,11 +145,11 @@ BLAZE_ALWAYS_INLINE void trmv( DenseVector<VT,true>& y, const DenseMatrix<MT,SO>
 // This function performs the dense matrix/dense vector multiplication for single precision
 // operands based on the BLAS cblas_sgemv() function.
 */
-BLAZE_ALWAYS_INLINE void gemv( CBLAS_ORDER order, CBLAS_TRANSPOSE transA, int M, int N,
+BLAZE_ALWAYS_INLINE void gemv( CBLAS_ORDER order, CBLAS_TRANSPOSE transA, int m, int n,
                                float alpha, const float* A, int lda, const float* x, int incX,
                                float beta, float* y, int incY )
 {
-   cblas_sgemv( order, transA, M, N, alpha, A, lda, x, incX, beta, y, incY );
+   cblas_sgemv( order, transA, m, n, alpha, A, lda, x, incX, beta, y, incY );
 }
 #endif
 //*************************************************************************************************
@@ -163,8 +163,8 @@ BLAZE_ALWAYS_INLINE void gemv( CBLAS_ORDER order, CBLAS_TRANSPOSE transA, int M,
 //
 // \param order Specifies the storage order of matrix \a A (\a CblasColMajor or \a CblasColMajor).
 // \param transA Specifies whether to transpose matrix \a A (\a CblasNoTrans or \a CblasTrans).
-// \param M The number of rows of matrix \a A \f$[0..\infty)\f$.
-// \param N The number of columns of matrix \a A \f$[0..\infty)\f$.
+// \param m The number of rows of matrix \a A \f$[0..\infty)\f$.
+// \param n The number of columns of matrix \a A \f$[0..\infty)\f$.
 // \param alpha The scaling factor for \f$ A*\vec{x} \f$.
 // \param A Pointer to the first element of matrix \a A.
 // \param lda The total number of elements between two rows/columns of matrix \a A \f$[0..\infty)\f$.
@@ -178,11 +178,11 @@ BLAZE_ALWAYS_INLINE void gemv( CBLAS_ORDER order, CBLAS_TRANSPOSE transA, int M,
 // This function performs the dense matrix/dense vector multiplication for double precision
 // operands based on the BLAS cblas_dgemv() function.
 */
-BLAZE_ALWAYS_INLINE void gemv( CBLAS_ORDER order, CBLAS_TRANSPOSE transA, int M, int N,
+BLAZE_ALWAYS_INLINE void gemv( CBLAS_ORDER order, CBLAS_TRANSPOSE transA, int m, int n,
                                double alpha, const double* A, int lda, const double* x, int incX,
                                double beta, double* y, int incY )
 {
-   cblas_dgemv( order, transA, M, N, alpha, A, lda, x, incX, beta, y, incY );
+   cblas_dgemv( order, transA, m, n, alpha, A, lda, x, incX, beta, y, incY );
 }
 #endif
 //*************************************************************************************************
@@ -196,8 +196,8 @@ BLAZE_ALWAYS_INLINE void gemv( CBLAS_ORDER order, CBLAS_TRANSPOSE transA, int M,
 //
 // \param order Specifies the storage order of matrix \a A (\a CblasColMajor or \a CblasColMajor).
 // \param transA Specifies whether to transpose matrix \a A (\a CblasNoTrans or \a CblasTrans).
-// \param M The number of rows of matrix \a A \f$[0..\infty)\f$.
-// \param N The number of columns of matrix \a A \f$[0..\infty)\f$.
+// \param m The number of rows of matrix \a A \f$[0..\infty)\f$.
+// \param n The number of columns of matrix \a A \f$[0..\infty)\f$.
 // \param alpha The scaling factor for \f$ A*\vec{x} \f$.
 // \param A Pointer to the first element of matrix \a A.
 // \param lda The total number of elements between two rows/columns of matrix \a A \f$[0..\infty)\f$.
@@ -211,12 +211,12 @@ BLAZE_ALWAYS_INLINE void gemv( CBLAS_ORDER order, CBLAS_TRANSPOSE transA, int M,
 // This function performs the dense matrix/dense vector multiplication for single precision
 // complex operands based on the BLAS cblas_cgemv() function.
 */
-BLAZE_ALWAYS_INLINE void gemv( CBLAS_ORDER order, CBLAS_TRANSPOSE transA, int M, int N,
+BLAZE_ALWAYS_INLINE void gemv( CBLAS_ORDER order, CBLAS_TRANSPOSE transA, int m, int n,
                                complex<float> alpha, const complex<float>* A, int lda,
                                const complex<float>* x, int incX, complex<float> beta,
                                complex<float>* y, int incY )
 {
-   cblas_cgemv( order, transA, M, N, &alpha, A, lda, x, incX, &beta, y, incY );
+   cblas_cgemv( order, transA, m, n, &alpha, A, lda, x, incX, &beta, y, incY );
 }
 #endif
 //*************************************************************************************************
@@ -230,8 +230,8 @@ BLAZE_ALWAYS_INLINE void gemv( CBLAS_ORDER order, CBLAS_TRANSPOSE transA, int M,
 //
 // \param order Specifies the storage order of matrix \a A (\a CblasColMajor or \a CblasColMajor).
 // \param transA Specifies whether to transpose matrix \a A (\a CblasNoTrans or \a CblasTrans).
-// \param M The number of rows of matrix \a A \f$[0..\infty)\f$.
-// \param N The number of columns of matrix \a A \f$[0..\infty)\f$.
+// \param m The number of rows of matrix \a A \f$[0..\infty)\f$.
+// \param n The number of columns of matrix \a A \f$[0..\infty)\f$.
 // \param alpha The scaling factor for \f$ A*\vec{x} \f$.
 // \param A Pointer to the first element of matrix \a A.
 // \param lda The total number of elements between two rows/columns of matrix \a A \f$[0..\infty)\f$.
@@ -245,12 +245,12 @@ BLAZE_ALWAYS_INLINE void gemv( CBLAS_ORDER order, CBLAS_TRANSPOSE transA, int M,
 // This function performs the dense matrix/dense vector multiplication for double precision
 // complex operands based on the BLAS zblas_zgemv() function.
 */
-BLAZE_ALWAYS_INLINE void gemv( CBLAS_ORDER order, CBLAS_TRANSPOSE transA, int M, int N,
+BLAZE_ALWAYS_INLINE void gemv( CBLAS_ORDER order, CBLAS_TRANSPOSE transA, int m, int n,
                                complex<double> alpha, const complex<double>* A, int lda,
                                const complex<double>* x, int incX, complex<double> beta,
                                complex<double>* y, int incY )
 {
-   cblas_zgemv( order, transA, M, N, &alpha, A, lda, x, incX, &beta, y, incY );
+   cblas_zgemv( order, transA, m, n, &alpha, A, lda, x, incX, &beta, y, incY );
 }
 #endif
 //*************************************************************************************************
@@ -296,11 +296,11 @@ BLAZE_ALWAYS_INLINE void gemv( DenseVector<VT1,false>& y, const DenseMatrix<MT1,
    BLAZE_CONSTRAINT_MUST_BE_BLAS_COMPATIBLE_TYPE( typename MT1::ElementType );
    BLAZE_CONSTRAINT_MUST_BE_BLAS_COMPATIBLE_TYPE( typename VT2::ElementType );
 
-   const int M  ( numeric_cast<int>( (~A).rows() )    );
-   const int N  ( numeric_cast<int>( (~A).columns() ) );
+   const int m  ( numeric_cast<int>( (~A).rows() )    );
+   const int n  ( numeric_cast<int>( (~A).columns() ) );
    const int lda( numeric_cast<int>( (~A).spacing() ) );
 
-   gemv( ( SO )?( CblasColMajor ):( CblasRowMajor ), CblasNoTrans, M, N, alpha,
+   gemv( ( SO )?( CblasColMajor ):( CblasRowMajor ), CblasNoTrans, m, n, alpha,
          (~A).data(), lda, (~x).data(), 1, beta, (~y).data(), 1 );
 }
 #endif
@@ -347,11 +347,11 @@ BLAZE_ALWAYS_INLINE void gemv( DenseVector<VT1,true>& y, const DenseVector<VT2,t
    BLAZE_CONSTRAINT_MUST_BE_BLAS_COMPATIBLE_TYPE( typename MT1::ElementType );
    BLAZE_CONSTRAINT_MUST_BE_BLAS_COMPATIBLE_TYPE( typename VT2::ElementType );
 
-   const int M  ( numeric_cast<int>( (~A).rows() )    );
-   const int N  ( numeric_cast<int>( (~A).columns() ) );
+   const int m  ( numeric_cast<int>( (~A).rows() )    );
+   const int n  ( numeric_cast<int>( (~A).columns() ) );
    const int lda( numeric_cast<int>( (~A).spacing() ) );
 
-   gemv( ( SO )?( CblasColMajor ):( CblasRowMajor ), CblasTrans, M, N, alpha,
+   gemv( ( SO )?( CblasColMajor ):( CblasRowMajor ), CblasTrans, m, n, alpha,
          (~A).data(), lda, (~x).data(), 1, beta, (~y).data(), 1 );
 }
 #endif
@@ -361,7 +361,7 @@ BLAZE_ALWAYS_INLINE void gemv( DenseVector<VT1,true>& y, const DenseVector<VT2,t
 //*************************************************************************************************
 #if BLAZE_BLAS_MODE
 /*!\brief BLAS kernel for a triangular dense matrix/dense vector multiplication for single
-//        precision operands (\f$ \vec{y}=A*\vec{y} \f$).
+//        precision operands (\f$ \vec{x}=A*\vec{x} \f$).
 // \ingroup math
 //
 // \param order Specifies the storage order of matrix \a A (\a CblasColMajor or \a CblasColMajor).
@@ -369,7 +369,7 @@ BLAZE_ALWAYS_INLINE void gemv( DenseVector<VT1,true>& y, const DenseVector<VT2,t
 // \param transA Specifies whether to transpose matrix \a A (\a CblasNoTrans or \a CblasTrans).
 // \param diag Specifies whether \a A is unitriangular (\a CblasNonUnit or \a CblasUnit).
 // \param n The number of rows/columns of matrix \a A \f$[0..\infty)\f$.
-// \param a Pointer to the first element of matrix \a A.
+// \param A Pointer to the first element of matrix \a A.
 // \param lda The total number of elements between two rows/columns of matrix \a A \f$[0..\infty)\f$.
 // \param x Pointer to the first element of vector \a x.
 // \param incX The stride within vector \a x.
@@ -379,10 +379,10 @@ BLAZE_ALWAYS_INLINE void gemv( DenseVector<VT1,true>& y, const DenseVector<VT2,t
 // based on the cblas_strmv() function.
 */
 BLAZE_ALWAYS_INLINE void trmv( CBLAS_ORDER order, CBLAS_UPLO uplo, CBLAS_TRANSPOSE transA,
-                               CBLAS_DIAG diag, int n, const float* a, int lda, float* x,
+                               CBLAS_DIAG diag, int n, const float* A, int lda, float* x,
                                int incX )
 {
-   cblas_strmv( order, uplo, transA, diag, n, a, lda, x, incX );
+   cblas_strmv( order, uplo, transA, diag, n, A, lda, x, incX );
 }
 #endif
 //*************************************************************************************************
@@ -391,7 +391,7 @@ BLAZE_ALWAYS_INLINE void trmv( CBLAS_ORDER order, CBLAS_UPLO uplo, CBLAS_TRANSPO
 //*************************************************************************************************
 #if BLAZE_BLAS_MODE
 /*!\brief BLAS kernel for a triangular dense matrix/dense vector multiplication for double
-//        precision operands (\f$ \vec{y}=A*\vec{y} \f$).
+//        precision operands (\f$ \vec{x}=A*\vec{x} \f$).
 // \ingroup math
 //
 // \param order Specifies the storage order of matrix \a A (\a CblasColMajor or \a CblasColMajor).
@@ -399,7 +399,7 @@ BLAZE_ALWAYS_INLINE void trmv( CBLAS_ORDER order, CBLAS_UPLO uplo, CBLAS_TRANSPO
 // \param transA Specifies whether to transpose matrix \a A (\a CblasNoTrans or \a CblasTrans).
 // \param diag Specifies whether \a A is unitriangular (\a CblasNonUnit or \a CblasUnit).
 // \param n The number of rows/columns of matrix \a A \f$[0..\infty)\f$.
-// \param a Pointer to the first element of matrix \a A.
+// \param A Pointer to the first element of matrix \a A.
 // \param lda The total number of elements between two rows/columns of matrix \a A \f$[0..\infty)\f$.
 // \param x Pointer to the first element of vector \a x.
 // \param incX The stride within vector \a x.
@@ -409,10 +409,10 @@ BLAZE_ALWAYS_INLINE void trmv( CBLAS_ORDER order, CBLAS_UPLO uplo, CBLAS_TRANSPO
 // based on the cblas_dtrmv() function.
 */
 BLAZE_ALWAYS_INLINE void trmv( CBLAS_ORDER order, CBLAS_UPLO uplo, CBLAS_TRANSPOSE transA,
-                               CBLAS_DIAG diag, int n, const double* a, int lda, double* x,
+                               CBLAS_DIAG diag, int n, const double* A, int lda, double* x,
                                int incX )
 {
-   cblas_dtrmv( order, uplo, transA, diag, n, a, lda, x, incX );
+   cblas_dtrmv( order, uplo, transA, diag, n, A, lda, x, incX );
 }
 #endif
 //*************************************************************************************************
@@ -421,7 +421,7 @@ BLAZE_ALWAYS_INLINE void trmv( CBLAS_ORDER order, CBLAS_UPLO uplo, CBLAS_TRANSPO
 //*************************************************************************************************
 #if BLAZE_BLAS_MODE
 /*!\brief BLAS kernel for a triangular dense matrix/dense vector multiplication for single
-//        precision complex operands (\f$ \vec{y}=A*\vec{y} \f$).
+//        precision complex operands (\f$ \vec{x}=A*\vec{x} \f$).
 // \ingroup math
 //
 // \param order Specifies the storage order of matrix \a A (\a CblasColMajor or \a CblasColMajor).
@@ -429,7 +429,7 @@ BLAZE_ALWAYS_INLINE void trmv( CBLAS_ORDER order, CBLAS_UPLO uplo, CBLAS_TRANSPO
 // \param transA Specifies whether to transpose matrix \a A (\a CblasNoTrans or \a CblasTrans).
 // \param diag Specifies whether \a A is unitriangular (\a CblasNonUnit or \a CblasUnit).
 // \param n The number of rows/columns of matrix \a A \f$[0..\infty)\f$.
-// \param a Pointer to the first element of matrix \a A.
+// \param A Pointer to the first element of matrix \a A.
 // \param lda The total number of elements between two rows/columns of matrix \a A \f$[0..\infty)\f$.
 // \param x Pointer to the first element of vector \a x.
 // \param incX The stride within vector \a x.
@@ -439,10 +439,10 @@ BLAZE_ALWAYS_INLINE void trmv( CBLAS_ORDER order, CBLAS_UPLO uplo, CBLAS_TRANSPO
 // vector based on the cblas_ctrmv() function.
 */
 BLAZE_ALWAYS_INLINE void trmv( CBLAS_ORDER order, CBLAS_UPLO uplo, CBLAS_TRANSPOSE transA,
-                               CBLAS_DIAG diag, int n, const complex<float>* a, int lda,
+                               CBLAS_DIAG diag, int n, const complex<float>* A, int lda,
                                complex<float>* x, int incX )
 {
-   cblas_ctrmv( order, uplo, transA, diag, n, a, lda, x, incX );
+   cblas_ctrmv( order, uplo, transA, diag, n, A, lda, x, incX );
 }
 #endif
 //*************************************************************************************************
@@ -451,7 +451,7 @@ BLAZE_ALWAYS_INLINE void trmv( CBLAS_ORDER order, CBLAS_UPLO uplo, CBLAS_TRANSPO
 //*************************************************************************************************
 #if BLAZE_BLAS_MODE
 /*!\brief BLAS kernel for a triangular dense matrix/dense vector multiplication for double
-//        precision complex operands (\f$ \vec{y}=A*\vec{y} \f$).
+//        precision complex operands (\f$ \vec{x}=A*\vec{x} \f$).
 // \ingroup math
 //
 // \param order Specifies the storage order of matrix \a A (\a CblasColMajor or \a CblasColMajor).
@@ -459,7 +459,7 @@ BLAZE_ALWAYS_INLINE void trmv( CBLAS_ORDER order, CBLAS_UPLO uplo, CBLAS_TRANSPO
 // \param transA Specifies whether to transpose matrix \a A (\a CblasNoTrans or \a CblasTrans).
 // \param diag Specifies whether \a A is unitriangular (\a CblasNonUnit or \a CblasUnit).
 // \param n The number of rows/columns of matrix \a A \f$[0..\infty)\f$.
-// \param a Pointer to the first element of matrix \a A.
+// \param A Pointer to the first element of matrix \a A.
 // \param lda The total number of elements between two rows/columns of matrix \a A \f$[0..\infty)\f$.
 // \param x Pointer to the first element of vector \a x.
 // \param incX The stride within vector \a x.
@@ -469,10 +469,10 @@ BLAZE_ALWAYS_INLINE void trmv( CBLAS_ORDER order, CBLAS_UPLO uplo, CBLAS_TRANSPO
 // vector based on the cblas_ztrmv() function.
 */
 BLAZE_ALWAYS_INLINE void trmv( CBLAS_ORDER order, CBLAS_UPLO uplo, CBLAS_TRANSPOSE transA,
-                               CBLAS_DIAG diag, int n, const complex<double>* a, int lda,
+                               CBLAS_DIAG diag, int n, const complex<double>* A, int lda,
                                complex<double>* x, int incX )
 {
-   cblas_ztrmv( order, uplo, transA, diag, n, a, lda, x, incX );
+   cblas_ztrmv( order, uplo, transA, diag, n, A, lda, x, incX );
 }
 #endif
 //*************************************************************************************************
@@ -481,10 +481,10 @@ BLAZE_ALWAYS_INLINE void trmv( CBLAS_ORDER order, CBLAS_UPLO uplo, CBLAS_TRANSPO
 //*************************************************************************************************
 #if BLAZE_BLAS_MODE
 /*!\brief BLAS kernel for a triangular dense matrix/dense vector multiplication
-//        (\f$ \vec{y}=A*\vec{y} \f$).
+//        (\f$ \vec{x}=A*\vec{x} \f$).
 // \ingroup math
 //
-// \param y The target left-hand side dense vector.
+// \param x The target left-hand side dense vector.
 // \param A The dense matrix operand.
 // \param uplo \a CblasLower to use the lower triangle from \a A, \a CblasUpper to use the upper triangle.
 // \return void
@@ -497,7 +497,7 @@ BLAZE_ALWAYS_INLINE void trmv( CBLAS_ORDER order, CBLAS_UPLO uplo, CBLAS_TRANSPO
 template< typename VT  // Type of the target vector
         , typename MT  // Type of the matrix operand
         , bool SO >    // Storage order of the matrix operand
-BLAZE_ALWAYS_INLINE void trmv( DenseVector<VT,false>& y, const DenseMatrix<MT,SO>& A,
+BLAZE_ALWAYS_INLINE void trmv( DenseVector<VT,false>& x, const DenseMatrix<MT,SO>& A,
                                CBLAS_UPLO uplo )
 {
    using boost::numeric_cast;
@@ -514,11 +514,11 @@ BLAZE_ALWAYS_INLINE void trmv( DenseVector<VT,false>& y, const DenseMatrix<MT,SO
    BLAZE_INTERNAL_ASSERT( (~A).rows() == (~A).columns(), "Non-square triangular matrix detected" );
    BLAZE_INTERNAL_ASSERT( uplo == CblasLower || uplo == CblasUpper, "Invalid uplo argument detected" );
 
-   const int N  ( numeric_cast<int>( (~A).rows() )    );
+   const int n  ( numeric_cast<int>( (~A).rows() )    );
    const int lda( numeric_cast<int>( (~A).spacing() ) );
 
    trmv( ( IsRowMajorMatrix<MT>::value )?( CblasRowMajor ):( CblasColMajor ),
-         uplo, CblasNoTrans, CblasNonUnit, N, (~A).data(), lda, (~y).data(), 1 );
+         uplo, CblasNoTrans, CblasNonUnit, n, (~A).data(), lda, (~x).data(), 1 );
 }
 #endif
 //*************************************************************************************************
@@ -527,10 +527,10 @@ BLAZE_ALWAYS_INLINE void trmv( DenseVector<VT,false>& y, const DenseMatrix<MT,SO
 //*************************************************************************************************
 #if BLAZE_BLAS_MODE
 /*!\brief BLAS kernel for a transpose dense vector/triangular dense matrix multiplication
-//        (\f$ \vec{y}^T=\vec{y}^T*A \f$).
+//        (\f$ \vec{x}^T=\vec{x}^T*A \f$).
 // \ingroup math
 //
-// \param y The target left-hand side dense vector.
+// \param x The target left-hand side dense vector.
 // \param A The dense matrix operand.
 // \param uplo \a CblasLower to use the lower triangle from \a A, \a CblasUpper to use the upper triangle.
 // \return void
@@ -543,7 +543,7 @@ BLAZE_ALWAYS_INLINE void trmv( DenseVector<VT,false>& y, const DenseMatrix<MT,SO
 template< typename VT  // Type of the target vector
         , typename MT  // Type of the matrix operand
         , bool SO >    // Storage order of the matrix operand
-BLAZE_ALWAYS_INLINE void trmv( DenseVector<VT,true>& y, const DenseMatrix<MT,SO>& A,
+BLAZE_ALWAYS_INLINE void trmv( DenseVector<VT,true>& x, const DenseMatrix<MT,SO>& A,
                                CBLAS_UPLO uplo )
 {
    using boost::numeric_cast;
@@ -560,11 +560,11 @@ BLAZE_ALWAYS_INLINE void trmv( DenseVector<VT,true>& y, const DenseMatrix<MT,SO>
    BLAZE_INTERNAL_ASSERT( (~A).rows() == (~A).columns(), "Non-square triangular matrix detected" );
    BLAZE_INTERNAL_ASSERT( uplo == CblasLower || uplo == CblasUpper, "Invalid uplo argument detected" );
 
-   const int N  ( numeric_cast<int>( (~A).rows() )    );
+   const int n  ( numeric_cast<int>( (~A).rows() )    );
    const int lda( numeric_cast<int>( (~A).spacing() ) );
 
    trmv( ( IsRowMajorMatrix<MT>::value )?( CblasRowMajor ):( CblasColMajor ),
-         uplo, CblasTrans, CblasNonUnit, N, (~A).data(), lda, (~y).data(), 1 );
+         uplo, CblasTrans, CblasNonUnit, n, (~A).data(), lda, (~x).data(), 1 );
 }
 #endif
 //*************************************************************************************************

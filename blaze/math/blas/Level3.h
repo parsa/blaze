@@ -68,20 +68,20 @@ namespace blaze {
 #if BLAZE_BLAS_MODE
 
 BLAZE_ALWAYS_INLINE void gemm( CBLAS_ORDER order, CBLAS_TRANSPOSE transA, CBLAS_TRANSPOSE transB,
-                               int M, int N, int K, float alpha, const float* A, int lda,
+                               int m, int n, int k, float alpha, const float* A, int lda,
                                const float* B, int ldb, float beta, float* C, int ldc );
 
 BLAZE_ALWAYS_INLINE void gemm( CBLAS_ORDER order, CBLAS_TRANSPOSE transA, CBLAS_TRANSPOSE transB,
-                               int M, int N, int K, double alpha, const double* A, int lda,
+                               int m, int n, int k, double alpha, const double* A, int lda,
                                const double* B, int ldb, double beta, float* C, int ldc );
 
 BLAZE_ALWAYS_INLINE void gemm( CBLAS_ORDER order, CBLAS_TRANSPOSE transA, CBLAS_TRANSPOSE transB,
-                               int M, int N, int K, complex<float> alpha, const complex<float>* A,
+                               int m, int n, int k, complex<float> alpha, const complex<float>* A,
                                int lda, const complex<float>* B, int ldb, complex<float> beta,
                                float* C, int ldc );
 
 BLAZE_ALWAYS_INLINE void gemm( CBLAS_ORDER order, CBLAS_TRANSPOSE transA, CBLAS_TRANSPOSE transB,
-                               int M, int N, int K, complex<double> alpha, const complex<double>* A,
+                               int m, int n, int k, complex<double> alpha, const complex<double>* A,
                                int lda, const complex<double>* B, int ldb, complex<double> beta,
                                float* C, int ldc );
 
@@ -90,20 +90,20 @@ BLAZE_ALWAYS_INLINE void gemm( DenseMatrix<MT1,SO1>& C, const DenseMatrix<MT2,SO
                                const DenseMatrix<MT3,SO3>& B, ST alpha, ST beta );
 
 BLAZE_ALWAYS_INLINE void trmm( CBLAS_ORDER order, CBLAS_SIDE side, CBLAS_UPLO uplo,
-                               CBLAS_TRANSPOSE transA, CBLAS_DIAG diag, int M, int N,
+                               CBLAS_TRANSPOSE transA, CBLAS_DIAG diag, int m, int n,
                                float alpha, const float* A, int lda, float* B, int ldb );
 
 BLAZE_ALWAYS_INLINE void trmm( CBLAS_ORDER order, CBLAS_SIDE side, CBLAS_UPLO uplo,
-                               CBLAS_TRANSPOSE transA, CBLAS_DIAG diag, int M, int N,
+                               CBLAS_TRANSPOSE transA, CBLAS_DIAG diag, int m, int n,
                                double alpha, const double* A, int lda, double* B, int ldb );
 
 BLAZE_ALWAYS_INLINE void trmm( CBLAS_ORDER order, CBLAS_SIDE side, CBLAS_UPLO uplo,
-                               CBLAS_TRANSPOSE transA, CBLAS_DIAG diag, int M, int N,
+                               CBLAS_TRANSPOSE transA, CBLAS_DIAG diag, int m, int n,
                                complex<float> alpha, const complex<float>* A, int lda,
                                complex<float>* B, int ldb );
 
 BLAZE_ALWAYS_INLINE void trmm( CBLAS_ORDER order, CBLAS_SIDE side, CBLAS_UPLO uplo,
-                               CBLAS_TRANSPOSE transA, CBLAS_DIAG diag, int M, int N,
+                               CBLAS_TRANSPOSE transA, CBLAS_DIAG diag, int m, int n,
                                complex<double> alpha, const complex<double>* A, int lda,
                                complex<double>* B, int ldb );
 
@@ -125,9 +125,9 @@ BLAZE_ALWAYS_INLINE void trmm( DenseMatrix<MT1,SO1>& B, const DenseMatrix<MT2,SO
 // \param order Specifies the storage order of matrix \a A (\a CblasColMajor or \a CblasColMajor).
 // \param transA Specifies whether to transpose matrix \a A (\a CblasNoTrans or \a CblasTrans).
 // \param transB Specifies whether to transpose matrix \a B (\a CblasNoTrans or \a CblasTrans).
-// \param M The number of rows of matrix \a A and \a C \f$[0..\infty)\f$.
-// \param N The number of columns of matrix \a B and \a C \f$[0..\infty)\f$.
-// \param K The number of columns of matrix \a A and rows in matrix \a B \f$[0..\infty)\f$.
+// \param m The number of rows of matrix \a A and \a C \f$[0..\infty)\f$.
+// \param n The number of columns of matrix \a B and \a C \f$[0..\infty)\f$.
+// \param k The number of columns of matrix \a A and rows in matrix \a B \f$[0..\infty)\f$.
 // \param alpha The scaling factor for \f$ A*B \f$.
 // \param A Pointer to the first element of matrix \a A.
 // \param lda The total number of elements between two rows/columns of matrix \a A \f$[0..\infty)\f$.
@@ -142,10 +142,10 @@ BLAZE_ALWAYS_INLINE void trmm( DenseMatrix<MT1,SO1>& B, const DenseMatrix<MT2,SO
 // matrices based on the BLAS cblas_sgemm() function.
 */
 BLAZE_ALWAYS_INLINE void gemm( CBLAS_ORDER order, CBLAS_TRANSPOSE transA, CBLAS_TRANSPOSE transB,
-                               int M, int N, int K, float alpha, const float* A, int lda,
+                               int m, int n, int k, float alpha, const float* A, int lda,
                                const float* B, int ldb, float beta, float* C, int ldc )
 {
-   cblas_sgemm( order, transA, transB, M, N, K, alpha, A, lda, B, ldb, beta, C, ldc );
+   cblas_sgemm( order, transA, transB, m, n, k, alpha, A, lda, B, ldb, beta, C, ldc );
 }
 #endif
 //*************************************************************************************************
@@ -160,9 +160,9 @@ BLAZE_ALWAYS_INLINE void gemm( CBLAS_ORDER order, CBLAS_TRANSPOSE transA, CBLAS_
 // \param order Specifies the storage order of matrix \a A (\a CblasColMajor or \a CblasColMajor).
 // \param transA Specifies whether to transpose matrix \a A (\a CblasNoTrans or \a CblasTrans).
 // \param transB Specifies whether to transpose matrix \a B (\a CblasNoTrans or \a CblasTrans).
-// \param M The number of rows of matrix \a A and \a C \f$[0..\infty)\f$.
-// \param N The number of columns of matrix \a B and \a C \f$[0..\infty)\f$.
-// \param K The number of columns of matrix \a A and rows in matrix \a B \f$[0..\infty)\f$.
+// \param m The number of rows of matrix \a A and \a C \f$[0..\infty)\f$.
+// \param n The number of columns of matrix \a B and \a C \f$[0..\infty)\f$.
+// \param k The number of columns of matrix \a A and rows in matrix \a B \f$[0..\infty)\f$.
 // \param alpha The scaling factor for \f$ A*B \f$.
 // \param A Pointer to the first element of matrix \a A.
 // \param lda The total number of elements between two rows/columns of matrix \a A \f$[0..\infty)\f$.
@@ -177,10 +177,10 @@ BLAZE_ALWAYS_INLINE void gemm( CBLAS_ORDER order, CBLAS_TRANSPOSE transA, CBLAS_
 // matrices based on the BLAS cblas_dgemm() function.
 */
 BLAZE_ALWAYS_INLINE void gemm( CBLAS_ORDER order, CBLAS_TRANSPOSE transA, CBLAS_TRANSPOSE transB,
-                               int M, int N, int K, double alpha, const double* A, int lda,
+                               int m, int n, int k, double alpha, const double* A, int lda,
                                const double* B, int ldb, double beta, double* C, int ldc )
 {
-   cblas_dgemm( order, transA, transB, M, N, K, alpha, A, lda, B, ldb, beta, C, ldc );
+   cblas_dgemm( order, transA, transB, m, n, k, alpha, A, lda, B, ldb, beta, C, ldc );
 }
 #endif
 //*************************************************************************************************
@@ -195,9 +195,9 @@ BLAZE_ALWAYS_INLINE void gemm( CBLAS_ORDER order, CBLAS_TRANSPOSE transA, CBLAS_
 // \param order Specifies the storage order of matrix \a A (\a CblasColMajor or \a CblasColMajor).
 // \param transA Specifies whether to transpose matrix \a A (\a CblasNoTrans or \a CblasTrans).
 // \param transB Specifies whether to transpose matrix \a B (\a CblasNoTrans or \a CblasTrans).
-// \param M The number of rows of matrix \a A and \a C \f$[0..\infty)\f$.
-// \param N The number of columns of matrix \a B and \a C \f$[0..\infty)\f$.
-// \param K The number of columns of matrix \a A and rows in matrix \a B \f$[0..\infty)\f$.
+// \param m The number of rows of matrix \a A and \a C \f$[0..\infty)\f$.
+// \param n The number of columns of matrix \a B and \a C \f$[0..\infty)\f$.
+// \param k The number of columns of matrix \a A and rows in matrix \a B \f$[0..\infty)\f$.
 // \param alpha The scaling factor for \f$ A*B \f$.
 // \param A Pointer to the first element of matrix \a A.
 // \param lda The total number of elements between two rows/columns of matrix \a A \f$[0..\infty)\f$.
@@ -212,11 +212,11 @@ BLAZE_ALWAYS_INLINE void gemm( CBLAS_ORDER order, CBLAS_TRANSPOSE transA, CBLAS_
 // complex matrices based on the BLAS cblas_cgemm() function.
 */
 BLAZE_ALWAYS_INLINE void gemm( CBLAS_ORDER order, CBLAS_TRANSPOSE transA, CBLAS_TRANSPOSE transB,
-                               int M, int N, int K, complex<float> alpha, const complex<float>* A,
+                               int m, int n, int k, complex<float> alpha, const complex<float>* A,
                                int lda, const complex<float>* B, int ldb, complex<float> beta,
                                complex<float>* C, int ldc )
 {
-   cblas_cgemm( order, transA, transB, M, N, K, &alpha, A, lda, B, ldb, &beta, C, ldc );
+   cblas_cgemm( order, transA, transB, m, n, k, &alpha, A, lda, B, ldb, &beta, C, ldc );
 }
 #endif
 //*************************************************************************************************
@@ -231,9 +231,9 @@ BLAZE_ALWAYS_INLINE void gemm( CBLAS_ORDER order, CBLAS_TRANSPOSE transA, CBLAS_
 // \param order Specifies the storage order of matrix \a A (\a CblasColMajor or \a CblasColMajor).
 // \param transA Specifies whether to transpose matrix \a A (\a CblasNoTrans or \a CblasTrans).
 // \param transB Specifies whether to transpose matrix \a B (\a CblasNoTrans or \a CblasTrans).
-// \param M The number of rows of matrix \a A and \a C \f$[0..\infty)\f$.
-// \param N The number of columns of matrix \a B and \a C \f$[0..\infty)\f$.
-// \param K The number of columns of matrix \a A and rows in matrix \a B \f$[0..\infty)\f$.
+// \param m The number of rows of matrix \a A and \a C \f$[0..\infty)\f$.
+// \param n The number of columns of matrix \a B and \a C \f$[0..\infty)\f$.
+// \param k The number of columns of matrix \a A and rows in matrix \a B \f$[0..\infty)\f$.
 // \param alpha The scaling factor for \f$ A*B \f$.
 // \param A Pointer to the first element of matrix \a A.
 // \param lda The total number of elements between two rows/columns of matrix \a A \f$[0..\infty)\f$.
@@ -248,11 +248,11 @@ BLAZE_ALWAYS_INLINE void gemm( CBLAS_ORDER order, CBLAS_TRANSPOSE transA, CBLAS_
 // complex matrices based on the BLAS cblas_zgemm() function.
 */
 BLAZE_ALWAYS_INLINE void gemm( CBLAS_ORDER order, CBLAS_TRANSPOSE transA, CBLAS_TRANSPOSE transB,
-                               int M, int N, int K, complex<double> alpha, const complex<double>* A,
+                               int m, int n, int k, complex<double> alpha, const complex<double>* A,
                                int lda, const complex<double>* B, int ldb, complex<double> beta,
                                complex<double>* C, int ldc )
 {
-   cblas_zgemm( order, transA, transB, M, N, K, &alpha, A, lda, B, ldb, &beta, C, ldc );
+   cblas_zgemm( order, transA, transB, m, n, k, &alpha, A, lda, B, ldb, &beta, C, ldc );
 }
 #endif
 //*************************************************************************************************
@@ -299,9 +299,9 @@ BLAZE_ALWAYS_INLINE void gemm( DenseMatrix<MT1,SO1>& C, const DenseMatrix<MT2,SO
    BLAZE_CONSTRAINT_MUST_BE_BLAS_COMPATIBLE_TYPE( typename MT2::ElementType );
    BLAZE_CONSTRAINT_MUST_BE_BLAS_COMPATIBLE_TYPE( typename MT3::ElementType );
 
-   const int M  ( numeric_cast<int>( (~A).rows() )    );
-   const int N  ( numeric_cast<int>( (~B).columns() ) );
-   const int K  ( numeric_cast<int>( (~A).columns() ) );
+   const int m  ( numeric_cast<int>( (~A).rows() )    );
+   const int n  ( numeric_cast<int>( (~B).columns() ) );
+   const int k  ( numeric_cast<int>( (~A).columns() ) );
    const int lda( numeric_cast<int>( (~A).spacing() ) );
    const int ldb( numeric_cast<int>( (~B).spacing() ) );
    const int ldc( numeric_cast<int>( (~C).spacing() ) );
@@ -309,7 +309,7 @@ BLAZE_ALWAYS_INLINE void gemm( DenseMatrix<MT1,SO1>& C, const DenseMatrix<MT2,SO
    gemm( ( IsRowMajorMatrix<MT1>::value )?( CblasRowMajor ):( CblasColMajor ),
          ( SO1 == SO2 )?( CblasNoTrans ):( CblasTrans ),
          ( SO1 == SO3 )?( CblasNoTrans ):( CblasTrans ),
-         M, N, K, alpha, (~A).data(), lda, (~B).data(), ldb, beta, (~C).data(), ldc );
+         m, n, k, alpha, (~A).data(), lda, (~B).data(), ldb, beta, (~C).data(), ldc );
 }
 #endif
 //*************************************************************************************************
@@ -326,8 +326,8 @@ BLAZE_ALWAYS_INLINE void gemm( DenseMatrix<MT1,SO1>& C, const DenseMatrix<MT2,SO
 // \param uplo \a CblasLower to use the lower triangle from \a A, \a CblasUpper to use the upper triangle.
 // \param transA Specifies whether to transpose matrix \a A (\a CblasNoTrans or \a CblasTrans).
 // \param diag Specifies whether \a A is unitriangular (\a CblasNonUnit or \a CblasUnit).
-// \param M The number of rows of matrix \a B \f$[0..\infty)\f$.
-// \param N The number of columns of matrix \a B \f$[0..\infty)\f$.
+// \param m The number of rows of matrix \a B \f$[0..\infty)\f$.
+// \param n The number of columns of matrix \a B \f$[0..\infty)\f$.
 // \param alpha The scaling factor for \f$ A*B \f$ or \f$ B*A \f$.
 // \param A Pointer to the first element of the triangular matrix \a A.
 // \param lda The total number of elements between two rows/columns of matrix \a A \f$[0..\infty)\f$.
@@ -339,10 +339,10 @@ BLAZE_ALWAYS_INLINE void gemm( DenseMatrix<MT1,SO1>& C, const DenseMatrix<MT2,SO
 // based on the cblas_strmm() function. Note that matrix \a A is expected to be a square matrix.
 */
 BLAZE_ALWAYS_INLINE void trmm( CBLAS_ORDER order, CBLAS_SIDE side, CBLAS_UPLO uplo,
-                               CBLAS_TRANSPOSE transA, CBLAS_DIAG diag, int M, int N,
+                               CBLAS_TRANSPOSE transA, CBLAS_DIAG diag, int m, int n,
                                float alpha, const float* A, int lda, float* B, int ldb )
 {
-   cblas_strmm( order, side, uplo, transA, diag, M, N, alpha, A, lda, B, ldb );
+   cblas_strmm( order, side, uplo, transA, diag, m, n, alpha, A, lda, B, ldb );
 }
 #endif
 //*************************************************************************************************
@@ -359,8 +359,8 @@ BLAZE_ALWAYS_INLINE void trmm( CBLAS_ORDER order, CBLAS_SIDE side, CBLAS_UPLO up
 // \param uplo \a CblasLower to use the lower triangle from \a A, \a CblasUpper to use the upper triangle.
 // \param transA Specifies whether to transpose matrix \a A (\a CblasNoTrans or \a CblasTrans).
 // \param diag Specifies whether \a A is unitriangular (\a CblasNonUnit or \a CblasUnit).
-// \param M The number of rows of matrix \a B \f$[0..\infty)\f$.
-// \param N The number of columns of matrix \a B \f$[0..\infty)\f$.
+// \param m The number of rows of matrix \a B \f$[0..\infty)\f$.
+// \param n The number of columns of matrix \a B \f$[0..\infty)\f$.
 // \param alpha The scaling factor for \f$ A*B \f$ or \f$ B*A \f$.
 // \param A Pointer to the first element of the triangular matrix \a A.
 // \param lda The total number of elements between two rows/columns of matrix \a A \f$[0..\infty)\f$.
@@ -372,10 +372,10 @@ BLAZE_ALWAYS_INLINE void trmm( CBLAS_ORDER order, CBLAS_SIDE side, CBLAS_UPLO up
 // based on the cblas_dtrmm() function. Note that matrix \a A is expected to be a square matrix.
 */
 BLAZE_ALWAYS_INLINE void trmm( CBLAS_ORDER order, CBLAS_SIDE side, CBLAS_UPLO uplo,
-                               CBLAS_TRANSPOSE transA, CBLAS_DIAG diag, int M, int N,
+                               CBLAS_TRANSPOSE transA, CBLAS_DIAG diag, int m, int n,
                                double alpha, const double* A, int lda, double* B, int ldb )
 {
-   cblas_dtrmm( order, side, uplo, transA, diag, M, N, alpha, A, lda, B, ldb );
+   cblas_dtrmm( order, side, uplo, transA, diag, m, n, alpha, A, lda, B, ldb );
 }
 #endif
 //*************************************************************************************************
@@ -392,8 +392,8 @@ BLAZE_ALWAYS_INLINE void trmm( CBLAS_ORDER order, CBLAS_SIDE side, CBLAS_UPLO up
 // \param uplo \a CblasLower to use the lower triangle from \a A, \a CblasUpper to use the upper triangle.
 // \param transA Specifies whether to transpose matrix \a A (\a CblasNoTrans or \a CblasTrans).
 // \param diag Specifies whether \a A is unitriangular (\a CblasNonUnit or \a CblasUnit).
-// \param M The number of rows of matrix \a B \f$[0..\infty)\f$.
-// \param N The number of columns of matrix \a B \f$[0..\infty)\f$.
+// \param m The number of rows of matrix \a B \f$[0..\infty)\f$.
+// \param n The number of columns of matrix \a B \f$[0..\infty)\f$.
 // \param alpha The scaling factor for \f$ A*B \f$ or \f$ B*A \f$.
 // \param A Pointer to the first element of the triangular matrix \a A.
 // \param lda The total number of elements between two rows/columns of matrix \a A \f$[0..\infty)\f$.
@@ -405,11 +405,11 @@ BLAZE_ALWAYS_INLINE void trmm( CBLAS_ORDER order, CBLAS_SIDE side, CBLAS_UPLO up
 // based on the cblas_ctrmm() function. Note that matrix \a A is expected to be a square matrix.
 */
 BLAZE_ALWAYS_INLINE void trmm( CBLAS_ORDER order, CBLAS_SIDE side, CBLAS_UPLO uplo,
-                               CBLAS_TRANSPOSE transA, CBLAS_DIAG diag, int M, int N,
+                               CBLAS_TRANSPOSE transA, CBLAS_DIAG diag, int m, int n,
                                complex<float> alpha, const complex<float>* A, int lda,
                                complex<float>* B, int ldb )
 {
-   cblas_ctrmm( order, side, uplo, transA, diag, M, N, &alpha, A, lda, B, ldb );
+   cblas_ctrmm( order, side, uplo, transA, diag, m, n, &alpha, A, lda, B, ldb );
 }
 #endif
 //*************************************************************************************************
@@ -426,8 +426,8 @@ BLAZE_ALWAYS_INLINE void trmm( CBLAS_ORDER order, CBLAS_SIDE side, CBLAS_UPLO up
 // \param uplo \a CblasLower to use the lower triangle from \a A, \a CblasUpper to use the upper triangle.
 // \param transA Specifies whether to transpose matrix \a A (\a CblasNoTrans or \a CblasTrans).
 // \param diag Specifies whether \a A is unitriangular (\a CblasNonUnit or \a CblasUnit).
-// \param M The number of rows of matrix \a B \f$[0..\infty)\f$.
-// \param N The number of columns of matrix \a B \f$[0..\infty)\f$.
+// \param m The number of rows of matrix \a B \f$[0..\infty)\f$.
+// \param n The number of columns of matrix \a B \f$[0..\infty)\f$.
 // \param alpha The scaling factor for \f$ A*B \f$ or \f$ B*A \f$.
 // \param A Pointer to the first element of the triangular matrix \a A.
 // \param lda The total number of elements between two rows/columns of matrix \a A \f$[0..\infty)\f$.
@@ -439,11 +439,11 @@ BLAZE_ALWAYS_INLINE void trmm( CBLAS_ORDER order, CBLAS_SIDE side, CBLAS_UPLO up
 // based on the cblas_ztrmm() function. Note that matrix \a A is expected to be a square matrix.
 */
 BLAZE_ALWAYS_INLINE void trmm( CBLAS_ORDER order, CBLAS_SIDE side, CBLAS_UPLO uplo,
-                               CBLAS_TRANSPOSE transA, CBLAS_DIAG diag, int M, int N,
+                               CBLAS_TRANSPOSE transA, CBLAS_DIAG diag, int m, int n,
                                complex<double> alpha, const complex<double>* A, int lda,
                                complex<double>* B, int ldb )
 {
-   cblas_ztrmm( order, side, uplo, transA, diag, M, N, &alpha, A, lda, B, ldb );
+   cblas_ztrmm( order, side, uplo, transA, diag, m, n, &alpha, A, lda, B, ldb );
 }
 #endif
 //*************************************************************************************************
@@ -490,8 +490,8 @@ BLAZE_ALWAYS_INLINE void trmm( DenseMatrix<MT1,SO1>& B, const DenseMatrix<MT2,SO
    BLAZE_INTERNAL_ASSERT( side == CblasLeft  || side == CblasRight, "Invalid side argument detected" );
    BLAZE_INTERNAL_ASSERT( uplo == CblasLower || uplo == CblasUpper, "Invalid uplo argument detected" );
 
-   const int M  ( numeric_cast<int>( (~B).rows() )    );
-   const int N  ( numeric_cast<int>( (~B).columns() ) );
+   const int m  ( numeric_cast<int>( (~B).rows() )    );
+   const int n  ( numeric_cast<int>( (~B).columns() ) );
    const int lda( numeric_cast<int>( (~A).spacing() ) );
    const int ldb( numeric_cast<int>( (~B).spacing() ) );
 
@@ -500,7 +500,7 @@ BLAZE_ALWAYS_INLINE void trmm( DenseMatrix<MT1,SO1>& B, const DenseMatrix<MT2,SO
          ( SO1 == SO2 )?( uplo ):( ( uplo == CblasLower )?( CblasUpper ):( CblasLower ) ),
          ( SO1 == SO2 )?( CblasNoTrans ):( CblasTrans ),
          CblasNonUnit,
-         M, N, alpha, (~A).data(), lda, (~B).data(), ldb );
+         m, n, alpha, (~A).data(), lda, (~B).data(), ldb );
 }
 #endif
 //*************************************************************************************************

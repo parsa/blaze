@@ -76,15 +76,15 @@ namespace blaze {
 /*! \cond BLAZE_INTERNAL */
 extern "C" {
 
-void sgetri_( int* n, float*  a, int* lda, int* ipiv, float*  work, int* lwork, int* info );
-void dgetri_( int* n, double* a, int* lda, int* ipiv, double* work, int* lwork, int* info );
-void cgetri_( int* n, float*  a, int* lda, int* ipiv, float*  work, int* lwork, int* info );
-void zgetri_( int* n, double* a, int* lda, int* ipiv, double* work, int* lwork, int* info );
+void sgetri_( int* n, float*  A, int* lda, int* ipiv, float*  work, int* lwork, int* info );
+void dgetri_( int* n, double* A, int* lda, int* ipiv, double* work, int* lwork, int* info );
+void cgetri_( int* n, float*  A, int* lda, int* ipiv, float*  work, int* lwork, int* info );
+void zgetri_( int* n, double* A, int* lda, int* ipiv, double* work, int* lwork, int* info );
 
-void spotri_( char* uplo, int* n, float*  a, int* lda, int* info );
-void dpotri_( char* uplo, int* n, double* a, int* lda, int* info );
-void cpotri_( char* uplo, int* n, float*  a, int* lda, int* info );
-void zpotri_( char* uplo, int* n, double* a, int* lda, int* info );
+void spotri_( char* uplo, int* n, float*  A, int* lda, int* info );
+void dpotri_( char* uplo, int* n, double* A, int* lda, int* info );
+void cpotri_( char* uplo, int* n, float*  A, int* lda, int* info );
+void zpotri_( char* uplo, int* n, double* A, int* lda, int* info );
 
 }
 /*! \endcond */
@@ -102,14 +102,14 @@ void zpotri_( char* uplo, int* n, double* a, int* lda, int* info );
 //*************************************************************************************************
 /*!\name LAPACK LU-based inversion functions */
 //@{
-inline void getri( int* n, float* a, int* lda, int* ipiv, float* work, int* lwork, int* info );
+inline void getri( int* n, float* A, int* lda, int* ipiv, float* work, int* lwork, int* info );
 
-inline void getri( int* n, double* a, int* lda, int* ipiv, double* work, int* lwork, int* info );
+inline void getri( int* n, double* A, int* lda, int* ipiv, double* work, int* lwork, int* info );
 
-inline void getri( int* n, complex<float>* a, int* lda, int* ipiv,
+inline void getri( int* n, complex<float>* A, int* lda, int* ipiv,
                    complex<float>* work, int* lwork, int* info );
 
-inline void getri( int* n, complex<double>* a, int* lda, int* ipiv,
+inline void getri( int* n, complex<double>* A, int* lda, int* ipiv,
                    complex<double>* work, int* lwork, int* info );
 
 template< typename MT, bool SO >
@@ -123,7 +123,7 @@ inline void getri( DenseMatrix<MT,SO>& A, const int* ipiv );
 // \ingroup lapack
 //
 // \param n The number of rows/columns of the matrix \f$[0..\infty)\f$.
-// \param a Pointer to the first element of the matrix to be inverted.
+// \param A Pointer to the first element of the matrix to be inverted.
 // \param lda The total number of elements between two rows/columns of the matrix \f$[0..\infty)\f$.
 // \param ipiv Auxiliary array for the pivot indices; size >= min( \a m, \a n ).
 // \param work Auxiliary array; size >= max( 1, \a lwork ).
@@ -152,9 +152,9 @@ inline void getri( DenseMatrix<MT,SO>& A, const int* ipiv );
 // \note This function can only be used if the fitting LAPACK library is available and linked to
 // the executable. Otherwise a call to this function will result in a linker error.
 */
-inline void getri( int* n, float* a, int* lda, int* ipiv, float* work, int* lwork, int* info )
+inline void getri( int* n, float* A, int* lda, int* ipiv, float* work, int* lwork, int* info )
 {
-   sgetri_( n, a, lda, ipiv, work, lwork, info );
+   sgetri_( n, A, lda, ipiv, work, lwork, info );
 }
 //*************************************************************************************************
 
@@ -164,7 +164,7 @@ inline void getri( int* n, float* a, int* lda, int* ipiv, float* work, int* lwor
 // \ingroup lapack
 //
 // \param n The number of rows/columns of the matrix \f$[0..\infty)\f$.
-// \param a Pointer to the first element of the matrix to be inverted.
+// \param A Pointer to the first element of the matrix to be inverted.
 // \param lda The total number of elements between two rows/columns of the matrix \f$[0..\infty)\f$.
 // \param ipiv Auxiliary array for the pivot indices; size >= min( \a m, \a n ).
 // \param work Auxiliary array; size >= max( 1, \a lwork ).
@@ -193,9 +193,9 @@ inline void getri( int* n, float* a, int* lda, int* ipiv, float* work, int* lwor
 // \note This function can only be used if the fitting LAPACK library is available and linked to
 // the executable. Otherwise a call to this function will result in a linker error.
 */
-inline void getri( int* n, double* a, int* lda, int* ipiv, double* work, int* lwork, int* info )
+inline void getri( int* n, double* A, int* lda, int* ipiv, double* work, int* lwork, int* info )
 {
-   dgetri_( n, a, lda, ipiv, work, lwork, info );
+   dgetri_( n, A, lda, ipiv, work, lwork, info );
 }
 //*************************************************************************************************
 
@@ -205,7 +205,7 @@ inline void getri( int* n, double* a, int* lda, int* ipiv, double* work, int* lw
 // \ingroup lapack
 //
 // \param n The number of rows/columns of the matrix \f$[0..\infty)\f$.
-// \param a Pointer to the first element of the matrix to be inverted.
+// \param A Pointer to the first element of the matrix to be inverted.
 // \param lda The total number of elements between two rows/columns of the matrix \f$[0..\infty)\f$.
 // \param ipiv Auxiliary array for the pivot indices; size >= min( \a m, \a n ).
 // \param work Auxiliary array; size >= max( 1, \a lwork ).
@@ -234,12 +234,12 @@ inline void getri( int* n, double* a, int* lda, int* ipiv, double* work, int* lw
 // \note This function can only be used if the fitting LAPACK library is available and linked to
 // the executable. Otherwise a call to this function will result in a linker error.
 */
-inline void getri( int* n, complex<float>* a, int* lda, int* ipiv,
+inline void getri( int* n, complex<float>* A, int* lda, int* ipiv,
                    complex<float>* work, int* lwork, int* info )
 {
    BLAZE_STATIC_ASSERT( sizeof( complex<float> ) == 2UL*sizeof( float ) );
 
-   cgetri_( n, reinterpret_cast<float*>( a ), lda, ipiv,
+   cgetri_( n, reinterpret_cast<float*>( A ), lda, ipiv,
             reinterpret_cast<float*>( work ), lwork, info );
 }
 //*************************************************************************************************
@@ -250,7 +250,7 @@ inline void getri( int* n, complex<float>* a, int* lda, int* ipiv,
 // \ingroup lapack
 //
 // \param n The number of rows/columns of the matrix \f$[0..\infty)\f$.
-// \param a Pointer to the first element of the matrix to be inverted.
+// \param A Pointer to the first element of the matrix to be inverted.
 // \param lda The total number of elements between two rows/columns of the matrix \f$[0..\infty)\f$.
 // \param ipiv Auxiliary array for the pivot indices; size >= min( \a m, \a n ).
 // \param work Auxiliary array; size >= max( 1, \a lwork ).
@@ -279,12 +279,12 @@ inline void getri( int* n, complex<float>* a, int* lda, int* ipiv,
 // \note This function can only be used if the fitting LAPACK library is available and linked to
 // the executable. Otherwise a call to this function will result in a linker error.
 */
-inline void getri( int* n, complex<double>* a, int* lda, int* ipiv,
+inline void getri( int* n, complex<double>* A, int* lda, int* ipiv,
                    complex<double>* work, int* lwork, int* info )
 {
    BLAZE_STATIC_ASSERT( sizeof( complex<double> ) == 2UL*sizeof( double ) );
 
-   zgetri_( n, reinterpret_cast<double*>( a ), lda, ipiv,
+   zgetri_( n, reinterpret_cast<double*>( A ), lda, ipiv,
             reinterpret_cast<double*>( work ), lwork, info );
 }
 //*************************************************************************************************
@@ -372,13 +372,13 @@ inline void getri( DenseMatrix<MT,SO>& A, const int* ipiv )
 //*************************************************************************************************
 /*!\name LAPACK Cholesky-based inversion functions */
 //@{
-inline void potri( char* uplo, int* n, float*  a, int* lda, int* info );
+inline void potri( char* uplo, int* n, float* A, int* lda, int* info );
 
-inline void potri( char* uplo, int* n, double* a, int* lda, int* info );
+inline void potri( char* uplo, int* n, double* A, int* lda, int* info );
 
-inline void potri( char* uplo, int* n, complex<float>*  a, int* lda, int* info );
+inline void potri( char* uplo, int* n, complex<float>* A, int* lda, int* info );
 
-inline void potri( char* uplo, int* n, complex<double>* a, int* lda, int* info );
+inline void potri( char* uplo, int* n, complex<double>* A, int* lda, int* info );
 
 template< typename MT, bool SO >
 inline void potri( DenseMatrix<MT,SO>& A, char uplo );
@@ -393,7 +393,7 @@ inline void potri( DenseMatrix<MT,SO>& A, char uplo );
 //
 // \param uplo \c 'L' to use the lower part of the matrix, \c 'U' to use the upper part.
 // \param n The number of rows/columns of the matrix \f$[0..\infty)\f$.
-// \param a Pointer to the first element of the matrix.
+// \param A Pointer to the first element of the matrix.
 // \param lda The total number of elements between two rows/columns of the matrix \f$[0..\infty)\f$.
 // \param info Return code of the function call.
 // \return void
@@ -416,9 +416,9 @@ inline void potri( DenseMatrix<MT,SO>& A, char uplo );
 // \note This function can only be used if the fitting LAPACK library is available and linked to
 // the executable. Otherwise a call to this function will result in a linker error.
 */
-inline void potri( char* uplo, int* n, float* a, int* lda, int* info )
+inline void potri( char* uplo, int* n, float* A, int* lda, int* info )
 {
-   spotri_( uplo, n, a, lda, info );
+   spotri_( uplo, n, A, lda, info );
 }
 //*************************************************************************************************
 
@@ -430,7 +430,7 @@ inline void potri( char* uplo, int* n, float* a, int* lda, int* info )
 //
 // \param uplo \c 'L' to use the lower part of the matrix, \c 'U' to use the upper part.
 // \param n The number of rows/columns of the matrix \f$[0..\infty)\f$.
-// \param a Pointer to the first element of the matrix.
+// \param A Pointer to the first element of the matrix.
 // \param lda The total number of elements between two rows/columns of the matrix \f$[0..\infty)\f$.
 // \param info Return code of the function call.
 // \return void
@@ -453,9 +453,9 @@ inline void potri( char* uplo, int* n, float* a, int* lda, int* info )
 // \note This function can only be used if the fitting LAPACK library is available and linked to
 // the executable. Otherwise a call to this function will result in a linker error.
 */
-inline void potri( char* uplo, int* n, double* a, int* lda, int* info )
+inline void potri( char* uplo, int* n, double* A, int* lda, int* info )
 {
-   dpotri_( uplo, n, a, lda, info );
+   dpotri_( uplo, n, A, lda, info );
 }
 //*************************************************************************************************
 
@@ -467,7 +467,7 @@ inline void potri( char* uplo, int* n, double* a, int* lda, int* info )
 //
 // \param uplo \c 'L' to use the lower part of the matrix, \c 'U' to use the upper part.
 // \param n The number of rows/columns of the matrix \f$[0..\infty)\f$.
-// \param a Pointer to the first element of the matrix.
+// \param A Pointer to the first element of the matrix.
 // \param lda The total number of elements between two rows/columns of the matrix \f$[0..\infty)\f$.
 // \param info Return code of the function call.
 // \return void
@@ -490,11 +490,11 @@ inline void potri( char* uplo, int* n, double* a, int* lda, int* info )
 // \note This function can only be used if the fitting LAPACK library is available and linked to
 // the executable. Otherwise a call to this function will result in a linker error.
 */
-inline void potri( char* uplo, int* n, complex<float>* a, int* lda, int* info )
+inline void potri( char* uplo, int* n, complex<float>* A, int* lda, int* info )
 {
    BLAZE_STATIC_ASSERT( sizeof( complex<float> ) == 2UL*sizeof( float ) );
 
-   cpotri_( uplo, n, reinterpret_cast<float*>( a ), lda, info );
+   cpotri_( uplo, n, reinterpret_cast<float*>( A ), lda, info );
 }
 //*************************************************************************************************
 
@@ -506,7 +506,7 @@ inline void potri( char* uplo, int* n, complex<float>* a, int* lda, int* info )
 //
 // \param uplo \c 'L' to use the lower part of the matrix, \c 'U' to use the upper part.
 // \param n The number of rows/columns of the matrix \f$[0..\infty)\f$.
-// \param a Pointer to the first element of the matrix.
+// \param A Pointer to the first element of the matrix.
 // \param lda The total number of elements between two rows/columns of the matrix \f$[0..\infty)\f$.
 // \param info Return code of the function call.
 // \return void
@@ -529,11 +529,11 @@ inline void potri( char* uplo, int* n, complex<float>* a, int* lda, int* info )
 // \note This function can only be used if the fitting LAPACK library is available and linked to
 // the executable. Otherwise a call to this function will result in a linker error.
 */
-inline void potri( char* uplo, int* n, complex<double>* a, int* lda, int* info )
+inline void potri( char* uplo, int* n, complex<double>* A, int* lda, int* info )
 {
    BLAZE_STATIC_ASSERT( sizeof( complex<double> ) == 2UL*sizeof( double ) );
 
-   zpotri_( uplo, n, reinterpret_cast<double*>( a ), lda, info );
+   zpotri_( uplo, n, reinterpret_cast<double*>( A ), lda, info );
 }
 //*************************************************************************************************
 

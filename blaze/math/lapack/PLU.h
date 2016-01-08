@@ -67,10 +67,10 @@ namespace blaze {
 /*! \cond BLAZE_INTERNAL */
 extern "C" {
 
-void sgetrf_( int* m, int* n, float*  a, int* lda, int* ipiv, int* info );
-void dgetrf_( int* m, int* n, double* a, int* lda, int* ipiv, int* info );
-void cgetrf_( int* m, int* n, float*  a, int* lda, int* ipiv, int* info );
-void zgetrf_( int* m, int* n, double* a, int* lda, int* ipiv, int* info );
+void sgetrf_( int* m, int* n, float*  A, int* lda, int* ipiv, int* info );
+void dgetrf_( int* m, int* n, double* A, int* lda, int* ipiv, int* info );
+void cgetrf_( int* m, int* n, float*  A, int* lda, int* ipiv, int* info );
+void zgetrf_( int* m, int* n, double* A, int* lda, int* ipiv, int* info );
 
 }
 /*! \endcond */
@@ -88,13 +88,13 @@ void zgetrf_( int* m, int* n, double* a, int* lda, int* ipiv, int* info );
 //*************************************************************************************************
 /*!\name LAPACK PLU decomposition functions */
 //@{
-inline void getrf( int* m, int* n, float* a, int* lda, int* ipiv, int* info );
+inline void getrf( int* m, int* n, float* A, int* lda, int* ipiv, int* info );
 
-inline void getrf( int* m, int* n, double* a, int* lda, int* ipiv, int* info );
+inline void getrf( int* m, int* n, double* A, int* lda, int* ipiv, int* info );
 
-inline void getrf( int* m, int* n, complex<float>* a, int* lda, int* ipiv, int* info );
+inline void getrf( int* m, int* n, complex<float>* A, int* lda, int* ipiv, int* info );
 
-inline void getrf( int* m, int* n, complex<double>* a, int* lda, int* ipiv, int* info );
+inline void getrf( int* m, int* n, complex<double>* A, int* lda, int* ipiv, int* info );
 
 template< typename MT, bool SO >
 inline void getrf( DenseMatrix<MT,SO>& A, int* ipiv );
@@ -108,7 +108,7 @@ inline void getrf( DenseMatrix<MT,SO>& A, int* ipiv );
 //
 // \param m The number of rows of the given matrix \f$[0..\infty)\f$.
 // \param n The number of columns of the given matrix \f$[0..\infty)\f$.
-// \param a Pointer to the first element of the matrix.
+// \param A Pointer to the first element of the matrix.
 // \param lda The total number of elements between two rows/columns of the matrix \f$[0..\infty)\f$.
 // \param ipiv Auxiliary array for the pivot indices; size >= min( \a m, \a n ).
 // \param info Return code of the function call.
@@ -139,9 +139,9 @@ inline void getrf( DenseMatrix<MT,SO>& A, int* ipiv );
 // \note This function can only be used if the fitting LAPACK library is available and linked to
 // the executable. Otherwise a call to this function will result in a linker error.
 */
-inline void getrf( int* m, int* n, float* a, int* lda, int* ipiv, int* info )
+inline void getrf( int* m, int* n, float* A, int* lda, int* ipiv, int* info )
 {
-   sgetrf_( m, n, a, lda, ipiv, info );
+   sgetrf_( m, n, A, lda, ipiv, info );
 }
 //*************************************************************************************************
 
@@ -152,7 +152,7 @@ inline void getrf( int* m, int* n, float* a, int* lda, int* ipiv, int* info )
 //
 // \param m The number of rows of the given matrix \f$[0..\infty)\f$.
 // \param n The number of columns of the given matrix \f$[0..\infty)\f$.
-// \param a Pointer to the first element of the matrix.
+// \param A Pointer to the first element of the matrix.
 // \param lda The total number of elements between two rows/columns of the matrix \f$[0..\infty)\f$.
 // \param ipiv Auxiliary array for the pivot indices; size >= min( \a m, \a n ).
 // \param info Return code of the function call.
@@ -183,9 +183,9 @@ inline void getrf( int* m, int* n, float* a, int* lda, int* ipiv, int* info )
 // \note This function can only be used if the fitting LAPACK library is available and linked to
 // the executable. Otherwise a call to this function will result in a linker error.
 */
-inline void getrf( int* m, int* n, double* a, int* lda, int* ipiv, int* info )
+inline void getrf( int* m, int* n, double* A, int* lda, int* ipiv, int* info )
 {
-   dgetrf_( m, n, a, lda, ipiv, info );
+   dgetrf_( m, n, A, lda, ipiv, info );
 }
 //*************************************************************************************************
 
@@ -196,7 +196,7 @@ inline void getrf( int* m, int* n, double* a, int* lda, int* ipiv, int* info )
 //
 // \param m The number of rows of the given matrix \f$[0..\infty)\f$.
 // \param n The number of columns of the given matrix \f$[0..\infty)\f$.
-// \param a Pointer to the first element of the matrix.
+// \param A Pointer to the first element of the matrix.
 // \param lda The total number of elements between two rows/columns of the matrix \f$[0..\infty)\f$.
 // \param ipiv Auxiliary array for the pivot indices; size >= min( \a m, \a n ).
 // \param info Return code of the function call.
@@ -227,11 +227,11 @@ inline void getrf( int* m, int* n, double* a, int* lda, int* ipiv, int* info )
 // \note This function can only be used if the fitting LAPACK library is available and linked to
 // the executable. Otherwise a call to this function will result in a linker error.
 */
-inline void getrf( int* m, int* n, complex<float>* a, int* lda, int* ipiv, int* info )
+inline void getrf( int* m, int* n, complex<float>* A, int* lda, int* ipiv, int* info )
 {
    BLAZE_STATIC_ASSERT( sizeof( complex<float> ) == 2UL*sizeof( float ) );
 
-   cgetrf_( m, n, reinterpret_cast<float*>( a ), lda, ipiv, info );
+   cgetrf_( m, n, reinterpret_cast<float*>( A ), lda, ipiv, info );
 }
 //*************************************************************************************************
 
@@ -242,7 +242,7 @@ inline void getrf( int* m, int* n, complex<float>* a, int* lda, int* ipiv, int* 
 //
 // \param m The number of rows of the given matrix \f$[0..\infty)\f$.
 // \param n The number of columns of the given matrix \f$[0..\infty)\f$.
-// \param a Pointer to the first element of the matrix.
+// \param A Pointer to the first element of the matrix.
 // \param lda The total number of elements between two rows/columns of the matrix \f$[0..\infty)\f$.
 // \param ipiv Auxiliary array for the pivot indices; size >= min( \a m, \a n ).
 // \param info Return code of the function call.
@@ -273,11 +273,11 @@ inline void getrf( int* m, int* n, complex<float>* a, int* lda, int* ipiv, int* 
 // \note This function can only be used if the fitting LAPACK library is available and linked to
 // the executable. Otherwise a call to this function will result in a linker error.
 */
-inline void getrf( int* m, int* n, complex<double>* a, int* lda, int* ipiv, int* info )
+inline void getrf( int* m, int* n, complex<double>* A, int* lda, int* ipiv, int* info )
 {
    BLAZE_STATIC_ASSERT( sizeof( complex<double> ) == 2UL*sizeof( double ) );
 
-   zgetrf_( m, n, reinterpret_cast<double*>( a ), lda, ipiv, info );
+   zgetrf_( m, n, reinterpret_cast<double*>( A ), lda, ipiv, info );
 }
 //*************************************************************************************************
 
