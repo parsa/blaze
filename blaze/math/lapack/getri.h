@@ -48,19 +48,10 @@
 #include <blaze/math/expressions/DenseMatrix.h>
 #include <blaze/math/lapack/getrf.h>
 #include <blaze/math/typetraits/IsRowMajorMatrix.h>
-#include <blaze/math/typetraits/IsSquare.h>
 #include <blaze/util/Assert.h>
 #include <blaze/util/Complex.h>
-#include <blaze/util/constraints/Complex.h>
-#include <blaze/util/constraints/Double.h>
-#include <blaze/util/constraints/Float.h>
-#include <blaze/util/EnableIf.h>
 #include <blaze/util/Exception.h>
 #include <blaze/util/StaticAssert.h>
-#include <blaze/util/typetraits/IsComplexDouble.h>
-#include <blaze/util/typetraits/IsComplexFloat.h>
-#include <blaze/util/typetraits/IsDouble.h>
-#include <blaze/util/typetraits/IsFloat.h>
 #include <blaze/util/UniqueArray.h>
 
 
@@ -114,12 +105,13 @@ inline void getri( DenseMatrix<MT,SO>& A, const int* ipiv );
 
 
 //*************************************************************************************************
-/*!\brief LAPACK kernel for the inversion of the given dense single precision matrix.
+/*!\brief LAPACK kernel for the dense matrix inversion of the given dense single precision
+//        column-major square matrix.
 // \ingroup lapack
 //
 // \param n The number of rows/columns of the matrix \f$[0..\infty)\f$.
-// \param A Pointer to the first element of the matrix to be inverted.
-// \param lda The total number of elements between two rows/columns of the matrix \f$[0..\infty)\f$.
+// \param A Pointer to the first element of the single precision column-major square matrix.
+// \param lda The total number of elements between two columns of the matrix \f$[0..\infty)\f$.
 // \param ipiv Auxiliary array for the pivot indices; size >= min( \a m, \a n ).
 // \param work Auxiliary array; size >= max( 1, \a lwork ).
 // \param lwork The dimension of the array \a work; size >= max( 1, \a n ).
@@ -127,8 +119,8 @@ inline void getri( DenseMatrix<MT,SO>& A, const int* ipiv );
 // \return void
 //
 // This function performs the dense matrix inversion based on the LAPACK sgetri() function for
-// single precision matrices that have already been factorized by the sgetrf() function. The
-// \a info argument provides feedback on the success of the function call:
+// single precision column-major matrices that have already been factorized by the sgetrf()
+// function. The \a info argument provides feedback on the success of the function call:
 //
 //   - = 0: The inversion finished successfully.
 //   - < 0: If info = -i, the i-th argument had an illegal value.
@@ -155,12 +147,13 @@ inline void getri( int* n, float* A, int* lda, int* ipiv, float* work, int* lwor
 
 
 //*************************************************************************************************
-/*!\brief LAPACK kernel for the inversion of the given dense double precision matrix.
+/*!\brief LAPACK kernel for the dense matrix inversion of the given dense double precision
+//        column-major square matrix.
 // \ingroup lapack
 //
 // \param n The number of rows/columns of the matrix \f$[0..\infty)\f$.
-// \param A Pointer to the first element of the matrix to be inverted.
-// \param lda The total number of elements between two rows/columns of the matrix \f$[0..\infty)\f$.
+// \param A Pointer to the first element of the double precision column-major square matrix.
+// \param lda The total number of elements between two columns of the matrix \f$[0..\infty)\f$.
 // \param ipiv Auxiliary array for the pivot indices; size >= min( \a m, \a n ).
 // \param work Auxiliary array; size >= max( 1, \a lwork ).
 // \param lwork The dimension of the array \a work; size >= max( 1, \a n ).
@@ -168,8 +161,8 @@ inline void getri( int* n, float* A, int* lda, int* ipiv, float* work, int* lwor
 // \return void
 //
 // This function performs the dense matrix inversion based on the LAPACK dgetri() function for
-// double precision matrices that have already been factorized by the dgetrf() function. The
-// \a info argument provides feedback on the success of the function call:
+// double precision column-major matrices that have already been factorized by the dgetrf()
+// function. The \a info argument provides feedback on the success of the function call:
 //
 //   - = 0: The inversion finished successfully.
 //   - < 0: If info = -i, the i-th argument had an illegal value.
@@ -196,12 +189,13 @@ inline void getri( int* n, double* A, int* lda, int* ipiv, double* work, int* lw
 
 
 //*************************************************************************************************
-/*!\brief LAPACK kernel for the inversion of the given dense single precision complex matrix.
+/*!\brief LAPACK kernel for the dense matrix inversion of the given dense single precision
+//        complex column-major square matrix.
 // \ingroup lapack
 //
 // \param n The number of rows/columns of the matrix \f$[0..\infty)\f$.
-// \param A Pointer to the first element of the matrix to be inverted.
-// \param lda The total number of elements between two rows/columns of the matrix \f$[0..\infty)\f$.
+// \param A Pointer to the first element of the single precision complex column-major square matrix.
+// \param lda The total number of elements between two columns of the matrix \f$[0..\infty)\f$.
 // \param ipiv Auxiliary array for the pivot indices; size >= min( \a m, \a n ).
 // \param work Auxiliary array; size >= max( 1, \a lwork ).
 // \param lwork The dimension of the array \a work; size >= max( 1, \a n ).
@@ -209,8 +203,8 @@ inline void getri( int* n, double* A, int* lda, int* ipiv, double* work, int* lw
 // \return void
 //
 // This function performs the dense matrix inversion based on the LAPACK cgetri() function for
-// single precision complex matrices that have already been factorized by the cgetrf() function.
-// The \a info argument provides feedback on the success of the function call:
+// single precision complex column-major matrices that have already been factorized by the
+// cgetrf() function. The \a info argument provides feedback on the success of the function call:
 //
 //   - = 0: The inversion finished successfully.
 //   - < 0: If info = -i, the i-th argument had an illegal value.
@@ -241,21 +235,22 @@ inline void getri( int* n, complex<float>* A, int* lda, int* ipiv,
 
 
 //*************************************************************************************************
-/*!\brief LAPACK kernel for the inversion of the given dense double precision complex matrix.
+/*!\brief LAPACK kernel for the dense matrix inversion of the given dense double precision
+//        complex column-major square matrix.
 // \ingroup lapack
 //
 // \param n The number of rows/columns of the matrix \f$[0..\infty)\f$.
-// \param A Pointer to the first element of the matrix to be inverted.
-// \param lda The total number of elements between two rows/columns of the matrix \f$[0..\infty)\f$.
+// \param A Pointer to the first element of the double precision complex column-major square matrix.
+// \param lda The total number of elements between two columns of the matrix \f$[0..\infty)\f$.
 // \param ipiv Auxiliary array for the pivot indices; size >= min( \a m, \a n ).
 // \param work Auxiliary array; size >= max( 1, \a lwork ).
 // \param lwork The dimension of the array \a work; size >= max( 1, \a n ).
 // \param info Return code of the function call.
 // \return void
 //
-// This function performs the dense matrix inversion based on the LAPACK zgetri() function for
-// double precision complex matrices that have already been factorized by the zgetrf() function.
-// The \a info argument provides feedback on the success of the function call:
+// This function performs the dense matrix inversion based on the LAPACK cgetri() function for
+// double precision complex column-major matrices that have already been factorized by the
+// cgetrf() function. The \a info argument provides feedback on the success of the function call:
 //
 //   - = 0: The inversion finished successfully.
 //   - < 0: If info = -i, the i-th argument had an illegal value.
@@ -335,8 +330,8 @@ inline void getri( DenseMatrix<MT,SO>& A, const int* ipiv )
       BLAZE_THROW_INVALID_ARGUMENT( "Invalid non-square matrix provided" );
    }
 
-   int n   ( boost::numeric_cast<int>( (~A).columns() ) );
-   int lda ( boost::numeric_cast<int>( (~A).spacing() ) );
+   int n   ( numeric_cast<int>( (~A).columns() ) );
+   int lda ( numeric_cast<int>( (~A).spacing() ) );
    int info( 0 );
 
    if( n == 0 )

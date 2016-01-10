@@ -48,20 +48,10 @@
 #include <blaze/math/expressions/DenseMatrix.h>
 #include <blaze/math/lapack/getrf.h>
 #include <blaze/math/typetraits/IsRowMajorMatrix.h>
-#include <blaze/math/typetraits/IsSquare.h>
 #include <blaze/util/Assert.h>
 #include <blaze/util/Complex.h>
-#include <blaze/util/constraints/Complex.h>
-#include <blaze/util/constraints/Double.h>
-#include <blaze/util/constraints/Float.h>
-#include <blaze/util/EnableIf.h>
 #include <blaze/util/Exception.h>
 #include <blaze/util/StaticAssert.h>
-#include <blaze/util/typetraits/IsComplexDouble.h>
-#include <blaze/util/typetraits/IsComplexFloat.h>
-#include <blaze/util/typetraits/IsDouble.h>
-#include <blaze/util/typetraits/IsFloat.h>
-#include <blaze/util/UniqueArray.h>
 
 
 namespace blaze {
@@ -112,21 +102,21 @@ inline void potri( DenseMatrix<MT,SO>& A, char uplo );
 
 
 //*************************************************************************************************
-/*!\brief LAPACK kernel for the inversion of the given dense positive-definite single precision
-//        matrix.
+/*!\brief LAPACK kernel for the dense matrix inversion of the given positive-definite single
+//        precision column-major matrix.
 // \ingroup lapack
 //
 // \param uplo \c 'L' to use the lower part of the matrix, \c 'U' to use the upper part.
 // \param n The number of rows/columns of the matrix \f$[0..\infty)\f$.
-// \param A Pointer to the first element of the matrix.
-// \param lda The total number of elements between two rows/columns of the matrix \f$[0..\infty)\f$.
+// \param A Pointer to the first element of the single precision column-major matrix.
+// \param lda The total number of elements between two columns of the matrix \f$[0..\infty)\f$.
 // \param info Return code of the function call.
 // \return void
 //
 // This function performs the dense matrix inversion based on the LAPACK spotri() function for
-// positive-definite single precision matrices that have already been factorized by the spotrf()
-// function. The resulting symmetric inverse of \a A is stored either in the lower part of \a A
-// (\a uplo = \c 'L') or in the upper part (\a uplo = \c 'U').
+// positive-definite single precision column-major matrices that have already been factorized
+// by the spotrf() function. The resulting symmetric inverse of \a A is stored either in the
+// lower part of \a A (\a uplo = \c 'L') or in the upper part (\a uplo = \c 'U').
 //
 // The \a info argument provides feedback on the success of the function call:
 //
@@ -149,21 +139,21 @@ inline void potri( char* uplo, int* n, float* A, int* lda, int* info )
 
 
 //*************************************************************************************************
-/*!\brief LAPACK kernel for the inversion of the given dense positive-definite double precision
-//        matrix.
+/*!\brief LAPACK kernel for the dense matrix inversion of the given positive-definite double
+//        precision column-major matrix.
 // \ingroup lapack
 //
 // \param uplo \c 'L' to use the lower part of the matrix, \c 'U' to use the upper part.
 // \param n The number of rows/columns of the matrix \f$[0..\infty)\f$.
-// \param A Pointer to the first element of the matrix.
-// \param lda The total number of elements between two rows/columns of the matrix \f$[0..\infty)\f$.
+// \param A Pointer to the first element of the double precision column-major matrix.
+// \param lda The total number of elements between two columns of the matrix \f$[0..\infty)\f$.
 // \param info Return code of the function call.
 // \return void
 //
 // This function performs the dense matrix inversion based on the LAPACK dpotri() function for
-// positive-definite double precision matrices that have already been factorized by the dpotrf()
-// function. The resulting symmetric inverse of \a A is stored either in the lower part of \a A
-// (\a uplo = \c 'L') or in the upper part (\a uplo = \c 'U').
+// positive-definite double precision column-major matrices that have already been factorized
+// by the dpotrf() function. The resulting symmetric inverse of \a A is stored either in the
+// lower part of \a A (\a uplo = \c 'L') or in the upper part (\a uplo = \c 'U').
 //
 // The \a info argument provides feedback on the success of the function call:
 //
@@ -186,21 +176,21 @@ inline void potri( char* uplo, int* n, double* A, int* lda, int* info )
 
 
 //*************************************************************************************************
-/*!\brief LAPACK kernel for the inversion of the given dense positive-definite single precision
-//        complex matrix.
+/*!\brief LAPACK kernel for the dense matrix inversion of the given positive-definite single
+//        precision complex column-major matrix.
 // \ingroup lapack
 //
 // \param uplo \c 'L' to use the lower part of the matrix, \c 'U' to use the upper part.
 // \param n The number of rows/columns of the matrix \f$[0..\infty)\f$.
-// \param A Pointer to the first element of the matrix.
-// \param lda The total number of elements between two rows/columns of the matrix \f$[0..\infty)\f$.
+// \param A Pointer to the first element of the single precision complex column-major matrix.
+// \param lda The total number of elements between two columns of the matrix \f$[0..\infty)\f$.
 // \param info Return code of the function call.
 // \return void
 //
 // This function performs the dense matrix inversion based on the LAPACK cpotri() function for
-// positive-definite single precision complex matrices that have already been factorized by the
-// cpotrf() function. The resulting symmetric inverse of \a A is stored either in the lower part
-// of \a A (\a uplo = \c 'L') or in the upper part (\a uplo = \c 'U').
+// positive-definite single precision complex column-major matrices that have already been
+// factorized by the cpotrf() function. The resulting symmetric inverse of \a A is stored either
+// in the lower part of \a A (\a uplo = \c 'L') or in the upper part (\a uplo = \c 'U').
 //
 // The \a info argument provides feedback on the success of the function call:
 //
@@ -225,21 +215,21 @@ inline void potri( char* uplo, int* n, complex<float>* A, int* lda, int* info )
 
 
 //*************************************************************************************************
-/*!\brief LAPACK kernel for the inversion of the given dense positive-definite double precision
-//        complex matrix.
+/*!\brief LAPACK kernel for the dense matrix inversion of the given positive-definite double
+//        precision complex column-major matrix.
 // \ingroup lapack
 //
 // \param uplo \c 'L' to use the lower part of the matrix, \c 'U' to use the upper part.
 // \param n The number of rows/columns of the matrix \f$[0..\infty)\f$.
-// \param A Pointer to the first element of the matrix.
-// \param lda The total number of elements between two rows/columns of the matrix \f$[0..\infty)\f$.
+// \param A Pointer to the first element of the double precision complex column-major matrix.
+// \param lda The total number of elements between two columns of the matrix \f$[0..\infty)\f$.
 // \param info Return code of the function call.
 // \return void
 //
 // This function performs the dense matrix inversion based on the LAPACK zpotri() function for
-// positive-definite double precision complex matrices that have already been factorized by the
-// zpotrf() function. The resulting symmetric inverse of \a A is stored either in the lower part
-// of \a A (\a uplo = \c 'L') or in the upper part (\a uplo = \c 'U').
+// positive-definite double precision complex column-major matrices that have already been
+// factorized by the zpotrf() function. The resulting symmetric inverse of \a A is stored either
+// in the lower part of \a A (\a uplo = \c 'L') or in the upper part (\a uplo = \c 'U').
 //
 // The \a info argument provides feedback on the success of the function call:
 //
@@ -318,8 +308,8 @@ inline void potri( DenseMatrix<MT,SO>& A, char uplo )
       BLAZE_THROW_INVALID_ARGUMENT( "Invalid uplo argument provided" );
    }
 
-   int n   ( boost::numeric_cast<int>( (~A).columns() ) );
-   int lda ( boost::numeric_cast<int>( (~A).spacing() ) );
+   int n   ( numeric_cast<int>( (~A).columns() ) );
+   int lda ( numeric_cast<int>( (~A).spacing() ) );
    int info( 0 );
 
    if( n == 0 ) {

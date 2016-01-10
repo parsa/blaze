@@ -46,13 +46,10 @@
 #include <blaze/math/constraints/Computation.h>
 #include <blaze/math/constraints/MutableDataAccess.h>
 #include <blaze/math/expressions/DenseMatrix.h>
+#include <blaze/math/typetraits/IsRowMajorMatrix.h>
 #include <blaze/util/Assert.h>
-#include <blaze/util/EnableIf.h>
+#include <blaze/util/Complex.h>
 #include <blaze/util/StaticAssert.h>
-#include <blaze/util/typetraits/IsComplexDouble.h>
-#include <blaze/util/typetraits/IsComplexFloat.h>
-#include <blaze/util/typetraits/IsFloat.h>
-#include <blaze/util/typetraits/IsDouble.h>
 
 
 namespace blaze {
@@ -103,28 +100,28 @@ inline void getrf( DenseMatrix<MT,SO>& A, int* ipiv );
 
 
 //*************************************************************************************************
-/*!\brief LAPACK kernel for the PLU decomposition of the given dense single precision matrix.
+/*!\brief LAPACK kernel for the dense matrix PLU decomposition of the given single precision
+//        column-major matrix.
 // \ingroup lapack
 //
 // \param m The number of rows of the given matrix \f$[0..\infty)\f$.
 // \param n The number of columns of the given matrix \f$[0..\infty)\f$.
-// \param A Pointer to the first element of the matrix.
-// \param lda The total number of elements between two rows/columns of the matrix \f$[0..\infty)\f$.
+// \param A Pointer to the first element of the single precision column-major matrix.
+// \param lda The total number of elements between two columns of the matrix \f$[0..\infty)\f$.
 // \param ipiv Auxiliary array for the pivot indices; size >= min( \a m, \a n ).
 // \param info Return code of the function call.
 // \return void
 //
-// This function performs the dense matrix PLU decomposition of a general M-by-N matrix based on
-// the LAPACK sgetrf() function, which uses partial pivoting with row interchanges. The resulting
-// decomposition has the form
+// This function performs the dense matrix PLU decomposition of a general M-by-N single precision
+// column-major matrix based on the LAPACK sgetrf() function, which uses partial pivoting with row
+// interchanges. The resulting decomposition has the form
 
                           \f[ A = P \cdot L \cdot U, \f]
 
-// where \c P is a permutation matrix, \c L is a lower unitriangular matrix, and \c U is an upper
-// triangular matrix. The resulting decomposition is stored within \a A: In case of a column-major
-// matrix, \c L is stored in the lower part of \a A and \c U is stored in the upper part. The unit
-// diagonal elements of \c L are not stored. In case \a A is a row-major matrix the result is
-// transposed.
+// where \c P is a permutation matrix, \c L is a lower unitriangular matrix (lower trapezoidal if
+// \a m > \a n), and \c U is an upper triangular matrix (upper trapezoidal if \a m < \a n). The
+// resulting decomposition is stored within the matrix \a A: \c L is stored in the lower part of
+// \a A and \c U is stored in the upper part. The unit diagonal elements of \c L are not stored.
 //
 // The \a info argument provides feedback on the success of the function call:
 //
@@ -147,28 +144,28 @@ inline void getrf( int* m, int* n, float* A, int* lda, int* ipiv, int* info )
 
 
 //*************************************************************************************************
-/*!\brief LAPACK kernel for the PLU decomposition of the given dense double precision matrix.
+/*!\brief LAPACK kernel for the dense matrix PLU decomposition of the given double precision
+//        column-major matrix.
 // \ingroup lapack
 //
 // \param m The number of rows of the given matrix \f$[0..\infty)\f$.
 // \param n The number of columns of the given matrix \f$[0..\infty)\f$.
-// \param A Pointer to the first element of the matrix.
-// \param lda The total number of elements between two rows/columns of the matrix \f$[0..\infty)\f$.
+// \param A Pointer to the first element of the double precision column-major matrix.
+// \param lda The total number of elements between two columns of the matrix \f$[0..\infty)\f$.
 // \param ipiv Auxiliary array for the pivot indices; size >= min( \a m, \a n ).
 // \param info Return code of the function call.
 // \return void
 //
-// This function performs the dense matrix PLU decomposition of a general M-by-N matrix based on
-// the LAPACK dgetrf() function, which uses partial pivoting with row interchanges. The resulting
-// decomposition has the form
+// This function performs the dense matrix PLU decomposition of a general M-by-N double precision
+// column-major matrix based on the LAPACK dgetrf() function, which uses partial pivoting with row
+// interchanges. The resulting decomposition has the form
 
                           \f[ A = P \cdot L \cdot U, \f]
 
-// where \c P is a permutation matrix, \c L is a lower unitriangular matrix, and \c U is an upper
-// triangular matrix. The resulting decomposition is stored within \a A: In case of a column-major
-// matrix, \c L is stored in the lower part of \a A and \c U is stored in the upper part. The unit
-// diagonal elements of \c L are not stored. In case \a A is a row-major matrix the result is
-// transposed.
+// where \c P is a permutation matrix, \c L is a lower unitriangular matrix (lower trapezoidal if
+// \a m > \a n), and \c U is an upper triangular matrix (upper trapezoidal if \a m < \a n). The
+// resulting decomposition is stored within the matrix \a A: \c L is stored in the lower part of
+// \a A and \c U is stored in the upper part. The unit diagonal elements of \c L are not stored.
 //
 // The \a info argument provides feedback on the success of the function call:
 //
@@ -191,28 +188,28 @@ inline void getrf( int* m, int* n, double* A, int* lda, int* ipiv, int* info )
 
 
 //*************************************************************************************************
-/*!\brief LAPACK kernel for the PLU decomposition of the given dense single precision complex matrix.
+/*!\brief LAPACK kernel for the dense matrix PLU decomposition of the given single precision
+//        complex column-major matrix.
 // \ingroup lapack
 //
 // \param m The number of rows of the given matrix \f$[0..\infty)\f$.
 // \param n The number of columns of the given matrix \f$[0..\infty)\f$.
-// \param A Pointer to the first element of the matrix.
-// \param lda The total number of elements between two rows/columns of the matrix \f$[0..\infty)\f$.
+// \param A Pointer to the first element of the single precision complex column-major matrix.
+// \param lda The total number of elements between two columns of the matrix \f$[0..\infty)\f$.
 // \param ipiv Auxiliary array for the pivot indices; size >= min( \a m, \a n ).
 // \param info Return code of the function call.
 // \return void
 //
-// This function performs the dense matrix PLU decomposition of a general M-by-N matrix based on
-// the LAPACK cgetrf() function, which uses partial pivoting with row interchanges. The resulting
-// decomposition has the form
+// This function performs the dense matrix PLU decomposition of a general M-by-N single precision
+// complex column-major matrix based on the LAPACK cgetrf() function, which uses partial pivoting
+// with row interchanges. The resulting decomposition has the form
 
                           \f[ A = P \cdot L \cdot U, \f]
 
-// where \c P is a permutation matrix, \c L is a lower unitriangular matrix, and \c U is an upper
-// triangular matrix. The resulting decomposition is stored within \a A: In case of a column-major
-// matrix, \c L is stored in the lower part of \a A and \c U is stored in the upper part. The unit
-// diagonal elements of \c L are not stored. In case \a A is a row-major matrix the result is
-// transposed.
+// where \c P is a permutation matrix, \c L is a lower unitriangular matrix (lower trapezoidal if
+// \a m > \a n), and \c U is an upper triangular matrix (upper trapezoidal if \a m < \a n). The
+// resulting decomposition is stored within the matrix \a A: \c L is stored in the lower part of
+// \a A and \c U is stored in the upper part. The unit diagonal elements of \c L are not stored.
 //
 // The \a info argument provides feedback on the success of the function call:
 //
@@ -237,28 +234,28 @@ inline void getrf( int* m, int* n, complex<float>* A, int* lda, int* ipiv, int* 
 
 
 //*************************************************************************************************
-/*!\brief LAPACK kernel for the PLU decomposition of the given dense double precision complex matrix.
+/*!\brief LAPACK kernel for the dense matrix PLU decomposition of the given double precision
+//        complex column-major matrix.
 // \ingroup lapack
 //
 // \param m The number of rows of the given matrix \f$[0..\infty)\f$.
 // \param n The number of columns of the given matrix \f$[0..\infty)\f$.
-// \param A Pointer to the first element of the matrix.
-// \param lda The total number of elements between two rows/columns of the matrix \f$[0..\infty)\f$.
+// \param A Pointer to the first element of the double precision complex column-major matrix.
+// \param lda The total number of elements between two columns of the matrix \f$[0..\infty)\f$.
 // \param ipiv Auxiliary array for the pivot indices; size >= min( \a m, \a n ).
 // \param info Return code of the function call.
 // \return void
 //
-// This function performs the dense matrix PLU decomposition of a general M-by-N matrix based on
-// the LAPACK zgetrf() function, which uses partial pivoting with row interchanges. The resulting
-// decomposition has the form
+// This function performs the dense matrix PLU decomposition of a general M-by-N double precision
+// complex column-major matrix based on the LAPACK zgetrf() function, which uses partial pivoting
+// with row interchanges. The resulting decomposition has the form
 
                           \f[ A = P \cdot L \cdot U, \f]
 
-// where \c P is a permutation matrix, \c L is a lower unitriangular matrix, and \c U is an upper
-// triangular matrix. The resulting decomposition is stored within \a A: In case of a column-major
-// matrix, \c L is stored in the lower part of \a A and \c U is stored in the upper part. The unit
-// diagonal elements of \c L are not stored. In case \a A is a row-major matrix the result is
-// transposed.
+// where \c P is a permutation matrix, \c L is a lower unitriangular matrix (lower trapezoidal if
+// \a m > \a n), and \c U is an upper triangular matrix (upper trapezoidal if \a m < \a n). The
+// resulting decomposition is stored within the matrix \a A: \c L is stored in the lower part of
+// \a A and \c U is stored in the upper part. The unit diagonal elements of \c L are not stored.
 //
 // The \a info argument provides feedback on the success of the function call:
 //
@@ -297,15 +294,22 @@ inline void getrf( int* m, int* n, complex<double>* A, int* lda, int* ipiv, int*
 // \c complex<float>, or \c complex<double> element type. The attempt to call the function
 // with adaptors or matrices of any other element type results in a compile time error!\n
 //
-// The resulting decomposition has the form
+// In case of a row-major matrix, the resulting decomposition has the form
+
+                          \f[ A = L \cdot U \cdot P, \f]
+
+// where \c P is an N-by-N permutation matrix, \c L is a lower triangular matrix (lower trapezoidal
+// if \a m > \a n), and \c U is an upper unitriangular matrix (upper trapezoidal if \a m < \a n).
+//
+// In case of a column-major matrix, the resulting decomposition has the form
 
                           \f[ A = P \cdot L \cdot U, \f]
 
-// where \c P is a permutation matrix, \c L is a lower unitriangular matrix, and \c U is an upper
-// triangular matrix. The resulting decomposition is stored within \a A: In case of a column-major
-// matrix, \c L is stored in the lower part of \a A and \c U is stored in the upper part. The unit
-// diagonal elements of \c L are not stored. In case \a A is a row-major matrix the result is
-// transposed.
+// where \c L is a lower unitriangular matrix (lower trapezoidal if \a m > \a n), \c U is an upper
+// triangular matrix (upper trapezoidal if \a m < \a n), and  \c P is an M-by-M permutation matrix.
+//
+// The resulting decomposition is stored within the matrix \a A: \c L is stored in the lower part
+// of \a A and \c U is stored in the upper part. The unit diagonal elements of \c L are not stored.
 //
 // For more information on the getrf() functions (i.e. sgetrf(), dgetrf(), cgetrf(), and zgetrf())
 // see the LAPACK online documentation browser:
@@ -331,9 +335,9 @@ inline void getrf( DenseMatrix<MT,SO>& A, int* ipiv )
    BLAZE_CONSTRAINT_MUST_HAVE_MUTABLE_DATA_ACCESS( MT );
    BLAZE_CONSTRAINT_MUST_BE_BLAS_COMPATIBLE_TYPE( typename MT::ElementType );
 
-   int m   ( boost::numeric_cast<int>( (~A).rows()    ) );
-   int n   ( boost::numeric_cast<int>( (~A).columns() ) );
-   int lda ( boost::numeric_cast<int>( (~A).spacing() ) );
+   int m   ( numeric_cast<int>( SO ? (~A).rows() : (~A).columns() ) );
+   int n   ( numeric_cast<int>( SO ? (~A).columns() : (~A).rows() ) );
+   int lda ( numeric_cast<int>( (~A).spacing() ) );
    int info( 0 );
 
    if( m == 0 || n == 0 ) {

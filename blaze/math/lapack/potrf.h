@@ -48,13 +48,9 @@
 #include <blaze/math/expressions/DenseMatrix.h>
 #include <blaze/math/typetraits/IsRowMajorMatrix.h>
 #include <blaze/util/Assert.h>
-#include <blaze/util/EnableIf.h>
+#include <blaze/util/Complex.h>
 #include <blaze/util/Exception.h>
 #include <blaze/util/StaticAssert.h>
-#include <blaze/util/typetraits/IsComplexDouble.h>
-#include <blaze/util/typetraits/IsComplexFloat.h>
-#include <blaze/util/typetraits/IsFloat.h>
-#include <blaze/util/typetraits/IsDouble.h>
 
 
 namespace blaze {
@@ -105,18 +101,20 @@ inline void potrf( DenseMatrix<MT,SO>& A, char uplo );
 
 
 //*************************************************************************************************
-/*!\brief LAPACK kernel for the Cholesky decomposition of the given dense single precision matrix.
+/*!\brief LAPACK kernel for the dense matrix Cholesky decomposition of the given single precision
+//        column-major matrix.
 // \ingroup lapack
 //
 // \param uplo \c 'L' to use the lower part of the matrix, \c 'U' to use the upper part.
 // \param n The number of rows/columns of the matrix \f$[0..\infty)\f$.
-// \param A Pointer to the first element of the matrix.
-// \param lda The total number of elements between two rows/columns of the matrix \f$[0..\infty)\f$.
+// \param A Pointer to the first element of the single precision column-major matrix.
+// \param lda The total number of elements between two columns of the matrix \f$[0..\infty)\f$.
 // \param info Return code of the function call.
 // \return void
 //
 // This function performs the dense matrix Cholesky decomposition of a symmetric positive definite
-// matrix based on the LAPACK spotrf() function. The decomposition has the form
+// single precision column-major matrix based on the LAPACK spotrf() function. The decomposition
+// has the form
 
                       \f[ A = U^{T} U \texttt{ (if uplo = 'U'), or }
                           A = L L^{T} \texttt{ (if uplo = 'L'), } \f]
@@ -147,18 +145,20 @@ inline void potrf( char* uplo, int* n, float* A, int* lda, int* info )
 
 
 //*************************************************************************************************
-/*!\brief LAPACK kernel for the Cholesky decomposition of the given dense double precision matrix.
+/*!\brief LAPACK kernel for the dense matrix Cholesky decomposition of the given double precision
+//        column-major matrix.
 // \ingroup lapack
 //
 // \param uplo \c 'L' to use the lower part of the matrix, \c 'U' to use the upper part.
 // \param n The number of rows/columns of the matrix \f$[0..\infty)\f$.
-// \param A Pointer to the first element of the matrix.
-// \param lda The total number of elements between two rows/columns of the matrix \f$[0..\infty)\f$.
+// \param A Pointer to the first element of the double precision column-major matrix.
+// \param lda The total number of elements between two columns of the matrix \f$[0..\infty)\f$.
 // \param info Return code of the function call.
 // \return void
 //
 // This function performs the dense matrix Cholesky decomposition of a symmetric positive definite
-// matrix based on the LAPACK dpotrf() function. The decomposition has the form
+// double precision column-major matrix based on the LAPACK dpotrf() function. The decomposition
+// has the form
 
                       \f[ A = U^{T} U \texttt{ (if uplo = 'U'), or }
                           A = L L^{T} \texttt{ (if uplo = 'L'), } \f]
@@ -189,19 +189,20 @@ inline void potrf( char* uplo, int* n, double* A, int* lda, int* info )
 
 
 //*************************************************************************************************
-/*!\brief LAPACK kernel for the Cholesky decomposition of the given dense single precision complex
-//        matrix.
+/*!\brief LAPACK kernel for the dense matrix Cholesky decomposition of the given single precision
+//        complex column-major matrix.
 // \ingroup lapack
 //
 // \param uplo \c 'L' to use the lower part of the matrix, \c 'U' to use the upper part.
 // \param n The number of rows/columns of the matrix \f$[0..\infty)\f$.
-// \param A Pointer to the first element of the matrix.
-// \param lda The total number of elements between two rows/columns of the matrix \f$[0..\infty)\f$.
+// \param A Pointer to the first element of the single precision complex column-major matrix.
+// \param lda The total number of elements between two columns of the matrix \f$[0..\infty)\f$.
 // \param info Return code of the function call.
 // \return void
 //
-// This function performs the dense matrix Cholesky decomposition of a symmetric positive definite
-// matrix based on the LAPACK cpotrf() function. The decomposition has the form
+// This function performs the dense matrix Cholesky decomposition of a symmetric positive
+// definite single precision complex column-major matrix based on the LAPACK cpotrf() function.
+// The decomposition has the form
 
                       \f[ A = U^{T} U \texttt{ (if uplo = 'U'), or }
                           A = L L^{T} \texttt{ (if uplo = 'L'), } \f]
@@ -234,19 +235,20 @@ inline void potrf( char* uplo, int* n, complex<float>* A, int* lda, int* info )
 
 
 //*************************************************************************************************
-/*!\brief LAPACK kernel for the Cholesky decomposition of the given dense double precision complex
-//        matrix.
+/*!\brief LAPACK kernel for the dense matrix Cholesky decomposition of the given double precision
+//        complex column-major matrix.
 // \ingroup lapack
 //
 // \param uplo \c 'L' to use the lower part of the matrix, \c 'U' to use the upper part.
 // \param n The number of rows/columns of the matrix \f$[0..\infty)\f$.
-// \param A Pointer to the first element of the matrix.
-// \param lda The total number of elements between two rows/columns of the matrix \f$[0..\infty)\f$.
+// \param A Pointer to the first element of the double precision complex column-major matrix.
+// \param lda The total number of elements between two columns of the matrix \f$[0..\infty)\f$.
 // \param info Return code of the function call.
 // \return void
 //
-// This function performs the dense matrix Cholesky decomposition of a symmetric positive definite
-// matrix based on the LAPACK cpotrf() function. The decomposition has the form
+// This function performs the dense matrix Cholesky decomposition of a symmetric positive
+// definite double precision complex column-major matrix based on the LAPACK zpotrf() function.
+// The decomposition has the form
 
                       \f[ A = U^{T} U \texttt{ (if uplo = 'U'), or }
                           A = L L^{T} \texttt{ (if uplo = 'L'), } \f]
@@ -332,8 +334,8 @@ inline void potrf( DenseMatrix<MT,SO>& A, char uplo )
       BLAZE_THROW_INVALID_ARGUMENT( "Invalid uplo argument provided" );
    }
 
-   int n   ( boost::numeric_cast<int>( (~A).rows()    ) );
-   int lda ( boost::numeric_cast<int>( (~A).spacing() ) );
+   int n   ( numeric_cast<int>( (~A).rows()    ) );
+   int lda ( numeric_cast<int>( (~A).spacing() ) );
    int info( 0 );
 
    if( n == 0 ) {

@@ -46,10 +46,9 @@
 #include <blaze/math/constraints/Computation.h>
 #include <blaze/math/constraints/MutableDataAccess.h>
 #include <blaze/math/expressions/DenseMatrix.h>
+#include <blaze/math/typetraits/IsRowMajorMatrix.h>
 #include <blaze/util/Assert.h>
-#include <blaze/util/constraints/Complex.h>
-#include <blaze/util/constraints/Double.h>
-#include <blaze/util/constraints/Float.h>
+#include <blaze/util/Complex.h>
 #include <blaze/util/StaticAssert.h>
 #include <blaze/util/UniqueArray.h>
 
@@ -106,21 +105,23 @@ inline void geqrf( DenseMatrix<MT,SO>& A, typename MT::ElementType* tau );
 
 
 //*************************************************************************************************
-/*!\brief LAPACK kernel for the QR decomposition of the given dense single precision matrix.
+/*!\brief LAPACK kernel for the dense matrix QR decomposition of the given dense single precision
+//        column-major matrix.
 // \ingroup lapack
 //
 // \param m The number of rows of the given matrix \f$[0..\infty)\f$.
 // \param n The number of columns of the given matrix \f$[0..\infty)\f$.
-// \param A Pointer to the first element of the matrix.
-// \param lda The total number of elements between two rows/columns of the matrix \f$[0..\infty)\f$.
+// \param A Pointer to the first element of the single precision column-major matrix.
+// \param lda The total number of elements between two columns of the matrix \f$[0..\infty)\f$.
 // \param tau Array for the scalar factors of the elementary reflectors; size >= min( \a m, \a n ).
 // \param work Auxiliary array; size >= max( 1, \a lwork ).
 // \param lwork The dimension of the array \a work; size >= max( 1, \a n ).
 // \param info Return code of the function call.
 // \return void
 //
-// This function performs the dense matrix QR decomposition of a general M-by-N matrix based on
-// the LAPACK sgeqrf() function. The resulting decomposition has the form
+// This function performs the dense matrix QR decomposition of a general M-by-N single precision
+// column-major matrix based on the LAPACK sgeqrf() function. The resulting decomposition has the
+// form
 
                               \f[ A = Q \cdot R, \f]
 
@@ -162,21 +163,23 @@ inline void geqrf( int* m, int* n, float* A, int* lda, float* tau,
 
 
 //*************************************************************************************************
-/*!\brief LAPACK kernel for the QR decomposition of the given dense double precision matrix.
+/*!\brief LAPACK kernel for the dense matrix QR decomposition of the given dense double precision
+//        column-major matrix.
 // \ingroup lapack
 //
 // \param m The number of rows of the given matrix \f$[0..\infty)\f$.
 // \param n The number of columns of the given matrix \f$[0..\infty)\f$.
-// \param A Pointer to the first element of the matrix.
-// \param lda The total number of elements between two rows/columns of the matrix \f$[0..\infty)\f$.
+// \param A Pointer to the first element of the double precision column-major matrix.
+// \param lda The total number of elements between two columns of the matrix \f$[0..\infty)\f$.
 // \param tau Array for the scalar factors of the elementary reflectors; size >= min( \a m, \a n ).
 // \param work Auxiliary array; size >= max( 1, \a lwork ).
 // \param lwork The dimension of the array \a work; size >= max( 1, \a n ).
 // \param info Return code of the function call.
 // \return void
 //
-// This function performs the dense matrix QR decomposition of a general M-by-N matrix based on
-// the LAPACK dgeqrf() function. The resulting decomposition has the form
+// This function performs the dense matrix QR decomposition of a general M-by-N double precision
+// column-major matrix based on the LAPACK dgeqrf() function. The resulting decomposition has the
+// form
 
                               \f[ A = Q \cdot R, \f]
 
@@ -218,21 +221,23 @@ inline void geqrf( int* m, int* n, double* A, int* lda, double* tau,
 
 
 //*************************************************************************************************
-/*!\brief LAPACK kernel for the QR decomposition of the given dense single precision complex matrix.
+/*!\brief LAPACK kernel for the dense matrix QR decomposition of the given dense single precision
+//        complex column-major matrix.
 // \ingroup lapack
 //
 // \param m The number of rows of the given matrix \f$[0..\infty)\f$.
 // \param n The number of columns of the given matrix \f$[0..\infty)\f$.
-// \param A Pointer to the first element of the matrix.
-// \param lda The total number of elements between two rows/columns of the matrix \f$[0..\infty)\f$.
+// \param A Pointer to the first element of the single precision complex column-major matrix.
+// \param lda The total number of elements between two columns of the matrix \f$[0..\infty)\f$.
 // \param tau Array for the scalar factors of the elementary reflectors; size >= min( \a m, \a n ).
 // \param work Auxiliary array; size >= max( 1, \a lwork ).
 // \param lwork The dimension of the array \a work; size >= max( 1, \a n ).
 // \param info Return code of the function call.
 // \return void
 //
-// This function performs the dense matrix QR decomposition of a general M-by-N matrix based on
-// the LAPACK cgeqrf() function. The resulting decomposition has the form
+// This function performs the dense matrix QR decomposition of a general M-by-N single precision
+// complex column-major matrix based on the LAPACK cgeqrf() function. The resulting decomposition
+// has the form
 
                               \f[ A = Q \cdot R, \f]
 
@@ -277,21 +282,23 @@ inline void geqrf( int* m, int* n, complex<float>* A, int* lda, complex<float>* 
 
 
 //*************************************************************************************************
-/*!\brief LAPACK kernel for the QR decomposition of the given dense double precision complex matrix.
+/*!\brief LAPACK kernel for the dense matrix QR decomposition of the given dense double precision
+//        complex column-major matrix.
 // \ingroup lapack
 //
 // \param m The number of rows of the given matrix \f$[0..\infty)\f$.
 // \param n The number of columns of the given matrix \f$[0..\infty)\f$.
-// \param A Pointer to the first element of the matrix.
-// \param lda The total number of elements between two rows/columns of the matrix \f$[0..\infty)\f$.
+// \param A Pointer to the first element of the double precision complex column-major matrix.
+// \param lda The total number of elements between two columns of the matrix \f$[0..\infty)\f$.
 // \param tau Array for the scalar factors of the elementary reflectors; size >= min( \a m, \a n ).
 // \param work Auxiliary array; size >= max( 1, \a lwork ).
 // \param lwork The dimension of the array \a work; size >= max( 1, \a n ).
 // \param info Return code of the function call.
 // \return void
 //
-// This function performs the dense matrix QR decomposition of a general M-by-N matrix based on
-// the LAPACK zgeqrf() function. The resulting decomposition has the form
+// This function performs the dense matrix QR decomposition of a general M-by-N single precision
+// complex column-major matrix based on the LAPACK zgeqrf() function. The resulting decomposition
+// has the form
 
                               \f[ A = Q \cdot R, \f]
 
@@ -349,7 +356,7 @@ inline void geqrf( int* m, int* n, complex<double>* A, int* lda, complex<double>
 // attempt to call the function with any adapted matrix or matrices of any other element type
 // results in a compile time error!\n
 //
-// The resulting decomposition has the form
+// In case of a column-major matrix, the resulting decomposition has the form
 
                               \f[ A = Q \cdot R, \f]
 
@@ -367,6 +374,10 @@ inline void geqrf( int* m, int* n, complex<double>* A, int* lda, complex<double>
 // min(M,N)-by-N upper trapezoidal matrix R (R is upper triangular if m >= n); the elements
 // below the diagonal, with the array \a tau, represent the orthogonal matrix Q as a product
 // of min(M,N) elementary reflectors.
+//
+// In case of a row-major matrix, the resulting decomposition is transposed, i.e. the elementary
+// reflectors are stored above the diagonal and the elements on and below the diagonal contain
+// the N-by-min(M,N) lower trapezoidal matrix R.
 //
 // For more information on the geqrf() functions (i.e. sgeqrf(), dgeqrf(), cgeqrf(), and zgeqrf())
 // see the LAPACK online documentation browser:
@@ -391,9 +402,9 @@ inline void geqrf( DenseMatrix<MT,SO>& A, typename MT::ElementType* tau )
 
    typedef typename MT::ElementType  ET;
 
-   int m   ( boost::numeric_cast<int>( (~A).rows()    ) );
-   int n   ( boost::numeric_cast<int>( (~A).columns() ) );
-   int lda ( boost::numeric_cast<int>( (~A).spacing() ) );
+   int m   ( numeric_cast<int>( SO ? (~A).rows() : (~A).columns() ) );
+   int n   ( numeric_cast<int>( SO ? (~A).columns() : (~A).rows() ) );
+   int lda ( numeric_cast<int>( (~A).spacing() ) );
    int info( 0 );
 
    if( m == 0 || n == 0 ) {
