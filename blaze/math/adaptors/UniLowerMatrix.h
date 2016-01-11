@@ -296,9 +296,7 @@ inline void swap( UniLowerMatrix<MT,SO,DF>& a, UniLowerMatrix<MT,SO,DF>& b ) /* 
 // \param m The unilower dense matrix to be inverted.
 // \return void
 //
-// This function inverts the given unilower dense \f$ 2 \times 2 \f$ matrix via the rule of
-// Sarrus. The matrix inversion fails if the given matrix is singular and not invertible. In
-// this case a \a std::invalid_argument exception is thrown.
+// This function inverts the given unilower dense \f$ 2 \times 2 \f$ matrix via the rule of Sarrus.
 //
 // \note The matrix inversion can only be used for dense matrices with \c float, \c double,
 // \c complex<float> or \c complex<double> element type. The attempt to call the function with
@@ -333,9 +331,7 @@ inline void invert2x2( UniLowerMatrix<MT,SO,true>& m )
 // \param m The unilower dense matrix to be inverted.
 // \return void
 //
-// This function inverts the given unilower dense \f$ 3 \times 3 \f$ matrix via the rule of
-// Sarrus. The matrix inversion fails if the given matrix is singular and not invertible. In
-// this case a \a std::invalid_argument exception is thrown.
+// This function inverts the given unilower dense \f$ 3 \times 3 \f$ matrix via the rule of Sarrus.
 //
 // \note The matrix inversion can only be used for dense matrices with \c float, \c double,
 // \c complex<float> or \c complex<double> element type. The attempt to call the function with
@@ -373,9 +369,7 @@ inline void invert3x3( UniLowerMatrix<MT,SO,true>& m )
 // \param m The unilower dense matrix to be inverted.
 // \return void
 //
-// This function inverts the given unilower dense \f$ 4 \times 4 \f$ matrix via the rule of
-// Sarrus. The matrix inversion fails if the given matrix is singular and not invertible. In
-// this case a \a std::invalid_argument exception is thrown.
+// This function inverts the given unilower dense \f$ 4 \times 4 \f$ matrix via the rule of Sarrus.
 //
 // \note The matrix inversion can only be used for dense matrices with \c float, \c double,
 // \c complex<float> or \c complex<double> element type. The attempt to call the function with
@@ -418,9 +412,7 @@ inline void invert4x4( UniLowerMatrix<MT,SO,true>& m )
 // \param m The unilower dense matrix to be inverted.
 // \return void
 //
-// This function inverts the given unilower dense \f$ 5 \times 5 \f$ matrix via the rule of
-// Sarrus. The matrix inversion fails if the given matrix is singular and not invertible. In
-// this case a \a std::invalid_argument exception is thrown.
+// This function inverts the given unilower dense \f$ 5 \times 5 \f$ matrix via the rule of Sarrus.
 //
 // \note The matrix inversion can only be used for dense matrices with \c float, \c double,
 // \c complex<float> or \c complex<double> element type. The attempt to call the function with
@@ -469,9 +461,7 @@ inline void invert5x5( UniLowerMatrix<MT,SO,true>& m )
 // \param m The unilower dense matrix to be inverted.
 // \return void
 //
-// This function inverts the given unilower dense \f$ 6 \times 6 \f$ matrix via the rule of
-// Sarrus. The matrix inversion fails if the given matrix is singular and not invertible. In
-// this case a \a std::invalid_argument exception is thrown.
+// This function inverts the given unilower dense \f$ 6 \times 6 \f$ matrix via the rule of Sarrus.
 //
 // \note The matrix inversion can only be used for dense matrices with \c float, \c double,
 // \c complex<float> or \c complex<double> element type. The attempt to call the function with
@@ -515,6 +505,67 @@ inline void invert6x6( UniLowerMatrix<MT,SO,true>& m )
    B(5,4) =   A(5,3)*A(3,4) - A(5,4);
 
    BLAZE_INTERNAL_ASSERT( isIntact( m ), "Broken invariant detected" );
+}
+/*! \endcond */
+//*************************************************************************************************
+
+
+//*************************************************************************************************
+/*! \cond BLAZE_INTERNAL */
+/*!\brief In-place PLU-based inversion of the given unilower dense matrix.
+// \ingroup unilower_matrix
+//
+// \param m The unilower dense matrix to be inverted.
+// \return void
+//
+// This function inverts the given unilower dense matrix by means of a PLU decomposition.
+//
+// \note The matrix inversion can only be used for dense matrices with \c float, \c double,
+// \c complex<float> or \c complex<double> element type. The attempt to call the function with
+// matrices of any other element type results in a compile time error!
+//
+// \note This function can only be used if the fitting LAPACK library is available and linked to
+// the executable. Otherwise a linker error will be created.
+*/
+template< typename MT  // Type of the dense matrix
+        , bool SO >    // Storage order of the dense matrix
+inline void invertByPLU( UniLowerMatrix<MT,SO,true>& m )
+{
+   BLAZE_CONSTRAINT_MUST_BE_BLAS_COMPATIBLE_TYPE( typename MT::ElementType );
+
+   const size_t n( min( (~m).rows(), (~m).columns() ) );
+   UniqueArray<int> ipiv( new int[n] );
+
+   for( size_t i=0UL; i<n; ++i )
+      ipiv[i] = static_cast<int>( i ) + 1;
+
+   getri( derestrict( ~m ), ipiv.get() );
+}
+/*! \endcond */
+//*************************************************************************************************
+
+
+//*************************************************************************************************
+/*! \cond BLAZE_INTERNAL */
+/*!\brief In-place Cholesky-based inversion of the given unilower dense matrix.
+// \ingroup unilower_matrix
+//
+// \param m The unilower dense matrix to be inverted.
+// \return void
+//
+// This function inverts the given unilower dense matrix by means of a Cholesky decomposition.
+//
+// \note The matrix inversion can only be used for dense matrices with \c float, \c double,
+// \c complex<float> or \c complex<double> element type. The attempt to call the function with
+// matrices of any other element type results in a compile time error!
+*/
+template< typename MT  // Type of the dense matrix
+        , bool SO >    // Storage order of the dense matrix
+inline void invertByCholesky( UniLowerMatrix<MT,SO,true>& m )
+{
+   BLAZE_CONSTRAINT_MUST_BE_BLAS_COMPATIBLE_TYPE( typename MT::ElementType );
+
+   UNUSED_PARAMETER( m );
 }
 /*! \endcond */
 //*************************************************************************************************
