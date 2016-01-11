@@ -8514,7 +8514,7 @@ namespace blaze {}
    } // namespace blaze
    \endcode
 
-The decomposition has the form
+// The decomposition has the form
 
                       \f[ A = U^{T} U \texttt{ (if uplo = 'U'), or }
                           A = L L^{T} \texttt{ (if uplo = 'L'), } \f]
@@ -8631,6 +8631,54 @@ The decomposition has the form
 //  - ... the given matrix is not a square matrix;
 //  - ... the given \a uplo argument is neither 'L' nor 'U';
 //  - ... the given matrix is singular and not invertible.
+//
+// The first four functions report failure via the \c info argument, the fifth function throws a
+// \a std::invalid_argument exception in case of an error.
+//
+//
+// \n \section lapack_linear_system_solver Linear System Solver
+// <hr>
+//
+// The following functions provide an interface for the LAPACK functions \c sgesv(), \c dgesv(),
+// \c cgesv(), and \c zgesv():
+
+   \code
+   void gesv( int* n, int* nrhs, float* A, int* lda, int* ipiv, float* B, int* ldb, int* info );
+
+   void gesv( int* n, int* nrhs, double* A, int* lda, int* ipiv, double* B, int* ldb, int* info );
+
+   void gesv( int* n, int* nrhs, complex<float>* A, int* lda, int* ipiv,
+              complex<float>* B, int* ldb, int* info );
+
+   void gesv( int* n, int* nrhs, complex<double>* A, int* lda, int* ipiv,
+              complex<double>* B, int* ldb, int* info );
+
+   template< typename MT, typename VT >
+   void gesv( DenseMatrix<MT,columnMajor>& A, DenseVector<VT,columnVector>& b, int* ipiv );
+
+   template< typename MT1, typename MT2 >
+   void gesv( DenseMatrix<MT1,columnMajor>& A, DenseMatrix<MT2,columnMajor>& B, int* ipiv );
+   \endcode
+
+// This function computes the solution to the system of linear equations \f$ A*X=B \f$, where
+// \a A is a column-major n-by-n matrix and \a B is either a column-major n-by-nrhs matrix or a
+// n-dimensional column vector (\a nrhs = 1).
+//
+// If the function exits successfully, the matrix \a B contains the solutions of the linear system
+// of equations and \a A has been decomposed by means of a PLU decomposition with partial pivoting
+// and row interchanges. The decomposition has the form
+
+                          \f[ A = P \cdot L \cdot U, \f]
+
+// where \c P is a permutation matrix, \c L is a lower unitriangular matrix, and \c U is an upper
+// triangular matrix. \c L is stored in the lower part of \a A and \c U is stored in the upper
+// part. The unit diagonal elements of \c L are not stored. The factored form of \a A is then
+// used to solve the system of equations.
+//
+// The functions fail if ...
+//
+//  - ... the given system matrix is not a square matrix;
+//  - ... the given system matrix is singular and not invertible.
 //
 // The first four functions report failure via the \c info argument, the fifth function throws a
 // \a std::invalid_argument exception in case of an error.
