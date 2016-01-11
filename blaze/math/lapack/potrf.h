@@ -310,10 +310,11 @@ inline void potrf( char* uplo, int* n, complex<double>* A, int* lda, int* info )
 //
 //        http://www.netlib.org/lapack/explore-html/
 //
-// \note This function does not provide any exception safety guarantee, i.e. in case an exception
-// is thrown \a A may already have been modified.
 // \note This function can only be used if the fitting LAPACK library is available and linked to
 // the executable. Otherwise a call to this function will result in a linker error.
+//
+// \note This function does not provide any exception safety guarantee, i.e. in case an exception
+// is thrown \a A may already have been modified.
 */
 template< typename MT  // Type of the dense matrix
         , bool SO >    // Storage order of the dense matrix
