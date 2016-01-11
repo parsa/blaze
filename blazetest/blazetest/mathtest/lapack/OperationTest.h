@@ -92,6 +92,7 @@ class OperationTest
    template< typename Type > void testPotrf();
    template< typename Type > void testGetri();
    template< typename Type > void testPotri();
+   template< typename Type > void testGesv();
    //@}
    //**********************************************************************************************
 
@@ -356,20 +357,21 @@ void OperationTest::testGetri()
       }
       while( blaze::isDefault( det( A ) ) );
 
-      blaze::StaticMatrix<Type,3UL,3UL,blaze::rowMajor> B( A );
+      blaze::StaticMatrix<Type,3UL,3UL,blaze::rowMajor> Ainv( A );
       blaze::StaticVector<int,3UL,blaze::rowVector> ipiv;
 
-      blaze::getrf( A, ipiv.data() );
-      blaze::getri( A, ipiv.data() );
+      blaze::getrf( Ainv, ipiv.data() );
+      blaze::getri( Ainv, ipiv.data() );
 
-      if( !blaze::isIdentity( A * B ) ) {
+      if( !blaze::isIdentity( Ainv * A ) ) {
          std::ostringstream oss;
          oss << " Test: " << test_ << "\n"
              << " Error: PLU-based matrix inversion failed\n"
              << " Details:\n"
              << "   Element type:\n"
              << "     " << typeid( Type ).name() << "\n"
-             << "   Result:\n" << A << "\n";
+             << "   Result:\n" << Ainv << "\n"
+             << "   Ainv * A = " << ( Ainv * A ) << "\n";
          throw std::runtime_error( oss.str() );
       }
    }
@@ -389,20 +391,21 @@ void OperationTest::testGetri()
       }
       while( blaze::isDefault( det( A ) ) );
 
-      blaze::StaticMatrix<Type,3UL,3UL,blaze::columnMajor> B( A );
+      blaze::StaticMatrix<Type,3UL,3UL,blaze::columnMajor> Ainv( A );
       blaze::StaticVector<int,3UL,blaze::rowVector> ipiv;
 
-      blaze::getrf( A, ipiv.data() );
-      blaze::getri( A, ipiv.data() );
+      blaze::getrf( Ainv, ipiv.data() );
+      blaze::getri( Ainv, ipiv.data() );
 
-      if( !blaze::isIdentity( A * B ) ) {
+      if( !blaze::isIdentity( Ainv * A ) ) {
          std::ostringstream oss;
          oss << " Test: " << test_ << "\n"
              << " Error: PLU-based matrix inversion failed\n"
              << " Details:\n"
              << "   Element type:\n"
              << "     " << typeid( Type ).name() << "\n"
-             << "   Result:\n" << A << "\n";
+             << "   Result:\n" << Ainv << "\n"
+             << "   Ainv * A = " << ( Ainv * A ) << "\n";
          throw std::runtime_error( oss.str() );
       }
    }
@@ -539,6 +542,89 @@ void OperationTest::testPotri()
              << "   Element type:\n"
              << "     " << typeid( Type ).name() << "\n"
              << "   Result:\n" << A << "\n";
+         throw std::runtime_error( oss.str() );
+      }
+   }
+}
+//*************************************************************************************************
+
+
+//*************************************************************************************************
+/*!\brief Test of the general matrix linear system solver functionality (gesv).
+//
+// \return void
+// \exception std::runtime_error Error detected.
+//
+// This function performs a test of the general matrix linear system solver functions for various
+// data types. In case an error is detected, a \a std::runtime_error exception is thrown.
+*/
+template< typename Type >
+void OperationTest::testGesv()
+{
+   {
+      test_ = "Linear system of equations (single right-hand side)";
+
+      blaze::StaticMatrix<Type,3UL,3UL,blaze::columnMajor> A, PLU;
+
+      do {
+         randomize( A );
+      }
+      while( blaze::isDefault( det( A ) ) );
+
+      blaze::StaticVector<Type,3UL,blaze::columnVector> rhs, result;
+      randomize( rhs );
+
+      blaze::StaticVector<int,3UL,blaze::columnVector> ipiv;
+
+      PLU = A;
+      result = rhs;
+
+      blaze::gesv( PLU, result, ipiv.data() );
+
+      if( ( A * result ) != rhs ) {
+         std::ostringstream oss;
+         oss << " Test: " << test_ << "\n"
+             << " Error: Solving the linear system of equations failed\n"
+             << " Details:\n"
+             << "   Element type:\n"
+             << "     " << typeid( Type ).name() << "\n"
+             << "   System matrix:\n" << A << "\n"
+             << "   Right-hand side:\n" << rhs << "\n"
+             << "   Result:\n" << result << "\n";
+         throw std::runtime_error( oss.str() );
+      }
+   }
+
+   {
+      test_ = "Linear system of equations (multiple right-hand side vectors)";
+
+      blaze::StaticMatrix<Type,3UL,3UL,blaze::columnMajor> A, PLU;
+
+      do {
+         randomize( A );
+      }
+      while( blaze::isDefault( det( A ) ) );
+
+      blaze::StaticMatrix<Type,3UL,3UL,blaze::columnMajor> rhs, result;
+      randomize( rhs );
+
+      blaze::StaticVector<int,3UL,blaze::columnVector> ipiv;
+
+      PLU = A;
+      result = rhs;
+
+      blaze::gesv( PLU, result, ipiv.data() );
+
+      if( ( A * result ) != rhs ) {
+         std::ostringstream oss;
+         oss << " Test: " << test_ << "\n"
+             << " Error: Solving the linear system of equations failed\n"
+             << " Details:\n"
+             << "   Element type:\n"
+             << "     " << typeid( Type ).name() << "\n"
+             << "   System matrix:\n" << A << "\n"
+             << "   Right-hand side:\n" << rhs << "\n"
+             << "   Result:\n" << result << "\n";
          throw std::runtime_error( oss.str() );
       }
    }

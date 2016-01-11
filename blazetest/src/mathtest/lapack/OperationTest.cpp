@@ -86,6 +86,11 @@ OperationTest::OperationTest()
    testPotri< double                 >();
    testPotri< blaze::complex<float>  >();
    testPotri< blaze::complex<double> >();
+
+   testGesv< float                  >();
+   testGesv< double                 >();
+   testGesv< blaze::complex<float>  >();
+   testGesv< blaze::complex<double> >();
 }
 //*************************************************************************************************
 
