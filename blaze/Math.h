@@ -49,13 +49,13 @@
 #include <blaze/math/Constraints.h>
 #include <blaze/math/CustomMatrix.h>
 #include <blaze/math/CustomVector.h>
-#include <blaze/math/DecompositionFlag.h>
 #include <blaze/math/DiagonalMatrix.h>
 #include <blaze/math/DynamicMatrix.h>
 #include <blaze/math/DynamicVector.h>
 #include <blaze/math/Epsilon.h>
 #include <blaze/math/Functions.h>
 #include <blaze/math/Infinity.h>
+#include <blaze/math/InversionFlag.h>
 #include <blaze/math/HermitianMatrix.h>
 #include <blaze/math/HybridMatrix.h>
 #include <blaze/math/HybridVector.h>

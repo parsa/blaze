@@ -1,7 +1,7 @@
 //=================================================================================================
 /*!
-//  \file blaze/math/DecompositionFlag.h
-//  \brief Header file for the dense matrix decomposition flags
+//  \file blaze/math/InversionFlag.h
+//  \brief Header file for the dense matrix inversion flags
 //
 //  Copyright (C) 2013 Klaus Iglberger - All Rights Reserved
 //
@@ -32,8 +32,8 @@
 */
 //=================================================================================================
 
-#ifndef _BLAZE_MATH_DECOMPOSITIONFLAG_H_
-#define _BLAZE_MATH_DECOMPOSITIONFLAG_H_
+#ifndef _BLAZE_MATH_INVERSIONFLAG_H_
+#define _BLAZE_MATH_INVERSIONFLAG_H_
 
 
 namespace blaze {
@@ -45,28 +45,25 @@ namespace blaze {
 //=================================================================================================
 
 //*************************************************************************************************
-/*!\brief Decomposition flag.
+/*!\brief Inversion flag.
 // \ingroup dense_matrix
 //
-// The DecompositionFlag type enumeration represents the different types of matrix decomposition
-// that are available within the Blaze library. The following flags are available:
+// The InversionFlag type enumeration represents the different types of matrix inversion that
+// are available within the Blaze library. The following flags are available:
 //
-//  - \a byPLU: The default decomposition algorithm for general square matrices. It decomposes a
-//          matrix into a lower unitriangular matrix \c L, an upper triangular matrix \c U, and
-//          a permutation matrix \c P (\f$ A = P L U \f$). If no permutations are required, \c P
-//          is the identity matrix.
-//  - \a byCholesky: An optimized decomposition for symmetric positive definite matrices. It
-//          decomposes a given matrix into either \f$ A = L^T L \f$, where \c L is a lower
-//          triangular matrix, or \f$ A = U^T U \f$, where \c U is an upper triangular matrix.
-//  - \a byQR: A very general decomposition for M-by-N matrices. It decomposes the matrix into
-//          \f$ A = Q R \f$, where \c Q is an orthogonal matrix of size M-by-M, and \c R is an
-//          upper triangular matrix of size M-by-N.
+//  - \a byPLU: The default inversion algorithm for general square matrices. It uses the PLU
+//          algorithm to decompose a matrix into a lower unitriangular matrix \c L, an upper
+//          triangular matrix \c U, and a permutation matrix \c P (\f$ A = P L U \f$). If no
+//          permutations are required, \c P is the identity matrix.
+//  - \a byCholesky: An optimized inversion based on the Cholesky decomposition for symmetric
+//          positive definite matrices. It decomposes a given matrix into either \f$ A = L^T L \f$,
+//          where \c L is a lower triangular matrix, or \f$ A = U^T U \f$, where \c U is an upper
+//          triangular matrix.
 */
-enum DecompositionFlag
+enum InversionFlag
 {
    byPLU      = 0,  //!< Flag for the PLU decomposition.
-   byCholesky = 1,  //!< Flag for the Cholesky decomposition.
-   byQR       = 2   //!< Flag for the QR decomposition.
+   byCholesky = 1   //!< Flag for the Cholesky decomposition.
 };
 //*************************************************************************************************
 

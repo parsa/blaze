@@ -40,7 +40,7 @@
 // Includes
 //*************************************************************************************************
 
-#include <blaze/math/DecompositionFlag.h>
+#include <blaze/math/InversionFlag.h>
 #include <blaze/math/proxy/ComplexProxy.h>
 #include <blaze/math/proxy/DefaultProxy.h>
 #include <blaze/math/proxy/DenseMatrixProxy.h>
@@ -827,7 +827,7 @@ inline void ctranspose( const Proxy<PT,RT>& proxy );
 template< typename PT, typename RT >
 inline void invert( const Proxy<PT,RT>& proxy );
 
-template< DecompositionFlag DF, typename PT, typename RT >
+template< InversionFlag IF, typename PT, typename RT >
 inline void invert( const Proxy<PT,RT>& proxy );
 
 template< typename PT, typename RT >
@@ -1061,7 +1061,7 @@ inline void invert( const Proxy<PT,RT>& proxy )
 // \exception std::invalid_argument Invalid non-square matrix provided.
 //
 // This function inverts the represented scalar or dense matrix element by means of the specified
-// matrix decomposition algorithm \ DF. In case the element is a symmetric positive-definite matrix
+// matrix inversion algorithm \c IF. In case the element is a symmetric positive-definite matrix
 // it is recommended to perform the inversion by means of a Cholesky decomposition, for a general
 // square matrix a PLU decomposition should be used:
 
@@ -1086,14 +1086,14 @@ inline void invert( const Proxy<PT,RT>& proxy )
 // fitting LAPACK library is available and linked to the executable. Otherwise a linker error will
 // be created.
 */
-template< DecompositionFlag DF, typename PT, typename RT >
+template< InversionFlag IF, typename PT, typename RT >
 inline void invert( const Proxy<PT,RT>& proxy )
 {
    if( (~proxy).isRestricted() ) {
       BLAZE_THROW_INVALID_ARGUMENT( "Invalid access to restricted element" );
    }
 
-   invert<DF>( (~proxy).get() );
+   invert<IF>( (~proxy).get() );
 }
 //*************************************************************************************************
 

@@ -45,7 +45,6 @@
 #include <blaze/math/constraints/DenseMatrix.h>
 #include <blaze/math/constraints/MutableDataAccess.h>
 #include <blaze/math/constraints/RequiresEvaluation.h>
-#include <blaze/math/DecompositionFlag.h>
 #include <blaze/math/expressions/DenseMatrix.h>
 #include <blaze/math/lapack/getrf.h>
 #include <blaze/math/typetraits/IsSquare.h>

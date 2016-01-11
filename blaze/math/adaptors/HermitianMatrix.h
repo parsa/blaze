@@ -46,10 +46,10 @@
 #include <blaze/math/adaptors/symmetricmatrix/BaseTemplate.h>
 #include <blaze/math/constraints/BlasCompatible.h>
 #include <blaze/math/constraints/RequiresEvaluation.h>
-#include <blaze/math/DecompositionFlag.h>
 #include <blaze/math/dense/StaticMatrix.h>
 #include <blaze/math/Forward.h>
 #include <blaze/math/Functions.h>
+#include <blaze/math/InversionFlag.h>
 #include <blaze/math/shims/Conjugate.h>
 #include <blaze/math/shims/IsReal.h>
 #include <blaze/math/traits/AddTrait.h>
@@ -792,14 +792,14 @@ inline void invert6x6( HermitianMatrix<MT,SO,true>& m )
 // \note This function does not provide any exception safety guarantee, i.e. in case an exception
 // is thrown, \c m may already have been modified.
 */
-template< DecompositionFlag DF  // Decomposition algorithm
-        , typename MT           // Type of the dense matrix
-        , bool SO >             // Storage order of the dense matrix
+template< InversionFlag IF  // Inversion algorithm
+        , typename MT       // Type of the dense matrix
+        , bool SO >         // Storage order of the dense matrix
 inline void invertNxN( HermitianMatrix<MT,SO,true>& m )
 {
    BLAZE_CONSTRAINT_MUST_BE_BLAS_COMPATIBLE_TYPE( typename MT::ElementType );
 
-   invertNxN<DF>( m.matrix_ );
+   invertNxN<IF>( m.matrix_ );
 
    BLAZE_INTERNAL_ASSERT( isIntact( m ), "Broken invariant detected" );
 }

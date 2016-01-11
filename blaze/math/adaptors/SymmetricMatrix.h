@@ -47,10 +47,10 @@
 #include <blaze/math/adaptors/symmetricmatrix/SparseNumeric.h>
 #include <blaze/math/constraints/BlasCompatible.h>
 #include <blaze/math/constraints/RequiresEvaluation.h>
-#include <blaze/math/DecompositionFlag.h>
 #include <blaze/math/dense/StaticMatrix.h>
 #include <blaze/math/Forward.h>
 #include <blaze/math/Functions.h>
+#include <blaze/math/InversionFlag.h>
 #include <blaze/math/traits/AddTrait.h>
 #include <blaze/math/traits/ColumnTrait.h>
 #include <blaze/math/traits/DivTrait.h>
@@ -795,14 +795,14 @@ inline void invert6x6( SymmetricMatrix<MT,SO,true,true>& m )
 // \note This function does not provide any exception safety guarantee, i.e. in case an exception
 // is thrown, \c m may already have been modified.
 */
-template< DecompositionFlag DF  // Decomposition algorithm
-        , typename MT           // Type of the dense matrix
-        , bool SO >             // Storage order of the dense matrix
+template< InversionFlag IF  // Inversion algorithm
+        , typename MT       // Type of the dense matrix
+        , bool SO >         // Storage order of the dense matrix
 inline void invertNxN( SymmetricMatrix<MT,SO,true,true>& m )
 {
    BLAZE_CONSTRAINT_MUST_BE_BLAS_COMPATIBLE_TYPE( typename MT::ElementType );
 
-   invertNxN<DF>( m.matrix_ );
+   invertNxN<IF>( m.matrix_ );
 
    BLAZE_INTERNAL_ASSERT( isIntact( m ), "Broken invariant detected" );
 }

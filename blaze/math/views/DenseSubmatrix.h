@@ -53,11 +53,11 @@
 #include <blaze/math/constraints/Symmetric.h>
 #include <blaze/math/constraints/TransExpr.h>
 #include <blaze/math/constraints/UniTriangular.h>
-#include <blaze/math/DecompositionFlag.h>
 #include <blaze/math/expressions/DenseMatrix.h>
 #include <blaze/math/expressions/Submatrix.h>
 #include <blaze/math/Functions.h>
 #include <blaze/math/Intrinsics.h>
+#include <blaze/math/InversionFlag.h>
 #include <blaze/math/shims/Clear.h>
 #include <blaze/math/shims/IsDefault.h>
 #include <blaze/math/StorageOrder.h>
@@ -11536,10 +11536,10 @@ inline bool isSame( const DenseSubmatrix<MT,AF,SO>& a, const DenseSubmatrix<MT,A
 // \note This function can only be used if the fitting LAPACK library is available and linked to
 // the executable. Otherwise a linker error will be created.
 */
-template< DecompositionFlag DF  // Decomposition algorithm
-        , typename MT           // Type of the dense matrix
-        , bool AF               // Alignment flag
-        , bool SO >             // Storage order
+template< InversionFlag IF  // Inversion algorithm
+        , typename MT       // Type of the dense matrix
+        , bool AF           // Alignment flag
+        , bool SO >         // Storage order
 inline typename DisableIf< HasMutableDataAccess<MT> >::Type
    invert( DenseSubmatrix<MT,AF,SO>& dm )
 {
@@ -11549,7 +11549,7 @@ inline typename DisableIf< HasMutableDataAccess<MT> >::Type
    BLAZE_CONSTRAINT_MUST_HAVE_MUTABLE_DATA_ACCESS( RT );
 
    RT tmp( dm );
-   invert<DF>( tmp );
+   invert<IF>( tmp );
    dm = tmp;
 }
 /*! \endcond */

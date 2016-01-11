@@ -43,10 +43,10 @@
 #include <blaze/math/constraints/Adaptor.h>
 #include <blaze/math/constraints/BlasCompatible.h>
 #include <blaze/math/constraints/StrictlyTriangular.h>
-#include <blaze/math/DecompositionFlag.h>
 #include <blaze/math/dense/StaticMatrix.h>
 #include <blaze/math/expressions/DenseMatrix.h>
 #include <blaze/math/Functions.h>
+#include <blaze/math/InversionFlag.h>
 #include <blaze/math/lapack/getrf.h>
 #include <blaze/math/lapack/getri.h>
 #include <blaze/math/lapack/potrf.h>
@@ -73,7 +73,7 @@ namespace blaze {
 template< typename MT, bool SO >
 inline void invert( DenseMatrix<MT,SO>& dm );
 
-template< DecompositionFlag DF, typename MT, bool SO >
+template< InversionFlag IF, typename MT, bool SO >
 inline void invert( DenseMatrix<MT,SO>& dm );
 //@}
 //*************************************************************************************************
@@ -752,9 +752,9 @@ inline void invertByCholesky( DenseMatrix<MT,SO>& dm )
 // \note This function does not provide any exception safety guarantee, i.e. in case an exception
 // is thrown, \c m may already have been modified.
 */
-template< DecompositionFlag DF  // Decomposition algorithm
-        , typename MT           // Type of the dense matrix
-        , bool SO >             // Storage order of the dense matrix
+template< InversionFlag IF  // Inversion algorithm
+        , typename MT       // Type of the dense matrix
+        , bool SO >         // Storage order of the dense matrix
 inline void invertNxN( DenseMatrix<MT,SO>& dm )
 {
    BLAZE_CONSTRAINT_MUST_NOT_BE_STRICTLY_TRIANGULAR_MATRIX_TYPE( MT );
@@ -762,7 +762,7 @@ inline void invertNxN( DenseMatrix<MT,SO>& dm )
 
    BLAZE_INTERNAL_ASSERT( isSquare( ~dm ), "Non-square matrix detected" );
 
-   if( DF == byPLU )
+   if( IF == byPLU )
       invertByPLU( ~dm );
    else
       invertByCholesky( ~dm );
@@ -846,9 +846,9 @@ inline void invert( DenseMatrix<MT,SO>& dm )
 // \note This function does not provide any exception safety guarantee, i.e. in case an exception
 // is thrown \c dm may already have been modified.
 */
-template< DecompositionFlag DF  // Decomposition algorithm
-        , typename MT           // Type of the dense matrix
-        , bool SO >             // Storage order of the dense matrix
+template< InversionFlag IF  // Inversion algorithm
+        , typename MT       // Type of the dense matrix
+        , bool SO >         // Storage order of the dense matrix
 inline void invert( DenseMatrix<MT,SO>& dm )
 {
    BLAZE_CONSTRAINT_MUST_NOT_BE_STRICTLY_TRIANGULAR_MATRIX_TYPE( MT );
@@ -886,7 +886,7 @@ inline void invert( DenseMatrix<MT,SO>& dm )
    }
    else
    {
-      invertNxN<DF>( ~dm );
+      invertNxN<IF>( ~dm );
    }
 
    BLAZE_INTERNAL_ASSERT( isIntact( ~dm ), "Broken invariant detected" );
