@@ -119,7 +119,7 @@ inline void geqrf( DenseMatrix<MT,SO>& A, typename MT::ElementType* tau );
 // \param info Return code of the function call.
 // \return void
 //
-// This function performs the dense matrix QR decomposition of a general M-by-N single precision
+// This function performs the dense matrix QR decomposition of a general m-by-n single precision
 // column-major matrix based on the LAPACK sgeqrf() function. The resulting decomposition has the
 // form
 
@@ -135,10 +135,10 @@ inline void geqrf( DenseMatrix<MT,SO>& A, typename MT::ElementType* tau );
 
 // where \c tau is a real scalar, and \c v is a real vector with <tt>v(0:i-1) = 0</tt> and
 // <tt>v(i) = 1</tt>. <tt>v(i+1:m)</tt> is stored on exit in <tt>A(i+1:m,i)</tt>, and \c tau
-// in \c tau(i). Thus on exit the elements on and above the diagonal of the matrix contain the
-// min(M,N)-by-N upper trapezoidal matrix R (R is upper triangular if m >= n); the elements
-// below the diagonal, with the array \a tau, represent the orthogonal matrix Q as a product
-// of min(M,N) elementary reflectors.
+// in \c tau(i). Thus on exit the elements on and above the diagonal of the matrix contain
+// the min(\a m,\a n)-by-n upper trapezoidal matrix R (R is upper triangular if m >= n); the
+// elements below the diagonal, with the array \a tau, represent the orthogonal matrix Q as
+// a product of min(\a m,\a n) elementary reflectors.
 //
 // The \a info argument provides feedback on the success of the function call:
 //
@@ -177,7 +177,7 @@ inline void geqrf( int* m, int* n, float* A, int* lda, float* tau,
 // \param info Return code of the function call.
 // \return void
 //
-// This function performs the dense matrix QR decomposition of a general M-by-N double precision
+// This function performs the dense matrix QR decomposition of a general m-by-n double precision
 // column-major matrix based on the LAPACK dgeqrf() function. The resulting decomposition has the
 // form
 
@@ -193,10 +193,10 @@ inline void geqrf( int* m, int* n, float* A, int* lda, float* tau,
 
 // where \c tau is a real scalar, and \c v is a real vector with <tt>v(0:i-1) = 0</tt> and
 // <tt>v(i) = 1</tt>. <tt>v(i+1:m)</tt> is stored on exit in <tt>A(i+1:m,i)</tt>, and \c tau
-// in \c tau(i). Thus on exit the elements on and above the diagonal of the matrix contain the
-// min(M,N)-by-N upper trapezoidal matrix R (R is upper triangular if m >= n); the elements
-// below the diagonal, with the array \a tau, represent the orthogonal matrix Q as a product
-// of min(M,N) elementary reflectors.
+// in \c tau(i). Thus on exit the elements on and above the diagonal of the matrix contain
+// the min(\a m,\a n)-by-n upper trapezoidal matrix R (R is upper triangular if m >= n); the
+// elements below the diagonal, with the array \a tau, represent the orthogonal matrix Q as
+// a product of min(\a m,\a n) elementary reflectors.
 //
 // The \a info argument provides feedback on the success of the function call:
 //
@@ -235,7 +235,7 @@ inline void geqrf( int* m, int* n, double* A, int* lda, double* tau,
 // \param info Return code of the function call.
 // \return void
 //
-// This function performs the dense matrix QR decomposition of a general M-by-N single precision
+// This function performs the dense matrix QR decomposition of a general m-by-n single precision
 // complex column-major matrix based on the LAPACK cgeqrf() function. The resulting decomposition
 // has the form
 
@@ -251,10 +251,10 @@ inline void geqrf( int* m, int* n, double* A, int* lda, double* tau,
 
 // where \c tau is a real scalar, and \c v is a real vector with <tt>v(0:i-1) = 0</tt> and
 // <tt>v(i) = 1</tt>. <tt>v(i+1:m)</tt> is stored on exit in <tt>A(i+1:m,i)</tt>, and \c tau
-// in \c tau(i). Thus on exit the elements on and above the diagonal of the matrix contain the
-// min(M,N)-by-N upper trapezoidal matrix R (R is upper triangular if m >= n); the elements
-// below the diagonal, with the array \a tau, represent the orthogonal matrix Q as a product
-// of min(M,N) elementary reflectors.
+// in \c tau(i). Thus on exit the elements on and above the diagonal of the matrix contain
+// the min(\a m,\a n)-by-n upper trapezoidal matrix R (R is upper triangular if m >= n); the
+// elements below the diagonal, with the array \a tau, represent the orthogonal matrix Q as
+// a product of min(\a m,\a n) elementary reflectors.
 //
 // The \a info argument provides feedback on the success of the function call:
 //
@@ -296,7 +296,7 @@ inline void geqrf( int* m, int* n, complex<float>* A, int* lda, complex<float>* 
 // \param info Return code of the function call.
 // \return void
 //
-// This function performs the dense matrix QR decomposition of a general M-by-N single precision
+// This function performs the dense matrix QR decomposition of a general m-by-n single precision
 // complex column-major matrix based on the LAPACK zgeqrf() function. The resulting decomposition
 // has the form
 
@@ -312,10 +312,10 @@ inline void geqrf( int* m, int* n, complex<float>* A, int* lda, complex<float>* 
 
 // where \c tau is a real scalar, and \c v is a real vector with <tt>v(0:i-1) = 0</tt> and
 // <tt>v(i) = 1</tt>. <tt>v(i+1:m)</tt> is stored on exit in <tt>A(i+1:m,i)</tt>, and \c tau
-// in \c tau(i). Thus on exit the elements on and above the diagonal of the matrix contain the
-// min(M,N)-by-N upper trapezoidal matrix R (R is upper triangular if m >= n); the elements
-// below the diagonal, with the array \a tau, represent the orthogonal matrix Q as a product
-// of min(M,N) elementary reflectors.
+// in \c tau(i). Thus on exit the elements on and above the diagonal of the matrix contain
+// the min(\a m,\a n)-by-n upper trapezoidal matrix R (R is upper triangular if m >= n); the
+// elements below the diagonal, with the array \a tau, represent the orthogonal matrix Q as
+// a product of min(\a m,\a n) elementary reflectors.
 //
 // The \a info argument provides feedback on the success of the function call:
 //
@@ -350,7 +350,7 @@ inline void geqrf( int* m, int* n, complex<double>* A, int* lda, complex<double>
 // \param tau Array for the scalar factors of the elementary reflectors; size >= min( \a m, \a n ).
 // \return void
 //
-// This function performs the dense matrix QR decomposition of a general M-by-N matrix based on
+// This function performs the dense matrix QR decomposition of a general m-by-n matrix based on
 // the LAPACK geqrf() functions. Note that this function can only be used for general, non-adapted
 // matrices with \c float, \c double, \c complex<float>, or \c complex<double> element type. The
 // attempt to call the function with any adapted matrix or matrices of any other element type
@@ -370,14 +370,14 @@ inline void geqrf( int* m, int* n, complex<double>* A, int* lda, complex<double>
 
 // where \c tau is a real scalar, and \c v is a real vector with <tt>v(0:i-1) = 0</tt> and
 // <tt>v(i) = 1</tt>. <tt>v(i+1:m)</tt> is stored on exit in <tt>A(i+1:m,i)</tt>, and \c tau
-// in \c tau(i). Thus on exit the elements on and above the diagonal of the matrix contain the
-// min(M,N)-by-N upper trapezoidal matrix R (R is upper triangular if m >= n); the elements
-// below the diagonal, with the array \a tau, represent the orthogonal matrix Q as a product
-// of min(M,N) elementary reflectors.
+// in \c tau(i). Thus on exit the elements on and above the diagonal of the matrix contain
+// the min(\a m,\a n)-by-n upper trapezoidal matrix R (R is upper triangular if m >= n); the
+// elements below the diagonal, with the array \a tau, represent the orthogonal matrix Q as
+// a product of min(\a m,\a n) elementary reflectors.
 //
 // In case of a row-major matrix, the resulting decomposition is transposed, i.e. the elementary
 // reflectors are stored above the diagonal and the elements on and below the diagonal contain
-// the N-by-min(M,N) lower trapezoidal matrix R.
+// the n-by-min(\a m,\a n) lower trapezoidal matrix R.
 //
 // For more information on the geqrf() functions (i.e. sgeqrf(), dgeqrf(), cgeqrf(), and zgeqrf())
 // see the LAPACK online documentation browser:

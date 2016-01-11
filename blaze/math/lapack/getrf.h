@@ -112,7 +112,7 @@ inline void getrf( DenseMatrix<MT,SO>& A, int* ipiv );
 // \param info Return code of the function call.
 // \return void
 //
-// This function performs the dense matrix PLU decomposition of a general M-by-N single precision
+// This function performs the dense matrix PLU decomposition of a general m-by-n single precision
 // column-major matrix based on the LAPACK sgetrf() function, which uses partial pivoting with row
 // interchanges. The resulting decomposition has the form
 
@@ -156,7 +156,7 @@ inline void getrf( int* m, int* n, float* A, int* lda, int* ipiv, int* info )
 // \param info Return code of the function call.
 // \return void
 //
-// This function performs the dense matrix PLU decomposition of a general M-by-N double precision
+// This function performs the dense matrix PLU decomposition of a general m-by-n double precision
 // column-major matrix based on the LAPACK dgetrf() function, which uses partial pivoting with row
 // interchanges. The resulting decomposition has the form
 
@@ -200,7 +200,7 @@ inline void getrf( int* m, int* n, double* A, int* lda, int* ipiv, int* info )
 // \param info Return code of the function call.
 // \return void
 //
-// This function performs the dense matrix PLU decomposition of a general M-by-N single precision
+// This function performs the dense matrix PLU decomposition of a general m-by-n single precision
 // complex column-major matrix based on the LAPACK cgetrf() function, which uses partial pivoting
 // with row interchanges. The resulting decomposition has the form
 
@@ -246,7 +246,7 @@ inline void getrf( int* m, int* n, complex<float>* A, int* lda, int* ipiv, int* 
 // \param info Return code of the function call.
 // \return void
 //
-// This function performs the dense matrix PLU decomposition of a general M-by-N double precision
+// This function performs the dense matrix PLU decomposition of a general m-by-n double precision
 // complex column-major matrix based on the LAPACK zgetrf() function, which uses partial pivoting
 // with row interchanges. The resulting decomposition has the form
 
@@ -288,7 +288,7 @@ inline void getrf( int* m, int* n, complex<double>* A, int* lda, int* ipiv, int*
 // \param ipiv Auxiliary array for the pivot indices; size >= min( \a m, \a n ).
 // \return void
 //
-// This function performs the dense matrix PLU decomposition of a general M-by-N matrix based
+// This function performs the dense matrix PLU decomposition of a general m-by-n matrix based
 // on the LAPACK \c getrf() functions, which use partial pivoting with row interchanges. Note
 // that the function only works for general, non-adapted matrices with \c float, \c double,
 // \c complex<float>, or \c complex<double> element type. The attempt to call the function
@@ -298,7 +298,7 @@ inline void getrf( int* m, int* n, complex<double>* A, int* lda, int* ipiv, int*
 
                           \f[ A = L \cdot U \cdot P, \f]
 
-// where \c P is an N-by-N permutation matrix, \c L is a lower triangular matrix (lower trapezoidal
+// where \c P is an n-by-n permutation matrix, \c L is a lower triangular matrix (lower trapezoidal
 // if \a m > \a n), and \c U is an upper unitriangular matrix (upper trapezoidal if \a m < \a n).
 //
 // In case of a column-major matrix, the resulting decomposition has the form
@@ -306,7 +306,7 @@ inline void getrf( int* m, int* n, complex<double>* A, int* lda, int* ipiv, int*
                           \f[ A = P \cdot L \cdot U, \f]
 
 // where \c L is a lower unitriangular matrix (lower trapezoidal if \a m > \a n), \c U is an upper
-// triangular matrix (upper trapezoidal if \a m < \a n), and  \c P is an M-by-M permutation matrix.
+// triangular matrix (upper trapezoidal if \a m < \a n), and  \c P is an m-by-m permutation matrix.
 //
 // The resulting decomposition is stored within the matrix \a A: \c L is stored in the lower part
 // of \a A and \c U is stored in the upper part. The unit diagonal elements of \c L are not stored.
