@@ -343,6 +343,8 @@ void OperationTest::testPotrf()
 template< typename Type >
 void OperationTest::testGetri()
 {
+#if BLAZETEST_MATHTEST_LAPACK_MODE
+
    //=====================================================================================
    // Row-major matrix tests
    //=====================================================================================
@@ -409,6 +411,8 @@ void OperationTest::testGetri()
          throw std::runtime_error( oss.str() );
       }
    }
+
+#endif
 }
 //*************************************************************************************************
 
@@ -425,6 +429,8 @@ void OperationTest::testGetri()
 template< typename Type >
 void OperationTest::testPotri()
 {
+#if BLAZETEST_MATHTEST_LAPACK_MODE
+
    //=====================================================================================
    // Row-major matrix tests
    //=====================================================================================
@@ -545,6 +551,8 @@ void OperationTest::testPotri()
          throw std::runtime_error( oss.str() );
       }
    }
+
+#endif
 }
 //*************************************************************************************************
 
@@ -561,6 +569,8 @@ void OperationTest::testPotri()
 template< typename Type >
 void OperationTest::testGesv()
 {
+#if BLAZETEST_MATHTEST_LAPACK_MODE
+
    {
       test_ = "Linear system of equations (single right-hand side)";
 
@@ -628,6 +638,8 @@ void OperationTest::testGesv()
          throw std::runtime_error( oss.str() );
       }
    }
+
+#endif
 }
 //*************************************************************************************************
 
