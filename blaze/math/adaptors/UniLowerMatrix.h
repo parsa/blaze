@@ -49,6 +49,7 @@
 #include <blaze/math/dense/StaticMatrix.h>
 #include <blaze/math/Forward.h>
 #include <blaze/math/Functions.h>
+#include <blaze/math/lapack/trtri.h>
 #include <blaze/math/shims/IsDefault.h>
 #include <blaze/math/shims/IsOne.h>
 #include <blaze/math/traits/AddTrait.h>
@@ -533,13 +534,9 @@ inline void invertByPLU( UniLowerMatrix<MT,SO,true>& m )
 {
    BLAZE_CONSTRAINT_MUST_BE_BLAS_COMPATIBLE_TYPE( typename MT::ElementType );
 
-   const size_t n( min( (~m).rows(), (~m).columns() ) );
-   UniqueArray<int> ipiv( new int[n] );
+   typename DerestrictTrait<MT>::Type A( derestrict( ~m ) );
 
-   for( size_t i=0UL; i<n; ++i )
-      ipiv[i] = static_cast<int>( i ) + 1;
-
-   getri( derestrict( ~m ), ipiv.get() );
+   trtri( A, 'L', 'U' );
 }
 /*! \endcond */
 //*************************************************************************************************
@@ -564,6 +561,8 @@ template< typename MT  // Type of the dense matrix
 inline void invertByCholesky( UniLowerMatrix<MT,SO,true>& m )
 {
    BLAZE_CONSTRAINT_MUST_BE_BLAS_COMPATIBLE_TYPE( typename MT::ElementType );
+
+   BLAZE_INTERNAL_ASSERT( isIdentity( ~m ), "Violation of preconditions detected" );
 
    UNUSED_PARAMETER( m );
 }
