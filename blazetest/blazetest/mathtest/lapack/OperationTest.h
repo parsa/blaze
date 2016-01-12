@@ -45,9 +45,13 @@
 #include <string>
 #include <typeinfo>
 #include <blaze/math/LAPACK.h>
+#include <blaze/math/LowerMatrix.h>
 #include <blaze/math/shims/IsDefault.h>
 #include <blaze/math/StaticMatrix.h>
 #include <blaze/math/StaticVector.h>
+#include <blaze/math/UniLowerMatrix.h>
+#include <blaze/math/UniUpperMatrix.h>
+#include <blaze/math/UpperMatrix.h>
 #include <blazetest/system/LAPACK.h>
 
 
@@ -92,6 +96,7 @@ class OperationTest
    template< typename Type > void testPotrf();
    template< typename Type > void testGetri();
    template< typename Type > void testPotri();
+   template< typename Type > void testTrtri();
    template< typename Type > void testGesv();
    //@}
    //**********************************************************************************************
@@ -548,6 +553,210 @@ void OperationTest::testPotri()
              << "   Element type:\n"
              << "     " << typeid( Type ).name() << "\n"
              << "   Result:\n" << A << "\n";
+         throw std::runtime_error( oss.str() );
+      }
+   }
+
+#endif
+}
+//*************************************************************************************************
+
+
+//*************************************************************************************************
+/*!\brief Test of the triangular matrix inversion functionality (trtri).
+//
+// \return void
+// \exception std::runtime_error Error detected.
+//
+// This function performs a test of the triangular matrix inversion functions for various data
+// types. In case an error is detected, a \a std::runtime_error exception is thrown.
+*/
+template< typename Type >
+void OperationTest::testTrtri()
+{
+#if BLAZETEST_MATHTEST_LAPACK_MODE
+
+   //=====================================================================================
+   // Row-major matrix tests
+   //=====================================================================================
+
+   {
+      test_ = "Row-major lower triangular matrix inversion";
+
+      blaze::LowerMatrix< blaze::StaticMatrix<Type,3UL,3UL,blaze::rowMajor> > A;
+      randomize( A );
+
+      blaze::StaticMatrix<Type,3UL,3UL,blaze::rowMajor> B( A );
+
+      blaze::trtri( B, 'L', 'N' );
+
+      if( !blaze::isIdentity( A * B ) ) {
+         std::ostringstream oss;
+         oss << " Test: " << test_ << "\n"
+             << " Error: Lower triangular matrix inversion failed\n"
+             << " Details:\n"
+             << "   Element type:\n"
+             << "     " << typeid( Type ).name() << "\n"
+             << "   Result:\n" << B << "\n";
+         throw std::runtime_error( oss.str() );
+      }
+   }
+
+   {
+      test_ = "Row-major lower unitriangular matrix inversion";
+
+      blaze::UniLowerMatrix< blaze::StaticMatrix<Type,3UL,3UL,blaze::rowMajor> > A;
+      randomize( A );
+
+      blaze::StaticMatrix<Type,3UL,3UL,blaze::rowMajor> B( A );
+
+      blaze::trtri( B, 'L', 'U' );
+
+      if( !blaze::isIdentity( A * B ) ) {
+         std::ostringstream oss;
+         oss << " Test: " << test_ << "\n"
+             << " Error: Lower unitriangular matrix inversion failed\n"
+             << " Details:\n"
+             << "   Element type:\n"
+             << "     " << typeid( Type ).name() << "\n"
+             << "   Result:\n" << B << "\n";
+         throw std::runtime_error( oss.str() );
+      }
+   }
+
+   {
+      test_ = "Row-major upper triangular matrix inversion";
+
+      blaze::UpperMatrix< blaze::StaticMatrix<Type,3UL,3UL,blaze::rowMajor> > A;
+      randomize( A );
+
+      blaze::StaticMatrix<Type,3UL,3UL,blaze::rowMajor> B( A );
+
+      blaze::trtri( B, 'U', 'N' );
+
+      if( !blaze::isIdentity( A * B ) ) {
+         std::ostringstream oss;
+         oss << " Test: " << test_ << "\n"
+             << " Error: Upper triangular matrix inversion failed\n"
+             << " Details:\n"
+             << "   Element type:\n"
+             << "     " << typeid( Type ).name() << "\n"
+             << "   Result:\n" << B << "\n";
+         throw std::runtime_error( oss.str() );
+      }
+   }
+
+   {
+      test_ = "Row-major upper unitriangular matrix inversion";
+
+      blaze::UniUpperMatrix< blaze::StaticMatrix<Type,3UL,3UL,blaze::rowMajor> > A;
+      randomize( A );
+
+      blaze::StaticMatrix<Type,3UL,3UL,blaze::rowMajor> B( A );
+
+      blaze::trtri( B, 'U', 'U' );
+
+      if( !blaze::isIdentity( A * B ) ) {
+         std::ostringstream oss;
+         oss << " Test: " << test_ << "\n"
+             << " Error: Upper unitriangular matrix inversion failed\n"
+             << " Details:\n"
+             << "   Element type:\n"
+             << "     " << typeid( Type ).name() << "\n"
+             << "   Result:\n" << B << "\n";
+         throw std::runtime_error( oss.str() );
+      }
+   }
+
+
+   //=====================================================================================
+   // Column-major matrix tests
+   //=====================================================================================
+
+   {
+      test_ = "Column-major lower triangular matrix inversion";
+
+      blaze::LowerMatrix< blaze::StaticMatrix<Type,3UL,3UL,blaze::columnMajor> > A;
+      randomize( A );
+
+      blaze::StaticMatrix<Type,3UL,3UL,blaze::columnMajor> B( A );
+
+      blaze::trtri( B, 'L', 'N' );
+
+      if( !blaze::isIdentity( A * B ) ) {
+         std::ostringstream oss;
+         oss << " Test: " << test_ << "\n"
+             << " Error: Lower triangular matrix inversion failed\n"
+             << " Details:\n"
+             << "   Element type:\n"
+             << "     " << typeid( Type ).name() << "\n"
+             << "   Result:\n" << B << "\n";
+         throw std::runtime_error( oss.str() );
+      }
+   }
+
+   {
+      test_ = "Column-major lower unitriangular matrix inversion";
+
+      blaze::UniLowerMatrix< blaze::StaticMatrix<Type,3UL,3UL,blaze::columnMajor> > A;
+      randomize( A );
+
+      blaze::StaticMatrix<Type,3UL,3UL,blaze::columnMajor> B( A );
+
+      blaze::trtri( B, 'L', 'U' );
+
+      if( !blaze::isIdentity( A * B ) ) {
+         std::ostringstream oss;
+         oss << " Test: " << test_ << "\n"
+             << " Error: Lower unitriangular matrix inversion failed\n"
+             << " Details:\n"
+             << "   Element type:\n"
+             << "     " << typeid( Type ).name() << "\n"
+             << "   Result:\n" << B << "\n";
+         throw std::runtime_error( oss.str() );
+      }
+   }
+
+   {
+      test_ = "Column-major upper triangular matrix inversion";
+
+      blaze::UpperMatrix< blaze::StaticMatrix<Type,3UL,3UL,blaze::columnMajor> > A;
+      randomize( A );
+
+      blaze::StaticMatrix<Type,3UL,3UL,blaze::columnMajor> B( A );
+
+      blaze::trtri( B, 'U', 'N' );
+
+      if( !blaze::isIdentity( A * B ) ) {
+         std::ostringstream oss;
+         oss << " Test: " << test_ << "\n"
+             << " Error: Upper triangular matrix inversion failed\n"
+             << " Details:\n"
+             << "   Element type:\n"
+             << "     " << typeid( Type ).name() << "\n"
+             << "   Result:\n" << B << "\n";
+         throw std::runtime_error( oss.str() );
+      }
+   }
+
+   {
+      test_ = "Column-major upper unitriangular matrix inversion";
+
+      blaze::UniUpperMatrix< blaze::StaticMatrix<Type,3UL,3UL,blaze::columnMajor> > A;
+      randomize( A );
+
+      blaze::StaticMatrix<Type,3UL,3UL,blaze::columnMajor> B( A );
+
+      blaze::trtri( B, 'U', 'U' );
+
+      if( !blaze::isIdentity( A * B ) ) {
+         std::ostringstream oss;
+         oss << " Test: " << test_ << "\n"
+             << " Error: Upper unitriangular matrix inversion failed\n"
+             << " Details:\n"
+             << "   Element type:\n"
+             << "     " << typeid( Type ).name() << "\n"
+             << "   Result:\n" << B << "\n";
          throw std::runtime_error( oss.str() );
       }
    }
