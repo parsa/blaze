@@ -48,7 +48,7 @@
 #include <blaze/math/dense/StaticMatrix.h>
 #include <blaze/math/Forward.h>
 #include <blaze/math/Functions.h>
-#include <blaze/math/lapack/getri.h>
+#include <blaze/math/lapack/trtri.h>
 #include <blaze/math/shims/Invert.h>
 #include <blaze/math/shims/IsDefault.h>
 #include <blaze/math/traits/AddTrait.h>
@@ -57,7 +57,6 @@
 #include <blaze/math/traits/DivTrait.h>
 #include <blaze/math/traits/MathTrait.h>
 #include <blaze/math/traits/MultTrait.h>
-#include <blaze/math/traits/RowExprTrait.h>
 #include <blaze/math/traits/RowTrait.h>
 #include <blaze/math/traits/SubmatrixTrait.h>
 #include <blaze/math/traits/SubTrait.h>
@@ -69,19 +68,13 @@
 #include <blaze/math/typetraits/IsPadded.h>
 #include <blaze/math/typetraits/IsResizable.h>
 #include <blaze/math/typetraits/IsRestricted.h>
-#include <blaze/math/typetraits/IsRowMajorMatrix.h>
 #include <blaze/math/typetraits/IsSquare.h>
 #include <blaze/math/typetraits/RemoveAdaptor.h>
 #include <blaze/math/typetraits/Rows.h>
-#include <blaze/math/views/DenseRow.h>
-#include <blaze/math/views/DenseSubvector.h>
-#include <blaze/math/views/Row.h>
-#include <blaze/math/views/Subvector.h>
 #include <blaze/util/Assert.h>
 #include <blaze/util/EnableIf.h>
 #include <blaze/util/Exception.h>
 #include <blaze/util/typetraits/IsNumeric.h>
-#include <blaze/util/UniqueArray.h>
 #include <blaze/util/Unused.h>
 #include <blaze/util/valuetraits/IsTrue.h>
 
@@ -603,32 +596,9 @@ inline void invertByPLU( UpperMatrix<MT,SO,true>& m )
 {
    BLAZE_CONSTRAINT_MUST_BE_BLAS_COMPATIBLE_TYPE( typename MT::ElementType );
 
-   typedef typename DerestrictTrait<MT>::Type  DT;
-   typedef typename RowExprTrait<MT>::Type     RT;
+   typename DerestrictTrait<MT>::Type A( derestrict( ~m ) );
 
-   const size_t n( min( (~m).rows(), (~m).columns() ) );
-   UniqueArray<int> ipiv( new int[n] );
-
-   DT A( derestrict( ~m ) );
-
-   if( IsRowMajorMatrix<MT>::value )
-   {
-      for( size_t i=0UL; i<n; ++i )
-      {
-         if( isDefault( A(i,i) ) ) {
-            BLAZE_THROW_INVALID_ARGUMENT( "Inversion of singular matrix failed" );
-         }
-
-         RT rowi( row( A, i ) );
-         subvector( rowi, i+1UL, n-i-1UL ) /= A(i,i);
-      }
-   }
-
-   for( size_t i=0UL; i<n; ++i ) {
-      ipiv[i] = static_cast<int>( i ) + 1;
-   }
-
-   getri( A, ipiv.get() );
+   trtri( A, 'U', 'N' );
 }
 /*! \endcond */
 //*************************************************************************************************
@@ -659,6 +629,8 @@ template< typename MT  // Type of the dense matrix
 inline void invertByCholesky( UpperMatrix<MT,SO,true>& m )
 {
    BLAZE_CONSTRAINT_MUST_BE_BLAS_COMPATIBLE_TYPE( typename MT::ElementType );
+
+   BLAZE_INTERNAL_ASSERT( isDiagonal( ~m ), "Violation of preconditions detected" );
 
    typename DerestrictTrait<MT>::Type A( derestrict( ~m ) );
 
