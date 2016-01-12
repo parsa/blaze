@@ -134,6 +134,8 @@ class DenseTest
 template< typename Type >
 void DenseTest::testRandom2x2()
 {
+#if BLAZETEST_MATHTEST_LAPACK_MODE
+
    using blaze::equal;
 
    typedef typename Type::ElementType  ET;
@@ -160,6 +162,8 @@ void DenseTest::testRandom2x2()
           << "   Result detNxN(): " << res3 << "\n";
       throw std::runtime_error( oss.str() );
    }
+
+#endif
 }
 //*************************************************************************************************
 
@@ -176,6 +180,8 @@ void DenseTest::testRandom2x2()
 template< typename Type >
 void DenseTest::testRandom3x3()
 {
+#if BLAZETEST_MATHTEST_LAPACK_MODE
+
    using blaze::equal;
 
    typedef typename Type::ElementType  ET;
@@ -202,6 +208,8 @@ void DenseTest::testRandom3x3()
           << "   Result detNxN(): " << res3 << "\n";
       throw std::runtime_error( oss.str() );
    }
+
+#endif
 }
 //*************************************************************************************************
 
@@ -218,6 +226,8 @@ void DenseTest::testRandom3x3()
 template< typename Type >
 void DenseTest::testRandom4x4()
 {
+#if BLAZETEST_MATHTEST_LAPACK_MODE
+
    using blaze::equal;
 
    typedef typename Type::ElementType  ET;
@@ -244,6 +254,8 @@ void DenseTest::testRandom4x4()
           << "   Result detNxN(): " << res3 << "\n";
       throw std::runtime_error( oss.str() );
    }
+
+#endif
 }
 //*************************************************************************************************
 
@@ -260,6 +272,8 @@ void DenseTest::testRandom4x4()
 template< typename Type >
 void DenseTest::testRandom5x5()
 {
+#if BLAZETEST_MATHTEST_LAPACK_MODE
+
    using blaze::equal;
 
    typedef typename Type::ElementType  ET;
@@ -286,6 +300,8 @@ void DenseTest::testRandom5x5()
           << "   Result detNxN(): " << res3 << "\n";
       throw std::runtime_error( oss.str() );
    }
+
+#endif
 }
 //*************************************************************************************************
 
@@ -302,6 +318,8 @@ void DenseTest::testRandom5x5()
 template< typename Type >
 void DenseTest::testRandom6x6()
 {
+#if BLAZETEST_MATHTEST_LAPACK_MODE
+
    using blaze::equal;
 
    typedef typename Type::ElementType  ET;
@@ -328,6 +346,8 @@ void DenseTest::testRandom6x6()
           << "   Result detNxN(): " << res3 << "\n";
       throw std::runtime_error( oss.str() );
    }
+
+#endif
 }
 //*************************************************************************************************
 
