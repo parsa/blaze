@@ -44,6 +44,7 @@
 #include <stdexcept>
 #include <string>
 #include <typeinfo>
+#include <blaze/math/HermitianMatrix.h>
 #include <blaze/math/LAPACK.h>
 #include <blaze/math/LowerMatrix.h>
 #include <blaze/math/shims/IsDefault.h>
@@ -94,6 +95,7 @@ class OperationTest
    //@{
    template< typename Type > void testGeqrf();
    template< typename Type > void testGetrf();
+   template< typename Type > void testHetrf();
    template< typename Type > void testSytrf();
    template< typename Type > void testPotrf();
 
@@ -258,6 +260,55 @@ void OperationTest::testGetrf()
          std::ostringstream oss;
          oss << " Test: " << test_ << "\n"
              << " Error: PLU decomposition failed\n"
+             << " Details:\n"
+             << "   Element type:\n"
+             << "     " << typeid( Type ).name() << "\n"
+             << "   Row-major decomposition:\n" << A << "\n"
+             << "   Row-major pivot elements:\n" << ipivA << "\n"
+             << "   Column-major decomposition:\n" << B << "\n"
+             << "   Column-major pivot elements:\n" << ipivB << "\n";
+         throw std::runtime_error( oss.str() );
+      }
+   }
+
+#endif
+}
+//*************************************************************************************************
+
+
+//*************************************************************************************************
+/*!\brief Test of the Hermitian matrix decomposition functionality (hetrf).
+//
+// \return void
+// \exception std::runtime_error Error detected.
+//
+// This function performs a test of the Hermitian matrix decomposition functions for various
+// data types. In case an error is detected, a \a std::runtime_error exception is thrown.
+*/
+template< typename Type >
+void OperationTest::testHetrf()
+{
+#if BLAZETEST_MATHTEST_LAPACK_MODE
+
+   test_ = "Hermitian matrix decomposition";
+
+   {
+      blaze::HermitianMatrix< blaze::StaticMatrix<Type,3UL,3UL,blaze::rowMajor> > H;
+      randomize( H );
+
+      blaze::StaticMatrix<Type,3UL,3UL,blaze::rowMajor>    A( H );
+      blaze::StaticMatrix<Type,3UL,3UL,blaze::columnMajor> B( H );
+
+      blaze::StaticVector<int,3UL,blaze::rowVector> ipivA;
+      blaze::StaticVector<int,3UL,blaze::rowVector> ipivB;
+
+      blaze::hetrf( A, 'L', ipivA.data() );
+      blaze::hetrf( B, 'U', ipivB.data() );
+
+      if( A != ctrans( B ) || ipivA != ipivB ) {
+         std::ostringstream oss;
+         oss << " Test: " << test_ << "\n"
+             << " Error: Hermitian matrix decomposition failed\n"
              << " Details:\n"
              << "   Element type:\n"
              << "     " << typeid( Type ).name() << "\n"
