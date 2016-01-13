@@ -47,6 +47,7 @@
 #include <blaze/math/DenseMatrix.h>
 #include <blaze/math/DenseSubmatrix.h>
 #include <blaze/math/shims/IsDefault.h>
+#include <blaze/math/typetraits/IsUniTriangular.h>
 #include <blaze/util/Random.h>
 #include <blazetest/system/LAPACK.h>
 #include <blazetest/system/Types.h>
@@ -452,10 +453,67 @@ void DenseTest::testRandomNxN()
 #if BLAZETEST_MATHTEST_LAPACK_MODE
 
    using blaze::invert;
+   using blaze::byDefault;
    using blaze::byPLU;
-   using blaze::byCholesky;
+   using blaze::byLDLT;
+   using blaze::byLDLH;
+   using blaze::byLLH;
 
    typedef typename Type::ElementType  ET;
+
+
+   //=====================================================================================
+   // Matrix default inversion
+   //=====================================================================================
+
+   {
+      test_ = "Matrix inversion (default)";
+
+      Type A;
+      initialize( A );
+      Type B( A );
+
+      invert<byDefault>( B );
+
+      if( !isIdentity( A * B ) ) {
+         std::ostringstream oss;
+         oss << " Test: " << test_ << "\n"
+             << " Error: Matrix inversion failed\n"
+             << " Details:\n"
+             << "   Matrix type:\n"
+             << "     " << typeid( Type ).name() << "\n"
+             << "   Element type:\n"
+             << "     " << typeid( ET ).name() << "\n"
+             << "   Initial matrix:\n" << A << "\n"
+             << "   Result:\n" << B << "\n";
+         throw std::runtime_error( oss.str() );
+      }
+   }
+
+   {
+      test_ = "Submatrix inversion (default)";
+
+      Type A;
+      initialize( A );
+      Type B( A );
+
+      blaze::DenseSubmatrix<Type> sub( B, 0UL, 0UL, A.rows(), A.columns() );
+      invert<byDefault>( sub );
+
+      if( !isIdentity( A * sub ) ) {
+         std::ostringstream oss;
+         oss << " Test: " << test_ << "\n"
+             << " Error: Matrix inversion failed\n"
+             << " Details:\n"
+             << "   Matrix type:\n"
+             << "     " << typeid( Type ).name() << "\n"
+             << "   Element type:\n"
+             << "     " << typeid( ET ).name() << "\n"
+             << "   Initial matrix:\n" << A << "\n"
+             << "   Result:\n" << B << "\n";
+         throw std::runtime_error( oss.str() );
+      }
+   }
 
 
    //=====================================================================================
@@ -513,17 +571,17 @@ void DenseTest::testRandomNxN()
 
 
    //=====================================================================================
-   // Matrix inversion by Cholesky decomposition
+   // Matrix inversion by LDLT (Bunch-Kaufman) decomposition
    //=====================================================================================
 
    {
-      test_ = "Matrix inversion (Cholesky)";
+      test_ = "Matrix inversion (LDLT/Bunch-Kaufman)";
 
       Type A;
       initialize( A );
       Type B( A );
 
-      invert<byCholesky>( B );
+      invert<byLDLT>( B );
 
       if( !isIdentity( A * B ) ) {
          std::ostringstream oss;
@@ -541,14 +599,122 @@ void DenseTest::testRandomNxN()
    }
 
    {
-      test_ = "Submatrix inversion (Cholesky)";
+      test_ = "Submatrix inversion (LDLT/Bunch-Kaufman)";
 
       Type A;
       initialize( A );
       Type B( A );
 
       blaze::DenseSubmatrix<Type> sub( B, 0UL, 0UL, A.rows(), A.columns() );
-      invert<byCholesky>( sub );
+      invert<byLDLT>( sub );
+
+      if( !isIdentity( A * sub ) ) {
+         std::ostringstream oss;
+         oss << " Test: " << test_ << "\n"
+             << " Error: Matrix inversion failed\n"
+             << " Details:\n"
+             << "   Matrix type:\n"
+             << "     " << typeid( Type ).name() << "\n"
+             << "   Element type:\n"
+             << "     " << typeid( ET ).name() << "\n"
+             << "   Initial matrix:\n" << A << "\n"
+             << "   Result:\n" << B << "\n";
+         throw std::runtime_error( oss.str() );
+      }
+   }
+
+
+   //=====================================================================================
+   // Matrix inversion by LDLH (Bunch-Kaufman) decomposition
+   //=====================================================================================
+
+   {
+      test_ = "Matrix inversion (LDLH/Bunch-Kaufman)";
+
+      Type A;
+      initialize( A );
+      Type B( A );
+
+      invert<byLDLH>( B );
+
+      if( !isIdentity( A * B ) ) {
+         std::ostringstream oss;
+         oss << " Test: " << test_ << "\n"
+             << " Error: Matrix inversion failed\n"
+             << " Details:\n"
+             << "   Matrix type:\n"
+             << "     " << typeid( Type ).name() << "\n"
+             << "   Element type:\n"
+             << "     " << typeid( ET ).name() << "\n"
+             << "   Initial matrix:\n" << A << "\n"
+             << "   Result:\n" << B << "\n";
+         throw std::runtime_error( oss.str() );
+      }
+   }
+
+   {
+      test_ = "Submatrix inversion (LDLH/Bunch-Kaufman)";
+
+      Type A;
+      initialize( A );
+      Type B( A );
+
+      blaze::DenseSubmatrix<Type> sub( B, 0UL, 0UL, A.rows(), A.columns() );
+      invert<byLDLH>( sub );
+
+      if( !isIdentity( A * sub ) ) {
+         std::ostringstream oss;
+         oss << " Test: " << test_ << "\n"
+             << " Error: Matrix inversion failed\n"
+             << " Details:\n"
+             << "   Matrix type:\n"
+             << "     " << typeid( Type ).name() << "\n"
+             << "   Element type:\n"
+             << "     " << typeid( ET ).name() << "\n"
+             << "   Initial matrix:\n" << A << "\n"
+             << "   Result:\n" << B << "\n";
+         throw std::runtime_error( oss.str() );
+      }
+   }
+
+
+   //=====================================================================================
+   // Matrix inversion by LLH (Cholesky) decomposition
+   //=====================================================================================
+
+   {
+      test_ = "Matrix inversion (LLH/Cholesky)";
+
+      Type A;
+      initialize( A );
+      Type B( A );
+
+      invert<byLLH>( B );
+
+      if( !isIdentity( A * B ) ) {
+         std::ostringstream oss;
+         oss << " Test: " << test_ << "\n"
+             << " Error: Matrix inversion failed\n"
+             << " Details:\n"
+             << "   Matrix type:\n"
+             << "     " << typeid( Type ).name() << "\n"
+             << "   Element type:\n"
+             << "     " << typeid( ET ).name() << "\n"
+             << "   Initial matrix:\n" << A << "\n"
+             << "   Result:\n" << B << "\n";
+         throw std::runtime_error( oss.str() );
+      }
+   }
+
+   {
+      test_ = "Submatrix inversion (LLH/Cholesky)";
+
+      Type A;
+      initialize( A );
+      Type B( A );
+
+      blaze::DenseSubmatrix<Type> sub( B, 0UL, 0UL, A.rows(), A.columns() );
+      invert<byLLH>( sub );
 
       if( !isIdentity( A * sub ) ) {
          std::ostringstream oss;
@@ -593,8 +759,10 @@ void DenseTest::initialize( blaze::DenseMatrix<MT,SO>& matrix )
    resize( ~matrix, size, size );
    reset( ~matrix );
 
-   for( size_t i=0UL; i<size; ++i ) {
-      (~matrix)(i,i) = ET(4);
+   if( !blaze::IsUniTriangular<MT>::value ) {
+      for( size_t i=0UL; i<size; ++i ) {
+         (~matrix)(i,i) = ET(4);
+      }
    }
 }
 //*************************************************************************************************
