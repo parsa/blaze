@@ -116,8 +116,8 @@ inline void hetrf( DenseMatrix<MT,SO>& A, char uplo, int* ipiv );
 // column-major matrix based on the LAPACK chetrf() function, which uses the Bunch-Kaufman diagonal
 // pivoting method. The decomposition has the form
 
-                      \f[ A = U D U^{T} \texttt{ (if uplo = 'U'), or }
-                          A = L D L^{T} \texttt{ (if uplo = 'L'), } \f]
+                      \f[ A = U D U^{H} \texttt{ (if uplo = 'U'), or }
+                          A = L D L^{H} \texttt{ (if uplo = 'L'), } \f]
 
 // where \c U (or \c L) is a product of permutation and unit upper (lower) triangular matrices,
 // and \c D is Hermitian and block diagonal with 1-by-1 and 2-by-2 diagonal blocks. The resulting
@@ -174,8 +174,8 @@ inline void hetrf( char* uplo, int* n, complex<float>* A, int* lda, int* ipiv,
 // column-major matrix based on the LAPACK zhetrf() function, which uses the Bunch-Kaufman diagonal
 // pivoting method. The decomposition has the form
 
-                      \f[ A = U D U^{T} \texttt{ (if uplo = 'U'), or }
-                          A = L D L^{T} \texttt{ (if uplo = 'L'), } \f]
+                      \f[ A = U D U^{H} \texttt{ (if uplo = 'U'), or }
+                          A = L D L^{H} \texttt{ (if uplo = 'L'), } \f]
 
 // where \c U (or \c L) is a product of permutation and unit upper (lower) triangular matrices,
 // and \c D is Hermitian and block diagonal with 1-by-1 and 2-by-2 diagonal blocks. The resulting
@@ -231,8 +231,8 @@ inline void hetrf( char* uplo, int* n, complex<double>* A, int* lda, int* ipiv,
 //
 // The decomposition has the form
 
-                      \f[ A = U D U^{T} \texttt{ (if uplo = 'U'), or }
-                          A = L D L^{T} \texttt{ (if uplo = 'L'), } \f]
+                      \f[ A = U D U^{H} \texttt{ (if uplo = 'U'), or }
+                          A = L D L^{H} \texttt{ (if uplo = 'L'), } \f]
 
 // where \c U (or \c L) is a product of permutation and unit upper (lower) triangular matrices,
 // and \c D is Hermitian and block diagonal with 1-by-1 and 2-by-2 diagonal blocks. The resulting

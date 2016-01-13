@@ -1,6 +1,6 @@
 //=================================================================================================
 /*!
-//  \file blaze/math/lapack/potrf.h
+//  \file blaze/math/lapack/sytrf.h
 //  \brief Header file for LAPACK symmetric matrix decomposition functions (sytrf)
 //
 //  Copyright (C) 2013 Klaus Iglberger - All Rights Reserved
@@ -100,7 +100,7 @@ inline void sytrf( char* uplo, int* n, complex<double>* A, int* lda, int* ipiv,
                    complex<double>* work, int* lwork, int* info );
 
 template< typename MT, bool SO >
-inline void sytrf( DenseMatrix<MT,SO>& A, char uplo );
+inline void sytrf( DenseMatrix<MT,SO>& A, char uplo, int* ipiv );
 //@}
 //*************************************************************************************************
 

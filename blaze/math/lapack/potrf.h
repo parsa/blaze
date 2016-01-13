@@ -204,8 +204,8 @@ inline void potrf( char* uplo, int* n, double* A, int* lda, int* info )
 // definite single precision complex column-major matrix based on the LAPACK cpotrf() function.
 // The decomposition has the form
 
-                      \f[ A = U^{T} U \texttt{ (if uplo = 'U'), or }
-                          A = L L^{T} \texttt{ (if uplo = 'L'), } \f]
+                      \f[ A = U^{H} U \texttt{ (if uplo = 'U'), or }
+                          A = L L^{H} \texttt{ (if uplo = 'L'), } \f]
 
 // where \c U is an upper triangular matrix and \c L is a lower triangular matrix. The resulting
 // decomposition is stored within \a A: In case \a uplo is set to \c 'L' the result is stored in
@@ -250,8 +250,8 @@ inline void potrf( char* uplo, int* n, complex<float>* A, int* lda, int* info )
 // definite double precision complex column-major matrix based on the LAPACK zpotrf() function.
 // The decomposition has the form
 
-                      \f[ A = U^{T} U \texttt{ (if uplo = 'U'), or }
-                          A = L L^{T} \texttt{ (if uplo = 'L'), } \f]
+                      \f[ A = U^{H} U \texttt{ (if uplo = 'U'), or }
+                          A = L L^{H} \texttt{ (if uplo = 'L'), } \f]
 
 // where \c U is an upper triangular matrix and \c L is a lower triangular matrix. The resulting
 // decomposition is stored within \a A: In case \a uplo is set to \c 'L' the result is stored in
@@ -298,8 +298,8 @@ inline void potrf( char* uplo, int* n, complex<double>* A, int* lda, int* info )
 //
 // The decomposition has the form
 
-                      \f[ A = U^{T} U \texttt{ (if uplo = 'U'), or }
-                          A = L L^{T} \texttt{ (if uplo = 'L'), } \f]
+                      \f[ A = U^{H} U \texttt{ (if uplo = 'U'), or }
+                          A = L L^{H} \texttt{ (if uplo = 'L'), } \f]
 
 // where \c U is an upper triangular matrix and \c L is a lower triangular matrix. The Cholesky
 // decomposition fails if the given matrix \a A is not a positive definite matrix. In this case

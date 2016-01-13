@@ -289,27 +289,30 @@ inline void getrf( int* m, int* n, complex<double>* A, int* lda, int* ipiv, int*
 // \return void
 //
 // This function performs the dense matrix PLU decomposition of a general m-by-n matrix based
-// on the LAPACK \c getrf() functions, which use partial pivoting with row interchanges. Note
-// that the function only works for general, non-adapted matrices with \c float, \c double,
-// \c complex<float>, or \c complex<double> element type. The attempt to call the function
-// with adaptors or matrices of any other element type results in a compile time error!\n
-//
-// In case of a row-major matrix, the resulting decomposition has the form
-
-                          \f[ A = L \cdot U \cdot P, \f]
-
-// where \c P is an n-by-n permutation matrix, \c L is a lower triangular matrix (lower trapezoidal
-// if \a m > \a n), and \c U is an upper unitriangular matrix (upper trapezoidal if \a m < \a n).
+// on the LAPACK \c getrf() functions, which use partial pivoting with row/column interchanges.
+// Note that the function only works for general, non-adapted matrices with \c float, \c double,
+// \c complex<float>, or \c complex<double> element type. The attempt to call the function with
+// adaptors or matrices of any other element type results in a compile time error!\n
 //
 // In case of a column-major matrix, the resulting decomposition has the form
 
                           \f[ A = P \cdot L \cdot U, \f]
 
 // where \c L is a lower unitriangular matrix (lower trapezoidal if \a m > \a n), \c U is an upper
-// triangular matrix (upper trapezoidal if \a m < \a n), and  \c P is an m-by-m permutation matrix.
+// triangular matrix (upper trapezoidal if \a m < \a n), and \c P is an m-by-m permutation matrix,
+// which represents the pivoting indices for the applied row interchanges.
+//
+// In case of a row-major matrix, the resulting decomposition has the form
+
+                          \f[ A = L \cdot U \cdot P, \f]
+
+// where \c P is an n-by-n permutation matrix, which represents the pivoting indices for the applied
+// column interchanges, \c L is a lower triangular matrix (lower trapezoidal if \a m > \a n), and
+// \c U is an upper unitriangular matrix (upper trapezoidal if \a m < \a n).
 //
 // The resulting decomposition is stored within the matrix \a A: \c L is stored in the lower part
-// of \a A and \c U is stored in the upper part. The unit diagonal elements of \c L are not stored.
+// of \a A and \c U is stored in the upper part. The unit diagonal elements of \c L or \c U are
+// not stored.
 //
 // For more information on the getrf() functions (i.e. sgetrf(), dgetrf(), cgetrf(), and zgetrf())
 // see the LAPACK online documentation browser:

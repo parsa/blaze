@@ -100,7 +100,7 @@ inline void sytri( char* uplo, char* diag, int* n, complex<double>* A, int* lda,
                    int* ipiv, complex<double>* work, int* info );
 
 template< typename MT, bool SO >
-inline void sytri( DenseMatrix<MT,SO>& A, char uplo, char diag );
+inline void sytri( DenseMatrix<MT,SO>& A, char uplo, int* ipiv );
 //@}
 //*************************************************************************************************
 

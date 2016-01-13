@@ -79,7 +79,7 @@ void ztrtri_( char* uplo, char* diag, int* n, double* A, int* lda, int* info );
 
 //=================================================================================================
 //
-//  LAPACK LU-BASED INVERSION FUNCTIONS
+//  LAPACK TRIANGULAR MATRIX INVERSION FUNCTIONS
 //
 //=================================================================================================
 
@@ -114,7 +114,7 @@ inline void trtri( DenseMatrix<MT,SO>& A, char uplo, char diag );
 // \return void
 //
 // This function performs the dense matrix inversion based on the LAPACK strtri() function for
-// a lower triangular (\a uplo = \c 'L') or upper triangular (\a uplo = \a 'U') single precision
+// lower triangular (\a uplo = \c 'L') or upper triangular (\a uplo = \a 'U') single precision
 // column-major matrices.
 //
 // The \a info argument provides feedback on the success of the function call:
@@ -151,7 +151,7 @@ inline void trtri( char* uplo, char* diag, int* n, float* A, int* lda, int* info
 // \return void
 //
 // This function performs the dense matrix inversion based on the LAPACK dtrtri() function for
-// a lower triangular (\a uplo = \c 'L') or upper triangular (\a uplo = \a 'U') double precision
+// lower triangular (\a uplo = \c 'L') or upper triangular (\a uplo = \a 'U') double precision
 // column-major matrices.
 //
 // The \a info argument provides feedback on the success of the function call:
@@ -188,7 +188,7 @@ inline void trtri( char* uplo, char* diag, int* n, double* A, int* lda, int* inf
 // \return void
 //
 // This function performs the dense matrix inversion based on the LAPACK ctrtri() function for
-// a lower triangular (\a uplo = \c 'L') or upper triangular (\a uplo = \a 'U') single precision
+// lower triangular (\a uplo = \c 'L') or upper triangular (\a uplo = \a 'U') single precision
 // complex column-major matrices.
 //
 // The \a info argument provides feedback on the success of the function call:
@@ -227,7 +227,7 @@ inline void trtri( char* uplo, char* diag, int* n, complex<float>* A, int* lda, 
 // \return void
 //
 // This function performs the dense matrix inversion based on the LAPACK ztrtri() function for
-// a lower triangular (\a uplo = \c 'L') or upper triangular (\a uplo = \a 'U') double precision
+// lower triangular (\a uplo = \c 'L') or upper triangular (\a uplo = \a 'U') double precision
 // complex column-major matrices.
 //
 // The \a info argument provides feedback on the success of the function call:
@@ -264,15 +264,16 @@ inline void trtri( char* uplo, char* diag, int* n, complex<double>* A, int* lda,
 // \exception std::invalid_argument Inversion of singular matrix failed.
 //
 // This function performs the dense matrix inversion based on the LAPACK trtri() functions for
-// a lower triangular (\a uplo = \c 'L') or upper triangular (\a uplo = \a 'U'). Note that the
-// function only works for general, non-adapted matrices with \c float, \c double, \c complex<float>,
-// or \c complex<double> element type. The attempt to call the function with adaptors or matrices
-// of any other element type results in a compile time error!
+// a lower triangular (\a uplo = \c 'L') or upper triangular (\a uplo = \a 'U') matrix. Note
+// that the function only works for general, non-adapted matrices with \c float, \c double,
+// \c complex<float>, or \c complex<double> element type. The attempt to call the function with
+// adaptors or matrices of any other element type results in a compile time error!
 //
 // The function fails if ...
 //
 //  - ... the given matrix is not a square matrix;
 //  - ... the given \a uplo argument is neither 'L' nor 'U';
+//  - ... the given \a diag argument is neither 'U' nor 'N';
 //  - ... the given matrix is singular and not invertible.
 //
 // In all failure cases a \a std::invalid_argument exception is thrown.
