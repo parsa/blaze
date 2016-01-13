@@ -101,6 +101,7 @@ class OperationTest
 
    template< typename Type > void testGetri();
    template< typename Type > void testSytri();
+   template< typename Type > void testHetri();
    template< typename Type > void testPotri();
    template< typename Type > void testTrtri();
 
@@ -654,6 +655,146 @@ void OperationTest::testSytri()
          std::ostringstream oss;
          oss << " Test: " << test_ << "\n"
              << " Error: Symmetric matrix inversion failed\n"
+             << " Details:\n"
+             << "   Element type:\n"
+             << "     " << typeid( Type ).name() << "\n"
+             << "   Result:\n" << B << "\n";
+         throw std::runtime_error( oss.str() );
+      }
+   }
+
+#endif
+}
+//*************************************************************************************************
+
+
+//*************************************************************************************************
+/*!\brief Test of the Hermitian matrix inversion functionality (hetri).
+//
+// \return void
+// \exception std::runtime_error Error detected.
+//
+// This function performs a test of the Hermitian matrix inversion functions for various data
+// types. In case an error is detected, a \a std::runtime_error exception is thrown.
+*/
+template< typename Type >
+void OperationTest::testHetri()
+{
+#if BLAZETEST_MATHTEST_LAPACK_MODE
+
+   //=====================================================================================
+   // Row-major matrix tests
+   //=====================================================================================
+
+   {
+      test_ = "Row-major Hermitian matrix inversion (lower part)";
+
+      blaze::HermitianMatrix< blaze::StaticMatrix<Type,3UL,3UL,blaze::rowMajor> > A;
+      randomize( A );
+
+      blaze::StaticMatrix<Type,3UL,3UL,blaze::rowMajor> B( A );
+      blaze::StaticVector<int,3UL,blaze::rowVector> ipiv;
+
+      blaze::hetrf( B, 'L', ipiv.data() );
+      blaze::hetri( B, 'L', ipiv.data() );
+
+      B(0,1) = conj( B(1,0) );
+      B(0,2) = conj( B(2,0) );
+      B(1,2) = conj( B(2,1) );
+
+      if( !blaze::isIdentity( A * B ) ) {
+         std::ostringstream oss;
+         oss << " Test: " << test_ << "\n"
+             << " Error: Hermitian matrix inversion failed\n"
+             << " Details:\n"
+             << "   Element type:\n"
+             << "     " << typeid( Type ).name() << "\n"
+             << "   Result:\n" << B << "\n";
+         throw std::runtime_error( oss.str() );
+      }
+   }
+
+   {
+      test_ = "Row-major Hermitian matrix inversion (upper part)";
+
+      blaze::HermitianMatrix< blaze::StaticMatrix<Type,3UL,3UL,blaze::rowMajor> > A;
+      randomize( A );
+
+      blaze::StaticMatrix<Type,3UL,3UL,blaze::rowMajor> B( A );
+      blaze::StaticVector<int,3UL,blaze::rowVector> ipiv;
+
+      blaze::hetrf( B, 'U', ipiv.data() );
+      blaze::hetri( B, 'U', ipiv.data() );
+
+      B(1,0) = conj( B(0,1) );
+      B(2,0) = conj( B(0,2) );
+      B(2,1) = conj( B(1,2) );
+
+      if( !blaze::isIdentity( A * B ) ) {
+         std::ostringstream oss;
+         oss << " Test: " << test_ << "\n"
+             << " Error: Hermitian matrix inversion failed\n"
+             << " Details:\n"
+             << "   Element type:\n"
+             << "     " << typeid( Type ).name() << "\n"
+             << "   Result:\n" << B << "\n";
+         throw std::runtime_error( oss.str() );
+      }
+   }
+
+
+   //=====================================================================================
+   // Column-major matrix tests
+   //=====================================================================================
+
+   {
+      test_ = "Column-major Hermitian matrix inversion (lower part)";
+
+      blaze::HermitianMatrix< blaze::StaticMatrix<Type,3UL,3UL,blaze::columnMajor> > A;
+      randomize( A );
+
+      blaze::StaticMatrix<Type,3UL,3UL,blaze::columnMajor> B( A );
+      blaze::StaticVector<int,3UL,blaze::rowVector> ipiv;
+
+      blaze::hetrf( B, 'L', ipiv.data() );
+      blaze::hetri( B, 'L', ipiv.data() );
+
+      B(0,1) = conj( B(1,0) );
+      B(0,2) = conj( B(2,0) );
+      B(1,2) = conj( B(2,1) );
+
+      if( !blaze::isIdentity( A * B ) ) {
+         std::ostringstream oss;
+         oss << " Test: " << test_ << "\n"
+             << " Error: Hermitian matrix inversion failed\n"
+             << " Details:\n"
+             << "   Element type:\n"
+             << "     " << typeid( Type ).name() << "\n"
+             << "   Result:\n" << B << "\n";
+         throw std::runtime_error( oss.str() );
+      }
+   }
+
+   {
+      test_ = "Column-major Hermitian matrix inversion (upper part)";
+
+      blaze::HermitianMatrix< blaze::StaticMatrix<Type,3UL,3UL,blaze::columnMajor> > A;
+      randomize( A );
+
+      blaze::StaticMatrix<Type,3UL,3UL,blaze::columnMajor> B( A );
+      blaze::StaticVector<int,3UL,blaze::rowVector> ipiv;
+
+      blaze::hetrf( B, 'U', ipiv.data() );
+      blaze::hetri( B, 'U', ipiv.data() );
+
+      B(1,0) = conj( B(0,1) );
+      B(2,0) = conj( B(0,2) );
+      B(2,1) = conj( B(1,2) );
+
+      if( !blaze::isIdentity( A * B ) ) {
+         std::ostringstream oss;
+         oss << " Test: " << test_ << "\n"
+             << " Error: Hermitian matrix inversion failed\n"
              << " Details:\n"
              << "   Element type:\n"
              << "     " << typeid( Type ).name() << "\n"

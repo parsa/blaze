@@ -62,6 +62,7 @@ namespace lapack {
 */
 OperationTest::OperationTest()
 {
+/*
    testGeqrf< float                  >();
    testGeqrf< double                 >();
    testGeqrf< blaze::complex<float>  >();
@@ -94,7 +95,12 @@ OperationTest::OperationTest()
    testSytri< double                 >();
    testSytri< blaze::complex<float>  >();
    testSytri< blaze::complex<double> >();
+   */
 
+   //testHetri< blaze::complex<float>  >();
+   testHetri< blaze::complex<double> >();
+
+   /*
    testPotri< float                  >();
    testPotri< double                 >();
    testPotri< blaze::complex<float>  >();
@@ -109,6 +115,7 @@ OperationTest::OperationTest()
    testGesv< double                 >();
    testGesv< blaze::complex<float>  >();
    testGesv< blaze::complex<double> >();
+   */
 }
 //*************************************************************************************************
 
