@@ -72,6 +72,11 @@ OperationTest::OperationTest()
    testGetrf< blaze::complex<float>  >();
    testGetrf< blaze::complex<double> >();
 
+   testSytrf< float                  >();
+   testSytrf< double                 >();
+   testSytrf< blaze::complex<float>  >();
+   testSytrf< blaze::complex<double> >();
+
    testPotrf< float                  >();
    testPotrf< double                 >();
    testPotrf< blaze::complex<float>  >();

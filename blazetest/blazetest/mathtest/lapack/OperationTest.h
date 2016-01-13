@@ -49,6 +49,7 @@
 #include <blaze/math/shims/IsDefault.h>
 #include <blaze/math/StaticMatrix.h>
 #include <blaze/math/StaticVector.h>
+#include <blaze/math/SymmetricMatrix.h>
 #include <blaze/math/UniLowerMatrix.h>
 #include <blaze/math/UniUpperMatrix.h>
 #include <blaze/math/UpperMatrix.h>
@@ -93,10 +94,13 @@ class OperationTest
    //@{
    template< typename Type > void testGeqrf();
    template< typename Type > void testGetrf();
+   template< typename Type > void testSytrf();
    template< typename Type > void testPotrf();
+
    template< typename Type > void testGetri();
    template< typename Type > void testPotri();
    template< typename Type > void testTrtri();
+
    template< typename Type > void testGesv();
    //@}
    //**********************************************************************************************
@@ -253,6 +257,55 @@ void OperationTest::testGetrf()
          std::ostringstream oss;
          oss << " Test: " << test_ << "\n"
              << " Error: PLU decomposition failed\n"
+             << " Details:\n"
+             << "   Element type:\n"
+             << "     " << typeid( Type ).name() << "\n"
+             << "   Row-major decomposition:\n" << A << "\n"
+             << "   Row-major pivot elements:\n" << ipivA << "\n"
+             << "   Column-major decomposition:\n" << B << "\n"
+             << "   Column-major pivot elements:\n" << ipivB << "\n";
+         throw std::runtime_error( oss.str() );
+      }
+   }
+
+#endif
+}
+//*************************************************************************************************
+
+
+//*************************************************************************************************
+/*!\brief Test of the symmetric matrix decomposition functionality (sytrf).
+//
+// \return void
+// \exception std::runtime_error Error detected.
+//
+// This function performs a test of the symmetric matrix decomposition functions for various
+// data types. In case an error is detected, a \a std::runtime_error exception is thrown.
+*/
+template< typename Type >
+void OperationTest::testSytrf()
+{
+#if BLAZETEST_MATHTEST_LAPACK_MODE
+
+   test_ = "Symmetric matrix decomposition";
+
+   {
+      blaze::SymmetricMatrix< blaze::StaticMatrix<Type,3UL,3UL,blaze::rowMajor> > S;
+      randomize( S );
+
+      blaze::StaticMatrix<Type,3UL,3UL,blaze::rowMajor>    A( S );
+      blaze::StaticMatrix<Type,3UL,3UL,blaze::columnMajor> B( S );
+
+      blaze::StaticVector<int,3UL,blaze::rowVector> ipivA;
+      blaze::StaticVector<int,3UL,blaze::rowVector> ipivB;
+
+      blaze::sytrf( A, 'L', ipivA.data() );
+      blaze::sytrf( B, 'U', ipivB.data() );
+
+      if( A != trans( B ) || ipivA != ipivB ) {
+         std::ostringstream oss;
+         oss << " Test: " << test_ << "\n"
+             << " Error: Symmetric matrix decomposition failed\n"
              << " Details:\n"
              << "   Element type:\n"
              << "     " << typeid( Type ).name() << "\n"
