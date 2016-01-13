@@ -98,6 +98,7 @@ class OperationTest
    template< typename Type > void testPotrf();
 
    template< typename Type > void testGetri();
+   template< typename Type > void testSytri();
    template< typename Type > void testPotri();
    template< typename Type > void testTrtri();
 
@@ -466,6 +467,146 @@ void OperationTest::testGetri()
              << "     " << typeid( Type ).name() << "\n"
              << "   Result:\n" << Ainv << "\n"
              << "   Ainv * A = " << ( Ainv * A ) << "\n";
+         throw std::runtime_error( oss.str() );
+      }
+   }
+
+#endif
+}
+//*************************************************************************************************
+
+
+//*************************************************************************************************
+/*!\brief Test of the symmetric matrix inversion functionality (sytri).
+//
+// \return void
+// \exception std::runtime_error Error detected.
+//
+// This function performs a test of the symmetric matrix inversion functions for various data
+// types. In case an error is detected, a \a std::runtime_error exception is thrown.
+*/
+template< typename Type >
+void OperationTest::testSytri()
+{
+#if BLAZETEST_MATHTEST_LAPACK_MODE
+
+   //=====================================================================================
+   // Row-major matrix tests
+   //=====================================================================================
+
+   {
+      test_ = "Row-major symmetric matrix inversion (lower part)";
+
+      blaze::SymmetricMatrix< blaze::StaticMatrix<Type,3UL,3UL,blaze::rowMajor> > A;
+      randomize( A );
+
+      blaze::StaticMatrix<Type,3UL,3UL,blaze::rowMajor> B( A );
+      blaze::StaticVector<int,3UL,blaze::rowVector> ipiv;
+
+      blaze::sytrf( B, 'L', ipiv.data() );
+      blaze::sytri( B, 'L', ipiv.data() );
+
+      B(0,1) = B(1,0);
+      B(0,2) = B(2,0);
+      B(1,2) = B(2,1);
+
+      if( !blaze::isIdentity( A * B ) ) {
+         std::ostringstream oss;
+         oss << " Test: " << test_ << "\n"
+             << " Error: Symmetric matrix inversion failed\n"
+             << " Details:\n"
+             << "   Element type:\n"
+             << "     " << typeid( Type ).name() << "\n"
+             << "   Result:\n" << B << "\n";
+         throw std::runtime_error( oss.str() );
+      }
+   }
+
+   {
+      test_ = "Row-major symmetric matrix inversion (upper part)";
+
+      blaze::SymmetricMatrix< blaze::StaticMatrix<Type,3UL,3UL,blaze::rowMajor> > A;
+      randomize( A );
+
+      blaze::StaticMatrix<Type,3UL,3UL,blaze::rowMajor> B( A );
+      blaze::StaticVector<int,3UL,blaze::rowVector> ipiv;
+
+      blaze::sytrf( B, 'U', ipiv.data() );
+      blaze::sytri( B, 'U', ipiv.data() );
+
+      B(1,0) = B(0,1);
+      B(2,0) = B(0,2);
+      B(2,1) = B(1,2);
+
+      if( !blaze::isIdentity( A * B ) ) {
+         std::ostringstream oss;
+         oss << " Test: " << test_ << "\n"
+             << " Error: Symmetric matrix inversion failed\n"
+             << " Details:\n"
+             << "   Element type:\n"
+             << "     " << typeid( Type ).name() << "\n"
+             << "   Result:\n" << B << "\n";
+         throw std::runtime_error( oss.str() );
+      }
+   }
+
+
+   //=====================================================================================
+   // Column-major matrix tests
+   //=====================================================================================
+
+   {
+      test_ = "Column-major symmetric matrix inversion (lower part)";
+
+      blaze::SymmetricMatrix< blaze::StaticMatrix<Type,3UL,3UL,blaze::columnMajor> > A;
+      randomize( A );
+
+      blaze::StaticMatrix<Type,3UL,3UL,blaze::columnMajor> B( A );
+      blaze::StaticVector<int,3UL,blaze::rowVector> ipiv;
+
+      blaze::sytrf( B, 'L', ipiv.data() );
+      blaze::sytri( B, 'L', ipiv.data() );
+
+      B(0,1) = B(1,0);
+      B(0,2) = B(2,0);
+      B(1,2) = B(2,1);
+
+      if( !blaze::isIdentity( A * B ) ) {
+         std::ostringstream oss;
+         oss << " Test: " << test_ << "\n"
+             << " Error: Symmetric matrix inversion failed\n"
+             << " Details:\n"
+             << "   Element type:\n"
+             << "     " << typeid( Type ).name() << "\n"
+             << "   Result:\n" << B << "\n";
+         throw std::runtime_error( oss.str() );
+      }
+   }
+
+   {
+      test_ = "Column-major symmetric matrix inversion (upper part)";
+
+      blaze::SymmetricMatrix< blaze::StaticMatrix<Type,3UL,3UL,blaze::columnMajor> > A;
+      randomize( A );
+
+      blaze::StaticMatrix<Type,3UL,3UL,blaze::columnMajor> B( A );
+      blaze::StaticVector<int,3UL,blaze::rowVector> ipiv;
+
+      blaze::sytrf( B, 'U', ipiv.data() );
+      blaze::sytri( B, 'U', ipiv.data() );
+
+      B(1,0) = B(0,1);
+      B(2,0) = B(0,2);
+      B(2,1) = B(1,2);
+
+      if( !blaze::isIdentity( A * B ) ) {
+         std::ostringstream oss;
+         oss << " Test: " << test_ << "\n"
+             << " Error: Symmetric matrix inversion failed\n"
+             << " Details:\n"
+             << "   Element type:\n"
+             << "     " << typeid( Type ).name() << "\n"
+             << "   Result:\n" << B << "\n";
          throw std::runtime_error( oss.str() );
       }
    }
