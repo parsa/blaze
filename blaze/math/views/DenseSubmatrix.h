@@ -11514,7 +11514,7 @@ inline bool isSame( const DenseSubmatrix<MT,AF,SO>& a, const DenseSubmatrix<MT,A
 // \exception std::invalid_argument Inversion of singular matrix failed.
 //
 // This function inverts the given dense submatrix by means of the specified matrix decomposition
-// algorithm \a DF. In case the submatrix is a symmetric positive-definite matrix it is recommended
+// algorithm \a IF. In case the submatrix is a symmetric positive-definite matrix it is recommended
 // to perform the inversion by means of a Cholesky decomposition, for a general square submatrix
 // a PLU decomposition should be used:
 

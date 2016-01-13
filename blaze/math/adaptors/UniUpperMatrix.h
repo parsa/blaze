@@ -516,6 +516,34 @@ inline void invert6x6( UniUpperMatrix<MT,SO,true>& m )
 
 //*************************************************************************************************
 /*! \cond BLAZE_INTERNAL */
+/*!\brief In-place inversion of the given uniupper dense matrix.
+// \ingroup uniupper_matrix
+//
+// \param m The uniupper dense matrix to be inverted.
+// \return void
+//
+// This function inverts the given uniupper dense matrix by means of the most suited matrix
+// inversion algorithm.
+//
+// \note The matrix inversion can only be used for dense matrices with \c float, \c double,
+// \c complex<float> or \c complex<double> element type. The attempt to call the function with
+// matrices of any other element type results in a compile time error!
+//
+// \note This function can only be used if the fitting LAPACK library is available and linked to
+// the executable. Otherwise a linker error will be created.
+*/
+template< typename MT  // Type of the dense matrix
+        , bool SO >    // Storage order of the dense matrix
+inline void invertByDefault( UniUpperMatrix<MT,SO,true>& m )
+{
+   invertByPLU( m );
+}
+/*! \endcond */
+//*************************************************************************************************
+
+
+//*************************************************************************************************
+/*! \cond BLAZE_INTERNAL */
 /*!\brief In-place PLU-based inversion of the given uniupper dense matrix.
 // \ingroup uniupper_matrix
 //
@@ -547,6 +575,60 @@ inline void invertByPLU( UniUpperMatrix<MT,SO,true>& m )
 
 //*************************************************************************************************
 /*! \cond BLAZE_INTERNAL */
+/*!\brief In-place Bunch-Kaufman-based inversion of the given uniupper dense matrix.
+// \ingroup uniupper_matrix
+//
+// \param m The uniupper dense matrix to be inverted.
+// \return void
+//
+// This function inverts the given uniupper dense matrix by means of a Bunch-Kaufman decomposition.
+//
+// \note The matrix inversion can only be used for dense matrices with \c float, \c double,
+// \c complex<float> or \c complex<double> element type. The attempt to call the function with
+// matrices of any other element type results in a compile time error!
+//
+// \note This function can only be used if the fitting LAPACK library is available and linked to
+// the executable. Otherwise a linker error will be created.
+*/
+template< typename MT  // Type of the dense matrix
+        , bool SO >    // Storage order of the dense matrix
+inline void invertByLDLT( UniUpperMatrix<MT,SO,true>& m )
+{
+   invertByLLH( m );
+}
+/*! \endcond */
+//*************************************************************************************************
+
+
+//*************************************************************************************************
+/*! \cond BLAZE_INTERNAL */
+/*!\brief In-place Bunch-Kaufman-based inversion of the given uniupper dense matrix.
+// \ingroup uniupper_matrix
+//
+// \param m The uniupper dense matrix to be inverted.
+// \return void
+//
+// This function inverts the given uniupper dense matrix by means of a Bunch-Kaufman decomposition.
+//
+// \note The matrix inversion can only be used for dense matrices with \c float, \c double,
+// \c complex<float> or \c complex<double> element type. The attempt to call the function with
+// matrices of any other element type results in a compile time error!
+//
+// \note This function can only be used if the fitting LAPACK library is available and linked to
+// the executable. Otherwise a linker error will be created.
+*/
+template< typename MT  // Type of the dense matrix
+        , bool SO >    // Storage order of the dense matrix
+inline void invertByLDLH( UniUpperMatrix<MT,SO,true>& m )
+{
+   invertByLLH( m );
+}
+/*! \endcond */
+//*************************************************************************************************
+
+
+//*************************************************************************************************
+/*! \cond BLAZE_INTERNAL */
 /*!\brief In-place Cholesky-based inversion of the given uniupper dense matrix.
 // \ingroup uniupper_matrix
 //
@@ -561,7 +643,7 @@ inline void invertByPLU( UniUpperMatrix<MT,SO,true>& m )
 */
 template< typename MT  // Type of the dense matrix
         , bool SO >    // Storage order of the dense matrix
-inline void invertByCholesky( UniUpperMatrix<MT,SO,true>& m )
+inline void invertByLLH( UniUpperMatrix<MT,SO,true>& m )
 {
    BLAZE_CONSTRAINT_MUST_BE_BLAS_COMPATIBLE_TYPE( typename MT::ElementType );
 

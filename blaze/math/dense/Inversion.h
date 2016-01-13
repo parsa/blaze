@@ -49,13 +49,20 @@
 #include <blaze/math/InversionFlag.h>
 #include <blaze/math/lapack/getrf.h>
 #include <blaze/math/lapack/getri.h>
+#include <blaze/math/lapack/hetrf.h>
+#include <blaze/math/lapack/hetri.h>
 #include <blaze/math/lapack/potrf.h>
 #include <blaze/math/lapack/potri.h>
+#include <blaze/math/lapack/sytrf.h>
+#include <blaze/math/lapack/sytri.h>
 #include <blaze/math/shims/Invert.h>
 #include <blaze/math/shims/IsDefault.h>
 #include <blaze/util/Assert.h>
+#include <blaze/util/EnableIf.h>
 #include <blaze/util/Exception.h>
 #include <blaze/util/Types.h>
+#include <blaze/util/typetraits/IsBuiltin.h>
+#include <blaze/util/typetraits/IsComplex.h>
 #include <blaze/util/UniqueArray.h>
 
 
@@ -616,6 +623,44 @@ inline void invert6x6( DenseMatrix<MT,SO>& dm )
 
 //*************************************************************************************************
 /*! \cond BLAZE_INTERNAL */
+/*!\brief In-place inversion of the given dense matrix.
+// \ingroup dense_matrix
+//
+// \param dm The dense matrix to be inverted.
+// \return void
+// \exception std::invalid_argument Inversion of singular matrix failed.
+// \exception std::invalid_argument Invalid non-square matrix provided.
+//
+// This function inverts the given dense matrix by means of the most suited matrix inversion
+// algorithm. The matrix inversion fails if ...
+//
+//  - ... the given matrix is not a square matrix;
+//  - ... the given matrix is singular and not invertible.
+//
+// In all failure cases a \a std::invalid_argument exception is thrown.
+//
+// \note The matrix inversion can only be used for dense matrices with \c float, \c double,
+// \c complex<float> or \c complex<double> element type. The attempt to call the function with
+// matrices of any other element type results in a compile time error!
+//
+// \note This function can only be used if the fitting LAPACK library is available and linked to
+// the executable. Otherwise a linker error will be created.
+//
+// \note This function does not provide any exception safety guarantee, i.e. in case an exception
+// is thrown \c dm may already have been modified.
+*/
+template< typename MT  // Type of the dense matrix
+        , bool SO >    // Storage order of the dense matrix
+inline void invertByDefault( DenseMatrix<MT,SO>& dm )
+{
+   invertByPLU( ~dm );
+}
+/*! \endcond */
+//*************************************************************************************************
+
+
+//*************************************************************************************************
+/*! \cond BLAZE_INTERNAL */
 /*!\brief In-place PLU-based inversion of the given dense matrix.
 // \ingroup dense_matrix
 //
@@ -661,6 +706,170 @@ inline void invertByPLU( DenseMatrix<MT,SO>& dm )
 
 //*************************************************************************************************
 /*! \cond BLAZE_INTERNAL */
+/*!\brief In-place Bunch-Kaufman-based inversion of the given symmetric dense matrix.
+// \ingroup dense_matrix
+//
+// \param dm The dense matrix to be inverted.
+// \return void
+// \exception std::invalid_argument Inversion of singular matrix failed.
+// \exception std::invalid_argument Invalid non-square matrix provided.
+//
+// This function inverts the given symmetric dense matrix by means of a Bunch-Kaufman decomposition.
+// The matrix inversion fails if ...
+//
+//  - ... the given matrix is not a square matrix;
+//  - ... the given matrix is singular and not invertible.
+//
+// In all failure cases a \a std::invalid_argument exception is thrown.
+//
+// \note The matrix inversion can only be used for dense matrices with \c float, \c double,
+// \c complex<float> or \c complex<double> element type. The attempt to call the function with
+// matrices of any other element type results in a compile time error!
+//
+// \note This function can only be used if the fitting LAPACK library is available and linked to
+// the executable. Otherwise a linker error will be created.
+//
+// \note This function does not provide any exception safety guarantee, i.e. in case an exception
+// is thrown \c dm may already have been modified.
+*/
+template< typename MT  // Type of the dense matrix
+        , bool SO >    // Storage order of the dense matrix
+inline void invertByLDLT( DenseMatrix<MT,SO>& dm )
+{
+   BLAZE_CONSTRAINT_MUST_NOT_BE_ADAPTOR_TYPE( MT );
+   BLAZE_CONSTRAINT_MUST_BE_BLAS_COMPATIBLE_TYPE( typename MT::ElementType );
+
+   BLAZE_USER_ASSERT( isSymmetric( ~dm ), "Invalid non-symmetric matrix detected" );
+
+   const char uplo( ( SO )?( 'L' ):( 'U' ) );
+   UniqueArray<int> ipiv( new int[(~dm).rows()] );
+
+   sytrf( ~dm, uplo, ipiv.get() );
+   sytri( ~dm, uplo, ipiv.get() );
+
+   if( SO ) {
+      for( size_t i=1UL; i<(~dm).rows(); ++i ) {
+         for( size_t j=0UL; j<i; ++j ) {
+            (~dm)(j,i) = (~dm)(i,j);
+         }
+      }
+   }
+   else {
+      for( size_t j=1UL; j<(~dm).columns(); ++j ) {
+         for( size_t i=0UL; i<j; ++i ) {
+            (~dm)(j,i) = (~dm)(i,j);
+         }
+      }
+   }
+}
+/*! \endcond */
+//*************************************************************************************************
+
+
+//*************************************************************************************************
+/*! \cond BLAZE_INTERNAL */
+/*!\brief In-place Bunch-Kaufman-based inversion of the given symmetric dense matrix.
+// \ingroup dense_matrix
+//
+// \param dm The dense matrix to be inverted.
+// \return void
+// \exception std::invalid_argument Inversion of singular matrix failed.
+// \exception std::invalid_argument Invalid non-square matrix provided.
+//
+// This function inverts the given symmetric dense matrix by means of a Bunch-Kaufman decomposition.
+// The matrix inversion fails if ...
+//
+//  - ... the given matrix is not a square matrix;
+//  - ... the given matrix is singular and not invertible.
+//
+// In all failure cases a \a std::invalid_argument exception is thrown.
+//
+// \note The matrix inversion can only be used for dense matrices with \c float, \c double,
+// \c complex<float> or \c complex<double> element type. The attempt to call the function with
+// matrices of any other element type results in a compile time error!
+//
+// \note This function can only be used if the fitting LAPACK library is available and linked to
+// the executable. Otherwise a linker error will be created.
+//
+// \note This function does not provide any exception safety guarantee, i.e. in case an exception
+// is thrown \c dm may already have been modified.
+*/
+template< typename MT  // Type of the dense matrix
+        , bool SO >    // Storage order of the dense matrix
+inline typename EnableIf< IsBuiltin<typename MT::ElementType> >::Type
+   invertByLDLH( DenseMatrix<MT,SO>& dm )
+{
+   invertByLDLT( ~dm );
+}
+/*! \endcond */
+//*************************************************************************************************
+
+
+//*************************************************************************************************
+/*! \cond BLAZE_INTERNAL */
+/*!\brief In-place Bunch-Kaufman-based inversion of the given Hermitian dense matrix.
+// \ingroup dense_matrix
+//
+// \param dm The dense matrix to be inverted.
+// \return void
+// \exception std::invalid_argument Inversion of singular matrix failed.
+// \exception std::invalid_argument Invalid non-square matrix provided.
+//
+// This function inverts the given Hermitian dense matrix by means of a Bunch-Kaufman decomposition.
+// The matrix inversion fails if ...
+//
+//  - ... the given matrix is not a square matrix;
+//  - ... the given matrix is singular and not invertible.
+//
+// In all failure cases a \a std::invalid_argument exception is thrown.
+//
+// \note The matrix inversion can only be used for dense matrices with \c float, \c double,
+// \c complex<float> or \c complex<double> element type. The attempt to call the function with
+// matrices of any other element type results in a compile time error!
+//
+// \note This function can only be used if the fitting LAPACK library is available and linked to
+// the executable. Otherwise a linker error will be created.
+//
+// \note This function does not provide any exception safety guarantee, i.e. in case an exception
+// is thrown \c dm may already have been modified.
+*/
+template< typename MT  // Type of the dense matrix
+        , bool SO >    // Storage order of the dense matrix
+inline typename EnableIf< IsComplex<typename MT::ElementType> >::Type
+   invertByLDLH( DenseMatrix<MT,SO>& dm )
+{
+   BLAZE_CONSTRAINT_MUST_NOT_BE_ADAPTOR_TYPE( MT );
+   BLAZE_CONSTRAINT_MUST_BE_BLAS_COMPATIBLE_TYPE( typename MT::ElementType );
+
+   BLAZE_USER_ASSERT( isHermitian( ~dm ), "Invalid non-Hermitian matrix detected" );
+
+   const char uplo( ( SO )?( 'L' ):( 'U' ) );
+   UniqueArray<int> ipiv( new int[(~dm).rows()] );
+
+   hetrf( ~dm, uplo, ipiv.get() );
+   hetri( ~dm, uplo, ipiv.get() );
+
+   if( SO ) {
+      for( size_t i=1UL; i<(~dm).rows(); ++i ) {
+         for( size_t j=0UL; j<i; ++j ) {
+            (~dm)(j,i) = (~dm)(i,j);
+         }
+      }
+   }
+   else {
+      for( size_t j=1UL; j<(~dm).columns(); ++j ) {
+         for( size_t i=0UL; i<j; ++i ) {
+            (~dm)(j,i) = (~dm)(i,j);
+         }
+      }
+   }
+}
+/*! \endcond */
+//*************************************************************************************************
+
+
+//*************************************************************************************************
+/*! \cond BLAZE_INTERNAL */
 /*!\brief In-place Cholesky-based inversion of the given dense matrix.
 // \ingroup dense_matrix
 //
@@ -689,13 +898,12 @@ inline void invertByPLU( DenseMatrix<MT,SO>& dm )
 */
 template< typename MT  // Type of the dense matrix
         , bool SO >    // Storage order of the dense matrix
-inline void invertByCholesky( DenseMatrix<MT,SO>& dm )
+inline void invertByLLH( DenseMatrix<MT,SO>& dm )
 {
    BLAZE_CONSTRAINT_MUST_NOT_BE_ADAPTOR_TYPE( MT );
    BLAZE_CONSTRAINT_MUST_BE_BLAS_COMPATIBLE_TYPE( typename MT::ElementType );
 
    BLAZE_USER_ASSERT( isSymmetric( ~dm ), "Invalid non-symmetric matrix detected" );
-   BLAZE_INTERNAL_ASSERT( isSquare( ~dm ), "Non-square matrix detected" );
 
    const char uplo( ( SO )?( 'L' ):( 'U' ) );
 
@@ -729,14 +937,14 @@ inline void invertByCholesky( DenseMatrix<MT,SO>& dm )
 // \param dm The dense matrix to be inverted.
 // \return void
 //
-// This function inverts the given dense square matrix via the specified matrix decomposition
-// algorithm \a DF. In case the given matrix is a positive-definite matrix it is recommended
-// to perform the inversion by means of a Cholesky decomposition, for a general matrix a PLU
-// decomposition should be used:
+// This function inverts the given dense square matrix via the specified matrix inversion
+// algorithm \a IF:
 
    \code
-   invertNxN<byPLU>( A );       // Inversion of a general matrix
-   invertNxN<byCholesky>( A );  // Inversion of a positive definite matrix
+   invertNxN<byPLU>( A );   // Inversion of a general matrix
+   invertNxN<byLDLT>( A );  // Inversion of a symmetric indefinite matrix
+   invertNxN<byLDLH>( A );  // Inversion of a Hermitian indefinite matrix
+   invertNxN<byLLH>( A );   // Inversion of a Hermitian positive definite matrix
    \endcode
 
 // The matrix inversion fails if the given matrix is singular and not invertible. In this case
@@ -764,8 +972,12 @@ inline void invertNxN( DenseMatrix<MT,SO>& dm )
 
    if( IF == byPLU )
       invertByPLU( ~dm );
+   else if( IF == byLDLT )
+      invertByLDLT( ~dm );
+   else if( IF == byLDLH )
+      invertByLDLH( ~dm );
    else
-      invertByCholesky( ~dm );
+      invertByLLH( ~dm );
 
    BLAZE_INTERNAL_ASSERT( isIntact( ~dm ), "Broken invariant detected" );
 }
@@ -804,7 +1016,7 @@ template< typename MT  // Type of the dense matrix
         , bool SO >    // Storage order of the dense matrix
 inline void invert( DenseMatrix<MT,SO>& dm )
 {
-   invert<byPLU>( ~dm );
+   invert<byDefault>( ~dm );
 };
 //*************************************************************************************************
 
@@ -818,14 +1030,14 @@ inline void invert( DenseMatrix<MT,SO>& dm )
 // \exception std::invalid_argument Inversion of singular matrix failed.
 // \exception std::invalid_argument Invalid non-square matrix provided.
 //
-// This function inverts the given dense matrix by means of the specified matrix decomposition
-// algorithm \c DF. In case the matrix is a symmetric positive-definite matrix it is recommended
-// to perform the inversion by means of a Cholesky decomposition, for a general square matrix
-// a PLU decomposition should be used:
+// This function inverts the given dense matrix by means of the specified matrix inversion
+// algorithm \c IF:
 
    \code
-   invert<byPLU>( A );       // Inversion of a general square matrix
-   invert<byCholesky>( A );  // Inversion of a positive definite matrix
+   invert<byPLU>( A );   // Inversion of a general matrix
+   invert<byLDLT>( A );  // Inversion of a symmetric indefinite matrix
+   invert<byLDLH>( A );  // Inversion of a Hermitian indefinite matrix
+   invert<byLLH>( A );   // Inversion of a Hermitian positive definite matrix
    \endcode
 
 // The matrix inversion fails if ...

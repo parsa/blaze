@@ -57,7 +57,6 @@
 #include <blaze/math/expressions/Forward.h>
 #include <blaze/math/Functions.h>
 #include <blaze/math/Intrinsics.h>
-#include <blaze/math/InversionFlag.h>
 #include <blaze/math/shims/Clear.h>
 #include <blaze/math/shims/Conjugate.h>
 #include <blaze/math/shims/Move.h>
@@ -768,8 +767,17 @@ class HermitianMatrix<MT,SO,true>
    template< typename MT2, bool SO2 >
    friend void invert6x6( HermitianMatrix<MT2,SO2,true>& m );
 
-   template< InversionFlag IF, typename MT2, bool SO2 >
-   friend void invertNxN( HermitianMatrix<MT2,SO2,true>& m );
+   template< typename MT2, bool SO2 >
+   friend void invertByPLU( HermitianMatrix<MT2,SO2,true>& m );
+
+   template< typename MT2, bool SO2 >
+   friend void invertByLDLT( HermitianMatrix<MT2,SO2,true>& m );
+
+   template< typename MT2, bool SO2 >
+   friend void invertByLDLH( HermitianMatrix<MT2,SO2,true>& m );
+
+   template< typename MT2, bool SO2 >
+   friend void invertByLLH( HermitianMatrix<MT2,SO2,true>& m );
    //**********************************************************************************************
 
    //**Compile time checks*************************************************************************

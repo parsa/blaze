@@ -569,6 +569,39 @@ inline void invert6x6( UpperMatrix<MT,SO,true>& m )
 
 //*************************************************************************************************
 /*! \cond BLAZE_INTERNAL */
+/*!\brief In-place inversion of the given upper dense matrix.
+// \ingroup upper_matrix
+//
+// \param m The upper dense matrix to be inverted.
+// \return void
+// \exception std::invalid_argument Inversion of singular matrix failed.
+//
+// This function inverts the given upper dense matrix by means of the most suited matrix inversion
+// algorithm. The matrix inversion fails if the given matrix is singular and not invertible. In
+// this case a \a std::invalid_argument exception is thrown.
+//
+// \note The matrix inversion can only be used for dense matrices with \c float, \c double,
+// \c complex<float> or \c complex<double> element type. The attempt to call the function with
+// matrices of any other element type results in a compile time error!
+//
+// \note This function can only be used if the fitting LAPACK library is available and linked to
+// the executable. Otherwise a linker error will be created.
+//
+// \note This function does not provide any exception safety guarantee, i.e. in case an exception
+// is thrown \c m may already have been modified.
+*/
+template< typename MT  // Type of the dense matrix
+        , bool SO >    // Storage order of the dense matrix
+inline void invertByDefault( UpperMatrix<MT,SO,true>& m )
+{
+   invertByPLU( m );
+}
+/*! \endcond */
+//*************************************************************************************************
+
+
+//*************************************************************************************************
+/*! \cond BLAZE_INTERNAL */
 /*!\brief In-place PLU-based inversion of the given upper dense matrix.
 // \ingroup upper_matrix
 //
@@ -588,7 +621,7 @@ inline void invert6x6( UpperMatrix<MT,SO,true>& m )
 // the executable. Otherwise a linker error will be created.
 //
 // \note This function does not provide any exception safety guarantee, i.e. in case an exception
-// is thrown \c dm may already have been modified.
+// is thrown \c m may already have been modified.
 */
 template< typename MT  // Type of the dense matrix
         , bool SO >    // Storage order of the dense matrix
@@ -599,6 +632,72 @@ inline void invertByPLU( UpperMatrix<MT,SO,true>& m )
    typename DerestrictTrait<MT>::Type A( derestrict( ~m ) );
 
    trtri( A, 'U', 'N' );
+}
+/*! \endcond */
+//*************************************************************************************************
+
+
+//*************************************************************************************************
+/*! \cond BLAZE_INTERNAL */
+/*!\brief In-place Bunch-Kaufman-based inversion of the given upper dense matrix.
+// \ingroup upper_matrix
+//
+// \param m The upper dense matrix to be inverted.
+// \return void
+// \exception std::invalid_argument Inversion of singular matrix failed.
+//
+// This function inverts the given upper dense matrix by means of a Bunch-Kaufman decomposition.
+// The matrix inversion fails if the given matrix is singular and not invertible. In this case a
+// \a std::invalid_argument exception is thrown.
+//
+// \note The matrix inversion can only be used for dense matrices with \c float, \c double,
+// \c complex<float> or \c complex<double> element type. The attempt to call the function with
+// matrices of any other element type results in a compile time error!
+//
+// \note This function can only be used if the fitting LAPACK library is available and linked to
+// the executable. Otherwise a linker error will be created.
+//
+// \note This function does not provide any exception safety guarantee, i.e. in case an exception
+// is thrown \c m may already have been modified.
+*/
+template< typename MT  // Type of the dense matrix
+        , bool SO >    // Storage order of the dense matrix
+inline void invertByLDLT( UpperMatrix<MT,SO,true>& m )
+{
+   invertByLLH( m );
+}
+/*! \endcond */
+//*************************************************************************************************
+
+
+//*************************************************************************************************
+/*! \cond BLAZE_INTERNAL */
+/*!\brief In-place Bunch-Kaufman-based inversion of the given upper dense matrix.
+// \ingroup upper_matrix
+//
+// \param m The upper dense matrix to be inverted.
+// \return void
+// \exception std::invalid_argument Inversion of singular matrix failed.
+//
+// This function inverts the given upper dense matrix by means of a Bunch-Kaufman decomposition.
+// The matrix inversion fails if the given matrix is singular and not invertible. In this case a
+// \a std::invalid_argument exception is thrown.
+//
+// \note The matrix inversion can only be used for dense matrices with \c float, \c double,
+// \c complex<float> or \c complex<double> element type. The attempt to call the function with
+// matrices of any other element type results in a compile time error!
+//
+// \note This function can only be used if the fitting LAPACK library is available and linked to
+// the executable. Otherwise a linker error will be created.
+//
+// \note This function does not provide any exception safety guarantee, i.e. in case an exception
+// is thrown \c m may already have been modified.
+*/
+template< typename MT  // Type of the dense matrix
+        , bool SO >    // Storage order of the dense matrix
+inline void invertByLDLH( UpperMatrix<MT,SO,true>& m )
+{
+   invertByLLH( m );
 }
 /*! \endcond */
 //*************************************************************************************************
@@ -622,11 +721,11 @@ inline void invertByPLU( UpperMatrix<MT,SO,true>& m )
 // matrices of any other element type results in a compile time error!
 //
 // \note This function does not provide any exception safety guarantee, i.e. in case an exception
-// is thrown \c dm may already have been modified.
+// is thrown \c m may already have been modified.
 */
 template< typename MT  // Type of the dense matrix
         , bool SO >    // Storage order of the dense matrix
-inline void invertByCholesky( UpperMatrix<MT,SO,true>& m )
+inline void invertByLLH( UpperMatrix<MT,SO,true>& m )
 {
    BLAZE_CONSTRAINT_MUST_BE_BLAS_COMPATIBLE_TYPE( typename MT::ElementType );
 

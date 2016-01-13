@@ -57,7 +57,6 @@
 #include <blaze/math/expressions/Forward.h>
 #include <blaze/math/Functions.h>
 #include <blaze/math/Intrinsics.h>
-#include <blaze/math/InversionFlag.h>
 #include <blaze/math/shims/Clear.h>
 #include <blaze/math/shims/Conjugate.h>
 #include <blaze/math/shims/Move.h>
@@ -752,8 +751,17 @@ class SymmetricMatrix<MT,SO,true,true>
    template< typename MT2, bool SO2 >
    friend void invert6x6( SymmetricMatrix<MT2,SO2,true,true>& m );
 
-   template< InversionFlag IF, typename MT2, bool SO2 >
-   friend void invertNxN( SymmetricMatrix<MT2,SO2,true,true>& m );
+   template< typename MT2, bool SO2 >
+   friend void invertByPLU( SymmetricMatrix<MT2,SO2,true,true>& m );
+
+   template< typename MT2, bool SO2 >
+   friend void invertByLDLT( SymmetricMatrix<MT2,SO2,true,true>& m );
+
+   template< typename MT2, bool SO2 >
+   friend void invertByLDLH( SymmetricMatrix<MT2,SO2,true,true>& m );
+
+   template< typename MT2, bool SO2 >
+   friend void invertByLLH( SymmetricMatrix<MT2,SO2,true,true>& m );
    //**********************************************************************************************
 
    //**Compile time checks*************************************************************************

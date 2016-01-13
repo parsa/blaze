@@ -48,22 +48,38 @@ namespace blaze {
 /*!\brief Inversion flag.
 // \ingroup dense_matrix
 //
-// The InversionFlag type enumeration represents the different types of matrix inversion that
-// are available within the Blaze library. The following flags are available:
+// The InversionFlag type enumeration represents the different types of matrix inversion algorithms
+// that are available within the Blaze library. The following flags are available:
 //
+//  - \a byDefault: The default algorithm for each type of matrix. In case of general square
+//          matrices a PLU decomposition is used, in case of symmetric and Hermitian matrices
+//          the Bunch-Kaufman diagonal pivoting method is applied, and in case of triangular
+//          matrices a direct inversion via backward substitution is performed.
 //  - \a byPLU: The default inversion algorithm for general square matrices. It uses the PLU
 //          algorithm to decompose a matrix into a lower unitriangular matrix \c L, an upper
 //          triangular matrix \c U, and a permutation matrix \c P (\f$ A = P L U \f$). If no
 //          permutations are required, \c P is the identity matrix.
-//  - \a byCholesky: An optimized inversion based on the Cholesky decomposition for symmetric
-//          positive definite matrices. It decomposes a given matrix into either \f$ A = L^T L \f$,
-//          where \c L is a lower triangular matrix, or \f$ A = U^T U \f$, where \c U is an upper
-//          triangular matrix.
+//  - \a byLDLT: The Bunch-Kaufman inversion algorithm for symmetric indefinite matrices. It
+//          decomposes the given matrix into either \f$ A = U D U^{T} \f$ or /f$ A = L D L^{T} \f$,
+//          where \c U (or \c L) is a product of permutation and unit upper (lower) triangular
+//          matrices, and \c D is symmetric and block diagonal with 1-by-1 and 2-by-2 diagonal
+//          blocks.
+//  - \a byLDLH: The Bunch-Kaufman inversion algorithm for Hermitian indefinite matrices. It
+//          decomposes the given matrix into either \f$ A = U D U^{H} \f$ or /f$ A = L D L^{H} \f$,
+//          where \c U (or \c L) is a product of permutation and unit upper (lower) triangular
+//          matrices, and \c D is Hermitian and block diagonal with 1-by-1 and 2-by-2 diagonal
+//          blocks.
+//  - \a byLLH: The Cholesky inversion algorithm for Hermitian positive definite matrices. It
+//          decomposes a given matrix into either \f$ A = L L^H \f$, where \c L is a lower
+//          triangular matrix, or \f$ A = U^H U \f$, where \c U is an upper triangular matrix.
 */
 enum InversionFlag
 {
-   byPLU      = 0,  //!< Flag for the PLU decomposition.
-   byCholesky = 1   //!< Flag for the Cholesky decomposition.
+   byDefault = 0,  //!< Flag for the default, optimal inversion algorithm.
+   byPLU     = 1,  //!< Flag for the PLU-based matrix inversion.
+   byLDLT    = 2,  //!< Flag for the Bunch-Kaufman-based inversion for symmetric matrices.
+   byLDLH    = 3,  //!< Flag for the Bunch-Kaufman-based inversion for Hermitian matrices.
+   byLLH     = 4   //!< Flag for the Cholesky-based inversion for positive-definite matrices.
 };
 //*************************************************************************************************
 
