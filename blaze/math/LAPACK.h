@@ -44,6 +44,7 @@
 #include <blaze/math/lapack/gesv.h>
 #include <blaze/math/lapack/getrf.h>
 #include <blaze/math/lapack/getri.h>
+#include <blaze/math/lapack/hetrf.h>
 #include <blaze/math/lapack/potrf.h>
 #include <blaze/math/lapack/potri.h>
 #include <blaze/math/lapack/sytrf.h>
