@@ -57,7 +57,7 @@ all: functions intrinsics lapack typetraits \
      dmatdmatadd dmatsmatadd smatdmatadd smatsmatadd \
      dmatdmatsub dmatsmatsub smatdmatsub smatsmatsub \
      dmatdmatmult dmatsmatmult smatdmatmult smatsmatmult \
-     determinant inversion \
+     determinant inversion lu \
      vectorserializer matrixserializer
 
 essential: all
@@ -484,6 +484,11 @@ inversion:
 	@echo "Building the matrix inversion tests..."
 	@$(MAKE) --no-print-directory -C ./inversion $(MAKECMDGOALS)
 
+lu:
+	@echo
+	@echo "Building the matrix LU decomposition tests..."
+	@$(MAKE) --no-print-directory -C ./lu $(MAKECMDGOALS)
+
 vectorserializer:
 	@echo
 	@echo "Building the VectorSerializer class tests..."
@@ -578,6 +583,7 @@ clean:
 	@$(MAKE) --no-print-directory -C ./smatsmatmult clean
 	@$(MAKE) --no-print-directory -C ./determinant clean
 	@$(MAKE) --no-print-directory -C ./inversion clean
+	@$(MAKE) --no-print-directory -C ./lu clean
 	@$(MAKE) --no-print-directory -C ./vectorserializer clean
 	@$(MAKE) --no-print-directory -C ./matrixserializer clean
 	@$(RM) $(OBJ) $(DEP)
@@ -607,5 +613,5 @@ clean:
         dmatdmatadd dmatsmatadd smatdmatadd smatsmatadd \
         dmatdmatsub dmatsmatsub smatdmatsub smatsmatsub \
         dmatdmatmult dmatsmatmult smatdmatmult smatsmatmult \
-        determinant inversion \
+        determinant inversion lu \
         vectorserializer matrixserializer
