@@ -8453,7 +8453,9 @@ namespace blaze {}
 // in case an exception is thrown the given matrix may already have been modified.
 //
 //
-// \n \section lapack_PLU_decomposition PLU Decomposition
+// \n \section lapack_decomposition Matrix Decomposition
+//
+// \n \subsection lapack_PLU_decomposition PLU Decomposition
 // <hr>
 //
 // The following functions provide an interface for the LAPACK functions \c sgetrf(), \c dgetrf(),
@@ -8491,8 +8493,84 @@ namespace blaze {}
 // a linear system of equations.
 //
 //
-// \n \section lapack_cholesky_decomposition Cholesky Decomposition
-// <hr>
+// \n \subsection lapack_ldlt_decomposition LDLT Decomposition (Bunch-Kaufman for Symmetric Matrices)
+//
+// The following functions provide an interface for the LAPACK functions \c ssytrf(), \c dsytrf(),
+// \c csytrf(), and \c zsytrf():
+
+   \code
+   namespace blaze {
+
+   inline void sytrf( char* uplo, int* n, float* A, int* lda, int* ipiv,
+                      float* work, int* lwork, int* info );
+
+   inline void sytrf( char* uplo, int* n, double* A, int* lda, int* ipiv,
+                      double* work, int* lwork, int* info );
+
+   inline void sytrf( char* uplo, int* n, complex<float>* A, int* lda, int* ipiv,
+                      complex<float>* work, int* lwork, int* info );
+
+   inline void sytrf( char* uplo, int* n, complex<double>* A, int* lda, int* ipiv,
+                      complex<double>* work, int* lwork, int* info );
+
+   template< typename MT, bool SO >
+   inline void sytrf( DenseMatrix<MT,SO>& A, char uplo, int* ipiv );
+
+   } // namespace blaze
+   \endcode
+
+// The decomposition has the form
+
+                      \f[ A = U D U^{T} \texttt{ (if uplo = 'U'), or }
+                          A = L D L^{T} \texttt{ (if uplo = 'L'), } \f]
+
+// where \c U (or \c L) is a product of permutation and unit upper (lower) triangular matrices,
+// and \c D is symmetric and block diagonal with 1-by-1 and 2-by-2 diagonal blocks. The resulting
+// decomposition is stored within \a A: In case \a uplo is set to \c 'L' the result is stored in
+// the lower part of the matrix and the upper part remains untouched, in case \a uplo is set to
+// \c 'U' the result is stored in the upper part and the lower part remains untouched.
+//
+// \note The Bunch-Kaufman decomposition will never fail, even for singular matrices. However, in
+// case of a singular matrix the resulting decomposition cannot be used for a matrix inversion or
+// solving a linear system of equations.
+//
+//
+// \n \subsection lapack_ldlh_decomposition LDLH Decomposition (Bunch-Kaufman for Hermitian Matrices)
+//
+// The following functions provide an interface for the LAPACK functions \c chetrf() and \c zsytrf():
+
+   \code
+   namespace blaze {
+
+   inline void hetrf( char* uplo, int* n, complex<float>* A, int* lda, int* ipiv,
+                      complex<float>* work, int* lwork, int* info );
+
+   inline void hetrf( char* uplo, int* n, complex<double>* A, int* lda, int* ipiv,
+                      complex<double>* work, int* lwork, int* info );
+
+   template< typename MT, bool SO >
+   inline void hetrf( DenseMatrix<MT,SO>& A, char uplo, int* ipiv );
+
+   } // namespace blaze
+   \endcode
+
+// The decomposition has the form
+
+                      \f[ A = U D U^{H} \texttt{ (if uplo = 'U'), or }
+                          A = L D L^{H} \texttt{ (if uplo = 'L'), } \f]
+
+// where \c U (or \c L) is a product of permutation and unit upper (lower) triangular matrices,
+// and \c D is Hermitian and block diagonal with 1-by-1 and 2-by-2 diagonal blocks. The resulting
+// decomposition is stored within \a A: In case \a uplo is set to \c 'L' the result is stored in
+// the lower part of the matrix and the upper part remains untouched, in case \a uplo is set to
+// \c 'U' the result is stored in the upper part and the lower part remains untouched.
+//
+// \note The Bunch-Kaufman decomposition will never fail, even for singular matrices. However, in
+// case of a singular matrix the resulting decomposition cannot be used for a matrix inversion or
+// solving a linear system of equations.
+//
+//
+// \n \subsection lapack_cholesky_decomposition Cholesky Decomposition
 //
 // The following functions provide an interface for the LAPACK functions \c spotrf(), \c dpotrf(),
 // \c cpotrf(), and \c zpotrf():
@@ -8524,8 +8602,7 @@ namespace blaze {}
 // a \a std::std::invalid_argument exception is thrown.
 //
 //
-// \n \section lapack_QR_decomposition QR Decomposition
-// <hr>
+// \n \subsection lapack_QR_decomposition QR Decomposition
 //
 // The following functions provide an interface for the LAPACK functions \c sgeqrf(), \c dgeqrf(),
 // \c cgeqrf(), and \c zgeqrf():
@@ -8569,8 +8646,10 @@ namespace blaze {}
 // of min(M,N) elementary reflectors.
 //
 //
-// \n \section lapack_PLU_inversion PLU-based Inversion
+// \n \section lapack_inversion Matrix Inversion
 // <hr>
+//
+// \subsection lapack_PLU_inversion PLU-based Inversion
 //
 // The following functions provide an interface for the LAPACK functions \c sgetri(), \c dgetri(),
 // \c cgetri(), and \c zgetri():
@@ -8603,8 +8682,70 @@ namespace blaze {}
 // \a std::invalid_argument exception in case of an error.
 //
 //
-// \n \section lapack_cholesky_inversion Cholesky-based Inversion
-// <hr>
+// \n \subsection lapack_ldlt_inversion LDLT-based Inversion (Bunch-Kaufman for Symmetric Matrices)
+//
+// The following functions provide an interface for the LAPACK functions \c ssytri(), \c dsytri(),
+// \c csytri(), and \c zsytri():
+
+   \code
+   namespace blaze {
+
+   inline void sytri( char* uplo, char* diag, int* n, float* A, int* lda,
+                      int* ipiv, float* work, int* info );
+
+   inline void sytri( char* uplo, char* diag, int* n, double* A, int* lda,
+                      int* ipiv, double* work, int* info );
+
+   inline void sytri( char* uplo, char* diag, int* n, complex<float>* A, int* lda,
+                      int* ipiv, complex<float>* work, int* info );
+
+   inline void sytri( char* uplo, char* diag, int* n, complex<double>* A, int* lda,
+                      int* ipiv, complex<double>* work, int* info );
+
+   template< typename MT, bool SO >
+   inline void sytri( DenseMatrix<MT,SO>& A, char uplo, int* ipiv );
+
+   } // namespace blaze
+   \endcode
+
+// The functions fail if ...
+//
+//  - ... the given matrix is not a square matrix;
+//  - ... the given matrix is singular and not invertible.
+//
+// The first four functions report failure via the \c info argument, the fifth function throws a
+// \a std::invalid_argument exception in case of an error.
+//
+//
+// \n \subsection lapack_ldlh_inversion LDLH-based Inversion (Bunch-Kaufman for Hermitian Matrices)
+//
+// The following functions provide an interface for the LAPACK functions \c chetri() and \c zhetri():
+
+   \code
+   namespace blaze {
+
+   inline void hetri( char* uplo, char* diag, int* n, complex<float>* A, int* lda,
+                      int* ipiv, complex<float>* work, int* info );
+
+   inline void hetri( char* uplo, char* diag, int* n, complex<double>* A, int* lda,
+                      int* ipiv, complex<double>* work, int* info );
+
+   template< typename MT, bool SO >
+   inline void hetri( DenseMatrix<MT,SO>& A, char uplo, int* ipiv );
+
+   } // namespace blaze
+   \endcode
+
+// The functions fail if ...
+//
+//  - ... the given matrix is not a square matrix;
+//  - ... the given matrix is singular and not invertible.
+//
+// The first four functions report failure via the \c info argument, the fifth function throws a
+// \a std::invalid_argument exception in case of an error.
+//
+//
+// \n \subsection lapack_cholesky_inversion Cholesky-based Inversion
 //
 // The following functions provide an interface for the LAPACK functions \c spotri(), \c dpotri(),
 // \c cpotri(), and \c zpotri():
@@ -8636,6 +8777,39 @@ namespace blaze {}
 // \a std::invalid_argument exception in case of an error.
 //
 //
+// \subsection lapack_triangular_inversion Triangular matrix Inversion
+//
+// The following functions provide an interface for the LAPACK functions \c strtri(), \c dtrtri(),
+// \c ctrtri(), and \c ztrtri():
+
+   \code
+   namespace blaze {
+
+   inline void trtri( char* uplo, char* diag, int* n, float* A, int* lda, int* info );
+
+   inline void trtri( char* uplo, char* diag, int* n, double* A, int* lda, int* info );
+
+   inline void trtri( char* uplo, char* diag, int* n, complex<float>* A, int* lda, int* info );
+
+   inline void trtri( char* uplo, char* diag, int* n, complex<double>* A, int* lda, int* info );
+
+   template< typename MT, bool SO >
+   inline void trtri( DenseMatrix<MT,SO>& A, char uplo, char diag );
+
+   } // namespace blaze
+   \endcode
+
+// The functions fail if ...
+//
+//  - ... the given matrix is not a square matrix;
+//  - ... the given \a uplo argument is neither 'L' nor 'U';
+//  - ... the given \a diag argument is neither 'U' nor 'N';
+//  - ... the given matrix is singular and not invertible.
+//
+// The first four functions report failure via the \c info argument, the fifth function throws a
+// \a std::invalid_argument exception in case of an error.
+//
+//
 // \n \section lapack_linear_system_solver Linear System Solver
 // <hr>
 //
@@ -8643,6 +8817,8 @@ namespace blaze {}
 // \c cgesv(), and \c zgesv():
 
    \code
+   namespace blaze {
+
    void gesv( int* n, int* nrhs, float* A, int* lda, int* ipiv, float* B, int* ldb, int* info );
 
    void gesv( int* n, int* nrhs, double* A, int* lda, int* ipiv, double* B, int* ldb, int* info );
@@ -8658,6 +8834,8 @@ namespace blaze {}
 
    template< typename MT1, typename MT2 >
    void gesv( DenseMatrix<MT1,columnMajor>& A, DenseMatrix<MT2,columnMajor>& B, int* ipiv );
+
+   } // namespace blaze
    \endcode
 
 // This function computes the solution to the system of linear equations \f$ A*X=B \f$, where
