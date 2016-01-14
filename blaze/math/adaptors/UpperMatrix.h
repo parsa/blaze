@@ -44,7 +44,12 @@
 #include <blaze/math/adaptors/uppermatrix/Dense.h>
 #include <blaze/math/adaptors/uppermatrix/Sparse.h>
 #include <blaze/math/constraints/BlasCompatible.h>
+#include <blaze/math/constraints/Hermitian.h>
+#include <blaze/math/constraints/Lower.h>
 #include <blaze/math/constraints/RequiresEvaluation.h>
+#include <blaze/math/constraints/Symmetric.h>
+#include <blaze/math/constraints/UniTriangular.h>
+#include <blaze/math/constraints/Upper.h>
 #include <blaze/math/dense/StaticMatrix.h>
 #include <blaze/math/Forward.h>
 #include <blaze/math/Functions.h>
@@ -740,6 +745,65 @@ inline void invertByLLH( UpperMatrix<MT,SO,true>& m )
       }
 
       invert( A(i,i) );
+   }
+}
+/*! \endcond */
+//*************************************************************************************************
+
+
+//*************************************************************************************************
+/*! \cond BLAZE_INTERNAL */
+/*!\brief LU decomposition of the given upper dense matrix.
+// \ingroup upper_matrix
+//
+// \param A The upper matrix to be decomposed.
+// \param L The resulting lower triangular matrix.
+// \param U The resulting upper triangular matrix.
+// \param P The resulting permutation matrix.
+// \return void
+//
+// This function performs the dense matrix (P)LU decomposition of a upper n-by-n matrix. The
+// resulting decomposition is written to the three distinct matrices \c L, \c U, and \c P, which
+// are resized to the correct dimensions (if possible and necessary).
+//
+// \note The LU decomposition will never fail, even for singular matrices. However, in case of a
+// singular matrix the resulting decomposition cannot be used for a matrix inversion or solving
+// a linear system of equations.
+*/
+template< typename MT1, bool SO1, typename MT2, typename MT3, typename MT4, bool SO2 >
+inline void lu( const UpperMatrix<MT1,SO1,true>& A, DenseMatrix<MT2,SO1>& L,
+                DenseMatrix<MT3,SO1>& U, Matrix<MT4,SO2>& P )
+{
+   BLAZE_CONSTRAINT_MUST_BE_BLAS_COMPATIBLE_TYPE( typename MT1::ElementType );
+
+   BLAZE_CONSTRAINT_MUST_NOT_BE_SYMMETRIC_MATRIX_TYPE( MT2 );
+   BLAZE_CONSTRAINT_MUST_NOT_BE_HERMITIAN_MATRIX_TYPE( MT2 );
+   BLAZE_CONSTRAINT_MUST_NOT_BE_UNITRIANGULAR_MATRIX_TYPE( MT2 );
+   BLAZE_CONSTRAINT_MUST_NOT_BE_UPPER_MATRIX_TYPE( MT2 );
+
+   BLAZE_CONSTRAINT_MUST_NOT_BE_SYMMETRIC_MATRIX_TYPE( MT3 );
+   BLAZE_CONSTRAINT_MUST_NOT_BE_HERMITIAN_MATRIX_TYPE( MT3 );
+   BLAZE_CONSTRAINT_MUST_NOT_BE_UNITRIANGULAR_MATRIX_TYPE( MT3 );
+   BLAZE_CONSTRAINT_MUST_NOT_BE_LOWER_MATRIX_TYPE( MT3 );
+
+   typedef typename MT2::ElementType  ET2;
+   typedef typename MT4::ElementType  ET4;
+
+   const size_t n( (~A).rows() );
+
+   typename DerestrictTrait<MT2>::Type L2( derestrict( ~L ) );
+
+   (~U) = A;
+
+   resize( ~L, n, n );
+   reset( L2 );
+
+   resize( ~P, n, n );
+   reset( ~P );
+
+   for( size_t i=0UL; i<n; ++i ) {
+      L2(i,i)   = ET2(1);
+      (~P)(i,i) = ET4(1);
    }
 }
 /*! \endcond */
