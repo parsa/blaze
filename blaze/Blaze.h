@@ -3313,30 +3313,44 @@ namespace blaze {}
    invert( A );  // In-place matrix inversion
    \endcode
 
-// For small matrices of up to 6x6, both the \c inv() and the \c invert() function uses manually
-// optimized kernels for maximum performance. For matrices larger than 6x6 the inversion is by
-// default performed by means of a PLU decomposition. However, via the \c invert() function it
-// is possible to explicitly specify the matrix decomposition algorithm that should be used in
-// the inversion process:
+// Both the \c inv() and the \c invert() functions will automatically select the most suited matrix
+// inversion algorithm depending on the size and type of the given matrix. For small matrices of
+// up to 6x6, both functions use manually optimized kernels for maximum performance. For matrices
+// larger than 6x6 the inversion is performed by means of the most suited matrix decomposition
+// method: In case of a general or triangular matrix the PLU decomposition is used, for symmetric
+// matrices the LDLT decomposition is applied and for Hermitian matrices the LDLH decomposition is
+// performed. However, via the \c invert() function it is possible to explicitly specify the matrix
+// inversion algorithm:
 
    \code
    using blaze::byPLU;
-   using blaze::byCholesky;
+   using blaze::byLDLT;
+   using blaze::byLDLH;
+   using blaze::byLLH;
 
-   // In-place inversion with default decomposition algorithm (PLU)
+   // In-place inversion with automatic selection of the inversion algorithm
    invert( A );
 
    // In-place inversion of a general matrix by means of a PLU decomposition
    invert<byPLU>( A );
 
+   // In-place inversion of a symmetric indefinite matrix by means of a Bunch-Kaufman decomposition
+   invert<byLDLT>( A );
+
+   // In-place inversion of a Hermitian indefinite matrix by means of a Bunch-Kaufman decomposition
+   invert<byLDLH>( A );
+
    // In-place inversion of a positive definite matrix by means of a Cholesky decomposition
-   invert<byCholesky>( A );
+   invert<byLLH>( A );
    \endcode
 
-// Whereas the inversion by PLU works for every general square matrix, the inversion by Cholesky
-// only works for positive definite matrices. Please note that it is in the responsibility of the
-// function caller to guarantee that the given matrix is a positive definite matrix. In case this
-// precondition is violated the result will not represent the inverse of the given matrix!
+// Whereas the inversion by means of a PLU decomposition works for every general square matrix,
+// the inversion by LDLT only works for symmetric indefinite matrices, the inversion by LDLH is
+// restricted to Hermitian indefinite matrices and the Cholesky decomposition (LLH) only works
+// for Hermitian positive definite matrices. Please note that it is in the responsibility of the
+// function caller to guarantee that the selected algorithm is suited for the given matrix. In
+// case this precondition is violated the result can be wrong and might not represent the inverse
+// of the given matrix!
 //
 // For both the \c inv() and \c invert() function the matrix inversion fails if ...
 //
