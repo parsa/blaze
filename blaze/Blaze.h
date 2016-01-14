@@ -3308,7 +3308,7 @@ namespace blaze {}
 // function:
 
    \code
-   blaze::DynamicMatrix<int,blaze::rowMajor> A;
+   blaze::DynamicMatrix<double,blaze::rowMajor> A;
    // ... Resizing and initialization
    invert( A );  // In-place matrix inversion
    \endcode
@@ -3317,13 +3317,13 @@ namespace blaze {}
 // inversion algorithm depending on the size and type of the given matrix. For small matrices of
 // up to 6x6, both functions use manually optimized kernels for maximum performance. For matrices
 // larger than 6x6 the inversion is performed by means of the most suited matrix decomposition
-// method: In case of a general or triangular matrix the PLU decomposition is used, for symmetric
+// method: In case of a general or triangular matrix the LU decomposition is used, for symmetric
 // matrices the LDLT decomposition is applied and for Hermitian matrices the LDLH decomposition is
 // performed. However, via the \c invert() function it is possible to explicitly specify the matrix
 // inversion algorithm:
 
    \code
-   using blaze::byPLU;
+   using blaze::byLU;
    using blaze::byLDLT;
    using blaze::byLDLH;
    using blaze::byLLH;
@@ -3331,8 +3331,8 @@ namespace blaze {}
    // In-place inversion with automatic selection of the inversion algorithm
    invert( A );
 
-   // In-place inversion of a general matrix by means of a PLU decomposition
-   invert<byPLU>( A );
+   // In-place inversion of a general matrix by means of an LU decomposition
+   invert<byLU>( A );
 
    // In-place inversion of a symmetric indefinite matrix by means of a Bunch-Kaufman decomposition
    invert<byLDLT>( A );
@@ -3344,7 +3344,7 @@ namespace blaze {}
    invert<byLLH>( A );
    \endcode
 
-// Whereas the inversion by means of a PLU decomposition works for every general square matrix,
+// Whereas the inversion by means of an LU decomposition works for every general square matrix,
 // the inversion by LDLT only works for symmetric indefinite matrices, the inversion by LDLH is
 // restricted to Hermitian indefinite matrices and the Cholesky decomposition (LLH) only works
 // for Hermitian positive definite matrices. Please note that it is in the responsibility of the
@@ -8469,7 +8469,7 @@ namespace blaze {}
 //
 // \n \section lapack_decomposition Matrix Decomposition
 //
-// \n \subsection lapack_PLU_decomposition PLU Decomposition
+// \n \subsection lapack_LU_decomposition LU Decomposition
 // <hr>
 //
 // The following functions provide an interface for the LAPACK functions \c sgetrf(), \c dgetrf(),
@@ -8502,7 +8502,7 @@ namespace blaze {}
 // diagonal elements of \c L are not stored. In case \a A is a row-major matrix the result is
 // transposed.
 //
-// \note The PLU decomposition will never fail, even for singular matrices. However, in case of a
+// \note The LU decomposition will never fail, even for singular matrices. However, in case of a
 // singular matrix the resulting decomposition cannot be used for a matrix inversion or solving
 // a linear system of equations.
 //
@@ -8663,7 +8663,7 @@ namespace blaze {}
 // \n \section lapack_inversion Matrix Inversion
 // <hr>
 //
-// \subsection lapack_PLU_inversion PLU-based Inversion
+// \subsection lapack_LU_inversion LU-based Inversion
 //
 // The following functions provide an interface for the LAPACK functions \c sgetri(), \c dgetri(),
 // \c cgetri(), and \c zgetri():
@@ -8857,7 +8857,7 @@ namespace blaze {}
 // n-dimensional column vector (\a nrhs = 1).
 //
 // If the function exits successfully, the matrix \a B contains the solutions of the linear system
-// of equations and \a A has been decomposed by means of a PLU decomposition with partial pivoting
+// of equations and \a A has been decomposed by means of a LU decomposition with partial pivoting
 // and row interchanges. The decomposition has the form
 
                           \f[ A = P \cdot L \cdot U, \f]
