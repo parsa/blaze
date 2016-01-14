@@ -3381,6 +3381,44 @@ namespace blaze {}
 // is thrown the matrix may already have been modified.
 //
 //
+// \n \subsection matrix_operations_matrix_decomposition Matrix Decomposition
+//
+// The LU decomposition of a dense matrix can be computed via the \c lu() function:
+
+   \code
+   blaze::DynamicMatrix<double,blaze::rowMajor> A;
+   // ... Resizing and initialization
+
+   blaze::DynamicMatrix<double,blaze::rowMajor> L, U, P;
+
+   lu( A, L, U, P );  // LU decomposition of A
+   \endcode
+
+// The function works for both \c rowMajor and \c columnMajor matrices. The three matrices \c A
+// \c L and \c U are required to have the same storage order though. Additionally, \c lu() can be
+// used with adaptors. For instance, the following example demonstrates the LU decomposition of a
+// symmetric matrix into a lower and upper triangular matrix:
+
+   \code
+   blaze::SymmetricMatrix< blaze::DynamicMatrix<double,blaze::columnMajor> > A;
+   // ... Resizing and initialization
+
+   blaze::LowerMatrix< blaze::DynamicMatrix<double,blaze::columnMajor> > L;
+   blaze::UpperMatrix< blaze::DynamicMatrix<double,blaze::columnMajor> > U;
+   blaze::DynamicMatrix<double,blaze::columnMajor> P;
+
+   lu( A, L, U, P );  // LU decomposition of A
+   \endcode
+
+// \note All decomposition methods can only be used for dense matrices with \c float, \c double,
+// \c complex<float> or \c complex<double> element type. The attempt to call the function with
+// matrices of any other element type or with a sparse matrix results in a compile time error!
+//
+// \note The functions decompose a dense matrix by means of LAPACK kernels. Thus the function can
+// only be used if the fitting LAPACK library is available and linked to the executable. Otherwise
+// a linker error will be created.
+//
+//
 // \n \subsection matrix_operations_swap Swap
 //
 // Via the \c \c swap() function it is possible to completely swap the contents of two matrices
