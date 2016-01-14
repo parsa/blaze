@@ -88,19 +88,19 @@ void zgesv_( int* n, int* nrhs, double* A, int* lda, int* ipiv, double* b, int* 
 //*************************************************************************************************
 /*!\name LAPACK wrapper functions (gesv) */
 //@{
-void gesv( int* n, int* nrhs, float* A, int* lda, int* ipiv, float* B, int* ldb, int* info );
+inline void gesv( int* n, int* nrhs, float* A, int* lda, int* ipiv, float* B, int* ldb, int* info );
 
-void gesv( int* n, int* nrhs, double* A, int* lda, int* ipiv, double* B, int* ldb, int* info );
+inline void gesv( int* n, int* nrhs, double* A, int* lda, int* ipiv, double* B, int* ldb, int* info );
 
-void gesv( int* n, int* nrhs, complex<float>* A, int* lda, int* ipiv, complex<float>* B, int* ldb, int* info );
+inline void gesv( int* n, int* nrhs, complex<float>* A, int* lda, int* ipiv, complex<float>* B, int* ldb, int* info );
 
-void gesv( int* n, int* nrhs, complex<double>* A, int* lda, int* ipiv, complex<double>* B, int* ldb, int* info );
+inline void gesv( int* n, int* nrhs, complex<double>* A, int* lda, int* ipiv, complex<double>* B, int* ldb, int* info );
 
 template< typename MT, typename VT >
-void gesv( DenseMatrix<MT,columnMajor>& A, DenseVector<VT,columnVector>& b, int* ipiv );
+inline void gesv( DenseMatrix<MT,columnMajor>& A, DenseVector<VT,columnVector>& b, int* ipiv );
 
 template< typename MT1, typename MT2 >
-void gesv( DenseMatrix<MT1,columnMajor>& A, DenseMatrix<MT2,columnMajor>& B, int* ipiv );
+inline void gesv( DenseMatrix<MT1,columnMajor>& A, DenseMatrix<MT2,columnMajor>& B, int* ipiv );
 //@}
 //*************************************************************************************************
 
@@ -145,7 +145,7 @@ void gesv( DenseMatrix<MT1,columnMajor>& A, DenseMatrix<MT2,columnMajor>& B, int
 // \note This function can only be used if the fitting LAPACK library is available and linked to
 // the executable. Otherwise a call to this function will result in a linker error.
 */
-void gesv( int* n, int* nrhs, float* A, int* lda, int* ipiv, float* B, int* ldb, int* info )
+inline void gesv( int* n, int* nrhs, float* A, int* lda, int* ipiv, float* B, int* ldb, int* info )
 {
    sgesv_( n, nrhs, A, lda, ipiv, B, ldb, info );
 }
@@ -192,7 +192,7 @@ void gesv( int* n, int* nrhs, float* A, int* lda, int* ipiv, float* B, int* ldb,
 // \note This function can only be used if the fitting LAPACK library is available and linked to
 // the executable. Otherwise a call to this function will result in a linker error.
 */
-void gesv( int* n, int* nrhs, double* A, int* lda, int* ipiv, double* B, int* ldb, int* info )
+inline void gesv( int* n, int* nrhs, double* A, int* lda, int* ipiv, double* B, int* ldb, int* info )
 {
    dgesv_( n, nrhs, A, lda, ipiv, B, ldb, info );
 }
@@ -240,7 +240,7 @@ void gesv( int* n, int* nrhs, double* A, int* lda, int* ipiv, double* B, int* ld
 // \note This function can only be used if the fitting LAPACK library is available and linked to
 // the executable. Otherwise a call to this function will result in a linker error.
 */
-void gesv( int* n, int* nrhs, complex<float>* A, int* lda, int* ipiv, complex<float>* B, int* ldb, int* info )
+inline void gesv( int* n, int* nrhs, complex<float>* A, int* lda, int* ipiv, complex<float>* B, int* ldb, int* info )
 {
    BLAZE_STATIC_ASSERT( sizeof( complex<float> ) == 2UL*sizeof( float ) );
 
@@ -291,7 +291,7 @@ void gesv( int* n, int* nrhs, complex<float>* A, int* lda, int* ipiv, complex<fl
 // \note This function can only be used if the fitting LAPACK library is available and linked to
 // the executable. Otherwise a call to this function will result in a linker error.
 */
-void gesv( int* n, int* nrhs, complex<double>* A, int* lda, int* ipiv, complex<double>* B, int* ldb, int* info )
+inline void gesv( int* n, int* nrhs, complex<double>* A, int* lda, int* ipiv, complex<double>* B, int* ldb, int* info )
 {
    BLAZE_STATIC_ASSERT( sizeof( complex<double> ) == 2UL*sizeof( double ) );
 
@@ -343,7 +343,7 @@ void gesv( int* n, int* nrhs, complex<double>* A, int* lda, int* ipiv, complex<d
 // the executable. Otherwise a call to this function will result in a linker error.
 */
 template< typename MT, typename VT >
-void gesv( DenseMatrix<MT,columnMajor>& A, DenseVector<VT,columnVector>& b, int* ipiv )
+inline void gesv( DenseMatrix<MT,columnMajor>& A, DenseVector<VT,columnVector>& b, int* ipiv )
 {
    using boost::numeric_cast;
 
