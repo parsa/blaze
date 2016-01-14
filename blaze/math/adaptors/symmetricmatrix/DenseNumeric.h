@@ -752,7 +752,7 @@ class SymmetricMatrix<MT,SO,true,true>
    friend void invert6x6( SymmetricMatrix<MT2,SO2,true,true>& m );
 
    template< typename MT2, bool SO2 >
-   friend void invertByPLU( SymmetricMatrix<MT2,SO2,true,true>& m );
+   friend void invertByLU( SymmetricMatrix<MT2,SO2,true,true>& m );
 
    template< typename MT2, bool SO2 >
    friend void invertByLDLT( SymmetricMatrix<MT2,SO2,true,true>& m );

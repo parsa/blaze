@@ -315,7 +315,7 @@ inline typename MT::ElementType det6x6( const DenseMatrix<MT,SO>& dm )
 // \param dm The given dense matrix.
 // \return The determinant of the given matrix.
 //
-// This function computes the determinant of the given dense square matrix via a PLU decomposition
+// This function computes the determinant of the given dense square matrix via an LU decomposition
 // of the matrix.
 */
 template< typename MT  // Type of the dense matrix

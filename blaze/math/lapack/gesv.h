@@ -317,7 +317,7 @@ void gesv( int* n, int* nrhs, complex<double>* A, int* lda, int* ipiv, complex<d
 // n-dimensional column vectors.
 //
 // If the function exits successfully, the vector \a b contains the solution of the linear system
-// of equations and \a A has been decomposed by means of a PLU decomposition with partial pivoting
+// of equations and \a A has been decomposed by means of an LU decomposition with partial pivoting
 // and row interchanges. The decomposition has the form
 
                           \f[ A = P \cdot L \cdot U, \f]
@@ -392,7 +392,7 @@ void gesv( DenseMatrix<MT,columnMajor>& A, DenseVector<VT,columnVector>& b, int*
 // column-major n-by-m matrices.
 //
 // If the function exits successfully, the matrix \a B contains the solutions of the linear system
-// of equations and \a A has been decomposed by means of a PLU decomposition with partial pivoting
+// of equations and \a A has been decomposed by means of an LU decomposition with partial pivoting
 // and row interchanges. The decomposition has the form
 
                           \f[ A = P \cdot L \cdot U, \f]

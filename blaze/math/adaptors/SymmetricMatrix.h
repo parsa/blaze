@@ -802,14 +802,14 @@ inline void invertByDefault( SymmetricMatrix<MT,SO,true,true>& m )
 
 //*************************************************************************************************
 /*! \cond BLAZE_INTERNAL */
-/*!\brief In-place PLU-based inversion of the given symmetric dense matrix.
+/*!\brief In-place LU-based inversion of the given symmetric dense matrix.
 // \ingroup symmetric_matrix
 //
 // \param m The symmetric dense matrix to be inverted.
 // \return void
 // \exception std::invalid_argument Inversion of singular matrix failed.
 //
-// This function inverts the given symmetric dense matrix by means of a PLU decomposition.
+// This function inverts the given symmetric dense matrix by means of an LU decomposition.
 // The inversion fails if the given matrix is singular and not invertible. In this case a
 // \a std::invalid_argument exception is thrown.
 //
@@ -825,11 +825,11 @@ inline void invertByDefault( SymmetricMatrix<MT,SO,true,true>& m )
 */
 template< typename MT  // Type of the dense matrix
         , bool SO >    // Storage order of the dense matrix
-inline void invertByPLU( SymmetricMatrix<MT,SO,true,true>& m )
+inline void invertByLU( SymmetricMatrix<MT,SO,true,true>& m )
 {
    BLAZE_CONSTRAINT_MUST_BE_BLAS_COMPATIBLE_TYPE( typename MT::ElementType );
 
-   invertByPLU( m.matrix_ );
+   invertByLU( m.matrix_ );
 
    BLAZE_INTERNAL_ASSERT( isIntact( m ), "Broken invariant detected" );
 }

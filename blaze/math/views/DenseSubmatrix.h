@@ -11514,13 +11514,13 @@ inline bool isSame( const DenseSubmatrix<MT,AF,SO>& a, const DenseSubmatrix<MT,A
 // \exception std::invalid_argument Inversion of singular matrix failed.
 //
 // This function inverts the given dense submatrix by means of the specified matrix decomposition
-// algorithm \a IF. In case the submatrix is a symmetric positive-definite matrix it is recommended
-// to perform the inversion by means of a Cholesky decomposition, for a general square submatrix
-// a PLU decomposition should be used:
+// algorithm \a IF:
 
    \code
-   invert<byPLU>( A );       // Inversion of a general square matrix
-   invert<byCholesky>( A );  // Inversion of a positive definite matrix
+   invert<byLU>( A );    // Inversion of a general matrix
+   invert<byLDLT>( A );  // Inversion of a symmetric indefinite matrix
+   invert<byLDLH>( A );  // Inversion of a Hermitian indefinite matrix
+   invert<byLLH>( A );   // Inversion of a Hermitian positive definite matrix
    \endcode
 
 // The matrix inversion fails if ...
@@ -11533,6 +11533,7 @@ inline bool isSame( const DenseSubmatrix<MT,AF,SO>& a, const DenseSubmatrix<MT,A
 //
 // \note This function does not provide any exception safety guarantee, i.e. in case an exception
 // is thrown \c dm may already have been modified.
+//
 // \note This function can only be used if the fitting LAPACK library is available and linked to
 // the executable. Otherwise a linker error will be created.
 */

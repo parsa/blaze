@@ -1,7 +1,7 @@
 //=================================================================================================
 /*!
 //  \file blaze/math/lapack/getrf.h
-//  \brief Header file for LAPACK PLU decomposition functions (getrf)
+//  \brief Header file for LAPACK LU decomposition functions (getrf)
 //
 //  Copyright (C) 2013 Klaus Iglberger - All Rights Reserved
 //
@@ -78,12 +78,12 @@ void zgetrf_( int* m, int* n, double* A, int* lda, int* ipiv, int* info );
 
 //=================================================================================================
 //
-//  LAPACK PLU DECOMPOSITION FUNCTIONS
+//  LAPACK LU DECOMPOSITION FUNCTIONS
 //
 //=================================================================================================
 
 //*************************************************************************************************
-/*!\name LAPACK PLU decomposition functions */
+/*!\name LAPACK LU decomposition functions */
 //@{
 inline void getrf( int* m, int* n, float* A, int* lda, int* ipiv, int* info );
 
@@ -100,7 +100,7 @@ inline void getrf( DenseMatrix<MT,SO>& A, int* ipiv );
 
 
 //*************************************************************************************************
-/*!\brief LAPACK kernel for the dense matrix PLU decomposition of the given single precision
+/*!\brief LAPACK kernel for the dense matrix LU decomposition of the given single precision
 //        column-major matrix.
 // \ingroup lapack
 //
@@ -112,7 +112,7 @@ inline void getrf( DenseMatrix<MT,SO>& A, int* ipiv );
 // \param info Return code of the function call.
 // \return void
 //
-// This function performs the dense matrix PLU decomposition of a general m-by-n single precision
+// This function performs the dense matrix LU decomposition of a general m-by-n single precision
 // column-major matrix based on the LAPACK sgetrf() function, which uses partial pivoting with row
 // interchanges. The resulting decomposition has the form
 
@@ -144,7 +144,7 @@ inline void getrf( int* m, int* n, float* A, int* lda, int* ipiv, int* info )
 
 
 //*************************************************************************************************
-/*!\brief LAPACK kernel for the dense matrix PLU decomposition of the given double precision
+/*!\brief LAPACK kernel for the dense matrix LU decomposition of the given double precision
 //        column-major matrix.
 // \ingroup lapack
 //
@@ -156,7 +156,7 @@ inline void getrf( int* m, int* n, float* A, int* lda, int* ipiv, int* info )
 // \param info Return code of the function call.
 // \return void
 //
-// This function performs the dense matrix PLU decomposition of a general m-by-n double precision
+// This function performs the dense matrix LU decomposition of a general m-by-n double precision
 // column-major matrix based on the LAPACK dgetrf() function, which uses partial pivoting with row
 // interchanges. The resulting decomposition has the form
 
@@ -188,7 +188,7 @@ inline void getrf( int* m, int* n, double* A, int* lda, int* ipiv, int* info )
 
 
 //*************************************************************************************************
-/*!\brief LAPACK kernel for the dense matrix PLU decomposition of the given single precision
+/*!\brief LAPACK kernel for the dense matrix LU decomposition of the given single precision
 //        complex column-major matrix.
 // \ingroup lapack
 //
@@ -200,7 +200,7 @@ inline void getrf( int* m, int* n, double* A, int* lda, int* ipiv, int* info )
 // \param info Return code of the function call.
 // \return void
 //
-// This function performs the dense matrix PLU decomposition of a general m-by-n single precision
+// This function performs the dense matrix LU decomposition of a general m-by-n single precision
 // complex column-major matrix based on the LAPACK cgetrf() function, which uses partial pivoting
 // with row interchanges. The resulting decomposition has the form
 
@@ -234,7 +234,7 @@ inline void getrf( int* m, int* n, complex<float>* A, int* lda, int* ipiv, int* 
 
 
 //*************************************************************************************************
-/*!\brief LAPACK kernel for the dense matrix PLU decomposition of the given double precision
+/*!\brief LAPACK kernel for the dense matrix LU decomposition of the given double precision
 //        complex column-major matrix.
 // \ingroup lapack
 //
@@ -246,7 +246,7 @@ inline void getrf( int* m, int* n, complex<float>* A, int* lda, int* ipiv, int* 
 // \param info Return code of the function call.
 // \return void
 //
-// This function performs the dense matrix PLU decomposition of a general m-by-n double precision
+// This function performs the dense matrix LU decomposition of a general m-by-n double precision
 // complex column-major matrix based on the LAPACK zgetrf() function, which uses partial pivoting
 // with row interchanges. The resulting decomposition has the form
 
@@ -281,14 +281,14 @@ inline void getrf( int* m, int* n, complex<double>* A, int* lda, int* ipiv, int*
 
 //*************************************************************************************************
 /*! \cond BLAZE_INTERNAL */
-/*!\brief LAPACK kernel for the PLU decomposition of the given dense matrix.
+/*!\brief LAPACK kernel for the LU decomposition of the given dense matrix.
 // \ingroup lapack
 //
 // \param A The matrix to be decomposed.
 // \param ipiv Auxiliary array for the pivot indices; size >= min( \a m, \a n ).
 // \return void
 //
-// This function performs the dense matrix PLU decomposition of a general m-by-n matrix based
+// This function performs the dense matrix LU decomposition of a general m-by-n matrix based
 // on the LAPACK \c getrf() functions, which use partial pivoting with row/column interchanges.
 // Note that the function only works for general, non-adapted matrices with \c float, \c double,
 // \c complex<float>, or \c complex<double> element type. The attempt to call the function with
@@ -322,7 +322,7 @@ inline void getrf( int* m, int* n, complex<double>* A, int* lda, int* ipiv, int*
 // \note This function can only be used if the fitting LAPACK library is available and linked to
 // the executable. Otherwise a call to this function will result in a linker error.
 //
-// \note The PLU decomposition will never fail, even for singular matrices. However, in case of a
+// \note The LU decomposition will never fail, even for singular matrices. However, in case of a
 // singular matrix the resulting decomposition cannot be used for a matrix inversion or solving
 // a linear system of equations.
 //
@@ -351,7 +351,7 @@ inline void getrf( DenseMatrix<MT,SO>& A, int* ipiv )
 
    getrf( &m, &n, (~A).data(), &lda, ipiv, &info );
 
-   BLAZE_INTERNAL_ASSERT( info >= 0, "Invalid argument for PLU decomposition" );
+   BLAZE_INTERNAL_ASSERT( info >= 0, "Invalid argument for LU decomposition" );
 }
 /*! \endcond */
 //*************************************************************************************************

@@ -536,7 +536,7 @@ template< typename MT  // Type of the dense matrix
         , bool SO >    // Storage order of the dense matrix
 inline void invertByDefault( UniUpperMatrix<MT,SO,true>& m )
 {
-   invertByPLU( m );
+   invertByLU( m );
 }
 /*! \endcond */
 //*************************************************************************************************
@@ -544,13 +544,13 @@ inline void invertByDefault( UniUpperMatrix<MT,SO,true>& m )
 
 //*************************************************************************************************
 /*! \cond BLAZE_INTERNAL */
-/*!\brief In-place PLU-based inversion of the given uniupper dense matrix.
+/*!\brief In-place LU-based inversion of the given uniupper dense matrix.
 // \ingroup uniupper_matrix
 //
 // \param m The uniupper dense matrix to be inverted.
 // \return void
 //
-// This function inverts the given uniupper dense matrix by means of a PLU decomposition.
+// This function inverts the given uniupper dense matrix by means of an LU decomposition.
 //
 // \note The matrix inversion can only be used for dense matrices with \c float, \c double,
 // \c complex<float> or \c complex<double> element type. The attempt to call the function with
@@ -561,7 +561,7 @@ inline void invertByDefault( UniUpperMatrix<MT,SO,true>& m )
 */
 template< typename MT  // Type of the dense matrix
         , bool SO >    // Storage order of the dense matrix
-inline void invertByPLU( UniUpperMatrix<MT,SO,true>& m )
+inline void invertByLU( UniUpperMatrix<MT,SO,true>& m )
 {
    BLAZE_CONSTRAINT_MUST_BE_BLAS_COMPATIBLE_TYPE( typename MT::ElementType );
 

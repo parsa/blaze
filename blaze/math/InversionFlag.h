@@ -52,10 +52,10 @@ namespace blaze {
 // that are available within the Blaze library. The following flags are available:
 //
 //  - \a byDefault: The default algorithm for each type of matrix. In case of general square
-//          matrices a PLU decomposition is used, in case of symmetric and Hermitian matrices
+//          matrices an LU decomposition is used, in case of symmetric and Hermitian matrices
 //          the Bunch-Kaufman diagonal pivoting method is applied, and in case of triangular
 //          matrices a direct inversion via backward substitution is performed.
-//  - \a byPLU: The default inversion algorithm for general square matrices. It uses the PLU
+//  - \a byLU: The default inversion algorithm for general square matrices. It uses the LU
 //          algorithm to decompose a matrix into a lower unitriangular matrix \c L, an upper
 //          triangular matrix \c U, and a permutation matrix \c P (\f$ A = P L U \f$). If no
 //          permutations are required, \c P is the identity matrix.
@@ -76,7 +76,7 @@ namespace blaze {
 enum InversionFlag
 {
    byDefault = 0,  //!< Flag for the default, optimal inversion algorithm.
-   byPLU     = 1,  //!< Flag for the PLU-based matrix inversion.
+   byLU      = 1,  //!< Flag for the LU-based matrix inversion.
    byLDLT    = 2,  //!< Flag for the Bunch-Kaufman-based inversion for symmetric matrices.
    byLDLH    = 3,  //!< Flag for the Bunch-Kaufman-based inversion for Hermitian matrices.
    byLLH     = 4   //!< Flag for the Cholesky-based inversion for positive-definite matrices.

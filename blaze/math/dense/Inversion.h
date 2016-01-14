@@ -653,7 +653,7 @@ template< typename MT  // Type of the dense matrix
         , bool SO >    // Storage order of the dense matrix
 inline void invertByDefault( DenseMatrix<MT,SO>& dm )
 {
-   invertByPLU( ~dm );
+   invertByLU( ~dm );
 }
 /*! \endcond */
 //*************************************************************************************************
@@ -661,7 +661,7 @@ inline void invertByDefault( DenseMatrix<MT,SO>& dm )
 
 //*************************************************************************************************
 /*! \cond BLAZE_INTERNAL */
-/*!\brief In-place PLU-based inversion of the given dense matrix.
+/*!\brief In-place LU-based inversion of the given dense matrix.
 // \ingroup dense_matrix
 //
 // \param dm The dense matrix to be inverted.
@@ -669,7 +669,7 @@ inline void invertByDefault( DenseMatrix<MT,SO>& dm )
 // \exception std::invalid_argument Inversion of singular matrix failed.
 // \exception std::invalid_argument Invalid non-square matrix provided.
 //
-// This function inverts the given dense matrix by means of a PLU decomposition. The matrix
+// This function inverts the given dense matrix by means of an LU decomposition. The matrix
 // inversion fails if ...
 //
 //  - ... the given matrix is not a square matrix;
@@ -689,7 +689,7 @@ inline void invertByDefault( DenseMatrix<MT,SO>& dm )
 */
 template< typename MT  // Type of the dense matrix
         , bool SO >    // Storage order of the dense matrix
-inline void invertByPLU( DenseMatrix<MT,SO>& dm )
+inline void invertByLU( DenseMatrix<MT,SO>& dm )
 {
    BLAZE_CONSTRAINT_MUST_NOT_BE_ADAPTOR_TYPE( MT );
    BLAZE_CONSTRAINT_MUST_BE_BLAS_COMPATIBLE_TYPE( typename MT::ElementType );
@@ -941,7 +941,7 @@ inline void invertByLLH( DenseMatrix<MT,SO>& dm )
 // algorithm \a IF:
 
    \code
-   invertNxN<byPLU>( A );   // Inversion of a general matrix
+   invertNxN<byLU>( A );    // Inversion of a general matrix
    invertNxN<byLDLT>( A );  // Inversion of a symmetric indefinite matrix
    invertNxN<byLDLH>( A );  // Inversion of a Hermitian indefinite matrix
    invertNxN<byLLH>( A );   // Inversion of a Hermitian positive definite matrix
@@ -970,8 +970,8 @@ inline void invertNxN( DenseMatrix<MT,SO>& dm )
 
    BLAZE_INTERNAL_ASSERT( isSquare( ~dm ), "Non-square matrix detected" );
 
-   if( IF == byPLU )
-      invertByPLU( ~dm );
+   if( IF == byLU )
+      invertByLU( ~dm );
    else if( IF == byLDLT )
       invertByLDLT( ~dm );
    else if( IF == byLDLH )
@@ -1034,7 +1034,7 @@ inline void invert( DenseMatrix<MT,SO>& dm )
 // algorithm \c IF:
 
    \code
-   invert<byPLU>( A );   // Inversion of a general matrix
+   invert<byLU>( A );    // Inversion of a general matrix
    invert<byLDLT>( A );  // Inversion of a symmetric indefinite matrix
    invert<byLDLH>( A );  // Inversion of a Hermitian indefinite matrix
    invert<byLLH>( A );   // Inversion of a Hermitian positive definite matrix

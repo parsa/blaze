@@ -594,7 +594,7 @@ template< typename MT  // Type of the dense matrix
         , bool SO >    // Storage order of the dense matrix
 inline void invertByDefault( UpperMatrix<MT,SO,true>& m )
 {
-   invertByPLU( m );
+   invertByLU( m );
 }
 /*! \endcond */
 //*************************************************************************************************
@@ -602,14 +602,14 @@ inline void invertByDefault( UpperMatrix<MT,SO,true>& m )
 
 //*************************************************************************************************
 /*! \cond BLAZE_INTERNAL */
-/*!\brief In-place PLU-based inversion of the given upper dense matrix.
+/*!\brief In-place LU-based inversion of the given upper dense matrix.
 // \ingroup upper_matrix
 //
 // \param m The upper dense matrix to be inverted.
 // \return void
 // \exception std::invalid_argument Inversion of singular matrix failed.
 //
-// This function inverts the given upper dense matrix by means of a PLU decomposition. The
+// This function inverts the given upper dense matrix by means of an LU decomposition. The
 // matrix inversion fails if the given matrix is singular and not invertible. In this case a
 // \a std::invalid_argument exception is thrown.
 //
@@ -625,7 +625,7 @@ inline void invertByDefault( UpperMatrix<MT,SO,true>& m )
 */
 template< typename MT  // Type of the dense matrix
         , bool SO >    // Storage order of the dense matrix
-inline void invertByPLU( UpperMatrix<MT,SO,true>& m )
+inline void invertByLU( UpperMatrix<MT,SO,true>& m )
 {
    BLAZE_CONSTRAINT_MUST_BE_BLAS_COMPATIBLE_TYPE( typename MT::ElementType );
 

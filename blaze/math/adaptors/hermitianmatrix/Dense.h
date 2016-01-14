@@ -768,7 +768,7 @@ class HermitianMatrix<MT,SO,true>
    friend void invert6x6( HermitianMatrix<MT2,SO2,true>& m );
 
    template< typename MT2, bool SO2 >
-   friend void invertByPLU( HermitianMatrix<MT2,SO2,true>& m );
+   friend void invertByLU( HermitianMatrix<MT2,SO2,true>& m );
 
    template< typename MT2, bool SO2 >
    friend void invertByLDLT( HermitianMatrix<MT2,SO2,true>& m );
