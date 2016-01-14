@@ -95,8 +95,8 @@ class OperationTest
    //@{
    template< typename Type > void testGeqrf();
    template< typename Type > void testGetrf();
-   template< typename Type > void testHetrf();
    template< typename Type > void testSytrf();
+   template< typename Type > void testHetrf();
    template< typename Type > void testPotrf();
 
    template< typename Type > void testGetri();
@@ -128,7 +128,7 @@ class OperationTest
 //=================================================================================================
 
 //*************************************************************************************************
-/*!\brief Test of the QR decomposition functionality (geqrf).
+/*!\brief Test of the QR decomposition functions (geqrf).
 //
 // \return void
 // \exception std::runtime_error Error detected.
@@ -158,7 +158,7 @@ void OperationTest::testGeqrf()
       if( A != trans( B ) || tauA != tauB ) {
          std::ostringstream oss;
          oss << " Test: " << test_ << "\n"
-             << " Error: PLU decomposition failed\n"
+             << " Error: LU decomposition failed\n"
              << " Details:\n"
              << "   Element type:\n"
              << "     " << typeid( Type ).name() << "\n"
@@ -185,7 +185,7 @@ void OperationTest::testGeqrf()
       if( A != trans( B ) || tauA != tauB ) {
          std::ostringstream oss;
          oss << " Test: " << test_ << "\n"
-             << " Error: PLU decomposition failed\n"
+             << " Error: LU decomposition failed\n"
              << " Details:\n"
              << "   Element type:\n"
              << "     " << typeid( Type ).name() << "\n"
@@ -203,12 +203,12 @@ void OperationTest::testGeqrf()
 
 
 //*************************************************************************************************
-/*!\brief Test of the PLU decomposition functionality (getrf).
+/*!\brief Test of the LU decomposition functions (getrf).
 //
 // \return void
 // \exception std::runtime_error Error detected.
 //
-// This function performs a test of the PLU decomposition functions for various data types. In
+// This function performs a test of the LU decomposition functions for various data types. In
 // case an error is detected, a \a std::runtime_error exception is thrown.
 */
 template< typename Type >
@@ -216,7 +216,7 @@ void OperationTest::testGetrf()
 {
 #if BLAZETEST_MATHTEST_LAPACK_MODE
 
-   test_ = "PLU decomposition";
+   test_ = "LU decomposition";
 
    {
       blaze::StaticMatrix<Type,2UL,5UL,blaze::rowMajor> A;
@@ -233,7 +233,7 @@ void OperationTest::testGetrf()
       if( A != trans( B ) || ipivA != ipivB ) {
          std::ostringstream oss;
          oss << " Test: " << test_ << "\n"
-             << " Error: PLU decomposition failed\n"
+             << " Error: LU decomposition failed\n"
              << " Details:\n"
              << "   Element type:\n"
              << "     " << typeid( Type ).name() << "\n"
@@ -260,7 +260,7 @@ void OperationTest::testGetrf()
       if( A != trans( B ) || ipivA != ipivB ) {
          std::ostringstream oss;
          oss << " Test: " << test_ << "\n"
-             << " Error: PLU decomposition failed\n"
+             << " Error: LU decomposition failed\n"
              << " Details:\n"
              << "   Element type:\n"
              << "     " << typeid( Type ).name() << "\n"
@@ -278,62 +278,14 @@ void OperationTest::testGetrf()
 
 
 //*************************************************************************************************
-/*!\brief Test of the Hermitian matrix decomposition functionality (hetrf).
+/*!\brief Test of the Bunch-Kaufman decomposition functions for symmetric matrices (sytrf).
 //
 // \return void
 // \exception std::runtime_error Error detected.
 //
-// This function performs a test of the Hermitian matrix decomposition functions for various
-// data types. In case an error is detected, a \a std::runtime_error exception is thrown.
-*/
-template< typename Type >
-void OperationTest::testHetrf()
-{
-#if BLAZETEST_MATHTEST_LAPACK_MODE
-
-   test_ = "Hermitian matrix decomposition";
-
-   {
-      blaze::HermitianMatrix< blaze::StaticMatrix<Type,3UL,3UL,blaze::rowMajor> > H;
-      randomize( H );
-
-      blaze::StaticMatrix<Type,3UL,3UL,blaze::rowMajor>    A( H );
-      blaze::StaticMatrix<Type,3UL,3UL,blaze::columnMajor> B( H );
-
-      blaze::StaticVector<int,3UL,blaze::rowVector> ipivA;
-      blaze::StaticVector<int,3UL,blaze::rowVector> ipivB;
-
-      blaze::hetrf( A, 'L', ipivA.data() );
-      blaze::hetrf( B, 'U', ipivB.data() );
-
-      if( A != ctrans( B ) || ipivA != ipivB ) {
-         std::ostringstream oss;
-         oss << " Test: " << test_ << "\n"
-             << " Error: Hermitian matrix decomposition failed\n"
-             << " Details:\n"
-             << "   Element type:\n"
-             << "     " << typeid( Type ).name() << "\n"
-             << "   Row-major decomposition:\n" << A << "\n"
-             << "   Row-major pivot elements:\n" << ipivA << "\n"
-             << "   Column-major decomposition:\n" << B << "\n"
-             << "   Column-major pivot elements:\n" << ipivB << "\n";
-         throw std::runtime_error( oss.str() );
-      }
-   }
-
-#endif
-}
-//*************************************************************************************************
-
-
-//*************************************************************************************************
-/*!\brief Test of the symmetric matrix decomposition functionality (sytrf).
-//
-// \return void
-// \exception std::runtime_error Error detected.
-//
-// This function performs a test of the symmetric matrix decomposition functions for various
-// data types. In case an error is detected, a \a std::runtime_error exception is thrown.
+// This function performs a test of the Bunch-Kaufman decomposition functions for symmetric
+// indefinite matrices for various data types. In case an error is detected, a \a std::runtime_error
+// exception is thrown.
 */
 template< typename Type >
 void OperationTest::testSytrf()
@@ -376,7 +328,57 @@ void OperationTest::testSytrf()
 
 
 //*************************************************************************************************
-/*!\brief Test of the Cholesky decomposition functionality (potrf).
+/*!\brief Test of the Bunch-Kaufman decomposition functions for Hermitian matrices (hetrf).
+//
+// \return void
+// \exception std::runtime_error Error detected.
+//
+// This function performs a test of the Bunch-Kaufman decomposition functions for Hermitian
+// indefinite matrices for various data types. In case an error is detected, a \a std::runtime_error
+// exception is thrown.
+*/
+template< typename Type >
+void OperationTest::testHetrf()
+{
+#if BLAZETEST_MATHTEST_LAPACK_MODE
+
+   test_ = "Hermitian matrix decomposition";
+
+   {
+      blaze::HermitianMatrix< blaze::StaticMatrix<Type,3UL,3UL,blaze::rowMajor> > H;
+      randomize( H );
+
+      blaze::StaticMatrix<Type,3UL,3UL,blaze::rowMajor>    A( H );
+      blaze::StaticMatrix<Type,3UL,3UL,blaze::columnMajor> B( H );
+
+      blaze::StaticVector<int,3UL,blaze::rowVector> ipivA;
+      blaze::StaticVector<int,3UL,blaze::rowVector> ipivB;
+
+      blaze::hetrf( A, 'L', ipivA.data() );
+      blaze::hetrf( B, 'U', ipivB.data() );
+
+      if( A != ctrans( B ) || ipivA != ipivB ) {
+         std::ostringstream oss;
+         oss << " Test: " << test_ << "\n"
+             << " Error: Hermitian matrix decomposition failed\n"
+             << " Details:\n"
+             << "   Element type:\n"
+             << "     " << typeid( Type ).name() << "\n"
+             << "   Row-major decomposition:\n" << A << "\n"
+             << "   Row-major pivot elements:\n" << ipivA << "\n"
+             << "   Column-major decomposition:\n" << B << "\n"
+             << "   Column-major pivot elements:\n" << ipivB << "\n";
+         throw std::runtime_error( oss.str() );
+      }
+   }
+
+#endif
+}
+//*************************************************************************************************
+
+
+//*************************************************************************************************
+/*!\brief Test of the Cholesky decomposition functions (potrf).
 //
 // \return void
 // \exception std::runtime_error Error detected.
@@ -443,12 +445,12 @@ void OperationTest::testPotrf()
 
 
 //*************************************************************************************************
-/*!\brief Test of the PLU-based matrix inversion functionality (getri).
+/*!\brief Test of the LU-based matrix inversion functions (getri).
 //
 // \return void
 // \exception std::runtime_error Error detected.
 //
-// This function performs a test of the PLU-based matrix inversion functions for various data
+// This function performs a test of the LU-based matrix inversion functions for various data
 // types. In case an error is detected, a \a std::runtime_error exception is thrown.
 */
 template< typename Type >
@@ -461,7 +463,7 @@ void OperationTest::testGetri()
    //=====================================================================================
 
    {
-      test_ = "Row-major PLU-based matrix inversion";
+      test_ = "Row-major LU-based matrix inversion";
 
       blaze::StaticMatrix<Type,3UL,3UL,blaze::rowMajor> A;
 
@@ -479,7 +481,7 @@ void OperationTest::testGetri()
       if( !blaze::isIdentity( Ainv * A ) ) {
          std::ostringstream oss;
          oss << " Test: " << test_ << "\n"
-             << " Error: PLU-based matrix inversion failed\n"
+             << " Error: LU-based matrix inversion failed\n"
              << " Details:\n"
              << "   Element type:\n"
              << "     " << typeid( Type ).name() << "\n"
@@ -495,7 +497,7 @@ void OperationTest::testGetri()
    //=====================================================================================
 
    {
-      test_ = "Column-major PLU-based matrix inversion";
+      test_ = "Column-major LU-based matrix inversion";
 
       blaze::StaticMatrix<Type,3UL,3UL,blaze::columnMajor> A;
 
@@ -513,7 +515,7 @@ void OperationTest::testGetri()
       if( !blaze::isIdentity( Ainv * A ) ) {
          std::ostringstream oss;
          oss << " Test: " << test_ << "\n"
-             << " Error: PLU-based matrix inversion failed\n"
+             << " Error: LU-based matrix inversion failed\n"
              << " Details:\n"
              << "   Element type:\n"
              << "     " << typeid( Type ).name() << "\n"
@@ -529,13 +531,14 @@ void OperationTest::testGetri()
 
 
 //*************************************************************************************************
-/*!\brief Test of the symmetric matrix inversion functionality (sytri).
+/*!\brief Test of the Bunch-Kaufman-based matrix inversion functions for symmetric matrices (sytri).
 //
 // \return void
 // \exception std::runtime_error Error detected.
 //
-// This function performs a test of the symmetric matrix inversion functions for various data
-// types. In case an error is detected, a \a std::runtime_error exception is thrown.
+// This function performs a test of the Bunch-Kaufman-based matrix inversion functions for
+// symmetric indefinite matrices for various data types. In case an error is detected, a
+// \a std::runtime_error exception is thrown.
 */
 template< typename Type >
 void OperationTest::testSytri()
@@ -669,13 +672,14 @@ void OperationTest::testSytri()
 
 
 //*************************************************************************************************
-/*!\brief Test of the Hermitian matrix inversion functionality (hetri).
+/*!\brief Test of the Bunch-Kaufman-based matrix inversion functions for Hermitian matrices (hetri).
 //
 // \return void
 // \exception std::runtime_error Error detected.
 //
-// This function performs a test of the Hermitian matrix inversion functions for various data
-// types. In case an error is detected, a \a std::runtime_error exception is thrown.
+// This function performs a test of the Bunch-Kaufman-based matrix inversion functions for
+// Hermitian indefinite matrices for various data types. In case an error is detected, a
+// \a std::runtime_error exception is thrown.
 */
 template< typename Type >
 void OperationTest::testHetri()
@@ -809,7 +813,7 @@ void OperationTest::testHetri()
 
 
 //*************************************************************************************************
-/*!\brief Test of the Cholesky-based matrix inversion functionality (potri).
+/*!\brief Test of the Cholesky-based matrix inversion functions (potri).
 //
 // \return void
 // \exception std::runtime_error Error detected.
@@ -949,7 +953,7 @@ void OperationTest::testPotri()
 
 
 //*************************************************************************************************
-/*!\brief Test of the triangular matrix inversion functionality (trtri).
+/*!\brief Test of the triangular matrix inversion functions (trtri).
 //
 // \return void
 // \exception std::runtime_error Error detected.
@@ -1153,7 +1157,7 @@ void OperationTest::testTrtri()
 
 
 //*************************************************************************************************
-/*!\brief Test of the general matrix linear system solver functionality (gesv).
+/*!\brief Test of the general matrix linear system solver functions (gesv).
 //
 // \return void
 // \exception std::runtime_error Error detected.
@@ -1169,7 +1173,7 @@ void OperationTest::testGesv()
    {
       test_ = "Linear system of equations (single right-hand side)";
 
-      blaze::StaticMatrix<Type,3UL,3UL,blaze::columnMajor> A, PLU;
+      blaze::StaticMatrix<Type,3UL,3UL,blaze::columnMajor> A, LU;
 
       do {
          randomize( A );
@@ -1181,10 +1185,10 @@ void OperationTest::testGesv()
 
       blaze::StaticVector<int,3UL,blaze::columnVector> ipiv;
 
-      PLU = A;
+      LU = A;
       result = rhs;
 
-      blaze::gesv( PLU, result, ipiv.data() );
+      blaze::gesv( LU, result, ipiv.data() );
 
       if( ( A * result ) != rhs ) {
          std::ostringstream oss;
@@ -1203,7 +1207,7 @@ void OperationTest::testGesv()
    {
       test_ = "Linear system of equations (multiple right-hand side vectors)";
 
-      blaze::StaticMatrix<Type,3UL,3UL,blaze::columnMajor> A, PLU;
+      blaze::StaticMatrix<Type,3UL,3UL,blaze::columnMajor> A, LU;
 
       do {
          randomize( A );
@@ -1215,10 +1219,10 @@ void OperationTest::testGesv()
 
       blaze::StaticVector<int,3UL,blaze::columnVector> ipiv;
 
-      PLU = A;
+      LU = A;
       result = rhs;
 
-      blaze::gesv( PLU, result, ipiv.data() );
+      blaze::gesv( LU, result, ipiv.data() );
 
       if( ( A * result ) != rhs ) {
          std::ostringstream oss;

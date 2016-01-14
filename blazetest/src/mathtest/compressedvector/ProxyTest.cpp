@@ -1826,8 +1826,8 @@ void ProxyTest::testInvert()
 #if BLAZETEST_MATHTEST_LAPACK_MODE
 
    using blaze::invert;
-   using blaze::byPLU;
-   using blaze::byCholesky;
+   using blaze::byLU;
+   using blaze::byLLH;
 
 
    {
@@ -1856,7 +1856,7 @@ void ProxyTest::testInvert()
    }
 
    {
-      test_ = "invert<byPLU>( VectorAccessProxy )";
+      test_ = "invert<byLU>( VectorAccessProxy )";
 
       blaze::CompressedVector< blaze::DynamicMatrix<double> > vec( 3UL, 1UL );
       vec[0].resize( 3UL, 3UL );
@@ -1864,7 +1864,7 @@ void ProxyTest::testInvert()
       vec[0](0,0) = 1.0;
       vec[0](1,1) = 1.0;
       vec[0](2,2) = 1.0;
-      invert<byPLU>( vec[0] );
+      invert<byLU>( vec[0] );
 
       checkSize    ( vec, 3UL );
       checkCapacity( vec, 1UL );
@@ -1881,7 +1881,7 @@ void ProxyTest::testInvert()
    }
 
    {
-      test_ = "invert<byCholesky>( VectorAccessProxy )";
+      test_ = "invert<byLLH>( VectorAccessProxy )";
 
       blaze::CompressedVector< blaze::DynamicMatrix<double> > vec( 3UL, 1UL );
       vec[0].resize( 3UL, 3UL );
@@ -1889,7 +1889,7 @@ void ProxyTest::testInvert()
       vec[0](0,0) = 1.0;
       vec[0](1,1) = 1.0;
       vec[0](2,2) = 1.0;
-      invert<byCholesky>( vec[0] );
+      invert<byLLH>( vec[0] );
 
       checkSize    ( vec, 3UL );
       checkCapacity( vec, 1UL );

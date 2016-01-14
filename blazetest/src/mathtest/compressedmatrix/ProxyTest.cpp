@@ -3563,8 +3563,8 @@ void ProxyTest::testInvert()
 #if BLAZETEST_MATHTEST_LAPACK_MODE
 
    using blaze::invert;
-   using blaze::byPLU;
-   using blaze::byCholesky;
+   using blaze::byLU;
+   using blaze::byLLH;
 
 
    //=====================================================================================
@@ -3600,7 +3600,7 @@ void ProxyTest::testInvert()
    }
 
    {
-      test_ = "Row-major invert<byPLU>( MatrixAccessProxy )";
+      test_ = "Row-major invert<byLU>( MatrixAccessProxy )";
 
       blaze::CompressedMatrix< blaze::DynamicMatrix<double>, blaze::rowMajor > mat( 2UL, 2UL, 1UL );
       mat(1,1).resize( 3UL, 3UL );
@@ -3608,7 +3608,7 @@ void ProxyTest::testInvert()
       mat(1,1)(0,0) = 1.0;
       mat(1,1)(1,1) = 1.0;
       mat(1,1)(2,2) = 1.0;
-      invert<byPLU>( mat(1,1) );
+      invert<byLU>( mat(1,1) );
 
       checkRows    ( mat, 2UL );
       checkColumns ( mat, 2UL );
@@ -3628,7 +3628,7 @@ void ProxyTest::testInvert()
    }
 
    {
-      test_ = "Row-major invert<byCholesky>( MatrixAccessProxy )";
+      test_ = "Row-major invert<byLLH>( MatrixAccessProxy )";
 
       blaze::CompressedMatrix< blaze::DynamicMatrix<double>, blaze::rowMajor > mat( 2UL, 2UL, 1UL );
       mat(1,1).resize( 3UL, 3UL );
@@ -3636,7 +3636,7 @@ void ProxyTest::testInvert()
       mat(1,1)(0,0) = 1.0;
       mat(1,1)(1,1) = 1.0;
       mat(1,1)(2,2) = 1.0;
-      invert<byCholesky>( mat(1,1) );
+      invert<byLLH>( mat(1,1) );
 
       checkRows    ( mat, 2UL );
       checkColumns ( mat, 2UL );
@@ -3689,7 +3689,7 @@ void ProxyTest::testInvert()
    }
 
    {
-      test_ = "Column-major invert<byPLU>( MatrixAccessProxy )";
+      test_ = "Column-major invert<byLU>( MatrixAccessProxy )";
 
       blaze::CompressedMatrix< blaze::DynamicMatrix<double>, blaze::columnMajor > mat( 2UL, 2UL, 1UL );
       mat(1,1).resize( 3UL, 3UL );
@@ -3697,7 +3697,7 @@ void ProxyTest::testInvert()
       mat(1,1)(0,0) = 1.0;
       mat(1,1)(1,1) = 1.0;
       mat(1,1)(2,2) = 1.0;
-      invert<byPLU>( mat(1,1) );
+      invert<byLU>( mat(1,1) );
 
       checkRows    ( mat, 2UL );
       checkColumns ( mat, 2UL );
@@ -3717,7 +3717,7 @@ void ProxyTest::testInvert()
    }
 
    {
-      test_ = "Column-major invert<byCholesky>( MatrixAccessProxy )";
+      test_ = "Column-major invert<byLLH>( MatrixAccessProxy )";
 
       blaze::CompressedMatrix< blaze::DynamicMatrix<double>, blaze::columnMajor > mat( 2UL, 2UL, 1UL );
       mat(1,1).resize( 3UL, 3UL );
@@ -3725,7 +3725,7 @@ void ProxyTest::testInvert()
       mat(1,1)(0,0) = 1.0;
       mat(1,1)(1,1) = 1.0;
       mat(1,1)(2,2) = 1.0;
-      invert<byCholesky>( mat(1,1) );
+      invert<byLLH>( mat(1,1) );
 
       checkRows    ( mat, 2UL );
       checkColumns ( mat, 2UL );
