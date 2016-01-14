@@ -41,8 +41,12 @@
 //*************************************************************************************************
 
 #include <boost/typeof/typeof.hpp>
+#include <blaze/util/Complex.h>
+#include <blaze/util/EnableIf.h>
 #include <blaze/util/mpl/If.h>
 #include <blaze/util/mpl/Or.h>
+#include <blaze/util/typetraits/CommonType.h>
+#include <blaze/util/typetraits/IsBuiltin.h>
 #include <blaze/util/typetraits/IsConst.h>
 #include <blaze/util/typetraits/IsReference.h>
 #include <blaze/util/typetraits/IsVolatile.h>
@@ -156,6 +160,57 @@ struct AddTrait
    /*! \endcond */
    //**********************************************************************************************
 };
+//*************************************************************************************************
+
+
+//*************************************************************************************************
+/*! \cond BLAZE_INTERNAL */
+/*!\brief Specialization of the AddTrait class template for a complex and a built-in type.
+// \ingroup math_traits
+*/
+template< typename T1, typename T2 >
+struct AddTrait< complex<T1>, T2, typename EnableIf< IsBuiltin<T2> >::Type >
+{
+ public:
+   //**********************************************************************************************
+   typedef typename CommonType< complex<T1> , T2 >::Type  Type;
+   //**********************************************************************************************
+};
+/*! \endcond */
+//*************************************************************************************************
+
+
+//*************************************************************************************************
+/*! \cond BLAZE_INTERNAL */
+/*!\brief Specialization of the AddTrait class template for a built-in and a complex type.
+// \ingroup math_traits
+*/
+template< typename T1, typename T2 >
+struct AddTrait< T1, complex<T2>, typename EnableIf< IsBuiltin<T1> >::Type >
+{
+ public:
+   //**********************************************************************************************
+   typedef typename CommonType< T1, complex<T2> >::Type  Type;
+   //**********************************************************************************************
+};
+/*! \endcond */
+//*************************************************************************************************
+
+
+//*************************************************************************************************
+/*! \cond BLAZE_INTERNAL */
+/*!\brief Specialization of the AddTrait class template for two complex types.
+// \ingroup math_traits
+*/
+template< typename T1, typename T2 >
+struct AddTrait< complex<T1>, complex<T2> >
+{
+ public:
+   //**********************************************************************************************
+   typedef typename CommonType< complex<T1>, complex<T2> >::Type  Type;
+   //**********************************************************************************************
+};
+/*! \endcond */
 //*************************************************************************************************
 
 } // namespace blaze
