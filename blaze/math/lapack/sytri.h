@@ -271,6 +271,7 @@ inline void sytri( char* uplo, int* n, complex<double>* A, int* lda,
 //
 // \param A The triangular matrix to be inverted.
 // \param uplo \c 'L' in case of a lower matrix, \c 'U' in case of an upper matrix.
+// \param ipiv Auxiliary array of size \a n for the pivot indices.
 // \return void
 // \exception std::invalid_argument Invalid argument provided.
 // \exception std::invalid_argument Inversion of singular matrix failed.
