@@ -43,10 +43,12 @@
 #include <blaze/math/expressions/Forward.h>
 #include <blaze/math/typetraits/IsColumnMajorMatrix.h>
 #include <blaze/math/typetraits/IsSparseMatrix.h>
+#include <blaze/math/typetraits/UnderlyingNumeric.h>
 #include <blaze/util/InvalidType.h>
 #include <blaze/util/mpl/And.h>
 #include <blaze/util/mpl/If.h>
 #include <blaze/util/mpl/Or.h>
+#include <blaze/util/typetraits/IsBuiltin.h>
 #include <blaze/util/typetraits/IsConst.h>
 #include <blaze/util/typetraits/IsReference.h>
 #include <blaze/util/typetraits/IsVolatile.h>
@@ -77,8 +79,11 @@ struct TSMatImagExprTrait
  private:
    //**********************************************************************************************
    /*! \cond BLAZE_INTERNAL */
+   typedef typename UnderlyingNumeric<MT>::Type  NET;
+
    typedef If< And< IsSparseMatrix<MT>, IsColumnMajorMatrix<MT> >
-             , SMatImagExpr<MT,true>, INVALID_TYPE >  Tmp;
+             , typename If< IsBuiltin<NET>, const MT&, SMatImagExpr<MT,true> >::Type
+             , INVALID_TYPE >  Tmp;
 
    typedef typename RemoveReference< typename RemoveCV<MT>::Type >::Type  Type1;
    /*! \endcond */

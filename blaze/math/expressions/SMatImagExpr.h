@@ -75,18 +75,16 @@
 #include <blaze/math/typetraits/IsUniUpper.h>
 #include <blaze/math/typetraits/IsUpper.h>
 #include <blaze/math/typetraits/RequiresEvaluation.h>
-#include <blaze/math/typetraits/UnderlyingNumeric.h>
 #include <blaze/math/typetraits/Rows.h>
+#include <blaze/math/typetraits/UnderlyingNumeric.h>
 #include <blaze/util/Assert.h>
+#include <blaze/util/constraints/Builtin.h>
 #include <blaze/util/constraints/Reference.h>
 #include <blaze/util/EnableIf.h>
 #include <blaze/util/InvalidType.h>
 #include <blaze/util/logging/FunctionTrace.h>
-#include <blaze/util/mpl/And.h>
-#include <blaze/util/mpl/Not.h>
 #include <blaze/util/SelectType.h>
 #include <blaze/util/Types.h>
-#include <blaze/util/typetraits/IsComplex.h>
 #include <blaze/util/typetraits/RemoveReference.h>
 #include <blaze/util/valuetraits/IsTrue.h>
 
@@ -114,10 +112,9 @@ class SMatImagExpr : public SparseMatrix< SMatImagExpr<MT,SO>, SO >
 {
  private:
    //**Type definitions****************************************************************************
-   typedef typename MT::ResultType               RT;  //!< Result type of the sparse matrix expression.
-   typedef typename MT::ReturnType               RN;  //!< Return type of the sparse matrix expression.
-   typedef typename MT::CompositeType            CT;  //!< Composite type of the sparse matrix expression.
-   typedef typename UnderlyingNumeric<MT>::Type  NT;  //!< Numeric element type of the sparse matrix expression.
+   typedef typename MT::ResultType     RT;  //!< Result type of the sparse matrix expression.
+   typedef typename MT::ReturnType     RN;  //!< Return type of the sparse matrix expression.
+   typedef typename MT::CompositeType  CT;  //!< Composite type of the sparse matrix expression.
    //**********************************************************************************************
 
    //**Return type evaluation**********************************************************************
@@ -491,38 +488,7 @@ class SMatImagExpr : public SparseMatrix< SMatImagExpr<MT,SO>, SO >
    Operand sm_;  //!< Sparse matrix of the imaginary part expression.
    //**********************************************************************************************
 
-   //**Assignment to dense matrices (built-in)*****************************************************
-   /*! \cond BLAZE_INTERNAL */
-   /*!\brief Assignment of a sparse matrix \a imag expression to a dense matrix.
-   // \ingroup sparse_matrix
-   //
-   // \param lhs The target left-hand side dense matrix.
-   // \param rhs The right-hand side \a imag expression to be assigned.
-   // \return void
-   //
-   // This function implements the performance optimized assignment of a sparse matrix
-   // \a imag expression to a dense matrix. Due to the explicit application of the SFINAE
-   // principle, this function can only be selected by the compiler in case the operand
-   // requires an intermediate evaluation and the numeric element type of the operand is
-   // not complex.
-   */
-   template< typename MT2  // Type of the target dense matrix
-           , bool SO2 >    // Storage order of the target dense matrix
-   friend inline typename EnableIf< And< UseAssign<MT2>, Not< IsComplex<NT> > > >::Type
-      assign( DenseMatrix<MT2,SO2>& lhs, const SMatImagExpr& rhs )
-   {
-      BLAZE_FUNCTION_TRACE;
-
-      BLAZE_INTERNAL_ASSERT( (~lhs).rows()    == rhs.rows()   , "Invalid number of rows"    );
-      BLAZE_INTERNAL_ASSERT( (~lhs).columns() == rhs.columns(), "Invalid number of columns" );
-
-      assign( ~lhs, rhs.sm_ );
-      assign( ~lhs, imag( ~lhs ) );
-   }
-   /*! \endcond */
-   //**********************************************************************************************
-
-   //**Assignment to dense matrices (complex)******************************************************
+   //**Assignment to dense matrices****************************************************************
    /*! \cond BLAZE_INTERNAL */
    /*!\brief Assignment of a sparse matrix \a imag expression to a dense matrix.
    // \ingroup sparse_matrix
@@ -539,7 +505,7 @@ class SMatImagExpr : public SparseMatrix< SMatImagExpr<MT,SO>, SO >
    */
    template< typename MT2  // Type of the target dense matrix
            , bool SO2 >    // Storage order of the target dense matrix
-   friend inline typename EnableIf< And< UseAssign<MT2>, IsComplex<NT> > >::Type
+   friend inline typename EnableIf< UseAssign<MT2> >::Type
       assign( DenseMatrix<MT2,SO2>& lhs, const SMatImagExpr& rhs )
    {
       BLAZE_FUNCTION_TRACE;
@@ -557,85 +523,7 @@ class SMatImagExpr : public SparseMatrix< SMatImagExpr<MT,SO>, SO >
    /*! \endcond */
    //**********************************************************************************************
 
-   //**Assignment to row-major sparse matrices (built-in)******************************************
-   /*! \cond BLAZE_INTERNAL */
-   /*!\brief Assignment of a sparse matrix \a imag expression to a row-major sparse matrix.
-   // \ingroup sparse_matrix
-   //
-   // \param lhs The target left-hand side sparse matrix.
-   // \param rhs The right-hand side \a imag expression to be assigned.
-   // \return void
-   //
-   // This function implements the performance optimized assignment of a sparse matrix \a imag
-   // expression to a row-major sparse matrix. Due to the explicit application of the SFINAE
-   // principle, this function can only be selected by the compiler in case the operand requires
-   // an intermediate evaluation and the numeric element type of the operand is not complex.
-   */
-   template< typename MT2 >  // Type of the target sparse matrix
-   friend inline typename EnableIf< And< UseAssign<MT2>, Not< IsComplex<NT> > > >::Type
-      assign( SparseMatrix<MT2,false>& lhs, const SMatImagExpr& rhs )
-   {
-      BLAZE_FUNCTION_TRACE;
-
-      BLAZE_INTERNAL_ASSERT( (~lhs).rows()    == rhs.rows()   , "Invalid number of rows"    );
-      BLAZE_INTERNAL_ASSERT( (~lhs).columns() == rhs.columns(), "Invalid number of columns" );
-
-      typedef typename MT2::Iterator  Iterator;
-
-      assign( ~lhs, rhs.sm_ );
-
-      const size_t m( rhs.rows() );
-
-      for( size_t i=0UL; i<m; ++i ) {
-         const Iterator end( (~lhs).end(i) );
-         for( Iterator element=(~lhs).begin(i); element!=end; ++element ) {
-            element->value() = imag( element->value() );
-         }
-      }
-   }
-   /*! \endcond */
-   //**********************************************************************************************
-
-   //**Assignment to column-major sparse matrices (built-in)***************************************
-   /*! \cond BLAZE_INTERNAL */
-   /*!\brief Assignment of a sparse matrix \a imag expression to a column-major sparse matrix.
-   // \ingroup sparse_matrix
-   //
-   // \param lhs The target left-hand side sparse matrix.
-   // \param rhs The right-hand side \a imag expression to be assigned.
-   // \return void
-   //
-   // This function implements the performance optimized assignment of a sparse matrix \a imag
-   // expression to a column-major sparse matrix. Due to the explicit application of the SFINAE
-   // principle, this function can only be selected by the compiler in case the operand requires
-   // an intermediate evaluation and the numeric element type of the operand is not complex.
-   */
-   template< typename MT2 >  // Type of the target sparse matrix
-   friend inline typename EnableIf< And< UseAssign<MT2>, Not< IsComplex<NT> > > >::Type
-      assign( SparseMatrix<MT2,true>& lhs, const SMatImagExpr& rhs )
-   {
-      BLAZE_FUNCTION_TRACE;
-
-      BLAZE_INTERNAL_ASSERT( (~lhs).rows()    == rhs.rows()   , "Invalid number of rows"    );
-      BLAZE_INTERNAL_ASSERT( (~lhs).columns() == rhs.columns(), "Invalid number of columns" );
-
-      typedef typename MT2::Iterator  Iterator;
-
-      assign( ~lhs, rhs.sm_ );
-
-      const size_t n( rhs.columns() );
-
-      for( size_t j=0UL; j<n; ++j ) {
-         const Iterator end( (~lhs).end(j) );
-         for( Iterator element=(~lhs).begin(j); element!=end; ++element ) {
-            element->value() = imag( element->value() );
-         }
-      }
-   }
-   /*! \endcond */
-   //**********************************************************************************************
-
-   //**Assignment to sparse matrices (complex)*****************************************************
+   //**Assignment to sparse matrices***************************************************************
    /*! \cond BLAZE_INTERNAL */
    /*!\brief Assignment of a sparse matrix \a imag expression to a sparse matrix.
    // \ingroup sparse_matrix
@@ -651,7 +539,7 @@ class SMatImagExpr : public SparseMatrix< SMatImagExpr<MT,SO>, SO >
    */
    template< typename MT2  // Type of the target sparse matrix
            , bool SO2 >    // Storage order of the target sparse matrix
-   friend inline typename EnableIf< And< UseAssign<MT2>, IsComplex<NT> > >::Type
+   friend inline typename EnableIf< UseAssign<MT2> >::Type
       assign( SparseMatrix<MT2,SO2>& lhs, const SMatImagExpr& rhs )
    {
       BLAZE_FUNCTION_TRACE;
@@ -753,38 +641,7 @@ class SMatImagExpr : public SparseMatrix< SMatImagExpr<MT,SO>, SO >
    // No special implementation for the multiplication assignment to sparse matrices.
    //**********************************************************************************************
 
-   //**SMP assignment to dense matrices (built-in)*************************************************
-   /*! \cond BLAZE_INTERNAL */
-   /*!\brief SMP assignment of a sparse matrix \a imag expression to a dense matrix.
-   // \ingroup sparse_matrix
-   //
-   // \param lhs The target left-hand side dense matrix.
-   // \param rhs The right-hand side \a imag expression to be assigned.
-   // \return void
-   //
-   // This function implements the performance optimized SMP assignment of a sparse matrix
-   // \a imag expression to a dense matrix. Due to the explicit application of the SFINAE
-   // principle, this function can only be selected by the compiler in case the the expression
-   // specific parallel evaluation strategy is selected and the numeric element type of the
-   // operand is not complex.
-   */
-   template< typename MT2  // Type of the target dense matrix
-           , bool SO2 >    // Storage order of the target dense matrix
-   friend inline typename EnableIf< And< UseSMPAssign<MT2>, Not< IsComplex<NT> > > >::Type
-      smpAssign( DenseMatrix<MT2,SO2>& lhs, const SMatImagExpr& rhs )
-   {
-      BLAZE_FUNCTION_TRACE;
-
-      BLAZE_INTERNAL_ASSERT( (~lhs).rows()    == rhs.rows()   , "Invalid number of rows"    );
-      BLAZE_INTERNAL_ASSERT( (~lhs).columns() == rhs.columns(), "Invalid number of columns" );
-
-      smpAssign( ~lhs, rhs.sm_ );
-      smpAssign( ~lhs, imag( ~lhs ) );
-   }
-   /*! \endcond */
-   //**********************************************************************************************
-
-   //**SMP assignment to dense matrices (complex)**************************************************
+   //**SMP assignment to dense matrices************************************************************
    /*! \cond BLAZE_INTERNAL */
    /*!\brief SMP assignment of a sparse matrix \a imag expression to a dense matrix.
    // \ingroup sparse_matrix
@@ -801,7 +658,7 @@ class SMatImagExpr : public SparseMatrix< SMatImagExpr<MT,SO>, SO >
    */
    template< typename MT2  // Type of the target dense matrix
            , bool SO2 >    // Storage order of the target dense matrix
-   friend inline typename EnableIf< And< UseSMPAssign<MT2>, IsComplex<NT> > >::Type
+   friend inline typename EnableIf< UseSMPAssign<MT2> >::Type
       smpAssign( DenseMatrix<MT2,SO2>& lhs, const SMatImagExpr& rhs )
    {
       BLAZE_FUNCTION_TRACE;
@@ -911,6 +768,7 @@ class SMatImagExpr : public SparseMatrix< SMatImagExpr<MT,SO>, SO >
    /*! \cond BLAZE_INTERNAL */
    BLAZE_CONSTRAINT_MUST_BE_SPARSE_MATRIX_TYPE( MT );
    BLAZE_CONSTRAINT_MUST_BE_MATRIX_WITH_STORAGE_ORDER( MT, SO );
+   BLAZE_CONSTRAINT_MUST_NOT_BE_BUILTIN_TYPE( typename UnderlyingNumeric<MT>::Type );
    /*! \endcond */
    //**********************************************************************************************
 };
@@ -944,11 +802,11 @@ class SMatImagExpr : public SparseMatrix< SMatImagExpr<MT,SO>, SO >
 */
 template< typename MT  // Type of the sparse matrix
         , bool SO >    // Storage order
-inline const SMatImagExpr<MT,SO> imag( const SparseMatrix<MT,SO>& sm )
+inline const typename ImagExprTrait<MT>::Type imag( const SparseMatrix<MT,SO>& sm )
 {
    BLAZE_FUNCTION_TRACE;
 
-   return SMatImagExpr<MT,SO>( ~sm );
+   return typename ImagExprTrait<MT>::Type( ~sm );
 }
 //*************************************************************************************************
 
