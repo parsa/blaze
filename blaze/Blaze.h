@@ -3391,13 +3391,30 @@ namespace blaze {}
 
    blaze::DynamicMatrix<double,blaze::rowMajor> L, U, P;
 
-   lu( A, L, U, P );  // LU decomposition of A
+   lu( A, L, U, P );  // LU decomposition of a row-major matrix
+
+   assert( A == L * U * P );
    \endcode
 
-// The function works for both \c rowMajor and \c columnMajor matrices. The three matrices \c A
-// \c L and \c U are required to have the same storage order though. Additionally, \c lu() can be
-// used with adaptors. For instance, the following example demonstrates the LU decomposition of a
-// symmetric matrix into a lower and upper triangular matrix:
+   \code
+   blaze::DynamicMatrix<double,blaze::columnMajor> A;
+   // ... Resizing and initialization
+
+   blaze::DynamicMatrix<double,blaze::columnMajor> L, U, P;
+
+   lu( A, L, U, P );  // LU decomposition of a column-major matrix
+
+   assert( A == P * L * U );
+   \endcode
+
+// The function works for both \c rowMajor and \c columnMajor matrices. Note, however, that the
+// three matrices \c A, \c L and \c U are required to have the same storage order. Also, please
+// note that the way the permutation matrix \c P needs to be applied differs between row-major and
+// column-major matrices, since the algorithm uses column interchanges for row-major matrices and
+// row interchanges for column-major matrices.
+//
+// Furthermore, \c lu() can be used with adaptors. For instance, the following example demonstrates
+// the LU decomposition of a symmetric matrix into a lower and upper triangular matrix:
 
    \code
    blaze::SymmetricMatrix< blaze::DynamicMatrix<double,blaze::columnMajor> > A;
