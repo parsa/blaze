@@ -63,19 +63,17 @@
 #include <blaze/math/typetraits/IsRowVector.h>
 #include <blaze/math/typetraits/IsTemporary.h>
 #include <blaze/math/typetraits/RequiresEvaluation.h>
-#include <blaze/math/typetraits/UnderlyingNumeric.h>
 #include <blaze/math/typetraits/Size.h>
+#include <blaze/math/typetraits/UnderlyingNumeric.h>
 #include <blaze/system/Inline.h>
 #include <blaze/util/Assert.h>
+#include <blaze/util/constraints/Builtin.h>
 #include <blaze/util/constraints/Reference.h>
 #include <blaze/util/EnableIf.h>
 #include <blaze/util/InvalidType.h>
 #include <blaze/util/logging/FunctionTrace.h>
-#include <blaze/util/mpl/And.h>
-#include <blaze/util/mpl/Not.h>
 #include <blaze/util/SelectType.h>
 #include <blaze/util/Types.h>
-#include <blaze/util/typetraits/IsComplex.h>
 
 
 namespace blaze {
@@ -101,9 +99,8 @@ class DVecRealExpr : public DenseVector< DVecRealExpr<VT,TF>, TF >
 {
  private:
    //**Type definitions****************************************************************************
-   typedef typename VT::ResultType               RT;  //!< Result type of the dense vector expression.
-   typedef typename VT::ReturnType               RN;  //!< Return type of the dense vector expression.
-   typedef typename UnderlyingNumeric<VT>::Type  NT;  //!< Numeric element type of the dense vector expression.
+   typedef typename VT::ResultType  RT;  //!< Result type of the dense vector expression.
+   typedef typename VT::ReturnType  RN;  //!< Return type of the dense vector expression.
    //**********************************************************************************************
 
    //**Return type evaluation**********************************************************************
@@ -519,35 +516,7 @@ class DVecRealExpr : public DenseVector< DVecRealExpr<VT,TF>, TF >
    Operand dv_;  //!< Dense vector of the real part expression.
    //**********************************************************************************************
 
-   //**Assignment to dense vectors (built-in)******************************************************
-   /*! \cond BLAZE_INTERNAL */
-   /*!\brief Assignment of a dense vector \a real expression to a dense vector.
-   // \ingroup dense_vector
-   //
-   // \param lhs The target left-hand side dense vector.
-   // \param rhs The right-hand side \a real expression to be assigned.
-   // \return void
-   //
-   // This function implements the performance optimized assignment of a dense vector \a real
-   // expression to a dense vector. Due to the explicit application of the SFINAE principle,
-   // this function can only be selected by the compiler in case the operand requires an
-   // intermediate evaluation and the numeric element type of the operand is not complex.
-   */
-   template< typename VT2 >  // Type of the target dense vector
-   friend inline typename EnableIf< And< UseAssign<VT2>, Not< IsComplex<NT> > > >::Type
-      assign( DenseVector<VT2,TF>& lhs, const DVecRealExpr& rhs )
-   {
-      BLAZE_FUNCTION_TRACE;
-
-      BLAZE_INTERNAL_ASSERT( (~lhs).size() == rhs.size(), "Invalid vector sizes" );
-
-      assign( ~lhs, rhs.dv_ );
-      assign( ~lhs, real( ~lhs ) );
-   }
-   /*! \endcond */
-   //**********************************************************************************************
-
-   //**Assignment to dense vectors (complex)*******************************************************
+   //**Assignment to dense vectors*****************************************************************
    /*! \cond BLAZE_INTERNAL */
    /*!\brief Assignment of a dense vector \a real expression to a dense vector.
    // \ingroup dense_vector
@@ -562,7 +531,7 @@ class DVecRealExpr : public DenseVector< DVecRealExpr<VT,TF>, TF >
    // intermediate evaluation and the numeric element type of the operand is complex.
    */
    template< typename VT2 >  // Type of the target dense vector
-   friend inline typename EnableIf< And< UseAssign<VT2>, IsComplex<NT> > >::Type
+   friend inline typename EnableIf< UseAssign<VT2> >::Type
       assign( DenseVector<VT2,TF>& lhs, const DVecRealExpr& rhs )
    {
       BLAZE_FUNCTION_TRACE;
@@ -719,36 +688,7 @@ class DVecRealExpr : public DenseVector< DVecRealExpr<VT,TF>, TF >
    // No special implementation for the multiplication assignment to sparse vectors.
    //**********************************************************************************************
 
-   //**SMP assignment to dense vectors (built-in)**************************************************
-   /*! \cond BLAZE_INTERNAL */
-   /*!\brief SMP assignment of a dense vector \a real expression to a dense vector.
-   // \ingroup dense_vector
-   //
-   // \param lhs The target left-hand side dense vector.
-   // \param rhs The right-hand side \a real expression to be assigned.
-   // \return void
-   //
-   // This function implements the performance optimized SMP assignment of a dense vector
-   // \a real expression to a dense vector. Due to the explicit application of the SFINAE
-   // principle, this function can only be selected by the compiler in case the expression
-   // specific parallel evaluation strategy is selected and the numeric element type of the
-   // operand is not complex.
-   */
-   template< typename VT2 >  // Type of the target dense vector
-   friend inline typename EnableIf< And< UseSMPAssign<VT2>, Not< IsComplex<NT> > > >::Type
-      smpAssign( DenseVector<VT2,TF>& lhs, const DVecRealExpr& rhs )
-   {
-      BLAZE_FUNCTION_TRACE;
-
-      BLAZE_INTERNAL_ASSERT( (~lhs).size() == rhs.size(), "Invalid vector sizes" );
-
-      smpAssign( ~lhs, rhs.dv_ );
-      smpAssign( ~lhs, real( ~lhs ) );
-   }
-   /*! \endcond */
-   //**********************************************************************************************
-
-   //**SMP assignment to dense vectors (complex)***************************************************
+   //**SMP assignment to dense vectors*************************************************************
    /*! \cond BLAZE_INTERNAL */
    /*!\brief SMP assignment of a dense vector \a real expression to a dense vector.
    // \ingroup dense_vector
@@ -764,7 +704,7 @@ class DVecRealExpr : public DenseVector< DVecRealExpr<VT,TF>, TF >
    // operand is complex.
    */
    template< typename VT2 >  // Type of the target dense vector
-   friend inline typename EnableIf< And< UseSMPAssign<VT2>, IsComplex<NT> > >::Type
+   friend inline typename EnableIf< UseSMPAssign<VT2> >::Type
       smpAssign( DenseVector<VT2,TF>& lhs, const DVecRealExpr& rhs )
    {
       BLAZE_FUNCTION_TRACE;
@@ -925,6 +865,7 @@ class DVecRealExpr : public DenseVector< DVecRealExpr<VT,TF>, TF >
    /*! \cond BLAZE_INTERNAL */
    BLAZE_CONSTRAINT_MUST_BE_DENSE_VECTOR_TYPE( VT );
    BLAZE_CONSTRAINT_MUST_BE_VECTOR_WITH_TRANSPOSE_FLAG( VT, TF );
+   BLAZE_CONSTRAINT_MUST_NOT_BE_BUILTIN_TYPE( typename UnderlyingNumeric<VT>::Type );
    /*! \endcond */
    //**********************************************************************************************
 };
@@ -958,11 +899,11 @@ class DVecRealExpr : public DenseVector< DVecRealExpr<VT,TF>, TF >
 */
 template< typename VT  // Type of the dense vector
         , bool TF >    // Transpose flag
-inline const DVecRealExpr<VT,TF> real( const DenseVector<VT,TF>& dv )
+inline const typename RealExprTrait<VT>::Type real( const DenseVector<VT,TF>& dv )
 {
    BLAZE_FUNCTION_TRACE;
 
-   return DVecRealExpr<VT,TF>( ~dv );
+   return typename RealExprTrait<VT>::Type( ~dv );
 }
 //*************************************************************************************************
 

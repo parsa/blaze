@@ -43,10 +43,12 @@
 #include <blaze/math/expressions/Forward.h>
 #include <blaze/math/typetraits/IsColumnVector.h>
 #include <blaze/math/typetraits/IsDenseVector.h>
+#include <blaze/math/typetraits/UnderlyingNumeric.h>
 #include <blaze/util/InvalidType.h>
 #include <blaze/util/mpl/And.h>
 #include <blaze/util/mpl/If.h>
 #include <blaze/util/mpl/Or.h>
+#include <blaze/util/typetraits/IsBuiltin.h>
 #include <blaze/util/typetraits/IsConst.h>
 #include <blaze/util/typetraits/IsReference.h>
 #include <blaze/util/typetraits/IsVolatile.h>
@@ -77,8 +79,11 @@ struct DVecRealExprTrait
  private:
    //**********************************************************************************************
    /*! \cond BLAZE_INTERNAL */
+   typedef typename UnderlyingNumeric<VT>::Type  NET;
+
    typedef If< And< IsDenseVector<VT>, IsColumnVector<VT> >
-             , DVecRealExpr<VT,false>, INVALID_TYPE >  Tmp;
+             , typename If< IsBuiltin<NET>, const VT&, DVecRealExpr<VT,false> >::Type
+             , INVALID_TYPE >  Tmp;
 
    typedef typename RemoveReference< typename RemoveCV<VT>::Type >::Type  Type1;
    /*! \endcond */
