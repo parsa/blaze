@@ -64,18 +64,16 @@
 #include <blaze/math/typetraits/IsSparseVector.h>
 #include <blaze/math/typetraits/IsTemporary.h>
 #include <blaze/math/typetraits/RequiresEvaluation.h>
-#include <blaze/math/typetraits/UnderlyingNumeric.h>
 #include <blaze/math/typetraits/Size.h>
+#include <blaze/math/typetraits/UnderlyingNumeric.h>
 #include <blaze/util/Assert.h>
+#include <blaze/util/constraints/Builtin.h>
 #include <blaze/util/constraints/Reference.h>
 #include <blaze/util/EnableIf.h>
 #include <blaze/util/InvalidType.h>
 #include <blaze/util/logging/FunctionTrace.h>
-#include <blaze/util/mpl/And.h>
-#include <blaze/util/mpl/Not.h>
 #include <blaze/util/SelectType.h>
 #include <blaze/util/Types.h>
-#include <blaze/util/typetraits/IsComplex.h>
 #include <blaze/util/typetraits/RemoveReference.h>
 
 
@@ -102,12 +100,11 @@ class SVecImagExpr : public SparseVector< SVecImagExpr<VT,TF>, TF >
 {
  private:
    //**Type definitions****************************************************************************
-   typedef typename VT::ResultType               RT;  //!< Result type of the sparse vector expression.
-   typedef typename VT::ReturnType               RN;  //!< Return type of the sparse vector expression.
-   typedef typename VT::CompositeType            CT;  //!< Composite type of the sparse vector expression.
-   typedef typename VT::TransposeType            TT;  //!< Transpose type of the sparse vector expression.
-   typedef typename VT::ElementType              ET;  //!< Element type of the sparse vector expression.
-   typedef typename UnderlyingNumeric<VT>::Type  NT;  //!< Numeric element type of the sparse vector expression.
+   typedef typename VT::ResultType     RT;  //!< Result type of the sparse vector expression.
+   typedef typename VT::ReturnType     RN;  //!< Return type of the sparse vector expression.
+   typedef typename VT::CompositeType  CT;  //!< Composite type of the sparse vector expression.
+   typedef typename VT::TransposeType  TT;  //!< Transpose type of the sparse vector expression.
+   typedef typename VT::ElementType    ET;  //!< Element type of the sparse vector expression.
    //**********************************************************************************************
 
    //**Return type evaluation**********************************************************************
@@ -452,36 +449,7 @@ class SVecImagExpr : public SparseVector< SVecImagExpr<VT,TF>, TF >
    Operand sv_;  //!< Sparse vector of the imaginary part expression.
    //**********************************************************************************************
 
-   //**Assignment to dense vectors (built-in)******************************************************
-   /*! \cond BLAZE_INTERNAL */
-   /*!\brief Assignment of a sparse vector \a imag expression to a dense vector.
-   // \ingroup sparse_vector
-   //
-   // \param lhs The target left-hand side dense vector.
-   // \param rhs The right-hand side \a imag expression to be assigned.
-   // \return void
-   //
-   // This function implements the performance optimized assignment of a sparse vector
-   // \a imag expression to a dense vector. Due to the explicit application of the SFINAE
-   // principle, this function can only be selected by the compiler in case the operand
-   // requires an intermediate evaluation and the numeric element type of the operand is
-   // not complex.
-   */
-   template< typename VT2 >  // Type of the target dense vector
-   friend inline typename EnableIf< And< UseAssign<VT2>, Not< IsComplex<NT> > > >::Type
-      assign( DenseVector<VT2,TF>& lhs, const SVecImagExpr& rhs )
-   {
-      BLAZE_FUNCTION_TRACE;
-
-      BLAZE_INTERNAL_ASSERT( (~lhs).size() == rhs.size(), "Invalid vector sizes" );
-
-      assign( ~lhs, rhs.sv_ );
-      assign( ~lhs, imag( ~lhs ) );
-   }
-   /*! \endcond */
-   //**********************************************************************************************
-
-   //**Assignment to dense vectors (complex)*******************************************************
+   //**Assignment to dense vectors*****************************************************************
    /*! \cond BLAZE_INTERNAL */
    /*!\brief Assignment of a sparse vector \a imag expression to a dense vector.
    // \ingroup sparse_vector
@@ -497,7 +465,7 @@ class SVecImagExpr : public SparseVector< SVecImagExpr<VT,TF>, TF >
    // complex.
    */
    template< typename VT2 >  // Type of the target dense vector
-   friend inline typename EnableIf< And< UseAssign<VT2>, IsComplex<NT> > >::Type
+   friend inline typename EnableIf< UseAssign<VT2> >::Type
       assign( DenseVector<VT2,TF>& lhs, const SVecImagExpr& rhs )
    {
       BLAZE_FUNCTION_TRACE;
@@ -534,16 +502,14 @@ class SVecImagExpr : public SparseVector< SVecImagExpr<VT,TF>, TF >
    {
       BLAZE_FUNCTION_TRACE;
 
+      BLAZE_CONSTRAINT_MUST_BE_SPARSE_VECTOR_TYPE( RT );
+      BLAZE_CONSTRAINT_MUST_BE_VECTOR_WITH_TRANSPOSE_FLAG( RT, TF );
+      BLAZE_CONSTRAINT_MUST_BE_REFERENCE_TYPE( typename RT::CompositeType );
+
       BLAZE_INTERNAL_ASSERT( (~lhs).size() == rhs.size(), "Invalid vector sizes" );
 
-      typedef typename VT2::Iterator  Iterator;
-
-      assign( ~lhs, rhs.sv_ );
-
-      const Iterator end( (~lhs).end() );
-      for( Iterator element=(~lhs).begin(); element!=end; ++element ) {
-         element->value() = imag( element->value() );
-      }
+      const RT tmp( serial( rhs.sv_ ) );
+      assign( ~lhs, imag( tmp ) );
    }
    /*! \endcond */
    //**********************************************************************************************
@@ -656,36 +622,7 @@ class SVecImagExpr : public SparseVector< SVecImagExpr<VT,TF>, TF >
    // No special implementation for the multiplication assignment to sparse vectors.
    //**********************************************************************************************
 
-   //**SMP assignment to dense vectors (built-in)**************************************************
-   /*! \cond BLAZE_INTERNAL */
-   /*!\brief SMP assignment of a sparse vector \a imag expression to a dense vector.
-   // \ingroup sparse_vector
-   //
-   // \param lhs The target left-hand side dense vector.
-   // \param rhs The right-hand side \a imag expression to be assigned.
-   // \return void
-   //
-   // This function implements the performance optimized SMP assignment of a sparse vector
-   // \a imag expression to a dense vector. Due to the explicit application of the SFINAE
-   // principle, this function can only be selected by the compiler in case the expression
-   // specific parallel evaluation strategy is selected and the numeric element type of the
-   // operand is not complex.
-   */
-   template< typename VT2 >  // Type of the target dense vector
-   friend inline typename EnableIf< And< UseSMPAssign<VT2>, Not< IsComplex<NT> > > >::Type
-      smpAssign( DenseVector<VT2,TF>& lhs, const SVecImagExpr& rhs )
-   {
-      BLAZE_FUNCTION_TRACE;
-
-      BLAZE_INTERNAL_ASSERT( (~lhs).size() == rhs.size(), "Invalid vector sizes" );
-
-      smpAssign( ~lhs, rhs.sv_ );
-      smpAssign( ~lhs, imag( ~lhs ) );
-   }
-   /*! \endcond */
-   //**********************************************************************************************
-
-   //**SMP assignment to dense vectors (complex)***************************************************
+   //**SMP assignment to dense vectors*************************************************************
    /*! \cond BLAZE_INTERNAL */
    /*!\brief SMP assignment of a sparse vector \a imag expression to a dense vector.
    // \ingroup sparse_vector
@@ -700,7 +637,7 @@ class SVecImagExpr : public SparseVector< SVecImagExpr<VT,TF>, TF >
    // specific parallel evaluation strategy is selected.
    */
    template< typename VT2 >  // Type of the target dense vector
-   friend inline typename EnableIf< And< UseSMPAssign<VT2>, IsComplex<NT> > >::Type
+   friend inline typename EnableIf< UseSMPAssign<VT2> >::Type
       smpAssign( DenseVector<VT2,TF>& lhs, const SVecImagExpr& rhs )
    {
       BLAZE_FUNCTION_TRACE;
@@ -833,6 +770,7 @@ class SVecImagExpr : public SparseVector< SVecImagExpr<VT,TF>, TF >
    /*! \cond BLAZE_INTERNAL */
    BLAZE_CONSTRAINT_MUST_BE_SPARSE_VECTOR_TYPE( VT );
    BLAZE_CONSTRAINT_MUST_BE_VECTOR_WITH_TRANSPOSE_FLAG( VT, TF );
+   BLAZE_CONSTRAINT_MUST_NOT_BE_BUILTIN_TYPE( typename UnderlyingNumeric<VT>::Type );
    /*! \endcond */
    //**********************************************************************************************
 };
@@ -866,11 +804,11 @@ class SVecImagExpr : public SparseVector< SVecImagExpr<VT,TF>, TF >
 */
 template< typename VT  // Type of the sparse vector
         , bool TF >    // Transpose flag
-inline const SVecImagExpr<VT,TF> imag( const SparseVector<VT,TF>& sv )
+inline const typename ImagExprTrait<VT>::Type imag( const SparseVector<VT,TF>& sv )
 {
    BLAZE_FUNCTION_TRACE;
 
-   return SVecImagExpr<VT,TF>( ~sv );
+   return typename ImagExprTrait<VT>::Type( ~sv );
 }
 //*************************************************************************************************
 
