@@ -150,8 +150,8 @@ inline void lu( DenseMatrix<MT1,SO1>& A, Matrix<MT2,SO2>& P )
                           \f[ A = P \cdot L \cdot U, \f]
 
 // where \c P is an m-by-m permutation matrix, which represents the pivoting indices for the applied
-// row interchanges, \c L is a lower unitriangular matrix (lower trapezoidal if \a m > \a n), and
-// \c U is an upper triangular matrix (upper trapezoidal if \a m < \a n).
+// row interchanges, \c L is a lower triangular matrix (lower trapezoidal if \a m > \a n), and \c U
+// is an upper triangular matrix (upper trapezoidal if \a m < \a n).
 //
 // In case of a row-major matrix the algorithm performs the decomposition using partial pivoting
 // with column interchanges. The resulting decomposition has the form
@@ -159,8 +159,8 @@ inline void lu( DenseMatrix<MT1,SO1>& A, Matrix<MT2,SO2>& P )
                           \f[ A = L \cdot U \cdot P, \f]
 
 // where \c L is a lower triangular matrix (lower trapezoidal if \a m > \a n), \c U is an upper
-// unitriangular matrix (upper trapezoidal if \a m < \a n), and \c P is an n-by-n permutation
-// matrix, which represents the pivoting indices for the applied column interchanges,
+// triangular matrix (upper trapezoidal if \a m < \a n), and \c P is an n-by-n permutation matrix,
+// which represents the pivoting indices for the applied column interchanges,
 //
 // \note This function only works for general matrices with \c float, \c double, \c complex<float>,
 // or \c complex<double> element type. The attempt to call the function with matrices of any other
