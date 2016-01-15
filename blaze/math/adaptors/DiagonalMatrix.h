@@ -289,12 +289,17 @@ inline void invert2x2( DiagonalMatrix<MT,SO,true>& m )
 
    typename DerestrictTrait<MT>::Type A( derestrict( m ) );
 
-   if( isDefault( A(0,0) ) || isDefault( A(1,1) ) ) {
+   const ET det( A(0,0) * A(1,1) );
+
+   if( isDefault( det ) ) {
       BLAZE_THROW_INVALID_ARGUMENT( "Inversion of singular matrix failed" );
    }
 
-   invert( A(0,0) );
-   invert( A(1,1) );
+   const ET idet( ET(1) / det );
+   const ET a11( A(0,0) * idet );
+
+   A(0,0) =  A(1,1) * idet;
+   A(1,1) =  a11;
 
    BLAZE_INTERNAL_ASSERT( isIntact( m ), "Broken invariant detected" );
 }
@@ -331,13 +336,20 @@ inline void invert3x3( DiagonalMatrix<MT,SO,true>& m )
 
    typename DerestrictTrait<MT>::Type A( derestrict( m ) );
 
-   if( isDefault( A(0,0) ) || isDefault( A(1,1) ) || isDefault( A(2,2) ) ) {
+   const ET tmp1( A(0,0)*A(1,1) );
+   const ET tmp2( A(0,0)*A(2,2) );
+
+   const ET det( tmp1*A(2,2) );
+
+   if( isDefault( det ) ) {
       BLAZE_THROW_INVALID_ARGUMENT( "Inversion of singular matrix failed" );
    }
 
-   invert( A(0,0) );
-   invert( A(1,1) );
-   invert( A(2,2) );
+   const ET idet( ET(1) / det );
+
+   A(0,0) = A(1,1)*A(2,2)*idet;
+   A(1,1) = tmp2*idet;
+   A(2,2) = tmp1*idet;
 
    BLAZE_INTERNAL_ASSERT( isIntact( m ), "Broken invariant detected" );
 }
@@ -374,14 +386,23 @@ inline void invert4x4( DiagonalMatrix<MT,SO,true>& m )
 
    typename DerestrictTrait<MT>::Type A( derestrict( m ) );
 
-   if( isDefault( A(0,0) ) || isDefault( A(1,1) ) || isDefault( A(2,2) ) || isDefault( A(3,3) ) ) {
+   const ET tmp1( A(2,2)*A(3,3) );
+   const ET tmp2( A(0,0)*A(1,1) );
+   const ET tmp3( A(0,0)*tmp1 );
+   const ET tmp4( A(2,2)*tmp2 );
+
+   const ET det( tmp1 * tmp2 );
+
+   if( isDefault( det ) ) {
       BLAZE_THROW_INVALID_ARGUMENT( "Inversion of singular matrix failed" );
    }
 
-   invert( A(0,0) );
-   invert( A(1,1) );
-   invert( A(2,2) );
-   invert( A(3,3) );
+   const ET idet( ET(1) / det );
+
+   A(0,0) = A(1,1)*tmp1*idet;
+   A(1,1) = tmp3*idet;
+   A(2,2) = A(3,3)*tmp2*idet;
+   A(3,3) = tmp4*idet;
 
    BLAZE_INTERNAL_ASSERT( isIntact( m ), "Broken invariant detected" );
 }
@@ -418,16 +439,25 @@ inline void invert5x5( DiagonalMatrix<MT,SO,true>& m )
 
    typename DerestrictTrait<MT>::Type A( derestrict( m ) );
 
-   if( isDefault( A(0,0) ) || isDefault( A(1,1) ) || isDefault( A(2,2) ) ||
-       isDefault( A(3,3) ) || isDefault( A(4,4) ) ) {
+   const ET tmp1( A(0,0)*A(1,1) );
+   const ET tmp2( A(3,3)*A(4,4) );
+   const ET tmp3( A(0,0)*tmp2 );
+   const ET tmp4( tmp1*A(2,2) );
+   const ET tmp5( tmp4*A(3,3) );
+
+   const ET det( tmp2*tmp4 );
+
+   if( isDefault( det ) ) {
       BLAZE_THROW_INVALID_ARGUMENT( "Inversion of singular matrix failed" );
    }
 
-   invert( A(0,0) );
-   invert( A(1,1) );
-   invert( A(2,2) );
-   invert( A(3,3) );
-   invert( A(4,4) );
+   const ET idet( ET(1) / det );
+
+   A(0,0) = A(1,1)*A(2,2)*tmp2*idet;
+   A(1,1) = A(2,2)*tmp3*idet;
+   A(2,2) = tmp1*tmp2*idet;
+   A(3,3) = tmp4*A(4,4)*idet;
+   A(4,4) = tmp5*idet;
 
    BLAZE_INTERNAL_ASSERT( isIntact( m ), "Broken invariant detected" );
 }
@@ -464,17 +494,27 @@ inline void invert6x6( DiagonalMatrix<MT,SO,true>& m )
 
    typename DerestrictTrait<MT>::Type A( derestrict( m ) );
 
-   if( isDefault( A(0,0) ) || isDefault( A(1,1) ) || isDefault( A(2,2) ) ||
-       isDefault( A(3,3) ) || isDefault( A(4,4) ) || isDefault( A(5,5) ) ) {
+   const ET tmp1( A(0,0)*A(1,1) );
+   const ET tmp2( A(3,3)*A(4,4) );
+   const ET tmp3( tmp1*A(2,2) );
+   const ET tmp4( tmp2*A(5,5) );
+   const ET tmp5( A(0,0)*tmp4 );
+   const ET tmp6( tmp3*A(3,3) );
+
+   const ET det( tmp3*tmp4 );
+
+   if( isDefault( det ) ) {
       BLAZE_THROW_INVALID_ARGUMENT( "Inversion of singular matrix failed" );
    }
 
-   invert( A(0,0) );
-   invert( A(1,1) );
-   invert( A(2,2) );
-   invert( A(3,3) );
-   invert( A(4,4) );
-   invert( A(5,5) );
+   const ET idet( ET(1) / det );
+
+   A(0,0) = A(1,1)*A(2,2)*tmp4*idet;
+   A(1,1) = tmp5*A(2,2)*idet;
+   A(2,2) = tmp1*tmp4*idet;
+   A(3,3) = tmp3*A(4,4)*A(5,5)*idet;
+   A(4,4) = tmp6*A(5,5)*idet;
+   A(5,5) = tmp2*tmp3*idet;
 
    BLAZE_INTERNAL_ASSERT( isIntact( m ), "Broken invariant detected" );
 }
