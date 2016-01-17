@@ -60,12 +60,12 @@ namespace blaze {
 //          triangular matrix \c U, and a permutation matrix \c P (\f$ A = P L U \f$). If no
 //          permutations are required, \c P is the identity matrix.
 //  - \a byLDLT: The Bunch-Kaufman inversion algorithm for symmetric indefinite matrices. It
-//          decomposes the given matrix into either \f$ A = U D U^{T} \f$ or /f$ A = L D L^{T} \f$,
+//          decomposes the given matrix into either \f$ A = U D U^{T} \f$ or \f$ A = L D L^{T} \f$,
 //          where \c U (or \c L) is a product of permutation and unit upper (lower) triangular
 //          matrices, and \c D is symmetric and block diagonal with 1-by-1 and 2-by-2 diagonal
 //          blocks.
 //  - \a byLDLH: The Bunch-Kaufman inversion algorithm for Hermitian indefinite matrices. It
-//          decomposes the given matrix into either \f$ A = U D U^{H} \f$ or /f$ A = L D L^{H} \f$,
+//          decomposes the given matrix into either \f$ A = U D U^{H} \f$ or \f$ A = L D L^{H} \f$,
 //          where \c U (or \c L) is a product of permutation and unit upper (lower) triangular
 //          matrices, and \c D is Hermitian and block diagonal with 1-by-1 and 2-by-2 diagonal
 //          blocks.
