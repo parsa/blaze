@@ -154,21 +154,15 @@ inline void qr( const DenseMatrix<MT1,SO1>& A, DenseMatrix<MT2,SO2>& Q, DenseMat
 
    geqrf( tmp, tau.get() );
 
-   typename DerestrictTrait<MT3>::Type R2( derestrict( ~R ) );
+   typename DerestrictTrait<MT3>::Type r( derestrict( ~R ) );
    resize( ~R, m, n );
-   reset( R2 );
+   reset( r );
 
    for( size_t i=0UL; i<mindim; ++i ) {
-      R2(i,i) = tmp(i,i);
+      r(i,i) = tmp(i,i);
       tmp(i,i) = ET3(1);
       for( size_t j=i+1UL; j<n; ++j ) {
-         R2(i,j) = tmp(i,j);
-         reset( tmp(i,j) );
-      }
-   }
-   for( size_t i=mindim; i<m; ++i ) {
-      for( size_t j=i+1UL; j<n; ++j ) {
-         R2(i,j) = tmp(i,j);
+         r(i,j) = tmp(i,j);
          reset( tmp(i,j) );
       }
    }
