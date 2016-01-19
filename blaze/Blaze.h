@@ -3294,7 +3294,20 @@ namespace blaze {}
 // will be created.
 //
 //
-// \n \subsection matrix_operations_matrix_inversion Matrix Inversion
+// \n \subsection matrix_operations_swap Swap
+//
+// Via the \c \c swap() function it is possible to completely swap the contents of two matrices
+// of the same type:
+
+   \code
+   blaze::DynamicMatrix<int,blaze::rowMajor> M1( 10UL, 15UL );
+   blaze::DynamicMatrix<int,blaze::rowMajor> M2( 20UL, 10UL );
+
+   swap( M1, M2 );  // Swapping the contents of M1 and M2
+   \endcode
+
+// \n \section matrix_operations_matrix_inversion Matrix Inversion
+// <hr>
 //
 // The inverse of a square dense matrix can be computed via the \c inv() function:
 
@@ -3381,7 +3394,18 @@ namespace blaze {}
 // is thrown the matrix may already have been modified.
 //
 //
-// \n \subsection matrix_operations_matrix_decomposition Matrix Decomposition
+// \n \section matrix_operations_decomposition Matrix Decomposition
+// <hr>
+//
+// \note All decomposition functions can only be used for dense matrices with \c float, \c double,
+// \c complex<float> or \c complex<double> element type. The attempt to call the function with
+// matrices of any other element type or with a sparse matrix results in a compile time error!
+//
+// \note The functions decompose a dense matrix by means of LAPACK kernels. Thus the function can
+// only be used if the fitting LAPACK library is available and linked to the executable. Otherwise
+// a linker error will be created.
+//
+// \subsection matrix_operations_decomposition_lu LU Decomposition
 //
 // The LU decomposition of a dense matrix can be computed via the \c lu() function:
 
@@ -3427,25 +3451,36 @@ namespace blaze {}
    lu( A, L, U, P );  // LU decomposition of A
    \endcode
 
-// \note All decomposition methods can only be used for dense matrices with \c float, \c double,
-// \c complex<float> or \c complex<double> element type. The attempt to call the function with
-// matrices of any other element type or with a sparse matrix results in a compile time error!
+// \n \subsection matrix_operations_decomposition_qr QR Decomposition
 //
-// \note The functions decompose a dense matrix by means of LAPACK kernels. Thus the function can
-// only be used if the fitting LAPACK library is available and linked to the executable. Otherwise
-// a linker error will be created.
-//
-//
-// \n \subsection matrix_operations_swap Swap
-//
-// Via the \c \c swap() function it is possible to completely swap the contents of two matrices
-// of the same type:
+// The QR decomposition of a dense matrix can be computed via the \c qr() function:
 
    \code
-   blaze::DynamicMatrix<int,blaze::rowMajor> M1( 10UL, 15UL );
-   blaze::DynamicMatrix<int,blaze::rowMajor> M2( 20UL, 10UL );
+   blaze::DynamicMatrix<double,blaze::rowMajor> A;
+   // ... Resizing and initialization
 
-   swap( M1, M2 );  // Swapping the contents of M1 and M2
+   blaze::DynamicMatrix<double,blaze::columnMajor> Q;
+   blaze::DynamicMatrix<double,blaze::rowMajor> R;
+
+   qr( A, Q, R );  // QR decomposition of a row-major matrix
+
+   assert( A == Q * R );
+   \endcode
+
+// The function works for both \c rowMajor and \c columnMajor matrices and the three matrices
+// \c A, \c Q and \c R can have any storage order.
+//
+// Furthermore, \c qr() can be used with adaptors. For instance, the following example demonstrates
+// the QR decomposition of a symmetric matrix into a general matrix and an upper triangular matrix:
+
+   \code
+   blaze::SymmetricMatrix< blaze::DynamicMatrix<double,blaze::columnMajor> > A;
+   // ... Resizing and initialization
+
+   blaze::DynamicMatrix<double,blaze::rowMajor> Q;
+   blaze::UpperMatrix< blaze::DynamicMatrix<double,blaze::columnMajor> > R;
+
+   qr( A, Q, R );  // QR decomposition of A
    \endcode
 
 // \n Previous: \ref matrix_types &nbsp; &nbsp; Next: \ref adaptors
