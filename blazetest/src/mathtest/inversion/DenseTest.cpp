@@ -40,10 +40,7 @@
 #include <cstdlib>
 #include <iostream>
 #include <blaze/math/DiagonalMatrix.h>
-#include <blaze/math/DynamicMatrix.h>
-#include <blaze/math/HermitianMatrix.h>
 #include <blaze/math/LowerMatrix.h>
-#include <blaze/math/SymmetricMatrix.h>
 #include <blaze/math/UniLowerMatrix.h>
 #include <blaze/math/UniUpperMatrix.h>
 #include <blaze/math/UpperMatrix.h>
@@ -276,7 +273,6 @@ DenseTest::DenseTest()
    testRandom6x6< UpperMatrix< DynamicMatrix<double,columnMajor> > >();
    testRandom6x6< UniUpperMatrix< DynamicMatrix<double,columnMajor> > >();
    testRandom6x6< DiagonalMatrix< DynamicMatrix<double,columnMajor> > >();
-
 
    //=====================================================================================
    // Random NxN matrix tests

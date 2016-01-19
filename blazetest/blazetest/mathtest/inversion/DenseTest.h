@@ -46,9 +46,18 @@
 #include <typeinfo>
 #include <blaze/math/DenseMatrix.h>
 #include <blaze/math/DenseSubmatrix.h>
+#include <blaze/math/DynamicMatrix.h>
+#include <blaze/math/HermitianMatrix.h>
 #include <blaze/math/shims/IsDefault.h>
+#include <blaze/math/SymmetricMatrix.h>
+#include <blaze/math/typetraits/IsHermitian.h>
+#include <blaze/math/typetraits/IsSymmetric.h>
+#include <blaze/math/typetraits/IsTriangular.h>
 #include <blaze/math/typetraits/IsUniTriangular.h>
+#include <blaze/math/typetraits/UnderlyingBuiltin.h>
+#include <blaze/util/mpl/If.h>
 #include <blaze/util/Random.h>
+#include <blaze/util/Template.h>
 #include <blazetest/system/LAPACK.h>
 #include <blazetest/system/Types.h>
 
@@ -119,7 +128,16 @@ class DenseTest
    /*!\name Utility functions */
    //@{
    template< typename MT, bool SO >
-   void initialize( blaze::DenseMatrix<MT,SO>& matrix );
+   void initializeForLU( blaze::DenseMatrix<MT,SO>& matrix );
+
+   template< typename MT, bool SO >
+   void initializeForLDLT( blaze::DenseMatrix<MT,SO>& matrix );
+
+   template< typename MT, bool SO >
+   void initializeForLDLH( blaze::DenseMatrix<MT,SO>& matrix );
+
+   template< typename MT, bool SO >
+   void initializeForLLH( blaze::DenseMatrix<MT,SO>& matrix );
    //@}
    //**********************************************************************************************
 
@@ -470,7 +488,7 @@ void DenseTest::testRandomNxN()
       test_ = "Matrix inversion (default)";
 
       Type A;
-      initialize( A );
+      initializeForLU( A );
       Type B( A );
 
       invert<byDefault>( B );
@@ -494,7 +512,7 @@ void DenseTest::testRandomNxN()
       test_ = "Submatrix inversion (default)";
 
       Type A;
-      initialize( A );
+      initializeForLU( A );
       Type B( A );
 
       blaze::DenseSubmatrix<Type> sub( B, 0UL, 0UL, A.rows(), A.columns() );
@@ -524,7 +542,7 @@ void DenseTest::testRandomNxN()
       test_ = "Matrix inversion (LU)";
 
       Type A;
-      initialize( A );
+      initializeForLU( A );
       Type B( A );
 
       invert<byLU>( B );
@@ -548,7 +566,7 @@ void DenseTest::testRandomNxN()
       test_ = "Submatrix inversion (LU)";
 
       Type A;
-      initialize( A );
+      initializeForLU( A );
       Type B( A );
 
       blaze::DenseSubmatrix<Type> sub( B, 0UL, 0UL, A.rows(), A.columns() );
@@ -578,7 +596,7 @@ void DenseTest::testRandomNxN()
       test_ = "Matrix inversion (LDLT/Bunch-Kaufman)";
 
       Type A;
-      initialize( A );
+      initializeForLDLT( A );
       Type B( A );
 
       invert<byLDLT>( B );
@@ -602,7 +620,7 @@ void DenseTest::testRandomNxN()
       test_ = "Submatrix inversion (LDLT/Bunch-Kaufman)";
 
       Type A;
-      initialize( A );
+      initializeForLDLT( A );
       Type B( A );
 
       blaze::DenseSubmatrix<Type> sub( B, 0UL, 0UL, A.rows(), A.columns() );
@@ -632,7 +650,7 @@ void DenseTest::testRandomNxN()
       test_ = "Matrix inversion (LDLH/Bunch-Kaufman)";
 
       Type A;
-      initialize( A );
+      initializeForLDLH( A );
       Type B( A );
 
       invert<byLDLH>( B );
@@ -656,7 +674,7 @@ void DenseTest::testRandomNxN()
       test_ = "Submatrix inversion (LDLH/Bunch-Kaufman)";
 
       Type A;
-      initialize( A );
+      initializeForLDLH( A );
       Type B( A );
 
       blaze::DenseSubmatrix<Type> sub( B, 0UL, 0UL, A.rows(), A.columns() );
@@ -686,7 +704,7 @@ void DenseTest::testRandomNxN()
       test_ = "Matrix inversion (LLH/Cholesky)";
 
       Type A;
-      initialize( A );
+      initializeForLLH( A );
       Type B( A );
 
       invert<byLLH>( B );
@@ -710,7 +728,7 @@ void DenseTest::testRandomNxN()
       test_ = "Submatrix inversion (LLH/Cholesky)";
 
       Type A;
-      initialize( A );
+      initializeForLLH( A );
       Type B( A );
 
       blaze::DenseSubmatrix<Type> sub( B, 0UL, 0UL, A.rows(), A.columns() );
@@ -745,12 +763,119 @@ void DenseTest::testRandomNxN()
 //=================================================================================================
 
 //*************************************************************************************************
-/*!\brief Initialization of the given dense matrix for a matrix inversion.
+/*!\brief Initialization of the given dense matrix for a LU-based matrix inversion.
 //
 // \return void
 */
 template< typename MT, bool SO >
-void DenseTest::initialize( blaze::DenseMatrix<MT,SO>& matrix )
+void DenseTest::initializeForLU( blaze::DenseMatrix<MT,SO>& matrix )
+{
+   const size_t size( blaze::rand<size_t>( 7UL, 25UL ) );
+
+   resize( ~matrix, size, size );
+   randomize( ~matrix );
+}
+//*************************************************************************************************
+
+
+//*************************************************************************************************
+/*!\brief Initialization of the given dense matrix for a LDLT-based matrix inversion.
+//
+// \return void
+*/
+template< typename MT, bool SO >
+void DenseTest::initializeForLDLT( blaze::DenseMatrix<MT,SO>& matrix )
+{
+   using blaze::DynamicMatrix;
+   using blaze::SymmetricMatrix;
+
+   const size_t size( blaze::rand<size_t>( 7UL, 25UL ) );
+
+   if( blaze::IsTriangular<MT>::value )
+   {
+      typedef typename MT::ElementType  ET;
+
+      resize( ~matrix, size, size );
+      reset( ~matrix );
+
+      if( !blaze::IsUniTriangular<MT>::value ) {
+         for( size_t i=0UL; i<size; ++i ) {
+            (~matrix)(i,i) = ET(4);
+         }
+      }
+   }
+   else
+   {
+      typedef typename MT::ElementType  ET;
+      typedef typename blaze::UnderlyingBuiltin<MT>::Type  UBT;
+
+      typedef typename blaze::If< blaze::IsHermitian<MT>
+                                , typename MT::BLAZE_TEMPLATE Rebind<UBT>::Other
+                                , SymmetricMatrix< DynamicMatrix<ET,SO> > >::Type  RandomType;
+
+      RandomType A;
+      resize( A, size, size );
+      randomize( A );
+
+      (~matrix) = A;
+   }
+}
+//*************************************************************************************************
+
+
+//*************************************************************************************************
+/*!\brief Initialization of the given dense matrix for a LDLH-based matrix inversion.
+//
+// \return void
+*/
+template< typename MT, bool SO >
+void DenseTest::initializeForLDLH( blaze::DenseMatrix<MT,SO>& matrix )
+{
+   using blaze::DynamicMatrix;
+   using blaze::HermitianMatrix;
+
+   typedef typename MT::ElementType  ET;
+
+   const size_t size( blaze::rand<size_t>( 7UL, 25UL ) );
+
+   if( blaze::IsTriangular<MT>::value )
+   {
+      typedef typename MT::ElementType  ET;
+
+      resize( ~matrix, size, size );
+      reset( ~matrix );
+
+      if( !blaze::IsUniTriangular<MT>::value ) {
+         for( size_t i=0UL; i<size; ++i ) {
+            (~matrix)(i,i) = ET(4);
+         }
+      }
+   }
+   else
+   {
+      typedef typename MT::ElementType  ET;
+      typedef typename blaze::UnderlyingBuiltin<MT>::Type  UBT;
+      typedef typename blaze::If< blaze::IsSymmetric<MT>
+                                , typename MT::BLAZE_TEMPLATE Rebind<UBT>::Other
+                                , HermitianMatrix< DynamicMatrix<ET,SO> > >::Type  RandomType;
+
+      RandomType A;
+      resize( A, size, size );
+      randomize( A );
+
+      (~matrix) = A;
+   }
+}
+//*************************************************************************************************
+
+
+//*************************************************************************************************
+/*!\brief Initialization of the given dense matrix for a LLH-based matrix inversion.
+//
+// \return void
+*/
+template< typename MT, bool SO >
+void DenseTest::initializeForLLH( blaze::DenseMatrix<MT,SO>& matrix )
 {
    typedef typename MT::ElementType  ET;
 
