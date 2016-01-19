@@ -55,6 +55,7 @@
 #include <blaze/math/lapack/potri.h>
 #include <blaze/math/lapack/sytrf.h>
 #include <blaze/math/lapack/sytri.h>
+#include <blaze/math/shims/Conjugate.h>
 #include <blaze/math/shims/Invert.h>
 #include <blaze/math/shims/IsDefault.h>
 #include <blaze/util/Assert.h>
@@ -852,14 +853,14 @@ inline typename EnableIf< IsComplex<typename MT::ElementType> >::Type
    if( SO ) {
       for( size_t i=1UL; i<(~dm).rows(); ++i ) {
          for( size_t j=0UL; j<i; ++j ) {
-            (~dm)(j,i) = (~dm)(i,j);
+            (~dm)(j,i) = conj( (~dm)(i,j) );
          }
       }
    }
    else {
       for( size_t j=1UL; j<(~dm).columns(); ++j ) {
          for( size_t i=0UL; i<j; ++i ) {
-            (~dm)(j,i) = (~dm)(i,j);
+            (~dm)(j,i) = conj( (~dm)(i,j) );
          }
       }
    }
