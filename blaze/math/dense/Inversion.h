@@ -970,14 +970,14 @@ inline void invertNxN( DenseMatrix<MT,SO>& dm )
 
    BLAZE_INTERNAL_ASSERT( isSquare( ~dm ), "Non-square matrix detected" );
 
-   if( IF == byLU )
-      invertByLU( ~dm );
-   else if( IF == byLDLT )
-      invertByLDLT( ~dm );
-   else if( IF == byLDLH )
-      invertByLDLH( ~dm );
-   else
-      invertByLLH( ~dm );
+   switch( IF ) {
+      case byDefault: invertByDefault( ~dm ); break;
+      case byLU     : invertByLU     ( ~dm ); break;
+      case byLDLT   : invertByLDLT   ( ~dm ); break;
+      case byLDLH   : invertByLDLH   ( ~dm ); break;
+      case byLLH    : invertByLLH    ( ~dm ); break;
+      default: BLAZE_INTERNAL_ASSERT( false, "Unhandled case detected" );
+   }
 
    BLAZE_INTERNAL_ASSERT( isIntact( ~dm ), "Broken invariant detected" );
 }
