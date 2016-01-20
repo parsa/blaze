@@ -107,6 +107,7 @@ class OperationTest
 
    template< typename Type > void testGesv();
    template< typename Type > void testSysv();
+   template< typename Type > void testHesv();
    template< typename Type > void testPosv();
    //@}
    //**********************************************************************************************
@@ -1298,6 +1299,42 @@ void OperationTest::testSysv()
    }
 
    {
+      test_ = "Symmetric indefinite linear system of equations (single right-hand side, upper part)";
+
+      blaze::StaticMatrix<Type,3UL,3UL,blaze::columnMajor> A, LU;
+
+      do {
+         randomize( A );
+         A *= trans( A );
+      }
+      while( blaze::isDefault( det( A ) ) );
+
+      blaze::StaticVector<Type,3UL,blaze::columnVector> rhs, result;
+      randomize( rhs );
+
+      blaze::StaticVector<int,3UL,blaze::columnVector> ipiv;
+
+      LU = A;
+      result = rhs;
+
+      blaze::sysv( LU, result, 'U', ipiv.data() );
+
+      if( ( A * result ) != rhs ) {
+         std::ostringstream oss;
+         oss << " Test: " << test_ << "\n"
+             << " Error: Solving the linear system of equations failed\n"
+             << " Details:\n"
+             << "   Element type:\n"
+             << "     " << typeid( Type ).name() << "\n"
+             << "   System matrix (A):\n" << A << "\n"
+             << "   Result (x):\n" << result << "\n"
+             << "   Right-hand side (y):\n" << rhs << "\n"
+             << "   A * x:\n" << ( A * result ) << "\n";
+         throw std::runtime_error( oss.str() );
+      }
+   }
+
+   {
       test_ = "Symmetric indefinite linear system of equations (multiple right-hand side vectors, lower part)";
 
       blaze::StaticMatrix<Type,3UL,3UL,blaze::columnMajor> A, LU;
@@ -1317,6 +1354,205 @@ void OperationTest::testSysv()
       result = rhs;
 
       blaze::sysv( LU, result, 'L', ipiv.data() );
+
+      if( ( A * result ) != rhs ) {
+         std::ostringstream oss;
+         oss << " Test: " << test_ << "\n"
+             << " Error: Solving the linear system of equations failed\n"
+             << " Details:\n"
+             << "   Element type:\n"
+             << "     " << typeid( Type ).name() << "\n"
+             << "   System matrix (A):\n" << A << "\n"
+             << "   Result (x):\n" << result << "\n"
+             << "   Right-hand side (y):\n" << rhs << "\n"
+             << "   A * x:\n" << ( A * result ) << "\n";
+         throw std::runtime_error( oss.str() );
+      }
+   }
+
+   {
+      test_ = "Symmetric indefinite linear system of equations (multiple right-hand side vectors, upper part)";
+
+      blaze::StaticMatrix<Type,3UL,3UL,blaze::columnMajor> A, LU;
+
+      do {
+         randomize( A );
+         A *= trans( A );
+      }
+      while( blaze::isDefault( det( A ) ) );
+
+      blaze::StaticMatrix<Type,3UL,3UL,blaze::columnMajor> rhs, result;
+      randomize( rhs );
+
+      blaze::StaticVector<int,3UL,blaze::columnVector> ipiv;
+
+      LU = A;
+      result = rhs;
+
+      blaze::sysv( LU, result, 'U', ipiv.data() );
+
+      if( ( A * result ) != rhs ) {
+         std::ostringstream oss;
+         oss << " Test: " << test_ << "\n"
+             << " Error: Solving the linear system of equations failed\n"
+             << " Details:\n"
+             << "   Element type:\n"
+             << "     " << typeid( Type ).name() << "\n"
+             << "   System matrix (A):\n" << A << "\n"
+             << "   Result (x):\n" << result << "\n"
+             << "   Right-hand side (y):\n" << rhs << "\n"
+             << "   A * x:\n" << ( A * result ) << "\n";
+         throw std::runtime_error( oss.str() );
+      }
+   }
+
+#endif
+}
+//*************************************************************************************************
+
+
+//*************************************************************************************************
+/*!\brief Test of the Hermitian indefinite linear system solver functions (hesv).
+//
+// \return void
+// \exception std::runtime_error Error detected.
+//
+// This function performs a test of the Hermitian indefinite linear system solver functions for
+// various data types. In case an error is detected, a \a std::runtime_error exception is thrown.
+*/
+template< typename Type >
+void OperationTest::testHesv()
+{
+#if BLAZETEST_MATHTEST_LAPACK_MODE
+
+   {
+      test_ = "Hermitian indefinite linear system of equations (single right-hand side, lower part)";
+
+      blaze::StaticMatrix<Type,3UL,3UL,blaze::columnMajor> A, LU;
+
+      do {
+         randomize( A );
+         A *= ctrans( A );
+      }
+      while( blaze::isDefault( det( A ) ) );
+
+      blaze::StaticVector<Type,3UL,blaze::columnVector> rhs, result;
+      randomize( rhs );
+
+      blaze::StaticVector<int,3UL,blaze::columnVector> ipiv;
+
+      LU = A;
+      result = rhs;
+
+      blaze::hesv( LU, result, 'L', ipiv.data() );
+
+      if( ( A * result ) != rhs ) {
+         std::ostringstream oss;
+         oss << " Test: " << test_ << "\n"
+             << " Error: Solving the linear system of equations failed\n"
+             << " Details:\n"
+             << "   Element type:\n"
+             << "     " << typeid( Type ).name() << "\n"
+             << "   System matrix (A):\n" << A << "\n"
+             << "   Result (x):\n" << result << "\n"
+             << "   Right-hand side (y):\n" << rhs << "\n"
+             << "   A * x:\n" << ( A * result ) << "\n";
+         throw std::runtime_error( oss.str() );
+      }
+   }
+
+   {
+      test_ = "Hermitian indefinite linear system of equations (single right-hand side, upper part)";
+
+      blaze::StaticMatrix<Type,3UL,3UL,blaze::columnMajor> A, LU;
+
+      do {
+         randomize( A );
+         A *= ctrans( A );
+      }
+      while( blaze::isDefault( det( A ) ) );
+
+      blaze::StaticVector<Type,3UL,blaze::columnVector> rhs, result;
+      randomize( rhs );
+
+      blaze::StaticVector<int,3UL,blaze::columnVector> ipiv;
+
+      LU = A;
+      result = rhs;
+
+      blaze::hesv( LU, result, 'U', ipiv.data() );
+
+      if( ( A * result ) != rhs ) {
+         std::ostringstream oss;
+         oss << " Test: " << test_ << "\n"
+             << " Error: Solving the linear system of equations failed\n"
+             << " Details:\n"
+             << "   Element type:\n"
+             << "     " << typeid( Type ).name() << "\n"
+             << "   System matrix (A):\n" << A << "\n"
+             << "   Result (x):\n" << result << "\n"
+             << "   Right-hand side (y):\n" << rhs << "\n"
+             << "   A * x:\n" << ( A * result ) << "\n";
+         throw std::runtime_error( oss.str() );
+      }
+   }
+
+   {
+      test_ = "Hermitian indefinite linear system of equations (multiple right-hand side vectors, lower part)";
+
+      blaze::StaticMatrix<Type,3UL,3UL,blaze::columnMajor> A, LU;
+
+      do {
+         randomize( A );
+         A *= ctrans( A );
+      }
+      while( blaze::isDefault( det( A ) ) );
+
+      blaze::StaticMatrix<Type,3UL,3UL,blaze::columnMajor> rhs, result;
+      randomize( rhs );
+
+      blaze::StaticVector<int,3UL,blaze::columnVector> ipiv;
+
+      LU = A;
+      result = rhs;
+
+      blaze::hesv( LU, result, 'L', ipiv.data() );
+
+      if( ( A * result ) != rhs ) {
+         std::ostringstream oss;
+         oss << " Test: " << test_ << "\n"
+             << " Error: Solving the linear system of equations failed\n"
+             << " Details:\n"
+             << "   Element type:\n"
+             << "     " << typeid( Type ).name() << "\n"
+             << "   System matrix (A):\n" << A << "\n"
+             << "   Result (x):\n" << result << "\n"
+             << "   Right-hand side (y):\n" << rhs << "\n"
+             << "   A * x:\n" << ( A * result ) << "\n";
+         throw std::runtime_error( oss.str() );
+      }
+   }
+
+   {
+      test_ = "Hermitian indefinite linear system of equations (multiple right-hand side vectors, upper part)";
+
+      blaze::StaticMatrix<Type,3UL,3UL,blaze::columnMajor> A, LU;
+
+      do {
+         randomize( A );
+         A *= ctrans( A );
+      }
+      while( blaze::isDefault( det( A ) ) );
+
+      blaze::StaticMatrix<Type,3UL,3UL,blaze::columnMajor> rhs, result;
+      randomize( rhs );
+
+      blaze::StaticVector<int,3UL,blaze::columnVector> ipiv;
+
+      LU = A;
+      result = rhs;
+
+      blaze::hesv( LU, result, 'U', ipiv.data() );
 
       if( ( A * result ) != rhs ) {
          std::ostringstream oss;
@@ -1390,6 +1626,43 @@ void OperationTest::testPosv()
    }
 
    {
+      test_ = "Positive definite linear system of equations (single right-hand side, upper part)";
+
+      blaze::StaticMatrix<Type,3UL,3UL,blaze::columnMajor> A, LU;
+
+      do {
+         randomize( A );
+         A *= ctrans( A );
+         A(0,0) += Type(3);
+         A(1,1) += Type(3);
+         A(2,2) += Type(3);
+      }
+      while( blaze::isDefault( det( A ) ) );
+
+      blaze::StaticVector<Type,3UL,blaze::columnVector> rhs, result;
+      randomize( rhs );
+
+      LU = A;
+      result = rhs;
+
+      blaze::posv( LU, result, 'U' );
+
+      if( ( A * result ) != rhs ) {
+         std::ostringstream oss;
+         oss << " Test: " << test_ << "\n"
+             << " Error: Solving the linear system of equations failed\n"
+             << " Details:\n"
+             << "   Element type:\n"
+             << "     " << typeid( Type ).name() << "\n"
+             << "   System matrix (A):\n" << A << "\n"
+             << "   Result (x):\n" << result << "\n"
+             << "   Right-hand side (y):\n" << rhs << "\n"
+             << "   A * x:\n" << ( A * result ) << "\n";
+         throw std::runtime_error( oss.str() );
+      }
+   }
+
+   {
       test_ = "Positive definite linear system of equations (multiple right-hand side vectors, lower part)";
 
       blaze::StaticMatrix<Type,3UL,3UL,blaze::columnMajor> A, LU;
@@ -1410,6 +1683,43 @@ void OperationTest::testPosv()
       result = rhs;
 
       blaze::posv( LU, result, 'L' );
+
+      if( ( A * result ) != rhs ) {
+         std::ostringstream oss;
+         oss << " Test: " << test_ << "\n"
+             << " Error: Solving the linear system of equations failed\n"
+             << " Details:\n"
+             << "   Element type:\n"
+             << "     " << typeid( Type ).name() << "\n"
+             << "   System matrix (A):\n" << A << "\n"
+             << "   Result (x):\n" << result << "\n"
+             << "   Right-hand side (y):\n" << rhs << "\n"
+             << "   A * x:\n" << ( A * result ) << "\n";
+         throw std::runtime_error( oss.str() );
+      }
+   }
+
+   {
+      test_ = "Positive definite linear system of equations (multiple right-hand side vectors, upper part)";
+
+      blaze::StaticMatrix<Type,3UL,3UL,blaze::columnMajor> A, LU;
+
+      do {
+         randomize( A );
+         A *= ctrans( A );
+         A(0,0) += Type(3);
+         A(1,1) += Type(3);
+         A(2,2) += Type(3);
+      }
+      while( blaze::isDefault( det( A ) ) );
+
+      blaze::StaticMatrix<Type,3UL,3UL,blaze::columnMajor> rhs, result;
+      randomize( rhs );
+
+      LU = A;
+      result = rhs;
+
+      blaze::posv( LU, result, 'U' );
 
       if( ( A * result ) != rhs ) {
          std::ostringstream oss;

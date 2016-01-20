@@ -62,64 +62,81 @@ namespace lapack {
 */
 OperationTest::OperationTest()
 {
-   testGeqrf< float                  >();
-   testGeqrf< double                 >();
-   testGeqrf< blaze::complex<float>  >();
-   testGeqrf< blaze::complex<double> >();
+   using blaze::complex;
 
-   testGetrf< float                  >();
-   testGetrf< double                 >();
-   testGetrf< blaze::complex<float>  >();
-   testGetrf< blaze::complex<double> >();
 
-   testSytrf< float                  >();
-   testSytrf< double                 >();
-   testSytrf< blaze::complex<float>  >();
-   testSytrf< blaze::complex<double> >();
+   //=====================================================================================
+   // Single precision tests
+   //=====================================================================================
 
-   testHetrf< blaze::complex<float>  >();
-   testHetrf< blaze::complex<double> >();
+   //testGeqrf< float >();
+   //testGetrf< float >();
+   //testSytrf< float >();
+   //testPotrf< float >();
+   //testGetri< float >();
+   //testSytri< float >();
+   //testPotri< float >();
+   //testTrtri< float >();
+   //testGesv < float >();
+   //testSysv < float >();
+   //testPosv < float >();
 
-   testPotrf< float                  >();
-   testPotrf< double                 >();
-   testPotrf< blaze::complex<float>  >();
-   testPotrf< blaze::complex<double> >();
 
-   testGetri< float                  >();
-   testGetri< double                 >();
-   testGetri< blaze::complex<float>  >();
-   testGetri< blaze::complex<double> >();
+   //=====================================================================================
+   // Double precision tests
+   //=====================================================================================
 
-   testSytri< float                  >();
-   testSytri< double                 >();
-   testSytri< blaze::complex<float>  >();
-   testSytri< blaze::complex<double> >();
+   testGeqrf< double >();
+   testGetrf< double >();
+   testSytrf< double >();
+   testPotrf< double >();
+   testGetri< double >();
+   testSytri< double >();
+   testPotri< double >();
+   testTrtri< double >();
+   testGesv < double >();
+   testSysv < double >();
+   testPosv < double >();
 
-   testHetri< blaze::complex<float>  >();
-   testHetri< blaze::complex<double> >();
 
-   testPotri< float                  >();
-   testPotri< double                 >();
-   testPotri< blaze::complex<float>  >();
-   testPotri< blaze::complex<double> >();
+   //=====================================================================================
+   // Single precision complex tests
+   //=====================================================================================
 
-   testTrtri< float                  >();
-   testTrtri< double                 >();
-   testTrtri< blaze::complex<float>  >();
-   testTrtri< blaze::complex<double> >();
+   //testGeqrf< complex<float> >();
+   //testGetrf< complex<float> >();
+   //testSytrf< complex<float> >();
+   //testHetrf< complex<float> >();
+   //testPotrf< complex<float> >();
+   //testGetri< complex<float> >();
+   //testSytri< complex<float> >();
+   //testHetri< complex<float> >();
+   //testPotri< complex<float> >();
+   //testTrtri< complex<float> >();
+   //testGesv < complex<float> >();
+   //testSysv < complex<float> >();
+   //testHesv < complex<float> >();
+   //testPosv < complex<float> >();
 
-   testGesv< float                  >();
-   testGesv< double                 >();
-   testGesv< blaze::complex<float>  >();
-   testGesv< blaze::complex<double> >();
 
-   testSysv< double                 >();
-   testSysv< blaze::complex<double> >();
+   //=====================================================================================
+   // Double precision complex tests
+   //=====================================================================================
 
-   testPosv< float                  >();
-   testPosv< double                 >();
-   testPosv< blaze::complex<float>  >();
-   testPosv< blaze::complex<double> >();
+   testGeqrf< complex<double> >();
+   testGetrf< complex<double> >();
+   testSytrf< complex<double> >();
+   testHetrf< complex<double> >();
+   testPotrf< complex<double> >();
+   testGetri< complex<double> >();
+   testSytri< complex<double> >();
+   testHetri< complex<double> >();
+   testPotri< complex<double> >();
+   testTrtri< complex<double> >();
+   testGesv < complex<double> >();
+   testSysv < complex<double> >();
+   testHesv < complex<double> >();
+   testPosv < complex<double> >();
 }
 //*************************************************************************************************
 
