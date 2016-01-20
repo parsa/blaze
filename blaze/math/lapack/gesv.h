@@ -1,7 +1,7 @@
 //=================================================================================================
 /*!
 //  \file blaze/math/lapack/gesv.h
-//  \brief Header file for LAPACK general matrix linear system solver functions (gesv)
+//  \brief Header file for LAPACK general linear system solver functions (gesv)
 //
 //  Copyright (C) 2013 Klaus Iglberger - All Rights Reserved
 //
@@ -106,7 +106,8 @@ inline void gesv( DenseMatrix<MT1,columnMajor>& A, DenseMatrix<MT2,columnMajor>&
 
 
 //*************************************************************************************************
-/*!\brief LAPACK kernel for solving a single precision linear system of equations (\f$ A*X=B \f$).
+/*!\brief LAPACK kernel for solving a general single precision linear system of equations
+//        (\f$ A*X=B \f$).
 // \ingroup lapack
 //
 // \param n The number of rows/columns of matrix \a A \f$[0..\infty)\f$.
@@ -119,8 +120,9 @@ inline void gesv( DenseMatrix<MT1,columnMajor>& A, DenseMatrix<MT2,columnMajor>&
 // \param info Return code of the function call.
 // \return void
 //
-// This function uses the LAPACK sgesv() function to compute the solution to the system of linear
-// equations \f$ A*X=B \f$, where \a A is a n-by-n matrix and \a X and \a B are n-by-nrhs matrices.
+// This function uses the LAPACK sgesv() function to compute the solution to the general system of
+// linear equations \f$ A*X=B \f$, where \a A is a n-by-n matrix and \a X and \a B are n-by-nrhs
+// matrices.
 //
 // The LU decomposition with partial pivoting and row interchanges is used to factor \a A as
 
@@ -136,7 +138,7 @@ inline void gesv( DenseMatrix<MT1,columnMajor>& A, DenseMatrix<MT2,columnMajor>&
 //   - = 0: The function finished successfully.
 //   - < 0: If info = -i, the i-th argument had an illegal value.
 //   - > 0: If info = i, the decomposition has been completed, but since factor U(i,i) is exactly
-//          singular and the solution could not be computed.
+//          singular the solution could not be computed.
 //
 // For more information on the sgesv() function, see the LAPACK online documentation browser:
 //
@@ -153,7 +155,8 @@ inline void gesv( int* n, int* nrhs, float* A, int* lda, int* ipiv, float* B, in
 
 
 //*************************************************************************************************
-/*!\brief LAPACK kernel for solving a double precision linear system of equations (\f$ A*X=B \f$).
+/*!\brief LAPACK kernel for solving a general double precision linear system of equations
+//        (\f$ A*X=B \f$).
 // \ingroup lapack
 //
 // \param n The number of rows/columns of matrix \a A \f$[0..\infty)\f$.
@@ -166,8 +169,9 @@ inline void gesv( int* n, int* nrhs, float* A, int* lda, int* ipiv, float* B, in
 // \param info Return code of the function call.
 // \return void
 //
-// This function uses the LAPACK dgesv() function to compute the solution to the system of linear
-// equations \f$ A*X=B \f$, where \a A is a n-by-n matrix and \a X and \a B are n-by-nrhs matrices.
+// This function uses the LAPACK dgesv() function to compute the solution to the general system of
+// linear equations \f$ A*X=B \f$, where \a A is a n-by-n matrix and \a X and \a B are n-by-nrhs
+// matrices.
 //
 // The LU decomposition with partial pivoting and row interchanges is used to factor \a A as
 
@@ -183,7 +187,7 @@ inline void gesv( int* n, int* nrhs, float* A, int* lda, int* ipiv, float* B, in
 //   - = 0: The function finished successfully.
 //   - < 0: If info = -i, the i-th argument had an illegal value.
 //   - > 0: If info = i, the decomposition has been completed, but since factor U(i,i) is exactly
-//          singular and the solution could not be computed.
+//          singular the solution could not be computed.
 //
 // For more information on the dgesv() function, see the LAPACK online documentation browser:
 //
@@ -200,7 +204,7 @@ inline void gesv( int* n, int* nrhs, double* A, int* lda, int* ipiv, double* B, 
 
 
 //*************************************************************************************************
-/*!\brief LAPACK kernel for solving a single precision complex linear system of equations
+/*!\brief LAPACK kernel for solving a general single precision complex linear system of equations
 //        (\f$ A*X=B \f$).
 // \ingroup lapack
 //
@@ -214,8 +218,9 @@ inline void gesv( int* n, int* nrhs, double* A, int* lda, int* ipiv, double* B, 
 // \param info Return code of the function call.
 // \return void
 //
-// This function uses the LAPACK cgesv() function to compute the solution to the system of linear
-// equations \f$ A*X=B \f$, where \a A is a n-by-n matrix and \a X and \a B are n-by-nrhs matrices.
+// This function uses the LAPACK cgesv() function to compute the solution to the general system of
+// linear equations \f$ A*X=B \f$, where \a A is a n-by-n matrix and \a X and \a B are n-by-nrhs
+// matrices.
 //
 // The LU decomposition with partial pivoting and row interchanges is used to factor \a A as
 
@@ -231,7 +236,7 @@ inline void gesv( int* n, int* nrhs, double* A, int* lda, int* ipiv, double* B, 
 //   - = 0: The function finished successfully.
 //   - < 0: If info = -i, the i-th argument had an illegal value.
 //   - > 0: If info = i, the decomposition has been completed, but since factor U(i,i) is exactly
-//          singular and the solution could not be computed.
+//          singular the solution could not be computed.
 //
 // For more information on the cgesv() function, see the LAPACK online documentation browser:
 //
@@ -251,7 +256,7 @@ inline void gesv( int* n, int* nrhs, complex<float>* A, int* lda, int* ipiv, com
 
 
 //*************************************************************************************************
-/*!\brief LAPACK kernel for solving a double precision complex linear system of equations
+/*!\brief LAPACK kernel for solving a general double precision complex linear system of equations
 //        (\f$ A*X=B \f$).
 // \ingroup lapack
 //
@@ -265,8 +270,9 @@ inline void gesv( int* n, int* nrhs, complex<float>* A, int* lda, int* ipiv, com
 // \param info Return code of the function call.
 // \return void
 //
-// This function uses the LAPACK zgesv() function to compute the solution to the system of linear
-// equations \f$ A*X=B \f$, where \a A is a n-by-n matrix and \a X and \a B are n-by-nrhs matrices.
+// This function uses the LAPACK zgesv() function to compute the solution to the general system of
+// linear equations \f$ A*X=B \f$, where \a A is a n-by-n matrix and \a X and \a B are n-by-nrhs
+// matrices.
 //
 // The LU decomposition with partial pivoting and row interchanges is used to factor \a A as
 
@@ -282,7 +288,7 @@ inline void gesv( int* n, int* nrhs, complex<float>* A, int* lda, int* ipiv, com
 //   - = 0: The function finished successfully.
 //   - < 0: If info = -i, the i-th argument had an illegal value.
 //   - > 0: If info = i, the decomposition has been completed, but since factor U(i,i) is exactly
-//          singular and the solution could not be computed.
+//          singular the solution could not be computed.
 //
 // For more information on the zgesv() function, see the LAPACK online documentation browser:
 //
@@ -302,7 +308,7 @@ inline void gesv( int* n, int* nrhs, complex<double>* A, int* lda, int* ipiv, co
 
 
 //*************************************************************************************************
-/*!\brief LAPACK kernel for solving a linear system of equations (\f$ A*x=b \f$).
+/*!\brief LAPACK kernel for solving a general linear system of equations (\f$ A*x=b \f$).
 // \ingroup lapack
 //
 // \param A The column-major system matrix.
@@ -312,9 +318,9 @@ inline void gesv( int* n, int* nrhs, complex<double>* A, int* lda, int* ipiv, co
 // \exception std::invalid_argument Inversion of singular matrix failed.
 // \exception std::invalid_argument Invalid non-square matrix provided.
 //
-// This function uses the LAPACK gesv() functions to compute the solution to the system of linear
-// equations \f$ A*x=b \f$, where \a A is a column-major n-by-n matrix and \a x and \a b are
-// n-dimensional column vectors. Note that the function only works for general, non-adapted
+// This function uses the LAPACK gesv() functions to compute the solution to the system of general
+// linear equations \f$ A*x=b \f$, where \a A is a column-major n-by-n matrix and \a x and \a b
+// are n-dimensional column vectors. Note that the function only works for general, non-adapted
 // matrices with \c float, \c double, \c complex<float>, or \c complex<double> element type. The
 // attempt to call the function with adaptors or matrices of any other element type results in a
 // compile time error!
@@ -387,7 +393,7 @@ inline void gesv( DenseMatrix<MT,columnMajor>& A, DenseVector<VT,columnVector>& 
 
 
 //*************************************************************************************************
-/*!\brief LAPACK kernel for solving a linear system of equations (\f$ A*X=B \f$).
+/*!\brief LAPACK kernel for solving a general linear system of equations (\f$ A*X=B \f$).
 // \ingroup lapack
 //
 // \param A The system matrix.
@@ -397,9 +403,9 @@ inline void gesv( DenseMatrix<MT,columnMajor>& A, DenseVector<VT,columnVector>& 
 // \exception std::invalid_argument Inversion of singular matrix failed.
 // \exception std::invalid_argument Invalid non-square matrix provided.
 //
-// This function uses the LAPACK gesv() functions to compute the solution to the system of linear
-// equations \f$ A*X=B \f$, where \a A is a column-major n-by-n matrix and \a X and \a B are
-// column-major n-by-m matrices. Note that the function only works for general, non-adapted
+// This function uses the LAPACK gesv() functions to compute the solution to the system of general
+// linear equations \f$ A*X=B \f$, where \a A is a column-major n-by-n matrix and \a X and \a B
+// are column-major n-by-m matrices. Note that the function only works for general, non-adapted
 // matrices with \c float, \c double, \c complex<float>, or \c complex<double> element type. The
 // attempt to call the function with adaptors or matrices of any other element type results in a
 // compile time error!
@@ -434,7 +440,7 @@ inline void gesv( DenseMatrix<MT,columnMajor>& A, DenseVector<VT,columnVector>& 
 // is thrown \a A may already have been modified.
 */
 template< typename MT1, typename MT2 >
-void gesv( DenseMatrix<MT1,columnMajor>& A, DenseMatrix<MT2,columnMajor>& B, int* ipiv )
+inline void gesv( DenseMatrix<MT1,columnMajor>& A, DenseMatrix<MT2,columnMajor>& B, int* ipiv )
 {
    using boost::numeric_cast;
 

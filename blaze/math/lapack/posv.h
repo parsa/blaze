@@ -1,7 +1,7 @@
 //=================================================================================================
 /*!
 //  \file blaze/math/lapack/posv.h
-//  \brief Header file for LAPACK positive definite matrix linear system solver functions (posv)
+//  \brief Header file for LAPACK positive definite linear system solver functions (posv)
 //
 //  Copyright (C) 2013 Klaus Iglberger - All Rights Reserved
 //
@@ -106,7 +106,8 @@ inline void posv( DenseMatrix<MT1,columnMajor>& A, DenseMatrix<MT2,columnMajor>&
 
 
 //*************************************************************************************************
-/*!\brief LAPACK kernel for solving a single precision linear system of equations (\f$ A*X=B \f$).
+/*!\brief LAPACK kernel for solving a positive definite single precision linear system of equations
+//        (\f$ A*X=B \f$).
 // \ingroup lapack
 //
 // \param uplo \c 'L' to use the lower part of the matrix, \c 'U' to use the upper part.
@@ -119,9 +120,9 @@ inline void posv( DenseMatrix<MT1,columnMajor>& A, DenseMatrix<MT2,columnMajor>&
 // \param info Return code of the function call.
 // \return void
 //
-// This function uses the LAPACK sposv() function to compute the solution to the system of linear
-// equations \f$ A*X=B \f$, where \a A is a n-by-n positive definite matrix and \a X and \a B are
-// n-by-nrhs matrices.
+// This function uses the LAPACK sposv() function to compute the solution to the positive definite
+// system of linear equations \f$ A*X=B \f$, where \a A is a n-by-n positive definite matrix and
+// \a X and \a B are n-by-nrhs matrices.
 //
 // The Cholesky decomposition is used to factor \a A as
 
@@ -156,7 +157,8 @@ inline void posv( char* uplo, int* n, int* nrhs, float* A, int* lda, float* B, i
 
 
 //*************************************************************************************************
-/*!\brief LAPACK kernel for solving a double precision linear system of equations (\f$ A*X=B \f$).
+/*!\brief LAPACK kernel for solving a positive definite double precision linear system of equations
+//        (\f$ A*X=B \f$).
 // \ingroup lapack
 //
 // \param uplo \c 'L' to use the lower part of the matrix, \c 'U' to use the upper part.
@@ -169,9 +171,9 @@ inline void posv( char* uplo, int* n, int* nrhs, float* A, int* lda, float* B, i
 // \param info Return code of the function call.
 // \return void
 //
-// This function uses the LAPACK dposv() function to compute the solution to the system of linear
-// equations \f$ A*X=B \f$, where \a A is a n-by-n positive definite matrix and \a X and \a B are
-// n-by-nrhs matrices.
+// This function uses the LAPACK dposv() function to compute the solution to the positive definite
+// system of linear equations \f$ A*X=B \f$, where \a A is a n-by-n positive definite matrix and
+// \a X and \a B are n-by-nrhs matrices.
 //
 // The Cholesky decomposition is used to factor \a A as
 
@@ -206,8 +208,8 @@ inline void posv( char* uplo, int* n, int* nrhs, double* A, int* lda, double* B,
 
 
 //*************************************************************************************************
-/*!\brief LAPACK kernel for solving a single precision complex linear system of equations
-//        (\f$ A*X=B \f$).
+/*!\brief LAPACK kernel for solving a positive definite single precision complex linear system of
+//        equations (\f$ A*X=B \f$).
 // \ingroup lapack
 //
 // \param uplo \c 'L' to use the lower part of the matrix, \c 'U' to use the upper part.
@@ -220,9 +222,9 @@ inline void posv( char* uplo, int* n, int* nrhs, double* A, int* lda, double* B,
 // \param info Return code of the function call.
 // \return void
 //
-// This function uses the LAPACK cposv() function to compute the solution to the system of linear
-// equations \f$ A*X=B \f$, where \a A is a n-by-n positive definite matrix and \a X and \a B are
-// n-by-nrhs matrices.
+// This function uses the LAPACK cposv() function to compute the solution to the positive definite
+// system of linear equations \f$ A*X=B \f$, where \a A is a n-by-n positive definite matrix and
+// \a X and \a B are n-by-nrhs matrices.
 //
 // The Cholesky decomposition is used to factor \a A as
 
@@ -260,8 +262,8 @@ inline void posv( char* uplo, int* n, int* nrhs, complex<float>* A, int* lda, co
 
 
 //*************************************************************************************************
-/*!\brief LAPACK kernel for solving a double precision complex linear system of equations
-//        (\f$ A*X=B \f$).
+/*!\brief LAPACK kernel for solving a positive definite double precision complex linear system of
+//        equations (\f$ A*X=B \f$).
 // \ingroup lapack
 //
 // \param uplo \c 'L' to use the lower part of the matrix, \c 'U' to use the upper part.
@@ -274,9 +276,9 @@ inline void posv( char* uplo, int* n, int* nrhs, complex<float>* A, int* lda, co
 // \param info Return code of the function call.
 // \return void
 //
-// This function uses the LAPACK zposv() function to compute the solution to the system of linear
-// equations \f$ A*X=B \f$, where \a A is a n-by-n positive definite matrix and \a X and \a B are
-// n-by-nrhs matrices.
+// This function uses the LAPACK zposv() function to compute the solution to the positive definite
+// system of linear equations \f$ A*X=B \f$, where \a A is a n-by-n positive definite matrix and
+// \a X and \a B are n-by-nrhs matrices.
 //
 // The Cholesky decomposition is used to factor \a A as
 
@@ -314,7 +316,7 @@ inline void posv( char* uplo, int* n, int* nrhs, complex<double>* A, int* lda, c
 
 
 //*************************************************************************************************
-/*!\brief LAPACK kernel for solving a linear system of equations (\f$ A*x=b \f$).
+/*!\brief LAPACK kernel for solving a positive definite linear system of equations (\f$ A*x=b \f$).
 // \ingroup lapack
 //
 // \param A The column-major system matrix.
@@ -324,8 +326,8 @@ inline void posv( char* uplo, int* n, int* nrhs, complex<double>* A, int* lda, c
 // \exception std::invalid_argument Inversion of singular matrix failed.
 // \exception std::invalid_argument Invalid non-square matrix provided.
 //
-// This function uses the LAPACK posv() functions to compute the solution to the system of linear
-// equations \f$ A*x=b \f$, where \a A is a column-major n-by-n positive definite matrix and \a x
+// This function uses the LAPACK posv() functions to compute the solution to the positive definite
+// system of linear equations \f$ A*x=b \f$, where \a A is a column-major n-by-n matrix and \a x
 // and \a b are n-dimensional column vectors. Note that the function only works for general,
 // non-adapted matrices with \c float, \c double, \c complex<float>, or \c complex<double> element
 // type. The attempt to call the function with adaptors or matrices of any other element type
@@ -405,7 +407,7 @@ inline void posv( DenseMatrix<MT,columnMajor>& A, DenseVector<VT,columnVector>& 
 
 
 //*************************************************************************************************
-/*!\brief LAPACK kernel for solving a linear system of equations (\f$ A*X=B \f$).
+/*!\brief LAPACK kernel for solving a positive definite linear system of equations (\f$ A*X=B \f$).
 // \ingroup lapack
 //
 // \param A The system matrix.
@@ -415,8 +417,8 @@ inline void posv( DenseMatrix<MT,columnMajor>& A, DenseVector<VT,columnVector>& 
 // \exception std::invalid_argument Inversion of singular matrix failed.
 // \exception std::invalid_argument Invalid non-square matrix provided.
 //
-// This function uses the LAPACK posv() functions to compute the solution to the system of linear
-// equations \f$ A*X=B \f$, where \a A is a column-major n-by-n positive definite matrix and \a X
+// This function uses the LAPACK posv() functions to compute the solution to the positive definite
+// system of linear equations \f$ A*X=B \f$, where \a A is a column-major n-by-n matrix and \a X
 // and \a B are column-major n-by-m matrices. Note that the function only works for general,
 // non-adapted matrices with \c float, \c double, \c complex<float>, or \c complex<double> element
 // type. The attempt to call the function with adaptors or matrices of any other element type
@@ -454,7 +456,7 @@ inline void posv( DenseMatrix<MT,columnMajor>& A, DenseVector<VT,columnVector>& 
 // is thrown \a A may already have been modified.
 */
 template< typename MT1, typename MT2 >
-void posv( DenseMatrix<MT1,columnMajor>& A, DenseMatrix<MT2,columnMajor>& B, char uplo )
+inline void posv( DenseMatrix<MT1,columnMajor>& A, DenseMatrix<MT2,columnMajor>& B, char uplo )
 {
    using boost::numeric_cast;
 
