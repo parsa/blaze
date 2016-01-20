@@ -113,6 +113,9 @@ OperationTest::OperationTest()
    testGesv< blaze::complex<float>  >();
    testGesv< blaze::complex<double> >();
 
+   testSysv< double                 >();
+   testSysv< blaze::complex<double> >();
+
    testPosv< float                  >();
    testPosv< double                 >();
    testPosv< blaze::complex<float>  >();

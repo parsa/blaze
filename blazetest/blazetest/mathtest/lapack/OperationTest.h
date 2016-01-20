@@ -106,6 +106,7 @@ class OperationTest
    template< typename Type > void testTrtri();
 
    template< typename Type > void testGesv();
+   template< typename Type > void testSysv();
    template< typename Type > void testPosv();
    //@}
    //**********************************************************************************************
@@ -1172,7 +1173,7 @@ void OperationTest::testGesv()
 #if BLAZETEST_MATHTEST_LAPACK_MODE
 
    {
-      test_ = "LU-based solving of a linear system of equations (single right-hand side)";
+      test_ = "General linear system of equations (single right-hand side)";
 
       blaze::StaticMatrix<Type,3UL,3UL,blaze::columnMajor> A, LU;
 
@@ -1198,16 +1199,16 @@ void OperationTest::testGesv()
              << " Details:\n"
              << "   Element type:\n"
              << "     " << typeid( Type ).name() << "\n"
-             << "   System matrix:\n" << A << "\n"
-             << "   Right-hand side:\n" << rhs << "\n"
-             << "   Result:\n" << result << "\n"
-             << "   Expected result:\n" << ( inv(A) * rhs ) << "\n";
+             << "   System matrix (A):\n" << A << "\n"
+             << "   Result (x):\n" << result << "\n"
+             << "   Right-hand side (y):\n" << rhs << "\n"
+             << "   A * x:\n" << ( A * result ) << "\n";
          throw std::runtime_error( oss.str() );
       }
    }
 
    {
-      test_ = "LU-based solving of a linear system of equations (multiple right-hand side vectors)";
+      test_ = "General linear system of equations (multiple right-hand side vectors)";
 
       blaze::StaticMatrix<Type,3UL,3UL,blaze::columnMajor> A, LU;
 
@@ -1233,10 +1234,101 @@ void OperationTest::testGesv()
              << " Details:\n"
              << "   Element type:\n"
              << "     " << typeid( Type ).name() << "\n"
-             << "   System matrix:\n" << A << "\n"
-             << "   Right-hand side:\n" << rhs << "\n"
-             << "   Result:\n" << result << "\n"
-             << "   Expected result:\n" << ( inv(A) * rhs ) << "\n";
+             << "   System matrix (A):\n" << A << "\n"
+             << "   Result (x):\n" << result << "\n"
+             << "   Right-hand side (y):\n" << rhs << "\n"
+             << "   A * x:\n" << ( A * result ) << "\n";
+         throw std::runtime_error( oss.str() );
+      }
+   }
+
+#endif
+}
+//*************************************************************************************************
+
+
+//*************************************************************************************************
+/*!\brief Test of the symmetric indefinite linear system solver functions (sysv).
+//
+// \return void
+// \exception std::runtime_error Error detected.
+//
+// This function performs a test of the symmetric indefinite linear system solver functions for
+// various data types. In case an error is detected, a \a std::runtime_error exception is thrown.
+*/
+template< typename Type >
+void OperationTest::testSysv()
+{
+#if BLAZETEST_MATHTEST_LAPACK_MODE
+
+   {
+      test_ = "Symmetric indefinite linear system of equations (single right-hand side, lower part)";
+
+      blaze::StaticMatrix<Type,3UL,3UL,blaze::columnMajor> A, LU;
+
+      do {
+         randomize( A );
+         A *= trans( A );
+      }
+      while( blaze::isDefault( det( A ) ) );
+
+      blaze::StaticVector<Type,3UL,blaze::columnVector> rhs, result;
+      randomize( rhs );
+
+      blaze::StaticVector<int,3UL,blaze::columnVector> ipiv;
+
+      LU = A;
+      result = rhs;
+
+      blaze::sysv( LU, result, 'L', ipiv.data() );
+
+      if( ( A * result ) != rhs ) {
+         std::ostringstream oss;
+         oss << " Test: " << test_ << "\n"
+             << " Error: Solving the linear system of equations failed\n"
+             << " Details:\n"
+             << "   Element type:\n"
+             << "     " << typeid( Type ).name() << "\n"
+             << "   System matrix (A):\n" << A << "\n"
+             << "   Result (x):\n" << result << "\n"
+             << "   Right-hand side (y):\n" << rhs << "\n"
+             << "   A * x:\n" << ( A * result ) << "\n";
+         throw std::runtime_error( oss.str() );
+      }
+   }
+
+   {
+      test_ = "Symmetric indefinite linear system of equations (multiple right-hand side vectors, lower part)";
+
+      blaze::StaticMatrix<Type,3UL,3UL,blaze::columnMajor> A, LU;
+
+      do {
+         randomize( A );
+         A *= trans( A );
+      }
+      while( blaze::isDefault( det( A ) ) );
+
+      blaze::StaticMatrix<Type,3UL,3UL,blaze::columnMajor> rhs, result;
+      randomize( rhs );
+
+      blaze::StaticVector<int,3UL,blaze::columnVector> ipiv;
+
+      LU = A;
+      result = rhs;
+
+      blaze::sysv( LU, result, 'L', ipiv.data() );
+
+      if( ( A * result ) != rhs ) {
+         std::ostringstream oss;
+         oss << " Test: " << test_ << "\n"
+             << " Error: Solving the linear system of equations failed\n"
+             << " Details:\n"
+             << "   Element type:\n"
+             << "     " << typeid( Type ).name() << "\n"
+             << "   System matrix (A):\n" << A << "\n"
+             << "   Result (x):\n" << result << "\n"
+             << "   Right-hand side (y):\n" << rhs << "\n"
+             << "   A * x:\n" << ( A * result ) << "\n";
          throw std::runtime_error( oss.str() );
       }
    }
@@ -1261,7 +1353,7 @@ void OperationTest::testPosv()
 #if BLAZETEST_MATHTEST_LAPACK_MODE
 
    {
-      test_ = "Cholesky-based solving of a linear system of equations (single right-hand side)";
+      test_ = "Positive definite linear system of equations (single right-hand side, lower part)";
 
       blaze::StaticMatrix<Type,3UL,3UL,blaze::columnMajor> A, LU;
 
@@ -1289,16 +1381,16 @@ void OperationTest::testPosv()
              << " Details:\n"
              << "   Element type:\n"
              << "     " << typeid( Type ).name() << "\n"
-             << "   System matrix:\n" << A << "\n"
-             << "   Right-hand side:\n" << rhs << "\n"
-             << "   Result:\n" << result << "\n"
-             << "   Expected result:\n" << ( inv(A) * rhs ) << "\n";
+             << "   System matrix (A):\n" << A << "\n"
+             << "   Result (x):\n" << result << "\n"
+             << "   Right-hand side (y):\n" << rhs << "\n"
+             << "   A * x:\n" << ( A * result ) << "\n";
          throw std::runtime_error( oss.str() );
       }
    }
 
    {
-      test_ = "Cholesky-based solving of a linear system of equations (multiple right-hand side vectors)";
+      test_ = "Positive definite linear system of equations (multiple right-hand side vectors, lower part)";
 
       blaze::StaticMatrix<Type,3UL,3UL,blaze::columnMajor> A, LU;
 
@@ -1317,7 +1409,7 @@ void OperationTest::testPosv()
       LU = A;
       result = rhs;
 
-      blaze::posv( LU, result, 'U' );
+      blaze::posv( LU, result, 'L' );
 
       if( ( A * result ) != rhs ) {
          std::ostringstream oss;
@@ -1326,10 +1418,10 @@ void OperationTest::testPosv()
              << " Details:\n"
              << "   Element type:\n"
              << "     " << typeid( Type ).name() << "\n"
-             << "   System matrix:\n" << A << "\n"
-             << "   Right-hand side:\n" << rhs << "\n"
-             << "   Result:\n" << result << "\n"
-             << "   Expected result:\n" << ( inv(A) * rhs ) << "\n";
+             << "   System matrix (A):\n" << A << "\n"
+             << "   Result (x):\n" << result << "\n"
+             << "   Right-hand side (y):\n" << rhs << "\n"
+             << "   A * x:\n" << ( A * result ) << "\n";
          throw std::runtime_error( oss.str() );
       }
    }
