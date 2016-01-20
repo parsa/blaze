@@ -75,7 +75,7 @@ inline const typename MultTrait<typename T1::ElementType,typename T2::ElementTyp
    operator,( const Vector<T1,true>& lhs, const Vector<T2,true>& rhs );
 
 template< typename VT, bool TF >
-inline std::ostream& operator<<( std::ostream& os, const Vector<VT,TF>& dv );
+inline std::ostream& operator<<( std::ostream& os, const Vector<VT,TF>& v );
 //@}
 //*************************************************************************************************
 
@@ -168,18 +168,20 @@ template< typename VT  // Type of the vector
         , bool TF >    // Transpose flag
 inline std::ostream& operator<<( std::ostream& os, const Vector<VT,TF>& v )
 {
-   if( (~v).size() == 0UL ) {
+   typename VT::CompositeType tmp( ~v );
+
+   if( tmp.size() == 0UL ) {
       os << "( )\n";
    }
    else if( TF == rowVector ) {
       os << "(";
-      for( size_t i=0UL; i<(~v).size(); ++i )
-         os << " " << (~v)[i];
+      for( size_t i=0UL; i<tmp.size(); ++i )
+         os << " " << tmp[i];
       os << " )\n";
    }
    else {
-      for( size_t i=0UL; i<(~v).size(); ++i )
-         os << "( " << std::setw( 11UL ) << (~v)[i] << " )\n";
+      for( size_t i=0UL; i<tmp.size(); ++i )
+         os << "( " << std::setw( 11UL ) << tmp[i] << " )\n";
    }
 
    return os;
