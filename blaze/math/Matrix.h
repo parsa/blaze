@@ -57,7 +57,7 @@ namespace blaze {
 /*!\name Matrix operators */
 //@{
 template< typename MT, bool SO >
-inline std::ostream& operator<<( std::ostream& os, const Matrix<MT,SO>& dv );
+inline std::ostream& operator<<( std::ostream& os, const Matrix<MT,SO>& m );
 //@}
 //*************************************************************************************************
 
@@ -74,10 +74,12 @@ template< typename MT  // Type of the matrix
         , bool SO >    // Storage order
 inline std::ostream& operator<<( std::ostream& os, const Matrix<MT,SO>& m )
 {
-   for( size_t i=0UL; i<(~m).rows(); ++i ) {
+   typename MT::CompositeType tmp( ~m );
+
+   for( size_t i=0UL; i<tmp.rows(); ++i ) {
       os << "( ";
-      for( size_t j=0UL; j<(~m).columns(); ++j ) {
-         os << std::setw(12) << (~m)(i,j) << " ";
+      for( size_t j=0UL; j<tmp.columns(); ++j ) {
+         os << std::setw(12) << tmp(i,j) << " ";
       }
       os << ")\n";
    }
