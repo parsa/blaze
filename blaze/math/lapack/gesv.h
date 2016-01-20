@@ -1,7 +1,7 @@
 //=================================================================================================
 /*!
 //  \file blaze/math/lapack/gesv.h
-//  \brief Header file for LAPACK linear system solver functions (gesv)
+//  \brief Header file for LAPACK general matrix linear system solver functions (gesv)
 //
 //  Copyright (C) 2013 Klaus Iglberger - All Rights Reserved
 //
@@ -314,7 +314,10 @@ inline void gesv( int* n, int* nrhs, complex<double>* A, int* lda, int* ipiv, co
 //
 // This function uses the LAPACK gesv() functions to compute the solution to the system of linear
 // equations \f$ A*x=b \f$, where \a A is a column-major n-by-n matrix and \a x and \a b are
-// n-dimensional column vectors.
+// n-dimensional column vectors. Note that the function only works for general, non-adapted
+// matrices with \c float, \c double, \c complex<float>, or \c complex<double> element type. The
+// attempt to call the function with adaptors or matrices of any other element type results in a
+// compile time error!
 //
 // If the function exits successfully, the vector \a b contains the solution of the linear system
 // of equations and \a A has been decomposed by means of an LU decomposition with partial pivoting
@@ -341,6 +344,9 @@ inline void gesv( int* n, int* nrhs, complex<double>* A, int* lda, int* ipiv, co
 //
 // \note This function can only be used if the fitting LAPACK library is available and linked to
 // the executable. Otherwise a call to this function will result in a linker error.
+//
+// \note This function does not provide any exception safety guarantee, i.e. in case an exception
+// is thrown \a A may already have been modified.
 */
 template< typename MT, typename VT >
 inline void gesv( DenseMatrix<MT,columnMajor>& A, DenseVector<VT,columnVector>& b, int* ipiv )
@@ -364,6 +370,10 @@ inline void gesv( DenseMatrix<MT,columnMajor>& A, DenseVector<VT,columnVector>& 
    int lda ( numeric_cast<int>( (~A).spacing() ) );
    int ldb ( numeric_cast<int>( (~b).size() ) );
    int info( 0 );
+
+   if( n == 0 ) {
+      return;
+   }
 
    gesv( &n, &nrhs, (~A).data(), &lda, ipiv, (~b).data(), &ldb, &info );
 
@@ -389,7 +399,10 @@ inline void gesv( DenseMatrix<MT,columnMajor>& A, DenseVector<VT,columnVector>& 
 //
 // This function uses the LAPACK gesv() functions to compute the solution to the system of linear
 // equations \f$ A*X=B \f$, where \a A is a column-major n-by-n matrix and \a X and \a B are
-// column-major n-by-m matrices.
+// column-major n-by-m matrices. Note that the function only works for general, non-adapted
+// matrices with \c float, \c double, \c complex<float>, or \c complex<double> element type. The
+// attempt to call the function with adaptors or matrices of any other element type results in a
+// compile time error!
 //
 // If the function exits successfully, the matrix \a B contains the solutions of the linear system
 // of equations and \a A has been decomposed by means of an LU decomposition with partial pivoting
@@ -416,6 +429,9 @@ inline void gesv( DenseMatrix<MT,columnMajor>& A, DenseVector<VT,columnVector>& 
 //
 // \note This function can only be used if the fitting LAPACK library is available and linked to
 // the executable. Otherwise a call to this function will result in a linker error.
+//
+// \note This function does not provide any exception safety guarantee, i.e. in case an exception
+// is thrown \a A may already have been modified.
 */
 template< typename MT1, typename MT2 >
 void gesv( DenseMatrix<MT1,columnMajor>& A, DenseMatrix<MT2,columnMajor>& B, int* ipiv )
@@ -440,6 +456,10 @@ void gesv( DenseMatrix<MT1,columnMajor>& A, DenseMatrix<MT2,columnMajor>& B, int
    int lda ( numeric_cast<int>( (~A).spacing() ) );
    int ldb ( numeric_cast<int>( (~B).spacing() ) );
    int info( 0 );
+
+   if( n == 0 ) {
+      return;
+   }
 
    gesv( &n, &nrhs, (~A).data(), &lda, ipiv, (~B).data(), &ldb, &info );
 
