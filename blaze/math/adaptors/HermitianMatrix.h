@@ -386,18 +386,21 @@ inline void invert4x4( HermitianMatrix<MT,SO,true>& m )
    ET tmp1( A(2,2)*A(3,3) - A(2,3)*A(3,2) );
    ET tmp2( A(2,1)*A(3,3) - A(2,3)*A(3,1) );
    ET tmp3( A(2,1)*A(3,2) - A(2,2)*A(3,1) );
-   ET tmp4( A(2,0)*A(3,3) - A(2,3)*A(3,0) );
-   ET tmp5( A(2,0)*A(3,2) - A(2,2)*A(3,0) );
-   ET tmp6( A(2,0)*A(3,1) - A(2,1)*A(3,0) );
 
    B(0,0) = A(1,1)*tmp1 - A(1,2)*tmp2 + A(1,3)*tmp3;
-   B(1,0) = A(1,2)*tmp4 - A(1,0)*tmp1 - A(1,3)*tmp5;
-   B(2,0) = A(1,0)*tmp2 - A(1,1)*tmp4 + A(1,3)*tmp6;
-   B(3,0) = A(1,1)*tmp5 - A(1,0)*tmp3 - A(1,2)*tmp6;
-   B(0,1) = conj( B(1,0) );
+   B(0,1) = A(0,2)*tmp2 - A(0,1)*tmp1 - A(0,3)*tmp3;
+
+   ET tmp4( A(2,0)*A(3,3) - A(2,3)*A(3,0) );
+   ET tmp5( A(2,0)*A(3,2) - A(2,2)*A(3,0) );
+
    B(1,1) = A(0,0)*tmp1 - A(0,2)*tmp4 + A(0,3)*tmp5;
-   B(2,1) = A(0,1)*tmp4 - A(0,0)*tmp2 - A(0,3)*tmp6;
-   B(3,1) = A(0,0)*tmp3 - A(0,1)*tmp5 + A(0,2)*tmp6;
+
+   tmp1 = A(2,0)*A(3,1) - A(2,1)*A(3,0);
+
+   B(2,0) = A(1,0)*tmp2 - A(1,1)*tmp4 + A(1,3)*tmp1;
+   B(2,1) = A(0,1)*tmp4 - A(0,0)*tmp2 - A(0,3)*tmp1;
+   B(3,0) = A(1,1)*tmp5 - A(1,0)*tmp3 - A(1,2)*tmp1;
+   B(3,1) = A(0,0)*tmp3 - A(0,1)*tmp5 + A(0,2)*tmp1;
 
    tmp1 = A(0,1)*A(1,3) - A(0,3)*A(1,1);
    tmp2 = A(0,1)*A(1,2) - A(0,2)*A(1,1);
@@ -405,14 +408,16 @@ inline void invert4x4( HermitianMatrix<MT,SO,true>& m )
    tmp4 = A(0,0)*A(1,2) - A(0,2)*A(1,0);
    tmp5 = A(0,0)*A(1,1) - A(0,1)*A(1,0);
 
-   B(0,2) = conj( B(2,0) );
-   B(1,2) = conj( B(2,1) );
    B(2,2) = A(3,0)*tmp1 - A(3,1)*tmp3 + A(3,3)*tmp5;
-   B(3,2) = A(3,1)*tmp4 - A(3,0)*tmp2 - A(3,2)*tmp5;
-   B(0,3) = conj( B(3,0) );
-   B(1,3) = conj( B(3,1) );
-   B(2,3) = conj( B(3,2) );
+   B(2,3) = A(2,1)*tmp3 - A(2,0)*tmp1 - A(2,3)*tmp5;
    B(3,3) = A(2,0)*tmp2 - A(2,1)*tmp4 + A(2,2)*tmp5;
+
+   B(0,2) = conj( B(2,0) );
+   B(0,3) = conj( B(3,0) );
+   B(1,0) = conj( B(0,1) );
+   B(1,2) = conj( B(2,1) );
+   B(1,3) = conj( B(3,1) );
+   B(3,2) = conj( B(2,3) );
 
    const ET det( A(0,0)*B(0,0) + A(0,1)*B(1,0) + A(0,2)*B(2,0) + A(0,3)*B(3,0) );
 
@@ -473,68 +478,69 @@ inline void invert5x5( HermitianMatrix<MT,SO,true>& m )
    ET tmp12( A(2,1)*tmp1 - A(2,3)*tmp4 + A(2,4)*tmp5  );
    ET tmp13( A(2,1)*tmp2 - A(2,2)*tmp4 + A(2,4)*tmp6  );
    ET tmp14( A(2,1)*tmp3 - A(2,2)*tmp5 + A(2,3)*tmp6  );
-   ET tmp15( A(1,1)*tmp1 - A(1,3)*tmp4 + A(1,4)*tmp5  );
-   ET tmp16( A(2,0)*tmp1 - A(2,3)*tmp7 + A(2,4)*tmp8  );
-   ET tmp17( A(2,0)*tmp2 - A(2,2)*tmp7 + A(2,4)*tmp9  );
-   ET tmp18( A(2,0)*tmp3 - A(2,2)*tmp8 + A(2,3)*tmp9  );
-   ET tmp19( A(1,0)*tmp1 - A(1,3)*tmp7 + A(1,4)*tmp8  );
-   ET tmp20( A(2,0)*tmp4 - A(2,1)*tmp7 + A(2,4)*tmp10 );
-   ET tmp21( A(2,0)*tmp5 - A(2,1)*tmp8 + A(2,3)*tmp10 );
-   ET tmp22( A(1,0)*tmp4 - A(1,1)*tmp7 + A(1,4)*tmp10 );
-   ET tmp23( A(1,0)*tmp5 - A(1,1)*tmp8 + A(1,3)*tmp10 );
-   ET tmp24( A(2,0)*tmp6 - A(2,1)*tmp9 + A(2,2)*tmp10 );
+   ET tmp15( A(2,0)*tmp1 - A(2,3)*tmp7 + A(2,4)*tmp8  );
+   ET tmp16( A(2,0)*tmp2 - A(2,2)*tmp7 + A(2,4)*tmp9  );
+   ET tmp17( A(2,0)*tmp3 - A(2,2)*tmp8 + A(2,3)*tmp9  );
 
    B(0,0) =   A(1,1)*tmp11 - A(1,2)*tmp12 + A(1,3)*tmp13 - A(1,4)*tmp14;
-   B(1,0) = - A(1,0)*tmp11 + A(1,2)*tmp16 - A(1,3)*tmp17 + A(1,4)*tmp18;
-   B(2,0) =   A(1,0)*tmp12 - A(1,1)*tmp16 + A(1,3)*tmp20 - A(1,4)*tmp21;
-   B(3,0) = - A(1,0)*tmp13 + A(1,1)*tmp17 - A(1,2)*tmp20 + A(1,4)*tmp24;
-   B(4,0) =   A(1,0)*tmp14 - A(1,1)*tmp18 + A(1,2)*tmp21 - A(1,3)*tmp24;
-   B(0,1) =   conj( B(1,0) );
-   B(1,1) =   A(0,0)*tmp11 - A(0,2)*tmp16 + A(0,3)*tmp17 - A(0,4)*tmp18;
-   B(2,1) = - A(0,0)*tmp12 + A(0,1)*tmp16 - A(0,3)*tmp20 + A(0,4)*tmp21;
-   B(3,1) =   A(0,0)*tmp13 - A(0,1)*tmp17 + A(0,2)*tmp20 - A(0,4)*tmp24;
-   B(4,1) = - A(0,0)*tmp14 + A(0,1)*tmp18 - A(0,2)*tmp21 + A(0,3)*tmp24;
-   B(0,2) =   conj( B(2,0) );
-   B(1,2) =   conj( B(2,1) );
-   B(2,2) =   A(0,0)*tmp15 - A(0,1)*tmp19 + A(0,3)*tmp22 - A(0,4)*tmp23;
+   B(0,1) = - A(0,1)*tmp11 + A(0,2)*tmp12 - A(0,3)*tmp13 + A(0,4)*tmp14;
+   B(1,1) =   A(0,0)*tmp11 - A(0,2)*tmp15 + A(0,3)*tmp16 - A(0,4)*tmp17;
 
-   tmp1 = A(0,2)*A(1,3) - A(0,3)*A(1,2);
-   tmp2 = A(0,1)*A(1,3) - A(0,3)*A(1,1);
-   tmp3 = A(0,1)*A(1,2) - A(0,2)*A(1,1);
-   tmp4 = A(0,0)*A(1,3) - A(0,3)*A(1,0);
-   tmp5 = A(0,0)*A(1,2) - A(0,2)*A(1,0);
-   tmp6 = A(0,0)*A(1,1) - A(0,1)*A(1,0);
-   tmp7 = A(0,2)*A(1,4) - A(0,4)*A(1,2);
-   tmp8 = A(0,1)*A(1,4) - A(0,4)*A(1,1);
-   tmp9 = A(0,0)*A(1,4) - A(0,4)*A(1,0);
+   ET tmp18( A(2,0)*tmp4 - A(2,1)*tmp7 + A(2,4)*tmp10 );
+   ET tmp19( A(2,0)*tmp5 - A(2,1)*tmp8 + A(2,3)*tmp10 );
+   ET tmp20( A(2,0)*tmp6 - A(2,1)*tmp9 + A(2,2)*tmp10 );
 
-   tmp11 = A(2,1)*tmp7 - A(2,2)*tmp8 + A(2,4)*tmp3;
-   tmp12 = A(2,1)*tmp1 - A(2,2)*tmp2 + A(2,3)*tmp3;
-   tmp13 = A(2,0)*tmp7 - A(2,2)*tmp9 + A(2,4)*tmp5;
-   tmp14 = A(2,0)*tmp1 - A(2,2)*tmp4 + A(2,3)*tmp5;
-   tmp15 = A(2,0)*tmp8 - A(2,1)*tmp9 + A(2,4)*tmp6;
-   tmp16 = A(2,0)*tmp2 - A(2,1)*tmp4 + A(2,3)*tmp6;
-   tmp17 = A(3,1)*tmp7 - A(3,2)*tmp8 + A(3,4)*tmp3;
-   tmp18 = A(3,0)*tmp7 - A(3,2)*tmp9 + A(3,4)*tmp5;
-   tmp19 = A(3,0)*tmp8 - A(3,1)*tmp9 + A(3,4)*tmp6;
-   tmp20 = A(3,0)*tmp3 - A(3,1)*tmp5 + A(3,2)*tmp6;
-   tmp21 = A(2,0)*tmp3 - A(2,1)*tmp5 + A(2,2)*tmp6;
-   tmp22 = A(3,1)*tmp1 - A(3,2)*tmp2 + A(3,3)*tmp3;
-   tmp23 = A(3,0)*tmp1 - A(3,2)*tmp4 + A(3,3)*tmp5;
-   tmp24 = A(3,0)*tmp2 - A(3,1)*tmp4 + A(3,3)*tmp6;
+   B(2,0) =   A(1,0)*tmp12 - A(1,1)*tmp15 + A(1,3)*tmp18 - A(1,4)*tmp19;
+   B(2,1) = - A(0,0)*tmp12 + A(0,1)*tmp15 - A(0,3)*tmp18 + A(0,4)*tmp19;
+   B(3,0) = - A(1,0)*tmp13 + A(1,1)*tmp16 - A(1,2)*tmp18 + A(1,4)*tmp20;
+   B(3,1) =   A(0,0)*tmp13 - A(0,1)*tmp16 + A(0,2)*tmp18 - A(0,4)*tmp20;
+   B(4,0) =   A(1,0)*tmp14 - A(1,1)*tmp17 + A(1,2)*tmp19 - A(1,3)*tmp20;
+   B(4,1) = - A(0,0)*tmp14 + A(0,1)*tmp17 - A(0,2)*tmp19 + A(0,3)*tmp20;
 
-   B(3,2) =   A(4,0)*tmp17 - A(4,1)*tmp18 + A(4,2)*tmp19 - A(4,4)*tmp20;
-   B(4,2) = - A(4,0)*tmp22 + A(4,1)*tmp23 - A(4,2)*tmp24 + A(4,3)*tmp20;
-   B(0,3) =   conj( B(3,0) );
-   B(1,3) =   conj( B(3,1) );
-   B(2,3) =   conj( B(3,2) );
-   B(3,3) = - A(4,0)*tmp11 + A(4,1)*tmp13 - A(4,2)*tmp15 + A(4,4)*tmp21;
-   B(4,3) =   A(4,0)*tmp12 - A(4,1)*tmp14 + A(4,2)*tmp16 - A(4,3)*tmp21;
-   B(0,4) =   conj( B(4,0) );
-   B(1,4) =   conj( B(4,1) );
-   B(2,4) =   conj( B(4,2) );
-   B(3,4) =   conj( B(4,3) );
-   B(4,4) = - A(3,0)*tmp12 + A(3,1)*tmp14 - A(3,2)*tmp16 + A(3,3)*tmp21;
+   tmp11 = A(1,1)*tmp1 - A(1,3)*tmp4 + A(1,4)*tmp5;
+   tmp12 = A(1,0)*tmp1 - A(1,3)*tmp7 + A(1,4)*tmp8;
+   tmp13 = A(1,0)*tmp4 - A(1,1)*tmp7 + A(1,4)*tmp10;
+   tmp14 = A(1,0)*tmp5 - A(1,1)*tmp8 + A(1,3)*tmp10;
+
+   B(2,2) = A(0,0)*tmp11 - A(0,1)*tmp12 + A(0,3)*tmp13 - A(0,4)*tmp14;
+
+   tmp1  = A(0,2)*A(1,3) - A(0,3)*A(1,2);
+   tmp2  = A(0,1)*A(1,3) - A(0,3)*A(1,1);
+   tmp3  = A(0,1)*A(1,2) - A(0,2)*A(1,1);
+   tmp4  = A(0,0)*A(1,3) - A(0,3)*A(1,0);
+   tmp5  = A(0,0)*A(1,2) - A(0,2)*A(1,0);
+   tmp6  = A(0,0)*A(1,1) - A(0,1)*A(1,0);
+   tmp7  = A(0,2)*A(1,4) - A(0,4)*A(1,2);
+   tmp8  = A(0,1)*A(1,4) - A(0,4)*A(1,1);
+   tmp9  = A(0,0)*A(1,4) - A(0,4)*A(1,0);
+   tmp10 = A(0,3)*A(1,4) - A(0,4)*A(1,3);
+
+   tmp11 = A(2,1)*tmp10 - A(2,3)*tmp8 + A(2,4)*tmp2;
+   tmp12 = A(2,1)*tmp7  - A(2,2)*tmp8 + A(2,4)*tmp3;
+   tmp13 = A(2,1)*tmp1  - A(2,2)*tmp2 + A(2,3)*tmp3;
+   tmp14 = A(2,0)*tmp10 - A(2,3)*tmp9 + A(2,4)*tmp4;
+   tmp15 = A(2,0)*tmp7  - A(2,2)*tmp9 + A(2,4)*tmp5;
+   tmp16 = A(2,0)*tmp1  - A(2,2)*tmp4 + A(2,3)*tmp5;
+   tmp17 = A(2,0)*tmp8  - A(2,1)*tmp9 + A(2,4)*tmp6;
+   tmp18 = A(2,0)*tmp2  - A(2,1)*tmp4 + A(2,3)*tmp6;
+   tmp19 = A(2,0)*tmp3  - A(2,1)*tmp5 + A(2,2)*tmp6;
+
+   B(2,3) =   A(4,0)*tmp11 - A(4,1)*tmp14 + A(4,3)*tmp17 - A(4,4)*tmp18;
+   B(2,4) = - A(3,0)*tmp11 + A(3,1)*tmp14 - A(3,3)*tmp17 + A(3,4)*tmp18;
+   B(3,3) = - A(4,0)*tmp12 + A(4,1)*tmp15 - A(4,2)*tmp17 + A(4,4)*tmp19;
+   B(3,4) =   A(3,0)*tmp12 - A(3,1)*tmp15 + A(3,2)*tmp17 - A(3,4)*tmp19;
+   B(4,4) = - A(3,0)*tmp13 + A(3,1)*tmp16 - A(3,2)*tmp18 + A(3,3)*tmp19;
+
+   B(0,2) = conj( B(2,0) );
+   B(0,3) = conj( B(3,0) );
+   B(0,4) = conj( B(4,0) );
+   B(1,0) = conj( B(0,1) );
+   B(1,2) = conj( B(2,1) );
+   B(1,3) = conj( B(3,1) );
+   B(1,4) = conj( B(4,1) );
+   B(3,2) = conj( B(2,3) );
+   B(4,2) = conj( B(2,4) );
+   B(4,3) = conj( B(3,4) );
 
    const ET det( A(0,0)*B(0,0) + A(0,1)*B(1,0) + A(0,2)*B(2,0) + A(0,3)*B(3,0) + A(0,4)*B(4,0) );
 
@@ -622,49 +628,52 @@ inline void invert6x6( HermitianMatrix<MT,SO,true>& m )
    ET tmp38( A(2,1)*tmp17 - A(2,2)*tmp20 + A(2,4)*tmp23 - A(2,5)*tmp24 );
    ET tmp39( A(2,1)*tmp18 - A(2,2)*tmp21 + A(2,3)*tmp23 - A(2,5)*tmp25 );
    ET tmp40( A(2,1)*tmp19 - A(2,2)*tmp22 + A(2,3)*tmp24 - A(2,4)*tmp25 );
-   ET tmp41( A(1,1)*tmp16 - A(1,3)*tmp20 + A(1,4)*tmp21 - A(1,5)*tmp22 );
-   ET tmp42( A(1,1)*tmp17 - A(1,2)*tmp20 + A(1,4)*tmp23 - A(1,5)*tmp24 );
-   ET tmp43( A(1,1)*tmp18 - A(1,2)*tmp21 + A(1,3)*tmp23 - A(1,5)*tmp25 );
-   ET tmp44( A(1,1)*tmp19 - A(1,2)*tmp22 + A(1,3)*tmp24 - A(1,4)*tmp25 );
-   ET tmp45( A(2,0)*tmp16 - A(2,3)*tmp26 + A(2,4)*tmp27 - A(2,5)*tmp28 );
-   ET tmp46( A(2,0)*tmp17 - A(2,2)*tmp26 + A(2,4)*tmp29 - A(2,5)*tmp30 );
-   ET tmp47( A(2,0)*tmp18 - A(2,2)*tmp27 + A(2,3)*tmp29 - A(2,5)*tmp31 );
-   ET tmp48( A(2,0)*tmp19 - A(2,2)*tmp28 + A(2,3)*tmp30 - A(2,4)*tmp31 );
-   ET tmp49( A(1,0)*tmp16 - A(1,3)*tmp26 + A(1,4)*tmp27 - A(1,5)*tmp28 );
-   ET tmp50( A(1,0)*tmp17 - A(1,2)*tmp26 + A(1,4)*tmp29 - A(1,5)*tmp30 );
-   ET tmp51( A(1,0)*tmp18 - A(1,2)*tmp27 + A(1,3)*tmp29 - A(1,5)*tmp31 );
-   ET tmp52( A(1,0)*tmp19 - A(1,2)*tmp28 + A(1,3)*tmp30 - A(1,4)*tmp31 );
-   ET tmp53( A(2,0)*tmp20 - A(2,1)*tmp26 + A(2,4)*tmp32 - A(2,5)*tmp33 );
-   ET tmp54( A(2,0)*tmp21 - A(2,1)*tmp27 + A(2,3)*tmp32 - A(2,5)*tmp34 );
-   ET tmp55( A(2,0)*tmp22 - A(2,1)*tmp28 + A(2,3)*tmp33 - A(2,4)*tmp34 );
-   ET tmp56( A(1,0)*tmp20 - A(1,1)*tmp26 + A(1,4)*tmp32 - A(1,5)*tmp33 );
-   ET tmp57( A(1,0)*tmp21 - A(1,1)*tmp27 + A(1,3)*tmp32 - A(1,5)*tmp34 );
-   ET tmp58( A(1,0)*tmp22 - A(1,1)*tmp28 + A(1,3)*tmp33 - A(1,4)*tmp34 );
-   ET tmp59( A(2,0)*tmp23 - A(2,1)*tmp29 + A(2,2)*tmp32 - A(2,5)*tmp35 );
-   ET tmp60( A(2,0)*tmp24 - A(2,1)*tmp30 + A(2,2)*tmp33 - A(2,4)*tmp35 );
-   ET tmp61( A(1,0)*tmp23 - A(1,1)*tmp29 + A(1,2)*tmp32 - A(1,5)*tmp35 );
-   ET tmp62( A(1,0)*tmp24 - A(1,1)*tmp30 + A(1,2)*tmp33 - A(1,4)*tmp35 );
-   ET tmp63( A(2,0)*tmp25 - A(2,1)*tmp31 + A(2,2)*tmp34 - A(2,3)*tmp35 );
-   ET tmp64( A(1,0)*tmp25 - A(1,1)*tmp31 + A(1,2)*tmp34 - A(1,3)*tmp35 );
+   ET tmp41( A(2,0)*tmp16 - A(2,3)*tmp26 + A(2,4)*tmp27 - A(2,5)*tmp28 );
+   ET tmp42( A(2,0)*tmp17 - A(2,2)*tmp26 + A(2,4)*tmp29 - A(2,5)*tmp30 );
+   ET tmp43( A(2,0)*tmp18 - A(2,2)*tmp27 + A(2,3)*tmp29 - A(2,5)*tmp31 );
+   ET tmp44( A(2,0)*tmp19 - A(2,2)*tmp28 + A(2,3)*tmp30 - A(2,4)*tmp31 );
 
    B(0,0) =   A(1,1)*tmp36 - A(1,2)*tmp37 + A(1,3)*tmp38 - A(1,4)*tmp39 + A(1,5)*tmp40;
-   B(1,0) = - A(1,0)*tmp36 + A(1,2)*tmp45 - A(1,3)*tmp46 + A(1,4)*tmp47 - A(1,5)*tmp48;
-   B(2,0) =   A(1,0)*tmp37 - A(1,1)*tmp45 + A(1,3)*tmp53 - A(1,4)*tmp54 + A(1,5)*tmp55;
-   B(3,0) = - A(1,0)*tmp38 + A(1,1)*tmp46 - A(1,2)*tmp53 + A(1,4)*tmp59 - A(1,5)*tmp60;
-   B(4,0) =   A(1,0)*tmp39 - A(1,1)*tmp47 + A(1,2)*tmp54 - A(1,3)*tmp59 + A(1,5)*tmp63;
-   B(5,0) = - A(1,0)*tmp40 + A(1,1)*tmp48 - A(1,2)*tmp55 + A(1,3)*tmp60 - A(1,4)*tmp63;
-   B(0,1) =   conj( B(1,0) );
-   B(1,1) =   A(0,0)*tmp36 - A(0,2)*tmp45 + A(0,3)*tmp46 - A(0,4)*tmp47 + A(0,5)*tmp48;
-   B(2,1) = - A(0,0)*tmp37 + A(0,1)*tmp45 - A(0,3)*tmp53 + A(0,4)*tmp54 - A(0,5)*tmp55;
-   B(3,1) =   A(0,0)*tmp38 - A(0,1)*tmp46 + A(0,2)*tmp53 - A(0,4)*tmp59 + A(0,5)*tmp60;
-   B(4,1) = - A(0,0)*tmp39 + A(0,1)*tmp47 - A(0,2)*tmp54 + A(0,3)*tmp59 - A(0,5)*tmp63;
-   B(5,1) =   A(0,0)*tmp40 - A(0,1)*tmp48 + A(0,2)*tmp55 - A(0,3)*tmp60 + A(0,4)*tmp63;
-   B(0,2) =   conj( B(2,0) );
-   B(1,2) =   conj( B(2,1) );
-   B(2,2) =   A(0,0)*tmp41 - A(0,1)*tmp49 + A(0,3)*tmp56 - A(0,4)*tmp57 + A(0,5)*tmp58;
-   B(3,2) = - A(0,0)*tmp42 + A(0,1)*tmp50 - A(0,2)*tmp56 + A(0,4)*tmp61 - A(0,5)*tmp62;
-   B(4,2) =   A(0,0)*tmp43 - A(0,1)*tmp51 + A(0,2)*tmp57 - A(0,3)*tmp61 + A(0,5)*tmp64;
-   B(5,2) = - A(0,0)*tmp44 + A(0,1)*tmp52 - A(0,2)*tmp58 + A(0,3)*tmp62 - A(0,4)*tmp64;
+   B(0,1) = - A(0,1)*tmp36 + A(0,2)*tmp37 - A(0,3)*tmp38 + A(0,4)*tmp39 - A(0,5)*tmp40;
+   B(1,1) =   A(0,0)*tmp36 - A(0,2)*tmp41 + A(0,3)*tmp42 - A(0,4)*tmp43 + A(0,5)*tmp44;
+
+   ET tmp45( A(2,0)*tmp20 - A(2,1)*tmp26 + A(2,4)*tmp32 - A(2,5)*tmp33 );
+   ET tmp46( A(2,0)*tmp21 - A(2,1)*tmp27 + A(2,3)*tmp32 - A(2,5)*tmp34 );
+   ET tmp47( A(2,0)*tmp22 - A(2,1)*tmp28 + A(2,3)*tmp33 - A(2,4)*tmp34 );
+   ET tmp48( A(2,0)*tmp23 - A(2,1)*tmp29 + A(2,2)*tmp32 - A(2,5)*tmp35 );
+   ET tmp49( A(2,0)*tmp24 - A(2,1)*tmp30 + A(2,2)*tmp33 - A(2,4)*tmp35 );
+
+   B(2,0) =   A(1,0)*tmp37 - A(1,1)*tmp41 + A(1,3)*tmp45 - A(1,4)*tmp46 + A(1,5)*tmp47;
+   B(2,1) = - A(0,0)*tmp37 + A(0,1)*tmp41 - A(0,3)*tmp45 + A(0,4)*tmp46 - A(0,5)*tmp47;
+   B(3,0) = - A(1,0)*tmp38 + A(1,1)*tmp42 - A(1,2)*tmp45 + A(1,4)*tmp48 - A(1,5)*tmp49;
+   B(3,1) =   A(0,0)*tmp38 - A(0,1)*tmp42 + A(0,2)*tmp45 - A(0,4)*tmp48 + A(0,5)*tmp49;
+
+   ET tmp50( A(2,0)*tmp25 - A(2,1)*tmp31 + A(2,2)*tmp34 - A(2,3)*tmp35 );
+
+   B(4,0) =   A(1,0)*tmp39 - A(1,1)*tmp43 + A(1,2)*tmp46 - A(1,3)*tmp48 + A(1,5)*tmp50;
+   B(4,1) = - A(0,0)*tmp39 + A(0,1)*tmp43 - A(0,2)*tmp46 + A(0,3)*tmp48 - A(0,5)*tmp50;
+   B(5,0) = - A(1,0)*tmp40 + A(1,1)*tmp44 - A(1,2)*tmp47 + A(1,3)*tmp49 - A(1,4)*tmp50;
+   B(5,1) =   A(0,0)*tmp40 - A(0,1)*tmp44 + A(0,2)*tmp47 - A(0,3)*tmp49 + A(0,4)*tmp50;
+
+   tmp36 = A(1,1)*tmp16 - A(1,3)*tmp20 + A(1,4)*tmp21 - A(1,5)*tmp22;
+   tmp37 = A(1,1)*tmp17 - A(1,2)*tmp20 + A(1,4)*tmp23 - A(1,5)*tmp24;
+   tmp38 = A(1,1)*tmp18 - A(1,2)*tmp21 + A(1,3)*tmp23 - A(1,5)*tmp25;
+   tmp39 = A(1,1)*tmp19 - A(1,2)*tmp22 + A(1,3)*tmp24 - A(1,4)*tmp25;
+   tmp40 = A(1,0)*tmp16 - A(1,3)*tmp26 + A(1,4)*tmp27 - A(1,5)*tmp28;
+   tmp41 = A(1,0)*tmp17 - A(1,2)*tmp26 + A(1,4)*tmp29 - A(1,5)*tmp30;
+   tmp42 = A(1,0)*tmp18 - A(1,2)*tmp27 + A(1,3)*tmp29 - A(1,5)*tmp31;
+   tmp43 = A(1,0)*tmp19 - A(1,2)*tmp28 + A(1,3)*tmp30 - A(1,4)*tmp31;
+   tmp44 = A(1,0)*tmp20 - A(1,1)*tmp26 + A(1,4)*tmp32 - A(1,5)*tmp33;
+   tmp45 = A(1,0)*tmp21 - A(1,1)*tmp27 + A(1,3)*tmp32 - A(1,5)*tmp34;
+   tmp46 = A(1,0)*tmp22 - A(1,1)*tmp28 + A(1,3)*tmp33 - A(1,4)*tmp34;
+   tmp47 = A(1,0)*tmp23 - A(1,1)*tmp29 + A(1,2)*tmp32 - A(1,5)*tmp35;
+   tmp48 = A(1,0)*tmp24 - A(1,1)*tmp30 + A(1,2)*tmp33 - A(1,4)*tmp35;
+   tmp49 = A(1,0)*tmp25 - A(1,1)*tmp31 + A(1,2)*tmp34 - A(1,3)*tmp35;
+
+   B(2,2) =   A(0,0)*tmp36 - A(0,1)*tmp40 + A(0,3)*tmp44 - A(0,4)*tmp45 + A(0,5)*tmp46;
+   B(3,2) = - A(0,0)*tmp37 + A(0,1)*tmp41 - A(0,2)*tmp44 + A(0,4)*tmp47 - A(0,5)*tmp48;
+   B(4,2) =   A(0,0)*tmp38 - A(0,1)*tmp42 + A(0,2)*tmp45 - A(0,3)*tmp47 + A(0,5)*tmp49;
+   B(5,2) = - A(0,0)*tmp39 + A(0,1)*tmp43 - A(0,2)*tmp46 + A(0,3)*tmp48 - A(0,4)*tmp49;
 
    tmp1  = A(0,3)*A(1,4) - A(0,4)*A(1,3);
    tmp2  = A(0,2)*A(1,4) - A(0,4)*A(1,2);
@@ -703,46 +712,50 @@ inline void invert6x6( HermitianMatrix<MT,SO,true>& m )
    tmp34 = A(2,0)*tmp5  - A(2,1)*tmp8  + A(2,3)*tmp10;
    tmp35 = A(2,0)*tmp6  - A(2,1)*tmp9  + A(2,2)*tmp10;
 
-   tmp36 = A(4,1)*tmp17 - A(4,2)*tmp20 + A(4,4)*tmp23 - A(4,5)*tmp24;
-   tmp37 = A(4,1)*tmp18 - A(4,2)*tmp21 + A(4,3)*tmp23 - A(4,5)*tmp25;
-   tmp38 = A(4,1)*tmp19 - A(4,2)*tmp22 + A(4,3)*tmp24 - A(4,4)*tmp25;
-   tmp39 = A(3,1)*tmp18 - A(3,2)*tmp21 + A(3,3)*tmp23 - A(3,5)*tmp25;
-   tmp40 = A(3,1)*tmp19 - A(3,2)*tmp22 + A(3,3)*tmp24 - A(3,4)*tmp25;
-   tmp41 = A(4,0)*tmp17 - A(4,2)*tmp26 + A(4,4)*tmp29 - A(4,5)*tmp30;
-   tmp42 = A(4,0)*tmp18 - A(4,2)*tmp27 + A(4,3)*tmp29 - A(4,5)*tmp31;
-   tmp43 = A(4,0)*tmp19 - A(4,2)*tmp28 + A(4,3)*tmp30 - A(4,4)*tmp31;
-   tmp44 = A(3,0)*tmp18 - A(3,2)*tmp27 + A(3,3)*tmp29 - A(3,5)*tmp31;
-   tmp45 = A(3,0)*tmp19 - A(3,2)*tmp28 + A(3,3)*tmp30 - A(3,4)*tmp31;
-   tmp46 = A(4,0)*tmp20 - A(4,1)*tmp26 + A(4,4)*tmp32 - A(4,5)*tmp33;
-   tmp47 = A(4,0)*tmp21 - A(4,1)*tmp27 + A(4,3)*tmp32 - A(4,5)*tmp34;
-   tmp48 = A(4,0)*tmp22 - A(4,1)*tmp28 + A(4,3)*tmp33 - A(4,4)*tmp34;
-   tmp49 = A(3,0)*tmp21 - A(3,1)*tmp27 + A(3,3)*tmp32 - A(3,5)*tmp34;
-   tmp50 = A(3,0)*tmp22 - A(3,1)*tmp28 + A(3,3)*tmp33 - A(3,4)*tmp34;
-   tmp51 = A(4,0)*tmp23 - A(4,1)*tmp29 + A(4,2)*tmp32 - A(4,5)*tmp35;
-   tmp52 = A(4,0)*tmp24 - A(4,1)*tmp30 + A(4,2)*tmp33 - A(4,4)*tmp35;
-   tmp53 = A(3,0)*tmp23 - A(3,1)*tmp29 + A(3,2)*tmp32 - A(3,5)*tmp35;
-   tmp54 = A(3,0)*tmp24 - A(3,1)*tmp30 + A(3,2)*tmp33 - A(3,4)*tmp35;
-   tmp55 = A(4,0)*tmp25 - A(4,1)*tmp31 + A(4,2)*tmp34 - A(4,3)*tmp35;
-   tmp56 = A(3,0)*tmp25 - A(3,1)*tmp31 + A(3,2)*tmp34 - A(3,3)*tmp35;
+   tmp36 = A(3,1)*tmp17 - A(3,2)*tmp20 + A(3,4)*tmp23 - A(3,5)*tmp24;
+   tmp37 = A(3,0)*tmp17 - A(3,2)*tmp26 + A(3,4)*tmp29 - A(3,5)*tmp30;
+   tmp38 = A(3,0)*tmp20 - A(3,1)*tmp26 + A(3,4)*tmp32 - A(3,5)*tmp33;
+   tmp39 = A(3,0)*tmp23 - A(3,1)*tmp29 + A(3,2)*tmp32 - A(3,5)*tmp35;
+   tmp40 = A(3,0)*tmp24 - A(3,1)*tmp30 + A(3,2)*tmp33 - A(3,4)*tmp35;
 
-   B(0,3) =   conj( B(3,0) );
-   B(1,3) =   conj( B(3,1) );
-   B(2,3) =   conj( B(3,2) );
-   B(3,3) = - A(5,0)*tmp36 + A(5,1)*tmp41 - A(5,2)*tmp46 + A(5,4)*tmp51 - A(5,5)*tmp52;
-   B(4,3) =   A(5,0)*tmp37 - A(5,1)*tmp42 + A(5,2)*tmp47 - A(5,3)*tmp51 + A(5,5)*tmp55;
-   B(5,3) = - A(5,0)*tmp38 + A(5,1)*tmp43 - A(5,2)*tmp48 + A(5,3)*tmp52 - A(5,4)*tmp55;
-   B(0,4) =   conj( B(4,0) );
-   B(1,4) =   conj( B(4,1) );
-   B(2,4) =   conj( B(4,2) );
-   B(3,4) =   conj( B(4,3) );
-   B(4,4) = - A(5,0)*tmp39 + A(5,1)*tmp44 - A(5,2)*tmp49 + A(5,3)*tmp53 - A(5,5)*tmp56;
-   B(5,4) =   A(5,0)*tmp40 - A(5,1)*tmp45 + A(5,2)*tmp50 - A(5,3)*tmp54 + A(5,4)*tmp56;
-   B(0,5) =   conj( B(5,0) );
-   B(1,5) =   conj( B(5,1) );
-   B(2,5) =   conj( B(5,2) );
-   B(3,5) =   conj( B(5,3) );
-   B(4,5) =   conj( B(5,4) );
-   B(5,5) = - A(4,0)*tmp40 + A(4,1)*tmp45 - A(4,2)*tmp50 + A(4,3)*tmp54 - A(4,4)*tmp56;
+   B(3,4) =   A(5,0)*tmp36 - A(5,1)*tmp37 + A(5,2)*tmp38 - A(5,4)*tmp39 + A(5,5)*tmp40;
+   B(3,5) = - A(4,0)*tmp36 + A(4,1)*tmp37 - A(4,2)*tmp38 + A(4,4)*tmp39 - A(4,5)*tmp40;
+
+   tmp41 = A(3,1)*tmp18 - A(3,2)*tmp21 + A(3,3)*tmp23 - A(3,5)*tmp25;
+   tmp42 = A(3,1)*tmp19 - A(3,2)*tmp22 + A(3,3)*tmp24 - A(3,4)*tmp25;
+   tmp43 = A(3,0)*tmp18 - A(3,2)*tmp27 + A(3,3)*tmp29 - A(3,5)*tmp31;
+   tmp44 = A(3,0)*tmp19 - A(3,2)*tmp28 + A(3,3)*tmp30 - A(3,4)*tmp31;
+   tmp45 = A(3,0)*tmp21 - A(3,1)*tmp27 + A(3,3)*tmp32 - A(3,5)*tmp34;
+   tmp46 = A(3,0)*tmp22 - A(3,1)*tmp28 + A(3,3)*tmp33 - A(3,4)*tmp34;
+   tmp47 = A(3,0)*tmp25 - A(3,1)*tmp31 + A(3,2)*tmp34 - A(3,3)*tmp35;
+
+   B(4,4) = - A(5,0)*tmp41 + A(5,1)*tmp43 - A(5,2)*tmp45 + A(5,3)*tmp39 - A(5,5)*tmp47;
+   B(4,5) =   A(4,0)*tmp41 - A(4,1)*tmp43 + A(4,2)*tmp45 - A(4,3)*tmp39 + A(4,5)*tmp47;
+   B(5,5) = - A(4,0)*tmp42 + A(4,1)*tmp44 - A(4,2)*tmp46 + A(4,3)*tmp40 - A(4,4)*tmp47;
+
+   tmp36 = A(4,1)*tmp17 - A(4,2)*tmp20 + A(4,4)*tmp23 - A(4,5)*tmp24;
+   tmp37 = A(4,0)*tmp17 - A(4,2)*tmp26 + A(4,4)*tmp29 - A(4,5)*tmp30;
+   tmp38 = A(4,0)*tmp20 - A(4,1)*tmp26 + A(4,4)*tmp32 - A(4,5)*tmp33;
+   tmp39 = A(4,0)*tmp23 - A(4,1)*tmp29 + A(4,2)*tmp32 - A(4,5)*tmp35;
+   tmp40 = A(4,0)*tmp24 - A(4,1)*tmp30 + A(4,2)*tmp33 - A(4,4)*tmp35;
+
+   B(3,3) = - A(5,0)*tmp36 + A(5,1)*tmp37 - A(5,2)*tmp38 + A(5,4)*tmp39 - A(5,5)*tmp40;
+
+   B(0,2) = conj( B(2,0) );
+   B(0,3) = conj( B(3,0) );
+   B(0,4) = conj( B(4,0) );
+   B(0,5) = conj( B(5,0) );
+   B(1,0) = conj( B(0,1) );
+   B(1,2) = conj( B(2,1) );
+   B(1,3) = conj( B(3,1) );
+   B(1,4) = conj( B(4,1) );
+   B(1,5) = conj( B(5,1) );
+   B(2,3) = conj( B(3,2) );
+   B(2,4) = conj( B(4,2) );
+   B(2,5) = conj( B(5,2) );
+   B(4,3) = conj( B(3,4) );
+   B(5,3) = conj( B(3,5) );
+   B(5,4) = conj( B(4,5) );
 
    const ET det( A(0,0)*B(0,0) + A(0,1)*B(1,0) + A(0,2)*B(2,0) +
                  A(0,3)*B(3,0) + A(0,4)*B(4,0) + A(0,5)*B(5,0) );
