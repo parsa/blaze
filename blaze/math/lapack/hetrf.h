@@ -85,11 +85,11 @@ void zhetrf_( char* uplo, int* n, double* A, int* lda, int* ipiv, double* work, 
 //*************************************************************************************************
 /*!\name LAPACK Hermitian matrix decomposition functions */
 //@{
-inline void hetrf( char* uplo, int* n, complex<float>* A, int* lda, int* ipiv,
-                   complex<float>* work, int* lwork, int* info );
+inline void hetrf( char uplo, int n, complex<float>* A, int lda, int* ipiv,
+                   complex<float>* work, int lwork, int* info );
 
-inline void hetrf( char* uplo, int* n, complex<double>* A, int* lda, int* ipiv,
-                   complex<double>* work, int* lwork, int* info );
+inline void hetrf( char uplo, int n, complex<double>* A, int lda, int* ipiv,
+                   complex<double>* work, int lwork, int* info );
 
 template< typename MT, bool SO >
 inline void hetrf( DenseMatrix<MT,SO>& A, char uplo, int* ipiv );
@@ -98,8 +98,8 @@ inline void hetrf( DenseMatrix<MT,SO>& A, char uplo, int* ipiv );
 
 
 //*************************************************************************************************
-/*!\brief LAPACK kernel for the dense matrix decomposition of the given Hermitian single precision
-//        complex column-major matrix.
+/*!\brief LAPACK kernel for the decomposition of the given dense Hermitian indefinite
+//        single precision complex column-major matrix.
 // \ingroup lapack
 //
 // \param uplo \c 'L' to use the lower part of the matrix, \c 'U' to use the upper part.
@@ -144,20 +144,20 @@ inline void hetrf( DenseMatrix<MT,SO>& A, char uplo, int* ipiv );
 // \note This function can only be used if the fitting LAPACK library is available and linked to
 // the executable. Otherwise a call to this function will result in a linker error.
 */
-inline void hetrf( char* uplo, int* n, complex<float>* A, int* lda, int* ipiv,
-                   complex<float>* work, int* lwork, int* info )
+inline void hetrf( char uplo, int n, complex<float>* A, int lda, int* ipiv,
+                   complex<float>* work, int lwork, int* info )
 {
    BLAZE_STATIC_ASSERT( sizeof( complex<float> ) == 2UL*sizeof( float ) );
 
-   chetrf_( uplo, n, reinterpret_cast<float*>( A ), lda, ipiv,
-            reinterpret_cast<float*>( work ), lwork, info );
+   chetrf_( &uplo, &n, reinterpret_cast<float*>( A ), &lda, ipiv,
+            reinterpret_cast<float*>( work ), &lwork, info );
 }
 //*************************************************************************************************
 
 
 //*************************************************************************************************
-/*!\brief LAPACK kernel for the dense matrix decomposition of the given Hermitian double precision
-//        complex column-major matrix.
+/*!\brief LAPACK kernel for the decomposition of the given dense Hermitian indefinite
+//        double precision complex column-major matrix.
 // \ingroup lapack
 //
 // \param uplo \c 'L' to use the lower part of the matrix, \c 'U' to use the upper part.
@@ -202,19 +202,19 @@ inline void hetrf( char* uplo, int* n, complex<float>* A, int* lda, int* ipiv,
 // \note This function can only be used if the fitting LAPACK library is available and linked to
 // the executable. Otherwise a call to this function will result in a linker error.
 */
-inline void hetrf( char* uplo, int* n, complex<double>* A, int* lda, int* ipiv,
-                   complex<double>* work, int* lwork, int* info )
+inline void hetrf( char uplo, int n, complex<double>* A, int lda, int* ipiv,
+                   complex<double>* work, int lwork, int* info )
 {
    BLAZE_STATIC_ASSERT( sizeof( complex<double> ) == 2UL*sizeof( double ) );
 
-   zhetrf_( uplo, n, reinterpret_cast<double*>( A ), lda, ipiv,
-            reinterpret_cast<double*>( work ), lwork, info );
+   zhetrf_( &uplo, &n, reinterpret_cast<double*>( A ), &lda, ipiv,
+            reinterpret_cast<double*>( work ), &lwork, info );
 }
 //*************************************************************************************************
 
 
 //*************************************************************************************************
-/*!\brief LAPACK kernel for the decomposition of the given Hermitian dense matrix.
+/*!\brief LAPACK kernel for the decomposition of the given dense Hermitian indefinite matrix.
 // \ingroup lapack
 //
 // \param A The matrix to be decomposed.
@@ -287,7 +287,7 @@ inline void hetrf( DenseMatrix<MT,SO>& A, char uplo, int* ipiv )
       ( uplo == 'L' )?( uplo = 'U' ):( uplo = 'L' );
    }
 
-   hetrf( &uplo, &n, (~A).data(), &lda, ipiv, work.get(), &lwork, &info );
+   hetrf( uplo, n, (~A).data(), lda, ipiv, work.get(), lwork, &info );
 
    BLAZE_INTERNAL_ASSERT( info >= 0, "Invalid argument for matrix decomposition" );
 }

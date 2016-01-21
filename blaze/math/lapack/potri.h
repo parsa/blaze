@@ -87,13 +87,13 @@ void zpotri_( char* uplo, int* n, double* A, int* lda, int* info );
 //*************************************************************************************************
 /*!\name LAPACK Cholesky-based inversion functions */
 //@{
-inline void potri( char* uplo, int* n, float* A, int* lda, int* info );
+inline void potri( char uplo, int n, float* A, int lda, int* info );
 
-inline void potri( char* uplo, int* n, double* A, int* lda, int* info );
+inline void potri( char uplo, int n, double* A, int lda, int* info );
 
-inline void potri( char* uplo, int* n, complex<float>* A, int* lda, int* info );
+inline void potri( char uplo, int n, complex<float>* A, int lda, int* info );
 
-inline void potri( char* uplo, int* n, complex<double>* A, int* lda, int* info );
+inline void potri( char uplo, int n, complex<double>* A, int lda, int* info );
 
 template< typename MT, bool SO >
 inline void potri( DenseMatrix<MT,SO>& A, char uplo );
@@ -102,8 +102,8 @@ inline void potri( DenseMatrix<MT,SO>& A, char uplo );
 
 
 //*************************************************************************************************
-/*!\brief LAPACK kernel for the dense matrix inversion of the given positive-definite single
-//        precision column-major matrix.
+/*!\brief LAPACK kernel for the inversion of the given dense positive definite single precision
+//        column-major square matrix.
 // \ingroup lapack
 //
 // \param uplo \c 'L' to use the lower part of the matrix, \c 'U' to use the upper part.
@@ -131,16 +131,16 @@ inline void potri( DenseMatrix<MT,SO>& A, char uplo );
 // \note This function can only be used if the fitting LAPACK library is available and linked to
 // the executable. Otherwise a call to this function will result in a linker error.
 */
-inline void potri( char* uplo, int* n, float* A, int* lda, int* info )
+inline void potri( char uplo, int n, float* A, int lda, int* info )
 {
-   spotri_( uplo, n, A, lda, info );
+   spotri_( &uplo, &n, A, &lda, info );
 }
 //*************************************************************************************************
 
 
 //*************************************************************************************************
-/*!\brief LAPACK kernel for the dense matrix inversion of the given positive-definite double
-//        precision column-major matrix.
+/*!\brief LAPACK kernel for the inversion of the given dense positive definite double precision
+//        column-major square matrix.
 // \ingroup lapack
 //
 // \param uplo \c 'L' to use the lower part of the matrix, \c 'U' to use the upper part.
@@ -168,16 +168,16 @@ inline void potri( char* uplo, int* n, float* A, int* lda, int* info )
 // \note This function can only be used if the fitting LAPACK library is available and linked to
 // the executable. Otherwise a call to this function will result in a linker error.
 */
-inline void potri( char* uplo, int* n, double* A, int* lda, int* info )
+inline void potri( char uplo, int n, double* A, int lda, int* info )
 {
-   dpotri_( uplo, n, A, lda, info );
+   dpotri_( &uplo, &n, A, &lda, info );
 }
 //*************************************************************************************************
 
 
 //*************************************************************************************************
-/*!\brief LAPACK kernel for the dense matrix inversion of the given positive-definite single
-//        precision complex column-major matrix.
+/*!\brief LAPACK kernel for the inversion of the given dense positive definite single precision
+//        complex column-major square matrix.
 // \ingroup lapack
 //
 // \param uplo \c 'L' to use the lower part of the matrix, \c 'U' to use the upper part.
@@ -205,18 +205,18 @@ inline void potri( char* uplo, int* n, double* A, int* lda, int* info )
 // \note This function can only be used if the fitting LAPACK library is available and linked to
 // the executable. Otherwise a call to this function will result in a linker error.
 */
-inline void potri( char* uplo, int* n, complex<float>* A, int* lda, int* info )
+inline void potri( char uplo, int n, complex<float>* A, int lda, int* info )
 {
    BLAZE_STATIC_ASSERT( sizeof( complex<float> ) == 2UL*sizeof( float ) );
 
-   cpotri_( uplo, n, reinterpret_cast<float*>( A ), lda, info );
+   cpotri_( &uplo, &n, reinterpret_cast<float*>( A ), &lda, info );
 }
 //*************************************************************************************************
 
 
 //*************************************************************************************************
-/*!\brief LAPACK kernel for the dense matrix inversion of the given positive-definite double
-//        precision complex column-major matrix.
+/*!\brief LAPACK kernel for the inversion of the given dense positive definite double precision
+//        complex column-major square matrix.
 // \ingroup lapack
 //
 // \param uplo \c 'L' to use the lower part of the matrix, \c 'U' to use the upper part.
@@ -244,17 +244,17 @@ inline void potri( char* uplo, int* n, complex<float>* A, int* lda, int* info )
 // \note This function can only be used if the fitting LAPACK library is available and linked to
 // the executable. Otherwise a call to this function will result in a linker error.
 */
-inline void potri( char* uplo, int* n, complex<double>* A, int* lda, int* info )
+inline void potri( char uplo, int n, complex<double>* A, int lda, int* info )
 {
    BLAZE_STATIC_ASSERT( sizeof( complex<double> ) == 2UL*sizeof( double ) );
 
-   zpotri_( uplo, n, reinterpret_cast<double*>( A ), lda, info );
+   zpotri_( &uplo, &n, reinterpret_cast<double*>( A ), &lda, info );
 }
 //*************************************************************************************************
 
 
 //*************************************************************************************************
-/*!\brief LAPACK kernel for the inversion of the given dense positive-definite matrix.
+/*!\brief LAPACK kernel for the inversion of the given dense positive definite matrix.
 // \ingroup lapack
 //
 // \param A The positive-definite matrix to be inverted.
@@ -321,7 +321,7 @@ inline void potri( DenseMatrix<MT,SO>& A, char uplo )
       ( uplo == 'L' )?( uplo = 'U' ):( uplo = 'L' );
    }
 
-   potri( &uplo, &n, (~A).data(), &lda, &info );
+   potri( uplo, n, (~A).data(), lda, &info );
 
    BLAZE_INTERNAL_ASSERT( info >= 0, "Invalid argument for matrix inversion" );
 

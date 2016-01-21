@@ -85,13 +85,13 @@ void zgetrf_( int* m, int* n, double* A, int* lda, int* ipiv, int* info );
 //*************************************************************************************************
 /*!\name LAPACK LU decomposition functions */
 //@{
-inline void getrf( int* m, int* n, float* A, int* lda, int* ipiv, int* info );
+inline void getrf( int m, int n, float* A, int lda, int* ipiv, int* info );
 
-inline void getrf( int* m, int* n, double* A, int* lda, int* ipiv, int* info );
+inline void getrf( int m, int n, double* A, int lda, int* ipiv, int* info );
 
-inline void getrf( int* m, int* n, complex<float>* A, int* lda, int* ipiv, int* info );
+inline void getrf( int m, int n, complex<float>* A, int lda, int* ipiv, int* info );
 
-inline void getrf( int* m, int* n, complex<double>* A, int* lda, int* ipiv, int* info );
+inline void getrf( int m, int n, complex<double>* A, int lda, int* ipiv, int* info );
 
 template< typename MT, bool SO >
 inline void getrf( DenseMatrix<MT,SO>& A, int* ipiv );
@@ -100,7 +100,7 @@ inline void getrf( DenseMatrix<MT,SO>& A, int* ipiv );
 
 
 //*************************************************************************************************
-/*!\brief LAPACK kernel for the dense matrix LU decomposition of the given single precision
+/*!\brief LAPACK kernel for the LU decomposition of the given dense general single precision
 //        column-major matrix.
 // \ingroup lapack
 //
@@ -136,15 +136,15 @@ inline void getrf( DenseMatrix<MT,SO>& A, int* ipiv );
 // \note This function can only be used if the fitting LAPACK library is available and linked to
 // the executable. Otherwise a call to this function will result in a linker error.
 */
-inline void getrf( int* m, int* n, float* A, int* lda, int* ipiv, int* info )
+inline void getrf( int m, int n, float* A, int lda, int* ipiv, int* info )
 {
-   sgetrf_( m, n, A, lda, ipiv, info );
+   sgetrf_( &m, &n, A, &lda, ipiv, info );
 }
 //*************************************************************************************************
 
 
 //*************************************************************************************************
-/*!\brief LAPACK kernel for the dense matrix LU decomposition of the given double precision
+/*!\brief LAPACK kernel for the LU decomposition of the given dense general double precision
 //        column-major matrix.
 // \ingroup lapack
 //
@@ -180,15 +180,15 @@ inline void getrf( int* m, int* n, float* A, int* lda, int* ipiv, int* info )
 // \note This function can only be used if the fitting LAPACK library is available and linked to
 // the executable. Otherwise a call to this function will result in a linker error.
 */
-inline void getrf( int* m, int* n, double* A, int* lda, int* ipiv, int* info )
+inline void getrf( int m, int n, double* A, int lda, int* ipiv, int* info )
 {
-   dgetrf_( m, n, A, lda, ipiv, info );
+   dgetrf_( &m, &n, A, &lda, ipiv, info );
 }
 //*************************************************************************************************
 
 
 //*************************************************************************************************
-/*!\brief LAPACK kernel for the dense matrix LU decomposition of the given single precision
+/*!\brief LAPACK kernel for the LU decomposition of the given dense general single precision
 //        complex column-major matrix.
 // \ingroup lapack
 //
@@ -224,17 +224,17 @@ inline void getrf( int* m, int* n, double* A, int* lda, int* ipiv, int* info )
 // \note This function can only be used if the fitting LAPACK library is available and linked to
 // the executable. Otherwise a call to this function will result in a linker error.
 */
-inline void getrf( int* m, int* n, complex<float>* A, int* lda, int* ipiv, int* info )
+inline void getrf( int m, int n, complex<float>* A, int lda, int* ipiv, int* info )
 {
    BLAZE_STATIC_ASSERT( sizeof( complex<float> ) == 2UL*sizeof( float ) );
 
-   cgetrf_( m, n, reinterpret_cast<float*>( A ), lda, ipiv, info );
+   cgetrf_( &m, &n, reinterpret_cast<float*>( A ), &lda, ipiv, info );
 }
 //*************************************************************************************************
 
 
 //*************************************************************************************************
-/*!\brief LAPACK kernel for the dense matrix LU decomposition of the given double precision
+/*!\brief LAPACK kernel for the LU decomposition of the given dense general double precision
 //        complex column-major matrix.
 // \ingroup lapack
 //
@@ -270,18 +270,18 @@ inline void getrf( int* m, int* n, complex<float>* A, int* lda, int* ipiv, int* 
 // \note This function can only be used if the fitting LAPACK library is available and linked to
 // the executable. Otherwise a call to this function will result in a linker error.
 */
-inline void getrf( int* m, int* n, complex<double>* A, int* lda, int* ipiv, int* info )
+inline void getrf( int m, int n, complex<double>* A, int lda, int* ipiv, int* info )
 {
    BLAZE_STATIC_ASSERT( sizeof( complex<double> ) == 2UL*sizeof( double ) );
 
-   zgetrf_( m, n, reinterpret_cast<double*>( A ), lda, ipiv, info );
+   zgetrf_( &m, &n, reinterpret_cast<double*>( A ), &lda, ipiv, info );
 }
 //*************************************************************************************************
 
 
 //*************************************************************************************************
 /*! \cond BLAZE_INTERNAL */
-/*!\brief LAPACK kernel for the LU decomposition of the given dense matrix.
+/*!\brief LAPACK kernel for the LU decomposition of the given dense general matrix.
 // \ingroup lapack
 //
 // \param A The matrix to be decomposed.
@@ -349,7 +349,7 @@ inline void getrf( DenseMatrix<MT,SO>& A, int* ipiv )
       return;
    }
 
-   getrf( &m, &n, (~A).data(), &lda, ipiv, &info );
+   getrf( m, n, (~A).data(), lda, ipiv, &info );
 
    BLAZE_INTERNAL_ASSERT( info >= 0, "Invalid argument for LU decomposition" );
 }

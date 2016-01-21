@@ -86,13 +86,13 @@ void ztrtri_( char* uplo, char* diag, int* n, double* A, int* lda, int* info );
 //*************************************************************************************************
 /*!\name LAPACK triangular matrix inversion functions */
 //@{
-inline void trtri( char* uplo, char* diag, int* n, float* A, int* lda, int* info );
+inline void trtri( char uplo, char diag, int n, float* A, int lda, int* info );
 
-inline void trtri( char* uplo, char* diag, int* n, double* A, int* lda, int* info );
+inline void trtri( char uplo, char diag, int n, double* A, int lda, int* info );
 
-inline void trtri( char* uplo, char* diag, int* n, complex<float>* A, int* lda, int* info );
+inline void trtri( char uplo, char diag, int n, complex<float>* A, int lda, int* info );
 
-inline void trtri( char* uplo, char* diag, int* n, complex<double>* A, int* lda, int* info );
+inline void trtri( char uplo, char diag, int n, complex<double>* A, int lda, int* info );
 
 template< typename MT, bool SO >
 inline void trtri( DenseMatrix<MT,SO>& A, char uplo, char diag );
@@ -101,7 +101,7 @@ inline void trtri( DenseMatrix<MT,SO>& A, char uplo, char diag );
 
 
 //*************************************************************************************************
-/*!\brief LAPACK kernel for the dense matrix inversion of the given triangular single precision
+/*!\brief LAPACK kernel for the inversion of the given dense triangular single precision
 //        column-major matrix.
 // \ingroup lapack
 //
@@ -130,15 +130,15 @@ inline void trtri( DenseMatrix<MT,SO>& A, char uplo, char diag );
 // \note This function can only be used if the fitting LAPACK library is available and linked to
 // the executable. Otherwise a call to this function will result in a linker error.
 */
-inline void trtri( char* uplo, char* diag, int* n, float* A, int* lda, int* info )
+inline void trtri( char uplo, char diag, int n, float* A, int lda, int* info )
 {
-   strtri_( uplo, diag, n, A, lda, info );
+   strtri_( &uplo, &diag, &n, A, &lda, info );
 }
 //*************************************************************************************************
 
 
 //*************************************************************************************************
-/*!\brief LAPACK kernel for the dense matrix inversion of the given triangular double precision
+/*!\brief LAPACK kernel for the inversion of the given dense triangular double precision
 //        column-major matrix.
 // \ingroup lapack
 //
@@ -167,16 +167,16 @@ inline void trtri( char* uplo, char* diag, int* n, float* A, int* lda, int* info
 // \note This function can only be used if the fitting LAPACK library is available and linked to
 // the executable. Otherwise a call to this function will result in a linker error.
 */
-inline void trtri( char* uplo, char* diag, int* n, double* A, int* lda, int* info )
+inline void trtri( char uplo, char diag, int n, double* A, int lda, int* info )
 {
-   dtrtri_( uplo, diag, n, A, lda, info );
+   dtrtri_( &uplo, &diag, &n, A, &lda, info );
 }
 //*************************************************************************************************
 
 
 //*************************************************************************************************
-/*!\brief LAPACK kernel for the dense matrix inversion of the given triangular single precision
-//        complex column-major matrix.
+/*!\brief LAPACK kernel for the inversion of the given dense triangular single precision complex
+//        column-major matrix.
 // \ingroup lapack
 //
 // \param uplo \c 'L' in case of a lower matrix, \c 'U' in case of an upper matrix.
@@ -204,18 +204,18 @@ inline void trtri( char* uplo, char* diag, int* n, double* A, int* lda, int* inf
 // \note This function can only be used if the fitting LAPACK library is available and linked to
 // the executable. Otherwise a call to this function will result in a linker error.
 */
-inline void trtri( char* uplo, char* diag, int* n, complex<float>* A, int* lda, int* info )
+inline void trtri( char uplo, char diag, int n, complex<float>* A, int lda, int* info )
 {
    BLAZE_STATIC_ASSERT( sizeof( complex<float> ) == 2UL*sizeof( float ) );
 
-   ctrtri_( uplo, diag, n, reinterpret_cast<float*>( A ), lda, info );
+   ctrtri_( &uplo, &diag, &n, reinterpret_cast<float*>( A ), &lda, info );
 }
 //*************************************************************************************************
 
 
 //*************************************************************************************************
-/*!\brief LAPACK kernel for the dense matrix inversion of the given triangular double precision
-//        complex column-major matrix.
+/*!\brief LAPACK kernel for the inversion of the given dense triangular double precision complex
+//        column-major matrix.
 // \ingroup lapack
 //
 // \param uplo \c 'L' in case of a lower matrix, \c 'U' in case of an upper matrix.
@@ -243,11 +243,11 @@ inline void trtri( char* uplo, char* diag, int* n, complex<float>* A, int* lda, 
 // \note This function can only be used if the fitting LAPACK library is available and linked to
 // the executable. Otherwise a call to this function will result in a linker error.
 */
-inline void trtri( char* uplo, char* diag, int* n, complex<double>* A, int* lda, int* info )
+inline void trtri( char uplo, char diag, int n, complex<double>* A, int lda, int* info )
 {
    BLAZE_STATIC_ASSERT( sizeof( complex<double> ) == 2UL*sizeof( double ) );
 
-   ztrtri_( uplo, diag, n, reinterpret_cast<double*>( A ), lda, info );
+   ztrtri_( &uplo, &diag, &n, reinterpret_cast<double*>( A ), &lda, info );
 }
 //*************************************************************************************************
 
@@ -324,7 +324,7 @@ inline void trtri( DenseMatrix<MT,SO>& A, char uplo, char diag )
       ( uplo == 'L' )?( uplo = 'U' ):( uplo = 'L' );
    }
 
-   trtri( &uplo, &diag, &n, (~A).data(), &lda, &info );
+   trtri( uplo, diag, n, (~A).data(), lda, &info );
 
    BLAZE_INTERNAL_ASSERT( info >= 0, "Invalid argument for matrix inversion" );
 

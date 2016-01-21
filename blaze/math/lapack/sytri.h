@@ -87,27 +87,25 @@ void zsytri_( char* uplo, int* n, double* A, int* lda, int* ipiv, double* work, 
 //*************************************************************************************************
 /*!\name LAPACK symmetric matrix inversion functions */
 //@{
-inline void sytri( char* uplo, char* diag, int* n, float* A, int* lda,
-                   int* ipiv, float* work, int* info );
+inline void sytri( char uplo, int n, float* A, int lda, const int* ipiv, float* work, int* info );
 
-inline void sytri( char* uplo, char* diag, int* n, double* A, int* lda,
-                   int* ipiv, double* work, int* info );
+inline void sytri( char uplo, int n, double* A, int lda, const int* ipiv, double* work, int* info );
 
-inline void sytri( char* uplo, char* diag, int* n, complex<float>* A, int* lda,
-                   int* ipiv, complex<float>* work, int* info );
+inline void sytri( char uplo, int n, complex<float>* A, int lda,
+                   const int* ipiv, complex<float>* work, int* info );
 
-inline void sytri( char* uplo, char* diag, int* n, complex<double>* A, int* lda,
-                   int* ipiv, complex<double>* work, int* info );
+inline void sytri( char uplo, int n, complex<double>* A, int lda,
+                   const int* ipiv, complex<double>* work, int* info );
 
 template< typename MT, bool SO >
-inline void sytri( DenseMatrix<MT,SO>& A, char uplo, int* ipiv );
+inline void sytri( DenseMatrix<MT,SO>& A, char uplo, const int* ipiv );
 //@}
 //*************************************************************************************************
 
 
 //*************************************************************************************************
-/*!\brief LAPACK kernel for the dense matrix inversion of the given symmetric single precision
-//        column-major matrix.
+/*!\brief LAPACK kernel for the inversion of the given dense symmetric indefinite single precision
+//        column-major square matrix.
 // \ingroup lapack
 //
 // \param uplo \c 'L' in case of a lower matrix, \c 'U' in case of an upper matrix.
@@ -136,16 +134,16 @@ inline void sytri( DenseMatrix<MT,SO>& A, char uplo, int* ipiv );
 // \note This function can only be used if the fitting LAPACK library is available and linked to
 // the executable. Otherwise a call to this function will result in a linker error.
 */
-inline void sytri( char* uplo, int* n, float* A, int* lda, int* ipiv, float* work, int* info )
+inline void sytri( char uplo, int n, float* A, int lda, const int* ipiv, float* work, int* info )
 {
-   ssytri_( uplo, n, A, lda, ipiv, work, info );
+   ssytri_( &uplo, &n, A, &lda, const_cast<int*>( ipiv ), work, info );
 }
 //*************************************************************************************************
 
 
 //*************************************************************************************************
-/*!\brief LAPACK kernel for the dense matrix inversion of the given symmetric double precision
-//        column-major matrix.
+/*!\brief LAPACK kernel for the inversion of the given dense symmetric indefinite double precision
+//        column-major square matrix.
 // \ingroup lapack
 //
 // \param uplo \c 'L' in case of a lower matrix, \c 'U' in case of an upper matrix.
@@ -174,16 +172,16 @@ inline void sytri( char* uplo, int* n, float* A, int* lda, int* ipiv, float* wor
 // \note This function can only be used if the fitting LAPACK library is available and linked to
 // the executable. Otherwise a call to this function will result in a linker error.
 */
-inline void sytri( char* uplo, int* n, double* A, int* lda, int* ipiv, double* work, int* info )
+inline void sytri( char uplo, int n, double* A, int lda, const int* ipiv, double* work, int* info )
 {
-   dsytri_( uplo, n, A, lda, ipiv, work, info );
+   dsytri_( &uplo, &n, A, &lda, const_cast<int*>( ipiv ), work, info );
 }
 //*************************************************************************************************
 
 
 //*************************************************************************************************
-/*!\brief LAPACK kernel for the dense matrix inversion of the given symmetric single precision
-//        complex column-major matrix.
+/*!\brief LAPACK kernel for the inversion of the given dense symmetric indefinite single precision
+//        complex column-major square matrix.
 // \ingroup lapack
 //
 // \param uplo \c 'L' in case of a lower matrix, \c 'U' in case of an upper matrix.
@@ -212,20 +210,20 @@ inline void sytri( char* uplo, int* n, double* A, int* lda, int* ipiv, double* w
 // \note This function can only be used if the fitting LAPACK library is available and linked to
 // the executable. Otherwise a call to this function will result in a linker error.
 */
-inline void sytri( char* uplo, int* n, complex<float>* A, int* lda,
-                   int* ipiv, complex<float>* work, int* info )
+inline void sytri( char uplo, int n, complex<float>* A, int lda,
+                   const int* ipiv, complex<float>* work, int* info )
 {
    BLAZE_STATIC_ASSERT( sizeof( complex<float> ) == 2UL*sizeof( float ) );
 
-   csytri_( uplo, n, reinterpret_cast<float*>( A ), lda,
-            ipiv, reinterpret_cast<float*>( work ), info );
+   csytri_( &uplo, &n, reinterpret_cast<float*>( A ), &lda,
+            const_cast<int*>( ipiv ), reinterpret_cast<float*>( work ), info );
 }
 //*************************************************************************************************
 
 
 //*************************************************************************************************
-/*!\brief LAPACK kernel for the dense matrix inversion of the given symmetric double precision
-//        complex column-major matrix.
+/*!\brief LAPACK kernel for the inversion of the given dense symmetric indefinite double precision
+//        complex column-major square matrix.
 // \ingroup lapack
 //
 // \param uplo \c 'L' in case of a lower matrix, \c 'U' in case of an upper matrix.
@@ -254,19 +252,19 @@ inline void sytri( char* uplo, int* n, complex<float>* A, int* lda,
 // \note This function can only be used if the fitting LAPACK library is available and linked to
 // the executable. Otherwise a call to this function will result in a linker error.
 */
-inline void sytri( char* uplo, int* n, complex<double>* A, int* lda,
-                   int* ipiv, complex<double>* work, int* info )
+inline void sytri( char uplo, int n, complex<double>* A, int lda,
+                   const int* ipiv, complex<double>* work, int* info )
 {
    BLAZE_STATIC_ASSERT( sizeof( complex<double> ) == 2UL*sizeof( double ) );
 
-   zsytri_( uplo, n, reinterpret_cast<double*>( A ), lda,
-            ipiv, reinterpret_cast<double*>( work ), info );
+   zsytri_( &uplo, &n, reinterpret_cast<double*>( A ), &lda,
+            const_cast<int*>( ipiv ), reinterpret_cast<double*>( work ), info );
 }
 //*************************************************************************************************
 
 
 //*************************************************************************************************
-/*!\brief LAPACK kernel for the inversion of the given dense symmetric matrix.
+/*!\brief LAPACK kernel for the inversion of the given dense symmetric indefinite matrix.
 // \ingroup lapack
 //
 // \param A The triangular matrix to be inverted.
@@ -303,7 +301,7 @@ inline void sytri( char* uplo, int* n, complex<double>* A, int* lda,
 */
 template< typename MT  // Type of the dense matrix
         , bool SO >    // Storage order of the dense matrix
-inline void sytri( DenseMatrix<MT,SO>& A, char uplo, int* ipiv )
+inline void sytri( DenseMatrix<MT,SO>& A, char uplo, const int* ipiv )
 {
    using boost::numeric_cast;
 
@@ -336,7 +334,7 @@ inline void sytri( DenseMatrix<MT,SO>& A, char uplo, int* ipiv )
 
    const UniqueArray<ET> work( new ET[n] );
 
-   sytri( &uplo, &n, (~A).data(), &lda, ipiv, work.get(), &info );
+   sytri( uplo, n, (~A).data(), lda, ipiv, work.get(), &info );
 
    BLAZE_INTERNAL_ASSERT( info >= 0, "Invalid argument for matrix inversion" );
 

@@ -86,17 +86,17 @@ void zgeqrf_( int* m, int* n, double* A, int* lda, double* tau, double* work, in
 //*************************************************************************************************
 /*!\name LAPACK QR decomposition functions */
 //@{
-inline void geqrf( int* m, int* n, float* A, int* lda, float* tau,
-                   float* work, int* lwork, int* info );
+inline void geqrf( int m, int n, float* A, int lda, float* tau,
+                   float* work, int lwork, int* info );
 
-inline void geqrf( int* m, int* n, double* A, int* lda, double* tau,
-                   double* work, int* lwork, int* info );
+inline void geqrf( int m, int n, double* A, int lda, double* tau,
+                   double* work, int lwork, int* info );
 
-inline void geqrf( int* m, int* n, complex<float>* A, int* lda, complex<float>* tau,
-                   complex<float>* work, int* lwork, int* info );
+inline void geqrf( int m, int n, complex<float>* A, int lda, complex<float>* tau,
+                   complex<float>* work, int lwork, int* info );
 
-inline void geqrf( int* m, int* n, complex<double>* A, int* lda, complex<double>* tau,
-                   complex<double>* work, int* lwork, int* info );
+inline void geqrf( int m, int n, complex<double>* A, int lda, complex<double>* tau,
+                   complex<double>* work, int lwork, int* info );
 
 template< typename MT, bool SO >
 inline void geqrf( DenseMatrix<MT,SO>& A, typename MT::ElementType* tau );
@@ -105,8 +105,8 @@ inline void geqrf( DenseMatrix<MT,SO>& A, typename MT::ElementType* tau );
 
 
 //*************************************************************************************************
-/*!\brief LAPACK kernel for the dense matrix QR decomposition of the given dense single precision
-//        column-major matrix.
+/*!\brief LAPACK kernel for the QR decomposition of the given dense single precision column-major
+//        matrix.
 // \ingroup lapack
 //
 // \param m The number of rows of the given matrix \f$[0..\infty)\f$.
@@ -155,17 +155,17 @@ inline void geqrf( DenseMatrix<MT,SO>& A, typename MT::ElementType* tau );
 // \note This function does not provide any exception safety guarantee, i.e. in case an exception
 // is thrown \a A may already have been modified.
 */
-inline void geqrf( int* m, int* n, float* A, int* lda, float* tau,
-                   float* work, int* lwork, int* info )
+inline void geqrf( int m, int n, float* A, int lda, float* tau,
+                   float* work, int lwork, int* info )
 {
-   sgeqrf_( m, n, A, lda, tau, work, lwork, info );
+   sgeqrf_( &m, &n, A, &lda, tau, work, &lwork, info );
 }
 //*************************************************************************************************
 
 
 //*************************************************************************************************
-/*!\brief LAPACK kernel for the dense matrix QR decomposition of the given dense double precision
-//        column-major matrix.
+/*!\brief LAPACK kernel for the QR decomposition of the given dense double precision column-major
+//        matrix.
 // \ingroup lapack
 //
 // \param m The number of rows of the given matrix \f$[0..\infty)\f$.
@@ -214,17 +214,17 @@ inline void geqrf( int* m, int* n, float* A, int* lda, float* tau,
 // \note This function does not provide any exception safety guarantee, i.e. in case an exception
 // is thrown \a A may already have been modified.
 */
-inline void geqrf( int* m, int* n, double* A, int* lda, double* tau,
-                   double* work, int* lwork, int* info )
+inline void geqrf( int m, int n, double* A, int lda, double* tau,
+                   double* work, int lwork, int* info )
 {
-   dgeqrf_( m, n, A, lda, tau, work, lwork, info );
+   dgeqrf_( &m, &n, A, &lda, tau, work, &lwork, info );
 }
 //*************************************************************************************************
 
 
 //*************************************************************************************************
-/*!\brief LAPACK kernel for the dense matrix QR decomposition of the given dense single precision
-//        complex column-major matrix.
+/*!\brief LAPACK kernel for the QR decomposition of the given dense single precision complex
+//        column-major matrix.
 // \ingroup lapack
 //
 // \param m The number of rows of the given matrix \f$[0..\infty)\f$.
@@ -273,20 +273,20 @@ inline void geqrf( int* m, int* n, double* A, int* lda, double* tau,
 // \note This function does not provide any exception safety guarantee, i.e. in case an exception
 // is thrown \a A may already have been modified.
 */
-inline void geqrf( int* m, int* n, complex<float>* A, int* lda, complex<float>* tau,
-                   complex<float>* work, int* lwork, int* info )
+inline void geqrf( int m, int n, complex<float>* A, int lda, complex<float>* tau,
+                   complex<float>* work, int lwork, int* info )
 {
    BLAZE_STATIC_ASSERT( sizeof( complex<float> ) == 2UL*sizeof( float ) );
 
-   cgeqrf_( m, n, reinterpret_cast<float*>( A ), lda, reinterpret_cast<float*>( tau ),
-            reinterpret_cast<float*>( work ), lwork, info );
+   cgeqrf_( &m, &n, reinterpret_cast<float*>( A ), &lda, reinterpret_cast<float*>( tau ),
+            reinterpret_cast<float*>( work ), &lwork, info );
 }
 //*************************************************************************************************
 
 
 //*************************************************************************************************
-/*!\brief LAPACK kernel for the dense matrix QR decomposition of the given dense double precision
-//        complex column-major matrix.
+/*!\brief LAPACK kernel for the QR decomposition of the given dense double precision complex
+//        column-major matrix.
 // \ingroup lapack
 //
 // \param m The number of rows of the given matrix \f$[0..\infty)\f$.
@@ -335,13 +335,13 @@ inline void geqrf( int* m, int* n, complex<float>* A, int* lda, complex<float>* 
 // \note This function does not provide any exception safety guarantee, i.e. in case an exception
 // is thrown \a A may already have been modified.
 */
-inline void geqrf( int* m, int* n, complex<double>* A, int* lda, complex<double>* tau,
-                   complex<double>* work, int* lwork, int* info )
+inline void geqrf( int m, int n, complex<double>* A, int lda, complex<double>* tau,
+                   complex<double>* work, int lwork, int* info )
 {
    BLAZE_STATIC_ASSERT( sizeof( complex<double> ) == 2UL*sizeof( double ) );
 
-   zgeqrf_( m, n, reinterpret_cast<double*>( A ), lda, reinterpret_cast<double*>( tau ),
-            reinterpret_cast<double*>( work ), lwork, info );
+   zgeqrf_( &m, &n, reinterpret_cast<double*>( A ), &lda, reinterpret_cast<double*>( tau ),
+            reinterpret_cast<double*>( work ), &lwork, info );
 }
 //*************************************************************************************************
 
@@ -419,9 +419,9 @@ inline void geqrf( DenseMatrix<MT,SO>& A, typename MT::ElementType* tau )
    int lwork( n*lda );
    const UniqueArray<ET> work( new ET[lwork] );
 
-   geqrf( &m, &n, (~A).data(), &lda, tau, work.get(), &lwork, &info );
+   geqrf( m, n, (~A).data(), lda, tau, work.get(), lwork, &info );
 
-   BLAZE_INTERNAL_ASSERT( info >= 0, "Invalid argument for QR decomposition" );
+   BLAZE_INTERNAL_ASSERT( info == 0, "Invalid argument for QR decomposition" );
 }
 //*************************************************************************************************
 

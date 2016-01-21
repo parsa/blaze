@@ -46,6 +46,7 @@
 #include <blaze/math/constraints/Computation.h>
 #include <blaze/math/constraints/MutableDataAccess.h>
 #include <blaze/math/expressions/DenseMatrix.h>
+#include <blaze/math/expressions/DenseVector.h>
 #include <blaze/math/StorageOrder.h>
 #include <blaze/math/TransposeFlag.h>
 #include <blaze/util/Assert.h>
@@ -88,13 +89,13 @@ void zgesv_( int* n, int* nrhs, double* A, int* lda, int* ipiv, double* b, int* 
 //*************************************************************************************************
 /*!\name LAPACK wrapper functions (gesv) */
 //@{
-inline void gesv( int* n, int* nrhs, float* A, int* lda, int* ipiv, float* B, int* ldb, int* info );
+inline void gesv( int n, int nrhs, float* A, int lda, int* ipiv, float* B, int ldb, int* info );
 
-inline void gesv( int* n, int* nrhs, double* A, int* lda, int* ipiv, double* B, int* ldb, int* info );
+inline void gesv( int n, int nrhs, double* A, int lda, int* ipiv, double* B, int ldb, int* info );
 
-inline void gesv( int* n, int* nrhs, complex<float>* A, int* lda, int* ipiv, complex<float>* B, int* ldb, int* info );
+inline void gesv( int n, int nrhs, complex<float>* A, int lda, int* ipiv, complex<float>* B, int ldb, int* info );
 
-inline void gesv( int* n, int* nrhs, complex<double>* A, int* lda, int* ipiv, complex<double>* B, int* ldb, int* info );
+inline void gesv( int n, int nrhs, complex<double>* A, int lda, int* ipiv, complex<double>* B, int ldb, int* info );
 
 template< typename MT, typename VT >
 inline void gesv( DenseMatrix<MT,columnMajor>& A, DenseVector<VT,columnVector>& b, int* ipiv );
@@ -147,9 +148,9 @@ inline void gesv( DenseMatrix<MT1,columnMajor>& A, DenseMatrix<MT2,columnMajor>&
 // \note This function can only be used if the fitting LAPACK library is available and linked to
 // the executable. Otherwise a call to this function will result in a linker error.
 */
-inline void gesv( int* n, int* nrhs, float* A, int* lda, int* ipiv, float* B, int* ldb, int* info )
+inline void gesv( int n, int nrhs, float* A, int lda, int* ipiv, float* B, int ldb, int* info )
 {
-   sgesv_( n, nrhs, A, lda, ipiv, B, ldb, info );
+   sgesv_( &n, &nrhs, A, &lda, ipiv, B, &ldb, info );
 }
 //*************************************************************************************************
 
@@ -196,9 +197,9 @@ inline void gesv( int* n, int* nrhs, float* A, int* lda, int* ipiv, float* B, in
 // \note This function can only be used if the fitting LAPACK library is available and linked to
 // the executable. Otherwise a call to this function will result in a linker error.
 */
-inline void gesv( int* n, int* nrhs, double* A, int* lda, int* ipiv, double* B, int* ldb, int* info )
+inline void gesv( int n, int nrhs, double* A, int lda, int* ipiv, double* B, int ldb, int* info )
 {
-   dgesv_( n, nrhs, A, lda, ipiv, B, ldb, info );
+   dgesv_( &n, &nrhs, A, &lda, ipiv, B, &ldb, info );
 }
 //*************************************************************************************************
 
@@ -245,12 +246,12 @@ inline void gesv( int* n, int* nrhs, double* A, int* lda, int* ipiv, double* B, 
 // \note This function can only be used if the fitting LAPACK library is available and linked to
 // the executable. Otherwise a call to this function will result in a linker error.
 */
-inline void gesv( int* n, int* nrhs, complex<float>* A, int* lda, int* ipiv, complex<float>* B, int* ldb, int* info )
+inline void gesv( int n, int nrhs, complex<float>* A, int lda, int* ipiv, complex<float>* B, int ldb, int* info )
 {
    BLAZE_STATIC_ASSERT( sizeof( complex<float> ) == 2UL*sizeof( float ) );
 
-   cgesv_( n, nrhs, reinterpret_cast<float*>( A ), lda, ipiv,
-           reinterpret_cast<float*>( B ), ldb, info );
+   cgesv_( &n, &nrhs, reinterpret_cast<float*>( A ), &lda, ipiv,
+           reinterpret_cast<float*>( B ), &ldb, info );
 }
 //*************************************************************************************************
 
@@ -297,12 +298,12 @@ inline void gesv( int* n, int* nrhs, complex<float>* A, int* lda, int* ipiv, com
 // \note This function can only be used if the fitting LAPACK library is available and linked to
 // the executable. Otherwise a call to this function will result in a linker error.
 */
-inline void gesv( int* n, int* nrhs, complex<double>* A, int* lda, int* ipiv, complex<double>* B, int* ldb, int* info )
+inline void gesv( int n, int nrhs, complex<double>* A, int lda, int* ipiv, complex<double>* B, int ldb, int* info )
 {
    BLAZE_STATIC_ASSERT( sizeof( complex<double> ) == 2UL*sizeof( double ) );
 
-   zgesv_( n, nrhs, reinterpret_cast<double*>( A ), lda, ipiv,
-           reinterpret_cast<double*>( B ), ldb, info );
+   zgesv_( &n, &nrhs, reinterpret_cast<double*>( A ), &lda, ipiv,
+           reinterpret_cast<double*>( B ), &ldb, info );
 }
 //*************************************************************************************************
 
@@ -354,7 +355,8 @@ inline void gesv( int* n, int* nrhs, complex<double>* A, int* lda, int* ipiv, co
 // \note This function does not provide any exception safety guarantee, i.e. in case an exception
 // is thrown \a A may already have been modified.
 */
-template< typename MT, typename VT >
+template< typename MT    // Type of the system matrix
+        , typename VT >  // Type of the right-hand side vector
 inline void gesv( DenseMatrix<MT,columnMajor>& A, DenseVector<VT,columnVector>& b, int* ipiv )
 {
    using boost::numeric_cast;
@@ -381,7 +383,7 @@ inline void gesv( DenseMatrix<MT,columnMajor>& A, DenseVector<VT,columnVector>& 
       return;
    }
 
-   gesv( &n, &nrhs, (~A).data(), &lda, ipiv, (~b).data(), &ldb, &info );
+   gesv( n, nrhs, (~A).data(), lda, ipiv, (~b).data(), ldb, &info );
 
    BLAZE_INTERNAL_ASSERT( info >= 0, "Invalid function argument" );
 
@@ -396,7 +398,7 @@ inline void gesv( DenseMatrix<MT,columnMajor>& A, DenseVector<VT,columnVector>& 
 /*!\brief LAPACK kernel for solving a general linear system of equations (\f$ A*X=B \f$).
 // \ingroup lapack
 //
-// \param A The system matrix.
+// \param A The column-major system matrix.
 // \param B The matrix of right-hand sides.
 // \param ipiv Auxiliary array of size \a n for the pivot indices.
 // \return void
@@ -439,7 +441,8 @@ inline void gesv( DenseMatrix<MT,columnMajor>& A, DenseVector<VT,columnVector>& 
 // \note This function does not provide any exception safety guarantee, i.e. in case an exception
 // is thrown \a A may already have been modified.
 */
-template< typename MT1, typename MT2 >
+template< typename MT1    // Type of the system matrix
+        , typename MT2 >  // Type of the right-hand side matrix
 inline void gesv( DenseMatrix<MT1,columnMajor>& A, DenseMatrix<MT2,columnMajor>& B, int* ipiv )
 {
    using boost::numeric_cast;
@@ -467,7 +470,7 @@ inline void gesv( DenseMatrix<MT1,columnMajor>& A, DenseMatrix<MT2,columnMajor>&
       return;
    }
 
-   gesv( &n, &nrhs, (~A).data(), &lda, ipiv, (~B).data(), &ldb, &info );
+   gesv( n, nrhs, (~A).data(), lda, ipiv, (~B).data(), ldb, &info );
 
    BLAZE_INTERNAL_ASSERT( info >= 0, "Invalid function argument" );
 

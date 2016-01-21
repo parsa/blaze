@@ -85,21 +85,21 @@ void zhetri_( char* uplo, int* n, double* A, int* lda, int* ipiv, double* work, 
 //*************************************************************************************************
 /*!\name LAPACK Hermitian matrix inversion functions */
 //@{
-inline void hetri( char* uplo, char* diag, int* n, complex<float>* A, int* lda,
-                   int* ipiv, complex<float>* work, int* info );
+inline void hetri( char uplo, int n, complex<float>* A, int lda,
+                   const int* ipiv, complex<float>* work, int* info );
 
-inline void hetri( char* uplo, char* diag, int* n, complex<double>* A, int* lda,
-                   int* ipiv, complex<double>* work, int* info );
+inline void hetri( char uplo, int n, complex<double>* A, int lda,
+                   const int* ipiv, complex<double>* work, int* info );
 
 template< typename MT, bool SO >
-inline void hetri( DenseMatrix<MT,SO>& A, char uplo, int* ipiv );
+inline void hetri( DenseMatrix<MT,SO>& A, char uplo, const int* ipiv );
 //@}
 //*************************************************************************************************
 
 
 //*************************************************************************************************
-/*!\brief LAPACK kernel for the dense matrix inversion of the given Hermitian single precision
-//        complex column-major matrix.
+/*!\brief LAPACK kernel for the inversion of the given dense Hermitian indefinite single precision
+//        complex column-major square matrix.
 // \ingroup lapack
 //
 // \param uplo \c 'L' in case of a lower matrix, \c 'U' in case of an upper matrix.
@@ -128,20 +128,20 @@ inline void hetri( DenseMatrix<MT,SO>& A, char uplo, int* ipiv );
 // \note This function can only be used if the fitting LAPACK library is available and linked to
 // the executable. Otherwise a call to this function will result in a linker error.
 */
-inline void hetri( char* uplo, int* n, complex<float>* A, int* lda,
-                   int* ipiv, complex<float>* work, int* info )
+inline void hetri( char uplo, int n, complex<float>* A, int lda,
+                   const int* ipiv, complex<float>* work, int* info )
 {
    BLAZE_STATIC_ASSERT( sizeof( complex<float> ) == 2UL*sizeof( float ) );
 
-   chetri_( uplo, n, reinterpret_cast<float*>( A ), lda,
-            ipiv, reinterpret_cast<float*>( work ), info );
+   chetri_( &uplo, &n, reinterpret_cast<float*>( A ), &lda,
+            const_cast<int*>( ipiv ), reinterpret_cast<float*>( work ), info );
 }
 //*************************************************************************************************
 
 
 //*************************************************************************************************
-/*!\brief LAPACK kernel for the dense matrix inversion of the given Hermitian double precision
-//        complex column-major matrix.
+/*!\brief LAPACK kernel for the inversion of the given dense Hermitian indefinite double precision
+//        complex column-major square matrix.
 // \ingroup lapack
 //
 // \param uplo \c 'L' in case of a lower matrix, \c 'U' in case of an upper matrix.
@@ -170,19 +170,19 @@ inline void hetri( char* uplo, int* n, complex<float>* A, int* lda,
 // \note This function can only be used if the fitting LAPACK library is available and linked to
 // the executable. Otherwise a call to this function will result in a linker error.
 */
-inline void hetri( char* uplo, int* n, complex<double>* A, int* lda,
-                   int* ipiv, complex<double>* work, int* info )
+inline void hetri( char uplo, int n, complex<double>* A, int lda,
+                   const int* ipiv, complex<double>* work, int* info )
 {
    BLAZE_STATIC_ASSERT( sizeof( complex<double> ) == 2UL*sizeof( double ) );
 
-   zhetri_( uplo, n, reinterpret_cast<double*>( A ), lda,
-            ipiv, reinterpret_cast<double*>( work ), info );
+   zhetri_( &uplo, &n, reinterpret_cast<double*>( A ), &lda,
+            const_cast<int*>( ipiv ), reinterpret_cast<double*>( work ), info );
 }
 //*************************************************************************************************
 
 
 //*************************************************************************************************
-/*!\brief LAPACK kernel for the inversion of the given dense Hermitian matrix.
+/*!\brief LAPACK kernel for the inversion of the given dense Hermitian indefinite matrix.
 // \ingroup lapack
 //
 // \param A The triangular matrix to be inverted.
@@ -219,7 +219,7 @@ inline void hetri( char* uplo, int* n, complex<double>* A, int* lda,
 */
 template< typename MT  // Type of the dense matrix
         , bool SO >    // Storage order of the dense matrix
-inline void hetri( DenseMatrix<MT,SO>& A, char uplo, int* ipiv )
+inline void hetri( DenseMatrix<MT,SO>& A, char uplo, const int* ipiv )
 {
    using boost::numeric_cast;
 
@@ -252,7 +252,7 @@ inline void hetri( DenseMatrix<MT,SO>& A, char uplo, int* ipiv )
 
    const UniqueArray<ET> work( new ET[n] );
 
-   hetri( &uplo, &n, (~A).data(), &lda, ipiv, work.get(), &info );
+   hetri( uplo, n, (~A).data(), lda, ipiv, work.get(), &info );
 
    BLAZE_INTERNAL_ASSERT( info >= 0, "Invalid argument for matrix inversion" );
 

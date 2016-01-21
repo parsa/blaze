@@ -86,13 +86,13 @@ void zpotrf_( char* uplo, int* n, double* A, int* lda, int* info );
 //*************************************************************************************************
 /*!\name LAPACK Cholesky decomposition functions */
 //@{
-inline void potrf( char* uplo, int* n, float* A, int* lda, int* info );
+inline void potrf( char uplo, int n, float* A, int lda, int* info );
 
-inline void potrf( char* uplo, int* n, double* A, int* lda, int* info );
+inline void potrf( char uplo, int n, double* A, int lda, int* info );
 
-inline void potrf( char* uplo, int* n, complex<float>* A, int* lda, int* info );
+inline void potrf( char uplo, int n, complex<float>* A, int lda, int* info );
 
-inline void potrf( char* uplo, int* n, complex<double>* A, int* lda, int* info );
+inline void potrf( char uplo, int n, complex<double>* A, int lda, int* info );
 
 template< typename MT, bool SO >
 inline void potrf( DenseMatrix<MT,SO>& A, char uplo );
@@ -101,8 +101,8 @@ inline void potrf( DenseMatrix<MT,SO>& A, char uplo );
 
 
 //*************************************************************************************************
-/*!\brief LAPACK kernel for the dense matrix Cholesky decomposition of the given single precision
-//        column-major matrix.
+/*!\brief LAPACK kernel for the Cholesky decomposition of the given dense positive definite
+//        single precision column-major matrix.
 // \ingroup lapack
 //
 // \param uplo \c 'L' to use the lower part of the matrix, \c 'U' to use the upper part.
@@ -137,16 +137,16 @@ inline void potrf( DenseMatrix<MT,SO>& A, char uplo );
 // \note This function can only be used if the fitting LAPACK library is available and linked to
 // the executable. Otherwise a call to this function will result in a linker error.
 */
-inline void potrf( char* uplo, int* n, float* A, int* lda, int* info )
+inline void potrf( char uplo, int n, float* A, int lda, int* info )
 {
-   spotrf_( uplo, n, A, lda, info );
+   spotrf_( &uplo, &n, A, &lda, info );
 }
 //*************************************************************************************************
 
 
 //*************************************************************************************************
-/*!\brief LAPACK kernel for the dense matrix Cholesky decomposition of the given double precision
-//        column-major matrix.
+/*!\brief LAPACK kernel for the Cholesky decomposition of the given dense positive definite
+//        double precision column-major matrix.
 // \ingroup lapack
 //
 // \param uplo \c 'L' to use the lower part of the matrix, \c 'U' to use the upper part.
@@ -181,16 +181,16 @@ inline void potrf( char* uplo, int* n, float* A, int* lda, int* info )
 // \note This function can only be used if the fitting LAPACK library is available and linked to
 // the executable. Otherwise a call to this function will result in a linker error.
 */
-inline void potrf( char* uplo, int* n, double* A, int* lda, int* info )
+inline void potrf( char uplo, int n, double* A, int lda, int* info )
 {
-   dpotrf_( uplo, n, A, lda, info );
+   dpotrf_( &uplo, &n, A, &lda, info );
 }
 //*************************************************************************************************
 
 
 //*************************************************************************************************
-/*!\brief LAPACK kernel for the dense matrix Cholesky decomposition of the given single precision
-//        complex column-major matrix.
+/*!\brief LAPACK kernel for the Cholesky decomposition of the given dense positive definite
+//        single precision complex column-major matrix.
 // \ingroup lapack
 //
 // \param uplo \c 'L' to use the lower part of the matrix, \c 'U' to use the upper part.
@@ -225,18 +225,18 @@ inline void potrf( char* uplo, int* n, double* A, int* lda, int* info )
 // \note This function can only be used if the fitting LAPACK library is available and linked to
 // the executable. Otherwise a call to this function will result in a linker error.
 */
-inline void potrf( char* uplo, int* n, complex<float>* A, int* lda, int* info )
+inline void potrf( char uplo, int n, complex<float>* A, int lda, int* info )
 {
    BLAZE_STATIC_ASSERT( sizeof( complex<float> ) == 2UL*sizeof( float ) );
 
-   cpotrf_( uplo, n, reinterpret_cast<float*>( A ), lda, info );
+   cpotrf_( &uplo, &n, reinterpret_cast<float*>( A ), &lda, info );
 }
 //*************************************************************************************************
 
 
 //*************************************************************************************************
-/*!\brief LAPACK kernel for the dense matrix Cholesky decomposition of the given double precision
-//        complex column-major matrix.
+/*!\brief LAPACK kernel for the Cholesky decomposition of the given dense positive definite
+//        double precision complex column-major matrix.
 // \ingroup lapack
 //
 // \param uplo \c 'L' to use the lower part of the matrix, \c 'U' to use the upper part.
@@ -271,17 +271,17 @@ inline void potrf( char* uplo, int* n, complex<float>* A, int* lda, int* info )
 // \note This function can only be used if the fitting LAPACK library is available and linked to
 // the executable. Otherwise a call to this function will result in a linker error.
 */
-inline void potrf( char* uplo, int* n, complex<double>* A, int* lda, int* info )
+inline void potrf( char uplo, int n, complex<double>* A, int lda, int* info )
 {
    BLAZE_STATIC_ASSERT( sizeof( complex<double> ) == 2UL*sizeof( double ) );
 
-   zpotrf_( uplo, n, reinterpret_cast<double*>( A ), lda, info );
+   zpotrf_( &uplo, &n, reinterpret_cast<double*>( A ), &lda, info );
 }
 //*************************************************************************************************
 
 
 //*************************************************************************************************
-/*!\brief LAPACK kernel for the Cholesky decomposition of the given dense matrix.
+/*!\brief LAPACK kernel for the Cholesky decomposition of the given dense positive definite matrix.
 // \ingroup lapack
 //
 // \param A The matrix to be decomposed.
@@ -347,7 +347,7 @@ inline void potrf( DenseMatrix<MT,SO>& A, char uplo )
       ( uplo == 'L' )?( uplo = 'U' ):( uplo = 'L' );
    }
 
-   potrf( &uplo, &n, (~A).data(), &lda, &info );
+   potrf( uplo, n, (~A).data(), lda, &info );
 
    BLAZE_INTERNAL_ASSERT( info >= 0, "Invalid argument for Cholesky decomposition" );
 

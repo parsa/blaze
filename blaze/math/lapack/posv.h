@@ -46,6 +46,7 @@
 #include <blaze/math/constraints/Computation.h>
 #include <blaze/math/constraints/MutableDataAccess.h>
 #include <blaze/math/expressions/DenseMatrix.h>
+#include <blaze/math/expressions/DenseVector.h>
 #include <blaze/math/StorageOrder.h>
 #include <blaze/math/TransposeFlag.h>
 #include <blaze/util/Assert.h>
@@ -88,13 +89,13 @@ void zposv_( char* uplo, int* n, int* nrhs, double* A, int* lda, double* b, int*
 //*************************************************************************************************
 /*!\name LAPACK wrapper functions (posv) */
 //@{
-inline void posv( char* uplo, int* n, int* nrhs, float* A, int* lda, float* B, int* ldb, int* info );
+inline void posv( char uplo, int n, int nrhs, float* A, int lda, float* B, int ldb, int* info );
 
-inline void posv( char* uplo, int* n, int* nrhs, double* A, int* lda, double* B, int* ldb, int* info );
+inline void posv( char uplo, int n, int nrhs, double* A, int lda, double* B, int ldb, int* info );
 
-inline void posv( char* uplo, int* n, int* nrhs, complex<float>* A, int* lda, complex<float>* B, int* ldb, int* info );
+inline void posv( char uplo, int n, int nrhs, complex<float>* A, int lda, complex<float>* B, int ldb, int* info );
 
-inline void posv( char* uplo, int* n, int* nrhs, complex<double>* A, int* lda, complex<double>* B, int* ldb, int* info );
+inline void posv( char uplo, int n, int nrhs, complex<double>* A, int lda, complex<double>* B, int ldb, int* info );
 
 template< typename MT, typename VT >
 inline void posv( DenseMatrix<MT,columnMajor>& A, DenseVector<VT,columnVector>& b, char uplo );
@@ -149,9 +150,9 @@ inline void posv( DenseMatrix<MT1,columnMajor>& A, DenseMatrix<MT2,columnMajor>&
 // \note This function can only be used if the fitting LAPACK library is available and linked to
 // the executable. Otherwise a call to this function will result in a linker error.
 */
-inline void posv( char* uplo, int* n, int* nrhs, float* A, int* lda, float* B, int* ldb, int* info )
+inline void posv( char uplo, int n, int nrhs, float* A, int lda, float* B, int ldb, int* info )
 {
-   sposv_( uplo, n, nrhs, A, lda, B, ldb, info );
+   sposv_( &uplo, &n, &nrhs, A, &lda, B, &ldb, info );
 }
 //*************************************************************************************************
 
@@ -200,9 +201,9 @@ inline void posv( char* uplo, int* n, int* nrhs, float* A, int* lda, float* B, i
 // \note This function can only be used if the fitting LAPACK library is available and linked to
 // the executable. Otherwise a call to this function will result in a linker error.
 */
-inline void posv( char* uplo, int* n, int* nrhs, double* A, int* lda, double* B, int* ldb, int* info )
+inline void posv( char uplo, int n, int nrhs, double* A, int lda, double* B, int ldb, int* info )
 {
-   dposv_( uplo, n, nrhs, A, lda, B, ldb, info );
+   dposv_( &uplo, &n, &nrhs, A, &lda, B, &ldb, info );
 }
 //*************************************************************************************************
 
@@ -251,12 +252,12 @@ inline void posv( char* uplo, int* n, int* nrhs, double* A, int* lda, double* B,
 // \note This function can only be used if the fitting LAPACK library is available and linked to
 // the executable. Otherwise a call to this function will result in a linker error.
 */
-inline void posv( char* uplo, int* n, int* nrhs, complex<float>* A, int* lda, complex<float>* B, int* ldb, int* info )
+inline void posv( char uplo, int n, int nrhs, complex<float>* A, int lda, complex<float>* B, int ldb, int* info )
 {
    BLAZE_STATIC_ASSERT( sizeof( complex<float> ) == 2UL*sizeof( float ) );
 
-   cposv_( uplo, n, nrhs, reinterpret_cast<float*>( A ), lda,
-           reinterpret_cast<float*>( B ), ldb, info );
+   cposv_( &uplo, &n, &nrhs, reinterpret_cast<float*>( A ), &lda,
+           reinterpret_cast<float*>( B ), &ldb, info );
 }
 //*************************************************************************************************
 
@@ -305,12 +306,12 @@ inline void posv( char* uplo, int* n, int* nrhs, complex<float>* A, int* lda, co
 // \note This function can only be used if the fitting LAPACK library is available and linked to
 // the executable. Otherwise a call to this function will result in a linker error.
 */
-inline void posv( char* uplo, int* n, int* nrhs, complex<double>* A, int* lda, complex<double>* B, int* ldb, int* info )
+inline void posv( char uplo, int n, int nrhs, complex<double>* A, int lda, complex<double>* B, int ldb, int* info )
 {
    BLAZE_STATIC_ASSERT( sizeof( complex<double> ) == 2UL*sizeof( double ) );
 
-   zposv_( uplo, n, nrhs, reinterpret_cast<double*>( A ), lda,
-           reinterpret_cast<double*>( B ), ldb, info );
+   zposv_( &uplo, &n, &nrhs, reinterpret_cast<double*>( A ), &lda,
+           reinterpret_cast<double*>( B ), &ldb, info );
 }
 //*************************************************************************************************
 
@@ -395,7 +396,7 @@ inline void posv( DenseMatrix<MT,columnMajor>& A, DenseVector<VT,columnVector>& 
       return;
    }
 
-   posv( &uplo, &n, &nrhs, (~A).data(), &lda, (~b).data(), &ldb, &info );
+   posv( uplo, n, nrhs, (~A).data(), lda, (~b).data(), ldb, &info );
 
    BLAZE_INTERNAL_ASSERT( info >= 0, "Invalid function argument" );
 
@@ -487,7 +488,7 @@ inline void posv( DenseMatrix<MT1,columnMajor>& A, DenseMatrix<MT2,columnMajor>&
       return;
    }
 
-   posv( &uplo, &n, &nrhs, (~A).data(), &lda, (~B).data(), &ldb, &info );
+   posv( uplo, n, nrhs, (~A).data(), lda, (~B).data(), ldb, &info );
 
    BLAZE_INTERNAL_ASSERT( info >= 0, "Invalid function argument" );
 

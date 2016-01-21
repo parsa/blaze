@@ -88,11 +88,11 @@ void zhesv_( char* uplo, int* n, int* nrhs, double* A, int* lda, int* ipiv, doub
 //*************************************************************************************************
 /*!\name LAPACK wrapper functions (hesv) */
 //@{
-inline void hesv( char* uplo, int* n, int* nrhs, complex<float>* A, int* lda, int* ipiv,
-                  complex<float>* B, int* ldb, complex<float>* work, int* lwork, int* info );
+inline void hesv( char uplo, int n, int nrhs, complex<float>* A, int lda, int* ipiv,
+                  complex<float>* B, int ldb, complex<float>* work, int lwork, int* info );
 
-inline void hesv( char* uplo, int* n, int* nrhs, complex<double>* A, int* lda, int* ipiv,
-                  complex<double>* B, int* ldb, complex<double>* work, int* lwork, int* info );
+inline void hesv( char uplo, int n, int nrhs, complex<double>* A, int lda, int* ipiv,
+                  complex<double>* B, int ldb, complex<double>* work, int lwork, int* info );
 
 template< typename MT, typename VT >
 inline void hesv( DenseMatrix<MT,columnMajor>& A, DenseVector<VT,columnVector>& b,
@@ -153,13 +153,13 @@ inline void hesv( DenseMatrix<MT1,columnMajor>& A, DenseMatrix<MT2,columnMajor>&
 // \note This function can only be used if the fitting LAPACK library is available and linked to
 // the executable. Otherwise a call to this function will result in a linker error.
 */
-inline void hesv( char* uplo, int* n, int* nrhs, complex<float>* A, int* lda, int* ipiv,
-                  complex<float>* B, int* ldb, complex<float>* work, int* lwork, int* info )
+inline void hesv( char uplo, int n, int nrhs, complex<float>* A, int lda, int* ipiv,
+                  complex<float>* B, int ldb, complex<float>* work, int lwork, int* info )
 {
    BLAZE_STATIC_ASSERT( sizeof( complex<float> ) == 2UL*sizeof( float ) );
 
-   chesv_( uplo, n, nrhs, reinterpret_cast<float*>( A ), lda, ipiv,
-           reinterpret_cast<float*>( B ), ldb, reinterpret_cast<float*>( work ), lwork, info );
+   chesv_( &uplo, &n, &nrhs, reinterpret_cast<float*>( A ), &lda, ipiv,
+           reinterpret_cast<float*>( B ), &ldb, reinterpret_cast<float*>( work ), &lwork, info );
 }
 //*************************************************************************************************
 
@@ -212,13 +212,13 @@ inline void hesv( char* uplo, int* n, int* nrhs, complex<float>* A, int* lda, in
 // \note This function can only be used if the fitting LAPACK library is available and linked to
 // the executable. Otherwise a call to this function will result in a linker error.
 */
-inline void hesv( char* uplo, int* n, int* nrhs, complex<double>* A, int* lda, int* ipiv,
-                  complex<double>* B, int* ldb, complex<double>* work, int* lwork, int* info )
+inline void hesv( char uplo, int n, int nrhs, complex<double>* A, int lda, int* ipiv,
+                  complex<double>* B, int ldb, complex<double>* work, int lwork, int* info )
 {
    BLAZE_STATIC_ASSERT( sizeof( complex<double> ) == 2UL*sizeof( double ) );
 
-   zhesv_( uplo, n, nrhs, reinterpret_cast<double*>( A ), lda, ipiv,
-           reinterpret_cast<double*>( B ), ldb, reinterpret_cast<double*>( work ), lwork, info );
+   zhesv_( &uplo, &n, &nrhs, reinterpret_cast<double*>( A ), &lda, ipiv,
+           reinterpret_cast<double*>( B ), &ldb, reinterpret_cast<double*>( work ), &lwork, info );
 }
 //*************************************************************************************************
 
@@ -311,7 +311,7 @@ inline void hesv( DenseMatrix<MT,columnMajor>& A, DenseVector<VT,columnVector>& 
    int lwork( n*lda );
    const UniqueArray<ET> work( new ET[lwork] );
 
-   hesv( &uplo, &n, &nrhs, (~A).data(), &lda, ipiv, (~b).data(), &ldb, work.get(), &lwork, &info );
+   hesv( uplo, n, nrhs, (~A).data(), lda, ipiv, (~b).data(), ldb, work.get(), lwork, &info );
 
    BLAZE_INTERNAL_ASSERT( info >= 0, "Invalid function argument" );
 
@@ -411,7 +411,7 @@ inline void hesv( DenseMatrix<MT1,columnMajor>& A, DenseMatrix<MT2,columnMajor>&
    int lwork( n*lda );
    const UniqueArray<ET> work( new ET[lwork] );
 
-   hesv( &uplo, &n, &nrhs, (~A).data(), &lda, ipiv, (~B).data(), &ldb, work.get(), &lwork, &info );
+   hesv( uplo, n, nrhs, (~A).data(), lda, ipiv, (~B).data(), ldb, work.get(), lwork, &info );
 
    BLAZE_INTERNAL_ASSERT( info >= 0, "Invalid function argument" );
 

@@ -341,10 +341,11 @@ typename MT::ElementType detNxN( const DenseMatrix<MT,SO>& dm )
 
    const UniqueArray<int> ipiv( new int[n] );
 
-   getrf( &n, &n, A.data(), &lda, ipiv.get(), &info );
+   getrf( n, n, A.data(), lda, ipiv.get(), &info );
 
-   if( info > 0 )
+   if( info > 0 ) {
       return ET(0);
+   }
 
    ET determinant = ET(1);
 

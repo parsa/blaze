@@ -1,7 +1,7 @@
 //=================================================================================================
 /*!
 //  \file blaze/math/lapack/getri.h
-//  \brief Header file for LAPACK matrix LU-based inversion functions (getri)
+//  \brief Header file for LAPACK LU-based matrix inversion functions (getri)
 //
 //  Copyright (C) 2013 Klaus Iglberger - All Rights Reserved
 //
@@ -46,7 +46,6 @@
 #include <blaze/math/constraints/Computation.h>
 #include <blaze/math/constraints/MutableDataAccess.h>
 #include <blaze/math/expressions/DenseMatrix.h>
-#include <blaze/math/lapack/getrf.h>
 #include <blaze/math/typetraits/IsRowMajorMatrix.h>
 #include <blaze/util/Assert.h>
 #include <blaze/util/Complex.h>
@@ -88,15 +87,15 @@ void zgetri_( int* n, double* A, int* lda, int* ipiv, double* work, int* lwork, 
 //*************************************************************************************************
 /*!\name LAPACK LU-based inversion functions */
 //@{
-inline void getri( int* n, float* A, int* lda, int* ipiv, float* work, int* lwork, int* info );
+inline void getri( int n, float* A, int lda, const int* ipiv, float* work, int lwork, int* info );
 
-inline void getri( int* n, double* A, int* lda, int* ipiv, double* work, int* lwork, int* info );
+inline void getri( int n, double* A, int lda, const int* ipiv, double* work, int lwork, int* info );
 
-inline void getri( int* n, complex<float>* A, int* lda, int* ipiv,
-                   complex<float>* work, int* lwork, int* info );
+inline void getri( int n, complex<float>* A, int lda, const int* ipiv,
+                   complex<float>* work, int lwork, int* info );
 
-inline void getri( int* n, complex<double>* A, int* lda, int* ipiv,
-                   complex<double>* work, int* lwork, int* info );
+inline void getri( int n, complex<double>* A, int lda, const int* ipiv,
+                   complex<double>* work, int lwork, int* info );
 
 template< typename MT, bool SO >
 inline void getri( DenseMatrix<MT,SO>& A, const int* ipiv );
@@ -105,8 +104,8 @@ inline void getri( DenseMatrix<MT,SO>& A, const int* ipiv );
 
 
 //*************************************************************************************************
-/*!\brief LAPACK kernel for the dense matrix inversion of the given dense single precision
-//        column-major square matrix.
+/*!\brief LAPACK kernel for the inversion of the given dense general single precision column-major
+//        square matrix.
 // \ingroup lapack
 //
 // \param n The number of rows/columns of the matrix \f$[0..\infty)\f$.
@@ -139,16 +138,16 @@ inline void getri( DenseMatrix<MT,SO>& A, const int* ipiv );
 // \note This function can only be used if the fitting LAPACK library is available and linked to
 // the executable. Otherwise a call to this function will result in a linker error.
 */
-inline void getri( int* n, float* A, int* lda, int* ipiv, float* work, int* lwork, int* info )
+inline void getri( int n, float* A, int lda, const int* ipiv, float* work, int lwork, int* info )
 {
-   sgetri_( n, A, lda, ipiv, work, lwork, info );
+   sgetri_( &n, A, &lda, const_cast<int*>( ipiv ), work, &lwork, info );
 }
 //*************************************************************************************************
 
 
 //*************************************************************************************************
-/*!\brief LAPACK kernel for the dense matrix inversion of the given dense double precision
-//        column-major square matrix.
+/*!\brief LAPACK kernel for the inversion of the given dense general double precision column-major
+//        square matrix.
 // \ingroup lapack
 //
 // \param n The number of rows/columns of the matrix \f$[0..\infty)\f$.
@@ -181,16 +180,16 @@ inline void getri( int* n, float* A, int* lda, int* ipiv, float* work, int* lwor
 // \note This function can only be used if the fitting LAPACK library is available and linked to
 // the executable. Otherwise a call to this function will result in a linker error.
 */
-inline void getri( int* n, double* A, int* lda, int* ipiv, double* work, int* lwork, int* info )
+inline void getri( int n, double* A, int lda, const int* ipiv, double* work, int lwork, int* info )
 {
-   dgetri_( n, A, lda, ipiv, work, lwork, info );
+   dgetri_( &n, A, &lda, const_cast<int*>( ipiv ), work, &lwork, info );
 }
 //*************************************************************************************************
 
 
 //*************************************************************************************************
-/*!\brief LAPACK kernel for the dense matrix inversion of the given dense single precision
-//        complex column-major square matrix.
+/*!\brief LAPACK kernel for the inversion of the given dense general single precision complex
+//        column-major square matrix.
 // \ingroup lapack
 //
 // \param n The number of rows/columns of the matrix \f$[0..\infty)\f$.
@@ -223,20 +222,20 @@ inline void getri( int* n, double* A, int* lda, int* ipiv, double* work, int* lw
 // \note This function can only be used if the fitting LAPACK library is available and linked to
 // the executable. Otherwise a call to this function will result in a linker error.
 */
-inline void getri( int* n, complex<float>* A, int* lda, int* ipiv,
-                   complex<float>* work, int* lwork, int* info )
+inline void getri( int n, complex<float>* A, int lda, const int* ipiv,
+                   complex<float>* work, int lwork, int* info )
 {
    BLAZE_STATIC_ASSERT( sizeof( complex<float> ) == 2UL*sizeof( float ) );
 
-   cgetri_( n, reinterpret_cast<float*>( A ), lda, ipiv,
-            reinterpret_cast<float*>( work ), lwork, info );
+   cgetri_( &n, reinterpret_cast<float*>( A ), &lda, const_cast<int*>( ipiv ),
+            reinterpret_cast<float*>( work ), &lwork, info );
 }
 //*************************************************************************************************
 
 
 //*************************************************************************************************
-/*!\brief LAPACK kernel for the dense matrix inversion of the given dense double precision
-//        complex column-major square matrix.
+/*!\brief LAPACK kernel for the inversion of the given dense general double precision complex
+//        column-major square matrix.
 // \ingroup lapack
 //
 // \param n The number of rows/columns of the matrix \f$[0..\infty)\f$.
@@ -250,7 +249,7 @@ inline void getri( int* n, complex<float>* A, int* lda, int* ipiv,
 //
 // This function performs the dense matrix inversion based on the LAPACK cgetri() function for
 // double precision complex column-major matrices that have already been factorized by the
-// cgetrf() function. The \a info argument provides feedback on the success of the function call:
+// zgetrf() function. The \a info argument provides feedback on the success of the function call:
 //
 //   - = 0: The inversion finished successfully.
 //   - < 0: If info = -i, the i-th argument had an illegal value.
@@ -269,19 +268,19 @@ inline void getri( int* n, complex<float>* A, int* lda, int* ipiv,
 // \note This function can only be used if the fitting LAPACK library is available and linked to
 // the executable. Otherwise a call to this function will result in a linker error.
 */
-inline void getri( int* n, complex<double>* A, int* lda, int* ipiv,
-                   complex<double>* work, int* lwork, int* info )
+inline void getri( int n, complex<double>* A, int lda, const int* ipiv,
+                   complex<double>* work, int lwork, int* info )
 {
    BLAZE_STATIC_ASSERT( sizeof( complex<double> ) == 2UL*sizeof( double ) );
 
-   zgetri_( n, reinterpret_cast<double*>( A ), lda, ipiv,
-            reinterpret_cast<double*>( work ), lwork, info );
+   zgetri_( &n, reinterpret_cast<double*>( A ), &lda, const_cast<int*>( ipiv ),
+            reinterpret_cast<double*>( work ), &lwork, info );
 }
 //*************************************************************************************************
 
 
 //*************************************************************************************************
-/*!\brief LAPACK kernel for the inversion of the given dense matrix.
+/*!\brief LAPACK kernel for the inversion of the given dense general matrix.
 // \ingroup lapack
 //
 // \param A The matrix to be inverted.
@@ -335,13 +334,14 @@ inline void getri( DenseMatrix<MT,SO>& A, const int* ipiv )
    int lda ( numeric_cast<int>( (~A).spacing() ) );
    int info( 0 );
 
-   if( n == 0 )
+   if( n == 0 ) {
       return;
+   }
 
    int lwork( n*lda );
    const UniqueArray<ET> work( new ET[lwork] );
 
-   getri( &n, (~A).data(), &lda, const_cast<int*>( ipiv ), work.get(), &lwork, &info );
+   getri( n, (~A).data(), lda, ipiv, work.get(), lwork, &info );
 
    BLAZE_INTERNAL_ASSERT( info >= 0, "Invalid argument for matrix inversion" );
 
