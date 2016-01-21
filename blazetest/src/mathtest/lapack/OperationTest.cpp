@@ -77,6 +77,7 @@ OperationTest::OperationTest()
    //testSytri< float >();
    //testPotri< float >();
    //testTrtri< float >();
+   //testGetrs< float >();
    //testGesv < float >();
    //testSysv < float >();
    //testPosv < float >();
@@ -94,6 +95,7 @@ OperationTest::OperationTest()
    testSytri< double >();
    testPotri< double >();
    testTrtri< double >();
+   testGetrs< double >();
    testGesv < double >();
    testSysv < double >();
    testPosv < double >();
@@ -113,6 +115,7 @@ OperationTest::OperationTest()
    //testHetri< complex<float> >();
    //testPotri< complex<float> >();
    //testTrtri< complex<float> >();
+   //testGetrs< complex<float> >();
    //testGesv < complex<float> >();
    //testSysv < complex<float> >();
    //testHesv < complex<float> >();
@@ -133,6 +136,7 @@ OperationTest::OperationTest()
    testHetri< complex<double> >();
    testPotri< complex<double> >();
    testTrtri< complex<double> >();
+   testGetrs< complex<double> >();
    testGesv < complex<double> >();
    testSysv < complex<double> >();
    testHesv < complex<double> >();

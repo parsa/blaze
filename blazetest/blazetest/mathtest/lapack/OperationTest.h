@@ -105,6 +105,8 @@ class OperationTest
    template< typename Type > void testPotri();
    template< typename Type > void testTrtri();
 
+   template< typename Type > void testGetrs();
+
    template< typename Type > void testGesv();
    template< typename Type > void testSysv();
    template< typename Type > void testHesv();
@@ -1160,6 +1162,178 @@ void OperationTest::testTrtri()
 
 
 //*************************************************************************************************
+/*!\brief Test of the general backward substitution functions (getrs).
+//
+// \return void
+// \exception std::runtime_error Error detected.
+//
+// This function performs a test of the backward substitution functions for various data types.
+// In case an error is detected, a \a std::runtime_error exception is thrown.
+*/
+template< typename Type >
+void OperationTest::testGetrs()
+{
+#if BLAZETEST_MATHTEST_LAPACK_MODE
+
+   //=====================================================================================
+   // Row-major matrix tests
+   //=====================================================================================
+
+   {
+      test_ = "Row-major general LSE backward substitution (single right-hand side)";
+
+      blaze::StaticMatrix<Type,3UL,3UL,blaze::rowMajor> A, LU;
+
+      do {
+         randomize( A );
+      }
+      while( blaze::isDefault( det( A ) ) );
+
+      blaze::StaticVector<Type,3UL,blaze::columnVector> rhs, result;
+      randomize( rhs );
+
+      blaze::StaticVector<int,3UL,blaze::rowVector> ipiv;
+
+      LU = A;
+      result = rhs;
+
+      blaze::getrf( LU, ipiv.data() );
+      blaze::getrs( LU, result, ipiv.data() );
+
+      if( ( A * result ) != rhs ) {
+         std::ostringstream oss;
+         oss << " Test: " << test_ << "\n"
+             << " Error: Solving the LSE failed\n"
+             << " Details:\n"
+             << "   Element type:\n"
+             << "     " << typeid( Type ).name() << "\n"
+             << "   System matrix (A):\n" << A << "\n"
+             << "   Result (x):\n" << result << "\n"
+             << "   Right-hand side (y):\n" << rhs << "\n"
+             << "   A * x:\n" << ( A * result ) << "\n";
+         throw std::runtime_error( oss.str() );
+      }
+   }
+
+   {
+      test_ = "Row-major general LSE backward substitution (multiple right-hand sides)";
+
+      blaze::StaticMatrix<Type,3UL,3UL,blaze::rowMajor> A, LU;
+
+      do {
+         randomize( A );
+      }
+      while( blaze::isDefault( det( A ) ) );
+
+      blaze::StaticMatrix<Type,3UL,3UL,blaze::columnMajor> rhs, result;
+      randomize( rhs );
+
+      blaze::StaticVector<int,3UL,blaze::rowVector> ipiv;
+
+      LU = A;
+      result = rhs;
+
+      blaze::getrf( LU, ipiv.data() );
+      blaze::getrs( LU, result, ipiv.data() );
+
+      if( ( A * result ) != rhs ) {
+         std::ostringstream oss;
+         oss << " Test: " << test_ << "\n"
+             << " Error: Solving the LSE failed\n"
+             << " Details:\n"
+             << "   Element type:\n"
+             << "     " << typeid( Type ).name() << "\n"
+             << "   System matrix (A):\n" << A << "\n"
+             << "   Result (x):\n" << result << "\n"
+             << "   Right-hand side (y):\n" << rhs << "\n"
+             << "   A * x:\n" << ( A * result ) << "\n";
+         throw std::runtime_error( oss.str() );
+      }
+   }
+
+
+   //=====================================================================================
+   // Column-major matrix tests
+   //=====================================================================================
+
+   {
+      test_ = "Column-major general LSE backward substitution (single right-hand side)";
+
+      blaze::StaticMatrix<Type,3UL,3UL,blaze::columnMajor> A, LU;
+
+      do {
+         randomize( A );
+      }
+      while( blaze::isDefault( det( A ) ) );
+
+      blaze::StaticVector<Type,3UL,blaze::columnVector> rhs, result;
+      randomize( rhs );
+
+      blaze::StaticVector<int,3UL,blaze::rowVector> ipiv;
+
+      LU = A;
+      result = rhs;
+
+      blaze::getrf( LU, ipiv.data() );
+      blaze::getrs( LU, result, ipiv.data() );
+
+      if( ( A * result ) != rhs ) {
+         std::ostringstream oss;
+         oss << " Test: " << test_ << "\n"
+             << " Error: Solving the LSE failed\n"
+             << " Details:\n"
+             << "   Element type:\n"
+             << "     " << typeid( Type ).name() << "\n"
+             << "   System matrix (A):\n" << A << "\n"
+             << "   Result (x):\n" << result << "\n"
+             << "   Right-hand side (y):\n" << rhs << "\n"
+             << "   A * x:\n" << ( A * result ) << "\n";
+         throw std::runtime_error( oss.str() );
+      }
+   }
+
+   {
+      test_ = "Column-major general LSE backward substitution (multiple right-hand sides)";
+
+      blaze::StaticMatrix<Type,3UL,3UL,blaze::columnMajor> A, LU;
+
+      do {
+         randomize( A );
+      }
+      while( blaze::isDefault( det( A ) ) );
+
+      blaze::StaticMatrix<Type,3UL,3UL,blaze::columnMajor> rhs, result;
+      randomize( rhs );
+
+      blaze::StaticVector<int,3UL,blaze::rowVector> ipiv;
+
+      LU = A;
+      result = rhs;
+
+      blaze::getrf( LU, ipiv.data() );
+      blaze::getrs( LU, result, ipiv.data() );
+
+      if( ( A * result ) != rhs ) {
+         std::ostringstream oss;
+         oss << " Test: " << test_ << "\n"
+             << " Error: Solving the LSE failed\n"
+             << " Details:\n"
+             << "   Element type:\n"
+             << "     " << typeid( Type ).name() << "\n"
+             << "   System matrix (A):\n" << A << "\n"
+             << "   Result (x):\n" << result << "\n"
+             << "   Right-hand side (y):\n" << rhs << "\n"
+             << "   A * x:\n" << ( A * result ) << "\n";
+         throw std::runtime_error( oss.str() );
+      }
+   }
+
+#endif
+}
+//*************************************************************************************************
+
+
+//*************************************************************************************************
 /*!\brief Test of the general linear system solver functions (gesv).
 //
 // \return void
@@ -1174,7 +1348,7 @@ void OperationTest::testGesv()
 #if BLAZETEST_MATHTEST_LAPACK_MODE
 
    {
-      test_ = "General linear system of equations (single right-hand side)";
+      test_ = "General LSE (single right-hand side)";
 
       blaze::StaticMatrix<Type,3UL,3UL,blaze::columnMajor> A, LU;
 
@@ -1196,7 +1370,7 @@ void OperationTest::testGesv()
       if( ( A * result ) != rhs ) {
          std::ostringstream oss;
          oss << " Test: " << test_ << "\n"
-             << " Error: Solving the linear system of equations failed\n"
+             << " Error: Solving the LSE failed\n"
              << " Details:\n"
              << "   Element type:\n"
              << "     " << typeid( Type ).name() << "\n"
@@ -1209,7 +1383,7 @@ void OperationTest::testGesv()
    }
 
    {
-      test_ = "General linear system of equations (multiple right-hand side vectors)";
+      test_ = "General LSE (multiple right-hand sides)";
 
       blaze::StaticMatrix<Type,3UL,3UL,blaze::columnMajor> A, LU;
 
@@ -1231,7 +1405,7 @@ void OperationTest::testGesv()
       if( ( A * result ) != rhs ) {
          std::ostringstream oss;
          oss << " Test: " << test_ << "\n"
-             << " Error: Solving the linear system of equations failed\n"
+             << " Error: Solving the LSE failed\n"
              << " Details:\n"
              << "   Element type:\n"
              << "     " << typeid( Type ).name() << "\n"
@@ -1263,7 +1437,7 @@ void OperationTest::testSysv()
 #if BLAZETEST_MATHTEST_LAPACK_MODE
 
    {
-      test_ = "Symmetric indefinite linear system of equations (single right-hand side, lower part)";
+      test_ = "Symmetric indefinite LSE (single right-hand side, lower part)";
 
       blaze::StaticMatrix<Type,3UL,3UL,blaze::columnMajor> A, LU;
 
@@ -1286,7 +1460,7 @@ void OperationTest::testSysv()
       if( ( A * result ) != rhs ) {
          std::ostringstream oss;
          oss << " Test: " << test_ << "\n"
-             << " Error: Solving the linear system of equations failed\n"
+             << " Error: Solving the LSE failed\n"
              << " Details:\n"
              << "   Element type:\n"
              << "     " << typeid( Type ).name() << "\n"
@@ -1299,7 +1473,7 @@ void OperationTest::testSysv()
    }
 
    {
-      test_ = "Symmetric indefinite linear system of equations (single right-hand side, upper part)";
+      test_ = "Symmetric indefinite LSE (single right-hand side, upper part)";
 
       blaze::StaticMatrix<Type,3UL,3UL,blaze::columnMajor> A, LU;
 
@@ -1322,7 +1496,7 @@ void OperationTest::testSysv()
       if( ( A * result ) != rhs ) {
          std::ostringstream oss;
          oss << " Test: " << test_ << "\n"
-             << " Error: Solving the linear system of equations failed\n"
+             << " Error: Solving the LSE failed\n"
              << " Details:\n"
              << "   Element type:\n"
              << "     " << typeid( Type ).name() << "\n"
@@ -1335,7 +1509,7 @@ void OperationTest::testSysv()
    }
 
    {
-      test_ = "Symmetric indefinite linear system of equations (multiple right-hand side vectors, lower part)";
+      test_ = "Symmetric indefinite LSE (multiple right-hand sides, lower part)";
 
       blaze::StaticMatrix<Type,3UL,3UL,blaze::columnMajor> A, LU;
 
@@ -1358,7 +1532,7 @@ void OperationTest::testSysv()
       if( ( A * result ) != rhs ) {
          std::ostringstream oss;
          oss << " Test: " << test_ << "\n"
-             << " Error: Solving the linear system of equations failed\n"
+             << " Error: Solving the LSE failed\n"
              << " Details:\n"
              << "   Element type:\n"
              << "     " << typeid( Type ).name() << "\n"
@@ -1371,7 +1545,7 @@ void OperationTest::testSysv()
    }
 
    {
-      test_ = "Symmetric indefinite linear system of equations (multiple right-hand side vectors, upper part)";
+      test_ = "Symmetric indefinite LSE (multiple right-hand sides, upper part)";
 
       blaze::StaticMatrix<Type,3UL,3UL,blaze::columnMajor> A, LU;
 
@@ -1394,7 +1568,7 @@ void OperationTest::testSysv()
       if( ( A * result ) != rhs ) {
          std::ostringstream oss;
          oss << " Test: " << test_ << "\n"
-             << " Error: Solving the linear system of equations failed\n"
+             << " Error: Solving the LSE failed\n"
              << " Details:\n"
              << "   Element type:\n"
              << "     " << typeid( Type ).name() << "\n"
@@ -1426,7 +1600,7 @@ void OperationTest::testHesv()
 #if BLAZETEST_MATHTEST_LAPACK_MODE
 
    {
-      test_ = "Hermitian indefinite linear system of equations (single right-hand side, lower part)";
+      test_ = "Hermitian indefinite LSE (single right-hand side, lower part)";
 
       blaze::StaticMatrix<Type,3UL,3UL,blaze::columnMajor> A, LU;
 
@@ -1449,7 +1623,7 @@ void OperationTest::testHesv()
       if( ( A * result ) != rhs ) {
          std::ostringstream oss;
          oss << " Test: " << test_ << "\n"
-             << " Error: Solving the linear system of equations failed\n"
+             << " Error: Solving the LSE failed\n"
              << " Details:\n"
              << "   Element type:\n"
              << "     " << typeid( Type ).name() << "\n"
@@ -1462,7 +1636,7 @@ void OperationTest::testHesv()
    }
 
    {
-      test_ = "Hermitian indefinite linear system of equations (single right-hand side, upper part)";
+      test_ = "Hermitian indefinite LSE (single right-hand side, upper part)";
 
       blaze::StaticMatrix<Type,3UL,3UL,blaze::columnMajor> A, LU;
 
@@ -1485,7 +1659,7 @@ void OperationTest::testHesv()
       if( ( A * result ) != rhs ) {
          std::ostringstream oss;
          oss << " Test: " << test_ << "\n"
-             << " Error: Solving the linear system of equations failed\n"
+             << " Error: Solving the LSE failed\n"
              << " Details:\n"
              << "   Element type:\n"
              << "     " << typeid( Type ).name() << "\n"
@@ -1498,7 +1672,7 @@ void OperationTest::testHesv()
    }
 
    {
-      test_ = "Hermitian indefinite linear system of equations (multiple right-hand side vectors, lower part)";
+      test_ = "Hermitian indefinite LSE (multiple right-hand sides, lower part)";
 
       blaze::StaticMatrix<Type,3UL,3UL,blaze::columnMajor> A, LU;
 
@@ -1521,7 +1695,7 @@ void OperationTest::testHesv()
       if( ( A * result ) != rhs ) {
          std::ostringstream oss;
          oss << " Test: " << test_ << "\n"
-             << " Error: Solving the linear system of equations failed\n"
+             << " Error: Solving the LSE failed\n"
              << " Details:\n"
              << "   Element type:\n"
              << "     " << typeid( Type ).name() << "\n"
@@ -1534,7 +1708,7 @@ void OperationTest::testHesv()
    }
 
    {
-      test_ = "Hermitian indefinite linear system of equations (multiple right-hand side vectors, upper part)";
+      test_ = "Hermitian indefinite LSE (multiple right-hand sides, upper part)";
 
       blaze::StaticMatrix<Type,3UL,3UL,blaze::columnMajor> A, LU;
 
@@ -1557,7 +1731,7 @@ void OperationTest::testHesv()
       if( ( A * result ) != rhs ) {
          std::ostringstream oss;
          oss << " Test: " << test_ << "\n"
-             << " Error: Solving the linear system of equations failed\n"
+             << " Error: Solving the LSE failed\n"
              << " Details:\n"
              << "   Element type:\n"
              << "     " << typeid( Type ).name() << "\n"
@@ -1589,7 +1763,7 @@ void OperationTest::testPosv()
 #if BLAZETEST_MATHTEST_LAPACK_MODE
 
    {
-      test_ = "Positive definite linear system of equations (single right-hand side, lower part)";
+      test_ = "Positive definite LSE (single right-hand side, lower part)";
 
       blaze::StaticMatrix<Type,3UL,3UL,blaze::columnMajor> A, LU;
 
@@ -1613,7 +1787,7 @@ void OperationTest::testPosv()
       if( ( A * result ) != rhs ) {
          std::ostringstream oss;
          oss << " Test: " << test_ << "\n"
-             << " Error: Solving the linear system of equations failed\n"
+             << " Error: Solving the LSE failed\n"
              << " Details:\n"
              << "   Element type:\n"
              << "     " << typeid( Type ).name() << "\n"
@@ -1626,7 +1800,7 @@ void OperationTest::testPosv()
    }
 
    {
-      test_ = "Positive definite linear system of equations (single right-hand side, upper part)";
+      test_ = "Positive definite LSE (single right-hand side, upper part)";
 
       blaze::StaticMatrix<Type,3UL,3UL,blaze::columnMajor> A, LU;
 
@@ -1650,7 +1824,7 @@ void OperationTest::testPosv()
       if( ( A * result ) != rhs ) {
          std::ostringstream oss;
          oss << " Test: " << test_ << "\n"
-             << " Error: Solving the linear system of equations failed\n"
+             << " Error: Solving the LSE failed\n"
              << " Details:\n"
              << "   Element type:\n"
              << "     " << typeid( Type ).name() << "\n"
@@ -1663,7 +1837,7 @@ void OperationTest::testPosv()
    }
 
    {
-      test_ = "Positive definite linear system of equations (multiple right-hand side vectors, lower part)";
+      test_ = "Positive definite LSE (multiple right-hand sides, lower part)";
 
       blaze::StaticMatrix<Type,3UL,3UL,blaze::columnMajor> A, LU;
 
@@ -1687,7 +1861,7 @@ void OperationTest::testPosv()
       if( ( A * result ) != rhs ) {
          std::ostringstream oss;
          oss << " Test: " << test_ << "\n"
-             << " Error: Solving the linear system of equations failed\n"
+             << " Error: Solving the LSE failed\n"
              << " Details:\n"
              << "   Element type:\n"
              << "     " << typeid( Type ).name() << "\n"
@@ -1700,7 +1874,7 @@ void OperationTest::testPosv()
    }
 
    {
-      test_ = "Positive definite linear system of equations (multiple right-hand side vectors, upper part)";
+      test_ = "Positive definite LSE (multiple right-hand sides, upper part)";
 
       blaze::StaticMatrix<Type,3UL,3UL,blaze::columnMajor> A, LU;
 
@@ -1724,7 +1898,7 @@ void OperationTest::testPosv()
       if( ( A * result ) != rhs ) {
          std::ostringstream oss;
          oss << " Test: " << test_ << "\n"
-             << " Error: Solving the linear system of equations failed\n"
+             << " Error: Solving the LSE failed\n"
              << " Details:\n"
              << "   Element type:\n"
              << "     " << typeid( Type ).name() << "\n"
