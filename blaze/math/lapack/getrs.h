@@ -1,7 +1,7 @@
 //=================================================================================================
 /*!
 //  \file blaze/math/lapack/getrs.h
-//  \brief Header file for LAPACK LU-based linear system functions (getrs)
+//  \brief Header file for LAPACK general backward substitution functions (getrs)
 //
 //  Copyright (C) 2013 Klaus Iglberger - All Rights Reserved
 //
@@ -47,7 +47,6 @@
 #include <blaze/math/constraints/MutableDataAccess.h>
 #include <blaze/math/expressions/DenseMatrix.h>
 #include <blaze/math/expressions/DenseVector.h>
-#include <blaze/math/TransposeFlag.h>
 #include <blaze/math/typetraits/IsRowMajorMatrix.h>
 #include <blaze/util/Assert.h>
 #include <blaze/util/Complex.h>
@@ -82,12 +81,12 @@ void zgetrs_( char* trans, int* n, int* nrhs, double* A, int* lda, int* ipiv, do
 
 //=================================================================================================
 //
-//  LAPACK LU-BASED LINEAR SYSTEM FUNCTIONS
+//  LAPACK LU-BASED SUBSTITUTION FUNCTIONS (GETRS)
 //
 //=================================================================================================
 
 //*************************************************************************************************
-/*!\name LAPACK LU-based linear system functions */
+/*!\name LAPACK LU-based substitution functions (getrs) */
 //@{
 inline void getrs( char trans, int n, int nrhs, const float* A, int lda, const int* ipiv,
                    float* B, int ldb, int* info );
@@ -101,18 +100,19 @@ inline void getrs( char trans, int n, const complex<float>* A, int lda, const in
 inline void getrs( char trans, int n, const complex<double>* A, int lda, const int* ipiv,
                    complex<double>* B, int ldb, int* info );
 
-template< typename MT, bool SO, typename VT >
-inline void getrs( const DenseMatrix<MT,SO>& A, DenseVector<VT,columnVector>& b, const int* ipiv );
+template< typename MT, bool SO, typename VT, bool TF >
+inline void getrs( const DenseMatrix<MT,SO>& A, DenseVector<VT,TF>& b, char trans, const int* ipiv );
 
-template< typename MT1, bool SO, typename MT2 >
-inline void getrs( const DenseMatrix<MT1,SO>& A, DenseMatrix<MT2,columnMajor>& B, const int* ipiv );
+template< typename MT1, bool SO1, typename MT2, bool SO2 >
+inline void getrs( const DenseMatrix<MT1,SO1>& A, DenseMatrix<MT2,SO2>& B,
+                   char trans, const int* ipiv );
 //@}
 //*************************************************************************************************
 
 
 //*************************************************************************************************
-/*!\brief LAPACK kernel for solving a general single precision linear system of equations
-//        (\f$ A*X=B \f$).
+/*!\brief LAPACK kernel for the substitution step of solving a general single precision linear
+//        system of equations (\f$ A*X=B \f$).
 // \ingroup lapack
 //
 // \param trans \c 'N' for \f$ A*X=B \f$, \c 'T' for \f$ A^T*X=B \f$, and \c C for \f$ A^H*X=B \f$.
@@ -122,15 +122,15 @@ inline void getrs( const DenseMatrix<MT1,SO>& A, DenseMatrix<MT2,columnMajor>& B
 // \param lda The total number of elements between two columns of the matrix \f$[0..\infty)\f$.
 // \param ipiv Auxiliary array for the pivot indices; size >= min( \a m, \a n ).
 // \param B Pointer to the first element of the column-major matrix.
-// \param ldb The total number of elements between two rows/columns of matrix \a B \f$[0..\infty)\f$.
+// \param ldb The total number of elements between two columns of matrix \a B \f$[0..\infty)\f$.
 // \param info Return code of the function call.
 // \return void
 //
-// This function uses the LAPACK sgetrs() function to compute the solution to the general system
-// of linear equations \f$ A*X=B \f$, \f$ A^{T}*X=B \f$, or \f$ A^{H}*X=B \f$, where \a A is a
-// n-by-n matrix that has already been factorized by the sgetrf() function and \a X and \a B are
-// column-major n-by-nrhs matrices. The \a trans argument specifies the form of the linear system
-// of equations:
+// This function uses the LAPACK sgetrs() function to perform the substitution step to compute
+// the solution to the general system of linear equations \f$ A*X=B \f$, \f$ A^{T}*X=B \f$, or
+// \f$ A^{H}*X=B \f$, where \a A is a n-by-n matrix that has already been factorized by the
+// sgetrf() function and \a X and \a B are column-major n-by-nrhs matrices. The \a trans argument
+// specifies the form of the linear system of equations:
 //
 //   - 'N': \f$ A*X=B \f$ (no transpose)
 //   - 'T': \f$ A^{T}*X=B \f$ (transpose)
@@ -158,8 +158,8 @@ inline void getrs( char trans, int n, int nrhs, const float* A, int lda,
 
 
 //*************************************************************************************************
-/*!\brief LAPACK kernel for solving a general double precision linear system of equations
-//        (\f$ A*X=B \f$).
+/*!\brief LAPACK kernel for the substitution step of solving a general double precision linear
+//        system of equations (\f$ A*X=B \f$).
 // \ingroup lapack
 //
 // \param trans \c 'N' for \f$ A*X=B \f$, \c 'T' for \f$ A^T*X=B \f$, and \c C for \f$ A^H*X=B \f$.
@@ -169,15 +169,15 @@ inline void getrs( char trans, int n, int nrhs, const float* A, int lda,
 // \param lda The total number of elements between two columns of the matrix \f$[0..\infty)\f$.
 // \param ipiv Auxiliary array for the pivot indices; size >= min( \a m, \a n ).
 // \param B Pointer to the first element of the column-major matrix.
-// \param ldb The total number of elements between two rows/columns of matrix \a B \f$[0..\infty)\f$.
+// \param ldb The total number of elements between two columns of matrix \a B \f$[0..\infty)\f$.
 // \param info Return code of the function call.
 // \return void
 //
-// This function uses the LAPACK dgetrs() function to compute the solution to the general system
-// of linear equations \f$ A*X=B \f$, \f$ A^{T}*X=B \f$, or \f$ A^{H}*X=B \f$, where \a A is a
-// n-by-n matrix that has already been factorized by the dgetrf() function and \a X and \a B are
-// column-major n-by-nrhs matrices. The \a trans argument specifies the form of the linear system
-// of equations:
+// This function uses the LAPACK dgetrs() function to perform the substitution step to compute
+// the solution to the general system of linear equations \f$ A*X=B \f$, \f$ A^{T}*X=B \f$, or
+// \f$ A^{H}*X=B \f$, where \a A is a n-by-n matrix that has already been factorized by the
+// dgetrf() function and \a X and \a B are column-major n-by-nrhs matrices. The \a trans argument
+// specifies the form of the linear system of equations:
 //
 //   - 'N': \f$ A*X=B \f$ (no transpose)
 //   - 'T': \f$ A^{T}*X=B \f$ (transpose)
@@ -205,8 +205,8 @@ inline void getrs( char trans, int n, int nrhs, const double* A, int lda,
 
 
 //*************************************************************************************************
-/*!\brief LAPACK kernel for solving a general single precision complex linear system of equations
-//        (\f$ A*X=B \f$).
+/*!\brief LAPACK kernel for the substitution step of solving a general single precision complex
+//        linear system of equations (\f$ A*X=B \f$).
 // \ingroup lapack
 //
 // \param trans \c 'N' for \f$ A*X=B \f$, \c 'T' for \f$ A^T*X=B \f$, and \c C for \f$ A^H*X=B \f$.
@@ -216,15 +216,15 @@ inline void getrs( char trans, int n, int nrhs, const double* A, int lda,
 // \param lda The total number of elements between two columns of the matrix \f$[0..\infty)\f$.
 // \param ipiv Auxiliary array for the pivot indices; size >= min( \a m, \a n ).
 // \param B Pointer to the first element of the column-major matrix.
-// \param ldb The total number of elements between two rows/columns of matrix \a B \f$[0..\infty)\f$.
+// \param ldb The total number of elements between two columns of matrix \a B \f$[0..\infty)\f$.
 // \param info Return code of the function call.
 // \return void
 //
-// This function uses the LAPACK cgetrs() function to compute the solution to the general system
-// of linear equations \f$ A*X=B \f$, \f$ A^{T}*X=B \f$, or \f$ A^{H}*X=B \f$, where \a A is a
-// n-by-n matrix that has already been factorized by the cgetrf() function and \a X and \a B are
-// column-major n-by-nrhs matrices. The \a trans argument specifies the form of the linear system
-// of equations:
+// This function uses the LAPACK cgetrs() function to perform the substitution step to compute
+// the solution to the general system of linear equations \f$ A*X=B \f$, \f$ A^{T}*X=B \f$, or
+// \f$ A^{H}*X=B \f$, where \a A is a n-by-n matrix that has already been factorized by the
+// cgetrf() function and \a X and \a B are column-major n-by-nrhs matrices. The \a trans argument
+// specifies the form of the linear system of equations:
 //
 //   - 'N': \f$ A*X=B \f$ (no transpose)
 //   - 'T': \f$ A^{T}*X=B \f$ (transpose)
@@ -254,8 +254,8 @@ inline void getrs( char trans, int n, int nrhs, const complex<float>* A, int lda
 
 
 //*************************************************************************************************
-/*!\brief LAPACK kernel for solving a general double precision complex linear system of equations
-//        (\f$ A*X=B \f$).
+/*!\brief LAPACK kernel for the substitution step of solving a general double precision complex
+//        linear system of equations (\f$ A*X=B \f$).
 // \ingroup lapack
 //
 // \param trans \c 'N' for \f$ A*X=B \f$, \c 'T' for \f$ A^T*X=B \f$, and \c C for \f$ A^H*X=B \f$.
@@ -265,15 +265,15 @@ inline void getrs( char trans, int n, int nrhs, const complex<float>* A, int lda
 // \param lda The total number of elements between two columns of the matrix \f$[0..\infty)\f$.
 // \param ipiv Auxiliary array for the pivot indices; size >= min( \a m, \a n ).
 // \param B Pointer to the first element of the column-major matrix.
-// \param ldb The total number of elements between two rows/columns of matrix \a B \f$[0..\infty)\f$.
+// \param ldb The total number of elements between two columns of matrix \a B \f$[0..\infty)\f$.
 // \param info Return code of the function call.
 // \return void
 //
-// This function uses the LAPACK zgetrs() function to compute the solution to the general system
-// of linear equations \f$ A*X=B \f$, \f$ A^{T}*X=B \f$, or \f$ A^{H}*X=B \f$, where \a A is a
-// n-by-n matrix that has already been factorized by the zgetrf() function and \a X and \a B are
-// column-major n-by-nrhs matrices. The \a trans argument specifies the form of the linear system
-// of equations:
+// This function uses the LAPACK zgetrs() function to perform the substitution step to compute
+// the solution to the general system of linear equations \f$ A*X=B \f$, \f$ A^{T}*X=B \f$, or
+// \f$ A^{H}*X=B \f$, where \a A is a n-by-n matrix that has already been factorized by the
+// zgetrf() function and \a X and \a B are column-major n-by-nrhs matrices. The \a trans argument
+// specifies the form of the linear system of equations:
 //
 //   - 'N': \f$ A*X=B \f$ (no transpose)
 //   - 'T': \f$ A^{T}*X=B \f$ (transpose)
@@ -303,28 +303,75 @@ inline void getrs( char trans, int n, int nrhs, const complex<double>* A, int ld
 
 
 //*************************************************************************************************
-/*!\brief LAPACK kernel for solving a general linear system of equations (\f$ A*x=b \f$).
+/*!\brief LAPACK kernel for the substitution step of solving a general linear system of equations
+//        (\f$ A*x=b \f$).
 // \ingroup lapack
 //
 // \param A The system matrix.
 // \param b The right-hand side vector.
+// \param trans \c 'N' for \f$ A*x=b \f$, \c 'T' for \f$ A^T*x=b \f$, and \c C for \f$ A^H*x=b \f$.
 // \param ipiv Auxiliary array of size \a n for the pivot indices.
 // \return void
-// \exception std::invalid_argument Inversion of singular matrix failed.
 // \exception std::invalid_argument Invalid non-square matrix provided.
 //
-// This function uses the LAPACK getrs() functions to compute the solution to the system of
-// general linear equations \f$ A*X=B \f$, \f$ A^{T}*X=B \f$, or \f$ A^{H}*X=B \f$, where \a A is
-// a n-by-n matrix that has already been factorized by the zgetrf() function and \a x and \a b
-// are n-dimensional column vectors. Note that the function only works for general, non-adapted
-// matrices with \c float, \c double, \c complex<float>, or \c complex<double> element type. The
-// attempt to call the function with adaptors or matrices of any other element type results in a
-// compile time error!
+// This function uses the LAPACK getrs() functions to perform the substitution step to compute
+// the solution to the general system of linear equations:
+//
+//  - \f$ A  *x=b \f$ if \a A is column-major
+//  - \f$ A^T*x=b \f$ if \a A is row-major
+//
+// In this context the general system matrix \a A is a n-by-n matrix that has already been
+// factorized by the getrf() functions and \a x and \a b are n-dimensional column vectors. Note
+// that the function only works for general, non-adapted matrices with \c float, \c double,
+// \c complex<float>, or \c complex<double> element type. The attempt to call the function with
+// adaptors or matrices of any other element type results in a compile time error!
 //
 // If the function exits successfully, the vector \a b contains the solution of the linear system
 // of equations. The function fails if the given system matrix is not a square matrix. In this case
 // a \a std::invalid_argument exception is thrown.
 //
+// Examples:
+
+   \code
+   using blaze::DynamicMatrix;
+   using blaze::DynamicVector;
+   using blaze::columnMajor;
+   using blaze::columnVector;
+
+   DynamicMatrix<double,columnMajor>  A( 2UL, 2UL );  // The system matrix A
+   DynamicVector<double,columnVector> b( 2UL );       // The right-hand side vector b
+   DynamicVector<int,columnVector> ipiv( 2UL );       // Pivoting indices
+   // ... Initialization
+
+   DynamicMatrix<double,columnMajor>  D( A );  // Temporary matrix to be decomposed
+   DynamicVector<double,columnVector> x( b );  // Temporary vector for the solution
+
+   getrf( D, ipiv.data() );
+   getrs( D, x, 'N', ipiv.data() );
+
+   assert( A * x == b );
+   \endcode
+
+   \code
+   using blaze::DynamicMatrix;
+   using blaze::DynamicVector;
+   using blaze::rowMajor;
+   using blaze::columnVector;
+
+   DynamicMatrix<double,rowMajor>  A( 2UL, 2UL );  // The system matrix A
+   DynamicVector<double,columnVector> b( 2UL );    // The right-hand side vector b
+   DynamicVector<int,columnVector> ipiv( 2UL );    // Pivoting indices
+   // ... Initialization
+
+   DynamicMatrix<double,rowMajor>  D( A );     // Temporary matrix to be decomposed
+   DynamicVector<double,columnVector> x( b );  // Temporary vector for the solution
+
+   getrf( D, ipiv.data() );
+   getrs( D, x, 'N', ipiv.data() );
+
+   assert( trans( A ) * x == b );
+   \endcode
+
 // For more information on the getrs() functions (i.e. sgetrs(), dgetrs(), cgetrs(), and zgetrs()),
 // see the LAPACK online documentation browser:
 //
@@ -333,10 +380,11 @@ inline void getrs( char trans, int n, int nrhs, const complex<double>* A, int ld
 // \note This function can only be used if the fitting LAPACK library is available and linked to
 // the executable. Otherwise a call to this function will result in a linker error.
 */
-template< typename MT    // Type of the system matrix
-        , bool SO        // Storage order of the system matrix
-        , typename VT >  // Type of the right-hand side vector
-inline void getrs( const DenseMatrix<MT,SO>& A, DenseVector<VT,columnVector>& b, const int* ipiv )
+template< typename MT  // Type of the system matrix
+        , bool SO      // Storage order of the system matrix
+        , typename VT  // Type of the right-hand side vector
+        , bool TF >    // Transpose flag of the right-hand side vector
+inline void getrs( const DenseMatrix<MT,SO>& A, DenseVector<VT,TF>& b, char trans, const int* ipiv )
 {
    using boost::numeric_cast;
 
@@ -349,12 +397,11 @@ inline void getrs( const DenseMatrix<MT,SO>& A, DenseVector<VT,columnVector>& b,
       BLAZE_THROW_INVALID_ARGUMENT( "Invalid non-square matrix provided" );
    }
 
-   char trans( IsRowMajorMatrix<MT>::value ? 'T' : 'N' );
-   int  n    ( numeric_cast<int>( (~A).rows() ) );
-   int  nrhs ( 1 );
-   int  lda  ( numeric_cast<int>( (~A).spacing() ) );
-   int  ldb  ( numeric_cast<int>( (~b).size() ) );
-   int  info ( 0 );
+   int n   ( numeric_cast<int>( (~A).rows() ) );
+   int nrhs( 1 );
+   int lda ( numeric_cast<int>( (~A).spacing() ) );
+   int ldb ( numeric_cast<int>( (~b).size() ) );
+   int info( 0 );
 
    if( n == 0 ) {
       return;
@@ -368,28 +415,83 @@ inline void getrs( const DenseMatrix<MT,SO>& A, DenseVector<VT,columnVector>& b,
 
 
 //*************************************************************************************************
-/*!\brief LAPACK kernel for solving a general linear system of equations (\f$ A*X=B \f$).
+/*!\brief LAPACK kernel for the substitution step of solving a general linear system of equations
+//        (\f$ A*X=B \f$).
 // \ingroup lapack
 //
 // \param A The system matrix.
 // \param B The matrix of right-hand sides.
+// \param trans \c 'N' for \f$ A*X=B \f$, \c 'T' for \f$ A^T*X=B \f$, and \c C for \f$ A^H*X=B \f$.
 // \param ipiv Auxiliary array of size \a n for the pivot indices.
 // \return void
-// \exception std::invalid_argument Inversion of singular matrix failed.
 // \exception std::invalid_argument Invalid non-square matrix provided.
+// \exception std::invalid_argument Matrix sizes do not match.
 //
-// This function uses the LAPACK getrs() functions to compute the solution to the system of
-// general linear equations \f$ A*X=B \f$, \f$ A^{T}*X=B \f$, or \f$ A^{H}*X=B \f$, where \a A is
-// a n-by-n matrix that has already been factorized by the zgetrf() function and \a X and \a B
-// are column-major n-by-m matrices. Note that the function only works for general, non-adapted
+// This function uses the LAPACK getrs() functions to perform the substitution step to compute
+// the solution to the general system of linear equations:
+//
+//  - \f$ A  *X  =B   \f$ if both \a A and \a B are column-major
+//  - \f$ A^T*X  =B   \f$ if \a A is row-major and \a B is column-major
+//  - \f$ A  *X^T=B^T \f$ if \a A is column-major and \a B is row-major
+//  - \f$ A^T*X^T=B^T \f$ if both \a A and \a B are row-major
+//
+// In this context the general system matrix \a A is a n-by-n matrix that has already been
+// factorized by the getrf() functions and \a X and \a B are either row-major m-by-n matrices
+// or column-major n-by-m matrices. Note that the function only works for general, non-adapted
 // matrices with \c float, \c double, \c complex<float>, or \c complex<double> element type. The
 // attempt to call the function with adaptors or matrices of any other element type results in a
 // compile time error!
 //
 // If the function exits successfully, the matrix \a B contains the solutions of the linear system
-// of equations. The function fails if the given system matrix is not a square matrix. In this case
-// a \a std::invalid_argument exception is thrown.
+// of equations. The function fails if ...
 //
+//  - ... the given system matrix is not a square matrix;
+//  - ... the sizes of the two given matrices do not match.
+//
+// In all failure cases a \a std::invalid_argument exception is thrown.
+//
+// Examples:
+
+   \code
+   using blaze::DynamicMatrix;
+   using blaze::DynamicVector;
+   using blaze::columnMajor;
+   using blaze::columnVector;
+
+   DynamicMatrix<double,columnMajor> A( 2UL, 2UL );  // The system matrix A
+   DynamicMatrix<double,columnMajor> B( 2UL, 4UL );  // The right-hand side matrix B
+   DynamicVector<int,columnVector> ipiv( 2UL );      // Pivoting indices
+   // ... Initialization
+
+   DynamicMatrix<double,columnMajor> D( A );  // Temporary matrix to be decomposed
+   DynamicMatrix<double,columnMajor> X( B );  // Temporary matrix for the solution
+
+   getrf( D, ipiv.data() );
+   getrs( D, X, 'N', ipiv.data() );
+
+   assert( A * X == B );
+   \endcode
+
+   \code
+   using blaze::DynamicMatrix;
+   using blaze::DynamicVector;
+   using blaze::rowMajor;
+   using blaze::columnVector;
+
+   DynamicMatrix<double,rowMajor> A( 2UL, 2UL );  // The system matrix A
+   DynamicMatrix<double,rowMajor> B( 2UL, 4UL );  // The right-hand side matrix B
+   DynamicVector<int,columnVector> ipiv( 2UL );      // Pivoting indices
+   // ... Initialization
+
+   DynamicMatrix<double,rowMajor> D( A );  // Temporary matrix to be decomposed
+   DynamicMatrix<double,rowMajor> X( B );  // Temporary matrix for the solution
+
+   getrf( D, ipiv.data() );
+   getrs( D, X, 'N', ipiv.data() );
+
+   assert( trans( A ) * trans( X ) == trans( B ) );
+   \endcode
+
 // For more information on the getrs() functions (i.e. sgetrs(), dgetrs(), cgetrs(), and zgetrs()),
 // see the LAPACK online documentation browser:
 //
@@ -398,10 +500,12 @@ inline void getrs( const DenseMatrix<MT,SO>& A, DenseVector<VT,columnVector>& b,
 // \note This function can only be used if the fitting LAPACK library is available and linked to
 // the executable. Otherwise a call to this function will result in a linker error.
 */
-template< typename MT1    // Type of the system matrix
-        , bool SO         // Storage order of the system matrix
-        , typename MT2 >  // Type of the right-hand side matrix
-inline void getrs( const DenseMatrix<MT1,SO>& A, DenseMatrix<MT2,columnMajor>& B, const int* ipiv )
+template< typename MT1  // Type of the system matrix
+        , bool SO1      // Storage order of the system matrix
+        , typename MT2  // Type of the right-hand side matrix
+        , bool SO2 >    // Storage order of the right-hand side matrix
+inline void getrs( const DenseMatrix<MT1,SO1>& A, DenseMatrix<MT2,SO2>& B,
+                   char trans, const int* ipiv )
 {
    using boost::numeric_cast;
 
@@ -420,12 +524,16 @@ inline void getrs( const DenseMatrix<MT1,SO>& A, DenseMatrix<MT2,columnMajor>& B
       BLAZE_THROW_INVALID_ARGUMENT( "Invalid non-square matrix provided" );
    }
 
-   char trans( IsRowMajorMatrix<MT1>::value ? 'T' : 'N' );
-   int  n    ( numeric_cast<int>( (~A).rows()    ) );
-   int  nrhs ( numeric_cast<int>( (~B).columns() ) );
-   int  lda  ( numeric_cast<int>( (~A).spacing() ) );
-   int  ldb  ( numeric_cast<int>( (~B).spacing() ) );
-   int  info ( 0 );
+   int n   ( numeric_cast<int>( (~A).rows()    ) );
+   int mrhs( numeric_cast<int>( SO2 ? (~B).rows() : (~B).columns() ) );
+   int nrhs( numeric_cast<int>( SO2 ? (~B).columns() : (~B).rows() ) );
+   int lda ( numeric_cast<int>( (~A).spacing() ) );
+   int ldb ( numeric_cast<int>( (~B).spacing() ) );
+   int info( 0 );
+
+   if( n != mrhs ) {
+      BLAZE_THROW_INVALID_ARGUMENT( "Matrix sizes do not match" );
+   }
 
    if( n == 0 ) {
       return;
