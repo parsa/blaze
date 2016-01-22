@@ -47,6 +47,7 @@
 #include <blaze/math/HermitianMatrix.h>
 #include <blaze/math/LAPACK.h>
 #include <blaze/math/LowerMatrix.h>
+#include <blaze/math/shims/Conjugate.h>
 #include <blaze/math/shims/IsDefault.h>
 #include <blaze/math/StaticMatrix.h>
 #include <blaze/math/StaticVector.h>
@@ -106,6 +107,7 @@ class OperationTest
    template< typename Type > void testTrtri();
 
    template< typename Type > void testGetrs();
+   template< typename Type > void testPotrs();
 
    template< typename Type > void testGesv();
    template< typename Type > void testSysv();
@@ -1162,12 +1164,12 @@ void OperationTest::testTrtri()
 
 
 //*************************************************************************************************
-/*!\brief Test of the general backward substitution functions (getrs).
+/*!\brief Test of the general substitution functions (getrs).
 //
 // \return void
 // \exception std::runtime_error Error detected.
 //
-// This function performs a test of the backward substitution functions for various data types.
+// This function performs a test of the general substitution functions for various data types.
 // In case an error is detected, a \a std::runtime_error exception is thrown.
 */
 template< typename Type >
@@ -1180,7 +1182,7 @@ void OperationTest::testGetrs()
    //=====================================================================================
 
    {
-      test_ = "Row-major general LSE backward substitution (single right-hand side)";
+      test_ = "Row-major general LSE substitution (single right-hand side)";
 
       blaze::StaticMatrix<Type,3UL,3UL,blaze::rowMajor> A, LU;
 
@@ -1216,7 +1218,7 @@ void OperationTest::testGetrs()
    }
 
    {
-      test_ = "Row-major general LSE backward substitution (multiple right-hand sides)";
+      test_ = "Row-major general LSE substitution (multiple right-hand sides)";
 
       blaze::StaticMatrix<Type,3UL,3UL,blaze::rowMajor> A, LU;
 
@@ -1257,7 +1259,7 @@ void OperationTest::testGetrs()
    //=====================================================================================
 
    {
-      test_ = "Column-major general LSE backward substitution (single right-hand side)";
+      test_ = "Column-major general LSE substitution (single right-hand side)";
 
       blaze::StaticMatrix<Type,3UL,3UL,blaze::columnMajor> A, LU;
 
@@ -1293,7 +1295,7 @@ void OperationTest::testGetrs()
    }
 
    {
-      test_ = "Column-major general LSE backward substitution (multiple right-hand sides)";
+      test_ = "Column-major general LSE substitution (multiple right-hand sides)";
 
       blaze::StaticMatrix<Type,3UL,3UL,blaze::columnMajor> A, LU;
 
@@ -1324,6 +1326,354 @@ void OperationTest::testGetrs()
              << "   Result (x):\n" << result << "\n"
              << "   Right-hand side (y):\n" << rhs << "\n"
              << "   A * x:\n" << ( A * result ) << "\n";
+         throw std::runtime_error( oss.str() );
+      }
+   }
+
+#endif
+}
+//*************************************************************************************************
+
+
+//*************************************************************************************************
+/*!\brief Test of the positive definite substitution functions (potrs).
+//
+// \return void
+// \exception std::runtime_error Error detected.
+//
+// This function performs a test of the positive definite substitution functions for various
+// data types. In case an error is detected, a \a std::runtime_error exception is thrown.
+*/
+template< typename Type >
+void OperationTest::testPotrs()
+{
+#if BLAZETEST_MATHTEST_LAPACK_MODE
+
+   //=====================================================================================
+   // Row-major matrix tests
+   //=====================================================================================
+
+   {
+      test_ = "Row-major positive definite LSE substitution (single right-hand side, lower part)";
+
+      blaze::StaticMatrix<Type,3UL,3UL,blaze::rowMajor> A, LU;
+
+      do {
+         randomize( A );
+         A *= ctrans( A );
+         A(0,0) += Type(3);
+         A(1,1) += Type(3);
+         A(2,2) += Type(3);
+      }
+      while( blaze::isDefault( det( A ) ) );
+
+      blaze::StaticVector<Type,3UL,blaze::columnVector> rhs, x;
+      randomize( rhs );
+
+      blaze::StaticVector<int,3UL,blaze::rowVector> ipiv;
+
+      LU = A;
+      x = rhs;
+
+      blaze::potrf( LU, 'L' );
+      blaze::potrs( LU, x, 'L' );
+
+      if( ( trans( A ) * x ) != rhs ) {
+         std::ostringstream oss;
+         oss << " Test: " << test_ << "\n"
+             << " Error: Solving the LSE failed\n"
+             << " Details:\n"
+             << "   Element type:\n"
+             << "     " << typeid( Type ).name() << "\n"
+             << "   System matrix (A):\n" << A << "\n"
+             << "   Result (x):\n" << x << "\n"
+             << "   Right-hand side (y):\n" << rhs << "\n"
+             << "   trans( A ) * x:\n" << ( trans( A ) * x ) << "\n";
+         throw std::runtime_error( oss.str() );
+      }
+   }
+
+   {
+      test_ = "Row-major positive definite LSE substitution (single right-hand side, upper part)";
+
+      blaze::StaticMatrix<Type,3UL,3UL,blaze::rowMajor> A, LU;
+
+      do {
+         randomize( A );
+         A *= ctrans( A );
+         A(0,0) += Type(3);
+         A(1,1) += Type(3);
+         A(2,2) += Type(3);
+      }
+      while( blaze::isDefault( det( A ) ) );
+
+      blaze::StaticVector<Type,3UL,blaze::columnVector> rhs, x;
+      randomize( rhs );
+
+      blaze::StaticVector<int,3UL,blaze::rowVector> ipiv;
+
+      LU = A;
+      x = rhs;
+
+      blaze::potrf( LU, 'U' );
+      blaze::potrs( LU, x, 'U' );
+
+      if( ( trans( A ) * x ) != rhs ) {
+         std::ostringstream oss;
+         oss << " Test: " << test_ << "\n"
+             << " Error: Solving the LSE failed\n"
+             << " Details:\n"
+             << "   Element type:\n"
+             << "     " << typeid( Type ).name() << "\n"
+             << "   System matrix (A):\n" << A << "\n"
+             << "   Result (x):\n" << x << "\n"
+             << "   Right-hand side (y):\n" << rhs << "\n"
+             << "   trans( A ) * x:\n" << ( trans( A ) * x ) << "\n";
+         throw std::runtime_error( oss.str() );
+      }
+   }
+
+   {
+      test_ = "Row-major positive definite LSE substitution (multiple right-hand sides, lower part)";
+
+      blaze::StaticMatrix<Type,3UL,3UL,blaze::rowMajor> A, LU;
+
+      do {
+         randomize( A );
+         A *= ctrans( A );
+         A(0,0) += Type(3);
+         A(1,1) += Type(3);
+         A(2,2) += Type(3);
+      }
+      while( blaze::isDefault( det( A ) ) );
+
+      blaze::StaticMatrix<Type,6UL,3UL,blaze::rowMajor> B, X;
+      randomize( B );
+
+      blaze::StaticVector<int,3UL,blaze::rowVector> ipiv;
+
+      LU = A;
+      X = B;
+
+      blaze::potrf( LU, 'L' );
+      blaze::potrs( LU, X, 'L' );
+
+      if( ( trans( A ) * trans( X ) ) != trans( B ) ) {
+         std::ostringstream oss;
+         oss << " Test: " << test_ << "\n"
+             << " Error: Solving the LSE failed\n"
+             << " Details:\n"
+             << "   Element type:\n"
+             << "     " << typeid( Type ).name() << "\n"
+             << "   System matrix (A):\n" << A << "\n"
+             << "   Result (X):\n" << X << "\n"
+             << "   Right-hand side (B):\n" << B << "\n"
+             << "   A * X:\n" << ( trans( A ) * trans( X ) ) << "\n";
+         throw std::runtime_error( oss.str() );
+      }
+   }
+
+   {
+      test_ = "Row-major positive definite LSE substitution (multiple right-hand sides, upper part)";
+
+      blaze::StaticMatrix<Type,3UL,3UL,blaze::rowMajor> A, LU;
+
+      do {
+         randomize( A );
+         A *= ctrans( A );
+         A(0,0) += Type(3);
+         A(1,1) += Type(3);
+         A(2,2) += Type(3);
+      }
+      while( blaze::isDefault( det( A ) ) );
+
+      blaze::StaticMatrix<Type,6UL,3UL,blaze::rowMajor> B, X;
+      randomize( B );
+
+      blaze::StaticVector<int,3UL,blaze::rowVector> ipiv;
+
+      LU = A;
+      X = B;
+
+      blaze::potrf( LU, 'U' );
+      blaze::potrs( LU, X, 'U' );
+
+      if( ( trans( A ) * trans( X ) ) != trans( B ) ) {
+         std::ostringstream oss;
+         oss << " Test: " << test_ << "\n"
+             << " Error: Solving the LSE failed\n"
+             << " Details:\n"
+             << "   Element type:\n"
+             << "     " << typeid( Type ).name() << "\n"
+             << "   System matrix (A):\n" << A << "\n"
+             << "   Result (X):\n" << X << "\n"
+             << "   Right-hand side (B):\n" << B << "\n"
+             << "   A * X:\n" << ( trans( A ) * trans( X ) ) << "\n";
+         throw std::runtime_error( oss.str() );
+      }
+   }
+
+
+   //=====================================================================================
+   // Column-major matrix tests
+   //=====================================================================================
+
+   {
+      test_ = "Column-major positive definite LSE substitution (single right-hand side, lower part)";
+
+      blaze::StaticMatrix<Type,3UL,3UL,blaze::columnMajor> A, LU;
+
+      do {
+         randomize( A );
+         A *= ctrans( A );
+         A(0,0) += Type(3);
+         A(1,1) += Type(3);
+         A(2,2) += Type(3);
+      }
+      while( blaze::isDefault( det( A ) ) );
+
+      blaze::StaticVector<Type,3UL,blaze::columnVector> rhs, x;
+      randomize( rhs );
+
+      blaze::StaticVector<int,3UL,blaze::rowVector> ipiv;
+
+      LU = A;
+      x = rhs;
+
+      blaze::potrf( LU, 'L' );
+      blaze::potrs( LU, x, 'L' );
+
+      if( ( A * x ) != rhs ) {
+         std::ostringstream oss;
+         oss << " Test: " << test_ << "\n"
+             << " Error: Solving the LSE failed\n"
+             << " Details:\n"
+             << "   Element type:\n"
+             << "     " << typeid( Type ).name() << "\n"
+             << "   System matrix (A):\n" << A << "\n"
+             << "   Result (x):\n" << x << "\n"
+             << "   Right-hand side (y):\n" << rhs << "\n"
+             << "   A * x:\n" << ( A * x ) << "\n";
+         throw std::runtime_error( oss.str() );
+      }
+   }
+
+   {
+      test_ = "Column-major positive definite LSE substitution (single right-hand side, upper part)";
+
+      blaze::StaticMatrix<Type,3UL,3UL,blaze::columnMajor> A, LU;
+
+      do {
+         randomize( A );
+         A *= ctrans( A );
+         A(0,0) += Type(3);
+         A(1,1) += Type(3);
+         A(2,2) += Type(3);
+      }
+      while( blaze::isDefault( det( A ) ) );
+
+      blaze::StaticVector<Type,3UL,blaze::columnVector> rhs, x;
+      randomize( rhs );
+
+      blaze::StaticVector<int,3UL,blaze::rowVector> ipiv;
+
+      LU = A;
+      x = rhs;
+
+      blaze::potrf( LU, 'U' );
+      blaze::potrs( LU, x, 'U' );
+
+      if( ( A * x ) != rhs ) {
+         std::ostringstream oss;
+         oss << " Test: " << test_ << "\n"
+             << " Error: Solving the LSE failed\n"
+             << " Details:\n"
+             << "   Element type:\n"
+             << "     " << typeid( Type ).name() << "\n"
+             << "   System matrix (A):\n" << A << "\n"
+             << "   Result (x):\n" << x << "\n"
+             << "   Right-hand side (y):\n" << rhs << "\n"
+             << "   A * x:\n" << ( A * x ) << "\n";
+         throw std::runtime_error( oss.str() );
+      }
+   }
+
+   {
+      test_ = "Column-major positive definite LSE substitution (multiple right-hand sides, lower part)";
+
+      blaze::StaticMatrix<Type,3UL,3UL,blaze::columnMajor> A, LU;
+
+      do {
+         randomize( A );
+         A *= ctrans( A );
+         A(0,0) += Type(3);
+         A(1,1) += Type(3);
+         A(2,2) += Type(3);
+      }
+      while( blaze::isDefault( det( A ) ) );
+
+      blaze::StaticMatrix<Type,3UL,6UL,blaze::columnMajor> B, X;
+      randomize( B );
+
+      blaze::StaticVector<int,3UL,blaze::rowVector> ipiv;
+
+      LU = A;
+      X = B;
+
+      blaze::potrf( LU, 'L' );
+      blaze::potrs( LU, X, 'L' );
+
+      if( ( A * X ) != B ) {
+         std::ostringstream oss;
+         oss << " Test: " << test_ << "\n"
+             << " Error: Solving the LSE failed\n"
+             << " Details:\n"
+             << "   Element type:\n"
+             << "     " << typeid( Type ).name() << "\n"
+             << "   System matrix (A):\n" << A << "\n"
+             << "   Result (X):\n" << X << "\n"
+             << "   Right-hand side (B):\n" << B << "\n"
+             << "   A * X:\n" << ( A * X ) << "\n";
+         throw std::runtime_error( oss.str() );
+      }
+   }
+
+   {
+      test_ = "Column-major positive definite LSE substitution (multiple right-hand sides, upper part)";
+
+      blaze::StaticMatrix<Type,3UL,3UL,blaze::columnMajor> A, LU;
+
+      do {
+         randomize( A );
+         A *= ctrans( A );
+         A(0,0) += Type(3);
+         A(1,1) += Type(3);
+         A(2,2) += Type(3);
+      }
+      while( blaze::isDefault( det( A ) ) );
+
+      blaze::StaticMatrix<Type,3UL,6UL,blaze::columnMajor> B, X;
+      randomize( B );
+
+      blaze::StaticVector<int,3UL,blaze::rowVector> ipiv;
+
+      LU = A;
+      X = B;
+
+      blaze::potrf( LU, 'U' );
+      blaze::potrs( LU, X, 'U' );
+
+      if( ( A * X ) != B ) {
+         std::ostringstream oss;
+         oss << " Test: " << test_ << "\n"
+             << " Error: Solving the LSE failed\n"
+             << " Details:\n"
+             << "   Element type:\n"
+             << "     " << typeid( Type ).name() << "\n"
+             << "   System matrix (A):\n" << A << "\n"
+             << "   Result (X):\n" << X << "\n"
+             << "   Right-hand side (B):\n" << B << "\n"
+             << "   A * X:\n" << ( A * X ) << "\n";
          throw std::runtime_error( oss.str() );
       }
    }
