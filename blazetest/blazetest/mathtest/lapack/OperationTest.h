@@ -401,9 +401,16 @@ void OperationTest::testPotrf()
    test_ = "Cholesky decomposition";
 
    {
-      blaze::StaticMatrix<Type,3UL,3UL,blaze::rowMajor> A( Type(1), Type( 2), Type( 4),
-                                                           Type(2), Type(13), Type(23),
-                                                           Type(4), Type(23), Type(77) );
+      blaze::StaticMatrix<Type,3UL,3UL,blaze::rowMajor> A;
+
+      do {
+         randomize( A );
+         A *= ctrans( A );
+         A(0,0) += Type(3);
+         A(1,1) += Type(3);
+         A(2,2) += Type(3);
+      }
+      while( blaze::isDefault( det( A ) ) );
 
       blaze::StaticMatrix<Type,3UL,3UL,blaze::columnMajor> B( A );
 
@@ -424,9 +431,16 @@ void OperationTest::testPotrf()
    }
 
    {
-      blaze::StaticMatrix<Type,3UL,3UL,blaze::rowMajor> A( Type(1), Type( 2), Type( 4),
-                                                           Type(2), Type(13), Type(23),
-                                                           Type(4), Type(23), Type(77) );
+      blaze::StaticMatrix<Type,3UL,3UL,blaze::rowMajor> A;
+
+      do {
+         randomize( A );
+         A *= ctrans( A );
+         A(0,0) += Type(3);
+         A(1,1) += Type(3);
+         A(2,2) += Type(3);
+      }
+      while( blaze::isDefault( det( A ) ) );
 
       blaze::StaticMatrix<Type,3UL,3UL,blaze::columnMajor> B( A );
 
@@ -693,6 +707,9 @@ void OperationTest::testHetri()
 {
 #if BLAZETEST_MATHTEST_LAPACK_MODE
 
+   using blaze::conj;
+
+
    //=====================================================================================
    // Row-major matrix tests
    //=====================================================================================
@@ -833,6 +850,9 @@ void OperationTest::testPotri()
 {
 #if BLAZETEST_MATHTEST_LAPACK_MODE
 
+   using blaze::conj;
+
+
    //=====================================================================================
    // Row-major matrix tests
    //=====================================================================================
@@ -840,18 +860,25 @@ void OperationTest::testPotri()
    {
       test_ = "Row-major Cholesky-based matrix inversion (lower part)";
 
-      blaze::StaticMatrix<Type,3UL,3UL,blaze::rowMajor> A( Type(1), Type(1), Type(1),
-                                                           Type(1), Type(2), Type(2),
-                                                           Type(1), Type(2), Type(4) );
+      blaze::StaticMatrix<Type,3UL,3UL,blaze::rowMajor> A;
+
+      do {
+         randomize( A );
+         A *= ctrans( A );
+         A(0,0) += Type(3);
+         A(1,1) += Type(3);
+         A(2,2) += Type(3);
+      }
+      while( blaze::isDefault( det( A ) ) );
 
       blaze::StaticMatrix<Type,3UL,3UL,blaze::rowMajor> B( A );
 
       blaze::potrf( A, 'L' );
       blaze::potri( A, 'L' );
 
-      A(0,1) = A(1,0);
-      A(0,2) = A(2,0);
-      A(1,2) = A(2,1);
+      A(0,1) = conj( A(1,0) );
+      A(0,2) = conj( A(2,0) );
+      A(1,2) = conj( A(2,1) );
 
       if( !blaze::isIdentity( A * B ) ) {
          std::ostringstream oss;
@@ -868,18 +895,25 @@ void OperationTest::testPotri()
    {
       test_ = "Row-major Cholesky-based matrix inversion (upper part)";
 
-      blaze::StaticMatrix<Type,3UL,3UL,blaze::rowMajor> A( Type(1), Type(1), Type(1),
-                                                           Type(1), Type(2), Type(2),
-                                                           Type(1), Type(2), Type(4) );
+      blaze::StaticMatrix<Type,3UL,3UL,blaze::rowMajor> A;
+
+      do {
+         randomize( A );
+         A *= ctrans( A );
+         A(0,0) += Type(3);
+         A(1,1) += Type(3);
+         A(2,2) += Type(3);
+      }
+      while( blaze::isDefault( det( A ) ) );
 
       blaze::StaticMatrix<Type,3UL,3UL,blaze::rowMajor> B( A );
 
       blaze::potrf( A, 'U' );
       blaze::potri( A, 'U' );
 
-      A(1,0) = A(0,1);
-      A(2,0) = A(0,2);
-      A(2,1) = A(1,2);
+      A(1,0) = conj( A(0,1) );
+      A(2,0) = conj( A(0,2) );
+      A(2,1) = conj( A(1,2) );
 
       if( !blaze::isIdentity( A * B ) ) {
          std::ostringstream oss;
@@ -901,18 +935,25 @@ void OperationTest::testPotri()
    {
       test_ = "Column-major Cholesky-based matrix inversion (lower part)";
 
-      blaze::StaticMatrix<Type,3UL,3UL,blaze::columnMajor> A( Type(1), Type(1), Type(1),
-                                                              Type(1), Type(2), Type(2),
-                                                              Type(1), Type(2), Type(4) );
+      blaze::StaticMatrix<Type,3UL,3UL,blaze::columnMajor> A;
+
+      do {
+         randomize( A );
+         A *= ctrans( A );
+         A(0,0) += Type(3);
+         A(1,1) += Type(3);
+         A(2,2) += Type(3);
+      }
+      while( blaze::isDefault( det( A ) ) );
 
       blaze::StaticMatrix<Type,3UL,3UL,blaze::columnMajor> B( A );
 
       blaze::potrf( A, 'L' );
       blaze::potri( A, 'L' );
 
-      A(0,1) = A(1,0);
-      A(0,2) = A(2,0);
-      A(1,2) = A(2,1);
+      A(0,1) = conj( A(1,0) );
+      A(0,2) = conj( A(2,0) );
+      A(1,2) = conj( A(2,1) );
 
       if( !blaze::isIdentity( A * B ) ) {
          std::ostringstream oss;
@@ -929,18 +970,25 @@ void OperationTest::testPotri()
    {
       test_ = "Column-major Cholesky-based matrix inversion (upper part)";
 
-      blaze::StaticMatrix<Type,3UL,3UL,blaze::columnMajor> A( Type(1), Type(1), Type(1),
-                                                              Type(1), Type(2), Type(2),
-                                                              Type(1), Type(2), Type(4) );
+      blaze::StaticMatrix<Type,3UL,3UL,blaze::columnMajor> A;
+
+      do {
+         randomize( A );
+         A *= ctrans( A );
+         A(0,0) += Type(3);
+         A(1,1) += Type(3);
+         A(2,2) += Type(3);
+      }
+      while( blaze::isDefault( det( A ) ) );
 
       blaze::StaticMatrix<Type,3UL,3UL,blaze::columnMajor> B( A );
 
       blaze::potrf( A, 'U' );
       blaze::potri( A, 'U' );
 
-      A(1,0) = A(0,1);
-      A(2,0) = A(0,2);
-      A(2,1) = A(1,2);
+      A(1,0) = conj( A(0,1) );
+      A(2,0) = conj( A(0,2) );
+      A(2,1) = conj( A(1,2) );
 
       if( !blaze::isIdentity( A * B ) ) {
          std::ostringstream oss;
