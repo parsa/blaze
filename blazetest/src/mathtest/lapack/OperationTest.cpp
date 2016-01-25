@@ -84,6 +84,7 @@ OperationTest::OperationTest()
    //testGesv < float >();
    //testSysv < float >();
    //testPosv < float >();
+   //testTrsv < float >();
 
 
    //=====================================================================================
@@ -105,6 +106,7 @@ OperationTest::OperationTest()
    testGesv < double >();
    testSysv < double >();
    testPosv < double >();
+   testTrsv < double >();
 
 
    //=====================================================================================
@@ -130,6 +132,7 @@ OperationTest::OperationTest()
    //testSysv < complex<float> >();
    //testHesv < complex<float> >();
    //testPosv < complex<float> >();
+   //testTrsv < complex<float> >();
 
 
    //=====================================================================================
@@ -155,6 +158,7 @@ OperationTest::OperationTest()
    testSysv < complex<double> >();
    testHesv < complex<double> >();
    testPosv < complex<double> >();
+   testTrsv < complex<double> >();
 }
 //*************************************************************************************************
 
