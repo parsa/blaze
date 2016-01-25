@@ -121,6 +121,7 @@ OperationTest::OperationTest()
    //testTrtri< complex<float> >();
    //testGetrs< complex<float> >();
    //testSytrs< complex<float> >();
+   //testHetrs< complex<float> >();
    //testPotrs< complex<float> >();
    //testGesv < complex<float> >();
    //testSysv < complex<float> >();
@@ -144,6 +145,7 @@ OperationTest::OperationTest()
    testTrtri< complex<double> >();
    testGetrs< complex<double> >();
    testSytrs< complex<double> >();
+   testHetrs< complex<double> >();
    testPotrs< complex<double> >();
    testGesv < complex<double> >();
    testSysv < complex<double> >();

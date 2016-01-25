@@ -108,6 +108,7 @@ class OperationTest
 
    template< typename Type > void testGetrs();
    template< typename Type > void testSytrs();
+   template< typename Type > void testHetrs();
    template< typename Type > void testPotrs();
 
    template< typename Type > void testGesv();
@@ -1975,6 +1976,330 @@ void OperationTest::testSytrs()
 
       blaze::sytrf( LU, 'U', ipiv.data() );
       blaze::sytrs( LU, X, 'U', ipiv.data() );
+
+      if( ( A * X ) != B ) {
+         std::ostringstream oss;
+         oss << " Test: " << test_ << "\n"
+             << " Error: Solving the LSE failed\n"
+             << " Details:\n"
+             << "   Element type:\n"
+             << "     " << typeid( Type ).name() << "\n"
+             << "   System matrix (A):\n" << A << "\n"
+             << "   Result (X):\n" << X << "\n"
+             << "   Right-hand side (B):\n" << B << "\n"
+             << "   A * X:\n" << ( A * X ) << "\n";
+         throw std::runtime_error( oss.str() );
+      }
+   }
+
+#endif
+}
+//*************************************************************************************************
+
+
+//*************************************************************************************************
+/*!\brief Test of the Hermitian indefinite substitution functions (hetrs).
+//
+// \return void
+// \exception std::runtime_error Error detected.
+//
+// This function performs a test of the Hermitian indefinite substitution functions for various
+// data types. In case an error is detected, a \a std::runtime_error exception is thrown.
+*/
+template< typename Type >
+void OperationTest::testHetrs()
+{
+#if BLAZETEST_MATHTEST_LAPACK_MODE
+
+   //=====================================================================================
+   // Row-major matrix tests
+   //=====================================================================================
+
+   {
+      test_ = "Row-major Hermitian indefinite LSE substitution (single right-hand side, lower part)";
+
+      blaze::StaticMatrix<Type,3UL,3UL,blaze::rowMajor> A, LU;
+
+      do {
+         randomize( A );
+         A *= ctrans( A );
+      }
+      while( blaze::isDefault( det( A ) ) );
+
+      blaze::StaticVector<Type,3UL,blaze::columnVector> b, x;
+      randomize( b );
+
+      blaze::StaticVector<int,3UL,blaze::rowVector> ipiv;
+
+      LU = A;
+      x = b;
+
+      blaze::hetrf( LU, 'L', ipiv.data() );
+      blaze::hetrs( LU, x, 'L', ipiv.data() );
+
+      if( ( trans( A ) * x ) != b ) {
+         std::ostringstream oss;
+         oss << " Test: " << test_ << "\n"
+             << " Error: Solving the LSE failed\n"
+             << " Details:\n"
+             << "   Element type:\n"
+             << "     " << typeid( Type ).name() << "\n"
+             << "   System matrix (A):\n" << A << "\n"
+             << "   Result (x):\n" << x << "\n"
+             << "   Right-hand side (b):\n" << b << "\n"
+             << "   trans( A ) * x:\n" << ( trans( A ) * x ) << "\n";
+         throw std::runtime_error( oss.str() );
+      }
+   }
+
+   {
+      test_ = "Row-major Hermitian indefinite LSE substitution (single right-hand side, upper part)";
+
+      blaze::StaticMatrix<Type,3UL,3UL,blaze::rowMajor> A, LU;
+
+      do {
+         randomize( A );
+         A *= ctrans( A );
+      }
+      while( blaze::isDefault( det( A ) ) );
+
+      blaze::StaticVector<Type,3UL,blaze::columnVector> b, x;
+      randomize( b );
+
+      blaze::StaticVector<int,3UL,blaze::rowVector> ipiv;
+
+      LU = A;
+      x = b;
+
+      blaze::hetrf( LU, 'U', ipiv.data() );
+      blaze::hetrs( LU, x, 'U', ipiv.data() );
+
+      if( ( trans( A ) * x ) != b ) {
+         std::ostringstream oss;
+         oss << " Test: " << test_ << "\n"
+             << " Error: Solving the LSE failed\n"
+             << " Details:\n"
+             << "   Element type:\n"
+             << "     " << typeid( Type ).name() << "\n"
+             << "   System matrix (A):\n" << A << "\n"
+             << "   Result (x):\n" << x << "\n"
+             << "   Right-hand side (b):\n" << b << "\n"
+             << "   trans( A ) * x:\n" << ( trans( A ) * x ) << "\n";
+         throw std::runtime_error( oss.str() );
+      }
+   }
+
+   {
+      test_ = "Row-major Hermitian indefinite LSE substitution (multiple right-hand sides, lower part)";
+
+      blaze::StaticMatrix<Type,3UL,3UL,blaze::rowMajor> A, LU;
+
+      do {
+         randomize( A );
+         A *= ctrans( A );
+      }
+      while( blaze::isDefault( det( A ) ) );
+
+      blaze::StaticMatrix<Type,6UL,3UL,blaze::rowMajor> B, X;
+      randomize( B );
+
+      blaze::StaticVector<int,3UL,blaze::rowVector> ipiv;
+
+      LU = A;
+      X = B;
+
+      blaze::hetrf( LU, 'L', ipiv.data() );
+      blaze::hetrs( LU, X, 'L', ipiv.data() );
+
+      if( ( trans( A ) * trans( X ) ) != trans( B ) ) {
+         std::ostringstream oss;
+         oss << " Test: " << test_ << "\n"
+             << " Error: Solving the LSE failed\n"
+             << " Details:\n"
+             << "   Element type:\n"
+             << "     " << typeid( Type ).name() << "\n"
+             << "   System matrix (A):\n" << A << "\n"
+             << "   Result (X):\n" << X << "\n"
+             << "   Right-hand side (B):\n" << B << "\n"
+             << "   A * X:\n" << ( trans( A ) * trans( X ) ) << "\n";
+         throw std::runtime_error( oss.str() );
+      }
+   }
+
+   {
+      test_ = "Row-major Hermitian indefinite LSE substitution (multiple right-hand sides, upper part)";
+
+      blaze::StaticMatrix<Type,3UL,3UL,blaze::rowMajor> A, LU;
+
+      do {
+         randomize( A );
+         A *= ctrans( A );
+      }
+      while( blaze::isDefault( det( A ) ) );
+
+      blaze::StaticMatrix<Type,6UL,3UL,blaze::rowMajor> B, X;
+      randomize( B );
+
+      blaze::StaticVector<int,3UL,blaze::rowVector> ipiv;
+
+      LU = A;
+      X = B;
+
+      blaze::hetrf( LU, 'U', ipiv.data() );
+      blaze::hetrs( LU, X, 'U', ipiv.data() );
+
+      if( ( trans( A ) * trans( X ) ) != trans( B ) ) {
+         std::ostringstream oss;
+         oss << " Test: " << test_ << "\n"
+             << " Error: Solving the LSE failed\n"
+             << " Details:\n"
+             << "   Element type:\n"
+             << "     " << typeid( Type ).name() << "\n"
+             << "   System matrix (A):\n" << A << "\n"
+             << "   Result (X):\n" << X << "\n"
+             << "   Right-hand side (B):\n" << B << "\n"
+             << "   A * X:\n" << ( trans( A ) * trans( X ) ) << "\n";
+         throw std::runtime_error( oss.str() );
+      }
+   }
+
+
+   //=====================================================================================
+   // Column-major matrix tests
+   //=====================================================================================
+
+   {
+      test_ = "Column-major Hermitian indefinite LSE substitution (single right-hand side, lower part)";
+
+      blaze::StaticMatrix<Type,3UL,3UL,blaze::columnMajor> A, LU;
+
+      do {
+         randomize( A );
+         A *= ctrans( A );
+      }
+      while( blaze::isDefault( det( A ) ) );
+
+      blaze::StaticVector<Type,3UL,blaze::columnVector> b, x;
+      randomize( b );
+
+      blaze::StaticVector<int,3UL,blaze::rowVector> ipiv;
+
+      LU = A;
+      x = b;
+
+      blaze::hetrf( LU, 'L', ipiv.data() );
+      blaze::hetrs( LU, x, 'L', ipiv.data() );
+
+      if( ( A * x ) != b ) {
+         std::ostringstream oss;
+         oss << " Test: " << test_ << "\n"
+             << " Error: Solving the LSE failed\n"
+             << " Details:\n"
+             << "   Element type:\n"
+             << "     " << typeid( Type ).name() << "\n"
+             << "   System matrix (A):\n" << A << "\n"
+             << "   Result (x):\n" << x << "\n"
+             << "   Right-hand side (b):\n" << b << "\n"
+             << "   A * x:\n" << ( A * x ) << "\n";
+         throw std::runtime_error( oss.str() );
+      }
+   }
+
+   {
+      test_ = "Column-major Hermitian indefinite LSE substitution (single right-hand side, upper part)";
+
+      blaze::StaticMatrix<Type,3UL,3UL,blaze::columnMajor> A, LU;
+
+      do {
+         randomize( A );
+         A *= ctrans( A );
+      }
+      while( blaze::isDefault( det( A ) ) );
+
+      blaze::StaticVector<Type,3UL,blaze::columnVector> b, x;
+      randomize( b );
+
+      blaze::StaticVector<int,3UL,blaze::rowVector> ipiv;
+
+      LU = A;
+      x = b;
+
+      blaze::hetrf( LU, 'U', ipiv.data() );
+      blaze::hetrs( LU, x, 'U', ipiv.data() );
+
+      if( ( A * x ) != b ) {
+         std::ostringstream oss;
+         oss << " Test: " << test_ << "\n"
+             << " Error: Solving the LSE failed\n"
+             << " Details:\n"
+             << "   Element type:\n"
+             << "     " << typeid( Type ).name() << "\n"
+             << "   System matrix (A):\n" << A << "\n"
+             << "   Result (x):\n" << x << "\n"
+             << "   Right-hand side (b):\n" << b << "\n"
+             << "   A * x:\n" << ( A * x ) << "\n";
+         throw std::runtime_error( oss.str() );
+      }
+   }
+
+   {
+      test_ = "Column-major Hermitian indefinite LSE substitution (multiple right-hand sides, lower part)";
+
+      blaze::StaticMatrix<Type,3UL,3UL,blaze::columnMajor> A, LU;
+
+      do {
+         randomize( A );
+         A *= ctrans( A );
+      }
+      while( blaze::isDefault( det( A ) ) );
+
+      blaze::StaticMatrix<Type,3UL,6UL,blaze::columnMajor> B, X;
+      randomize( B );
+
+      blaze::StaticVector<int,3UL,blaze::rowVector> ipiv;
+
+      LU = A;
+      X = B;
+
+      blaze::hetrf( LU, 'L', ipiv.data() );
+      blaze::hetrs( LU, X, 'L', ipiv.data() );
+
+      if( ( A * X ) != B ) {
+         std::ostringstream oss;
+         oss << " Test: " << test_ << "\n"
+             << " Error: Solving the LSE failed\n"
+             << " Details:\n"
+             << "   Element type:\n"
+             << "     " << typeid( Type ).name() << "\n"
+             << "   System matrix (A):\n" << A << "\n"
+             << "   Result (X):\n" << X << "\n"
+             << "   Right-hand side (B):\n" << B << "\n"
+             << "   A * X:\n" << ( A * X ) << "\n";
+         throw std::runtime_error( oss.str() );
+      }
+   }
+
+   {
+      test_ = "Column-major Hermitian indefinite LSE substitution (multiple right-hand sides, upper part)";
+
+      blaze::StaticMatrix<Type,3UL,3UL,blaze::columnMajor> A, LU;
+
+      do {
+         randomize( A );
+         A *= ctrans( A );
+      }
+      while( blaze::isDefault( det( A ) ) );
+
+      blaze::StaticMatrix<Type,3UL,6UL,blaze::columnMajor> B, X;
+      randomize( B );
+
+      blaze::StaticVector<int,3UL,blaze::rowVector> ipiv;
+
+      LU = A;
+      X = B;
+
+      blaze::hetrf( LU, 'U', ipiv.data() );
+      blaze::hetrs( LU, X, 'U', ipiv.data() );
 
       if( ( A * X ) != B ) {
          std::ostringstream oss;
