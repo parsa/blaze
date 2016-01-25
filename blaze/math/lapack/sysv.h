@@ -47,8 +47,6 @@
 #include <blaze/math/constraints/MutableDataAccess.h>
 #include <blaze/math/expressions/DenseMatrix.h>
 #include <blaze/math/expressions/DenseVector.h>
-#include <blaze/math/StorageOrder.h>
-#include <blaze/math/TransposeFlag.h>
 #include <blaze/util/Assert.h>
 #include <blaze/util/Complex.h>
 #include <blaze/util/constraints/SameType.h>
@@ -82,12 +80,12 @@ void zsysv_( char* uplo, int* n, int* nrhs, double* A, int* lda, int* ipiv, doub
 
 //=================================================================================================
 //
-//  LAPACK WRAPPER FUNCTIONS (SYSV)
+//  LAPACK LINEAR SYSTEM FUNCTIONS (SYSV)
 //
 //=================================================================================================
 
 //*************************************************************************************************
-/*!\name LAPACK wrapper functions (sysv) */
+/*!\name LAPACK linear system functions (sysv) */
 //@{
 inline void sysv( char uplo, int n, int nrhs, float* A, int lda, int* ipiv,
                   float* B, int ldb, float* work, int lwork, int* info );
@@ -101,13 +99,11 @@ inline void sysv( char uplo, int n, int nrhs, complex<float>* A, int lda, int* i
 inline void sysv( char uplo, int n, int nrhs, complex<double>* A, int lda, int* ipiv,
                   complex<double>* B, int ldb, complex<double>* work, int lwork, int* info );
 
-template< typename MT, typename VT >
-inline void sysv( DenseMatrix<MT,columnMajor>& A, DenseVector<VT,columnVector>& b,
-                  char uplo, int* ipiv );
+template< typename MT, bool SO, typename VT, bool TF >
+inline void sysv( DenseMatrix<MT,SO>& A, DenseVector<VT,TF>& b, char uplo, int* ipiv );
 
-template< typename MT1, typename MT2 >
-inline void sysv( DenseMatrix<MT1,columnMajor>& A, DenseMatrix<MT2,columnMajor>& B,
-                  char uplo, int* ipiv );
+template< typename MT1, bool SO1, typename MT2, bool SO2 >
+inline void sysv( DenseMatrix<MT1,SO1>& A, DenseMatrix<MT2,SO2>& B, char uplo, int* ipiv );
 //@}
 //*************************************************************************************************
 
@@ -120,11 +116,11 @@ inline void sysv( DenseMatrix<MT1,columnMajor>& A, DenseMatrix<MT2,columnMajor>&
 // \param uplo \c 'L' to use the lower part of the matrix, \c 'U' to use the upper part.
 // \param n The number of rows/columns of matrix \a A \f$[0..\infty)\f$.
 // \param nrhs The number of right-hand side vectors \f$[0..\infty)\f$.
-// \param A Pointer to the first element of the matrix.
-// \param lda The total number of elements between two rows/columns of matrix \a A \f$[0..\infty)\f$.
+// \param A Pointer to the first element of the single precision column-major square matrix.
+// \param lda The total number of elements between two columns of matrix \a A \f$[0..\infty)\f$.
 // \param ipiv Auxiliary array of size \a n for the pivot indices.
-// \param B Pointer to the first element of the matrix.
-// \param ldb The total number of elements between two rows/columns of matrix \a B \f$[0..\infty)\f$.
+// \param B Pointer to the first element of the column-major matrix.
+// \param ldb The total number of elements between two columns of matrix \a B \f$[0..\infty)\f$.
 // \param work Auxiliary array; size >= max( 1, \a lwork ).
 // \param lwork The dimension of the array \a work; size >= max( 1, \a n ).
 // \param info Return code of the function call.
@@ -176,11 +172,11 @@ inline void sysv( char uplo, int n, int nrhs, float* A, int lda, int* ipiv,
 // \param uplo \c 'L' to use the lower part of the matrix, \c 'U' to use the upper part.
 // \param n The number of rows/columns of matrix \a A \f$[0..\infty)\f$.
 // \param nrhs The number of right-hand side vectors \f$[0..\infty)\f$.
-// \param A Pointer to the first element of the matrix.
-// \param lda The total number of elements between two rows/columns of matrix \a A \f$[0..\infty)\f$.
+// \param A Pointer to the first element of the double precision column-major square matrix.
+// \param lda The total number of elements between two columns of matrix \a A \f$[0..\infty)\f$.
 // \param ipiv Auxiliary array of size \a n for the pivot indices.
-// \param B Pointer to the first element of the matrix.
-// \param ldb The total number of elements between two rows/columns of matrix \a B \f$[0..\infty)\f$.
+// \param B Pointer to the first element of the column-major matrix.
+// \param ldb The total number of elements between two columns of matrix \a B \f$[0..\infty)\f$.
 // \param work Auxiliary array; size >= max( 1, \a lwork ).
 // \param lwork The dimension of the array \a work; size >= max( 1, \a n ).
 // \param info Return code of the function call.
@@ -232,11 +228,11 @@ inline void sysv( char uplo, int n, int nrhs, double* A, int lda, int* ipiv,
 // \param uplo \c 'L' to use the lower part of the matrix, \c 'U' to use the upper part.
 // \param n The number of rows/columns of matrix \a A \f$[0..\infty)\f$.
 // \param nrhs The number of right-hand side vectors \f$[0..\infty)\f$.
-// \param A Pointer to the first element of the matrix.
-// \param lda The total number of elements between two rows/columns of matrix \a A \f$[0..\infty)\f$.
+// \param A Pointer to the first element of the single precision complex column-major square matrix.
+// \param lda The total number of elements between two columns of matrix \a A \f$[0..\infty)\f$.
 // \param ipiv Auxiliary array of size \a n for the pivot indices.
-// \param B Pointer to the first element of the matrix.
-// \param ldb The total number of elements between two rows/columns of matrix \a B \f$[0..\infty)\f$.
+// \param B Pointer to the first element of the column-major matrix.
+// \param ldb The total number of elements between two columns of matrix \a B \f$[0..\infty)\f$.
 // \param work Auxiliary array; size >= max( 1, \a lwork ).
 // \param lwork The dimension of the array \a work; size >= max( 1, \a n ).
 // \param info Return code of the function call.
@@ -291,11 +287,11 @@ inline void sysv( char uplo, int n, int nrhs, complex<float>* A, int lda, int* i
 // \param uplo \c 'L' to use the lower part of the matrix, \c 'U' to use the upper part.
 // \param n The number of rows/columns of matrix \a A \f$[0..\infty)\f$.
 // \param nrhs The number of right-hand side vectors \f$[0..\infty)\f$.
-// \param A Pointer to the first element of the matrix.
-// \param lda The total number of elements between two rows/columns of matrix \a A \f$[0..\infty)\f$.
+// \param A Pointer to the first element of the double precision complex column-major square matrix.
+// \param lda The total number of elements between two columns of matrix \a A \f$[0..\infty)\f$.
 // \param ipiv Auxiliary array of size \a n for the pivot indices.
-// \param B Pointer to the first element of the matrix.
-// \param ldb The total number of elements between two rows/columns of matrix \a B \f$[0..\infty)\f$.
+// \param B Pointer to the first element of the column-major matrix.
+// \param ldb The total number of elements between two columns of matrix \a B \f$[0..\infty)\f$.
 // \param work Auxiliary array; size >= max( 1, \a lwork ).
 // \param lwork The dimension of the array \a work; size >= max( 1, \a n ).
 // \param info Return code of the function call.
@@ -351,15 +347,21 @@ inline void sysv( char uplo, int n, int nrhs, complex<double>* A, int lda, int* 
 // \param uplo \c 'L' to use the lower part of the matrix, \c 'U' to use the upper part.
 // \param ipiv Auxiliary array of size \a n for the pivot indices.
 // \return void
-// \exception std::invalid_argument Inversion of singular matrix failed.
 // \exception std::invalid_argument Invalid non-square matrix provided.
+// \exception std::invalid_argument Invalid uplo argument provided.
+// \exception std::invalid_argument Inversion of singular matrix failed.
 //
 // This function uses the LAPACK sysv() functions to compute the solution to the symmetric
-// indefinite system of linear equations \f$ A*x=b \f$, where \a A is a column-major n-by-n matrix
-// and \a x and \a b are n-dimensional column vectors. Note that the function only works for general,
-// non-adapted matrices with \c float, \c double, \c complex<float>, or \c complex<double> element
-// type. The attempt to call the function with adaptors or matrices of any other element type
-// results in a compile time error!
+// indefinite system of linear equations;
+//
+//  - \f$ A  *x=b \f$ if \a A is column-major
+//  - \f$ A^T*x=b \f$ if \a A is row-major
+//
+// In this context the symmetric indefinite system matrix \a A is a n-by-n matrix and \a x and
+// \a b are n-dimensional vectors. Note that the function only works for general, non-adapted
+// matrices with \c float, \c double, \c complex<float>, or \c complex<double> element type.
+// The attempt to call the function with adaptors or matrices of any other element type results
+// in a compile time error!
 //
 // If the function exits successfully, the vector \a b contains the solution of the linear system
 // of equations and \a A has been decomposed by means of the Bunch-Kaufman decomposition. The
@@ -378,6 +380,7 @@ inline void sysv( char uplo, int n, int nrhs, complex<double>* A, int lda, int* 
 // The function fails if ...
 //
 //  - ... the given system matrix is not a square matrix;
+//  - ... the given \a uplo argument is neither 'L' nor 'U';
 //  - ... the given system matrix is singular and not invertible.
 //
 // In all failure cases a \a std::invalid_argument exception is thrown.
@@ -393,8 +396,11 @@ inline void sysv( char uplo, int n, int nrhs, complex<double>* A, int lda, int* 
 // \note This function does not provide any exception safety guarantee, i.e. in case an exception
 // is thrown \a A may already have been modified.
 */
-template< typename MT, typename VT >
-inline void sysv( DenseMatrix<MT,columnMajor>& A, DenseVector<VT,columnVector>& b,
+template< typename MT  // Type of the system matrix
+        , bool SO      // Storage order of the system matrix
+        , typename VT  // Type of the right-hand side vector
+        , bool TF >    // Transpose flag of the right-hand side vector
+inline void sysv( DenseMatrix<MT,SO>& A, DenseVector<VT,TF>& b,
                   char uplo, int* ipiv )
 {
    using boost::numeric_cast;
@@ -427,6 +433,10 @@ inline void sysv( DenseMatrix<MT,columnMajor>& A, DenseVector<VT,columnVector>& 
       return;
    }
 
+   if( IsRowMajorMatrix<MT>::value ) {
+      ( uplo == 'L' )?( uplo = 'U' ):( uplo = 'L' );
+   }
+
    int lwork( n*lda );
    const UniqueArray<ET> work( new ET[lwork] );
 
@@ -450,17 +460,26 @@ inline void sysv( DenseMatrix<MT,columnMajor>& A, DenseVector<VT,columnVector>& 
 // \param uplo \c 'L' to use the lower part of the matrix, \c 'U' to use the upper part.
 // \param ipiv Auxiliary array of size \a n for the pivot indices.
 // \return void
-// \exception std::invalid_argument Inversion of singular matrix failed.
 // \exception std::invalid_argument Invalid non-square matrix provided.
+// \exception std::invalid_argument Invalid uplo argument provided.
+// \exception std::invalid_argument Matrix sizes do not match.
+// \exception std::invalid_argument Inversion of singular matrix failed.
 //
 // This function uses the LAPACK sysv() functions to compute the solution to the symmetric
-// indefinite system of linear equations \f$ A*X=B \f$, where \a A is a column-major n-by-n matrix
-// and \a X and \a B are column-major n-by-m matrices. Note that the function only works for general,
-// non-adapted matrices with \c float, \c double, \c complex<float>, or \c complex<double> element
-// type. The attempt to call the function with adaptors or matrices of any other element type
-// results in a compile time error!
+// indefinite system of linear equations:
 //
-// If the function exits successfully, the vector \a b contains the solution of the linear system
+//  - \f$ A  *X  =B   \f$ if both \a A and \a B are column-major
+//  - \f$ A^T*X  =B   \f$ if \a A is row-major and \a B is column-major
+//  - \f$ A  *X^T=B^T \f$ if \a A is column-major and \a B is row-major
+//  - \f$ A^T*X^T=B^T \f$ if both \a A and \a B are row-major
+//
+// In this context the symmetric indefinite system matrix \a A is a n-by-n matrix and \a X and
+/ \a B are either row-major m-by-n matrices or column-major n-by-m matrices. Note that the function
+// only works for general, non-adapted matrices with \c float, \c double, \c complex<float>, or
+// \c complex<double> element type. The attempt to call the function with adaptors or matrices of
+// any other element type results in a compile time error!
+//
+// If the function exits successfully, the matrix \a B contains the solution of the linear system
 // of equations and \a A has been decomposed by means of a Bunch-Kaufman decomposition. The
 // decomposition has the form
 
@@ -477,6 +496,8 @@ inline void sysv( DenseMatrix<MT,columnMajor>& A, DenseVector<VT,columnVector>& 
 // The function fails if ...
 //
 //  - ... the given system matrix is not a square matrix;
+//  - ... the given \a uplo argument is neither 'L' nor 'U';
+//  - ... the sizes of the two given matrices do not match;
 //  - ... the given system matrix is singular and not invertible.
 //
 // In all failure cases a \a std::invalid_argument exception is thrown.
@@ -492,8 +513,11 @@ inline void sysv( DenseMatrix<MT,columnMajor>& A, DenseVector<VT,columnVector>& 
 // \note This function does not provide any exception safety guarantee, i.e. in case an exception
 // is thrown \a A may already have been modified.
 */
-template< typename MT1, typename MT2 >
-inline void sysv( DenseMatrix<MT1,columnMajor>& A, DenseMatrix<MT2,columnMajor>& B,
+template< typename MT1  // Type of the system matrix
+        , bool SO1      // Storage order of the system matrix
+        , typename MT2  // Type of the right-hand side matrix
+        , bool SO2 >    // Storage order of the right-hand side matrix
+inline void sysv( DenseMatrix<MT1,SO1>& A, DenseMatrix<MT2,SO2>& B,
                   char uplo, int* ipiv )
 {
    using boost::numeric_cast;
@@ -517,14 +541,23 @@ inline void sysv( DenseMatrix<MT1,columnMajor>& A, DenseMatrix<MT2,columnMajor>&
       BLAZE_THROW_INVALID_ARGUMENT( "Invalid uplo argument provided" );
    }
 
-   int n   ( numeric_cast<int>( (~A).rows()    ) );
-   int nrhs( numeric_cast<int>( (~B).columns() ) );
+   int n   ( numeric_cast<int>( (~A).rows() ) );
+   int mrhs( numeric_cast<int>( SO2 ? (~B).rows() : (~B).columns() ) );
+   int nrhs( numeric_cast<int>( SO2 ? (~B).columns() : (~B).rows() ) );
    int lda ( numeric_cast<int>( (~A).spacing() ) );
    int ldb ( numeric_cast<int>( (~B).spacing() ) );
    int info( 0 );
 
+   if( n != mrhs ) {
+      BLAZE_THROW_INVALID_ARGUMENT( "Matrix sizes do not match" );
+   }
+
    if( n == 0 ) {
       return;
+   }
+
+   if( IsRowMajorMatrix<MT1>::value ) {
+      ( uplo == 'L' )?( uplo = 'U' ):( uplo = 'L' );
    }
 
    int lwork( n*lda );
