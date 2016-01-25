@@ -3584,10 +3584,14 @@ void OperationTest::testSysv()
 {
 #if BLAZETEST_MATHTEST_LAPACK_MODE
 
-   {
-      test_ = "Symmetric indefinite LSE (single right-hand side, lower part)";
+   //=====================================================================================
+   // Row-major matrix tests
+   //=====================================================================================
 
-      blaze::StaticMatrix<Type,3UL,3UL,blaze::columnMajor> A, LU;
+   {
+      test_ = "Row-major symmetric indefinite LSE (single right-hand side, lower part)";
+
+      blaze::StaticMatrix<Type,3UL,3UL,blaze::rowMajor> A, LU;
 
       do {
          randomize( A );
@@ -3595,17 +3599,17 @@ void OperationTest::testSysv()
       }
       while( blaze::isDefault( det( A ) ) );
 
-      blaze::StaticVector<Type,3UL,blaze::columnVector> rhs, result;
-      randomize( rhs );
+      blaze::StaticVector<Type,3UL,blaze::columnVector> b, x;
+      randomize( b );
 
       blaze::StaticVector<int,3UL,blaze::columnVector> ipiv;
 
       LU = A;
-      result = rhs;
+      x = b;
 
-      blaze::sysv( LU, result, 'L', ipiv.data() );
+      blaze::sysv( LU, x, 'L', ipiv.data() );
 
-      if( ( A * result ) != rhs ) {
+      if( ( trans( A ) * x ) != b ) {
          std::ostringstream oss;
          oss << " Test: " << test_ << "\n"
              << " Error: Solving the LSE failed\n"
@@ -3613,17 +3617,17 @@ void OperationTest::testSysv()
              << "   Element type:\n"
              << "     " << typeid( Type ).name() << "\n"
              << "   System matrix (A):\n" << A << "\n"
-             << "   Result (x):\n" << result << "\n"
-             << "   Right-hand side (y):\n" << rhs << "\n"
-             << "   A * x:\n" << ( A * result ) << "\n";
+             << "   Result (x):\n" << x << "\n"
+             << "   Right-hand side (b):\n" << b << "\n"
+             << "   A * x:\n" << ( trans( A ) * x ) << "\n";
          throw std::runtime_error( oss.str() );
       }
    }
 
    {
-      test_ = "Symmetric indefinite LSE (single right-hand side, upper part)";
+      test_ = "Row-major symmetric indefinite LSE (single right-hand side, upper part)";
 
-      blaze::StaticMatrix<Type,3UL,3UL,blaze::columnMajor> A, LU;
+      blaze::StaticMatrix<Type,3UL,3UL,blaze::rowMajor> A, LU;
 
       do {
          randomize( A );
@@ -3631,17 +3635,17 @@ void OperationTest::testSysv()
       }
       while( blaze::isDefault( det( A ) ) );
 
-      blaze::StaticVector<Type,3UL,blaze::columnVector> rhs, result;
-      randomize( rhs );
+      blaze::StaticVector<Type,3UL,blaze::columnVector> b, x;
+      randomize( b );
 
       blaze::StaticVector<int,3UL,blaze::columnVector> ipiv;
 
       LU = A;
-      result = rhs;
+      x = b;
 
-      blaze::sysv( LU, result, 'U', ipiv.data() );
+      blaze::sysv( LU, x, 'U', ipiv.data() );
 
-      if( ( A * result ) != rhs ) {
+      if( ( trans( A ) * x ) != b ) {
          std::ostringstream oss;
          oss << " Test: " << test_ << "\n"
              << " Error: Solving the LSE failed\n"
@@ -3649,17 +3653,17 @@ void OperationTest::testSysv()
              << "   Element type:\n"
              << "     " << typeid( Type ).name() << "\n"
              << "   System matrix (A):\n" << A << "\n"
-             << "   Result (x):\n" << result << "\n"
-             << "   Right-hand side (y):\n" << rhs << "\n"
-             << "   A * x:\n" << ( A * result ) << "\n";
+             << "   Result (x):\n" << x << "\n"
+             << "   Right-hand side (b):\n" << b << "\n"
+             << "   A * x:\n" << ( trans( A ) * x ) << "\n";
          throw std::runtime_error( oss.str() );
       }
    }
 
    {
-      test_ = "Symmetric indefinite LSE (multiple right-hand sides, lower part)";
+      test_ = "Row-major symmetric indefinite LSE (multiple right-hand sides, lower part)";
 
-      blaze::StaticMatrix<Type,3UL,3UL,blaze::columnMajor> A, LU;
+      blaze::StaticMatrix<Type,3UL,3UL,blaze::rowMajor> A, LU;
 
       do {
          randomize( A );
@@ -3667,17 +3671,17 @@ void OperationTest::testSysv()
       }
       while( blaze::isDefault( det( A ) ) );
 
-      blaze::StaticMatrix<Type,3UL,3UL,blaze::columnMajor> rhs, result;
-      randomize( rhs );
+      blaze::StaticMatrix<Type,3UL,3UL,blaze::rowMajor> B, X;
+      randomize( B );
 
       blaze::StaticVector<int,3UL,blaze::columnVector> ipiv;
 
       LU = A;
-      result = rhs;
+      X = B;
 
-      blaze::sysv( LU, result, 'L', ipiv.data() );
+      blaze::sysv( LU, X, 'L', ipiv.data() );
 
-      if( ( A * result ) != rhs ) {
+      if( ( trans( A ) * trans( X ) ) != trans( B ) ) {
          std::ostringstream oss;
          oss << " Test: " << test_ << "\n"
              << " Error: Solving the LSE failed\n"
@@ -3685,15 +3689,56 @@ void OperationTest::testSysv()
              << "   Element type:\n"
              << "     " << typeid( Type ).name() << "\n"
              << "   System matrix (A):\n" << A << "\n"
-             << "   Result (x):\n" << result << "\n"
-             << "   Right-hand side (y):\n" << rhs << "\n"
-             << "   A * x:\n" << ( A * result ) << "\n";
+             << "   Result (X):\n" << X << "\n"
+             << "   Right-hand side (B):\n" << B << "\n"
+             << "   A * X:\n" << ( trans( A ) * trans( X ) ) << "\n";
          throw std::runtime_error( oss.str() );
       }
    }
 
    {
-      test_ = "Symmetric indefinite LSE (multiple right-hand sides, upper part)";
+      test_ = "Row-major symmetric indefinite LSE (multiple right-hand sides, upper part)";
+
+      blaze::StaticMatrix<Type,3UL,3UL,blaze::rowMajor> A, LU;
+
+      do {
+         randomize( A );
+         A *= trans( A );
+      }
+      while( blaze::isDefault( det( A ) ) );
+
+      blaze::StaticMatrix<Type,3UL,3UL,blaze::rowMajor> B, X;
+      randomize( B );
+
+      blaze::StaticVector<int,3UL,blaze::columnVector> ipiv;
+
+      LU = A;
+      X = B;
+
+      blaze::sysv( LU, X, 'U', ipiv.data() );
+
+      if( ( trans( A ) * trans( X ) ) != trans( B ) ) {
+         std::ostringstream oss;
+         oss << " Test: " << test_ << "\n"
+             << " Error: Solving the LSE failed\n"
+             << " Details:\n"
+             << "   Element type:\n"
+             << "     " << typeid( Type ).name() << "\n"
+             << "   System matrix (A):\n" << A << "\n"
+             << "   Result (X):\n" << X << "\n"
+             << "   Right-hand side (B):\n" << B << "\n"
+             << "   A * X:\n" << ( trans( A ) * trans( X ) ) << "\n";
+         throw std::runtime_error( oss.str() );
+      }
+   }
+
+
+   //=====================================================================================
+   // Column-major matrix tests
+   //=====================================================================================
+
+   {
+      test_ = "Column-major symmetric indefinite LSE (single right-hand side, lower part)";
 
       blaze::StaticMatrix<Type,3UL,3UL,blaze::columnMajor> A, LU;
 
@@ -3703,17 +3748,17 @@ void OperationTest::testSysv()
       }
       while( blaze::isDefault( det( A ) ) );
 
-      blaze::StaticMatrix<Type,3UL,3UL,blaze::columnMajor> rhs, result;
-      randomize( rhs );
+      blaze::StaticVector<Type,3UL,blaze::columnVector> b, x;
+      randomize( b );
 
       blaze::StaticVector<int,3UL,blaze::columnVector> ipiv;
 
       LU = A;
-      result = rhs;
+      x = b;
 
-      blaze::sysv( LU, result, 'U', ipiv.data() );
+      blaze::sysv( LU, x, 'L', ipiv.data() );
 
-      if( ( A * result ) != rhs ) {
+      if( ( A * x ) != b ) {
          std::ostringstream oss;
          oss << " Test: " << test_ << "\n"
              << " Error: Solving the LSE failed\n"
@@ -3721,9 +3766,117 @@ void OperationTest::testSysv()
              << "   Element type:\n"
              << "     " << typeid( Type ).name() << "\n"
              << "   System matrix (A):\n" << A << "\n"
-             << "   Result (x):\n" << result << "\n"
-             << "   Right-hand side (y):\n" << rhs << "\n"
-             << "   A * x:\n" << ( A * result ) << "\n";
+             << "   Result (x):\n" << x << "\n"
+             << "   Right-hand side (b):\n" << b << "\n"
+             << "   A * x:\n" << ( A * x ) << "\n";
+         throw std::runtime_error( oss.str() );
+      }
+   }
+
+   {
+      test_ = "Column-major symmetric indefinite LSE (single right-hand side, upper part)";
+
+      blaze::StaticMatrix<Type,3UL,3UL,blaze::columnMajor> A, LU;
+
+      do {
+         randomize( A );
+         A *= trans( A );
+      }
+      while( blaze::isDefault( det( A ) ) );
+
+      blaze::StaticVector<Type,3UL,blaze::columnVector> b, x;
+      randomize( b );
+
+      blaze::StaticVector<int,3UL,blaze::columnVector> ipiv;
+
+      LU = A;
+      x = b;
+
+      blaze::sysv( LU, x, 'U', ipiv.data() );
+
+      if( ( A * x ) != b ) {
+         std::ostringstream oss;
+         oss << " Test: " << test_ << "\n"
+             << " Error: Solving the LSE failed\n"
+             << " Details:\n"
+             << "   Element type:\n"
+             << "     " << typeid( Type ).name() << "\n"
+             << "   System matrix (A):\n" << A << "\n"
+             << "   Result (x):\n" << x << "\n"
+             << "   Right-hand side (b):\n" << b << "\n"
+             << "   A * x:\n" << ( A * x ) << "\n";
+         throw std::runtime_error( oss.str() );
+      }
+   }
+
+   {
+      test_ = "Column-major symmetric indefinite LSE (multiple right-hand sides, lower part)";
+
+      blaze::StaticMatrix<Type,3UL,3UL,blaze::columnMajor> A, LU;
+
+      do {
+         randomize( A );
+         A *= trans( A );
+      }
+      while( blaze::isDefault( det( A ) ) );
+
+      blaze::StaticMatrix<Type,3UL,3UL,blaze::columnMajor> B, X;
+      randomize( B );
+
+      blaze::StaticVector<int,3UL,blaze::columnVector> ipiv;
+
+      LU = A;
+      X = B;
+
+      blaze::sysv( LU, X, 'L', ipiv.data() );
+
+      if( ( A * X ) != B ) {
+         std::ostringstream oss;
+         oss << " Test: " << test_ << "\n"
+             << " Error: Solving the LSE failed\n"
+             << " Details:\n"
+             << "   Element type:\n"
+             << "     " << typeid( Type ).name() << "\n"
+             << "   System matrix (A):\n" << A << "\n"
+             << "   Result (X):\n" << X << "\n"
+             << "   Right-hand side (B):\n" << B << "\n"
+             << "   A * X:\n" << ( A * X ) << "\n";
+         throw std::runtime_error( oss.str() );
+      }
+   }
+
+   {
+      test_ = "Column-major symmetric indefinite LSE (multiple right-hand sides, upper part)";
+
+      blaze::StaticMatrix<Type,3UL,3UL,blaze::columnMajor> A, LU;
+
+      do {
+         randomize( A );
+         A *= trans( A );
+      }
+      while( blaze::isDefault( det( A ) ) );
+
+      blaze::StaticMatrix<Type,3UL,3UL,blaze::columnMajor> B, X;
+      randomize( B );
+
+      blaze::StaticVector<int,3UL,blaze::columnVector> ipiv;
+
+      LU = A;
+      X = B;
+
+      blaze::sysv( LU, X, 'U', ipiv.data() );
+
+      if( ( A * X ) != B ) {
+         std::ostringstream oss;
+         oss << " Test: " << test_ << "\n"
+             << " Error: Solving the LSE failed\n"
+             << " Details:\n"
+             << "   Element type:\n"
+             << "     " << typeid( Type ).name() << "\n"
+             << "   System matrix (A):\n" << A << "\n"
+             << "   Result (X):\n" << X << "\n"
+             << "   Right-hand side (B):\n" << B << "\n"
+             << "   A * X:\n" << ( A * X ) << "\n";
          throw std::runtime_error( oss.str() );
       }
    }
