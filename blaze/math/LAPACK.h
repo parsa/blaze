@@ -58,5 +58,6 @@
 #include <blaze/math/lapack/sytri.h>
 #include <blaze/math/lapack/sytrs.h>
 #include <blaze/math/lapack/trtri.h>
+#include <blaze/math/lapack/trtrs.h>
 
 #endif
