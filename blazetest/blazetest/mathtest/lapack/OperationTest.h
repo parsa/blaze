@@ -110,6 +110,7 @@ class OperationTest
    template< typename Type > void testSytrs();
    template< typename Type > void testHetrs();
    template< typename Type > void testPotrs();
+   template< typename Type > void testTrtrs();
 
    template< typename Type > void testGesv();
    template< typename Type > void testSysv();
@@ -2644,6 +2645,754 @@ void OperationTest::testPotrs()
              << "   Result (X):\n" << X << "\n"
              << "   Right-hand side (B):\n" << B << "\n"
              << "   A * X:\n" << ( A * X ) << "\n";
+         throw std::runtime_error( oss.str() );
+      }
+   }
+
+#endif
+}
+//*************************************************************************************************
+
+
+//*************************************************************************************************
+/*!\brief Test of the triangular substitution functions (trtrs).
+//
+// \return void
+// \exception std::runtime_error Error detected.
+//
+// This function performs a test of the triangular substitution functions for various data types.
+// In case an error is detected, a \a std::runtime_error exception is thrown.
+*/
+template< typename Type >
+void OperationTest::testTrtrs()
+{
+#if BLAZETEST_MATHTEST_LAPACK_MODE
+
+   //=====================================================================================
+   // Row-major matrix tests
+   //=====================================================================================
+
+   {
+      test_ = "Row-major triangular LSE substitution (single right-hand side, lower part, not transposed)";
+
+      blaze::LowerMatrix< blaze::StaticMatrix<Type,3UL,3UL,blaze::rowMajor> > A;
+      randomize( A );
+
+      blaze::StaticMatrix<Type,3UL,3UL,blaze::rowMajor> LU( A );
+
+      blaze::StaticVector<Type,3UL,blaze::columnVector> b, x;
+      randomize( b );
+
+      x = b;
+
+      blaze::trtrs( LU, x, 'L', 'N', 'N' );
+
+      if( ( trans( A ) * x ) != b ) {
+         std::ostringstream oss;
+         oss << " Test: " << test_ << "\n"
+             << " Error: Solving the LSE failed\n"
+             << " Details:\n"
+             << "   Element type:\n"
+             << "     " << typeid( Type ).name() << "\n"
+             << "   System matrix (A):\n" << A << "\n"
+             << "   Result (x):\n" << x << "\n"
+             << "   Right-hand side (b):\n" << b << "\n"
+             << "   trans( A ) * x:\n" << ( trans( A ) * x ) << "\n";
+         throw std::runtime_error( oss.str() );
+      }
+   }
+
+   {
+      test_ = "Row-major triangular LSE substitution (single right-hand side, lower part, transposed)";
+
+      blaze::LowerMatrix< blaze::StaticMatrix<Type,3UL,3UL,blaze::rowMajor> > A;
+      randomize( A );
+
+      blaze::StaticMatrix<Type,3UL,3UL,blaze::rowMajor> LU( trans( A ) );
+
+      blaze::StaticVector<Type,3UL,blaze::columnVector> b, x;
+      randomize( b );
+
+      x = b;
+
+      blaze::trtrs( LU, x, 'U', 'T', 'N' );
+
+      if( ( trans( A ) * x ) != b ) {
+         std::ostringstream oss;
+         oss << " Test: " << test_ << "\n"
+             << " Error: Solving the LSE failed\n"
+             << " Details:\n"
+             << "   Element type:\n"
+             << "     " << typeid( Type ).name() << "\n"
+             << "   System matrix (A):\n" << A << "\n"
+             << "   Result (x):\n" << x << "\n"
+             << "   Right-hand side (b):\n" << b << "\n"
+             << "   trans( A ) * x:\n" << ( trans( A ) * x ) << "\n";
+         throw std::runtime_error( oss.str() );
+      }
+   }
+
+   {
+      test_ = "Row-major triangular LSE substitution (single right-hand side, lower part, conjugate transposed)";
+
+      blaze::LowerMatrix< blaze::StaticMatrix<Type,3UL,3UL,blaze::rowMajor> > A;
+      randomize( A );
+
+      blaze::StaticMatrix<Type,3UL,3UL,blaze::rowMajor> LU( ctrans( A ) );
+
+      blaze::StaticVector<Type,3UL,blaze::columnVector> b, x;
+      randomize( b );
+
+      x = b;
+
+      blaze::trtrs( LU, x, 'U', 'C', 'N' );
+
+      if( ( trans( A ) * x ) != b ) {
+         std::ostringstream oss;
+         oss << " Test: " << test_ << "\n"
+             << " Error: Solving the LSE failed\n"
+             << " Details:\n"
+             << "   Element type:\n"
+             << "     " << typeid( Type ).name() << "\n"
+             << "   System matrix (A):\n" << A << "\n"
+             << "   Result (x):\n" << x << "\n"
+             << "   Right-hand side (b):\n" << b << "\n"
+             << "   trans( A ) * x:\n" << ( trans( A ) * x ) << "\n";
+         throw std::runtime_error( oss.str() );
+      }
+   }
+
+   {
+      test_ = "Row-major unitriangular LSE substitution (single right-hand side, lower part, not transposed)";
+
+      blaze::UniLowerMatrix< blaze::StaticMatrix<Type,3UL,3UL,blaze::rowMajor> > A;
+      randomize( A );
+
+      blaze::StaticMatrix<Type,3UL,3UL,blaze::rowMajor> LU( A );
+
+      blaze::StaticVector<Type,3UL,blaze::columnVector> b, x;
+      randomize( b );
+
+      x = b;
+
+      blaze::trtrs( LU, x, 'L', 'N', 'U' );
+
+      if( ( trans( A ) * x ) != b ) {
+         std::ostringstream oss;
+         oss << " Test: " << test_ << "\n"
+             << " Error: Solving the LSE failed\n"
+             << " Details:\n"
+             << "   Element type:\n"
+             << "     " << typeid( Type ).name() << "\n"
+             << "   System matrix (A):\n" << A << "\n"
+             << "   Result (x):\n" << x << "\n"
+             << "   Right-hand side (b):\n" << b << "\n"
+             << "   trans( A ) * x:\n" << ( trans( A ) * x ) << "\n";
+         throw std::runtime_error( oss.str() );
+      }
+   }
+
+   {
+      test_ = "Row-major unitriangular LSE substitution (single right-hand side, lower part, transposed)";
+
+      blaze::UniLowerMatrix< blaze::StaticMatrix<Type,3UL,3UL,blaze::rowMajor> > A;
+      randomize( A );
+
+      blaze::StaticMatrix<Type,3UL,3UL,blaze::rowMajor> LU( trans( A ) );
+
+      blaze::StaticVector<Type,3UL,blaze::columnVector> b, x;
+      randomize( b );
+
+      x = b;
+
+      blaze::trtrs( LU, x, 'U', 'T', 'U' );
+
+      if( ( trans( A ) * x ) != b ) {
+         std::ostringstream oss;
+         oss << " Test: " << test_ << "\n"
+             << " Error: Solving the LSE failed\n"
+             << " Details:\n"
+             << "   Element type:\n"
+             << "     " << typeid( Type ).name() << "\n"
+             << "   System matrix (A):\n" << A << "\n"
+             << "   Result (x):\n" << x << "\n"
+             << "   Right-hand side (b):\n" << b << "\n"
+             << "   trans( A ) * x:\n" << ( trans( A ) * x ) << "\n";
+         throw std::runtime_error( oss.str() );
+      }
+   }
+
+   {
+      test_ = "Row-major unitriangular LSE substitution (single right-hand side, lower part, conjugate transposed)";
+
+      blaze::UniLowerMatrix< blaze::StaticMatrix<Type,3UL,3UL,blaze::rowMajor> > A;
+      randomize( A );
+
+      blaze::StaticMatrix<Type,3UL,3UL,blaze::rowMajor> LU( ctrans( A ) );
+
+      blaze::StaticVector<Type,3UL,blaze::columnVector> b, x;
+      randomize( b );
+
+      x = b;
+
+      blaze::trtrs( LU, x, 'U', 'C', 'U' );
+
+      if( ( trans( A ) * x ) != b ) {
+         std::ostringstream oss;
+         oss << " Test: " << test_ << "\n"
+             << " Error: Solving the LSE failed\n"
+             << " Details:\n"
+             << "   Element type:\n"
+             << "     " << typeid( Type ).name() << "\n"
+             << "   System matrix (A):\n" << A << "\n"
+             << "   Result (x):\n" << x << "\n"
+             << "   Right-hand side (b):\n" << b << "\n"
+             << "   trans( A ) * x:\n" << ( trans( A ) * x ) << "\n";
+         throw std::runtime_error( oss.str() );
+      }
+   }
+
+   {
+      test_ = "Row-major triangular LSE substitution (single right-hand side, upper part, not transposed)";
+
+      blaze::UpperMatrix< blaze::StaticMatrix<Type,3UL,3UL,blaze::rowMajor> > A;
+      randomize( A );
+
+      blaze::StaticMatrix<Type,3UL,3UL,blaze::rowMajor> LU( A );
+
+      blaze::StaticVector<Type,3UL,blaze::columnVector> b, x;
+      randomize( b );
+
+      x = b;
+
+      blaze::trtrs( LU, x, 'U', 'N', 'N' );
+
+      if( ( trans( A ) * x ) != b ) {
+         std::ostringstream oss;
+         oss << " Test: " << test_ << "\n"
+             << " Error: Solving the LSE failed\n"
+             << " Details:\n"
+             << "   Element type:\n"
+             << "     " << typeid( Type ).name() << "\n"
+             << "   System matrix (A):\n" << A << "\n"
+             << "   Result (x):\n" << x << "\n"
+             << "   Right-hand side (b):\n" << b << "\n"
+             << "   trans( A ) * x:\n" << ( trans( A ) * x ) << "\n";
+         throw std::runtime_error( oss.str() );
+      }
+   }
+
+   {
+      test_ = "Row-major triangular LSE substitution (single right-hand side, upper part, transposed)";
+
+      blaze::UpperMatrix< blaze::StaticMatrix<Type,3UL,3UL,blaze::rowMajor> > A;
+      randomize( A );
+
+      blaze::StaticMatrix<Type,3UL,3UL,blaze::rowMajor> LU( trans( A ) );
+
+      blaze::StaticVector<Type,3UL,blaze::columnVector> b, x;
+      randomize( b );
+
+      x = b;
+
+      blaze::trtrs( LU, x, 'L', 'T', 'N' );
+
+      if( ( trans( A ) * x ) != b ) {
+         std::ostringstream oss;
+         oss << " Test: " << test_ << "\n"
+             << " Error: Solving the LSE failed\n"
+             << " Details:\n"
+             << "   Element type:\n"
+             << "     " << typeid( Type ).name() << "\n"
+             << "   System matrix (A):\n" << A << "\n"
+             << "   Result (x):\n" << x << "\n"
+             << "   Right-hand side (b):\n" << b << "\n"
+             << "   trans( A ) * x:\n" << ( trans( A ) * x ) << "\n";
+         throw std::runtime_error( oss.str() );
+      }
+   }
+
+   {
+      test_ = "Row-major triangular LSE substitution (single right-hand side, upper part, conjugate transposed)";
+
+      blaze::UpperMatrix< blaze::StaticMatrix<Type,3UL,3UL,blaze::rowMajor> > A;
+      randomize( A );
+
+      blaze::StaticMatrix<Type,3UL,3UL,blaze::rowMajor> LU( ctrans( A ) );
+
+      blaze::StaticVector<Type,3UL,blaze::columnVector> b, x;
+      randomize( b );
+
+      x = b;
+
+      blaze::trtrs( LU, x, 'L', 'C', 'N' );
+
+      if( ( trans( A ) * x ) != b ) {
+         std::ostringstream oss;
+         oss << " Test: " << test_ << "\n"
+             << " Error: Solving the LSE failed\n"
+             << " Details:\n"
+             << "   Element type:\n"
+             << "     " << typeid( Type ).name() << "\n"
+             << "   System matrix (A):\n" << A << "\n"
+             << "   Result (x):\n" << x << "\n"
+             << "   Right-hand side (b):\n" << b << "\n"
+             << "   trans( A ) * x:\n" << ( trans( A ) * x ) << "\n";
+         throw std::runtime_error( oss.str() );
+      }
+   }
+
+   {
+      test_ = "Row-major unitriangular LSE substitution (single right-hand side, upper part, not transposed)";
+
+      blaze::UniUpperMatrix< blaze::StaticMatrix<Type,3UL,3UL,blaze::rowMajor> > A;
+      randomize( A );
+
+      blaze::StaticMatrix<Type,3UL,3UL,blaze::rowMajor> LU( A );
+
+      blaze::StaticVector<Type,3UL,blaze::columnVector> b, x;
+      randomize( b );
+
+      x = b;
+
+      blaze::trtrs( LU, x, 'U', 'N', 'U' );
+
+      if( ( trans( A ) * x ) != b ) {
+         std::ostringstream oss;
+         oss << " Test: " << test_ << "\n"
+             << " Error: Solving the LSE failed\n"
+             << " Details:\n"
+             << "   Element type:\n"
+             << "     " << typeid( Type ).name() << "\n"
+             << "   System matrix (A):\n" << A << "\n"
+             << "   Result (x):\n" << x << "\n"
+             << "   Right-hand side (b):\n" << b << "\n"
+             << "   trans( A ) * x:\n" << ( trans( A ) * x ) << "\n";
+         throw std::runtime_error( oss.str() );
+      }
+   }
+
+   {
+      test_ = "Row-major unitriangular LSE substitution (single right-hand side, upper part, transposed)";
+
+      blaze::UniUpperMatrix< blaze::StaticMatrix<Type,3UL,3UL,blaze::rowMajor> > A;
+      randomize( A );
+
+      blaze::StaticMatrix<Type,3UL,3UL,blaze::rowMajor> LU( trans( A ) );
+
+      blaze::StaticVector<Type,3UL,blaze::columnVector> b, x;
+      randomize( b );
+
+      x = b;
+
+      blaze::trtrs( LU, x, 'L', 'T', 'U' );
+
+      if( ( trans( A ) * x ) != b ) {
+         std::ostringstream oss;
+         oss << " Test: " << test_ << "\n"
+             << " Error: Solving the LSE failed\n"
+             << " Details:\n"
+             << "   Element type:\n"
+             << "     " << typeid( Type ).name() << "\n"
+             << "   System matrix (A):\n" << A << "\n"
+             << "   Result (x):\n" << x << "\n"
+             << "   Right-hand side (b):\n" << b << "\n"
+             << "   trans( A ) * x:\n" << ( trans( A ) * x ) << "\n";
+         throw std::runtime_error( oss.str() );
+      }
+   }
+
+   {
+      test_ = "Row-major unitriangular LSE substitution (single right-hand side, upper part, conjugate transposed)";
+
+      blaze::UniUpperMatrix< blaze::StaticMatrix<Type,3UL,3UL,blaze::rowMajor> > A;
+      randomize( A );
+
+      blaze::StaticMatrix<Type,3UL,3UL,blaze::rowMajor> LU( ctrans( A ) );
+
+      blaze::StaticVector<Type,3UL,blaze::columnVector> b, x;
+      randomize( b );
+
+      x = b;
+
+      blaze::trtrs( LU, x, 'L', 'C', 'U' );
+
+      if( ( trans( A ) * x ) != b ) {
+         std::ostringstream oss;
+         oss << " Test: " << test_ << "\n"
+             << " Error: Solving the LSE failed\n"
+             << " Details:\n"
+             << "   Element type:\n"
+             << "     " << typeid( Type ).name() << "\n"
+             << "   System matrix (A):\n" << A << "\n"
+             << "   Result (x):\n" << x << "\n"
+             << "   Right-hand side (b):\n" << b << "\n"
+             << "   trans( A ) * x:\n" << ( trans( A ) * x ) << "\n";
+         throw std::runtime_error( oss.str() );
+      }
+   }
+
+
+   //=====================================================================================
+   // Column-major matrix tests
+   //=====================================================================================
+
+   {
+      test_ = "Column-major triangular LSE substitution (single right-hand side, lower part, not transposed)";
+
+      blaze::LowerMatrix< blaze::StaticMatrix<Type,3UL,3UL,blaze::columnMajor> > A;
+      randomize( A );
+
+      blaze::StaticMatrix<Type,3UL,3UL,blaze::columnMajor> LU( A );
+
+      blaze::StaticVector<Type,3UL,blaze::columnVector> b, x;
+      randomize( b );
+
+      x = b;
+
+      blaze::trtrs( LU, x, 'L', 'N', 'N' );
+
+      if( ( A * x ) != b ) {
+         std::ostringstream oss;
+         oss << " Test: " << test_ << "\n"
+             << " Error: Solving the LSE failed\n"
+             << " Details:\n"
+             << "   Element type:\n"
+             << "     " << typeid( Type ).name() << "\n"
+             << "   System matrix (A):\n" << A << "\n"
+             << "   Result (x):\n" << x << "\n"
+             << "   Right-hand side (b):\n" << b << "\n"
+             << "   trans( A ) * x:\n" << ( trans( A ) * x ) << "\n";
+         throw std::runtime_error( oss.str() );
+      }
+   }
+
+   {
+      test_ = "Column-major triangular LSE substitution (single right-hand side, lower part, transposed)";
+
+      blaze::LowerMatrix< blaze::StaticMatrix<Type,3UL,3UL,blaze::columnMajor> > A;
+      randomize( A );
+
+      blaze::StaticMatrix<Type,3UL,3UL,blaze::columnMajor> LU( trans( A ) );
+
+      blaze::StaticVector<Type,3UL,blaze::columnVector> b, x;
+      randomize( b );
+
+      x = b;
+
+      blaze::trtrs( LU, x, 'U', 'T', 'N' );
+
+      if( ( A * x ) != b ) {
+         std::ostringstream oss;
+         oss << " Test: " << test_ << "\n"
+             << " Error: Solving the LSE failed\n"
+             << " Details:\n"
+             << "   Element type:\n"
+             << "     " << typeid( Type ).name() << "\n"
+             << "   System matrix (A):\n" << A << "\n"
+             << "   Result (x):\n" << x << "\n"
+             << "   Right-hand side (b):\n" << b << "\n"
+             << "   trans( A ) * x:\n" << ( trans( A ) * x ) << "\n";
+         throw std::runtime_error( oss.str() );
+      }
+   }
+
+   {
+      test_ = "Column-major triangular LSE substitution (single right-hand side, lower part, conjugate transposed)";
+
+      blaze::LowerMatrix< blaze::StaticMatrix<Type,3UL,3UL,blaze::columnMajor> > A;
+      randomize( A );
+
+      blaze::StaticMatrix<Type,3UL,3UL,blaze::columnMajor> LU( ctrans( A ) );
+
+      blaze::StaticVector<Type,3UL,blaze::columnVector> b, x;
+      randomize( b );
+
+      x = b;
+
+      blaze::trtrs( LU, x, 'U', 'C', 'N' );
+
+      if( ( A * x ) != b ) {
+         std::ostringstream oss;
+         oss << " Test: " << test_ << "\n"
+             << " Error: Solving the LSE failed\n"
+             << " Details:\n"
+             << "   Element type:\n"
+             << "     " << typeid( Type ).name() << "\n"
+             << "   System matrix (A):\n" << A << "\n"
+             << "   Result (x):\n" << x << "\n"
+             << "   Right-hand side (b):\n" << b << "\n"
+             << "   trans( A ) * x:\n" << ( trans( A ) * x ) << "\n";
+         throw std::runtime_error( oss.str() );
+      }
+   }
+
+   {
+      test_ = "Column-major unitriangular LSE substitution (single right-hand side, lower part, not transposed)";
+
+      blaze::UniLowerMatrix< blaze::StaticMatrix<Type,3UL,3UL,blaze::columnMajor> > A;
+      randomize( A );
+
+      blaze::StaticMatrix<Type,3UL,3UL,blaze::columnMajor> LU( A );
+
+      blaze::StaticVector<Type,3UL,blaze::columnVector> b, x;
+      randomize( b );
+
+      x = b;
+
+      blaze::trtrs( LU, x, 'L', 'N', 'U' );
+
+      if( ( A * x ) != b ) {
+         std::ostringstream oss;
+         oss << " Test: " << test_ << "\n"
+             << " Error: Solving the LSE failed\n"
+             << " Details:\n"
+             << "   Element type:\n"
+             << "     " << typeid( Type ).name() << "\n"
+             << "   System matrix (A):\n" << A << "\n"
+             << "   Result (x):\n" << x << "\n"
+             << "   Right-hand side (b):\n" << b << "\n"
+             << "   trans( A ) * x:\n" << ( trans( A ) * x ) << "\n";
+         throw std::runtime_error( oss.str() );
+      }
+   }
+
+   {
+      test_ = "Column-major unitriangular LSE substitution (single right-hand side, lower part, transposed)";
+
+      blaze::UniLowerMatrix< blaze::StaticMatrix<Type,3UL,3UL,blaze::columnMajor> > A;
+      randomize( A );
+
+      blaze::StaticMatrix<Type,3UL,3UL,blaze::columnMajor> LU( trans( A ) );
+
+      blaze::StaticVector<Type,3UL,blaze::columnVector> b, x;
+      randomize( b );
+
+      x = b;
+
+      blaze::trtrs( LU, x, 'U', 'T', 'U' );
+
+      if( ( A * x ) != b ) {
+         std::ostringstream oss;
+         oss << " Test: " << test_ << "\n"
+             << " Error: Solving the LSE failed\n"
+             << " Details:\n"
+             << "   Element type:\n"
+             << "     " << typeid( Type ).name() << "\n"
+             << "   System matrix (A):\n" << A << "\n"
+             << "   Result (x):\n" << x << "\n"
+             << "   Right-hand side (b):\n" << b << "\n"
+             << "   trans( A ) * x:\n" << ( trans( A ) * x ) << "\n";
+         throw std::runtime_error( oss.str() );
+      }
+   }
+
+   {
+      test_ = "Column-major unitriangular LSE substitution (single right-hand side, lower part, conjugate transposed)";
+
+      blaze::UniLowerMatrix< blaze::StaticMatrix<Type,3UL,3UL,blaze::columnMajor> > A;
+      randomize( A );
+
+      blaze::StaticMatrix<Type,3UL,3UL,blaze::columnMajor> LU( ctrans( A ) );
+
+      blaze::StaticVector<Type,3UL,blaze::columnVector> b, x;
+      randomize( b );
+
+      x = b;
+
+      blaze::trtrs( LU, x, 'U', 'C', 'U' );
+
+      if( ( A * x ) != b ) {
+         std::ostringstream oss;
+         oss << " Test: " << test_ << "\n"
+             << " Error: Solving the LSE failed\n"
+             << " Details:\n"
+             << "   Element type:\n"
+             << "     " << typeid( Type ).name() << "\n"
+             << "   System matrix (A):\n" << A << "\n"
+             << "   Result (x):\n" << x << "\n"
+             << "   Right-hand side (b):\n" << b << "\n"
+             << "   trans( A ) * x:\n" << ( trans( A ) * x ) << "\n";
+         throw std::runtime_error( oss.str() );
+      }
+   }
+
+   {
+      test_ = "Column-major triangular LSE substitution (single right-hand side, upper part, not transposed)";
+
+      blaze::UpperMatrix< blaze::StaticMatrix<Type,3UL,3UL,blaze::columnMajor> > A;
+      randomize( A );
+
+      blaze::StaticMatrix<Type,3UL,3UL,blaze::columnMajor> LU( A );
+
+      blaze::StaticVector<Type,3UL,blaze::columnVector> b, x;
+      randomize( b );
+
+      x = b;
+
+      blaze::trtrs( LU, x, 'U', 'N', 'N' );
+
+      if( ( A * x ) != b ) {
+         std::ostringstream oss;
+         oss << " Test: " << test_ << "\n"
+             << " Error: Solving the LSE failed\n"
+             << " Details:\n"
+             << "   Element type:\n"
+             << "     " << typeid( Type ).name() << "\n"
+             << "   System matrix (A):\n" << A << "\n"
+             << "   Result (x):\n" << x << "\n"
+             << "   Right-hand side (b):\n" << b << "\n"
+             << "   trans( A ) * x:\n" << ( trans( A ) * x ) << "\n";
+         throw std::runtime_error( oss.str() );
+      }
+   }
+
+   {
+      test_ = "Column-major triangular LSE substitution (single right-hand side, upper part, transposed)";
+
+      blaze::UpperMatrix< blaze::StaticMatrix<Type,3UL,3UL,blaze::columnMajor> > A;
+      randomize( A );
+
+      blaze::StaticMatrix<Type,3UL,3UL,blaze::columnMajor> LU( trans( A ) );
+
+      blaze::StaticVector<Type,3UL,blaze::columnVector> b, x;
+      randomize( b );
+
+      x = b;
+
+      blaze::trtrs( LU, x, 'L', 'T', 'N' );
+
+      if( ( A * x ) != b ) {
+         std::ostringstream oss;
+         oss << " Test: " << test_ << "\n"
+             << " Error: Solving the LSE failed\n"
+             << " Details:\n"
+             << "   Element type:\n"
+             << "     " << typeid( Type ).name() << "\n"
+             << "   System matrix (A):\n" << A << "\n"
+             << "   Result (x):\n" << x << "\n"
+             << "   Right-hand side (b):\n" << b << "\n"
+             << "   trans( A ) * x:\n" << ( trans( A ) * x ) << "\n";
+         throw std::runtime_error( oss.str() );
+      }
+   }
+
+   {
+      test_ = "Column-major triangular LSE substitution (single right-hand side, upper part, conjugate transposed)";
+
+      blaze::UpperMatrix< blaze::StaticMatrix<Type,3UL,3UL,blaze::columnMajor> > A;
+      randomize( A );
+
+      blaze::StaticMatrix<Type,3UL,3UL,blaze::columnMajor> LU( ctrans( A ) );
+
+      blaze::StaticVector<Type,3UL,blaze::columnVector> b, x;
+      randomize( b );
+
+      x = b;
+
+      blaze::trtrs( LU, x, 'L', 'C', 'N' );
+
+      if( ( A * x ) != b ) {
+         std::ostringstream oss;
+         oss << " Test: " << test_ << "\n"
+             << " Error: Solving the LSE failed\n"
+             << " Details:\n"
+             << "   Element type:\n"
+             << "     " << typeid( Type ).name() << "\n"
+             << "   System matrix (A):\n" << A << "\n"
+             << "   Result (x):\n" << x << "\n"
+             << "   Right-hand side (b):\n" << b << "\n"
+             << "   trans( A ) * x:\n" << ( trans( A ) * x ) << "\n";
+         throw std::runtime_error( oss.str() );
+      }
+   }
+
+   {
+      test_ = "Column-major unitriangular LSE substitution (single right-hand side, upper part, not transposed)";
+
+      blaze::UniUpperMatrix< blaze::StaticMatrix<Type,3UL,3UL,blaze::columnMajor> > A;
+      randomize( A );
+
+      blaze::StaticMatrix<Type,3UL,3UL,blaze::columnMajor> LU( A );
+
+      blaze::StaticVector<Type,3UL,blaze::columnVector> b, x;
+      randomize( b );
+
+      x = b;
+
+      blaze::trtrs( LU, x, 'U', 'N', 'U' );
+
+      if( ( A * x ) != b ) {
+         std::ostringstream oss;
+         oss << " Test: " << test_ << "\n"
+             << " Error: Solving the LSE failed\n"
+             << " Details:\n"
+             << "   Element type:\n"
+             << "     " << typeid( Type ).name() << "\n"
+             << "   System matrix (A):\n" << A << "\n"
+             << "   Result (x):\n" << x << "\n"
+             << "   Right-hand side (b):\n" << b << "\n"
+             << "   trans( A ) * x:\n" << ( trans( A ) * x ) << "\n";
+         throw std::runtime_error( oss.str() );
+      }
+   }
+
+   {
+      test_ = "Column-major unitriangular LSE substitution (single right-hand side, upper part, transposed)";
+
+      blaze::UniUpperMatrix< blaze::StaticMatrix<Type,3UL,3UL,blaze::columnMajor> > A;
+      randomize( A );
+
+      blaze::StaticMatrix<Type,3UL,3UL,blaze::columnMajor> LU( trans( A ) );
+
+      blaze::StaticVector<Type,3UL,blaze::columnVector> b, x;
+      randomize( b );
+
+      x = b;
+
+      blaze::trtrs( LU, x, 'L', 'T', 'U' );
+
+      if( ( A * x ) != b ) {
+         std::ostringstream oss;
+         oss << " Test: " << test_ << "\n"
+             << " Error: Solving the LSE failed\n"
+             << " Details:\n"
+             << "   Element type:\n"
+             << "     " << typeid( Type ).name() << "\n"
+             << "   System matrix (A):\n" << A << "\n"
+             << "   Result (x):\n" << x << "\n"
+             << "   Right-hand side (b):\n" << b << "\n"
+             << "   trans( A ) * x:\n" << ( trans( A ) * x ) << "\n";
+         throw std::runtime_error( oss.str() );
+      }
+   }
+
+   {
+      test_ = "Column-major unitriangular LSE substitution (single right-hand side, upper part, conjugate transposed)";
+
+      blaze::UniUpperMatrix< blaze::StaticMatrix<Type,3UL,3UL,blaze::columnMajor> > A;
+      randomize( A );
+
+      blaze::StaticMatrix<Type,3UL,3UL,blaze::columnMajor> LU( ctrans( A ) );
+
+      blaze::StaticVector<Type,3UL,blaze::columnVector> b, x;
+      randomize( b );
+
+      x = b;
+
+      blaze::trtrs( LU, x, 'L', 'C', 'U' );
+
+      if( ( A * x ) != b ) {
+         std::ostringstream oss;
+         oss << " Test: " << test_ << "\n"
+             << " Error: Solving the LSE failed\n"
+             << " Details:\n"
+             << "   Element type:\n"
+             << "     " << typeid( Type ).name() << "\n"
+             << "   System matrix (A):\n" << A << "\n"
+             << "   Result (x):\n" << x << "\n"
+             << "   Right-hand side (b):\n" << b << "\n"
+             << "   trans( A ) * x:\n" << ( trans( A ) * x ) << "\n";
          throw std::runtime_error( oss.str() );
       }
    }
