@@ -325,9 +325,6 @@ inline void getrf( int m, int n, complex<double>* A, int lda, int* ipiv, int* in
 // \note The LU decomposition will never fail, even for singular matrices. However, in case of a
 // singular matrix the resulting decomposition cannot be used for a matrix inversion or solving
 // a linear system of equations.
-//
-// \note This function does not provide any exception safety guarantee, i.e. in case an exception
-// is thrown \a A may already have been modified.
 */
 template< typename MT  // Type of the dense matrix
         , bool SO >    // Storage order of the dense matrix

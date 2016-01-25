@@ -1,7 +1,7 @@
 //=================================================================================================
 /*!
 //  \file blaze/math/lapack/potrs.h
-//  \brief Header file for LAPACK Cholesky-based linear system functions (potrs)
+//  \brief Header file for LAPACK positive definite backward substitution functions (potrs)
 //
 //  Copyright (C) 2013 Klaus Iglberger - All Rights Reserved
 //
@@ -67,10 +67,10 @@ namespace blaze {
 /*! \cond BLAZE_INTERNAL */
 extern "C" {
 
-void spotrs_( char* uplo, int* n, int* nrhs, float*  A, int* lda, float*  b, int* ldb, int* info );
-void dpotrs_( char* uplo, int* n, int* nrhs, double* A, int* lda, double* b, int* ldb, int* info );
-void cpotrs_( char* uplo, int* n, int* nrhs, float*  A, int* lda, float*  b, int* ldb, int* info );
-void zpotrs_( char* uplo, int* n, int* nrhs, double* A, int* lda, double* b, int* ldb, int* info );
+void spotrs_( char* uplo, int* n, int* nrhs, float*  A, int* lda, float*  B, int* ldb, int* info );
+void dpotrs_( char* uplo, int* n, int* nrhs, double* A, int* lda, double* B, int* ldb, int* info );
+void cpotrs_( char* uplo, int* n, int* nrhs, float*  A, int* lda, float*  B, int* ldb, int* info );
+void zpotrs_( char* uplo, int* n, int* nrhs, double* A, int* lda, double* B, int* ldb, int* info );
 
 }
 /*! \endcond */
@@ -288,8 +288,8 @@ inline void potrs( char uplo, int n, int nrhs, const complex<double>* A,
 //  - \f$ A^T*x=b \f$ if \a A is row-major
 //
 // In this context the positive definite system matrix \a A is a n-by-n matrix that has already
-// been factorized by the potrf() functions and \a x and \a b are n-dimensional column vectors.
-// Note that the function only works for general, non-adapted matrices with \c float, \c double,
+// been factorized by the potrf() functions and \a x and \a b are n-dimensional vectors. Note
+// that the function only works for general, non-adapted matrices with \c float, \c double,
 // \c complex<float>, or \c complex<double> element type. The attempt to call the function with
 // adaptors or matrices of any other element type results in a compile time error!
 //
@@ -307,6 +307,7 @@ inline void potrs( char uplo, int n, int nrhs, const complex<double>* A,
    using blaze::DynamicMatrix;
    using blaze::DynamicVector;
    using blaze::columnMajor;
+   using blaze::columnVector;
 
    DynamicMatrix<double,columnMajor>  A( 2UL, 2UL );  // The system matrix A
    DynamicVector<double,columnVector> b( 2UL );       // The right-hand side vector b
@@ -325,6 +326,7 @@ inline void potrs( char uplo, int n, int nrhs, const complex<double>* A,
    using blaze::DynamicMatrix;
    using blaze::DynamicVector;
    using blaze::rowMajor;
+   using blaze::columnVector;
 
    DynamicMatrix<double,rowMajor> A( 2UL, 2UL );  // The system matrix A
    DynamicVector<double,columnVector> b( 2UL );   // The right-hand side vector b
@@ -459,8 +461,8 @@ inline void potrs( const DenseMatrix<MT,SO>& A, DenseVector<VT,TF>& b, char uplo
    DynamicMatrix<double,rowMajor> B( 4UL, 2UL );  // The right-hand side matrix B
    // ... Initialization
 
-   DynamicMatrix<double,columnMajor> D( A );  // Temporary matrix to be decomposed
-   DynamicMatrix<double,columnMajor> X( B );  // Temporary matrix for the solution
+   DynamicMatrix<double,rowMajor> D( A );  // Temporary matrix to be decomposed
+   DynamicMatrix<double,rowMajor> X( B );  // Temporary matrix for the solution
 
    potrf( D, 'L' );
    potrs( D, X, 'L' );

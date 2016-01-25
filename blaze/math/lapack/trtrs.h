@@ -86,19 +86,19 @@ void ztrtrs_( char* uplo, char* trans, char* diag, int* n, int* nrhs, double* A,
 //=================================================================================================
 
 //*************************************************************************************************
-/*!\name LAPACK Triangular substitution functions (trtrs) */
+/*!\name LAPACK triangular substitution functions (trtrs) */
 //@{
-inline void trtrs( char uplo, char trans, char diag, int n, int nrhs, const float* A, int lda,
-                   float* B, int ldb, int* info );
+inline void trtrs( char uplo, char trans, char diag, int n, int nrhs, const float* A,
+                   int lda, float* B, int ldb, int* info );
 
-inline void trtrs( char uplo, char trans, char diag, int n, int nrhs, const double* A, int lda,
-                   double* B, int ldb, int* info );
+inline void trtrs( char uplo, char trans, char diag, int n, int nrhs, const double* A,
+                   int lda, double* B, int ldb, int* info );
 
-inline void trtrs( char uplo, char trans, char diag, int n, const complex<float>* A, int lda,
-                   complex<float>* B, int ldb, int* info );
+inline void trtrs( char uplo, char trans, char diag, int n, int nrhs, const complex<float>* A,
+                   int lda, complex<float>* B, int ldb, int* info );
 
-inline void trtrs( char uplo, char trans, char diag, int n, const complex<double>* A, int lda,
-                   complex<double>* B, int ldb, int* info );
+inline void trtrs( char uplo, char trans, char diag, int n, int nrhs, const complex<double>* A,
+                   int lda, complex<double>* B, int ldb, int* info );
 
 template< typename MT, bool SO, typename VT, bool TF >
 inline void trtrs( const DenseMatrix<MT,SO>& A, DenseVector<VT,TF>& b,

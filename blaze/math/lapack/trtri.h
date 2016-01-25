@@ -260,7 +260,9 @@ inline void trtri( char uplo, char diag, int n, complex<double>* A, int lda, int
 // \param uplo \c 'L' in case of a lower matrix, \c 'U' in case of an upper matrix.
 // \param diag \c 'U' in case of a unitriangular matrix, \c 'N' otherwise.
 // \return void
-// \exception std::invalid_argument Invalid argument provided.
+// \exception std::invalid_argument Invalid non-square matrix provided.
+// \exception std::invalid_argument Invalid uplo argument provided.
+// \exception std::invalid_argument Invalid diag argument provided.
 // \exception std::invalid_argument Inversion of singular matrix failed.
 //
 // This function performs the dense matrix inversion based on the LAPACK trtri() functions for

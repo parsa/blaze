@@ -302,8 +302,8 @@ inline void sytrs( char uplo, int n, int nrhs, const complex<double>* A, int lda
 //  - \f$ A^T*x=b \f$ if \a A is row-major
 //
 // In this context the symmetric indefinite system matrix \a A is a n-by-n matrix that has already
-// been factorized by the sytrf() functions and \a x and \a b are n-dimensional column vectors.
-// Note that the function only works for general, non-adapted matrices with \c float, \c double,
+// been factorized by the sytrf() functions and \a x and \a b are n-dimensional vectors. Note that
+// the function only works for general, non-adapted matrices with \c float, \c double,
 // \c complex<float>, or \c complex<double> element type. The attempt to call the function with
 // adaptors or matrices of any other element type results in a compile time error!
 //

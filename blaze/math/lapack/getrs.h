@@ -120,7 +120,7 @@ inline void getrs( const DenseMatrix<MT1,SO1>& A, DenseMatrix<MT2,SO2>& B,
 // \param nrhs The number of right-hand side vectors \f$[0..\infty)\f$.
 // \param A Pointer to the first element of the single precision column-major square matrix.
 // \param lda The total number of elements between two columns of the matrix \f$[0..\infty)\f$.
-// \param ipiv Auxiliary array for the pivot indices; size >= min( \a m, \a n ).
+// \param ipiv Auxiliary array of size \a n for the pivot indices.
 // \param B Pointer to the first element of the column-major matrix.
 // \param ldb The total number of elements between two columns of matrix \a B \f$[0..\infty)\f$.
 // \param info Return code of the function call.
@@ -167,7 +167,7 @@ inline void getrs( char trans, int n, int nrhs, const float* A, int lda,
 // \param nrhs The number of right-hand side vectors \f$[0..\infty)\f$.
 // \param A Pointer to the first element of the double precision column-major square matrix.
 // \param lda The total number of elements between two columns of the matrix \f$[0..\infty)\f$.
-// \param ipiv Auxiliary array for the pivot indices; size >= min( \a m, \a n ).
+// \param ipiv Auxiliary array of size \a n for the pivot indices.
 // \param B Pointer to the first element of the column-major matrix.
 // \param ldb The total number of elements between two columns of matrix \a B \f$[0..\infty)\f$.
 // \param info Return code of the function call.
@@ -214,7 +214,7 @@ inline void getrs( char trans, int n, int nrhs, const double* A, int lda,
 // \param nrhs The number of right-hand side vectors \f$[0..\infty)\f$.
 // \param A Pointer to the first element of the single precision complex column-major square matrix.
 // \param lda The total number of elements between two columns of the matrix \f$[0..\infty)\f$.
-// \param ipiv Auxiliary array for the pivot indices; size >= min( \a m, \a n ).
+// \param ipiv Auxiliary array of size \a n for the pivot indices.
 // \param B Pointer to the first element of the column-major matrix.
 // \param ldb The total number of elements between two columns of matrix \a B \f$[0..\infty)\f$.
 // \param info Return code of the function call.
@@ -263,7 +263,7 @@ inline void getrs( char trans, int n, int nrhs, const complex<float>* A, int lda
 // \param nrhs The number of right-hand side vectors \f$[0..\infty)\f$.
 // \param A Pointer to the first element of the double precision complex column-major square matrix.
 // \param lda The total number of elements between two columns of the matrix \f$[0..\infty)\f$.
-// \param ipiv Auxiliary array for the pivot indices; size >= min( \a m, \a n ).
+// \param ipiv Auxiliary array of size \a n for the pivot indices.
 // \param B Pointer to the first element of the column-major matrix.
 // \param ldb The total number of elements between two columns of matrix \a B \f$[0..\infty)\f$.
 // \param info Return code of the function call.
@@ -313,6 +313,7 @@ inline void getrs( char trans, int n, int nrhs, const complex<double>* A, int ld
 // \param ipiv Auxiliary array of size \a n for the pivot indices.
 // \return void
 // \exception std::invalid_argument Invalid non-square matrix provided.
+// \exception std::invalid_argument Invalid trans argument provided.
 //
 // This function uses the LAPACK getrs() functions to perform the substitution step to compute
 // the solution to the general system of linear equations:
@@ -321,14 +322,18 @@ inline void getrs( char trans, int n, int nrhs, const complex<double>* A, int ld
 //  - \f$ A^T*x=b \f$ if \a A is row-major
 //
 // In this context the general system matrix \a A is a n-by-n matrix that has already been
-// factorized by the getrf() functions and \a x and \a b are n-dimensional column vectors. Note
-// that the function only works for general, non-adapted matrices with \c float, \c double,
-// \c complex<float>, or \c complex<double> element type. The attempt to call the function with
-// adaptors or matrices of any other element type results in a compile time error!
+// factorized by the getrf() functions and \a x and \a b are n-dimensional vectors. Note that the
+// function only works for general, non-adapted matrices with \c float, \c double, \c complex<float>,
+// or \c complex<double> element type. The attempt to call the function with adaptors or matrices
+// of any other element type results in a compile time error!
 //
 // If the function exits successfully, the vector \a b contains the solution of the linear system
-// of equations. The function fails if the given system matrix is not a square matrix. In this case
-// a \a std::invalid_argument exception is thrown.
+// of equations. The function fails if ...
+//
+//  - ... the given system matrix is not a square matrix;
+//  - ... the given \a trans argument is neither 'N' nor 'T' nor 'C'.
+//
+// In all failure cases a \a std::invalid_argument exception is thrown.
 //
 // Examples:
 
@@ -397,6 +402,10 @@ inline void getrs( const DenseMatrix<MT,SO>& A, DenseVector<VT,TF>& b, char tran
       BLAZE_THROW_INVALID_ARGUMENT( "Invalid non-square matrix provided" );
    }
 
+   if( trans != 'N' && trans != 'T' && trans != 'C' ) {
+      BLAZE_THROW_INVALID_ARGUMENT( "Invalid trans argument provided" );
+   }
+
    int n   ( numeric_cast<int>( (~A).rows() ) );
    int nrhs( 1 );
    int lda ( numeric_cast<int>( (~A).spacing() ) );
@@ -425,6 +434,7 @@ inline void getrs( const DenseMatrix<MT,SO>& A, DenseVector<VT,TF>& b, char tran
 // \param ipiv Auxiliary array of size \a n for the pivot indices.
 // \return void
 // \exception std::invalid_argument Invalid non-square matrix provided.
+// \exception std::invalid_argument Invalid trans argument provided.
 // \exception std::invalid_argument Matrix sizes do not match.
 //
 // This function uses the LAPACK getrs() functions to perform the substitution step to compute
@@ -446,6 +456,7 @@ inline void getrs( const DenseMatrix<MT,SO>& A, DenseVector<VT,TF>& b, char tran
 // of equations. The function fails if ...
 //
 //  - ... the given system matrix is not a square matrix;
+//  - ... the given \a trans argument is neither 'N' nor 'T' nor 'C';
 //  - ... the sizes of the two given matrices do not match.
 //
 // In all failure cases a \a std::invalid_argument exception is thrown.
@@ -480,7 +491,7 @@ inline void getrs( const DenseMatrix<MT,SO>& A, DenseVector<VT,TF>& b, char tran
 
    DynamicMatrix<double,rowMajor> A( 2UL, 2UL );  // The system matrix A
    DynamicMatrix<double,rowMajor> B( 2UL, 4UL );  // The right-hand side matrix B
-   DynamicVector<int,columnVector> ipiv( 2UL );      // Pivoting indices
+   DynamicVector<int,columnVector> ipiv( 2UL );   // Pivoting indices
    // ... Initialization
 
    DynamicMatrix<double,rowMajor> D( A );  // Temporary matrix to be decomposed
@@ -522,6 +533,10 @@ inline void getrs( const DenseMatrix<MT1,SO1>& A, DenseMatrix<MT2,SO2>& B,
 
    if( !isSquare( ~A ) ) {
       BLAZE_THROW_INVALID_ARGUMENT( "Invalid non-square matrix provided" );
+   }
+
+   if( trans != 'N' && trans != 'T' && trans != 'C' ) {
+      BLAZE_THROW_INVALID_ARGUMENT( "Invalid trans argument provided" );
    }
 
    int n   ( numeric_cast<int>( (~A).rows()    ) );

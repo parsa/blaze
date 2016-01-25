@@ -79,12 +79,12 @@ void zhesv_( char* uplo, int* n, int* nrhs, double* A, int* lda, int* ipiv, doub
 
 //=================================================================================================
 //
-//  LAPACK LINEAR SYSTEM FUNCTIONS (HESV)
+//  LAPACK HERMITIAN INDEFINITE LINEAR SYSTEM FUNCTIONS (HESV)
 //
 //=================================================================================================
 
 //*************************************************************************************************
-/*!\name LAPACK linear system functions (hesv) */
+/*!\name LAPACK Hermitian indefinite linear system functions (hesv) */
 //@{
 inline void hesv( char uplo, int n, int nrhs, complex<float>* A, int lda, int* ipiv,
                   complex<float>* B, int ldb, complex<float>* work, int lwork, int* info );

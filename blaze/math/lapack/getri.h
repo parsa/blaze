@@ -286,8 +286,8 @@ inline void getri( int n, complex<double>* A, int lda, const int* ipiv,
 // \param A The matrix to be inverted.
 // \param ipiv Auxiliary array for the pivot indices; size >= min( \a m, \a n ).
 // \return void
-// \exception std::invalid_argument Inversion of singular matrix failed.
 // \exception std::invalid_argument Invalid non-square matrix provided.
+// \exception std::invalid_argument Inversion of singular matrix failed.
 //
 // This function performs the dense matrix inversion based on the LAPACK getri() functions for
 // matrices that have already been factorized by the getrf() functions. Note that the function

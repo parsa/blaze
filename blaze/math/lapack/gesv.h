@@ -80,12 +80,12 @@ void zgesv_( int* n, int* nrhs, double* A, int* lda, int* ipiv, double* b, int* 
 
 //=================================================================================================
 //
-//  LAPACK LINEAR SYSTEM FUNCTIONS (GESV)
+//  LAPACK GENERAL LINEAR SYSTEM FUNCTIONS (GESV)
 //
 //=================================================================================================
 
 //*************************************************************************************************
-/*!\name LAPACK linear system functions (gesv) */
+/*!\name LAPACK general linear system functions (gesv) */
 //@{
 inline void gesv( int n, int nrhs, float* A, int lda, int* ipiv, float* B, int ldb, int* info );
 

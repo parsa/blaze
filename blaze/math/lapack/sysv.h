@@ -80,12 +80,12 @@ void zsysv_( char* uplo, int* n, int* nrhs, double* A, int* lda, int* ipiv, doub
 
 //=================================================================================================
 //
-//  LAPACK LINEAR SYSTEM FUNCTIONS (SYSV)
+//  LAPACK SYMMETRIC INDEFINITE LINEAR SYSTEM FUNCTIONS (SYSV)
 //
 //=================================================================================================
 
 //*************************************************************************************************
-/*!\name LAPACK linear system functions (sysv) */
+/*!\name LAPACK symmetric indefinite linear system functions (sysv) */
 //@{
 inline void sysv( char uplo, int n, int nrhs, float* A, int lda, int* ipiv,
                   float* B, int ldb, float* work, int lwork, int* info );
@@ -400,8 +400,7 @@ template< typename MT  // Type of the system matrix
         , bool SO      // Storage order of the system matrix
         , typename VT  // Type of the right-hand side vector
         , bool TF >    // Transpose flag of the right-hand side vector
-inline void sysv( DenseMatrix<MT,SO>& A, DenseVector<VT,TF>& b,
-                  char uplo, int* ipiv )
+inline void sysv( DenseMatrix<MT,SO>& A, DenseVector<VT,TF>& b, char uplo, int* ipiv )
 {
    using boost::numeric_cast;
 
@@ -517,8 +516,7 @@ template< typename MT1  // Type of the system matrix
         , bool SO1      // Storage order of the system matrix
         , typename MT2  // Type of the right-hand side matrix
         , bool SO2 >    // Storage order of the right-hand side matrix
-inline void sysv( DenseMatrix<MT1,SO1>& A, DenseMatrix<MT2,SO2>& B,
-                  char uplo, int* ipiv )
+inline void sysv( DenseMatrix<MT1,SO1>& A, DenseMatrix<MT2,SO2>& B, char uplo, int* ipiv )
 {
    using boost::numeric_cast;
 

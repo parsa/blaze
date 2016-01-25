@@ -78,12 +78,12 @@ void zhetrf_( char* uplo, int* n, double* A, int* lda, int* ipiv, double* work, 
 
 //=================================================================================================
 //
-//  LAPACK HERMITIAN MATRIX DECOMPOSITION FUNCTIONS
+//  LAPACK LDLH DECOMPOSITION FUNCTIONS
 //
 //=================================================================================================
 
 //*************************************************************************************************
-/*!\name LAPACK Hermitian matrix decomposition functions */
+/*!\name LAPACK LDLH decomposition functions */
 //@{
 inline void hetrf( char uplo, int n, complex<float>* A, int lda, int* ipiv,
                    complex<float>* work, int lwork, int* info );
@@ -221,7 +221,8 @@ inline void hetrf( char uplo, int n, complex<double>* A, int lda, int* ipiv,
 // \param uplo \c 'L' to use the lower part of the matrix, \c 'U' to use the upper part.
 // \param ipiv Auxiliary array of size \a n for the pivot indices.
 // \return void
-// \exception std::invalid_argument Invalid argument provided.
+// \exception std::invalid_argument Invalid non-square matrix provided.
+// \exception std::invalid_argument Invalid uplo argument provided.
 //
 // This function performs the dense matrix decomposition of a Hermitian indefinite matrix based
 // on the LAPACK hetrf() functions, which use the Bunch-Kaufman diagonal pivoting method. Note
@@ -240,6 +241,13 @@ inline void hetrf( char uplo, int n, complex<double>* A, int lda, int* ipiv,
 // the lower part of the matrix and the upper part remains untouched, in case \a uplo is set to
 // \c 'U' the result is stored in the upper part and the lower part remains untouched.
 //
+// The function fails if ...
+//
+//  - ... the given matrix is not a square matrix;
+//  - ... the given \a uplo argument is neither 'L' nor 'U'.
+//
+// In all failure cases a \a std::invalid_argument exception is thrown.
+//
 // For more information on the hetrf() functions (i.e. chetrf() and zhetrf()) see the LAPACK
 // online documentation browser:
 //
@@ -247,9 +255,6 @@ inline void hetrf( char uplo, int n, complex<double>* A, int lda, int* ipiv,
 //
 // \note This function can only be used if the fitting LAPACK library is available and linked to
 // the executable. Otherwise a call to this function will result in a linker error.
-//
-// \note This function does not provide any exception safety guarantee, i.e. in case an exception
-// is thrown \a A may already have been modified.
 */
 template< typename MT  // Type of the dense matrix
         , bool SO >    // Storage order of the dense matrix

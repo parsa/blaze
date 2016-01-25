@@ -80,12 +80,12 @@ void zposv_( char* uplo, int* n, int* nrhs, double* A, int* lda, double* b, int*
 
 //=================================================================================================
 //
-//  LAPACK LINEAR SYSTEM FUNCTIONS (POSV)
+//  LAPACK POSITIVE DEFINITE LINEAR SYSTEM FUNCTIONS (POSV)
 //
 //=================================================================================================
 
 //*************************************************************************************************
-/*!\name LAPACK linear system functions (posv) */
+/*!\name LAPACK positive definite linear system functions (posv) */
 //@{
 inline void posv( char uplo, int n, int nrhs, float* A, int lda, float* B, int ldb, int* info );
 
@@ -428,6 +428,7 @@ inline void posv( DenseMatrix<MT,SO>& A, DenseVector<VT,TF>& b, char uplo )
 // \param uplo \c 'L' to use the lower part of the matrix, \c 'U' to use the upper part.
 // \return void
 // \exception std::invalid_argument Invalid non-square matrix provided.
+// \exception std::invalid_argument Invalid uplo argument provided.
 // \exception std::invalid_argument Matrix sizes do not match.
 // \exception std::invalid_argument Inversion of singular matrix failed.
 //
@@ -461,6 +462,7 @@ inline void posv( DenseMatrix<MT,SO>& A, DenseVector<VT,TF>& b, char uplo )
 // The function fails if ...
 //
 //  - ... the given system matrix is not a square matrix;
+//  - ... the given \a uplo argument is neither 'L' nor 'U';
 //  - ... the sizes of the two given matrices do not match;
 //  - ... the given system matrix is singular and not invertible.
 //

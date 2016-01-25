@@ -79,12 +79,12 @@ void zpotrf_( char* uplo, int* n, double* A, int* lda, int* info );
 
 //=================================================================================================
 //
-//  LAPACK CHOLESKY DECOMPOSITION FUNCTIONS
+//  LAPACK LLH (CHOLESKY) DECOMPOSITION FUNCTIONS
 //
 //=================================================================================================
 
 //*************************************************************************************************
-/*!\name LAPACK Cholesky decomposition functions */
+/*!\name LAPACK LLH (Cholesky) decomposition functions */
 //@{
 inline void potrf( char uplo, int n, float* A, int lda, int* info );
 
@@ -287,7 +287,8 @@ inline void potrf( char uplo, int n, complex<double>* A, int lda, int* info )
 // \param A The matrix to be decomposed.
 // \param uplo \c 'L' to use the lower part of the matrix, \c 'U' to use the upper part.
 // \return void
-// \exception std::invalid_argument Invalid argument provided.
+// \exception std::invalid_argument Invalid non-square matrix provided.
+// \exception std::invalid_argument Invalid uplo argument provided.
 // \exception std::invalid_argument Decomposition of singular matrix failed.
 //
 // This function performs the dense matrix Cholesky decomposition of a symmetric positive definite
@@ -302,8 +303,12 @@ inline void potrf( char uplo, int n, complex<double>* A, int lda, int* info )
                           A = L L^{H} \texttt{ (if uplo = 'L'), } \f]
 
 // where \c U is an upper triangular matrix and \c L is a lower triangular matrix. The Cholesky
-// decomposition fails if the given matrix \a A is not a positive definite matrix. In this case
-// a \a std::std::invalid_argument exception is thrown.
+// decomposition fails if ...
+//
+//  - ... the given system matrix \a A is not a symmetric positive definite matrix;
+//  - ... the given \a uplo argument is neither 'L' nor 'U'.
+//
+// In all failure cases a \a std::invalid_argument exception is thrown.
 //
 // For more information on the potrf() functions (i.e. spotrf(), dpotrf(), cpotrf(), and zpotrf())
 // see the LAPACK online documentation browser:

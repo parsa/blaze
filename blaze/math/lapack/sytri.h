@@ -271,7 +271,8 @@ inline void sytri( char uplo, int n, complex<double>* A, int lda,
 // \param uplo \c 'L' in case of a lower matrix, \c 'U' in case of an upper matrix.
 // \param ipiv Auxiliary array of size \a n for the pivot indices.
 // \return void
-// \exception std::invalid_argument Invalid argument provided.
+// \exception std::invalid_argument Invalid non-square matrix provided.
+// \exception std::invalid_argument Invalid uplo argument provided.
 // \exception std::invalid_argument Inversion of singular matrix failed.
 //
 // This function performs the dense matrix inversion based on the LAPACK sytri() functions for

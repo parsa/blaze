@@ -260,7 +260,8 @@ inline void potri( char uplo, int n, complex<double>* A, int lda, int* info )
 // \param A The positive-definite matrix to be inverted.
 // \param uplo \c 'L' to use the lower part of the matrix, \c 'U' to use the upper part.
 // \return void
-// \exception std::invalid_argument Invalid argument provided.
+// \exception std::invalid_argument Invalid non-square matrix provided.
+// \exception std::invalid_argument Invalid uplo argument provided.
 // \exception std::invalid_argument Inversion of singular matrix failed.
 //
 // This function performs the dense matrix inversion based on the LAPACK potri() functions for
