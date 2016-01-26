@@ -8541,40 +8541,48 @@ namespace blaze {}
 // \tableofcontents
 //
 //
-// The \b Blaze library makes extensive use of the LAPACK functionality for the decomposition,
-// inversion and the computation of the determinant of dense matrices. For this purpose, \b Blaze
-// implements several convenient C++ wrapper functions for all required LAPACK functions. The
-// following sections give a complete overview of all available LAPACK wrapper functions. For
-// more details on the individual LAPACK functions beyond the \b Blaze function documentation,
-// see the LAPACK online documentation browser:
+// The \b Blaze library makes extensive use of the LAPACK functionality for various compute tasks
+// (including the decomposition, inversion and the computation of the determinant of dense matrices).
+// For this purpose, \b Blaze implements several convenient C++ wrapper functions for all required
+// LAPACK functions. The following sections give a complete overview of all available LAPACK wrapper
+// functions. For more details on the individual LAPACK functions see the \b Blaze function
+// documentation or the LAPACK online documentation browser:
 //
 //        http://www.netlib.org/lapack/explore-html/
+//
+// \note All functions only work for general, non-adapted matrices with \c float, \c double,
+// \c complex<float>, or \c complex<double> element type. The attempt to call the function with
+// adaptors or matrices of any other element type results in a compile time error!
 //
 // \note All functions can only be used if the fitting LAPACK library is available and linked to
 // the final executable. Otherwise a call to this function will result in a linker error.
 //
-// \note For performance reasons, all functions do not provide any exception safety guarantee, i.e.
-// in case an exception is thrown the given matrix may already have been modified.
+// \note For performance reasons, all functions do not provide the basic exception safety guarantee,
+// i.e. in case an exception is thrown the given matrix may already have been modified.
 //
 //
 // \n \section lapack_decomposition Matrix Decomposition
-//
-// \n \subsection lapack_LU_decomposition LU Decomposition
 // <hr>
 //
+// The following functions decompose/factorize the given dense matrix. Based on this decomposition
+// the matrix can be inverted or used to solve a linear system of equations.
+//
+//
+// \n \subsection lapack_lu_decomposition LU Decomposition
+//
 // The following functions provide an interface for the LAPACK functions \c sgetrf(), \c dgetrf(),
-// \c cgetrf(), and \c zgetrf():
+// \c cgetrf(), and \c zgetrf(), which compute the LU decomposition for the given general matrix:
 
    \code
    namespace blaze {
 
-   void getrf( int* m, int* n, float* A, int* lda, int* ipiv, int* info );
+   void getrf( int m, int n, float* A, int lda, int* ipiv, int* info );
 
-   void getrf( int* m, int* n, double* A, int* lda, int* ipiv, int* info );
+   void getrf( int m, int n, double* A, int lda, int* ipiv, int* info );
 
-   void getrf( int* m, int* n, complex<float>* A, int* lda, int* ipiv, int* info );
+   void getrf( int m, int n, complex<float>* A, int lda, int* ipiv, int* info );
 
-   void getrf( int* m, int* n, complex<double>* A, int* lda, int* ipiv, int* info );
+   void getrf( int m, int n, complex<double>* A, int lda, int* ipiv, int* info );
 
    template< typename MT, bool SO >
    void getrf( DenseMatrix<MT,SO>& A, int* ipiv );
@@ -8597,28 +8605,25 @@ namespace blaze {}
 // a linear system of equations.
 //
 //
-// \n \subsection lapack_ldlt_decomposition LDLT Decomposition (Bunch-Kaufman for Symmetric Matrices)
+// \n \subsection lapack_ldlt_decomposition LDLT Decomposition
 //
 // The following functions provide an interface for the LAPACK functions \c ssytrf(), \c dsytrf(),
-// \c csytrf(), and \c zsytrf():
+// \c csytrf(), and \c zsytrf(), which compute the LDLT (Bunch-Kaufman) decomposition for the given
+// symmetric indefinite matrix:
 
    \code
    namespace blaze {
 
-   inline void sytrf( char* uplo, int* n, float* A, int* lda, int* ipiv,
-                      float* work, int* lwork, int* info );
+   void sytrf( char uplo, int n, float* A, int lda, int* ipiv, float* work, int lwork, int* info );
 
-   inline void sytrf( char* uplo, int* n, double* A, int* lda, int* ipiv,
-                      double* work, int* lwork, int* info );
+   void sytrf( char uplo, int n, double* A, int lda, int* ipiv, double* work, int lwork, int* info );
 
-   inline void sytrf( char* uplo, int* n, complex<float>* A, int* lda, int* ipiv,
-                      complex<float>* work, int* lwork, int* info );
+   void sytrf( char uplo, int n, complex<float>* A, int lda, int* ipiv, complex<float>* work, int lwork, int* info );
 
-   inline void sytrf( char* uplo, int* n, complex<double>* A, int* lda, int* ipiv,
-                      complex<double>* work, int* lwork, int* info );
+   void sytrf( char uplo, int n, complex<double>* A, int lda, int* ipiv, complex<double>* work, int lwork, int* info );
 
    template< typename MT, bool SO >
-   inline void sytrf( DenseMatrix<MT,SO>& A, char uplo, int* ipiv );
+   void sytrf( DenseMatrix<MT,SO>& A, char uplo, int* ipiv );
 
    } // namespace blaze
    \endcode
@@ -8639,21 +8644,20 @@ namespace blaze {}
 // solving a linear system of equations.
 //
 //
-// \n \subsection lapack_ldlh_decomposition LDLH Decomposition (Bunch-Kaufman for Hermitian Matrices)
+// \n \subsection lapack_ldlh_decomposition LDLH Decomposition
 //
-// The following functions provide an interface for the LAPACK functions \c chetrf() and \c zsytrf():
+// The following functions provide an interface for the LAPACK functions \c chetrf() and \c zsytrf(),
+// which compute the LDLH (Bunch-Kaufman) decomposition for the given Hermitian indefinite matrix:
 
    \code
    namespace blaze {
 
-   inline void hetrf( char* uplo, int* n, complex<float>* A, int* lda, int* ipiv,
-                      complex<float>* work, int* lwork, int* info );
+   void hetrf( char uplo, int n, complex<float>* A, int lda, int* ipiv, complex<float>* work, int lwork, int* info );
 
-   inline void hetrf( char* uplo, int* n, complex<double>* A, int* lda, int* ipiv,
-                      complex<double>* work, int* lwork, int* info );
+   void hetrf( char uplo, int n, complex<double>* A, int lda, int* ipiv, complex<double>* work, int lwork, int* info );
 
    template< typename MT, bool SO >
-   inline void hetrf( DenseMatrix<MT,SO>& A, char uplo, int* ipiv );
+   void hetrf( DenseMatrix<MT,SO>& A, char uplo, int* ipiv );
 
    } // namespace blaze
    \endcode
@@ -8674,21 +8678,22 @@ namespace blaze {}
 // solving a linear system of equations.
 //
 //
-// \n \subsection lapack_cholesky_decomposition Cholesky Decomposition
+// \n \subsection lapack_llh_decomposition Cholesky (LLH) Decomposition
 //
 // The following functions provide an interface for the LAPACK functions \c spotrf(), \c dpotrf(),
-// \c cpotrf(), and \c zpotrf():
+// \c cpotrf(), and \c zpotrf(), which compute the LLH (Cholesky) decomposition for the given
+// positive definite matrix:
 
    \code
    namespace blaze {
 
-   void potrf( char* uplo, int* n, float* A, int* lda, int* info );
+   void potrf( char uplo, int n, float* A, int lda, int* info );
 
-   void potrf( char* uplo, int* n, double* A, int* lda, int* info );
+   void potrf( char uplo, int n, double* A, int lda, int* info );
 
-   void potrf( char* uplo, int* n, complex<float>* A, int* lda, int* info );
+   void potrf( char uplo, int n, complex<float>* A, int lda, int* info );
 
-   void potrf( char* uplo, int* n, complex<double>* A, int* lda, int* info );
+   void potrf( char uplo, int n, complex<double>* A, int lda, int* info );
 
    template< typename MT, bool SO >
    void potrf( DenseMatrix<MT,SO>& A, char uplo );
@@ -8706,23 +8711,21 @@ namespace blaze {}
 // a \a std::std::invalid_argument exception is thrown.
 //
 //
-// \n \subsection lapack_QR_decomposition QR Decomposition
+// \n \subsection lapack_qr_decomposition QR Decomposition
 //
 // The following functions provide an interface for the LAPACK functions \c sgeqrf(), \c dgeqrf(),
-// \c cgeqrf(), and \c zgeqrf():
+// \c cgeqrf(), and \c zgeqrf(), which compute the QR decomposition of the given general matrix:
 
    \code
    namespace blaze {
 
-   void geqrf( int* m, int* n, float* A, int* lda, float* tau, float*  work, int* lwork, int* info );
+   void geqrf( int m, int n, float* A, int lda, float* tau, float* work, int lwork, int* info );
 
-   void geqrf( int* m, int* n, double* A, int* lda, double* tau, double* work, int* lwork, int* info );
+   void geqrf( int m, int n, double* A, int lda, double* tau, double* work, int lwork, int* info );
 
-   void geqrf( int* m, int* n, complex<float>* A, int* lda, complex<float>* tau,
-            complex<float>* work, int* lwork, int* info );
+   void geqrf( int m, int n, complex<float>* A, int lda, complex<float>* tau, complex<float>* work, int lwork, int* info );
 
-   void geqrf( int* m, int* n, complex<double>* A, int* lda, complex<double>* tau,
-            complex<double>* work, int* lwork, int* info );
+   void geqrf( int m, int n, complex<double>* A, int lda, complex<double>* tau, complex<double>* work, int lwork, int* info );
 
    template< typename MT, bool SO >
    void geqrf( DenseMatrix<MT,SO>& A, typename MT::ElementType* tau );
@@ -8753,23 +8756,26 @@ namespace blaze {}
 // \n \section lapack_inversion Matrix Inversion
 // <hr>
 //
-// \subsection lapack_LU_inversion LU-based Inversion
+// Given a matrix that has already been decomposed, the following functions can be used to invert
+// the matrix in-place.
+//
+//
+// \n \subsection lapack_lu_inversion LU-based Inversion
 //
 // The following functions provide an interface for the LAPACK functions \c sgetri(), \c dgetri(),
-// \c cgetri(), and \c zgetri():
+// \c cgetri(), and \c zgetri(), which invert a general matrix that has already been decomposed by
+// an \ref lapack_lu_decomposition :
 
    \code
    namespace blaze {
 
-   void getri( int* n, float* A, int* lda, int* ipiv, float* work, int* lwork, int* info );
+   void getri( int n, float* A, int lda, const int* ipiv, float* work, int lwork, int* info );
 
-   void getri( int* n, double* A, int* lda, int* ipiv, double* work, int* lwork, int* info );
+   void getri( int n, double* A, int lda, const int* ipiv, double* work, int lwork, int* info );
 
-   void getri( int* n, complex<float>* A, int* lda, int* ipiv,
-               complex<float>* work, int* lwork, int* info );
+   void getri( int n, complex<float>* A, int lda, const int* ipiv, complex<float>* work, int lwork, int* info );
 
-   void getri( int* n, complex<double>* A, int* lda, int* ipiv,
-               complex<double>* work, int* lwork, int* info );
+   void getri( int n, complex<double>* A, int lda, const int* ipiv, complex<double>* work, int lwork, int* info );
 
    template< typename MT, bool SO >
    void getri( DenseMatrix<MT,SO>& A, const int* ipiv );
@@ -8786,28 +8792,25 @@ namespace blaze {}
 // \a std::invalid_argument exception in case of an error.
 //
 //
-// \n \subsection lapack_ldlt_inversion LDLT-based Inversion (Bunch-Kaufman for Symmetric Matrices)
+// \n \subsection lapack_ldlt_inversion LDLT-based Inversion
 //
 // The following functions provide an interface for the LAPACK functions \c ssytri(), \c dsytri(),
-// \c csytri(), and \c zsytri():
+// \c csytri(), and \c zsytri(), which invert a symmetric indefinite matrix that has already been
+// decomposed by an \ref lapack_ldlt_decomposition :
 
    \code
    namespace blaze {
 
-   inline void sytri( char* uplo, char* diag, int* n, float* A, int* lda,
-                      int* ipiv, float* work, int* info );
+   void sytri( char uplo, int n, float* A, int lda, const int* ipiv, float* work, int* info );
 
-   inline void sytri( char* uplo, char* diag, int* n, double* A, int* lda,
-                      int* ipiv, double* work, int* info );
+   void sytri( char uplo, int n, double* A, int lda, const int* ipiv, double* work, int* info );
 
-   inline void sytri( char* uplo, char* diag, int* n, complex<float>* A, int* lda,
-                      int* ipiv, complex<float>* work, int* info );
+   void sytri( char uplo, int n, complex<float>* A, int lda, const int* ipiv, complex<float>* work, int* info );
 
-   inline void sytri( char* uplo, char* diag, int* n, complex<double>* A, int* lda,
-                      int* ipiv, complex<double>* work, int* info );
+   void sytri( char uplo, int n, complex<double>* A, int lda, const int* ipiv, complex<double>* work, int* info );
 
    template< typename MT, bool SO >
-   inline void sytri( DenseMatrix<MT,SO>& A, char uplo, int* ipiv );
+   void sytri( DenseMatrix<MT,SO>& A, char uplo, const int* ipiv );
 
    } // namespace blaze
    \endcode
@@ -8821,21 +8824,21 @@ namespace blaze {}
 // \a std::invalid_argument exception in case of an error.
 //
 //
-// \n \subsection lapack_ldlh_inversion LDLH-based Inversion (Bunch-Kaufman for Hermitian Matrices)
+// \n \subsection lapack_ldlh_inversion LDLH-based Inversion
 //
-// The following functions provide an interface for the LAPACK functions \c chetri() and \c zhetri():
+// The following functions provide an interface for the LAPACK functions \c chetri() and
+// \c zhetri(), which invert an Hermitian indefinite matrix that has already been decomposed by
+// an \ref lapack_ldlh_decomposition :
 
    \code
    namespace blaze {
 
-   inline void hetri( char* uplo, char* diag, int* n, complex<float>* A, int* lda,
-                      int* ipiv, complex<float>* work, int* info );
+   void hetri( char uplo, int n, complex<float>* A, int lda, const int* ipiv, complex<float>* work, int* info );
 
-   inline void hetri( char* uplo, char* diag, int* n, complex<double>* A, int* lda,
-                      int* ipiv, complex<double>* work, int* info );
+   void hetri( char uplo, int n, complex<double>* A, int lda, const int* ipiv, complex<double>* work, int* info );
 
    template< typename MT, bool SO >
-   inline void hetri( DenseMatrix<MT,SO>& A, char uplo, int* ipiv );
+   void hetri( DenseMatrix<MT,SO>& A, char uplo, const int* ipiv );
 
    } // namespace blaze
    \endcode
@@ -8849,21 +8852,22 @@ namespace blaze {}
 // \a std::invalid_argument exception in case of an error.
 //
 //
-// \n \subsection lapack_cholesky_inversion Cholesky-based Inversion
+// \n \subsection lapack_llh_inversion Cholesky-based Inversion
 //
 // The following functions provide an interface for the LAPACK functions \c spotri(), \c dpotri(),
-// \c cpotri(), and \c zpotri():
+// \c cpotri(), and \c zpotri(), which invert a positive definite matrix that has already been
+// decomposed by an \ref lapack_llh_decomposition :
 
    \code
    namespace blaze {
 
-   void potri( char* uplo, int* n, float* A, int* lda, int* info );
+   void potri( char uplo, int n, float* A, int lda, int* info );
 
-   void potri( char* uplo, int* n, double* A, int* lda, int* info );
+   void potri( char uplo, int n, double* A, int lda, int* info );
 
-   void potri( char* uplo, int* n, complex<float>* A, int* lda, int* info );
+   void potri( char uplo, int n, complex<float>* A, int lda, int* info );
 
-   void potri( char* uplo, int* n, complex<double>* A, int* lda, int* info );
+   void potri( char uplo, int n, complex<double>* A, int lda, int* info );
 
    template< typename MT, bool SO >
    void potri( DenseMatrix<MT,SO>& A, char uplo );
@@ -8881,24 +8885,24 @@ namespace blaze {}
 // \a std::invalid_argument exception in case of an error.
 //
 //
-// \subsection lapack_triangular_inversion Triangular matrix Inversion
+// \n \subsection lapack_triangular_inversion Inversion of Triangular Matrices
 //
 // The following functions provide an interface for the LAPACK functions \c strtri(), \c dtrtri(),
-// \c ctrtri(), and \c ztrtri():
+// \c ctrtri(), and \c ztrtri(), which invert the given triangular matrix in-place:
 
    \code
    namespace blaze {
 
-   inline void trtri( char* uplo, char* diag, int* n, float* A, int* lda, int* info );
+   void trtri( char uplo, char diag, int n, float* A, int lda, int* info );
 
-   inline void trtri( char* uplo, char* diag, int* n, double* A, int* lda, int* info );
+   void trtri( char uplo, char diag, int n, double* A, int lda, int* info );
 
-   inline void trtri( char* uplo, char* diag, int* n, complex<float>* A, int* lda, int* info );
+   void trtri( char uplo, char diag, int n, complex<float>* A, int lda, int* info );
 
-   inline void trtri( char* uplo, char* diag, int* n, complex<double>* A, int* lda, int* info );
+   void trtri( char uplo, char diag, int n, complex<double>* A, int lda, int* info );
 
    template< typename MT, bool SO >
-   inline void trtri( DenseMatrix<MT,SO>& A, char uplo, char diag );
+   void trtri( DenseMatrix<MT,SO>& A, char uplo, char diag );
 
    } // namespace blaze
    \endcode
@@ -8914,48 +8918,263 @@ namespace blaze {}
 // \a std::invalid_argument exception in case of an error.
 //
 //
-// \n \section lapack_linear_system_solver Linear System Solver
+// \n \section lapack_substitution Forward/Backward Substitution
 // <hr>
 //
-// The following functions provide an interface for the LAPACK functions \c sgesv(), \c dgesv(),
-// \c cgesv(), and \c zgesv():
+// Given a matrix that has already been decomposed the following functions can be used to perform
+// the forward/backward substitution step to compute the solution to a system of linear equations.
+// Note that depending on the storage order of the system matrix and the given right-hand side the
+// functions solve different equation systems:
+//
+// Single right-hand side:
+//  - \f$ A  *x=b \f$ if \a A is column-major
+//  - \f$ A^T*x=b \f$ if \a A is row-major
+//
+// Multiple right-hand sides:
+//  - \f$ A  *X  =B   \f$ if both \a A and \a B are column-major
+//  - \f$ A^T*X  =B   \f$ if \a A is row-major and \a B is column-major
+//  - \f$ A  *X^T=B^T \f$ if \a A is column-major and \a B is row-major
+//  - \f$ A^T*X^T=B^T \f$ if both \a A and \a B are row-major
+//
+// In this context the general system matrix \a A is a n-by-n matrix that has already been
+// factorized by the according decomposition function, \a x and \a b are n-dimensional vectors
+// and \a X and \a B are either row-major m-by-n matrices or column-major n-by-m matrices.
+//
+//
+// \n \subsection lapack_lu_substitution LU-based Substitution
+//
+// The following functions provide an interface for the LAPACK functions \c sgetrs(), \c dgetrs(),
+// \c cgetrs(), and \c zgetrs(), which perform the substitution step for a general matrix that has
+// already been decomposed by an \ref lapack_lu_decomposition :
 
    \code
    namespace blaze {
 
-   void gesv( int* n, int* nrhs, float* A, int* lda, int* ipiv, float* B, int* ldb, int* info );
+   void getrs( char trans, int n, int nrhs, const float* A, int lda, const int* ipiv, float* B, int ldb, int* info );
 
-   void gesv( int* n, int* nrhs, double* A, int* lda, int* ipiv, double* B, int* ldb, int* info );
+   void getrs( char trans, int n, int nrhs, const double* A, int lda, const int* ipiv, double* B, int ldb, int* info );
 
-   void gesv( int* n, int* nrhs, complex<float>* A, int* lda, int* ipiv,
-              complex<float>* B, int* ldb, int* info );
+   void getrs( char trans, int n, const complex<float>* A, int lda, const int* ipiv, complex<float>* B, int ldb, int* info );
 
-   void gesv( int* n, int* nrhs, complex<double>* A, int* lda, int* ipiv,
-              complex<double>* B, int* ldb, int* info );
+   void getrs( char trans, int n, const complex<double>* A, int lda, const int* ipiv, complex<double>* B, int ldb, int* info );
 
-   template< typename MT, typename VT >
-   void gesv( DenseMatrix<MT,columnMajor>& A, DenseVector<VT,columnVector>& b, int* ipiv );
+   template< typename MT, bool SO, typename VT, bool TF >
+   void getrs( const DenseMatrix<MT,SO>& A, DenseVector<VT,TF>& b, char trans, const int* ipiv );
 
-   template< typename MT1, typename MT2 >
-   void gesv( DenseMatrix<MT1,columnMajor>& A, DenseMatrix<MT2,columnMajor>& B, int* ipiv );
+   template< typename MT1, bool SO1, typename MT2, bool SO2 >
+   void getrs( const DenseMatrix<MT1,SO1>& A, DenseMatrix<MT2,SO2>& B, char trans, const int* ipiv );
 
    } // namespace blaze
    \endcode
 
-// This function computes the solution to the system of linear equations \f$ A*X=B \f$, where
-// \a A is a column-major n-by-n matrix and \a B is either a column-major n-by-nrhs matrix or a
-// n-dimensional column vector (\a nrhs = 1).
+// If the function exits successfully, the vector \a b or the matrix \a B contain the solution(s)
+// of the linear system of equations. The function fails if ...
 //
-// If the function exits successfully, the matrix \a B contains the solutions of the linear system
-// of equations and \a A has been decomposed by means of a LU decomposition with partial pivoting
-// and row interchanges. The decomposition has the form
+//  - ... the given system matrix is not a square matrix;
+//  - ... the given \a trans argument is neither 'N' nor 'T' nor 'C';
+//  - ... the sizes of the two given matrices do not match.
+//
+// The first four functions report failure via the \c info argument, the last two functions throw
+// a \a std::invalid_argument exception in case of an error.
+//
+//
+// \n \subsection lapack_ldlt_substitution LDLT-based Substitution
+//
+// The following functions provide an interface for the LAPACK functions \c ssytrs(), \c dsytrs(),
+// \c csytrs(), and \c zsytrs(), which perform the substitution step for a symmetric indefinite
+// matrix that has already been decomposed by an \ref lapack_ldlt_decomposition :
 
-                          \f[ A = P \cdot L \cdot U, \f]
+   \code
+   namespace blaze {
 
-// where \c P is a permutation matrix, \c L is a lower unitriangular matrix, and \c U is an upper
-// triangular matrix. \c L is stored in the lower part of \a A and \c U is stored in the upper
-// part. The unit diagonal elements of \c L are not stored. The factored form of \a A is then
-// used to solve the system of equations.
+   void sytrs( char uplo, int n, int nrhs, const float* A, int lda, const int* ipiv, float* B, int ldb, int* info );
+
+   void sytrs( char uplo, int n, int nrhs, const double* A, int lda, const int* ipiv, double* B, int ldb, int* info );
+
+   void sytrs( char uplo, int n, int nrhs, const complex<float>* A, int lda, const int* ipiv, complex<float>* B, int ldb, int* info );
+
+   void sytrs( char uplo, int n, int nrhs, const complex<double>* A, int lda, const int* ipiv, complex<double>* B, int ldb, int* info );
+
+   template< typename MT, bool SO, typename VT, bool TF >
+   void sytrs( const DenseMatrix<MT,SO>& A, DenseVector<VT,TF>& b, char uplo, const int* ipiv );
+
+   template< typename MT1, bool SO1, typename MT2, bool SO2 >
+   void sytrs( const DenseMatrix<MT1,SO1>& A, DenseMatrix<MT2,SO2>& B, char uplo, const int* ipiv );
+
+   } // namespace blaze
+   \endcode
+
+// If the function exits successfully, the vector \a b or the matrix \a B contain the solution(s)
+// of the linear system of equations. The function fails if ...
+//
+//  - ... the given system matrix is not a square matrix;
+//  - ... the given \a uplo argument is neither 'L' nor 'U';
+//  - ... the sizes of the two given matrices do not match.
+//
+// The first four functions report failure via the \c info argument, the last two functions throw
+// a \a std::invalid_argument exception in case of an error.
+//
+//
+// \n \subsection lapack_ldlh_substitution LDLH-based Substitution
+//
+// The following functions provide an interface for the LAPACK functions \c chetrs(), and \c zhetrs(),
+// which perform the substitution step for an Hermitian indefinite matrix that has already been
+// decomposed by an \ref lapack_ldlh_decomposition :
+
+   \code
+   namespace blaze {
+
+   void hetrs( char uplo, int n, int nrhs, const complex<float>* A, int lda, const int* ipiv, complex<float>* B, int ldb, int* info );
+
+   void hetrs( char uplo, int n, int nrhs, const complex<double>* A, int lda, const int* ipiv, complex<double>* B, int ldb, int* info );
+
+   template< typename MT, bool SO, typename VT, bool TF >
+   void hetrs( const DenseMatrix<MT,SO>& A, DenseVector<VT,TF>& b, char uplo, const int* ipiv );
+
+   template< typename MT1, bool SO1, typename MT2, bool SO2 >
+   void hetrs( const DenseMatrix<MT1,SO1>& A, DenseMatrix<MT2,SO2>& B, char uplo, const int* ipiv );
+
+   } // namespace blaze
+   \endcode
+
+// If the function exits successfully, the vector \a b or the matrix \a B contain the solution(s)
+// of the linear system of equations. The function fails if ...
+//
+//  - ... the given system matrix is not a square matrix;
+//  - ... the given \a uplo argument is neither 'L' nor 'U';
+//  - ... the sizes of the two given matrices do not match.
+//
+// The first two functions report failure via the \c info argument, the last two functions throw
+// a \a std::invalid_argument exception in case of an error.
+//
+//
+// \n \subsection lapack_llh_substitution Cholesky-based Substitution
+//
+// The following functions provide an interface for the LAPACK functions \c spotrs(), \c dpotrs(),
+// \c cpotrs(), and \c zpotrs(), which perform the substitution step for a positive definite matrix
+// that has already been decomposed by an \ref lapack_llh_decomposition :
+
+   \code
+   namespace blaze {
+
+   void potrs( char uplo, int n, int nrhs, const float* A, int lda, float* B, int ldb, int* info );
+
+   void potrs( char uplo, int n, int nrhs, const double* A, int lda, double* B, int ldb, int* info );
+
+   void potrs( char uplo, int n, int nrhs, const complex<float>* A, int lda, complex<float>* B, int ldb, int* info );
+
+   void potrs( char uplo, int n, int nrhs, const complex<double>* A, int lda, complex<double>* B, int ldb, int* info );
+
+   template< typename MT, bool SO, typename VT, bool TF >
+   void potrs( const DenseMatrix<MT,SO>& A, DenseVector<VT,TF>& b, char uplo );
+
+   template< typename MT1, bool SO1, typename MT2, bool SO2 >
+   void potrs( const DenseMatrix<MT1,SO1>& A, DenseMatrix<MT2,SO2>& B, char uplo );
+
+   } // namespace blaze
+   \endcode
+
+// If the function exits successfully, the vector \a b or the matrix \a B contain the solution(s)
+// of the linear system of equations. The function fails if ...
+//
+//  - ... the given system matrix is not a square matrix;
+//  - ... the given \a uplo argument is neither 'L' nor 'U';
+//  - ... the sizes of the two given matrices do not match.
+//
+// The first two functions report failure via the \c info argument, the last two functions throw
+// a \a std::invalid_argument exception in case of an error.
+//
+//
+// \n \subsection lapack_triangular_substitution Substitution for Triangular Matrices
+//
+// The following functions provide an interface for the LAPACK functions \c strtrs(), \c dtrtrs(),
+// \c ctrtrs(), and \c ztrtrs(), which perform the substitution step for a triangular matrix:
+
+   \code
+   namespace blaze {
+
+   void trtrs( char uplo, char trans, char diag, int n, int nrhs, const float* A, int lda, float* B, int ldb, int* info );
+
+   void trtrs( char uplo, char trans, char diag, int n, int nrhs, const double* A, int lda, double* B, int ldb, int* info );
+
+   void trtrs( char uplo, char trans, char diag, int n, int nrhs, const complex<float>* A, int lda, complex<float>* B, int ldb, int* info );
+
+   void trtrs( char uplo, char trans, char diag, int n, int nrhs, const complex<double>* A, int lda, complex<double>* B, int ldb, int* info );
+
+   template< typename MT, bool SO, typename VT, bool TF >
+   void trtrs( const DenseMatrix<MT,SO>& A, DenseVector<VT,TF>& b, char uplo, char trans, char diag );
+
+   template< typename MT1, bool SO1, typename MT2, bool SO2 >
+   void trtrs( const DenseMatrix<MT1,SO1>& A, DenseMatrix<MT2,SO2>& B, char uplo, char trans, char diag );
+
+   } // namespace blaze
+   \endcode
+
+// If the function exits successfully, the vector \a b or the matrix \a B contain the solution(s)
+// of the linear system of equations. The function fails if ...
+//
+//  - ... the given system matrix is not a square matrix;
+//  - ... the given \a uplo argument is neither 'L' nor 'U';
+//  - ... the given \a trans argument is neither 'N' nor 'T' nor 'C';
+//  - ... the given \a diag argument is neither 'U' nor 'N';
+//  - ... the sizes of the two given matrices do not match.
+//
+// The first four functions report failure via the \c info argument, the last two functions throw
+// a \a std::invalid_argument exception in case of an error.
+//
+//
+// \n \section lapack_linear_system_solver Linear System Solver
+// <hr>
+//
+// The following functions represent compound functions that perform both the decomposition step
+// as well as the substitution step to compute the solution to a system of linear equations. Note
+// that depending on the storage order of the system matrix and the given right-hand side the
+// functions solve different equation systems:
+//
+// Single right-hand side:
+//  - \f$ A  *x=b \f$ if \a A is column-major
+//  - \f$ A^T*x=b \f$ if \a A is row-major
+//
+// Multiple right-hand sides:
+//  - \f$ A  *X  =B   \f$ if both \a A and \a B are column-major
+//  - \f$ A^T*X  =B   \f$ if \a A is row-major and \a B is column-major
+//  - \f$ A  *X^T=B^T \f$ if \a A is column-major and \a B is row-major
+//  - \f$ A^T*X^T=B^T \f$ if both \a A and \a B are row-major
+//
+// In this context the general system matrix \a A is a n-by-n matrix that has already been
+// factorized by the according decomposition function, \a x and \a b are n-dimensional vectors
+// and \a X and \a B are either row-major m-by-n matrices or column-major n-by-m matrices.
+//
+//
+// \subsection lapack_lu_linear_system_solver LU-based Linear System Solver
+//
+// The following functions provide an interface for the LAPACK functions \c sgesv(), \c dgesv(),
+// \c cgesv(), and \c zgesv(), which combine an \ref lapack_lu_decomposition and the according
+// \ref lapack_lu_substitution :
+
+   \code
+   namespace blaze {
+
+   void gesv( int n, int nrhs, float* A, int lda, int* ipiv, float* B, int ldb, int* info );
+
+   void gesv( int n, int nrhs, double* A, int lda, int* ipiv, double* B, int ldb, int* info );
+
+   void gesv( int n, int nrhs, complex<float>* A, int lda, int* ipiv, complex<float>* B, int ldb, int* info );
+
+   void gesv( int n, int nrhs, complex<double>* A, int lda, int* ipiv, complex<double>* B, int ldb, int* info );
+
+   template< typename MT, bool SO, typename VT, bool TF >
+   void gesv( DenseMatrix<MT,SO>& A, DenseVector<VT,TF>& b, int* ipiv );
+
+   template< typename MT1, bool SO1, typename MT2, bool SO2 >
+   void gesv( DenseMatrix<MT1,SO1>& A, DenseMatrix<MT2,SO2>& B, int* ipiv );
+
+   } // namespace blaze
+   \endcode
+
+// If the function exits successfully, the vector \a b or the matrix \a B contain the
+// solution(s) of the linear system of equations and \a A has been decomposed by means of an
+// \ref lapack_lu_decomposition.
 //
 // The functions fail if ...
 //
@@ -8964,6 +9183,162 @@ namespace blaze {}
 //
 // The first four functions report failure via the \c info argument, the fifth function throws a
 // \a std::invalid_argument exception in case of an error.
+//
+//
+// \n \subsection lapack_ldlt_linear_system_solver LDLT-based Linear System Solver
+//
+// The following functions provide an interface for the LAPACK functions \c ssysv(), \c dsysv(),
+// \c csysv(), and \c zsysv(), which combine an \ref lapack_ldlt_decomposition and the according
+// \ref lapack_ldlt_substitution :
+
+   \code
+   namespace blaze {
+
+   void sysv( char uplo, int n, int nrhs, float* A, int lda, int* ipiv, float* B, int ldb, float* work, int lwork, int* info );
+
+   void sysv( char uplo, int n, int nrhs, double* A, int lda, int* ipiv, double* B, int ldb, double* work, int lwork, int* info );
+
+   void sysv( char uplo, int n, int nrhs, complex<float>* A, int lda, int* ipiv, complex<float>* B, int ldb, complex<float>* work, int lwork, int* info );
+
+   void sysv( char uplo, int n, int nrhs, complex<double>* A, int lda, int* ipiv, complex<double>* B, int ldb, complex<double>* work, int lwork, int* info );
+
+   template< typename MT, bool SO, typename VT, bool TF >
+   void sysv( DenseMatrix<MT,SO>& A, DenseVector<VT,TF>& b, char uplo, int* ipiv );
+
+   template< typename MT1, bool SO1, typename MT2, bool SO2 >
+   void sysv( DenseMatrix<MT1,SO1>& A, DenseMatrix<MT2,SO2>& B, char uplo, int* ipiv );
+
+   } // namespace blaze
+   \endcode
+
+// If the function exits successfully, the vector \a b or the matrix \a B contain the
+// solution(s) of the linear system of equations and \a A has been decomposed by means of an
+// \ref lapack_ldlt_decomposition.
+//
+// The functions fail if ...
+//
+//  - ... the given system matrix is not a square matrix;
+//  - ... the given \a uplo argument is neither 'L' nor 'U';
+//  - ... the sizes of the two given matrices do not match;
+//  - ... the given system matrix is singular and not invertible.
+//
+// The first four functions report failure via the \c info argument, the fifth function throws a
+// \a std::invalid_argument exception in case of an error.
+//
+//
+// \n \subsection lapack_ldlh_linear_system_solver LDLH-based Linear System Solver
+//
+// The following functions provide an interface for the LAPACK functions \c shesv(), \c dhesv(),
+// \c chesv(), and \c zhesv(), which combine an \ref lapack_ldlh_decomposition and the according
+// \ref lapack_ldlh_substitution :
+
+   \code
+   namespace blaze {
+
+   void hesv( char uplo, int n, int nrhs, complex<float>* A, int lda, int* ipiv, complex<float>* B, int ldb, complex<float>* work, int lwork, int* info );
+
+   void hesv( char uplo, int n, int nrhs, complex<double>* A, int lda, int* ipiv, complex<double>* B, int ldb, complex<double>* work, int lwork, int* info );
+
+   template< typename MT, bool SO, typename VT, bool TF >
+   void hesv( DenseMatrix<MT,SO>& A, DenseVector<VT,TF>& b, char uplo, int* ipiv );
+
+   template< typename MT1, bool SO1, typename MT2, bool SO2 >
+   void hesv( DenseMatrix<MT1,SO1>& A, DenseMatrix<MT2,SO2>& B, char uplo, int* ipiv );
+
+   } // namespace blaze
+   \endcode
+
+// If the function exits successfully, the vector \a b or the matrix \a B contain the
+// solution(s) of the linear system of equations and \a A has been decomposed by means of an
+// \ref lapack_ldlh_decomposition.
+//
+// The functions fail if ...
+//
+//  - ... the given system matrix is not a square matrix;
+//  - ... the given \a uplo argument is neither 'L' nor 'U';
+//  - ... the sizes of the two given matrices do not match;
+//  - ... the given system matrix is singular and not invertible.
+//
+// The first two functions report failure via the \c info argument, the fifth function throws a
+// \a std::invalid_argument exception in case of an error.
+//
+//
+// \n \subsection lapack_llh_linear_system_solver Cholesky-based Linear System Solver
+//
+// The following functions provide an interface for the LAPACK functions \c sposv(), \c dposv(),
+// \c cposv(), and \c zposv(), which combine an \ref lapack_llh_decomposition and the according
+// \ref lapack_llh_substitution :
+
+   \code
+   namespace blaze {
+
+   void posv( char uplo, int n, int nrhs, float* A, int lda, float* B, int ldb, int* info );
+
+   void posv( char uplo, int n, int nrhs, double* A, int lda, double* B, int ldb, int* info );
+
+   void posv( char uplo, int n, int nrhs, complex<float>* A, int lda, complex<float>* B, int ldb, int* info );
+
+   void posv( char uplo, int n, int nrhs, complex<double>* A, int lda, complex<double>* B, int ldb, int* info );
+
+   template< typename MT, bool SO, typename VT, bool TF >
+   void posv( DenseMatrix<MT,SO>& A, DenseVector<VT,TF>& b, char uplo );
+
+   template< typename MT1, bool SO1, typename MT2, bool SO2 >
+   void posv( DenseMatrix<MT1,SO1>& A, DenseMatrix<MT2,SO2>& B, char uplo );
+
+   } // namespace blaze
+   \endcode
+
+// If the function exits successfully, the vector \a b or the matrix \a B contain the
+// solution(s) of the linear system of equations and \a A has been decomposed by means of an
+// \ref lapack_llh_decomposition.
+//
+// The functions fail if ...
+//
+//  - ... the given system matrix is not a square matrix;
+//  - ... the given \a uplo argument is neither 'L' nor 'U';
+//  - ... the sizes of the two given matrices do not match;
+//  - ... the given system matrix is singular and not invertible.
+//
+// The first four functions report failure via the \c info argument, the fifth function throws a
+// \a std::invalid_argument exception in case of an error.
+//
+//
+// \n \subsection lapack_triangular_linear_system_solverLinear Linear System Solver for Triangular Matrices
+//
+// The following functions provide an interface for the LAPACK functions \c strsv(), \c dtrsv(),
+// \c ctrsv(), and \c ztrsv():
+
+   \code
+   namespace blaze {
+
+   void trsv( char uplo, char trans, char diag, int n, const float* A, int lda, float* x, int incX );
+
+   void trsv( char uplo, char trans, char diag, int n, const double* A, int lda, double* x, int incX );
+
+   void trsv( char uplo, char trans, char diag, int n, const complex<float>* A, int lda, complex<float>* x, int incX );
+
+   void trsv( char uplo, char trans, char diag, int n, const complex<double>* A, int lda, complex<double>* x, int incX );
+
+   template< typename MT, bool SO, typename VT, bool TF >
+   void trsv( const DenseMatrix<MT,SO>& A, DenseVector<VT,TF>& b, char uplo, char trans, char diag );
+
+   } // namespace blaze
+   \endcode
+
+// If the function exits successfully, the vector \a b or the matrix \a B contain the
+// solution(s) of the linear system of equations.
+//
+// The functions fail if ...
+//
+//  - ... the given system matrix is not a square matrix;
+//  - ... the given \a uplo argument is neither 'L' nor 'U';
+//  - ... the given \a trans argument is neither 'N' nor 'T' nor 'C';
+//  - ... the given \a diag argument is neither 'U' nor 'N'.
+//
+// The last function throws a \a std::invalid_argument exception in case of an error. Note that
+// none of the functions does perform any test for singularity or near-singularity. Such tests
+// must be performed prior to calling this function! All other
 //
 //
 // \n Previous: \ref blas_functions &nbsp; &nbsp; Next: \ref configuration_files \n
