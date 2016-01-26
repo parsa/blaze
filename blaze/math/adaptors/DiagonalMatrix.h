@@ -539,8 +539,8 @@ inline void invert6x6( DiagonalMatrix<MT,SO,true>& m )
 // \c complex<float> or \c complex<double> element type. The attempt to call the function with
 // matrices of any other element type results in a compile time error!
 //
-// \note This function does not provide any exception safety guarantee, i.e. in case an exception
-// is thrown, \c m may already have been modified.
+// \note This function does only provide the basic exception safety guarantee, i.e. in case of an
+// exception \a m may already have been modified.
 */
 template< InversionFlag IF  // Inversion algorithm
         , typename MT       // Type of the adapted matrix

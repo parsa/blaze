@@ -11531,11 +11531,11 @@ inline bool isSame( const DenseSubmatrix<MT,AF,SO>& a, const DenseSubmatrix<MT,A
 // In all failure cases either a compilation error is created if the failure can be predicted at
 // compile time or a \a std::invalid_argument exception is thrown.
 //
-// \note This function does not provide any exception safety guarantee, i.e. in case an exception
-// is thrown \c dm may already have been modified.
-//
 // \note This function can only be used if the fitting LAPACK library is available and linked to
 // the executable. Otherwise a linker error will be created.
+//
+// \note This function does only provide the basic exception safety guarantee, i.e. in case of an
+// exception \a dm may already have been modified.
 */
 template< InversionFlag IF  // Inversion algorithm
         , typename MT       // Type of the dense matrix

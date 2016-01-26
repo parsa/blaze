@@ -676,8 +676,8 @@ inline void invert6x6( DenseMatrix<MT,SO>& dm )
 // \note This function can only be used if the fitting LAPACK library is available and linked to
 // the executable. Otherwise a linker error will be created.
 //
-// \note This function does not provide any exception safety guarantee, i.e. in case an exception
-// is thrown \c dm may already have been modified.
+// \note This function does only provide the basic exception safety guarantee, i.e. in case of an
+// exception \a dm may already have been modified.
 */
 template< typename MT  // Type of the dense matrix
         , bool SO >    // Storage order of the dense matrix
@@ -714,8 +714,8 @@ inline void invertByDefault( DenseMatrix<MT,SO>& dm )
 // \note This function can only be used if the fitting LAPACK library is available and linked to
 // the executable. Otherwise a linker error will be created.
 //
-// \note This function does not provide any exception safety guarantee, i.e. in case an exception
-// is thrown \c dm may already have been modified.
+// \note This function does only provide the basic exception safety guarantee, i.e. in case of an
+// exception \a dm may already have been modified.
 */
 template< typename MT  // Type of the dense matrix
         , bool SO >    // Storage order of the dense matrix
@@ -759,8 +759,8 @@ inline void invertByLU( DenseMatrix<MT,SO>& dm )
 // \note This function can only be used if the fitting LAPACK library is available and linked to
 // the executable. Otherwise a linker error will be created.
 //
-// \note This function does not provide any exception safety guarantee, i.e. in case an exception
-// is thrown \c dm may already have been modified.
+// \note This function does only provide the basic exception safety guarantee, i.e. in case of an
+// exception \a dm may already have been modified.
 */
 template< typename MT  // Type of the dense matrix
         , bool SO >    // Storage order of the dense matrix
@@ -821,8 +821,8 @@ inline void invertByLDLT( DenseMatrix<MT,SO>& dm )
 // \note This function can only be used if the fitting LAPACK library is available and linked to
 // the executable. Otherwise a linker error will be created.
 //
-// \note This function does not provide any exception safety guarantee, i.e. in case an exception
-// is thrown \c dm may already have been modified.
+// \note This function does only provide the basic exception safety guarantee, i.e. in case of an
+// exception \a dm may already have been modified.
 */
 template< typename MT  // Type of the dense matrix
         , bool SO >    // Storage order of the dense matrix
@@ -860,8 +860,8 @@ inline typename EnableIf< IsBuiltin<typename MT::ElementType> >::Type
 // \note This function can only be used if the fitting LAPACK library is available and linked to
 // the executable. Otherwise a linker error will be created.
 //
-// \note This function does not provide any exception safety guarantee, i.e. in case an exception
-// is thrown \c dm may already have been modified.
+// \note This function does only provide the basic exception safety guarantee, i.e. in case of an
+// exception \a dm may already have been modified.
 */
 template< typename MT  // Type of the dense matrix
         , bool SO >    // Storage order of the dense matrix
@@ -923,8 +923,8 @@ inline typename EnableIf< IsComplex<typename MT::ElementType> >::Type
 // \note This function can only be used if the fitting LAPACK library is available and linked to
 // the executable. Otherwise a linker error will be created.
 //
-// \note This function does not provide any exception safety guarantee, i.e. in case an exception
-// is thrown \c dm may already have been modified.
+// \note This function does only provide the basic exception safety guarantee, i.e. in case of an
+// exception \a dm may already have been modified.
 */
 template< typename MT  // Type of the dense matrix
         , bool SO >    // Storage order of the dense matrix
@@ -987,8 +987,8 @@ inline void invertByLLH( DenseMatrix<MT,SO>& dm )
 // \note This function can only be used if the fitting LAPACK library is available and linked to
 // the executable. Otherwise a linker error will be created.
 //
-// \note This function does not provide any exception safety guarantee, i.e. in case an exception
-// is thrown, \c m may already have been modified.
+// \note This function does only provide the basic exception safety guarantee, i.e. in case of an
+// exception \a dm may already have been modified.
 */
 template< InversionFlag IF  // Inversion algorithm
         , typename MT       // Type of the dense matrix
@@ -1039,8 +1039,8 @@ inline void invertNxN( DenseMatrix<MT,SO>& dm )
 // \note This function can only be used if the fitting LAPACK library is available and linked to
 // the executable. Otherwise a linker error will be created.
 //
-// \note This function does not provide any exception safety guarantee, i.e. in case an exception
-// is thrown \c dm may already have been modified.
+// \note This function does only provide the basic exception safety guarantee, i.e. in case of an
+// exception \a dm may already have been modified.
 */
 template< typename MT  // Type of the dense matrix
         , bool SO >    // Storage order of the dense matrix
@@ -1085,8 +1085,8 @@ inline void invert( DenseMatrix<MT,SO>& dm )
 // \note This function can only be used if the fitting LAPACK library is available and linked to
 // the executable. Otherwise a linker error will be created.
 //
-// \note This function does not provide any exception safety guarantee, i.e. in case an exception
-// is thrown \c dm may already have been modified.
+// \note This function does only provide the basic exception safety guarantee, i.e. in case of an
+// exception \a dm may already have been modified.
 */
 template< InversionFlag IF  // Inversion algorithm
         , typename MT       // Type of the dense matrix

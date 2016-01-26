@@ -536,6 +536,9 @@ inline void invert6x6( UniUpperMatrix<MT,SO,true>& m )
 //
 // \note This function can only be used if the fitting LAPACK library is available and linked to
 // the executable. Otherwise a linker error will be created.
+//
+// \note This function does only provide the basic exception safety guarantee, i.e. in case of an
+// exception \a m may already have been modified.
 */
 template< typename MT  // Type of the dense matrix
         , bool SO >    // Storage order of the dense matrix
@@ -563,6 +566,9 @@ inline void invertByDefault( UniUpperMatrix<MT,SO,true>& m )
 //
 // \note This function can only be used if the fitting LAPACK library is available and linked to
 // the executable. Otherwise a linker error will be created.
+//
+// \note This function does only provide the basic exception safety guarantee, i.e. in case of an
+// exception \a m may already have been modified.
 */
 template< typename MT  // Type of the dense matrix
         , bool SO >    // Storage order of the dense matrix
