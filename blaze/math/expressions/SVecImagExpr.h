@@ -509,6 +509,7 @@ class SVecImagExpr : public SparseVector< SVecImagExpr<VT,TF>, TF >
       BLAZE_INTERNAL_ASSERT( (~lhs).size() == rhs.size(), "Invalid vector sizes" );
 
       const RT tmp( serial( rhs.sv_ ) );
+      (~lhs).reserve( tmp.nonZeros() );
       assign( ~lhs, imag( tmp ) );
    }
    /*! \endcond */

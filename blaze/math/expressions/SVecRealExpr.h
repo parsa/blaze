@@ -509,6 +509,7 @@ class SVecRealExpr : public SparseVector< SVecRealExpr<VT,TF>, TF >
       BLAZE_INTERNAL_ASSERT( (~lhs).size() == rhs.size(), "Invalid vector sizes" );
 
       const RT tmp( serial( rhs.sv_ ) );
+      (~lhs).reserve( tmp.nonZeros() );
       assign( ~lhs, real( tmp ) );
    }
    /*! \endcond */

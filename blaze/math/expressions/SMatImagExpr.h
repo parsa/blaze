@@ -552,6 +552,7 @@ class SMatImagExpr : public SparseMatrix< SMatImagExpr<MT,SO>, SO >
       BLAZE_INTERNAL_ASSERT( (~lhs).columns() == rhs.columns(), "Invalid number of columns" );
 
       const RT tmp( serial( rhs.sm_ ) );
+      (~lhs).reserve( tmp.nonZeros() );
       assign( ~lhs, imag( tmp ) );
    }
    /*! \endcond */
