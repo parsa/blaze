@@ -274,6 +274,7 @@ DenseTest::DenseTest()
    testRandom6x6< UniUpperMatrix< DynamicMatrix<double,columnMajor> > >();
    testRandom6x6< DiagonalMatrix< DynamicMatrix<double,columnMajor> > >();
 
+
    //=====================================================================================
    // Random NxN matrix tests
    //=====================================================================================

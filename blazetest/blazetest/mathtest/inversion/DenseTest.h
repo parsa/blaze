@@ -502,8 +502,9 @@ void DenseTest::testRandomNxN()
              << "     " << typeid( Type ).name() << "\n"
              << "   Element type:\n"
              << "     " << typeid( ET ).name() << "\n"
-             << "   Initial matrix:\n" << A << "\n"
-             << "   Result:\n" << B << "\n";
+             << "   Initial matrix (A):\n" << A << "\n"
+             << "   Result (B):\n" << B << "\n"
+             << "   A * B =\n" << ( A * B ) << "\n";
          throw std::runtime_error( oss.str() );
       }
    }
@@ -527,8 +528,9 @@ void DenseTest::testRandomNxN()
              << "     " << typeid( Type ).name() << "\n"
              << "   Element type:\n"
              << "     " << typeid( ET ).name() << "\n"
-             << "   Initial matrix:\n" << A << "\n"
-             << "   Result:\n" << B << "\n";
+             << "   Initial matrix (A):\n" << A << "\n"
+             << "   Result (B):\n" << B << "\n"
+             << "   A * B =\n" << ( A * B ) << "\n";
          throw std::runtime_error( oss.str() );
       }
    }
@@ -556,8 +558,9 @@ void DenseTest::testRandomNxN()
              << "     " << typeid( Type ).name() << "\n"
              << "   Element type:\n"
              << "     " << typeid( ET ).name() << "\n"
-             << "   Initial matrix:\n" << A << "\n"
-             << "   Result:\n" << B << "\n";
+             << "   Initial matrix (A):\n" << A << "\n"
+             << "   Result (B):\n" << B << "\n"
+             << "   A * B =\n" << ( A * B ) << "\n";
          throw std::runtime_error( oss.str() );
       }
    }
@@ -581,8 +584,9 @@ void DenseTest::testRandomNxN()
              << "     " << typeid( Type ).name() << "\n"
              << "   Element type:\n"
              << "     " << typeid( ET ).name() << "\n"
-             << "   Initial matrix:\n" << A << "\n"
-             << "   Result:\n" << B << "\n";
+             << "   Initial matrix (A):\n" << A << "\n"
+             << "   Result (B):\n" << B << "\n"
+             << "   A * B =\n" << ( A * B ) << "\n";
          throw std::runtime_error( oss.str() );
       }
    }
@@ -610,8 +614,9 @@ void DenseTest::testRandomNxN()
              << "     " << typeid( Type ).name() << "\n"
              << "   Element type:\n"
              << "     " << typeid( ET ).name() << "\n"
-             << "   Initial matrix:\n" << A << "\n"
-             << "   Result:\n" << B << "\n";
+             << "   Initial matrix (A):\n" << A << "\n"
+             << "   Result (B):\n" << B << "\n"
+             << "   A * B =\n" << ( A * B ) << "\n";
          throw std::runtime_error( oss.str() );
       }
    }
@@ -635,8 +640,9 @@ void DenseTest::testRandomNxN()
              << "     " << typeid( Type ).name() << "\n"
              << "   Element type:\n"
              << "     " << typeid( ET ).name() << "\n"
-             << "   Initial matrix:\n" << A << "\n"
-             << "   Result:\n" << B << "\n";
+             << "   Initial matrix (A):\n" << A << "\n"
+             << "   Result (B):\n" << B << "\n"
+             << "   A * B =\n" << ( A * B ) << "\n";
          throw std::runtime_error( oss.str() );
       }
    }
@@ -664,8 +670,9 @@ void DenseTest::testRandomNxN()
              << "     " << typeid( Type ).name() << "\n"
              << "   Element type:\n"
              << "     " << typeid( ET ).name() << "\n"
-             << "   Initial matrix:\n" << A << "\n"
-             << "   Result:\n" << B << "\n";
+             << "   Initial matrix (A):\n" << A << "\n"
+             << "   Result (B):\n" << B << "\n"
+             << "   A * B =\n" << ( A * B ) << "\n";
          throw std::runtime_error( oss.str() );
       }
    }
@@ -689,8 +696,9 @@ void DenseTest::testRandomNxN()
              << "     " << typeid( Type ).name() << "\n"
              << "   Element type:\n"
              << "     " << typeid( ET ).name() << "\n"
-             << "   Initial matrix:\n" << A << "\n"
-             << "   Result:\n" << B << "\n";
+             << "   Initial matrix (A):\n" << A << "\n"
+             << "   Result (B):\n" << B << "\n"
+             << "   A * B =\n" << ( A * B ) << "\n";
          throw std::runtime_error( oss.str() );
       }
    }
@@ -718,8 +726,9 @@ void DenseTest::testRandomNxN()
              << "     " << typeid( Type ).name() << "\n"
              << "   Element type:\n"
              << "     " << typeid( ET ).name() << "\n"
-             << "   Initial matrix:\n" << A << "\n"
-             << "   Result:\n" << B << "\n";
+             << "   Initial matrix (A):\n" << A << "\n"
+             << "   Result (B):\n" << B << "\n"
+             << "   A * B =\n" << ( A * B ) << "\n";
          throw std::runtime_error( oss.str() );
       }
    }
@@ -743,8 +752,9 @@ void DenseTest::testRandomNxN()
              << "     " << typeid( Type ).name() << "\n"
              << "   Element type:\n"
              << "     " << typeid( ET ).name() << "\n"
-             << "   Initial matrix:\n" << A << "\n"
-             << "   Result:\n" << B << "\n";
+             << "   Initial matrix (A):\n" << A << "\n"
+             << "   Result (B):\n" << B << "\n"
+             << "   A * B =\n" << ( A * B ) << "\n";
          throw std::runtime_error( oss.str() );
       }
    }
@@ -770,7 +780,7 @@ void DenseTest::testRandomNxN()
 template< typename MT, bool SO >
 void DenseTest::initializeForLU( blaze::DenseMatrix<MT,SO>& matrix )
 {
-   const size_t size( blaze::rand<size_t>( 7UL, 25UL ) );
+   const size_t size( blaze::rand<size_t>( 7UL, 14UL ) );
 
    resize( ~matrix, size, size );
    randomize( ~matrix );
@@ -789,12 +799,12 @@ void DenseTest::initializeForLDLT( blaze::DenseMatrix<MT,SO>& matrix )
    using blaze::DynamicMatrix;
    using blaze::SymmetricMatrix;
 
-   const size_t size( blaze::rand<size_t>( 7UL, 25UL ) );
+   typedef typename MT::ElementType  ET;
+
+   const size_t size( blaze::rand<size_t>( 7UL, 14UL ) );
 
    if( blaze::IsTriangular<MT>::value )
    {
-      typedef typename MT::ElementType  ET;
-
       resize( ~matrix, size, size );
       reset( ~matrix );
 
@@ -806,9 +816,7 @@ void DenseTest::initializeForLDLT( blaze::DenseMatrix<MT,SO>& matrix )
    }
    else
    {
-      typedef typename MT::ElementType  ET;
       typedef typename blaze::UnderlyingBuiltin<MT>::Type  UBT;
-
       typedef typename blaze::If< blaze::IsHermitian<MT>
                                 , typename MT::BLAZE_TEMPLATE Rebind<UBT>::Other
                                 , SymmetricMatrix< DynamicMatrix<ET,SO> > >::Type  RandomType;
@@ -836,12 +844,10 @@ void DenseTest::initializeForLDLH( blaze::DenseMatrix<MT,SO>& matrix )
 
    typedef typename MT::ElementType  ET;
 
-   const size_t size( blaze::rand<size_t>( 7UL, 25UL ) );
+   const size_t size( blaze::rand<size_t>( 7UL, 14UL ) );
 
    if( blaze::IsTriangular<MT>::value )
    {
-      typedef typename MT::ElementType  ET;
-
       resize( ~matrix, size, size );
       reset( ~matrix );
 
@@ -853,7 +859,6 @@ void DenseTest::initializeForLDLH( blaze::DenseMatrix<MT,SO>& matrix )
    }
    else
    {
-      typedef typename MT::ElementType  ET;
       typedef typename blaze::UnderlyingBuiltin<MT>::Type  UBT;
       typedef typename blaze::If< blaze::IsSymmetric<MT>
                                 , typename MT::BLAZE_TEMPLATE Rebind<UBT>::Other
@@ -877,17 +882,41 @@ void DenseTest::initializeForLDLH( blaze::DenseMatrix<MT,SO>& matrix )
 template< typename MT, bool SO >
 void DenseTest::initializeForLLH( blaze::DenseMatrix<MT,SO>& matrix )
 {
+   using blaze::DynamicMatrix;
+   using blaze::HermitianMatrix;
+
    typedef typename MT::ElementType  ET;
 
-   const size_t size( blaze::rand<size_t>( 7UL, 25UL ) );
+   const size_t size( blaze::rand<size_t>( 7UL, 14UL ) );
 
-   resize( ~matrix, size, size );
-   reset( ~matrix );
+   if( blaze::IsTriangular<MT>::value )
+   {
+      resize( ~matrix, size, size );
+      reset( ~matrix );
 
-   if( !blaze::IsUniTriangular<MT>::value ) {
-      for( size_t i=0UL; i<size; ++i ) {
-         (~matrix)(i,i) = ET(4);
+      if( !blaze::IsUniTriangular<MT>::value ) {
+         for( size_t i=0UL; i<size; ++i ) {
+            (~matrix)(i,i) = ET(4);
+         }
       }
+   }
+   else
+   {
+      typedef typename MT::ElementType  ET;
+      typedef typename blaze::UnderlyingBuiltin<MT>::Type  UBT;
+      typedef typename blaze::If< blaze::IsSymmetric<MT>
+                                , typename MT::BLAZE_TEMPLATE Rebind<UBT>::Other
+                                , HermitianMatrix< DynamicMatrix<ET,SO> > >::Type  RandomType;
+
+      RandomType A;
+      resize( A, size, size );
+      randomize( A );
+      A *= ctrans( A );
+      for( size_t i=0UL; i<size; ++i ) {
+         A(i,i) += typename RandomType::ElementType(size);
+      }
+
+      (~matrix) = A;
    }
 }
 //*************************************************************************************************
