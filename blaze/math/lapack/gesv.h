@@ -354,8 +354,8 @@ inline void gesv( int n, int nrhs, complex<double>* A, int lda, int* ipiv, compl
 // \note This function can only be used if the fitting LAPACK library is available and linked to
 // the executable. Otherwise a call to this function will result in a linker error.
 //
-// \note This function does not provide any exception safety guarantee, i.e. in case an exception
-// is thrown \a A may already have been modified.
+// \note This function does only provide the basic exception safety guarantee, i.e. in case of an
+// exception \a A may already have been modified.
 */
 template< typename MT  // Type of the system matrix
         , bool SO      // Storage order of the system matrix
@@ -451,8 +451,8 @@ inline void gesv( DenseMatrix<MT,SO>& A, DenseVector<VT,TF>& b, int* ipiv )
 // \note This function can only be used if the fitting LAPACK library is available and linked to
 // the executable. Otherwise a call to this function will result in a linker error.
 //
-// \note This function does not provide any exception safety guarantee, i.e. in case an exception
-// is thrown \a A may already have been modified.
+// \note This function does only provide the basic exception safety guarantee, i.e. in case of an
+// exception \a A may already have been modified.
 */
 template< typename MT1  // Type of the system matrix
         , bool SO1      // Storage order of the system matrix
