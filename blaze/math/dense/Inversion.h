@@ -933,7 +933,7 @@ inline void invertByLLH( DenseMatrix<MT,SO>& dm )
    BLAZE_CONSTRAINT_MUST_NOT_BE_ADAPTOR_TYPE( MT );
    BLAZE_CONSTRAINT_MUST_BE_BLAS_COMPATIBLE_TYPE( typename MT::ElementType );
 
-   BLAZE_USER_ASSERT( isSymmetric( ~dm ), "Invalid non-symmetric matrix detected" );
+   BLAZE_USER_ASSERT( isHermitian( ~dm ), "Invalid non-symmetric matrix detected" );
 
    const char uplo( ( SO )?( 'L' ):( 'U' ) );
 
@@ -943,14 +943,14 @@ inline void invertByLLH( DenseMatrix<MT,SO>& dm )
    if( SO ) {
       for( size_t i=1UL; i<(~dm).rows(); ++i ) {
          for( size_t j=0UL; j<i; ++j ) {
-            (~dm)(j,i) = (~dm)(i,j);
+            (~dm)(j,i) = conj( (~dm)(i,j) );
          }
       }
    }
    else {
       for( size_t j=1UL; j<(~dm).columns(); ++j ) {
          for( size_t i=0UL; i<j; ++i ) {
-            (~dm)(j,i) = (~dm)(i,j);
+            (~dm)(j,i) = conj( (~dm)(i,j) );
          }
       }
    }
