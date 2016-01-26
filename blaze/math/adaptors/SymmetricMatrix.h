@@ -800,8 +800,8 @@ inline void invert6x6( SymmetricMatrix<MT,SO,true,true>& m )
 // \note This function can only be used if the fitting LAPACK library is available and linked to
 // the executable. Otherwise a linker error will be created.
 //
-// \note This function does not provide any exception safety guarantee, i.e. in case an exception
-// is thrown \c m may already have been modified.
+// \note This function does only provide the basic exception safety guarantee, i.e. in case of an
+// exception \a m may already have been modified.
 */
 template< typename MT  // Type of the dense matrix
         , bool SO >    // Storage order of the dense matrix
@@ -833,8 +833,8 @@ inline void invertByDefault( SymmetricMatrix<MT,SO,true,true>& m )
 // \note This function can only be used if the fitting LAPACK library is available and linked to
 // the executable. Otherwise a linker error will be created.
 //
-// \note This function does not provide any exception safety guarantee, i.e. in case an exception
-// is thrown \c m may already have been modified.
+// \note This function does only provide the basic exception safety guarantee, i.e. in case of an
+// exception \a m may already have been modified.
 */
 template< typename MT  // Type of the dense matrix
         , bool SO >    // Storage order of the dense matrix
@@ -842,7 +842,9 @@ inline void invertByLU( SymmetricMatrix<MT,SO,true,true>& m )
 {
    BLAZE_CONSTRAINT_MUST_BE_BLAS_COMPATIBLE_TYPE( typename MT::ElementType );
 
-   invertByLU( m.matrix_ );
+   MT tmp( m.matrix_ );
+   invertByLU( tmp );
+   move( m.matrix_, tmp );
 
    BLAZE_INTERNAL_ASSERT( isIntact( m ), "Broken invariant detected" );
 }
@@ -870,8 +872,8 @@ inline void invertByLU( SymmetricMatrix<MT,SO,true,true>& m )
 // \note This function can only be used if the fitting LAPACK library is available and linked to
 // the executable. Otherwise a linker error will be created.
 //
-// \note This function does not provide any exception safety guarantee, i.e. in case an exception
-// is thrown \c m may already have been modified.
+// \note This function does only provide the basic exception safety guarantee, i.e. in case of an
+// exception \a m may already have been modified.
 */
 template< typename MT  // Type of the dense matrix
         , bool SO >    // Storage order of the dense matrix
@@ -879,7 +881,9 @@ inline void invertByLDLT( SymmetricMatrix<MT,SO,true,true>& m )
 {
    BLAZE_CONSTRAINT_MUST_BE_BLAS_COMPATIBLE_TYPE( typename MT::ElementType );
 
-   invertByLDLT( m.matrix_ );
+   MT tmp( m.matrix_ );
+   invertByLDLT( tmp );
+   move( m.matrix_, tmp );
 
    BLAZE_INTERNAL_ASSERT( isIntact( m ), "Broken invariant detected" );
 }
@@ -907,8 +911,8 @@ inline void invertByLDLT( SymmetricMatrix<MT,SO,true,true>& m )
 // \note This function can only be used if the fitting LAPACK library is available and linked to
 // the executable. Otherwise a linker error will be created.
 //
-// \note This function does not provide any exception safety guarantee, i.e. in case an exception
-// is thrown \c m may already have been modified.
+// \note This function does only provide the basic exception safety guarantee, i.e. in case of an
+// exception \a m may already have been modified.
 */
 template< typename MT  // Type of the dense matrix
         , bool SO >    // Storage order of the dense matrix
@@ -916,7 +920,9 @@ inline void invertByLDLH( SymmetricMatrix<MT,SO,true,true>& m )
 {
    BLAZE_CONSTRAINT_MUST_BE_BLAS_COMPATIBLE_TYPE( typename MT::ElementType );
 
-   invertByLDLH( m.matrix_ );
+   MT tmp( m.matrix_ );
+   invertByLDLH( tmp );
+   move( m.matrix_, tmp );
 
    BLAZE_INTERNAL_ASSERT( isIntact( m ), "Broken invariant detected" );
 }
@@ -944,8 +950,8 @@ inline void invertByLDLH( SymmetricMatrix<MT,SO,true,true>& m )
 // \note This function can only be used if the fitting LAPACK library is available and linked to
 // the executable. Otherwise a linker error will be created.
 //
-// \note This function does not provide any exception safety guarantee, i.e. in case an exception
-// is thrown \c m may already have been modified.
+// \note This function does only provide the basic exception safety guarantee, i.e. in case of an
+// exception \a m may already have been modified.
 */
 template< typename MT  // Type of the dense matrix
         , bool SO >    // Storage order of the dense matrix
@@ -953,7 +959,9 @@ inline void invertByLLH( SymmetricMatrix<MT,SO,true,true>& m )
 {
    BLAZE_CONSTRAINT_MUST_BE_BLAS_COMPATIBLE_TYPE( typename MT::ElementType );
 
-   invertByLLH( m.matrix_ );
+   MT tmp( m.matrix_ );
+   invertByLLH( tmp );
+   move( m.matrix_, tmp );
 
    BLAZE_INTERNAL_ASSERT( isIntact( m ), "Broken invariant detected" );
 }
