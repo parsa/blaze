@@ -1779,19 +1779,15 @@ template< typename Type  // Data type of the matrix
         , bool SO >      // Storage order
 inline CustomMatrix<Type,AF,PF,SO>& CustomMatrix<Type,AF,PF,SO>::ctranspose()
 {
-   using std::swap;
-
    if( m_ != n_ ) {
       BLAZE_THROW_LOGIC_ERROR( "Impossible transpose operation" );
    }
 
    for( size_t i=0UL; i<m_; ++i ) {
       for( size_t j=0UL; j<i; ++j ) {
-         swap( v_[i*nn_+j], v_[j*nn_+i] );
-         v_[i*nn_+j] = conj( v_[i*nn_+j] );
-         v_[j*nn_+i] = conj( v_[j*nn_+i] );
+         cswap( v_[i*nn_+j], v_[j*nn_+i] );
       }
-      v_[i*nn_+i] = conj( v_[i*nn_+i] );
+      conjugate( v_[i*nn_+i] );
    }
 
    return *this;
@@ -4352,19 +4348,15 @@ template< typename Type  // Data type of the matrix
         , bool PF >      // Padding flag
 inline CustomMatrix<Type,AF,PF,true>& CustomMatrix<Type,AF,PF,true>::ctranspose()
 {
-   using std::swap;
-
    if( m_ != n_ ) {
       BLAZE_THROW_LOGIC_ERROR( "Impossible transpose operation" );
    }
 
    for( size_t j=0UL; j<n_; ++j ) {
       for( size_t i=0UL; i<j; ++i ) {
-         swap( v_[i+j*mm_], v_[j+i*mm_] );
-         v_[i+j*mm_] = conj( v_[i+j*mm_] );
-         v_[j+i*mm_] = conj( v_[j+i*mm_] );
+         cswap( v_[i+j*mm_], v_[j+i*mm_] );
       }
-      v_[j+j*mm_] = conj( v_[j+j*mm_] );
+      conjugate( v_[j+j*mm_] );
    }
 
    return *this;

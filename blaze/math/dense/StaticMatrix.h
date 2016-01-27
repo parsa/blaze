@@ -2284,17 +2284,13 @@ template< typename Type  // Data type of the matrix
         , bool SO >      // Storage order
 inline StaticMatrix<Type,M,N,SO>& StaticMatrix<Type,M,N,SO>::ctranspose()
 {
-   using std::swap;
-
    BLAZE_STATIC_ASSERT( M == N );
 
    for( size_t i=0UL; i<M; ++i ) {
       for( size_t j=0UL; j<i; ++j ) {
-         swap( v_[i*NN+j], v_[j*NN+i] );
-         v_[i*NN+j] = conj( v_[i*NN+j] );
-         v_[j*NN+i] = conj( v_[j*NN+i] );
+         cswap( v_[i*NN+j], v_[j*NN+i] );
       }
-      v_[i*NN+i] = conj( v_[i*NN+i] );
+      conjugate( v_[i*NN+i] );
    }
 
    return *this;
@@ -5440,17 +5436,13 @@ template< typename Type  // Data type of the matrix
         , size_t N >     // Number of columns
 inline StaticMatrix<Type,M,N,true>& StaticMatrix<Type,M,N,true>::ctranspose()
 {
-   using std::swap;
-
    BLAZE_STATIC_ASSERT( M == N );
 
    for( size_t j=0UL; j<N; ++j ) {
       for( size_t i=0UL; i<j; ++i ) {
-         swap( v_[i+j*MM], v_[j+i*MM] );
-         v_[i+j*MM] = conj( v_[i+j*MM] );
-         v_[j+i*MM] = conj( v_[j+i*MM] );
+         cswap( v_[i+j*MM], v_[j+i*MM] );
       }
-      v_[j+j*MM] = conj( v_[j+j*MM] );
+      conjugate( v_[j+j*MM] );
    }
 
    return *this;

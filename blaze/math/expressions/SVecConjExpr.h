@@ -502,7 +502,7 @@ class SVecConjExpr : public SparseVector< SVecConjExpr<VT,TF>, TF >
 
       const Iterator end( (~lhs).end() );
       for( Iterator element=(~lhs).begin(); element!=end; ++element ) {
-         element->value() = conj( element->value() );
+         conjugate( element->value() );
       }
    }
    /*! \endcond */

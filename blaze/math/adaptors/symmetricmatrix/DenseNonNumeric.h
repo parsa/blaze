@@ -2092,12 +2092,12 @@ inline SymmetricMatrix<MT,SO,true,false>& SymmetricMatrix<MT,SO,true,false>::ctr
    if( SO ) {
       for( size_t j=0UL; j<columns(); ++j )
          for( size_t i=0UL; i<=j; ++i )
-            matrix_(i,j) = conj( matrix_(i,j) );
+            conjugate( matrix_(i,j) );
    }
    else {
       for( size_t i=0UL; i<rows(); ++i )
          for( size_t j=0UL; j<=i; ++j )
-            matrix_(i,j) = conj( matrix_(i,j) );
+            conjugate( matrix_(i,j) );
    }
 
    return *this;

@@ -548,7 +548,7 @@ class SMatConjExpr : public SparseMatrix< SMatConjExpr<MT,SO>, SO >
       for( size_t i=0UL; i<m; ++i ) {
          const Iterator end( (~lhs).end(i) );
          for( Iterator element=(~lhs).begin(i); element!=end; ++element ) {
-            element->value() = conj( element->value() );
+            conjugate( element->value() );
          }
       }
    }
@@ -587,7 +587,7 @@ class SMatConjExpr : public SparseMatrix< SMatConjExpr<MT,SO>, SO >
       for( size_t j=0UL; j<n; ++j ) {
          const Iterator end( (~lhs).end(j) );
          for( Iterator element=(~lhs).begin(j); element!=end; ++element ) {
-            element->value() = conj( element->value() );
+            conjugate( element->value() );
          }
       }
    }

@@ -1798,11 +1798,9 @@ inline HybridMatrix<Type,M,N,SO>& HybridMatrix<Type,M,N,SO>::ctranspose()
    const size_t maxsize( max( m_, n_ ) );
    for( size_t i=0UL; i<maxsize; ++i ) {
       for( size_t j=0UL; j<i; ++j ) {
-         swap( v_[i*NN+j], v_[j*NN+i] );
-         v_[i*NN+j] = conj( v_[i*NN+j] );
-         v_[j*NN+i] = conj( v_[j*NN+i] );
+         cswap( v_[i*NN+j], v_[j*NN+i] );
       }
-      v_[i*NN+i] = conj( v_[i*NN+i] );
+      conjugate( v_[i*NN+i] );
    }
 
    if( IsVectorizable<Type>::value && m_ < n_ ) {
@@ -4428,11 +4426,9 @@ inline HybridMatrix<Type,M,N,true>& HybridMatrix<Type,M,N,true>::ctranspose()
    const size_t maxsize( max( m_, n_ ) );
    for( size_t j=0UL; j<maxsize; ++j ) {
       for( size_t i=0UL; i<j; ++i ) {
-         swap( v_[i+j*MM], v_[j+i*MM] );
-         v_[i+j*MM] = conj( v_[i+j*MM] );
-         v_[j+i*MM] = conj( v_[j+i*MM] );
+         cswap( v_[i+j*MM], v_[j+i*MM] );
       }
-      v_[j+j*MM] = conj( v_[j+j*MM] );
+      conjugate( v_[j+j*MM] );
    }
 
    if( IsVectorizable<Type>::value && n_ < m_ ) {

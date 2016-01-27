@@ -51,6 +51,7 @@
 #include <blaze/math/Functions.h>
 #include <blaze/math/Intrinsics.h>
 #include <blaze/math/shims/Clear.h>
+#include <blaze/math/shims/Conjugate.h>
 #include <blaze/math/shims/IsDefault.h>
 #include <blaze/math/traits/AddTrait.h>
 #include <blaze/math/traits/ColumnTrait.h>
@@ -1615,8 +1616,6 @@ template< typename Type  // Data type of the matrix
         , bool SO >      // Storage order
 inline DynamicMatrix<Type,SO>& DynamicMatrix<Type,SO>::ctranspose()
 {
-   using std::swap;
-
    const size_t block( BLOCK_SIZE );
 
    if( m_ == n_ )
@@ -1627,36 +1626,25 @@ inline DynamicMatrix<Type,SO>& DynamicMatrix<Type,SO>::ctranspose()
             const size_t jend( min( jj+block, n_ ) );
             for( size_t i=ii; i<iend; ++i ) {
                for( size_t j=jj; j<jend; ++j ) {
-                  swap( v_[i*nn_+j], v_[j*nn_+i] );
-                  v_[i*nn_+j] = conj( v_[i*nn_+j] );
-                  v_[j*nn_+i] = conj( v_[j*nn_+i] );
+                  cswap( v_[i*nn_+j], v_[j*nn_+i] );
                }
             }
          }
          for( size_t i=ii; i<iend; ++i ) {
             for( size_t j=ii; j<i; ++j ) {
-               swap( v_[i*nn_+j], v_[j*nn_+i] );
-               v_[i*nn_+j] = conj( v_[i*nn_+j] );
-               v_[j*nn_+i] = conj( v_[j*nn_+i] );
+               cswap( v_[i*nn_+j], v_[j*nn_+i] );
             }
-            v_[i*nn_+i] = conj( v_[i*nn_+i] );
+            conjugate( v_[i*nn_+i] );
          }
       }
    }
    else
    {
       DynamicMatrix tmp( ctrans(*this) );
-      this->swap( tmp );
+      swap( tmp );
    }
 
    return *this;
-
-
-   /*
-   DynamicMatrix tmp( ctrans(*this) );
-   swap( tmp );
-   return *this;
-   */
 }
 //*************************************************************************************************
 
@@ -4083,8 +4071,6 @@ inline DynamicMatrix<Type,true>& DynamicMatrix<Type,true>::transpose()
 template< typename Type >  // Data type of the matrix
 inline DynamicMatrix<Type,true>& DynamicMatrix<Type,true>::ctranspose()
 {
-   using std::swap;
-
    const size_t block( BLOCK_SIZE );
 
    if( m_ == n_ )
@@ -4095,19 +4081,15 @@ inline DynamicMatrix<Type,true>& DynamicMatrix<Type,true>::ctranspose()
             const size_t iend( min( ii+block, m_ ) );
             for( size_t j=jj; j<jend; ++j ) {
                for( size_t i=ii; i<iend; ++i ) {
-                  swap( v_[i+j*mm_], v_[j+i*mm_] );
-                  v_[i+j*mm_] = conj( v_[i+j*mm_] );
-                  v_[j+i*mm_] = conj( v_[j+i*mm_] );
+                  cswap( v_[i+j*mm_], v_[j+i*mm_] );
                }
             }
          }
          for( size_t j=jj; j<jend; ++j ) {
             for( size_t i=jj; i<j; ++i ) {
-               swap( v_[i+j*mm_], v_[j+i*mm_] );
-               v_[i+j*mm_] = conj( v_[i+j*mm_] );
-               v_[j+i*mm_] = conj( v_[j+i*mm_] );
+               cswap( v_[i+j*mm_], v_[j+i*mm_] );
             }
-            v_[j+j*mm_] = conj( v_[j+j*mm_] );
+            conjugate( v_[j+j*mm_] );
          }
       }
    }

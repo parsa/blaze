@@ -2088,7 +2088,7 @@ template< typename MT  // Type of the adapted dense matrix
 inline SymmetricMatrix<MT,SO,true,true>& SymmetricMatrix<MT,SO,true,true>::ctranspose()
 {
    if( !IsBuiltin<ElementType>::value )
-      matrix_ = conj( matrix_ );
+      conjugate( matrix_ );
 
    return *this;
 }

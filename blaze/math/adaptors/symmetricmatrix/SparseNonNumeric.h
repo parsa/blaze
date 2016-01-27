@@ -1951,7 +1951,7 @@ inline SymmetricMatrix<MT,SO,false,false>& SymmetricMatrix<MT,SO,false,false>::c
    for( size_t i=0UL; i<rows(); ++i ) {
       const typename MatrixType::Iterator last( matrix_.upperBound(i,i) );
       for( typename MatrixType::Iterator element=matrix_.begin(i); element!=last; ++element )
-         *element->value() = conj( *element->value() );
+         conjugate( *element->value() );
    }
 
    return *this;
