@@ -657,23 +657,16 @@ inline void invert6x6( HermitianMatrix<MT,SO,true>& m )
 
    tmp36 = A(1,1)*tmp16 - A(1,3)*tmp20 + A(1,4)*tmp21 - A(1,5)*tmp22;
    tmp37 = A(1,1)*tmp17 - A(1,2)*tmp20 + A(1,4)*tmp23 - A(1,5)*tmp24;
-   tmp38 = A(1,1)*tmp18 - A(1,2)*tmp21 + A(1,3)*tmp23 - A(1,5)*tmp25;
-   tmp39 = A(1,1)*tmp19 - A(1,2)*tmp22 + A(1,3)*tmp24 - A(1,4)*tmp25;
-   tmp40 = A(1,0)*tmp16 - A(1,3)*tmp26 + A(1,4)*tmp27 - A(1,5)*tmp28;
-   tmp41 = A(1,0)*tmp17 - A(1,2)*tmp26 + A(1,4)*tmp29 - A(1,5)*tmp30;
-   tmp42 = A(1,0)*tmp18 - A(1,2)*tmp27 + A(1,3)*tmp29 - A(1,5)*tmp31;
-   tmp43 = A(1,0)*tmp19 - A(1,2)*tmp28 + A(1,3)*tmp30 - A(1,4)*tmp31;
-   tmp44 = A(1,0)*tmp20 - A(1,1)*tmp26 + A(1,4)*tmp32 - A(1,5)*tmp33;
-   tmp45 = A(1,0)*tmp21 - A(1,1)*tmp27 + A(1,3)*tmp32 - A(1,5)*tmp34;
-   tmp46 = A(1,0)*tmp22 - A(1,1)*tmp28 + A(1,3)*tmp33 - A(1,4)*tmp34;
-   tmp47 = A(1,0)*tmp23 - A(1,1)*tmp29 + A(1,2)*tmp32 - A(1,5)*tmp35;
-   tmp48 = A(1,0)*tmp24 - A(1,1)*tmp30 + A(1,2)*tmp33 - A(1,4)*tmp35;
-   tmp49 = A(1,0)*tmp25 - A(1,1)*tmp31 + A(1,2)*tmp34 - A(1,3)*tmp35;
+   tmp38 = A(1,0)*tmp16 - A(1,3)*tmp26 + A(1,4)*tmp27 - A(1,5)*tmp28;
+   tmp39 = A(1,0)*tmp17 - A(1,2)*tmp26 + A(1,4)*tmp29 - A(1,5)*tmp30;
+   tmp40 = A(1,0)*tmp20 - A(1,1)*tmp26 + A(1,4)*tmp32 - A(1,5)*tmp33;
+   tmp41 = A(1,0)*tmp21 - A(1,1)*tmp27 + A(1,3)*tmp32 - A(1,5)*tmp34;
+   tmp42 = A(1,0)*tmp22 - A(1,1)*tmp28 + A(1,3)*tmp33 - A(1,4)*tmp34;
+   tmp43 = A(1,0)*tmp23 - A(1,1)*tmp29 + A(1,2)*tmp32 - A(1,5)*tmp35;
+   tmp44 = A(1,0)*tmp24 - A(1,1)*tmp30 + A(1,2)*tmp33 - A(1,4)*tmp35;
 
-   B(2,2) =   A(0,0)*tmp36 - A(0,1)*tmp40 + A(0,3)*tmp44 - A(0,4)*tmp45 + A(0,5)*tmp46;
-   B(3,2) = - A(0,0)*tmp37 + A(0,1)*tmp41 - A(0,2)*tmp44 + A(0,4)*tmp47 - A(0,5)*tmp48;
-   B(4,2) =   A(0,0)*tmp38 - A(0,1)*tmp42 + A(0,2)*tmp45 - A(0,3)*tmp47 + A(0,5)*tmp49;
-   B(5,2) = - A(0,0)*tmp39 + A(0,1)*tmp43 - A(0,2)*tmp46 + A(0,3)*tmp48 - A(0,4)*tmp49;
+   B(2,2) =   A(0,0)*tmp36 - A(0,1)*tmp38 + A(0,3)*tmp40 - A(0,4)*tmp41 + A(0,5)*tmp42;
+   B(3,2) = - A(0,0)*tmp37 + A(0,1)*tmp39 - A(0,2)*tmp40 + A(0,4)*tmp43 - A(0,5)*tmp44;
 
    tmp1  = A(0,3)*A(1,4) - A(0,4)*A(1,3);
    tmp2  = A(0,2)*A(1,4) - A(0,4)*A(1,2);
@@ -712,26 +705,30 @@ inline void invert6x6( HermitianMatrix<MT,SO,true>& m )
    tmp34 = A(2,0)*tmp5  - A(2,1)*tmp8  + A(2,3)*tmp10;
    tmp35 = A(2,0)*tmp6  - A(2,1)*tmp9  + A(2,2)*tmp10;
 
-   tmp36 = A(3,1)*tmp17 - A(3,2)*tmp20 + A(3,4)*tmp23 - A(3,5)*tmp24;
-   tmp37 = A(3,0)*tmp17 - A(3,2)*tmp26 + A(3,4)*tmp29 - A(3,5)*tmp30;
-   tmp38 = A(3,0)*tmp20 - A(3,1)*tmp26 + A(3,4)*tmp32 - A(3,5)*tmp33;
-   tmp39 = A(3,0)*tmp23 - A(3,1)*tmp29 + A(3,2)*tmp32 - A(3,5)*tmp35;
-   tmp40 = A(3,0)*tmp24 - A(3,1)*tmp30 + A(3,2)*tmp33 - A(3,4)*tmp35;
+   tmp36 = A(3,1)*tmp16 - A(3,3)*tmp20 + A(3,4)*tmp21 - A(3,5)*tmp22;
+   tmp37 = A(3,1)*tmp17 - A(3,2)*tmp20 + A(3,4)*tmp23 - A(3,5)*tmp24;
+   tmp38 = A(3,0)*tmp16 - A(3,3)*tmp26 + A(3,4)*tmp27 - A(3,5)*tmp28;
+   tmp39 = A(3,0)*tmp17 - A(3,2)*tmp26 + A(3,4)*tmp29 - A(3,5)*tmp30;
+   tmp40 = A(3,0)*tmp20 - A(3,1)*tmp26 + A(3,4)*tmp32 - A(3,5)*tmp33;
+   tmp41 = A(3,0)*tmp21 - A(3,1)*tmp27 + A(3,3)*tmp32 - A(3,5)*tmp34;
+   tmp42 = A(3,0)*tmp22 - A(3,1)*tmp28 + A(3,3)*tmp33 - A(3,4)*tmp34;
+   tmp43 = A(3,0)*tmp23 - A(3,1)*tmp29 + A(3,2)*tmp32 - A(3,5)*tmp35;
+   tmp44 = A(3,0)*tmp24 - A(3,1)*tmp30 + A(3,2)*tmp33 - A(3,4)*tmp35;
 
-   B(3,4) =   A(5,0)*tmp36 - A(5,1)*tmp37 + A(5,2)*tmp38 - A(5,4)*tmp39 + A(5,5)*tmp40;
-   B(3,5) = - A(4,0)*tmp36 + A(4,1)*tmp37 - A(4,2)*tmp38 + A(4,4)*tmp39 - A(4,5)*tmp40;
+   B(2,4) = - A(5,0)*tmp36 + A(5,1)*tmp38 - A(5,3)*tmp40 + A(5,4)*tmp41 - A(5,5)*tmp42;
+   B(2,5) =   A(4,0)*tmp36 - A(4,1)*tmp38 + A(4,3)*tmp40 - A(4,4)*tmp41 + A(4,5)*tmp42;
+   B(3,4) =   A(5,0)*tmp37 - A(5,1)*tmp39 + A(5,2)*tmp40 - A(5,4)*tmp43 + A(5,5)*tmp44;
+   B(3,5) = - A(4,0)*tmp37 + A(4,1)*tmp39 - A(4,2)*tmp40 + A(4,4)*tmp43 - A(4,5)*tmp44;
 
-   tmp41 = A(3,1)*tmp18 - A(3,2)*tmp21 + A(3,3)*tmp23 - A(3,5)*tmp25;
-   tmp42 = A(3,1)*tmp19 - A(3,2)*tmp22 + A(3,3)*tmp24 - A(3,4)*tmp25;
-   tmp43 = A(3,0)*tmp18 - A(3,2)*tmp27 + A(3,3)*tmp29 - A(3,5)*tmp31;
-   tmp44 = A(3,0)*tmp19 - A(3,2)*tmp28 + A(3,3)*tmp30 - A(3,4)*tmp31;
-   tmp45 = A(3,0)*tmp21 - A(3,1)*tmp27 + A(3,3)*tmp32 - A(3,5)*tmp34;
-   tmp46 = A(3,0)*tmp22 - A(3,1)*tmp28 + A(3,3)*tmp33 - A(3,4)*tmp34;
-   tmp47 = A(3,0)*tmp25 - A(3,1)*tmp31 + A(3,2)*tmp34 - A(3,3)*tmp35;
+   tmp36 = A(3,1)*tmp18 - A(3,2)*tmp21 + A(3,3)*tmp23 - A(3,5)*tmp25;
+   tmp37 = A(3,1)*tmp19 - A(3,2)*tmp22 + A(3,3)*tmp24 - A(3,4)*tmp25;
+   tmp38 = A(3,0)*tmp18 - A(3,2)*tmp27 + A(3,3)*tmp29 - A(3,5)*tmp31;
+   tmp39 = A(3,0)*tmp19 - A(3,2)*tmp28 + A(3,3)*tmp30 - A(3,4)*tmp31;
+   tmp40 = A(3,0)*tmp25 - A(3,1)*tmp31 + A(3,2)*tmp34 - A(3,3)*tmp35;
 
-   B(4,4) = - A(5,0)*tmp41 + A(5,1)*tmp43 - A(5,2)*tmp45 + A(5,3)*tmp39 - A(5,5)*tmp47;
-   B(4,5) =   A(4,0)*tmp41 - A(4,1)*tmp43 + A(4,2)*tmp45 - A(4,3)*tmp39 + A(4,5)*tmp47;
-   B(5,5) = - A(4,0)*tmp42 + A(4,1)*tmp44 - A(4,2)*tmp46 + A(4,3)*tmp40 - A(4,4)*tmp47;
+   B(4,4) = - A(5,0)*tmp36 + A(5,1)*tmp38 - A(5,2)*tmp41 + A(5,3)*tmp43 - A(5,5)*tmp40;
+   B(4,5) =   A(4,0)*tmp36 - A(4,1)*tmp38 + A(4,2)*tmp41 - A(4,3)*tmp43 + A(4,5)*tmp40;
+   B(5,5) = - A(4,0)*tmp37 + A(4,1)*tmp39 - A(4,2)*tmp42 + A(4,3)*tmp44 - A(4,4)*tmp40;
 
    tmp36 = A(4,1)*tmp17 - A(4,2)*tmp20 + A(4,4)*tmp23 - A(4,5)*tmp24;
    tmp37 = A(4,0)*tmp17 - A(4,2)*tmp26 + A(4,4)*tmp29 - A(4,5)*tmp30;
@@ -751,9 +748,9 @@ inline void invert6x6( HermitianMatrix<MT,SO,true>& m )
    B(1,4) = conj( B(4,1) );
    B(1,5) = conj( B(5,1) );
    B(2,3) = conj( B(3,2) );
-   B(2,4) = conj( B(4,2) );
-   B(2,5) = conj( B(5,2) );
+   B(4,2) = conj( B(2,4) );
    B(4,3) = conj( B(3,4) );
+   B(5,2) = conj( B(2,5) );
    B(5,3) = conj( B(3,5) );
    B(5,4) = conj( B(4,5) );
 
