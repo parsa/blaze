@@ -41,8 +41,10 @@
 //*************************************************************************************************
 
 #include <blaze/system/Inline.h>
+#include <blaze/util/DisableIf.h>
 #include <blaze/util/EnableIf.h>
 #include <blaze/util/typetraits/IsBuiltin.h>
+#include <blaze/util/typetraits/IsNumeric.h>
 
 
 namespace blaze {
@@ -118,6 +120,83 @@ template< typename T >
 BLAZE_ALWAYS_INLINE void conjugate( T& a )
 {
    a = conj( a );
+}
+//*************************************************************************************************
+
+
+
+
+//=================================================================================================
+//
+//  CSWAP SHIM
+//
+//=================================================================================================
+
+//*************************************************************************************************
+/*! \cond BLAZE_INTERNAL */
+/*!\brief Backend function of the \a cswap function for non-numeric data types.
+// \ingroup math_shims
+//
+// \param a The first value/object to be swapped and conjugated.
+// \param b The second value/object to be swapped and conjugated.
+// \return void
+*/
+template< typename T >
+BLAZE_ALWAYS_INLINE typename DisableIf< IsNumeric<T> >::Type
+   cswap_backend( T& a, T& b )
+{
+   using std::swap;
+
+   swap( a, b );
+   conjugate( a );
+   conjugate( b );
+}
+/*! \endcond */
+//*************************************************************************************************
+
+
+//*************************************************************************************************
+/*! \cond BLAZE_INTERNAL */
+/*!\brief Backend function of the \a cswap function for numeric data types.
+// \ingroup math_shims
+//
+// \param a The first value to be swapped and conjugated.
+// \param b The second value to be swapped and conjugated.
+// \return void
+*/
+template< typename T >
+BLAZE_ALWAYS_INLINE typename EnableIf< IsNumeric<T> >::Type
+   cswap_backend( T& a, T& b )
+{
+   const T tmp( a );
+   a = conj( b );
+   b = conj( tmp );
+}
+/*! \endcond */
+//*************************************************************************************************
+
+
+//*************************************************************************************************
+/*!\brief Swapping two conjugated values/objects.
+// \ingroup math_shims
+//
+// \param a The first value/object to be swapped and conjugated.
+// \param b The second value/object to be swapped and conjugated.
+// \return void
+//
+// The \a cswap shim implements the most efficient way to swap and conjugate two values/objects.
+// Semantically \a cswap is equivalent to the following sequence of operations:
+
+   \code
+   swap( a, b );
+   conjugate( a );
+   conjugate( b );
+   \endcode
+*/
+template< typename T >
+BLAZE_ALWAYS_INLINE void cswap( T& a, T& b )
+{
+   cswap_backend( a, b );
 }
 //*************************************************************************************************
 
