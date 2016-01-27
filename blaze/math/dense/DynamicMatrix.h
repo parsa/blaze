@@ -54,12 +54,14 @@
 #include <blaze/math/shims/IsDefault.h>
 #include <blaze/math/traits/AddTrait.h>
 #include <blaze/math/traits/ColumnTrait.h>
+#include <blaze/math/traits/CTransExprTrait.h>
 #include <blaze/math/traits/DivTrait.h>
 #include <blaze/math/traits/MathTrait.h>
 #include <blaze/math/traits/MultTrait.h>
 #include <blaze/math/traits/RowTrait.h>
 #include <blaze/math/traits/SubmatrixTrait.h>
 #include <blaze/math/traits/SubTrait.h>
+#include <blaze/math/traits/TransExprTrait.h>
 #include <blaze/math/typetraits/HasConstDataAccess.h>
 #include <blaze/math/typetraits/HasMutableDataAccess.h>
 #include <blaze/math/typetraits/IsAligned.h>
@@ -1072,7 +1074,16 @@ template< typename MT    // Type of the right-hand side matrix
         , bool SO2 >     // Storage order of the right-hand side matrix
 inline DynamicMatrix<Type,SO>& DynamicMatrix<Type,SO>::operator=( const Matrix<MT,SO2>& rhs )
 {
-   if( (~rhs).canAlias( this ) ) {
+   typedef typename TransExprTrait<This>::Type   TT;
+   typedef typename CTransExprTrait<This>::Type  CT;
+
+   if( IsSame<MT,TT>::value && (~rhs).isAliased( this ) ) {
+      transpose();
+   }
+   else if( IsSame<MT,CT>::value && (~rhs).isAliased( this ) ) {
+      ctranspose();
+   }
+   else if( (~rhs).canAlias( this ) ) {
       DynamicMatrix tmp( ~rhs );
       swap( tmp );
    }
@@ -1566,8 +1577,30 @@ template< typename Type  // Data type of the matrix
         , bool SO >      // Storage order
 inline DynamicMatrix<Type,SO>& DynamicMatrix<Type,SO>::transpose()
 {
-   DynamicMatrix tmp( trans(*this) );
-   swap( tmp );
+   using std::swap;
+
+   const size_t block( BLOCK_SIZE );
+
+   if( m_ == n_ )
+   {
+      for( size_t ii=0UL; ii<m_; ii+=block ) {
+         const size_t iend( min( ii+block, m_ ) );
+         for( size_t jj=0UL; jj<=ii; jj+=block ) {
+            for( size_t i=ii; i<iend; ++i ) {
+               const size_t jend( min( jj+block, n_, i ) );
+               for( size_t j=jj; j<jend; ++j ) {
+                  swap( v_[i*nn_+j], v_[j*nn_+i] );
+               }
+            }
+         }
+      }
+   }
+   else
+   {
+      DynamicMatrix tmp( trans(*this) );
+      this->swap( tmp );
+   }
+
    return *this;
 }
 //*************************************************************************************************
@@ -1582,9 +1615,48 @@ template< typename Type  // Data type of the matrix
         , bool SO >      // Storage order
 inline DynamicMatrix<Type,SO>& DynamicMatrix<Type,SO>::ctranspose()
 {
+   using std::swap;
+
+   const size_t block( BLOCK_SIZE );
+
+   if( m_ == n_ )
+   {
+      for( size_t ii=0UL; ii<m_; ii+=block ) {
+         const size_t iend( min( ii+block, m_ ) );
+         for( size_t jj=0UL; jj<ii; jj+=block ) {
+            const size_t jend( min( jj+block, n_ ) );
+            for( size_t i=ii; i<iend; ++i ) {
+               for( size_t j=jj; j<jend; ++j ) {
+                  swap( v_[i*nn_+j], v_[j*nn_+i] );
+                  v_[i*nn_+j] = conj( v_[i*nn_+j] );
+                  v_[j*nn_+i] = conj( v_[j*nn_+i] );
+               }
+            }
+         }
+         for( size_t i=ii; i<iend; ++i ) {
+            for( size_t j=ii; j<i; ++j ) {
+               swap( v_[i*nn_+j], v_[j*nn_+i] );
+               v_[i*nn_+j] = conj( v_[i*nn_+j] );
+               v_[j*nn_+i] = conj( v_[j*nn_+i] );
+            }
+            v_[i*nn_+i] = conj( v_[i*nn_+i] );
+         }
+      }
+   }
+   else
+   {
+      DynamicMatrix tmp( ctrans(*this) );
+      this->swap( tmp );
+   }
+
+   return *this;
+
+
+   /*
    DynamicMatrix tmp( ctrans(*this) );
    swap( tmp );
    return *this;
+   */
 }
 //*************************************************************************************************
 
@@ -3464,7 +3536,16 @@ template< typename MT      // Type of the right-hand side matrix
         , bool SO >        // Storage order of the right-hand side matrix
 inline DynamicMatrix<Type,true>& DynamicMatrix<Type,true>::operator=( const Matrix<MT,SO>& rhs )
 {
-   if( (~rhs).canAlias( this ) ) {
+   typedef typename TransExprTrait<This>::Type   TT;
+   typedef typename CTransExprTrait<This>::Type  CT;
+
+   if( IsSame<MT,TT>::value && (~rhs).isAliased( this ) ) {
+      transpose();
+   }
+   else if( IsSame<MT,CT>::value && (~rhs).isAliased( this ) ) {
+      ctranspose();
+   }
+   else if( (~rhs).canAlias( this ) ) {
       DynamicMatrix tmp( ~rhs );
       swap( tmp );
    }
@@ -3963,8 +4044,30 @@ inline void DynamicMatrix<Type,true>::reserve( size_t elements )
 template< typename Type >  // Data type of the matrix
 inline DynamicMatrix<Type,true>& DynamicMatrix<Type,true>::transpose()
 {
-   DynamicMatrix tmp( trans(*this) );
-   swap( tmp );
+   using std::swap;
+
+   const size_t block( BLOCK_SIZE );
+
+   if( m_ == n_ )
+   {
+      for( size_t jj=0UL; jj<n_; jj+=block ) {
+         const size_t jend( min( jj+block, n_ ) );
+         for( size_t ii=0UL; ii<=jj; ii+=block ) {
+            for( size_t j=jj; j<jend; ++j ) {
+               const size_t iend( min( ii+block, m_, j ) );
+               for( size_t i=ii; i<iend; ++i ) {
+                  swap( v_[i+j*mm_], v_[j+i*mm_] );
+               }
+            }
+         }
+      }
+   }
+   else
+   {
+      DynamicMatrix tmp( trans(*this) );
+      this->swap( tmp );
+   }
+
    return *this;
 }
 /*! \endcond */
@@ -3980,8 +4083,40 @@ inline DynamicMatrix<Type,true>& DynamicMatrix<Type,true>::transpose()
 template< typename Type >  // Data type of the matrix
 inline DynamicMatrix<Type,true>& DynamicMatrix<Type,true>::ctranspose()
 {
-   DynamicMatrix tmp( ctrans(*this) );
-   swap( tmp );
+   using std::swap;
+
+   const size_t block( BLOCK_SIZE );
+
+   if( m_ == n_ )
+   {
+      for( size_t jj=0UL; jj<n_; jj+=block ) {
+         const size_t jend( min( jj+block, n_ ) );
+         for( size_t ii=0UL; ii<jj; ii+=block ) {
+            const size_t iend( min( ii+block, m_ ) );
+            for( size_t j=jj; j<jend; ++j ) {
+               for( size_t i=ii; i<iend; ++i ) {
+                  swap( v_[i+j*mm_], v_[j+i*mm_] );
+                  v_[i+j*mm_] = conj( v_[i+j*mm_] );
+                  v_[j+i*mm_] = conj( v_[j+i*mm_] );
+               }
+            }
+         }
+         for( size_t j=jj; j<jend; ++j ) {
+            for( size_t i=jj; i<j; ++i ) {
+               swap( v_[i+j*mm_], v_[j+i*mm_] );
+               v_[i+j*mm_] = conj( v_[i+j*mm_] );
+               v_[j+i*mm_] = conj( v_[j+i*mm_] );
+            }
+            v_[j+j*mm_] = conj( v_[j+j*mm_] );
+         }
+      }
+   }
+   else
+   {
+      DynamicMatrix tmp( ctrans(*this) );
+      this->swap( tmp );
+   }
+
    return *this;
 }
 /*! \endcond */
