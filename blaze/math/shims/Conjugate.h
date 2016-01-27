@@ -49,12 +49,11 @@ namespace blaze {
 
 //=================================================================================================
 //
-//  CONJUGATE SHIM
+//  CONJ SHIM
 //
 //=================================================================================================
 
 //*************************************************************************************************
-/*! \cond BLAZE_INTERNAL */
 /*!\brief Computing the conjugate of the given value/object.
 // \ingroup math_shims
 //
@@ -82,7 +81,44 @@ BLAZE_ALWAYS_INLINE typename EnableIf< IsBuiltin<T>, T >::Type
 {
    return a;
 }
-/*! \endcond */
+//*************************************************************************************************
+
+
+
+
+//=================================================================================================
+//
+//  CONJUGATE SHIM
+//
+//=================================================================================================
+
+//*************************************************************************************************
+/*!\brief In-place conjugation of the given value/object.
+// \ingroup math_shims
+//
+// \param a The given value/object to be conjugated.
+// \return void
+//
+// The \a conjugate shim represents an abstract interface for the in-place conjugation of any
+// given value/object. In case the given value is of complex type the function computes the
+// complex conjugate by reversing the sign of the imaginary part:
+
+   \code
+   blaze::complex<double> a( 1.0, 2.0 );
+   conjugate( a );  // Results in ( 1, -2 )
+   \endcode
+
+// Values of other data types, such as all built-in data types, are considered complex numbers
+// with an imaginary part of 0. Thus the returned value corresponds to the given value. For more
+// information on complex conjugates, see
+//
+//       https://en.wikipedia.org/wiki/Complex_conjugate
+*/
+template< typename T >
+BLAZE_ALWAYS_INLINE void conjugate( T& a )
+{
+   a = conj( a );
+}
 //*************************************************************************************************
 
 } // namespace blaze
