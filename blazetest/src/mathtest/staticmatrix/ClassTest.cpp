@@ -8345,7 +8345,7 @@ void ClassTest::testTranspose()
           mat(2,0) != 3 || mat(2,1) != 6 || mat(2,2) != 9 ) {
          std::ostringstream oss;
          oss << " Test: " << test_ << "\n"
-             << " Error: Initialization failed\n"
+             << " Error: Transpose operation failed\n"
              << " Details:\n"
              << "   Result:\n" << mat << "\n"
              << "   Expected result:\n( 1 4 7 )\n( 2 5 8 )\n( 3 6 9 )\n";
@@ -8373,7 +8373,7 @@ void ClassTest::testTranspose()
           mat(2,0) != 3 || mat(2,1) != 6 || mat(2,2) != 9 ) {
          std::ostringstream oss;
          oss << " Test: " << test_ << "\n"
-             << " Error: Initialization failed\n"
+             << " Error: Transpose operation failed\n"
              << " Details:\n"
              << "   Result:\n" << mat << "\n"
              << "   Expected result:\n( 1 4 7 )\n( 2 5 8 )\n( 3 6 9 )\n";
@@ -8406,7 +8406,7 @@ void ClassTest::testTranspose()
           mat(2,0) != 7 || mat(2,1) != 8 || mat(2,2) != 9 ) {
          std::ostringstream oss;
          oss << " Test: " << test_ << "\n"
-             << " Error: Initialization failed\n"
+             << " Error: Transpose operation failed\n"
              << " Details:\n"
              << "   Result:\n" << mat << "\n"
              << "   Expected result:\n( 1 2 3 )\n( 4 5 6 )\n( 7 8 9 )\n";
@@ -8434,7 +8434,7 @@ void ClassTest::testTranspose()
           mat(2,0) != 7 || mat(2,1) != 8 || mat(2,2) != 9 ) {
          std::ostringstream oss;
          oss << " Test: " << test_ << "\n"
-             << " Error: Initialization failed\n"
+             << " Error: Transpose operation failed\n"
              << " Details:\n"
              << "   Result:\n" << mat << "\n"
              << "   Expected result:\n( 1 2 3 )\n( 4 5 6 )\n( 7 8 9 )\n";
@@ -8485,7 +8485,7 @@ void ClassTest::testCTranspose()
           mat(2,0) != cplx(3,3) || mat(2,1) != cplx(6,6) || mat(2,2) != cplx(9,9) ) {
          std::ostringstream oss;
          oss << " Test: " << test_ << "\n"
-             << " Error: Initialization failed\n"
+             << " Error: Transpose operation failed\n"
              << " Details:\n"
              << "   Result:\n" << mat << "\n"
              << "   Expected result:\n( (1,1) (4,4) (7,7) )\n"
@@ -8519,7 +8519,7 @@ void ClassTest::testCTranspose()
           mat(2,0) != cplx(3,3) || mat(2,1) != cplx(6,6) || mat(2,2) != cplx(9,9) ) {
          std::ostringstream oss;
          oss << " Test: " << test_ << "\n"
-             << " Error: Initialization failed\n"
+             << " Error: Transpose operation failed\n"
              << " Details:\n"
              << "   Result:\n" << mat << "\n"
              << "   Expected result:\n( (1,1) (4,4) (7,7) )\n"
@@ -8558,7 +8558,7 @@ void ClassTest::testCTranspose()
           mat(2,0) != cplx(7,7) || mat(2,1) != cplx(8,8) || mat(2,2) != cplx(9,9) ) {
          std::ostringstream oss;
          oss << " Test: " << test_ << "\n"
-             << " Error: Initialization failed\n"
+             << " Error: Transpose operation failed\n"
              << " Details:\n"
              << "   Result:\n" << mat << "\n"
              << "   Expected result:\n( (1,1) (2,2) (3,3) )\n"
@@ -8592,7 +8592,7 @@ void ClassTest::testCTranspose()
           mat(2,0) != cplx(7,7) || mat(2,1) != cplx(8,8) || mat(2,2) != cplx(9,9) ) {
          std::ostringstream oss;
          oss << " Test: " << test_ << "\n"
-             << " Error: Initialization failed\n"
+             << " Error: Transpose operation failed\n"
              << " Details:\n"
              << "   Result:\n" << mat << "\n"
              << "   Expected result:\n( (1,1) (2,2) (3,3) )\n"
