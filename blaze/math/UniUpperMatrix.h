@@ -546,6 +546,118 @@ inline void Rand< UniUpperMatrix<MT,SO,DF> >::randomize( UniUpperMatrix<MT,SO,DF
 /*! \endcond */
 //*************************************************************************************************
 
+
+
+
+//=================================================================================================
+//
+//  MAKE FUNCTIONS
+//
+//=================================================================================================
+
+//*************************************************************************************************
+/*! \cond BLAZE_INTERNAL */
+/*!\brief Setup of a random symmetric UniUpperMatrix.
+//
+// \param matrix The matrix to be randomized.
+// \return void
+*/
+template< typename MT  // Type of the adapted matrix
+        , bool SO      // Storage order of the adapted matrix
+        , bool DF >    // Density flag
+void makeSymmetric( UniUpperMatrix<MT,SO,DF>& matrix )
+{
+   reset( matrix );
+
+   BLAZE_INTERNAL_ASSERT( isSymmetric( matrix ), "Non-symmetric matrix detected" );
+}
+/*! \endcond */
+//*************************************************************************************************
+
+
+//*************************************************************************************************
+/*! \cond BLAZE_INTERNAL */
+/*!\brief Setup of a random symmetric UniUpperMatrix.
+//
+// \param matrix The matrix to be randomized.
+// \param min The smallest possible value for a matrix element.
+// \param max The largest possible value for a matrix element.
+// \return void
+*/
+template< typename MT     // Type of the adapted matrix
+        , bool SO         // Storage order of the adapted matrix
+        , bool DF         // Density flag
+        , typename Arg >  // Min/max argument type
+void makeSymmetric( UniUpperMatrix<MT,SO,DF>& matrix, const Arg& min, const Arg& max )
+{
+   UNUSED_PARAMETER( min, max );
+
+   makeSymmetric( matrix );
+}
+/*! \endcond */
+//*************************************************************************************************
+
+
+//*************************************************************************************************
+/*! \cond BLAZE_INTERNAL */
+/*!\brief Setup of a random Hermitian UniUpperMatrix.
+//
+// \param matrix The matrix to be randomized.
+// \return void
+*/
+template< typename MT  // Type of the adapted matrix
+        , bool SO      // Storage order of the adapted matrix
+        , bool DF >    // Density flag
+void makeHermitian( UniUpperMatrix<MT,SO,DF>& matrix )
+{
+   reset( matrix );
+
+   BLAZE_INTERNAL_ASSERT( isHermitian( matrix ), "Non-Hermitian matrix detected" );
+}
+/*! \endcond */
+//*************************************************************************************************
+
+
+//*************************************************************************************************
+/*! \cond BLAZE_INTERNAL */
+/*!\brief Setup of a random Hermitian UniUpperMatrix.
+//
+// \param matrix The matrix to be randomized.
+// \param min The smallest possible value for a matrix element.
+// \param max The largest possible value for a matrix element.
+// \return void
+*/
+template< typename MT     // Type of the adapted matrix
+        , bool SO         // Storage order of the adapted matrix
+        , bool DF         // Density flag
+        , typename Arg >  // Min/max argument type
+void makeHermitian( UniUpperMatrix<MT,SO,DF>& matrix, const Arg& min, const Arg& max )
+{
+   UNUSED_PARAMETER( min, max );
+
+   makeHermitian( matrix );
+}
+/*! \endcond */
+//*************************************************************************************************
+
+
+//*************************************************************************************************
+/*! \cond BLAZE_INTERNAL */
+/*!\brief Setup of a random (Hermitian) positive definite UniUpperMatrix.
+//
+// \param matrix The matrix to be randomized.
+// \return void
+*/
+template< typename MT  // Type of the adapted matrix
+        , bool SO      // Storage order of the adapted matrix
+        , bool DF >    // Density flag
+void makePositiveDefinite( UniUpperMatrix<MT,SO,DF>& matrix )
+{
+   makeHermitian( matrix );
+}
+/*! \endcond */
+//*************************************************************************************************
+
 } // namespace blaze
 
 #endif
