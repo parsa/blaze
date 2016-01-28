@@ -43,14 +43,11 @@
 #include <sstream>
 #include <stdexcept>
 #include <string>
-#include <blaze/math/DiagonalMatrix.h>
-#include <blaze/math/HermitianMatrix.h>
-#include <blaze/math/LowerMatrix.h>
-#include <blaze/math/StaticMatrix.h>
-#include <blaze/math/SymmetricMatrix.h>
-#include <blaze/math/UniLowerMatrix.h>
-#include <blaze/math/UniUpperMatrix.h>
-#include <blaze/math/UpperMatrix.h>
+#include <typeinfo>
+#include <blaze/math/typetraits/IsSquare.h>
+#include <blaze/math/typetraits/RemoveAdaptor.h>
+#include <blaze/util/Complex.h>
+#include <blaze/util/Random.h>
 #include <blazetest/system/LAPACK.h>
 
 
@@ -91,15 +88,23 @@ class DenseTest
    //**Test functions******************************************************************************
    /*!\name Test functions */
    //@{
-   template< typename Type > void testGeneral();
-   template< typename Type > void testSymmetric();
-   template< typename Type > void testHermitian();
-   template< typename Type > void testLower();
-   template< typename Type > void testUniLower();
-   template< typename Type > void testUpper();
-   template< typename Type > void testUniUpper();
-   template< typename Type > void testDiagonal();
+   template< typename Type >
+   void testRandom();
+
+   void testGeneral();
+   void testSymmetric();
+   void testHermitian();
+   void testLower();
+   void testUniLower();
+   void testUpper();
+   void testUniUpper();
+   void testDiagonal();
    //@}
+   //**********************************************************************************************
+
+   //**Type definitions****************************************************************************
+   typedef blaze::complex<float>   cfloat;   //!< Single precision complex test type.
+   typedef blaze::complex<double>  cdouble;  //!< Double precision complex test type.
    //**********************************************************************************************
 
    //**Member variables****************************************************************************
@@ -121,702 +126,44 @@ class DenseTest
 //=================================================================================================
 
 //*************************************************************************************************
-/*!\brief Test of the QR decomposition functionality for general matrices.
+/*!\brief Test of the QR decomposition with a randomly initialized matrix of the given type.
 //
 // \return void
 // \exception std::runtime_error Error detected.
 //
-// This function tests the dense matrix QR decomposition for general matrices. In case an error
-// is detected, a \a std::runtime_error exception is thrown.
+// This function tests the dense matrix QR decomposition for a randomly initialized matrix of the
+// given type. In case an error is detected, a \a std::runtime_error exception is thrown.
 */
 template< typename Type >
-void DenseTest::testGeneral()
+void DenseTest::testRandom()
 {
 #if BLAZETEST_MATHTEST_LAPACK_MODE
 
-   //=====================================================================================
-   // Row-major matrix tests
-   //=====================================================================================
+   test_ = "QR decomposition";
 
-   {
-      test_ = "Row-major general matrix (3x3)";
+   typedef typename blaze::RemoveAdaptor<Type>::Type  MT;
 
-      blaze::StaticMatrix<Type,3UL,3UL,blaze::rowMajor> A;
-      randomize( A );
+   const size_t m( blaze::rand<size_t>( 3UL, 8UL ) );
+   const size_t n( blaze::IsSquare<Type>::value ? m : blaze::rand<size_t>( 3UL, 8UL ) );
 
-      blaze::StaticMatrix<Type,3UL,3UL,blaze::rowMajor> Q;
-      blaze::UpperMatrix< blaze::StaticMatrix<Type,3UL,3UL,blaze::rowMajor> > R;
+   Type A;
+   MT Q, R;
 
-      blaze::qr( A, Q, R );
+   resize( A, m, n );
+   randomize( A );
 
-      const blaze::StaticMatrix<Type,3UL,3UL,blaze::rowMajor> QR( Q*R );
+   blaze::qr( A, Q, R );
 
-      if( QR != A ) {
-         std::ostringstream oss;
-         oss << " Test: " << test_ << "\n"
-             << " Error: QR decomposition failed\n"
-             << " Details:\n"
-             << "   Result:\n" << QR << "\n"
-             << "   Expected result:\n" << A << "\n";
-         throw std::runtime_error( oss.str() );
-      }
-   }
+   const MT QR( Q*R );
 
-   {
-      test_ = "Row-major general matrix (2x5)";
-
-      blaze::StaticMatrix<Type,2UL,5UL,blaze::rowMajor> A;
-      randomize( A );
-
-      blaze::StaticMatrix<Type,2UL,2UL,blaze::rowMajor> Q;
-      blaze::StaticMatrix<Type,2UL,5UL,blaze::rowMajor> R;
-
-      blaze::qr( A, Q, R );
-
-      const blaze::StaticMatrix<Type,2UL,5UL,blaze::rowMajor> QR( Q*R );
-
-      if( QR != A ) {
-         std::ostringstream oss;
-         oss << " Test: " << test_ << "\n"
-             << " Error: QR decomposition failed\n"
-             << " Details:\n"
-             << "   Result:\n" << QR << "\n"
-             << "   Expected result:\n" << A << "\n";
-         throw std::runtime_error( oss.str() );
-      }
-   }
-
-   {
-      test_ = "Row-major general matrix (5x2)";
-
-      blaze::StaticMatrix<Type,5UL,2UL,blaze::rowMajor> A;
-      randomize( A );
-
-      blaze::StaticMatrix<Type,5UL,5UL,blaze::rowMajor> Q;
-      blaze::StaticMatrix<Type,5UL,2UL,blaze::rowMajor> R;
-
-      blaze::qr( A, Q, R );
-
-      const blaze::StaticMatrix<Type,5UL,2UL,blaze::rowMajor> QR( Q*R );
-
-      if( QR != A ) {
-         std::ostringstream oss;
-         oss << " Test: " << test_ << "\n"
-             << " Error: QR decomposition failed\n"
-             << " Details:\n"
-             << "   Result:\n" << QR << "\n"
-             << "   Expected result:\n" << A << "\n";
-         throw std::runtime_error( oss.str() );
-      }
-   }
-
-
-   //=====================================================================================
-   // Column-major matrix tests
-   //=====================================================================================
-
-   {
-      test_ = "Column-major general matrix (3x3)";
-
-      blaze::StaticMatrix<Type,3UL,3UL,blaze::columnMajor> A;
-      randomize( A );
-
-      blaze::StaticMatrix<Type,3UL,3UL,blaze::columnMajor> Q;
-      blaze::UpperMatrix< blaze::StaticMatrix<Type,3UL,3UL,blaze::columnMajor> > R;
-
-      blaze::qr( A, Q, R );
-
-      const blaze::StaticMatrix<Type,3UL,3UL,blaze::columnMajor> QR( Q*R );
-
-      if( QR != A ) {
-         std::ostringstream oss;
-         oss << " Test: " << test_ << "\n"
-             << " Error: QR decomposition failed\n"
-             << " Details:\n"
-             << "   Result:\n" << QR << "\n"
-             << "   Expected result:\n" << A << "\n";
-         throw std::runtime_error( oss.str() );
-      }
-   }
-
-   {
-      test_ = "Column-major general matrix (2x5)";
-
-      blaze::StaticMatrix<Type,2UL,5UL,blaze::columnMajor> A;
-      randomize( A );
-
-      blaze::StaticMatrix<Type,2UL,2UL,blaze::columnMajor> Q;
-      blaze::StaticMatrix<Type,2UL,5UL,blaze::columnMajor> R;
-
-      blaze::qr( A, Q, R );
-
-      const blaze::StaticMatrix<Type,2UL,5UL,blaze::columnMajor> QR( Q*R );
-
-      if( QR != A ) {
-         std::ostringstream oss;
-         oss << " Test: " << test_ << "\n"
-             << " Error: QR decomposition failed\n"
-             << " Details:\n"
-             << "   Result:\n" << QR << "\n"
-             << "   Expected result:\n" << A << "\n";
-         throw std::runtime_error( oss.str() );
-      }
-   }
-
-   {
-      test_ = "Column-major general matrix (5x2)";
-
-      blaze::StaticMatrix<Type,5UL,2UL,blaze::columnMajor> A;
-      randomize( A );
-
-      blaze::StaticMatrix<Type,5UL,5UL,blaze::columnMajor> Q;
-      blaze::StaticMatrix<Type,5UL,2UL,blaze::columnMajor> R;
-
-      blaze::qr( A, Q, R );
-
-      const blaze::StaticMatrix<Type,5UL,2UL,blaze::columnMajor> QR( Q*R );
-
-      if( QR != A ) {
-         std::ostringstream oss;
-         oss << " Test: " << test_ << "\n"
-             << " Error: QR decomposition failed\n"
-             << " Details:\n"
-             << "   Result:\n" << QR << "\n"
-             << "   Expected result:\n" << A << "\n";
-         throw std::runtime_error( oss.str() );
-      }
-   }
-
-#endif
-}
-//*************************************************************************************************
-
-
-//*************************************************************************************************
-/*!\brief Test of the QR decomposition functionality for symmetric matrices.
-//
-// \return void
-// \exception std::runtime_error Error detected.
-//
-// This function tests the dense matrix QR decomposition for symmetric matrices. In case an error
-// is detected, a \a std::runtime_error exception is thrown.
-*/
-template< typename Type >
-void DenseTest::testSymmetric()
-{
-#if BLAZETEST_MATHTEST_LAPACK_MODE
-
-   //=====================================================================================
-   // Row-major matrix tests
-   //=====================================================================================
-
-   {
-      test_ = "Row-major symmetric matrix (3x3)";
-
-      blaze::SymmetricMatrix< blaze::StaticMatrix<Type,3UL,3UL,blaze::rowMajor> > A;
-      randomize( A );
-
-      blaze::StaticMatrix<Type,3UL,3UL,blaze::rowMajor> Q;
-      blaze::UpperMatrix< blaze::StaticMatrix<Type,3UL,3UL,blaze::rowMajor> > R;
-
-      blaze::qr( A, Q, R );
-
-      const blaze::StaticMatrix<Type,3UL,3UL,blaze::rowMajor> QR( Q*R );
-
-      if( QR != A ) {
-         std::ostringstream oss;
-         oss << " Test: " << test_ << "\n"
-             << " Error: QR decomposition failed\n"
-             << " Details:\n"
-             << "   Result:\n" << QR << "\n"
-             << "   Expected result:\n" << A << "\n";
-         throw std::runtime_error( oss.str() );
-      }
-   }
-
-
-   //=====================================================================================
-   // Column-major matrix tests
-   //=====================================================================================
-
-   {
-      test_ = "Column-major symmetric matrix (3x3)";
-
-      blaze::SymmetricMatrix< blaze::StaticMatrix<Type,3UL,3UL,blaze::columnMajor> > A;
-      randomize( A );
-
-      blaze::StaticMatrix<Type,3UL,3UL,blaze::columnMajor> Q;
-      blaze::UpperMatrix< blaze::StaticMatrix<Type,3UL,3UL,blaze::columnMajor> > R;
-
-      blaze::qr( A, Q, R );
-
-      const blaze::StaticMatrix<Type,3UL,3UL,blaze::columnMajor> QR( Q*R );
-
-      if( QR != A ) {
-         std::ostringstream oss;
-         oss << " Test: " << test_ << "\n"
-             << " Error: QR decomposition failed\n"
-             << " Details:\n"
-             << "   Result:\n" << QR << "\n"
-             << "   Expected result:\n" << A << "\n";
-         throw std::runtime_error( oss.str() );
-      }
-   }
-
-#endif
-}
-//*************************************************************************************************
-
-
-//*************************************************************************************************
-/*!\brief Test of the QR decomposition functionality for Hermitian matrices.
-//
-// \return void
-// \exception std::runtime_error Error detected.
-//
-// This function tests the dense matrix QR decomposition for Hermitian matrices. In case an error
-// is detected, a \a std::runtime_error exception is thrown.
-*/
-template< typename Type >
-void DenseTest::testHermitian()
-{
-#if BLAZETEST_MATHTEST_LAPACK_MODE
-
-   //=====================================================================================
-   // Row-major matrix tests
-   //=====================================================================================
-
-   {
-      test_ = "Row-major Hermitian matrix (3x3)";
-
-      blaze::HermitianMatrix< blaze::StaticMatrix<Type,3UL,3UL,blaze::rowMajor> > A;
-      randomize( A );
-
-      blaze::StaticMatrix<Type,3UL,3UL,blaze::rowMajor> Q;
-      blaze::UpperMatrix< blaze::StaticMatrix<Type,3UL,3UL,blaze::rowMajor> > R;
-
-      blaze::qr( A, Q, R );
-
-      const blaze::StaticMatrix<Type,3UL,3UL,blaze::rowMajor> QR( Q*R );
-
-      if( QR != A ) {
-         std::ostringstream oss;
-         oss << " Test: " << test_ << "\n"
-             << " Error: QR decomposition failed\n"
-             << " Details:\n"
-             << "   Result:\n" << QR << "\n"
-             << "   Expected result:\n" << A << "\n";
-         throw std::runtime_error( oss.str() );
-      }
-   }
-
-
-   //=====================================================================================
-   // Column-major matrix tests
-   //=====================================================================================
-
-   {
-      test_ = "Column-major Hermitian matrix (3x3)";
-
-      blaze::HermitianMatrix< blaze::StaticMatrix<Type,3UL,3UL,blaze::columnMajor> > A;
-      randomize( A );
-
-      blaze::StaticMatrix<Type,3UL,3UL,blaze::columnMajor> Q;
-      blaze::UpperMatrix< blaze::StaticMatrix<Type,3UL,3UL,blaze::columnMajor> > R;
-
-      blaze::qr( A, Q, R );
-
-      const blaze::StaticMatrix<Type,3UL,3UL,blaze::columnMajor> QR( Q*R );
-
-      if( QR != A ) {
-         std::ostringstream oss;
-         oss << " Test: " << test_ << "\n"
-             << " Error: QR decomposition failed\n"
-             << " Details:\n"
-             << "   Result:\n" << QR << "\n"
-             << "   Expected result:\n" << A << "\n";
-         throw std::runtime_error( oss.str() );
-      }
-   }
-
-#endif
-}
-//*************************************************************************************************
-
-
-//*************************************************************************************************
-/*!\brief Test of the QR decomposition functionality for lower matrices.
-//
-// \return void
-// \exception std::runtime_error Error detected.
-//
-// This function tests the dense matrix QR decomposition for lower matrices. In case an error
-// is detected, a \a std::runtime_error exception is thrown.
-*/
-template< typename Type >
-void DenseTest::testLower()
-{
-#if BLAZETEST_MATHTEST_LAPACK_MODE
-
-   //=====================================================================================
-   // Row-major matrix tests
-   //=====================================================================================
-
-   {
-      test_ = "Row-major lower matrix (3x3)";
-
-      blaze::LowerMatrix< blaze::StaticMatrix<Type,3UL,3UL,blaze::rowMajor> > A;
-      randomize( A );
-
-      blaze::StaticMatrix<Type,3UL,3UL,blaze::rowMajor> Q;
-      blaze::UpperMatrix< blaze::StaticMatrix<Type,3UL,3UL,blaze::rowMajor> > R;
-
-      blaze::qr( A, Q, R );
-
-      const blaze::StaticMatrix<Type,3UL,3UL,blaze::rowMajor> QR( Q*R );
-
-      if( QR != A ) {
-         std::ostringstream oss;
-         oss << " Test: " << test_ << "\n"
-             << " Error: QR decomposition failed\n"
-             << " Details:\n"
-             << "   Result:\n" << QR << "\n"
-             << "   Expected result:\n" << A << "\n";
-         throw std::runtime_error( oss.str() );
-      }
-   }
-
-
-   //=====================================================================================
-   // Column-major matrix tests
-   //=====================================================================================
-
-   {
-      test_ = "Column-major lower matrix (3x3)";
-
-      blaze::LowerMatrix< blaze::StaticMatrix<Type,3UL,3UL,blaze::columnMajor> > A;
-      randomize( A );
-
-      blaze::StaticMatrix<Type,3UL,3UL,blaze::columnMajor> Q;
-      blaze::UpperMatrix< blaze::StaticMatrix<Type,3UL,3UL,blaze::columnMajor> > R;
-
-      blaze::qr( A, Q, R );
-
-      const blaze::StaticMatrix<Type,3UL,3UL,blaze::columnMajor> QR( Q*R );
-
-      if( QR != A ) {
-         std::ostringstream oss;
-         oss << " Test: " << test_ << "\n"
-             << " Error: QR decomposition failed\n"
-             << " Details:\n"
-             << "   Result:\n" << QR << "\n"
-             << "   Expected result:\n" << A << "\n";
-         throw std::runtime_error( oss.str() );
-      }
-   }
-
-#endif
-}
-//*************************************************************************************************
-
-
-//*************************************************************************************************
-/*!\brief Test of the QR decomposition functionality for unilower matrices.
-//
-// \return void
-// \exception std::runtime_error Error detected.
-//
-// This function tests the dense matrix QR decomposition for unilower matrices. In case an error
-// is detected, a \a std::runtime_error exception is thrown.
-*/
-template< typename Type >
-void DenseTest::testUniLower()
-{
-#if BLAZETEST_MATHTEST_LAPACK_MODE
-
-   //=====================================================================================
-   // Row-major matrix tests
-   //=====================================================================================
-
-   {
-      test_ = "Row-major unilower matrix (3x3)";
-
-      blaze::UniLowerMatrix< blaze::StaticMatrix<Type,3UL,3UL,blaze::rowMajor> > A;
-      randomize( A );
-
-      blaze::StaticMatrix<Type,3UL,3UL,blaze::rowMajor> Q;
-      blaze::UpperMatrix< blaze::StaticMatrix<Type,3UL,3UL,blaze::rowMajor> > R;
-
-      blaze::qr( A, Q, R );
-
-      const blaze::StaticMatrix<Type,3UL,3UL,blaze::rowMajor> QR( Q*R );
-
-      if( QR != A ) {
-         std::ostringstream oss;
-         oss << " Test: " << test_ << "\n"
-             << " Error: QR decomposition failed\n"
-             << " Details:\n"
-             << "   Result:\n" << QR << "\n"
-             << "   Expected result:\n" << A << "\n";
-         throw std::runtime_error( oss.str() );
-      }
-   }
-
-
-   //=====================================================================================
-   // Column-major matrix tests
-   //=====================================================================================
-
-   {
-      test_ = "Column-major unilower matrix (3x3)";
-
-      blaze::UniLowerMatrix< blaze::StaticMatrix<Type,3UL,3UL,blaze::columnMajor> > A;
-      randomize( A );
-
-      blaze::StaticMatrix<Type,3UL,3UL,blaze::columnMajor> Q;
-      blaze::UpperMatrix< blaze::StaticMatrix<Type,3UL,3UL,blaze::columnMajor> > R;
-
-      blaze::qr( A, Q, R );
-
-      const blaze::StaticMatrix<Type,3UL,3UL,blaze::columnMajor> QR( Q*R );
-
-      if( QR != A ) {
-         std::ostringstream oss;
-         oss << " Test: " << test_ << "\n"
-             << " Error: QR decomposition failed\n"
-             << " Details:\n"
-             << "   Result:\n" << QR << "\n"
-             << "   Expected result:\n" << A << "\n";
-         throw std::runtime_error( oss.str() );
-      }
-   }
-
-#endif
-}
-//*************************************************************************************************
-
-
-//*************************************************************************************************
-/*!\brief Test of the QR decomposition functionality for upper matrices.
-//
-// \return void
-// \exception std::runtime_error Error detected.
-//
-// This function tests the dense matrix QR decomposition for upper matrices. In case an error
-// is detected, a \a std::runtime_error exception is thrown.
-*/
-template< typename Type >
-void DenseTest::testUpper()
-{
-#if BLAZETEST_MATHTEST_LAPACK_MODE
-
-   //=====================================================================================
-   // Row-major matrix tests
-   //=====================================================================================
-
-   {
-      test_ = "Row-major upper matrix (3x3)";
-
-      blaze::UpperMatrix< blaze::StaticMatrix<Type,3UL,3UL,blaze::rowMajor> > A;
-      randomize( A );
-
-      blaze::StaticMatrix<Type,3UL,3UL,blaze::rowMajor> Q;
-      blaze::UpperMatrix< blaze::StaticMatrix<Type,3UL,3UL,blaze::rowMajor> > R;
-
-      blaze::qr( A, Q, R );
-
-      const blaze::StaticMatrix<Type,3UL,3UL,blaze::rowMajor> QR( Q*R );
-
-      if( QR != A ) {
-         std::ostringstream oss;
-         oss << " Test: " << test_ << "\n"
-             << " Error: QR decomposition failed\n"
-             << " Details:\n"
-             << "   Result:\n" << QR << "\n"
-             << "   Expected result:\n" << A << "\n";
-         throw std::runtime_error( oss.str() );
-      }
-   }
-
-
-   //=====================================================================================
-   // Column-major matrix tests
-   //=====================================================================================
-
-   {
-      test_ = "Column-major upper matrix (3x3)";
-
-      blaze::UpperMatrix< blaze::StaticMatrix<Type,3UL,3UL,blaze::columnMajor> > A;
-      randomize( A );
-
-      blaze::StaticMatrix<Type,3UL,3UL,blaze::columnMajor> Q;
-      blaze::UpperMatrix< blaze::StaticMatrix<Type,3UL,3UL,blaze::columnMajor> > R;
-
-      blaze::qr( A, Q, R );
-
-      const blaze::StaticMatrix<Type,3UL,3UL,blaze::columnMajor> QR( Q*R );
-
-      if( QR != A ) {
-         std::ostringstream oss;
-         oss << " Test: " << test_ << "\n"
-             << " Error: QR decomposition failed\n"
-             << " Details:\n"
-             << "   Result:\n" << QR << "\n"
-             << "   Expected result:\n" << A << "\n";
-         throw std::runtime_error( oss.str() );
-      }
-   }
-
-#endif
-}
-//*************************************************************************************************
-
-
-//*************************************************************************************************
-/*!\brief Test of the QR decomposition functionality for uniupper matrices.
-//
-// \return void
-// \exception std::runtime_error Error detected.
-//
-// This function tests the dense matrix QR decomposition for uniupper matrices. In case an error
-// is detected, a \a std::runtime_error exception is thrown.
-*/
-template< typename Type >
-void DenseTest::testUniUpper()
-{
-#if BLAZETEST_MATHTEST_LAPACK_MODE
-
-   //=====================================================================================
-   // Row-major matrix tests
-   //=====================================================================================
-
-   {
-      test_ = "Row-major uniupper matrix (3x3)";
-
-      blaze::UniUpperMatrix< blaze::StaticMatrix<Type,3UL,3UL,blaze::rowMajor> > A;
-      randomize( A );
-
-      blaze::StaticMatrix<Type,3UL,3UL,blaze::rowMajor> Q;
-      blaze::UpperMatrix< blaze::StaticMatrix<Type,3UL,3UL,blaze::rowMajor> > R;
-
-      blaze::qr( A, Q, R );
-
-      const blaze::StaticMatrix<Type,3UL,3UL,blaze::rowMajor> QR( Q*R );
-
-      if( QR != A ) {
-         std::ostringstream oss;
-         oss << " Test: " << test_ << "\n"
-             << " Error: QR decomposition failed\n"
-             << " Details:\n"
-             << "   Result:\n" << QR << "\n"
-             << "   Expected result:\n" << A << "\n";
-         throw std::runtime_error( oss.str() );
-      }
-   }
-
-
-   //=====================================================================================
-   // Column-major matrix tests
-   //=====================================================================================
-
-   {
-      test_ = "Column-major uniupper matrix (3x3)";
-
-      blaze::UniUpperMatrix< blaze::StaticMatrix<Type,3UL,3UL,blaze::columnMajor> > A;
-      randomize( A );
-
-      blaze::StaticMatrix<Type,3UL,3UL,blaze::columnMajor> Q;
-      blaze::UpperMatrix< blaze::StaticMatrix<Type,3UL,3UL,blaze::columnMajor> > R;
-
-      blaze::qr( A, Q, R );
-
-      const blaze::StaticMatrix<Type,3UL,3UL,blaze::columnMajor> QR( Q*R );
-
-      if( QR != A ) {
-         std::ostringstream oss;
-         oss << " Test: " << test_ << "\n"
-             << " Error: QR decomposition failed\n"
-             << " Details:\n"
-             << "   Result:\n" << QR << "\n"
-             << "   Expected result:\n" << A << "\n";
-         throw std::runtime_error( oss.str() );
-      }
-   }
-
-#endif
-}
-//*************************************************************************************************
-
-
-//*************************************************************************************************
-/*!\brief Test of the QR decomposition functionality for diagonal matrices.
-//
-// \return void
-// \exception std::runtime_error Error detected.
-//
-// This function tests the dense matrix QR decomposition for diagonal matrices. In case an error
-// is detected, a \a std::runtime_error exception is thrown.
-*/
-template< typename Type >
-void DenseTest::testDiagonal()
-{
-#if BLAZETEST_MATHTEST_LAPACK_MODE
-
-   //=====================================================================================
-   // Row-major matrix tests
-   //=====================================================================================
-
-   {
-      test_ = "Row-major diagonal matrix (3x3)";
-
-      blaze::DiagonalMatrix< blaze::StaticMatrix<Type,3UL,3UL,blaze::rowMajor> > A;
-      randomize( A );
-
-      blaze::StaticMatrix<Type,3UL,3UL,blaze::rowMajor> Q;
-      blaze::UpperMatrix< blaze::StaticMatrix<Type,3UL,3UL,blaze::rowMajor> > R;
-
-      blaze::qr( A, Q, R );
-
-      const blaze::StaticMatrix<Type,3UL,3UL,blaze::rowMajor> QR( Q*R );
-
-      if( QR != A ) {
-         std::ostringstream oss;
-         oss << " Test: " << test_ << "\n"
-             << " Error: QR decomposition failed\n"
-             << " Details:\n"
-             << "   Result:\n" << QR << "\n"
-             << "   Expected result:\n" << A << "\n";
-         throw std::runtime_error( oss.str() );
-      }
-   }
-
-
-   //=====================================================================================
-   // Column-major matrix tests
-   //=====================================================================================
-
-   {
-      test_ = "Column-major diagonal matrix (3x3)";
-
-      blaze::DiagonalMatrix< blaze::StaticMatrix<Type,3UL,3UL,blaze::columnMajor> > A;
-      randomize( A );
-
-      blaze::StaticMatrix<Type,3UL,3UL,blaze::columnMajor> Q;
-      blaze::UpperMatrix< blaze::StaticMatrix<Type,3UL,3UL,blaze::columnMajor> > R;
-
-      blaze::qr( A, Q, R );
-
-      const blaze::StaticMatrix<Type,3UL,3UL,blaze::columnMajor> QR( Q*R );
-
-      if( QR != A ) {
-         std::ostringstream oss;
-         oss << " Test: " << test_ << "\n"
-             << " Error: QR decomposition failed\n"
-             << " Details:\n"
-             << "   Result:\n" << QR << "\n"
-             << "   Expected result:\n" << A << "\n";
-         throw std::runtime_error( oss.str() );
-      }
+   if( QR != A ) {
+      std::ostringstream oss;
+      oss << " Test: " << test_ << "\n"
+          << " Error: QR decomposition failed\n"
+          << " Details:\n"
+          << "   Result:\n" << QR << "\n"
+          << "   Expected result:\n" << A << "\n";
+      throw std::runtime_error( oss.str() );
    }
 
 #endif
