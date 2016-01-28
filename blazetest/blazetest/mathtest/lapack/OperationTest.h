@@ -5261,6 +5261,8 @@ void OperationTest::testPosv()
 template< typename Type >
 void OperationTest::testTrsv()
 {
+#if BLAZETEST_MATHTEST_LAPACK_MODE
+
    //=====================================================================================
    // Row-major matrix tests
    //=====================================================================================
@@ -5989,6 +5991,8 @@ void OperationTest::testTrsv()
          throw std::runtime_error( oss.str() );
       }
    }
+
+#endif
 }
 //*************************************************************************************************
 
