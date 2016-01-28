@@ -53,6 +53,8 @@
 #include <blaze/math/Functions.h>
 #include <blaze/math/lapack/getrf.h>
 #include <blaze/math/traits/DerestrictTrait.h>
+#include <blaze/math/typetraits/IsResizable.h>
+#include <blaze/util/Exception.h>
 
 
 namespace blaze {
@@ -67,8 +69,8 @@ namespace blaze {
 /*!\name LU decomposition functions */
 //@{
 template< typename MT1, bool SO1, typename MT2, typename MT3, typename MT4, bool SO2 >
-inline void lu( const DenseMatrix<MT1,SO1>& A, DenseMatrix<MT2,SO1>& L,
-                DenseMatrix<MT3,SO1>& U, Matrix<MT4,SO2>& P );
+void lu( const DenseMatrix<MT1,SO1>& A, DenseMatrix<MT2,SO1>& L,
+         DenseMatrix<MT3,SO1>& U, Matrix<MT4,SO2>& P );
 //@}
 //*************************************************************************************************
 
@@ -90,7 +92,7 @@ template< typename MT1  // Type of matrix A
         , bool SO1      // Storage order of dense matrix A
         , typename MT2  // Type of matrix P
         , bool SO2 >    // Storage order of matrix P
-inline void lu( DenseMatrix<MT1,SO1>& A, Matrix<MT2,SO2>& P )
+void lu( DenseMatrix<MT1,SO1>& A, Matrix<MT2,SO2>& P )
 {
    BLAZE_CONSTRAINT_MUST_NOT_BE_ADAPTOR_TYPE( MT1 );
    BLAZE_CONSTRAINT_MUST_BE_BLAS_COMPATIBLE_TYPE( typename MT1::ElementType );
@@ -139,6 +141,7 @@ inline void lu( DenseMatrix<MT1,SO1>& A, Matrix<MT2,SO2>& P )
 // \param U The resulting upper triangular matrix.
 // \param P The resulting permutation matrix.
 // \return void
+// \exception std::invalid_argument Dimensions of fixed size matrix do not match.
 //
 // This function performs the dense matrix (P)LU decomposition of a general m-by-n matrix. The
 // resulting decomposition is written to the three distinct matrices \c L, \c U, and \c P, which
@@ -160,11 +163,35 @@ inline void lu( DenseMatrix<MT1,SO1>& A, Matrix<MT2,SO2>& P )
 
 // where \c L is a lower triangular matrix (lower trapezoidal if \a m > \a n), \c U is an upper
 // triangular matrix (upper trapezoidal if \a m < \a n), and \c P is an n-by-n permutation matrix,
-// which represents the pivoting indices for the applied column interchanges,
+// which represents the pivoting indices for the applied column interchanges.
 //
-// \note This function only works for general matrices with \c float, \c double, \c complex<float>,
-// or \c complex<double> element type. The attempt to call the function with matrices of any other
-// element type results in a compile time error!\n
+// Examples:
+
+   \code
+   blaze::DynamicMatrix<double,blaze::rowMajor> A;
+   // ... Resizing and initialization
+
+   blaze::DynamicMatrix<double,blaze::rowMajor> L, U, P;
+
+   lu( A, L, U, P );  // LU decomposition of a row-major matrix
+
+   assert( A == L * U * P );
+   \endcode
+
+   \code
+   blaze::DynamicMatrix<double,blaze::columnMajor> A;
+   // ... Resizing and initialization
+
+   blaze::DynamicMatrix<double,blaze::columnMajor> L, U, P;
+
+   lu( A, L, U, P );  // LU decomposition of a column-major matrix
+
+   assert( A == P * L * U );
+   \endcode
+
+// \note This function only works for matrices with \c float, \c double, \c complex<float>, or
+// \c complex<double> element type. The attempt to call the function with matrices of any other
+// element type results in a compile time error!
 //
 // \note This function can only be used if the fitting LAPACK library is available and linked to
 // the executable. Otherwise a call to this function will result in a linker error.
@@ -172,9 +199,6 @@ inline void lu( DenseMatrix<MT1,SO1>& A, Matrix<MT2,SO2>& P )
 // \note The LU decomposition will never fail, even for singular matrices. However, in case of a
 // singular matrix the resulting decomposition cannot be used for a matrix inversion or solving
 // a linear system of equations.
-//
-// \note This function does not provide any exception safety guarantee, i.e. in case an exception
-// is thrown \a A may already have been modified.
 */
 template< typename MT1  // Type of matrix A
         , bool SO1      // Storage order of matrix A, L and U
@@ -182,8 +206,8 @@ template< typename MT1  // Type of matrix A
         , typename MT3  // Type of matrix U
         , typename MT4  // Type of matrix P
         , bool SO2 >    // Storage order of matrix P
-inline void lu( const DenseMatrix<MT1,SO1>& A, DenseMatrix<MT2,SO1>& L,
-                DenseMatrix<MT3,SO1>& U, Matrix<MT4,SO2>& P )
+void lu( const DenseMatrix<MT1,SO1>& A, DenseMatrix<MT2,SO1>& L,
+         DenseMatrix<MT3,SO1>& U, Matrix<MT4,SO2>& P )
 {
    BLAZE_CONSTRAINT_MUST_NOT_BE_STRICTLY_TRIANGULAR_MATRIX_TYPE( MT1 );
    BLAZE_CONSTRAINT_MUST_BE_BLAS_COMPATIBLE_TYPE( typename MT1::ElementType );
@@ -203,61 +227,69 @@ inline void lu( const DenseMatrix<MT1,SO1>& A, DenseMatrix<MT2,SO1>& L,
 
    const size_t m( (~A).rows()    );
    const size_t n( (~A).columns() );
+   const size_t mindim( min( m, n ) );
+   const size_t size( SO1 ? m : n );
 
-   typename DerestrictTrait<MT2>::Type L2( derestrict( ~L ) );
-   typename DerestrictTrait<MT3>::Type U2( derestrict( ~U ) );
+   if( ( !IsResizable<MT2>::value && ( (~L).rows() != m      || (~L).columns() != mindim ) ) ||
+       ( !IsResizable<MT3>::value && ( (~U).rows() != mindim || (~U).columns() != n      ) ) ||
+       ( !IsResizable<MT4>::value && ( (~P).rows() != size   || (~P).columns() != size   ) ) ) {
+      BLAZE_THROW_INVALID_ARGUMENT( "Dimensions of fixed size matrix do not match" );
+   }
+
+   typename DerestrictTrait<MT2>::Type l( derestrict( ~L ) );
+   typename DerestrictTrait<MT3>::Type u( derestrict( ~U ) );
 
    if( m < n )
    {
-      U2 = (~A);
-      lu( U2, ~P );
+      u = (~A);
+      lu( u, ~P );
 
       resize( ~L, m, m );
-      reset( L2 );
+      reset( l );
 
       if( SO1 == rowMajor )
       {
          for( size_t i=0UL; i<m; ++i )
          {
             for( size_t j=0UL; j<i; ++j ) {
-               L2(i,j) = U2(i,j);
-               reset( U2(i,j) );
+               l(i,j) = u(i,j);
+               reset( u(i,j) );
             }
 
-            L2(i,i) = U2(i,i);
-            U2(i,i) = ET3(1);
+            l(i,i) = u(i,i);
+            u(i,i) = ET3(1);
          }
       }
       else
       {
          for( size_t j=0UL; j<m; ++j )
          {
-            L2(j,j) = ET2(1);
+            l(j,j) = ET2(1);
 
             for( size_t i=j+1UL; i<m; ++i ) {
-               L2(i,j) = U2(i,j);
-               reset( U2(i,j) );
+               l(i,j) = u(i,j);
+               reset( u(i,j) );
             }
          }
       }
    }
    else
    {
-      L2 = (~A);
-      lu( L2, ~P );
+      l = (~A);
+      lu( l, ~P );
 
       resize( ~U, n, n );
-      reset( U2 );
+      reset( u );
 
       if( SO1 == rowMajor )
       {
          for( size_t i=0UL; i<n; ++i )
          {
-            U2(i,i) = ET3(1);
+            u(i,i) = ET3(1);
 
             for( size_t j=i+1UL; j<n; ++j ) {
-               U2(i,j) = L2(i,j);
-               reset( L2(i,j) );
+               u(i,j) = l(i,j);
+               reset( l(i,j) );
             }
          }
       }
@@ -266,12 +298,12 @@ inline void lu( const DenseMatrix<MT1,SO1>& A, DenseMatrix<MT2,SO1>& L,
          for( size_t j=0UL; j<n; ++j )
          {
             for( size_t i=0UL; i<j; ++i ) {
-               U2(i,j) = L2(i,j);
-               reset( L2(i,j) );
+               u(i,j) = l(i,j);
+               reset( l(i,j) );
             }
 
-            U2(j,j) = L2(j,j);
-            L2(j,j) = ET2(1);
+            u(j,j) = l(j,j);
+            l(j,j) = ET2(1);
          }
       }
    }
