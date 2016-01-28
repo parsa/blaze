@@ -47,9 +47,11 @@
 #include <blaze/math/constraints/Resizable.h>
 #include <blaze/math/constraints/SparseMatrix.h>
 #include <blaze/math/DenseMatrix.h>
+#include <blaze/math/shims/Real.h>
 #include <blaze/math/SparseMatrix.h>
 #include <blaze/math/typetraits/IsDenseMatrix.h>
 #include <blaze/math/typetraits/UnderlyingBuiltin.h>
+#include <blaze/util/Assert.h>
 #include <blaze/util/FalseType.h>
 #include <blaze/util/Random.h>
 #include <blaze/util/TrueType.h>
@@ -566,6 +568,151 @@ inline void Rand< HermitianMatrix<MT,SO,DF> >::randomize( HermitianMatrix<MT,SO,
       else
          matrix(row,column) = rand<ET>( min, max );
    }
+}
+/*! \endcond */
+//*************************************************************************************************
+
+
+
+
+//=================================================================================================
+//
+//  MAKE FUNCTIONS
+//
+//=================================================================================================
+
+//*************************************************************************************************
+/*! \cond BLAZE_INTERNAL */
+/*!\brief Setup of a random symmetric HermitianMatrix.
+//
+// \param matrix The matrix to be randomized.
+// \return void
+*/
+template< typename MT  // Type of the adapted matrix
+        , bool SO      // Storage order of the adapted matrix
+        , bool DF >    // Density flag
+void makeSymmetric( HermitianMatrix<MT,SO,DF>& matrix )
+{
+   typedef typename UnderlyingBuiltin<typename MT::ElementType>::Type  BT;
+
+   const size_t n( matrix.rows() );
+
+   for( size_t i=0UL; i<n; ++i ) {
+      for( size_t j=0UL; j<=i; ++j ) {
+         matrix(i,j) = rand<BT>();
+      }
+   }
+
+   BLAZE_INTERNAL_ASSERT( isSymmetric( matrix ), "Non-symmetric matrix detected" );
+}
+/*! \endcond */
+//*************************************************************************************************
+
+
+//*************************************************************************************************
+/*! \cond BLAZE_INTERNAL */
+/*!\brief Setup of a random symmetric HermitianMatrix.
+//
+// \param matrix The matrix to be randomized.
+// \param min The smallest possible value for a matrix element.
+// \param max The largest possible value for a matrix element.
+// \return void
+*/
+template< typename MT     // Type of the adapted matrix
+        , bool SO         // Storage order of the adapted matrix
+        , bool DF         // Density flag
+        , typename Arg >  // Min/max argument type
+void makeSymmetric( HermitianMatrix<MT,SO,DF>& matrix, const Arg& min, const Arg& max )
+{
+   typedef typename UnderlyingBuiltin<typename MT::ElementType>::Type  BT;
+
+   const size_t n( matrix.rows() );
+
+   for( size_t i=0UL; i<n; ++i ) {
+      for( size_t j=0UL; j<=i; ++j ) {
+         matrix(i,j) = rand<BT>( real( min ), real( max ) );
+      }
+   }
+
+   BLAZE_INTERNAL_ASSERT( isSymmetric( matrix ), "Non-symmetric matrix detected" );
+}
+/*! \endcond */
+//*************************************************************************************************
+
+
+//*************************************************************************************************
+/*! \cond BLAZE_INTERNAL */
+/*!\brief Setup of a random Hermitian HermitianMatrix.
+//
+// \param matrix The matrix to be randomized.
+// \return void
+*/
+template< typename MT  // Type of the adapted matrix
+        , bool SO      // Storage order of the adapted matrix
+        , bool DF >    // Density flag
+void makeHermitian( HermitianMatrix<MT,SO,DF>& matrix )
+{
+   using blaze::randomize;
+
+   randomize( matrix );
+
+   BLAZE_INTERNAL_ASSERT( isHermitian( matrix ), "Non-Hermitian matrix detected" );
+}
+/*! \endcond */
+//*************************************************************************************************
+
+
+//*************************************************************************************************
+/*! \cond BLAZE_INTERNAL */
+/*!\brief Setup of a random Hermitian HermitianMatrix.
+//
+// \param matrix The matrix to be randomized.
+// \param min The smallest possible value for a matrix element.
+// \param max The largest possible value for a matrix element.
+// \return void
+*/
+template< typename MT     // Type of the adapted matrix
+        , bool SO         // Storage order of the adapted matrix
+        , bool DF         // Density flag
+        , typename Arg >  // Min/max argument type
+void makeHermitian( HermitianMatrix<MT,SO,DF>& matrix, const Arg& min, const Arg& max )
+{
+   using blaze::randomize;
+
+   randomize( matrix, min, max );
+
+   BLAZE_INTERNAL_ASSERT( isHermitian( matrix ), "Non-Hermitian matrix detected" );
+}
+/*! \endcond */
+//*************************************************************************************************
+
+
+//*************************************************************************************************
+/*! \cond BLAZE_INTERNAL */
+/*!\brief Setup of a random (Hermitian) positive definite HermitianMatrix.
+//
+// \param matrix The matrix to be randomized.
+// \return void
+*/
+template< typename MT  // Type of the adapted matrix
+        , bool SO      // Storage order of the adapted matrix
+        , bool DF >    // Density flag
+void makePositiveDefinite( HermitianMatrix<MT,SO,DF>& matrix )
+{
+   using blaze::randomize;
+
+   typedef typename UnderlyingBuiltin<typename MT::ElementType>::Type  BT;
+
+   const size_t n( matrix.rows() );
+
+   randomize( matrix );
+   matrix *= matrix;
+
+   for( size_t i=0UL; i<n; ++i ) {
+      matrix(i,i) += BT(n);
+   }
+
+   BLAZE_INTERNAL_ASSERT( isHermitian( matrix ), "Non-Hermitian matrix detected" );
 }
 /*! \endcond */
 //*************************************************************************************************
