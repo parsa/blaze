@@ -43,9 +43,15 @@
 #include <blaze/math/dense/StaticMatrix.h>
 #include <blaze/math/DenseMatrix.h>
 #include <blaze/math/HybridMatrix.h>
+#include <blaze/math/shims/Conjugate.h>
+#include <blaze/math/shims/Real.h>
 #include <blaze/math/StaticVector.h>
+#include <blaze/math/typetraits/UnderlyingBuiltin.h>
 #include <blaze/system/Precision.h>
+#include <blaze/util/Assert.h>
+#include <blaze/util/constraints/Numeric.h>
 #include <blaze/util/Random.h>
+#include <blaze/util/StaticAssert.h>
 
 
 namespace blaze {
@@ -187,6 +193,186 @@ inline void Rand< StaticMatrix<Type,M,N,SO> >::randomize( StaticMatrix<Type,M,N,
          randomize( matrix(i,j), min, max );
       }
    }
+}
+/*! \endcond */
+//*************************************************************************************************
+
+
+
+
+//=================================================================================================
+//
+//  MAKE FUNCTIONS
+//
+//=================================================================================================
+
+//*************************************************************************************************
+/*! \cond BLAZE_INTERNAL */
+/*!\brief Setup of a random symmetric StaticMatrix.
+//
+// \param matrix The matrix to be randomized.
+// \return void
+// \exception std::invalid_argument Invalid non-square matrix provided.
+*/
+template< typename Type  // Data type of the matrix
+        , size_t M       // Number of rows
+        , size_t N       // Number of columns
+        , bool SO >      // Storage order
+void makeSymmetric( StaticMatrix<Type,M,N,SO>& matrix )
+{
+   using blaze::randomize;
+
+   BLAZE_STATIC_ASSERT( M == N );
+
+   for( size_t i=0UL; i<N; ++i ) {
+      for( size_t j=0UL; j<i; ++j ) {
+         randomize( matrix(i,j) );
+         matrix(j,i) = matrix(i,j);
+      }
+      randomize( matrix(i,i) );
+   }
+
+   BLAZE_INTERNAL_ASSERT( isSymmetric( matrix ), "Non-symmetric matrix detected" );
+}
+/*! \endcond */
+//*************************************************************************************************
+
+
+//*************************************************************************************************
+/*! \cond BLAZE_INTERNAL */
+/*!\brief Setup of a random symmetric StaticMatrix.
+//
+// \param matrix The matrix to be randomized.
+// \param min The smallest possible value for a matrix element.
+// \param max The largest possible value for a matrix element.
+// \return void
+// \exception std::invalid_argument Invalid non-square matrix provided.
+*/
+template< typename Type   // Data type of the matrix
+        , size_t M        // Number of rows
+        , size_t N        // Number of columns
+        , bool SO         // Storage order
+        , typename Arg >  // Min/max argument type
+void makeSymmetric( StaticMatrix<Type,M,N,SO>& matrix, const Arg& min, const Arg& max )
+{
+   using blaze::randomize;
+
+   BLAZE_STATIC_ASSERT( M == N );
+
+   for( size_t i=0UL; i<N; ++i ) {
+      for( size_t j=0UL; j<i; ++j ) {
+         randomize( matrix(i,j), min, max );
+         matrix(j,i) = matrix(i,j);
+      }
+      randomize( matrix(i,i), min, max );
+   }
+
+   BLAZE_INTERNAL_ASSERT( isSymmetric( matrix ), "Non-symmetric matrix detected" );
+}
+/*! \endcond */
+//*************************************************************************************************
+
+
+//*************************************************************************************************
+/*! \cond BLAZE_INTERNAL */
+/*!\brief Setup of a random Hermitian StaticMatrix.
+//
+// \param matrix The matrix to be randomized.
+// \return void
+// \exception std::invalid_argument Invalid non-square matrix provided.
+*/
+template< typename Type  // Data type of the matrix
+        , size_t M       // Number of rows
+        , size_t N       // Number of columns
+        , bool SO >      // Storage order
+void makeHermitian( StaticMatrix<Type,M,N,SO>& matrix )
+{
+   using blaze::randomize;
+
+   BLAZE_STATIC_ASSERT( M == N );
+   BLAZE_CONSTRAINT_MUST_BE_NUMERIC_TYPE( Type );
+
+   typedef typename UnderlyingBuiltin<Type>::Type  BT;
+
+   for( size_t i=0UL; i<N; ++i ) {
+      for( size_t j=0UL; j<i; ++j ) {
+         randomize( matrix(i,j) );
+         matrix(j,i) = conj( matrix(i,j) );
+      }
+      matrix(i,i) = rand<BT>();
+   }
+
+   BLAZE_INTERNAL_ASSERT( isHermitian( matrix ), "Non-Hermitian matrix detected" );
+}
+/*! \endcond */
+//*************************************************************************************************
+
+
+//*************************************************************************************************
+/*! \cond BLAZE_INTERNAL */
+/*!\brief Setup of a random Hermitian StaticMatrix.
+//
+// \param matrix The matrix to be randomized.
+// \param min The smallest possible value for a matrix element.
+// \param max The largest possible value for a matrix element.
+// \return void
+// \exception std::invalid_argument Invalid non-square matrix provided.
+*/
+template< typename Type   // Data type of the matrix
+        , size_t M        // Number of rows
+        , size_t N        // Number of columns
+        , bool SO         // Storage order
+        , typename Arg >  // Min/max argument type
+void makeHermitian( StaticMatrix<Type,M,N,SO>& matrix, const Arg& min, const Arg& max )
+{
+   using blaze::randomize;
+
+   BLAZE_STATIC_ASSERT( M == N );
+   BLAZE_CONSTRAINT_MUST_BE_NUMERIC_TYPE( Type );
+
+   typedef typename UnderlyingBuiltin<Type>::Type  BT;
+
+   for( size_t i=0UL; i<N; ++i ) {
+      for( size_t j=0UL; j<i; ++j ) {
+         randomize( matrix(i,j), min, max );
+         matrix(j,i) = conj( matrix(i,j) );
+      }
+      matrix(i,i) = rand<BT>( real( min ), real( max ) );
+   }
+
+   BLAZE_INTERNAL_ASSERT( isHermitian( matrix ), "Non-Hermitian matrix detected" );
+}
+/*! \endcond */
+//*************************************************************************************************
+
+
+//*************************************************************************************************
+/*! \cond BLAZE_INTERNAL */
+/*!\brief Setup of a random (Hermitian) positive definite StaticMatrix.
+//
+// \param matrix The matrix to be randomized.
+// \return void
+// \exception std::invalid_argument Invalid non-square matrix provided.
+*/
+template< typename Type  // Data type of the matrix
+        , size_t M       // Number of rows
+        , size_t N       // Number of columns
+        , bool SO >      // Storage order
+void makePositiveDefinite( StaticMatrix<Type,M,N,SO>& matrix )
+{
+   using blaze::randomize;
+
+   BLAZE_STATIC_ASSERT( M == N );
+   BLAZE_CONSTRAINT_MUST_BE_NUMERIC_TYPE( Type );
+
+   randomize( matrix );
+   matrix *= ctrans( matrix );
+
+   for( size_t i=0UL; i<N; ++i ) {
+      matrix(i,i) += Type(N);
+   }
+
+   BLAZE_INTERNAL_ASSERT( isHermitian( matrix ), "Non-symmetric matrix detected" );
 }
 /*! \endcond */
 //*************************************************************************************************
