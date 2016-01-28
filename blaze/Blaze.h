@@ -3469,6 +3469,36 @@ namespace blaze {}
    lu( A, L, U, P );  // LU decomposition of A
    \endcode
 
+// \n \subsection matrix_operations_decomposition_llh Cholesky (LLH) Decomposition
+//
+// The Cholesky decomposition of a dense matrix can be computed via the \c llh() function:
+
+   \code
+   blaze::DynamicMatrix<double,blaze::rowMajor> A;
+   // ... Resizing and initialization
+
+   blaze::DynamicMatrix<double,blaze::rowMajor> L;
+
+   llh( A, L );  // LLH decomposition of a row-major matrix
+
+   assert( A == L * ctrans( L ) );
+   \endcode
+
+// The function works for both \c rowMajor and \c columnMajor matrices and the two matrices \c A
+// and \c L can have any storage order.
+//
+// Furthermore, \c llh() can be used with adaptors. For instance, the following example demonstrates
+// the LLH decomposition of a symmetric matrix into a lower triangular matrix:
+
+   \code
+   blaze::SymmetricMatrix< blaze::DynamicMatrix<double,blaze::columnMajor> > A;
+   // ... Resizing and initialization
+
+   blaze::LowerMatrix< blaze::DynamicMatrix<double,blaze::columnMajor> > L;
+
+   llh( A, L );  // Cholesky decomposition of A
+   \endcode
+
 // \n \subsection matrix_operations_decomposition_qr QR Decomposition
 //
 // The QR decomposition of a dense matrix can be computed via the \c qr() function:
