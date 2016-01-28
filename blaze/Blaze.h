@@ -1617,6 +1617,15 @@ namespace blaze {}
    b = conj( a );
    \endcode
 
+// Additionally, vectors can be conjugated in-place via the \c conjugate() function:
+
+   \code
+   blaze::DynamicVector<cplx> c( 5UL );
+
+   conjugate( c );  // In-place conjugate operation.
+   c = conj( c );   // Same as above
+   \endcode
+
 // \n \subsection vector_operators_real Real Part
 //
 // The \c real() function can be used on a dense or sparse vector to extract the real part of
@@ -3156,6 +3165,15 @@ namespace blaze {}
    //    ( (1,-1)  ( 0,-1) )
    StaticMatrix<cplx,2UL,2UL> B;
    B = conj( A );
+   \endcode
+
+// Additionally, matrices can be conjugated in-place via the \c conjugate() function:
+
+   \code
+   blaze::DynamicMatrix<cplx> C( 5UL, 2UL );
+
+   conjugate( C );  // In-place conjugate operation.
+   C = conj( C );   // Same as above
    \endcode
 
 // \n \subsection matrix_operators_real Real Part
