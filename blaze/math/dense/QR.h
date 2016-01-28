@@ -53,11 +53,13 @@
 #include <blaze/math/Functions.h>
 #include <blaze/math/lapack/geqrf.h>
 #include <blaze/math/traits/DerestrictTrait.h>
+#include <blaze/math/typetraits/IsResizable.h>
 #include <blaze/math/typetraits/IsRowMajorMatrix.h>
 #include <blaze/math/typetraits/RemoveAdaptor.h>
 #include <blaze/math/views/Column.h>
 #include <blaze/math/views/DenseColumn.h>
 #include <blaze/util/constraints/SameType.h>
+#include <blaze/util/Exception.h>
 #include <blaze/util/mpl/If.h>
 
 
@@ -73,7 +75,7 @@ namespace blaze {
 /*!\name QR decomposition functions */
 //@{
 template< typename MT1, bool SO1, typename MT2, bool SO2, typename MT3, bool SO3 >
-inline void qr( const DenseMatrix<MT1,SO1>& A, DenseMatrix<MT2,SO2>& Q, DenseMatrix<MT3,SO3>& R );
+void qr( const DenseMatrix<MT1,SO1>& A, DenseMatrix<MT2,SO2>& Q, DenseMatrix<MT3,SO3>& R );
 //@}
 //*************************************************************************************************
 
@@ -86,6 +88,7 @@ inline void qr( const DenseMatrix<MT1,SO1>& A, DenseMatrix<MT2,SO2>& Q, DenseMat
 // \param Q The resulting Q matrix.
 // \param R The resulting R matrix.
 // \return void
+// \exception std::invalid_argument Dimensions of fixed size matrix do not match.
 //
 // This function performs the dense matrix QR decomposition of a general m-by-n matrix. The
 // resulting decomposition has the form
@@ -110,8 +113,8 @@ inline void qr( const DenseMatrix<MT1,SO1>& A, DenseMatrix<MT2,SO2>& Q, DenseMat
    assert( A == Q * R );
    \endcode
 
-// \note This function only works for general matrices with \c float, \c double, \c complex<float>,
-// or \c complex<double> element type. The attempt to call the function with matrices of any other
+// \note This function only works for matrices with \c float, \c double, \c complex<float>, or
+// \c complex<double> element type. The attempt to call the function with matrices of any other
 // element type results in a compile time error!
 //
 // \note This function can only be used if the fitting LAPACK library is available and linked to
@@ -123,7 +126,7 @@ template< typename MT1  // Type of matrix A
         , bool SO2      // Storage order of matrix Q
         , typename MT3  // Type of matrix R
         , bool SO3 >    // Storage order of matrix R
-inline void qr( const DenseMatrix<MT1,SO1>& A, DenseMatrix<MT2,SO2>& Q, DenseMatrix<MT3,SO3>& R )
+void qr( const DenseMatrix<MT1,SO1>& A, DenseMatrix<MT2,SO2>& Q, DenseMatrix<MT3,SO3>& R )
 {
    BLAZE_CONSTRAINT_MUST_NOT_BE_STRICTLY_TRIANGULAR_MATRIX_TYPE( MT1 );
    BLAZE_CONSTRAINT_MUST_BE_BLAS_COMPATIBLE_TYPE( typename MT1::ElementType );
@@ -148,6 +151,11 @@ inline void qr( const DenseMatrix<MT1,SO1>& A, DenseMatrix<MT2,SO2>& Q, DenseMat
    const size_t m( (~A).rows() );
    const size_t n( (~A).columns() );
    const size_t mindim( min( m, n ) );
+
+   if( ( !IsResizable<MT2>::value && ( (~Q).rows() != m || (~Q).columns() != m ) ) ||
+       ( !IsResizable<MT3>::value && ( (~R).rows() != m || (~R).columns() != n ) ) ) {
+      BLAZE_THROW_INVALID_ARGUMENT( "Dimensions of fixed size matrix do not match" );
+   }
 
    Tmp tmp( ~A );
    UniqueArray<ET3> tau( new ET3[mindim] );
