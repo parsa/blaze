@@ -49,7 +49,9 @@
 #include <blaze/math/expressions/DenseMatrix.h>
 #include <blaze/math/lapack/potrf.h>
 #include <blaze/math/traits/DerestrictTrait.h>
+#include <blaze/math/typetraits/IsResizable.h>
 #include <blaze/math/typetraits/IsRowMajorMatrix.h>
+#include <blaze/util/Exception.h>
 
 
 namespace blaze {
@@ -64,7 +66,7 @@ namespace blaze {
 /*!\name LLH decomposition functions */
 //@{
 template< typename MT1, bool SO1, typename MT2, bool SO2 >
-inline void llh( const DenseMatrix<MT1,SO1>& A, DenseMatrix<MT2,SO2>& L );
+void llh( const DenseMatrix<MT1,SO1>& A, DenseMatrix<MT2,SO2>& L );
 //@}
 //*************************************************************************************************
 
@@ -77,6 +79,7 @@ inline void llh( const DenseMatrix<MT1,SO1>& A, DenseMatrix<MT2,SO2>& L );
 // \param L The resulting lower triangular matrix.
 // \return void
 // \exception std::invalid_argument Invalid non-square matrix provided.
+// \exception std::invalid_argument Dimensions of fixed size matrix do not match.
 // \exception std::invalid_argument Decomposition of singular matrix failed.
 //
 // This function performs the dense matrix Cholesky (LLH) decomposition of a positive definite
@@ -111,7 +114,7 @@ template< typename MT1  // Type of matrix A
         , bool SO1      // Storage order of matrix A
         , typename MT2  // Type of matrix L
         , bool SO2 >    // Storage order of matrix L
-inline void llh( const DenseMatrix<MT1,SO1>& A, DenseMatrix<MT2,SO2>& L )
+void llh( const DenseMatrix<MT1,SO1>& A, DenseMatrix<MT2,SO2>& L )
 {
    BLAZE_CONSTRAINT_MUST_NOT_BE_STRICTLY_TRIANGULAR_MATRIX_TYPE( MT1 );
    BLAZE_CONSTRAINT_MUST_BE_BLAS_COMPATIBLE_TYPE( typename MT1::ElementType );
@@ -122,11 +125,16 @@ inline void llh( const DenseMatrix<MT1,SO1>& A, DenseMatrix<MT2,SO2>& L )
    BLAZE_CONSTRAINT_MUST_NOT_BE_UPPER_MATRIX_TYPE( MT2 );
    BLAZE_CONSTRAINT_MUST_BE_BLAS_COMPATIBLE_TYPE( typename MT2::ElementType );
 
-   if( !isSquare( ~A ) || !isSquare( L ) ) {
+   if( !isSquare( ~A ) ) {
       BLAZE_THROW_INVALID_ARGUMENT( "Invalid non-square matrix provided" );
    }
 
    const size_t n( (~A).rows() );
+
+   if( ( !IsResizable<MT2>::value && ( (~L).rows() != n || (~L).columns() != n ) ) ) {
+      BLAZE_THROW_INVALID_ARGUMENT( "Dimensions of fixed size matrix do not match" );
+   }
+
    typename DerestrictTrait<MT2>::Type l( derestrict( ~L ) );
 
    resize( ~L, n, n );
