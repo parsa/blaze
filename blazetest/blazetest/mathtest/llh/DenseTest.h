@@ -47,6 +47,7 @@
 #include <blaze/math/LowerMatrix.h>
 #include <blaze/math/typetraits/RemoveAdaptor.h>
 #include <blaze/util/Complex.h>
+#include <blaze/util/Random.h>
 #include <blazetest/system/LAPACK.h>
 
 
@@ -142,9 +143,12 @@ void DenseTest::testRandom()
 
    typedef typename blaze::RemoveAdaptor<Type>::Type  MT;
 
+   const size_t n( blaze::rand<size_t>( 3UL, 8UL ) );
+
    Type A;
    blaze::LowerMatrix<MT> L;
 
+   resize( A, n, n );
    makePositiveDefinite( A );
    blaze::llh( A, L );
 

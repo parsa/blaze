@@ -97,7 +97,7 @@ DenseTest::DenseTest()
 // This function tests the dense matrix LLH decomposition for general matrices. In case an error
 // is detected, a \a std::runtime_error exception is thrown.
 */
-inline void DenseTest::testGeneral()
+void DenseTest::testGeneral()
 {
    testRandom< blaze::DynamicMatrix<float  ,blaze::rowMajor> >();
    testRandom< blaze::DynamicMatrix<double ,blaze::rowMajor> >();
