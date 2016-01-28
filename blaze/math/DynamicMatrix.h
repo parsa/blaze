@@ -43,7 +43,13 @@
 #include <blaze/math/dense/DynamicMatrix.h>
 #include <blaze/math/DenseMatrix.h>
 #include <blaze/math/DynamicVector.h>
+#include <blaze/math/shims/Conjugate.h>
+#include <blaze/math/shims/Real.h>
+#include <blaze/math/typetraits/UnderlyingBuiltin.h>
 #include <blaze/system/Precision.h>
+#include <blaze/util/Assert.h>
+#include <blaze/util/constraints/Numeric.h>
+#include <blaze/util/Exception.h>
 #include <blaze/util/Random.h>
 
 
@@ -187,6 +193,199 @@ inline void Rand< DynamicMatrix<Type,SO> >::randomize( DynamicMatrix<Type,SO>& m
          randomize( matrix(i,j), min, max );
       }
    }
+}
+/*! \endcond */
+//*************************************************************************************************
+
+
+
+
+//=================================================================================================
+//
+//  MAKE FUNCTIONS
+//
+//=================================================================================================
+
+//*************************************************************************************************
+/*! \cond BLAZE_INTERNAL */
+/*!\brief Setup of a random symmetric DynamicMatrix.
+//
+// \param matrix The matrix to be randomized.
+// \return void
+// \exception std::invalid_argument Invalid non-square matrix provided.
+*/
+template< typename Type  // Data type of the matrix
+        , bool SO >      // Storage order
+void makeSymmetric( DynamicMatrix<Type,SO>& matrix )
+{
+   using blaze::randomize;
+
+   if( !isSquare( ~matrix ) ) {
+      BLAZE_THROW_INVALID_ARGUMENT( "Invalid non-square matrix provided" );
+   }
+
+   const size_t n( matrix.rows() );
+
+   for( size_t i=0UL; i<n; ++i ) {
+      for( size_t j=0UL; j<i; ++j ) {
+         randomize( matrix(i,j) );
+         matrix(j,i) = matrix(i,j);
+      }
+      randomize( matrix(i,i) );
+   }
+
+   BLAZE_INTERNAL_ASSERT( isSymmetric( matrix ), "Non-symmetric matrix detected" );
+}
+/*! \endcond */
+//*************************************************************************************************
+
+
+//*************************************************************************************************
+/*! \cond BLAZE_INTERNAL */
+/*!\brief Setup of a random symmetric DynamicMatrix.
+//
+// \param matrix The matrix to be randomized.
+// \param min The smallest possible value for a matrix element.
+// \param max The largest possible value for a matrix element.
+// \return void
+// \exception std::invalid_argument Invalid non-square matrix provided.
+*/
+template< typename Type   // Data type of the matrix
+        , bool SO         // Storage order
+        , typename Arg >  // Min/max argument type
+void makeSymmetric( DynamicMatrix<Type,SO>& matrix, const Arg& min, const Arg& max )
+{
+   using blaze::randomize;
+
+   if( !isSquare( ~matrix ) ) {
+      BLAZE_THROW_INVALID_ARGUMENT( "Invalid non-square matrix provided" );
+   }
+
+   const size_t n( matrix.rows() );
+
+   for( size_t i=0UL; i<n; ++i ) {
+      for( size_t j=0UL; j<i; ++j ) {
+         randomize( matrix(i,j), min, max );
+         matrix(j,i) = matrix(i,j);
+      }
+      randomize( matrix(i,i), min, max );
+   }
+
+   BLAZE_INTERNAL_ASSERT( isSymmetric( matrix ), "Non-symmetric matrix detected" );
+}
+/*! \endcond */
+//*************************************************************************************************
+
+
+//*************************************************************************************************
+/*! \cond BLAZE_INTERNAL */
+/*!\brief Setup of a random Hermitian DynamicMatrix.
+//
+// \param matrix The matrix to be randomized.
+// \return void
+// \exception std::invalid_argument Invalid non-square matrix provided.
+*/
+template< typename Type  // Data type of the matrix
+        , bool SO >      // Storage order
+void makeHermitian( DynamicMatrix<Type,SO>& matrix )
+{
+   using blaze::randomize;
+
+   BLAZE_CONSTRAINT_MUST_BE_NUMERIC_TYPE( Type );
+
+   typedef typename UnderlyingBuiltin<Type>::Type  BT;
+
+   if( !isSquare( ~matrix ) ) {
+      BLAZE_THROW_INVALID_ARGUMENT( "Invalid non-square matrix provided" );
+   }
+
+   const size_t n( matrix.rows() );
+
+   for( size_t i=0UL; i<n; ++i ) {
+      for( size_t j=0UL; j<i; ++j ) {
+         randomize( matrix(i,j) );
+         matrix(j,i) = conj( matrix(i,j) );
+      }
+      matrix(i,i) = rand<BT>();
+   }
+
+   BLAZE_INTERNAL_ASSERT( isHermitian( matrix ), "Non-Hermitian matrix detected" );
+}
+/*! \endcond */
+//*************************************************************************************************
+
+
+//*************************************************************************************************
+/*! \cond BLAZE_INTERNAL */
+/*!\brief Setup of a random Hermitian DynamicMatrix.
+//
+// \param matrix The matrix to be randomized.
+// \param min The smallest possible value for a matrix element.
+// \param max The largest possible value for a matrix element.
+// \return void
+// \exception std::invalid_argument Invalid non-square matrix provided.
+*/
+template< typename Type   // Data type of the matrix
+        , bool SO         // Storage order
+        , typename Arg >  // Min/max argument type
+void makeHermitian( DynamicMatrix<Type,SO>& matrix, const Arg& min, const Arg& max )
+{
+   using blaze::randomize;
+
+   BLAZE_CONSTRAINT_MUST_BE_NUMERIC_TYPE( Type );
+
+   typedef typename UnderlyingBuiltin<Type>::Type  BT;
+
+   if( !isSquare( ~matrix ) ) {
+      BLAZE_THROW_INVALID_ARGUMENT( "Invalid non-square matrix provided" );
+   }
+
+   const size_t n( matrix.rows() );
+
+   for( size_t i=0UL; i<n; ++i ) {
+      for( size_t j=0UL; j<i; ++j ) {
+         randomize( matrix(i,j), min, max );
+         matrix(j,i) = conj( matrix(i,j) );
+      }
+      matrix(i,i) = rand<BT>( real( min ), real( max ) );
+   }
+
+   BLAZE_INTERNAL_ASSERT( isHermitian( matrix ), "Non-Hermitian matrix detected" );
+}
+/*! \endcond */
+//*************************************************************************************************
+
+
+//*************************************************************************************************
+/*! \cond BLAZE_INTERNAL */
+/*!\brief Setup of a random (Hermitian) positive definite DynamicMatrix.
+//
+// \param matrix The matrix to be randomized.
+// \return void
+// \exception std::invalid_argument Invalid non-square matrix provided.
+*/
+template< typename Type  // Data type of the matrix
+        , bool SO >      // Storage order
+void makePositiveDefinite( DynamicMatrix<Type,SO>& matrix )
+{
+   using blaze::randomize;
+
+   BLAZE_CONSTRAINT_MUST_BE_NUMERIC_TYPE( Type );
+
+   if( !isSquare( ~matrix ) ) {
+      BLAZE_THROW_INVALID_ARGUMENT( "Invalid non-square matrix provided" );
+   }
+
+   const size_t n( matrix.rows() );
+
+   randomize( matrix );
+   matrix *= ctrans( matrix );
+
+   for( size_t i=0UL; i<n; ++i ) {
+      matrix(i,i) += Type(n);
+   }
+
+   BLAZE_INTERNAL_ASSERT( isHermitian( matrix ), "Non-symmetric matrix detected" );
 }
 /*! \endcond */
 //*************************************************************************************************
