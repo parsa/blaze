@@ -46,18 +46,8 @@
 #include <typeinfo>
 #include <blaze/math/DenseMatrix.h>
 #include <blaze/math/DenseSubmatrix.h>
-#include <blaze/math/DynamicMatrix.h>
-#include <blaze/math/HermitianMatrix.h>
 #include <blaze/math/shims/IsDefault.h>
-#include <blaze/math/SymmetricMatrix.h>
-#include <blaze/math/typetraits/IsHermitian.h>
-#include <blaze/math/typetraits/IsSymmetric.h>
-#include <blaze/math/typetraits/IsTriangular.h>
-#include <blaze/math/typetraits/IsUniTriangular.h>
-#include <blaze/math/typetraits/UnderlyingBuiltin.h>
-#include <blaze/util/mpl/If.h>
 #include <blaze/util/Random.h>
-#include <blaze/util/Template.h>
 #include <blazetest/system/LAPACK.h>
 #include <blazetest/system/Types.h>
 
@@ -796,37 +786,10 @@ void DenseTest::initializeForLU( blaze::DenseMatrix<MT,SO>& matrix )
 template< typename MT, bool SO >
 void DenseTest::initializeForLDLT( blaze::DenseMatrix<MT,SO>& matrix )
 {
-   using blaze::DynamicMatrix;
-   using blaze::SymmetricMatrix;
-
-   typedef typename MT::ElementType  ET;
-
    const size_t size( blaze::rand<size_t>( 7UL, 14UL ) );
 
-   if( blaze::IsTriangular<MT>::value )
-   {
-      resize( ~matrix, size, size );
-      reset( ~matrix );
-
-      if( !blaze::IsUniTriangular<MT>::value ) {
-         for( size_t i=0UL; i<size; ++i ) {
-            (~matrix)(i,i) = ET(4);
-         }
-      }
-   }
-   else
-   {
-      typedef typename blaze::UnderlyingBuiltin<MT>::Type  UBT;
-      typedef typename blaze::If< blaze::IsHermitian<MT>
-                                , typename MT::BLAZE_TEMPLATE Rebind<UBT>::Other
-                                , SymmetricMatrix< DynamicMatrix<ET,SO> > >::Type  RandomType;
-
-      RandomType A;
-      resize( A, size, size );
-      randomize( A );
-
-      (~matrix) = A;
-   }
+   resize( ~matrix, size, size );
+   makeSymmetric( ~matrix );
 }
 //*************************************************************************************************
 
@@ -839,37 +802,10 @@ void DenseTest::initializeForLDLT( blaze::DenseMatrix<MT,SO>& matrix )
 template< typename MT, bool SO >
 void DenseTest::initializeForLDLH( blaze::DenseMatrix<MT,SO>& matrix )
 {
-   using blaze::DynamicMatrix;
-   using blaze::HermitianMatrix;
-
-   typedef typename MT::ElementType  ET;
-
    const size_t size( blaze::rand<size_t>( 7UL, 14UL ) );
 
-   if( blaze::IsTriangular<MT>::value )
-   {
-      resize( ~matrix, size, size );
-      reset( ~matrix );
-
-      if( !blaze::IsUniTriangular<MT>::value ) {
-         for( size_t i=0UL; i<size; ++i ) {
-            (~matrix)(i,i) = ET(4);
-         }
-      }
-   }
-   else
-   {
-      typedef typename blaze::UnderlyingBuiltin<MT>::Type  UBT;
-      typedef typename blaze::If< blaze::IsSymmetric<MT>
-                                , typename MT::BLAZE_TEMPLATE Rebind<UBT>::Other
-                                , HermitianMatrix< DynamicMatrix<ET,SO> > >::Type  RandomType;
-
-      RandomType A;
-      resize( A, size, size );
-      randomize( A );
-
-      (~matrix) = A;
-   }
+   resize( ~matrix, size, size );
+   makeHermitian( ~matrix );
 }
 //*************************************************************************************************
 
@@ -882,42 +818,10 @@ void DenseTest::initializeForLDLH( blaze::DenseMatrix<MT,SO>& matrix )
 template< typename MT, bool SO >
 void DenseTest::initializeForLLH( blaze::DenseMatrix<MT,SO>& matrix )
 {
-   using blaze::DynamicMatrix;
-   using blaze::HermitianMatrix;
-
-   typedef typename MT::ElementType  ET;
-
    const size_t size( blaze::rand<size_t>( 7UL, 14UL ) );
 
-   if( blaze::IsTriangular<MT>::value )
-   {
-      resize( ~matrix, size, size );
-      reset( ~matrix );
-
-      if( !blaze::IsUniTriangular<MT>::value ) {
-         for( size_t i=0UL; i<size; ++i ) {
-            (~matrix)(i,i) = ET(4);
-         }
-      }
-   }
-   else
-   {
-      typedef typename MT::ElementType  ET;
-      typedef typename blaze::UnderlyingBuiltin<MT>::Type  UBT;
-      typedef typename blaze::If< blaze::IsSymmetric<MT>
-                                , typename MT::BLAZE_TEMPLATE Rebind<UBT>::Other
-                                , HermitianMatrix< DynamicMatrix<ET,SO> > >::Type  RandomType;
-
-      RandomType A;
-      resize( A, size, size );
-      randomize( A );
-      A *= ctrans( A );
-      for( size_t i=0UL; i<size; ++i ) {
-         A(i,i) += typename RandomType::ElementType(size);
-      }
-
-      (~matrix) = A;
-   }
+   resize( ~matrix, size, size );
+   makePositiveDefinite( ~matrix );
 }
 //*************************************************************************************************
 

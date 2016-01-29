@@ -40,7 +40,10 @@
 #include <cstdlib>
 #include <iostream>
 #include <blaze/math/DiagonalMatrix.h>
+#include <blaze/math/DynamicMatrix.h>
+#include <blaze/math/HermitianMatrix.h>
 #include <blaze/math/LowerMatrix.h>
+#include <blaze/math/SymmetricMatrix.h>
 #include <blaze/math/UniLowerMatrix.h>
 #include <blaze/math/UniUpperMatrix.h>
 #include <blaze/math/UpperMatrix.h>
