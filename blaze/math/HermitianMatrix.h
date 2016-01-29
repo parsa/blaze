@@ -655,8 +655,6 @@ void makeHermitian( HermitianMatrix<MT,SO,DF>& matrix )
    using blaze::randomize;
 
    randomize( matrix );
-
-   BLAZE_INTERNAL_ASSERT( isHermitian( matrix ), "Non-Hermitian matrix detected" );
 }
 /*! \endcond */
 //*************************************************************************************************
@@ -680,8 +678,6 @@ void makeHermitian( HermitianMatrix<MT,SO,DF>& matrix, const Arg& min, const Arg
    using blaze::randomize;
 
    randomize( matrix, min, max );
-
-   BLAZE_INTERNAL_ASSERT( isHermitian( matrix ), "Non-Hermitian matrix detected" );
 }
 /*! \endcond */
 //*************************************************************************************************
@@ -711,8 +707,6 @@ void makePositiveDefinite( HermitianMatrix<MT,SO,DF>& matrix )
    for( size_t i=0UL; i<n; ++i ) {
       matrix(i,i) += BT(n);
    }
-
-   BLAZE_INTERNAL_ASSERT( isHermitian( matrix ), "Non-Hermitian matrix detected" );
 }
 /*! \endcond */
 //*************************************************************************************************
