@@ -579,8 +579,6 @@ void makeSymmetric( SymmetricMatrix<MT,SO,true,NF>& matrix )
    using blaze::randomize;
 
    randomize( matrix );
-
-   BLAZE_INTERNAL_ASSERT( isSymmetric( matrix ), "Non-symmetric matrix detected" );
 }
 /*! \endcond */
 //*************************************************************************************************
@@ -604,8 +602,6 @@ void makeSymmetric( SymmetricMatrix<MT,SO,true,NF>& matrix, const Arg& min, cons
    using blaze::randomize;
 
    randomize( matrix, min, max );
-
-   BLAZE_INTERNAL_ASSERT( isSymmetric( matrix ), "Non-symmetric matrix detected" );
 }
 /*! \endcond */
 //*************************************************************************************************
