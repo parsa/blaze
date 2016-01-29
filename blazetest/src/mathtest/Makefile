@@ -57,7 +57,7 @@ all: functions intrinsics lapack typetraits \
      dmatdmatadd dmatsmatadd smatdmatadd smatsmatadd \
      dmatdmatsub dmatsmatsub smatdmatsub smatsmatsub \
      dmatdmatmult dmatsmatmult smatdmatmult smatsmatmult \
-     determinant inversion lu qr \
+     determinant decomposition inversion \
      vectorserializer matrixserializer
 
 essential: all
@@ -75,6 +75,7 @@ noop: functions intrinsics lapack typetraits \
       densesubvector sparsesubvector \
       densesubmatrix sparsesubmatrix \
       denserow densecolumn sparserow sparsecolumn \
+      determinant decomposition inversion \
       vectorserializer matrixserializer
 
 
@@ -479,20 +480,15 @@ determinant:
 	@echo "Building the matrix determinant tests..."
 	@$(MAKE) --no-print-directory -C ./determinant $(MAKECMDGOALS)
 
+decomposition:
+	@echo
+	@echo "Building the matrix decomposition tests..."
+	@$(MAKE) --no-print-directory -C ./decomposition $(MAKECMDGOALS)
+
 inversion:
 	@echo
 	@echo "Building the matrix inversion tests..."
 	@$(MAKE) --no-print-directory -C ./inversion $(MAKECMDGOALS)
-
-lu:
-	@echo
-	@echo "Building the matrix LU decomposition tests..."
-	@$(MAKE) --no-print-directory -C ./lu $(MAKECMDGOALS)
-
-qr:
-	@echo
-	@echo "Building the matrix QR decomposition tests..."
-	@$(MAKE) --no-print-directory -C ./qr $(MAKECMDGOALS)
 
 vectorserializer:
 	@echo
@@ -587,9 +583,8 @@ clean:
 	@$(MAKE) --no-print-directory -C ./smatdmatmult clean
 	@$(MAKE) --no-print-directory -C ./smatsmatmult clean
 	@$(MAKE) --no-print-directory -C ./determinant clean
+	@$(MAKE) --no-print-directory -C ./decomposition clean
 	@$(MAKE) --no-print-directory -C ./inversion clean
-	@$(MAKE) --no-print-directory -C ./lu clean
-	@$(MAKE) --no-print-directory -C ./qr clean
 	@$(MAKE) --no-print-directory -C ./vectorserializer clean
 	@$(MAKE) --no-print-directory -C ./matrixserializer clean
 	@$(RM) $(OBJ) $(DEP)
@@ -619,5 +614,5 @@ clean:
         dmatdmatadd dmatsmatadd smatdmatadd smatsmatadd \
         dmatdmatsub dmatsmatsub smatdmatsub smatsmatsub \
         dmatdmatmult dmatsmatmult smatdmatmult smatsmatmult \
-        determinant inversion lu qr \
+        determinant decomposition inversion \
         vectorserializer matrixserializer

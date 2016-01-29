@@ -1,7 +1,7 @@
 //=================================================================================================
 /*!
-//  \file blazetest/mathtest/llh/DenseTest.h
-//  \brief Header file for the dense matrix LLH test
+//  \file blazetest/mathtest/decomposition/DenseLUTest.h
+//  \brief Header file for the dense matrix LU test
 //
 //  Copyright (C) 2013 Klaus Iglberger - All Rights Reserved
 //
@@ -32,8 +32,8 @@
 */
 //=================================================================================================
 
-#ifndef _BLAZETEST_MATHTEST_LLH_DENSETEST_H_
-#define _BLAZETEST_MATHTEST_LLH_DENSETEST_H_
+#ifndef _BLAZETEST_MATHTEST_DECOMPOSITION_DENSELUTEST_H_
+#define _BLAZETEST_MATHTEST_DECOMPOSITION_DENSELUTEST_H_
 
 
 //*************************************************************************************************
@@ -44,7 +44,8 @@
 #include <stdexcept>
 #include <string>
 #include <typeinfo>
-#include <blaze/math/LowerMatrix.h>
+#include <blaze/math/typetraits/IsRowMajorMatrix.h>
+#include <blaze/math/typetraits/IsSquare.h>
 #include <blaze/math/typetraits/RemoveAdaptor.h>
 #include <blaze/util/Complex.h>
 #include <blaze/util/Random.h>
@@ -55,7 +56,7 @@ namespace blazetest {
 
 namespace mathtest {
 
-namespace llh {
+namespace decomposition {
 
 //=================================================================================================
 //
@@ -64,18 +65,18 @@ namespace llh {
 //=================================================================================================
 
 //*************************************************************************************************
-/*!\brief Auxiliary class for all dense matrix LLH tests.
+/*!\brief Auxiliary class for all dense matrix LU tests.
 //
-// This class represents a test suite for the dense matrix LLH decomposition functionality. It
-// performs a series of LLH decompositions on all dense matrix types of the Blaze library.
+// This class represents a test suite for the dense matrix LU decomposition functionality. It
+// performs a series of LU decompositions on all dense matrix types of the Blaze library.
 */
-class DenseTest
+class DenseLUTest
 {
  public:
    //**Constructors********************************************************************************
    /*!\name Constructors */
    //@{
-   explicit DenseTest();
+   explicit DenseLUTest();
    // No explicitly declared copy constructor.
    //@}
    //**********************************************************************************************
@@ -126,49 +127,54 @@ class DenseTest
 //=================================================================================================
 
 //*************************************************************************************************
-/*!\brief Test of the LLH decomposition with a randomly initialized matrix of the given type.
+/*!\brief Test of the LU decomposition with a randomly initialized matrix of the given type.
 //
 // \return void
 // \exception std::runtime_error Error detected.
 //
-// This function tests the dense matrix LLH decomposition for a randomly initialized matrix of the
+// This function tests the dense matrix LU decomposition for a randomly initialized matrix of the
 // given type. In case an error is detected, a \a std::runtime_error exception is thrown.
 */
 template< typename Type >
-void DenseTest::testRandom()
+void DenseLUTest::testRandom()
 {
-#if BLAZETEST_MATHTEST_LAPACK_MODE
-
-   test_ = "LLH decomposition";
+   test_ = "LU decomposition";
 
    typedef typename blaze::RemoveAdaptor<Type>::Type  MT;
 
-   const size_t n( blaze::rand<size_t>( 3UL, 8UL ) );
+   const size_t m( blaze::rand<size_t>( 3UL, 8UL ) );
+   const size_t n( blaze::IsSquare<Type>::value ? m : blaze::rand<size_t>( 3UL, 8UL ) );
 
    Type A;
-   blaze::LowerMatrix<MT> L;
+   MT L, U, P;
 
-   resize( A, n, n );
-   makePositiveDefinite( A );
-   blaze::llh( A, L );
+   resize( A, m, n );
+   randomize( A );
 
-   const MT LLH( L * ctrans( L ) );
+   blaze::lu( A, L, U, P );
 
-   if( LLH != A ) {
+   MT LU( L*U );
+
+   if( blaze::IsRowMajorMatrix<Type>::value ) {
+      LU = LU * P;
+   }
+   else {
+      LU = P * LU;
+   }
+
+   if( LU != A ) {
       std::ostringstream oss;
       oss << " Test: " << test_ << "\n"
-          << " Error: LLH decomposition failed\n"
+          << " Error: LU decomposition failed\n"
           << " Details:\n"
           << "   Matrix type:\n"
           << "     " << typeid( Type ).name() << "\n"
           << "   Element type:\n"
           << "     " << typeid( typename Type::ElementType ).name() << "\n"
-          << "   Result:\n" << LLH << "\n"
+          << "   Result:\n" << LU << "\n"
           << "   Expected result:\n" << A << "\n";
       throw std::runtime_error( oss.str() );
    }
-
-#endif
 }
 //*************************************************************************************************
 
@@ -182,13 +188,13 @@ void DenseTest::testRandom()
 //=================================================================================================
 
 //*************************************************************************************************
-/*!\brief Testing the dense matrix LLH decomposition.
+/*!\brief Testing the dense matrix LU decomposition.
 //
 // \return void
 */
 void runTest()
 {
-   DenseTest();
+   DenseLUTest();
 }
 //*************************************************************************************************
 
@@ -203,14 +209,14 @@ void runTest()
 
 //*************************************************************************************************
 /*! \cond BLAZE_INTERNAL */
-/*!\brief Macro for the execution of the dense matrix LLH test.
+/*!\brief Macro for the execution of the dense matrix LU test.
 */
-#define RUN_LLH_DENSE_TEST \
-   blazetest::mathtest::llh::runTest()
+#define RUN_DENSE_LU_TEST \
+   blazetest::mathtest::decomposition::runTest()
 /*! \endcond */
 //*************************************************************************************************
 
-} // namespace llh
+} // namespace decomposition
 
 } // namespace mathtest
 

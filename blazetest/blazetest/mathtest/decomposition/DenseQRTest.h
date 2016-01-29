@@ -1,6 +1,6 @@
 //=================================================================================================
 /*!
-//  \file blazetest/mathtest/qr/DenseTest.h
+//  \file blazetest/mathtest/decomposition/DenseQRTest.h
 //  \brief Header file for the dense matrix QR test
 //
 //  Copyright (C) 2013 Klaus Iglberger - All Rights Reserved
@@ -32,8 +32,8 @@
 */
 //=================================================================================================
 
-#ifndef _BLAZETEST_MATHTEST_QR_DENSETEST_H_
-#define _BLAZETEST_MATHTEST_QR_DENSETEST_H_
+#ifndef _BLAZETEST_MATHTEST_DECOMPOSITION_DENSEQRTEST_H_
+#define _BLAZETEST_MATHTEST_DECOMPOSITION_DENSEQRTEST_H_
 
 
 //*************************************************************************************************
@@ -55,7 +55,7 @@ namespace blazetest {
 
 namespace mathtest {
 
-namespace qr {
+namespace decomposition {
 
 //=================================================================================================
 //
@@ -69,13 +69,13 @@ namespace qr {
 // This class represents a test suite for the dense matrix QR decomposition functionality. It
 // performs a series of QR decompositions on all dense matrix types of the Blaze library.
 */
-class DenseTest
+class DenseQRTest
 {
  public:
    //**Constructors********************************************************************************
    /*!\name Constructors */
    //@{
-   explicit DenseTest();
+   explicit DenseQRTest();
    // No explicitly declared copy constructor.
    //@}
    //**********************************************************************************************
@@ -135,7 +135,7 @@ class DenseTest
 // given type. In case an error is detected, a \a std::runtime_error exception is thrown.
 */
 template< typename Type >
-void DenseTest::testRandom()
+void DenseQRTest::testRandom()
 {
 #if BLAZETEST_MATHTEST_LAPACK_MODE
 
@@ -186,7 +186,7 @@ void DenseTest::testRandom()
 */
 void runTest()
 {
-   DenseTest();
+   DenseQRTest();
 }
 //*************************************************************************************************
 
@@ -203,12 +203,12 @@ void runTest()
 /*! \cond BLAZE_INTERNAL */
 /*!\brief Macro for the execution of the dense matrix QR test.
 */
-#define RUN_QR_DENSE_TEST \
-   blazetest::mathtest::qr::runTest()
+#define RUN_DENSE_QR_TEST \
+   blazetest::mathtest::decomposition::runTest()
 /*! \endcond */
 //*************************************************************************************************
 
-} // namespace qr
+} // namespace decomposition
 
 } // namespace mathtest
 
