@@ -142,6 +142,7 @@ void lu( DenseMatrix<MT1,SO1>& A, Matrix<MT2,SO2>& P )
 // \param P The resulting permutation matrix.
 // \return void
 // \exception std::invalid_argument Dimensions of fixed size matrix do not match.
+// \exception std::invalid_argument Square matrix cannot be resized to m-by-n.
 //
 // This function performs the dense matrix (P)LU decomposition of a general m-by-n matrix. The
 // resulting decomposition is written to the three distinct matrices \c L, \c U, and \c P, which
@@ -164,6 +165,13 @@ void lu( DenseMatrix<MT1,SO1>& A, Matrix<MT2,SO2>& P )
 // where \c L is a lower triangular matrix (lower trapezoidal if \a m > \a n), \c U is an upper
 // triangular matrix (upper trapezoidal if \a m < \a n), and \c P is an n-by-n permutation matrix,
 // which represents the pivoting indices for the applied column interchanges.
+//
+// The function fails if ...
+//
+//  - ... either \a L, \a U, and \a P are fixed size matrices and the dimensions don't match;
+//  - ... \a A is a non-square m-by-n matrix, but \a L or \a U is a compile time square matrix.
+//
+// In all failure cases a \a std::invalid_argument exception is thrown.
 //
 // Examples:
 
@@ -234,6 +242,10 @@ void lu( const DenseMatrix<MT1,SO1>& A, DenseMatrix<MT2,SO1>& L,
        ( !IsResizable<MT3>::value && ( (~U).rows() != mindim || (~U).columns() != n      ) ) ||
        ( !IsResizable<MT4>::value && ( (~P).rows() != size   || (~P).columns() != size   ) ) ) {
       BLAZE_THROW_INVALID_ARGUMENT( "Dimensions of fixed size matrix do not match" );
+   }
+
+   if( ( IsSquare<MT2>::value && n < m ) || ( IsSquare<MT3>::value && m < n ) ) {
+      BLAZE_THROW_INVALID_ARGUMENT( "Square matrix cannot be resized to m-by-n" );
    }
 
    typename DerestrictTrait<MT2>::Type l( derestrict( ~L ) );
