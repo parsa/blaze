@@ -55,6 +55,7 @@
 #include <blaze/math/traits/DerestrictTrait.h>
 #include <blaze/math/typetraits/IsResizable.h>
 #include <blaze/math/typetraits/IsRowMajorMatrix.h>
+#include <blaze/math/typetraits/IsSquare.h>
 #include <blaze/math/typetraits/RemoveAdaptor.h>
 #include <blaze/math/views/Column.h>
 #include <blaze/math/views/DenseColumn.h>
@@ -89,6 +90,7 @@ void qr( const DenseMatrix<MT1,SO1>& A, DenseMatrix<MT2,SO2>& Q, DenseMatrix<MT3
 // \param R The resulting R matrix.
 // \return void
 // \exception std::invalid_argument Dimensions of fixed size matrix do not match.
+// \exception std::invalid_argument Square matrix cannot be resized to m-by-n.
 //
 // This function performs the dense matrix QR decomposition of a general m-by-n matrix. The
 // resulting decomposition has the form
@@ -98,6 +100,13 @@ void qr( const DenseMatrix<MT1,SO1>& A, DenseMatrix<MT2,SO2>& Q, DenseMatrix<MT3
 // where \c Q is a general m-by-m matrix and \c R is an upper trapezoidal m-by-n matrix. The
 // decomposition is written to the two distinct matrices \c Q and \c R, which are resized to the
 // correct dimensions (if possible and necessary).
+//
+// The function fails if ...
+//
+//  - ... either \a Q or \a R are fixed size matrices and the dimensions don't match;
+//  - ... \a A is a non-square m-by-n matrix, but \a R is a compile time square matrix.
+//
+// In all failure cases a \a std::invalid_argument exception is thrown.
 //
 // Example:
 
@@ -155,6 +164,10 @@ void qr( const DenseMatrix<MT1,SO1>& A, DenseMatrix<MT2,SO2>& Q, DenseMatrix<MT3
    if( ( !IsResizable<MT2>::value && ( (~Q).rows() != m || (~Q).columns() != m ) ) ||
        ( !IsResizable<MT3>::value && ( (~R).rows() != m || (~R).columns() != n ) ) ) {
       BLAZE_THROW_INVALID_ARGUMENT( "Dimensions of fixed size matrix do not match" );
+   }
+
+   if( IsSquare<MT3>::value && m != n ) {
+      BLAZE_THROW_INVALID_ARGUMENT( "Square matrix cannot be resized to m-by-n" );
    }
 
    Tmp tmp( ~A );
