@@ -8605,7 +8605,7 @@ namespace blaze {}
 // \note All functions can only be used if the fitting LAPACK library is available and linked to
 // the final executable. Otherwise a call to this function will result in a linker error.
 //
-// \note For performance reasons, all functions do not provide the basic exception safety guarantee,
+// \note For performance reasons all functions do only provide the basic exception safety guarantee,
 // i.e. in case an exception is thrown the given matrix may already have been modified.
 //
 //
