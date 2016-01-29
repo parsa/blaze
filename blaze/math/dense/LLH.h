@@ -90,6 +90,13 @@ void llh( const DenseMatrix<MT1,SO1>& A, DenseMatrix<MT2,SO2>& L );
 // where \c L is a lower triangular n-by-n matrix. The decomposition is written to the matrix
 // \c L, which is resized to the correct dimensions (if possible and necessary).
 //
+// The function fails if ...
+//
+//  - ... \a A is not a square matrix;
+//  - ... \a L is a fixed size matrix and the dimensions don't match \a A.
+//
+// In all failure cases a \a std::invalid_argument exception is thrown.
+//
 // Example:
 
    \code
@@ -109,6 +116,9 @@ void llh( const DenseMatrix<MT1,SO1>& A, DenseMatrix<MT2,SO2>& L );
 //
 // \note This function can only be used if the fitting LAPACK library is available and linked to
 // the executable. Otherwise a call to this function will result in a linker error.
+//
+// \note This function does only provide the basic exception safety guarantee, i.e. in case of an
+// exception \a L may already have been modified.
 */
 template< typename MT1  // Type of matrix A
         , bool SO1      // Storage order of matrix A
