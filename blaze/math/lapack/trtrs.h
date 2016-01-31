@@ -332,9 +332,9 @@ inline void trtrs( char uplo, char trans, char diag, int n, int nrhs, const comp
 // of equations. The function fails if ...
 //
 //  - ... the given system matrix is not a square matrix;
-//  - ... the given \a uplo argument is neither 'L' nor 'U';
-//  - ... the given \a trans argument is neither 'N' nor 'T' nor 'C';
-//  - ... the given \a diag argument is neither 'U' nor 'N'.
+//  - ... the given \a uplo argument is neither \c 'L' nor \c 'U';
+//  - ... the given \a trans argument is neither \c 'N' nor \c 'T' nor \c 'C';
+//  - ... the given \a diag argument is neither \c 'U' nor \c 'N'.
 //
 // In all failure cases a \a std::invalid_argument exception is thrown.
 //
@@ -469,9 +469,9 @@ inline void trtrs( const DenseMatrix<MT,SO>& A, DenseVector<VT,TF>& b, char uplo
 // of equations. The function fails if ...
 //
 //  - ... the given system matrix is not a square matrix;
-//  - ... the given \a uplo argument is neither 'L' nor 'U';
-//  - ... the given \a trans argument is neither 'N' nor 'T' nor 'C';
-//  - ... the given \a diag argument is neither 'U' nor 'N';
+//  - ... the given \a uplo argument is neither \c 'L' nor \c 'U';
+//  - ... the given \a trans argument is neither \c 'N' nor \c 'T' nor \c 'C';
+//  - ... the given \a diag argument is neither \c 'U' nor \c 'N';
 //  - ... the sizes of the two given matrices do not match.
 //
 // In all failure cases a \a std::invalid_argument exception is thrown.

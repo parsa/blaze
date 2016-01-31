@@ -274,8 +274,8 @@ inline void trtri( char uplo, char diag, int n, complex<double>* A, int lda, int
 // The function fails if ...
 //
 //  - ... the given matrix is not a square matrix;
-//  - ... the given \a uplo argument is neither 'L' nor 'U';
-//  - ... the given \a diag argument is neither 'U' nor 'N';
+//  - ... the given \a uplo argument is neither \c 'L' nor \c 'U';
+//  - ... the given \a diag argument is neither \c 'U' nor \c 'N';
 //  - ... the given matrix is singular and not invertible.
 //
 // In all failure cases a \a std::invalid_argument exception is thrown.

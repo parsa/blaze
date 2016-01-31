@@ -354,7 +354,7 @@ inline void posv( char uplo, int n, int nrhs, complex<double>* A, int lda, compl
 // The function fails if ...
 //
 //  - ... the given system matrix is not a square matrix;
-//  - ... the given \a uplo argument is neither 'L' nor 'U';
+//  - ... the given \a uplo argument is neither \c 'L' nor \c 'U';
 //  - ... the given system matrix is singular and not invertible.
 //
 // In all failure cases a \a std::invalid_argument exception is thrown.
@@ -462,7 +462,7 @@ inline void posv( DenseMatrix<MT,SO>& A, DenseVector<VT,TF>& b, char uplo )
 // The function fails if ...
 //
 //  - ... the given system matrix is not a square matrix;
-//  - ... the given \a uplo argument is neither 'L' nor 'U';
+//  - ... the given \a uplo argument is neither \c 'L' nor \c 'U';
 //  - ... the sizes of the two given matrices do not match;
 //  - ... the given system matrix is singular and not invertible.
 //

@@ -131,7 +131,7 @@ inline void trsv( const DenseMatrix<MT,SO>& A, DenseVector<VT,TF>& b,
 //   - 'T': \f$ A^{T}*x=b \f$ (transpose)
 //   - 'C': \f$ A^{H}*x=b \f$ (conjugate transpose)
 //
-// For more information on the strtrs() function, see the LAPACK online documentation browser:
+// For more information on the strsv() function, see the LAPACK online documentation browser:
 //
 //        http://www.netlib.org/lapack/explore-html/
 //
@@ -173,7 +173,7 @@ inline void trsv( char uplo, char trans, char diag, int n, const float* A,
 //   - 'T': \f$ A^{T}*x=b \f$ (transpose)
 //   - 'C': \f$ A^{H}*x=b \f$ (conjugate transpose)
 //
-// For more information on the dtrtrs() function, see the LAPACK online documentation browser:
+// For more information on the dtrsv() function, see the LAPACK online documentation browser:
 //
 //        http://www.netlib.org/lapack/explore-html/
 //
@@ -215,7 +215,7 @@ inline void trsv( char uplo, char trans, char diag, int n, const double* A,
 //   - 'T': \f$ A^{T}*x=b \f$ (transpose)
 //   - 'C': \f$ A^{H}*x=b \f$ (conjugate transpose)
 //
-// For more information on the ctrtrs() function, see the LAPACK online documentation browser:
+// For more information on the ctrsv() function, see the LAPACK online documentation browser:
 //
 //        http://www.netlib.org/lapack/explore-html/
 //
@@ -260,7 +260,7 @@ inline void trsv( char uplo, char trans, char diag, int n, const complex<float>*
 //   - 'T': \f$ A^{T}*x=b \f$ (transpose)
 //   - 'C': \f$ A^{H}*x=b \f$ (conjugate transpose)
 //
-// For more information on the ztrtrs() function, see the LAPACK online documentation browser:
+// For more information on the ztrsv() function, see the LAPACK online documentation browser:
 //
 //        http://www.netlib.org/lapack/explore-html/
 //
@@ -313,9 +313,9 @@ inline void trsv( char uplo, char trans, char diag, int n, const complex<double>
 // of equations. The function fails if ...
 //
 //  - ... the given system matrix is not a square matrix;
-//  - ... the given \a uplo argument is neither 'L' nor 'U';
-//  - ... the given \a trans argument is neither 'N' nor 'T' nor 'C';
-//  - ... the given \a diag argument is neither 'U' nor 'N'.
+//  - ... the given \a uplo argument is neither \c 'L' nor \c 'U';
+//  - ... the given \a trans argument is neither \c 'N' nor \c 'T' nor \c 'C';
+//  - ... the given \a diag argument is neither \c 'U' nor \c 'N'.
 //
 // In all failure cases a \a std::invalid_argument exception is thrown.
 //
@@ -364,6 +364,9 @@ inline void trsv( char uplo, char trans, char diag, int n, const complex<double>
 //
 // \note This function can only be used if the fitting LAPACK library is available and linked to
 // the executable. Otherwise a call to this function will result in a linker error.
+//
+// \note The function does not perform any test for singularity or near-singularity. Such tests
+// must be performed prior to calling this function!
 */
 template< typename MT  // Type of the system matrix
         , bool SO      // Storage order of the system matrix

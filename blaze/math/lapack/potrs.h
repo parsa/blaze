@@ -297,7 +297,7 @@ inline void potrs( char uplo, int n, int nrhs, const complex<double>* A,
 // of equations. The function fails if ...
 //
 //  - ... the given system matrix is not a square matrix;
-//  - ... the given \a uplo argument is neither 'L' nor 'U'.
+//  - ... the given \a uplo argument is neither \c 'L' nor \c 'U'.
 //
 // In all failure cases a \a std::invalid_argument exception is thrown.
 //
@@ -430,7 +430,7 @@ inline void potrs( const DenseMatrix<MT,SO>& A, DenseVector<VT,TF>& b, char uplo
 //
 //  - ... the given system matrix is not a square matrix;
 //  - ... the sizes of the two given matrices do not match;
-//  - ... the given \a uplo argument is neither 'L' nor 'U'.
+//  - ... the given \a uplo argument is neither \c 'L' nor \c 'U'.
 //
 // In all failure cases a \a std::invalid_argument exception is thrown.
 //

@@ -306,7 +306,7 @@ inline void potrf( char uplo, int n, complex<double>* A, int lda, int* info )
 // decomposition fails if ...
 //
 //  - ... the given system matrix \a A is not a symmetric positive definite matrix;
-//  - ... the given \a uplo argument is neither 'L' nor 'U'.
+//  - ... the given \a uplo argument is neither \c 'L' nor \c 'U'.
 //
 // In all failure cases a \a std::invalid_argument exception is thrown.
 //
