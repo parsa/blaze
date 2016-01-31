@@ -3395,7 +3395,7 @@ namespace blaze {}
 // \c complex<float> or \c complex<double> element type. The attempt to call the function with
 // matrices of any other element type or with a sparse matrix results in a compile time error!
 //
-// \note The function inverts the dense matrix by means of LAPACK kernels. Thus the function can
+// \note The functions invert the dense matrix by means of LAPACK kernels. Thus the functions can
 // only be used if the fitting LAPACK library is available and linked to the executable. Otherwise
 // a linker error will be created.
 //
@@ -3408,8 +3408,8 @@ namespace blaze {}
    inv( A )(1,2);         // Compilation error: It is not possible to access individual elements!
    \endcode
 
-// \note This function does not provide any exception safety guarantee, i.e. in case an exception
-// is thrown the matrix may already have been modified.
+// \note The inversion functions do not provide any exception safety guarantee, i.e. in case an
+// exception is thrown the matrix may already have been modified.
 //
 //
 // \n \section matrix_operations_decomposition Matrix Decomposition
@@ -3419,7 +3419,7 @@ namespace blaze {}
 // \c complex<float> or \c complex<double> element type. The attempt to call the function with
 // matrices of any other element type or with a sparse matrix results in a compile time error!
 //
-// \note The functions decompose a dense matrix by means of LAPACK kernels. Thus the function can
+// \note The functions decompose a dense matrix by means of LAPACK kernels. Thus the functions can
 // only be used if the fitting LAPACK library is available and linked to the executable. Otherwise
 // a linker error will be created.
 //
@@ -9352,7 +9352,7 @@ namespace blaze {}
 // \a std::invalid_argument exception in case of an error.
 //
 //
-// \n \subsection lapack_triangular_linear_system_solverLinear Linear System Solver for Triangular Matrices
+// \n \subsection lapack_triangular_linear_system_solver Linear System Solver for Triangular Matrices
 //
 // The following functions provide an interface for the LAPACK functions \c strsv(), \c dtrsv(),
 // \c ctrsv(), and \c ztrsv():
@@ -9386,7 +9386,7 @@ namespace blaze {}
 //
 // The last function throws a \a std::invalid_argument exception in case of an error. Note that
 // none of the functions does perform any test for singularity or near-singularity. Such tests
-// must be performed prior to calling this function! All other
+// must be performed prior to calling this function!
 //
 //
 // \n Previous: \ref blas_functions &nbsp; &nbsp; Next: \ref configuration_files \n
