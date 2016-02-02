@@ -69,7 +69,6 @@ OperationTest::OperationTest()
    // Single precision tests
    //=====================================================================================
 
-   //testGeqrf< float >();
    //testGetrf< float >();
    //testSytrf< float >();
    //testPotrf< float >();
@@ -85,13 +84,14 @@ OperationTest::OperationTest()
    //testSysv < float >();
    //testPosv < float >();
    //testTrsv < float >();
+   //testGeqrf< float >();
+   //testOrgqr< float >();
 
 
    //=====================================================================================
    // Double precision tests
    //=====================================================================================
 
-   testGeqrf< double >();
    testGetrf< double >();
    testSytrf< double >();
    testPotrf< double >();
@@ -107,13 +107,14 @@ OperationTest::OperationTest()
    testSysv < double >();
    testPosv < double >();
    testTrsv < double >();
+   testGeqrf< double >();
+   testOrgqr< double >();
 
 
    //=====================================================================================
    // Single precision complex tests
    //=====================================================================================
 
-   //testGeqrf< complex<float> >();
    //testGetrf< complex<float> >();
    //testSytrf< complex<float> >();
    //testHetrf< complex<float> >();
@@ -133,13 +134,14 @@ OperationTest::OperationTest()
    //testHesv < complex<float> >();
    //testPosv < complex<float> >();
    //testTrsv < complex<float> >();
+   //testGeqrf< complex<float> >();
+   //testUngqr< complex<float> >();
 
 
    //=====================================================================================
    // Double precision complex tests
    //=====================================================================================
 
-   testGeqrf< complex<double> >();
    testGetrf< complex<double> >();
    testSytrf< complex<double> >();
    testHetrf< complex<double> >();
@@ -159,6 +161,8 @@ OperationTest::OperationTest()
    testHesv < complex<double> >();
    testPosv < complex<double> >();
    testTrsv < complex<double> >();
+   testGeqrf< complex<double> >();
+   testUngqr< complex<double> >();
 }
 //*************************************************************************************************
 
