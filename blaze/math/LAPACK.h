@@ -49,6 +49,7 @@
 #include <blaze/math/lapack/hetrf.h>
 #include <blaze/math/lapack/hetri.h>
 #include <blaze/math/lapack/hetrs.h>
+#include <blaze/math/lapack/orgqr.h>
 #include <blaze/math/lapack/posv.h>
 #include <blaze/math/lapack/potrf.h>
 #include <blaze/math/lapack/potri.h>
@@ -60,5 +61,6 @@
 #include <blaze/math/lapack/trsv.h>
 #include <blaze/math/lapack/trtri.h>
 #include <blaze/math/lapack/trtrs.h>
+#include <blaze/math/lapack/ungqr.h>
 
 #endif
