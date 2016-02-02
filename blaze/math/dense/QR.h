@@ -52,13 +52,15 @@
 #include <blaze/math/expressions/DenseMatrix.h>
 #include <blaze/math/Functions.h>
 #include <blaze/math/lapack/geqrf.h>
+#include <blaze/math/lapack/orgqr.h>
+#include <blaze/math/lapack/ungqr.h>
 #include <blaze/math/traits/DerestrictTrait.h>
 #include <blaze/math/typetraits/IsResizable.h>
 #include <blaze/math/typetraits/IsRowMajorMatrix.h>
 #include <blaze/math/typetraits/IsSquare.h>
 #include <blaze/math/typetraits/RemoveAdaptor.h>
-#include <blaze/math/views/Column.h>
-#include <blaze/math/views/DenseColumn.h>
+#include <blaze/math/views/DenseSubmatrix.h>
+#include <blaze/math/views/Submatrix.h>
 #include <blaze/util/constraints/SameType.h>
 #include <blaze/util/Exception.h>
 #include <blaze/util/mpl/If.h>
@@ -82,6 +84,68 @@ void qr( const DenseMatrix<MT1,SO1>& A, DenseMatrix<MT2,SO2>& Q, DenseMatrix<MT3
 
 
 //*************************************************************************************************
+/*! \cond BLAZE_INTERNAL */
+/*!\brief Auxiliary function for the QR decomposition.
+// \ingroup dense_matrix
+//
+// \param A The QR decomposed column-major matrix.
+// \param tau Array for the scalar factors of the elementary reflectors.
+// \param Q The resulting Q matrix.
+// \return void
+//
+// This function is an auxiliary helper for the dense matrix QR decomposition. It reconstructs
+// the Q matrix from the QR decomposition.
+*/
+template< typename MT1    // Type of matrix A
+        , typename MT2 >  // Type of matrix Q
+inline typename EnableIf< IsBuiltin< typename MT1::ElementType > >::Type
+   qr_backend( MT1& A, const typename MT1::ElementType* tau, MT2& Q )
+{
+   BLAZE_CONSTRAINT_MUST_BE_COLUMN_MAJOR_MATRIX_TYPE( MT1 );
+
+   orgqr( A, tau );
+
+   const size_t m( A.rows() );
+   const size_t n( A.columns() );
+
+   Q = submatrix( A, 0UL, 0UL, m, min( m, n ) );
+}
+/*! \endcond */
+//*************************************************************************************************
+
+
+//*************************************************************************************************
+/*! \cond BLAZE_INTERNAL */
+/*!\brief Auxiliary function for the QR decomposition.
+// \ingroup dense_matrix
+//
+// \param A The QR decomposed column-major matrix.
+// \param tau Array for the scalar factors of the elementary reflectors.
+// \param Q The resulting Q matrix.
+// \return void
+//
+// This function is an auxiliary helper for the dense matrix QR decomposition. It reconstructs
+// the Q matrix from the QR decomposition.
+*/
+template< typename MT1    // Type of matrix A
+        , typename MT2 >  // Type of matrix Q
+inline typename EnableIf< IsComplex< typename MT1::ElementType > >::Type
+   qr_backend( MT1& A, const typename MT1::ElementType* tau, MT2& Q )
+{
+   BLAZE_CONSTRAINT_MUST_BE_COLUMN_MAJOR_MATRIX_TYPE( MT1 );
+
+   ungqr( A, tau );
+
+   const size_t m( A.rows() );
+   const size_t n( A.columns() );
+
+   Q = submatrix( A, 0UL, 0UL, m, min( m, n ) );
+}
+/*! \endcond */
+//*************************************************************************************************
+
+
+//*************************************************************************************************
 /*!\brief QR decomposition of the given dense matrix.
 // \ingroup dense_matrix
 //
@@ -97,9 +161,9 @@ void qr( const DenseMatrix<MT1,SO1>& A, DenseMatrix<MT2,SO2>& Q, DenseMatrix<MT3
 
                               \f[ A = Q \cdot R, \f]
 
-// where \c Q is a general m-by-m matrix and \c R is an upper trapezoidal m-by-n matrix. The
-// decomposition is written to the two distinct matrices \c Q and \c R, which are resized to the
-// correct dimensions (if possible and necessary).
+// where \c Q is a general m-by-min(m,n) matrix and \c R is an upper trapezoidal min(m,n)-by-n
+// matrix. The decomposition is written to the two distinct matrices \c Q and \c R, which are
+// resized to the correct dimensions (if possible and necessary).
 //
 // The function fails if ...
 //
@@ -114,8 +178,8 @@ void qr( const DenseMatrix<MT1,SO1>& A, DenseMatrix<MT2,SO2>& Q, DenseMatrix<MT3
    blaze::DynamicMatrix<double,blaze::columnMajor> A( 32, 16 );
    // ... Initialization of A
 
-   blaze::DynamicMatrix<double,blaze::columnMajor> Q( 32, 32 );
-   blaze::DynamicMatrix<double,blaze::columnMajor> R( 32, 16 );
+   blaze::DynamicMatrix<double,blaze::columnMajor> Q( 32, 16 );
+   blaze::DynamicMatrix<double,blaze::columnMajor> R( 16, 16 );
 
    qr( A, Q, R );
 
@@ -161,13 +225,13 @@ void qr( const DenseMatrix<MT1,SO1>& A, DenseMatrix<MT2,SO2>& Q, DenseMatrix<MT3
    const size_t n( (~A).columns() );
    const size_t mindim( min( m, n ) );
 
-   if( ( !IsResizable<MT2>::value && ( (~Q).rows() != m || (~Q).columns() != m ) ) ||
-       ( !IsResizable<MT3>::value && ( (~R).rows() != m || (~R).columns() != n ) ) ) {
+   if( ( !IsResizable<MT2>::value && ( (~Q).rows() != m || (~Q).columns() != mindim ) ) ||
+       ( !IsResizable<MT3>::value && ( (~R).rows() != mindim || (~R).columns() != n ) ) ) {
       BLAZE_THROW_INVALID_ARGUMENT( "Dimensions of fixed size matrix do not match" );
    }
 
-   if( IsSquare<MT3>::value && m != n ) {
-      BLAZE_THROW_INVALID_ARGUMENT( "Square matrix cannot be resized to m-by-n" );
+   if( IsSquare<MT3>::value && mindim != n ) {
+      BLAZE_THROW_INVALID_ARGUMENT( "Square matrix cannot be resized to min(m,n)-by-n" );
    }
 
    Tmp tmp( ~A );
@@ -176,7 +240,7 @@ void qr( const DenseMatrix<MT1,SO1>& A, DenseMatrix<MT2,SO2>& Q, DenseMatrix<MT3
    geqrf( tmp, tau.get() );
 
    typename DerestrictTrait<MT3>::Type r( derestrict( ~R ) );
-   resize( ~R, m, n );
+   resize( ~R, mindim, n );
    reset( r );
 
    for( size_t i=0UL; i<mindim; ++i ) {
@@ -188,23 +252,7 @@ void qr( const DenseMatrix<MT1,SO1>& A, DenseMatrix<MT2,SO2>& Q, DenseMatrix<MT3
       }
    }
 
-   MT2 I, Qtmp;
-   resize( I, m, m );
-   reset( I );
-
-   for( size_t i=0UL; i<m; ++i ) {
-      I(i,i) = ET2(1);
-   }
-
-   (~Q) = I;
-
-   for( size_t i=0UL; i<mindim; ++i ) {
-      if( !isDefault( tau[i] ) ) {
-         Qtmp = Q;
-         DenseColumn<Tmp> col = column( tmp, i );
-         (~Q) = Qtmp * ( I - tau[i] * col * ctrans( col ) );
-      }
-   }
+   qr_backend( tmp, tau.get(), ~Q );
 }
 //*************************************************************************************************
 
