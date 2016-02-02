@@ -3888,12 +3888,12 @@ class TDMatDMatMultExpr : public DenseMatrix< TDMatDMatMultExpr<MT1,MT2>, true >
       typedef typename MT3::ElementType  ET;
 
       if( IsTriangular<MT4>::value ) {
-         typename MT3::ResultType tmp( B );
+         typename MT3::ResultType tmp( serial( B ) );
          trmm( tmp, A, CblasLeft, ( IsLower<MT4>::value )?( CblasLower ):( CblasUpper ), ET(1) );
          addAssign( C, tmp );
       }
       else if( IsTriangular<MT5>::value ) {
-         typename MT3::ResultType tmp( A );
+         typename MT3::ResultType tmp( serial( A ) );
          trmm( tmp, B, CblasRight, ( IsLower<MT5>::value )?( CblasLower ):( CblasUpper ), ET(1) );
          addAssign( C, tmp );
       }
@@ -5585,12 +5585,12 @@ class TDMatDMatMultExpr : public DenseMatrix< TDMatDMatMultExpr<MT1,MT2>, true >
       typedef typename MT3::ElementType  ET;
 
       if( IsTriangular<MT4>::value ) {
-         typename MT3::ResultType tmp( B );
+         typename MT3::ResultType tmp( serial( B ) );
          trmm( tmp, A, CblasLeft, ( IsLower<MT4>::value )?( CblasLower ):( CblasUpper ), ET(1) );
          subAssign( C, tmp );
       }
       else if( IsTriangular<MT5>::value ) {
-         typename MT3::ResultType tmp( A );
+         typename MT3::ResultType tmp( serial( A ) );
          trmm( tmp, B, CblasRight, ( IsLower<MT5>::value )?( CblasLower ):( CblasUpper ), ET(1) );
          subAssign( C, tmp );
       }
@@ -9371,12 +9371,12 @@ class DMatScalarMultExpr< TDMatDMatMultExpr<MT1,MT2>, ST, true >
       typedef typename MT3::ElementType  ET;
 
       if( IsTriangular<MT4>::value ) {
-         typename MT3::ResultType tmp( B );
+         typename MT3::ResultType tmp( serial( B ) );
          trmm( tmp, A, CblasLeft, ( IsLower<MT4>::value )?( CblasLower ):( CblasUpper ), ET(scalar) );
          addAssign( C, tmp );
       }
       else if( IsTriangular<MT5>::value ) {
-         typename MT3::ResultType tmp( A );
+         typename MT3::ResultType tmp( serial( A ) );
          trmm( tmp, B, CblasRight, ( IsLower<MT5>::value )?( CblasLower ):( CblasUpper ), ET(scalar) );
          addAssign( C, tmp );
       }
@@ -10897,12 +10897,12 @@ class DMatScalarMultExpr< TDMatDMatMultExpr<MT1,MT2>, ST, true >
       typedef typename MT3::ElementType  ET;
 
       if( IsTriangular<MT4>::value ) {
-         typename MT3::ResultType tmp( B );
+         typename MT3::ResultType tmp( serial( B ) );
          trmm( tmp, A, CblasLeft, ( IsLower<MT4>::value )?( CblasLower ):( CblasUpper ), ET(scalar) );
          subAssign( C, tmp );
       }
       else if( IsTriangular<MT5>::value ) {
-         typename MT3::ResultType tmp( A );
+         typename MT3::ResultType tmp( serial( A ) );
          trmm( tmp, B, CblasRight, ( IsLower<MT5>::value )?( CblasLower ):( CblasUpper ), ET(scalar) );
          subAssign( C, tmp );
       }
