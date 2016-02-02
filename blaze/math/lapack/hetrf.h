@@ -1,7 +1,7 @@
 //=================================================================================================
 /*!
 //  \file blaze/math/lapack/hetrf.h
-//  \brief Header file for LAPACK Hermitian matrix decomposition functions (hetrf)
+//  \brief Header file for the LAPACK Hermitian matrix decomposition functions (hetrf)
 //
 //  Copyright (C) 2013 Klaus Iglberger - All Rights Reserved
 //

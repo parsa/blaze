@@ -1,7 +1,7 @@
 //=================================================================================================
 /*!
 //  \file blaze/math/lapack/getri.h
-//  \brief Header file for LAPACK LU-based matrix inversion functions (getri)
+//  \brief Header file for the LAPACK LU-based matrix inversion functions (getri)
 //
 //  Copyright (C) 2013 Klaus Iglberger - All Rights Reserved
 //

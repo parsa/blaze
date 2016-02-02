@@ -1,7 +1,7 @@
 //=================================================================================================
 /*!
 //  \file blaze/math/lapack/hetrs.h
-//  \brief Header file for LAPACK symmetric indefinite backward substitution functions (hetrs)
+//  \brief Header file for the LAPACK symmetric indefinite backward substitution functions (hetrs)
 //
 //  Copyright (C) 2013 Klaus Iglberger - All Rights Reserved
 //
@@ -67,8 +67,6 @@ namespace blaze {
 /*! \cond BLAZE_INTERNAL */
 extern "C" {
 
-void shetrs_( char* uplo, int* n, int* nrhs, float*  A, int* lda, int* ipiv, float*  B, int* ldb, int* info );
-void dhetrs_( char* uplo, int* n, int* nrhs, double* A, int* lda, int* ipiv, double* B, int* ldb, int* info );
 void chetrs_( char* uplo, int* n, int* nrhs, float*  A, int* lda, int* ipiv, float*  B, int* ldb, int* info );
 void zhetrs_( char* uplo, int* n, int* nrhs, double* A, int* lda, int* ipiv, double* B, int* ldb, int* info );
 
@@ -267,8 +265,8 @@ inline void hetrs( char uplo, int n, int nrhs, const complex<double>* A, int lda
    assert( trans( A ) * x == b );
    \endcode
 
-// For more information on the hetrs() functions (i.e. shetrs(), dhetrs(), chetrs(), and zhetrs()),
-// see the LAPACK online documentation browser:
+// For more information on the hetrs() functions (i.e. chetrs() and zhetrs()) see the LAPACK
+// online documentation browser:
 //
 //        http://www.netlib.org/lapack/explore-html/
 //
@@ -399,8 +397,8 @@ inline void hetrs( const DenseMatrix<MT,SO>& A, DenseVector<VT,TF>& b, char uplo
    assert( trans( A ) * trans( X ) == trans( B ) );
    \endcode
 
-// For more information on the hetrs() functions (i.e. shetrs(), dhetrs(), chetrs(), and zhetrs()),
-// see the LAPACK online documentation browser:
+// For more information on the hetrs() functions (i.e. chetrs() and zhetrs()) see the LAPACK
+// online documentation browser:
 //
 //        http://www.netlib.org/lapack/explore-html/
 //

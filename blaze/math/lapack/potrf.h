@@ -1,7 +1,7 @@
 //=================================================================================================
 /*!
 //  \file blaze/math/lapack/potrf.h
-//  \brief Header file for LAPACK Cholesky decomposition functions (potrf)
+//  \brief Header file for the LAPACK Cholesky decomposition functions (potrf)
 //
 //  Copyright (C) 2013 Klaus Iglberger - All Rights Reserved
 //

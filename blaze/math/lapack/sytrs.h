@@ -1,7 +1,7 @@
 //=================================================================================================
 /*!
 //  \file blaze/math/lapack/sytrs.h
-//  \brief Header file for LAPACK symmetric indefinite backward substitution functions (sytrs)
+//  \brief Header file for the LAPACK symmetric indefinite backward substitution functions (sytrs)
 //
 //  Copyright (C) 2013 Klaus Iglberger - All Rights Reserved
 //

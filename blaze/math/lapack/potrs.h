@@ -1,7 +1,7 @@
 //=================================================================================================
 /*!
 //  \file blaze/math/lapack/potrs.h
-//  \brief Header file for LAPACK positive definite backward substitution functions (potrs)
+//  \brief Header file for the LAPACK positive definite backward substitution functions (potrs)
 //
 //  Copyright (C) 2013 Klaus Iglberger - All Rights Reserved
 //

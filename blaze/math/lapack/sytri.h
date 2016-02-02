@@ -1,7 +1,7 @@
 //=================================================================================================
 /*!
 //  \file blaze/math/lapack/sytri.h
-//  \brief Header file for LAPACK symmetric matrix inversion functions (sytri)
+//  \brief Header file for the LAPACK symmetric matrix inversion functions (sytri)
 //
 //  Copyright (C) 2013 Klaus Iglberger - All Rights Reserved
 //

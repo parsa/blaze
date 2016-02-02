@@ -1,7 +1,7 @@
 //=================================================================================================
 /*!
 //  \file blaze/math/lapack/getrs.h
-//  \brief Header file for LAPACK general backward substitution functions (getrs)
+//  \brief Header file for the LAPACK general backward substitution functions (getrs)
 //
 //  Copyright (C) 2013 Klaus Iglberger - All Rights Reserved
 //

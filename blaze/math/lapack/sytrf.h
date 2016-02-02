@@ -1,7 +1,7 @@
 //=================================================================================================
 /*!
 //  \file blaze/math/lapack/sytrf.h
-//  \brief Header file for LAPACK symmetric matrix decomposition functions (sytrf)
+//  \brief Header file for the LAPACK symmetric matrix decomposition functions (sytrf)
 //
 //  Copyright (C) 2013 Klaus Iglberger - All Rights Reserved
 //

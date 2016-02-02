@@ -1,7 +1,7 @@
 //=================================================================================================
 /*!
 //  \file blaze/math/lapack/sysv.h
-//  \brief Header file for LAPACK symmetric indefinite linear system solver functions (sysv)
+//  \brief Header file for the LAPACK symmetric indefinite linear system solver functions (sysv)
 //
 //  Copyright (C) 2013 Klaus Iglberger - All Rights Reserved
 //

@@ -1,7 +1,7 @@
 //=================================================================================================
 /*!
 //  \file blaze/math/lapack/potri.h
-//  \brief Header file for LAPACK matrix Cholesky-based inversion functions (potri)
+//  \brief Header file for the LAPACK matrix Cholesky-based inversion functions (potri)
 //
 //  Copyright (C) 2013 Klaus Iglberger - All Rights Reserved
 //

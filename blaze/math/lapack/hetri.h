@@ -1,7 +1,7 @@
 //=================================================================================================
 /*!
 //  \file blaze/math/lapack/hetri.h
-//  \brief Header file for LAPACK Hermitian matrix inversion functions (hetri)
+//  \brief Header file for the LAPACK Hermitian matrix inversion functions (hetri)
 //
 //  Copyright (C) 2013 Klaus Iglberger - All Rights Reserved
 //

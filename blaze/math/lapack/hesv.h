@@ -1,7 +1,7 @@
 //=================================================================================================
 /*!
 //  \file blaze/math/lapack/hesv.h
-//  \brief Header file for LAPACK Hermitian indefinite linear system solver functions (hesv)
+//  \brief Header file for the LAPACK Hermitian indefinite linear system solver functions (hesv)
 //
 //  Copyright (C) 2013 Klaus Iglberger - All Rights Reserved
 //
@@ -65,8 +65,6 @@ namespace blaze {
 /*! \cond BLAZE_INTERNAL */
 extern "C" {
 
-void shesv_( char* uplo, int* n, int* nrhs, float*  A, int* lda, int* ipiv, float*  b, int* ldb, float*  work, int* lwork, int* info );
-void dhesv_( char* uplo, int* n, int* nrhs, double* A, int* lda, int* ipiv, double* b, int* ldb, double* work, int* lwork, int* info );
 void chesv_( char* uplo, int* n, int* nrhs, float*  A, int* lda, int* ipiv, float*  b, int* ldb, float*  work, int* lwork, int* info );
 void zhesv_( char* uplo, int* n, int* nrhs, double* A, int* lda, int* ipiv, double* b, int* ldb, double* work, int* lwork, int* info );
 
@@ -266,8 +264,8 @@ inline void hesv( char uplo, int n, int nrhs, complex<double>* A, int lda, int* 
 //
 // In all failure cases a \a std::invalid_argument exception is thrown.
 //
-// For more information on the hesv() functions (i.e. shesv(), dhesv(), chesv(), and zhesv()),
-// see the LAPACK online documentation browser:
+// For more information on the hesv() functions (i.e. chesv() and zhesv()) see the LAPACK online
+// documentation browser:
 //
 //        http://www.netlib.org/lapack/explore-html/
 //
@@ -382,8 +380,8 @@ inline void hesv( DenseMatrix<MT,SO>& A, DenseVector<VT,TF>& b, char uplo, int* 
 //
 // In all failure cases a \a std::invalid_argument exception is thrown.
 //
-// For more information on the hesv() functions (i.e. shesv(), dhesv(), chesv(), and zhesv()),
-// see the LAPACK online documentation browser:
+// For more information on the hesv() functions (i.e. chesv() and zhesv()) see the LAPACK online
+// documentation browser:
 //
 //        http://www.netlib.org/lapack/explore-html/
 //

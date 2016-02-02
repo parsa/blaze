@@ -1,7 +1,7 @@
 //=================================================================================================
 /*!
 //  \file blaze/math/lapack/trtri.h
-//  \brief Header file for LAPACK triangular matrix inversion functions (trtri)
+//  \brief Header file for the LAPACK triangular matrix inversion functions (trtri)
 //
 //  Copyright (C) 2013 Klaus Iglberger - All Rights Reserved
 //

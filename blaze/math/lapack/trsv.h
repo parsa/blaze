@@ -1,7 +1,7 @@
 //=================================================================================================
 /*!
 //  \file blaze/math/lapack/trsv.h
-//  \brief Header file for LAPACK triangular linear system solver functions (trsv)
+//  \brief Header file for the LAPACK triangular linear system solver functions (trsv)
 //
 //  Copyright (C) 2013 Klaus Iglberger - All Rights Reserved
 //

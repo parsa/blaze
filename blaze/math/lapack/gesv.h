@@ -1,7 +1,7 @@
 //=================================================================================================
 /*!
 //  \file blaze/math/lapack/gesv.h
-//  \brief Header file for LAPACK general linear system solver functions (gesv)
+//  \brief Header file for the LAPACK general linear system solver functions (gesv)
 //
 //  Copyright (C) 2013 Klaus Iglberger - All Rights Reserved
 //

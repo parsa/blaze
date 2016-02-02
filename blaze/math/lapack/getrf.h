@@ -1,7 +1,7 @@
 //=================================================================================================
 /*!
 //  \file blaze/math/lapack/getrf.h
-//  \brief Header file for LAPACK LU decomposition functions (getrf)
+//  \brief Header file for the LAPACK LU decomposition functions (getrf)
 //
 //  Copyright (C) 2013 Klaus Iglberger - All Rights Reserved
 //

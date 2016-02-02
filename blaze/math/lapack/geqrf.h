@@ -1,7 +1,7 @@
 //=================================================================================================
 /*!
 //  \file blaze/math/lapack/geqrf.h
-//  \brief Header file for LAPACK QR decomposition functions (geqrf)
+//  \brief Header file for the LAPACK QR decomposition functions (geqrf)
 //
 //  Copyright (C) 2013 Klaus Iglberger - All Rights Reserved
 //

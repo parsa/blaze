@@ -1,7 +1,7 @@
 //=================================================================================================
 /*!
 //  \file blaze/math/lapack/posv.h
-//  \brief Header file for LAPACK positive definite linear system solver functions (posv)
+//  \brief Header file for the LAPACK positive definite linear system solver functions (posv)
 //
 //  Copyright (C) 2013 Klaus Iglberger - All Rights Reserved
 //

@@ -1,7 +1,7 @@
 //=================================================================================================
 /*!
 //  \file blaze/math/lapack/trtrs.h
-//  \brief Header file for LAPACK triangular backward substitution functions (trtrs)
+//  \brief Header file for the LAPACK triangular backward substitution functions (trtrs)
 //
 //  Copyright (C) 2013 Klaus Iglberger - All Rights Reserved
 //
