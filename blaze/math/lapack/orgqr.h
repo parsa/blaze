@@ -185,7 +185,7 @@ inline void orgqr( int m, int n, int k, double* A, int lda, const double* tau, d
 // of any other element type results in a compile time error!\n
 //
 // The row-major min(m,n)-by-n or column-major m-by-min(m,n) \a Q matrix is stored in the within
-// the given \a A matrix:
+// the given matrix \a A:
 
    \code
    using blaze::DynamicMatrix;
@@ -201,7 +201,7 @@ inline void orgqr( int m, int n, int k, double* A, int lda, const double* tau, d
    const int m( A.rows() );
    const int n( A.columns() );
 
-   DynamicMatrix<double,columnMajor> Q( submatrix( A, 0, 0, m, min(m,n) ) );
+   DynamicMatrix<double,columnMajor> Q( submatrix( A, 0UL, 0UL, m, min(m,n) ) );
    \endcode
 
    \code
@@ -218,7 +218,7 @@ inline void orgqr( int m, int n, int k, double* A, int lda, const double* tau, d
    const int m( A.rows() );
    const int n( A.columns() );
 
-   DynamicMatrix<double,rowMajor> Q( submatrix( A, 0, 0, min(m,n), n ) );
+   DynamicMatrix<double,rowMajor> Q( submatrix( A, 0UL, 0UL, min(m,n), n ) );
    \endcode
 
 // For more information on the orgqr() functions (i.e. sorgqr() and dorgqr()) see the LAPACK
@@ -243,7 +243,7 @@ inline void orgqr( DenseMatrix<MT,SO>& A, const typename MT::ElementType* tau )
    typedef typename MT::ElementType  ET;
 
    int m   ( numeric_cast<int>( SO ? (~A).rows() : (~A).columns() ) );
-   int n   ( min( m, numeric_cast<int>( SO ? (~A).columns() : (~A).rows() ) ) );
+   int n   ( numeric_cast<int>( SO ? (~A).columns() : (~A).rows() ) );
    int k   ( min( m, n ) );
    int lda ( numeric_cast<int>( (~A).spacing() ) );
    int info( 0 );
@@ -252,10 +252,10 @@ inline void orgqr( DenseMatrix<MT,SO>& A, const typename MT::ElementType* tau )
       return;
    }
 
-   int lwork( n*lda );
+   int lwork( k*lda );
    const UniqueArray<ET> work( new ET[lwork] );
 
-   orgqr( m, n, k, (~A).data(), lda, tau, work.get(), lwork, &info );
+   orgqr( m, k, k, (~A).data(), lda, tau, work.get(), lwork, &info );
 
    BLAZE_INTERNAL_ASSERT( info == 0, "Invalid argument for Q reconstruction" );
 }
