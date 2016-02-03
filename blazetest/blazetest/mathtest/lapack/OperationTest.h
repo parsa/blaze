@@ -120,6 +120,10 @@ class OperationTest
    template< typename Type > void testGeqrf();
    template< typename Type > void testOrgqr();
    template< typename Type > void testUngqr();
+
+   template< typename Type > void testGerqf();
+   template< typename Type > void testOrgrq();
+   template< typename Type > void testUngrq();
    //@}
    //**********************************************************************************************
 
@@ -6135,6 +6139,235 @@ void OperationTest::testUngqr()
 
       blaze::ungqr( A, tauA.data() );
       blaze::ungqr( B, tauB.data() );
+
+      if( A != trans( B ) ) {
+         std::ostringstream oss;
+         oss << " Test: " << test_ << "\n"
+             << " Error: Q reconstruction failed\n"
+             << " Details:\n"
+             << "   Element type:\n"
+             << "     " << typeid( Type ).name() << "\n"
+             << "   Row-major reconstruction:\n" << A << "\n"
+             << "   Column-major reconstruction:\n" << B << "\n";
+         throw std::runtime_error( oss.str() );
+      }
+   }
+
+#endif
+}
+//*************************************************************************************************
+
+
+//*************************************************************************************************
+/*!\brief Test of the RQ decomposition functions (gerqf).
+//
+// \return void
+// \exception std::runtime_error Error detected.
+//
+// This function performs a test of the RQ decomposition functions for various data types. In
+// case an error is detected, a \a std::runtime_error exception is thrown.
+*/
+template< typename Type >
+void OperationTest::testGerqf()
+{
+#if BLAZETEST_MATHTEST_LAPACK_MODE
+
+   test_ = "RQ decomposition";
+
+   {
+      blaze::StaticMatrix<Type,2UL,5UL,blaze::rowMajor> A;
+      randomize( A );
+
+      blaze::StaticMatrix<Type,5UL,2UL,blaze::columnMajor> B( trans( A ) );
+
+      blaze::StaticVector<Type,2UL,blaze::rowVector> tauA;
+      blaze::StaticVector<Type,2UL,blaze::rowVector> tauB;
+
+      blaze::gerqf( A, tauA.data() );
+      blaze::gerqf( B, tauB.data() );
+
+      if( A != trans( B ) || tauA != tauB ) {
+         std::ostringstream oss;
+         oss << " Test: " << test_ << "\n"
+             << " Error: RQ decomposition failed\n"
+             << " Details:\n"
+             << "   Element type:\n"
+             << "     " << typeid( Type ).name() << "\n"
+             << "   Row-major decomposition:\n" << A << "\n"
+             << "   Row-major projectors:\n" << tauA << "\n"
+             << "   Column-major decomposition:\n" << B << "\n"
+             << "   Column-major projectors:\n" << tauB << "\n";
+         throw std::runtime_error( oss.str() );
+      }
+   }
+
+   {
+      blaze::StaticMatrix<Type,5UL,2UL,blaze::rowMajor> A;
+      randomize( A );
+
+      blaze::StaticMatrix<Type,2UL,5UL,blaze::columnMajor> B( trans( A ) );
+
+      blaze::StaticVector<Type,2UL,blaze::rowVector> tauA;
+      blaze::StaticVector<Type,2UL,blaze::rowVector> tauB;
+
+      blaze::gerqf( A, tauA.data() );
+      blaze::gerqf( B, tauB.data() );
+
+      if( A != trans( B ) || tauA != tauB ) {
+         std::ostringstream oss;
+         oss << " Test: " << test_ << "\n"
+             << " Error: RQ decomposition failed\n"
+             << " Details:\n"
+             << "   Element type:\n"
+             << "     " << typeid( Type ).name() << "\n"
+             << "   Row-major decomposition:\n" << A << "\n"
+             << "   Row-major projectors:\n" << tauA << "\n"
+             << "   Column-major decomposition:\n" << B << "\n"
+             << "   Column-major projectors:\n" << tauB << "\n";
+         throw std::runtime_error( oss.str() );
+      }
+   }
+
+#endif
+}
+//*************************************************************************************************
+
+
+//*************************************************************************************************
+/*!\brief Test of the Q reconstruction from a RQ decomposition (orgrq).
+//
+// \return void
+// \exception std::runtime_error Error detected.
+//
+// This function performs a test of the Q reconstruction from a RQ decomposition for various data
+// types. In case an error is detected, a \a std::runtime_error exception is thrown.
+*/
+template< typename Type >
+void OperationTest::testOrgrq()
+{
+#if BLAZETEST_MATHTEST_LAPACK_MODE
+
+   test_ = "Reconstruction of Q from a RQ decomposition";
+
+   {
+      blaze::StaticMatrix<Type,2UL,5UL,blaze::rowMajor> A;
+      randomize( A );
+
+      blaze::StaticMatrix<Type,5UL,2UL,blaze::columnMajor> B( trans( A ) );
+
+      blaze::StaticVector<Type,2UL,blaze::rowVector> tauA;
+      blaze::StaticVector<Type,2UL,blaze::rowVector> tauB;
+
+      blaze::gerqf( A, tauA.data() );
+      blaze::gerqf( B, tauB.data() );
+
+      blaze::orgrq( A, tauA.data() );
+      blaze::orgrq( B, tauB.data() );
+
+      if( A != trans( B ) ) {
+         std::ostringstream oss;
+         oss << " Test: " << test_ << "\n"
+             << " Error: Q reconstruction failed\n"
+             << " Details:\n"
+             << "   Element type:\n"
+             << "     " << typeid( Type ).name() << "\n"
+             << "   Row-major reconstruction:\n" << A << "\n"
+             << "   Column-major reconstruction:\n" << B << "\n";
+         throw std::runtime_error( oss.str() );
+      }
+   }
+
+   {
+      blaze::StaticMatrix<Type,5UL,2UL,blaze::rowMajor> A;
+      randomize( A );
+
+      blaze::StaticMatrix<Type,2UL,5UL,blaze::columnMajor> B( trans( A ) );
+
+      blaze::StaticVector<Type,2UL,blaze::rowVector> tauA;
+      blaze::StaticVector<Type,2UL,blaze::rowVector> tauB;
+
+      blaze::gerqf( A, tauA.data() );
+      blaze::gerqf( B, tauB.data() );
+
+      blaze::orgrq( A, tauA.data() );
+      blaze::orgrq( B, tauB.data() );
+
+      if( A != trans( B ) ) {
+         std::ostringstream oss;
+         oss << " Test: " << test_ << "\n"
+             << " Error: Q reconstruction failed\n"
+             << " Details:\n"
+             << "   Element type:\n"
+             << "     " << typeid( Type ).name() << "\n"
+             << "   Row-major reconstruction:\n" << A << "\n"
+             << "   Column-major reconstruction:\n" << B << "\n";
+         throw std::runtime_error( oss.str() );
+      }
+   }
+
+#endif
+}
+//*************************************************************************************************
+
+
+//*************************************************************************************************
+/*!\brief Test of the Q reconstruction from a RQ decomposition (ungrq).
+//
+// \return void
+// \exception std::runtime_error Error detected.
+//
+// This function performs a test of the Q reconstruction from a RQ decomposition for various data
+// types. In case an error is detected, a \a std::runtime_error exception is thrown.
+*/
+template< typename Type >
+void OperationTest::testUngrq()
+{
+#if BLAZETEST_MATHTEST_LAPACK_MODE
+
+   test_ = "Reconstruction of Q from a RQ decomposition";
+
+   {
+      blaze::StaticMatrix<Type,2UL,5UL,blaze::rowMajor> A;
+      randomize( A );
+
+      blaze::StaticMatrix<Type,5UL,2UL,blaze::columnMajor> B( trans( A ) );
+
+      blaze::StaticVector<Type,2UL,blaze::rowVector> tauA;
+      blaze::StaticVector<Type,2UL,blaze::rowVector> tauB;
+
+      blaze::gerqf( A, tauA.data() );
+      blaze::gerqf( B, tauB.data() );
+
+      blaze::ungrq( A, tauA.data() );
+      blaze::ungrq( B, tauB.data() );
+
+      if( A != trans( B ) ) {
+         std::ostringstream oss;
+         oss << " Test: " << test_ << "\n"
+             << " Error: Q reconstruction failed\n"
+             << " Details:\n"
+             << "   Element type:\n"
+             << "     " << typeid( Type ).name() << "\n"
+             << "   Row-major reconstruction:\n" << A << "\n"
+             << "   Column-major reconstruction:\n" << B << "\n";
+         throw std::runtime_error( oss.str() );
+      }
+   }
+
+   {
+      blaze::StaticMatrix<Type,5UL,2UL,blaze::rowMajor> A;
+      randomize( A );
+
+      blaze::StaticMatrix<Type,2UL,5UL,blaze::columnMajor> B( trans( A ) );
+
+      blaze::StaticVector<Type,2UL,blaze::rowVector> tauA;
+      blaze::StaticVector<Type,2UL,blaze::rowVector> tauB;
+
+      blaze::gerqf( A, tauA.data() );
+      blaze::gerqf( B, tauB.data() );
+
+      blaze::ungrq( A, tauA.data() );
+      blaze::ungrq( B, tauB.data() );
 
       if( A != trans( B ) ) {
          std::ostringstream oss;

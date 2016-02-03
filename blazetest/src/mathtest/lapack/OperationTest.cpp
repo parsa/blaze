@@ -86,6 +86,8 @@ OperationTest::OperationTest()
    //testTrsv < float >();
    //testGeqrf< float >();
    //testOrgqr< float >();
+   //testGerqf< float >();
+   //testOrgrq< float >();
 
 
    //=====================================================================================
@@ -109,6 +111,8 @@ OperationTest::OperationTest()
    testTrsv < double >();
    testGeqrf< double >();
    testOrgqr< double >();
+   testGerqf< double >();
+   testOrgrq< double >();
 
 
    //=====================================================================================
@@ -136,6 +140,8 @@ OperationTest::OperationTest()
    //testTrsv < complex<float> >();
    //testGeqrf< complex<float> >();
    //testUngqr< complex<float> >();
+   //testGerqf< complex<float> >();
+   //testUngrq< complex<float> >();
 
 
    //=====================================================================================
@@ -163,6 +169,8 @@ OperationTest::OperationTest()
    testTrsv < complex<double> >();
    testGeqrf< complex<double> >();
    testUngqr< complex<double> >();
+   testGerqf< complex<double> >();
+   testUngrq< complex<double> >();
 }
 //*************************************************************************************************
 
