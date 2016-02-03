@@ -64,5 +64,6 @@
 #include <blaze/math/lapack/trtri.h>
 #include <blaze/math/lapack/trtrs.h>
 #include <blaze/math/lapack/ungqr.h>
+#include <blaze/math/lapack/ungrq.h>
 
 #endif
