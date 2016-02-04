@@ -3531,6 +3531,40 @@ namespace blaze {}
    qr( A, Q, R );  // QR decomposition of A
    \endcode
 
+// \n \subsection matrix_operations_decomposition_rq RQ Decomposition
+//
+// Similar to the QR decomposition, the RQ decomposition of a dense matrix can be computed via
+// the \c rq() function:
+
+   \code
+   blaze::DynamicMatrix<double,blaze::rowMajor> A;
+   // ... Resizing and initialization
+
+   blaze::DynamicMatrix<double,blaze::rowMajor> R;
+   blaze::DynamicMatrix<double,blaze::columnMajor> Q;
+
+   rq( A, R, Q );  // RQ decomposition of a row-major matrix
+
+   assert( A == R * Q );
+   \endcode
+
+// The function works for both \c rowMajor and \c columnMajor matrices and the three matrices
+// \c A, \c R and \c Q can have any storage order.
+//
+// Also the \c \rq() function can be used in combination with matrix adaptors. For instance, the
+// following example demonstrates the RQ decomposition of an Hermitian matrix into a general
+// matrix and an upper triangular matrix:
+
+   \code
+   blaze::HermitianMatrix< blaze::DynamicMatrix<complex<double>,blaze::columnMajor> > A;
+   // ... Resizing and initialization
+
+   blaze::UpperMatrix< blaze::DynamicMatrix<double,blaze::columnMajor> > R;
+   blaze::DynamicMatrix<double,blaze::rowMajor> Q;
+
+   rq( A, R, Q );  // RQ decomposition of A
+   \endcode
+
 // \n Previous: \ref matrix_types &nbsp; &nbsp; Next: \ref adaptors
 */
 //*************************************************************************************************
@@ -8796,9 +8830,9 @@ namespace blaze {}
 // where \c tau is a real scalar, and \c v is a real vector with <tt>v(0:i-1) = 0</tt> and
 // <tt>v(i) = 1</tt>. <tt>v(i+1:m)</tt> is stored on exit in <tt>A(i+1:m,i)</tt>, and \c tau
 // in \c tau(i). Thus on exit the elements on and above the diagonal of the matrix contain the
-// min(M,N)-by-N upper trapezoidal matrix R (R is upper triangular if m >= n); the elements
-// below the diagonal, with the array \a tau, represent the orthogonal matrix Q as a product
-// of min(M,N) elementary reflectors.
+// min(\a m,\a n)-by-\a n upper trapezoidal matrix \c R (\c R is upper triangular if \a m >= \a n);
+// the elements below the diagonal, with the array \a tau, represent the orthogonal matrix \c Q as
+// a product of min(\a m,\a n) elementary reflectors.
 //
 //
 // \n \section lapack_inversion Matrix Inversion
