@@ -90,25 +90,18 @@ void qr( const DenseMatrix<MT1,SO1>& A, DenseMatrix<MT2,SO2>& Q, DenseMatrix<MT3
 //
 // \param A The QR decomposed column-major matrix.
 // \param tau Array for the scalar factors of the elementary reflectors.
-// \param Q The resulting Q matrix.
 // \return void
 //
-// This function is an auxiliary helper for the dense matrix QR decomposition. It reconstructs
-// the Q matrix from the QR decomposition.
+// This function is an auxiliary helper for the dense matrix QR decomposition. It performs the
+// reconstruction of the Q matrix from the RQ decomposition.
 */
-template< typename MT1    // Type of matrix A
-        , typename MT2 >  // Type of matrix Q
+template< typename MT1 >  // Type of matrix A
 inline typename EnableIf< IsBuiltin< typename MT1::ElementType > >::Type
-   qr_backend( MT1& A, const typename MT1::ElementType* tau, MT2& Q )
+   qr_backend( MT1& A, const typename MT1::ElementType* tau )
 {
    BLAZE_CONSTRAINT_MUST_BE_COLUMN_MAJOR_MATRIX_TYPE( MT1 );
 
    orgqr( A, tau );
-
-   const size_t m( A.rows() );
-   const size_t n( A.columns() );
-
-   Q = submatrix( A, 0UL, 0UL, m, min( m, n ) );
 }
 /*! \endcond */
 //*************************************************************************************************
@@ -121,25 +114,18 @@ inline typename EnableIf< IsBuiltin< typename MT1::ElementType > >::Type
 //
 // \param A The QR decomposed column-major matrix.
 // \param tau Array for the scalar factors of the elementary reflectors.
-// \param Q The resulting Q matrix.
 // \return void
 //
-// This function is an auxiliary helper for the dense matrix QR decomposition. It reconstructs
-// the Q matrix from the QR decomposition.
+// This function is an auxiliary helper for the dense matrix QR decomposition. It performs the
+// reconstruction of the Q matrix from the RQ decomposition.
 */
-template< typename MT1    // Type of matrix A
-        , typename MT2 >  // Type of matrix Q
+template< typename MT1 >  // Type of matrix A
 inline typename EnableIf< IsComplex< typename MT1::ElementType > >::Type
-   qr_backend( MT1& A, const typename MT1::ElementType* tau, MT2& Q )
+   qr_backend( MT1& A, const typename MT1::ElementType* tau )
 {
    BLAZE_CONSTRAINT_MUST_BE_COLUMN_MAJOR_MATRIX_TYPE( MT1 );
 
    ungqr( A, tau );
-
-   const size_t m( A.rows() );
-   const size_t n( A.columns() );
-
-   Q = submatrix( A, 0UL, 0UL, m, min( m, n ) );
 }
 /*! \endcond */
 //*************************************************************************************************
@@ -156,19 +142,19 @@ inline typename EnableIf< IsComplex< typename MT1::ElementType > >::Type
 // \exception std::invalid_argument Dimensions of fixed size matrix do not match.
 // \exception std::invalid_argument Square matrix cannot be resized to m-by-n.
 //
-// This function performs the dense matrix QR decomposition of a general m-by-n matrix. The
-// resulting decomposition has the form
+// This function performs the dense matrix QR decomposition of a general \a m-by-\a n matrix.
+// The resulting decomposition has the form
 
                               \f[ A = Q \cdot R, \f]
 
-// where \c Q is a general m-by-min(m,n) matrix and \c R is an upper trapezoidal min(m,n)-by-n
-// matrix. The decomposition is written to the two distinct matrices \c Q and \c R, which are
-// resized to the correct dimensions (if possible and necessary).
+// where \c Q is a general \a m-by-min(\a m,\a n) matrix and \c R is an upper trapezoidal
+// min(\a m,\a n)-by-\a n matrix. The decomposition is written to the two distinct matrices
+// \c Q and \c R, which are resized to the correct dimensions (if possible and necessary).
 //
 // The function fails if ...
 //
 //  - ... either \a Q or \a R are fixed size matrices and the dimensions don't match;
-//  - ... \a A is a non-square m-by-n matrix, but \a R is a compile time square matrix.
+//  - ... \a R is a compile time square matrix, but is required to be non-square.
 //
 // In all failure cases a \a std::invalid_argument exception is thrown.
 //
@@ -213,13 +199,12 @@ void qr( const DenseMatrix<MT1,SO1>& A, DenseMatrix<MT2,SO2>& Q, DenseMatrix<MT3
    BLAZE_CONSTRAINT_MUST_NOT_BE_LOWER_MATRIX_TYPE( MT3 );
    BLAZE_CONSTRAINT_MUST_BE_BLAS_COMPATIBLE_TYPE( typename MT3::ElementType );
 
-   typedef typename MT2::ElementType  ET2;
-   typedef typename MT3::ElementType  ET3;
-   typedef typename RemoveAdaptor<MT3>::Type  UMT3;
-   typedef typename If< IsRowMajorMatrix<UMT3>, typename UMT3::OppositeType, UMT3 >::Type  Tmp;
+   typedef typename RemoveAdaptor<MT1>::Type  UMT1;
+   typedef typename If< IsRowMajorMatrix<UMT1>, typename UMT1::OppositeType, UMT1 >::Type  Tmp;
+   typedef typename MT1::ElementType  ET1;
 
    BLAZE_CONSTRAINT_MUST_BE_COLUMN_MAJOR_MATRIX_TYPE( Tmp );
-   BLAZE_CONSTRAINT_MUST_BE_SAME_TYPE( ET3, typename Tmp::ElementType );
+   BLAZE_CONSTRAINT_MUST_BE_SAME_TYPE( ET1, typename Tmp::ElementType );
 
    const size_t m( (~A).rows() );
    const size_t n( (~A).columns() );
@@ -235,7 +220,7 @@ void qr( const DenseMatrix<MT1,SO1>& A, DenseMatrix<MT2,SO2>& Q, DenseMatrix<MT3
    }
 
    Tmp tmp( ~A );
-   UniqueArray<ET3> tau( new ET3[mindim] );
+   UniqueArray<ET1> tau( new ET1[mindim] );
 
    geqrf( tmp, tau.get() );
 
@@ -244,15 +229,14 @@ void qr( const DenseMatrix<MT1,SO1>& A, DenseMatrix<MT2,SO2>& Q, DenseMatrix<MT3
    reset( r );
 
    for( size_t i=0UL; i<mindim; ++i ) {
-      r(i,i) = tmp(i,i);
-      tmp(i,i) = ET3(1);
-      for( size_t j=i+1UL; j<n; ++j ) {
+      for( size_t j=i; j<n; ++j ) {
          r(i,j) = tmp(i,j);
-         reset( tmp(i,j) );
       }
    }
 
-   qr_backend( tmp, tau.get(), ~Q );
+   qr_backend( tmp, tau.get() );
+
+   (~Q) = submatrix( tmp, 0UL, 0UL, m, min( m, n ) );
 }
 //*************************************************************************************************
 
