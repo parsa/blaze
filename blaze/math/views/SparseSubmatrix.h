@@ -6077,6 +6077,106 @@ struct DerestrictTrait< SparseSubmatrix<MT,AF,SO> >
 
 //=================================================================================================
 //
+//  ADDTRAIT SPECIALIZATIONS
+//
+//=================================================================================================
+
+//*************************************************************************************************
+/*! \cond BLAZE_INTERNAL */
+template< typename MT, bool AF, bool SO, typename T >
+struct AddTrait< SparseSubmatrix<MT,AF,SO>, T >
+{
+   typedef typename AddTrait< typename SubmatrixTrait<MT>::Type, T >::Type  Type;
+};
+
+template< typename T, typename MT, bool AF, bool TF >
+struct AddTrait< T, SparseSubmatrix<MT,AF,TF> >
+{
+   typedef typename AddTrait< T, typename SubmatrixTrait<MT>::Type >::Type  Type;
+};
+/*! \endcond */
+//*************************************************************************************************
+
+
+
+
+//=================================================================================================
+//
+//  SUBTRAIT SPECIALIZATIONS
+//
+//=================================================================================================
+
+//*************************************************************************************************
+/*! \cond BLAZE_INTERNAL */
+template< typename MT, bool AF, bool SO, typename T >
+struct SubTrait< SparseSubmatrix<MT,AF,SO>, T >
+{
+   typedef typename SubTrait< typename SubmatrixTrait<MT>::Type, T >::Type  Type;
+};
+
+template< typename T, typename MT, bool AF, bool TF >
+struct SubTrait< T, SparseSubmatrix<MT,AF,TF> >
+{
+   typedef typename SubTrait< T, typename SubmatrixTrait<MT>::Type >::Type  Type;
+};
+/*! \endcond */
+//*************************************************************************************************
+
+
+
+
+//=================================================================================================
+//
+//  MULTTRAIT SPECIALIZATIONS
+//
+//=================================================================================================
+
+//*************************************************************************************************
+/*! \cond BLAZE_INTERNAL */
+template< typename MT, bool AF, bool SO, typename T >
+struct MultTrait< SparseSubmatrix<MT,AF,SO>, T >
+{
+   typedef typename MultTrait< typename SubmatrixTrait<MT>::Type, T >::Type  Type;
+};
+
+template< typename T, typename MT, bool AF, bool TF >
+struct MultTrait< T, SparseSubmatrix<MT,AF,TF> >
+{
+   typedef typename MultTrait< T, typename SubmatrixTrait<MT>::Type >::Type  Type;
+};
+/*! \endcond */
+//*************************************************************************************************
+
+
+
+
+//=================================================================================================
+//
+//  DIVTRAIT SPECIALIZATIONS
+//
+//=================================================================================================
+
+//*************************************************************************************************
+/*! \cond BLAZE_INTERNAL */
+template< typename MT, bool AF, bool SO, typename T >
+struct DivTrait< SparseSubmatrix<MT,AF,SO>, T >
+{
+   typedef typename DivTrait< typename SubmatrixTrait<MT>::Type, T >::Type  Type;
+};
+
+template< typename T, typename MT, bool AF, bool TF >
+struct DivTrait< T, SparseSubmatrix<MT,AF,TF> >
+{
+   typedef typename DivTrait< T, typename SubmatrixTrait<MT>::Type >::Type  Type;
+};
+/*! \endcond */
+//*************************************************************************************************
+
+
+
+
+//=================================================================================================
+//
 //  SUBMATRIXTRAIT SPECIALIZATIONS
 //
 //=================================================================================================
