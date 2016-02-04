@@ -57,7 +57,12 @@
 #include <blaze/math/Intrinsics.h>
 #include <blaze/math/shims/Clear.h>
 #include <blaze/math/shims/IsDefault.h>
+#include <blaze/math/traits/AddTrait.h>
+#include <blaze/math/traits/CrossTrait.h>
 #include <blaze/math/traits/DerestrictTrait.h>
+#include <blaze/math/traits/DivTrait.h>
+#include <blaze/math/traits/MultTrait.h>
+#include <blaze/math/traits/SubTrait.h>
 #include <blaze/math/traits/SubvectorExprTrait.h>
 #include <blaze/math/traits/SubvectorTrait.h>
 #include <blaze/math/typetraits/HasConstDataAccess.h>
@@ -5366,6 +5371,131 @@ struct HasMutableDataAccess< DenseSubvector<VT,AF,TF> >
 template< typename VT, bool TF >
 struct IsAligned< DenseSubvector<VT,aligned,TF> > : public IsTrue<true>
 {};
+/*! \endcond */
+//*************************************************************************************************
+
+
+
+
+//=================================================================================================
+//
+//  ADDTRAIT SPECIALIZATIONS
+//
+//=================================================================================================
+
+//*************************************************************************************************
+/*! \cond BLAZE_INTERNAL */
+template< typename VT, bool AF, bool TF, typename T >
+struct AddTrait< DenseSubvector<VT,AF,TF>, T >
+{
+   typedef typename AddTrait< typename SubvectorTrait<VT>::Type, T >::Type  Type;
+};
+
+template< typename T, typename VT, bool AF, bool TF >
+struct AddTrait< T, DenseSubvector<VT,AF,TF> >
+{
+   typedef typename AddTrait< T, typename SubvectorTrait<VT>::Type >::Type  Type;
+};
+/*! \endcond */
+//*************************************************************************************************
+
+
+
+
+//=================================================================================================
+//
+//  SUBTRAIT SPECIALIZATIONS
+//
+//=================================================================================================
+
+//*************************************************************************************************
+/*! \cond BLAZE_INTERNAL */
+template< typename VT, bool AF, bool TF, typename T >
+struct SubTrait< DenseSubvector<VT,AF,TF>, T >
+{
+   typedef typename SubTrait< typename SubvectorTrait<VT>::Type, T >::Type  Type;
+};
+
+template< typename T, typename VT, bool AF, bool TF >
+struct SubTrait< T, DenseSubvector<VT,AF,TF> >
+{
+   typedef typename SubTrait< T, typename SubvectorTrait<VT>::Type >::Type  Type;
+};
+/*! \endcond */
+//*************************************************************************************************
+
+
+
+
+//=================================================================================================
+//
+//  MULTTRAIT SPECIALIZATIONS
+//
+//=================================================================================================
+
+//*************************************************************************************************
+/*! \cond BLAZE_INTERNAL */
+template< typename VT, bool AF, bool TF, typename T >
+struct MultTrait< DenseSubvector<VT,AF,TF>, T >
+{
+   typedef typename MultTrait< typename SubvectorTrait<VT>::Type, T >::Type  Type;
+};
+
+template< typename T, typename VT, bool AF, bool TF >
+struct MultTrait< T, DenseSubvector<VT,AF,TF> >
+{
+   typedef typename MultTrait< T, typename SubvectorTrait<VT>::Type >::Type  Type;
+};
+/*! \endcond */
+//*************************************************************************************************
+
+
+
+
+//=================================================================================================
+//
+//  CROSSTRAIT SPECIALIZATIONS
+//
+//=================================================================================================
+
+//*************************************************************************************************
+/*! \cond BLAZE_INTERNAL */
+template< typename VT, bool AF, bool TF, typename T >
+struct CrossTrait< DenseSubvector<VT,AF,TF>, T >
+{
+   typedef typename CrossTrait< typename SubvectorTrait<VT>::Type, T >::Type  Type;
+};
+
+template< typename T, typename VT, bool AF, bool TF >
+struct CrossTrait< T, DenseSubvector<VT,AF,TF> >
+{
+   typedef typename CrossTrait< T, typename SubvectorTrait<VT>::Type >::Type  Type;
+};
+/*! \endcond */
+//*************************************************************************************************
+
+
+
+
+//=================================================================================================
+//
+//  DIVTRAIT SPECIALIZATIONS
+//
+//=================================================================================================
+
+//*************************************************************************************************
+/*! \cond BLAZE_INTERNAL */
+template< typename VT, bool AF, bool TF, typename T >
+struct DivTrait< DenseSubvector<VT,AF,TF>, T >
+{
+   typedef typename DivTrait< typename SubvectorTrait<VT>::Type, T >::Type  Type;
+};
+
+template< typename T, typename VT, bool AF, bool TF >
+struct DivTrait< T, DenseSubvector<VT,AF,TF> >
+{
+   typedef typename DivTrait< T, typename SubvectorTrait<VT>::Type >::Type  Type;
+};
 /*! \endcond */
 //*************************************************************************************************
 
