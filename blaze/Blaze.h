@@ -8834,6 +8834,94 @@ namespace blaze {}
 // the elements below the diagonal, with the array \a tau, represent the orthogonal matrix \c Q as
 // a product of min(\a m,\a n) elementary reflectors.
 //
+// The following functions provide an interface for the LAPACK functions \c sorgqr(), \c dorgqr(),
+// \c cungqr(), and \c zunqqr(), which reconstruct the \c Q matrix from a QR decomposition:
+
+   \code
+   namespace blaze {
+
+   void orgqr( int m, int n, int k, float* A, int lda, const float* tau, float* work, int lwork, int* info );
+
+   void orgqr( int m, int n, int k, double* A, int lda, const double* tau, double* work, int lwork, int* info );
+
+   void ungqr( int m, int n, int k, complex<float>* A, int lda, const complex<float>* tau, complex<float>* work, int lwork, int* info );
+
+   void ungqr( int m, int n, int k, complex<double>* A, int lda, const complex<double>* tau, complex<double>* work, int lwork, int* info );
+
+   template< typename MT, bool SO >
+   void orgqr( DenseMatrix<MT,SO>& A, const typename MT::ElementType* tau );
+
+   template< typename MT, bool SO >
+   void ungqr( DenseMatrix<MT,SO>& A, const typename MT::ElementType* tau );
+
+   } // namespace blaze
+   \endcode
+
+// \n \subsection lapack_rq_decomposition RQ Decomposition
+//
+// The following functions provide an interface for the LAPACK functions \c sgerqf(), \c dgerqf(),
+// \c cgerqf(), and \c zgerqf(), which compute the RQ decomposition of the given general matrix:
+
+   \code
+   namespace blaze {
+
+   void gerqf( int m, int n, float* A, int lda, float* tau, float* work, int lwork, int* info );
+
+   void gerqf( int m, int n, double* A, int lda, double* tau, double* work, int lwork, int* info );
+
+   void gerqf( int m, int n, complex<float>* A, int lda, complex<float>* tau, complex<float>* work, int lwork, int* info );
+
+   void gerqf( int m, int n, complex<double>* A, int lda, complex<double>* tau, complex<double>* work, int lwork, int* info );
+
+   template< typename MT, bool SO >
+   void gerqf( DenseMatrix<MT,SO>& A, typename MT::ElementType* tau );
+
+   } // namespace blaze
+   \endcode
+
+// The decomposition has the form
+
+                              \f[ A = R \cdot Q, \f]
+
+// where the \c Q is represented as a product of elementary reflectors
+
+               \f[ Q = H(1) H(2) . . . H(k) \texttt{, with k = min(m,n).} \f]
+
+// Each H(i) has the form
+
+                      \f[ H(i) = I - tau \cdot v \cdot v^T, \f]
+
+// where \c tau is a real scalar, and \c v is a real vector with <tt>v(n-k+i+1:n) = 0</tt> and
+// <tt>v(n-k+i) = 1</tt>. <tt>v(1:n-k+i-1)</tt> is stored on exit in <tt>A(m-k+i,1:n-k+i-1)</tt>,
+// and \c tau in \c tau(i). Thus in case \a m <= \a n, the upper triangle of the subarray
+// A(1:m,n-m+1:n) contains the \a m-by-\a m upper triangular matrix \c R and in case \a m >= \a n,
+// the elements on and above the (\a m-\a n)-th subdiagonal contain the \a m-by-\a n upper
+// trapezoidal matrix \c R; the remaining elements in combination with the array \c tau represent
+// the orthogonal matrix \c Q as a product of min(\a m,\a n) elementary reflectors.
+//
+// The following functions provide an interface for the LAPACK functions \c sorgrq(), \c dorgrq(),
+// \c cungrq(), and \c zunqrq(), which reconstruct the \c Q matrix from a RQ decomposition:
+
+   \code
+   namespace blaze {
+
+   void orgrq( int m, int n, int k, float* A, int lda, const float* tau, float* work, int lwork, int* info );
+
+   void orgrq( int m, int n, int k, double* A, int lda, const double* tau, double* work, int lwork, int* info );
+
+   void ungrq( int m, int n, int k, complex<float>* A, int lda, const complex<float>* tau, complex<float>* work, int lwork, int* info );
+
+   void ungrq( int m, int n, int k, complex<double>* A, int lda, const complex<double>* tau, complex<double>* work, int lwork, int* info );
+
+   template< typename MT, bool SO >
+   void orgrq( DenseMatrix<MT,SO>& A, const typename MT::ElementType* tau );
+
+   template< typename MT, bool SO >
+   void ungrq( DenseMatrix<MT,SO>& A, const typename MT::ElementType* tau );
+
+   } // namespace blaze
+   \endcode
+//
 //
 // \n \section lapack_inversion Matrix Inversion
 // <hr>
