@@ -161,6 +161,10 @@ void DenseQRTest::testRandom()
       oss << " Test: " << test_ << "\n"
           << " Error: QR decomposition failed\n"
           << " Details:\n"
+          << "   Matrix type:\n"
+          << "     " << typeid( Type ).name() << "\n"
+          << "   Element type:\n"
+          << "     " << typeid( typename Type::ElementType ).name() << "\n"
           << "   Result:\n" << QR << "\n"
           << "   Expected result:\n" << A << "\n";
       throw std::runtime_error( oss.str() );
