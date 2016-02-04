@@ -5776,6 +5776,131 @@ struct IsPadded< DenseColumn<MT,SO,SF> >
 
 //=================================================================================================
 //
+//  ADDTRAIT SPECIALIZATIONS
+//
+//=================================================================================================
+
+//*************************************************************************************************
+/*! \cond BLAZE_INTERNAL */
+template< typename MT, bool SO, bool SF, typename T >
+struct AddTrait< DenseColumn<MT,SO,SF>, T >
+{
+   typedef typename AddTrait< typename ColumnTrait<MT>::Type, T >::Type  Type;
+};
+
+template< typename T, typename MT, bool SO, bool SF >
+struct AddTrait< T, DenseColumn<MT,SO,SF> >
+{
+   typedef typename AddTrait< T, typename ColumnTrait<MT>::Type >::Type  Type;
+};
+/*! \endcond */
+//*************************************************************************************************
+
+
+
+
+//=================================================================================================
+//
+//  SUBTRAIT SPECIALIZATIONS
+//
+//=================================================================================================
+
+//*************************************************************************************************
+/*! \cond BLAZE_INTERNAL */
+template< typename MT, bool SO, bool SF, typename T >
+struct SubTrait< DenseColumn<MT,SO,SF>, T >
+{
+   typedef typename SubTrait< typename ColumnTrait<MT>::Type, T >::Type  Type;
+};
+
+template< typename T, typename MT, bool SO, bool SF >
+struct SubTrait< T, DenseColumn<MT,SO,SF> >
+{
+   typedef typename SubTrait< T, typename ColumnTrait<MT>::Type >::Type  Type;
+};
+/*! \endcond */
+//*************************************************************************************************
+
+
+
+
+//=================================================================================================
+//
+//  MULTTRAIT SPECIALIZATIONS
+//
+//=================================================================================================
+
+//*************************************************************************************************
+/*! \cond BLAZE_INTERNAL */
+template< typename MT, bool SO, bool SF, typename T >
+struct MultTrait< DenseColumn<MT,SO,SF>, T >
+{
+   typedef typename MultTrait< typename ColumnTrait<MT>::Type, T >::Type  Type;
+};
+
+template< typename T, typename MT, bool SO, bool SF >
+struct MultTrait< T, DenseColumn<MT,SO,SF> >
+{
+   typedef typename MultTrait< T, typename ColumnTrait<MT>::Type >::Type  Type;
+};
+/*! \endcond */
+//*************************************************************************************************
+
+
+
+
+//=================================================================================================
+//
+//  CROSSTRAIT SPECIALIZATIONS
+//
+//=================================================================================================
+
+//*************************************************************************************************
+/*! \cond BLAZE_INTERNAL */
+template< typename MT, bool SO, bool SF, typename T >
+struct CrossTrait< DenseColumn<MT,SO,SF>, T >
+{
+   typedef typename CrossTrait< typename ColumnTrait<MT>::Type, T >::Type  Type;
+};
+
+template< typename T, typename MT, bool SO, bool SF >
+struct CrossTrait< T, DenseColumn<MT,SO,SF> >
+{
+   typedef typename CrossTrait< T, typename ColumnTrait<MT>::Type >::Type  Type;
+};
+/*! \endcond */
+//*************************************************************************************************
+
+
+
+
+//=================================================================================================
+//
+//  DIVTRAIT SPECIALIZATIONS
+//
+//=================================================================================================
+
+//*************************************************************************************************
+/*! \cond BLAZE_INTERNAL */
+template< typename MT, bool SO, bool SF, typename T >
+struct DivTrait< DenseColumn<MT,SO,SF>, T >
+{
+   typedef typename DivTrait< typename ColumnTrait<MT>::Type, T >::Type  Type;
+};
+
+template< typename T, typename MT, bool SO, bool SF >
+struct DivTrait< T, DenseColumn<MT,SO,SF> >
+{
+   typedef typename DivTrait< T, typename ColumnTrait<MT>::Type >::Type  Type;
+};
+/*! \endcond */
+//*************************************************************************************************
+
+
+
+
+//=================================================================================================
+//
 //  SUBVECTORTRAIT SPECIALIZATIONS
 //
 //=================================================================================================
