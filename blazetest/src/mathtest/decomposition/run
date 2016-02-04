@@ -40,3 +40,4 @@ echo " Running decomposition tests..."
 EXE=$PATH_DECOMPOSITION/DenseLUTest;  if [ -x $EXE ]; then $EXE; if [ $? != 0 ]; then exit 1; fi fi
 EXE=$PATH_DECOMPOSITION/DenseLLHTest; if [ -x $EXE ]; then $EXE; if [ $? != 0 ]; then exit 1; fi fi
 EXE=$PATH_DECOMPOSITION/DenseQRTest;  if [ -x $EXE ]; then $EXE; if [ $? != 0 ]; then exit 1; fi fi
+EXE=$PATH_DECOMPOSITION/DenseRQTest;  if [ -x $EXE ]; then $EXE; if [ $? != 0 ]; then exit 1; fi fi

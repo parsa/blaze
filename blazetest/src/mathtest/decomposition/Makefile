@@ -60,6 +60,8 @@ DenseLLHTest: DenseLLHTest.o
 	@$(CXX) $(CXXFLAGS) -o $@ $< $(LIBRARIES)
 DenseQRTest: DenseQRTest.o
 	@$(CXX) $(CXXFLAGS) -o $@ $< $(LIBRARIES)
+DenseRQTest: DenseRQTest.o
+	@$(CXX) $(CXXFLAGS) -o $@ $< $(LIBRARIES)
 
 
 # Cleanup
