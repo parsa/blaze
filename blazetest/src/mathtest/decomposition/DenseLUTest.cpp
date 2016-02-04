@@ -100,14 +100,16 @@ DenseLUTest::DenseLUTest()
 */
 void DenseLUTest::testGeneral()
 {
-   testRandom< blaze::DynamicMatrix<float  ,blaze::rowMajor> >();
-   testRandom< blaze::DynamicMatrix<double ,blaze::rowMajor> >();
-   testRandom< blaze::DynamicMatrix<cfloat ,blaze::rowMajor> >();
-   testRandom< blaze::DynamicMatrix<cdouble,blaze::rowMajor> >();
+   //testRandom< blaze::DynamicMatrix<float,blaze::rowMajor   > >();
+   //testRandom< blaze::DynamicMatrix<float,blaze::columnMajor> >();
 
-   testRandom< blaze::DynamicMatrix<float  ,blaze::columnMajor> >();
-   testRandom< blaze::DynamicMatrix<double ,blaze::columnMajor> >();
-   testRandom< blaze::DynamicMatrix<cfloat ,blaze::columnMajor> >();
+   testRandom< blaze::DynamicMatrix<double,blaze::rowMajor   > >();
+   testRandom< blaze::DynamicMatrix<double,blaze::columnMajor> >();
+
+   //testRandom< blaze::DynamicMatrix<cfloat,blaze::rowMajor   > >();
+   //testRandom< blaze::DynamicMatrix<cfloat,blaze::columnMajor> >();
+
+   testRandom< blaze::DynamicMatrix<cdouble,blaze::rowMajor   > >();
    testRandom< blaze::DynamicMatrix<cdouble,blaze::columnMajor> >();
 }
 //*************************************************************************************************
@@ -124,14 +126,16 @@ void DenseLUTest::testGeneral()
 */
 void DenseLUTest::testSymmetric()
 {
-   testRandom< blaze::SymmetricMatrix< blaze::DynamicMatrix<float  ,blaze::rowMajor> > >();
-   testRandom< blaze::SymmetricMatrix< blaze::DynamicMatrix<double ,blaze::rowMajor> > >();
-   testRandom< blaze::SymmetricMatrix< blaze::DynamicMatrix<cfloat ,blaze::rowMajor> > >();
-   testRandom< blaze::SymmetricMatrix< blaze::DynamicMatrix<cdouble,blaze::rowMajor> > >();
+   //testRandom< blaze::SymmetricMatrix< blaze::DynamicMatrix<float,blaze::rowMajor   > > >();
+   //testRandom< blaze::SymmetricMatrix< blaze::DynamicMatrix<float,blaze::columnMajor> > >();
 
-   testRandom< blaze::SymmetricMatrix< blaze::DynamicMatrix<float  ,blaze::columnMajor> > >();
-   testRandom< blaze::SymmetricMatrix< blaze::DynamicMatrix<double ,blaze::columnMajor> > >();
-   testRandom< blaze::SymmetricMatrix< blaze::DynamicMatrix<cfloat ,blaze::columnMajor> > >();
+   testRandom< blaze::SymmetricMatrix< blaze::DynamicMatrix<double,blaze::rowMajor   > > >();
+   testRandom< blaze::SymmetricMatrix< blaze::DynamicMatrix<double,blaze::columnMajor> > >();
+
+   //testRandom< blaze::SymmetricMatrix< blaze::DynamicMatrix<cfloat,blaze::rowMajor   > > >();
+   //testRandom< blaze::SymmetricMatrix< blaze::DynamicMatrix<cfloat,blaze::columnMajor> > >();
+
+   testRandom< blaze::SymmetricMatrix< blaze::DynamicMatrix<cdouble,blaze::rowMajor   > > >();
    testRandom< blaze::SymmetricMatrix< blaze::DynamicMatrix<cdouble,blaze::columnMajor> > >();
 }
 //*************************************************************************************************
@@ -148,14 +152,16 @@ void DenseLUTest::testSymmetric()
 */
 void DenseLUTest::testHermitian()
 {
-   testRandom< blaze::HermitianMatrix< blaze::DynamicMatrix<float  ,blaze::rowMajor> > >();
-   testRandom< blaze::HermitianMatrix< blaze::DynamicMatrix<double ,blaze::rowMajor> > >();
-   testRandom< blaze::HermitianMatrix< blaze::DynamicMatrix<cfloat ,blaze::rowMajor> > >();
-   testRandom< blaze::HermitianMatrix< blaze::DynamicMatrix<cdouble,blaze::rowMajor> > >();
+   //testRandom< blaze::HermitianMatrix< blaze::DynamicMatrix<float,blaze::rowMajor   > > >();
+   //testRandom< blaze::HermitianMatrix< blaze::DynamicMatrix<float,blaze::columnMajor> > >();
 
-   testRandom< blaze::HermitianMatrix< blaze::DynamicMatrix<float  ,blaze::columnMajor> > >();
-   testRandom< blaze::HermitianMatrix< blaze::DynamicMatrix<double ,blaze::columnMajor> > >();
-   testRandom< blaze::HermitianMatrix< blaze::DynamicMatrix<cfloat ,blaze::columnMajor> > >();
+   testRandom< blaze::HermitianMatrix< blaze::DynamicMatrix<double,blaze::rowMajor   > > >();
+   testRandom< blaze::HermitianMatrix< blaze::DynamicMatrix<double,blaze::columnMajor> > >();
+
+   //testRandom< blaze::HermitianMatrix< blaze::DynamicMatrix<cfloat,blaze::rowMajor   > > >();
+   //testRandom< blaze::HermitianMatrix< blaze::DynamicMatrix<cfloat,blaze::columnMajor> > >();
+
+   testRandom< blaze::HermitianMatrix< blaze::DynamicMatrix<cdouble,blaze::rowMajor   > > >();
    testRandom< blaze::HermitianMatrix< blaze::DynamicMatrix<cdouble,blaze::columnMajor> > >();
 }
 //*************************************************************************************************
@@ -172,14 +178,16 @@ void DenseLUTest::testHermitian()
 */
 void DenseLUTest::testLower()
 {
-   testRandom< blaze::LowerMatrix< blaze::DynamicMatrix<float  ,blaze::rowMajor> > >();
-   testRandom< blaze::LowerMatrix< blaze::DynamicMatrix<double ,blaze::rowMajor> > >();
-   testRandom< blaze::LowerMatrix< blaze::DynamicMatrix<cfloat ,blaze::rowMajor> > >();
-   testRandom< blaze::LowerMatrix< blaze::DynamicMatrix<cdouble,blaze::rowMajor> > >();
+   //testRandom< blaze::LowerMatrix< blaze::DynamicMatrix<float,blaze::rowMajor   > > >();
+   //testRandom< blaze::LowerMatrix< blaze::DynamicMatrix<float,blaze::columnMajor> > >();
 
-   testRandom< blaze::LowerMatrix< blaze::DynamicMatrix<float  ,blaze::columnMajor> > >();
-   testRandom< blaze::LowerMatrix< blaze::DynamicMatrix<double ,blaze::columnMajor> > >();
-   testRandom< blaze::LowerMatrix< blaze::DynamicMatrix<cfloat ,blaze::columnMajor> > >();
+   testRandom< blaze::LowerMatrix< blaze::DynamicMatrix<double,blaze::rowMajor   > > >();
+   testRandom< blaze::LowerMatrix< blaze::DynamicMatrix<double,blaze::columnMajor> > >();
+
+   //testRandom< blaze::LowerMatrix< blaze::DynamicMatrix<cfloat,blaze::rowMajor   > > >();
+   //testRandom< blaze::LowerMatrix< blaze::DynamicMatrix<cfloat,blaze::columnMajor> > >();
+
+   testRandom< blaze::LowerMatrix< blaze::DynamicMatrix<cdouble,blaze::rowMajor   > > >();
    testRandom< blaze::LowerMatrix< blaze::DynamicMatrix<cdouble,blaze::columnMajor> > >();
 }
 //*************************************************************************************************
@@ -196,14 +204,16 @@ void DenseLUTest::testLower()
 */
 void DenseLUTest::testUniLower()
 {
-   testRandom< blaze::UniLowerMatrix< blaze::DynamicMatrix<float  ,blaze::rowMajor> > >();
-   testRandom< blaze::UniLowerMatrix< blaze::DynamicMatrix<double ,blaze::rowMajor> > >();
-   testRandom< blaze::UniLowerMatrix< blaze::DynamicMatrix<cfloat ,blaze::rowMajor> > >();
-   testRandom< blaze::UniLowerMatrix< blaze::DynamicMatrix<cdouble,blaze::rowMajor> > >();
+   //testRandom< blaze::UniLowerMatrix< blaze::DynamicMatrix<float,blaze::rowMajor   > > >();
+   //testRandom< blaze::UniLowerMatrix< blaze::DynamicMatrix<float,blaze::columnMajor> > >();
 
-   testRandom< blaze::UniLowerMatrix< blaze::DynamicMatrix<float  ,blaze::columnMajor> > >();
-   testRandom< blaze::UniLowerMatrix< blaze::DynamicMatrix<double ,blaze::columnMajor> > >();
-   testRandom< blaze::UniLowerMatrix< blaze::DynamicMatrix<cfloat ,blaze::columnMajor> > >();
+   testRandom< blaze::UniLowerMatrix< blaze::DynamicMatrix<double,blaze::rowMajor   > > >();
+   testRandom< blaze::UniLowerMatrix< blaze::DynamicMatrix<double,blaze::columnMajor> > >();
+
+   //testRandom< blaze::UniLowerMatrix< blaze::DynamicMatrix<cfloat,blaze::rowMajor   > > >();
+   //testRandom< blaze::UniLowerMatrix< blaze::DynamicMatrix<cfloat,blaze::columnMajor> > >();
+
+   testRandom< blaze::UniLowerMatrix< blaze::DynamicMatrix<cdouble,blaze::rowMajor   > > >();
    testRandom< blaze::UniLowerMatrix< blaze::DynamicMatrix<cdouble,blaze::columnMajor> > >();
 }
 //*************************************************************************************************
@@ -220,14 +230,16 @@ void DenseLUTest::testUniLower()
 */
 void DenseLUTest::testUpper()
 {
-   testRandom< blaze::UpperMatrix< blaze::DynamicMatrix<float  ,blaze::rowMajor> > >();
-   testRandom< blaze::UpperMatrix< blaze::DynamicMatrix<double ,blaze::rowMajor> > >();
-   testRandom< blaze::UpperMatrix< blaze::DynamicMatrix<cfloat ,blaze::rowMajor> > >();
-   testRandom< blaze::UpperMatrix< blaze::DynamicMatrix<cdouble,blaze::rowMajor> > >();
+   //testRandom< blaze::UpperMatrix< blaze::DynamicMatrix<float,blaze::rowMajor   > > >();
+   //testRandom< blaze::UpperMatrix< blaze::DynamicMatrix<float,blaze::columnMajor> > >();
 
-   testRandom< blaze::UpperMatrix< blaze::DynamicMatrix<float  ,blaze::columnMajor> > >();
-   testRandom< blaze::UpperMatrix< blaze::DynamicMatrix<double ,blaze::columnMajor> > >();
-   testRandom< blaze::UpperMatrix< blaze::DynamicMatrix<cfloat ,blaze::columnMajor> > >();
+   testRandom< blaze::UpperMatrix< blaze::DynamicMatrix<double,blaze::rowMajor   > > >();
+   testRandom< blaze::UpperMatrix< blaze::DynamicMatrix<double,blaze::columnMajor> > >();
+
+   //testRandom< blaze::UpperMatrix< blaze::DynamicMatrix<cfloat,blaze::rowMajor   > > >();
+   //testRandom< blaze::UpperMatrix< blaze::DynamicMatrix<cfloat,blaze::columnMajor> > >();
+
+   testRandom< blaze::UpperMatrix< blaze::DynamicMatrix<cdouble,blaze::rowMajor   > > >();
    testRandom< blaze::UpperMatrix< blaze::DynamicMatrix<cdouble,blaze::columnMajor> > >();
 }
 //*************************************************************************************************
@@ -244,14 +256,16 @@ void DenseLUTest::testUpper()
 */
 void DenseLUTest::testUniUpper()
 {
-   testRandom< blaze::UniUpperMatrix< blaze::DynamicMatrix<float  ,blaze::rowMajor> > >();
-   testRandom< blaze::UniUpperMatrix< blaze::DynamicMatrix<double ,blaze::rowMajor> > >();
-   testRandom< blaze::UniUpperMatrix< blaze::DynamicMatrix<cfloat ,blaze::rowMajor> > >();
-   testRandom< blaze::UniUpperMatrix< blaze::DynamicMatrix<cdouble,blaze::rowMajor> > >();
+   //testRandom< blaze::UniUpperMatrix< blaze::DynamicMatrix<float,blaze::rowMajor   > > >();
+   //testRandom< blaze::UniUpperMatrix< blaze::DynamicMatrix<float,blaze::columnMajor> > >();
 
-   testRandom< blaze::UniUpperMatrix< blaze::DynamicMatrix<float  ,blaze::columnMajor> > >();
-   testRandom< blaze::UniUpperMatrix< blaze::DynamicMatrix<double ,blaze::columnMajor> > >();
-   testRandom< blaze::UniUpperMatrix< blaze::DynamicMatrix<cfloat ,blaze::columnMajor> > >();
+   testRandom< blaze::UniUpperMatrix< blaze::DynamicMatrix<double,blaze::rowMajor   > > >();
+   testRandom< blaze::UniUpperMatrix< blaze::DynamicMatrix<double,blaze::columnMajor> > >();
+
+   //testRandom< blaze::UniUpperMatrix< blaze::DynamicMatrix<cfloat,blaze::rowMajor   > > >();
+   //testRandom< blaze::UniUpperMatrix< blaze::DynamicMatrix<cfloat,blaze::columnMajor> > >();
+
+   testRandom< blaze::UniUpperMatrix< blaze::DynamicMatrix<cdouble,blaze::rowMajor   > > >();
    testRandom< blaze::UniUpperMatrix< blaze::DynamicMatrix<cdouble,blaze::columnMajor> > >();
 }
 //*************************************************************************************************
@@ -268,14 +282,16 @@ void DenseLUTest::testUniUpper()
 */
 void DenseLUTest::testDiagonal()
 {
-   testRandom< blaze::DiagonalMatrix< blaze::DynamicMatrix<float  ,blaze::rowMajor> > >();
-   testRandom< blaze::DiagonalMatrix< blaze::DynamicMatrix<double ,blaze::rowMajor> > >();
-   testRandom< blaze::DiagonalMatrix< blaze::DynamicMatrix<cfloat ,blaze::rowMajor> > >();
-   testRandom< blaze::DiagonalMatrix< blaze::DynamicMatrix<cdouble,blaze::rowMajor> > >();
+   //testRandom< blaze::DiagonalMatrix< blaze::DynamicMatrix<float,blaze::rowMajor   > > >();
+   //testRandom< blaze::DiagonalMatrix< blaze::DynamicMatrix<float,blaze::columnMajor> > >();
 
-   testRandom< blaze::DiagonalMatrix< blaze::DynamicMatrix<float  ,blaze::columnMajor> > >();
-   testRandom< blaze::DiagonalMatrix< blaze::DynamicMatrix<double ,blaze::columnMajor> > >();
-   testRandom< blaze::DiagonalMatrix< blaze::DynamicMatrix<cfloat ,blaze::columnMajor> > >();
+   testRandom< blaze::DiagonalMatrix< blaze::DynamicMatrix<double,blaze::rowMajor   > > >();
+   testRandom< blaze::DiagonalMatrix< blaze::DynamicMatrix<double,blaze::columnMajor> > >();
+
+   //testRandom< blaze::DiagonalMatrix< blaze::DynamicMatrix<cfloat,blaze::rowMajor   > > >();
+   //testRandom< blaze::DiagonalMatrix< blaze::DynamicMatrix<cfloat,blaze::columnMajor> > >();
+
+   testRandom< blaze::DiagonalMatrix< blaze::DynamicMatrix<cdouble,blaze::rowMajor   > > >();
    testRandom< blaze::DiagonalMatrix< blaze::DynamicMatrix<cdouble,blaze::columnMajor> > >();
 }
 //*************************************************************************************************
