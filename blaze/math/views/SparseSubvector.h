@@ -55,6 +55,7 @@
 #include <blaze/math/shims/Serial.h>
 #include <blaze/math/sparse/SparseElement.h>
 #include <blaze/math/traits/AddTrait.h>
+#include <blaze/math/traits/CrossTrait.h>
 #include <blaze/math/traits/DerestrictTrait.h>
 #include <blaze/math/traits/DivTrait.h>
 #include <blaze/math/traits/MultTrait.h>
@@ -2521,6 +2522,131 @@ template< typename VT, bool AF, bool TF >
 struct DerestrictTrait< SparseSubvector<VT,AF,TF> >
 {
    typedef SparseSubvector< typename RemoveReference< typename DerestrictTrait<VT>::Type >::Type, AF, TF >  Type;
+};
+/*! \endcond */
+//*************************************************************************************************
+
+
+
+
+//=================================================================================================
+//
+//  ADDTRAIT SPECIALIZATIONS
+//
+//=================================================================================================
+
+//*************************************************************************************************
+/*! \cond BLAZE_INTERNAL */
+template< typename VT, bool AF, bool TF, typename T >
+struct AddTrait< SparseSubvector<VT,AF,TF>, T >
+{
+   typedef typename AddTrait< typename SubvectorTrait<VT>::Type, T >::Type  Type;
+};
+
+template< typename T, typename VT, bool AF, bool TF >
+struct AddTrait< T, SparseSubvector<VT,AF,TF> >
+{
+   typedef typename AddTrait< T, typename SubvectorTrait<VT>::Type >::Type  Type;
+};
+/*! \endcond */
+//*************************************************************************************************
+
+
+
+
+//=================================================================================================
+//
+//  SUBTRAIT SPECIALIZATIONS
+//
+//=================================================================================================
+
+//*************************************************************************************************
+/*! \cond BLAZE_INTERNAL */
+template< typename VT, bool AF, bool TF, typename T >
+struct SubTrait< SparseSubvector<VT,AF,TF>, T >
+{
+   typedef typename SubTrait< typename SubvectorTrait<VT>::Type, T >::Type  Type;
+};
+
+template< typename T, typename VT, bool AF, bool TF >
+struct SubTrait< T, SparseSubvector<VT,AF,TF> >
+{
+   typedef typename SubTrait< T, typename SubvectorTrait<VT>::Type >::Type  Type;
+};
+/*! \endcond */
+//*************************************************************************************************
+
+
+
+
+//=================================================================================================
+//
+//  MULTTRAIT SPECIALIZATIONS
+//
+//=================================================================================================
+
+//*************************************************************************************************
+/*! \cond BLAZE_INTERNAL */
+template< typename VT, bool AF, bool TF, typename T >
+struct MultTrait< SparseSubvector<VT,AF,TF>, T >
+{
+   typedef typename MultTrait< typename SubvectorTrait<VT>::Type, T >::Type  Type;
+};
+
+template< typename T, typename VT, bool AF, bool TF >
+struct MultTrait< T, SparseSubvector<VT,AF,TF> >
+{
+   typedef typename MultTrait< T, typename SubvectorTrait<VT>::Type >::Type  Type;
+};
+/*! \endcond */
+//*************************************************************************************************
+
+
+
+
+//=================================================================================================
+//
+//  CROSSTRAIT SPECIALIZATIONS
+//
+//=================================================================================================
+
+//*************************************************************************************************
+/*! \cond BLAZE_INTERNAL */
+template< typename VT, bool AF, bool TF, typename T >
+struct CrossTrait< SparseSubvector<VT,AF,TF>, T >
+{
+   typedef typename CrossTrait< typename SubvectorTrait<VT>::Type, T >::Type  Type;
+};
+
+template< typename T, typename VT, bool AF, bool TF >
+struct CrossTrait< T, SparseSubvector<VT,AF,TF> >
+{
+   typedef typename CrossTrait< T, typename SubvectorTrait<VT>::Type >::Type  Type;
+};
+/*! \endcond */
+//*************************************************************************************************
+
+
+
+
+//=================================================================================================
+//
+//  DIVTRAIT SPECIALIZATIONS
+//
+//=================================================================================================
+
+//*************************************************************************************************
+/*! \cond BLAZE_INTERNAL */
+template< typename VT, bool AF, bool TF, typename T >
+struct DivTrait< SparseSubvector<VT,AF,TF>, T >
+{
+   typedef typename DivTrait< typename SubvectorTrait<VT>::Type, T >::Type  Type;
+};
+
+template< typename T, typename VT, bool AF, bool TF >
+struct DivTrait< T, SparseSubvector<VT,AF,TF> >
+{
+   typedef typename DivTrait< T, typename SubvectorTrait<VT>::Type >::Type  Type;
 };
 /*! \endcond */
 //*************************************************************************************************
