@@ -60,6 +60,7 @@
 #include <blaze/math/shims/Serial.h>
 #include <blaze/math/sparse/SparseElement.h>
 #include <blaze/math/traits/AddTrait.h>
+#include <blaze/math/traits/CrossTrait.h>
 #include <blaze/math/traits/DerestrictTrait.h>
 #include <blaze/math/traits/DivTrait.h>
 #include <blaze/math/traits/MultTrait.h>
@@ -5550,6 +5551,131 @@ template< typename MT, bool SO, bool SF >
 struct DerestrictTrait< SparseRow<MT,SO,SF> >
 {
    typedef SparseRow< typename RemoveReference< typename DerestrictTrait<MT>::Type >::Type >  Type;
+};
+/*! \endcond */
+//*************************************************************************************************
+
+
+
+
+//=================================================================================================
+//
+//  ADDTRAIT SPECIALIZATIONS
+//
+//=================================================================================================
+
+//*************************************************************************************************
+/*! \cond BLAZE_INTERNAL */
+template< typename MT, bool SO, bool SF, typename T >
+struct AddTrait< SparseRow<MT,SO,SF>, T >
+{
+   typedef typename AddTrait< typename RowTrait<MT>::Type, T >::Type  Type;
+};
+
+template< typename T, typename MT, bool SO, bool SF >
+struct AddTrait< T, SparseRow<MT,SO,SF> >
+{
+   typedef typename AddTrait< T, typename RowTrait<MT>::Type >::Type  Type;
+};
+/*! \endcond */
+//*************************************************************************************************
+
+
+
+
+//=================================================================================================
+//
+//  SUBTRAIT SPECIALIZATIONS
+//
+//=================================================================================================
+
+//*************************************************************************************************
+/*! \cond BLAZE_INTERNAL */
+template< typename MT, bool SO, bool SF, typename T >
+struct SubTrait< SparseRow<MT,SO,SF>, T >
+{
+   typedef typename SubTrait< typename RowTrait<MT>::Type, T >::Type  Type;
+};
+
+template< typename T, typename MT, bool SO, bool SF >
+struct SubTrait< T, SparseRow<MT,SO,SF> >
+{
+   typedef typename SubTrait< T, typename RowTrait<MT>::Type >::Type  Type;
+};
+/*! \endcond */
+//*************************************************************************************************
+
+
+
+
+//=================================================================================================
+//
+//  MULTTRAIT SPECIALIZATIONS
+//
+//=================================================================================================
+
+//*************************************************************************************************
+/*! \cond BLAZE_INTERNAL */
+template< typename MT, bool SO, bool SF, typename T >
+struct MultTrait< SparseRow<MT,SO,SF>, T >
+{
+   typedef typename MultTrait< typename RowTrait<MT>::Type, T >::Type  Type;
+};
+
+template< typename T, typename MT, bool SO, bool SF >
+struct MultTrait< T, SparseRow<MT,SO,SF> >
+{
+   typedef typename MultTrait< T, typename RowTrait<MT>::Type >::Type  Type;
+};
+/*! \endcond */
+//*************************************************************************************************
+
+
+
+
+//=================================================================================================
+//
+//  CROSSTRAIT SPECIALIZATIONS
+//
+//=================================================================================================
+
+//*************************************************************************************************
+/*! \cond BLAZE_INTERNAL */
+template< typename MT, bool SO, bool SF, typename T >
+struct CrossTrait< SparseRow<MT,SO,SF>, T >
+{
+   typedef typename CrossTrait< typename RowTrait<MT>::Type, T >::Type  Type;
+};
+
+template< typename T, typename MT, bool SO, bool SF >
+struct CrossTrait< T, SparseRow<MT,SO,SF> >
+{
+   typedef typename CrossTrait< T, typename RowTrait<MT>::Type >::Type  Type;
+};
+/*! \endcond */
+//*************************************************************************************************
+
+
+
+
+//=================================================================================================
+//
+//  DIVTRAIT SPECIALIZATIONS
+//
+//=================================================================================================
+
+//*************************************************************************************************
+/*! \cond BLAZE_INTERNAL */
+template< typename MT, bool SO, bool SF, typename T >
+struct DivTrait< SparseRow<MT,SO,SF>, T >
+{
+   typedef typename DivTrait< typename RowTrait<MT>::Type, T >::Type  Type;
+};
+
+template< typename T, typename MT, bool SO, bool SF >
+struct DivTrait< T, SparseRow<MT,SO,SF> >
+{
+   typedef typename DivTrait< T, typename RowTrait<MT>::Type >::Type  Type;
 };
 /*! \endcond */
 //*************************************************************************************************
