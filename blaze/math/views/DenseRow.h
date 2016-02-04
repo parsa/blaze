@@ -56,9 +56,13 @@
 #include <blaze/math/Intrinsics.h>
 #include <blaze/math/shims/Clear.h>
 #include <blaze/math/shims/IsDefault.h>
+#include <blaze/math/traits/AddTrait.h>
+#include <blaze/math/traits/CrossTrait.h>
 #include <blaze/math/traits/DerestrictTrait.h>
 #include <blaze/math/traits/DivTrait.h>
+#include <blaze/math/traits/MultTrait.h>
 #include <blaze/math/traits/RowTrait.h>
+#include <blaze/math/traits/SubTrait.h>
 #include <blaze/math/traits/SubvectorTrait.h>
 #include <blaze/math/typetraits/HasConstDataAccess.h>
 #include <blaze/math/typetraits/HasMutableDataAccess.h>
@@ -5751,6 +5755,131 @@ template< typename MT, bool SO, bool SF >
 struct IsPadded< DenseRow<MT,SO,SF> >
    : public IsTrue< And< IsPadded<MT>, Or< IsRowMajorMatrix<MT>, IsSymmetric<MT> > >::value >
 {};
+/*! \endcond */
+//*************************************************************************************************
+
+
+
+
+//=================================================================================================
+//
+//  ADDTRAIT SPECIALIZATIONS
+//
+//=================================================================================================
+
+//*************************************************************************************************
+/*! \cond BLAZE_INTERNAL */
+template< typename MT, bool SO, bool SF, typename T >
+struct AddTrait< DenseRow<MT,SO,SF>, T >
+{
+   typedef typename AddTrait< typename RowTrait<MT>::Type, T >::Type  Type;
+};
+
+template< typename T, typename MT, bool SO, bool SF >
+struct AddTrait< T, DenseRow<MT,SO,SF> >
+{
+   typedef typename AddTrait< T, typename RowTrait<MT>::Type >::Type  Type;
+};
+/*! \endcond */
+//*************************************************************************************************
+
+
+
+
+//=================================================================================================
+//
+//  SUBTRAIT SPECIALIZATIONS
+//
+//=================================================================================================
+
+//*************************************************************************************************
+/*! \cond BLAZE_INTERNAL */
+template< typename MT, bool SO, bool SF, typename T >
+struct SubTrait< DenseRow<MT,SO,SF>, T >
+{
+   typedef typename SubTrait< typename RowTrait<MT>::Type, T >::Type  Type;
+};
+
+template< typename T, typename MT, bool SO, bool SF >
+struct SubTrait< T, DenseRow<MT,SO,SF> >
+{
+   typedef typename SubTrait< T, typename RowTrait<MT>::Type >::Type  Type;
+};
+/*! \endcond */
+//*************************************************************************************************
+
+
+
+
+//=================================================================================================
+//
+//  MULTTRAIT SPECIALIZATIONS
+//
+//=================================================================================================
+
+//*************************************************************************************************
+/*! \cond BLAZE_INTERNAL */
+template< typename MT, bool SO, bool SF, typename T >
+struct MultTrait< DenseRow<MT,SO,SF>, T >
+{
+   typedef typename MultTrait< typename RowTrait<MT>::Type, T >::Type  Type;
+};
+
+template< typename T, typename MT, bool SO, bool SF >
+struct MultTrait< T, DenseRow<MT,SO,SF> >
+{
+   typedef typename MultTrait< T, typename RowTrait<MT>::Type >::Type  Type;
+};
+/*! \endcond */
+//*************************************************************************************************
+
+
+
+
+//=================================================================================================
+//
+//  CROSSTRAIT SPECIALIZATIONS
+//
+//=================================================================================================
+
+//*************************************************************************************************
+/*! \cond BLAZE_INTERNAL */
+template< typename MT, bool SO, bool SF, typename T >
+struct CrossTrait< DenseRow<MT,SO,SF>, T >
+{
+   typedef typename CrossTrait< typename RowTrait<MT>::Type, T >::Type  Type;
+};
+
+template< typename T, typename MT, bool SO, bool SF >
+struct CrossTrait< T, DenseRow<MT,SO,SF> >
+{
+   typedef typename CrossTrait< T, typename RowTrait<MT>::Type >::Type  Type;
+};
+/*! \endcond */
+//*************************************************************************************************
+
+
+
+
+//=================================================================================================
+//
+//  DIVTRAIT SPECIALIZATIONS
+//
+//=================================================================================================
+
+//*************************************************************************************************
+/*! \cond BLAZE_INTERNAL */
+template< typename MT, bool SO, bool SF, typename T >
+struct DivTrait< DenseRow<MT,SO,SF>, T >
+{
+   typedef typename DivTrait< typename RowTrait<MT>::Type, T >::Type  Type;
+};
+
+template< typename T, typename MT, bool SO, bool SF >
+struct DivTrait< T, DenseRow<MT,SO,SF> >
+{
+   typedef typename DivTrait< T, typename RowTrait<MT>::Type >::Type  Type;
+};
 /*! \endcond */
 //*************************************************************************************************
 
