@@ -43,6 +43,7 @@
 #include <blaze/math/expressions/Forward.h>
 #include <blaze/math/traits/DivTrait.h>
 #include <blaze/math/typetraits/IsDenseVector.h>
+#include <blaze/math/typetraits/IsInvertible.h>
 #include <blaze/math/typetraits/IsRowVector.h>
 #include <blaze/math/typetraits/UnderlyingBuiltin.h>
 #include <blaze/math/typetraits/UnderlyingNumeric.h>
@@ -53,7 +54,6 @@
 #include <blaze/util/typetraits/IsBuiltin.h>
 #include <blaze/util/typetraits/IsComplex.h>
 #include <blaze/util/typetraits/IsConst.h>
-#include <blaze/util/typetraits/IsFloatingPoint.h>
 #include <blaze/util/typetraits/IsNumeric.h>
 #include <blaze/util/typetraits/IsReference.h>
 #include <blaze/util/typetraits/IsVolatile.h>
@@ -90,7 +90,7 @@ struct TDVecScalarDivExprTraitHelper
 
  public:
    //**********************************************************************************************
-   typedef typename If< IsFloatingPoint<ElementType>
+   typedef typename If< IsInvertible<ElementType>
                       , DVecScalarMultExpr<VT,ElementType,true>
                       , DVecScalarDivExpr<VT,ElementType,true>
                       >::Type  Type;

@@ -64,6 +64,7 @@
 #include <blaze/math/typetraits/IsDenseMatrix.h>
 #include <blaze/math/typetraits/IsDenseVector.h>
 #include <blaze/math/typetraits/IsExpression.h>
+#include <blaze/math/typetraits/IsInvertible.h>
 #include <blaze/math/typetraits/IsPadded.h>
 #include <blaze/math/typetraits/IsRowMajorMatrix.h>
 #include <blaze/math/typetraits/IsRowVector.h>
@@ -83,9 +84,9 @@
 #include <blaze/util/EnableIf.h>
 #include <blaze/util/InvalidType.h>
 #include <blaze/util/logging/FunctionTrace.h>
+#include <blaze/util/mpl/And.h>
 #include <blaze/util/SelectType.h>
 #include <blaze/util/Types.h>
-#include <blaze/util/typetraits/IsFloatingPoint.h>
 #include <blaze/util/typetraits/IsNumeric.h>
 #include <blaze/util/typetraits/IsSame.h>
 #include <blaze/util/valuetraits/IsTrue.h>
@@ -1200,7 +1201,7 @@ template< typename VT     // Type of the dense vector of the left-hand side expr
         , typename ST1    // Type of the scalar of the left-hand side expression
         , bool TF         // Transpose flag of the dense vector
         , typename ST2 >  // Type of the right-hand side scalar
-inline const typename EnableIf< IsFloatingPoint<typename DivTrait<ST1,ST2>::Type>
+inline const typename EnableIf< And< IsNumeric<ST2>, IsInvertible< typename DivTrait<ST1,ST2>::Type > >
                               , typename DivExprTrait< DVecScalarMultExpr<VT,ST1,TF>, ST2 >::Type >::Type
    operator/( const DVecScalarMultExpr<VT,ST1,TF>& vec, ST2 scalar )
 {
@@ -1853,12 +1854,16 @@ struct DVecScalarDivExprTrait< DVecScalarMultExpr<VT,ST1,false>, ST2 >
 {
  private:
    //**********************************************************************************************
-   enum { condition = IsFloatingPoint<typename DivTrait<ST1,ST2>::Type>::value };
+   typedef typename DivTrait<ST1,ST2>::Type  ScalarType;
    //**********************************************************************************************
 
    //**********************************************************************************************
-   typedef typename DVecScalarMultExprTrait<VT,typename DivTrait<ST1,ST2>::Type>::Type  T1;
-   typedef typename DVecScalarDivExprTrait<VT,typename DivTrait<ST1,ST2>::Type>::Type   T2;
+   enum { condition = IsInvertible<ScalarType>::value };
+   //**********************************************************************************************
+
+   //**********************************************************************************************
+   typedef typename DVecScalarMultExprTrait<VT,ScalarType>::Type  T1;
+   typedef typename DVecScalarDivExprTrait<VT,ScalarType>::Type   T2;
    //**********************************************************************************************
 
  public:
@@ -1888,12 +1893,16 @@ struct TDVecScalarDivExprTrait< DVecScalarMultExpr<VT,ST1,true>, ST2 >
 {
  private:
    //**********************************************************************************************
-   enum { condition = IsFloatingPoint<typename DivTrait<ST1,ST2>::Type>::value };
+   typedef typename DivTrait<ST1,ST2>::Type  ScalarType;
    //**********************************************************************************************
 
    //**********************************************************************************************
-   typedef typename TDVecScalarMultExprTrait<VT,typename DivTrait<ST1,ST2>::Type>::Type  T1;
-   typedef typename TDVecScalarDivExprTrait<VT,typename DivTrait<ST1,ST2>::Type>::Type   T2;
+   enum { condition = IsInvertible<ScalarType>::value };
+   //**********************************************************************************************
+
+   //**********************************************************************************************
+   typedef typename TDVecScalarMultExprTrait<VT,ScalarType>::Type  T1;
+   typedef typename TDVecScalarDivExprTrait<VT,ScalarType>::Type   T2;
    //**********************************************************************************************
 
  public:
