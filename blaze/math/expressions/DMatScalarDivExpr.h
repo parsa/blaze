@@ -63,6 +63,7 @@
 #include <blaze/math/typetraits/IsDenseMatrix.h>
 #include <blaze/math/typetraits/IsExpression.h>
 #include <blaze/math/typetraits/IsHermitian.h>
+#include <blaze/math/typetraits/IsInvertible.h>
 #include <blaze/math/typetraits/IsLower.h>
 #include <blaze/math/typetraits/IsMultExpr.h>
 #include <blaze/math/typetraits/IsPadded.h>
@@ -84,9 +85,9 @@
 #include <blaze/util/EnableIf.h>
 #include <blaze/util/InvalidType.h>
 #include <blaze/util/logging/FunctionTrace.h>
+#include <blaze/util/mpl/And.h>
 #include <blaze/util/SelectType.h>
 #include <blaze/util/Types.h>
-#include <blaze/util/typetraits/IsFloatingPoint.h>
 #include <blaze/util/typetraits/IsNumeric.h>
 #include <blaze/util/typetraits/IsSame.h>
 #include <blaze/util/valuetraits/IsTrue.h>
@@ -982,7 +983,7 @@ template< typename MT     // Type of the dense matrix of the left-hand side expr
         , typename ST1    // Type of the scalar of the left-hand side expression
         , bool SO         // Storage order of the dense matrix
         , typename ST2 >  // Type of the right-hand side scalar
-inline const typename EnableIf< IsFloatingPoint< typename DivTrait<ST2,ST1>::Type >
+inline const typename EnableIf< And< IsNumeric<ST2>, IsInvertible<typename DivTrait<ST2,ST1>::Type > >
                               , typename MultExprTrait< DMatScalarDivExpr<MT,ST1,SO>, ST2 >::Type >::Type
    operator*( const DMatScalarDivExpr<MT,ST1,SO>& mat, ST2 scalar )
 {
@@ -1011,7 +1012,7 @@ template< typename ST1  // Type of the left-hand side scalar
         , typename MT   // Type of the dense matrix of the right-hand side expression
         , typename ST2  // Type of the scalar of the right-hand side expression
         , bool SO >     // Storage order of the dense matrix
-inline const typename EnableIf< IsFloatingPoint< typename DivTrait<ST1,ST2>::Type >
+inline const typename EnableIf< And< IsNumeric<ST1>, IsInvertible<typename DivTrait<ST1,ST2>::Type > >
                               , typename MultExprTrait< ST1, DMatScalarDivExpr<MT,ST2,SO> >::Type >::Type
    operator*( ST1 scalar, const DMatScalarDivExpr<MT,ST2,SO>& mat )
 {
@@ -1248,12 +1249,16 @@ struct DMatScalarMultExprTrait< DMatScalarDivExpr<MT,ST1,false>, ST2 >
 {
  private:
    //**********************************************************************************************
-   enum { condition = IsFloatingPoint<typename DivTrait<ST1,ST2>::Type>::value };
+   typedef typename DivTrait<ST2,ST1>::Type  ScalarType;
    //**********************************************************************************************
 
    //**********************************************************************************************
-   typedef typename DMatScalarMultExprTrait<MT,typename DivTrait<ST1,ST2>::Type>::Type  T1;
-   typedef DMatScalarMultExpr< DMatScalarDivExpr<MT,ST1,false>, ST2, false >            T2;
+   enum { condition = IsInvertible<ScalarType>::value };
+   //**********************************************************************************************
+
+   //**********************************************************************************************
+   typedef typename DMatScalarMultExprTrait<MT,ScalarType>::Type              T1;
+   typedef DMatScalarMultExpr< DMatScalarDivExpr<MT,ST1,false>, ST2, false >  T2;
    //**********************************************************************************************
 
  public:
@@ -1283,12 +1288,16 @@ struct TDMatScalarMultExprTrait< DMatScalarDivExpr<MT,ST1,true>, ST2 >
 {
  private:
    //**********************************************************************************************
-   enum { condition = IsFloatingPoint<typename DivTrait<ST1,ST2>::Type>::value };
+   typedef typename DivTrait<ST2,ST1>::Type  ScalarType;
    //**********************************************************************************************
 
    //**********************************************************************************************
-   typedef typename DMatScalarMultExprTrait<MT,typename DivTrait<ST1,ST2>::Type>::Type  T1;
-   typedef DMatScalarMultExpr< DMatScalarDivExpr<MT,ST1,true>, ST2, true >              T2;
+   enum { condition = IsInvertible<ScalarType>::value };
+   //**********************************************************************************************
+
+   //**********************************************************************************************
+   typedef typename DMatScalarMultExprTrait<MT,ScalarType>::Type            T1;
+   typedef DMatScalarMultExpr< DMatScalarDivExpr<MT,ST1,true>, ST2, true >  T2;
    //**********************************************************************************************
 
  public:

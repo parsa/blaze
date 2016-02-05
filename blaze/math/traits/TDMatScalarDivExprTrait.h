@@ -44,6 +44,7 @@
 #include <blaze/math/traits/DivTrait.h>
 #include <blaze/math/typetraits/IsColumnMajorMatrix.h>
 #include <blaze/math/typetraits/IsDenseMatrix.h>
+#include <blaze/math/typetraits/IsInvertible.h>
 #include <blaze/math/typetraits/UnderlyingBuiltin.h>
 #include <blaze/math/typetraits/UnderlyingNumeric.h>
 #include <blaze/util/InvalidType.h>
@@ -53,7 +54,6 @@
 #include <blaze/util/typetraits/IsBuiltin.h>
 #include <blaze/util/typetraits/IsComplex.h>
 #include <blaze/util/typetraits/IsConst.h>
-#include <blaze/util/typetraits/IsFloatingPoint.h>
 #include <blaze/util/typetraits/IsNumeric.h>
 #include <blaze/util/typetraits/IsReference.h>
 #include <blaze/util/typetraits/IsVolatile.h>
@@ -90,7 +90,7 @@ struct TDMatScalarDivExprTraitHelper
 
  public:
    //**********************************************************************************************
-   typedef typename If< IsFloatingPoint<ElementType>
+   typedef typename If< IsInvertible<ElementType>
                       , DMatScalarMultExpr<MT,ElementType,true>
                       , DMatScalarDivExpr<MT,ElementType,true>
                       >::Type  Type;
