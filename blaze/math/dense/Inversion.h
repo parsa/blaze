@@ -1100,35 +1100,15 @@ inline void invert( DenseMatrix<MT,SO>& dm )
       BLAZE_THROW_INVALID_ARGUMENT( "Invalid non-square matrix provided" );
    }
 
-   const size_t N( (~dm).rows() );
-
-   if( N == 1UL )
-   {
-      invert( (~dm)(0,0) );
-   }
-   else if( N == 2UL )
-   {
-      invert2x2( ~dm );
-   }
-   else if( N == 3UL )
-   {
-      invert3x3( ~dm );
-   }
-   else if( N == 4UL )
-   {
-      invert4x4( ~dm );
-   }
-   else if( N == 5UL )
-   {
-      invert5x5( ~dm );
-   }
-   else if( N == 6UL )
-   {
-      invert6x6( ~dm );
-   }
-   else
-   {
-      invertNxN<IF>( ~dm );
+   switch( (~dm).rows() ) {
+      case 0UL:                       break;
+      case 1UL: invert( (~dm)(0,0) ); break;
+      case 2UL: invert2x2    ( ~dm ); break;
+      case 3UL: invert3x3    ( ~dm ); break;
+      case 4UL: invert4x4    ( ~dm ); break;
+      case 5UL: invert5x5    ( ~dm ); break;
+      case 6UL: invert6x6    ( ~dm ); break;
+      default : invertNxN<IF>( ~dm ); break;
    }
 
    BLAZE_INTERNAL_ASSERT( isIntact( ~dm ), "Broken invariant detected" );
