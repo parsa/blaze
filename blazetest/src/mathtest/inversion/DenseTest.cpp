@@ -81,7 +81,6 @@ DenseTest::DenseTest()
    using blaze::rowMajor;
    using blaze::columnMajor;
 
-   typedef blaze::complex<float>   cfloat;
    typedef blaze::complex<double>  cdouble;
 
 
