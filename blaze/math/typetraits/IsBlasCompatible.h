@@ -80,8 +80,8 @@ struct IsBlasCompatibleHelper
 // \ingroup math_type_traits
 //
 // This type trait tests whether or not the given template parameter is a data type compatible
-// to the BLAS standard. The BLAS standard currently only supports float, double, complex<float>
-// and complex<double> values. If the type is BLAS compatible, the \a value member enumeration
+// to the BLAS standard. The BLAS standard supports \c float, \c double, \c complex<float> and
+// \c complex<double> values. If the type is BLAS compatible, the \a value member enumeration
 // is set to 1, the nested type definition \a Type is \a TrueType, and the class derives from
 // \a TrueType. Otherwise \a value is set to 0, \a Type is \a FalseType, and the class derives
 // from \a FalseType.
