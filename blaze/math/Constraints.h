@@ -64,6 +64,7 @@
 #include <blaze/math/constraints/Hermitian.h>
 #include <blaze/math/constraints/Identity.h>
 #include <blaze/math/constraints/ImagExpr.h>
+#include <blaze/math/constraints/Invertible.h>
 #include <blaze/math/constraints/Lower.h>
 #include <blaze/math/constraints/MatAbsExpr.h>
 #include <blaze/math/constraints/MatConjExpr.h>
