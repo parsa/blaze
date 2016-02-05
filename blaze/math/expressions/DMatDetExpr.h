@@ -389,20 +389,19 @@ inline typename MT::ElementType det( const DenseMatrix<MT,SO>& dm )
 
    const size_t N( (~dm).rows() );
 
-   if( IsStrictlyTriangular<MT>::value || N == 0UL )
-   {
+   if( IsStrictlyTriangular<MT>::value || N == 0UL ) {
       return ET(0);
    }
-   else if( IsUniTriangular<MT>::value )
-   {
+
+   if( IsUniTriangular<MT>::value ) {
       return ET(1);
    }
-   else if( N == 1UL )
-   {
+
+   if( N == 1UL ) {
       return (~dm)(0,0);
    }
-   else if( IsTriangular<MT>::value )
-   {
+
+   if( IsTriangular<MT>::value ) {
       ET determinant( (~dm)(0,0) );
 
       for( size_t i=1UL; i<N; ++i ) {
@@ -411,29 +410,14 @@ inline typename MT::ElementType det( const DenseMatrix<MT,SO>& dm )
 
       return determinant;
    }
-   else if( N == 2UL )
-   {
-      return det2x2( ~dm );
-   }
-   else if( N == 3UL )
-   {
-      return det3x3( ~dm );
-   }
-   else if( N == 4UL )
-   {
-      return det4x4( ~dm );
-   }
-   else if( N == 5UL )
-   {
-      return det5x5( ~dm );
-   }
-   else if( N == 6UL )
-   {
-      return det6x6( ~dm );
-   }
-   else
-   {
-      return detNxN( ~dm );
+
+   switch( N ) {
+      case 2UL: return det2x2( ~dm );
+      case 3UL: return det3x3( ~dm );
+      case 4UL: return det4x4( ~dm );
+      case 5UL: return det5x5( ~dm );
+      case 6UL: return det6x6( ~dm );
+      default : return detNxN( ~dm );
    }
 }
 //*************************************************************************************************
