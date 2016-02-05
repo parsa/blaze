@@ -80,12 +80,12 @@ void zsytrf_( char* uplo, int* n, double* A, int* lda, int* ipiv, double* work, 
 
 //=================================================================================================
 //
-//  LAPACK LDLT DECOMPOSITION FUNCTIONS
+//  LAPACK LDLT DECOMPOSITION FUNCTIONS (SYTRF)
 //
 //=================================================================================================
 
 //*************************************************************************************************
-/*!\name LAPACK LDLT decomposition functions */
+/*!\name LAPACK LDLT decomposition functions (sytrf) */
 //@{
 inline void sytrf( char uplo, int n, float* A, int lda, int* ipiv,
                    float* work, int lwork, int* info );
@@ -108,7 +108,7 @@ inline void sytrf( DenseMatrix<MT,SO>& A, char uplo, int* ipiv );
 //*************************************************************************************************
 /*!\brief LAPACK kernel for the decomposition of the given dense symmetric indefinite single
 //        precision column-major matrix.
-// \ingroup lapack
+// \ingroup lapack_decomposition
 //
 // \param uplo \c 'L' to use the lower part of the matrix, \c 'U' to use the upper part.
 // \param n The number of rows/columns of the symmetric matrix \f$[0..\infty)\f$.
@@ -163,7 +163,7 @@ inline void sytrf( char uplo, int n, float* A, int lda, int* ipiv,
 //*************************************************************************************************
 /*!\brief LAPACK kernel for the decomposition of the given dense symmetric indefinite double
 //        precision column-major matrix.
-// \ingroup lapack
+// \ingroup lapack_decomposition
 //
 // \param uplo \c 'L' to use the lower part of the matrix, \c 'U' to use the upper part.
 // \param n The number of rows/columns of the symmetric matrix \f$[0..\infty)\f$.
@@ -218,7 +218,7 @@ inline void sytrf( char uplo, int n, double* A, int lda, int* ipiv,
 //*************************************************************************************************
 /*!\brief LAPACK kernel for the decomposition of the given dense symmetric indefinite single
 //        precision complex column-major matrix.
-// \ingroup lapack
+// \ingroup lapack_decomposition
 //
 // \param uplo \c 'L' to use the lower part of the matrix, \c 'U' to use the upper part.
 // \param n The number of rows/columns of the symmetric matrix \f$[0..\infty)\f$.
@@ -276,7 +276,7 @@ inline void sytrf( char uplo, int n, complex<float>* A, int lda, int* ipiv,
 //*************************************************************************************************
 /*!\brief LAPACK kernel for the decomposition of the given dense symmetric indefinite double
 //        precision complex column-major matrix.
-// \ingroup lapack
+// \ingroup lapack_decomposition
 //
 // \param uplo \c 'L' to use the lower part of the matrix, \c 'U' to use the upper part.
 // \param n The number of rows/columns of the symmetric matrix \f$[0..\infty)\f$.
@@ -333,7 +333,7 @@ inline void sytrf( char uplo, int n, complex<double>* A, int lda, int* ipiv,
 
 //*************************************************************************************************
 /*!\brief LAPACK kernel for the decomposition of the given dense symmetric indefinite matrix.
-// \ingroup lapack
+// \ingroup lapack_decomposition
 //
 // \param A The matrix to be decomposed.
 // \param uplo \c 'L' to use the lower part of the matrix, \c 'U' to use the upper part.

@@ -94,11 +94,11 @@ inline void getrs( char trans, int n, int nrhs, const float* A, int lda, const i
 inline void getrs( char trans, int n, int nrhs, const double* A, int lda, const int* ipiv,
                    double* B, int ldb, int* info );
 
-inline void getrs( char trans, int n, const complex<float>* A, int lda, const int* ipiv,
-                   complex<float>* B, int ldb, int* info );
+inline void getrs( char trans, int n, int nrhs, const complex<float>* A, int lda,
+                   const int* ipiv, complex<float>* B, int ldb, int* info );
 
-inline void getrs( char trans, int n, const complex<double>* A, int lda, const int* ipiv,
-                   complex<double>* B, int ldb, int* info );
+inline void getrs( char trans, int n, int nrhs, const complex<double>* A, int lda,
+                   const int* ipiv, complex<double>* B, int ldb, int* info );
 
 template< typename MT, bool SO, typename VT, bool TF >
 inline void getrs( const DenseMatrix<MT,SO>& A, DenseVector<VT,TF>& b, char trans, const int* ipiv );
@@ -113,7 +113,7 @@ inline void getrs( const DenseMatrix<MT1,SO1>& A, DenseMatrix<MT2,SO2>& B,
 //*************************************************************************************************
 /*!\brief LAPACK kernel for the substitution step of solving a general single precision linear
 //        system of equations (\f$ A*X=B \f$).
-// \ingroup lapack
+// \ingroup lapack_substitution
 //
 // \param trans \c 'N' for \f$ A*X=B \f$, \c 'T' for \f$ A^T*X=B \f$, and \c C for \f$ A^H*X=B \f$.
 // \param n The number of rows/columns of the column-major matrix \f$[0..\infty)\f$.
@@ -160,7 +160,7 @@ inline void getrs( char trans, int n, int nrhs, const float* A, int lda,
 //*************************************************************************************************
 /*!\brief LAPACK kernel for the substitution step of solving a general double precision linear
 //        system of equations (\f$ A*X=B \f$).
-// \ingroup lapack
+// \ingroup lapack_substitution
 //
 // \param trans \c 'N' for \f$ A*X=B \f$, \c 'T' for \f$ A^T*X=B \f$, and \c C for \f$ A^H*X=B \f$.
 // \param n The number of rows/columns of the column-major matrix \f$[0..\infty)\f$.
@@ -207,7 +207,7 @@ inline void getrs( char trans, int n, int nrhs, const double* A, int lda,
 //*************************************************************************************************
 /*!\brief LAPACK kernel for the substitution step of solving a general single precision complex
 //        linear system of equations (\f$ A*X=B \f$).
-// \ingroup lapack
+// \ingroup lapack_substitution
 //
 // \param trans \c 'N' for \f$ A*X=B \f$, \c 'T' for \f$ A^T*X=B \f$, and \c C for \f$ A^H*X=B \f$.
 // \param n The number of rows/columns of the column-major matrix \f$[0..\infty)\f$.
@@ -256,7 +256,7 @@ inline void getrs( char trans, int n, int nrhs, const complex<float>* A, int lda
 //*************************************************************************************************
 /*!\brief LAPACK kernel for the substitution step of solving a general double precision complex
 //        linear system of equations (\f$ A*X=B \f$).
-// \ingroup lapack
+// \ingroup lapack_substitution
 //
 // \param trans \c 'N' for \f$ A*X=B \f$, \c 'T' for \f$ A^T*X=B \f$, and \c C for \f$ A^H*X=B \f$.
 // \param n The number of rows/columns of the column-major matrix \f$[0..\infty)\f$.
@@ -305,7 +305,7 @@ inline void getrs( char trans, int n, int nrhs, const complex<double>* A, int ld
 //*************************************************************************************************
 /*!\brief LAPACK kernel for the substitution step of solving a general linear system of equations
 //        (\f$ A*x=b \f$).
-// \ingroup lapack
+// \ingroup lapack_substitution
 //
 // \param A The system matrix.
 // \param b The right-hand side vector.
@@ -426,7 +426,7 @@ inline void getrs( const DenseMatrix<MT,SO>& A, DenseVector<VT,TF>& b, char tran
 //*************************************************************************************************
 /*!\brief LAPACK kernel for the substitution step of solving a general linear system of equations
 //        (\f$ A*X=B \f$).
-// \ingroup lapack
+// \ingroup lapack_substitution
 //
 // \param A The system matrix.
 // \param B The matrix of right-hand sides.

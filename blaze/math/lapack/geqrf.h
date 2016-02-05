@@ -79,12 +79,12 @@ void zgeqrf_( int* m, int* n, double* A, int* lda, double* tau, double* work, in
 
 //=================================================================================================
 //
-//  LAPACK QR DECOMPOSITION FUNCTIONS
+//  LAPACK QR DECOMPOSITION FUNCTIONS (GEQRF)
 //
 //=================================================================================================
 
 //*************************************************************************************************
-/*!\name LAPACK QR decomposition functions */
+/*!\name LAPACK QR decomposition functions (geqrf) */
 //@{
 inline void geqrf( int m, int n, float* A, int lda, float* tau,
                    float* work, int lwork, int* info );
@@ -107,7 +107,7 @@ inline void geqrf( DenseMatrix<MT,SO>& A, typename MT::ElementType* tau );
 //*************************************************************************************************
 /*!\brief LAPACK kernel for the QR decomposition of the given dense single precision column-major
 //        matrix.
-// \ingroup lapack
+// \ingroup lapack_decomposition
 //
 // \param m The number of rows of the given matrix \f$[0..\infty)\f$.
 // \param n The number of columns of the given matrix \f$[0..\infty)\f$.
@@ -163,7 +163,7 @@ inline void geqrf( int m, int n, float* A, int lda, float* tau,
 //*************************************************************************************************
 /*!\brief LAPACK kernel for the QR decomposition of the given dense double precision column-major
 //        matrix.
-// \ingroup lapack
+// \ingroup lapack_decomposition
 //
 // \param m The number of rows of the given matrix \f$[0..\infty)\f$.
 // \param n The number of columns of the given matrix \f$[0..\infty)\f$.
@@ -219,7 +219,7 @@ inline void geqrf( int m, int n, double* A, int lda, double* tau,
 //*************************************************************************************************
 /*!\brief LAPACK kernel for the QR decomposition of the given dense single precision complex
 //        column-major matrix.
-// \ingroup lapack
+// \ingroup lapack_decomposition
 //
 // \param m The number of rows of the given matrix \f$[0..\infty)\f$.
 // \param n The number of columns of the given matrix \f$[0..\infty)\f$.
@@ -278,7 +278,7 @@ inline void geqrf( int m, int n, complex<float>* A, int lda, complex<float>* tau
 //*************************************************************************************************
 /*!\brief LAPACK kernel for the QR decomposition of the given dense double precision complex
 //        column-major matrix.
-// \ingroup lapack
+// \ingroup lapack_decomposition
 //
 // \param m The number of rows of the given matrix \f$[0..\infty)\f$.
 // \param n The number of columns of the given matrix \f$[0..\infty)\f$.
@@ -336,7 +336,7 @@ inline void geqrf( int m, int n, complex<double>* A, int lda, complex<double>* t
 
 //*************************************************************************************************
 /*!\brief LAPACK kernel for the QR decomposition of the given dense matrix.
-// \ingroup lapack
+// \ingroup lapack_decomposition
 //
 // \param A The matrix to be decomposed.
 // \param tau Array for the scalar factors of the elementary reflectors; size >= min( \a m, \a n ).

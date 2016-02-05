@@ -113,7 +113,7 @@ inline void sytrs( const DenseMatrix<MT1,SO1>& A, DenseMatrix<MT2,SO2>& B,
 //*************************************************************************************************
 /*!\brief LAPACK kernel for the substitution step of solving a symmetric indefinite single
 //        precision linear system of equations (\f$ A*X=B \f$).
-// \ingroup lapack
+// \ingroup lapack_substitution
 //
 // \param uplo \c 'L' to use the lower part of the matrix, \c 'U' to use the upper part.
 // \param n The number of rows/columns of the column-major matrix \f$[0..\infty)\f$.
@@ -155,7 +155,7 @@ inline void sytrs( char uplo, int n, int nrhs, const float* A, int lda, const in
 //*************************************************************************************************
 /*!\brief LAPACK kernel for the substitution step of solving a symmetric indefinite double
 //        precision linear system of equations (\f$ A*X=B \f$).
-// \ingroup lapack
+// \ingroup lapack_substitution
 //
 // \param uplo \c 'L' to use the lower part of the matrix, \c 'U' to use the upper part.
 // \param n The number of rows/columns of the column-major matrix \f$[0..\infty)\f$.
@@ -197,7 +197,7 @@ inline void sytrs( char uplo, int n, int nrhs, const double* A, int lda, const i
 //*************************************************************************************************
 /*!\brief LAPACK kernel for the substitution step of solving a symmetric indefinite single
 //        precision complex linear system of equations (\f$ A*X=B \f$).
-// \ingroup lapack
+// \ingroup lapack_substitution
 //
 // \param uplo \c 'L' to use the lower part of the matrix, \c 'U' to use the upper part.
 // \param n The number of rows/columns of the column-major matrix \f$[0..\infty)\f$.
@@ -241,7 +241,7 @@ inline void sytrs( char uplo, int n, int nrhs, const complex<float>* A, int lda,
 //*************************************************************************************************
 /*!\brief LAPACK kernel for the substitution step of solving a symmetric indefinite double
 //        precision complex linear system of equations (\f$ A*X=B \f$).
-// \ingroup lapack
+// \ingroup lapack_substitution
 //
 // \param uplo \c 'L' to use the lower part of the matrix, \c 'U' to use the upper part.
 // \param n The number of rows/columns of the column-major matrix \f$[0..\infty)\f$.
@@ -285,7 +285,7 @@ inline void sytrs( char uplo, int n, int nrhs, const complex<double>* A, int lda
 //*************************************************************************************************
 /*!\brief LAPACK kernel for the substitution step of solving a symmetric indefinite linear
 //        system of equations (\f$ A*x=b \f$).
-// \ingroup lapack
+// \ingroup lapack_substitution
 //
 // \param A The system matrix.
 // \param b The right-hand side vector.
@@ -416,7 +416,7 @@ inline void sytrs( const DenseMatrix<MT,SO>& A, DenseVector<VT,TF>& b, char uplo
 //*************************************************************************************************
 /*!\brief LAPACK kernel for the substitution step of solving a symmetric indefinite linear
 //        system of equations (\f$ A*X=B \f$).
-// \ingroup lapack
+// \ingroup lapack_substitution
 //
 // \param A The system matrix.
 // \param B The matrix of right-hand sides.

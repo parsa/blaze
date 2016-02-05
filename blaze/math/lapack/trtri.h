@@ -79,12 +79,12 @@ void ztrtri_( char* uplo, char* diag, int* n, double* A, int* lda, int* info );
 
 //=================================================================================================
 //
-//  LAPACK TRIANGULAR MATRIX INVERSION FUNCTIONS
+//  LAPACK TRIANGULAR MATRIX INVERSION FUNCTIONS (TRTRI)
 //
 //=================================================================================================
 
 //*************************************************************************************************
-/*!\name LAPACK triangular matrix inversion functions */
+/*!\name LAPACK triangular matrix inversion functions (trtri) */
 //@{
 inline void trtri( char uplo, char diag, int n, float* A, int lda, int* info );
 
@@ -103,7 +103,7 @@ inline void trtri( DenseMatrix<MT,SO>& A, char uplo, char diag );
 //*************************************************************************************************
 /*!\brief LAPACK kernel for the inversion of the given dense triangular single precision
 //        column-major matrix.
-// \ingroup lapack
+// \ingroup lapack_inversion
 //
 // \param uplo \c 'L' in case of a lower matrix, \c 'U' in case of an upper matrix.
 // \param diag \c 'U' in case of a unitriangular matrix, \c 'N' otherwise.
@@ -140,7 +140,7 @@ inline void trtri( char uplo, char diag, int n, float* A, int lda, int* info )
 //*************************************************************************************************
 /*!\brief LAPACK kernel for the inversion of the given dense triangular double precision
 //        column-major matrix.
-// \ingroup lapack
+// \ingroup lapack_inversion
 //
 // \param uplo \c 'L' in case of a lower matrix, \c 'U' in case of an upper matrix.
 // \param diag \c 'U' in case of a unitriangular matrix, \c 'N' otherwise.
@@ -177,7 +177,7 @@ inline void trtri( char uplo, char diag, int n, double* A, int lda, int* info )
 //*************************************************************************************************
 /*!\brief LAPACK kernel for the inversion of the given dense triangular single precision complex
 //        column-major matrix.
-// \ingroup lapack
+// \ingroup lapack_inversion
 //
 // \param uplo \c 'L' in case of a lower matrix, \c 'U' in case of an upper matrix.
 // \param diag \c 'U' in case of a unitriangular matrix, \c 'N' otherwise.
@@ -216,7 +216,7 @@ inline void trtri( char uplo, char diag, int n, complex<float>* A, int lda, int*
 //*************************************************************************************************
 /*!\brief LAPACK kernel for the inversion of the given dense triangular double precision complex
 //        column-major matrix.
-// \ingroup lapack
+// \ingroup lapack_inversion
 //
 // \param uplo \c 'L' in case of a lower matrix, \c 'U' in case of an upper matrix.
 // \param diag \c 'U' in case of a unitriangular matrix, \c 'N' otherwise.
@@ -254,7 +254,7 @@ inline void trtri( char uplo, char diag, int n, complex<double>* A, int lda, int
 
 //*************************************************************************************************
 /*!\brief LAPACK kernel for the inversion of the given dense triangular matrix.
-// \ingroup lapack
+// \ingroup lapack_inversion
 //
 // \param A The triangular matrix to be inverted.
 // \param uplo \c 'L' in case of a lower matrix, \c 'U' in case of an upper matrix.

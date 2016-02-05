@@ -114,7 +114,7 @@ inline void trtrs( const DenseMatrix<MT1,SO1>& A, DenseMatrix<MT2,SO2>& B,
 //*************************************************************************************************
 /*!\brief LAPACK kernel for the substitution step of solving a triangular single precision linear
 //        system of equations (\f$ A*X=B \f$).
-// \ingroup lapack
+// \ingroup lapack_substitution
 //
 // \param uplo \c 'L' in case of a lower matrix, \c 'U' in case of an upper matrix.
 // \param trans \c 'N' for \f$ A*X=B \f$, \c 'T' for \f$ A^T*X=B \f$, and \c C for \f$ A^H*X=B \f$.
@@ -160,7 +160,7 @@ inline void trtrs( char uplo, char trans, char diag, int n, int nrhs, const floa
 //*************************************************************************************************
 /*!\brief LAPACK kernel for the substitution step of solving a triangular double precision linear
 //        system of equations (\f$ A*X=B \f$).
-// \ingroup lapack
+// \ingroup lapack_substitution
 //
 // \param uplo \c 'L' in case of a lower matrix, \c 'U' in case of an upper matrix.
 // \param trans \c 'N' for \f$ A*X=B \f$, \c 'T' for \f$ A^T*X=B \f$, and \c C for \f$ A^H*X=B \f$.
@@ -206,7 +206,7 @@ inline void trtrs( char uplo, char trans, char diag, int n, int nrhs, const doub
 //*************************************************************************************************
 /*!\brief LAPACK kernel for the substitution step of solving a triangular single precision complex
 //        linear system of equations (\f$ A*X=B \f$).
-// \ingroup lapack
+// \ingroup lapack_substitution
 //
 // \param uplo \c 'L' in case of a lower matrix, \c 'U' in case of an upper matrix.
 // \param trans \c 'N' for \f$ A*X=B \f$, \c 'T' for \f$ A^T*X=B \f$, and \c C for \f$ A^H*X=B \f$.
@@ -255,7 +255,7 @@ inline void trtrs( char uplo, char trans, char diag, int n, int nrhs, const comp
 //*************************************************************************************************
 /*!\brief LAPACK kernel for the substitution step of solving a triangular double precision complex
 //        linear system of equations (\f$ A*X=B \f$).
-// \ingroup lapack
+// \ingroup lapack_substitution
 //
 // \param uplo \c 'L' in case of a lower matrix, \c 'U' in case of an upper matrix.
 // \param trans \c 'N' for \f$ A*X=B \f$, \c 'T' for \f$ A^T*X=B \f$, and \c C for \f$ A^H*X=B \f$.
@@ -304,7 +304,7 @@ inline void trtrs( char uplo, char trans, char diag, int n, int nrhs, const comp
 //*************************************************************************************************
 /*!\brief LAPACK kernel for the substitution step of solving a triangular linear system of equations
 //        (\f$ A*x=b \f$).
-// \ingroup lapack
+// \ingroup lapack_substitution
 //
 // \param A The system matrix.
 // \param b The right-hand side vector.
@@ -437,7 +437,7 @@ inline void trtrs( const DenseMatrix<MT,SO>& A, DenseVector<VT,TF>& b, char uplo
 //*************************************************************************************************
 /*!\brief LAPACK kernel for the substitution step of solving a triangular linear system of equations
 //        (\f$ A*X=B \f$).
-// \ingroup lapack
+// \ingroup lapack_substitution
 //
 // \param A The system matrix.
 // \param B The matrix of right-hand sides.

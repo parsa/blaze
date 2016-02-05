@@ -78,12 +78,12 @@ void zgetrf_( int* m, int* n, double* A, int* lda, int* ipiv, int* info );
 
 //=================================================================================================
 //
-//  LAPACK LU DECOMPOSITION FUNCTIONS
+//  LAPACK LU DECOMPOSITION FUNCTIONS (GETRF)
 //
 //=================================================================================================
 
 //*************************************************************************************************
-/*!\name LAPACK LU decomposition functions */
+/*!\name LAPACK LU decomposition functions (getrf) */
 //@{
 inline void getrf( int m, int n, float* A, int lda, int* ipiv, int* info );
 
@@ -102,7 +102,7 @@ inline void getrf( DenseMatrix<MT,SO>& A, int* ipiv );
 //*************************************************************************************************
 /*!\brief LAPACK kernel for the LU decomposition of the given dense general single precision
 //        column-major matrix.
-// \ingroup lapack
+// \ingroup lapack_decomposition
 //
 // \param m The number of rows of the given matrix \f$[0..\infty)\f$.
 // \param n The number of columns of the given matrix \f$[0..\infty)\f$.
@@ -146,7 +146,7 @@ inline void getrf( int m, int n, float* A, int lda, int* ipiv, int* info )
 //*************************************************************************************************
 /*!\brief LAPACK kernel for the LU decomposition of the given dense general double precision
 //        column-major matrix.
-// \ingroup lapack
+// \ingroup lapack_decomposition
 //
 // \param m The number of rows of the given matrix \f$[0..\infty)\f$.
 // \param n The number of columns of the given matrix \f$[0..\infty)\f$.
@@ -190,7 +190,7 @@ inline void getrf( int m, int n, double* A, int lda, int* ipiv, int* info )
 //*************************************************************************************************
 /*!\brief LAPACK kernel for the LU decomposition of the given dense general single precision
 //        complex column-major matrix.
-// \ingroup lapack
+// \ingroup lapack_decomposition
 //
 // \param m The number of rows of the given matrix \f$[0..\infty)\f$.
 // \param n The number of columns of the given matrix \f$[0..\infty)\f$.
@@ -236,7 +236,7 @@ inline void getrf( int m, int n, complex<float>* A, int lda, int* ipiv, int* inf
 //*************************************************************************************************
 /*!\brief LAPACK kernel for the LU decomposition of the given dense general double precision
 //        complex column-major matrix.
-// \ingroup lapack
+// \ingroup lapack_decomposition
 //
 // \param m The number of rows of the given matrix \f$[0..\infty)\f$.
 // \param n The number of columns of the given matrix \f$[0..\infty)\f$.
@@ -282,7 +282,7 @@ inline void getrf( int m, int n, complex<double>* A, int lda, int* ipiv, int* in
 //*************************************************************************************************
 /*! \cond BLAZE_INTERNAL */
 /*!\brief LAPACK kernel for the LU decomposition of the given dense general matrix.
-// \ingroup lapack
+// \ingroup lapack_decomposition
 //
 // \param A The matrix to be decomposed.
 // \param ipiv Auxiliary array for the pivot indices; size >= min( \a m, \a n ).

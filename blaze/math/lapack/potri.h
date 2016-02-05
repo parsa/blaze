@@ -80,12 +80,12 @@ void zpotri_( char* uplo, int* n, double* A, int* lda, int* info );
 
 //=================================================================================================
 //
-//  LAPACK CHOLESKY-BASED INVERSION FUNCTIONS
+//  LAPACK LLH-BASED INVERSION FUNCTIONS (POTRI)
 //
 //=================================================================================================
 
 //*************************************************************************************************
-/*!\name LAPACK Cholesky-based inversion functions */
+/*!\name LAPACK LLH-based inversion functions (potri) */
 //@{
 inline void potri( char uplo, int n, float* A, int lda, int* info );
 
@@ -104,7 +104,7 @@ inline void potri( DenseMatrix<MT,SO>& A, char uplo );
 //*************************************************************************************************
 /*!\brief LAPACK kernel for the inversion of the given dense positive definite single precision
 //        column-major square matrix.
-// \ingroup lapack
+// \ingroup lapack_inversion
 //
 // \param uplo \c 'L' to use the lower part of the matrix, \c 'U' to use the upper part.
 // \param n The number of rows/columns of the matrix \f$[0..\infty)\f$.
@@ -141,7 +141,7 @@ inline void potri( char uplo, int n, float* A, int lda, int* info )
 //*************************************************************************************************
 /*!\brief LAPACK kernel for the inversion of the given dense positive definite double precision
 //        column-major square matrix.
-// \ingroup lapack
+// \ingroup lapack_inversion
 //
 // \param uplo \c 'L' to use the lower part of the matrix, \c 'U' to use the upper part.
 // \param n The number of rows/columns of the matrix \f$[0..\infty)\f$.
@@ -178,7 +178,7 @@ inline void potri( char uplo, int n, double* A, int lda, int* info )
 //*************************************************************************************************
 /*!\brief LAPACK kernel for the inversion of the given dense positive definite single precision
 //        complex column-major square matrix.
-// \ingroup lapack
+// \ingroup lapack_inversion
 //
 // \param uplo \c 'L' to use the lower part of the matrix, \c 'U' to use the upper part.
 // \param n The number of rows/columns of the matrix \f$[0..\infty)\f$.
@@ -217,7 +217,7 @@ inline void potri( char uplo, int n, complex<float>* A, int lda, int* info )
 //*************************************************************************************************
 /*!\brief LAPACK kernel for the inversion of the given dense positive definite double precision
 //        complex column-major square matrix.
-// \ingroup lapack
+// \ingroup lapack_inversion
 //
 // \param uplo \c 'L' to use the lower part of the matrix, \c 'U' to use the upper part.
 // \param n The number of rows/columns of the matrix \f$[0..\infty)\f$.
@@ -255,7 +255,7 @@ inline void potri( char uplo, int n, complex<double>* A, int lda, int* info )
 
 //*************************************************************************************************
 /*!\brief LAPACK kernel for the inversion of the given dense positive definite matrix.
-// \ingroup lapack
+// \ingroup lapack_inversion
 //
 // \param A The positive-definite matrix to be inverted.
 // \param uplo \c 'L' to use the lower part of the matrix, \c 'U' to use the upper part.

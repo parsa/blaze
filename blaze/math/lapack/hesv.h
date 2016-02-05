@@ -102,7 +102,7 @@ inline void hesv( DenseMatrix<MT1,SO1>& A, DenseMatrix<MT2,SO2>& B, char uplo, i
 //*************************************************************************************************
 /*!\brief LAPACK kernel for solving a Hermitian indefinite single precision complex linear system
 //        of equations (\f$ A*X=B \f$).
-// \ingroup lapack
+// \ingroup lapack_solver
 //
 // \param uplo \c 'L' to use the lower part of the matrix, \c 'U' to use the upper part.
 // \param n The number of rows/columns of matrix \a A \f$[0..\infty)\f$.
@@ -161,7 +161,7 @@ inline void hesv( char uplo, int n, int nrhs, complex<float>* A, int lda, int* i
 //*************************************************************************************************
 /*!\brief LAPACK kernel for solving a Hermitian indefinite double precision complex linear system
 //        of equations (\f$ A*X=B \f$).
-// \ingroup lapack
+// \ingroup lapack_solver
 //
 // \param uplo \c 'L' to use the lower part of the matrix, \c 'U' to use the upper part.
 // \param n The number of rows/columns of matrix \a A \f$[0..\infty)\f$.
@@ -219,7 +219,7 @@ inline void hesv( char uplo, int n, int nrhs, complex<double>* A, int lda, int* 
 
 //*************************************************************************************************
 /*!\brief LAPACK kernel for solving a Hermitian indefinite linear system of equations (\f$ A*x=b \f$).
-// \ingroup lapack
+// \ingroup lapack_solver
 //
 // \param A The column-major system matrix.
 // \param b The right-hand side vector.
@@ -331,7 +331,7 @@ inline void hesv( DenseMatrix<MT,SO>& A, DenseVector<VT,TF>& b, char uplo, int* 
 
 //*************************************************************************************************
 /*!\brief LAPACK kernel for solving a Hermitian indefinite linear system of equations (\f$ A*X=B \f$).
-// \ingroup lapack
+// \ingroup lapack_solver
 //
 // \param A The system matrix.
 // \param B The matrix of right-hand sides.

@@ -79,12 +79,12 @@ void zpotrf_( char* uplo, int* n, double* A, int* lda, int* info );
 
 //=================================================================================================
 //
-//  LAPACK LLH (CHOLESKY) DECOMPOSITION FUNCTIONS
+//  LAPACK LLH (CHOLESKY) DECOMPOSITION FUNCTIONS (POTRF)
 //
 //=================================================================================================
 
 //*************************************************************************************************
-/*!\name LAPACK LLH (Cholesky) decomposition functions */
+/*!\name LAPACK LLH (Cholesky) decomposition functions (potrf) */
 //@{
 inline void potrf( char uplo, int n, float* A, int lda, int* info );
 
@@ -103,7 +103,7 @@ inline void potrf( DenseMatrix<MT,SO>& A, char uplo );
 //*************************************************************************************************
 /*!\brief LAPACK kernel for the Cholesky decomposition of the given dense positive definite
 //        single precision column-major matrix.
-// \ingroup lapack
+// \ingroup lapack_decomposition
 //
 // \param uplo \c 'L' to use the lower part of the matrix, \c 'U' to use the upper part.
 // \param n The number of rows/columns of the matrix \f$[0..\infty)\f$.
@@ -147,7 +147,7 @@ inline void potrf( char uplo, int n, float* A, int lda, int* info )
 //*************************************************************************************************
 /*!\brief LAPACK kernel for the Cholesky decomposition of the given dense positive definite
 //        double precision column-major matrix.
-// \ingroup lapack
+// \ingroup lapack_decomposition
 //
 // \param uplo \c 'L' to use the lower part of the matrix, \c 'U' to use the upper part.
 // \param n The number of rows/columns of the matrix \f$[0..\infty)\f$.
@@ -191,7 +191,7 @@ inline void potrf( char uplo, int n, double* A, int lda, int* info )
 //*************************************************************************************************
 /*!\brief LAPACK kernel for the Cholesky decomposition of the given dense positive definite
 //        single precision complex column-major matrix.
-// \ingroup lapack
+// \ingroup lapack_decomposition
 //
 // \param uplo \c 'L' to use the lower part of the matrix, \c 'U' to use the upper part.
 // \param n The number of rows/columns of the matrix \f$[0..\infty)\f$.
@@ -237,7 +237,7 @@ inline void potrf( char uplo, int n, complex<float>* A, int lda, int* info )
 //*************************************************************************************************
 /*!\brief LAPACK kernel for the Cholesky decomposition of the given dense positive definite
 //        double precision complex column-major matrix.
-// \ingroup lapack
+// \ingroup lapack_decomposition
 //
 // \param uplo \c 'L' to use the lower part of the matrix, \c 'U' to use the upper part.
 // \param n The number of rows/columns of the matrix \f$[0..\infty)\f$.
@@ -282,7 +282,7 @@ inline void potrf( char uplo, int n, complex<double>* A, int lda, int* info )
 
 //*************************************************************************************************
 /*!\brief LAPACK kernel for the Cholesky decomposition of the given dense positive definite matrix.
-// \ingroup lapack
+// \ingroup lapack_decomposition
 //
 // \param A The matrix to be decomposed.
 // \param uplo \c 'L' to use the lower part of the matrix, \c 'U' to use the upper part.

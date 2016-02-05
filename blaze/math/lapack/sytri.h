@@ -80,12 +80,12 @@ void zsytri_( char* uplo, int* n, double* A, int* lda, int* ipiv, double* work, 
 
 //=================================================================================================
 //
-//  LAPACK SYMMETRIC MATRIX INVERSION FUNCTIONS
+//  LAPACK LDLT-BASED INVERSION FUNCTIONS (SYTRI)
 //
 //=================================================================================================
 
 //*************************************************************************************************
-/*!\name LAPACK symmetric matrix inversion functions */
+/*!\name LAPACK LDLT-based inversion functions (sytri) */
 //@{
 inline void sytri( char uplo, int n, float* A, int lda, const int* ipiv, float* work, int* info );
 
@@ -106,7 +106,7 @@ inline void sytri( DenseMatrix<MT,SO>& A, char uplo, const int* ipiv );
 //*************************************************************************************************
 /*!\brief LAPACK kernel for the inversion of the given dense symmetric indefinite single precision
 //        column-major square matrix.
-// \ingroup lapack
+// \ingroup lapack_inversion
 //
 // \param uplo \c 'L' in case of a lower matrix, \c 'U' in case of an upper matrix.
 // \param n The number of rows/columns of the symmetric matrix \f$[0..\infty)\f$.
@@ -144,7 +144,7 @@ inline void sytri( char uplo, int n, float* A, int lda, const int* ipiv, float* 
 //*************************************************************************************************
 /*!\brief LAPACK kernel for the inversion of the given dense symmetric indefinite double precision
 //        column-major square matrix.
-// \ingroup lapack
+// \ingroup lapack_inversion
 //
 // \param uplo \c 'L' in case of a lower matrix, \c 'U' in case of an upper matrix.
 // \param n The number of rows/columns of the symmetric matrix \f$[0..\infty)\f$.
@@ -182,7 +182,7 @@ inline void sytri( char uplo, int n, double* A, int lda, const int* ipiv, double
 //*************************************************************************************************
 /*!\brief LAPACK kernel for the inversion of the given dense symmetric indefinite single precision
 //        complex column-major square matrix.
-// \ingroup lapack
+// \ingroup lapack_inversion
 //
 // \param uplo \c 'L' in case of a lower matrix, \c 'U' in case of an upper matrix.
 // \param n The number of rows/columns of the symmetric matrix \f$[0..\infty)\f$.
@@ -224,7 +224,7 @@ inline void sytri( char uplo, int n, complex<float>* A, int lda,
 //*************************************************************************************************
 /*!\brief LAPACK kernel for the inversion of the given dense symmetric indefinite double precision
 //        complex column-major square matrix.
-// \ingroup lapack
+// \ingroup lapack_inversion
 //
 // \param uplo \c 'L' in case of a lower matrix, \c 'U' in case of an upper matrix.
 // \param n The number of rows/columns of the symmetric matrix \f$[0..\infty)\f$.
@@ -265,7 +265,7 @@ inline void sytri( char uplo, int n, complex<double>* A, int lda,
 
 //*************************************************************************************************
 /*!\brief LAPACK kernel for the inversion of the given dense symmetric indefinite matrix.
-// \ingroup lapack
+// \ingroup lapack_inversion
 //
 // \param A The triangular matrix to be inverted.
 // \param uplo \c 'L' in case of a lower matrix, \c 'U' in case of an upper matrix.

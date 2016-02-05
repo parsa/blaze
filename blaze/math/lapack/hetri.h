@@ -78,12 +78,12 @@ void zhetri_( char* uplo, int* n, double* A, int* lda, int* ipiv, double* work, 
 
 //=================================================================================================
 //
-//  LAPACK HERMITIAN MATRIX INVERSION FUNCTIONS
+//  LAPACK LDLH-BASED INVERSION FUNCTIONS (HETRI)
 //
 //=================================================================================================
 
 //*************************************************************************************************
-/*!\name LAPACK Hermitian matrix inversion functions */
+/*!\name LAPACK LDLH-based inversion functions (hetri) */
 //@{
 inline void hetri( char uplo, int n, complex<float>* A, int lda,
                    const int* ipiv, complex<float>* work, int* info );
@@ -100,7 +100,7 @@ inline void hetri( DenseMatrix<MT,SO>& A, char uplo, const int* ipiv );
 //*************************************************************************************************
 /*!\brief LAPACK kernel for the inversion of the given dense Hermitian indefinite single precision
 //        complex column-major square matrix.
-// \ingroup lapack
+// \ingroup lapack_inversion
 //
 // \param uplo \c 'L' in case of a lower matrix, \c 'U' in case of an upper matrix.
 // \param n The number of rows/columns of the Hermitian matrix \f$[0..\infty)\f$.
@@ -142,7 +142,7 @@ inline void hetri( char uplo, int n, complex<float>* A, int lda,
 //*************************************************************************************************
 /*!\brief LAPACK kernel for the inversion of the given dense Hermitian indefinite double precision
 //        complex column-major square matrix.
-// \ingroup lapack
+// \ingroup lapack_inversion
 //
 // \param uplo \c 'L' in case of a lower matrix, \c 'U' in case of an upper matrix.
 // \param n The number of rows/columns of the Hermitian matrix \f$[0..\infty)\f$.
@@ -183,7 +183,7 @@ inline void hetri( char uplo, int n, complex<double>* A, int lda,
 
 //*************************************************************************************************
 /*!\brief LAPACK kernel for the inversion of the given dense Hermitian indefinite matrix.
-// \ingroup lapack
+// \ingroup lapack_inversion
 //
 // \param A The triangular matrix to be inverted.
 // \param uplo \c 'L' in case of a lower matrix, \c 'U' in case of an upper matrix.

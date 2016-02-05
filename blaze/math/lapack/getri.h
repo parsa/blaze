@@ -80,12 +80,12 @@ void zgetri_( int* n, double* A, int* lda, int* ipiv, double* work, int* lwork, 
 
 //=================================================================================================
 //
-//  LAPACK LU-BASED INVERSION FUNCTIONS
+//  LAPACK LU-BASED INVERSION FUNCTIONS (GETRI)
 //
 //=================================================================================================
 
 //*************************************************************************************************
-/*!\name LAPACK LU-based inversion functions */
+/*!\name LAPACK LU-based inversion functions (getri) */
 //@{
 inline void getri( int n, float* A, int lda, const int* ipiv, float* work, int lwork, int* info );
 
@@ -106,7 +106,7 @@ inline void getri( DenseMatrix<MT,SO>& A, const int* ipiv );
 //*************************************************************************************************
 /*!\brief LAPACK kernel for the inversion of the given dense general single precision column-major
 //        square matrix.
-// \ingroup lapack
+// \ingroup lapack_inversion
 //
 // \param n The number of rows/columns of the matrix \f$[0..\infty)\f$.
 // \param A Pointer to the first element of the single precision column-major square matrix.
@@ -148,7 +148,7 @@ inline void getri( int n, float* A, int lda, const int* ipiv, float* work, int l
 //*************************************************************************************************
 /*!\brief LAPACK kernel for the inversion of the given dense general double precision column-major
 //        square matrix.
-// \ingroup lapack
+// \ingroup lapack_inversion
 //
 // \param n The number of rows/columns of the matrix \f$[0..\infty)\f$.
 // \param A Pointer to the first element of the double precision column-major square matrix.
@@ -190,7 +190,7 @@ inline void getri( int n, double* A, int lda, const int* ipiv, double* work, int
 //*************************************************************************************************
 /*!\brief LAPACK kernel for the inversion of the given dense general single precision complex
 //        column-major square matrix.
-// \ingroup lapack
+// \ingroup lapack_inversion
 //
 // \param n The number of rows/columns of the matrix \f$[0..\infty)\f$.
 // \param A Pointer to the first element of the single precision complex column-major square matrix.
@@ -236,7 +236,7 @@ inline void getri( int n, complex<float>* A, int lda, const int* ipiv,
 //*************************************************************************************************
 /*!\brief LAPACK kernel for the inversion of the given dense general double precision complex
 //        column-major square matrix.
-// \ingroup lapack
+// \ingroup lapack_inversion
 //
 // \param n The number of rows/columns of the matrix \f$[0..\infty)\f$.
 // \param A Pointer to the first element of the double precision complex column-major square matrix.
@@ -281,7 +281,7 @@ inline void getri( int n, complex<double>* A, int lda, const int* ipiv,
 
 //*************************************************************************************************
 /*!\brief LAPACK kernel for the inversion of the given dense general matrix.
-// \ingroup lapack
+// \ingroup lapack_inversion
 //
 // \param A The matrix to be inverted.
 // \param ipiv Auxiliary array for the pivot indices; size >= min( \a m, \a n ).

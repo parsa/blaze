@@ -107,7 +107,7 @@ inline void gesv( DenseMatrix<MT1,SO1>& A, DenseMatrix<MT2,SO2>& B, int* ipiv );
 //*************************************************************************************************
 /*!\brief LAPACK kernel for solving a general single precision linear system of equations
 //        (\f$ A*X=B \f$).
-// \ingroup lapack
+// \ingroup lapack_solver
 //
 // \param n The number of rows/columns of matrix \a A \f$[0..\infty)\f$.
 // \param nrhs The number of right-hand side vectors \f$[0..\infty)\f$.
@@ -156,7 +156,7 @@ inline void gesv( int n, int nrhs, float* A, int lda, int* ipiv, float* B, int l
 //*************************************************************************************************
 /*!\brief LAPACK kernel for solving a general double precision linear system of equations
 //        (\f$ A*X=B \f$).
-// \ingroup lapack
+// \ingroup lapack_solver
 //
 // \param n The number of rows/columns of matrix \a A \f$[0..\infty)\f$.
 // \param nrhs The number of right-hand side vectors \f$[0..\infty)\f$.
@@ -205,7 +205,7 @@ inline void gesv( int n, int nrhs, double* A, int lda, int* ipiv, double* B, int
 //*************************************************************************************************
 /*!\brief LAPACK kernel for solving a general single precision complex linear system of equations
 //        (\f$ A*X=B \f$).
-// \ingroup lapack
+// \ingroup lapack_solver
 //
 // \param n The number of rows/columns of matrix \a A \f$[0..\infty)\f$.
 // \param nrhs The number of right-hand side vectors \f$[0..\infty)\f$.
@@ -257,7 +257,7 @@ inline void gesv( int n, int nrhs, complex<float>* A, int lda, int* ipiv, comple
 //*************************************************************************************************
 /*!\brief LAPACK kernel for solving a general double precision complex linear system of equations
 //        (\f$ A*X=B \f$).
-// \ingroup lapack
+// \ingroup lapack_solver
 //
 // \param n The number of rows/columns of matrix \a A \f$[0..\infty)\f$.
 // \param nrhs The number of right-hand side vectors \f$[0..\infty)\f$.
@@ -308,7 +308,7 @@ inline void gesv( int n, int nrhs, complex<double>* A, int lda, int* ipiv, compl
 
 //*************************************************************************************************
 /*!\brief LAPACK kernel for solving a general linear system of equations (\f$ A*x=b \f$).
-// \ingroup lapack
+// \ingroup lapack_solver
 //
 // \param A The column-major system matrix.
 // \param b The right-hand side vector.
@@ -400,7 +400,7 @@ inline void gesv( DenseMatrix<MT,SO>& A, DenseVector<VT,TF>& b, int* ipiv )
 
 //*************************************************************************************************
 /*!\brief LAPACK kernel for solving a general linear system of equations (\f$ A*X=B \f$).
-// \ingroup lapack
+// \ingroup lapack_solver
 //
 // \param A The column-major system matrix.
 // \param B The matrix of right-hand sides.

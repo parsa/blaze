@@ -78,12 +78,12 @@ void zhetrf_( char* uplo, int* n, double* A, int* lda, int* ipiv, double* work, 
 
 //=================================================================================================
 //
-//  LAPACK LDLH DECOMPOSITION FUNCTIONS
+//  LAPACK LDLH DECOMPOSITION FUNCTIONS (HETRF)
 //
 //=================================================================================================
 
 //*************************************************************************************************
-/*!\name LAPACK LDLH decomposition functions */
+/*!\name LAPACK LDLH decomposition functions (hetrf) */
 //@{
 inline void hetrf( char uplo, int n, complex<float>* A, int lda, int* ipiv,
                    complex<float>* work, int lwork, int* info );
@@ -100,7 +100,7 @@ inline void hetrf( DenseMatrix<MT,SO>& A, char uplo, int* ipiv );
 //*************************************************************************************************
 /*!\brief LAPACK kernel for the decomposition of the given dense Hermitian indefinite
 //        single precision complex column-major matrix.
-// \ingroup lapack
+// \ingroup lapack_decomposition
 //
 // \param uplo \c 'L' to use the lower part of the matrix, \c 'U' to use the upper part.
 // \param n The number of rows/columns of the Hermitian matrix \f$[0..\infty)\f$.
@@ -158,7 +158,7 @@ inline void hetrf( char uplo, int n, complex<float>* A, int lda, int* ipiv,
 //*************************************************************************************************
 /*!\brief LAPACK kernel for the decomposition of the given dense Hermitian indefinite
 //        double precision complex column-major matrix.
-// \ingroup lapack
+// \ingroup lapack_decomposition
 //
 // \param uplo \c 'L' to use the lower part of the matrix, \c 'U' to use the upper part.
 // \param n The number of rows/columns of the Hermitian matrix \f$[0..\infty)\f$.
@@ -215,7 +215,7 @@ inline void hetrf( char uplo, int n, complex<double>* A, int lda, int* ipiv,
 
 //*************************************************************************************************
 /*!\brief LAPACK kernel for the decomposition of the given dense Hermitian indefinite matrix.
-// \ingroup lapack
+// \ingroup lapack_decomposition
 //
 // \param A The matrix to be decomposed.
 // \param uplo \c 'L' to use the lower part of the matrix, \c 'U' to use the upper part.

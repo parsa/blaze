@@ -110,7 +110,7 @@ inline void trsv( const DenseMatrix<MT,SO>& A, DenseVector<VT,TF>& b,
 //*************************************************************************************************
 /*!\brief LAPACK kernel for solving a triangular single precision linear system of equations
 //        (\f$ A*X=B \f$).
-// \ingroup lapack
+// \ingroup lapack_solver
 //
 // \param uplo \c 'L' in case of a lower matrix, \c 'U' in case of an upper matrix.
 // \param trans \c 'N' for \f$ A*X=B \f$, \c 'T' for \f$ A^T*X=B \f$, and \c C for \f$ A^H*X=B \f$.
@@ -152,7 +152,7 @@ inline void trsv( char uplo, char trans, char diag, int n, const float* A,
 //*************************************************************************************************
 /*!\brief LAPACK kernel for solving a triangular double precision linear system of equations
 //        (\f$ A*x=b \f$).
-// \ingroup lapack
+// \ingroup lapack_solver
 //
 // \param uplo \c 'L' in case of a lower matrix, \c 'U' in case of an upper matrix.
 // \param trans \c 'N' for \f$ A*X=B \f$, \c 'T' for \f$ A^T*X=B \f$, and \c C for \f$ A^H*X=B \f$.
@@ -194,7 +194,7 @@ inline void trsv( char uplo, char trans, char diag, int n, const double* A,
 //*************************************************************************************************
 /*!\brief LAPACK kernel for solving a triangular single precision complex linear system of
 //        equations (\f$ A*x=b \f$).
-// \ingroup lapack
+// \ingroup lapack_solver
 //
 // \param uplo \c 'L' in case of a lower matrix, \c 'U' in case of an upper matrix.
 // \param trans \c 'N' for \f$ A*X=B \f$, \c 'T' for \f$ A^T*X=B \f$, and \c C for \f$ A^H*X=B \f$.
@@ -239,7 +239,7 @@ inline void trsv( char uplo, char trans, char diag, int n, const complex<float>*
 //*************************************************************************************************
 /*!\brief LAPACK kernel for solving a triangular double precision complex linear system of
 //        equations (\f$ A*x=b \f$).
-// \ingroup lapack
+// \ingroup lapack_solver
 //
 // \param uplo \c 'L' in case of a lower matrix, \c 'U' in case of an upper matrix.
 // \param trans \c 'N' for \f$ A*X=B \f$, \c 'T' for \f$ A^T*X=B \f$, and \c C for \f$ A^H*X=B \f$.
@@ -284,7 +284,7 @@ inline void trsv( char uplo, char trans, char diag, int n, const complex<double>
 //*************************************************************************************************
 /*!\brief LAPACK kernel for solving a triangular linear system of equations (\f$ A*x=b \f$).
 //        (\f$ A*x=b \f$).
-// \ingroup lapack
+// \ingroup lapack_solver
 //
 // \param A The system matrix.
 // \param b The right-hand side vector.

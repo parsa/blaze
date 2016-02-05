@@ -77,12 +77,12 @@ void zungqr_( int* m, int* n, int* k, double* A, int* lda, double* tau, double* 
 
 //=================================================================================================
 //
-//  LAPACK FUNCTIONS TO RECONSTRUCT Q FROM A QR DECOMPOSITION
+//  LAPACK FUNCTIONS TO RECONSTRUCT Q FROM A QR DECOMPOSITION (UNGQR)
 //
 //=================================================================================================
 
 //*************************************************************************************************
-/*!\name LAPACK functions to reconstruct Q from a QR decomposition */
+/*!\name LAPACK functions to reconstruct Q from a QR decomposition (ungqr) */
 //@{
 inline void ungqr( int m, int n, int k, complex<float>* A, int lda, const complex<float>* tau,
                    complex<float>* work, int lwork, int* info );
@@ -98,7 +98,7 @@ inline void ungqr( DenseMatrix<MT,SO>& A, const typename MT::ElementType* tau );
 
 //*************************************************************************************************
 /*!\brief LAPACK kernel for the reconstruction of the orthogonal matrix Q from a QR decomposition.
-// \ingroup lapack
+// \ingroup lapack_decomposition
 //
 // \param m The number of rows of the given matrix \f$[0..\infty)\f$.
 // \param n The number of columns of the given matrix \f$[0..m)\f$.
@@ -138,7 +138,7 @@ inline void ungqr( int m, int n, int k, complex<float>* A, int lda, const comple
 
 //*************************************************************************************************
 /*!\brief LAPACK kernel for the reconstruction of the orthogonal matrix Q from a QR decomposition.
-// \ingroup lapack
+// \ingroup lapack_decomposition
 //
 // \param m The number of rows of the given matrix \f$[0..\infty)\f$.
 // \param n The number of columns of the given matrix \f$[0..m)\f$.
@@ -178,7 +178,7 @@ inline void ungqr( int m, int n, int k, complex<double>* A, int lda, const compl
 
 //*************************************************************************************************
 /*!\brief LAPACK kernel for the reconstruction of the orthogonal matrix Q from a QR decomposition.
-// \ingroup lapack
+// \ingroup lapack_decomposition
 //
 // \param A The decomposed matrix.
 // \param tau Array for the scalar factors of the elementary reflectors; size >= min( \a m, \a n ).

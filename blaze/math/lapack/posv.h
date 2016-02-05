@@ -107,7 +107,7 @@ inline void posv( DenseMatrix<MT1,SO1>& A, DenseMatrix<MT2,SO2>& B, char uplo );
 //*************************************************************************************************
 /*!\brief LAPACK kernel for solving a positive definite single precision linear system of equations
 //        (\f$ A*X=B \f$).
-// \ingroup lapack
+// \ingroup lapack_solver
 //
 // \param uplo \c 'L' to use the lower part of the matrix, \c 'U' to use the upper part.
 // \param n The number of rows/columns of matrix \a A \f$[0..\infty)\f$.
@@ -158,7 +158,7 @@ inline void posv( char uplo, int n, int nrhs, float* A, int lda, float* B, int l
 //*************************************************************************************************
 /*!\brief LAPACK kernel for solving a positive definite double precision linear system of equations
 //        (\f$ A*X=B \f$).
-// \ingroup lapack
+// \ingroup lapack_solver
 //
 // \param uplo \c 'L' to use the lower part of the matrix, \c 'U' to use the upper part.
 // \param n The number of rows/columns of matrix \a A \f$[0..\infty)\f$.
@@ -209,7 +209,7 @@ inline void posv( char uplo, int n, int nrhs, double* A, int lda, double* B, int
 //*************************************************************************************************
 /*!\brief LAPACK kernel for solving a positive definite single precision complex linear system of
 //        equations (\f$ A*X=B \f$).
-// \ingroup lapack
+// \ingroup lapack_solver
 //
 // \param uplo \c 'L' to use the lower part of the matrix, \c 'U' to use the upper part.
 // \param n The number of rows/columns of matrix \a A \f$[0..\infty)\f$.
@@ -263,7 +263,7 @@ inline void posv( char uplo, int n, int nrhs, complex<float>* A, int lda, comple
 //*************************************************************************************************
 /*!\brief LAPACK kernel for solving a positive definite double precision complex linear system of
 //        equations (\f$ A*X=B \f$).
-// \ingroup lapack
+// \ingroup lapack_solver
 //
 // \param uplo \c 'L' to use the lower part of the matrix, \c 'U' to use the upper part.
 // \param n The number of rows/columns of matrix \a A \f$[0..\infty)\f$.
@@ -316,7 +316,7 @@ inline void posv( char uplo, int n, int nrhs, complex<double>* A, int lda, compl
 
 //*************************************************************************************************
 /*!\brief LAPACK kernel for solving a positive definite linear system of equations (\f$ A*x=b \f$).
-// \ingroup lapack
+// \ingroup lapack_solver
 //
 // \param A The column-major system matrix.
 // \param b The right-hand side vector.
@@ -421,7 +421,7 @@ inline void posv( DenseMatrix<MT,SO>& A, DenseVector<VT,TF>& b, char uplo )
 
 //*************************************************************************************************
 /*!\brief LAPACK kernel for solving a positive definite linear system of equations (\f$ A*X=B \f$).
-// \ingroup lapack
+// \ingroup lapack_solver
 //
 // \param A The system matrix.
 // \param B The matrix of right-hand sides.
