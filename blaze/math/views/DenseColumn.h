@@ -56,9 +56,13 @@
 #include <blaze/math/Intrinsics.h>
 #include <blaze/math/shims/Clear.h>
 #include <blaze/math/shims/IsDefault.h>
+#include <blaze/math/traits/AddTrait.h>
 #include <blaze/math/traits/ColumnTrait.h>
+#include <blaze/math/traits/CrossTrait.h>
 #include <blaze/math/traits/DerestrictTrait.h>
 #include <blaze/math/traits/DivTrait.h>
+#include <blaze/math/traits/MultTrait.h>
+#include <blaze/math/traits/SubTrait.h>
 #include <blaze/math/traits/SubvectorTrait.h>
 #include <blaze/math/typetraits/HasConstDataAccess.h>
 #include <blaze/math/typetraits/HasMutableDataAccess.h>

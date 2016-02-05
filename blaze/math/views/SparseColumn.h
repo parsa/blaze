@@ -61,6 +61,7 @@
 #include <blaze/math/sparse/SparseElement.h>
 #include <blaze/math/traits/AddTrait.h>
 #include <blaze/math/traits/ColumnTrait.h>
+#include <blaze/math/traits/CrossTrait.h>
 #include <blaze/math/traits/DerestrictTrait.h>
 #include <blaze/math/traits/DerestrictTrait.h>
 #include <blaze/math/traits/DivTrait.h>
