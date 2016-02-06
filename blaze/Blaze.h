@@ -3551,7 +3551,7 @@ namespace blaze {}
 // The function works for both \c rowMajor and \c columnMajor matrices and the three matrices
 // \c A, \c R and \c Q can have any storage order.
 //
-// Also the \c \rq() function can be used in combination with matrix adaptors. For instance, the
+// Also the \c rq() function can be used in combination with matrix adaptors. For instance, the
 // following example demonstrates the RQ decomposition of an Hermitian matrix into a general
 // matrix and an upper triangular matrix:
 
@@ -8831,7 +8831,7 @@ namespace blaze {}
 // <tt>v(i) = 1</tt>. <tt>v(i+1:m)</tt> is stored on exit in <tt>A(i+1:m,i)</tt>, and \c tau
 // in \c tau(i). Thus on exit the elements on and above the diagonal of the matrix contain the
 // min(\a m,\a n)-by-\a n upper trapezoidal matrix \c R (\c R is upper triangular if \a m >= \a n);
-// the elements below the diagonal, with the array \a tau, represent the orthogonal matrix \c Q as
+// the elements below the diagonal, with the array \c tau, represent the orthogonal matrix \c Q as
 // a product of min(\a m,\a n) elementary reflectors.
 //
 // The following functions provide an interface for the LAPACK functions \c sorgqr(), \c dorgqr(),
@@ -8894,10 +8894,10 @@ namespace blaze {}
 // where \c tau is a real scalar, and \c v is a real vector with <tt>v(n-k+i+1:n) = 0</tt> and
 // <tt>v(n-k+i) = 1</tt>. <tt>v(1:n-k+i-1)</tt> is stored on exit in <tt>A(m-k+i,1:n-k+i-1)</tt>,
 // and \c tau in \c tau(i). Thus in case \a m <= \a n, the upper triangle of the subarray
-// A(1:m,n-m+1:n) contains the \a m-by-\a m upper triangular matrix \c R and in case \a m >= \a n,
-// the elements on and above the (\a m-\a n)-th subdiagonal contain the \a m-by-\a n upper
-// trapezoidal matrix \c R; the remaining elements in combination with the array \c tau represent
-// the orthogonal matrix \c Q as a product of min(\a m,\a n) elementary reflectors.
+// <tt>A(1:m,n-m+1:n)</tt> contains the \a m-by-\a m upper triangular matrix \c R and in case
+// \a m >= \a n, the elements on and above the (\a m-\a n)-th subdiagonal contain the \a m-by-\a n
+// upper trapezoidal matrix \c R; the remaining elements in combination with the array \c tau
+// represent the orthogonal matrix \c Q as a product of min(\a m,\a n) elementary reflectors.
 //
 // The following functions provide an interface for the LAPACK functions \c sorgrq(), \c dorgrq(),
 // \c cungrq(), and \c zunqrq(), which reconstruct the \c Q matrix from a RQ decomposition:
@@ -8921,8 +8921,7 @@ namespace blaze {}
 
    } // namespace blaze
    \endcode
-//
-//
+
 // \n \section lapack_inversion Matrix Inversion
 // <hr>
 //
