@@ -94,6 +94,8 @@ class DMatTransposer : public DenseMatrix< DMatTransposer<MT,SO>, SO >
    typedef const This&                  CompositeType;   //!< Data type for composite expression templates.
    typedef typename MT::Reference       Reference;       //!< Reference to a non-constant matrix value.
    typedef typename MT::ConstReference  ConstReference;  //!< Reference to a constant matrix value.
+   typedef typename MT::Pointer         Pointer;         //!< Pointer to a non-constant matrix value.
+   typedef typename MT::ConstPointer    ConstPointer;    //!< Pointer to a constant matrix value.
    typedef typename MT::Iterator        Iterator;        //!< Iterator over non-constant elements.
    typedef typename MT::ConstIterator   ConstIterator;   //!< Iterator over constant elements.
    //**********************************************************************************************
@@ -155,7 +157,17 @@ class DMatTransposer : public DenseMatrix< DMatTransposer<MT,SO>, SO >
    //
    // \return Pointer to the internal element storage.
    */
-   inline ElementType* data() {
+   inline Pointer data() {
+      return dm_.data();
+   }
+   //**********************************************************************************************
+
+   //**Low-level data access***********************************************************************
+   /*!\brief Low-level data access to the matrix elements.
+   //
+   // \return Pointer to the internal element storage.
+   */
+   inline ConstPointer data() const {
       return dm_.data();
    }
    //**********************************************************************************************
@@ -958,6 +970,8 @@ class DMatTransposer<MT,true> : public DenseMatrix< DMatTransposer<MT,true>, tru
    typedef const This&                  CompositeType;   //!< Data type for composite expression templates.
    typedef typename MT::Reference       Reference;       //!< Reference to a non-constant matrix value.
    typedef typename MT::ConstReference  ConstReference;  //!< Reference to a constant matrix value.
+   typedef typename MT::Pointer         Pointer;         //!< Pointer to a non-constant matrix value.
+   typedef typename MT::ConstPointer    ConstPointer;    //!< Pointer to a constant matrix value.
    typedef typename MT::Iterator        Iterator;        //!< Iterator over non-constant elements.
    typedef typename MT::ConstIterator   ConstIterator;   //!< Iterator over constant elements.
    //**********************************************************************************************
@@ -1019,7 +1033,17 @@ class DMatTransposer<MT,true> : public DenseMatrix< DMatTransposer<MT,true>, tru
    //
    // \return Pointer to the internal element storage.
    */
-   inline ElementType* data() {
+   inline Pointer data() {
+      return dm_.data();
+   }
+   //**********************************************************************************************
+
+   //**Low-level data access***********************************************************************
+   /*!\brief Low-level data access to the matrix elements.
+   //
+   // \return Pointer to the internal element storage.
+   */
+   inline ConstPointer data() const {
       return dm_.data();
    }
    //**********************************************************************************************
