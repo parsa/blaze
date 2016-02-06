@@ -82,14 +82,14 @@ struct SMatScalarMultExprTraitHelper
    //**********************************************************************************************
    typedef typename UnderlyingNumeric<MT>::Type  NET;
    typedef typename If< And< IsComplex<NET>, IsBuiltin<ST> >
-                      , typename UnderlyingBuiltin<MT>::Type
+                      , typename MultTrait<typename UnderlyingBuiltin<MT>::Type,ST>::Type
                       , typename MultTrait<NET,ST>::Type
-                      >::Type  ElementType;
+                      >::Type  ScalarType;
    //**********************************************************************************************
 
  public:
    //**********************************************************************************************
-   typedef SMatScalarMultExpr<MT,ElementType,false>  Type;
+   typedef SMatScalarMultExpr<MT,ScalarType,false>  Type;
    //**********************************************************************************************
 };
 /*! \endcond */

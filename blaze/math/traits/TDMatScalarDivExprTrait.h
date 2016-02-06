@@ -83,16 +83,16 @@ struct TDMatScalarDivExprTraitHelper
    //**********************************************************************************************
    typedef typename UnderlyingNumeric<MT>::Type  NET;
    typedef typename If< And< IsComplex<NET>, IsBuiltin<ST> >
-                           , typename UnderlyingBuiltin<MT>::Type
+                           , typename DivTrait<typename UnderlyingBuiltin<MT>::Type,ST>::Type
                            , typename DivTrait<NET,ST>::Type
-                           >::Type  ElementType;
+                           >::Type  ScalarType;
    //**********************************************************************************************
 
  public:
    //**********************************************************************************************
-   typedef typename If< IsInvertible<ElementType>
-                      , DMatScalarMultExpr<MT,ElementType,true>
-                      , DMatScalarDivExpr<MT,ElementType,true>
+   typedef typename If< IsInvertible<ScalarType>
+                      , DMatScalarMultExpr<MT,ScalarType,true>
+                      , DMatScalarDivExpr<MT,ScalarType,true>
                       >::Type  Type;
    //**********************************************************************************************
 };

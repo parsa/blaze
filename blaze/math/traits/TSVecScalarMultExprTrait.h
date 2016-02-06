@@ -82,14 +82,14 @@ struct TSVecScalarMultExprTraitHelper
    //**********************************************************************************************
    typedef typename UnderlyingNumeric<VT>::Type  NET;
    typedef typename If< And< IsComplex<NET>, IsBuiltin<ST> >
-                      , typename UnderlyingBuiltin<VT>::Type
+                      , typename MultTrait<typename UnderlyingBuiltin<VT>::Type,ST>::Type
                       , typename MultTrait<NET,ST>::Type
-                      >::Type  ElementType;
+                      >::Type  ScalarType;
    //**********************************************************************************************
 
  public:
    //**********************************************************************************************
-   typedef SVecScalarMultExpr<VT,ElementType,true>  Type;
+   typedef SVecScalarMultExpr<VT,ScalarType,true>  Type;
    //**********************************************************************************************
 };
 /*! \endcond */

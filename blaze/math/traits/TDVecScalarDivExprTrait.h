@@ -83,16 +83,16 @@ struct TDVecScalarDivExprTraitHelper
    //**********************************************************************************************
    typedef typename UnderlyingNumeric<VT>::Type  NET;
    typedef typename If< And< IsComplex<NET>, IsBuiltin<ST> >
-                      , typename UnderlyingBuiltin<VT>::Type
+                      , typename DivTrait<typename UnderlyingBuiltin<VT>::Type,ST>::Type
                       , typename DivTrait<NET,ST>::Type
-                      >::Type  ElementType;
+                      >::Type  ScalarType;
    //**********************************************************************************************
 
  public:
    //**********************************************************************************************
-   typedef typename If< IsInvertible<ElementType>
-                      , DVecScalarMultExpr<VT,ElementType,true>
-                      , DVecScalarDivExpr<VT,ElementType,true>
+   typedef typename If< IsInvertible<ScalarType>
+                      , DVecScalarMultExpr<VT,ScalarType,true>
+                      , DVecScalarDivExpr<VT,ScalarType,true>
                       >::Type  Type;
    //**********************************************************************************************
 };
