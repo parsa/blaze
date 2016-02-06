@@ -88,8 +88,10 @@ class DVecTransposer : public DenseVector< DVecTransposer<VT,TF>, TF >
    typedef typename IT::Type            IntrinsicType;   //!< Intrinsic type of the vector elements.
    typedef typename VT::ReturnType      ReturnType;      //!< Return type for expression template evaluations.
    typedef const This&                  CompositeType;   //!< Data type for composite expression templates.
-   typedef typename VT::Reference       Reference;       //!< Reference to a non-constant matrix value.
-   typedef typename VT::ConstReference  ConstReference;  //!< Reference to a constant matrix value.
+   typedef typename VT::Reference       Reference;       //!< Reference to a non-constant vector value.
+   typedef typename VT::ConstReference  ConstReference;  //!< Reference to a constant vector value.
+   typedef typename VT::Pointer         Pointer;         //!< Pointer to a non-constant vector value.
+   typedef typename VT::ConstPointer    ConstPointer;    //!< Pointer to a constant vector value.
    typedef typename VT::Iterator        Iterator;        //!< Iterator over non-constant elements.
    typedef typename VT::ConstIterator   ConstIterator;   //!< Iterator over constant elements.
    //**********************************************************************************************
@@ -147,7 +149,17 @@ class DVecTransposer : public DenseVector< DVecTransposer<VT,TF>, TF >
    //
    // \return Pointer to the internal element storage.
    */
-   inline ElementType* data() {
+   inline Pointer data() {
+      return dv_.data();
+   }
+   //**********************************************************************************************
+
+   //**Low-level data access***********************************************************************
+   /*!\brief Low-level data access to the vector elements.
+   //
+   // \return Pointer to the internal element storage.
+   */
+   inline ConstPointer data() const {
       return dv_.data();
    }
    //**********************************************************************************************
