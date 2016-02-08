@@ -243,6 +243,8 @@ class HybridVector : public DenseVector< HybridVector<Type,N,TF>, TF >
    //@{
    inline Reference      operator[]( size_t index );
    inline ConstReference operator[]( size_t index ) const;
+   inline Reference      at( size_t index );
+   inline ConstReference at( size_t index ) const;
    inline Pointer        data  ();
    inline ConstPointer   data  () const;
    inline Iterator       begin ();
@@ -709,7 +711,8 @@ inline HybridVector<Type,N,TF>::HybridVector( const Vector<VT,TF>& v )
 // \param index Access index. The index has to be in the range \f$[0..N-1]\f$.
 // \return Reference to the accessed value.
 //
-// In case BLAZE_USER_ASSERT() is active, this operator performs an index check.
+// This function only performs an index check in case BLAZE_USER_ASSERT() is active. In contrast,
+// the at() function is guaranteed to perform a check of the given access index.
 */
 template< typename Type  // Data type of the vector
         , size_t N       // Number of elements
@@ -729,7 +732,8 @@ inline typename HybridVector<Type,N,TF>::Reference
 // \param index Access index. The index has to be in the range \f$[0..N-1]\f$.
 // \return Reference-to-const to the accessed value.
 //
-// In case BLAZE_USER_ASSERT() is active, this operator performs an index check.
+// This function only performs an index check in case BLAZE_USER_ASSERT() is active. In contrast,
+// the at() function is guaranteed to perform a check of the given access index.
 */
 template< typename Type  // Data type of the vector
         , size_t N       // Number of elements
@@ -739,6 +743,54 @@ inline typename HybridVector<Type,N,TF>::ConstReference
 {
    BLAZE_USER_ASSERT( index < size_, "Invalid vector access index" );
    return v_[index];
+}
+//*************************************************************************************************
+
+
+//*************************************************************************************************
+/*!\brief Checked access to the vector elements.
+//
+// \param index Access index. The index has to be in the range \f$[0..N-1]\f$.
+// \return Reference to the accessed value.
+// \exception std::out_of_range Invalid vector access index.
+//
+// In contrast to the subscript operator this function always performs a check of the given
+// access index.
+*/
+template< typename Type  // Data type of the vector
+        , size_t N       // Number of elements
+        , bool TF >      // Transpose flag
+inline typename HybridVector<Type,N,TF>::Reference
+   HybridVector<Type,N,TF>::at( size_t index )
+{
+   if( index >= size_ ) {
+      BLAZE_THROW_OUT_OF_RANGE( "Invalid vector access index" );
+   }
+   return (*this)[index];
+}
+//*************************************************************************************************
+
+
+//*************************************************************************************************
+/*!\brief Checked access to the vector elements.
+//
+// \param index Access index. The index has to be in the range \f$[0..N-1]\f$.
+// \return Reference to the accessed value.
+// \exception std::out_of_range Invalid vector access index.
+//
+// In contrast to the subscript operator this function always performs a check of the given
+// access index.
+*/
+template< typename Type  // Data type of the vector
+        , size_t N       // Number of elements
+        , bool TF >      // Transpose flag
+inline typename HybridVector<Type,N,TF>::ConstReference
+   HybridVector<Type,N,TF>::at( size_t index ) const
+{
+   if( index >= size_ ) {
+      BLAZE_THROW_OUT_OF_RANGE( "Invalid vector access index" );
+   }
+   return (*this)[index];
 }
 //*************************************************************************************************
 
