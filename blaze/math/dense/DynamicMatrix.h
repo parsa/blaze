@@ -271,6 +271,8 @@ class DynamicMatrix : public DenseMatrix< DynamicMatrix<Type,SO>, SO >
    //@{
    inline Reference      operator()( size_t i, size_t j );
    inline ConstReference operator()( size_t i, size_t j ) const;
+   inline Reference      at( size_t i, size_t j );
+   inline ConstReference at( size_t i, size_t j ) const;
    inline Pointer        data  ();
    inline ConstPointer   data  () const;
    inline Pointer        data  ( size_t i );
@@ -729,6 +731,9 @@ inline DynamicMatrix<Type,SO>::~DynamicMatrix()
 // \param i Access index for the row. The index has to be in the range \f$[0..M-1]\f$.
 // \param j Access index for the column. The index has to be in the range \f$[0..N-1]\f$.
 // \return Reference to the accessed value.
+//
+// This function only performs an index check in case BLAZE_USER_ASSERT() is active. In contrast,
+// the at() function is guaranteed to perform a check of the given access indices.
 */
 template< typename Type  // Data type of the matrix
         , bool SO >      // Storage order
@@ -748,6 +753,9 @@ inline typename DynamicMatrix<Type,SO>::Reference
 // \param i Access index for the row. The index has to be in the range \f$[0..M-1]\f$.
 // \param j Access index for the column. The index has to be in the range \f$[0..N-1]\f$.
 // \return Reference to the accessed value.
+//
+// This function only performs an index check in case BLAZE_USER_ASSERT() is active. In contrast,
+// the at() function is guaranteed to perform a check of the given access indices.
 */
 template< typename Type  // Data type of the matrix
         , bool SO >      // Storage order
@@ -757,6 +765,60 @@ inline typename DynamicMatrix<Type,SO>::ConstReference
    BLAZE_USER_ASSERT( i<m_, "Invalid row access index"    );
    BLAZE_USER_ASSERT( j<n_, "Invalid column access index" );
    return v_[i*nn_+j];
+}
+//*************************************************************************************************
+
+
+//*************************************************************************************************
+/*!\brief Checked access to the matrix elements.
+//
+// \param i Access index for the row. The index has to be in the range \f$[0..M-1]\f$.
+// \param j Access index for the column. The index has to be in the range \f$[0..N-1]\f$.
+// \return Reference to the accessed value.
+// \exception std::out_of_range Invalid matrix access index.
+//
+// In contrast to the subscript operator this function always performs a check of the given
+// access indices.
+*/
+template< typename Type  // Data type of the matrix
+        , bool SO >      // Storage order
+inline typename DynamicMatrix<Type,SO>::Reference
+   DynamicMatrix<Type,SO>::at( size_t i, size_t j )
+{
+   if( i >= m_ ) {
+      BLAZE_THROW_OUT_OF_RANGE( "Invalid row access index" );
+   }
+   if( j >= n_ ) {
+      BLAZE_THROW_OUT_OF_RANGE( "Invalid column access index" );
+   }
+   return (*this)(i,j);
+}
+//*************************************************************************************************
+
+
+//*************************************************************************************************
+/*!\brief Checked access to the matrix elements.
+//
+// \param i Access index for the row. The index has to be in the range \f$[0..M-1]\f$.
+// \param j Access index for the column. The index has to be in the range \f$[0..N-1]\f$.
+// \return Reference to the accessed value.
+// \exception std::out_of_range Invalid matrix access index.
+//
+// In contrast to the subscript operator this function always performs a check of the given
+// access indices.
+*/
+template< typename Type  // Data type of the matrix
+        , bool SO >      // Storage order
+inline typename DynamicMatrix<Type,SO>::ConstReference
+   DynamicMatrix<Type,SO>::at( size_t i, size_t j ) const
+{
+   if( i >= m_ ) {
+      BLAZE_THROW_OUT_OF_RANGE( "Invalid row access index" );
+   }
+   if( j >= n_ ) {
+      BLAZE_THROW_OUT_OF_RANGE( "Invalid column access index" );
+   }
+   return (*this)(i,j);
 }
 //*************************************************************************************************
 
@@ -2743,6 +2805,8 @@ class DynamicMatrix<Type,true> : public DenseMatrix< DynamicMatrix<Type,true>, t
    //@{
    inline Reference      operator()( size_t i, size_t j );
    inline ConstReference operator()( size_t i, size_t j ) const;
+   inline Reference      at( size_t i, size_t j );
+   inline ConstReference at( size_t i, size_t j ) const;
    inline Pointer        data  ();
    inline ConstPointer   data  () const;
    inline Pointer        data  ( size_t j );
@@ -3196,6 +3260,9 @@ inline DynamicMatrix<Type,true>::~DynamicMatrix()
 // \param i Access index for the row. The index has to be in the range \f$[0..M-1]\f$.
 // \param j Access index for the column. The index has to be in the range \f$[0..N-1]\f$.
 // \return Reference to the accessed value.
+//
+// This function only performs an index check in case BLAZE_USER_ASSERT() is active. In contrast,
+// the at() function is guaranteed to perform a check of the given access indices.
 */
 template< typename Type >  // Data type of the matrix
 inline typename DynamicMatrix<Type,true>::Reference
@@ -3216,6 +3283,9 @@ inline typename DynamicMatrix<Type,true>::Reference
 // \param i Access index for the row. The index has to be in the range \f$[0..M-1]\f$.
 // \param j Access index for the column. The index has to be in the range \f$[0..N-1]\f$.
 // \return Reference to the accessed value.
+//
+// This function only performs an index check in case BLAZE_USER_ASSERT() is active. In contrast,
+// the at() function is guaranteed to perform a check of the given access indices.
 */
 template< typename Type >  // Data type of the matrix
 inline typename DynamicMatrix<Type,true>::ConstReference
@@ -3224,6 +3294,62 @@ inline typename DynamicMatrix<Type,true>::ConstReference
    BLAZE_USER_ASSERT( i<m_, "Invalid row access index"    );
    BLAZE_USER_ASSERT( j<n_, "Invalid column access index" );
    return v_[i+j*mm_];
+}
+/*! \endcond */
+//*************************************************************************************************
+
+
+//*************************************************************************************************
+/*! \cond BLAZE_INTERNAL */
+/*!\brief Checked access to the matrix elements.
+//
+// \param i Access index for the row. The index has to be in the range \f$[0..M-1]\f$.
+// \param j Access index for the column. The index has to be in the range \f$[0..N-1]\f$.
+// \return Reference to the accessed value.
+// \exception std::out_of_range Invalid matrix access index.
+//
+// In contrast to the subscript operator this function always performs a check of the given
+// access indices.
+*/
+template< typename Type >  // Data type of the matrix
+inline typename DynamicMatrix<Type,true>::Reference
+   DynamicMatrix<Type,true>::at( size_t i, size_t j )
+{
+   if( i >= m_ ) {
+      BLAZE_THROW_OUT_OF_RANGE( "Invalid row access index" );
+   }
+   if( j >= n_ ) {
+      BLAZE_THROW_OUT_OF_RANGE( "Invalid column access index" );
+   }
+   return (*this)(i,j);
+}
+/*! \endcond */
+//*************************************************************************************************
+
+
+//*************************************************************************************************
+/*! \cond BLAZE_INTERNAL */
+/*!\brief Checked access to the matrix elements.
+//
+// \param i Access index for the row. The index has to be in the range \f$[0..M-1]\f$.
+// \param j Access index for the column. The index has to be in the range \f$[0..N-1]\f$.
+// \return Reference to the accessed value.
+// \exception std::out_of_range Invalid matrix access index.
+//
+// In contrast to the subscript operator this function always performs a check of the given
+// access indices.
+*/
+template< typename Type >  // Data type of the matrix
+inline typename DynamicMatrix<Type,true>::ConstReference
+   DynamicMatrix<Type,true>::at( size_t i, size_t j ) const
+{
+   if( i >= m_ ) {
+      BLAZE_THROW_OUT_OF_RANGE( "Invalid row access index" );
+   }
+   if( j >= n_ ) {
+      BLAZE_THROW_OUT_OF_RANGE( "Invalid column access index" );
+   }
+   return (*this)(i,j);
 }
 /*! \endcond */
 //*************************************************************************************************
