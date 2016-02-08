@@ -489,6 +489,8 @@ class CustomVector : public DenseVector< CustomVector<Type,AF,PF,TF>, TF >
    //@{
    inline Reference      operator[]( size_t index );
    inline ConstReference operator[]( size_t index ) const;
+   inline Reference      at( size_t index );
+   inline ConstReference at( size_t index ) const;
    inline Pointer        data  ();
    inline ConstPointer   data  () const;
    inline Iterator       begin ();
@@ -892,6 +894,9 @@ inline CustomVector<Type,AF,PF,TF>::CustomVector( const CustomVector& v )
 //
 // \param index Access index. The index has to be in the range \f$[0..N-1]\f$.
 // \return Reference to the accessed value.
+//
+// This function only performs an index check in case BLAZE_USER_ASSERT() is active. In contrast,
+// the at() function is guaranteed to perform a check of the given access index.
 */
 template< typename Type  // Data type of the vector
         , bool AF        // Alignment flag
@@ -911,6 +916,9 @@ inline typename CustomVector<Type,AF,PF,TF>::Reference
 //
 // \param index Access index. The index has to be in the range \f$[0..N-1]\f$.
 // \return Reference to the accessed value.
+//
+// This function only performs an index check in case BLAZE_USER_ASSERT() is active. In contrast,
+// the at() function is guaranteed to perform a check of the given access index.
 */
 template< typename Type  // Data type of the vector
         , bool AF        // Alignment flag
@@ -921,6 +929,56 @@ inline typename CustomVector<Type,AF,PF,TF>::ConstReference
 {
    BLAZE_USER_ASSERT( index < size_, "Invalid vector access index" );
    return v_[index];
+}
+//*************************************************************************************************
+
+
+//*************************************************************************************************
+/*!\brief Checked access to the vector elements.
+//
+// \param index Access index. The index has to be in the range \f$[0..N-1]\f$.
+// \return Reference to the accessed value.
+// \exception std::out_of_range Invalid vector access index.
+//
+// In contrast to the subscript operator this function always performs a check of the given
+// access index.
+*/
+template< typename Type  // Data type of the vector
+        , bool AF        // Alignment flag
+        , bool PF        // Padding flag
+        , bool TF >      // Transpose flag
+inline typename CustomVector<Type,AF,PF,TF>::Reference
+   CustomVector<Type,AF,PF,TF>::at( size_t index )
+{
+   if( index >= size_ ) {
+      BLAZE_THROW_OUT_OF_RANGE( "Invalid vector access index" );
+   }
+   return (*this)[index];
+}
+//*************************************************************************************************
+
+
+//*************************************************************************************************
+/*!\brief Checked access to the vector elements.
+//
+// \param index Access index. The index has to be in the range \f$[0..N-1]\f$.
+// \return Reference to the accessed value.
+// \exception std::out_of_range Invalid vector access index.
+//
+// In contrast to the subscript operator this function always performs a check of the given
+// access index.
+*/
+template< typename Type  // Data type of the vector
+        , bool AF        // Alignment flag
+        , bool PF        // Padding flag
+        , bool TF >      // Transpose flag
+inline typename CustomVector<Type,AF,PF,TF>::ConstReference
+   CustomVector<Type,AF,PF,TF>::at( size_t index ) const
+{
+   if( index >= size_ ) {
+      BLAZE_THROW_OUT_OF_RANGE( "Invalid vector access index" );
+   }
+   return (*this)[index];
 }
 //*************************************************************************************************
 
@@ -2516,6 +2574,8 @@ class CustomVector<Type,AF,padded,TF>
    //@{
    inline Reference      operator[]( size_t index );
    inline ConstReference operator[]( size_t index ) const;
+   inline Reference      at( size_t index );
+   inline ConstReference at( size_t index ) const;
    inline Pointer        data  ();
    inline ConstPointer   data  () const;
    inline Iterator       begin ();
@@ -2866,6 +2926,9 @@ inline CustomVector<Type,AF,padded,TF>::CustomVector( const CustomVector& v )
 //
 // \param index Access index. The index has to be in the range \f$[0..N-1]\f$.
 // \return Reference to the accessed value.
+//
+// This function only performs an index check in case BLAZE_USER_ASSERT() is active. In contrast,
+// the at() function is guaranteed to perform a check of the given access index.
 */
 template< typename Type  // Data type of the vector
         , bool AF        // Alignment flag
@@ -2886,6 +2949,9 @@ inline typename CustomVector<Type,AF,padded,TF>::Reference
 //
 // \param index Access index. The index has to be in the range \f$[0..N-1]\f$.
 // \return Reference to the accessed value.
+//
+// This function only performs an index check in case BLAZE_USER_ASSERT() is active. In contrast,
+// the at() function is guaranteed to perform a check of the given access index.
 */
 template< typename Type  // Data type of the vector
         , bool AF        // Alignment flag
@@ -2895,6 +2961,58 @@ inline typename CustomVector<Type,AF,padded,TF>::ConstReference
 {
    BLAZE_USER_ASSERT( index < size_, "Invalid vector access index" );
    return v_[index];
+}
+/*! \endcond */
+//*************************************************************************************************
+
+
+//*************************************************************************************************
+/*! \cond BLAZE_INTERNAL */
+/*!\brief Checked access to the vector elements.
+//
+// \param index Access index. The index has to be in the range \f$[0..N-1]\f$.
+// \return Reference to the accessed value.
+// \exception std::out_of_range Invalid vector access index.
+//
+// In contrast to the subscript operator this function always performs a check of the given
+// access index.
+*/
+template< typename Type  // Data type of the vector
+        , bool AF        // Alignment flag
+        , bool TF >      // Transpose flag
+inline typename CustomVector<Type,AF,padded,TF>::Reference
+   CustomVector<Type,AF,padded,TF>::at( size_t index )
+{
+   if( index >= size_ ) {
+      BLAZE_THROW_OUT_OF_RANGE( "Invalid vector access index" );
+   }
+   return (*this)[index];
+}
+/*! \endcond */
+//*************************************************************************************************
+
+
+//*************************************************************************************************
+/*! \cond BLAZE_INTERNAL */
+/*!\brief Checked access to the vector elements.
+//
+// \param index Access index. The index has to be in the range \f$[0..N-1]\f$.
+// \return Reference to the accessed value.
+// \exception std::out_of_range Invalid vector access index.
+//
+// In contrast to the subscript operator this function always performs a check of the given
+// access index.
+*/
+template< typename Type  // Data type of the vector
+        , bool AF        // Alignment flag
+        , bool TF >      // Transpose flag
+inline typename CustomVector<Type,AF,padded,TF>::ConstReference
+   CustomVector<Type,AF,padded,TF>::at( size_t index ) const
+{
+   if( index >= size_ ) {
+      BLAZE_THROW_OUT_OF_RANGE( "Invalid vector access index" );
+   }
+   return (*this)[index];
 }
 /*! \endcond */
 //*************************************************************************************************
