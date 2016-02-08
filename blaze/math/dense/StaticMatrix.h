@@ -296,6 +296,8 @@ class StaticMatrix : public DenseMatrix< StaticMatrix<Type,M,N,SO>, SO >
    //@{
    inline Reference      operator()( size_t i, size_t j );
    inline ConstReference operator()( size_t i, size_t j ) const;
+   inline Reference      at( size_t i, size_t j );
+   inline ConstReference at( size_t i, size_t j ) const;
    inline Pointer        data  ();
    inline ConstPointer   data  () const;
    inline Pointer        data  ( size_t i );
@@ -1410,6 +1412,9 @@ inline StaticMatrix<Type,M,N,SO>::StaticMatrix( const Type& v1, const Type& v2, 
 // \param i Access index for the row. The index has to be in the range [0..M-1].
 // \param j Access index for the column. The index has to be in the range [0..N-1].
 // \return Reference to the accessed value.
+//
+// This function only performs an index check in case BLAZE_USER_ASSERT() is active. In contrast,
+// the at() function is guaranteed to perform a check of the given access indices.
 */
 template< typename Type  // Data type of the matrix
         , size_t M       // Number of rows
@@ -1431,6 +1436,9 @@ inline typename StaticMatrix<Type,M,N,SO>::Reference
 // \param i Access index for the row. The index has to be in the range [0..M-1].
 // \param j Access index for the column. The index has to be in the range [0..N-1].
 // \return Reference-to-const to the accessed value.
+//
+// This function only performs an index check in case BLAZE_USER_ASSERT() is active. In contrast,
+// the at() function is guaranteed to perform a check of the given access indices.
 */
 template< typename Type  // Data type of the matrix
         , size_t M       // Number of rows
@@ -1442,6 +1450,64 @@ inline typename StaticMatrix<Type,M,N,SO>::ConstReference
    BLAZE_USER_ASSERT( i<M, "Invalid row access index"    );
    BLAZE_USER_ASSERT( j<N, "Invalid column access index" );
    return v_[i*NN+j];
+}
+//*************************************************************************************************
+
+
+//*************************************************************************************************
+/*!\brief Checked access to the matrix elements.
+//
+// \param i Access index for the row. The index has to be in the range \f$[0..M-1]\f$.
+// \param j Access index for the column. The index has to be in the range \f$[0..N-1]\f$.
+// \return Reference to the accessed value.
+// \exception std::out_of_range Invalid matrix access index.
+//
+// In contrast to the subscript operator this function always performs a check of the given
+// access indices.
+*/
+template< typename Type  // Data type of the matrix
+        , size_t M       // Number of rows
+        , size_t N       // Number of columns
+        , bool SO >      // Storage order
+inline typename StaticMatrix<Type,M,N,SO>::Reference
+   StaticMatrix<Type,M,N,SO>::at( size_t i, size_t j )
+{
+   if( i >= M ) {
+      BLAZE_THROW_OUT_OF_RANGE( "Invalid row access index" );
+   }
+   if( j >= N ) {
+      BLAZE_THROW_OUT_OF_RANGE( "Invalid column access index" );
+   }
+   return (*this)(i,j);
+}
+//*************************************************************************************************
+
+
+//*************************************************************************************************
+/*!\brief Checked access to the matrix elements.
+//
+// \param i Access index for the row. The index has to be in the range \f$[0..M-1]\f$.
+// \param j Access index for the column. The index has to be in the range \f$[0..N-1]\f$.
+// \return Reference to the accessed value.
+// \exception std::out_of_range Invalid matrix access index.
+//
+// In contrast to the subscript operator this function always performs a check of the given
+// access indices.
+*/
+template< typename Type  // Data type of the matrix
+        , size_t M       // Number of rows
+        , size_t N       // Number of columns
+        , bool SO >      // Storage order
+inline typename StaticMatrix<Type,M,N,SO>::ConstReference
+   StaticMatrix<Type,M,N,SO>::at( size_t i, size_t j ) const
+{
+   if( i >= M ) {
+      BLAZE_THROW_OUT_OF_RANGE( "Invalid row access index" );
+   }
+   if( j >= N ) {
+      BLAZE_THROW_OUT_OF_RANGE( "Invalid column access index" );
+   }
+   return (*this)(i,j);
 }
 //*************************************************************************************************
 
@@ -3458,6 +3524,8 @@ class StaticMatrix<Type,M,N,true> : public DenseMatrix< StaticMatrix<Type,M,N,tr
    //@{
    inline Reference      operator()( size_t i, size_t j );
    inline ConstReference operator()( size_t i, size_t j ) const;
+   inline Reference      at( size_t i, size_t j );
+   inline ConstReference at( size_t i, size_t j ) const;
    inline Pointer        data  ();
    inline ConstPointer   data  () const;
    inline Pointer        data  ( size_t j );
@@ -4574,6 +4642,9 @@ inline StaticMatrix<Type,M,N,true>::StaticMatrix( const Type& v1, const Type& v2
 // \param i Access index for the row. The index has to be in the range [0..M-1].
 // \param j Access index for the column. The index has to be in the range [0..N-1].
 // \return Reference to the accessed value.
+//
+// This function only performs an index check in case BLAZE_USER_ASSERT() is active. In contrast,
+// the at() function is guaranteed to perform a check of the given access indices.
 */
 template< typename Type  // Data type of the matrix
         , size_t M       // Number of rows
@@ -4596,6 +4667,9 @@ inline typename StaticMatrix<Type,M,N,true>::Reference
 // \param i Access index for the row. The index has to be in the range [0..M-1].
 // \param j Access index for the column. The index has to be in the range [0..N-1].
 // \return Reference-to-const to the accessed value.
+//
+// This function only performs an index check in case BLAZE_USER_ASSERT() is active. In contrast,
+// the at() function is guaranteed to perform a check of the given access indices.
 */
 template< typename Type  // Data type of the matrix
         , size_t M       // Number of rows
@@ -4606,6 +4680,66 @@ inline typename StaticMatrix<Type,M,N,true>::ConstReference
    BLAZE_USER_ASSERT( i<M, "Invalid row access index"    );
    BLAZE_USER_ASSERT( j<N, "Invalid column access index" );
    return v_[i+j*MM];
+}
+/*! \endcond */
+//*************************************************************************************************
+
+
+//*************************************************************************************************
+/*! \cond BLAZE_INTERNAL */
+/*!\brief Checked access to the matrix elements.
+//
+// \param i Access index for the row. The index has to be in the range \f$[0..M-1]\f$.
+// \param j Access index for the column. The index has to be in the range \f$[0..N-1]\f$.
+// \return Reference to the accessed value.
+// \exception std::out_of_range Invalid matrix access index.
+//
+// In contrast to the subscript operator this function always performs a check of the given
+// access indices.
+*/
+template< typename Type  // Data type of the matrix
+        , size_t M       // Number of rows
+        , size_t N >     // Number of columns
+inline typename StaticMatrix<Type,M,N,true>::Reference
+   StaticMatrix<Type,M,N,true>::at( size_t i, size_t j )
+{
+   if( i >= M ) {
+      BLAZE_THROW_OUT_OF_RANGE( "Invalid row access index" );
+   }
+   if( j >= N ) {
+      BLAZE_THROW_OUT_OF_RANGE( "Invalid column access index" );
+   }
+   return (*this)(i,j);
+}
+/*! \endcond */
+//*************************************************************************************************
+
+
+//*************************************************************************************************
+/*! \cond BLAZE_INTERNAL */
+/*!\brief Checked access to the matrix elements.
+//
+// \param i Access index for the row. The index has to be in the range \f$[0..M-1]\f$.
+// \param j Access index for the column. The index has to be in the range \f$[0..N-1]\f$.
+// \return Reference to the accessed value.
+// \exception std::out_of_range Invalid matrix access index.
+//
+// In contrast to the subscript operator this function always performs a check of the given
+// access indices.
+*/
+template< typename Type  // Data type of the matrix
+        , size_t M       // Number of rows
+        , size_t N >     // Number of columns
+inline typename StaticMatrix<Type,M,N,true>::ConstReference
+   StaticMatrix<Type,M,N,true>::at( size_t i, size_t j ) const
+{
+   if( i >= M ) {
+      BLAZE_THROW_OUT_OF_RANGE( "Invalid row access index" );
+   }
+   if( j >= N ) {
+      BLAZE_THROW_OUT_OF_RANGE( "Invalid column access index" );
+   }
+   return (*this)(i,j);
 }
 /*! \endcond */
 //*************************************************************************************************
