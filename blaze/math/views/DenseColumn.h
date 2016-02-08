@@ -406,6 +406,8 @@ class DenseColumn : public DenseVector< DenseColumn<MT,SO,SF>, false >
    //@{
    inline Reference      operator[]( size_t index );
    inline ConstReference operator[]( size_t index ) const;
+   inline Reference      at( size_t index );
+   inline ConstReference at( size_t index ) const;
    inline Pointer        data  ();
    inline ConstPointer   data  () const;
    inline Iterator       begin ();
@@ -665,6 +667,9 @@ inline DenseColumn<MT,SO,SF>::DenseColumn( MT& matrix, size_t index )
 //
 // \param index Access index. The index must be smaller than the number of matrix rows.
 // \return Reference to the accessed value.
+//
+// This function only performs an index check in case BLAZE_USER_ASSERT() is active. In contrast,
+// the at() function is guaranteed to perform a check of the given access index.
 */
 template< typename MT  // Type of the dense matrix
         , bool SO      // Storage order
@@ -682,6 +687,9 @@ inline typename DenseColumn<MT,SO,SF>::Reference DenseColumn<MT,SO,SF>::operator
 //
 // \param index Access index. The index must be smaller than the number of matrix rows.
 // \return Reference to the accessed value.
+//
+// This function only performs an index check in case BLAZE_USER_ASSERT() is active. In contrast,
+// the at() function is guaranteed to perform a check of the given access index.
 */
 template< typename MT  // Type of the dense matrix
         , bool SO      // Storage order
@@ -691,6 +699,53 @@ inline typename DenseColumn<MT,SO,SF>::ConstReference
 {
    BLAZE_USER_ASSERT( index < size(), "Invalid column access index" );
    return const_cast<const MT&>( matrix_ )(index,col_);
+}
+//*************************************************************************************************
+
+
+//*************************************************************************************************
+/*!\brief Checked access to the column elements.
+//
+// \param index Access index. The index must be smaller than the number of matrix rows.
+// \return Reference to the accessed value.
+// \exception std::out_of_range Invalid column access index.
+//
+// In contrast to the subscript operator this function always performs a check of the given
+// access index.
+*/
+template< typename MT  // Type of the dense matrix
+        , bool SO      // Storage order
+        , bool SF >    // Symmetry flag
+inline typename DenseColumn<MT,SO,SF>::Reference DenseColumn<MT,SO,SF>::at( size_t index )
+{
+   if( index >= size() ) {
+      BLAZE_THROW_OUT_OF_RANGE( "Invalid column access index" );
+   }
+   return (*this)[index];
+}
+//*************************************************************************************************
+
+
+//*************************************************************************************************
+/*!\brief Checked access to the column elements.
+//
+// \param index Access index. The index must be smaller than the number of matrix rows.
+// \return Reference to the accessed value.
+// \exception std::out_of_range Invalid column access index.
+//
+// In contrast to the subscript operator this function always performs a check of the given
+// access index.
+*/
+template< typename MT  // Type of the dense matrix
+        , bool SO      // Storage order
+        , bool SF >    // Symmetry flag
+inline typename DenseColumn<MT,SO,SF>::ConstReference
+   DenseColumn<MT,SO,SF>::at( size_t index ) const
+{
+   if( index >= size() ) {
+      BLAZE_THROW_OUT_OF_RANGE( "Invalid column access index" );
+   }
+   return (*this)[index];
 }
 //*************************************************************************************************
 
@@ -2439,6 +2494,8 @@ class DenseColumn<MT,false,false> : public DenseVector< DenseColumn<MT,false,fal
    //@{
    inline Reference      operator[]( size_t index );
    inline ConstReference operator[]( size_t index ) const;
+   inline Reference      at( size_t index );
+   inline ConstReference at( size_t index ) const;
    inline Pointer        data  ();
    inline ConstPointer   data  () const;
    inline Iterator       begin ();
@@ -2605,6 +2662,9 @@ inline DenseColumn<MT,false,false>::DenseColumn( MT& matrix, size_t index )
 //
 // \param index Access index. The index must be smaller than the number of matrix rows.
 // \return Reference to the accessed value.
+//
+// This function only performs an index check in case BLAZE_USER_ASSERT() is active. In contrast,
+// the at() function is guaranteed to perform a check of the given access index.
 */
 template< typename MT >  // Type of the dense matrix
 inline typename DenseColumn<MT,false,false>::Reference
@@ -2623,6 +2683,9 @@ inline typename DenseColumn<MT,false,false>::Reference
 //
 // \param index Access index. The index must be smaller than the number of matrix rows.
 // \return Reference to the accessed value.
+//
+// This function only performs an index check in case BLAZE_USER_ASSERT() is active. In contrast,
+// the at() function is guaranteed to perform a check of the given access index.
 */
 template< typename MT >  // Type of the dense matrix
 inline typename DenseColumn<MT,false,false>::ConstReference
@@ -2630,6 +2693,54 @@ inline typename DenseColumn<MT,false,false>::ConstReference
 {
    BLAZE_USER_ASSERT( index < size(), "Invalid column access index" );
    return const_cast<const MT&>( matrix_ )(index,col_);
+}
+/*! \endcond */
+//*************************************************************************************************
+
+
+//*************************************************************************************************
+/*! \cond BLAZE_INTERNAL */
+/*!\brief Checked access to the column elements.
+//
+// \param index Access index. The index must be smaller than the number of matrix rows.
+// \return Reference to the accessed value.
+// \exception std::out_of_range Invalid column access index.
+//
+// In contrast to the subscript operator this function always performs a check of the given
+// access index.
+*/
+template< typename MT >  // Type of the dense matrix
+inline typename DenseColumn<MT,false,false>::Reference
+   DenseColumn<MT,false,false>::at( size_t index )
+{
+   if( index >= size() ) {
+      BLAZE_THROW_OUT_OF_RANGE( "Invalid column access index" );
+   }
+   return (*this)[index];
+}
+/*! \endcond */
+//*************************************************************************************************
+
+
+//*************************************************************************************************
+/*! \cond BLAZE_INTERNAL */
+/*!\brief Checked access to the column elements.
+//
+// \param index Access index. The index must be smaller than the number of matrix rows.
+// \return Reference to the accessed value.
+// \exception std::out_of_range Invalid column access index.
+//
+// In contrast to the subscript operator this function always performs a check of the given
+// access index.
+*/
+template< typename MT >  // Type of the dense matrix
+inline typename DenseColumn<MT,false,false>::ConstReference
+   DenseColumn<MT,false,false>::at( size_t index ) const
+{
+   if( index >= size() ) {
+      BLAZE_THROW_OUT_OF_RANGE( "Invalid column access index" );
+   }
+   return (*this)[index];
 }
 /*! \endcond */
 //*************************************************************************************************
@@ -3739,6 +3850,8 @@ class DenseColumn<MT,false,true> : public DenseVector< DenseColumn<MT,false,true
    //@{
    inline Reference      operator[]( size_t index );
    inline ConstReference operator[]( size_t index ) const;
+   inline Reference      at( size_t index );
+   inline ConstReference at( size_t index ) const;
    inline Pointer        data  ();
    inline ConstPointer   data  () const;
    inline Iterator       begin ();
@@ -3989,6 +4102,9 @@ inline DenseColumn<MT,false,true>::DenseColumn( MT& matrix, size_t index )
 //
 // \param index Access index. The index must be smaller than the number of matrix rows.
 // \return Reference to the accessed value.
+//
+// This function only performs an index check in case BLAZE_USER_ASSERT() is active. In contrast,
+// the at() function is guaranteed to perform a check of the given access index.
 */
 template< typename MT >  // Type of the dense matrix
 inline typename DenseColumn<MT,false,true>::Reference
@@ -4007,6 +4123,9 @@ inline typename DenseColumn<MT,false,true>::Reference
 //
 // \param index Access index. The index must be smaller than the number of matrix rows.
 // \return Reference to the accessed value.
+//
+// This function only performs an index check in case BLAZE_USER_ASSERT() is active. In contrast,
+// the at() function is guaranteed to perform a check of the given access index.
 */
 template< typename MT >  // Type of the dense matrix
 inline typename DenseColumn<MT,false,true>::ConstReference
@@ -4014,6 +4133,54 @@ inline typename DenseColumn<MT,false,true>::ConstReference
 {
    BLAZE_USER_ASSERT( index < size(), "Invalid column access index" );
    return const_cast<const MT&>( matrix_ )(index,col_);
+}
+/*! \endcond */
+//*************************************************************************************************
+
+
+//*************************************************************************************************
+/*! \cond BLAZE_INTERNAL */
+/*!\brief Checked access to the column elements.
+//
+// \param index Access index. The index must be smaller than the number of matrix rows.
+// \return Reference to the accessed value.
+// \exception std::out_of_range Invalid column access index.
+//
+// In contrast to the subscript operator this function always performs a check of the given
+// access index.
+*/
+template< typename MT >  // Type of the dense matrix
+inline typename DenseColumn<MT,false,true>::Reference
+   DenseColumn<MT,false,true>::at( size_t index )
+{
+   if( index >= size() ) {
+      BLAZE_THROW_OUT_OF_RANGE( "Invalid column access index" );
+   }
+   return (*this)[index];
+}
+/*! \endcond */
+//*************************************************************************************************
+
+
+//*************************************************************************************************
+/*! \cond BLAZE_INTERNAL */
+/*!\brief Checked access to the column elements.
+//
+// \param index Access index. The index must be smaller than the number of matrix rows.
+// \return Reference to the accessed value.
+// \exception std::out_of_range Invalid column access index.
+//
+// In contrast to the subscript operator this function always performs a check of the given
+// access index.
+*/
+template< typename MT >  // Type of the dense matrix
+inline typename DenseColumn<MT,false,true>::ConstReference
+   DenseColumn<MT,false,true>::at( size_t index ) const
+{
+   if( index >= size() ) {
+      BLAZE_THROW_OUT_OF_RANGE( "Invalid column access index" );
+   }
+   return (*this)[index];
 }
 /*! \endcond */
 //*************************************************************************************************
