@@ -285,6 +285,8 @@ class CompressedVector : public SparseVector< CompressedVector<Type,TF>, TF >
    //@{
    inline Reference      operator[]( size_t index );
    inline ConstReference operator[]( size_t index ) const;
+   inline Reference      at( size_t index );
+   inline ConstReference at( size_t index ) const;
    inline Iterator       begin ();
    inline ConstIterator  begin () const;
    inline ConstIterator  cbegin() const;
@@ -603,6 +605,56 @@ inline typename CompressedVector<Type,TF>::ConstReference
       return zero_;
    else
       return pos->value_;
+}
+//*************************************************************************************************
+
+
+//*************************************************************************************************
+/*!\brief Checked access to the compressed vector elements.
+//
+// \param index Access index. The index has to be in the range \f$[0..N-1]\f$.
+// \return Reference to the accessed value.
+// \exception std::out_of_range Invalid compressed vector access index.
+//
+// This function returns a reference to the accessed value at position \a index. In case the
+// compressed vector does not yet store an element for index \a index, a new element is inserted
+// into the compressed vector. In contrast to the subscript operator this function always
+// performs a check of the given access index.
+*/
+template< typename Type  // Data type of the vector
+        , bool TF >      // Transpose flag
+inline typename CompressedVector<Type,TF>::Reference
+   CompressedVector<Type,TF>::at( size_t index )
+{
+   if( index >= size_ ) {
+      BLAZE_THROW_OUT_OF_RANGE( "Invalid compressed vector access index" );
+   }
+   return (*this)[index];
+}
+//*************************************************************************************************
+
+
+//*************************************************************************************************
+/*!\brief Checked access to the compressed vector elements.
+//
+// \param index Access index. The index has to be in the range \f$[0..N-1]\f$.
+// \return Reference to the accessed value.
+// \exception std::out_of_range Invalid compressed vector access index.
+//
+// This function returns a reference to the accessed value at position \a index. In case the
+// compressed vector does not yet store an element for index \a index, a new element is inserted
+// into the compressed vector. In contrast to the subscript operator this function always
+// performs a check of the given access index.
+*/
+template< typename Type  // Data type of the vector
+        , bool TF >      // Transpose flag
+inline typename CompressedVector<Type,TF>::ConstReference
+   CompressedVector<Type,TF>::at( size_t index ) const
+{
+   if( index >= size_ ) {
+      BLAZE_THROW_OUT_OF_RANGE( "Invalid compressed vector access index" );
+   }
+   return (*this)[index];
 }
 //*************************************************************************************************
 
