@@ -422,6 +422,8 @@ class SparseColumn : public SparseVector< SparseColumn<MT,SO,SF>, false >
    //@{
    inline Reference      operator[]( size_t index );
    inline ConstReference operator[]( size_t index ) const;
+   inline Reference      at( size_t index );
+   inline ConstReference at( size_t index ) const;
    inline Iterator       begin ();
    inline ConstIterator  begin () const;
    inline ConstIterator  cbegin() const;
@@ -603,6 +605,9 @@ inline SparseColumn<MT,SO,SF>::SparseColumn( MT& matrix, size_t index )
 //
 // \param index Access index. The index must be smaller than the number of matrix rows.
 // \return Reference to the accessed value.
+//
+// This function only performs an index check in case BLAZE_USER_ASSERT() is active. In contrast,
+// the at() function is guaranteed to perform a check of the given access index.
 */
 template< typename MT  // Type of the sparse matrix
         , bool SO      // Storage order
@@ -621,6 +626,9 @@ inline typename SparseColumn<MT,SO,SF>::Reference
 //
 // \param index Access index. The index must be smaller than the number of matrix rows.
 // \return Reference to the accessed value.
+//
+// This function only performs an index check in case BLAZE_USER_ASSERT() is active. In contrast,
+// the at() function is guaranteed to perform a check of the given access index.
 */
 template< typename MT  // Type of the sparse matrix
         , bool SO      // Storage order
@@ -630,6 +638,54 @@ inline typename SparseColumn<MT,SO,SF>::ConstReference
 {
    BLAZE_USER_ASSERT( index < size(), "Invalid column access index" );
    return const_cast<const MT&>( matrix_ )(index,col_);
+}
+//*************************************************************************************************
+
+
+//*************************************************************************************************
+/*!\brief Checked access to the column elements.
+//
+// \param index Access index. The index must be smaller than the number of matrix rows.
+// \return Reference to the accessed value.
+// \exception std::out_of_range Invalid column access index.
+//
+// In contrast to the subscript operator this function always performs a check of the given
+// access index.
+*/
+template< typename MT  // Type of the sparse matrix
+        , bool SO      // Storage order
+        , bool SF >    // Symmetry flag
+inline typename SparseColumn<MT,SO,SF>::Reference
+   SparseColumn<MT,SO,SF>::at( size_t index )
+{
+   if( index >= size() ) {
+      BLAZE_THROW_OUT_OF_RANGE( "Invalid column access index" );
+   }
+   return (*this)[index];
+}
+//*************************************************************************************************
+
+
+//*************************************************************************************************
+/*!\brief Checked access to the column elements.
+//
+// \param index Access index. The index must be smaller than the number of matrix rows.
+// \return Reference to the accessed value.
+// \exception std::out_of_range Invalid column access index.
+//
+// In contrast to the subscript operator this function always performs a check of the given
+// access index.
+*/
+template< typename MT  // Type of the sparse matrix
+        , bool SO      // Storage order
+        , bool SF >    // Symmetry flag
+inline typename SparseColumn<MT,SO,SF>::ConstReference
+   SparseColumn<MT,SO,SF>::at( size_t index ) const
+{
+   if( index >= size() ) {
+      BLAZE_THROW_OUT_OF_RANGE( "Invalid column access index" );
+   }
+   return (*this)[index];
 }
 //*************************************************************************************************
 
@@ -2348,6 +2404,8 @@ class SparseColumn<MT,false,false> : public SparseVector< SparseColumn<MT,false,
    //@{
    inline Reference      operator[]( size_t index );
    inline ConstReference operator[]( size_t index ) const;
+   inline Reference      at( size_t index );
+   inline ConstReference at( size_t index ) const;
    inline Iterator       begin ();
    inline ConstIterator  begin () const;
    inline ConstIterator  cbegin() const;
@@ -2515,6 +2573,9 @@ inline SparseColumn<MT,false,false>::SparseColumn( MT& matrix, size_t index )
 //
 // \param index Access index. The index must be smaller than the number of matrix rows.
 // \return Reference to the accessed value.
+//
+// This function only performs an index check in case BLAZE_USER_ASSERT() is active. In contrast,
+// the at() function is guaranteed to perform a check of the given access index.
 */
 template< typename MT >  // Type of the sparse matrix
 inline typename SparseColumn<MT,false,false>::Reference
@@ -2533,6 +2594,9 @@ inline typename SparseColumn<MT,false,false>::Reference
 //
 // \param index Access index. The index must be smaller than the number of matrix rows.
 // \return Reference to the accessed value.
+//
+// This function only performs an index check in case BLAZE_USER_ASSERT() is active. In contrast,
+// the at() function is guaranteed to perform a check of the given access index.
 */
 template< typename MT >  // Type of the sparse matrix
 inline typename SparseColumn<MT,false,false>::ConstReference
@@ -2540,6 +2604,54 @@ inline typename SparseColumn<MT,false,false>::ConstReference
 {
    BLAZE_USER_ASSERT( index < size(), "Invalid column access index" );
    return const_cast<const MT&>( matrix_ )(index,col_);
+}
+/*! \endcond */
+//*************************************************************************************************
+
+
+//*************************************************************************************************
+/*! \cond BLAZE_INTERNAL */
+/*!\brief Checked access to the column elements.
+//
+// \param index Access index. The index must be smaller than the number of matrix rows.
+// \return Reference to the accessed value.
+// \exception std::out_of_range Invalid column access index.
+//
+// In contrast to the subscript operator this function always performs a check of the given
+// access index.
+*/
+template< typename MT >  // Type of the sparse matrix
+inline typename SparseColumn<MT,false,false>::Reference
+   SparseColumn<MT,false,false>::at( size_t index )
+{
+   if( index >= size() ) {
+      BLAZE_THROW_OUT_OF_RANGE( "Invalid column access index" );
+   }
+   return (*this)[index];
+}
+/*! \endcond */
+//*************************************************************************************************
+
+
+//*************************************************************************************************
+/*! \cond BLAZE_INTERNAL */
+/*!\brief Checked access to the column elements.
+//
+// \param index Access index. The index must be smaller than the number of matrix rows.
+// \return Reference to the accessed value.
+// \exception std::out_of_range Invalid column access index.
+//
+// In contrast to the subscript operator this function always performs a check of the given
+// access index.
+*/
+template< typename MT >  // Type of the sparse matrix
+inline typename SparseColumn<MT,false,false>::ConstReference
+   SparseColumn<MT,false,false>::at( size_t index ) const
+{
+   if( index >= size() ) {
+      BLAZE_THROW_OUT_OF_RANGE( "Invalid column access index" );
+   }
+   return (*this)[index];
 }
 /*! \endcond */
 //*************************************************************************************************
@@ -3711,6 +3823,8 @@ class SparseColumn<MT,false,true> : public SparseVector< SparseColumn<MT,false,t
    //@{
    inline Reference      operator[]( size_t index );
    inline ConstReference operator[]( size_t index ) const;
+   inline Reference      at( size_t index );
+   inline ConstReference at( size_t index ) const;
    inline Iterator       begin ();
    inline ConstIterator  begin () const;
    inline ConstIterator  cbegin() const;
@@ -3891,6 +4005,9 @@ inline SparseColumn<MT,false,true>::SparseColumn( MT& matrix, size_t index )
 //
 // \param index Access index. The index must be smaller than the number of matrix rows.
 // \return Reference to the accessed value.
+//
+// This function only performs an index check in case BLAZE_USER_ASSERT() is active. In contrast,
+// the at() function is guaranteed to perform a check of the given access index.
 */
 template< typename MT >  // Type of the sparse matrix
 inline typename SparseColumn<MT,false,true>::Reference
@@ -3909,6 +4026,9 @@ inline typename SparseColumn<MT,false,true>::Reference
 //
 // \param index Access index. The index must be smaller than the number of matrix rows.
 // \return Reference to the accessed value.
+//
+// This function only performs an index check in case BLAZE_USER_ASSERT() is active. In contrast,
+// the at() function is guaranteed to perform a check of the given access index.
 */
 template< typename MT >  // Type of the sparse matrix
 inline typename SparseColumn<MT,false,true>::ConstReference
@@ -3916,6 +4036,54 @@ inline typename SparseColumn<MT,false,true>::ConstReference
 {
    BLAZE_USER_ASSERT( index < size(), "Invalid column access index" );
    return const_cast<const MT&>( matrix_ )(col_,index);
+}
+/*! \endcond */
+//*************************************************************************************************
+
+
+//*************************************************************************************************
+/*! \cond BLAZE_INTERNAL */
+/*!\brief Checked access to the column elements.
+//
+// \param index Access index. The index must be smaller than the number of matrix rows.
+// \return Reference to the accessed value.
+// \exception std::out_of_range Invalid column access index.
+//
+// In contrast to the subscript operator this function always performs a check of the given
+// access index.
+*/
+template< typename MT >  // Type of the sparse matrix
+inline typename SparseColumn<MT,false,true>::Reference
+   SparseColumn<MT,false,true>::at( size_t index )
+{
+   if( index >= size() ) {
+      BLAZE_THROW_OUT_OF_RANGE( "Invalid column access index" );
+   }
+   return (*this)[index];
+}
+/*! \endcond */
+//*************************************************************************************************
+
+
+//*************************************************************************************************
+/*! \cond BLAZE_INTERNAL */
+/*!\brief Checked access to the column elements.
+//
+// \param index Access index. The index must be smaller than the number of matrix rows.
+// \return Reference to the accessed value.
+// \exception std::out_of_range Invalid column access index.
+//
+// In contrast to the subscript operator this function always performs a check of the given
+// access index.
+*/
+template< typename MT >  // Type of the sparse matrix
+inline typename SparseColumn<MT,false,true>::ConstReference
+   SparseColumn<MT,false,true>::at( size_t index ) const
+{
+   if( index >= size() ) {
+      BLAZE_THROW_OUT_OF_RANGE( "Invalid column access index" );
+   }
+   return (*this)[index];
 }
 /*! \endcond */
 //*************************************************************************************************
