@@ -789,6 +789,8 @@ class DenseSubvector : public DenseVector< DenseSubvector<VT,AF,TF>, TF >
    //@{
    inline Reference      operator[]( size_t index );
    inline ConstReference operator[]( size_t index ) const;
+   inline Reference      at( size_t index );
+   inline ConstReference at( size_t index ) const;
    inline Pointer        data  ();
    inline ConstPointer   data  () const;
    inline Iterator       begin ();
@@ -1071,6 +1073,9 @@ inline DenseSubvector<VT,AF,TF>::DenseSubvector( Operand vector, size_t index, s
 //
 // \param index Access index. The index must be smaller than the number of subvector elements.
 // \return Reference to the accessed value.
+//
+// This function only performs an index check in case BLAZE_USER_ASSERT() is active. In contrast,
+// the at() function is guaranteed to perform a check of the given access index.
 */
 template< typename VT  // Type of the dense vector
         , bool AF      // Alignment flag
@@ -1089,6 +1094,9 @@ inline typename DenseSubvector<VT,AF,TF>::Reference
 //
 // \param index Access index. The index must be smaller than the number of subvector columns.
 // \return Reference to the accessed value.
+//
+// This function only performs an index check in case BLAZE_USER_ASSERT() is active. In contrast,
+// the at() function is guaranteed to perform a check of the given access index.
 */
 template< typename VT  // Type of the dense vector
         , bool AF      // Alignment flag
@@ -1098,6 +1106,54 @@ inline typename DenseSubvector<VT,AF,TF>::ConstReference
 {
    BLAZE_USER_ASSERT( index < size(), "Invalid subvector access index" );
    return const_cast<const VT&>( vector_ )[offset_+index];
+}
+//*************************************************************************************************
+
+
+//*************************************************************************************************
+/*!\brief Checked access to the subvector elements.
+//
+// \param index Access index. The index must be smaller than the number of subvector columns.
+// \return Reference to the accessed value.
+// \exception std::out_of_range Invalid subvector access index.
+//
+// In contrast to the subscript operator this function always performs a check of the given
+// access index.
+*/
+template< typename VT  // Type of the dense vector
+        , bool AF      // Alignment flag
+        , bool TF >    // Transpose flag
+inline typename DenseSubvector<VT,AF,TF>::Reference
+   DenseSubvector<VT,AF,TF>::at( size_t index )
+{
+   if( index >= size() ) {
+      BLAZE_THROW_OUT_OF_RANGE( "Invalid subvector access index" );
+   }
+   return (*this)[index];
+}
+//*************************************************************************************************
+
+
+//*************************************************************************************************
+/*!\brief Checked access to the subvector elements.
+//
+// \param index Access index. The index must be smaller than the number of subvector columns.
+// \return Reference to the accessed value.
+// \exception std::out_of_range Invalid subvector access index.
+//
+// In contrast to the subscript operator this function always performs a check of the given
+// access index.
+*/
+template< typename VT  // Type of the dense vector
+        , bool AF      // Alignment flag
+        , bool TF >    // Transpose flag
+inline typename DenseSubvector<VT,AF,TF>::ConstReference
+   DenseSubvector<VT,AF,TF>::at( size_t index ) const
+{
+   if( index >= size() ) {
+      BLAZE_THROW_OUT_OF_RANGE( "Invalid subvector access index" );
+   }
+   return (*this)[index];
 }
 //*************************************************************************************************
 
@@ -2561,6 +2617,8 @@ class DenseSubvector<VT,aligned,TF> : public DenseVector< DenseSubvector<VT,alig
    //@{
    inline Reference      operator[]( size_t index );
    inline ConstReference operator[]( size_t index ) const;
+   inline Reference      at( size_t index );
+   inline ConstReference at( size_t index ) const;
    inline Pointer        data  ();
    inline ConstPointer   data  () const;
    inline Iterator       begin ();
@@ -2857,6 +2915,56 @@ inline typename DenseSubvector<VT,aligned,TF>::ConstReference
 {
    BLAZE_USER_ASSERT( index < size(), "Invalid subvector access index" );
    return const_cast<const VT&>( vector_ )[offset_+index];
+}
+/*! \endcond */
+//*************************************************************************************************
+
+
+//*************************************************************************************************
+/*! \cond BLAZE_INTERNAL */
+/*!\brief Checked access to the subvector elements.
+//
+// \param index Access index. The index must be smaller than the number of subvector columns.
+// \return Reference to the accessed value.
+// \exception std::out_of_range Invalid subvector access index.
+//
+// In contrast to the subscript operator this function always performs a check of the given
+// access index.
+*/
+template< typename VT  // Type of the dense vector
+        , bool TF >    // Transpose flag
+inline typename DenseSubvector<VT,aligned,TF>::Reference
+   DenseSubvector<VT,aligned,TF>::at( size_t index )
+{
+   if( index >= size() ) {
+      BLAZE_THROW_OUT_OF_RANGE( "Invalid subvector access index" );
+   }
+   return (*this)[index];
+}
+/*! \endcond */
+//*************************************************************************************************
+
+
+//*************************************************************************************************
+/*! \cond BLAZE_INTERNAL */
+/*!\brief Checked access to the subvector elements.
+//
+// \param index Access index. The index must be smaller than the number of subvector columns.
+// \return Reference to the accessed value.
+// \exception std::out_of_range Invalid subvector access index.
+//
+// In contrast to the subscript operator this function always performs a check of the given
+// access index.
+*/
+template< typename VT  // Type of the dense vector
+        , bool TF >    // Transpose flag
+inline typename DenseSubvector<VT,aligned,TF>::ConstReference
+   DenseSubvector<VT,aligned,TF>::at( size_t index ) const
+{
+   if( index >= size() ) {
+      BLAZE_THROW_OUT_OF_RANGE( "Invalid subvector access index" );
+   }
+   return (*this)[index];
 }
 /*! \endcond */
 //*************************************************************************************************
@@ -4352,8 +4460,23 @@ class DenseSubvector< DVecDVecCrossExpr<VT1,VT2>, unaligned, false >
    // \return The resulting value.
    */
    inline ReturnType operator[]( size_t index ) const {
-      BLAZE_INTERNAL_ASSERT( index < size_, "Invalid vector access index" );
+      BLAZE_INTERNAL_ASSERT( index < size(), "Invalid vector access index" );
       return vector_[offset_+index];
+   }
+   //**********************************************************************************************
+
+   //**At function*********************************************************************************
+   /*!\brief Checked access to the vector elements.
+   //
+   // \param index Access index. The index has to be in the range \f$[0..N-1]\f$.
+   // \return The resulting value.
+   // \exception std::out_of_range Invalid vector access index.
+   */
+   inline ReturnType at( size_t index ) const {
+      if( index >= size() ) {
+         BLAZE_THROW_OUT_OF_RANGE( "Invalid vector access index" );
+      }
+      return (*this)[index];
    }
    //**********************************************************************************************
 
@@ -4506,8 +4629,23 @@ class DenseSubvector< DVecSVecCrossExpr<VT1,VT2>, unaligned, false >
    // \return The resulting value.
    */
    inline ReturnType operator[]( size_t index ) const {
-      BLAZE_INTERNAL_ASSERT( index < size_, "Invalid vector access index" );
+      BLAZE_INTERNAL_ASSERT( index < size(), "Invalid vector access index" );
       return vector_[offset_+index];
+   }
+   //**********************************************************************************************
+
+   //**At function*********************************************************************************
+   /*!\brief Checked access to the vector elements.
+   //
+   // \param index Access index. The index has to be in the range \f$[0..N-1]\f$.
+   // \return The resulting value.
+   // \exception std::out_of_range Invalid vector access index.
+   */
+   inline ReturnType at( size_t index ) const {
+      if( index >= size() ) {
+         BLAZE_THROW_OUT_OF_RANGE( "Invalid vector access index" );
+      }
+      return (*this)[index];
    }
    //**********************************************************************************************
 
@@ -4660,8 +4798,23 @@ class DenseSubvector< SVecDVecCrossExpr<VT1,VT2>, unaligned, false >
    // \return The resulting value.
    */
    inline ReturnType operator[]( size_t index ) const {
-      BLAZE_INTERNAL_ASSERT( index < size_, "Invalid vector access index" );
+      BLAZE_INTERNAL_ASSERT( index < size(), "Invalid vector access index" );
       return vector_[offset_+index];
+   }
+   //**********************************************************************************************
+
+   //**At function*********************************************************************************
+   /*!\brief Checked access to the vector elements.
+   //
+   // \param index Access index. The index has to be in the range \f$[0..N-1]\f$.
+   // \return The resulting value.
+   // \exception std::out_of_range Invalid vector access index.
+   */
+   inline ReturnType at( size_t index ) const {
+      if( index >= size() ) {
+         BLAZE_THROW_OUT_OF_RANGE( "Invalid vector access index" );
+      }
+      return (*this)[index];
    }
    //**********************************************************************************************
 
@@ -4814,8 +4967,23 @@ class DenseSubvector< SVecSVecCrossExpr<VT1,VT2>, unaligned, false >
    // \return The resulting value.
    */
    inline ReturnType operator[]( size_t index ) const {
-      BLAZE_INTERNAL_ASSERT( index < size_, "Invalid vector access index" );
+      BLAZE_INTERNAL_ASSERT( index < size(), "Invalid vector access index" );
       return vector_[offset_+index];
+   }
+   //**********************************************************************************************
+
+   //**At function*********************************************************************************
+   /*!\brief Checked access to the vector elements.
+   //
+   // \param index Access index. The index has to be in the range \f$[0..N-1]\f$.
+   // \return The resulting value.
+   // \exception std::out_of_range Invalid vector access index.
+   */
+   inline ReturnType at( size_t index ) const {
+      if( index >= size() ) {
+         BLAZE_THROW_OUT_OF_RANGE( "Invalid vector access index" );
+      }
+      return (*this)[index];
    }
    //**********************************************************************************************
 
