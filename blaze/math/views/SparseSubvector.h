@@ -748,6 +748,8 @@ class SparseSubvector : public SparseVector< SparseSubvector<VT,AF,TF>, TF >
    //@{
    inline Reference      operator[]( size_t index );
    inline ConstReference operator[]( size_t index ) const;
+   inline Reference      at( size_t index );
+   inline ConstReference at( size_t index ) const;
    inline Iterator       begin ();
    inline ConstIterator  begin () const;
    inline ConstIterator  cbegin() const;
@@ -936,6 +938,9 @@ inline SparseSubvector<VT,AF,TF>::SparseSubvector( Operand vector, size_t index,
 //
 // \param index Access index. The index must be smaller than the number of subvector elements.
 // \return Reference to the accessed value.
+//
+// This function only performs an index check in case BLAZE_USER_ASSERT() is active. In contrast,
+// the at() function is guaranteed to perform a check of the given access index.
 */
 template< typename VT  // Type of the sparse vector
         , bool AF      // Alignment flag
@@ -954,6 +959,9 @@ inline typename SparseSubvector<VT,AF,TF>::Reference
 //
 // \param index Access index. The index must be smaller than the number of subvector elements.
 // \return Reference to the accessed value.
+//
+// This function only performs an index check in case BLAZE_USER_ASSERT() is active. In contrast,
+// the at() function is guaranteed to perform a check of the given access index.
 */
 template< typename VT  // Type of the sparse vector
         , bool AF      // Alignment flag
@@ -963,6 +971,54 @@ inline typename SparseSubvector<VT,AF,TF>::ConstReference
 {
    BLAZE_USER_ASSERT( index < size(), "Invalid subvector access index" );
    return const_cast<const VT&>( vector_ )[offset_+index];
+}
+//*************************************************************************************************
+
+
+//*************************************************************************************************
+/*!\brief Checked access to the subvector elements.
+//
+// \param index Access index. The index must be smaller than the number of subvector columns.
+// \return Reference to the accessed value.
+// \exception std::out_of_range Invalid subvector access index.
+//
+// In contrast to the subscript operator this function always performs a check of the given
+// access index.
+*/
+template< typename VT  // Type of the sparse vector
+        , bool AF      // Alignment flag
+        , bool TF >    // Transpose flag
+inline typename SparseSubvector<VT,AF,TF>::Reference
+   SparseSubvector<VT,AF,TF>::at( size_t index )
+{
+   if( index >= size() ) {
+      BLAZE_THROW_OUT_OF_RANGE( "Invalid subvector access index" );
+   }
+   return (*this)[index];
+}
+//*************************************************************************************************
+
+
+//*************************************************************************************************
+/*!\brief Checked access to the subvector elements.
+//
+// \param index Access index. The index must be smaller than the number of subvector columns.
+// \return Reference to the accessed value.
+// \exception std::out_of_range Invalid subvector access index.
+//
+// In contrast to the subscript operator this function always performs a check of the given
+// access index.
+*/
+template< typename VT  // Type of the sparse vector
+        , bool AF      // Alignment flag
+        , bool TF >    // Transpose flag
+inline typename SparseSubvector<VT,AF,TF>::ConstReference
+   SparseSubvector<VT,AF,TF>::at( size_t index ) const
+{
+   if( index >= size() ) {
+      BLAZE_THROW_OUT_OF_RANGE( "Invalid subvector access index" );
+   }
+   return (*this)[index];
 }
 //*************************************************************************************************
 
