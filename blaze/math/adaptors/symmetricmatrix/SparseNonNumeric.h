@@ -472,6 +472,8 @@ class SymmetricMatrix<MT,SO,false,false>
    //@{
    inline Reference      operator()( size_t i, size_t j );
    inline ConstReference operator()( size_t i, size_t j ) const;
+   inline Reference      at( size_t i, size_t j );
+   inline ConstReference at( size_t i, size_t j ) const;
    inline Iterator       begin ( size_t i );
    inline ConstIterator  begin ( size_t i ) const;
    inline ConstIterator  cbegin( size_t i ) const;
@@ -839,6 +841,9 @@ inline SymmetricMatrix<MT,SO,false,false>::SymmetricMatrix( const Matrix<MT2,!SO
 // The function call operator provides access to both elements \f$ a_{ij} \f$ and \f$ a_{ji} \f$.
 // In order to preserve the symmetry of the matrix, any modification to one of the elements will
 // also be applied to the other element.
+//
+// Note that this function only performs an index check in case BLAZE_USER_ASSERT() is active. In
+// contrast, the at() function is guaranteed to perform a check of the given access indices.
 */
 template< typename MT  // Type of the adapted sparse matrix
         , bool SO >    // Storage order of the adapted sparse matrix
@@ -865,6 +870,9 @@ inline typename SymmetricMatrix<MT,SO,false,false>::Reference
 // The function call operator provides access to both elements \f$ a_{ij} \f$ and \f$ a_{ji} \f$.
 // In order to preserve the symmetry of the matrix, any modification to one of the elements will
 // also be applied to the other element.
+//
+// Note that this function only performs an index check in case BLAZE_USER_ASSERT() is active. In
+// contrast, the at() function is guaranteed to perform a check of the given access indices.
 */
 template< typename MT  // Type of the adapted sparse matrix
         , bool SO >    // Storage order of the adapted sparse matrix
@@ -875,6 +883,72 @@ inline typename SymmetricMatrix<MT,SO,false,false>::ConstReference
    BLAZE_USER_ASSERT( j<columns(), "Invalid column access index" );
 
    return *matrix_(i,j);
+}
+/*! \endcond */
+//*************************************************************************************************
+
+
+//*************************************************************************************************
+/*! \cond BLAZE_INTERNAL */
+/*!\brief Checked access to the matrix elements.
+//
+// \param i Access index for the row. The index has to be in the range \f$[0..N-1]\f$.
+// \param j Access index for the column. The index has to be in the range \f$[0..N-1]\f$.
+// \return Reference to the accessed value.
+// \exception std::out_of_range Invalid matrix access index.
+//
+// The function call operator provides access to both the elements at position (i,j) and (j,i).
+// In order to preserve the symmetry of the matrix, any modification to one of the elements will
+// also be applied to the other element.
+//
+// Note that in contrast to the subscript operator this function always performs a check of the
+// given access indices.
+*/
+template< typename MT  // Type of the adapted dense matrix
+        , bool SO >    // Storage order of the adapted dense matrix
+inline typename SymmetricMatrix<MT,SO,false,false>::Reference
+   SymmetricMatrix<MT,SO,false,false>::at( size_t i, size_t j )
+{
+   if( i >= rows() ) {
+      BLAZE_THROW_OUT_OF_RANGE( "Invalid row access index" );
+   }
+   if( j >= columns() ) {
+      BLAZE_THROW_OUT_OF_RANGE( "Invalid column access index" );
+   }
+   return (*this)(i,j);
+}
+/*! \endcond */
+//*************************************************************************************************
+
+
+//*************************************************************************************************
+/*! \cond BLAZE_INTERNAL */
+/*!\brief Checked access to the matrix elements.
+//
+// \param i Access index for the row. The index has to be in the range \f$[0..N-1]\f$.
+// \param j Access index for the column. The index has to be in the range \f$[0..N-1]\f$.
+// \return Reference to the accessed value.
+// \exception std::out_of_range Invalid matrix access index.
+//
+// The function call operator provides access to both the elements at position (i,j) and (j,i).
+// In order to preserve the symmetry of the matrix, any modification to one of the elements will
+// also be applied to the other element.
+//
+// Note that in contrast to the subscript operator this function always performs a check of the
+// given access indices.
+*/
+template< typename MT  // Type of the adapted dense matrix
+        , bool SO >    // Storage order of the adapted dense matrix
+inline typename SymmetricMatrix<MT,SO,false,false>::ConstReference
+   SymmetricMatrix<MT,SO,false,false>::at( size_t i, size_t j ) const
+{
+   if( i >= rows() ) {
+      BLAZE_THROW_OUT_OF_RANGE( "Invalid row access index" );
+   }
+   if( j >= columns() ) {
+      BLAZE_THROW_OUT_OF_RANGE( "Invalid column access index" );
+   }
+   return (*this)(i,j);
 }
 /*! \endcond */
 //*************************************************************************************************
