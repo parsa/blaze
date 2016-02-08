@@ -876,6 +876,8 @@ class DenseSubmatrix : public DenseMatrix< DenseSubmatrix<MT,AF,SO>, SO >
    //@{
    inline Reference      operator()( size_t i, size_t j );
    inline ConstReference operator()( size_t i, size_t j ) const;
+   inline Reference      at( size_t i, size_t j );
+   inline ConstReference at( size_t i, size_t j ) const;
    inline Pointer        data  ();
    inline ConstPointer   data  () const;
    inline Pointer        data  ( size_t i );
@@ -1201,6 +1203,9 @@ inline DenseSubmatrix<MT,AF,SO>::DenseSubmatrix( Operand matrix, size_t rindex, 
 // \param i Access index for the row. The index has to be in the range \f$[0..M-1]\f$.
 // \param j Access index for the column. The index has to be in the range \f$[0..N-1]\f$.
 // \return Reference to the accessed value.
+//
+// This function only performs an index check in case BLAZE_USER_ASSERT() is active. In contrast,
+// the at() function is guaranteed to perform a check of the given access indices.
 */
 template< typename MT  // Type of the dense matrix
         , bool AF      // Alignment flag
@@ -1222,6 +1227,9 @@ inline typename DenseSubmatrix<MT,AF,SO>::Reference
 // \param i Access index for the row. The index has to be in the range \f$[0..M-1]\f$.
 // \param j Access index for the column. The index has to be in the range \f$[0..N-1]\f$.
 // \return Reference to the accessed value.
+//
+// This function only performs an index check in case BLAZE_USER_ASSERT() is active. In contrast,
+// the at() function is guaranteed to perform a check of the given access indices.
 */
 template< typename MT  // Type of the dense matrix
         , bool AF      // Alignment flag
@@ -1233,6 +1241,62 @@ inline typename DenseSubmatrix<MT,AF,SO>::ConstReference
    BLAZE_USER_ASSERT( j < columns(), "Invalid column access index" );
 
    return const_cast<const MT&>( matrix_ )(row_+i,column_+j);
+}
+//*************************************************************************************************
+
+
+//*************************************************************************************************
+/*!\brief Checked access to the submatrix elements.
+//
+// \param i Access index for the row. The index has to be in the range \f$[0..M-1]\f$.
+// \param j Access index for the column. The index has to be in the range \f$[0..N-1]\f$.
+// \return Reference to the accessed value.
+// \exception std::out_of_range Invalid matrix access index.
+//
+// In contrast to the subscript operator this function always performs a check of the given
+// access indices.
+*/
+template< typename MT  // Type of the dense matrix
+        , bool AF      // Alignment flag
+        , bool SO >    // Storage order
+inline typename DenseSubmatrix<MT,AF,SO>::Reference
+   DenseSubmatrix<MT,AF,SO>::at( size_t i, size_t j )
+{
+   if( i >= rows() ) {
+      BLAZE_THROW_OUT_OF_RANGE( "Invalid row access index" );
+   }
+   if( j >= columns() ) {
+      BLAZE_THROW_OUT_OF_RANGE( "Invalid column access index" );
+   }
+   return (*this)(i,j);
+}
+//*************************************************************************************************
+
+
+//*************************************************************************************************
+/*!\brief Checked access to the submatrix elements.
+//
+// \param i Access index for the row. The index has to be in the range \f$[0..M-1]\f$.
+// \param j Access index for the column. The index has to be in the range \f$[0..N-1]\f$.
+// \return Reference to the accessed value.
+// \exception std::out_of_range Invalid matrix access index.
+//
+// In contrast to the subscript operator this function always performs a check of the given
+// access indices.
+*/
+template< typename MT  // Type of the dense matrix
+        , bool AF      // Alignment flag
+        , bool SO >    // Storage order
+inline typename DenseSubmatrix<MT,AF,SO>::ConstReference
+   DenseSubmatrix<MT,AF,SO>::at( size_t i, size_t j ) const
+{
+   if( i >= rows() ) {
+      BLAZE_THROW_OUT_OF_RANGE( "Invalid row access index" );
+   }
+   if( j >= columns() ) {
+      BLAZE_THROW_OUT_OF_RANGE( "Invalid column access index" );
+   }
+   return (*this)(i,j);
 }
 //*************************************************************************************************
 
@@ -3683,6 +3747,8 @@ class DenseSubmatrix<MT,unaligned,true> : public DenseMatrix< DenseSubmatrix<MT,
    //@{
    inline Reference      operator()( size_t i, size_t j );
    inline ConstReference operator()( size_t i, size_t j ) const;
+   inline Reference      at( size_t i, size_t j );
+   inline ConstReference at( size_t i, size_t j ) const;
    inline Pointer        data  ();
    inline ConstPointer   data  () const;
    inline Pointer        data  ( size_t j );
@@ -4000,6 +4066,9 @@ inline DenseSubmatrix<MT,unaligned,true>::DenseSubmatrix( Operand matrix, size_t
 // \param i Access index for the row. The index has to be in the range \f$[0..M-1]\f$.
 // \param j Access index for the column. The index has to be in the range \f$[0..N-1]\f$.
 // \return Reference to the accessed value.
+//
+// This function only performs an index check in case BLAZE_USER_ASSERT() is active. In contrast,
+// the at() function is guaranteed to perform a check of the given access indices.
 */
 template< typename MT >  // Type of the dense matrix
 inline typename DenseSubmatrix<MT,unaligned,true>::Reference
@@ -4021,6 +4090,9 @@ inline typename DenseSubmatrix<MT,unaligned,true>::Reference
 // \param i Access index for the row. The index has to be in the range \f$[0..M-1]\f$.
 // \param j Access index for the column. The index has to be in the range \f$[0..N-1]\f$.
 // \return Reference to the accessed value.
+//
+// This function only performs an index check in case BLAZE_USER_ASSERT() is active. In contrast,
+// the at() function is guaranteed to perform a check of the given access indices.
 */
 template< typename MT >  // Type of the dense matrix
 inline typename DenseSubmatrix<MT,unaligned,true>::ConstReference
@@ -4030,6 +4102,62 @@ inline typename DenseSubmatrix<MT,unaligned,true>::ConstReference
    BLAZE_USER_ASSERT( j < columns(), "Invalid column access index" );
 
    return const_cast<const MT&>( matrix_ )(row_+i,column_+j);
+}
+/*! \endcond */
+//*************************************************************************************************
+
+
+//*************************************************************************************************
+/*! \cond BLAZE_INTERNAL */
+/*!\brief Checked access to the submatrix elements.
+//
+// \param i Access index for the row. The index has to be in the range \f$[0..M-1]\f$.
+// \param j Access index for the column. The index has to be in the range \f$[0..N-1]\f$.
+// \return Reference to the accessed value.
+// \exception std::out_of_range Invalid matrix access index.
+//
+// In contrast to the subscript operator this function always performs a check of the given
+// access indices.
+*/
+template< typename MT >  // Type of the dense matrix
+inline typename DenseSubmatrix<MT,unaligned,true>::Reference
+   DenseSubmatrix<MT,unaligned,true>::at( size_t i, size_t j )
+{
+   if( i >= rows() ) {
+      BLAZE_THROW_OUT_OF_RANGE( "Invalid row access index" );
+   }
+   if( j >= columns() ) {
+      BLAZE_THROW_OUT_OF_RANGE( "Invalid column access index" );
+   }
+   return (*this)(i,j);
+}
+/*! \endcond */
+//*************************************************************************************************
+
+
+//*************************************************************************************************
+/*! \cond BLAZE_INTERNAL */
+/*!\brief Checked access to the submatrix elements.
+//
+// \param i Access index for the row. The index has to be in the range \f$[0..M-1]\f$.
+// \param j Access index for the column. The index has to be in the range \f$[0..N-1]\f$.
+// \return Reference to the accessed value.
+// \exception std::out_of_range Invalid matrix access index.
+//
+// In contrast to the subscript operator this function always performs a check of the given
+// access indices.
+*/
+template< typename MT >  // Type of the dense matrix
+inline typename DenseSubmatrix<MT,unaligned,true>::ConstReference
+   DenseSubmatrix<MT,unaligned,true>::at( size_t i, size_t j ) const
+{
+   if( i >= rows() ) {
+      BLAZE_THROW_OUT_OF_RANGE( "Invalid row access index" );
+   }
+   if( j >= columns() ) {
+      BLAZE_THROW_OUT_OF_RANGE( "Invalid column access index" );
+   }
+   return (*this)(i,j);
 }
 /*! \endcond */
 //*************************************************************************************************
@@ -6105,6 +6233,8 @@ class DenseSubmatrix<MT,aligned,false> : public DenseMatrix< DenseSubmatrix<MT,a
    //@{
    inline Reference      operator()( size_t i, size_t j );
    inline ConstReference operator()( size_t i, size_t j ) const;
+   inline Reference      at( size_t i, size_t j );
+   inline ConstReference at( size_t i, size_t j ) const;
    inline Pointer        data  ();
    inline ConstPointer   data  () const;
    inline Pointer        data  ( size_t i );
@@ -6418,6 +6548,9 @@ inline DenseSubmatrix<MT,aligned,false>::DenseSubmatrix( Operand matrix, size_t 
 // \param i Access index for the row. The index has to be in the range \f$[0..M-1]\f$.
 // \param j Access index for the column. The index has to be in the range \f$[0..N-1]\f$.
 // \return Reference to the accessed value.
+//
+// This function only performs an index check in case BLAZE_USER_ASSERT() is active. In contrast,
+// the at() function is guaranteed to perform a check of the given access indices.
 */
 template< typename MT >  // Type of the dense matrix
 inline typename DenseSubmatrix<MT,aligned,false>::Reference
@@ -6439,6 +6572,9 @@ inline typename DenseSubmatrix<MT,aligned,false>::Reference
 // \param i Access index for the row. The index has to be in the range \f$[0..M-1]\f$.
 // \param j Access index for the column. The index has to be in the range \f$[0..N-1]\f$.
 // \return Reference to the accessed value.
+//
+// This function only performs an index check in case BLAZE_USER_ASSERT() is active. In contrast,
+// the at() function is guaranteed to perform a check of the given access indices.
 */
 template< typename MT >  // Type of the dense matrix
 inline typename DenseSubmatrix<MT,aligned,false>::ConstReference
@@ -6448,6 +6584,62 @@ inline typename DenseSubmatrix<MT,aligned,false>::ConstReference
    BLAZE_USER_ASSERT( j < columns(), "Invalid column access index" );
 
    return const_cast<const MT&>( matrix_ )(row_+i,column_+j);
+}
+/*! \endcond */
+//*************************************************************************************************
+
+
+//*************************************************************************************************
+/*! \cond BLAZE_INTERNAL */
+/*!\brief Checked access to the submatrix elements.
+//
+// \param i Access index for the row. The index has to be in the range \f$[0..M-1]\f$.
+// \param j Access index for the column. The index has to be in the range \f$[0..N-1]\f$.
+// \return Reference to the accessed value.
+// \exception std::out_of_range Invalid matrix access index.
+//
+// In contrast to the subscript operator this function always performs a check of the given
+// access indices.
+*/
+template< typename MT >  // Type of the dense matrix
+inline typename DenseSubmatrix<MT,aligned,false>::Reference
+   DenseSubmatrix<MT,aligned,false>::at( size_t i, size_t j )
+{
+   if( i >= rows() ) {
+      BLAZE_THROW_OUT_OF_RANGE( "Invalid row access index" );
+   }
+   if( j >= columns() ) {
+      BLAZE_THROW_OUT_OF_RANGE( "Invalid column access index" );
+   }
+   return (*this)(i,j);
+}
+/*! \endcond */
+//*************************************************************************************************
+
+
+//*************************************************************************************************
+/*! \cond BLAZE_INTERNAL */
+/*!\brief Checked access to the submatrix elements.
+//
+// \param i Access index for the row. The index has to be in the range \f$[0..M-1]\f$.
+// \param j Access index for the column. The index has to be in the range \f$[0..N-1]\f$.
+// \return Reference to the accessed value.
+// \exception std::out_of_range Invalid matrix access index.
+//
+// In contrast to the subscript operator this function always performs a check of the given
+// access indices.
+*/
+template< typename MT >  // Type of the dense matrix
+inline typename DenseSubmatrix<MT,aligned,false>::ConstReference
+   DenseSubmatrix<MT,aligned,false>::at( size_t i, size_t j ) const
+{
+   if( i >= rows() ) {
+      BLAZE_THROW_OUT_OF_RANGE( "Invalid row access index" );
+   }
+   if( j >= columns() ) {
+      BLAZE_THROW_OUT_OF_RANGE( "Invalid column access index" );
+   }
+   return (*this)(i,j);
 }
 /*! \endcond */
 //*************************************************************************************************
@@ -8571,6 +8763,8 @@ class DenseSubmatrix<MT,aligned,true> : public DenseMatrix< DenseSubmatrix<MT,al
    //@{
    inline Reference      operator()( size_t i, size_t j );
    inline ConstReference operator()( size_t i, size_t j ) const;
+   inline Reference      at( size_t i, size_t j );
+   inline ConstReference at( size_t i, size_t j ) const;
    inline Pointer        data  ();
    inline ConstPointer   data  () const;
    inline Pointer        data  ( size_t j );
@@ -8884,6 +9078,9 @@ inline DenseSubmatrix<MT,aligned,true>::DenseSubmatrix( Operand matrix, size_t r
 // \param i Access index for the row. The index has to be in the range \f$[0..M-1]\f$.
 // \param j Access index for the column. The index has to be in the range \f$[0..N-1]\f$.
 // \return Reference to the accessed value.
+//
+// This function only performs an index check in case BLAZE_USER_ASSERT() is active. In contrast,
+// the at() function is guaranteed to perform a check of the given access indices.
 */
 template< typename MT >  // Type of the dense matrix
 inline typename DenseSubmatrix<MT,aligned,true>::Reference
@@ -8905,6 +9102,9 @@ inline typename DenseSubmatrix<MT,aligned,true>::Reference
 // \param i Access index for the row. The index has to be in the range \f$[0..M-1]\f$.
 // \param j Access index for the column. The index has to be in the range \f$[0..N-1]\f$.
 // \return Reference to the accessed value.
+//
+// This function only performs an index check in case BLAZE_USER_ASSERT() is active. In contrast,
+// the at() function is guaranteed to perform a check of the given access indices.
 */
 template< typename MT >  // Type of the dense matrix
 inline typename DenseSubmatrix<MT,aligned,true>::ConstReference
@@ -8914,6 +9114,62 @@ inline typename DenseSubmatrix<MT,aligned,true>::ConstReference
    BLAZE_USER_ASSERT( j < columns(), "Invalid column access index" );
 
    return const_cast<const MT&>( matrix_ )(row_+i,column_+j);
+}
+/*! \endcond */
+//*************************************************************************************************
+
+
+//*************************************************************************************************
+/*! \cond BLAZE_INTERNAL */
+/*!\brief Checked access to the submatrix elements.
+//
+// \param i Access index for the row. The index has to be in the range \f$[0..M-1]\f$.
+// \param j Access index for the column. The index has to be in the range \f$[0..N-1]\f$.
+// \return Reference to the accessed value.
+// \exception std::out_of_range Invalid matrix access index.
+//
+// In contrast to the subscript operator this function always performs a check of the given
+// access indices.
+*/
+template< typename MT >  // Type of the dense matrix
+inline typename DenseSubmatrix<MT,aligned,true>::Reference
+   DenseSubmatrix<MT,aligned,true>::at( size_t i, size_t j )
+{
+   if( i >= rows() ) {
+      BLAZE_THROW_OUT_OF_RANGE( "Invalid row access index" );
+   }
+   if( j >= columns() ) {
+      BLAZE_THROW_OUT_OF_RANGE( "Invalid column access index" );
+   }
+   return (*this)(i,j);
+}
+/*! \endcond */
+//*************************************************************************************************
+
+
+//*************************************************************************************************
+/*! \cond BLAZE_INTERNAL */
+/*!\brief Checked access to the submatrix elements.
+//
+// \param i Access index for the row. The index has to be in the range \f$[0..M-1]\f$.
+// \param j Access index for the column. The index has to be in the range \f$[0..N-1]\f$.
+// \return Reference to the accessed value.
+// \exception std::out_of_range Invalid matrix access index.
+//
+// In contrast to the subscript operator this function always performs a check of the given
+// access indices.
+*/
+template< typename MT >  // Type of the dense matrix
+inline typename DenseSubmatrix<MT,aligned,true>::ConstReference
+   DenseSubmatrix<MT,aligned,true>::at( size_t i, size_t j ) const
+{
+   if( i >= rows() ) {
+      BLAZE_THROW_OUT_OF_RANGE( "Invalid row access index" );
+   }
+   if( j >= columns() ) {
+      BLAZE_THROW_OUT_OF_RANGE( "Invalid column access index" );
+   }
+   return (*this)(i,j);
 }
 /*! \endcond */
 //*************************************************************************************************
