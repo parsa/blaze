@@ -830,6 +830,8 @@ class SparseSubmatrix : public SparseMatrix< SparseSubmatrix<MT,AF,SO>, SO >
    //@{
    inline Reference      operator()( size_t i, size_t j );
    inline ConstReference operator()( size_t i, size_t j ) const;
+   inline Reference      at( size_t i, size_t j );
+   inline ConstReference at( size_t i, size_t j ) const;
    inline Iterator       begin ( size_t i );
    inline ConstIterator  begin ( size_t i ) const;
    inline ConstIterator  cbegin( size_t i ) const;
@@ -1063,6 +1065,9 @@ inline SparseSubmatrix<MT,AF,SO>::SparseSubmatrix( Operand matrix, size_t rindex
 // \param i Access index for the row. The index has to be in the range \f$[0..M-1]\f$.
 // \param j Access index for the column. The index has to be in the range \f$[0..N-1]\f$.
 // \return Reference to the accessed value.
+//
+// This function only performs an index check in case BLAZE_USER_ASSERT() is active. In contrast,
+// the at() function is guaranteed to perform a check of the given access indices.
 */
 template< typename MT  // Type of the sparse matrix
         , bool AF      // Alignment flag
@@ -1084,6 +1089,9 @@ inline typename SparseSubmatrix<MT,AF,SO>::Reference
 // \param i Access index for the row. The index has to be in the range \f$[0..M-1]\f$.
 // \param j Access index for the column. The index has to be in the range \f$[0..N-1]\f$.
 // \return Reference to the accessed value.
+//
+// This function only performs an index check in case BLAZE_USER_ASSERT() is active. In contrast,
+// the at() function is guaranteed to perform a check of the given access indices.
 */
 template< typename MT  // Type of the sparse matrix
         , bool AF      // Alignment flag
@@ -1095,6 +1103,62 @@ inline typename SparseSubmatrix<MT,AF,SO>::ConstReference
    BLAZE_USER_ASSERT( j < columns(), "Invalid column access index" );
 
    return const_cast<const MT&>( matrix_ )(row_+i,column_+j);
+}
+//*************************************************************************************************
+
+
+//*************************************************************************************************
+/*!\brief Checked access to the submatrix elements.
+//
+// \param i Access index for the row. The index has to be in the range \f$[0..M-1]\f$.
+// \param j Access index for the column. The index has to be in the range \f$[0..N-1]\f$.
+// \return Reference to the accessed value.
+// \exception std::out_of_range Invalid matrix access index.
+//
+// In contrast to the subscript operator this function always performs a check of the given
+// access indices.
+*/
+template< typename MT  // Type of the sparse matrix
+        , bool AF      // Alignment flag
+        , bool SO >    // Storage order
+inline typename SparseSubmatrix<MT,AF,SO>::Reference
+   SparseSubmatrix<MT,AF,SO>::at( size_t i, size_t j )
+{
+   if( i >= rows() ) {
+      BLAZE_THROW_OUT_OF_RANGE( "Invalid row access index" );
+   }
+   if( j >= columns() ) {
+      BLAZE_THROW_OUT_OF_RANGE( "Invalid column access index" );
+   }
+   return (*this)(i,j);
+}
+//*************************************************************************************************
+
+
+//*************************************************************************************************
+/*!\brief Checked access to the submatrix elements.
+//
+// \param i Access index for the row. The index has to be in the range \f$[0..M-1]\f$.
+// \param j Access index for the column. The index has to be in the range \f$[0..N-1]\f$.
+// \return Reference to the accessed value.
+// \exception std::out_of_range Invalid matrix access index.
+//
+// In contrast to the subscript operator this function always performs a check of the given
+// access indices.
+*/
+template< typename MT  // Type of the sparse matrix
+        , bool AF      // Alignment flag
+        , bool SO >    // Storage order
+inline typename SparseSubmatrix<MT,AF,SO>::ConstReference
+   SparseSubmatrix<MT,AF,SO>::at( size_t i, size_t j ) const
+{
+   if( i >= rows() ) {
+      BLAZE_THROW_OUT_OF_RANGE( "Invalid row access index" );
+   }
+   if( j >= columns() ) {
+      BLAZE_THROW_OUT_OF_RANGE( "Invalid column access index" );
+   }
+   return (*this)(i,j);
 }
 //*************************************************************************************************
 
@@ -3163,6 +3227,8 @@ class SparseSubmatrix<MT,AF,true> : public SparseMatrix< SparseSubmatrix<MT,AF,t
    //@{
    inline Reference      operator()( size_t i, size_t j );
    inline ConstReference operator()( size_t i, size_t j ) const;
+   inline Reference      at( size_t i, size_t j );
+   inline ConstReference at( size_t i, size_t j ) const;
    inline Iterator       begin ( size_t i );
    inline ConstIterator  begin ( size_t i ) const;
    inline ConstIterator  cbegin( size_t i ) const;
@@ -3395,6 +3461,9 @@ inline SparseSubmatrix<MT,AF,true>::SparseSubmatrix( Operand matrix, size_t rind
 // \param i Access index for the row. The index has to be in the range \f$[0..M-1]\f$.
 // \param j Access index for the column. The index has to be in the range \f$[0..N-1]\f$.
 // \return Reference to the accessed value.
+//
+// This function only performs an index check in case BLAZE_USER_ASSERT() is active. In contrast,
+// the at() function is guaranteed to perform a check of the given access indices.
 */
 template< typename MT  // Type of the sparse matrix
         , bool AF >    // Alignment flag
@@ -3417,6 +3486,9 @@ inline typename SparseSubmatrix<MT,AF,true>::Reference
 // \param i Access index for the row. The index has to be in the range \f$[0..M-1]\f$.
 // \param j Access index for the column. The index has to be in the range \f$[0..N-1]\f$.
 // \return Reference to the accessed value.
+//
+// This function only performs an index check in case BLAZE_USER_ASSERT() is active. In contrast,
+// the at() function is guaranteed to perform a check of the given access indices.
 */
 template< typename MT  // Type of the sparse matrix
         , bool AF >    // Alignment flag
@@ -3427,6 +3499,64 @@ inline typename SparseSubmatrix<MT,AF,true>::ConstReference
    BLAZE_USER_ASSERT( j < columns(), "Invalid column access index" );
 
    return const_cast<const MT&>( matrix_ )(row_+i,column_+j);
+}
+/*! \endcond */
+//*************************************************************************************************
+
+
+//*************************************************************************************************
+/*! \cond BLAZE_INTERNAL */
+/*!\brief Checked access to the submatrix elements.
+//
+// \param i Access index for the row. The index has to be in the range \f$[0..M-1]\f$.
+// \param j Access index for the column. The index has to be in the range \f$[0..N-1]\f$.
+// \return Reference to the accessed value.
+// \exception std::out_of_range Invalid matrix access index.
+//
+// In contrast to the subscript operator this function always performs a check of the given
+// access indices.
+*/
+template< typename MT  // Type of the sparse matrix
+        , bool AF >    // Alignment flag
+inline typename SparseSubmatrix<MT,AF,true>::Reference
+   SparseSubmatrix<MT,AF,true>::at( size_t i, size_t j )
+{
+   if( i >= rows() ) {
+      BLAZE_THROW_OUT_OF_RANGE( "Invalid row access index" );
+   }
+   if( j >= columns() ) {
+      BLAZE_THROW_OUT_OF_RANGE( "Invalid column access index" );
+   }
+   return (*this)(i,j);
+}
+/*! \endcond */
+//*************************************************************************************************
+
+
+//*************************************************************************************************
+/*! \cond BLAZE_INTERNAL */
+/*!\brief Checked access to the submatrix elements.
+//
+// \param i Access index for the row. The index has to be in the range \f$[0..M-1]\f$.
+// \param j Access index for the column. The index has to be in the range \f$[0..N-1]\f$.
+// \return Reference to the accessed value.
+// \exception std::out_of_range Invalid matrix access index.
+//
+// In contrast to the subscript operator this function always performs a check of the given
+// access indices.
+*/
+template< typename MT  // Type of the sparse matrix
+        , bool AF >    // Alignment flag
+inline typename SparseSubmatrix<MT,AF,true>::ConstReference
+   SparseSubmatrix<MT,AF,true>::at( size_t i, size_t j ) const
+{
+   if( i >= rows() ) {
+      BLAZE_THROW_OUT_OF_RANGE( "Invalid row access index" );
+   }
+   if( j >= columns() ) {
+      BLAZE_THROW_OUT_OF_RANGE( "Invalid column access index" );
+   }
+   return (*this)(i,j);
 }
 /*! \endcond */
 //*************************************************************************************************
