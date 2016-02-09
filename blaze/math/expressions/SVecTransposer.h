@@ -49,6 +49,7 @@
 #include <blaze/math/traits/SubvectorTrait.h>
 #include <blaze/util/Assert.h>
 #include <blaze/util/EnableIf.h>
+#include <blaze/util/Exception.h>
 #include <blaze/util/Types.h>
 #include <blaze/util/typetraits/IsNumeric.h>
 
@@ -112,6 +113,21 @@ class SVecTransposer : public SparseVector< SVecTransposer<VT,TF>, TF >
    inline ConstReference operator[]( size_t index ) const {
       BLAZE_USER_ASSERT( index < sv_.size(), "Invalid vector access index" );
       return sv_[index];
+   }
+   //**********************************************************************************************
+
+   //**At function*********************************************************************************
+   /*!\brief Checked access to the vector elements.
+   //
+   // \param index Access index. The index has to be in the range \f$[0..N-1]\f$.
+   // \return The resulting value.
+   // \exception std::out_of_range Invalid vector access index.
+   */
+   inline ConstReference at( size_t index ) const {
+      if( index >= sv_.size() ) {
+         BLAZE_THROW_OUT_OF_RANGE( "Invalid vector access index" );
+      }
+      return (*this)[index];
    }
    //**********************************************************************************************
 
