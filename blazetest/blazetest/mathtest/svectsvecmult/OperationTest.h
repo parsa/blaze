@@ -472,10 +472,14 @@ void OperationTest<VT1,VT2>::testElementAccess()
 
    if( lhs_.size() > 0UL && rhs_.size() > 0UL )
    {
-      if( !equal( ( lhs_ * rhs_ )(0UL,0UL), ( reflhs_ * refrhs_ )(0UL,0UL) ) ) {
+      const size_t m( lhs_.size() - 1UL );
+      const size_t n( rhs_.size() - 1UL );
+
+      if( !equal( ( lhs_ * rhs_ )(m,n), ( reflhs_ * refrhs_ )(m,n) ) ||
+          !equal( ( lhs_ * rhs_ ).at(m,n), ( reflhs_ * refrhs_ ).at(m,n) ) ) {
          std::ostringstream oss;
          oss << " Test : Element access of outer product expression\n"
-             << " Error: Unequal resulting elements at element (0,0) detected\n"
+             << " Error: Unequal resulting elements at element (" << m << "," << n << ") detected\n"
              << " Details:\n"
              << "   Left-hand side sparse vector type:\n"
              << "     " << typeid( VT1 ).name() << "\n"
@@ -484,10 +488,11 @@ void OperationTest<VT1,VT2>::testElementAccess()
          throw std::runtime_error( oss.str() );
       }
 
-      if( !equal( ( lhs_ * eval( rhs_ ) )(0UL,0UL), ( reflhs_ * eval( refrhs_ ) )(0UL,0UL) ) ) {
+      if( !equal( ( lhs_ * eval( rhs_ ) )(m,n), ( reflhs_ * eval( refrhs_ ) )(m,n) ) ||
+          !equal( ( lhs_ * eval( rhs_ ) ).at(m,n), ( reflhs_ * eval( refrhs_ ) ).at(m,n) ) ) {
          std::ostringstream oss;
          oss << " Test : Element access of right evaluated addition expression\n"
-             << " Error: Unequal resulting elements at element (0,0) detected\n"
+             << " Error: Unequal resulting elements at element (" << m << "," << n << ") detected\n"
              << " Details:\n"
              << "   Left-hand side sparse vector type:\n"
              << "     " << typeid( VT1 ).name() << "\n"
@@ -496,10 +501,11 @@ void OperationTest<VT1,VT2>::testElementAccess()
          throw std::runtime_error( oss.str() );
       }
 
-      if( !equal( ( eval( lhs_ ) * rhs_ )(0UL,0UL), ( eval( reflhs_ ) * refrhs_ )(0UL,0UL) ) ) {
+      if( !equal( ( eval( lhs_ ) * rhs_ )(m,n), ( eval( reflhs_ ) * refrhs_ )(m,n) ) ||
+          !equal( ( eval( lhs_ ) * rhs_ ).at(m,n), ( eval( reflhs_ ) * refrhs_ ).at(m,n) ) ) {
          std::ostringstream oss;
          oss << " Test : Element access of left evaluated addition expression\n"
-             << " Error: Unequal resulting elements at element (0,0) detected\n"
+             << " Error: Unequal resulting elements at element (" << m << "," << n << ") detected\n"
              << " Details:\n"
              << "   Left-hand side sparse vector type:\n"
              << "     " << typeid( VT1 ).name() << "\n"
@@ -508,10 +514,11 @@ void OperationTest<VT1,VT2>::testElementAccess()
          throw std::runtime_error( oss.str() );
       }
 
-      if( !equal( ( eval( lhs_ ) * eval( rhs_ ) )(0UL,0UL), ( eval( reflhs_ ) * eval( refrhs_ ) )(0UL,0UL) ) ) {
+      if( !equal( ( eval( lhs_ ) * eval( rhs_ ) )(m,n), ( eval( reflhs_ ) * eval( refrhs_ ) )(m,n) ) ||
+          !equal( ( eval( lhs_ ) * eval( rhs_ ) ).at(m,n), ( eval( reflhs_ ) * eval( refrhs_ ) ).at(m,n) ) ) {
          std::ostringstream oss;
          oss << " Test : Element access of fully evaluated addition expression\n"
-             << " Error: Unequal resulting elements at element (0,0) detected\n"
+             << " Error: Unequal resulting elements at element (" << m << "," << n << ") detected\n"
              << " Details:\n"
              << "   Left-hand side sparse vector type:\n"
              << "     " << typeid( VT1 ).name() << "\n"
@@ -520,6 +527,36 @@ void OperationTest<VT1,VT2>::testElementAccess()
          throw std::runtime_error( oss.str() );
       }
    }
+
+   try {
+      ( lhs_ * rhs_ ).at( 0UL, rhs_.size() );
+
+      std::ostringstream oss;
+      oss << " Test : Checked element access of outer product expression\n"
+          << " Error: Out-of-bound access succeeded\n"
+          << " Details:\n"
+          << "   Left-hand side sparse vector type:\n"
+          << "     " << typeid( VT1 ).name() << "\n"
+          << "   Right-hand side transpose sparse vector type:\n"
+          << "     " << typeid( TVT2 ).name() << "\n";
+      throw std::runtime_error( oss.str() );
+   }
+   catch( std::out_of_range& ex ) {}
+
+   try {
+      ( lhs_ * rhs_ ).at( lhs_.size(), 0UL );
+
+      std::ostringstream oss;
+      oss << " Test : Checked element access of outer product expression\n"
+          << " Error: Out-of-bound access succeeded\n"
+          << " Details:\n"
+          << "   Left-hand side sparse vector type:\n"
+          << "     " << typeid( VT1 ).name() << "\n"
+          << "   Right-hand side transpose sparse vector type:\n"
+          << "     " << typeid( TVT2 ).name() << "\n";
+      throw std::runtime_error( oss.str() );
+   }
+   catch( std::out_of_range& ex ) {}
 }
 //*************************************************************************************************
 
