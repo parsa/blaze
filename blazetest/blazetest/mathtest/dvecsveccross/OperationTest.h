@@ -433,10 +433,11 @@ void OperationTest<VT1,VT2>::testElementAccess()
    // Testing the element access with the given vectors
    //=====================================================================================
 
-   if( !equal( ( lhs_ % rhs_ )[0UL], ( reflhs_ % refrhs_ )[0UL] ) ) {
+   if( !equal( ( lhs_ % rhs_ )[2UL], ( reflhs_ % refrhs_ )[2UL] ) ||
+       !equal( ( lhs_ % rhs_ ).at(2UL), ( reflhs_ % refrhs_ ).at(2UL) ) ) {
       std::ostringstream oss;
       oss << " Test : Element access of cross product expression\n"
-          << " Error: Unequal resulting elements at index 0 detected\n"
+          << " Error: Unequal resulting elements at index 2 detected\n"
           << " Details:\n"
           << "   Left-hand side dense vector type:\n"
           << "     " << typeid( VT1 ).name() << "\n"
@@ -445,10 +446,11 @@ void OperationTest<VT1,VT2>::testElementAccess()
       throw std::runtime_error( oss.str() );
    }
 
-   if( !equal( ( lhs_ % eval( rhs_ ) )[0UL], ( reflhs_ % eval( refrhs_ ) )[0UL] ) ) {
+   if( !equal( ( lhs_ % eval( rhs_ ) )[2UL], ( reflhs_ % eval( refrhs_ ) )[2UL] ) ||
+       !equal( ( lhs_ % eval( rhs_ ) ).at(2UL), ( reflhs_ % eval( refrhs_ ) ).at(2UL) ) ) {
       std::ostringstream oss;
       oss << " Test : Element access of right evaluated cross product expression\n"
-          << " Error: Unequal resulting elements at index 0 detected\n"
+          << " Error: Unequal resulting elements at index 2 detected\n"
           << " Details:\n"
           << "   Left-hand side dense vector type:\n"
           << "     " << typeid( VT1 ).name() << "\n"
@@ -457,10 +459,11 @@ void OperationTest<VT1,VT2>::testElementAccess()
       throw std::runtime_error( oss.str() );
    }
 
-   if( !equal( ( eval( lhs_ ) % rhs_ )[0UL], ( eval( reflhs_ ) % refrhs_ )[0UL] ) ) {
+   if( !equal( ( eval( lhs_ ) % rhs_ )[2UL], ( eval( reflhs_ ) % refrhs_ )[2UL] ) ||
+       !equal( ( eval( lhs_ ) % rhs_ ).at(2UL), ( eval( reflhs_ ) % refrhs_ ).at(2UL) ) ) {
       std::ostringstream oss;
       oss << " Test : Element access of left evaluated cross product expression\n"
-          << " Error: Unequal resulting elements at index 0 detected\n"
+          << " Error: Unequal resulting elements at index 2 detected\n"
           << " Details:\n"
           << "   Left-hand side dense vector type:\n"
           << "     " << typeid( VT1 ).name() << "\n"
@@ -469,10 +472,11 @@ void OperationTest<VT1,VT2>::testElementAccess()
       throw std::runtime_error( oss.str() );
    }
 
-   if( !equal( ( eval( lhs_ ) % eval( rhs_ ) )[0UL], ( eval( reflhs_ ) % eval( refrhs_ ) )[0UL] ) ) {
+   if( !equal( ( eval( lhs_ ) % eval( rhs_ ) )[2UL], ( eval( reflhs_ ) % eval( refrhs_ ) )[2UL] ) ||
+       !equal( ( eval( lhs_ ) % eval( rhs_ ) ).at(2UL), ( eval( reflhs_ ) % eval( refrhs_ ) ).at(2UL) ) ) {
       std::ostringstream oss;
       oss << " Test : Element access of fully evaluated cross product expression\n"
-          << " Error: Unequal resulting elements at index 0 detected\n"
+          << " Error: Unequal resulting elements at index 2 detected\n"
           << " Details:\n"
           << "   Left-hand side dense vector type:\n"
           << "     " << typeid( VT1 ).name() << "\n"
@@ -480,6 +484,21 @@ void OperationTest<VT1,VT2>::testElementAccess()
           << "     " << typeid( VT2 ).name() << "\n";
       throw std::runtime_error( oss.str() );
    }
+
+   try {
+      ( lhs_ % rhs_ ).at( 3UL );
+
+      std::ostringstream oss;
+      oss << " Test : Checked element access of cross product expression\n"
+          << " Error: Out-of-bound access succeeded\n"
+          << " Details:\n"
+          << "   Left-hand side dense vector type:\n"
+          << "     " << typeid( VT1 ).name() << "\n"
+          << "   Right-hand side sparse vector type:\n"
+          << "     " << typeid( VT2 ).name() << "\n";
+      throw std::runtime_error( oss.str() );
+   }
+   catch( std::out_of_range& ex ) {}
 }
 //*************************************************************************************************
 

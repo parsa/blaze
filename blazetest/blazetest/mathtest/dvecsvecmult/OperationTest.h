@@ -581,10 +581,13 @@ void OperationTest<VT1,VT2>::testElementAccess()
 
    if( lhs_.size() > 0UL && rhs_.size() > 0UL )
    {
-      if( !equal( ( lhs_ * rhs_ )[0UL], ( reflhs_ * refrhs_ )[0UL] ) ) {
+      const size_t n( lhs_.size() - 1UL );
+
+      if( !equal( ( lhs_ * rhs_ )[n], ( reflhs_ * refrhs_ )[n] ) ||
+          !equal( ( lhs_ * rhs_ ).at(n), ( reflhs_ * refrhs_ ).at(n) ) ) {
          std::ostringstream oss;
          oss << " Test : Element access of multiplication expression\n"
-             << " Error: Unequal resulting elements at index 0 detected\n"
+             << " Error: Unequal resulting elements at index " << n << " detected\n"
              << " Details:\n"
              << "   Left-hand side dense vector type:\n"
              << "     " << typeid( VT1 ).name() << "\n"
@@ -593,10 +596,11 @@ void OperationTest<VT1,VT2>::testElementAccess()
          throw std::runtime_error( oss.str() );
       }
 
-      if( !equal( ( lhs_ * eval( rhs_ ) )[0UL], ( reflhs_ * eval( refrhs_ ) )[0UL] ) ) {
+      if( !equal( ( lhs_ * eval( rhs_ ) )[n], ( reflhs_ * eval( refrhs_ ) )[n] ) ||
+          !equal( ( lhs_ * eval( rhs_ ) ).at(n), ( reflhs_ * eval( refrhs_ ) ).at(n) ) ) {
          std::ostringstream oss;
          oss << " Test : Element access of right evaluated multiplication expression\n"
-             << " Error: Unequal resulting elements at index 0 detected\n"
+             << " Error: Unequal resulting elements at index " << n << " detected\n"
              << " Details:\n"
              << "   Left-hand side dense vector type:\n"
              << "     " << typeid( VT1 ).name() << "\n"
@@ -605,10 +609,11 @@ void OperationTest<VT1,VT2>::testElementAccess()
          throw std::runtime_error( oss.str() );
       }
 
-      if( !equal( ( eval( lhs_ ) * rhs_ )[0UL], ( eval( reflhs_ ) * refrhs_ )[0UL] ) ) {
+      if( !equal( ( eval( lhs_ ) * rhs_ )[n], ( eval( reflhs_ ) * refrhs_ )[n] ) ||
+          !equal( ( eval( lhs_ ) * rhs_ ).at(n), ( eval( reflhs_ ) * refrhs_ ).at(n) ) ) {
          std::ostringstream oss;
          oss << " Test : Element access of left evaluated multiplication expression\n"
-             << " Error: Unequal resulting elements at index 0 detected\n"
+             << " Error: Unequal resulting elements at index " << n << " detected\n"
              << " Details:\n"
              << "   Left-hand side dense vector type:\n"
              << "     " << typeid( VT1 ).name() << "\n"
@@ -617,10 +622,11 @@ void OperationTest<VT1,VT2>::testElementAccess()
          throw std::runtime_error( oss.str() );
       }
 
-      if( !equal( ( eval( lhs_ ) * eval( rhs_ ) )[0UL], ( eval( reflhs_ ) * eval( refrhs_ ) )[0UL] ) ) {
+      if( !equal( ( eval( lhs_ ) * eval( rhs_ ) )[n], ( eval( reflhs_ ) * eval( refrhs_ ) )[n] ) ||
+          !equal( ( eval( lhs_ ) * eval( rhs_ ) ).at(n), ( eval( reflhs_ ) * eval( refrhs_ ) ).at(n) ) ) {
          std::ostringstream oss;
          oss << " Test : Element access of fully evaluated multiplication expression\n"
-             << " Error: Unequal resulting elements at index 0 detected\n"
+             << " Error: Unequal resulting elements at index " << n << " detected\n"
              << " Details:\n"
              << "   Left-hand side dense vector type:\n"
              << "     " << typeid( VT1 ).name() << "\n"
@@ -629,6 +635,21 @@ void OperationTest<VT1,VT2>::testElementAccess()
          throw std::runtime_error( oss.str() );
       }
    }
+
+   try {
+      ( lhs_ * rhs_ ).at( lhs_.size() );
+
+      std::ostringstream oss;
+      oss << " Test : Checked element access of multiplication expression\n"
+          << " Error: Out-of-bound access succeeded\n"
+          << " Details:\n"
+          << "   Left-hand side dense vector type:\n"
+          << "     " << typeid( VT1 ).name() << "\n"
+          << "   Right-hand side sparse vector type:\n"
+          << "     " << typeid( VT2 ).name() << "\n";
+      throw std::runtime_error( oss.str() );
+   }
+   catch( std::out_of_range& ex ) {}
 
 
    //=====================================================================================
@@ -637,10 +658,13 @@ void OperationTest<VT1,VT2>::testElementAccess()
 
    if( tlhs_.size() > 0UL && trhs_.size() > 0UL )
    {
-      if( !equal( ( tlhs_ * trhs_ )[0UL], ( treflhs_ * trefrhs_ )[0UL] ) ) {
+      const size_t n( tlhs_.size() - 1UL );
+
+      if( !equal( ( tlhs_ * trhs_ )[n], ( treflhs_ * trefrhs_ )[n] ) ||
+          !equal( ( tlhs_ * trhs_ ).at(n), ( treflhs_ * trefrhs_ ).at(n) ) ) {
          std::ostringstream oss;
          oss << " Test : Element access of transpose multiplication expression\n"
-             << " Error: Unequal resulting elements at index 0 detected\n"
+             << " Error: Unequal resulting elements at index " << n << " detected\n"
              << " Details:\n"
              << "   Transpose left-hand side dense vector type:\n"
              << "     " << typeid( TVT1 ).name() << "\n"
@@ -649,10 +673,11 @@ void OperationTest<VT1,VT2>::testElementAccess()
          throw std::runtime_error( oss.str() );
       }
 
-      if( !equal( ( tlhs_ * eval( trhs_ ) )[0UL], ( treflhs_ * eval( trefrhs_ ) )[0UL] ) ) {
+      if( !equal( ( tlhs_ * eval( trhs_ ) )[n], ( treflhs_ * eval( trefrhs_ ) )[n] ) ||
+          !equal( ( tlhs_ * eval( trhs_ ) ).at(n), ( treflhs_ * eval( trefrhs_ ) ).at(n) ) ) {
          std::ostringstream oss;
          oss << " Test : Element access of right evaluated transpose multiplication expression\n"
-             << " Error: Unequal resulting elements at index 0 detected\n"
+             << " Error: Unequal resulting elements at index " << n << " detected\n"
              << " Details:\n"
              << "   Transpose left-hand side dense vector type:\n"
              << "     " << typeid( TVT1 ).name() << "\n"
@@ -661,10 +686,11 @@ void OperationTest<VT1,VT2>::testElementAccess()
          throw std::runtime_error( oss.str() );
       }
 
-      if( !equal( ( eval( tlhs_ ) * trhs_ )[0UL], ( eval( treflhs_ ) * trefrhs_ )[0UL] ) ) {
+      if( !equal( ( eval( tlhs_ ) * trhs_ )[n], ( eval( treflhs_ ) * trefrhs_ )[n] ) ||
+          !equal( ( eval( tlhs_ ) * trhs_ ).at(n), ( eval( treflhs_ ) * trefrhs_ ).at(n) ) ) {
          std::ostringstream oss;
          oss << " Test : Element access of left evaluated transpose multiplication expression\n"
-             << " Error: Unequal resulting elements at index 0 detected\n"
+             << " Error: Unequal resulting elements at index " << n << " detected\n"
              << " Details:\n"
              << "   Transpose left-hand side dense vector type:\n"
              << "     " << typeid( TVT1 ).name() << "\n"
@@ -673,10 +699,11 @@ void OperationTest<VT1,VT2>::testElementAccess()
          throw std::runtime_error( oss.str() );
       }
 
-      if( !equal( ( eval( tlhs_ ) * eval( trhs_ ) )[0UL], ( eval( treflhs_ ) * eval( trefrhs_ ) )[0UL] ) ) {
+      if( !equal( ( eval( tlhs_ ) * eval( trhs_ ) )[n], ( eval( treflhs_ ) * eval( trefrhs_ ) )[n] ) ||
+          !equal( ( eval( tlhs_ ) * eval( trhs_ ) ).at(n), ( eval( treflhs_ ) * eval( trefrhs_ ) ).at(n) ) ) {
          std::ostringstream oss;
          oss << " Test : Element access of fully evaluated transpose multiplication expression\n"
-             << " Error: Unequal resulting elements at index 0 detected\n"
+             << " Error: Unequal resulting elements at index " << n << " detected\n"
              << " Details:\n"
              << "   Transpose left-hand side dense vector type:\n"
              << "     " << typeid( TVT1 ).name() << "\n"
@@ -685,6 +712,21 @@ void OperationTest<VT1,VT2>::testElementAccess()
          throw std::runtime_error( oss.str() );
       }
    }
+
+   try {
+      ( tlhs_ * trhs_ ).at( tlhs_.size() );
+
+      std::ostringstream oss;
+      oss << " Test : Checked element access of transpose multiplication expression\n"
+          << " Error: Out-of-bound access succeeded\n"
+          << " Details:\n"
+          << "   Transpose left-hand side dense vector type:\n"
+          << "     " << typeid( TVT1 ).name() << "\n"
+          << "   Transpose right-hand side sparse vector type:\n"
+          << "     " << typeid( TVT2 ).name() << "\n";
+      throw std::runtime_error( oss.str() );
+   }
+   catch( std::out_of_range& ex ) {}
 }
 //*************************************************************************************************
 
