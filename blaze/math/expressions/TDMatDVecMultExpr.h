@@ -286,6 +286,21 @@ class TDMatDVecMultExpr : public DenseVector< TDMatDVecMultExpr<MT,VT>, false >
    }
    //**********************************************************************************************
 
+   //**At function*********************************************************************************
+   /*!\brief Checked access to the vector elements.
+   //
+   // \param index Access index. The index has to be in the range \f$[0..N-1]\f$.
+   // \return The resulting value.
+   // \exception std::out_of_range Invalid vector access index.
+   */
+   inline ReturnType at( size_t index ) const {
+      if( index >= mat_.rows() ) {
+         BLAZE_THROW_OUT_OF_RANGE( "Invalid vector access index" );
+      }
+      return (*this)[index];
+   }
+   //**********************************************************************************************
+
    //**Size function*******************************************************************************
    /*!\brief Returns the current size/dimension of the vector.
    //
@@ -2531,6 +2546,21 @@ class DVecScalarMultExpr< TDMatDVecMultExpr<MT,VT>, ST, false >
    inline ReturnType operator[]( size_t index ) const {
       BLAZE_INTERNAL_ASSERT( index < vector_.size(), "Invalid vector access index" );
       return vector_[index] * scalar_;
+   }
+   //**********************************************************************************************
+
+   //**At function*********************************************************************************
+   /*!\brief Checked access to the vector elements.
+   //
+   // \param index Access index. The index has to be in the range \f$[0..N-1]\f$.
+   // \return The resulting value.
+   // \exception std::out_of_range Invalid vector access index.
+   */
+   inline ReturnType at( size_t index ) const {
+      if( index >= vector_.size() ) {
+         BLAZE_THROW_OUT_OF_RANGE( "Invalid vector access index" );
+      }
+      return (*this)[index];
    }
    //**********************************************************************************************
 
