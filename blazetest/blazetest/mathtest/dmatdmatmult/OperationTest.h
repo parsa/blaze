@@ -692,10 +692,14 @@ void OperationTest<MT1,MT2>::testElementAccess()
 
    if( lhs_.rows() > 0UL && rhs_.columns() > 0UL )
    {
-      if( !equal( ( lhs_ * rhs_ )(0UL,0UL), ( reflhs_ * refrhs_ )(0UL,0UL) ) ) {
+      const size_t m( lhs_.rows()    - 1UL );
+      const size_t n( rhs_.columns() - 1UL );
+
+      if( !equal( ( lhs_ * rhs_ )(m,n), ( reflhs_ * refrhs_ )(m,n) ) ||
+          !equal( ( lhs_ * rhs_ ).at(m,n), ( reflhs_ * refrhs_ ).at(m,n) ) ) {
          std::ostringstream oss;
          oss << " Test : Element access of multiplication expression\n"
-             << " Error: Unequal resulting elements at element (0,0) detected\n"
+             << " Error: Unequal resulting elements at element (" << m << "," << n << ") detected\n"
              << " Details:\n"
              << "   Left-hand side row-major dense matrix type:\n"
              << "     " << typeid( MT1 ).name() << "\n"
@@ -704,10 +708,11 @@ void OperationTest<MT1,MT2>::testElementAccess()
          throw std::runtime_error( oss.str() );
       }
 
-      if( !equal( ( lhs_ * eval( rhs_ ) )(0UL,0UL), ( reflhs_ * eval( refrhs_ ) )(0UL,0UL) ) ) {
+      if( !equal( ( lhs_ * eval( rhs_ ) )(m,n), ( reflhs_ * eval( refrhs_ ) )(m,n) ) ||
+          !equal( ( lhs_ * eval( rhs_ ) ).at(m,n), ( reflhs_ * eval( refrhs_ ) ).at(m,n) ) ) {
          std::ostringstream oss;
          oss << " Test : Element access of right evaluated multiplication expression\n"
-             << " Error: Unequal resulting elements at element (0,0) detected\n"
+             << " Error: Unequal resulting elements at element (" << m << "," << n << ") detected\n"
              << " Details:\n"
              << "   Left-hand side row-major dense matrix type:\n"
              << "     " << typeid( MT1 ).name() << "\n"
@@ -716,10 +721,11 @@ void OperationTest<MT1,MT2>::testElementAccess()
          throw std::runtime_error( oss.str() );
       }
 
-      if( !equal( ( eval( lhs_ ) * rhs_ )(0UL,0UL), ( eval( reflhs_ ) * refrhs_ )(0UL,0UL) ) ) {
+      if( !equal( ( eval( lhs_ ) * rhs_ )(m,n), ( eval( reflhs_ ) * refrhs_ )(m,n) ) ||
+          !equal( ( eval( lhs_ ) * rhs_ ).at(m,n), ( eval( reflhs_ ) * refrhs_ ).at(m,n) ) ) {
          std::ostringstream oss;
          oss << " Test : Element access of left evaluated multiplication expression\n"
-             << " Error: Unequal resulting elements at element (0,0) detected\n"
+             << " Error: Unequal resulting elements at element (" << m << "," << n << ") detected\n"
              << " Details:\n"
              << "   Left-hand side row-major dense matrix type:\n"
              << "     " << typeid( MT1 ).name() << "\n"
@@ -728,10 +734,11 @@ void OperationTest<MT1,MT2>::testElementAccess()
          throw std::runtime_error( oss.str() );
       }
 
-      if( !equal( ( eval( lhs_ ) * eval( rhs_ ) )(0UL,0UL), ( eval( reflhs_ ) * eval( refrhs_ ) )(0UL,0UL) ) ) {
+      if( !equal( ( eval( lhs_ ) * eval( rhs_ ) )(m,n), ( eval( reflhs_ ) * eval( refrhs_ ) )(m,n) ) ||
+          !equal( ( eval( lhs_ ) * eval( rhs_ ) ).at(m,n), ( eval( reflhs_ ) * eval( refrhs_ ) ).at(m,n) ) ) {
          std::ostringstream oss;
          oss << " Test : Element access of fully evaluated multiplication expression\n"
-             << " Error: Unequal resulting elements at element (0,0) detected\n"
+             << " Error: Unequal resulting elements at element (" << m << "," << n << ") detected\n"
              << " Details:\n"
              << "   Left-hand side row-major dense matrix type:\n"
              << "     " << typeid( MT1 ).name() << "\n"
@@ -740,6 +747,36 @@ void OperationTest<MT1,MT2>::testElementAccess()
          throw std::runtime_error( oss.str() );
       }
    }
+
+   try {
+      ( lhs_ * rhs_ ).at( 0UL, rhs_.columns() );
+
+      std::ostringstream oss;
+      oss << " Test : Checked element access of multiplication expression\n"
+          << " Error: Out-of-bound access succeeded\n"
+          << " Details:\n"
+          << "   Left-hand side row-major dense matrix type:\n"
+          << "     " << typeid( MT1 ).name() << "\n"
+          << "   Right-hand side row-major dense matrix type:\n"
+          << "     " << typeid( MT2 ).name() << "\n";
+      throw std::runtime_error( oss.str() );
+   }
+   catch( std::out_of_range& ex ) {}
+
+   try {
+      ( lhs_ * rhs_ ).at( lhs_.rows(), 0UL );
+
+      std::ostringstream oss;
+      oss << " Test : Checked element access of multiplication expression\n"
+          << " Error: Out-of-bound access succeeded\n"
+          << " Details:\n"
+          << "   Left-hand side row-major dense matrix type:\n"
+          << "     " << typeid( MT1 ).name() << "\n"
+          << "   Right-hand side row-major dense matrix type:\n"
+          << "     " << typeid( MT2 ).name() << "\n";
+      throw std::runtime_error( oss.str() );
+   }
+   catch( std::out_of_range& ex ) {}
 
 
    //=====================================================================================
@@ -748,10 +785,14 @@ void OperationTest<MT1,MT2>::testElementAccess()
 
    if( lhs_.rows() > 0UL && orhs_.columns() > 0UL )
    {
-      if( !equal( ( lhs_ * orhs_ )(0UL,0UL), ( reflhs_ * refrhs_ )(0UL,0UL) ) ) {
+      const size_t m( lhs_.rows()     - 1UL );
+      const size_t n( orhs_.columns() - 1UL );
+
+      if( !equal( ( lhs_ * orhs_ )(m,n), ( reflhs_ * refrhs_ )(m,n) ) ||
+          !equal( ( lhs_ * orhs_ ).at(m,n), ( reflhs_ * refrhs_ ).at(m,n) ) ) {
          std::ostringstream oss;
          oss << " Test : Element access of multiplication expression\n"
-             << " Error: Unequal resulting elements at element (0,0) detected\n"
+             << " Error: Unequal resulting elements at element (" << m << "," << n << ") detected\n"
              << " Details:\n"
              << "   Left-hand side row-major dense matrix type:\n"
              << "     " << typeid( MT1 ).name() << "\n"
@@ -760,10 +801,11 @@ void OperationTest<MT1,MT2>::testElementAccess()
          throw std::runtime_error( oss.str() );
       }
 
-      if( !equal( ( lhs_ * eval( orhs_ ) )(0UL,0UL), ( reflhs_ * eval( refrhs_ ) )(0UL,0UL) ) ) {
+      if( !equal( ( lhs_ * eval( orhs_ ) )(m,n), ( reflhs_ * eval( refrhs_ ) )(m,n) ) ||
+          !equal( ( lhs_ * eval( orhs_ ) ).at(m,n), ( reflhs_ * eval( refrhs_ ) ).at(m,n) ) ) {
          std::ostringstream oss;
          oss << " Test : Element access of right evaluated multiplication expression\n"
-             << " Error: Unequal resulting elements at element (0,0) detected\n"
+             << " Error: Unequal resulting elements at element (" << m << "," << n << ") detected\n"
              << " Details:\n"
              << "   Left-hand side row-major dense matrix type:\n"
              << "     " << typeid( MT1 ).name() << "\n"
@@ -772,10 +814,11 @@ void OperationTest<MT1,MT2>::testElementAccess()
          throw std::runtime_error( oss.str() );
       }
 
-      if( !equal( ( eval( lhs_ ) * orhs_ )(0UL,0UL), ( eval( reflhs_ ) * refrhs_ )(0UL,0UL) ) ) {
+      if( !equal( ( eval( lhs_ ) * orhs_ )(m,n), ( eval( reflhs_ ) * refrhs_ )(m,n) ) ||
+          !equal( ( eval( lhs_ ) * orhs_ ).at(m,n), ( eval( reflhs_ ) * refrhs_ ).at(m,n) ) ) {
          std::ostringstream oss;
          oss << " Test : Element access of left evaluated multiplication expression\n"
-             << " Error: Unequal resulting elements at element (0,0) detected\n"
+             << " Error: Unequal resulting elements at element (" << m << "," << n << ") detected\n"
              << " Details:\n"
              << "   Left-hand side row-major dense matrix type:\n"
              << "     " << typeid( MT1 ).name() << "\n"
@@ -784,10 +827,11 @@ void OperationTest<MT1,MT2>::testElementAccess()
          throw std::runtime_error( oss.str() );
       }
 
-      if( !equal( ( eval( lhs_ ) * eval( orhs_ ) )(0UL,0UL), ( eval( reflhs_ ) * eval( refrhs_ ) )(0UL,0UL) ) ) {
+      if( !equal( ( eval( lhs_ ) * eval( orhs_ ) )(m,n), ( eval( reflhs_ ) * eval( refrhs_ ) )(m,n) ) ||
+          !equal( ( eval( lhs_ ) * eval( orhs_ ) ).at(m,n), ( eval( reflhs_ ) * eval( refrhs_ ) ).at(m,n) ) ) {
          std::ostringstream oss;
          oss << " Test : Element access of fully evaluated multiplication expression\n"
-             << " Error: Unequal resulting elements at element (0,0) detected\n"
+             << " Error: Unequal resulting elements at element (" << m << "," << n << ") detected\n"
              << " Details:\n"
              << "   Left-hand side row-major dense matrix type:\n"
              << "     " << typeid( MT1 ).name() << "\n"
@@ -796,6 +840,36 @@ void OperationTest<MT1,MT2>::testElementAccess()
          throw std::runtime_error( oss.str() );
       }
    }
+
+   try {
+      ( lhs_ * orhs_ ).at( 0UL, orhs_.columns() );
+
+      std::ostringstream oss;
+      oss << " Test : Checked element access of multiplication expression\n"
+          << " Error: Out-of-bound access succeeded\n"
+          << " Details:\n"
+          << "   Left-hand side row-major dense matrix type:\n"
+          << "     " << typeid( MT1 ).name() << "\n"
+          << "   Right-hand side column-major dense matrix type:\n"
+          << "     " << typeid( OMT2 ).name() << "\n";
+      throw std::runtime_error( oss.str() );
+   }
+   catch( std::out_of_range& ex ) {}
+
+   try {
+      ( lhs_ * orhs_ ).at( lhs_.rows(), 0UL );
+
+      std::ostringstream oss;
+      oss << " Test : Checked element access of multiplication expression\n"
+          << " Error: Out-of-bound access succeeded\n"
+          << " Details:\n"
+          << "   Left-hand side row-major dense matrix type:\n"
+          << "     " << typeid( MT1 ).name() << "\n"
+          << "   Right-hand side column-major dense matrix type:\n"
+          << "     " << typeid( OMT2 ).name() << "\n";
+      throw std::runtime_error( oss.str() );
+   }
+   catch( std::out_of_range& ex ) {}
 
 
    //=====================================================================================
@@ -804,10 +878,14 @@ void OperationTest<MT1,MT2>::testElementAccess()
 
    if( olhs_.rows() > 0UL && rhs_.columns() > 0UL )
    {
-      if( !equal( ( olhs_ * rhs_ )(0UL,0UL), ( reflhs_ * refrhs_ )(0UL,0UL) ) ) {
+      const size_t m( olhs_.rows()   - 1UL );
+      const size_t n( rhs_.columns() - 1UL );
+
+      if( !equal( ( olhs_ * rhs_ )(m,n), ( reflhs_ * refrhs_ )(m,n) ) ||
+          !equal( ( olhs_ * rhs_ ).at(m,n), ( reflhs_ * refrhs_ ).at(m,n) ) ) {
          std::ostringstream oss;
          oss << " Test : Element access of multiplication expression\n"
-             << " Error: Unequal resulting elements at element (0,0) detected\n"
+             << " Error: Unequal resulting elements at element (" << m << "," << n << ") detected\n"
              << " Details:\n"
              << "   Left-hand side column-major dense matrix type:\n"
              << "     " << typeid( OMT1 ).name() << "\n"
@@ -816,10 +894,11 @@ void OperationTest<MT1,MT2>::testElementAccess()
          throw std::runtime_error( oss.str() );
       }
 
-      if( !equal( ( olhs_ * eval( rhs_ ) )(0UL,0UL), ( reflhs_ * eval( refrhs_ ) )(0UL,0UL) ) ) {
+      if( !equal( ( olhs_ * eval( rhs_ ) )(m,n), ( reflhs_ * eval( refrhs_ ) )(m,n) ) ||
+          !equal( ( olhs_ * eval( rhs_ ) ).at(m,n), ( reflhs_ * eval( refrhs_ ) ).at(m,n) ) ) {
          std::ostringstream oss;
          oss << " Test : Element access of right evaluated multiplication expression\n"
-             << " Error: Unequal resulting elements at element (0,0) detected\n"
+             << " Error: Unequal resulting elements at element (" << m << "," << n << ") detected\n"
              << " Details:\n"
              << "   Left-hand side column-major dense matrix type:\n"
              << "     " << typeid( OMT1 ).name() << "\n"
@@ -828,10 +907,11 @@ void OperationTest<MT1,MT2>::testElementAccess()
          throw std::runtime_error( oss.str() );
       }
 
-      if( !equal( ( eval( olhs_ ) * rhs_ )(0UL,0UL), ( eval( reflhs_ ) * refrhs_ )(0UL,0UL) ) ) {
+      if( !equal( ( eval( olhs_ ) * rhs_ )(m,n), ( eval( reflhs_ ) * refrhs_ )(m,n) ) ||
+          !equal( ( eval( olhs_ ) * rhs_ ).at(m,n), ( eval( reflhs_ ) * refrhs_ ).at(m,n) ) ) {
          std::ostringstream oss;
          oss << " Test : Element access of left evaluated multiplication expression\n"
-             << " Error: Unequal resulting elements at element (0,0) detected\n"
+             << " Error: Unequal resulting elements at element (" << m << "," << n << ") detected\n"
              << " Details:\n"
              << "   Left-hand side column-major dense matrix type:\n"
              << "     " << typeid( OMT1 ).name() << "\n"
@@ -840,10 +920,11 @@ void OperationTest<MT1,MT2>::testElementAccess()
          throw std::runtime_error( oss.str() );
       }
 
-      if( !equal( ( eval( olhs_ ) * eval( rhs_ ) )(0UL,0UL), ( eval( reflhs_ ) * eval( refrhs_ ) )(0UL,0UL) ) ) {
+      if( !equal( ( eval( olhs_ ) * eval( rhs_ ) )(m,n), ( eval( reflhs_ ) * eval( refrhs_ ) )(m,n) ) ||
+          !equal( ( eval( olhs_ ) * eval( rhs_ ) ).at(m,n), ( eval( reflhs_ ) * eval( refrhs_ ) ).at(m,n) ) ) {
          std::ostringstream oss;
          oss << " Test : Element access of fully evaluated multiplication expression\n"
-             << " Error: Unequal resulting elements at element (0,0) detected\n"
+             << " Error: Unequal resulting elements at element (" << m << "," << n << ") detected\n"
              << " Details:\n"
              << "   Left-hand side column-major dense matrix type:\n"
              << "     " << typeid( OMT1 ).name() << "\n"
@@ -852,6 +933,36 @@ void OperationTest<MT1,MT2>::testElementAccess()
          throw std::runtime_error( oss.str() );
       }
    }
+
+   try {
+      ( olhs_ * rhs_ ).at( 0UL, rhs_.columns() );
+
+      std::ostringstream oss;
+      oss << " Test : Checked element access of multiplication expression\n"
+          << " Error: Out-of-bound access succeeded\n"
+          << " Details:\n"
+          << "   Left-hand side column-major dense matrix type:\n"
+          << "     " << typeid( OMT1 ).name() << "\n"
+          << "   Right-hand side row-major dense matrix type:\n"
+          << "     " << typeid( MT2 ).name() << "\n";
+      throw std::runtime_error( oss.str() );
+   }
+   catch( std::out_of_range& ex ) {}
+
+   try {
+      ( olhs_ * rhs_ ).at( olhs_.rows(), 0UL );
+
+      std::ostringstream oss;
+      oss << " Test : Checked element access of multiplication expression\n"
+          << " Error: Out-of-bound access succeeded\n"
+          << " Details:\n"
+          << "   Left-hand side column-major dense matrix type:\n"
+          << "     " << typeid( OMT1 ).name() << "\n"
+          << "   Right-hand side row-major dense matrix type:\n"
+          << "     " << typeid( MT2 ).name() << "\n";
+      throw std::runtime_error( oss.str() );
+   }
+   catch( std::out_of_range& ex ) {}
 
 
    //=====================================================================================
@@ -860,54 +971,91 @@ void OperationTest<MT1,MT2>::testElementAccess()
 
    if( olhs_.rows() > 0UL && orhs_.columns() > 0UL )
    {
-      if( !equal( ( olhs_ * orhs_ )(0UL,0UL), ( reflhs_ * refrhs_ )(0UL,0UL) ) ) {
+      const size_t m( olhs_.rows()    - 1UL );
+      const size_t n( orhs_.columns() - 1UL );
+
+      if( !equal( ( olhs_ * orhs_ )(m,n), ( reflhs_ * refrhs_ )(m,n) ) ||
+          !equal( ( olhs_ * orhs_ ).at(m,n), ( reflhs_ * refrhs_ ).at(m,n) ) ) {
          std::ostringstream oss;
-         oss << " Test : Element access of transpose multiplication expression\n"
-             << " Error: Unequal resulting elements at element (0,0) detected\n"
+         oss << " Test : Element access of multiplication expression\n"
+             << " Error: Unequal resulting elements at element (" << m << "," << n << ") detected\n"
              << " Details:\n"
-             << "   Transpose left-hand side dense matrix type:\n"
+             << "   Left-hand side column-major dense matrix type:\n"
              << "     " << typeid( OMT1 ).name() << "\n"
-             << "   Transpose right-hand side dense matrix type:\n"
+             << "   Right-hand side column-major dense matrix type:\n"
              << "     " << typeid( OMT2 ).name() << "\n";
          throw std::runtime_error( oss.str() );
       }
 
-      if( !equal( ( olhs_ * eval( orhs_ ) )(0UL,0UL), ( reflhs_ * eval( refrhs_ ) )(0UL,0UL) ) ) {
+      if( !equal( ( olhs_ * eval( orhs_ ) )(m,n), ( reflhs_ * eval( refrhs_ ) )(m,n) ) ||
+          !equal( ( olhs_ * eval( orhs_ ) ).at(m,n), ( reflhs_ * eval( refrhs_ ) ).at(m,n) ) ) {
          std::ostringstream oss;
-         oss << " Test : Element access of right evaluated transpose multiplication expression\n"
-             << " Error: Unequal resulting elements at element (0,0) detected\n"
+         oss << " Test : Element access of right evaluated multiplication expression\n"
+             << " Error: Unequal resulting elements at element (" << m << "," << n << ") detected\n"
              << " Details:\n"
-             << "   Transpose left-hand side dense matrix type:\n"
+             << "   Left-hand side column-major dense matrix type:\n"
              << "     " << typeid( OMT1 ).name() << "\n"
-             << "   Transpose right-hand side dense matrix type:\n"
+             << "   Right-hand side column-major dense matrix type:\n"
              << "     " << typeid( OMT2 ).name() << "\n";
          throw std::runtime_error( oss.str() );
       }
 
-      if( !equal( ( eval( olhs_ ) * orhs_ )(0UL,0UL), ( eval( reflhs_ ) * refrhs_ )(0UL,0UL) ) ) {
+      if( !equal( ( eval( olhs_ ) * orhs_ )(m,n), ( eval( reflhs_ ) * refrhs_ )(m,n) ) ||
+          !equal( ( eval( olhs_ ) * orhs_ ).at(m,n), ( eval( reflhs_ ) * refrhs_ ).at(m,n) ) ) {
          std::ostringstream oss;
-         oss << " Test : Element access of left evaluated transpose multiplication expression\n"
-             << " Error: Unequal resulting elements at element (0,0) detected\n"
+         oss << " Test : Element access of left evaluated multiplication expression\n"
+             << " Error: Unequal resulting elements at element (" << m << "," << n << ") detected\n"
              << " Details:\n"
-             << "   Transpose left-hand side dense matrix type:\n"
+             << "   Left-hand side column-major dense matrix type:\n"
              << "     " << typeid( OMT1 ).name() << "\n"
-             << "   Transpose right-hand side dense matrix type:\n"
+             << "   Right-hand side column-major dense matrix type:\n"
              << "     " << typeid( OMT2 ).name() << "\n";
          throw std::runtime_error( oss.str() );
       }
 
-      if( !equal( ( eval( olhs_ ) * eval( orhs_ ) )(0UL,0UL), ( eval( reflhs_ ) * eval( refrhs_ ) )(0UL,0UL) ) ) {
+      if( !equal( ( eval( olhs_ ) * eval( orhs_ ) )(m,n), ( eval( reflhs_ ) * eval( refrhs_ ) )(m,n) ) ||
+          !equal( ( eval( olhs_ ) * eval( orhs_ ) ).at(m,n), ( eval( reflhs_ ) * eval( refrhs_ ) ).at(m,n) ) ) {
          std::ostringstream oss;
-         oss << " Test : Element access of fully evaluated transpose multiplication expression\n"
-             << " Error: Unequal resulting elements at element (0,0) detected\n"
+         oss << " Test : Element access of fully evaluated multiplication expression\n"
+             << " Error: Unequal resulting elements at element (" << m << "," << n << ") detected\n"
              << " Details:\n"
-             << "   Transpose left-hand side dense matrix type:\n"
+             << "   Left-hand side column-major dense matrix type:\n"
              << "     " << typeid( OMT1 ).name() << "\n"
-             << "   Transpose right-hand side dense matrix type:\n"
+             << "   Right-hand side column-major dense matrix type:\n"
              << "     " << typeid( OMT2 ).name() << "\n";
          throw std::runtime_error( oss.str() );
       }
    }
+
+   try {
+      ( olhs_ * orhs_ ).at( 0UL, orhs_.columns() );
+
+      std::ostringstream oss;
+      oss << " Test : Checked element access of multiplication expression\n"
+          << " Error: Out-of-bound access succeeded\n"
+          << " Details:\n"
+          << "   Left-hand side column-major dense matrix type:\n"
+          << "     " << typeid( OMT1 ).name() << "\n"
+          << "   Right-hand side column-major dense matrix type:\n"
+          << "     " << typeid( OMT2 ).name() << "\n";
+      throw std::runtime_error( oss.str() );
+   }
+   catch( std::out_of_range& ex ) {}
+
+   try {
+      ( olhs_ * orhs_ ).at( olhs_.rows(), 0UL );
+
+      std::ostringstream oss;
+      oss << " Test : Checked element access of multiplication expression\n"
+          << " Error: Out-of-bound access succeeded\n"
+          << " Details:\n"
+          << "   Left-hand side column-major dense matrix type:\n"
+          << "     " << typeid( OMT1 ).name() << "\n"
+          << "   Right-hand side column-major dense matrix type:\n"
+          << "     " << typeid( OMT2 ).name() << "\n";
+      throw std::runtime_error( oss.str() );
+   }
+   catch( std::out_of_range& ex ) {}
 }
 //*************************************************************************************************
 
