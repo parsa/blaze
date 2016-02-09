@@ -77,6 +77,7 @@
 #include <blaze/util/Assert.h>
 #include <blaze/util/constraints/Reference.h>
 #include <blaze/util/EnableIf.h>
+#include <blaze/util/Exception.h>
 #include <blaze/util/logging/FunctionTrace.h>
 #include <blaze/util/SelectType.h>
 #include <blaze/util/Types.h>
@@ -508,6 +509,25 @@ class DVecTDVecMultExpr : public DenseMatrix< DVecTDVecMultExpr<VT1,VT2>, false 
       BLAZE_INTERNAL_ASSERT( j < rhs_.size(), "Invalid column access index" );
 
       return lhs_[i] * rhs_[j];
+   }
+   //**********************************************************************************************
+
+   //**At function*********************************************************************************
+   /*!\brief Checked access to the matrix elements.
+   //
+   // \param i Access index for the row. The index has to be in the range \f$[0..M-1]\f$.
+   // \param j Access index for the column. The index has to be in the range \f$[0..N-1]\f$.
+   // \return The resulting value.
+   // \exception std::out_of_range Invalid matrix access index.
+   */
+   inline ReturnType at( size_t i, size_t j ) const {
+      if( i >= lhs_.size() ) {
+         BLAZE_THROW_OUT_OF_RANGE( "Invalid row access index" );
+      }
+      if( j >= rhs_.size() ) {
+         BLAZE_THROW_OUT_OF_RANGE( "Invalid column access index" );
+      }
+      return (*this)(i,j);
    }
    //**********************************************************************************************
 

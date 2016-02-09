@@ -88,6 +88,7 @@
 #include <blaze/util/constraints/Reference.h>
 #include <blaze/util/constraints/SameType.h>
 #include <blaze/util/EnableIf.h>
+#include <blaze/util/Exception.h>
 #include <blaze/util/InvalidType.h>
 #include <blaze/util/logging/FunctionTrace.h>
 #include <blaze/util/mpl/And.h>
@@ -473,6 +474,25 @@ class DMatScalarMultExpr : public DenseMatrix< DMatScalarMultExpr<MT,ST,SO>, SO 
       BLAZE_INTERNAL_ASSERT( i < matrix_.rows()   , "Invalid row access index"    );
       BLAZE_INTERNAL_ASSERT( j < matrix_.columns(), "Invalid column access index" );
       return matrix_(i,j) * scalar_;
+   }
+   //**********************************************************************************************
+
+   //**At function*********************************************************************************
+   /*!\brief Checked access to the matrix elements.
+   //
+   // \param i Access index for the row. The index has to be in the range \f$[0..M-1]\f$.
+   // \param j Access index for the column. The index has to be in the range \f$[0..N-1]\f$.
+   // \return The resulting value.
+   // \exception std::out_of_range Invalid matrix access index.
+   */
+   inline ReturnType at( size_t i, size_t j ) const {
+      if( i >= matrix_.rows() ) {
+         BLAZE_THROW_OUT_OF_RANGE( "Invalid row access index" );
+      }
+      if( j >= matrix_.columns() ) {
+         BLAZE_THROW_OUT_OF_RANGE( "Invalid column access index" );
+      }
+      return (*this)(i,j);
    }
    //**********************************************************************************************
 

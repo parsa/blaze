@@ -342,6 +342,25 @@ class DMatDMatMultExpr : public DenseMatrix< DMatDMatMultExpr<MT1,MT2>, false >
    }
    //**********************************************************************************************
 
+   //**At function*********************************************************************************
+   /*!\brief Checked access to the matrix elements.
+   //
+   // \param i Access index for the row. The index has to be in the range \f$[0..M-1]\f$.
+   // \param j Access index for the column. The index has to be in the range \f$[0..N-1]\f$.
+   // \return The resulting value.
+   // \exception std::out_of_range Invalid matrix access index.
+   */
+   inline ReturnType at( size_t i, size_t j ) const {
+      if( i >= lhs_.rows() ) {
+         BLAZE_THROW_OUT_OF_RANGE( "Invalid row access index" );
+      }
+      if( j >= rhs_.columns() ) {
+         BLAZE_THROW_OUT_OF_RANGE( "Invalid column access index" );
+      }
+      return (*this)(i,j);
+   }
+   //**********************************************************************************************
+
    //**Rows function*******************************************************************************
    /*!\brief Returns the current number of rows of the matrix.
    //
@@ -4193,6 +4212,25 @@ class DMatScalarMultExpr< DMatDMatMultExpr<MT1,MT2>, ST, false >
       BLAZE_INTERNAL_ASSERT( i < matrix_.rows()   , "Invalid row access index"    );
       BLAZE_INTERNAL_ASSERT( j < matrix_.columns(), "Invalid column access index" );
       return matrix_(i,j) * scalar_;
+   }
+   //**********************************************************************************************
+
+   //**At function*********************************************************************************
+   /*!\brief Checked access to the matrix elements.
+   //
+   // \param i Access index for the row. The index has to be in the range \f$[0..M-1]\f$.
+   // \param j Access index for the column. The index has to be in the range \f$[0..N-1]\f$.
+   // \return The resulting value.
+   // \exception std::out_of_range Invalid matrix access index.
+   */
+   inline ReturnType at( size_t i, size_t j ) const {
+      if( i >= matrix_.rows() ) {
+         BLAZE_THROW_OUT_OF_RANGE( "Invalid row access index" );
+      }
+      if( j >= matrix_.columns() ) {
+         BLAZE_THROW_OUT_OF_RANGE( "Invalid column access index" );
+      }
+      return (*this)(i,j);
    }
    //**********************************************************************************************
 

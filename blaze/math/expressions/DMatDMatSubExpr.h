@@ -477,6 +477,25 @@ class DMatDMatSubExpr : public DenseMatrix< DMatDMatSubExpr<MT1,MT2,SO>, SO >
    }
    //**********************************************************************************************
 
+   //**At function*********************************************************************************
+   /*!\brief Checked access to the matrix elements.
+   //
+   // \param i Access index for the row. The index has to be in the range \f$[0..M-1]\f$.
+   // \param j Access index for the column. The index has to be in the range \f$[0..N-1]\f$.
+   // \return The resulting value.
+   // \exception std::out_of_range Invalid matrix access index.
+   */
+   inline ReturnType at( size_t i, size_t j ) const {
+      if( i >= lhs_.rows() ) {
+         BLAZE_THROW_OUT_OF_RANGE( "Invalid row access index" );
+      }
+      if( j >= lhs_.columns() ) {
+         BLAZE_THROW_OUT_OF_RANGE( "Invalid column access index" );
+      }
+      return (*this)(i,j);
+   }
+   //**********************************************************************************************
+
    //**Load function*******************************************************************************
    /*!\brief Access to the intrinsic elements of the matrix.
    //
