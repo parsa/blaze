@@ -81,6 +81,7 @@
 #include <blaze/math/typetraits/RequiresEvaluation.h>
 #include <blaze/math/typetraits/Rows.h>
 #include <blaze/math/typetraits/UnderlyingBuiltin.h>
+#include <blaze/math/typetraits/UnderlyingElement.h>
 #include <blaze/system/Inline.h>
 #include <blaze/system/Thresholds.h>
 #include <blaze/util/Assert.h>
@@ -444,8 +445,10 @@ class DMatScalarMultExpr : public DenseMatrix< DMatScalarMultExpr<MT,ST,SO>, SO 
    //**Compilation flags***************************************************************************
    //! Compilation switch for the expression template evaluation strategy.
    enum { vectorizable = MT::vectorizable &&
-                         IsSame<ET,RightOperand>::value &&
-                         IntrinsicTrait<ET>::multiplication };
+                         IsNumeric<ET>::value &&
+                         ( IsSame<ET,RightOperand>::value ||
+                           IsSame<typename UnderlyingElement<ET>::Type,RightOperand>::value ) &&
+                         IntrinsicTrait<RightOperand>::multiplication };
 
    //! Compilation switch for the expression template assignment strategy.
    enum { smpAssignable = MT::smpAssignable };
@@ -509,9 +512,7 @@ class DMatScalarMultExpr : public DenseMatrix< DMatScalarMultExpr<MT,ST,SO>, SO 
       BLAZE_INTERNAL_ASSERT( j < matrix_.columns(), "Invalid column access index" );
       BLAZE_INTERNAL_ASSERT( !SO || ( i % IT::size == 0UL ), "Invalid row access index"    );
       BLAZE_INTERNAL_ASSERT( SO  || ( j % IT::size == 0UL ), "Invalid column access index" );
-      const IntrinsicType xmm1( matrix_.load(i,j) );
-      const IntrinsicType xmm2( set( scalar_ ) );
-      return xmm1 * xmm2;
+      return matrix_.load(i,j) * set( scalar_ );
    }
    //**********************************************************************************************
 
