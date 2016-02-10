@@ -138,6 +138,8 @@ class DenseLUTest
 template< typename Type >
 void DenseLUTest::testRandom()
 {
+#if BLAZETEST_MATHTEST_LAPACK_MODE
+
    test_ = "LU decomposition";
 
    typedef typename blaze::RemoveAdaptor<Type>::Type  MT;
@@ -175,6 +177,8 @@ void DenseLUTest::testRandom()
           << "   Expected result:\n" << A << "\n";
       throw std::runtime_error( oss.str() );
    }
+
+#endif
 }
 //*************************************************************************************************
 
