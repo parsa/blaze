@@ -179,8 +179,54 @@ BLAZE_ALWAYS_INLINE simd_double_t operator*( const simd_double_t& a, const simd_
 
 
 //*************************************************************************************************
+/*!\fn simd_cint16_t operator*( simd_cint16_t, simd_int16_t )
+// \brief Scaling of a vector of 16-bit integral complex values.
+// \ingroup intrinsics
+//
+// \param a The left-hand side complex values to be scaled.
+// \param b The right-hand side scalars.
+// \return The result of the scaling operation.
+*/
+#if BLAZE_AVX2_MODE
+BLAZE_ALWAYS_INLINE simd_cint16_t operator*( const simd_cint16_t& a, const simd_int16_t& b )
+{
+   return _mm256_mullo_epi16( a.value, b.value );
+}
+#elif BLAZE_SSE2_MODE
+BLAZE_ALWAYS_INLINE simd_cint16_t operator*( const simd_cint16_t& a, const simd_int16_t& b )
+{
+   return _mm_mullo_epi16( a.value, b.value );
+}
+#endif
+//*************************************************************************************************
+
+
+//*************************************************************************************************
+/*!\fn simd_cint16_t operator*( simd_int16_t, simd_cint16_t )
+// \brief Scaling of a vector of 16-bit integral complex values.
+// \ingroup intrinsics
+//
+// \param a The left-hand side scalars.
+// \param b The right-hand side complex values to be scaled.
+// \return The result of the scaling operation.
+*/
+#if BLAZE_AVX2_MODE
+BLAZE_ALWAYS_INLINE simd_cint16_t operator*( const simd_int16_t& a, const simd_cint16_t& b )
+{
+   return _mm256_mullo_epi16( a.value, b.value );
+}
+#elif BLAZE_SSE2_MODE
+BLAZE_ALWAYS_INLINE simd_cint16_t operator*( const simd_int16_t& a, const simd_cint16_t& b )
+{
+   return _mm_mullo_epi16( a.value, b.value );
+}
+#endif
+//*************************************************************************************************
+
+
+//*************************************************************************************************
 /*!\fn simd_cint16_t operator*( simd_cint16_t, simd_cint16_t )
-// \brief Multiplication of two vectors of 16-bit integral values.
+// \brief Multiplication of two vectors of 16-bit integral complex values.
 // \ingroup intrinsics
 //
 // \param a The left-hand side operand.
@@ -226,8 +272,64 @@ BLAZE_ALWAYS_INLINE simd_cint16_t operator*( const simd_cint16_t& a, const simd_
 
 
 //*************************************************************************************************
+/*!\fn simd_cint32_t operator*( simd_cint32_t, simd_int32_t )
+// \brief Scaling of a vector of 32-bit integral complex values.
+// \ingroup intrinsics
+//
+// \param a The left-hand side complex values to be scaled.
+// \param b The right-hand side scalars.
+// \return The result of the scaling operation.
+*/
+#if BLAZE_MIC_MODE
+BLAZE_ALWAYS_INLINE simd_cint32_t operator*( const simd_cint32_t& a, const simd_int32_t& b )
+{
+   return _mm512_mullo_epi32( a.value, b.value );
+}
+#elif BLAZE_AVX2_MODE
+BLAZE_ALWAYS_INLINE simd_cint32_t operator*( const simd_cint32_t& a, const simd_int32_t& b )
+{
+   return _mm256_mullo_epi32( a.value, b.value );
+}
+#elif BLAZE_SSE4_MODE
+BLAZE_ALWAYS_INLINE simd_cint32_t operator*( const simd_cint32_t& a, const simd_int32_t& b )
+{
+   return _mm_mullo_epi32( a.value, b.value );
+}
+#endif
+//*************************************************************************************************
+
+
+//*************************************************************************************************
+/*!\fn simd_cint32_t operator*( simd_int32_t, simd_cint32_t )
+// \brief Scaling of a vector of 32-bit integral complex values.
+// \ingroup intrinsics
+//
+// \param a The left-hand side scalars.
+// \param b The right-hand side complex values to be scaled.
+// \return The result of the scaling operation.
+*/
+#if BLAZE_MIC_MODE
+BLAZE_ALWAYS_INLINE simd_cint32_t operator*( const simd_int32_t& a, const simd_cint32_t& b )
+{
+   return _mm512_mullo_epi32( a.value, b.value );
+}
+#elif BLAZE_AVX2_MODE
+BLAZE_ALWAYS_INLINE simd_cint32_t operator*( const simd_int32_t& a, const simd_cint32_t& b )
+{
+   return _mm256_mullo_epi32( a.value, b.value );
+}
+#elif BLAZE_SSE4_MODE
+BLAZE_ALWAYS_INLINE simd_cint32_t operator*( const simd_int32_t& a, const simd_cint32_t& b )
+{
+   return _mm_mullo_epi32( a.value, b.value );
+}
+#endif
+//*************************************************************************************************
+
+
+//*************************************************************************************************
 /*!\fn simd_cint32_t operator*( simd_cint32_t, simd_cint32_t )
-// \brief Multiplication of two vectors of 32-bit integral values.
+// \brief Multiplication of two vectors of 32-bit integral complex values.
 // \ingroup intrinsics
 //
 // \param a The left-hand side operand.
@@ -281,6 +383,62 @@ BLAZE_ALWAYS_INLINE simd_cint32_t operator*( const simd_cint32_t& a, const simd_
 
 
 //*************************************************************************************************
+/*!\fn simd_cfloat_t operator*( simd_cfloat_t, simd_float_t )
+// \brief Scaling of a vector of single precision complex values.
+// \ingroup intrinsics
+//
+// \param a The left-hand side complex values to be scaled.
+// \param b The right-hand side scalars.
+// \return The result of the scaling operation.
+*/
+#if BLAZE_MIC_MODE
+BLAZE_ALWAYS_INLINE simd_cfloat_t operator*( const simd_cfloat_t& a, const simd_float_t& b )
+{
+   return _mm512_mul_ps( a.value, b.value );
+}
+#elif BLAZE_AVX_MODE
+BLAZE_ALWAYS_INLINE simd_cfloat_t operator*( const simd_cfloat_t& a, const simd_float_t& b )
+{
+   return _mm256_mul_ps( a.value, b.value );
+}
+#elif BLAZE_SSE_MODE
+BLAZE_ALWAYS_INLINE simd_cfloat_t operator*( const simd_cfloat_t& a, const simd_float_t& b )
+{
+   return _mm_mul_ps( a.value, b.value );
+}
+#endif
+//*************************************************************************************************
+
+
+//*************************************************************************************************
+/*!\fn simd_cfloat_t operator*( simd_float_t, simd_cfloat_t )
+// \brief Scaling of a vector of single precision complex values.
+// \ingroup intrinsics
+//
+// \param a The left-hand side scalars.
+// \param b The right-hand side complex values to be scaled.
+// \return The result of the scaling operation.
+*/
+#if BLAZE_MIC_MODE
+BLAZE_ALWAYS_INLINE simd_cfloat_t operator*( const simd_float_t& a, const simd_cfloat_t& b )
+{
+   return _mm512_mul_ps( a.value, b.value );
+}
+#elif BLAZE_AVX_MODE
+BLAZE_ALWAYS_INLINE simd_cfloat_t operator*( const simd_float_t& a, const simd_cfloat_t& b )
+{
+   return _mm256_mul_ps( a.value, b.value );
+}
+#elif BLAZE_SSE_MODE
+BLAZE_ALWAYS_INLINE simd_cfloat_t operator*( const simd_float_t& a, const simd_cfloat_t& b )
+{
+   return _mm_mul_ps( a.value, b.value );
+}
+#endif
+//*************************************************************************************************
+
+
+//*************************************************************************************************
 /*!\fn simd_cfloat_t operator*( simd_cfloat_t, simd_cfloat_t )
 // \brief Multiplication of two vectors of single precision complex values.
 // \ingroup intrinsics
@@ -312,6 +470,62 @@ BLAZE_ALWAYS_INLINE simd_cfloat_t operator*( const simd_cfloat_t& a, const simd_
    y = _mm_shuffle_ps( b.value, b.value, 0xB1 );
    y = _mm_mul_ps( x, y );
    return _mm_addsub_ps( z, y );
+}
+#endif
+//*************************************************************************************************
+
+
+//*************************************************************************************************
+/*!\fn simd_cdouble_t operator*( simd_cdouble_t, simd_double_t )
+// \brief Scaling of a vector of double precision complex values.
+// \ingroup intrinsics
+//
+// \param a The left-hand side complex values to be scaled.
+// \param b The right-hand side scalars.
+// \return The result of the scaling operation.
+*/
+#if BLAZE_MIC_MODE
+BLAZE_ALWAYS_INLINE simd_cdouble_t operator*( const simd_cdouble_t& a, const simd_double_t& b )
+{
+   return _mm512_mul_pd( a.value, b.value );
+}
+#elif BLAZE_AVX_MODE
+BLAZE_ALWAYS_INLINE simd_cdouble_t operator*( const simd_cdouble_t& a, const simd_double_t& b )
+{
+   return _mm256_mul_pd( a.value, b.value );
+}
+#elif BLAZE_SSE2_MODE
+BLAZE_ALWAYS_INLINE simd_cdouble_t operator*( const simd_cdouble_t& a, const simd_double_t& b )
+{
+   return _mm_mul_pd( a.value, b.value );
+}
+#endif
+//*************************************************************************************************
+
+
+//*************************************************************************************************
+/*!\fn simd_cdouble_t operator*( simd_double_t, simd_cdouble_t )
+// \brief Scaling of a vector of double precision complex values.
+// \ingroup intrinsics
+//
+// \param a The left-hand side scalars.
+// \param b The right-hand side complex values to be scaled.
+// \return The result of the scaling operation.
+*/
+#if BLAZE_MIC_MODE
+BLAZE_ALWAYS_INLINE simd_cdouble_t operator*( const simd_double_t& a, const simd_cdouble_t& b )
+{
+   return _mm512_mul_pd( a.value, b.value );
+}
+#elif BLAZE_AVX_MODE
+BLAZE_ALWAYS_INLINE simd_cdouble_t operator*( const simd_double_t& a, const simd_cdouble_t& b )
+{
+   return _mm256_mul_pd( a.value, b.value );
+}
+#elif BLAZE_SSE2_MODE
+BLAZE_ALWAYS_INLINE simd_cdouble_t operator*( const simd_double_t& a, const simd_cdouble_t& b )
+{
+   return _mm_mul_pd( a.value, b.value );
 }
 #endif
 //*************************************************************************************************
