@@ -184,8 +184,8 @@ inline void orgqr( int m, int n, int k, double* A, int lda, const double* tau, d
 // \c double element type. The attempt to call the function with any adapted matrix or matrices
 // of any other element type results in a compile time error!\n
 //
-// The row-major min(m,n)-by-n or column-major m-by-min(m,n) \a Q matrix is stored in the within
-// the given matrix \a A:
+// The row-major min(\a m,\a n)-by-\a n or column-major \a m-by-min(\a m,\a n) \a Q matrix is
+// stored in the within the given matrix \a A:
 
    \code
    using blaze::DynamicMatrix;
@@ -248,7 +248,7 @@ inline void orgqr( DenseMatrix<MT,SO>& A, const typename MT::ElementType* tau )
    int lda ( numeric_cast<int>( (~A).spacing() ) );
    int info( 0 );
 
-   if( m == 0 ) {
+   if( k == 0 ) {
       return;
    }
 

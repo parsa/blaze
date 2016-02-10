@@ -190,8 +190,8 @@ inline void ungrq( int m, int n, int k, complex<double>* A, int lda, const compl
 // \c double element type. The attempt to call the function with any adapted matrix or matrices
 // of any other element type results in a compile time error!\n
 //
-// The row-major m-by-min(m,n) or column-major min(m,n)-by-n \a Q matrix is stored in the within
-// the given matrix \a A:
+// The row-major \a m-by-min(\a m,\a n) or column-major min(\a m,\a n)-by-\a n \a Q matrix is
+// stored in the within the given matrix \a A:
 
    \code
    using blaze::DynamicMatrix;
@@ -256,7 +256,7 @@ inline void ungrq( DenseMatrix<MT,SO>& A, const typename MT::ElementType* tau )
    int lda ( numeric_cast<int>( (~A).spacing() ) );
    int info( 0 );
 
-   if( n == 0 ) {
+   if( k == 0 ) {
       return;
    }
 

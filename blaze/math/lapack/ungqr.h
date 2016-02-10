@@ -190,8 +190,8 @@ inline void ungqr( int m, int n, int k, complex<double>* A, int lda, const compl
 // or \c complex<double> element type. The attempt to call the function with any adapted matrix or
 // matrices of any other element type results in a compile time error!\n
 //
-// The row-major min(m,n)-by-n or column-major m-by-min(m,n) \a Q matrix is stored in the within
-// the given \a A matrix:
+// The row-major min(\a m,\a n)-by-\a n or column-major \a m-by-min(\a m,\a n) \a Q matrix is
+// stored in the within the given matrix \a A:
 
    \code
    using blaze::DynamicMatrix;
@@ -253,19 +253,19 @@ inline void ungqr( DenseMatrix<MT,SO>& A, const typename MT::ElementType* tau )
    typedef typename MT::ElementType  ET;
 
    int m   ( numeric_cast<int>( SO ? (~A).rows() : (~A).columns() ) );
-   int n   ( min( m, numeric_cast<int>( SO ? (~A).columns() : (~A).rows() ) ) );
+   int n   ( numeric_cast<int>( SO ? (~A).columns() : (~A).rows() ) );
    int k   ( min( m, n ) );
    int lda ( numeric_cast<int>( (~A).spacing() ) );
    int info( 0 );
 
-   if( m == 0 ) {
+   if( k == 0 ) {
       return;
    }
 
-   int lwork( n*lda );
+   int lwork( k*lda );
    const UniqueArray<ET> work( new ET[lwork] );
 
-   ungqr( m, n, k, (~A).data(), lda, tau, work.get(), lwork, &info );
+   ungqr( m, k, k, (~A).data(), lda, tau, work.get(), lwork, &info );
 
    BLAZE_INTERNAL_ASSERT( info == 0, "Invalid argument for Q reconstruction" );
 }

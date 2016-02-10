@@ -290,7 +290,7 @@ inline void geqrf( int m, int n, complex<float>* A, int lda, complex<float>* tau
 // \param info Return code of the function call.
 // \return void
 //
-// This function performs the dense matrix QR decomposition of a general \a m-by-\a n single
+// This function performs the dense matrix QR decomposition of a general \a m-by-\a n double
 // precision complex column-major matrix based on the LAPACK zgeqrf() function. The resulting
 // decomposition has the form
 
