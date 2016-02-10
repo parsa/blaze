@@ -142,11 +142,11 @@ void lu( DenseMatrix<MT1,SO1>& A, Matrix<MT2,SO2>& P )
 // \param P The resulting permutation matrix.
 // \return void
 // \exception std::invalid_argument Dimensions of fixed size matrix do not match.
-// \exception std::invalid_argument Square matrix cannot be resized to m-by-n.
+// \exception std::invalid_argument Square matrix cannot be resized to \a m-by-\a n.
 //
-// This function performs the dense matrix (P)LU decomposition of a general m-by-n matrix. The
-// resulting decomposition is written to the three distinct matrices \c L, \c U, and \c P, which
-// are resized to the correct dimensions (if possible and necessary).
+// This function performs the dense matrix (P)LU decomposition of a general \a m-by-\a n matrix.
+// The resulting decomposition is written to the three distinct matrices \c L, \c U, and \c P,
+// which are resized to the correct dimensions (if possible and necessary).
 //
 // In case of a column-major matrix the algorithm performs the decomposition using partial pivoting
 // with row interchanges. The resulting decomposition has the form

@@ -93,7 +93,7 @@ void rq( const DenseMatrix<MT1,SO1>& A, DenseMatrix<MT2,SO2>& R, DenseMatrix<MT3
 // \return void
 //
 // This function is an auxiliary helper for the dense matrix RQ decomposition. It performs the
-// reconstruction of the Q matrix from the RQ decomposition.
+// reconstruction of the \c Q matrix from the RQ decomposition.
 */
 template< typename MT1 >  // Type of matrix A
 inline typename EnableIf< IsBuiltin< typename MT1::ElementType > >::Type
@@ -117,7 +117,7 @@ inline typename EnableIf< IsBuiltin< typename MT1::ElementType > >::Type
 // \return void
 //
 // This function is an auxiliary helper for the dense matrix RQ decomposition. It performs the
-// reconstruction of the Q matrix from the RQ decomposition.
+// reconstruction of the \c Q matrix from the RQ decomposition.
 */
 template< typename MT1 >  // Type of matrix A
 inline typename EnableIf< IsComplex< typename MT1::ElementType > >::Type
@@ -136,8 +136,8 @@ inline typename EnableIf< IsComplex< typename MT1::ElementType > >::Type
 // \ingroup dense_matrix
 //
 // \param A The matrix to be decomposed.
-// \param R The resulting R matrix.
-// \param Q The resulting Q matrix.
+// \param R The resulting \c R matrix.
+// \param Q The resulting \c Q matrix.
 // \return void
 // \exception std::invalid_argument Dimensions of fixed size matrix do not match.
 // \exception std::invalid_argument Square matrix cannot be resized to \a m-by-\a n.
