@@ -56,6 +56,8 @@ noop: $(BIN)
 # Build rules
 DenseLUTest: DenseLUTest.o
 	@$(CXX) $(CXXFLAGS) -o $@ $< $(LIBRARIES)
+DenseLQTest: DenseLQTest.o
+	@$(CXX) $(CXXFLAGS) -o $@ $< $(LIBRARIES)
 DenseLLHTest: DenseLLHTest.o
 	@$(CXX) $(CXXFLAGS) -o $@ $< $(LIBRARIES)
 DenseQRTest: DenseQRTest.o

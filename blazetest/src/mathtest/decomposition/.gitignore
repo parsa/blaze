@@ -1,6 +1,7 @@
 *.d
 *.o
 DenseLLHTest
+DenseLQTest
 DenseLUTest
 DenseQRTest
 DenseRQTest
