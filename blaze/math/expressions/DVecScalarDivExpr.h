@@ -66,6 +66,7 @@
 #include <blaze/math/typetraits/IsTemporary.h>
 #include <blaze/math/typetraits/RequiresEvaluation.h>
 #include <blaze/math/typetraits/Size.h>
+#include <blaze/math/typetraits/UnderlyingElement.h>
 #include <blaze/system/Inline.h>
 #include <blaze/system/Thresholds.h>
 #include <blaze/util/Assert.h>
@@ -429,8 +430,10 @@ class DVecScalarDivExpr : public DenseVector< DVecScalarDivExpr<VT,ST,TF>, TF >
    //**Compilation flags***************************************************************************
    //! Compilation switch for the expression template evaluation strategy.
    enum { vectorizable = VT::vectorizable &&
-                         IsSame<ET,RightOperand>::value &&
-                         IntrinsicTrait<ET>::division };
+                         IsNumeric<ET>::value &&
+                         ( IsSame<ET,RightOperand>::value ||
+                           IsSame<typename UnderlyingElement<ET>::Type,RightOperand>::value ) &&
+                         IntrinsicTrait<RightOperand>::division };
 
    //! Compilation switch for the expression template assignment strategy.
    enum { smpAssignable = VT::smpAssignable };
@@ -485,9 +488,7 @@ class DVecScalarDivExpr : public DenseVector< DVecScalarDivExpr<VT,ST,TF>, TF >
       typedef IntrinsicTrait<ElementType>  IT;
       BLAZE_INTERNAL_ASSERT( index < vector_.size() , "Invalid vector access index" );
       BLAZE_INTERNAL_ASSERT( index % IT::size == 0UL, "Invalid vector access index" );
-      const IntrinsicType xmm1( vector_.load( index ) );
-      const IntrinsicType xmm2( set( scalar_ ) );
-      return xmm1 / xmm2;
+      return vector_.load( index ) / set( scalar_ );
    }
    //**********************************************************************************************
 
