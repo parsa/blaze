@@ -113,6 +113,8 @@ OperationTest::OperationTest()
    testOrgqr< double >();
    testGerqf< double >();
    testOrgrq< double >();
+   testGeqlf< double >();
+   testOrgql< double >();
    testGelqf< double >();
    testOrglq< double >();
 
@@ -173,6 +175,8 @@ OperationTest::OperationTest()
    testUngqr< complex<double> >();
    testGerqf< complex<double> >();
    testUngrq< complex<double> >();
+   testGeqlf< complex<double> >();
+   testUngql< complex<double> >();
    testGelqf< complex<double> >();
    testUnglq< complex<double> >();
 }
