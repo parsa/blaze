@@ -45,6 +45,7 @@
 #include <blaze/math/dense/LLH.h>
 #include <blaze/math/dense/LQ.h>
 #include <blaze/math/dense/LU.h>
+#include <blaze/math/dense/QL.h>
 #include <blaze/math/dense/QR.h>
 #include <blaze/math/dense/RQ.h>
 #include <blaze/math/expressions/DenseMatrix.h>
