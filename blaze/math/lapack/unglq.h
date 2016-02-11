@@ -100,9 +100,9 @@ inline void unglq( DenseMatrix<MT,SO>& A, const typename MT::ElementType* tau );
 /*!\brief LAPACK kernel for the reconstruction of the orthogonal matrix Q from a LQ decomposition.
 // \ingroup lapack_decomposition
 //
-// \param m The number of rows of the given matrix \f$[0..\infty)\f$.
-// \param n The number of columns of the given matrix \f$[0..m)\f$.
-// \param k The number of elementary reflectors, whose product defines the matrix \f$[0..n)\f$.
+// \param m The number of rows of the given matrix \f$[0..n)\f$.
+// \param n The number of columns of the given matrix \f$[0..\infty)\f$.
+// \param k The number of elementary reflectors, whose product defines the matrix \f$[0..m)\f$.
 // \param A Pointer to the first element of the single precision complex column-major matrix.
 // \param lda The total number of elements between two columns of the matrix \f$[0..\infty)\f$.
 // \param tau Array for the scalar factors of the elementary reflectors; size >= min( \a m, \a n ).
@@ -140,9 +140,9 @@ inline void unglq( int m, int n, int k, complex<float>* A, int lda, const comple
 /*!\brief LAPACK kernel for the reconstruction of the orthogonal matrix Q from a LQ decomposition.
 // \ingroup lapack_decomposition
 //
-// \param m The number of rows of the given matrix \f$[0..\infty)\f$.
-// \param n The number of columns of the given matrix \f$[0..m)\f$.
-// \param k The number of elementary reflectors, whose product defines the matrix \f$[0..n)\f$.
+// \param m The number of rows of the given matrix \f$[0..n)\f$.
+// \param n The number of columns of the given matrix \f$[0..\infty)\f$.
+// \param k The number of elementary reflectors, whose product defines the matrix \f$[0..m)\f$.
 // \param A Pointer to the first element of the double precision complex column-major matrix.
 // \param lda The total number of elements between two columns of the matrix \f$[0..\infty)\f$.
 // \param tau Array for the scalar factors of the elementary reflectors; size >= min( \a m, \a n ).

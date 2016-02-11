@@ -406,7 +406,7 @@ inline void gerqf( DenseMatrix<MT,SO>& A, typename MT::ElementType* tau )
       return;
    }
 
-   int lwork( n*lda );
+   int lwork( m*lda );
    const UniqueArray<ET> work( new ET[lwork] );
 
    gerqf( m, n, (~A).data(), lda, tau, work.get(), lwork, &info );

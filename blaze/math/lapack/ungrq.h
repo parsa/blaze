@@ -100,9 +100,9 @@ inline void ungrq( DenseMatrix<MT,SO>& A, const typename MT::ElementType* tau );
 /*!\brief LAPACK kernel for the reconstruction of the orthogonal matrix Q from a RQ decomposition.
 // \ingroup lapack_decomposition
 //
-// \param m The number of rows of the given matrix \f$[0..\infty)\f$.
-// \param n The number of columns of the given matrix \f$[0..m)\f$.
-// \param k The number of elementary reflectors, whose product defines the matrix \f$[0..n)\f$.
+// \param m The number of rows of the given matrix \f$[0..n)\f$.
+// \param n The number of columns of the given matrix \f$[0..\infty)\f$.
+// \param k The number of elementary reflectors, whose product defines the matrix \f$[0..m)\f$.
 // \param A Pointer to the first element of the single precision column-major matrix.
 // \param lda The total number of elements between two columns of the matrix \f$[0..\infty)\f$.
 // \param tau Array for the scalar factors of the elementary reflectors; size >= min( \a m, \a n ).
@@ -140,9 +140,9 @@ inline void ungrq( int m, int n, int k, complex<float>* A, int lda, const comple
 /*!\brief LAPACK kernel for the reconstruction of the orthogonal matrix Q from a RQ decomposition.
 // \ingroup lapack_decomposition
 //
-// \param m The number of rows of the given matrix \f$[0..\infty)\f$.
-// \param n The number of columns of the given matrix \f$[0..m)\f$.
-// \param k The number of elementary reflectors, whose product defines the matrix \f$[0..n)\f$.
+// \param m The number of rows of the given matrix \f$[0..n)\f$.
+// \param n The number of columns of the given matrix \f$[0..\infty)\f$.
+// \param k The number of elementary reflectors, whose product defines the matrix \f$[0..m)\f$.
 // \param A Pointer to the first element of the double precision column-major matrix.
 // \param lda The total number of elements between two columns of the matrix \f$[0..\infty)\f$.
 // \param tau Array for the scalar factors of the elementary reflectors; size >= min( \a m, \a n ).
@@ -197,8 +197,10 @@ inline void ungrq( int m, int n, int k, complex<double>* A, int lda, const compl
    using blaze::DynamicMatrix;
    using blaze::columnMajor;
 
-   DynamicMatrix<double,columnMajor> A;
-   DynamicVector<double> tau;
+   typedef complex<double>  cplx;
+
+   DynamicMatrix<cplx,columnMajor> A;
+   DynamicVector<cplx> tau;
    // ... Resizing and initialization
 
    gerqf( A, tau.data() );  // Performing the RQ decomposition
@@ -208,15 +210,17 @@ inline void ungrq( int m, int n, int k, complex<double>* A, int lda, const compl
    const int n( A.columns() );
 
    const size_t row( m > n ? m - n : 0UL )
-   DynamicMatrix<double,columnMajor> Q( submatrix( A, row, 0UL, min(m,n), n ) );
+   DynamicMatrix<cplx,columnMajor> Q( submatrix( A, row, 0UL, min(m,n), n ) );
    \endcode
 
    \code
    using blaze::DynamicMatrix;
    using blaze::rowMajor;
 
-   DynamicMatrix<double,rowMajor> A;
-   DynamicVector<double> tau;
+   typedef complex<double>  cplx;
+
+   DynamicMatrix<cplx,rowMajor> A;
+   DynamicVector<cplx> tau;
    // ... Resizing and initialization
 
    gerqf( A, tau.data() );  // Performing the RQ decomposition
@@ -226,7 +230,7 @@ inline void ungrq( int m, int n, int k, complex<double>* A, int lda, const compl
    const int n( A.columns() );
 
    const size_t column( m < n ? n - m : 0UL )
-   DynamicMatrix<double,rowMajor> Q( submatrix( A, 0UL, column, m, min(m,n) ) );
+   DynamicMatrix<cplx,rowMajor> Q( submatrix( A, 0UL, column, m, min(m,n) ) );
    \endcode
 
 // For more information on the ungrq() functions (i.e. cungrq() and zungrq()) see the LAPACK
