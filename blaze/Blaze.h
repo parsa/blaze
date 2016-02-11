@@ -8954,6 +8954,70 @@ namespace blaze {}
    } // namespace blaze
    \endcode
 
+// \n \subsection lapack_lq_decomposition LQ Decomposition
+//
+// The following functions provide an interface for the LAPACK functions \c sgelqf(), \c dgelqf(),
+// \c cgelqf(), and \c zgelqf(), which compute the LQ decomposition of the given general matrix:
+
+   \code
+   namespace blaze {
+
+   void gelqf( int m, int n, float* A, int lda, float* tau, float* work, int lwork, int* info );
+
+   void gelqf( int m, int n, double* A, int lda, double* tau, double* work, int lwork, int* info );
+
+   void gelqf( int m, int n, complex<float>* A, int lda, complex<float>* tau, complex<float>* work, int lwork, int* info );
+
+   void gelqf( int m, int n, complex<double>* A, int lda, complex<double>* tau, complex<double>* work, int lwork, int* info );
+
+   template< typename MT, bool SO >
+   void gelqf( DenseMatrix<MT,SO>& A, typename MT::ElementType* tau );
+
+   } // namespace blaze
+   \endcode
+
+// The decomposition has the form
+
+                              \f[ A = L \cdot Q, \f]
+
+// where the \c Q is represented as a product of elementary reflectors
+
+               \f[ Q = H(k) . . . H(2) H(1) \texttt{, with k = min(m,n).} \f]
+
+// Each H(i) has the form
+
+                      \f[ H(i) = I - tau \cdot v \cdot v^T, \f]
+
+// where \c tau is a real scalar, and \c v is a real vector with <tt>v(0:i-1) = 0</tt> and
+// <tt>v(i) = 1</tt>. <tt>v(i+1:n)</tt> is stored on exit in <tt>A(i,i+1:n)</tt>, and \c tau
+// in \c tau(i). Thus on exit the elements on and below the diagonal of the matrix contain the
+// \a m-by-min(\a m,\a n) lower trapezoidal matrix \c L (\c L is lower triangular if \a m <= \a n);
+// the elements above the diagonal, with the array \a tau, represent the orthogonal matrix \c Q
+// as a product of min(\a m,\a n) elementary reflectors.
+//
+// The following functions provide an interface for the LAPACK functions \c sorglq(), \c dorglq(),
+// \c cunglq(), and \c zunqlq(), which reconstruct the \c Q matrix from an LQ decomposition:
+
+   \code
+   namespace blaze {
+
+   void orglq( int m, int n, int k, float* A, int lda, const float* tau, float* work, int lwork, int* info );
+
+   void orglq( int m, int n, int k, double* A, int lda, const double* tau, double* work, int lwork, int* info );
+
+   void unglq( int m, int n, int k, complex<float>* A, int lda, const complex<float>* tau, complex<float>* work, int lwork, int* info );
+
+   void unglq( int m, int n, int k, complex<double>* A, int lda, const complex<double>* tau, complex<double>* work, int lwork, int* info );
+
+   template< typename MT, bool SO >
+   void orglq( DenseMatrix<MT,SO>& A, const typename MT::ElementType* tau );
+
+   template< typename MT, bool SO >
+   void unglq( DenseMatrix<MT,SO>& A, const typename MT::ElementType* tau );
+
+   } // namespace blaze
+   \endcode
+
 // \n \section lapack_inversion Matrix Inversion
 // <hr>
 //
