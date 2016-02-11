@@ -541,7 +541,7 @@ void OperationTest<VT1,VT2>::testElementAccess()
           << "     " << typeid( TVT2 ).name() << "\n";
       throw std::runtime_error( oss.str() );
    }
-   catch( std::out_of_range& ex ) {}
+   catch( std::out_of_range& ) {}
 
    try {
       ( lhs_ * rhs_ ).at( lhs_.size(), 0UL );
@@ -556,7 +556,7 @@ void OperationTest<VT1,VT2>::testElementAccess()
           << "     " << typeid( TVT2 ).name() << "\n";
       throw std::runtime_error( oss.str() );
    }
-   catch( std::out_of_range& ex ) {}
+   catch( std::out_of_range& ) {}
 }
 //*************************************************************************************************
 

@@ -498,7 +498,7 @@ void OperationTest<VT1,VT2>::testElementAccess()
           << "     " << typeid( VT2 ).name() << "\n";
       throw std::runtime_error( oss.str() );
    }
-   catch( std::out_of_range& ex ) {}
+   catch( std::out_of_range& ) {}
 }
 //*************************************************************************************************
 

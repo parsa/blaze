@@ -762,7 +762,7 @@ void OperationTest<MT1,MT2>::testElementAccess()
           << "     " << typeid( MT2 ).name() << "\n";
       throw std::runtime_error( oss.str() );
    }
-   catch( std::out_of_range& ex ) {}
+   catch( std::out_of_range& ) {}
 
    try {
       ( lhs_ + rhs_ ).at( lhs_.rows(), 0UL );
@@ -777,7 +777,7 @@ void OperationTest<MT1,MT2>::testElementAccess()
           << "     " << typeid( MT2 ).name() << "\n";
       throw std::runtime_error( oss.str() );
    }
-   catch( std::out_of_range& ex ) {}
+   catch( std::out_of_range& ) {}
 
 
    //=====================================================================================
@@ -855,7 +855,7 @@ void OperationTest<MT1,MT2>::testElementAccess()
           << "     " << typeid( OMT2 ).name() << "\n";
       throw std::runtime_error( oss.str() );
    }
-   catch( std::out_of_range& ex ) {}
+   catch( std::out_of_range& ) {}
 
    try {
       ( lhs_ + orhs_ ).at( lhs_.rows(), 0UL );
@@ -870,7 +870,7 @@ void OperationTest<MT1,MT2>::testElementAccess()
           << "     " << typeid( OMT2 ).name() << "\n";
       throw std::runtime_error( oss.str() );
    }
-   catch( std::out_of_range& ex ) {}
+   catch( std::out_of_range& ) {}
 
 
    //=====================================================================================
@@ -948,7 +948,7 @@ void OperationTest<MT1,MT2>::testElementAccess()
           << "     " << typeid( MT2 ).name() << "\n";
       throw std::runtime_error( oss.str() );
    }
-   catch( std::out_of_range& ex ) {}
+   catch( std::out_of_range& ) {}
 
    try {
       ( olhs_ + rhs_ ).at( lhs_.rows(), 0UL );
@@ -963,7 +963,7 @@ void OperationTest<MT1,MT2>::testElementAccess()
           << "     " << typeid( MT2 ).name() << "\n";
       throw std::runtime_error( oss.str() );
    }
-   catch( std::out_of_range& ex ) {}
+   catch( std::out_of_range& ) {}
 
 
    //=====================================================================================
@@ -1041,7 +1041,7 @@ void OperationTest<MT1,MT2>::testElementAccess()
           << "     " << typeid( OMT2 ).name() << "\n";
       throw std::runtime_error( oss.str() );
    }
-   catch( std::out_of_range& ex ) {}
+   catch( std::out_of_range& ) {}
 
    try {
       ( olhs_ + orhs_ ).at( lhs_.rows(), 0UL );
@@ -1056,7 +1056,7 @@ void OperationTest<MT1,MT2>::testElementAccess()
           << "     " << typeid( OMT2 ).name() << "\n";
       throw std::runtime_error( oss.str() );
    }
-   catch( std::out_of_range& ex ) {}
+   catch( std::out_of_range& ) {}
 }
 //*************************************************************************************************
 

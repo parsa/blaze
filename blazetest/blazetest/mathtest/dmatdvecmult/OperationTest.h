@@ -629,7 +629,7 @@ void OperationTest<MT,VT>::testElementAccess()
           << "     " << typeid( VT ).name() << "\n";
       throw std::runtime_error( oss.str() );
    }
-   catch( std::out_of_range& ex ) {}
+   catch( std::out_of_range& ) {}
 
 
    //=====================================================================================
@@ -706,7 +706,7 @@ void OperationTest<MT,VT>::testElementAccess()
           << "     " << typeid( VT ).name() << "\n";
       throw std::runtime_error( oss.str() );
    }
-   catch( std::out_of_range& ex ) {}
+   catch( std::out_of_range& ) {}
 }
 //*************************************************************************************************
 
