@@ -3565,6 +3565,38 @@ namespace blaze {}
    rq( A, R, Q );  // RQ decomposition of A
    \endcode
 
+// \n \subsection matrix_operations_decomposition_lq LQ Decomposition
+//
+// The LQ decomposition of a dense matrix can be computed via the \c lq() function:
+
+   \code
+   blaze::DynamicMatrix<double,blaze::rowMajor> A;
+   // ... Resizing and initialization
+
+   blaze::DynamicMatrix<double,blaze::rowMajor> L;
+   blaze::DynamicMatrix<double,blaze::columnMajor> Q;
+
+   lq( A, L, Q );  // LQ decomposition of a row-major matrix
+
+   assert( A == L * Q );
+   \endcode
+
+// The function works for both \c rowMajor and \c columnMajor matrices and the three matrices
+// \c A, \c L and \c Q can have any storage order.
+//
+// Furthermore, \c lq() can be used with adaptors. For instance, the following example demonstrates
+// the LQ decomposition of a symmetric matrix into a lower triangular matrix and a general matrix:
+
+   \code
+   blaze::SymmetricMatrix< blaze::DynamicMatrix<double,blaze::columnMajor> > A;
+   // ... Resizing and initialization
+
+   blaze::LowerMatrix< blaze::DynamicMatrix<double,blaze::columnMajor> > L;
+   blaze::DynamicMatrix<double,blaze::rowMajor> Q;
+
+   lq( A, L, Q );  // LQ decomposition of A
+   \endcode
+
 // \n Previous: \ref matrix_types &nbsp; &nbsp; Next: \ref adaptors
 */
 //*************************************************************************************************
