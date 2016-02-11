@@ -8987,6 +8987,71 @@ namespace blaze {}
    } // namespace blaze
    \endcode
 
+// \n \subsection lapack_ql_decomposition QL Decomposition
+//
+// The following functions provide an interface for the LAPACK functions \c sgeqlf(), \c dgeqlf(),
+// \c cgeqlf(), and \c zgeqlf(), which compute the QL decomposition of the given general matrix:
+
+   \code
+   namespace blaze {
+
+   void geqlf( int m, int n, float* A, int lda, float* tau, float* work, int lwork, int* info );
+
+   void geqlf( int m, int n, double* A, int lda, double* tau, double* work, int lwork, int* info );
+
+   void geqlf( int m, int n, complex<float>* A, int lda, complex<float>* tau, complex<float>* work, int lwork, int* info );
+
+   void geqlf( int m, int n, complex<double>* A, int lda, complex<double>* tau, complex<double>* work, int lwork, int* info );
+
+   template< typename MT, bool SO >
+   void geqlf( DenseMatrix<MT,SO>& A, typename MT::ElementType* tau );
+
+   } // namespace blaze
+   \endcode
+
+// The decomposition has the form
+
+                              \f[ A = Q \cdot L, \f]
+
+// where the \c Q is represented as a product of elementary reflectors
+
+               \f[ Q = H(k) . . . H(2) H(1) \texttt{, with k = min(m,n).} \f]
+
+// Each H(i) has the form
+
+                      \f[ H(i) = I - tau \cdot v \cdot v^T, \f]
+
+// where \c tau is a real scalar, and \c v is a real vector with <tt>v(m-k+i+1:m) = 0</tt> and
+// <tt>v(m-k+i) = 1</tt>. <tt>v(1:m-k+i-1)</tt> is stored on exit in <tt>A(1:m-k+i-1,n-k+i)</tt>,
+// and \c tau in \c tau(i). Thus in case \a m >= \a n, the lower triangle of the subarray
+// A(m-n+1:m,1:n) contains the \a n-by-\a n lower triangular matrix \c L and in case \a m <= \a n,
+// the elements on and below the (\a n-\a m)-th subdiagonal contain the \a m-by-\a n lower
+// trapezoidal matrix \c L; the remaining elements in combination with the array \c tau represent
+// the orthogonal matrix \c Q as a product of min(\a m,\a n) elementary reflectors.
+//
+// The following functions provide an interface for the LAPACK functions \c sorgql(), \c dorgql(),
+// \c cungql(), and \c zunqql(), which reconstruct the \c Q matrix from an QL decomposition:
+
+   \code
+   namespace blaze {
+
+   void orgql( int m, int n, int k, float* A, int lda, const float* tau, float* work, int lwork, int* info );
+
+   void orgql( int m, int n, int k, double* A, int lda, const double* tau, double* work, int lwork, int* info );
+
+   void ungql( int m, int n, int k, complex<float>* A, int lda, const complex<float>* tau, complex<float>* work, int lwork, int* info );
+
+   void ungql( int m, int n, int k, complex<double>* A, int lda, const complex<double>* tau, complex<double>* work, int lwork, int* info );
+
+   template< typename MT, bool SO >
+   void orgql( DenseMatrix<MT,SO>& A, const typename MT::ElementType* tau );
+
+   template< typename MT, bool SO >
+   void ungql( DenseMatrix<MT,SO>& A, const typename MT::ElementType* tau );
+
+   } // namespace blaze
+   \endcode
+
 // \n \subsection lapack_lq_decomposition LQ Decomposition
 //
 // The following functions provide an interface for the LAPACK functions \c sgelqf(), \c dgelqf(),
