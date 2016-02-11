@@ -3559,10 +3559,43 @@ namespace blaze {}
    blaze::HermitianMatrix< blaze::DynamicMatrix<complex<double>,blaze::columnMajor> > A;
    // ... Resizing and initialization
 
-   blaze::UpperMatrix< blaze::DynamicMatrix<double,blaze::columnMajor> > R;
-   blaze::DynamicMatrix<double,blaze::rowMajor> Q;
+   blaze::UpperMatrix< blaze::DynamicMatrix<complex<double>,blaze::columnMajor> > R;
+   blaze::DynamicMatrix<complex<double>,blaze::rowMajor> Q;
 
    rq( A, R, Q );  // RQ decomposition of A
+   \endcode
+
+// \n \subsection matrix_operations_decomposition_ql QL Decomposition
+//
+// The QL decomposition of a dense matrix can be computed via the \c ql() function:
+
+   \code
+   blaze::DynamicMatrix<double,blaze::rowMajor> A;
+   // ... Resizing and initialization
+
+   blaze::DynamicMatrix<double,blaze::rowMajor> Q;
+   blaze::DynamicMatrix<double,blaze::columnMajor> L;
+
+   ql( A, Q, L );  // QL decomposition of a row-major matrix
+
+   assert( A == Q * L );
+   \endcode
+
+// The function works for both \c rowMajor and \c columnMajor matrices and the three matrices
+// \c A, \c Q and \c L can have any storage order.
+//
+// Also the \c ql() function can be used in combination with matrix adaptors. For instance, the
+// following example demonstrates the QL decomposition of a symmetric matrix into a general
+// matrix and a lower triangular matrix:
+
+   \code
+   blaze::SymmetricMatrix< blaze::DynamicMatrix<double,blaze::columnMajor> > A;
+   // ... Resizing and initialization
+
+   blaze::DynamicMatrix<double,blaze::rowMajor> Q;
+   blaze::LowerMatrix< blaze::DynamicMatrix<double,blaze::columnMajor> > L;
+
+   ql( A, Q, L );  // QL decomposition of A
    \endcode
 
 // \n \subsection matrix_operations_decomposition_lq LQ Decomposition
@@ -3585,14 +3618,14 @@ namespace blaze {}
 // \c A, \c L and \c Q can have any storage order.
 //
 // Furthermore, \c lq() can be used with adaptors. For instance, the following example demonstrates
-// the LQ decomposition of a symmetric matrix into a lower triangular matrix and a general matrix:
+// the LQ decomposition of an Hermitian matrix into a lower triangular matrix and a general matrix:
 
    \code
-   blaze::SymmetricMatrix< blaze::DynamicMatrix<double,blaze::columnMajor> > A;
+   blaze::HermitianMatrix< blaze::DynamicMatrix<complex<double>,blaze::columnMajor> > A;
    // ... Resizing and initialization
 
-   blaze::LowerMatrix< blaze::DynamicMatrix<double,blaze::columnMajor> > L;
-   blaze::DynamicMatrix<double,blaze::rowMajor> Q;
+   blaze::LowerMatrix< blaze::DynamicMatrix<complex<double>,blaze::columnMajor> > L;
+   blaze::DynamicMatrix<complex<double>,blaze::rowMajor> Q;
 
    lq( A, L, Q );  // LQ decomposition of A
    \endcode
