@@ -182,10 +182,10 @@ inline typename EnableIf< IsComplex< typename MT1::ElementType > >::Type
 */
 template< typename MT1  // Type of matrix A
         , bool SO1      // Storage order of matrix A
-        , typename MT2  // Type of matrix Q
-        , bool SO2      // Storage order of matrix Q
-        , typename MT3  // Type of matrix R
-        , bool SO3 >    // Storage order of matrix R
+        , typename MT2  // Type of matrix R
+        , bool SO2      // Storage order of matrix R
+        , typename MT3  // Type of matrix Q
+        , bool SO3 >    // Storage order of matrix Q
 void rq( const DenseMatrix<MT1,SO1>& A, DenseMatrix<MT2,SO2>& R, DenseMatrix<MT3,SO3>& Q )
 {
    BLAZE_CONSTRAINT_MUST_NOT_BE_STRICTLY_TRIANGULAR_MATRIX_TYPE( MT1 );

@@ -167,7 +167,6 @@ inline typename EnableIf< IsComplex< typename MT1::ElementType > >::Type
    blaze::DynamicMatrix<double,blaze::columnMajor> Q( 32, 16 );
    blaze::DynamicMatrix<double,blaze::columnMajor> L( 16, 16 );
 
-
    ql( A, Q, L );
 
    assert( A == Q * L );
