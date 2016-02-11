@@ -108,8 +108,11 @@ class UpperProxy : public Proxy< UpperProxy<MT>, typename MT::ElementType >
    //! Type of the represented matrix element.
    typedef typename MT::ElementType  RepresentedType;
 
-   //! Reference to the represented element.
+   //! Reference-to-non-const to the represented element.
    typedef typename AddReference<ReferenceType>::Type  RawReference;
+
+   //! Reference-to-const to the represented element.
+   typedef const RepresentedType&  ConstReference;
    //**********************************************************************************************
 
    //**Constructors********************************************************************************
@@ -147,7 +150,7 @@ class UpperProxy : public Proxy< UpperProxy<MT>, typename MT::ElementType >
    //**Conversion operator*************************************************************************
    /*!\name Conversion operator */
    //@{
-   inline operator RawReference() const;
+   inline operator ConstReference() const;
    //@}
    //**********************************************************************************************
 
@@ -419,12 +422,12 @@ inline bool UpperProxy<MT>::isRestricted() const
 //*************************************************************************************************
 /*!\brief Conversion to the accessed matrix element.
 //
-// \return Direct/raw reference to the accessed matrix element.
+// \return Reference-to-const to the accessed matrix element.
 */
 template< typename MT >  // Type of the adapted matrix
-inline UpperProxy<MT>::operator RawReference() const
+inline UpperProxy<MT>::operator ConstReference() const
 {
-   return get();
+   return static_cast<ConstReference>( value_ );
 }
 //*************************************************************************************************
 
