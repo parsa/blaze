@@ -53,6 +53,7 @@
 #include <blaze/math/lapack/hetri.h>
 #include <blaze/math/lapack/hetrs.h>
 #include <blaze/math/lapack/orglq.h>
+#include <blaze/math/lapack/orgql.h>
 #include <blaze/math/lapack/orgqr.h>
 #include <blaze/math/lapack/orgrq.h>
 #include <blaze/math/lapack/posv.h>
