@@ -9090,7 +9090,7 @@ namespace blaze {}
 // <tt>v(i) = 1</tt>. <tt>v(i+1:n)</tt> is stored on exit in <tt>A(i,i+1:n)</tt>, and \c tau
 // in \c tau(i). Thus on exit the elements on and below the diagonal of the matrix contain the
 // \a m-by-min(\a m,\a n) lower trapezoidal matrix \c L (\c L is lower triangular if \a m <= \a n);
-// the elements above the diagonal, with the array \a tau, represent the orthogonal matrix \c Q
+// the elements above the diagonal, with the array \c tau, represent the orthogonal matrix \c Q
 // as a product of min(\a m,\a n) elementary reflectors.
 //
 // The following functions provide an interface for the LAPACK functions \c sorglq(), \c dorglq(),
