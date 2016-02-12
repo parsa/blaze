@@ -137,7 +137,7 @@ inline void geqrf( DenseMatrix<MT,SO>& A, typename MT::ElementType* tau );
 // <tt>v(i) = 1</tt>. <tt>v(i+1:m)</tt> is stored on exit in <tt>A(i+1:m,i)</tt>, and \c tau
 // in \c tau(i). Thus on exit the elements on and above the diagonal of the matrix contain the
 // min(\a m,\a n)-by-\a n upper trapezoidal matrix \c R (\c R is upper triangular if \a m >= \a n);
-// the elements below the diagonal, with the array \a tau, represent the orthogonal matrix \c Q
+// the elements below the diagonal, with the array \c tau, represent the orthogonal matrix \c Q
 // as a product of min(\a m,\a n) elementary reflectors.
 //
 // The \a info argument provides feedback on the success of the function call:
@@ -193,7 +193,7 @@ inline void geqrf( int m, int n, float* A, int lda, float* tau,
 // <tt>v(i) = 1</tt>. <tt>v(i+1:m)</tt> is stored on exit in <tt>A(i+1:m,i)</tt>, and \c tau
 // in \c tau(i). Thus on exit the elements on and above the diagonal of the matrix contain the
 // min(\a m,\a n)-by-\a n upper trapezoidal matrix \c R (\c R is upper triangular if \a m >= \a n);
-// the elements below the diagonal, with the array \a tau, represent the orthogonal matrix \c Q
+// the elements below the diagonal, with the array \c tau, represent the orthogonal matrix \c Q
 // as a product of min(\a m,\a n) elementary reflectors.
 //
 // The \a info argument provides feedback on the success of the function call:
@@ -249,7 +249,7 @@ inline void geqrf( int m, int n, double* A, int lda, double* tau,
 // <tt>v(i) = 1</tt>. <tt>v(i+1:m)</tt> is stored on exit in <tt>A(i+1:m,i)</tt>, and \c tau
 // in \c tau(i). Thus on exit the elements on and above the diagonal of the matrix contain the
 // min(\a m,\a n)-by-\a n upper trapezoidal matrix \c R (\c R is upper triangular if \a m >= \a n);
-// the elements below the diagonal, with the array \a tau, represent the orthogonal matrix \c Q
+// the elements below the diagonal, with the array \c tau, represent the orthogonal matrix \c Q
 // as a product of min(\a m,\a n) elementary reflectors.
 //
 // The \a info argument provides feedback on the success of the function call:
@@ -308,7 +308,7 @@ inline void geqrf( int m, int n, complex<float>* A, int lda, complex<float>* tau
 // <tt>v(i) = 1</tt>. <tt>v(i+1:m)</tt> is stored on exit in <tt>A(i+1:m,i)</tt>, and \c tau
 // in \c tau(i). Thus on exit the elements on and above the diagonal of the matrix contain the
 // min(\a m,\a n)-by-\a n upper trapezoidal matrix \c R (\c R is upper triangular if \a m >= \a n);
-// the elements below the diagonal, with the array \a tau, represent the orthogonal matrix \c Q
+// the elements below the diagonal, with the array \c tau, represent the orthogonal matrix \c Q
 // as a product of min(\a m,\a n) elementary reflectors.
 //
 // The \a info argument provides feedback on the success of the function call:
@@ -364,7 +364,7 @@ inline void geqrf( int m, int n, complex<double>* A, int lda, complex<double>* t
 // <tt>v(i) = 1</tt>. <tt>v(i+1:m)</tt> is stored on exit in <tt>A(i+1:m,i)</tt>, and \c tau
 // in \c tau(i). Thus on exit the elements on and above the diagonal of the matrix contain the
 // min(\a m,\a n)-by-\a n upper trapezoidal matrix \c R (\c R is upper triangular if \a m >= \a n);
-// the elements below the diagonal, with the array \a tau, represent the orthogonal matrix \c Q
+// the elements below the diagonal, with the array \c tau, represent the orthogonal matrix \c Q
 // as a product of min(\a m,\a n) elementary reflectors.
 //
 // In case of a row-major matrix, the resulting decomposition is transposed, i.e. the elementary
