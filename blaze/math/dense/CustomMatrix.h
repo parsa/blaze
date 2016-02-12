@@ -96,6 +96,7 @@
 #include <blaze/util/Template.h>
 #include <blaze/util/Types.h>
 #include <blaze/util/typetraits/AlignmentOf.h>
+#include <blaze/util/typetraits/IsClass.h>
 #include <blaze/util/typetraits/IsNumeric.h>
 #include <blaze/util/typetraits/IsSame.h>
 #include <blaze/util/typetraits/IsVectorizable.h>
@@ -668,6 +669,19 @@ class CustomMatrix : public DenseMatrix< CustomMatrix<Type,AF,PF,SO>, SO >
    //**********************************************************************************************
 
  private:
+   //**Construction functions**********************************************************************
+   /*!\name Construction functions */
+   //@{
+   template< typename Arg >
+   inline typename DisableIf< IsClass<Arg> >::Type
+      construct( Type* ptr, size_t m, size_t n, Arg arg );
+
+   template< typename Arg >
+   inline typename EnableIf< IsClass<Arg> >::Type
+      construct( Type* ptr, size_t m, size_t n, Arg arg );
+   //@}
+   //**********************************************************************************************
+
    //**Member variables****************************************************************************
    /*!\name Member variables */
    //@{
@@ -852,20 +866,10 @@ template< typename Deleter >  // Type of the custom deleter
 inline CustomMatrix<Type,AF,PF,SO>::CustomMatrix( Type* ptr, size_t m, size_t n, Deleter d )
    : m_ ( m )  // The current number of rows of the matrix
    , n_ ( n )  // The current number of columns of the matrix
-   , nn_( n )  // The number of elements between two rows
+   , nn_(   )  // The number of elements between two rows
    , v_ (   )  // The matrix elements
 {
-   BLAZE_STATIC_ASSERT( PF == unpadded );
-
-   if( ptr == NULL ) {
-      BLAZE_THROW_INVALID_ARGUMENT( "Invalid array of elements" );
-   }
-
-   if( AF && ( !checkAlignment( ptr ) || nn_ % IT::size != 0UL ) ) {
-      BLAZE_THROW_INVALID_ARGUMENT( "Invalid alignment detected" );
-   }
-
-   v_.reset( ptr, d );
+   construct( ptr, m, n, d );
 }
 //*************************************************************************************************
 
@@ -3051,6 +3055,84 @@ inline void CustomMatrix<Type,AF,PF,SO>::subAssign( const SparseMatrix<MT,!SO>& 
 
 
 
+//=================================================================================================
+//
+//  CONSTRUCTION FUNCTIONS
+//
+//=================================================================================================
+
+//*************************************************************************************************
+/*!\brief Finalizing the construction of an unmanaged custom matrix.
+//
+// \param ptr The array of elements to be used by the matrix.
+// \param m The number of rows of the array of elements.
+// \param n The number of columns of the array of elements.
+// \param arg The total number of elements between two rows/columns.
+// \return void
+//
+// This function finalizes the construction of an unmanaged custom matrix.
+*/
+template< typename Type   // Data type of the matrix
+        , bool AF         // Alignment flag
+        , bool PF         // Padding flag
+        , bool SO >       // Storage order
+template< typename Arg >  // Type of the constructor argument
+inline typename DisableIf< IsClass<Arg> >::Type
+   CustomMatrix<Type,AF,PF,SO>::construct( Type* ptr, size_t m, size_t n, Arg arg )
+{
+   UNUSED_PARAMETER( m, n );
+
+   if( ptr == NULL ) {
+      BLAZE_THROW_INVALID_ARGUMENT( "Invalid array of elements" );
+   }
+
+   if( AF && ( !checkAlignment( ptr ) || arg % IT::size != 0UL ) ) {
+      BLAZE_THROW_INVALID_ARGUMENT( "Invalid alignment detected" );
+   }
+
+   nn_ = arg;
+   v_.reset( ptr, NoDelete() );
+}
+//*************************************************************************************************
+
+
+//*************************************************************************************************
+/*!\brief Finalizing the construction of a managed custom matrix.
+//
+// \param ptr The array of elements to be used by the matrix.
+// \param m The number of rows of the array of elements.
+// \param n The number of columns of the array of elements.
+// \param arg The deleter to destroy the array of elements.
+// \return void
+*/
+template< typename Type   // Data type of the matrix
+        , bool AF         // Alignment flag
+        , bool PF         // Padding flag
+        , bool SO >       // Storage order
+template< typename Arg >  // Type of the constructor argument
+inline typename EnableIf< IsClass<Arg> >::Type
+   CustomMatrix<Type,AF,PF,SO>::construct( Type* ptr, size_t m, size_t n, Arg arg )
+{
+   BLAZE_STATIC_ASSERT( PF == unpadded );
+
+   UNUSED_PARAMETER( m );
+
+   if( ptr == NULL ) {
+      BLAZE_THROW_INVALID_ARGUMENT( "Invalid array of elements" );
+   }
+
+   if( AF && ( !checkAlignment( ptr ) || n % IT::size != 0UL ) ) {
+      BLAZE_THROW_INVALID_ARGUMENT( "Invalid alignment detected" );
+   }
+
+   nn_ = n;
+   v_.reset( ptr, arg );
+}
+//*************************************************************************************************
+
+
+
+
 
 
 
@@ -3310,6 +3392,19 @@ class CustomMatrix<Type,AF,PF,true> : public DenseMatrix< CustomMatrix<Type,AF,P
    //**********************************************************************************************
 
  private:
+   //**Construction functions**********************************************************************
+   /*!\name Construction functions */
+   //@{
+   template< typename Arg >
+   inline typename DisableIf< IsClass<Arg> >::Type
+      construct( Type* ptr, size_t m, size_t n, Arg arg );
+
+   template< typename Arg >
+   inline typename EnableIf< IsClass<Arg> >::Type
+      construct( Type* ptr, size_t m, size_t n, Arg arg );
+   //@}
+   //**********************************************************************************************
+
    //**Member variables****************************************************************************
    /*!\name Member variables */
    //@{
@@ -3488,21 +3583,11 @@ template< typename Type       // Data type of the matrix
 template< typename Deleter >  // Type of the custom deleter
 inline CustomMatrix<Type,AF,PF,true>::CustomMatrix( Type* ptr, size_t m, size_t n, Deleter d )
    : m_ ( m )  // The current number of rows of the matrix
-   , mm_( m )  // The number of elements between two columns
+   , mm_(   )  // The number of elements between two columns
    , n_ ( n )  // The current number of columns of the matrix
    , v_ (   )  // The matrix elements
 {
-   BLAZE_STATIC_ASSERT( PF == unpadded );
-
-   if( ptr == NULL ) {
-      BLAZE_THROW_INVALID_ARGUMENT( "Invalid array of elements" );
-   }
-
-   if( AF && ( !checkAlignment( ptr ) || mm_ % IT::size != 0UL ) ) {
-      BLAZE_THROW_INVALID_ARGUMENT( "Invalid alignment detected" );
-   }
-
-   v_.reset( ptr, d );
+   construct( ptr, m, n, d );
 }
 /*! \endcond */
 //*************************************************************************************************
@@ -5708,6 +5793,86 @@ inline void CustomMatrix<Type,AF,PF,true>::subAssign( const SparseMatrix<MT,fals
    for( size_t i=0UL; i<(~rhs).rows(); ++i )
       for( typename MT::ConstIterator element=(~rhs).begin(i); element!=(~rhs).end(i); ++element )
          v_[i+element->index()*mm_] -= element->value();
+}
+/*! \endcond */
+//*************************************************************************************************
+
+
+
+
+//=================================================================================================
+//
+//  CONSTRUCTION FUNCTIONS
+//
+//=================================================================================================
+
+//*************************************************************************************************
+/*! \cond BLAZE_INTERNAL */
+/*!\brief Finalizing the construction of an unmanaged custom matrix.
+//
+// \param ptr The array of elements to be used by the matrix.
+// \param m The number of rows of the array of elements.
+// \param n The number of columns of the array of elements.
+// \param arg The total number of elements between two rows/columns.
+// \return void
+//
+// This function finalizes the construction of an unmanaged custom matrix.
+*/
+template< typename Type  // Data type of the matrix
+        , bool AF        // Alignment flag
+        , bool PF >      // Padding flag
+template< typename Arg >  // Type of the constructor argument
+inline typename DisableIf< IsClass<Arg> >::Type
+   CustomMatrix<Type,AF,PF,true>::construct( Type* ptr, size_t m, size_t n, Arg arg )
+{
+   UNUSED_PARAMETER( m, n );
+
+   if( ptr == NULL ) {
+      BLAZE_THROW_INVALID_ARGUMENT( "Invalid array of elements" );
+   }
+
+   if( AF && ( !checkAlignment( ptr ) || arg % IT::size != 0UL ) ) {
+      BLAZE_THROW_INVALID_ARGUMENT( "Invalid alignment detected" );
+   }
+
+   mm_ = arg;
+   v_.reset( ptr, NoDelete() );
+}
+/*! \endcond */
+//*************************************************************************************************
+
+
+//*************************************************************************************************
+/*! \cond BLAZE_INTERNAL */
+/*!\brief Finalizing the construction of a managed custom matrix.
+//
+// \param ptr The array of elements to be used by the matrix.
+// \param m The number of rows of the array of elements.
+// \param n The number of columns of the array of elements.
+// \param arg The deleter to destroy the array of elements.
+// \return void
+*/
+template< typename Type  // Data type of the matrix
+        , bool AF        // Alignment flag
+        , bool PF >      // Padding flag
+template< typename Arg >  // Type of the constructor argument
+inline typename EnableIf< IsClass<Arg> >::Type
+   CustomMatrix<Type,AF,PF,true>::construct( Type* ptr, size_t m, size_t n, Arg arg )
+{
+   BLAZE_STATIC_ASSERT( PF == unpadded );
+
+   UNUSED_PARAMETER( n );
+
+   if( ptr == NULL ) {
+      BLAZE_THROW_INVALID_ARGUMENT( "Invalid array of elements" );
+   }
+
+   if( AF && ( !checkAlignment( ptr ) || m % IT::size != 0UL ) ) {
+      BLAZE_THROW_INVALID_ARGUMENT( "Invalid alignment detected" );
+   }
+
+   mm_ = m;
+   v_.reset( ptr, arg );
 }
 /*! \endcond */
 //*************************************************************************************************
