@@ -3469,9 +3469,9 @@ namespace blaze {}
    lu( A, L, U, P );  // LU decomposition of A
    \endcode
 
-// \n \subsection matrix_operations_decomposition_llh Cholesky (LLH) Decomposition
+// \n \subsection matrix_operations_decomposition_llh Cholesky Decomposition
 //
-// The Cholesky decomposition of a dense matrix can be computed via the \c llh() function:
+// The Cholesky (LLH) decomposition of a dense matrix can be computed via the \c llh() function:
 
    \code
    blaze::DynamicMatrix<double,blaze::rowMajor> A;
@@ -8825,10 +8825,10 @@ namespace blaze {}
 // solving a linear system of equations.
 //
 //
-// \n \subsection lapack_llh_decomposition Cholesky (LLH) Decomposition
+// \n \subsection lapack_llh_decomposition Cholesky Decomposition
 //
 // The following functions provide an interface for the LAPACK functions \c spotrf(), \c dpotrf(),
-// \c cpotrf(), and \c zpotrf(), which compute the LLH (Cholesky) decomposition for the given
+// \c cpotrf(), and \c zpotrf(), which compute the Cholesky (LLH) decomposition for the given
 // positive definite matrix:
 
    \code
@@ -9281,7 +9281,7 @@ namespace blaze {}
 // \a std::invalid_argument exception in case of an error.
 //
 //
-// \n \section lapack_substitution Forward/Backward Substitution
+// \n \section lapack_substitution Substitution
 // <hr>
 //
 // Given a matrix that has already been decomposed the following functions can be used to perform
