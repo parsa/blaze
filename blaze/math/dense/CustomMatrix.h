@@ -189,7 +189,7 @@ namespace blaze {
 // class employs shared ownership between all copies of the custom matrix, which reference the
 // same array.
 //
-// The following examples give an impression of several possible types of custom matrices:
+// The following examples give an impression of several possible custom matrices:
 
    \code
    using blaze::CustomMatrix;
@@ -215,9 +215,9 @@ namespace blaze {
    // of the custom matrix.
    CustomMatrix<int,unaligned,unpadded,rowMajor> B( new int[12], 3UL, 4UL, ArrayDelete() );
 
-   // Definition of a custom 8x12 matrix and capacity 128 with aligned and padded
-   // integer array. The memory management is passed to the custom matrix by providing a
-   // deleter of type 'blaze::Deallocate'.
+   // Definition of a custom 8x12 matrix for an aligned and padded integer array of
+   // capacity 128 (including 8 padding elements per row). The memory management is passed
+   // to the custom matrix by providing a deleter of type 'blaze::Deallocate'.
    CustomMatrix<int,aligned,padded> C( allocate<int>( 128UL ), 8UL, 12UL, 16UL, Deallocate() );
    \endcode
 
