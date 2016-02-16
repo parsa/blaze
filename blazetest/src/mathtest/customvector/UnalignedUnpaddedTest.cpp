@@ -1269,7 +1269,7 @@ void UnalignedUnpaddedTest::testAt()
    if( vec.at(2) != 1 ) {
       std::ostringstream oss;
       oss << " Test: " << test_ << "\n"
-          << " Error: Access via at() function failed\n"\n"
+          << " Error: Access via at() function failed\n"
           << " Details:\n"
           << "   Result:\n" << vec << "\n"
           << "   Expected result:\n( 0 0 1 0 0 0 0 )\n";
@@ -1286,7 +1286,7 @@ void UnalignedUnpaddedTest::testAt()
    if( vec.at(2) != 1 || vec.at(5) != 2 ) {
       std::ostringstream oss;
       oss << " Test: " << test_ << "\n"
-          << " Error: Access via at() function failed\n"\n"
+          << " Error: Access via at() function failed\n"
           << " Details:\n"
           << "   Result:\n" << vec << "\n"
           << "   Expected result:\n( 0 0 1 0 0 2 0 )\n";
@@ -1303,7 +1303,7 @@ void UnalignedUnpaddedTest::testAt()
    if( vec.at(2) != 1 || vec.at(3) != 3 || vec.at(5) != 2 ) {
       std::ostringstream oss;
       oss << " Test: " << test_ << "\n"
-          << " Error: Access via at() function failed\n"\n"
+          << " Error: Access via at() function failed\n"
           << " Details:\n"
           << "   Result:\n" << vec << "\n"
           << "   Expected result:\n( 0 0 1 3 0 2 0 )\n";
@@ -1320,7 +1320,7 @@ void UnalignedUnpaddedTest::testAt()
    if( vec.at(0) != 4 || vec.at(2) != 1 || vec.at(3) != 3 || vec.at(5) != 2 ) {
       std::ostringstream oss;
       oss << " Test: " << test_ << "\n"
-          << " Error: Access via at() function failed\n"\n"
+          << " Error: Access via at() function failed\n"
           << " Details:\n"
           << "   Result:\n" << vec << "\n"
           << "   Expected result:\n( 4 0 1 3 0 2 0 )\n";
@@ -1337,7 +1337,7 @@ void UnalignedUnpaddedTest::testAt()
    if( vec.at(0) != 4 || vec.at(2) != 4 || vec.at(3) != 3 || vec.at(5) != 2 ) {
       std::ostringstream oss;
       oss << " Test: " << test_ << "\n"
-          << " Error: Access via at() function failed\n"\n"
+          << " Error: Access via at() function failed\n"
           << " Details:\n"
           << "   Result:\n" << vec << "\n"
           << "   Expected result:\n( 4 0 4 3 0 2 0 )\n";
@@ -1354,7 +1354,7 @@ void UnalignedUnpaddedTest::testAt()
    if( vec.at(0) != 4 || vec.at(1) != -2 || vec.at(2) != 4 || vec.at(3) != 3 || vec.at(5) != 2 ) {
       std::ostringstream oss;
       oss << " Test: " << test_ << "\n"
-          << " Error: Access via at() function failed\n"\n"
+          << " Error: Access via at() function failed\n"
           << " Details:\n"
           << "   Result:\n" << vec << "\n"
           << "   Expected result:\n( 4 -2 4 3 0 2 0 )\n";
@@ -1371,7 +1371,7 @@ void UnalignedUnpaddedTest::testAt()
    if( vec.at(0) != 4 || vec.at(1) != -2 || vec.at(2) != 4 || vec.at(3) != -9 || vec.at(5) != 2 ) {
       std::ostringstream oss;
       oss << " Test: " << test_ << "\n"
-          << " Error: Access via at() function failed\n"\n"
+          << " Error: Access via at() function failed\n"
           << " Details:\n"
           << "   Result:\n" << vec << "\n"
           << "   Expected result:\n( 4 -2 4 -9 0 2 0 )\n";
@@ -1388,7 +1388,7 @@ void UnalignedUnpaddedTest::testAt()
    if( vec.at(0) != 4 || vec.at(1) != -2 || vec.at(2) != 2 || vec.at(3) != -9 || vec.at(5) != 2 ) {
       std::ostringstream oss;
       oss << " Test: " << test_ << "\n"
-          << " Error: Access via at() function failed\n"\n"
+          << " Error: Access via at() function failed\n"
           << " Details:\n"
           << "   Result:\n" << vec << "\n"
           << "   Expected result:\n( 4 -2 2 -9 0 2 0 )\n";

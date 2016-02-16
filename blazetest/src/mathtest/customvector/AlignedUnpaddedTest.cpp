@@ -45,6 +45,7 @@
 #include <blaze/util/Memory.h>
 #include <blaze/util/policies/Deallocate.h>
 #include <blaze/util/Random.h>
+#include <blaze/util/typetraits/AlignmentOf.h>
 #include <blaze/util/UniqueArray.h>
 #include <blazetest/mathtest/customvector/AlignedUnpaddedTest.h>
 #include <blazetest/mathtest/RandomMaximum.h>
@@ -149,18 +150,21 @@ void AlignedUnpaddedTest::testConstructors()
       catch( std::invalid_argument& ) {}
 
       // Trying to construct a custom vector with invalid alignment
-      try {
-         blaze::UniqueArray<int,blaze::Deallocate> array( blaze::allocate<int>( 5UL ) );
-         VT vec( array.get()+1UL, 4UL );
+      if( blaze::AlignmentOf<int>::value > 1UL )
+      {
+         try {
+            blaze::UniqueArray<int,blaze::Deallocate> array( blaze::allocate<int>( 5UL ) );
+            VT vec( array.get()+1UL, 4UL );
 
-         std::ostringstream oss;
-         oss << " Test: " << test_ << "\n"
-             << " Error: Constructing a custom vector with invalid alignment succeeded\n"
-             << " Details:\n"
-             << "   Result:\n" << vec << "\n";
-         throw std::runtime_error( oss.str() );
+            std::ostringstream oss;
+            oss << " Test: " << test_ << "\n"
+                << " Error: Constructing a custom vector with invalid alignment succeeded\n"
+                << " Details:\n"
+                << "   Result:\n" << vec << "\n";
+            throw std::runtime_error( oss.str() );
+         }
+         catch( std::invalid_argument& ) {}
       }
-      catch( std::invalid_argument& ) {}
    }
 
 
@@ -191,18 +195,21 @@ void AlignedUnpaddedTest::testConstructors()
       catch( std::invalid_argument& ) {}
 
       // Trying to construct a custom vector with invalid alignment
-      try {
-         blaze::UniqueArray<int,blaze::Deallocate> array( blaze::allocate<int>( 5UL ) );
-         VT vec( array.get()+1UL, 4UL, blaze::Deallocate() );
+      if( blaze::AlignmentOf<int>::value > 1UL )
+      {
+         try {
+            blaze::UniqueArray<int,blaze::Deallocate> array( blaze::allocate<int>( 5UL ) );
+            VT vec( array.get()+1UL, 4UL, blaze::Deallocate() );
 
-         std::ostringstream oss;
-         oss << " Test: " << test_ << "\n"
-             << " Error: Constructing a custom vector with invalid alignment succeeded\n"
-             << " Details:\n"
-             << "   Result:\n" << vec << "\n";
-         throw std::runtime_error( oss.str() );
+            std::ostringstream oss;
+            oss << " Test: " << test_ << "\n"
+                << " Error: Constructing a custom vector with invalid alignment succeeded\n"
+                << " Details:\n"
+                << "   Result:\n" << vec << "\n";
+            throw std::runtime_error( oss.str() );
+         }
+         catch( std::invalid_argument& ) {}
       }
-      catch( std::invalid_argument& ) {}
    }
 
 
@@ -1296,7 +1303,7 @@ void AlignedUnpaddedTest::testAt()
    if( vec.at(2) != 1 ) {
       std::ostringstream oss;
       oss << " Test: " << test_ << "\n"
-          << " Error: Access via at() function failed\n"\n"
+          << " Error: Access via at() function failed\n"
           << " Details:\n"
           << "   Result:\n" << vec << "\n"
           << "   Expected result:\n( 0 0 1 0 0 0 0 )\n";
@@ -1313,7 +1320,7 @@ void AlignedUnpaddedTest::testAt()
    if( vec.at(2) != 1 || vec.at(5) != 2 ) {
       std::ostringstream oss;
       oss << " Test: " << test_ << "\n"
-          << " Error: Access via at() function failed\n"\n"
+          << " Error: Access via at() function failed\n"
           << " Details:\n"
           << "   Result:\n" << vec << "\n"
           << "   Expected result:\n( 0 0 1 0 0 2 0 )\n";
@@ -1330,7 +1337,7 @@ void AlignedUnpaddedTest::testAt()
    if( vec.at(2) != 1 || vec.at(3) != 3 || vec.at(5) != 2 ) {
       std::ostringstream oss;
       oss << " Test: " << test_ << "\n"
-          << " Error: Access via at() function failed\n"\n"
+          << " Error: Access via at() function failed\n"
           << " Details:\n"
           << "   Result:\n" << vec << "\n"
           << "   Expected result:\n( 0 0 1 3 0 2 0 )\n";
@@ -1347,7 +1354,7 @@ void AlignedUnpaddedTest::testAt()
    if( vec.at(0) != 4 || vec.at(2) != 1 || vec.at(3) != 3 || vec.at(5) != 2 ) {
       std::ostringstream oss;
       oss << " Test: " << test_ << "\n"
-          << " Error: Access via at() function failed\n"\n"
+          << " Error: Access via at() function failed\n"
           << " Details:\n"
           << "   Result:\n" << vec << "\n"
           << "   Expected result:\n( 4 0 1 3 0 2 0 )\n";
@@ -1364,7 +1371,7 @@ void AlignedUnpaddedTest::testAt()
    if( vec.at(0) != 4 || vec.at(2) != 4 || vec.at(3) != 3 || vec.at(5) != 2 ) {
       std::ostringstream oss;
       oss << " Test: " << test_ << "\n"
-          << " Error: Access via at() function failed\n"\n"
+          << " Error: Access via at() function failed\n"
           << " Details:\n"
           << "   Result:\n" << vec << "\n"
           << "   Expected result:\n( 4 0 4 3 0 2 0 )\n";
@@ -1381,7 +1388,7 @@ void AlignedUnpaddedTest::testAt()
    if( vec.at(0) != 4 || vec.at(1) != -2 || vec.at(2) != 4 || vec.at(3) != 3 || vec.at(5) != 2 ) {
       std::ostringstream oss;
       oss << " Test: " << test_ << "\n"
-          << " Error: Access via at() function failed\n"\n"
+          << " Error: Access via at() function failed\n"
           << " Details:\n"
           << "   Result:\n" << vec << "\n"
           << "   Expected result:\n( 4 -2 4 3 0 2 0 )\n";
@@ -1398,7 +1405,7 @@ void AlignedUnpaddedTest::testAt()
    if( vec.at(0) != 4 || vec.at(1) != -2 || vec.at(2) != 4 || vec.at(3) != -9 || vec.at(5) != 2 ) {
       std::ostringstream oss;
       oss << " Test: " << test_ << "\n"
-          << " Error: Access via at() function failed\n"\n"
+          << " Error: Access via at() function failed\n"
           << " Details:\n"
           << "   Result:\n" << vec << "\n"
           << "   Expected result:\n( 4 -2 4 -9 0 2 0 )\n";
@@ -1415,7 +1422,7 @@ void AlignedUnpaddedTest::testAt()
    if( vec.at(0) != 4 || vec.at(1) != -2 || vec.at(2) != 2 || vec.at(3) != -9 || vec.at(5) != 2 ) {
       std::ostringstream oss;
       oss << " Test: " << test_ << "\n"
-          << " Error: Access via at() function failed\n"\n"
+          << " Error: Access via at() function failed\n"
           << " Details:\n"
           << "   Result:\n" << vec << "\n"
           << "   Expected result:\n( 4 -2 2 -9 0 2 0 )\n";
