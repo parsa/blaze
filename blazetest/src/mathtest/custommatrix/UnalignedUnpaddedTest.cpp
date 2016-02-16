@@ -693,7 +693,7 @@ void UnalignedUnpaddedTest::testAssignment()
       {
          const size_t rows   ( blaze::rand<size_t>( 0UL, 16UL ) );
          const size_t columns( blaze::rand<size_t>( 0UL, 16UL ) );
-         const size_t spacing( blaze::nextMultiple( columns, 16UL ) );
+         const size_t spacing( blaze::nextMultiple<size_t>( columns, 16UL ) );
 
          typedef blaze::CustomMatrix<int,aligned,padded,rowMajor>  AlignedPadded;
          AlignedPadded mat1( blaze::allocate<int>( rows*spacing ), rows, columns, spacing, blaze::Deallocate() );
@@ -840,7 +840,7 @@ void UnalignedUnpaddedTest::testAssignment()
       {
          const size_t rows   ( blaze::rand<size_t>( 0UL, 16UL ) );
          const size_t columns( blaze::rand<size_t>( 0UL, 16UL ) );
-         const size_t spacing( blaze::nextMultiple( rows, 16UL ) );
+         const size_t spacing( blaze::nextMultiple<size_t>( rows, 16UL ) );
 
          typedef blaze::CustomMatrix<int,aligned,padded,columnMajor>  AlignedPadded;
          AlignedPadded mat1( blaze::allocate<int>( spacing*columns ), rows, columns, spacing, blaze::Deallocate() );
@@ -1486,7 +1486,7 @@ void UnalignedUnpaddedTest::testAssignment()
       {
          const size_t rows   ( blaze::rand<size_t>( 0UL, 16UL ) );
          const size_t columns( blaze::rand<size_t>( 0UL, 16UL ) );
-         const size_t spacing( blaze::nextMultiple( columns, 16UL ) );
+         const size_t spacing( blaze::nextMultiple<size_t>( columns, 16UL ) );
 
          typedef blaze::CustomMatrix<int,aligned,padded,rowMajor>  AlignedPadded;
          AlignedPadded mat1( blaze::allocate<int>( rows*spacing ), rows, columns, spacing, blaze::Deallocate() );
@@ -1635,7 +1635,7 @@ void UnalignedUnpaddedTest::testAssignment()
       {
          const size_t rows   ( blaze::rand<size_t>( 0UL, 16UL ) );
          const size_t columns( blaze::rand<size_t>( 0UL, 16UL ) );
-         const size_t spacing( blaze::nextMultiple( rows, 16UL ) );
+         const size_t spacing( blaze::nextMultiple<size_t>( rows, 16UL ) );
 
          typedef blaze::CustomMatrix<int,aligned,padded,columnMajor>  AlignedPadded;
          AlignedPadded mat1( blaze::allocate<int>( spacing*columns ), rows, columns, spacing, blaze::Deallocate() );

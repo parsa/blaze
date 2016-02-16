@@ -623,7 +623,7 @@ void UnalignedPaddedTest::testAssignment()
       {
          const size_t rows   ( blaze::rand<size_t>( 0UL, 16UL ) );
          const size_t columns( blaze::rand<size_t>( 0UL, 16UL ) );
-         const size_t spacing( blaze::nextMultiple( columns, 16UL ) );
+         const size_t spacing( blaze::nextMultiple<size_t>( columns, 16UL ) );
 
          typedef blaze::CustomMatrix<int,aligned,padded,rowMajor>  AlignedPadded;
          AlignedPadded mat1( blaze::allocate<int>( rows*spacing ), rows, columns, spacing, blaze::Deallocate() );
@@ -697,7 +697,7 @@ void UnalignedPaddedTest::testAssignment()
       {
          const size_t rows   ( blaze::rand<size_t>( 0UL, 16UL ) );
          const size_t columns( blaze::rand<size_t>( 0UL, 16UL ) );
-         const size_t spacing( blaze::nextMultiple( columns, 16UL ) );
+         const size_t spacing( blaze::nextMultiple<size_t>( columns, 16UL ) );
 
          typedef blaze::CustomMatrix<int,unaligned,unpadded,rowMajor>  UnalignedUnpadded;
          blaze::UniqueArray<int> array( new int[rows*columns+1UL] );
@@ -771,8 +771,8 @@ void UnalignedPaddedTest::testAssignment()
       {
          const size_t rows    ( blaze::rand<size_t>( 0UL, 16UL ) );
          const size_t columns ( blaze::rand<size_t>( 0UL, 16UL ) );
-         const size_t spacing1( blaze::nextMultiple( rows, 16UL ) );
-         const size_t spacing2( blaze::nextMultiple( columns, 16UL ) );
+         const size_t spacing1( blaze::nextMultiple<size_t>( rows, 16UL ) );
+         const size_t spacing2( blaze::nextMultiple<size_t>( columns, 16UL ) );
 
          typedef blaze::CustomMatrix<int,aligned,padded,columnMajor>  AlignedPadded;
          AlignedPadded mat1( blaze::allocate<int>( spacing1*columns ), rows, columns, spacing1, blaze::Deallocate() );
@@ -846,7 +846,7 @@ void UnalignedPaddedTest::testAssignment()
       {
          const size_t rows   ( blaze::rand<size_t>( 0UL, 16UL ) );
          const size_t columns( blaze::rand<size_t>( 0UL, 16UL ) );
-         const size_t spacing( blaze::nextMultiple( columns, 16UL ) );
+         const size_t spacing( blaze::nextMultiple<size_t>( columns, 16UL ) );
 
          typedef blaze::CustomMatrix<int,unaligned,unpadded,columnMajor>  UnalignedUnpadded;
          blaze::UniqueArray<int> array( new int[rows*columns+1UL] );
@@ -1046,7 +1046,7 @@ void UnalignedPaddedTest::testAssignment()
       {
          const size_t rows   ( blaze::rand<size_t>( 0UL, 16UL ) );
          const size_t columns( blaze::rand<size_t>( 0UL, 16UL ) );
-         const size_t spacing( blaze::nextMultiple( columns, 16UL ) );
+         const size_t spacing( blaze::nextMultiple<size_t>( columns, 16UL ) );
 
          blaze::CompressedMatrix<int,blaze::rowMajor> mat1( rows, columns );
          randomize( mat1, min, max );
@@ -1107,7 +1107,7 @@ void UnalignedPaddedTest::testAssignment()
       {
          const size_t rows   ( blaze::rand<size_t>( 0UL, 16UL ) );
          const size_t columns( blaze::rand<size_t>( 0UL, 16UL ) );
-         const size_t spacing( blaze::nextMultiple( columns, 16UL ) );
+         const size_t spacing( blaze::nextMultiple<size_t>( columns, 16UL ) );
 
          blaze::CompressedMatrix<int,blaze::columnMajor> mat1( rows, columns );
          randomize( mat1, min, max );
@@ -1421,8 +1421,8 @@ void UnalignedPaddedTest::testAssignment()
       {
          const size_t rows    ( blaze::rand<size_t>( 0UL, 16UL ) );
          const size_t columns ( blaze::rand<size_t>( 0UL, 16UL ) );
-         const size_t spacing1( blaze::nextMultiple( columns, 16UL ) );
-         const size_t spacing2( blaze::nextMultiple( rows, 16UL ) );
+         const size_t spacing1( blaze::nextMultiple<size_t>( columns, 16UL ) );
+         const size_t spacing2( blaze::nextMultiple<size_t>( rows, 16UL ) );
 
          typedef blaze::CustomMatrix<int,aligned,padded,rowMajor>  AlignedPadded;
          AlignedPadded mat1( blaze::allocate<int>( rows*spacing1 ), rows, columns, spacing1, blaze::Deallocate() );
@@ -1497,7 +1497,7 @@ void UnalignedPaddedTest::testAssignment()
       {
          const size_t rows   ( blaze::rand<size_t>( 0UL, 16UL ) );
          const size_t columns( blaze::rand<size_t>( 0UL, 16UL ) );
-         const size_t spacing( blaze::nextMultiple( rows, 16UL ) );
+         const size_t spacing( blaze::nextMultiple<size_t>( rows, 16UL ) );
 
          typedef blaze::CustomMatrix<int,unaligned,unpadded,rowMajor>  UnalignedUnpadded;
          blaze::UniqueArray<int> array( new int[rows*columns+1UL] );
@@ -1572,7 +1572,7 @@ void UnalignedPaddedTest::testAssignment()
       {
          const size_t rows   ( blaze::rand<size_t>( 0UL, 16UL ) );
          const size_t columns( blaze::rand<size_t>( 0UL, 16UL ) );
-         const size_t spacing( blaze::nextMultiple( rows, 16UL ) );
+         const size_t spacing( blaze::nextMultiple<size_t>( rows, 16UL ) );
 
          typedef blaze::CustomMatrix<int,aligned,padded,columnMajor>  AlignedPadded;
          AlignedPadded mat1( blaze::allocate<int>( spacing*columns ), rows, columns, spacing, blaze::Deallocate() );
@@ -1647,7 +1647,7 @@ void UnalignedPaddedTest::testAssignment()
       {
          const size_t rows   ( blaze::rand<size_t>( 0UL, 16UL ) );
          const size_t columns( blaze::rand<size_t>( 0UL, 16UL ) );
-         const size_t spacing( blaze::nextMultiple( rows, 16UL ) );
+         const size_t spacing( blaze::nextMultiple<size_t>( rows, 16UL ) );
 
          typedef blaze::CustomMatrix<int,unaligned,unpadded,columnMajor>  UnalignedUnpadded;
          blaze::UniqueArray<int> array( new int[rows*columns+1UL] );
@@ -1848,7 +1848,7 @@ void UnalignedPaddedTest::testAssignment()
       {
          const size_t rows   ( blaze::rand<size_t>( 0UL, 16UL ) );
          const size_t columns( blaze::rand<size_t>( 0UL, 16UL ) );
-         const size_t spacing( blaze::nextMultiple( rows, 16UL ) );
+         const size_t spacing( blaze::nextMultiple<size_t>( rows, 16UL ) );
 
          blaze::CompressedMatrix<int,blaze::rowMajor> mat1( rows, columns );
          randomize( mat1, min, max );
@@ -1910,7 +1910,7 @@ void UnalignedPaddedTest::testAssignment()
       {
          const size_t rows   ( blaze::rand<size_t>( 0UL, 16UL ) );
          const size_t columns( blaze::rand<size_t>( 0UL, 16UL ) );
-         const size_t spacing( blaze::nextMultiple( rows, 16UL ) );
+         const size_t spacing( blaze::nextMultiple<size_t>( rows, 16UL ) );
 
          blaze::CompressedMatrix<int,blaze::columnMajor> mat1( rows, columns );
          randomize( mat1, min, max );
