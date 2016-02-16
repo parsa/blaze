@@ -18,9 +18,9 @@ Get an impression of the clear but powerful syntax of **Blaze** in the [Getting 
 ## Download ##
 
 ![white20x120.jpg](https://bitbucket.org/blaze-lib/blaze/wiki/images/white20x120.jpg)
-[![blaze-2.5.jpg](https://bitbucket.org/blaze-lib/blaze/wiki/images/blaze-2.5.jpg)](https://bitbucket.org/blaze-lib/blaze/downloads/blaze-2.5.tar.gz)
+[![blaze-2.6.jpg](https://bitbucket.org/blaze-lib/blaze/wiki/images/blaze-2.6.jpg)](https://bitbucket.org/blaze-lib/blaze/downloads/blaze-2.6.tar.gz)
 ![white40x120.jpg](https://bitbucket.org/blaze-lib/blaze/wiki/images/white40x120.jpg)
-[![blaze-docu-2.5.jpg](https://bitbucket.org/blaze-lib/blaze/wiki/images/blaze-docu-2.5.jpg)](https://bitbucket.org/blaze-lib/blaze/downloads/blaze-docu-2.5.tar.gz)
+[![blaze-docu-2.6.jpg](https://bitbucket.org/blaze-lib/blaze/wiki/images/blaze-docu-2.6.jpg)](https://bitbucket.org/blaze-lib/blaze/downloads/blaze-docu-2.6.tar.gz)
 
 Older releases of **Blaze** can be found in the [downloads](https://bitbucket.org/blaze-lib/blaze/downloads) section or in our [release archive](https://bitbucket.org/blaze-lib/blaze/wiki/Release Archive).
 
@@ -28,9 +28,17 @@ Older releases of **Blaze** can be found in the [downloads](https://bitbucket.or
 
 ## News ##
 
+**dd.mm.yyyy**: Release 2.6 represents a major step in the history of the **Blaze** library. Within the last four and a half month we have implemented and brought to perfection several major features that have been on the wishlist of many **Blaze** users. Among these features are the LAPACK-based [LU](https://bitbucket.org/blaze-lib/blaze/wiki/Matrix Operations#!lu-decomposition), [Cholesky](https://bitbucket.org/blaze-lib/blaze/wiki/Matrix Operations#!cholesky-decomposition), [QR](https://bitbucket.org/blaze-lib/blaze/wiki/Matrix Operations#!qr-decomposition), [RQ](https://bitbucket.org/blaze-lib/blaze/wiki/Matrix Operations#!rq-decomposition), [QL](https://bitbucket.org/blaze-lib/blaze/wiki/Matrix Operations#!ql-decomposition), and [LQ](https://bitbucket.org/blaze-lib/blaze/wiki/Matrix Operations#!lq-decomposition) decomposition of dense matrices as well as the [inversion of dense matrices](https://bitbucket.org/blaze-lib/blaze/wiki/Matrix Operations#!matrix_inversion). Along with these come a large number of [LAPACK wrapper functions](https://bitbucket.org/blaze-lib/blaze/wiki/LAPACK Functions) that considerably simplify the use of LAPACK. Furthermore, the introduction of [{{{CustomVector}}}](https://bitbucket.org/blaze-lib/blaze/wiki/Vector Types#!customvector) and [{{{CustomMatrix}}}](https://bitbucket.org/blaze-lib/blaze/wiki/Matrix Types#!custommatrix) now enables custom memory management for both dense vector and matrices and allows to represent manually acquired memory as native **Blaze** data structure.
+
+A major thank you goes to [CD-adapco](http://www.cd-adapco.com), a leader in the field of computational fluid dynamics (CFD). Since their decision to use **Blaze** within their flagship product [Star-CCM+](http://www.cd-adapco.com/products/star-ccm®) to drive linear algebra computations we have received considerable support and thus were able to completely focus on this release for the past few month. Thanks a lot for the ongoing help and support!
+
+----
+
 **1.10.2015**: After some month of hard work we finally release **Blaze** 2.5! This version comes with a fair amount of new features, many of them focused on computations with complex numbers: [Hermitian matrices](https://bitbucket.org/blaze-lib/blaze/issues/15/introduce-hermitian-matrices-into-blaze), the [```conj()```](https://bitbucket.org/blaze-lib/blaze/issues/7/provide-support-for-conjugate-complex), [```ctrans()```](https://bitbucket.org/blaze-lib/blaze/issues/8/provide-support-for-conjugate-transpose), [```real()```](https://bitbucket.org/blaze-lib/blaze/issues/17/provide-a-real-function-for-vectors-and), and [```imag()```](https://bitbucket.org/blaze-lib/blaze/issues/18/provide-an-imag-function-for-vectors-and) operations, and the [vectorization of integral complex numbers](https://bitbucket.org/blaze-lib/blaze/issues/21/support-the-vectorization-of-integral).
 
 In addition, we are particularly proud about the performance improvements of several [dense matrix/sparse matrix multiplication](https://bitbucket.org/blaze-lib/blaze/issues/9/improve-the-performance-of-dense-matrix) and [sparse matrix/dense matrix multiplication](https://bitbucket.org/blaze-lib/blaze/issues/11/improve-the-performance-of-sparse-matrix) kernels. Furthermore, to extend the support for special environments, we have enabled the [customization of the error reporting mechanism](https://bitbucket.org/blaze-lib/blaze/issues/19/provide-means-to-adapt-the-error-reporting). Enjoy!
+
+----
 
 **4.7.2015**: We are proud to announce the release of **Blaze** 2.4! With this release, we say goodbye to the [GoogleCode](http://code.google.com/p/blaze-lib) platform and move to our new home:
 
@@ -106,8 +114,12 @@ One of the main motivations of the **Blaze** 1.x releases was to provide maximum
 * [Serialization](https://bitbucket.org/blaze-lib/blaze/wiki/Serialization)
     * [Vector Serialization](https://bitbucket.org/blaze-lib/blaze/wiki/Vector Serialization)
     * [Matrix Serialization](https://bitbucket.org/blaze-lib/blaze/wiki/Matrix Serialization)
-* [Intra-Statement Optimization](https://bitbucket.org/blaze-lib/blaze/wiki/Intra-Statement Optimization)
+* [BLAS Functions](https://bitbucket.org/blaze-lib/blaze/wiki/BLAS Functions)
+* [LAPACK Functions](https://bitbucket.org/blaze-lib/blaze/wiki/LAPACK Functions)
 * [Configuration Files](https://bitbucket.org/blaze-lib/blaze/wiki/Configuration Files)
+* [Custom Data Types](https://bitbucket.org/blaze-lib/blaze/wiki/Custom Data Types)
+* [Error Reporting Customization](https://bitbucket.org/blaze-lib/blaze/wiki/Error Reporting Customization)
+* [Intra-Statement Optimization](https://bitbucket.org/blaze-lib/blaze/wiki/Intra-Statement Optimization)
 * [Blazemark: The Blaze Benchmark Suite](https://bitbucket.org/blaze-lib/blaze/wiki/Blazemark)
 * [Benchmarks/Performance Results](https://bitbucket.org/blaze-lib/blaze/wiki/Benchmarks)
 
@@ -127,7 +139,7 @@ THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS IS" AND 
 
 ## Compiler Compatibility ##
 
-**Blaze** is written in C++-98 and therefore compatible with a wide range of C++ compilers. In fact, **Blaze** is constantly tested with the GNU compiler collection (version 4.5 through 5.0), the Intel C++ compiler (12.1, 13.1, 14.0, 15.0), the Clang compiler (version 3.4 through 3.7), and Visual C++ 2010, 2012 and 2013 (Win64 only). Other compilers are not explicitly tested, but might work with a high probability.
+**Blaze** is written in C++-98 and therefore compatible with a wide range of C++ compilers. In fact, **Blaze** is constantly tested with the GNU compiler collection (version 4.5 through 5.0), the Intel C++ compiler (12.1, 13.1, 14.0, 15.0), the Clang compiler (version 3.4 through 3.7), and Visual C++ 2010, 2012, 2013, and 2015 (Win64 only). Other compilers are not explicitly tested, but might work with a high probability.
 
 ----
 
@@ -144,6 +156,6 @@ THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS IS" AND 
 
 [Georg Hager](http://www.rrze.uni-erlangen.de/wir-ueber-uns/organigramm/mitarbeiter/index.shtml/georg-hager.shtml) -- Performance analysis and optimization
 
-[Christian Godenschwager](http://www10.informatik.uni-erlangen.de/~godenschwager/) -- Visual Studio 2010/2012/2013 bug fixes and testing
+[Christian Godenschwager](http://www10.informatik.uni-erlangen.de/~godenschwager/) -- Visual Studio 2010/2012/2013/2015 bug fixes and testing
 
 Tobias Scharpff -- Sparse matrix multiplication algorithms
