@@ -3080,7 +3080,7 @@ template< typename Arg >  // Type of the constructor argument
 inline typename DisableIf< IsClass<Arg> >::Type
    CustomMatrix<Type,AF,PF,SO>::construct( Type* ptr, size_t m, size_t n, Arg arg )
 {
-   UNUSED_PARAMETER( m, n );
+   UNUSED_PARAMETER( m );
 
    if( ptr == NULL ) {
       BLAZE_THROW_INVALID_ARGUMENT( "Invalid array of elements" );
@@ -3088,6 +3088,10 @@ inline typename DisableIf< IsClass<Arg> >::Type
 
    if( AF && ( !checkAlignment( ptr ) || arg % IT::size != 0UL ) ) {
       BLAZE_THROW_INVALID_ARGUMENT( "Invalid alignment detected" );
+   }
+
+   if( PF && IsVectorizable<Type>::value && ( arg < nextMultiple<size_t>( n, IT::size ) ) ) {
+      BLAZE_THROW_INVALID_ARGUMENT( "Insufficient capacity for padded matrix" );
    }
 
    nn_ = arg;
@@ -5825,7 +5829,7 @@ template< typename Arg >  // Type of the constructor argument
 inline typename DisableIf< IsClass<Arg> >::Type
    CustomMatrix<Type,AF,PF,true>::construct( Type* ptr, size_t m, size_t n, Arg arg )
 {
-   UNUSED_PARAMETER( m, n );
+   UNUSED_PARAMETER( n );
 
    if( ptr == NULL ) {
       BLAZE_THROW_INVALID_ARGUMENT( "Invalid array of elements" );
@@ -5833,6 +5837,10 @@ inline typename DisableIf< IsClass<Arg> >::Type
 
    if( AF && ( !checkAlignment( ptr ) || arg % IT::size != 0UL ) ) {
       BLAZE_THROW_INVALID_ARGUMENT( "Invalid alignment detected" );
+   }
+
+   if( PF && IsVectorizable<Type>::value && ( arg < nextMultiple<size_t>( m, IT::size ) ) ) {
+      BLAZE_THROW_INVALID_ARGUMENT( "Insufficient capacity for padded matrix" );
    }
 
    mm_ = arg;
