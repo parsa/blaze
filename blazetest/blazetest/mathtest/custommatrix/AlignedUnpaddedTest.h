@@ -100,6 +100,7 @@ class AlignedUnpaddedTest
    void testMultAssign  ();
    void testScaling     ();
    void testFunctionCall();
+   void testAt          ();
    void testIterator    ();
    void testNonZeros    ();
    void testReset       ();

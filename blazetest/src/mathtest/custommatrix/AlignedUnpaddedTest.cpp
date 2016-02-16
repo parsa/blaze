@@ -78,6 +78,7 @@ AlignedUnpaddedTest::AlignedUnpaddedTest()
    testMultAssign();
    testScaling();
    testFunctionCall();
+   testAt();
    testIterator();
    testNonZeros();
    testReset();
@@ -6016,6 +6017,450 @@ void AlignedUnpaddedTest::testFunctionCall()
              << "   Expected result:\n(  0 0 0 -9 0 )\n( -2 0 0  0 2 )\n(  0 2 4  0 0 )\n";
          throw std::runtime_error( oss.str() );
       }
+   }
+}
+//*************************************************************************************************
+
+
+//*************************************************************************************************
+/*!\brief Test of the \c at() member function of the CustomMatrix class template.
+//
+// \return void
+// \exception std::runtime_error Error detected.
+//
+// This function performs a test of adding and accessing elements via the \c at() member function
+// of the CustomMatrix class template. In case an error is detected, a \a std::runtime_error
+// exception is thrown.
+*/
+void AlignedUnpaddedTest::testAt()
+{
+   //=====================================================================================
+   // Row-major matrix tests
+   //=====================================================================================
+
+   {
+      test_ = "Row-major CustomMatrix::at()";
+
+      // Assignment to the element (2,1)
+      MT mat( blaze::allocate<int>( 48UL ), 3UL, 5UL, 16UL, blaze::Deallocate() );
+      mat = 0;
+      mat.at(2,1) = 1;
+
+      checkRows    ( mat,  3UL );
+      checkColumns ( mat,  5UL );
+      checkCapacity( mat, 48UL );
+      checkNonZeros( mat,  1UL );
+      checkNonZeros( mat,  0UL, 0UL );
+      checkNonZeros( mat,  1UL, 0UL );
+      checkNonZeros( mat,  2UL, 1UL );
+
+      if( mat.at(2,1) != 1 ) {
+         std::ostringstream oss;
+         oss << " Test: " << test_ << "\n"
+             << " Error: Access via at() function failed\n"
+             << " Details:\n"
+             << "   Result:\n" << mat << "\n"
+             << "   Expected result:\n( 0 0 0 0 0 )\n( 0 0 0 0 0 )\n( 0 1 0 0 0 )\n";
+         throw std::runtime_error( oss.str() );
+      }
+
+      // Assignment to the element (1,4)
+      mat.at(1,4) = 2;
+
+      checkRows    ( mat,  3UL );
+      checkColumns ( mat,  5UL );
+      checkCapacity( mat, 48UL );
+      checkNonZeros( mat,  2UL );
+      checkNonZeros( mat,  0UL, 0UL );
+      checkNonZeros( mat,  1UL, 1UL );
+      checkNonZeros( mat,  2UL, 1UL );
+
+      if( mat.at(1,4) != 2 || mat.at(2,1) != 1 ) {
+         std::ostringstream oss;
+         oss << " Test: " << test_ << "\n"
+             << " Error: Access via at() function failed\n"
+             << " Details:\n"
+             << "   Result:\n" << mat << "\n"
+             << "   Expected result:\n( 0 0 0 0 0 )\n( 0 0 0 0 2 )\n( 0 1 0 0 0 )\n";
+         throw std::runtime_error( oss.str() );
+      }
+
+      // Assignment to the element (0,3)
+      mat.at(0,3) = 3;
+
+      checkRows    ( mat,  3UL );
+      checkColumns ( mat,  5UL );
+      checkCapacity( mat, 48UL );
+      checkNonZeros( mat,  3UL );
+      checkNonZeros( mat,  0UL, 1UL );
+      checkNonZeros( mat,  1UL, 1UL );
+      checkNonZeros( mat,  2UL, 1UL );
+
+      if( mat.at(0,3) != 3 || mat.at(1,4) != 2 || mat.at(2,1) != 1 ) {
+         std::ostringstream oss;
+         oss << " Test: " << test_ << "\n"
+             << " Error: Access via at() function failed\n"
+             << " Details:\n"
+             << "   Result:\n" << mat << "\n"
+             << "   Expected result:\n( 0 0 0 3 0 )\n( 0 0 0 0 2 )\n( 0 1 0 0 0 )\n";
+         throw std::runtime_error( oss.str() );
+      }
+
+      // Assignment to the element (2,2)
+      mat.at(2,2) = 4;
+
+      checkRows    ( mat,  3UL );
+      checkColumns ( mat,  5UL );
+      checkCapacity( mat, 48UL );
+      checkNonZeros( mat,  4UL );
+      checkNonZeros( mat,  0UL, 1UL );
+      checkNonZeros( mat,  1UL, 1UL );
+      checkNonZeros( mat,  2UL, 2UL );
+
+      if( mat.at(0,3) != 3 || mat.at(1,4) != 2 || mat.at(2,1) != 1 || mat.at(2,2) != 4 ) {
+         std::ostringstream oss;
+         oss << " Test: " << test_ << "\n"
+             << " Error: Access via at() function failed\n"
+             << " Details:\n"
+             << "   Result:\n" << mat << "\n"
+             << "   Expected result:\n( 0 0 0 3 0 )\n( 0 0 0 0 2 )\n( 0 1 4 0 0 )\n";
+         throw std::runtime_error( oss.str() );
+      }
+
+      // Addition assignment to the element (2,1)
+      mat.at(2,1) += mat.at(0,3);
+
+      checkRows    ( mat,  3UL );
+      checkColumns ( mat,  5UL );
+      checkCapacity( mat, 48UL );
+      checkNonZeros( mat,  4UL );
+      checkNonZeros( mat,  0UL, 1UL );
+      checkNonZeros( mat,  1UL, 1UL );
+      checkNonZeros( mat,  2UL, 2UL );
+
+      if( mat.at(0,3) != 3 || mat.at(1,4) != 2 || mat.at(2,1) != 4 || mat.at(2,2) != 4 ) {
+         std::ostringstream oss;
+         oss << " Test: " << test_ << "\n"
+             << " Error: Access via at() function failed\n"
+             << " Details:\n"
+             << "   Result:\n" << mat << "\n"
+             << "   Expected result:\n( 0 0 0 3 0 )\n( 0 0 0 0 2 )\n( 0 4 4 0 0 )\n";
+         throw std::runtime_error( oss.str() );
+      }
+
+      // Subtraction assignment to the element (1,0)
+      mat.at(1,0) -= mat.at(1,4);
+
+      checkRows    ( mat,  3UL );
+      checkColumns ( mat,  5UL );
+      checkCapacity( mat, 48UL );
+      checkNonZeros( mat,  5UL );
+      checkNonZeros( mat,  0UL, 1UL );
+      checkNonZeros( mat,  1UL, 2UL );
+      checkNonZeros( mat,  2UL, 2UL );
+
+      if( mat.at(0,3) != 3 || mat.at(1,0) != -2 || mat.at(1,4) != 2 || mat.at(2,1) != 4 || mat.at(2,2) != 4 ) {
+         std::ostringstream oss;
+         oss << " Test: " << test_ << "\n"
+             << " Error: Access via at() function failed\n"
+             << " Details:\n"
+             << "   Result:\n" << mat << "\n"
+             << "   Expected result:\n(  0 0 0 3 0 )\n( -2 0 0 0 2 )\n(  0 4 4 0 0 )\n";
+         throw std::runtime_error( oss.str() );
+      }
+
+      // Multiplication assignment to the element (0,3)
+      mat.at(0,3) *= -3;
+
+      checkRows    ( mat,  3UL );
+      checkColumns ( mat,  5UL );
+      checkCapacity( mat, 48UL );
+      checkNonZeros( mat,  5UL );
+      checkNonZeros( mat,  0UL, 1UL );
+      checkNonZeros( mat,  1UL, 2UL );
+      checkNonZeros( mat,  2UL, 2UL );
+
+      if( mat.at(0,3) != -9 || mat.at(1,0) != -2 || mat.at(1,4) != 2 || mat.at(2,1) != 4 || mat.at(2,2) != 4 ) {
+         std::ostringstream oss;
+         oss << " Test: " << test_ << "\n"
+             << " Error: Access via at() function failed\n"
+             << " Details:\n"
+             << "   Result:\n" << mat << "\n"
+             << "   Expected result:\n(  0 0 0 -3 0 )\n( -2 0 0  0 2 )\n(  0 4 4  0 0 )\n";
+         throw std::runtime_error( oss.str() );
+      }
+
+      // Division assignment to the element (2,1)
+      mat.at(2,1) /= 2;
+
+      checkRows    ( mat,  3UL );
+      checkColumns ( mat,  5UL );
+      checkCapacity( mat, 48UL );
+      checkNonZeros( mat,  5UL );
+      checkNonZeros( mat,  0UL, 1UL );
+      checkNonZeros( mat,  1UL, 2UL );
+      checkNonZeros( mat,  2UL, 2UL );
+
+      if( mat.at(0,3) != -9 || mat.at(1,0) != -2 || mat.at(1,4) != 2 || mat.at(2,1) != 2 || mat.at(2,2) != 4 ) {
+         std::ostringstream oss;
+         oss << " Test: " << test_ << "\n"
+             << " Error: Access via at() function failed\n"
+             << " Details:\n"
+             << "   Result:\n" << mat << "\n"
+             << "   Expected result:\n(  0 0 0 -3 0 )\n( -2 0 0  0 2 )\n(  0 2 4  0 0 )\n";
+         throw std::runtime_error( oss.str() );
+      }
+
+      // Attempt to assign to the element (3,0)
+      try {
+         mat.at(3,0) = 2;
+
+         std::ostringstream oss;
+         oss << " Test: " << test_ << "\n"
+             << " Error: Out-of-bound access succeeded\n"
+             << " Details:\n"
+             << "   Result:\n" << mat << "\n"
+             << "   Expected result:\n(  0 0 0 -3 0 )\n( -2 0 0  0 2 )\n(  0 2 4  0 0 )\n";
+         throw std::runtime_error( oss.str() );
+      }
+      catch( std::out_of_range& ) {}
+
+      // Attempt to assign to the element (0,5)
+      try {
+         mat.at(0,5) = 2;
+
+         std::ostringstream oss;
+         oss << " Test: " << test_ << "\n"
+             << " Error: Out-of-bound access succeeded\n"
+             << " Details:\n"
+             << "   Result:\n" << mat << "\n"
+             << "   Expected result:\n(  0 0 0 -3 0 )\n( -2 0 0  0 2 )\n(  0 2 4  0 0 )\n";
+         throw std::runtime_error( oss.str() );
+      }
+      catch( std::out_of_range& ) {}
+   }
+
+
+   //=====================================================================================
+   // Column-major matrix tests
+   //=====================================================================================
+
+   {
+      test_ = "Column-major CustomMatrix::at()";
+
+      // Assignment to the element (2,1)
+      OMT mat( blaze::allocate<int>( 80UL ), 3UL, 5UL, 16UL, blaze::Deallocate() );
+      mat = 0;
+      mat.at(2,1) = 1;
+
+      checkRows    ( mat,  3UL );
+      checkColumns ( mat,  5UL );
+      checkCapacity( mat, 80UL );
+      checkNonZeros( mat,  1UL );
+      checkNonZeros( mat,  0UL, 0UL );
+      checkNonZeros( mat,  1UL, 1UL );
+      checkNonZeros( mat,  2UL, 0UL );
+      checkNonZeros( mat,  3UL, 0UL );
+      checkNonZeros( mat,  4UL, 0UL );
+
+      if( mat.at(2,1) != 1 ) {
+         std::ostringstream oss;
+         oss << " Test: " << test_ << "\n"
+             << " Error: Access via at() function failed\n"
+             << " Details:\n"
+             << "   Result:\n" << mat << "\n"
+             << "   Expected result:\n( 0 0 0 0 0 )\n( 0 0 0 0 0 )\n( 0 1 0 0 0 )\n";
+         throw std::runtime_error( oss.str() );
+      }
+
+      // Assignment to the element (1,4)
+      mat.at(1,4) = 2;
+
+      checkRows    ( mat,  3UL );
+      checkColumns ( mat,  5UL );
+      checkCapacity( mat, 80UL );
+      checkNonZeros( mat,  2UL );
+      checkNonZeros( mat,  0UL, 0UL );
+      checkNonZeros( mat,  1UL, 1UL );
+      checkNonZeros( mat,  2UL, 0UL );
+      checkNonZeros( mat,  3UL, 0UL );
+      checkNonZeros( mat,  4UL, 1UL );
+
+      if( mat.at(2,1) != 1 || mat.at(1,4) != 2 ) {
+         std::ostringstream oss;
+         oss << " Test: " << test_ << "\n"
+             << " Error: Access via at() function failed\n"
+             << " Details:\n"
+             << "   Result:\n" << mat << "\n"
+             << "   Expected result:\n( 0 0 0 0 0 )\n( 0 0 0 0 2 )\n( 0 1 0 0 0 )\n";
+         throw std::runtime_error( oss.str() );
+      }
+
+      // Assignment to the element (0,3)
+      mat.at(0,3) = 3;
+
+      checkRows    ( mat,  3UL );
+      checkColumns ( mat,  5UL );
+      checkCapacity( mat, 80UL );
+      checkNonZeros( mat,  3UL );
+      checkNonZeros( mat,  0UL, 0UL );
+      checkNonZeros( mat,  1UL, 1UL );
+      checkNonZeros( mat,  2UL, 0UL );
+      checkNonZeros( mat,  3UL, 1UL );
+      checkNonZeros( mat,  4UL, 1UL );
+
+      if( mat.at(2,1) != 1 || mat.at(1,4) != 2 || mat.at(0,3) != 3 ) {
+         std::ostringstream oss;
+         oss << " Test: " << test_ << "\n"
+             << " Error: Access via at() function failed\n"
+             << " Details:\n"
+             << "   Result:\n" << mat << "\n"
+             << "   Expected result:\n( 0 0 0 3 0 )\n( 0 0 0 0 2 )\n( 0 1 0 0 0 )\n";
+         throw std::runtime_error( oss.str() );
+      }
+
+      // Assignment to the element (2,2)
+      mat.at(2,2) = 4;
+
+      checkRows    ( mat,  3UL );
+      checkColumns ( mat,  5UL );
+      checkCapacity( mat, 80UL );
+      checkNonZeros( mat,  4UL );
+      checkNonZeros( mat,  0UL, 0UL );
+      checkNonZeros( mat,  1UL, 1UL );
+      checkNonZeros( mat,  2UL, 1UL );
+      checkNonZeros( mat,  3UL, 1UL );
+      checkNonZeros( mat,  4UL, 1UL );
+
+      if( mat.at(2,1) != 1 || mat.at(1,4) != 2 || mat.at(0,3) != 3 || mat.at(2,2) != 4 ) {
+         std::ostringstream oss;
+         oss << " Test: " << test_ << "\n"
+             << " Error: Access via at() function failed\n"
+             << " Details:\n"
+             << "   Result:\n" << mat << "\n"
+             << "   Expected result:\n( 0 0 0 3 0 )\n( 0 0 0 0 2 )\n( 0 1 4 0 0 )\n";
+         throw std::runtime_error( oss.str() );
+      }
+
+      // Addition assignment to the element (2,1)
+      mat.at(2,1) += mat.at(0,3);
+
+      checkRows    ( mat,  3UL );
+      checkColumns ( mat,  5UL );
+      checkCapacity( mat, 80UL );
+      checkNonZeros( mat,  4UL );
+      checkNonZeros( mat,  0UL, 0UL );
+      checkNonZeros( mat,  1UL, 1UL );
+      checkNonZeros( mat,  2UL, 1UL );
+      checkNonZeros( mat,  3UL, 1UL );
+      checkNonZeros( mat,  4UL, 1UL );
+
+      if( mat.at(2,1) != 4 || mat.at(2,2) != 4 || mat.at(0,3) != 3 || mat.at(1,4) != 2 ) {
+         std::ostringstream oss;
+         oss << " Test: " << test_ << "\n"
+             << " Error: Access via at() function failed\n"
+             << " Details:\n"
+             << "   Result:\n" << mat << "\n"
+             << "   Expected result:\n( 0 0 0 3 0 )\n( 0 0 0 0 2 )\n( 0 4 4 0 0 )\n";
+         throw std::runtime_error( oss.str() );
+      }
+
+      // Subtraction assignment to the element (1,0)
+      mat.at(1,0) -= mat.at(1,4);
+
+      checkRows    ( mat,  3UL );
+      checkColumns ( mat,  5UL );
+      checkCapacity( mat, 80UL );
+      checkNonZeros( mat,  5UL );
+      checkNonZeros( mat,  0UL, 1UL );
+      checkNonZeros( mat,  1UL, 1UL );
+      checkNonZeros( mat,  2UL, 1UL );
+      checkNonZeros( mat,  3UL, 1UL );
+      checkNonZeros( mat,  4UL, 1UL );
+
+      if( mat.at(1,0) != -2 || mat.at(2,1) != 4 || mat.at(2,2) != 4 || mat.at(0,3) != 3 || mat.at(1,4) != 2 ) {
+         std::ostringstream oss;
+         oss << " Test: " << test_ << "\n"
+             << " Error: Access via at() function failed\n"
+             << " Details:\n"
+             << "   Result:\n" << mat << "\n"
+             << "   Expected result:\n(  0 0 0 3 0 )\n( -2 0 0 0 2 )\n(  0 4 4 0 0 )\n";
+         throw std::runtime_error( oss.str() );
+      }
+
+      // Multiplication assignment to the element (0,3)
+      mat.at(0,3) *= -3;
+
+      checkRows    ( mat,  3UL );
+      checkColumns ( mat,  5UL );
+      checkCapacity( mat, 80UL );
+      checkNonZeros( mat,  5UL );
+      checkNonZeros( mat,  0UL, 1UL );
+      checkNonZeros( mat,  1UL, 1UL );
+      checkNonZeros( mat,  2UL, 1UL );
+      checkNonZeros( mat,  3UL, 1UL );
+      checkNonZeros( mat,  4UL, 1UL );
+
+      if( mat.at(1,0) != -2 || mat.at(2,1) != 4 || mat.at(2,2) != 4 || mat.at(0,3) != -9 || mat.at(1,4) != 2 ) {
+         std::ostringstream oss;
+         oss << " Test: " << test_ << "\n"
+             << " Error: Access via at() function failed\n"
+             << " Details:\n"
+             << "   Result:\n" << mat << "\n"
+             << "   Expected result:\n(  0 0 0 -9 0 )\n( -2 0 0  0 2 )\n(  0 4 4  0 0 )\n";
+         throw std::runtime_error( oss.str() );
+      }
+
+      // Division assignment to the element (2,1)
+      mat.at(2,1) /= 2;
+
+      checkRows    ( mat,  3UL );
+      checkColumns ( mat,  5UL );
+      checkCapacity( mat, 80UL );
+      checkNonZeros( mat,  5UL );
+      checkNonZeros( mat,  0UL, 1UL );
+      checkNonZeros( mat,  1UL, 1UL );
+      checkNonZeros( mat,  2UL, 1UL );
+      checkNonZeros( mat,  3UL, 1UL );
+      checkNonZeros( mat,  4UL, 1UL );
+
+      if( mat.at(1,0) != -2 || mat.at(2,1) != 2 || mat.at(2,2) != 4 || mat.at(0,3) != -9 || mat.at(1,4) != 2 ) {
+         std::ostringstream oss;
+         oss << " Test: " << test_ << "\n"
+             << " Error: Access via at() function failed\n"
+             << " Details:\n"
+             << "   Result:\n" << mat << "\n"
+             << "   Expected result:\n(  0 0 0 -9 0 )\n( -2 0 0  0 2 )\n(  0 2 4  0 0 )\n";
+         throw std::runtime_error( oss.str() );
+      }
+
+      // Attempt to assign to the element (3,0)
+      try {
+         mat.at(3,0) = 2;
+
+         std::ostringstream oss;
+         oss << " Test: " << test_ << "\n"
+             << " Error: Out-of-bound access succeeded\n"
+             << " Details:\n"
+             << "   Result:\n" << mat << "\n"
+             << "   Expected result:\n(  0 0 0 -9 0 )\n( -2 0 0  0 2 )\n(  0 2 4  0 0 )\n";
+         throw std::runtime_error( oss.str() );
+      }
+      catch( std::out_of_range& ) {}
+
+      // Attempt to assign to the element (0,5)
+      try {
+         mat.at(0,5) = 2;
+
+         std::ostringstream oss;
+         oss << " Test: " << test_ << "\n"
+             << " Error: Out-of-bound access succeeded\n"
+             << " Details:\n"
+             << "   Result:\n" << mat << "\n"
+             << "   Expected result:\n(  0 0 0 -9 0 )\n( -2 0 0  0 2 )\n(  0 2 4  0 0 )\n";
+         throw std::runtime_error( oss.str() );
+      }
+      catch( std::out_of_range& ) {}
    }
 }
 //*************************************************************************************************
