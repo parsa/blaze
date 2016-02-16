@@ -2020,7 +2020,7 @@ template< typename Type       // Data type of the matrix
 template< typename Deleter >  // Type of the custom deleter
 inline void CustomMatrix<Type,AF,PF,SO>::reset( Type* ptr, size_t m, size_t n, Deleter d )
 {
-   BLAZE_STATIC_ASSERT( PF == unpadded );
+   BLAZE_STATIC_ASSERT( !IsClass<Deleter>::value || PF == unpadded );
 
    CustomMatrix tmp( ptr, m, n, d );
    swap( tmp );
@@ -4743,7 +4743,7 @@ template< typename Type       // Data type of the matrix
 template< typename Deleter >  // Type of the custom deleter
 inline void CustomMatrix<Type,AF,PF,true>::reset( Type* ptr, size_t m, size_t n, Deleter d )
 {
-   BLAZE_STATIC_ASSERT( PF == unpadded );
+   BLAZE_STATIC_ASSERT( !IsClass<Deleter>::value || PF == unpadded );
 
    CustomMatrix tmp( ptr, m, n, d );
    swap( tmp );
