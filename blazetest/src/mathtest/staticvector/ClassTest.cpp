@@ -102,6 +102,7 @@ ClassTest::ClassTest()
    testMultAssign();
    testScaling();
    testSubscript();
+   testAt();
    testIterator();
    testNonZeros();
    testReset();
@@ -1574,6 +1575,174 @@ void ClassTest::testSubscript()
           << "   Expected result:\n( 4 -2 2 -9 2 )\n";
       throw std::runtime_error( oss.str() );
    }
+}
+//*************************************************************************************************
+
+
+//*************************************************************************************************
+/*!\brief Test of the \c at() member function of the StaticVector class template.
+//
+// \return void
+// \exception std::runtime_error Error detected.
+//
+// This function performs a test of adding and accessing elements via the \c at() member function
+// of the StaticVector class template. In case an error is detected, a \a std::runtime_error
+// exception is thrown.
+*/
+void ClassTest::testAt()
+{
+   test_ = "StaticVector::at()";
+
+   // Assignment to the element at index 2
+   blaze::StaticVector<int,5UL,blaze::rowVector> vec;
+   vec.at(2) = 1;
+
+   checkSize    ( vec, 5UL );
+   checkCapacity( vec, 5UL );
+   checkNonZeros( vec, 1UL );
+
+   if( vec.at(2) != 1 ) {
+      std::ostringstream oss;
+      oss << " Test: " << test_ << "\n"
+          << " Error: Access via at() function failed\n"
+          << " Details:\n"
+          << "   Result:\n" << vec << "\n"
+          << "   Expected result:\n( 0 0 1 0 0 )\n";
+      throw std::runtime_error( oss.str() );
+   }
+
+   // Assignment to the element at index 4
+   vec.at(4) = 2;
+
+   checkSize    ( vec, 5UL );
+   checkCapacity( vec, 5UL );
+   checkNonZeros( vec, 2UL );
+
+   if( vec.at(2) != 1 || vec.at(4) != 2 ) {
+      std::ostringstream oss;
+      oss << " Test: " << test_ << "\n"
+          << " Error: Access via at() function failed\n"
+          << " Details:\n"
+          << "   Result:\n" << vec << "\n"
+          << "   Expected result:\n( 0 0 1 0 2 )\n";
+      throw std::runtime_error( oss.str() );
+   }
+
+   // Assignment to the element at index 3
+   vec.at(3) = 3;
+
+   checkSize    ( vec, 5UL );
+   checkCapacity( vec, 5UL );
+   checkNonZeros( vec, 3UL );
+
+   if( vec.at(2) != 1 || vec.at(3) != 3 || vec.at(4) != 2 ) {
+      std::ostringstream oss;
+      oss << " Test: " << test_ << "\n"
+          << " Error: Access via at() function failed\n"
+          << " Details:\n"
+          << "   Result:\n" << vec << "\n"
+          << "   Expected result:\n( 0 0 1 3 2 )\n";
+      throw std::runtime_error( oss.str() );
+   }
+
+   // Assignment to the element at index 0
+   vec.at(0) = 4;
+
+   checkSize    ( vec, 5UL );
+   checkCapacity( vec, 5UL );
+   checkNonZeros( vec, 4UL );
+
+   if( vec.at(0) != 4 || vec.at(2) != 1 || vec.at(3) != 3 || vec.at(4) != 2 ) {
+      std::ostringstream oss;
+      oss << " Test: " << test_ << "\n"
+          << " Error: Access via at() function failed\n"
+          << " Details:\n"
+          << "   Result:\n" << vec << "\n"
+          << "   Expected result:\n( 4 0 1 3 2 )\n";
+      throw std::runtime_error( oss.str() );
+   }
+
+   // Addition assignment to the element at index 2
+   vec.at(2) += vec.at(3);
+
+   checkSize    ( vec, 5UL );
+   checkCapacity( vec, 5UL );
+   checkNonZeros( vec, 4UL );
+
+   if( vec.at(0) != 4 || vec.at(2) != 4 || vec.at(3) != 3 || vec.at(4) != 2 ) {
+      std::ostringstream oss;
+      oss << " Test: " << test_ << "\n"
+          << " Error: Access via at() function failed\n"
+          << " Details:\n"
+          << "   Result:\n" << vec << "\n"
+          << "   Expected result:\n( 4 0 4 3 2 )\n";
+      throw std::runtime_error( oss.str() );
+   }
+
+   // Subtraction assignment to the element at index 1
+   vec.at(1) -= vec.at(4);
+
+   checkSize    ( vec, 5UL );
+   checkCapacity( vec, 5UL );
+   checkNonZeros( vec, 5UL );
+
+   if( vec.at(0) != 4 || vec.at(1) != -2 || vec.at(2) != 4 || vec.at(3) != 3 || vec.at(4) != 2 ) {
+      std::ostringstream oss;
+      oss << " Test: " << test_ << "\n"
+          << " Error: Access via at() function failed\n"
+          << " Details:\n"
+          << "   Result:\n" << vec << "\n"
+          << "   Expected result:\n( 4 -2 4 3 2 )\n";
+      throw std::runtime_error( oss.str() );
+   }
+
+   // Multiplication assignment to the element at index 3
+   vec.at(3) *= -3;
+
+   checkSize    ( vec, 5UL );
+   checkCapacity( vec, 5UL );
+   checkNonZeros( vec, 5UL );
+
+   if( vec.at(0) != 4 || vec.at(1) != -2 || vec.at(2) != 4 || vec.at(3) != -9 || vec.at(4) != 2 ) {
+      std::ostringstream oss;
+      oss << " Test: " << test_ << "\n"
+          << " Error: Access via at() function failed\n"
+          << " Details:\n"
+          << "   Result:\n" << vec << "\n"
+          << "   Expected result:\n( 4 -2 4 -9 2 )\n";
+      throw std::runtime_error( oss.str() );
+   }
+
+   // Division assignment to the element at index 2
+   vec.at(2) /= 2;
+
+   checkSize    ( vec, 5UL );
+   checkCapacity( vec, 5UL );
+   checkNonZeros( vec, 5UL );
+
+   if( vec.at(0) != 4 || vec.at(1) != -2 || vec.at(2) != 2 || vec.at(3) != -9 || vec.at(4) != 2 ) {
+      std::ostringstream oss;
+      oss << " Test: " << test_ << "\n"
+          << " Error: Access via at() function failed\n"
+          << " Details:\n"
+          << "   Result:\n" << vec << "\n"
+          << "   Expected result:\n( 4 -2 2 -9 2 )\n";
+      throw std::runtime_error( oss.str() );
+   }
+
+   // Attempt to assign to the element at index 5
+   try {
+      vec.at(5) = 2;
+
+      std::ostringstream oss;
+      oss << " Test: " << test_ << "\n"
+          << " Error: Out-of-bound access succeeded\n"
+          << " Details:\n"
+          << "   Result:\n" << vec << "\n"
+          << "   Expected result:\n( 4 -2 2 -9 2 )\n";
+      throw std::runtime_error( oss.str() );
+   }
+   catch( std::out_of_range& ) {}
 }
 //*************************************************************************************************
 
