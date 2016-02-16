@@ -47,7 +47,7 @@
 // \ingroup system
 //
 // This value corresponds to the major version of the Blaze library. For instance, for Blaze
-// version 2.4, the BLAZE_MAJOR_VERSION corresponds to 2.
+// version 2.6, the BLAZE_MAJOR_VERSION corresponds to 2.
 */
 #define BLAZE_MAJOR_VERSION 2
 //*************************************************************************************************
@@ -58,9 +58,9 @@
 // \ingroup system
 //
 // This value corresponds to the minor version of the Blaze library. For instance, for Blaze
-// version 2.5, the BLAZE_MINOR_VERSION corresponds to 5.
+// version 2.6, the BLAZE_MINOR_VERSION corresponds to 6.
 */
-#define BLAZE_MINOR_VERSION 5
+#define BLAZE_MINOR_VERSION 6
 //*************************************************************************************************
 
 #endif
