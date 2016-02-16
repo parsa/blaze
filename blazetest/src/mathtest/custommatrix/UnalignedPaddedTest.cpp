@@ -47,6 +47,7 @@
 #include <blaze/util/Memory.h>
 #include <blaze/util/policies/Deallocate.h>
 #include <blaze/util/Random.h>
+#include <blaze/util/typetraits/IsVectorizable.h>
 #include <blaze/util/UniqueArray.h>
 #include <blazetest/mathtest/custommatrix/UnalignedPaddedTest.h>
 #include <blazetest/mathtest/RandomMaximum.h>
@@ -155,16 +156,19 @@ void UnalignedPaddedTest::testConstructors()
       catch( std::invalid_argument& ) {}
 
       // Trying to construct a custom matrix with invalid padding
-      try {
-         blaze::UniqueArray<int,blaze::ArrayDelete> array( new int[7UL] );
-         MT mat( array.get()+1UL, 2UL, 2UL, 3UL );
+      if( blaze::IsVectorizable<int>::value )
+      {
+         try {
+            blaze::UniqueArray<int,blaze::ArrayDelete> array( new int[7UL] );
+            MT mat( array.get()+1UL, 2UL, 2UL, 3UL );
 
-         std::ostringstream oss;
-         oss << " Test: " << test_ << "\n"
-             << " Error: Constructing a custom matrix with invalid padding succeeded\n";
-         throw std::runtime_error( oss.str() );
+            std::ostringstream oss;
+            oss << " Test: " << test_ << "\n"
+                << " Error: Constructing a custom matrix with invalid padding succeeded\n";
+            throw std::runtime_error( oss.str() );
+         }
+         catch( std::invalid_argument& ) {}
       }
-      catch( std::invalid_argument& ) {}
    }
 
 
@@ -196,16 +200,19 @@ void UnalignedPaddedTest::testConstructors()
       catch( std::invalid_argument& ) {}
 
       // Trying to construct a custom matrix with invalid padding
-      try {
-         blaze::UniqueArray<int,blaze::ArrayDelete> array( new int[7UL] );
-         MT mat( array.get()+1UL, 2UL, 2UL, 3UL, blaze::ArrayDelete() );
+      if( blaze::IsVectorizable<int>::value )
+      {
+         try {
+            blaze::UniqueArray<int,blaze::ArrayDelete> array( new int[7UL] );
+            MT mat( array.get()+1UL, 2UL, 2UL, 3UL, blaze::ArrayDelete() );
 
-         std::ostringstream oss;
-         oss << " Test: " << test_ << "\n"
-             << " Error: Constructing a custom matrix with invalid padding succeeded\n";
-         throw std::runtime_error( oss.str() );
+            std::ostringstream oss;
+            oss << " Test: " << test_ << "\n"
+                << " Error: Constructing a custom matrix with invalid padding succeeded\n";
+            throw std::runtime_error( oss.str() );
+         }
+         catch( std::invalid_argument& ) {}
       }
-      catch( std::invalid_argument& ) {}
    }
 
 
@@ -326,16 +333,19 @@ void UnalignedPaddedTest::testConstructors()
       catch( std::invalid_argument& ) {}
 
       // Trying to construct a custom matrix with invalid padding
-      try {
-         blaze::UniqueArray<int,blaze::ArrayDelete> array( new int[7UL] );
-         OMT mat( array.get()+1UL, 2UL, 2UL, 3UL );
+      if( blaze::IsVectorizable<int>::value )
+      {
+         try {
+            blaze::UniqueArray<int,blaze::ArrayDelete> array( new int[7UL] );
+            OMT mat( array.get()+1UL, 2UL, 2UL, 3UL );
 
-         std::ostringstream oss;
-         oss << " Test: " << test_ << "\n"
-             << " Error: Constructing a custom matrix with invalid padding succeeded\n";
-         throw std::runtime_error( oss.str() );
+            std::ostringstream oss;
+            oss << " Test: " << test_ << "\n"
+                << " Error: Constructing a custom matrix with invalid padding succeeded\n";
+            throw std::runtime_error( oss.str() );
+         }
+         catch( std::invalid_argument& ) {}
       }
-      catch( std::invalid_argument& ) {}
    }
 
 
@@ -367,16 +377,19 @@ void UnalignedPaddedTest::testConstructors()
       catch( std::invalid_argument& ) {}
 
       // Trying to construct a custom matrix with invalid padding
-      try {
-         blaze::UniqueArray<int,blaze::ArrayDelete> array( new int[7UL] );
-         OMT mat( array.get()+1UL, 2UL, 2UL, 3UL, blaze::ArrayDelete() );
+      if( blaze::IsVectorizable<int>::value )
+      {
+         try {
+            blaze::UniqueArray<int,blaze::ArrayDelete> array( new int[7UL] );
+            OMT mat( array.get()+1UL, 2UL, 2UL, 3UL, blaze::ArrayDelete() );
 
-         std::ostringstream oss;
-         oss << " Test: " << test_ << "\n"
-             << " Error: Constructing a custom matrix with invalid padding succeeded\n";
-         throw std::runtime_error( oss.str() );
+            std::ostringstream oss;
+            oss << " Test: " << test_ << "\n"
+                << " Error: Constructing a custom matrix with invalid padding succeeded\n";
+            throw std::runtime_error( oss.str() );
+         }
+         catch( std::invalid_argument& ) {}
       }
-      catch( std::invalid_argument& ) {}
    }
 
 

@@ -46,6 +46,7 @@
 #include <blaze/util/Complex.h>
 #include <blaze/util/policies/ArrayDelete.h>
 #include <blaze/util/Random.h>
+#include <blaze/util/typetraits/AlignmentOf.h>
 #include <blaze/util/UniqueArray.h>
 #include <blazetest/mathtest/custommatrix/AlignedUnpaddedTest.h>
 #include <blazetest/mathtest/RandomMaximum.h>
@@ -154,32 +155,38 @@ void AlignedUnpaddedTest::testConstructors()
       catch( std::invalid_argument& ) {}
 
       // Trying to construct a custom matrix with invalid alignment
-      try {
-         blaze::UniqueArray<int,blaze::Deallocate> array( blaze::allocate<int>( 33UL ) );
-         MT mat( array.get()+1UL, 2UL, 16UL );
+      if( blaze::AlignmentOf<int>::value > 1UL )
+      {
+         try {
+            blaze::UniqueArray<int,blaze::Deallocate> array( blaze::allocate<int>( 33UL ) );
+            MT mat( array.get()+1UL, 2UL, 16UL );
 
-         std::ostringstream oss;
-         oss << " Test: " << test_ << "\n"
-             << " Error: Constructing a custom matrix with invalid alignment succeeded\n"
-             << " Details:\n"
-             << "   Result:\n" << mat << "\n";
-         throw std::runtime_error( oss.str() );
+            std::ostringstream oss;
+            oss << " Test: " << test_ << "\n"
+                << " Error: Constructing a custom matrix with invalid alignment succeeded\n"
+                << " Details:\n"
+                << "   Result:\n" << mat << "\n";
+            throw std::runtime_error( oss.str() );
+         }
+         catch( std::invalid_argument& ) {}
       }
-      catch( std::invalid_argument& ) {}
 
       // Trying to construct a custom matrix with invalid row alignment
-      try {
-         blaze::UniqueArray<int,blaze::Deallocate> array( blaze::allocate<int>( 30UL ) );
-         MT mat( array.get(), 2UL, 15UL );
+      if( blaze::AlignmentOf<int>::value > 1UL )
+      {
+         try {
+            blaze::UniqueArray<int,blaze::Deallocate> array( blaze::allocate<int>( 30UL ) );
+            MT mat( array.get(), 2UL, 15UL );
 
-         std::ostringstream oss;
-         oss << " Test: " << test_ << "\n"
-             << " Error: Constructing a custom matrix with invalid row alignment succeeded\n"
-             << " Details:\n"
-             << "   Result:\n" << mat << "\n";
-         throw std::runtime_error( oss.str() );
+            std::ostringstream oss;
+            oss << " Test: " << test_ << "\n"
+                << " Error: Constructing a custom matrix with invalid row alignment succeeded\n"
+                << " Details:\n"
+                << "   Result:\n" << mat << "\n";
+            throw std::runtime_error( oss.str() );
+         }
+         catch( std::invalid_argument& ) {}
       }
-      catch( std::invalid_argument& ) {}
    }
 
 
@@ -212,32 +219,38 @@ void AlignedUnpaddedTest::testConstructors()
       catch( std::invalid_argument& ) {}
 
       // Trying to construct a custom matrix with invalid alignment
-      try {
-         blaze::UniqueArray<int,blaze::Deallocate> array( blaze::allocate<int>( 33UL ) );
-         MT mat( array.get()+1UL, 2UL, 2UL, 16UL );
+      if( blaze::AlignmentOf<int>::value > 1UL )
+      {
+         try {
+            blaze::UniqueArray<int,blaze::Deallocate> array( blaze::allocate<int>( 33UL ) );
+            MT mat( array.get()+1UL, 2UL, 2UL, 16UL );
 
-         std::ostringstream oss;
-         oss << " Test: " << test_ << "\n"
-             << " Error: Constructing a custom matrix with invalid alignment succeeded\n"
-             << " Details:\n"
-             << "   Result:\n" << mat << "\n";
-         throw std::runtime_error( oss.str() );
+            std::ostringstream oss;
+            oss << " Test: " << test_ << "\n"
+                << " Error: Constructing a custom matrix with invalid alignment succeeded\n"
+                << " Details:\n"
+                << "   Result:\n" << mat << "\n";
+            throw std::runtime_error( oss.str() );
+         }
+         catch( std::invalid_argument& ) {}
       }
-      catch( std::invalid_argument& ) {}
 
       // Trying to construct a custom matrix with invalid row alignment
-      try {
-         blaze::UniqueArray<int,blaze::Deallocate> array( blaze::allocate<int>( 30UL ) );
-         MT mat( array.get(), 2UL, 2UL, 15UL );
+      if( blaze::AlignmentOf<int>::value > 1UL )
+      {
+         try {
+            blaze::UniqueArray<int,blaze::Deallocate> array( blaze::allocate<int>( 30UL ) );
+            MT mat( array.get(), 2UL, 2UL, 15UL );
 
-         std::ostringstream oss;
-         oss << " Test: " << test_ << "\n"
-             << " Error: Constructing a custom matrix with invalid row alignment succeeded\n"
-             << " Details:\n"
-             << "   Result:\n" << mat << "\n";
-         throw std::runtime_error( oss.str() );
+            std::ostringstream oss;
+            oss << " Test: " << test_ << "\n"
+                << " Error: Constructing a custom matrix with invalid row alignment succeeded\n"
+                << " Details:\n"
+                << "   Result:\n" << mat << "\n";
+            throw std::runtime_error( oss.str() );
+         }
+         catch( std::invalid_argument& ) {}
       }
-      catch( std::invalid_argument& ) {}
    }
 
 
@@ -269,32 +282,38 @@ void AlignedUnpaddedTest::testConstructors()
       catch( std::invalid_argument& ) {}
 
       // Trying to construct a custom matrix with invalid alignment
-      try {
-         blaze::UniqueArray<int,blaze::Deallocate> array( blaze::allocate<int>( 33UL ) );
-         MT mat( array.get()+1UL, 2UL, 16UL, blaze::Deallocate() );
+      if( blaze::AlignmentOf<int>::value > 1UL )
+      {
+         try {
+            blaze::UniqueArray<int,blaze::Deallocate> array( blaze::allocate<int>( 33UL ) );
+            MT mat( array.get()+1UL, 2UL, 16UL, blaze::Deallocate() );
 
-         std::ostringstream oss;
-         oss << " Test: " << test_ << "\n"
-             << " Error: Constructing a custom matrix with invalid alignment succeeded\n"
-             << " Details:\n"
-             << "   Result:\n" << mat << "\n";
-         throw std::runtime_error( oss.str() );
+            std::ostringstream oss;
+            oss << " Test: " << test_ << "\n"
+                << " Error: Constructing a custom matrix with invalid alignment succeeded\n"
+                << " Details:\n"
+                << "   Result:\n" << mat << "\n";
+            throw std::runtime_error( oss.str() );
+         }
+         catch( std::invalid_argument& ) {}
       }
-      catch( std::invalid_argument& ) {}
 
       // Trying to construct a custom matrix with invalid row alignment
-      try {
-         blaze::UniqueArray<int,blaze::Deallocate> array( blaze::allocate<int>( 30UL ) );
-         MT mat( array.get(), 2UL, 15UL, blaze::Deallocate() );
+      if( blaze::AlignmentOf<int>::value > 1UL )
+      {
+         try {
+            blaze::UniqueArray<int,blaze::Deallocate> array( blaze::allocate<int>( 30UL ) );
+            MT mat( array.get(), 2UL, 15UL, blaze::Deallocate() );
 
-         std::ostringstream oss;
-         oss << " Test: " << test_ << "\n"
-             << " Error: Constructing a custom matrix with invalid row alignment succeeded\n"
-             << " Details:\n"
-             << "   Result:\n" << mat << "\n";
-         throw std::runtime_error( oss.str() );
+            std::ostringstream oss;
+            oss << " Test: " << test_ << "\n"
+                << " Error: Constructing a custom matrix with invalid row alignment succeeded\n"
+                << " Details:\n"
+                << "   Result:\n" << mat << "\n";
+            throw std::runtime_error( oss.str() );
+         }
+         catch( std::invalid_argument& ) {}
       }
-      catch( std::invalid_argument& ) {}
    }
 
 
@@ -326,32 +345,38 @@ void AlignedUnpaddedTest::testConstructors()
       catch( std::invalid_argument& ) {}
 
       // Trying to construct a custom matrix with invalid alignment
-      try {
-         blaze::UniqueArray<int,blaze::Deallocate> array( blaze::allocate<int>( 33UL ) );
-         MT mat( array.get()+1UL, 2UL, 2UL, 16UL, blaze::Deallocate() );
+      if( blaze::AlignmentOf<int>::value > 1UL )
+      {
+         try {
+            blaze::UniqueArray<int,blaze::Deallocate> array( blaze::allocate<int>( 33UL ) );
+            MT mat( array.get()+1UL, 2UL, 2UL, 16UL, blaze::Deallocate() );
 
-         std::ostringstream oss;
-         oss << " Test: " << test_ << "\n"
-             << " Error: Constructing a custom matrix with invalid alignment succeeded\n"
-             << " Details:\n"
-             << "   Result:\n" << mat << "\n";
-         throw std::runtime_error( oss.str() );
+            std::ostringstream oss;
+            oss << " Test: " << test_ << "\n"
+                << " Error: Constructing a custom matrix with invalid alignment succeeded\n"
+                << " Details:\n"
+                << "   Result:\n" << mat << "\n";
+            throw std::runtime_error( oss.str() );
+         }
+         catch( std::invalid_argument& ) {}
       }
-      catch( std::invalid_argument& ) {}
 
       // Trying to construct a custom matrix with invalid row alignment
-      try {
-         blaze::UniqueArray<int,blaze::Deallocate> array( blaze::allocate<int>( 30UL ) );
-         MT mat( array.get(), 2UL, 2UL, 15UL, blaze::Deallocate() );
+      if( blaze::AlignmentOf<int>::value > 1UL )
+      {
+         try {
+            blaze::UniqueArray<int,blaze::Deallocate> array( blaze::allocate<int>( 30UL ) );
+            MT mat( array.get(), 2UL, 2UL, 15UL, blaze::Deallocate() );
 
-         std::ostringstream oss;
-         oss << " Test: " << test_ << "\n"
-             << " Error: Constructing a custom matrix with invalid row alignment succeeded\n"
-             << " Details:\n"
-             << "   Result:\n" << mat << "\n";
-         throw std::runtime_error( oss.str() );
+            std::ostringstream oss;
+            oss << " Test: " << test_ << "\n"
+                << " Error: Constructing a custom matrix with invalid row alignment succeeded\n"
+                << " Details:\n"
+                << "   Result:\n" << mat << "\n";
+            throw std::runtime_error( oss.str() );
+         }
+         catch( std::invalid_argument& ) {}
       }
-      catch( std::invalid_argument& ) {}
    }
 
 
@@ -472,32 +497,38 @@ void AlignedUnpaddedTest::testConstructors()
       catch( std::invalid_argument& ) {}
 
       // Trying to construct a custom matrix with invalid alignment
-      try {
-         blaze::UniqueArray<int,blaze::Deallocate> array( blaze::allocate<int>( 33UL ) );
-         OMT mat( array.get()+1UL, 16UL, 2UL );
+      if( blaze::AlignmentOf<int>::value > 1UL )
+      {
+         try {
+            blaze::UniqueArray<int,blaze::Deallocate> array( blaze::allocate<int>( 33UL ) );
+            OMT mat( array.get()+1UL, 16UL, 2UL );
 
-         std::ostringstream oss;
-         oss << " Test: " << test_ << "\n"
-             << " Error: Constructing a custom matrix with invalid alignment succeeded\n"
-             << " Details:\n"
-             << "   Result:\n" << mat << "\n";
-         throw std::runtime_error( oss.str() );
+            std::ostringstream oss;
+            oss << " Test: " << test_ << "\n"
+                << " Error: Constructing a custom matrix with invalid alignment succeeded\n"
+                << " Details:\n"
+                << "   Result:\n" << mat << "\n";
+            throw std::runtime_error( oss.str() );
+         }
+         catch( std::invalid_argument& ) {}
       }
-      catch( std::invalid_argument& ) {}
 
       // Trying to construct a custom matrix with invalid column alignment
-      try {
-         blaze::UniqueArray<int,blaze::Deallocate> array( blaze::allocate<int>( 30UL ) );
-         OMT mat( array.get(), 15UL, 2UL );
+      if( blaze::AlignmentOf<int>::value > 1UL )
+      {
+         try {
+            blaze::UniqueArray<int,blaze::Deallocate> array( blaze::allocate<int>( 30UL ) );
+            OMT mat( array.get(), 15UL, 2UL );
 
-         std::ostringstream oss;
-         oss << " Test: " << test_ << "\n"
-             << " Error: Constructing a custom matrix with invalid column alignment succeeded\n"
-             << " Details:\n"
-             << "   Result:\n" << mat << "\n";
-         throw std::runtime_error( oss.str() );
+            std::ostringstream oss;
+            oss << " Test: " << test_ << "\n"
+                << " Error: Constructing a custom matrix with invalid column alignment succeeded\n"
+                << " Details:\n"
+                << "   Result:\n" << mat << "\n";
+            throw std::runtime_error( oss.str() );
+         }
+         catch( std::invalid_argument& ) {}
       }
-      catch( std::invalid_argument& ) {}
    }
 
 
@@ -530,32 +561,38 @@ void AlignedUnpaddedTest::testConstructors()
       catch( std::invalid_argument& ) {}
 
       // Trying to construct a custom matrix with invalid alignment
-      try {
-         blaze::UniqueArray<int,blaze::Deallocate> array( blaze::allocate<int>( 33UL ) );
-         OMT mat( array.get()+1UL, 2UL, 2UL, 16UL );
+      if( blaze::AlignmentOf<int>::value > 1UL )
+      {
+         try {
+            blaze::UniqueArray<int,blaze::Deallocate> array( blaze::allocate<int>( 33UL ) );
+            OMT mat( array.get()+1UL, 2UL, 2UL, 16UL );
 
-         std::ostringstream oss;
-         oss << " Test: " << test_ << "\n"
-             << " Error: Constructing a custom matrix with invalid alignment succeeded\n"
-             << " Details:\n"
-             << "   Result:\n" << mat << "\n";
-         throw std::runtime_error( oss.str() );
+            std::ostringstream oss;
+            oss << " Test: " << test_ << "\n"
+                << " Error: Constructing a custom matrix with invalid alignment succeeded\n"
+                << " Details:\n"
+                << "   Result:\n" << mat << "\n";
+            throw std::runtime_error( oss.str() );
+         }
+         catch( std::invalid_argument& ) {}
       }
-      catch( std::invalid_argument& ) {}
 
       // Trying to construct a custom matrix with invalid column alignment
-      try {
-         blaze::UniqueArray<int,blaze::Deallocate> array( blaze::allocate<int>( 30UL ) );
-         OMT mat( array.get(), 2UL, 2UL, 15UL );
+      if( blaze::AlignmentOf<int>::value > 1UL )
+      {
+         try {
+            blaze::UniqueArray<int,blaze::Deallocate> array( blaze::allocate<int>( 30UL ) );
+            OMT mat( array.get(), 2UL, 2UL, 15UL );
 
-         std::ostringstream oss;
-         oss << " Test: " << test_ << "\n"
-             << " Error: Constructing a custom matrix with invalid column alignment succeeded\n"
-             << " Details:\n"
-             << "   Result:\n" << mat << "\n";
-         throw std::runtime_error( oss.str() );
+            std::ostringstream oss;
+            oss << " Test: " << test_ << "\n"
+                << " Error: Constructing a custom matrix with invalid column alignment succeeded\n"
+                << " Details:\n"
+                << "   Result:\n" << mat << "\n";
+            throw std::runtime_error( oss.str() );
+         }
+         catch( std::invalid_argument& ) {}
       }
-      catch( std::invalid_argument& ) {}
    }
 
 
@@ -587,32 +624,38 @@ void AlignedUnpaddedTest::testConstructors()
       catch( std::invalid_argument& ) {}
 
       // Trying to construct a custom matrix with invalid alignment
-      try {
-         blaze::UniqueArray<int,blaze::Deallocate> array( blaze::allocate<int>( 33UL ) );
-         OMT mat( array.get()+1UL, 16UL, 2UL, blaze::Deallocate() );
+      if( blaze::AlignmentOf<int>::value > 1UL )
+      {
+         try {
+            blaze::UniqueArray<int,blaze::Deallocate> array( blaze::allocate<int>( 33UL ) );
+            OMT mat( array.get()+1UL, 16UL, 2UL, blaze::Deallocate() );
 
-         std::ostringstream oss;
-         oss << " Test: " << test_ << "\n"
-             << " Error: Constructing a custom matrix with invalid alignment succeeded\n"
-             << " Details:\n"
-             << "   Result:\n" << mat << "\n";
-         throw std::runtime_error( oss.str() );
+            std::ostringstream oss;
+            oss << " Test: " << test_ << "\n"
+                << " Error: Constructing a custom matrix with invalid alignment succeeded\n"
+                << " Details:\n"
+                << "   Result:\n" << mat << "\n";
+            throw std::runtime_error( oss.str() );
+         }
+         catch( std::invalid_argument& ) {}
       }
-      catch( std::invalid_argument& ) {}
 
       // Trying to construct a custom matrix with invalid column alignment
-      try {
-         blaze::UniqueArray<int,blaze::Deallocate> array( blaze::allocate<int>( 30UL ) );
-         OMT mat( array.get(), 15UL, 2UL, blaze::Deallocate() );
+      if( blaze::AlignmentOf<int>::value > 1UL )
+      {
+         try {
+            blaze::UniqueArray<int,blaze::Deallocate> array( blaze::allocate<int>( 30UL ) );
+            OMT mat( array.get(), 15UL, 2UL, blaze::Deallocate() );
 
-         std::ostringstream oss;
-         oss << " Test: " << test_ << "\n"
-             << " Error: Constructing a custom matrix with invalid column alignment succeeded\n"
-             << " Details:\n"
-             << "   Result:\n" << mat << "\n";
-         throw std::runtime_error( oss.str() );
+            std::ostringstream oss;
+            oss << " Test: " << test_ << "\n"
+                << " Error: Constructing a custom matrix with invalid column alignment succeeded\n"
+                << " Details:\n"
+                << "   Result:\n" << mat << "\n";
+            throw std::runtime_error( oss.str() );
+         }
+         catch( std::invalid_argument& ) {}
       }
-      catch( std::invalid_argument& ) {}
    }
 
 
@@ -644,32 +687,38 @@ void AlignedUnpaddedTest::testConstructors()
       catch( std::invalid_argument& ) {}
 
       // Trying to construct a custom matrix with invalid alignment
-      try {
-         blaze::UniqueArray<int,blaze::Deallocate> array( blaze::allocate<int>( 33UL ) );
-         OMT mat( array.get()+1UL, 2UL, 2UL, 16UL, blaze::Deallocate() );
+      if( blaze::AlignmentOf<int>::value > 1UL )
+      {
+         try {
+            blaze::UniqueArray<int,blaze::Deallocate> array( blaze::allocate<int>( 33UL ) );
+            OMT mat( array.get()+1UL, 2UL, 2UL, 16UL, blaze::Deallocate() );
 
-         std::ostringstream oss;
-         oss << " Test: " << test_ << "\n"
-             << " Error: Constructing a custom matrix with invalid alignment succeeded\n"
-             << " Details:\n"
-             << "   Result:\n" << mat << "\n";
-         throw std::runtime_error( oss.str() );
+            std::ostringstream oss;
+            oss << " Test: " << test_ << "\n"
+                << " Error: Constructing a custom matrix with invalid alignment succeeded\n"
+                << " Details:\n"
+                << "   Result:\n" << mat << "\n";
+            throw std::runtime_error( oss.str() );
+         }
+         catch( std::invalid_argument& ) {}
       }
-      catch( std::invalid_argument& ) {}
 
       // Trying to construct a custom matrix with invalid column alignment
-      try {
-         blaze::UniqueArray<int,blaze::Deallocate> array( blaze::allocate<int>( 30UL ) );
-         OMT mat( array.get(), 2UL, 2UL, 15UL, blaze::Deallocate() );
+      if( blaze::AlignmentOf<int>::value > 1UL )
+      {
+         try {
+            blaze::UniqueArray<int,blaze::Deallocate> array( blaze::allocate<int>( 30UL ) );
+            OMT mat( array.get(), 2UL, 2UL, 15UL, blaze::Deallocate() );
 
-         std::ostringstream oss;
-         oss << " Test: " << test_ << "\n"
-             << " Error: Constructing a custom matrix with invalid column alignment succeeded\n"
-             << " Details:\n"
-             << "   Result:\n" << mat << "\n";
-         throw std::runtime_error( oss.str() );
+            std::ostringstream oss;
+            oss << " Test: " << test_ << "\n"
+                << " Error: Constructing a custom matrix with invalid column alignment succeeded\n"
+                << " Details:\n"
+                << "   Result:\n" << mat << "\n";
+            throw std::runtime_error( oss.str() );
+         }
+         catch( std::invalid_argument& ) {}
       }
-      catch( std::invalid_argument& ) {}
    }
 
 
