@@ -2241,7 +2241,6 @@ void ClassTest::testExtend()
 
    checkSize    ( vec, 5UL );
    checkCapacity( vec, 5UL );
-   checkNonZeros( vec, 3UL );
 
    if( vec[0] != 1 || vec[1] != 2 || vec[2] != 3 ) {
       std::ostringstream oss;
