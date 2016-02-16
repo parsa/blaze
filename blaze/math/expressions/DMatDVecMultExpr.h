@@ -1719,7 +1719,7 @@ class DMatDVecMultExpr : public DenseVector< DMatDVecMultExpr<MT,VT>, false >
       typedef typename VT1::ElementType  ET;
 
       if( IsTriangular<MT1>::value ) {
-         typename VT1::ResultType tmp( x );
+         typename VT1::ResultType tmp( serial( x ) );
          trmv( tmp, A, ( IsLower<MT1>::value )?( CblasLower ):( CblasUpper ) );
          addAssign( y, tmp );
       }
@@ -2379,7 +2379,7 @@ class DMatDVecMultExpr : public DenseVector< DMatDVecMultExpr<MT,VT>, false >
       typedef typename VT1::ElementType  ET;
 
       if( IsTriangular<MT1>::value ) {
-         typename VT1::ResultType tmp( x );
+         typename VT1::ResultType tmp( serial( x ) );
          trmv( tmp, A, ( IsLower<MT1>::value )?( CblasLower ):( CblasUpper ) );
          subAssign( y, tmp );
       }
@@ -4257,7 +4257,7 @@ class DVecScalarMultExpr< DMatDVecMultExpr<MT,VT>, ST, false >
       typedef typename VT1::ElementType  ET;
 
       if( IsTriangular<MT1>::value ) {
-         typename VT1::ResultType tmp( scalar * x );
+         typename VT1::ResultType tmp( serial( scalar * x ) );
          trmv( tmp, A, ( IsLower<MT1>::value )?( CblasLower ):( CblasUpper ) );
          addAssign( y, tmp );
       }
@@ -4918,7 +4918,7 @@ class DVecScalarMultExpr< DMatDVecMultExpr<MT,VT>, ST, false >
       typedef typename VT1::ElementType  ET;
 
       if( IsTriangular<MT1>::value ) {
-         typename VT1::ResultType tmp( scalar * x );
+         typename VT1::ResultType tmp( serial( scalar * x ) );
          trmv( tmp, A, ( IsLower<MT1>::value )?( CblasLower ):( CblasUpper ) );
          subAssign( y, tmp );
       }
