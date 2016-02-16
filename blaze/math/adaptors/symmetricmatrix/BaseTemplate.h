@@ -604,7 +604,8 @@ template< typename MT                                             // Type of the
         , bool SO = IsColumnMajorMatrix<MT>::value                // Storage order of the adapted matrix
         , bool DF = IsDenseMatrix<MT>::value                      // Density flag
         , bool NF = IsNumeric<typename MT::ElementType>::value >  // Numeric flag
-class SymmetricMatrix;
+class SymmetricMatrix
+{};
 //*************************************************************************************************
 
 } // namespace blaze

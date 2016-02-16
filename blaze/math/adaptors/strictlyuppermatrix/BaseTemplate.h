@@ -551,7 +551,8 @@ namespace blaze {
 template< typename MT                               // Type of the adapted matrix
         , bool SO = IsColumnMajorMatrix<MT>::value  // Storage order of the adapted matrix
         , bool DF = IsDenseMatrix<MT>::value >      // Density flag
-class StrictlyUpperMatrix;
+class StrictlyUpperMatrix
+{};
 //*************************************************************************************************
 
 } // namespace blaze
