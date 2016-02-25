@@ -40,7 +40,7 @@
 // Includes
 //*************************************************************************************************
 
-#include <boost/type_traits/integral_constant.hpp>
+#include <blaze/util/IntegralConstant.h>
 
 
 namespace blaze {
@@ -58,7 +58,7 @@ namespace blaze {
 // The FalseType class is used as base class for type traits and value traits that evaluate to
 // \a false.
 */
-typedef boost::false_type  FalseType;
+using FalseType = BoolConstant<false>;
 //*************************************************************************************************
 
 } // namespace blaze

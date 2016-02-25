@@ -40,7 +40,7 @@
 // Includes
 //*************************************************************************************************
 
-#include <blaze/util/mpl/IntegralC.h>
+#include <blaze/util/IntegralConstant.h>
 #include <blaze/util/typetraits/CommonType.h>
 
 
@@ -71,8 +71,8 @@ namespace blaze {
 template< typename T1    // Type of the first compile time value
         , typename T2 >  // Type of the second compile time value
 struct Modulus
-   : public IntegralC< typename CommonType<typename T1::ValueType,typename T2::ValueType>::Type
-                     , ( T1::value % T2::value ) >
+   : public IntegralConstant< typename CommonType<typename T1::ValueType,typename T2::ValueType>::Type
+                            , ( T1::value % T2::value ) >
 {};
 //*************************************************************************************************
 

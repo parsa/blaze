@@ -40,7 +40,7 @@
 // Includes
 //*************************************************************************************************
 
-#include <boost/type_traits/integral_constant.hpp>
+#include <blaze/util/IntegralConstant.h>
 
 
 namespace blaze {
@@ -58,7 +58,7 @@ namespace blaze {
 // The TrueType class is used as base class for type traits and value traits that evaluate to
 // \a true.
 */
-typedef boost::true_type  TrueType;
+using TrueType = BoolConstant<true>;
 //*************************************************************************************************
 
 } // namespace blaze

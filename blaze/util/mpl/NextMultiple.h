@@ -40,8 +40,7 @@
 // Includes
 //*************************************************************************************************
 
-#include <boost/typeof/typeof.hpp>
-#include <blaze/util/mpl/IntegralC.h>
+#include <blaze/util/IntegralConstant.h>
 #include <blaze/util/mpl/Minus.h>
 #include <blaze/util/mpl/Modulus.h>
 #include <blaze/util/mpl/Plus.h>

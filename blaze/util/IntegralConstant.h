@@ -1,7 +1,7 @@
 //=================================================================================================
 /*!
-//  \file blaze/util/mpl/IntegralC.h
-//  \brief Header file for the IntegralC class template
+//  \file blaze/util/IntegralConstant.h
+//  \brief Header file for the IntegralConstant class template
 //
 //  Copyright (C) 2013 Klaus Iglberger - All Rights Reserved
 //
@@ -32,15 +32,15 @@
 */
 //=================================================================================================
 
-#ifndef _BLAZE_UTIL_MPL_INTEGRALC_H_
-#define _BLAZE_UTIL_MPL_INTEGRALC_H_
+#ifndef _BLAZE_UTIL_INTEGRALCONSTANT_H_
+#define _BLAZE_UTIL_INTEGRALCONSTANT_H_
 
 
 //*************************************************************************************************
 // Includes
 //*************************************************************************************************
 
-#include <blaze/util/constraints/Integral.h>
+#include <type_traits>
 
 
 namespace blaze {
@@ -53,37 +53,51 @@ namespace blaze {
 
 //*************************************************************************************************
 /*!\brief Generic wrapper for a compile time constant integral value.
-// \ingroup mpl
+// \ingroup util
 //
-// The IntegralC class template represents a generic wrapper for a compile time constant integral
-// value. The value of an IntegralC can be accessed via the nested \a value (which is guaranteed
-// to be of type \a T), the type can be accessed via the nested type definition \a ValueType.
+// The IntegralConstant class template represents a generic wrapper for a compile time constant
+// integral value. The value of an IntegralConstant can be accessed via the nested \a value (which
+// is guaranteed to be of type \a T), the type can be accessed via the nested type definition
+// \a ValueType.
 
    \code
    using namespace blaze;
 
-   IntegralC<int,3>::value        // Evaluates to 3
-   IntegralC<long,5L>::ValueType  // Results in long
+   IntegralConstant<int,3>::value        // Evaluates to 3
+   IntegralConstant<long,5L>::ValueType  // Results in long
    \endcode
 */
 template< typename T, T N >
-struct IntegralC
+struct IntegralConstant : public std::integral_constant<T,N>
 {
- public:
    //**********************************************************************************************
    /*! \cond BLAZE_INTERNAL */
-   static const T value = N;
-   typedef T  ValueType;
-   /*! \endcond */
-   //**********************************************************************************************
-
- private:
-   //**********************************************************************************************
-   /*! \cond BLAZE_INTERNAL */
-   BLAZE_CONSTRAINT_MUST_BE_INTEGRAL_TYPE( T );
+   using ValueType = T;
+   using Type = IntegralConstant<T,N>;
    /*! \endcond */
    //**********************************************************************************************
 };
+//*************************************************************************************************
+
+
+//*************************************************************************************************
+/*!\brief Generic wrapper for a compile time constant boolean value.
+// \ingroup util
+//
+// The BoolConstant class template represents a generic wrapper for a compile time constant
+// boolean value. The value of a BoolConstant can be accessed via the nested \a value (which
+// is guaranteed to be of type \c bool), the type can be accessed via the nested type definition
+// \a ValueType.
+
+   \code
+   using namespace blaze;
+
+   BoolConstant<true>::value       // Evaluates to true
+   BoolConstant<false>::ValueType  // Results in bool
+   \endcode
+*/
+template< bool B >
+using BoolConstant = IntegralConstant<bool,B>;
 //*************************************************************************************************
 
 } // namespace blaze
