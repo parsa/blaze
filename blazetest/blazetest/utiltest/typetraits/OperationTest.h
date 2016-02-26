@@ -81,10 +81,62 @@ class OperationTest
    //**Test functions******************************************************************************
    /*!\name Test functions */
    //@{
-   void testHasMember();
+   void testAddConst();
+   void testAddCV();
+   void testAddPointer();
+   void testAddReference();
+   void testAddVolatile();
+   void testCommonType();
+   void testExtent();
    void testGetMember();
+   void testHasMember();
+   void testHasSize();
+   void testHaveSameSize();
+   void testIsArithmetic();
+   void testIsArray();
+   void testIsBaseOf();
+   void testIsBoolean();
+   void testIsBuiltin();
+   void testIsCharacter();
+   void testIsClass();
+   void testIsComplex();
+   void testIsComplexDouble();
+   void testIsComplexFloat();
+   void testIsConst();
+   void testIsConvertible();
+   void testIsDouble();
+   void testIsEmpty();
+   void testIsFloat();
+   void testIsFloatingPoint();
+   void testIsInteger();
+   void testIsIntegral();
+   void testIsLong();
+   void testIsLongDouble();
+   void testIsNumeric();
+   void testIsObject();
+   void testIsPod();
+   void testIsPointer();
+   void testIsReference();
+   void testIsSame();
+   void testIsStrictlySame();
+   void testIsShort();
+   void testIsSigned();
+   void testIsUnion();
+   void testIsUnsigned();
+   void testIsValid();
+   void testIsVectorizable();
+   void testIsVoid();
+   void testIsVolatile();
    void testMakeSigned();
    void testMakeUnsigned();
+   void testRank();
+   void testRemoveAllExtents();
+   void testRemoveConst();
+   void testRemoveCV();
+   void testRemoveExtent();
+   void testRemovePointer();
+   void testRemoveReference();
+   void testRemoveVolatile();
    //@}
    //**********************************************************************************************
 

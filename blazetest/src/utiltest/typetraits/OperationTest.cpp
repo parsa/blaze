@@ -39,11 +39,14 @@
 
 #include <cstdlib>
 #include <iostream>
+#include <string>
+#include <vector>
+#include <blaze/util/constraints/DerivedFrom.h>
 #include <blaze/util/constraints/SameType.h>
 #include <blaze/util/constraints/SameSize.h>
+#include <blaze/util/InvalidType.h>
 #include <blaze/util/StaticAssert.h>
-#include <blaze/util/typetraits/MakeSigned.h>
-#include <blaze/util/typetraits/MakeUnsigned.h>
+#include <blaze/util/TypeTraits.h>
 #include <blazetest/utiltest/typetraits/OperationTest.h>
 
 
@@ -66,10 +69,61 @@ namespace typetraits {
 */
 OperationTest::OperationTest()
 {
-   testHasMember();
+   testAddConst();
+   testAddCV();
+   testAddPointer();
+   testAddReference();
+   testAddVolatile();
+   testCommonType();
+   testExtent();
    testGetMember();
+   testHasMember();
+   testHasSize();
+   testHaveSameSize();
+   testIsArithmetic();
+   testIsArray();
+   testIsBaseOf();
+   testIsBoolean();
+   testIsBuiltin();
+   testIsCharacter();
+   testIsClass();
+   testIsComplex();
+   testIsComplexDouble();
+   testIsComplexFloat();
+   testIsConst();
+   testIsConvertible();
+   testIsDouble();
+   testIsEmpty();
+   testIsFloat();
+   testIsFloatingPoint();
+   testIsInteger();
+   testIsIntegral();
+   testIsLong();
+   testIsLongDouble();
+   testIsNumeric();
+   testIsObject();
+   testIsPod();
+   testIsPointer();
+   testIsReference();
+   testIsSame();
+   testIsStrictlySame();
+   testIsShort();
+   testIsSigned();
+   testIsUnion();
+   testIsUnsigned();
+   testIsValid();
+   testIsVectorizable();
+   testIsVoid();
+   testIsVolatile();
    testMakeSigned();
    testMakeUnsigned();
+   testRemoveAllExtents();
+   testRemoveConst();
+   testRemoveCV();
+   testRemoveExtent();
+   testRemovePointer();
+   testRemoveReference();
+   testRemoveVolatile();
 }
 //*************************************************************************************************
 
@@ -83,38 +137,158 @@ OperationTest::OperationTest()
 //=================================================================================================
 
 //*************************************************************************************************
-/*!\brief Test of the \c HAS_MEMBER type trait generation macro.
+/*!\brief Test of the \c AddConst type trait.
 //
 // \return void
 // \exception std::runtime_error Error detected.
 //
-// This function performs a compile time test of the \c HAS_MEMBER type trait generation macro.
-// In case an error is detected, a compilation error is created.
+// This function performs a compile time test of the \c AddConst type trait. In case an error
+// is detected, a compilation error is created.
 */
-void OperationTest::testHasMember()
+void OperationTest::testAddConst()
 {
-   BLAZE_STATIC_ASSERT( HasValue<Type1>::value == 1 );
-   BLAZE_STATIC_ASSERT( HasValue<Type2>::value == 1 );
-   BLAZE_STATIC_ASSERT( HasValue<Type3>::value == 0 );
-   BLAZE_STATIC_ASSERT( HasValue<Type4>::value == 0 );
-   BLAZE_STATIC_ASSERT( HasValue<Type5>::value == 0 );
-   BLAZE_STATIC_ASSERT( HasValue<Type6>::value == 0 );
+   using blaze::AddConst;
 
-   BLAZE_STATIC_ASSERT( HasCompute<Type1>::value == 0 );
-   BLAZE_STATIC_ASSERT( HasCompute<Type2>::value == 0 );
-   BLAZE_STATIC_ASSERT( HasCompute<Type3>::value == 1 );
-   BLAZE_STATIC_ASSERT( HasCompute<Type4>::value == 1 );
-   BLAZE_STATIC_ASSERT( HasCompute<Type5>::value == 0 );
-   BLAZE_STATIC_ASSERT( HasCompute<Type6>::value == 0 );
+   BLAZE_CONSTRAINT_MUST_BE_SAME_TYPE( AddConst<int>::Type, int const );
+   BLAZE_CONSTRAINT_MUST_BE_SAME_TYPE( AddConst<int*>::Type, int* const );
+   BLAZE_CONSTRAINT_MUST_BE_SAME_TYPE( AddConst<int&>::Type, int& );
+   BLAZE_CONSTRAINT_MUST_BE_SAME_TYPE( AddConst<int const>::Type, int const );
+   BLAZE_CONSTRAINT_MUST_BE_SAME_TYPE( AddConst<int volatile>::Type, int volatile const );
+}
+//*************************************************************************************************
 
-#if !(defined __INTEL_COMPILER) || ( __INTEL_COMPILER >= 1400 )
-   BLAZE_STATIC_ASSERT( HasDataType<Type1>::value == 0 );
-   BLAZE_STATIC_ASSERT( HasDataType<Type2>::value == 0 );
-   BLAZE_STATIC_ASSERT( HasDataType<Type3>::value == 0 );
-   BLAZE_STATIC_ASSERT( HasDataType<Type4>::value == 0 );
-   BLAZE_STATIC_ASSERT( HasDataType<Type5>::value == 1 );
-   BLAZE_STATIC_ASSERT( HasDataType<Type6>::value == 1 );
-#endif
+
+//*************************************************************************************************
+/*!\brief Test of the \c AddCV type trait.
+//
+// \return void
+// \exception std::runtime_error Error detected.
+//
+// This function performs a compile time test of the \c AddCV type trait. In case an error
+// is detected, a compilation error is created.
+*/
+void OperationTest::testAddCV()
+{
+   using blaze::AddCV;
+
+   BLAZE_CONSTRAINT_MUST_BE_SAME_TYPE( AddCV<int>::Type, int const volatile );
+   BLAZE_CONSTRAINT_MUST_BE_SAME_TYPE( AddCV<int*>::Type, int* const volatile );
+   BLAZE_CONSTRAINT_MUST_BE_SAME_TYPE( AddCV<int&>::Type, int& );
+   BLAZE_CONSTRAINT_MUST_BE_SAME_TYPE( AddCV<int const>::Type, int const volatile );
+   BLAZE_CONSTRAINT_MUST_BE_SAME_TYPE( AddCV<int volatile>::Type, int const volatile );
+}
+//*************************************************************************************************
+
+
+//*************************************************************************************************
+/*!\brief Test of the \c AddPointer type trait.
+//
+// \return void
+// \exception std::runtime_error Error detected.
+//
+// This function performs a compile time test of the \c AddPointer type trait. In case an error
+// is detected, a compilation error is created.
+*/
+void OperationTest::testAddPointer()
+{
+   using blaze::AddPointer;
+
+   BLAZE_CONSTRAINT_MUST_BE_SAME_TYPE( AddPointer<int>::Type, int* );
+   BLAZE_CONSTRAINT_MUST_BE_SAME_TYPE( AddPointer<int const>::Type, int const* );
+   BLAZE_CONSTRAINT_MUST_BE_SAME_TYPE( AddPointer<int*>::Type, int** );
+   BLAZE_CONSTRAINT_MUST_BE_SAME_TYPE( AddPointer<int*&>::Type, int** );
+}
+//*************************************************************************************************
+
+
+//*************************************************************************************************
+/*!\brief Test of the \c AddReference type trait.
+//
+// \return void
+// \exception std::runtime_error Error detected.
+//
+// This function performs a compile time test of the \c AddReference type trait. In case an error
+// is detected, a compilation error is created.
+*/
+void OperationTest::testAddReference()
+{
+   using blaze::AddReference;
+
+   BLAZE_CONSTRAINT_MUST_BE_SAME_TYPE( AddReference<int>::Type, int& );
+   BLAZE_CONSTRAINT_MUST_BE_SAME_TYPE( AddReference<int const&>::Type, int const& );
+   BLAZE_CONSTRAINT_MUST_BE_SAME_TYPE( AddReference<int*>::Type, int*& );
+   BLAZE_CONSTRAINT_MUST_BE_SAME_TYPE( AddReference<int*&>::Type, int*& );
+}
+//*************************************************************************************************
+
+
+//*************************************************************************************************
+/*!\brief Test of the \c AddVolatile type trait.
+//
+// \return void
+// \exception std::runtime_error Error detected.
+//
+// This function performs a compile time test of the \c AddVolatile type trait. In case an error
+// is detected, a compilation error is created.
+*/
+void OperationTest::testAddVolatile()
+{
+   using blaze::AddVolatile;
+
+   BLAZE_CONSTRAINT_MUST_BE_SAME_TYPE( AddVolatile<int>::Type, int volatile );
+   BLAZE_CONSTRAINT_MUST_BE_SAME_TYPE( AddVolatile<int*>::Type, int* volatile );
+   BLAZE_CONSTRAINT_MUST_BE_SAME_TYPE( AddVolatile<int&>::Type, int& );
+   BLAZE_CONSTRAINT_MUST_BE_SAME_TYPE( AddVolatile<int volatile>::Type, int volatile );
+   BLAZE_CONSTRAINT_MUST_BE_SAME_TYPE( AddVolatile<int const>::Type, int const volatile );
+}
+//*************************************************************************************************
+
+
+//*************************************************************************************************
+/*!\brief Test of the \c CommonType type trait.
+//
+// \return void
+// \exception std::runtime_error Error detected.
+//
+// This function performs a compile time test of the \c CommonType type trait. In case an error
+// is detected, a compilation error is created.
+*/
+void OperationTest::testCommonType()
+{
+   using blaze::CommonType;
+
+   typedef CommonType<short,int>::Type                         T1;
+   typedef CommonType<const double,int&>::Type                 T2;
+   typedef CommonType<char&, volatile int, const float>::Type  T3;
+
+   BLAZE_CONSTRAINT_MUST_BE_SAME_TYPE( T1, int    );
+   BLAZE_CONSTRAINT_MUST_BE_SAME_TYPE( T2, double );
+   BLAZE_CONSTRAINT_MUST_BE_SAME_TYPE( T3, float  );
+}
+//*************************************************************************************************
+
+
+//*************************************************************************************************
+/*!\brief Test of the \c Extent type trait.
+//
+// \return void
+// \exception std::runtime_error Error detected.
+//
+// This function performs a compile time test of the \c Extent type trait. In case an error is
+// detected, a compilation error is created.
+*/
+void OperationTest::testExtent()
+{
+   using blaze::Extent;
+
+   BLAZE_STATIC_ASSERT( ( Extent< int[4], 0 >::value == 4U ) );
+   BLAZE_STATIC_ASSERT( ( Extent< int[2][3][4], 0 >::value == 2U ) );
+   BLAZE_STATIC_ASSERT( ( Extent< int[2][3][4], 1 >::value == 3U ) );
+   BLAZE_STATIC_ASSERT( ( Extent< int[2][3][4], 2 >::value == 4U ) );
+   BLAZE_STATIC_ASSERT( ( Extent< int[][2], 0 >::value == 0U ) );
+   BLAZE_STATIC_ASSERT( ( Extent< int[][2], 1 >::value == 2U ) );
+   BLAZE_STATIC_ASSERT( ( Extent< int*, 0 >::value == 0U ) );
+   BLAZE_STATIC_ASSERT( ( Extent< std::vector<int>, 0 >::value == 0U ) );
 }
 //*************************************************************************************************
 
@@ -135,6 +309,979 @@ void OperationTest::testGetMember()
    BLAZE_CONSTRAINT_MUST_BE_SAME_TYPE( GetDataType<Type6>::Type, Type6::DataType );
    BLAZE_CONSTRAINT_MUST_BE_SAME_TYPE( GetDataType<Type7>::Type, int             );
 #endif
+}
+//*************************************************************************************************
+
+
+//*************************************************************************************************
+/*!\brief Test of the \c HAS_MEMBER type trait generation macro.
+//
+// \return void
+// \exception std::runtime_error Error detected.
+//
+// This function performs a compile time test of the \c HAS_MEMBER type trait generation macro.
+// In case an error is detected, a compilation error is created.
+*/
+void OperationTest::testHasMember()
+{
+   BLAZE_STATIC_ASSERT( HasValue<Type1>::value == true  );
+   BLAZE_STATIC_ASSERT( HasValue<Type2>::value == true  );
+   BLAZE_STATIC_ASSERT( HasValue<Type3>::value == false );
+   BLAZE_STATIC_ASSERT( HasValue<Type4>::value == false );
+   BLAZE_STATIC_ASSERT( HasValue<Type5>::value == false );
+   BLAZE_STATIC_ASSERT( HasValue<Type6>::value == false );
+
+   BLAZE_STATIC_ASSERT( HasCompute<Type1>::value == false );
+   BLAZE_STATIC_ASSERT( HasCompute<Type2>::value == false );
+   BLAZE_STATIC_ASSERT( HasCompute<Type3>::value == true  );
+   BLAZE_STATIC_ASSERT( HasCompute<Type4>::value == true  );
+   BLAZE_STATIC_ASSERT( HasCompute<Type5>::value == false );
+   BLAZE_STATIC_ASSERT( HasCompute<Type6>::value == false );
+
+#if !(defined __INTEL_COMPILER) || ( __INTEL_COMPILER >= 1400 )
+   BLAZE_STATIC_ASSERT( HasDataType<Type1>::value == false );
+   BLAZE_STATIC_ASSERT( HasDataType<Type2>::value == false );
+   BLAZE_STATIC_ASSERT( HasDataType<Type3>::value == false );
+   BLAZE_STATIC_ASSERT( HasDataType<Type4>::value == false );
+   BLAZE_STATIC_ASSERT( HasDataType<Type5>::value == true  );
+   BLAZE_STATIC_ASSERT( HasDataType<Type6>::value == true  );
+#endif
+}
+//*************************************************************************************************
+
+
+//*************************************************************************************************
+/*!\brief Test of the \c HasSize type trait.
+//
+// \return void
+// \exception std::runtime_error Error detected.
+//
+// This function performs a compile time test of the \c HasSize type trait. In case an error is
+// detected, a compilation error is created.
+*/
+void OperationTest::testHasSize()
+{
+   using blaze::HasSize;
+
+   typedef HasSize<int,4>              T1;
+   typedef HasSize<float,4>            T2;
+   typedef HasSize<const double,8>     T3;
+   typedef HasSize<volatile double,2>  T4;
+   typedef HasSize<const char,8>       T5;
+   typedef HasSize<unsigned char,4>    T6;
+
+   BLAZE_STATIC_ASSERT( T1::value == true );
+   BLAZE_CONSTRAINT_MUST_BE_SAME_TYPE( T2::Type, blaze::TrueType );
+   BLAZE_CONSTRAINT_MUST_BE_DERIVED_FROM( T3, blaze::TrueType );
+   BLAZE_STATIC_ASSERT( T4::value == false );
+   BLAZE_CONSTRAINT_MUST_BE_SAME_TYPE( T5::Type, blaze::FalseType );
+   BLAZE_CONSTRAINT_MUST_BE_DERIVED_FROM( T6, blaze::FalseType );
+}
+//*************************************************************************************************
+
+
+//*************************************************************************************************
+/*!\brief Test of the \c HaveSameSize type trait.
+//
+// \return void
+// \exception std::runtime_error Error detected.
+//
+// This function performs a compile time test of the \c HaveSameSize type trait. In case an
+// error is detected, a compilation error is created.
+*/
+void OperationTest::testHaveSameSize()
+{
+   using blaze::HaveSameSize;
+
+   typedef blaze::HaveSameSize<int,unsigned int>  T1;
+   typedef blaze::HaveSameSize<int,unsigned int>  T2;
+   typedef blaze::HaveSameSize<int,unsigned int>  T3;
+   typedef blaze::HaveSameSize<char,wchar_t>      T4;
+   typedef blaze::HaveSameSize<char,wchar_t>      T5;
+   typedef blaze::HaveSameSize<char,wchar_t>      T6;
+
+   BLAZE_STATIC_ASSERT( T1::value == true );
+   BLAZE_CONSTRAINT_MUST_BE_SAME_TYPE( T2::Type, blaze::TrueType );
+   BLAZE_CONSTRAINT_MUST_BE_DERIVED_FROM( T3, blaze::TrueType );
+   BLAZE_STATIC_ASSERT( T4::value == false );
+   BLAZE_CONSTRAINT_MUST_BE_SAME_TYPE( T5::Type, blaze::FalseType );
+   BLAZE_CONSTRAINT_MUST_BE_DERIVED_FROM( T6, blaze::FalseType );
+}
+//*************************************************************************************************
+
+
+//*************************************************************************************************
+/*!\brief Test of the \c IsArithmetic type trait.
+//
+// \return void
+// \exception std::runtime_error Error detected.
+//
+// This function performs a compile time test of the \c IsArithmetic type trait. In case an error
+// is detected, a compilation error is created.
+*/
+void OperationTest::testIsArithmetic()
+{
+   using blaze::IsArithmetic;
+
+   BLAZE_STATIC_ASSERT( IsArithmetic<int>::value == true );
+   BLAZE_CONSTRAINT_MUST_BE_SAME_TYPE( IsArithmetic<float const>::Type, blaze::TrueType );
+   BLAZE_CONSTRAINT_MUST_BE_DERIVED_FROM( IsArithmetic<short volatile>, blaze::TrueType );
+   BLAZE_STATIC_ASSERT( IsArithmetic<void>::value == false );
+   BLAZE_STATIC_ASSERT( IsArithmetic<int*>::value == false );
+   BLAZE_CONSTRAINT_MUST_BE_SAME_TYPE( IsArithmetic<int&>::Type, blaze::FalseType );
+   BLAZE_CONSTRAINT_MUST_BE_DERIVED_FROM( IsArithmetic<Type7>, blaze::FalseType );
+}
+//*************************************************************************************************
+
+
+//*************************************************************************************************
+/*!\brief Test of the \c IsArray type trait.
+//
+// \return void
+// \exception std::runtime_error Error detected.
+//
+// This function performs a compile time test of the \c IsArray type trait. In case an error is
+// detected, a compilation error is created.
+*/
+void OperationTest::testIsArray()
+{
+   using blaze::IsArray;
+
+   BLAZE_STATIC_ASSERT( IsArray< int[3] >::value == true );
+   BLAZE_CONSTRAINT_MUST_BE_SAME_TYPE( IsArray< const int[] >::Type, blaze::TrueType );
+   BLAZE_CONSTRAINT_MUST_BE_DERIVED_FROM( IsArray< int[][3] >, blaze::TrueType );
+   BLAZE_STATIC_ASSERT( IsArray< int >::value == false );
+   BLAZE_CONSTRAINT_MUST_BE_SAME_TYPE( IsArray< int const* >::Type, blaze::FalseType );
+   BLAZE_CONSTRAINT_MUST_BE_DERIVED_FROM( IsArray< std::vector<int> >, blaze::FalseType );
+}
+//*************************************************************************************************
+
+
+//*************************************************************************************************
+/*!\brief Test of the \c IsBaseOf type trait.
+//
+// \return void
+// \exception std::runtime_error Error detected.
+//
+// This function performs a compile time test of the \c IsBaseOf type trait. In case an error is
+// detected, a compilation error is created.
+*/
+void OperationTest::testIsBaseOf()
+{
+   using blaze::IsBaseOf;
+
+   class A {};
+   class B : public A {};
+   class C {};
+
+   typedef IsBaseOf<A,B>  T1;
+   typedef IsBaseOf<A,B>  T2;
+   typedef IsBaseOf<A,B>  T3;
+   typedef IsBaseOf<A,C>  T4;
+   typedef IsBaseOf<B,A>  T5;
+   typedef IsBaseOf<B,A>  T6;
+
+   BLAZE_STATIC_ASSERT( T1::value == true );
+   BLAZE_CONSTRAINT_MUST_BE_SAME_TYPE( T2::Type, blaze::TrueType );
+   BLAZE_CONSTRAINT_MUST_BE_DERIVED_FROM( T3, blaze::TrueType );
+   BLAZE_STATIC_ASSERT( T4::value == false );
+   BLAZE_CONSTRAINT_MUST_BE_SAME_TYPE( T5::Type, blaze::FalseType );
+   BLAZE_CONSTRAINT_MUST_BE_DERIVED_FROM( T6, blaze::FalseType );
+}
+//*************************************************************************************************
+
+
+//*************************************************************************************************
+/*!\brief Test of the \c IsBoolean type trait.
+//
+// \return void
+// \exception std::runtime_error Error detected.
+//
+// This function performs a compile time test of the \c IsBoolean type trait. In case an error
+// is detected, a compilation error is created.
+*/
+void OperationTest::testIsBoolean()
+{
+   using blaze::IsBoolean;
+
+   BLAZE_STATIC_ASSERT( IsBoolean<bool>::value == true );
+   BLAZE_CONSTRAINT_MUST_BE_SAME_TYPE( IsBoolean<const bool>::Type, blaze::TrueType );
+   BLAZE_CONSTRAINT_MUST_BE_DERIVED_FROM( IsBoolean<const volatile bool>, blaze::TrueType );
+   BLAZE_STATIC_ASSERT( IsBoolean<float>::value == false );
+   BLAZE_CONSTRAINT_MUST_BE_SAME_TYPE( IsBoolean<const int>::Type, blaze::FalseType );
+   BLAZE_CONSTRAINT_MUST_BE_DERIVED_FROM( IsBoolean<volatile short>, blaze::FalseType );
+}
+//*************************************************************************************************
+
+
+//*************************************************************************************************
+/*!\brief Test of the \c IsBuiltin type trait.
+//
+// \return void
+// \exception std::runtime_error Error detected.
+//
+// This function performs a compile time test of the \c IsBuiltin type trait. In case an error
+// is detected, a compilation error is created.
+*/
+void OperationTest::testIsBuiltin()
+{
+   using blaze::IsBuiltin;
+
+   BLAZE_STATIC_ASSERT( IsBuiltin<void>::value == true );
+   BLAZE_CONSTRAINT_MUST_BE_SAME_TYPE( IsBuiltin<float const>::Type, blaze::TrueType );
+   BLAZE_CONSTRAINT_MUST_BE_DERIVED_FROM( IsBuiltin<short volatile>, blaze::TrueType );
+   BLAZE_STATIC_ASSERT( IsBuiltin<std::string>::value == false );
+   BLAZE_CONSTRAINT_MUST_BE_SAME_TYPE( IsBuiltin<int*>::Type, blaze::FalseType );
+   BLAZE_CONSTRAINT_MUST_BE_DERIVED_FROM( IsBuiltin<int&>, blaze::FalseType );
+}
+//*************************************************************************************************
+
+
+//*************************************************************************************************
+/*!\brief Test of the \c IsCharacter type trait.
+//
+// \return void
+// \exception std::runtime_error Error detected.
+//
+// This function performs a compile time test of the \c IsCharacter type trait. In case an error
+// is detected, a compilation error is created.
+*/
+void OperationTest::testIsCharacter()
+{
+   using blaze::IsCharacter;
+
+   BLAZE_STATIC_ASSERT( IsCharacter<char>::value == true );
+   BLAZE_CONSTRAINT_MUST_BE_SAME_TYPE( IsCharacter<const unsigned char>::Type, blaze::TrueType );
+   BLAZE_CONSTRAINT_MUST_BE_DERIVED_FROM( IsCharacter<const volatile wchar_t>, blaze::TrueType );
+   BLAZE_STATIC_ASSERT( IsCharacter<unsigned short>::value == false );
+   BLAZE_CONSTRAINT_MUST_BE_SAME_TYPE( IsCharacter<const int>::Type, blaze::FalseType );
+   BLAZE_CONSTRAINT_MUST_BE_DERIVED_FROM( IsCharacter<volatile long>, blaze::FalseType );
+}
+//*************************************************************************************************
+
+
+//*************************************************************************************************
+/*!\brief Test of the \c IsClass type trait.
+//
+// \return void
+// \exception std::runtime_error Error detected.
+//
+// This function performs a compile time test of the \c IsClass type trait. In case an error
+// is detected, a compilation error is created.
+*/
+void OperationTest::testIsClass()
+{
+   using blaze::IsClass;
+
+   BLAZE_STATIC_ASSERT( IsClass<Type7>::value == true );
+   BLAZE_CONSTRAINT_MUST_BE_SAME_TYPE( IsClass<Type7 const>::Type, blaze::TrueType );
+   BLAZE_CONSTRAINT_MUST_BE_DERIVED_FROM( IsClass<std::string volatile>, blaze::TrueType );
+   BLAZE_STATIC_ASSERT( IsClass<int>::value == false );
+   BLAZE_CONSTRAINT_MUST_BE_SAME_TYPE( IsClass<Type7&>::Type, blaze::FalseType );
+   BLAZE_CONSTRAINT_MUST_BE_DERIVED_FROM( IsClass<Type7*>, blaze::FalseType );
+}
+//*************************************************************************************************
+
+
+//*************************************************************************************************
+/*!\brief Test of the \c IsComplex type trait.
+//
+// \return void
+// \exception std::runtime_error Error detected.
+//
+// This function performs a compile time test of the \c IsComplex type trait. In case an error
+// is detected, a compilation error is created.
+*/
+void OperationTest::testIsComplex()
+{
+   using blaze::complex;
+   using blaze::IsComplex;
+
+   BLAZE_STATIC_ASSERT( IsComplex< complex<double> >::value == true );
+   BLAZE_CONSTRAINT_MUST_BE_SAME_TYPE( IsComplex< const complex<float> >::Type, blaze::TrueType );
+   BLAZE_CONSTRAINT_MUST_BE_DERIVED_FROM( IsComplex< volatile complex<int> >, blaze::TrueType );
+   BLAZE_STATIC_ASSERT( IsComplex< float >::value == false );
+   BLAZE_CONSTRAINT_MUST_BE_SAME_TYPE( IsComplex< const double >::Type, blaze::FalseType );
+   BLAZE_CONSTRAINT_MUST_BE_DERIVED_FROM( IsComplex< const volatile int >, blaze::FalseType );
+}
+//*************************************************************************************************
+
+
+//*************************************************************************************************
+/*!\brief Test of the \c IsComplexDouble type trait.
+//
+// \return void
+// \exception std::runtime_error Error detected.
+//
+// This function performs a compile time test of the \c IsComplexDouble type trait. In case an
+// error is detected, a compilation error is created.
+*/
+void OperationTest::testIsComplexDouble()
+{
+   using blaze::complex;
+   using blaze::IsComplexDouble;
+
+   BLAZE_STATIC_ASSERT( IsComplexDouble< complex<double> >::value == true );
+   BLAZE_CONSTRAINT_MUST_BE_SAME_TYPE( IsComplexDouble< const complex<double> >::Type, blaze::TrueType );
+   BLAZE_CONSTRAINT_MUST_BE_DERIVED_FROM( IsComplexDouble< volatile complex<double> >, blaze::TrueType );
+   BLAZE_STATIC_ASSERT( IsComplexDouble< double >::value == false );
+   BLAZE_CONSTRAINT_MUST_BE_SAME_TYPE( IsComplexDouble< const complex<float> >::Type, blaze::FalseType );
+   BLAZE_CONSTRAINT_MUST_BE_DERIVED_FROM( IsComplexDouble< const volatile complex<int> >, blaze::FalseType );
+}
+//*************************************************************************************************
+
+
+//*************************************************************************************************
+/*!\brief Test of the \c IsComplexFloat type trait.
+//
+// \return void
+// \exception std::runtime_error Error detected.
+//
+// This function performs a compile time test of the \c IsComplexFloat type trait. In case an
+// error is detected, a compilation error is created.
+*/
+void OperationTest::testIsComplexFloat()
+{
+   using blaze::complex;
+   using blaze::IsComplexFloat;
+
+   BLAZE_STATIC_ASSERT( IsComplexFloat< complex<float> >::value == true );
+   BLAZE_CONSTRAINT_MUST_BE_SAME_TYPE( IsComplexFloat< const complex<float> >::Type, blaze::TrueType );
+   BLAZE_CONSTRAINT_MUST_BE_DERIVED_FROM( IsComplexFloat< volatile complex<float> >, blaze::TrueType );
+   BLAZE_STATIC_ASSERT( IsComplexFloat< float >::value == false );
+   BLAZE_CONSTRAINT_MUST_BE_SAME_TYPE( IsComplexFloat< const complex<double> >::Type, blaze::FalseType );
+   BLAZE_CONSTRAINT_MUST_BE_DERIVED_FROM( IsComplexFloat< const volatile complex<int> >, blaze::FalseType );
+}
+//*************************************************************************************************
+
+
+//*************************************************************************************************
+/*!\brief Test of the \c IsConst type trait.
+//
+// \return void
+// \exception std::runtime_error Error detected.
+//
+// This function performs a compile time test of the \c IsConst type trait. In case an error is
+// detected, a compilation error is created.
+*/
+void OperationTest::testIsConst()
+{
+   using blaze::IsConst;
+
+   BLAZE_STATIC_ASSERT( IsConst<const int>::value == true );
+   BLAZE_CONSTRAINT_MUST_BE_SAME_TYPE( IsConst<const volatile int>::Type, blaze::TrueType );
+   BLAZE_CONSTRAINT_MUST_BE_DERIVED_FROM( IsConst<int* const>, blaze::TrueType );
+   BLAZE_STATIC_ASSERT( IsConst<int>::value == false );
+   BLAZE_CONSTRAINT_MUST_BE_SAME_TYPE( IsConst<const int*>::Type, blaze::FalseType );
+   BLAZE_CONSTRAINT_MUST_BE_DERIVED_FROM( IsConst<const int* volatile>, blaze::FalseType );
+}
+//*************************************************************************************************
+
+
+//*************************************************************************************************
+/*!\brief Test of the \c IsConvertible type trait.
+//
+// \return void
+// \exception std::runtime_error Error detected.
+//
+// This function performs a compile time test of the \c IsConvertible type trait. In case an
+// error is detected, a compilation error is created.
+*/
+void OperationTest::testIsConvertible()
+{
+   using blaze::IsConvertible;
+
+   struct A {};
+   struct B : public A {};
+
+   struct C {};
+   struct D {
+      D( const C& ) {}
+   };
+
+   typedef IsConvertible<int,unsigned int>    T1;
+   typedef IsConvertible<float,const double>  T2;
+   typedef IsConvertible<B,A>                 T3;
+   typedef IsConvertible<B*,A*>               T4;
+   typedef IsConvertible<C,D>                 T5;
+   typedef IsConvertible<char*,std::string>   T6;
+   typedef IsConvertible<std::string,char*>   T7;
+   typedef IsConvertible<A,B>                 T8;
+   typedef IsConvertible<A*,B*>               T9;
+
+   BLAZE_STATIC_ASSERT( T1::value == true );
+   BLAZE_STATIC_ASSERT( T2::value == true );
+   BLAZE_CONSTRAINT_MUST_BE_SAME_TYPE( T3::Type, blaze::TrueType );
+   BLAZE_CONSTRAINT_MUST_BE_SAME_TYPE( T4::Type, blaze::TrueType );
+   BLAZE_CONSTRAINT_MUST_BE_DERIVED_FROM( T5, blaze::TrueType );
+   BLAZE_CONSTRAINT_MUST_BE_DERIVED_FROM( T6, blaze::TrueType );
+   BLAZE_STATIC_ASSERT( T7::value == false );
+   BLAZE_CONSTRAINT_MUST_BE_SAME_TYPE( T8::Type, blaze::FalseType );
+   BLAZE_CONSTRAINT_MUST_BE_DERIVED_FROM( T9, blaze::FalseType );
+}
+//*************************************************************************************************
+
+
+//*************************************************************************************************
+/*!\brief Test of the \c IsDouble type trait.
+//
+// \return void
+// \exception std::runtime_error Error detected.
+//
+// This function performs a compile time test of the \c IsDouble type trait. In case an error is
+// detected, a compilation error is created.
+*/
+void OperationTest::testIsDouble()
+{
+   using blaze::IsDouble;
+
+   BLAZE_STATIC_ASSERT( IsDouble<double>::value == true );
+   BLAZE_CONSTRAINT_MUST_BE_SAME_TYPE( IsDouble<const double>::Type, blaze::TrueType );
+   BLAZE_CONSTRAINT_MUST_BE_DERIVED_FROM( IsDouble<const volatile double>, blaze::TrueType );
+   BLAZE_STATIC_ASSERT( IsDouble<float>::value == false );
+   BLAZE_CONSTRAINT_MUST_BE_SAME_TYPE( IsDouble<const int>::Type, blaze::FalseType );
+   BLAZE_CONSTRAINT_MUST_BE_DERIVED_FROM( IsDouble<volatile short>, blaze::FalseType );
+}
+//*************************************************************************************************
+
+
+//*************************************************************************************************
+/*!\brief Test of the \c IsEmpty type trait.
+//
+// \return void
+// \exception std::runtime_error Error detected.
+//
+// This function performs a compile time test of the \c IsEmpty type trait. In case an error is
+// detected, a compilation error is created.
+*/
+void OperationTest::testIsEmpty()
+{
+   using blaze::IsEmpty;
+
+   class A {};
+   class B { int i; };
+
+   BLAZE_STATIC_ASSERT( IsEmpty<A>::value == true );
+   BLAZE_CONSTRAINT_MUST_BE_SAME_TYPE( IsEmpty<A volatile>::Type, blaze::TrueType );
+   BLAZE_CONSTRAINT_MUST_BE_DERIVED_FROM( IsEmpty<A const>, blaze::TrueType );
+   BLAZE_STATIC_ASSERT( IsEmpty<int>::value == false );
+   BLAZE_CONSTRAINT_MUST_BE_SAME_TYPE( IsEmpty<std::string>::Type, blaze::FalseType );
+   BLAZE_CONSTRAINT_MUST_BE_DERIVED_FROM( IsEmpty<B>, blaze::FalseType );
+}
+//*************************************************************************************************
+
+
+//*************************************************************************************************
+/*!\brief Test of the \c IsFloat type trait.
+//
+// \return void
+// \exception std::runtime_error Error detected.
+//
+// This function performs a compile time test of the \c IsFloat type trait. In case an error is
+// detected, a compilation error is created.
+*/
+void OperationTest::testIsFloat()
+{
+   using blaze::IsFloat;
+
+   BLAZE_STATIC_ASSERT( IsFloat<float>::value == true );
+   BLAZE_CONSTRAINT_MUST_BE_SAME_TYPE( IsFloat<const float>::Type, blaze::TrueType );
+   BLAZE_CONSTRAINT_MUST_BE_DERIVED_FROM( IsFloat<const volatile float>, blaze::TrueType );
+   BLAZE_STATIC_ASSERT( IsFloat<double>::value == false );
+   BLAZE_CONSTRAINT_MUST_BE_SAME_TYPE( IsFloat<const int>::Type, blaze::FalseType );
+   BLAZE_CONSTRAINT_MUST_BE_DERIVED_FROM( IsFloat<volatile short>, blaze::FalseType );
+}
+//*************************************************************************************************
+
+
+//*************************************************************************************************
+/*!\brief Test of the \c IsFloatingPoint type trait.
+//
+// \return void
+// \exception std::runtime_error Error detected.
+//
+// This function performs a compile time test of the \c IsFloatingPoint type trait. In case an
+// error is detected, a compilation error is created.
+*/
+void OperationTest::testIsFloatingPoint()
+{
+   using blaze::IsFloatingPoint;
+
+   BLAZE_STATIC_ASSERT( IsFloatingPoint<float>::value == true );
+   BLAZE_CONSTRAINT_MUST_BE_SAME_TYPE( IsFloatingPoint<volatile double>::Type, blaze::TrueType );
+   BLAZE_CONSTRAINT_MUST_BE_DERIVED_FROM( IsFloatingPoint<const long double>, blaze::TrueType );
+   BLAZE_STATIC_ASSERT( IsFloatingPoint<int>::value == false );
+   BLAZE_CONSTRAINT_MUST_BE_SAME_TYPE( IsFloatingPoint<const short>::Type, blaze::FalseType );
+   BLAZE_CONSTRAINT_MUST_BE_DERIVED_FROM( IsFloatingPoint<volatile wchar_t>, blaze::FalseType );
+}
+//*************************************************************************************************
+
+
+//*************************************************************************************************
+/*!\brief Test of the \c IsInteger type trait.
+//
+// \return void
+// \exception std::runtime_error Error detected.
+//
+// This function performs a compile time test of the \c IsInteger type trait. In case an error is
+// detected, a compilation error is created.
+*/
+void OperationTest::testIsInteger()
+{
+   using blaze::IsInteger;
+
+   BLAZE_STATIC_ASSERT( IsInteger<int>::value == true );
+   BLAZE_CONSTRAINT_MUST_BE_SAME_TYPE( IsInteger<const unsigned int>::Type, blaze::TrueType );
+   BLAZE_CONSTRAINT_MUST_BE_DERIVED_FROM( IsInteger<const volatile signed int>, blaze::TrueType );
+   BLAZE_STATIC_ASSERT( IsInteger<unsigned short>::value == false );
+   BLAZE_CONSTRAINT_MUST_BE_SAME_TYPE( IsInteger<const long>::Type, blaze::FalseType );
+   BLAZE_CONSTRAINT_MUST_BE_DERIVED_FROM( IsInteger<volatile float>, blaze::FalseType );
+}
+//*************************************************************************************************
+
+
+//*************************************************************************************************
+/*!\brief Test of the \c IsIntegral type trait.
+//
+// \return void
+// \exception std::runtime_error Error detected.
+//
+// This function performs a compile time test of the \c IsIntegral type trait. In case an error is
+// detected, a compilation error is created.
+*/
+void OperationTest::testIsIntegral()
+{
+   using blaze::IsIntegral;
+
+   BLAZE_STATIC_ASSERT( IsIntegral<int>::value == true );
+   BLAZE_CONSTRAINT_MUST_BE_SAME_TYPE( IsIntegral<const char>::Type, blaze::TrueType );
+   BLAZE_CONSTRAINT_MUST_BE_DERIVED_FROM( IsIntegral<volatile short>, blaze::TrueType );
+   BLAZE_STATIC_ASSERT( IsIntegral<float>::value == false );
+   BLAZE_CONSTRAINT_MUST_BE_SAME_TYPE( IsIntegral<const double>::Type, blaze::FalseType );
+   BLAZE_CONSTRAINT_MUST_BE_DERIVED_FROM( IsIntegral<volatile long double>, blaze::FalseType );
+}
+//*************************************************************************************************
+
+
+//*************************************************************************************************
+/*!\brief Test of the \c IsLong type trait.
+//
+// \return void
+// \exception std::runtime_error Error detected.
+//
+// This function performs a compile time test of the \c IsLong type trait. In case an error is
+// detected, a compilation error is created.
+*/
+void OperationTest::testIsLong()
+{
+   using blaze::IsLong;
+
+   BLAZE_STATIC_ASSERT( IsLong<long>::value == true );
+   BLAZE_CONSTRAINT_MUST_BE_SAME_TYPE( IsLong<const unsigned long>::Type, blaze::TrueType );
+   BLAZE_CONSTRAINT_MUST_BE_DERIVED_FROM( IsLong<const volatile signed long>, blaze::TrueType );
+   BLAZE_STATIC_ASSERT( IsLong<unsigned short>::value == false );
+   BLAZE_CONSTRAINT_MUST_BE_SAME_TYPE( IsLong<const int>::Type, blaze::FalseType );
+   BLAZE_CONSTRAINT_MUST_BE_DERIVED_FROM( IsLong<volatile float>, blaze::FalseType );
+}
+//*************************************************************************************************
+
+
+//*************************************************************************************************
+/*!\brief Test of the \c IsLongDouble type trait.
+//
+// \return void
+// \exception std::runtime_error Error detected.
+//
+// This function performs a compile time test of the \c IsLongDouble type trait. In case an error is
+// detected, a compilation error is created.
+*/
+void OperationTest::testIsLongDouble()
+{
+   using blaze::IsLongDouble;
+
+   BLAZE_STATIC_ASSERT( IsLongDouble<long double>::value == true );
+   BLAZE_CONSTRAINT_MUST_BE_SAME_TYPE( IsLongDouble<const long double>::Type, blaze::TrueType );
+   BLAZE_CONSTRAINT_MUST_BE_DERIVED_FROM( IsLongDouble<const volatile long double>, blaze::TrueType );
+   BLAZE_STATIC_ASSERT( IsLongDouble<float>::value == false );
+   BLAZE_CONSTRAINT_MUST_BE_SAME_TYPE( IsLongDouble<const unsigned int>::Type, blaze::FalseType );
+   BLAZE_CONSTRAINT_MUST_BE_DERIVED_FROM( IsLongDouble<volatile const short>, blaze::FalseType );
+}
+//*************************************************************************************************
+
+
+//*************************************************************************************************
+/*!\brief Test of the \c IsNumeric type trait.
+//
+// \return void
+// \exception std::runtime_error Error detected.
+//
+// This function performs a compile time test of the \c IsNumeric type trait. In case an error is
+// detected, a compilation error is created.
+*/
+void OperationTest::testIsNumeric()
+{
+   using blaze::complex;
+   using blaze::IsNumeric;
+
+   BLAZE_STATIC_ASSERT( IsNumeric<int>::value == true );
+   BLAZE_CONSTRAINT_MUST_BE_SAME_TYPE( IsNumeric<const double>::Type, blaze::TrueType );
+   BLAZE_CONSTRAINT_MUST_BE_DERIVED_FROM( IsNumeric<volatile complex<float> >, blaze::TrueType );
+   BLAZE_STATIC_ASSERT( IsNumeric<void>::value == false );
+   BLAZE_CONSTRAINT_MUST_BE_SAME_TYPE( IsNumeric<bool>::Type, blaze::FalseType );
+   BLAZE_CONSTRAINT_MUST_BE_DERIVED_FROM( IsNumeric<const bool>, blaze::FalseType );
+}
+//*************************************************************************************************
+
+
+//*************************************************************************************************
+/*!\brief Test of the \c IsObject type trait.
+//
+// \return void
+// \exception std::runtime_error Error detected.
+//
+// This function performs a compile time test of the \c IsObject type trait. In case an error is
+// detected, a compilation error is created.
+*/
+void OperationTest::testIsObject()
+{
+   using blaze::IsObject;
+
+   BLAZE_STATIC_ASSERT( IsObject<int>::value == true );
+   BLAZE_CONSTRAINT_MUST_BE_SAME_TYPE( IsObject<int*>::Type, blaze::TrueType );
+   BLAZE_CONSTRAINT_MUST_BE_DERIVED_FROM( IsObject<int (*)(void)>, blaze::TrueType );
+   BLAZE_CONSTRAINT_MUST_BE_DERIVED_FROM( IsObject<int (Type7::*)(void)const>, blaze::TrueType );
+   BLAZE_STATIC_ASSERT( IsObject<int&>::value == false );
+   BLAZE_CONSTRAINT_MUST_BE_SAME_TYPE( IsObject<const void>::Type, blaze::FalseType );
+   BLAZE_CONSTRAINT_MUST_BE_DERIVED_FROM( IsObject<int (double)>, blaze::FalseType );
+}
+//*************************************************************************************************
+
+
+//*************************************************************************************************
+/*!\brief Test of the \c IsPod type trait.
+//
+// \return void
+// \exception std::runtime_error Error detected.
+//
+// This function performs a compile time test of the \c IsPod type trait. In case an error is
+// detected, a compilation error is created.
+*/
+void OperationTest::testIsPod()
+{
+   using blaze::IsPod;
+
+   class A {
+      int i_;
+      double d_;
+   };
+
+   class B {
+      virtual ~B() {}
+   };
+
+   class C {
+      std::string s_;
+   };
+
+   BLAZE_STATIC_ASSERT( IsPod<int>::value == true );
+   BLAZE_CONSTRAINT_MUST_BE_SAME_TYPE( IsPod<double const>::Type, blaze::TrueType );
+   BLAZE_CONSTRAINT_MUST_BE_DERIVED_FROM( IsPod<A volatile>, blaze::TrueType );
+   BLAZE_STATIC_ASSERT( IsPod< std::vector<int> >::value == false );
+   BLAZE_CONSTRAINT_MUST_BE_SAME_TYPE( IsPod<B>::Type, blaze::FalseType );
+   BLAZE_CONSTRAINT_MUST_BE_DERIVED_FROM( IsPod<C>, blaze::FalseType );
+}
+//*************************************************************************************************
+
+
+//*************************************************************************************************
+/*!\brief Test of the \c IsPointer type trait.
+//
+// \return void
+// \exception std::runtime_error Error detected.
+//
+// This function performs a compile time test of the \c IsPointer type trait. In case an error is
+// detected, a compilation error is created.
+*/
+void OperationTest::testIsPointer()
+{
+   using blaze::IsPointer;
+
+   BLAZE_STATIC_ASSERT( IsPointer<char* const>::value == true );
+   BLAZE_CONSTRAINT_MUST_BE_SAME_TYPE( IsPointer<volatile float*>::Type, blaze::TrueType );
+   BLAZE_CONSTRAINT_MUST_BE_DERIVED_FROM( IsPointer<int (*)(long)>, blaze::TrueType );
+   BLAZE_STATIC_ASSERT( IsPointer<int>::value == false );
+   BLAZE_CONSTRAINT_MUST_BE_SAME_TYPE( IsPointer<int Type7::*>::Type, blaze::FalseType );
+   BLAZE_CONSTRAINT_MUST_BE_DERIVED_FROM( IsPointer<int (Type7::*)(long)>, blaze::FalseType );
+}
+//*************************************************************************************************
+
+
+//*************************************************************************************************
+/*!\brief Test of the \c IsReference type trait.
+//
+// \return void
+// \exception std::runtime_error Error detected.
+//
+// This function performs a compile time test of the \c IsReference type trait. In case an error is
+// detected, a compilation error is created.
+*/
+void OperationTest::testIsReference()
+{
+   using blaze::IsReference;
+
+   BLAZE_STATIC_ASSERT( IsReference<int&>::value == true );
+   BLAZE_CONSTRAINT_MUST_BE_SAME_TYPE( IsReference<int const&>::Type, blaze::TrueType );
+   BLAZE_CONSTRAINT_MUST_BE_DERIVED_FROM( IsReference<int (&)(long)>, blaze::TrueType );
+   BLAZE_STATIC_ASSERT( IsReference<int>::value == false );
+   BLAZE_CONSTRAINT_MUST_BE_SAME_TYPE( IsReference<double*>::Type, blaze::FalseType );
+   BLAZE_CONSTRAINT_MUST_BE_DERIVED_FROM( IsReference<int (Type7::*)(long)>, blaze::FalseType );
+}
+//*************************************************************************************************
+
+
+//*************************************************************************************************
+/*!\brief Test of the \c IsSame type trait.
+//
+// \return void
+// \exception std::runtime_error Error detected.
+//
+// This function performs a compile time test of the \c IsSame type trait. In case an error is
+// detected, a compilation error is created.
+*/
+void OperationTest::testIsSame()
+{
+   using blaze::IsSame;
+
+   typedef IsSame<int,int>               T1;
+   typedef IsSame<int,const int>         T2;
+   typedef IsSame<float,volatile float>  T3;
+   typedef IsSame<char,wchar_t>          T4;
+   typedef IsSame<char,volatile float>   T5;
+   typedef IsSame<int,double>            T6;
+
+   BLAZE_STATIC_ASSERT( T1::value == true );
+   BLAZE_CONSTRAINT_MUST_BE_SAME_TYPE( T2::Type, blaze::TrueType );
+   BLAZE_CONSTRAINT_MUST_BE_DERIVED_FROM( T3, blaze::TrueType );
+   BLAZE_STATIC_ASSERT( T4::value == false );
+   BLAZE_CONSTRAINT_MUST_BE_SAME_TYPE( T5::Type, blaze::FalseType );
+   BLAZE_CONSTRAINT_MUST_BE_DERIVED_FROM( T6, blaze::FalseType );
+}
+//*************************************************************************************************
+
+
+//*************************************************************************************************
+/*!\brief Test of the \c IsStrictlySame type trait.
+//
+// \return void
+// \exception std::runtime_error Error detected.
+//
+// This function performs a compile time test of the \c IsStrictlySame type trait. In case an error is
+// detected, a compilation error is created.
+*/
+void OperationTest::testIsStrictlySame()
+{
+   using blaze::IsStrictlySame;
+
+   typedef IsStrictlySame<int,int>                        T1;
+   typedef IsStrictlySame<const double,const double>      T2;
+   typedef IsStrictlySame<volatile float,volatile float>  T3;
+   typedef IsStrictlySame<char,wchar_t>                   T4;
+   typedef IsStrictlySame<int,const int>                  T5;
+   typedef IsStrictlySame<float,volatile float>           T6;
+
+   BLAZE_STATIC_ASSERT( T1::value == true );
+   BLAZE_CONSTRAINT_MUST_BE_SAME_TYPE( T2::Type, blaze::TrueType );
+   BLAZE_CONSTRAINT_MUST_BE_DERIVED_FROM( T3, blaze::TrueType );
+   BLAZE_STATIC_ASSERT( T4::value == false );
+   BLAZE_CONSTRAINT_MUST_BE_SAME_TYPE( T5::Type, blaze::FalseType );
+   BLAZE_CONSTRAINT_MUST_BE_DERIVED_FROM( T6, blaze::FalseType );
+}
+//*************************************************************************************************
+
+
+//*************************************************************************************************
+/*!\brief Test of the \c IsShort type trait.
+//
+// \return void
+// \exception std::runtime_error Error detected.
+//
+// This function performs a compile time test of the \c IsShort type trait. In case an error is
+// detected, a compilation error is created.
+*/
+void OperationTest::testIsShort()
+{
+   using blaze::IsShort;
+
+   BLAZE_STATIC_ASSERT( IsShort<short>::value == true );
+   BLAZE_CONSTRAINT_MUST_BE_SAME_TYPE( IsShort<const unsigned short>::Type, blaze::TrueType );
+   BLAZE_CONSTRAINT_MUST_BE_DERIVED_FROM( IsShort<const volatile signed short>, blaze::TrueType );
+   BLAZE_STATIC_ASSERT( IsShort<unsigned int>::value == false );
+   BLAZE_CONSTRAINT_MUST_BE_SAME_TYPE( IsShort<const long>::Type, blaze::FalseType );
+   BLAZE_CONSTRAINT_MUST_BE_DERIVED_FROM( IsShort<volatile float>, blaze::FalseType );
+}
+//*************************************************************************************************
+
+
+//*************************************************************************************************
+/*!\brief Test of the \c IsSigned type trait.
+//
+// \return void
+// \exception std::runtime_error Error detected.
+//
+// This function performs a compile time test of the \c IsSigned type trait. In case an error is
+// detected, a compilation error is created.
+*/
+void OperationTest::testIsSigned()
+{
+   using blaze::IsSigned;
+
+   BLAZE_STATIC_ASSERT( IsSigned<short>::value == true );
+   BLAZE_CONSTRAINT_MUST_BE_SAME_TYPE( IsSigned<const int>::Type, blaze::TrueType );
+   BLAZE_CONSTRAINT_MUST_BE_DERIVED_FROM( IsSigned<volatile float>, blaze::TrueType );
+   BLAZE_STATIC_ASSERT( IsSigned<unsigned int>::value == false );
+   BLAZE_CONSTRAINT_MUST_BE_SAME_TYPE( IsSigned<const unsigned long>::Type, blaze::FalseType );
+   BLAZE_CONSTRAINT_MUST_BE_DERIVED_FROM( IsSigned<Type7>, blaze::FalseType );
+}
+//*************************************************************************************************
+
+
+//*************************************************************************************************
+/*!\brief Test of the \c IsUnion type trait.
+//
+// \return void
+// \exception std::runtime_error Error detected.
+//
+// This function performs a compile time test of the \c IsUnion type trait. In case an error is
+// detected, a compilation error is created.
+*/
+void OperationTest::testIsUnion()
+{
+   using blaze::IsUnion;
+
+   union A;
+
+   BLAZE_STATIC_ASSERT( IsUnion<A>::value == true );
+   BLAZE_CONSTRAINT_MUST_BE_SAME_TYPE( IsUnion<A const>::Type, blaze::TrueType );
+   BLAZE_CONSTRAINT_MUST_BE_DERIVED_FROM( IsUnion<A volatile>, blaze::TrueType );
+   BLAZE_STATIC_ASSERT( IsUnion<int>::value == false );
+   BLAZE_CONSTRAINT_MUST_BE_SAME_TYPE( IsUnion<double>::Type, blaze::FalseType );
+   BLAZE_CONSTRAINT_MUST_BE_DERIVED_FROM( IsUnion<std::string>, blaze::FalseType );
+}
+//*************************************************************************************************
+
+
+//*************************************************************************************************
+/*!\brief Test of the \c IsUnsigned type trait.
+//
+// \return void
+// \exception std::runtime_error Error detected.
+//
+// This function performs a compile time test of the \c IsUnsigned type trait. In case an error is
+// detected, a compilation error is created.
+*/
+void OperationTest::testIsUnsigned()
+{
+   using blaze::IsUnsigned;
+
+   BLAZE_STATIC_ASSERT( IsUnsigned<unsigned short>::value == true );
+   BLAZE_CONSTRAINT_MUST_BE_SAME_TYPE( IsUnsigned<const unsigned int>::Type, blaze::TrueType );
+   BLAZE_CONSTRAINT_MUST_BE_DERIVED_FROM( IsUnsigned<volatile unsigned long>, blaze::TrueType );
+   BLAZE_STATIC_ASSERT( IsUnsigned<float>::value == false );
+   BLAZE_CONSTRAINT_MUST_BE_SAME_TYPE( IsUnsigned<const volatile int>::Type, blaze::FalseType );
+   BLAZE_CONSTRAINT_MUST_BE_DERIVED_FROM( IsUnsigned<Type7>, blaze::FalseType );
+}
+//*************************************************************************************************
+
+
+//*************************************************************************************************
+/*!\brief Test of the \c IsValid type trait.
+//
+// \return void
+// \exception std::runtime_error Error detected.
+//
+// This function performs a compile time test of the \c IsValid type trait. In case an error is
+// detected, a compilation error is created.
+*/
+void OperationTest::testIsValid()
+{
+   using blaze::IsValid;
+   using blaze::INVALID_TYPE;
+
+   BLAZE_STATIC_ASSERT( IsValid<int>::value == true );
+   BLAZE_CONSTRAINT_MUST_BE_SAME_TYPE( IsValid<float const>::Type, blaze::TrueType );
+   BLAZE_CONSTRAINT_MUST_BE_DERIVED_FROM( IsValid<double volatile>, blaze::TrueType );
+   BLAZE_STATIC_ASSERT( IsValid<INVALID_TYPE>::value == false );
+   BLAZE_CONSTRAINT_MUST_BE_SAME_TYPE( IsValid<INVALID_TYPE const>::Type, blaze::FalseType );
+   BLAZE_CONSTRAINT_MUST_BE_DERIVED_FROM( IsValid<INVALID_TYPE volatile>, blaze::FalseType );
+}
+//*************************************************************************************************
+
+
+//*************************************************************************************************
+/*!\brief Test of the \c IsVectorizable type trait.
+//
+// \return void
+// \exception std::runtime_error Error detected.
+//
+// This function performs a compile time test of the \c IsVectorizable type trait. In case an
+// error is detected, a compilation error is created.
+*/
+void OperationTest::testIsVectorizable()
+{
+   using blaze::IsVectorizable;
+
+   BLAZE_STATIC_ASSERT( IsVectorizable< int >::value == true );
+   BLAZE_CONSTRAINT_MUST_BE_SAME_TYPE( IsVectorizable< const float >::Type, blaze::TrueType );
+   BLAZE_CONSTRAINT_MUST_BE_DERIVED_FROM( IsVectorizable< volatile double >, blaze::TrueType );
+   BLAZE_STATIC_ASSERT( IsVectorizable< void >::value == false );
+   BLAZE_CONSTRAINT_MUST_BE_SAME_TYPE( IsVectorizable< const bool >::Type, blaze::FalseType );
+   BLAZE_CONSTRAINT_MUST_BE_DERIVED_FROM( IsVectorizable< volatile Type7 >, blaze::FalseType );
+}
+//*************************************************************************************************
+
+
+//*************************************************************************************************
+/*!\brief Test of the \c IsVoid type trait.
+//
+// \return void
+// \exception std::runtime_error Error detected.
+//
+// This function performs a compile time test of the \c IsVoid type trait. In case an error is
+// detected, a compilation error is created.
+*/
+void OperationTest::testIsVoid()
+{
+   using blaze::IsVoid;
+
+   BLAZE_STATIC_ASSERT( IsVoid<void>::value == true );
+   BLAZE_CONSTRAINT_MUST_BE_SAME_TYPE( IsVoid<const void>::Type, blaze::TrueType );
+   BLAZE_CONSTRAINT_MUST_BE_DERIVED_FROM( IsVoid<const volatile void>, blaze::TrueType );
+   BLAZE_STATIC_ASSERT( IsVoid<int>::value == false );
+   BLAZE_CONSTRAINT_MUST_BE_SAME_TYPE( IsVoid<const char>::Type, blaze::FalseType );
+   BLAZE_CONSTRAINT_MUST_BE_DERIVED_FROM( IsVoid<volatile float>, blaze::FalseType );
+}
+//*************************************************************************************************
+
+
+//*************************************************************************************************
+/*!\brief Test of the \c IsVolatile type trait.
+//
+// \return void
+// \exception std::runtime_error Error detected.
+//
+// This function performs a compile time test of the \c IsVolatile type trait. In case an error is
+// detected, a compilation error is created.
+*/
+void OperationTest::testIsVolatile()
+{
+   using blaze::IsVolatile;
+
+   BLAZE_STATIC_ASSERT( IsVolatile<volatile int>::value == true );
+   BLAZE_CONSTRAINT_MUST_BE_SAME_TYPE( IsVolatile<const volatile int>::Type, blaze::TrueType );
+   BLAZE_CONSTRAINT_MUST_BE_DERIVED_FROM( IsVolatile<int* volatile>, blaze::TrueType );
+   BLAZE_STATIC_ASSERT( IsVolatile<volatile int*>::value == false );
+   BLAZE_CONSTRAINT_MUST_BE_SAME_TYPE( IsVolatile<const int>::Type, blaze::FalseType );
+   BLAZE_CONSTRAINT_MUST_BE_DERIVED_FROM( IsVolatile<int>, blaze::FalseType );
 }
 //*************************************************************************************************
 
@@ -197,6 +1344,188 @@ void OperationTest::testMakeUnsigned()
    BLAZE_CONSTRAINT_MUST_BE_SAME_TYPE( MakeUnsigned<const volatile int>::Type, const volatile unsigned int );
 
    BLAZE_CONSTRAINT_MUST_HAVE_SAME_SIZE( MakeUnsigned<wchar_t>::Type, wchar_t );
+}
+//*************************************************************************************************
+
+
+//*************************************************************************************************
+/*!\brief Test of the \c Rank type trait.
+//
+// \return void
+// \exception std::runtime_error Error detected.
+//
+// This function performs a compile time test of the \c Rank type trait. In case an error
+// is detected, a compilation error is created.
+*/
+void OperationTest::testRank()
+{
+   using blaze::Rank;
+
+   BLAZE_STATIC_ASSERT( Rank< int[] >::value == 1UL );
+   BLAZE_STATIC_ASSERT( Rank< int[3] >::value == 1UL );
+   BLAZE_STATIC_ASSERT( Rank< const int[2][3][4] >::value == 3UL );
+   BLAZE_STATIC_ASSERT( Rank< int[][3] >::value == 2UL );
+   BLAZE_STATIC_ASSERT( Rank< int const* >::value == 0UL );
+   BLAZE_STATIC_ASSERT( Rank< std::vector<int> >::value == 0UL );
+}
+//*************************************************************************************************
+
+
+//*************************************************************************************************
+/*!\brief Test of the \c RemoveAllExtents type trait.
+//
+// \return void
+// \exception std::runtime_error Error detected.
+//
+// This function performs a compile time test of the \c RemoveAllExtents type trait. In case an
+// error is detected, a compilation error is created.
+*/
+void OperationTest::testRemoveAllExtents()
+{
+   using blaze::RemoveAllExtents;
+
+   BLAZE_CONSTRAINT_MUST_BE_SAME_TYPE( RemoveAllExtents<int>::Type, int );
+   BLAZE_CONSTRAINT_MUST_BE_SAME_TYPE( RemoveAllExtents<int const[2]>::Type, const int );
+   BLAZE_CONSTRAINT_MUST_BE_SAME_TYPE( RemoveAllExtents<int[2][4]>::Type, int );
+   BLAZE_CONSTRAINT_MUST_BE_SAME_TYPE( RemoveAllExtents<int[][2]>::Type, int );
+   BLAZE_CONSTRAINT_MUST_BE_SAME_TYPE( RemoveAllExtents<int[2][3][4]>::Type, int );
+   BLAZE_CONSTRAINT_MUST_BE_SAME_TYPE( RemoveAllExtents<int const*>::Type, int const* );
+}
+//*************************************************************************************************
+
+
+//*************************************************************************************************
+/*!\brief Test of the \c RemoveConst type trait.
+//
+// \return void
+// \exception std::runtime_error Error detected.
+//
+// This function performs a compile time test of the \c RemoveConst type trait. In case an
+// error is detected, a compilation error is created.
+*/
+void OperationTest::testRemoveConst()
+{
+   using blaze::RemoveConst;
+
+   BLAZE_CONSTRAINT_MUST_BE_SAME_TYPE( RemoveConst<short>::Type, short );
+   BLAZE_CONSTRAINT_MUST_BE_SAME_TYPE( RemoveConst<const double>::Type, double );
+   BLAZE_CONSTRAINT_MUST_BE_SAME_TYPE( RemoveConst<const volatile int>::Type, volatile int );
+   BLAZE_CONSTRAINT_MUST_BE_SAME_TYPE( RemoveConst<int const*>::Type, const int* );
+   BLAZE_CONSTRAINT_MUST_BE_SAME_TYPE( RemoveConst<int const* const>::Type, const int* );
+   BLAZE_CONSTRAINT_MUST_BE_SAME_TYPE( RemoveConst<int const&>::Type, const int& );
+}
+//*************************************************************************************************
+
+
+//*************************************************************************************************
+/*!\brief Test of the \c RemoveCV type trait.
+//
+// \return void
+// \exception std::runtime_error Error detected.
+//
+// This function performs a compile time test of the \c RemoveCV type trait. In case an
+// error is detected, a compilation error is created.
+*/
+void OperationTest::testRemoveCV()
+{
+   using blaze::RemoveCV;
+
+   BLAZE_CONSTRAINT_MUST_BE_SAME_TYPE( RemoveCV<short>::Type, short );
+   BLAZE_CONSTRAINT_MUST_BE_SAME_TYPE( RemoveCV<const double>::Type, double );
+   BLAZE_CONSTRAINT_MUST_BE_SAME_TYPE( RemoveCV<volatile float>::Type, float );
+   BLAZE_CONSTRAINT_MUST_BE_SAME_TYPE( RemoveCV<const volatile int>::Type, int );
+   BLAZE_CONSTRAINT_MUST_BE_SAME_TYPE( RemoveCV<int const*>::Type, int const* );
+   BLAZE_CONSTRAINT_MUST_BE_SAME_TYPE( RemoveCV<int const* const>::Type, int const* );
+   BLAZE_CONSTRAINT_MUST_BE_SAME_TYPE( RemoveCV<int const&>::Type, int const& );
+}
+//*************************************************************************************************
+
+
+//*************************************************************************************************
+/*!\brief Test of the \c RemoveExtent type trait.
+//
+// \return void
+// \exception std::runtime_error Error detected.
+//
+// This function performs a compile time test of the \c RemoveExtent type trait. In case an
+// error is detected, a compilation error is created.
+*/
+void OperationTest::testRemoveExtent()
+{
+   using blaze::RemoveExtent;
+
+   BLAZE_CONSTRAINT_MUST_BE_SAME_TYPE( RemoveExtent<int>::Type, int );
+   BLAZE_CONSTRAINT_MUST_BE_SAME_TYPE( RemoveExtent<int const[2]>::Type, const int );
+   BLAZE_CONSTRAINT_MUST_BE_SAME_TYPE( RemoveExtent<int[2][4]>::Type, int[4] );
+   BLAZE_CONSTRAINT_MUST_BE_SAME_TYPE( RemoveExtent<int[][2]>::Type, int[2] );
+   BLAZE_CONSTRAINT_MUST_BE_SAME_TYPE( RemoveExtent<int const*>::Type, const int* );
+}
+//*************************************************************************************************
+
+
+//*************************************************************************************************
+/*!\brief Test of the \c RemovePointer type trait.
+//
+// \return void
+// \exception std::runtime_error Error detected.
+//
+// This function performs a compile time test of the \c RemovePointer type trait. In case an
+// error is detected, a compilation error is created.
+*/
+void OperationTest::testRemovePointer()
+{
+   using blaze::RemovePointer;
+
+   BLAZE_CONSTRAINT_MUST_BE_SAME_TYPE( RemovePointer<int>::Type, int );
+   BLAZE_CONSTRAINT_MUST_BE_SAME_TYPE( RemovePointer<const int*>::Type, const int );
+   BLAZE_CONSTRAINT_MUST_BE_SAME_TYPE( RemovePointer<volatile int**>::Type, volatile int* );
+   BLAZE_CONSTRAINT_MUST_BE_SAME_TYPE( RemovePointer<int&>::Type, int& );
+   BLAZE_CONSTRAINT_MUST_BE_SAME_TYPE( RemovePointer<int*&>::Type, int*& );
+}
+//*************************************************************************************************
+
+
+//*************************************************************************************************
+/*!\brief Test of the \c RemoveReference type trait.
+//
+// \return void
+// \exception std::runtime_error Error detected.
+//
+// This function performs a compile time test of the \c RemoveReference type trait. In case an
+// error is detected, a compilation error is created.
+*/
+void OperationTest::testRemoveReference()
+{
+   using blaze::RemoveReference;
+
+   BLAZE_CONSTRAINT_MUST_BE_SAME_TYPE( RemoveReference<int>::Type, int );
+   BLAZE_CONSTRAINT_MUST_BE_SAME_TYPE( RemoveReference<const int&>::Type, const int );
+   BLAZE_CONSTRAINT_MUST_BE_SAME_TYPE( RemoveReference<volatile int&&>::Type, volatile int );
+   BLAZE_CONSTRAINT_MUST_BE_SAME_TYPE( RemoveReference<int*>::Type, int* );
+   BLAZE_CONSTRAINT_MUST_BE_SAME_TYPE( RemoveReference<int*&>::Type, int* );
+}
+//*************************************************************************************************
+
+
+//*************************************************************************************************
+/*!\brief Test of the \c RemoveVolatile type trait.
+//
+// \return void
+// \exception std::runtime_error Error detected.
+//
+// This function performs a compile time test of the \c RemoveVolatile type trait. In case an
+// error is detected, a compilation error is created.
+*/
+void OperationTest::testRemoveVolatile()
+{
+   using blaze::RemoveVolatile;
+
+   BLAZE_CONSTRAINT_MUST_BE_SAME_TYPE( RemoveVolatile<short>::Type, short );
+   BLAZE_CONSTRAINT_MUST_BE_SAME_TYPE( RemoveVolatile<volatile double>::Type, double );
+   BLAZE_CONSTRAINT_MUST_BE_SAME_TYPE( RemoveVolatile<const volatile int>::Type, const int );
+   BLAZE_CONSTRAINT_MUST_BE_SAME_TYPE( RemoveVolatile<int volatile*>::Type, int volatile* );
+   BLAZE_CONSTRAINT_MUST_BE_SAME_TYPE( RemoveVolatile<int volatile* volatile>::Type, int volatile* );
+   BLAZE_CONSTRAINT_MUST_BE_SAME_TYPE( RemoveVolatile<int volatile&>::Type, int volatile& );
 }
 //*************************************************************************************************
 
