@@ -40,7 +40,7 @@
 // Includes
 //*************************************************************************************************
 
-#include <boost/type_traits/make_unsigned.hpp>
+#include <type_traits>
 
 
 namespace blaze {
@@ -61,7 +61,7 @@ namespace blaze {
 
    \code
    enum MyEnum { ... };
-   
+
    blaze::MakeUnsigned<int>::Type                  // Results in 'unsigned int'
    blaze::MakeUnsigned<const unsigned int>::Type   // Results in 'const unsigned int'
    blaze::MakeUnsigned<const unsigned long>::Type  // Results in 'const unsigned long'
@@ -75,7 +75,7 @@ struct MakeUnsigned
  public:
    //**********************************************************************************************
    /*! \cond BLAZE_INTERNAL */
-   typedef typename boost::make_unsigned<T>::type  Type;
+   typedef typename std::make_unsigned<T>::type  Type;
    /*! \endcond */
    //**********************************************************************************************
 };

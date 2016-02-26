@@ -40,10 +40,8 @@
 // Includes
 //*************************************************************************************************
 
-#include <boost/type_traits/is_pod.hpp>
-#include <blaze/util/FalseType.h>
-#include <blaze/util/SelectType.h>
-#include <blaze/util/TrueType.h>
+#include <type_traits>
+#include <blaze/util/IntegralConstant.h>
 
 
 namespace blaze {
@@ -55,30 +53,13 @@ namespace blaze {
 //=================================================================================================
 
 //*************************************************************************************************
-/*! \cond BLAZE_INTERNAL */
-/*!\brief Auxiliary helper struct for the IsPod type trait.
-// \ingroup type_traits
-*/
-template< typename T >
-struct IsPodHelper
-{
-   //**********************************************************************************************
-   enum { value = boost::is_pod<T>::value };
-   typedef typename SelectType<value,TrueType,FalseType>::Type  Type;
-   //**********************************************************************************************
-};
-/*! \endcond */
-//*************************************************************************************************
-
-
-//*************************************************************************************************
 /*!\brief Compile time check for pod data types.
 // \ingroup type_traits
 //
 // This type trait tests whether or not the given template parameter is a POD (Plain Old Data).
-// In case the type is a POD, the \a value member enumeration is set o 1, the nested type
-// definition \a Type is \a TrueType, and the class derives from \a TrueType. Otherwise
-// \a value is set to 0, \a Type is \a FalseType, and the class derives from \a FalseType.
+// In case the type is a POD, the \a value member enumeration is set to \a true, the nested type
+// definition \a Type is \a TrueType, and the class derives from \a TrueType. Otherwise \a value
+// is set to \a false, \a Type is \a FalseType, and the class derives from \a FalseType.
 
    \code
    class A {
@@ -88,31 +69,23 @@ struct IsPodHelper
 
    class B {
       virtual ~B() {}
-   }
+   };
 
    class C {
       std::string s_;
    };
 
-   blaze::IsPod<int>::value                 // Evaluates to 1
+   blaze::IsPod<int>::value                 // Evaluates to 'true'
    blaze::IsPod<double const>::Type         // Results in TrueType
    blaze::IsPod<A volatile>                 // Is derived from TrueType
-   blaze::IsPod< std::vector<int> >::value  // Evaluates to 0
+   blaze::IsPod< std::vector<int> >::value  // Evaluates to 'false'
    blaze::IsPod<B>::Type                    // Results in FalseType
    blaze::IsPod<C>                          // Is derived from FalseType
    \endcode
 */
 template< typename T >
-struct IsPod : public IsPodHelper<T>::Type
-{
- public:
-   //**********************************************************************************************
-   /*! \cond BLAZE_INTERNAL */
-   enum { value = IsPodHelper<T>::value };
-   typedef typename IsPodHelper<T>::Type  Type;
-   /*! \endcond */
-   //**********************************************************************************************
-};
+struct IsPod : public BoolConstant< std::is_pod<T>::value >
+{};
 //*************************************************************************************************
 
 } // namespace blaze

@@ -40,10 +40,8 @@
 // Includes
 //*************************************************************************************************
 
-#include <boost/type_traits/is_base_of.hpp>
-#include <blaze/util/FalseType.h>
-#include <blaze/util/SelectType.h>
-#include <blaze/util/TrueType.h>
+#include <type_traits>
+#include <blaze/util/IntegralConstant.h>
 #include <blaze/util/typetraits/RemoveCV.h>
 
 
@@ -56,57 +54,32 @@ namespace blaze {
 //=================================================================================================
 
 //*************************************************************************************************
-/*! \cond BLAZE_INTERNAL */
-/*!\brief Auxiliary helper struct for the IsBaseOf type trait.
-// \ingroup type_traits
-*/
-template< typename Base, typename Derived >
-struct IsBaseOfHelper
-{
-   //**********************************************************************************************
-   enum { value = boost::is_base_of<typename RemoveCV<Base>::Type,
-                                    typename RemoveCV<Derived>::Type>::value };
-   typedef typename SelectType<value,TrueType,FalseType>::Type  Type;
-   //**********************************************************************************************
-};
-/*! \endcond */
-//*************************************************************************************************
-
-
-//*************************************************************************************************
 /*!\brief Compile time analysis of an inheritance relationship.
 // \ingroup type_traits
 //
 // This type trait tests for an inheritance relationship between the two types \a Base and
 // \a Derived. If \a Derived is a type derived from \a Base or the same type as \a Base the
-// \a value member enumeration is set to 1, the nested type definition \a Type is \a TrueType,
-// and the class derives from \a TrueType. Otherwise \a value is set to 0, \a Type is
-// \a FalseType, and the class derives from \a FalseType.
+// \a value member enumeration is set to \a true, the nested type definition \a Type is
+// \a TrueType, and the class derives from \a TrueType. Otherwise \a value is set to \a false,
+// \a Type is \a FalseType, and the class derives from \a FalseType.
 
    \code
    class A { ... };
    class B : public A { ... };
    class C { ... };
 
-   blaze::IsBaseOf<A,B>::value  // Evaluates to 1
+   blaze::IsBaseOf<A,B>::value  // Evaluates to 'true'
    blaze::IsBaseOf<A,B>::Type   // Results in TrueType
    blaze::IsBaseOf<A,B>         // Is derived from TrueType
-   blaze::IsBaseOf<A,C>::value  // Evaluates to 0
+   blaze::IsBaseOf<A,C>::value  // Evaluates to 'false'
    blaze::IsBaseOf<B,A>::Type   // Results in FalseType
    blaze::IsBaseOf<B,A>         // Is derived from FalseType
    \endcode
 */
 template< typename Base, typename Derived >
-class IsBaseOf : public IsBaseOfHelper<Base,Derived>::Type
-{
- public:
-   //**********************************************************************************************
-   /*! \cond BLAZE_INTERNAL */
-   enum { value = IsBaseOfHelper<Base,Derived>::value };
-   typedef typename IsBaseOfHelper<Base,Derived>::Type  Type;
-   /*! \endcond */
-   //**********************************************************************************************
-};
+class IsBaseOf : public BoolConstant< std::is_base_of< typename RemoveCV<Base>::Type
+                                                     , typename RemoveCV<Derived>::Type>::value >
+{};
 //*************************************************************************************************
 
 } // namespace blaze

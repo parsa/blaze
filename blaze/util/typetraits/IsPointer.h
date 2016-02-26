@@ -40,10 +40,8 @@
 // Includes
 //*************************************************************************************************
 
-#include <boost/type_traits/is_pointer.hpp>
-#include <blaze/util/FalseType.h>
-#include <blaze/util/SelectType.h>
-#include <blaze/util/TrueType.h>
+#include <type_traits>
+#include <blaze/util/IntegralConstant.h>
 
 
 namespace blaze {
@@ -55,52 +53,27 @@ namespace blaze {
 //=================================================================================================
 
 //*************************************************************************************************
-/*! \cond BLAZE_INTERNAL */
-/*!\brief Auxiliary helper struct for the IsPointer type trait.
-// \ingroup type_traits
-*/
-template< typename T >
-struct IsPointerHelper
-{
-   //**********************************************************************************************
-   enum { value = boost::is_pointer<T>::value };
-   typedef typename SelectType<value,TrueType,FalseType>::Type  Type;
-   //**********************************************************************************************
-};
-/*! \endcond */
-//*************************************************************************************************
-
-
-//*************************************************************************************************
 /*!\brief Compile time type check.
 // \ingroup type_traits
 //
 // This class tests whether the given template parameter is a pointer type (including function
 // pointers, but excluding pointers to members) or not. If it is a pointer type, the \a value
-// member enumeration is set to 1, the nested type definition \a Type is \a TrueType, and the
-// class derives from \a TrueType. Otherwise \a value is set to 0, \a Type is \a FalseType,
-// and the class derives from \a FalseType.
+// member enumeration is set to \a true, the nested type definition \a Type is \a TrueType,
+// and the class derives from \a TrueType. Otherwise \a value is set to \a false, \a Type is
+// \a FalseType, and the class derives from \a FalseType.
 
    \code
-   blaze::IsPointer<char* const>::value      // Evaluates to 1
+   blaze::IsPointer<char* const>::value      // Evaluates to 'true'
    blaze::IsPointer<volatile float*>::Type   // Results in TrueType
    blaze::IsPointer<int (*)(long)>           // Is derived from TrueType
-   blaze::IsPointer<int>::value              // Evaluates to 0
+   blaze::IsPointer<int>::value              // Evaluates to 'false'
    blaze::IsPointer<int MyClass::*>::Type    // Results in FalseType
    blaze::IsPointer<int (MyClass::*)(long)>  // Is derived from FalseType
    \endcode
 */
 template< typename T >
-struct IsPointer : public IsPointerHelper<T>::Type
-{
- public:
-   //**********************************************************************************************
-   /*! \cond BLAZE_INTERNAL */
-   enum { value = IsPointerHelper<T>::value };
-   typedef typename IsPointerHelper<T>::Type  Type;
-   /*! \endcond */
-   //**********************************************************************************************
-};
+struct IsPointer : public BoolConstant< std::is_pointer<T>::value >
+{};
 //*************************************************************************************************
 
 } // namespace blaze

@@ -40,10 +40,8 @@
 // Includes
 //*************************************************************************************************
 
-#include <boost/type_traits/is_empty.hpp>
-#include <blaze/util/FalseType.h>
-#include <blaze/util/SelectType.h>
-#include <blaze/util/TrueType.h>
+#include <type_traits>
+#include <blaze/util/IntegralConstant.h>
 
 
 namespace blaze {
@@ -55,55 +53,30 @@ namespace blaze {
 //=================================================================================================
 
 //*************************************************************************************************
-/*! \cond BLAZE_INTERNAL */
-/*!\brief Auxiliary helper struct for the IsEmpty type trait.
-// \ingroup type_traits
-*/
-template< typename T >
-struct IsEmptyHelper
-{
-   //**********************************************************************************************
-   enum { value = boost::is_empty<T>::value };
-   typedef typename SelectType<value,TrueType,FalseType>::Type  Type;
-   //**********************************************************************************************
-};
-/*! \endcond */
-//*************************************************************************************************
-
-
-//*************************************************************************************************
 /*!\brief Compile time type check.
 // \ingroup type_traits
 //
 // This class tests whether the given template parameter is an empty class type, i.e. a type
 // without member data and virtual functions. If it is an empty class type, the \a value
-// member enumeration is set to 1, the nested type definition \a Type is \a TrueType, and the
-// class derives from \a TrueType. Otherwise \a value is set to 0, \a Type is \a FalseType,
-// and the class derives from \a FalseType.
+// member enumeration is set to \a true, the nested type definition \a Type is \a TrueType,
+// and the class derives from \a TrueType. Otherwise \a value is set to \a false, \a Type is
+// \a FalseType, and the class derives from \a FalseType.
 
    \code
    class A {};
    class B { int i; };
 
-   blaze::IsEmpty<A>::value           // Evaluates to 1
+   blaze::IsEmpty<A>::value           // Evaluates to 'true'
    blaze::IsEmpty<A volatile>::Type   // Results in TrueType
    blaze::IsEmpty<A const>            // Is derived from TrueType
-   blaze::IsEmpty<int>::value         // Evaluates to 0
+   blaze::IsEmpty<int>::value         // Evaluates to 'false'
    blaze::IsEmpty<std::string>::Type  // Results in FalseType
    blaze::IsEmpty<B>                  // Is derived from FalseType
    \endcode
 */
 template< typename T >
-struct IsEmpty : public IsEmptyHelper<T>::Type
-{
- public:
-   //**********************************************************************************************
-   /*! \cond BLAZE_INTERNAL */
-   enum { value = IsEmptyHelper<T>::value };
-   typedef typename IsEmptyHelper<T>::Type  Type;
-   /*! \endcond */
-   //**********************************************************************************************
-};
+struct IsEmpty : public BoolConstant< std::is_empty<T>::value >
+{};
 //*************************************************************************************************
 
 } // namespace blaze

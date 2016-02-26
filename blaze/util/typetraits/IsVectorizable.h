@@ -41,9 +41,7 @@
 //*************************************************************************************************
 
 #include <blaze/system/Vectorization.h>
-#include <blaze/util/FalseType.h>
 #include <blaze/util/SelectType.h>
-#include <blaze/util/TrueType.h>
 #include <blaze/util/typetraits/IsComplex.h>
 #include <blaze/util/typetraits/IsFloat.h>
 #include <blaze/util/typetraits/IsNumeric.h>
@@ -85,7 +83,6 @@ struct IsVectorizableHelper
    enum { value = ( BLAZE_SSE_MODE  && ( IsFloat<T2>::value   ) ) ||
                   ( BLAZE_SSE2_MODE && ( IsNumeric<T2>::value ) ) ||
                   ( BLAZE_MIC_MODE  && ( IsNumeric<T2>::value && sizeof(T2) >= 4UL ) ) };
-   typedef typename SelectType<value,TrueType,FalseType>::Type  Type;
    //**********************************************************************************************
 };
 /*! \endcond */
@@ -99,32 +96,24 @@ struct IsVectorizableHelper
 // Depending on the available instruction set (SSE, SSE2, SSE3, SSE4, AVX, AVX2, MIC, ...),
 // this type trait tests whether or not the given template parameter is a vectorizable type,
 // i.e. a type for which intrinsic vector operations and optimizations can be used. Currently,
-// only signed/unsigned short, signed/unsigned int, signed/unsigned long, float, double, and
-// the according complex numbers are considered to be vectorizable types. In case the type is
-// vectorizable, the \a value member enumeration is set to 1, the nested type definition \a Type
-// is \a TrueType, and the class derives from \a TrueType. Otherwise \a value is set to 0,
-// \a Type is \a FalseType, and the class derives from \a FalseType.
+// all built-in data types except \c bool and the according complex numbers are considered to
+// be vectorizable types. In case the type is vectorizable, the \a value member enumeration
+// is set to \a true, the nested type definition \a Type is \a TrueType, and the class derives
+// from \a TrueType. Otherwise \a value is set to \a false, \a Type is \a FalseType, and the
+// class derives from \a FalseType.
 
    \code
-   blaze::IsVectorizable< int >::value         // Evaluates to 1
+   blaze::IsVectorizable< int >::value         // Evaluates to 'true'
    blaze::IsVectorizable< const float >::Type  // Results in TrueType
    blaze::IsVectorizable< volatile double >    // Is derived from TrueType
-   blaze::IsVectorizable< bool >::value        // Evaluates to 0
-   blaze::IsVectorizable< const char >::Type   // Results in FalseType
-   blaze::IsVectorizable< long double >        // Is derived from FalseType
+   blaze::IsVectorizable< void >::value        // Evaluates to 'false'
+   blaze::IsVectorizable< const bool >::Type   // Results in FalseType
+   blaze::IsVectorizable< volatile MyClass >   // Is derived from FalseType
    \endcode
 */
 template< typename T >
-struct IsVectorizable : public IsVectorizableHelper<T>::Type
-{
- public:
-   //**********************************************************************************************
-   /*! \cond BLAZE_INTERNAL */
-   enum { value = IsVectorizableHelper<T>::value };
-   typedef typename IsVectorizableHelper<T>::Type  Type;
-   /*! \endcond */
-   //**********************************************************************************************
-};
+struct IsVectorizable : public BoolConstant< IsVectorizableHelper<T>::value >
+{};
 //*************************************************************************************************
 
 } // namespace blaze

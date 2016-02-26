@@ -59,30 +59,22 @@ namespace blaze {
 //
 // This type trait tests whether or not the given template parameter is of type \c complex<double>.
 // In case the type is \c complex<double> (ignoring the cv-qualifiers), the \a value member
-// enumeration is set to 1, the nested type definition \a Type is \a TrueType, and the class
-// derives from \a TrueType. Otherwise \a value is set to 0, \a Type is \a FalseType, and the
-// class derives from \a FalseType.
+// enumeration is set to \a true, the nested type definition \a Type is \a TrueType, and the class
+// derives from \a TrueType. Otherwise \a value is set to \a false, \a Type is \a FalseType, and
+// the class derives from \a FalseType.
 
    \code
-   blaze::IsComplexDouble< complex<double> >::value       // Evaluates to 1
+   blaze::IsComplexDouble< complex<double> >::value       // Evaluates to 'true'
    blaze::IsComplexDouble< const complex<double> >::Type  // Results in TrueType
    blaze::IsComplexDouble< volatile complex<double> >     // Is derived from TrueType
-   blaze::IsComplexDouble< double >::value                // Evaluates to 0
+   blaze::IsComplexDouble< double >::value                // Evaluates to 'false'
    blaze::IsComplexDouble< const complex<float> >::Type   // Results in FalseType
    blaze::IsComplexDouble< const volatile complex<int> >  // Is derived from FalseType
    \endcode
 */
 template< typename T >
 struct IsComplexDouble : public FalseType
-{
- public:
-   //**********************************************************************************************
-   /*! \cond BLAZE_INTERNAL */
-   enum { value = 0 };
-   typedef FalseType  Type;
-   /*! \endcond */
-   //**********************************************************************************************
-};
+{};
 //*************************************************************************************************
 
 
@@ -91,13 +83,7 @@ struct IsComplexDouble : public FalseType
 //! Specialization of the IsComplexDouble type trait for the plain 'complex<double>' type.
 template<>
 struct IsComplexDouble< complex<double> > : public TrueType
-{
- public:
-   //**********************************************************************************************
-   enum { value = 1 };
-   typedef TrueType  Type;
-   //**********************************************************************************************
-};
+{};
 /*! \endcond */
 //*************************************************************************************************
 
@@ -107,13 +93,7 @@ struct IsComplexDouble< complex<double> > : public TrueType
 //! Specialization of the IsComplexDouble type trait for 'const complex<double>'.
 template<>
 struct IsComplexDouble< const complex<double> > : public TrueType
-{
- public:
-   //**********************************************************************************************
-   enum { value = 1 };
-   typedef TrueType  Type;
-   //**********************************************************************************************
-};
+{};
 /*! \endcond */
 //*************************************************************************************************
 
@@ -123,13 +103,7 @@ struct IsComplexDouble< const complex<double> > : public TrueType
 //! Specialization of the IsComplexDouble type trait for 'volatile complex<double>'.
 template<>
 struct IsComplexDouble< volatile complex<double> > : public TrueType
-{
- public:
-   //**********************************************************************************************
-   enum { value = 1 };
-   typedef TrueType  Type;
-   //**********************************************************************************************
-};
+{};
 /*! \endcond */
 //*************************************************************************************************
 
@@ -139,13 +113,7 @@ struct IsComplexDouble< volatile complex<double> > : public TrueType
 //! Specialization of the IsComplexDouble type trait for 'const volatile complex<double>'
 template<>
 struct IsComplexDouble< const volatile complex<double> > : public TrueType
-{
- public:
-   //**********************************************************************************************
-   enum { value = 1 };
-   typedef TrueType  Type;
-   //**********************************************************************************************
-};
+{};
 /*! \endcond */
 //*************************************************************************************************
 

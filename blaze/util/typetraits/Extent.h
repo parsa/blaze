@@ -36,6 +36,13 @@
 #define _BLAZE_UTIL_TYPETRAITS_EXTENT_H_
 
 
+//*************************************************************************************************
+// Includes
+//*************************************************************************************************
+
+#include <blaze/util/IntegralConstant.h>
+
+
 namespace blaze {
 
 //=================================================================================================
@@ -67,14 +74,8 @@ namespace blaze {
 */
 template< typename T, unsigned int N >
 struct Extent
-{
- public:
-   //**********************************************************************************************
-   /*! \cond BLAZE_INTERNAL */
-   enum { value = 0 };
-   /*! \endcond */
-   //**********************************************************************************************
-};
+   : public IntegralConstant<unsigned int,0U>
+{};
 //*************************************************************************************************
 
 
@@ -83,12 +84,8 @@ struct Extent
 //! Partial specialization of the Extent type trait for empty array extents.
 template< typename T, unsigned int N >
 struct Extent<T[],N>
-{
- public:
-   //**********************************************************************************************
-   enum { value = Extent<T,N-1>::value };
-   //**********************************************************************************************
-};
+   : public IntegralConstant<unsigned int,Extent<T,N-1U>::value>
+{};
 /*! \endcond */
 //*************************************************************************************************
 
@@ -98,12 +95,8 @@ struct Extent<T[],N>
 //! Partial specialization of the Extent type trait for non-empty array extents.
 template< typename T, unsigned int N, unsigned int E >
 struct Extent<T[E],N>
-{
- public:
-   //**********************************************************************************************
-   enum { value = Extent<T,N-1>::value };
-   //**********************************************************************************************
-};
+   : public IntegralConstant<unsigned int,Extent<T,N-1U>::value>
+{};
 /*! \endcond */
 //*************************************************************************************************
 
@@ -113,12 +106,8 @@ struct Extent<T[E],N>
 //! Terminating partial specialization of the Extent type trait for empty array extents.
 template< typename T >
 struct Extent<T[],0UL>
-{
- public:
-   //**********************************************************************************************
-   enum { value = 0 };
-   //**********************************************************************************************
-};
+   : public IntegralConstant<unsigned int,0U>
+{};
 /*! \endcond */
 //*************************************************************************************************
 
@@ -128,12 +117,8 @@ struct Extent<T[],0UL>
 //! Terminating partial specialization of the Extent type trait for non-empty array extents.
 template< typename T, unsigned int E >
 struct Extent<T[E],0U>
-{
- public:
-   //**********************************************************************************************
-   enum { value = E };
-   //**********************************************************************************************
-};
+   : public IntegralConstant<unsigned int,E>
+{};
 /*! \endcond */
 //*************************************************************************************************
 

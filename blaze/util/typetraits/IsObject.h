@@ -40,10 +40,8 @@
 // Includes
 //*************************************************************************************************
 
-#include <boost/type_traits/is_object.hpp>
-#include <blaze/util/FalseType.h>
-#include <blaze/util/SelectType.h>
-#include <blaze/util/TrueType.h>
+#include <type_traits>
+#include <blaze/util/IntegralConstant.h>
 
 
 namespace blaze {
@@ -55,53 +53,28 @@ namespace blaze {
 //=================================================================================================
 
 //*************************************************************************************************
-/*! \cond BLAZE_INTERNAL */
-/*!\brief Auxiliary helper struct for the IsObject type trait.
-// \ingroup type_traits
-*/
-template< typename T >
-struct IsObjectHelper
-{
-   //**********************************************************************************************
-   enum { value = boost::is_object<T>::value };
-   typedef typename SelectType<value,TrueType,FalseType>::Type  Type;
-   //**********************************************************************************************
-};
-/*! \endcond */
-//*************************************************************************************************
-
-
-//*************************************************************************************************
 /*!\brief Compile time type check.
 // \ingroup type_traits
 //
 // This class tests whether the given template parameter \a T is an object type. All types are
 // considered object types except references, \a void, and function types. If \a T is an object
-// type, the \a value member enumeration is set to 1, the nested type definition \a Type is
-// \a TrueType, and the class derives from \a TrueType. Otherwise \a value is set to 0, \a Type
-// is \a FalseType, and the class derives from \a FalseType.
+// type, the \a value member enumeration is set to \a true, the nested type definition \a Type
+// is \a TrueType, and the class derives from \a TrueType. Otherwise \a value is set to \a false,
+// \a Type is \a FalseType, and the class derives from \a FalseType.
 
    \code
-   blaze::IsObject<int>::value                   // Evaluates to 1
+   blaze::IsObject<int>::value                   // Evaluates to 'true'
    blaze::IsObject<int*>::Type                   // Results in TrueType
    blaze::IsObject<int (*)(void)>                // Is derived from TrueType
    blaze::IsObject<int (MyClass::*)(void)const>  // Also derived from TrueType
-   blaze::IsObject<int&>::value                  // Evaluates to 0
+   blaze::IsObject<int&>::value                  // Evaluates to 'false'
    blaze::IsObject<const void>::Type             // Results in FalseType
    blaze::IsObject<int (double)>                 // Is derived from FalseType
    \endcode
 */
 template< typename T >
-struct IsObject : public IsObjectHelper<T>::Type
-{
- public:
-   //**********************************************************************************************
-   /*! \cond BLAZE_INTERNAL */
-   enum { value = IsObjectHelper<T>::value };
-   typedef typename IsObjectHelper<T>::Type  Type;
-   /*! \endcond */
-   //**********************************************************************************************
-};
+struct IsObject : public BoolConstant< std::is_object<T>::value >
+{};
 //*************************************************************************************************
 
 } // namespace blaze

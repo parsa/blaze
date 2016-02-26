@@ -40,9 +40,7 @@
 // Includes
 //*************************************************************************************************
 
-#include <blaze/util/FalseType.h>
-#include <blaze/util/SelectType.h>
-#include <blaze/util/TrueType.h>
+#include <blaze/util/IntegralConstant.h>
 #include <blaze/util/Types.h>
 
 
@@ -59,30 +57,23 @@ namespace blaze {
 // \ingroup type_traits
 //
 // This class offers the possibility to test the size of a type at compile time. If the type
-// \a T is exactly \a Size bytes large, the \a value member enumeration is set to 1, the nested
-// type definition \a Type is \a TrueType, and the class derives from \a TrueType. Otherwise
-// \a value is set to 0, \a Type is \a FalseType, and the class derives from \a FalseType.
+// \a T is exactly \a Size bytes large, the \a value member enumeration is set to \a true,
+// the nested type definition \a Type is \a TrueType, and the class derives from \a TrueType.
+// Otherwise \a value is set to \a false, \a Type is \a FalseType, and the class derives from
+// \a FalseType.
 
    \code
-   blaze::HasSize<int,4>::value              // Evaluates to 1 (on most architectures)
+   blaze::HasSize<int,4>::value              // Evaluates to 'true' (on most architectures)
    blaze::HasSize<float,4>::Type             // Results in TrueType (on most architectures)
    blaze::HasSize<const double,8>            // Is derived from TrueType (on most architectures)
-   blaze::HasSize<volatile double,2>::value  // Evaluates to 0
+   blaze::HasSize<volatile double,2>::value  // Evaluates to 'false'
    blaze::HasSize<const char,8>::Type        // Results in FalseType
    blaze::HasSize<unsigned char,4>           // Is derived from FalseType
    \endcode
 */
 template< typename T, size_t Size >
-struct HasSize : public SelectType< sizeof( T ) == Size, TrueType, FalseType >::Type
-{
- public:
-   //**********************************************************************************************
-   /*! \cond BLAZE_INTERNAL */
-   enum { value = ( sizeof( T ) == Size ) };
-   typedef typename SelectType<value,TrueType,FalseType>::Type  Type;
-   /*! \endcond */
-   //**********************************************************************************************
-};
+struct HasSize : public BoolConstant< sizeof( T ) == Size >
+{};
 //*************************************************************************************************
 
 
@@ -93,19 +84,13 @@ struct HasSize : public SelectType< sizeof( T ) == Size, TrueType, FalseType >::
 //
 // This class ia a partial specialization of the HasSize template for the type \a void. This
 // specialization assumes that an object of type \a void has a size of 0. Therefore \a value
-// is set to 1, \a Type is \a TrueType, and the class derives from \a TrueType only if the
-// \a Size template argument is 0. Otherwise \a value is set to 0, \a Type is \a FalseType,
+// is set to \a true, \a Type is \a TrueType, and the class derives from \a TrueType only if the
+// \a Size template argument is 0. Otherwise \a value is set to \a false, \a Type is \a FalseType,
 // and the class derives from \a FalseType.
 */
 template< size_t Size >
-struct HasSize<void,Size> : public SelectType< 0 == Size, TrueType, FalseType >::Type
-{
- public:
-   //**********************************************************************************************
-   enum { value = ( 0 == Size ) };
-   typedef typename SelectType<value,TrueType,FalseType>::Type  Type;
-   //**********************************************************************************************
-};
+struct HasSize<void,Size> : public BoolConstant< 0 == Size >
+{};
 /*! \endcond */
 //*************************************************************************************************
 
@@ -117,19 +102,13 @@ struct HasSize<void,Size> : public SelectType< 0 == Size, TrueType, FalseType >:
 //
 // This class ia a partial specialization of the HasSize template for constant \a void. This
 // specialization assumes that an object of type \a void has a size of 0. Therefore \a value
-// is set to 1, \a Type is \a TrueType, and the class derives from \a TrueType only if the
-// \a Size template argument is 0. Otherwise \a value is set to 0, \a Type is \a FalseType,
-// and the class derives from \a FalseType.
+// is set to \a true, \a Type is \a TrueType, and the class derives from \a TrueType only if
+// the \a Size template argument is 0. Otherwise \a value is set to \a false, \a Type is
+// \a FalseType, and the class derives from \a FalseType.
 */
 template< size_t Size >
-struct HasSize<const void,Size> : public SelectType< 0 == Size, TrueType, FalseType >::Type
-{
- public:
-   //**********************************************************************************************
-   enum { value = ( 0 == Size ) };
-   typedef typename SelectType<value,TrueType,FalseType>::Type  Type;
-   //**********************************************************************************************
-};
+struct HasSize<const void,Size> : public BoolConstant< 0 == Size >
+{};
 /*! \endcond */
 //*************************************************************************************************
 
@@ -141,19 +120,13 @@ struct HasSize<const void,Size> : public SelectType< 0 == Size, TrueType, FalseT
 //
 // This class ia a partial specialization of the HasSize template for volatile \a void. This
 // specialization assumes that an object of type \a void has a size of 0. Therefore \a value
-// is set to 1, \a Type is \a TrueType, and the class derives from \a TrueType only if the
-// \a Size template argument is 0. Otherwise \a value is set to 0, \a Type is \a FalseType,
-// and the class derives from \a FalseType.
+// is set to \a true, \a Type is \a TrueType, and the class derives from \a TrueType only if
+// the \a Size template argument is 0. Otherwise \a value is set to \a false, \a Type is
+// \a FalseType, and the class derives from \a FalseType.
 */
 template< size_t Size >
-struct HasSize<volatile void,Size> : public SelectType< 0 == Size, TrueType, FalseType >::Type
-{
- public:
-   //**********************************************************************************************
-   enum { value = ( 0 == Size ) };
-   typedef typename SelectType<value,TrueType,FalseType>::Type  Type;
-   //**********************************************************************************************
-};
+struct HasSize<volatile void,Size> : public BoolConstant< 0 == Size >
+{};
 /*! \endcond */
 //*************************************************************************************************
 
@@ -165,19 +138,13 @@ struct HasSize<volatile void,Size> : public SelectType< 0 == Size, TrueType, Fal
 //
 // This class ia a partial specialization of the HasSize template for constant volatile \a void.
 // This specialization assumes that an object of type \a void has a size of 0. Therefore \a value
-// is set to 1, \a Type is \a TrueType, and the class derives from \a TrueType only if the \a Size
-// template argument is 0. Otherwise \a value is set to 0, \a Type is \a FalseType, and the class
-// derives from \a FalseType.
+// is set to \a true, \a Type is \a TrueType, and the class derives from \a TrueType only if the
+// \a Size template argument is 0. Otherwise \a value is set to \a false, \a Type is \a FalseType,
+// and the class derives from \a FalseType.
 */
 template< size_t Size >
-struct HasSize<const volatile void,Size> : public SelectType< 0 == Size, TrueType, FalseType >::Type
-{
- public:
-   //**********************************************************************************************
-   enum { value = ( 0 == Size ) };
-   typedef typename SelectType<value,TrueType,FalseType>::Type  Type;
-   //**********************************************************************************************
-};
+struct HasSize<const volatile void,Size> : public BoolConstant< 0 == Size >
+{};
 /*! \endcond */
 //*************************************************************************************************
 
@@ -195,16 +162,16 @@ struct HasSize<const volatile void,Size> : public SelectType< 0 == Size, TrueTyp
 // \ingroup type_traits
 //
 // This type trait offers the possibility to test whether a given type has a size of exactly
-// one byte. If the type \a T has one byte, the \a value member enumeration is set to 1, the
-// nested type definition \a Type is \a TrueType, and the class derives from \a TrueType.
-// Otherwise \a value is set to 0, \a Type is \a FalseType, and the class derives from
+// one byte. If the type \a T has one byte, the \a value member enumeration is set to \a true,
+// the nested type definition \a Type is \a TrueType, and the class derives from \a TrueType.
+// Otherwise \a value is set to \a false, \a Type is \a FalseType, and the class derives from
 // \a FalseType.
 
    \code
-   blaze::Has1Byte<const char>::value       // Evaluates to 1 (on most architectures)
+   blaze::Has1Byte<const char>::value       // Evaluates to 'true' (on most architectures)
    blaze::Has1Byte<unsigned char>::Type     // Results in TrueType (on most architectures)
    blaze::Has1Byte<signed char>             // Is derived from TrueType (on most architectures)
-   blaze::Has1Byte<volatile double>::value  // Evaluates to 0
+   blaze::Has1Byte<volatile double>::value  // Evaluates to 'false'
    blaze::Has1Byte<const float>::Type       // Results in FalseType
    blaze::Has1Byte<unsigned short>          // Is derived from FalseType
    \endcode
@@ -228,16 +195,16 @@ struct Has1Byte : public HasSize<T,1UL>
 // \ingroup type_traits
 //
 // This type trait offers the possibility to test whether a given type has a size of exactly
-// two bytes. If the type \a T has two bytes, the \a value member enumeration is set to 1, the
-// nested type definition \a Type is \a TrueType, and the class derives from \a TrueType.
-// Otherwise \a value is set to 0, \a Type is \a FalseType, and the class derives from
+// two bytes. If the type \a T has two bytes, the \a value member enumeration is set to \a true,
+// the nested type definition \a Type is \a TrueType, and the class derives from \a TrueType.
+// Otherwise \a value is set to \a false, \a Type is \a FalseType, and the class derives from
 // \a FalseType.
 
    \code
-   blaze::Has2Bytes<const short>::value      // Evaluates to 1 (on most architectures)
+   blaze::Has2Bytes<const short>::value      // Evaluates to 'true' (on most architectures)
    blaze::Has2Bytes<unsigned short>::Type    // Results in TrueType (on most architectures)
    blaze::Has2Bytes<volatile short>          // Is derived from TrueType (on most architectures)
-   blaze::Has2Bytes<volatile double>::value  // Evaluates to 0
+   blaze::Has2Bytes<volatile double>::value  // Evaluates to 'false'
    blaze::Has2Bytes<const float>::Type       // Results in FalseType
    blaze::Has2Bytes<unsigned int>            // Is derived from FalseType
    \endcode
@@ -261,16 +228,16 @@ struct Has2Bytes : public HasSize<T,2UL>
 // \ingroup type_traits
 //
 // This type trait offers the possibility to test whether a given type has a size of exactly
-// four bytes. If the type \a T has four bytes, the \a value member enumeration is set to 1,
-// the nested type definition \a Type is \a TrueType, and the class derives from \a TrueType.
-// Otherwise \a value is set to 0, \a Type is \a FalseType, and the class derives from
-// \a FalseType.
+// four bytes. If the type \a T has four bytes, the \a value member enumeration is set to
+// \a true, the nested type definition \a Type is \a TrueType, and the class derives from
+// \a TrueType. Otherwise \a value is set to \a false, \a Type is \a FalseType, and the class
+// derives from \a FalseType.
 
    \code
-   blaze::Has4Bytes<const int>::value        // Evaluates to 1 (on most architectures)
+   blaze::Has4Bytes<const int>::value        // Evaluates to 'true' (on most architectures)
    blaze::Has4Bytes<unsigned int>::Type      // Results in TrueType (on most architectures)
    blaze::Has4Bytes<volatile float>          // Is derived from TrueType (on most architectures)
-   blaze::Has4Bytes<volatile double>::value  // Evaluates to 0
+   blaze::Has4Bytes<volatile double>::value  // Evaluates to 'false'
    blaze::Has4Bytes<const float>::Type       // Results in FalseType
    blaze::Has4Bytes<short>                   // Is derived from FalseType
    \endcode
@@ -294,16 +261,16 @@ struct Has4Bytes : public HasSize<T,4UL>
 // \ingroup type_traits
 //
 // This type trait offers the possibility to test whether a given type has a size of exactly
-// four bytes. If the type \a T has four bytes, the \a value member enumeration is set to 1,
-// the nested type definition \a Type is \a TrueType, and the class derives from \a TrueType.
-// Otherwise \a value is set to 0, \a Type is \a FalseType, and the class derives from
-// \a FalseType.
+// four bytes. If the type \a T has four bytes, the \a value member enumeration is set to
+// \a true, the nested type definition \a Type is \a TrueType, and the class derives from
+// \a TrueType. Otherwise \a value is set to \a false, \a Type is \a FalseType, and the class
+// derives from \a FalseType.
 
    \code
-   blaze::Has8Bytes<double>::value        // Evaluates to 1 (on most architectures)
+   blaze::Has8Bytes<double>::value        // Evaluates to 'true' (on most architectures)
    blaze::Has8Bytes<const double>::Type   // Results in TrueType (on most architectures)
    blaze::Has8Bytes<volatile double>      // Is derived from TrueType (on most architectures)
-   blaze::Has8Bytes<unsigned int>::value  // Evaluates to 0
+   blaze::Has8Bytes<unsigned int>::value  // Evaluates to 'false'
    blaze::Has8Bytes<const float>::Type    // Results in FalseType
    blaze::Has8Bytes<volatile short>       // Is derived from FalseType
    \endcode

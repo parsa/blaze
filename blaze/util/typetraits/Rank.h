@@ -40,8 +40,7 @@
 // Includes
 //*************************************************************************************************
 
-#include <blaze/util/FalseType.h>
-#include <blaze/util/TrueType.h>
+#include <blaze/util/IntegralConstant.h>
 
 
 namespace blaze {
@@ -70,15 +69,8 @@ namespace blaze {
    \endcode
 */
 template< typename T >
-struct Rank
-{
- public:
-   //**********************************************************************************************
-   /*! \cond BLAZE_INTERNAL */
-   enum { value = 0 };
-   /*! \endcond */
-   //**********************************************************************************************
-};
+struct Rank : public IntegralConstant<size_t,0UL>
+{};
 //*************************************************************************************************
 
 
@@ -86,13 +78,8 @@ struct Rank
 /*! \cond BLAZE_INTERNAL */
 //! Specialization of the Rank type trait for empty arrays.
 template< typename T >
-struct Rank<T[]>
-{
- public:
-   //**********************************************************************************************
-   enum { value = 1 + Rank<T>::value };
-   //**********************************************************************************************
-};
+struct Rank<T[]> : public IntegralConstant<size_t,1UL+Rank<T>::value>
+{};
 /*! \endcond */
 //*************************************************************************************************
 
@@ -101,13 +88,8 @@ struct Rank<T[]>
 /*! \cond BLAZE_INTERNAL */
 //! Specialization of the Rank type trait for non-empty arrays.
 template< typename T, unsigned int N >
-struct Rank<T[N]>
-{
- public:
-   //**********************************************************************************************
-   enum { value = 1 + Rank<T>::value };
-   //**********************************************************************************************
-};
+struct Rank<T[N]> : public IntegralConstant<size_t,1UL+Rank<T>::value>
+{};
 /*! \endcond */
 //*************************************************************************************************
 

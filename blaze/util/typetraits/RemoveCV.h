@@ -40,7 +40,7 @@
 // Includes
 //*************************************************************************************************
 
-#include <boost/type_traits/remove_cv.hpp>
+#include <type_traits>
 
 
 namespace blaze {
@@ -62,9 +62,9 @@ namespace blaze {
    blaze::RemoveCV<const double>::Type        // Results in 'double'
    blaze::RemoveCV<volatile float>::Type      // Results in 'float'
    blaze::RemoveCV<const volatile int>::Type  // Results in 'int'
-   blaze::RemoveCV<int const*>::Type          // Results in 'const int*'
-   blaze::RemoveCV<int const* const>::Type    // Results in 'const int*'
-   blaze::RemoveCV<int const&>::Type          // Results in 'const int&'
+   blaze::RemoveCV<int const*>::Type          // Results in 'int const*'
+   blaze::RemoveCV<int const* const>::Type    // Results in 'int const*'
+   blaze::RemoveCV<int const&>::Type          // Results in 'int const&'
    \endcode
 */
 template< typename T >
@@ -73,7 +73,7 @@ struct RemoveCV
  public:
    //**********************************************************************************************
    /*! \cond BLAZE_INTERNAL */
-   typedef typename boost::remove_cv<T>::type  Type;
+   typedef typename std::remove_cv<T>::type  Type;
    /*! \endcond */
    //**********************************************************************************************
 };

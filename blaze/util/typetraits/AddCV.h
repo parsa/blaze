@@ -40,7 +40,7 @@
 // Includes
 //*************************************************************************************************
 
-#include <boost/type_traits/add_cv.hpp>
+#include <type_traits>
 
 
 namespace blaze {
@@ -72,7 +72,7 @@ struct AddCV
  public:
    //**********************************************************************************************
    /*! \cond BLAZE_INTERNAL */
-   typedef typename boost::add_cv<T>::type  Type;
+   typedef typename std::add_cv<T>::type  Type;
    /*! \endcond */
    //**********************************************************************************************
 };

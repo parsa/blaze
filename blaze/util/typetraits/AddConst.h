@@ -40,7 +40,7 @@
 // Includes
 //*************************************************************************************************
 
-#include <boost/type_traits/add_const.hpp>
+#include <type_traits>
 
 
 namespace blaze {
@@ -71,7 +71,7 @@ struct AddConst
  public:
    //**********************************************************************************************
    /*! \cond BLAZE_INTERNAL */
-   typedef typename boost::add_const<T>::type  Type;
+   typedef typename std::add_const<T>::type  Type;
    /*! \endcond */
    //**********************************************************************************************
 };

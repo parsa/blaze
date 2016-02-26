@@ -40,10 +40,8 @@
 // Includes
 //*************************************************************************************************
 
-#include <boost/type_traits/is_signed.hpp>
-#include <blaze/util/FalseType.h>
-#include <blaze/util/SelectType.h>
-#include <blaze/util/TrueType.h>
+#include <type_traits>
+#include <blaze/util/IntegralConstant.h>
 
 
 namespace blaze {
@@ -55,54 +53,29 @@ namespace blaze {
 //=================================================================================================
 
 //*************************************************************************************************
-/*! \cond BLAZE_INTERNAL */
-/*!\brief Auxiliary helper struct for the IsSigned type trait.
-// \ingroup type_traits
-*/
-template< typename T >
-struct IsSignedHelper
-{
-   //**********************************************************************************************
-   enum { value = boost::is_signed<T>::value };
-   typedef typename SelectType<value,TrueType,FalseType>::Type  Type;
-   //**********************************************************************************************
-};
-/*! \endcond */
-//*************************************************************************************************
-
-
-//*************************************************************************************************
 /*!\brief Compile time check for signed data types.
 // \ingroup type_traits
 //
-// This type trait tests whether or not the given template parameter is a signed integral data
-// type. In case the type is a signed (possibly cv-qualified) data type, the \a value member
-// enumeration is set to 1, the nested type definition \a Type is \a TrueType, and the class
-// derives from \a TrueType. Otherwise \a value is set to 0, \a Type is \a FalseType, and
-// the class derives from \a FalseType.
+// This type trait tests whether or not the given template parameter is a signed integral or
+// a floating point data type. In case the type is a signed (possibly cv-qualified) data type,
+// the \a value member enumeration is set to \a true, the nested type definition \a Type is
+// \a TrueType, and the class derives from \a TrueType. Otherwise \a value is set to \a false,
+// \a Type is \a FalseType, and the class derives from \a FalseType.
 
    \code
    class MyClass {};
 
-   blaze::IsSigned<short>::value         // Evaluates to 1
-   blaze::IsSigned<const int>::type      // Results in TrueType
-   blaze::IsSigned<volatile long>        // Is derived from TrueType
-   blaze::IsSigned<unsigned int>::value  // Evaluates to 0
-   blaze::IsSigned<const float>::type    // Results in FalseType
-   blaze::IsSigned<MyClass>              // Is derived from FalseType
+   blaze::IsSigned<short>::value               // Evaluates to 'true'
+   blaze::IsSigned<const int>::Type            // Results in TrueType
+   blaze::IsSigned<volatile float>             // Is derived from TrueType
+   blaze::IsSigned<unsigned int>::value        // Evaluates to 'false'
+   blaze::IsSigned<const unsigned long>::Type  // Results in FalseType
+   blaze::IsSigned<MyClass>                    // Is derived from FalseType
    \endcode
 */
 template< typename T >
-struct IsSigned : public IsSignedHelper<T>::Type
-{
- public:
-   //**********************************************************************************************
-   /*! \cond BLAZE_INTERNAL */
-   enum { value = IsSignedHelper<T>::value };
-   typedef typename IsSignedHelper<T>::Type  Type;
-   /*! \endcond */
-   //**********************************************************************************************
-};
+struct IsSigned : public BoolConstant< std::is_signed<T>::value >
+{};
 //*************************************************************************************************
 
 } // namespace blaze

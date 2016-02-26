@@ -58,30 +58,22 @@ namespace blaze {
 //
 // This type trait tests whether or not the given template parameter is of boolean type. In
 // case the type is a boolean (ignoring the cv-qualifiers), the \a value member enumeration
-// is set to 1, the nested type definition \a Type is \a TrueType, and the class derives
-// from \a TrueType. Otherwise \a value is set to 0, \a Type is \a FalseType, and the class
-// derives from \a FalseType.
+// is set to \a true, the nested type definition \a Type is \a TrueType, and the class derives
+// from \a TrueType. Otherwise \a value is set to \a false, \a Type is \a FalseType, and the
+// class derives from \a FalseType.
 
    \code
-   blaze::IsBoolean<bool>::value          // Evaluates to 1
+   blaze::IsBoolean<bool>::value          // Evaluates to 'true'
    blaze::IsBoolean<const bool>::Type     // Results in TrueType
    blaze::IsBoolean<const volatile bool>  // Is derived from TrueType
-   blaze::IsBoolean<float>::value         // Evaluates to 0 (float is not a boolean)
+   blaze::IsBoolean<float>::value         // Evaluates to 'false' (float is not a boolean)
    blaze::IsBoolean<const int>::Type      // Results in FalseType
    blaze::IsBoolean<volatile short>       // Is derived from FalseType
    \endcode
 */
 template< typename T >
 struct IsBoolean : public FalseType
-{
- public:
-   //**********************************************************************************************
-   /*! \cond BLAZE_INTERNAL */
-   enum { value = 0 };
-   typedef FalseType  Type;
-   /*! \endcond */
-   //**********************************************************************************************
-};
+{};
 //*************************************************************************************************
 
 
@@ -90,13 +82,7 @@ struct IsBoolean : public FalseType
 //! Specialization of the IsBoolean type trait for the plain 'bool' type.
 template<>
 struct IsBoolean<bool> : public TrueType
-{
- public:
-   //**********************************************************************************************
-   enum { value = 1 };
-   typedef TrueType  Type;
-   //**********************************************************************************************
-};
+{};
 /*! \endcond */
 //*************************************************************************************************
 
@@ -106,13 +92,7 @@ struct IsBoolean<bool> : public TrueType
 //! Specialization of the IsBoolean type trait for 'const bool'.
 template<>
 struct IsBoolean<const bool> : public TrueType
-{
- public:
-   //**********************************************************************************************
-   enum { value = 1 };
-   typedef TrueType  Type;
-   //**********************************************************************************************
-};
+{};
 /*! \endcond */
 //*************************************************************************************************
 
@@ -122,13 +102,7 @@ struct IsBoolean<const bool> : public TrueType
 //! Specialization of the IsBoolean type trait for 'volatile bool'.
 template<>
 struct IsBoolean<volatile bool> : public TrueType
-{
- public:
-   //**********************************************************************************************
-   enum { value = 1 };
-   typedef TrueType  Type;
-   //**********************************************************************************************
-};
+{};
 /*! \endcond */
 //*************************************************************************************************
 
@@ -138,13 +112,7 @@ struct IsBoolean<volatile bool> : public TrueType
 //! Specialization of the IsBoolean type trait for 'const volatile bool'
 template<>
 struct IsBoolean<const volatile bool> : public TrueType
-{
- public:
-   //**********************************************************************************************
-   enum { value = 1 };
-   typedef TrueType  Type;
-   //**********************************************************************************************
-};
+{};
 /*! \endcond */
 //*************************************************************************************************
 

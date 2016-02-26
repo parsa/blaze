@@ -40,7 +40,7 @@
 // Includes
 //*************************************************************************************************
 
-#include <boost/type_traits/remove_pointer.hpp>
+#include <type_traits>
 
 
 namespace blaze {
@@ -55,14 +55,14 @@ namespace blaze {
 /*!\brief Removal of pointer modifiers.
 // \ingroup type_traits
 //
-// The RemoveCV type trait removes any pointer modifiers from the given type \a T.
+// The RemovePointer type trait removes any pointer modifiers from the given type \a T.
 
    \code
-   blaze::RemoveCV<int>::Type             // Results in 'int'
-   blaze::RemoveCV<const int*>::Type      // Results in 'const int'
-   blaze::RemoveCV<volatile int**>::Type  // Results in 'volatile int*'
-   blaze::RemoveCV<int&>::Type            // Results in 'int&'
-   blaze::RemoveCV<int*&>::Type           // Results in 'int*&'
+   blaze::RemovePointer<int>::Type             // Results in 'int'
+   blaze::RemovePointer<const int*>::Type      // Results in 'const int'
+   blaze::RemovePointer<volatile int**>::Type  // Results in 'volatile int*'
+   blaze::RemovePointer<int&>::Type            // Results in 'int&'
+   blaze::RemovePointer<int*&>::Type           // Results in 'int*&'
    \endcode
 */
 template< typename T >
@@ -71,7 +71,7 @@ struct RemovePointer
  public:
    //**********************************************************************************************
    /*! \cond BLAZE_INTERNAL */
-   typedef typename boost::remove_pointer<T>::type  Type;
+   typedef typename std::remove_pointer<T>::type  Type;
    /*! \endcond */
    //**********************************************************************************************
 };

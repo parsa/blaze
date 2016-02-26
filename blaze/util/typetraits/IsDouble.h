@@ -56,32 +56,24 @@ namespace blaze {
 /*!\brief Compile time check for double precision floating point types.
 // \ingroup type_traits
 //
-// This type trait tests whether or not the given template parameter is of double type. In
-// case the type is double (ignoring the cv-qualifiers), the \a value member enumeration is
-// set to 1, the nested type definition \a Type is \a TrueType, and the class derives from
-// \a TrueType. Otherwise \a value is set to 0, \a Type is \a FalseType, and the class
+// This type trait tests whether or not the given template parameter is of double type. In case
+// the type is double (ignoring the cv-qualifiers), the \a value member enumeration is set to
+// \a true, the nested type definition \a Type is \a TrueType, and the class derives from
+// \a TrueType. Otherwise \a value is set to \a false, \a Type is \a FalseType, and the class
 // derives from \a FalseType.
 
    \code
-   blaze::IsDouble<double>::value          // Evaluates to 1
+   blaze::IsDouble<double>::value          // Evaluates to 'true'
    blaze::IsDouble<const double>::Type     // Results in TrueType
    blaze::IsDouble<const volatile double>  // Is derived from TrueType
-   blaze::IsDouble<float>::value           // Evaluates to 0
+   blaze::IsDouble<float>::value           // Evaluates to 'false'
    blaze::IsDouble<const int>::Type        // Results in FalseType
    blaze::IsDouble<volatile short>         // Is derived from FalseType
    \endcode
 */
 template< typename T >
 struct IsDouble : public FalseType
-{
- public:
-   //**********************************************************************************************
-   /*! \cond BLAZE_INTERNAL */
-   enum { value = 0 };
-   typedef FalseType  Type;
-   /*! \endcond */
-   //**********************************************************************************************
-};
+{};
 //*************************************************************************************************
 
 
@@ -90,13 +82,7 @@ struct IsDouble : public FalseType
 //! Specialization of the IsDouble type trait for the plain 'double' type.
 template<>
 struct IsDouble<double> : public TrueType
-{
- public:
-   //**********************************************************************************************
-   enum { value = 1 };
-   typedef TrueType  Type;
-   //**********************************************************************************************
-};
+{};
 /*! \endcond */
 //*************************************************************************************************
 
@@ -106,13 +92,7 @@ struct IsDouble<double> : public TrueType
 //! Specialization of the IsDouble type trait for 'const double'.
 template<>
 struct IsDouble<const double> : public TrueType
-{
- public:
-   //**********************************************************************************************
-   enum { value = 1 };
-   typedef TrueType  Type;
-   //**********************************************************************************************
-};
+{};
 /*! \endcond */
 //*************************************************************************************************
 
@@ -122,13 +102,7 @@ struct IsDouble<const double> : public TrueType
 //! Specialization of the IsDouble type trait for 'volatile double'.
 template<>
 struct IsDouble<volatile double> : public TrueType
-{
- public:
-   //**********************************************************************************************
-   enum { value = 1 };
-   typedef TrueType  Type;
-   //**********************************************************************************************
-};
+{};
 /*! \endcond */
 //*************************************************************************************************
 
@@ -138,13 +112,7 @@ struct IsDouble<volatile double> : public TrueType
 //! Specialization of the IsDouble type trait for 'const volatile double'.
 template<>
 struct IsDouble<const volatile double> : public TrueType
-{
- public:
-   //**********************************************************************************************
-   enum { value = 1 };
-   typedef TrueType  Type;
-   //**********************************************************************************************
-};
+{};
 /*! \endcond */
 //*************************************************************************************************
 

@@ -40,7 +40,7 @@
 // Includes
 //*************************************************************************************************
 
-#include <boost/type_traits/remove_const.hpp>
+#include <type_traits>
 
 
 namespace blaze {
@@ -72,7 +72,7 @@ struct RemoveConst
  public:
    //**********************************************************************************************
    /*! \cond BLAZE_INTERNAL */
-   typedef typename boost::remove_const<T>::type  Type;
+   typedef typename std::remove_const<T>::type  Type;
    /*! \endcond */
    //**********************************************************************************************
 };

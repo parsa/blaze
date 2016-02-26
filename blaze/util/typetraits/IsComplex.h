@@ -59,30 +59,22 @@ namespace blaze {
 //
 // This type trait tests whether or not the given template parameter is a complex data type.
 // In case the type is a complex data type (ignoring the cv-qualifiers), the \a value member
-// enumeration is set to 1, the nested type definition \a Type is \a TrueType, and the class
-// derives from \a TrueType. Otherwise \a value is set to 0, \a Type is \a FalseType, and the
-// class derives from \a FalseType.
+// enumeration is set to \a true, the nested type definition \a Type is \a TrueType, and the
+// class derives from \a TrueType. Otherwise \a value is set to \a false, \a Type is \a FalseType,
+// and the class derives from \a FalseType.
 
    \code
-   blaze::IsComplex< complex<double> >::value      // Evaluates to 1
+   blaze::IsComplex< complex<double> >::value      // Evaluates to 'true'
    blaze::IsComplex< const complex<float> >::Type  // Results in TrueType
    blaze::IsComplex< volatile complex<int> >       // Is derived from TrueType
-   blaze::IsComplex< float >::value                // Evaluates to 0
+   blaze::IsComplex< float >::value                // Evaluates to 'false'
    blaze::IsComplex< const double >::Type          // Results in FalseType
    blaze::IsComplex< const volatile int >          // Is derived from FalseType
    \endcode
 */
 template< typename T >
 struct IsComplex : public FalseType
-{
- public:
-   //**********************************************************************************************
-   /*! \cond BLAZE_INTERNAL */
-   enum { value = 0 };
-   typedef FalseType  Type;
-   /*! \endcond */
-   //**********************************************************************************************
-};
+{};
 //*************************************************************************************************
 
 
@@ -91,13 +83,7 @@ struct IsComplex : public FalseType
 //! Specialization of the IsComplex type trait for the plain 'complex' type.
 template< typename T >
 struct IsComplex< complex<T> > : public TrueType
-{
- public:
-   //**********************************************************************************************
-   enum { value = 1 };
-   typedef TrueType  Type;
-   //**********************************************************************************************
-};
+{};
 /*! \endcond */
 //*************************************************************************************************
 
@@ -107,13 +93,7 @@ struct IsComplex< complex<T> > : public TrueType
 //! Specialization of the IsComplex type trait for 'const complex'.
 template< typename T >
 struct IsComplex< const complex<T> > : public TrueType
-{
- public:
-   //**********************************************************************************************
-   enum { value = 1 };
-   typedef TrueType  Type;
-   //**********************************************************************************************
-};
+{};
 /*! \endcond */
 //*************************************************************************************************
 
@@ -123,13 +103,7 @@ struct IsComplex< const complex<T> > : public TrueType
 //! Specialization of the IsComplex type trait for 'volatile complex'.
 template< typename T >
 struct IsComplex< volatile complex<T> > : public TrueType
-{
- public:
-   //**********************************************************************************************
-   enum { value = 1 };
-   typedef TrueType  Type;
-   //**********************************************************************************************
-};
+{};
 /*! \endcond */
 //*************************************************************************************************
 
@@ -139,13 +113,7 @@ struct IsComplex< volatile complex<T> > : public TrueType
 //! Specialization of the IsComplex type trait for 'const volatile complex'
 template< typename T >
 struct IsComplex< const volatile complex<T> > : public TrueType
-{
- public:
-   //**********************************************************************************************
-   enum { value = 1 };
-   typedef TrueType  Type;
-   //**********************************************************************************************
-};
+{};
 /*! \endcond */
 //*************************************************************************************************
 

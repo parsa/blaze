@@ -40,7 +40,7 @@
 // Includes
 //*************************************************************************************************
 
-#include <boost/type_traits/make_signed.hpp>
+#include <type_traits>
 
 
 namespace blaze {
@@ -61,7 +61,7 @@ namespace blaze {
 
    \code
    enum MyEnum { ... };
-   
+
    blaze::MakeSigned<int>::Type                  // Results in 'int'
    blaze::MakeSigned<const unsigned int>::Type   // Results in 'const int'
    blaze::MakeSigned<const unsigned long>::Type  // Results in 'const long'
@@ -75,7 +75,7 @@ struct MakeSigned
  public:
    //**********************************************************************************************
    /*! \cond BLAZE_INTERNAL */
-   typedef typename boost::make_signed<T>::type  Type;
+   typedef typename std::make_signed<T>::type  Type;
    /*! \endcond */
    //**********************************************************************************************
 };

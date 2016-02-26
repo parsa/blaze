@@ -40,7 +40,7 @@
 // Includes
 //*************************************************************************************************
 
-#include <boost/type_traits/add_pointer.hpp>
+#include <type_traits>
 
 
 namespace blaze {
@@ -71,7 +71,7 @@ struct AddPointer
  public:
    //**********************************************************************************************
    /*! \cond BLAZE_INTERNAL */
-   typedef typename boost::add_pointer<T>::type  Type;
+   typedef typename std::add_pointer<T>::type  Type;
    /*! \endcond */
    //**********************************************************************************************
 };

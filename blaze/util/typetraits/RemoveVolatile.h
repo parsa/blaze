@@ -40,7 +40,7 @@
 // Includes
 //*************************************************************************************************
 
-#include <boost/type_traits/remove_volatile.hpp>
+#include <type_traits>
 
 
 namespace blaze {
@@ -62,9 +62,9 @@ namespace blaze {
    blaze::RemoveVolatile<short>::Type                   // Results in 'short'
    blaze::RemoveVolatile<volatile double>::Type         // Results in 'double'
    blaze::RemoveVolatile<const volatile int>::Type      // Results in 'const int'
-   blaze::RemoveVolatile<int volatile*>::Type           // Results in 'const int*'
-   blaze::RemoveVolatile<int volatile* volatile>::Type  // Results in 'const int*'
-   blaze::RemoveVolatile<int volatile&>::Type           // Results in 'const int&'
+   blaze::RemoveVolatile<int volatile*>::Type           // Results in 'int volatile*'
+   blaze::RemoveVolatile<int volatile* volatile>::Type  // Results in 'int volatile*'
+   blaze::RemoveVolatile<int volatile&>::Type           // Results in 'int volatile&'
    \endcode
 */
 template< typename T >
@@ -73,7 +73,7 @@ struct RemoveVolatile
  public:
    //**********************************************************************************************
    /*! \cond BLAZE_INTERNAL */
-   typedef typename boost::remove_volatile<T>::type  Type;
+   typedef typename std::remove_volatile<T>::type  Type;
    /*! \endcond */
    //**********************************************************************************************
 };

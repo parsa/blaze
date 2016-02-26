@@ -40,7 +40,7 @@
 // Includes
 //*************************************************************************************************
 
-#include <boost/type_traits/add_reference.hpp>
+#include <type_traits>
 
 
 namespace blaze {
@@ -71,7 +71,7 @@ struct AddReference
  public:
    //**********************************************************************************************
    /*! \cond BLAZE_INTERNAL */
-   typedef typename boost::add_reference<T>::type  Type;
+   typedef typename std::add_lvalue_reference<T>::type  Type;
    /*! \endcond */
    //**********************************************************************************************
 };

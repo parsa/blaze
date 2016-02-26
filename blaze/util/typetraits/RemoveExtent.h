@@ -40,7 +40,7 @@
 // Includes
 //*************************************************************************************************
 
-#include <boost/type_traits/remove_extent.hpp>
+#include <type_traits>
 
 
 namespace blaze {
@@ -71,7 +71,7 @@ struct RemoveExtent
  public:
    //**********************************************************************************************
    /*! \cond BLAZE_INTERNAL */
-   typedef typename boost::remove_extent<T>::type  Type;
+   typedef typename std::remove_extent<T>::type  Type;
    /*! \endcond */
    //**********************************************************************************************
 };

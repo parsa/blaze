@@ -40,7 +40,7 @@
 // Includes
 //*************************************************************************************************
 
-#include <boost/type_traits/add_volatile.hpp>
+#include <type_traits>
 
 
 namespace blaze {
@@ -71,7 +71,7 @@ struct AddVolatile
  public:
    //**********************************************************************************************
    /*! \cond BLAZE_INTERNAL */
-   typedef typename boost::add_volatile<T>::type  Type;
+   typedef typename std::add_volatile<T>::type  Type;
    /*! \endcond */
    //**********************************************************************************************
 };
