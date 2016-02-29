@@ -40,13 +40,12 @@ namespace blaze {
 // \ingroup config
 //
 // This type definition represents the type of the random number generated used in the Blaze
-// library. The default random number generator is the boost::mt19937 mersenne-twister pseudo
-// random number generator. For more information see the class description of the boost library:
+// library. The default random number generator is the std::mt19937 mersenne-twister pseudo
+// random number generator. For more information see the following reference documentation:
 //
-//   http://www.boost.org/doc/libs/1_35_0/libs/random/random-generators.html#mersenne_twister\n
-//   http://www.boost.org/doc/libs/1_35_0/boost/random/mersenne_twister.hpp
+//   http://en.cppreference.com/w/cpp/numeric/random/mersenne_twister_engine
 */
-typedef boost::mt19937  RNG;
+typedef std::mt19937  RNG;
 //*************************************************************************************************
 
 } // namespace blaze
