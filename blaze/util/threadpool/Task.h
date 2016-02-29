@@ -40,7 +40,7 @@
 // Includes
 //*************************************************************************************************
 
-#include <boost/function.hpp>
+#include <functional>
 
 
 namespace blaze {
@@ -57,7 +57,7 @@ namespace threadpool {
 /*!\brief Handle for a single, executable task.
 // \ingroup threads
 */
-typedef boost::function<void(void)>  Task;
+typedef std::function<void(void)>  Task;
 //*************************************************************************************************
 
 } // namespace threadpool

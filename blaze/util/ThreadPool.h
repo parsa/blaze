@@ -40,7 +40,7 @@
 // Includes
 //*************************************************************************************************
 
-#include <boost/bind.hpp>
+#include <functional>
 #include <blaze/util/Assert.h>
 #include <blaze/util/Exception.h>
 #include <blaze/util/NonCopyable.h>
@@ -344,26 +344,11 @@ class ThreadPool : private NonCopyable
    //@}
    //**********************************************************************************************
 
-   //**Scheduling functions************************************************************************
-   /*!\name Scheduling functions */
+   //**Task scheduling*****************************************************************************
+   /*!\name Task scheduling */
    //@{
-   template< typename Callable >
-   void schedule( Callable func );
-
-   template< typename Callable, typename A1 >
-   void schedule( Callable func, A1 a1 );
-
-   template< typename Callable, typename A1, typename A2 >
-   void schedule( Callable func, A1 a1, A2 a2 );
-
-   template< typename Callable, typename A1, typename A2, typename A3 >
-   void schedule( Callable func, A1 a1, A2 a2, A3 a3 );
-
-   template< typename Callable, typename A1, typename A2, typename A3, typename A4 >
-   void schedule( Callable func, A1 a1, A2 a2, A3 a3, A4 a4 );
-
-   template< typename Callable, typename A1, typename A2, typename A3, typename A4, typename A5 >
-   void schedule( Callable func, A1 a1, A2 a2, A3 a3, A4 a4, A5 a5 );
+   template< typename Callable, typename... Args >
+   void schedule( Callable func, Args&&... args );
    //@}
    //**********************************************************************************************
 
@@ -431,9 +416,9 @@ template< typename TT    // Type of the encapsulated thread
         , typename LT    // Type of the mutex lock
         , typename CT >  // Type of the condition variable
 ThreadPool<TT,MT,LT,CT>::ThreadPool( size_t n )
-   : total_     ( 0 )  // Total number of threads in the thread pool
-   , expected_  ( 0 )  // Expected number of threads in the thread pool
-   , active_    ( 0 )  // Number of currently active/busy threads
+   : total_   ( 0UL )  // Total number of threads in the thread pool
+   , expected_( 0UL )  // Expected number of threads in the thread pool
+   , active_  ( 0UL )  // Number of currently active/busy threads
    , threads_      ()  // The threads contained in the thread pool
    , taskqueue_    ()  // Task queue for the scheduled tasks
    , mutex_        ()  // Synchronization mutex
@@ -471,13 +456,13 @@ ThreadPool<TT,MT,LT,CT>::~ThreadPool()
    taskqueue_.clear();
 
    // Setting the expected number of threads
-   expected_ = 0;
+   expected_ = 0UL;
 
    // Notifying all idle threads
    waitForTask_.notify_all();
 
    // Waiting for all threads to terminate
-   while( total_ != 0 ) {
+   while( total_ != 0UL ) {
       waitForThread_.wait( lock );
    }
 
@@ -577,168 +562,26 @@ inline size_t ThreadPool<TT,MT,LT,CT>::ready() const
 //=================================================================================================
 
 //*************************************************************************************************
-/*!\brief Scheduling the given zero argument function/functor for execution.
+/*!\brief Scheduling the given function/functor for execution.
 //
 // \param func The given function/functor.
+// \param args The arguments for the function/functor.
 // \return void
 //
 // This function schedules the given function/functor for execution. The given function/functor
-// must be copyable, must be callable without arguments and must return void.
+// must be copyable, must be callable with the given type and number of arguments and must return
+// \c void.
 */
-template< typename TT          // Type of the encapsulated thread
-        , typename MT          // Type of the synchronization mutex
-        , typename LT          // Type of the mutex lock
-        , typename CT >        // Type of the condition variable
-template< typename Callable >  // Type of the function/functor
-void ThreadPool<TT,MT,LT,CT>::schedule( Callable func )
+template< typename TT         // Type of the encapsulated thread
+        , typename MT         // Type of the synchronization mutex
+        , typename LT         // Type of the mutex lock
+        , typename CT >       // Type of the condition variable
+template< typename Callable   // Type of the function/functor
+        , typename... Args >  // Types of the function/functor arguments
+void ThreadPool<TT,MT,LT,CT>::schedule( Callable func, Args&&... args )
 {
    Lock lock( mutex_ );
-   taskqueue_.push( func );
-   waitForTask_.notify_one();
-}
-//*************************************************************************************************
-
-
-//*************************************************************************************************
-/*!\brief Scheduling the given unary function/functor for execution.
-//
-// \param func The given function/functor.
-// \param a1 The first argument.
-// \return void
-//
-// This function schedules the given function/functor for execution. The given function/functor
-// must be copyable, must be callable with one argument and must return void.
-*/
-template< typename TT        // Type of the encapsulated thread
-        , typename MT        // Type of the synchronization mutex
-        , typename LT        // Type of the mutex lock
-        , typename CT >      // Type of the condition variable
-template< typename Callable  // Type of the function/functor
-        , typename A1 >      // Type of the first argument
-void ThreadPool<TT,MT,LT,CT>::schedule( Callable func, A1 a1 )
-{
-   Lock lock( mutex_ );
-   taskqueue_.push( boost::bind<void>( func, a1 ) );
-   waitForTask_.notify_one();
-}
-//*************************************************************************************************
-
-
-//*************************************************************************************************
-/*!\brief Scheduling the given binary function/functor for execution.
-//
-// \param func The given function/functor.
-// \param a1 The first argument.
-// \param a2 The second argument.
-// \return void
-//
-// This function schedules the given function/functor for execution. The given function/functor
-// must be copyable, must be callable with two arguments and must return void.
-*/
-template< typename TT        // Type of the encapsulated thread
-        , typename MT        // Type of the synchronization mutex
-        , typename LT        // Type of the mutex lock
-        , typename CT >      // Type of the condition variable
-template< typename Callable  // Type of the function/functor
-        , typename A1        // Type of the first argument
-        , typename A2 >      // Type of the second argument
-void ThreadPool<TT,MT,LT,CT>::schedule( Callable func, A1 a1, A2 a2 )
-{
-   Lock lock( mutex_ );
-   taskqueue_.push( boost::bind<void>( func, a1, a2 ) );
-   waitForTask_.notify_one();
-}
-//*************************************************************************************************
-
-
-//*************************************************************************************************
-/*!\brief Scheduling the given ternary function/functor for execution.
-//
-// \param func The given function/functor.
-// \param a1 The first argument.
-// \param a2 The second argument.
-// \param a3 The third argument.
-// \return void
-//
-// This function schedules the given function/functor for execution. The given function/functor
-// must be copyable, must be callable with three arguments and must return void.
-*/
-template< typename TT        // Type of the encapsulated thread
-        , typename MT        // Type of the synchronization mutex
-        , typename LT        // Type of the mutex lock
-        , typename CT >      // Type of the condition variable
-template< typename Callable  // Type of the function/functor
-        , typename A1        // Type of the first argument
-        , typename A2        // Type of the second argument
-        , typename A3 >      // Type of the third argument
-void ThreadPool<TT,MT,LT,CT>::schedule( Callable func, A1 a1, A2 a2, A3 a3 )
-{
-   Lock lock( mutex_ );
-   taskqueue_.push( boost::bind<void>( func, a1, a2, a3 ) );
-   waitForTask_.notify_one();
-}
-//*************************************************************************************************
-
-
-//*************************************************************************************************
-/*!\brief Scheduling the given four argument function/functor for execution.
-//
-// \param func The given function/functor.
-// \param a1 The first argument.
-// \param a2 The second argument.
-// \param a3 The third argument.
-// \param a4 The fourth argument.
-// \return void
-//
-// This function schedules the given function/functor for execution. The given function/functor
-// must be copyable, must be callable with four arguments and must return void.
-*/
-template< typename TT        // Type of the encapsulated thread
-        , typename MT        // Type of the synchronization mutex
-        , typename LT        // Type of the mutex lock
-        , typename CT >      // Type of the condition variable
-template< typename Callable  // Type of the function/functor
-        , typename A1        // Type of the first argument
-        , typename A2        // Type of the second argument
-        , typename A3        // Type of the third argument
-        , typename A4 >      // Type of the fourth argument
-void ThreadPool<TT,MT,LT,CT>::schedule( Callable func, A1 a1, A2 a2, A3 a3, A4 a4 )
-{
-   Lock lock( mutex_ );
-   taskqueue_.push( boost::bind<void>( func, a1, a2, a3, a4 ) );
-   waitForTask_.notify_one();
-}
-//*************************************************************************************************
-
-
-//*************************************************************************************************
-/*!\brief Scheduling the given four argument function/functor for execution.
-//
-// \param func The given function/functor.
-// \param a1 The first argument.
-// \param a2 The second argument.
-// \param a3 The third argument.
-// \param a4 The fourth argument.
-// \param a5 The fifth argument.
-// \return void
-//
-// This function schedules the given function/functor for execution. The given function/functor
-// must be copyable, must be callable with five arguments and must return void.
-*/
-template< typename TT        // Type of the encapsulated thread
-        , typename MT        // Type of the synchronization mutex
-        , typename LT        // Type of the mutex lock
-        , typename CT >      // Type of the condition variable
-template< typename Callable  // Type of the function/functor
-        , typename A1        // Type of the first argument
-        , typename A2        // Type of the second argument
-        , typename A3        // Type of the third argument
-        , typename A4        // Type of the fourth argument
-        , typename A5 >      // Type of the fifth argument
-void ThreadPool<TT,MT,LT,CT>::schedule( Callable func, A1 a1, A2 a2, A3 a3, A4 a4, A5 a5 )
-{
-   Lock lock( mutex_ );
-   taskqueue_.push( boost::bind<void>( func, a1, a2, a3, a4, a5 ) );
+   taskqueue_.push( std::bind<void>( func, std::forward<Args>( args )... ) );
    waitForTask_.notify_one();
 }
 //*************************************************************************************************
@@ -800,7 +643,7 @@ void ThreadPool<TT,MT,LT,CT>::resize( size_t n, bool block )
 {
    // Checking the given number of threads
 #if !(defined _MSC_VER)
-   if( n == 0 ) {
+   if( n == 0UL ) {
       BLAZE_THROW_INVALID_ARGUMENT( "Invalid number of threads" );
    }
 #endif
@@ -853,7 +696,7 @@ void ThreadPool<TT,MT,LT,CT>::wait()
 {
    Lock lock( mutex_ );
 
-   while( !taskqueue_.isEmpty() || active_ > 0 ) {
+   while( !taskqueue_.isEmpty() || active_ > 0UL ) {
       waitForThread_.wait( lock );
    }
 }
