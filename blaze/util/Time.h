@@ -132,7 +132,7 @@ inline double getWcTime()
    return ( static_cast<double>( timeptr.time ) + static_cast<double>( timeptr.millitm )/1E3 );
 #else
    struct timeval tp;
-   gettimeofday( &tp, sptr );
+   gettimeofday( &tp, nullptr );
    return ( static_cast<double>( tp.tv_sec ) + static_cast<double>( tp.tv_usec )/1E6 );
 #endif
 }
