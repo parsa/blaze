@@ -40,8 +40,6 @@
 // Includes
 //*************************************************************************************************
 
-#include <blaze/util/constraints/ConstraintTest.h>
-#include <blaze/util/Suffix.h>
 #include <blaze/util/typetraits/IsSame.h>
 
 
@@ -52,22 +50,6 @@ namespace blaze {
 //  MUST_BE_SAME_TYPE CONSTRAINT
 //
 //=================================================================================================
-
-//*************************************************************************************************
-/*! \cond BLAZE_INTERNAL */
-/*!\brief Compile time constraint.
-// \ingroup constraints
-//
-// Helper template class for the compile time constraint enforcement. Based on the compile time
-// constant expression used for the template instantiation, either the undefined basic template
-// or the specialization is selected. If the undefined basic template is selected, a compilation
-// error is created.
-*/
-template< bool > struct CONSTRAINT_MUST_BE_SAME_TYPE_FAILED;
-template<> struct CONSTRAINT_MUST_BE_SAME_TYPE_FAILED<true> { enum { value = 1 }; };
-/*! \endcond */
-//*************************************************************************************************
-
 
 //*************************************************************************************************
 /*!\brief Data type constraint.
@@ -87,10 +69,7 @@ template<> struct CONSTRAINT_MUST_BE_SAME_TYPE_FAILED<true> { enum { value = 1 }
 // considered to be unequal), use the blaze::BLAZE_CONSTRAINT_MUST_BE_STRICTLY_SAME_TYPE constraint.
 */
 #define BLAZE_CONSTRAINT_MUST_BE_SAME_TYPE(A,B) \
-   typedef \
-      ::blaze::CONSTRAINT_TEST< \
-         ::blaze::CONSTRAINT_MUST_BE_SAME_TYPE_FAILED< ::blaze::IsSame<A,B>::value >::value > \
-      BLAZE_JOIN( CONSTRAINT_MUST_BE_SAME_TYPE_TYPEDEF, __LINE__ )
+   static_assert( ::blaze::IsSame<A,B>::value, "Non-matching types detected" )
 //*************************************************************************************************
 
 
@@ -101,22 +80,6 @@ template<> struct CONSTRAINT_MUST_BE_SAME_TYPE_FAILED<true> { enum { value = 1 }
 //  MUST_NOT_BE_SAME_TYPE CONSTRAINT
 //
 //=================================================================================================
-
-//*************************************************************************************************
-/*! \cond BLAZE_INTERNAL */
-/*!\brief Compile time constraint.
-// \ingroup constraints
-//
-// Helper template class for the compile time constraint enforcement. Based on the compile time
-// constant expression used for the template instantiation, either the undefined basic template
-// or the specialization is selected. If the undefined basic template is selected, a compilation
-// error is created.
-*/
-template< bool > struct CONSTRAINT_MUST_NOT_BE_SAME_TYPE_FAILED;
-template<> struct CONSTRAINT_MUST_NOT_BE_SAME_TYPE_FAILED<true> { enum { value = 1 }; };
-/*! \endcond */
-//*************************************************************************************************
-
 
 //*************************************************************************************************
 /*!\brief Data type constraint.
@@ -137,10 +100,7 @@ template<> struct CONSTRAINT_MUST_NOT_BE_SAME_TYPE_FAILED<true> { enum { value =
 // constraint.
 */
 #define BLAZE_CONSTRAINT_MUST_NOT_BE_SAME_TYPE(A,B) \
-   typedef \
-      ::blaze::CONSTRAINT_TEST< \
-         ::blaze::CONSTRAINT_MUST_NOT_BE_SAME_TYPE_FAILED< !::blaze::IsSame<A,B>::value >::value > \
-      BLAZE_JOIN( CONSTRAINT_MUST_NOT_BE_SAME_TYPE_TYPEDEF, __LINE__ )
+   static_assert( !::blaze::IsSame<A,B>::value, "Matching types detected" )
 //*************************************************************************************************
 
 
@@ -151,22 +111,6 @@ template<> struct CONSTRAINT_MUST_NOT_BE_SAME_TYPE_FAILED<true> { enum { value =
 //  MUST_BE_STRICTLY_SAME_TYPE CONSTRAINT
 //
 //=================================================================================================
-
-//*************************************************************************************************
-/*! \cond BLAZE_INTERNAL */
-/*!\brief Compile time constraint.
-// \ingroup constraints
-//
-// Helper template class for the compile time constraint enforcement. Based on the compile time
-// constant expression used for the template instantiation, either the undefined basic template
-// or the specialization is selected. If the undefined basic template is selected, a compilation
-// error is created.
-*/
-template< bool > struct CONSTRAINT_MUST_BE_STRICTLY_SAME_TYPE_FAILED;
-template<> struct CONSTRAINT_MUST_BE_STRICTLY_SAME_TYPE_FAILED<true> { enum { value = 1 }; };
-/*! \endcond */
-//*************************************************************************************************
-
 
 //*************************************************************************************************
 /*!\brief Data type constraint.
@@ -185,10 +129,7 @@ template<> struct CONSTRAINT_MUST_BE_STRICTLY_SAME_TYPE_FAILED<true> { enum { va
 // considered to be equal), use the blaze::BLAZE_CONSTRAINT_MUST_BE_SAME_TYPE constraint.
 */
 #define BLAZE_CONSTRAINT_MUST_BE_STRICTLY_SAME_TYPE(A,B) \
-   typedef \
-      ::blaze::CONSTRAINT_TEST< \
-         ::blaze::CONSTRAINT_MUST_BE_STRICTLY_SAME_TYPE_FAILED< ::blaze::IsStrictlySame<A,B>::value >::value > \
-      BLAZE_JOIN( CONSTRAINT_MUST_BE_STRICTLY_SAME_TYPE_TYPEDEF, __LINE__ )
+   static_assert( ::blaze::IsStrictlySame<A,B>::value, "Non-matching types detected" )
 //*************************************************************************************************
 
 
@@ -199,22 +140,6 @@ template<> struct CONSTRAINT_MUST_BE_STRICTLY_SAME_TYPE_FAILED<true> { enum { va
 //  MUST_NOT_BE_STRICTLY_SAME_TYPE CONSTRAINT
 //
 //=================================================================================================
-
-//*************************************************************************************************
-/*! \cond BLAZE_INTERNAL */
-/*!\brief Compile time constraint.
-// \ingroup constraints
-//
-// Helper template class for the compile time constraint enforcement. Based on the compile time
-// constant expression used for the template instantiation, either the undefined basic template
-// or the specialization is selected. If the undefined basic template is selected, a compilation
-// error is created.
-*/
-template< bool > struct CONSTRAINT_MUST_NOT_BE_STRICTLY_SAME_TYPE_FAILED;
-template<> struct CONSTRAINT_MUST_NOT_BE_STRICTLY_SAME_TYPE_FAILED<true> { enum { value = 1 }; };
-/*! \endcond */
-//*************************************************************************************************
-
 
 //*************************************************************************************************
 /*!\brief Data type constraint.
@@ -233,10 +158,7 @@ template<> struct CONSTRAINT_MUST_NOT_BE_STRICTLY_SAME_TYPE_FAILED<true> { enum 
 // considered to be equal), use the blaze::BLAZE_CONSTRAINT_MUST_NOT_BE_SAME_TYPE constraint.
 */
 #define BLAZE_CONSTRAINT_MUST_NOT_BE_STRICTLY_SAME_TYPE(A,B) \
-   typedef \
-      ::blaze::CONSTRAINT_TEST< \
-         ::blaze::CONSTRAINT_MUST_NOT_BE_STRICTLY_SAME_TYPE_FAILED< !::blaze::IsStrictlySame<A,B>::value >::value > \
-      BLAZE_JOIN( CONSTRAINT_MUST_NOT_BE_STRICTLY_SAME_TYPE_TYPEDEF, __LINE__ )
+   static_assert( !::blaze::IsStrictlySame<A,B>::value, "Matching types detected" )
 //*************************************************************************************************
 
 } // namespace blaze

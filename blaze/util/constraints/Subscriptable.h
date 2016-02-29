@@ -53,43 +53,13 @@ namespace blaze {
 //=================================================================================================
 
 //*************************************************************************************************
-/*! \cond BLAZE_INTERNAL */
-/*!\brief Compile time constraint.
-// \ingroup constraints
-//
-// Helper template class for the compile time constraint enforcement. Based on the given type
-// the \a constraint function can be called or not. If the given type is not subscriptable
-// (the subscript operator can not be used on the type) a compilation error is created.
-*/
-template< typename T >
-struct CONSTRAINT_MUST_BE_SUBSCRIBTABLE_FAILED
-{
- private:
-   //**********************************************************************************************
-   static T createT();
-   //**********************************************************************************************
-
- public:
-   //**********************************************************************************************
-   enum { T_is_not_subscriptable = sizeof( createT()[0] ),
-          value = 1 };
-   //**********************************************************************************************
-};
-/*! \endcond */
-//*************************************************************************************************
-
-
-//*************************************************************************************************
 /*!\brief Constraint on the data type.
 // \ingroup constraints
 //
 // In case the given data type is not subscriptable, a compilation error is created.
 */
 #define BLAZE_CONSTRAINT_MUST_BE_SUBSCRIPTABLE(T) \
-   typedef \
-      ::blaze::CONSTRAINT_TEST< \
-         ::blaze::CONSTRAINT_MUST_BE_SUBSCRIBTABLE_FAILED< T >::value > \
-      BLAZE_JOIN( CONSTRAINT_MUST_BE_SUBSCRIPTABLE_TYPEDEF, __LINE__ )
+   static_assert( sizeof( std::declval<T>()[0] ) > 0UL, "Non-subscriptable type detected" )
 //*************************************************************************************************
 
 
@@ -102,43 +72,13 @@ struct CONSTRAINT_MUST_BE_SUBSCRIBTABLE_FAILED
 //=================================================================================================
 
 //*************************************************************************************************
-/*! \cond BLAZE_INTERNAL */
-/*!\brief Compile time constraint.
-// \ingroup constraints
-//
-// Helper template class for the compile time constraint enforcement. Based on the given type
-// the \a constraint function can be called or not. If the given type is not a subscriptable
-// pointer a compilation error is created.
-*/
-template< typename T >
-struct CONSTRAINT_MUST_BE_SUBSCRIBTABLE_AS_DECAYABLE_POINTER_FAILED
-{
- private:
-   //**********************************************************************************************
-   static T createT();
-   //**********************************************************************************************
-
- public:
-   //**********************************************************************************************
-   enum { T_is_not_subscriptable = sizeof( 0[createT()] ),
-          value = 1 };
-   //**********************************************************************************************
-};
-/*! \endcond */
-//*************************************************************************************************
-
-
-//*************************************************************************************************
 /*!\brief Constraint on the data type.
 // \ingroup constraints
 //
 // In case the given data type is not a subscriptable pointer, a compilation error is created.
 */
 #define BLAZE_CONSTRAINT_MUST_BE_SUBSCRIPTABLE_AS_DECAYABLE_POINTER(T) \
-   typedef \
-      ::blaze::CONSTRAINT_TEST< \
-         ::blaze::CONSTRAINT_MUST_BE_SUBSCRIBTABLE_AS_DECAYABLE_POINTER_FAILED< T >::value > \
-      BLAZE_JOIN( CONSTRAINT_MUST_BE_SUBSCRIBTABLE_AS_DECAYABLE_POINTER_TYPEDEF, __LINE__ )
+   static_assert( sizeof( 0[std::declval<T>()] ) > 0UL, "Non-subscriptable pointer detected" )
 //*************************************************************************************************
 
 } // namespace blaze

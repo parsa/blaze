@@ -40,8 +40,6 @@
 // Includes
 //*************************************************************************************************
 
-#include <blaze/util/constraints/ConstraintTest.h>
-#include <blaze/util/Suffix.h>
 #include <blaze/util/typetraits/IsVoid.h>
 
 
@@ -54,32 +52,13 @@ namespace blaze {
 //=================================================================================================
 
 //*************************************************************************************************
-/*! \cond BLAZE_INTERNAL */
-/*!\brief Compile time constraint.
-// \ingroup constraints
-//
-// Helper template class for the compile time constraint enforcement. Based on the compile time
-// constant expression used for the template instantiation, either the undefined basic template
-// or the specialization is selected. If the undefined basic template is selected, a compilation
-// error is created.
-*/
-template< bool > struct CONSTRAINT_MUST_BE_VOID_FAILED;
-template<> struct CONSTRAINT_MUST_BE_VOID_FAILED<true> { enum { value = 1 }; };
-/*! \endcond */
-//*************************************************************************************************
-
-
-//*************************************************************************************************
 /*!\brief Constraint on the data type.
 // \ingroup constraints
 //
 // In case the given data type is not \a void, a compilation error is created.
 */
 #define BLAZE_CONSTRAINT_MUST_BE_VOID(T) \
-   typedef \
-      ::blaze::CONSTRAINT_TEST< \
-         ::blaze::CONSTRAINT_MUST_BE_VOID_FAILED< ::blaze::IsVoid<T>::value >::value > \
-      BLAZE_JOIN( CONSTRAINT_MUST_BE_VOID_TYPEDEF, __LINE__ )
+   static_assert( ::blaze::IsVoid<T>::value, "Non-void type detected" )
 //*************************************************************************************************
 
 
@@ -92,32 +71,13 @@ template<> struct CONSTRAINT_MUST_BE_VOID_FAILED<true> { enum { value = 1 }; };
 //=================================================================================================
 
 //*************************************************************************************************
-/*! \cond BLAZE_INTERNAL */
-/*!\brief Compile time constraint.
-// \ingroup constraints
-//
-// Helper template class for the compile time constraint enforcement. Based on the compile time
-// constant expression used for the template instantiation, either the undefined basic template
-// or the specialization is selected. If the undefined basic template is selected, a compilation
-// error is created.
-*/
-template< bool > struct CONSTRAINT_MUST_NOT_BE_VOID_FAILED;
-template<> struct CONSTRAINT_MUST_NOT_BE_VOID_FAILED<true> { enum { value = 1 }; };
-/*! \endcond */
-//*************************************************************************************************
-
-
-//*************************************************************************************************
 /*!\brief Constraint on the data type.
 // \ingroup constraints
 //
 // In case the given data type is \a void, a compilation error is created.
 */
 #define BLAZE_CONSTRAINT_MUST_NOT_BE_VOID(T) \
-   typedef \
-      ::blaze::CONSTRAINT_TEST< \
-         ::blaze::CONSTRAINT_MUST_NOT_BE_VOID_FAILED< !::blaze::IsVoid<T>::value >::value > \
-      BLAZE_JOIN( CONSTRAINT_MUST_NOT_BE_VOID_TYPEDEF, __LINE__ )
+   static_assert( !::blaze::IsVoid<T>::value, "Void type detected" )
 //*************************************************************************************************
 
 } // namespace blaze
