@@ -111,9 +111,9 @@ class AlignedAllocator
    //**Utility functions***************************************************************************
    /*!\name Utility functions */
    //@{
-   inline size_t       max_size() const;
-   inline Pointer      address( Reference x ) const;
-   inline ConstPointer address( ConstReference x ) const;
+   inline constexpr size_t max_size() const noexcept;
+   inline Pointer          address( Reference x ) const noexcept;
+   inline ConstPointer     address( ConstReference x ) const noexcept;
    //@}
    //**********************************************************************************************
 
@@ -129,7 +129,7 @@ class AlignedAllocator
    /*!\name Construction functions */
    //@{
    inline void construct( Pointer ptr, const Type& value );
-   inline void destroy  ( Pointer ptr );
+   inline void destroy  ( Pointer ptr ) noexcept;
    //@}
    //**********************************************************************************************
 };
@@ -181,7 +181,7 @@ inline AlignedAllocator<Type>::AlignedAllocator( const AlignedAllocator<Type2>& 
 // \return The maximum number of elements that can be allocated together.
 */
 template< typename Type >
-inline size_t AlignedAllocator<Type>::max_size() const
+inline constexpr size_t AlignedAllocator<Type>::max_size() const noexcept
 {
    return size_t(-1) / sizeof( Type );
 }
@@ -195,7 +195,7 @@ inline size_t AlignedAllocator<Type>::max_size() const
 */
 template< typename Type >
 inline typename AlignedAllocator<Type>::Pointer
-   AlignedAllocator<Type>::address( Reference x ) const
+   AlignedAllocator<Type>::address( Reference x ) const noexcept
 {
    return &x;
 }
@@ -209,7 +209,7 @@ inline typename AlignedAllocator<Type>::Pointer
 */
 template< typename Type >
 inline typename AlignedAllocator<Type>::ConstPointer
-   AlignedAllocator<Type>::address( ConstReference x ) const
+   AlignedAllocator<Type>::address( ConstReference x ) const noexcept
 {
    return &x;
 }
@@ -322,7 +322,7 @@ inline void AlignedAllocator<Type>::construct( Pointer ptr, ConstReference value
 // destructor.
 */
 template< typename Type >
-inline void AlignedAllocator<Type>::destroy( Pointer ptr )
+inline void AlignedAllocator<Type>::destroy( Pointer ptr ) noexcept
 {
    ptr->~Type();
 }
@@ -338,13 +338,13 @@ inline void AlignedAllocator<Type>::destroy( Pointer ptr )
 //=================================================================================================
 
 //*************************************************************************************************
-/*!\name UniquePtr operators */
+/*!\name AlignedAllocator operators */
 //@{
 template< typename T1, typename T2 >
-inline bool operator==( const AlignedAllocator<T1>& lhs, const AlignedAllocator<T2>& rhs );
+inline constexpr bool operator==( const AlignedAllocator<T1>& lhs, const AlignedAllocator<T2>& rhs ) noexcept;
 
 template< typename T1, typename T2 >
-inline bool operator!=( const AlignedAllocator<T1>& lhs, const AlignedAllocator<T2>& rhs );
+inline constexpr bool operator!=( const AlignedAllocator<T1>& lhs, const AlignedAllocator<T2>& rhs ) noexcept;
 //@}
 //*************************************************************************************************
 
@@ -358,7 +358,7 @@ inline bool operator!=( const AlignedAllocator<T1>& lhs, const AlignedAllocator<
 */
 template< typename T1    // Type of the left-hand side aligned allocator
         , typename T2 >  // Type of the right-hand side aligned allocator
-inline bool operator==( const AlignedAllocator<T1>& lhs, const AlignedAllocator<T2>& rhs )
+inline constexpr bool operator==( const AlignedAllocator<T1>& lhs, const AlignedAllocator<T2>& rhs ) noexcept
 {
    UNUSED_PARAMETER( lhs, rhs );
    return true;
@@ -375,7 +375,7 @@ inline bool operator==( const AlignedAllocator<T1>& lhs, const AlignedAllocator<
 */
 template< typename T1    // Type of the left-hand side aligned allocator
         , typename T2 >  // Type of the right-hand side aligned allocator
-inline bool operator!=( const AlignedAllocator<T1>& lhs, const AlignedAllocator<T2>& rhs )
+inline constexpr bool operator!=( const AlignedAllocator<T1>& lhs, const AlignedAllocator<T2>& rhs ) noexcept
 {
    UNUSED_PARAMETER( lhs, rhs );
    return false;
