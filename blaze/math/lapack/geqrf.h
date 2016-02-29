@@ -40,6 +40,7 @@
 // Includes
 //*************************************************************************************************
 
+#include <memory>
 #include <boost/cast.hpp>
 #include <blaze/math/constraints/Adaptor.h>
 #include <blaze/math/constraints/BlasCompatible.h>
@@ -50,7 +51,6 @@
 #include <blaze/util/Assert.h>
 #include <blaze/util/Complex.h>
 #include <blaze/util/StaticAssert.h>
-#include <blaze/util/UniqueArray.h>
 
 
 namespace blaze {
@@ -402,7 +402,7 @@ inline void geqrf( DenseMatrix<MT,SO>& A, typename MT::ElementType* tau )
    }
 
    int lwork( n*lda );
-   const UniqueArray<ET> work( new ET[lwork] );
+   const std::unique_ptr<ET[]> work( new ET[lwork] );
 
    geqrf( m, n, (~A).data(), lda, tau, work.get(), lwork, &info );
 

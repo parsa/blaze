@@ -40,6 +40,7 @@
 // Includes
 //*************************************************************************************************
 
+#include <memory>
 #include <blaze/math/constraints/Adaptor.h>
 #include <blaze/math/constraints/BlasCompatible.h>
 #include <blaze/math/constraints/StrictlyTriangular.h>
@@ -64,7 +65,6 @@
 #include <blaze/util/Types.h>
 #include <blaze/util/typetraits/IsBuiltin.h>
 #include <blaze/util/typetraits/IsComplex.h>
-#include <blaze/util/UniqueArray.h>
 
 
 namespace blaze {
@@ -725,7 +725,7 @@ inline void invertByLU( DenseMatrix<MT,SO>& dm )
    BLAZE_CONSTRAINT_MUST_BE_BLAS_COMPATIBLE_TYPE( typename MT::ElementType );
 
    const size_t n( min( (~dm).rows(), (~dm).columns() ) );
-   UniqueArray<int> ipiv( new int[n] );
+   const std::unique_ptr<int[]> ipiv( new int[n] );
 
    getrf( ~dm, ipiv.get() );
    getri( ~dm, ipiv.get() );
@@ -772,7 +772,7 @@ inline void invertByLDLT( DenseMatrix<MT,SO>& dm )
    BLAZE_USER_ASSERT( isSymmetric( ~dm ), "Invalid non-symmetric matrix detected" );
 
    const char uplo( ( SO )?( 'L' ):( 'U' ) );
-   UniqueArray<int> ipiv( new int[(~dm).rows()] );
+   const std::unique_ptr<int[]> ipiv( new int[(~dm).rows()] );
 
    sytrf( ~dm, uplo, ipiv.get() );
    sytri( ~dm, uplo, ipiv.get() );
@@ -874,7 +874,7 @@ inline typename EnableIf< IsComplex<typename MT::ElementType> >::Type
    BLAZE_USER_ASSERT( isHermitian( ~dm ), "Invalid non-Hermitian matrix detected" );
 
    const char uplo( ( SO )?( 'L' ):( 'U' ) );
-   UniqueArray<int> ipiv( new int[(~dm).rows()] );
+   const std::unique_ptr<int[]> ipiv( new int[(~dm).rows()] );
 
    hetrf( ~dm, uplo, ipiv.get() );
    hetri( ~dm, uplo, ipiv.get() );

@@ -41,6 +41,7 @@
 //*************************************************************************************************
 
 #include <algorithm>
+#include <memory>
 #include <blaze/math/constraints/Adaptor.h>
 #include <blaze/math/constraints/BlasCompatible.h>
 #include <blaze/math/constraints/Hermitian.h>
@@ -105,7 +106,7 @@ void lu( DenseMatrix<MT1,SO1>& A, Matrix<MT2,SO2>& P )
    const size_t mindim( min( m, n ) );
    const size_t size( SO1 ? m : n );
 
-   UniqueArray<int> helper( new int[mindim + size] );
+   const std::unique_ptr<int[]> helper( new int[mindim + size] );
    int* ipiv  ( helper.get() );
    int* permut( ipiv + mindim );
 

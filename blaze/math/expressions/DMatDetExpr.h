@@ -40,6 +40,7 @@
 // Includes
 //*************************************************************************************************
 
+#include <memory>
 #include <boost/cast.hpp>
 #include <blaze/math/constraints/BlasCompatible.h>
 #include <blaze/math/constraints/DenseMatrix.h>
@@ -55,7 +56,6 @@
 #include <blaze/util/Assert.h>
 #include <blaze/util/Exception.h>
 #include <blaze/util/Types.h>
-#include <blaze/util/UniqueArray.h>
 
 
 namespace blaze {
@@ -339,7 +339,7 @@ typename MT::ElementType detNxN( const DenseMatrix<MT,SO>& dm )
    int lda ( boost::numeric_cast<int>( A.spacing() ) );
    int info( 0 );
 
-   const UniqueArray<int> ipiv( new int[n] );
+   const std::unique_ptr<int[]> ipiv( new int[n] );
 
    getrf( n, n, A.data(), lda, ipiv.get(), &info );
 

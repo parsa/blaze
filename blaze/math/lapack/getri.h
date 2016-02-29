@@ -40,6 +40,7 @@
 // Includes
 //*************************************************************************************************
 
+#include <memory>
 #include <boost/cast.hpp>
 #include <blaze/math/constraints/Adaptor.h>
 #include <blaze/math/constraints/BlasCompatible.h>
@@ -51,7 +52,6 @@
 #include <blaze/util/Complex.h>
 #include <blaze/util/Exception.h>
 #include <blaze/util/StaticAssert.h>
-#include <blaze/util/UniqueArray.h>
 
 
 namespace blaze {
@@ -339,7 +339,7 @@ inline void getri( DenseMatrix<MT,SO>& A, const int* ipiv )
    }
 
    int lwork( n*lda );
-   const UniqueArray<ET> work( new ET[lwork] );
+   const std::unique_ptr<ET[]> work( new ET[lwork] );
 
    getri( n, (~A).data(), lda, ipiv, work.get(), lwork, &info );
 

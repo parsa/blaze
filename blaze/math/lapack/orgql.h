@@ -40,6 +40,7 @@
 // Includes
 //*************************************************************************************************
 
+#include <memory>
 #include <boost/cast.hpp>
 #include <blaze/math/constraints/Adaptor.h>
 #include <blaze/math/constraints/BlasCompatible.h>
@@ -50,7 +51,6 @@
 #include <blaze/util/Complex.h>
 #include <blaze/util/constraints/Builtin.h>
 #include <blaze/util/StaticAssert.h>
-#include <blaze/util/UniqueArray.h>
 
 
 namespace blaze {
@@ -255,7 +255,7 @@ inline void orgql( DenseMatrix<MT,SO>& A, const typename MT::ElementType* tau )
    }
 
    int lwork( k*lda );
-   const UniqueArray<ET> work( new ET[lwork] );
+   const std::unique_ptr<ET[]> work( new ET[lwork] );
    const size_t offset( ( m < n )?( n - m ):( 0UL ) );
 
    orgql( m, k, k, (~A).data(offset), lda, tau, work.get(), lwork, &info );

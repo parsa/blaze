@@ -40,6 +40,7 @@
 // Includes
 //*************************************************************************************************
 
+#include <memory>
 #include <blaze/math/constraints/Adaptor.h>
 #include <blaze/math/constraints/BlasCompatible.h>
 #include <blaze/math/constraints/Hermitian.h>
@@ -221,7 +222,7 @@ void ql( const DenseMatrix<MT1,SO1>& A, DenseMatrix<MT2,SO2>& Q, DenseMatrix<MT3
    }
 
    Tmp tmp( ~A );
-   UniqueArray<ET1> tau( new ET1[mindim] );
+   const std::unique_ptr<ET1[]> tau( new ET1[mindim] );
 
    geqlf( tmp, tau.get() );
 

@@ -40,6 +40,7 @@
 // Includes
 //*************************************************************************************************
 
+#include <memory>
 #include <boost/cast.hpp>
 #include <blaze/math/constraints/Adaptor.h>
 #include <blaze/math/constraints/BlasCompatible.h>
@@ -437,7 +438,7 @@ inline void sysv( DenseMatrix<MT,SO>& A, DenseVector<VT,TF>& b, char uplo, int* 
    }
 
    int lwork( n*lda );
-   const UniqueArray<ET> work( new ET[lwork] );
+   const std::unique_ptr<ET[]> work( new ET[lwork] );
 
    sysv( uplo, n, nrhs, (~A).data(), lda, ipiv, (~b).data(), ldb, work.get(), lwork, &info );
 
@@ -559,7 +560,7 @@ inline void sysv( DenseMatrix<MT1,SO1>& A, DenseMatrix<MT2,SO2>& B, char uplo, i
    }
 
    int lwork( n*lda );
-   const UniqueArray<ET> work( new ET[lwork] );
+   const std::unique_ptr<ET[]> work( new ET[lwork] );
 
    sysv( uplo, n, nrhs, (~A).data(), lda, ipiv, (~B).data(), ldb, work.get(), lwork, &info );
 

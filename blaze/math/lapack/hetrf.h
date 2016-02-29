@@ -40,6 +40,7 @@
 // Includes
 //*************************************************************************************************
 
+#include <memory>
 #include <boost/cast.hpp>
 #include <blaze/math/constraints/Adaptor.h>
 #include <blaze/math/constraints/BlasCompatible.h>
@@ -51,7 +52,6 @@
 #include <blaze/util/Complex.h>
 #include <blaze/util/Exception.h>
 #include <blaze/util/StaticAssert.h>
-#include <blaze/util/UniqueArray.h>
 
 
 namespace blaze {
@@ -286,7 +286,7 @@ inline void hetrf( DenseMatrix<MT,SO>& A, char uplo, int* ipiv )
    }
 
    int lwork( n*lda );
-   const UniqueArray<ET> work( new ET[lwork] );
+   const std::unique_ptr<ET[]> work( new ET[lwork] );
 
    if( IsRowMajorMatrix<MT>::value ) {
       ( uplo == 'L' )?( uplo = 'U' ):( uplo = 'L' );
