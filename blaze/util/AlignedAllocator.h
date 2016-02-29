@@ -41,7 +41,6 @@
 //*************************************************************************************************
 
 #include <blaze/util/Memory.h>
-#include <blaze/util/Null.h>
 #include <blaze/util/typetraits/AlignmentOf.h>
 #include <blaze/util/Unused.h>
 
@@ -121,7 +120,7 @@ class AlignedAllocator
    //**Allocation functions************************************************************************
    /*!\name Allocation functions */
    //@{
-   inline Pointer allocate  ( size_t numObjects, const void* localityHint = NULL );
+   inline Pointer allocate  ( size_t numObjects, const void* localityHint = nullptr );
    inline void    deallocate( Pointer ptr, size_t numObjects );
    //@}
    //**********************************************************************************************
@@ -272,7 +271,7 @@ inline void AlignedAllocator<Type>::deallocate( Pointer ptr, size_t numObjects )
 {
    UNUSED_PARAMETER( numObjects );
 
-   if( ptr == NULL )
+   if( ptr == nullptr )
       return;
 
    const size_t alignment( AlignmentOf<Type>::value );

@@ -50,7 +50,6 @@
 #include <blaze/util/DisableIf.h>
 #include <blaze/util/EnableIf.h>
 #include <blaze/util/Exception.h>
-#include <blaze/util/Null.h>
 #include <blaze/util/Types.h>
 #include <blaze/util/typetraits/AlignmentOf.h>
 #include <blaze/util/typetraits/IsBuiltin.h>
@@ -80,11 +79,11 @@ namespace blaze {
 */
 inline byte* allocate_backend( size_t size, size_t alignment )
 {
-   void* raw( NULL );
+   void* raw( nullptr );
 
 #if defined(_MSC_VER)
    raw = _aligned_malloc( size, alignment );
-   if( raw == NULL ) {
+   if( raw == nullptr ) {
 #else
    if( posix_memalign( &raw, alignment, size ) ) {
 #endif
@@ -226,7 +225,7 @@ typename DisableIf< IsBuiltin<T>, T* >::Type allocate( size_t size )
 template< typename T >
 typename EnableIf< IsBuiltin<T> >::Type deallocate( T* address )
 {
-   if( address == NULL )
+   if( address == nullptr )
       return;
 
    const size_t alignment( AlignmentOf<T>::value );
@@ -252,7 +251,7 @@ typename EnableIf< IsBuiltin<T> >::Type deallocate( T* address )
 template< typename T >
 typename DisableIf< IsBuiltin<T> >::Type deallocate( T* address )
 {
-   if( address == NULL )
+   if( address == nullptr )
       return;
 
    const size_t alignment ( AlignmentOf<T>::value );

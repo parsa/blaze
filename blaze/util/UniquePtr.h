@@ -43,7 +43,6 @@
 #include <blaze/util/Assert.h>
 #include <blaze/util/constraints/Array.h>
 #include <blaze/util/NonCopyable.h>
-#include <blaze/util/Null.h>
 #include <blaze/util/policies/PtrDelete.h>
 #include <blaze/util/Types.h>
 #include <blaze/util/typetraits/RemoveReference.h>
@@ -107,7 +106,7 @@ class UniquePtr : private NonCopyable
    //**Constructors********************************************************************************
    /*!\name Constructors */
    //@{
-   inline UniquePtr( Pointer ptr = NULL );
+   inline UniquePtr( Pointer ptr = nullptr );
    //@}
    //**********************************************************************************************
 
@@ -131,7 +130,7 @@ class UniquePtr : private NonCopyable
    //@{
    inline Pointer get() const /* throw() */;
    inline Pointer release() /* throw() */;
-   inline void    reset( Pointer ptr = NULL ) /* throw() */;
+   inline void    reset( Pointer ptr = nullptr ) /* throw() */;
    inline void    swap ( UniquePtr& up ) /* throw() */;
    //@}
    //**********************************************************************************************
@@ -252,10 +251,10 @@ inline typename UniquePtr<T,D>::Pointer UniquePtr<T,D>::operator->() const /* th
 //*************************************************************************************************
 /*!\brief Returns a pointer to the managed resource.
 //
-// \return Pointer to the managed resource or NULL if no resource is managed.
+// \return Pointer to the managed resource or \c nullptr if no resource is managed.
 //
-// This function returns a pointer to the managed resource (or NULL in case no resource is
-// currently managed). Note however that the ownership remains with the unqiue pointer.
+// This function returns a pointer to the managed resource (or \c nullptr in case no resource
+// is currently managed). Note however that the ownership remains with the unqiue pointer.
 */
 template< typename T    // Type of the resource
         , typename D >  // Type of the deleter
@@ -269,17 +268,17 @@ inline typename UniquePtr<T,D>::Pointer UniquePtr<T,D>::get() const /* throw() *
 //*************************************************************************************************
 /*!\brief Releases the ownership of the managed resource to the caller.
 //
-// \return Pointer to the managed resource or NULL if no resource is managed.
+// \return Pointer to the managed resource or \c nullptr if no resource is managed.
 //
-// This function returns a pointer to the managed resource (or NULL in case no resource is
-// currently managed). The ownership of the resource is released and passed to the caller.
+// This function returns a pointer to the managed resource (or \c nullptr in case no resource
+// is currently managed). The ownership of the resource is released and passed to the caller.
 */
 template< typename T    // Type of the resource
         , typename D >  // Type of the deleter
 inline typename UniquePtr<T,D>::Pointer UniquePtr<T,D>::release() /* throw() */
 {
    Pointer tmp( ptr_ );
-   ptr_ = NULL;
+   ptr_ = nullptr;
    return tmp;
 }
 //*************************************************************************************************
@@ -329,15 +328,15 @@ inline void UniquePtr<T,D>::swap( UniquePtr& ptr ) /* throw() */
 //=================================================================================================
 
 //*************************************************************************************************
-/*!\brief Returns whether the unique pointer is set to a non-NULL pointer.
+/*!\brief Returns whether the unique pointer is set to a non-\c nullptr pointer.
 //
-// \return \a true in case the unique pointer is not NULL, \a false if it is NULL.
+// \return \a true in case the unique pointer is not \c nullptr, \a false if it is \c nullptr.
 */
 template< typename T    // Type of the resource
         , typename D >  // Type of the deleter
 inline UniquePtr<T,D>::operator bool() const /* throw() */
 {
-   return ( ptr_ != NULL );
+   return ( ptr_ != nullptr );
 }
 //*************************************************************************************************
 
@@ -372,40 +371,40 @@ template< typename T1, typename D1, typename T2, typename D2 >
 inline bool operator>=( const UniquePtr<T1,D1>& lhs, const UniquePtr<T2,D2>& rhs );
 
 template< typename T, typename D >
-inline bool operator==( const UniquePtr<T,D>& ptr, const Null& null );
+inline bool operator==( const UniquePtr<T,D>& ptr, const nullptr_t& null );
 
 template< typename T, typename D >
-inline bool operator!=( const UniquePtr<T,D>& ptr, const Null& null );
+inline bool operator!=( const UniquePtr<T,D>& ptr, const nullptr_t& null );
 
 template< typename T, typename D >
-inline bool operator<( const UniquePtr<T,D>& ptr, const Null& null );
+inline bool operator<( const UniquePtr<T,D>& ptr, const nullptr_t& null );
 
 template< typename T, typename D >
-inline bool operator>( const UniquePtr<T,D>& ptr, const Null& null );
+inline bool operator>( const UniquePtr<T,D>& ptr, const nullptr_t& null );
 
 template< typename T, typename D >
-inline bool operator<=( const UniquePtr<T,D>& ptr, const Null& null );
+inline bool operator<=( const UniquePtr<T,D>& ptr, const nullptr_t& null );
 
 template< typename T, typename D >
-inline bool operator>=( const UniquePtr<T,D>& ptr, const Null& null );
+inline bool operator>=( const UniquePtr<T,D>& ptr, const nullptr_t& null );
 
 template< typename T, typename D >
-inline bool operator==( const Null& null, const UniquePtr<T,D>& ptr );
+inline bool operator==( const nullptr_t& null, const UniquePtr<T,D>& ptr );
 
 template< typename T, typename D >
-inline bool operator!=( const Null& null, const UniquePtr<T,D>& ptr );
+inline bool operator!=( const nullptr_t& null, const UniquePtr<T,D>& ptr );
 
 template< typename T, typename D >
-inline bool operator<( const Null& null, const UniquePtr<T,D>& ptr );
+inline bool operator<( const nullptr_t& null, const UniquePtr<T,D>& ptr );
 
 template< typename T, typename D >
-inline bool operator>( const Null& null, const UniquePtr<T,D>& ptr );
+inline bool operator>( const nullptr_t& null, const UniquePtr<T,D>& ptr );
 
 template< typename T, typename D >
-inline bool operator<=( const Null& null, const UniquePtr<T,D>& ptr );
+inline bool operator<=( const nullptr_t& null, const UniquePtr<T,D>& ptr );
 
 template< typename T, typename D >
-inline bool operator>=( const Null& null, const UniquePtr<T,D>& ptr );
+inline bool operator>=( const nullptr_t& null, const UniquePtr<T,D>& ptr );
 
 template< typename T, typename D >
 inline void swap( UniquePtr<T,D>& a, UniquePtr<T,D>& b ) /* throw() */;
@@ -522,15 +521,15 @@ inline bool operator>=( const UniquePtr<T1,D1>& lhs, const UniquePtr<T2,D2>& rhs
 
 
 //*************************************************************************************************
-/*!\brief Equality comparison between a UniquePtr and NULL.
+/*!\brief Equality comparison between a UniquePtr and \c nullptr.
 //
 // \param ptr The left-hand side unique pointer.
-// \param null The right-hand side NULL pointer.
-// \return \a true if the unique pointer is NULL, \a false if it isn't.
+// \param null The right-hand side \c nullptr.
+// \return \a true if the unique pointer is \c nullptr, \a false if it isn't.
 */
 template< typename T    // Resource type of the unique pointer
         , typename D >  // Deleter type of the unique pointer
-inline bool operator==( const UniquePtr<T,D>& ptr, const Null& null )
+inline bool operator==( const UniquePtr<T,D>& ptr, const nullptr_t& null )
 {
    return ptr.get() == null;
 }
@@ -538,15 +537,15 @@ inline bool operator==( const UniquePtr<T,D>& ptr, const Null& null )
 
 
 //*************************************************************************************************
-/*!\brief Inequality comparison between a UniquePtr and NULL.
+/*!\brief Inequality comparison between a UniquePtr and \c nullptr.
 //
 // \param ptr The left-hand side unique pointer.
-// \param null The right-hand side NULL pointer.
-// \return \a true if the unique pointer is not NULL, \a false if it is.
+// \param null The right-hand side \c nullptr.
+// \return \a true if the unique pointer is not \c nullptr, \a false if it is.
 */
 template< typename T    // Resource type of the unique pointer
         , typename D >  // Deleter type of the unique pointer
-inline bool operator!=( const UniquePtr<T,D>& ptr, const Null& null )
+inline bool operator!=( const UniquePtr<T,D>& ptr, const nullptr_t& null )
 {
    return !( ptr == null );
 }
@@ -554,15 +553,15 @@ inline bool operator!=( const UniquePtr<T,D>& ptr, const Null& null )
 
 
 //*************************************************************************************************
-/*!\brief Less-than comparison between a UniquePtr and NULL.
+/*!\brief Less-than comparison between a UniquePtr and \c nullptr.
 //
 // \param ptr The left-hand side unique pointer.
-// \param null The right-hand side NULL pointer.
-// \return \a true if the unique pointer is less than NULL, \a false if not.
+// \param null The right-hand side \c nullptr.
+// \return \a true if the unique pointer is less than \c nullptr, \a false if not.
 */
 template< typename T    // Resource type of the unique pointer
         , typename D >  // Deleter type of the unique pointer
-inline bool operator<( const UniquePtr<T,D>& ptr, const Null& null )
+inline bool operator<( const UniquePtr<T,D>& ptr, const nullptr_t& null )
 {
    return ptr.get() < null;
 }
@@ -570,15 +569,15 @@ inline bool operator<( const UniquePtr<T,D>& ptr, const Null& null )
 
 
 //*************************************************************************************************
-/*!\brief Greater-than comparison between a UniquePtr and NULL.
+/*!\brief Greater-than comparison between a UniquePtr and \c nullptr.
 //
 // \param ptr The left-hand side unique pointer.
-// \param null The right-hand side NULL pointer.
-// \return \a true if the unique pointer is greater than NULL, \a false if not.
+// \param null The right-hand side \c nullptr.
+// \return \a true if the unique pointer is greater than \c nullptr, \a false if not.
 */
 template< typename T    // Resource type of the unique pointer
         , typename D >  // Deleter type of the unique pointer
-inline bool operator>( const UniquePtr<T,D>& ptr, const Null& null )
+inline bool operator>( const UniquePtr<T,D>& ptr, const nullptr_t& null )
 {
    return ptr.get() > null;
 }
@@ -586,15 +585,15 @@ inline bool operator>( const UniquePtr<T,D>& ptr, const Null& null )
 
 
 //*************************************************************************************************
-/*!\brief Less-or-equal-than comparison between a UniquePtr and NULL.
+/*!\brief Less-or-equal-than comparison between a UniquePtr and \c nullptr.
 //
 // \param ptr The left-hand side unique pointer.
-// \param null The right-hand side NULL pointer.
-// \return \a true if the unique pointer is less or equal than NULL, \a false if not.
+// \param null The right-hand side \c nullptr.
+// \return \a true if the unique pointer is less or equal than \c nullptr, \a false if not.
 */
 template< typename T    // Resource type of the unique pointer
         , typename D >  // Deleter type of the unique pointer
-inline bool operator<=( const UniquePtr<T,D>& ptr, const Null& null )
+inline bool operator<=( const UniquePtr<T,D>& ptr, const nullptr_t& null )
 {
    return !( ptr > null );
 }
@@ -602,15 +601,15 @@ inline bool operator<=( const UniquePtr<T,D>& ptr, const Null& null )
 
 
 //*************************************************************************************************
-/*!\brief Greater-or-equal-than comparison between a UniquePtr and NULL.
+/*!\brief Greater-or-equal-than comparison between a UniquePtr and \c nullptr.
 //
 // \param ptr The left-hand side unique pointer.
-// \param null The right-hand side NULL pointer.
-// \return \a true if the unique pointer is greater or equal than NULL, \a false if not.
+// \param null The right-hand side \c nullptr.
+// \return \a true if the unique pointer is greater or equal than \c nullptr, \a false if not.
 */
 template< typename T    // Resource type of the unique pointer
         , typename D >  // Deleter type of the unique pointer
-inline bool operator>=( const UniquePtr<T,D>& ptr, const Null& null )
+inline bool operator>=( const UniquePtr<T,D>& ptr, const nullptr_t& null )
 {
    return !( ptr < null );
 }
@@ -618,15 +617,15 @@ inline bool operator>=( const UniquePtr<T,D>& ptr, const Null& null )
 
 
 //*************************************************************************************************
-/*!\brief Equality comparison between NULL and a UniquePtr.
+/*!\brief Equality comparison between \c nullptr and a UniquePtr.
 //
-// \param null The left-hand side NULL pointer.
+// \param null The left-hand side \c nullptr.
 // \param ptr The right-hand side unique pointer.
-// \return \a true if the unique pointer is NULL, \a false if it isn't.
+// \return \a true if the unique pointer is \c nullptr, \a false if it isn't.
 */
 template< typename T    // Resource type of the unique pointer
         , typename D >  // Deleter type of the unique pointer
-inline bool operator==( const Null& null, const UniquePtr<T,D>& ptr )
+inline bool operator==( const nullptr_t& null, const UniquePtr<T,D>& ptr )
 {
    return ptr == null;
 }
@@ -634,15 +633,15 @@ inline bool operator==( const Null& null, const UniquePtr<T,D>& ptr )
 
 
 //*************************************************************************************************
-/*!\brief Inquality comparison between NULL and a UniquePtr.
+/*!\brief Inquality comparison between \c nullptr and a UniquePtr.
 //
-// \param null The left-hand side NULL pointer.
+// \param null The left-hand side \c nullptr.
 // \param ptr The right-hand side unique pointer.
-// \return \a true if the unique pointer is not NULL, \a false if it is.
+// \return \a true if the unique pointer is not \c nullptr, \a false if it is.
 */
 template< typename T    // Resource type of the unique pointer
         , typename D >  // Deleter type of the unique pointer
-inline bool operator!=( const Null& null, const UniquePtr<T,D>& ptr )
+inline bool operator!=( const nullptr_t& null, const UniquePtr<T,D>& ptr )
 {
    return ptr != null;
 }
@@ -650,15 +649,15 @@ inline bool operator!=( const Null& null, const UniquePtr<T,D>& ptr )
 
 
 //*************************************************************************************************
-/*!\brief Less-than comparison between NULL and a UniquePtr.
+/*!\brief Less-than comparison between \c nullptr and a UniquePtr.
 //
-// \param null The left-hand side NULL pointer.
+// \param null The left-hand side \c nullptr.
 // \param ptr The right-hand side unique pointer.
-// \return \a true if NULL is less than the unique pointer, \a false if not.
+// \return \a true if \c nullptr is less than the unique pointer, \a false if not.
 */
 template< typename T    // Resource type of the unique pointer
         , typename D >  // Deleter type of the unique pointer
-inline bool operator<( const Null& null, const UniquePtr<T,D>& ptr )
+inline bool operator<( const nullptr_t& null, const UniquePtr<T,D>& ptr )
 {
    return ptr > null;
 }
@@ -666,15 +665,15 @@ inline bool operator<( const Null& null, const UniquePtr<T,D>& ptr )
 
 
 //*************************************************************************************************
-/*!\brief Greater-than comparison between NULL and a UniquePtr.
+/*!\brief Greater-than comparison between \c nullptr and a UniquePtr.
 //
-// \param null The left-hand side NULL pointer.
+// \param null The left-hand side \c nullptr.
 // \param ptr The right-hand side unique pointer.
-// \return \a true if NULL is greater than the unique pointer, \a false if not.
+// \return \a true if \c nullptr is greater than the unique pointer, \a false if not.
 */
 template< typename T    // Resource type of the unique pointer
         , typename D >  // Deleter type of the unique pointer
-inline bool operator>( const Null& null, const UniquePtr<T,D>& ptr )
+inline bool operator>( const nullptr_t& null, const UniquePtr<T,D>& ptr )
 {
    return ptr < null;
 }
@@ -682,15 +681,15 @@ inline bool operator>( const Null& null, const UniquePtr<T,D>& ptr )
 
 
 //*************************************************************************************************
-/*!\brief Less-or-equal-than comparison between NULL and a UniquePtr.
+/*!\brief Less-or-equal-than comparison between \c nullptr and a UniquePtr.
 //
-// \param null The left-hand side NULL pointer.
+// \param null The left-hand side \c nullptr.
 // \param ptr The right-hand side unique pointer.
-// \return \a true if NULL is less or equal than the unique pointer, \a false if not.
+// \return \a true if \c nullptr is less or equal than the unique pointer, \a false if not.
 */
 template< typename T    // Resource type of the unique pointer
         , typename D >  // Deleter type of the unique pointer
-inline bool operator<=( const Null& null, const UniquePtr<T,D>& ptr )
+inline bool operator<=( const nullptr_t& null, const UniquePtr<T,D>& ptr )
 {
    return ptr >= null;
 }
@@ -698,15 +697,15 @@ inline bool operator<=( const Null& null, const UniquePtr<T,D>& ptr )
 
 
 //*************************************************************************************************
-/*!\brief Greater-or-equal-than comparison between NULL and a UniquePtr.
+/*!\brief Greater-or-equal-than comparison between \c nullptr and a UniquePtr.
 //
-// \param null The left-hand side NULL pointer.
+// \param null The left-hand side \c nullptr.
 // \param ptr The right-hand side unique pointer.
-// \return \a true if NULL is greater or equal than the unique pointer, \a false if not.
+// \return \a true if \c nullptr is greater or equal than the unique pointer, \a false if not.
 */
 template< typename T    // Resource type of the unique pointer
         , typename D >  // Deleter type of the unique pointer
-inline bool operator>=( const Null& null, const UniquePtr<T,D>& ptr )
+inline bool operator>=( const nullptr_t& null, const UniquePtr<T,D>& ptr )
 {
    return ptr <= null;
 }

@@ -124,7 +124,7 @@ class TYPE_TRAIT_NAME##HELPER                                                   
    static YES& TEST( ... );                                                                  \
                                                                                              \
  public:                                                                                     \
-   static constexpr bool value = ( sizeof( TEST<DERIVED>( NULL ) ) == sizeof( YES ) );       \
+   static constexpr bool value = ( sizeof( TEST<DERIVED>( nullptr ) ) == sizeof( YES ) );    \
    using Type = typename blaze::SelectType<value,blaze::TrueType,blaze::FalseType>::Type;    \
 };                                                                                           \
                                                                                              \
@@ -209,7 +209,7 @@ struct TYPE_TRAIT_NAME##HELPER                                                  
    static YES& TEST( U* );                                                                 \
                                                                                            \
  public:                                                                                   \
-   static constexpr bool value = ( sizeof( TEST<DERIVED>( NULL ) ) == sizeof( YES ) );     \
+   static constexpr bool value = ( sizeof( TEST<DERIVED>( nullptr ) ) == sizeof( YES ) );  \
    using Type = typename blaze::SelectType<value,blaze::TrueType,blaze::FalseType>::Type;  \
 };                                                                                         \
                                                                                            \

@@ -41,7 +41,6 @@
 //*************************************************************************************************
 
 #include <ctime>
-#include <blaze/util/Null.h>
 #include <blaze/util/singleton/Singleton.h>
 #include <blaze/util/SystemClockID.h>
 
@@ -174,7 +173,7 @@ inline time_t SystemClock::start() const
 */
 inline time_t SystemClock::now() const
 {
-   return time( NULL );
+   return time( nullptr );
 }
 //*************************************************************************************************
 
@@ -186,7 +185,7 @@ inline time_t SystemClock::now() const
 */
 inline time_t SystemClock::elapsed() const
 {
-   return std::time( NULL ) - start_;
+   return std::time( nullptr ) - start_;
 }
 //*************************************************************************************************
 

@@ -43,7 +43,6 @@
 #include <blaze/util/Assert.h>
 #include <blaze/util/constraints/Array.h>
 #include <blaze/util/NonCopyable.h>
-#include <blaze/util/Null.h>
 #include <blaze/util/policies/ArrayDelete.h>
 #include <blaze/util/Types.h>
 #include <blaze/util/typetraits/RemoveReference.h>
@@ -106,7 +105,7 @@ class UniqueArray : private NonCopyable
    //**Constructors********************************************************************************
    /*!\name Constructors */
    //@{
-   inline UniqueArray( Pointer ptr = NULL );
+   inline UniqueArray( Pointer ptr = nullptr );
    //@}
    //**********************************************************************************************
 
@@ -129,7 +128,7 @@ class UniqueArray : private NonCopyable
    //@{
    inline Pointer get() const /* throw() */;
    inline Pointer release() /* throw() */;
-   inline void    reset( Pointer ptr = NULL ) /* throw() */;
+   inline void    reset( Pointer ptr = nullptr ) /* throw() */;
    inline void    swap ( UniqueArray& up ) /* throw() */;
    //@}
    //**********************************************************************************************
@@ -235,9 +234,9 @@ inline typename UniqueArray<T,D>::Reference UniqueArray<T,D>::operator[]( size_t
 //*************************************************************************************************
 /*!\brief Returns a pointer to the managed array.
 //
-// \return Pointer to the managed array or NULL if no array is managed.
+// \return Pointer to the managed array or \c nullptr if no array is managed.
 //
-// This function returns a pointer to the managed array (or NULL in case no array is
+// This function returns a pointer to the managed array (or \c nullptr in case no array is
 // currently managed). Note however that the ownership remains with the unqiue pointer.
 */
 template< typename T    // Type of the array elements
@@ -252,9 +251,9 @@ inline typename UniqueArray<T,D>::Pointer UniqueArray<T,D>::get() const /* throw
 //*************************************************************************************************
 /*!\brief Releases the ownership of the managed array to the caller.
 //
-// \return Pointer to the managed array or NULL if no array is managed.
+// \return Pointer to the managed array or \c nullptr if no array is managed.
 //
-// This function returns a pointer to the managed array (or NULL in case no array is
+// This function returns a pointer to the managed array (or \c nullptr in case no array is
 // currently managed). The ownership of the array is released and passed to the caller.
 */
 template< typename T    // Type of the array elements
@@ -262,7 +261,7 @@ template< typename T    // Type of the array elements
 inline typename UniqueArray<T,D>::Pointer UniqueArray<T,D>::release() /* throw() */
 {
    Pointer tmp( ptr_ );
-   ptr_ = NULL;
+   ptr_ = nullptr;
    return tmp;
 }
 //*************************************************************************************************
@@ -312,15 +311,15 @@ inline void UniqueArray<T,D>::swap( UniqueArray& ptr ) /* throw() */
 //=================================================================================================
 
 //*************************************************************************************************
-/*!\brief Returns whether the unique pointer is set to a non-NULL pointer.
+/*!\brief Returns whether the unique pointer is set to a non-\c nullptr pointer.
 //
-// \return \a true in case the unique pointer is not NULL, \a false if it is NULL.
+// \return \a true in case the unique pointer is not \c nullptr, \a false if it is \c nullptr.
 */
 template< typename T    // Type of the array elements
         , typename D >  // Type of the deleter
 inline UniqueArray<T,D>::operator bool() const /* throw() */
 {
-   return ( ptr_ != NULL );
+   return ( ptr_ != nullptr );
 }
 //*************************************************************************************************
 
@@ -355,40 +354,40 @@ template< typename T1, typename D1, typename T2, typename D2 >
 inline bool operator>=( const UniqueArray<T1,D1>& lhs, const UniqueArray<T2,D2>& rhs );
 
 template< typename T, typename D >
-inline bool operator==( const UniqueArray<T,D>& ptr, const Null& null );
+inline bool operator==( const UniqueArray<T,D>& ptr, const nullptr_t& null );
 
 template< typename T, typename D >
-inline bool operator!=( const UniqueArray<T,D>& ptr, const Null& null );
+inline bool operator!=( const UniqueArray<T,D>& ptr, const nullptr_t& null );
 
 template< typename T, typename D >
-inline bool operator<( const UniqueArray<T,D>& ptr, const Null& null );
+inline bool operator<( const UniqueArray<T,D>& ptr, const nullptr_t& null );
 
 template< typename T, typename D >
-inline bool operator>( const UniqueArray<T,D>& ptr, const Null& null );
+inline bool operator>( const UniqueArray<T,D>& ptr, const nullptr_t& null );
 
 template< typename T, typename D >
-inline bool operator<=( const UniqueArray<T,D>& ptr, const Null& null );
+inline bool operator<=( const UniqueArray<T,D>& ptr, const nullptr_t& null );
 
 template< typename T, typename D >
-inline bool operator>=( const UniqueArray<T,D>& ptr, const Null& null );
+inline bool operator>=( const UniqueArray<T,D>& ptr, const nullptr_t& null );
 
 template< typename T, typename D >
-inline bool operator==( const Null& null, const UniqueArray<T,D>& ptr );
+inline bool operator==( const nullptr_t& null, const UniqueArray<T,D>& ptr );
 
 template< typename T, typename D >
-inline bool operator!=( const Null& null, const UniqueArray<T,D>& ptr );
+inline bool operator!=( const nullptr_t& null, const UniqueArray<T,D>& ptr );
 
 template< typename T, typename D >
-inline bool operator<( const Null& null, const UniqueArray<T,D>& ptr );
+inline bool operator<( const nullptr_t& null, const UniqueArray<T,D>& ptr );
 
 template< typename T, typename D >
-inline bool operator>( const Null& null, const UniqueArray<T,D>& ptr );
+inline bool operator>( const nullptr_t& null, const UniqueArray<T,D>& ptr );
 
 template< typename T, typename D >
-inline bool operator<=( const Null& null, const UniqueArray<T,D>& ptr );
+inline bool operator<=( const nullptr_t& null, const UniqueArray<T,D>& ptr );
 
 template< typename T, typename D >
-inline bool operator>=( const Null& null, const UniqueArray<T,D>& ptr );
+inline bool operator>=( const nullptr_t& null, const UniqueArray<T,D>& ptr );
 
 template< typename T, typename D >
 inline void swap( UniqueArray<T,D>& a, UniqueArray<T,D>& b ) /* throw() */;
@@ -505,15 +504,15 @@ inline bool operator>=( const UniqueArray<T1,D1>& lhs, const UniqueArray<T2,D2>&
 
 
 //*************************************************************************************************
-/*!\brief Equality comparison between a UniqueArray and NULL.
+/*!\brief Equality comparison between a UniqueArray and \c nullptr.
 //
 // \param ptr The left-hand side unique array.
-// \param null The right-hand side NULL pointer.
-// \return \a true if the unique array is NULL, \a false if it isn't.
+// \param null The right-hand side \c nullptr.
+// \return \a true if the unique array is \c nullptr, \a false if it isn't.
 */
 template< typename T    // Resource type of the unique array
         , typename D >  // Deleter type of the unique array
-inline bool operator==( const UniqueArray<T,D>& ptr, const Null& null )
+inline bool operator==( const UniqueArray<T,D>& ptr, const nullptr_t& null )
 {
    return ptr.get() == null;
 }
@@ -521,15 +520,15 @@ inline bool operator==( const UniqueArray<T,D>& ptr, const Null& null )
 
 
 //*************************************************************************************************
-/*!\brief Inequality comparison between a UniqueArray and NULL.
+/*!\brief Inequality comparison between a UniqueArray and \c nullptr.
 //
 // \param ptr The left-hand side unique array.
-// \param null The right-hand side NULL pointer.
-// \return \a true if the unique array is not NULL, \a false if it is.
+// \param null The right-hand side \c nullptr.
+// \return \a true if the unique array is not \c nullptr, \a false if it is.
 */
 template< typename T    // Resource type of the unique array
         , typename D >  // Deleter type of the unique array
-inline bool operator!=( const UniqueArray<T,D>& ptr, const Null& null )
+inline bool operator!=( const UniqueArray<T,D>& ptr, const nullptr_t& null )
 {
    return !( ptr == null );
 }
@@ -537,15 +536,15 @@ inline bool operator!=( const UniqueArray<T,D>& ptr, const Null& null )
 
 
 //*************************************************************************************************
-/*!\brief Less-than comparison between a UniqueArray and NULL.
+/*!\brief Less-than comparison between a UniqueArray and \c nullptr.
 //
 // \param ptr The left-hand side unique array.
-// \param null The right-hand side NULL pointer.
-// \return \a true if the unique array is less than NULL, \a false if not.
+// \param null The right-hand side \c nullptr.
+// \return \a true if the unique array is less than \c nullptr, \a false if not.
 */
 template< typename T    // Resource type of the unique array
         , typename D >  // Deleter type of the unique array
-inline bool operator<( const UniqueArray<T,D>& ptr, const Null& null )
+inline bool operator<( const UniqueArray<T,D>& ptr, const nullptr_t& null )
 {
    return ptr.get() < null;
 }
@@ -553,15 +552,15 @@ inline bool operator<( const UniqueArray<T,D>& ptr, const Null& null )
 
 
 //*************************************************************************************************
-/*!\brief Greater-than comparison between a UniqueArray and NULL.
+/*!\brief Greater-than comparison between a UniqueArray and \c nullptr.
 //
 // \param ptr The left-hand side unique array.
-// \param null The right-hand side NULL pointer.
-// \return \a true if the unique array is greater than NULL, \a false if not.
+// \param null The right-hand side \c nullptr.
+// \return \a true if the unique array is greater than \c nullptr, \a false if not.
 */
 template< typename T    // Resource type of the unique array
         , typename D >  // Deleter type of the unique array
-inline bool operator>( const UniqueArray<T,D>& ptr, const Null& null )
+inline bool operator>( const UniqueArray<T,D>& ptr, const nullptr_t& null )
 {
    return ptr.get() > null;
 }
@@ -569,15 +568,15 @@ inline bool operator>( const UniqueArray<T,D>& ptr, const Null& null )
 
 
 //*************************************************************************************************
-/*!\brief Less-or-equal-than comparison between a UniqueArray and NULL.
+/*!\brief Less-or-equal-than comparison between a UniqueArray and \c nullptr.
 //
 // \param ptr The left-hand side unique array.
-// \param null The right-hand side NULL pointer.
-// \return \a true if the unique array is less or equal than NULL, \a false if not.
+// \param null The right-hand side \c nullptr.
+// \return \a true if the unique array is less or equal than \c nullptr, \a false if not.
 */
 template< typename T    // Resource type of the unique array
         , typename D >  // Deleter type of the unique array
-inline bool operator<=( const UniqueArray<T,D>& ptr, const Null& null )
+inline bool operator<=( const UniqueArray<T,D>& ptr, const nullptr_t& null )
 {
    return !( ptr > null );
 }
@@ -585,15 +584,15 @@ inline bool operator<=( const UniqueArray<T,D>& ptr, const Null& null )
 
 
 //*************************************************************************************************
-/*!\brief Greater-or-equal-than comparison between a UniqueArray and NULL.
+/*!\brief Greater-or-equal-than comparison between a UniqueArray and \c nullptr.
 //
 // \param ptr The left-hand side unique array.
-// \param null The right-hand side NULL pointer.
-// \return \a true if the unique array is greater or equal than NULL, \a false if not.
+// \param null The right-hand side \c nullptr pointer.
+// \return \a true if the unique array is greater or equal than \c nullptr, \a false if not.
 */
 template< typename T    // Resource type of the unique array
         , typename D >  // Deleter type of the unique array
-inline bool operator>=( const UniqueArray<T,D>& ptr, const Null& null )
+inline bool operator>=( const UniqueArray<T,D>& ptr, const nullptr_t& null )
 {
    return !( ptr < null );
 }
@@ -601,15 +600,15 @@ inline bool operator>=( const UniqueArray<T,D>& ptr, const Null& null )
 
 
 //*************************************************************************************************
-/*!\brief Equality comparison between NULL and a UniqueArray.
+/*!\brief Equality comparison between \c nullptr and a UniqueArray.
 //
-// \param null The left-hand side NULL pointer.
+// \param null The left-hand side \c nullptr.
 // \param ptr The right-hand side unique array.
-// \return \a true if the unique array is NULL, \a false if it isn't.
+// \return \a true if the unique array is \c nullptr, \a false if it isn't.
 */
 template< typename T    // Resource type of the unique array
         , typename D >  // Deleter type of the unique array
-inline bool operator==( const Null& null, const UniqueArray<T,D>& ptr )
+inline bool operator==( const nullptr_t& null, const UniqueArray<T,D>& ptr )
 {
    return ptr == null;
 }
@@ -617,15 +616,15 @@ inline bool operator==( const Null& null, const UniqueArray<T,D>& ptr )
 
 
 //*************************************************************************************************
-/*!\brief Inquality comparison between NULL and a UniqueArray.
+/*!\brief Inquality comparison between \c nullptr and a UniqueArray.
 //
-// \param null The left-hand side NULL pointer.
+// \param null The left-hand side \c nullptr.
 // \param ptr The right-hand side unique array.
-// \return \a true if the unique array is not NULL, \a false if it is.
+// \return \a true if the unique array is not \c nullptr, \a false if it is.
 */
 template< typename T    // Resource type of the unique array
         , typename D >  // Deleter type of the unique array
-inline bool operator!=( const Null& null, const UniqueArray<T,D>& ptr )
+inline bool operator!=( const nullptr_t& null, const UniqueArray<T,D>& ptr )
 {
    return ptr != null;
 }
@@ -633,15 +632,15 @@ inline bool operator!=( const Null& null, const UniqueArray<T,D>& ptr )
 
 
 //*************************************************************************************************
-/*!\brief Less-than comparison between NULL and a UniqueArray.
+/*!\brief Less-than comparison between \c nullptr and a UniqueArray.
 //
-// \param null The left-hand side NULL pointer.
+// \param null The left-hand side \c nullptr pointer.
 // \param ptr The right-hand side unique array.
-// \return \a true if NULL is less than the unique array, \a false if not.
+// \return \a true if \c nullptr is less than the unique array, \a false if not.
 */
 template< typename T    // Resource type of the unique array
         , typename D >  // Deleter type of the unique array
-inline bool operator<( const Null& null, const UniqueArray<T,D>& ptr )
+inline bool operator<( const nullptr_t& null, const UniqueArray<T,D>& ptr )
 {
    return ptr > null;
 }
@@ -649,15 +648,15 @@ inline bool operator<( const Null& null, const UniqueArray<T,D>& ptr )
 
 
 //*************************************************************************************************
-/*!\brief Greater-than comparison between NULL and a UniqueArray.
+/*!\brief Greater-than comparison between \c nullptr and a UniqueArray.
 //
-// \param null The left-hand side NULL pointer.
+// \param null The left-hand side \c nullptr pointer.
 // \param ptr The right-hand side unique array.
-// \return \a true if NULL is greater than the unique array, \a false if not.
+// \return \a true if \c nullptr is greater than the unique array, \a false if not.
 */
 template< typename T    // Resource type of the unique array
         , typename D >  // Deleter type of the unique array
-inline bool operator>( const Null& null, const UniqueArray<T,D>& ptr )
+inline bool operator>( const nullptr_t& null, const UniqueArray<T,D>& ptr )
 {
    return ptr < null;
 }
@@ -665,15 +664,15 @@ inline bool operator>( const Null& null, const UniqueArray<T,D>& ptr )
 
 
 //*************************************************************************************************
-/*!\brief Less-or-equal-than comparison between NULL and a UniqueArray.
+/*!\brief Less-or-equal-than comparison between \c nullptr and a UniqueArray.
 //
-// \param null The left-hand side NULL pointer.
+// \param null The left-hand side \c nullptr pointer.
 // \param ptr The right-hand side unique array.
-// \return \a true if NULL is less or equal than the unique array, \a false if not.
+// \return \a true if \c nullptr is less or equal than the unique array, \a false if not.
 */
 template< typename T    // Resource type of the unique array
         , typename D >  // Deleter type of the unique array
-inline bool operator<=( const Null& null, const UniqueArray<T,D>& ptr )
+inline bool operator<=( const nullptr_t& null, const UniqueArray<T,D>& ptr )
 {
    return ptr >= null;
 }
@@ -681,15 +680,15 @@ inline bool operator<=( const Null& null, const UniqueArray<T,D>& ptr )
 
 
 //*************************************************************************************************
-/*!\brief Greater-or-equal-than comparison between NULL and a UniqueArray.
+/*!\brief Greater-or-equal-than comparison between \c nullptr and a UniqueArray.
 //
-// \param null The left-hand side NULL pointer.
+// \param null The left-hand side \c nullptr pointer.
 // \param ptr The right-hand side unique array.
-// \return \a true if NULL is greater or equal than the unique array, \a false if not.
+// \return \a true if \c nullptr is greater or equal than the unique array, \a false if not.
 */
 template< typename T    // Resource type of the unique array
         , typename D >  // Deleter type of the unique array
-inline bool operator>=( const Null& null, const UniqueArray<T,D>& ptr )
+inline bool operator>=( const nullptr_t& null, const UniqueArray<T,D>& ptr )
 {
    return ptr <= null;
 }

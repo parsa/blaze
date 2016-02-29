@@ -46,7 +46,6 @@
 #include <blaze/util/constraints/Convertible.h>
 #include <blaze/util/constraints/DerivedFrom.h>
 #include <blaze/util/Exception.h>
-#include <blaze/util/Null.h>
 #include <blaze/util/policies/PtrDelete.h>
 #include <blaze/util/policies/OptimalGrowth.h>
 #include <blaze/util/PtrIterator.h>
@@ -2056,8 +2055,8 @@ template< typename T    // Type
         , typename G >  // Growth policy
 template< typename C >  // Cast type
 inline PtrVector<T,D,G>::CastIterator<C>::CastIterator()
-   : cur_(NULL)  // Pointer to the current memory location
-   , end_(NULL)  // Pointer to the element one past the last element in the element range
+   : cur_( nullptr )  // Pointer to the current memory location
+   , end_( nullptr )  // Pointer to the element one past the last element in the element range
 {
    BLAZE_CONSTRAINT_MUST_BE_STRICTLY_DERIVED_FROM( C, T );
 }
@@ -2392,8 +2391,8 @@ template< typename T    // Type
         , typename G >  // Growth policy
 template< typename C >  // Cast type
 inline PtrVector<T,D,G>::ConstCastIterator<C>::ConstCastIterator()
-   : cur_(NULL)  // Pointer to the current memory location
-   , end_(NULL)  // Pointer to the element one past the last element in the element range
+   : cur_( nullptr )  // Pointer to the current memory location
+   , end_( nullptr )  // Pointer to the element one past the last element in the element range
 {
    BLAZE_CONSTRAINT_MUST_BE_STRICTLY_DERIVED_FROM( C, T );
 }
