@@ -86,7 +86,7 @@ FunctionTrace::FunctionTrace( const std::string& file, const std::string& functi
    oss << " + Entering function '" << function_ << "' in file '" << file_ << "'\n";
 
    // Logging the message string
-   boost::shared_ptr<Logger> logger( Logger::instance() );
+   std::shared_ptr<Logger> logger( Logger::instance() );
    logger->log( oss.str() );
 }
 //*************************************************************************************************
@@ -120,7 +120,7 @@ FunctionTrace::~FunctionTrace()
    oss << " - Leaving function '" << function_ << "' in file '" << file_ << "'\n";
 
    // Logging the message string
-   boost::shared_ptr<Logger> logger( Logger::instance() );
+   std::shared_ptr<Logger> logger( Logger::instance() );
    logger->log( oss.str() );
 }
 //*************************************************************************************************

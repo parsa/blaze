@@ -40,7 +40,7 @@
 // Includes
 //*************************************************************************************************
 
-#include <boost/shared_ptr.hpp>
+#include <memory>
 #include <blaze/util/constraints/DerivedFrom.h>
 
 
@@ -104,7 +104,7 @@ class Dependency
    //**Member variables****************************************************************************
    /*!\name Member variables */
    //@{
-   boost::shared_ptr<T> dependency_;  //!< Handle to the lifetime dependency.
+   std::shared_ptr<T> dependency_;  //!< Handle to the lifetime dependency.
    //@}
    //**********************************************************************************************
 };

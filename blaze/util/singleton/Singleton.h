@@ -40,8 +40,8 @@
 // Includes
 //*************************************************************************************************
 
-#include <boost/shared_ptr.hpp>
-#include <boost/thread/mutex.hpp>
+#include <memory>
+#include <mutex>
 #include <blaze/util/constraints/DerivedFrom.h>
 #include <blaze/util/NonCopyable.h>
 #include <blaze/util/NullType.h>
@@ -661,10 +661,9 @@ class Singleton : private NonCopyable
    //**Instance function***************************************************************************
    /*!\name Instance function */
    //@{
-   static boost::shared_ptr<T> instance()
+   static std::shared_ptr<T> instance()
    {
-      boost::mutex::scoped_lock lock( instanceMutex_ );
-      static boost::shared_ptr<T> object( new T() );
+      static std::shared_ptr<T> object( new T() );
       return object;
    }
    //@}
@@ -674,22 +673,14 @@ class Singleton : private NonCopyable
    //**Member variables****************************************************************************
    /*!\name Member variables */
    //@{
-   boost::shared_ptr<D1> dependency1_;  //!< Handle to the first lifetime dependency.
-   boost::shared_ptr<D2> dependency2_;  //!< Handle to the second lifetime dependency.
-   boost::shared_ptr<D3> dependency3_;  //!< Handle to the third lifetime dependency.
-   boost::shared_ptr<D4> dependency4_;  //!< Handle to the fourth lifetime dependency.
-   boost::shared_ptr<D5> dependency5_;  //!< Handle to the fifth lifetime dependency.
-   boost::shared_ptr<D6> dependency6_;  //!< Handle to the sixth lifetime dependency.
-   boost::shared_ptr<D7> dependency7_;  //!< Handle to the seventh lifetime dependency.
-   boost::shared_ptr<D8> dependency8_;  //!< Handle to the eighth lifetime dependency.
-   //@}
-   //**********************************************************************************************
-
- protected:
-   //**Member variables****************************************************************************
-   /*!\name Member variables */
-   //@{
-   static boost::mutex instanceMutex_;  //!< Synchronization mutex for access to the singleton.
+   std::shared_ptr<D1> dependency1_;  //!< Handle to the first lifetime dependency.
+   std::shared_ptr<D2> dependency2_;  //!< Handle to the second lifetime dependency.
+   std::shared_ptr<D3> dependency3_;  //!< Handle to the third lifetime dependency.
+   std::shared_ptr<D4> dependency4_;  //!< Handle to the fourth lifetime dependency.
+   std::shared_ptr<D5> dependency5_;  //!< Handle to the fifth lifetime dependency.
+   std::shared_ptr<D6> dependency6_;  //!< Handle to the sixth lifetime dependency.
+   std::shared_ptr<D7> dependency7_;  //!< Handle to the seventh lifetime dependency.
+   std::shared_ptr<D8> dependency8_;  //!< Handle to the eighth lifetime dependency.
    //@}
    //**********************************************************************************************
 };
@@ -775,10 +766,9 @@ class Singleton<T,D1,D2,D3,D4,D5,D6,D7,NullType> : private NonCopyable
    //**Instance function***************************************************************************
    /*!\name Instance function */
    //@{
-   static boost::shared_ptr<T> instance()
+   static std::shared_ptr<T> instance()
    {
-      boost::mutex::scoped_lock lock( instanceMutex_ );
-      static boost::shared_ptr<T> object( new T() );
+      static std::shared_ptr<T> object( new T() );
       return object;
    }
    //@}
@@ -788,21 +778,13 @@ class Singleton<T,D1,D2,D3,D4,D5,D6,D7,NullType> : private NonCopyable
    //**Member variables****************************************************************************
    /*!\name Member variables */
    //@{
-   boost::shared_ptr<D1> dependency1_;  //!< Handle to the first lifetime dependency.
-   boost::shared_ptr<D2> dependency2_;  //!< Handle to the second lifetime dependency.
-   boost::shared_ptr<D3> dependency3_;  //!< Handle to the third lifetime dependency.
-   boost::shared_ptr<D4> dependency4_;  //!< Handle to the fourth lifetime dependency.
-   boost::shared_ptr<D5> dependency5_;  //!< Handle to the fifth lifetime dependency.
-   boost::shared_ptr<D6> dependency6_;  //!< Handle to the sixth lifetime dependency.
-   boost::shared_ptr<D7> dependency7_;  //!< Handle to the seventh lifetime dependency.
-   //@}
-   //**********************************************************************************************
-
- protected:
-   //**Member variables****************************************************************************
-   /*!\name Member variables */
-   //@{
-   static boost::mutex instanceMutex_;  //!< Synchronization mutex for access to the singleton.
+   std::shared_ptr<D1> dependency1_;  //!< Handle to the first lifetime dependency.
+   std::shared_ptr<D2> dependency2_;  //!< Handle to the second lifetime dependency.
+   std::shared_ptr<D3> dependency3_;  //!< Handle to the third lifetime dependency.
+   std::shared_ptr<D4> dependency4_;  //!< Handle to the fourth lifetime dependency.
+   std::shared_ptr<D5> dependency5_;  //!< Handle to the fifth lifetime dependency.
+   std::shared_ptr<D6> dependency6_;  //!< Handle to the sixth lifetime dependency.
+   std::shared_ptr<D7> dependency7_;  //!< Handle to the seventh lifetime dependency.
    //@}
    //**********************************************************************************************
 };
@@ -885,10 +867,9 @@ class Singleton<T,D1,D2,D3,D4,D5,D6,NullType,NullType> : private NonCopyable
    //**Instance function***************************************************************************
    /*!\name Instance function */
    //@{
-   static boost::shared_ptr<T> instance()
+   static std::shared_ptr<T> instance()
    {
-      boost::mutex::scoped_lock lock( instanceMutex_ );
-      static boost::shared_ptr<T> object( new T() );
+      static std::shared_ptr<T> object( new T() );
       return object;
    }
    //@}
@@ -898,20 +879,12 @@ class Singleton<T,D1,D2,D3,D4,D5,D6,NullType,NullType> : private NonCopyable
    //**Member variables****************************************************************************
    /*!\name Member variables */
    //@{
-   boost::shared_ptr<D1> dependency1_;  //!< Handle to the first lifetime dependency.
-   boost::shared_ptr<D2> dependency2_;  //!< Handle to the second lifetime dependency.
-   boost::shared_ptr<D3> dependency3_;  //!< Handle to the third lifetime dependency.
-   boost::shared_ptr<D4> dependency4_;  //!< Handle to the fourth lifetime dependency.
-   boost::shared_ptr<D5> dependency5_;  //!< Handle to the fifth lifetime dependency.
-   boost::shared_ptr<D6> dependency6_;  //!< Handle to the sixth lifetime dependency.
-   //@}
-   //**********************************************************************************************
-
- protected:
-   //**Member variables****************************************************************************
-   /*!\name Member variables */
-   //@{
-   static boost::mutex instanceMutex_;  //!< Synchronization mutex for access to the singleton.
+   std::shared_ptr<D1> dependency1_;  //!< Handle to the first lifetime dependency.
+   std::shared_ptr<D2> dependency2_;  //!< Handle to the second lifetime dependency.
+   std::shared_ptr<D3> dependency3_;  //!< Handle to the third lifetime dependency.
+   std::shared_ptr<D4> dependency4_;  //!< Handle to the fourth lifetime dependency.
+   std::shared_ptr<D5> dependency5_;  //!< Handle to the fifth lifetime dependency.
+   std::shared_ptr<D6> dependency6_;  //!< Handle to the sixth lifetime dependency.
    //@}
    //**********************************************************************************************
 };
@@ -990,10 +963,9 @@ class Singleton<T,D1,D2,D3,D4,D5,NullType,NullType,NullType> : private NonCopyab
    //**Instance function***************************************************************************
    /*!\name Instance function */
    //@{
-   static boost::shared_ptr<T> instance()
+   static std::shared_ptr<T> instance()
    {
-      boost::mutex::scoped_lock lock( instanceMutex_ );
-      static boost::shared_ptr<T> object( new T() );
+      static std::shared_ptr<T> object( new T() );
       return object;
    }
    //@}
@@ -1003,19 +975,11 @@ class Singleton<T,D1,D2,D3,D4,D5,NullType,NullType,NullType> : private NonCopyab
    //**Member variables****************************************************************************
    /*!\name Member variables */
    //@{
-   boost::shared_ptr<D1> dependency1_;  //!< Handle to the first lifetime dependency.
-   boost::shared_ptr<D2> dependency2_;  //!< Handle to the second lifetime dependency.
-   boost::shared_ptr<D3> dependency3_;  //!< Handle to the third lifetime dependency.
-   boost::shared_ptr<D4> dependency4_;  //!< Handle to the fourth lifetime dependency.
-   boost::shared_ptr<D5> dependency5_;  //!< Handle to the fifth lifetime dependency.
-   //@}
-   //**********************************************************************************************
-
- protected:
-   //**Member variables****************************************************************************
-   /*!\name Member variables */
-   //@{
-   static boost::mutex instanceMutex_;  //!< Synchronization mutex for access to the singleton.
+   std::shared_ptr<D1> dependency1_;  //!< Handle to the first lifetime dependency.
+   std::shared_ptr<D2> dependency2_;  //!< Handle to the second lifetime dependency.
+   std::shared_ptr<D3> dependency3_;  //!< Handle to the third lifetime dependency.
+   std::shared_ptr<D4> dependency4_;  //!< Handle to the fourth lifetime dependency.
+   std::shared_ptr<D5> dependency5_;  //!< Handle to the fifth lifetime dependency.
    //@}
    //**********************************************************************************************
 };
@@ -1090,10 +1054,9 @@ class Singleton<T,D1,D2,D3,D4,NullType,NullType,NullType,NullType> : private Non
    //**Instance function***************************************************************************
    /*!\name Instance function */
    //@{
-   static boost::shared_ptr<T> instance()
+   static std::shared_ptr<T> instance()
    {
-      boost::mutex::scoped_lock lock( instanceMutex_ );
-      static boost::shared_ptr<T> object( new T() );
+      static std::shared_ptr<T> object( new T() );
       return object;
    }
    //@}
@@ -1103,18 +1066,10 @@ class Singleton<T,D1,D2,D3,D4,NullType,NullType,NullType,NullType> : private Non
    //**Member variables****************************************************************************
    /*!\name Member variables */
    //@{
-   boost::shared_ptr<D1> dependency1_;  //!< Handle to the first lifetime dependency.
-   boost::shared_ptr<D2> dependency2_;  //!< Handle to the second lifetime dependency.
-   boost::shared_ptr<D3> dependency3_;  //!< Handle to the third lifetime dependency.
-   boost::shared_ptr<D4> dependency4_;  //!< Handle to the fourth lifetime dependency.
-   //@}
-   //**********************************************************************************************
-
- protected:
-   //**Member variables****************************************************************************
-   /*!\name Member variables */
-   //@{
-   static boost::mutex instanceMutex_;  //!< Synchronization mutex for access to the singleton.
+   std::shared_ptr<D1> dependency1_;  //!< Handle to the first lifetime dependency.
+   std::shared_ptr<D2> dependency2_;  //!< Handle to the second lifetime dependency.
+   std::shared_ptr<D3> dependency3_;  //!< Handle to the third lifetime dependency.
+   std::shared_ptr<D4> dependency4_;  //!< Handle to the fourth lifetime dependency.
    //@}
    //**********************************************************************************************
 };
@@ -1185,10 +1140,9 @@ class Singleton<T,D1,D2,D3,NullType,NullType,NullType,NullType,NullType> : priva
    //**Instance function***************************************************************************
    /*!\name Instance function */
    //@{
-   static boost::shared_ptr<T> instance()
+   static std::shared_ptr<T> instance()
    {
-      boost::mutex::scoped_lock lock( instanceMutex_ );
-      static boost::shared_ptr<T> object( new T() );
+      static std::shared_ptr<T> object( new T() );
       return object;
    }
    //@}
@@ -1198,17 +1152,9 @@ class Singleton<T,D1,D2,D3,NullType,NullType,NullType,NullType,NullType> : priva
    //**Member variables****************************************************************************
    /*!\name Member variables */
    //@{
-   boost::shared_ptr<D1> dependency1_;  //!< Handle to the first lifetime dependency.
-   boost::shared_ptr<D2> dependency2_;  //!< Handle to the second lifetime dependency.
-   boost::shared_ptr<D3> dependency3_;  //!< Handle to the third lifetime dependency.
-   //@}
-   //**********************************************************************************************
-
- protected:
-   //**Member variables****************************************************************************
-   /*!\name Member variables */
-   //@{
-   static boost::mutex instanceMutex_;  //!< Synchronization mutex for access to the singleton.
+   std::shared_ptr<D1> dependency1_;  //!< Handle to the first lifetime dependency.
+   std::shared_ptr<D2> dependency2_;  //!< Handle to the second lifetime dependency.
+   std::shared_ptr<D3> dependency3_;  //!< Handle to the third lifetime dependency.
    //@}
    //**********************************************************************************************
 };
@@ -1275,10 +1221,9 @@ class Singleton<T,D1,D2,NullType,NullType,NullType,NullType,NullType,NullType> :
    //**Instance function***************************************************************************
    /*!\name Instance function */
    //@{
-   static boost::shared_ptr<T> instance()
+   static std::shared_ptr<T> instance()
    {
-      boost::mutex::scoped_lock lock( instanceMutex_ );
-      static boost::shared_ptr<T> object( new T() );
+      static std::shared_ptr<T> object( new T() );
       return object;
    }
    //@}
@@ -1288,16 +1233,8 @@ class Singleton<T,D1,D2,NullType,NullType,NullType,NullType,NullType,NullType> :
    //**Member variables****************************************************************************
    /*!\name Member variables */
    //@{
-   boost::shared_ptr<D1> dependency1_;  //!< Handle to the first lifetime dependency.
-   boost::shared_ptr<D2> dependency2_;  //!< Handle to the second lifetime dependency.
-   //@}
-   //**********************************************************************************************
-
- protected:
-   //**Member variables****************************************************************************
-   /*!\name Member variables */
-   //@{
-   static boost::mutex instanceMutex_;  //!< Synchronization mutex for access to the singleton.
+   std::shared_ptr<D1> dependency1_;  //!< Handle to the first lifetime dependency.
+   std::shared_ptr<D2> dependency2_;  //!< Handle to the second lifetime dependency.
    //@}
    //**********************************************************************************************
 };
@@ -1360,10 +1297,9 @@ class Singleton<T,D1,NullType,NullType,NullType,NullType,NullType,NullType,NullT
    //**Instance function***************************************************************************
    /*!\name Instance function */
    //@{
-   static boost::shared_ptr<T> instance()
+   static std::shared_ptr<T> instance()
    {
-      boost::mutex::scoped_lock lock( instanceMutex_ );
-      static boost::shared_ptr<T> object( new T() );
+      static std::shared_ptr<T> object( new T() );
       return object;
    }
    //@}
@@ -1373,15 +1309,7 @@ class Singleton<T,D1,NullType,NullType,NullType,NullType,NullType,NullType,NullT
    //**Member variables****************************************************************************
    /*!\name Member variables */
    //@{
-   boost::shared_ptr<D1> dependency1_;  //!< Handle to the lifetime dependency.
-   //@}
-   //**********************************************************************************************
-
- protected:
-   //**Member variables****************************************************************************
-   /*!\name Member variables */
-   //@{
-   static boost::mutex instanceMutex_;  //!< Synchronization mutex for access to the singleton.
+   std::shared_ptr<D1> dependency1_;  //!< Handle to the lifetime dependency.
    //@}
    //**********************************************************************************************
 };
@@ -1440,97 +1368,16 @@ class Singleton<T,NullType,NullType,NullType,NullType,NullType,NullType,NullType
    //**Instance function***************************************************************************
    /*!\name Instance function */
    //@{
-   static boost::shared_ptr<T> instance()
+   static std::shared_ptr<T> instance()
    {
-      boost::mutex::scoped_lock lock( instanceMutex_ );
-      static boost::shared_ptr<T> object( new T() );
+      static std::shared_ptr<T> object( new T() );
       return object;
    }
-   //@}
-   //**********************************************************************************************
-
- protected:
-   //**Member variables****************************************************************************
-   /*!\name Member variables */
-   //@{
-   static boost::mutex instanceMutex_;  //!< Synchronization mutex for access to the singleton.
    //@}
    //**********************************************************************************************
 };
 /*! \endcond */
 //*************************************************************************************************
-
-
-
-
-//=================================================================================================
-//
-//  DEFINITION AND INITIALIZATION OF THE STATIC MEMBER VARIABLES
-//
-//=================================================================================================
-
-template< typename T    // Type of the singleton (CRTP pattern)
-        , typename A    // Type of the first lifetime dependency
-        , typename B    // Type of the second lifetime dependency
-        , typename C    // Type of the third lifetime dependency
-        , typename D    // Type of the fourth lifetime dependency
-        , typename E    // Type of the fifth lifetime dependency
-        , typename F    // Type of the sixth lifetime dependency
-        , typename G    // Type of the seventh lifetime dependency
-        , typename H >  // Type of the eighth lifetime dependency
-boost::mutex Singleton<T,A,B,C,D,E,F,G,H>::instanceMutex_;
-
-template< typename T    // Type of the singleton (CRTP pattern)
-        , typename A    // Type of the first lifetime dependency
-        , typename B    // Type of the second lifetime dependency
-        , typename C    // Type of the third lifetime dependency
-        , typename D    // Type of the fourth lifetime dependency
-        , typename E    // Type of the fifth lifetime dependency
-        , typename F    // Type of the sixth lifetime dependency
-        , typename G >  // Type of the seventh lifetime dependency
-boost::mutex Singleton<T,A,B,C,D,E,F,G,NullType>::instanceMutex_;
-
-template< typename T    // Type of the singleton (CRTP pattern)
-        , typename A    // Type of the first lifetime dependency
-        , typename B    // Type of the second lifetime dependency
-        , typename C    // Type of the third lifetime dependency
-        , typename D    // Type of the fourth lifetime dependency
-        , typename E    // Type of the fifth lifetime dependency
-        , typename F >  // Type of the sixth lifetime dependency
-boost::mutex Singleton<T,A,B,C,D,E,F,NullType,NullType>::instanceMutex_;
-
-template< typename T    // Type of the singleton (CRTP pattern)
-        , typename A    // Type of the first lifetime dependency
-        , typename B    // Type of the second lifetime dependency
-        , typename C    // Type of the third lifetime dependency
-        , typename D    // Type of the fourth lifetime dependency
-        , typename E >  // Type of the fifth lifetime dependency
-boost::mutex Singleton<T,A,B,C,D,E,NullType,NullType,NullType>::instanceMutex_;
-
-template< typename T    // Type of the singleton (CRTP pattern)
-        , typename A    // Type of the first lifetime dependency
-        , typename B    // Type of the second lifetime dependency
-        , typename C    // Type of the third lifetime dependency
-        , typename D >  // Type of the fourth lifetime dependency
-boost::mutex Singleton<T,A,B,C,D,NullType,NullType,NullType,NullType>::instanceMutex_;
-
-template< typename T    // Type of the singleton (CRTP pattern)
-        , typename A    // Type of the first lifetime dependency
-        , typename B    // Type of the second lifetime dependency
-        , typename C >  // Type of the third lifetime dependency
-boost::mutex Singleton<T,A,B,C,NullType,NullType,NullType,NullType,NullType>::instanceMutex_;
-
-template< typename T    // Type of the singleton (CRTP pattern)
-        , typename A    // Type of the first lifetime dependency
-        , typename B >  // Type of the second lifetime dependency
-boost::mutex Singleton<T,A,B,NullType,NullType,NullType,NullType,NullType,NullType>::instanceMutex_;
-
-template< typename T    // Type of the singleton (CRTP pattern)
-        , typename A >  // Type of the first lifetime dependency
-boost::mutex Singleton<T,A,NullType,NullType,NullType,NullType,NullType,NullType,NullType>::instanceMutex_;
-
-template< typename T >  // Type of the singleton (CRTP pattern)
-boost::mutex Singleton<T,NullType,NullType,NullType,NullType,NullType,NullType,NullType,NullType>::instanceMutex_;
 
 } // namespace blaze
 

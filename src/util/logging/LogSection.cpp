@@ -152,7 +152,7 @@ void LogSection::commit()
       oss << "\n";
 
    // Logging the formated log message
-   boost::shared_ptr<Logger> logger( Logger::instance() );
+   std::shared_ptr<Logger> logger( Logger::instance() );
    logger->log( oss.str() );
 
    // Resetting the message buffer
