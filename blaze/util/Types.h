@@ -41,7 +41,7 @@
 //*************************************************************************************************
 
 #include <cstddef>
-#include <boost/cstdint.hpp>
+#include <cstdint>
 
 
 namespace blaze {
@@ -75,7 +75,7 @@ using std::ptrdiff_t;
 // \brief 8-bit signed integer type of the Blaze library.
 // \ingroup util
 */
-using boost::int8_t;
+using std::int8_t;
 //*************************************************************************************************
 
 
@@ -84,7 +84,7 @@ using boost::int8_t;
 // \brief 8-bit unsigned integer type of the Blaze library.
 // \ingroup util
 */
-using boost::uint8_t;
+using std::uint8_t;
 //*************************************************************************************************
 
 
@@ -93,7 +93,7 @@ using boost::uint8_t;
 // \brief 16-bit signed integer type of the Blaze library.
 // \ingroup util
 */
-using boost::int16_t;
+using std::int16_t;
 //*************************************************************************************************
 
 
@@ -102,7 +102,7 @@ using boost::int16_t;
 // \brief 16-bit unsigned integer type of the Blaze library.
 // \ingroup util
 */
-using boost::uint16_t;
+using std::uint16_t;
 //*************************************************************************************************
 
 
@@ -111,7 +111,7 @@ using boost::uint16_t;
 // \brief 32-bit signed integer type of the Blaze library.
 // \ingroup util
 */
-using boost::int32_t;
+using std::int32_t;
 //*************************************************************************************************
 
 
@@ -120,7 +120,7 @@ using boost::int32_t;
 // \brief 32-bit unsigned integer type of the Blaze library.
 // \ingroup util
 */
-using boost::uint32_t;
+using std::uint32_t;
 //*************************************************************************************************
 
 
@@ -129,9 +129,7 @@ using boost::uint32_t;
 // \brief 64-bit signed integer type of the Blaze library.
 // \ingroup util
 */
-#ifndef BOOST_NO_INT64_T
-using boost::int64_t;
-#endif
+using std::int64_t;
 //*************************************************************************************************
 
 
@@ -140,9 +138,7 @@ using boost::int64_t;
 // \brief 64-bit unsigned integer type of the Blaze library.
 // \ingroup util
 */
-#ifndef BOOST_NO_INT64_T
-using boost::uint64_t;
-#endif
+using std::uint64_t;
 //*************************************************************************************************
 
 
@@ -150,11 +146,7 @@ using boost::uint64_t;
 /*!\brief The largest available signed integer data type.
 // \ingroup util
 */
-#ifndef BOOST_NO_INT64_T
 typedef int64_t  large_t;
-#else
-typedef int32_t  large_t;
-#endif
 //*************************************************************************************************
 
 
@@ -162,11 +154,7 @@ typedef int32_t  large_t;
 /*!\brief The largest available unsigned integer data type.
 // \ingroup util
 */
-#ifndef BOOST_NO_INT64_T
 typedef uint64_t  ularge_t;
-#else
-typedef uint32_t  ularge_t;
-#endif
 //*************************************************************************************************
 
 
