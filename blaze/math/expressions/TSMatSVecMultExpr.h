@@ -64,7 +64,6 @@
 #include <blaze/math/typetraits/Size.h>
 #include <blaze/system/Thresholds.h>
 #include <blaze/util/Assert.h>
-#include <blaze/util/Byte.h>
 #include <blaze/util/constraints/Reference.h>
 #include <blaze/util/DisableIf.h>
 #include <blaze/util/EnableIf.h>
@@ -421,7 +420,7 @@ class TSMatSVecMultExpr : public SparseVector< TSMatSVecMultExpr<MT,VT>, false >
       BLAZE_INTERNAL_ASSERT( A.rows()    == (~lhs).size()     , "Invalid vector size"       );
 
       DynamicVector<ElementType> tmp( (~lhs).size() );
-      std::vector<byte> indices( (~lhs).size(), 0 );
+      std::vector<byte_t> indices( (~lhs).size(), 0 );
       size_t nonzeros( 0UL );
 
       const VectorIterator vend ( x.end() );

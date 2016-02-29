@@ -87,7 +87,6 @@
 #include <blaze/math/typetraits/Rows.h>
 #include <blaze/system/Thresholds.h>
 #include <blaze/util/Assert.h>
-#include <blaze/util/Byte.h>
 #include <blaze/util/DisableIf.h>
 #include <blaze/util/EnableIf.h>
 #include <blaze/util/Exception.h>
@@ -518,7 +517,7 @@ class SMatSMatMultExpr : public SparseMatrix< SMatSMatMultExpr<MT1,MT2>, false >
 
       // Performing the matrix-matrix multiplication
       std::vector<ElementType> values ( (~lhs).columns(), ElementType() );
-      std::vector<byte>        valid  ( (~lhs).columns(), 0   );
+      std::vector<byte_t>      valid  ( (~lhs).columns(), 0   );
       std::vector<size_t>      indices( (~lhs).columns(), 0UL );
       size_t minIndex( inf ), maxIndex( 0UL );
 

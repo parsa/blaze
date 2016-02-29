@@ -46,7 +46,6 @@
 #include <blaze/util/AlignmentCheck.h>
 #include <blaze/util/Algorithm.h>
 #include <blaze/util/Assert.h>
-#include <blaze/util/Byte.h>
 #include <blaze/util/ColorMacros.h>
 #include <blaze/util/Complex.h>
 #include <blaze/util/Constraints.h>

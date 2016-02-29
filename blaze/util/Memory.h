@@ -46,7 +46,6 @@
 #include <cstdlib>
 #include <new>
 #include <blaze/util/Assert.h>
-#include <blaze/util/Byte.h>
 #include <blaze/util/DisableIf.h>
 #include <blaze/util/EnableIf.h>
 #include <blaze/util/Exception.h>
@@ -77,7 +76,7 @@ namespace blaze {
 // restrictions. For that purpose it uses the according system-specific memory allocation
 // functions.
 */
-inline byte* allocate_backend( size_t size, size_t alignment )
+inline byte_t* allocate_backend( size_t size, size_t alignment )
 {
    void* raw( nullptr );
 
@@ -90,7 +89,7 @@ inline byte* allocate_backend( size_t size, size_t alignment )
       BLAZE_THROW_BAD_ALLOC;
    }
 
-   return reinterpret_cast<byte*>( raw );
+   return reinterpret_cast<byte_t*>( raw );
 }
 /*! \endcond */
 //*************************************************************************************************
@@ -187,7 +186,7 @@ typename DisableIf< IsBuiltin<T>, T* >::Type allocate( size_t size )
 
    if( alignment >= 8UL )
    {
-      byte* const raw( allocate_backend( size*sizeof(T)+headersize, alignment ) );
+      byte_t* const raw( allocate_backend( size*sizeof(T)+headersize, alignment ) );
 
       *reinterpret_cast<size_t*>( raw ) = size;
 
@@ -262,7 +261,7 @@ typename DisableIf< IsBuiltin<T> >::Type deallocate( T* address )
 
    if( alignment >= 8UL )
    {
-      const byte* const raw = reinterpret_cast<byte*>( address ) - headersize;
+      const byte_t* const raw = reinterpret_cast<byte_t*>( address ) - headersize;
 
       const size_t size( *reinterpret_cast<const size_t*>( raw ) );
       for( size_t i=0UL; i<size; ++i )
