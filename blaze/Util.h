@@ -87,7 +87,6 @@
 #include <blaze/util/Types.h>
 #include <blaze/util/TypeTraits.h>
 #include <blaze/util/UniqueArray.h>
-#include <blaze/util/UniquePtr.h>
 #include <blaze/util/UnsignedValue.h>
 #include <blaze/util/ValueTraits.h>
 
