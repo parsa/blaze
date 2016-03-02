@@ -170,9 +170,9 @@ class SymmetricMatrix<MT,SO,true,true>
       /*!\brief Default constructor of the Iterator class.
       */
       inline Iterator()
-         : matrix_( NULL )  // Reference to the adapted dense matrix
-         , row_   ( 0UL  )  // The current row index of the iterator
-         , column_( 0UL  )  // The current column index of the iterator
+         : matrix_( nullptr )  // Reference to the adapted dense matrix
+         , row_   ( 0UL )      // The current row index of the iterator
+         , column_( 0UL )      // The current column index of the iterator
       {}
       //*******************************************************************************************
 
@@ -842,7 +842,7 @@ inline SymmetricMatrix<MT,SO,true,true>::SymmetricMatrix( size_t n )
 // This constructor creates an unpadded symmetric custom matrix of size \f$ n \times n \f$. The
 // construction fails if ...
 //
-//  - ... the passed pointer is NULL;
+//  - ... the passed pointer is \c nullptr;
 //  - ... the alignment flag \a AF is set to \a aligned, but the passed pointer is not properly
 //    aligned according to the available instruction set (SSE, AVX, ...);
 //  - ... the values in the given array do not represent a symmetric matrix.
@@ -879,7 +879,7 @@ inline SymmetricMatrix<MT,SO,true,true>::SymmetricMatrix( ElementType* ptr, size
 // This constructor creates a symmetric custom matrix of size \f$ n \times n \f$. The construction
 // fails if ...
 //
-//  - ... the passed pointer is NULL;
+//  - ... the passed pointer is \c nullptr;
 //  - ... the alignment flag \a AF is set to \a aligned, but the passed pointer is not properly
 //    aligned according to the available instruction set (SSE, AVX, ...);
 //  - ... the specified spacing \a nn is insufficient for the given data type \a Type and the
@@ -917,7 +917,7 @@ inline SymmetricMatrix<MT,SO,true,true>::SymmetricMatrix( ElementType* ptr, size
 // This constructor creates an unpadded symmetric custom matrix of size \f$ n \times n \f$. The
 // construction fails if ...
 //
-//  - ... the passed pointer is NULL;
+//  - ... the passed pointer is \c nullptr;
 //  - ... the alignment flag \a AF is set to \a aligned, but the passed pointer is not properly
 //    aligned according to the available instruction set (SSE, AVX, ...);
 //  - ... the values in the given array do not represent a symmetric matrix.
@@ -955,7 +955,7 @@ inline SymmetricMatrix<MT,SO,true,true>::SymmetricMatrix( ElementType* ptr, size
 // This constructor creates a symmetric custom matrix of size \f$ n \times n \f$. The construction
 // fails if ...
 //
-//  - ... the passed pointer is NULL;
+//  - ... the passed pointer is \c nullptr;
 //  - ... the alignment flag \a AF is set to \a aligned, but the passed pointer is not properly
 //    aligned according to the available instruction set (SSE, AVX, ...);
 //  - ... the specified spacing \a nn is insufficient for the given data type \a Type and the

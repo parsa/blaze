@@ -74,7 +74,6 @@
 #include <blaze/util/Exception.h>
 #include <blaze/util/Memory.h>
 #include <blaze/util/mpl/If.h>
-#include <blaze/util/Null.h>
 #include <blaze/util/Types.h>
 #include <blaze/util/typetraits/IsFloatingPoint.h>
 #include <blaze/util/typetraits/IsNumeric.h>
@@ -433,10 +432,10 @@ const Type CompressedVector<Type,TF>::zero_ = Type();
 template< typename Type  // Data type of the vector
         , bool TF >      // Transpose flag
 inline CompressedVector<Type,TF>::CompressedVector()
-   : size_    ( 0UL )   // The current size/dimension of the compressed vector
-   , capacity_( 0UL )   // The maximum capacity of the compressed vector
-   , begin_   ( NULL )  // Pointer to the first non-zero element of the compressed vector
-   , end_     ( NULL )  // Pointer to the last non-zero element of the compressed vector
+   : size_    ( 0UL )      // The current size/dimension of the compressed vector
+   , capacity_( 0UL )      // The maximum capacity of the compressed vector
+   , begin_   ( nullptr )  // Pointer to the first non-zero element of the compressed vector
+   , end_     ( nullptr )  // Pointer to the last non-zero element of the compressed vector
 {}
 //*************************************************************************************************
 
@@ -449,10 +448,10 @@ inline CompressedVector<Type,TF>::CompressedVector()
 template< typename Type  // Data type of the vector
         , bool TF >      // Transpose flag
 inline CompressedVector<Type,TF>::CompressedVector( size_t n )
-   : size_    ( n   )   // The current size/dimension of the compressed vector
-   , capacity_( 0UL )   // The maximum capacity of the compressed vector
-   , begin_   ( NULL )  // Pointer to the first non-zero element of the compressed vector
-   , end_     ( NULL )  // Pointer to the last non-zero element of the compressed vector
+   : size_    ( n   )      // The current size/dimension of the compressed vector
+   , capacity_( 0UL )      // The maximum capacity of the compressed vector
+   , begin_   ( nullptr )  // Pointer to the first non-zero element of the compressed vector
+   , end_     ( nullptr )  // Pointer to the last non-zero element of the compressed vector
 {}
 //*************************************************************************************************
 
@@ -505,9 +504,9 @@ template< typename Type  // Data type of the vector
 template< typename VT >  // Type of the foreign dense vector
 inline CompressedVector<Type,TF>::CompressedVector( const DenseVector<VT,TF>& dv )
    : size_    ( (~dv).size() )  // The current size/dimension of the compressed vector
-   , capacity_( 0UL  )          // The maximum capacity of the compressed vector
-   , begin_   ( NULL )          // Pointer to the first non-zero element of the compressed vector
-   , end_     ( NULL )          // Pointer to the last non-zero element of the compressed vector
+   , capacity_( 0UL )           // The maximum capacity of the compressed vector
+   , begin_   ( nullptr )       // Pointer to the first non-zero element of the compressed vector
+   , end_     ( nullptr )       // Pointer to the last non-zero element of the compressed vector
 {
    using blaze::assign;
    assign( *this, ~dv );

@@ -82,7 +82,6 @@
 #include <blaze/util/EnableIf.h>
 #include <blaze/util/Exception.h>
 #include <blaze/util/Memory.h>
-#include <blaze/util/Null.h>
 #include <blaze/util/Template.h>
 #include <blaze/util/Types.h>
 #include <blaze/util/typetraits/IsNumeric.h>
@@ -456,9 +455,9 @@ class DynamicVector : public DenseVector< DynamicVector<Type,TF>, TF >
 template< typename Type  // Data type of the vector
         , bool TF >      // Transpose flag
 inline DynamicVector<Type,TF>::DynamicVector()
-   : size_    ( 0UL )   // The current size/dimension of the vector
-   , capacity_( 0UL )   // The maximum capacity of the vector
-   , v_       ( NULL )  // The vector elements
+   : size_    ( 0UL )      // The current size/dimension of the vector
+   , capacity_( 0UL )      // The maximum capacity of the vector
+   , v_       ( nullptr )  // The vector elements
 {}
 //*************************************************************************************************
 

@@ -161,9 +161,9 @@ class SymmetricMatrix<MT,SO,false,true>
       /*!\brief Default constructor for the Iterator class.
       */
       inline Iterator()
-         : pos_   (      )  // Iterator to the current sparse symmetric matrix element
-         , matrix_( NULL )  // The sparse matrix containing the iterator
-         , index_ ( 0UL  )  // The row/column index of the iterator
+         : pos_   ()           // Iterator to the current sparse symmetric matrix element
+         , matrix_( nullptr )  // The sparse matrix containing the iterator
+         , index_ ( 0UL )      // The row/column index of the iterator
       {}
       //*******************************************************************************************
 

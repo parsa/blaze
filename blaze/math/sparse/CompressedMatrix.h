@@ -78,7 +78,6 @@
 #include <blaze/util/Exception.h>
 #include <blaze/util/Memory.h>
 #include <blaze/util/mpl/If.h>
-#include <blaze/util/Null.h>
 #include <blaze/util/Types.h>
 #include <blaze/util/typetraits/IsFloatingPoint.h>
 #include <blaze/util/typetraits/IsNumeric.h>
@@ -474,7 +473,7 @@ inline CompressedMatrix<Type,SO>::CompressedMatrix()
    , begin_( new Iterator[2] )  // Pointers to the first non-zero element of each row
    , end_  ( begin_+1 )         // Pointers one past the last non-zero element of each row
 {
-   begin_[0] = end_[0] = NULL;
+   begin_[0] = end_[0] = nullptr;
 }
 //*************************************************************************************************
 
@@ -497,7 +496,7 @@ inline CompressedMatrix<Type,SO>::CompressedMatrix( size_t m, size_t n )
    , end_  ( begin_+(m+1UL) )           // Pointers one past the last non-zero element of each row
 {
    for( size_t i=0UL; i<2UL*m_+2UL; ++i )
-      begin_[i] = NULL;
+      begin_[i] = nullptr;
 }
 //*************************************************************************************************
 
@@ -605,7 +604,7 @@ inline CompressedMatrix<Type,SO>::CompressedMatrix( const DenseMatrix<MT,SO2>& d
    using blaze::assign;
 
    for( size_t i=0UL; i<2UL*m_+2UL; ++i )
-      begin_[i] = NULL;
+      begin_[i] = nullptr;
 
    assign( *this, ~dm );
 }
@@ -2350,7 +2349,7 @@ inline void CompressedMatrix<Type,SO>::assign( const SparseMatrix<MT,SO>& rhs )
    BLAZE_INTERNAL_ASSERT( nonZeros() == 0UL, "Invalid non-zero elements detected" );
    BLAZE_INTERNAL_ASSERT( capacity() >= (~rhs).nonZeros(), "Invalid capacity detected" );
 
-   if( m_ == 0UL || begin_[0] == NULL )
+   if( m_ == 0UL || begin_[0] == nullptr )
       return;
 
    for( size_t i=0UL; i<m_; ++i ) {
@@ -2802,7 +2801,7 @@ inline CompressedMatrix<Type,true>::CompressedMatrix()
    , begin_( new Iterator[2UL] )  // Pointers to the first non-zero element of each column
    , end_  ( begin_+1UL )         // Pointers one past the last non-zero element of each column
 {
-   begin_[0UL] = end_[0UL] = NULL;
+   begin_[0UL] = end_[0UL] = nullptr;
 }
 /*! \endcond */
 //*************************************************************************************************
@@ -2826,7 +2825,7 @@ inline CompressedMatrix<Type,true>::CompressedMatrix( size_t m, size_t n )
    , end_  ( begin_+(n+1UL) )           // Pointers one past the last non-zero element of each column
 {
    for( size_t j=0UL; j<2UL*n_+2UL; ++j )
-      begin_[j] = NULL;
+      begin_[j] = nullptr;
 }
 /*! \endcond */
 //*************************************************************************************************
@@ -2937,7 +2936,7 @@ inline CompressedMatrix<Type,true>::CompressedMatrix( const DenseMatrix<MT,SO>& 
    using blaze::assign;
 
    for( size_t j=0UL; j<2UL*n_+2UL; ++j )
-      begin_[j] = NULL;
+      begin_[j] = nullptr;
 
    assign( *this, ~dm );
 }
@@ -4671,7 +4670,7 @@ inline void CompressedMatrix<Type,true>::assign( const SparseMatrix<MT,true>& rh
    BLAZE_INTERNAL_ASSERT( nonZeros() == 0UL, "Invalid non-zero elements detected" );
    BLAZE_INTERNAL_ASSERT( capacity() >= (~rhs).nonZeros(), "Invalid capacity detected" );
 
-   if( n_ == 0UL || begin_[0] == NULL )
+   if( n_ == 0UL || begin_[0] == nullptr )
       return;
 
    for( size_t j=0UL; j<n_; ++j ) {

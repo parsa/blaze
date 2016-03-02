@@ -89,7 +89,6 @@
 #include <blaze/util/mpl/And.h>
 #include <blaze/util/mpl/If.h>
 #include <blaze/util/mpl/Or.h>
-#include <blaze/util/Null.h>
 #include <blaze/util/Types.h>
 #include <blaze/util/typetraits/IsConst.h>
 #include <blaze/util/typetraits/IsFloatingPoint.h>
@@ -2212,10 +2211,10 @@ class SparseColumn<MT,false,false> : public SparseVector< SparseColumn<MT,false,
       /*!\brief Default constructor of the ColumnIterator class.
       */
       inline ColumnIterator()
-         : matrix_( NULL )  // The sparse matrix containing the column.
-         , row_   ( 0UL  )  // The current row index.
-         , column_( 0UL  )  // The current column index.
-         , pos_   ()        // Iterator to the current sparse element.
+         : matrix_( nullptr )  // The sparse matrix containing the column.
+         , row_   ( 0UL )      // The current row index.
+         , column_( 0UL )      // The current column index.
+         , pos_   ()           // Iterator to the current sparse element.
       {}
       //*******************************************************************************************
 

@@ -93,7 +93,6 @@
 #include <blaze/util/EnableIf.h>
 #include <blaze/util/Exception.h>
 #include <blaze/util/Memory.h>
-#include <blaze/util/Null.h>
 #include <blaze/util/Template.h>
 #include <blaze/util/Types.h>
 #include <blaze/util/typetraits/IsNumeric.h>
@@ -484,11 +483,11 @@ class DynamicMatrix : public DenseMatrix< DynamicMatrix<Type,SO>, SO >
 template< typename Type  // Data type of the matrix
         , bool SO >      // Storage order
 inline DynamicMatrix<Type,SO>::DynamicMatrix()
-   : m_       ( 0UL  )  // The current number of rows of the matrix
-   , n_       ( 0UL  )  // The current number of columns of the matrix
-   , nn_      ( 0UL  )  // The alignment adjusted number of columns
-   , capacity_( 0UL  )  // The maximum capacity of the matrix
-   , v_       ( NULL )  // The matrix elements
+   : m_       ( 0UL )      // The current number of rows of the matrix
+   , n_       ( 0UL )      // The current number of columns of the matrix
+   , nn_      ( 0UL )      // The alignment adjusted number of columns
+   , capacity_( 0UL )      // The maximum capacity of the matrix
+   , v_       ( nullptr )  // The matrix elements
 {}
 //*************************************************************************************************
 
@@ -3004,11 +3003,11 @@ class DynamicMatrix<Type,true> : public DenseMatrix< DynamicMatrix<Type,true>, t
 */
 template< typename Type >  // Data type of the matrix
 inline DynamicMatrix<Type,true>::DynamicMatrix()
-   : m_       ( 0UL  )  // The current number of rows of the matrix
-   , mm_      ( 0UL  )  // The alignment adjusted number of rows
-   , n_       ( 0UL  )  // The current number of columns of the matrix
-   , capacity_( 0UL  )  // The maximum capacity of the matrix
-   , v_       ( NULL )  // The matrix elements
+   : m_       ( 0UL )      // The current number of rows of the matrix
+   , mm_      ( 0UL )      // The alignment adjusted number of rows
+   , n_       ( 0UL )      // The current number of columns of the matrix
+   , capacity_( 0UL )      // The maximum capacity of the matrix
+   , v_       ( nullptr )  // The matrix elements
 {}
 /*! \endcond */
 //*************************************************************************************************

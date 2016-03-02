@@ -96,7 +96,6 @@
 #include <blaze/util/mpl/If.h>
 #include <blaze/util/mpl/Not.h>
 #include <blaze/util/mpl/Or.h>
-#include <blaze/util/Null.h>
 #include <blaze/util/Template.h>
 #include <blaze/util/Types.h>
 #include <blaze/util/typetraits/IsConst.h>
@@ -2195,9 +2194,9 @@ class DenseColumn<MT,false,false> : public DenseVector< DenseColumn<MT,false,fal
       /*!\brief Default constructor of the ColumnIterator class.
       */
       inline ColumnIterator()
-         : matrix_( NULL )  // The dense matrix containing the column.
-         , row_   ( 0UL  )  // The current row index.
-         , column_( 0UL  )  // The current column index.
+         : matrix_( nullptr )  // The dense matrix containing the column.
+         , row_   ( 0UL )      // The current row index.
+         , column_( 0UL )      // The current column index.
       {}
       //*******************************************************************************************
 

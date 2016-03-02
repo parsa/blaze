@@ -35,7 +35,6 @@
 #include <blaze/math/Intrinsics.h>
 #include <blaze/util/AlignmentCheck.h>
 #include <blaze/util/Assert.h>
-#include <blaze/util/Null.h>
 #include <blaze/util/Types.h>
 
 
@@ -161,7 +160,7 @@ class DenseIterator
 template< typename Type  // Type of the elements
         , bool AF >      // Alignment flag
 inline DenseIterator<Type,AF>::DenseIterator()
-   : ptr_( NULL )  // Pointer to the current element
+   : ptr_( nullptr )  // Pointer to the current element
 {}
 //*************************************************************************************************
 

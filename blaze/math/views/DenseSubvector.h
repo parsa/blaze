@@ -87,7 +87,6 @@
 #include <blaze/util/mpl/If.h>
 #include <blaze/util/mpl/Not.h>
 #include <blaze/util/mpl/Or.h>
-#include <blaze/util/Null.h>
 #include <blaze/util/Template.h>
 #include <blaze/util/Types.h>
 #include <blaze/util/typetraits/IsConst.h>
@@ -1051,7 +1050,7 @@ inline DenseSubvector<VT,AF,TF>::DenseSubvector( Operand vector, size_t index, s
    : vector_   ( vector )  // The vector containing the subvector
    , offset_   ( index  )  // The offset of the subvector within the dense vector
    , size_     ( n      )  // The size of the subvector
-   , isAligned_( vectorizable && vector.data() != NULL && checkAlignment( data() ) )
+   , isAligned_( vectorizable && vector.data() != nullptr && checkAlignment( data() ) )
 {
    if( index + n > vector.size() ) {
       BLAZE_THROW_INVALID_ARGUMENT( "Invalid subvector specification" );
@@ -2866,7 +2865,7 @@ inline DenseSubvector<VT,aligned,TF>::DenseSubvector( Operand vector, size_t ind
       BLAZE_THROW_INVALID_ARGUMENT( "Invalid subvector specification" );
    }
 
-   if( vectorizable && vector_.data() != NULL && !checkAlignment( data() ) ) {
+   if( vectorizable && vector_.data() != nullptr && !checkAlignment( data() ) ) {
       BLAZE_THROW_INVALID_ARGUMENT( "Invalid subvector alignment" );
    }
 }

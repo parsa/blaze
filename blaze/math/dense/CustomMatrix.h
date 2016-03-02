@@ -91,7 +91,6 @@
 #include <blaze/util/EnableIf.h>
 #include <blaze/util/Exception.h>
 #include <blaze/util/Misalignment.h>
-#include <blaze/util/Null.h>
 #include <blaze/util/policies/NoDelete.h>
 #include <blaze/util/Template.h>
 #include <blaze/util/Types.h>
@@ -748,7 +747,7 @@ inline CustomMatrix<Type,AF,PF,SO>::CustomMatrix()
 // This constructor creates an unpadded custom matrix of size \f$ m \times n \f$. The construction
 // fails if ...
 //
-//  - ... the passed pointer is NULL;
+//  - ... the passed pointer is \c nullptr;
 //  - ... the alignment flag \a AF is set to \a aligned, but the passed pointer is not properly
 //    aligned according to the available instruction set (SSE, AVX, ...).
 //
@@ -769,7 +768,7 @@ inline CustomMatrix<Type,AF,PF,SO>::CustomMatrix( Type* ptr, size_t m, size_t n 
 {
    BLAZE_STATIC_ASSERT( PF == unpadded );
 
-   if( ptr == NULL ) {
+   if( ptr == nullptr ) {
       BLAZE_THROW_INVALID_ARGUMENT( "Invalid array of elements" );
    }
 
@@ -794,7 +793,7 @@ inline CustomMatrix<Type,AF,PF,SO>::CustomMatrix( Type* ptr, size_t m, size_t n 
 // This constructor creates a custom matrix of size \f$ m \times n \f$. The construction fails
 // if ...
 //
-//  - ... the passed pointer is NULL;
+//  - ... the passed pointer is \c nullptr;
 //  - ... the alignment flag \a AF is set to \a aligned, but the passed pointer is not properly
 //    aligned according to the available instruction set (SSE, AVX, ...);
 //  - ... the specified spacing \a nn is insufficient for the given data type \a Type and the
@@ -814,7 +813,7 @@ inline CustomMatrix<Type,AF,PF,SO>::CustomMatrix( Type* ptr, size_t m, size_t n,
    , nn_( nn )  // The number of elements between two rows
    , v_ (    )  // The matrix elements
 {
-   if( ptr == NULL ) {
+   if( ptr == nullptr ) {
       BLAZE_THROW_INVALID_ARGUMENT( "Invalid array of elements" );
    }
 
@@ -850,7 +849,7 @@ inline CustomMatrix<Type,AF,PF,SO>::CustomMatrix( Type* ptr, size_t m, size_t n,
 // This constructor creates an unpadded custom matrix of size \f$ m \times n \f$. The construction
 // fails if ...
 //
-//  - ... the passed pointer is NULL;
+//  - ... the passed pointer is \c nullptr;
 //  - ... the alignment flag \a AF is set to \a aligned, but the passed pointer is not properly
 //    aligned according to the available instruction set (SSE, AVX, ...).
 //
@@ -887,7 +886,7 @@ inline CustomMatrix<Type,AF,PF,SO>::CustomMatrix( Type* ptr, size_t m, size_t n,
 // This constructor creates a custom matrix of size \f$ m \times n \f$. The construction fails
 // if ...
 //
-//  - ... the passed pointer is NULL;
+//  - ... the passed pointer is \c nullptr;
 //  - ... the alignment flag \a AF is set to \a aligned, but the passed pointer is not properly
 //    aligned according to the available instruction set (SSE, AVX, ...);
 //  - ... the specified spacing \a nn is insufficient for the given data type \a Type and the
@@ -906,7 +905,7 @@ inline CustomMatrix<Type,AF,PF,SO>::CustomMatrix( Type* ptr, size_t m, size_t n,
    , nn_( nn )  // The number of elements between two rows
    , v_ (    )  // The matrix elements
 {
-   if( ptr == NULL ) {
+   if( ptr == nullptr ) {
       BLAZE_THROW_INVALID_ARGUMENT( "Invalid array of elements" );
    }
 
@@ -1930,7 +1929,7 @@ inline void CustomMatrix<Type,AF,PF,SO>::swap( CustomMatrix& m ) /* throw() */
 // This function resets the custom matrix to the given array of elements of size \f$ m \times n \f$.
 // The function fails if ...
 //
-//  - ... the passed pointer is NULL;
+//  - ... the passed pointer is \c nullptr;
 //  - ... the alignment flag \a AF is set to \a aligned, but the passed pointer is not properly
 //    aligned according to the available instruction set (SSE, AVX, ...).
 //
@@ -1968,7 +1967,7 @@ inline void CustomMatrix<Type,AF,PF,SO>::reset( Type* ptr, size_t m, size_t n )
 // This function resets the custom matrix to the given array of elements of size \f$ m \times n \f$.
 // The function fails if ...
 //
-//  - ... the passed pointer is NULL;
+//  - ... the passed pointer is \c nullptr;
 //  - ... the alignment flag \a AF is set to \a aligned, but the passed pointer is not properly
 //    aligned according to the available instruction set (SSE, AVX, ...).
 //
@@ -2003,7 +2002,7 @@ inline void CustomMatrix<Type,AF,PF,SO>::reset( Type* ptr, size_t m, size_t n, s
 // This function resets the custom matrix to the given array of elements of size \f$ m \times n \f$.
 // The function fails if ...
 //
-//  - ... the passed pointer is NULL;
+//  - ... the passed pointer is \c nullptr;
 //  - ... the alignment flag \a AF is set to \a aligned, but the passed pointer is not properly
 //    aligned according to the available instruction set (SSE, AVX, ...).
 //
@@ -2042,7 +2041,7 @@ inline void CustomMatrix<Type,AF,PF,SO>::reset( Type* ptr, size_t m, size_t n, D
 // This function resets the custom matrix to the given array of elements of size \f$ m \times n \f$.
 // The function fails if ...
 //
-//  - ... the passed pointer is NULL;
+//  - ... the passed pointer is \c nullptr;
 //  - ... the alignment flag \a AF is set to \a aligned, but the passed pointer is not properly
 //    aligned according to the available instruction set (SSE, AVX, ...).
 //
@@ -3082,7 +3081,7 @@ inline typename DisableIf< IsClass<Arg> >::Type
 {
    UNUSED_PARAMETER( m );
 
-   if( ptr == NULL ) {
+   if( ptr == nullptr ) {
       BLAZE_THROW_INVALID_ARGUMENT( "Invalid array of elements" );
    }
 
@@ -3121,7 +3120,7 @@ inline typename EnableIf< IsClass<Arg> >::Type
 
    UNUSED_PARAMETER( m );
 
-   if( ptr == NULL ) {
+   if( ptr == nullptr ) {
       BLAZE_THROW_INVALID_ARGUMENT( "Invalid array of elements" );
    }
 
@@ -3469,7 +3468,7 @@ inline CustomMatrix<Type,AF,PF,true>::CustomMatrix()
 // This constructor creates an unpadded custom matrix of size \f$ m \times n \f$. The construction
 // fails if ...
 //
-//  - ... the passed pointer is NULL;
+//  - ... the passed pointer is \c nullptr;
 //  - ... the alignment flag \a AF is set to \a aligned, but the passed pointer is not properly
 //    aligned according to the available instruction set (SSE, AVX, ...).
 //
@@ -3489,7 +3488,7 @@ inline CustomMatrix<Type,AF,PF,true>::CustomMatrix( Type* ptr, size_t m, size_t 
 {
    BLAZE_STATIC_ASSERT( PF == unpadded );
 
-   if( ptr == NULL ) {
+   if( ptr == nullptr ) {
       BLAZE_THROW_INVALID_ARGUMENT( "Invalid array of elements" );
    }
 
@@ -3516,7 +3515,7 @@ inline CustomMatrix<Type,AF,PF,true>::CustomMatrix( Type* ptr, size_t m, size_t 
 // This constructor creates a custom matrix of size \f$ m \times n \f$. The construction fails
 // if ...
 //
-//  - ... the passed pointer is NULL;
+//  - ... the passed pointer is \c nullptr;
 //  - ... the alignment flag \a AF is set to \a aligned, but the passed pointer is not properly
 //    aligned according to the available instruction set (SSE, AVX, ...);
 //  - ... the specified spacing \a mm is insufficient for the given data type \a Type and the
@@ -3535,7 +3534,7 @@ inline CustomMatrix<Type,AF,PF,true>::CustomMatrix( Type* ptr, size_t m, size_t 
    , n_ ( n  )  // The current number of columns of the matrix
    , v_ (    )  // The matrix elements
 {
-   if( ptr == NULL ) {
+   if( ptr == nullptr ) {
       BLAZE_THROW_INVALID_ARGUMENT( "Invalid array of elements" );
    }
 
@@ -3573,7 +3572,7 @@ inline CustomMatrix<Type,AF,PF,true>::CustomMatrix( Type* ptr, size_t m, size_t 
 // This constructor creates an unpadded custom matrix of size \f$ m \times n \f$. The construction
 // fails if ...
 //
-//  - ... the passed pointer is NULL;
+//  - ... the passed pointer is \c nullptr;
 //  - ... the alignment flag \a AF is set to \a aligned, but the passed pointer is not properly
 //    aligned according to the available instruction set (SSE, AVX, ...).
 //
@@ -3611,7 +3610,7 @@ inline CustomMatrix<Type,AF,PF,true>::CustomMatrix( Type* ptr, size_t m, size_t 
 // This constructor creates a custom matrix of size \f$ m \times n \f$. The construction fails
 // if ...
 //
-//  - ... the passed pointer is NULL;
+//  - ... the passed pointer is \c nullptr;
 //  - ... the alignment flag \a AF is set to \a aligned, but the passed pointer is not properly
 //    aligned according to the available instruction set (SSE, AVX, ...);
 //  - ... the specified spacing \a mm is insufficient for the given data type \a Type and the
@@ -3629,7 +3628,7 @@ inline CustomMatrix<Type,AF,PF,true>::CustomMatrix( Type* ptr, size_t m, size_t 
    , n_ ( n  )  // The current number of columns of the matrix
    , v_ (    )  // The matrix elements
 {
-   if( ptr == NULL ) {
+   if( ptr == nullptr ) {
       BLAZE_THROW_INVALID_ARGUMENT( "Invalid array of elements" );
    }
 
@@ -4656,7 +4655,7 @@ inline void CustomMatrix<Type,AF,PF,true>::swap( CustomMatrix& m ) /* throw() */
 // This function resets the custom matrix to the given array of elements of size \f$ m \times n \f$.
 // The function fails if ...
 //
-//  - ... the passed pointer is NULL;
+//  - ... the passed pointer is \c nullptr;
 //  - ... the alignment flag \a AF is set to \a aligned, but the passed pointer is not properly
 //    aligned according to the available instruction set (SSE, AVX, ...).
 //
@@ -4695,7 +4694,7 @@ inline void CustomMatrix<Type,AF,PF,true>::reset( Type* ptr, size_t m, size_t n 
 // This function resets the custom matrix to the given array of elements of size \f$ m \times n \f$.
 // The function fails if ...
 //
-//  - ... the passed pointer is NULL;
+//  - ... the passed pointer is \c nullptr;
 //  - ... the alignment flag \a AF is set to \a aligned, but the passed pointer is not properly
 //    aligned according to the available instruction set (SSE, AVX, ...).
 //
@@ -4731,7 +4730,7 @@ inline void CustomMatrix<Type,AF,PF,true>::reset( Type* ptr, size_t m, size_t n,
 // This function resets the custom matrix to the given array of elements of size \f$ m \times n \f$.
 // The function fails if ...
 //
-//  - ... the passed pointer is NULL;
+//  - ... the passed pointer is \c nullptr;
 //  - ... the alignment flag \a AF is set to \a aligned, but the passed pointer is not properly
 //    aligned according to the available instruction set (SSE, AVX, ...).
 //
@@ -4771,7 +4770,7 @@ inline void CustomMatrix<Type,AF,PF,true>::reset( Type* ptr, size_t m, size_t n,
 // This function resets the custom matrix to the given array of elements of size \f$ m \times n \f$.
 // The function fails if ...
 //
-//  - ... the passed pointer is NULL;
+//  - ... the passed pointer is \c nullptr;
 //  - ... the alignment flag \a AF is set to \a aligned, but the passed pointer is not properly
 //    aligned according to the available instruction set (SSE, AVX, ...).
 //
@@ -5831,7 +5830,7 @@ inline typename DisableIf< IsClass<Arg> >::Type
 {
    UNUSED_PARAMETER( n );
 
-   if( ptr == NULL ) {
+   if( ptr == nullptr ) {
       BLAZE_THROW_INVALID_ARGUMENT( "Invalid array of elements" );
    }
 
@@ -5871,7 +5870,7 @@ inline typename EnableIf< IsClass<Arg> >::Type
 
    UNUSED_PARAMETER( n );
 
-   if( ptr == NULL ) {
+   if( ptr == nullptr ) {
       BLAZE_THROW_INVALID_ARGUMENT( "Invalid array of elements" );
    }
 

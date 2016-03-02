@@ -106,7 +106,6 @@
 #include <blaze/util/mpl/If.h>
 #include <blaze/util/mpl/Not.h>
 #include <blaze/util/mpl/Or.h>
-#include <blaze/util/Null.h>
 #include <blaze/util/Template.h>
 #include <blaze/util/Types.h>
 #include <blaze/util/typetraits/IsConst.h>
@@ -1179,7 +1178,7 @@ inline DenseSubmatrix<MT,AF,SO>::DenseSubmatrix( Operand matrix, size_t rindex, 
    , column_   ( cindex )  // The first column of the submatrix
    , m_        ( m      )  // The number of rows of the submatrix
    , n_        ( n      )  // The number of columns of the submatrix
-   , isAligned_( vectorizable && matrix.data() != NULL && checkAlignment( data() ) &&
+   , isAligned_( vectorizable && matrix.data() != nullptr && checkAlignment( data() ) &&
                  ( m < 2UL || ( matrix.spacing() & size_t(-IT::size) ) == 0UL ) )
 {
    if( ( row_ + m_ > matrix_.rows() ) || ( column_ + n_ > matrix_.columns() ) ) {
@@ -4040,7 +4039,7 @@ inline DenseSubmatrix<MT,unaligned,true>::DenseSubmatrix( Operand matrix, size_t
    , column_   ( cindex )  // The first column of the submatrix
    , m_        ( m      )  // The number of rows of the submatrix
    , n_        ( n      )  // The number of columns of the submatrix
-   , isAligned_( vectorizable && matrix.data() != NULL && checkAlignment( data() ) &&
+   , isAligned_( vectorizable && matrix.data() != nullptr && checkAlignment( data() ) &&
                  ( n < 2UL || ( matrix.spacing() & size_t(-IT::size) ) == 0UL ) )
 {
    if( ( row_ + m_ > matrix_.rows() ) || ( column_ + n_ > matrix_.columns() ) ) {
@@ -6524,7 +6523,7 @@ inline DenseSubmatrix<MT,aligned,false>::DenseSubmatrix( Operand matrix, size_t 
       BLAZE_THROW_INVALID_ARGUMENT( "Invalid submatrix specification" );
    }
 
-   if( ( vectorizable && matrix_.data() != NULL && !checkAlignment( data() ) ) ||
+   if( ( vectorizable && matrix_.data() != nullptr && !checkAlignment( data() ) ) ||
        ( m_ > 1UL && matrix_.spacing() % IT::size != 0UL ) ) {
       BLAZE_THROW_INVALID_ARGUMENT( "Invalid submatrix alignment" );
    }
@@ -9054,7 +9053,7 @@ inline DenseSubmatrix<MT,aligned,true>::DenseSubmatrix( Operand matrix, size_t r
       BLAZE_THROW_INVALID_ARGUMENT( "Invalid submatrix specification" );
    }
 
-   if( ( vectorizable && matrix_.data() != NULL && !checkAlignment( data() ) ) ||
+   if( ( vectorizable && matrix_.data() != nullptr && !checkAlignment( data() ) ) ||
        ( n_ > 1UL && matrix_.spacing() % IT::size != 0UL ) ) {
       BLAZE_THROW_INVALID_ARGUMENT( "Invalid submatrix alignment" );
    }

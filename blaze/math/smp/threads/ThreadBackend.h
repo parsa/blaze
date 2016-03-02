@@ -528,7 +528,7 @@ inline size_t ThreadBackend<TT,MT,LT,CT>::initPool()
 {
    const char* env = std::getenv( "BLAZE_NUM_THREADS" );
 
-   if( env == NULL )
+   if( env == nullptr )
       return 1UL;
    else return max( 1, atoi( env ) );
 }

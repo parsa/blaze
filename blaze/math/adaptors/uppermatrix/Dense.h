@@ -165,9 +165,9 @@ class UpperMatrix<MT,SO,true>
       /*!\brief Default constructor of the Iterator class.
       */
       inline Iterator()
-         : matrix_( NULL )  // Reference to the adapted dense matrix
-         , row_   ( 0UL  )  // The current row index of the iterator
-         , column_( 0UL  )  // The current column index of the iterator
+         : matrix_( nullptr )  // Reference to the adapted dense matrix
+         , row_   ( 0UL )      // The current row index of the iterator
+         , column_( 0UL )      // The current column index of the iterator
       {}
       //*******************************************************************************************
 
@@ -853,7 +853,7 @@ inline UpperMatrix<MT,SO,true>::UpperMatrix( size_t n, const ElementType& init )
 // This constructor creates an unpadded upper custom matrix of size \f$ n \times n \f$. The
 // construction fails if ...
 //
-//  - ... the passed pointer is NULL;
+//  - ... the passed pointer is \c nullptr;
 //  - ... the alignment flag \a AF is set to \a aligned, but the passed pointer is not properly
 //    aligned according to the available instruction set (SSE, AVX, ...);
 //  - ... the values in the given array do not represent an upper triangular matrix.
@@ -890,7 +890,7 @@ inline UpperMatrix<MT,SO,true>::UpperMatrix( ElementType* ptr, size_t n )
 // This constructor creates an upper custom matrix of size \f$ n \times n \f$. The construction
 // fails if ...
 //
-//  - ... the passed pointer is NULL;
+//  - ... the passed pointer is \c nullptr;
 //  - ... the alignment flag \a AF is set to \a aligned, but the passed pointer is not properly
 //    aligned according to the available instruction set (SSE, AVX, ...);
 //  - ... the specified spacing \a nn is insufficient for the given data type \a Type and the
@@ -928,7 +928,7 @@ inline UpperMatrix<MT,SO,true>::UpperMatrix( ElementType* ptr, size_t n, size_t 
 // This constructor creates an unpadded upper custom matrix of size \f$ n \times n \f$. The
 // construction fails if ...
 //
-//  - ... the passed pointer is NULL;
+//  - ... the passed pointer is \c nullptr;
 //  - ... the alignment flag \a AF is set to \a aligned, but the passed pointer is not properly
 //    aligned according to the available instruction set (SSE, AVX, ...);
 //  - ... the values in the given array do not represent an upper triangular matrix.
@@ -966,7 +966,7 @@ inline UpperMatrix<MT,SO,true>::UpperMatrix( ElementType* ptr, size_t n, Deleter
 // This constructor creates an upper custom matrix of size \f$ n \times n \f$. The construction
 // fails if ...
 //
-//  - ... the passed pointer is NULL;
+//  - ... the passed pointer is \c nullptr;
 //  - ... the alignment flag \a AF is set to \a aligned, but the passed pointer is not properly
 //    aligned according to the available instruction set (SSE, AVX, ...);
 //  - ... the specified spacing \a nn is insufficient for the given data type \a Type and the

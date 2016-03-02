@@ -82,7 +82,6 @@
 #include <blaze/util/DisableIf.h>
 #include <blaze/util/EnableIf.h>
 #include <blaze/util/Exception.h>
-#include <blaze/util/Null.h>
 #include <blaze/util/policies/NoDelete.h>
 #include <blaze/util/StaticAssert.h>
 #include <blaze/util/Template.h>
@@ -718,7 +717,7 @@ inline CustomVector<Type,AF,PF,TF>::CustomVector()
 //
 // This constructor creates an unpadded custom vector of size \a n. The construction fails if ...
 //
-//  - ... the passed pointer is NULL;
+//  - ... the passed pointer is \c nullptr;
 //  - ... the alignment flag \a AF is set to \a aligned, but the passed pointer is not properly
 //    aligned according to the available instruction set (SSE, AVX, ...).
 //
@@ -735,7 +734,7 @@ inline CustomVector<Type,AF,PF,TF>::CustomVector( Type* ptr, size_t n )
    : size_( n )  // The size/dimension of the vector
    , v_   (   )  // The custom array of elements
 {
-   if( ptr == NULL ) {
+   if( ptr == nullptr ) {
       BLAZE_THROW_INVALID_ARGUMENT( "Invalid array of elements" );
    }
 
@@ -759,7 +758,7 @@ inline CustomVector<Type,AF,PF,TF>::CustomVector( Type* ptr, size_t n )
 // This constructor creates a padded custom vector of size \a n and capacity \a nn. The
 // construction fails if ...
 //
-//  - ... the passed pointer is NULL;
+//  - ... the passed pointer is \c nullptr;
 //  - ... the alignment flag \a AF is set to \a aligned, but the passed pointer is not properly
 //    aligned according to the available instruction set (SSE, AVX, ...);
 //  - ... the specified capacity \a nn is insufficient for the given data type \a Type and the
@@ -795,7 +794,7 @@ inline CustomVector<Type,AF,PF,TF>::CustomVector( Type* ptr, size_t n, size_t nn
 //
 // This constructor creates an unpadded custom vector of size \a n. The construction fails if ...
 //
-//  - ... the passed pointer is NULL;
+//  - ... the passed pointer is \c nullptr;
 //  - ... the alignment flag \a AF is set to \a aligned, but the passed pointer is not properly
 //    aligned according to the available instruction set (SSE, AVX, ...).
 //
@@ -812,7 +811,7 @@ inline CustomVector<Type,AF,PF,TF>::CustomVector( Type* ptr, size_t n, Deleter d
    : size_( n )  // The size/dimension of the vector
    , v_   (   )  // The custom array of elements
 {
-   if( ptr == NULL ) {
+   if( ptr == nullptr ) {
       BLAZE_THROW_INVALID_ARGUMENT( "Invalid array of elements" );
    }
 
@@ -837,7 +836,7 @@ inline CustomVector<Type,AF,PF,TF>::CustomVector( Type* ptr, size_t n, Deleter d
 // This constructor creates a padded custom vector of size \a n and capacity \a nn. The
 // construction fails if ...
 //
-//  - ... the passed pointer is NULL;
+//  - ... the passed pointer is \c nullptr;
 //  - ... the alignment flag \a AF is set to \a aligned, but the passed pointer is not properly
 //    aligned according to the available instruction set (SSE, AVX, ...);
 //  - ... the specified capacity \a nn is insufficient for the given data type \a Type and the
@@ -1574,7 +1573,7 @@ inline void CustomVector<Type,AF,PF,TF>::swap( CustomVector& v ) /* throw() */
 // This function resets the custom vector to the given array of elements of size \a n. The
 // function fails if ...
 //
-//  - ... the passed pointer is NULL;
+//  - ... the passed pointer is \c nullptr;
 //  - ... the alignment flag \a AF is set to \a aligned, but the passed pointer is not properly
 //    aligned according to the available instruction set (SSE, AVX, ...).
 //
@@ -1609,7 +1608,7 @@ inline void CustomVector<Type,AF,PF,TF>::reset( Type* ptr, size_t n )
 // This function resets the custom vector to the given array of elements of size \a n and
 // capacity \a nn. The function fails if ...
 //
-//  - ... the passed pointer is NULL;
+//  - ... the passed pointer is \c nullptr;
 //  - ... the alignment flag \a AF is set to \a aligned, but the passed pointer is not properly
 //    aligned according to the available instruction set (SSE, AVX, ...);
 //  - ... the specified capacity \a nn is insufficient for the given data type \a Type and
@@ -1647,7 +1646,7 @@ inline void CustomVector<Type,AF,PF,TF>::reset( Type* ptr, size_t n, size_t nn )
 // This function resets the custom vector to the given array of elements of size \a n. The
 // function fails if ...
 //
-//  - ... the passed pointer is NULL;
+//  - ... the passed pointer is \c nullptr;
 //  - ... the alignment flag \a AF is set to \a aligned, but the passed pointer is not properly
 //    aligned according to the available instruction set (SSE, AVX, ...).
 //
@@ -1683,7 +1682,7 @@ inline void CustomVector<Type,AF,PF,TF>::reset( Type* ptr, size_t n, Deleter d )
 // This function resets the custom vector to the given array of elements of size \a n and
 // capacity \a nn. The function fails if ...
 //
-//  - ... the passed pointer is NULL;
+//  - ... the passed pointer is \c nullptr;
 //  - ... the alignment flag \a AF is set to \a aligned, but the passed pointer is not properly
 //    aligned according to the available instruction set (SSE, AVX, ...);
 //  - ... the specified capacity \a nn is insufficient for the given data type \a Type and
@@ -2798,7 +2797,7 @@ inline CustomVector<Type,AF,padded,TF>::CustomVector()
 // This constructor creates a padded custom vector of size \a n and capacity \a nn. The
 // construction of the vector fails if ...
 //
-//  - ... the passed pointer is NULL;
+//  - ... the passed pointer is \c nullptr;
 //  - ... the alignment flag \a AF is set to \a aligned, but the passed pointer is not properly
 //    aligned according to the available instruction set (SSE, AVX, ...);
 //  - ... the specified capacity \a nn is insufficient for the given data type \a Type and
@@ -2816,7 +2815,7 @@ inline CustomVector<Type,AF,padded,TF>::CustomVector( Type* ptr, size_t n, size_
    , capacity_( nn )  // The maximum capacity of the vector
    , v_       (    )  // The custom array of elements
 {
-   if( ptr == NULL ) {
+   if( ptr == nullptr ) {
       BLAZE_THROW_INVALID_ARGUMENT( "Invalid array of elements" );
    }
 
@@ -2852,7 +2851,7 @@ inline CustomVector<Type,AF,padded,TF>::CustomVector( Type* ptr, size_t n, size_
 // This constructor creates a padded custom vector of size \a n and capacity \a nn. The
 // construction of the vector fails if ...
 //
-//  - ... the passes pointer is NULL;
+//  - ... the passes pointer is \c nullptr;
 //  - ... the alignment flag \a AF is set to \a aligned, but the passed pointer is not properly
 //    aligned according to the available instruction set (SSE, AVX, ...);
 //  - ... the specified capacity \a nn is insufficient for the given data type \a Type and
@@ -2869,7 +2868,7 @@ inline CustomVector<Type,AF,padded,TF>::CustomVector( Type* ptr, size_t n, size_
    , capacity_( nn )  // The maximum capacity of the vector
    , v_       (    )  // The custom array of elements
 {
-   if( ptr == NULL ) {
+   if( ptr == nullptr ) {
       BLAZE_THROW_INVALID_ARGUMENT( "Invalid array of elements" );
    }
 
@@ -3653,7 +3652,7 @@ inline void CustomVector<Type,AF,padded,TF>::swap( CustomVector& v ) /* throw() 
 // This function resets the custom vector to the given array of elements of size \a n and capacity
 // \a nn. The function fails if ...
 //
-//  - ... the passed pointer is NULL;
+//  - ... the passed pointer is \c nullptr;
 //  - ... the specified capacity \a nn is insufficient for the given data type \a Type and
 //    the available instruction set.
 //
@@ -3689,7 +3688,7 @@ inline void CustomVector<Type,AF,padded,TF>::reset( Type* ptr, size_t n, size_t 
 // This function resets the custom vector to the given array of elements of size \a n and capacity
 // \a nn. The function fails if ...
 //
-//  - ... the passed pointer is NULL;
+//  - ... the passed pointer is \c nullptr;
 //  - ... the specified capacity \a nn is insufficient for the given data type \a Type and
 //    the available instruction set.
 //
