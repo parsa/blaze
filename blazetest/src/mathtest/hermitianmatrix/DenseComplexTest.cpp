@@ -39,6 +39,7 @@
 
 #include <cstdlib>
 #include <iostream>
+#include <memory>
 #include <blaze/math/CompressedMatrix.h>
 #include <blaze/math/CustomMatrix.h>
 #include <blaze/math/DenseColumn.h>
@@ -48,7 +49,6 @@
 #include <blaze/math/StaticMatrix.h>
 #include <blaze/math/StaticVector.h>
 #include <blaze/util/policies/ArrayDelete.h>
-#include <blaze/util/UniqueArray.h>
 #include <blazetest/mathtest/hermitianmatrix/DenseComplexTest.h>
 
 
@@ -195,7 +195,7 @@ void DenseComplexTest::testConstructors()
       using blaze::rowMajor;
 
       typedef blaze::CustomMatrix<cplx,unaligned,unpadded,rowMajor>  UnalignedUnpadded;
-      blaze::UniqueArray<cplx> array( new cplx[5UL] );
+      std::unique_ptr<cplx[]> array( new cplx[5UL] );
       array[1] = cplx(1, 0);
       array[2] = cplx(2, 1);
       array[3] = cplx(2,-1);
@@ -228,7 +228,7 @@ void DenseComplexTest::testConstructors()
       using blaze::rowMajor;
 
       typedef blaze::CustomMatrix<cplx,unaligned,unpadded,rowMajor>  UnalignedUnpadded;
-      blaze::UniqueArray<cplx> array( new cplx[11UL] );
+      std::unique_ptr<cplx[]> array( new cplx[11UL] );
       array[1] = cplx(1, 0);
       array[2] = cplx(2, 1);
       array[6] = cplx(2,-1);
@@ -261,7 +261,7 @@ void DenseComplexTest::testConstructors()
       using blaze::rowMajor;
 
       typedef blaze::CustomMatrix<cplx,unaligned,unpadded,rowMajor>  UnalignedUnpadded;
-      blaze::UniqueArray<cplx> array( new cplx[4UL] );
+      std::unique_ptr<cplx[]> array( new cplx[4UL] );
       array[0] = cplx(1, 0);
       array[1] = cplx(2, 1);
       array[2] = cplx(2,-1);
@@ -294,7 +294,7 @@ void DenseComplexTest::testConstructors()
       using blaze::rowMajor;
 
       typedef blaze::CustomMatrix<cplx,unaligned,unpadded,rowMajor>  UnalignedUnpadded;
-      blaze::UniqueArray<cplx> array( new cplx[10UL] );
+      std::unique_ptr<cplx[]> array( new cplx[10UL] );
       array[0] = cplx(1, 0);
       array[1] = cplx(2, 1);
       array[5] = cplx(2,-1);
@@ -592,7 +592,7 @@ void DenseComplexTest::testConstructors()
       using blaze::columnMajor;
 
       typedef blaze::CustomMatrix<cplx,unaligned,unpadded,columnMajor>  UnalignedUnpadded;
-      blaze::UniqueArray<cplx> array( new cplx[5UL] );
+      std::unique_ptr<cplx[]> array( new cplx[5UL] );
       array[1] = cplx(1, 0);
       array[2] = cplx(2,-1);
       array[3] = cplx(2, 1);
@@ -625,7 +625,7 @@ void DenseComplexTest::testConstructors()
       using blaze::columnMajor;
 
       typedef blaze::CustomMatrix<cplx,unaligned,unpadded,columnMajor>  UnalignedUnpadded;
-      blaze::UniqueArray<cplx> array( new cplx[11UL] );
+      std::unique_ptr<cplx[]> array( new cplx[11UL] );
       array[1] = cplx(1, 0);
       array[2] = cplx(2,-1);
       array[6] = cplx(2, 1);
@@ -658,7 +658,7 @@ void DenseComplexTest::testConstructors()
       using blaze::columnMajor;
 
       typedef blaze::CustomMatrix<cplx,unaligned,unpadded,columnMajor>  UnalignedUnpadded;
-      blaze::UniqueArray<cplx> array( new cplx[4UL] );
+      std::unique_ptr<cplx[]> array( new cplx[4UL] );
       array[0] = cplx(1, 0);
       array[1] = cplx(2,-1);
       array[2] = cplx(2, 1);
@@ -691,7 +691,7 @@ void DenseComplexTest::testConstructors()
       using blaze::columnMajor;
 
       typedef blaze::CustomMatrix<cplx,unaligned,unpadded,columnMajor>  UnalignedUnpadded;
-      blaze::UniqueArray<cplx> array( new cplx[10UL] );
+      std::unique_ptr<cplx[]> array( new cplx[10UL] );
       array[0] = cplx(1, 0);
       array[1] = cplx(2,-1);
       array[5] = cplx(2, 1);

@@ -39,6 +39,7 @@
 
 #include <cstdlib>
 #include <iostream>
+#include <memory>
 #include <blaze/math/CompressedMatrix.h>
 #include <blaze/math/CustomMatrix.h>
 #include <blaze/math/DenseColumn.h>
@@ -48,7 +49,6 @@
 #include <blaze/math/StaticMatrix.h>
 #include <blaze/math/StaticVector.h>
 #include <blaze/util/policies/ArrayDelete.h>
-#include <blaze/util/UniqueArray.h>
 #include <blazetest/mathtest/hermitianmatrix/DenseRealTest.h>
 
 
@@ -195,7 +195,7 @@ void DenseRealTest::testConstructors()
       using blaze::rowMajor;
 
       typedef blaze::CustomMatrix<int,unaligned,unpadded,rowMajor>  UnalignedUnpadded;
-      blaze::UniqueArray<int> array( new int[5UL] );
+      std::unique_ptr<int[]> array( new int[5UL] );
       array[1] = 1;
       array[2] = 2;
       array[3] = 2;
@@ -228,7 +228,7 @@ void DenseRealTest::testConstructors()
       using blaze::rowMajor;
 
       typedef blaze::CustomMatrix<int,unaligned,unpadded,rowMajor>  UnalignedUnpadded;
-      blaze::UniqueArray<int> array( new int[11UL] );
+      std::unique_ptr<int[]> array( new int[11UL] );
       array[1] = 1;
       array[2] = 2;
       array[6] = 2;
@@ -261,7 +261,7 @@ void DenseRealTest::testConstructors()
       using blaze::rowMajor;
 
       typedef blaze::CustomMatrix<int,unaligned,unpadded,rowMajor>  UnalignedUnpadded;
-      blaze::UniqueArray<int> array( new int[4UL] );
+      std::unique_ptr<int[]> array( new int[4UL] );
       array[0] = 1;
       array[1] = 2;
       array[2] = 2;
@@ -294,7 +294,7 @@ void DenseRealTest::testConstructors()
       using blaze::rowMajor;
 
       typedef blaze::CustomMatrix<int,unaligned,unpadded,rowMajor>  UnalignedUnpadded;
-      blaze::UniqueArray<int> array( new int[10UL] );
+      std::unique_ptr<int[]> array( new int[10UL] );
       array[0] = 1;
       array[1] = 2;
       array[5] = 2;
@@ -542,7 +542,7 @@ void DenseRealTest::testConstructors()
       using blaze::columnMajor;
 
       typedef blaze::CustomMatrix<int,unaligned,unpadded,columnMajor>  UnalignedUnpadded;
-      blaze::UniqueArray<int> array( new int[5UL] );
+      std::unique_ptr<int[]> array( new int[5UL] );
       array[1] = 1;
       array[2] = 2;
       array[3] = 2;
@@ -575,7 +575,7 @@ void DenseRealTest::testConstructors()
       using blaze::columnMajor;
 
       typedef blaze::CustomMatrix<int,unaligned,unpadded,columnMajor>  UnalignedUnpadded;
-      blaze::UniqueArray<int> array( new int[11UL] );
+      std::unique_ptr<int[]> array( new int[11UL] );
       array[1] = 1;
       array[2] = 2;
       array[6] = 2;
@@ -608,7 +608,7 @@ void DenseRealTest::testConstructors()
       using blaze::columnMajor;
 
       typedef blaze::CustomMatrix<int,unaligned,unpadded,columnMajor>  UnalignedUnpadded;
-      blaze::UniqueArray<int> array( new int[4UL] );
+      std::unique_ptr<int[]> array( new int[4UL] );
       array[0] = 1;
       array[1] = 2;
       array[2] = 2;
@@ -641,7 +641,7 @@ void DenseRealTest::testConstructors()
       using blaze::columnMajor;
 
       typedef blaze::CustomMatrix<int,unaligned,unpadded,columnMajor>  UnalignedUnpadded;
-      blaze::UniqueArray<int> array( new int[10UL] );
+      std::unique_ptr<int[]> array( new int[10UL] );
       array[0] = 1;
       array[1] = 2;
       array[5] = 2;

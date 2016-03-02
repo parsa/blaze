@@ -39,6 +39,7 @@
 
 #include <cstdlib>
 #include <iostream>
+#include <memory>
 #include <blaze/math/CompressedVector.h>
 #include <blaze/math/shims/Equal.h>
 #include <blaze/util/Complex.h>
@@ -47,7 +48,6 @@
 #include <blaze/util/Random.h>
 #include <blaze/util/typetraits/AlignmentOf.h>
 #include <blaze/util/typetraits/IsVectorizable.h>
-#include <blaze/util/UniqueArray.h>
 #include <blazetest/mathtest/customvector/AlignedPaddedTest.h>
 #include <blazetest/mathtest/RandomMaximum.h>
 #include <blazetest/mathtest/RandomMinimum.h>
@@ -132,7 +132,7 @@ void AlignedPaddedTest::testConstructors()
 
       // Constructing a custom vector of size 10
       {
-         blaze::UniqueArray<int,blaze::Deallocate> array( blaze::allocate<int>( 16UL ) );
+         std::unique_ptr<int[],blaze::Deallocate> array( blaze::allocate<int>( 16UL ) );
          VT vec( array.get(), 10UL, 16UL );
 
          checkSize    ( vec, 10UL );
@@ -154,7 +154,7 @@ void AlignedPaddedTest::testConstructors()
       if( blaze::AlignmentOf<int>::value > 1UL )
       {
          try {
-            blaze::UniqueArray<int,blaze::Deallocate> array( blaze::allocate<int>( 17UL ) );
+            std::unique_ptr<int[],blaze::Deallocate> array( blaze::allocate<int>( 17UL ) );
             VT vec( array.get()+1UL, 4UL, 16UL );
 
             std::ostringstream oss;
@@ -171,7 +171,7 @@ void AlignedPaddedTest::testConstructors()
       if( blaze::IsVectorizable<int>::value )
       {
          try {
-            blaze::UniqueArray<int,blaze::Deallocate> array( blaze::allocate<int>( 3UL ) );
+            std::unique_ptr<int[],blaze::Deallocate> array( blaze::allocate<int>( 3UL ) );
             VT vec( array.get(), 2UL, 3UL );
 
             std::ostringstream oss;
@@ -216,7 +216,7 @@ void AlignedPaddedTest::testConstructors()
       if( blaze::AlignmentOf<int>::value > 1UL )
       {
          try {
-            blaze::UniqueArray<int,blaze::Deallocate> array( blaze::allocate<int>( 17UL ) );
+            std::unique_ptr<int[],blaze::Deallocate> array( blaze::allocate<int>( 17UL ) );
             VT vec( array.get()+1UL, 4UL, 16UL, blaze::Deallocate() );
 
             std::ostringstream oss;
@@ -233,7 +233,7 @@ void AlignedPaddedTest::testConstructors()
       if( blaze::IsVectorizable<int>::value )
       {
          try {
-            blaze::UniqueArray<int,blaze::Deallocate> array( blaze::allocate<int>( 3UL ) );
+            std::unique_ptr<int[],blaze::Deallocate> array( blaze::allocate<int>( 3UL ) );
             VT vec( array.get(), 2UL, 3UL, blaze::Deallocate() );
 
             std::ostringstream oss;
@@ -433,7 +433,7 @@ void AlignedPaddedTest::testAssignment()
       using blaze::rowVector;
 
       typedef blaze::CustomVector<int,unaligned,unpadded,rowVector>  UnalignedUnpadded;
-      blaze::UniqueArray<int> array( new int[6UL] );
+      std::unique_ptr<int[]> array( new int[6UL] );
       UnalignedUnpadded vec1( array.get()+1UL, 5UL );
       vec1[0] = 1;
       vec1[1] = 2;
@@ -554,7 +554,7 @@ void AlignedPaddedTest::testAddAssign()
       using blaze::rowVector;
 
       typedef blaze::CustomVector<int,unaligned,unpadded,rowVector>  UnalignedUnpadded;
-      blaze::UniqueArray<int> array( new int[6UL] );
+      std::unique_ptr<int[]> array( new int[6UL] );
       UnalignedUnpadded vec1( array.get()+1UL, 5UL );
       vec1[0] =  1;
       vec1[1] =  0;
@@ -687,7 +687,7 @@ void AlignedPaddedTest::testSubAssign()
       using blaze::rowVector;
 
       typedef blaze::CustomVector<int,unaligned,unpadded,rowVector>  UnalignedUnpadded;
-      blaze::UniqueArray<int> array( new int[6UL] );
+      std::unique_ptr<int[]> array( new int[6UL] );
       UnalignedUnpadded vec1( array.get()+1UL, 5UL );
       vec1[0] = -1;
       vec1[1] =  0;
@@ -820,7 +820,7 @@ void AlignedPaddedTest::testMultAssign()
       using blaze::rowVector;
 
       typedef blaze::CustomVector<int,unaligned,unpadded,rowVector>  UnalignedUnpadded;
-      blaze::UniqueArray<int> array( new int[6UL] );
+      std::unique_ptr<int[]> array( new int[6UL] );
       UnalignedUnpadded vec1( array.get()+1UL, 5UL );
       vec1[0] =  1;
       vec1[1] =  0;
@@ -1927,7 +1927,7 @@ void AlignedPaddedTest::testReset()
       vec[2] = 3;
       vec[3] = 4;
 
-      blaze::UniqueArray<int,blaze::Deallocate> array( blaze::allocate<int>( 32UL ) );
+      std::unique_ptr<int[],blaze::Deallocate> array( blaze::allocate<int>( 32UL ) );
       vec.reset( array.get(), 27UL, 32UL );
 
       checkSize    ( vec, 27UL );

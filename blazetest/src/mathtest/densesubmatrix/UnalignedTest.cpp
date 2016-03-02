@@ -39,12 +39,12 @@
 
 #include <cstdlib>
 #include <iostream>
+#include <memory>
 #include <blaze/math/CompressedMatrix.h>
 #include <blaze/math/CustomMatrix.h>
 #include <blaze/math/Views.h>
 #include <blaze/util/Memory.h>
 #include <blaze/util/policies/Deallocate.h>
-#include <blaze/util/UniqueArray.h>
 #include <blazetest/mathtest/densesubmatrix/UnalignedTest.h>
 
 
@@ -574,7 +574,7 @@ void UnalignedTest::testAssignment()
       SMT sm = submatrix( mat_, 1UL, 0UL, 2UL, 3UL );
 
       typedef blaze::CustomMatrix<int,unaligned,unpadded,rowMajor>  UnalignedUnpadded;
-      blaze::UniqueArray<int> array( new int[7UL] );
+      std::unique_ptr<int[]> array( new int[7UL] );
       UnalignedUnpadded mat( array.get()+1UL, 2UL, 3UL );
       mat = 0;
       mat(0,1) = 11;
@@ -683,7 +683,7 @@ void UnalignedTest::testAssignment()
       SMT sm = submatrix( mat_, 1UL, 0UL, 2UL, 3UL );
 
       typedef blaze::CustomMatrix<int,unaligned,unpadded,columnMajor>  UnalignedUnpadded;
-      blaze::UniqueArray<int> array( new int[7UL] );
+      std::unique_ptr<int[]> array( new int[7UL] );
       UnalignedUnpadded mat( array.get()+1UL, 2UL, 3UL );
       mat = 0;
       mat(0,1) = 11;
@@ -1098,7 +1098,7 @@ void UnalignedTest::testAssignment()
       OSMT sm = submatrix( tmat_, 0UL, 1UL, 3UL, 2UL );
 
       typedef blaze::CustomMatrix<int,unaligned,unpadded,rowMajor>  UnalignedUnpadded;
-      blaze::UniqueArray<int> array( new int[7UL] );
+      std::unique_ptr<int[]> array( new int[7UL] );
       UnalignedUnpadded mat( array.get()+1UL, 3UL, 2UL );
       mat = 0;
       mat(1,0) = 11;
@@ -1205,7 +1205,7 @@ void UnalignedTest::testAssignment()
       OSMT sm = submatrix( tmat_, 0UL, 1UL, 3UL, 2UL );
 
       typedef blaze::CustomMatrix<int,unaligned,unpadded,columnMajor>  UnalignedUnpadded;
-      blaze::UniqueArray<int> array( new int[7UL] );
+      std::unique_ptr<int[]> array( new int[7UL] );
       UnalignedUnpadded mat( array.get()+1UL, 3UL, 2UL );
       mat = 0;
       mat(1,0) = 11;
@@ -1549,7 +1549,7 @@ void UnalignedTest::testAddAssign()
       SMT sm = submatrix( mat_, 1UL, 0UL, 2UL, 3UL );
 
       typedef blaze::CustomMatrix<int,unaligned,unpadded,rowMajor>  UnalignedUnpadded;
-      blaze::UniqueArray<int> array( new int[7UL] );
+      std::unique_ptr<int[]> array( new int[7UL] );
       UnalignedUnpadded mat( array.get()+1UL, 2UL, 3UL );
       mat = 0;
       mat(0,1) = 11;
@@ -1658,7 +1658,7 @@ void UnalignedTest::testAddAssign()
       SMT sm = submatrix( mat_, 1UL, 0UL, 2UL, 3UL );
 
       typedef blaze::CustomMatrix<int,unaligned,unpadded,columnMajor>  UnalignedUnpadded;
-      blaze::UniqueArray<int> array( new int[7UL] );
+      std::unique_ptr<int[]> array( new int[7UL] );
       UnalignedUnpadded mat( array.get()+1UL, 2UL, 3UL );
       mat = 0;
       mat(0,1) = 11;
@@ -1981,7 +1981,7 @@ void UnalignedTest::testAddAssign()
       OSMT sm = submatrix( tmat_, 0UL, 1UL, 3UL, 2UL );
 
       typedef blaze::CustomMatrix<int,unaligned,unpadded,rowMajor>  UnalignedUnpadded;
-      blaze::UniqueArray<int> array( new int[7UL] );
+      std::unique_ptr<int[]> array( new int[7UL] );
       UnalignedUnpadded mat( array.get()+1UL, 3UL, 2UL );
       mat = 0;
       mat(1,0) = 11;
@@ -2088,7 +2088,7 @@ void UnalignedTest::testAddAssign()
       OSMT sm = submatrix( tmat_, 0UL, 1UL, 3UL, 2UL );
 
       typedef blaze::CustomMatrix<int,unaligned,unpadded,columnMajor>  UnalignedUnpadded;
-      blaze::UniqueArray<int> array( new int[7UL] );
+      std::unique_ptr<int[]> array( new int[7UL] );
       UnalignedUnpadded mat( array.get()+1UL, 3UL, 2UL );
       mat = 0;
       mat(1,0) = 11;
@@ -2432,7 +2432,7 @@ void UnalignedTest::testSubAssign()
       SMT sm = submatrix( mat_, 1UL, 0UL, 2UL, 3UL );
 
       typedef blaze::CustomMatrix<int,unaligned,unpadded,rowMajor>  UnalignedUnpadded;
-      blaze::UniqueArray<int> array( new int[7UL] );
+      std::unique_ptr<int[]> array( new int[7UL] );
       UnalignedUnpadded mat( array.get()+1UL, 2UL, 3UL );
       mat = 0;
       mat(0,1) = -11;
@@ -2541,7 +2541,7 @@ void UnalignedTest::testSubAssign()
       SMT sm = submatrix( mat_, 1UL, 0UL, 2UL, 3UL );
 
       typedef blaze::CustomMatrix<int,unaligned,unpadded,columnMajor>  UnalignedUnpadded;
-      blaze::UniqueArray<int> array( new int[7UL] );
+      std::unique_ptr<int[]> array( new int[7UL] );
       UnalignedUnpadded mat( array.get()+1UL, 2UL, 3UL );
       mat = 0;
       mat(0,1) = -11;
@@ -2864,7 +2864,7 @@ void UnalignedTest::testSubAssign()
       OSMT sm = submatrix( tmat_, 0UL, 1UL, 3UL, 2UL );
 
       typedef blaze::CustomMatrix<int,unaligned,unpadded,rowMajor>  UnalignedUnpadded;
-      blaze::UniqueArray<int> array( new int[7UL] );
+      std::unique_ptr<int[]> array( new int[7UL] );
       UnalignedUnpadded mat( array.get()+1UL, 3UL, 2UL );
       mat = 0;
       mat(1,0) = -11;
@@ -2971,7 +2971,7 @@ void UnalignedTest::testSubAssign()
       OSMT sm = submatrix( tmat_, 0UL, 1UL, 3UL, 2UL );
 
       typedef blaze::CustomMatrix<int,unaligned,unpadded,columnMajor>  UnalignedUnpadded;
-      blaze::UniqueArray<int> array( new int[7UL] );
+      std::unique_ptr<int[]> array( new int[7UL] );
       UnalignedUnpadded mat( array.get()+1UL, 3UL, 2UL );
       mat = 0;
       mat(1,0) = -11;
@@ -3315,7 +3315,7 @@ void UnalignedTest::testMultAssign()
       SMT sm = submatrix( mat_, 1UL, 0UL, 2UL, 2UL );
 
       typedef blaze::CustomMatrix<int,unaligned,unpadded,rowMajor>  UnalignedUnpadded;
-      blaze::UniqueArray<int> array( new int[5UL] );
+      std::unique_ptr<int[]> array( new int[5UL] );
       UnalignedUnpadded mat( array.get()+1UL, 2UL, 2UL );
       mat(0,0) = -11;
       mat(0,1) = -12;
@@ -3422,7 +3422,7 @@ void UnalignedTest::testMultAssign()
       SMT sm = submatrix( mat_, 1UL, 0UL, 2UL, 2UL );
 
       typedef blaze::CustomMatrix<int,unaligned,unpadded,columnMajor>  UnalignedUnpadded;
-      blaze::UniqueArray<int> array( new int[5UL] );
+      std::unique_ptr<int[]> array( new int[5UL] );
       UnalignedUnpadded mat( array.get()+1UL, 2UL, 2UL );
       mat(0,0) = -11;
       mat(0,1) = -12;
@@ -3741,7 +3741,7 @@ void UnalignedTest::testMultAssign()
       OSMT sm = submatrix( tmat_, 0UL, 1UL, 2UL, 2UL );
 
       typedef blaze::CustomMatrix<int,unaligned,unpadded,rowMajor>  UnalignedUnpadded;
-      blaze::UniqueArray<int> array( new int[5UL] );
+      std::unique_ptr<int[]> array( new int[5UL] );
       UnalignedUnpadded mat( array.get()+1UL, 2UL, 2UL );
       mat(0,0) =  11;
       mat(0,1) =  12;
@@ -3844,7 +3844,7 @@ void UnalignedTest::testMultAssign()
       OSMT sm = submatrix( tmat_, 0UL, 1UL, 2UL, 2UL );
 
       typedef blaze::CustomMatrix<int,unaligned,unpadded,columnMajor>  UnalignedUnpadded;
-      blaze::UniqueArray<int> array( new int[5UL] );
+      std::unique_ptr<int[]> array( new int[5UL] );
       UnalignedUnpadded mat( array.get()+1UL, 2UL, 2UL );
       mat(0,0) =  11;
       mat(0,1) =  12;

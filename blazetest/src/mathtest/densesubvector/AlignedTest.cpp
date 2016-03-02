@@ -39,12 +39,12 @@
 
 #include <cstdlib>
 #include <iostream>
+#include <memory>
 #include <blaze/math/CompressedVector.h>
 #include <blaze/math/CustomVector.h>
 #include <blaze/util/Memory.h>
 #include <blaze/util/policies/Deallocate.h>
 #include <blaze/util/typetraits/AlignmentOf.h>
-#include <blaze/util/UniqueArray.h>
 #include <blazetest/mathtest/densesubvector/AlignedTest.h>
 #include <blazetest/mathtest/RandomMaximum.h>
 #include <blazetest/mathtest/RandomMinimum.h>
@@ -331,7 +331,7 @@ void AlignedTest::testAssignment()
       USVT sv2 = subvector<unaligned>( vec2_, 8UL, 16UL );
 
       typedef blaze::CustomVector<int,unaligned,unpadded,rowVector>  UnalignedUnpadded;
-      blaze::UniqueArray<int> array( new int[17] );
+      std::unique_ptr<int[]> array( new int[17] );
       UnalignedUnpadded vec( array.get()+1UL, 16UL );
       randomize( vec, int(randmin), int(randmax) );
 
@@ -507,7 +507,7 @@ void AlignedTest::testAddAssign()
       USVT sv2 = subvector<unaligned>( vec2_, 8UL, 16UL );
 
       typedef blaze::CustomVector<int,unaligned,unpadded,rowVector>  UnalignedUnpadded;
-      blaze::UniqueArray<int> array( new int[17] );
+      std::unique_ptr<int[]> array( new int[17] );
       UnalignedUnpadded vec( array.get()+1UL, 16UL );
       randomize( vec, int(randmin), int(randmax) );
 
@@ -683,7 +683,7 @@ void AlignedTest::testSubAssign()
       USVT sv2 = subvector<unaligned>( vec2_, 8UL, 16UL );
 
       typedef blaze::CustomVector<int,unaligned,unpadded,rowVector>  UnalignedUnpadded;
-      blaze::UniqueArray<int> array( new int[17] );
+      std::unique_ptr<int[]> array( new int[17] );
       UnalignedUnpadded vec( array.get()+1UL, 16UL );
       randomize( vec, int(randmin), int(randmax) );
 
@@ -859,7 +859,7 @@ void AlignedTest::testMultAssign()
       USVT sv2 = subvector<unaligned>( vec2_, 8UL, 16UL );
 
       typedef blaze::CustomVector<int,unaligned,unpadded,rowVector>  UnalignedUnpadded;
-      blaze::UniqueArray<int> array( new int[17] );
+      std::unique_ptr<int[]> array( new int[17] );
       UnalignedUnpadded vec( array.get()+1UL, 16UL );
       randomize( vec, int(randmin), int(randmax) );
 

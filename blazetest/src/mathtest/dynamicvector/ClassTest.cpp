@@ -39,6 +39,7 @@
 
 #include <cstdlib>
 #include <iostream>
+#include <memory>
 #include <blaze/math/CompressedVector.h>
 #include <blaze/math/CustomVector.h>
 #include <blaze/math/StaticVector.h>
@@ -46,7 +47,6 @@
 #include <blaze/util/Complex.h>
 #include <blaze/util/policies/Deallocate.h>
 #include <blaze/util/Random.h>
-#include <blaze/util/UniqueArray.h>
 #include <blazetest/mathtest/dynamicvector/ClassTest.h>
 #include <blazetest/mathtest/RandomMaximum.h>
 #include <blazetest/mathtest/RandomMinimum.h>
@@ -213,7 +213,7 @@ void ClassTest::testConstructors()
    {
       test_ = "DynamicVector dynamic array initialization constructor (size 4)";
 
-      blaze::UniqueArray<int> array( new int[4] );
+      std::unique_ptr<int[]> array( new int[4] );
       array[0] = 1;
       array[1] = 2;
       array[2] = 3;
@@ -341,7 +341,7 @@ void ClassTest::testConstructors()
       using blaze::rowVector;
 
       typedef blaze::CustomVector<int,unaligned,unpadded,rowVector>  UnalignedUnpadded;
-      blaze::UniqueArray<int> array( new int[6] );
+      std::unique_ptr<int[]> array( new int[6] );
       UnalignedUnpadded vec1( array.get()+1UL, 5UL );
       vec1[0] = 1;
       vec1[1] = 2;
@@ -565,7 +565,7 @@ void ClassTest::testAssignment()
       using blaze::rowVector;
 
       typedef blaze::CustomVector<int,unaligned,unpadded,rowVector>  UnalignedUnpadded;
-      blaze::UniqueArray<int> array( new int[6] );
+      std::unique_ptr<int[]> array( new int[6] );
       UnalignedUnpadded vec1( array.get()+1UL, 5UL );
       vec1[0] = 1;
       vec1[1] = 2;
@@ -739,7 +739,7 @@ void ClassTest::testAddAssign()
       using blaze::rowVector;
 
       typedef blaze::CustomVector<int,unaligned,unpadded,rowVector>  UnalignedUnpadded;
-      blaze::UniqueArray<int> array( new int[6] );
+      std::unique_ptr<int[]> array( new int[6] );
       UnalignedUnpadded vec1( array.get()+1UL, 5UL );
       vec1[0] =  1;
       vec1[1] =  0;
@@ -867,7 +867,7 @@ void ClassTest::testSubAssign()
       using blaze::rowVector;
 
       typedef blaze::CustomVector<int,unaligned,unpadded,rowVector>  UnalignedUnpadded;
-      blaze::UniqueArray<int> array( new int[6] );
+      std::unique_ptr<int[]> array( new int[6] );
       UnalignedUnpadded vec1( array.get()+1UL, 5UL );
       vec1[0] = -1;
       vec1[1] =  0;
@@ -995,7 +995,7 @@ void ClassTest::testMultAssign()
       using blaze::rowVector;
 
       typedef blaze::CustomVector<int,unaligned,unpadded,rowVector>  UnalignedUnpadded;
-      blaze::UniqueArray<int> array( new int[6] );
+      std::unique_ptr<int[]> array( new int[6] );
       UnalignedUnpadded vec1( array.get()+1UL, 5UL );
       vec1[0] =  1;
       vec1[1] =  0;
