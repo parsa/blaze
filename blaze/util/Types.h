@@ -42,8 +42,6 @@
 
 #include <cstddef>
 #include <cstdint>
-#include <blaze/util/constraints/Integral.h>
-#include <blaze/util/constraints/Size.h>
 
 
 namespace blaze {
@@ -175,42 +173,6 @@ using ularge_t = uint64_t;
 // \ingroup util
 */
 using id_t = ularge_t;
-//*************************************************************************************************
-
-
-
-
-//=================================================================================================
-//
-//  COMPILE TIME CONSTRAINTS
-//
-//=================================================================================================
-
-//*************************************************************************************************
-/*! \cond BLAZE_INTERNAL */
-namespace check {
-
-BLAZE_CONSTRAINT_MUST_BE_INTEGRAL_TYPE( byte_t   );
-BLAZE_CONSTRAINT_MUST_BE_INTEGRAL_TYPE( int8_t   );
-BLAZE_CONSTRAINT_MUST_BE_INTEGRAL_TYPE( uint8_t  );
-BLAZE_CONSTRAINT_MUST_BE_INTEGRAL_TYPE( int16_t  );
-BLAZE_CONSTRAINT_MUST_BE_INTEGRAL_TYPE( uint16_t );
-BLAZE_CONSTRAINT_MUST_BE_INTEGRAL_TYPE( int32_t  );
-BLAZE_CONSTRAINT_MUST_BE_INTEGRAL_TYPE( uint32_t );
-BLAZE_CONSTRAINT_MUST_BE_INTEGRAL_TYPE( int64_t  );
-BLAZE_CONSTRAINT_MUST_BE_INTEGRAL_TYPE( uint64_t );
-
-BLAZE_CONSTRAINT_MUST_HAVE_SIZE( int8_t  , 1 );
-BLAZE_CONSTRAINT_MUST_HAVE_SIZE( uint8_t , 1 );
-BLAZE_CONSTRAINT_MUST_HAVE_SIZE( int16_t , 2 );
-BLAZE_CONSTRAINT_MUST_HAVE_SIZE( uint16_t, 2 );
-BLAZE_CONSTRAINT_MUST_HAVE_SIZE( int32_t , 4 );
-BLAZE_CONSTRAINT_MUST_HAVE_SIZE( uint32_t, 4 );
-BLAZE_CONSTRAINT_MUST_HAVE_SIZE( int64_t , 8 );
-BLAZE_CONSTRAINT_MUST_HAVE_SIZE( uint64_t, 8 );
-
-} // namespace check
-/*! \endcond */
 //*************************************************************************************************
 
 } // namespace blaze
