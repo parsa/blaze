@@ -35,7 +35,7 @@
 # Build rules
 default: all
 
-all: alignedallocator memory typetraits valuetraits uniqueptr uniquearray
+all: alignedallocator memory typetraits valuetraits uniquearray
 
 essential: all
 
@@ -65,11 +65,6 @@ valuetraits:
 	@echo "Building the value traits tests..."
 	@$(MAKE) --no-print-directory -C ./valuetraits $(MAKECMDGOALS)
 
-uniqueptr:
-	@echo
-	@echo "Building the unique pointer tests..."
-	@$(MAKE) --no-print-directory -C ./uniqueptr $(MAKECMDGOALS)
-
 uniquearray:
 	@echo
 	@echo "Building the unique array tests..."
@@ -82,11 +77,10 @@ clean:
 	@$(MAKE) --no-print-directory -C ./memory clean
 	@$(MAKE) --no-print-directory -C ./typetraits clean
 	@$(MAKE) --no-print-directory -C ./valuetraits clean
-	@$(MAKE) --no-print-directory -C ./uniqueptr clean
 	@$(MAKE) --no-print-directory -C ./uniquearray clean
 	@$(RM) $(OBJ) $(DEP)
 
 
 # Setting the independent commands
 .PHONY: default all essential single clean \
-        alignedallocator memory typetraits valuetraits uniqueptr uniquearray
+        alignedallocator memory typetraits valuetraits uniquearray
