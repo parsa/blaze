@@ -40,9 +40,7 @@
 // Includes
 //*************************************************************************************************
 
-#include <blaze/util/FalseType.h>
-#include <blaze/util/SelectType.h>
-#include <blaze/util/TrueType.h>
+#include <blaze/util/IntegralConstant.h>
 
 
 namespace blaze {
@@ -63,25 +61,17 @@ namespace blaze {
 // \a Type is \a FalseType, and the class derives from \a FalseType.
 
    \code
-   blaze::IsTrue< 1 >::value  // Evaluates to 1
-   blaze::IsTrue< 2 >::Type   // Results in TrueType
-   blaze::IsTrue< 3 >         // Is derived from TrueType
-   blaze::IsTrue< 0 >::value  // Evaluates to 0
-   blaze::IsTrue< 0 >::Type   // Results in FalseType
-   blaze::IsTrue< 0 >         // Is derived from FalseType
+   blaze::IsTrue< true >::value   // Evaluates to 1
+   blaze::IsTrue< true >::Type    // Results in TrueType
+   blaze::IsTrue< true >          // Is derived from TrueType
+   blaze::IsTrue< false >::value  // Evaluates to 0
+   blaze::IsTrue< false >::Type   // Results in FalseType
+   blaze::IsTrue< false >         // Is derived from FalseType
    \endcode
 */
 template< bool C >
-struct IsTrue : public SelectType<C,TrueType,FalseType>::Type
-{
- public:
-   //**********************************************************************************************
-   /*! \cond BLAZE_INTERNAL */
-   enum { value = ( C )?( 1 ):( 0 ) };
-   typedef typename SelectType<C,TrueType,FalseType>::Type  Type;
-   /*! \endcond */
-   //**********************************************************************************************
-};
+struct IsTrue : public BoolConstant<C>
+{};
 //*************************************************************************************************
 
 } // namespace blaze

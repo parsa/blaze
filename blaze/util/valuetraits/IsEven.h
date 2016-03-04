@@ -40,9 +40,7 @@
 // Includes
 //*************************************************************************************************
 
-#include <blaze/util/FalseType.h>
-#include <blaze/util/SelectType.h>
-#include <blaze/util/TrueType.h>
+#include <blaze/util/IntegralConstant.h>
 
 
 namespace blaze {
@@ -58,9 +56,9 @@ namespace blaze {
 // \ingroup value_traits
 //
 // This value trait tests whether the given integral value \a N is an even value. In case the
-// value is even, the \a value member enumeration is set to 1, the nested type definition
+// value is even, the \a value member enumeration is set to \a true, the nested type definition
 // \a Type is \a TrueType, and the class derives from \a TrueType. Otherwise \a value is set
-// to 0, \a Type is \a FalseType, and the class derives from \a FalseType.
+// to \a false, \a Type is \a FalseType, and the class derives from \a FalseType.
 
    \code
    blaze::IsEven<2>::value   // Evaluates to 1
@@ -72,16 +70,8 @@ namespace blaze {
    \endcode
 */
 template< size_t N >
-struct IsEven : public SelectType<N%2,FalseType,TrueType>::Type
-{
- public:
-   //**********************************************************************************************
-   /*! \cond BLAZE_INTERNAL */
-   enum { value = ( N%2 )?( 0 ):( 1 ) };
-   typedef typename SelectType<N%2,FalseType,TrueType>::Type  Type;
-   /*! \endcond */
-   //**********************************************************************************************
-};
+struct IsEven : public BoolConstant< N % 2UL == 0UL >
+{};
 //*************************************************************************************************
 
 } // namespace blaze

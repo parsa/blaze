@@ -40,9 +40,7 @@
 // Includes
 //*************************************************************************************************
 
-#include <blaze/util/FalseType.h>
-#include <blaze/util/SelectType.h>
-#include <blaze/util/TrueType.h>
+#include <blaze/util/IntegralConstant.h>
 
 
 namespace blaze {
@@ -72,16 +70,8 @@ namespace blaze {
    \endcode
 */
 template< size_t N >
-struct IsOdd : public SelectType<N%2,TrueType,FalseType>::Type
-{
- public:
-   //**********************************************************************************************
-   /*! \cond BLAZE_INTERNAL */
-   enum { value = ( N%2 )?( 1 ):( 0 ) };
-   typedef typename SelectType<N%2,TrueType,FalseType>::Type  Type;
-   /*! \endcond */
-   //**********************************************************************************************
-};
+struct IsOdd : public BoolConstant< N % 2UL != 0UL >
+{};
 //*************************************************************************************************
 
 } // namespace blaze

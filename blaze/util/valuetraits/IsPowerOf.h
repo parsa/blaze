@@ -41,7 +41,7 @@
 //*************************************************************************************************
 
 #include <blaze/util/FalseType.h>
-#include <blaze/util/SelectType.h>
+#include <blaze/util/IntegralConstant.h>
 #include <blaze/util/TrueType.h>
 
 
@@ -60,9 +60,9 @@ namespace blaze {
 // This value trait tests whether the given integral value \a N is a power of the base \a B
 // according to the equation \f$ B^x = N \f$, where x is any positive integer in the range
 // \f$ [0..\infty) \f$. In case the value is a power of \a B, the \a value member enumeration
-// is set to 1, the nested type definition \a Type is \a TrueType, and the class derives from
-// \a TrueType. Otherwise \a value is set to 0, \a Type is \a FalseType, and the class derives
-// from \a FalseType.
+// is set to \a true, the nested type definition \a Type is \a TrueType, and the class derives
+// from \a TrueType. Otherwise \a value is set to \a false, \a Type is \a FalseType, and the
+// class derives from \a FalseType.
 
    \code
    blaze::IsPowerOf<2,8>::value   // Evaluates to 1 (2^3 = 8)
@@ -77,16 +77,8 @@ namespace blaze {
    \endcode
 */
 template< size_t B, size_t N >
-struct IsPowerOf : public SelectType<N%B,FalseType,typename IsPowerOf<B,N/B>::Type>::Type
-{
- public:
-   //**********************************************************************************************
-   /*! \cond BLAZE_INTERNAL */
-   enum { value = ( N%B )?( 0 ):( IsPowerOf<B,N/B>::value ) };
-   typedef typename SelectType<N%B,FalseType,typename IsPowerOf<B,N/B>::Type>::Type  Type;
-   /*! \endcond */
-   //**********************************************************************************************
-};
+struct IsPowerOf : public IsPowerOf<B,N/B>
+{};
 //*************************************************************************************************
 
 
@@ -101,14 +93,8 @@ struct IsPowerOf : public SelectType<N%B,FalseType,typename IsPowerOf<B,N/B>::Ty
 // not, \a value is set to 0, \a Type is \a FalseType, and the class derives from \a FalseType.
 */
 template< size_t N >
-struct IsPowerOf<2,N> : public SelectType<N&(N-1),FalseType,TrueType>::Type
-{
- public:
-   //**********************************************************************************************
-   enum { value = ( N&(N-1) )?( 0 ):( 1 ) };
-   typedef typename SelectType<N&(N-1),FalseType,TrueType>::Type  Type;
-   //**********************************************************************************************
-};
+struct IsPowerOf<2,N> : public BoolConstant< ( N & (N-1) ) == 0UL >
+{};
 /*! \endcond */
 //*************************************************************************************************
 
@@ -124,13 +110,7 @@ struct IsPowerOf<2,N> : public SelectType<N&(N-1),FalseType,TrueType>::Type
 */
 template<>
 struct IsPowerOf<2,0> : public FalseType
-{
- public:
-   //**********************************************************************************************
-   enum { value = 0 };
-   typedef FalseType  Type;
-   //**********************************************************************************************
-};
+{};
 /*! \endcond */
 //*************************************************************************************************
 
@@ -147,13 +127,7 @@ struct IsPowerOf<2,0> : public FalseType
 */
 template< size_t B >
 struct IsPowerOf<B,1> : public TrueType
-{
- public:
-   //**********************************************************************************************
-   enum { value = 1 };
-   typedef TrueType  Type;
-   //**********************************************************************************************
-};
+{};
 /*! \endcond */
 //*************************************************************************************************
 
@@ -170,13 +144,7 @@ struct IsPowerOf<B,1> : public TrueType
 */
 template< size_t N >
 struct IsPowerOf<1,N> : public FalseType
-{
- public:
-   //**********************************************************************************************
-   enum { value = 0 };
-   typedef FalseType  Type;
-   //**********************************************************************************************
-};
+{};
 /*! \endcond */
 //*************************************************************************************************
 
@@ -193,13 +161,7 @@ struct IsPowerOf<1,N> : public FalseType
 */
 template<>
 struct IsPowerOf<1,1> : public TrueType
-{
- public:
-   //**********************************************************************************************
-   enum { value = 1 };
-   typedef TrueType  Type;
-   //**********************************************************************************************
-};
+{};
 /*! \endcond */
 //*************************************************************************************************
 
@@ -216,13 +178,7 @@ struct IsPowerOf<1,1> : public TrueType
 */
 template< size_t B >
 struct IsPowerOf<B,0> : public FalseType
-{
- public:
-   //**********************************************************************************************
-   enum { value = 0 };
-   typedef FalseType  Type;
-   //**********************************************************************************************
-};
+{};
 /*! \endcond */
 //*************************************************************************************************
 
@@ -239,13 +195,7 @@ struct IsPowerOf<B,0> : public FalseType
 */
 template< size_t N >
 struct IsPowerOf<0,N> : public FalseType
-{
- public:
-   //**********************************************************************************************
-   enum { value = 0 };
-   typedef FalseType  Type;
-   //**********************************************************************************************
-};
+{};
 /*! \endcond */
 //*************************************************************************************************
 
@@ -262,13 +212,7 @@ struct IsPowerOf<0,N> : public FalseType
 */
 template<>
 struct IsPowerOf<0,0> : public TrueType
-{
- public:
-   //**********************************************************************************************
-   enum { value = 1 };
-   typedef TrueType  Type;
-   //**********************************************************************************************
-};
+{};
 /*! \endcond */
 //*************************************************************************************************
 
