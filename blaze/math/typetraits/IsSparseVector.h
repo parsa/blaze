@@ -44,6 +44,7 @@
 #include <blaze/util/IntegralConstant.h>
 #include <blaze/util/mpl/Or.h>
 #include <blaze/util/typetraits/IsBaseOf.h>
+#include <blaze/util/typetraits/RemoveCV.h>
 
 
 namespace blaze {
@@ -75,7 +76,8 @@ namespace blaze {
 */
 template< typename T >
 struct IsSparseVector
-   : public BoolConstant< Or< IsBaseOf<SparseVector<T,false>,T>, IsBaseOf<SparseVector<T,true>,T> >::value >
+   : public BoolConstant< Or< IsBaseOf<SparseVector<typename RemoveCV<T>::Type,false>,T>
+                            , IsBaseOf<SparseVector<typename RemoveCV<T>::Type,true>,T> >::value >
 {};
 //*************************************************************************************************
 
