@@ -41,8 +41,6 @@
 //*************************************************************************************************
 
 #include <blaze/math/typetraits/HasConstDataAccess.h>
-#include <blaze/util/constraints/ConstraintTest.h>
-#include <blaze/util/Suffix.h>
 
 
 namespace blaze {
@@ -54,22 +52,6 @@ namespace blaze {
 //=================================================================================================
 
 //*************************************************************************************************
-/*! \cond BLAZE_INTERNAL */
-/*!\brief Compile time constraint.
-// \ingroup math_constraints
-//
-// Helper template class for the compile time constraint enforcement. Based on the compile time
-// constant expression used for the template instantiation, either the undefined basic template
-// or the specialization is selected. If the undefined basic template is selected, a compilation
-// error is created.
-*/
-template< bool > struct CONSTRAINT_MUST_HAVE_CONST_DATA_ACCESS_FAILED;
-template<> struct CONSTRAINT_MUST_HAVE_CONST_DATA_ACCESS_FAILED<true> { enum { value = 1 }; };
-/*! \endcond */
-//*************************************************************************************************
-
-
-//*************************************************************************************************
 /*!\brief Constraint on the data type.
 // \ingroup math_constraints
 //
@@ -77,10 +59,7 @@ template<> struct CONSTRAINT_MUST_HAVE_CONST_DATA_ACCESS_FAILED<true> { enum { v
 // i.e. does not have a const 'data' member function, a compilation error is created.
 */
 #define BLAZE_CONSTRAINT_MUST_HAVE_CONST_DATA_ACCESS(T) \
-   typedef \
-      blaze::CONSTRAINT_TEST< \
-         blaze::CONSTRAINT_MUST_HAVE_CONST_DATA_ACCESS_FAILED< blaze::HasConstDataAccess<T>::value >::value > \
-      BLAZE_JOIN( CONSTRAINT_MUST_HAVE_CONST_DATA_ACCESS_TYPEDEF, __LINE__ )
+   static_assert( ::blaze::HasConstDataAccess<T>::value, "Type without const data access detected" )
 //*************************************************************************************************
 
 
@@ -93,22 +72,6 @@ template<> struct CONSTRAINT_MUST_HAVE_CONST_DATA_ACCESS_FAILED<true> { enum { v
 //=================================================================================================
 
 //*************************************************************************************************
-/*! \cond BLAZE_INTERNAL */
-/*!\brief Compile time constraint.
-// \ingroup math_constraints
-//
-// Helper template class for the compile time constraint enforcement. Based on the compile time
-// constant expression used for the template instantiation, either the undefined basic template
-// or the specialization is selected. If the undefined basic template is selected, a compilation
-// error is created.
-*/
-template< bool > struct CONSTRAINT_MUST_NOT_HAVE_CONST_DATA_ACCESS_FAILED;
-template<> struct CONSTRAINT_MUST_NOT_HAVE_CONST_DATA_ACCESS_FAILED<true> { enum { value = 1 }; };
-/*! \endcond */
-//*************************************************************************************************
-
-
-//*************************************************************************************************
 /*!\brief Constraint on the data type.
 // \ingroup math_constraints
 //
@@ -116,10 +79,7 @@ template<> struct CONSTRAINT_MUST_NOT_HAVE_CONST_DATA_ACCESS_FAILED<true> { enum
 // does have a const 'data' member function, a compilation error is created.
 */
 #define BLAZE_CONSTRAINT_MUST_NOT_HAVE_CONST_DATA_ACCESS(T) \
-   typedef \
-      blaze::CONSTRAINT_TEST< \
-         blaze::CONSTRAINT_MUST_NOT_HAVE_CONST_DATA_ACCESS_FAILED< !blaze::HasConstDataAccess<T>::value >::value > \
-      BLAZE_JOIN( CONSTRAINT_MUST_NOT_HAVE_CONST_DATA_ACCESS_TYPEDEF, __LINE__ )
+   static_assert( !::blaze::HasConstDataAccess<T>::value, "Type with const data access detected" )
 //*************************************************************************************************
 
 } // namespace blaze

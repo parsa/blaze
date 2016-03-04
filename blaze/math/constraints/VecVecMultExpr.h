@@ -44,13 +44,11 @@
 #include <blaze/math/typetraits/IsRowVector.h>
 #include <blaze/math/typetraits/IsVecVecMultExpr.h>
 #include <blaze/math/typetraits/Size.h>
-#include <blaze/util/constraints/ConstraintTest.h>
 #include <blaze/util/mpl/And.h>
 #include <blaze/util/mpl/Equal.h>
 #include <blaze/util/mpl/Not.h>
 #include <blaze/util/mpl/Or.h>
 #include <blaze/util/mpl/SizeT.h>
-#include <blaze/util/Suffix.h>
 
 
 namespace blaze {
@@ -62,22 +60,6 @@ namespace blaze {
 //=================================================================================================
 
 //*************************************************************************************************
-/*! \cond BLAZE_INTERNAL */
-/*!\brief Compile time constraint.
-// \ingroup math_constraints
-//
-// Helper template class for the compile time constraint enforcement. Based on the compile time
-// constant expression used for the template instantiation, either the undefined basic template
-// or the specialization is selected. If the undefined basic template is selected, a compilation
-// error is created.
-*/
-template< bool > struct CONSTRAINT_MUST_BE_VECVECMULTEXPR_TYPE_FAILED;
-template<> struct CONSTRAINT_MUST_BE_VECVECMULTEXPR_TYPE_FAILED<true> { enum { value = 1 }; };
-/*! \endcond */
-//*************************************************************************************************
-
-
-//*************************************************************************************************
 /*!\brief Constraint on the data type.
 // \ingroup math_constraints
 //
@@ -85,10 +67,7 @@ template<> struct CONSTRAINT_MUST_BE_VECVECMULTEXPR_TYPE_FAILED<true> { enum { v
 // derived from the VecVecMultExpr base class), a compilation error is created.
 */
 #define BLAZE_CONSTRAINT_MUST_BE_VECVECMULTEXPR_TYPE(T) \
-   typedef \
-      blaze::CONSTRAINT_TEST< \
-         blaze::CONSTRAINT_MUST_BE_VECVECMULTEXPR_TYPE_FAILED< blaze::IsVecVecMultExpr<T>::value >::value > \
-      BLAZE_JOIN( CONSTRAINT_MUST_BE_VECVECMULTEXPR_TYPE_TYPEDEF, __LINE__ )
+   static_assert( ::blaze::IsVecVecMultExpr<T>::value, "Non-vector/vector multiplication expression type detected" )
 //*************************************************************************************************
 
 
@@ -101,22 +80,6 @@ template<> struct CONSTRAINT_MUST_BE_VECVECMULTEXPR_TYPE_FAILED<true> { enum { v
 //=================================================================================================
 
 //*************************************************************************************************
-/*! \cond BLAZE_INTERNAL */
-/*!\brief Compile time constraint.
-// \ingroup math_constraints
-//
-// Helper template class for the compile time constraint enforcement. Based on the compile time
-// constant expression used for the template instantiation, either the undefined basic template
-// or the specialization is selected. If the undefined basic template is selected, a compilation
-// error is created.
-*/
-template< bool > struct CONSTRAINT_MUST_NOT_BE_VECVECMULTEXPR_TYPE_FAILED;
-template<> struct CONSTRAINT_MUST_NOT_BE_VECVECMULTEXPR_TYPE_FAILED<true> { enum { value = 1 }; };
-/*! \endcond */
-//*************************************************************************************************
-
-
-//*************************************************************************************************
 /*!\brief Constraint on the data type.
 // \ingroup math_constraints
 //
@@ -124,10 +87,7 @@ template<> struct CONSTRAINT_MUST_NOT_BE_VECVECMULTEXPR_TYPE_FAILED<true> { enum
 // derived from the VecVecMultExpr base class), a compilation error is created.
 */
 #define BLAZE_CONSTRAINT_MUST_NOT_BE_VECVECMULTEXPR_TYPE(T) \
-   typedef \
-      blaze::CONSTRAINT_TEST< \
-         blaze::CONSTRAINT_MUST_NOT_BE_VECVECMULTEXPR_TYPE_FAILED< !blaze::IsVecVecMultExpr<T>::value >::value > \
-      BLAZE_JOIN( CONSTRAINT_MUST_NOT_BE_VECVECMULTEXPR_TYPE_TYPEDEF, __LINE__ )
+   static_assert( !::blaze::IsVecVecMultExpr<T>::value, "Vector/vector multiplication expression type detected" )
 //*************************************************************************************************
 
 
@@ -140,22 +100,6 @@ template<> struct CONSTRAINT_MUST_NOT_BE_VECVECMULTEXPR_TYPE_FAILED<true> { enum
 //=================================================================================================
 
 //*************************************************************************************************
-/*! \cond BLAZE_INTERNAL */
-/*!\brief Compile time constraint.
-// \ingroup math_constraints
-//
-// Helper template class for the compile time constraint enforcement. Based on the compile time
-// constant expression used for the template instantiation, either the undefined basic template
-// or the specialization is selected. If the undefined basic template is selected, a compilation
-// error is created.
-*/
-template< bool > struct CONSTRAINT_MUST_FORM_VALID_VECVECMULTEXPR_FAILED;
-template<> struct CONSTRAINT_MUST_FORM_VALID_VECVECMULTEXPR_FAILED<true> { enum { value = 1 }; };
-/*! \endcond */
-//*************************************************************************************************
-
-
-//*************************************************************************************************
 /*!\brief Constraint on the data type.
 // \ingroup math_constraints
 //
@@ -163,18 +107,14 @@ template<> struct CONSTRAINT_MUST_FORM_VALID_VECVECMULTEXPR_FAILED<true> { enum 
 // a compilation error is created.
 */
 #define BLAZE_CONSTRAINT_MUST_FORM_VALID_VECVECMULTEXPR(T1,T2) \
-   typedef \
-      blaze::CONSTRAINT_TEST< \
-         blaze::CONSTRAINT_MUST_FORM_VALID_VECVECMULTEXPR_FAILED< ( \
-            blaze::And< blaze::Or< blaze::And< blaze::IsRowVector<T1> \
-                                             , blaze::IsRowVector<T2> > \
-                                 , blaze::And< blaze::IsColumnVector<T1> \
-                                             , blaze::IsColumnVector<T2> > > \
-                      , blaze::Or< blaze::Equal< blaze::Size<T1>, blaze::SizeT<0UL> > \
-                                 , blaze::Equal< blaze::Size<T2>, blaze::SizeT<0UL> > \
-                                 , blaze::Equal< blaze::Size<T1>, blaze::Size<T2> > > \
-                      >::value ) >::value > \
-      BLAZE_JOIN( CONSTRAINT_MUST_FORM_VALID_VECVECMULTEXPR_TYPEDEF, __LINE__ )
+   static_assert( ::blaze::And< ::blaze::Or< ::blaze::And< ::blaze::IsRowVector<T1> \
+                                                         , ::blaze::IsRowVector<T2> > \
+                                           , ::blaze::And< ::blaze::IsColumnVector<T1> \
+                                                         , ::blaze::IsColumnVector<T2> > > \
+                              , ::blaze::Or< ::blaze::Equal< ::blaze::Size<T1>, ::blaze::SizeT<0UL> > \
+                                           , ::blaze::Equal< ::blaze::Size<T2>, ::blaze::SizeT<0UL> > \
+                                           , ::blaze::Equal< ::blaze::Size<T1>, ::blaze::Size<T2> > > \
+                              >::value, "Invalid vector/vector multiplication expression detected" )
 //*************************************************************************************************
 
 
@@ -187,22 +127,6 @@ template<> struct CONSTRAINT_MUST_FORM_VALID_VECVECMULTEXPR_FAILED<true> { enum 
 //=================================================================================================
 
 //*************************************************************************************************
-/*! \cond BLAZE_INTERNAL */
-/*!\brief Compile time constraint.
-// \ingroup math_constraints
-//
-// Helper template class for the compile time constraint enforcement. Based on the compile time
-// constant expression used for the template instantiation, either the undefined basic template
-// or the specialization is selected. If the undefined basic template is selected, a compilation
-// error is created.
-*/
-template< bool > struct CONSTRAINT_MUST_NOT_FORM_VALID_VECVECMULTEXPR_FAILED;
-template<> struct CONSTRAINT_MUST_NOT_FORM_VALID_VECVECMULTEXPR_FAILED<true> { enum { value = 1 }; };
-/*! \endcond */
-//*************************************************************************************************
-
-
-//*************************************************************************************************
 /*!\brief Constraint on the data type.
 // \ingroup math_constraints
 //
@@ -210,18 +134,14 @@ template<> struct CONSTRAINT_MUST_NOT_FORM_VALID_VECVECMULTEXPR_FAILED<true> { e
 // a compilation error is created.
 */
 #define BLAZE_CONSTRAINT_MUST_NOT_FORM_VALID_VECVECMULTEXPR(T1,T2) \
-   typedef \
-      blaze::CONSTRAINT_TEST< \
-         blaze::CONSTRAINT_MUST_NOT_FORM_VALID_VECVECMULTEXPR_FAILED< ( \
-            blaze::Not< blaze::And< blaze::Or< blaze::And< blaze::IsRowVector<T1> \
-                                                         , blaze::IsRowVector<T2> > \
-                                             , blaze::And< blaze::IsColumnVector<T1> \
-                                                         , blaze::IsColumnVector<T2> > > \
-                                  , blaze::Or< blaze::Equal< blaze::Size<T1>, blaze::SizeT<0UL> > \
-                                             , blaze::Equal< blaze::Size<T2>, blaze::SizeT<0UL> > \
-                                             , blaze::Equal< blaze::Size<T1>, blaze::Size<T2> > > > \
-                      >::value ) >::value > \
-      BLAZE_JOIN( CONSTRAINT_MUST_NOT_FORM_VALID_VECVECMULTEXPR_TYPEDEF, __LINE__ )
+   static_assert( ::blaze::Not< ::blaze::And< ::blaze::Or< ::blaze::And< ::blaze::IsRowVector<T1> \
+                                                                       , ::blaze::IsRowVector<T2> > \
+                                                         , ::blaze::And< ::blaze::IsColumnVector<T1> \
+                                                                       , ::blaze::IsColumnVector<T2> > > \
+                                            , ::blaze::Or< ::blaze::Equal< ::blaze::Size<T1>, ::blaze::SizeT<0UL> > \
+                                                         , ::blaze::Equal< ::blaze::Size<T2>, ::blaze::SizeT<0UL> > \
+                                                         , ::blaze::Equal< ::blaze::Size<T1>, ::blaze::Size<T2> > > > \
+                              >::value, "Valid vector/vector multiplication expression detected" )
 //*************************************************************************************************
 
 } // namespace blaze

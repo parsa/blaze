@@ -41,8 +41,6 @@
 //*************************************************************************************************
 
 #include <blaze/math/typetraits/HasMutableDataAccess.h>
-#include <blaze/util/constraints/ConstraintTest.h>
-#include <blaze/util/Suffix.h>
 
 
 namespace blaze {
@@ -54,22 +52,6 @@ namespace blaze {
 //=================================================================================================
 
 //*************************************************************************************************
-/*! \cond BLAZE_INTERNAL */
-/*!\brief Compile time constraint.
-// \ingroup math_constraints
-//
-// Helper template class for the compile time constraint enforcement. Based on the compile time
-// constant expression used for the template instantiation, either the undefined basic template
-// or the specialization is selected. If the undefined basic template is selected, a compilation
-// error is created.
-*/
-template< bool > struct CONSTRAINT_MUST_HAVE_MUTABLE_DATA_ACCESS_FAILED;
-template<> struct CONSTRAINT_MUST_HAVE_MUTABLE_DATA_ACCESS_FAILED<true> { enum { value = 1 }; };
-/*! \endcond */
-//*************************************************************************************************
-
-
-//*************************************************************************************************
 /*!\brief Constraint on the data type.
 // \ingroup math_constraints
 //
@@ -77,10 +59,7 @@ template<> struct CONSTRAINT_MUST_HAVE_MUTABLE_DATA_ACCESS_FAILED<true> { enum {
 // i.e. does not have a non-const 'data' member function, a compilation error is created.
 */
 #define BLAZE_CONSTRAINT_MUST_HAVE_MUTABLE_DATA_ACCESS(T) \
-   typedef \
-      blaze::CONSTRAINT_TEST< \
-         blaze::CONSTRAINT_MUST_HAVE_MUTABLE_DATA_ACCESS_FAILED< blaze::HasMutableDataAccess<T>::value >::value > \
-      BLAZE_JOIN( CONSTRAINT_MUST_HAVE_MUTABLE_DATA_ACCESS_TYPEDEF, __LINE__ )
+   static_assert( ::blaze::HasMutableDataAccess<T>::value, "Type without mutable data access detected" )
 //*************************************************************************************************
 
 
@@ -93,22 +72,6 @@ template<> struct CONSTRAINT_MUST_HAVE_MUTABLE_DATA_ACCESS_FAILED<true> { enum {
 //=================================================================================================
 
 //*************************************************************************************************
-/*! \cond BLAZE_INTERNAL */
-/*!\brief Compile time constraint.
-// \ingroup math_constraints
-//
-// Helper template class for the compile time constraint enforcement. Based on the compile time
-// constant expression used for the template instantiation, either the undefined basic template
-// or the specialization is selected. If the undefined basic template is selected, a compilation
-// error is created.
-*/
-template< bool > struct CONSTRAINT_MUST_NOT_HAVE_MUTABLE_DATA_ACCESS_FAILED;
-template<> struct CONSTRAINT_MUST_NOT_HAVE_MUTABLE_DATA_ACCESS_FAILED<true> { enum { value = 1 }; };
-/*! \endcond */
-//*************************************************************************************************
-
-
-//*************************************************************************************************
 /*!\brief Constraint on the data type.
 // \ingroup math_constraints
 //
@@ -116,10 +79,7 @@ template<> struct CONSTRAINT_MUST_NOT_HAVE_MUTABLE_DATA_ACCESS_FAILED<true> { en
 // does have a non-const 'data' member function, a compilation error is created.
 */
 #define BLAZE_CONSTRAINT_MUST_NOT_HAVE_MUTABLE_DATA_ACCESS(T) \
-   typedef \
-      blaze::CONSTRAINT_TEST< \
-         blaze::CONSTRAINT_MUST_NOT_HAVE_MUTABLE_DATA_ACCESS_FAILED< !blaze::HasMutableDataAccess<T>::value >::value > \
-      BLAZE_JOIN( CONSTRAINT_MUST_NOT_HAVE_MUTABLE_DATA_ACCESS_TYPEDEF, __LINE__ )
+   static_assert( !::blaze::HasMutableDataAccess<T>::value, "Type with mutable data access detected" )
 //*************************************************************************************************
 
 } // namespace blaze

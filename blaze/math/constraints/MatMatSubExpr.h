@@ -44,13 +44,11 @@
 #include <blaze/math/typetraits/IsMatMatSubExpr.h>
 #include <blaze/math/typetraits/IsMatrix.h>
 #include <blaze/math/typetraits/Rows.h>
-#include <blaze/util/constraints/ConstraintTest.h>
 #include <blaze/util/mpl/And.h>
 #include <blaze/util/mpl/Equal.h>
 #include <blaze/util/mpl/Not.h>
 #include <blaze/util/mpl/Or.h>
 #include <blaze/util/mpl/SizeT.h>
-#include <blaze/util/Suffix.h>
 
 
 namespace blaze {
@@ -62,22 +60,6 @@ namespace blaze {
 //=================================================================================================
 
 //*************************************************************************************************
-/*! \cond BLAZE_INTERNAL */
-/*!\brief Compile time constraint.
-// \ingroup math_constraints
-//
-// Helper template class for the compile time constraint enforcement. Based on the compile time
-// constant expression used for the template instantiation, either the undefined basic template
-// or the specialization is selected. If the undefined basic template is selected, a compilation
-// error is created.
-*/
-template< bool > struct CONSTRAINT_MUST_BE_MATMATSUBEXPR_TYPE_FAILED;
-template<> struct CONSTRAINT_MUST_BE_MATMATSUBEXPR_TYPE_FAILED<true> { enum { value = 1 }; };
-/*! \endcond */
-//*************************************************************************************************
-
-
-//*************************************************************************************************
 /*!\brief Constraint on the data type.
 // \ingroup math_constraints
 //
@@ -85,10 +67,7 @@ template<> struct CONSTRAINT_MUST_BE_MATMATSUBEXPR_TYPE_FAILED<true> { enum { va
 // derived from the MatMatSubExpr base class), a compilation error is created.
 */
 #define BLAZE_CONSTRAINT_MUST_BE_MATMATSUBEXPR_TYPE(T) \
-   typedef \
-      blaze::CONSTRAINT_TEST< \
-         blaze::CONSTRAINT_MUST_BE_MATMATSUBEXPR_TYPE_FAILED< blaze::IsMatMatSubExpr<T>::value >::value > \
-      BLAZE_JOIN( CONSTRAINT_MUST_BE_MATMATSUBEXPR_TYPE_TYPEDEF, __LINE__ )
+   static_assert( ::blaze::IsMatMatSubExpr<T>::value, "Non-matrix/matrix subtraction expression type detected" )
 //*************************************************************************************************
 
 
@@ -101,22 +80,6 @@ template<> struct CONSTRAINT_MUST_BE_MATMATSUBEXPR_TYPE_FAILED<true> { enum { va
 //=================================================================================================
 
 //*************************************************************************************************
-/*! \cond BLAZE_INTERNAL */
-/*!\brief Compile time constraint.
-// \ingroup math_constraints
-//
-// Helper template class for the compile time constraint enforcement. Based on the compile time
-// constant expression used for the template instantiation, either the undefined basic template
-// or the specialization is selected. If the undefined basic template is selected, a compilation
-// error is created.
-*/
-template< bool > struct CONSTRAINT_MUST_NOT_BE_MATMATSUBEXPR_TYPE_FAILED;
-template<> struct CONSTRAINT_MUST_NOT_BE_MATMATSUBEXPR_TYPE_FAILED<true> { enum { value = 1 }; };
-/*! \endcond */
-//*************************************************************************************************
-
-
-//*************************************************************************************************
 /*!\brief Constraint on the data type.
 // \ingroup math_constraints
 //
@@ -124,10 +87,7 @@ template<> struct CONSTRAINT_MUST_NOT_BE_MATMATSUBEXPR_TYPE_FAILED<true> { enum 
 // from the MatMatSubExpr base class), a compilation error is created.
 */
 #define BLAZE_CONSTRAINT_MUST_NOT_BE_MATMATSUBEXPR_TYPE(T) \
-   typedef \
-      blaze::CONSTRAINT_TEST< \
-         blaze::CONSTRAINT_MUST_NOT_BE_MATMATSUBEXPR_TYPE_FAILED< !blaze::IsMatMatSubExpr<T>::value >::value > \
-      BLAZE_JOIN( CONSTRAINT_MUST_NOT_BE_MATMATSUBEXPR_TYPE_TYPEDEF, __LINE__ )
+   static_assert( !::blaze::IsMatMatSubExpr<T>::value, "Matrix/matrix subtraction expression type detected" )
 //*************************************************************************************************
 
 
@@ -140,22 +100,6 @@ template<> struct CONSTRAINT_MUST_NOT_BE_MATMATSUBEXPR_TYPE_FAILED<true> { enum 
 //=================================================================================================
 
 //*************************************************************************************************
-/*! \cond BLAZE_INTERNAL */
-/*!\brief Compile time constraint.
-// \ingroup math_constraints
-//
-// Helper template class for the compile time constraint enforcement. Based on the compile time
-// constant expression used for the template instantiation, either the undefined basic template
-// or the specialization is selected. If the undefined basic template is selected, a compilation
-// error is created.
-*/
-template< bool > struct CONSTRAINT_MUST_FORM_VALID_MATMATSUBEXPR_FAILED;
-template<> struct CONSTRAINT_MUST_FORM_VALID_MATMATSUBEXPR_FAILED<true> { enum { value = 1 }; };
-/*! \endcond */
-//*************************************************************************************************
-
-
-//*************************************************************************************************
 /*!\brief Constraint on the data type.
 // \ingroup math_constraints
 //
@@ -163,19 +107,15 @@ template<> struct CONSTRAINT_MUST_FORM_VALID_MATMATSUBEXPR_FAILED<true> { enum {
 // a compilation error is created.
 */
 #define BLAZE_CONSTRAINT_MUST_FORM_VALID_MATMATSUBEXPR(T1,T2) \
-   typedef \
-      blaze::CONSTRAINT_TEST< \
-         blaze::CONSTRAINT_MUST_FORM_VALID_MATMATSUBEXPR_FAILED< ( \
-            blaze::And< blaze::IsMatrix<T1> \
-                      , blaze::IsMatrix<T2> \
-                      , blaze::Or< blaze::Equal< blaze::Rows<T1>, blaze::SizeT<0UL> > \
-                                 , blaze::Equal< blaze::Rows<T2>, blaze::SizeT<0UL> > \
-                                 , blaze::Equal< blaze::Rows<T1>, blaze::Rows<T2> > > \
-                      , blaze::Or< blaze::Equal< blaze::Columns<T1>, blaze::SizeT<0UL> > \
-                                 , blaze::Equal< blaze::Columns<T2>, blaze::SizeT<0UL> > \
-                                 , blaze::Equal< blaze::Columns<T1>, blaze::Columns<T2> > > \
-                      >::value ) >::value > \
-      BLAZE_JOIN( CONSTRAINT_MUST_FORM_VALID_MATMATSUBEXPR_TYPEDEF, __LINE__ )
+   static_assert( ::blaze::And< ::blaze::IsMatrix<T1> \
+                              , ::blaze::IsMatrix<T2> \
+                              , ::blaze::Or< ::blaze::Equal< ::blaze::Rows<T1>, ::blaze::SizeT<0UL> > \
+                                           , ::blaze::Equal< ::blaze::Rows<T2>, ::blaze::SizeT<0UL> > \
+                                           , ::blaze::Equal< ::blaze::Rows<T1>, ::blaze::Rows<T2> > > \
+                              , ::blaze::Or< ::blaze::Equal< ::blaze::Columns<T1>, ::blaze::SizeT<0UL> > \
+                                           , ::blaze::Equal< ::blaze::Columns<T2>, ::blaze::SizeT<0UL> > \
+                                           , ::blaze::Equal< ::blaze::Columns<T1>, ::blaze::Columns<T2> > > \
+                              >::value, "Invalid matrix/matrix subtraction expression detected" )
 //*************************************************************************************************
 
 
@@ -188,22 +128,6 @@ template<> struct CONSTRAINT_MUST_FORM_VALID_MATMATSUBEXPR_FAILED<true> { enum {
 //=================================================================================================
 
 //*************************************************************************************************
-/*! \cond BLAZE_INTERNAL */
-/*!\brief Compile time constraint.
-// \ingroup math_constraints
-//
-// Helper template class for the compile time constraint enforcement. Based on the compile time
-// constant expression used for the template instantiation, either the undefined basic template
-// or the specialization is selected. If the undefined basic template is selected, a compilation
-// error is created.
-*/
-template< bool > struct CONSTRAINT_MUST_NOT_FORM_VALID_MATMATSUBEXPR_FAILED;
-template<> struct CONSTRAINT_MUST_NOT_FORM_VALID_MATMATSUBEXPR_FAILED<true> { enum { value = 1 }; };
-/*! \endcond */
-//*************************************************************************************************
-
-
-//*************************************************************************************************
 /*!\brief Constraint on the data type.
 // \ingroup math_constraints
 //
@@ -211,19 +135,15 @@ template<> struct CONSTRAINT_MUST_NOT_FORM_VALID_MATMATSUBEXPR_FAILED<true> { en
 // compilation error is created.
 */
 #define BLAZE_CONSTRAINT_MUST_NOT_FORM_VALID_MATMATSUBEXPR(T1,T2) \
-   typedef \
-      blaze::CONSTRAINT_TEST< \
-         blaze::CONSTRAINT_MUST_NOT_FORM_VALID_MATMATSUBEXPR_FAILED< ( \
-            blaze::Not< blaze::And< blaze::IsMatrix<T1> \
-                                  , blaze::IsMatrix<T2> \
-                                  , blaze::Or< blaze::Equal< blaze::Rows<T1>, blaze::SizeT<0UL> > \
-                                             , blaze::Equal< blaze::Rows<T2>, blaze::SizeT<0UL> > \
-                                             , blaze::Equal< blaze::Rows<T1>, blaze::Rows<T2> > > \
-                                  , blaze::Or< blaze::Equal< blaze::Columns<T1>, blaze::SizeT<0UL> > \
-                                             , blaze::Equal< blaze::Columns<T2>, blaze::SizeT<0UL> > \
-                                             , blaze::Equal< blaze::Columns<T1>, blaze::Columns<T2> > > > \
-                      >::value ) >::value > \
-      BLAZE_JOIN( CONSTRAINT_MUST_NOT_FORM_VALID_MATMATSUBEXPR_TYPEDEF, __LINE__ )
+   static_assert( ::blaze::Not< ::blaze::And< ::blaze::IsMatrix<T1> \
+                                            , ::blaze::IsMatrix<T2> \
+                                            , ::blaze::Or< ::blaze::Equal< ::blaze::Rows<T1>, ::blaze::SizeT<0UL> > \
+                                                         , ::blaze::Equal< ::blaze::Rows<T2>, ::blaze::SizeT<0UL> > \
+                                                         , ::blaze::Equal< ::blaze::Rows<T1>, ::blaze::Rows<T2> > > \
+                                            , ::blaze::Or< ::blaze::Equal< ::blaze::Columns<T1>, ::blaze::SizeT<0UL> > \
+                                                         , ::blaze::Equal< ::blaze::Columns<T2>, ::blaze::SizeT<0UL> > \
+                                                         , ::blaze::Equal< ::blaze::Columns<T1>, ::blaze::Columns<T2> > > > \
+                              >::value, "Valid matrix/matrix subtraction expression detected" )
 //*************************************************************************************************
 
 } // namespace blaze

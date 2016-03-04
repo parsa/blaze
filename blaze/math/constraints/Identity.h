@@ -41,8 +41,6 @@
 //*************************************************************************************************
 
 #include <blaze/math/typetraits/IsIdentity.h>
-#include <blaze/util/constraints/ConstraintTest.h>
-#include <blaze/util/Suffix.h>
 
 
 namespace blaze {
@@ -54,32 +52,13 @@ namespace blaze {
 //=================================================================================================
 
 //*************************************************************************************************
-/*! \cond BLAZE_INTERNAL */
-/*!\brief Compile time constraint.
-// \ingroup math_constraints
-//
-// Helper template class for the compile time constraint enforcement. Based on the compile time
-// constant expression used for the template instantiation, either the undefined basic template
-// or the specialization is selected. If the undefined basic template is selected, a compilation
-// error is created.
-*/
-template< bool > struct CONSTRAINT_MUST_BE_IDENTITY_MATRIX_TYPE_FAILED;
-template<> struct CONSTRAINT_MUST_BE_IDENTITY_MATRIX_TYPE_FAILED<true> { enum { value = 1 }; };
-/*! \endcond */
-//*************************************************************************************************
-
-
-//*************************************************************************************************
 /*!\brief Constraint on the data type.
 // \ingroup math_constraints
 //
 // In case the given data type \a T is not an identity matrix type, a compilation error is created.
 */
 #define BLAZE_CONSTRAINT_MUST_BE_IDENTITY_MATRIX_TYPE(T) \
-   typedef \
-      blaze::CONSTRAINT_TEST< \
-         blaze::CONSTRAINT_MUST_BE_IDENTITY_MATRIX_TYPE_FAILED< blaze::IsIdentity<T>::value >::value > \
-      BLAZE_JOIN( CONSTRAINT_MUST_BE_IDENTITY_MATRIX_TYPE_TYPEDEF, __LINE__ )
+   static_assert( ::blaze::IsIdentity<T>::value, "Non-identity matrix type detected" )
 //*************************************************************************************************
 
 
@@ -92,32 +71,13 @@ template<> struct CONSTRAINT_MUST_BE_IDENTITY_MATRIX_TYPE_FAILED<true> { enum { 
 //=================================================================================================
 
 //*************************************************************************************************
-/*! \cond BLAZE_INTERNAL */
-/*!\brief Compile time constraint.
-// \ingroup math_constraints
-//
-// Helper template class for the compile time constraint enforcement. Based on the compile time
-// constant expression used for the template instantiation, either the undefined basic template
-// or the specialization is selected. If the undefined basic template is selected, a compilation
-// error is created.
-*/
-template< bool > struct CONSTRAINT_MUST_NOT_BE_IDENTITY_MATRIX_TYPE_FAILED;
-template<> struct CONSTRAINT_MUST_NOT_BE_IDENTITY_MATRIX_TYPE_FAILED<true> { enum { value = 1 }; };
-/*! \endcond */
-//*************************************************************************************************
-
-
-//*************************************************************************************************
 /*!\brief Constraint on the data type.
 // \ingroup math_constraints
 //
 // In case the given data type \a T is an identity matrix type, a compilation error is created.
 */
 #define BLAZE_CONSTRAINT_MUST_NOT_BE_IDENTITY_MATRIX_TYPE(T) \
-   typedef \
-      blaze::CONSTRAINT_TEST< \
-         blaze::CONSTRAINT_MUST_NOT_BE_IDENTITY_MATRIX_TYPE_FAILED< !blaze::IsIdentity<T>::value >::value > \
-      BLAZE_JOIN( CONSTRAINT_MUST_NOT_BE_IDENTITY_MATRIX_TYPE_TYPEDEF, __LINE__ )
+   static_assert( !::blaze::IsIdentity<T>::value, "Identity matrix type detected" )
 //*************************************************************************************************
 
 } // namespace blaze
