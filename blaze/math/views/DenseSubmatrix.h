@@ -101,12 +101,14 @@
 #include <blaze/util/DisableIf.h>
 #include <blaze/util/EnableIf.h>
 #include <blaze/util/Exception.h>
+#include <blaze/util/IntegralConstant.h>
 #include <blaze/util/logging/FunctionTrace.h>
 #include <blaze/util/mpl/And.h>
 #include <blaze/util/mpl/If.h>
 #include <blaze/util/mpl/Not.h>
 #include <blaze/util/mpl/Or.h>
 #include <blaze/util/Template.h>
+#include <blaze/util/TrueType.h>
 #include <blaze/util/Types.h>
 #include <blaze/util/typetraits/IsConst.h>
 #include <blaze/util/typetraits/IsFloatingPoint.h>
@@ -115,7 +117,6 @@
 #include <blaze/util/typetraits/IsSame.h>
 #include <blaze/util/typetraits/RemoveReference.h>
 #include <blaze/util/Unused.h>
-#include <blaze/util/valuetraits/IsTrue.h>
 
 
 namespace blaze {
@@ -12139,7 +12140,7 @@ inline const DenseSubmatrix<MT,AF1,SO>
 //*************************************************************************************************
 /*! \cond BLAZE_INTERNAL */
 template< typename MT, bool AF, bool SO >
-struct IsRestricted< DenseSubmatrix<MT,AF,SO> > : public IsTrue< IsRestricted<MT>::value >
+struct IsRestricted< DenseSubmatrix<MT,AF,SO> > : public BoolConstant< IsRestricted<MT>::value >
 {};
 /*! \endcond */
 //*************************************************************************************************
@@ -12176,7 +12177,7 @@ struct DerestrictTrait< DenseSubmatrix<MT,AF,SO> >
 /*! \cond BLAZE_INTERNAL */
 template< typename MT, bool AF, bool SO >
 struct HasConstDataAccess< DenseSubmatrix<MT,AF,SO> >
-   : public IsTrue< HasConstDataAccess<MT>::value >
+   : public BoolConstant< HasConstDataAccess<MT>::value >
 {};
 /*! \endcond */
 //*************************************************************************************************
@@ -12194,7 +12195,7 @@ struct HasConstDataAccess< DenseSubmatrix<MT,AF,SO> >
 /*! \cond BLAZE_INTERNAL */
 template< typename MT, bool AF, bool SO >
 struct HasMutableDataAccess< DenseSubmatrix<MT,AF,SO> >
-   : public IsTrue< HasMutableDataAccess<MT>::value >
+   : public BoolConstant< HasMutableDataAccess<MT>::value >
 {};
 /*! \endcond */
 //*************************************************************************************************
@@ -12211,7 +12212,7 @@ struct HasMutableDataAccess< DenseSubmatrix<MT,AF,SO> >
 //*************************************************************************************************
 /*! \cond BLAZE_INTERNAL */
 template< typename MT, bool SO >
-struct IsAligned< DenseSubmatrix<MT,aligned,SO> > : public IsTrue<true>
+struct IsAligned< DenseSubmatrix<MT,aligned,SO> > : public TrueType
 {};
 /*! \endcond */
 //*************************************************************************************************

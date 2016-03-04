@@ -68,6 +68,7 @@
 #include <blaze/util/Assert.h>
 #include <blaze/util/EnableIf.h>
 #include <blaze/util/Exception.h>
+#include <blaze/util/IntegralConstant.h>
 #include <blaze/util/logging/FunctionTrace.h>
 #include <blaze/util/mpl/If.h>
 #include <blaze/util/mpl/Or.h>
@@ -2555,11 +2556,8 @@ inline const SparseSubvector<VT,AF1,TF>
 //*************************************************************************************************
 /*! \cond BLAZE_INTERNAL */
 template< typename VT, bool AF, bool TF >
-struct IsRestricted< SparseSubvector<VT,AF,TF> > : public If< IsRestricted<VT>, TrueType, FalseType >::Type
-{
-   enum { value = IsRestricted<VT>::value };
-   typedef typename If< IsRestricted<VT>, TrueType, FalseType >::Type  Type;
-};
+struct IsRestricted< SparseSubvector<VT,AF,TF> > : public BoolConstant< IsRestricted<VT>::value >
+{};
 /*! \endcond */
 //*************************************************************************************************
 

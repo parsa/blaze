@@ -85,6 +85,7 @@
 #include <blaze/util/DisableIf.h>
 #include <blaze/util/EnableIf.h>
 #include <blaze/util/Exception.h>
+#include <blaze/util/IntegralConstant.h>
 #include <blaze/util/logging/FunctionTrace.h>
 #include <blaze/util/mpl/And.h>
 #include <blaze/util/mpl/If.h>
@@ -96,7 +97,6 @@
 #include <blaze/util/typetraits/IsReference.h>
 #include <blaze/util/typetraits/RemoveReference.h>
 #include <blaze/util/Unused.h>
-#include <blaze/util/valuetraits/IsTrue.h>
 
 
 namespace blaze {
@@ -5720,7 +5720,7 @@ inline typename DerestrictTrait< SparseColumn<MT,SO,SF> >::Type
 //*************************************************************************************************
 /*! \cond BLAZE_INTERNAL */
 template< typename MT, bool SO, bool SF >
-struct IsRestricted< SparseColumn<MT,SO,SF> > : public IsTrue< IsRestricted<MT>::value >
+struct IsRestricted< SparseColumn<MT,SO,SF> > : public BoolConstant< IsRestricted<MT>::value >
 {};
 /*! \endcond */
 //*************************************************************************************************

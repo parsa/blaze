@@ -91,6 +91,7 @@
 #include <blaze/util/DisableIf.h>
 #include <blaze/util/EnableIf.h>
 #include <blaze/util/Exception.h>
+#include <blaze/util/IntegralConstant.h>
 #include <blaze/util/logging/FunctionTrace.h>
 #include <blaze/util/mpl/And.h>
 #include <blaze/util/mpl/If.h>
@@ -104,7 +105,6 @@
 #include <blaze/util/typetraits/IsReference.h>
 #include <blaze/util/typetraits/IsSame.h>
 #include <blaze/util/typetraits/RemoveReference.h>
-#include <blaze/util/valuetraits/IsTrue.h>
 
 
 namespace blaze {
@@ -5845,7 +5845,7 @@ inline typename DerestrictTrait< DenseColumn<MT,SO,SF> >::Type
 //*************************************************************************************************
 /*! \cond BLAZE_INTERNAL */
 template< typename MT, bool SO, bool SF >
-struct IsRestricted< DenseColumn<MT,SO,SF> > : public IsTrue< IsRestricted<MT>::value >
+struct IsRestricted< DenseColumn<MT,SO,SF> > : public BoolConstant< IsRestricted<MT>::value >
 {};
 /*! \endcond */
 //*************************************************************************************************
@@ -5882,7 +5882,7 @@ struct DerestrictTrait< DenseColumn<MT,SO,SF> >
 /*! \cond BLAZE_INTERNAL */
 template< typename MT, bool SO, bool SF >
 struct HasConstDataAccess< DenseColumn<MT,SO,SF> >
-   : public IsTrue< HasConstDataAccess<MT>::value >
+   : public BoolConstant< HasConstDataAccess<MT>::value >
 {};
 /*! \endcond */
 //*************************************************************************************************
@@ -5900,7 +5900,7 @@ struct HasConstDataAccess< DenseColumn<MT,SO,SF> >
 /*! \cond BLAZE_INTERNAL */
 template< typename MT, bool SO, bool SF >
 struct HasMutableDataAccess< DenseColumn<MT,SO,SF> >
-   : public IsTrue< HasMutableDataAccess<MT>::value >
+   : public BoolConstant< HasMutableDataAccess<MT>::value >
 {};
 /*! \endcond */
 //*************************************************************************************************
@@ -5918,7 +5918,7 @@ struct HasMutableDataAccess< DenseColumn<MT,SO,SF> >
 /*! \cond BLAZE_INTERNAL */
 template< typename MT, bool SO, bool SF >
 struct IsAligned< DenseColumn<MT,SO,SF> >
-   : public IsTrue< And< IsAligned<MT>, Or< IsColumnMajorMatrix<MT>, IsSymmetric<MT> > >::value >
+   : public BoolConstant< And< IsAligned<MT>, Or< IsColumnMajorMatrix<MT>, IsSymmetric<MT> > >::value >
 {};
 /*! \endcond */
 //*************************************************************************************************
@@ -5936,7 +5936,7 @@ struct IsAligned< DenseColumn<MT,SO,SF> >
 /*! \cond BLAZE_INTERNAL */
 template< typename MT, bool SO, bool SF >
 struct IsPadded< DenseColumn<MT,SO,SF> >
-   : public IsTrue< And< IsPadded<MT>, Or< IsColumnMajorMatrix<MT>, IsSymmetric<MT> > >::value >
+   : public BoolConstant< And< IsPadded<MT>, Or< IsColumnMajorMatrix<MT>, IsSymmetric<MT> > >::value >
 {};
 /*! \endcond */
 //*************************************************************************************************

@@ -83,17 +83,18 @@
 #include <blaze/util/DisableIf.h>
 #include <blaze/util/EnableIf.h>
 #include <blaze/util/Exception.h>
+#include <blaze/util/IntegralConstant.h>
 #include <blaze/util/logging/FunctionTrace.h>
 #include <blaze/util/mpl/If.h>
 #include <blaze/util/mpl/Not.h>
 #include <blaze/util/mpl/Or.h>
 #include <blaze/util/Template.h>
+#include <blaze/util/TrueType.h>
 #include <blaze/util/Types.h>
 #include <blaze/util/typetraits/IsConst.h>
 #include <blaze/util/typetraits/IsNumeric.h>
 #include <blaze/util/typetraits/IsSame.h>
 #include <blaze/util/typetraits/RemoveReference.h>
-#include <blaze/util/valuetraits/IsTrue.h>
 
 
 namespace blaze {
@@ -5464,7 +5465,7 @@ inline const DenseSubvector<VT,AF1,TF>
 //*************************************************************************************************
 /*! \cond BLAZE_INTERNAL */
 template< typename VT, bool AF, bool TF >
-struct IsRestricted< DenseSubvector<VT,AF,TF> > : public IsTrue< IsRestricted<VT>::value >
+struct IsRestricted< DenseSubvector<VT,AF,TF> > : public BoolConstant< IsRestricted<VT>::value >
 {};
 /*! \endcond */
 //*************************************************************************************************
@@ -5501,7 +5502,7 @@ struct DerestrictTrait< DenseSubvector<VT,AF,TF> >
 /*! \cond BLAZE_INTERNAL */
 template< typename VT, bool AF, bool TF >
 struct HasConstDataAccess< DenseSubvector<VT,AF,TF> >
-   : public IsTrue< HasConstDataAccess<VT>::value >
+   : public BoolConstant< HasConstDataAccess<VT>::value >
 {};
 /*! \endcond */
 //*************************************************************************************************
@@ -5519,7 +5520,7 @@ struct HasConstDataAccess< DenseSubvector<VT,AF,TF> >
 /*! \cond BLAZE_INTERNAL */
 template< typename VT, bool AF, bool TF >
 struct HasMutableDataAccess< DenseSubvector<VT,AF,TF> >
-   : public IsTrue< HasMutableDataAccess<VT>::value >
+   : public BoolConstant< HasMutableDataAccess<VT>::value >
 {};
 /*! \endcond */
 //*************************************************************************************************
@@ -5536,7 +5537,7 @@ struct HasMutableDataAccess< DenseSubvector<VT,AF,TF> >
 //*************************************************************************************************
 /*! \cond BLAZE_INTERNAL */
 template< typename VT, bool TF >
-struct IsAligned< DenseSubvector<VT,aligned,TF> > : public IsTrue<true>
+struct IsAligned< DenseSubvector<VT,aligned,TF> > : public TrueType
 {};
 /*! \endcond */
 //*************************************************************************************************

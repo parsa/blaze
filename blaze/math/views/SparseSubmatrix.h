@@ -88,6 +88,7 @@
 #include <blaze/util/DisableIf.h>
 #include <blaze/util/EnableIf.h>
 #include <blaze/util/Exception.h>
+#include <blaze/util/IntegralConstant.h>
 #include <blaze/util/logging/FunctionTrace.h>
 #include <blaze/util/mpl/If.h>
 #include <blaze/util/mpl/Or.h>
@@ -6175,11 +6176,8 @@ inline const SparseSubmatrix<MT,AF1,SO>
 //*************************************************************************************************
 /*! \cond BLAZE_INTERNAL */
 template< typename MT, bool AF, bool SO >
-struct IsRestricted< SparseSubmatrix<MT,AF,SO> > : public If< IsRestricted<MT>, TrueType, FalseType >::Type
-{
-   enum { value = IsRestricted<MT>::value };
-   typedef typename If< IsRestricted<MT>, TrueType, FalseType >::Type  Type;
-};
+struct IsRestricted< SparseSubmatrix<MT,AF,SO> > : public BoolConstant< IsRestricted<MT>::value >
+{};
 /*! \endcond */
 //*************************************************************************************************
 
