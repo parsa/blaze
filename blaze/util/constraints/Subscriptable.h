@@ -40,8 +40,7 @@
 // Includes
 //*************************************************************************************************
 
-#include <blaze/util/constraints/ConstraintTest.h>
-#include <blaze/util/Suffix.h>
+#include <utility>
 
 
 namespace blaze {
