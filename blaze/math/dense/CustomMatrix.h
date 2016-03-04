@@ -93,6 +93,7 @@
 #include <blaze/util/Misalignment.h>
 #include <blaze/util/policies/NoDelete.h>
 #include <blaze/util/Template.h>
+#include <blaze/util/TrueType.h>
 #include <blaze/util/Types.h>
 #include <blaze/util/typetraits/AlignmentOf.h>
 #include <blaze/util/typetraits/IsClass.h>
@@ -100,7 +101,6 @@
 #include <blaze/util/typetraits/IsSame.h>
 #include <blaze/util/typetraits/IsVectorizable.h>
 #include <blaze/util/Unused.h>
-#include <blaze/util/valuetraits/IsTrue.h>
 
 
 namespace blaze {
@@ -6099,7 +6099,7 @@ inline void move( CustomMatrix<Type,AF,PF,SO>& dst, CustomMatrix<Type,AF,PF,SO>&
 //*************************************************************************************************
 /*! \cond BLAZE_INTERNAL */
 template< typename T, bool AF, bool PF, bool SO >
-struct HasConstDataAccess< CustomMatrix<T,AF,PF,SO> > : public IsTrue<true>
+struct HasConstDataAccess< CustomMatrix<T,AF,PF,SO> > : public TrueType
 {};
 /*! \endcond */
 //*************************************************************************************************
@@ -6116,7 +6116,7 @@ struct HasConstDataAccess< CustomMatrix<T,AF,PF,SO> > : public IsTrue<true>
 //*************************************************************************************************
 /*! \cond BLAZE_INTERNAL */
 template< typename T, bool AF, bool PF, bool SO >
-struct HasMutableDataAccess< CustomMatrix<T,AF,PF,SO> > : public IsTrue<true>
+struct HasMutableDataAccess< CustomMatrix<T,AF,PF,SO> > : public TrueType
 {};
 /*! \endcond */
 //*************************************************************************************************
@@ -6133,7 +6133,7 @@ struct HasMutableDataAccess< CustomMatrix<T,AF,PF,SO> > : public IsTrue<true>
 //*************************************************************************************************
 /*! \cond BLAZE_INTERNAL */
 template< typename T, bool AF, bool PF, bool SO >
-struct IsCustom< CustomMatrix<T,AF,PF,SO> > : public IsTrue<true>
+struct IsCustom< CustomMatrix<T,AF,PF,SO> > : public TrueType
 {};
 /*! \endcond */
 //*************************************************************************************************
@@ -6150,7 +6150,7 @@ struct IsCustom< CustomMatrix<T,AF,PF,SO> > : public IsTrue<true>
 //*************************************************************************************************
 /*! \cond BLAZE_INTERNAL */
 template< typename T, bool PF, bool SO >
-struct IsAligned< CustomMatrix<T,aligned,PF,SO> > : public IsTrue<true>
+struct IsAligned< CustomMatrix<T,aligned,PF,SO> > : public TrueType
 {};
 /*! \endcond */
 //*************************************************************************************************
@@ -6167,7 +6167,7 @@ struct IsAligned< CustomMatrix<T,aligned,PF,SO> > : public IsTrue<true>
 //*************************************************************************************************
 /*! \cond BLAZE_INTERNAL */
 template< typename T, bool AF, bool SO >
-struct IsPadded< CustomMatrix<T,AF,padded,SO> > : public IsTrue<true>
+struct IsPadded< CustomMatrix<T,AF,padded,SO> > : public TrueType
 {};
 /*! \endcond */
 //*************************************************************************************************

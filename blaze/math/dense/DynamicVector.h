@@ -81,13 +81,14 @@
 #include <blaze/util/DisableIf.h>
 #include <blaze/util/EnableIf.h>
 #include <blaze/util/Exception.h>
+#include <blaze/util/IntegralConstant.h>
 #include <blaze/util/Memory.h>
 #include <blaze/util/Template.h>
+#include <blaze/util/TrueType.h>
 #include <blaze/util/Types.h>
 #include <blaze/util/typetraits/IsNumeric.h>
 #include <blaze/util/typetraits/IsSame.h>
 #include <blaze/util/typetraits/IsVectorizable.h>
-#include <blaze/util/valuetraits/IsTrue.h>
 
 
 namespace blaze {
@@ -2254,7 +2255,7 @@ inline void move( DynamicVector<Type,TF>& dst, DynamicVector<Type,TF>& src ) /* 
 //*************************************************************************************************
 /*! \cond BLAZE_INTERNAL */
 template< typename T, bool TF >
-struct HasConstDataAccess< DynamicVector<T,TF> > : public IsTrue<true>
+struct HasConstDataAccess< DynamicVector<T,TF> > : public TrueType
 {};
 /*! \endcond */
 //*************************************************************************************************
@@ -2271,7 +2272,7 @@ struct HasConstDataAccess< DynamicVector<T,TF> > : public IsTrue<true>
 //*************************************************************************************************
 /*! \cond BLAZE_INTERNAL */
 template< typename T, bool TF >
-struct HasMutableDataAccess< DynamicVector<T,TF> > : public IsTrue<true>
+struct HasMutableDataAccess< DynamicVector<T,TF> > : public TrueType
 {};
 /*! \endcond */
 //*************************************************************************************************
@@ -2288,7 +2289,7 @@ struct HasMutableDataAccess< DynamicVector<T,TF> > : public IsTrue<true>
 //*************************************************************************************************
 /*! \cond BLAZE_INTERNAL */
 template< typename T, bool TF >
-struct IsAligned< DynamicVector<T,TF> > : public IsTrue<true>
+struct IsAligned< DynamicVector<T,TF> > : public TrueType
 {};
 /*! \endcond */
 //*************************************************************************************************
@@ -2305,7 +2306,7 @@ struct IsAligned< DynamicVector<T,TF> > : public IsTrue<true>
 //*************************************************************************************************
 /*! \cond BLAZE_INTERNAL */
 template< typename T, bool TF >
-struct IsPadded< DynamicVector<T,TF> > : public IsTrue<usePadding>
+struct IsPadded< DynamicVector<T,TF> > : public BoolConstant<usePadding>
 {};
 /*! \endcond */
 //*************************************************************************************************
@@ -2322,7 +2323,7 @@ struct IsPadded< DynamicVector<T,TF> > : public IsTrue<usePadding>
 //*************************************************************************************************
 /*! \cond BLAZE_INTERNAL */
 template< typename T, bool TF >
-struct IsResizable< DynamicVector<T,TF> > : public IsTrue<true>
+struct IsResizable< DynamicVector<T,TF> > : public TrueType
 {};
 /*! \endcond */
 //*************************************************************************************************

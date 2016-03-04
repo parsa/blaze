@@ -85,13 +85,13 @@
 #include <blaze/util/policies/NoDelete.h>
 #include <blaze/util/StaticAssert.h>
 #include <blaze/util/Template.h>
+#include <blaze/util/TrueType.h>
 #include <blaze/util/Types.h>
 #include <blaze/util/typetraits/AlignmentOf.h>
 #include <blaze/util/typetraits/IsNumeric.h>
 #include <blaze/util/typetraits/IsSame.h>
 #include <blaze/util/typetraits/IsVectorizable.h>
 #include <blaze/util/Unused.h>
-#include <blaze/util/valuetraits/IsTrue.h>
 
 
 namespace blaze {
@@ -4700,7 +4700,7 @@ inline void move( CustomVector<Type,AF,PF,TF>& dst, CustomVector<Type,AF,PF,TF>&
 //*************************************************************************************************
 /*! \cond BLAZE_INTERNAL */
 template< typename T, bool AF, bool PF, bool TF >
-struct HasConstDataAccess< CustomVector<T,AF,PF,TF> > : public IsTrue<true>
+struct HasConstDataAccess< CustomVector<T,AF,PF,TF> > : public TrueType
 {};
 /*! \endcond */
 //*************************************************************************************************
@@ -4717,7 +4717,7 @@ struct HasConstDataAccess< CustomVector<T,AF,PF,TF> > : public IsTrue<true>
 //*************************************************************************************************
 /*! \cond BLAZE_INTERNAL */
 template< typename T, bool AF, bool PF, bool TF >
-struct HasMutableDataAccess< CustomVector<T,AF,PF,TF> > : public IsTrue<true>
+struct HasMutableDataAccess< CustomVector<T,AF,PF,TF> > : public TrueType
 {};
 /*! \endcond */
 //*************************************************************************************************
@@ -4734,7 +4734,7 @@ struct HasMutableDataAccess< CustomVector<T,AF,PF,TF> > : public IsTrue<true>
 //*************************************************************************************************
 /*! \cond BLAZE_INTERNAL */
 template< typename T, bool AF, bool PF, bool TF >
-struct IsCustom< CustomVector<T,AF,PF,TF> > : public IsTrue<true>
+struct IsCustom< CustomVector<T,AF,PF,TF> > : public TrueType
 {};
 /*! \endcond */
 //*************************************************************************************************
@@ -4751,7 +4751,7 @@ struct IsCustom< CustomVector<T,AF,PF,TF> > : public IsTrue<true>
 //*************************************************************************************************
 /*! \cond BLAZE_INTERNAL */
 template< typename T, bool PF, bool TF >
-struct IsAligned< CustomVector<T,aligned,PF,TF> > : public IsTrue<true>
+struct IsAligned< CustomVector<T,aligned,PF,TF> > : public TrueType
 {};
 /*! \endcond */
 //*************************************************************************************************
@@ -4768,7 +4768,7 @@ struct IsAligned< CustomVector<T,aligned,PF,TF> > : public IsTrue<true>
 //*************************************************************************************************
 /*! \cond BLAZE_INTERNAL */
 template< typename T, bool AF, bool TF >
-struct IsPadded< CustomVector<T,AF,padded,TF> > : public IsTrue<true>
+struct IsPadded< CustomVector<T,AF,padded,TF> > : public TrueType
 {};
 /*! \endcond */
 //*************************************************************************************************

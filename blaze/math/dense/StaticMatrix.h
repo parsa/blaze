@@ -93,6 +93,7 @@
 #include <blaze/util/EnableIf.h>
 #include <blaze/util/Exception.h>
 #include <blaze/util/FalseType.h>
+#include <blaze/util/IntegralConstant.h>
 #include <blaze/util/Memory.h>
 #include <blaze/util/mpl/NextMultiple.h>
 #include <blaze/util/mpl/SizeT.h>
@@ -104,7 +105,6 @@
 #include <blaze/util/typetraits/IsSame.h>
 #include <blaze/util/typetraits/IsVectorizable.h>
 #include <blaze/util/Unused.h>
-#include <blaze/util/valuetraits/IsTrue.h>
 
 
 namespace blaze {
@@ -6966,7 +6966,7 @@ struct Columns< StaticMatrix<T,M,N,SO> > : public SizeT<N>
 //*************************************************************************************************
 /*! \cond BLAZE_INTERNAL */
 template< typename T, size_t N, bool SO >
-struct IsSquare< StaticMatrix<T,N,N,SO> > : public IsTrue<true>
+struct IsSquare< StaticMatrix<T,N,N,SO> > : public TrueType
 {};
 /*! \endcond */
 //*************************************************************************************************
@@ -6983,7 +6983,7 @@ struct IsSquare< StaticMatrix<T,N,N,SO> > : public IsTrue<true>
 //*************************************************************************************************
 /*! \cond BLAZE_INTERNAL */
 template< typename T, size_t M, size_t N, bool SO >
-struct HasConstDataAccess< StaticMatrix<T,M,N,SO> > : public IsTrue<true>
+struct HasConstDataAccess< StaticMatrix<T,M,N,SO> > : public TrueType
 {};
 /*! \endcond */
 //*************************************************************************************************
@@ -7000,7 +7000,7 @@ struct HasConstDataAccess< StaticMatrix<T,M,N,SO> > : public IsTrue<true>
 //*************************************************************************************************
 /*! \cond BLAZE_INTERNAL */
 template< typename T, size_t M, size_t N, bool SO >
-struct HasMutableDataAccess< StaticMatrix<T,M,N,SO> > : public IsTrue<true>
+struct HasMutableDataAccess< StaticMatrix<T,M,N,SO> > : public TrueType
 {};
 /*! \endcond */
 //*************************************************************************************************
@@ -7017,7 +7017,7 @@ struct HasMutableDataAccess< StaticMatrix<T,M,N,SO> > : public IsTrue<true>
 //*************************************************************************************************
 /*! \cond BLAZE_INTERNAL */
 template< typename T, size_t M, size_t N, bool SO >
-struct IsAligned< StaticMatrix<T,M,N,SO> > : public IsTrue<usePadding>
+struct IsAligned< StaticMatrix<T,M,N,SO> > : public BoolConstant<usePadding>
 {};
 /*! \endcond */
 //*************************************************************************************************
@@ -7034,7 +7034,7 @@ struct IsAligned< StaticMatrix<T,M,N,SO> > : public IsTrue<usePadding>
 //*************************************************************************************************
 /*! \cond BLAZE_INTERNAL */
 template< typename T, size_t M, size_t N, bool SO >
-struct IsPadded< StaticMatrix<T,M,N,SO> > : public IsTrue<usePadding>
+struct IsPadded< StaticMatrix<T,M,N,SO> > : public BoolConstant<usePadding>
 {};
 /*! \endcond */
 //*************************************************************************************************

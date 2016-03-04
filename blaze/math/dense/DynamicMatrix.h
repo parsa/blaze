@@ -92,14 +92,15 @@
 #include <blaze/util/DisableIf.h>
 #include <blaze/util/EnableIf.h>
 #include <blaze/util/Exception.h>
+#include <blaze/util/IntegralConstant.h>
 #include <blaze/util/Memory.h>
 #include <blaze/util/Template.h>
+#include <blaze/util/TrueType.h>
 #include <blaze/util/Types.h>
 #include <blaze/util/typetraits/IsNumeric.h>
 #include <blaze/util/typetraits/IsSame.h>
 #include <blaze/util/typetraits/IsVectorizable.h>
 #include <blaze/util/Unused.h>
-#include <blaze/util/valuetraits/IsTrue.h>
 
 
 namespace blaze {
@@ -5441,7 +5442,7 @@ inline void move( DynamicMatrix<Type,SO>& dst, DynamicMatrix<Type,SO>& src ) /* 
 //*************************************************************************************************
 /*! \cond BLAZE_INTERNAL */
 template< typename T, bool SO >
-struct HasConstDataAccess< DynamicMatrix<T,SO> > : public IsTrue<true>
+struct HasConstDataAccess< DynamicMatrix<T,SO> > : public TrueType
 {};
 /*! \endcond */
 //*************************************************************************************************
@@ -5458,7 +5459,7 @@ struct HasConstDataAccess< DynamicMatrix<T,SO> > : public IsTrue<true>
 //*************************************************************************************************
 /*! \cond BLAZE_INTERNAL */
 template< typename T, bool SO >
-struct HasMutableDataAccess< DynamicMatrix<T,SO> > : public IsTrue<true>
+struct HasMutableDataAccess< DynamicMatrix<T,SO> > : public TrueType
 {};
 /*! \endcond */
 //*************************************************************************************************
@@ -5475,7 +5476,7 @@ struct HasMutableDataAccess< DynamicMatrix<T,SO> > : public IsTrue<true>
 //*************************************************************************************************
 /*! \cond BLAZE_INTERNAL */
 template< typename T, bool SO >
-struct IsAligned< DynamicMatrix<T,SO> > : public IsTrue<usePadding>
+struct IsAligned< DynamicMatrix<T,SO> > : public BoolConstant<usePadding>
 {};
 /*! \endcond */
 //*************************************************************************************************
@@ -5492,7 +5493,7 @@ struct IsAligned< DynamicMatrix<T,SO> > : public IsTrue<usePadding>
 //*************************************************************************************************
 /*! \cond BLAZE_INTERNAL */
 template< typename T, bool SO >
-struct IsPadded< DynamicMatrix<T,SO> > : public IsTrue<usePadding>
+struct IsPadded< DynamicMatrix<T,SO> > : public BoolConstant<usePadding>
 {};
 /*! \endcond */
 //*************************************************************************************************
@@ -5509,7 +5510,7 @@ struct IsPadded< DynamicMatrix<T,SO> > : public IsTrue<usePadding>
 //*************************************************************************************************
 /*! \cond BLAZE_INTERNAL */
 template< typename T, bool SO >
-struct IsResizable< DynamicMatrix<T,SO> > : public IsTrue<true>
+struct IsResizable< DynamicMatrix<T,SO> > : public TrueType
 {};
 /*! \endcond */
 //*************************************************************************************************

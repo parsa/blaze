@@ -69,17 +69,18 @@
 #include <blaze/util/DisableIf.h>
 #include <blaze/util/EnableIf.h>
 #include <blaze/util/Exception.h>
+#include <blaze/util/IntegralConstant.h>
 #include <blaze/util/Memory.h>
 #include <blaze/util/mpl/NextMultiple.h>
 #include <blaze/util/mpl/SizeT.h>
 #include <blaze/util/StaticAssert.h>
 #include <blaze/util/Template.h>
+#include <blaze/util/TrueType.h>
 #include <blaze/util/Types.h>
 #include <blaze/util/typetraits/IsNumeric.h>
 #include <blaze/util/typetraits/IsSame.h>
 #include <blaze/util/typetraits/IsVectorizable.h>
 #include <blaze/util/Unused.h>
-#include <blaze/util/valuetraits/IsTrue.h>
 
 
 namespace blaze {
@@ -2429,7 +2430,7 @@ inline void move( HybridVector<Type,N,TF>& dst, HybridVector<Type,N,TF>& src ) /
 //*************************************************************************************************
 /*! \cond BLAZE_INTERNAL */
 template< typename T, size_t N, bool TF >
-struct HasConstDataAccess< HybridVector<T,N,TF> > : public IsTrue<true>
+struct HasConstDataAccess< HybridVector<T,N,TF> > : public TrueType
 {};
 /*! \endcond */
 //*************************************************************************************************
@@ -2446,7 +2447,7 @@ struct HasConstDataAccess< HybridVector<T,N,TF> > : public IsTrue<true>
 //*************************************************************************************************
 /*! \cond BLAZE_INTERNAL */
 template< typename T, size_t N, bool TF >
-struct HasMutableDataAccess< HybridVector<T,N,TF> > : public IsTrue<true>
+struct HasMutableDataAccess< HybridVector<T,N,TF> > : public TrueType
 {};
 /*! \endcond */
 //*************************************************************************************************
@@ -2463,7 +2464,7 @@ struct HasMutableDataAccess< HybridVector<T,N,TF> > : public IsTrue<true>
 //*************************************************************************************************
 /*! \cond BLAZE_INTERNAL */
 template< typename T, size_t N, bool TF >
-struct IsAligned< HybridVector<T,N,TF> > : public IsTrue<true>
+struct IsAligned< HybridVector<T,N,TF> > : public TrueType
 {};
 /*! \endcond */
 //*************************************************************************************************
@@ -2480,7 +2481,7 @@ struct IsAligned< HybridVector<T,N,TF> > : public IsTrue<true>
 //*************************************************************************************************
 /*! \cond BLAZE_INTERNAL */
 template< typename T, size_t N, bool TF >
-struct IsPadded< HybridVector<T,N,TF> > : public IsTrue<usePadding>
+struct IsPadded< HybridVector<T,N,TF> > : public BoolConstant<usePadding>
 {};
 /*! \endcond */
 //*************************************************************************************************
@@ -2497,7 +2498,7 @@ struct IsPadded< HybridVector<T,N,TF> > : public IsTrue<usePadding>
 //*************************************************************************************************
 /*! \cond BLAZE_INTERNAL */
 template< typename T, size_t N, bool TF >
-struct IsResizable< HybridVector<T,N,TF> > : public IsTrue<true>
+struct IsResizable< HybridVector<T,N,TF> > : public TrueType
 {};
 /*! \endcond */
 //*************************************************************************************************
