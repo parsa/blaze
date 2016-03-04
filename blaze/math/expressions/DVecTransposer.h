@@ -52,9 +52,9 @@
 #include <blaze/util/Assert.h>
 #include <blaze/util/EnableIf.h>
 #include <blaze/util/Exception.h>
+#include <blaze/util/IntegralConstant.h>
 #include <blaze/util/Types.h>
 #include <blaze/util/typetraits/IsNumeric.h>
-#include <blaze/util/valuetraits/IsTrue.h>
 
 
 namespace blaze {
@@ -757,7 +757,8 @@ inline void reset( DVecTransposer<VT,TF>& v )
 //*************************************************************************************************
 /*! \cond BLAZE_INTERNAL */
 template< typename VT, bool TF >
-struct IsAligned< DVecTransposer<VT,TF> > : public IsTrue< IsAligned<VT>::value >
+struct IsAligned< DVecTransposer<VT,TF> >
+   : public BoolConstant< IsAligned<VT>::value >
 {};
 /*! \endcond */
 //*************************************************************************************************
@@ -774,7 +775,8 @@ struct IsAligned< DVecTransposer<VT,TF> > : public IsTrue< IsAligned<VT>::value 
 //*************************************************************************************************
 /*! \cond BLAZE_INTERNAL */
 template< typename VT, bool TF >
-struct IsPadded< DVecTransposer<VT,TF> > : public IsTrue< IsPadded<VT>::value >
+struct IsPadded< DVecTransposer<VT,TF> >
+   : public BoolConstant< IsPadded<VT>::value >
 {};
 /*! \endcond */
 //*************************************************************************************************

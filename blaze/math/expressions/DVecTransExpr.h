@@ -68,11 +68,11 @@
 #include <blaze/util/EmptyType.h>
 #include <blaze/util/EnableIf.h>
 #include <blaze/util/Exception.h>
+#include <blaze/util/IntegralConstant.h>
 #include <blaze/util/InvalidType.h>
 #include <blaze/util/logging/FunctionTrace.h>
 #include <blaze/util/SelectType.h>
 #include <blaze/util/Types.h>
-#include <blaze/util/valuetraits/IsTrue.h>
 
 
 namespace blaze {
@@ -970,7 +970,8 @@ struct Size< DVecTransExpr<VT,TF> > : public Size<VT>
 //*************************************************************************************************
 /*! \cond BLAZE_INTERNAL */
 template< typename VT, bool TF >
-struct IsAligned< DVecTransExpr<VT,TF> > : public IsTrue< IsAligned<VT>::value >
+struct IsAligned< DVecTransExpr<VT,TF> >
+   : public BoolConstant< IsAligned<VT>::value >
 {};
 /*! \endcond */
 //*************************************************************************************************
@@ -987,7 +988,8 @@ struct IsAligned< DVecTransExpr<VT,TF> > : public IsTrue< IsAligned<VT>::value >
 //*************************************************************************************************
 /*! \cond BLAZE_INTERNAL */
 template< typename VT, bool TF >
-struct IsPadded< DVecTransExpr<VT,TF> > : public IsTrue< IsPadded<VT>::value >
+struct IsPadded< DVecTransExpr<VT,TF> >
+   : public BoolConstant< IsPadded<VT>::value >
 {};
 /*! \endcond */
 //*************************************************************************************************

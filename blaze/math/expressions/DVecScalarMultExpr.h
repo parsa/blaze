@@ -84,6 +84,7 @@
 #include <blaze/util/constraints/SameType.h>
 #include <blaze/util/EnableIf.h>
 #include <blaze/util/Exception.h>
+#include <blaze/util/IntegralConstant.h>
 #include <blaze/util/InvalidType.h>
 #include <blaze/util/logging/FunctionTrace.h>
 #include <blaze/util/mpl/And.h>
@@ -91,7 +92,6 @@
 #include <blaze/util/Types.h>
 #include <blaze/util/typetraits/IsNumeric.h>
 #include <blaze/util/typetraits/IsSame.h>
-#include <blaze/util/valuetraits/IsTrue.h>
 
 
 namespace blaze {
@@ -1783,7 +1783,8 @@ struct Size< DVecScalarMultExpr<VT,ST,TF> > : public Size<VT>
 //*************************************************************************************************
 /*! \cond BLAZE_INTERNAL */
 template< typename VT, typename ST, bool TF >
-struct IsAligned< DVecScalarMultExpr<VT,ST,TF> > : public IsTrue< IsAligned<VT>::value >
+struct IsAligned< DVecScalarMultExpr<VT,ST,TF> >
+   : public BoolConstant< IsAligned<VT>::value >
 {};
 /*! \endcond */
 //*************************************************************************************************
@@ -1800,7 +1801,8 @@ struct IsAligned< DVecScalarMultExpr<VT,ST,TF> > : public IsTrue< IsAligned<VT>:
 //*************************************************************************************************
 /*! \cond BLAZE_INTERNAL */
 template< typename VT, typename ST, bool TF >
-struct IsPadded< DVecScalarMultExpr<VT,ST,TF> > : public IsTrue< IsPadded<VT>::value >
+struct IsPadded< DVecScalarMultExpr<VT,ST,TF> >
+   : public BoolConstant< IsPadded<VT>::value >
 {};
 /*! \endcond */
 //*************************************************************************************************

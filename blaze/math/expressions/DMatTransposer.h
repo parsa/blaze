@@ -55,9 +55,9 @@
 #include <blaze/util/Assert.h>
 #include <blaze/util/EnableIf.h>
 #include <blaze/util/Exception.h>
+#include <blaze/util/IntegralConstant.h>
 #include <blaze/util/Types.h>
 #include <blaze/util/typetraits/IsNumeric.h>
-#include <blaze/util/valuetraits/IsTrue.h>
 
 
 namespace blaze {
@@ -1912,7 +1912,7 @@ inline bool isIntact( const DMatTransposer<MT,SO>& m )
 /*! \cond BLAZE_INTERNAL */
 template< typename MT, bool SO >
 struct HasMutableDataAccess< DMatTransposer<MT,SO> >
-   : public IsTrue< HasMutableDataAccess<MT>::value >
+   : public BoolConstant< HasMutableDataAccess<MT>::value >
 {};
 /*! \endcond */
 //*************************************************************************************************
@@ -1929,7 +1929,8 @@ struct HasMutableDataAccess< DMatTransposer<MT,SO> >
 //*************************************************************************************************
 /*! \cond BLAZE_INTERNAL */
 template< typename MT, bool SO >
-struct IsAligned< DMatTransposer<MT,SO> > : public IsTrue< IsAligned<MT>::value >
+struct IsAligned< DMatTransposer<MT,SO> >
+   : public BoolConstant< IsAligned<MT>::value >
 {};
 /*! \endcond */
 //*************************************************************************************************
@@ -1946,7 +1947,8 @@ struct IsAligned< DMatTransposer<MT,SO> > : public IsTrue< IsAligned<MT>::value 
 //*************************************************************************************************
 /*! \cond BLAZE_INTERNAL */
 template< typename MT, bool SO >
-struct IsPadded< DMatTransposer<MT,SO> > : public IsTrue< IsPadded<MT>::value >
+struct IsPadded< DMatTransposer<MT,SO> >
+   : public BoolConstant< IsPadded<MT>::value >
 {};
 /*! \endcond */
 //*************************************************************************************************

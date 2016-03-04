@@ -66,13 +66,13 @@
 #include <blaze/util/constraints/Reference.h>
 #include <blaze/util/EnableIf.h>
 #include <blaze/util/Exception.h>
+#include <blaze/util/IntegralConstant.h>
 #include <blaze/util/logging/FunctionTrace.h>
 #include <blaze/util/mpl/And.h>
 #include <blaze/util/mpl/Max.h>
 #include <blaze/util/SelectType.h>
 #include <blaze/util/Types.h>
 #include <blaze/util/typetraits/IsSame.h>
-#include <blaze/util/valuetraits/IsTrue.h>
 
 
 namespace blaze {
@@ -1018,7 +1018,7 @@ struct Size< DVecDVecSubExpr<VT1,VT2,TF> >
 /*! \cond BLAZE_INTERNAL */
 template< typename VT1, typename VT2, bool TF >
 struct IsAligned< DVecDVecSubExpr<VT1,VT2,TF> >
-   : public IsTrue< And< IsAligned<VT1>, IsAligned<VT2> >::value  >
+   : public BoolConstant< And< IsAligned<VT1>, IsAligned<VT2> >::value  >
 {};
 /*! \endcond */
 //*************************************************************************************************
@@ -1036,7 +1036,7 @@ struct IsAligned< DVecDVecSubExpr<VT1,VT2,TF> >
 /*! \cond BLAZE_INTERNAL */
 template< typename VT1, typename VT2, bool TF >
 struct IsPadded< DVecDVecSubExpr<VT1,VT2,TF> >
-   : public IsTrue< And< IsPadded<VT1>, IsPadded<VT2> >::value  >
+   : public BoolConstant< And< IsPadded<VT1>, IsPadded<VT2> >::value  >
 {};
 /*! \endcond */
 //*************************************************************************************************

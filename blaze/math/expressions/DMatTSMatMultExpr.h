@@ -96,6 +96,7 @@
 #include <blaze/util/DisableIf.h>
 #include <blaze/util/EnableIf.h>
 #include <blaze/util/Exception.h>
+#include <blaze/util/IntegralConstant.h>
 #include <blaze/util/InvalidType.h>
 #include <blaze/util/logging/FunctionTrace.h>
 #include <blaze/util/mpl/And.h>
@@ -103,7 +104,6 @@
 #include <blaze/util/SelectType.h>
 #include <blaze/util/Types.h>
 #include <blaze/util/typetraits/RemoveReference.h>
-#include <blaze/util/valuetraits/IsTrue.h>
 
 
 namespace blaze {
@@ -1855,7 +1855,8 @@ struct Columns< DMatTSMatMultExpr<MT1,MT2> > : public Columns<MT2>
 //*************************************************************************************************
 /*! \cond BLAZE_INTERNAL */
 template< typename MT1, typename MT2 >
-struct IsAligned< DMatTSMatMultExpr<MT1,MT2> > : public IsTrue< IsAligned<MT1>::value >
+struct IsAligned< DMatTSMatMultExpr<MT1,MT2> >
+   : public BoolConstant< IsAligned<MT1>::value >
 {};
 /*! \endcond */
 //*************************************************************************************************
@@ -1873,7 +1874,7 @@ struct IsAligned< DMatTSMatMultExpr<MT1,MT2> > : public IsTrue< IsAligned<MT1>::
 /*! \cond BLAZE_INTERNAL */
 template< typename MT1, typename MT2 >
 struct IsLower< DMatTSMatMultExpr<MT1,MT2> >
-   : public IsTrue< IsLower<MT1>::value && IsLower<MT2>::value >
+   : public BoolConstant< IsLower<MT1>::value && IsLower<MT2>::value >
 {};
 /*! \endcond */
 //*************************************************************************************************
@@ -1891,7 +1892,7 @@ struct IsLower< DMatTSMatMultExpr<MT1,MT2> >
 /*! \cond BLAZE_INTERNAL */
 template< typename MT1, typename MT2 >
 struct IsUniLower< DMatTSMatMultExpr<MT1,MT2> >
-   : public IsTrue< IsUniLower<MT1>::value && IsUniLower<MT2>::value >
+   : public BoolConstant< IsUniLower<MT1>::value && IsUniLower<MT2>::value >
 {};
 /*! \endcond */
 //*************************************************************************************************
@@ -1909,8 +1910,8 @@ struct IsUniLower< DMatTSMatMultExpr<MT1,MT2> >
 /*! \cond BLAZE_INTERNAL */
 template< typename MT1, typename MT2 >
 struct IsStrictlyLower< DMatTSMatMultExpr<MT1,MT2> >
-   : public IsTrue< Or< And< IsStrictlyLower<MT1>, IsLower<MT2> >
-                      , And< IsStrictlyLower<MT2>, IsLower<MT1> > >::value >
+   : public BoolConstant< Or< And< IsStrictlyLower<MT1>, IsLower<MT2> >
+                            , And< IsStrictlyLower<MT2>, IsLower<MT1> > >::value >
 {};
 /*! \endcond */
 //*************************************************************************************************
@@ -1928,7 +1929,7 @@ struct IsStrictlyLower< DMatTSMatMultExpr<MT1,MT2> >
 /*! \cond BLAZE_INTERNAL */
 template< typename MT1, typename MT2 >
 struct IsUpper< DMatTSMatMultExpr<MT1,MT2> >
-   : public IsTrue< IsUpper<MT1>::value && IsUpper<MT2>::value >
+   : public BoolConstant< IsUpper<MT1>::value && IsUpper<MT2>::value >
 {};
 /*! \endcond */
 //*************************************************************************************************
@@ -1946,7 +1947,7 @@ struct IsUpper< DMatTSMatMultExpr<MT1,MT2> >
 /*! \cond BLAZE_INTERNAL */
 template< typename MT1, typename MT2 >
 struct IsUniUpper< DMatTSMatMultExpr<MT1,MT2> >
-   : public IsTrue< IsUniUpper<MT1>::value && IsUniUpper<MT2>::value >
+   : public BoolConstant< IsUniUpper<MT1>::value && IsUniUpper<MT2>::value >
 {};
 /*! \endcond */
 //*************************************************************************************************
@@ -1964,8 +1965,8 @@ struct IsUniUpper< DMatTSMatMultExpr<MT1,MT2> >
 /*! \cond BLAZE_INTERNAL */
 template< typename MT1, typename MT2 >
 struct IsStrictlyUpper< DMatTSMatMultExpr<MT1,MT2> >
-   : public IsTrue< Or< And< IsStrictlyUpper<MT1>, IsUpper<MT2> >
-                      , And< IsStrictlyUpper<MT2>, IsUpper<MT1> > >::value >
+   : public BoolConstant< Or< And< IsStrictlyUpper<MT1>, IsUpper<MT2> >
+                            , And< IsStrictlyUpper<MT2>, IsUpper<MT1> > >::value >
 {};
 /*! \endcond */
 //*************************************************************************************************

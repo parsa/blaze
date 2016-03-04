@@ -63,11 +63,11 @@
 #include <blaze/util/Assert.h>
 #include <blaze/util/constraints/Reference.h>
 #include <blaze/util/Exception.h>
+#include <blaze/util/IntegralConstant.h>
 #include <blaze/util/InvalidType.h>
 #include <blaze/util/logging/FunctionTrace.h>
 #include <blaze/util/SelectType.h>
 #include <blaze/util/Types.h>
-#include <blaze/util/valuetraits/IsTrue.h>
 
 
 namespace blaze {
@@ -470,7 +470,8 @@ struct Columns< DMatInvExpr<MT,SO> > : public Columns<MT>
 //*************************************************************************************************
 /*! \cond BLAZE_INTERNAL */
 template< typename MT, bool SO >
-struct IsSymmetric< DMatInvExpr<MT,SO> > : public IsTrue< IsSymmetric<MT>::value >
+struct IsSymmetric< DMatInvExpr<MT,SO> >
+   : public BoolConstant< IsSymmetric<MT>::value >
 {};
 /*! \endcond */
 //*************************************************************************************************
@@ -487,7 +488,8 @@ struct IsSymmetric< DMatInvExpr<MT,SO> > : public IsTrue< IsSymmetric<MT>::value
 //*************************************************************************************************
 /*! \cond BLAZE_INTERNAL */
 template< typename MT, bool SO >
-struct IsHermitian< DMatInvExpr<MT,SO> > : public IsTrue< IsHermitian<MT>::value >
+struct IsHermitian< DMatInvExpr<MT,SO> >
+   : public BoolConstant< IsHermitian<MT>::value >
 {};
 /*! \endcond */
 //*************************************************************************************************
@@ -504,7 +506,8 @@ struct IsHermitian< DMatInvExpr<MT,SO> > : public IsTrue< IsHermitian<MT>::value
 //*************************************************************************************************
 /*! \cond BLAZE_INTERNAL */
 template< typename MT, bool SO >
-struct IsLower< DMatInvExpr<MT,SO> > : public IsTrue< IsUpper<MT>::value >
+struct IsLower< DMatInvExpr<MT,SO> >
+   : public BoolConstant< IsUpper<MT>::value >
 {};
 /*! \endcond */
 //*************************************************************************************************
@@ -521,7 +524,8 @@ struct IsLower< DMatInvExpr<MT,SO> > : public IsTrue< IsUpper<MT>::value >
 //*************************************************************************************************
 /*! \cond BLAZE_INTERNAL */
 template< typename MT, bool SO >
-struct IsUniLower< DMatInvExpr<MT,SO> > : public IsTrue< IsUniUpper<MT>::value >
+struct IsUniLower< DMatInvExpr<MT,SO> >
+   : public BoolConstant< IsUniUpper<MT>::value >
 {};
 /*! \endcond */
 //*************************************************************************************************
@@ -538,7 +542,8 @@ struct IsUniLower< DMatInvExpr<MT,SO> > : public IsTrue< IsUniUpper<MT>::value >
 //*************************************************************************************************
 /*! \cond BLAZE_INTERNAL */
 template< typename MT, bool SO >
-struct IsUpper< DMatInvExpr<MT,SO> > : public IsTrue< IsLower<MT>::value >
+struct IsUpper< DMatInvExpr<MT,SO> >
+   : public BoolConstant< IsLower<MT>::value >
 {};
 /*! \endcond */
 //*************************************************************************************************
@@ -555,7 +560,8 @@ struct IsUpper< DMatInvExpr<MT,SO> > : public IsTrue< IsLower<MT>::value >
 //*************************************************************************************************
 /*! \cond BLAZE_INTERNAL */
 template< typename MT, bool SO >
-struct IsUniUpper< DMatInvExpr<MT,SO> > : public IsTrue< IsUniLower<MT>::value >
+struct IsUniUpper< DMatInvExpr<MT,SO> >
+   : public BoolConstant< IsUniLower<MT>::value >
 {};
 /*! \endcond */
 //*************************************************************************************************

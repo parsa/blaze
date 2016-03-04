@@ -74,6 +74,7 @@
 #include <blaze/util/DisableIf.h>
 #include <blaze/util/EnableIf.h>
 #include <blaze/util/Exception.h>
+#include <blaze/util/IntegralConstant.h>
 #include <blaze/util/logging/FunctionTrace.h>
 #include <blaze/util/mpl/And.h>
 #include <blaze/util/mpl/Max.h>
@@ -81,7 +82,6 @@
 #include <blaze/util/SelectType.h>
 #include <blaze/util/Types.h>
 #include <blaze/util/typetraits/RemoveReference.h>
-#include <blaze/util/valuetraits/IsTrue.h>
 
 
 namespace blaze {
@@ -866,7 +866,7 @@ struct Columns< SMatSMatAddExpr<MT1,MT2> >
 /*! \cond BLAZE_INTERNAL */
 template< typename MT1, typename MT2 >
 struct IsSymmetric< SMatSMatAddExpr<MT1,MT2> >
-   : public IsTrue< IsSymmetric<MT1>::value && IsSymmetric<MT2>::value >
+   : public BoolConstant< IsSymmetric<MT1>::value && IsSymmetric<MT2>::value >
 {};
 /*! \endcond */
 //*************************************************************************************************
@@ -884,7 +884,7 @@ struct IsSymmetric< SMatSMatAddExpr<MT1,MT2> >
 /*! \cond BLAZE_INTERNAL */
 template< typename MT1, typename MT2 >
 struct IsHermitian< SMatSMatAddExpr<MT1,MT2> >
-   : public IsTrue< IsHermitian<MT1>::value && IsHermitian<MT2>::value >
+   : public BoolConstant< IsHermitian<MT1>::value && IsHermitian<MT2>::value >
 {};
 /*! \endcond */
 //*************************************************************************************************
@@ -902,7 +902,7 @@ struct IsHermitian< SMatSMatAddExpr<MT1,MT2> >
 /*! \cond BLAZE_INTERNAL */
 template< typename MT1, typename MT2 >
 struct IsLower< SMatSMatAddExpr<MT1,MT2> >
-   : public IsTrue< And< IsLower<MT1>, IsLower<MT2> >::value >
+   : public BoolConstant< And< IsLower<MT1>, IsLower<MT2> >::value >
 {};
 /*! \endcond */
 //*************************************************************************************************
@@ -920,8 +920,8 @@ struct IsLower< SMatSMatAddExpr<MT1,MT2> >
 /*! \cond BLAZE_INTERNAL */
 template< typename MT1, typename MT2 >
 struct IsUniLower< SMatSMatAddExpr<MT1,MT2> >
-   : public IsTrue< Or< And< IsUniLower<MT1>, IsStrictlyLower<MT2> >
-                      , And< IsUniLower<MT2>, IsStrictlyLower<MT1> > >::value >
+   : public BoolConstant< Or< And< IsUniLower<MT1>, IsStrictlyLower<MT2> >
+                            , And< IsUniLower<MT2>, IsStrictlyLower<MT1> > >::value >
 {};
 /*! \endcond */
 //*************************************************************************************************
@@ -939,7 +939,7 @@ struct IsUniLower< SMatSMatAddExpr<MT1,MT2> >
 /*! \cond BLAZE_INTERNAL */
 template< typename MT1, typename MT2 >
 struct IsStrictlyLower< SMatSMatAddExpr<MT1,MT2> >
-   : public IsTrue< And< IsStrictlyLower<MT1>, IsStrictlyLower<MT2> >::value >
+   : public BoolConstant< And< IsStrictlyLower<MT1>, IsStrictlyLower<MT2> >::value >
 {};
 /*! \endcond */
 //*************************************************************************************************
@@ -957,7 +957,7 @@ struct IsStrictlyLower< SMatSMatAddExpr<MT1,MT2> >
 /*! \cond BLAZE_INTERNAL */
 template< typename MT1, typename MT2 >
 struct IsUpper< SMatSMatAddExpr<MT1,MT2> >
-   : public IsTrue< And< IsUpper<MT1>, IsUpper<MT2> >::value >
+   : public BoolConstant< And< IsUpper<MT1>, IsUpper<MT2> >::value >
 {};
 /*! \endcond */
 //*************************************************************************************************
@@ -975,8 +975,8 @@ struct IsUpper< SMatSMatAddExpr<MT1,MT2> >
 /*! \cond BLAZE_INTERNAL */
 template< typename MT1, typename MT2 >
 struct IsUniUpper< SMatSMatAddExpr<MT1,MT2> >
-   : public IsTrue< Or< And< IsUniUpper<MT1>, IsStrictlyUpper<MT2> >
-                      , And< IsUniUpper<MT2>, IsStrictlyUpper<MT1> > >::value >
+   : public BoolConstant< Or< And< IsUniUpper<MT1>, IsStrictlyUpper<MT2> >
+                            , And< IsUniUpper<MT2>, IsStrictlyUpper<MT1> > >::value >
 {};
 /*! \endcond */
 //*************************************************************************************************
@@ -994,7 +994,7 @@ struct IsUniUpper< SMatSMatAddExpr<MT1,MT2> >
 /*! \cond BLAZE_INTERNAL */
 template< typename MT1, typename MT2 >
 struct IsStrictlyUpper< SMatSMatAddExpr<MT1,MT2> >
-   : public IsTrue< And< IsStrictlyUpper<MT1>, IsStrictlyUpper<MT2> >::value >
+   : public BoolConstant< And< IsStrictlyUpper<MT1>, IsStrictlyUpper<MT2> >::value >
 {};
 /*! \endcond */
 //*************************************************************************************************

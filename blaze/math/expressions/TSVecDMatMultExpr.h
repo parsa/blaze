@@ -78,6 +78,7 @@
 #include <blaze/util/DisableIf.h>
 #include <blaze/util/EnableIf.h>
 #include <blaze/util/Exception.h>
+#include <blaze/util/IntegralConstant.h>
 #include <blaze/util/logging/FunctionTrace.h>
 #include <blaze/util/SelectType.h>
 #include <blaze/util/Types.h>
@@ -1741,7 +1742,8 @@ struct Size< TSVecDMatMultExpr<VT,MT> > : public Columns<MT>
 //*************************************************************************************************
 /*! \cond BLAZE_INTERNAL */
 template< typename VT, typename MT >
-struct IsAligned< TSVecDMatMultExpr<VT,MT> > : public IsTrue< IsAligned<MT>::value >
+struct IsAligned< TSVecDMatMultExpr<VT,MT> >
+   : public BoolConstant< IsAligned<MT>::value >
 {};
 /*! \endcond */
 //*************************************************************************************************
