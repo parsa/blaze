@@ -40,10 +40,9 @@
 // Includes
 //*************************************************************************************************
 
+#include <utility>
 #include <blaze/math/proxy/Forward.h>
-#include <blaze/util/FalseType.h>
-#include <blaze/util/SelectType.h>
-#include <blaze/util/TrueType.h>
+#include <blaze/util/IntegralConstant.h>
 #include <blaze/util/typetraits/RemoveCV.h>
 
 
@@ -74,14 +73,11 @@ struct IsProxyHelper
    static Yes test( const Proxy<PT,RT>& );
 
    static No test( ... );
-
-   static T2 create();
    //**********************************************************************************************
 
  public:
    //**********************************************************************************************
-   enum { value = ( sizeof( test( create() ) ) == sizeof( Yes ) ) };
-   typedef typename SelectType< value, TrueType, FalseType >::Type  Type;
+   enum { value = ( sizeof( test( std::declval<T2>() ) ) == sizeof( Yes ) ) };
    //**********************************************************************************************
 };
 /*! \endcond */
@@ -94,9 +90,9 @@ struct IsProxyHelper
 //
 // This type trait tests whether or not the given template parameter is a proxy type (i.e.
 // derived from the blaze::Proxy class template). In case the type is a proxy, the \a value
-// member enumeration is set to 1, the nested type definition \a Type is \a TrueType, and the
-// class derives from \a TrueType. Otherwise \a value is set to 0, \a Type is \a FalseType,
-// and the class derives from \a FalseType.
+// member enumeration is set to \a true, the nested type definition \a Type is \a TrueType,
+// and the class derives from \a TrueType. Otherwise \a value is set to \a false, \a Type is
+// \a FalseType, and the class derives from \a FalseType.
 
    \code
    class MyProxy1 : public Proxy<MyProxy1> {};
@@ -113,16 +109,8 @@ struct IsProxyHelper
    \endcode
 */
 template< typename T >
-struct IsProxy : public IsProxyHelper<T>::Type
-{
- public:
-   //**********************************************************************************************
-   /*! \cond BLAZE_INTERNAL */
-   enum { value = IsProxyHelper<T>::value };
-   typedef typename IsProxyHelper<T>::Type  Type;
-   /*! \endcond */
-   //**********************************************************************************************
-};
+struct IsProxy : public BoolConstant< IsProxyHelper<T>::value >
+{};
 //*************************************************************************************************
 
 } // namespace blaze

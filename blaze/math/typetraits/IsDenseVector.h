@@ -40,12 +40,10 @@
 // Includes
 //*************************************************************************************************
 
-#include <boost/type_traits/is_base_of.hpp>
 #include <blaze/math/expressions/DenseVector.h>
-#include <blaze/util/FalseType.h>
-#include <blaze/util/SelectType.h>
-#include <blaze/util/TrueType.h>
-#include <blaze/util/typetraits/RemoveCV.h>
+#include <blaze/util/IntegralConstant.h>
+#include <blaze/util/mpl/Or.h>
+#include <blaze/util/typetraits/IsBaseOf.h>
 
 
 namespace blaze {
@@ -57,38 +55,14 @@ namespace blaze {
 //=================================================================================================
 
 //*************************************************************************************************
-/*! \cond BLAZE_INTERNAL */
-/*!\brief Auxiliary helper struct for the IsDenseVector type trait.
-// \ingroup math_type_traits
-*/
-template< typename T >
-struct IsDenseVectorHelper
-{
- private:
-   //**********************************************************************************************
-   typedef typename RemoveCV<T>::Type  T2;
-   //**********************************************************************************************
-
- public:
-   //**********************************************************************************************
-   enum { value = boost::is_base_of< DenseVector<T2,false>, T2 >::value ||
-                  boost::is_base_of< DenseVector<T2,true >, T2 >::value };
-   typedef typename SelectType<value,TrueType,FalseType>::Type  Type;
-   //**********************************************************************************************
-};
-/*! \endcond */
-//*************************************************************************************************
-
-
-//*************************************************************************************************
 /*!\brief Compile time check for dense vector types.
 // \ingroup math_type_traits
 //
 // This type trait tests whether or not the given template parameter is a dense, N-dimensional
 // vector type. In case the type is a dense vector type, the \a value member enumeration is
-// set to 1, the nested type definition \a Type is \a TrueType, and the class derives from
-// \a TrueType. Otherwise \a value is set to 0, \a Type is \a FalseType, and the class derives
-// from \a FalseType.
+// set to \a true, the nested type definition \a Type is \a TrueType, and the class derives
+// from \a TrueType. Otherwise \a value is set to \a false, \a Type is \a FalseType, and the
+// class derives from \a FalseType.
 
    \code
    blaze::IsDenseVector< DynamicVector<double,false> >::value       // Evaluates to 1
@@ -100,16 +74,9 @@ struct IsDenseVectorHelper
    \endcode
 */
 template< typename T >
-struct IsDenseVector : public IsDenseVectorHelper<T>::Type
-{
- public:
-   //**********************************************************************************************
-   /*! \cond BLAZE_INTERNAL */
-   enum { value = IsDenseVectorHelper<T>::value };
-   typedef typename IsDenseVectorHelper<T>::Type  Type;
-   /*! \endcond */
-   //**********************************************************************************************
-};
+struct IsDenseVector
+   : public BoolConstant< Or< IsBaseOf<DenseVector<T,false>,T>, IsBaseOf<DenseVector<T,true>,T> >::value >
+{};
 //*************************************************************************************************
 
 } // namespace blaze

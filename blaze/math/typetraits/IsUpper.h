@@ -42,10 +42,8 @@
 
 #include <blaze/math/typetraits/IsStrictlyUpper.h>
 #include <blaze/math/typetraits/IsUniUpper.h>
-#include <blaze/util/FalseType.h>
-#include <blaze/util/mpl/If.h>
+#include <blaze/util/IntegralConstant.h>
 #include <blaze/util/mpl/Or.h>
-#include <blaze/util/TrueType.h>
 
 
 namespace blaze {
@@ -62,10 +60,10 @@ namespace blaze {
 //
 // This type trait tests whether or not the given template parameter is an upper triangular matrix
 // type (i.e. a matrix type that is guaranteed to be upper triangular at compile time). This also
-// includes upper unitriangular and strictly upper triangular matrices. In case the type is an upper
-// triangular matrix type, the \a value member enumeration is set to 1, the nested type definition
-// \a Type is \a TrueType, and the class derives from \a TrueType. Otherwise \a value is set to 0,
-// \a Type is \a FalseType, and the class derives from \a FalseType.
+// includes upper unitriangular and strictly upper triangular matrices. In case the type is an
+// upper triangular matrix type, the \a value member enumeration is set to \a true, the nested type
+// definition \a Type is \a TrueType, and the class derives from \a TrueType. Otherwise \a value is
+// set to \a false, \a Type is \a FalseType, and the class derives from \a FalseType.
 
    \code
    using blaze::rowMajor;
@@ -87,16 +85,8 @@ namespace blaze {
    \endcode
 */
 template< typename T >
-struct IsUpper : public If< Or< IsUniUpper<T>, IsStrictlyUpper<T> >, TrueType, FalseType >::Type
-{
- public:
-   //**********************************************************************************************
-   /*! \cond BLAZE_INTERNAL */
-   enum { value = IsUniUpper<T>::value || IsStrictlyUpper<T>::value };
-   typedef typename If< Or< IsUniUpper<T>, IsStrictlyUpper<T> >, TrueType, FalseType >::Type  Type;
-   /*! \endcond */
-   //**********************************************************************************************
-};
+struct IsUpper : public BoolConstant< Or< IsUniUpper<T>, IsStrictlyUpper<T> >::value >
+{};
 //*************************************************************************************************
 
 
@@ -106,14 +96,8 @@ struct IsUpper : public If< Or< IsUniUpper<T>, IsStrictlyUpper<T> >, TrueType, F
 // \ingroup math_type_traits
 */
 template< typename T >
-struct IsUpper< const T > : public IsUpper<T>::Type
-{
- public:
-   //**********************************************************************************************
-   enum { value = IsUpper<T>::value };
-   typedef typename IsUpper<T>::Type  Type;
-   //**********************************************************************************************
-};
+struct IsUpper< const T > : public IsUpper<T>
+{};
 /*! \endcond */
 //*************************************************************************************************
 
@@ -124,14 +108,8 @@ struct IsUpper< const T > : public IsUpper<T>::Type
 // \ingroup math_type_traits
 */
 template< typename T >
-struct IsUpper< volatile T > : public IsUpper<T>::Type
-{
- public:
-   //**********************************************************************************************
-   enum { value = IsUpper<T>::value };
-   typedef typename IsUpper<T>::Type  Type;
-   //**********************************************************************************************
-};
+struct IsUpper< volatile T > : public IsUpper<T>
+{};
 /*! \endcond */
 //*************************************************************************************************
 
@@ -142,14 +120,8 @@ struct IsUpper< volatile T > : public IsUpper<T>::Type
 // \ingroup math_type_traits
 */
 template< typename T >
-struct IsUpper< const volatile T > : public IsUpper<T>::Type
-{
- public:
-   //**********************************************************************************************
-   enum { value = IsUpper<T>::value };
-   typedef typename IsUpper<T>::Type  Type;
-   //**********************************************************************************************
-};
+struct IsUpper< const volatile T > : public IsUpper<T>
+{};
 /*! \endcond */
 //*************************************************************************************************
 

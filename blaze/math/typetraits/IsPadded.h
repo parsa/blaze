@@ -58,9 +58,10 @@ namespace blaze {
 //
 // This type trait tests whether the given data type employs or simulates padding such that no
 // special treatment of remainder elements is necessary for vectorized operations on the type.
-// In case the data type is padded, the \a value member enumeration is set to 1, the nested type
-// definition \a Type is \a TrueType, and the class derives from \a TrueType. Otherwise \a value
-// is set to 0, \a Type is \a FalseType, and the class derives from \a FalseType. Examples:
+// In case the data type is padded, the \a value member enumeration is set to \a true, the nested
+// type definition \a Type is \a TrueType, and the class derives from \a TrueType. Otherwise
+// \a value is set to \a false, \a Type is \a FalseType, and the class derives from \a FalseType.
+// Examples:
 
    \code
    blaze::IsPadded< blaze::StaticVector<int,3UL> >::value     // Evaluates to 1
@@ -73,15 +74,7 @@ namespace blaze {
 */
 template< typename T >
 struct IsPadded : public FalseType
-{
- public:
-   //**********************************************************************************************
-   /*! \cond BLAZE_INTERNAL */
-   enum { value = 0 };
-   typedef FalseType  Type;
-   /*! \endcond */
-   //**********************************************************************************************
-};
+{};
 //*************************************************************************************************
 
 
@@ -91,14 +84,8 @@ struct IsPadded : public FalseType
 // \ingroup math_type_traits
 */
 template< typename T >
-struct IsPadded< const T > : public IsPadded<T>::Type
-{
- public:
-   //**********************************************************************************************
-   enum { value = IsPadded<T>::value };
-   typedef typename IsPadded<T>::Type  Type;
-   //**********************************************************************************************
-};
+struct IsPadded< const T > : public IsPadded<T>
+{};
 /*! \endcond */
 //*************************************************************************************************
 
@@ -109,14 +96,8 @@ struct IsPadded< const T > : public IsPadded<T>::Type
 // \ingroup math_type_traits
 */
 template< typename T >
-struct IsPadded< volatile T > : public IsPadded<T>::Type
-{
- public:
-   //**********************************************************************************************
-   enum { value = IsPadded<T>::value };
-   typedef typename IsPadded<T>::Type  Type;
-   //**********************************************************************************************
-};
+struct IsPadded< volatile T > : public IsPadded<T>
+{};
 /*! \endcond */
 //*************************************************************************************************
 
@@ -127,14 +108,8 @@ struct IsPadded< volatile T > : public IsPadded<T>::Type
 // \ingroup math_type_traits
 */
 template< typename T >
-struct IsPadded< const volatile T > : public IsPadded<T>::Type
-{
- public:
-   //**********************************************************************************************
-   enum { value = IsPadded<T>::value };
-   typedef typename IsPadded<T>::Type  Type;
-   //**********************************************************************************************
-};
+struct IsPadded< const volatile T > : public IsPadded<T>
+{};
 /*! \endcond */
 //*************************************************************************************************
 

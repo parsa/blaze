@@ -42,10 +42,8 @@
 
 #include <blaze/math/typetraits/IsLower.h>
 #include <blaze/math/typetraits/IsUpper.h>
-#include <blaze/util/FalseType.h>
+#include <blaze/util/IntegralConstant.h>
 #include <blaze/util/mpl/And.h>
-#include <blaze/util/mpl/If.h>
-#include <blaze/util/TrueType.h>
 
 
 namespace blaze {
@@ -61,10 +59,10 @@ namespace blaze {
 // \ingroup math_type_traits
 //
 // This type trait tests whether or not the given template parameter is a diagonal matrix type
-// (i.e. a matrix type that is guaranteed to be diagonal at compile time). In case the type is a
-// diagonal matrix type, the \a value member enumeration is set to 1, the nested type definition
-// \a Type is \a TrueType, and the class derives from \a TrueType. Otherwise \a value is set to
-// 0, \a Type is \a FalseType, and the class derives from \a FalseType.
+// (i.e. a matrix type that is guaranteed to be diagonal at compile time). In case the type is
+// a diagonal matrix type, the \a value member enumeration is set to \a true, the nested type
+// definition \a Type is \a TrueType, and the class derives from \a TrueType. Otherwise \a value
+// is set to \a false, \a Type is \a FalseType, and the class derives from \a FalseType.
 
    \code
    using blaze::rowMajor;
@@ -89,16 +87,8 @@ namespace blaze {
    \endcode
 */
 template< typename T >
-struct IsDiagonal : public If< And< IsLower<T>, IsUpper<T> >, TrueType, FalseType >::Type
-{
- public:
-   //**********************************************************************************************
-   /*! \cond BLAZE_INTERNAL */
-   enum { value = IsLower<T>::value && IsUpper<T>::value };
-   typedef typename If< And< IsLower<T>, IsUpper<T> >, TrueType, FalseType >::Type  Type;
-   /*! \endcond */
-   //**********************************************************************************************
-};
+struct IsDiagonal : public BoolConstant< And< IsLower<T>, IsUpper<T> >::value >
+{};
 //*************************************************************************************************
 
 
@@ -108,14 +98,8 @@ struct IsDiagonal : public If< And< IsLower<T>, IsUpper<T> >, TrueType, FalseTyp
 // \ingroup math_type_traits
 */
 template< typename T >
-struct IsDiagonal< const T > : public IsDiagonal<T>::Type
-{
- public:
-   //**********************************************************************************************
-   enum { value = IsDiagonal<T>::value };
-   typedef typename IsDiagonal<T>::Type  Type;
-   //**********************************************************************************************
-};
+struct IsDiagonal< const T > : public IsDiagonal<T>
+{};
 /*! \endcond */
 //*************************************************************************************************
 
@@ -126,14 +110,8 @@ struct IsDiagonal< const T > : public IsDiagonal<T>::Type
 // \ingroup math_type_traits
 */
 template< typename T >
-struct IsDiagonal< volatile T > : public IsDiagonal<T>::Type
-{
- public:
-   //**********************************************************************************************
-   enum { value = IsDiagonal<T>::value };
-   typedef typename IsDiagonal<T>::Type  Type;
-   //**********************************************************************************************
-};
+struct IsDiagonal< volatile T > : public IsDiagonal<T>
+{};
 /*! \endcond */
 //*************************************************************************************************
 
@@ -144,14 +122,8 @@ struct IsDiagonal< volatile T > : public IsDiagonal<T>::Type
 // \ingroup math_type_traits
 */
 template< typename T >
-struct IsDiagonal< const volatile T > : public IsDiagonal<T>::Type
-{
- public:
-   //**********************************************************************************************
-   enum { value = IsDiagonal<T>::value };
-   typedef typename IsDiagonal<T>::Type  Type;
-   //**********************************************************************************************
-};
+struct IsDiagonal< const volatile T > : public IsDiagonal<T>
+{};
 /*! \endcond */
 //*************************************************************************************************
 

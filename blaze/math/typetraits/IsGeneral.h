@@ -43,9 +43,9 @@
 #include <blaze/math/typetraits/IsHermitian.h>
 #include <blaze/math/typetraits/IsSymmetric.h>
 #include <blaze/math/typetraits/IsTriangular.h>
-#include <blaze/util/FalseType.h>
-#include <blaze/util/SelectType.h>
-#include <blaze/util/TrueType.h>
+#include <blaze/util/IntegralConstant.h>
+#include <blaze/util/mpl/And.h>
+#include <blaze/util/mpl/Not.h>
 
 
 namespace blaze {
@@ -57,32 +57,15 @@ namespace blaze {
 //=================================================================================================
 
 //*************************************************************************************************
-/*! \cond BLAZE_INTERNAL */
-/*!\brief Auxiliary helper struct for the IsGeneral type trait.
-// \ingroup math_type_traits
-*/
-template< typename T >
-struct IsGeneralHelper
-{
-   //**********************************************************************************************
-   enum { value = !IsSymmetric<T>::value && !IsHermitian<T>::value && !IsTriangular<T>::value };
-   typedef typename SelectType<value,TrueType,FalseType>::Type  Type;
-   //**********************************************************************************************
-};
-/*! \endcond */
-//*************************************************************************************************
-
-
-//*************************************************************************************************
 /*!\brief Compile time check for general matrices.
 // \ingroup math_type_traits
 //
 // This type trait tests whether or not the given template parameter is a general matrix type
 // (i.e. a matrix type that is neither symmetric, Hermitian, lower triangular or upper triangular
 // at compile time). In case the type is a general matrix type, the \a value member enumeration
-// is set to 1, the nested type definition \a Type is \a TrueType, and the class derives from
-// \a TrueType. Otherwise \a value is set to 0, \a Type is \a FalseType, and the class derives
-// from \a FalseType.
+// is set to \a true, the nested type definition \a Type is \a TrueType, and the class derives
+// from \a TrueType. Otherwise \a value is set to \a false, \a Type is \a FalseType, and the
+// class derives from \a FalseType.
 
    \code
    using blaze::rowMajor;
@@ -104,16 +87,9 @@ struct IsGeneralHelper
    \endcode
 */
 template< typename T >
-struct IsGeneral : public IsGeneralHelper<T>::Type
-{
- public:
-   //**********************************************************************************************
-   /*! \cond BLAZE_INTERNAL */
-   enum { value = IsGeneralHelper<T>::value };
-   typedef typename IsGeneralHelper<T>::Type  Type;
-   /*! \endcond */
-   //**********************************************************************************************
-};
+struct IsGeneral
+   : public BoolConstant< And< Not< IsSymmetric<T> >, Not< IsHermitian<T> >, Not< IsTriangular<T> > >::value >
+{};
 //*************************************************************************************************
 
 
@@ -123,14 +99,8 @@ struct IsGeneral : public IsGeneralHelper<T>::Type
 // \ingroup math_type_traits
 */
 template< typename T >
-struct IsGeneral< const T > : public IsGeneral<T>::Type
-{
- public:
-   //**********************************************************************************************
-   enum { value = IsGeneral<T>::value };
-   typedef typename IsGeneral<T>::Type  Type;
-   //**********************************************************************************************
-};
+struct IsGeneral< const T > : public IsGeneral<T>
+{};
 /*! \endcond */
 //*************************************************************************************************
 
@@ -141,14 +111,8 @@ struct IsGeneral< const T > : public IsGeneral<T>::Type
 // \ingroup math_type_traits
 */
 template< typename T >
-struct IsGeneral< volatile T > : public IsGeneral<T>::Type
-{
- public:
-   //**********************************************************************************************
-   enum { value = IsGeneral<T>::value };
-   typedef typename IsGeneral<T>::Type  Type;
-   //**********************************************************************************************
-};
+struct IsGeneral< volatile T > : public IsGeneral<T>
+{};
 /*! \endcond */
 //*************************************************************************************************
 
@@ -159,14 +123,8 @@ struct IsGeneral< volatile T > : public IsGeneral<T>::Type
 // \ingroup math_type_traits
 */
 template< typename T >
-struct IsGeneral< const volatile T > : public IsGeneral<T>::Type
-{
- public:
-   //**********************************************************************************************
-   enum { value = IsGeneral<T>::value };
-   typedef typename IsGeneral<T>::Type  Type;
-   //**********************************************************************************************
-};
+struct IsGeneral< const volatile T > : public IsGeneral<T>
+{};
 /*! \endcond */
 //*************************************************************************************************
 

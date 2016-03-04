@@ -40,12 +40,11 @@
 // Includes
 //*************************************************************************************************
 
-#include <boost/type_traits/is_base_of.hpp>
 #include <blaze/math/expressions/Column.h>
-#include <blaze/util/FalseType.h>
-#include <blaze/util/SelectType.h>
-#include <blaze/util/TrueType.h>
-#include <blaze/util/typetraits/RemoveCV.h>
+#include <blaze/util/IntegralConstant.h>
+#include <blaze/util/mpl/And.h>
+#include <blaze/util/mpl/Not.h>
+#include <blaze/util/typetraits/IsBaseOf.h>
 
 
 namespace blaze {
@@ -57,37 +56,14 @@ namespace blaze {
 //=================================================================================================
 
 //*************************************************************************************************
-/*! \cond BLAZE_INTERNAL */
-/*!\brief Auxiliary helper struct for the IsColumn type trait.
-// \ingroup math_type_traits
-*/
-template< typename T >
-struct IsColumnHelper
-{
- private:
-   //**********************************************************************************************
-   typedef typename RemoveCV<T>::Type  T2;
-   //**********************************************************************************************
-
- public:
-   //**********************************************************************************************
-   enum { value = boost::is_base_of<Column,T2>::value && !boost::is_base_of<T2,Column>::value };
-   typedef typename SelectType<value,TrueType,FalseType>::Type  Type;
-   //**********************************************************************************************
-};
-/*! \endcond */
-//*************************************************************************************************
-
-
-//*************************************************************************************************
 /*!\brief Compile time check for columns.
 // \ingroup math_type_traits
 //
-// This type trait tests whether or not the given template parameter is a column (i.e. dense or
-// sparse column). In case the type is a column, the \a value member enumeration is set to 1,
-// the nested type definition \a Type is \a TrueType, and the class derives from \a TrueType.
-// Otherwise \a value is set to 0, \a Type is \a FalseType, and the class derives from
-// \a FalseType.
+// This type trait tests whether or not the given template parameter is a column (i.e. dense
+// or sparse column). In case the type is a column, the \a value member enumeration is set to
+// \a true, the nested type definition \a Type is \a TrueType, and the class derives from
+// \a TrueType. Otherwise \a value is set to \a false, \a Type is \a FalseType, and the class
+// derives from \a FalseType.
 
    \code
    typedef blaze::DynamicMatrix<double,columnMajor>  DenseMatrixType1;
@@ -108,16 +84,9 @@ struct IsColumnHelper
    \endcode
 */
 template< typename T >
-struct IsColumn : public IsColumnHelper<T>::Type
-{
- public:
-   //**********************************************************************************************
-   /*! \cond BLAZE_INTERNAL */
-   enum { value = IsColumnHelper<T>::value };
-   typedef typename IsColumnHelper<T>::Type  Type;
-   /*! \endcond */
-   //**********************************************************************************************
-};
+struct IsColumn
+   : public BoolConstant< And< IsBaseOf<Column,T>, Not< IsBaseOf<T,Column> > >::value >
+{};
 //*************************************************************************************************
 
 } // namespace blaze

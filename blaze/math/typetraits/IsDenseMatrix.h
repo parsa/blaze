@@ -40,12 +40,10 @@
 // Includes
 //*************************************************************************************************
 
-#include <boost/type_traits/is_base_of.hpp>
 #include <blaze/math/expressions/DenseMatrix.h>
-#include <blaze/util/FalseType.h>
-#include <blaze/util/SelectType.h>
-#include <blaze/util/TrueType.h>
-#include <blaze/util/typetraits/RemoveCV.h>
+#include <blaze/util/IntegralConstant.h>
+#include <blaze/util/mpl/Or.h>
+#include <blaze/util/typetraits/IsBaseOf.h>
 
 
 namespace blaze {
@@ -57,38 +55,14 @@ namespace blaze {
 //=================================================================================================
 
 //*************************************************************************************************
-/*! \cond BLAZE_INTERNAL */
-/*!\brief Auxiliary helper struct for the IsDenseMatrix type trait.
-// \ingroup math_type_traits
-*/
-template< typename T >
-struct IsDenseMatrixHelper
-{
- private:
-   //**********************************************************************************************
-   typedef typename RemoveCV<T>::Type  T2;
-   //**********************************************************************************************
-
- public:
-   //**********************************************************************************************
-   enum { value = boost::is_base_of< DenseMatrix<T2,false>, T2 >::value ||
-                  boost::is_base_of< DenseMatrix<T2,true >, T2 >::value };
-   typedef typename SelectType<value,TrueType,FalseType>::Type  Type;
-   //**********************************************************************************************
-};
-/*! \endcond */
-//*************************************************************************************************
-
-
-//*************************************************************************************************
 /*!\brief Compile time check for dense matrix types.
 // \ingroup math_type_traits
 //
 // This type trait tests whether or not the given template parameter is a dense, N-dimensional
 // matrix type. In case the type is a dense matrix type, the \a value member enumeration is
-// set to 1, the nested type definition \a Type is \a TrueType, and the class derives from
-// \a TrueType. Otherwise \a yes is set to 0, \a Type is \a FalseType, and the class derives
-// from \a FalseType.
+// set to \a true, the nested type definition \a Type is \a TrueType, and the class derives
+// from \a TrueType. Otherwise \a yes is set to \a false, \a Type is \a FalseType, and the
+// class derives from \a FalseType.
 
    \code
    blaze::IsDenseMatrix< DynamicMatrix<double,false> >::value     // Evaluates to 1
@@ -100,16 +74,9 @@ struct IsDenseMatrixHelper
    \endcode
 */
 template< typename T >
-struct IsDenseMatrix : public IsDenseMatrixHelper<T>::Type
-{
- public:
-   //**********************************************************************************************
-   /*! \cond BLAZE_INTERNAL */
-   enum { value = IsDenseMatrixHelper<T>::value };
-   typedef typename IsDenseMatrixHelper<T>::Type  Type;
-   /*! \endcond */
-   //**********************************************************************************************
-};
+struct IsDenseMatrix
+   : public BoolConstant< Or< IsBaseOf<DenseMatrix<T,false>,T>, IsBaseOf<DenseMatrix<T,true>,T> >::value >
+{};
 //*************************************************************************************************
 
 } // namespace blaze

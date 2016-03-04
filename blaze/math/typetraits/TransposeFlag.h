@@ -80,7 +80,7 @@ struct TransposeFlag
    //**struct ValidType****************************************************************************
    /*! \cond BLAZE_INTERNAL */
    struct ValidType {
-      static const bool value = ( IsRowVector<T>::value ? rowVector : columnVector );
+      static constexpr bool value = ( IsRowVector<T>::value ? rowVector : columnVector );
    };
    /*! \endcond */
    //**********************************************************************************************
@@ -88,7 +88,7 @@ struct TransposeFlag
  public:
    //**********************************************************************************************
    /*! \cond BLAZE_INTERNAL */
-   static const bool value = If< IsVector<T>, ValidType, INVALID_TYPE >::Type::value;
+   static constexpr bool value = If< IsVector<T>, ValidType, INVALID_TYPE >::Type::value;
    /*! \endcond */
    //**********************************************************************************************
 };

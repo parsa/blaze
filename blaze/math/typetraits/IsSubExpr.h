@@ -40,11 +40,11 @@
 // Includes
 //*************************************************************************************************
 
-#include <boost/type_traits/is_base_of.hpp>
 #include <blaze/math/expressions/SubExpr.h>
-#include <blaze/util/FalseType.h>
-#include <blaze/util/SelectType.h>
-#include <blaze/util/TrueType.h>
+#include <blaze/util/IntegralConstant.h>
+#include <blaze/util/mpl/And.h>
+#include <blaze/util/mpl/Not.h>
+#include <blaze/util/typetraits/IsBaseOf.h>
 
 
 namespace blaze {
@@ -56,23 +56,6 @@ namespace blaze {
 //=================================================================================================
 
 //*************************************************************************************************
-/*! \cond BLAZE_INTERNAL */
-/*!\brief Auxiliary helper struct for the IsSubExpr type trait.
-// \ingroup math_type_traits
-*/
-template< typename T >
-struct IsSubExprHelper
-{
-   //**********************************************************************************************
-   enum { value = boost::is_base_of<SubExpr,T>::value && !boost::is_base_of<T,SubExpr>::value };
-   typedef typename SelectType<value,TrueType,FalseType>::Type  Type;
-   //**********************************************************************************************
-};
-/*! \endcond */
-//*************************************************************************************************
-
-
-//*************************************************************************************************
 /*!\brief Compile time check whether the given type is a subtraction expression template.
 // \ingroup math_type_traits
 //
@@ -80,21 +63,14 @@ struct IsSubExprHelper
 // template (i.e. an expression representing a vector subtraction or a matrix subtraction). In
 // order to qualify as a valid subtraction expression template, the given type has to derive
 // (publicly or privately) from the SubExpr base class. In case the given type is a valid
-// subtraction expression template, the \a value member enumeration is set to 1, the nested type
-// definition \a Type is \a TrueType, and the class derives from \a TrueType. Otherwise \a value
-// is set to 0, \a Type is \a FalseType, and the class derives from \a FalseType.
+// subtraction expression template, the \a value member enumeration is set to \a true, the nested
+// type definition \a Type is \a TrueType, and the class derives from \a TrueType. Otherwise
+// \a value is set to \a false, \a Type is \a FalseType, and the class derives from \a FalseType.
 */
 template< typename T >
-struct IsSubExpr : public IsSubExprHelper<T>::Type
-{
- public:
-   //**********************************************************************************************
-   /*! \cond BLAZE_INTERNAL */
-   enum { value = IsSubExprHelper<T>::value };
-   typedef typename IsSubExprHelper<T>::Type  Type;
-   /*! \endcond */
-   //**********************************************************************************************
-};
+struct IsSubExpr
+   : public BoolConstant< And< IsBaseOf<SubExpr,T>, Not< IsBaseOf<T,SubExpr> > >::value >
+{};
 //*************************************************************************************************
 
 } // namespace blaze

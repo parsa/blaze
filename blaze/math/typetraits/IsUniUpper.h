@@ -59,8 +59,9 @@ namespace blaze {
 // This type trait tests whether or not the given template parameter is an upper unitriangular
 // matrix type (i.e. a matrix type that is guaranteed to be upper unitriangular at compile time).
 // In case the type is an upper unitriangular matrix type, the \a value member enumeration is set
-// to 1, the nested type definition \a Type is \a TrueType, and the class derives from \a TrueType.
-// Otherwise \a value is set to 0, \a Type is \a FalseType, and the class derives from \a FalseType.
+// to \a true, the nested type definition \a Type is \a TrueType, and the class derives from
+// \a TrueType. Otherwise \a value is set to \a false, \a Type is \a FalseType, and the class
+// derives from \a FalseType.
 
    \code
    using blaze::rowMajor;
@@ -83,15 +84,7 @@ namespace blaze {
 */
 template< typename T >
 struct IsUniUpper : public FalseType
-{
- public:
-   //**********************************************************************************************
-   /*! \cond BLAZE_INTERNAL */
-   enum { value = 0 };
-   typedef FalseType  Type;
-   /*! \endcond */
-   //**********************************************************************************************
-};
+{};
 //*************************************************************************************************
 
 
@@ -101,14 +94,8 @@ struct IsUniUpper : public FalseType
 // \ingroup math_type_traits
 */
 template< typename T >
-struct IsUniUpper< const T > : public IsUniUpper<T>::Type
-{
- public:
-   //**********************************************************************************************
-   enum { value = IsUniUpper<T>::value };
-   typedef typename IsUniUpper<T>::Type  Type;
-   //**********************************************************************************************
-};
+struct IsUniUpper< const T > : public IsUniUpper<T>
+{};
 /*! \endcond */
 //*************************************************************************************************
 
@@ -119,14 +106,8 @@ struct IsUniUpper< const T > : public IsUniUpper<T>::Type
 // \ingroup math_type_traits
 */
 template< typename T >
-struct IsUniUpper< volatile T > : public IsUniUpper<T>::Type
-{
- public:
-   //**********************************************************************************************
-   enum { value = IsUniUpper<T>::value };
-   typedef typename IsUniUpper<T>::Type  Type;
-   //**********************************************************************************************
-};
+struct IsUniUpper< volatile T > : public IsUniUpper<T>
+{};
 /*! \endcond */
 //*************************************************************************************************
 
@@ -137,14 +118,8 @@ struct IsUniUpper< volatile T > : public IsUniUpper<T>::Type
 // \ingroup math_type_traits
 */
 template< typename T >
-struct IsUniUpper< const volatile T > : public IsUniUpper<T>::Type
-{
- public:
-   //**********************************************************************************************
-   enum { value = IsUniUpper<T>::value };
-   typedef typename IsUniUpper<T>::Type  Type;
-   //**********************************************************************************************
-};
+struct IsUniUpper< const volatile T > : public IsUniUpper<T>
+{};
 /*! \endcond */
 //*************************************************************************************************
 

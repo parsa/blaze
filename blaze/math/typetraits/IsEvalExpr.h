@@ -40,11 +40,11 @@
 // Includes
 //*************************************************************************************************
 
-#include <boost/type_traits/is_base_of.hpp>
 #include <blaze/math/expressions/EvalExpr.h>
-#include <blaze/util/FalseType.h>
-#include <blaze/util/SelectType.h>
-#include <blaze/util/TrueType.h>
+#include <blaze/util/mpl/And.h>
+#include <blaze/util/mpl/Not.h>
+#include <blaze/util/IntegralConstant.h>
+#include <blaze/util/typetraits/IsBaseOf.h>
 
 
 namespace blaze {
@@ -56,44 +56,20 @@ namespace blaze {
 //=================================================================================================
 
 //*************************************************************************************************
-/*! \cond BLAZE_INTERNAL */
-/*!\brief Auxiliary helper struct for the IsEvalExpr type trait.
-// \ingroup math_type_traits
-*/
-template< typename T >
-struct IsEvalExprHelper
-{
-   //**********************************************************************************************
-   enum { value = boost::is_base_of<EvalExpr,T>::value && !boost::is_base_of<T,EvalExpr>::value };
-   typedef typename SelectType<value,TrueType,FalseType>::Type  Type;
-   //**********************************************************************************************
-};
-/*! \endcond */
-//*************************************************************************************************
-
-
-//*************************************************************************************************
 /*!\brief Compile time check whether the given type is an evaluation expression template.
 // \ingroup math_type_traits
 //
 // This type trait class tests whether or not the given type \a Type is an evaluation expression
 // template. In order to qualify as a valid evaluation expression template, the given type has to
 // derive (publicly or privately) from the EvalExpr base class. In case the given type is a valid
-// evaluation expression template, the \a value member enumeration is set to 1, the nested type
-// definition \a Type is \a TrueType, and the class derives from \a TrueType. Otherwise \a value
-// is set to 0, \a Type is \a FalseType, and the class derives from \a FalseType.
+// evaluation expression template, the \a value member enumeration is set to \a true, the nested
+// type definition \a Type is \a TrueType, and the class derives from \a TrueType. Otherwise
+// \a value is set to \a false, \a Type is \a FalseType, and the class derives from \a FalseType.
 */
 template< typename T >
-struct IsEvalExpr : public IsEvalExprHelper<T>::Type
-{
- public:
-   //**********************************************************************************************
-   /*! \cond BLAZE_INTERNAL */
-   enum { value = IsEvalExprHelper<T>::value };
-   typedef typename IsEvalExprHelper<T>::Type  Type;
-   /*! \endcond */
-   //**********************************************************************************************
-};
+struct IsEvalExpr
+   : public BoolConstant< And< IsBaseOf<EvalExpr,T>, Not< IsBaseOf<T,EvalExpr> > >::value >
+{};
 //*************************************************************************************************
 
 } // namespace blaze

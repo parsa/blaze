@@ -40,11 +40,11 @@
 // Includes
 //*************************************************************************************************
 
-#include <boost/type_traits/is_base_of.hpp>
 #include <blaze/math/sparse/SparseElement.h>
-#include <blaze/util/FalseType.h>
-#include <blaze/util/SelectType.h>
-#include <blaze/util/TrueType.h>
+#include <blaze/util/IntegralConstant.h>
+#include <blaze/util/mpl/And.h>
+#include <blaze/util/mpl/Not.h>
+#include <blaze/util/typetraits/IsBaseOf.h>
 
 
 namespace blaze {
@@ -56,23 +56,6 @@ namespace blaze {
 //=================================================================================================
 
 //*************************************************************************************************
-/*! \cond BLAZE_INTERNAL */
-/*!\brief Auxiliary helper struct for the IsSparseElement type trait.
-// \ingroup math_type_traits
-*/
-template< typename T >
-struct IsSparseElementHelper
-{
-   //**********************************************************************************************
-   enum { value = boost::is_base_of<SparseElement,T>::value && !boost::is_base_of<T,SparseElement>::value };
-   typedef typename SelectType<value,TrueType,FalseType>::Type  Type;
-   //**********************************************************************************************
-};
-/*! \endcond */
-//*************************************************************************************************
-
-
-//*************************************************************************************************
 /*!\brief Compile time check whether the given type is a sparse element type.
 // \ingroup math_type_traits
 //
@@ -80,21 +63,14 @@ struct IsSparseElementHelper
 // type, i.e. if the type implements the sparse element concept by providing a value() and an
 // index() member function. In order to qualify as a valid sparse element type, the given type
 // has to derive (publicly or privately) from the SparseElement base class. In case the given
-// type is a valid sparse element, the \a value member enumeration is set to 1, the nested type
-// definition \a Type is \a TrueType, and the class derives from \a TrueType. Otherwise \a value
-// is set to 0, \a Type is \a FalseType, and the class derives from \a FalseType.
+// type is a valid sparse element, the \a value member enumeration is set to \a true, the nested
+// type definition \a Type is \a TrueType, and the class derives from \a TrueType. Otherwise
+// \a value is set to \a false, \a Type is \a FalseType, and the class derives from \a FalseType.
 */
 template< typename T >
-struct IsSparseElement : public IsSparseElementHelper<T>::Type
-{
- public:
-   //**********************************************************************************************
-   /*! \cond BLAZE_INTERNAL */
-   enum { value = IsSparseElementHelper<T>::value };
-   typedef typename IsSparseElementHelper<T>::Type  Type;
-   /*! \endcond */
-   //**********************************************************************************************
-};
+struct IsSparseElement
+   : public BoolConstant< And< IsBaseOf<SparseElement,T>, Not< IsBaseOf<T,SparseElement> > >::value >
+{};
 //*************************************************************************************************
 
 } // namespace blaze

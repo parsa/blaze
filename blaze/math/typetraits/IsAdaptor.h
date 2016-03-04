@@ -58,10 +58,10 @@ namespace blaze {
 //
 // This type trait tests whether the given template parameter is an adaptor type (for instance
 // \a LowerMatrix, \a UpperMatrix, or \a SymmetricMatrix). In case the type is an adaptor type,
-// the \a value member enumeration is set to 1, the nested type definition \a Type is \a TrueType,
-// and the class derives from \a TrueType. Otherwise \a value is set to 0, \a Type is \a FalseType,
-// and the class derives from \a FalseType. The following example demonstrates this by means of
-// the mentioned matrix adaptors:
+// the \a value member enumeration is set to \a true, the nested type definition \a Type is
+// \a TrueType, and the class derives from \a TrueType. Otherwise \a value is set to \a false,
+// \a Type is \a FalseType, and the class derives from \a FalseType. The following example
+// demonstrates this by means of the mentioned matrix adaptors:
 
    \code
    using blaze::rowMajor;
@@ -86,15 +86,7 @@ namespace blaze {
 */
 template< typename T >
 struct IsAdaptor : public FalseType
-{
- public:
-   //**********************************************************************************************
-   /*! \cond BLAZE_INTERNAL */
-   enum { value = 0 };
-   typedef FalseType  Type;
-   /*! \endcond */
-   //**********************************************************************************************
-};
+{};
 //*************************************************************************************************
 
 
@@ -104,14 +96,8 @@ struct IsAdaptor : public FalseType
 // \ingroup math_type_traits
 */
 template< typename T >
-struct IsAdaptor< const T > : public IsAdaptor<T>::Type
-{
- public:
-   //**********************************************************************************************
-   enum { value = IsAdaptor<T>::value };
-   typedef typename IsAdaptor<T>::Type  Type;
-   //**********************************************************************************************
-};
+struct IsAdaptor< const T > : public IsAdaptor<T>
+{};
 /*! \endcond */
 //*************************************************************************************************
 
@@ -122,14 +108,8 @@ struct IsAdaptor< const T > : public IsAdaptor<T>::Type
 // \ingroup math_type_traits
 */
 template< typename T >
-struct IsAdaptor< volatile T > : public IsAdaptor<T>::Type
-{
- public:
-   //**********************************************************************************************
-   enum { value = IsAdaptor<T>::value };
-   typedef typename IsAdaptor<T>::Type  Type;
-   //**********************************************************************************************
-};
+struct IsAdaptor< volatile T > : public IsAdaptor<T>
+{};
 /*! \endcond */
 //*************************************************************************************************
 
@@ -140,14 +120,8 @@ struct IsAdaptor< volatile T > : public IsAdaptor<T>::Type
 // \ingroup math_type_traits
 */
 template< typename T >
-struct IsAdaptor< const volatile T > : public IsAdaptor<T>::Type
-{
- public:
-   //**********************************************************************************************
-   enum { value = IsAdaptor<T>::value };
-   typedef typename IsAdaptor<T>::Type  Type;
-   //**********************************************************************************************
-};
+struct IsAdaptor< const volatile T > : public IsAdaptor<T>
+{};
 /*! \endcond */
 //*************************************************************************************************
 

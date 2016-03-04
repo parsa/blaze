@@ -40,11 +40,11 @@
 // Includes
 //*************************************************************************************************
 
-#include <boost/type_traits/is_base_of.hpp>
 #include <blaze/math/expressions/VecImagExpr.h>
-#include <blaze/util/FalseType.h>
-#include <blaze/util/SelectType.h>
-#include <blaze/util/TrueType.h>
+#include <blaze/util/IntegralConstant.h>
+#include <blaze/util/mpl/And.h>
+#include <blaze/util/mpl/Not.h>
+#include <blaze/util/typetraits/IsBaseOf.h>
 
 
 namespace blaze {
@@ -56,23 +56,6 @@ namespace blaze {
 //=================================================================================================
 
 //*************************************************************************************************
-/*! \cond BLAZE_INTERNAL */
-/*!\brief Auxiliary helper struct for the IsVecImagExpr type trait.
-// \ingroup math_type_traits
-*/
-template< typename T >
-struct IsVecImagExprHelper
-{
-   //**********************************************************************************************
-   enum { value = boost::is_base_of<VecImagExpr,T>::value && !boost::is_base_of<T,VecImagExpr>::value };
-   typedef typename SelectType<value,TrueType,FalseType>::Type  Type;
-   //**********************************************************************************************
-};
-/*! \endcond */
-//*************************************************************************************************
-
-
-//*************************************************************************************************
 /*!\brief Compile time check whether the given type is a vector imaginary part expression template.
 // \ingroup math_type_traits
 //
@@ -80,21 +63,14 @@ struct IsVecImagExprHelper
 // expression template. In order to qualify as a valid vector imaginary part expression template,
 // the given type has to derive (publicly or privately) from the VecImagExpr base class. In case
 // the given type is a valid vector imaginary part expression template, the \a value member
-// enumeration is set to 1, the nested type definition \a Type is \a TrueType, and the class
-// derives from \a TrueType. Otherwise \a value is set to 0, \a Type is \a FalseType, and the
-// class derives from \a FalseType.
+// enumeration is set to \a true, the nested type definition \a Type is \a TrueType, and the class
+// derives from \a TrueType. Otherwise \a value is set to \a false, \a Type is \a FalseType, and
+// the class derives from \a FalseType.
 */
 template< typename T >
-struct IsVecImagExpr : public IsVecImagExprHelper<T>::Type
-{
- public:
-   //**********************************************************************************************
-   /*! \cond BLAZE_INTERNAL */
-   enum { value = IsVecImagExprHelper<T>::value };
-   typedef typename IsVecImagExprHelper<T>::Type  Type;
-   /*! \endcond */
-   //**********************************************************************************************
-};
+struct IsVecImagExpr
+   : public BoolConstant< And< IsBaseOf<VecImagExpr,T>, Not< IsBaseOf<T,VecImagExpr> > >::value >
+{};
 //*************************************************************************************************
 
 } // namespace blaze

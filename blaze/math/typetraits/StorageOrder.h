@@ -80,7 +80,7 @@ struct StorageOrder
    //**struct ValidType****************************************************************************
    /*! \cond BLAZE_INTERNAL */
    struct ValidType {
-      static const bool value = ( IsRowMajorMatrix<T>::value ? rowMajor : columnMajor );
+      static constexpr bool value = ( IsRowMajorMatrix<T>::value ? rowMajor : columnMajor );
    };
    /*! \endcond */
    //**********************************************************************************************
@@ -88,7 +88,7 @@ struct StorageOrder
  public:
    //**********************************************************************************************
    /*! \cond BLAZE_INTERNAL */
-   static const bool value = If< IsMatrix<T>, ValidType, INVALID_TYPE >::Type::value;
+   static constexpr bool value = If< IsMatrix<T>, ValidType, INVALID_TYPE >::Type::value;
    /*! \endcond */
    //**********************************************************************************************
 };

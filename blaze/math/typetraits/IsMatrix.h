@@ -42,9 +42,8 @@
 
 #include <blaze/math/typetraits/IsDenseMatrix.h>
 #include <blaze/math/typetraits/IsSparseMatrix.h>
-#include <blaze/util/FalseType.h>
-#include <blaze/util/SelectType.h>
-#include <blaze/util/TrueType.h>
+#include <blaze/util/IntegralConstant.h>
+#include <blaze/util/mpl/Or.h>
 
 
 namespace blaze {
@@ -56,31 +55,14 @@ namespace blaze {
 //=================================================================================================
 
 //*************************************************************************************************
-/*! \cond BLAZE_INTERNAL */
-/*!\brief Auxiliary helper struct for the IsMatrix type trait.
-// \ingroup math_type_traits
-*/
-template< typename T >
-struct IsMatrixHelper
-{
-   //**********************************************************************************************
-   enum { value = IsDenseMatrix<T>::value || IsSparseMatrix<T>::value };
-   typedef typename SelectType<value,TrueType,FalseType>::Type  Type;
-   //**********************************************************************************************
-};
-/*! \endcond */
-//*************************************************************************************************
-
-
-//*************************************************************************************************
 /*!\brief Compile time check for matrix types.
 // \ingroup math_type_traits
 //
 // This type trait tests whether or not the given template parameter is a N-dimensional dense
 // or sparse matrix type. In case the type is a matrix type, the \a value member enumeration
-// is set to 1, the nested type definition \a Type is \a TrueType, and the class derives from
-// \a TrueType. Otherwise \a yes is set to 0, \a Type is \a FalseType, and the class derives
-// from \a FalseType.
+// is set to \a true, the nested type definition \a Type is \a TrueType, and the class derives
+// from \a TrueType. Otherwise \a yes is set to \a false, \a Type is \a FalseType, and the class
+// derives from \a FalseType.
 
    \code
    blaze::IsMatrix< StaticMatrix<float,3U,3U,false> >::value  // Evaluates to 1
@@ -92,16 +74,8 @@ struct IsMatrixHelper
    \endcode
 */
 template< typename T >
-struct IsMatrix : public IsMatrixHelper<T>::Type
-{
- public:
-   //**********************************************************************************************
-   /*! \cond BLAZE_INTERNAL */
-   enum { value = IsMatrixHelper<T>::value };
-   typedef typename IsMatrixHelper<T>::Type  Type;
-   /*! \endcond */
-   //**********************************************************************************************
-};
+struct IsMatrix : public BoolConstant< Or< IsDenseMatrix<T>, IsSparseMatrix<T> >::value >
+{};
 //*************************************************************************************************
 
 } // namespace blaze

@@ -59,9 +59,9 @@ namespace blaze {
 // This type trait tests whether the given data type has a restricted data access. Examples are
 // the LowerMatrix and UpperMatrix adaptors that don't allow write access to the elements in the
 // upper or lower part of the matrix, respectively. In case the data type has a restricted data
-// access, the \a value member enumeration is set to 1, the nested type definition \a Type is
-// \a TrueType, and the class derives from \a TrueType. Otherwise \a value is set to 0, \a Type
-// is \a FalseType, and the class derives from \a FalseType. Examples:
+// access, the \a value member enumeration is set to \a true, the nested type definition \a Type
+// is \a TrueType, and the class derives from \a TrueType. Otherwise \a value is set to \a false,
+// \a Type is \a FalseType, and the class derives from \a FalseType. Examples:
 
    \code
    typedef blaze::StaticVector<int,3UL>  VectorType;
@@ -80,15 +80,7 @@ namespace blaze {
 */
 template< typename T >
 struct IsRestricted : public FalseType
-{
- public:
-   //**********************************************************************************************
-   /*! \cond BLAZE_INTERNAL */
-   enum { value = 0 };
-   typedef FalseType  Type;
-   /*! \endcond */
-   //**********************************************************************************************
-};
+{};
 //*************************************************************************************************
 
 
@@ -98,14 +90,8 @@ struct IsRestricted : public FalseType
 // \ingroup math_type_traits
 */
 template< typename T >
-struct IsRestricted< const T > : public IsRestricted<T>::Type
-{
- public:
-   //**********************************************************************************************
-   enum { value = IsRestricted<T>::value };
-   typedef typename IsRestricted<T>::Type  Type;
-   //**********************************************************************************************
-};
+struct IsRestricted< const T > : public IsRestricted<T>
+{};
 /*! \endcond */
 //*************************************************************************************************
 
@@ -116,14 +102,8 @@ struct IsRestricted< const T > : public IsRestricted<T>::Type
 // \ingroup math_type_traits
 */
 template< typename T >
-struct IsRestricted< volatile T > : public IsRestricted<T>::Type
-{
- public:
-   //**********************************************************************************************
-   enum { value = IsRestricted<T>::value };
-   typedef typename IsRestricted<T>::Type  Type;
-   //**********************************************************************************************
-};
+struct IsRestricted< volatile T > : public IsRestricted<T>
+{};
 /*! \endcond */
 //*************************************************************************************************
 
@@ -134,14 +114,8 @@ struct IsRestricted< volatile T > : public IsRestricted<T>::Type
 // \ingroup math_type_traits
 */
 template< typename T >
-struct IsRestricted< const volatile T > : public IsRestricted<T>::Type
-{
- public:
-   //**********************************************************************************************
-   enum { value = IsRestricted<T>::value };
-   typedef typename IsRestricted<T>::Type  Type;
-   //**********************************************************************************************
-};
+struct IsRestricted< const volatile T > : public IsRestricted<T>
+{};
 /*! \endcond */
 //*************************************************************************************************
 

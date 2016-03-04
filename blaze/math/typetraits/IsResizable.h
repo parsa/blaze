@@ -58,9 +58,9 @@ namespace blaze {
 //
 // This type trait tests whether the given data type is a resizable data type. In case the
 // data type can be resized (via the resize() function), the \a value member enumeration
-// is set to 1, the nested type definition \a Type is \a TrueType, and the class derives from
-// \a TrueType. Otherwise \a value is set to 0, \a Type is \a FalseType, and the class derives
-// from \a FalseType. Examples:
+// is set to \a true, the nested type definition \a Type is \a TrueType, and the class derives
+// from \a TrueType. Otherwise \a value is set to \a false, \a Type is \a FalseType, and the
+// class derives from \a FalseType. Examples:
 
    \code
    blaze::IsResizable< DynamicVector<double,false> >::value       // Evaluates to 1
@@ -73,15 +73,7 @@ namespace blaze {
 */
 template< typename T >
 struct IsResizable : public FalseType
-{
- public:
-   //**********************************************************************************************
-   /*! \cond BLAZE_INTERNAL */
-   enum { value = 0 };
-   typedef FalseType  Type;
-   /*! \endcond */
-   //**********************************************************************************************
-};
+{};
 //*************************************************************************************************
 
 
@@ -91,14 +83,8 @@ struct IsResizable : public FalseType
 // \ingroup math_type_traits
 */
 template< typename T >
-struct IsResizable< const T > : public IsResizable<T>::Type
-{
- public:
-   //**********************************************************************************************
-   enum { value = IsResizable<T>::value };
-   typedef typename IsResizable<T>::Type  Type;
-   //**********************************************************************************************
-};
+struct IsResizable< const T > : public IsResizable<T>
+{};
 /*! \endcond */
 //*************************************************************************************************
 
@@ -109,14 +95,8 @@ struct IsResizable< const T > : public IsResizable<T>::Type
 // \ingroup math_type_traits
 */
 template< typename T >
-struct IsResizable< volatile T > : public IsResizable<T>::Type
-{
- public:
-   //**********************************************************************************************
-   enum { value = IsResizable<T>::value };
-   typedef typename IsResizable<T>::Type  Type;
-   //**********************************************************************************************
-};
+struct IsResizable< volatile T > : public IsResizable<T>
+{};
 /*! \endcond */
 //*************************************************************************************************
 
@@ -127,14 +107,8 @@ struct IsResizable< volatile T > : public IsResizable<T>::Type
 // \ingroup math_type_traits
 */
 template< typename T >
-struct IsResizable< const volatile T > : public IsResizable<T>::Type
-{
- public:
-   //**********************************************************************************************
-   enum { value = IsResizable<T>::value };
-   typedef typename IsResizable<T>::Type  Type;
-   //**********************************************************************************************
-};
+struct IsResizable< const volatile T > : public IsResizable<T>
+{};
 /*! \endcond */
 //*************************************************************************************************
 

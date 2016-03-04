@@ -40,9 +40,8 @@
 // Includes
 //*************************************************************************************************
 
-#include <blaze/util/FalseType.h>
-#include <blaze/util/SelectType.h>
-#include <blaze/util/TrueType.h>
+#include <blaze/util/IntegralConstant.h>
+#include <blaze/util/mpl/Or.h>
 #include <blaze/util/typetraits/IsComplexDouble.h>
 #include <blaze/util/typetraits/IsComplexFloat.h>
 #include <blaze/util/typetraits/IsDouble.h>
@@ -58,33 +57,15 @@ namespace blaze {
 //=================================================================================================
 
 //*************************************************************************************************
-/*! \cond BLAZE_INTERNAL */
-/*!\brief Auxiliary helper struct for the IsBlasCompatible type trait.
-// \ingroup math_type_traits
-*/
-template< typename T >
-struct IsBlasCompatibleHelper
-{
-   //**********************************************************************************************
-   enum { value = ( IsFloat<T>::value  || IsComplexFloat<T>::value ||
-                    IsDouble<T>::value || IsComplexDouble<T>::value ) };
-   typedef typename SelectType<value,TrueType,FalseType>::Type  Type;
-   //**********************************************************************************************
-};
-/*! \endcond */
-//*************************************************************************************************
-
-
-//*************************************************************************************************
 /*!\brief Compile time check for data types.
 // \ingroup math_type_traits
 //
 // This type trait tests whether or not the given template parameter is a data type compatible
 // to the BLAS standard. The BLAS standard supports \c float, \c double, \c complex<float> and
 // \c complex<double> values. If the type is BLAS compatible, the \a value member enumeration
-// is set to 1, the nested type definition \a Type is \a TrueType, and the class derives from
-// \a TrueType. Otherwise \a value is set to 0, \a Type is \a FalseType, and the class derives
-// from \a FalseType.
+// is set to \a true, the nested type definition \a Type is \a TrueType, and the class derives
+// from \a TrueType. Otherwise \a value is set to \a false, \a Type is \a FalseType, and the
+// class derives from \a FalseType.
 
    \code
    blaze::IsBlasCompatible< float >::value         // Evaluates to 1
@@ -96,16 +77,9 @@ struct IsBlasCompatibleHelper
    \endcode
 */
 template< typename T >
-struct IsBlasCompatible : public IsBlasCompatibleHelper<T>::Type
-{
- public:
-   //**********************************************************************************************
-   /*! \cond BLAZE_INTERNAL */
-   enum { value = IsBlasCompatibleHelper<T>::value };
-   typedef typename IsBlasCompatibleHelper<T>::Type  Type;
-   /*! \endcond */
-   //**********************************************************************************************
-};
+struct IsBlasCompatible
+   : public BoolConstant< Or< IsFloat<T>, IsDouble<T>, IsComplexFloat<T>, IsComplexDouble<T> >::value >
+{};
 //*************************************************************************************************
 
 } // namespace blaze

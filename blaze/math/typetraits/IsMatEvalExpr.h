@@ -40,11 +40,11 @@
 // Includes
 //*************************************************************************************************
 
-#include <boost/type_traits/is_base_of.hpp>
 #include <blaze/math/expressions/MatEvalExpr.h>
-#include <blaze/util/FalseType.h>
-#include <blaze/util/SelectType.h>
-#include <blaze/util/TrueType.h>
+#include <blaze/util/IntegralConstant.h>
+#include <blaze/util/mpl/And.h>
+#include <blaze/util/mpl/Not.h>
+#include <blaze/util/typetraits/IsBaseOf.h>
 
 
 namespace blaze {
@@ -56,23 +56,6 @@ namespace blaze {
 //=================================================================================================
 
 //*************************************************************************************************
-/*! \cond BLAZE_INTERNAL */
-/*!\brief Auxiliary helper struct for the IsMatEvalExpr type trait.
-// \ingroup math_type_traits
-*/
-template< typename T >
-struct IsMatEvalExprHelper
-{
-   //**********************************************************************************************
-   enum { value = boost::is_base_of<MatEvalExpr,T>::value && !boost::is_base_of<T,MatEvalExpr>::value };
-   typedef typename SelectType<value,TrueType,FalseType>::Type  Type;
-   //**********************************************************************************************
-};
-/*! \endcond */
-//*************************************************************************************************
-
-
-//*************************************************************************************************
 /*!\brief Compile time check whether the given type is a matrix evaluation expression template.
 // \ingroup math_type_traits
 //
@@ -80,21 +63,14 @@ struct IsMatEvalExprHelper
 // expression template. In order to qualify as a valid matrix evaluation expression template,
 // the given type has to derive (publicly or privately) from the MatEvalExpr base class. In
 // case the given type is a valid matrix evaluation expression template, the \a value member
-// enumeration is set to 1, the nested type definition \a Type is \a TrueType, and the class
-// derives from \a TrueType. Otherwise \a value is set to 0, \a Type is \a FalseType, and the
-// class derives from \a FalseType.
+// enumeration is set to \a true, the nested type definition \a Type is \a TrueType, and the
+// class derives from \a TrueType. Otherwise \a value is set to \a false, \a Type is \a FalseType,
+// and the class derives from \a FalseType.
 */
 template< typename T >
-struct IsMatEvalExpr : public IsMatEvalExprHelper<T>::Type
-{
- public:
-   //**********************************************************************************************
-   /*! \cond BLAZE_INTERNAL */
-   enum { value = IsMatEvalExprHelper<T>::value };
-   typedef typename IsMatEvalExprHelper<T>::Type  Type;
-   /*! \endcond */
-   //**********************************************************************************************
-};
+struct IsMatEvalExpr
+   : public BoolConstant< And< IsBaseOf<MatEvalExpr,T>, Not< IsBaseOf<T,MatEvalExpr> > >::value >
+{};
 //*************************************************************************************************
 
 } // namespace blaze

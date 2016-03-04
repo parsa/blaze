@@ -40,11 +40,11 @@
 // Includes
 //*************************************************************************************************
 
-#include <boost/type_traits/is_base_of.hpp>
 #include <blaze/math/expressions/VecRealExpr.h>
-#include <blaze/util/FalseType.h>
-#include <blaze/util/SelectType.h>
-#include <blaze/util/TrueType.h>
+#include <blaze/util/IntegralConstant.h>
+#include <blaze/util/mpl/And.h>
+#include <blaze/util/mpl/Not.h>
+#include <blaze/util/typetraits/IsBaseOf.h>
 
 
 namespace blaze {
@@ -56,23 +56,6 @@ namespace blaze {
 //=================================================================================================
 
 //*************************************************************************************************
-/*! \cond BLAZE_INTERNAL */
-/*!\brief Auxiliary helper struct for the IsVecRealExpr type trait.
-// \ingroup math_type_traits
-*/
-template< typename T >
-struct IsVecRealExprHelper
-{
-   //**********************************************************************************************
-   enum { value = boost::is_base_of<VecRealExpr,T>::value && !boost::is_base_of<T,VecRealExpr>::value };
-   typedef typename SelectType<value,TrueType,FalseType>::Type  Type;
-   //**********************************************************************************************
-};
-/*! \endcond */
-//*************************************************************************************************
-
-
-//*************************************************************************************************
 /*!\brief Compile time check whether the given type is a vector real part expression template.
 // \ingroup math_type_traits
 //
@@ -80,21 +63,14 @@ struct IsVecRealExprHelper
 // expression template. In order to qualify as a valid vector real part expression template,
 // the given type has to derive (publicly or privately) from the VecRealExpr base class. In
 // case the given type is a valid vector real part expression template, the \a value member
-// enumeration is set to 1, the nested type definition \a Type is \a TrueType, and the class
-// derives from \a TrueType. Otherwise \a value is set to 0, \a Type is \a FalseType, and the
-// class derives from \a FalseType.
+// enumeration is set to \a true, the nested type definition \a Type is \a TrueType, and
+// the class derives from \a TrueType. Otherwise \a value is set to \a false, \a Type is
+// \a FalseType, and the class derives from \a FalseType.
 */
 template< typename T >
-struct IsVecRealExpr : public IsVecRealExprHelper<T>::Type
-{
- public:
-   //**********************************************************************************************
-   /*! \cond BLAZE_INTERNAL */
-   enum { value = IsVecRealExprHelper<T>::value };
-   typedef typename IsVecRealExprHelper<T>::Type  Type;
-   /*! \endcond */
-   //**********************************************************************************************
-};
+struct IsVecRealExpr
+   : public BoolConstant< And< IsBaseOf<VecRealExpr,T>, Not< IsBaseOf<T,VecRealExpr> > >::value >
+{};
 //*************************************************************************************************
 
 } // namespace blaze

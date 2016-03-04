@@ -40,11 +40,11 @@
 // Includes
 //*************************************************************************************************
 
-#include <boost/type_traits/is_base_of.hpp>
 #include <blaze/math/expressions/VecVecMultExpr.h>
-#include <blaze/util/FalseType.h>
-#include <blaze/util/SelectType.h>
-#include <blaze/util/TrueType.h>
+#include <blaze/util/IntegralConstant.h>
+#include <blaze/util/mpl/And.h>
+#include <blaze/util/mpl/Not.h>
+#include <blaze/util/typetraits/IsBaseOf.h>
 
 
 namespace blaze {
@@ -56,23 +56,6 @@ namespace blaze {
 //=================================================================================================
 
 //*************************************************************************************************
-/*! \cond BLAZE_INTERNAL */
-/*!\brief Auxiliary helper struct for the IsVecVecMultExpr type trait.
-// \ingroup math_type_traits
-*/
-template< typename T >
-struct IsVecVecMultExprHelper
-{
-   //**********************************************************************************************
-   enum { value = boost::is_base_of<VecVecMultExpr,T>::value && !boost::is_base_of<T,VecVecMultExpr>::value };
-   typedef typename SelectType<value,TrueType,FalseType>::Type  Type;
-   //**********************************************************************************************
-};
-/*! \endcond */
-//*************************************************************************************************
-
-
-//*************************************************************************************************
 /*!\brief Compile time check whether the given type is a vector/vector multiplication expression
 //        template.
 // \ingroup math_type_traits
@@ -81,21 +64,15 @@ struct IsVecVecMultExprHelper
 // multiplication expression template. In order to qualify as a valid vector multiplication
 // expression template, the given type has to derive (publicly or privately) from the
 // VecVecMultExpr base class. In case the given type is a valid vector multiplication
-// expression template, the \a value member enumeration is set to 1, the nested type
+// expression template, the \a value member enumeration is set to \a true, the nested type
 // definition \a Type is \a TrueType, and the class derives from \a TrueType. Otherwise
-// \a value is set to 0, \a Type is \a FalseType, and the class derives from \a FalseType.
+// \a value is set to \a false, \a Type is \a FalseType, and the class derives from
+// \a FalseType.
 */
 template< typename T >
-struct IsVecVecMultExpr : public IsVecVecMultExprHelper<T>::Type
-{
- public:
-   //**********************************************************************************************
-   /*! \cond BLAZE_INTERNAL */
-   enum { value = IsVecVecMultExprHelper<T>::value };
-   typedef typename IsVecVecMultExprHelper<T>::Type  Type;
-   /*! \endcond */
-   //**********************************************************************************************
-};
+struct IsVecVecMultExpr
+   : public BoolConstant< And< IsBaseOf<VecVecMultExpr,T>, Not< IsBaseOf<T,VecVecMultExpr> > >::value >
+{};
 //*************************************************************************************************
 
 } // namespace blaze

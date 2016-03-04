@@ -41,11 +41,11 @@
 //*************************************************************************************************
 
 #include <blaze/math/typetraits/IsExpression.h>
+#include <blaze/util/IntegralConstant.h>
+#include <blaze/util/mpl/And.h>
+#include <blaze/util/mpl/Not.h>
 #include <blaze/util/typetraits/IsNumeric.h>
 #include <blaze/util/typetraits/IsReference.h>
-#include <blaze/util/FalseType.h>
-#include <blaze/util/SelectType.h>
-#include <blaze/util/TrueType.h>
 
 
 namespace blaze {
@@ -57,43 +57,19 @@ namespace blaze {
 //=================================================================================================
 
 //*************************************************************************************************
-/*! \cond BLAZE_INTERNAL */
-/*!\brief Auxiliary helper struct for the IsTemporary type trait.
-// \ingroup math_type_traits
-*/
-template< typename T >
-struct IsTemporaryHelper
-{
-   //**********************************************************************************************
-   enum { value = !IsReference<T>::value && !IsNumeric<T>::value && !IsExpression<T>::value };
-   typedef typename SelectType<value,TrueType,FalseType>::Type  Type;
-   //**********************************************************************************************
-};
-/*! \endcond */
-//*************************************************************************************************
-
-
-//*************************************************************************************************
 /*!\brief Compile time check whether the given type is a temporary vector or matrix type.
 // \ingroup math_type_traits
 //
 // This type trait class tests whether the given type is a temporary vector or matrix type,
 // i.e. can be used for a temporary vector or matrix. In case the given type can be used as
-// temporary, the \a value member enumeration is set to 1, the nested type definition \a Type
-// is \a TrueType, and the class derives from \a TrueType. Otherwise \a value is set to 0,
-// \a Type is \a FalseType, and the class derives from \a FalseType.
+// temporary, the \a value member enumeration is set to \a true, the nested type definition
+// \a Type is \a TrueType, and the class derives from \a TrueType. Otherwise \a value is set
+// to \a false, \a Type is \a FalseType, and the class derives from \a FalseType.
 */
 template< typename T >
-struct IsTemporary : public IsTemporaryHelper<T>::Type
-{
- public:
-   //**********************************************************************************************
-   /*! \cond BLAZE_INTERNAL */
-   enum { value = IsTemporaryHelper<T>::value };
-   typedef typename IsTemporaryHelper<T>::Type  Type;
-   /*! \endcond */
-   //**********************************************************************************************
-};
+struct IsTemporary
+   : public BoolConstant< And< Not< IsReference<T> >, Not< IsNumeric<T> >, Not< IsExpression<T> > >::value >
+{};
 //*************************************************************************************************
 
 } // namespace blaze

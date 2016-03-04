@@ -40,12 +40,11 @@
 // Includes
 //*************************************************************************************************
 
-#include <boost/type_traits/is_base_of.hpp>
 #include <blaze/math/expressions/Submatrix.h>
-#include <blaze/util/FalseType.h>
-#include <blaze/util/SelectType.h>
-#include <blaze/util/TrueType.h>
-#include <blaze/util/typetraits/RemoveCV.h>
+#include <blaze/util/IntegralConstant.h>
+#include <blaze/util/mpl/And.h>
+#include <blaze/util/mpl/Not.h>
+#include <blaze/util/typetraits/IsBaseOf.h>
 
 
 namespace blaze {
@@ -57,36 +56,14 @@ namespace blaze {
 //=================================================================================================
 
 //*************************************************************************************************
-/*! \cond BLAZE_INTERNAL */
-/*!\brief Auxiliary helper struct for the IsSubmatrix type trait.
-// \ingroup math_type_traits
-*/
-template< typename T >
-struct IsSubmatrixHelper
-{
- private:
-   //**********************************************************************************************
-   typedef typename RemoveCV<T>::Type  T2;
-   //**********************************************************************************************
-
- public:
-   //**********************************************************************************************
-   enum { value = boost::is_base_of<Submatrix,T2>::value && !boost::is_base_of<T2,Submatrix>::value };
-   typedef typename SelectType<value,TrueType,FalseType>::Type  Type;
-   //**********************************************************************************************
-};
-/*! \endcond */
-//*************************************************************************************************
-
-
-//*************************************************************************************************
 /*!\brief Compile time check for submatrices.
 // \ingroup math_type_traits
 //
-// This type trait tests whether or not the given template parameter is a submatrix (i.e. dense or
-// sparse submatrix). In case the type is a submatrix, the \a value member enumeration is set to
-// 1, the nested type definition \a Type is \a TrueType, and the class derives from \a TrueType.
-// Otherwise \a value is set to 0, \a Type is \a FalseType, and the class derives from \a FalseType.
+// This type trait tests whether or not the given template parameter is a submatrix (i.e. dense
+// or sparse submatrix). In case the type is a submatrix, the \a value member enumeration is set
+// to \a true, the nested type definition \a Type is \a TrueType, and the class derives from
+// \a TrueType. Otherwise \a value is set to \a false, \a Type is \a FalseType, and the class
+// derives from \a FalseType.
 
    \code
    typedef blaze::DynamicMatrix<double,columnMajor>  DenseMatrixType1;
@@ -107,16 +84,9 @@ struct IsSubmatrixHelper
    \endcode
 */
 template< typename T >
-struct IsSubmatrix : public IsSubmatrixHelper<T>::Type
-{
- public:
-   //**********************************************************************************************
-   /*! \cond BLAZE_INTERNAL */
-   enum { value = IsSubmatrixHelper<T>::value };
-   typedef typename IsSubmatrixHelper<T>::Type  Type;
-   /*! \endcond */
-   //**********************************************************************************************
-};
+struct IsSubmatrix
+   : public BoolConstant< And< IsBaseOf<Submatrix,T>, Not< IsBaseOf<T,Submatrix> > >::value >
+{};
 //*************************************************************************************************
 
 } // namespace blaze
