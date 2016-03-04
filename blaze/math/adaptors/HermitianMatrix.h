@@ -74,11 +74,12 @@
 #include <blaze/util/Assert.h>
 #include <blaze/util/EnableIf.h>
 #include <blaze/util/Exception.h>
+#include <blaze/util/IntegralConstant.h>
 #include <blaze/util/mpl/If.h>
+#include <blaze/util/TrueType.h>
 #include <blaze/util/typetraits/IsBuiltin.h>
 #include <blaze/util/typetraits/IsNumeric.h>
 #include <blaze/util/Unused.h>
-#include <blaze/util/valuetraits/IsTrue.h>
 
 
 namespace blaze {
@@ -1298,7 +1299,7 @@ struct Columns< HermitianMatrix<MT,SO,DF> > : public Columns<MT>
 //*************************************************************************************************
 /*! \cond BLAZE_INTERNAL */
 template< typename MT, bool SO, bool DF >
-struct IsSquare< HermitianMatrix<MT,SO,DF> > : public IsTrue<true>
+struct IsSquare< HermitianMatrix<MT,SO,DF> > : public TrueType
 {};
 /*! \endcond */
 //*************************************************************************************************
@@ -1316,7 +1317,7 @@ struct IsSquare< HermitianMatrix<MT,SO,DF> > : public IsTrue<true>
 /*! \cond BLAZE_INTERNAL */
 template< typename MT, bool SO, bool DF >
 struct IsSymmetric< HermitianMatrix<MT,SO,DF> >
-   : public IsTrue< IsBuiltin<typename MT::ElementType>::value >
+   : public BoolConstant< IsBuiltin<typename MT::ElementType>::value >
 {};
 /*! \endcond */
 //*************************************************************************************************
@@ -1333,7 +1334,7 @@ struct IsSymmetric< HermitianMatrix<MT,SO,DF> >
 //*************************************************************************************************
 /*! \cond BLAZE_INTERNAL */
 template< typename MT, bool SO, bool DF >
-struct IsHermitian< HermitianMatrix<MT,SO,DF> > : public IsTrue<true>
+struct IsHermitian< HermitianMatrix<MT,SO,DF> > : public TrueType
 {};
 /*! \endcond */
 //*************************************************************************************************
@@ -1350,7 +1351,7 @@ struct IsHermitian< HermitianMatrix<MT,SO,DF> > : public IsTrue<true>
 //*************************************************************************************************
 /*! \cond BLAZE_INTERNAL */
 template< typename MT, bool SO, bool DF >
-struct IsAdaptor< HermitianMatrix<MT,SO,DF> > : public IsTrue<true>
+struct IsAdaptor< HermitianMatrix<MT,SO,DF> > : public TrueType
 {};
 /*! \endcond */
 //*************************************************************************************************
@@ -1367,7 +1368,7 @@ struct IsAdaptor< HermitianMatrix<MT,SO,DF> > : public IsTrue<true>
 //*************************************************************************************************
 /*! \cond BLAZE_INTERNAL */
 template< typename MT, bool SO, bool DF >
-struct IsRestricted< HermitianMatrix<MT,SO,DF> > : public IsTrue<true>
+struct IsRestricted< HermitianMatrix<MT,SO,DF> > : public TrueType
 {};
 /*! \endcond */
 //*************************************************************************************************
@@ -1384,7 +1385,7 @@ struct IsRestricted< HermitianMatrix<MT,SO,DF> > : public IsTrue<true>
 //*************************************************************************************************
 /*! \cond BLAZE_INTERNAL */
 template< typename MT, bool SO >
-struct HasConstDataAccess< HermitianMatrix<MT,SO,true> > : public IsTrue<true>
+struct HasConstDataAccess< HermitianMatrix<MT,SO,true> > : public TrueType
 {};
 /*! \endcond */
 //*************************************************************************************************
@@ -1401,7 +1402,7 @@ struct HasConstDataAccess< HermitianMatrix<MT,SO,true> > : public IsTrue<true>
 //*************************************************************************************************
 /*! \cond BLAZE_INTERNAL */
 template< typename MT, bool SO, bool DF >
-struct IsAligned< HermitianMatrix<MT,SO,DF> > : public IsTrue< IsAligned<MT>::value >
+struct IsAligned< HermitianMatrix<MT,SO,DF> > : public BoolConstant< IsAligned<MT>::value >
 {};
 /*! \endcond */
 //*************************************************************************************************
@@ -1418,7 +1419,7 @@ struct IsAligned< HermitianMatrix<MT,SO,DF> > : public IsTrue< IsAligned<MT>::va
 //*************************************************************************************************
 /*! \cond BLAZE_INTERNAL */
 template< typename MT, bool SO, bool DF >
-struct IsPadded< HermitianMatrix<MT,SO,DF> > : public IsTrue< IsPadded<MT>::value >
+struct IsPadded< HermitianMatrix<MT,SO,DF> > : public BoolConstant< IsPadded<MT>::value >
 {};
 /*! \endcond */
 //*************************************************************************************************
@@ -1435,7 +1436,7 @@ struct IsPadded< HermitianMatrix<MT,SO,DF> > : public IsTrue< IsPadded<MT>::valu
 //*************************************************************************************************
 /*! \cond BLAZE_INTERNAL */
 template< typename MT, bool SO, bool DF >
-struct IsResizable< HermitianMatrix<MT,SO,DF> > : public IsTrue< IsResizable<MT>::value >
+struct IsResizable< HermitianMatrix<MT,SO,DF> > : public BoolConstant< IsResizable<MT>::value >
 {};
 /*! \endcond */
 //*************************************************************************************************

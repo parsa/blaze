@@ -84,10 +84,11 @@
 #include <blaze/util/Assert.h>
 #include <blaze/util/EnableIf.h>
 #include <blaze/util/Exception.h>
+#include <blaze/util/IntegralConstant.h>
+#include <blaze/util/TrueType.h>
 #include <blaze/util/typetraits/IsBuiltin.h>
 #include <blaze/util/typetraits/IsNumeric.h>
 #include <blaze/util/Unused.h>
-#include <blaze/util/valuetraits/IsTrue.h>
 
 
 namespace blaze {
@@ -1202,7 +1203,7 @@ struct Columns< DiagonalMatrix<MT,SO,DF> > : public Columns<MT>
 //*************************************************************************************************
 /*! \cond BLAZE_INTERNAL */
 template< typename MT, bool SO, bool DF >
-struct IsSquare< DiagonalMatrix<MT,SO,DF> > : public IsTrue<true>
+struct IsSquare< DiagonalMatrix<MT,SO,DF> > : public TrueType
 {};
 /*! \endcond */
 //*************************************************************************************************
@@ -1219,7 +1220,7 @@ struct IsSquare< DiagonalMatrix<MT,SO,DF> > : public IsTrue<true>
 //*************************************************************************************************
 /*! \cond BLAZE_INTERNAL */
 template< typename MT, bool SO, bool DF >
-struct IsSymmetric< DiagonalMatrix<MT,SO,DF> > : public IsTrue<true>
+struct IsSymmetric< DiagonalMatrix<MT,SO,DF> > : public TrueType
 {};
 /*! \endcond */
 //*************************************************************************************************
@@ -1237,7 +1238,7 @@ struct IsSymmetric< DiagonalMatrix<MT,SO,DF> > : public IsTrue<true>
 /*! \cond BLAZE_INTERNAL */
 template< typename MT, bool SO, bool DF >
 struct IsHermitian< DiagonalMatrix<MT,SO,DF> >
-   : public IsTrue< IsBuiltin<typename MT::ElementType>::value >
+   : public BoolConstant< IsBuiltin<typename MT::ElementType>::value >
 {};
 /*! \endcond */
 //*************************************************************************************************
@@ -1254,7 +1255,7 @@ struct IsHermitian< DiagonalMatrix<MT,SO,DF> >
 //*************************************************************************************************
 /*! \cond BLAZE_INTERNAL */
 template< typename MT, bool SO, bool DF >
-struct IsLower< DiagonalMatrix<MT,SO,DF> > : public IsTrue<true>
+struct IsLower< DiagonalMatrix<MT,SO,DF> > : public TrueType
 {};
 /*! \endcond */
 //*************************************************************************************************
@@ -1271,7 +1272,7 @@ struct IsLower< DiagonalMatrix<MT,SO,DF> > : public IsTrue<true>
 //*************************************************************************************************
 /*! \cond BLAZE_INTERNAL */
 template< typename MT, bool SO, bool DF >
-struct IsUpper< DiagonalMatrix<MT,SO,DF> > : public IsTrue<true>
+struct IsUpper< DiagonalMatrix<MT,SO,DF> > : public TrueType
 {};
 /*! \endcond */
 //*************************************************************************************************
@@ -1288,7 +1289,7 @@ struct IsUpper< DiagonalMatrix<MT,SO,DF> > : public IsTrue<true>
 //*************************************************************************************************
 /*! \cond BLAZE_INTERNAL */
 template< typename MT, bool SO, bool DF >
-struct IsAdaptor< DiagonalMatrix<MT,SO,DF> > : public IsTrue<true>
+struct IsAdaptor< DiagonalMatrix<MT,SO,DF> > : public TrueType
 {};
 /*! \endcond */
 //*************************************************************************************************
@@ -1305,7 +1306,7 @@ struct IsAdaptor< DiagonalMatrix<MT,SO,DF> > : public IsTrue<true>
 //*************************************************************************************************
 /*! \cond BLAZE_INTERNAL */
 template< typename MT, bool SO, bool DF >
-struct IsRestricted< DiagonalMatrix<MT,SO,DF> > : public IsTrue<true>
+struct IsRestricted< DiagonalMatrix<MT,SO,DF> > : public TrueType
 {};
 /*! \endcond */
 //*************************************************************************************************
@@ -1322,7 +1323,7 @@ struct IsRestricted< DiagonalMatrix<MT,SO,DF> > : public IsTrue<true>
 //*************************************************************************************************
 /*! \cond BLAZE_INTERNAL */
 template< typename MT, bool SO >
-struct HasConstDataAccess< DiagonalMatrix<MT,SO,true> > : public IsTrue<true>
+struct HasConstDataAccess< DiagonalMatrix<MT,SO,true> > : public TrueType
 {};
 /*! \endcond */
 //*************************************************************************************************
@@ -1339,7 +1340,7 @@ struct HasConstDataAccess< DiagonalMatrix<MT,SO,true> > : public IsTrue<true>
 //*************************************************************************************************
 /*! \cond BLAZE_INTERNAL */
 template< typename MT, bool SO, bool DF >
-struct IsAligned< DiagonalMatrix<MT,SO,DF> > : public IsTrue< IsAligned<MT>::value >
+struct IsAligned< DiagonalMatrix<MT,SO,DF> > : public BoolConstant< IsAligned<MT>::value >
 {};
 /*! \endcond */
 //*************************************************************************************************
@@ -1356,7 +1357,7 @@ struct IsAligned< DiagonalMatrix<MT,SO,DF> > : public IsTrue< IsAligned<MT>::val
 //*************************************************************************************************
 /*! \cond BLAZE_INTERNAL */
 template< typename MT, bool SO, bool DF >
-struct IsPadded< DiagonalMatrix<MT,SO,DF> > : public IsTrue< IsPadded<MT>::value >
+struct IsPadded< DiagonalMatrix<MT,SO,DF> > : public BoolConstant< IsPadded<MT>::value >
 {};
 /*! \endcond */
 //*************************************************************************************************
@@ -1373,7 +1374,7 @@ struct IsPadded< DiagonalMatrix<MT,SO,DF> > : public IsTrue< IsPadded<MT>::value
 //*************************************************************************************************
 /*! \cond BLAZE_INTERNAL */
 template< typename MT, bool SO, bool DF >
-struct IsResizable< DiagonalMatrix<MT,SO,DF> > : public IsTrue< IsResizable<MT>::value >
+struct IsResizable< DiagonalMatrix<MT,SO,DF> > : public BoolConstant< IsResizable<MT>::value >
 {};
 /*! \endcond */
 //*************************************************************************************************

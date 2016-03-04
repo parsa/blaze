@@ -71,9 +71,10 @@
 #include <blaze/math/typetraits/Rows.h>
 #include <blaze/util/Assert.h>
 #include <blaze/util/EnableIf.h>
+#include <blaze/util/IntegralConstant.h>
+#include <blaze/util/TrueType.h>
 #include <blaze/util/typetraits/IsNumeric.h>
 #include <blaze/util/Unused.h>
-#include <blaze/util/valuetraits/IsTrue.h>
 
 
 namespace blaze {
@@ -911,7 +912,7 @@ struct Columns< StrictlyLowerMatrix<MT,SO,DF> > : public Columns<MT>
 //*************************************************************************************************
 /*! \cond BLAZE_INTERNAL */
 template< typename MT, bool SO, bool DF >
-struct IsSquare< StrictlyLowerMatrix<MT,SO,DF> > : public IsTrue<true>
+struct IsSquare< StrictlyLowerMatrix<MT,SO,DF> > : public TrueType
 {};
 /*! \endcond */
 //*************************************************************************************************
@@ -928,7 +929,7 @@ struct IsSquare< StrictlyLowerMatrix<MT,SO,DF> > : public IsTrue<true>
 //*************************************************************************************************
 /*! \cond BLAZE_INTERNAL */
 template< typename MT, bool SO, bool DF >
-struct IsStrictlyLower< StrictlyLowerMatrix<MT,SO,DF> > : public IsTrue<true>
+struct IsStrictlyLower< StrictlyLowerMatrix<MT,SO,DF> > : public TrueType
 {};
 /*! \endcond */
 //*************************************************************************************************
@@ -945,7 +946,7 @@ struct IsStrictlyLower< StrictlyLowerMatrix<MT,SO,DF> > : public IsTrue<true>
 //*************************************************************************************************
 /*! \cond BLAZE_INTERNAL */
 template< typename MT, bool SO, bool DF >
-struct IsAdaptor< StrictlyLowerMatrix<MT,SO,DF> > : public IsTrue<true>
+struct IsAdaptor< StrictlyLowerMatrix<MT,SO,DF> > : public TrueType
 {};
 /*! \endcond */
 //*************************************************************************************************
@@ -962,7 +963,7 @@ struct IsAdaptor< StrictlyLowerMatrix<MT,SO,DF> > : public IsTrue<true>
 //*************************************************************************************************
 /*! \cond BLAZE_INTERNAL */
 template< typename MT, bool SO, bool DF >
-struct IsRestricted< StrictlyLowerMatrix<MT,SO,DF> > : public IsTrue<true>
+struct IsRestricted< StrictlyLowerMatrix<MT,SO,DF> > : public TrueType
 {};
 /*! \endcond */
 //*************************************************************************************************
@@ -979,7 +980,7 @@ struct IsRestricted< StrictlyLowerMatrix<MT,SO,DF> > : public IsTrue<true>
 //*************************************************************************************************
 /*! \cond BLAZE_INTERNAL */
 template< typename MT, bool SO >
-struct HasConstDataAccess< StrictlyLowerMatrix<MT,SO,true> > : public IsTrue<true>
+struct HasConstDataAccess< StrictlyLowerMatrix<MT,SO,true> > : public TrueType
 {};
 /*! \endcond */
 //*************************************************************************************************
@@ -996,7 +997,7 @@ struct HasConstDataAccess< StrictlyLowerMatrix<MT,SO,true> > : public IsTrue<tru
 //*************************************************************************************************
 /*! \cond BLAZE_INTERNAL */
 template< typename MT, bool SO, bool DF >
-struct IsAligned< StrictlyLowerMatrix<MT,SO,DF> > : public IsTrue< IsAligned<MT>::value >
+struct IsAligned< StrictlyLowerMatrix<MT,SO,DF> > : public BoolConstant< IsAligned<MT>::value >
 {};
 /*! \endcond */
 //*************************************************************************************************
@@ -1013,7 +1014,7 @@ struct IsAligned< StrictlyLowerMatrix<MT,SO,DF> > : public IsTrue< IsAligned<MT>
 //*************************************************************************************************
 /*! \cond BLAZE_INTERNAL */
 template< typename MT, bool SO, bool DF >
-struct IsPadded< StrictlyLowerMatrix<MT,SO,DF> > : public IsTrue< IsPadded<MT>::value >
+struct IsPadded< StrictlyLowerMatrix<MT,SO,DF> > : public BoolConstant< IsPadded<MT>::value >
 {};
 /*! \endcond */
 //*************************************************************************************************
@@ -1030,7 +1031,7 @@ struct IsPadded< StrictlyLowerMatrix<MT,SO,DF> > : public IsTrue< IsPadded<MT>::
 //*************************************************************************************************
 /*! \cond BLAZE_INTERNAL */
 template< typename MT, bool SO, bool DF >
-struct IsResizable< StrictlyLowerMatrix<MT,SO,DF> > : public IsTrue< IsResizable<MT>::value >
+struct IsResizable< StrictlyLowerMatrix<MT,SO,DF> > : public BoolConstant< IsResizable<MT>::value >
 {};
 /*! \endcond */
 //*************************************************************************************************

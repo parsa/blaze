@@ -79,9 +79,10 @@
 #include <blaze/math/typetraits/Rows.h>
 #include <blaze/util/Assert.h>
 #include <blaze/util/EnableIf.h>
+#include <blaze/util/IntegralConstant.h>
+#include <blaze/util/TrueType.h>
 #include <blaze/util/typetraits/IsNumeric.h>
 #include <blaze/util/Unused.h>
-#include <blaze/util/valuetraits/IsTrue.h>
 
 
 namespace blaze {
@@ -1833,7 +1834,7 @@ struct Columns< UniLowerMatrix<MT,SO,DF> > : public Columns<MT>
 //*************************************************************************************************
 /*! \cond BLAZE_INTERNAL */
 template< typename MT, bool SO, bool DF >
-struct IsSquare< UniLowerMatrix<MT,SO,DF> > : public IsTrue<true>
+struct IsSquare< UniLowerMatrix<MT,SO,DF> > : public TrueType
 {};
 /*! \endcond */
 //*************************************************************************************************
@@ -1850,7 +1851,7 @@ struct IsSquare< UniLowerMatrix<MT,SO,DF> > : public IsTrue<true>
 //*************************************************************************************************
 /*! \cond BLAZE_INTERNAL */
 template< typename MT, bool SO, bool DF >
-struct IsUniLower< UniLowerMatrix<MT,SO,DF> > : public IsTrue<true>
+struct IsUniLower< UniLowerMatrix<MT,SO,DF> > : public TrueType
 {};
 /*! \endcond */
 //*************************************************************************************************
@@ -1867,7 +1868,7 @@ struct IsUniLower< UniLowerMatrix<MT,SO,DF> > : public IsTrue<true>
 //*************************************************************************************************
 /*! \cond BLAZE_INTERNAL */
 template< typename MT, bool SO, bool DF >
-struct IsAdaptor< UniLowerMatrix<MT,SO,DF> > : public IsTrue<true>
+struct IsAdaptor< UniLowerMatrix<MT,SO,DF> > : public TrueType
 {};
 /*! \endcond */
 //*************************************************************************************************
@@ -1884,7 +1885,7 @@ struct IsAdaptor< UniLowerMatrix<MT,SO,DF> > : public IsTrue<true>
 //*************************************************************************************************
 /*! \cond BLAZE_INTERNAL */
 template< typename MT, bool SO, bool DF >
-struct IsRestricted< UniLowerMatrix<MT,SO,DF> > : public IsTrue<true>
+struct IsRestricted< UniLowerMatrix<MT,SO,DF> > : public TrueType
 {};
 /*! \endcond */
 //*************************************************************************************************
@@ -1901,7 +1902,7 @@ struct IsRestricted< UniLowerMatrix<MT,SO,DF> > : public IsTrue<true>
 //*************************************************************************************************
 /*! \cond BLAZE_INTERNAL */
 template< typename MT, bool SO >
-struct HasConstDataAccess< UniLowerMatrix<MT,SO,true> > : public IsTrue<true>
+struct HasConstDataAccess< UniLowerMatrix<MT,SO,true> > : public TrueType
 {};
 /*! \endcond */
 //*************************************************************************************************
@@ -1918,7 +1919,7 @@ struct HasConstDataAccess< UniLowerMatrix<MT,SO,true> > : public IsTrue<true>
 //*************************************************************************************************
 /*! \cond BLAZE_INTERNAL */
 template< typename MT, bool SO, bool DF >
-struct IsAligned< UniLowerMatrix<MT,SO,DF> > : public IsTrue< IsAligned<MT>::value >
+struct IsAligned< UniLowerMatrix<MT,SO,DF> > : public BoolConstant< IsAligned<MT>::value >
 {};
 /*! \endcond */
 //*************************************************************************************************
@@ -1935,7 +1936,7 @@ struct IsAligned< UniLowerMatrix<MT,SO,DF> > : public IsTrue< IsAligned<MT>::val
 //*************************************************************************************************
 /*! \cond BLAZE_INTERNAL */
 template< typename MT, bool SO, bool DF >
-struct IsPadded< UniLowerMatrix<MT,SO,DF> > : public IsTrue< IsPadded<MT>::value >
+struct IsPadded< UniLowerMatrix<MT,SO,DF> > : public BoolConstant< IsPadded<MT>::value >
 {};
 /*! \endcond */
 //*************************************************************************************************
@@ -1952,7 +1953,7 @@ struct IsPadded< UniLowerMatrix<MT,SO,DF> > : public IsTrue< IsPadded<MT>::value
 //*************************************************************************************************
 /*! \cond BLAZE_INTERNAL */
 template< typename MT, bool SO, bool DF >
-struct IsResizable< UniLowerMatrix<MT,SO,DF> > : public IsTrue< IsResizable<MT>::value >
+struct IsResizable< UniLowerMatrix<MT,SO,DF> > : public BoolConstant< IsResizable<MT>::value >
 {};
 /*! \endcond */
 //*************************************************************************************************
