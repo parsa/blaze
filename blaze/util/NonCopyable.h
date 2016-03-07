@@ -49,8 +49,8 @@ namespace blaze {
 // \ingroup util
 //
 // The NonCopyable class is intended to work as a base class for non-copyable classes. Both the
-// copy constructor and the copy assignment operator are declared private and left undefined in
-// order to prohibit copy operations of the derived classes.\n
+// copy constructor and the copy assignment operator are explicitly deleted in order to prohibit
+// copy operations of the derived classes.\n
 //
 // \note: It is not necessary to publicly derive from this class. It is sufficient to derive
 // privately to prevent copy operations on the derived class.
@@ -71,12 +71,11 @@ class NonCopyable
    //@}
    //**********************************************************************************************
 
- private:
    //**Copy constructor and copy assignment operator***********************************************
    /*!\name Copy constructor and copy assignment operator */
    //@{
-   NonCopyable( const NonCopyable& );             //!< Copy constructor (private & undefined)
-   NonCopyable& operator=( const NonCopyable& );  //!< Copy assignment operator (private & undefined)
+   NonCopyable( const NonCopyable& ) = delete;             //!< Copy constructor (explicitly deleted)
+   NonCopyable& operator=( const NonCopyable& ) = delete;  //!< Copy assignment operator (explicitly deleted)
    //@}
    //**********************************************************************************************
 };
