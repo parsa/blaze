@@ -64,13 +64,13 @@ namespace blaze {
 */
 class NonCreatable
 {
- private:
+ protected:
    //**Constructors and copy assignment operator***************************************************
    /*!\name Constructors and copy assignment operator */
    //@{
-   NonCreatable();                                  //!< Constructor (private & undefined)
-   NonCreatable( const NonCreatable& );             //!< Copy constructor (private & undefined)
-   NonCreatable& operator=( const NonCreatable& );  //!< Copy assignment operator (private & undefined)
+   NonCreatable() = delete;                                  //!< Constructor (explicitly deleted)
+   NonCreatable( const NonCreatable& ) = delete;             //!< Copy constructor (explicitly deleted)
+   NonCreatable& operator=( const NonCreatable& ) = delete;  //!< Copy assignment operator (explicitly deleted)
    //@}
    //**********************************************************************************************
 };
