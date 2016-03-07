@@ -50,12 +50,12 @@
 #include <blaze/math/shims/Equal.h>
 #include <blaze/util/constraints/Numeric.h>
 #include <blaze/util/FalseType.h>
+#include <blaze/util/IntegralConstant.h>
 #include <blaze/util/Memory.h>
 #include <blaze/util/NonCopyable.h>
 #include <blaze/util/policies/Deallocate.h>
 #include <blaze/util/Random.h>
 #include <blaze/util/TrueType.h>
-#include <blaze/util/valuetraits/IsTrue.h>
 
 
 namespace blazetest {
@@ -192,12 +192,12 @@ OperationTest<T>::OperationTest()
       testStoreu( offset );
    }
 
-   testAddition      ( typename blaze::IsTrue< IT::addition       >::Type() );
-   testSubtraction   ( typename blaze::IsTrue< IT::subtraction    >::Type() );
-   testMultiplication( typename blaze::IsTrue< IT::multiplication >::Type() );
-   testDivision      ( typename blaze::IsTrue< IT::division       >::Type() );
-   testAbsoluteValue ( typename blaze::IsTrue< IT::absoluteValue  >::Type() );
-   testConjugate     ( typename blaze::IsTrue< IT::conjugate      >::Type() );
+   testAddition      ( typename blaze::BoolConstant< IT::addition       >::Type() );
+   testSubtraction   ( typename blaze::BoolConstant< IT::subtraction    >::Type() );
+   testMultiplication( typename blaze::BoolConstant< IT::multiplication >::Type() );
+   testDivision      ( typename blaze::BoolConstant< IT::division       >::Type() );
+   testAbsoluteValue ( typename blaze::BoolConstant< IT::absoluteValue  >::Type() );
+   testConjugate     ( typename blaze::BoolConstant< IT::conjugate      >::Type() );
    testReduction     ();
 }
 //*************************************************************************************************
