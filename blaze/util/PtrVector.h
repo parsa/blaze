@@ -413,7 +413,7 @@ class PtrVector
    /*!\name Utility functions */
    //@{
           void reserve( SizeType newCapacity );
-   inline void swap( PtrVector& pv ) /* throw() */;
+   inline void swap( PtrVector& pv ) noexcept;
    //@}
    //**********************************************************************************************
 
@@ -1630,7 +1630,7 @@ void PtrVector<T,D,G>::reserve( SizeType newCapacity )
 template< typename T    // Type
         , typename D    // Deletion policy
         , typename G >  // Growth policy
-inline void PtrVector<T,D,G>::swap( PtrVector& pv ) /* throw() */
+inline void PtrVector<T,D,G>::swap( PtrVector& pv ) noexcept
 {
    // By using the 'std::swap' function to swap all member variables,
    // the function can give the nothrow guarantee.
@@ -1866,7 +1866,7 @@ template< typename T, typename D, typename G >
 inline bool operator!=( const PtrVector<T,D,G>& lhs, const PtrVector<T,D,G>& rhs );
 
 template< typename T, typename D, typename G >
-inline void swap( PtrVector<T,D,G>& a, PtrVector<T,D,G>& b ) /* throw() */;
+inline void swap( PtrVector<T,D,G>& a, PtrVector<T,D,G>& b ) noexcept;
 //@}
 //*************************************************************************************************
 
@@ -1916,7 +1916,7 @@ inline bool operator!=( const PtrVector<T,D,G>& lhs, const PtrVector<T,D,G>& rhs
 template< typename T    // Type
         , typename D    // Deletion policy
         , typename G >  // Growth policy
-inline void swap( PtrVector<T,D,G>& a, PtrVector<T,D,G>& b ) /* throw() */
+inline void swap( PtrVector<T,D,G>& a, PtrVector<T,D,G>& b ) noexcept
 {
    a.swap( b );
 }

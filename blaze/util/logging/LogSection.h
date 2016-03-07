@@ -97,29 +97,29 @@ class LogSection
    //@}
    //**********************************************************************************************
 
+   //**Forbidden operations************************************************************************
+   /*!\name Forbidden operations */
+   //@{
+   LogSection& operator=( const LogSection& ) = delete;
+
+   void* operator new  ( std::size_t ) = delete;
+   void* operator new[]( std::size_t ) = delete;
+   void* operator new  ( std::size_t, const std::nothrow_t& ) noexcept = delete;
+   void* operator new[]( std::size_t, const std::nothrow_t& ) noexcept = delete;
+
+   void operator delete  ( void* ) noexcept = delete;
+   void operator delete[]( void* ) noexcept = delete;
+   void operator delete  ( void*, const std::nothrow_t& ) noexcept = delete;
+   void operator delete[]( void*, const std::nothrow_t& ) noexcept = delete;
+   //@}
+   //**********************************************************************************************
+
  private:
    //**Member variables****************************************************************************
    /*!\name Member variables */
    //@{
    LogLevel          level_;    //!< The logging level of the log section.
    std::stringstream message_;  //!< Intermediate buffer for log messages.
-   //@}
-   //**********************************************************************************************
-
-   //**Forbidden operations************************************************************************
-   /*!\name Forbidden operations */
-   //@{
-   LogSection& operator=( const LogSection& );
-
-   void* operator new  ( std::size_t ) /*throw( std::bad_alloc )*/;
-   void* operator new[]( std::size_t ) /*throw( std::bad_alloc )*/;
-   void* operator new  ( std::size_t, const std::nothrow_t& ) /*throw()*/;
-   void* operator new[]( std::size_t, const std::nothrow_t& ) /*throw()*/;
-
-   void operator delete  ( void* ) /*throw()*/;
-   void operator delete[]( void* ) /*throw()*/;
-   void operator delete  ( void*, const std::nothrow_t& ) /*throw()*/;
-   void operator delete[]( void*, const std::nothrow_t& ) /*throw()*/;
    //@}
    //**********************************************************************************************
 };

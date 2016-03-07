@@ -82,27 +82,27 @@ class FunctionTrace : private NonCopyable
    //@}
    //**********************************************************************************************
 
+   //**Forbidden operations************************************************************************
+   /*!\name Forbidden operations */
+   //@{
+   void* operator new  ( std::size_t ) = delete;
+   void* operator new[]( std::size_t ) = delete;
+   void* operator new  ( std::size_t, const std::nothrow_t& ) noexcept = delete;
+   void* operator new[]( std::size_t, const std::nothrow_t& ) noexcept = delete;
+
+   void operator delete  ( void* ) noexcept = delete;
+   void operator delete[]( void* ) noexcept = delete;
+   void operator delete  ( void*, const std::nothrow_t& ) noexcept = delete;
+   void operator delete[]( void*, const std::nothrow_t& ) noexcept = delete;
+   //@}
+   //**********************************************************************************************
+
  private:
    //**Member variables****************************************************************************
    /*!\name Member variables */
    //@{
    std::string file_;      //!< The file name the traced function is contained in.
    std::string function_;  //!< The name of the traced function.
-   //@}
-   //**********************************************************************************************
-
-   //**Forbidden operations************************************************************************
-   /*!\name Forbidden operations */
-   //@{
-   void* operator new  ( std::size_t ) /*throw( std::bad_alloc )*/;
-   void* operator new[]( std::size_t ) /*throw( std::bad_alloc )*/;
-   void* operator new  ( std::size_t, const std::nothrow_t& ) /*throw()*/;
-   void* operator new[]( std::size_t, const std::nothrow_t& ) /*throw()*/;
-
-   void operator delete  ( void* ) /*throw()*/;
-   void operator delete[]( void* ) /*throw()*/;
-   void operator delete  ( void*, const std::nothrow_t& ) /*throw()*/;
-   void operator delete[]( void*, const std::nothrow_t& ) /*throw()*/;
    //@}
    //**********************************************************************************************
 };
