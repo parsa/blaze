@@ -75,6 +75,7 @@ OperationTest::OperationTest()
    testAddReference();
    testAddVolatile();
    testCommonType();
+   testDecay();
    testExtent();
    testGetMember();
    testHasMember();
@@ -264,6 +265,29 @@ void OperationTest::testCommonType()
    BLAZE_CONSTRAINT_MUST_BE_SAME_TYPE( T1, int    );
    BLAZE_CONSTRAINT_MUST_BE_SAME_TYPE( T2, double );
    BLAZE_CONSTRAINT_MUST_BE_SAME_TYPE( T3, float  );
+}
+//*************************************************************************************************
+
+
+//*************************************************************************************************
+/*!\brief Test of the \c Decay type trait.
+//
+// \return void
+// \exception std::runtime_error Error detected.
+//
+// This function performs a compile time test of the \c Decay type trait. In case an error
+// is detected, a compilation error is created.
+*/
+void OperationTest::testDecay()
+{
+   using blaze::Decay;
+
+   BLAZE_CONSTRAINT_MUST_BE_SAME_TYPE( blaze::Decay<int>::Type       , int         );
+   BLAZE_CONSTRAINT_MUST_BE_SAME_TYPE( blaze::Decay<int&>::Type      , int         );
+   BLAZE_CONSTRAINT_MUST_BE_SAME_TYPE( blaze::Decay<int&&>::Type     , int         );
+   BLAZE_CONSTRAINT_MUST_BE_SAME_TYPE( blaze::Decay<const int&>::Type, int         );
+   BLAZE_CONSTRAINT_MUST_BE_SAME_TYPE( blaze::Decay<int[2]>::Type    , int*        );
+   BLAZE_CONSTRAINT_MUST_BE_SAME_TYPE( blaze::Decay<int(int)>::Type  , int(*)(int) );
 }
 //*************************************************************************************************
 
