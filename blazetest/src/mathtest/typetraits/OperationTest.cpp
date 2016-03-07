@@ -68,7 +68,6 @@
 #include <blaze/math/UpperMatrix.h>
 #include <blaze/util/Complex.h>
 #include <blaze/util/constraints/SameType.h>
-#include <blaze/util/valuetraits/IsTrue.h>
 #include <blazetest/mathtest/typetraits/OperationTest.h>
 
 
