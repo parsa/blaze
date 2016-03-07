@@ -328,7 +328,7 @@ class DynamicMatrix : public DenseMatrix< DynamicMatrix<Type,SO>, SO >
                               inline DynamicMatrix& transpose();
                               inline DynamicMatrix& ctranspose();
    template< typename Other > inline DynamicMatrix& scale( const Other& scalar );
-                              inline void           swap( DynamicMatrix& m ) /* throw() */;
+                              inline void           swap( DynamicMatrix& m ) noexcept;
    //@}
    //**********************************************************************************************
 
@@ -1740,7 +1740,7 @@ inline DynamicMatrix<Type,SO>& DynamicMatrix<Type,SO>::scale( const Other& scala
 */
 template< typename Type  // Data type of the matrix
         , bool SO >      // Storage order
-inline void DynamicMatrix<Type,SO>::swap( DynamicMatrix& m ) /* throw() */
+inline void DynamicMatrix<Type,SO>::swap( DynamicMatrix& m ) noexcept
 {
    std::swap( m_ , m.m_  );
    std::swap( n_ , m.n_  );
@@ -2862,7 +2862,7 @@ class DynamicMatrix<Type,true> : public DenseMatrix< DynamicMatrix<Type,true>, t
                               inline DynamicMatrix& transpose();
                               inline DynamicMatrix& ctranspose();
    template< typename Other > inline DynamicMatrix& scale( const Other& scalar );
-                              inline void           swap( DynamicMatrix& m ) /* throw() */;
+                              inline void           swap( DynamicMatrix& m ) noexcept;
    //@}
    //**********************************************************************************************
 
@@ -4261,7 +4261,7 @@ inline DynamicMatrix<Type,true>& DynamicMatrix<Type,true>::scale( const Other& s
 // \exception no-throw guarantee.
 */
 template< typename Type >  // Data type of the matrix
-inline void DynamicMatrix<Type,true>::swap( DynamicMatrix& m ) /* throw() */
+inline void DynamicMatrix<Type,true>::swap( DynamicMatrix& m ) noexcept
 {
    std::swap( m_ , m.m_  );
    std::swap( mm_, m.mm_ );
@@ -5279,10 +5279,10 @@ template< typename Type, bool SO >
 inline bool isIntact( const DynamicMatrix<Type,SO>& m );
 
 template< typename Type, bool SO >
-inline void swap( DynamicMatrix<Type,SO>& a, DynamicMatrix<Type,SO>& b ) /* throw() */;
+inline void swap( DynamicMatrix<Type,SO>& a, DynamicMatrix<Type,SO>& b ) noexcept;
 
 template< typename Type, bool SO >
-inline void move( DynamicMatrix<Type,SO>& dst, DynamicMatrix<Type,SO>& src ) /* throw() */;
+inline void move( DynamicMatrix<Type,SO>& dst, DynamicMatrix<Type,SO>& src ) noexcept;
 //@}
 //*************************************************************************************************
 
@@ -5406,7 +5406,7 @@ inline bool isIntact( const DynamicMatrix<Type,SO>& m )
 */
 template< typename Type  // Data type of the matrix
         , bool SO >      // Storage order
-inline void swap( DynamicMatrix<Type,SO>& a, DynamicMatrix<Type,SO>& b ) /* throw() */
+inline void swap( DynamicMatrix<Type,SO>& a, DynamicMatrix<Type,SO>& b ) noexcept
 {
    a.swap( b );
 }
@@ -5424,7 +5424,7 @@ inline void swap( DynamicMatrix<Type,SO>& a, DynamicMatrix<Type,SO>& b ) /* thro
 */
 template< typename Type  // Data type of the matrix
         , bool SO >      // Storage order
-inline void move( DynamicMatrix<Type,SO>& dst, DynamicMatrix<Type,SO>& src ) /* throw() */
+inline void move( DynamicMatrix<Type,SO>& dst, DynamicMatrix<Type,SO>& src ) noexcept
 {
    dst.swap( src );
 }

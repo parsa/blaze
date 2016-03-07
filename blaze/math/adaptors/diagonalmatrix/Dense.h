@@ -678,7 +678,7 @@ class DiagonalMatrix<MT,SO,true>
                               inline void            extend ( size_t n, bool preserve=true );
                               inline void            reserve( size_t elements );
    template< typename Other > inline DiagonalMatrix& scale( const Other& scalar );
-                              inline void            swap( DiagonalMatrix& m ) /* throw() */;
+                              inline void            swap( DiagonalMatrix& m ) noexcept;
    //@}
    //**********************************************************************************************
 
@@ -2043,7 +2043,7 @@ inline DiagonalMatrix<MT,SO,true>& DiagonalMatrix<MT,SO,true>::scale( const Othe
 */
 template< typename MT  // Type of the adapted dense matrix
         , bool SO >    // Storage order of the adapted dense matrix
-inline void DiagonalMatrix<MT,SO,true>::swap( DiagonalMatrix& m ) /* throw() */
+inline void DiagonalMatrix<MT,SO,true>::swap( DiagonalMatrix& m ) noexcept
 {
    using std::swap;
 

@@ -534,7 +534,7 @@ class CustomVector : public DenseVector< CustomVector<Type,AF,PF,TF>, TF >
                                 inline void          reset();
                                 inline void          clear();
    template< typename Other   > inline CustomVector& scale( const Other& scalar );
-                                inline void          swap( CustomVector& v ) /* throw() */;
+                                inline void          swap( CustomVector& v ) noexcept;
    //@}
    //**********************************************************************************************
 
@@ -1550,7 +1550,7 @@ template< typename Type  // Data type of the vector
         , bool AF        // Alignment flag
         , bool PF        // Padding flag
         , bool TF >      // Transpose flag
-inline void CustomVector<Type,AF,PF,TF>::swap( CustomVector& v ) /* throw() */
+inline void CustomVector<Type,AF,PF,TF>::swap( CustomVector& v ) noexcept
 {
    using std::swap;
 
@@ -2625,7 +2625,7 @@ class CustomVector<Type,AF,padded,TF>
                                 inline void          reset();
                                 inline void          clear();
    template< typename Other >   inline CustomVector& scale( const Other& scalar );
-                                inline void          swap( CustomVector& v ) /* throw() */;
+                                inline void          swap( CustomVector& v ) noexcept;
    //@}
    //**********************************************************************************************
 
@@ -3626,7 +3626,7 @@ inline CustomVector<Type,AF,padded,TF>&
 template< typename Type  // Data type of the vector
         , bool AF        // Alignment flag
         , bool TF >      // Transpose flag
-inline void CustomVector<Type,AF,padded,TF>::swap( CustomVector& v ) /* throw() */
+inline void CustomVector<Type,AF,padded,TF>::swap( CustomVector& v ) noexcept
 {
    using std::swap;
 
@@ -4548,10 +4548,10 @@ template< typename Type, bool AF, bool PF, bool TF >
 inline bool isIntact( const CustomVector<Type,AF,PF,TF>& v );
 
 template< typename Type, bool AF, bool PF, bool TF >
-inline void swap( CustomVector<Type,AF,PF,TF>& a, CustomVector<Type,AF,PF,TF>& b ) /* throw() */;
+inline void swap( CustomVector<Type,AF,PF,TF>& a, CustomVector<Type,AF,PF,TF>& b ) noexcept;
 
 template< typename Type, bool AF, bool PF, bool TF >
-inline void move( CustomVector<Type,AF,PF,TF>& dst, CustomVector<Type,AF,PF,TF>& src ) /* throw() */;
+inline void move( CustomVector<Type,AF,PF,TF>& dst, CustomVector<Type,AF,PF,TF>& src ) noexcept;
 //@}
 //*************************************************************************************************
 
@@ -4669,7 +4669,7 @@ template< typename Type  // Data type of the vector
         , bool AF        // Alignment flag
         , bool PF        // Padding flag
         , bool TF >      // Transpose flag
-inline void swap( CustomVector<Type,AF,PF,TF>& a, CustomVector<Type,AF,PF,TF>& b ) /* throw() */
+inline void swap( CustomVector<Type,AF,PF,TF>& a, CustomVector<Type,AF,PF,TF>& b ) noexcept
 {
    a.swap( b );
 }
@@ -4689,7 +4689,7 @@ template< typename Type  // Data type of the vector
         , bool AF        // Alignment flag
         , bool PF        // Padding flag
         , bool TF >      // Transpose flag
-inline void move( CustomVector<Type,AF,PF,TF>& dst, CustomVector<Type,AF,PF,TF>& src ) /* throw() */
+inline void move( CustomVector<Type,AF,PF,TF>& dst, CustomVector<Type,AF,PF,TF>& src ) noexcept
 {
    dst.swap( src );
 }

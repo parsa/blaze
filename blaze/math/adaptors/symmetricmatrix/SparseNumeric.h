@@ -402,7 +402,7 @@ class SymmetricMatrix<MT,SO,false,true>
                               inline SymmetricMatrix& ctranspose();
    template< typename Other > inline SymmetricMatrix& scale( const Other& scalar );
    template< typename Other > inline SymmetricMatrix& scaleDiagonal( Other scale );
-                              inline void             swap( SymmetricMatrix& m ) /* throw() */;
+                              inline void             swap( SymmetricMatrix& m ) noexcept;
    //@}
    //**********************************************************************************************
 
@@ -1923,7 +1923,7 @@ inline SymmetricMatrix<MT,SO,false,true>&
 */
 template< typename MT  // Type of the adapted sparse matrix
         , bool SO >    // Storage order of the adapted sparse matrix
-inline void SymmetricMatrix<MT,SO,false,true>::swap( SymmetricMatrix& m ) /* throw() */
+inline void SymmetricMatrix<MT,SO,false,true>::swap( SymmetricMatrix& m ) noexcept
 {
    using std::swap;
 

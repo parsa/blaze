@@ -232,7 +232,7 @@ class DiagonalMatrix<MT,SO,false>
                               inline void            trim( size_t i );
    template< typename Other > inline DiagonalMatrix& scale( const Other& scalar );
    template< typename Other > inline DiagonalMatrix& scaleDiagonal( Other scale );
-                              inline void            swap( DiagonalMatrix& m ) /* throw() */;
+                              inline void            swap( DiagonalMatrix& m ) noexcept;
    //@}
    //**********************************************************************************************
 
@@ -1583,7 +1583,7 @@ inline DiagonalMatrix<MT,SO,false>&
 */
 template< typename MT  // Type of the adapted sparse matrix
         , bool SO >    // Storage order of the adapted sparse matrix
-inline void DiagonalMatrix<MT,SO,false>::swap( DiagonalMatrix& m ) /* throw() */
+inline void DiagonalMatrix<MT,SO,false>::swap( DiagonalMatrix& m ) noexcept
 {
    using std::swap;
 

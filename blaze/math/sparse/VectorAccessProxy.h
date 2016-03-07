@@ -431,13 +431,13 @@ template< typename VT >
 inline bool isnan( const VectorAccessProxy<VT>& proxy );
 
 template< typename VT >
-inline void swap( const VectorAccessProxy<VT>& a, const VectorAccessProxy<VT>& b ) /* throw() */;
+inline void swap( const VectorAccessProxy<VT>& a, const VectorAccessProxy<VT>& b ) noexcept;
 
 template< typename VT, typename T >
-inline void swap( const VectorAccessProxy<VT>& a, T& b ) /* throw() */;
+inline void swap( const VectorAccessProxy<VT>& a, T& b ) noexcept;
 
 template< typename T, typename VT >
-inline void swap( T& a, const VectorAccessProxy<VT>& v ) /* throw() */;
+inline void swap( T& a, const VectorAccessProxy<VT>& v ) noexcept;
 //@}
 //*************************************************************************************************
 
@@ -610,7 +610,7 @@ inline bool isnan( const VectorAccessProxy<VT>& proxy )
 // \exception no-throw guarantee.
 */
 template< typename VT >
-inline void swap( const VectorAccessProxy<VT>& a, const VectorAccessProxy<VT>& b ) /* throw() */
+inline void swap( const VectorAccessProxy<VT>& a, const VectorAccessProxy<VT>& b ) noexcept
 {
    using std::swap;
 
@@ -629,7 +629,7 @@ inline void swap( const VectorAccessProxy<VT>& a, const VectorAccessProxy<VT>& b
 // \exception no-throw guarantee.
 */
 template< typename VT, typename T >
-inline void swap( const VectorAccessProxy<VT>& a, T& b ) /* throw() */
+inline void swap( const VectorAccessProxy<VT>& a, T& b ) noexcept
 {
    using std::swap;
 
@@ -648,7 +648,7 @@ inline void swap( const VectorAccessProxy<VT>& a, T& b ) /* throw() */
 // \exception no-throw guarantee.
 */
 template< typename T, typename VT >
-inline void swap( T& a, const VectorAccessProxy<VT>& b ) /* throw() */
+inline void swap( T& a, const VectorAccessProxy<VT>& b ) noexcept
 {
    using std::swap;
 

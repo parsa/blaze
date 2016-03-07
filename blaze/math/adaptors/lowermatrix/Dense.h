@@ -679,7 +679,7 @@ class LowerMatrix<MT,SO,true>
                               inline void         extend ( size_t n, bool preserve=true );
                               inline void         reserve( size_t elements );
    template< typename Other > inline LowerMatrix& scale( const Other& scalar );
-                              inline void         swap( LowerMatrix& m ) /* throw() */;
+                              inline void         swap( LowerMatrix& m ) noexcept;
 
    static inline size_t maxNonZeros();
    static inline size_t maxNonZeros( size_t n );
@@ -2081,7 +2081,7 @@ inline LowerMatrix<MT,SO,true>& LowerMatrix<MT,SO,true>::scale( const Other& sca
 */
 template< typename MT  // Type of the adapted dense matrix
         , bool SO >    // Storage order of the adapted dense matrix
-inline void LowerMatrix<MT,SO,true>::swap( LowerMatrix& m ) /* throw() */
+inline void LowerMatrix<MT,SO,true>::swap( LowerMatrix& m ) noexcept
 {
    using std::swap;
 

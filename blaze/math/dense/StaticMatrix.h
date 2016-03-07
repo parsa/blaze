@@ -350,7 +350,7 @@ class StaticMatrix : public DenseMatrix< StaticMatrix<Type,M,N,SO>, SO >
                               inline StaticMatrix& transpose();
                               inline StaticMatrix& ctranspose();
    template< typename Other > inline StaticMatrix& scale( const Other& scalar );
-                              inline void          swap( StaticMatrix& m ) /* throw() */;
+                              inline void          swap( StaticMatrix& m ) noexcept;
    //@}
    //**********************************************************************************************
 
@@ -2447,7 +2447,7 @@ template< typename Type  // Data type of the matrix
         , size_t M       // Number of rows
         , size_t N       // Number of columns
         , bool SO >      // Storage order
-inline void StaticMatrix<Type,M,N,SO>::swap( StaticMatrix& m ) /* throw() */
+inline void StaticMatrix<Type,M,N,SO>::swap( StaticMatrix& m ) noexcept
 {
    using std::swap;
 
@@ -3578,7 +3578,7 @@ class StaticMatrix<Type,M,N,true> : public DenseMatrix< StaticMatrix<Type,M,N,tr
                               inline StaticMatrix& transpose();
                               inline StaticMatrix& ctranspose();
    template< typename Other > inline StaticMatrix& scale( const Other& scalar );
-                              inline void          swap( StaticMatrix& m ) /* throw() */;
+                              inline void          swap( StaticMatrix& m ) noexcept;
    //@}
    //**********************************************************************************************
 
@@ -5668,7 +5668,7 @@ inline StaticMatrix<Type,M,N,true>&
 template< typename Type  // Data type of the matrix
         , size_t M       // Number of rows
         , size_t N >     // Number of columns
-inline void StaticMatrix<Type,M,N,true>::swap( StaticMatrix& m ) /* throw() */
+inline void StaticMatrix<Type,M,N,true>::swap( StaticMatrix& m ) noexcept
 {
    using std::swap;
 
@@ -6741,10 +6741,10 @@ template< typename Type, size_t M, size_t N, bool SO >
 inline bool isIntact( const StaticMatrix<Type,M,N,SO>& m );
 
 template< typename Type, size_t M, size_t N, bool SO >
-inline void swap( StaticMatrix<Type,M,N,SO>& a, StaticMatrix<Type,M,N,SO>& b ) /* throw() */;
+inline void swap( StaticMatrix<Type,M,N,SO>& a, StaticMatrix<Type,M,N,SO>& b ) noexcept;
 
 template< typename Type, size_t M, size_t N, bool SO >
-inline void move( StaticMatrix<Type,M,N,SO>& dst, StaticMatrix<Type,M,N,SO>& src ) /* throw() */;
+inline void move( StaticMatrix<Type,M,N,SO>& dst, StaticMatrix<Type,M,N,SO>& src ) noexcept;
 //@}
 //*************************************************************************************************
 
@@ -6894,7 +6894,7 @@ template< typename Type  // Data type of the matrix
         , size_t M       // Number of rows
         , size_t N       // Number of columns
         , bool SO >      // Storage order
-inline void swap( StaticMatrix<Type,M,N,SO>& a, StaticMatrix<Type,M,N,SO>& b ) /* throw() */
+inline void swap( StaticMatrix<Type,M,N,SO>& a, StaticMatrix<Type,M,N,SO>& b ) noexcept
 {
    a.swap( b );
 }
@@ -6914,7 +6914,7 @@ template< typename Type  // Data type of the matrix
         , size_t M       // Number of rows
         , size_t N       // Number of columns
         , bool SO >      // Storage order
-inline void move( StaticMatrix<Type,M,N,SO>& dst, StaticMatrix<Type,M,N,SO>& src ) /* throw() */
+inline void move( StaticMatrix<Type,M,N,SO>& dst, StaticMatrix<Type,M,N,SO>& src ) noexcept
 {
    dst = src;
 }

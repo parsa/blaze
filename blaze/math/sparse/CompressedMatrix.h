@@ -363,7 +363,7 @@ class CompressedMatrix : public SparseMatrix< CompressedMatrix<Type,SO>, SO >
                               inline CompressedMatrix& ctranspose();
    template< typename Other > inline CompressedMatrix& scale( const Other& scalar );
    template< typename Other > inline CompressedMatrix& scaleDiagonal( Other scalar );
-                              inline void              swap( CompressedMatrix& sm ) /* throw() */;
+                              inline void              swap( CompressedMatrix& sm ) noexcept;
    //@}
    //**********************************************************************************************
 
@@ -1878,7 +1878,7 @@ inline CompressedMatrix<Type,SO>& CompressedMatrix<Type,SO>::scaleDiagonal( Othe
 */
 template< typename Type  // Data type of the sparse matrix
         , bool SO >      // Storage order
-inline void CompressedMatrix<Type,SO>::swap( CompressedMatrix& sm ) /* throw() */
+inline void CompressedMatrix<Type,SO>::swap( CompressedMatrix& sm ) noexcept
 {
    std::swap( m_, sm.m_ );
    std::swap( n_, sm.n_ );
@@ -2690,7 +2690,7 @@ class CompressedMatrix<Type,true> : public SparseMatrix< CompressedMatrix<Type,t
                               inline CompressedMatrix& ctranspose();
    template< typename Other > inline CompressedMatrix& scale( const Other& scalar );
    template< typename Other > inline CompressedMatrix& scaleDiagonal( Other scalar );
-                              inline void              swap( CompressedMatrix& sm ) /* throw() */;
+                              inline void              swap( CompressedMatrix& sm ) noexcept;
    //@}
    //**********************************************************************************************
 
@@ -4197,7 +4197,7 @@ inline CompressedMatrix<Type,true>& CompressedMatrix<Type,true>::scaleDiagonal( 
 // \exception no-throw guarantee.
 */
 template< typename Type >  // Data type of the sparse matrix
-inline void CompressedMatrix<Type,true>::swap( CompressedMatrix& sm ) /* throw() */
+inline void CompressedMatrix<Type,true>::swap( CompressedMatrix& sm ) noexcept
 {
    std::swap( m_, sm.m_ );
    std::swap( n_, sm.n_ );
@@ -4867,10 +4867,10 @@ template< typename Type, bool SO >
 inline bool isIntact( const CompressedMatrix<Type,SO>& m );
 
 template< typename Type, bool SO >
-inline void swap( CompressedMatrix<Type,SO>& a, CompressedMatrix<Type,SO>& b ) /* throw() */;
+inline void swap( CompressedMatrix<Type,SO>& a, CompressedMatrix<Type,SO>& b ) noexcept;
 
 template< typename Type, bool SO >
-inline void move( CompressedMatrix<Type,SO>& dst, CompressedMatrix<Type,SO>& src ) /* throw() */;
+inline void move( CompressedMatrix<Type,SO>& dst, CompressedMatrix<Type,SO>& src ) noexcept;
 //@}
 //*************************************************************************************************
 
@@ -4994,7 +4994,7 @@ inline bool isIntact( const CompressedMatrix<Type,SO>& m )
 */
 template< typename Type  // Data type of the sparse matrix
         , bool SO >      // Storage order
-inline void swap( CompressedMatrix<Type,SO>& a, CompressedMatrix<Type,SO>& b ) /* throw() */
+inline void swap( CompressedMatrix<Type,SO>& a, CompressedMatrix<Type,SO>& b ) noexcept
 {
    a.swap( b );
 }
@@ -5012,7 +5012,7 @@ inline void swap( CompressedMatrix<Type,SO>& a, CompressedMatrix<Type,SO>& b ) /
 */
 template< typename Type  // Data type of the sparse matrix
         , bool SO >      // Storage order
-inline void move( CompressedMatrix<Type,SO>& dst, CompressedMatrix<Type,SO>& src ) /* throw() */
+inline void move( CompressedMatrix<Type,SO>& dst, CompressedMatrix<Type,SO>& src ) noexcept
 {
    dst.swap( src );
 }

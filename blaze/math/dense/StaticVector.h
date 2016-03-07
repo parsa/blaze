@@ -301,7 +301,7 @@ class StaticVector : public DenseVector< StaticVector<Type,N,TF>, TF >
                               inline size_t        nonZeros() const;
                               inline void          reset();
    template< typename Other > inline StaticVector& scale( const Other& scalar );
-                              inline void          swap( StaticVector& v ) /* throw() */;
+                              inline void          swap( StaticVector& v ) noexcept;
    //@}
    //**********************************************************************************************
 
@@ -1460,7 +1460,7 @@ inline StaticVector<Type,N,TF>& StaticVector<Type,N,TF>::scale( const Other& sca
 template< typename Type  // Data type of the vector
         , size_t N       // Number of elements
         , bool TF >      // Transpose flag
-inline void StaticVector<Type,N,TF>::swap( StaticVector& v ) /* throw() */
+inline void StaticVector<Type,N,TF>::swap( StaticVector& v ) noexcept
 {
    using std::swap;
 
@@ -2343,10 +2343,10 @@ template< typename Type, bool TF >
 inline const StaticVector<Type,3UL,TF> perp( const StaticVector<Type,3UL,TF>& v );
 
 template< typename Type, size_t N, bool TF >
-inline void swap( StaticVector<Type,N,TF>& a, StaticVector<Type,N,TF>& b ) /* throw() */;
+inline void swap( StaticVector<Type,N,TF>& a, StaticVector<Type,N,TF>& b ) noexcept;
 
 template< typename Type, size_t N, bool TF >
-inline void move( StaticVector<Type,N,TF>& dst, StaticVector<Type,N,TF>& src ) /* throw() */;
+inline void move( StaticVector<Type,N,TF>& dst, StaticVector<Type,N,TF>& src ) noexcept;
 //@}
 //*************************************************************************************************
 
@@ -2499,7 +2499,7 @@ inline const StaticVector<Type,3UL,TF> perp( const StaticVector<Type,3UL,TF>& v 
 template< typename Type  // Data type of the vector
         , size_t N       // Number of elements
         , bool TF >      // Transpose flag
-inline void swap( StaticVector<Type,N,TF>& a, StaticVector<Type,N,TF>& b ) /* throw() */
+inline void swap( StaticVector<Type,N,TF>& a, StaticVector<Type,N,TF>& b ) noexcept
 {
    a.swap( b );
 }
@@ -2518,7 +2518,7 @@ inline void swap( StaticVector<Type,N,TF>& a, StaticVector<Type,N,TF>& b ) /* th
 template< typename Type  // Data type of the vector
         , size_t N       // Number of elements
         , bool TF >      // Transpose flag
-inline void move( StaticVector<Type,N,TF>& dst, StaticVector<Type,N,TF>& src ) /* throw() */
+inline void move( StaticVector<Type,N,TF>& dst, StaticVector<Type,N,TF>& src ) noexcept
 {
    dst = src;
 }

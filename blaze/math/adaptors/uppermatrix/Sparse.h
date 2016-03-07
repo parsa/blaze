@@ -233,7 +233,7 @@ class UpperMatrix<MT,SO,false>
                               inline void         trim( size_t i );
    template< typename Other > inline UpperMatrix& scale( const Other& scalar );
    template< typename Other > inline UpperMatrix& scaleDiagonal( Other scale );
-                              inline void         swap( UpperMatrix& m ) /* throw() */;
+                              inline void         swap( UpperMatrix& m ) noexcept;
 
    static inline size_t maxNonZeros();
    static inline size_t maxNonZeros( size_t n );
@@ -1586,7 +1586,7 @@ inline UpperMatrix<MT,SO,false>&
 */
 template< typename MT  // Type of the adapted sparse matrix
         , bool SO >    // Storage order of the adapted sparse matrix
-inline void UpperMatrix<MT,SO,false>::swap( UpperMatrix& m ) /* throw() */
+inline void UpperMatrix<MT,SO,false>::swap( UpperMatrix& m ) noexcept
 {
    using std::swap;
 

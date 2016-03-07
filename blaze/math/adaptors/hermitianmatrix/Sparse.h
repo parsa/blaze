@@ -408,7 +408,7 @@ class HermitianMatrix<MT,SO,false>
                               inline HermitianMatrix& ctranspose();
    template< typename Other > inline HermitianMatrix& scale( const Other& scalar );
    template< typename Other > inline HermitianMatrix& scaleDiagonal( Other scale );
-                              inline void             swap( HermitianMatrix& m ) /* throw() */;
+                              inline void             swap( HermitianMatrix& m ) noexcept;
    //@}
    //**********************************************************************************************
 
@@ -1934,7 +1934,7 @@ inline HermitianMatrix<MT,SO,false>&
 */
 template< typename MT  // Type of the adapted sparse matrix
         , bool SO >    // Storage order of the adapted sparse matrix
-inline void HermitianMatrix<MT,SO,false>::swap( HermitianMatrix& m ) /* throw() */
+inline void HermitianMatrix<MT,SO,false>::swap( HermitianMatrix& m ) noexcept
 {
    using std::swap;
 

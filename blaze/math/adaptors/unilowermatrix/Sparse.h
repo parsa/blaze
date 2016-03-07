@@ -379,7 +379,7 @@ class UniLowerMatrix<MT,SO,false>
    inline void     reserve( size_t i, size_t nonzeros );
    inline void     trim();
    inline void     trim( size_t i );
-   inline void     swap( UniLowerMatrix& m ) /* throw() */;
+   inline void     swap( UniLowerMatrix& m ) noexcept;
 
    static inline size_t maxNonZeros();
    static inline size_t maxNonZeros( size_t n );
@@ -1721,7 +1721,7 @@ inline void UniLowerMatrix<MT,SO,false>::trim( size_t i )
 */
 template< typename MT  // Type of the adapted sparse matrix
         , bool SO >    // Storage order of the adapted sparse matrix
-inline void UniLowerMatrix<MT,SO,false>::swap( UniLowerMatrix& m ) /* throw() */
+inline void UniLowerMatrix<MT,SO,false>::swap( UniLowerMatrix& m ) noexcept
 {
    using std::swap;
 

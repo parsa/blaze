@@ -695,7 +695,7 @@ class SymmetricMatrix<MT,SO,true,true>
                               inline SymmetricMatrix& transpose();
                               inline SymmetricMatrix& ctranspose();
    template< typename Other > inline SymmetricMatrix& scale( const Other& scalar );
-                              inline void             swap( SymmetricMatrix& m ) /* throw() */;
+                              inline void             swap( SymmetricMatrix& m ) noexcept;
    //@}
    //**********************************************************************************************
 
@@ -2200,7 +2200,7 @@ inline SymmetricMatrix<MT,SO,true,true>&
 */
 template< typename MT  // Type of the adapted dense matrix
         , bool SO >    // Storage order of the adapted dense matrix
-inline void SymmetricMatrix<MT,SO,true,true>::swap( SymmetricMatrix& m ) /* throw() */
+inline void SymmetricMatrix<MT,SO,true,true>::swap( SymmetricMatrix& m ) noexcept
 {
    using std::swap;
 

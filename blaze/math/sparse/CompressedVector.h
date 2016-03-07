@@ -331,7 +331,7 @@ class CompressedVector : public SparseVector< CompressedVector<Type,TF>, TF >
                               inline void              resize( size_t n, bool preserve=true );
                                      void              reserve( size_t n );
    template< typename Other > inline CompressedVector& scale( const Other& scalar );
-                              inline void              swap( CompressedVector& sv ) /* throw() */;
+                              inline void              swap( CompressedVector& sv ) noexcept;
    //@}
    //**********************************************************************************************
 
@@ -1336,7 +1336,7 @@ inline CompressedVector<Type,TF>& CompressedVector<Type,TF>::scale( const Other&
 */
 template< typename Type  // Data type of the vector
         , bool TF >      // Transpose flag
-inline void CompressedVector<Type,TF>::swap( CompressedVector& sv ) /* throw() */
+inline void CompressedVector<Type,TF>::swap( CompressedVector& sv ) noexcept
 {
    std::swap( size_, sv.size_ );
    std::swap( capacity_, sv.capacity_ );
@@ -1835,10 +1835,10 @@ template< typename Type, bool TF >
 inline bool isIntact( const CompressedVector<Type,TF>& v );
 
 template< typename Type, bool TF >
-inline void swap( CompressedVector<Type,TF>& a, CompressedVector<Type,TF>& b ) /* throw() */;
+inline void swap( CompressedVector<Type,TF>& a, CompressedVector<Type,TF>& b ) noexcept;
 
 template< typename Type, bool TF >
-inline void move( CompressedVector<Type,TF>& dst, CompressedVector<Type,TF>& src ) /* throw() */;
+inline void move( CompressedVector<Type,TF>& dst, CompressedVector<Type,TF>& src ) noexcept;
 //@}
 //*************************************************************************************************
 
@@ -1939,7 +1939,7 @@ inline bool isIntact( const CompressedVector<Type,TF>& v )
 */
 template< typename Type  // Data type of the vector
         , bool TF >      // Transpose flag
-inline void swap( CompressedVector<Type,TF>& a, CompressedVector<Type,TF>& b ) /* throw() */
+inline void swap( CompressedVector<Type,TF>& a, CompressedVector<Type,TF>& b ) noexcept
 {
    a.swap( b );
 }
@@ -1957,7 +1957,7 @@ inline void swap( CompressedVector<Type,TF>& a, CompressedVector<Type,TF>& b ) /
 */
 template< typename Type  // Data type of the vector
         , bool TF >      // Transpose flag
-inline void move( CompressedVector<Type,TF>& dst, CompressedVector<Type,TF>& src ) /* throw() */
+inline void move( CompressedVector<Type,TF>& dst, CompressedVector<Type,TF>& src ) noexcept
 {
    dst.swap( src );
 }

@@ -341,7 +341,7 @@ class HybridMatrix : public DenseMatrix< HybridMatrix<Type,M,N,SO>, SO >
                               inline HybridMatrix& transpose();
                               inline HybridMatrix& ctranspose();
    template< typename Other > inline HybridMatrix& scale( const Other& scalar );
-                              inline void          swap( HybridMatrix& m ) /* throw() */;
+                              inline void          swap( HybridMatrix& m ) noexcept;
    //@}
    //**********************************************************************************************
 
@@ -1926,7 +1926,7 @@ template< typename Type  // Data type of the matrix
         , size_t M       // Number of rows
         , size_t N       // Number of columns
         , bool SO >      // Storage order
-inline void HybridMatrix<Type,M,N,SO>::swap( HybridMatrix& m ) /* throw() */
+inline void HybridMatrix<Type,M,N,SO>::swap( HybridMatrix& m ) noexcept
 {
    using std::swap;
 
@@ -3051,7 +3051,7 @@ class HybridMatrix<Type,M,N,true> : public DenseMatrix< HybridMatrix<Type,M,N,tr
                               inline HybridMatrix& transpose();
                               inline HybridMatrix& ctranspose();
    template< typename Other > inline HybridMatrix& scale( const Other& scalar );
-                              inline void          swap( HybridMatrix& m ) /* throw() */;
+                              inline void          swap( HybridMatrix& m ) noexcept;
    //@}
    //**********************************************************************************************
 
@@ -4623,7 +4623,7 @@ inline HybridMatrix<Type,M,N,true>&
 template< typename Type  // Data type of the matrix
         , size_t M       // Number of rows
         , size_t N >     // Number of columns
-inline void HybridMatrix<Type,M,N,true>::swap( HybridMatrix& m ) /* throw() */
+inline void HybridMatrix<Type,M,N,true>::swap( HybridMatrix& m ) noexcept
 {
    using std::swap;
 
@@ -5702,10 +5702,10 @@ template< typename Type, size_t M, size_t N, bool SO >
 inline bool isIntact( const HybridMatrix<Type,M,N,SO>& m );
 
 template< typename Type, size_t M, size_t N, bool SO >
-inline void swap( HybridMatrix<Type,M,N,SO>& a, HybridMatrix<Type,M,N,SO>& b ) /* throw() */;
+inline void swap( HybridMatrix<Type,M,N,SO>& a, HybridMatrix<Type,M,N,SO>& b ) noexcept;
 
 template< typename Type, size_t M, size_t N, bool SO >
-inline void move( HybridMatrix<Type,M,N,SO>& dst, HybridMatrix<Type,M,N,SO>& src ) /* throw() */;
+inline void move( HybridMatrix<Type,M,N,SO>& dst, HybridMatrix<Type,M,N,SO>& src ) noexcept;
 //@}
 //*************************************************************************************************
 
@@ -5841,7 +5841,7 @@ template< typename Type  // Data type of the matrix
         , size_t M       // Number of rows
         , size_t N       // Number of columns
         , bool SO >      // Storage order
-inline void swap( HybridMatrix<Type,M,N,SO>& a, HybridMatrix<Type,M,N,SO>& b ) /* throw() */
+inline void swap( HybridMatrix<Type,M,N,SO>& a, HybridMatrix<Type,M,N,SO>& b ) noexcept
 {
    a.swap( b );
 }
@@ -5861,7 +5861,7 @@ template< typename Type  // Data type of the matrix
         , size_t M       // Number of rows
         , size_t N       // Number of columns
         , bool SO >      // Storage order
-inline void move( HybridMatrix<Type,M,N,SO>& dst, HybridMatrix<Type,M,N,SO>& src ) /* throw() */
+inline void move( HybridMatrix<Type,M,N,SO>& dst, HybridMatrix<Type,M,N,SO>& src ) noexcept
 {
    dst = src;
 }

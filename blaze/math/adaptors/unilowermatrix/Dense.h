@@ -674,7 +674,7 @@ class UniLowerMatrix<MT,SO,true>
           void   resize ( size_t n, bool preserve=true );
    inline void   extend ( size_t n, bool preserve=true );
    inline void   reserve( size_t elements );
-   inline void   swap( UniLowerMatrix& m ) /* throw() */;
+   inline void   swap( UniLowerMatrix& m ) noexcept;
 
    static inline size_t maxNonZeros();
    static inline size_t maxNonZeros( size_t n );
@@ -2027,7 +2027,7 @@ inline void UniLowerMatrix<MT,SO,true>::reserve( size_t elements )
 */
 template< typename MT  // Type of the adapted dense matrix
         , bool SO >    // Storage order of the adapted dense matrix
-inline void UniLowerMatrix<MT,SO,true>::swap( UniLowerMatrix& m ) /* throw() */
+inline void UniLowerMatrix<MT,SO,true>::swap( UniLowerMatrix& m ) noexcept
 {
    using std::swap;
 

@@ -443,13 +443,13 @@ template< typename MT >
 inline bool isnan( const MatrixAccessProxy<MT>& proxy );
 
 template< typename MT >
-inline void swap( const MatrixAccessProxy<MT>& a, const MatrixAccessProxy<MT>& b ) /* throw() */;
+inline void swap( const MatrixAccessProxy<MT>& a, const MatrixAccessProxy<MT>& b ) noexcept;
 
 template< typename MT, typename T >
-inline void swap( const MatrixAccessProxy<MT>& a, T& b ) /* throw() */;
+inline void swap( const MatrixAccessProxy<MT>& a, T& b ) noexcept;
 
 template< typename T, typename MT >
-inline void swap( T& a, const MatrixAccessProxy<MT>& v ) /* throw() */;
+inline void swap( T& a, const MatrixAccessProxy<MT>& v ) noexcept;
 //@}
 //*************************************************************************************************
 
@@ -631,7 +631,7 @@ inline bool isnan( const MatrixAccessProxy<MT>& proxy )
 // \exception no-throw guarantee.
 */
 template< typename MT >
-inline void swap( const MatrixAccessProxy<MT>& a, const MatrixAccessProxy<MT>& b ) /* throw() */
+inline void swap( const MatrixAccessProxy<MT>& a, const MatrixAccessProxy<MT>& b ) noexcept
 {
    using std::swap;
 
@@ -650,7 +650,7 @@ inline void swap( const MatrixAccessProxy<MT>& a, const MatrixAccessProxy<MT>& b
 // \exception no-throw guarantee.
 */
 template< typename MT, typename T >
-inline void swap( const MatrixAccessProxy<MT>& a, T& b ) /* throw() */
+inline void swap( const MatrixAccessProxy<MT>& a, T& b ) noexcept
 {
    using std::swap;
 
@@ -669,7 +669,7 @@ inline void swap( const MatrixAccessProxy<MT>& a, T& b ) /* throw() */
 // \exception no-throw guarantee.
 */
 template< typename T, typename MT >
-inline void swap( T& a, const MatrixAccessProxy<MT>& b ) /* throw() */
+inline void swap( T& a, const MatrixAccessProxy<MT>& b ) noexcept
 {
    using std::swap;
 

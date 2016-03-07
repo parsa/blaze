@@ -238,7 +238,7 @@ class StrictlyUpperMatrix<MT,SO,false>
    template< typename Other > inline StrictlyUpperMatrix& scale( const Other& scalar );
    template< typename Other > inline StrictlyUpperMatrix& scaleDiagonal( Other scale );
 
-   inline void swap( StrictlyUpperMatrix& m ) /* throw() */;
+   inline void swap( StrictlyUpperMatrix& m ) noexcept;
 
    static inline size_t maxNonZeros();
    static inline size_t maxNonZeros( size_t n );
@@ -1618,7 +1618,7 @@ inline StrictlyUpperMatrix<MT,SO,false>&
 */
 template< typename MT  // Type of the adapted sparse matrix
         , bool SO >    // Storage order of the adapted sparse matrix
-inline void StrictlyUpperMatrix<MT,SO,false>::swap( StrictlyUpperMatrix& m ) /* throw() */
+inline void StrictlyUpperMatrix<MT,SO,false>::swap( StrictlyUpperMatrix& m ) noexcept
 {
    using std::swap;
 

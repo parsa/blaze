@@ -700,7 +700,7 @@ class HermitianMatrix<MT,SO,true>
                               inline HermitianMatrix& transpose();
                               inline HermitianMatrix& ctranspose();
    template< typename Other > inline HermitianMatrix& scale( const Other& scalar );
-                              inline void             swap( HermitianMatrix& m ) /* throw() */;
+                              inline void             swap( HermitianMatrix& m ) noexcept;
    //@}
    //**********************************************************************************************
 
@@ -2198,7 +2198,7 @@ inline HermitianMatrix<MT,SO,true>&
 */
 template< typename MT  // Type of the adapted dense matrix
         , bool SO >    // Storage order of the adapted dense matrix
-inline void HermitianMatrix<MT,SO,true>::swap( HermitianMatrix& m ) /* throw() */
+inline void HermitianMatrix<MT,SO,true>::swap( HermitianMatrix& m ) noexcept
 {
    using std::swap;
 

@@ -239,7 +239,7 @@ class StrictlyLowerMatrix<MT,SO,false>
    template< typename Other > inline StrictlyLowerMatrix& scale( const Other& scalar );
    template< typename Other > inline StrictlyLowerMatrix& scaleDiagonal( Other scale );
 
-   inline void swap( StrictlyLowerMatrix& m ) /* throw() */;
+   inline void swap( StrictlyLowerMatrix& m ) noexcept;
 
    static inline size_t maxNonZeros();
    static inline size_t maxNonZeros( size_t n );
@@ -1619,7 +1619,7 @@ inline StrictlyLowerMatrix<MT,SO,false>&
 */
 template< typename MT  // Type of the adapted sparse matrix
         , bool SO >    // Storage order of the adapted sparse matrix
-inline void StrictlyLowerMatrix<MT,SO,false>::swap( StrictlyLowerMatrix& m ) /* throw() */
+inline void StrictlyLowerMatrix<MT,SO,false>::swap( StrictlyLowerMatrix& m ) noexcept
 {
    using std::swap;
 

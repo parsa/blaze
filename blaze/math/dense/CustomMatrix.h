@@ -555,7 +555,7 @@ class CustomMatrix : public DenseMatrix< CustomMatrix<Type,AF,PF,SO>, SO >
                               inline CustomMatrix& transpose();
                               inline CustomMatrix& ctranspose();
    template< typename Other > inline CustomMatrix& scale( const Other& scalar );
-                              inline void          swap( CustomMatrix& m ) /* throw() */;
+                              inline void          swap( CustomMatrix& m ) noexcept;
    //@}
    //**********************************************************************************************
 
@@ -1899,7 +1899,7 @@ template< typename Type  // Data type of the matrix
         , bool AF        // Alignment flag
         , bool PF        // Padding flag
         , bool SO >      // Storage order
-inline void CustomMatrix<Type,AF,PF,SO>::swap( CustomMatrix& m ) /* throw() */
+inline void CustomMatrix<Type,AF,PF,SO>::swap( CustomMatrix& m ) noexcept
 {
    using std::swap;
 
@@ -3209,7 +3209,7 @@ class CustomMatrix<Type,AF,PF,true> : public DenseMatrix< CustomMatrix<Type,AF,P
                               inline CustomMatrix& transpose();
                               inline CustomMatrix& ctranspose();
    template< typename Other > inline CustomMatrix& scale( const Other& scalar );
-                              inline void          swap( CustomMatrix& m ) /* throw() */;
+                              inline void          swap( CustomMatrix& m ) noexcept;
    //@}
    //**********************************************************************************************
 
@@ -4544,7 +4544,7 @@ inline CustomMatrix<Type,AF,PF,true>& CustomMatrix<Type,AF,PF,true>::scale( cons
 template< typename Type  // Data type of the matrix
         , bool AF        // Alignment flag
         , bool PF >      // Padding flag
-inline void CustomMatrix<Type,AF,PF,true>::swap( CustomMatrix& m ) /* throw() */
+inline void CustomMatrix<Type,AF,PF,true>::swap( CustomMatrix& m ) noexcept
 {
    using std::swap;
 
@@ -5756,10 +5756,10 @@ template< typename Type, bool AF, bool PF, bool SO >
 inline bool isIntact( const CustomMatrix<Type,AF,PF,SO>& m );
 
 template< typename Type, bool AF, bool PF, bool SO >
-inline void swap( CustomMatrix<Type,AF,PF,SO>& a, CustomMatrix<Type,AF,PF,SO>& b ) /* throw() */;
+inline void swap( CustomMatrix<Type,AF,PF,SO>& a, CustomMatrix<Type,AF,PF,SO>& b ) noexcept;
 
 template< typename Type, bool AF, bool PF, bool SO >
-inline void move( CustomMatrix<Type,AF,PF,SO>& dst, CustomMatrix<Type,AF,PF,SO>& src ) /* throw() */;
+inline void move( CustomMatrix<Type,AF,PF,SO>& dst, CustomMatrix<Type,AF,PF,SO>& src ) noexcept;
 //@}
 //*************************************************************************************************
 
@@ -5901,7 +5901,7 @@ template< typename Type  // Data type of the matrix
         , bool AF        // Alignment flag
         , bool PF        // Padding flag
         , bool SO >      // Storage order
-inline void swap( CustomMatrix<Type,AF,PF,SO>& a, CustomMatrix<Type,AF,PF,SO>& b ) /* throw() */
+inline void swap( CustomMatrix<Type,AF,PF,SO>& a, CustomMatrix<Type,AF,PF,SO>& b ) noexcept
 {
    a.swap( b );
 }
@@ -5921,7 +5921,7 @@ template< typename Type  // Data type of the matrix
         , bool AF        // Alignment flag
         , bool PF        // Padding flag
         , bool SO >      // Storage order
-inline void move( CustomMatrix<Type,AF,PF,SO>& dst, CustomMatrix<Type,AF,PF,SO>& src ) /* throw() */
+inline void move( CustomMatrix<Type,AF,PF,SO>& dst, CustomMatrix<Type,AF,PF,SO>& src ) noexcept
 {
    dst.swap( src );
 }

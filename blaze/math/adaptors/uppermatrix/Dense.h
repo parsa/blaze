@@ -679,7 +679,7 @@ class UpperMatrix<MT,SO,true>
                               inline void         extend ( size_t n, bool preserve=true );
                               inline void         reserve( size_t elements );
    template< typename Other > inline UpperMatrix& scale( const Other& scalar );
-                              inline void         swap( UpperMatrix& m ) /* throw() */;
+                              inline void         swap( UpperMatrix& m ) noexcept;
 
    static inline size_t maxNonZeros();
    static inline size_t maxNonZeros( size_t n );
@@ -2081,7 +2081,7 @@ inline UpperMatrix<MT,SO,true>& UpperMatrix<MT,SO,true>::scale( const Other& sca
 */
 template< typename MT  // Type of the adapted dense matrix
         , bool SO >    // Storage order of the adapted dense matrix
-inline void UpperMatrix<MT,SO,true>::swap( UpperMatrix& m ) /* throw() */
+inline void UpperMatrix<MT,SO,true>::swap( UpperMatrix& m ) noexcept
 {
    using std::swap;
 

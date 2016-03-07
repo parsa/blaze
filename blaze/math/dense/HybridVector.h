@@ -291,7 +291,7 @@ class HybridVector : public DenseVector< HybridVector<Type,N,TF>, TF >
                               inline void          resize( size_t n, bool preserve=true );
                               inline void          extend( size_t n, bool preserve=true );
    template< typename Other > inline HybridVector& scale( const Other& scalar );
-                              inline void          swap( HybridVector& v ) /* throw() */;
+                              inline void          swap( HybridVector& v ) noexcept;
    //@}
    //**********************************************************************************************
 
@@ -1409,7 +1409,7 @@ inline HybridVector<Type,N,TF>& HybridVector<Type,N,TF>::scale( const Other& sca
 template< typename Type  // Data type of the vector
         , size_t N       // Number of elements
         , bool TF >      // Transpose flag
-inline void HybridVector<Type,N,TF>::swap( HybridVector& v ) /* throw() */
+inline void HybridVector<Type,N,TF>::swap( HybridVector& v ) noexcept
 {
    using std::swap;
 
@@ -2284,10 +2284,10 @@ template< typename Type, size_t N, bool TF >
 inline bool isIntact( const HybridVector<Type,N,TF>& v );
 
 template< typename Type, size_t N, bool TF >
-inline void swap( HybridVector<Type,N,TF>& a, HybridVector<Type,N,TF>& b ) /* throw() */;
+inline void swap( HybridVector<Type,N,TF>& a, HybridVector<Type,N,TF>& b ) noexcept;
 
 template< typename Type, size_t N, bool TF >
-inline void move( HybridVector<Type,N,TF>& dst, HybridVector<Type,N,TF>& src ) /* throw() */;
+inline void move( HybridVector<Type,N,TF>& dst, HybridVector<Type,N,TF>& src ) noexcept;
 //@}
 //*************************************************************************************************
 
@@ -2393,7 +2393,7 @@ inline bool isIntact( const HybridVector<Type,N,TF>& v )
 template< typename Type  // Data type of the vector
         , size_t N       // Number of elements
         , bool TF >      // Transpose flag
-inline void swap( HybridVector<Type,N,TF>& a, HybridVector<Type,N,TF>& b ) /* throw() */
+inline void swap( HybridVector<Type,N,TF>& a, HybridVector<Type,N,TF>& b ) noexcept
 {
    a.swap( b );
 }
@@ -2412,7 +2412,7 @@ inline void swap( HybridVector<Type,N,TF>& a, HybridVector<Type,N,TF>& b ) /* th
 template< typename Type  // Data type of the vector
         , size_t N       // Number of elements
         , bool TF >      // Transpose flag
-inline void move( HybridVector<Type,N,TF>& dst, HybridVector<Type,N,TF>& src ) /* throw() */
+inline void move( HybridVector<Type,N,TF>& dst, HybridVector<Type,N,TF>& src ) noexcept
 {
    dst = src;
 }

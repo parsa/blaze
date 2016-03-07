@@ -291,7 +291,7 @@ class DynamicVector : public DenseVector< DynamicVector<Type,TF>, TF >
                               inline void           extend( size_t n, bool preserve=true );
                               inline void           reserve( size_t n );
    template< typename Other > inline DynamicVector& scale( const Other& scalar );
-                              inline void           swap( DynamicVector& v ) /* throw() */;
+                              inline void           swap( DynamicVector& v ) noexcept;
    //@}
    //**********************************************************************************************
 
@@ -1356,7 +1356,7 @@ inline DynamicVector<Type,TF>& DynamicVector<Type,TF>::scale( const Other& scala
 */
 template< typename Type  // Data type of the vector
         , bool TF >      // Transpose flag
-inline void DynamicVector<Type,TF>::swap( DynamicVector& v ) /* throw() */
+inline void DynamicVector<Type,TF>::swap( DynamicVector& v ) noexcept
 {
    std::swap( size_, v.size_ );
    std::swap( capacity_, v.capacity_ );
@@ -2115,10 +2115,10 @@ template< typename Type, bool TF >
 inline bool isIntact( const DynamicVector<Type,TF>& v );
 
 template< typename Type, bool TF >
-inline void swap( DynamicVector<Type,TF>& a, DynamicVector<Type,TF>& b ) /* throw() */;
+inline void swap( DynamicVector<Type,TF>& a, DynamicVector<Type,TF>& b ) noexcept;
 
 template< typename Type, bool TF >
-inline void move( DynamicVector<Type,TF>& dst, DynamicVector<Type,TF>& src ) /* throw() */;
+inline void move( DynamicVector<Type,TF>& dst, DynamicVector<Type,TF>& src ) noexcept;
 //@}
 //*************************************************************************************************
 
@@ -2219,7 +2219,7 @@ inline bool isIntact( const DynamicVector<Type,TF>& v )
 */
 template< typename Type  // Data type of the vector
         , bool TF >      // Transpose flag
-inline void swap( DynamicVector<Type,TF>& a, DynamicVector<Type,TF>& b ) /* throw() */
+inline void swap( DynamicVector<Type,TF>& a, DynamicVector<Type,TF>& b ) noexcept
 {
    a.swap( b );
 }
@@ -2237,7 +2237,7 @@ inline void swap( DynamicVector<Type,TF>& a, DynamicVector<Type,TF>& b ) /* thro
 */
 template< typename Type  // Data type of the vector
         , bool TF >      // Transpose flag
-inline void move( DynamicVector<Type,TF>& dst, DynamicVector<Type,TF>& src ) /* throw() */
+inline void move( DynamicVector<Type,TF>& dst, DynamicVector<Type,TF>& src ) noexcept
 {
    dst.swap( src );
 }
