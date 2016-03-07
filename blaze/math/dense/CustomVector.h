@@ -88,6 +88,7 @@
 #include <blaze/util/TrueType.h>
 #include <blaze/util/Types.h>
 #include <blaze/util/typetraits/AlignmentOf.h>
+#include <blaze/util/typetraits/IsClass.h>
 #include <blaze/util/typetraits/IsNumeric.h>
 #include <blaze/util/typetraits/IsSame.h>
 #include <blaze/util/typetraits/IsVectorizable.h>
@@ -469,7 +470,7 @@ class CustomVector : public DenseVector< CustomVector<Type,AF,PF,TF>, TF >
    explicit inline CustomVector( Type* ptr, size_t n );
    explicit inline CustomVector( Type* ptr, size_t n, size_t nn );
 
-   template< typename Deleter >
+   template< typename Deleter, typename = typename EnableIf< IsClass<Deleter> >::Type >
    explicit inline CustomVector( Type* ptr, size_t n, Deleter d );
 
    template< typename Deleter >
@@ -540,10 +541,14 @@ class CustomVector : public DenseVector< CustomVector<Type,AF,PF,TF>, TF >
    //**Resource management functions***************************************************************
    /*!\name Resource management functions */
    //@{
-                                inline void reset( Type* ptr, size_t n );
-                                inline void reset( Type* ptr, size_t n, size_t nn );
-   template< typename Deleter > inline void reset( Type* ptr, size_t n, Deleter d );
-   template< typename Deleter > inline void reset( Type* ptr, size_t n, size_t nn, Deleter d );
+   inline void reset( Type* ptr, size_t n );
+   inline void reset( Type* ptr, size_t n, size_t nn );
+
+   template< typename Deleter, typename = typename EnableIf< IsClass<Deleter> >::Type >
+   inline void reset( Type* ptr, size_t n, Deleter d );
+
+   template< typename Deleter >
+   inline void reset( Type* ptr, size_t n, size_t nn, Deleter d );
    //@}
    //**********************************************************************************************
 
@@ -802,11 +807,12 @@ inline CustomVector<Type,AF,PF,TF>::CustomVector( Type* ptr, size_t n, size_t nn
 //
 // \note This constructor is \b NOT available for padded custom vectors!
 */
-template< typename Type       // Data type of the vector
-        , bool AF             // Alignment flag
-        , bool PF             // Padding flag
-        , bool TF >           // Transpose flag
-template< typename Deleter >  // Type of the custom deleter
+template< typename Type     // Data type of the vector
+        , bool AF           // Alignment flag
+        , bool PF           // Padding flag
+        , bool TF >         // Transpose flag
+template< typename Deleter  // Type of the custom deleter
+        , typename >        // Type restriction on the custom deleter
 inline CustomVector<Type,AF,PF,TF>::CustomVector( Type* ptr, size_t n, Deleter d )
    : size_( n )  // The size/dimension of the vector
    , v_   (   )  // The custom array of elements
@@ -1656,11 +1662,12 @@ inline void CustomVector<Type,AF,PF,TF>::reset( Type* ptr, size_t n, size_t nn )
 // \note In case a deleter was specified, the previously referenced array will only be destroyed
 //       when the last custom vector referencing the array goes out of scope.
 */
-template< typename Type       // Data type of the vector
-        , bool AF             // Alignment flag
-        , bool PF             // Padding flag
-        , bool TF >           // Transpose flag
-template< typename Deleter >  // Type of the custom deleter
+template< typename Type     // Data type of the vector
+        , bool AF           // Alignment flag
+        , bool PF           // Padding flag
+        , bool TF >         // Transpose flag
+template< typename Deleter  // Type of the custom deleter
+        , typename >        // Type restriction on the custom deleter
 inline void CustomVector<Type,AF,PF,TF>::reset( Type* ptr, size_t n, Deleter d )
 {
    CustomVector tmp( ptr, n, d );
