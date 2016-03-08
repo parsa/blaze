@@ -289,6 +289,7 @@ class CompressedMatrix : public SparseMatrix< CompressedMatrix<Type,SO>, SO >
                             explicit inline CompressedMatrix( size_t m, size_t n, size_t nonzeros );
                             explicit        CompressedMatrix( size_t m, size_t n, const std::vector<size_t>& nonzeros );
                                      inline CompressedMatrix( const CompressedMatrix& sm );
+                                     inline CompressedMatrix( CompressedMatrix&& sm ) noexcept;
    template< typename MT, bool SO2 > inline CompressedMatrix( const DenseMatrix<MT,SO2>&  dm );
    template< typename MT, bool SO2 > inline CompressedMatrix( const SparseMatrix<MT,SO2>& sm );
    //@}
@@ -320,7 +321,9 @@ class CompressedMatrix : public SparseMatrix< CompressedMatrix<Type,SO>, SO >
    //**Assignment operators************************************************************************
    /*!\name Assignment operators */
    //@{
-                                     inline CompressedMatrix& operator= ( const CompressedMatrix& rhs );
+   inline CompressedMatrix& operator=( const CompressedMatrix& rhs );
+   inline CompressedMatrix& operator=( CompressedMatrix&& rhs ) noexcept;
+
    template< typename MT, bool SO2 > inline CompressedMatrix& operator= ( const DenseMatrix<MT,SO2>&  rhs );
    template< typename MT, bool SO2 > inline CompressedMatrix& operator= ( const SparseMatrix<MT,SO2>& rhs );
    template< typename MT, bool SO2 > inline CompressedMatrix& operator+=( const Matrix<MT,SO2>& rhs );
@@ -471,7 +474,7 @@ inline CompressedMatrix<Type,SO>::CompressedMatrix()
    , n_       ( 0UL )           // The current number of columns of the sparse matrix
    , capacity_( 0UL )           // The current capacity of the pointer array
    , begin_( new Iterator[2] )  // Pointers to the first non-zero element of each row
-   , end_  ( begin_+1 )         // Pointers one past the last non-zero element of each row
+   , end_  ( begin_+1UL )       // Pointers one past the last non-zero element of each row
 {
    begin_[0] = end_[0] = nullptr;
 }
@@ -569,11 +572,11 @@ CompressedMatrix<Type,SO>::CompressedMatrix( size_t m, size_t n, const std::vect
 template< typename Type  // Data type of the sparse matrix
         , bool SO >      // Storage order
 inline CompressedMatrix<Type,SO>::CompressedMatrix( const CompressedMatrix& sm )
-   : m_       ( sm.m_ )                     // The current number of rows of the sparse matrix
-   , n_       ( sm.n_ )                     // The current number of columns of the sparse matrix
-   , capacity_( sm.m_ )                     // The current capacity of the pointer array
-   , begin_   ( new Iterator[2UL*m_+2UL] )  // Pointers to the first non-zero element of each row
-   , end_     ( begin_+(m_+1UL) )           // Pointers one past the last non-zero element of each row
+   : m_       ( sm.m_ )                  // The current number of rows of the sparse matrix
+   , n_       ( sm.n_ )                  // The current number of columns of the sparse matrix
+   , capacity_( sm.m_ )                  // The current capacity of the pointer array
+   , begin_( new Iterator[2UL*m_+2UL] )  // Pointers to the first non-zero element of each row
+   , end_  ( begin_+(m_+1UL) )           // Pointers one past the last non-zero element of each row
 {
    const size_t nonzeros( sm.nonZeros() );
 
@@ -581,6 +584,29 @@ inline CompressedMatrix<Type,SO>::CompressedMatrix( const CompressedMatrix& sm )
    for( size_t i=0UL; i<m_; ++i )
       begin_[i+1UL] = end_[i] = std::copy( sm.begin(i), sm.end(i), begin_[i] );
    end_[m_] = begin_[0UL]+nonzeros;
+}
+//*************************************************************************************************
+
+
+//*************************************************************************************************
+/*!\brief The move constructor for CompressedMatrix.
+//
+// \param sm The sparse matrix to be moved into this instance.
+*/
+template< typename Type  // Data type of the sparse matrix
+        , bool SO >      // Storage order
+inline CompressedMatrix<Type,SO>::CompressedMatrix( CompressedMatrix&& sm ) noexcept
+   : m_       ( sm.m_ )         // The current number of rows of the sparse matrix
+   , n_       ( sm.n_ )         // The current number of columns of the sparse matrix
+   , capacity_( sm.capacity_ )  // The current capacity of the pointer array
+   , begin_   ( sm.begin_ )     // Pointers to the first non-zero element of each row
+   , end_     ( sm.end_ )       // Pointers one past the last non-zero element of each row
+{
+   sm.m_        = 0UL;
+   sm.n_        = 0UL;
+   sm.capacity_ = 0UL;
+   sm.begin_    = nullptr;
+   sm.end_      = nullptr;
 }
 //*************************************************************************************************
 
@@ -656,8 +682,10 @@ template< typename Type  // Data type of the sparse matrix
         , bool SO >      // Storage order
 inline CompressedMatrix<Type,SO>::~CompressedMatrix()
 {
-   deallocate( begin_[0UL] );
-   delete [] begin_;
+   if( begin_ != nullptr ) {
+      deallocate( begin_[0UL] );
+      delete[] begin_;
+   }
 }
 //*************************************************************************************************
 
@@ -947,7 +975,7 @@ inline CompressedMatrix<Type,SO>&
       std::swap( begin_, newBegin );
       end_ = newEnd;
       deallocate( newBegin[0UL] );
-      delete [] newBegin;
+      delete[] newBegin;
       capacity_ = rhs.m_;
    }
    else {
@@ -958,6 +986,37 @@ inline CompressedMatrix<Type,SO>&
 
    m_ = rhs.m_;
    n_ = rhs.n_;
+
+   return *this;
+}
+//*************************************************************************************************
+
+
+//*************************************************************************************************
+/*!\brief Move assignment operator for CompressedMatrix.
+//
+// \param rhs The sparse matrix to be moved into this instance.
+// \return Reference to the assigned sparse matrix.
+*/
+template< typename Type  // Data type of the sparse matrix
+        , bool SO >      // Storage order
+inline CompressedMatrix<Type,SO>&
+   CompressedMatrix<Type,SO>::operator=( CompressedMatrix&& rhs ) noexcept
+{
+   deallocate( begin_[0UL] );
+   delete[] begin_;
+
+   m_        = rhs.m_;
+   n_        = rhs.n_;
+   capacity_ = rhs.capacity_;
+   begin_    = rhs.begin_;
+   end_      = rhs.end_;
+
+   rhs.m_        = 0UL;
+   rhs.n_        = 0UL;
+   rhs.capacity_ = 0UL;
+   rhs.begin_    = nullptr;
+   rhs.end_      = nullptr;
 
    return *this;
 }
@@ -1425,7 +1484,7 @@ typename CompressedMatrix<Type,SO>::Iterator
    CompressedMatrix<Type,SO>::insert( Iterator pos, size_t i, size_t j, const Type& value )
 {
    if( begin_[i+1UL] - end_[i] != 0 ) {
-      std::copy_backward( pos, end_[i], end_[i]+1 );
+      std::copy_backward( pos, end_[i], end_[i]+1UL );
       pos->value_ = value;
       pos->index_ = j;
       ++end_[i];
@@ -1433,7 +1492,7 @@ typename CompressedMatrix<Type,SO>::Iterator
       return pos;
    }
    else if( end_[m_] - begin_[m_] != 0 ) {
-      std::copy_backward( pos, end_[m_-1UL], end_[m_-1UL]+1 );
+      std::copy_backward( pos, end_[m_-1UL], end_[m_-1UL]+1UL );
 
       pos->value_ = value;
       pos->index_ = j;
@@ -1478,7 +1537,7 @@ typename CompressedMatrix<Type,SO>::Iterator
       std::swap( newBegin, begin_ );
       end_ = newEnd;
       deallocate( newBegin[0UL] );
-      delete [] newBegin;
+      delete[] newBegin;
 
       return tmp;
    }
@@ -1615,7 +1674,7 @@ void CompressedMatrix<Type,SO>::resize( size_t m, size_t n, bool preserve )
       newEnd[m] = end_[m_];
 
       std::swap( newBegin, begin_ );
-      delete [] newBegin;
+      delete[] newBegin;
 
       end_ = newEnd;
       capacity_ = m;
@@ -1730,7 +1789,7 @@ void CompressedMatrix<Type,SO>::reserve( size_t i, size_t nonzeros )
 
       std::swap( newBegin, begin_ );
       deallocate( newBegin[0UL] );
-      delete [] newBegin;
+      delete[] newBegin;
       end_ = newEnd;
       capacity_ = m_;
    }
@@ -1936,7 +1995,7 @@ void CompressedMatrix<Type,SO>::reserveElements( size_t nonzeros )
 
    std::swap( newBegin, begin_ );
    deallocate( newBegin[0UL] );
-   delete [] newBegin;
+   delete[] newBegin;
    end_ = newEnd;
 }
 //*************************************************************************************************
@@ -2616,6 +2675,7 @@ class CompressedMatrix<Type,true> : public SparseMatrix< CompressedMatrix<Type,t
                            explicit inline CompressedMatrix( size_t m, size_t n, size_t nonzeros );
                            explicit        CompressedMatrix( size_t m, size_t n, const std::vector<size_t>& nonzeros );
                                     inline CompressedMatrix( const CompressedMatrix& sm );
+                                    inline CompressedMatrix( CompressedMatrix&& sm ) noexcept;
    template< typename MT, bool SO > inline CompressedMatrix( const DenseMatrix<MT,SO>&  dm );
    template< typename MT, bool SO > inline CompressedMatrix( const SparseMatrix<MT,SO>& sm );
    //@}
@@ -2647,7 +2707,9 @@ class CompressedMatrix<Type,true> : public SparseMatrix< CompressedMatrix<Type,t
    //**Assignment operators************************************************************************
    /*!\name Assignment operators */
    //@{
-                                    inline CompressedMatrix& operator= ( const CompressedMatrix& rhs );
+   inline CompressedMatrix& operator=( const CompressedMatrix& rhs );
+   inline CompressedMatrix& operator=( CompressedMatrix&& rhs ) noexcept;
+
    template< typename MT, bool SO > inline CompressedMatrix& operator= ( const DenseMatrix<MT,SO>&  rhs );
    template< typename MT, bool SO > inline CompressedMatrix& operator= ( const SparseMatrix<MT,SO>& rhs );
    template< typename MT, bool SO > inline CompressedMatrix& operator+=( const Matrix<MT,SO>& rhs );
@@ -2919,6 +2981,30 @@ inline CompressedMatrix<Type,true>::CompressedMatrix( const CompressedMatrix& sm
 
 //*************************************************************************************************
 /*! \cond BLAZE_INTERNAL */
+/*!\brief The move constructor for CompressedMatrix.
+//
+// \param sm The sparse matrix to be moved into this instance.
+*/
+template< typename Type >  // Data type of the sparse matrix
+inline CompressedMatrix<Type,true>::CompressedMatrix( CompressedMatrix&& sm ) noexcept
+   : m_       ( sm.m_ )         // The current number of rows of the sparse matrix
+   , n_       ( sm.n_ )         // The current number of columns of the sparse matrix
+   , capacity_( sm.capacity_ )  // The current capacity of the pointer array
+   , begin_   ( sm.begin_ )     // Pointers to the first non-zero element of each column
+   , end_     ( sm.end_ )       // Pointers one past the last non-zero element of each column
+{
+   sm.m_        = 0UL;
+   sm.n_        = 0UL;
+   sm.capacity_ = 0UL;
+   sm.begin_    = nullptr;
+   sm.end_      = nullptr;
+}
+/*! \endcond */
+//*************************************************************************************************
+
+
+//*************************************************************************************************
+/*! \cond BLAZE_INTERNAL */
 /*!\brief Conversion constructor from dense matrices.
 //
 // \param dm Dense matrix to be copied.
@@ -2990,8 +3076,10 @@ inline CompressedMatrix<Type,true>::CompressedMatrix( const SparseMatrix<MT,SO>&
 template< typename Type >  // Data type of the sparse matrix
 inline CompressedMatrix<Type,true>::~CompressedMatrix()
 {
-   deallocate( begin_[0UL] );
-   delete [] begin_;
+   if( begin_ != nullptr ) {
+      deallocate( begin_[0UL] );
+      delete[] begin_;
+   }
 }
 /*! \endcond */
 //*************************************************************************************************
@@ -3256,7 +3344,7 @@ inline CompressedMatrix<Type,true>&
       std::swap( begin_, newBegin );
       end_ = newEnd;
       deallocate( newBegin[0UL] );
-      delete [] newBegin;
+      delete[] newBegin;
       capacity_ = rhs.n_;
    }
    else {
@@ -3267,6 +3355,38 @@ inline CompressedMatrix<Type,true>&
 
    m_ = rhs.m_;
    n_ = rhs.n_;
+
+   return *this;
+}
+/*! \endcond */
+//*************************************************************************************************
+
+
+//*************************************************************************************************
+/*! \cond BLAZE_INTERNAL */
+/*!\brief Move assignment operator for CompressedMatrix.
+//
+// \param rhs The sparse matrix to be moved into this instance.
+// \return Reference to the assigned sparse matrix.
+*/
+template< typename Type >  // Data type of the sparse matrix
+inline CompressedMatrix<Type,true>&
+   CompressedMatrix<Type,true>::operator=( CompressedMatrix&& rhs ) noexcept
+{
+   deallocate( begin_[0UL] );
+   delete[] begin_;
+
+   m_        = rhs.m_;
+   n_        = rhs.n_;
+   capacity_ = rhs.capacity_;
+   begin_    = rhs.begin_;
+   end_      = rhs.end_;
+
+   rhs.m_        = 0UL;
+   rhs.n_        = 0UL;
+   rhs.capacity_ = 0UL;
+   rhs.begin_    = nullptr;
+   rhs.end_      = nullptr;
 
    return *this;
 }
@@ -3740,7 +3860,7 @@ typename CompressedMatrix<Type,true>::Iterator
    CompressedMatrix<Type,true>::insert( Iterator pos, size_t i, size_t j, const Type& value )
 {
    if( begin_[j+1UL] - end_[j] != 0 ) {
-      std::copy_backward( pos, end_[j], end_[j]+1 );
+      std::copy_backward( pos, end_[j], end_[j]+1UL );
       pos->value_ = value;
       pos->index_ = i;
       ++end_[j];
@@ -3748,7 +3868,7 @@ typename CompressedMatrix<Type,true>::Iterator
       return pos;
    }
    else if( end_[n_] - begin_[n_] != 0 ) {
-      std::copy_backward( pos, end_[n_-1UL], end_[n_-1]+1 );
+      std::copy_backward( pos, end_[n_-1UL], end_[n_-1]+1UL );
 
       pos->value_ = value;
       pos->index_ = i;
@@ -3793,7 +3913,7 @@ typename CompressedMatrix<Type,true>::Iterator
       std::swap( newBegin, begin_ );
       end_ = newEnd;
       deallocate( newBegin[0UL] );
-      delete [] newBegin;
+      delete[] newBegin;
 
       return tmp;
    }
@@ -3930,7 +4050,7 @@ void CompressedMatrix<Type,true>::resize( size_t m, size_t n, bool preserve )
       newEnd[n] = end_[n_];
 
       std::swap( newBegin, begin_ );
-      delete [] newBegin;
+      delete[] newBegin;
 
       end_ = newEnd;
       capacity_ = n;
@@ -4044,7 +4164,7 @@ void CompressedMatrix<Type,true>::reserve( size_t j, size_t nonzeros )
 
       std::swap( newBegin, begin_ );
       deallocate( newBegin[0UL] );
-      delete [] newBegin;
+      delete[] newBegin;
       end_ = newEnd;
       capacity_ = n_;
    }
@@ -4257,7 +4377,7 @@ void CompressedMatrix<Type,true>::reserveElements( size_t nonzeros )
 
    std::swap( newBegin, begin_ );
    deallocate( newBegin[0UL] );
-   delete [] newBegin;
+   delete[] newBegin;
    end_ = newEnd;
 }
 /*! \endcond */
