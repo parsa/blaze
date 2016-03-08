@@ -318,6 +318,79 @@ void UnalignedUnpaddedTest::testConstructors()
 
 
    //=====================================================================================
+   // Row-major move constructor
+   //=====================================================================================
+
+   {
+      test_ = "Row-major CustomMatrix move constructor (0x0)";
+
+      MT mat1;
+      MT mat2( std::move( mat1 ) );
+
+      checkRows    ( mat2, 0UL );
+      checkColumns ( mat2, 0UL );
+      checkNonZeros( mat2, 0UL );
+   }
+
+   {
+      test_ = "Row-major CustomMatrix move constructor (0x3)";
+
+      std::unique_ptr<int[],blaze::ArrayDelete> array( new int[10UL] );
+      MT mat1( array.get(), 0UL, 3UL );
+      MT mat2( std::move( mat1 ) );
+
+      checkRows    ( mat2, 0UL );
+      checkColumns ( mat2, 3UL );
+      checkNonZeros( mat2, 0UL );
+   }
+
+   {
+      test_ = "Row-major CustomMatrix move constructor (2x0)";
+
+      std::unique_ptr<int[],blaze::ArrayDelete> array( new int[10UL] );
+      MT mat1( array.get(), 2UL, 0UL );
+      MT mat2( std::move( mat1 ) );
+
+      checkRows    ( mat2, 2UL );
+      checkColumns ( mat2, 0UL );
+      checkNonZeros( mat2, 0UL );
+   }
+
+   {
+      test_ = "Row-major CustomMatrix move constructor (2x3)";
+
+      std::unique_ptr<int[],blaze::ArrayDelete> array( new int[6UL] );
+      MT mat1( array.get(), 2UL, 3UL );
+      mat1(0,0) = 1;
+      mat1(0,1) = 2;
+      mat1(0,2) = 3;
+      mat1(1,0) = 4;
+      mat1(1,1) = 5;
+      mat1(1,2) = 6;
+
+      MT mat2( std::move( mat1 ) );
+
+      checkRows    ( mat2, 2UL );
+      checkColumns ( mat2, 3UL );
+      checkCapacity( mat2, 6UL );
+      checkNonZeros( mat2, 6UL );
+      checkNonZeros( mat2, 0UL, 3UL );
+      checkNonZeros( mat2, 1UL, 3UL );
+
+      if( mat2(0,0) != 1 || mat2(0,1) != 2 || mat2(0,2) != 3 ||
+          mat2(1,0) != 4 || mat2(1,1) != 5 || mat2(1,2) != 6 ) {
+         std::ostringstream oss;
+         oss << " Test: " << test_ << "\n"
+             << " Error: Construction failed\n"
+             << " Details:\n"
+             << "   Result:\n" << mat2 << "\n"
+             << "   Expected result:\n( 1 2 3 )\n( 4 5 6 )\n";
+         throw std::runtime_error( oss.str() );
+      }
+   }
+
+
+   //=====================================================================================
    // Column-major default constructor
    //=====================================================================================
 
@@ -522,6 +595,80 @@ void UnalignedUnpaddedTest::testConstructors()
          throw std::runtime_error( oss.str() );
       }
    }
+
+
+   //=====================================================================================
+   // Column-major move constructor
+   //=====================================================================================
+
+   {
+      test_ = "Column-major CustomMatrix move constructor (0x0)";
+
+      OMT mat1;
+      OMT mat2( std::move( mat1 ) );
+
+      checkRows    ( mat2, 0UL );
+      checkColumns ( mat2, 0UL );
+      checkNonZeros( mat2, 0UL );
+   }
+
+   {
+      test_ = "Column-major CustomMatrix move constructor (0x3)";
+
+      std::unique_ptr<int[],blaze::ArrayDelete> array( new int[10UL] );
+      OMT mat1( array.get(), 0UL, 3UL );
+      OMT mat2( std::move( mat1 ) );
+
+      checkRows    ( mat2, 0UL );
+      checkColumns ( mat2, 3UL );
+      checkNonZeros( mat2, 0UL );
+   }
+
+   {
+      test_ = "Column-major CustomMatrix move constructor (2x0)";
+
+      std::unique_ptr<int[],blaze::ArrayDelete> array( new int[10UL] );
+      OMT mat1( array.get(), 2UL, 0UL );
+      OMT mat2( std::move( mat1 ) );
+
+      checkRows    ( mat2, 2UL );
+      checkColumns ( mat2, 0UL );
+      checkNonZeros( mat2, 0UL );
+   }
+
+   {
+      test_ = "Column-major CustomMatrix move constructor (2x3)";
+
+      std::unique_ptr<int[],blaze::ArrayDelete> array( new int[6UL] );
+      OMT mat1( array.get(), 2UL, 3UL );
+      mat1(0,0) = 1;
+      mat1(0,1) = 2;
+      mat1(0,2) = 3;
+      mat1(1,0) = 4;
+      mat1(1,1) = 5;
+      mat1(1,2) = 6;
+
+      OMT mat2( std::move( mat1 ) );
+
+      checkRows    ( mat2, 2UL );
+      checkColumns ( mat2, 3UL );
+      checkCapacity( mat2, 6UL );
+      checkNonZeros( mat2, 6UL );
+      checkNonZeros( mat2, 0UL, 2UL );
+      checkNonZeros( mat2, 1UL, 2UL );
+      checkNonZeros( mat2, 2UL, 2UL );
+
+      if( mat2(0,0) != 1 || mat2(0,1) != 2 || mat2(0,2) != 3 ||
+          mat2(1,0) != 4 || mat2(1,1) != 5 || mat2(1,2) != 6 ) {
+         std::ostringstream oss;
+         oss << " Test: " << test_ << "\n"
+             << " Error: Construction failed\n"
+             << " Details:\n"
+             << "   Result:\n" << mat2 << "\n"
+             << "   Expected result:\n( 1 2 3 )\n( 4 5 6 )\n";
+         throw std::runtime_error( oss.str() );
+      }
+   }
 }
 //*************************************************************************************************
 
@@ -617,6 +764,44 @@ void UnalignedUnpaddedTest::testAssignment()
 
       MT mat2( new int[6UL], 2UL, 3UL, blaze::ArrayDelete() );
       mat2 = mat1;
+
+      checkRows    ( mat2, 2UL );
+      checkColumns ( mat2, 3UL );
+      checkCapacity( mat2, 6UL );
+      checkNonZeros( mat2, 6UL );
+      checkNonZeros( mat2, 0UL, 3UL );
+      checkNonZeros( mat2, 1UL, 3UL );
+
+      if( mat2(0,0) != 1 || mat2(0,1) != 2 || mat2(0,2) != 3 ||
+          mat2(1,0) != 4 || mat2(1,1) != 5 || mat2(1,2) != 6 ) {
+         std::ostringstream oss;
+         oss << " Test: " << test_ << "\n"
+             << " Error: Assignment failed\n"
+             << " Details:\n"
+             << "   Result:\n" << mat2 << "\n"
+             << "   Expected result:\n( 1 2 3 )\n( 4 5 6 )\n";
+         throw std::runtime_error( oss.str() );
+      }
+   }
+
+
+   //=====================================================================================
+   // Row-major move assignment
+   //=====================================================================================
+
+   {
+      test_ = "Row-major CustomMatrix move assignment";
+
+      MT mat1( new int[6UL], 2UL, 3UL, blaze::ArrayDelete() );
+      mat1(0,0) = 1;
+      mat1(0,1) = 2;
+      mat1(0,2) = 3;
+      mat1(1,0) = 4;
+      mat1(1,1) = 5;
+      mat1(1,2) = 6;
+
+      MT mat2( new int[6UL], 2UL, 3UL, blaze::ArrayDelete() );
+      mat2 = std::move( mat1 );
 
       checkRows    ( mat2, 2UL );
       checkColumns ( mat2, 3UL );
@@ -1408,6 +1593,45 @@ void UnalignedUnpaddedTest::testAssignment()
 
       OMT mat2( new int[6UL], 2UL, 3UL, blaze::ArrayDelete() );
       mat2 = mat1;
+
+      checkRows    ( mat2, 2UL );
+      checkColumns ( mat2, 3UL );
+      checkCapacity( mat2, 6UL );
+      checkNonZeros( mat2, 6UL );
+      checkNonZeros( mat2, 0UL, 2UL );
+      checkNonZeros( mat2, 1UL, 2UL );
+      checkNonZeros( mat2, 2UL, 2UL );
+
+      if( mat2(0,0) != 1 || mat2(0,1) != 2 || mat2(0,2) != 3 ||
+          mat2(1,0) != 4 || mat2(1,1) != 5 || mat2(1,2) != 6 ) {
+         std::ostringstream oss;
+         oss << " Test: " << test_ << "\n"
+             << " Error: Assignment failed\n"
+             << " Details:\n"
+             << "   Result:\n" << mat2 << "\n"
+             << "   Expected result:\n( 1 2 3 )\n( 4 5 6 )\n";
+         throw std::runtime_error( oss.str() );
+      }
+   }
+
+
+   //=====================================================================================
+   // Column-major move assignment
+   //=====================================================================================
+
+   {
+      test_ = "Column-major CustomMatrix move assignment";
+
+      OMT mat1( new int[6UL], 2UL, 3UL, blaze::ArrayDelete() );
+      mat1(0,0) = 1;
+      mat1(0,1) = 2;
+      mat1(0,2) = 3;
+      mat1(1,0) = 4;
+      mat1(1,1) = 5;
+      mat1(1,2) = 6;
+
+      OMT mat2( new int[6UL], 2UL, 3UL, blaze::ArrayDelete() );
+      mat2 = std::move( mat1 );
 
       checkRows    ( mat2, 2UL );
       checkColumns ( mat2, 3UL );
