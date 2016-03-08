@@ -489,6 +489,7 @@ class CustomMatrix : public DenseMatrix< CustomMatrix<Type,AF,PF,SO>, SO >
    explicit inline CustomMatrix( Type* ptr, size_t m, size_t n, size_t nn, Deleter D );
 
    inline CustomMatrix( const CustomMatrix& m );
+   inline CustomMatrix( CustomMatrix&& m ) noexcept;
    //@}
    //**********************************************************************************************
 
@@ -522,8 +523,10 @@ class CustomMatrix : public DenseMatrix< CustomMatrix<Type,AF,PF,SO>, SO >
    template< typename Other, size_t M, size_t N >
    inline CustomMatrix& operator=( const Other (&array)[M][N] );
 
-                                     inline CustomMatrix& operator= ( const Type& set );
-                                     inline CustomMatrix& operator= ( const CustomMatrix&   rhs );
+   inline CustomMatrix& operator=( const Type& set );
+   inline CustomMatrix& operator=( const CustomMatrix& rhs );
+   inline CustomMatrix& operator=( CustomMatrix&& rhs ) noexcept;
+
    template< typename MT, bool SO2 > inline CustomMatrix& operator= ( const Matrix<MT,SO2>& rhs );
    template< typename MT, bool SO2 > inline CustomMatrix& operator+=( const Matrix<MT,SO2>& rhs );
    template< typename MT, bool SO2 > inline CustomMatrix& operator-=( const Matrix<MT,SO2>& rhs );
@@ -948,6 +951,30 @@ inline CustomMatrix<Type,AF,PF,SO>::CustomMatrix( const CustomMatrix& m )
    , nn_( m.nn_ )  // The number of elements between two rows
    , v_ ( m.v_  )  // The matrix elements
 {}
+//*************************************************************************************************
+
+
+//*************************************************************************************************
+/*!\brief The move constructor for CustomMatrix.
+//
+// \param m The matrix to be moved into this instance.
+*/
+template< typename Type  // Data type of the matrix
+        , bool AF        // Alignment flag
+        , bool PF        // Padding flag
+        , bool SO >      // Storage order
+inline CustomMatrix<Type,AF,PF,SO>::CustomMatrix( CustomMatrix&& m ) noexcept
+   : m_ ( m.m_  )              // The current number of rows of the matrix
+   , n_ ( m.n_  )              // The current number of columns of the matrix
+   , nn_( m.nn_ )              // The number of elements between two rows
+   , v_ ( std::move( m.v_ ) )  // The matrix elements
+{
+   m.m_  = 0UL;
+   m.n_  = 0UL;
+   m.nn_ = 0UL;
+
+   BLAZE_INTERNAL_ASSERT( m.data() == nullptr, "Invalid data reference detected" );
+}
 //*************************************************************************************************
 
 
@@ -1398,6 +1425,35 @@ inline CustomMatrix<Type,AF,PF,SO>& CustomMatrix<Type,AF,PF,SO>::operator=( cons
    }
 
    smpAssign( *this, ~rhs );
+
+   return *this;
+}
+//*************************************************************************************************
+
+
+//*************************************************************************************************
+/*!\brief Move assignment operator for CustomMatrix.
+//
+// \param rhs Matrix to be copied.
+// \return Reference to the assigned matrix.
+*/
+template< typename Type  // Data type of the matrix
+        , bool AF        // Alignment flag
+        , bool PF        // Padding flag
+        , bool SO >      // Storage order
+inline CustomMatrix<Type,AF,PF,SO>&
+   CustomMatrix<Type,AF,PF,SO>::operator=( CustomMatrix&& rhs ) noexcept
+{
+   m_  = rhs.m_;
+   n_  = rhs.n_;
+   nn_ = rhs.nn_;
+   v_  = std::move( rhs.v_ );
+
+   rhs.m_  = 0UL;
+   rhs.n_  = 0UL;
+   rhs.nn_ = 0UL;
+
+   BLAZE_INTERNAL_ASSERT( rhs.data() == nullptr, "Invalid data reference detected" );
 
    return *this;
 }
@@ -3143,6 +3199,7 @@ class CustomMatrix<Type,AF,PF,true> : public DenseMatrix< CustomMatrix<Type,AF,P
    explicit inline CustomMatrix( Type* ptr, size_t m, size_t n, size_t mm, Deleter d );
 
    inline CustomMatrix( const CustomMatrix& m );
+   inline CustomMatrix( CustomMatrix&& m ) noexcept;
    //@}
    //**********************************************************************************************
 
@@ -3176,8 +3233,10 @@ class CustomMatrix<Type,AF,PF,true> : public DenseMatrix< CustomMatrix<Type,AF,P
    template< typename Other, size_t M, size_t N >
    inline CustomMatrix& operator=( const Other (&array)[M][N] );
 
-                                    inline CustomMatrix& operator= ( const Type& set );
-                                    inline CustomMatrix& operator= ( const CustomMatrix& rhs );
+   inline CustomMatrix& operator=( const Type& set );
+   inline CustomMatrix& operator=( const CustomMatrix& rhs );
+   inline CustomMatrix& operator=( CustomMatrix&& rhs ) noexcept;
+
    template< typename MT, bool SO > inline CustomMatrix& operator= ( const Matrix<MT,SO>& rhs );
    template< typename MT, bool SO > inline CustomMatrix& operator+=( const Matrix<MT,SO>& rhs );
    template< typename MT, bool SO > inline CustomMatrix& operator-=( const Matrix<MT,SO>& rhs );
@@ -3594,6 +3653,31 @@ inline CustomMatrix<Type,AF,PF,true>::CustomMatrix( const CustomMatrix& m )
    , n_ ( m.n_  )  // The current number of columns of the matrix
    , v_ ( m.v_  )  // The matrix elements
 {}
+/*! \endcond */
+//*************************************************************************************************
+
+
+//*************************************************************************************************
+/*! \cond BLAZE_INTERNAL */
+/*!\brief The move constructor for CustomMatrix.
+//
+// \param m The matrix to be moved into this instance.
+*/
+template< typename Type  // Data type of the matrix
+        , bool AF        // Alignment flag
+        , bool PF >      // Padding flag
+inline CustomMatrix<Type,AF,PF,true>::CustomMatrix( CustomMatrix&& m ) noexcept
+   : m_ ( m.m_  )              // The current number of rows of the matrix
+   , mm_( m.mm_ )              // The number of elements between two columns
+   , n_ ( m.n_  )              // The current number of columns of the matrix
+   , v_ ( std::move( m.v_ ) )  // The matrix elements
+{
+   m.m_  = 0UL;
+   m.mm_ = 0UL;
+   m.n_  = 0UL;
+
+   BLAZE_INTERNAL_ASSERT( m.data() == nullptr, "Invalid data reference detected" );
+}
 /*! \endcond */
 //*************************************************************************************************
 
@@ -4033,6 +4117,36 @@ inline CustomMatrix<Type,AF,PF,true>&
    }
 
    smpAssign( *this, ~rhs );
+
+   return *this;
+}
+/*! \endcond */
+//*************************************************************************************************
+
+
+//*************************************************************************************************
+/*! \cond BLAZE_INTERNAL */
+/*!\brief Move assignment operator for CustomMatrix.
+//
+// \param rhs The matrix to be moved into this instance.
+// \return Reference to the assigned matrix.
+*/
+template< typename Type  // Data type of the matrix
+        , bool AF        // Alignment flag
+        , bool PF >      // Padding flag
+inline CustomMatrix<Type,AF,PF,true>&
+   CustomMatrix<Type,AF,PF,true>::operator=( CustomMatrix&& rhs ) noexcept
+{
+   m_  = rhs.m_;
+   mm_ = rhs.mm_;
+   n_  = rhs.n_;
+   v_  = std::move( rhs.v_ );
+
+   rhs.m_  = 0UL;
+   rhs.mm_ = 0UL;
+   rhs.n_  = 0UL;
+
+   BLAZE_INTERNAL_ASSERT( rhs.data() == nullptr, "Invalid data reference detected" );
 
    return *this;
 }
