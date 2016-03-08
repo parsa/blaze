@@ -145,8 +145,11 @@ class StrictlyUpperMatrix<MT,SO,false>
    explicit inline StrictlyUpperMatrix( size_t n, size_t nonzeros );
    explicit inline StrictlyUpperMatrix( size_t n, const std::vector<size_t>& nonzeros );
 
-                                      inline StrictlyUpperMatrix( const StrictlyUpperMatrix& m );
-   template< typename MT2, bool SO2 > inline StrictlyUpperMatrix( const Matrix<MT2,SO2>& m );
+   inline StrictlyUpperMatrix( const StrictlyUpperMatrix& m );
+   inline StrictlyUpperMatrix( StrictlyUpperMatrix&& m ) noexcept;
+
+   template< typename MT2, bool SO2 >
+   inline StrictlyUpperMatrix( const Matrix<MT2,SO2>& m );
    //@}
    //**********************************************************************************************
 
@@ -174,6 +177,7 @@ class StrictlyUpperMatrix<MT,SO,false>
    /*!\name Assignment operators */
    //@{
    inline StrictlyUpperMatrix& operator=( const StrictlyUpperMatrix& rhs );
+   inline StrictlyUpperMatrix& operator=( StrictlyUpperMatrix&& rhs ) noexcept;
 
    template< typename MT2, bool SO2 >
    inline typename DisableIf< IsComputation<MT2>, StrictlyUpperMatrix& >::Type
@@ -426,6 +430,24 @@ template< typename MT  // Type of the adapted sparse matrix
         , bool SO >    // Storage order of the adapted sparse matrix
 inline StrictlyUpperMatrix<MT,SO,false>::StrictlyUpperMatrix( const StrictlyUpperMatrix& m )
    : matrix_( m.matrix_ )  // The adapted sparse matrix
+{
+   BLAZE_INTERNAL_ASSERT( isSquare( matrix_ ), "Non-square strictly upper matrix detected" );
+   BLAZE_INTERNAL_ASSERT( isIntact(), "Broken invariant detected" );
+}
+/*! \endcond */
+//*************************************************************************************************
+
+
+//*************************************************************************************************
+/*! \cond BLAZE_INTERNAL */
+/*!\brief The move constructor for StrictlyUpperMatrix.
+//
+// \param m The strictly upper matrix to be moved into this instance.
+*/
+template< typename MT  // Type of the adapted sparse matrix
+        , bool SO >    // Storage order of the adapted sparse matrix
+inline StrictlyUpperMatrix<MT,SO,false>::StrictlyUpperMatrix( StrictlyUpperMatrix&& m ) noexcept
+   : matrix_( std::move( m.matrix_ ) )  // The adapted sparse matrix
 {
    BLAZE_INTERNAL_ASSERT( isSquare( matrix_ ), "Non-square strictly upper matrix detected" );
    BLAZE_INTERNAL_ASSERT( isIntact(), "Broken invariant detected" );
@@ -765,6 +787,29 @@ inline StrictlyUpperMatrix<MT,SO,false>&
    StrictlyUpperMatrix<MT,SO,false>::operator=( const StrictlyUpperMatrix& rhs )
 {
    matrix_ = rhs.matrix_;
+
+   BLAZE_INTERNAL_ASSERT( isSquare( matrix_ ), "Non-square strictly upper matrix detected" );
+   BLAZE_INTERNAL_ASSERT( isIntact(), "Broken invariant detected" );
+
+   return *this;
+}
+/*! \endcond */
+//*************************************************************************************************
+
+
+//*************************************************************************************************
+/*! \cond BLAZE_INTERNAL */
+/*!\brief Move assignment operator for StrictlyUpperMatrix.
+//
+// \param rhs The matrix to be moved into this instance.
+// \return Reference to the assigned matrix.
+*/
+template< typename MT  // Type of the adapted sparse matrix
+        , bool SO >    // Storage order of the adapted sparse matrix
+inline StrictlyUpperMatrix<MT,SO,false>&
+   StrictlyUpperMatrix<MT,SO,false>::operator=( StrictlyUpperMatrix&& rhs ) noexcept
+{
+   matrix_ = std::move( rhs.matrix_ );
 
    BLAZE_INTERNAL_ASSERT( isSquare( matrix_ ), "Non-square strictly upper matrix detected" );
    BLAZE_INTERNAL_ASSERT( isIntact(), "Broken invariant detected" );
