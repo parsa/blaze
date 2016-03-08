@@ -41,7 +41,6 @@
 //*************************************************************************************************
 
 #include <blaze/util/mpl/Bool.h>
-#include <blaze/util/NullType.h>
 
 
 namespace blaze {
@@ -53,11 +52,38 @@ namespace blaze {
 //=================================================================================================
 
 //*************************************************************************************************
+/*! \cond BLAZE_INTERNAL */
+/*! Auxiliary helper struct for the And class template.
+// \ingroup mpl
+*/
+template< typename T        // Type of the mandatory argument
+        , typename... Ts >  // Types of the optional operands
+struct AndHelper
+   : public Bool< T::value && AndHelper<Ts...>::value >
+{};
+/*! \endcond */
+//*************************************************************************************************
+
+
+//*************************************************************************************************
+/*! \cond BLAZE_INTERNAL */
+/*! Specialization of the AndHelper class template for a single template argument.
+// \ingroup mpl
+*/
+template< typename T >  // Type of the mandatory argument
+struct AndHelper<T>
+   : public Bool< T::value >
+{};
+/*! \endcond */
+//*************************************************************************************************
+
+
+//*************************************************************************************************
 /*!\brief Compile time logical and evaluation.
 // \ingroup mpl
 //
-// The And class template performs at compile time a logical and ('&&') evaluation of the up to
-// six given compile time conditions:
+// The And class template performs at compile time a logical and ('&&') evaluation of at least
+// two compile time conditions:
 
    \code
    using namespace blaze;
@@ -69,69 +95,12 @@ namespace blaze {
    And< IsFloat<Type>   , IsDouble<Type>        >::value  // Evaluates to 0
    \endcode
 */
-template< typename T1               // Type of the first operand
-        , typename T2               // Type of the second operand
-        , typename T3 = NullType    // Type of the third operand
-        , typename T4 = NullType    // Type of the fourth operand
-        , typename T5 = NullType    // Type of the fifth operand
-        , typename T6 = NullType >  // Type of the sixth operand
+template< typename T1       // Type of the first mandatory operand
+        , typename T2       // Type of the second mandatory operand
+        , typename... Ts >  // Types of the optional operands
 struct And
-   : public Bool< ( T1::value && T2::value && T3::value && T4::value && T5::value && T6::value ) >
+   : public Bool< AndHelper<T1,T2,Ts...>::value >
 {};
-//*************************************************************************************************
-
-
-//*************************************************************************************************
-/*! \cond BLAZE_INTERNAL */
-//! Specialization of the And class template for two operands.
-template< typename T1    // Type of the first operand
-        , typename T2 >  // Type of the second operand
-struct And<T1,T2,NullType,NullType,NullType,NullType>
-   : public Bool< ( T1::value && T2::value ) >
-{};
-/*! \endcond */
-//*************************************************************************************************
-
-
-//*************************************************************************************************
-/*! \cond BLAZE_INTERNAL */
-//! Specialization of the And class template for three operands.
-template< typename T1    // Type of the first operand
-        , typename T2    // Type of the second operand
-        , typename T3 >  // Type of the third operand
-struct And<T1,T2,T3,NullType,NullType,NullType>
-   : public Bool< ( T1::value && T2::value && T3::value ) >
-{};
-/*! \endcond */
-//*************************************************************************************************
-
-
-//*************************************************************************************************
-/*! \cond BLAZE_INTERNAL */
-//! Specialization of the And class template for four operands.
-template< typename T1    // Type of the first operand
-        , typename T2    // Type of the second operand
-        , typename T3    // Type of the third operand
-        , typename T4 >  // Type of the fourth operand
-struct And<T1,T2,T3,T4,NullType,NullType>
-   : public Bool< ( T1::value && T2::value && T3::value && T4::value ) >
-{};
-/*! \endcond */
-//*************************************************************************************************
-
-
-//*************************************************************************************************
-/*! \cond BLAZE_INTERNAL */
-//! Specialization of the And class template for five operands.
-template< typename T1    // Type of the first operand
-        , typename T2    // Type of the second operand
-        , typename T3    // Type of the third operand
-        , typename T4    // Type of the fourth operand
-        , typename T5 >  // Type of the fifth operand
-struct And<T1,T2,T3,T4,T5,NullType>
-   : public Bool< ( T1::value && T2::value && T3::value && T4::value && T5::value ) >
-{};
-/*! \endcond */
 //*************************************************************************************************
 
 } // namespace blaze
