@@ -477,6 +477,7 @@ class CustomVector : public DenseVector< CustomVector<Type,AF,PF,TF>, TF >
    explicit inline CustomVector( Type* ptr, size_t n, size_t nn, Deleter d );
 
    inline CustomVector( const CustomVector& v );
+   inline CustomVector( CustomVector&& v ) noexcept;
    //@}
    //**********************************************************************************************
 
@@ -508,8 +509,10 @@ class CustomVector : public DenseVector< CustomVector<Type,AF,PF,TF>, TF >
    template< typename Other, size_t N >
    inline CustomVector& operator=( const Other (&array)[N] );
 
-                           inline CustomVector& operator= ( const Type& rhs );
-                           inline CustomVector& operator= ( const CustomVector&  rhs );
+   inline CustomVector& operator=( const Type& rhs );
+   inline CustomVector& operator=( const CustomVector& rhs );
+   inline CustomVector& operator=( CustomVector&& rhs ) noexcept;
+
    template< typename VT > inline CustomVector& operator= ( const Vector<VT,TF>& rhs );
    template< typename VT > inline CustomVector& operator+=( const Vector<VT,TF>& rhs );
    template< typename VT > inline CustomVector& operator-=( const Vector<VT,TF>& rhs );
@@ -886,6 +889,26 @@ inline CustomVector<Type,AF,PF,TF>::CustomVector( const CustomVector& v )
 //*************************************************************************************************
 
 
+//*************************************************************************************************
+/*!\brief The move constructor for CustomVector.
+//
+// \param v The vector to be moved into this instance.
+*/
+template< typename Type  // Data type of the vector
+        , bool AF        // Alignment flag
+        , bool PF        // Padding flag
+        , bool TF >      // Transpose flag
+inline CustomVector<Type,AF,PF,TF>::CustomVector( CustomVector&& v ) noexcept
+   : size_( v.size_ )            // The size/dimension of the vector
+   , v_   ( std::move( v.v_ ) )  // The custom array of elements
+{
+   v.size_ = 0UL;
+
+   BLAZE_INTERNAL_ASSERT( v.data() == nullptr, "Invalid data reference detected" );
+}
+//*************************************************************************************************
+
+
 
 
 //=================================================================================================
@@ -1215,6 +1238,31 @@ inline CustomVector<Type,AF,PF,TF>& CustomVector<Type,AF,PF,TF>::operator=( cons
    }
 
    smpAssign( *this, ~rhs );
+
+   return *this;
+}
+//*************************************************************************************************
+
+
+//*************************************************************************************************
+/*!\brief Move assignment operator for CustomVector.
+//
+// \param rhs The vector to be moved into this instance.
+// \return Reference to the assigned vector.
+*/
+template< typename Type  // Data type of the vector
+        , bool AF        // Alignment flag
+        , bool PF        // Padding flag
+        , bool TF >      // Transpose flag
+inline CustomVector<Type,AF,PF,TF>&
+   CustomVector<Type,AF,PF,TF>::operator=( CustomVector&& rhs ) noexcept
+{
+   size_ = rhs.size_;
+   v_    = std::move( rhs.v_ );
+
+   rhs.size_ = 0UL;
+
+   BLAZE_INTERNAL_ASSERT( rhs.data() == nullptr, "Invalid data reference detected" );
 
    return *this;
 }
@@ -2568,6 +2616,7 @@ class CustomVector<Type,AF,padded,TF>
    explicit inline CustomVector( Type* ptr, size_t n, size_t nn, Deleter d );
 
    inline CustomVector( const CustomVector& v );
+   inline CustomVector( CustomVector&& v ) noexcept;
    //@}
    //**********************************************************************************************
 
@@ -2599,8 +2648,10 @@ class CustomVector<Type,AF,padded,TF>
    template< typename Other, size_t N >
    inline CustomVector& operator=( const Other (&array)[N] );
 
-                           inline CustomVector& operator= ( const Type& rhs );
-                           inline CustomVector& operator= ( const CustomVector&  rhs );
+   inline CustomVector& operator=( const Type& rhs );
+   inline CustomVector& operator=( const CustomVector& rhs );
+   inline CustomVector& operator=( CustomVector&& rhs ) noexcept;
+
    template< typename VT > inline CustomVector& operator= ( const Vector<VT,TF>& rhs );
    template< typename VT > inline CustomVector& operator+=( const Vector<VT,TF>& rhs );
    template< typename VT > inline CustomVector& operator-=( const Vector<VT,TF>& rhs );
@@ -2914,6 +2965,29 @@ inline CustomVector<Type,AF,padded,TF>::CustomVector( const CustomVector& v )
    , capacity_( v.capacity_ )  // The maximum capacity of the vector
    , v_       ( v.v_        )  // The custom array of elements
 {}
+/*! \endcond */
+//*************************************************************************************************
+
+
+//*************************************************************************************************
+/*! \cond BLAZE_INTERNAL */
+/*!\brief The move constructor for CustomVector.
+//
+// \param v The vector to be moved into this instance.
+*/
+template< typename Type  // Data type of the vector
+        , bool AF        // Alignment flag
+        , bool TF >      // Transpose flag
+inline CustomVector<Type,AF,padded,TF>::CustomVector( CustomVector&& v ) noexcept
+   : size_    ( v.size_     )        // The size/dimension of the vector
+   , capacity_( v.capacity_ )        // The maximum capacity of the vector
+   , v_       ( std::move( v.v_ ) )  // The custom array of elements
+{
+   v.size_     = 0UL;
+   v.capacity_ = 0UL;
+
+   BLAZE_INTERNAL_ASSERT( v.data() == nullptr, "Invalid data reference detected" );
+}
 /*! \endcond */
 //*************************************************************************************************
 
@@ -3272,6 +3346,34 @@ inline CustomVector<Type,AF,padded,TF>&
    }
 
    smpAssign( *this, ~rhs );
+
+   return *this;
+}
+/*! \endcond */
+//*************************************************************************************************
+
+
+//*************************************************************************************************
+/*! \cond BLAZE_INTERNAL */
+/*!\brief Move assignment operator for CustomVector.
+//
+// \param rhs The vector to be moved into this instance.
+// \return Reference to the assigned vector.
+*/
+template< typename Type  // Data type of the vector
+        , bool AF        // Alignment flag
+        , bool TF >      // Transpose flag
+inline CustomVector<Type,AF,padded,TF>&
+   CustomVector<Type,AF,padded,TF>::operator=( CustomVector&& rhs ) noexcept
+{
+   size_     = rhs.size_;
+   capacity_ = rhs.capacity_;
+   v_        = std::move( rhs.v_ );
+
+   rhs.size_     = 0UL;
+   rhs.capacity_ = 0UL;
+
+   BLAZE_INTERNAL_ASSERT( rhs.data() == nullptr, "Invalid data reference detected" );
 
    return *this;
 }
