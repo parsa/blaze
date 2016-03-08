@@ -146,8 +146,11 @@ class StrictlyLowerMatrix<MT,SO,false>
    explicit inline StrictlyLowerMatrix( size_t n, size_t nonzeros );
    explicit inline StrictlyLowerMatrix( size_t n, const std::vector<size_t>& nonzeros );
 
-                                      inline StrictlyLowerMatrix( const StrictlyLowerMatrix& m );
-   template< typename MT2, bool SO2 > inline StrictlyLowerMatrix( const Matrix<MT2,SO2>& m );
+   inline StrictlyLowerMatrix( const StrictlyLowerMatrix& m );
+   inline StrictlyLowerMatrix( StrictlyLowerMatrix&& m ) noexcept;
+
+   template< typename MT2, bool SO2 >
+   inline StrictlyLowerMatrix( const Matrix<MT2,SO2>& m );
    //@}
    //**********************************************************************************************
 
@@ -175,6 +178,7 @@ class StrictlyLowerMatrix<MT,SO,false>
    /*!\name Assignment operators */
    //@{
    inline StrictlyLowerMatrix& operator=( const StrictlyLowerMatrix& rhs );
+   inline StrictlyLowerMatrix& operator=( StrictlyLowerMatrix&& rhs ) noexcept;
 
    template< typename MT2, bool SO2 >
    inline typename DisableIf< IsComputation<MT2>, StrictlyLowerMatrix& >::Type
@@ -427,6 +431,24 @@ template< typename MT  // Type of the adapted sparse matrix
         , bool SO >    // Storage order of the adapted sparse matrix
 inline StrictlyLowerMatrix<MT,SO,false>::StrictlyLowerMatrix( const StrictlyLowerMatrix& m )
    : matrix_( m.matrix_ )  // The adapted sparse matrix
+{
+   BLAZE_INTERNAL_ASSERT( isSquare( matrix_ ), "Non-square strictly lower matrix detected" );
+   BLAZE_INTERNAL_ASSERT( isIntact(), "Broken invariant detected" );
+}
+/*! \endcond */
+//*************************************************************************************************
+
+
+//*************************************************************************************************
+/*! \cond BLAZE_INTERNAL */
+/*!\brief The move constructor for StrictlyLowerMatrix.
+//
+// \param m The strictly lower matrix to be moved into this instance.
+*/
+template< typename MT  // Type of the adapted sparse matrix
+        , bool SO >    // Storage order of the adapted sparse matrix
+inline StrictlyLowerMatrix<MT,SO,false>::StrictlyLowerMatrix( StrictlyLowerMatrix&& m ) noexcept
+   : matrix_( std::move( m.matrix_ ) )  // The adapted sparse matrix
 {
    BLAZE_INTERNAL_ASSERT( isSquare( matrix_ ), "Non-square strictly lower matrix detected" );
    BLAZE_INTERNAL_ASSERT( isIntact(), "Broken invariant detected" );
@@ -766,6 +788,29 @@ inline StrictlyLowerMatrix<MT,SO,false>&
    StrictlyLowerMatrix<MT,SO,false>::operator=( const StrictlyLowerMatrix& rhs )
 {
    matrix_ = rhs.matrix_;
+
+   BLAZE_INTERNAL_ASSERT( isSquare( matrix_ ), "Non-square strictly lower matrix detected" );
+   BLAZE_INTERNAL_ASSERT( isIntact(), "Broken invariant detected" );
+
+   return *this;
+}
+/*! \endcond */
+//*************************************************************************************************
+
+
+//*************************************************************************************************
+/*! \cond BLAZE_INTERNAL */
+/*!\brief Move assignment operator for StrictlyLowerMatrix.
+//
+// \param rhs The matrix to be moved into this instance.
+// \return Reference to the assigned matrix.
+*/
+template< typename MT  // Type of the adapted sparse matrix
+        , bool SO >    // Storage order of the adapted sparse matrix
+inline StrictlyLowerMatrix<MT,SO,false>&
+   StrictlyLowerMatrix<MT,SO,false>::operator=( StrictlyLowerMatrix&& rhs ) noexcept
+{
+   matrix_ = std::move( rhs.matrix_ );
 
    BLAZE_INTERNAL_ASSERT( isSquare( matrix_ ), "Non-square strictly lower matrix detected" );
    BLAZE_INTERNAL_ASSERT( isIntact(), "Broken invariant detected" );
