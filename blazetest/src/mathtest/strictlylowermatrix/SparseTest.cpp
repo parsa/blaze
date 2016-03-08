@@ -199,6 +199,54 @@ void SparseTest::testConstructors()
 
 
    //=====================================================================================
+   // Row-major move constructor
+   //=====================================================================================
+
+   // Move constructor (0x0)
+   {
+      test_ = "Row-major StrictlyLowerMatrix move constructor (0x0)";
+
+      LT lower1;
+      LT lower2( std::move( lower1 ) );
+
+      checkRows    ( lower2, 0UL );
+      checkColumns ( lower2, 0UL );
+      checkNonZeros( lower2, 0UL );
+   }
+
+   // Move constructor (3x3)
+   {
+      test_ = "Row-major StrictlyLowerMatrix move constructor (3x3)";
+
+      LT lower1( 3UL );
+      lower1(1,0) = -4;
+      lower1(2,0) =  7;
+
+      LT lower2( std::move( lower1 ) );
+
+      checkRows    ( lower2, 3UL );
+      checkColumns ( lower2, 3UL );
+      checkCapacity( lower2, 2UL );
+      checkNonZeros( lower2, 2UL );
+      checkNonZeros( lower2, 0UL, 0UL );
+      checkNonZeros( lower2, 1UL, 1UL );
+      checkNonZeros( lower2, 2UL, 1UL );
+
+      if( lower2(0,0) !=  0 || lower2(0,1) != 0 || lower2(0,2) != 0 ||
+          lower2(1,0) != -4 || lower2(1,1) != 0 || lower2(1,2) != 0 ||
+          lower2(2,0) !=  7 || lower2(2,1) != 0 || lower2(2,2) != 0 ) {
+         std::ostringstream oss;
+         oss << " Test: " << test_ << "\n"
+             << " Error: Construction failed\n"
+             << " Details:\n"
+             << "   Result:\n" << lower2 << "\n"
+             << "   Expected result:\n(  0 0 0 )\n( -4 0 0 )\n(  7 0 0 )\n";
+         throw std::runtime_error( oss.str() );
+      }
+   }
+
+
+   //=====================================================================================
    // Row-major conversion constructor
    //=====================================================================================
 
@@ -380,6 +428,54 @@ void SparseTest::testConstructors()
 
 
    //=====================================================================================
+   // Column-major move constructor
+   //=====================================================================================
+
+   // Move constructor (0x0)
+   {
+      test_ = "Column-major StrictlyLowerMatrix move constructor (0x0)";
+
+      OLT lower1;
+      OLT lower2( std::move( lower1 ) );
+
+      checkRows    ( lower2, 0UL );
+      checkColumns ( lower2, 0UL );
+      checkNonZeros( lower2, 0UL );
+   }
+
+   // Move constructor (3x3)
+   {
+      test_ = "Column-major StrictlyLowerMatrix move constructor (3x3)";
+
+      OLT lower1( 3UL );
+      lower1(1,0) = -4;
+      lower1(2,0) =  7;
+
+      OLT lower2( std::move( lower1 ) );
+
+      checkRows    ( lower2, 3UL );
+      checkColumns ( lower2, 3UL );
+      checkCapacity( lower2, 2UL );
+      checkNonZeros( lower2, 2UL );
+      checkNonZeros( lower2, 0UL, 2UL );
+      checkNonZeros( lower2, 1UL, 0UL );
+      checkNonZeros( lower2, 2UL, 0UL );
+
+      if( lower2(0,0) !=  0 || lower2(0,1) != 0 || lower2(0,2) != 0 ||
+          lower2(1,0) != -4 || lower2(1,1) != 0 || lower2(1,2) != 0 ||
+          lower2(2,0) !=  7 || lower2(2,1) != 0 || lower2(2,2) != 0 ) {
+         std::ostringstream oss;
+         oss << " Test: " << test_ << "\n"
+             << " Error: Construction failed\n"
+             << " Details:\n"
+             << "   Result:\n" << lower2 << "\n"
+             << "   Expected result:\n(  0 0 0 )\n( -4 0 0 )\n(  7 0 0 )\n";
+         throw std::runtime_error( oss.str() );
+      }
+   }
+
+
+   //=====================================================================================
    // Column-major conversion constructor
    //=====================================================================================
 
@@ -520,6 +616,55 @@ void SparseTest::testAssignment()
 
       LT lower2;
       lower2 = lower1;
+
+      checkRows    ( lower2, 3UL );
+      checkColumns ( lower2, 3UL );
+      checkNonZeros( lower2, 2UL );
+      checkNonZeros( lower2, 0UL, 0UL );
+      checkNonZeros( lower2, 1UL, 1UL );
+      checkNonZeros( lower2, 2UL, 1UL );
+
+      if( lower2(0,0) !=  0 || lower2(0,1) != 0 || lower2(0,2) != 0 ||
+          lower2(1,0) != -4 || lower2(1,1) != 0 || lower2(1,2) != 0 ||
+          lower2(2,0) !=  7 || lower2(2,1) != 0 || lower2(2,2) != 0 ) {
+         std::ostringstream oss;
+         oss << " Test: " << test_ << "\n"
+             << " Error: Assignment failed\n"
+             << " Details:\n"
+             << "   Result:\n" << lower2 << "\n"
+             << "   Expected result:\n(  0 0 0 )\n( -4 0 0 )\n(  7 0 0 )\n";
+         throw std::runtime_error( oss.str() );
+      }
+   }
+
+
+   //=====================================================================================
+   // Row-major move assignment
+   //=====================================================================================
+
+   // Move assignment (0x0)
+   {
+      test_ = "Row-major StrictlyLowerMatrix move assignment (0x0)";
+
+      LT lower1, lower2;
+
+      lower2 = std::move( lower1 );
+
+      checkRows    ( lower2, 0UL );
+      checkColumns ( lower2, 0UL );
+      checkNonZeros( lower2, 0UL );
+   }
+
+   // Move assignment (3x3)
+   {
+      test_ = "Row-major StrictlyLowerMatrix move assignment (3x3)";
+
+      LT lower1( 3UL );
+      lower1(1,0) = -4;
+      lower1(2,0) =  7;
+
+      LT lower2;
+      lower2 = std::move( lower1 );
 
       checkRows    ( lower2, 3UL );
       checkColumns ( lower2, 3UL );
@@ -949,6 +1094,55 @@ void SparseTest::testAssignment()
 
       OLT lower2;
       lower2 = lower1;
+
+      checkRows    ( lower2, 3UL );
+      checkColumns ( lower2, 3UL );
+      checkNonZeros( lower2, 2UL );
+      checkNonZeros( lower2, 0UL, 2UL );
+      checkNonZeros( lower2, 1UL, 0UL );
+      checkNonZeros( lower2, 2UL, 0UL );
+
+      if( lower2(0,0) !=  0 || lower2(0,1) != 0 || lower2(0,2) != 0 ||
+          lower2(1,0) != -4 || lower2(1,1) != 0 || lower2(1,2) != 0 ||
+          lower2(2,0) !=  7 || lower2(2,1) != 0 || lower2(2,2) != 0 ) {
+         std::ostringstream oss;
+         oss << " Test: " << test_ << "\n"
+             << " Error: Assignment failed\n"
+             << " Details:\n"
+             << "   Result:\n" << lower2 << "\n"
+             << "   Expected result:\n(  0 0 0 )\n( -4 0 0 )\n(  7 0 0 )\n";
+         throw std::runtime_error( oss.str() );
+      }
+   }
+
+
+   //=====================================================================================
+   // Column-major move assignment
+   //=====================================================================================
+
+   // Move assignment (0x0)
+   {
+      test_ = "Column-major StrictlyLowerMatrix move assignment (0x0)";
+
+      OLT lower1, lower2;
+
+      lower2 = std::move( lower1 );
+
+      checkRows    ( lower2, 0UL );
+      checkColumns ( lower2, 0UL );
+      checkNonZeros( lower2, 0UL );
+   }
+
+   // Move assignment (3x3)
+   {
+      test_ = "Column-major StrictlyLowerMatrix move assignment (3x3)";
+
+      OLT lower1( 3UL );
+      lower1(1,0) = -4;
+      lower1(2,0) =  7;
+
+      OLT lower2;
+      lower2 = std::move( lower1 );
 
       checkRows    ( lower2, 3UL );
       checkColumns ( lower2, 3UL );
