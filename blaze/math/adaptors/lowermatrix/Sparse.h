@@ -142,8 +142,11 @@ class LowerMatrix<MT,SO,false>
    explicit inline LowerMatrix( size_t n, size_t nonzeros );
    explicit inline LowerMatrix( size_t n, const std::vector<size_t>& nonzeros );
 
-                                      inline LowerMatrix( const LowerMatrix& m );
-   template< typename MT2, bool SO2 > inline LowerMatrix( const Matrix<MT2,SO2>& m );
+   inline LowerMatrix( const LowerMatrix& m );
+   inline LowerMatrix( LowerMatrix&& m ) noexcept;
+
+   template< typename MT2, bool SO2 >
+   inline LowerMatrix( const Matrix<MT2,SO2>& m );
    //@}
    //**********************************************************************************************
 
@@ -171,6 +174,7 @@ class LowerMatrix<MT,SO,false>
    /*!\name Assignment operators */
    //@{
    inline LowerMatrix& operator=( const LowerMatrix& rhs );
+   inline LowerMatrix& operator=( LowerMatrix&& rhs ) noexcept;
 
    template< typename MT2, bool SO2 >
    inline typename DisableIf< IsComputation<MT2>, LowerMatrix& >::Type
@@ -420,6 +424,24 @@ template< typename MT  // Type of the adapted sparse matrix
         , bool SO >    // Storage order of the adapted sparse matrix
 inline LowerMatrix<MT,SO,false>::LowerMatrix( const LowerMatrix& m )
    : matrix_( m.matrix_ )  // The adapted sparse matrix
+{
+   BLAZE_INTERNAL_ASSERT( isSquare( matrix_ ), "Non-square lower matrix detected" );
+   BLAZE_INTERNAL_ASSERT( isIntact(), "Broken invariant detected" );
+}
+/*! \endcond */
+//*************************************************************************************************
+
+
+//*************************************************************************************************
+/*! \cond BLAZE_INTERNAL */
+/*!\brief The move constructor for LowerMatrix.
+//
+// \param m The lower matrix to be moved into this instance.
+*/
+template< typename MT  // Type of the adapted sparse matrix
+        , bool SO >    // Storage order of the adapted sparse matrix
+inline LowerMatrix<MT,SO,false>::LowerMatrix( LowerMatrix&& m ) noexcept
+   : matrix_( std::move( m.matrix_ ) )  // The adapted sparse matrix
 {
    BLAZE_INTERNAL_ASSERT( isSquare( matrix_ ), "Non-square lower matrix detected" );
    BLAZE_INTERNAL_ASSERT( isIntact(), "Broken invariant detected" );
@@ -757,6 +779,29 @@ inline LowerMatrix<MT,SO,false>&
    LowerMatrix<MT,SO,false>::operator=( const LowerMatrix& rhs )
 {
    matrix_ = rhs.matrix_;
+
+   BLAZE_INTERNAL_ASSERT( isSquare( matrix_ ), "Non-square lower matrix detected" );
+   BLAZE_INTERNAL_ASSERT( isIntact(), "Broken invariant detected" );
+
+   return *this;
+}
+/*! \endcond */
+//*************************************************************************************************
+
+
+//*************************************************************************************************
+/*! \cond BLAZE_INTERNAL */
+/*!\brief Move assignment operator for LowerMatrix.
+//
+// \param rhs The matrix to be moved into this instance.
+// \return Reference to the assigned matrix.
+*/
+template< typename MT  // Type of the adapted sparse matrix
+        , bool SO >    // Storage order of the adapted sparse matrix
+inline LowerMatrix<MT,SO,false>&
+   LowerMatrix<MT,SO,false>::operator=( LowerMatrix&& rhs ) noexcept
+{
+   matrix_ = std::move( rhs.matrix_ );
 
    BLAZE_INTERNAL_ASSERT( isSquare( matrix_ ), "Non-square lower matrix detected" );
    BLAZE_INTERNAL_ASSERT( isIntact(), "Broken invariant detected" );
