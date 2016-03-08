@@ -374,6 +374,56 @@ void DenseNonNumericTest::testConstructors()
 
 
    //=====================================================================================
+   // Row-major move constructor
+   //=====================================================================================
+
+   // Move constructor (0x0)
+   {
+      test_ = "Row-major SymmetricMatrix move constructor (0x0)";
+
+      ST sym1;
+      ST sym2( std::move( sym1 ) );
+
+      checkRows    ( sym2, 0UL );
+      checkColumns ( sym2, 0UL );
+      checkNonZeros( sym2, 0UL );
+   }
+
+   // Move constructor (3x3)
+   {
+      test_ = "Row-major SymmetricMatrix move constructor (3x3)";
+
+      ST sym1( 3UL );
+      sym1(0,0) = vec(  1 );
+      sym1(0,1) = vec( -4 );
+      sym1(0,2) = vec(  7 );
+      sym1(1,1) = vec(  2 );
+      sym1(2,2) = vec(  3 );
+
+      ST sym2( std::move( sym1 ) );
+
+      checkRows    ( sym2, 3UL );
+      checkColumns ( sym2, 3UL );
+      checkCapacity( sym2, 9UL );
+      checkNonZeros( sym2, 7UL );
+
+      if( sym2(0,0) != vec(  1 ) || sym2(0,1) != vec( -4 )  || sym2(0,2) != vec( 7 )   ||
+          sym2(1,0) != vec( -4 ) || sym2(1,1) != vec(  2 )  || !isDefault( sym2(1,2) ) ||
+          sym2(2,0) != vec(  7 ) || !isDefault( sym2(2,1) ) || sym2(2,2) != vec( 3 ) ) {
+         std::ostringstream oss;
+         oss << " Test: " << test_ << "\n"
+             << " Error: Construction failed\n"
+             << " Details:\n"
+             << "   Result:\n" << sym2 << "\n"
+             << "   Expected result:\n( (  1 ) ( -4 ) ( 7 ) )\n"
+                                     "( ( -4 ) (  2 ) (   ) )\n"
+                                     "( (  7 ) (    ) ( 3 ) )\n";
+         throw std::runtime_error( oss.str() );
+      }
+   }
+
+
+   //=====================================================================================
    // Row-major conversion constructor
    //=====================================================================================
 
@@ -741,6 +791,56 @@ void DenseNonNumericTest::testConstructors()
 
 
    //=====================================================================================
+   // Column-major move constructor
+   //=====================================================================================
+
+   // Move constructor (0x0)
+   {
+      test_ = "Column-major SymmetricMatrix move constructor (0x0)";
+
+      OST sym1;
+      OST sym2( std::move( sym1 ) );
+
+      checkRows    ( sym2, 0UL );
+      checkColumns ( sym2, 0UL );
+      checkNonZeros( sym2, 0UL );
+   }
+
+   // Move constructor (3x3)
+   {
+      test_ = "Column-major SymmetricMatrix move constructor (3x3)";
+
+      OST sym1( 3UL );
+      sym1(0,0) = vec(  1 );
+      sym1(0,1) = vec( -4 );
+      sym1(0,2) = vec(  7 );
+      sym1(1,1) = vec(  2 );
+      sym1(2,2) = vec(  3 );
+
+      OST sym2( std::move( sym1 ) );
+
+      checkRows    ( sym2, 3UL );
+      checkColumns ( sym2, 3UL );
+      checkCapacity( sym2, 9UL );
+      checkNonZeros( sym2, 7UL );
+
+      if( sym2(0,0) != vec(  1 ) || sym2(0,1) != vec( -4 )  || sym2(0,2) != vec( 7 )   ||
+          sym2(1,0) != vec( -4 ) || sym2(1,1) != vec(  2 )  || !isDefault( sym2(1,2) ) ||
+          sym2(2,0) != vec(  7 ) || !isDefault( sym2(2,1) ) || sym2(2,2) != vec( 3 ) ) {
+         std::ostringstream oss;
+         oss << " Test: " << test_ << "\n"
+             << " Error: Construction failed\n"
+             << " Details:\n"
+             << "   Result:\n" << sym2 << "\n"
+             << "   Expected result:\n( (  1 ) ( -4 ) ( 7 ) )\n"
+                                     "( ( -4 ) (  2 ) (   ) )\n"
+                                     "( (  7 ) (    ) ( 3 ) )\n";
+         throw std::runtime_error( oss.str() );
+      }
+   }
+
+
+   //=====================================================================================
    // Column-major conversion constructor
    //=====================================================================================
 
@@ -894,6 +994,57 @@ void DenseNonNumericTest::testAssignment()
 
       ST sym2;
       sym2 = sym1;
+
+      checkRows    ( sym2, 3UL );
+      checkColumns ( sym2, 3UL );
+      checkNonZeros( sym2, 7UL );
+
+      if( sym2(0,0) != vec(  1 ) || sym2(0,1) != vec( -4 )  || sym2(0,2) != vec( 7 )   ||
+          sym2(1,0) != vec( -4 ) || sym2(1,1) != vec(  2 )  || !isDefault( sym2(1,2) ) ||
+          sym2(2,0) != vec(  7 ) || !isDefault( sym2(2,1) ) || sym2(2,2) != vec( 3 ) ) {
+         std::ostringstream oss;
+         oss << " Test: " << test_ << "\n"
+             << " Error: Construction failed\n"
+             << " Details:\n"
+             << "   Result:\n" << sym2 << "\n"
+             << "   Expected result:\n( (  1 ) ( -4 ) ( 7 ) )\n"
+                                     "( ( -4 ) (  2 ) (   ) )\n"
+                                     "( (  7 ) (    ) ( 3 ) )\n";
+         throw std::runtime_error( oss.str() );
+      }
+   }
+
+
+   //=====================================================================================
+   // Row-major move assignment
+   //=====================================================================================
+
+   // Move assignment (0x0)
+   {
+      test_ = "Row-major SymmetricMatrix move assignment (0x0)";
+
+      ST sym1, sym2;
+
+      sym2 = std::move( sym1 );
+
+      checkRows    ( sym2, 0UL );
+      checkColumns ( sym2, 0UL );
+      checkNonZeros( sym2, 0UL );
+   }
+
+   // Move assignment (3x3)
+   {
+      test_ = "Row-major SymmetricMatrix move assignment (3x3)";
+
+      ST sym1( 3UL );
+      sym1(0,0) = vec(  1 );
+      sym1(0,1) = vec( -4 );
+      sym1(0,2) = vec(  7 );
+      sym1(1,1) = vec(  2 );
+      sym1(2,2) = vec(  3 );
+
+      ST sym2;
+      sym2 = std::move( sym1 );
 
       checkRows    ( sym2, 3UL );
       checkColumns ( sym2, 3UL );
@@ -1492,6 +1643,57 @@ void DenseNonNumericTest::testAssignment()
 
       OST sym2;
       sym2 = sym1;
+
+      checkRows    ( sym2, 3UL );
+      checkColumns ( sym2, 3UL );
+      checkNonZeros( sym2, 7UL );
+
+      if( sym2(0,0) != vec(  1 ) || sym2(0,1) != vec( -4 )  || sym2(0,2) != vec( 7 )   ||
+          sym2(1,0) != vec( -4 ) || sym2(1,1) != vec(  2 )  || !isDefault( sym2(1,2) ) ||
+          sym2(2,0) != vec(  7 ) || !isDefault( sym2(2,1) ) || sym2(2,2) != vec( 3 ) ) {
+         std::ostringstream oss;
+         oss << " Test: " << test_ << "\n"
+             << " Error: Construction failed\n"
+             << " Details:\n"
+             << "   Result:\n" << sym2 << "\n"
+             << "   Expected result:\n( (  1 ) ( -4 ) ( 7 ) )\n"
+                                     "( ( -4 ) (  2 ) (   ) )\n"
+                                     "( (  7 ) (    ) ( 3 ) )\n";
+         throw std::runtime_error( oss.str() );
+      }
+   }
+
+
+   //=====================================================================================
+   // Column-major move assignment
+   //=====================================================================================
+
+   // Move assignment (0x0)
+   {
+      test_ = "Column-major SymmetricMatrix move assignment (0x0)";
+
+      OST sym1, sym2;
+
+      sym2 = std::move( sym1 );
+
+      checkRows    ( sym2, 0UL );
+      checkColumns ( sym2, 0UL );
+      checkNonZeros( sym2, 0UL );
+   }
+
+   // Move assignment (3x3)
+   {
+      test_ = "Column-major SymmetricMatrix move assignment (3x3)";
+
+      OST sym1( 3UL );
+      sym1(0,0) = vec(  1 );
+      sym1(0,1) = vec( -4 );
+      sym1(0,2) = vec(  7 );
+      sym1(1,1) = vec(  2 );
+      sym1(2,2) = vec(  3 );
+
+      OST sym2;
+      sym2 = std::move( sym1 );
 
       checkRows    ( sym2, 3UL );
       checkColumns ( sym2, 3UL );
