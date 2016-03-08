@@ -370,6 +370,56 @@ void DenseComplexTest::testConstructors()
 
 
    //=====================================================================================
+   // Row-major move constructor
+   //=====================================================================================
+
+   // Move constructor (0x0)
+   {
+      test_ = "Row-major HermitianMatrix move constructor (0x0)";
+
+      HT herm1;
+      HT herm2( std::move( herm1 ) );
+
+      checkRows    ( herm2, 0UL );
+      checkColumns ( herm2, 0UL );
+      checkNonZeros( herm2, 0UL );
+   }
+
+   // Move constructor (3x3)
+   {
+      test_ = "Row-major HermitianMatrix move constructor (3x3)";
+
+      HT herm1( 3UL );
+      herm1(0,0) = cplx( 1, 0);
+      herm1(0,1) = cplx(-4,-1);
+      herm1(0,2) = cplx( 7, 3);
+      herm1(1,1) = cplx( 2, 0);
+      herm1(2,2) = cplx( 3, 0);
+
+      HT herm2( std::move( herm1 ) );
+
+      checkRows    ( herm2, 3UL );
+      checkColumns ( herm2, 3UL );
+      checkCapacity( herm2, 9UL );
+      checkNonZeros( herm2, 7UL );
+
+      if( herm2(0,0) != cplx( 1, 0) || herm2(0,1) != cplx(-4,-1) || herm2(0,2) != cplx(7,3) ||
+          herm2(1,0) != cplx(-4, 1) || herm2(1,1) != cplx( 2, 0) || herm2(1,2) != cplx(0,0) ||
+          herm2(2,0) != cplx( 7,-3) || herm2(2,1) != cplx( 0, 0) || herm2(2,2) != cplx(3,0) ) {
+         std::ostringstream oss;
+         oss << " Test: " << test_ << "\n"
+             << " Error: Construction failed\n"
+             << " Details:\n"
+             << "   Result:\n" << herm2 << "\n"
+             << "   Expected result:\n( ( 1, 0) (-4,-1) (7,3) )\n"
+                                     "( (-4, 1) ( 2, 0) (0,0) )\n"
+                                     "( ( 7,-3) ( 0, 0) (3,0) )\n";
+         throw std::runtime_error( oss.str() );
+      }
+   }
+
+
+   //=====================================================================================
    // Row-major conversion constructor
    //=====================================================================================
 
@@ -767,6 +817,56 @@ void DenseComplexTest::testConstructors()
 
 
    //=====================================================================================
+   // Column-major move constructor
+   //=====================================================================================
+
+   // Move constructor (0x0)
+   {
+      test_ = "Column-major HermitianMatrix move constructor (0x0)";
+
+      OHT herm1;
+      OHT herm2( std::move( herm1 ) );
+
+      checkRows    ( herm2, 0UL );
+      checkColumns ( herm2, 0UL );
+      checkNonZeros( herm2, 0UL );
+   }
+
+   // Move constructor (3x3)
+   {
+      test_ = "Column-major HermitianMatrix move constructor (3x3)";
+
+      OHT herm1( 3UL );
+      herm1(0,0) = cplx( 1, 0);
+      herm1(0,1) = cplx(-4,-1);
+      herm1(0,2) = cplx( 7, 3);
+      herm1(1,1) = cplx( 2, 0);
+      herm1(2,2) = cplx( 3, 0);
+
+      OHT herm2( std::move( herm1 ) );
+
+      checkRows    ( herm2, 3UL );
+      checkColumns ( herm2, 3UL );
+      checkCapacity( herm2, 9UL );
+      checkNonZeros( herm2, 7UL );
+
+      if( herm2(0,0) != cplx( 1, 0) || herm2(0,1) != cplx(-4,-1) || herm2(0,2) != cplx(7,3) ||
+          herm2(1,0) != cplx(-4, 1) || herm2(1,1) != cplx( 2, 0) || herm2(1,2) != cplx(0,0) ||
+          herm2(2,0) != cplx( 7,-3) || herm2(2,1) != cplx( 0, 0) || herm2(2,2) != cplx(3,0) ) {
+         std::ostringstream oss;
+         oss << " Test: " << test_ << "\n"
+             << " Error: Construction failed\n"
+             << " Details:\n"
+             << "   Result:\n" << herm2 << "\n"
+             << "   Expected result:\n( ( 1, 0) (-4,-1) (7,3) )\n"
+                                     "( (-4, 1) ( 2, 0) (0,0) )\n"
+                                     "( ( 7,-3) ( 0, 0) (3,0) )\n";
+         throw std::runtime_error( oss.str() );
+      }
+   }
+
+
+   //=====================================================================================
    // Column-major conversion constructor
    //=====================================================================================
 
@@ -952,6 +1052,57 @@ void DenseComplexTest::testAssignment()
 
       HT herm2;
       herm2 = herm1;
+
+      checkRows    ( herm2, 3UL );
+      checkColumns ( herm2, 3UL );
+      checkNonZeros( herm2, 7UL );
+
+      if( herm2(0,0) != cplx( 1, 0) || herm2(0,1) != cplx(-4,-1) || herm2(0,2) != cplx(7,3) ||
+          herm2(1,0) != cplx(-4, 1) || herm2(1,1) != cplx( 2, 0) || herm2(1,2) != cplx(0,0) ||
+          herm2(2,0) != cplx( 7,-3) || herm2(2,1) != cplx( 0, 0) || herm2(2,2) != cplx(3,0) ) {
+         std::ostringstream oss;
+         oss << " Test: " << test_ << "\n"
+             << " Error: Assignment failed\n"
+             << " Details:\n"
+             << "   Result:\n" << herm2 << "\n"
+             << "   Expected result:\n( ( 1, 0) (-4,-1) (7,3) )\n"
+                                     "( (-4, 1) ( 2, 0) (0,0) )\n"
+                                     "( ( 7,-3) ( 0, 0) (3,0) )\n";
+         throw std::runtime_error( oss.str() );
+      }
+   }
+
+
+   //=====================================================================================
+   // Row-major move assignment
+   //=====================================================================================
+
+   // Move assignment (0x0)
+   {
+      test_ = "Row-major HermitianMatrix move assignment (0x0)";
+
+      HT herm1, herm2;
+
+      herm2 = std::move( herm1 );
+
+      checkRows    ( herm2, 0UL );
+      checkColumns ( herm2, 0UL );
+      checkNonZeros( herm2, 0UL );
+   }
+
+   // Move assignment (3x3)
+   {
+      test_ = "Row-major HermitianMatrix move assignment (3x3)";
+
+      HT herm1( 3UL );
+      herm1(0,0) = cplx( 1, 0);
+      herm1(0,1) = cplx(-4,-1);
+      herm1(0,2) = cplx( 7, 3);
+      herm1(1,1) = cplx( 2, 0);
+      herm1(2,2) = cplx( 3, 0);
+
+      HT herm2;
+      herm2 = std::move( herm1 );
 
       checkRows    ( herm2, 3UL );
       checkColumns ( herm2, 3UL );
@@ -1543,6 +1694,57 @@ void DenseComplexTest::testAssignment()
 
       OHT herm2;
       herm2 = herm1;
+
+      checkRows    ( herm2, 3UL );
+      checkColumns ( herm2, 3UL );
+      checkNonZeros( herm2, 7UL );
+
+      if( herm2(0,0) != cplx( 1, 0) || herm2(0,1) != cplx(-4,-1) || herm2(0,2) != cplx(7,3) ||
+          herm2(1,0) != cplx(-4, 1) || herm2(1,1) != cplx( 2, 0) || herm2(1,2) != cplx(0,0) ||
+          herm2(2,0) != cplx( 7,-3) || herm2(2,1) != cplx( 0, 0) || herm2(2,2) != cplx(3,0) ) {
+         std::ostringstream oss;
+         oss << " Test: " << test_ << "\n"
+             << " Error: Assignment failed\n"
+             << " Details:\n"
+             << "   Result:\n" << herm2 << "\n"
+             << "   Expected result:\n( ( 1, 0) (-4,-1) (7,3) )\n"
+                                     "( (-4, 1) ( 2, 0) (0,0) )\n"
+                                     "( ( 7,-3) ( 0, 0) (3,0) )\n";
+         throw std::runtime_error( oss.str() );
+      }
+   }
+
+
+   //=====================================================================================
+   // Column-major move assignment
+   //=====================================================================================
+
+   // Move assignment (0x0)
+   {
+      test_ = "Column-major HermitianMatrix move assignment (0x0)";
+
+      OHT herm1, herm2;
+
+      herm2 = std::move( herm1 );
+
+      checkRows    ( herm2, 0UL );
+      checkColumns ( herm2, 0UL );
+      checkNonZeros( herm2, 0UL );
+   }
+
+   // Move assignment (3x3)
+   {
+      test_ = "Column-major HermitianMatrix move assignment (3x3)";
+
+      OHT herm1( 3UL );
+      herm1(0,0) = cplx( 1, 0);
+      herm1(0,1) = cplx(-4,-1);
+      herm1(0,2) = cplx( 7, 3);
+      herm1(1,1) = cplx( 2, 0);
+      herm1(2,2) = cplx( 3, 0);
+
+      OHT herm2;
+      herm2 = std::move( herm1 );
 
       checkRows    ( herm2, 3UL );
       checkColumns ( herm2, 3UL );
