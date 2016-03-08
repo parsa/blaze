@@ -267,6 +267,7 @@ class CompressedVector : public SparseVector< CompressedVector<Type,TF>, TF >
                            explicit inline CompressedVector( size_t size );
                            explicit inline CompressedVector( size_t size, size_t nonzeros );
                                     inline CompressedVector( const CompressedVector& sv );
+                                    inline CompressedVector( CompressedVector&& sv ) noexcept;
    template< typename VT >          inline CompressedVector( const DenseVector<VT,TF>&  dv );
    template< typename VT >          inline CompressedVector( const SparseVector<VT,TF>& sv );
    //@}
@@ -298,7 +299,9 @@ class CompressedVector : public SparseVector< CompressedVector<Type,TF>, TF >
    //**Assignment operators************************************************************************
    /*!\name Assignment operators */
    //@{
-                           inline CompressedVector& operator= ( const CompressedVector& rhs );
+   inline CompressedVector& operator=( const CompressedVector& rhs );
+   inline CompressedVector& operator=( CompressedVector&& rhs ) noexcept;
+
    template< typename VT > inline CompressedVector& operator= ( const DenseVector<VT,TF>&  rhs );
    template< typename VT > inline CompressedVector& operator= ( const SparseVector<VT,TF>& rhs );
    template< typename VT > inline CompressedVector& operator+=( const Vector<VT,TF>& rhs );
@@ -490,6 +493,27 @@ inline CompressedVector<Type,TF>::CompressedVector( const CompressedVector& sv )
    , end_     ( begin_+capacity_ )                // Pointer to the last non-zero element of the compressed vector
 {
    std::copy( sv.begin_, sv.end_, begin_ );
+}
+//*************************************************************************************************
+
+
+//*************************************************************************************************
+/*!\brief The move constructor for CompressedVector.
+//
+// \param sv The compressed vector to be moved into this instance.
+*/
+template< typename Type  // Data type of the vector
+        , bool TF >      // Transpose flag
+inline CompressedVector<Type,TF>::CompressedVector( CompressedVector&& sv ) noexcept
+   : size_    ( sv.size_ )      // The current size/dimension of the compressed vector
+   , capacity_( sv.capacity_ )  // The maximum capacity of the compressed vector
+   , begin_   ( sv.begin_ )     // Pointer to the first non-zero element of the compressed vector
+   , end_     ( sv.end_ )       // Pointer to the last non-zero element of the compressed vector
+{
+   sv.size_     = 0UL;
+   sv.capacity_ = 0UL;
+   sv.begin_    = nullptr;
+   sv.end_      = nullptr;
 }
 //*************************************************************************************************
 
@@ -781,6 +805,34 @@ inline CompressedVector<Type,TF>&
       end_  = std::copy( rhs.begin_, rhs.end_, begin_ );
       size_ = rhs.size_;
    }
+
+   return *this;
+}
+//*************************************************************************************************
+
+
+//*************************************************************************************************
+/*!\brief Move assignment operator for CompressedVector.
+//
+// \param rhs The compressed vector to be moved into this instance.
+// \return Reference to the assigned compressed vector.
+*/
+template< typename Type  // Data type of the vector
+        , bool TF >      // Transpose flag
+inline CompressedVector<Type,TF>&
+   CompressedVector<Type,TF>::operator=( CompressedVector&& rhs ) noexcept
+{
+   deallocate( begin_ );
+
+   size_     = rhs.size_;
+   capacity_ = rhs.capacity_;
+   begin_    = rhs.begin_;
+   end_      = rhs.end_;
+
+   rhs.size_     = 0UL;
+   rhs.capacity_ = 0UL;
+   rhs.begin_    = nullptr;
+   rhs.end_      = nullptr;
 
    return *this;
 }
