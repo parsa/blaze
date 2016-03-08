@@ -239,7 +239,7 @@ class Archive : private NonCopyable
 // on the given arguments \a args.
 */
 template< typename Stream >   // Type of the bound stream
-template< typename... Args >  // Type of the first argument
+template< typename... Args >  // Types of the optional arguments
 inline Archive<Stream>::Archive( Args&&... args )
    : ptr_   ( new Stream( std::forward<Args>( args )... ) )  // The dynamically allocated stream resource
    , stream_( *ptr_.get() )                                  // Reference to the bound stream

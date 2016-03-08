@@ -888,7 +888,7 @@ inline T rand()
 // This rand() function creates a random number based on the given arguments \a args.
 */
 template< typename T          // Type of the random number
-        , typename... Args >  // Type of the first argument
+        , typename... Args >  // Types of the optional arguments
 inline T rand( Args&&... args )
 {
    Rand<T> tmp;
@@ -932,7 +932,7 @@ inline void randomize( T& value )
 // This randomize() function randomizes the given variable based on the given arguments \a args.
 */
 template< typename T          // Type of the random number
-        , typename... Args >  // Type of the first argument
+        , typename... Args >  // Types of the optional arguments
 inline void randomize( T& value, Args&&... args )
 {
    Rand<T> tmp;
