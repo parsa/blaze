@@ -219,6 +219,47 @@ void UnalignedUnpaddedTest::testConstructors()
          throw std::runtime_error( oss.str() );
       }
    }
+
+
+   //=====================================================================================
+   // Move constructor
+   //=====================================================================================
+
+   {
+      test_ = "CustomVector move constructor (size 0)";
+
+      VT vec1;
+      VT vec2( std::move( vec1 ) );
+
+      checkSize    ( vec2, 0UL );
+      checkNonZeros( vec2, 0UL );
+   }
+
+   {
+      test_ = "CustomVector move constructor (size 5)";
+
+      VT vec1( new int[5UL], 5UL, blaze::ArrayDelete() );
+      vec1[0] = 1;
+      vec1[1] = 2;
+      vec1[2] = 3;
+      vec1[3] = 4;
+      vec1[4] = 5;
+      VT vec2( std::move( vec1 ) );
+
+      checkSize    ( vec2, 5UL );
+      checkCapacity( vec2, 5UL );
+      checkNonZeros( vec2, 5UL );
+
+      if( vec2[0] != 1 || vec2[1] != 2 || vec2[2] != 3 || vec2[3] != 4 || vec2[4] != 5 ) {
+         std::ostringstream oss;
+         oss << " Test: " << test_ << "\n"
+             << " Error: Construction failed\n"
+             << " Details:\n"
+             << "   Result:\n" << vec2 << "\n"
+             << "   Expected result:\n( 1 2 3 4 5 )\n";
+         throw std::runtime_error( oss.str() );
+      }
+   }
 }
 //*************************************************************************************************
 
@@ -302,6 +343,38 @@ void UnalignedUnpaddedTest::testAssignment()
       vec1[4] = 5;
       VT vec2( new int[5UL], 5UL, blaze::ArrayDelete() );
       vec2 = vec1;
+
+      checkSize    ( vec2, 5UL );
+      checkCapacity( vec2, 5UL );
+      checkNonZeros( vec2, 5UL );
+
+      if( vec2[0] != 1 || vec2[1] != 2 || vec2[2] != 3 || vec2[3] != 4 || vec2[4] != 5 ) {
+         std::ostringstream oss;
+         oss << " Test: " << test_ << "\n"
+             << " Error: Assignment failed\n"
+             << " Details:\n"
+             << "   Result:\n" << vec2 << "\n"
+             << "   Expected result:\n( 1 2 3 4 5 )\n";
+         throw std::runtime_error( oss.str() );
+      }
+   }
+
+
+   //=====================================================================================
+   // Move assignment
+   //=====================================================================================
+
+   {
+      test_ = "CustomVector move assignment";
+
+      VT vec1( new int[5UL], 5UL, blaze::ArrayDelete() );
+      vec1[0] = 1;
+      vec1[1] = 2;
+      vec1[2] = 3;
+      vec1[3] = 4;
+      vec1[4] = 5;
+      VT vec2( new int[5UL], 5UL, blaze::ArrayDelete() );
+      vec2 = std::move( vec1 );
 
       checkSize    ( vec2, 5UL );
       checkCapacity( vec2, 5UL );
