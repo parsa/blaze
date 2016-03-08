@@ -106,7 +106,7 @@ inline byte_t* allocate_backend( size_t size, size_t alignment )
 // This function deallocates the given memory that was previously allocated via the allocate()
 // function. For that purpose it uses the according system-specific memory deallocation functions.
 */
-inline void deallocate_backend( const void* address )
+inline void deallocate_backend( const void* address ) noexcept
 {
 #if defined(_MSC_VER)
    _aligned_free( const_cast<void*>( address ) );
@@ -222,7 +222,7 @@ typename DisableIf< IsBuiltin<T>, T* >::Type allocate( size_t size )
 // function.
 */
 template< typename T >
-typename EnableIf< IsBuiltin<T> >::Type deallocate( T* address )
+typename EnableIf< IsBuiltin<T> >::Type deallocate( T* address ) noexcept
 {
    if( address == nullptr )
       return;
