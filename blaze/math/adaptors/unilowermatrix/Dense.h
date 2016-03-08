@@ -598,6 +598,7 @@ class UniLowerMatrix<MT,SO,true>
    explicit inline UniLowerMatrix( ElementType* ptr, size_t n, size_t nn, Deleter d );
 
    inline UniLowerMatrix( const UniLowerMatrix& m );
+   inline UniLowerMatrix( UniLowerMatrix&& m ) noexcept;
    //@}
    //**********************************************************************************************
 
@@ -628,6 +629,7 @@ class UniLowerMatrix<MT,SO,true>
    //@{
    inline UniLowerMatrix& operator=( const ElementType& rhs );
    inline UniLowerMatrix& operator=( const UniLowerMatrix& rhs );
+   inline UniLowerMatrix& operator=( UniLowerMatrix&& rhs ) noexcept;
 
    template< typename MT2, bool SO2 >
    inline typename DisableIf< IsComputation<MT2>, UniLowerMatrix& >::Type
@@ -1001,6 +1003,24 @@ template< typename MT  // Type of the adapted dense matrix
         , bool SO >    // Storage order of the adapted dense matrix
 inline UniLowerMatrix<MT,SO,true>::UniLowerMatrix( const UniLowerMatrix& m )
    : matrix_( m.matrix_ )  // The adapted dense matrix
+{
+   BLAZE_INTERNAL_ASSERT( isSquare( matrix_ ), "Non-square unilower matrix detected" );
+   BLAZE_INTERNAL_ASSERT( isIntact(), "Broken invariant detected" );
+}
+/*! \endcond */
+//*************************************************************************************************
+
+
+//*************************************************************************************************
+/*! \cond BLAZE_INTERNAL */
+/*!\brief The move constructor for UniLowerMatrix.
+//
+// \param m The unilower matrix to be moved into this instance.
+*/
+template< typename MT  // Type of the adapted dense matrix
+        , bool SO >    // Storage order of the adapted dense matrix
+inline UniLowerMatrix<MT,SO,true>::UniLowerMatrix( UniLowerMatrix&& m ) noexcept
+   : matrix_( std::move( m.matrix_ ) )  // The adapted dense matrix
 {
    BLAZE_INTERNAL_ASSERT( isSquare( matrix_ ), "Non-square unilower matrix detected" );
    BLAZE_INTERNAL_ASSERT( isIntact(), "Broken invariant detected" );
@@ -1386,6 +1406,29 @@ inline UniLowerMatrix<MT,SO,true>&
    UniLowerMatrix<MT,SO,true>::operator=( const UniLowerMatrix& rhs )
 {
    matrix_ = rhs.matrix_;
+
+   BLAZE_INTERNAL_ASSERT( isSquare( matrix_ ), "Non-square unilower matrix detected" );
+   BLAZE_INTERNAL_ASSERT( isIntact(), "Broken invariant detected" );
+
+   return *this;
+}
+/*! \endcond */
+//*************************************************************************************************
+
+
+//*************************************************************************************************
+/*! \cond BLAZE_INTERNAL */
+/*!\brief Move assignment operator for UniLowerMatrix.
+//
+// \param rhs The matrix to be moved into this instance.
+// \return Reference to the assigned matrix.
+*/
+template< typename MT  // Type of the adapted dense matrix
+        , bool SO >    // Storage order of the adapted dense matrix
+inline UniLowerMatrix<MT,SO,true>&
+   UniLowerMatrix<MT,SO,true>::operator=( UniLowerMatrix&& rhs ) noexcept
+{
+   matrix_ = std::move( rhs.matrix_ );
 
    BLAZE_INTERNAL_ASSERT( isSquare( matrix_ ), "Non-square unilower matrix detected" );
    BLAZE_INTERNAL_ASSERT( isIntact(), "Broken invariant detected" );
