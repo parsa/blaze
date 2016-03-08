@@ -594,6 +594,7 @@ class UpperMatrix<MT,SO,true>
    explicit inline UpperMatrix( ElementType* ptr, size_t n, size_t nn, Deleter d );
 
    inline UpperMatrix( const UpperMatrix& m );
+   inline UpperMatrix( UpperMatrix&& m ) noexcept;
    //@}
    //**********************************************************************************************
 
@@ -624,6 +625,7 @@ class UpperMatrix<MT,SO,true>
    //@{
    inline UpperMatrix& operator=( const ElementType& rhs );
    inline UpperMatrix& operator=( const UpperMatrix& rhs );
+   inline UpperMatrix& operator=( UpperMatrix&& rhs ) noexcept;
 
    template< typename MT2, bool SO2 >
    inline typename DisableIf< IsComputation<MT2>, UpperMatrix& >::Type
@@ -1009,6 +1011,24 @@ inline UpperMatrix<MT,SO,true>::UpperMatrix( const UpperMatrix& m )
 //*************************************************************************************************
 
 
+//*************************************************************************************************
+/*! \cond BLAZE_INTERNAL */
+/*!\brief The move constructor for UpperMatrix.
+//
+// \param m The upper matrix to be moved into this instance.
+*/
+template< typename MT  // Type of the adapted dense matrix
+        , bool SO >    // Storage order of the adapted dense matrix
+inline UpperMatrix<MT,SO,true>::UpperMatrix( UpperMatrix&& m ) noexcept
+   : matrix_( std::move( m.matrix_ ) )  // The adapted dense matrix
+{
+   BLAZE_INTERNAL_ASSERT( isSquare( matrix_ ), "Non-square upper matrix detected" );
+   BLAZE_INTERNAL_ASSERT( isIntact(), "Broken invariant detected" );
+}
+/*! \endcond */
+//*************************************************************************************************
+
+
 
 
 //=================================================================================================
@@ -1386,6 +1406,29 @@ inline UpperMatrix<MT,SO,true>&
    UpperMatrix<MT,SO,true>::operator=( const UpperMatrix& rhs )
 {
    matrix_ = rhs.matrix_;
+
+   BLAZE_INTERNAL_ASSERT( isSquare( matrix_ ), "Non-square upper matrix detected" );
+   BLAZE_INTERNAL_ASSERT( isIntact(), "Broken invariant detected" );
+
+   return *this;
+}
+/*! \endcond */
+//*************************************************************************************************
+
+
+//*************************************************************************************************
+/*! \cond BLAZE_INTERNAL */
+/*!\brief Move assignment operator for UpperMatrix.
+//
+// \param rhs The matrix to be moved into this instance.
+// \return Reference to the assigned matrix.
+*/
+template< typename MT  // Type of the adapted dense matrix
+        , bool SO >    // Storage order of the adapted dense matrix
+inline UpperMatrix<MT,SO,true>&
+   UpperMatrix<MT,SO,true>::operator=( UpperMatrix&& rhs ) noexcept
+{
+   matrix_ = std::move( rhs.matrix_ );
 
    BLAZE_INTERNAL_ASSERT( isSquare( matrix_ ), "Non-square upper matrix detected" );
    BLAZE_INTERNAL_ASSERT( isIntact(), "Broken invariant detected" );
