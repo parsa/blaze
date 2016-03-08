@@ -141,8 +141,11 @@ class DiagonalMatrix<MT,SO,false>
    explicit inline DiagonalMatrix( size_t n, size_t nonzeros );
    explicit inline DiagonalMatrix( size_t n, const std::vector<size_t>& nonzeros );
 
-                                      inline DiagonalMatrix( const DiagonalMatrix& m );
-   template< typename MT2, bool SO2 > inline DiagonalMatrix( const Matrix<MT2,SO2>& m );
+   inline DiagonalMatrix( const DiagonalMatrix& m );
+   inline DiagonalMatrix( DiagonalMatrix&& m ) noexcept;
+
+   template< typename MT2, bool SO2 >
+   inline DiagonalMatrix( const Matrix<MT2,SO2>& m );
    //@}
    //**********************************************************************************************
 
@@ -170,6 +173,7 @@ class DiagonalMatrix<MT,SO,false>
    /*!\name Assignment operators */
    //@{
    inline DiagonalMatrix& operator=( const DiagonalMatrix& rhs );
+   inline DiagonalMatrix& operator=( DiagonalMatrix&& rhs ) noexcept;
 
    template< typename MT2, bool SO2 >
    inline typename DisableIf< IsComputation<MT2>, DiagonalMatrix& >::Type
@@ -416,6 +420,24 @@ template< typename MT  // Type of the adapted sparse matrix
         , bool SO >    // Storage order of the adapted sparse matrix
 inline DiagonalMatrix<MT,SO,false>::DiagonalMatrix( const DiagonalMatrix& m )
    : matrix_( m.matrix_ )  // The adapted sparse matrix
+{
+   BLAZE_INTERNAL_ASSERT( isSquare( matrix_ ), "Non-square diagonal matrix detected" );
+   BLAZE_INTERNAL_ASSERT( isIntact(), "Broken invariant detected" );
+}
+/*! \endcond */
+//*************************************************************************************************
+
+
+//*************************************************************************************************
+/*! \cond BLAZE_INTERNAL */
+/*!\brief The move constructor for DiagonalMatrix.
+//
+// \param m The diagonal matrix to be moved into this instance.
+*/
+template< typename MT  // Type of the adapted sparse matrix
+        , bool SO >    // Storage order of the adapted sparse matrix
+inline DiagonalMatrix<MT,SO,false>::DiagonalMatrix( DiagonalMatrix&& m ) noexcept
+   : matrix_( std::move( m.matrix_ ) )  // The adapted sparse matrix
 {
    BLAZE_INTERNAL_ASSERT( isSquare( matrix_ ), "Non-square diagonal matrix detected" );
    BLAZE_INTERNAL_ASSERT( isIntact(), "Broken invariant detected" );
@@ -753,6 +775,29 @@ inline DiagonalMatrix<MT,SO,false>&
    DiagonalMatrix<MT,SO,false>::operator=( const DiagonalMatrix& rhs )
 {
    matrix_ = rhs.matrix_;
+
+   BLAZE_INTERNAL_ASSERT( isSquare( matrix_ ), "Non-square diagonal matrix detected" );
+   BLAZE_INTERNAL_ASSERT( isIntact(), "Broken invariant detected" );
+
+   return *this;
+}
+/*! \endcond */
+//*************************************************************************************************
+
+
+//*************************************************************************************************
+/*! \cond BLAZE_INTERNAL */
+/*!\brief Move assignment operator for DiagonalMatrix.
+//
+// \param rhs The matrix to be moved into this instance.
+// \return Reference to the assigned matrix.
+*/
+template< typename MT  // Type of the adapted sparse matrix
+        , bool SO >    // Storage order of the adapted sparse matrix
+inline DiagonalMatrix<MT,SO,false>&
+   DiagonalMatrix<MT,SO,false>::operator=( DiagonalMatrix&& rhs ) noexcept
+{
+   matrix_ = std::move( rhs.matrix_ );
 
    BLAZE_INTERNAL_ASSERT( isSquare( matrix_ ), "Non-square diagonal matrix detected" );
    BLAZE_INTERNAL_ASSERT( isIntact(), "Broken invariant detected" );
