@@ -196,6 +196,54 @@ void SparseTest::testConstructors()
 
 
    //=====================================================================================
+   // Row-major move constructor
+   //=====================================================================================
+
+   // Move constructor (0x0)
+   {
+      test_ = "Row-major UniUpperMatrix move constructor (0x0)";
+
+      UT upper1;
+      UT upper2( std::move( upper1 ) );
+
+      checkRows    ( upper2, 0UL );
+      checkColumns ( upper2, 0UL );
+      checkNonZeros( upper2, 0UL );
+   }
+
+   // Move constructor (3x3)
+   {
+      test_ = "Row-major UniUpperMatrix move constructor (3x3)";
+
+      UT upper1( 3UL );
+      upper1(0,1) = -4;
+      upper1(0,2) =  7;
+
+      UT upper2( std::move( upper1 ) );
+
+      checkRows    ( upper2, 3UL );
+      checkColumns ( upper2, 3UL );
+      checkCapacity( upper2, 5UL );
+      checkNonZeros( upper2, 5UL );
+      checkNonZeros( upper2, 0UL, 3UL );
+      checkNonZeros( upper2, 1UL, 1UL );
+      checkNonZeros( upper2, 2UL, 1UL );
+
+      if( upper2(0,0) != 1 || upper2(0,1) != -4 || upper2(0,2) != 7 ||
+          upper2(1,0) != 0 || upper2(1,1) !=  1 || upper2(1,2) != 0 ||
+          upper2(2,0) != 0 || upper2(2,1) !=  0 || upper2(2,2) != 1 ) {
+         std::ostringstream oss;
+         oss << " Test: " << test_ << "\n"
+             << " Error: Construction failed\n"
+             << " Details:\n"
+             << "   Result:\n" << upper2 << "\n"
+             << "   Expected result:\n( 1 -4  7 )\n( 0  1  0 )\n( 0  0  1 )\n";
+         throw std::runtime_error( oss.str() );
+      }
+   }
+
+
+   //=====================================================================================
    // Row-major conversion constructor
    //=====================================================================================
 
@@ -383,6 +431,54 @@ void SparseTest::testConstructors()
 
 
    //=====================================================================================
+   // Column-major move constructor
+   //=====================================================================================
+
+   // Move constructor (0x0)
+   {
+      test_ = "Column-major UniUpperMatrix move constructor (0x0)";
+
+      OUT upper1;
+      OUT upper2( std::move( upper1 ) );
+
+      checkRows    ( upper2, 0UL );
+      checkColumns ( upper2, 0UL );
+      checkNonZeros( upper2, 0UL );
+   }
+
+   // Move constructor (3x3)
+   {
+      test_ = "Column-major UniUpperMatrix move constructor (3x3)";
+
+      OUT upper1( 3UL );
+      upper1(0,1) = -4;
+      upper1(0,2) =  7;
+
+      OUT upper2( std::move( upper1 ) );
+
+      checkRows    ( upper2, 3UL );
+      checkColumns ( upper2, 3UL );
+      checkCapacity( upper2, 5UL );
+      checkNonZeros( upper2, 5UL );
+      checkNonZeros( upper2, 0UL, 1UL );
+      checkNonZeros( upper2, 1UL, 2UL );
+      checkNonZeros( upper2, 2UL, 2UL );
+
+      if( upper2(0,0) != 1 || upper2(0,1) != -4 || upper2(0,2) != 7 ||
+          upper2(1,0) != 0 || upper2(1,1) !=  1 || upper2(1,2) != 0 ||
+          upper2(2,0) != 0 || upper2(2,1) !=  0 || upper2(2,2) != 1 ) {
+         std::ostringstream oss;
+         oss << " Test: " << test_ << "\n"
+             << " Error: Construction failed\n"
+             << " Details:\n"
+             << "   Result:\n" << upper2 << "\n"
+             << "   Expected result:\n( 1 -4  7 )\n( 0  1  0 )\n( 0  0  1 )\n";
+         throw std::runtime_error( oss.str() );
+      }
+   }
+
+
+   //=====================================================================================
    // Column-major conversion constructor
    //=====================================================================================
 
@@ -530,6 +626,56 @@ void SparseTest::testAssignment()
 
       UT upper2;
       upper2 = upper1;
+
+      checkRows    ( upper2, 3UL );
+      checkColumns ( upper2, 3UL );
+      checkNonZeros( upper2, 5UL );
+      checkNonZeros( upper2, 0UL, 3UL );
+      checkNonZeros( upper2, 1UL, 1UL );
+      checkNonZeros( upper2, 2UL, 1UL );
+
+      if( upper2(0,0) != 1 || upper2(0,1) != -4 || upper2(0,2) != 7 ||
+          upper2(1,0) != 0 || upper2(1,1) !=  1 || upper2(1,2) != 0 ||
+          upper2(2,0) != 0 || upper2(2,1) !=  0 || upper2(2,2) != 1 ) {
+         std::ostringstream oss;
+         oss << " Test: " << test_ << "\n"
+             << " Error: Assignment failed\n"
+             << " Details:\n"
+             << "   Result:\n" << upper2 << "\n"
+             << "   Expected result:\n( 1 -4  7 )\n( 0  1  0 )\n( 0  0  1 )\n";
+         throw std::runtime_error( oss.str() );
+      }
+   }
+
+
+   //=====================================================================================
+   // Row-major move assignment
+   //=====================================================================================
+
+   // Move assignment (0x0)
+   {
+      test_ = "Row-major UniUpperMatrix move assignment (0x0)";
+
+      UT upper1, upper2;
+
+      upper2 = std::move( upper1 );
+
+      checkRows    ( upper2, 0UL );
+      checkColumns ( upper2, 0UL );
+      checkNonZeros( upper2, 0UL );
+   }
+
+   // Move assignment (3x3)
+   {
+      test_ = "Row-major UniUpperMatrix move assignment (3x3)";
+
+      UT upper1( 3UL );
+      upper1(0,1) = -4;
+      upper1(0,2) =  7;
+      upper1(1,2) =  0;
+
+      UT upper2;
+      upper2 = std::move( upper1 );
 
       checkRows    ( upper2, 3UL );
       checkColumns ( upper2, 3UL );
@@ -984,6 +1130,56 @@ void SparseTest::testAssignment()
 
       OUT upper2;
       upper2 = upper1;
+
+      checkRows    ( upper2, 3UL );
+      checkColumns ( upper2, 3UL );
+      checkNonZeros( upper2, 5UL );
+      checkNonZeros( upper2, 0UL, 1UL );
+      checkNonZeros( upper2, 1UL, 2UL );
+      checkNonZeros( upper2, 2UL, 2UL );
+
+      if( upper2(0,0) != 1 || upper2(0,1) != -4 || upper2(0,2) != 7 ||
+          upper2(1,0) != 0 || upper2(1,1) !=  1 || upper2(1,2) != 0 ||
+          upper2(2,0) != 0 || upper2(2,1) !=  0 || upper2(2,2) != 1 ) {
+         std::ostringstream oss;
+         oss << " Test: " << test_ << "\n"
+             << " Error: Assignment failed\n"
+             << " Details:\n"
+             << "   Result:\n" << upper2 << "\n"
+             << "   Expected result:\n( 1 -4  7 )\n( 0  1  0 )\n( 0  0  1 )\n";
+         throw std::runtime_error( oss.str() );
+      }
+   }
+
+
+   //=====================================================================================
+   // Column-major move assignment
+   //=====================================================================================
+
+   // Move assignment (0x0)
+   {
+      test_ = "Column-major UniUpperMatrix move assignment (0x0)";
+
+      OUT upper1, upper2;
+
+      upper2 = std::move( upper1 );
+
+      checkRows    ( upper2, 0UL );
+      checkColumns ( upper2, 0UL );
+      checkNonZeros( upper2, 0UL );
+   }
+
+   // Move assignment (3x3)
+   {
+      test_ = "Column-major UniUpperMatrix move assignment (3x3)";
+
+      OUT upper1( 3UL );
+      upper1(0,1) = -4;
+      upper1(0,2) =  7;
+      upper1(1,2) =  0;
+
+      OUT upper2;
+      upper2 = std::move( upper1 );
 
       checkRows    ( upper2, 3UL );
       checkColumns ( upper2, 3UL );
