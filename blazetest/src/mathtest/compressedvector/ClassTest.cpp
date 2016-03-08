@@ -213,6 +213,45 @@ void ClassTest::testConstructors()
          throw std::runtime_error( oss.str() );
       }
    }
+
+
+   //=====================================================================================
+   // Move constructor
+   //=====================================================================================
+
+   {
+      test_ = "CompressedVector move constructor (size 0)";
+
+      blaze::CompressedVector<int,blaze::rowVector> vec1( 0UL, 3UL );
+      blaze::CompressedVector<int,blaze::rowVector> vec2( std::move( vec1 ) );
+
+      checkSize    ( vec2, 0UL );
+      checkNonZeros( vec2, 0UL );
+   }
+
+   {
+      test_ = "CompressedVector move constructor (size 7)";
+
+      blaze::CompressedVector<int,blaze::rowVector> vec1( 7UL, 3UL );
+      vec1[0] = 1;
+      vec1[1] = 2;
+      vec1[3] = 4;
+      blaze::CompressedVector<int,blaze::rowVector> vec2( std::move( vec1 ) );
+
+      checkSize    ( vec2, 7UL );
+      checkCapacity( vec2, 3UL );
+      checkNonZeros( vec2, 3UL );
+
+      if( vec2[0] != 1 || vec2[1] != 2 || vec2[3] != 4 ) {
+         std::ostringstream oss;
+         oss << " Test: " << test_ << "\n"
+             << " Error: Construction failed\n"
+             << " Details:\n"
+             << "   Result:\n" << vec2 << "\n"
+             << "   Expected result:\n( 1 2 0 4 0 0 0 )\n";
+         throw std::runtime_error( oss.str() );
+      }
+   }
 }
 //*************************************************************************************************
 
@@ -282,6 +321,39 @@ void ClassTest::testAssignment()
                 << "   Expected result:\n" << vec2 << "\n";
             throw std::runtime_error( oss.str() );
          }
+      }
+   }
+
+
+   //=====================================================================================
+   // Move assignment
+   //=====================================================================================
+
+   {
+      test_ = "CompressedVector move assignment";
+
+      blaze::CompressedVector<int,blaze::rowVector> vec1( 7UL, 3UL );
+      vec1[0] = 1;
+      vec1[1] = 2;
+      vec1[3] = 4;
+
+      blaze::CompressedVector<int,blaze::rowVector> vec2( 4UL, 1UL );
+      vec2[2] = 11;
+
+      vec2 = std::move( vec1 );
+
+      checkSize    ( vec2, 7UL );
+      checkCapacity( vec2, 3UL );
+      checkNonZeros( vec2, 3UL );
+
+      if( vec2[0] != 1 || vec2[1] != 2 || vec2[3] != 4 ) {
+         std::ostringstream oss;
+         oss << " Test: " << test_ << "\n"
+             << " Error: Assignment failed\n"
+             << " Details:\n"
+             << "   Result:\n" << vec2 << "\n"
+             << "   Expected result:\n( 1 2 0 4 0 0 0 )\n";
+         throw std::runtime_error( oss.str() );
       }
    }
 
