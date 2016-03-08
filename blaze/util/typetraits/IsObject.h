@@ -58,8 +58,8 @@ namespace blaze {
 //
 // This class tests whether the given template parameter \a T is an object type. All types are
 // considered object types except references, \a void, and function types. If \a T is an object
-// type, the \a value member enumeration is set to \a true, the nested type definition \a Type
-// is \a TrueType, and the class derives from \a TrueType. Otherwise \a value is set to \a false,
+// type, the \a value member constant is set to \a true, the nested type definition \a Type is
+// \a TrueType, and the class derives from \a TrueType. Otherwise \a value is set to \a false,
 // \a Type is \a FalseType, and the class derives from \a FalseType.
 
    \code

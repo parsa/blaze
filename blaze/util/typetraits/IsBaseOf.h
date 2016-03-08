@@ -59,9 +59,9 @@ namespace blaze {
 //
 // This type trait tests for an inheritance relationship between the two types \a Base and
 // \a Derived. If \a Derived is a type derived from \a Base or the same type as \a Base the
-// \a value member enumeration is set to \a true, the nested type definition \a Type is
-// \a TrueType, and the class derives from \a TrueType. Otherwise \a value is set to \a false,
-// \a Type is \a FalseType, and the class derives from \a FalseType.
+// \a value member contant is set to \a true, the nested type definition \a Type is \a TrueType,
+// and the class derives from \a TrueType. Otherwise \a value is set to \a false, \a Type is
+// \a FalseType, and the class derives from \a FalseType.
 
    \code
    class A { ... };

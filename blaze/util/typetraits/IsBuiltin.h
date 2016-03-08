@@ -57,10 +57,10 @@ namespace blaze {
 // \ingroup type_traits
 //
 // This type trait tests whether or not the given template parameter is a built-in/fundamental
-// data type. In case the type is a built-in type, the \a value member enumeration is set to
-// \a true, the nested type definition \a Type is \a TrueType, and the class derives from
-// \a TrueType. Otherwise \a value is set to \a false, \a Type is \a FalseType, and the class
-// derives from \a FalseType.
+// data type. In case the type is a built-in type, the \a value member constant is set to \a true,
+// the nested type definition \a Type is \a TrueType, and the class derives from \a TrueType.
+// Otherwise \a value is set to \a false, \a Type is \a FalseType, and the class derives from
+// \a FalseType.
 
    \code
    blaze::IsBuiltin<void>::value         // Evaluates to 'true'

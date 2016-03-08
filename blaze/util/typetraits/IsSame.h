@@ -60,7 +60,7 @@ namespace blaze {
 //
 // This class tests if the two data types \a A and \a B are equal. For this type comparison,
 // the cv-qualifiers of both data types are not ignored. If \a A and \a B are the same data
-// type, then the \a value member enumeration is set to \a true, the nested type definition
+// type, then the \a value member constant is set to \a true, the nested type definition
 // \a Type is \a TrueType, and the class derives from \a TrueType. Otherwise \a value is set
 // to \a false, \a Type is \a FalseType, and the class derives from \a FalseType.
 
@@ -127,7 +127,7 @@ struct IsSameHelper
 //
 // This class tests if the two data types \a A and \a B are equal. For this type comparison,
 // the cv-qualifiers of both data types are ignored. If \a A and \a B are the same data type
-// (ignoring the cv-qualifiers), then the \a value member enumeration is set to \a true, the
+// (ignoring the cv-qualifiers), then the \a value member constant is set to \a true, the
 // nested type definition \a Type is \a TrueType, and the class derives from \a TrueType.
 // Otherwise \a value is set to \a false, \a Type is \a FalseType, and the class derives from
 // \a FalseType.

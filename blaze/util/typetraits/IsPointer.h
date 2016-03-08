@@ -58,8 +58,8 @@ namespace blaze {
 //
 // This class tests whether the given template parameter is a pointer type (including function
 // pointers, but excluding pointers to members) or not. If it is a pointer type, the \a value
-// member enumeration is set to \a true, the nested type definition \a Type is \a TrueType,
-// and the class derives from \a TrueType. Otherwise \a value is set to \a false, \a Type is
+// member constant is set to \a true, the nested type definition \a Type is \a TrueType, and
+// the class derives from \a TrueType. Otherwise \a value is set to \a false, \a Type is
 // \a FalseType, and the class derives from \a FalseType.
 
    \code

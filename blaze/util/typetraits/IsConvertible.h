@@ -57,10 +57,11 @@ namespace blaze {
 // \ingroup type_traits
 //
 // This type traits tests whether the first given template argument can be converted to the
-// second template argument via copy construction. If the first argument can be converted to
-// the second argument, the \a value member enumeration is set to \a true, the nested type
+// second template argument via copy construction. If the first argument can be converted
+// to the second argument, the \a value member constnt is set to \a true, the nested type
 // definition \a type is \a TrueType, and the class derives from \a TrueType. Otherwise
-// \a value is set to \a false, \a type is \a FalseType, and the class derives from \a FalseType.
+// \a value is set to \a false, \a type is \a FalseType, and the class derives from
+// \a FalseType.
 
    \code
    struct A {};

@@ -57,8 +57,8 @@ namespace blaze {
 // \ingroup type_traits
 //
 // This class offers the possibility to test the size of a type at compile time. If the type
-// \a T is exactly \a Size bytes large, the \a value member enumeration is set to \a true,
-// the nested type definition \a Type is \a TrueType, and the class derives from \a TrueType.
+// \a T is exactly \a Size bytes large, the \a value member constant is set to \a true, the
+// nested type definition \a Type is \a TrueType, and the class derives from \a TrueType.
 // Otherwise \a value is set to \a false, \a Type is \a FalseType, and the class derives from
 // \a FalseType.
 
@@ -162,7 +162,7 @@ struct HasSize<const volatile void,Size> : public BoolConstant< 0 == Size >
 // \ingroup type_traits
 //
 // This type trait offers the possibility to test whether a given type has a size of exactly
-// one byte. If the type \a T has one byte, the \a value member enumeration is set to \a true,
+// one byte. If the type \a T has one byte, the \a value member constant is set to \a true,
 // the nested type definition \a Type is \a TrueType, and the class derives from \a TrueType.
 // Otherwise \a value is set to \a false, \a Type is \a FalseType, and the class derives from
 // \a FalseType.
@@ -195,7 +195,7 @@ struct Has1Byte : public HasSize<T,1UL>
 // \ingroup type_traits
 //
 // This type trait offers the possibility to test whether a given type has a size of exactly
-// two bytes. If the type \a T has two bytes, the \a value member enumeration is set to \a true,
+// two bytes. If the type \a T has two bytes, the \a value member constant is set to \a true,
 // the nested type definition \a Type is \a TrueType, and the class derives from \a TrueType.
 // Otherwise \a value is set to \a false, \a Type is \a FalseType, and the class derives from
 // \a FalseType.
@@ -228,10 +228,10 @@ struct Has2Bytes : public HasSize<T,2UL>
 // \ingroup type_traits
 //
 // This type trait offers the possibility to test whether a given type has a size of exactly
-// four bytes. If the type \a T has four bytes, the \a value member enumeration is set to
-// \a true, the nested type definition \a Type is \a TrueType, and the class derives from
-// \a TrueType. Otherwise \a value is set to \a false, \a Type is \a FalseType, and the class
-// derives from \a FalseType.
+// four bytes. If the type \a T has four bytes, the \a value member constant is set to \a true,
+// the nested type definition \a Type is \a TrueType, and the class derives from \a TrueType.
+// Otherwise \a value is set to \a false, \a Type is \a FalseType, and the class derives from
+// \a FalseType.
 
    \code
    blaze::Has4Bytes<const int>::value        // Evaluates to 'true' (on most architectures)
@@ -261,10 +261,10 @@ struct Has4Bytes : public HasSize<T,4UL>
 // \ingroup type_traits
 //
 // This type trait offers the possibility to test whether a given type has a size of exactly
-// four bytes. If the type \a T has four bytes, the \a value member enumeration is set to
-// \a true, the nested type definition \a Type is \a TrueType, and the class derives from
-// \a TrueType. Otherwise \a value is set to \a false, \a Type is \a FalseType, and the class
-// derives from \a FalseType.
+// four bytes. If the type \a T has four bytes, the \a value member constant is set to \a true,
+// the nested type definition \a Type is \a TrueType, and the class derives from\a TrueType.
+// Otherwise \a value is set to \a false, \a Type is \a FalseType, and the classderives from
+// \a FalseType.
 
    \code
    blaze::Has8Bytes<double>::value        // Evaluates to 'true' (on most architectures)

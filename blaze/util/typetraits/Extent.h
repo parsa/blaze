@@ -57,9 +57,9 @@ namespace blaze {
 //
 // Via this type trait it is possible to query at compile time for the size of a particular
 // array extent. In case the given template argument is an array type with a rank greater
-// than N, the \a value member enumeration is set to the number of elements of the N'th
-// array dimension. In all other cases, and especially in case the N'th array dimension
-// is incomplete, \a value is set to 0.
+// than N, the \a value member constant is set to the number of elements of the N'th array
+// dimension. In all other cases, and especially in case the N'th array dimension is
+// incomplete, \a value is set to 0.
 
    \code
    blaze::Extent< int[4], 0 >::value            // Evaluates to 4

@@ -58,9 +58,9 @@ namespace blaze {
 //
 // This class tests whether the given template parameter is an empty class type, i.e. a type
 // without member data and virtual functions. If it is an empty class type, the \a value
-// member enumeration is set to \a true, the nested type definition \a Type is \a TrueType,
-// and the class derives from \a TrueType. Otherwise \a value is set to \a false, \a Type is
-// \a FalseType, and the class derives from \a FalseType.
+// member constant is set to \a true, the nested type definition \a Type is \a TrueType,
+// and the class derives from \a TrueType. Otherwise \a value is set to \a false, \a Type
+// is \a FalseType, and the class derives from \a FalseType.
 
    \code
    class A {};

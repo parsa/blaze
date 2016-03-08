@@ -58,10 +58,9 @@ namespace blaze {
 //
 // This type trait tests whether or not the given template parameter is an integer type (i.e.,
 // either (signed) int or unsigned int, possibly cv-qualified). In case the type is an integer
-// type (ignoring the cv-qualifiers), the \a value member enumeration is set to \a true, the
-// nested type definition \a Type is \a TrueType, and the class derives from \a TrueType.
-// Otherwise \a value is set to \a false, \a Type is \a FalseType, and the class derives from
-// \a FalseType.
+// type (ignoring the cv-qualifiers), the \a value member constant is set to \a true, the nested
+// type definition \a Type is \a TrueType, and the class derives from \a TrueType. Otherwise
+// \a value is set to \a false, \a Type is \a FalseType, and the class derives from \a FalseType.
 
    \code
    blaze::IsInteger<int>::value                 // Evaluates to 'true'

@@ -58,8 +58,8 @@ namespace blaze {
 //
 // The IsConst type trait tests whether or not the given template parameter is a (top level)
 // const-qualified data type. In case the given data type is const-qualified, the \a value
-// member enumeration is set to \a true, the nested type definition \a Type is \a TrueType,
-// and the class derives from \a TrueType. Otherwise \a value is set to \a false, \a Type is
+// member constant is set to \a true, the nested type definition \a Type is \a TrueType, and
+// the class derives from \a TrueType. Otherwise \a value is set to \a false, \a Type is
 // \a FalseType, and the class derives from \a FalseType.
 
    \code

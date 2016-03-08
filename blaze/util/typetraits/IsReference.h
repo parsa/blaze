@@ -57,10 +57,10 @@ namespace blaze {
 // \ingroup type_traits
 //
 // This class tests whether the given template parameter \a T is a reference type (including
-// references to functions). If it is a reference type, the \a value member enumeration is
-// set to \a true, the nested type definition \a Type is \a TrueType, and the class derives
-// from \a TrueType. Otherwise \a value is set to \a false, \a Type is \a FalseType, and the
-// class derives from \a FalseType.
+// references to functions). If it is a reference type, the \a value member constant is set
+// to \a true, the nested type definition \a Type is \a TrueType, and the class derives from
+// \a TrueType. Otherwise \a value is set to \a false, \a Type is \a FalseType, and the class
+// derives from \a FalseType.
 
    \code
    blaze::IsReference<int&>::value             // Evaluates to 'true'

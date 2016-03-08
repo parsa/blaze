@@ -59,8 +59,8 @@ namespace blaze {
 //
 // This class tests whether the given template parameter is a valid or invalid data type (i.e.
 // if the type is the INVALID_TYPE). If \a T is not the INVALID_TYPE class type, the \a value
-// member enumeration is set to \a true, the nested type definition \a Type is \a TrueType,
-// and the class derives from \a TrueType. Otherwise \a value is set to \a false, \a Type is
+// member constant is set to \a true, the nested type definition \a Type is \a TrueType, and
+// the class derives from \a TrueType. Otherwise \a value is set to \a false, \a Type is
 // \a FalseType, and the class derives from \a FalseType.
 
    \code

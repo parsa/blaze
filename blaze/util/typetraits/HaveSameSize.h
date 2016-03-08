@@ -58,7 +58,7 @@ namespace blaze {
 // \ingroup type_traits
 //
 // This class offers the possibility to test the size of two types at compile time. If an object
-// of type \a T1 has the same size as an object of type \a T2, the \a value member enumeration is
+// of type \a T1 has the same size as an object of type \a T2, the \a value member constant is
 // set to \a true, the nested type definition \a Type is \a TrueType, and the class derives from
 // \a TrueType. Otherwise \a value  is set to \a false, \a Type is \a FalseType, and the class
 // derives from \a FalseType.
@@ -101,7 +101,7 @@ class HaveSameSize : public BoolConstant< sizeof(T1) == sizeof(T2) >
 // \ingroup type_traits
 //
 // This class is a partial specialization of the HaveSameSize template for the type \a void
-// as first template argument. The \a value member enumeration is automatically set to \a false,
+// as first template argument. The \a value member constant is automatically set to \a false,
 // the nested type definition \a Type is \a FalseType, and the class derives from \a FalseType
 // for any given type \a T since the \a void type has no size.
 */
@@ -118,7 +118,7 @@ class HaveSameSize<void,T> : public FalseType
 // \ingroup type_traits
 //
 // This class is a partial specialization of the HaveSameSize template for the type \a void
-// as second template argument. The \a value member enumeration is automatically set to \a false,
+// as second template argument. The \a value member constant is automatically set to \a false,
 // the nested type definition \a Type is \a FalseType, and the class derives from \a FalseType
 // for any given type \a T since the \a void type has no size.
 */
@@ -135,8 +135,8 @@ class HaveSameSize<T,void> : public FalseType
 // \ingroup type_traits
 //
 // This class is a full specialization of the HaveSameSize template for the type \a void
-// as first and second template argument. The \a value member enumeration is automatically
-// set to \a true, the nested type definition \a Type is \a TrueType, and the class derives from
+// as first and second template argument. The \a value member constant is automatically set
+// to \a true, the nested type definition \a Type is \a TrueType, and the class derives from
 // \a TrueType since both arguments are \a void.
 */
 template<>

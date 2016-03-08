@@ -56,7 +56,7 @@ namespace blaze {
 // \ingroup type_traits
 //
 // This type trait determines the rank of the given template argument. In case the given type
-// is an array type, the nested \a value member enumeration is set to the number of dimensions
+// is an array type, the nested \a value member constant is set to the number of dimensions
 // of \a T. Otherwise \a value is set to 0.
 
    \code

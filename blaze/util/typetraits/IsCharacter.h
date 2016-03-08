@@ -57,9 +57,9 @@ namespace blaze {
 // \ingroup type_traits
 //
 // This type trait tests whether or not the given template parameter is a character type
-// (i.e., either char, signed char, unsigned char, or wchar_t, possibly cv-qualified). In
-// case the type is a character type (ignoring the cv-qualifiers), the \a value member
-// enumeration is set to \a true, the nested type definition \a Type is \a TrueType, and
+// (i.e., either char, signed char, unsigned char, or wchar_t, possibly cv-qualified).
+// In case the type is a character type (ignoring the cv-qualifiers), the \a value member
+// constant is set to \a true, the nested type definition \a Type is \a TrueType, and
 // the class derives from \a TrueType. Otherwise \a value is set to \a false, \a Type is
 // \a FalseType, and the class derives from \a FalseType.
 

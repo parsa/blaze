@@ -55,7 +55,7 @@ namespace blaze {
 /*!\brief Compile time type conversion into an unsigned integral type.
 // \ingroup type_traits
 //
-// This type trait provides the feature to convert the given integral or enumeration type \a T to
+// This type trait provides the feature to convert the given integral or constant type \a T to
 // the corresponding unsigned integral data type with the same size and with the same cv-qualifiers.
 // Note that in case \a T is bool or a non-integral data type, a compilation error is created.
 

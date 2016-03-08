@@ -56,9 +56,9 @@ namespace blaze {
 /*!\brief Compile time check for double precision floating point types.
 // \ingroup type_traits
 //
-// This type trait tests whether or not the given template parameter is of double type. In case
-// the type is double (ignoring the cv-qualifiers), the \a value member enumeration is set to
-// \a true, the nested type definition \a Type is \a TrueType, and the class derives from
+// This type trait tests whether or not the given template parameter is of double type. In
+// case the type is double (ignoring the cv-qualifiers), the \a value member constant is set
+// to \a true, the nested type definition \a Type is \a TrueType, and the class derives from
 // \a TrueType. Otherwise \a value is set to \a false, \a Type is \a FalseType, and the class
 // derives from \a FalseType.
 

@@ -56,11 +56,11 @@ namespace blaze {
 /*!\brief Compile time type check.
 // \ingroup type_traits
 //
-// The IsArray type trait tests whether or not the given template parameter is an array type.
-// In case the given data type is an array type, the \a value member enumeration is set to
-// \a true, the nested type definition \a Type is set to \a TrueType, and the class derives
-// from \a TrueType. Otherwise \a value is set to \a false, \a Type is \a FalseType and the
-// class derives from \a FalseType.
+// The IsArray type trait tests whether or not the given template parameter is an array type. In
+// case the given data type is an array type, the \a value member constant is set to \a true, the
+// nested type definition \a Type is set to \a TrueType, and the class derives from \a TrueType.
+// Otherwise \a value is set to \a false, \a Type is \a FalseType and the class derives from
+// \a FalseType.
 
    \code
    blaze::IsArray< int[3] >::value      // Evaluates to 'true'
