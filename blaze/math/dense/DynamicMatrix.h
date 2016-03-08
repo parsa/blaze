@@ -255,6 +255,7 @@ class DynamicMatrix : public DenseMatrix< DynamicMatrix<Type,SO>, SO >
    explicit inline DynamicMatrix( const Other (&array)[M][N] );
 
                                      inline DynamicMatrix( const DynamicMatrix& m );
+                                     inline DynamicMatrix( DynamicMatrix&& m ) noexcept;
    template< typename MT, bool SO2 > inline DynamicMatrix( const Matrix<MT,SO2>& m );
    //@}
    //**********************************************************************************************
@@ -292,8 +293,10 @@ class DynamicMatrix : public DenseMatrix< DynamicMatrix<Type,SO>, SO >
    template< typename Other, size_t M, size_t N >
    inline DynamicMatrix& operator=( const Other (&array)[M][N] );
 
-                                     inline DynamicMatrix& operator= ( const Type& rhs );
-                                     inline DynamicMatrix& operator= ( const DynamicMatrix&  rhs );
+   inline DynamicMatrix& operator=( const Type& rhs );
+   inline DynamicMatrix& operator=( const DynamicMatrix& rhs );
+   inline DynamicMatrix& operator=( DynamicMatrix&& rhs ) noexcept;
+
    template< typename MT, bool SO2 > inline DynamicMatrix& operator= ( const Matrix<MT,SO2>& rhs );
    template< typename MT, bool SO2 > inline DynamicMatrix& operator+=( const Matrix<MT,SO2>& rhs );
    template< typename MT, bool SO2 > inline DynamicMatrix& operator-=( const Matrix<MT,SO2>& rhs );
@@ -665,6 +668,29 @@ inline DynamicMatrix<Type,SO>::DynamicMatrix( const DynamicMatrix& m )
 
    for( size_t i=0UL; i<capacity_; ++i )
       v_[i] = m.v_[i];
+}
+//*************************************************************************************************
+
+
+//*************************************************************************************************
+/*!\brief The move constructor for DynamicMatrix.
+//
+// \param m The matrix to be move into this instance.
+*/
+template< typename Type  // Data type of the matrix
+        , bool SO >      // Storage order
+inline DynamicMatrix<Type,SO>::DynamicMatrix( DynamicMatrix&& m ) noexcept
+   : m_       ( m.m_        )  // The current number of rows of the matrix
+   , n_       ( m.n_        )  // The current number of columns of the matrix
+   , nn_      ( m.nn_       )  // The alignment adjusted number of columns
+   , capacity_( m.capacity_ )  // The maximum capacity of the matrix
+   , v_       ( m.v_        )  // The matrix elements
+{
+   m.m_        = 0UL;
+   m.n_        = 0UL;
+   m.nn_       = 0UL;
+   m.capacity_ = 0UL;
+   m.v_        = nullptr;
 }
 //*************************************************************************************************
 
@@ -1116,6 +1142,35 @@ inline DynamicMatrix<Type,SO>& DynamicMatrix<Type,SO>::operator=( const DynamicM
 
    resize( rhs.m_, rhs.n_, false );
    smpAssign( *this, ~rhs );
+
+   return *this;
+}
+//*************************************************************************************************
+
+
+//*************************************************************************************************
+/*!\brief Move assignment operator for DynamicMatrix.
+//
+// \param rhs The matrix to be moved into this instance.
+// \return Reference to the assigned matrix.
+*/
+template< typename Type  // Data type of the matrix
+        , bool SO >      // Storage order
+inline DynamicMatrix<Type,SO>& DynamicMatrix<Type,SO>::operator=( DynamicMatrix&& rhs ) noexcept
+{
+   deallocate( v_ );
+
+   m_        = rhs.m_;
+   n_        = rhs.n_;
+   nn_       = rhs.nn_;
+   capacity_ = rhs.capacity_;
+   v_        = rhs.v_;
+
+   rhs.m_        = 0UL;
+   rhs.n_        = 0UL;
+   rhs.nn_       = 0UL;
+   rhs.capacity_ = 0UL;
+   rhs.v_        = nullptr;
 
    return *this;
 }
@@ -2789,6 +2844,7 @@ class DynamicMatrix<Type,true> : public DenseMatrix< DynamicMatrix<Type,true>, t
    explicit inline DynamicMatrix( const Other (&array)[M][N] );
 
                                     inline DynamicMatrix( const DynamicMatrix& m );
+                                    inline DynamicMatrix( DynamicMatrix&& m );
    template< typename MT, bool SO > inline DynamicMatrix( const Matrix<MT,SO>& m );
    //@}
    //**********************************************************************************************
@@ -2826,8 +2882,10 @@ class DynamicMatrix<Type,true> : public DenseMatrix< DynamicMatrix<Type,true>, t
    template< typename Other, size_t M, size_t N >
    inline DynamicMatrix& operator=( const Other (&array)[M][N] );
 
-                                    inline DynamicMatrix& operator= ( const Type& rhs );
-                                    inline DynamicMatrix& operator= ( const DynamicMatrix& rhs );
+   inline DynamicMatrix& operator=( const Type& rhs );
+   inline DynamicMatrix& operator=( const DynamicMatrix& rhs );
+   inline DynamicMatrix& operator=( DynamicMatrix&& rhs );
+
    template< typename MT, bool SO > inline DynamicMatrix& operator= ( const Matrix<MT,SO>& rhs );
    template< typename MT, bool SO > inline DynamicMatrix& operator+=( const Matrix<MT,SO>& rhs );
    template< typename MT, bool SO > inline DynamicMatrix& operator-=( const Matrix<MT,SO>& rhs );
@@ -3190,6 +3248,30 @@ inline DynamicMatrix<Type,true>::DynamicMatrix( const DynamicMatrix& m )
 
    for( size_t i=0UL; i<capacity_; ++i )
       v_[i] = m.v_[i];
+}
+/*! \endcond */
+//*************************************************************************************************
+
+
+//*************************************************************************************************
+/*! \cond BLAZE_INTERNAL */
+/*!\brief The move constructor for DynamicMatrix.
+//
+// \param m The matrix to be moved into this instance.
+*/
+template< typename Type >  // Data type of the matrix
+inline DynamicMatrix<Type,true>::DynamicMatrix( DynamicMatrix&& m )
+   : m_       ( m.m_        )  // The current number of rows of the matrix
+   , mm_      ( m.mm_       )  // The alignment adjusted number of rows
+   , n_       ( m.n_        )  // The current number of columns of the matrix
+   , capacity_( m.capacity_ )  // The maximum capacity of the matrix
+   , v_       ( m.v_        )  // The matrix elements
+{
+   m.m_        = 0UL;
+   m.mm_       = 0UL;
+   m.n_        = 0UL;
+   m.capacity_ = 0UL;
+   m.v_        = nullptr;
 }
 /*! \endcond */
 //*************************************************************************************************
@@ -3628,6 +3710,36 @@ inline DynamicMatrix<Type,true>& DynamicMatrix<Type,true>::operator=( const Dyna
 
    resize( rhs.m_, rhs.n_, false );
    smpAssign( *this, ~rhs );
+
+   return *this;
+}
+/*! \endcond */
+//*************************************************************************************************
+
+
+//*************************************************************************************************
+/*! \cond BLAZE_INTERNAL */
+/*!\brief Move assignment operator for DynamicMatrix.
+//
+// \param rhs The matrix to be moved into this instance.
+// \return Reference to the assigned matrix.
+*/
+template< typename Type >  // Data type of the matrix
+inline DynamicMatrix<Type,true>& DynamicMatrix<Type,true>::operator=( DynamicMatrix&& rhs )
+{
+   deallocate( v_ );
+
+   m_        = rhs.m_;
+   mm_       = rhs.mm_;
+   n_        = rhs.n_;
+   capacity_ = rhs.capacity_;
+   v_        = rhs.v_;
+
+   rhs.m_        = 0UL;
+   rhs.mm_       = 0UL;
+   rhs.n_        = 0UL;
+   rhs.capacity_ = 0UL;
+   rhs.v_        = nullptr;
 
    return *this;
 }
