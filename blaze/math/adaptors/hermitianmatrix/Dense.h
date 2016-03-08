@@ -600,8 +600,11 @@ class HermitianMatrix<MT,SO,true>
    template< typename Deleter >
    explicit inline HermitianMatrix( ElementType* ptr, size_t n, size_t nn, Deleter d );
 
-                                      inline HermitianMatrix( const HermitianMatrix& m );
-   template< typename MT2, bool SO2 > inline HermitianMatrix( const Matrix<MT2,SO2>& m );
+   inline HermitianMatrix( const HermitianMatrix& m );
+   inline HermitianMatrix( HermitianMatrix&& m ) noexcept;
+
+   template< typename MT2, bool SO2 >
+   inline HermitianMatrix( const Matrix<MT2,SO2>& m );
    //@}
    //**********************************************************************************************
 
@@ -631,6 +634,7 @@ class HermitianMatrix<MT,SO,true>
    /*!\name Assignment operators */
    //@{
    inline HermitianMatrix& operator=( const HermitianMatrix& rhs );
+   inline HermitianMatrix& operator=( HermitianMatrix&& rhs ) noexcept;
 
    template< typename MT2, bool SO2 >
    inline typename DisableIf< IsComputation<MT2>, HermitianMatrix& >::Type
@@ -1006,6 +1010,24 @@ template< typename MT  // Type of the adapted dense matrix
         , bool SO >    // Storage order of the adapted dense matrix
 inline HermitianMatrix<MT,SO,true>::HermitianMatrix( const HermitianMatrix& m )
    : matrix_( m.matrix_ )  // The adapted dense matrix
+{
+   BLAZE_INTERNAL_ASSERT( isSquare( matrix_ ), "Non-square Hermitian matrix detected" );
+   BLAZE_INTERNAL_ASSERT( isIntact(), "Broken invariant detected" );
+}
+/*! \endcond */
+//*************************************************************************************************
+
+
+//*************************************************************************************************
+/*! \cond BLAZE_INTERNAL */
+/*!\brief The move constructor for HermitianMatrix.
+//
+// \param m The Hermitian matrix to be moved into this instance.
+*/
+template< typename MT  // Type of the adapted dense matrix
+        , bool SO >    // Storage order of the adapted dense matrix
+inline HermitianMatrix<MT,SO,true>::HermitianMatrix( HermitianMatrix&& m ) noexcept
+   : matrix_( std::move( m.matrix_ ) )  // The adapted dense matrix
 {
    BLAZE_INTERNAL_ASSERT( isSquare( matrix_ ), "Non-square Hermitian matrix detected" );
    BLAZE_INTERNAL_ASSERT( isIntact(), "Broken invariant detected" );
@@ -1392,6 +1414,29 @@ inline HermitianMatrix<MT,SO,true>&
    HermitianMatrix<MT,SO,true>::operator=( const HermitianMatrix& rhs )
 {
    matrix_ = rhs.matrix_;
+
+   BLAZE_INTERNAL_ASSERT( isSquare( matrix_ ), "Non-square Hermitian matrix detected" );
+   BLAZE_INTERNAL_ASSERT( isIntact(), "Broken invariant detected" );
+
+   return *this;
+}
+/*! \endcond */
+//*************************************************************************************************
+
+
+//*************************************************************************************************
+/*! \cond BLAZE_INTERNAL */
+/*!\brief Move assignment operator for HermitianMatrix.
+//
+// \param rhs The matrix to be moved into this instance.
+// \return Reference to the assigned matrix.
+*/
+template< typename MT  // Type of the adapted dense matrix
+        , bool SO >    // Storage order of the adapted dense matrix
+inline HermitianMatrix<MT,SO,true>&
+   HermitianMatrix<MT,SO,true>::operator=( HermitianMatrix&& rhs ) noexcept
+{
+   matrix_ = std::move( rhs.matrix_ );
 
    BLAZE_INTERNAL_ASSERT( isSquare( matrix_ ), "Non-square Hermitian matrix detected" );
    BLAZE_INTERNAL_ASSERT( isIntact(), "Broken invariant detected" );
