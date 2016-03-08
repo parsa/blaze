@@ -365,6 +365,73 @@ void ClassTest::testConstructors()
 
 
    //=====================================================================================
+   // Row-major move constructor
+   //=====================================================================================
+
+   {
+      test_ = "Row-major CompressedMatrix move constructor (0x0)";
+
+      blaze::CompressedMatrix<int,blaze::rowMajor> mat1( 0UL, 0UL, 3UL );
+      blaze::CompressedMatrix<int,blaze::rowMajor> mat2( std::move( mat1 ) );
+
+      checkRows    ( mat2, 0UL );
+      checkColumns ( mat2, 0UL );
+      checkNonZeros( mat2, 0UL );
+   }
+
+   {
+      test_ = "Row-major CompressedMatrix move constructor (0x3)";
+
+      blaze::CompressedMatrix<int,blaze::rowMajor> mat1( 0UL, 3UL, 3UL );
+      blaze::CompressedMatrix<int,blaze::rowMajor> mat2( std::move( mat1 ) );
+
+      checkRows    ( mat2, 0UL );
+      checkColumns ( mat2, 3UL );
+      checkNonZeros( mat2, 0UL );
+   }
+
+   {
+      test_ = "Row-major CompressedMatrix move constructor (2x0)";
+
+      blaze::CompressedMatrix<int,blaze::rowMajor> mat1( 2UL, 0UL, 3UL );
+      blaze::CompressedMatrix<int,blaze::rowMajor> mat2( std::move( mat1 ) );
+
+      checkRows    ( mat2, 2UL );
+      checkColumns ( mat2, 0UL );
+      checkNonZeros( mat2, 0UL );
+   }
+
+   {
+      test_ = "Row-major CompressedMatrix move constructor (2x3)";
+
+      blaze::CompressedMatrix<int,blaze::rowMajor> mat1( 2UL, 3UL, 3UL );
+      mat1(0,0) = 1;
+      mat1(0,2) = 2;
+      mat1(1,1) = 3;
+
+      blaze::CompressedMatrix<int,blaze::rowMajor> mat2( std::move( mat1 ) );
+
+      checkRows    ( mat2, 2UL );
+      checkColumns ( mat2, 3UL );
+      checkCapacity( mat2, 3UL );
+      checkNonZeros( mat2, 3UL );
+      checkNonZeros( mat2, 0UL, 2UL );
+      checkNonZeros( mat2, 1UL, 1UL );
+
+      if( mat2(0,0) != 1 || mat2(0,1) != 0 || mat2(0,2) != 2 ||
+          mat2(1,0) != 0 || mat2(1,1) != 3 || mat2(1,2) != 0 ) {
+         std::ostringstream oss;
+         oss << " Test: " << test_ << "\n"
+             << " Error: Construction failed\n"
+             << " Details:\n"
+             << "   Result:\n" << mat2 << "\n"
+             << "   Expected result:\n( 1 0 2 )\n( 0 3 0 )\n";
+         throw std::runtime_error( oss.str() );
+      }
+   }
+
+
+   //=====================================================================================
    // Column-major default constructor
    //=====================================================================================
 
@@ -609,6 +676,74 @@ void ClassTest::testConstructors()
          throw std::runtime_error( oss.str() );
       }
    }
+
+
+   //=====================================================================================
+   // Column-major move constructor
+   //=====================================================================================
+
+   {
+      test_ = "Column-major CompressedMatrix move constructor (0x0)";
+
+      blaze::CompressedMatrix<int,blaze::columnMajor> mat1( 0UL, 0UL, 3UL );
+      blaze::CompressedMatrix<int,blaze::columnMajor> mat2( std::move( mat1 ) );
+
+      checkRows    ( mat2, 0UL );
+      checkColumns ( mat2, 0UL );
+      checkNonZeros( mat2, 0UL );
+   }
+
+   {
+      test_ = "Column-major CompressedMatrix move constructor (0x3)";
+
+      blaze::CompressedMatrix<int,blaze::columnMajor> mat1( 0UL, 3UL, 3UL );
+      blaze::CompressedMatrix<int,blaze::columnMajor> mat2( std::move( mat1 ) );
+
+      checkRows    ( mat2, 0UL );
+      checkColumns ( mat2, 3UL );
+      checkNonZeros( mat2, 0UL );
+   }
+
+   {
+      test_ = "Column-major CompressedMatrix move constructor (2x0)";
+
+      blaze::CompressedMatrix<int,blaze::columnMajor> mat1( 2UL, 0UL, 3UL );
+      blaze::CompressedMatrix<int,blaze::columnMajor> mat2( std::move( mat1 ) );
+
+      checkRows    ( mat2, 2UL );
+      checkColumns ( mat2, 0UL );
+      checkNonZeros( mat2, 0UL );
+   }
+
+   {
+      test_ = "Column-major CompressedMatrix move constructor (2x3)";
+
+      blaze::CompressedMatrix<int,blaze::columnMajor> mat1( 2UL, 3UL, 3UL );
+      mat1(0,0) = 1;
+      mat1(0,2) = 2;
+      mat1(1,1) = 3;
+
+      blaze::CompressedMatrix<int,blaze::columnMajor> mat2( std::move( mat1 ) );
+
+      checkRows    ( mat2, 2UL );
+      checkColumns ( mat2, 3UL );
+      checkCapacity( mat2, 3UL );
+      checkNonZeros( mat2, 3UL );
+      checkNonZeros( mat2, 0UL, 1UL );
+      checkNonZeros( mat2, 1UL, 1UL );
+      checkNonZeros( mat2, 2UL, 1UL );
+
+      if( mat2(0,0) != 1 || mat2(0,1) != 0 || mat2(0,2) != 2 ||
+          mat2(1,0) != 0 || mat2(1,1) != 3 || mat2(1,2) != 0 ) {
+         std::ostringstream oss;
+         oss << " Test: " << test_ << "\n"
+             << " Error: Construction failed\n"
+             << " Details:\n"
+             << "   Result:\n" << mat2 << "\n"
+             << "   Expected result:\n( 1 0 2 )\n( 0 3 0 )\n";
+         throw std::runtime_error( oss.str() );
+      }
+   }
 }
 //*************************************************************************************************
 
@@ -684,6 +819,44 @@ void ClassTest::testAssignment()
                 << "   Expected result:\n" << mat2 << "\n";
             throw std::runtime_error( oss.str() );
          }
+      }
+   }
+
+
+   //=====================================================================================
+   // Row-major move assignment
+   //=====================================================================================
+
+   {
+      test_ = "Row-major CompressedMatrix move assignment";
+
+      blaze::CompressedMatrix<int,blaze::rowMajor> mat1( 2UL, 3UL, 3UL );
+      mat1(0,0) = 1;
+      mat1(0,2) = 2;
+      mat1(1,1) = 3;
+
+      blaze::CompressedMatrix<int,blaze::rowMajor> mat2( 4UL, 1UL, 2UL );
+      mat2(1,0) = 11;
+      mat2(3,0) = 12;
+
+      mat2 = std::move( mat1 );
+
+      checkRows    ( mat2, 2UL );
+      checkColumns ( mat2, 3UL );
+      checkCapacity( mat2, 3UL );
+      checkNonZeros( mat2, 3UL );
+      checkNonZeros( mat2, 0UL, 2UL );
+      checkNonZeros( mat2, 1UL, 1UL );
+
+      if( mat2(0,0) != 1 || mat2(0,1) != 0 || mat2(0,2) != 2 ||
+          mat2(1,0) != 0 || mat2(1,1) != 3 || mat2(1,2) != 0 ) {
+         std::ostringstream oss;
+         oss << " Test: " << test_ << "\n"
+             << " Error: Assignment failed\n"
+             << " Details:\n"
+             << "   Result:\n" << mat2 << "\n"
+             << "   Expected result:\n( 1 0 2 )\n( 0 3 0 )\n";
+         throw std::runtime_error( oss.str() );
       }
    }
 
@@ -1265,6 +1438,45 @@ void ClassTest::testAssignment()
                 << "   Expected result:\n" << mat2 << "\n";
             throw std::runtime_error( oss.str() );
          }
+      }
+   }
+
+
+   //=====================================================================================
+   // Column-major move assignment
+   //=====================================================================================
+
+   {
+      test_ = "Column-major CompressedMatrix move assignment";
+
+      blaze::CompressedMatrix<int,blaze::columnMajor> mat1( 2UL, 3UL, 3UL );
+      mat1(0,0) = 1;
+      mat1(0,2) = 2;
+      mat1(1,1) = 3;
+
+      blaze::CompressedMatrix<int,blaze::columnMajor> mat2( 4UL, 1UL, 2UL );
+      mat2(1,0) = 11;
+      mat2(3,0) = 12;
+
+      mat2 = std::move( mat1 );
+
+      checkRows    ( mat2, 2UL );
+      checkColumns ( mat2, 3UL );
+      checkCapacity( mat2, 3UL );
+      checkNonZeros( mat2, 3UL );
+      checkNonZeros( mat2, 0UL, 1UL );
+      checkNonZeros( mat2, 1UL, 1UL );
+      checkNonZeros( mat2, 2UL, 1UL );
+
+      if( mat2(0,0) != 1 || mat2(0,1) != 0 || mat2(0,2) != 2 ||
+          mat2(1,0) != 0 || mat2(1,1) != 3 || mat2(1,2) != 0 ) {
+         std::ostringstream oss;
+         oss << " Test: " << test_ << "\n"
+             << " Error: Assignment failed\n"
+             << " Details:\n"
+             << "   Result:\n" << mat2 << "\n"
+             << "   Expected result:\n( 1 0 2 )\n( 0 3 0 )\n";
+         throw std::runtime_error( oss.str() );
       }
    }
 
