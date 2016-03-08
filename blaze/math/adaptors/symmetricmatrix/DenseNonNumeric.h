@@ -57,7 +57,6 @@
 #include <blaze/math/shims/Clear.h>
 #include <blaze/math/shims/Conjugate.h>
 #include <blaze/math/shims/IsDefault.h>
-#include <blaze/math/shims/Move.h>
 #include <blaze/math/traits/MultTrait.h>
 #include <blaze/math/typetraits/Columns.h>
 #include <blaze/math/typetraits/IsComputation.h>
@@ -2421,12 +2420,12 @@ inline void SymmetricMatrix<MT,SO,true,false>::assign( DenseMatrix<MT2,SO>& rhs 
    if( SO ) {
       for( size_t j=0UL; j<columns(); ++j )
          for( size_t i=0UL; i<=j; ++i )
-            move( matrix_(i,j), (~rhs)(i,j) );
+            matrix_(i,j) = std::move( (~rhs)(i,j) );
    }
    else {
       for( size_t i=0UL; i<rows(); ++i )
          for( size_t j=0UL; j<=i; ++j )
-            move( matrix_(i,j), (~rhs)(i,j) );
+            matrix_(i,j) = std::move( (~rhs)(i,j) );
    }
 }
 /*! \endcond */

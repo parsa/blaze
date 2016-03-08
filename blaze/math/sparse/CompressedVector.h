@@ -1888,9 +1888,6 @@ inline bool isIntact( const CompressedVector<Type,TF>& v );
 
 template< typename Type, bool TF >
 inline void swap( CompressedVector<Type,TF>& a, CompressedVector<Type,TF>& b ) noexcept;
-
-template< typename Type, bool TF >
-inline void move( CompressedVector<Type,TF>& dst, CompressedVector<Type,TF>& src ) noexcept;
 //@}
 //*************************************************************************************************
 
@@ -1994,24 +1991,6 @@ template< typename Type  // Data type of the vector
 inline void swap( CompressedVector<Type,TF>& a, CompressedVector<Type,TF>& b ) noexcept
 {
    a.swap( b );
-}
-//*************************************************************************************************
-
-
-//*************************************************************************************************
-/*!\brief Moving the contents of one compressed vector to another.
-// \ingroup compressed_vector
-//
-// \param dst The destination vector.
-// \param src The source vector.
-// \return void
-// \exception no-throw guarantee.
-*/
-template< typename Type  // Data type of the vector
-        , bool TF >      // Transpose flag
-inline void move( CompressedVector<Type,TF>& dst, CompressedVector<Type,TF>& src ) noexcept
-{
-   dst.swap( src );
 }
 //*************************************************************************************************
 

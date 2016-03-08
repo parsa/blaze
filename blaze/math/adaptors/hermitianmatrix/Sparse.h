@@ -60,7 +60,6 @@
 #include <blaze/math/shims/IsDefault.h>
 #include <blaze/math/shims/IsReal.h>
 #include <blaze/math/shims/Conjugate.h>
-#include <blaze/math/shims/Move.h>
 #include <blaze/math/sparse/SparseMatrix.h>
 #include <blaze/math/traits/TransExprTrait.h>
 #include <blaze/math/typetraits/Columns.h>
@@ -1049,7 +1048,7 @@ inline typename EnableIf< IsComputation<MT2>, HermitianMatrix<MT,SO,false>& >::T
          BLAZE_THROW_INVALID_ARGUMENT( "Invalid assignment to Hermitian matrix" );
       }
 
-      move( matrix_, tmp );
+      matrix_ = std::move( tmp );
    }
 
    BLAZE_INTERNAL_ASSERT( isSquare( matrix_ ), "Non-square Hermitian matrix detected" );
@@ -1329,7 +1328,7 @@ inline HermitianMatrix<MT,SO,false>&
       BLAZE_THROW_INVALID_ARGUMENT( "Invalid assignment to Hermitian matrix" );
    }
 
-   move( matrix_, tmp );
+   matrix_ = std::move( tmp );
 
    BLAZE_INTERNAL_ASSERT( isSquare( matrix_ ), "Non-square Hermitian matrix detected" );
    BLAZE_INTERNAL_ASSERT( isIntact(), "Broken invariant detected" );

@@ -56,7 +56,6 @@
 #include <blaze/math/Intrinsics.h>
 #include <blaze/math/shims/Clear.h>
 #include <blaze/math/shims/IsDefault.h>
-#include <blaze/math/shims/Move.h>
 #include <blaze/math/typetraits/Columns.h>
 #include <blaze/math/typetraits/IsComputation.h>
 #include <blaze/math/typetraits/IsDiagonal.h>
@@ -1494,7 +1493,7 @@ inline typename EnableIf< IsComputation<MT2>, DiagonalMatrix<MT,SO,true>& >::Typ
          BLAZE_THROW_INVALID_ARGUMENT( "Invalid assignment to diagonal matrix" );
       }
 
-      move( matrix_, tmp );
+      matrix_ = std::move( tmp );
    }
 
    BLAZE_INTERNAL_ASSERT( isSquare( matrix_ ), "Non-square diagonal matrix detected" );
@@ -1697,7 +1696,7 @@ inline DiagonalMatrix<MT,SO,true>&
       BLAZE_THROW_INVALID_ARGUMENT( "Invalid assignment to diagonal matrix" );
    }
 
-   move( matrix_, tmp );
+   matrix_ = std::move( tmp );
 
    BLAZE_INTERNAL_ASSERT( isSquare( matrix_ ), "Non-square diagonal matrix detected" );
    BLAZE_INTERNAL_ASSERT( isIntact(), "Broken invariant detected" );

@@ -842,7 +842,7 @@ inline void invertByLU( SymmetricMatrix<MT,SO,true,true>& m )
 
    MT tmp( m.matrix_ );
    invertByLU( tmp );
-   move( m.matrix_, tmp );
+   m.matrix_ = std::move( tmp );
 
    BLAZE_INTERNAL_ASSERT( isIntact( m ), "Broken invariant detected" );
 }
@@ -881,7 +881,7 @@ inline void invertByLDLT( SymmetricMatrix<MT,SO,true,true>& m )
 
    MT tmp( m.matrix_ );
    invertByLDLT( tmp );
-   move( m.matrix_, tmp );
+   m.matrix_ = std::move( tmp );
 
    BLAZE_INTERNAL_ASSERT( isIntact( m ), "Broken invariant detected" );
 }
@@ -920,7 +920,7 @@ inline void invertByLDLH( SymmetricMatrix<MT,SO,true,true>& m )
 
    MT tmp( m.matrix_ );
    invertByLDLH( tmp );
-   move( m.matrix_, tmp );
+   m.matrix_ = std::move( tmp );
 
    BLAZE_INTERNAL_ASSERT( isIntact( m ), "Broken invariant detected" );
 }
@@ -959,7 +959,7 @@ inline void invertByLLH( SymmetricMatrix<MT,SO,true,true>& m )
 
    MT tmp( m.matrix_ );
    invertByLLH( tmp );
-   move( m.matrix_, tmp );
+   m.matrix_ = std::move( tmp );
 
    BLAZE_INTERNAL_ASSERT( isIntact( m ), "Broken invariant detected" );
 }

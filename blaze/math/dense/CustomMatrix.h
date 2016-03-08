@@ -5871,9 +5871,6 @@ inline bool isIntact( const CustomMatrix<Type,AF,PF,SO>& m );
 
 template< typename Type, bool AF, bool PF, bool SO >
 inline void swap( CustomMatrix<Type,AF,PF,SO>& a, CustomMatrix<Type,AF,PF,SO>& b ) noexcept;
-
-template< typename Type, bool AF, bool PF, bool SO >
-inline void move( CustomMatrix<Type,AF,PF,SO>& dst, CustomMatrix<Type,AF,PF,SO>& src ) noexcept;
 //@}
 //*************************************************************************************************
 
@@ -6018,26 +6015,6 @@ template< typename Type  // Data type of the matrix
 inline void swap( CustomMatrix<Type,AF,PF,SO>& a, CustomMatrix<Type,AF,PF,SO>& b ) noexcept
 {
    a.swap( b );
-}
-//*************************************************************************************************
-
-
-//*************************************************************************************************
-/*!\brief Moving the contents of one custom matrix to another.
-// \ingroup custom_matrix
-//
-// \param dst The destination matrix.
-// \param src The source matrix.
-// \return void
-// \exception no-throw guarantee.
-*/
-template< typename Type  // Data type of the matrix
-        , bool AF        // Alignment flag
-        , bool PF        // Padding flag
-        , bool SO >      // Storage order
-inline void move( CustomMatrix<Type,AF,PF,SO>& dst, CustomMatrix<Type,AF,PF,SO>& src ) noexcept
-{
-   dst.swap( src );
 }
 //*************************************************************************************************
 

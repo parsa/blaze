@@ -2163,9 +2163,6 @@ inline bool isIntact( const DynamicVector<Type,TF>& v );
 
 template< typename Type, bool TF >
 inline void swap( DynamicVector<Type,TF>& a, DynamicVector<Type,TF>& b ) noexcept;
-
-template< typename Type, bool TF >
-inline void move( DynamicVector<Type,TF>& dst, DynamicVector<Type,TF>& src ) noexcept;
 //@}
 //*************************************************************************************************
 
@@ -2269,24 +2266,6 @@ template< typename Type  // Data type of the vector
 inline void swap( DynamicVector<Type,TF>& a, DynamicVector<Type,TF>& b ) noexcept
 {
    a.swap( b );
-}
-//*************************************************************************************************
-
-
-//*************************************************************************************************
-/*!\brief Moving the contents of one dynamic vector to another.
-// \ingroup dynamic_vector
-//
-// \param dst The destination vector.
-// \param src The source vector.
-// \return void
-// \exception no-throw guarantee.
-*/
-template< typename Type  // Data type of the vector
-        , bool TF >      // Transpose flag
-inline void move( DynamicVector<Type,TF>& dst, DynamicVector<Type,TF>& src ) noexcept
-{
-   dst.swap( src );
 }
 //*************************************************************************************************
 

@@ -5392,9 +5392,6 @@ inline bool isIntact( const DynamicMatrix<Type,SO>& m );
 
 template< typename Type, bool SO >
 inline void swap( DynamicMatrix<Type,SO>& a, DynamicMatrix<Type,SO>& b ) noexcept;
-
-template< typename Type, bool SO >
-inline void move( DynamicMatrix<Type,SO>& dst, DynamicMatrix<Type,SO>& src ) noexcept;
 //@}
 //*************************************************************************************************
 
@@ -5521,24 +5518,6 @@ template< typename Type  // Data type of the matrix
 inline void swap( DynamicMatrix<Type,SO>& a, DynamicMatrix<Type,SO>& b ) noexcept
 {
    a.swap( b );
-}
-//*************************************************************************************************
-
-
-//*************************************************************************************************
-/*!\brief Moving the contents of one dynamic matrix to another.
-// \ingroup dynamic_matrix
-//
-// \param dst The destination matrix.
-// \param src The source matrix.
-// \return void
-// \exception no-throw guarantee.
-*/
-template< typename Type  // Data type of the matrix
-        , bool SO >      // Storage order
-inline void move( DynamicMatrix<Type,SO>& dst, DynamicMatrix<Type,SO>& src ) noexcept
-{
-   dst.swap( src );
 }
 //*************************************************************************************************
 

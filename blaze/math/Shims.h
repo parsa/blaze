@@ -50,7 +50,6 @@
 #include <blaze/math/shims/IsOne.h>
 #include <blaze/math/shims/IsReal.h>
 #include <blaze/math/shims/IsZero.h>
-#include <blaze/math/shims/Move.h>
 #include <blaze/math/shims/Real.h>
 #include <blaze/math/shims/Reset.h>
 #include <blaze/math/shims/Serial.h>

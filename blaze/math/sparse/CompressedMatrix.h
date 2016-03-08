@@ -4988,9 +4988,6 @@ inline bool isIntact( const CompressedMatrix<Type,SO>& m );
 
 template< typename Type, bool SO >
 inline void swap( CompressedMatrix<Type,SO>& a, CompressedMatrix<Type,SO>& b ) noexcept;
-
-template< typename Type, bool SO >
-inline void move( CompressedMatrix<Type,SO>& dst, CompressedMatrix<Type,SO>& src ) noexcept;
 //@}
 //*************************************************************************************************
 
@@ -5117,24 +5114,6 @@ template< typename Type  // Data type of the sparse matrix
 inline void swap( CompressedMatrix<Type,SO>& a, CompressedMatrix<Type,SO>& b ) noexcept
 {
    a.swap( b );
-}
-//*************************************************************************************************
-
-
-//*************************************************************************************************
-/*!\brief Moving the contents of one compressed matrix to another.
-// \ingroup compressed_matrix
-//
-// \param dst The destination matrix.
-// \param src The source matrix.
-// \return void
-// \exception no-throw guarantee.
-*/
-template< typename Type  // Data type of the sparse matrix
-        , bool SO >      // Storage order
-inline void move( CompressedMatrix<Type,SO>& dst, CompressedMatrix<Type,SO>& src ) noexcept
-{
-   dst.swap( src );
 }
 //*************************************************************************************************
 

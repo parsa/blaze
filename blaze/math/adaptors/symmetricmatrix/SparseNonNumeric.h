@@ -59,7 +59,6 @@
 #include <blaze/math/shims/Clear.h>
 #include <blaze/math/shims/Conjugate.h>
 #include <blaze/math/shims/IsDefault.h>
-#include <blaze/math/shims/Move.h>
 #include <blaze/math/sparse/SparseElement.h>
 #include <blaze/math/sparse/SparseMatrix.h>
 #include <blaze/math/traits/AddTrait.h>
@@ -2556,7 +2555,7 @@ void SymmetricMatrix<MT,SO,false,false>::assign( DenseMatrix<MT2,SO>& rhs )
       for( size_t j=i; j<columns(); ++j ) {
          if( !isDefault( (~rhs)(i,j) ) ) {
             SharedValue<ET> shared;
-            move( *shared, (~rhs)(i,j) );
+            *shared = std::move( (~rhs)(i,j) );
             matrix_.append( i, j, shared, false );
             if( i != j )
                matrix_.append( j, i, shared, false );
@@ -2657,7 +2656,7 @@ void SymmetricMatrix<MT,SO,false,false>::assign( SparseMatrix<MT2,SO>& rhs )
       for( typename MT2::Iterator it=(~rhs).lowerBound(i,i); it!=(~rhs).end(i); ++it ) {
          if( !isDefault( it->value() ) ) {
             SharedValue<ET> shared;
-            move( *shared, it->value() );
+            *shared = std::move( it->value() );
             matrix_.append( i, it->index(), shared, false );
             if( i != it->index() )
                matrix_.append( it->index(), i, shared, false );

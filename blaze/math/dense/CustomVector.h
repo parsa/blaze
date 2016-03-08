@@ -4651,9 +4651,6 @@ inline bool isIntact( const CustomVector<Type,AF,PF,TF>& v );
 
 template< typename Type, bool AF, bool PF, bool TF >
 inline void swap( CustomVector<Type,AF,PF,TF>& a, CustomVector<Type,AF,PF,TF>& b ) noexcept;
-
-template< typename Type, bool AF, bool PF, bool TF >
-inline void move( CustomVector<Type,AF,PF,TF>& dst, CustomVector<Type,AF,PF,TF>& src ) noexcept;
 //@}
 //*************************************************************************************************
 
@@ -4774,26 +4771,6 @@ template< typename Type  // Data type of the vector
 inline void swap( CustomVector<Type,AF,PF,TF>& a, CustomVector<Type,AF,PF,TF>& b ) noexcept
 {
    a.swap( b );
-}
-//*************************************************************************************************
-
-
-//*************************************************************************************************
-/*!\brief Moving the contents of one custom vector to another.
-// \ingroup custom_vector
-//
-// \param dst The destination vector.
-// \param src The source vector.
-// \return void
-// \exception no-throw guarantee.
-*/
-template< typename Type  // Data type of the vector
-        , bool AF        // Alignment flag
-        , bool PF        // Padding flag
-        , bool TF >      // Transpose flag
-inline void move( CustomVector<Type,AF,PF,TF>& dst, CustomVector<Type,AF,PF,TF>& src ) noexcept
-{
-   dst.swap( src );
 }
 //*************************************************************************************************
 

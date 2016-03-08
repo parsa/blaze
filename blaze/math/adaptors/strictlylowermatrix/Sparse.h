@@ -57,7 +57,6 @@
 #include <blaze/math/Functions.h>
 #include <blaze/math/shims/Clear.h>
 #include <blaze/math/shims/IsDefault.h>
-#include <blaze/math/shims/Move.h>
 #include <blaze/math/sparse/SparseElement.h>
 #include <blaze/math/sparse/SparseMatrix.h>
 #include <blaze/math/typetraits/Columns.h>
@@ -894,7 +893,7 @@ inline typename EnableIf< IsComputation<MT2>, StrictlyLowerMatrix<MT,SO,false>& 
          BLAZE_THROW_INVALID_ARGUMENT( "Invalid assignment to strictly lower matrix" );
       }
 
-      move( matrix_, tmp );
+      matrix_ = std::move( tmp );
    }
 
    if( !IsStrictlyLower<MT2>::value )
@@ -1114,7 +1113,7 @@ inline StrictlyLowerMatrix<MT,SO,false>&
       BLAZE_THROW_INVALID_ARGUMENT( "Invalid assignment to strictly lower matrix" );
    }
 
-   move( matrix_, tmp );
+   matrix_ = std::move( tmp );
 
    if( !IsStrictlyLower<MT2>::value )
       resetUpper();

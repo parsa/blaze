@@ -41,7 +41,6 @@
 //*************************************************************************************************
 
 #include <boost/shared_ptr.hpp>
-#include <blaze/math/shims/Move.h>
 #include <blaze/util/constraints/Const.h>
 #include <blaze/util/constraints/Pointer.h>
 #include <blaze/util/constraints/Reference.h>
