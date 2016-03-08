@@ -227,6 +227,7 @@ class DynamicVector : public DenseVector< DynamicVector<Type,TF>, TF >
    explicit inline DynamicVector( const Other (&array)[N] );
 
                            inline DynamicVector( const DynamicVector& v );
+                           inline DynamicVector( DynamicVector&& v ) noexcept;
    template< typename VT > inline DynamicVector( const Vector<VT,TF>& v );
    //@}
    //**********************************************************************************************
@@ -262,8 +263,10 @@ class DynamicVector : public DenseVector< DynamicVector<Type,TF>, TF >
    template< typename Other, size_t N >
    inline DynamicVector& operator=( const Other (&array)[N] );
 
-                           inline DynamicVector& operator= ( const Type& rhs );
-                           inline DynamicVector& operator= ( const DynamicVector& rhs );
+   inline DynamicVector& operator=( const Type& rhs );
+   inline DynamicVector& operator=( const DynamicVector& rhs );
+   inline DynamicVector& operator=( DynamicVector&& rhs ) noexcept;
+
    template< typename VT > inline DynamicVector& operator= ( const Vector<VT,TF>& rhs );
    template< typename VT > inline DynamicVector& operator+=( const Vector<VT,TF>& rhs );
    template< typename VT > inline DynamicVector& operator-=( const Vector<VT,TF>& rhs );
@@ -612,6 +615,25 @@ inline DynamicVector<Type,TF>::DynamicVector( const DynamicVector& v )
 
 
 //*************************************************************************************************
+/*!\brief The move constructor for DynamicVector.
+//
+// \param v The vector to be moved into this instance.
+*/
+template< typename Type  // Data type of the vector
+        , bool TF >      // Transpose flag
+inline DynamicVector<Type,TF>::DynamicVector( DynamicVector&& v ) noexcept
+   : size_    ( v.size_     )  // The current size/dimension of the vector
+   , capacity_( v.capacity_ )  // The maximum capacity of the vector
+   , v_       ( v.v_        )  // The vector elements
+{
+   v.size_     = 0UL;
+   v.capacity_ = 0UL;
+   v.v_        = nullptr;
+}
+//*************************************************************************************************
+
+
+//*************************************************************************************************
 /*!\brief Conversion constructor from different vectors.
 //
 // \param v Vector to be copied.
@@ -940,6 +962,31 @@ inline DynamicVector<Type,TF>& DynamicVector<Type,TF>::operator=( const DynamicV
 
    resize( rhs.size_, false );
    smpAssign( *this, ~rhs );
+
+   return *this;
+}
+//*************************************************************************************************
+
+
+//*************************************************************************************************
+/*!\brief Move assignment operator for DynamicVector.
+//
+// \param rhs The vector to be moved into this instance.
+// \return Reference to the assigned vector.
+*/
+template< typename Type  // Data type of the vector
+        , bool TF >      // Transpose flag
+inline DynamicVector<Type,TF>& DynamicVector<Type,TF>::operator=( DynamicVector&& rhs ) noexcept
+{
+   deallocate( v_ );
+
+   size_     = rhs.size_;
+   capacity_ = rhs.capacity_;
+   v_        = rhs.v_;
+
+   rhs.size_     = 0UL;
+   rhs.capacity_ = 0UL;
+   rhs.v_        = nullptr;
 
    return *this;
 }
