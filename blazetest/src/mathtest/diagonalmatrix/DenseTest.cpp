@@ -587,6 +587,55 @@ void DenseTest::testConstructors()
 
 
    //=====================================================================================
+   // Row-major move constructor
+   //=====================================================================================
+
+   // Move constructor (0x0)
+   {
+      test_ = "Row-major DiagonalMatrix move constructor (0x0)";
+
+      DT diag1;
+      DT diag2( std::move( diag1 ) );
+
+      checkRows    ( diag2, 0UL );
+      checkColumns ( diag2, 0UL );
+      checkNonZeros( diag2, 0UL );
+   }
+
+   // Move constructor (3x3)
+   {
+      test_ = "Row-major DiagonalMatrix move constructor (3x3)";
+
+      DT diag1( 3UL );
+      diag1(0,0) = 1;
+      diag1(1,1) = 2;
+      diag1(2,2) = 3;
+
+      DT diag2( std::move( diag1 ) );
+
+      checkRows    ( diag2, 3UL );
+      checkColumns ( diag2, 3UL );
+      checkCapacity( diag2, 9UL );
+      checkNonZeros( diag2, 3UL );
+      checkNonZeros( diag2, 0UL, 1UL );
+      checkNonZeros( diag2, 1UL, 1UL );
+      checkNonZeros( diag2, 2UL, 1UL );
+
+      if( diag2(0,0) != 1 || diag2(0,1) != 0 || diag2(0,2) != 0 ||
+          diag2(1,0) != 0 || diag2(1,1) != 2 || diag2(1,2) != 0 ||
+          diag2(2,0) != 0 || diag2(2,1) != 0 || diag2(2,2) != 3 ) {
+         std::ostringstream oss;
+         oss << " Test: " << test_ << "\n"
+             << " Error: Construction failed\n"
+             << " Details:\n"
+             << "   Result:\n" << diag2 << "\n"
+             << "   Expected result:\n( 1 0 0 )\n( 0 2 0 )\n( 0 0 3 )\n";
+         throw std::runtime_error( oss.str() );
+      }
+   }
+
+
+   //=====================================================================================
    // Column-major default constructor
    //=====================================================================================
 
@@ -1055,6 +1104,55 @@ void DenseTest::testConstructors()
          throw std::runtime_error( oss.str() );
       }
    }
+
+
+   //=====================================================================================
+   // Column-major move constructor
+   //=====================================================================================
+
+   // Move constructor (0x0)
+   {
+      test_ = "Column-major DiagonalMatrix move constructor (0x0)";
+
+      ODT diag1;
+      ODT diag2( std::move( diag1 ) );
+
+      checkRows    ( diag2, 0UL );
+      checkColumns ( diag2, 0UL );
+      checkNonZeros( diag2, 0UL );
+   }
+
+   // Move constructor (3x3)
+   {
+      test_ = "Column-major DiagonalMatrix move constructor (3x3)";
+
+      ODT diag1( 3UL );
+      diag1(0,0) = 1;
+      diag1(1,1) = 2;
+      diag1(2,2) = 3;
+
+      ODT diag2( std::move( diag1 ) );
+
+      checkRows    ( diag2, 3UL );
+      checkColumns ( diag2, 3UL );
+      checkCapacity( diag2, 9UL );
+      checkNonZeros( diag2, 3UL );
+      checkNonZeros( diag2, 0UL, 1UL );
+      checkNonZeros( diag2, 1UL, 1UL );
+      checkNonZeros( diag2, 2UL, 1UL );
+
+      if( diag2(0,0) != 1 || diag2(0,1) != 0 || diag2(0,2) != 0 ||
+          diag2(1,0) != 0 || diag2(1,1) != 2 || diag2(1,2) != 0 ||
+          diag2(2,0) != 0 || diag2(2,1) != 0 || diag2(2,2) != 3 ) {
+         std::ostringstream oss;
+         oss << " Test: " << test_ << "\n"
+             << " Error: Construction failed\n"
+             << " Details:\n"
+             << "   Result:\n" << diag2 << "\n"
+             << "   Expected result:\n( 1 0 0 )\n( 0 2 0 )\n( 0 0 3 )\n";
+         throw std::runtime_error( oss.str() );
+      }
+   }
 }
 //*************************************************************************************************
 
@@ -1130,6 +1228,56 @@ void DenseTest::testAssignment()
 
       DT diag2;
       diag2 = diag1;
+
+      checkRows    ( diag2, 3UL );
+      checkColumns ( diag2, 3UL );
+      checkNonZeros( diag2, 3UL );
+      checkNonZeros( diag2, 0UL, 1UL );
+      checkNonZeros( diag2, 1UL, 1UL );
+      checkNonZeros( diag2, 2UL, 1UL );
+
+      if( diag2(0,0) != 1 || diag2(0,1) != 0 || diag2(0,2) != 0 ||
+          diag2(1,0) != 0 || diag2(1,1) != 2 || diag2(1,2) != 0 ||
+          diag2(2,0) != 0 || diag2(2,1) != 0 || diag2(2,2) != 3 ) {
+         std::ostringstream oss;
+         oss << " Test: " << test_ << "\n"
+             << " Error: Assignment failed\n"
+             << " Details:\n"
+             << "   Result:\n" << diag2 << "\n"
+             << "   Expected result:\n( 1 0 0 )\n( 0 2 0 )\n( 0 0 3 )\n";
+         throw std::runtime_error( oss.str() );
+      }
+   }
+
+
+   //=====================================================================================
+   // Row-major move assignment
+   //=====================================================================================
+
+   // Move assignment (0x0)
+   {
+      test_ = "Row-major DiagonalMatrix move assignment (0x0)";
+
+      DT diag1, diag2;
+
+      diag2 = std::move( diag1 );
+
+      checkRows    ( diag2, 0UL );
+      checkColumns ( diag2, 0UL );
+      checkNonZeros( diag2, 0UL );
+   }
+
+   // Move assignment (3x3)
+   {
+      test_ = "Row-major DiagonalMatrix move assignment (3x3)";
+
+      DT diag1( 3UL );
+      diag1(0,0) = 1;
+      diag1(1,1) = 2;
+      diag1(2,2) = 3;
+
+      DT diag2;
+      diag2 = std::move( diag1 );
 
       checkRows    ( diag2, 3UL );
       checkColumns ( diag2, 3UL );
@@ -1702,6 +1850,56 @@ void DenseTest::testAssignment()
 
       ODT diag2;
       diag2 = diag1;
+
+      checkRows    ( diag2, 3UL );
+      checkColumns ( diag2, 3UL );
+      checkNonZeros( diag2, 3UL );
+      checkNonZeros( diag2, 0UL, 1UL );
+      checkNonZeros( diag2, 1UL, 1UL );
+      checkNonZeros( diag2, 2UL, 1UL );
+
+      if( diag2(0,0) != 1 || diag2(0,1) != 0 || diag2(0,2) != 0 ||
+          diag2(1,0) != 0 || diag2(1,1) != 2 || diag2(1,2) != 0 ||
+          diag2(2,0) != 0 || diag2(2,1) != 0 || diag2(2,2) != 3 ) {
+         std::ostringstream oss;
+         oss << " Test: " << test_ << "\n"
+             << " Error: Assignment failed\n"
+             << " Details:\n"
+             << "   Result:\n" << diag2 << "\n"
+             << "   Expected result:\n( 1 0 0 )\n( 0 2 0 )\n( 0 0 3 )\n";
+         throw std::runtime_error( oss.str() );
+      }
+   }
+
+
+   //=====================================================================================
+   // Column-major move assignment
+   //=====================================================================================
+
+   // Move assignment (0x0)
+   {
+      test_ = "Column-major DiagonalMatrix move assignment (0x0)";
+
+      ODT diag1, diag2;
+
+      diag2 = std::move( diag1 );
+
+      checkRows    ( diag2, 0UL );
+      checkColumns ( diag2, 0UL );
+      checkNonZeros( diag2, 0UL );
+   }
+
+   // Move assignment (3x3)
+   {
+      test_ = "Column-major DiagonalMatrix move assignment (3x3)";
+
+      ODT diag1( 3UL );
+      diag1(0,0) = 1;
+      diag1(1,1) = 2;
+      diag1(2,2) = 3;
+
+      ODT diag2;
+      diag2 = std::move( diag1 );
 
       checkRows    ( diag2, 3UL );
       checkColumns ( diag2, 3UL );
