@@ -42,7 +42,6 @@
 
 #include <blaze/util/AlignedAllocator.h>
 #include <blaze/util/AlignedArray.h>
-#include <blaze/util/AlignedStorage.h>
 #include <blaze/util/AlignmentCheck.h>
 #include <blaze/util/Algorithm.h>
 #include <blaze/util/Assert.h>
