@@ -60,9 +60,9 @@ namespace blaze {
 // with respect to the requirements of the available instruction set. For instance, vectorizable
 // data types such as built-in and complex data types are required to be 16-bit aligned for SSE,
 // 32-bit aligned for AVX, and 64-bit aligned for MIC. In case the data type is properly aligned,
-// the \a value member enumeration is set to \a true, the nested type definition \a Type is
-// \a TrueType, and the class derives from \a TrueType. Otherwise \a value is set to \a false,
-// \a Type is \a FalseType, and the class derives from \a FalseType. Examples:
+// the \a value member constant is set to \a true, the nested type definition \a Type is
+// \a TrueType, and the class derives from \a TrueType. Otherwise \a value is set to
+// \a false, \a Type is \a FalseType, and the class derives from \a FalseType. Examples:
 
    \code
    using blaze::StaticVector;

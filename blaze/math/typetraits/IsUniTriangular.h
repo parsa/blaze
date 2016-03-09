@@ -60,7 +60,7 @@ namespace blaze {
 //
 // This type trait tests whether or not the given template parameter is a lower or upper
 // unitriangular matrix type. In case the type is an unitriangular matrix type, the \a value
-// member enumeration is set to \a true, the nested type definition \a Type is \a TrueType,
+// member constant is set to \a true, the nested type definition \a Type is \a TrueType,
 // and the class derives from \a TrueType. Otherwise \a yes is set to \a false, \a Type is
 // \a FalseType, and the class derives from \a FalseType.
 

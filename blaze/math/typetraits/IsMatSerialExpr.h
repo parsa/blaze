@@ -63,7 +63,7 @@ namespace blaze {
 // expression template. In order to qualify as a valid matrix serial evaluation expression template,
 // the given type has to derive (publicly or privately) from the MatSerialExpr base class. In case
 // the given type is a valid matrix serial evaluation expression template, the \a value member
-// enumeration is set to \a true, the nested type definition \a Type is \a TrueType, and the class
+// constant is set to \a true, the nested type definition \a Type is \a TrueType, and the class
 // derives from \a TrueType. Otherwise \a value is set to \a false, \a Type is \a FalseType, and
 // the class derives from \a FalseType.
 */

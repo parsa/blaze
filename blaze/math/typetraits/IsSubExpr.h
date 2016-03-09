@@ -63,7 +63,7 @@ namespace blaze {
 // template (i.e. an expression representing a vector subtraction or a matrix subtraction). In
 // order to qualify as a valid subtraction expression template, the given type has to derive
 // (publicly or privately) from the SubExpr base class. In case the given type is a valid
-// subtraction expression template, the \a value member enumeration is set to \a true, the nested
+// subtraction expression template, the \a value member constant is set to \a true, the nested
 // type definition \a Type is \a TrueType, and the class derives from \a TrueType. Otherwise
 // \a value is set to \a false, \a Type is \a FalseType, and the class derives from \a FalseType.
 */

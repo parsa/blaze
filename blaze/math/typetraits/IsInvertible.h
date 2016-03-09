@@ -65,8 +65,8 @@ namespace blaze {
 // is considered to be invertible if it is either BLAS compatible (i.e. \c float, \c double,
 // \c complex<float>, or \c complex<double>), <tt>long double</tt>, or any dense matrix type
 // with a BLAS compatible element type. If the given type is invertible, the \a value member
-// enumeration is set to \a true, the nested type definition \a Type is \a TrueType, and
-// the class derives from \a TrueType. Otherwise \a value is set to \a false, \a Type is
+// constant is set to \a true, the nested type definition \a Type is \a TrueType, and the
+// class derives from \a TrueType. Otherwise \a value is set to \a false, \a Type is
 // \a FalseType, and the class derives from \a FalseType.
 
    \code

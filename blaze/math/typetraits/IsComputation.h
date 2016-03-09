@@ -64,7 +64,7 @@ namespace blaze {
 // a multiplication, a division, an absolute value calculation, ...). In order to qualify
 // as a valid computational expression template, the given type has to derive (publicly or
 // privately) from the Computation base class. In case the given type is a valid computational
-// expression template, the \a value member enumeration is set to \a true, the nested type
+// expression template, the \a value member constant is set to \a true, the nested type
 // definition \a Type is \a TrueType, and the class derives from \a TrueType. Otherwise
 // \a value is set to \a false, \a Type is \a FalseType, and the class derives from \a FalseType.
 */

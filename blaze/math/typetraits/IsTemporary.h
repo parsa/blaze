@@ -62,7 +62,7 @@ namespace blaze {
 //
 // This type trait class tests whether the given type is a temporary vector or matrix type,
 // i.e. can be used for a temporary vector or matrix. In case the given type can be used as
-// temporary, the \a value member enumeration is set to \a true, the nested type definition
+// temporary, the \a value member constant is set to \a true, the nested type definition
 // \a Type is \a TrueType, and the class derives from \a TrueType. Otherwise \a value is set
 // to \a false, \a Type is \a FalseType, and the class derives from \a FalseType.
 */

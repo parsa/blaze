@@ -58,7 +58,7 @@ namespace blaze {
 //
 // This type trait tests whether the given template parameter is an adaptor type (for instance
 // \a LowerMatrix, \a UpperMatrix, or \a SymmetricMatrix). In case the type is an adaptor type,
-// the \a value member enumeration is set to \a true, the nested type definition \a Type is
+// the \a value member constant is set to \a true, the nested type definition \a Type is
 // \a TrueType, and the class derives from \a TrueType. Otherwise \a value is set to \a false,
 // \a Type is \a FalseType, and the class derives from \a FalseType. The following example
 // demonstrates this by means of the mentioned matrix adaptors:

@@ -60,9 +60,9 @@ namespace blaze {
 //
 // This type trait tests whether or not the given template parameter is a strictly lower or
 // upper triangular matrix type. In case the type is a triangular matrix type, the \a value
-// member enumeration is set to \a true, the nested type definition \a Type is \a TrueType,
-// and the class derives from \a TrueType. Otherwise \a yes is set to \a false, \a Type is
-// \a FalseType, and the class derives from \a FalseType.
+// member constant is set to \a true, the nested type definition \a Type is \a TrueType,
+// and the class derives from \a TrueType. Otherwise \a yes is set to \a false, \a Type
+// is \a FalseType, and the class derives from \a FalseType.
 
    \code
    using blaze::rowMajor;

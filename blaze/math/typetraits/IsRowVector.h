@@ -62,7 +62,7 @@ namespace blaze {
 //
 // This type trait tests whether or not the given template argument is a row dense or sparse
 // vector type (i.e. a vector whose transposition flag is set to blaze::rowVector). In case
-// the type is a row vector type, the \a value member enumeration is set to \a true, the nested
+// the type is a row vector type, the \a value member constant is set to \a true, the nested
 // type definition \a Type is \a TrueType, and the class derives from \a TrueType. Otherwise
 // \a value is set to \a false, \a Type is \a FalseType, and the class derives from \a FalseType.
 

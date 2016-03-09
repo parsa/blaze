@@ -63,7 +63,7 @@ namespace blaze {
 // type, i.e. if the type implements the sparse element concept by providing a value() and an
 // index() member function. In order to qualify as a valid sparse element type, the given type
 // has to derive (publicly or privately) from the SparseElement base class. In case the given
-// type is a valid sparse element, the \a value member enumeration is set to \a true, the nested
+// type is a valid sparse element, the \a value member constant is set to \a true, the nested
 // type definition \a Type is \a TrueType, and the class derives from \a TrueType. Otherwise
 // \a value is set to \a false, \a Type is \a FalseType, and the class derives from \a FalseType.
 */

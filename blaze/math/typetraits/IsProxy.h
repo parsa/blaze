@@ -77,7 +77,7 @@ struct IsProxyHelper
 
  public:
    //**********************************************************************************************
-   enum { value = ( sizeof( test( std::declval<T2>() ) ) == sizeof( Yes ) ) };
+   static constexpr bool value = ( sizeof( test( std::declval<T2>() ) ) == sizeof( Yes ) );
    //**********************************************************************************************
 };
 /*! \endcond */
@@ -90,9 +90,9 @@ struct IsProxyHelper
 //
 // This type trait tests whether or not the given template parameter is a proxy type (i.e.
 // derived from the blaze::Proxy class template). In case the type is a proxy, the \a value
-// member enumeration is set to \a true, the nested type definition \a Type is \a TrueType,
-// and the class derives from \a TrueType. Otherwise \a value is set to \a false, \a Type is
-// \a FalseType, and the class derives from \a FalseType.
+// member constant is set to \a true, the nested type definition \a Type is \a TrueType,
+// and the class derives from \a TrueType. Otherwise \a value is set to \a false, \a Type
+// is \a FalseType, and the class derives from \a FalseType.
 
    \code
    class MyProxy1 : public Proxy<MyProxy1> {};

@@ -59,7 +59,7 @@ namespace blaze {
 // This type trait tests whether the given data type has a restricted data access. Examples are
 // the LowerMatrix and UpperMatrix adaptors that don't allow write access to the elements in the
 // upper or lower part of the matrix, respectively. In case the data type has a restricted data
-// access, the \a value member enumeration is set to \a true, the nested type definition \a Type
+// access, the \a value member constant is set to \a true, the nested type definition \a Type
 // is \a TrueType, and the class derives from \a TrueType. Otherwise \a value is set to \a false,
 // \a Type is \a FalseType, and the class derives from \a FalseType. Examples:
 

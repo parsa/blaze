@@ -62,8 +62,8 @@ namespace blaze {
 //
 // This type trait tests whether or not the given template parameter is a data type compatible
 // to the BLAS standard. The BLAS standard supports \c float, \c double, \c complex<float> and
-// \c complex<double> values. If the type is BLAS compatible, the \a value member enumeration
-// is set to \a true, the nested type definition \a Type is \a TrueType, and the class derives
+// \c complex<double> values. If the type is BLAS compatible, the \a value member constant is
+// set to \a true, the nested type definition \a Type is \a TrueType, and the class derives
 // from \a TrueType. Otherwise \a value is set to \a false, \a Type is \a FalseType, and the
 // class derives from \a FalseType.
 

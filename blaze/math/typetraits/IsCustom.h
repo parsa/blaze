@@ -57,10 +57,10 @@ namespace blaze {
 // \ingroup math_type_traits
 //
 // This type trait tests whether the given data type is a custom data type, i.e. a custom vector
-// or a custom matrix. In case the data type a custom data type, the \a value member enumeration
-// is set to \a true, the nested type definition \a Type is \a TrueType, and the class derives
-// from \a TrueType. Otherwise \a value is set to \a false, \a Type is \a FalseType, and the
-// class derives from \a FalseType. Examples:
+// or a custom matrix. In case the data type a custom data type, the \a value member constant is
+// set to \a true, the nested type definition \a Type is \a TrueType, and the class derives from
+// \a TrueType. Otherwise \a value is set to \a false, \a Type is \a FalseType, and the class
+// derives from \a FalseType. Examples:
 
    \code
    using blaze::CustomVector;

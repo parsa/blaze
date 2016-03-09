@@ -60,7 +60,7 @@ namespace blaze {
 // \ingroup math_type_traits
 //
 // This type trait tests whether or not the given template parameter is a column (i.e. dense
-// or sparse column). In case the type is a column, the \a value member enumeration is set to
+// or sparse column). In case the type is a column, the \a value member constant is set to
 // \a true, the nested type definition \a Type is \a TrueType, and the class derives from
 // \a TrueType. Otherwise \a value is set to \a false, \a Type is \a FalseType, and the class
 // derives from \a FalseType.

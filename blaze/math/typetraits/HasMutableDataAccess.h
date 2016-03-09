@@ -58,7 +58,7 @@ namespace blaze {
 //
 // This type trait tests whether the given data type provides a low-level access to mutable data
 // via a non-const 'data' member function. In case the according member function is provided,
-// the \a value member enumeration is set to \a true, the nested type definition \a Type is
+// the \a value member constant is set to \a true, the nested type definition \a Type is
 // \a TrueType, and the class derives from \a TrueType. Otherwise \a value is set to \a false,
 // \a Type is \a FalseType, and the class derives from \a FalseType. Examples:
 

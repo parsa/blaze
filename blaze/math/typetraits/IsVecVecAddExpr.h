@@ -62,7 +62,7 @@ namespace blaze {
 // This type trait class tests whether or not the given type \a Type is a vector/vector addition
 // expression template. In order to qualify as a valid vector addition expression template, the
 // given type has to derive (publicly or privately) from the VecVecAddExpr base class. In case
-// the given type is a valid vector addition expression template, the \a value member enumeration
+// the given type is a valid vector addition expression template, the \a value member constant
 // is set to \a true, the nested type definition \a Type is \a TrueType, and the class derives
 // from \a TrueType. Otherwise \a value is set to \a false, \a Type is \a FalseType, and the
 // class derives from \a FalseType.

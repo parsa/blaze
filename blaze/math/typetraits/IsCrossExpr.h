@@ -63,8 +63,8 @@ namespace blaze {
 // expression template. In order to qualify as a valid cross product expression template,
 // the given type has to derive (publicly or privately) from the CrossExpr base class. In
 // case the given type is a valid cross product expression template, the \a value member
-// enumeration is set to \a true, the nested type definition \a Type is \a TrueType, and
-// the class derives from \a TrueType. Otherwise \a value is set to \a false, \a Type is
+// constant is set to \a true, the nested type definition \a Type is \a TrueType, and the
+// class derives from \a TrueType. Otherwise \a value is set to \a false, \a Type is
 // \a FalseType, and the class derives from \a FalseType.
 */
 template< typename T >

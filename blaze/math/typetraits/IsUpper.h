@@ -61,9 +61,9 @@ namespace blaze {
 // This type trait tests whether or not the given template parameter is an upper triangular matrix
 // type (i.e. a matrix type that is guaranteed to be upper triangular at compile time). This also
 // includes upper unitriangular and strictly upper triangular matrices. In case the type is an
-// upper triangular matrix type, the \a value member enumeration is set to \a true, the nested type
-// definition \a Type is \a TrueType, and the class derives from \a TrueType. Otherwise \a value is
-// set to \a false, \a Type is \a FalseType, and the class derives from \a FalseType.
+// upper triangular matrix type, the \a value member constant is set to \a true, the nested type
+// definition \a Type is \a TrueType, and the class derives from \a TrueType. Otherwise \a value
+// is set to \a false, \a Type is \a FalseType, and the class derives from \a FalseType.
 
    \code
    using blaze::rowMajor;

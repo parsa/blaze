@@ -64,8 +64,8 @@ namespace blaze {
 // multiplication expression template. In order to qualify as a valid vector/matrix
 // multiplication expression template, the given type has to derive (publicly or
 // privately) from the TVecMatMultExpr base class. In case the given type is a valid
-// vector/matrix multiplication expression template, the \a value member enumeration is
-// set to \a true, the nested type definition \a Type is \a TrueType, and the class derives
+// vector/matrix multiplication expression template, the \a value member constant is set
+// to \a true, the nested type definition \a Type is \a TrueType, and the class derives
 // from \a TrueType. Otherwise \a value is set to \a false, \a Type is \a FalseType, and
 // the class derives from \a FalseType.
 */

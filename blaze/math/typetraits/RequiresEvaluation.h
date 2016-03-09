@@ -59,10 +59,10 @@ namespace blaze {
 //
 // Via this type trait it is possible to determine whether a given vector or matrix expression
 // type requires an intermediate evaluation in the context of a compound expression. In case
-// the given type requires an evaluation, the \a value member enumeration is set to \a true,
-// the nested type definition \a Type is \a TrueType, and the class derives from \a TrueType.
-// Otherwise \a value is set to \a false, \a Type is \a FalseType, and the class derives from
-// \a FalseType.
+// the given type requires an evaluation, the \a value member constant is set to \a true, the
+// nested type definition \a Type is \a TrueType, and the class derives from \a TrueType.
+// Otherwise \a value is set to \a false, \a Type is \a FalseType, and the class derives
+// from \a FalseType.
 //
 // \note that this type trait can only be applied to Blaze vector or matrix expressions
 // or any other type providing the nested type \a CompositeType. In case this nested type

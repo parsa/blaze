@@ -58,7 +58,7 @@ namespace blaze {
 //
 // This type trait tests whether the given data type employs or simulates padding such that no
 // special treatment of remainder elements is necessary for vectorized operations on the type.
-// In case the data type is padded, the \a value member enumeration is set to \a true, the nested
+// In case the data type is padded, the \a value member constant is set to \a true, the nested
 // type definition \a Type is \a TrueType, and the class derives from \a TrueType. Otherwise
 // \a value is set to \a false, \a Type is \a FalseType, and the class derives from \a FalseType.
 // Examples:

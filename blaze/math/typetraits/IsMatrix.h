@@ -59,10 +59,10 @@ namespace blaze {
 // \ingroup math_type_traits
 //
 // This type trait tests whether or not the given template parameter is a N-dimensional dense
-// or sparse matrix type. In case the type is a matrix type, the \a value member enumeration
-// is set to \a true, the nested type definition \a Type is \a TrueType, and the class derives
-// from \a TrueType. Otherwise \a yes is set to \a false, \a Type is \a FalseType, and the class
-// derives from \a FalseType.
+// or sparse matrix type. In case the type is a matrix type, the \a value member constant is
+// set to \a true, the nested type definition \a Type is \a TrueType, and the class derives
+// from \a TrueType. Otherwise \a yes is set to \a false, \a Type is \a FalseType, and the
+// class derives from \a FalseType.
 
    \code
    blaze::IsMatrix< StaticMatrix<float,3U,3U,false> >::value  // Evaluates to 1
