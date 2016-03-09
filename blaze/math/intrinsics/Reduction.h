@@ -60,7 +60,7 @@ namespace blaze {
 // \param a The vector to be sumed up.
 // \return The sum of all vector elements.
 */
-BLAZE_ALWAYS_INLINE int16_t sum( const simd_int16_t& a )
+BLAZE_ALWAYS_INLINE int16_t sum( const simd_int16_t& a ) noexcept
 {
 #if BLAZE_AVX2_MODE
    const simd_int16_t b( _mm256_hadd_epi16( a.value, a.value ) );
@@ -90,7 +90,7 @@ BLAZE_ALWAYS_INLINE int16_t sum( const simd_int16_t& a )
 // \param a The vector to be sumed up.
 // \return The sum of all vector elements.
 */
-BLAZE_ALWAYS_INLINE int32_t sum( const simd_int32_t& a )
+BLAZE_ALWAYS_INLINE int32_t sum( const simd_int32_t& a ) noexcept
 {
 #if BLAZE_MIC_MODE
    return _mm512_reduce_add_epi32( a.value );
@@ -120,7 +120,7 @@ BLAZE_ALWAYS_INLINE int32_t sum( const simd_int32_t& a )
 // \param a The vector to be sumed up.
 // \return The sum of all vector elements.
 */
-BLAZE_ALWAYS_INLINE int64_t sum( const simd_int64_t& a )
+BLAZE_ALWAYS_INLINE int64_t sum( const simd_int64_t& a ) noexcept
 {
 #if BLAZE_MIC_MODE
    return _mm512_reduce_add_epi64( a.value );
@@ -142,7 +142,7 @@ BLAZE_ALWAYS_INLINE int64_t sum( const simd_int64_t& a )
 // \param a The vector to be sumed up.
 // \return The sum of all vector elements.
 */
-BLAZE_ALWAYS_INLINE float sum( const simd_float_t& a )
+BLAZE_ALWAYS_INLINE float sum( const simd_float_t& a ) noexcept
 {
 #if BLAZE_MIC_MODE
    return _mm512_reduce_add_ps( a.value );
@@ -172,7 +172,7 @@ BLAZE_ALWAYS_INLINE float sum( const simd_float_t& a )
 // \param a The vector to be sumed up.
 // \return The sum of all vector elements.
 */
-BLAZE_ALWAYS_INLINE double sum( const simd_double_t& a )
+BLAZE_ALWAYS_INLINE double sum( const simd_double_t& a ) noexcept
 {
 #if BLAZE_MIC_MODE
    return _mm512_reduce_add_pd( a.value );
@@ -200,7 +200,7 @@ BLAZE_ALWAYS_INLINE double sum( const simd_double_t& a )
 // \param a The vector to be sumed up.
 // \return The sum of all vector elements.
 */
-BLAZE_ALWAYS_INLINE complex<int8_t> sum( const simd_cint8_t& a )
+BLAZE_ALWAYS_INLINE complex<int8_t> sum( const simd_cint8_t& a ) noexcept
 {
 #if BLAZE_AVX2_MODE
    return complex<int8_t>( a[0] + a[1] + a[ 2] + a[ 3] + a[ 4] + a[ 5] + a[ 6] + a[ 7] +
@@ -221,7 +221,7 @@ BLAZE_ALWAYS_INLINE complex<int8_t> sum( const simd_cint8_t& a )
 // \param a The vector to be sumed up.
 // \return The sum of all vector elements.
 */
-BLAZE_ALWAYS_INLINE complex<int16_t> sum( const simd_cint16_t& a )
+BLAZE_ALWAYS_INLINE complex<int16_t> sum( const simd_cint16_t& a ) noexcept
 {
 #if BLAZE_AVX2_MODE
    return complex<int16_t>( a[0] + a[1] + a[2] + a[3] + a[4] + a[5] + a[6] + a[7] );
@@ -241,7 +241,7 @@ BLAZE_ALWAYS_INLINE complex<int16_t> sum( const simd_cint16_t& a )
 // \param a The vector to be sumed up.
 // \return The sum of all vector elements.
 */
-BLAZE_ALWAYS_INLINE complex<int32_t> sum( const simd_cint32_t& a )
+BLAZE_ALWAYS_INLINE complex<int32_t> sum( const simd_cint32_t& a ) noexcept
 {
 #if BLAZE_AVX2_MODE
    return complex<int32_t>( a[0] + a[1] + a[2] + a[3] );
@@ -261,7 +261,7 @@ BLAZE_ALWAYS_INLINE complex<int32_t> sum( const simd_cint32_t& a )
 // \param a The vector to be sumed up.
 // \return The sum of all vector elements.
 */
-BLAZE_ALWAYS_INLINE complex<int64_t> sum( const simd_cint64_t& a )
+BLAZE_ALWAYS_INLINE complex<int64_t> sum( const simd_cint64_t& a ) noexcept
 {
 #if BLAZE_AVX2_MODE
    return complex<int64_t>( a[0] + a[1] );
@@ -281,7 +281,7 @@ BLAZE_ALWAYS_INLINE complex<int64_t> sum( const simd_cint64_t& a )
 // \param a The vector to be sumed up.
 // \return The sum of all vector elements.
 */
-BLAZE_ALWAYS_INLINE complex<float> sum( const simd_cfloat_t& a )
+BLAZE_ALWAYS_INLINE complex<float> sum( const simd_cfloat_t& a ) noexcept
 {
 #if BLAZE_MIC_MODE
    return complex<float>( a[0] + a[1] + a[2] + a[3] + a[4] + a[5] + a[6] + a[7] );
@@ -303,7 +303,7 @@ BLAZE_ALWAYS_INLINE complex<float> sum( const simd_cfloat_t& a )
 // \param a The vector to be sumed up.
 // \return The sum of all vector elements.
 */
-BLAZE_ALWAYS_INLINE complex<double> sum( const simd_cdouble_t& a )
+BLAZE_ALWAYS_INLINE complex<double> sum( const simd_cdouble_t& a ) noexcept
 {
 #if BLAZE_MIC_MODE
    return complex<double>( a[0] + a[1] + a[2] + a[3] );

@@ -63,7 +63,7 @@ namespace blaze {
 // \return The result of the division.
 */
 #if BLAZE_MIC_MODE
-BLAZE_ALWAYS_INLINE simd_int32_t operator/( const simd_int32_t& a, const simd_int32_t& b )
+BLAZE_ALWAYS_INLINE simd_int32_t operator/( const simd_int32_t& a, const simd_int32_t& b ) noexcept
 {
    return _mm512_div_epi32( a.value, b.value );
 }
@@ -81,7 +81,7 @@ BLAZE_ALWAYS_INLINE simd_int32_t operator/( const simd_int32_t& a, const simd_in
 // \return The result of the division.
 */
 #if BLAZE_MIC_MODE
-BLAZE_ALWAYS_INLINE simd_int64_t operator/( const simd_int64_t& a, const simd_int64_t& b )
+BLAZE_ALWAYS_INLINE simd_int64_t operator/( const simd_int64_t& a, const simd_int64_t& b ) noexcept
 {
    return _mm512_div_epi64( a.value, b.value );
 }
@@ -99,17 +99,17 @@ BLAZE_ALWAYS_INLINE simd_int64_t operator/( const simd_int64_t& a, const simd_in
 // \return The result of the division.
 */
 #if BLAZE_MIC_MODE
-BLAZE_ALWAYS_INLINE simd_float_t operator/( const simd_float_t& a, const simd_float_t& b )
+BLAZE_ALWAYS_INLINE simd_float_t operator/( const simd_float_t& a, const simd_float_t& b ) noexcept
 {
    return _mm512_div_ps( a.value, b.value );
 }
 #elif BLAZE_AVX_MODE
-BLAZE_ALWAYS_INLINE simd_float_t operator/( const simd_float_t& a, const simd_float_t& b )
+BLAZE_ALWAYS_INLINE simd_float_t operator/( const simd_float_t& a, const simd_float_t& b ) noexcept
 {
    return _mm256_div_ps( a.value, b.value );
 }
 #elif BLAZE_SSE_MODE
-BLAZE_ALWAYS_INLINE simd_float_t operator/( const simd_float_t& a, const simd_float_t& b )
+BLAZE_ALWAYS_INLINE simd_float_t operator/( const simd_float_t& a, const simd_float_t& b ) noexcept
 {
    return _mm_div_ps( a.value, b.value );
 }
@@ -127,17 +127,17 @@ BLAZE_ALWAYS_INLINE simd_float_t operator/( const simd_float_t& a, const simd_fl
 // \return The result of the division.
 */
 #if BLAZE_MIC_MODE
-BLAZE_ALWAYS_INLINE simd_double_t operator/( const simd_double_t& a, const simd_double_t& b )
+BLAZE_ALWAYS_INLINE simd_double_t operator/( const simd_double_t& a, const simd_double_t& b ) noexcept
 {
    return _mm512_div_pd( a.value, b.value );
 }
 #elif BLAZE_AVX_MODE
-BLAZE_ALWAYS_INLINE simd_double_t operator/( const simd_double_t& a, const simd_double_t& b )
+BLAZE_ALWAYS_INLINE simd_double_t operator/( const simd_double_t& a, const simd_double_t& b ) noexcept
 {
    return _mm256_div_pd( a.value, b.value );
 }
 #elif BLAZE_SSE2_MODE
-BLAZE_ALWAYS_INLINE simd_double_t operator/( const simd_double_t& a, const simd_double_t& b )
+BLAZE_ALWAYS_INLINE simd_double_t operator/( const simd_double_t& a, const simd_double_t& b ) noexcept
 {
    return _mm_div_pd( a.value, b.value );
 }
@@ -155,7 +155,7 @@ BLAZE_ALWAYS_INLINE simd_double_t operator/( const simd_double_t& a, const simd_
 // \return The result of the division.
 */
 #if BLAZE_MIC_MODE
-BLAZE_ALWAYS_INLINE simd_cint32_t operator/( const simd_cint32_t& a, const simd_int32_t& b )
+BLAZE_ALWAYS_INLINE simd_cint32_t operator/( const simd_cint32_t& a, const simd_int32_t& b ) noexcept
 {
    return _mm512_div_epi32( a.value, b.value );
 }
@@ -173,7 +173,7 @@ BLAZE_ALWAYS_INLINE simd_cint32_t operator/( const simd_cint32_t& a, const simd_
 // \return The result of the division.
 */
 #if BLAZE_MIC_MODE
-BLAZE_ALWAYS_INLINE simd_cint64_t operator/( const simd_cint64_t& a, const simd_int64_t& b )
+BLAZE_ALWAYS_INLINE simd_cint64_t operator/( const simd_cint64_t& a, const simd_int64_t& b ) noexcept
 {
    return _mm512_div_epi64( a.value, b.value );
 }
@@ -191,17 +191,17 @@ BLAZE_ALWAYS_INLINE simd_cint64_t operator/( const simd_cint64_t& a, const simd_
 // \return The result of the division.
 */
 #if BLAZE_MIC_MODE
-BLAZE_ALWAYS_INLINE simd_cfloat_t operator/( const simd_cfloat_t& a, const simd_float_t& b )
+BLAZE_ALWAYS_INLINE simd_cfloat_t operator/( const simd_cfloat_t& a, const simd_float_t& b ) noexcept
 {
    return _mm512_div_ps( a.value, b.value );
 }
 #elif BLAZE_AVX_MODE
-BLAZE_ALWAYS_INLINE simd_cfloat_t operator/( const simd_cfloat_t& a, const simd_float_t& b )
+BLAZE_ALWAYS_INLINE simd_cfloat_t operator/( const simd_cfloat_t& a, const simd_float_t& b ) noexcept
 {
    return _mm256_div_ps( a.value, b.value );
 }
 #elif BLAZE_SSE_MODE
-BLAZE_ALWAYS_INLINE simd_cfloat_t operator/( const simd_cfloat_t& a, const simd_float_t& b )
+BLAZE_ALWAYS_INLINE simd_cfloat_t operator/( const simd_cfloat_t& a, const simd_float_t& b ) noexcept
 {
    return _mm_div_ps( a.value, b.value );
 }
@@ -219,17 +219,17 @@ BLAZE_ALWAYS_INLINE simd_cfloat_t operator/( const simd_cfloat_t& a, const simd_
 // \return The result of the division.
 */
 #if BLAZE_MIC_MODE
-BLAZE_ALWAYS_INLINE simd_cdouble_t operator/( const simd_cdouble_t& a, const simd_double_t& b )
+BLAZE_ALWAYS_INLINE simd_cdouble_t operator/( const simd_cdouble_t& a, const simd_double_t& b ) noexcept
 {
    return _mm512_div_pd( a.value, b.value );
 }
 #elif BLAZE_AVX_MODE
-BLAZE_ALWAYS_INLINE simd_cdouble_t operator/( const simd_cdouble_t& a, const simd_double_t& b )
+BLAZE_ALWAYS_INLINE simd_cdouble_t operator/( const simd_cdouble_t& a, const simd_double_t& b ) noexcept
 {
    return _mm256_div_pd( a.value, b.value );
 }
 #elif BLAZE_SSE2_MODE
-BLAZE_ALWAYS_INLINE simd_cdouble_t operator/( const simd_cdouble_t& a, const simd_double_t& b )
+BLAZE_ALWAYS_INLINE simd_cdouble_t operator/( const simd_cdouble_t& a, const simd_double_t& b ) noexcept
 {
    return _mm_div_pd( a.value, b.value );
 }

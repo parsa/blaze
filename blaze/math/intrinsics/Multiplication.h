@@ -63,12 +63,12 @@ namespace blaze {
 // \return The result of the multiplication.
 */
 #if BLAZE_AVX2_MODE
-BLAZE_ALWAYS_INLINE simd_int16_t operator*( const simd_int16_t& a, const simd_int16_t& b )
+BLAZE_ALWAYS_INLINE simd_int16_t operator*( const simd_int16_t& a, const simd_int16_t& b ) noexcept
 {
    return _mm256_mullo_epi16( a.value, b.value );
 }
 #elif BLAZE_SSE2_MODE
-BLAZE_ALWAYS_INLINE simd_int16_t operator*( const simd_int16_t& a, const simd_int16_t& b )
+BLAZE_ALWAYS_INLINE simd_int16_t operator*( const simd_int16_t& a, const simd_int16_t& b ) noexcept
 {
    return _mm_mullo_epi16( a.value, b.value );
 }
@@ -86,17 +86,17 @@ BLAZE_ALWAYS_INLINE simd_int16_t operator*( const simd_int16_t& a, const simd_in
 // \return The result of the multiplication.
 */
 #if BLAZE_MIC_MODE
-BLAZE_ALWAYS_INLINE simd_int32_t operator*( const simd_int32_t& a, const simd_int32_t& b )
+BLAZE_ALWAYS_INLINE simd_int32_t operator*( const simd_int32_t& a, const simd_int32_t& b ) noexcept
 {
    return _mm512_mullo_epi32( a.value, b.value );
 }
 #elif BLAZE_AVX2_MODE
-BLAZE_ALWAYS_INLINE simd_int32_t operator*( const simd_int32_t& a, const simd_int32_t& b )
+BLAZE_ALWAYS_INLINE simd_int32_t operator*( const simd_int32_t& a, const simd_int32_t& b ) noexcept
 {
    return _mm256_mullo_epi32( a.value, b.value );
 }
 #elif BLAZE_SSE4_MODE
-BLAZE_ALWAYS_INLINE simd_int32_t operator*( const simd_int32_t& a, const simd_int32_t& b )
+BLAZE_ALWAYS_INLINE simd_int32_t operator*( const simd_int32_t& a, const simd_int32_t& b ) noexcept
 {
    return _mm_mullo_epi32( a.value, b.value );
 }
@@ -114,7 +114,7 @@ BLAZE_ALWAYS_INLINE simd_int32_t operator*( const simd_int32_t& a, const simd_in
 // \return The result of the multiplication.
 */
 #if BLAZE_MIC_MODE
-BLAZE_ALWAYS_INLINE simd_int64_t operator*( const simd_int64_t& a, const simd_int64_t& b )
+BLAZE_ALWAYS_INLINE simd_int64_t operator*( const simd_int64_t& a, const simd_int64_t& b ) noexcept
 {
    return _mm512_mullo_epi64( a.value, b.value );
 }
@@ -132,17 +132,17 @@ BLAZE_ALWAYS_INLINE simd_int64_t operator*( const simd_int64_t& a, const simd_in
 // \return The result of the multiplication.
 */
 #if BLAZE_MIC_MODE
-BLAZE_ALWAYS_INLINE simd_float_t operator*( const simd_float_t& a, const simd_float_t& b )
+BLAZE_ALWAYS_INLINE simd_float_t operator*( const simd_float_t& a, const simd_float_t& b ) noexcept
 {
    return _mm512_mul_ps( a.value, b.value );
 }
 #elif BLAZE_AVX_MODE
-BLAZE_ALWAYS_INLINE simd_float_t operator*( const simd_float_t& a, const simd_float_t& b )
+BLAZE_ALWAYS_INLINE simd_float_t operator*( const simd_float_t& a, const simd_float_t& b ) noexcept
 {
    return _mm256_mul_ps( a.value, b.value );
 }
 #elif BLAZE_SSE_MODE
-BLAZE_ALWAYS_INLINE simd_float_t operator*( const simd_float_t& a, const simd_float_t& b )
+BLAZE_ALWAYS_INLINE simd_float_t operator*( const simd_float_t& a, const simd_float_t& b ) noexcept
 {
    return _mm_mul_ps( a.value, b.value );
 }
@@ -160,17 +160,17 @@ BLAZE_ALWAYS_INLINE simd_float_t operator*( const simd_float_t& a, const simd_fl
 // \return The result of the multiplication.
 */
 #if BLAZE_MIC_MODE
-BLAZE_ALWAYS_INLINE simd_double_t operator*( const simd_double_t& a, const simd_double_t& b )
+BLAZE_ALWAYS_INLINE simd_double_t operator*( const simd_double_t& a, const simd_double_t& b ) noexcept
 {
    return _mm512_mul_pd( a.value, b.value );
 }
 #elif BLAZE_AVX_MODE
-BLAZE_ALWAYS_INLINE simd_double_t operator*( const simd_double_t& a, const simd_double_t& b )
+BLAZE_ALWAYS_INLINE simd_double_t operator*( const simd_double_t& a, const simd_double_t& b ) noexcept
 {
    return _mm256_mul_pd( a.value, b.value );
 }
 #elif BLAZE_SSE2_MODE
-BLAZE_ALWAYS_INLINE simd_double_t operator*( const simd_double_t& a, const simd_double_t& b )
+BLAZE_ALWAYS_INLINE simd_double_t operator*( const simd_double_t& a, const simd_double_t& b ) noexcept
 {
    return _mm_mul_pd( a.value, b.value );
 }
@@ -188,12 +188,12 @@ BLAZE_ALWAYS_INLINE simd_double_t operator*( const simd_double_t& a, const simd_
 // \return The result of the scaling operation.
 */
 #if BLAZE_AVX2_MODE
-BLAZE_ALWAYS_INLINE simd_cint16_t operator*( const simd_cint16_t& a, const simd_int16_t& b )
+BLAZE_ALWAYS_INLINE simd_cint16_t operator*( const simd_cint16_t& a, const simd_int16_t& b ) noexcept
 {
    return _mm256_mullo_epi16( a.value, b.value );
 }
 #elif BLAZE_SSE2_MODE
-BLAZE_ALWAYS_INLINE simd_cint16_t operator*( const simd_cint16_t& a, const simd_int16_t& b )
+BLAZE_ALWAYS_INLINE simd_cint16_t operator*( const simd_cint16_t& a, const simd_int16_t& b ) noexcept
 {
    return _mm_mullo_epi16( a.value, b.value );
 }
@@ -211,12 +211,12 @@ BLAZE_ALWAYS_INLINE simd_cint16_t operator*( const simd_cint16_t& a, const simd_
 // \return The result of the scaling operation.
 */
 #if BLAZE_AVX2_MODE
-BLAZE_ALWAYS_INLINE simd_cint16_t operator*( const simd_int16_t& a, const simd_cint16_t& b )
+BLAZE_ALWAYS_INLINE simd_cint16_t operator*( const simd_int16_t& a, const simd_cint16_t& b ) noexcept
 {
    return _mm256_mullo_epi16( a.value, b.value );
 }
 #elif BLAZE_SSE2_MODE
-BLAZE_ALWAYS_INLINE simd_cint16_t operator*( const simd_int16_t& a, const simd_cint16_t& b )
+BLAZE_ALWAYS_INLINE simd_cint16_t operator*( const simd_int16_t& a, const simd_cint16_t& b ) noexcept
 {
    return _mm_mullo_epi16( a.value, b.value );
 }
@@ -234,7 +234,7 @@ BLAZE_ALWAYS_INLINE simd_cint16_t operator*( const simd_int16_t& a, const simd_c
 // \return The result of the multiplication.
 */
 #if BLAZE_AVX2_MODE
-BLAZE_ALWAYS_INLINE simd_cint16_t operator*( const simd_cint16_t& a, const simd_cint16_t& b )
+BLAZE_ALWAYS_INLINE simd_cint16_t operator*( const simd_cint16_t& a, const simd_cint16_t& b ) noexcept
 {
    __m256i x, y, z;
    const __m256i neg( _mm256_set_epi16( 1, -1, 1, -1, 1, -1, 1, -1, 1, -1, 1, -1, 1, -1, 1, -1 ) );
@@ -251,7 +251,7 @@ BLAZE_ALWAYS_INLINE simd_cint16_t operator*( const simd_cint16_t& a, const simd_
    return _mm256_add_epi16( z, y );
 }
 #elif BLAZE_SSE2_MODE
-BLAZE_ALWAYS_INLINE simd_cint16_t operator*( const simd_cint16_t& a, const simd_cint16_t& b )
+BLAZE_ALWAYS_INLINE simd_cint16_t operator*( const simd_cint16_t& a, const simd_cint16_t& b ) noexcept
 {
    __m128i x, y, z;
    const __m128i neg( _mm_set_epi16( 1, -1, 1, -1, 1, -1, 1, -1 ) );
@@ -281,17 +281,17 @@ BLAZE_ALWAYS_INLINE simd_cint16_t operator*( const simd_cint16_t& a, const simd_
 // \return The result of the scaling operation.
 */
 #if BLAZE_MIC_MODE
-BLAZE_ALWAYS_INLINE simd_cint32_t operator*( const simd_cint32_t& a, const simd_int32_t& b )
+BLAZE_ALWAYS_INLINE simd_cint32_t operator*( const simd_cint32_t& a, const simd_int32_t& b ) noexcept
 {
    return _mm512_mullo_epi32( a.value, b.value );
 }
 #elif BLAZE_AVX2_MODE
-BLAZE_ALWAYS_INLINE simd_cint32_t operator*( const simd_cint32_t& a, const simd_int32_t& b )
+BLAZE_ALWAYS_INLINE simd_cint32_t operator*( const simd_cint32_t& a, const simd_int32_t& b ) noexcept
 {
    return _mm256_mullo_epi32( a.value, b.value );
 }
 #elif BLAZE_SSE4_MODE
-BLAZE_ALWAYS_INLINE simd_cint32_t operator*( const simd_cint32_t& a, const simd_int32_t& b )
+BLAZE_ALWAYS_INLINE simd_cint32_t operator*( const simd_cint32_t& a, const simd_int32_t& b ) noexcept
 {
    return _mm_mullo_epi32( a.value, b.value );
 }
@@ -309,17 +309,17 @@ BLAZE_ALWAYS_INLINE simd_cint32_t operator*( const simd_cint32_t& a, const simd_
 // \return The result of the scaling operation.
 */
 #if BLAZE_MIC_MODE
-BLAZE_ALWAYS_INLINE simd_cint32_t operator*( const simd_int32_t& a, const simd_cint32_t& b )
+BLAZE_ALWAYS_INLINE simd_cint32_t operator*( const simd_int32_t& a, const simd_cint32_t& b ) noexcept
 {
    return _mm512_mullo_epi32( a.value, b.value );
 }
 #elif BLAZE_AVX2_MODE
-BLAZE_ALWAYS_INLINE simd_cint32_t operator*( const simd_int32_t& a, const simd_cint32_t& b )
+BLAZE_ALWAYS_INLINE simd_cint32_t operator*( const simd_int32_t& a, const simd_cint32_t& b ) noexcept
 {
    return _mm256_mullo_epi32( a.value, b.value );
 }
 #elif BLAZE_SSE4_MODE
-BLAZE_ALWAYS_INLINE simd_cint32_t operator*( const simd_int32_t& a, const simd_cint32_t& b )
+BLAZE_ALWAYS_INLINE simd_cint32_t operator*( const simd_int32_t& a, const simd_cint32_t& b ) noexcept
 {
    return _mm_mullo_epi32( a.value, b.value );
 }
@@ -337,7 +337,7 @@ BLAZE_ALWAYS_INLINE simd_cint32_t operator*( const simd_int32_t& a, const simd_c
 // \return The result of the multiplication.
 */
 #if BLAZE_MIC_MODE
-BLAZE_ALWAYS_INLINE simd_cint32_t operator*( const simd_cint32_t& a, const simd_cint32_t& b )
+BLAZE_ALWAYS_INLINE simd_cint32_t operator*( const simd_cint32_t& a, const simd_cint32_t& b ) noexcept
 {
    __m512i x, y, z;
    const __m512i neg( _mm256_set_epi32( 1, -1, 1, -1, 1, -1, 1, -1, 1, -1, 1, -1, 1, -1, 1, -1 ) );
@@ -351,7 +351,7 @@ BLAZE_ALWAYS_INLINE simd_cint32_t operator*( const simd_cint32_t& a, const simd_
    return _mm512_add_epi32( z, y );
 }
 #elif BLAZE_AVX2_MODE
-BLAZE_ALWAYS_INLINE simd_cint32_t operator*( const simd_cint32_t& a, const simd_cint32_t& b )
+BLAZE_ALWAYS_INLINE simd_cint32_t operator*( const simd_cint32_t& a, const simd_cint32_t& b ) noexcept
 {
    __m256i x, y, z;
    const __m256i neg( _mm256_set_epi32( 1, -1, 1, -1, 1, -1, 1, -1 ) );
@@ -365,7 +365,7 @@ BLAZE_ALWAYS_INLINE simd_cint32_t operator*( const simd_cint32_t& a, const simd_
    return _mm256_add_epi32( z, y );
 }
 #elif BLAZE_SSE4_MODE
-BLAZE_ALWAYS_INLINE simd_cint32_t operator*( const simd_cint32_t& a, const simd_cint32_t& b )
+BLAZE_ALWAYS_INLINE simd_cint32_t operator*( const simd_cint32_t& a, const simd_cint32_t& b ) noexcept
 {
    __m128i x, y, z;
    const __m128i neg( _mm_set_epi32( 1, -1, 1, -1 ) );
@@ -392,17 +392,17 @@ BLAZE_ALWAYS_INLINE simd_cint32_t operator*( const simd_cint32_t& a, const simd_
 // \return The result of the scaling operation.
 */
 #if BLAZE_MIC_MODE
-BLAZE_ALWAYS_INLINE simd_cfloat_t operator*( const simd_cfloat_t& a, const simd_float_t& b )
+BLAZE_ALWAYS_INLINE simd_cfloat_t operator*( const simd_cfloat_t& a, const simd_float_t& b ) noexcept
 {
    return _mm512_mul_ps( a.value, b.value );
 }
 #elif BLAZE_AVX_MODE
-BLAZE_ALWAYS_INLINE simd_cfloat_t operator*( const simd_cfloat_t& a, const simd_float_t& b )
+BLAZE_ALWAYS_INLINE simd_cfloat_t operator*( const simd_cfloat_t& a, const simd_float_t& b ) noexcept
 {
    return _mm256_mul_ps( a.value, b.value );
 }
 #elif BLAZE_SSE_MODE
-BLAZE_ALWAYS_INLINE simd_cfloat_t operator*( const simd_cfloat_t& a, const simd_float_t& b )
+BLAZE_ALWAYS_INLINE simd_cfloat_t operator*( const simd_cfloat_t& a, const simd_float_t& b ) noexcept
 {
    return _mm_mul_ps( a.value, b.value );
 }
@@ -420,17 +420,17 @@ BLAZE_ALWAYS_INLINE simd_cfloat_t operator*( const simd_cfloat_t& a, const simd_
 // \return The result of the scaling operation.
 */
 #if BLAZE_MIC_MODE
-BLAZE_ALWAYS_INLINE simd_cfloat_t operator*( const simd_float_t& a, const simd_cfloat_t& b )
+BLAZE_ALWAYS_INLINE simd_cfloat_t operator*( const simd_float_t& a, const simd_cfloat_t& b ) noexcept
 {
    return _mm512_mul_ps( a.value, b.value );
 }
 #elif BLAZE_AVX_MODE
-BLAZE_ALWAYS_INLINE simd_cfloat_t operator*( const simd_float_t& a, const simd_cfloat_t& b )
+BLAZE_ALWAYS_INLINE simd_cfloat_t operator*( const simd_float_t& a, const simd_cfloat_t& b ) noexcept
 {
    return _mm256_mul_ps( a.value, b.value );
 }
 #elif BLAZE_SSE_MODE
-BLAZE_ALWAYS_INLINE simd_cfloat_t operator*( const simd_float_t& a, const simd_cfloat_t& b )
+BLAZE_ALWAYS_INLINE simd_cfloat_t operator*( const simd_float_t& a, const simd_cfloat_t& b ) noexcept
 {
    return _mm_mul_ps( a.value, b.value );
 }
@@ -448,7 +448,7 @@ BLAZE_ALWAYS_INLINE simd_cfloat_t operator*( const simd_float_t& a, const simd_c
 // \return The result of the multiplication.
 */
 #if BLAZE_AVX_MODE
-BLAZE_ALWAYS_INLINE simd_cfloat_t operator*( const simd_cfloat_t& a, const simd_cfloat_t& b )
+BLAZE_ALWAYS_INLINE simd_cfloat_t operator*( const simd_cfloat_t& a, const simd_cfloat_t& b ) noexcept
 {
    __m256 x, y, z;
 
@@ -460,7 +460,7 @@ BLAZE_ALWAYS_INLINE simd_cfloat_t operator*( const simd_cfloat_t& a, const simd_
    return _mm256_addsub_ps( z, y );
 }
 #elif BLAZE_SSE3_MODE
-BLAZE_ALWAYS_INLINE simd_cfloat_t operator*( const simd_cfloat_t& a, const simd_cfloat_t& b )
+BLAZE_ALWAYS_INLINE simd_cfloat_t operator*( const simd_cfloat_t& a, const simd_cfloat_t& b ) noexcept
 {
    __m128 x, y, z;
 
@@ -485,17 +485,17 @@ BLAZE_ALWAYS_INLINE simd_cfloat_t operator*( const simd_cfloat_t& a, const simd_
 // \return The result of the scaling operation.
 */
 #if BLAZE_MIC_MODE
-BLAZE_ALWAYS_INLINE simd_cdouble_t operator*( const simd_cdouble_t& a, const simd_double_t& b )
+BLAZE_ALWAYS_INLINE simd_cdouble_t operator*( const simd_cdouble_t& a, const simd_double_t& b ) noexcept
 {
    return _mm512_mul_pd( a.value, b.value );
 }
 #elif BLAZE_AVX_MODE
-BLAZE_ALWAYS_INLINE simd_cdouble_t operator*( const simd_cdouble_t& a, const simd_double_t& b )
+BLAZE_ALWAYS_INLINE simd_cdouble_t operator*( const simd_cdouble_t& a, const simd_double_t& b ) noexcept
 {
    return _mm256_mul_pd( a.value, b.value );
 }
 #elif BLAZE_SSE2_MODE
-BLAZE_ALWAYS_INLINE simd_cdouble_t operator*( const simd_cdouble_t& a, const simd_double_t& b )
+BLAZE_ALWAYS_INLINE simd_cdouble_t operator*( const simd_cdouble_t& a, const simd_double_t& b ) noexcept
 {
    return _mm_mul_pd( a.value, b.value );
 }
@@ -513,17 +513,17 @@ BLAZE_ALWAYS_INLINE simd_cdouble_t operator*( const simd_cdouble_t& a, const sim
 // \return The result of the scaling operation.
 */
 #if BLAZE_MIC_MODE
-BLAZE_ALWAYS_INLINE simd_cdouble_t operator*( const simd_double_t& a, const simd_cdouble_t& b )
+BLAZE_ALWAYS_INLINE simd_cdouble_t operator*( const simd_double_t& a, const simd_cdouble_t& b ) noexcept
 {
    return _mm512_mul_pd( a.value, b.value );
 }
 #elif BLAZE_AVX_MODE
-BLAZE_ALWAYS_INLINE simd_cdouble_t operator*( const simd_double_t& a, const simd_cdouble_t& b )
+BLAZE_ALWAYS_INLINE simd_cdouble_t operator*( const simd_double_t& a, const simd_cdouble_t& b ) noexcept
 {
    return _mm256_mul_pd( a.value, b.value );
 }
 #elif BLAZE_SSE2_MODE
-BLAZE_ALWAYS_INLINE simd_cdouble_t operator*( const simd_double_t& a, const simd_cdouble_t& b )
+BLAZE_ALWAYS_INLINE simd_cdouble_t operator*( const simd_double_t& a, const simd_cdouble_t& b ) noexcept
 {
    return _mm_mul_pd( a.value, b.value );
 }
@@ -541,7 +541,7 @@ BLAZE_ALWAYS_INLINE simd_cdouble_t operator*( const simd_double_t& a, const simd
 // \return The result of the multiplication.
 */
 #if BLAZE_AVX_MODE
-BLAZE_ALWAYS_INLINE simd_cdouble_t operator*( const simd_cdouble_t& a, const simd_cdouble_t& b )
+BLAZE_ALWAYS_INLINE simd_cdouble_t operator*( const simd_cdouble_t& a, const simd_cdouble_t& b ) noexcept
 {
    __m256d x, y, z;
 
@@ -553,7 +553,7 @@ BLAZE_ALWAYS_INLINE simd_cdouble_t operator*( const simd_cdouble_t& a, const sim
    return _mm256_addsub_pd( z, y );
 }
 #elif BLAZE_SSE3_MODE
-BLAZE_ALWAYS_INLINE simd_cdouble_t operator*( const simd_cdouble_t& a, const simd_cdouble_t& b )
+BLAZE_ALWAYS_INLINE simd_cdouble_t operator*( const simd_cdouble_t& a, const simd_cdouble_t& b ) noexcept
 {
    __m128d x, y, z;
 

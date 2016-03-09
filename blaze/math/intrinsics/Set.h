@@ -70,7 +70,7 @@ namespace blaze {
 */
 template< typename T >  // Type of the integral value
 BLAZE_ALWAYS_INLINE typename EnableIf< And< IsIntegral<T>, HasSize<T,2UL> >, simd_int16_t >::Type
-   set( T value )
+   set( T value ) noexcept
 {
 #if BLAZE_AVX2_MODE
    return _mm256_set1_epi16( value );
@@ -92,7 +92,7 @@ BLAZE_ALWAYS_INLINE typename EnableIf< And< IsIntegral<T>, HasSize<T,2UL> >, sim
 */
 template< typename T >  // Type of the integral value
 BLAZE_ALWAYS_INLINE typename EnableIf< And< IsIntegral<T>, HasSize<T,4UL> >, simd_int32_t >::Type
-   set( T value )
+   set( T value ) noexcept
 {
 #if BLAZE_MIC_MODE
    return _mm512_set1_epi32( value );
@@ -116,7 +116,7 @@ BLAZE_ALWAYS_INLINE typename EnableIf< And< IsIntegral<T>, HasSize<T,4UL> >, sim
 */
 template< typename T >  // Type of the integral value
 BLAZE_ALWAYS_INLINE typename EnableIf< And< IsIntegral<T>, HasSize<T,8UL> >, simd_int64_t >::Type
-   set( T value )
+   set( T value ) noexcept
 {
 #if BLAZE_MIC_MODE
    return _mm512_set1_epi64( value );
@@ -138,7 +138,7 @@ BLAZE_ALWAYS_INLINE typename EnableIf< And< IsIntegral<T>, HasSize<T,8UL> >, sim
 // \param value The given 'float' value.
 // \return The set vector of 'float' values.
 */
-BLAZE_ALWAYS_INLINE simd_float_t set( float value )
+BLAZE_ALWAYS_INLINE simd_float_t set( float value ) noexcept
 {
 #if BLAZE_MIC_MODE
    return _mm512_set1_ps( value );
@@ -160,7 +160,7 @@ BLAZE_ALWAYS_INLINE simd_float_t set( float value )
 // \param value The given 'double' value.
 // \return The set vector of 'double' values.
 */
-BLAZE_ALWAYS_INLINE simd_double_t set( double value )
+BLAZE_ALWAYS_INLINE simd_double_t set( double value ) noexcept
 {
 #if BLAZE_MIC_MODE
    return _mm512_set1_pd( value );
@@ -184,7 +184,7 @@ BLAZE_ALWAYS_INLINE simd_double_t set( double value )
 */
 template< typename T >  // Type of the integral value
 BLAZE_ALWAYS_INLINE typename EnableIf< And< IsIntegral<T>, HasSize<T,2UL> >, simd_cint16_t >::Type
-   set( complex<T> value )
+   set( complex<T> value ) noexcept
 {
 #if BLAZE_AVX2_MODE
    return _mm256_set_epi16( value.imag(), value.real(), value.imag(), value.real(),
@@ -211,7 +211,7 @@ BLAZE_ALWAYS_INLINE typename EnableIf< And< IsIntegral<T>, HasSize<T,2UL> >, sim
 */
 template< typename T >  // Type of the integral value
 BLAZE_ALWAYS_INLINE typename EnableIf< And< IsIntegral<T>, HasSize<T,4UL> >, simd_cint32_t >::Type
-   set( complex<T> value )
+   set( complex<T> value ) noexcept
 {
 #if BLAZE_MIC_MODE
    return _mm512_set_epi32( value.imag(), value.real(), value.imag(), value.real(),
@@ -240,7 +240,7 @@ BLAZE_ALWAYS_INLINE typename EnableIf< And< IsIntegral<T>, HasSize<T,4UL> >, sim
 */
 template< typename T >  // Type of the integral value
 BLAZE_ALWAYS_INLINE typename EnableIf< And< IsIntegral<T>, HasSize<T,8UL> >, simd_cint64_t >::Type
-   set( complex<T> value )
+   set( complex<T> value ) noexcept
 {
 #if BLAZE_MIC_MODE
    return _mm512_set_epi64( value.imag(), value.real(), value.imag(), value.real(),
@@ -264,7 +264,7 @@ BLAZE_ALWAYS_INLINE typename EnableIf< And< IsIntegral<T>, HasSize<T,8UL> >, sim
 // \param value The given 'complex<float>' value.
 // \return The set vector of 'complex<float>' values.
 */
-BLAZE_ALWAYS_INLINE simd_cfloat_t set( const complex<float>& value )
+BLAZE_ALWAYS_INLINE simd_cfloat_t set( const complex<float>& value ) noexcept
 {
 #if BLAZE_MIC_MODE
    return _mm512_set_ps( value.imag(), value.real(), value.imag(), value.real(),
@@ -291,7 +291,7 @@ BLAZE_ALWAYS_INLINE simd_cfloat_t set( const complex<float>& value )
 // \param value The given 'complex<double>' value.
 // \return The set vector of 'complex<double>' values.
 */
-BLAZE_ALWAYS_INLINE simd_cdouble_t set( const complex<double>& value )
+BLAZE_ALWAYS_INLINE simd_cdouble_t set( const complex<double>& value ) noexcept
 {
 #if BLAZE_MIC_MODE
    return _mm512_set_pd( value.imag(), value.real(), value.imag(), value.real(),

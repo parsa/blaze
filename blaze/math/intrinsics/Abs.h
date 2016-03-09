@@ -62,12 +62,12 @@ namespace blaze {
 // \return The absolute values.
 */
 #if BLAZE_AVX2_MODE
-BLAZE_ALWAYS_INLINE simd_int8_t abs( const simd_int8_t& a )
+BLAZE_ALWAYS_INLINE simd_int8_t abs( const simd_int8_t& a ) noexcept
 {
    return _mm256_abs_epi8( a.value );
 }
 #elif BLAZE_SSSE3_MODE
-BLAZE_ALWAYS_INLINE simd_int8_t abs( const simd_int8_t& a )
+BLAZE_ALWAYS_INLINE simd_int8_t abs( const simd_int8_t& a ) noexcept
 {
    return _mm_abs_epi8( a.value );
 }
@@ -84,12 +84,12 @@ BLAZE_ALWAYS_INLINE simd_int8_t abs( const simd_int8_t& a )
 // \return The absolute values.
 */
 #if BLAZE_AVX2_MODE
-BLAZE_ALWAYS_INLINE simd_int16_t abs( const simd_int16_t& a )
+BLAZE_ALWAYS_INLINE simd_int16_t abs( const simd_int16_t& a ) noexcept
 {
    return _mm256_abs_epi16( a.value );
 }
 #elif BLAZE_SSSE3_MODE
-BLAZE_ALWAYS_INLINE simd_int16_t abs( const simd_int16_t& a )
+BLAZE_ALWAYS_INLINE simd_int16_t abs( const simd_int16_t& a ) noexcept
 {
    return _mm_abs_epi16( a.value );
 }
@@ -106,12 +106,12 @@ BLAZE_ALWAYS_INLINE simd_int16_t abs( const simd_int16_t& a )
 // \return The absolute values.
 */
 #if BLAZE_AVX2_MODE
-BLAZE_ALWAYS_INLINE simd_int32_t abs( const simd_int32_t& a )
+BLAZE_ALWAYS_INLINE simd_int32_t abs( const simd_int32_t& a ) noexcept
 {
    return _mm256_abs_epi32( a.value );
 }
 #elif BLAZE_SSSE3_MODE
-BLAZE_ALWAYS_INLINE simd_int32_t abs( const simd_int32_t& a )
+BLAZE_ALWAYS_INLINE simd_int32_t abs( const simd_int32_t& a ) noexcept
 {
    return _mm_abs_epi32( a.value );
 }

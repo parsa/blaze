@@ -63,12 +63,12 @@ namespace blaze {
 // \return The result of the addition.
 */
 #if BLAZE_AVX2_MODE
-BLAZE_ALWAYS_INLINE simd_int8_t operator+( const simd_int8_t& a, const simd_int8_t& b )
+BLAZE_ALWAYS_INLINE simd_int8_t operator+( const simd_int8_t& a, const simd_int8_t& b ) noexcept
 {
    return _mm256_add_epi8( a.value, b.value );
 }
 #elif BLAZE_SSE2_MODE
-BLAZE_ALWAYS_INLINE simd_int8_t operator+( const simd_int8_t& a, const simd_int8_t& b )
+BLAZE_ALWAYS_INLINE simd_int8_t operator+( const simd_int8_t& a, const simd_int8_t& b ) noexcept
 {
    return _mm_add_epi8( a.value, b.value );
 }
@@ -86,12 +86,12 @@ BLAZE_ALWAYS_INLINE simd_int8_t operator+( const simd_int8_t& a, const simd_int8
 // \return The result of the addition.
 */
 #if BLAZE_AVX2_MODE
-BLAZE_ALWAYS_INLINE simd_int16_t operator+( const simd_int16_t& a, const simd_int16_t& b )
+BLAZE_ALWAYS_INLINE simd_int16_t operator+( const simd_int16_t& a, const simd_int16_t& b ) noexcept
 {
    return _mm256_add_epi16( a.value, b.value );
 }
 #elif BLAZE_SSE2_MODE
-BLAZE_ALWAYS_INLINE simd_int16_t operator+( const simd_int16_t& a, const simd_int16_t& b )
+BLAZE_ALWAYS_INLINE simd_int16_t operator+( const simd_int16_t& a, const simd_int16_t& b ) noexcept
 {
    return _mm_add_epi16( a.value, b.value );
 }
@@ -109,17 +109,17 @@ BLAZE_ALWAYS_INLINE simd_int16_t operator+( const simd_int16_t& a, const simd_in
 // \return The result of the addition.
 */
 #if BLAZE_MIC_MODE
-BLAZE_ALWAYS_INLINE simd_int32_t operator+( const simd_int32_t& a, const simd_int32_t& b )
+BLAZE_ALWAYS_INLINE simd_int32_t operator+( const simd_int32_t& a, const simd_int32_t& b ) noexcept
 {
    return _mm512_add_epi32( a.value, b.value );
 }
 #elif BLAZE_AVX2_MODE
-BLAZE_ALWAYS_INLINE simd_int32_t operator+( const simd_int32_t& a, const simd_int32_t& b )
+BLAZE_ALWAYS_INLINE simd_int32_t operator+( const simd_int32_t& a, const simd_int32_t& b ) noexcept
 {
    return _mm256_add_epi32( a.value, b.value );
 }
 #elif BLAZE_SSE2_MODE
-BLAZE_ALWAYS_INLINE simd_int32_t operator+( const simd_int32_t& a, const simd_int32_t& b )
+BLAZE_ALWAYS_INLINE simd_int32_t operator+( const simd_int32_t& a, const simd_int32_t& b ) noexcept
 {
    return _mm_add_epi32( a.value, b.value );
 }
@@ -137,17 +137,17 @@ BLAZE_ALWAYS_INLINE simd_int32_t operator+( const simd_int32_t& a, const simd_in
 // \return The result of the addition.
 */
 #if BLAZE_MIC_MODE
-BLAZE_ALWAYS_INLINE simd_int64_t operator+( const simd_int64_t& a, const simd_int64_t& b )
+BLAZE_ALWAYS_INLINE simd_int64_t operator+( const simd_int64_t& a, const simd_int64_t& b ) noexcept
 {
    return _mm512_add_epi64( a.value, b.value );
 }
 #elif BLAZE_AVX2_MODE
-BLAZE_ALWAYS_INLINE simd_int64_t operator+( const simd_int64_t& a, const simd_int64_t& b )
+BLAZE_ALWAYS_INLINE simd_int64_t operator+( const simd_int64_t& a, const simd_int64_t& b ) noexcept
 {
    return _mm256_add_epi64( a.value, b.value );
 }
 #elif BLAZE_SSE2_MODE
-BLAZE_ALWAYS_INLINE simd_int64_t operator+( const simd_int64_t& a, const simd_int64_t& b )
+BLAZE_ALWAYS_INLINE simd_int64_t operator+( const simd_int64_t& a, const simd_int64_t& b ) noexcept
 {
    return _mm_add_epi64( a.value, b.value );
 }
@@ -165,17 +165,17 @@ BLAZE_ALWAYS_INLINE simd_int64_t operator+( const simd_int64_t& a, const simd_in
 // \return The result of the addition.
 */
 #if BLAZE_MIC_MODE
-BLAZE_ALWAYS_INLINE simd_float_t operator+( const simd_float_t& a, const simd_float_t& b )
+BLAZE_ALWAYS_INLINE simd_float_t operator+( const simd_float_t& a, const simd_float_t& b ) noexcept
 {
    return _mm512_add_ps( a.value, b.value );
 }
 #elif BLAZE_AVX_MODE
-BLAZE_ALWAYS_INLINE simd_float_t operator+( const simd_float_t& a, const simd_float_t& b )
+BLAZE_ALWAYS_INLINE simd_float_t operator+( const simd_float_t& a, const simd_float_t& b ) noexcept
 {
    return _mm256_add_ps( a.value, b.value );
 }
 #elif BLAZE_SSE_MODE
-BLAZE_ALWAYS_INLINE simd_float_t operator+( const simd_float_t& a, const simd_float_t& b )
+BLAZE_ALWAYS_INLINE simd_float_t operator+( const simd_float_t& a, const simd_float_t& b ) noexcept
 {
    return _mm_add_ps( a.value, b.value );
 }
@@ -193,17 +193,17 @@ BLAZE_ALWAYS_INLINE simd_float_t operator+( const simd_float_t& a, const simd_fl
 // \return The result of the addition.
 */
 #if BLAZE_MIC_MODE
-BLAZE_ALWAYS_INLINE simd_double_t operator+( const simd_double_t& a, const simd_double_t& b )
+BLAZE_ALWAYS_INLINE simd_double_t operator+( const simd_double_t& a, const simd_double_t& b ) noexcept
 {
    return _mm512_add_pd( a.value, b.value );
 }
 #elif BLAZE_AVX_MODE
-BLAZE_ALWAYS_INLINE simd_double_t operator+( const simd_double_t& a, const simd_double_t& b )
+BLAZE_ALWAYS_INLINE simd_double_t operator+( const simd_double_t& a, const simd_double_t& b ) noexcept
 {
    return _mm256_add_pd( a.value, b.value );
 }
 #elif BLAZE_SSE2_MODE
-BLAZE_ALWAYS_INLINE simd_double_t operator+( const simd_double_t& a, const simd_double_t& b )
+BLAZE_ALWAYS_INLINE simd_double_t operator+( const simd_double_t& a, const simd_double_t& b ) noexcept
 {
    return _mm_add_pd( a.value, b.value );
 }
@@ -221,12 +221,12 @@ BLAZE_ALWAYS_INLINE simd_double_t operator+( const simd_double_t& a, const simd_
 // \return The result of the addition.
 */
 #if BLAZE_AVX2_MODE
-BLAZE_ALWAYS_INLINE simd_cint8_t operator+( const simd_cint8_t& a, const simd_cint8_t& b )
+BLAZE_ALWAYS_INLINE simd_cint8_t operator+( const simd_cint8_t& a, const simd_cint8_t& b ) noexcept
 {
    return _mm256_add_epi8( a.value, b.value );
 }
 #elif BLAZE_SSE2_MODE
-BLAZE_ALWAYS_INLINE simd_cint8_t operator+( const simd_cint8_t& a, const simd_cint8_t& b )
+BLAZE_ALWAYS_INLINE simd_cint8_t operator+( const simd_cint8_t& a, const simd_cint8_t& b ) noexcept
 {
    return _mm_add_epi8( a.value, b.value );
 }
@@ -244,12 +244,12 @@ BLAZE_ALWAYS_INLINE simd_cint8_t operator+( const simd_cint8_t& a, const simd_ci
 // \return The result of the addition.
 */
 #if BLAZE_AVX2_MODE
-BLAZE_ALWAYS_INLINE simd_cint16_t operator+( const simd_cint16_t& a, const simd_cint16_t& b )
+BLAZE_ALWAYS_INLINE simd_cint16_t operator+( const simd_cint16_t& a, const simd_cint16_t& b ) noexcept
 {
    return _mm256_add_epi16( a.value, b.value );
 }
 #elif BLAZE_SSE2_MODE
-BLAZE_ALWAYS_INLINE simd_cint16_t operator+( const simd_cint16_t& a, const simd_cint16_t& b )
+BLAZE_ALWAYS_INLINE simd_cint16_t operator+( const simd_cint16_t& a, const simd_cint16_t& b ) noexcept
 {
    return _mm_add_epi16( a.value, b.value );
 }
@@ -267,17 +267,17 @@ BLAZE_ALWAYS_INLINE simd_cint16_t operator+( const simd_cint16_t& a, const simd_
 // \return The result of the addition.
 */
 #if BLAZE_MIC_MODE
-BLAZE_ALWAYS_INLINE simd_cint32_t operator+( const simd_cint32_t& a, const simd_cint32_t& b )
+BLAZE_ALWAYS_INLINE simd_cint32_t operator+( const simd_cint32_t& a, const simd_cint32_t& b ) noexcept
 {
    return _mm512_add_epi32( a.value, b.value );
 }
 #elif BLAZE_AVX2_MODE
-BLAZE_ALWAYS_INLINE simd_cint32_t operator+( const simd_cint32_t& a, const simd_cint32_t& b )
+BLAZE_ALWAYS_INLINE simd_cint32_t operator+( const simd_cint32_t& a, const simd_cint32_t& b ) noexcept
 {
    return _mm256_add_epi32( a.value, b.value );
 }
 #elif BLAZE_SSE2_MODE
-BLAZE_ALWAYS_INLINE simd_cint32_t operator+( const simd_cint32_t& a, const simd_cint32_t& b )
+BLAZE_ALWAYS_INLINE simd_cint32_t operator+( const simd_cint32_t& a, const simd_cint32_t& b ) noexcept
 {
    return _mm_add_epi32( a.value, b.value );
 }
@@ -295,17 +295,17 @@ BLAZE_ALWAYS_INLINE simd_cint32_t operator+( const simd_cint32_t& a, const simd_
 // \return The result of the addition.
 */
 #if BLAZE_MIC_MODE
-BLAZE_ALWAYS_INLINE simd_cint64_t operator+( const simd_cint64_t& a, const simd_cint64_t& b )
+BLAZE_ALWAYS_INLINE simd_cint64_t operator+( const simd_cint64_t& a, const simd_cint64_t& b ) noexcept
 {
    return _mm512_add_epi64( a.value, b.value );
 }
 #elif BLAZE_AVX2_MODE
-BLAZE_ALWAYS_INLINE simd_cint64_t operator+( const simd_cint64_t& a, const simd_cint64_t& b )
+BLAZE_ALWAYS_INLINE simd_cint64_t operator+( const simd_cint64_t& a, const simd_cint64_t& b ) noexcept
 {
    return _mm256_add_epi64( a.value, b.value );
 }
 #elif BLAZE_SSE2_MODE
-BLAZE_ALWAYS_INLINE simd_cint64_t operator+( const simd_cint64_t& a, const simd_cint64_t& b )
+BLAZE_ALWAYS_INLINE simd_cint64_t operator+( const simd_cint64_t& a, const simd_cint64_t& b ) noexcept
 {
    return _mm_add_epi64( a.value, b.value );
 }
@@ -323,17 +323,17 @@ BLAZE_ALWAYS_INLINE simd_cint64_t operator+( const simd_cint64_t& a, const simd_
 // \return The result of the addition.
 */
 #if BLAZE_MIC_MODE
-BLAZE_ALWAYS_INLINE simd_cfloat_t operator+( const simd_cfloat_t& a, const simd_cfloat_t& b )
+BLAZE_ALWAYS_INLINE simd_cfloat_t operator+( const simd_cfloat_t& a, const simd_cfloat_t& b ) noexcept
 {
    return _mm512_add_ps( a.value, b.value );
 }
 #elif BLAZE_AVX_MODE
-BLAZE_ALWAYS_INLINE simd_cfloat_t operator+( const simd_cfloat_t& a, const simd_cfloat_t& b )
+BLAZE_ALWAYS_INLINE simd_cfloat_t operator+( const simd_cfloat_t& a, const simd_cfloat_t& b ) noexcept
 {
    return _mm256_add_ps( a.value, b.value );
 }
 #elif BLAZE_SSE_MODE
-BLAZE_ALWAYS_INLINE simd_cfloat_t operator+( const simd_cfloat_t& a, const simd_cfloat_t& b )
+BLAZE_ALWAYS_INLINE simd_cfloat_t operator+( const simd_cfloat_t& a, const simd_cfloat_t& b ) noexcept
 {
    return _mm_add_ps( a.value, b.value );
 }
@@ -351,17 +351,17 @@ BLAZE_ALWAYS_INLINE simd_cfloat_t operator+( const simd_cfloat_t& a, const simd_
 // \return The result of the addition.
 */
 #if BLAZE_MIC_MODE
-BLAZE_ALWAYS_INLINE simd_cdouble_t operator+( const simd_cdouble_t& a, const simd_cdouble_t& b )
+BLAZE_ALWAYS_INLINE simd_cdouble_t operator+( const simd_cdouble_t& a, const simd_cdouble_t& b ) noexcept
 {
    return _mm512_add_pd( a.value, b.value );
 }
 #elif BLAZE_AVX_MODE
-BLAZE_ALWAYS_INLINE simd_cdouble_t operator+( const simd_cdouble_t& a, const simd_cdouble_t& b )
+BLAZE_ALWAYS_INLINE simd_cdouble_t operator+( const simd_cdouble_t& a, const simd_cdouble_t& b ) noexcept
 {
    return _mm256_add_pd( a.value, b.value );
 }
 #elif BLAZE_SSE2_MODE
-BLAZE_ALWAYS_INLINE simd_cdouble_t operator+( const simd_cdouble_t& a, const simd_cdouble_t& b )
+BLAZE_ALWAYS_INLINE simd_cdouble_t operator+( const simd_cdouble_t& a, const simd_cdouble_t& b ) noexcept
 {
    return _mm_add_pd( a.value, b.value );
 }

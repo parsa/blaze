@@ -72,7 +72,7 @@ namespace blaze {
 */
 template< typename T >  // Type of the integral value
 BLAZE_ALWAYS_INLINE typename EnableIf< And< IsIntegral<T>, HasSize<T,2UL> > >::Type
-   storeu( T* address, const simd_int16_t& value )
+   storeu( T* address, const simd_int16_t& value ) noexcept
 {
 #if BLAZE_AVX2_MODE
    _mm256_storeu_si256( reinterpret_cast<__m256i*>( address ), value.value );
@@ -98,7 +98,7 @@ BLAZE_ALWAYS_INLINE typename EnableIf< And< IsIntegral<T>, HasSize<T,2UL> > >::T
 */
 template< typename T >  // Type of the integral value
 BLAZE_ALWAYS_INLINE typename EnableIf< And< IsIntegral<T>, HasSize<T,4UL> > >::Type
-   storeu( T* address, const simd_int32_t& value )
+   storeu( T* address, const simd_int32_t& value ) noexcept
 {
 #if BLAZE_MIC_MODE
    _mm512_packstorelo_epi32( address, value.value );
@@ -127,7 +127,7 @@ BLAZE_ALWAYS_INLINE typename EnableIf< And< IsIntegral<T>, HasSize<T,4UL> > >::T
 */
 template< typename T >  // Type of the integral value
 BLAZE_ALWAYS_INLINE typename EnableIf< And< IsIntegral<T>, HasSize<T,8UL> > >::Type
-   storeu( T* address, const simd_int64_t& value )
+   storeu( T* address, const simd_int64_t& value ) noexcept
 {
 #if BLAZE_MIC_MODE
    _mm512_packstorelo_epi64( address, value.value );
@@ -154,7 +154,7 @@ BLAZE_ALWAYS_INLINE typename EnableIf< And< IsIntegral<T>, HasSize<T,8UL> > >::T
 // This function stores a vector of 'float' values. In contrast to the according store function,
 // the given address is not required to be properly aligned.
 */
-BLAZE_ALWAYS_INLINE void storeu( float* address, const simd_float_t& value )
+BLAZE_ALWAYS_INLINE void storeu( float* address, const simd_float_t& value ) noexcept
 {
 #if BLAZE_MIC_MODE
    _mm512_packstorelo_ps( address     , value.value );
@@ -181,7 +181,7 @@ BLAZE_ALWAYS_INLINE void storeu( float* address, const simd_float_t& value )
 // This function stores a vector of 'double' values. In contrast to the according store function,
 // the given address is not required to be properly aligned.
 */
-BLAZE_ALWAYS_INLINE void storeu( double* address, const simd_double_t& value )
+BLAZE_ALWAYS_INLINE void storeu( double* address, const simd_double_t& value ) noexcept
 {
 #if BLAZE_MIC_MODE
    _mm512_packstorelo_pd( address    , value.value );
@@ -210,7 +210,7 @@ BLAZE_ALWAYS_INLINE void storeu( double* address, const simd_double_t& value )
 */
 template< typename T >  // Type of the integral value
 BLAZE_ALWAYS_INLINE typename EnableIf< And< IsIntegral<T>, HasSize<T,2UL> > >::Type
-   storeu( complex<T>* address, const simd_cint16_t& value )
+   storeu( complex<T>* address, const simd_cint16_t& value ) noexcept
 {
    BLAZE_STATIC_ASSERT( sizeof( complex<T> ) == 2UL*sizeof( T ) );
 
@@ -238,7 +238,7 @@ BLAZE_ALWAYS_INLINE typename EnableIf< And< IsIntegral<T>, HasSize<T,2UL> > >::T
 */
 template< typename T >  // Type of the integral value
 BLAZE_ALWAYS_INLINE typename EnableIf< And< IsIntegral<T>, HasSize<T,4UL> > >::Type
-   storeu( complex<T>* address, const simd_cint32_t& value )
+   storeu( complex<T>* address, const simd_cint32_t& value ) noexcept
 {
    BLAZE_STATIC_ASSERT( sizeof( complex<T> ) == 2UL*sizeof( T ) );
 
@@ -269,7 +269,7 @@ BLAZE_ALWAYS_INLINE typename EnableIf< And< IsIntegral<T>, HasSize<T,4UL> > >::T
 */
 template< typename T >  // Type of the integral value
 BLAZE_ALWAYS_INLINE typename EnableIf< And< IsIntegral<T>, HasSize<T,8UL> > >::Type
-   storeu( complex<T>* address, const simd_cint64_t& value )
+   storeu( complex<T>* address, const simd_cint64_t& value ) noexcept
 {
    BLAZE_STATIC_ASSERT( sizeof( complex<T> ) == 2UL*sizeof( T ) );
 
@@ -298,7 +298,7 @@ BLAZE_ALWAYS_INLINE typename EnableIf< And< IsIntegral<T>, HasSize<T,8UL> > >::T
 // This function stores a vector of 'complex<float>' values. In contrast to the according store
 // function, the given address is not required to be properly aligned.
 */
-BLAZE_ALWAYS_INLINE void storeu( complex<float>* address, const simd_cfloat_t& value )
+BLAZE_ALWAYS_INLINE void storeu( complex<float>* address, const simd_cfloat_t& value ) noexcept
 {
    BLAZE_STATIC_ASSERT( sizeof( complex<float> ) == 2UL*sizeof( float ) );
 
@@ -327,7 +327,7 @@ BLAZE_ALWAYS_INLINE void storeu( complex<float>* address, const simd_cfloat_t& v
 // This function stores a vector of 'complex<double>' values. In contrast to the according store
 // function, the given address is not required to be properly aligned.
 */
-BLAZE_ALWAYS_INLINE void storeu( complex<double>* address, const simd_cdouble_t& value )
+BLAZE_ALWAYS_INLINE void storeu( complex<double>* address, const simd_cdouble_t& value ) noexcept
 {
    BLAZE_STATIC_ASSERT( sizeof( complex<double> ) == 2UL*sizeof( double ) );
 

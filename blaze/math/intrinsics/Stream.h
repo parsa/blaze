@@ -71,7 +71,7 @@ namespace blaze {
 */
 template< typename T >  // Type of the integral value
 BLAZE_ALWAYS_INLINE typename EnableIf< And< IsIntegral<T>, HasSize<T,2UL> > >::Type
-   stream( T* address, const simd_int16_t& value )
+   stream( T* address, const simd_int16_t& value ) noexcept
 {
    BLAZE_INTERNAL_ASSERT( checkAlignment( address ), "Invalid alignment detected" );
 
@@ -96,7 +96,7 @@ BLAZE_ALWAYS_INLINE typename EnableIf< And< IsIntegral<T>, HasSize<T,2UL> > >::T
 */
 template< typename T >  // Type of the integral value
 BLAZE_ALWAYS_INLINE typename EnableIf< And< IsIntegral<T>, HasSize<T,4UL> > >::Type
-   stream( T* address, const simd_int32_t& value )
+   stream( T* address, const simd_int32_t& value ) noexcept
 {
    BLAZE_INTERNAL_ASSERT( checkAlignment( address ), "Invalid alignment detected" );
 
@@ -123,7 +123,7 @@ BLAZE_ALWAYS_INLINE typename EnableIf< And< IsIntegral<T>, HasSize<T,4UL> > >::T
 */
 template< typename T >  // Type of the integral value
 BLAZE_ALWAYS_INLINE typename EnableIf< And< IsIntegral<T>, HasSize<T,8UL> > >::Type
-   stream( T* address, const simd_int64_t& value )
+   stream( T* address, const simd_int64_t& value ) noexcept
 {
    BLAZE_INTERNAL_ASSERT( checkAlignment( address ), "Invalid alignment detected" );
 
@@ -148,7 +148,7 @@ BLAZE_ALWAYS_INLINE typename EnableIf< And< IsIntegral<T>, HasSize<T,8UL> > >::T
 // \param value The 'float' vector to be streamed.
 // \return void
 */
-BLAZE_ALWAYS_INLINE void stream( float* address, const simd_float_t& value )
+BLAZE_ALWAYS_INLINE void stream( float* address, const simd_float_t& value ) noexcept
 {
    BLAZE_INTERNAL_ASSERT( checkAlignment( address ), "Invalid alignment detected" );
 
@@ -173,7 +173,7 @@ BLAZE_ALWAYS_INLINE void stream( float* address, const simd_float_t& value )
 // \param value The 'double' vector to be streamed.
 // \return void
 */
-BLAZE_ALWAYS_INLINE void stream( double* address, const simd_double_t& value )
+BLAZE_ALWAYS_INLINE void stream( double* address, const simd_double_t& value ) noexcept
 {
    BLAZE_INTERNAL_ASSERT( checkAlignment( address ), "Invalid alignment detected" );
 
@@ -200,7 +200,7 @@ BLAZE_ALWAYS_INLINE void stream( double* address, const simd_double_t& value )
 */
 template< typename T >  // Type of the integral value
 BLAZE_ALWAYS_INLINE typename EnableIf< And< IsIntegral<T>, HasSize<T,2UL> > >::Type
-   stream( complex<T>* address, const simd_cint16_t& value )
+   stream( complex<T>* address, const simd_cint16_t& value ) noexcept
 {
    BLAZE_STATIC_ASSERT( sizeof( complex<T> ) == 2UL*sizeof( T ) );
    BLAZE_INTERNAL_ASSERT( checkAlignment( address ), "Invalid alignment detected" );
@@ -226,7 +226,7 @@ BLAZE_ALWAYS_INLINE typename EnableIf< And< IsIntegral<T>, HasSize<T,2UL> > >::T
 */
 template< typename T >  // Type of the integral value
 BLAZE_ALWAYS_INLINE typename EnableIf< And< IsIntegral<T>, HasSize<T,4UL> > >::Type
-   stream( complex<T>* address, const simd_cint32_t& value )
+   stream( complex<T>* address, const simd_cint32_t& value ) noexcept
 {
    BLAZE_STATIC_ASSERT( sizeof( complex<T> ) == 2UL*sizeof( T ) );
    BLAZE_INTERNAL_ASSERT( checkAlignment( address ), "Invalid alignment detected" );
@@ -254,7 +254,7 @@ BLAZE_ALWAYS_INLINE typename EnableIf< And< IsIntegral<T>, HasSize<T,4UL> > >::T
 */
 template< typename T >  // Type of the integral value
 BLAZE_ALWAYS_INLINE typename EnableIf< And< IsIntegral<T>, HasSize<T,8UL> > >::Type
-   stream( complex<T>* address, const simd_cint64_t& value )
+   stream( complex<T>* address, const simd_cint64_t& value ) noexcept
 {
    BLAZE_STATIC_ASSERT( sizeof( complex<T> ) == 2UL*sizeof( T ) );
    BLAZE_INTERNAL_ASSERT( checkAlignment( address ), "Invalid alignment detected" );
@@ -280,7 +280,7 @@ BLAZE_ALWAYS_INLINE typename EnableIf< And< IsIntegral<T>, HasSize<T,8UL> > >::T
 // \param value The 'complex<float>' vector to be streamed.
 // \return void
 */
-BLAZE_ALWAYS_INLINE void stream( complex<float>* address, const simd_cfloat_t& value )
+BLAZE_ALWAYS_INLINE void stream( complex<float>* address, const simd_cfloat_t& value ) noexcept
 {
    BLAZE_STATIC_ASSERT  ( sizeof( complex<float> ) == 2UL*sizeof( float ) );
    BLAZE_INTERNAL_ASSERT( checkAlignment( address ), "Invalid alignment detected" );
@@ -306,7 +306,7 @@ BLAZE_ALWAYS_INLINE void stream( complex<float>* address, const simd_cfloat_t& v
 // \param value The 'complex<double>' vector to be streamed.
 // \return void
 */
-BLAZE_ALWAYS_INLINE void stream( complex<double>* address, const simd_cdouble_t& value )
+BLAZE_ALWAYS_INLINE void stream( complex<double>* address, const simd_cdouble_t& value ) noexcept
 {
    BLAZE_STATIC_ASSERT  ( sizeof( complex<double> ) == 2UL*sizeof( double ) );
    BLAZE_INTERNAL_ASSERT( checkAlignment( address ), "Invalid alignment detected" );

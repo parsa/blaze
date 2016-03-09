@@ -60,7 +60,7 @@ namespace blaze {
 // \param value The value to be set to zero.
 // \return void
 */
-BLAZE_ALWAYS_INLINE void setzero( simd_int8_t& value )
+BLAZE_ALWAYS_INLINE void setzero( simd_int8_t& value ) noexcept
 {
 #if BLAZE_AVX2_MODE
    value.value = _mm256_setzero_si256();
@@ -80,7 +80,7 @@ BLAZE_ALWAYS_INLINE void setzero( simd_int8_t& value )
 // \param value The value to be set to zero.
 // \return void
 */
-BLAZE_ALWAYS_INLINE void setzero( simd_int16_t& value )
+BLAZE_ALWAYS_INLINE void setzero( simd_int16_t& value ) noexcept
 {
 #if BLAZE_AVX2_MODE
    value.value = _mm256_setzero_si256();
@@ -100,7 +100,7 @@ BLAZE_ALWAYS_INLINE void setzero( simd_int16_t& value )
 // \param value The value to be set to zero.
 // \return void
 */
-BLAZE_ALWAYS_INLINE void setzero( simd_int32_t& value )
+BLAZE_ALWAYS_INLINE void setzero( simd_int32_t& value ) noexcept
 {
 #if BLAZE_MIC_MODE
    value.value = _mm512_setzero_epi32();
@@ -122,7 +122,7 @@ BLAZE_ALWAYS_INLINE void setzero( simd_int32_t& value )
 // \param value The value to be set to zero.
 // \return void
 */
-BLAZE_ALWAYS_INLINE void setzero( simd_int64_t& value )
+BLAZE_ALWAYS_INLINE void setzero( simd_int64_t& value ) noexcept
 {
 #if BLAZE_MIC_MODE
    value.value = _mm512_setzero_epi32();
@@ -144,7 +144,7 @@ BLAZE_ALWAYS_INLINE void setzero( simd_int64_t& value )
 // \param value The value to be set to zero.
 // \return void
 */
-BLAZE_ALWAYS_INLINE void setzero( simd_float_t& value )
+BLAZE_ALWAYS_INLINE void setzero( simd_float_t& value ) noexcept
 {
 #if BLAZE_MIC_MODE
    value.value = _mm512_setzero_ps();
@@ -166,7 +166,7 @@ BLAZE_ALWAYS_INLINE void setzero( simd_float_t& value )
 // \param value The value to be set to zero.
 // \return void
 */
-BLAZE_ALWAYS_INLINE void setzero( simd_double_t& value )
+BLAZE_ALWAYS_INLINE void setzero( simd_double_t& value ) noexcept
 {
 #if BLAZE_MIC_MODE
    value.value = _mm512_setzero_pd();
@@ -188,7 +188,7 @@ BLAZE_ALWAYS_INLINE void setzero( simd_double_t& value )
 // \param value The value to be set to zero.
 // \return void
 */
-BLAZE_ALWAYS_INLINE void setzero( simd_cfloat_t& value )
+BLAZE_ALWAYS_INLINE void setzero( simd_cfloat_t& value ) noexcept
 {
 #if BLAZE_MIC_MODE
    value.value = _mm512_setzero_ps();
@@ -210,7 +210,7 @@ BLAZE_ALWAYS_INLINE void setzero( simd_cfloat_t& value )
 // \param value The value to be set to zero.
 // \return void
 */
-BLAZE_ALWAYS_INLINE void setzero( simd_cdouble_t& value )
+BLAZE_ALWAYS_INLINE void setzero( simd_cdouble_t& value ) noexcept
 {
 #if BLAZE_MIC_MODE
    value.value = _mm512_setzero_pd();
