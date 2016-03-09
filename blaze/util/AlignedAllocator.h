@@ -1,7 +1,7 @@
 //=================================================================================================
 /*!
-//  \file blaze/util/AlignedStorage.h
-//  \brief Header file for the AlignedStorage implementation
+//  \file blaze/util/AlignedAllocator.h
+//  \brief Header file for the AlignedAllocator implementation
 //
 //  Copyright (C) 2013 Klaus Iglberger - All Rights Reserved
 //
