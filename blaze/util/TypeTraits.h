@@ -64,6 +64,7 @@
 #include <blaze/util/typetraits/IsComplexDouble.h>
 #include <blaze/util/typetraits/IsComplexFloat.h>
 #include <blaze/util/typetraits/IsConst.h>
+#include <blaze/util/typetraits/IsConstructible.h>
 #include <blaze/util/typetraits/IsConvertible.h>
 #include <blaze/util/typetraits/IsDouble.h>
 #include <blaze/util/typetraits/IsEmpty.h>

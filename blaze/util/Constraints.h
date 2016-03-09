@@ -51,6 +51,7 @@
 #include <blaze/util/constraints/ComplexDouble.h>
 #include <blaze/util/constraints/ComplexFloat.h>
 #include <blaze/util/constraints/Const.h>
+#include <blaze/util/constraints/Constructible.h>
 #include <blaze/util/constraints/Convertible.h>
 #include <blaze/util/constraints/DerivedFrom.h>
 #include <blaze/util/constraints/Double.h>
