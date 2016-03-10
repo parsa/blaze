@@ -42,6 +42,7 @@
 
 #include <blaze/util/constraints/Arithmetic.h>
 #include <blaze/util/constraints/Array.h>
+#include <blaze/util/constraints/Assignable.h>
 #include <blaze/util/constraints/BaseOf.h>
 #include <blaze/util/constraints/Boolean.h>
 #include <blaze/util/constraints/Builtin.h>

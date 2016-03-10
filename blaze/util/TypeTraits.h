@@ -55,6 +55,7 @@
 #include <blaze/util/typetraits/HaveSameSize.h>
 #include <blaze/util/typetraits/IsArithmetic.h>
 #include <blaze/util/typetraits/IsArray.h>
+#include <blaze/util/typetraits/IsAssignable.h>
 #include <blaze/util/typetraits/IsBaseOf.h>
 #include <blaze/util/typetraits/IsBoolean.h>
 #include <blaze/util/typetraits/IsBuiltin.h>
