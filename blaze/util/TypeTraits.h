@@ -67,6 +67,7 @@
 #include <blaze/util/typetraits/IsConst.h>
 #include <blaze/util/typetraits/IsConstructible.h>
 #include <blaze/util/typetraits/IsConvertible.h>
+#include <blaze/util/typetraits/IsDestructible.h>
 #include <blaze/util/typetraits/IsDouble.h>
 #include <blaze/util/typetraits/IsEmpty.h>
 #include <blaze/util/typetraits/IsFloat.h>
