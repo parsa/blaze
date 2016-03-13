@@ -147,11 +147,11 @@ void AlignedPaddedTest::testConstructors()
 
       // Trying to construct a custom matrix with invalid array of elements
       try {
-         MT mat( NULL, 0UL, 0UL, 0UL );
+         MT mat( nullptr, 0UL, 0UL, 0UL );
 
          std::ostringstream oss;
          oss << " Test: " << test_ << "\n"
-             << " Error: Constructing a custom matrix with a NULL pointer succeeded\n";
+             << " Error: Constructing a custom matrix with a nullptr succeeded\n";
          throw std::runtime_error( oss.str() );
       }
       catch( std::invalid_argument& ) {}
@@ -225,11 +225,11 @@ void AlignedPaddedTest::testConstructors()
 
       // Trying to construct a custom matrix with invalid array of elements
       try {
-         MT mat( NULL, 0UL, 0UL, 0UL, blaze::Deallocate() );
+         MT mat( nullptr, 0UL, 0UL, 0UL, blaze::Deallocate() );
 
          std::ostringstream oss;
          oss << " Test: " << test_ << "\n"
-             << " Error: Constructing a custom matrix with a NULL pointer succeeded\n";
+             << " Error: Constructing a custom matrix with a nullptr succeeded\n";
          throw std::runtime_error( oss.str() );
       }
       catch( std::invalid_argument& ) {}
@@ -464,11 +464,11 @@ void AlignedPaddedTest::testConstructors()
 
       // Trying to construct a custom matrix with invalid array of elements
       try {
-         OMT mat( NULL, 0UL, 0UL, 0UL );
+         OMT mat( nullptr, 0UL, 0UL, 0UL );
 
          std::ostringstream oss;
          oss << " Test: " << test_ << "\n"
-             << " Error: Constructing a custom matrix with a NULL pointer succeeded\n";
+             << " Error: Constructing a custom matrix with a nullptr succeeded\n";
          throw std::runtime_error( oss.str() );
       }
       catch( std::invalid_argument& ) {}
@@ -542,11 +542,11 @@ void AlignedPaddedTest::testConstructors()
 
       // Trying to construct a custom matrix with invalid array of elements
       try {
-         OMT mat( NULL, 0UL, 0UL, 0UL, blaze::Deallocate() );
+         OMT mat( nullptr, 0UL, 0UL, 0UL, blaze::Deallocate() );
 
          std::ostringstream oss;
          oss << " Test: " << test_ << "\n"
-             << " Error: Constructing a custom matrix with a NULL pointer succeeded\n";
+             << " Error: Constructing a custom matrix with a nullptr succeeded\n";
          throw std::runtime_error( oss.str() );
       }
       catch( std::invalid_argument& ) {}

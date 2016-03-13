@@ -141,11 +141,11 @@ void AlignedPaddedTest::testConstructors()
 
       // Trying to construct a custom vector with invalid array of elements
       try {
-         VT vec( NULL, 0UL, 0UL );
+         VT vec( nullptr, 0UL, 0UL );
 
          std::ostringstream oss;
          oss << " Test: " << test_ << "\n"
-             << " Error: Constructing a custom vector with a NULL pointer succeeded\n";
+             << " Error: Constructing a custom vector with a nullptr succeeded\n";
          throw std::runtime_error( oss.str() );
       }
       catch( std::invalid_argument& ) {}
@@ -203,11 +203,11 @@ void AlignedPaddedTest::testConstructors()
 
       // Trying to construct a custom vector with invalid array of elements
       try {
-         VT vec( NULL, 0UL, 0UL, blaze::Deallocate() );
+         VT vec( nullptr, 0UL, 0UL, blaze::Deallocate() );
 
          std::ostringstream oss;
          oss << " Test: " << test_ << "\n"
-             << " Error: Constructing a custom vector with a NULL pointer succeeded\n";
+             << " Error: Constructing a custom vector with a nullptr succeeded\n";
          throw std::runtime_error( oss.str() );
       }
       catch( std::invalid_argument& ) {}

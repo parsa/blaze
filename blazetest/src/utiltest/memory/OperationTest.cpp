@@ -43,7 +43,6 @@
 #include <stdexcept>
 #include <blaze/math/StaticVector.h>
 #include <blaze/util/Memory.h>
-#include <blaze/util/Null.h>
 #include <blaze/util/typetraits/AlignmentOf.h>
 #include <blazetest/utiltest/memory/OperationTest.h>
 #include <blazetest/utiltest/AlignedResource.h>
@@ -271,17 +270,17 @@ void OperationTest::testClassTypes()
 
 
 //*************************************************************************************************
-/*!\brief Test of a deallocation of a NULL pointer.
+/*!\brief Test of a deallocation of a \c nullptr.
 //
 // \return void
 // \exception std::runtime_error Error detected.
 //
-// This function performs a test of the deallocation using a NULL pointer. In case an error is
+// This function performs a test of the deallocation using a \c nullptr. In case an error is
 // detected, a \a std::runtime_error exception is thrown.
 */
 void OperationTest::testNullPointer()
 {
-   const int* const array( NULL );
+   const int* const array( nullptr );
 
    blaze::deallocate( array );
 }
