@@ -76,7 +76,7 @@ namespace blaze {
 // other cases the function returns \a false.
 */
 template< typename T >
-BLAZE_ALWAYS_INLINE typename EnableIf< IsNumeric<T>, bool >::Type isnan( T a )
+BLAZE_ALWAYS_INLINE typename EnableIf< IsNumeric<T>, bool >::Type isnan( T a ) noexcept
 {
    return a != a;
 }

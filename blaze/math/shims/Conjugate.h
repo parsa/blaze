@@ -78,8 +78,8 @@ namespace blaze {
 //       https://en.wikipedia.org/wiki/Complex_conjugate
 */
 template< typename T >
-BLAZE_ALWAYS_INLINE typename EnableIf< IsBuiltin<T>, T >::Type
-   conj( T a )
+BLAZE_ALWAYS_INLINE constexpr typename EnableIf< IsBuiltin<T>, T >::Type
+   conj( T a ) noexcept
 {
    return a;
 }
@@ -117,7 +117,7 @@ BLAZE_ALWAYS_INLINE typename EnableIf< IsBuiltin<T>, T >::Type
 //       https://en.wikipedia.org/wiki/Complex_conjugate
 */
 template< typename T >
-BLAZE_ALWAYS_INLINE void conjugate( T& a )
+BLAZE_ALWAYS_INLINE void conjugate( T& a ) noexcept( IsNumeric<T>::value )
 {
    a = conj( a );
 }
@@ -166,7 +166,7 @@ BLAZE_ALWAYS_INLINE typename DisableIf< IsNumeric<T> >::Type
 */
 template< typename T >
 BLAZE_ALWAYS_INLINE typename EnableIf< IsNumeric<T> >::Type
-   cswap_backend( T& a, T& b )
+   cswap_backend( T& a, T& b ) noexcept
 {
    const T tmp( a );
    a = conj( b );
@@ -194,7 +194,7 @@ BLAZE_ALWAYS_INLINE typename EnableIf< IsNumeric<T> >::Type
    \endcode
 */
 template< typename T >
-BLAZE_ALWAYS_INLINE void cswap( T& a, T& b )
+BLAZE_ALWAYS_INLINE void cswap( T& a, T& b ) noexcept( IsNumeric<T>::value )
 {
    cswap_backend( a, b );
 }

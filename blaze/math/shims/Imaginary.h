@@ -80,8 +80,8 @@ namespace blaze {
    \endcode
 */
 template< typename T >
-BLAZE_ALWAYS_INLINE typename EnableIf< IsBuiltin<T>, T >::Type
-   imag( T a )
+BLAZE_ALWAYS_INLINE constexpr typename EnableIf< IsBuiltin<T>, T >::Type
+   imag( T a ) noexcept
 {
    UNUSED_PARAMETER( a );
 

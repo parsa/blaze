@@ -66,7 +66,7 @@ namespace blaze {
 //
 // \note: A division by zero is only checked by an user assert.
 */
-BLAZE_ALWAYS_INLINE float inv( float a )
+BLAZE_ALWAYS_INLINE float inv( float a ) noexcept
 {
    BLAZE_USER_ASSERT( a != 0.0F, "Division by zero detected" );
    return ( 1.0F / a );
@@ -86,7 +86,7 @@ BLAZE_ALWAYS_INLINE float inv( float a )
 //
 // \note: A division by zero is only checked by an user assert.
 */
-BLAZE_ALWAYS_INLINE double inv( double a )
+BLAZE_ALWAYS_INLINE double inv( double a ) noexcept
 {
    BLAZE_USER_ASSERT( a != 0.0, "Division by zero detected" );
    return ( 1.0 / a );
@@ -106,7 +106,7 @@ BLAZE_ALWAYS_INLINE double inv( double a )
 //
 // \note: A division by zero is only checked by an user assert.
 */
-BLAZE_ALWAYS_INLINE long double inv( long double a )
+BLAZE_ALWAYS_INLINE long double inv( long double a ) noexcept
 {
    BLAZE_USER_ASSERT( a != 0.0L, "Division by zero detected" );
    return ( 1.0L / a );
@@ -127,7 +127,7 @@ BLAZE_ALWAYS_INLINE long double inv( long double a )
 //
 // \note: A division by zero is only checked by an user assert.
 */
-BLAZE_ALWAYS_INLINE complex<float> inv( const complex<float>& a )
+BLAZE_ALWAYS_INLINE complex<float> inv( const complex<float>& a ) noexcept
 {
    const float abs( sq( real(a) ) + sq( imag(a) ) );
    BLAZE_USER_ASSERT( abs != 0.0F, "Division by zero detected" );
@@ -151,7 +151,7 @@ BLAZE_ALWAYS_INLINE complex<float> inv( const complex<float>& a )
 //
 // \note: A division by zero is only checked by an user assert.
 */
-BLAZE_ALWAYS_INLINE complex<double> inv( const complex<double>& a )
+BLAZE_ALWAYS_INLINE complex<double> inv( const complex<double>& a ) noexcept
 {
    const double abs( sq( real(a) ) + sq( imag(a) ) );
    BLAZE_USER_ASSERT( abs != 0.0, "Division by zero detected" );
@@ -175,7 +175,7 @@ BLAZE_ALWAYS_INLINE complex<double> inv( const complex<double>& a )
 //
 // \note: A division by zero is only checked by an user assert.
 */
-BLAZE_ALWAYS_INLINE complex<long double> inv( const complex<long double>& a )
+BLAZE_ALWAYS_INLINE complex<long double> inv( const complex<long double>& a ) noexcept
 {
    const long double abs( sq( real(a) ) + sq( imag(a) ) );
    BLAZE_USER_ASSERT( abs != 0.0L, "Division by zero detected" );
@@ -207,7 +207,7 @@ BLAZE_ALWAYS_INLINE complex<long double> inv( const complex<long double>& a )
 //
 // \note: A division by zero is only checked by an user assert.
 */
-BLAZE_ALWAYS_INLINE void invert( float& a )
+BLAZE_ALWAYS_INLINE void invert( float& a ) noexcept
 {
    a = inv( a );
 }
@@ -227,7 +227,7 @@ BLAZE_ALWAYS_INLINE void invert( float& a )
 //
 // \note: A division by zero is only checked by an user assert.
 */
-BLAZE_ALWAYS_INLINE void invert( double& a )
+BLAZE_ALWAYS_INLINE void invert( double& a ) noexcept
 {
    a = inv( a );
 }
@@ -247,7 +247,7 @@ BLAZE_ALWAYS_INLINE void invert( double& a )
 //
 // \note: A division by zero is only checked by an user assert.
 */
-BLAZE_ALWAYS_INLINE void invert( long double& a )
+BLAZE_ALWAYS_INLINE void invert( long double& a ) noexcept
 {
    a = inv( a );
 }
@@ -267,7 +267,7 @@ BLAZE_ALWAYS_INLINE void invert( long double& a )
 //
 // \note: A division by zero is only checked by an user assert.
 */
-BLAZE_ALWAYS_INLINE void invert( complex<float>& a )
+BLAZE_ALWAYS_INLINE void invert( complex<float>& a ) noexcept
 {
    a = inv( a );
 }
@@ -287,7 +287,7 @@ BLAZE_ALWAYS_INLINE void invert( complex<float>& a )
 //
 // \note: A division by zero is only checked by an user assert.
 */
-BLAZE_ALWAYS_INLINE void invert( complex<double>& a )
+BLAZE_ALWAYS_INLINE void invert( complex<double>& a ) noexcept
 {
    a = inv( a );
 }
@@ -307,7 +307,7 @@ BLAZE_ALWAYS_INLINE void invert( complex<double>& a )
 //
 // \note: A division by zero is only checked by an user assert.
 */
-BLAZE_ALWAYS_INLINE void invert( complex<long double>& a )
+BLAZE_ALWAYS_INLINE void invert( complex<long double>& a ) noexcept
 {
    a = inv( a );
 }

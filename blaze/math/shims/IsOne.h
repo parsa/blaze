@@ -96,7 +96,7 @@ BLAZE_ALWAYS_INLINE typename EnableIf< IsNumeric<Type>, bool >::Type
 */
 template< typename Type >
 BLAZE_ALWAYS_INLINE typename DisableIf< IsNumeric<Type>, bool >::Type
-   isOne( const Type& v )
+   isOne( const Type& v ) noexcept
 {
    UNUSED_PARAMETER( v );
 

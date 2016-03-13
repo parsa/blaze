@@ -43,6 +43,8 @@
 #include <cmath>
 #include <blaze/math/Accuracy.h>
 #include <blaze/system/Inline.h>
+#include <blaze/util/Complex.h>
+#include <blaze/util/typetraits/IsBuiltin.h>
 
 
 namespace blaze {
@@ -74,7 +76,7 @@ namespace blaze {
    \endcode
 */
 template< typename Type >
-BLAZE_ALWAYS_INLINE bool isDefault( const Type& v )
+BLAZE_ALWAYS_INLINE bool isDefault( const Type& v ) noexcept( IsBuiltin<Type>::value )
 {
    return v == Type();
 }
@@ -93,7 +95,7 @@ BLAZE_ALWAYS_INLINE bool isDefault( const Type& v )
 // value is exactly zero or within an epsilon range to zero. In case the value is zero or close
 // to zero the function returns \a true, otherwise it returns \a false.
 */
-BLAZE_ALWAYS_INLINE bool isDefault( float v )
+BLAZE_ALWAYS_INLINE bool isDefault( float v ) noexcept
 {
    return std::fabs( v ) <= accuracy;
 }
@@ -113,7 +115,7 @@ BLAZE_ALWAYS_INLINE bool isDefault( float v )
 // value is exactly zero or within an epsilon range to zero. In case the value is zero or close
 // to zero the function returns \a true, otherwise it returns \a false.
 */
-BLAZE_ALWAYS_INLINE bool isDefault( double v )
+BLAZE_ALWAYS_INLINE bool isDefault( double v ) noexcept
 {
    return std::fabs( v ) <= accuracy;
 }
@@ -133,7 +135,7 @@ BLAZE_ALWAYS_INLINE bool isDefault( double v )
 // point value is exactly zero or within an epsilon range to zero. In case the value is zero or
 // close to zero the function returns \a true, otherwise it returns \a false.
 */
-BLAZE_ALWAYS_INLINE bool isDefault( long double v )
+BLAZE_ALWAYS_INLINE bool isDefault( long double v ) noexcept
 {
    return std::fabs( v ) <= accuracy;
 }
@@ -154,7 +156,7 @@ BLAZE_ALWAYS_INLINE bool isDefault( long double v )
 // parts are zero or close to zero the function returns \a true, otherwise it returns \a false.
 */
 template< typename T >
-BLAZE_ALWAYS_INLINE bool isDefault( const complex<T>& v )
+BLAZE_ALWAYS_INLINE bool isDefault( const complex<T>& v ) noexcept( IsBuiltin<T>::value )
 {
    return isDefault( real( v ) ) && isDefault( imag( v ) );
 }
