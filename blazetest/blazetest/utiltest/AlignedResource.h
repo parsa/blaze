@@ -40,7 +40,6 @@
 // Includes
 //*************************************************************************************************
 
-#include <blaze/system/Alignment.h>
 #include <blaze/util/StaticAssert.h>
 #include <blaze/util/typetraits/AlignmentOf.h>
 #include <blazetest/utiltest/InstanceCounter.h>
@@ -63,7 +62,7 @@ namespace utiltest {
 // counted via the InstanceCounter class and guaranteed to be 64-bit aligned. Additionally, it
 // provides a data member that is guaranteed to be initialized to 7 via the default constructor.
 */
-class BLAZE_ALIGN( 64UL ) AlignedResource : public InstanceCounter<AlignedResource>
+class alignas( 64UL ) AlignedResource : public InstanceCounter<AlignedResource>
 {
  public:
    //**Constructors********************************************************************************
