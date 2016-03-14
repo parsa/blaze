@@ -41,13 +41,16 @@
 //*************************************************************************************************
 
 #include <cmath>
-#include <blaze/math/traits/MathTrait.h>
 #include <blaze/system/Inline.h>
 #include <blaze/util/constraints/Builtin.h>
-#include <blaze/util/constraints/FloatingPoint.h>
 #include <blaze/util/constraints/Integral.h>
+#include <blaze/util/mpl/And.h>
 #include <blaze/util/Types.h>
+#include <blaze/util/typetraits/All.h>
+#include <blaze/util/typetraits/CommonType.h>
+#include <blaze/util/typetraits/IsBuiltin.h>
 #include <blaze/util/typetraits/IsFloatingPoint.h>
+#include <blaze/util/typetraits/IsNumeric.h>
 #include <blaze/util/typetraits/IsSigned.h>
 
 
@@ -63,35 +66,36 @@ namespace blaze {
 /*!\name Mathematical utility functions */
 //@{
 template< typename T >
-inline int sign( T a );
+inline constexpr int sign( T a ) noexcept;
 
 template< typename T >
-inline size_t digits( T a );
+inline size_t digits( T a ) noexcept;
 
 template< typename T1, typename T2 >
-BLAZE_ALWAYS_INLINE const typename MathTrait<T1,T2>::HighType
-   min( const T1& a, const T2& b );
+BLAZE_ALWAYS_INLINE constexpr typename CommonType<T1,T2>::Type
+   min( const T1& a, const T2& b ) noexcept( All<IsNumeric,T1,T2>::value );
 
-template< typename T1, typename T2, typename T3 >
-BLAZE_ALWAYS_INLINE const typename MathTrait< typename MathTrait<T1,T2>::HighType, T3 >::HighType
-   min( const T1& a, const T2& b, const T3& c );
+template< typename T1, typename T2, typename... Ts >
+BLAZE_ALWAYS_INLINE constexpr typename CommonType<T1,T2,Ts...>::Type
+   min( const T1& a, const T2& b, const Ts&... args ) noexcept( All<IsNumeric,T1,T2,Ts...>::value );
 
 template< typename T1, typename T2 >
-BLAZE_ALWAYS_INLINE const typename MathTrait<T1,T2>::HighType
-   max( const T1& a, const T2& b );
+BLAZE_ALWAYS_INLINE constexpr typename CommonType<T1,T2>::Type
+   max( const T1& a, const T2& b ) noexcept( All<IsNumeric,T1,T2>::value );
 
-template< typename T1, typename T2, typename T3 >
-BLAZE_ALWAYS_INLINE const typename MathTrait< typename MathTrait<T1,T2>::HighType, T3 >::HighType
-   max( const T1& a, const T2& b, const T3& c );
+template< typename T1, typename T2, typename... Ts >
+BLAZE_ALWAYS_INLINE constexpr typename CommonType<T1,T2,Ts...>::Type
+   max( const T1& a, const T2& b, const Ts&... args ) noexcept( All<IsNumeric,T1,T2,Ts...>::value );
 
 template< typename T >
-BLAZE_ALWAYS_INLINE T round( T a );
+BLAZE_ALWAYS_INLINE T round( T a ) noexcept;
 
 template< typename T >
-BLAZE_ALWAYS_INLINE T nextMultiple( T value, T factor );
+BLAZE_ALWAYS_INLINE constexpr T nextMultiple( T value, T factor ) noexcept;
 
 template< typename T1, typename T2 >
-BLAZE_ALWAYS_INLINE bool lessThan( T1 a, T2 b );
+BLAZE_ALWAYS_INLINE constexpr bool lessThan( T1 a, T2 b )
+   noexcept( IsBuiltin< typename CommonType<T1,T2>::Type >::value );
 //@}
 //*************************************************************************************************
 
@@ -107,14 +111,13 @@ BLAZE_ALWAYS_INLINE bool lessThan( T1 a, T2 b );
 // type will result in a compile time error.
 */
 template< typename T >
-inline int sign( T a )
+inline constexpr int sign( T a ) noexcept
 {
    BLAZE_CONSTRAINT_MUST_BE_BUILTIN_TYPE( T );
 
-   if( IsSigned<T>::value || IsFloatingPoint<T>::value )
-      return ( T(0) < a ) - ( a < T(0) );
-   else
-      return ( T(0) < a );
+   return ( IsSigned<T>::value || IsFloatingPoint<T>::value )
+          ?( T(0) < a ) - ( a < T(0) )
+          :( T(0) < a );
 }
 //*************************************************************************************************
 
@@ -138,7 +141,7 @@ inline int sign( T a )
 // other type will result in a compile time error.
 */
 template< typename T >
-inline size_t digits( T a )
+inline size_t digits( T a ) noexcept
 {
    BLAZE_CONSTRAINT_MUST_BE_INTEGRAL_TYPE( T );
 
@@ -155,113 +158,87 @@ inline size_t digits( T a )
 
 
 //*************************************************************************************************
-/*!\brief Minimum function for two arguments.
+/*!\brief Minimum function for two data values.
 // \ingroup math
 //
-// \param a First value.
-// \param b Second value.
+// \param a The first value.
+// \param b The second value.
 // \return The minimum of the two values.
 //
-// This function returns the minimum of the two given data values. The return type of the
-// function is determined by the data types of the given arguments (for further detail see
-// the MathTrait class description).
+// This function returns the minimum of the two given data values. The return type of the function
+// is determined by the data types of the given arguments (for further detail see the CommonType
+// class description).
 */
 template< typename T1, typename T2 >
-BLAZE_ALWAYS_INLINE const typename MathTrait<T1,T2>::HighType min( const T1& a, const T2& b )
+BLAZE_ALWAYS_INLINE constexpr typename CommonType<T1,T2>::Type
+   min( const T1& a, const T2& b ) noexcept( All<IsNumeric,T1,T2>::value )
 {
-   // The return type of the function is only a copy of the one of the arguments for two reasons:
-   //  - in case the data types T1 and T2 are equal, a reference return type could result in a
-   //    bug if combined with literals
-   //  - in case the two data types are unequal, the result of the comparison could be converted
-   //    to the more significant data type, which results in a local temporary value
-   // The copy operation might cause a performance decrease for class types, which is probably
-   // avoided if the function is inlined.
    return ( a < b )?( a ):( b );
 }
 //*************************************************************************************************
 
 
 //*************************************************************************************************
-/*!\brief Minimum function for three arguments.
+/*!\brief Minimum function for at least three data values.
 // \ingroup math
 //
-// \param a First value.
-// \param b Second value.
-// \param c Third value
-// \return The minimum of the three values.
+// \param a The first value.
+// \param b The second value.
+// \param args The pack of additional values.
+// \return The minimum of the given values.
 //
-// This function returns the minimum of the three given data values. The return type of the
-// function is determined by the data types of the given arguments (for further detail see
-// the MathTrait class description).
+// This function returns the minimum of the given data values. The return type of the function
+// is determined by the data types of the given arguments (for further detail see the CommonType
+// class description).
 */
-template< typename T1, typename T2, typename T3 >
-BLAZE_ALWAYS_INLINE const typename MathTrait< typename MathTrait<T1,T2>::HighType, T3 >::HighType
-   min( const T1& a, const T2& b, const T3& c )
+template< typename T1, typename T2, typename... Ts >
+BLAZE_ALWAYS_INLINE constexpr typename CommonType<T1,T2,Ts...>::Type
+   min( const T1& a, const T2& b, const Ts&... args ) noexcept( All<IsNumeric,T1,T2,Ts...>::value )
 {
-   // The return type of the function is only a copy of the one of the arguments for two reasons:
-   //  - in case the data types T1, T2, and T3 are equal, a reference return type could result in
-   //    a bug if combined with literals
-   //  - in case the three data types are unequal, the result of the comparison could be converted
-   //    to the more significant data type, which results in a local temporary value
-   // The copy operation might cause a performance decrease for class types, which is probably
-   // avoided if the function is inlined.
-   return ( a < b )?( ( a < c )?( a ):( c ) ):( ( b < c )?( b ):( c ) );
+   return min( a, min( b, args... ) );
 }
 //*************************************************************************************************
 
 
 //*************************************************************************************************
-/*!\brief Maximum function for two arguments.
+/*!\brief Maximum function for two data values.
 // \ingroup math
 //
-// \param a First value.
-// \param b Second value.
+// \param a The first value.
+// \param b The second value.
 // \return The maximum of the two values.
 //
-// This function returns the maximum of the two given data values. The return type of the
-// function is determined by the data types of the given arguments (for further detail see
-// the MathTrait class description).
+// This function returns the maximum of the two given data values. The return type of the function
+// is determined by the data types of the given arguments (for further detail see the CommonType
+// class description).
 */
 template< typename T1, typename T2 >
-BLAZE_ALWAYS_INLINE const typename MathTrait<T1,T2>::HighType max( const T1& a, const T2& b )
+BLAZE_ALWAYS_INLINE constexpr typename CommonType<T1,T2>::Type
+   max( const T1& a, const T2& b ) noexcept( All<IsNumeric,T1,T2>::value )
 {
-   // The return type of the function is only a copy of the one of the arguments for two reasons:
-   //  - in case the data types T1 and T2 are equal, a reference return type could result in a
-   //    bug if combined with literals
-   //  - in case the two data types are unequal, the result of the comparison could be converted
-   //    to the more significant data type, which results in a local temporary value
-   // The copy operation might cause a performance decrease for class types, which is probably
-   // avoided if the function is inlined.
    return ( a < b )?( b ):( a );
 }
 //*************************************************************************************************
 
 
 //*************************************************************************************************
-/*!\brief Maximum function for three arguments.
+/*!\brief Maximum function for at least three data values.
 // \ingroup math
 //
-// \param a First value.
-// \param b Second value.
-// \param c Third value.
-// \return The maximum of the three values.
+// \param a The first value.
+// \param b The second value.
+// \param args The pack of additional values.
+// \return The maximum of the given values.
 //
-// This function returns the maximum of the three given data values. The return type of the
-// function is determined by the data types of the given arguments (for further detail see
-// the MathTrait class description).
+// This function returns the maximum of the given data values. The return type of the function
+// is determined by the data types of the given arguments (for further detail see the CommonType
+// class description).
 */
-template< typename T1, typename T2, typename T3 >
-BLAZE_ALWAYS_INLINE const typename MathTrait< typename MathTrait<T1,T2>::HighType, T3 >::HighType
-   max( const T1& a, const T2& b, const T3& c )
+template< typename T1, typename T2, typename... Ts >
+BLAZE_ALWAYS_INLINE constexpr typename CommonType<T1,T2,Ts...>::Type
+   max( const T1& a, const T2& b, const Ts&... args ) noexcept( All<IsNumeric,T1,T2,Ts...>::value )
 {
-   // The return type of the function is only a copy of the one of the arguments for two reasons:
-   //  - in case the data types T1, T2, and T3 are equal, a reference return type could result in
-   //    a bug if combined with literals
-   //  - in case the three data types are unequal, the result of the comparison could be converted
-   //    to the more significant data type, which results in a local temporary value
-   // The copy operation might cause a performance decrease for class types, which is probably
-   // avoided if the function is inlined.
-   return ( a < b )?( ( b < c )?( c ):( b ) ):( ( a < c )?( c ):( a ) );
+   return max( a, max( b, args... ) );
 }
 //*************************************************************************************************
 
@@ -279,7 +256,7 @@ BLAZE_ALWAYS_INLINE const typename MathTrait< typename MathTrait<T1,T2>::HighTyp
 // function for any other type will result in a compile time error.
 */
 template< typename T >
-BLAZE_ALWAYS_INLINE T round( T a )
+BLAZE_ALWAYS_INLINE T round( T a ) noexcept
 {
    BLAZE_CONSTRAINT_MUST_BE_INTEGRAL_TYPE( T );
    return a;
@@ -299,8 +276,7 @@ BLAZE_ALWAYS_INLINE T round( T a )
 // digit after the comma is smaller than five the value is rounded down. Otherwise it is
 // rounded up.
 */
-template<>
-BLAZE_ALWAYS_INLINE float round( float a )
+BLAZE_ALWAYS_INLINE float round( float a ) noexcept
 {
    return std::floor( a + 0.5F );
 }
@@ -320,8 +296,7 @@ BLAZE_ALWAYS_INLINE float round( float a )
 // digit after the comma is smaller than five the value is rounded down. Otherwise it is
 // rounded up.
 */
-template<>
-BLAZE_ALWAYS_INLINE double round<double>( double a )
+BLAZE_ALWAYS_INLINE double round( double a ) noexcept
 {
    return std::floor( a + 0.5 );
 }
@@ -341,8 +316,7 @@ BLAZE_ALWAYS_INLINE double round<double>( double a )
 // first digit after the comma is smaller than five the value is rounded down. Otherwise
 // it is rounded up.
 */
-template<>
-BLAZE_ALWAYS_INLINE long double round<long double>( long double a )
+BLAZE_ALWAYS_INLINE long double round( long double a ) noexcept
 {
    return std::floor( a + 0.5L );
 }
@@ -365,30 +339,31 @@ BLAZE_ALWAYS_INLINE long double round<long double>( long double a )
 // function with non-integral types results in a compilation error!
 */
 template< typename T >
-BLAZE_ALWAYS_INLINE T nextMultiple( T value, T factor )
+BLAZE_ALWAYS_INLINE constexpr T nextMultiple( T value, T factor ) noexcept
 {
    BLAZE_CONSTRAINT_MUST_BE_INTEGRAL_TYPE( T );
 
-   if( value > T(0) && factor > T(0) )
-      return value + ( factor - ( value % factor ) ) % factor;
-   else return T(0);
+   return ( value > T(0) && factor > T(0) )
+          ?( value + ( factor - ( value % factor ) ) % factor )
+          :( T(0) );
 }
 //*************************************************************************************************
 
 
 //*************************************************************************************************
 /*! \cond BLAZE_INTERNAL */
-/*!\brief Less-than comparison for integral data types.
+/*!\brief Default less-than comparison for any data type.
 // \ingroup math
 //
 // \param a First value.
 // \param b Second value.
 // \return \a true if the first value is smaller than the second, \a false if not.
 //
-// Less-than function for the comparison of two integral values.
+// Default implementation of a less-than comparison of two data values.
 */
 template< typename T >
-BLAZE_ALWAYS_INLINE bool lessThan_backend( T a, T b )
+BLAZE_ALWAYS_INLINE constexpr bool lessThan_backend( const T& a, const T& b )
+   noexcept( IsBuiltin<T>::value )
 {
    return a < b;
 }
@@ -410,8 +385,7 @@ BLAZE_ALWAYS_INLINE bool lessThan_backend( T a, T b )
 // be avoided. This functions offers the possibility to compare two floating-point values with
 // a certain accuracy margin.
 */
-template<>
-BLAZE_ALWAYS_INLINE bool lessThan_backend<float>( float a, float b )
+BLAZE_ALWAYS_INLINE constexpr bool lessThan_backend( float a, float b ) noexcept
 {
    return ( b - a ) > 1E-8F;
 }
@@ -433,8 +407,7 @@ BLAZE_ALWAYS_INLINE bool lessThan_backend<float>( float a, float b )
 // be avoided. This functions offers the possibility to compare two floating-point values with
 // a certain accuracy margin.
 */
-template<>
-BLAZE_ALWAYS_INLINE bool lessThan_backend<double>( double a, double b )
+BLAZE_ALWAYS_INLINE constexpr bool lessThan_backend( double a, double b ) noexcept
 {
    return ( b - a ) > 1E-8;
 }
@@ -456,8 +429,7 @@ BLAZE_ALWAYS_INLINE bool lessThan_backend<double>( double a, double b )
 // avoided. This functions offers the possibility to compare two floating-point values with a
 // certain accuracy margin.
 */
-template<>
-BLAZE_ALWAYS_INLINE bool lessThan_backend<long double>( long double a, long double b )
+BLAZE_ALWAYS_INLINE constexpr bool lessThan_backend( long double a, long double b ) noexcept
 {
    return ( b - a ) > 1E-10;
 }
@@ -478,10 +450,10 @@ BLAZE_ALWAYS_INLINE bool lessThan_backend<long double>( long double a, long doub
 // the limited machine accuracy into account.
 */
 template< typename T1, typename T2 >
-BLAZE_ALWAYS_INLINE bool lessThan( T1 a, T2 b )
+BLAZE_ALWAYS_INLINE constexpr bool lessThan( const T1& a, const T2& b )
+   noexcept( IsBuiltin< typename CommonType<T1,T2>::Type >::value )
 {
-   typedef typename MathTrait<T1,T2>::HighType  High;
-   return lessThan_backend<High>( a, b );
+   return lessThan_backend<typename CommonType<T1,T2>::Type>( a, b );
 }
 //*************************************************************************************************
 
