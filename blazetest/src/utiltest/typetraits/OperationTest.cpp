@@ -74,6 +74,7 @@ OperationTest::OperationTest()
    testAddPointer();
    testAddReference();
    testAddVolatile();
+   testAll();
    testCommonType();
    testDecay();
    testExtent();
@@ -241,6 +242,41 @@ void OperationTest::testAddVolatile()
    BLAZE_CONSTRAINT_MUST_BE_SAME_TYPE( AddVolatile<int&>::Type, int& );
    BLAZE_CONSTRAINT_MUST_BE_SAME_TYPE( AddVolatile<int volatile>::Type, int volatile );
    BLAZE_CONSTRAINT_MUST_BE_SAME_TYPE( AddVolatile<int const>::Type, int const volatile );
+}
+//*************************************************************************************************
+
+
+//*************************************************************************************************
+/*!\brief Test of the \c All type trait.
+//
+// \return void
+// \exception std::runtime_error Error detected.
+//
+// This function performs a compile time test of the \c All type trait. In case an error is
+// detected, a compilation error is created.
+*/
+void OperationTest::testAll()
+{
+   using blaze::All;
+   using blaze::IsCharacter;
+   using blaze::IsIntegral;
+   using blaze::IsPointer;
+
+   const bool value1( All<IsIntegral,int,short,long>::value );
+   const bool value2( All<IsIntegral,int,float,double >::value );
+
+   typedef All<IsPointer,int*,float*>::Type           T1;
+   typedef All<IsCharacter,char,signed char,wchar_t>  T2;
+   typedef All<IsPointer,int*,float&>::Type           T3;
+   typedef All<IsCharacter,char,signed int,wchar_t>   T4;
+
+   BLAZE_STATIC_ASSERT( value1 == true );
+   BLAZE_STATIC_ASSERT( value2 == false );
+
+   BLAZE_CONSTRAINT_MUST_BE_SAME_TYPE   ( T1, blaze::TrueType  );
+   BLAZE_CONSTRAINT_MUST_BE_DERIVED_FROM( T2, blaze::TrueType  );
+   BLAZE_CONSTRAINT_MUST_BE_SAME_TYPE   ( T3, blaze::FalseType );
+   BLAZE_CONSTRAINT_MUST_BE_DERIVED_FROM( T4, blaze::FalseType );
 }
 //*************************************************************************************************
 
