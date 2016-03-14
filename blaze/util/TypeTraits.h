@@ -46,6 +46,7 @@
 #include <blaze/util/typetraits/AddReference.h>
 #include <blaze/util/typetraits/AddVolatile.h>
 #include <blaze/util/typetraits/AlignmentOf.h>
+#include <blaze/util/typetraits/All.h>
 #include <blaze/util/typetraits/CommonType.h>
 #include <blaze/util/typetraits/Decay.h>
 #include <blaze/util/typetraits/Extent.h>
