@@ -75,6 +75,7 @@ OperationTest::OperationTest()
    testAddReference();
    testAddVolatile();
    testAll();
+   testAny();
    testCommonType();
    testDecay();
    testExtent();
@@ -269,6 +270,41 @@ void OperationTest::testAll()
    typedef All<IsCharacter,char,signed char,wchar_t>  T2;
    typedef All<IsPointer,int*,float&>::Type           T3;
    typedef All<IsCharacter,char,signed int,wchar_t>   T4;
+
+   BLAZE_STATIC_ASSERT( value1 == true );
+   BLAZE_STATIC_ASSERT( value2 == false );
+
+   BLAZE_CONSTRAINT_MUST_BE_SAME_TYPE   ( T1, blaze::TrueType  );
+   BLAZE_CONSTRAINT_MUST_BE_DERIVED_FROM( T2, blaze::TrueType  );
+   BLAZE_CONSTRAINT_MUST_BE_SAME_TYPE   ( T3, blaze::FalseType );
+   BLAZE_CONSTRAINT_MUST_BE_DERIVED_FROM( T4, blaze::FalseType );
+}
+//*************************************************************************************************
+
+
+//*************************************************************************************************
+/*!\brief Test of the \c Any type trait.
+//
+// \return void
+// \exception std::runtime_error Error detected.
+//
+// This function performs a compile time test of the \c Any type trait. In case an error is
+// detected, a compilation error is created.
+*/
+void OperationTest::testAny()
+{
+   using blaze::Any;
+   using blaze::IsCharacter;
+   using blaze::IsIntegral;
+   using blaze::IsPointer;
+
+   const bool value1( Any<IsIntegral,int,float>::value );
+   const bool value2( Any<IsIntegral,float,double>::value );
+
+   typedef Any<IsPointer,int&,float*>::Type  T1;
+   typedef Any<IsCharacter,float,wchar_t>    T2;
+   typedef Any<IsPointer,int,float&>::Type   T3;
+   typedef Any<IsCharacter,int,double>       T4;
 
    BLAZE_STATIC_ASSERT( value1 == true );
    BLAZE_STATIC_ASSERT( value2 == false );

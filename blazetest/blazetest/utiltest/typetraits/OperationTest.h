@@ -87,6 +87,7 @@ class OperationTest
    void testAddReference();
    void testAddVolatile();
    void testAll();
+   void testAny();
    void testCommonType();
    void testDecay();
    void testExtent();
