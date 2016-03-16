@@ -213,7 +213,7 @@ class HybridMatrix : public DenseMatrix< HybridMatrix<Type,M,N,SO>, SO >
 
    //**********************************************************************************************
    //! Alignment adjustment
-   static const size_t NN = ( usePadding )?( NextMultiple< SizeT<N>, SizeT<IT::size> >::value ):( N );
+   static constexpr size_t NN = ( usePadding )?( NextMultiple< SizeT<N>, SizeT<IT::size> >::value ):( N );
    //**********************************************************************************************
 
  public:
@@ -283,20 +283,20 @@ class HybridMatrix : public DenseMatrix< HybridMatrix<Type,M,N,SO>, SO >
    //**Data access functions***********************************************************************
    /*!\name Data access functions */
    //@{
-   inline Reference      operator()( size_t i, size_t j );
-   inline ConstReference operator()( size_t i, size_t j ) const;
+   inline Reference      operator()( size_t i, size_t j ) noexcept;
+   inline ConstReference operator()( size_t i, size_t j ) const noexcept;
    inline Reference      at( size_t i, size_t j );
    inline ConstReference at( size_t i, size_t j ) const;
-   inline Pointer        data  ();
-   inline ConstPointer   data  () const;
-   inline Pointer        data  ( size_t i );
-   inline ConstPointer   data  ( size_t i ) const;
-   inline Iterator       begin ( size_t i );
-   inline ConstIterator  begin ( size_t i ) const;
-   inline ConstIterator  cbegin( size_t i ) const;
-   inline Iterator       end   ( size_t i );
-   inline ConstIterator  end   ( size_t i ) const;
-   inline ConstIterator  cend  ( size_t i ) const;
+   inline Pointer        data  () noexcept;
+   inline ConstPointer   data  () const noexcept;
+   inline Pointer        data  ( size_t i ) noexcept;
+   inline ConstPointer   data  ( size_t i ) const noexcept;
+   inline Iterator       begin ( size_t i ) noexcept;
+   inline ConstIterator  begin ( size_t i ) const noexcept;
+   inline ConstIterator  cbegin( size_t i ) const noexcept;
+   inline Iterator       end   ( size_t i ) noexcept;
+   inline ConstIterator  end   ( size_t i ) const noexcept;
+   inline ConstIterator  cend  ( size_t i ) const noexcept;
    //@}
    //**********************************************************************************************
 
@@ -326,22 +326,22 @@ class HybridMatrix : public DenseMatrix< HybridMatrix<Type,M,N,SO>, SO >
    //**Utility functions***************************************************************************
    /*!\name Utility functions */
    //@{
-                              inline size_t        rows() const;
-                              inline size_t        columns() const;
-                              inline size_t        spacing() const;
-                              inline size_t        capacity() const;
-                              inline size_t        capacity( size_t i ) const;
-                              inline size_t        nonZeros() const;
-                              inline size_t        nonZeros( size_t i ) const;
-                              inline void          reset();
-                              inline void          reset( size_t i );
-                              inline void          clear();
-                                     void          resize ( size_t m, size_t n, bool preserve=true );
-                              inline void          extend ( size_t m, size_t n, bool preserve=true );
-                              inline HybridMatrix& transpose();
-                              inline HybridMatrix& ctranspose();
-   template< typename Other > inline HybridMatrix& scale( const Other& scalar );
-                              inline void          swap( HybridMatrix& m ) noexcept;
+                              inline size_t           rows() const noexcept;
+                              inline size_t           columns() const noexcept;
+                              inline constexpr size_t spacing() const noexcept;
+                              inline constexpr size_t capacity() const noexcept;
+                              inline constexpr size_t capacity( size_t i ) const noexcept;
+                              inline size_t           nonZeros() const;
+                              inline size_t           nonZeros( size_t i ) const;
+                              inline void             reset();
+                              inline void             reset( size_t i );
+                              inline void             clear();
+                                     void             resize ( size_t m, size_t n, bool preserve=true );
+                              inline void             extend ( size_t m, size_t n, bool preserve=true );
+                              inline HybridMatrix&    transpose();
+                              inline HybridMatrix&    ctranspose();
+   template< typename Other > inline HybridMatrix&    scale( const Other& scalar );
+                              inline void             swap( HybridMatrix& m ) noexcept;
    //@}
    //**********************************************************************************************
 
@@ -408,19 +408,19 @@ class HybridMatrix : public DenseMatrix< HybridMatrix<Type,M,N,SO>, SO >
    //**Expression template evaluation functions****************************************************
    /*!\name Expression template evaluation functions */
    //@{
-   template< typename Other > inline bool canAlias ( const Other* alias ) const;
-   template< typename Other > inline bool isAliased( const Other* alias ) const;
+   template< typename Other > inline bool canAlias ( const Other* alias ) const noexcept;
+   template< typename Other > inline bool isAliased( const Other* alias ) const noexcept;
 
-   inline bool isAligned() const;
+   inline bool isAligned() const noexcept;
 
-   BLAZE_ALWAYS_INLINE IntrinsicType load ( size_t i, size_t j ) const;
-   BLAZE_ALWAYS_INLINE IntrinsicType loada( size_t i, size_t j ) const;
-   BLAZE_ALWAYS_INLINE IntrinsicType loadu( size_t i, size_t j ) const;
+   BLAZE_ALWAYS_INLINE IntrinsicType load ( size_t i, size_t j ) const noexcept;
+   BLAZE_ALWAYS_INLINE IntrinsicType loada( size_t i, size_t j ) const noexcept;
+   BLAZE_ALWAYS_INLINE IntrinsicType loadu( size_t i, size_t j ) const noexcept;
 
-   BLAZE_ALWAYS_INLINE void store ( size_t i, size_t j, const IntrinsicType& value );
-   BLAZE_ALWAYS_INLINE void storea( size_t i, size_t j, const IntrinsicType& value );
-   BLAZE_ALWAYS_INLINE void storeu( size_t i, size_t j, const IntrinsicType& value );
-   BLAZE_ALWAYS_INLINE void stream( size_t i, size_t j, const IntrinsicType& value );
+   BLAZE_ALWAYS_INLINE void store ( size_t i, size_t j, const IntrinsicType& value ) noexcept;
+   BLAZE_ALWAYS_INLINE void storea( size_t i, size_t j, const IntrinsicType& value ) noexcept;
+   BLAZE_ALWAYS_INLINE void storeu( size_t i, size_t j, const IntrinsicType& value ) noexcept;
+   BLAZE_ALWAYS_INLINE void stream( size_t i, size_t j, const IntrinsicType& value ) noexcept;
 
    template< typename MT, bool SO2 >
    inline typename DisableIf< VectorizedAssign<MT> >::Type
@@ -841,7 +841,7 @@ template< typename Type  // Data type of the matrix
         , size_t N       // Number of columns
         , bool SO >      // Storage order
 inline typename HybridMatrix<Type,M,N,SO>::Reference
-   HybridMatrix<Type,M,N,SO>::operator()( size_t i, size_t j )
+   HybridMatrix<Type,M,N,SO>::operator()( size_t i, size_t j ) noexcept
 {
    BLAZE_USER_ASSERT( i<M, "Invalid row access index"    );
    BLAZE_USER_ASSERT( j<N, "Invalid column access index" );
@@ -865,7 +865,7 @@ template< typename Type  // Data type of the matrix
         , size_t N       // Number of columns
         , bool SO >      // Storage order
 inline typename HybridMatrix<Type,M,N,SO>::ConstReference
-   HybridMatrix<Type,M,N,SO>::operator()( size_t i, size_t j ) const
+   HybridMatrix<Type,M,N,SO>::operator()( size_t i, size_t j ) const noexcept
 {
    BLAZE_USER_ASSERT( i<M, "Invalid row access index"    );
    BLAZE_USER_ASSERT( j<N, "Invalid column access index" );
@@ -949,7 +949,7 @@ template< typename Type  // Data type of the matrix
         , size_t N       // Number of columns
         , bool SO >      // Storage order
 inline typename HybridMatrix<Type,M,N,SO>::Pointer
-   HybridMatrix<Type,M,N,SO>::data()
+   HybridMatrix<Type,M,N,SO>::data() noexcept
 {
    return v_;
 }
@@ -973,7 +973,7 @@ template< typename Type  // Data type of the matrix
         , size_t N       // Number of columns
         , bool SO >      // Storage order
 inline typename HybridMatrix<Type,M,N,SO>::ConstPointer
-   HybridMatrix<Type,M,N,SO>::data() const
+   HybridMatrix<Type,M,N,SO>::data() const noexcept
 {
    return v_;
 }
@@ -993,7 +993,7 @@ template< typename Type  // Data type of the matrix
         , size_t N       // Number of columns
         , bool SO >      // Storage order
 inline typename HybridMatrix<Type,M,N,SO>::Pointer
-   HybridMatrix<Type,M,N,SO>::data( size_t i )
+   HybridMatrix<Type,M,N,SO>::data( size_t i ) noexcept
 {
    BLAZE_USER_ASSERT( i < M, "Invalid dense matrix row access index" );
    return v_ + i*NN;
@@ -1014,7 +1014,7 @@ template< typename Type  // Data type of the matrix
         , size_t N       // Number of columns
         , bool SO >      // Storage order
 inline typename HybridMatrix<Type,M,N,SO>::ConstPointer
-   HybridMatrix<Type,M,N,SO>::data( size_t i ) const
+   HybridMatrix<Type,M,N,SO>::data( size_t i ) const noexcept
 {
    BLAZE_USER_ASSERT( i < M, "Invalid dense matrix row access index" );
    return v_ + i*NN;
@@ -1038,7 +1038,7 @@ template< typename Type  // Data type of the matrix
         , size_t N       // Number of columns
         , bool SO >      // Storage order
 inline typename HybridMatrix<Type,M,N,SO>::Iterator
-   HybridMatrix<Type,M,N,SO>::begin( size_t i )
+   HybridMatrix<Type,M,N,SO>::begin( size_t i ) noexcept
 {
    BLAZE_USER_ASSERT( i < M, "Invalid dense matrix row access index" );
    return Iterator( v_ + i*NN );
@@ -1062,7 +1062,7 @@ template< typename Type  // Data type of the matrix
         , size_t N       // Number of columns
         , bool SO >      // Storage order
 inline typename HybridMatrix<Type,M,N,SO>::ConstIterator
-   HybridMatrix<Type,M,N,SO>::begin( size_t i ) const
+   HybridMatrix<Type,M,N,SO>::begin( size_t i ) const noexcept
 {
    BLAZE_USER_ASSERT( i < M, "Invalid dense matrix row access index" );
    return ConstIterator( v_ + i*NN );
@@ -1086,7 +1086,7 @@ template< typename Type  // Data type of the matrix
         , size_t N       // Number of columns
         , bool SO >      // Storage order
 inline typename HybridMatrix<Type,M,N,SO>::ConstIterator
-   HybridMatrix<Type,M,N,SO>::cbegin( size_t i ) const
+   HybridMatrix<Type,M,N,SO>::cbegin( size_t i ) const noexcept
 {
    BLAZE_USER_ASSERT( i < M, "Invalid dense matrix row access index" );
    return ConstIterator( v_ + i*NN );
@@ -1110,7 +1110,7 @@ template< typename Type  // Data type of the matrix
         , size_t N       // Number of columns
         , bool SO >      // Storage order
 inline typename HybridMatrix<Type,M,N,SO>::Iterator
-   HybridMatrix<Type,M,N,SO>::end( size_t i )
+   HybridMatrix<Type,M,N,SO>::end( size_t i ) noexcept
 {
    BLAZE_USER_ASSERT( i < M, "Invalid dense matrix row access index" );
    return Iterator( v_ + i*NN + N );
@@ -1134,7 +1134,7 @@ template< typename Type  // Data type of the matrix
         , size_t N       // Number of columns
         , bool SO >      // Storage order
 inline typename HybridMatrix<Type,M,N,SO>::ConstIterator
-   HybridMatrix<Type,M,N,SO>::end( size_t i ) const
+   HybridMatrix<Type,M,N,SO>::end( size_t i ) const noexcept
 {
    BLAZE_USER_ASSERT( i < M, "Invalid dense matrix row access index" );
    return ConstIterator( v_ + i*NN + N );
@@ -1158,7 +1158,7 @@ template< typename Type  // Data type of the matrix
         , size_t N       // Number of columns
         , bool SO >      // Storage order
 inline typename HybridMatrix<Type,M,N,SO>::ConstIterator
-   HybridMatrix<Type,M,N,SO>::cend( size_t i ) const
+   HybridMatrix<Type,M,N,SO>::cend( size_t i ) const noexcept
 {
    BLAZE_USER_ASSERT( i < M, "Invalid dense matrix row access index" );
    return ConstIterator( v_ + i*NN + N );
@@ -1489,7 +1489,7 @@ template< typename Type  // Data type of the matrix
         , size_t M       // Number of rows
         , size_t N       // Number of columns
         , bool SO >      // Storage order
-inline size_t HybridMatrix<Type,M,N,SO>::rows() const
+inline size_t HybridMatrix<Type,M,N,SO>::rows() const noexcept
 {
    return m_;
 }
@@ -1505,7 +1505,7 @@ template< typename Type  // Data type of the matrix
         , size_t M       // Number of rows
         , size_t N       // Number of columns
         , bool SO >      // Storage order
-inline size_t HybridMatrix<Type,M,N,SO>::columns() const
+inline size_t HybridMatrix<Type,M,N,SO>::columns() const noexcept
 {
    return n_;
 }
@@ -1524,7 +1524,7 @@ template< typename Type  // Data type of the matrix
         , size_t M       // Number of rows
         , size_t N       // Number of columns
         , bool SO >      // Storage order
-inline size_t HybridMatrix<Type,M,N,SO>::spacing() const
+inline constexpr size_t HybridMatrix<Type,M,N,SO>::spacing() const noexcept
 {
    return NN;
 }
@@ -1540,7 +1540,7 @@ template< typename Type  // Data type of the matrix
         , size_t M       // Number of rows
         , size_t N       // Number of columns
         , bool SO >      // Storage order
-inline size_t HybridMatrix<Type,M,N,SO>::capacity() const
+inline constexpr size_t HybridMatrix<Type,M,N,SO>::capacity() const noexcept
 {
    return M*NN;
 }
@@ -1562,7 +1562,7 @@ template< typename Type  // Data type of the matrix
         , size_t M       // Number of rows
         , size_t N       // Number of columns
         , bool SO >      // Storage order
-inline size_t HybridMatrix<Type,M,N,SO>::capacity( size_t i ) const
+inline constexpr size_t HybridMatrix<Type,M,N,SO>::capacity( size_t i ) const noexcept
 {
    UNUSED_PARAMETER( i );
 
@@ -1920,7 +1920,6 @@ inline HybridMatrix<Type,M,N,SO>& HybridMatrix<Type,M,N,SO>::scale( const Other&
 //
 // \param m The matrix to be swapped.
 // \return void
-// \exception no-throw guarantee.
 */
 template< typename Type  // Data type of the matrix
         , size_t M       // Number of rows
@@ -2142,7 +2141,7 @@ template< typename Type     // Data type of the matrix
         , size_t N          // Number of columns
         , bool SO >         // Storage order
 template< typename Other >  // Data type of the foreign expression
-inline bool HybridMatrix<Type,M,N,SO>::canAlias( const Other* alias ) const
+inline bool HybridMatrix<Type,M,N,SO>::canAlias( const Other* alias ) const noexcept
 {
    return static_cast<const void*>( this ) == static_cast<const void*>( alias );
 }
@@ -2164,7 +2163,7 @@ template< typename Type     // Data type of the matrix
         , size_t N          // Number of columns
         , bool SO >         // Storage order
 template< typename Other >  // Data type of the foreign expression
-inline bool HybridMatrix<Type,M,N,SO>::isAliased( const Other* alias ) const
+inline bool HybridMatrix<Type,M,N,SO>::isAliased( const Other* alias ) const noexcept
 {
    return static_cast<const void*>( this ) == static_cast<const void*>( alias );
 }
@@ -2184,7 +2183,7 @@ template< typename Type  // Data type of the matrix
         , size_t M       // Number of rows
         , size_t N       // Number of columns
         , bool SO >      // Storage order
-inline bool HybridMatrix<Type,M,N,SO>::isAligned() const
+inline bool HybridMatrix<Type,M,N,SO>::isAligned() const noexcept
 {
    return ( usePadding || columns() % IT::size == 0UL );
 }
@@ -2211,7 +2210,7 @@ template< typename Type  // Data type of the matrix
         , size_t N       // Number of columns
         , bool SO >      // Storage order
 BLAZE_ALWAYS_INLINE typename HybridMatrix<Type,M,N,SO>::IntrinsicType
-   HybridMatrix<Type,M,N,SO>::load( size_t i, size_t j ) const
+   HybridMatrix<Type,M,N,SO>::load( size_t i, size_t j ) const noexcept
 {
    if( usePadding )
       return loada( i, j );
@@ -2241,7 +2240,7 @@ template< typename Type  // Data type of the matrix
         , size_t N       // Number of columns
         , bool SO >      // Storage order
 BLAZE_ALWAYS_INLINE typename HybridMatrix<Type,M,N,SO>::IntrinsicType
-   HybridMatrix<Type,M,N,SO>::loada( size_t i, size_t j ) const
+   HybridMatrix<Type,M,N,SO>::loada( size_t i, size_t j ) const noexcept
 {
    using blaze::loada;
 
@@ -2278,7 +2277,7 @@ template< typename Type  // Data type of the matrix
         , size_t N       // Number of columns
         , bool SO >      // Storage order
 BLAZE_ALWAYS_INLINE typename HybridMatrix<Type,M,N,SO>::IntrinsicType
-   HybridMatrix<Type,M,N,SO>::loadu( size_t i, size_t j ) const
+   HybridMatrix<Type,M,N,SO>::loadu( size_t i, size_t j ) const noexcept
 {
    using blaze::loadu;
 
@@ -2314,7 +2313,7 @@ template< typename Type  // Data type of the matrix
         , size_t N       // Number of columns
         , bool SO >      // Storage order
 BLAZE_ALWAYS_INLINE void
-   HybridMatrix<Type,M,N,SO>::store( size_t i, size_t j, const IntrinsicType& value )
+   HybridMatrix<Type,M,N,SO>::store( size_t i, size_t j, const IntrinsicType& value ) noexcept
 {
    if( usePadding )
       storea( i, j, value );
@@ -2345,7 +2344,7 @@ template< typename Type  // Data type of the matrix
         , size_t N       // Number of columns
         , bool SO >      // Storage order
 BLAZE_ALWAYS_INLINE void
-   HybridMatrix<Type,M,N,SO>::storea( size_t i, size_t j, const IntrinsicType& value )
+   HybridMatrix<Type,M,N,SO>::storea( size_t i, size_t j, const IntrinsicType& value ) noexcept
 {
    using blaze::storea;
 
@@ -2383,7 +2382,7 @@ template< typename Type  // Data type of the matrix
         , size_t N       // Number of columns
         , bool SO >      // Storage order
 BLAZE_ALWAYS_INLINE void
-   HybridMatrix<Type,M,N,SO>::storeu( size_t i, size_t j, const IntrinsicType& value )
+   HybridMatrix<Type,M,N,SO>::storeu( size_t i, size_t j, const IntrinsicType& value ) noexcept
 {
    using blaze::storeu;
 
@@ -2419,7 +2418,7 @@ template< typename Type  // Data type of the matrix
         , size_t N       // Number of columns
         , bool SO >      // Storage order
 BLAZE_ALWAYS_INLINE void
-   HybridMatrix<Type,M,N,SO>::stream( size_t i, size_t j, const IntrinsicType& value )
+   HybridMatrix<Type,M,N,SO>::stream( size_t i, size_t j, const IntrinsicType& value ) noexcept
 {
    using blaze::stream;
 
@@ -2923,7 +2922,7 @@ class HybridMatrix<Type,M,N,true> : public DenseMatrix< HybridMatrix<Type,M,N,tr
 
    //**********************************************************************************************
    //! Alignment adjustment
-   static const size_t MM = ( usePadding )?( NextMultiple< SizeT<M>, SizeT<IT::size> >::value ):( M );
+   static constexpr size_t MM = ( usePadding )?( NextMultiple< SizeT<M>, SizeT<IT::size> >::value ):( M );
    //**********************************************************************************************
 
  public:
@@ -2993,20 +2992,20 @@ class HybridMatrix<Type,M,N,true> : public DenseMatrix< HybridMatrix<Type,M,N,tr
    //**Data access functions***********************************************************************
    /*!\name Data access functions */
    //@{
-   inline Reference      operator()( size_t i, size_t j );
-   inline ConstReference operator()( size_t i, size_t j ) const;
+   inline Reference      operator()( size_t i, size_t j ) noexcept;
+   inline ConstReference operator()( size_t i, size_t j ) const noexcept;
    inline Reference      at( size_t i, size_t j );
    inline ConstReference at( size_t i, size_t j ) const;
-   inline Pointer        data  ();
-   inline ConstPointer   data  () const;
-   inline Pointer        data  ( size_t j );
-   inline ConstPointer   data  ( size_t j ) const;
-   inline Iterator       begin ( size_t j );
-   inline ConstIterator  begin ( size_t j ) const;
-   inline ConstIterator  cbegin( size_t j ) const;
-   inline Iterator       end   ( size_t j );
-   inline ConstIterator  end   ( size_t j ) const;
-   inline ConstIterator  cend  ( size_t j ) const;
+   inline Pointer        data  () noexcept;
+   inline ConstPointer   data  () const noexcept;
+   inline Pointer        data  ( size_t j ) noexcept;
+   inline ConstPointer   data  ( size_t j ) const noexcept;
+   inline Iterator       begin ( size_t j ) noexcept;
+   inline ConstIterator  begin ( size_t j ) const noexcept;
+   inline ConstIterator  cbegin( size_t j ) const noexcept;
+   inline Iterator       end   ( size_t j ) noexcept;
+   inline ConstIterator  end   ( size_t j ) const noexcept;
+   inline ConstIterator  cend  ( size_t j ) const noexcept;
    //@}
    //**********************************************************************************************
 
@@ -3036,22 +3035,22 @@ class HybridMatrix<Type,M,N,true> : public DenseMatrix< HybridMatrix<Type,M,N,tr
    //**Utility functions***************************************************************************
    /*!\name Utility functions */
    //@{
-                              inline size_t        rows() const;
-                              inline size_t        columns() const;
-                              inline size_t        spacing() const;
-                              inline size_t        capacity() const;
-                              inline size_t        capacity( size_t j ) const;
-                              inline size_t        nonZeros() const;
-                              inline size_t        nonZeros( size_t j ) const;
-                              inline void          reset();
-                              inline void          reset( size_t i );
-                              inline void          clear();
-                                     void          resize ( size_t m, size_t n, bool preserve=true );
-                              inline void          extend ( size_t m, size_t n, bool preserve=true );
-                              inline HybridMatrix& transpose();
-                              inline HybridMatrix& ctranspose();
-   template< typename Other > inline HybridMatrix& scale( const Other& scalar );
-                              inline void          swap( HybridMatrix& m ) noexcept;
+                              inline size_t           rows() const noexcept;
+                              inline size_t           columns() const noexcept;
+                              inline constexpr size_t spacing() const noexcept;
+                              inline constexpr size_t capacity() const noexcept;
+                              inline constexpr size_t capacity( size_t j ) const noexcept;
+                              inline size_t           nonZeros() const;
+                              inline size_t           nonZeros( size_t j ) const;
+                              inline void             reset();
+                              inline void             reset( size_t i );
+                              inline void             clear();
+                                     void             resize ( size_t m, size_t n, bool preserve=true );
+                              inline void             extend ( size_t m, size_t n, bool preserve=true );
+                              inline HybridMatrix&    transpose();
+                              inline HybridMatrix&    ctranspose();
+   template< typename Other > inline HybridMatrix&    scale( const Other& scalar );
+                              inline void             swap( HybridMatrix& m ) noexcept;
    //@}
    //**********************************************************************************************
 
@@ -3112,19 +3111,19 @@ class HybridMatrix<Type,M,N,true> : public DenseMatrix< HybridMatrix<Type,M,N,tr
    //**Expression template evaluation functions****************************************************
    /*!\name Expression template evaluation functions */
    //@{
-   template< typename Other > inline bool canAlias ( const Other* alias ) const;
-   template< typename Other > inline bool isAliased( const Other* alias ) const;
+   template< typename Other > inline bool canAlias ( const Other* alias ) const noexcept;
+   template< typename Other > inline bool isAliased( const Other* alias ) const noexcept;
 
-   inline bool isAligned() const;
+   inline bool isAligned() const noexcept;
 
-   BLAZE_ALWAYS_INLINE IntrinsicType load ( size_t i, size_t j ) const;
-   BLAZE_ALWAYS_INLINE IntrinsicType loada( size_t i, size_t j ) const;
-   BLAZE_ALWAYS_INLINE IntrinsicType loadu( size_t i, size_t j ) const;
+   BLAZE_ALWAYS_INLINE IntrinsicType load ( size_t i, size_t j ) const noexcept;
+   BLAZE_ALWAYS_INLINE IntrinsicType loada( size_t i, size_t j ) const noexcept;
+   BLAZE_ALWAYS_INLINE IntrinsicType loadu( size_t i, size_t j ) const noexcept;
 
-   BLAZE_ALWAYS_INLINE void store ( size_t i, size_t j, const IntrinsicType& value );
-   BLAZE_ALWAYS_INLINE void storea( size_t i, size_t j, const IntrinsicType& value );
-   BLAZE_ALWAYS_INLINE void storeu( size_t i, size_t j, const IntrinsicType& value );
-   BLAZE_ALWAYS_INLINE void stream( size_t i, size_t j, const IntrinsicType& value );
+   BLAZE_ALWAYS_INLINE void store ( size_t i, size_t j, const IntrinsicType& value ) noexcept;
+   BLAZE_ALWAYS_INLINE void storea( size_t i, size_t j, const IntrinsicType& value ) noexcept;
+   BLAZE_ALWAYS_INLINE void storeu( size_t i, size_t j, const IntrinsicType& value ) noexcept;
+   BLAZE_ALWAYS_INLINE void stream( size_t i, size_t j, const IntrinsicType& value ) noexcept;
 
    template< typename MT, bool SO >
    inline typename DisableIf< VectorizedAssign<MT> >::Type
@@ -3544,7 +3543,7 @@ template< typename Type  // Data type of the matrix
         , size_t M       // Number of rows
         , size_t N >     // Number of columns
 inline typename HybridMatrix<Type,M,N,true>::Reference
-   HybridMatrix<Type,M,N,true>::operator()( size_t i, size_t j )
+   HybridMatrix<Type,M,N,true>::operator()( size_t i, size_t j ) noexcept
 {
    BLAZE_USER_ASSERT( i<M, "Invalid row access index"    );
    BLAZE_USER_ASSERT( j<N, "Invalid column access index" );
@@ -3569,7 +3568,7 @@ template< typename Type  // Data type of the matrix
         , size_t M       // Number of rows
         , size_t N >     // Number of columns
 inline typename HybridMatrix<Type,M,N,true>::ConstReference
-   HybridMatrix<Type,M,N,true>::operator()( size_t i, size_t j ) const
+   HybridMatrix<Type,M,N,true>::operator()( size_t i, size_t j ) const noexcept
 {
    BLAZE_USER_ASSERT( i<M, "Invalid row access index"    );
    BLAZE_USER_ASSERT( j<N, "Invalid column access index" );
@@ -3655,7 +3654,7 @@ template< typename Type  // Data type of the matrix
         , size_t M       // Number of rows
         , size_t N >     // Number of columns
 inline typename HybridMatrix<Type,M,N,true>::Pointer
-   HybridMatrix<Type,M,N,true>::data()
+   HybridMatrix<Type,M,N,true>::data() noexcept
 {
    return v_;
 }
@@ -3679,7 +3678,7 @@ template< typename Type  // Data type of the matrix
         , size_t M       // Number of rows
         , size_t N >     // Number of columns
 inline typename HybridMatrix<Type,M,N,true>::ConstPointer
-   HybridMatrix<Type,M,N,true>::data() const
+   HybridMatrix<Type,M,N,true>::data() const noexcept
 {
    return v_;
 }
@@ -3700,7 +3699,7 @@ template< typename Type  // Data type of the matrix
         , size_t M       // Number of rows
         , size_t N >     // Number of columns
 inline typename HybridMatrix<Type,M,N,true>::Pointer
-   HybridMatrix<Type,M,N,true>::data( size_t j )
+   HybridMatrix<Type,M,N,true>::data( size_t j ) noexcept
 {
    BLAZE_USER_ASSERT( j < N, "Invalid dense matrix column access index" );
    return v_ + j*MM;
@@ -3722,7 +3721,7 @@ template< typename Type  // Data type of the matrix
         , size_t M       // Number of rows
         , size_t N >     // Number of columns
 inline typename HybridMatrix<Type,M,N,true>::ConstPointer
-   HybridMatrix<Type,M,N,true>::data( size_t j ) const
+   HybridMatrix<Type,M,N,true>::data( size_t j ) const noexcept
 {
    BLAZE_USER_ASSERT( j < N, "Invalid dense matrix column access index" );
    return v_ + j*MM;
@@ -3742,7 +3741,7 @@ template< typename Type  // Data type of the matrix
         , size_t M       // Number of rows
         , size_t N >     // Number of columns
 inline typename HybridMatrix<Type,M,N,true>::Iterator
-   HybridMatrix<Type,M,N,true>::begin( size_t j )
+   HybridMatrix<Type,M,N,true>::begin( size_t j ) noexcept
 {
    BLAZE_USER_ASSERT( j < N, "Invalid dense matrix column access index" );
    return Iterator( v_ + j*MM );
@@ -3762,7 +3761,7 @@ template< typename Type  // Data type of the matrix
         , size_t M       // Number of rows
         , size_t N >     // Number of columns
 inline typename HybridMatrix<Type,M,N,true>::ConstIterator
-   HybridMatrix<Type,M,N,true>::begin( size_t j ) const
+   HybridMatrix<Type,M,N,true>::begin( size_t j ) const noexcept
 {
    BLAZE_USER_ASSERT( j < N, "Invalid dense matrix column access index" );
    return ConstIterator( v_ + j*MM );
@@ -3782,7 +3781,7 @@ template< typename Type  // Data type of the matrix
         , size_t M       // Number of rows
         , size_t N >     // Number of columns
 inline typename HybridMatrix<Type,M,N,true>::ConstIterator
-   HybridMatrix<Type,M,N,true>::cbegin( size_t j ) const
+   HybridMatrix<Type,M,N,true>::cbegin( size_t j ) const noexcept
 {
    BLAZE_USER_ASSERT( j < N, "Invalid dense matrix column access index" );
    return ConstIterator( v_ + j*MM );
@@ -3802,7 +3801,7 @@ template< typename Type  // Data type of the matrix
         , size_t M       // Number of rows
         , size_t N >     // Number of columns
 inline typename HybridMatrix<Type,M,N,true>::Iterator
-   HybridMatrix<Type,M,N,true>::end( size_t j )
+   HybridMatrix<Type,M,N,true>::end( size_t j ) noexcept
 {
    BLAZE_USER_ASSERT( j < N, "Invalid dense matrix column access index" );
    return Iterator( v_ + j*MM + M );
@@ -3822,7 +3821,7 @@ template< typename Type  // Data type of the matrix
         , size_t M       // Number of rows
         , size_t N >     // Number of columns
 inline typename HybridMatrix<Type,M,N,true>::ConstIterator
-   HybridMatrix<Type,M,N,true>::end( size_t j ) const
+   HybridMatrix<Type,M,N,true>::end( size_t j ) const noexcept
 {
    BLAZE_USER_ASSERT( j < N, "Invalid dense matrix column access index" );
    return ConstIterator( v_ + j*MM + M );
@@ -3842,7 +3841,7 @@ template< typename Type  // Data type of the matrix
         , size_t M       // Number of rows
         , size_t N >     // Number of columns
 inline typename HybridMatrix<Type,M,N,true>::ConstIterator
-   HybridMatrix<Type,M,N,true>::cend( size_t j ) const
+   HybridMatrix<Type,M,N,true>::cend( size_t j ) const noexcept
 {
    BLAZE_USER_ASSERT( j < N, "Invalid dense matrix column access index" );
    return ConstIterator( v_ + j*MM + M );
@@ -4186,7 +4185,7 @@ inline typename EnableIf< IsNumeric<Other>, HybridMatrix<Type,M,N,true> >::Type&
 template< typename Type  // Data type of the matrix
         , size_t M       // Number of rows
         , size_t N >     // Number of columns
-inline size_t HybridMatrix<Type,M,N,true>::rows() const
+inline size_t HybridMatrix<Type,M,N,true>::rows() const noexcept
 {
    return m_;
 }
@@ -4203,7 +4202,7 @@ inline size_t HybridMatrix<Type,M,N,true>::rows() const
 template< typename Type  // Data type of the matrix
         , size_t M       // Number of rows
         , size_t N >     // Number of columns
-inline size_t HybridMatrix<Type,M,N,true>::columns() const
+inline size_t HybridMatrix<Type,M,N,true>::columns() const noexcept
 {
    return n_;
 }
@@ -4223,7 +4222,7 @@ inline size_t HybridMatrix<Type,M,N,true>::columns() const
 template< typename Type  // Data type of the matrix
         , size_t M       // Number of rows
         , size_t N >     // Number of columns
-inline size_t HybridMatrix<Type,M,N,true>::spacing() const
+inline constexpr size_t HybridMatrix<Type,M,N,true>::spacing() const noexcept
 {
    return MM;
 }
@@ -4240,7 +4239,7 @@ inline size_t HybridMatrix<Type,M,N,true>::spacing() const
 template< typename Type  // Data type of the matrix
         , size_t M       // Number of rows
         , size_t N >     // Number of columns
-inline size_t HybridMatrix<Type,M,N,true>::capacity() const
+inline constexpr size_t HybridMatrix<Type,M,N,true>::capacity() const noexcept
 {
    return MM*N;
 }
@@ -4258,7 +4257,7 @@ inline size_t HybridMatrix<Type,M,N,true>::capacity() const
 template< typename Type  // Data type of the matrix
         , size_t M       // Number of rows
         , size_t N >     // Number of columns
-inline size_t HybridMatrix<Type,M,N,true>::capacity( size_t j ) const
+inline constexpr size_t HybridMatrix<Type,M,N,true>::capacity( size_t j ) const noexcept
 {
    UNUSED_PARAMETER( j );
 
@@ -4618,7 +4617,6 @@ inline HybridMatrix<Type,M,N,true>&
 //
 // \param m The matrix to be swapped.
 // \return void
-// \exception no-throw guarantee.
 */
 template< typename Type  // Data type of the matrix
         , size_t M       // Number of rows
@@ -4848,7 +4846,7 @@ template< typename Type     // Data type of the matrix
         , size_t M          // Number of rows
         , size_t N >        // Number of columns
 template< typename Other >  // Data type of the foreign expression
-inline bool HybridMatrix<Type,M,N,true>::canAlias( const Other* alias ) const
+inline bool HybridMatrix<Type,M,N,true>::canAlias( const Other* alias ) const noexcept
 {
    return static_cast<const void*>( this ) == static_cast<const void*>( alias );
 }
@@ -4871,7 +4869,7 @@ template< typename Type     // Data type of the matrix
         , size_t M          // Number of rows
         , size_t N >        // Number of columns
 template< typename Other >  // Data type of the foreign expression
-inline bool HybridMatrix<Type,M,N,true>::isAliased( const Other* alias ) const
+inline bool HybridMatrix<Type,M,N,true>::isAliased( const Other* alias ) const noexcept
 {
    return static_cast<const void*>( this ) == static_cast<const void*>( alias );
 }
@@ -4892,7 +4890,7 @@ inline bool HybridMatrix<Type,M,N,true>::isAliased( const Other* alias ) const
 template< typename Type  // Data type of the matrix
         , size_t M       // Number of rows
         , size_t N >     // Number of columns
-inline bool HybridMatrix<Type,M,N,true>::isAligned() const
+inline bool HybridMatrix<Type,M,N,true>::isAligned() const noexcept
 {
    return ( usePadding || rows() % IT::size == 0UL );
 }
@@ -4919,7 +4917,7 @@ template< typename Type  // Data type of the matrix
         , size_t M       // Number of rows
         , size_t N >     // Number of columns
 BLAZE_ALWAYS_INLINE typename HybridMatrix<Type,M,N,true>::IntrinsicType
-   HybridMatrix<Type,M,N,true>::load( size_t i, size_t j ) const
+   HybridMatrix<Type,M,N,true>::load( size_t i, size_t j ) const noexcept
 {
    if( usePadding )
       return loada( i, j );
@@ -4949,7 +4947,7 @@ template< typename Type  // Data type of the matrix
         , size_t M       // Number of rows
         , size_t N >     // Number of columns
 BLAZE_ALWAYS_INLINE typename HybridMatrix<Type,M,N,true>::IntrinsicType
-   HybridMatrix<Type,M,N,true>::loada( size_t i, size_t j ) const
+   HybridMatrix<Type,M,N,true>::loada( size_t i, size_t j ) const noexcept
 {
    using blaze::loada;
 
@@ -4986,7 +4984,7 @@ template< typename Type  // Data type of the matrix
         , size_t M       // Number of rows
         , size_t N >     // Number of columns
 BLAZE_ALWAYS_INLINE typename HybridMatrix<Type,M,N,true>::IntrinsicType
-   HybridMatrix<Type,M,N,true>::loadu( size_t i, size_t j ) const
+   HybridMatrix<Type,M,N,true>::loadu( size_t i, size_t j ) const noexcept
 {
    using blaze::loadu;
 
@@ -5022,7 +5020,7 @@ template< typename Type  // Data type of the matrix
         , size_t M       // Number of rows
         , size_t N >     // Number of columns
 BLAZE_ALWAYS_INLINE void
-   HybridMatrix<Type,M,N,true>::store( size_t i, size_t j, const IntrinsicType& value )
+   HybridMatrix<Type,M,N,true>::store( size_t i, size_t j, const IntrinsicType& value ) noexcept
 {
    if( usePadding )
       storea( i, j, value );
@@ -5053,7 +5051,7 @@ template< typename Type  // Data type of the matrix
         , size_t M       // Number of rows
         , size_t N >     // Number of columns
 BLAZE_ALWAYS_INLINE void
-   HybridMatrix<Type,M,N,true>::storea( size_t i, size_t j, const IntrinsicType& value )
+   HybridMatrix<Type,M,N,true>::storea( size_t i, size_t j, const IntrinsicType& value ) noexcept
 {
    using blaze::storea;
 
@@ -5091,7 +5089,7 @@ template< typename Type  // Data type of the matrix
         , size_t M       // Number of rows
         , size_t N >     // Number of columns
 BLAZE_ALWAYS_INLINE void
-   HybridMatrix<Type,M,N,true>::storeu( size_t i, size_t j, const IntrinsicType& value )
+   HybridMatrix<Type,M,N,true>::storeu( size_t i, size_t j, const IntrinsicType& value ) noexcept
 {
    using blaze::storeu;
 
@@ -5127,7 +5125,7 @@ template< typename Type  // Data type of the matrix
         , size_t M       // Number of rows
         , size_t N >     // Number of columns
 BLAZE_ALWAYS_INLINE void
-   HybridMatrix<Type,M,N,true>::stream( size_t i, size_t j, const IntrinsicType& value )
+   HybridMatrix<Type,M,N,true>::stream( size_t i, size_t j, const IntrinsicType& value ) noexcept
 {
    using blaze::stream;
 
@@ -5699,7 +5697,7 @@ template< typename Type, size_t M, size_t N, bool SO >
 inline bool isDefault( const HybridMatrix<Type,M,N,SO>& m );
 
 template< typename Type, size_t M, size_t N, bool SO >
-inline bool isIntact( const HybridMatrix<Type,M,N,SO>& m );
+inline bool isIntact( const HybridMatrix<Type,M,N,SO>& m ) noexcept;
 
 template< typename Type, size_t M, size_t N, bool SO >
 inline void swap( HybridMatrix<Type,M,N,SO>& a, HybridMatrix<Type,M,N,SO>& b ) noexcept;
@@ -5818,7 +5816,7 @@ template< typename Type  // Data type of the matrix
         , size_t M       // Number of rows
         , size_t N       // Number of columns
         , bool SO >      // Storage order
-inline bool isIntact( const HybridMatrix<Type,M,N,SO>& m )
+inline bool isIntact( const HybridMatrix<Type,M,N,SO>& m ) noexcept
 {
    return ( m.rows() <= M && m.columns() <= N );
 }
@@ -5832,7 +5830,6 @@ inline bool isIntact( const HybridMatrix<Type,M,N,SO>& m )
 // \param a The first matrix to be swapped.
 // \param b The second matrix to be swapped.
 // \return void
-// \exception no-throw guarantee.
 */
 template< typename Type  // Data type of the matrix
         , size_t M       // Number of rows
