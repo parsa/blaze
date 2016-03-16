@@ -868,11 +868,9 @@ void ClassTest::testAssignment()
    {
       test_ = "Row-major/row-major CompressedMatrix dense matrix assignment";
 
-      blaze::DynamicMatrix<int,blaze::rowMajor> mat1( 3UL, 2UL, 0 );
-      mat1(0,1) = 1;
-      mat1(1,1) = 2;
-      mat1(2,0) = 3;
-      mat1(2,1) = 4;
+      blaze::DynamicMatrix<int,blaze::rowMajor> mat1( { { 0, 1 },
+                                                        { 0, 2 },
+                                                        { 3, 4 } } );
 
       blaze::CompressedMatrix<int,blaze::rowMajor> mat2( 2UL, 3UL );
       mat2 = mat1;
@@ -929,11 +927,9 @@ void ClassTest::testAssignment()
    {
       test_ = "Row-major/column-major CompressedMatrix dense matrix assignment";
 
-      blaze::DynamicMatrix<int,blaze::columnMajor> mat1( 3UL, 2UL, 0 );
-      mat1(0,1) = 1;
-      mat1(1,1) = 2;
-      mat1(2,0) = 3;
-      mat1(2,1) = 4;
+      blaze::DynamicMatrix<int,blaze::columnMajor> mat1( { { 0, 1 },
+                                                           { 0, 2 },
+                                                           { 3, 4 } } );
 
       blaze::CompressedMatrix<int,blaze::rowMajor> mat2( 2UL, 3UL );
       mat2 = mat1;
@@ -1488,11 +1484,9 @@ void ClassTest::testAssignment()
    {
       test_ = "Column-major/row-major CompressedMatrix dense matrix assignment";
 
-      blaze::DynamicMatrix<int,blaze::rowMajor> mat1( 3UL, 2UL, 0 );
-      mat1(0,1) = 1;
-      mat1(1,1) = 2;
-      mat1(2,0) = 3;
-      mat1(2,1) = 4;
+      blaze::DynamicMatrix<int,blaze::rowMajor> mat1( { { 0, 1 },
+                                                        { 0, 2 },
+                                                        { 3, 4 } } );
 
       blaze::CompressedMatrix<int,blaze::columnMajor> mat2( 2UL, 3UL );
       mat2 = mat1;
@@ -1548,11 +1542,9 @@ void ClassTest::testAssignment()
    {
       test_ = "Column-major/column-major CompressedMatrix dense matrix assignment";
 
-      blaze::DynamicMatrix<int,blaze::columnMajor> mat1( 3UL, 2UL, 0 );
-      mat1(0,1) = 1;
-      mat1(1,1) = 2;
-      mat1(2,0) = 3;
-      mat1(2,1) = 4;
+      blaze::DynamicMatrix<int,blaze::columnMajor> mat1( { { 0, 1 },
+                                                           { 0, 2 },
+                                                           { 3, 4 } } );
 
       blaze::CompressedMatrix<int,blaze::columnMajor> mat2( 2UL, 3UL );
       mat2 = mat1;
@@ -2015,11 +2007,8 @@ void ClassTest::testAddAssign()
    {
       test_ = "Row-major/row-major CompressedMatrix dense matrix addition assignment";
 
-      blaze::DynamicMatrix<int,blaze::rowMajor> mat1( 2UL, 3UL, 0 );
-      mat1(0,2) = 1;
-      mat1(1,0) = 2;
-      mat1(1,1) = 3;
-      mat1(1,2) = 4;
+      blaze::DynamicMatrix<int,blaze::rowMajor> mat1( { { 0, 0, 1 },
+                                                        { 2, 3, 4 } } );
 
       blaze::CompressedMatrix<int,blaze::rowMajor> mat2( 2UL, 3UL, 3UL );
       mat2(0,0) = 5;
@@ -2049,11 +2038,8 @@ void ClassTest::testAddAssign()
    {
       test_ = "Row-major/column-major CompressedMatrix dense matrix addition assignment";
 
-      blaze::DynamicMatrix<int,blaze::columnMajor> mat1( 2UL, 3UL, 0 );
-      mat1(0,2) = 1;
-      mat1(1,0) = 2;
-      mat1(1,1) = 3;
-      mat1(1,2) = 4;
+      blaze::DynamicMatrix<int,blaze::columnMajor> mat1( { { 0, 0, 1 },
+                                                           { 2, 3, 4 } } );
 
       blaze::CompressedMatrix<int,blaze::rowMajor> mat2( 2UL, 3UL, 3UL );
       mat2(0,0) = 5;
@@ -2413,11 +2399,8 @@ void ClassTest::testAddAssign()
    {
       test_ = "Column-major/row-major CompressedMatrix dense matrix addition assignment";
 
-      blaze::DynamicMatrix<int,blaze::rowMajor> mat1( 2UL, 3UL, 0 );
-      mat1(0,2) = 1;
-      mat1(1,0) = 2;
-      mat1(1,1) = 3;
-      mat1(1,2) = 4;
+      blaze::DynamicMatrix<int,blaze::rowMajor> mat1( { { 0, 0, 1 },
+                                                        { 2, 3, 4 } } );
 
       blaze::CompressedMatrix<int,blaze::columnMajor> mat2( 2UL, 3UL, 3UL );
       mat2(0,0) = 5;
@@ -2448,11 +2431,8 @@ void ClassTest::testAddAssign()
    {
       test_ = "Row-major/column-major CompressedMatrix dense matrix addition assignment";
 
-      blaze::DynamicMatrix<int,blaze::columnMajor> mat1( 2UL, 3UL, 0 );
-      mat1(0,2) = 1;
-      mat1(1,0) = 2;
-      mat1(1,1) = 3;
-      mat1(1,2) = 4;
+      blaze::DynamicMatrix<int,blaze::columnMajor> mat1( { { 0, 0, 1 },
+                                                           { 2, 3, 4 } } );
 
       blaze::CompressedMatrix<int,blaze::columnMajor> mat2( 2UL, 3UL, 3UL );
       mat2(0,0) = 5;
@@ -2828,11 +2808,8 @@ void ClassTest::testSubAssign()
    {
       test_ = "Row-major/row-major CompressedMatrix dense matrix subtraction assignment";
 
-      blaze::DynamicMatrix<int,blaze::rowMajor> mat1( 2UL, 3UL, 0 );
-      mat1(0,2) = 1;
-      mat1(1,0) = 2;
-      mat1(1,1) = 3;
-      mat1(1,2) = 4;
+      blaze::DynamicMatrix<int,blaze::rowMajor> mat1( { { 0, 0, 1 },
+                                                        { 2, 3, 4 } } );
 
       blaze::CompressedMatrix<int,blaze::rowMajor> mat2( 2UL, 3UL, 3UL );
       mat2(0,0) = 5;
@@ -2862,11 +2839,8 @@ void ClassTest::testSubAssign()
    {
       test_ = "Row-major/column-major CompressedMatrix dense matrix subtraction assignment";
 
-      blaze::DynamicMatrix<int,blaze::columnMajor> mat1( 2UL, 3UL, 0 );
-      mat1(0,2) = 1;
-      mat1(1,0) = 2;
-      mat1(1,1) = 3;
-      mat1(1,2) = 4;
+      blaze::DynamicMatrix<int,blaze::columnMajor> mat1( { { 0, 0, 1 },
+                                                           { 2, 3, 4 } } );
 
       blaze::CompressedMatrix<int,blaze::rowMajor> mat2( 2UL, 3UL, 3UL );
       mat2(0,0) = 5;
@@ -3226,11 +3200,8 @@ void ClassTest::testSubAssign()
    {
       test_ = "Column-major/row-major CompressedMatrix dense matrix subtraction assignment";
 
-      blaze::DynamicMatrix<int,blaze::rowMajor> mat1( 2UL, 3UL, 0 );
-      mat1(0,2) = 1;
-      mat1(1,0) = 2;
-      mat1(1,1) = 3;
-      mat1(1,2) = 4;
+      blaze::DynamicMatrix<int,blaze::rowMajor> mat1( { { 0, 0, 1 },
+                                                        { 2, 3, 4 } } );
 
       blaze::CompressedMatrix<int,blaze::columnMajor> mat2( 2UL, 3UL, 3UL );
       mat2(0,0) = 5;
@@ -3261,11 +3232,8 @@ void ClassTest::testSubAssign()
    {
       test_ = "Row-major/column-major CompressedMatrix dense matrix subtraction assignment";
 
-      blaze::DynamicMatrix<int,blaze::columnMajor> mat1( 2UL, 3UL, 0 );
-      mat1(0,2) = 1;
-      mat1(1,0) = 2;
-      mat1(1,1) = 3;
-      mat1(1,2) = 4;
+      blaze::DynamicMatrix<int,blaze::columnMajor> mat1( { { 0, 0, 1 },
+                                                           { 2, 3, 4 } } );
 
       blaze::CompressedMatrix<int,blaze::columnMajor> mat2( 2UL, 3UL, 3UL );
       mat2(0,0) = 5;
@@ -3641,12 +3609,9 @@ void ClassTest::testMultAssign()
    {
       test_ = "Row-major/row-major CompressedMatrix dense matrix multiplication assignment";
 
-      blaze::DynamicMatrix<int,blaze::rowMajor> mat1( 3UL, 4UL, 0 );
-      mat1(0,1) = 2;
-      mat1(1,0) = 1;
-      mat1(1,1) = 3;
-      mat1(1,3) = 4;
-      mat1(2,3) = 5;
+      blaze::DynamicMatrix<int,blaze::rowMajor> mat1( { { 0, 2, 0, 0 },
+                                                        { 1, 3, 0, 4 },
+                                                        { 0, 0, 0, 5 } } );
 
       blaze::CompressedMatrix<int,blaze::rowMajor> mat2( 3UL, 3UL, 5UL );
       mat2(0,0) = 1;
@@ -3680,12 +3645,9 @@ void ClassTest::testMultAssign()
    {
       test_ = "Row-major/column-major CompressedMatrix dense matrix multiplication assignment";
 
-      blaze::DynamicMatrix<int,blaze::columnMajor> mat1( 3UL, 4UL, 0 );
-      mat1(0,1) = 2;
-      mat1(1,0) = 1;
-      mat1(1,1) = 3;
-      mat1(1,3) = 4;
-      mat1(2,3) = 5;
+      blaze::DynamicMatrix<int,blaze::columnMajor> mat1( { { 0, 2, 0, 0 },
+                                                           { 1, 3, 0, 4 },
+                                                           { 0, 0, 0, 5 } } );
 
       blaze::CompressedMatrix<int,blaze::rowMajor> mat2( 3UL, 3UL, 5UL );
       mat2(0,0) = 1;
@@ -3807,12 +3769,9 @@ void ClassTest::testMultAssign()
    {
       test_ = "Column-major/row-major CompressedMatrix dense matrix multiplication assignment";
 
-      blaze::DynamicMatrix<int,blaze::rowMajor> mat1( 3UL, 4UL, 0 );
-      mat1(0,1) = 2;
-      mat1(1,0) = 1;
-      mat1(1,1) = 3;
-      mat1(1,3) = 4;
-      mat1(2,3) = 5;
+      blaze::DynamicMatrix<int,blaze::rowMajor> mat1( { { 0, 2, 0, 0 },
+                                                        { 1, 3, 0, 4 },
+                                                        { 0, 0, 0, 5 } } );
 
       blaze::CompressedMatrix<int,blaze::columnMajor> mat2( 3UL, 3UL, 5UL );
       mat2(0,0) = 1;
@@ -3847,12 +3806,9 @@ void ClassTest::testMultAssign()
    {
       test_ = "Row-major/column-major CompressedMatrix dense matrix multiplication assignment";
 
-      blaze::DynamicMatrix<int,blaze::columnMajor> mat1( 3UL, 4UL, 0 );
-      mat1(0,1) = 2;
-      mat1(1,0) = 1;
-      mat1(1,1) = 3;
-      mat1(1,3) = 4;
-      mat1(2,3) = 5;
+      blaze::DynamicMatrix<int,blaze::columnMajor> mat1( { { 0, 2, 0, 0 },
+                                                           { 1, 3, 0, 4 },
+                                                           { 0, 0, 0, 5 } } );
 
       blaze::CompressedMatrix<int,blaze::columnMajor> mat2( 3UL, 3UL, 5UL );
       mat2(0,0) = 1;
