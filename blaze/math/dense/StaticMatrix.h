@@ -210,7 +210,7 @@ class StaticMatrix : public DenseMatrix< StaticMatrix<Type,M,N,SO>, SO >
 
    //**********************************************************************************************
    //! Alignment adjustment
-   static const size_t NN = ( usePadding )?( NextMultiple< SizeT<N>, SizeT<IT::size> >::value ):( N );
+   static constexpr size_t NN = ( usePadding )?( NextMultiple< SizeT<N>, SizeT<IT::size> >::value ):( N );
    //**********************************************************************************************
 
  public:
@@ -263,27 +263,15 @@ class StaticMatrix : public DenseMatrix< StaticMatrix<Type,M,N,SO>, SO >
    explicit inline StaticMatrix();
    explicit inline StaticMatrix( const Type& init );
 
-   template< typename Other > explicit inline StaticMatrix( size_t m, size_t n, const Other* array );
-   template< typename Other > explicit inline StaticMatrix( const Other (&array)[M][N] );
+   template< typename Other >
+   explicit inline StaticMatrix( size_t m, size_t n, const Other* array );
+
+   template< typename Other >
+   explicit inline StaticMatrix( const Other (&array)[M][N] );
 
                                         inline StaticMatrix( const StaticMatrix& m );
    template< typename Other, bool SO2 > inline StaticMatrix( const StaticMatrix<Other,M,N,SO2>& m );
    template< typename MT   , bool SO2 > inline StaticMatrix( const Matrix<MT,SO2>& m );
-
-   inline StaticMatrix( const Type& v1, const Type& v2 );
-   inline StaticMatrix( const Type& v1, const Type& v2, const Type& v3 );
-   inline StaticMatrix( const Type& v1, const Type& v2, const Type& v3, const Type& v4 );
-   inline StaticMatrix( const Type& v1, const Type& v2, const Type& v3, const Type& v4, const Type& v5 );
-   inline StaticMatrix( const Type& v1, const Type& v2, const Type& v3, const Type& v4, const Type& v5,
-                        const Type& v6 );
-   inline StaticMatrix( const Type& v1, const Type& v2, const Type& v3, const Type& v4, const Type& v5,
-                        const Type& v6, const Type& v7 );
-   inline StaticMatrix( const Type& v1, const Type& v2, const Type& v3, const Type& v4, const Type& v5,
-                        const Type& v6, const Type& v7, const Type& v8 );
-   inline StaticMatrix( const Type& v1, const Type& v2, const Type& v3, const Type& v4, const Type& v5,
-                        const Type& v6, const Type& v7, const Type& v8, const Type& v9 );
-   inline StaticMatrix( const Type& v1, const Type& v2, const Type& v3, const Type& v4, const Type& v5,
-                        const Type& v6, const Type& v7, const Type& v8, const Type& v9, const Type& v10 );
    //@}
    //**********************************************************************************************
 
@@ -294,20 +282,20 @@ class StaticMatrix : public DenseMatrix< StaticMatrix<Type,M,N,SO>, SO >
    //**Data access functions***********************************************************************
    /*!\name Data access functions */
    //@{
-   inline Reference      operator()( size_t i, size_t j );
-   inline ConstReference operator()( size_t i, size_t j ) const;
+   inline Reference      operator()( size_t i, size_t j ) noexcept;
+   inline ConstReference operator()( size_t i, size_t j ) const noexcept;
    inline Reference      at( size_t i, size_t j );
    inline ConstReference at( size_t i, size_t j ) const;
-   inline Pointer        data  ();
-   inline ConstPointer   data  () const;
-   inline Pointer        data  ( size_t i );
-   inline ConstPointer   data  ( size_t i ) const;
-   inline Iterator       begin ( size_t i );
-   inline ConstIterator  begin ( size_t i ) const;
-   inline ConstIterator  cbegin( size_t i ) const;
-   inline Iterator       end   ( size_t i );
-   inline ConstIterator  end   ( size_t i ) const;
-   inline ConstIterator  cend  ( size_t i ) const;
+   inline Pointer        data  () noexcept;
+   inline ConstPointer   data  () const noexcept;
+   inline Pointer        data  ( size_t i ) noexcept;
+   inline ConstPointer   data  ( size_t i ) const noexcept;
+   inline Iterator       begin ( size_t i ) noexcept;
+   inline ConstIterator  begin ( size_t i ) const noexcept;
+   inline ConstIterator  cbegin( size_t i ) const noexcept;
+   inline Iterator       end   ( size_t i ) noexcept;
+   inline ConstIterator  end   ( size_t i ) const noexcept;
+   inline ConstIterator  cend  ( size_t i ) const noexcept;
    //@}
    //**********************************************************************************************
 
@@ -338,19 +326,19 @@ class StaticMatrix : public DenseMatrix< StaticMatrix<Type,M,N,SO>, SO >
    //**Utility functions***************************************************************************
    /*!\name Utility functions */
    //@{
-                              inline size_t        rows() const;
-                              inline size_t        columns() const;
-                              inline size_t        spacing() const;
-                              inline size_t        capacity() const;
-                              inline size_t        capacity( size_t i ) const;
-                              inline size_t        nonZeros() const;
-                              inline size_t        nonZeros( size_t i ) const;
-                              inline void          reset();
-                              inline void          reset( size_t i );
-                              inline StaticMatrix& transpose();
-                              inline StaticMatrix& ctranspose();
-   template< typename Other > inline StaticMatrix& scale( const Other& scalar );
-                              inline void          swap( StaticMatrix& m ) noexcept;
+                              inline constexpr size_t rows() const noexcept;
+                              inline constexpr size_t columns() const noexcept;
+                              inline constexpr size_t spacing() const noexcept;
+                              inline constexpr size_t capacity() const noexcept;
+                              inline constexpr size_t capacity( size_t i ) const noexcept;
+                              inline size_t           nonZeros() const;
+                              inline size_t           nonZeros( size_t i ) const;
+                              inline void             reset();
+                              inline void             reset( size_t i );
+                              inline StaticMatrix&    transpose();
+                              inline StaticMatrix&    ctranspose();
+   template< typename Other > inline StaticMatrix&    scale( const Other& scalar );
+                              inline void             swap( StaticMatrix& m ) noexcept;
    //@}
    //**********************************************************************************************
 
@@ -417,19 +405,19 @@ class StaticMatrix : public DenseMatrix< StaticMatrix<Type,M,N,SO>, SO >
    //**Expression template evaluation functions****************************************************
    /*!\name Expression template evaluation functions */
    //@{
-   template< typename Other > inline bool canAlias ( const Other* alias ) const;
-   template< typename Other > inline bool isAliased( const Other* alias ) const;
+   template< typename Other > inline bool canAlias ( const Other* alias ) const noexcept;
+   template< typename Other > inline bool isAliased( const Other* alias ) const noexcept;
 
-   inline bool isAligned() const;
+   inline bool isAligned() const noexcept;
 
-   BLAZE_ALWAYS_INLINE IntrinsicType load ( size_t i, size_t j ) const;
-   BLAZE_ALWAYS_INLINE IntrinsicType loada( size_t i, size_t j ) const;
-   BLAZE_ALWAYS_INLINE IntrinsicType loadu( size_t i, size_t j ) const;
+   BLAZE_ALWAYS_INLINE IntrinsicType load ( size_t i, size_t j ) const noexcept;
+   BLAZE_ALWAYS_INLINE IntrinsicType loada( size_t i, size_t j ) const noexcept;
+   BLAZE_ALWAYS_INLINE IntrinsicType loadu( size_t i, size_t j ) const noexcept;
 
-   BLAZE_ALWAYS_INLINE void store ( size_t i, size_t j, const IntrinsicType& value );
-   BLAZE_ALWAYS_INLINE void storea( size_t i, size_t j, const IntrinsicType& value );
-   BLAZE_ALWAYS_INLINE void storeu( size_t i, size_t j, const IntrinsicType& value );
-   BLAZE_ALWAYS_INLINE void stream( size_t i, size_t j, const IntrinsicType& value );
+   BLAZE_ALWAYS_INLINE void store ( size_t i, size_t j, const IntrinsicType& value ) noexcept;
+   BLAZE_ALWAYS_INLINE void storea( size_t i, size_t j, const IntrinsicType& value ) noexcept;
+   BLAZE_ALWAYS_INLINE void storeu( size_t i, size_t j, const IntrinsicType& value ) noexcept;
+   BLAZE_ALWAYS_INLINE void stream( size_t i, size_t j, const IntrinsicType& value ) noexcept;
 
    template< typename MT, bool SO2 >
    inline typename DisableIf< VectorizedAssign<MT> >::Type
@@ -749,655 +737,6 @@ inline StaticMatrix<Type,M,N,SO>::StaticMatrix( const Matrix<MT,SO2>& m )
 //*************************************************************************************************
 
 
-//*************************************************************************************************
-/*!\brief Constructor for \f$ 1 \times 2 \f$ and \f$ 2 \times 1 \f$ matrices.
-//
-// \param v1 The initializer for the first matrix element.
-// \param v2 The initializer for the second matrix element.
-//
-// This constructor offers the option to directly initialize a newly created \f$ 1 \times 2 \f$
-// and \f$ 2 \times 1 \f$ matrix. The following example demonstrates this by creating the matrix
-
-                     \f[\left(\begin{array}{*{2}{c}}
-                     1 & 2 \\
-                     \end{array}\right)\f]:
-
-   \code
-   blaze::StaticMatrix<int,1,2,false> A( 1, 2 );
-   \endcode
-*/
-template< typename Type  // Data type of the matrix
-        , size_t M       // Number of rows
-        , size_t N       // Number of columns
-        , bool SO >      // Storage order
-inline StaticMatrix<Type,M,N,SO>::StaticMatrix( const Type& v1, const Type& v2 )
-   : v_()  // The statically allocated matrix elements
-{
-   BLAZE_STATIC_ASSERT( M*N == 2UL );
-   BLAZE_STATIC_ASSERT( IsVectorizable<Type>::value || NN == N );
-
-   // Initialization of a 1x2 matrix
-   if( M == 1UL ) {
-      v_[0UL] = v1;
-      v_[1UL] = v2;
-   }
-
-   // Initialization of a 2x1 matrix
-   else {
-      v_[0UL] = v1;
-      v_[ NN] = v2;
-   }
-
-   for( size_t i=0UL; i<M; ++i ) {
-      for( size_t j=N; j<NN; ++j )
-         v_[i*NN+j] = Type();
-   }
-}
-//*************************************************************************************************
-
-
-//*************************************************************************************************
-/*!\brief Constructor for \f$ 1 \times 3 \f$ and \f$ 3 \times 1 \f$ matrices.
-//
-// \param v1 The initializer for the first matrix element.
-// \param v2 The initializer for the second matrix element.
-// \param v3 The initializer for the third matrix element.
-//
-// This constructor offers the option to directly initialize a newly created \f$ 1 \times 3 \f$
-// and \f$ 3 \times 1 \f$ matrix. The following example demonstrates this by creating the matrix
-
-                     \f[\left(\begin{array}{*{3}{c}}
-                     1 & 2 & 3 \\
-                     \end{array}\right)\f]:
-
-   \code
-   blaze::StaticMatrix<int,1,3,false> A( 1, 2, 3 );
-   \endcode
-*/
-template< typename Type  // Data type of the matrix
-        , size_t M       // Number of rows
-        , size_t N       // Number of columns
-        , bool SO >      // Storage order
-inline StaticMatrix<Type,M,N,SO>::StaticMatrix( const Type& v1, const Type& v2, const Type& v3 )
-   : v_()  // The statically allocated matrix elements
-{
-   BLAZE_STATIC_ASSERT( M*N == 3UL );
-   BLAZE_STATIC_ASSERT( IsVectorizable<Type>::value || NN == N );
-
-   // Initialization of a 1x3 matrix
-   if( M == 1UL ) {
-      v_[0UL] = v1;
-      v_[1UL] = v2;
-      v_[2UL] = v3;
-   }
-
-   // Initialization of a 3x1 matrix
-   else {
-      v_[   0UL] = v1;
-      v_[    NN] = v2;
-      v_[2UL*NN] = v3;
-   }
-
-   for( size_t i=0UL; i<M; ++i ) {
-      for( size_t j=N; j<NN; ++j )
-         v_[i*NN+j] = Type();
-   }
-}
-//*************************************************************************************************
-
-
-//*************************************************************************************************
-/*!\brief Constructor for \f$ 1 \times 4 \f$, \f$ 2 \times 2 \f$, and \f$ 4 \times 1 \f$ matrices.
-//
-// \param v1 The initializer for the first matrix element.
-// \param v2 The initializer for the second matrix element.
-// \param v3 The initializer for the third matrix element.
-// \param v4 The initializer for the fourth matrix element.
-//
-// This constructor offers the option to directly initialize a newly created \f$ 1 \times 4 \f$,
-// \f$ 2 \times 2 \f$ and \f$ 3 \times 1 \f$ matrix. The following example demonstrates this by
-// creating the matrix
-
-                     \f[\left(\begin{array}{*{2}{c}}
-                     1 & 2 \\
-                     3 & 4 \\
-                     \end{array}\right)\f]:
-
-   \code
-   blaze::StaticMatrix<int,2,2,false> A( 1, 2, 3, 4 );
-   \endcode
-*/
-template< typename Type  // Data type of the matrix
-        , size_t M       // Number of rows
-        , size_t N       // Number of columns
-        , bool SO >      // Storage order
-inline StaticMatrix<Type,M,N,SO>::StaticMatrix( const Type& v1, const Type& v2,
-                                                const Type& v3, const Type& v4 )
-   : v_()  // The statically allocated matrix elements
-{
-   BLAZE_STATIC_ASSERT( M*N == 4UL );
-   BLAZE_STATIC_ASSERT( IsVectorizable<Type>::value || NN == N );
-
-   // Initialization of a 1x4 matrix
-   if( M == 1UL ) {
-      v_[0UL] = v1;
-      v_[1UL] = v2;
-      v_[2UL] = v3;
-      v_[3UL] = v4;
-   }
-
-   // Initialization of a 2x2 matrix
-   else if( M == 2UL ) {
-      v_[   0UL] = v1;
-      v_[   1UL] = v2;
-      v_[NN    ] = v3;
-      v_[NN+1UL] = v4;
-   }
-
-   // Initialization of a 4x1 matrix
-   else {
-      v_[   0UL] = v1;
-      v_[    NN] = v2;
-      v_[2UL*NN] = v3;
-      v_[3UL*NN] = v4;
-   }
-
-   for( size_t i=0UL; i<M; ++i ) {
-      for( size_t j=N; j<NN; ++j )
-         v_[i*NN+j] = Type();
-   }
-}
-//*************************************************************************************************
-
-
-//*************************************************************************************************
-/*!\brief Constructor for \f$ 1 \times 5 \f$ and \f$ 5 \times 1 \f$ matrices.
-//
-// \param v1 The initializer for the first matrix element.
-// \param v2 The initializer for the second matrix element.
-// \param v3 The initializer for the third matrix element.
-// \param v4 The initializer for the fourth matrix element.
-// \param v5 The initializer for the fifth matrix element.
-//
-// This constructor offers the option to directly initialize a newly created \f$ 1 \times 5 \f$,
-// and \f$ 5 \times 1 \f$ matrix. The following example demonstrates this by creating the matrix
-
-                     \f[\left(\begin{array}{*{5}{c}}
-                     1 & 2 & 3 & 4 & 5 \\
-                     \end{array}\right)\f]:
-
-   \code
-   blaze::StaticMatrix<int,1,5,false> A( 1, 2, 3, 4, 5 );
-   \endcode
-*/
-template< typename Type  // Data type of the matrix
-        , size_t M       // Number of rows
-        , size_t N       // Number of columns
-        , bool SO >      // Storage order
-inline StaticMatrix<Type,M,N,SO>::StaticMatrix( const Type& v1, const Type& v2, const Type& v3,
-                                                const Type& v4, const Type& v5 )
-   : v_()  // The statically allocated matrix elements
-{
-   BLAZE_STATIC_ASSERT( M*N == 5UL );
-   BLAZE_STATIC_ASSERT( IsVectorizable<Type>::value || NN == N );
-
-   // Initialization of a 1x5 matrix
-   if( M == 1UL ) {
-      v_[0UL] = v1;
-      v_[1UL] = v2;
-      v_[2UL] = v3;
-      v_[3UL] = v4;
-      v_[4UL] = v5;
-   }
-
-   // Initialization of a 5x1 matrix
-   else {
-      v_[   0UL] = v1;
-      v_[    NN] = v2;
-      v_[2UL*NN] = v3;
-      v_[3UL*NN] = v4;
-      v_[4UL*NN] = v5;
-   }
-
-   for( size_t i=0UL; i<M; ++i ) {
-      for( size_t j=N; j<NN; ++j )
-         v_[i*NN+j] = Type();
-   }
-}
-//*************************************************************************************************
-
-
-//*************************************************************************************************
-/*!\brief Constructor for \f$ 1 \times 6 \f$, \f$ 2 \times 3 \f$, \f$ 3 \times 2 \f$, and
-//        \f$ 6 \times 1 \f$ matrices.
-//
-// \param v1 The initializer for the first matrix element.
-// \param v2 The initializer for the second matrix element.
-// \param v3 The initializer for the third matrix element.
-// \param v4 The initializer for the fourth matrix element.
-// \param v5 The initializer for the fifth matrix element.
-// \param v6 The initializer for the sixth matrix element.
-//
-// This constructor offers the option to directly initialize a newly created \f$ 1 \times 6 \f$,
-// \f$ 2 \times 3 \f$, \f$ 3 \times 2 \f$, and \f$ 6 \times 1 \f$ matrix. The following example
-// demonstrates this by creating the matrix
-
-                     \f[\left(\begin{array}{*{3}{c}}
-                     1 & 2 & 3 \\
-                     4 & 5 & 6 \\
-                     \end{array}\right)\f]:
-
-   \code
-   blaze::StaticMatrix<int,2,3,false> A( 1, 2, 3, 4, 5, 6 );
-   \endcode
-*/
-template< typename Type  // Data type of the matrix
-        , size_t M       // Number of rows
-        , size_t N       // Number of columns
-        , bool SO >      // Storage order
-inline StaticMatrix<Type,M,N,SO>::StaticMatrix( const Type& v1, const Type& v2, const Type& v3,
-                                                const Type& v4, const Type& v5, const Type& v6 )
-   : v_()  // The statically allocated matrix elements
-{
-   BLAZE_STATIC_ASSERT( M*N == 6UL );
-   BLAZE_STATIC_ASSERT( IsVectorizable<Type>::value || NN == N );
-
-   // Initialization of a 1x6 matrix
-   if( M == 1UL ) {
-      v_[0UL] = v1;
-      v_[1UL] = v2;
-      v_[2UL] = v3;
-      v_[3UL] = v4;
-      v_[4UL] = v5;
-      v_[5UL] = v6;
-   }
-
-   // Initialization of a 2x3 matrix
-   else if( M == 2UL ) {
-      v_[   0UL] = v1;
-      v_[   1UL] = v2;
-      v_[   2UL] = v3;
-      v_[NN    ] = v4;
-      v_[NN+1UL] = v5;
-      v_[NN+2UL] = v6;
-   }
-
-   // Initialization of a 3x2 matrix
-   else if( M == 3UL ) {
-      v_[       0UL] = v1;
-      v_[       1UL] = v2;
-      v_[    NN    ] = v3;
-      v_[    NN+1UL] = v4;
-      v_[2UL*NN    ] = v5;
-      v_[2UL*NN+1UL] = v6;
-   }
-
-   // Initialization of a 6x1 matrix
-   else {
-      v_[   0UL] = v1;
-      v_[    NN] = v2;
-      v_[2UL*NN] = v3;
-      v_[3UL*NN] = v4;
-      v_[4UL*NN] = v5;
-      v_[5UL*NN] = v6;
-   }
-
-   for( size_t i=0UL; i<M; ++i ) {
-      for( size_t j=N; j<NN; ++j )
-         v_[i*NN+j] = Type();
-   }
-}
-//*************************************************************************************************
-
-
-//*************************************************************************************************
-/*!\brief Constructor for \f$ 1 \times 7 \f$ and \f$ 7 \times 1 \f$ matrices.
-//
-// \param v1 The initializer for the first matrix element.
-// \param v2 The initializer for the second matrix element.
-// \param v3 The initializer for the third matrix element.
-// \param v4 The initializer for the fourth matrix element.
-// \param v5 The initializer for the fifth matrix element.
-// \param v6 The initializer for the sixth matrix element.
-// \param v7 The initializer for the seventh matrix element.
-//
-// This constructor offers the option to directly initialize a newly created \f$ 1 \times 7 \f$,
-// and \f$ 7 \times 1 \f$ matrix. The following example demonstrates this by creating the matrix
-
-                     \f[\left(\begin{array}{*{7}{c}}
-                     1 & 2 & 3 & 4 & 5 & 6 & 7 \\
-                     \end{array}\right)\f]:
-
-   \code
-   blaze::StaticMatrix<int,1,7,false> A( 1, 2, 3, 4, 5, 6, 7 );
-   \endcode
-*/
-template< typename Type  // Data type of the matrix
-        , size_t M       // Number of rows
-        , size_t N       // Number of columns
-        , bool SO >      // Storage order
-inline StaticMatrix<Type,M,N,SO>::StaticMatrix( const Type& v1, const Type& v2, const Type& v3,
-                                                const Type& v4, const Type& v5, const Type& v6,
-                                                const Type& v7 )
-   : v_()  // The statically allocated matrix elements
-{
-   BLAZE_STATIC_ASSERT( M*N == 7UL );
-   BLAZE_STATIC_ASSERT( IsVectorizable<Type>::value || NN == N );
-
-   // Initialization of a 1x7 matrix
-   if( M == 1UL ) {
-      v_[0UL] = v1;
-      v_[1UL] = v2;
-      v_[2UL] = v3;
-      v_[3UL] = v4;
-      v_[4UL] = v5;
-      v_[5UL] = v6;
-      v_[6UL] = v7;
-   }
-
-   // Initialization of a 7x1 matrix
-   else {
-      v_[   0UL] = v1;
-      v_[    NN] = v2;
-      v_[2UL*NN] = v3;
-      v_[3UL*NN] = v4;
-      v_[4UL*NN] = v5;
-      v_[5UL*NN] = v6;
-      v_[6UL*NN] = v7;
-   }
-
-   for( size_t i=0UL; i<M; ++i ) {
-      for( size_t j=N; j<NN; ++j )
-         v_[i*NN+j] = Type();
-   }
-}
-//*************************************************************************************************
-
-
-//*************************************************************************************************
-/*!\brief Constructor for \f$ 1 \times 8 \f$ and \f$ 8 \times 1 \f$ matrices.
-//
-// \param v1 The initializer for the first matrix element.
-// \param v2 The initializer for the second matrix element.
-// \param v3 The initializer for the third matrix element.
-// \param v4 The initializer for the fourth matrix element.
-// \param v5 The initializer for the fifth matrix element.
-// \param v6 The initializer for the sixth matrix element.
-// \param v7 The initializer for the seventh matrix element.
-// \param v8 The initializer for the eigth matrix element.
-//
-// This constructor offers the option to directly initialize a newly created \f$ 1 \times 8 \f$,
-// \f$ 2 \times 4 \f$, \f$ 4 \times 2 \f$, and \f$ 8 \times 1 \f$ matrix. The following example
-// demonstrates this by creating the matrix
-
-                     \f[\left(\begin{array}{*{4}{c}}
-                     1 & 2 & 3 & 4 \\
-                     5 & 6 & 7 & 8 \\
-                     \end{array}\right)\f]:
-
-   \code
-   blaze::StaticMatrix<int,2,4,false> A( 1, 2, 3, 4, 5, 6, 7, 8 );
-   \endcode
-*/
-template< typename Type  // Data type of the matrix
-        , size_t M       // Number of rows
-        , size_t N       // Number of columns
-        , bool SO >      // Storage order
-inline StaticMatrix<Type,M,N,SO>::StaticMatrix( const Type& v1, const Type& v2, const Type& v3,
-                                                const Type& v4, const Type& v5, const Type& v6,
-                                                const Type& v7, const Type& v8 )
-   : v_()  // The statically allocated matrix elements
-{
-   BLAZE_STATIC_ASSERT( M*N == 8UL );
-   BLAZE_STATIC_ASSERT( IsVectorizable<Type>::value || NN == N );
-
-   // Initialization of a 1x8 matrix
-   if( M == 1UL ) {
-      v_[0UL] = v1;
-      v_[1UL] = v2;
-      v_[2UL] = v3;
-      v_[3UL] = v4;
-      v_[4UL] = v5;
-      v_[5UL] = v6;
-      v_[6UL] = v7;
-      v_[7UL] = v8;
-   }
-
-   // Initialization of a 2x4 matrix
-   else if( M == 2UL ) {
-      v_[   0UL] = v1;
-      v_[   1UL] = v2;
-      v_[   2UL] = v3;
-      v_[   3UL] = v4;
-      v_[NN    ] = v5;
-      v_[NN+1UL] = v6;
-      v_[NN+2UL] = v7;
-      v_[NN+3UL] = v8;
-   }
-
-   // Initialization of a 4x2 matrix
-   else if( M == 4UL ) {
-      v_[       0UL] = v1;
-      v_[       1UL] = v2;
-      v_[    NN    ] = v3;
-      v_[    NN+1UL] = v4;
-      v_[2UL*NN    ] = v5;
-      v_[2UL*NN+1UL] = v6;
-      v_[3UL*NN    ] = v7;
-      v_[3UL*NN+1UL] = v8;
-   }
-
-   // Initialization of a 8x1 matrix
-   else {
-      v_[   0UL] = v1;
-      v_[    NN] = v2;
-      v_[2UL*NN] = v3;
-      v_[3UL*NN] = v4;
-      v_[4UL*NN] = v5;
-      v_[5UL*NN] = v6;
-      v_[6UL*NN] = v7;
-      v_[7UL*NN] = v8;
-   }
-
-   for( size_t i=0UL; i<M; ++i ) {
-      for( size_t j=N; j<NN; ++j )
-         v_[i*NN+j] = Type();
-   }
-}
-//*************************************************************************************************
-
-
-//*************************************************************************************************
-/*!\brief Constructor for \f$ 1 \times 9 \f$, \f$ 3 \times 3 \f$, and \f$ 9 \times 1 \f$ matrices.
-//
-// \param v1 The initializer for the first matrix element.
-// \param v2 The initializer for the second matrix element.
-// \param v3 The initializer for the third matrix element.
-// \param v4 The initializer for the fourth matrix element.
-// \param v5 The initializer for the fifth matrix element.
-// \param v6 The initializer for the sixth matrix element.
-// \param v7 The initializer for the seventh matrix element.
-// \param v8 The initializer for the eigth matrix element.
-// \param v9 The initializer for the ninth matrix element.
-//
-// This constructor offers the option to directly initialize a newly created \f$ 1 \times 9 \f$,
-// \f$ 3 \times 3 \f$, and \f$ 9 \times 1 \f$ matrix. The following example demonstrates this by
-// creating the matrix
-
-                     \f[\left(\begin{array}{*{3}{c}}
-                     1 & 2 & 3 \\
-                     4 & 5 & 6 \\
-                     7 & 8 & 9 \\
-                     \end{array}\right)\f]:
-
-   \code
-   blaze::StaticMatrix<int,3,3,false> A( 1, 2, 3, 4, 5, 6, 7, 8, 9 );
-   \endcode
-*/
-template< typename Type  // Data type of the matrix
-        , size_t M       // Number of rows
-        , size_t N       // Number of columns
-        , bool SO >      // Storage order
-inline StaticMatrix<Type,M,N,SO>::StaticMatrix( const Type& v1, const Type& v2, const Type& v3,
-                                                const Type& v4, const Type& v5, const Type& v6,
-                                                const Type& v7, const Type& v8, const Type& v9 )
-   : v_()  // The statically allocated matrix elements
-{
-   BLAZE_STATIC_ASSERT( M*N == 9UL );
-   BLAZE_STATIC_ASSERT( IsVectorizable<Type>::value || NN == N );
-
-   // Initialization of a 1x9 matrix
-   if( M == 1UL ) {
-      v_[0UL] = v1;
-      v_[1UL] = v2;
-      v_[2UL] = v3;
-      v_[3UL] = v4;
-      v_[4UL] = v5;
-      v_[5UL] = v6;
-      v_[6UL] = v7;
-      v_[7UL] = v8;
-      v_[8UL] = v9;
-   }
-
-   // Initialization of a 3x3 matrix
-   else if( M == 3UL ) {
-      v_[       0UL] = v1;
-      v_[       1UL] = v2;
-      v_[       2UL] = v3;
-      v_[    NN    ] = v4;
-      v_[    NN+1UL] = v5;
-      v_[    NN+2UL] = v6;
-      v_[2UL*NN    ] = v7;
-      v_[2UL*NN+1UL] = v8;
-      v_[2UL*NN+2UL] = v9;
-   }
-
-   // Initialization of a 9x1 matrix
-   else {
-      v_[   0UL] = v1;
-      v_[    NN] = v2;
-      v_[2UL*NN] = v3;
-      v_[3UL*NN] = v4;
-      v_[4UL*NN] = v5;
-      v_[5UL*NN] = v6;
-      v_[6UL*NN] = v7;
-      v_[7UL*NN] = v8;
-      v_[8UL*NN] = v9;
-   }
-
-   for( size_t i=0UL; i<M; ++i ) {
-      for( size_t j=N; j<NN; ++j )
-         v_[i*NN+j] = Type();
-   }
-}
-//*************************************************************************************************
-
-
-//*************************************************************************************************
-/*!\brief Constructor for \f$ 1 \times 10 \f$, \f$ 2 \times 5 \f$, \f$ 5 \times 2 \f$, and
-//        \f$ 10 \times 1 \f$ matrices.
-//
-// \param v1 The initializer for the first matrix element.
-// \param v2 The initializer for the second matrix element.
-// \param v3 The initializer for the third matrix element.
-// \param v4 The initializer for the fourth matrix element.
-// \param v5 The initializer for the fifth matrix element.
-// \param v6 The initializer for the sixth matrix element.
-// \param v7 The initializer for the seventh matrix element.
-// \param v8 The initializer for the eigth matrix element.
-// \param v9 The initializer for the ninth matrix element.
-// \param v10 The initializer for the tenth matrix element.
-//
-// This constructor offers the option to directly initialize a newly created \f$ 1 \times 10 \f$,
-// \f$ 2 \times 5 \f$, \f$ 5 \times 2 \f$, and \f$ 10 \times 1 \f$ matrix. The following example
-// demonstrates this by creating the matrix
-
-                     \f[\left(\begin{array}{*{5}{c}}
-                     1 & 2 & 3 & 4 & 5  \\
-                     6 & 7 & 8 & 8 & 10 \\
-                     \end{array}\right)\f]:
-
-   \code
-   blaze::StaticMatrix<int,2,5,false> A( 1, 2, 3, 4, 5, 6, 7, 8, 9, 10 );
-   \endcode
-*/
-template< typename Type  // Data type of the matrix
-        , size_t M       // Number of rows
-        , size_t N       // Number of columns
-        , bool SO >      // Storage order
-inline StaticMatrix<Type,M,N,SO>::StaticMatrix( const Type& v1, const Type& v2, const Type& v3,
-                                                const Type& v4, const Type& v5, const Type& v6,
-                                                const Type& v7, const Type& v8, const Type& v9,
-                                                const Type& v10 )
-   : v_()  // The statically allocated matrix elements
-{
-   BLAZE_STATIC_ASSERT( M*N == 10UL );
-   BLAZE_STATIC_ASSERT( IsVectorizable<Type>::value || NN == N );
-
-   // Initialization of a 1x10 matrix
-   if( M == 1UL ) {
-      v_[0UL] = v1;
-      v_[1UL] = v2;
-      v_[2UL] = v3;
-      v_[3UL] = v4;
-      v_[4UL] = v5;
-      v_[5UL] = v6;
-      v_[6UL] = v7;
-      v_[7UL] = v8;
-      v_[8UL] = v9;
-      v_[9UL] = v10;
-   }
-
-   // Initialization of a 2x5 matrix
-   else if( M == 2UL ) {
-      v_[   0UL] = v1;
-      v_[   1UL] = v2;
-      v_[   2UL] = v3;
-      v_[   3UL] = v4;
-      v_[   4UL] = v5;
-      v_[NN    ] = v6;
-      v_[NN+1UL] = v7;
-      v_[NN+2UL] = v8;
-      v_[NN+3UL] = v9;
-      v_[NN+4UL] = v10;
-   }
-
-   // Initialization of a 5x2 matrix
-   else if( M == 5UL ) {
-      v_[       0UL] = v1;
-      v_[       1UL] = v2;
-      v_[    NN    ] = v3;
-      v_[    NN+1UL] = v4;
-      v_[2UL*NN    ] = v5;
-      v_[2UL*NN+1UL] = v6;
-      v_[3UL*NN    ] = v7;
-      v_[3UL*NN+1UL] = v8;
-      v_[4UL*NN    ] = v9;
-      v_[4UL*NN+1UL] = v10;
-   }
-
-   // Initialization of a 10x1 matrix
-   else {
-      v_[   0UL] = v1;
-      v_[    NN] = v2;
-      v_[2UL*NN] = v3;
-      v_[3UL*NN] = v4;
-      v_[4UL*NN] = v5;
-      v_[5UL*NN] = v6;
-      v_[6UL*NN] = v7;
-      v_[7UL*NN] = v8;
-      v_[8UL*NN] = v9;
-      v_[9UL*NN] = v10;
-   }
-
-   for( size_t i=0UL; i<M; ++i ) {
-      for( size_t j=N; j<NN; ++j )
-         v_[i*NN+j] = Type();
-   }
-}
-//*************************************************************************************************
-
-
 
 
 //=================================================================================================
@@ -1421,7 +760,7 @@ template< typename Type  // Data type of the matrix
         , size_t N       // Number of columns
         , bool SO >      // Storage order
 inline typename StaticMatrix<Type,M,N,SO>::Reference
-   StaticMatrix<Type,M,N,SO>::operator()( size_t i, size_t j )
+   StaticMatrix<Type,M,N,SO>::operator()( size_t i, size_t j ) noexcept
 {
    BLAZE_USER_ASSERT( i<M, "Invalid row access index"    );
    BLAZE_USER_ASSERT( j<N, "Invalid column access index" );
@@ -1445,7 +784,7 @@ template< typename Type  // Data type of the matrix
         , size_t N       // Number of columns
         , bool SO >      // Storage order
 inline typename StaticMatrix<Type,M,N,SO>::ConstReference
-   StaticMatrix<Type,M,N,SO>::operator()( size_t i, size_t j ) const
+   StaticMatrix<Type,M,N,SO>::operator()( size_t i, size_t j ) const noexcept
 {
    BLAZE_USER_ASSERT( i<M, "Invalid row access index"    );
    BLAZE_USER_ASSERT( j<N, "Invalid column access index" );
@@ -1529,7 +868,7 @@ template< typename Type  // Data type of the matrix
         , size_t N       // Number of columns
         , bool SO >      // Storage order
 inline typename StaticMatrix<Type,M,N,SO>::Pointer
-   StaticMatrix<Type,M,N,SO>::data()
+   StaticMatrix<Type,M,N,SO>::data() noexcept
 {
    return v_;
 }
@@ -1553,7 +892,7 @@ template< typename Type  // Data type of the matrix
         , size_t N       // Number of columns
         , bool SO >      // Storage order
 inline typename StaticMatrix<Type,M,N,SO>::ConstPointer
-   StaticMatrix<Type,M,N,SO>::data() const
+   StaticMatrix<Type,M,N,SO>::data() const noexcept
 {
    return v_;
 }
@@ -1573,7 +912,7 @@ template< typename Type  // Data type of the matrix
         , size_t N       // Number of columns
         , bool SO >      // Storage order
 inline typename StaticMatrix<Type,M,N,SO>::Pointer
-   StaticMatrix<Type,M,N,SO>::data( size_t i )
+   StaticMatrix<Type,M,N,SO>::data( size_t i ) noexcept
 {
    BLAZE_USER_ASSERT( i < M, "Invalid dense matrix row access index" );
    return v_ + i*NN;
@@ -1594,7 +933,7 @@ template< typename Type  // Data type of the matrix
         , size_t N       // Number of columns
         , bool SO >      // Storage order
 inline typename StaticMatrix<Type,M,N,SO>::ConstPointer
-   StaticMatrix<Type,M,N,SO>::data( size_t i ) const
+   StaticMatrix<Type,M,N,SO>::data( size_t i ) const noexcept
 {
    BLAZE_USER_ASSERT( i < M, "Invalid dense matrix row access index" );
    return v_ + i*NN;
@@ -1618,7 +957,7 @@ template< typename Type  // Data type of the matrix
         , size_t N       // Number of columns
         , bool SO >      // Storage order
 inline typename StaticMatrix<Type,M,N,SO>::Iterator
-   StaticMatrix<Type,M,N,SO>::begin( size_t i )
+   StaticMatrix<Type,M,N,SO>::begin( size_t i ) noexcept
 {
    BLAZE_USER_ASSERT( i < M, "Invalid dense matrix row access index" );
    return Iterator( v_ + i*NN );
@@ -1642,7 +981,7 @@ template< typename Type  // Data type of the matrix
         , size_t N       // Number of columns
         , bool SO >      // Storage order
 inline typename StaticMatrix<Type,M,N,SO>::ConstIterator
-   StaticMatrix<Type,M,N,SO>::begin( size_t i ) const
+   StaticMatrix<Type,M,N,SO>::begin( size_t i ) const noexcept
 {
    BLAZE_USER_ASSERT( i < M, "Invalid dense matrix row access index" );
    return ConstIterator( v_ + i*NN );
@@ -1666,7 +1005,7 @@ template< typename Type  // Data type of the matrix
         , size_t N       // Number of columns
         , bool SO >      // Storage order
 inline typename StaticMatrix<Type,M,N,SO>::ConstIterator
-   StaticMatrix<Type,M,N,SO>::cbegin( size_t i ) const
+   StaticMatrix<Type,M,N,SO>::cbegin( size_t i ) const noexcept
 {
    BLAZE_USER_ASSERT( i < M, "Invalid dense matrix row access index" );
    return ConstIterator( v_ + i*NN );
@@ -1690,7 +1029,7 @@ template< typename Type  // Data type of the matrix
         , size_t N       // Number of columns
         , bool SO >      // Storage order
 inline typename StaticMatrix<Type,M,N,SO>::Iterator
-   StaticMatrix<Type,M,N,SO>::end( size_t i )
+   StaticMatrix<Type,M,N,SO>::end( size_t i ) noexcept
 {
    BLAZE_USER_ASSERT( i < M, "Invalid dense matrix row access index" );
    return Iterator( v_ + i*NN + N );
@@ -1714,7 +1053,7 @@ template< typename Type  // Data type of the matrix
         , size_t N       // Number of columns
         , bool SO >      // Storage order
 inline typename StaticMatrix<Type,M,N,SO>::ConstIterator
-   StaticMatrix<Type,M,N,SO>::end( size_t i ) const
+   StaticMatrix<Type,M,N,SO>::end( size_t i ) const noexcept
 {
    BLAZE_USER_ASSERT( i < M, "Invalid dense matrix row access index" );
    return ConstIterator( v_ + i*NN + N );
@@ -1738,7 +1077,7 @@ template< typename Type  // Data type of the matrix
         , size_t N       // Number of columns
         , bool SO >      // Storage order
 inline typename StaticMatrix<Type,M,N,SO>::ConstIterator
-   StaticMatrix<Type,M,N,SO>::cend( size_t i ) const
+   StaticMatrix<Type,M,N,SO>::cend( size_t i ) const noexcept
 {
    BLAZE_USER_ASSERT( i < M, "Invalid dense matrix row access index" );
    return ConstIterator( v_ + i*NN + N );
@@ -2075,7 +1414,7 @@ template< typename Type  // Data type of the matrix
         , size_t M       // Number of rows
         , size_t N       // Number of columns
         , bool SO >      // Storage order
-inline size_t StaticMatrix<Type,M,N,SO>::rows() const
+inline constexpr size_t StaticMatrix<Type,M,N,SO>::rows() const noexcept
 {
    return M;
 }
@@ -2091,7 +1430,7 @@ template< typename Type  // Data type of the matrix
         , size_t M       // Number of rows
         , size_t N       // Number of columns
         , bool SO >      // Storage order
-inline size_t StaticMatrix<Type,M,N,SO>::columns() const
+inline constexpr size_t StaticMatrix<Type,M,N,SO>::columns() const noexcept
 {
    return N;
 }
@@ -2110,7 +1449,7 @@ template< typename Type  // Data type of the matrix
         , size_t M       // Number of rows
         , size_t N       // Number of columns
         , bool SO >      // Storage order
-inline size_t StaticMatrix<Type,M,N,SO>::spacing() const
+inline constexpr size_t StaticMatrix<Type,M,N,SO>::spacing() const noexcept
 {
    return NN;
 }
@@ -2126,7 +1465,7 @@ template< typename Type  // Data type of the matrix
         , size_t M       // Number of rows
         , size_t N       // Number of columns
         , bool SO >      // Storage order
-inline size_t StaticMatrix<Type,M,N,SO>::capacity() const
+inline constexpr size_t StaticMatrix<Type,M,N,SO>::capacity() const noexcept
 {
    return M*NN;
 }
@@ -2148,7 +1487,7 @@ template< typename Type  // Data type of the matrix
         , size_t M       // Number of rows
         , size_t N       // Number of columns
         , bool SO >      // Storage order
-inline size_t StaticMatrix<Type,M,N,SO>::capacity( size_t i ) const
+inline constexpr size_t StaticMatrix<Type,M,N,SO>::capacity( size_t i ) const noexcept
 {
    UNUSED_PARAMETER( i );
 
@@ -2441,7 +1780,6 @@ inline StaticMatrix<Type,M,N,SO>& StaticMatrix<Type,M,N,SO>::scale( const Other&
 //
 // \param m The matrix to be swapped.
 // \return void
-// \exception no-throw guarantee.
 */
 template< typename Type  // Data type of the matrix
         , size_t M       // Number of rows
@@ -2657,7 +1995,7 @@ template< typename Type     // Data type of the matrix
         , size_t N          // Number of columns
         , bool SO >         // Storage order
 template< typename Other >  // Data type of the foreign expression
-inline bool StaticMatrix<Type,M,N,SO>::canAlias( const Other* alias ) const
+inline bool StaticMatrix<Type,M,N,SO>::canAlias( const Other* alias ) const noexcept
 {
    return static_cast<const void*>( this ) == static_cast<const void*>( alias );
 }
@@ -2679,7 +2017,7 @@ template< typename Type     // Data type of the matrix
         , size_t N          // Number of columns
         , bool SO >         // Storage order
 template< typename Other >  // Data type of the foreign expression
-inline bool StaticMatrix<Type,M,N,SO>::isAliased( const Other* alias ) const
+inline bool StaticMatrix<Type,M,N,SO>::isAliased( const Other* alias ) const noexcept
 {
    return static_cast<const void*>( this ) == static_cast<const void*>( alias );
 }
@@ -2699,7 +2037,7 @@ template< typename Type  // Data type of the matrix
         , size_t M       // Number of rows
         , size_t N       // Number of columns
         , bool SO >      // Storage order
-inline bool StaticMatrix<Type,M,N,SO>::isAligned() const
+inline bool StaticMatrix<Type,M,N,SO>::isAligned() const noexcept
 {
    return ( usePadding || columns() % IT::size == 0UL );
 }
@@ -2726,7 +2064,7 @@ template< typename Type  // Data type of the matrix
         , size_t N       // Number of columns
         , bool SO >      // Storage order
 BLAZE_ALWAYS_INLINE typename StaticMatrix<Type,M,N,SO>::IntrinsicType
-   StaticMatrix<Type,M,N,SO>::load( size_t i, size_t j ) const
+   StaticMatrix<Type,M,N,SO>::load( size_t i, size_t j ) const noexcept
 {
    if( usePadding )
       return loada( i, j );
@@ -2756,7 +2094,7 @@ template< typename Type  // Data type of the matrix
         , size_t N       // Number of columns
         , bool SO >      // Storage order
 BLAZE_ALWAYS_INLINE typename StaticMatrix<Type,M,N,SO>::IntrinsicType
-   StaticMatrix<Type,M,N,SO>::loada( size_t i, size_t j ) const
+   StaticMatrix<Type,M,N,SO>::loada( size_t i, size_t j ) const noexcept
 {
    using blaze::loada;
 
@@ -2793,7 +2131,7 @@ template< typename Type  // Data type of the matrix
         , size_t N       // Number of columns
         , bool SO >      // Storage order
 BLAZE_ALWAYS_INLINE typename StaticMatrix<Type,M,N,SO>::IntrinsicType
-   StaticMatrix<Type,M,N,SO>::loadu( size_t i, size_t j ) const
+   StaticMatrix<Type,M,N,SO>::loadu( size_t i, size_t j ) const noexcept
 {
    using blaze::loadu;
 
@@ -2829,7 +2167,7 @@ template< typename Type  // Data type of the matrix
         , size_t N       // Number of columns
         , bool SO >      // Storage order
 BLAZE_ALWAYS_INLINE void
-   StaticMatrix<Type,M,N,SO>::store( size_t i, size_t j, const IntrinsicType& value )
+   StaticMatrix<Type,M,N,SO>::store( size_t i, size_t j, const IntrinsicType& value ) noexcept
 {
    if( usePadding )
       storea( i, j, value );
@@ -2860,7 +2198,7 @@ template< typename Type  // Data type of the matrix
         , size_t N       // Number of columns
         , bool SO >      // Storage order
 BLAZE_ALWAYS_INLINE void
-   StaticMatrix<Type,M,N,SO>::storea( size_t i, size_t j, const IntrinsicType& value )
+   StaticMatrix<Type,M,N,SO>::storea( size_t i, size_t j, const IntrinsicType& value ) noexcept
 {
    using blaze::storea;
 
@@ -2898,7 +2236,7 @@ template< typename Type  // Data type of the matrix
         , size_t N       // Number of columns
         , bool SO >      // Storage order
 BLAZE_ALWAYS_INLINE void
-   StaticMatrix<Type,M,N,SO>::storeu( size_t i, size_t j, const IntrinsicType& value )
+   StaticMatrix<Type,M,N,SO>::storeu( size_t i, size_t j, const IntrinsicType& value ) noexcept
 {
    using blaze::storeu;
 
@@ -2934,7 +2272,7 @@ template< typename Type  // Data type of the matrix
         , size_t N       // Number of columns
         , bool SO >      // Storage order
 BLAZE_ALWAYS_INLINE void
-   StaticMatrix<Type,M,N,SO>::stream( size_t i, size_t j, const IntrinsicType& value )
+   StaticMatrix<Type,M,N,SO>::stream( size_t i, size_t j, const IntrinsicType& value ) noexcept
 {
    using blaze::stream;
 
@@ -3438,7 +2776,7 @@ class StaticMatrix<Type,M,N,true> : public DenseMatrix< StaticMatrix<Type,M,N,tr
 
    //**********************************************************************************************
    //! Alignment adjustment
-   static const size_t MM = ( usePadding )?( NextMultiple< SizeT<M>, SizeT<IT::size> >::value ):( M );
+   static constexpr size_t MM = ( usePadding )?( NextMultiple< SizeT<M>, SizeT<IT::size> >::value ):( M );
    //**********************************************************************************************
 
  public:
@@ -3497,21 +2835,6 @@ class StaticMatrix<Type,M,N,true> : public DenseMatrix< StaticMatrix<Type,M,N,tr
                                        inline StaticMatrix( const StaticMatrix& m );
    template< typename Other, bool SO > inline StaticMatrix( const StaticMatrix<Other,M,N,SO>&  m );
    template< typename MT   , bool SO > inline StaticMatrix( const Matrix<MT,SO>& m );
-
-   inline StaticMatrix( const Type& v1, const Type& v2 );
-   inline StaticMatrix( const Type& v1, const Type& v2, const Type& v3 );
-   inline StaticMatrix( const Type& v1, const Type& v2, const Type& v3, const Type& v4 );
-   inline StaticMatrix( const Type& v1, const Type& v2, const Type& v3, const Type& v4, const Type& v5 );
-   inline StaticMatrix( const Type& v1, const Type& v2, const Type& v3, const Type& v4, const Type& v5,
-                        const Type& v6 );
-   inline StaticMatrix( const Type& v1, const Type& v2, const Type& v3, const Type& v4, const Type& v5,
-                        const Type& v6, const Type& v7 );
-   inline StaticMatrix( const Type& v1, const Type& v2, const Type& v3, const Type& v4, const Type& v5,
-                        const Type& v6, const Type& v7, const Type& v8 );
-   inline StaticMatrix( const Type& v1, const Type& v2, const Type& v3, const Type& v4, const Type& v5,
-                        const Type& v6, const Type& v7, const Type& v8, const Type& v9 );
-   inline StaticMatrix( const Type& v1, const Type& v2, const Type& v3, const Type& v4, const Type& v5,
-                        const Type& v6, const Type& v7, const Type& v8, const Type& v9, const Type& v10 );
    //@}
    //**********************************************************************************************
 
@@ -3522,20 +2845,20 @@ class StaticMatrix<Type,M,N,true> : public DenseMatrix< StaticMatrix<Type,M,N,tr
    //**Data access functions***********************************************************************
    /*!\name Data access functions */
    //@{
-   inline Reference      operator()( size_t i, size_t j );
-   inline ConstReference operator()( size_t i, size_t j ) const;
+   inline Reference      operator()( size_t i, size_t j ) noexcept;
+   inline ConstReference operator()( size_t i, size_t j ) const noexcept;
    inline Reference      at( size_t i, size_t j );
    inline ConstReference at( size_t i, size_t j ) const;
-   inline Pointer        data  ();
-   inline ConstPointer   data  () const;
-   inline Pointer        data  ( size_t j );
-   inline ConstPointer   data  ( size_t j ) const;
-   inline Iterator       begin ( size_t j );
-   inline ConstIterator  begin ( size_t j ) const;
-   inline ConstIterator  cbegin( size_t j ) const;
-   inline Iterator       end   ( size_t j );
-   inline ConstIterator  end   ( size_t j ) const;
-   inline ConstIterator  cend  ( size_t j ) const;
+   inline Pointer        data  () noexcept;
+   inline ConstPointer   data  () const noexcept;
+   inline Pointer        data  ( size_t j ) noexcept;
+   inline ConstPointer   data  ( size_t j ) const noexcept;
+   inline Iterator       begin ( size_t j ) noexcept;
+   inline ConstIterator  begin ( size_t j ) const noexcept;
+   inline ConstIterator  cbegin( size_t j ) const noexcept;
+   inline Iterator       end   ( size_t j ) noexcept;
+   inline ConstIterator  end   ( size_t j ) const noexcept;
+   inline ConstIterator  cend  ( size_t j ) const noexcept;
    //@}
    //**********************************************************************************************
 
@@ -3566,19 +2889,19 @@ class StaticMatrix<Type,M,N,true> : public DenseMatrix< StaticMatrix<Type,M,N,tr
    //**Utility functions***************************************************************************
    /*!\name Utility functions */
    //@{
-                              inline size_t        rows() const;
-                              inline size_t        columns() const;
-                              inline size_t        spacing() const;
-                              inline size_t        capacity() const;
-                              inline size_t        capacity( size_t j ) const;
-                              inline size_t        nonZeros() const;
-                              inline size_t        nonZeros( size_t j ) const;
-                              inline void          reset();
-                              inline void          reset( size_t i );
-                              inline StaticMatrix& transpose();
-                              inline StaticMatrix& ctranspose();
-   template< typename Other > inline StaticMatrix& scale( const Other& scalar );
-                              inline void          swap( StaticMatrix& m ) noexcept;
+                              inline constexpr size_t rows() const noexcept;
+                              inline constexpr size_t columns() const noexcept;
+                              inline constexpr size_t spacing() const noexcept;
+                              inline constexpr size_t capacity() const noexcept;
+                              inline constexpr size_t capacity( size_t j ) const noexcept;
+                              inline size_t           nonZeros() const;
+                              inline size_t           nonZeros( size_t j ) const;
+                              inline void             reset();
+                              inline void             reset( size_t i );
+                              inline StaticMatrix&    transpose();
+                              inline StaticMatrix&    ctranspose();
+   template< typename Other > inline StaticMatrix&    scale( const Other& scalar );
+                              inline void             swap( StaticMatrix& m ) noexcept;
    //@}
    //**********************************************************************************************
 
@@ -3639,19 +2962,19 @@ class StaticMatrix<Type,M,N,true> : public DenseMatrix< StaticMatrix<Type,M,N,tr
    //**Expression template evaluation functions****************************************************
    /*!\name Expression template evaluation functions */
    //@{
-   template< typename Other > inline bool canAlias ( const Other* alias ) const;
-   template< typename Other > inline bool isAliased( const Other* alias ) const;
+   template< typename Other > inline bool canAlias ( const Other* alias ) const noexcept;
+   template< typename Other > inline bool isAliased( const Other* alias ) const noexcept;
 
-   inline bool isAligned() const;
+   inline bool isAligned() const noexcept;
 
-   BLAZE_ALWAYS_INLINE IntrinsicType load ( size_t i, size_t j ) const;
-   BLAZE_ALWAYS_INLINE IntrinsicType loada( size_t i, size_t j ) const;
-   BLAZE_ALWAYS_INLINE IntrinsicType loadu( size_t i, size_t j ) const;
+   BLAZE_ALWAYS_INLINE IntrinsicType load ( size_t i, size_t j ) const noexcept;
+   BLAZE_ALWAYS_INLINE IntrinsicType loada( size_t i, size_t j ) const noexcept;
+   BLAZE_ALWAYS_INLINE IntrinsicType loadu( size_t i, size_t j ) const noexcept;
 
-   BLAZE_ALWAYS_INLINE void store ( size_t i, size_t j, const IntrinsicType& value );
-   BLAZE_ALWAYS_INLINE void storea( size_t i, size_t j, const IntrinsicType& value );
-   BLAZE_ALWAYS_INLINE void storeu( size_t i, size_t j, const IntrinsicType& value );
-   BLAZE_ALWAYS_INLINE void stream( size_t i, size_t j, const IntrinsicType& value );
+   BLAZE_ALWAYS_INLINE void store ( size_t i, size_t j, const IntrinsicType& value ) noexcept;
+   BLAZE_ALWAYS_INLINE void storea( size_t i, size_t j, const IntrinsicType& value ) noexcept;
+   BLAZE_ALWAYS_INLINE void storeu( size_t i, size_t j, const IntrinsicType& value ) noexcept;
+   BLAZE_ALWAYS_INLINE void stream( size_t i, size_t j, const IntrinsicType& value ) noexcept;
 
    template< typename MT, bool SO >
    inline typename DisableIf< VectorizedAssign<MT> >::Type
@@ -3968,665 +3291,6 @@ inline StaticMatrix<Type,M,N,true>::StaticMatrix( const Matrix<MT,SO>& m )
 //*************************************************************************************************
 
 
-//*************************************************************************************************
-/*! \cond BLAZE_INTERNAL */
-/*!\brief Constructor for \f$ 1 \times 2 \f$ and \f$ 2 \times 1 \f$ matrices.
-//
-// \param v1 The initializer for the first matrix element.
-// \param v2 The initializer for the second matrix element.
-//
-// This constructor offers the option to directly initialize a newly created \f$ 1 \times 2 \f$
-// and \f$ 2 \times 1 \f$ matrix. The following example demonstrates this by creating the matrix
-
-                     \f[\left(\begin{array}{*{2}{c}}
-                     1 & 2 \\
-                     \end{array}\right)\f]:
-
-   \code
-   blaze::StaticMatrix<int,1,2,true> A( 1, 2 );
-   \endcode
-*/
-template< typename Type  // Data type of the matrix
-        , size_t M       // Number of rows
-        , size_t N >     // Number of columns
-inline StaticMatrix<Type,M,N,true>::StaticMatrix( const Type& v1, const Type& v2 )
-   : v_()  // The statically allocated matrix elements
-{
-   BLAZE_STATIC_ASSERT( M*N == 2UL );
-   BLAZE_STATIC_ASSERT( IsVectorizable<Type>::value || MM == M );
-
-   // Initialization of a 2x1 matrix
-   if( N == 1UL ) {
-      v_[0UL] = v1;
-      v_[1UL] = v2;
-   }
-
-   // Initialization of a 1x2 matrix
-   else {
-      v_[0UL] = v1;
-      v_[ MM] = v2;
-   }
-
-   for( size_t j=0UL; j<N; ++j )
-      for( size_t i=M; i<MM; ++i ) {
-         v_[i+j*MM] = Type();
-   }
-}
-/*! \endcond */
-//*************************************************************************************************
-
-
-//*************************************************************************************************
-/*! \cond BLAZE_INTERNAL */
-/*!\brief Constructor for \f$ 1 \times 3 \f$ and \f$ 3 \times 1 \f$ matrices.
-//
-// \param v1 The initializer for the first matrix element.
-// \param v2 The initializer for the second matrix element.
-// \param v3 The initializer for the third matrix element.
-//
-// This constructor offers the option to directly initialize a newly created \f$ 1 \times 3 \f$
-// and \f$ 3 \times 1 \f$ matrix. The following example demonstrates this by creating the matrix
-
-                     \f[\left(\begin{array}{*{3}{c}}
-                     1 & 2 & 3 \\
-                     \end{array}\right)\f]:
-
-   \code
-   blaze::StaticMatrix<int,1,3,true> A( 1, 2, 3 );
-   \endcode
-*/
-template< typename Type  // Data type of the matrix
-        , size_t M       // Number of rows
-        , size_t N >     // Number of columns
-inline StaticMatrix<Type,M,N,true>::StaticMatrix( const Type& v1, const Type& v2, const Type& v3 )
-   : v_()  // The statically allocated matrix elements
-{
-   BLAZE_STATIC_ASSERT( M*N == 3UL );
-   BLAZE_STATIC_ASSERT( IsVectorizable<Type>::value || MM == M );
-
-   // Initialization of a 3x1 matrix
-   if( N == 1UL ) {
-      v_[0UL] = v1;
-      v_[1UL] = v2;
-      v_[2UL] = v3;
-   }
-
-   // Initialization of a 1x3 matrix
-   else {
-      v_[   0UL] = v1;
-      v_[    MM] = v2;
-      v_[2UL*MM] = v3;
-   }
-
-   for( size_t j=0UL; j<N; ++j )
-      for( size_t i=M; i<MM; ++i ) {
-         v_[i+j*MM] = Type();
-   }
-}
-/*! \endcond */
-//*************************************************************************************************
-
-
-//*************************************************************************************************
-/*! \cond BLAZE_INTERNAL */
-/*!\brief Constructor for \f$ 1 \times 3 \f$, \f$ 2 \times 2 \f$, and \f$ 3 \times 1 \f$ matrices.
-//
-// \param v1 The initializer for the first matrix element.
-// \param v2 The initializer for the second matrix element.
-// \param v3 The initializer for the third matrix element.
-// \param v4 The initializer for the fourth matrix element.
-//
-// This constructor offers the option to directly initialize a newly created \f$ 1 \times 4 \f$,
-// \f$ 2 \times 2 \f$, and \f$ 4 \times 1 \f$ matrix. The following example demonstrates this by
-// creating the matrix
-
-                     \f[\left(\begin{array}{*{2}{c}}
-                     1 & 3 \\
-                     2 & 4 \\
-                     \end{array}\right)\f]:
-
-   \code
-   blaze::StaticMatrix<int,2,2,true> A( 1, 2, 3, 4 );
-   \endcode
-*/
-template< typename Type  // Data type of the matrix
-        , size_t M       // Number of rows
-        , size_t N >     // Number of columns
-inline StaticMatrix<Type,M,N,true>::StaticMatrix( const Type& v1, const Type& v2, const Type& v3,
-                                                  const Type& v4 )
-   : v_()  // The statically allocated matrix elements
-{
-   BLAZE_STATIC_ASSERT( M*N == 4UL );
-   BLAZE_STATIC_ASSERT( IsVectorizable<Type>::value || MM == M );
-
-   // Initialization of a 4x1 matrix
-   if( N == 1UL ) {
-      v_[0UL] = v1;
-      v_[1UL] = v2;
-      v_[2UL] = v3;
-      v_[3UL] = v4;
-   }
-
-   // Initialization of a 2x2 matrix
-   else if( N == 2UL ) {
-      v_[   0UL] = v1;
-      v_[   1UL] = v2;
-      v_[MM    ] = v3;
-      v_[MM+1UL] = v4;
-   }
-
-   // Initialization of a 1x4 matrix
-   else {
-      v_[   0UL] = v1;
-      v_[    MM] = v2;
-      v_[2UL*MM] = v3;
-      v_[3UL*MM] = v4;
-   }
-
-   for( size_t j=0UL; j<N; ++j )
-      for( size_t i=M; i<MM; ++i ) {
-         v_[i+j*MM] = Type();
-   }
-}
-/*! \endcond */
-//*************************************************************************************************
-
-
-//*************************************************************************************************
-/*! \cond BLAZE_INTERNAL */
-/*!\brief Constructor for \f$ 1 \times 5 \f$ and \f$ 5 \times 1 \f$ matrices.
-//
-// \param v1 The initializer for the first matrix element.
-// \param v2 The initializer for the second matrix element.
-// \param v3 The initializer for the third matrix element.
-// \param v4 The initializer for the fourth matrix element.
-// \param v5 The initializer for the fifth matrix element.
-//
-// This constructor offers the option to directly initialize a newly created \f$ 1 \times 5 \f$
-// and \f$ 5 \times 1 \f$ matrix. The following example demonstrates this by creating the matrix
-
-                     \f[\left(\begin{array}{*{5}{c}}
-                     1 & 2 & 3 & 4 & 5 \\
-                     \end{array}\right)\f]:
-
-   \code
-   blaze::StaticMatrix<int,1,5,true> A( 1, 2, 3, 4, 5 );
-   \endcode
-*/
-template< typename Type  // Data type of the matrix
-        , size_t M       // Number of rows
-        , size_t N >     // Number of columns
-inline StaticMatrix<Type,M,N,true>::StaticMatrix( const Type& v1, const Type& v2, const Type& v3,
-                                                  const Type& v4, const Type& v5 )
-   : v_()  // The statically allocated matrix elements
-{
-   BLAZE_STATIC_ASSERT( M*N == 5UL );
-   BLAZE_STATIC_ASSERT( IsVectorizable<Type>::value || MM == M );
-
-   // Initialization of a 5x1 matrix
-   if( N == 1UL ) {
-      v_[0UL] = v1;
-      v_[1UL] = v2;
-      v_[2UL] = v3;
-      v_[3UL] = v4;
-      v_[4UL] = v5;
-   }
-
-   // Initialization of a 1x5 matrix
-   else {
-      v_[   0UL] = v1;
-      v_[    MM] = v2;
-      v_[2UL*MM] = v3;
-      v_[3UL*MM] = v4;
-      v_[4UL*MM] = v5;
-   }
-
-   for( size_t j=0UL; j<N; ++j )
-      for( size_t i=M; i<MM; ++i ) {
-         v_[i+j*MM] = Type();
-   }
-}
-/*! \endcond */
-//*************************************************************************************************
-
-
-//*************************************************************************************************
-/*! \cond BLAZE_INTERNAL */
-/*!\brief Constructor for \f$ 1 \times 6 \f$, \f$ 2 \times 3 \f$, \f$ 3 \times 2 \f$, and
-//        \f$ 6 \times 1 \f$ matrices.
-//
-// \param v1 The initializer for the first matrix element.
-// \param v2 The initializer for the second matrix element.
-// \param v3 The initializer for the third matrix element.
-// \param v4 The initializer for the fourth matrix element.
-// \param v5 The initializer for the fifth matrix element.
-// \param v6 The initializer for the sixth matrix element.
-//
-// This constructor offers the option to directly initialize a newly created \f$ 1 \times 6 \f$,
-// \f$ 2 \times 3 \f$, \f$ 3 \times 2 \f$, and \f$ 6 \times 1 \f$ matrix. The following example
-// demonstrates this by creating the matrix
-
-                     \f[\left(\begin{array}{*{3}{c}}
-                     1 & 3 & 5 \\
-                     2 & 4 & 6 \\
-                     \end{array}\right)\f]:
-
-   \code
-   blaze::StaticMatrix<int,2,3,true> A( 1, 2, 3, 4, 5, 6 );
-   \endcode
-*/
-template< typename Type  // Data type of the matrix
-        , size_t M       // Number of rows
-        , size_t N >     // Number of columns
-inline StaticMatrix<Type,M,N,true>::StaticMatrix( const Type& v1, const Type& v2, const Type& v3,
-                                                  const Type& v4, const Type& v5, const Type& v6 )
-   : v_()  // The statically allocated matrix elements
-{
-   BLAZE_STATIC_ASSERT( M*N == 6UL );
-   BLAZE_STATIC_ASSERT( IsVectorizable<Type>::value || MM == M );
-
-   // Initialization of a 6x1 matrix
-   if( N == 1UL ) {
-      v_[0UL] = v1;
-      v_[1UL] = v2;
-      v_[2UL] = v3;
-      v_[3UL] = v4;
-      v_[4UL] = v5;
-      v_[5UL] = v6;
-   }
-
-   // Initialization of a 3x2 matrix
-   else if( N == 2UL ) {
-      v_[   0UL] = v1;
-      v_[   1UL] = v2;
-      v_[   2UL] = v3;
-      v_[MM    ] = v4;
-      v_[MM+1UL] = v5;
-      v_[MM+2UL] = v6;
-   }
-
-   // Initialization of a 2x3 matrix
-   else if( N == 3UL ) {
-      v_[       0UL] = v1;
-      v_[       1UL] = v2;
-      v_[    MM    ] = v3;
-      v_[    MM+1UL] = v4;
-      v_[2UL*MM    ] = v5;
-      v_[2UL*MM+1UL] = v6;
-   }
-
-   // Initialization of a 1x6 matrix
-   else {
-      v_[   0UL] = v1;
-      v_[    MM] = v2;
-      v_[2UL*MM] = v3;
-      v_[3UL*MM] = v4;
-      v_[4UL*MM] = v5;
-      v_[5UL*MM] = v6;
-   }
-
-   for( size_t j=0UL; j<N; ++j )
-      for( size_t i=M; i<MM; ++i ) {
-         v_[i+j*MM] = Type();
-   }
-}
-/*! \endcond */
-//*************************************************************************************************
-
-
-//*************************************************************************************************
-/*! \cond BLAZE_INTERNAL */
-/*!\brief Constructor for \f$ 1 \times 7 \f$ and \f$ 7 \times 1 \f$ matrices.
-//
-// \param v1 The initializer for the first matrix element.
-// \param v2 The initializer for the second matrix element.
-// \param v3 The initializer for the third matrix element.
-// \param v4 The initializer for the fourth matrix element.
-// \param v5 The initializer for the fifth matrix element.
-// \param v6 The initializer for the sixth matrix element.
-// \param v7 The initializer for the seventh matrix element.
-//
-// This constructor offers the option to directly initialize a newly created \f$ 1 \times 7 \f$
-// and \f$ 7 \times 1 \f$ matrix. The following example demonstrates this by creating the matrix
-
-                     \f[\left(\begin{array}{*{7}{c}}
-                     1 & 2 & 3 & 4 & 5 & 6 & 7 \\
-                     \end{array}\right)\f]:
-
-   \code
-   blaze::StaticMatrix<int,1,7,true> A( 1, 2, 3, 4, 5, 6, 7 );
-   \endcode
-*/
-template< typename Type  // Data type of the matrix
-        , size_t M       // Number of rows
-        , size_t N >     // Number of columns
-inline StaticMatrix<Type,M,N,true>::StaticMatrix( const Type& v1, const Type& v2, const Type& v3,
-                                                  const Type& v4, const Type& v5, const Type& v6,
-                                                  const Type& v7 )
-   : v_()  // The statically allocated matrix elements
-{
-   BLAZE_STATIC_ASSERT( M*N == 7UL );
-   BLAZE_STATIC_ASSERT( IsVectorizable<Type>::value || MM == M );
-
-   // Initialization of a 7x1 matrix
-   if( N == 1UL ) {
-      v_[0UL] = v1;
-      v_[1UL] = v2;
-      v_[2UL] = v3;
-      v_[3UL] = v4;
-      v_[4UL] = v5;
-      v_[5UL] = v6;
-      v_[6UL] = v7;
-   }
-
-   // Initialization of a 1x7 matrix
-   else {
-      v_[   0UL] = v1;
-      v_[    MM] = v2;
-      v_[2UL*MM] = v3;
-      v_[3UL*MM] = v4;
-      v_[4UL*MM] = v5;
-      v_[5UL*MM] = v6;
-      v_[6UL*MM] = v7;
-   }
-
-   for( size_t j=0UL; j<N; ++j )
-      for( size_t i=M; i<MM; ++i ) {
-         v_[i+j*MM] = Type();
-   }
-}
-/*! \endcond */
-//*************************************************************************************************
-
-
-//*************************************************************************************************
-/*! \cond BLAZE_INTERNAL */
-/*!\brief Constructor for \f$ 1 \times 8 \f$, \f$ 2 \times 4 \f$, \f$ 4 \times 2 \f$, and
-//        \f$ 8 \times 1 \f$ matrices.
-//
-// \param v1 The initializer for the first matrix element.
-// \param v2 The initializer for the second matrix element.
-// \param v3 The initializer for the third matrix element.
-// \param v4 The initializer for the fourth matrix element.
-// \param v5 The initializer for the fifth matrix element.
-// \param v6 The initializer for the sixth matrix element.
-// \param v7 The initializer for the seventh matrix element.
-// \param v8 The initializer for the eigth matrix element.
-//
-// This constructor offers the option to directly initialize a newly created \f$ 1 \times 8 \f$,
-// \f$ 2 \times 4 \f$, \f$ 4 \times 2 \f$, and \f$ 8 \times 1 \f$ matrix. The following example
-// demonstrates this by creating the matrix
-
-                     \f[\left(\begin{array}{*{4}{c}}
-                     1 & 3 & 5 & 7 \\
-                     2 & 4 & 6 & 8 \\
-                     \end{array}\right)\f]:
-
-   \code
-   blaze::StaticMatrix<int,2,4,true> A( 1, 2, 3, 4, 5, 6, 7, 8 );
-   \endcode
-*/
-template< typename Type  // Data type of the matrix
-        , size_t M       // Number of rows
-        , size_t N >     // Number of columns
-inline StaticMatrix<Type,M,N,true>::StaticMatrix( const Type& v1, const Type& v2, const Type& v3,
-                                                  const Type& v4, const Type& v5, const Type& v6,
-                                                  const Type& v7, const Type& v8 )
-   : v_()  // The statically allocated matrix elements
-{
-   BLAZE_STATIC_ASSERT( M*N == 8UL );
-   BLAZE_STATIC_ASSERT( IsVectorizable<Type>::value || MM == M );
-
-   // Initialization of a 8x1 matrix
-   if( N == 1UL ) {
-      v_[0UL] = v1;
-      v_[1UL] = v2;
-      v_[2UL] = v3;
-      v_[3UL] = v4;
-      v_[4UL] = v5;
-      v_[5UL] = v6;
-      v_[6UL] = v7;
-      v_[7UL] = v8;
-   }
-
-   // Initialization of a 4x2 matrix
-   else if( N == 2UL ) {
-      v_[   0UL] = v1;
-      v_[   1UL] = v2;
-      v_[   2UL] = v3;
-      v_[   3UL] = v4;
-      v_[MM    ] = v5;
-      v_[MM+1UL] = v6;
-      v_[MM+2UL] = v7;
-      v_[MM+3UL] = v8;
-   }
-
-   // Initialization of a 2x4 matrix
-   else if( N == 4UL ) {
-      v_[       0UL] = v1;
-      v_[       1UL] = v2;
-      v_[    MM    ] = v3;
-      v_[    MM+1UL] = v4;
-      v_[2UL*MM    ] = v5;
-      v_[2UL*MM+1UL] = v6;
-      v_[3UL*MM    ] = v7;
-      v_[3UL*MM+1UL] = v8;
-   }
-
-   // Initialization of a 1x8 matrix
-   else {
-      v_[   0UL] = v1;
-      v_[    MM] = v2;
-      v_[2UL*MM] = v3;
-      v_[3UL*MM] = v4;
-      v_[4UL*MM] = v5;
-      v_[5UL*MM] = v6;
-      v_[6UL*MM] = v7;
-      v_[7UL*MM] = v8;
-   }
-
-   for( size_t j=0UL; j<N; ++j )
-      for( size_t i=M; i<MM; ++i ) {
-         v_[i+j*MM] = Type();
-   }
-}
-/*! \endcond */
-//*************************************************************************************************
-
-
-//*************************************************************************************************
-/*! \cond BLAZE_INTERNAL */
-/*!\brief Constructor for \f$ 1 \times 9 \f$, \f$ 3 \times 3 \f$, and \f$ 9 \times 1 \f$ matrices.
-//
-// \param v1 The initializer for the first matrix element.
-// \param v2 The initializer for the second matrix element.
-// \param v3 The initializer for the third matrix element.
-// \param v4 The initializer for the fourth matrix element.
-// \param v5 The initializer for the fifth matrix element.
-// \param v6 The initializer for the sixth matrix element.
-// \param v7 The initializer for the seventh matrix element.
-// \param v8 The initializer for the eigth matrix element.
-// \param v9 The initializer for the ninth matrix element.
-//
-// This constructor offers the option to directly initialize a newly created \f$ 1 \times 9 \f$,
-// \f$ 3 \times 3 \f$, and \f$ 9 \times 1 \f$ matrix. The following example demonstrates this by
-// creating the matrix
-
-                     \f[\left(\begin{array}{*{3}{c}}
-                     1 & 4 & 7 \\
-                     2 & 5 & 8 \\
-                     3 & 6 & 9 \\
-                     \end{array}\right)\f]:
-
-   \code
-   blaze::StaticMatrix<int,3,3,true> A( 1, 2, 3, 4, 5, 6, 7, 8, 9 );
-   \endcode
-*/
-template< typename Type  // Data type of the matrix
-        , size_t M       // Number of rows
-        , size_t N >     // Number of columns
-inline StaticMatrix<Type,M,N,true>::StaticMatrix( const Type& v1, const Type& v2, const Type& v3,
-                                                  const Type& v4, const Type& v5, const Type& v6,
-                                                  const Type& v7, const Type& v8, const Type& v9 )
-   : v_()  // The statically allocated matrix elements
-{
-   BLAZE_STATIC_ASSERT( M*N == 9UL );
-   BLAZE_STATIC_ASSERT( IsVectorizable<Type>::value || MM == M );
-
-   // Initialization of a 9x1 matrix
-   if( N == 1 ) {
-      v_[0UL] = v1;
-      v_[1UL] = v2;
-      v_[2UL] = v3;
-      v_[3UL] = v4;
-      v_[4UL] = v5;
-      v_[5UL] = v6;
-      v_[6UL] = v7;
-      v_[7UL] = v8;
-      v_[8UL] = v9;
-   }
-
-   // Initialization of a 3x3 matrix
-   else if( N == 3UL ) {
-      v_[       0UL] = v1;
-      v_[       1UL] = v2;
-      v_[       2UL] = v3;
-      v_[    MM    ] = v4;
-      v_[    MM+1UL] = v5;
-      v_[    MM+2UL] = v6;
-      v_[2UL*MM    ] = v7;
-      v_[2UL*MM+1UL] = v8;
-      v_[2UL*MM+2UL] = v9;
-   }
-
-   // Initialization of a 1x9 matrix
-   else {
-      v_[   0UL] = v1;
-      v_[    MM] = v2;
-      v_[2UL*MM] = v3;
-      v_[3UL*MM] = v4;
-      v_[4UL*MM] = v5;
-      v_[5UL*MM] = v6;
-      v_[6UL*MM] = v7;
-      v_[7UL*MM] = v8;
-      v_[8UL*MM] = v9;
-   }
-
-   for( size_t j=0UL; j<N; ++j )
-      for( size_t i=M; i<MM; ++i ) {
-         v_[i+j*MM] = Type();
-   }
-}
-/*! \endcond */
-//*************************************************************************************************
-
-
-//*************************************************************************************************
-/*! \cond BLAZE_INTERNAL */
-/*!\brief Constructor for \f$ 1 \times 10 \f$, \f$ 2 \times 5 \f$, \f$ 5 \times 2 \f$, and
-// \f$ 10 \times 1 \f$ matrices.
-//
-// \param v1 The initializer for the first matrix element.
-// \param v2 The initializer for the second matrix element.
-// \param v3 The initializer for the third matrix element.
-// \param v4 The initializer for the fourth matrix element.
-// \param v5 The initializer for the fifth matrix element.
-// \param v6 The initializer for the sixth matrix element.
-// \param v7 The initializer for the seventh matrix element.
-// \param v8 The initializer for the eigth matrix element.
-// \param v9 The initializer for the ninth matrix element.
-// \param v10 The initializer for the tenth matrix element.
-//
-// This constructor offers the option to directly initialize a newly created \f$ 1 \times 10 \f$,
-// \f$ 2 \times 5 \f$, \f$ 5 \times 2 \f$, and \f$ 10 \times 1 \f$ matrix. The following example
-// demonstrates this by creating the matrix
-
-                     \f[\left(\begin{array}{*{5}{c}}
-                     1 & 3 & 5 & 7 & 9  \\
-                     2 & 4 & 6 & 8 & 10 \\
-                     \end{array}\right)\f]:
-
-   \code
-   blaze::StaticMatrix<int,2,5,true> A( 1, 2, 3, 4, 5, 6, 7, 8, 9, 10 );
-   \endcode
-*/
-template< typename Type  // Data type of the matrix
-        , size_t M       // Number of rows
-        , size_t N >     // Number of columns
-inline StaticMatrix<Type,M,N,true>::StaticMatrix( const Type& v1, const Type& v2, const Type& v3,
-                                                  const Type& v4, const Type& v5, const Type& v6,
-                                                  const Type& v7, const Type& v8, const Type& v9,
-                                                  const Type& v10 )
-   : v_()  // The statically allocated matrix elements
-{
-   BLAZE_STATIC_ASSERT( M*N == 10UL );
-   BLAZE_STATIC_ASSERT( IsVectorizable<Type>::value || MM == M );
-
-   // Initialization of a 10x1 matrix
-   if( N == 1UL ) {
-      v_[0UL] = v1;
-      v_[1UL] = v2;
-      v_[2UL] = v3;
-      v_[3UL] = v4;
-      v_[4UL] = v5;
-      v_[5UL] = v6;
-      v_[6UL] = v7;
-      v_[7UL] = v8;
-      v_[8UL] = v9;
-      v_[9UL] = v10;
-   }
-
-   // Initialization of a 5x2 matrix
-   else if( N == 2UL ) {
-      v_[   0UL] = v1;
-      v_[   1UL] = v2;
-      v_[   2UL] = v3;
-      v_[   3UL] = v4;
-      v_[   4UL] = v5;
-      v_[MM    ] = v6;
-      v_[MM+1UL] = v7;
-      v_[MM+2UL] = v8;
-      v_[MM+3UL] = v9;
-      v_[MM+4UL] = v10;
-   }
-
-   // Initialization of a 2x5 matrix
-   else if( N == 5UL ) {
-      v_[       0UL] = v1;
-      v_[       1UL] = v2;
-      v_[    MM    ] = v3;
-      v_[    MM+1UL] = v4;
-      v_[2UL*MM    ] = v5;
-      v_[2UL*MM+1UL] = v6;
-      v_[3UL*MM    ] = v7;
-      v_[3UL*MM+1UL] = v8;
-      v_[4UL*MM    ] = v9;
-      v_[4UL*MM+1UL] = v10;
-   }
-
-   // Initialization of a 1x10 matrix
-   else {
-      v_[   0UL] = v1;
-      v_[    MM] = v2;
-      v_[2UL*MM] = v3;
-      v_[3UL*MM] = v4;
-      v_[4UL*MM] = v5;
-      v_[5UL*MM] = v6;
-      v_[6UL*MM] = v7;
-      v_[7UL*MM] = v8;
-      v_[8UL*MM] = v9;
-      v_[9UL*MM] = v10;
-   }
-
-   for( size_t j=0UL; j<N; ++j )
-      for( size_t i=M; i<MM; ++i ) {
-         v_[i+j*MM] = Type();
-   }
-}
-/*! \endcond */
-//*************************************************************************************************
-
-
 
 
 //=================================================================================================
@@ -4650,7 +3314,7 @@ template< typename Type  // Data type of the matrix
         , size_t M       // Number of rows
         , size_t N >     // Number of columns
 inline typename StaticMatrix<Type,M,N,true>::Reference
-   StaticMatrix<Type,M,N,true>::operator()( size_t i, size_t j )
+   StaticMatrix<Type,M,N,true>::operator()( size_t i, size_t j ) noexcept
 {
    BLAZE_USER_ASSERT( i<M, "Invalid row access index"    );
    BLAZE_USER_ASSERT( j<N, "Invalid column access index" );
@@ -4675,7 +3339,7 @@ template< typename Type  // Data type of the matrix
         , size_t M       // Number of rows
         , size_t N >     // Number of columns
 inline typename StaticMatrix<Type,M,N,true>::ConstReference
-   StaticMatrix<Type,M,N,true>::operator()( size_t i, size_t j ) const
+   StaticMatrix<Type,M,N,true>::operator()( size_t i, size_t j ) const noexcept
 {
    BLAZE_USER_ASSERT( i<M, "Invalid row access index"    );
    BLAZE_USER_ASSERT( j<N, "Invalid column access index" );
@@ -4761,7 +3425,7 @@ template< typename Type  // Data type of the matrix
         , size_t M       // Number of rows
         , size_t N >     // Number of columns
 inline typename StaticMatrix<Type,M,N,true>::Pointer
-   StaticMatrix<Type,M,N,true>::data()
+   StaticMatrix<Type,M,N,true>::data() noexcept
 {
    return v_;
 }
@@ -4785,7 +3449,7 @@ template< typename Type  // Data type of the matrix
         , size_t M       // Number of rows
         , size_t N >     // Number of columns
 inline typename StaticMatrix<Type,M,N,true>::ConstPointer
-   StaticMatrix<Type,M,N,true>::data() const
+   StaticMatrix<Type,M,N,true>::data() const noexcept
 {
    return v_;
 }
@@ -4806,7 +3470,7 @@ template< typename Type  // Data type of the matrix
         , size_t M       // Number of rows
         , size_t N >     // Number of columns
 inline typename StaticMatrix<Type,M,N,true>::Pointer
-   StaticMatrix<Type,M,N,true>::data( size_t j )
+   StaticMatrix<Type,M,N,true>::data( size_t j ) noexcept
 {
    BLAZE_USER_ASSERT( j < N, "Invalid dense matrix column access index" );
    return v_ + j*MM;
@@ -4828,7 +3492,7 @@ template< typename Type  // Data type of the matrix
         , size_t M       // Number of rows
         , size_t N >     // Number of columns
 inline typename StaticMatrix<Type,M,N,true>::ConstPointer
-   StaticMatrix<Type,M,N,true>::data( size_t j ) const
+   StaticMatrix<Type,M,N,true>::data( size_t j ) const noexcept
 {
    BLAZE_USER_ASSERT( j < N, "Invalid dense matrix column access index" );
    return v_ + j*MM;
@@ -4848,7 +3512,7 @@ template< typename Type  // Data type of the matrix
         , size_t M       // Number of rows
         , size_t N >     // Number of columns
 inline typename StaticMatrix<Type,M,N,true>::Iterator
-   StaticMatrix<Type,M,N,true>::begin( size_t j )
+   StaticMatrix<Type,M,N,true>::begin( size_t j ) noexcept
 {
    BLAZE_USER_ASSERT( j < N, "Invalid dense matrix column access index" );
    return Iterator( v_ + j*MM );
@@ -4868,7 +3532,7 @@ template< typename Type  // Data type of the matrix
         , size_t M       // Number of rows
         , size_t N >     // Number of columns
 inline typename StaticMatrix<Type,M,N,true>::ConstIterator
-   StaticMatrix<Type,M,N,true>::begin( size_t j ) const
+   StaticMatrix<Type,M,N,true>::begin( size_t j ) const noexcept
 {
    BLAZE_USER_ASSERT( j < N, "Invalid dense matrix column access index" );
    return ConstIterator( v_ + j*MM );
@@ -4888,7 +3552,7 @@ template< typename Type  // Data type of the matrix
         , size_t M       // Number of rows
         , size_t N >     // Number of columns
 inline typename StaticMatrix<Type,M,N,true>::ConstIterator
-   StaticMatrix<Type,M,N,true>::cbegin( size_t j ) const
+   StaticMatrix<Type,M,N,true>::cbegin( size_t j ) const noexcept
 {
    BLAZE_USER_ASSERT( j < N, "Invalid dense matrix column access index" );
    return ConstIterator( v_ + j*MM );
@@ -4908,7 +3572,7 @@ template< typename Type  // Data type of the matrix
         , size_t M       // Number of rows
         , size_t N >     // Number of columns
 inline typename StaticMatrix<Type,M,N,true>::Iterator
-   StaticMatrix<Type,M,N,true>::end( size_t j )
+   StaticMatrix<Type,M,N,true>::end( size_t j ) noexcept
 {
    BLAZE_USER_ASSERT( j < N, "Invalid dense matrix column access index" );
    return Iterator( v_ + j*MM + M );
@@ -4928,7 +3592,7 @@ template< typename Type  // Data type of the matrix
         , size_t M       // Number of rows
         , size_t N >     // Number of columns
 inline typename StaticMatrix<Type,M,N,true>::ConstIterator
-   StaticMatrix<Type,M,N,true>::end( size_t j ) const
+   StaticMatrix<Type,M,N,true>::end( size_t j ) const noexcept
 {
    BLAZE_USER_ASSERT( j < N, "Invalid dense matrix column access index" );
    return ConstIterator( v_ + j*MM + M );
@@ -4948,7 +3612,7 @@ template< typename Type  // Data type of the matrix
         , size_t M       // Number of rows
         , size_t N >     // Number of columns
 inline typename StaticMatrix<Type,M,N,true>::ConstIterator
-   StaticMatrix<Type,M,N,true>::cend( size_t j ) const
+   StaticMatrix<Type,M,N,true>::cend( size_t j ) const noexcept
 {
    BLAZE_USER_ASSERT( j < N, "Invalid dense matrix column access index" );
    return ConstIterator( v_ + j*MM + M );
@@ -5299,7 +3963,7 @@ inline typename EnableIf< IsNumeric<Other>, StaticMatrix<Type,M,N,true> >::Type&
 template< typename Type  // Data type of the matrix
         , size_t M       // Number of rows
         , size_t N >     // Number of columns
-inline size_t StaticMatrix<Type,M,N,true>::rows() const
+inline constexpr size_t StaticMatrix<Type,M,N,true>::rows() const noexcept
 {
    return M;
 }
@@ -5316,7 +3980,7 @@ inline size_t StaticMatrix<Type,M,N,true>::rows() const
 template< typename Type  // Data type of the matrix
         , size_t M       // Number of rows
         , size_t N >     // Number of columns
-inline size_t StaticMatrix<Type,M,N,true>::columns() const
+inline constexpr size_t StaticMatrix<Type,M,N,true>::columns() const noexcept
 {
    return N;
 }
@@ -5336,7 +4000,7 @@ inline size_t StaticMatrix<Type,M,N,true>::columns() const
 template< typename Type  // Data type of the matrix
         , size_t M       // Number of rows
         , size_t N >     // Number of columns
-inline size_t StaticMatrix<Type,M,N,true>::spacing() const
+inline constexpr size_t StaticMatrix<Type,M,N,true>::spacing() const noexcept
 {
    return MM;
 }
@@ -5353,7 +4017,7 @@ inline size_t StaticMatrix<Type,M,N,true>::spacing() const
 template< typename Type  // Data type of the matrix
         , size_t M       // Number of rows
         , size_t N >     // Number of columns
-inline size_t StaticMatrix<Type,M,N,true>::capacity() const
+inline constexpr size_t StaticMatrix<Type,M,N,true>::capacity() const noexcept
 {
    return MM*N;
 }
@@ -5371,7 +4035,7 @@ inline size_t StaticMatrix<Type,M,N,true>::capacity() const
 template< typename Type  // Data type of the matrix
         , size_t M       // Number of rows
         , size_t N >     // Number of columns
-inline size_t StaticMatrix<Type,M,N,true>::capacity( size_t j ) const
+inline constexpr size_t StaticMatrix<Type,M,N,true>::capacity( size_t j ) const noexcept
 {
    UNUSED_PARAMETER( j );
 
@@ -5663,7 +4327,6 @@ inline StaticMatrix<Type,M,N,true>&
 //
 // \param m The matrix to be swapped.
 // \return void
-// \exception no-throw guarantee.
 */
 template< typename Type  // Data type of the matrix
         , size_t M       // Number of rows
@@ -5887,7 +4550,7 @@ template< typename Type     // Data type of the matrix
         , size_t M          // Number of rows
         , size_t N >        // Number of columns
 template< typename Other >  // Data type of the foreign expression
-inline bool StaticMatrix<Type,M,N,true>::canAlias( const Other* alias ) const
+inline bool StaticMatrix<Type,M,N,true>::canAlias( const Other* alias ) const noexcept
 {
    return static_cast<const void*>( this ) == static_cast<const void*>( alias );
 }
@@ -5910,7 +4573,7 @@ template< typename Type     // Data type of the matrix
         , size_t M          // Number of rows
         , size_t N >        // Number of columns
 template< typename Other >  // Data type of the foreign expression
-inline bool StaticMatrix<Type,M,N,true>::isAliased( const Other* alias ) const
+inline bool StaticMatrix<Type,M,N,true>::isAliased( const Other* alias ) const noexcept
 {
    return static_cast<const void*>( this ) == static_cast<const void*>( alias );
 }
@@ -5931,7 +4594,7 @@ inline bool StaticMatrix<Type,M,N,true>::isAliased( const Other* alias ) const
 template< typename Type  // Data type of the matrix
         , size_t M       // Number of rows
         , size_t N >     // Number of columns
-inline bool StaticMatrix<Type,M,N,true>::isAligned() const
+inline bool StaticMatrix<Type,M,N,true>::isAligned() const noexcept
 {
    return ( usePadding || rows() % IT::size == 0UL );
 }
@@ -5958,7 +4621,7 @@ template< typename Type  // Data type of the matrix
         , size_t M       // Number of rows
         , size_t N >     // Number of columns
 BLAZE_ALWAYS_INLINE typename StaticMatrix<Type,M,N,true>::IntrinsicType
-   StaticMatrix<Type,M,N,true>::load( size_t i, size_t j ) const
+   StaticMatrix<Type,M,N,true>::load( size_t i, size_t j ) const noexcept
 {
    if( usePadding )
       return loada( i, j );
@@ -5988,7 +4651,7 @@ template< typename Type  // Data type of the matrix
         , size_t M       // Number of rows
         , size_t N >     // Number of columns
 BLAZE_ALWAYS_INLINE typename StaticMatrix<Type,M,N,true>::IntrinsicType
-   StaticMatrix<Type,M,N,true>::loada( size_t i, size_t j ) const
+   StaticMatrix<Type,M,N,true>::loada( size_t i, size_t j ) const noexcept
 {
    using blaze::loada;
 
@@ -6025,7 +4688,7 @@ template< typename Type  // Data type of the matrix
         , size_t M       // Number of rows
         , size_t N >     // Number of columns
 BLAZE_ALWAYS_INLINE typename StaticMatrix<Type,M,N,true>::IntrinsicType
-   StaticMatrix<Type,M,N,true>::loadu( size_t i, size_t j ) const
+   StaticMatrix<Type,M,N,true>::loadu( size_t i, size_t j ) const noexcept
 {
    using blaze::loadu;
 
@@ -6061,7 +4724,7 @@ template< typename Type  // Data type of the matrix
         , size_t M       // Number of rows
         , size_t N >     // Number of columns
 BLAZE_ALWAYS_INLINE void
-   StaticMatrix<Type,M,N,true>::store( size_t i, size_t j, const IntrinsicType& value )
+   StaticMatrix<Type,M,N,true>::store( size_t i, size_t j, const IntrinsicType& value ) noexcept
 {
    if( usePadding )
       storea( i, j, value );
@@ -6092,7 +4755,7 @@ template< typename Type  // Data type of the matrix
         , size_t M       // Number of rows
         , size_t N >     // Number of columns
 BLAZE_ALWAYS_INLINE void
-   StaticMatrix<Type,M,N,true>::storea( size_t i, size_t j, const IntrinsicType& value )
+   StaticMatrix<Type,M,N,true>::storea( size_t i, size_t j, const IntrinsicType& value ) noexcept
 {
    using blaze::storea;
 
@@ -6130,7 +4793,7 @@ template< typename Type  // Data type of the matrix
         , size_t M       // Number of rows
         , size_t N >     // Number of columns
 BLAZE_ALWAYS_INLINE void
-   StaticMatrix<Type,M,N,true>::storeu( size_t i, size_t j, const IntrinsicType& value )
+   StaticMatrix<Type,M,N,true>::storeu( size_t i, size_t j, const IntrinsicType& value ) noexcept
 {
    using blaze::storeu;
 
@@ -6166,7 +4829,7 @@ template< typename Type  // Data type of the matrix
         , size_t M       // Number of rows
         , size_t N >     // Number of columns
 BLAZE_ALWAYS_INLINE void
-   StaticMatrix<Type,M,N,true>::stream( size_t i, size_t j, const IntrinsicType& value )
+   StaticMatrix<Type,M,N,true>::stream( size_t i, size_t j, const IntrinsicType& value ) noexcept
 {
    using blaze::stream;
 
@@ -6738,7 +5401,7 @@ template< typename Type, size_t M, size_t N, bool SO >
 inline bool isDefault( const StaticMatrix<Type,M,N,SO>& m );
 
 template< typename Type, size_t M, size_t N, bool SO >
-inline bool isIntact( const StaticMatrix<Type,M,N,SO>& m );
+inline bool isIntact( const StaticMatrix<Type,M,N,SO>& m ) noexcept;
 
 template< typename Type, size_t M, size_t N, bool SO >
 inline void swap( StaticMatrix<Type,M,N,SO>& a, StaticMatrix<Type,M,N,SO>& b ) noexcept;
@@ -6869,7 +5532,7 @@ template< typename Type  // Data type of the matrix
         , size_t M       // Number of rows
         , size_t N       // Number of columns
         , bool SO >      // Storage order
-inline bool isIntact( const StaticMatrix<Type,M,N,SO>& m )
+inline bool isIntact( const StaticMatrix<Type,M,N,SO>& m ) noexcept
 {
    UNUSED_PARAMETER( m );
 
@@ -6885,7 +5548,6 @@ inline bool isIntact( const StaticMatrix<Type,M,N,SO>& m )
 // \param a The first matrix to be swapped.
 // \param b The second matrix to be swapped.
 // \return void
-// \exception no-throw guarantee.
 */
 template< typename Type  // Data type of the matrix
         , size_t M       // Number of rows
