@@ -272,12 +272,7 @@ void ClassTest::testConstructors()
    {
       test_ = "HybridVector copy constructor (size 5)";
 
-      blaze::HybridVector<int,9UL,blaze::rowVector> vec1( 5UL );
-      vec1[0] = 1;
-      vec1[1] = 2;
-      vec1[2] = 3;
-      vec1[3] = 4;
-      vec1[4] = 5;
+      blaze::HybridVector<int,9UL,blaze::rowVector> vec1( { 1, 2, 3, 4, 5 } );
       blaze::HybridVector<int,9UL,blaze::rowVector> vec2( vec1 );
 
       checkSize    ( vec2, 5UL );
@@ -376,12 +371,7 @@ void ClassTest::testConstructors()
    try {
       test_ = "HybridVector dense vector constructor (non-fitting vector)";
 
-      blaze::HybridVector<int,6UL,blaze::rowVector> vec1( 5UL );
-      vec1[0] = 1;
-      vec1[1] = 2;
-      vec1[2] = 3;
-      vec1[3] = 4;
-      vec1[4] = 5;
+      blaze::HybridVector<int,6UL,blaze::rowVector> vec1( { 1, 2, 3, 4, 5 } );
       blaze::HybridVector<int,4UL,blaze::rowVector> vec2( vec1 );
 
       std::ostringstream oss;
@@ -528,12 +518,7 @@ void ClassTest::testAssignment()
    {
       test_ = "HybridVector copy assignment";
 
-      blaze::HybridVector<int,6UL,blaze::rowVector> vec1( 5UL );
-      vec1[0] = 1;
-      vec1[1] = 2;
-      vec1[2] = 3;
-      vec1[3] = 4;
-      vec1[4] = 5;
+      blaze::HybridVector<int,6UL,blaze::rowVector> vec1( { 1, 2, 3, 4, 5 } );
       blaze::HybridVector<int,8UL,blaze::rowVector> vec2;
       vec2 = vec1;
 
@@ -681,12 +666,7 @@ void ClassTest::testAssignment()
    try {
       test_ = "HybridVector dense vector assignment (non-fitting vector)";
 
-      blaze::HybridVector<int,6UL,blaze::rowVector> vec1( 5UL );
-      vec1[0] = 1;
-      vec1[1] = 2;
-      vec1[2] = 3;
-      vec1[3] = 4;
-      vec1[4] = 5;
+      blaze::HybridVector<int,6UL,blaze::rowVector> vec1( { 1, 2, 3, 4, 5 } );
       blaze::HybridVector<int,4UL,blaze::rowVector> vec2;
       vec2 = vec1;
 
@@ -812,11 +792,7 @@ void ClassTest::testAddAssign()
       vec1[2] = -2;
       vec1[3] =  3;
       vec1[4] =  0;
-      blaze::HybridVector<int,8UL,blaze::rowVector> vec2( 5UL, 0 );
-      vec2[1] =  4;
-      vec2[2] =  2;
-      vec2[3] = -6;
-      vec2[4] =  7;
+      blaze::HybridVector<int,8UL,blaze::rowVector> vec2( { 0, 4, 2, -6, 7 } );
 
       vec2 += vec1;
 
@@ -850,11 +826,7 @@ void ClassTest::testAddAssign()
       vec1[2] = -2;
       vec1[3] =  3;
       vec1[4] =  0;
-      blaze::HybridVector<int,8UL,blaze::rowVector> vec2( 5UL, 0 );
-      vec2[1] =  4;
-      vec2[2] =  2;
-      vec2[3] = -6;
-      vec2[4] =  7;
+      blaze::HybridVector<int,8UL,blaze::rowVector> vec2( { 0, 4, 2, -6, 7 } );
 
       vec2 += vec1;
 
@@ -885,11 +857,7 @@ void ClassTest::testAddAssign()
       vec1[0] =  1;
       vec1[2] = -2;
       vec1[3] =  3;
-      blaze::HybridVector<int,8UL,blaze::rowVector> vec2( 5UL, 0 );
-      vec2[1] =  4;
-      vec2[2] =  2;
-      vec2[3] = -6;
-      vec2[4] =  7;
+      blaze::HybridVector<int,8UL,blaze::rowVector> vec2( { 0, 4, 2, -6, 7 } );
 
       vec2 += vec1;
 
@@ -940,11 +908,7 @@ void ClassTest::testSubAssign()
       vec1[2] =  2;
       vec1[3] = -3;
       vec1[4] =  0;
-      blaze::HybridVector<int,8UL,blaze::rowVector> vec2( 5UL, 0 );
-      vec2[1] =  4;
-      vec2[2] =  2;
-      vec2[3] = -6;
-      vec2[4] =  7;
+      blaze::HybridVector<int,8UL,blaze::rowVector> vec2( { 0, 4, 2, -6, 7 } );
 
       vec2 -= vec1;
 
@@ -978,11 +942,7 @@ void ClassTest::testSubAssign()
       vec1[2] =  2;
       vec1[3] = -3;
       vec1[4] =  0;
-      blaze::HybridVector<int,8UL,blaze::rowVector> vec2( 5UL, 0 );
-      vec2[1] =  4;
-      vec2[2] =  2;
-      vec2[3] = -6;
-      vec2[4] =  7;
+      blaze::HybridVector<int,8UL,blaze::rowVector> vec2( { 0, 4, 2, -6, 7 } );
 
       vec2 -= vec1;
 
@@ -1013,11 +973,7 @@ void ClassTest::testSubAssign()
       vec1[0] = -1;
       vec1[2] =  2;
       vec1[3] = -3;
-      blaze::HybridVector<int,8UL,blaze::rowVector> vec2( 5UL, 0 );
-      vec2[1] =  4;
-      vec2[2] =  2;
-      vec2[3] = -6;
-      vec2[4] =  7;
+      blaze::HybridVector<int,8UL,blaze::rowVector> vec2( { 0, 4, 2, -6, 7 } );
 
       vec2 -= vec1;
 
@@ -1068,11 +1024,7 @@ void ClassTest::testMultAssign()
       vec1[2] = -2;
       vec1[3] =  3;
       vec1[4] =  0;
-      blaze::HybridVector<int,8UL,blaze::rowVector> vec2( 5UL, 0 );
-      vec2[1] =  4;
-      vec2[2] =  2;
-      vec2[3] = -6;
-      vec2[4] =  7;
+      blaze::HybridVector<int,8UL,blaze::rowVector> vec2( { 0, 4, 2, -6, 7 } );
 
       vec2 *= vec1;
 
@@ -1106,11 +1058,7 @@ void ClassTest::testMultAssign()
       vec1[2] = -2;
       vec1[3] =  3;
       vec1[4] =  0;
-      blaze::HybridVector<int,8UL,blaze::rowVector> vec2( 5UL, 0 );
-      vec2[1] =  4;
-      vec2[2] =  2;
-      vec2[3] = -6;
-      vec2[4] =  7;
+      blaze::HybridVector<int,8UL,blaze::rowVector> vec2( { 0, 4, 2, -6, 7 } );
 
       vec2 *= vec1;
 
@@ -1141,11 +1089,7 @@ void ClassTest::testMultAssign()
       vec1[0] =  1;
       vec1[2] = -2;
       vec1[3] =  3;
-      blaze::HybridVector<int,8UL,blaze::rowVector> vec2( 5UL, 0 );
-      vec2[1] =  4;
-      vec2[2] =  2;
-      vec2[3] = -6;
-      vec2[4] =  7;
+      blaze::HybridVector<int,8UL,blaze::rowVector> vec2( { 0, 4, 2, -6, 7 } );
 
       vec2 *= vec1;
 
@@ -1185,10 +1129,7 @@ void ClassTest::testScaling()
    {
       test_ = "HybridVector self-scaling (v*=s)";
 
-      blaze::HybridVector<int,8UL,blaze::rowVector> vec( 5UL, 0 );
-      vec[0] =  1;
-      vec[2] = -2;
-      vec[3] =  3;
+      blaze::HybridVector<int,8UL,blaze::rowVector> vec( { 1, 0, -2, 3, 0 } );
 
       vec *= 2;
 
@@ -1215,10 +1156,7 @@ void ClassTest::testScaling()
    {
       test_ = "HybridVector self-scaling (v=v*s)";
 
-      blaze::HybridVector<int,8UL,blaze::rowVector> vec( 5UL, 0 );
-      vec[0] =  1;
-      vec[2] = -2;
-      vec[3] =  3;
+      blaze::HybridVector<int,8UL,blaze::rowVector> vec( { 1, 0, -2, 3, 0 } );
 
       vec = vec * 2;
 
@@ -1245,10 +1183,7 @@ void ClassTest::testScaling()
    {
       test_ = "HybridVector self-scaling (v=s*v)";
 
-      blaze::HybridVector<int,8UL,blaze::rowVector> vec( 5UL, 0 );
-      vec[0] =  1;
-      vec[2] = -2;
-      vec[3] =  3;
+      blaze::HybridVector<int,8UL,blaze::rowVector> vec( { 1, 0, -2, 3, 0 } );
 
       vec = 2 * vec;
 
@@ -1275,10 +1210,7 @@ void ClassTest::testScaling()
    {
       test_ = "HybridVector self-scaling (v/=s)";
 
-      blaze::HybridVector<int,5UL,blaze::rowVector> vec( 5UL, 0 );
-      vec[0] =  2;
-      vec[2] = -4;
-      vec[3] =  6;
+      blaze::HybridVector<int,5UL,blaze::rowVector> vec( { 2, 0, -4, 6, 0 } );
 
       vec /= 2;
 
@@ -1305,10 +1237,7 @@ void ClassTest::testScaling()
    {
       test_ = "HybridVector self-scaling (v=v/s)";
 
-      blaze::HybridVector<int,5UL,blaze::rowVector> vec( 5UL, 0 );
-      vec[0] =  2;
-      vec[2] = -4;
-      vec[3] =  6;
+      blaze::HybridVector<int,5UL,blaze::rowVector> vec( { 2, 0, -4, 6, 0 } );
 
       vec = vec / 2;
 
@@ -1336,7 +1265,7 @@ void ClassTest::testScaling()
       test_ = "HybridVector::scale() (int)";
 
       // Initialization check
-      blaze::HybridVector<int,4UL,blaze::rowVector> vec( 4UL );
+      blaze::HybridVector<int,4UL,blaze::rowVector> vec( { 1, 2, 3, 4 } );
       vec[0] = 1;
       vec[1] = 2;
       vec[2] = 3;
@@ -1434,8 +1363,7 @@ void ClassTest::testSubscript()
    test_ = "HybridVector::operator[]";
 
    // Assignment to the element at index 2
-   blaze::HybridVector<int,7UL,blaze::rowVector> vec( 7UL, 0UL );
-   vec[2] = 1;
+   blaze::HybridVector<int,7UL,blaze::rowVector> vec( { 0, 0, 1, 0, 0, 0, 0 } );
 
    checkSize    ( vec, 7UL );
    checkCapacity( vec, 7UL );
@@ -1588,8 +1516,7 @@ void ClassTest::testAt()
    test_ = "HybridVector::at()";
 
    // Assignment to the element at index 2
-   blaze::HybridVector<int,7UL,blaze::rowVector> vec( 7UL, 0UL );
-   vec.at(2) = 1;
+   blaze::HybridVector<int,7UL,blaze::rowVector> vec( { 0, 0, 1, 0, 0, 0, 0 } );
 
    checkSize    ( vec, 7UL );
    checkCapacity( vec, 7UL );
@@ -1756,10 +1683,7 @@ void ClassTest::testIterator()
    typedef VectorType::Iterator          Iterator;
    typedef VectorType::ConstIterator     ConstIterator;
 
-   VectorType vec( 4UL, 0 );
-   vec[0] =  1;
-   vec[2] = -2;
-   vec[3] = -3;
+   VectorType vec( { 1, 0, -2, -3 } );
 
    // Testing the Iterator default constructor
    {
@@ -2071,11 +1995,7 @@ void ClassTest::testNonZeros()
    }
 
    {
-      blaze::HybridVector<int,4UL,blaze::rowVector> vec( 4UL );
-      vec[0] = 1;
-      vec[1] = 2;
-      vec[2] = 0;
-      vec[3] = 3;
+      blaze::HybridVector<int,4UL,blaze::rowVector> vec( { 1, 2, 0, 3 } );
 
       checkSize    ( vec, 4UL );
       checkCapacity( vec, 4UL );
@@ -2111,11 +2031,7 @@ void ClassTest::testReset()
    test_ = "HybridVector::reset()";
 
    // Initialization check
-   blaze::HybridVector<int,4UL,blaze::rowVector> vec( 4UL );
-   vec[0] = 1;
-   vec[1] = 2;
-   vec[2] = 3;
-   vec[3] = 4;
+   blaze::HybridVector<int,4UL,blaze::rowVector> vec( { 1, 2, 3, 4 } );
 
    checkSize    ( vec, 4UL );
    checkCapacity( vec, 4UL );
@@ -2184,11 +2100,7 @@ void ClassTest::testClear()
    test_ = "HybridVector::clear()";
 
    // Initialization check
-   blaze::HybridVector<int,4UL,blaze::rowVector> vec( 4UL );
-   vec[0] = 1;
-   vec[1] = 2;
-   vec[2] = 3;
-   vec[3] = 4;
+   blaze::HybridVector<int,4UL,blaze::rowVector> vec( { 1, 2, 3, 4 } );
 
    checkSize    ( vec, 4UL );
    checkCapacity( vec, 4UL );
@@ -2379,16 +2291,8 @@ void ClassTest::testSwap()
 {
    test_ = "HybridVector swap";
 
-   blaze::HybridVector<int,4UL,blaze::rowVector> vec1( 3UL );
-   vec1[0] = 1;
-   vec1[1] = 2;
-   vec1[2] = 3;
-
-   blaze::HybridVector<int,4UL,blaze::rowVector> vec2( 4UL );
-   vec2[0] = 4;
-   vec2[1] = 3;
-   vec2[2] = 2;
-   vec2[3] = 1;
+   blaze::HybridVector<int,4UL,blaze::rowVector> vec1( { 1, 2, 3 } );
+   blaze::HybridVector<int,4UL,blaze::rowVector> vec2( { 4, 3, 2, 1 } );
 
    swap( vec1, vec2 );
 
@@ -2454,7 +2358,7 @@ void ClassTest::testIsDefault()
 
    // isDefault with default vector
    {
-      blaze::HybridVector<int,3UL,blaze::rowVector> vec( 3UL, 0 );
+      blaze::HybridVector<int,3UL,blaze::rowVector> vec( { 0, 0, 0 } );
 
       if( isDefault( vec[1] ) != true ) {
          std::ostringstream oss;
@@ -2477,8 +2381,7 @@ void ClassTest::testIsDefault()
 
    // isDefault with non-default vector
    {
-      blaze::HybridVector<int,3UL,blaze::rowVector> vec( 3UL, 0 );
-      vec[1] = 1;
+      blaze::HybridVector<int,3UL,blaze::rowVector> vec( { 0, 1, 0 } );
 
       if( isDefault( vec[1] ) != false ) {
          std::ostringstream oss;
