@@ -488,18 +488,18 @@ class CustomVector : public DenseVector< CustomVector<Type,AF,PF,TF>, TF >
    //**Data access functions***********************************************************************
    /*!\name Data access functions */
    //@{
-   inline Reference      operator[]( size_t index );
-   inline ConstReference operator[]( size_t index ) const;
+   inline Reference      operator[]( size_t index ) noexcept;
+   inline ConstReference operator[]( size_t index ) const noexcept;
    inline Reference      at( size_t index );
    inline ConstReference at( size_t index ) const;
-   inline Pointer        data  ();
-   inline ConstPointer   data  () const;
-   inline Iterator       begin ();
-   inline ConstIterator  begin () const;
-   inline ConstIterator  cbegin() const;
-   inline Iterator       end   ();
-   inline ConstIterator  end   () const;
-   inline ConstIterator  cend  () const;
+   inline Pointer        data  () noexcept;
+   inline ConstPointer   data  () const noexcept;
+   inline Iterator       begin () noexcept;
+   inline ConstIterator  begin () const noexcept;
+   inline ConstIterator  cbegin() const noexcept;
+   inline Iterator       end   () noexcept;
+   inline ConstIterator  end   () const noexcept;
+   inline ConstIterator  cend  () const noexcept;
    //@}
    //**********************************************************************************************
 
@@ -531,8 +531,8 @@ class CustomVector : public DenseVector< CustomVector<Type,AF,PF,TF>, TF >
    //**Utility functions***************************************************************************
    /*!\name Utility functions */
    //@{
-                                inline size_t        size() const;
-                                inline size_t        capacity() const;
+                                inline size_t        size() const noexcept;
+                                inline size_t        capacity() const noexcept;
                                 inline size_t        nonZeros() const;
                                 inline void          reset();
                                 inline void          clear();
@@ -611,20 +611,20 @@ class CustomVector : public DenseVector< CustomVector<Type,AF,PF,TF>, TF >
    //**Expression template evaluation functions****************************************************
    /*!\name Expression template evaluation functions */
    //@{
-   template< typename Other > inline bool canAlias ( const Other* alias ) const;
-   template< typename Other > inline bool isAliased( const Other* alias ) const;
+   template< typename Other > inline bool canAlias ( const Other* alias ) const noexcept;
+   template< typename Other > inline bool isAliased( const Other* alias ) const noexcept;
 
-   inline bool isAligned   () const;
-   inline bool canSMPAssign() const;
+   inline bool isAligned   () const noexcept;
+   inline bool canSMPAssign() const noexcept;
 
-   BLAZE_ALWAYS_INLINE IntrinsicType load ( size_t index ) const;
-   BLAZE_ALWAYS_INLINE IntrinsicType loada( size_t index ) const;
-   BLAZE_ALWAYS_INLINE IntrinsicType loadu( size_t index ) const;
+   BLAZE_ALWAYS_INLINE IntrinsicType load ( size_t index ) const noexcept;
+   BLAZE_ALWAYS_INLINE IntrinsicType loada( size_t index ) const noexcept;
+   BLAZE_ALWAYS_INLINE IntrinsicType loadu( size_t index ) const noexcept;
 
-   BLAZE_ALWAYS_INLINE void store ( size_t index, const IntrinsicType& value );
-   BLAZE_ALWAYS_INLINE void storea( size_t index, const IntrinsicType& value );
-   BLAZE_ALWAYS_INLINE void storeu( size_t index, const IntrinsicType& value );
-   BLAZE_ALWAYS_INLINE void stream( size_t index, const IntrinsicType& value );
+   BLAZE_ALWAYS_INLINE void store ( size_t index, const IntrinsicType& value ) noexcept;
+   BLAZE_ALWAYS_INLINE void storea( size_t index, const IntrinsicType& value ) noexcept;
+   BLAZE_ALWAYS_INLINE void storeu( size_t index, const IntrinsicType& value ) noexcept;
+   BLAZE_ALWAYS_INLINE void stream( size_t index, const IntrinsicType& value ) noexcept;
 
    template< typename VT >
    inline typename DisableIf< VectorizedAssign<VT> >::Type
@@ -931,7 +931,7 @@ template< typename Type  // Data type of the vector
         , bool PF        // Padding flag
         , bool TF >      // Transpose flag
 inline typename CustomVector<Type,AF,PF,TF>::Reference
-   CustomVector<Type,AF,PF,TF>::operator[]( size_t index )
+   CustomVector<Type,AF,PF,TF>::operator[]( size_t index ) noexcept
 {
    BLAZE_USER_ASSERT( index < size_, "Invalid vector access index" );
    return v_[index];
@@ -953,7 +953,7 @@ template< typename Type  // Data type of the vector
         , bool PF        // Padding flag
         , bool TF >      // Transpose flag
 inline typename CustomVector<Type,AF,PF,TF>::ConstReference
-   CustomVector<Type,AF,PF,TF>::operator[]( size_t index ) const
+   CustomVector<Type,AF,PF,TF>::operator[]( size_t index ) const noexcept
 {
    BLAZE_USER_ASSERT( index < size_, "Invalid vector access index" );
    return v_[index];
@@ -1022,7 +1022,8 @@ template< typename Type  // Data type of the vector
         , bool AF        // Alignment flag
         , bool PF        // Padding flag
         , bool TF >      // Transpose flag
-inline typename CustomVector<Type,AF,PF,TF>::Pointer CustomVector<Type,AF,PF,TF>::data()
+inline typename CustomVector<Type,AF,PF,TF>::Pointer
+   CustomVector<Type,AF,PF,TF>::data() noexcept
 {
    return v_.get();
 }
@@ -1040,7 +1041,8 @@ template< typename Type  // Data type of the vector
         , bool AF        // Alignment flag
         , bool PF        // Padding flag
         , bool TF >      // Transpose flag
-inline typename CustomVector<Type,AF,PF,TF>::ConstPointer CustomVector<Type,AF,PF,TF>::data() const
+inline typename CustomVector<Type,AF,PF,TF>::ConstPointer
+   CustomVector<Type,AF,PF,TF>::data() const noexcept
 {
    return v_.get();
 }
@@ -1056,7 +1058,8 @@ template< typename Type  // Data type of the vector
         , bool AF        // Alignment flag
         , bool PF        // Padding flag
         , bool TF >      // Transpose flag
-inline typename CustomVector<Type,AF,PF,TF>::Iterator CustomVector<Type,AF,PF,TF>::begin()
+inline typename CustomVector<Type,AF,PF,TF>::Iterator
+   CustomVector<Type,AF,PF,TF>::begin() noexcept
 {
    return Iterator( v_.get() );
 }
@@ -1072,7 +1075,8 @@ template< typename Type  // Data type of the vector
         , bool AF        // Alignment flag
         , bool PF        // Padding flag
         , bool TF >      // Transpose flag
-inline typename CustomVector<Type,AF,PF,TF>::ConstIterator CustomVector<Type,AF,PF,TF>::begin() const
+inline typename CustomVector<Type,AF,PF,TF>::ConstIterator
+   CustomVector<Type,AF,PF,TF>::begin() const noexcept
 {
    return ConstIterator( v_.get() );
 }
@@ -1088,7 +1092,8 @@ template< typename Type  // Data type of the vector
         , bool AF        // Alignment flag
         , bool PF        // Padding flag
         , bool TF >      // Transpose flag
-inline typename CustomVector<Type,AF,PF,TF>::ConstIterator CustomVector<Type,AF,PF,TF>::cbegin() const
+inline typename CustomVector<Type,AF,PF,TF>::ConstIterator
+   CustomVector<Type,AF,PF,TF>::cbegin() const noexcept
 {
    return ConstIterator( v_.get() );
 }
@@ -1104,7 +1109,8 @@ template< typename Type  // Data type of the vector
         , bool AF        // Alignment flag
         , bool PF        // Padding flag
         , bool TF >      // Transpose flag
-inline typename CustomVector<Type,AF,PF,TF>::Iterator CustomVector<Type,AF,PF,TF>::end()
+inline typename CustomVector<Type,AF,PF,TF>::Iterator
+   CustomVector<Type,AF,PF,TF>::end() noexcept
 {
    return Iterator( v_.get() + size_ );
 }
@@ -1120,7 +1126,8 @@ template< typename Type  // Data type of the vector
         , bool AF        // Alignment flag
         , bool PF        // Padding flag
         , bool TF >      // Transpose flag
-inline typename CustomVector<Type,AF,PF,TF>::ConstIterator CustomVector<Type,AF,PF,TF>::end() const
+inline typename CustomVector<Type,AF,PF,TF>::ConstIterator
+   CustomVector<Type,AF,PF,TF>::end() const noexcept
 {
    return ConstIterator( v_.get() + size_ );
 }
@@ -1136,7 +1143,8 @@ template< typename Type  // Data type of the vector
         , bool AF        // Alignment flag
         , bool PF        // Padding flag
         , bool TF >      // Transpose flag
-inline typename CustomVector<Type,AF,PF,TF>::ConstIterator CustomVector<Type,AF,PF,TF>::cend() const
+inline typename CustomVector<Type,AF,PF,TF>::ConstIterator
+   CustomVector<Type,AF,PF,TF>::cend() const noexcept
 {
    return ConstIterator( v_.get() + size_ );
 }
@@ -1480,7 +1488,7 @@ template< typename Type  // Data type of the vector
         , bool AF        // Alignment flag
         , bool PF        // Padding flag
         , bool TF >      // Transpose flag
-inline size_t CustomVector<Type,AF,PF,TF>::size() const
+inline size_t CustomVector<Type,AF,PF,TF>::size() const noexcept
 {
    return size_;
 }
@@ -1496,7 +1504,7 @@ template< typename Type  // Data type of the vector
         , bool AF        // Alignment flag
         , bool PF        // Padding flag
         , bool TF >      // Transpose flag
-inline size_t CustomVector<Type,AF,PF,TF>::capacity() const
+inline size_t CustomVector<Type,AF,PF,TF>::capacity() const noexcept
 {
    return size_;
 }
@@ -1592,7 +1600,6 @@ inline CustomVector<Type,AF,PF,TF>& CustomVector<Type,AF,PF,TF>::scale( const Ot
 //
 // \param v The vector to be swapped.
 // \return void
-// \exception no-throw guarantee.
 */
 template< typename Type  // Data type of the vector
         , bool AF        // Alignment flag
@@ -1786,7 +1793,7 @@ template< typename Type     // Data type of the vector
         , bool PF           // Padding flag
         , bool TF >         // Transpose flag
 template< typename Other >  // Data type of the foreign expression
-inline bool CustomVector<Type,AF,PF,TF>::canAlias( const Other* alias ) const
+inline bool CustomVector<Type,AF,PF,TF>::canAlias( const Other* alias ) const noexcept
 {
    return static_cast<const void*>( this ) == static_cast<const void*>( alias );
 }
@@ -1808,7 +1815,7 @@ template< typename Type     // Data type of the vector
         , bool PF           // Padding flag
         , bool TF >         // Transpose flag
 template< typename Other >  // Data type of the foreign expression
-inline bool CustomVector<Type,AF,PF,TF>::isAliased( const Other* alias ) const
+inline bool CustomVector<Type,AF,PF,TF>::isAliased( const Other* alias ) const noexcept
 {
    return static_cast<const void*>( this ) == static_cast<const void*>( alias );
 }
@@ -1828,7 +1835,7 @@ template< typename Type  // Data type of the vector
         , bool AF        // Alignment flag
         , bool PF        // Padding flag
         , bool TF >      // Transpose flag
-inline bool CustomVector<Type,AF,PF,TF>::isAligned() const
+inline bool CustomVector<Type,AF,PF,TF>::isAligned() const noexcept
 {
    return ( AF || checkAlignment( v_.get() ) );
 }
@@ -1849,7 +1856,7 @@ template< typename Type  // Data type of the vector
         , bool AF        // Alignment flag
         , bool PF        // Padding flag
         , bool TF >      // Transpose flag
-inline bool CustomVector<Type,AF,PF,TF>::canSMPAssign() const
+inline bool CustomVector<Type,AF,PF,TF>::canSMPAssign() const noexcept
 {
    return ( size() > SMP_DVECASSIGN_THRESHOLD );
 }
@@ -1874,7 +1881,7 @@ template< typename Type  // Data type of the vector
         , bool PF        // Padding flag
         , bool TF >      // Transpose flag
 BLAZE_ALWAYS_INLINE typename CustomVector<Type,AF,PF,TF>::IntrinsicType
-   CustomVector<Type,AF,PF,TF>::load( size_t index ) const
+   CustomVector<Type,AF,PF,TF>::load( size_t index ) const noexcept
 {
    if( AF )
       return loada( index );
@@ -1902,7 +1909,7 @@ template< typename Type  // Data type of the vector
         , bool PF        // Padding flag
         , bool TF >      // Transpose flag
 BLAZE_ALWAYS_INLINE typename CustomVector<Type,AF,PF,TF>::IntrinsicType
-   CustomVector<Type,AF,PF,TF>::loada( size_t index ) const
+   CustomVector<Type,AF,PF,TF>::loada( size_t index ) const noexcept
 {
    using blaze::loada;
 
@@ -1936,7 +1943,7 @@ template< typename Type  // Data type of the vector
         , bool PF        // Padding flag
         , bool TF >      // Transpose flag
 BLAZE_ALWAYS_INLINE typename CustomVector<Type,AF,PF,TF>::IntrinsicType
-   CustomVector<Type,AF,PF,TF>::loadu( size_t index ) const
+   CustomVector<Type,AF,PF,TF>::loadu( size_t index ) const noexcept
 {
    using blaze::loadu;
 
@@ -1968,7 +1975,7 @@ template< typename Type  // Data type of the vector
         , bool AF        // Alignment flag
         , bool PF        // Padding flag
         , bool TF >      // Transpose flag
-BLAZE_ALWAYS_INLINE void CustomVector<Type,AF,PF,TF>::store( size_t index, const IntrinsicType& value )
+BLAZE_ALWAYS_INLINE void CustomVector<Type,AF,PF,TF>::store( size_t index, const IntrinsicType& value ) noexcept
 {
    if( AF )
       storea( index, value );
@@ -1996,7 +2003,7 @@ template< typename Type  // Data type of the vector
         , bool AF        // Alignment flag
         , bool PF        // Padding flag
         , bool TF >      // Transpose flag
-BLAZE_ALWAYS_INLINE void CustomVector<Type,AF,PF,TF>::storea( size_t index, const IntrinsicType& value )
+BLAZE_ALWAYS_INLINE void CustomVector<Type,AF,PF,TF>::storea( size_t index, const IntrinsicType& value ) noexcept
 {
    using blaze::storea;
 
@@ -2030,7 +2037,7 @@ template< typename Type  // Data type of the vector
         , bool AF        // Alignment flag
         , bool PF        // Padding flag
         , bool TF >      // Transpose flag
-BLAZE_ALWAYS_INLINE void CustomVector<Type,AF,PF,TF>::storeu( size_t index, const IntrinsicType& value )
+BLAZE_ALWAYS_INLINE void CustomVector<Type,AF,PF,TF>::storeu( size_t index, const IntrinsicType& value ) noexcept
 {
    using blaze::storeu;
 
@@ -2062,7 +2069,7 @@ template< typename Type  // Data type of the vector
         , bool AF        // Alignment flag
         , bool PF        // Padding flag
         , bool TF >      // Transpose flag
-BLAZE_ALWAYS_INLINE void CustomVector<Type,AF,PF,TF>::stream( size_t index, const IntrinsicType& value )
+BLAZE_ALWAYS_INLINE void CustomVector<Type,AF,PF,TF>::stream( size_t index, const IntrinsicType& value ) noexcept
 {
    using blaze::stream;
 
@@ -2627,18 +2634,18 @@ class CustomVector<Type,AF,padded,TF>
    //**Data access functions***********************************************************************
    /*!\name Data access functions */
    //@{
-   inline Reference      operator[]( size_t index );
-   inline ConstReference operator[]( size_t index ) const;
+   inline Reference      operator[]( size_t index ) noexcept;
+   inline ConstReference operator[]( size_t index ) const noexcept;
    inline Reference      at( size_t index );
    inline ConstReference at( size_t index ) const;
-   inline Pointer        data  ();
-   inline ConstPointer   data  () const;
-   inline Iterator       begin ();
-   inline ConstIterator  begin () const;
-   inline ConstIterator  cbegin() const;
-   inline Iterator       end   ();
-   inline ConstIterator  end   () const;
-   inline ConstIterator  cend  () const;
+   inline Pointer        data  () noexcept;
+   inline ConstPointer   data  () const noexcept;
+   inline Iterator       begin () noexcept;
+   inline ConstIterator  begin () const noexcept;
+   inline ConstIterator  cbegin() const noexcept;
+   inline Iterator       end   () noexcept;
+   inline ConstIterator  end   () const noexcept;
+   inline ConstIterator  cend  () const noexcept;
    //@}
    //**********************************************************************************************
 
@@ -2670,8 +2677,8 @@ class CustomVector<Type,AF,padded,TF>
    //**Utility functions***************************************************************************
    /*!\name Utility functions */
    //@{
-                                inline size_t        size() const;
-                                inline size_t        capacity() const;
+                                inline size_t        size() const noexcept;
+                                inline size_t        capacity() const noexcept;
                                 inline size_t        nonZeros() const;
                                 inline void          reset();
                                 inline void          clear();
@@ -2736,20 +2743,20 @@ class CustomVector<Type,AF,padded,TF>
    //**Expression template evaluation functions****************************************************
    /*!\name Expression template evaluation functions */
    //@{
-   template< typename Other > inline bool canAlias ( const Other* alias ) const;
-   template< typename Other > inline bool isAliased( const Other* alias ) const;
+   template< typename Other > inline bool canAlias ( const Other* alias ) const noexcept;
+   template< typename Other > inline bool isAliased( const Other* alias ) const noexcept;
 
-   inline bool isAligned   () const;
-   inline bool canSMPAssign() const;
+   inline bool isAligned   () const noexcept;
+   inline bool canSMPAssign() const noexcept;
 
-   BLAZE_ALWAYS_INLINE IntrinsicType load ( size_t index ) const;
-   BLAZE_ALWAYS_INLINE IntrinsicType loada( size_t index ) const;
-   BLAZE_ALWAYS_INLINE IntrinsicType loadu( size_t index ) const;
+   BLAZE_ALWAYS_INLINE IntrinsicType load ( size_t index ) const noexcept;
+   BLAZE_ALWAYS_INLINE IntrinsicType loada( size_t index ) const noexcept;
+   BLAZE_ALWAYS_INLINE IntrinsicType loadu( size_t index ) const noexcept;
 
-   BLAZE_ALWAYS_INLINE void store ( size_t index, const IntrinsicType& value );
-   BLAZE_ALWAYS_INLINE void storea( size_t index, const IntrinsicType& value );
-   BLAZE_ALWAYS_INLINE void storeu( size_t index, const IntrinsicType& value );
-   BLAZE_ALWAYS_INLINE void stream( size_t index, const IntrinsicType& value );
+   BLAZE_ALWAYS_INLINE void store ( size_t index, const IntrinsicType& value ) noexcept;
+   BLAZE_ALWAYS_INLINE void storea( size_t index, const IntrinsicType& value ) noexcept;
+   BLAZE_ALWAYS_INLINE void storeu( size_t index, const IntrinsicType& value ) noexcept;
+   BLAZE_ALWAYS_INLINE void stream( size_t index, const IntrinsicType& value ) noexcept;
 
    template< typename VT >
    inline typename DisableIf< VectorizedAssign<VT> >::Type
@@ -3014,7 +3021,7 @@ template< typename Type  // Data type of the vector
         , bool AF        // Alignment flag
         , bool TF >      // Transpose flag
 inline typename CustomVector<Type,AF,padded,TF>::Reference
-   CustomVector<Type,AF,padded,TF>::operator[]( size_t index )
+   CustomVector<Type,AF,padded,TF>::operator[]( size_t index ) noexcept
 {
    BLAZE_USER_ASSERT( index < size_, "Invalid vector access index" );
    return v_[index];
@@ -3037,7 +3044,7 @@ template< typename Type  // Data type of the vector
         , bool AF        // Alignment flag
         , bool TF >      // Transpose flag
 inline typename CustomVector<Type,AF,padded,TF>::ConstReference
-   CustomVector<Type,AF,padded,TF>::operator[]( size_t index ) const
+   CustomVector<Type,AF,padded,TF>::operator[]( size_t index ) const noexcept
 {
    BLAZE_USER_ASSERT( index < size_, "Invalid vector access index" );
    return v_[index];
@@ -3110,7 +3117,7 @@ template< typename Type  // Data type of the vector
         , bool AF        // Alignment flag
         , bool TF >      // Transpose flag
 inline typename CustomVector<Type,AF,padded,TF>::Pointer
-   CustomVector<Type,AF,padded,TF>::data()
+   CustomVector<Type,AF,padded,TF>::data() noexcept
 {
    return v_.get();
 }
@@ -3130,7 +3137,7 @@ template< typename Type  // Data type of the vector
         , bool AF        // Alignment flag
         , bool TF >      // Transpose flag
 inline typename CustomVector<Type,AF,padded,TF>::ConstPointer
-   CustomVector<Type,AF,padded,TF>::data() const
+   CustomVector<Type,AF,padded,TF>::data() const noexcept
 {
    return v_.get();
 }
@@ -3148,7 +3155,7 @@ template< typename Type  // Data type of the vector
         , bool AF        // Alignment flag
         , bool TF >      // Transpose flag
 inline typename CustomVector<Type,AF,padded,TF>::Iterator
-   CustomVector<Type,AF,padded,TF>::begin()
+   CustomVector<Type,AF,padded,TF>::begin() noexcept
 {
    return Iterator( v_.get() );
 }
@@ -3166,7 +3173,7 @@ template< typename Type  // Data type of the vector
         , bool AF        // Alignment flag
         , bool TF >      // Transpose flag
 inline typename CustomVector<Type,AF,padded,TF>::ConstIterator
-   CustomVector<Type,AF,padded,TF>::begin() const
+   CustomVector<Type,AF,padded,TF>::begin() const noexcept
 {
    return ConstIterator( v_.get() );
 }
@@ -3184,7 +3191,7 @@ template< typename Type  // Data type of the vector
         , bool AF        // Alignment flag
         , bool TF >      // Transpose flag
 inline typename CustomVector<Type,AF,padded,TF>::ConstIterator
-   CustomVector<Type,AF,padded,TF>::cbegin() const
+   CustomVector<Type,AF,padded,TF>::cbegin() const noexcept
 {
    return ConstIterator( v_.get() );
 }
@@ -3202,7 +3209,7 @@ template< typename Type  // Data type of the vector
         , bool AF        // Alignment flag
         , bool TF >      // Transpose flag
 inline typename CustomVector<Type,AF,padded,TF>::Iterator
-   CustomVector<Type,AF,padded,TF>::end()
+   CustomVector<Type,AF,padded,TF>::end() noexcept
 {
    return Iterator( v_.get() + size_ );
 }
@@ -3220,7 +3227,7 @@ template< typename Type  // Data type of the vector
         , bool AF        // Alignment flag
         , bool TF >      // Transpose flag
 inline typename CustomVector<Type,AF,padded,TF>::ConstIterator
-   CustomVector<Type,AF,padded,TF>::end() const
+   CustomVector<Type,AF,padded,TF>::end() const noexcept
 {
    return ConstIterator( v_.get() + size_ );
 }
@@ -3238,7 +3245,7 @@ template< typename Type  // Data type of the vector
         , bool AF        // Alignment flag
         , bool TF >      // Transpose flag
 inline typename CustomVector<Type,AF,padded,TF>::ConstIterator
-   CustomVector<Type,AF,padded,TF>::cend() const
+   CustomVector<Type,AF,padded,TF>::cend() const noexcept
 {
    return ConstIterator( v_.get() + size_ );
 }
@@ -3602,7 +3609,7 @@ inline typename EnableIf< IsNumeric<Other>, CustomVector<Type,AF,padded,TF> >::T
 template< typename Type  // Data type of the vector
         , bool AF        // Alignment flag
         , bool TF >      // Transpose flag
-inline size_t CustomVector<Type,AF,padded,TF>::size() const
+inline size_t CustomVector<Type,AF,padded,TF>::size() const noexcept
 {
    return size_;
 }
@@ -3619,7 +3626,7 @@ inline size_t CustomVector<Type,AF,padded,TF>::size() const
 template< typename Type  // Data type of the vector
         , bool AF        // Alignment flag
         , bool TF >      // Transpose flag
-inline size_t CustomVector<Type,AF,padded,TF>::capacity() const
+inline size_t CustomVector<Type,AF,padded,TF>::capacity() const noexcept
 {
    return capacity_;
 }
@@ -3723,7 +3730,6 @@ inline CustomVector<Type,AF,padded,TF>&
 //
 // \param v The vector to be swapped.
 // \return void
-// \exception no-throw guarantee.
 */
 template< typename Type  // Data type of the vector
         , bool AF        // Alignment flag
@@ -3842,7 +3848,7 @@ template< typename Type     // Data type of the vector
         , bool AF           // Alignment flag
         , bool TF >         // Transpose flag
 template< typename Other >  // Data type of the foreign expression
-inline bool CustomVector<Type,AF,padded,TF>::canAlias( const Other* alias ) const
+inline bool CustomVector<Type,AF,padded,TF>::canAlias( const Other* alias ) const noexcept
 {
    return static_cast<const void*>( this ) == static_cast<const void*>( alias );
 }
@@ -3865,7 +3871,7 @@ template< typename Type     // Data type of the vector
         , bool AF           // Alignment flag
         , bool TF >         // Transpose flag
 template< typename Other >  // Data type of the foreign expression
-inline bool CustomVector<Type,AF,padded,TF>::isAliased( const Other* alias ) const
+inline bool CustomVector<Type,AF,padded,TF>::isAliased( const Other* alias ) const noexcept
 {
    return static_cast<const void*>( this ) == static_cast<const void*>( alias );
 }
@@ -3886,7 +3892,7 @@ inline bool CustomVector<Type,AF,padded,TF>::isAliased( const Other* alias ) con
 template< typename Type  // Data type of the vector
         , bool AF        // Alignment flag
         , bool TF >      // Transpose flag
-inline bool CustomVector<Type,AF,padded,TF>::isAligned() const
+inline bool CustomVector<Type,AF,padded,TF>::isAligned() const noexcept
 {
    return ( AF || checkAlignment( v_.get() ) );
 }
@@ -3908,7 +3914,7 @@ inline bool CustomVector<Type,AF,padded,TF>::isAligned() const
 template< typename Type  // Data type of the vector
         , bool AF        // Alignment flag
         , bool TF >      // Transpose flag
-inline bool CustomVector<Type,AF,padded,TF>::canSMPAssign() const
+inline bool CustomVector<Type,AF,padded,TF>::canSMPAssign() const noexcept
 {
    return ( size() > SMP_DVECASSIGN_THRESHOLD );
 }
@@ -3934,7 +3940,7 @@ template< typename Type  // Data type of the vector
         , bool AF        // Alignment flag
         , bool TF >      // Transpose flag
 BLAZE_ALWAYS_INLINE typename CustomVector<Type,AF,padded,TF>::IntrinsicType
-   CustomVector<Type,AF,padded,TF>::load( size_t index ) const
+   CustomVector<Type,AF,padded,TF>::load( size_t index ) const noexcept
 {
    if( AF )
       return loada( index );
@@ -3963,7 +3969,7 @@ template< typename Type  // Data type of the vector
         , bool AF        // Alignment flag
         , bool TF >      // Transpose flag
 BLAZE_ALWAYS_INLINE typename CustomVector<Type,AF,padded,TF>::IntrinsicType
-   CustomVector<Type,AF,padded,TF>::loada( size_t index ) const
+   CustomVector<Type,AF,padded,TF>::loada( size_t index ) const noexcept
 {
    using blaze::loada;
 
@@ -3998,7 +4004,7 @@ template< typename Type  // Data type of the vector
         , bool AF        // Alignment flag
         , bool TF >      // Transpose flag
 BLAZE_ALWAYS_INLINE typename CustomVector<Type,AF,padded,TF>::IntrinsicType
-   CustomVector<Type,AF,padded,TF>::loadu( size_t index ) const
+   CustomVector<Type,AF,padded,TF>::loadu( size_t index ) const noexcept
 {
    using blaze::loadu;
 
@@ -4032,7 +4038,7 @@ template< typename Type  // Data type of the vector
         , bool AF        // Alignment flag
         , bool TF >      // Transpose flag
 BLAZE_ALWAYS_INLINE void
-   CustomVector<Type,AF,padded,TF>::store( size_t index, const IntrinsicType& value )
+   CustomVector<Type,AF,padded,TF>::store( size_t index, const IntrinsicType& value ) noexcept
 {
    if( AF )
       storea( index, value );
@@ -4062,7 +4068,7 @@ template< typename Type  // Data type of the vector
         , bool AF        // Alignment flag
         , bool TF >      // Transpose flag
 BLAZE_ALWAYS_INLINE void
-   CustomVector<Type,AF,padded,TF>::storea( size_t index, const IntrinsicType& value )
+   CustomVector<Type,AF,padded,TF>::storea( size_t index, const IntrinsicType& value ) noexcept
 {
    using blaze::storea;
 
@@ -4098,7 +4104,7 @@ template< typename Type  // Data type of the vector
         , bool AF        // Alignment flag
         , bool TF >      // Transpose flag
 BLAZE_ALWAYS_INLINE void
-   CustomVector<Type,AF,padded,TF>::storeu( size_t index, const IntrinsicType& value )
+   CustomVector<Type,AF,padded,TF>::storeu( size_t index, const IntrinsicType& value ) noexcept
 {
    using blaze::storeu;
 
@@ -4132,7 +4138,7 @@ template< typename Type  // Data type of the vector
         , bool AF        // Alignment flag
         , bool TF >      // Transpose flag
 BLAZE_ALWAYS_INLINE void
-   CustomVector<Type,AF,padded,TF>::stream( size_t index, const IntrinsicType& value )
+   CustomVector<Type,AF,padded,TF>::stream( size_t index, const IntrinsicType& value ) noexcept
 {
    using blaze::stream;
 
@@ -4647,7 +4653,7 @@ template< typename Type, bool AF, bool PF, bool TF >
 inline bool isDefault( const CustomVector<Type,AF,PF,TF>& v );
 
 template< typename Type, bool AF, bool PF, bool TF >
-inline bool isIntact( const CustomVector<Type,AF,PF,TF>& v );
+inline bool isIntact( const CustomVector<Type,AF,PF,TF>& v ) noexcept;
 
 template< typename Type, bool AF, bool PF, bool TF >
 inline void swap( CustomVector<Type,AF,PF,TF>& a, CustomVector<Type,AF,PF,TF>& b ) noexcept;
@@ -4748,7 +4754,7 @@ template< typename Type  // Data type of the vector
         , bool AF        // Alignment flag
         , bool PF        // Padding flag
         , bool TF >      // Transpose flag
-inline bool isIntact( const CustomVector<Type,AF,PF,TF>& v )
+inline bool isIntact( const CustomVector<Type,AF,PF,TF>& v ) noexcept
 {
    return ( v.size() <= v.capacity() );
 }
@@ -4762,7 +4768,6 @@ inline bool isIntact( const CustomVector<Type,AF,PF,TF>& v )
 // \param a The first vector to be swapped.
 // \param b The second vector to be swapped.
 // \return void
-// \exception no-throw guarantee.
 */
 template< typename Type  // Data type of the vector
         , bool AF        // Alignment flag
