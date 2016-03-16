@@ -362,13 +362,8 @@ void ClassTest::testConstructors()
    {
       test_ = "Row-major HybridMatrix copy constructor (2x3)";
 
-      blaze::HybridMatrix<int,2UL,3UL,blaze::rowMajor> mat1( 2UL, 3UL );
-      mat1(0,0) = 1;
-      mat1(0,1) = 2;
-      mat1(0,2) = 3;
-      mat1(1,0) = 4;
-      mat1(1,1) = 5;
-      mat1(1,2) = 6;
+      blaze::HybridMatrix<int,2UL,3UL,blaze::rowMajor> mat1( { { 1, 2, 3 },
+                                                               { 4, 5, 6 } } );
 
       blaze::HybridMatrix<int,2UL,3UL,blaze::rowMajor> mat2( mat1 );
 
@@ -837,13 +832,8 @@ void ClassTest::testConstructors()
    {
       test_ = "Column-major HybridMatrix copy constructor (2x3)";
 
-      blaze::HybridMatrix<int,2UL,3UL,blaze::columnMajor> mat1( 2UL, 3UL );
-      mat1(0,0) = 1;
-      mat1(0,1) = 2;
-      mat1(0,2) = 3;
-      mat1(1,0) = 4;
-      mat1(1,1) = 5;
-      mat1(1,2) = 6;
+      blaze::HybridMatrix<int,2UL,3UL,blaze::columnMajor> mat1( { { 1, 2, 3 },
+                                                                  { 4, 5, 6 } } );
 
       blaze::HybridMatrix<int,2UL,3UL,blaze::columnMajor> mat2( mat1 );
 
@@ -1177,13 +1167,8 @@ void ClassTest::testAssignment()
    {
       test_ = "Row-major HybridMatrix copy assignment";
 
-      blaze::HybridMatrix<int,2UL,3UL,blaze::rowMajor> mat1( 2UL, 3UL );
-      mat1(0,0) = 1;
-      mat1(0,1) = 2;
-      mat1(0,2) = 3;
-      mat1(1,0) = 4;
-      mat1(1,1) = 5;
-      mat1(1,2) = 6;
+      blaze::HybridMatrix<int,2UL,3UL,blaze::rowMajor> mat1( { { 1, 2, 3 },
+                                                               { 4, 5, 6 } } );
 
       blaze::HybridMatrix<int,2UL,3UL,blaze::rowMajor> mat2;
       mat2 = mat1;
@@ -1915,13 +1900,8 @@ void ClassTest::testAssignment()
    {
       test_ = "Column-major HybridMatrix copy assignment";
 
-      blaze::HybridMatrix<int,2UL,3UL,blaze::columnMajor> mat1( 2UL, 3UL );
-      mat1(0,0) = 1;
-      mat1(0,1) = 2;
-      mat1(0,2) = 3;
-      mat1(1,0) = 4;
-      mat1(1,1) = 5;
-      mat1(1,2) = 6;
+      blaze::HybridMatrix<int,2UL,3UL,blaze::columnMajor> mat1( { { 1, 2, 3 },
+                                                                  { 4, 5, 6 } } );
 
       blaze::HybridMatrix<int,2UL,3UL,blaze::columnMajor> mat2;
       mat2 = mat1;
@@ -2620,10 +2600,8 @@ void ClassTest::testAddAssign()
       mat1(1,0) = -3;
       mat1(1,2) =  4;
 
-      blaze::HybridMatrix<int,2UL,3UL,blaze::rowMajor> mat2( 2UL, 3UL, 0 );
-      mat2(0,1) = -2;
-      mat2(0,2) =  6;
-      mat2(1,0) =  5;
+      blaze::HybridMatrix<int,2UL,3UL,blaze::rowMajor> mat2( { { 0, -2, 6 },
+                                                               { 5,  0, 0 } } );
 
       mat2 += mat1;
 
@@ -2662,10 +2640,8 @@ void ClassTest::testAddAssign()
       mat1(1,0) = -3;
       mat1(1,2) =  4;
 
-      blaze::HybridMatrix<int,2UL,3UL,blaze::rowMajor> mat2( 2UL, 3UL, 0 );
-      mat2(0,1) = -2;
-      mat2(0,2) =  6;
-      mat2(1,0) =  5;
+      blaze::HybridMatrix<int,2UL,3UL,blaze::rowMajor> mat2( { { 0, -2, 6 },
+                                                               { 5,  0, 0 } } );
 
       mat2 += mat1;
 
@@ -2703,10 +2679,8 @@ void ClassTest::testAddAssign()
       mat1(1,0) = -3;
       mat1(1,2) =  4;
 
-      blaze::HybridMatrix<int,2UL,3UL,blaze::rowMajor> mat2( 2UL, 3UL, 0 );
-      mat2(0,1) = -2;
-      mat2(0,2) =  6;
-      mat2(1,0) =  5;
+      blaze::HybridMatrix<int,2UL,3UL,blaze::rowMajor> mat2( { { 0, -2, 6 },
+                                                               { 5,  0, 0 } } );
 
       mat2 += mat1;
 
@@ -2745,10 +2719,8 @@ void ClassTest::testAddAssign()
       mat1(1,0) = -3;
       mat1(1,2) =  4;
 
-      blaze::HybridMatrix<int,2UL,3UL,blaze::rowMajor> mat2( 2UL, 3UL, 0 );
-      mat2(0,1) = -2;
-      mat2(0,2) =  6;
-      mat2(1,0) =  5;
+      blaze::HybridMatrix<int,2UL,3UL,blaze::rowMajor> mat2( { { 0, -2, 6 },
+                                                               { 5,  0, 0 } } );
 
       mat2 += mat1;
 
@@ -2911,10 +2883,8 @@ void ClassTest::testAddAssign()
       mat1(1,0) = -3;
       mat1(1,2) =  4;
 
-      blaze::HybridMatrix<int,2UL,3UL,blaze::rowMajor> mat2( 2UL, 3UL, 0 );
-      mat2(0,1) = -2;
-      mat2(0,2) =  6;
-      mat2(1,0) =  5;
+      blaze::HybridMatrix<int,2UL,3UL,blaze::rowMajor> mat2( { { 0, -2, 6 },
+                                                               { 5,  0, 0 } } );
 
       mat2 += mat1;
 
@@ -2946,10 +2916,8 @@ void ClassTest::testAddAssign()
       mat1(1,0) = -3;
       mat1(1,2) =  4;
 
-      blaze::HybridMatrix<int,2UL,3UL,blaze::rowMajor> mat2( 2UL, 3UL, 0 );
-      mat2(0,1) = -2;
-      mat2(0,2) =  6;
-      mat2(1,0) =  5;
+      blaze::HybridMatrix<int,2UL,3UL,blaze::rowMajor> mat2( { { 0, -2, 6 },
+                                                               { 5,  0, 0 } } );
 
       mat2 += mat1;
 
@@ -3118,10 +3086,8 @@ void ClassTest::testAddAssign()
       mat1(1,0) = -3;
       mat1(1,2) =  4;
 
-      blaze::HybridMatrix<int,2UL,3UL,blaze::columnMajor> mat2( 2UL, 3UL, 0 );
-      mat2(0,1) = -2;
-      mat2(0,2) =  6;
-      mat2(1,0) =  5;
+      blaze::HybridMatrix<int,2UL,3UL,blaze::columnMajor> mat2( { { 0, -2, 6 },
+                                                                  { 5,  0, 0 } } );
 
       mat2 += mat1;
 
@@ -3161,10 +3127,8 @@ void ClassTest::testAddAssign()
       mat1(1,0) = -3;
       mat1(1,2) =  4;
 
-      blaze::HybridMatrix<int,2UL,3UL,blaze::columnMajor> mat2( 2UL, 3UL, 0 );
-      mat2(0,1) = -2;
-      mat2(0,2) =  6;
-      mat2(1,0) =  5;
+      blaze::HybridMatrix<int,2UL,3UL,blaze::columnMajor> mat2( { { 0, -2, 6 },
+                                                                  { 5,  0, 0 } } );
 
       mat2 += mat1;
 
@@ -3203,10 +3167,8 @@ void ClassTest::testAddAssign()
       mat1(1,0) = -3;
       mat1(1,2) =  4;
 
-      blaze::HybridMatrix<int,2UL,3UL,blaze::columnMajor> mat2( 2UL, 3UL, 0 );
-      mat2(0,1) = -2;
-      mat2(0,2) =  6;
-      mat2(1,0) =  5;
+      blaze::HybridMatrix<int,2UL,3UL,blaze::columnMajor> mat2( { { 0, -2, 6 },
+                                                                  { 5,  0, 0 } } );
 
       mat2 += mat1;
 
@@ -3246,10 +3208,8 @@ void ClassTest::testAddAssign()
       mat1(1,0) = -3;
       mat1(1,2) =  4;
 
-      blaze::HybridMatrix<int,2UL,3UL,blaze::columnMajor> mat2( 2UL, 3UL, 0 );
-      mat2(0,1) = -2;
-      mat2(0,2) =  6;
-      mat2(1,0) =  5;
+      blaze::HybridMatrix<int,2UL,3UL,blaze::columnMajor> mat2( { { 0, -2, 6 },
+                                                                  { 5,  0, 0 } } );
 
       mat2 += mat1;
 
@@ -3413,10 +3373,8 @@ void ClassTest::testAddAssign()
       mat1(1,0) = -3;
       mat1(1,2) =  4;
 
-      blaze::HybridMatrix<int,2UL,3UL,blaze::columnMajor> mat2( 2UL, 3UL, 0 );
-      mat2(0,1) = -2;
-      mat2(0,2) =  6;
-      mat2(1,0) =  5;
+      blaze::HybridMatrix<int,2UL,3UL,blaze::columnMajor> mat2( { { 0, -2, 6 },
+                                                                  { 5,  0, 0 } } );
 
       mat2 += mat1;
 
@@ -3449,10 +3407,8 @@ void ClassTest::testAddAssign()
       mat1(1,0) = -3;
       mat1(1,2) =  4;
 
-      blaze::HybridMatrix<int,2UL,3UL,blaze::columnMajor> mat2( 2UL, 3UL, 0 );
-      mat2(0,1) = -2;
-      mat2(0,2) =  6;
-      mat2(1,0) =  5;
+      blaze::HybridMatrix<int,2UL,3UL,blaze::columnMajor> mat2( { { 0, -2, 6 },
+                                                                  { 5,  0, 0 } } );
 
       mat2 += mat1;
 
@@ -3635,10 +3591,8 @@ void ClassTest::testSubAssign()
       mat1(1,0) =  3;
       mat1(1,2) = -4;
 
-      blaze::HybridMatrix<int,2UL,3UL,blaze::rowMajor> mat2( 2UL, 3UL, 0 );
-      mat2(0,1) = -2;
-      mat2(0,2) =  6;
-      mat2(1,0) =  5;
+      blaze::HybridMatrix<int,2UL,3UL,blaze::rowMajor> mat2( { { 0, -2, 6 },
+                                                               { 5,  0, 0 } } );
 
       mat2 -= mat1;
 
@@ -3677,10 +3631,8 @@ void ClassTest::testSubAssign()
       mat1(1,0) =  3;
       mat1(1,2) = -4;
 
-      blaze::HybridMatrix<int,2UL,3UL,blaze::rowMajor> mat2( 2UL, 3UL, 0 );
-      mat2(0,1) = -2;
-      mat2(0,2) =  6;
-      mat2(1,0) =  5;
+      blaze::HybridMatrix<int,2UL,3UL,blaze::rowMajor> mat2( { { 0, -2, 6 },
+                                                               { 5,  0, 0 } } );
 
       mat2 -= mat1;
 
@@ -3718,10 +3670,8 @@ void ClassTest::testSubAssign()
       mat1(1,0) =  3;
       mat1(1,2) = -4;
 
-      blaze::HybridMatrix<int,2UL,3UL,blaze::rowMajor> mat2( 2UL, 3UL, 0 );
-      mat2(0,1) = -2;
-      mat2(0,2) =  6;
-      mat2(1,0) =  5;
+      blaze::HybridMatrix<int,2UL,3UL,blaze::rowMajor> mat2( { { 0, -2, 6 },
+                                                               { 5,  0, 0 } } );
 
       mat2 -= mat1;
 
@@ -3760,10 +3710,8 @@ void ClassTest::testSubAssign()
       mat1(1,0) =  3;
       mat1(1,2) = -4;
 
-      blaze::HybridMatrix<int,2UL,3UL,blaze::rowMajor> mat2( 2UL, 3UL, 0 );
-      mat2(0,1) = -2;
-      mat2(0,2) =  6;
-      mat2(1,0) =  5;
+      blaze::HybridMatrix<int,2UL,3UL,blaze::rowMajor> mat2( { { 0, -2, 6 },
+                                                               { 5,  0, 0 } } );
 
       mat2 -= mat1;
 
@@ -3926,10 +3874,8 @@ void ClassTest::testSubAssign()
       mat1(1,0) = -3;
       mat1(1,2) =  4;
 
-      blaze::HybridMatrix<int,2UL,3UL,blaze::rowMajor> mat2( 2UL, 3UL, 0 );
-      mat2(0,1) = -2;
-      mat2(0,2) =  6;
-      mat2(1,0) =  5;
+      blaze::HybridMatrix<int,2UL,3UL,blaze::rowMajor> mat2( { { 0, -2, 6 },
+                                                               { 5,  0, 0 } } );
 
       mat2 += mat1;
 
@@ -3961,10 +3907,8 @@ void ClassTest::testSubAssign()
       mat1(1,0) = -3;
       mat1(1,2) =  4;
 
-      blaze::HybridMatrix<int,2UL,3UL,blaze::rowMajor> mat2( 2UL, 3UL, 0 );
-      mat2(0,1) = -2;
-      mat2(0,2) =  6;
-      mat2(1,0) =  5;
+      blaze::HybridMatrix<int,2UL,3UL,blaze::rowMajor> mat2( { { 0, -2, 6 },
+                                                               { 5,  0, 0 } } );
 
       mat2 += mat1;
 
@@ -4133,10 +4077,8 @@ void ClassTest::testSubAssign()
       mat1(1,0) =  3;
       mat1(1,2) = -4;
 
-      blaze::HybridMatrix<int,2UL,3UL,blaze::columnMajor> mat2( 2UL, 3UL, 0 );
-      mat2(0,1) = -2;
-      mat2(0,2) =  6;
-      mat2(1,0) =  5;
+      blaze::HybridMatrix<int,2UL,3UL,blaze::columnMajor> mat2( { { 0, -2, 6 },
+                                                                  { 5,  0, 0 } } );
 
       mat2 -= mat1;
 
@@ -4176,10 +4118,8 @@ void ClassTest::testSubAssign()
       mat1(1,0) =  3;
       mat1(1,2) = -4;
 
-      blaze::HybridMatrix<int,2UL,3UL,blaze::columnMajor> mat2( 2UL, 3UL, 0 );
-      mat2(0,1) = -2;
-      mat2(0,2) =  6;
-      mat2(1,0) =  5;
+      blaze::HybridMatrix<int,2UL,3UL,blaze::columnMajor> mat2( { { 0, -2, 6 },
+                                                                  { 5,  0, 0 } } );
 
       mat2 -= mat1;
 
@@ -4218,10 +4158,8 @@ void ClassTest::testSubAssign()
       mat1(1,0) =  3;
       mat1(1,2) = -4;
 
-      blaze::HybridMatrix<int,2UL,3UL,blaze::columnMajor> mat2( 2UL, 3UL, 0 );
-      mat2(0,1) = -2;
-      mat2(0,2) =  6;
-      mat2(1,0) =  5;
+      blaze::HybridMatrix<int,2UL,3UL,blaze::columnMajor> mat2( { { 0, -2, 6 },
+                                                                  { 5,  0, 0 } } );
 
       mat2 -= mat1;
 
@@ -4261,10 +4199,8 @@ void ClassTest::testSubAssign()
       mat1(1,0) =  3;
       mat1(1,2) = -4;
 
-      blaze::HybridMatrix<int,2UL,3UL,blaze::columnMajor> mat2( 2UL, 3UL, 0 );
-      mat2(0,1) = -2;
-      mat2(0,2) =  6;
-      mat2(1,0) =  5;
+      blaze::HybridMatrix<int,2UL,3UL,blaze::columnMajor> mat2( { { 0, -2, 6 },
+                                                                  { 5,  0, 0 } } );
 
       mat2 -= mat1;
 
@@ -4428,10 +4364,8 @@ void ClassTest::testSubAssign()
       mat1(1,0) =  3;
       mat1(1,2) = -4;
 
-      blaze::HybridMatrix<int,2UL,3UL,blaze::columnMajor> mat2( 2UL, 3UL, 0 );
-      mat2(0,1) = -2;
-      mat2(0,2) =  6;
-      mat2(1,0) =  5;
+      blaze::HybridMatrix<int,2UL,3UL,blaze::columnMajor> mat2( { { 0, -2, 6 },
+                                                                  { 5,  0, 0 } } );
 
       mat2 -= mat1;
 
@@ -4464,10 +4398,8 @@ void ClassTest::testSubAssign()
       mat1(1,0) =  3;
       mat1(1,2) = -4;
 
-      blaze::HybridMatrix<int,2UL,3UL,blaze::columnMajor> mat2( 2UL, 3UL, 0 );
-      mat2(0,1) = -2;
-      mat2(0,2) =  6;
-      mat2(1,0) =  5;
+      blaze::HybridMatrix<int,2UL,3UL,blaze::columnMajor> mat2( { { 0, -2, 6 },
+                                                                  { 5,  0, 0 } } );
 
       mat2 -= mat1;
 
@@ -4651,12 +4583,9 @@ void ClassTest::testMultAssign()
       mat1(1,3) = 4;
       mat1(2,3) = 5;
 
-      blaze::HybridMatrix<int,3UL,4UL,blaze::rowMajor> mat2( 3UL, 3UL, 0 );
-      mat2(0,0) = 1;
-      mat2(0,2) = 2;
-      mat2(1,1) = 3;
-      mat2(2,0) = 4;
-      mat2(2,2) = 5;
+      blaze::HybridMatrix<int,3UL,4UL,blaze::rowMajor> mat2( { { 1, 0, 2 },
+                                                               { 0, 3, 0 },
+                                                               { 4, 0, 5 } } );
 
       mat2 *= mat1;
 
@@ -4697,12 +4626,9 @@ void ClassTest::testMultAssign()
       mat1(1,3) = 4;
       mat1(2,3) = 5;
 
-      blaze::HybridMatrix<int,3UL,4UL,blaze::rowMajor> mat2( 3UL, 3UL, 0 );
-      mat2(0,0) = 1;
-      mat2(0,2) = 2;
-      mat2(1,1) = 3;
-      mat2(2,0) = 4;
-      mat2(2,2) = 5;
+      blaze::HybridMatrix<int,3UL,4UL,blaze::rowMajor> mat2( { { 1, 0, 2 },
+                                                               { 0, 3, 0 },
+                                                               { 4, 0, 5 } } );
 
       mat2 *= mat1;
 
@@ -4742,12 +4668,9 @@ void ClassTest::testMultAssign()
       mat1(1,3) = 4;
       mat1(2,3) = 5;
 
-      blaze::HybridMatrix<int,3UL,4UL,blaze::rowMajor> mat2( 3UL, 3UL, 0 );
-      mat2(0,0) = 1;
-      mat2(0,2) = 2;
-      mat2(1,1) = 3;
-      mat2(2,0) = 4;
-      mat2(2,2) = 5;
+      blaze::HybridMatrix<int,3UL,4UL,blaze::rowMajor> mat2( { { 1, 0, 2 },
+                                                               { 0, 3, 0 },
+                                                               { 4, 0, 5 } } );
 
       mat2 *= mat1;
 
@@ -4788,12 +4711,9 @@ void ClassTest::testMultAssign()
       mat1(1,3) = 4;
       mat1(2,3) = 5;
 
-      blaze::HybridMatrix<int,3UL,4UL,blaze::rowMajor> mat2( 3UL, 3UL, 0 );
-      mat2(0,0) = 1;
-      mat2(0,2) = 2;
-      mat2(1,1) = 3;
-      mat2(2,0) = 4;
-      mat2(2,2) = 5;
+      blaze::HybridMatrix<int,3UL,4UL,blaze::rowMajor> mat2( { { 1, 0, 2 },
+                                                               { 0, 3, 0 },
+                                                               { 4, 0, 5 } } );
 
       mat2 *= mat1;
 
@@ -4832,12 +4752,9 @@ void ClassTest::testMultAssign()
       mat1(1,3) = 4;
       mat1(2,3) = 5;
 
-      blaze::HybridMatrix<int,3UL,4UL,blaze::rowMajor> mat2( 3UL, 3UL, 0 );
-      mat2(0,0) = 1;
-      mat2(0,2) = 2;
-      mat2(1,1) = 3;
-      mat2(2,0) = 4;
-      mat2(2,2) = 5;
+      blaze::HybridMatrix<int,3UL,4UL,blaze::rowMajor> mat2( { { 1, 0, 2 },
+                                                               { 0, 3, 0 },
+                                                               { 4, 0, 5 } } );
 
       mat2 *= mat1;
 
@@ -4871,12 +4788,9 @@ void ClassTest::testMultAssign()
       mat1(1,3) = 4;
       mat1(2,3) = 5;
 
-      blaze::HybridMatrix<int,3UL,4UL,blaze::rowMajor> mat2( 3UL, 3UL, 0 );
-      mat2(0,0) = 1;
-      mat2(0,2) = 2;
-      mat2(1,1) = 3;
-      mat2(2,0) = 4;
-      mat2(2,2) = 5;
+      blaze::HybridMatrix<int,3UL,4UL,blaze::rowMajor> mat2( { { 1, 0, 2 },
+                                                               { 0, 3, 0 },
+                                                               { 4, 0, 5 } } );
 
       mat2 *= mat1;
 
@@ -4921,12 +4835,9 @@ void ClassTest::testMultAssign()
       mat1(1,3) = 4;
       mat1(2,3) = 5;
 
-      blaze::HybridMatrix<int,3UL,4UL,blaze::columnMajor> mat2( 3UL, 3UL, 0 );
-      mat2(0,0) = 1;
-      mat2(0,2) = 2;
-      mat2(1,1) = 3;
-      mat2(2,0) = 4;
-      mat2(2,2) = 5;
+      blaze::HybridMatrix<int,3UL,4UL,blaze::columnMajor> mat2( { { 1, 0, 2 },
+                                                                  { 0, 3, 0 },
+                                                                  { 4, 0, 5 } } );
 
       mat2 *= mat1;
 
@@ -4968,12 +4879,9 @@ void ClassTest::testMultAssign()
       mat1(1,3) = 4;
       mat1(2,3) = 5;
 
-      blaze::HybridMatrix<int,3UL,4UL,blaze::columnMajor> mat2( 3UL, 3UL, 0 );
-      mat2(0,0) = 1;
-      mat2(0,2) = 2;
-      mat2(1,1) = 3;
-      mat2(2,0) = 4;
-      mat2(2,2) = 5;
+      blaze::HybridMatrix<int,3UL,4UL,blaze::columnMajor> mat2( { { 1, 0, 2 },
+                                                                  { 0, 3, 0 },
+                                                                  { 4, 0, 5 } } );
 
       mat2 *= mat1;
 
@@ -5014,12 +4922,9 @@ void ClassTest::testMultAssign()
       mat1(1,3) = 4;
       mat1(2,3) = 5;
 
-      blaze::HybridMatrix<int,3UL,4UL,blaze::columnMajor> mat2( 3UL, 3UL, 0 );
-      mat2(0,0) = 1;
-      mat2(0,2) = 2;
-      mat2(1,1) = 3;
-      mat2(2,0) = 4;
-      mat2(2,2) = 5;
+      blaze::HybridMatrix<int,3UL,4UL,blaze::columnMajor> mat2( { { 1, 0, 2 },
+                                                                  { 0, 3, 0 },
+                                                                  { 4, 0, 5 } } );
 
       mat2 *= mat1;
 
@@ -5061,12 +4966,9 @@ void ClassTest::testMultAssign()
       mat1(1,3) = 4;
       mat1(2,3) = 5;
 
-      blaze::HybridMatrix<int,3UL,4UL,blaze::columnMajor> mat2( 3UL, 3UL, 0 );
-      mat2(0,0) = 1;
-      mat2(0,2) = 2;
-      mat2(1,1) = 3;
-      mat2(2,0) = 4;
-      mat2(2,2) = 5;
+      blaze::HybridMatrix<int,3UL,4UL,blaze::columnMajor> mat2( { { 1, 0, 2 },
+                                                                  { 0, 3, 0 },
+                                                                  { 4, 0, 5 } } );
 
       mat2 *= mat1;
 
@@ -5106,12 +5008,9 @@ void ClassTest::testMultAssign()
       mat1(1,3) = 4;
       mat1(2,3) = 5;
 
-      blaze::HybridMatrix<int,3UL,4UL,blaze::columnMajor> mat2( 3UL, 3UL, 0 );
-      mat2(0,0) = 1;
-      mat2(0,2) = 2;
-      mat2(1,1) = 3;
-      mat2(2,0) = 4;
-      mat2(2,2) = 5;
+      blaze::HybridMatrix<int,3UL,4UL,blaze::columnMajor> mat2( { { 1, 0, 2 },
+                                                                  { 0, 3, 0 },
+                                                                  { 4, 0, 5 } } );
 
       mat2 *= mat1;
 
@@ -5146,12 +5045,9 @@ void ClassTest::testMultAssign()
       mat1(1,3) = 4;
       mat1(2,3) = 5;
 
-      blaze::HybridMatrix<int,3UL,4UL,blaze::columnMajor> mat2( 3UL, 3UL, 0 );
-      mat2(0,0) = 1;
-      mat2(0,2) = 2;
-      mat2(1,1) = 3;
-      mat2(2,0) = 4;
-      mat2(2,2) = 5;
+      blaze::HybridMatrix<int,3UL,4UL,blaze::columnMajor> mat2( { { 1, 0, 2 },
+                                                                  { 0, 3, 0 },
+                                                                  { 4, 0, 5 } } );
 
       mat2 *= mat1;
 
@@ -5197,10 +5093,9 @@ void ClassTest::testScaling()
    {
       test_ = "Row-major self-scaling (M*=s)";
 
-      blaze::HybridMatrix<int,3UL,3UL,blaze::rowMajor> mat( 3UL, 3UL, 0 );
-      mat(1,2) =  1;
-      mat(2,0) = -2;
-      mat(2,2) =  3;
+      blaze::HybridMatrix<int,3UL,3UL,blaze::rowMajor> mat( { {  0, 0, 0 },
+                                                              {  0, 0, 1 },
+                                                              { -2, 0, 3 } } );
 
       mat *= 2;
 
@@ -5232,10 +5127,9 @@ void ClassTest::testScaling()
    {
       test_ = "Row-major self-scaling (M=M*s)";
 
-      blaze::HybridMatrix<int,3UL,3UL,blaze::rowMajor> mat( 3UL, 3UL, 0 );
-      mat(1,2) =  1;
-      mat(2,0) = -2;
-      mat(2,2) =  3;
+      blaze::HybridMatrix<int,3UL,3UL,blaze::rowMajor> mat( { {  0, 0, 0 },
+                                                              {  0, 0, 1 },
+                                                              { -2, 0, 3 } } );
 
       mat = mat * 2;
 
@@ -5267,10 +5161,9 @@ void ClassTest::testScaling()
    {
       test_ = "Row-major self-scaling (M=s*M)";
 
-      blaze::HybridMatrix<int,3UL,3UL,blaze::rowMajor> mat( 3UL, 3UL, 0 );
-      mat(1,2) =  1;
-      mat(2,0) = -2;
-      mat(2,2) =  3;
+      blaze::HybridMatrix<int,3UL,3UL,blaze::rowMajor> mat( { {  0, 0, 0 },
+                                                              {  0, 0, 1 },
+                                                              { -2, 0, 3 } } );
 
       mat = 2 * mat;
 
@@ -5302,10 +5195,9 @@ void ClassTest::testScaling()
    {
       test_ = "Row-major self-scaling (M/=s)";
 
-      blaze::HybridMatrix<int,3UL,3UL,blaze::rowMajor> mat( 3UL, 3UL, 0 );
-      mat(1,2) =  2;
-      mat(2,0) = -4;
-      mat(2,2) =  6;
+      blaze::HybridMatrix<int,3UL,3UL,blaze::rowMajor> mat( { {  0, 0, 0 },
+                                                              {  0, 0, 2 },
+                                                              { -4, 0, 6 } } );
 
       mat /= 2;
 
@@ -5337,10 +5229,9 @@ void ClassTest::testScaling()
    {
       test_ = "Row-major self-scaling (M=M/s)";
 
-      blaze::HybridMatrix<int,3UL,3UL,blaze::rowMajor> mat( 3UL, 3UL, 0 );
-      mat(1,2) =  2;
-      mat(2,0) = -4;
-      mat(2,2) =  6;
+      blaze::HybridMatrix<int,3UL,3UL,blaze::rowMajor> mat( { {  0, 0, 0 },
+                                                              {  0, 0, 2 },
+                                                              { -4, 0, 6 } } );
 
       mat = mat / 2;
 
@@ -5373,13 +5264,9 @@ void ClassTest::testScaling()
       test_ = "Row-major HybridMatrix::scale() (int)";
 
       // Initialization check
-      blaze::HybridMatrix<int,3UL,2UL,blaze::rowMajor> mat( 3UL, 2UL );
-      mat(0,0) = 1;
-      mat(0,1) = 2;
-      mat(1,0) = 3;
-      mat(1,1) = 4;
-      mat(2,0) = 5;
-      mat(2,1) = 6;
+      blaze::HybridMatrix<int,3UL,2UL,blaze::rowMajor> mat( { { 1, 2 },
+                                                              { 3, 4 },
+                                                              { 5, 6 } } );
 
       checkRows    ( mat, 3UL );
       checkColumns ( mat, 2UL );
@@ -5487,10 +5374,9 @@ void ClassTest::testScaling()
    {
       test_ = "Column-major self-scaling (M*=s)";
 
-      blaze::HybridMatrix<int,3UL,3UL,blaze::columnMajor> mat( 3UL, 3UL, 0 );
-      mat(1,2) =  1;
-      mat(2,0) = -2;
-      mat(2,2) =  3;
+      blaze::HybridMatrix<int,3UL,3UL,blaze::columnMajor> mat( { {  0, 0, 0 },
+                                                                 {  0, 0, 1 },
+                                                                 { -2, 0, 3 } } );
 
       mat *= 2;
 
@@ -5522,10 +5408,9 @@ void ClassTest::testScaling()
    {
       test_ = "Column-major self-scaling (M=M*s)";
 
-      blaze::HybridMatrix<int,3UL,3UL,blaze::columnMajor> mat( 3UL, 3UL, 0 );
-      mat(1,2) =  1;
-      mat(2,0) = -2;
-      mat(2,2) =  3;
+      blaze::HybridMatrix<int,3UL,3UL,blaze::columnMajor> mat( { {  0, 0, 0 },
+                                                                 {  0, 0, 1 },
+                                                                 { -2, 0, 3 } } );
 
       mat = mat * 2;
 
@@ -5557,10 +5442,9 @@ void ClassTest::testScaling()
    {
       test_ = "Column-major self-scaling (M=s*M)";
 
-      blaze::HybridMatrix<int,3UL,3UL,blaze::columnMajor> mat( 3UL, 3UL, 0 );
-      mat(1,2) =  1;
-      mat(2,0) = -2;
-      mat(2,2) =  3;
+      blaze::HybridMatrix<int,3UL,3UL,blaze::columnMajor> mat( { {  0, 0, 0 },
+                                                                 {  0, 0, 1 },
+                                                                 { -2, 0, 3 } } );
 
       mat = 2 * mat;
 
@@ -5592,10 +5476,9 @@ void ClassTest::testScaling()
    {
       test_ = "Column-major self-scaling (M/=s)";
 
-      blaze::HybridMatrix<int,3UL,3UL,blaze::columnMajor> mat( 3UL, 3UL, 0 );
-      mat(1,2) =  2;
-      mat(2,0) = -4;
-      mat(2,2) =  6;
+      blaze::HybridMatrix<int,3UL,3UL,blaze::columnMajor> mat( { {  0, 0, 0 },
+                                                                 {  0, 0, 2 },
+                                                                 { -4, 0, 6 } } );
 
       mat /= 2;
 
@@ -5627,10 +5510,9 @@ void ClassTest::testScaling()
    {
       test_ = "Column-major self-scaling (M=M/s)";
 
-      blaze::HybridMatrix<int,3UL,3UL,blaze::columnMajor> mat( 3UL, 3UL, 0 );
-      mat(1,2) =  2;
-      mat(2,0) = -4;
-      mat(2,2) =  6;
+      blaze::HybridMatrix<int,3UL,3UL,blaze::columnMajor> mat( { {  0, 0, 0 },
+                                                                 {  0, 0, 2 },
+                                                                 { -4, 0, 6 } } );
 
       mat = mat / 2;
 
@@ -5663,7 +5545,9 @@ void ClassTest::testScaling()
       test_ = "Column-major HybridMatrix::scale() (int)";
 
       // Initialization check
-      blaze::HybridMatrix<int,3UL,2UL,blaze::columnMajor> mat( 3UL, 2UL );
+      blaze::HybridMatrix<int,3UL,2UL,blaze::columnMajor> mat( { { 1, 4 },
+                                                                 { 2, 5 },
+                                                                 { 3, 6 } } );
       mat(0,0) = 1;
       mat(0,1) = 4;
       mat(1,0) = 2;
@@ -6617,12 +6501,9 @@ void ClassTest::testIterator()
       typedef MatrixType::Iterator                              Iterator;
       typedef MatrixType::ConstIterator                         ConstIterator;
 
-      MatrixType mat( 3UL, 3UL, 0 );
-      mat(0,1) =  1;
-      mat(1,0) = -2;
-      mat(1,2) = -3;
-      mat(2,1) =  4;
-      mat(2,2) =  5;
+      MatrixType mat( { {  0,  1,  0 },
+                        { -2,  0, -3 },
+                        {  0,  4,  5 } } );
 
       // Testing the Iterator default constructor
       {
@@ -6920,12 +6801,9 @@ void ClassTest::testIterator()
       typedef MatrixType::Iterator                                 Iterator;
       typedef MatrixType::ConstIterator                            ConstIterator;
 
-      MatrixType mat( 3UL, 3UL, 0 );
-      mat(1,0) =  1;
-      mat(0,1) = -2;
-      mat(2,1) = -3;
-      mat(1,2) =  4;
-      mat(2,2) =  5;
+      MatrixType mat( { { 0, -2,  0 },
+                        { 1,  0,  4 },
+                        { 0, -3,  5 } } );
 
       // Testing the Iterator default constructor
       {
@@ -7274,11 +7152,8 @@ void ClassTest::testNonZeros()
       }
 
       {
-         blaze::HybridMatrix<int,2UL,3UL,blaze::rowMajor> mat( 2UL, 3UL, 0 );
-         mat(0,1) = 1;
-         mat(0,2) = 2;
-         mat(1,1) = 3;
-         mat(1,2) = 0;
+         blaze::HybridMatrix<int,2UL,3UL,blaze::rowMajor> mat( { { 0, 1, 2 },
+                                                                 { 0, 3, 0 } } );
 
          checkRows    ( mat, 2UL );
          checkColumns ( mat, 3UL );
@@ -7332,11 +7207,8 @@ void ClassTest::testNonZeros()
       }
 
       {
-         blaze::HybridMatrix<int,2UL,3UL,blaze::columnMajor> mat( 2UL, 3UL, 0 );
-         mat(0,1) = 1;
-         mat(0,2) = 2;
-         mat(1,1) = 3;
-         mat(1,2) = 0;
+         blaze::HybridMatrix<int,2UL,3UL,blaze::columnMajor> mat( { { 0, 1, 2 },
+                                                                    { 0, 3, 0 } } );
 
          checkRows    ( mat, 2UL );
          checkColumns ( mat, 3UL );
@@ -7384,13 +7256,8 @@ void ClassTest::testReset()
       test_ = "Row-major HybridMatrix::reset()";
 
       // Initialization check
-      blaze::HybridMatrix<int,2UL,3UL,blaze::rowMajor> mat( 2UL, 3UL );
-      mat(0,0) = 1;
-      mat(0,1) = 2;
-      mat(0,2) = 3;
-      mat(1,0) = 4;
-      mat(1,1) = 5;
-      mat(1,2) = 6;
+      blaze::HybridMatrix<int,2UL,3UL,blaze::rowMajor> mat( { { 1, 2, 3 },
+                                                              { 4, 5, 6 } } );
 
       checkRows    ( mat, 2UL );
       checkColumns ( mat, 3UL );
@@ -7483,13 +7350,8 @@ void ClassTest::testReset()
       test_ = "Column-major HybridMatrix::reset()";
 
       // Initialization check
-      blaze::HybridMatrix<int,2UL,3UL,blaze::columnMajor> mat( 2UL, 3UL );
-      mat(0,0) = 1;
-      mat(0,1) = 2;
-      mat(0,2) = 3;
-      mat(1,0) = 4;
-      mat(1,1) = 5;
-      mat(1,2) = 6;
+      blaze::HybridMatrix<int,2UL,3UL,blaze::columnMajor> mat( { { 1, 2, 3 },
+                                                                 { 4, 5, 6 } } );
 
       checkRows    ( mat, 2UL );
       checkColumns ( mat, 3UL );
@@ -7602,13 +7464,8 @@ void ClassTest::testClear()
       test_ = "Row-major HybridMatrix::clear()";
 
       // Initialization check
-      blaze::HybridMatrix<int,2UL,3UL,blaze::rowMajor> mat( 2UL, 3UL );
-      mat(0,0) = 1;
-      mat(0,1) = 2;
-      mat(0,2) = 3;
-      mat(1,0) = 4;
-      mat(1,1) = 5;
-      mat(1,2) = 6;
+      blaze::HybridMatrix<int,2UL,3UL,blaze::rowMajor> mat( { { 1, 2, 3 },
+                                                              { 4, 5, 6 } } );
 
       checkRows    ( mat, 2UL );
       checkColumns ( mat, 3UL );
@@ -7666,13 +7523,8 @@ void ClassTest::testClear()
       test_ = "Column-major HybridMatrix::clear()";
 
       // Initialization check
-      blaze::HybridMatrix<int,2UL,3UL,blaze::columnMajor> mat( 2UL, 3UL );
-      mat(0,0) = 1;
-      mat(0,1) = 2;
-      mat(0,2) = 3;
-      mat(1,0) = 4;
-      mat(1,1) = 5;
-      mat(1,2) = 6;
+      blaze::HybridMatrix<int,2UL,3UL,blaze::columnMajor> mat( { { 1, 2, 3 },
+                                                                 { 4, 5, 6 } } );
 
       checkRows    ( mat, 2UL );
       checkColumns ( mat, 3UL );
@@ -8061,15 +7913,9 @@ void ClassTest::testTranspose()
 
       // Self-transpose of a 3x5 matrix
       {
-         blaze::HybridMatrix<int,5UL,5UL,blaze::rowMajor> mat( 3UL, 5UL, 0 );
-         mat(0,0) = 1;
-         mat(0,2) = 2;
-         mat(0,4) = 3;
-         mat(1,1) = 4;
-         mat(1,3) = 5;
-         mat(2,0) = 6;
-         mat(2,2) = 7;
-         mat(2,4) = 8;
+         blaze::HybridMatrix<int,5UL,5UL,blaze::rowMajor> mat( { { 1, 0, 2, 0, 3 },
+                                                                 { 0, 4, 0, 5, 0 },
+                                                                 { 6, 0, 7, 0, 8 } } );
 
          transpose( mat );
 
@@ -8100,15 +7946,11 @@ void ClassTest::testTranspose()
 
       // Self-transpose of a 5x3 matrix
       {
-         blaze::HybridMatrix<int,5UL,5UL,blaze::rowMajor> mat( 5UL, 3UL, 0 );
-         mat(0,0) = 1;
-         mat(0,2) = 6;
-         mat(1,1) = 4;
-         mat(2,0) = 2;
-         mat(2,2) = 7;
-         mat(3,1) = 5;
-         mat(4,0) = 3;
-         mat(4,2) = 8;
+         blaze::HybridMatrix<int,5UL,5UL,blaze::rowMajor> mat( { { 1, 0, 6 },
+                                                                 { 0, 4, 0 },
+                                                                 { 2, 0, 7 },
+                                                                 { 0, 5, 0 },
+                                                                 { 3, 0, 8 } } );
 
          transpose( mat );
 
@@ -8139,15 +7981,9 @@ void ClassTest::testTranspose()
 
       // Self-transpose of a 3x5 matrix
       {
-         blaze::HybridMatrix<int,5UL,5UL,blaze::rowMajor> mat( 3UL, 5UL, 0 );
-         mat(0,0) = 1;
-         mat(0,2) = 2;
-         mat(0,4) = 3;
-         mat(1,1) = 4;
-         mat(1,3) = 5;
-         mat(2,0) = 6;
-         mat(2,2) = 7;
-         mat(2,4) = 8;
+         blaze::HybridMatrix<int,5UL,5UL,blaze::rowMajor> mat( { { 1, 0, 2, 0, 3 },
+                                                                 { 0, 4, 0, 5, 0 },
+                                                                 { 6, 0, 7, 0, 8 } } );
 
          mat = trans( mat );
 
@@ -8178,15 +8014,11 @@ void ClassTest::testTranspose()
 
       // Self-transpose of a 5x3 matrix
       {
-         blaze::HybridMatrix<int,5UL,5UL,blaze::rowMajor> mat( 5UL, 3UL, 0 );
-         mat(0,0) = 1;
-         mat(0,2) = 6;
-         mat(1,1) = 4;
-         mat(2,0) = 2;
-         mat(2,2) = 7;
-         mat(3,1) = 5;
-         mat(4,0) = 3;
-         mat(4,2) = 8;
+         blaze::HybridMatrix<int,5UL,5UL,blaze::rowMajor> mat( { { 1, 0, 6 },
+                                                                 { 0, 4, 0 },
+                                                                 { 2, 0, 7 },
+                                                                 { 0, 5, 0 },
+                                                                 { 3, 0, 8 } } );
 
          mat = trans( mat );
 
@@ -8222,15 +8054,9 @@ void ClassTest::testTranspose()
 
       // Self-transpose of a 3x5 matrix
       {
-         blaze::HybridMatrix<int,5UL,5UL,blaze::columnMajor> mat( 3UL, 5UL, 0 );
-         mat(0,0) = 1;
-         mat(0,2) = 2;
-         mat(0,4) = 3;
-         mat(1,1) = 4;
-         mat(1,3) = 5;
-         mat(2,0) = 6;
-         mat(2,2) = 7;
-         mat(2,4) = 8;
+         blaze::HybridMatrix<int,5UL,5UL,blaze::columnMajor> mat( { { 1, 0, 2, 0, 3 },
+                                                                    { 0, 4, 0, 5, 0 },
+                                                                    { 6, 0, 7, 0, 8 } } );
 
          transpose( mat );
 
@@ -8259,15 +8085,11 @@ void ClassTest::testTranspose()
 
       // Self-transpose of a 5x3 matrix
       {
-         blaze::HybridMatrix<int,5UL,5UL,blaze::columnMajor> mat( 5UL, 3UL, 0 );
-         mat(0,0) = 1;
-         mat(0,2) = 6;
-         mat(1,1) = 4;
-         mat(2,0) = 2;
-         mat(2,2) = 7;
-         mat(3,1) = 5;
-         mat(4,0) = 3;
-         mat(4,2) = 8;
+         blaze::HybridMatrix<int,5UL,5UL,blaze::columnMajor> mat( { { 1, 0, 6 },
+                                                                    { 0, 4, 0 },
+                                                                    { 2, 0, 7 },
+                                                                    { 0, 5, 0 },
+                                                                    { 3, 0, 8 } } );
 
          transpose( mat );
 
@@ -8300,15 +8122,9 @@ void ClassTest::testTranspose()
 
       // Self-transpose of a 3x5 matrix
       {
-         blaze::HybridMatrix<int,5UL,5UL,blaze::columnMajor> mat( 3UL, 5UL, 0 );
-         mat(0,0) = 1;
-         mat(0,2) = 2;
-         mat(0,4) = 3;
-         mat(1,1) = 4;
-         mat(1,3) = 5;
-         mat(2,0) = 6;
-         mat(2,2) = 7;
-         mat(2,4) = 8;
+         blaze::HybridMatrix<int,5UL,5UL,blaze::columnMajor> mat( { { 1, 0, 2, 0, 3 },
+                                                                    { 0, 4, 0, 5, 0 },
+                                                                    { 6, 0, 7, 0, 8 } } );
 
          mat = trans( mat );
 
@@ -8337,15 +8153,11 @@ void ClassTest::testTranspose()
 
       // Self-transpose of a 5x3 matrix
       {
-         blaze::HybridMatrix<int,5UL,5UL,blaze::columnMajor> mat( 5UL, 3UL, 0 );
-         mat(0,0) = 1;
-         mat(0,2) = 6;
-         mat(1,1) = 4;
-         mat(2,0) = 2;
-         mat(2,2) = 7;
-         mat(3,1) = 5;
-         mat(4,0) = 3;
-         mat(4,2) = 8;
+         blaze::HybridMatrix<int,5UL,5UL,blaze::columnMajor> mat( { { 1, 0, 6 },
+                                                                    { 0, 4, 0 },
+                                                                    { 2, 0, 7 },
+                                                                    { 0, 5, 0 },
+                                                                    { 3, 0, 8 } } );
 
          mat = trans( mat );
 
@@ -8762,21 +8574,12 @@ void ClassTest::testSwap()
    {
       test_ = "Row-major HybridMatrix swap";
 
-      blaze::HybridMatrix<int,3UL,3UL,blaze::rowMajor> mat1( 3UL, 2UL );
-      mat1(0,0) = 1;
-      mat1(0,1) = 2;
-      mat1(1,0) = 0;
-      mat1(1,1) = 3;
-      mat1(2,0) = 4;
-      mat1(2,1) = 0;
+      blaze::HybridMatrix<int,3UL,3UL,blaze::rowMajor> mat1( { { 1, 2 },
+                                                               { 0, 3 },
+                                                               { 4, 0 } } );
 
-      blaze::HybridMatrix<int,3UL,3UL,blaze::rowMajor> mat2( 2UL, 3UL );
-      mat2(0,0) = 6;
-      mat2(0,1) = 5;
-      mat2(0,2) = 4;
-      mat2(1,0) = 3;
-      mat2(1,1) = 2;
-      mat2(1,2) = 1;
+      blaze::HybridMatrix<int,3UL,3UL,blaze::rowMajor> mat2( { { 6, 5, 4 },
+                                                               { 3, 2, 1 } } );
 
       swap( mat1, mat2 );
 
@@ -8827,21 +8630,12 @@ void ClassTest::testSwap()
    {
       test_ = "Column-major HybridMatrix swap";
 
-      blaze::HybridMatrix<int,3UL,3UL,blaze::columnMajor> mat1( 3UL, 2UL );
-      mat1(0,0) = 1;
-      mat1(0,1) = 2;
-      mat1(1,0) = 0;
-      mat1(1,1) = 3;
-      mat1(2,0) = 4;
-      mat1(2,1) = 0;
+      blaze::HybridMatrix<int,3UL,3UL,blaze::columnMajor> mat1( { { 1, 2 },
+                                                                  { 0, 3 },
+                                                                  { 4, 0 } } );
 
-      blaze::HybridMatrix<int,3UL,3UL,blaze::columnMajor> mat2( 2UL, 3UL );
-      mat2(0,0) = 6;
-      mat2(0,1) = 5;
-      mat2(0,2) = 4;
-      mat2(1,0) = 3;
-      mat2(1,1) = 2;
-      mat2(1,2) = 1;
+      blaze::HybridMatrix<int,3UL,3UL,blaze::columnMajor> mat2( { { 6, 5, 4 },
+                                                                  { 3, 2, 1 } } );
 
       swap( mat1, mat2 );
 
