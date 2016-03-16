@@ -85,7 +85,7 @@ struct Vector
    //
    // \return Reference of the actual type of the vector.
    */
-   BLAZE_ALWAYS_INLINE VectorType& operator~() {
+   BLAZE_ALWAYS_INLINE VectorType& operator~() noexcept {
       return *static_cast<VectorType*>( this );
    }
    //**********************************************************************************************
@@ -95,7 +95,7 @@ struct Vector
    //
    // \return Const reference of the actual type of the vector.
    */
-   BLAZE_ALWAYS_INLINE const VectorType& operator~() const {
+   BLAZE_ALWAYS_INLINE const VectorType& operator~() const noexcept {
       return *static_cast<const VectorType*>( this );
    }
    //**********************************************************************************************
@@ -133,10 +133,10 @@ template< typename VT, bool TF >
 BLAZE_ALWAYS_INLINE typename VT::ConstIterator cend( const Vector<VT,TF>& vector );
 
 template< typename VT, bool TF >
-BLAZE_ALWAYS_INLINE size_t size( const Vector<VT,TF>& vector );
+BLAZE_ALWAYS_INLINE size_t size( const Vector<VT,TF>& vector ) noexcept;
 
 template< typename VT, bool TF >
-BLAZE_ALWAYS_INLINE size_t capacity( const Vector<VT,TF>& vector );
+BLAZE_ALWAYS_INLINE size_t capacity( const Vector<VT,TF>& vector ) noexcept;
 
 template< typename VT, bool TF >
 BLAZE_ALWAYS_INLINE size_t nonZeros( const Vector<VT,TF>& vector );
@@ -145,7 +145,7 @@ template< typename VT, bool TF >
 BLAZE_ALWAYS_INLINE void resize( Vector<VT,TF>& vector, size_t n, bool preserve=true );
 
 template< typename VT1, bool TF1, typename VT2, bool TF2 >
-BLAZE_ALWAYS_INLINE bool isSame( const Vector<VT1,TF1>& a, const Vector<VT2,TF2>& b );
+BLAZE_ALWAYS_INLINE bool isSame( const Vector<VT1,TF1>& a, const Vector<VT2,TF2>& b ) noexcept;
 //@}
 //*************************************************************************************************
 
@@ -249,7 +249,7 @@ BLAZE_ALWAYS_INLINE typename VT::ConstIterator cend( const Vector<VT,TF>& vector
 */
 template< typename VT  // Type of the vector
         , bool TF >    // Transpose flag of the vector
-BLAZE_ALWAYS_INLINE size_t size( const Vector<VT,TF>& vector )
+BLAZE_ALWAYS_INLINE size_t size( const Vector<VT,TF>& vector ) noexcept
 {
    return (~vector).size();
 }
@@ -265,7 +265,7 @@ BLAZE_ALWAYS_INLINE size_t size( const Vector<VT,TF>& vector )
 */
 template< typename VT  // Type of the vector
         , bool TF >    // Transpose flag of the vector
-BLAZE_ALWAYS_INLINE size_t capacity( const Vector<VT,TF>& vector )
+BLAZE_ALWAYS_INLINE size_t capacity( const Vector<VT,TF>& vector ) noexcept
 {
    return (~vector).capacity();
 }
@@ -417,7 +417,7 @@ template< typename VT1  // Type of the left-hand side vector
         , bool TF1      // Transpose flag of the left-hand side vector
         , typename VT2  // Type of the right-hand side vector
         , bool TF2 >    // Transpose flag of the right-hand side vector
-BLAZE_ALWAYS_INLINE bool isSame( const Vector<VT1,TF1>& a, const Vector<VT2,TF2>& b )
+BLAZE_ALWAYS_INLINE bool isSame( const Vector<VT1,TF1>& a, const Vector<VT2,TF2>& b ) noexcept
 {
    return ( IsSame<VT1,VT2>::value &&
             reinterpret_cast<const void*>( &a ) == reinterpret_cast<const void*>( &b ) );

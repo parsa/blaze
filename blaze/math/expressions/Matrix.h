@@ -90,7 +90,7 @@ struct Matrix
    //
    // \return Reference of the actual type of the matrix.
    */
-   BLAZE_ALWAYS_INLINE MatrixType& operator~() {
+   BLAZE_ALWAYS_INLINE MatrixType& operator~() noexcept {
       return *static_cast<MatrixType*>( this );
    }
    //**********************************************************************************************
@@ -100,7 +100,7 @@ struct Matrix
    //
    // \return Constant reference of the actual type of the matrix.
    */
-   BLAZE_ALWAYS_INLINE const MatrixType& operator~() const {
+   BLAZE_ALWAYS_INLINE const MatrixType& operator~() const noexcept {
       return *static_cast<const MatrixType*>( this );
    }
    //**********************************************************************************************
@@ -138,16 +138,16 @@ template< typename MT, bool SO >
 BLAZE_ALWAYS_INLINE typename MT::ConstIterator cend( const Matrix<MT,SO>& matrix, size_t i );
 
 template< typename MT, bool SO >
-BLAZE_ALWAYS_INLINE size_t rows( const Matrix<MT,SO>& matrix );
+BLAZE_ALWAYS_INLINE size_t rows( const Matrix<MT,SO>& matrix ) noexcept;
 
 template< typename MT, bool SO >
-BLAZE_ALWAYS_INLINE size_t columns( const Matrix<MT,SO>& matrix );
+BLAZE_ALWAYS_INLINE size_t columns( const Matrix<MT,SO>& matrix ) noexcept;
 
 template< typename MT, bool SO >
-BLAZE_ALWAYS_INLINE size_t capacity( const Matrix<MT,SO>& matrix );
+BLAZE_ALWAYS_INLINE size_t capacity( const Matrix<MT,SO>& matrix ) noexcept;
 
 template< typename MT, bool SO >
-BLAZE_ALWAYS_INLINE size_t capacity( const Matrix<MT,SO>& matrix, size_t i );
+BLAZE_ALWAYS_INLINE size_t capacity( const Matrix<MT,SO>& matrix, size_t i ) noexcept;
 
 template< typename MT, bool SO >
 BLAZE_ALWAYS_INLINE size_t nonZeros( const Matrix<MT,SO>& matrix );
@@ -162,10 +162,10 @@ template< typename MT, bool SO >
 BLAZE_ALWAYS_INLINE void transpose( Matrix<MT,SO>& matrix );
 
 template< typename MT, bool SO >
-BLAZE_ALWAYS_INLINE bool isSquare( const Matrix<MT,SO>& matrix );
+BLAZE_ALWAYS_INLINE bool isSquare( const Matrix<MT,SO>& matrix ) noexcept;
 
 template< typename MT1, bool SO1, typename MT2, bool SO2 >
-BLAZE_ALWAYS_INLINE bool isSame( const Matrix<MT1,SO1>& a, const Matrix<MT2,SO2>& b );
+BLAZE_ALWAYS_INLINE bool isSame( const Matrix<MT1,SO1>& a, const Matrix<MT2,SO2>& b ) noexcept;
 //@}
 //*************************************************************************************************
 
@@ -305,7 +305,7 @@ BLAZE_ALWAYS_INLINE typename MT::ConstIterator cend( const Matrix<MT,SO>& matrix
 */
 template< typename MT  // Type of the matrix
         , bool SO >    // Storage order of the matrix
-BLAZE_ALWAYS_INLINE size_t rows( const Matrix<MT,SO>& matrix )
+BLAZE_ALWAYS_INLINE size_t rows( const Matrix<MT,SO>& matrix ) noexcept
 {
    return (~matrix).rows();
 }
@@ -321,7 +321,7 @@ BLAZE_ALWAYS_INLINE size_t rows( const Matrix<MT,SO>& matrix )
 */
 template< typename MT  // Type of the matrix
         , bool SO >    // Storage order of the matrix
-BLAZE_ALWAYS_INLINE size_t columns( const Matrix<MT,SO>& matrix )
+BLAZE_ALWAYS_INLINE size_t columns( const Matrix<MT,SO>& matrix ) noexcept
 {
    return (~matrix).columns();
 }
@@ -337,7 +337,7 @@ BLAZE_ALWAYS_INLINE size_t columns( const Matrix<MT,SO>& matrix )
 */
 template< typename MT  // Type of the matrix
         , bool SO >    // Storage order of the matrix
-BLAZE_ALWAYS_INLINE size_t capacity( const Matrix<MT,SO>& matrix )
+BLAZE_ALWAYS_INLINE size_t capacity( const Matrix<MT,SO>& matrix ) noexcept
 {
    return (~matrix).capacity();
 }
@@ -359,7 +359,7 @@ BLAZE_ALWAYS_INLINE size_t capacity( const Matrix<MT,SO>& matrix )
 */
 template< typename MT  // Type of the matrix
         , bool SO >    // Storage order of the matrix
-BLAZE_ALWAYS_INLINE size_t capacity( const Matrix<MT,SO>& matrix, size_t i )
+BLAZE_ALWAYS_INLINE size_t capacity( const Matrix<MT,SO>& matrix, size_t i ) noexcept
 {
    return (~matrix).capacity( i );
 }
@@ -600,7 +600,7 @@ BLAZE_ALWAYS_INLINE void ctranspose( Matrix<MT,SO>& matrix )
 */
 template< typename MT  // Type of the matrix
         , bool SO >    // Storage order
-BLAZE_ALWAYS_INLINE bool isSquare( const Matrix<MT,SO>& matrix )
+BLAZE_ALWAYS_INLINE bool isSquare( const Matrix<MT,SO>& matrix ) noexcept
 {
    return ( IsSquare<MT>::value || (~matrix).rows() == (~matrix).columns() );
 }
@@ -644,7 +644,7 @@ template< typename MT1  // Type of the left-hand side matrix
         , bool SO1      // Storage order of the left-hand side matrix
         , typename MT2  // Type of the right-hand side matrix
         , bool SO2 >    // Storage order of the right-hand side matrix
-BLAZE_ALWAYS_INLINE bool isSame( const Matrix<MT1,SO1>& a, const Matrix<MT2,SO2>& b )
+BLAZE_ALWAYS_INLINE bool isSame( const Matrix<MT1,SO1>& a, const Matrix<MT2,SO2>& b ) noexcept
 {
    return ( IsSame<MT1,MT2>::value &&
             reinterpret_cast<const void*>( &a ) == reinterpret_cast<const void*>( &b ) );
