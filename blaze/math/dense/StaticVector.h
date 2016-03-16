@@ -177,7 +177,7 @@ class StaticVector : public DenseVector< StaticVector<Type,N,TF>, TF >
 
    //**********************************************************************************************
    //! Alignment adjustment
-   static const size_t NN = ( usePadding )?( NextMultiple< SizeT<N>, SizeT<IT::size> >::value ):( N );
+   static constexpr size_t NN = ( usePadding )?( NextMultiple< SizeT<N>, SizeT<IT::size> >::value ):( N );
    //**********************************************************************************************
 
  public:
@@ -226,9 +226,11 @@ class StaticVector : public DenseVector< StaticVector<Type,N,TF>, TF >
    //**Constructors********************************************************************************
    /*!\name Constructors */
    //@{
-                              explicit inline StaticVector();
-                              explicit inline StaticVector( const Type& init );
-   template< typename Other > explicit inline StaticVector( size_t n, const Other* array );
+   explicit inline StaticVector();
+   explicit inline StaticVector( const Type& init );
+
+   template< typename Other >
+   explicit inline StaticVector( size_t n, const Other* array );
 
    template< typename Other >
    explicit inline StaticVector( const Other (&array)[N] );
@@ -236,14 +238,6 @@ class StaticVector : public DenseVector< StaticVector<Type,N,TF>, TF >
                               inline StaticVector( const StaticVector& v );
    template< typename Other > inline StaticVector( const StaticVector<Other,N,TF>& v );
    template< typename VT >    inline StaticVector( const Vector<VT,TF>& v );
-
-   inline StaticVector( const Type& v1, const Type& v2 );
-   inline StaticVector( const Type& v1, const Type& v2, const Type& v3 );
-   inline StaticVector( const Type& v1, const Type& v2, const Type& v3, const Type& v4 );
-   inline StaticVector( const Type& v1, const Type& v2, const Type& v3,
-                        const Type& v4, const Type& v5 );
-   inline StaticVector( const Type& v1, const Type& v2, const Type& v3,
-                        const Type& v4, const Type& v5, const Type& v6 );
    //@}
    //**********************************************************************************************
 
@@ -254,18 +248,18 @@ class StaticVector : public DenseVector< StaticVector<Type,N,TF>, TF >
    //**Data access functions***********************************************************************
    /*!\name Data access functions */
    //@{
-   inline Reference      operator[]( size_t index );
-   inline ConstReference operator[]( size_t index ) const;
+   inline Reference      operator[]( size_t index ) noexcept;
+   inline ConstReference operator[]( size_t index ) const noexcept;
    inline Reference      at( size_t index );
    inline ConstReference at( size_t index ) const;
-   inline Pointer        data  ();
-   inline ConstPointer   data  () const;
-   inline Iterator       begin ();
-   inline ConstIterator  begin () const;
-   inline ConstIterator  cbegin() const;
-   inline Iterator       end   ();
-   inline ConstIterator  end   () const;
-   inline ConstIterator  cend  () const;
+   inline Pointer        data  () noexcept;
+   inline ConstPointer   data  () const noexcept;
+   inline Iterator       begin () noexcept;
+   inline ConstIterator  begin () const noexcept;
+   inline ConstIterator  cbegin() const noexcept;
+   inline Iterator       end   () noexcept;
+   inline ConstIterator  end   () const noexcept;
+   inline ConstIterator  cend  () const noexcept;
    //@}
    //**********************************************************************************************
 
@@ -296,12 +290,12 @@ class StaticVector : public DenseVector< StaticVector<Type,N,TF>, TF >
    //**Utility functions***************************************************************************
    /*!\name Utility functions */
    //@{
-                              inline size_t        size() const;
-                              inline size_t        capacity() const;
-                              inline size_t        nonZeros() const;
-                              inline void          reset();
-   template< typename Other > inline StaticVector& scale( const Other& scalar );
-                              inline void          swap( StaticVector& v ) noexcept;
+                              inline constexpr size_t size() const noexcept;
+                              inline constexpr size_t capacity() const noexcept;
+                              inline size_t           nonZeros() const;
+                              inline void             reset();
+   template< typename Other > inline StaticVector&    scale( const Other& scalar );
+                              inline void             swap( StaticVector& v ) noexcept;
    //@}
    //**********************************************************************************************
 
@@ -376,19 +370,19 @@ class StaticVector : public DenseVector< StaticVector<Type,N,TF>, TF >
    //**Expression template evaluation functions****************************************************
    /*!\name Expression template evaluation functions */
    //@{
-   template< typename Other > inline bool canAlias ( const Other* alias ) const;
-   template< typename Other > inline bool isAliased( const Other* alias ) const;
+   template< typename Other > inline bool canAlias ( const Other* alias ) const noexcept;
+   template< typename Other > inline bool isAliased( const Other* alias ) const noexcept;
 
-   inline bool isAligned() const;
+   inline bool isAligned() const noexcept;
 
-   BLAZE_ALWAYS_INLINE IntrinsicType load ( size_t index ) const;
-   BLAZE_ALWAYS_INLINE IntrinsicType loada( size_t index ) const;
-   BLAZE_ALWAYS_INLINE IntrinsicType loadu( size_t index ) const;
+   BLAZE_ALWAYS_INLINE IntrinsicType load ( size_t index ) const noexcept;
+   BLAZE_ALWAYS_INLINE IntrinsicType loada( size_t index ) const noexcept;
+   BLAZE_ALWAYS_INLINE IntrinsicType loadu( size_t index ) const noexcept;
 
-   BLAZE_ALWAYS_INLINE void store ( size_t index, const IntrinsicType& value );
-   BLAZE_ALWAYS_INLINE void storea( size_t index, const IntrinsicType& value );
-   BLAZE_ALWAYS_INLINE void storeu( size_t index, const IntrinsicType& value );
-   BLAZE_ALWAYS_INLINE void stream( size_t index, const IntrinsicType& value );
+   BLAZE_ALWAYS_INLINE void store ( size_t index, const IntrinsicType& value ) noexcept;
+   BLAZE_ALWAYS_INLINE void storea( size_t index, const IntrinsicType& value ) noexcept;
+   BLAZE_ALWAYS_INLINE void storeu( size_t index, const IntrinsicType& value ) noexcept;
+   BLAZE_ALWAYS_INLINE void stream( size_t index, const IntrinsicType& value ) noexcept;
 
    template< typename VT >
    inline typename DisableIf< VectorizedAssign<VT> >::Type
@@ -668,179 +662,6 @@ inline StaticVector<Type,N,TF>::StaticVector( const Vector<VT,TF>& v )
 //*************************************************************************************************
 
 
-//*************************************************************************************************
-/*!\brief Constructor for 2-dimensional vectors.
-//
-// \param v1 The initializer for the first vector element.
-// \param v2 The initializer for the second vector element.
-//
-// This constructor offers the option to create 2-dimensional vectors with specific elements:
-
-   \code
-   blaze::StaticVector<int,2> v( 1, 2 );
-   \endcode
-*/
-template< typename Type  // Data type of the vector
-        , size_t N       // Number of elements
-        , bool TF >      // Transpose flag
-inline StaticVector<Type,N,TF>::StaticVector( const Type& v1, const Type& v2 )
-   : v_()  // The statically allocated vector elements
-{
-   BLAZE_STATIC_ASSERT( N == 2UL );
-   BLAZE_STATIC_ASSERT( IsVectorizable<Type>::value || NN == N );
-
-   v_[0UL] = v1;
-   v_[1UL] = v2;
-
-   for( size_t i=N; i<NN; ++i )
-      v_[i] = Type();
-}
-//*************************************************************************************************
-
-
-//*************************************************************************************************
-/*!\brief Constructor for 3-dimensional vectors.
-//
-// \param v1 The initializer for the first vector element.
-// \param v2 The initializer for the second vector element.
-// \param v3 The initializer for the third vector element.
-//
-// This constructor offers the option to create 3-dimensional vectors with specific elements:
-
-   \code
-   blaze::StaticVector<int,3> v( 1, 2, 3 );
-   \endcode
-*/
-template< typename Type  // Data type of the vector
-        , size_t N       // Number of elements
-        , bool TF >      // Transpose flag
-inline StaticVector<Type,N,TF>::StaticVector( const Type& v1, const Type& v2, const Type& v3 )
-   : v_()  // The statically allocated vector elements
-{
-   BLAZE_STATIC_ASSERT( N == 3UL );
-   BLAZE_STATIC_ASSERT( IsVectorizable<Type>::value || NN == N );
-
-   v_[0UL] = v1;
-   v_[1UL] = v2;
-   v_[2UL] = v3;
-
-   for( size_t i=N; i<NN; ++i )
-      v_[i] = Type();
-}
-//*************************************************************************************************
-
-
-//*************************************************************************************************
-/*!\brief Constructor for 4-dimensional vectors.
-//
-// \param v1 The initializer for the first vector element.
-// \param v2 The initializer for the second vector element.
-// \param v3 The initializer for the third vector element.
-// \param v4 The initializer for the fourth vector element.
-//
-// This constructor offers the option to create 4-dimensional vectors with specific elements:
-
-   \code
-   blaze::StaticVector<int,4> v( 1, 2, 3, 4 );
-   \endcode
-*/
-template< typename Type  // Data type of the vector
-        , size_t N       // Number of elements
-        , bool TF >      // Transpose flag
-inline StaticVector<Type,N,TF>::StaticVector( const Type& v1, const Type& v2,
-                                              const Type& v3, const Type& v4 )
-   : v_()  // The statically allocated vector elements
-{
-   BLAZE_STATIC_ASSERT( N == 4UL );
-   BLAZE_STATIC_ASSERT( IsVectorizable<Type>::value || NN == N );
-
-   v_[0UL] = v1;
-   v_[1UL] = v2;
-   v_[2UL] = v3;
-   v_[3UL] = v4;
-
-   for( size_t i=N; i<NN; ++i )
-      v_[i] = Type();
-}
-//*************************************************************************************************
-
-
-//*************************************************************************************************
-/*!\brief Constructor for 5-dimensional vectors.
-//
-// \param v1 The initializer for the first vector element.
-// \param v2 The initializer for the second vector element.
-// \param v3 The initializer for the third vector element.
-// \param v4 The initializer for the fourth vector element.
-// \param v5 The initializer for the fifth vector element.
-//
-// This constructor offers the option to create 5-dimensional vectors with specific elements:
-
-   \code
-   blaze::StaticVector<int,5> v( 1, 2, 3, 4, 5 );
-   \endcode
-*/
-template< typename Type  // Data type of the vector
-        , size_t N       // Number of elements
-        , bool TF >      // Transpose flag
-inline StaticVector<Type,N,TF>::StaticVector( const Type& v1, const Type& v2, const Type& v3,
-                                              const Type& v4, const Type& v5 )
-   : v_()  // The statically allocated vector elements
-{
-   BLAZE_STATIC_ASSERT( N == 5UL );
-   BLAZE_STATIC_ASSERT( IsVectorizable<Type>::value || NN == N );
-
-   v_[0UL] = v1;
-   v_[1UL] = v2;
-   v_[2UL] = v3;
-   v_[3UL] = v4;
-   v_[4UL] = v5;
-
-   for( size_t i=N; i<NN; ++i )
-      v_[i] = Type();
-}
-//*************************************************************************************************
-
-
-//*************************************************************************************************
-/*!\brief Constructor for 6-dimensional vectors.
-//
-// \param v1 The initializer for the first vector element.
-// \param v2 The initializer for the second vector element.
-// \param v3 The initializer for the third vector element.
-// \param v4 The initializer for the fourth vector element.
-// \param v5 The initializer for the fifth vector element.
-// \param v6 The initializer for the sixth vector element.
-//
-// This constructor offers the option to create 6-dimensional vectors with specific elements:
-
-   \code
-   blaze::StaticVector<int,6> v( 1, 2, 3, 4, 5, 6 );
-   \endcode
-*/
-template< typename Type  // Data type of the vector
-        , size_t N       // Number of elements
-        , bool TF >      // Transpose flag
-inline StaticVector<Type,N,TF>::StaticVector( const Type& v1, const Type& v2, const Type& v3,
-                                              const Type& v4, const Type& v5, const Type& v6 )
-   : v_()  // The statically allocated vector elements
-{
-   BLAZE_STATIC_ASSERT( N == 6UL );
-   BLAZE_STATIC_ASSERT( IsVectorizable<Type>::value || NN == N );
-
-   v_[0UL] = v1;
-   v_[1UL] = v2;
-   v_[2UL] = v3;
-   v_[3UL] = v4;
-   v_[4UL] = v5;
-   v_[5UL] = v6;
-
-   for( size_t i=N; i<NN; ++i )
-      v_[i] = Type();
-}
-//*************************************************************************************************
-
-
 
 
 //=================================================================================================
@@ -862,7 +683,7 @@ template< typename Type  // Data type of the vector
         , size_t N       // Number of elements
         , bool TF >      // Transpose flag
 inline typename StaticVector<Type,N,TF>::Reference
-   StaticVector<Type,N,TF>::operator[]( size_t index )
+   StaticVector<Type,N,TF>::operator[]( size_t index ) noexcept
 {
    BLAZE_USER_ASSERT( index < N, "Invalid vector access index" );
    return v_[index];
@@ -883,7 +704,7 @@ template< typename Type  // Data type of the vector
         , size_t N       // Number of elements
         , bool TF >      // Transpose flag
 inline typename StaticVector<Type,N,TF>::ConstReference
-   StaticVector<Type,N,TF>::operator[]( size_t index ) const
+   StaticVector<Type,N,TF>::operator[]( size_t index ) const noexcept
 {
    BLAZE_USER_ASSERT( index < N, "Invalid vector access index" );
    return v_[index];
@@ -949,7 +770,7 @@ inline typename StaticVector<Type,N,TF>::ConstReference
 template< typename Type  // Data type of the vector
         , size_t N       // Number of elements
         , bool TF >      // Transpose flag
-inline typename StaticVector<Type,N,TF>::Pointer StaticVector<Type,N,TF>::data()
+inline typename StaticVector<Type,N,TF>::Pointer StaticVector<Type,N,TF>::data() noexcept
 {
    return v_;
 }
@@ -966,7 +787,7 @@ inline typename StaticVector<Type,N,TF>::Pointer StaticVector<Type,N,TF>::data()
 template< typename Type  // Data type of the vector
         , size_t N       // Number of elements
         , bool TF >      // Transpose flag
-inline typename StaticVector<Type,N,TF>::ConstPointer StaticVector<Type,N,TF>::data() const
+inline typename StaticVector<Type,N,TF>::ConstPointer StaticVector<Type,N,TF>::data() const noexcept
 {
    return v_;
 }
@@ -981,7 +802,7 @@ inline typename StaticVector<Type,N,TF>::ConstPointer StaticVector<Type,N,TF>::d
 template< typename Type  // Data type of the vector
         , size_t N       // Number of elements
         , bool TF >      // Transpose flag
-inline typename StaticVector<Type,N,TF>::Iterator StaticVector<Type,N,TF>::begin()
+inline typename StaticVector<Type,N,TF>::Iterator StaticVector<Type,N,TF>::begin() noexcept
 {
    return Iterator( v_ );
 }
@@ -996,7 +817,7 @@ inline typename StaticVector<Type,N,TF>::Iterator StaticVector<Type,N,TF>::begin
 template< typename Type  // Data type of the vector
         , size_t N       // Number of elements
         , bool TF >      // Transpose flag
-inline typename StaticVector<Type,N,TF>::ConstIterator StaticVector<Type,N,TF>::begin() const
+inline typename StaticVector<Type,N,TF>::ConstIterator StaticVector<Type,N,TF>::begin() const noexcept
 {
    return ConstIterator( v_ );
 }
@@ -1011,7 +832,7 @@ inline typename StaticVector<Type,N,TF>::ConstIterator StaticVector<Type,N,TF>::
 template< typename Type  // Data type of the vector
         , size_t N       // Number of elements
         , bool TF >      // Transpose flag
-inline typename StaticVector<Type,N,TF>::ConstIterator StaticVector<Type,N,TF>::cbegin() const
+inline typename StaticVector<Type,N,TF>::ConstIterator StaticVector<Type,N,TF>::cbegin() const noexcept
 {
    return ConstIterator( v_ );
 }
@@ -1026,7 +847,7 @@ inline typename StaticVector<Type,N,TF>::ConstIterator StaticVector<Type,N,TF>::
 template< typename Type  // Data type of the vector
         , size_t N       // Number of elements
         , bool TF >      // Transpose flag
-inline typename StaticVector<Type,N,TF>::Iterator StaticVector<Type,N,TF>::end()
+inline typename StaticVector<Type,N,TF>::Iterator StaticVector<Type,N,TF>::end() noexcept
 {
    return Iterator( v_ + N );
 }
@@ -1041,7 +862,7 @@ inline typename StaticVector<Type,N,TF>::Iterator StaticVector<Type,N,TF>::end()
 template< typename Type  // Data type of the vector
         , size_t N       // Number of elements
         , bool TF >      // Transpose flag
-inline typename StaticVector<Type,N,TF>::ConstIterator StaticVector<Type,N,TF>::end() const
+inline typename StaticVector<Type,N,TF>::ConstIterator StaticVector<Type,N,TF>::end() const noexcept
 {
    return ConstIterator( v_ + N );
 }
@@ -1056,7 +877,7 @@ inline typename StaticVector<Type,N,TF>::ConstIterator StaticVector<Type,N,TF>::
 template< typename Type  // Data type of the vector
         , size_t N       // Number of elements
         , bool TF >      // Transpose flag
-inline typename StaticVector<Type,N,TF>::ConstIterator StaticVector<Type,N,TF>::cend() const
+inline typename StaticVector<Type,N,TF>::ConstIterator StaticVector<Type,N,TF>::cend() const noexcept
 {
    return ConstIterator( v_ + N );
 }
@@ -1367,7 +1188,7 @@ inline typename EnableIf< IsNumeric<Other>, StaticVector<Type,N,TF> >::Type&
 template< typename Type  // Data type of the vector
         , size_t N       // Number of elements
         , bool TF >      // Transpose flag
-inline size_t StaticVector<Type,N,TF>::size() const
+inline constexpr size_t StaticVector<Type,N,TF>::size() const noexcept
 {
    return N;
 }
@@ -1382,7 +1203,7 @@ inline size_t StaticVector<Type,N,TF>::size() const
 template< typename Type  // Data type of the vector
         , size_t N       // Number of elements
         , bool TF >      // Transpose flag
-inline size_t StaticVector<Type,N,TF>::capacity() const
+inline constexpr size_t StaticVector<Type,N,TF>::capacity() const noexcept
 {
    return NN;
 }
@@ -1455,7 +1276,6 @@ inline StaticVector<Type,N,TF>& StaticVector<Type,N,TF>::scale( const Other& sca
 //
 // \param v The vector to be swapped.
 // \return void
-// \exception no-throw guarantee.
 */
 template< typename Type  // Data type of the vector
         , size_t N       // Number of elements
@@ -1658,7 +1478,7 @@ template< typename Type     // Data type of the vector
         , size_t N          // Number of elements
         , bool TF >         // Transpose flag
 template< typename Other >  // Data type of the foreign expression
-inline bool StaticVector<Type,N,TF>::canAlias( const Other* alias ) const
+inline bool StaticVector<Type,N,TF>::canAlias( const Other* alias ) const noexcept
 {
    return static_cast<const void*>( this ) == static_cast<const void*>( alias );
 }
@@ -1679,7 +1499,7 @@ template< typename Type     // Data type of the vector
         , size_t N          // Number of elements
         , bool TF >         // Transpose flag
 template< typename Other >  // Data type of the foreign expression
-inline bool StaticVector<Type,N,TF>::isAliased( const Other* alias ) const
+inline bool StaticVector<Type,N,TF>::isAliased( const Other* alias ) const noexcept
 {
    return static_cast<const void*>( this ) == static_cast<const void*>( alias );
 }
@@ -1698,7 +1518,7 @@ inline bool StaticVector<Type,N,TF>::isAliased( const Other* alias ) const
 template< typename Type  // Data type of the vector
         , size_t N       // Number of elements
         , bool TF >      // Transpose flag
-inline bool StaticVector<Type,N,TF>::isAligned() const
+inline bool StaticVector<Type,N,TF>::isAligned() const noexcept
 {
    return true;
 }
@@ -1722,7 +1542,7 @@ template< typename Type  // Data type of the vector
         , size_t N       // Number of elements
         , bool TF >      // Transpose flag
 BLAZE_ALWAYS_INLINE typename StaticVector<Type,N,TF>::IntrinsicType
-   StaticVector<Type,N,TF>::load( size_t index ) const
+   StaticVector<Type,N,TF>::load( size_t index ) const noexcept
 {
    return loada( index );
 }
@@ -1746,7 +1566,7 @@ template< typename Type  // Data type of the vector
         , size_t N       // Number of elements
         , bool TF >      // Transpose flag
 BLAZE_ALWAYS_INLINE typename StaticVector<Type,N,TF>::IntrinsicType
-   StaticVector<Type,N,TF>::loada( size_t index ) const
+   StaticVector<Type,N,TF>::loada( size_t index ) const noexcept
 {
    using blaze::loada;
 
@@ -1779,7 +1599,7 @@ template< typename Type  // Data type of the vector
         , size_t N       // Number of elements
         , bool TF >      // Transpose flag
 BLAZE_ALWAYS_INLINE typename StaticVector<Type,N,TF>::IntrinsicType
-   StaticVector<Type,N,TF>::loadu( size_t index ) const
+   StaticVector<Type,N,TF>::loadu( size_t index ) const noexcept
 {
    using blaze::loadu;
 
@@ -1811,7 +1631,7 @@ template< typename Type  // Data type of the vector
         , size_t N       // Number of elements
         , bool TF >      // Transpose flag
 BLAZE_ALWAYS_INLINE void
-   StaticVector<Type,N,TF>::store( size_t index, const IntrinsicType& value )
+   StaticVector<Type,N,TF>::store( size_t index, const IntrinsicType& value ) noexcept
 {
    storea( index, value );
 }
@@ -1836,7 +1656,7 @@ template< typename Type  // Data type of the vector
         , size_t N       // Number of elements
         , bool TF >      // Transpose flag
 BLAZE_ALWAYS_INLINE void
-   StaticVector<Type,N,TF>::storea( size_t index, const IntrinsicType& value )
+   StaticVector<Type,N,TF>::storea( size_t index, const IntrinsicType& value ) noexcept
 {
    using blaze::storea;
 
@@ -1870,7 +1690,7 @@ template< typename Type  // Data type of the vector
         , size_t N       // Number of elements
         , bool TF >      // Transpose flag
 BLAZE_ALWAYS_INLINE void
-   StaticVector<Type,N,TF>::storeu( size_t index, const IntrinsicType& value )
+   StaticVector<Type,N,TF>::storeu( size_t index, const IntrinsicType& value ) noexcept
 {
    using blaze::storeu;
 
@@ -1902,7 +1722,7 @@ template< typename Type  // Data type of the vector
         , size_t N       // Number of elements
         , bool TF >      // Transpose flag
 BLAZE_ALWAYS_INLINE void
-   StaticVector<Type,N,TF>::stream( size_t index, const IntrinsicType& value )
+   StaticVector<Type,N,TF>::stream( size_t index, const IntrinsicType& value ) noexcept
 {
    using blaze::stream;
 
@@ -2334,7 +2154,7 @@ template< typename Type, size_t N, bool TF >
 inline bool isDefault( const StaticVector<Type,N,TF>& v );
 
 template< typename Type, size_t N, bool TF >
-inline bool isIntact( const StaticVector<Type,N,TF>& v );
+inline bool isIntact( const StaticVector<Type,N,TF>& v ) noexcept;
 
 template< typename Type, bool TF >
 inline const StaticVector<Type,2UL,TF> perp( const StaticVector<Type,2UL,TF>& v );
@@ -2435,7 +2255,7 @@ inline bool isDefault( const StaticVector<Type,N,TF>& v )
 template< typename Type  // Data type of the vector
         , size_t N       // Number of elements
         , bool TF >      // Transpose flag
-inline bool isIntact( const StaticVector<Type,N,TF>& v )
+inline bool isIntact( const StaticVector<Type,N,TF>& v ) noexcept
 {
    UNUSED_PARAMETER( v );
 
@@ -2491,7 +2311,6 @@ inline const StaticVector<Type,3UL,TF> perp( const StaticVector<Type,3UL,TF>& v 
 // \param a The first vector to be swapped.
 // \param b The second vector to be swapped.
 // \return void
-// \exception no-throw guarantee.
 */
 template< typename Type  // Data type of the vector
         , size_t N       // Number of elements
