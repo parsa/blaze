@@ -246,7 +246,7 @@ class DynamicMatrix : public DenseMatrix< DynamicMatrix<Type,SO>, SO >
    //**Constructors********************************************************************************
    /*!\name Constructors */
    //@{
-                              explicit inline DynamicMatrix();
+                              explicit inline DynamicMatrix() noexcept;
                               explicit inline DynamicMatrix( size_t m, size_t n );
                               explicit inline DynamicMatrix( size_t m, size_t n, const Type& init );
    template< typename Other > explicit inline DynamicMatrix( size_t m, size_t n, const Other* array );
@@ -270,20 +270,20 @@ class DynamicMatrix : public DenseMatrix< DynamicMatrix<Type,SO>, SO >
    //**Data access functions***********************************************************************
    /*!\name Data access functions */
    //@{
-   inline Reference      operator()( size_t i, size_t j );
-   inline ConstReference operator()( size_t i, size_t j ) const;
+   inline Reference      operator()( size_t i, size_t j ) noexcept;
+   inline ConstReference operator()( size_t i, size_t j ) const noexcept;
    inline Reference      at( size_t i, size_t j );
    inline ConstReference at( size_t i, size_t j ) const;
-   inline Pointer        data  ();
-   inline ConstPointer   data  () const;
-   inline Pointer        data  ( size_t i );
-   inline ConstPointer   data  ( size_t i ) const;
-   inline Iterator       begin ( size_t i );
-   inline ConstIterator  begin ( size_t i ) const;
-   inline ConstIterator  cbegin( size_t i ) const;
-   inline Iterator       end   ( size_t i );
-   inline ConstIterator  end   ( size_t i ) const;
-   inline ConstIterator  cend  ( size_t i ) const;
+   inline Pointer        data  () noexcept;
+   inline ConstPointer   data  () const noexcept;
+   inline Pointer        data  ( size_t i ) noexcept;
+   inline ConstPointer   data  ( size_t i ) const noexcept;
+   inline Iterator       begin ( size_t i ) noexcept;
+   inline ConstIterator  begin ( size_t i ) const noexcept;
+   inline ConstIterator  cbegin( size_t i ) const noexcept;
+   inline Iterator       end   ( size_t i ) noexcept;
+   inline ConstIterator  end   ( size_t i ) const noexcept;
+   inline ConstIterator  cend  ( size_t i ) const noexcept;
    //@}
    //**********************************************************************************************
 
@@ -315,11 +315,11 @@ class DynamicMatrix : public DenseMatrix< DynamicMatrix<Type,SO>, SO >
    //**Utility functions***************************************************************************
    /*!\name Utility functions */
    //@{
-                              inline size_t         rows() const;
-                              inline size_t         columns() const;
-                              inline size_t         spacing() const;
-                              inline size_t         capacity() const;
-                              inline size_t         capacity( size_t i ) const;
+                              inline size_t         rows() const noexcept;
+                              inline size_t         columns() const noexcept;
+                              inline size_t         spacing() const noexcept;
+                              inline size_t         capacity() const noexcept;
+                              inline size_t         capacity( size_t i ) const noexcept;
                               inline size_t         nonZeros() const;
                               inline size_t         nonZeros( size_t i ) const;
                               inline void           reset();
@@ -380,20 +380,20 @@ class DynamicMatrix : public DenseMatrix< DynamicMatrix<Type,SO>, SO >
    //**Expression template evaluation functions****************************************************
    /*!\name Expression template evaluation functions */
    //@{
-   template< typename Other > inline bool canAlias ( const Other* alias ) const;
-   template< typename Other > inline bool isAliased( const Other* alias ) const;
+   template< typename Other > inline bool canAlias ( const Other* alias ) const noexcept;
+   template< typename Other > inline bool isAliased( const Other* alias ) const noexcept;
 
-   inline bool isAligned   () const;
-   inline bool canSMPAssign() const;
+   inline bool isAligned   () const noexcept;
+   inline bool canSMPAssign() const noexcept;
 
-   BLAZE_ALWAYS_INLINE IntrinsicType load ( size_t i, size_t j ) const;
-   BLAZE_ALWAYS_INLINE IntrinsicType loada( size_t i, size_t j ) const;
-   BLAZE_ALWAYS_INLINE IntrinsicType loadu( size_t i, size_t j ) const;
+   BLAZE_ALWAYS_INLINE IntrinsicType load ( size_t i, size_t j ) const noexcept;
+   BLAZE_ALWAYS_INLINE IntrinsicType loada( size_t i, size_t j ) const noexcept;
+   BLAZE_ALWAYS_INLINE IntrinsicType loadu( size_t i, size_t j ) const noexcept;
 
-   BLAZE_ALWAYS_INLINE void store ( size_t i, size_t j, const IntrinsicType& value );
-   BLAZE_ALWAYS_INLINE void storea( size_t i, size_t j, const IntrinsicType& value );
-   BLAZE_ALWAYS_INLINE void storeu( size_t i, size_t j, const IntrinsicType& value );
-   BLAZE_ALWAYS_INLINE void stream( size_t i, size_t j, const IntrinsicType& value );
+   BLAZE_ALWAYS_INLINE void store ( size_t i, size_t j, const IntrinsicType& value ) noexcept;
+   BLAZE_ALWAYS_INLINE void storea( size_t i, size_t j, const IntrinsicType& value ) noexcept;
+   BLAZE_ALWAYS_INLINE void storeu( size_t i, size_t j, const IntrinsicType& value ) noexcept;
+   BLAZE_ALWAYS_INLINE void stream( size_t i, size_t j, const IntrinsicType& value ) noexcept;
 
    template< typename MT >
    inline typename DisableIf< VectorizedAssign<MT> >::Type
@@ -437,7 +437,7 @@ class DynamicMatrix : public DenseMatrix< DynamicMatrix<Type,SO>, SO >
    //**Utility functions***************************************************************************
    /*!\name Utility functions */
    //@{
-   inline size_t adjustColumns( size_t minColumns ) const;
+   inline constexpr size_t adjustColumns( size_t minColumns ) const noexcept;
    //@}
    //**********************************************************************************************
 
@@ -486,7 +486,7 @@ class DynamicMatrix : public DenseMatrix< DynamicMatrix<Type,SO>, SO >
 */
 template< typename Type  // Data type of the matrix
         , bool SO >      // Storage order
-inline DynamicMatrix<Type,SO>::DynamicMatrix()
+inline DynamicMatrix<Type,SO>::DynamicMatrix() noexcept
    : m_       ( 0UL )      // The current number of rows of the matrix
    , n_       ( 0UL )      // The current number of columns of the matrix
    , nn_      ( 0UL )      // The alignment adjusted number of columns
@@ -764,7 +764,7 @@ inline DynamicMatrix<Type,SO>::~DynamicMatrix()
 template< typename Type  // Data type of the matrix
         , bool SO >      // Storage order
 inline typename DynamicMatrix<Type,SO>::Reference
-   DynamicMatrix<Type,SO>::operator()( size_t i, size_t j )
+   DynamicMatrix<Type,SO>::operator()( size_t i, size_t j ) noexcept
 {
    BLAZE_USER_ASSERT( i<m_, "Invalid row access index"    );
    BLAZE_USER_ASSERT( j<n_, "Invalid column access index" );
@@ -786,7 +786,7 @@ inline typename DynamicMatrix<Type,SO>::Reference
 template< typename Type  // Data type of the matrix
         , bool SO >      // Storage order
 inline typename DynamicMatrix<Type,SO>::ConstReference
-   DynamicMatrix<Type,SO>::operator()( size_t i, size_t j ) const
+   DynamicMatrix<Type,SO>::operator()( size_t i, size_t j ) const noexcept
 {
    BLAZE_USER_ASSERT( i<m_, "Invalid row access index"    );
    BLAZE_USER_ASSERT( j<n_, "Invalid column access index" );
@@ -863,7 +863,8 @@ inline typename DynamicMatrix<Type,SO>::ConstReference
 */
 template< typename Type  // Data type of the matrix
         , bool SO >      // Storage order
-inline typename DynamicMatrix<Type,SO>::Pointer DynamicMatrix<Type,SO>::data()
+inline typename DynamicMatrix<Type,SO>::Pointer
+   DynamicMatrix<Type,SO>::data() noexcept
 {
    return v_;
 }
@@ -884,7 +885,8 @@ inline typename DynamicMatrix<Type,SO>::Pointer DynamicMatrix<Type,SO>::data()
 */
 template< typename Type  // Data type of the matrix
         , bool SO >      // Storage order
-inline typename DynamicMatrix<Type,SO>::ConstPointer DynamicMatrix<Type,SO>::data() const
+inline typename DynamicMatrix<Type,SO>::ConstPointer
+   DynamicMatrix<Type,SO>::data() const noexcept
 {
    return v_;
 }
@@ -901,7 +903,8 @@ inline typename DynamicMatrix<Type,SO>::ConstPointer DynamicMatrix<Type,SO>::dat
 */
 template< typename Type  // Data type of the matrix
         , bool SO >      // Storage order
-inline typename DynamicMatrix<Type,SO>::Pointer DynamicMatrix<Type,SO>::data( size_t i )
+inline typename DynamicMatrix<Type,SO>::Pointer
+   DynamicMatrix<Type,SO>::data( size_t i ) noexcept
 {
    BLAZE_USER_ASSERT( i < m_, "Invalid dense matrix row access index" );
    return v_ + i*nn_;
@@ -919,7 +922,8 @@ inline typename DynamicMatrix<Type,SO>::Pointer DynamicMatrix<Type,SO>::data( si
 */
 template< typename Type  // Data type of the matrix
         , bool SO >      // Storage order
-inline typename DynamicMatrix<Type,SO>::ConstPointer DynamicMatrix<Type,SO>::data( size_t i ) const
+inline typename DynamicMatrix<Type,SO>::ConstPointer
+   DynamicMatrix<Type,SO>::data( size_t i ) const noexcept
 {
    BLAZE_USER_ASSERT( i < m_, "Invalid dense matrix row access index" );
    return v_ + i*nn_;
@@ -941,7 +945,7 @@ inline typename DynamicMatrix<Type,SO>::ConstPointer DynamicMatrix<Type,SO>::dat
 template< typename Type  // Data type of the matrix
         , bool SO >      // Storage order
 inline typename DynamicMatrix<Type,SO>::Iterator
-   DynamicMatrix<Type,SO>::begin( size_t i )
+   DynamicMatrix<Type,SO>::begin( size_t i ) noexcept
 {
    BLAZE_USER_ASSERT( i < m_, "Invalid dense matrix row access index" );
    return Iterator( v_ + i*nn_ );
@@ -963,7 +967,7 @@ inline typename DynamicMatrix<Type,SO>::Iterator
 template< typename Type  // Data type of the matrix
         , bool SO >      // Storage order
 inline typename DynamicMatrix<Type,SO>::ConstIterator
-   DynamicMatrix<Type,SO>::begin( size_t i ) const
+   DynamicMatrix<Type,SO>::begin( size_t i ) const noexcept
 {
    BLAZE_USER_ASSERT( i < m_, "Invalid dense matrix row access index" );
    return ConstIterator( v_ + i*nn_ );
@@ -985,7 +989,7 @@ inline typename DynamicMatrix<Type,SO>::ConstIterator
 template< typename Type  // Data type of the matrix
         , bool SO >      // Storage order
 inline typename DynamicMatrix<Type,SO>::ConstIterator
-   DynamicMatrix<Type,SO>::cbegin( size_t i ) const
+   DynamicMatrix<Type,SO>::cbegin( size_t i ) const noexcept
 {
    BLAZE_USER_ASSERT( i < m_, "Invalid dense matrix row access index" );
    return ConstIterator( v_ + i*nn_ );
@@ -1007,7 +1011,7 @@ inline typename DynamicMatrix<Type,SO>::ConstIterator
 template< typename Type  // Data type of the matrix
         , bool SO >      // Storage order
 inline typename DynamicMatrix<Type,SO>::Iterator
-   DynamicMatrix<Type,SO>::end( size_t i )
+   DynamicMatrix<Type,SO>::end( size_t i ) noexcept
 {
    BLAZE_USER_ASSERT( i < m_, "Invalid dense matrix row access index" );
    return Iterator( v_ + i*nn_ + n_ );
@@ -1029,7 +1033,7 @@ inline typename DynamicMatrix<Type,SO>::Iterator
 template< typename Type  // Data type of the matrix
         , bool SO >      // Storage order
 inline typename DynamicMatrix<Type,SO>::ConstIterator
-   DynamicMatrix<Type,SO>::end( size_t i ) const
+   DynamicMatrix<Type,SO>::end( size_t i ) const noexcept
 {
    BLAZE_USER_ASSERT( i < m_, "Invalid dense matrix row access index" );
    return ConstIterator( v_ + i*nn_ + n_ );
@@ -1051,7 +1055,7 @@ inline typename DynamicMatrix<Type,SO>::ConstIterator
 template< typename Type  // Data type of the matrix
         , bool SO >      // Storage order
 inline typename DynamicMatrix<Type,SO>::ConstIterator
-   DynamicMatrix<Type,SO>::cend( size_t i ) const
+   DynamicMatrix<Type,SO>::cend( size_t i ) const noexcept
 {
    BLAZE_USER_ASSERT( i < m_, "Invalid dense matrix row access index" );
    return ConstIterator( v_ + i*nn_ + n_ );
@@ -1366,7 +1370,7 @@ inline typename EnableIf< IsNumeric<Other>, DynamicMatrix<Type,SO> >::Type&
 */
 template< typename Type  // Data type of the matrix
         , bool SO >      // Storage order
-inline size_t DynamicMatrix<Type,SO>::rows() const
+inline size_t DynamicMatrix<Type,SO>::rows() const noexcept
 {
    return m_;
 }
@@ -1380,7 +1384,7 @@ inline size_t DynamicMatrix<Type,SO>::rows() const
 */
 template< typename Type  // Data type of the matrix
         , bool SO >      // Storage order
-inline size_t DynamicMatrix<Type,SO>::columns() const
+inline size_t DynamicMatrix<Type,SO>::columns() const noexcept
 {
    return n_;
 }
@@ -1399,7 +1403,7 @@ inline size_t DynamicMatrix<Type,SO>::columns() const
 */
 template< typename Type  // Data type of the matrix
         , bool SO >      // Storage order
-inline size_t DynamicMatrix<Type,SO>::spacing() const
+inline size_t DynamicMatrix<Type,SO>::spacing() const noexcept
 {
    return nn_;
 }
@@ -1413,7 +1417,7 @@ inline size_t DynamicMatrix<Type,SO>::spacing() const
 */
 template< typename Type  // Data type of the matrix
         , bool SO >      // Storage order
-inline size_t DynamicMatrix<Type,SO>::capacity() const
+inline size_t DynamicMatrix<Type,SO>::capacity() const noexcept
 {
    return capacity_;
 }
@@ -1433,7 +1437,7 @@ inline size_t DynamicMatrix<Type,SO>::capacity() const
 */
 template< typename Type  // Data type of the matrix
         , bool SO >      // Storage order
-inline size_t DynamicMatrix<Type,SO>::capacity( size_t i ) const
+inline size_t DynamicMatrix<Type,SO>::capacity( size_t i ) const noexcept
 {
    UNUSED_PARAMETER( i );
    BLAZE_USER_ASSERT( i < rows(), "Invalid row access index" );
@@ -1791,7 +1795,6 @@ inline DynamicMatrix<Type,SO>& DynamicMatrix<Type,SO>::scale( const Other& scala
 //
 // \param m The matrix to be swapped.
 // \return void
-// \exception no-throw guarantee.
 */
 template< typename Type  // Data type of the matrix
         , bool SO >      // Storage order
@@ -1814,7 +1817,7 @@ inline void DynamicMatrix<Type,SO>::swap( DynamicMatrix& m ) noexcept
 */
 template< typename Type  // Data type of the matrix
         , bool SO >      // Storage order
-inline size_t DynamicMatrix<Type,SO>::adjustColumns( size_t minColumns ) const
+inline constexpr size_t DynamicMatrix<Type,SO>::adjustColumns( size_t minColumns ) const noexcept
 {
    if( usePadding && IsVectorizable<Type>::value )
       return nextMultiple<size_t>( minColumns, IT::size );
@@ -1844,7 +1847,7 @@ inline size_t DynamicMatrix<Type,SO>::adjustColumns( size_t minColumns ) const
 template< typename Type     // Data type of the matrix
         , bool SO >         // Storage order
 template< typename Other >  // Data type of the foreign expression
-inline bool DynamicMatrix<Type,SO>::canAlias( const Other* alias ) const
+inline bool DynamicMatrix<Type,SO>::canAlias( const Other* alias ) const noexcept
 {
    return static_cast<const void*>( this ) == static_cast<const void*>( alias );
 }
@@ -1864,7 +1867,7 @@ inline bool DynamicMatrix<Type,SO>::canAlias( const Other* alias ) const
 template< typename Type     // Data type of the matrix
         , bool SO >         // Storage order
 template< typename Other >  // Data type of the foreign expression
-inline bool DynamicMatrix<Type,SO>::isAliased( const Other* alias ) const
+inline bool DynamicMatrix<Type,SO>::isAliased( const Other* alias ) const noexcept
 {
    return static_cast<const void*>( this ) == static_cast<const void*>( alias );
 }
@@ -1882,7 +1885,7 @@ inline bool DynamicMatrix<Type,SO>::isAliased( const Other* alias ) const
 */
 template< typename Type  // Data type of the matrix
         , bool SO >      // Storage order
-inline bool DynamicMatrix<Type,SO>::isAligned() const
+inline bool DynamicMatrix<Type,SO>::isAligned() const noexcept
 {
    return ( usePadding || columns() % IT::size == 0UL );
 }
@@ -1901,7 +1904,7 @@ inline bool DynamicMatrix<Type,SO>::isAligned() const
 */
 template< typename Type  // Data type of the matrix
         , bool SO >      // Storage order
-inline bool DynamicMatrix<Type,SO>::canSMPAssign() const
+inline bool DynamicMatrix<Type,SO>::canSMPAssign() const noexcept
 {
    return ( rows() > SMP_DMATASSIGN_THRESHOLD );
 }
@@ -1926,7 +1929,7 @@ inline bool DynamicMatrix<Type,SO>::canSMPAssign() const
 template< typename Type  // Data type of the matrix
         , bool SO >      // Storage order
 BLAZE_ALWAYS_INLINE typename DynamicMatrix<Type,SO>::IntrinsicType
-   DynamicMatrix<Type,SO>::load( size_t i, size_t j ) const
+   DynamicMatrix<Type,SO>::load( size_t i, size_t j ) const noexcept
 {
    if( usePadding )
       return loada( i, j );
@@ -1954,7 +1957,7 @@ BLAZE_ALWAYS_INLINE typename DynamicMatrix<Type,SO>::IntrinsicType
 template< typename Type  // Data type of the matrix
         , bool SO >      // Storage order
 BLAZE_ALWAYS_INLINE typename DynamicMatrix<Type,SO>::IntrinsicType
-   DynamicMatrix<Type,SO>::loada( size_t i, size_t j ) const
+   DynamicMatrix<Type,SO>::loada( size_t i, size_t j ) const noexcept
 {
    using blaze::loada;
 
@@ -1989,7 +1992,7 @@ BLAZE_ALWAYS_INLINE typename DynamicMatrix<Type,SO>::IntrinsicType
 template< typename Type  // Data type of the matrix
         , bool SO >      // Storage order
 BLAZE_ALWAYS_INLINE typename DynamicMatrix<Type,SO>::IntrinsicType
-   DynamicMatrix<Type,SO>::loadu( size_t i, size_t j ) const
+   DynamicMatrix<Type,SO>::loadu( size_t i, size_t j ) const noexcept
 {
    using blaze::loadu;
 
@@ -2023,7 +2026,7 @@ BLAZE_ALWAYS_INLINE typename DynamicMatrix<Type,SO>::IntrinsicType
 template< typename Type  // Data type of the matrix
         , bool SO >      // Storage order
 BLAZE_ALWAYS_INLINE void
-   DynamicMatrix<Type,SO>::store( size_t i, size_t j, const IntrinsicType& value )
+   DynamicMatrix<Type,SO>::store( size_t i, size_t j, const IntrinsicType& value ) noexcept
 {
    if( usePadding )
       storea( i, j, value );
@@ -2052,7 +2055,7 @@ BLAZE_ALWAYS_INLINE void
 template< typename Type  // Data type of the matrix
         , bool SO >      // Storage order
 BLAZE_ALWAYS_INLINE void
-   DynamicMatrix<Type,SO>::storea( size_t i, size_t j, const IntrinsicType& value )
+   DynamicMatrix<Type,SO>::storea( size_t i, size_t j, const IntrinsicType& value ) noexcept
 {
    using blaze::storea;
 
@@ -2088,7 +2091,7 @@ BLAZE_ALWAYS_INLINE void
 template< typename Type  // Data type of the matrix
         , bool SO >      // Storage order
 BLAZE_ALWAYS_INLINE void
-   DynamicMatrix<Type,SO>::storeu( size_t i, size_t j, const IntrinsicType& value )
+   DynamicMatrix<Type,SO>::storeu( size_t i, size_t j, const IntrinsicType& value ) noexcept
 {
    using blaze::storeu;
 
@@ -2122,7 +2125,7 @@ BLAZE_ALWAYS_INLINE void
 template< typename Type  // Data type of the matrix
         , bool SO >      // Storage order
 BLAZE_ALWAYS_INLINE void
-   DynamicMatrix<Type,SO>::stream( size_t i, size_t j, const IntrinsicType& value )
+   DynamicMatrix<Type,SO>::stream( size_t i, size_t j, const IntrinsicType& value ) noexcept
 {
    using blaze::stream;
 
@@ -2835,7 +2838,7 @@ class DynamicMatrix<Type,true> : public DenseMatrix< DynamicMatrix<Type,true>, t
    //**Constructors********************************************************************************
    /*!\name Constructors */
    //@{
-                              explicit inline DynamicMatrix();
+                              explicit inline DynamicMatrix() noexcept;
                               explicit inline DynamicMatrix( size_t m, size_t n );
                               explicit inline DynamicMatrix( size_t m, size_t n, const Type& init );
    template< typename Other > explicit inline DynamicMatrix( size_t m, size_t n, const Other* array );
@@ -2859,20 +2862,20 @@ class DynamicMatrix<Type,true> : public DenseMatrix< DynamicMatrix<Type,true>, t
    //**Data access functions***********************************************************************
    /*!\name Data access functions */
    //@{
-   inline Reference      operator()( size_t i, size_t j );
-   inline ConstReference operator()( size_t i, size_t j ) const;
+   inline Reference      operator()( size_t i, size_t j ) noexcept;
+   inline ConstReference operator()( size_t i, size_t j ) const noexcept;
    inline Reference      at( size_t i, size_t j );
    inline ConstReference at( size_t i, size_t j ) const;
-   inline Pointer        data  ();
-   inline ConstPointer   data  () const;
-   inline Pointer        data  ( size_t j );
-   inline ConstPointer   data  ( size_t j ) const;
-   inline Iterator       begin ( size_t j );
-   inline ConstIterator  begin ( size_t j ) const;
-   inline ConstIterator  cbegin( size_t j ) const;
-   inline Iterator       end   ( size_t j );
-   inline ConstIterator  end   ( size_t j ) const;
-   inline ConstIterator  cend  ( size_t j ) const;
+   inline Pointer        data  () noexcept;
+   inline ConstPointer   data  () const noexcept;
+   inline Pointer        data  ( size_t j ) noexcept;
+   inline ConstPointer   data  ( size_t j ) const noexcept;
+   inline Iterator       begin ( size_t j ) noexcept;
+   inline ConstIterator  begin ( size_t j ) const noexcept;
+   inline ConstIterator  cbegin( size_t j ) const noexcept;
+   inline Iterator       end   ( size_t j ) noexcept;
+   inline ConstIterator  end   ( size_t j ) const noexcept;
+   inline ConstIterator  cend  ( size_t j ) const noexcept;
    //@}
    //**********************************************************************************************
 
@@ -2904,11 +2907,11 @@ class DynamicMatrix<Type,true> : public DenseMatrix< DynamicMatrix<Type,true>, t
    //**Utility functions***************************************************************************
    /*!\name Utility functions */
    //@{
-                              inline size_t         rows() const;
-                              inline size_t         columns() const;
-                              inline size_t         spacing() const;
-                              inline size_t         capacity() const;
-                              inline size_t         capacity( size_t j ) const;
+                              inline size_t         rows() const noexcept;
+                              inline size_t         columns() const noexcept;
+                              inline size_t         spacing() const noexcept;
+                              inline size_t         capacity() const noexcept;
+                              inline size_t         capacity( size_t j ) const noexcept;
                               inline size_t         nonZeros() const;
                               inline size_t         nonZeros( size_t j ) const;
                               inline void           reset();
@@ -2963,20 +2966,20 @@ class DynamicMatrix<Type,true> : public DenseMatrix< DynamicMatrix<Type,true>, t
    //**Expression template evaluation functions****************************************************
    /*!\name Expression template evaluation functions */
    //@{
-   template< typename Other > inline bool canAlias ( const Other* alias ) const;
-   template< typename Other > inline bool isAliased( const Other* alias ) const;
+   template< typename Other > inline bool canAlias ( const Other* alias ) const noexcept;
+   template< typename Other > inline bool isAliased( const Other* alias ) const noexcept;
 
-   inline bool isAligned   () const;
-   inline bool canSMPAssign() const;
+   inline bool isAligned   () const noexcept;
+   inline bool canSMPAssign() const noexcept;
 
-   BLAZE_ALWAYS_INLINE IntrinsicType load ( size_t i, size_t j ) const;
-   BLAZE_ALWAYS_INLINE IntrinsicType loada( size_t i, size_t j ) const;
-   BLAZE_ALWAYS_INLINE IntrinsicType loadu( size_t i, size_t j ) const;
+   BLAZE_ALWAYS_INLINE IntrinsicType load ( size_t i, size_t j ) const noexcept;
+   BLAZE_ALWAYS_INLINE IntrinsicType loada( size_t i, size_t j ) const noexcept;
+   BLAZE_ALWAYS_INLINE IntrinsicType loadu( size_t i, size_t j ) const noexcept;
 
-   BLAZE_ALWAYS_INLINE void store ( size_t i, size_t j, const IntrinsicType& value );
-   BLAZE_ALWAYS_INLINE void storea( size_t i, size_t j, const IntrinsicType& value );
-   BLAZE_ALWAYS_INLINE void storeu( size_t i, size_t j, const IntrinsicType& value );
-   BLAZE_ALWAYS_INLINE void stream( size_t i, size_t j, const IntrinsicType& value );
+   BLAZE_ALWAYS_INLINE void store ( size_t i, size_t j, const IntrinsicType& value ) noexcept;
+   BLAZE_ALWAYS_INLINE void storea( size_t i, size_t j, const IntrinsicType& value ) noexcept;
+   BLAZE_ALWAYS_INLINE void storeu( size_t i, size_t j, const IntrinsicType& value ) noexcept;
+   BLAZE_ALWAYS_INLINE void stream( size_t i, size_t j, const IntrinsicType& value ) noexcept;
 
    template< typename MT >
    inline typename DisableIf< VectorizedAssign<MT> >::Type
@@ -3020,7 +3023,7 @@ class DynamicMatrix<Type,true> : public DenseMatrix< DynamicMatrix<Type,true>, t
    //**Utility functions***************************************************************************
    /*!\name Utility functions */
    //@{
-   inline size_t adjustRows( size_t minRows ) const;
+   inline constexpr size_t adjustRows( size_t minRows ) const noexcept;
    //@}
    //**********************************************************************************************
 
@@ -3061,7 +3064,7 @@ class DynamicMatrix<Type,true> : public DenseMatrix< DynamicMatrix<Type,true>, t
 /*!\brief The default constructor for DynamicMatrix.
 */
 template< typename Type >  // Data type of the matrix
-inline DynamicMatrix<Type,true>::DynamicMatrix()
+inline DynamicMatrix<Type,true>::DynamicMatrix() noexcept
    : m_       ( 0UL )      // The current number of rows of the matrix
    , mm_      ( 0UL )      // The alignment adjusted number of rows
    , n_       ( 0UL )      // The current number of columns of the matrix
@@ -3348,7 +3351,7 @@ inline DynamicMatrix<Type,true>::~DynamicMatrix()
 */
 template< typename Type >  // Data type of the matrix
 inline typename DynamicMatrix<Type,true>::Reference
-   DynamicMatrix<Type,true>::operator()( size_t i, size_t j )
+   DynamicMatrix<Type,true>::operator()( size_t i, size_t j ) noexcept
 {
    BLAZE_USER_ASSERT( i<m_, "Invalid row access index"    );
    BLAZE_USER_ASSERT( j<n_, "Invalid column access index" );
@@ -3371,7 +3374,7 @@ inline typename DynamicMatrix<Type,true>::Reference
 */
 template< typename Type >  // Data type of the matrix
 inline typename DynamicMatrix<Type,true>::ConstReference
-   DynamicMatrix<Type,true>::operator()( size_t i, size_t j ) const
+   DynamicMatrix<Type,true>::operator()( size_t i, size_t j ) const noexcept
 {
    BLAZE_USER_ASSERT( i<m_, "Invalid row access index"    );
    BLAZE_USER_ASSERT( j<n_, "Invalid column access index" );
@@ -3450,7 +3453,8 @@ inline typename DynamicMatrix<Type,true>::ConstReference
 // of elements including padding is given by the \c spacing() member function.
 */
 template< typename Type >  // Data type of the matrix
-inline typename DynamicMatrix<Type,true>::Pointer DynamicMatrix<Type,true>::data()
+inline typename DynamicMatrix<Type,true>::Pointer
+   DynamicMatrix<Type,true>::data() noexcept
 {
    return v_;
 }
@@ -3471,7 +3475,8 @@ inline typename DynamicMatrix<Type,true>::Pointer DynamicMatrix<Type,true>::data
 // of elements including padding is given by the \c spacing() member function.
 */
 template< typename Type >  // Data type of the matrix
-inline typename DynamicMatrix<Type,true>::ConstPointer DynamicMatrix<Type,true>::data() const
+inline typename DynamicMatrix<Type,true>::ConstPointer
+   DynamicMatrix<Type,true>::data() const noexcept
 {
    return v_;
 }
@@ -3489,7 +3494,8 @@ inline typename DynamicMatrix<Type,true>::ConstPointer DynamicMatrix<Type,true>:
 // This function returns a pointer to the internal storage for the elements in column \a j.
 */
 template< typename Type >  // Data type of the matrix
-inline typename DynamicMatrix<Type,true>::Pointer DynamicMatrix<Type,true>::data( size_t j )
+inline typename DynamicMatrix<Type,true>::Pointer
+   DynamicMatrix<Type,true>::data( size_t j ) noexcept
 {
    BLAZE_USER_ASSERT( j < n_, "Invalid dense matrix column access index" );
    return v_ + j*mm_;
@@ -3508,7 +3514,8 @@ inline typename DynamicMatrix<Type,true>::Pointer DynamicMatrix<Type,true>::data
 // This function returns a pointer to the internal storage for the elements in column \a j.
 */
 template< typename Type >  // Data type of the matrix
-inline typename DynamicMatrix<Type,true>::ConstPointer DynamicMatrix<Type,true>::data( size_t j ) const
+inline typename DynamicMatrix<Type,true>::ConstPointer
+   DynamicMatrix<Type,true>::data( size_t j ) const noexcept
 {
    BLAZE_USER_ASSERT( j < n_, "Invalid dense matrix column access index" );
    return v_ + j*mm_;
@@ -3526,7 +3533,7 @@ inline typename DynamicMatrix<Type,true>::ConstPointer DynamicMatrix<Type,true>:
 */
 template< typename Type >  // Data type of the matrix
 inline typename DynamicMatrix<Type,true>::Iterator
-   DynamicMatrix<Type,true>::begin( size_t j )
+   DynamicMatrix<Type,true>::begin( size_t j ) noexcept
 {
    BLAZE_USER_ASSERT( j < n_, "Invalid dense matrix column access index" );
    return Iterator( v_ + j*mm_ );
@@ -3544,7 +3551,7 @@ inline typename DynamicMatrix<Type,true>::Iterator
 */
 template< typename Type >  // Data type of the matrix
 inline typename DynamicMatrix<Type,true>::ConstIterator
-   DynamicMatrix<Type,true>::begin( size_t j ) const
+   DynamicMatrix<Type,true>::begin( size_t j ) const noexcept
 {
    BLAZE_USER_ASSERT( j < n_, "Invalid dense matrix column access index" );
    return ConstIterator( v_ + j*mm_ );
@@ -3562,7 +3569,7 @@ inline typename DynamicMatrix<Type,true>::ConstIterator
 */
 template< typename Type >  // Data type of the matrix
 inline typename DynamicMatrix<Type,true>::ConstIterator
-   DynamicMatrix<Type,true>::cbegin( size_t j ) const
+   DynamicMatrix<Type,true>::cbegin( size_t j ) const noexcept
 {
    BLAZE_USER_ASSERT( j < n_, "Invalid dense matrix column access index" );
    return ConstIterator( v_ + j*mm_ );
@@ -3580,7 +3587,7 @@ inline typename DynamicMatrix<Type,true>::ConstIterator
 */
 template< typename Type >  // Data type of the matrix
 inline typename DynamicMatrix<Type,true>::Iterator
-   DynamicMatrix<Type,true>::end( size_t j )
+   DynamicMatrix<Type,true>::end( size_t j ) noexcept
 {
    BLAZE_USER_ASSERT( j < n_, "Invalid dense matrix column access index" );
    return Iterator( v_ + j*mm_ + m_ );
@@ -3598,7 +3605,7 @@ inline typename DynamicMatrix<Type,true>::Iterator
 */
 template< typename Type >  // Data type of the matrix
 inline typename DynamicMatrix<Type,true>::ConstIterator
-   DynamicMatrix<Type,true>::end( size_t j ) const
+   DynamicMatrix<Type,true>::end( size_t j ) const noexcept
 {
    BLAZE_USER_ASSERT( j < n_, "Invalid dense matrix column access index" );
    return ConstIterator( v_ + j*mm_ + m_ );
@@ -3616,7 +3623,7 @@ inline typename DynamicMatrix<Type,true>::ConstIterator
 */
 template< typename Type >  // Data type of the matrix
 inline typename DynamicMatrix<Type,true>::ConstIterator
-   DynamicMatrix<Type,true>::cend( size_t j ) const
+   DynamicMatrix<Type,true>::cend( size_t j ) const noexcept
 {
    BLAZE_USER_ASSERT( j < n_, "Invalid dense matrix column access index" );
    return ConstIterator( v_ + j*mm_ + m_ );
@@ -3942,7 +3949,7 @@ inline typename EnableIf< IsNumeric<Other>, DynamicMatrix<Type,true> >::Type&
 // \return The number of rows of the matrix.
 */
 template< typename Type >  // Data type of the matrix
-inline size_t DynamicMatrix<Type,true>::rows() const
+inline size_t DynamicMatrix<Type,true>::rows() const noexcept
 {
    return m_;
 }
@@ -3957,7 +3964,7 @@ inline size_t DynamicMatrix<Type,true>::rows() const
 // \return The number of columns of the matrix.
 */
 template< typename Type >  // Data type of the matrix
-inline size_t DynamicMatrix<Type,true>::columns() const
+inline size_t DynamicMatrix<Type,true>::columns() const noexcept
 {
    return n_;
 }
@@ -3975,7 +3982,7 @@ inline size_t DynamicMatrix<Type,true>::columns() const
 // of elements of a column.
 */
 template< typename Type >  // Data type of the matrix
-inline size_t DynamicMatrix<Type,true>::spacing() const
+inline size_t DynamicMatrix<Type,true>::spacing() const noexcept
 {
    return mm_;
 }
@@ -3990,7 +3997,7 @@ inline size_t DynamicMatrix<Type,true>::spacing() const
 // \return The capacity of the matrix.
 */
 template< typename Type >  // Data type of the matrix
-inline size_t DynamicMatrix<Type,true>::capacity() const
+inline size_t DynamicMatrix<Type,true>::capacity() const noexcept
 {
    return capacity_;
 }
@@ -4006,7 +4013,7 @@ inline size_t DynamicMatrix<Type,true>::capacity() const
 // \return The current capacity of column \a j.
 */
 template< typename Type >  // Data type of the matrix
-inline size_t DynamicMatrix<Type,true>::capacity( size_t j ) const
+inline size_t DynamicMatrix<Type,true>::capacity( size_t j ) const noexcept
 {
    UNUSED_PARAMETER( j );
    BLAZE_USER_ASSERT( j < columns(), "Invalid column access index" );
@@ -4370,7 +4377,6 @@ inline DynamicMatrix<Type,true>& DynamicMatrix<Type,true>::scale( const Other& s
 //
 // \param m The matrix to be swapped.
 // \return void
-// \exception no-throw guarantee.
 */
 template< typename Type >  // Data type of the matrix
 inline void DynamicMatrix<Type,true>::swap( DynamicMatrix& m ) noexcept
@@ -4393,7 +4399,7 @@ inline void DynamicMatrix<Type,true>::swap( DynamicMatrix& m ) noexcept
 // \return The adjusted number of rows.
 */
 template< typename Type >  // Data type of the matrix
-inline size_t DynamicMatrix<Type,true>::adjustRows( size_t minRows ) const
+inline constexpr size_t DynamicMatrix<Type,true>::adjustRows( size_t minRows ) const noexcept
 {
    if( usePadding && IsVectorizable<Type>::value )
       return nextMultiple<size_t>( minRows, IT::size );
@@ -4424,7 +4430,7 @@ inline size_t DynamicMatrix<Type,true>::adjustRows( size_t minRows ) const
 */
 template< typename Type >   // Data type of the matrix
 template< typename Other >  // Data type of the foreign expression
-inline bool DynamicMatrix<Type,true>::canAlias( const Other* alias ) const
+inline bool DynamicMatrix<Type,true>::canAlias( const Other* alias ) const noexcept
 {
    return static_cast<const void*>( this ) == static_cast<const void*>( alias );
 }
@@ -4445,7 +4451,7 @@ inline bool DynamicMatrix<Type,true>::canAlias( const Other* alias ) const
 */
 template< typename Type >   // Data type of the matrix
 template< typename Other >  // Data type of the foreign expression
-inline bool DynamicMatrix<Type,true>::isAliased( const Other* alias ) const
+inline bool DynamicMatrix<Type,true>::isAliased( const Other* alias ) const noexcept
 {
    return static_cast<const void*>( this ) == static_cast<const void*>( alias );
 }
@@ -4464,7 +4470,7 @@ inline bool DynamicMatrix<Type,true>::isAliased( const Other* alias ) const
 // the alignment restrictions of the element type \a Type.
 */
 template< typename Type >  // Data type of the matrix
-inline bool DynamicMatrix<Type,true>::isAligned() const
+inline bool DynamicMatrix<Type,true>::isAligned() const noexcept
 {
    return ( usePadding || rows() % IT::size == 0UL );
 }
@@ -4484,7 +4490,7 @@ inline bool DynamicMatrix<Type,true>::isAligned() const
 // rows and/or columns of the matrix).
 */
 template< typename Type >  // Data type of the matrix
-inline bool DynamicMatrix<Type,true>::canSMPAssign() const
+inline bool DynamicMatrix<Type,true>::canSMPAssign() const noexcept
 {
    return ( columns() > SMP_DMATASSIGN_THRESHOLD );
 }
@@ -4509,7 +4515,7 @@ inline bool DynamicMatrix<Type,true>::canSMPAssign() const
 */
 template< typename Type >  // Data type of the matrix
 BLAZE_ALWAYS_INLINE typename DynamicMatrix<Type,true>::IntrinsicType
-   DynamicMatrix<Type,true>::load( size_t i, size_t j ) const
+   DynamicMatrix<Type,true>::load( size_t i, size_t j ) const noexcept
 {
    if( usePadding )
       return loada( i, j );
@@ -4537,7 +4543,7 @@ BLAZE_ALWAYS_INLINE typename DynamicMatrix<Type,true>::IntrinsicType
 */
 template< typename Type >  // Data type of the matrix
 BLAZE_ALWAYS_INLINE typename DynamicMatrix<Type,true>::IntrinsicType
-   DynamicMatrix<Type,true>::loada( size_t i, size_t j ) const
+   DynamicMatrix<Type,true>::loada( size_t i, size_t j ) const noexcept
 {
    using blaze::loada;
 
@@ -4572,7 +4578,7 @@ BLAZE_ALWAYS_INLINE typename DynamicMatrix<Type,true>::IntrinsicType
 */
 template< typename Type >  // Data type of the matrix
 BLAZE_ALWAYS_INLINE typename DynamicMatrix<Type,true>::IntrinsicType
-   DynamicMatrix<Type,true>::loadu( size_t i, size_t j ) const
+   DynamicMatrix<Type,true>::loadu( size_t i, size_t j ) const noexcept
 {
    using blaze::loadu;
 
@@ -4606,7 +4612,7 @@ BLAZE_ALWAYS_INLINE typename DynamicMatrix<Type,true>::IntrinsicType
 */
 template< typename Type >  // Data type of the matrix
 BLAZE_ALWAYS_INLINE void
-   DynamicMatrix<Type,true>::store( size_t i, size_t j, const IntrinsicType& value )
+   DynamicMatrix<Type,true>::store( size_t i, size_t j, const IntrinsicType& value ) noexcept
 {
    if( usePadding )
       storea( i, j, value );
@@ -4635,7 +4641,7 @@ BLAZE_ALWAYS_INLINE void
 */
 template< typename Type >  // Data type of the matrix
 BLAZE_ALWAYS_INLINE void
-   DynamicMatrix<Type,true>::storea( size_t i, size_t j, const IntrinsicType& value )
+   DynamicMatrix<Type,true>::storea( size_t i, size_t j, const IntrinsicType& value ) noexcept
 {
    using blaze::storea;
 
@@ -4671,7 +4677,7 @@ BLAZE_ALWAYS_INLINE void
 */
 template< typename Type >  // Data type of the matrix
 BLAZE_ALWAYS_INLINE void
-   DynamicMatrix<Type,true>::storeu( size_t i, size_t j, const IntrinsicType& value )
+   DynamicMatrix<Type,true>::storeu( size_t i, size_t j, const IntrinsicType& value ) noexcept
 {
    using blaze::storeu;
 
@@ -4705,7 +4711,7 @@ BLAZE_ALWAYS_INLINE void
 */
 template< typename Type >  // Data type of the matrix
 BLAZE_ALWAYS_INLINE void
-   DynamicMatrix<Type,true>::stream( size_t i, size_t j, const IntrinsicType& value )
+   DynamicMatrix<Type,true>::stream( size_t i, size_t j, const IntrinsicType& value ) noexcept
 {
    using blaze::stream;
 
@@ -5388,7 +5394,7 @@ template< typename Type, bool SO >
 inline bool isDefault( const DynamicMatrix<Type,SO>& m );
 
 template< typename Type, bool SO >
-inline bool isIntact( const DynamicMatrix<Type,SO>& m );
+inline bool isIntact( const DynamicMatrix<Type,SO>& m ) noexcept;
 
 template< typename Type, bool SO >
 inline void swap( DynamicMatrix<Type,SO>& a, DynamicMatrix<Type,SO>& b ) noexcept;
@@ -5497,7 +5503,7 @@ inline bool isDefault( const DynamicMatrix<Type,SO>& m )
 */
 template< typename Type  // Data type of the matrix
         , bool SO >      // Storage order
-inline bool isIntact( const DynamicMatrix<Type,SO>& m )
+inline bool isIntact( const DynamicMatrix<Type,SO>& m ) noexcept
 {
    return ( m.rows() * m.columns() <= m.capacity() );
 }
@@ -5511,7 +5517,6 @@ inline bool isIntact( const DynamicMatrix<Type,SO>& m )
 // \param a The first matrix to be swapped.
 // \param b The second matrix to be swapped.
 // \return void
-// \exception no-throw guarantee.
 */
 template< typename Type  // Data type of the matrix
         , bool SO >      // Storage order
