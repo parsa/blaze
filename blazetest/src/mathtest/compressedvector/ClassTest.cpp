@@ -365,11 +365,7 @@ void ClassTest::testAssignment()
    {
       test_ = "CompressedVector dense vector assignment";
 
-      blaze::DynamicVector<int,blaze::rowVector> vec1( 5UL, 0 );
-      vec1[0] = 10;
-      vec1[1] = 11;
-      vec1[2] = 12;
-      vec1[4] = 13;
+      blaze::DynamicVector<int,blaze::rowVector> vec1( { 10, 11, 12, 0, 13 } );
       blaze::CompressedVector<int,blaze::rowVector> vec2;
       vec2 = vec1;
 
@@ -493,11 +489,7 @@ void ClassTest::testAddAssign()
    {
       test_ = "CompressedVector dense vector addition assignment";
 
-      blaze::DynamicVector<int,blaze::rowVector> vec1( 5UL, 0 );
-      vec1[0] = 10;
-      vec1[1] = 11;
-      vec1[2] = 12;
-      vec1[4] = 13;
+      blaze::DynamicVector<int,blaze::rowVector> vec1( { 10, 11, 12, 0, 13 } );
       blaze::CompressedVector<int,blaze::rowVector> vec2( 5UL, 3UL );
       vec2[0] = 1;
       vec2[1] = 2;
@@ -572,11 +564,7 @@ void ClassTest::testSubAssign()
    {
       test_ = "CompressedVector dense vector subtraction assignment";
 
-      blaze::DynamicVector<int,blaze::rowVector> vec1( 5UL, 0 );
-      vec1[0] = 10;
-      vec1[1] = 11;
-      vec1[2] = 12;
-      vec1[4] = 13;
+      blaze::DynamicVector<int,blaze::rowVector> vec1( { 10, 11, 12, 0, 13 } );
       blaze::CompressedVector<int,blaze::rowVector> vec2( 5UL, 3UL );
       vec2[0] = 1;
       vec2[1] = 2;
@@ -651,11 +639,7 @@ void ClassTest::testMultAssign()
    {
       test_ = "CompressedVector dense vector multiplication assignment";
 
-      blaze::DynamicVector<int,blaze::rowVector> vec1( 5UL, 0 );
-      vec1[0] = 10;
-      vec1[1] = 11;
-      vec1[2] = 12;
-      vec1[4] = 13;
+      blaze::DynamicVector<int,blaze::rowVector> vec1( { 10, 11, 12, 0, 13 } );
       blaze::CompressedVector<int,blaze::rowVector> vec2( 5UL, 3UL );
       vec2[0] = 1;
       vec2[1] = 2;
