@@ -500,20 +500,20 @@ class CustomMatrix : public DenseMatrix< CustomMatrix<Type,AF,PF,SO>, SO >
    //**Data access functions***********************************************************************
    /*!\name Data access functions */
    //@{
-   inline Reference      operator()( size_t i, size_t j );
-   inline ConstReference operator()( size_t i, size_t j ) const;
+   inline Reference      operator()( size_t i, size_t j ) noexcept;
+   inline ConstReference operator()( size_t i, size_t j ) const noexcept;
    inline Reference      at( size_t i, size_t j );
    inline ConstReference at( size_t i, size_t j ) const;
-   inline Pointer        data  ();
-   inline ConstPointer   data  () const;
-   inline Pointer        data  ( size_t i );
-   inline ConstPointer   data  ( size_t i ) const;
-   inline Iterator       begin ( size_t i );
-   inline ConstIterator  begin ( size_t i ) const;
-   inline ConstIterator  cbegin( size_t i ) const;
-   inline Iterator       end   ( size_t i );
-   inline ConstIterator  end   ( size_t i ) const;
-   inline ConstIterator  cend  ( size_t i ) const;
+   inline Pointer        data  () noexcept;
+   inline ConstPointer   data  () const noexcept;
+   inline Pointer        data  ( size_t i ) noexcept;
+   inline ConstPointer   data  ( size_t i ) const noexcept;
+   inline Iterator       begin ( size_t i ) noexcept;
+   inline ConstIterator  begin ( size_t i ) const noexcept;
+   inline ConstIterator  cbegin( size_t i ) const noexcept;
+   inline Iterator       end   ( size_t i ) noexcept;
+   inline ConstIterator  end   ( size_t i ) const noexcept;
+   inline ConstIterator  cend  ( size_t i ) const noexcept;
    //@}
    //**********************************************************************************************
 
@@ -545,11 +545,11 @@ class CustomMatrix : public DenseMatrix< CustomMatrix<Type,AF,PF,SO>, SO >
    //**Utility functions***************************************************************************
    /*!\name Utility functions */
    //@{
-                              inline size_t        rows() const;
-                              inline size_t        columns() const;
-                              inline size_t        spacing() const;
-                              inline size_t        capacity() const;
-                              inline size_t        capacity( size_t i ) const;
+                              inline size_t        rows() const noexcept;
+                              inline size_t        columns() const noexcept;
+                              inline size_t        spacing() const noexcept;
+                              inline size_t        capacity() const noexcept;
+                              inline size_t        capacity( size_t i ) const noexcept;
                               inline size_t        nonZeros() const;
                               inline size_t        nonZeros( size_t i ) const;
                               inline void          reset();
@@ -621,20 +621,20 @@ class CustomMatrix : public DenseMatrix< CustomMatrix<Type,AF,PF,SO>, SO >
    //**Expression template evaluation functions****************************************************
    /*!\name Expression template evaluation functions */
    //@{
-   template< typename Other > inline bool canAlias ( const Other* alias ) const;
-   template< typename Other > inline bool isAliased( const Other* alias ) const;
+   template< typename Other > inline bool canAlias ( const Other* alias ) const noexcept;
+   template< typename Other > inline bool isAliased( const Other* alias ) const noexcept;
 
-   inline bool isAligned   () const;
-   inline bool canSMPAssign() const;
+   inline bool isAligned   () const noexcept;
+   inline bool canSMPAssign() const noexcept;
 
-   BLAZE_ALWAYS_INLINE IntrinsicType load ( size_t i, size_t j ) const;
-   BLAZE_ALWAYS_INLINE IntrinsicType loada( size_t i, size_t j ) const;
-   BLAZE_ALWAYS_INLINE IntrinsicType loadu( size_t i, size_t j ) const;
+   BLAZE_ALWAYS_INLINE IntrinsicType load ( size_t i, size_t j ) const noexcept;
+   BLAZE_ALWAYS_INLINE IntrinsicType loada( size_t i, size_t j ) const noexcept;
+   BLAZE_ALWAYS_INLINE IntrinsicType loadu( size_t i, size_t j ) const noexcept;
 
-   BLAZE_ALWAYS_INLINE void store ( size_t i, size_t j, const IntrinsicType& value );
-   BLAZE_ALWAYS_INLINE void storea( size_t i, size_t j, const IntrinsicType& value );
-   BLAZE_ALWAYS_INLINE void storeu( size_t i, size_t j, const IntrinsicType& value );
-   BLAZE_ALWAYS_INLINE void stream( size_t i, size_t j, const IntrinsicType& value );
+   BLAZE_ALWAYS_INLINE void store ( size_t i, size_t j, const IntrinsicType& value ) noexcept;
+   BLAZE_ALWAYS_INLINE void storea( size_t i, size_t j, const IntrinsicType& value ) noexcept;
+   BLAZE_ALWAYS_INLINE void storeu( size_t i, size_t j, const IntrinsicType& value ) noexcept;
+   BLAZE_ALWAYS_INLINE void stream( size_t i, size_t j, const IntrinsicType& value ) noexcept;
 
    template< typename MT >
    inline typename DisableIf< VectorizedAssign<MT> >::Type
@@ -1001,7 +1001,7 @@ template< typename Type  // Data type of the matrix
         , bool PF        // Padding flag
         , bool SO >      // Storage order
 inline typename CustomMatrix<Type,AF,PF,SO>::Reference
-   CustomMatrix<Type,AF,PF,SO>::operator()( size_t i, size_t j )
+   CustomMatrix<Type,AF,PF,SO>::operator()( size_t i, size_t j ) noexcept
 {
    BLAZE_USER_ASSERT( i<m_, "Invalid row access index"    );
    BLAZE_USER_ASSERT( j<n_, "Invalid column access index" );
@@ -1025,7 +1025,7 @@ template< typename Type  // Data type of the matrix
         , bool PF        // Padding flag
         , bool SO >      // Storage order
 inline typename CustomMatrix<Type,AF,PF,SO>::ConstReference
-   CustomMatrix<Type,AF,PF,SO>::operator()( size_t i, size_t j ) const
+   CustomMatrix<Type,AF,PF,SO>::operator()( size_t i, size_t j ) const noexcept
 {
    BLAZE_USER_ASSERT( i<m_, "Invalid row access index"    );
    BLAZE_USER_ASSERT( j<n_, "Invalid column access index" );
@@ -1108,7 +1108,8 @@ template< typename Type  // Data type of the matrix
         , bool AF        // Alignment flag
         , bool PF        // Padding flag
         , bool SO >      // Storage order
-inline typename CustomMatrix<Type,AF,PF,SO>::Pointer CustomMatrix<Type,AF,PF,SO>::data()
+inline typename CustomMatrix<Type,AF,PF,SO>::Pointer
+   CustomMatrix<Type,AF,PF,SO>::data() noexcept
 {
    return v_.get();
 }
@@ -1131,7 +1132,8 @@ template< typename Type  // Data type of the matrix
         , bool AF        // Alignment flag
         , bool PF        // Padding flag
         , bool SO >      // Storage order
-inline typename CustomMatrix<Type,AF,PF,SO>::ConstPointer CustomMatrix<Type,AF,PF,SO>::data() const
+inline typename CustomMatrix<Type,AF,PF,SO>::ConstPointer
+   CustomMatrix<Type,AF,PF,SO>::data() const noexcept
 {
    return v_.get();
 }
@@ -1151,7 +1153,7 @@ template< typename Type  // Data type of the matrix
         , bool PF        // Padding flag
         , bool SO >      // Storage order
 inline typename CustomMatrix<Type,AF,PF,SO>::Pointer
-   CustomMatrix<Type,AF,PF,SO>::data( size_t i )
+   CustomMatrix<Type,AF,PF,SO>::data( size_t i ) noexcept
 {
    BLAZE_USER_ASSERT( i < m_, "Invalid dense matrix row access index" );
    return v_.get() + i*nn_;
@@ -1172,7 +1174,7 @@ template< typename Type  // Data type of the matrix
         , bool PF        // Padding flag
         , bool SO >      // Storage order
 inline typename CustomMatrix<Type,AF,PF,SO>::ConstPointer
-   CustomMatrix<Type,AF,PF,SO>::data( size_t i ) const
+   CustomMatrix<Type,AF,PF,SO>::data( size_t i ) const noexcept
 {
    BLAZE_USER_ASSERT( i < m_, "Invalid dense matrix row access index" );
    return v_.get() + i*nn_;
@@ -1196,7 +1198,7 @@ template< typename Type  // Data type of the matrix
         , bool PF        // Padding flag
         , bool SO >      // Storage order
 inline typename CustomMatrix<Type,AF,PF,SO>::Iterator
-   CustomMatrix<Type,AF,PF,SO>::begin( size_t i )
+   CustomMatrix<Type,AF,PF,SO>::begin( size_t i ) noexcept
 {
    BLAZE_USER_ASSERT( i < m_, "Invalid dense matrix row access index" );
    return Iterator( v_.get() + i*nn_ );
@@ -1220,7 +1222,7 @@ template< typename Type  // Data type of the matrix
         , bool PF        // Padding flag
         , bool SO >      // Storage order
 inline typename CustomMatrix<Type,AF,PF,SO>::ConstIterator
-   CustomMatrix<Type,AF,PF,SO>::begin( size_t i ) const
+   CustomMatrix<Type,AF,PF,SO>::begin( size_t i ) const noexcept
 {
    BLAZE_USER_ASSERT( i < m_, "Invalid dense matrix row access index" );
    return ConstIterator( v_.get() + i*nn_ );
@@ -1244,7 +1246,7 @@ template< typename Type  // Data type of the matrix
         , bool PF        // Padding flag
         , bool SO >      // Storage order
 inline typename CustomMatrix<Type,AF,PF,SO>::ConstIterator
-   CustomMatrix<Type,AF,PF,SO>::cbegin( size_t i ) const
+   CustomMatrix<Type,AF,PF,SO>::cbegin( size_t i ) const noexcept
 {
    BLAZE_USER_ASSERT( i < m_, "Invalid dense matrix row access index" );
    return ConstIterator( v_.get() + i*nn_ );
@@ -1268,7 +1270,7 @@ template< typename Type  // Data type of the matrix
         , bool PF        // Padding flag
         , bool SO >      // Storage order
 inline typename CustomMatrix<Type,AF,PF,SO>::Iterator
-   CustomMatrix<Type,AF,PF,SO>::end( size_t i )
+   CustomMatrix<Type,AF,PF,SO>::end( size_t i ) noexcept
 {
    BLAZE_USER_ASSERT( i < m_, "Invalid dense matrix row access index" );
    return Iterator( v_.get() + i*nn_ + n_ );
@@ -1292,7 +1294,7 @@ template< typename Type  // Data type of the matrix
         , bool PF        // Padding flag
         , bool SO >      // Storage order
 inline typename CustomMatrix<Type,AF,PF,SO>::ConstIterator
-   CustomMatrix<Type,AF,PF,SO>::end( size_t i ) const
+   CustomMatrix<Type,AF,PF,SO>::end( size_t i ) const noexcept
 {
    BLAZE_USER_ASSERT( i < m_, "Invalid dense matrix row access index" );
    return ConstIterator( v_.get() + i*nn_ + n_ );
@@ -1316,7 +1318,7 @@ template< typename Type  // Data type of the matrix
         , bool PF        // Padding flag
         , bool SO >      // Storage order
 inline typename CustomMatrix<Type,AF,PF,SO>::ConstIterator
-   CustomMatrix<Type,AF,PF,SO>::cend( size_t i ) const
+   CustomMatrix<Type,AF,PF,SO>::cend( size_t i ) const noexcept
 {
    BLAZE_USER_ASSERT( i < m_, "Invalid dense matrix row access index" );
    return ConstIterator( v_.get() + i*nn_ + n_ );
@@ -1658,7 +1660,7 @@ template< typename Type  // Data type of the matrix
         , bool AF        // Alignment flag
         , bool PF        // Padding flag
         , bool SO >      // Storage order
-inline size_t CustomMatrix<Type,AF,PF,SO>::rows() const
+inline size_t CustomMatrix<Type,AF,PF,SO>::rows() const noexcept
 {
    return m_;
 }
@@ -1674,7 +1676,7 @@ template< typename Type  // Data type of the matrix
         , bool AF        // Alignment flag
         , bool PF        // Padding flag
         , bool SO >      // Storage order
-inline size_t CustomMatrix<Type,AF,PF,SO>::columns() const
+inline size_t CustomMatrix<Type,AF,PF,SO>::columns() const noexcept
 {
    return n_;
 }
@@ -1695,7 +1697,7 @@ template< typename Type  // Data type of the matrix
         , bool AF        // Alignment flag
         , bool PF        // Padding flag
         , bool SO >      // Storage order
-inline size_t CustomMatrix<Type,AF,PF,SO>::spacing() const
+inline size_t CustomMatrix<Type,AF,PF,SO>::spacing() const noexcept
 {
    return nn_;
 }
@@ -1711,7 +1713,7 @@ template< typename Type  // Data type of the matrix
         , bool AF        // Alignment flag
         , bool PF        // Padding flag
         , bool SO >      // Storage order
-inline size_t CustomMatrix<Type,AF,PF,SO>::capacity() const
+inline size_t CustomMatrix<Type,AF,PF,SO>::capacity() const noexcept
 {
    return m_ * nn_;
 }
@@ -1733,7 +1735,7 @@ template< typename Type  // Data type of the matrix
         , bool AF        // Alignment flag
         , bool PF        // Padding flag
         , bool SO >      // Storage order
-inline size_t CustomMatrix<Type,AF,PF,SO>::capacity( size_t i ) const
+inline size_t CustomMatrix<Type,AF,PF,SO>::capacity( size_t i ) const noexcept
 {
    UNUSED_PARAMETER( i );
    BLAZE_USER_ASSERT( i < rows(), "Invalid row access index" );
@@ -1949,7 +1951,6 @@ inline CustomMatrix<Type,AF,PF,SO>& CustomMatrix<Type,AF,PF,SO>::scale( const Ot
 //
 // \param m The matrix to be swapped.
 // \return void
-// \exception no-throw guarantee.
 */
 template< typename Type  // Data type of the matrix
         , bool AF        // Alignment flag
@@ -2145,7 +2146,7 @@ template< typename Type     // Data type of the matrix
         , bool PF           // Padding flag
         , bool SO >         // Storage order
 template< typename Other >  // Data type of the foreign expression
-inline bool CustomMatrix<Type,AF,PF,SO>::canAlias( const Other* alias ) const
+inline bool CustomMatrix<Type,AF,PF,SO>::canAlias( const Other* alias ) const noexcept
 {
    return static_cast<const void*>( this ) == static_cast<const void*>( alias );
 }
@@ -2167,7 +2168,7 @@ template< typename Type     // Data type of the matrix
         , bool PF           // Padding flag
         , bool SO >         // Storage order
 template< typename Other >  // Data type of the foreign expression
-inline bool CustomMatrix<Type,AF,PF,SO>::isAliased( const Other* alias ) const
+inline bool CustomMatrix<Type,AF,PF,SO>::isAliased( const Other* alias ) const noexcept
 {
    return static_cast<const void*>( this ) == static_cast<const void*>( alias );
 }
@@ -2187,7 +2188,7 @@ template< typename Type  // Data type of the matrix
         , bool AF        // Alignment flag
         , bool PF        // Padding flag
         , bool SO >      // Storage order
-inline bool CustomMatrix<Type,AF,PF,SO>::isAligned() const
+inline bool CustomMatrix<Type,AF,PF,SO>::isAligned() const noexcept
 {
    return ( AF || ( checkAlignment( v_.get() ) && columns() % IT::size == 0UL ) );
 }
@@ -2208,7 +2209,7 @@ template< typename Type  // Data type of the matrix
         , bool AF        // Alignment flag
         , bool PF        // Padding flag
         , bool SO >      // Storage order
-inline bool CustomMatrix<Type,AF,PF,SO>::canSMPAssign() const
+inline bool CustomMatrix<Type,AF,PF,SO>::canSMPAssign() const noexcept
 {
    return ( rows() > SMP_DMATASSIGN_THRESHOLD );
 }
@@ -2235,7 +2236,7 @@ template< typename Type  // Data type of the matrix
         , bool PF        // Padding flag
         , bool SO >      // Storage order
 BLAZE_ALWAYS_INLINE typename CustomMatrix<Type,AF,PF,SO>::IntrinsicType
-   CustomMatrix<Type,AF,PF,SO>::load( size_t i, size_t j ) const
+   CustomMatrix<Type,AF,PF,SO>::load( size_t i, size_t j ) const noexcept
 {
    if( AF && PF )
       return loada( i, j );
@@ -2265,7 +2266,7 @@ template< typename Type  // Data type of the matrix
         , bool PF        // Padding flag
         , bool SO >      // Storage order
 BLAZE_ALWAYS_INLINE typename CustomMatrix<Type,AF,PF,SO>::IntrinsicType
-   CustomMatrix<Type,AF,PF,SO>::loada( size_t i, size_t j ) const
+   CustomMatrix<Type,AF,PF,SO>::loada( size_t i, size_t j ) const noexcept
 {
    using blaze::loada;
 
@@ -2302,7 +2303,7 @@ template< typename Type  // Data type of the matrix
         , bool PF        // Padding flag
         , bool SO >      // Storage order
 BLAZE_ALWAYS_INLINE typename CustomMatrix<Type,AF,PF,SO>::IntrinsicType
-   CustomMatrix<Type,AF,PF,SO>::loadu( size_t i, size_t j ) const
+   CustomMatrix<Type,AF,PF,SO>::loadu( size_t i, size_t j ) const noexcept
 {
    using blaze::loadu;
 
@@ -2338,7 +2339,7 @@ template< typename Type  // Data type of the matrix
         , bool PF        // Padding flag
         , bool SO >      // Storage order
 BLAZE_ALWAYS_INLINE void
-   CustomMatrix<Type,AF,PF,SO>::store( size_t i, size_t j, const IntrinsicType& value )
+   CustomMatrix<Type,AF,PF,SO>::store( size_t i, size_t j, const IntrinsicType& value ) noexcept
 {
    if( AF && PF )
       storea( i, j, value );
@@ -2369,7 +2370,7 @@ template< typename Type  // Data type of the matrix
         , bool PF        // Padding flag
         , bool SO >      // Storage order
 BLAZE_ALWAYS_INLINE void
-   CustomMatrix<Type,AF,PF,SO>::storea( size_t i, size_t j, const IntrinsicType& value )
+   CustomMatrix<Type,AF,PF,SO>::storea( size_t i, size_t j, const IntrinsicType& value ) noexcept
 {
    using blaze::storea;
 
@@ -2407,7 +2408,7 @@ template< typename Type  // Data type of the matrix
         , bool PF        // Padding flag
         , bool SO >      // Storage order
 BLAZE_ALWAYS_INLINE void
-   CustomMatrix<Type,AF,PF,SO>::storeu( size_t i, size_t j, const IntrinsicType& value )
+   CustomMatrix<Type,AF,PF,SO>::storeu( size_t i, size_t j, const IntrinsicType& value ) noexcept
 {
    using blaze::storeu;
 
@@ -2443,7 +2444,7 @@ template< typename Type  // Data type of the matrix
         , bool PF        // Padding flag
         , bool SO >      // Storage order
 BLAZE_ALWAYS_INLINE void
-   CustomMatrix<Type,AF,PF,SO>::stream( size_t i, size_t j, const IntrinsicType& value )
+   CustomMatrix<Type,AF,PF,SO>::stream( size_t i, size_t j, const IntrinsicType& value ) noexcept
 {
    using blaze::stream;
 
@@ -3210,20 +3211,20 @@ class CustomMatrix<Type,AF,PF,true> : public DenseMatrix< CustomMatrix<Type,AF,P
    //**Data access functions***********************************************************************
    /*!\name Data access functions */
    //@{
-   inline Reference      operator()( size_t i, size_t j );
-   inline ConstReference operator()( size_t i, size_t j ) const;
+   inline Reference      operator()( size_t i, size_t j ) noexcept;
+   inline ConstReference operator()( size_t i, size_t j ) const noexcept;
    inline Reference      at( size_t i, size_t j );
    inline ConstReference at( size_t i, size_t j ) const;
-   inline Pointer        data  ();
-   inline ConstPointer   data  () const;
-   inline Pointer        data  ( size_t j );
-   inline ConstPointer   data  ( size_t j ) const;
-   inline Iterator       begin ( size_t j );
-   inline ConstIterator  begin ( size_t j ) const;
-   inline ConstIterator  cbegin( size_t j ) const;
-   inline Iterator       end   ( size_t j );
-   inline ConstIterator  end   ( size_t j ) const;
-   inline ConstIterator  cend  ( size_t j ) const;
+   inline Pointer        data  () noexcept;
+   inline ConstPointer   data  () const noexcept;
+   inline Pointer        data  ( size_t j ) noexcept;
+   inline ConstPointer   data  ( size_t j ) const noexcept;
+   inline Iterator       begin ( size_t j ) noexcept;
+   inline ConstIterator  begin ( size_t j ) const noexcept;
+   inline ConstIterator  cbegin( size_t j ) const noexcept;
+   inline Iterator       end   ( size_t j ) noexcept;
+   inline ConstIterator  end   ( size_t j ) const noexcept;
+   inline ConstIterator  cend  ( size_t j ) const noexcept;
    //@}
    //**********************************************************************************************
 
@@ -3255,11 +3256,11 @@ class CustomMatrix<Type,AF,PF,true> : public DenseMatrix< CustomMatrix<Type,AF,P
    //**Utility functions***************************************************************************
    /*!\name Utility functions */
    //@{
-                              inline size_t        rows() const;
-                              inline size_t        columns() const;
-                              inline size_t        spacing() const;
-                              inline size_t        capacity() const;
-                              inline size_t        capacity( size_t j ) const;
+                              inline size_t        rows() const noexcept;
+                              inline size_t        columns() const noexcept;
+                              inline size_t        spacing() const noexcept;
+                              inline size_t        capacity() const noexcept;
+                              inline size_t        capacity( size_t j ) const noexcept;
                               inline size_t        nonZeros() const;
                               inline size_t        nonZeros( size_t j ) const;
                               inline void          reset();
@@ -3325,20 +3326,20 @@ class CustomMatrix<Type,AF,PF,true> : public DenseMatrix< CustomMatrix<Type,AF,P
    //**Expression template evaluation functions****************************************************
    /*!\name Expression template evaluation functions */
    //@{
-   template< typename Other > inline bool canAlias ( const Other* alias ) const;
-   template< typename Other > inline bool isAliased( const Other* alias ) const;
+   template< typename Other > inline bool canAlias ( const Other* alias ) const noexcept;
+   template< typename Other > inline bool isAliased( const Other* alias ) const noexcept;
 
-   inline bool isAligned   () const;
-   inline bool canSMPAssign() const;
+   inline bool isAligned   () const noexcept;
+   inline bool canSMPAssign() const noexcept;
 
-   BLAZE_ALWAYS_INLINE IntrinsicType load ( size_t i, size_t j ) const;
-   BLAZE_ALWAYS_INLINE IntrinsicType loada( size_t i, size_t j ) const;
-   BLAZE_ALWAYS_INLINE IntrinsicType loadu( size_t i, size_t j ) const;
+   BLAZE_ALWAYS_INLINE IntrinsicType load ( size_t i, size_t j ) const noexcept;
+   BLAZE_ALWAYS_INLINE IntrinsicType loada( size_t i, size_t j ) const noexcept;
+   BLAZE_ALWAYS_INLINE IntrinsicType loadu( size_t i, size_t j ) const noexcept;
 
-   BLAZE_ALWAYS_INLINE void store ( size_t i, size_t j, const IntrinsicType& value );
-   BLAZE_ALWAYS_INLINE void storea( size_t i, size_t j, const IntrinsicType& value );
-   BLAZE_ALWAYS_INLINE void storeu( size_t i, size_t j, const IntrinsicType& value );
-   BLAZE_ALWAYS_INLINE void stream( size_t i, size_t j, const IntrinsicType& value );
+   BLAZE_ALWAYS_INLINE void store ( size_t i, size_t j, const IntrinsicType& value ) noexcept;
+   BLAZE_ALWAYS_INLINE void storea( size_t i, size_t j, const IntrinsicType& value ) noexcept;
+   BLAZE_ALWAYS_INLINE void storeu( size_t i, size_t j, const IntrinsicType& value ) noexcept;
+   BLAZE_ALWAYS_INLINE void stream( size_t i, size_t j, const IntrinsicType& value ) noexcept;
 
    template< typename MT >
    inline typename DisableIf< VectorizedAssign<MT> >::Type
@@ -3705,7 +3706,7 @@ template< typename Type  // Data type of the matrix
         , bool AF        // Alignment flag
         , bool PF >      // Padding flag
 inline typename CustomMatrix<Type,AF,PF,true>::Reference
-   CustomMatrix<Type,AF,PF,true>::operator()( size_t i, size_t j )
+   CustomMatrix<Type,AF,PF,true>::operator()( size_t i, size_t j ) noexcept
 {
    BLAZE_USER_ASSERT( i<m_, "Invalid row access index"    );
    BLAZE_USER_ASSERT( j<n_, "Invalid column access index" );
@@ -3730,7 +3731,7 @@ template< typename Type  // Data type of the matrix
         , bool AF        // Alignment flag
         , bool PF >      // Padding flag
 inline typename CustomMatrix<Type,AF,PF,true>::ConstReference
-   CustomMatrix<Type,AF,PF,true>::operator()( size_t i, size_t j ) const
+   CustomMatrix<Type,AF,PF,true>::operator()( size_t i, size_t j ) const noexcept
 {
    BLAZE_USER_ASSERT( i<m_, "Invalid row access index"    );
    BLAZE_USER_ASSERT( j<n_, "Invalid column access index" );
@@ -3816,7 +3817,7 @@ template< typename Type  // Data type of the matrix
         , bool AF        // Alignment flag
         , bool PF >      // Padding flag
 inline typename CustomMatrix<Type,AF,PF,true>::Pointer
-   CustomMatrix<Type,AF,PF,true>::data()
+   CustomMatrix<Type,AF,PF,true>::data() noexcept
 {
    return v_.get();
 }
@@ -3840,7 +3841,7 @@ template< typename Type  // Data type of the matrix
         , bool AF        // Alignment flag
         , bool PF >      // Padding flag
 inline typename CustomMatrix<Type,AF,PF,true>::ConstPointer
-   CustomMatrix<Type,AF,PF,true>::data() const
+   CustomMatrix<Type,AF,PF,true>::data() const noexcept
 {
    return v_.get();
 }
@@ -3861,7 +3862,7 @@ template< typename Type  // Data type of the matrix
         , bool AF        // Alignment flag
         , bool PF >      // Padding flag
 inline typename CustomMatrix<Type,AF,PF,true>::Pointer
-   CustomMatrix<Type,AF,PF,true>::data( size_t j )
+   CustomMatrix<Type,AF,PF,true>::data( size_t j ) noexcept
 {
    BLAZE_USER_ASSERT( j < n_, "Invalid dense matrix column access index" );
    return v_.get() + j*mm_;
@@ -3883,7 +3884,7 @@ template< typename Type  // Data type of the matrix
         , bool AF        // Alignment flag
         , bool PF >      // Padding flag
 inline typename CustomMatrix<Type,AF,PF,true>::ConstPointer
-   CustomMatrix<Type,AF,PF,true>::data( size_t j ) const
+   CustomMatrix<Type,AF,PF,true>::data( size_t j ) const noexcept
 {
    BLAZE_USER_ASSERT( j < n_, "Invalid dense matrix column access index" );
    return v_.get() + j*mm_;
@@ -3903,7 +3904,7 @@ template< typename Type  // Data type of the matrix
         , bool AF        // Alignment flag
         , bool PF >      // Padding flag
 inline typename CustomMatrix<Type,AF,PF,true>::Iterator
-   CustomMatrix<Type,AF,PF,true>::begin( size_t j )
+   CustomMatrix<Type,AF,PF,true>::begin( size_t j ) noexcept
 {
    BLAZE_USER_ASSERT( j < n_, "Invalid dense matrix column access index" );
    return Iterator( v_.get() + j*mm_ );
@@ -3923,7 +3924,7 @@ template< typename Type  // Data type of the matrix
         , bool AF        // Alignment flag
         , bool PF >      // Padding flag
 inline typename CustomMatrix<Type,AF,PF,true>::ConstIterator
-   CustomMatrix<Type,AF,PF,true>::begin( size_t j ) const
+   CustomMatrix<Type,AF,PF,true>::begin( size_t j ) const noexcept
 {
    BLAZE_USER_ASSERT( j < n_, "Invalid dense matrix column access index" );
    return ConstIterator( v_.get() + j*mm_ );
@@ -3943,7 +3944,7 @@ template< typename Type  // Data type of the matrix
         , bool AF        // Alignment flag
         , bool PF >      // Padding flag
 inline typename CustomMatrix<Type,AF,PF,true>::ConstIterator
-   CustomMatrix<Type,AF,PF,true>::cbegin( size_t j ) const
+   CustomMatrix<Type,AF,PF,true>::cbegin( size_t j ) const noexcept
 {
    BLAZE_USER_ASSERT( j < n_, "Invalid dense matrix column access index" );
    return ConstIterator( v_.get() + j*mm_ );
@@ -3963,7 +3964,7 @@ template< typename Type  // Data type of the matrix
         , bool AF        // Alignment flag
         , bool PF >      // Padding flag
 inline typename CustomMatrix<Type,AF,PF,true>::Iterator
-   CustomMatrix<Type,AF,PF,true>::end( size_t j )
+   CustomMatrix<Type,AF,PF,true>::end( size_t j ) noexcept
 {
    BLAZE_USER_ASSERT( j < n_, "Invalid dense matrix column access index" );
    return Iterator( v_.get() + j*mm_ + m_ );
@@ -3983,7 +3984,7 @@ template< typename Type  // Data type of the matrix
         , bool AF        // Alignment flag
         , bool PF >      // Padding flag
 inline typename CustomMatrix<Type,AF,PF,true>::ConstIterator
-   CustomMatrix<Type,AF,PF,true>::end( size_t j ) const
+   CustomMatrix<Type,AF,PF,true>::end( size_t j ) const noexcept
 {
    BLAZE_USER_ASSERT( j < n_, "Invalid dense matrix column access index" );
    return ConstIterator( v_.get() + j*mm_ + m_ );
@@ -4003,7 +4004,7 @@ template< typename Type  // Data type of the matrix
         , bool AF        // Alignment flag
         , bool PF >      // Padding flag
 inline typename CustomMatrix<Type,AF,PF,true>::ConstIterator
-   CustomMatrix<Type,AF,PF,true>::cend( size_t j ) const
+   CustomMatrix<Type,AF,PF,true>::cend( size_t j ) const noexcept
 {
    BLAZE_USER_ASSERT( j < n_, "Invalid dense matrix column access index" );
    return ConstIterator( v_.get() + j*mm_ + m_ );
@@ -4362,7 +4363,7 @@ inline typename EnableIf< IsNumeric<Other>, CustomMatrix<Type,AF,PF,true> >::Typ
 template< typename Type  // Data type of the matrix
         , bool AF        // Alignment flag
         , bool PF >      // Padding flag
-inline size_t CustomMatrix<Type,AF,PF,true>::rows() const
+inline size_t CustomMatrix<Type,AF,PF,true>::rows() const noexcept
 {
    return m_;
 }
@@ -4379,7 +4380,7 @@ inline size_t CustomMatrix<Type,AF,PF,true>::rows() const
 template< typename Type  // Data type of the matrix
         , bool AF        // Alignment flag
         , bool PF >      // Padding flag
-inline size_t CustomMatrix<Type,AF,PF,true>::columns() const
+inline size_t CustomMatrix<Type,AF,PF,true>::columns() const noexcept
 {
    return n_;
 }
@@ -4399,7 +4400,7 @@ inline size_t CustomMatrix<Type,AF,PF,true>::columns() const
 template< typename Type  // Data type of the matrix
         , bool AF        // Alignment flag
         , bool PF >      // Padding flag
-inline size_t CustomMatrix<Type,AF,PF,true>::spacing() const
+inline size_t CustomMatrix<Type,AF,PF,true>::spacing() const noexcept
 {
    return mm_;
 }
@@ -4416,7 +4417,7 @@ inline size_t CustomMatrix<Type,AF,PF,true>::spacing() const
 template< typename Type  // Data type of the matrix
         , bool AF        // Alignment flag
         , bool PF >      // Padding flag
-inline size_t CustomMatrix<Type,AF,PF,true>::capacity() const
+inline size_t CustomMatrix<Type,AF,PF,true>::capacity() const noexcept
 {
    return mm_ * n_;
 }
@@ -4434,7 +4435,7 @@ inline size_t CustomMatrix<Type,AF,PF,true>::capacity() const
 template< typename Type  // Data type of the matrix
         , bool AF        // Alignment flag
         , bool PF >      // Padding flag
-inline size_t CustomMatrix<Type,AF,PF,true>::capacity( size_t j ) const
+inline size_t CustomMatrix<Type,AF,PF,true>::capacity( size_t j ) const noexcept
 {
    UNUSED_PARAMETER( j );
    BLAZE_USER_ASSERT( j < columns(), "Invalid column access index" );
@@ -4653,7 +4654,6 @@ inline CustomMatrix<Type,AF,PF,true>& CustomMatrix<Type,AF,PF,true>::scale( cons
 //
 // \param m The matrix to be swapped.
 // \return void
-// \exception no-throw guarantee.
 */
 template< typename Type  // Data type of the matrix
         , bool AF        // Alignment flag
@@ -4853,7 +4853,7 @@ template< typename Type     // Data type of the matrix
         , bool AF           // Alignment flag
         , bool PF >         // Padding flag
 template< typename Other >  // Data type of the foreign expression
-inline bool CustomMatrix<Type,AF,PF,true>::canAlias( const Other* alias ) const
+inline bool CustomMatrix<Type,AF,PF,true>::canAlias( const Other* alias ) const noexcept
 {
    return static_cast<const void*>( this ) == static_cast<const void*>( alias );
 }
@@ -4876,7 +4876,7 @@ template< typename Type     // Data type of the matrix
         , bool AF           // Alignment flag
         , bool PF >         // Padding flag
 template< typename Other >  // Data type of the foreign expression
-inline bool CustomMatrix<Type,AF,PF,true>::isAliased( const Other* alias ) const
+inline bool CustomMatrix<Type,AF,PF,true>::isAliased( const Other* alias ) const noexcept
 {
    return static_cast<const void*>( this ) == static_cast<const void*>( alias );
 }
@@ -4897,7 +4897,7 @@ inline bool CustomMatrix<Type,AF,PF,true>::isAliased( const Other* alias ) const
 template< typename Type  // Data type of the matrix
         , bool AF        // Alignment flag
         , bool PF >      // Padding flag
-inline bool CustomMatrix<Type,AF,PF,true>::isAligned() const
+inline bool CustomMatrix<Type,AF,PF,true>::isAligned() const noexcept
 {
    return ( AF || ( checkAlignment( v_.get() ) && rows() % IT::size == 0UL ) );
 }
@@ -4919,7 +4919,7 @@ inline bool CustomMatrix<Type,AF,PF,true>::isAligned() const
 template< typename Type  // Data type of the matrix
         , bool AF        // Alignment flag
         , bool PF >      // Padding flag
-inline bool CustomMatrix<Type,AF,PF,true>::canSMPAssign() const
+inline bool CustomMatrix<Type,AF,PF,true>::canSMPAssign() const noexcept
 {
    return ( columns() > SMP_DMATASSIGN_THRESHOLD );
 }
@@ -4946,7 +4946,7 @@ template< typename Type  // Data type of the matrix
         , bool AF        // Alignment flag
         , bool PF >      // Padding flag
 BLAZE_ALWAYS_INLINE typename CustomMatrix<Type,AF,PF,true>::IntrinsicType
-   CustomMatrix<Type,AF,PF,true>::load( size_t i, size_t j ) const
+   CustomMatrix<Type,AF,PF,true>::load( size_t i, size_t j ) const noexcept
 {
    if( AF && PF )
       return loada( i, j );
@@ -4976,7 +4976,7 @@ template< typename Type  // Data type of the matrix
         , bool AF        // Alignment flag
         , bool PF >      // Padding flag
 BLAZE_ALWAYS_INLINE typename CustomMatrix<Type,AF,PF,true>::IntrinsicType
-   CustomMatrix<Type,AF,PF,true>::loada( size_t i, size_t j ) const
+   CustomMatrix<Type,AF,PF,true>::loada( size_t i, size_t j ) const noexcept
 {
    using blaze::loada;
 
@@ -5013,7 +5013,7 @@ template< typename Type  // Data type of the matrix
         , bool AF        // Alignment flag
         , bool PF >      // Padding flag
 BLAZE_ALWAYS_INLINE typename CustomMatrix<Type,AF,PF,true>::IntrinsicType
-   CustomMatrix<Type,AF,PF,true>::loadu( size_t i, size_t j ) const
+   CustomMatrix<Type,AF,PF,true>::loadu( size_t i, size_t j ) const noexcept
 {
    using blaze::loadu;
 
@@ -5049,7 +5049,7 @@ template< typename Type  // Data type of the matrix
         , bool AF        // Alignment flag
         , bool PF >      // Padding flag
 BLAZE_ALWAYS_INLINE void
-   CustomMatrix<Type,AF,PF,true>::store( size_t i, size_t j, const IntrinsicType& value )
+   CustomMatrix<Type,AF,PF,true>::store( size_t i, size_t j, const IntrinsicType& value ) noexcept
 {
    if( AF && PF )
       storea( i, j, value );
@@ -5080,7 +5080,7 @@ template< typename Type  // Data type of the matrix
         , bool AF        // Alignment flag
         , bool PF >      // Padding flag
 BLAZE_ALWAYS_INLINE void
-   CustomMatrix<Type,AF,PF,true>::storea( size_t i, size_t j, const IntrinsicType& value )
+   CustomMatrix<Type,AF,PF,true>::storea( size_t i, size_t j, const IntrinsicType& value ) noexcept
 {
    using blaze::storea;
 
@@ -5118,7 +5118,7 @@ template< typename Type  // Data type of the matrix
         , bool AF        // Alignment flag
         , bool PF >      // Padding flag
 BLAZE_ALWAYS_INLINE void
-   CustomMatrix<Type,AF,PF,true>::storeu( size_t i, size_t j, const IntrinsicType& value )
+   CustomMatrix<Type,AF,PF,true>::storeu( size_t i, size_t j, const IntrinsicType& value ) noexcept
 {
    using blaze::storeu;
 
@@ -5154,7 +5154,7 @@ template< typename Type  // Data type of the matrix
         , bool AF        // Alignment flag
         , bool PF >      // Padding flag
 BLAZE_ALWAYS_INLINE void
-   CustomMatrix<Type,AF,PF,true>::stream( size_t i, size_t j, const IntrinsicType& value )
+   CustomMatrix<Type,AF,PF,true>::stream( size_t i, size_t j, const IntrinsicType& value ) noexcept
 {
    using blaze::stream;
 
@@ -6006,7 +6006,6 @@ inline bool isIntact( const CustomMatrix<Type,AF,PF,SO>& m )
 // \param a The first matrix to be swapped.
 // \param b The second matrix to be swapped.
 // \return void
-// \exception no-throw guarantee.
 */
 template< typename Type  // Data type of the matrix
         , bool AF        // Alignment flag
