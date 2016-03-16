@@ -135,15 +135,15 @@ class VectorAccessProxy : public Proxy< VectorAccessProxy<VT>, typename VT::Elem
    //**Utility functions***************************************************************************
    /*!\name Utility functions */
    //@{
-   inline RawReference get()          const;
-   inline bool         isRestricted() const;
+   inline RawReference get()          const noexcept;
+   inline bool         isRestricted() const noexcept;
    //@}
    //**********************************************************************************************
 
    //**Conversion operator*************************************************************************
    /*!\name Conversion operator */
    //@{
-   inline operator RawReference() const;
+   inline operator RawReference() const noexcept;
    //@}
    //**********************************************************************************************
 
@@ -351,7 +351,7 @@ inline const VectorAccessProxy<VT>& VectorAccessProxy<VT>::operator/=( const T& 
 // \return Direct/raw reference to the accessed sparse vector element.
 */
 template< typename VT >  // Type of the sparse vector
-inline typename VectorAccessProxy<VT>::RawReference VectorAccessProxy<VT>::get() const
+inline typename VectorAccessProxy<VT>::RawReference VectorAccessProxy<VT>::get() const noexcept
 {
    const typename VT::Iterator element( sv_.find( i_ ) );
    BLAZE_INTERNAL_ASSERT( element != sv_.end(), "Missing vector element detected" );
@@ -366,7 +366,7 @@ inline typename VectorAccessProxy<VT>::RawReference VectorAccessProxy<VT>::get()
 // \return \a true in case access to the sparse vector element is restricted, \a false if not.
 */
 template< typename VT >  // Type of the sparse vector
-inline bool VectorAccessProxy<VT>::isRestricted() const
+inline bool VectorAccessProxy<VT>::isRestricted() const noexcept
 {
    return false;
 }
@@ -387,7 +387,7 @@ inline bool VectorAccessProxy<VT>::isRestricted() const
 // \return Direct/raw reference to the accessed sparse vector element.
 */
 template< typename VT >  // Type of the sparse vector
-inline VectorAccessProxy<VT>::operator RawReference() const
+inline VectorAccessProxy<VT>::operator RawReference() const noexcept
 {
    return get();
 }
@@ -607,7 +607,6 @@ inline bool isnan( const VectorAccessProxy<VT>& proxy )
 // \param a The first access proxy to be swapped.
 // \param b The second access proxy to be swapped.
 // \return void
-// \exception no-throw guarantee.
 */
 template< typename VT >
 inline void swap( const VectorAccessProxy<VT>& a, const VectorAccessProxy<VT>& b ) noexcept
@@ -626,7 +625,6 @@ inline void swap( const VectorAccessProxy<VT>& a, const VectorAccessProxy<VT>& b
 // \param a The access proxy to be swapped.
 // \param b The other element to be swapped.
 // \return void
-// \exception no-throw guarantee.
 */
 template< typename VT, typename T >
 inline void swap( const VectorAccessProxy<VT>& a, T& b ) noexcept
@@ -645,7 +643,6 @@ inline void swap( const VectorAccessProxy<VT>& a, T& b ) noexcept
 // \param a The other element to be swapped.
 // \param b The access proxy to be swapped.
 // \return void
-// \exception no-throw guarantee.
 */
 template< typename T, typename VT >
 inline void swap( T& a, const VectorAccessProxy<VT>& b ) noexcept

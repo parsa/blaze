@@ -41,7 +41,6 @@
 //*************************************************************************************************
 
 #include <algorithm>
-#include <functional>
 #include <blaze/math/constraints/DenseVector.h>
 #include <blaze/math/constraints/TransposeFlag.h>
 #include <blaze/math/expressions/DenseVector.h>
@@ -210,25 +209,6 @@ class CompressedVector : public SparseVector< CompressedVector<Type,TF>, TF >
    /*! \endcond */
    //**********************************************************************************************
 
-   //**Private class FindIndex*********************************************************************
-   /*! \cond BLAZE_INTERNAL */
-   /*!\brief Helper class for the lower_bound() function.
-   */
-   struct FindIndex : public std::binary_function<Element,size_t,bool>
-   {
-      inline bool operator()( const Element& element, size_t index ) const {
-         return element.index() < index;
-      }
-      inline bool operator()( size_t index, const Element& element ) const {
-         return index < element.index();
-      }
-      inline bool operator()( const Element& element1, const Element& element2 ) const {
-         return element1.index() < element2.index();
-      }
-   };
-   /*! \endcond */
-   //**********************************************************************************************
-
  public:
    //**Type definitions****************************************************************************
    typedef CompressedVector<Type,TF>   This;            //!< Type of this CompressedVector instance.
@@ -263,8 +243,8 @@ class CompressedVector : public SparseVector< CompressedVector<Type,TF>, TF >
    //**Constructors********************************************************************************
    /*!\name Constructors */
    //@{
-                           explicit inline CompressedVector();
-                           explicit inline CompressedVector( size_t size );
+                           explicit inline CompressedVector() noexcept;
+                           explicit inline CompressedVector( size_t size ) noexcept;
                            explicit inline CompressedVector( size_t size, size_t nonzeros );
                                     inline CompressedVector( const CompressedVector& sv );
                                     inline CompressedVector( CompressedVector&& sv ) noexcept;
@@ -283,16 +263,16 @@ class CompressedVector : public SparseVector< CompressedVector<Type,TF>, TF >
    //**Data access functions***********************************************************************
    /*!\name Data access functions */
    //@{
-   inline Reference      operator[]( size_t index );
-   inline ConstReference operator[]( size_t index ) const;
+   inline Reference      operator[]( size_t index ) noexcept;
+   inline ConstReference operator[]( size_t index ) const noexcept;
    inline Reference      at( size_t index );
    inline ConstReference at( size_t index ) const;
-   inline Iterator       begin ();
-   inline ConstIterator  begin () const;
-   inline ConstIterator  cbegin() const;
-   inline Iterator       end   ();
-   inline ConstIterator  end   () const;
-   inline ConstIterator  cend  () const;
+   inline Iterator       begin () noexcept;
+   inline ConstIterator  begin () const noexcept;
+   inline ConstIterator  cbegin() const noexcept;
+   inline Iterator       end   () noexcept;
+   inline ConstIterator  end   () const noexcept;
+   inline ConstIterator  cend  () const noexcept;
    //@}
    //**********************************************************************************************
 
@@ -321,8 +301,8 @@ class CompressedVector : public SparseVector< CompressedVector<Type,TF>, TF >
    //**Utility functions***************************************************************************
    /*!\name Utility functions */
    //@{
-                              inline size_t            size() const;
-                              inline size_t            capacity() const;
+                              inline size_t            size() const noexcept;
+                              inline size_t            capacity() const noexcept;
                               inline size_t            nonZeros() const;
                               inline void              reset();
                               inline void              clear();
@@ -360,10 +340,10 @@ class CompressedVector : public SparseVector< CompressedVector<Type,TF>, TF >
    //**Expression template evaluation functions****************************************************
    /*!\name Expression template evaluation functions */
    //@{
-   template< typename Other > inline bool canAlias ( const Other* alias ) const;
-   template< typename Other > inline bool isAliased( const Other* alias ) const;
+   template< typename Other > inline bool canAlias ( const Other* alias ) const noexcept;
+   template< typename Other > inline bool isAliased( const Other* alias ) const noexcept;
 
-   inline bool canSMPAssign() const;
+   inline bool canSMPAssign() const noexcept;
 
    template< typename VT > inline void assign   ( const DenseVector <VT,TF>& rhs );
    template< typename VT > inline void assign   ( const SparseVector<VT,TF>& rhs );
@@ -379,7 +359,7 @@ class CompressedVector : public SparseVector< CompressedVector<Type,TF>, TF >
    /*!\name Utility functions */
    //@{
           Iterator insert( Iterator pos, size_t index, const Type& value );
-   inline size_t   extendCapacity() const;
+   inline size_t   extendCapacity() const noexcept;
    //@}
    //**********************************************************************************************
 
@@ -434,7 +414,7 @@ const Type CompressedVector<Type,TF>::zero_ = Type();
 */
 template< typename Type  // Data type of the vector
         , bool TF >      // Transpose flag
-inline CompressedVector<Type,TF>::CompressedVector()
+inline CompressedVector<Type,TF>::CompressedVector() noexcept
    : size_    ( 0UL )      // The current size/dimension of the compressed vector
    , capacity_( 0UL )      // The maximum capacity of the compressed vector
    , begin_   ( nullptr )  // Pointer to the first non-zero element of the compressed vector
@@ -450,7 +430,7 @@ inline CompressedVector<Type,TF>::CompressedVector()
 */
 template< typename Type  // Data type of the vector
         , bool TF >      // Transpose flag
-inline CompressedVector<Type,TF>::CompressedVector( size_t n )
+inline CompressedVector<Type,TF>::CompressedVector( size_t n ) noexcept
    : size_    ( n   )      // The current size/dimension of the compressed vector
    , capacity_( 0UL )      // The maximum capacity of the compressed vector
    , begin_   ( nullptr )  // Pointer to the first non-zero element of the compressed vector
@@ -600,7 +580,7 @@ inline CompressedVector<Type,TF>::~CompressedVector()
 template< typename Type  // Data type of the vector
         , bool TF >      // Transpose flag
 inline typename CompressedVector<Type,TF>::Reference
-   CompressedVector<Type,TF>::operator[]( size_t index )
+   CompressedVector<Type,TF>::operator[]( size_t index ) noexcept
 {
    BLAZE_USER_ASSERT( index < size_, "Invalid compressed vector access index" );
 
@@ -618,7 +598,7 @@ inline typename CompressedVector<Type,TF>::Reference
 template< typename Type  // Data type of the vector
         , bool TF >      // Transpose flag
 inline typename CompressedVector<Type,TF>::ConstReference
-   CompressedVector<Type,TF>::operator[]( size_t index ) const
+   CompressedVector<Type,TF>::operator[]( size_t index ) const noexcept
 {
    BLAZE_USER_ASSERT( index < size_, "Invalid compressed vector access index" );
 
@@ -689,7 +669,7 @@ inline typename CompressedVector<Type,TF>::ConstReference
 */
 template< typename Type  // Data type of the vector
         , bool TF >      // Transpose flag
-inline typename CompressedVector<Type,TF>::Iterator CompressedVector<Type,TF>::begin()
+inline typename CompressedVector<Type,TF>::Iterator CompressedVector<Type,TF>::begin() noexcept
 {
    return Iterator( begin_ );
 }
@@ -703,7 +683,8 @@ inline typename CompressedVector<Type,TF>::Iterator CompressedVector<Type,TF>::b
 */
 template< typename Type  // Data type of the vector
         , bool TF >      // Transpose flag
-inline typename CompressedVector<Type,TF>::ConstIterator CompressedVector<Type,TF>::begin() const
+inline typename CompressedVector<Type,TF>::ConstIterator
+   CompressedVector<Type,TF>::begin() const noexcept
 {
    return ConstIterator( begin_ );
 }
@@ -717,7 +698,8 @@ inline typename CompressedVector<Type,TF>::ConstIterator CompressedVector<Type,T
 */
 template< typename Type  // Data type of the vector
         , bool TF >      // Transpose flag
-inline typename CompressedVector<Type,TF>::ConstIterator CompressedVector<Type,TF>::cbegin() const
+inline typename CompressedVector<Type,TF>::ConstIterator
+   CompressedVector<Type,TF>::cbegin() const noexcept
 {
    return ConstIterator( begin_ );
 }
@@ -731,7 +713,7 @@ inline typename CompressedVector<Type,TF>::ConstIterator CompressedVector<Type,T
 */
 template< typename Type  // Data type of the vector
         , bool TF >      // Transpose flag
-inline typename CompressedVector<Type,TF>::Iterator CompressedVector<Type,TF>::end()
+inline typename CompressedVector<Type,TF>::Iterator CompressedVector<Type,TF>::end() noexcept
 {
    return Iterator( end_ );
 }
@@ -745,7 +727,8 @@ inline typename CompressedVector<Type,TF>::Iterator CompressedVector<Type,TF>::e
 */
 template< typename Type  // Data type of the vector
         , bool TF >      // Transpose flag
-inline typename CompressedVector<Type,TF>::ConstIterator CompressedVector<Type,TF>::end() const
+inline typename CompressedVector<Type,TF>::ConstIterator
+   CompressedVector<Type,TF>::end() const noexcept
 {
    return ConstIterator( end_ );
 }
@@ -759,7 +742,8 @@ inline typename CompressedVector<Type,TF>::ConstIterator CompressedVector<Type,T
 */
 template< typename Type  // Data type of the vector
         , bool TF >      // Transpose flag
-inline typename CompressedVector<Type,TF>::ConstIterator CompressedVector<Type,TF>::cend() const
+inline typename CompressedVector<Type,TF>::ConstIterator
+   CompressedVector<Type,TF>::cend() const noexcept
 {
    return ConstIterator( end_ );
 }
@@ -1066,7 +1050,7 @@ inline typename EnableIf< IsNumeric<Other>, CompressedVector<Type,TF> >::Type&
 */
 template< typename Type  // Data type of the vector
         , bool TF >      // Transpose flag
-inline size_t CompressedVector<Type,TF>::size() const
+inline size_t CompressedVector<Type,TF>::size() const noexcept
 {
    return size_;
 }
@@ -1080,7 +1064,7 @@ inline size_t CompressedVector<Type,TF>::size() const
 */
 template< typename Type  // Data type of the vector
         , bool TF >      // Transpose flag
-inline size_t CompressedVector<Type,TF>::capacity() const
+inline size_t CompressedVector<Type,TF>::capacity() const noexcept
 {
    return capacity_;
 }
@@ -1384,7 +1368,6 @@ inline CompressedVector<Type,TF>& CompressedVector<Type,TF>::scale( const Other&
 //
 // \param sv The compressed vector to be swapped.
 // \return void
-// \exception no-throw guarantee.
 */
 template< typename Type  // Data type of the vector
         , bool TF >      // Transpose flag
@@ -1408,7 +1391,7 @@ inline void CompressedVector<Type,TF>::swap( CompressedVector& sv ) noexcept
 */
 template< typename Type  // Data type of the vector
         , bool TF >      // Transpose flag
-inline size_t CompressedVector<Type,TF>::extendCapacity() const
+inline size_t CompressedVector<Type,TF>::extendCapacity() const noexcept
 {
    using blaze::max;
    using blaze::min;
@@ -1518,7 +1501,11 @@ template< typename Type  // Data type of the vector
 inline typename CompressedVector<Type,TF>::ConstIterator
    CompressedVector<Type,TF>::lowerBound( size_t index ) const
 {
-   return std::lower_bound( begin_, end_, index, FindIndex() );
+   return std::lower_bound( begin_, end_, index,
+                            []( const Element& element, size_t i )
+                            {
+                               return element.index() < i;
+                            } );
 }
 //*************************************************************************************************
 
@@ -1562,7 +1549,11 @@ template< typename Type  // Data type of the vector
 inline typename CompressedVector<Type,TF>::ConstIterator
    CompressedVector<Type,TF>::upperBound( size_t index ) const
 {
-   return std::upper_bound( begin_, end_, index, FindIndex() );
+   return std::upper_bound( begin_, end_, index,
+                            []( size_t i, const Element& element )
+                            {
+                               return i < element.index();
+                            } );
 }
 //*************************************************************************************************
 
@@ -1638,7 +1629,7 @@ inline void CompressedVector<Type,TF>::append( size_t index, const Type& value, 
 template< typename Type     // Data type of the vector
         , bool TF >         // Transpose flag
 template< typename Other >  // Data type of the foreign expression
-inline bool CompressedVector<Type,TF>::canAlias( const Other* alias ) const
+inline bool CompressedVector<Type,TF>::canAlias( const Other* alias ) const noexcept
 {
    return static_cast<const void*>( this ) == static_cast<const void*>( alias );
 }
@@ -1658,7 +1649,7 @@ inline bool CompressedVector<Type,TF>::canAlias( const Other* alias ) const
 template< typename Type     // Data type of the vector
         , bool TF >         // Transpose flag
 template< typename Other >  // Data type of the foreign expression
-inline bool CompressedVector<Type,TF>::isAliased( const Other* alias ) const
+inline bool CompressedVector<Type,TF>::isAliased( const Other* alias ) const noexcept
 {
    return static_cast<const void*>( this ) == static_cast<const void*>( alias );
 }
@@ -1677,7 +1668,7 @@ inline bool CompressedVector<Type,TF>::isAliased( const Other* alias ) const
 */
 template< typename Type  // Data type of the vector
         , bool TF >      // Transpose flag
-inline bool CompressedVector<Type,TF>::canSMPAssign() const
+inline bool CompressedVector<Type,TF>::canSMPAssign() const noexcept
 {
    return false;
 }
@@ -1884,7 +1875,7 @@ template< typename Type, bool TF >
 inline bool isDefault( const CompressedVector<Type,TF>& v );
 
 template< typename Type, bool TF >
-inline bool isIntact( const CompressedVector<Type,TF>& v );
+inline bool isIntact( const CompressedVector<Type,TF>& v ) noexcept;
 
 template< typename Type, bool TF >
 inline void swap( CompressedVector<Type,TF>& a, CompressedVector<Type,TF>& b ) noexcept;
@@ -1970,7 +1961,7 @@ inline bool isDefault( const CompressedVector<Type,TF>& v )
 */
 template< typename Type  // Data type of the vector
         , bool TF >      // Transpose flag
-inline bool isIntact( const CompressedVector<Type,TF>& v )
+inline bool isIntact( const CompressedVector<Type,TF>& v ) noexcept
 {
    return ( v.nonZeros() <= v.capacity() );
 }
@@ -1984,7 +1975,6 @@ inline bool isIntact( const CompressedVector<Type,TF>& v )
 // \param a The first compressed vector to be swapped.
 // \param b The second compressed vector to be swapped.
 // \return void
-// \exception no-throw guarantee.
 */
 template< typename Type  // Data type of the vector
         , bool TF >      // Transpose flag
