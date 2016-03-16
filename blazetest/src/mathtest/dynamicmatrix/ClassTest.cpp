@@ -362,13 +362,8 @@ void ClassTest::testConstructors()
    {
       test_ = "Row-major DynamicMatrix copy constructor (2x3)";
 
-      blaze::DynamicMatrix<int,blaze::rowMajor> mat1( 2UL, 3UL );
-      mat1(0,0) = 1;
-      mat1(0,1) = 2;
-      mat1(0,2) = 3;
-      mat1(1,0) = 4;
-      mat1(1,1) = 5;
-      mat1(1,2) = 6;
+      blaze::DynamicMatrix<int,blaze::rowMajor> mat1( { { 1, 2, 3 },
+                                                        { 4, 5, 6 } } );
 
       blaze::DynamicMatrix<int,blaze::rowMajor> mat2( mat1 );
 
@@ -432,13 +427,8 @@ void ClassTest::testConstructors()
    {
       test_ = "Row-major DynamicMatrix copy constructor (2x3)";
 
-      blaze::DynamicMatrix<int,blaze::rowMajor> mat1( 2UL, 3UL );
-      mat1(0,0) = 1;
-      mat1(0,1) = 2;
-      mat1(0,2) = 3;
-      mat1(1,0) = 4;
-      mat1(1,1) = 5;
-      mat1(1,2) = 6;
+      blaze::DynamicMatrix<int,blaze::rowMajor> mat1( { { 1, 2, 3 },
+                                                        { 4, 5, 6 } } );
 
       blaze::DynamicMatrix<int,blaze::rowMajor> mat2( std::move( mat1 ) );
 
@@ -907,13 +897,8 @@ void ClassTest::testConstructors()
    {
       test_ = "Column-major DynamicMatrix copy constructor (2x3)";
 
-      blaze::DynamicMatrix<int,blaze::columnMajor> mat1( 2UL, 3UL );
-      mat1(0,0) = 1;
-      mat1(0,1) = 2;
-      mat1(0,2) = 3;
-      mat1(1,0) = 4;
-      mat1(1,1) = 5;
-      mat1(1,2) = 6;
+      blaze::DynamicMatrix<int,blaze::columnMajor> mat1( { { 1, 2, 3 },
+                                                           { 4, 5, 6 } } );
 
       blaze::DynamicMatrix<int,blaze::columnMajor> mat2( mat1 );
 
@@ -978,13 +963,8 @@ void ClassTest::testConstructors()
    {
       test_ = "Column-major DynamicMatrix move constructor (2x3)";
 
-      blaze::DynamicMatrix<int,blaze::columnMajor> mat1( 2UL, 3UL );
-      mat1(0,0) = 1;
-      mat1(0,1) = 2;
-      mat1(0,2) = 3;
-      mat1(1,0) = 4;
-      mat1(1,1) = 5;
-      mat1(1,2) = 6;
+      blaze::DynamicMatrix<int,blaze::columnMajor> mat1( { { 1, 2, 3 },
+                                                           { 4, 5, 6 } } );
 
       blaze::DynamicMatrix<int,blaze::columnMajor> mat2( std::move( mat1 ) );
 
@@ -1318,13 +1298,8 @@ void ClassTest::testAssignment()
    {
       test_ = "Row-major DynamicMatrix copy assignment";
 
-      blaze::DynamicMatrix<int,blaze::rowMajor> mat1( 2UL, 3UL );
-      mat1(0,0) = 1;
-      mat1(0,1) = 2;
-      mat1(0,2) = 3;
-      mat1(1,0) = 4;
-      mat1(1,1) = 5;
-      mat1(1,2) = 6;
+      blaze::DynamicMatrix<int,blaze::rowMajor> mat1( { { 1, 2, 3 },
+                                                        { 4, 5, 6 } } );
 
       blaze::DynamicMatrix<int,blaze::rowMajor> mat2;
       mat2 = mat1;
@@ -1385,19 +1360,10 @@ void ClassTest::testAssignment()
    {
       test_ = "Row-major DynamicMatrix move assignment";
 
-      blaze::DynamicMatrix<int,blaze::rowMajor> mat1( 2UL, 3UL );
-      mat1(0,0) = 1;
-      mat1(0,1) = 2;
-      mat1(0,2) = 3;
-      mat1(1,0) = 4;
-      mat1(1,1) = 5;
-      mat1(1,2) = 6;
+      blaze::DynamicMatrix<int,blaze::rowMajor> mat1( { { 1, 2, 3 },
+                                                        { 4, 5, 6 } } );
 
-      blaze::DynamicMatrix<int,blaze::rowMajor> mat2( 4UL, 1UL );
-      mat2(0,0) = 11;
-      mat2(1,0) = 12;
-      mat2(2,0) = 13;
-      mat2(3,0) = 14;
+      blaze::DynamicMatrix<int,blaze::rowMajor> mat2( { { 11 }, { 12 }, { 13 }, { 14 } } );
 
       mat2 = std::move( mat1 );
 
@@ -2099,13 +2065,8 @@ void ClassTest::testAssignment()
    {
       test_ = "Column-major DynamicMatrix copy assignment";
 
-      blaze::DynamicMatrix<int,blaze::columnMajor> mat1( 2UL, 3UL );
-      mat1(0,0) = 1;
-      mat1(0,1) = 2;
-      mat1(0,2) = 3;
-      mat1(1,0) = 4;
-      mat1(1,1) = 5;
-      mat1(1,2) = 6;
+      blaze::DynamicMatrix<int,blaze::columnMajor> mat1( { { 1, 2, 3 },
+                                                           { 4, 5, 6 } } );
 
       blaze::DynamicMatrix<int,blaze::columnMajor> mat2;
       mat2 = mat1;
@@ -2167,19 +2128,10 @@ void ClassTest::testAssignment()
    {
       test_ = "Column-major DynamicMatrix move assignment";
 
-      blaze::DynamicMatrix<int,blaze::columnMajor> mat1( 2UL, 3UL );
-      mat1(0,0) = 1;
-      mat1(0,1) = 2;
-      mat1(0,2) = 3;
-      mat1(1,0) = 4;
-      mat1(1,1) = 5;
-      mat1(1,2) = 6;
+      blaze::DynamicMatrix<int,blaze::columnMajor> mat1( { { 1, 2, 3 },
+                                                           { 4, 5, 6 } } );
 
-      blaze::DynamicMatrix<int,blaze::columnMajor> mat2( 4UL, 1UL );
-      mat2(0,0) = 11;
-      mat2(1,0) = 12;
-      mat2(2,0) = 13;
-      mat2(3,0) = 14;
+      blaze::DynamicMatrix<int,blaze::columnMajor> mat2( { { 11 }, { 12 }, { 13 }, { 14 } } );
 
       mat2 = std::move( mat1 );
 
@@ -2848,10 +2800,8 @@ void ClassTest::testAddAssign()
       mat1(1,0) = -3;
       mat1(1,2) =  4;
 
-      blaze::DynamicMatrix<int,blaze::rowMajor> mat2( 2UL, 3UL, 0 );
-      mat2(0,1) = -2;
-      mat2(0,2) =  6;
-      mat2(1,0) =  5;
+      blaze::DynamicMatrix<int,blaze::rowMajor> mat2( { { 0, -2, 6 },
+                                                        { 5,  0, 0 } } );
 
       mat2 += mat1;
 
@@ -2890,10 +2840,8 @@ void ClassTest::testAddAssign()
       mat1(1,0) = -3;
       mat1(1,2) =  4;
 
-      blaze::DynamicMatrix<int,blaze::rowMajor> mat2( 2UL, 3UL, 0 );
-      mat2(0,1) = -2;
-      mat2(0,2) =  6;
-      mat2(1,0) =  5;
+      blaze::DynamicMatrix<int,blaze::rowMajor> mat2( { { 0, -2, 6 },
+                                                        { 5,  0, 0 } } );
 
       mat2 += mat1;
 
@@ -2931,10 +2879,8 @@ void ClassTest::testAddAssign()
       mat1(1,0) = -3;
       mat1(1,2) =  4;
 
-      blaze::DynamicMatrix<int,blaze::rowMajor> mat2( 2UL, 3UL, 0 );
-      mat2(0,1) = -2;
-      mat2(0,2) =  6;
-      mat2(1,0) =  5;
+      blaze::DynamicMatrix<int,blaze::rowMajor> mat2( { { 0, -2, 6 },
+                                                        { 5,  0, 0 } } );
 
       mat2 += mat1;
 
@@ -2973,10 +2919,8 @@ void ClassTest::testAddAssign()
       mat1(1,0) = -3;
       mat1(1,2) =  4;
 
-      blaze::DynamicMatrix<int,blaze::rowMajor> mat2( 2UL, 3UL, 0 );
-      mat2(0,1) = -2;
-      mat2(0,2) =  6;
-      mat2(1,0) =  5;
+      blaze::DynamicMatrix<int,blaze::rowMajor> mat2( { { 0, -2, 6 },
+                                                        { 5,  0, 0 } } );
 
       mat2 += mat1;
 
@@ -3139,10 +3083,8 @@ void ClassTest::testAddAssign()
       mat1(1,0) = -3;
       mat1(1,2) =  4;
 
-      blaze::DynamicMatrix<int,blaze::rowMajor> mat2( 2UL, 3UL, 0 );
-      mat2(0,1) = -2;
-      mat2(0,2) =  6;
-      mat2(1,0) =  5;
+      blaze::DynamicMatrix<int,blaze::rowMajor> mat2( { { 0, -2, 6 },
+                                                        { 5,  0, 0 } } );
 
       mat2 += mat1;
 
@@ -3174,10 +3116,8 @@ void ClassTest::testAddAssign()
       mat1(1,0) = -3;
       mat1(1,2) =  4;
 
-      blaze::DynamicMatrix<int,blaze::rowMajor> mat2( 2UL, 3UL, 0 );
-      mat2(0,1) = -2;
-      mat2(0,2) =  6;
-      mat2(1,0) =  5;
+      blaze::DynamicMatrix<int,blaze::rowMajor> mat2( { { 0, -2, 6 },
+                                                        { 5,  0, 0 } } );
 
       mat2 += mat1;
 
@@ -3346,10 +3286,8 @@ void ClassTest::testAddAssign()
       mat1(1,0) = -3;
       mat1(1,2) =  4;
 
-      blaze::DynamicMatrix<int,blaze::columnMajor> mat2( 2UL, 3UL, 0 );
-      mat2(0,1) = -2;
-      mat2(0,2) =  6;
-      mat2(1,0) =  5;
+      blaze::DynamicMatrix<int,blaze::columnMajor> mat2( { { 0, -2, 6 },
+                                                           { 5,  0, 0 } } );
 
       mat2 += mat1;
 
@@ -3389,10 +3327,8 @@ void ClassTest::testAddAssign()
       mat1(1,0) = -3;
       mat1(1,2) =  4;
 
-      blaze::DynamicMatrix<int,blaze::columnMajor> mat2( 2UL, 3UL, 0 );
-      mat2(0,1) = -2;
-      mat2(0,2) =  6;
-      mat2(1,0) =  5;
+      blaze::DynamicMatrix<int,blaze::columnMajor> mat2( { { 0, -2, 6 },
+                                                           { 5,  0, 0 } } );
 
       mat2 += mat1;
 
@@ -3431,10 +3367,8 @@ void ClassTest::testAddAssign()
       mat1(1,0) = -3;
       mat1(1,2) =  4;
 
-      blaze::DynamicMatrix<int,blaze::columnMajor> mat2( 2UL, 3UL, 0 );
-      mat2(0,1) = -2;
-      mat2(0,2) =  6;
-      mat2(1,0) =  5;
+      blaze::DynamicMatrix<int,blaze::columnMajor> mat2( { { 0, -2, 6 },
+                                                           { 5,  0, 0 } } );
 
       mat2 += mat1;
 
@@ -3474,10 +3408,8 @@ void ClassTest::testAddAssign()
       mat1(1,0) = -3;
       mat1(1,2) =  4;
 
-      blaze::DynamicMatrix<int,blaze::columnMajor> mat2( 2UL, 3UL, 0 );
-      mat2(0,1) = -2;
-      mat2(0,2) =  6;
-      mat2(1,0) =  5;
+      blaze::DynamicMatrix<int,blaze::columnMajor> mat2( { { 0, -2, 6 },
+                                                           { 5,  0, 0 } } );
 
       mat2 += mat1;
 
@@ -3641,10 +3573,8 @@ void ClassTest::testAddAssign()
       mat1(1,0) = -3;
       mat1(1,2) =  4;
 
-      blaze::DynamicMatrix<int,blaze::columnMajor> mat2( 2UL, 3UL, 0 );
-      mat2(0,1) = -2;
-      mat2(0,2) =  6;
-      mat2(1,0) =  5;
+      blaze::DynamicMatrix<int,blaze::columnMajor> mat2( { { 0, -2, 6 },
+                                                           { 5,  0, 0 } } );
 
       mat2 += mat1;
 
@@ -3677,10 +3607,8 @@ void ClassTest::testAddAssign()
       mat1(1,0) = -3;
       mat1(1,2) =  4;
 
-      blaze::DynamicMatrix<int,blaze::columnMajor> mat2( 2UL, 3UL, 0 );
-      mat2(0,1) = -2;
-      mat2(0,2) =  6;
-      mat2(1,0) =  5;
+      blaze::DynamicMatrix<int,blaze::columnMajor> mat2( { { 0, -2, 6 },
+                                                           { 5,  0, 0 } } );
 
       mat2 += mat1;
 
@@ -4154,10 +4082,8 @@ void ClassTest::testSubAssign()
       mat1(1,0) =  3;
       mat1(1,2) = -4;
 
-      blaze::DynamicMatrix<int,blaze::rowMajor> mat2( 2UL, 3UL, 0 );
-      mat2(0,1) = -2;
-      mat2(0,2) =  6;
-      mat2(1,0) =  5;
+      blaze::DynamicMatrix<int,blaze::rowMajor> mat2( { { 0, -2, 6 },
+                                                        { 5,  0, 0 } } );
 
       mat2 -= mat1;
 
@@ -4189,10 +4115,8 @@ void ClassTest::testSubAssign()
       mat1(1,0) =  3;
       mat1(1,2) = -4;
 
-      blaze::DynamicMatrix<int,blaze::rowMajor> mat2( 2UL, 3UL, 0 );
-      mat2(0,1) = -2;
-      mat2(0,2) =  6;
-      mat2(1,0) =  5;
+      blaze::DynamicMatrix<int,blaze::rowMajor> mat2( { { 0, -2, 6 },
+                                                        { 5,  0, 0 } } );
 
       mat2 -= mat1;
 
@@ -4361,10 +4285,8 @@ void ClassTest::testSubAssign()
       mat1(1,0) =  3;
       mat1(1,2) = -4;
 
-      blaze::DynamicMatrix<int,blaze::columnMajor> mat2( 2UL, 3UL, 0 );
-      mat2(0,1) = -2;
-      mat2(0,2) =  6;
-      mat2(1,0) =  5;
+      blaze::DynamicMatrix<int,blaze::columnMajor> mat2( { { 0, -2, 6 },
+                                                           { 5,  0, 0 } } );
 
       mat2 -= mat1;
 
@@ -4404,10 +4326,8 @@ void ClassTest::testSubAssign()
       mat1(1,0) =  3;
       mat1(1,2) = -4;
 
-      blaze::DynamicMatrix<int,blaze::columnMajor> mat2( 2UL, 3UL, 0 );
-      mat2(0,1) = -2;
-      mat2(0,2) =  6;
-      mat2(1,0) =  5;
+      blaze::DynamicMatrix<int,blaze::columnMajor> mat2( { { 0, -2, 6 },
+                                                           { 5,  0, 0 } } );
 
       mat2 -= mat1;
 
@@ -4446,10 +4366,8 @@ void ClassTest::testSubAssign()
       mat1(1,0) =  3;
       mat1(1,2) = -4;
 
-      blaze::DynamicMatrix<int,blaze::columnMajor> mat2( 2UL, 3UL, 0 );
-      mat2(0,1) = -2;
-      mat2(0,2) =  6;
-      mat2(1,0) =  5;
+      blaze::DynamicMatrix<int,blaze::columnMajor> mat2( { { 0, -2, 6 },
+                                                           { 5,  0, 0 } } );
 
       mat2 -= mat1;
 
@@ -4489,10 +4407,8 @@ void ClassTest::testSubAssign()
       mat1(1,0) =  3;
       mat1(1,2) = -4;
 
-      blaze::DynamicMatrix<int,blaze::columnMajor> mat2( 2UL, 3UL, 0 );
-      mat2(0,1) = -2;
-      mat2(0,2) =  6;
-      mat2(1,0) =  5;
+      blaze::DynamicMatrix<int,blaze::columnMajor> mat2( { { 0, -2, 6 },
+                                                           { 5,  0, 0 } } );
 
       mat2 -= mat1;
 
@@ -4656,10 +4572,8 @@ void ClassTest::testSubAssign()
       mat1(1,0) =  3;
       mat1(1,2) = -4;
 
-      blaze::DynamicMatrix<int,blaze::columnMajor> mat2( 2UL, 3UL, 0 );
-      mat2(0,1) = -2;
-      mat2(0,2) =  6;
-      mat2(1,0) =  5;
+      blaze::DynamicMatrix<int,blaze::columnMajor> mat2( { { 0, -2, 6 },
+                                                           { 5,  0, 0 } } );
 
       mat2 -= mat1;
 
@@ -4692,10 +4606,8 @@ void ClassTest::testSubAssign()
       mat1(1,0) =  3;
       mat1(1,2) = -4;
 
-      blaze::DynamicMatrix<int,blaze::columnMajor> mat2( 2UL, 3UL, 0 );
-      mat2(0,1) = -2;
-      mat2(0,2) =  6;
-      mat2(1,0) =  5;
+      blaze::DynamicMatrix<int,blaze::columnMajor> mat2( { { 0, -2, 6 },
+                                                           { 5,  0, 0 } } );
 
       mat2 -= mat1;
 
@@ -4879,12 +4791,9 @@ void ClassTest::testMultAssign()
       mat1(1,3) = 4;
       mat1(2,3) = 5;
 
-      blaze::DynamicMatrix<int,blaze::rowMajor> mat2( 3UL, 3UL, 0 );
-      mat2(0,0) = 1;
-      mat2(0,2) = 2;
-      mat2(1,1) = 3;
-      mat2(2,0) = 4;
-      mat2(2,2) = 5;
+      blaze::DynamicMatrix<int,blaze::rowMajor> mat2( { { 1, 0, 2 },
+                                                        { 0, 3, 0 },
+                                                        { 4, 0, 5 } } );
 
       mat2 *= mat1;
 
@@ -4925,12 +4834,9 @@ void ClassTest::testMultAssign()
       mat1(1,3) = 4;
       mat1(2,3) = 5;
 
-      blaze::DynamicMatrix<int,blaze::rowMajor> mat2( 3UL, 3UL, 0 );
-      mat2(0,0) = 1;
-      mat2(0,2) = 2;
-      mat2(1,1) = 3;
-      mat2(2,0) = 4;
-      mat2(2,2) = 5;
+      blaze::DynamicMatrix<int,blaze::rowMajor> mat2( { { 1, 0, 2 },
+                                                        { 0, 3, 0 },
+                                                        { 4, 0, 5 } } );
 
       mat2 *= mat1;
 
@@ -4970,12 +4876,9 @@ void ClassTest::testMultAssign()
       mat1(1,3) = 4;
       mat1(2,3) = 5;
 
-      blaze::DynamicMatrix<int,blaze::rowMajor> mat2( 3UL, 3UL, 0 );
-      mat2(0,0) = 1;
-      mat2(0,2) = 2;
-      mat2(1,1) = 3;
-      mat2(2,0) = 4;
-      mat2(2,2) = 5;
+      blaze::DynamicMatrix<int,blaze::rowMajor> mat2( { { 1, 0, 2 },
+                                                        { 0, 3, 0 },
+                                                        { 4, 0, 5 } } );
 
       mat2 *= mat1;
 
@@ -5016,12 +4919,9 @@ void ClassTest::testMultAssign()
       mat1(1,3) = 4;
       mat1(2,3) = 5;
 
-      blaze::DynamicMatrix<int,blaze::rowMajor> mat2( 3UL, 3UL, 0 );
-      mat2(0,0) = 1;
-      mat2(0,2) = 2;
-      mat2(1,1) = 3;
-      mat2(2,0) = 4;
-      mat2(2,2) = 5;
+      blaze::DynamicMatrix<int,blaze::rowMajor> mat2( { { 1, 0, 2 },
+                                                        { 0, 3, 0 },
+                                                        { 4, 0, 5 } } );
 
       mat2 *= mat1;
 
@@ -5060,12 +4960,9 @@ void ClassTest::testMultAssign()
       mat1(1,3) = 4;
       mat1(2,3) = 5;
 
-      blaze::DynamicMatrix<int,blaze::rowMajor> mat2( 3UL, 3UL, 0 );
-      mat2(0,0) = 1;
-      mat2(0,2) = 2;
-      mat2(1,1) = 3;
-      mat2(2,0) = 4;
-      mat2(2,2) = 5;
+      blaze::DynamicMatrix<int,blaze::rowMajor> mat2( { { 1, 0, 2 },
+                                                        { 0, 3, 0 },
+                                                        { 4, 0, 5 } } );
 
       mat2 *= mat1;
 
@@ -5099,12 +4996,9 @@ void ClassTest::testMultAssign()
       mat1(1,3) = 4;
       mat1(2,3) = 5;
 
-      blaze::DynamicMatrix<int,blaze::rowMajor> mat2( 3UL, 3UL, 0 );
-      mat2(0,0) = 1;
-      mat2(0,2) = 2;
-      mat2(1,1) = 3;
-      mat2(2,0) = 4;
-      mat2(2,2) = 5;
+      blaze::DynamicMatrix<int,blaze::rowMajor> mat2( { { 1, 0, 2 },
+                                                        { 0, 3, 0 },
+                                                        { 4, 0, 5 } } );
 
       mat2 *= mat1;
 
@@ -5149,12 +5043,9 @@ void ClassTest::testMultAssign()
       mat1(1,3) = 4;
       mat1(2,3) = 5;
 
-      blaze::DynamicMatrix<int,blaze::columnMajor> mat2( 3UL, 3UL, 0 );
-      mat2(0,0) = 1;
-      mat2(0,2) = 2;
-      mat2(1,1) = 3;
-      mat2(2,0) = 4;
-      mat2(2,2) = 5;
+      blaze::DynamicMatrix<int,blaze::columnMajor> mat2( { { 1, 0, 2 },
+                                                           { 0, 3, 0 },
+                                                           { 4, 0, 5 } } );
 
       mat2 *= mat1;
 
@@ -5196,12 +5087,9 @@ void ClassTest::testMultAssign()
       mat1(1,3) = 4;
       mat1(2,3) = 5;
 
-      blaze::DynamicMatrix<int,blaze::columnMajor> mat2( 3UL, 3UL, 0 );
-      mat2(0,0) = 1;
-      mat2(0,2) = 2;
-      mat2(1,1) = 3;
-      mat2(2,0) = 4;
-      mat2(2,2) = 5;
+      blaze::DynamicMatrix<int,blaze::columnMajor> mat2( { { 1, 0, 2 },
+                                                           { 0, 3, 0 },
+                                                           { 4, 0, 5 } } );
 
       mat2 *= mat1;
 
@@ -5242,12 +5130,9 @@ void ClassTest::testMultAssign()
       mat1(1,3) = 4;
       mat1(2,3) = 5;
 
-      blaze::DynamicMatrix<int,blaze::columnMajor> mat2( 3UL, 3UL, 0 );
-      mat2(0,0) = 1;
-      mat2(0,2) = 2;
-      mat2(1,1) = 3;
-      mat2(2,0) = 4;
-      mat2(2,2) = 5;
+      blaze::DynamicMatrix<int,blaze::columnMajor> mat2( { { 1, 0, 2 },
+                                                           { 0, 3, 0 },
+                                                           { 4, 0, 5 } } );
 
       mat2 *= mat1;
 
@@ -5289,12 +5174,9 @@ void ClassTest::testMultAssign()
       mat1(1,3) = 4;
       mat1(2,3) = 5;
 
-      blaze::DynamicMatrix<int,blaze::columnMajor> mat2( 3UL, 3UL, 0 );
-      mat2(0,0) = 1;
-      mat2(0,2) = 2;
-      mat2(1,1) = 3;
-      mat2(2,0) = 4;
-      mat2(2,2) = 5;
+      blaze::DynamicMatrix<int,blaze::columnMajor> mat2( { { 1, 0, 2 },
+                                                           { 0, 3, 0 },
+                                                           { 4, 0, 5 } } );
 
       mat2 *= mat1;
 
@@ -5334,12 +5216,9 @@ void ClassTest::testMultAssign()
       mat1(1,3) = 4;
       mat1(2,3) = 5;
 
-      blaze::DynamicMatrix<int,blaze::columnMajor> mat2( 3UL, 3UL, 0 );
-      mat2(0,0) = 1;
-      mat2(0,2) = 2;
-      mat2(1,1) = 3;
-      mat2(2,0) = 4;
-      mat2(2,2) = 5;
+      blaze::DynamicMatrix<int,blaze::columnMajor> mat2( { { 1, 0, 2 },
+                                                           { 0, 3, 0 },
+                                                           { 4, 0, 5 } } );
 
       mat2 *= mat1;
 
@@ -5374,12 +5253,9 @@ void ClassTest::testMultAssign()
       mat1(1,3) = 4;
       mat1(2,3) = 5;
 
-      blaze::DynamicMatrix<int,blaze::columnMajor> mat2( 3UL, 3UL, 0 );
-      mat2(0,0) = 1;
-      mat2(0,2) = 2;
-      mat2(1,1) = 3;
-      mat2(2,0) = 4;
-      mat2(2,2) = 5;
+      blaze::DynamicMatrix<int,blaze::columnMajor> mat2( { { 1, 0, 2 },
+                                                           { 0, 3, 0 },
+                                                           { 4, 0, 5 } } );
 
       mat2 *= mat1;
 
@@ -5425,10 +5301,9 @@ void ClassTest::testScaling()
    {
       test_ = "Row-major self-scaling (M*=s)";
 
-      blaze::DynamicMatrix<int,blaze::rowMajor> mat( 3UL, 3UL, 0 );
-      mat(1,2) =  1;
-      mat(2,0) = -2;
-      mat(2,2) =  3;
+      blaze::DynamicMatrix<int,blaze::rowMajor> mat( { {  0, 0, 0 },
+                                                       {  0, 0, 1 },
+                                                       { -2, 0, 3 } } );
 
       mat *= 2;
 
@@ -5460,10 +5335,9 @@ void ClassTest::testScaling()
    {
       test_ = "Row-major self-scaling (M=M*s)";
 
-      blaze::DynamicMatrix<int,blaze::rowMajor> mat( 3UL, 3UL, 0 );
-      mat(1,2) =  1;
-      mat(2,0) = -2;
-      mat(2,2) =  3;
+      blaze::DynamicMatrix<int,blaze::rowMajor> mat( { {  0, 0, 0 },
+                                                       {  0, 0, 1 },
+                                                       { -2, 0, 3 } } );
 
       mat = mat * 2;
 
@@ -5495,10 +5369,9 @@ void ClassTest::testScaling()
    {
       test_ = "Row-major self-scaling (M=s*M)";
 
-      blaze::DynamicMatrix<int,blaze::rowMajor> mat( 3UL, 3UL, 0 );
-      mat(1,2) =  1;
-      mat(2,0) = -2;
-      mat(2,2) =  3;
+      blaze::DynamicMatrix<int,blaze::rowMajor> mat( { {  0, 0, 0 },
+                                                       {  0, 0, 1 },
+                                                       { -2, 0, 3 } } );
 
       mat = 2 * mat;
 
@@ -5530,10 +5403,9 @@ void ClassTest::testScaling()
    {
       test_ = "Row-major self-scaling (M/=s)";
 
-      blaze::DynamicMatrix<int,blaze::rowMajor> mat( 3UL, 3UL, 0 );
-      mat(1,2) =  2;
-      mat(2,0) = -4;
-      mat(2,2) =  6;
+      blaze::DynamicMatrix<int,blaze::rowMajor> mat( { {  0, 0, 0 },
+                                                       {  0, 0, 2 },
+                                                       { -4, 0, 6 } } );
 
       mat /= 2;
 
@@ -5565,10 +5437,9 @@ void ClassTest::testScaling()
    {
       test_ = "Row-major self-scaling (M=M/s)";
 
-      blaze::DynamicMatrix<int,blaze::rowMajor> mat( 3UL, 3UL, 0 );
-      mat(1,2) =  2;
-      mat(2,0) = -4;
-      mat(2,2) =  6;
+      blaze::DynamicMatrix<int,blaze::rowMajor> mat( { {  0, 0, 0 },
+                                                       {  0, 0, 2 },
+                                                       { -4, 0, 6 } } );
 
       mat = mat / 2;
 
@@ -5601,13 +5472,9 @@ void ClassTest::testScaling()
       test_ = "Row-major DynamicMatrix::scale() (int)";
 
       // Initialization check
-      blaze::DynamicMatrix<int,blaze::rowMajor> mat( 3UL, 2UL );
-      mat(0,0) = 1;
-      mat(0,1) = 2;
-      mat(1,0) = 3;
-      mat(1,1) = 4;
-      mat(2,0) = 5;
-      mat(2,1) = 6;
+      blaze::DynamicMatrix<int,blaze::rowMajor> mat( { { 1, 2 },
+                                                       { 3, 4 },
+                                                       { 5, 6 } } );
 
       checkRows    ( mat, 3UL );
       checkColumns ( mat, 2UL );
@@ -5715,10 +5582,9 @@ void ClassTest::testScaling()
    {
       test_ = "Column-major self-scaling (M*=s)";
 
-      blaze::DynamicMatrix<int,blaze::columnMajor> mat( 3UL, 3UL, 0 );
-      mat(1,2) =  1;
-      mat(2,0) = -2;
-      mat(2,2) =  3;
+      blaze::DynamicMatrix<int,blaze::columnMajor> mat( { {  0, 0, 0 },
+                                                          {  0, 0, 1 },
+                                                          { -2, 0, 3 } } );
 
       mat *= 2;
 
@@ -5750,10 +5616,9 @@ void ClassTest::testScaling()
    {
       test_ = "Column-major self-scaling (M=M*s)";
 
-      blaze::DynamicMatrix<int,blaze::columnMajor> mat( 3UL, 3UL, 0 );
-      mat(1,2) =  1;
-      mat(2,0) = -2;
-      mat(2,2) =  3;
+      blaze::DynamicMatrix<int,blaze::columnMajor> mat( { {  0, 0, 0 },
+                                                          {  0, 0, 1 },
+                                                          { -2, 0, 3 } } );
 
       mat = mat * 2;
 
@@ -5785,10 +5650,9 @@ void ClassTest::testScaling()
    {
       test_ = "Column-major self-scaling (M=s*M)";
 
-      blaze::DynamicMatrix<int,blaze::columnMajor> mat( 3UL, 3UL, 0 );
-      mat(1,2) =  1;
-      mat(2,0) = -2;
-      mat(2,2) =  3;
+      blaze::DynamicMatrix<int,blaze::columnMajor> mat( { {  0, 0, 0 },
+                                                          {  0, 0, 1 },
+                                                          { -2, 0, 3 } } );
 
       mat = 2 * mat;
 
@@ -5820,10 +5684,9 @@ void ClassTest::testScaling()
    {
       test_ = "Column-major self-scaling (M/=s)";
 
-      blaze::DynamicMatrix<int,blaze::columnMajor> mat( 3UL, 3UL, 0 );
-      mat(1,2) =  2;
-      mat(2,0) = -4;
-      mat(2,2) =  6;
+      blaze::DynamicMatrix<int,blaze::columnMajor> mat( { {  0, 0, 0 },
+                                                          {  0, 0, 2 },
+                                                          { -4, 0, 6 } } );
 
       mat /= 2;
 
@@ -5855,10 +5718,9 @@ void ClassTest::testScaling()
    {
       test_ = "Column-major self-scaling (M=M/s)";
 
-      blaze::DynamicMatrix<int,blaze::columnMajor> mat( 3UL, 3UL, 0 );
-      mat(1,2) =  2;
-      mat(2,0) = -4;
-      mat(2,2) =  6;
+      blaze::DynamicMatrix<int,blaze::columnMajor> mat( { {  0, 0, 0 },
+                                                          {  0, 0, 2 },
+                                                          { -4, 0, 6 } } );
 
       mat = mat / 2;
 
@@ -5891,13 +5753,9 @@ void ClassTest::testScaling()
       test_ = "Column-major DynamicMatrix::scale() (int)";
 
       // Initialization check
-      blaze::DynamicMatrix<int,blaze::columnMajor> mat( 3UL, 2UL );
-      mat(0,0) = 1;
-      mat(0,1) = 4;
-      mat(1,0) = 2;
-      mat(1,1) = 5;
-      mat(2,0) = 3;
-      mat(2,1) = 6;
+      blaze::DynamicMatrix<int,blaze::columnMajor> mat( { { 1, 4 },
+                                                          { 2, 5 },
+                                                          { 3, 6 } } );
 
       checkRows    ( mat, 3UL );
       checkColumns ( mat, 2UL );
@@ -6845,12 +6703,9 @@ void ClassTest::testIterator()
       typedef MatrixType::Iterator                       Iterator;
       typedef MatrixType::ConstIterator                  ConstIterator;
 
-      MatrixType mat( 3UL, 3UL, 0 );
-      mat(0,1) =  1;
-      mat(1,0) = -2;
-      mat(1,2) = -3;
-      mat(2,1) =  4;
-      mat(2,2) =  5;
+      MatrixType mat( { {  0,  1,  0 },
+                        { -2,  0, -3 },
+                        {  0,  4,  5 } } );
 
       // Testing the Iterator default constructor
       {
@@ -7148,12 +7003,9 @@ void ClassTest::testIterator()
       typedef MatrixType::Iterator                          Iterator;
       typedef MatrixType::ConstIterator                     ConstIterator;
 
-      MatrixType mat( 3UL, 3UL, 0 );
-      mat(1,0) =  1;
-      mat(0,1) = -2;
-      mat(2,1) = -3;
-      mat(1,2) =  4;
-      mat(2,2) =  5;
+      MatrixType mat( { { 0, -2,  0 },
+                        { 1,  0,  4 },
+                        { 0, -3,  5 } } );
 
       // Testing the Iterator default constructor
       {
@@ -7485,11 +7337,8 @@ void ClassTest::testNonZeros()
       }
 
       {
-         blaze::DynamicMatrix<int,blaze::rowMajor> mat( 2UL, 3UL, 0 );
-         mat(0,1) = 1;
-         mat(0,2) = 2;
-         mat(1,1) = 3;
-         mat(1,2) = 0;
+         blaze::DynamicMatrix<int,blaze::rowMajor> mat( { { 0, 1, 2 },
+                                                          { 0, 3, 0 } } );
 
          checkRows    ( mat, 2UL );
          checkColumns ( mat, 3UL );
@@ -7543,11 +7392,8 @@ void ClassTest::testNonZeros()
       }
 
       {
-         blaze::DynamicMatrix<int,blaze::columnMajor> mat( 2UL, 3UL, 0 );
-         mat(0,1) = 1;
-         mat(0,2) = 2;
-         mat(1,1) = 3;
-         mat(1,2) = 0;
+         blaze::DynamicMatrix<int,blaze::columnMajor> mat( { { 0, 1, 2 },
+                                                             { 0, 3, 0 } } );
 
          checkRows    ( mat, 2UL );
          checkColumns ( mat, 3UL );
@@ -7595,13 +7441,8 @@ void ClassTest::testReset()
       test_ = "Row-major DynamicMatrix::reset()";
 
       // Initialization check
-      blaze::DynamicMatrix<int,blaze::rowMajor> mat( 2UL, 3UL );
-      mat(0,0) = 1;
-      mat(0,1) = 2;
-      mat(0,2) = 3;
-      mat(1,0) = 4;
-      mat(1,1) = 5;
-      mat(1,2) = 6;
+      blaze::DynamicMatrix<int,blaze::rowMajor> mat( { { 1, 2, 3 },
+                                                       { 4, 5, 6 } } );
 
       checkRows    ( mat, 2UL );
       checkColumns ( mat, 3UL );
@@ -7694,13 +7535,8 @@ void ClassTest::testReset()
       test_ = "Column-major DynamicMatrix::reset()";
 
       // Initialization check
-      blaze::DynamicMatrix<int,blaze::columnMajor> mat( 2UL, 3UL );
-      mat(0,0) = 1;
-      mat(0,1) = 2;
-      mat(0,2) = 3;
-      mat(1,0) = 4;
-      mat(1,1) = 5;
-      mat(1,2) = 6;
+      blaze::DynamicMatrix<int,blaze::columnMajor> mat( { { 1, 2, 3 },
+                                                          { 4, 5, 6 } } );
 
       checkRows    ( mat, 2UL );
       checkColumns ( mat, 3UL );
@@ -7813,13 +7649,8 @@ void ClassTest::testClear()
       test_ = "Row-major DynamicMatrix::clear()";
 
       // Initialization check
-      blaze::DynamicMatrix<int,blaze::rowMajor> mat( 2UL, 3UL );
-      mat(0,0) = 1;
-      mat(0,1) = 2;
-      mat(0,2) = 3;
-      mat(1,0) = 4;
-      mat(1,1) = 5;
-      mat(1,2) = 6;
+      blaze::DynamicMatrix<int,blaze::rowMajor> mat( { { 1, 2, 3 },
+                                                       { 4, 5, 6 } } );
 
       checkRows    ( mat, 2UL );
       checkColumns ( mat, 3UL );
@@ -7877,13 +7708,8 @@ void ClassTest::testClear()
       test_ = "Column-major DynamicMatrix::clear()";
 
       // Initialization check
-      blaze::DynamicMatrix<int,blaze::columnMajor> mat( 2UL, 3UL );
-      mat(0,0) = 1;
-      mat(0,1) = 2;
-      mat(0,2) = 3;
-      mat(1,0) = 4;
-      mat(1,1) = 5;
-      mat(1,2) = 6;
+      blaze::DynamicMatrix<int,blaze::columnMajor> mat( { { 1, 2, 3 },
+                                                          { 4, 5, 6 } } );
 
       checkRows    ( mat, 2UL );
       checkColumns ( mat, 3UL );
@@ -8349,15 +8175,9 @@ void ClassTest::testTranspose()
 
       // Self-transpose of a 3x5 matrix
       {
-         blaze::DynamicMatrix<int,blaze::rowMajor> mat( 3UL, 5UL, 0 );
-         mat(0,0) = 1;
-         mat(0,2) = 2;
-         mat(0,4) = 3;
-         mat(1,1) = 4;
-         mat(1,3) = 5;
-         mat(2,0) = 6;
-         mat(2,2) = 7;
-         mat(2,4) = 8;
+         blaze::DynamicMatrix<int,blaze::rowMajor> mat( { { 1, 0, 2, 0, 3 },
+                                                          { 0, 4, 0, 5, 0 },
+                                                          { 6, 0, 7, 0, 8 } } );
 
          transpose( mat );
 
@@ -8388,15 +8208,11 @@ void ClassTest::testTranspose()
 
       // Self-transpose of a 5x3 matrix
       {
-         blaze::DynamicMatrix<int,blaze::rowMajor> mat( 5UL, 3UL, 0 );
-         mat(0,0) = 1;
-         mat(0,2) = 6;
-         mat(1,1) = 4;
-         mat(2,0) = 2;
-         mat(2,2) = 7;
-         mat(3,1) = 5;
-         mat(4,0) = 3;
-         mat(4,2) = 8;
+         blaze::DynamicMatrix<int,blaze::rowMajor> mat( { { 1, 0, 6 },
+                                                          { 0, 4, 0 },
+                                                          { 2, 0, 7 },
+                                                          { 0, 5, 0 },
+                                                          { 3, 0, 8 } } );
 
          transpose( mat );
 
@@ -8427,15 +8243,9 @@ void ClassTest::testTranspose()
 
       // Self-transpose of a 3x5 matrix
       {
-         blaze::DynamicMatrix<int,blaze::rowMajor> mat( 3UL, 5UL, 0 );
-         mat(0,0) = 1;
-         mat(0,2) = 2;
-         mat(0,4) = 3;
-         mat(1,1) = 4;
-         mat(1,3) = 5;
-         mat(2,0) = 6;
-         mat(2,2) = 7;
-         mat(2,4) = 8;
+         blaze::DynamicMatrix<int,blaze::rowMajor> mat( { { 1, 0, 2, 0, 3 },
+                                                          { 0, 4, 0, 5, 0 },
+                                                          { 6, 0, 7, 0, 8 } } );
 
          mat = trans( mat );
 
@@ -8466,15 +8276,11 @@ void ClassTest::testTranspose()
 
       // Self-transpose of a 5x3 matrix
       {
-         blaze::DynamicMatrix<int,blaze::rowMajor> mat( 5UL, 3UL, 0 );
-         mat(0,0) = 1;
-         mat(0,2) = 6;
-         mat(1,1) = 4;
-         mat(2,0) = 2;
-         mat(2,2) = 7;
-         mat(3,1) = 5;
-         mat(4,0) = 3;
-         mat(4,2) = 8;
+         blaze::DynamicMatrix<int,blaze::rowMajor> mat( { { 1, 0, 6 },
+                                                          { 0, 4, 0 },
+                                                          { 2, 0, 7 },
+                                                          { 0, 5, 0 },
+                                                          { 3, 0, 8 } } );
 
          mat = trans( mat );
 
@@ -8532,15 +8338,9 @@ void ClassTest::testTranspose()
 
       // Self-transpose of a 3x5 matrix
       {
-         blaze::DynamicMatrix<int,blaze::columnMajor> mat( 3UL, 5UL, 0 );
-         mat(0,0) = 1;
-         mat(0,2) = 2;
-         mat(0,4) = 3;
-         mat(1,1) = 4;
-         mat(1,3) = 5;
-         mat(2,0) = 6;
-         mat(2,2) = 7;
-         mat(2,4) = 8;
+         blaze::DynamicMatrix<int,blaze::columnMajor> mat( { { 1, 0, 2, 0, 3 },
+                                                             { 0, 4, 0, 5, 0 },
+                                                             { 6, 0, 7, 0, 8 } } );
 
          transpose( mat );
 
@@ -8569,15 +8369,11 @@ void ClassTest::testTranspose()
 
       // Self-transpose of a 5x3 matrix
       {
-         blaze::DynamicMatrix<int,blaze::columnMajor> mat( 5UL, 3UL, 0 );
-         mat(0,0) = 1;
-         mat(0,2) = 6;
-         mat(1,1) = 4;
-         mat(2,0) = 2;
-         mat(2,2) = 7;
-         mat(3,1) = 5;
-         mat(4,0) = 3;
-         mat(4,2) = 8;
+         blaze::DynamicMatrix<int,blaze::columnMajor> mat( { { 1, 0, 6 },
+                                                             { 0, 4, 0 },
+                                                             { 2, 0, 7 },
+                                                             { 0, 5, 0 },
+                                                             { 3, 0, 8 } } );
 
          transpose( mat );
 
@@ -8610,15 +8406,9 @@ void ClassTest::testTranspose()
 
       // Self-transpose of a 3x5 matrix
       {
-         blaze::DynamicMatrix<int,blaze::columnMajor> mat( 3UL, 5UL, 0 );
-         mat(0,0) = 1;
-         mat(0,2) = 2;
-         mat(0,4) = 3;
-         mat(1,1) = 4;
-         mat(1,3) = 5;
-         mat(2,0) = 6;
-         mat(2,2) = 7;
-         mat(2,4) = 8;
+         blaze::DynamicMatrix<int,blaze::columnMajor> mat( { { 1, 0, 2, 0, 3 },
+                                                             { 0, 4, 0, 5, 0 },
+                                                             { 6, 0, 7, 0, 8 } } );
 
          mat = trans( mat );
 
@@ -8647,15 +8437,11 @@ void ClassTest::testTranspose()
 
       // Self-transpose of a 5x3 matrix
       {
-         blaze::DynamicMatrix<int,blaze::columnMajor> mat( 5UL, 3UL, 0 );
-         mat(0,0) = 1;
-         mat(0,2) = 6;
-         mat(1,1) = 4;
-         mat(2,0) = 2;
-         mat(2,2) = 7;
-         mat(3,1) = 5;
-         mat(4,0) = 3;
-         mat(4,2) = 8;
+         blaze::DynamicMatrix<int,blaze::columnMajor> mat( { { 1, 0, 6 },
+                                                             { 0, 4, 0 },
+                                                             { 2, 0, 7 },
+                                                             { 0, 5, 0 },
+                                                             { 3, 0, 8 } } );
 
          mat = trans( mat );
 
@@ -9350,51 +9136,50 @@ void ClassTest::testSwap()
    {
       test_ = "Row-major DynamicMatrix swap";
 
-      blaze::DynamicMatrix<int,blaze::rowMajor> mat1( 2UL, 2UL );
-      mat1(0,0) = 1;
-      mat1(0,1) = 2;
-      mat1(1,0) = 0;
-      mat1(1,1) = 3;
+      blaze::DynamicMatrix<int,blaze::rowMajor> mat1( { { 1, 2 },
+                                                        { 0, 3 },
+                                                        { 4, 0 } } );
 
-      blaze::DynamicMatrix<int,blaze::rowMajor> mat2( 2UL, 2UL );
-      mat2(0,0) = 4;
-      mat2(0,1) = 3;
-      mat2(1,0) = 2;
-      mat2(1,1) = 1;
+      blaze::DynamicMatrix<int,blaze::rowMajor> mat2( { { 6, 5, 4 },
+                                                        { 3, 2, 1 } } );
 
       swap( mat1, mat2 );
 
       checkRows    ( mat1, 2UL );
-      checkColumns ( mat1, 2UL );
-      checkCapacity( mat1, 4UL );
-      checkNonZeros( mat1, 4UL );
-      checkNonZeros( mat1, 0UL, 2UL );
-      checkNonZeros( mat1, 1UL, 2UL );
+      checkColumns ( mat1, 3UL );
+      checkCapacity( mat1, 6UL );
+      checkNonZeros( mat1, 6UL );
+      checkNonZeros( mat1, 0UL, 3UL );
+      checkNonZeros( mat1, 1UL, 3UL );
 
-      if( mat1(0,0) != 4 || mat1(0,1) != 3 || mat1(1,0) != 2 || mat1(1,1) != 1 ) {
+      if( mat1(0,0) != 6 || mat1(0,1) != 5 || mat1(0,2) != 4 ||
+          mat1(1,0) != 3 || mat1(1,1) != 2 || mat1(1,2) != 1 ) {
          std::ostringstream oss;
          oss << " Test: " << test_ << "\n"
              << " Error: Swapping the first matrix failed\n"
              << " Details:\n"
              << "   Result:\n" << mat1 << "\n"
-             << "   Expected result:\n( 4 3 )\n( 2 1 )\n";
+             << "   Expected result:\n( 6 5 4 )\n( 3 2 1 )\n";
          throw std::runtime_error( oss.str() );
       }
 
-      checkRows    ( mat2, 2UL );
+      checkRows    ( mat2, 3UL );
       checkColumns ( mat2, 2UL );
-      checkCapacity( mat2, 4UL );
-      checkNonZeros( mat2, 3UL );
+      checkCapacity( mat2, 6UL );
+      checkNonZeros( mat2, 4UL );
       checkNonZeros( mat2, 0UL, 2UL );
       checkNonZeros( mat2, 1UL, 1UL );
+      checkNonZeros( mat2, 2UL, 1UL );
 
-      if( mat2(0,0) != 1 || mat2(0,1) != 2 || mat2(1,0) != 0 || mat2(1,1) != 3 ) {
+      if( mat2(0,0) != 1 || mat2(0,1) != 2 ||
+          mat2(1,0) != 0 || mat2(1,1) != 3 ||
+          mat2(2,0) != 4 || mat2(2,1) != 0 ) {
          std::ostringstream oss;
          oss << " Test: " << test_ << "\n"
              << " Error: Swapping the second matrix failed\n"
              << " Details:\n"
              << "   Result:\n" << mat2 << "\n"
-             << "   Expected result:\n( 1 2 )\n( 0 3 )\n";
+             << "   Expected result:\n( 1 2 )\n( 0 3 )\n( 4, 0 )\n";
          throw std::runtime_error( oss.str() );
       }
    }
@@ -9407,51 +9192,50 @@ void ClassTest::testSwap()
    {
       test_ = "Column-major DynamicMatrix swap";
 
-      blaze::DynamicMatrix<int,blaze::columnMajor> mat1( 2UL, 2UL );
-      mat1(0,0) = 1;
-      mat1(0,1) = 0;
-      mat1(1,0) = 2;
-      mat1(1,1) = 3;
+      blaze::DynamicMatrix<int,blaze::columnMajor> mat1( { { 1, 2 },
+                                                           { 0, 3 },
+                                                           { 4, 0 } } );
 
-      blaze::DynamicMatrix<int,blaze::columnMajor> mat2( 2UL, 2UL );
-      mat2(0,0) = 4;
-      mat2(0,1) = 2;
-      mat2(1,0) = 3;
-      mat2(1,1) = 1;
+      blaze::DynamicMatrix<int,blaze::columnMajor> mat2( { { 6, 5, 4 },
+                                                           { 3, 2, 1 } } );
 
       swap( mat1, mat2 );
 
       checkRows    ( mat1, 2UL );
-      checkColumns ( mat1, 2UL );
-      checkCapacity( mat1, 4UL );
-      checkNonZeros( mat1, 4UL );
+      checkColumns ( mat1, 3UL );
+      checkCapacity( mat1, 6UL );
+      checkNonZeros( mat1, 6UL );
       checkNonZeros( mat1, 0UL, 2UL );
       checkNonZeros( mat1, 1UL, 2UL );
+      checkNonZeros( mat1, 2UL, 2UL );
 
-      if( mat1(0,0) != 4 || mat1(0,1) != 2 || mat1(1,0) != 3 || mat1(1,1) != 1 ) {
+      if( mat1(0,0) != 6 || mat1(0,1) != 5 || mat1(0,2) != 4 ||
+          mat1(1,0) != 3 || mat1(1,1) != 2 || mat1(1,2) != 1 ) {
          std::ostringstream oss;
          oss << " Test: " << test_ << "\n"
              << " Error: Swapping the first matrix failed\n"
              << " Details:\n"
              << "   Result:\n" << mat1 << "\n"
-             << "   Expected result:\n( 4 2 )\n( 3 1 )\n";
+             << "   Expected result:\n( 6 5 4 )\n( 3 2 1 )\n";
          throw std::runtime_error( oss.str() );
       }
 
-      checkRows    ( mat2, 2UL );
+      checkRows    ( mat2, 3UL );
       checkColumns ( mat2, 2UL );
-      checkCapacity( mat2, 4UL );
-      checkNonZeros( mat2, 3UL );
+      checkCapacity( mat2, 6UL );
+      checkNonZeros( mat2, 4UL );
       checkNonZeros( mat2, 0UL, 2UL );
-      checkNonZeros( mat2, 1UL, 1UL );
+      checkNonZeros( mat2, 1UL, 2UL );
 
-      if( mat2(0,0) != 1 || mat2(0,1) != 0 || mat2(1,0) != 2 || mat2(1,1) != 3 ) {
+      if( mat2(0,0) != 1 || mat2(0,1) != 2 ||
+          mat2(1,0) != 0 || mat2(1,1) != 3 ||
+          mat2(2,0) != 4 || mat2(2,1) != 0 ) {
          std::ostringstream oss;
          oss << " Test: " << test_ << "\n"
              << " Error: Swapping the second matrix failed\n"
              << " Details:\n"
              << "   Result:\n" << mat2 << "\n"
-             << "   Expected result:\n( 1 0 )\n( 2 3 )\n";
+             << "   Expected result:\n( 1 2 )\n( 0 3 )\n( 4, 0 )\n";
          throw std::runtime_error( oss.str() );
       }
    }
