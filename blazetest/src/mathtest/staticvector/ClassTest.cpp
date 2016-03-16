@@ -183,131 +183,6 @@ void ClassTest::testConstructors()
 
 
    //=====================================================================================
-   // 2D initialization constructor
-   //=====================================================================================
-
-   {
-      test_ = "StaticVector 2D initialization constructor";
-
-      blaze::StaticVector<int,2UL,blaze::rowVector> vec( 3, 5 );
-
-      checkSize    ( vec, 2UL );
-      checkCapacity( vec, 2UL );
-      checkNonZeros( vec, 2UL );
-
-      if( vec[0] != 3 || vec[1] != 5 ) {
-         std::ostringstream oss;
-         oss << " Test: " << test_ << "\n"
-             << " Error: Construction failed\n"
-             << " Details:\n"
-             << "   Result:\n" << vec << "\n"
-             << "   Expected result:\n( 3 5 )\n";
-         throw std::runtime_error( oss.str() );
-      }
-   }
-
-
-   //=====================================================================================
-   // 3D initialization constructor
-   //=====================================================================================
-
-   {
-      test_ = "StaticVector 3D initialization constructor";
-
-      blaze::StaticVector<int,3UL,blaze::rowVector> vec( 3, 5, 2 );
-
-      checkSize    ( vec, 3UL );
-      checkCapacity( vec, 3UL );
-      checkNonZeros( vec, 3UL );
-
-      if( vec[0] != 3 || vec[1] != 5 || vec[2] != 2 ) {
-         std::ostringstream oss;
-         oss << " Test: " << test_ << "\n"
-             << " Error: Construction failed\n"
-             << " Details:\n"
-             << "   Result:\n" << vec << "\n"
-             << "   Expected result:\n( 3 5 2 )\n";
-         throw std::runtime_error( oss.str() );
-      }
-   }
-
-
-   //=====================================================================================
-   // 4D initialization constructor
-   //=====================================================================================
-
-   {
-      test_ = "StaticVector 4D initialization constructor";
-
-      blaze::StaticVector<int,4UL,blaze::rowVector> vec( 3, 5, 2, -7 );
-
-      checkSize    ( vec, 4UL );
-      checkCapacity( vec, 4UL );
-      checkNonZeros( vec, 4UL );
-
-      if( vec[0] != 3 || vec[1] != 5 || vec[2] != 2 || vec[3] != -7 ) {
-         std::ostringstream oss;
-         oss << " Test: " << test_ << "\n"
-             << " Error: Construction failed\n"
-             << " Details:\n"
-             << "   Result:\n" << vec << "\n"
-             << "   Expected result:\n( 3 5 2 -7 )\n";
-         throw std::runtime_error( oss.str() );
-      }
-   }
-
-
-   //=====================================================================================
-   // 5D initialization constructor
-   //=====================================================================================
-
-   {
-      test_ = "StaticVector 5D initialization constructor";
-
-      blaze::StaticVector<int,5UL,blaze::rowVector> vec( 3, 5, 2, -7, -1 );
-
-      checkSize    ( vec, 5UL );
-      checkCapacity( vec, 5UL );
-      checkNonZeros( vec, 5UL );
-
-      if( vec[0] != 3 || vec[1] != 5 || vec[2] != 2 || vec[3] != -7 || vec[4] != -1 ) {
-         std::ostringstream oss;
-         oss << " Test: " << test_ << "\n"
-             << " Error: Construction failed\n"
-             << " Details:\n"
-             << "   Result:\n" << vec << "\n"
-             << "   Expected result:\n( 3 5 2 -7 -1 )\n";
-         throw std::runtime_error( oss.str() );
-      }
-   }
-
-
-   //=====================================================================================
-   // 6D initialization constructor
-   //=====================================================================================
-
-   {
-      test_ = "StaticVector 6D initialization constructor";
-
-      blaze::StaticVector<int,6UL,blaze::rowVector> vec( 3, 5, 2, -7, -1, 4 );
-
-      checkSize    ( vec, 6UL );
-      checkCapacity( vec, 6UL );
-      checkNonZeros( vec, 6UL );
-
-      if( vec[0] != 3 || vec[1] != 5 || vec[2] != 2 || vec[3] != -7 || vec[4] != -1 || vec[5] != 4 ) {
-         std::ostringstream oss;
-         oss << " Test: " << test_ << "\n"
-             << " Error: Construction failed\n"
-             << " Details:\n"
-             << "   Result:\n" << vec << "\n"
-             << "   Expected result:\n( 3 5 2 -7 -1 4 )\n";
-         throw std::runtime_error( oss.str() );
-      }
-   }
-
-
-   //=====================================================================================
    // Array initialization
    //=====================================================================================
 
@@ -388,7 +263,7 @@ void ClassTest::testConstructors()
    {
       test_ = "StaticVector copy constructor";
 
-      blaze::StaticVector<int,5UL,blaze::rowVector> vec1( 1, 2, 3, 4, 5 );
+      blaze::StaticVector<int,5UL,blaze::rowVector> vec1( { 1, 2, 3, 4, 5 } );
       blaze::StaticVector<int,5UL,blaze::rowVector> vec2( vec1 );
 
       checkSize    ( vec2, 5UL );
@@ -477,12 +352,7 @@ void ClassTest::testConstructors()
    try {
       test_ = "StaticVector dense vector constructor (non-fitting vector)";
 
-      blaze::DynamicVector<int,blaze::rowVector> vec1( 5UL );
-      vec1[0] = 1;
-      vec1[1] = 2;
-      vec1[2] = 3;
-      vec1[3] = 4;
-      vec1[4] = 5;
+      blaze::DynamicVector<int,blaze::rowVector> vec1( { 1, 2, 3, 4, 5 } );
       blaze::StaticVector<int,4UL,blaze::rowVector> vec2( vec1 );
 
       std::ostringstream oss;
@@ -641,7 +511,7 @@ void ClassTest::testAssignment()
    {
       test_ = "StaticVector copy assignment";
 
-      blaze::StaticVector<int,5UL,blaze::rowVector> vec1( 1, 2, 3, 4, 5 );
+      blaze::StaticVector<int,5UL,blaze::rowVector> vec1( { 1, 2, 3, 4, 5 } );
       blaze::StaticVector<int,5UL,blaze::rowVector> vec2;
       vec2 = vec1;
 
@@ -873,7 +743,7 @@ void ClassTest::testAddAssign()
       vec1[2] = -2;
       vec1[3] =  3;
       vec1[4] =  0;
-      blaze::StaticVector<int,5UL,blaze::rowVector> vec2( 0, 4,  2, -6, 7 );
+      blaze::StaticVector<int,5UL,blaze::rowVector> vec2( { 0, 4,  2, -6, 7 } );
 
       vec2 += vec1;
 
@@ -907,7 +777,7 @@ void ClassTest::testAddAssign()
       vec1[2] = -2;
       vec1[3] =  3;
       vec1[4] =  0;
-      blaze::StaticVector<int,5UL,blaze::rowVector> vec2( 0, 4,  2, -6, 7 );
+      blaze::StaticVector<int,5UL,blaze::rowVector> vec2( { 0, 4,  2, -6, 7 } );
 
       vec2 += vec1;
 
@@ -938,7 +808,7 @@ void ClassTest::testAddAssign()
       vec1[0] =  1;
       vec1[2] = -2;
       vec1[3] =  3;
-      blaze::StaticVector<int,5UL,blaze::rowVector> vec2( 0, 4, 2, -6, 7 );
+      blaze::StaticVector<int,5UL,blaze::rowVector> vec2( { 0, 4, 2, -6, 7 } );
 
       vec2 += vec1;
 
@@ -989,7 +859,7 @@ void ClassTest::testSubAssign()
       vec1[2] =  2;
       vec1[3] = -3;
       vec1[4] =  0;
-      blaze::StaticVector<int,5UL,blaze::rowVector> vec2(  0, 4, 2, -6, 7 );
+      blaze::StaticVector<int,5UL,blaze::rowVector> vec2( { 0, 4, 2, -6, 7 } );
 
       vec2 -= vec1;
 
@@ -1023,7 +893,7 @@ void ClassTest::testSubAssign()
       vec1[2] =  2;
       vec1[3] = -3;
       vec1[4] =  0;
-      blaze::StaticVector<int,5UL,blaze::rowVector> vec2(  0, 4, 2, -6, 7 );
+      blaze::StaticVector<int,5UL,blaze::rowVector> vec2( { 0, 4, 2, -6, 7 } );
 
       vec2 -= vec1;
 
@@ -1054,7 +924,7 @@ void ClassTest::testSubAssign()
       vec1[0] = -1;
       vec1[2] =  2;
       vec1[3] = -3;
-      blaze::StaticVector<int,5UL,blaze::rowVector> vec2( 0, 4, 2, -6, 7 );
+      blaze::StaticVector<int,5UL,blaze::rowVector> vec2( { 0, 4, 2, -6, 7 } );
 
       vec2 -= vec1;
 
@@ -1105,7 +975,7 @@ void ClassTest::testMultAssign()
       vec1[2] = -2;
       vec1[3] =  3;
       vec1[4] =  0;
-      blaze::StaticVector<int,5UL,blaze::rowVector> vec2( 0, 4,  2, -6, 7 );
+      blaze::StaticVector<int,5UL,blaze::rowVector> vec2( { 0, 4,  2, -6, 7 } );
 
       vec2 *= vec1;
 
@@ -1139,7 +1009,7 @@ void ClassTest::testMultAssign()
       vec1[2] = -2;
       vec1[3] =  3;
       vec1[4] =  0;
-      blaze::StaticVector<int,5UL,blaze::rowVector> vec2( 0, 4,  2, -6, 7 );
+      blaze::StaticVector<int,5UL,blaze::rowVector> vec2( { 0, 4,  2, -6, 7 } );
 
       vec2 *= vec1;
 
@@ -1170,7 +1040,7 @@ void ClassTest::testMultAssign()
       vec1[0] =  1;
       vec1[2] = -2;
       vec1[3] =  3;
-      blaze::StaticVector<int,5UL,blaze::rowVector> vec2( 0, 4, 2, -6, 7 );
+      blaze::StaticVector<int,5UL,blaze::rowVector> vec2( { 0, 4, 2, -6, 7 } );
 
       vec2 *= vec1;
 
@@ -1210,7 +1080,7 @@ void ClassTest::testScaling()
    {
       test_ = "StaticVector self-scaling (v*=s)";
 
-      blaze::StaticVector<int,5UL,blaze::rowVector> vec( 1, 0, -2, 3, 0 );
+      blaze::StaticVector<int,5UL,blaze::rowVector> vec( { 1, 0, -2, 3, 0 } );
 
       vec *= 2;
 
@@ -1237,7 +1107,7 @@ void ClassTest::testScaling()
    {
       test_ = "StaticVector self-scaling (v=v*s)";
 
-      blaze::StaticVector<int,5UL,blaze::rowVector> vec( 1, 0, -2, 3, 0 );
+      blaze::StaticVector<int,5UL,blaze::rowVector> vec( { 1, 0, -2, 3, 0 } );
 
       vec = vec * 2;
 
@@ -1264,7 +1134,7 @@ void ClassTest::testScaling()
    {
       test_ = "StaticVector self-scaling (v=s*v)";
 
-      blaze::StaticVector<int,5UL,blaze::rowVector> vec( 1, 0, -2, 3, 0 );
+      blaze::StaticVector<int,5UL,blaze::rowVector> vec( { 1, 0, -2, 3, 0 } );
 
       vec = 2 * vec;
 
@@ -1291,7 +1161,7 @@ void ClassTest::testScaling()
    {
       test_ = "StaticVector self-scaling (v/=s)";
 
-      blaze::StaticVector<int,5UL,blaze::rowVector> vec( 2, 0, -4, 6, 0 );
+      blaze::StaticVector<int,5UL,blaze::rowVector> vec( { 2, 0, -4, 6, 0 } );
 
       vec /= 2;
 
@@ -1318,7 +1188,7 @@ void ClassTest::testScaling()
    {
       test_ = "StaticVector self-scaling (v=v/s)";
 
-      blaze::StaticVector<int,5UL,blaze::rowVector> vec( 2, 0, -4, 6, 0 );
+      blaze::StaticVector<int,5UL,blaze::rowVector> vec( { 2, 0, -4, 6, 0 } );
 
       vec = vec / 2;
 
@@ -1346,7 +1216,7 @@ void ClassTest::testScaling()
       test_ = "StaticVector::scale() (int)";
 
       // Initialization check
-      blaze::StaticVector<int,4UL,blaze::rowVector> vec( 1, 2, 3, 4 );
+      blaze::StaticVector<int,4UL,blaze::rowVector> vec( { 1, 2, 3, 4 } );
 
       checkSize    ( vec, 4UL );
       checkCapacity( vec, 4UL );
@@ -2077,7 +1947,7 @@ void ClassTest::testNonZeros()
    }
 
    {
-      blaze::StaticVector<int,4UL,blaze::rowVector> vec( 1, 2, 0, 3 );
+      blaze::StaticVector<int,4UL,blaze::rowVector> vec( { 1, 2, 0, 3 } );
 
       checkSize    ( vec, 4UL );
       checkCapacity( vec, 4UL );
@@ -2113,7 +1983,7 @@ void ClassTest::testReset()
    test_ = "StaticVector::reset()";
 
    // Initialization check
-   blaze::StaticVector<int,4UL,blaze::rowVector> vec( 1, 2, 3, 4 );
+   blaze::StaticVector<int,4UL,blaze::rowVector> vec( { 1, 2, 3, 4 } );
 
    checkSize    ( vec, 4UL );
    checkCapacity( vec, 4UL );
@@ -2182,7 +2052,7 @@ void ClassTest::testClear()
    test_ = "clear() function";
 
    // Initialization check
-   blaze::StaticVector<int,4UL,blaze::rowVector> vec( 1, 2, 3, 4 );
+   blaze::StaticVector<int,4UL,blaze::rowVector> vec( { 1, 2, 3, 4 } );
 
    checkSize    ( vec, 4UL );
    checkCapacity( vec, 4UL );
@@ -2231,8 +2101,8 @@ void ClassTest::testSwap()
 {
    test_ = "StaticVector swap";
 
-   blaze::StaticVector<int,4UL,blaze::rowVector> vec1( 1, 2, 3, 4 );
-   blaze::StaticVector<int,4UL,blaze::rowVector> vec2( 4, 3, 2, 1 );
+   blaze::StaticVector<int,4UL,blaze::rowVector> vec1( { 1, 2, 3, 4 } );
+   blaze::StaticVector<int,4UL,blaze::rowVector> vec2( { 4, 3, 2, 1 } );
 
    swap( vec1, vec2 );
 
@@ -2298,7 +2168,7 @@ void ClassTest::testIsDefault()
 
    // isDefault with non-default vector
    {
-      blaze::StaticVector<int,3UL,blaze::rowVector> vec( 0, 1, 0 );
+      blaze::StaticVector<int,3UL,blaze::rowVector> vec( { 0, 1, 0 } );
 
       if( isDefault( vec[1] ) != false ) {
          std::ostringstream oss;
