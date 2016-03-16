@@ -435,9 +435,9 @@ void DenseRealTest::testConstructors()
    {
       test_ = "Row-major HermitianMatrix conversion constructor (symmetric)";
 
-      const blaze::StaticMatrix<int,3UL,3UL,blaze::rowMajor> mat(  1, -4, 7,
-                                                                  -4,  2, 0,
-                                                                   7,  0, 3 );
+      const blaze::StaticMatrix<int,3UL,3UL,blaze::rowMajor> mat( { {  1, -4, 7 },
+                                                                    { -4,  2, 0 },
+                                                                    {  7,  0, 3 } } );
 
       const HT herm( mat );
 
@@ -463,9 +463,9 @@ void DenseRealTest::testConstructors()
    {
       test_ = "Row-major HermitianMatrix conversion constructor (non-symmetric)";
 
-      const blaze::StaticMatrix<int,3UL,3UL,blaze::rowMajor> mat(  1, -4, 7,
-                                                                  -4,  2, 0,
-                                                                  -5,  0, 3 );
+      const blaze::StaticMatrix<int,3UL,3UL,blaze::rowMajor> mat( { {  1, -4, 7 },
+                                                                    { -4,  2, 0 },
+                                                                    { -5,  0, 3 } } );
 
       try {
          const HT herm( mat );
@@ -830,9 +830,9 @@ void DenseRealTest::testConstructors()
    {
       test_ = "Column-major HermitianMatrix conversion constructor (symmetric)";
 
-      const blaze::StaticMatrix<int,3UL,3UL,blaze::columnMajor> mat(  1, -4, 7,
-                                                                     -4,  2, 0,
-                                                                      7,  0, 3 );
+      const blaze::StaticMatrix<int,3UL,3UL,blaze::columnMajor> mat( { {  1, -4, 7 },
+                                                                       { -4,  2, 0 },
+                                                                       {  7,  0, 3 } } );
 
       const OHT herm( mat );
 
@@ -858,9 +858,9 @@ void DenseRealTest::testConstructors()
    {
       test_ = "Column-major HermitianMatrix conversion constructor (non-symmetric)";
 
-      const blaze::StaticMatrix<int,3UL,3UL,blaze::columnMajor> mat(  1, -4, 7,
-                                                                     -4,  2, 0,
-                                                                     -5,  0, 3 );
+      const blaze::StaticMatrix<int,3UL,3UL,blaze::columnMajor> mat( { {  1, -4, 7 },
+                                                                       { -4,  2, 0 },
+                                                                       { -5,  0, 3 } } );
 
       try {
          const OHT herm( mat );
@@ -1040,9 +1040,9 @@ void DenseRealTest::testAssignment()
    {
       test_ = "Row-major/row-major HermitianMatrix dense matrix assignment (symmetric)";
 
-      const blaze::StaticMatrix<int,3UL,3UL,blaze::rowMajor> mat(  1, -4, 7,
-                                                                  -4,  2, 0,
-                                                                   7,  0, 3 );
+      const blaze::StaticMatrix<int,3UL,3UL,blaze::rowMajor> mat( { {  1, -4, 7 },
+                                                                    { -4,  2, 0 },
+                                                                    {  7,  0, 3 } } );
 
       HT herm;
       herm = mat;
@@ -1068,9 +1068,9 @@ void DenseRealTest::testAssignment()
    {
       test_ = "Row-major/column-major HermitianMatrix dense matrix assignment (symmetric)";
 
-      const blaze::StaticMatrix<int,3UL,3UL,blaze::columnMajor> mat(  1, -4, 7,
-                                                                     -4,  2, 0,
-                                                                      7,  0, 3 );
+      const blaze::StaticMatrix<int,3UL,3UL,blaze::columnMajor> mat( { {  1, -4, 7 },
+                                                                       { -4,  2, 0 },
+                                                                       {  7,  0, 3 } } );
 
       HT herm;
       herm = mat;
@@ -1096,9 +1096,9 @@ void DenseRealTest::testAssignment()
    {
       test_ = "Row-major/row-major HermitianMatrix dense matrix assignment (non-symmetric)";
 
-      const blaze::StaticMatrix<int,3UL,3UL,blaze::rowMajor> mat(  1, -4, 7,
-                                                                  -4,  2, 0,
-                                                                  -5,  0, 3 );
+      const blaze::StaticMatrix<int,3UL,3UL,blaze::rowMajor> mat( { {  1, -4, 7 },
+                                                                    { -4,  2, 0 },
+                                                                    { -5,  0, 3 } } );
 
       try {
          HT herm;
@@ -1118,9 +1118,9 @@ void DenseRealTest::testAssignment()
    {
       test_ = "Row-major/column-major HermitianMatrix dense matrix assignment (non-symmetric)";
 
-      const blaze::StaticMatrix<int,3UL,3UL,blaze::columnMajor> mat(  1, -4, 7,
-                                                                     -4,  2, 0,
-                                                                     -5,  0, 3 );
+      const blaze::StaticMatrix<int,3UL,3UL,blaze::columnMajor> mat( { {  1, -4, 7 },
+                                                                       { -4,  2, 0 },
+                                                                       { -5,  0, 3 } } );
 
       try {
          HT herm;
@@ -1522,9 +1522,9 @@ void DenseRealTest::testAssignment()
    {
       test_ = "Column-major/row-major HermitianMatrix dense matrix assignment (symmetric)";
 
-      const blaze::StaticMatrix<int,3UL,3UL,blaze::rowMajor> mat(  1, -4, 7,
-                                                                  -4,  2, 0,
-                                                                   7,  0, 3 );
+      const blaze::StaticMatrix<int,3UL,3UL,blaze::rowMajor> mat( { {  1, -4, 7 },
+                                                                    { -4,  2, 0 },
+                                                                    {  7,  0, 3 } } );
 
       OHT herm;
       herm = mat;
@@ -1550,9 +1550,9 @@ void DenseRealTest::testAssignment()
    {
       test_ = "Column-major/column-major HermitianMatrix dense matrix assignment (symmetric)";
 
-      const blaze::StaticMatrix<int,3UL,3UL,blaze::columnMajor> mat(  1, -4, 7,
-                                                                     -4,  2, 0,
-                                                                      7,  0, 3 );
+      const blaze::StaticMatrix<int,3UL,3UL,blaze::columnMajor> mat( { {  1, -4, 7 },
+                                                                       { -4,  2, 0 },
+                                                                       {  7,  0, 3 } } );
 
       OHT herm;
       herm = mat;
@@ -1578,9 +1578,9 @@ void DenseRealTest::testAssignment()
    {
       test_ = "Column-major/row-major HermitianMatrix dense matrix assignment (non-symmetric)";
 
-      const blaze::StaticMatrix<int,3UL,3UL,blaze::rowMajor> mat(  1, -4, 7,
-                                                                  -4,  2, 0,
-                                                                  -5,  0, 3 );
+      const blaze::StaticMatrix<int,3UL,3UL,blaze::rowMajor> mat( { {  1, -4, 7 },
+                                                                    { -4,  2, 0 },
+                                                                    { -5,  0, 3 } } );
 
       try {
          OHT herm;
@@ -1600,9 +1600,9 @@ void DenseRealTest::testAssignment()
    {
       test_ = "Column-major/column-major HermitianMatrix dense matrix assignment (non-symmetric)";
 
-      const blaze::StaticMatrix<int,3UL,3UL,blaze::columnMajor> mat(  1, -4, 7,
-                                                                     -4,  2, 0,
-                                                                     -5,  0, 3 );
+      const blaze::StaticMatrix<int,3UL,3UL,blaze::columnMajor> mat( { {  1, -4, 7 },
+                                                                       { -4,  2, 0 },
+                                                                       { -5,  0, 3 } } );
 
       try {
          OHT herm;

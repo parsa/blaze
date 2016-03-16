@@ -292,673 +292,14 @@ void ClassTest::testConstructors()
 
 
    //=====================================================================================
-   // Row-major initialization constructors
-   //=====================================================================================
-
-   {
-      test_ = "Row-major StaticMatrix 1x2 initialization constructor";
-
-      blaze::StaticMatrix<int,1UL,2UL,blaze::rowMajor> mat( 1, 2 );
-
-      checkRows    ( mat, 1UL );
-      checkColumns ( mat, 2UL );
-      checkCapacity( mat, 2UL );
-      checkNonZeros( mat, 2UL );
-      checkNonZeros( mat, 0UL, 2UL );
-
-      if( mat(0,0) != 1 || mat(0,1) != 2 ) {
-         std::ostringstream oss;
-         oss << " Test: " << test_ << "\n"
-             << " Error: Construction failed\n"
-             << " Details:\n"
-             << "   Result:\n" << mat << "\n"
-             << "   Expected result:\n( 1 2 )\n";
-         throw std::runtime_error( oss.str() );
-      }
-   }
-
-   {
-      test_ = "Row-major StaticMatrix 2x1 initialization constructor";
-
-      blaze::StaticMatrix<int,2UL,1UL,blaze::rowMajor> mat( 1, 2 );
-
-      checkRows    ( mat, 2UL );
-      checkColumns ( mat, 1UL );
-      checkCapacity( mat, 2UL );
-      checkNonZeros( mat, 2UL );
-      checkNonZeros( mat, 0UL, 1UL );
-      checkNonZeros( mat, 1UL, 1UL );
-
-      if( mat(0,0) != 1 || mat(1,0) != 2 ) {
-         std::ostringstream oss;
-         oss << " Test: " << test_ << "\n"
-             << " Error: Construction failed\n"
-             << " Details:\n"
-             << "   Result:\n" << mat << "\n"
-             << "   Expected result:\n( 1 )\n( 2 )\n";
-         throw std::runtime_error( oss.str() );
-      }
-   }
-
-   {
-      test_ = "Row-major StaticMatrix 1x3 initialization constructor";
-
-      blaze::StaticMatrix<int,1UL,3UL,blaze::rowMajor> mat( 1, 2, 3 );
-
-      checkRows    ( mat, 1UL );
-      checkColumns ( mat, 3UL );
-      checkCapacity( mat, 3UL );
-      checkNonZeros( mat, 3UL );
-      checkNonZeros( mat, 0UL, 3UL );
-
-      if( mat(0,0) != 1 || mat(0,1) != 2 || mat(0,2) != 3 ) {
-         std::ostringstream oss;
-         oss << " Test: " << test_ << "\n"
-             << " Error: Construction failed\n"
-             << " Details:\n"
-             << "   Result:\n" << mat << "\n"
-             << "   Expected result:\n( 1 2 3 )\n";
-         throw std::runtime_error( oss.str() );
-      }
-   }
-
-   {
-      test_ = "Row-major StaticMatrix 3x1 initialization constructor";
-
-      blaze::StaticMatrix<int,3UL,1UL,blaze::rowMajor> mat( 1, 2, 3 );
-
-      checkRows    ( mat, 3UL );
-      checkColumns ( mat, 1UL );
-      checkCapacity( mat, 3UL );
-      checkNonZeros( mat, 3UL );
-      checkNonZeros( mat, 0UL, 1UL );
-      checkNonZeros( mat, 1UL, 1UL );
-      checkNonZeros( mat, 2UL, 1UL );
-
-      if( mat(0,0) != 1 || mat(1,0) != 2 || mat(2,0) != 3 ) {
-         std::ostringstream oss;
-         oss << " Test: " << test_ << "\n"
-             << " Error: Construction failed\n"
-             << " Details:\n"
-             << "   Result:\n" << mat << "\n"
-             << "   Expected result:\n( 1 )\n( 2 )\n( 3 )\n";
-         throw std::runtime_error( oss.str() );
-      }
-   }
-
-   {
-      test_ = "Row-major StaticMatrix 1x4 initialization constructor";
-
-      blaze::StaticMatrix<int,1UL,4UL,blaze::rowMajor> mat( 1, 2, 3, 4 );
-
-      checkRows    ( mat, 1UL );
-      checkColumns ( mat, 4UL );
-      checkCapacity( mat, 4UL );
-      checkNonZeros( mat, 4UL );
-      checkNonZeros( mat, 0UL, 4UL );
-
-      if( mat(0,0) != 1 || mat(0,1) != 2 || mat(0,2) != 3 || mat(0,3) != 4 ) {
-         std::ostringstream oss;
-         oss << " Test: " << test_ << "\n"
-             << " Error: Construction failed\n"
-             << " Details:\n"
-             << "   Result:\n" << mat << "\n"
-             << "   Expected result:\n( 1 2 3 4 )\n";
-         throw std::runtime_error( oss.str() );
-      }
-   }
-
-   {
-      test_ = "Row-major StaticMatrix 2x2 initialization constructor";
-
-      blaze::StaticMatrix<int,2UL,2UL,blaze::rowMajor> mat( 1, 2, 3, 4 );
-
-      checkRows    ( mat, 2UL );
-      checkColumns ( mat, 2UL );
-      checkCapacity( mat, 4UL );
-      checkNonZeros( mat, 4UL );
-      checkNonZeros( mat, 0UL, 2UL );
-      checkNonZeros( mat, 1UL, 2UL );
-
-      if( mat(0,0) != 1 || mat(0,1) != 2 || mat(1,0) != 3 || mat(1,1) != 4 ) {
-         std::ostringstream oss;
-         oss << " Test: " << test_ << "\n"
-             << " Error: Construction failed\n"
-             << " Details:\n"
-             << "   Result:\n" << mat << "\n"
-             << "   Expected result:\n( 1 2 )\n( 3 4 )\n";
-         throw std::runtime_error( oss.str() );
-      }
-   }
-
-   {
-      test_ = "Row-major StaticMatrix 4x1 initialization constructor";
-
-      blaze::StaticMatrix<int,4UL,1UL,blaze::rowMajor> mat( 1, 2, 3, 4 );
-
-      checkRows    ( mat, 4UL );
-      checkColumns ( mat, 1UL );
-      checkCapacity( mat, 4UL );
-      checkNonZeros( mat, 4UL );
-      checkNonZeros( mat, 0UL, 1UL );
-      checkNonZeros( mat, 1UL, 1UL );
-      checkNonZeros( mat, 2UL, 1UL );
-      checkNonZeros( mat, 3UL, 1UL );
-
-      if( mat(0,0) != 1 || mat(1,0) != 2 || mat(2,0) != 3 || mat(3,0) != 4 ) {
-         std::ostringstream oss;
-         oss << " Test: " << test_ << "\n"
-             << " Error: Construction failed\n"
-             << " Details:\n"
-             << "   Result:\n" << mat << "\n"
-             << "   Expected result:\n( 1 )\n( 2 )\n( 3 )\n( 4 )\n";
-         throw std::runtime_error( oss.str() );
-      }
-   }
-
-   {
-      test_ = "Row-major StaticMatrix 1x5 initialization constructor";
-
-      blaze::StaticMatrix<int,1UL,5UL,blaze::rowMajor> mat( 1, 2, 3, 4, 5 );
-
-      checkRows    ( mat, 1UL );
-      checkColumns ( mat, 5UL );
-      checkCapacity( mat, 5UL );
-      checkNonZeros( mat, 5UL );
-      checkNonZeros( mat, 0UL, 5UL );
-
-      if( mat(0,0) != 1 || mat(0,1) != 2 || mat(0,2) != 3 || mat(0,3) != 4 || mat(0,4) != 5 ) {
-         std::ostringstream oss;
-         oss << " Test: " << test_ << "\n"
-             << " Error: Construction failed\n"
-             << " Details:\n"
-             << "   Result:\n" << mat << "\n"
-             << "   Expected result:\n( 1 2 3 4 5 )\n";
-         throw std::runtime_error( oss.str() );
-      }
-   }
-
-   {
-      test_ = "Row-major StaticMatrix 5x1 initialization constructor";
-
-      blaze::StaticMatrix<int,5UL,1UL,blaze::rowMajor> mat( 1, 2, 3, 4, 5 );
-
-      checkRows    ( mat, 5UL );
-      checkColumns ( mat, 1UL );
-      checkCapacity( mat, 5UL );
-      checkNonZeros( mat, 5UL );
-      checkNonZeros( mat, 0UL, 1UL );
-      checkNonZeros( mat, 1UL, 1UL );
-      checkNonZeros( mat, 2UL, 1UL );
-      checkNonZeros( mat, 3UL, 1UL );
-      checkNonZeros( mat, 4UL, 1UL );
-
-      if( mat(0,0) != 1 || mat(1,0) != 2 || mat(2,0) != 3 || mat(3,0) != 4 || mat(4,0) != 5 ) {
-         std::ostringstream oss;
-         oss << " Test: " << test_ << "\n"
-             << " Error: Construction failed\n"
-             << " Details:\n"
-             << "   Result:\n" << mat << "\n"
-             << "   Expected result:\n( 1 )\n( 2 )\n( 3 )\n( 4 )\n( 5 )\n";
-         throw std::runtime_error( oss.str() );
-      }
-   }
-
-   {
-      test_ = "Row-major StaticMatrix 1x6 initialization constructor";
-
-      blaze::StaticMatrix<int,1UL,6UL,blaze::rowMajor> mat( 1, 2, 3, 4, 5, 6 );
-
-      checkRows    ( mat, 1UL );
-      checkColumns ( mat, 6UL );
-      checkCapacity( mat, 6UL );
-      checkNonZeros( mat, 6UL );
-      checkNonZeros( mat, 0UL, 6UL );
-
-      if( mat(0,0) != 1 || mat(0,1) != 2 || mat(0,2) != 3 ||
-          mat(0,3) != 4 || mat(0,4) != 5 || mat(0,5) != 6 ) {
-         std::ostringstream oss;
-         oss << " Test: " << test_ << "\n"
-             << " Error: Construction failed\n"
-             << " Details:\n"
-             << "   Result:\n" << mat << "\n"
-             << "   Expected result:\n( 1 2 3 4 5 6 )\n";
-         throw std::runtime_error( oss.str() );
-      }
-   }
-
-   {
-      test_ = "Row-major StaticMatrix 2x3 initialization constructor";
-
-      blaze::StaticMatrix<int,2UL,3UL,blaze::rowMajor> mat( 1, 2, 3, 4, 5, 6 );
-
-      checkRows    ( mat, 2UL );
-      checkColumns ( mat, 3UL );
-      checkCapacity( mat, 6UL );
-      checkNonZeros( mat, 6UL );
-      checkNonZeros( mat, 0UL, 3UL );
-      checkNonZeros( mat, 1UL, 3UL );
-
-      if( mat(0,0) != 1 || mat(0,1) != 2 || mat(0,2) != 3 ||
-          mat(1,0) != 4 || mat(1,1) != 5 || mat(1,2) != 6 ) {
-         std::ostringstream oss;
-         oss << " Test: " << test_ << "\n"
-             << " Error: Construction failed\n"
-             << " Details:\n"
-             << "   Result:\n" << mat << "\n"
-             << "   Expected result:\n( 1 2 3 )\n( 4 5 6 )\n";
-         throw std::runtime_error( oss.str() );
-      }
-   }
-
-   {
-      test_ = "Row-major StaticMatrix 3x2 initialization constructor";
-
-      blaze::StaticMatrix<int,3UL,2UL,blaze::rowMajor> mat( 1, 2, 3, 4, 5, 6 );
-
-      checkRows    ( mat, 3UL );
-      checkColumns ( mat, 2UL );
-      checkCapacity( mat, 6UL );
-      checkNonZeros( mat, 6UL );
-      checkNonZeros( mat, 0UL, 2UL );
-      checkNonZeros( mat, 1UL, 2UL );
-      checkNonZeros( mat, 2UL, 2UL );
-
-      if( mat(0,0) != 1 || mat(0,1) != 2 ||
-          mat(1,0) != 3 || mat(1,1) != 4 ||
-          mat(2,0) != 5 || mat(2,1) != 6 ) {
-         std::ostringstream oss;
-         oss << " Test: " << test_ << "\n"
-             << " Error: Construction failed\n"
-             << " Details:\n"
-             << "   Result:\n" << mat << "\n"
-             << "   Expected result:\n( 1 2 )\n( 3 4 )\n( 5 6 )\n";
-         throw std::runtime_error( oss.str() );
-      }
-   }
-
-   {
-      test_ = "Row-major StaticMatrix 6x1 initialization constructor";
-
-      blaze::StaticMatrix<int,6UL,1UL,blaze::rowMajor> mat( 1, 2, 3, 4, 5, 6 );
-
-      checkRows    ( mat, 6UL );
-      checkColumns ( mat, 1UL );
-      checkCapacity( mat, 6UL );
-      checkNonZeros( mat, 6UL );
-      checkNonZeros( mat, 0UL, 1UL );
-      checkNonZeros( mat, 1UL, 1UL );
-      checkNonZeros( mat, 2UL, 1UL );
-      checkNonZeros( mat, 3UL, 1UL );
-      checkNonZeros( mat, 4UL, 1UL );
-      checkNonZeros( mat, 5UL, 1UL );
-
-      if( mat(0,0) != 1 || mat(1,0) != 2 || mat(2,0) != 3 ||
-          mat(3,0) != 4 || mat(4,0) != 5 || mat(5,0) != 6 ) {
-         std::ostringstream oss;
-         oss << " Test: " << test_ << "\n"
-             << " Error: Construction failed\n"
-             << " Details:\n"
-             << "   Result:\n" << mat << "\n"
-             << "   Expected result:\n( 1 )\n( 2 )\n( 3 )\n( 4 )\n( 5 )\n( 6 )\n";
-         throw std::runtime_error( oss.str() );
-      }
-   }
-
-   {
-      test_ = "Row-major StaticMatrix 1x7 initialization constructor";
-
-      blaze::StaticMatrix<int,1UL,7UL,blaze::rowMajor> mat( 1, 2, 3, 4, 5, 6, 7 );
-
-      checkRows    ( mat, 1UL );
-      checkColumns ( mat, 7UL );
-      checkCapacity( mat, 7UL );
-      checkNonZeros( mat, 7UL );
-      checkNonZeros( mat, 0UL, 7UL );
-
-      if( mat(0,0) != 1 || mat(0,1) != 2 || mat(0,2) != 3 || mat(0,3) != 4 ||
-          mat(0,4) != 5 || mat(0,5) != 6 || mat(0,6) != 7 ) {
-         std::ostringstream oss;
-         oss << " Test: " << test_ << "\n"
-             << " Error: Construction failed\n"
-             << " Details:\n"
-             << "   Result:\n" << mat << "\n"
-             << "   Expected result:\n( 1 2 3 4 5 6 7 )\n";
-         throw std::runtime_error( oss.str() );
-      }
-   }
-
-   {
-      test_ = "Row-major StaticMatrix 7x1 initialization constructor";
-
-      blaze::StaticMatrix<int,7UL,1UL,blaze::rowMajor> mat( 1, 2, 3, 4, 5, 6, 7 );
-
-      checkRows    ( mat, 7UL );
-      checkColumns ( mat, 1UL );
-      checkCapacity( mat, 7UL );
-      checkNonZeros( mat, 7UL );
-      checkNonZeros( mat, 0UL, 1UL );
-      checkNonZeros( mat, 1UL, 1UL );
-      checkNonZeros( mat, 2UL, 1UL );
-      checkNonZeros( mat, 3UL, 1UL );
-      checkNonZeros( mat, 4UL, 1UL );
-      checkNonZeros( mat, 5UL, 1UL );
-      checkNonZeros( mat, 6UL, 1UL );
-
-      if( mat(0,0) != 1 || mat(1,0) != 2 || mat(2,0) != 3 || mat(3,0) != 4 ||
-          mat(4,0) != 5 || mat(5,0) != 6 || mat(6,0) != 7 ) {
-         std::ostringstream oss;
-         oss << " Test: " << test_ << "\n"
-             << " Error: Construction failed\n"
-             << " Details:\n"
-             << "   Result:\n" << mat << "\n"
-             << "   Expected result:\n( 1 )\n( 2 )\n( 3 )\n( 4 )\n( 5 )\n( 6 )\n( 7 )\n";
-         throw std::runtime_error( oss.str() );
-      }
-   }
-
-   {
-      test_ = "Row-major StaticMatrix 1x8 initialization constructor";
-
-      blaze::StaticMatrix<int,1UL,8UL,blaze::rowMajor> mat( 1, 2, 3, 4, 5, 6, 7, 8 );
-
-      checkRows    ( mat, 1UL );
-      checkColumns ( mat, 8UL );
-      checkCapacity( mat, 8UL );
-      checkNonZeros( mat, 8UL );
-      checkNonZeros( mat, 0UL, 8UL );
-
-      if( mat(0,0) != 1 || mat(0,1) != 2 || mat(0,2) != 3 || mat(0,3) != 4 ||
-          mat(0,4) != 5 || mat(0,5) != 6 || mat(0,6) != 7 || mat(0,7) != 8 ) {
-         std::ostringstream oss;
-         oss << " Test: " << test_ << "\n"
-             << " Error: Construction failed\n"
-             << " Details:\n"
-             << "   Result:\n" << mat << "\n"
-             << "   Expected result:\n( 1 2 3 4 5 6 7 8 )\n";
-         throw std::runtime_error( oss.str() );
-      }
-   }
-
-   {
-      test_ = "Row-major StaticMatrix 2x4 initialization constructor";
-
-      blaze::StaticMatrix<int,2UL,4UL,blaze::rowMajor> mat( 1, 2, 3, 4, 5, 6, 7, 8 );
-
-      checkRows    ( mat, 2UL );
-      checkColumns ( mat, 4UL );
-      checkCapacity( mat, 8UL );
-      checkNonZeros( mat, 8UL );
-      checkNonZeros( mat, 0UL, 4UL );
-      checkNonZeros( mat, 1UL, 4UL );
-
-      if( mat(0,0) != 1 || mat(0,1) != 2 || mat(0,2) != 3 || mat(0,3) != 4 ||
-          mat(1,0) != 5 || mat(1,1) != 6 || mat(1,2) != 7 || mat(1,3) != 8 ) {
-         std::ostringstream oss;
-         oss << " Test: " << test_ << "\n"
-             << " Error: Construction failed\n"
-             << " Details:\n"
-             << "   Result:\n" << mat << "\n"
-             << "   Expected result:\n( 1 2 3 4 )\n( 5 6 7 8 )\n";
-         throw std::runtime_error( oss.str() );
-      }
-   }
-
-   {
-      test_ = "Row-major StaticMatrix 4x2 initialization constructor";
-
-      blaze::StaticMatrix<int,4UL,2UL,blaze::rowMajor> mat( 1, 2, 3, 4, 5, 6, 7, 8 );
-
-      checkRows    ( mat, 4UL );
-      checkColumns ( mat, 2UL );
-      checkCapacity( mat, 8UL );
-      checkNonZeros( mat, 8UL );
-      checkNonZeros( mat, 0UL, 2UL );
-      checkNonZeros( mat, 1UL, 2UL );
-      checkNonZeros( mat, 2UL, 2UL );
-      checkNonZeros( mat, 3UL, 2UL );
-
-      if( mat(0,0) != 1 || mat(0,1) != 2 || mat(1,0) != 3 || mat(1,1) != 4 ||
-          mat(2,0) != 5 || mat(2,1) != 6 || mat(3,0) != 7 || mat(3,1) != 8 ) {
-         std::ostringstream oss;
-         oss << " Test: " << test_ << "\n"
-             << " Error: Construction failed\n"
-             << " Details:\n"
-             << "   Result:\n" << mat << "\n"
-             << "   Expected result:\n( 1 2 )\n( 3 4 )\n( 5 6 )\n( 7 8 )\n";
-         throw std::runtime_error( oss.str() );
-      }
-   }
-
-   {
-      test_ = "Row-major StaticMatrix 8x1 initialization constructor";
-
-      blaze::StaticMatrix<int,8UL,1UL,blaze::rowMajor> mat( 1, 2, 3, 4, 5, 6, 7, 8 );
-
-      checkRows    ( mat, 8UL );
-      checkColumns ( mat, 1UL );
-      checkCapacity( mat, 8UL );
-      checkNonZeros( mat, 8UL );
-      checkNonZeros( mat, 0UL, 1UL );
-      checkNonZeros( mat, 1UL, 1UL );
-      checkNonZeros( mat, 2UL, 1UL );
-      checkNonZeros( mat, 3UL, 1UL );
-      checkNonZeros( mat, 4UL, 1UL );
-      checkNonZeros( mat, 5UL, 1UL );
-      checkNonZeros( mat, 6UL, 1UL );
-      checkNonZeros( mat, 7UL, 1UL );
-
-      if( mat(0,0) != 1 || mat(1,0) != 2 || mat(2,0) != 3 || mat(3,0) != 4 ||
-          mat(4,0) != 5 || mat(5,0) != 6 || mat(6,0) != 7 || mat(7,0) != 8 ) {
-         std::ostringstream oss;
-         oss << " Test: " << test_ << "\n"
-             << " Error: Construction failed\n"
-             << " Details:\n"
-             << "   Result:\n" << mat << "\n"
-             << "   Expected result:\n( 1 )\n( 2 )\n( 3 )\n( 4 )\n( 5 )\n( 6 )\n( 7 )\n( 8 )\n";
-         throw std::runtime_error( oss.str() );
-      }
-   }
-
-   {
-      test_ = "Row-major StaticMatrix 1x9 initialization constructor";
-
-      blaze::StaticMatrix<int,1UL,9UL,blaze::rowMajor> mat( 1, 2, 3, 4, 5, 6, 7, 8, 9 );
-
-      checkRows    ( mat, 1UL );
-      checkColumns ( mat, 9UL );
-      checkCapacity( mat, 9UL );
-      checkNonZeros( mat, 9UL );
-      checkNonZeros( mat, 0UL, 9UL );
-
-      if( mat(0,0) != 1 || mat(0,1) != 2 || mat(0,2) != 3 || mat(0,3) != 4 || mat(0,4) != 5 ||
-          mat(0,5) != 6 || mat(0,6) != 7 || mat(0,7) != 8 || mat(0,8) != 9 ) {
-         std::ostringstream oss;
-         oss << " Test: " << test_ << "\n"
-             << " Error: Construction failed\n"
-             << " Details:\n"
-             << "   Result:\n" << mat << "\n"
-             << "   Expected result:\n( 1 2 3 4 5 6 7 8 9 )\n";
-         throw std::runtime_error( oss.str() );
-      }
-   }
-
-   {
-      test_ = "Row-major StaticMatrix 3x3 initialization constructor";
-
-      blaze::StaticMatrix<int,3UL,3UL,blaze::rowMajor> mat( 1, 2, 3, 4, 5, 6, 7, 8, 9 );
-
-      checkRows    ( mat, 3UL );
-      checkColumns ( mat, 3UL );
-      checkCapacity( mat, 9UL );
-      checkNonZeros( mat, 9UL );
-      checkNonZeros( mat, 0UL, 3UL );
-      checkNonZeros( mat, 1UL, 3UL );
-      checkNonZeros( mat, 2UL, 3UL );
-
-      if( mat(0,0) != 1 || mat(0,1) != 2 || mat(0,2) != 3 ||
-          mat(1,0) != 4 || mat(1,1) != 5 || mat(1,2) != 6 ||
-          mat(2,0) != 7 || mat(2,1) != 8 || mat(2,2) != 9 ) {
-         std::ostringstream oss;
-         oss << " Test: " << test_ << "\n"
-             << " Error: Construction failed\n"
-             << " Details:\n"
-             << "   Result:\n" << mat << "\n"
-             << "   Expected result:\n( 1 2 3 )\n( 4 5 6 )\n( 7 8 9 )\n";
-         throw std::runtime_error( oss.str() );
-      }
-   }
-
-   {
-      test_ = "Row-major StaticMatrix 9x1 initialization constructor";
-
-      blaze::StaticMatrix<int,9UL,1UL,blaze::rowMajor> mat( 1, 2, 3, 4, 5, 6, 7, 8, 9 );
-
-      checkRows    ( mat, 9UL );
-      checkColumns ( mat, 1UL );
-      checkCapacity( mat, 9UL );
-      checkNonZeros( mat, 9UL );
-      checkNonZeros( mat, 0UL, 1UL );
-      checkNonZeros( mat, 1UL, 1UL );
-      checkNonZeros( mat, 2UL, 1UL );
-      checkNonZeros( mat, 3UL, 1UL );
-      checkNonZeros( mat, 4UL, 1UL );
-      checkNonZeros( mat, 5UL, 1UL );
-      checkNonZeros( mat, 6UL, 1UL );
-      checkNonZeros( mat, 7UL, 1UL );
-      checkNonZeros( mat, 8UL, 1UL );
-
-      if( mat(0,0) != 1 || mat(1,0) != 2 || mat(2,0) != 3 || mat(3,0) != 4 || mat(4,0) != 5 ||
-          mat(5,0) != 6 || mat(6,0) != 7 || mat(7,0) != 8 || mat(8,0) != 9 ) {
-         std::ostringstream oss;
-         oss << " Test: " << test_ << "\n"
-             << " Error: Construction failed\n"
-             << " Details:\n"
-             << "   Result:\n" << mat << "\n"
-             << "   Expected result:\n( 1 )\n( 2 )\n( 3 )\n( 4 )\n( 5 )\n( 6 )\n( 7 )\n( 8 )\n( 9 )\n";
-         throw std::runtime_error( oss.str() );
-      }
-   }
-
-   {
-      test_ = "Row-major StaticMatrix 1x10 initialization constructor";
-
-      blaze::StaticMatrix<int,1UL,10UL,blaze::rowMajor> mat( 1, 2, 3, 4, 5, 6, 7, 8, 9, 10 );
-
-      checkRows    ( mat,  1UL );
-      checkColumns ( mat, 10UL );
-      checkCapacity( mat, 10UL );
-      checkNonZeros( mat, 10UL );
-      checkNonZeros( mat,  0UL, 10UL );
-
-      if( mat(0,0) != 1 || mat(0,1) != 2 || mat(0,2) != 3 || mat(0,3) != 4 || mat(0,4) != 5 ||
-          mat(0,5) != 6 || mat(0,6) != 7 || mat(0,7) != 8 || mat(0,8) != 9 || mat(0,9) != 10 ) {
-         std::ostringstream oss;
-         oss << " Test: " << test_ << "\n"
-             << " Error: Construction failed\n"
-             << " Details:\n"
-             << "   Result:\n" << mat << "\n"
-             << "   Expected result:\n( 1 2 3 4 5 6 7 8 9 10 )\n";
-         throw std::runtime_error( oss.str() );
-      }
-   }
-
-   {
-      test_ = "Row-major StaticMatrix 2x5 initialization constructor";
-
-      blaze::StaticMatrix<int,2UL,5UL,blaze::rowMajor> mat( 1, 2, 3, 4, 5, 6, 7, 8, 9, 10 );
-
-      checkRows    ( mat,  2UL );
-      checkColumns ( mat,  5UL );
-      checkCapacity( mat, 10UL );
-      checkNonZeros( mat, 10UL );
-      checkNonZeros( mat,  0UL, 5UL );
-      checkNonZeros( mat,  1UL, 5UL );
-
-      if( mat(0,0) != 1 || mat(0,1) != 2 || mat(0,2) != 3 || mat(0,3) != 4 || mat(0,4) != 5 ||
-          mat(1,0) != 6 || mat(1,1) != 7 || mat(1,2) != 8 || mat(1,3) != 9 || mat(1,4) != 10 ) {
-         std::ostringstream oss;
-         oss << " Test: " << test_ << "\n"
-             << " Error: Construction failed\n"
-             << " Details:\n"
-             << "   Result:\n" << mat << "\n"
-             << "   Expected result:\n( 1 2 3 4 5 )\n( 6 7 8 9 10 )\n";
-         throw std::runtime_error( oss.str() );
-      }
-   }
-
-   {
-      test_ = "Row-major StaticMatrix 5x2 initialization constructor";
-
-      blaze::StaticMatrix<int,5UL,2UL,blaze::rowMajor> mat( 1, 2, 3, 4, 5, 6, 7, 8, 9, 10 );
-
-      checkRows    ( mat,  5UL );
-      checkColumns ( mat,  2UL );
-      checkCapacity( mat, 10UL );
-      checkNonZeros( mat, 10UL );
-      checkNonZeros( mat,  0UL, 2UL );
-      checkNonZeros( mat,  1UL, 2UL );
-      checkNonZeros( mat,  2UL, 2UL );
-      checkNonZeros( mat,  3UL, 2UL );
-      checkNonZeros( mat,  4UL, 2UL );
-
-      if( mat(0,0) != 1 || mat(0,1) !=  2 ||
-          mat(1,0) != 3 || mat(1,1) !=  4 ||
-          mat(2,0) != 5 || mat(2,1) !=  6 ||
-          mat(3,0) != 7 || mat(3,1) !=  8 ||
-          mat(4,0) != 9 || mat(4,1) != 10 ) {
-         std::ostringstream oss;
-         oss << " Test: " << test_ << "\n"
-             << " Error: Construction failed\n"
-             << " Details:\n"
-             << "   Result:\n" << mat << "\n"
-             << "   Expected result:\n( 1 2 )\n( 3 4 )\n( 5 6 )\n( 7 8 )\n( 9 10 )\n";
-         throw std::runtime_error( oss.str() );
-      }
-   }
-
-   {
-      test_ = "Row-major StaticMatrix 10x1 initialization constructor";
-
-      blaze::StaticMatrix<int,10UL,1UL,blaze::rowMajor> mat( 1, 2, 3, 4, 5, 6, 7, 8, 9, 10 );
-
-      checkRows    ( mat, 10UL );
-      checkColumns ( mat,  1UL );
-      checkCapacity( mat, 10UL );
-      checkNonZeros( mat, 10UL );
-      checkNonZeros( mat,  0UL, 1UL );
-      checkNonZeros( mat,  1UL, 1UL );
-      checkNonZeros( mat,  2UL, 1UL );
-      checkNonZeros( mat,  3UL, 1UL );
-      checkNonZeros( mat,  4UL, 1UL );
-      checkNonZeros( mat,  5UL, 1UL );
-      checkNonZeros( mat,  6UL, 1UL );
-      checkNonZeros( mat,  7UL, 1UL );
-      checkNonZeros( mat,  8UL, 1UL );
-      checkNonZeros( mat,  9UL, 1UL );
-
-      if( mat(0,0) != 1 || mat(1,0) != 2 || mat(2,0) != 3 || mat(3,0) != 4 || mat(4,0) != 5 ||
-          mat(5,0) != 6 || mat(6,0) != 7 || mat(7,0) != 8 || mat(8,0) != 9 || mat(9,0) != 10 ) {
-         std::ostringstream oss;
-         oss << " Test: " << test_ << "\n"
-             << " Error: Construction failed\n"
-             << " Details:\n"
-             << "   Result:\n" << mat << "\n"
-             << "   Expected result:\n(  1 )\n(  2 )\n(  3 )\n(  4 )\n(  5 )\n"
-                                     "(  6 )\n(  7 )\n(  8 )\n(  9 )\n( 10 )\n";
-         throw std::runtime_error( oss.str() );
-      }
-   }
-
-
-   //=====================================================================================
    // Row-major copy constructor
    //=====================================================================================
 
    {
       test_ = "Row-major StaticMatrix copy constructor";
 
-      blaze::StaticMatrix<int,2UL,3UL,blaze::rowMajor> mat1( 1, 2, 3, 4, 5, 6 );
+      blaze::StaticMatrix<int,2UL,3UL,blaze::rowMajor> mat1( { { 1, 2, 3 },
+                                                               { 4, 5, 6 } } );
       blaze::StaticMatrix<int,2UL,3UL,blaze::rowMajor> mat2( mat1 );
 
       checkRows    ( mat2, 2UL );
@@ -1362,673 +703,14 @@ void ClassTest::testConstructors()
 
 
    //=====================================================================================
-   // Column-major initialization constructors
-   //=====================================================================================
-
-   {
-      test_ = "Column-major StaticMatrix 1x2 initialization constructor";
-
-      blaze::StaticMatrix<int,1UL,2UL,blaze::columnMajor> mat( 1, 2 );
-
-      checkRows    ( mat, 1UL );
-      checkColumns ( mat, 2UL );
-      checkCapacity( mat, 2UL );
-      checkNonZeros( mat, 2UL );
-      checkNonZeros( mat, 0UL, 1UL );
-      checkNonZeros( mat, 1UL, 1UL );
-
-      if( mat(0,0) != 1 || mat(0,1) != 2 ) {
-         std::ostringstream oss;
-         oss << " Test: " << test_ << "\n"
-             << " Error: Construction failed\n"
-             << " Details:\n"
-             << "   Result:\n" << mat << "\n"
-             << "   Expected result:\n( 1 2 )\n";
-         throw std::runtime_error( oss.str() );
-      }
-   }
-
-   {
-      test_ = "Column-major StaticMatrix 2x1 initialization constructor";
-
-      blaze::StaticMatrix<int,2UL,1UL,blaze::columnMajor> mat( 1, 2 );
-
-      checkRows    ( mat, 2UL );
-      checkColumns ( mat, 1UL );
-      checkCapacity( mat, 2UL );
-      checkNonZeros( mat, 2UL );
-      checkNonZeros( mat, 0UL, 2UL );
-
-      if( mat(0,0) != 1 || mat(1,0) != 2 ) {
-         std::ostringstream oss;
-         oss << " Test: " << test_ << "\n"
-             << " Error: Construction failed\n"
-             << " Details:\n"
-             << "   Result:\n" << mat << "\n"
-             << "   Expected result:\n( 1 )\n( 2 )\n";
-         throw std::runtime_error( oss.str() );
-      }
-   }
-
-   {
-      test_ = "Column-major StaticMatrix 1x3 initialization constructor";
-
-      blaze::StaticMatrix<int,1UL,3UL,blaze::columnMajor> mat( 1, 2, 3 );
-
-      checkRows    ( mat, 1UL );
-      checkColumns ( mat, 3UL );
-      checkCapacity( mat, 3UL );
-      checkNonZeros( mat, 3UL );
-      checkNonZeros( mat, 0UL, 1UL );
-      checkNonZeros( mat, 1UL, 1UL );
-      checkNonZeros( mat, 1UL, 1UL );
-
-      if( mat(0,0) != 1 || mat(0,1) != 2 || mat(0,2) != 3 ) {
-         std::ostringstream oss;
-         oss << " Test: " << test_ << "\n"
-             << " Error: Construction failed\n"
-             << " Details:\n"
-             << "   Result:\n" << mat << "\n"
-             << "   Expected result:\n( 1 2 3 )\n";
-         throw std::runtime_error( oss.str() );
-      }
-   }
-
-   {
-      test_ = "Column-major StaticMatrix 3x1 initialization constructor";
-
-      blaze::StaticMatrix<int,3UL,1UL,blaze::columnMajor> mat( 1, 2, 3 );
-
-      checkRows    ( mat, 3UL );
-      checkColumns ( mat, 1UL );
-      checkCapacity( mat, 3UL );
-      checkNonZeros( mat, 3UL );
-      checkNonZeros( mat, 0UL, 3UL );
-
-      if( mat(0,0) != 1 || mat(1,0) != 2 || mat(2,0) != 3 ) {
-         std::ostringstream oss;
-         oss << " Test: " << test_ << "\n"
-             << " Error: Construction failed\n"
-             << " Details:\n"
-             << "   Result:\n" << mat << "\n"
-             << "   Expected result:\n( 1 )\n( 2 )\n( 3 )\n";
-         throw std::runtime_error( oss.str() );
-      }
-   }
-
-   {
-      test_ = "Column-major StaticMatrix 1x4 initialization constructor";
-
-      blaze::StaticMatrix<int,1UL,4UL,blaze::columnMajor> mat( 1, 2, 3, 4 );
-
-      checkRows    ( mat, 1UL );
-      checkColumns ( mat, 4UL );
-      checkCapacity( mat, 4UL );
-      checkNonZeros( mat, 4UL );
-      checkNonZeros( mat, 0UL, 1UL );
-      checkNonZeros( mat, 1UL, 1UL );
-      checkNonZeros( mat, 2UL, 1UL );
-      checkNonZeros( mat, 3UL, 1UL );
-
-      if( mat(0,0) != 1 || mat(0,1) != 2 || mat(0,2) != 3 || mat(0,3) != 4 ) {
-         std::ostringstream oss;
-         oss << " Test: " << test_ << "\n"
-             << " Error: Construction failed\n"
-             << " Details:\n"
-             << "   Result:\n" << mat << "\n"
-             << "   Expected result:\n( 1 2 3 4 )\n";
-         throw std::runtime_error( oss.str() );
-      }
-   }
-
-   {
-      test_ = "Column-major StaticMatrix 2x2 initialization constructor";
-
-      blaze::StaticMatrix<int,2UL,2UL,blaze::columnMajor> mat( 1, 2, 3, 4 );
-
-      checkRows    ( mat, 2UL );
-      checkColumns ( mat, 2UL );
-      checkCapacity( mat, 4UL );
-      checkNonZeros( mat, 4UL );
-      checkNonZeros( mat, 0UL, 2UL );
-      checkNonZeros( mat, 1UL, 2UL );
-
-      if( mat(0,0) != 1 || mat(0,1) != 3 || mat(1,0) != 2 || mat(1,1) != 4 ) {
-         std::ostringstream oss;
-         oss << " Test: " << test_ << "\n"
-             << " Error: Construction failed\n"
-             << " Details:\n"
-             << "   Result:\n" << mat << "\n"
-             << "   Expected result:\n( 1 3 )\n( 2 4 )\n";
-         throw std::runtime_error( oss.str() );
-      }
-   }
-
-   {
-      test_ = "Column-major StaticMatrix 4x1 initialization constructor";
-
-      blaze::StaticMatrix<int,4UL,1UL,blaze::columnMajor> mat( 1, 2, 3, 4 );
-
-      checkRows    ( mat, 4UL );
-      checkColumns ( mat, 1UL );
-      checkCapacity( mat, 4UL );
-      checkNonZeros( mat, 4UL );
-      checkNonZeros( mat, 0UL, 4UL );
-
-      if( mat(0,0) != 1 || mat(1,0) != 2 || mat(2,0) != 3 || mat(3,0) != 4 ) {
-         std::ostringstream oss;
-         oss << " Test: " << test_ << "\n"
-             << " Error: Construction failed\n"
-             << " Details:\n"
-             << "   Result:\n" << mat << "\n"
-             << "   Expected result:\n( 1 )\n( 2 )\n( 3 )\n( 4 )\n";
-         throw std::runtime_error( oss.str() );
-      }
-   }
-
-   {
-      test_ = "Column-major StaticMatrix 1x5 initialization constructor";
-
-      blaze::StaticMatrix<int,1UL,5UL,blaze::columnMajor> mat( 1, 2, 3, 4, 5 );
-
-      checkRows    ( mat, 1UL );
-      checkColumns ( mat, 5UL );
-      checkCapacity( mat, 5UL );
-      checkNonZeros( mat, 5UL );
-      checkNonZeros( mat, 0UL, 1UL );
-      checkNonZeros( mat, 1UL, 1UL );
-      checkNonZeros( mat, 2UL, 1UL );
-      checkNonZeros( mat, 3UL, 1UL );
-      checkNonZeros( mat, 4UL, 1UL );
-
-      if( mat(0,0) != 1 || mat(0,1) != 2 || mat(0,2) != 3 || mat(0,3) != 4 || mat(0,4) != 5 ) {
-         std::ostringstream oss;
-         oss << " Test: " << test_ << "\n"
-             << " Error: Construction failed\n"
-             << " Details:\n"
-             << "   Result:\n" << mat << "\n"
-             << "   Expected result:\n( 1 2 3 4 5 )\n";
-         throw std::runtime_error( oss.str() );
-      }
-   }
-
-   {
-      test_ = "Column-major StaticMatrix 5x1 initialization constructor";
-
-      blaze::StaticMatrix<int,5UL,1UL,blaze::columnMajor> mat( 1, 2, 3, 4, 5 );
-
-      checkRows    ( mat, 5UL );
-      checkColumns ( mat, 1UL );
-      checkCapacity( mat, 5UL );
-      checkNonZeros( mat, 5UL );
-      checkNonZeros( mat, 0UL, 5UL );
-
-      if( mat(0,0) != 1 || mat(1,0) != 2 || mat(2,0) != 3 || mat(3,0) != 4 || mat(4,0) != 5 ) {
-         std::ostringstream oss;
-         oss << " Test: " << test_ << "\n"
-             << " Error: Construction failed\n"
-             << " Details:\n"
-             << "   Result:\n" << mat << "\n"
-             << "   Expected result:\n( 1 )\n( 2 )\n( 3 )\n( 4 )\n( 5 )\n";
-         throw std::runtime_error( oss.str() );
-      }
-   }
-
-   {
-      test_ = "Column-major StaticMatrix 1x6 initialization constructor";
-
-      blaze::StaticMatrix<int,1UL,6UL,blaze::columnMajor> mat( 1, 2, 3, 4, 5, 6 );
-
-      checkRows    ( mat, 1UL );
-      checkColumns ( mat, 6UL );
-      checkCapacity( mat, 6UL );
-      checkNonZeros( mat, 6UL );
-      checkNonZeros( mat, 0UL, 1UL );
-      checkNonZeros( mat, 1UL, 1UL );
-      checkNonZeros( mat, 2UL, 1UL );
-      checkNonZeros( mat, 3UL, 1UL );
-      checkNonZeros( mat, 4UL, 1UL );
-      checkNonZeros( mat, 5UL, 1UL );
-
-      if( mat(0,0) != 1 || mat(0,1) != 2 || mat(0,2) != 3 ||
-          mat(0,3) != 4 || mat(0,4) != 5 || mat(0,5) != 6 ) {
-         std::ostringstream oss;
-         oss << " Test: " << test_ << "\n"
-             << " Error: Construction failed\n"
-             << " Details:\n"
-             << "   Result:\n" << mat << "\n"
-             << "   Expected result:\n( 1 2 3 4 5 6 )\n";
-         throw std::runtime_error( oss.str() );
-      }
-   }
-
-   {
-      test_ = "Column-major StaticMatrix 2x3 initialization constructor";
-
-      blaze::StaticMatrix<int,2UL,3UL,blaze::columnMajor> mat( 1, 2, 3, 4, 5, 6 );
-
-      checkRows    ( mat, 2UL );
-      checkColumns ( mat, 3UL );
-      checkCapacity( mat, 6UL );
-      checkNonZeros( mat, 6UL );
-      checkNonZeros( mat, 0UL, 2UL );
-      checkNonZeros( mat, 1UL, 2UL );
-      checkNonZeros( mat, 2UL, 2UL );
-
-      if( mat(0,0) != 1 || mat(0,1) != 3 || mat(0,2) != 5 ||
-          mat(1,0) != 2 || mat(1,1) != 4 || mat(1,2) != 6 ) {
-         std::ostringstream oss;
-         oss << " Test: " << test_ << "\n"
-             << " Error: Construction failed\n"
-             << " Details:\n"
-             << "   Result:\n" << mat << "\n"
-             << "   Expected result:\n( 1 3 5 )\n( 2 4 6 )\n";
-         throw std::runtime_error( oss.str() );
-      }
-   }
-
-   {
-      test_ = "Column-major StaticMatrix 3x2 initialization constructor";
-
-      blaze::StaticMatrix<int,3UL,2UL,blaze::columnMajor> mat( 1, 2, 3, 4, 5, 6 );
-
-      checkRows    ( mat, 3UL );
-      checkColumns ( mat, 2UL );
-      checkCapacity( mat, 6UL );
-      checkNonZeros( mat, 6UL );
-      checkNonZeros( mat, 0UL, 3UL );
-      checkNonZeros( mat, 1UL, 3UL );
-
-      if( mat(0,0) != 1 || mat(0,1) != 4 ||
-          mat(1,0) != 2 || mat(1,1) != 5 ||
-          mat(2,0) != 3 || mat(2,1) != 6 ) {
-         std::ostringstream oss;
-         oss << " Test: " << test_ << "\n"
-             << " Error: Construction failed\n"
-             << " Details:\n"
-             << "   Result:\n" << mat << "\n"
-             << "   Expected result:\n( 1 4 )\n( 2 5 )\n( 3 6 )\n";
-         throw std::runtime_error( oss.str() );
-      }
-   }
-
-   {
-      test_ = "Column-major StaticMatrix 6x1 initialization constructor";
-
-      blaze::StaticMatrix<int,6UL,1UL,blaze::columnMajor> mat( 1, 2, 3, 4, 5, 6 );
-
-      checkRows    ( mat, 6UL );
-      checkColumns ( mat, 1UL );
-      checkCapacity( mat, 6UL );
-      checkNonZeros( mat, 6UL );
-      checkNonZeros( mat, 0UL, 6UL );
-
-      if( mat(0,0) != 1 || mat(1,0) != 2 || mat(2,0) != 3 ||
-          mat(3,0) != 4 || mat(4,0) != 5 || mat(5,0) != 6 ) {
-         std::ostringstream oss;
-         oss << " Test: " << test_ << "\n"
-             << " Error: Construction failed\n"
-             << " Details:\n"
-             << "   Result:\n" << mat << "\n"
-             << "   Expected result:\n( 1 )\n( 2 )\n( 3 )\n( 4 )\n( 5 )\n( 6 )\n";
-         throw std::runtime_error( oss.str() );
-      }
-   }
-
-   {
-      test_ = "Column-major StaticMatrix 1x7 initialization constructor";
-
-      blaze::StaticMatrix<int,1UL,7UL,blaze::columnMajor> mat( 1, 2, 3, 4, 5, 6, 7 );
-
-      checkRows    ( mat, 1UL );
-      checkColumns ( mat, 7UL );
-      checkCapacity( mat, 7UL );
-      checkNonZeros( mat, 7UL );
-      checkNonZeros( mat, 0UL, 1UL );
-      checkNonZeros( mat, 1UL, 1UL );
-      checkNonZeros( mat, 2UL, 1UL );
-      checkNonZeros( mat, 3UL, 1UL );
-      checkNonZeros( mat, 4UL, 1UL );
-      checkNonZeros( mat, 5UL, 1UL );
-      checkNonZeros( mat, 6UL, 1UL );
-
-      if( mat(0,0) != 1 || mat(0,1) != 2 || mat(0,2) != 3 || mat(0,3) != 4 ||
-          mat(0,4) != 5 || mat(0,5) != 6 || mat(0,6) != 7 ) {
-         std::ostringstream oss;
-         oss << " Test: " << test_ << "\n"
-             << " Error: Construction failed\n"
-             << " Details:\n"
-             << "   Result:\n" << mat << "\n"
-             << "   Expected result:\n( 1 2 3 4 5 6 7 )\n";
-         throw std::runtime_error( oss.str() );
-      }
-   }
-
-   {
-      test_ = "Column-major StaticMatrix 7x1 initialization constructor";
-
-      blaze::StaticMatrix<int,7UL,1UL,blaze::columnMajor> mat( 1, 2, 3, 4, 5, 6, 7 );
-
-      checkRows    ( mat, 7UL );
-      checkColumns ( mat, 1UL );
-      checkCapacity( mat, 7UL );
-      checkNonZeros( mat, 7UL );
-      checkNonZeros( mat, 0UL, 7UL );
-
-      if( mat(0,0) != 1 || mat(1,0) != 2 || mat(2,0) != 3 || mat(3,0) != 4 ||
-          mat(4,0) != 5 || mat(5,0) != 6 || mat(6,0) != 7 ) {
-         std::ostringstream oss;
-         oss << " Test: " << test_ << "\n"
-             << " Error: Construction failed\n"
-             << " Details:\n"
-             << "   Result:\n" << mat << "\n"
-             << "   Expected result:\n( 1 )\n( 2 )\n( 3 )\n( 4 )\n( 5 )\n( 6 )\n( 7 )\n";
-         throw std::runtime_error( oss.str() );
-      }
-   }
-
-   {
-      test_ = "Column-major StaticMatrix 1x8 initialization constructor";
-
-      blaze::StaticMatrix<int,1UL,8UL,blaze::columnMajor> mat( 1, 2, 3, 4, 5, 6, 7, 8 );
-
-      checkRows    ( mat, 1UL );
-      checkColumns ( mat, 8UL );
-      checkCapacity( mat, 8UL );
-      checkNonZeros( mat, 8UL );
-      checkNonZeros( mat, 0UL, 1UL );
-      checkNonZeros( mat, 1UL, 1UL );
-      checkNonZeros( mat, 2UL, 1UL );
-      checkNonZeros( mat, 3UL, 1UL );
-      checkNonZeros( mat, 4UL, 1UL );
-      checkNonZeros( mat, 5UL, 1UL );
-      checkNonZeros( mat, 6UL, 1UL );
-      checkNonZeros( mat, 7UL, 1UL );
-
-      if( mat(0,0) != 1 || mat(0,1) != 2 || mat(0,2) != 3 || mat(0,3) != 4 ||
-          mat(0,4) != 5 || mat(0,5) != 6 || mat(0,6) != 7 || mat(0,7) != 8 ) {
-         std::ostringstream oss;
-         oss << " Test: " << test_ << "\n"
-             << " Error: Construction failed\n"
-             << " Details:\n"
-             << "   Result:\n" << mat << "\n"
-             << "   Expected result:\n( 1 2 3 4 5 6 7 8 )\n";
-         throw std::runtime_error( oss.str() );
-      }
-   }
-
-   {
-      test_ = "Column-major StaticMatrix 2x4 initialization constructor";
-
-      blaze::StaticMatrix<int,2UL,4UL,blaze::columnMajor> mat( 1, 2, 3, 4, 5, 6, 7, 8 );
-
-      checkRows    ( mat, 2UL );
-      checkColumns ( mat, 4UL );
-      checkCapacity( mat, 8UL );
-      checkNonZeros( mat, 8UL );
-      checkNonZeros( mat, 0UL, 2UL );
-      checkNonZeros( mat, 1UL, 2UL );
-      checkNonZeros( mat, 2UL, 2UL );
-      checkNonZeros( mat, 3UL, 2UL );
-
-      if( mat(0,0) != 1 || mat(0,1) != 3 || mat(0,2) != 5 || mat(0,3) != 7 ||
-          mat(1,0) != 2 || mat(1,1) != 4 || mat(1,2) != 6 || mat(1,3) != 8 ) {
-         std::ostringstream oss;
-         oss << " Test: " << test_ << "\n"
-             << " Error: Construction failed\n"
-             << " Details:\n"
-             << "   Result:\n" << mat << "\n"
-             << "   Expected result:\n( 1 3 5 7 )\n( 2 4 6 8 )\n";
-         throw std::runtime_error( oss.str() );
-      }
-   }
-
-   {
-      test_ = "Column-major StaticMatrix 4x2 initialization constructor";
-
-      blaze::StaticMatrix<int,4UL,2UL,blaze::columnMajor> mat( 1, 2, 3, 4, 5, 6, 7, 8 );
-
-      checkRows    ( mat, 4UL );
-      checkColumns ( mat, 2UL );
-      checkCapacity( mat, 8UL );
-      checkNonZeros( mat, 8UL );
-      checkNonZeros( mat, 0UL, 4UL );
-      checkNonZeros( mat, 1UL, 4UL );
-
-      if( mat(0,0) != 1 || mat(0,1) != 5 || mat(1,0) != 2 || mat(1,1) != 6 ||
-          mat(2,0) != 3 || mat(2,1) != 7 || mat(3,0) != 4 || mat(3,1) != 8 ) {
-         std::ostringstream oss;
-         oss << " Test: " << test_ << "\n"
-             << " Error: Construction failed\n"
-             << " Details:\n"
-             << "   Result:\n" << mat << "\n"
-             << "   Expected result:\n( 1 5 )\n( 2 6 )\n( 3 7 )\n( 4 8 )\n";
-         throw std::runtime_error( oss.str() );
-      }
-   }
-
-   {
-      test_ = "Column-major StaticMatrix 8x1 initialization constructor";
-
-      blaze::StaticMatrix<int,8UL,1UL,blaze::columnMajor> mat( 1, 2, 3, 4, 5, 6, 7, 8 );
-
-      checkRows    ( mat, 8UL );
-      checkColumns ( mat, 1UL );
-      checkCapacity( mat, 8UL );
-      checkNonZeros( mat, 8UL );
-      checkNonZeros( mat, 0UL, 8UL );
-
-      if( mat(0,0) != 1 || mat(1,0) != 2 || mat(2,0) != 3 || mat(3,0) != 4 ||
-          mat(4,0) != 5 || mat(5,0) != 6 || mat(6,0) != 7 || mat(7,0) != 8 ) {
-         std::ostringstream oss;
-         oss << " Test: " << test_ << "\n"
-             << " Error: Construction failed\n"
-             << " Details:\n"
-             << "   Result:\n" << mat << "\n"
-             << "   Expected result:\n( 1 )\n( 2 )\n( 3 )\n( 4 )\n( 5 )\n( 6 )\n( 7 )\n( 8 )\n";
-         throw std::runtime_error( oss.str() );
-      }
-   }
-
-   {
-      test_ = "Column-major StaticMatrix 1x9 initialization constructor";
-
-      blaze::StaticMatrix<int,1UL,9UL,blaze::columnMajor> mat( 1, 2, 3, 4, 5, 6, 7, 8, 9 );
-
-      checkRows    ( mat, 1UL );
-      checkColumns ( mat, 9UL );
-      checkCapacity( mat, 9UL );
-      checkNonZeros( mat, 9UL );
-      checkNonZeros( mat, 0UL, 1UL );
-      checkNonZeros( mat, 1UL, 1UL );
-      checkNonZeros( mat, 2UL, 1UL );
-      checkNonZeros( mat, 3UL, 1UL );
-      checkNonZeros( mat, 4UL, 1UL );
-      checkNonZeros( mat, 5UL, 1UL );
-      checkNonZeros( mat, 6UL, 1UL );
-      checkNonZeros( mat, 7UL, 1UL );
-      checkNonZeros( mat, 8UL, 1UL );
-
-      if( mat(0,0) != 1 || mat(0,1) != 2 || mat(0,2) != 3 || mat(0,3) != 4 || mat(0,4) != 5 ||
-          mat(0,5) != 6 || mat(0,6) != 7 || mat(0,7) != 8 || mat(0,8) != 9 ) {
-         std::ostringstream oss;
-         oss << " Test: " << test_ << "\n"
-             << " Error: Construction failed\n"
-             << " Details:\n"
-             << "   Result:\n" << mat << "\n"
-             << "   Expected result:\n( 1 2 3 4 5 6 7 8 9 )\n";
-         throw std::runtime_error( oss.str() );
-      }
-   }
-
-   {
-      test_ = "Column-major StaticMatrix 3x3 initialization constructor";
-
-      blaze::StaticMatrix<int,3UL,3UL,blaze::columnMajor> mat( 1, 2, 3, 4, 5, 6, 7, 8, 9 );
-
-      checkRows    ( mat, 3UL );
-      checkColumns ( mat, 3UL );
-      checkCapacity( mat, 9UL );
-      checkNonZeros( mat, 9UL );
-      checkNonZeros( mat, 0UL, 3UL );
-      checkNonZeros( mat, 1UL, 3UL );
-      checkNonZeros( mat, 2UL, 3UL );
-
-      if( mat(0,0) != 1 || mat(0,1) != 4 || mat(0,2) != 7 ||
-          mat(1,0) != 2 || mat(1,1) != 5 || mat(1,2) != 8 ||
-          mat(2,0) != 3 || mat(2,1) != 6 || mat(2,2) != 9 ) {
-         std::ostringstream oss;
-         oss << " Test: " << test_ << "\n"
-             << " Error: Construction failed\n"
-             << " Details:\n"
-             << "   Result:\n" << mat << "\n"
-             << "   Expected result:\n( 1 4 7 )\n( 2 5 8 )\n( 3 6 9 )\n";
-         throw std::runtime_error( oss.str() );
-      }
-   }
-
-   {
-      test_ = "Column-major StaticMatrix 9x1 initialization constructor";
-
-      blaze::StaticMatrix<int,9UL,1UL,blaze::columnMajor> mat( 1, 2, 3, 4, 5, 6, 7, 8, 9 );
-
-      checkRows    ( mat, 9UL );
-      checkColumns ( mat, 1UL );
-      checkCapacity( mat, 9UL );
-      checkNonZeros( mat, 9UL );
-      checkNonZeros( mat, 0UL, 9UL );
-
-      if( mat(0,0) != 1 || mat(1,0) != 2 || mat(2,0) != 3 || mat(3,0) != 4 || mat(4,0) != 5 ||
-          mat(5,0) != 6 || mat(6,0) != 7 || mat(7,0) != 8 || mat(8,0) != 9 ) {
-         std::ostringstream oss;
-         oss << " Test: " << test_ << "\n"
-             << " Error: Construction failed\n"
-             << " Details:\n"
-             << "   Result:\n" << mat << "\n"
-             << "   Expected result:\n( 1 )\n( 2 )\n( 3 )\n( 4 )\n( 5 )\n( 6 )\n( 7 )\n( 8 )\n( 9 )\n";
-         throw std::runtime_error( oss.str() );
-      }
-   }
-
-   {
-      test_ = "Column-major StaticMatrix 1x10 initialization constructor";
-
-      blaze::StaticMatrix<int,1UL,10UL,blaze::columnMajor> mat( 1, 2, 3, 4, 5, 6, 7, 8, 9, 10 );
-
-      checkRows    ( mat,  1UL );
-      checkColumns ( mat, 10UL );
-      checkCapacity( mat, 10UL );
-      checkNonZeros( mat, 10UL );
-      checkNonZeros( mat,  0UL, 1UL );
-      checkNonZeros( mat,  1UL, 1UL );
-      checkNonZeros( mat,  2UL, 1UL );
-      checkNonZeros( mat,  3UL, 1UL );
-      checkNonZeros( mat,  4UL, 1UL );
-      checkNonZeros( mat,  5UL, 1UL );
-      checkNonZeros( mat,  6UL, 1UL );
-      checkNonZeros( mat,  7UL, 1UL );
-      checkNonZeros( mat,  8UL, 1UL );
-      checkNonZeros( mat,  9UL, 1UL );
-
-      if( mat(0,0) != 1 || mat(0,1) != 2 || mat(0,2) != 3 || mat(0,3) != 4 || mat(0,4) != 5 ||
-          mat(0,5) != 6 || mat(0,6) != 7 || mat(0,7) != 8 || mat(0,8) != 9 || mat(0,9) != 10 ) {
-         std::ostringstream oss;
-         oss << " Test: " << test_ << "\n"
-             << " Error: Construction failed\n"
-             << " Details:\n"
-             << "   Result:\n" << mat << "\n"
-             << "   Expected result:\n( 1 2 3 4 5 6 7 8 9 10 )\n";
-         throw std::runtime_error( oss.str() );
-      }
-   }
-
-   {
-      test_ = "Column-major StaticMatrix 2x5 initialization constructor";
-
-      blaze::StaticMatrix<int,2UL,5UL,blaze::columnMajor> mat( 1, 2, 3, 4, 5, 6, 7, 8, 9, 10 );
-
-      checkRows    ( mat,  2UL );
-      checkColumns ( mat,  5UL );
-      checkCapacity( mat, 10UL );
-      checkNonZeros( mat, 10UL );
-      checkNonZeros( mat,  0UL, 2UL );
-      checkNonZeros( mat,  1UL, 2UL );
-      checkNonZeros( mat,  2UL, 2UL );
-      checkNonZeros( mat,  3UL, 2UL );
-      checkNonZeros( mat,  4UL, 2UL );
-
-      if( mat(0,0) != 1 || mat(0,1) != 3 || mat(0,2) != 5 || mat(0,3) != 7 || mat(0,4) != 9 ||
-          mat(1,0) != 2 || mat(1,1) != 4 || mat(1,2) != 6 || mat(1,3) != 8 || mat(1,4) != 10 ) {
-         std::ostringstream oss;
-         oss << " Test: " << test_ << "\n"
-             << " Error: Construction failed\n"
-             << " Details:\n"
-             << "   Result:\n" << mat << "\n"
-             << "   Expected result:\n( 1 3 5 7 9 )\n( 2 4 6 8 10 )\n";
-         throw std::runtime_error( oss.str() );
-      }
-   }
-
-   {
-      test_ = "Column-major StaticMatrix 5x2 initialization constructor";
-
-      blaze::StaticMatrix<int,5UL,2UL,blaze::columnMajor> mat( 1, 2, 3, 4, 5, 6, 7, 8, 9, 10 );
-
-      checkRows    ( mat,  5UL );
-      checkColumns ( mat,  2UL );
-      checkCapacity( mat, 10UL );
-      checkNonZeros( mat, 10UL );
-      checkNonZeros( mat,  0UL, 5UL );
-      checkNonZeros( mat,  1UL, 5UL );
-
-      if( mat(0,0) != 1 || mat(0,1) !=  6 ||
-          mat(1,0) != 2 || mat(1,1) !=  7 ||
-          mat(2,0) != 3 || mat(2,1) !=  8 ||
-          mat(3,0) != 4 || mat(3,1) !=  9 ||
-          mat(4,0) != 5 || mat(4,1) != 10 ) {
-         std::ostringstream oss;
-         oss << " Test: " << test_ << "\n"
-             << " Error: Construction failed\n"
-             << " Details:\n"
-             << "   Result:\n" << mat << "\n"
-             << "   Expected result:\n( 1 6 )\n( 2 7 )\n( 3 8 )\n( 4 9 )\n( 5 10 )\n";
-         throw std::runtime_error( oss.str() );
-      }
-   }
-
-   {
-      test_ = "Column-major StaticMatrix 10x1 initialization constructor";
-
-      blaze::StaticMatrix<int,10UL,1UL,blaze::columnMajor> mat( 1, 2, 3, 4, 5, 6, 7, 8, 9, 10 );
-
-      checkRows    ( mat, 10UL );
-      checkColumns ( mat,  1UL );
-      checkCapacity( mat, 10UL );
-      checkNonZeros( mat, 10UL );
-      checkNonZeros( mat,  0UL, 10UL );
-
-      if( mat(0,0) != 1 || mat(1,0) != 2 || mat(2,0) != 3 || mat(3,0) != 4 || mat(4,0) != 5 ||
-          mat(5,0) != 6 || mat(6,0) != 7 || mat(7,0) != 8 || mat(8,0) != 9 || mat(9,0) != 10 ) {
-         std::ostringstream oss;
-         oss << " Test: " << test_ << "\n"
-             << " Error: Construction failed\n"
-             << " Details:\n"
-             << "   Result:\n" << mat << "\n"
-             << "   Expected result:\n(  1 )\n(  2 )\n(  3 )\n(  4 )\n(  5 )\n"
-                                     "(  6 )\n(  7 )\n(  8 )\n(  9 )\n( 10 )\n";
-         throw std::runtime_error( oss.str() );
-      }
-   }
-
-
-   //=====================================================================================
    // Column-major copy constructor
    //=====================================================================================
 
    {
       test_ = "Column-major StaticMatrix copy constructor";
 
-      blaze::StaticMatrix<int,2UL,3UL,blaze::columnMajor> mat1( 1, 2, 3, 4, 5, 6 );
+      blaze::StaticMatrix<int,2UL,3UL,blaze::columnMajor> mat1( { { 1, 3, 5 },
+                                                                  { 2, 4, 6 } } );
       blaze::StaticMatrix<int,2UL,3UL,blaze::columnMajor> mat2( mat1 );
 
       checkRows    ( mat2, 2UL );
@@ -2361,7 +1043,8 @@ void ClassTest::testAssignment()
    {
       test_ = "Row-major StaticMatrix copy assignment";
 
-      blaze::StaticMatrix<int,2UL,3UL,blaze::rowMajor> mat1( 1, 2, 3, 4, 5, 6 );
+      blaze::StaticMatrix<int,2UL,3UL,blaze::rowMajor> mat1( { { 1, 2, 3 },
+                                                               { 4, 5, 6 } } );
       blaze::StaticMatrix<int,2UL,3UL,blaze::rowMajor> mat2;
       mat2 = mat1;
 
@@ -3050,7 +1733,8 @@ void ClassTest::testAssignment()
    {
       test_ = "Column-major StaticMatrix copy assignment";
 
-      blaze::StaticMatrix<int,2UL,3UL,blaze::columnMajor> mat1( 1, 2, 3, 4, 5, 6 );
+      blaze::StaticMatrix<int,2UL,3UL,blaze::columnMajor> mat1( { { 1, 3, 5 },
+                                                                  { 2, 4, 6 } } );
       blaze::StaticMatrix<int,2UL,3UL,blaze::columnMajor> mat2;
       mat2 = mat1;
 
@@ -3738,7 +2422,8 @@ void ClassTest::testAddAssign()
       mat1(1,0) = -3;
       mat1(1,2) =  4;
 
-      blaze::StaticMatrix<int,2UL,3UL,blaze::rowMajor> mat2( 0, -2, 6, 5, 0, 0 );
+      blaze::StaticMatrix<int,2UL,3UL,blaze::rowMajor> mat2( { { 0, -2, 6 },
+                                                               { 5,  0, 0 } } );
 
       mat2 += mat1;
 
@@ -3777,7 +2462,8 @@ void ClassTest::testAddAssign()
       mat1(1,0) = -3;
       mat1(1,2) =  4;
 
-      blaze::StaticMatrix<int,2UL,3UL,blaze::rowMajor> mat2( 0, -2, 6, 5, 0, 0 );
+      blaze::StaticMatrix<int,2UL,3UL,blaze::rowMajor> mat2( { { 0, -2, 6 },
+                                                               { 5,  0, 0 } } );
 
       mat2 += mat1;
 
@@ -3815,7 +2501,8 @@ void ClassTest::testAddAssign()
       mat1(1,0) = -3;
       mat1(1,2) =  4;
 
-      blaze::StaticMatrix<int,2UL,3UL,blaze::rowMajor> mat2( 0, -2, 6, 5, 0, 0 );
+      blaze::StaticMatrix<int,2UL,3UL,blaze::rowMajor> mat2( { { 0, -2, 6 },
+                                                               { 5,  0, 0 } } );
 
       mat2 += mat1;
 
@@ -3854,7 +2541,8 @@ void ClassTest::testAddAssign()
       mat1(1,0) = -3;
       mat1(1,2) =  4;
 
-      blaze::StaticMatrix<int,2UL,3UL,blaze::rowMajor> mat2( 0, -2, 6, 5, 0, 0 );
+      blaze::StaticMatrix<int,2UL,3UL,blaze::rowMajor> mat2( { { 0, -2, 6 },
+                                                               { 5,  0, 0 } } );
 
       mat2 += mat1;
 
@@ -4017,7 +2705,8 @@ void ClassTest::testAddAssign()
       mat1(1,0) = -3;
       mat1(1,2) =  4;
 
-      blaze::StaticMatrix<int,2UL,3UL,blaze::rowMajor> mat2( 0, -2, 6, 5, 0, 0 );
+      blaze::StaticMatrix<int,2UL,3UL,blaze::rowMajor> mat2( { { 0, -2, 6 },
+                                                               { 5,  0, 0 } } );
 
       mat2 += mat1;
 
@@ -4049,7 +2738,8 @@ void ClassTest::testAddAssign()
       mat1(1,0) = -3;
       mat1(1,2) =  4;
 
-      blaze::StaticMatrix<int,2UL,3UL,blaze::rowMajor> mat2( 0, -2, 6, 5, 0, 0 );
+      blaze::StaticMatrix<int,2UL,3UL,blaze::rowMajor> mat2( { { 0, -2, 6 },
+                                                               { 5,  0, 0 } } );
 
       mat2 += mat1;
 
@@ -4260,7 +2950,8 @@ void ClassTest::testAddAssign()
       mat1(1,0) = -3;
       mat1(1,2) =  4;
 
-      blaze::StaticMatrix<int,2UL,3UL,blaze::columnMajor> mat2( 0, 5, -2, 0, 6, 0 );
+      blaze::StaticMatrix<int,2UL,3UL,blaze::columnMajor> mat2( { { 0, -2, 6 },
+                                                                  { 5,  0, 0 } } );
 
       mat2 += mat1;
 
@@ -4300,7 +2991,8 @@ void ClassTest::testAddAssign()
       mat1(1,0) = -3;
       mat1(1,2) =  4;
 
-      blaze::StaticMatrix<int,2UL,3UL,blaze::columnMajor> mat2( 0, 5, -2, 0, 6, 0 );
+      blaze::StaticMatrix<int,2UL,3UL,blaze::columnMajor> mat2( { { 0, -2, 6 },
+                                                                  { 5,  0, 0 } } );
 
       mat2 += mat1;
 
@@ -4339,7 +3031,8 @@ void ClassTest::testAddAssign()
       mat1(1,0) = -3;
       mat1(1,2) =  4;
 
-      blaze::StaticMatrix<int,2UL,3UL,blaze::columnMajor> mat2( 0, 5, -2, 0, 6, 0 );
+      blaze::StaticMatrix<int,2UL,3UL,blaze::columnMajor> mat2( { { 0, -2, 6 },
+                                                                  { 5,  0, 0 } } );
 
       mat2 += mat1;
 
@@ -4379,7 +3072,8 @@ void ClassTest::testAddAssign()
       mat1(1,0) = -3;
       mat1(1,2) =  4;
 
-      blaze::StaticMatrix<int,2UL,3UL,blaze::columnMajor> mat2( 0, 5, -2, 0, 6, 0 );
+      blaze::StaticMatrix<int,2UL,3UL,blaze::columnMajor> mat2( { { 0, -2, 6 },
+                                                                  { 5,  0, 0 } } );
 
       mat2 += mat1;
 
@@ -4543,7 +3237,8 @@ void ClassTest::testAddAssign()
       mat1(1,0) = -3;
       mat1(1,2) =  4;
 
-      blaze::StaticMatrix<int,2UL,3UL,blaze::columnMajor> mat2( 0, 5, -2,  0, 6, 0 );
+      blaze::StaticMatrix<int,2UL,3UL,blaze::columnMajor> mat2( { { 0, -2, 6 },
+                                                                  { 5,  0, 0 } } );
 
       mat2 += mat1;
 
@@ -4576,7 +3271,8 @@ void ClassTest::testAddAssign()
       mat1(1,0) = -3;
       mat1(1,2) =  4;
 
-      blaze::StaticMatrix<int,2UL,3UL,blaze::columnMajor> mat2( 0, 5, -2,  0, 6, 0 );
+      blaze::StaticMatrix<int,2UL,3UL,blaze::columnMajor> mat2( { { 0, -2, 6 },
+                                                                  { 5,  0, 0 } } );
 
       mat2 += mat1;
 
@@ -4759,7 +3455,8 @@ void ClassTest::testSubAssign()
       mat1(1,0) =  3;
       mat1(1,2) = -4;
 
-      blaze::StaticMatrix<int,2UL,3UL,blaze::rowMajor> mat2( 0, -2, 6, 5, 0, 0 );
+      blaze::StaticMatrix<int,2UL,3UL,blaze::rowMajor> mat2( { { 0, -2, 6 },
+                                                               { 5,  0, 0 } } );
 
       mat2 -= mat1;
 
@@ -4798,7 +3495,8 @@ void ClassTest::testSubAssign()
       mat1(1,0) =  3;
       mat1(1,2) = -4;
 
-      blaze::StaticMatrix<int,2UL,3UL,blaze::rowMajor> mat2( 0, -2, 6, 5, 0, 0 );
+      blaze::StaticMatrix<int,2UL,3UL,blaze::rowMajor> mat2( { { 0, -2, 6 },
+                                                               { 5,  0, 0 } } );
 
       mat2 -= mat1;
 
@@ -4836,7 +3534,8 @@ void ClassTest::testSubAssign()
       mat1(1,0) =  3;
       mat1(1,2) = -4;
 
-      blaze::StaticMatrix<int,2UL,3UL,blaze::rowMajor> mat2( 0, -2, 6, 5, 0, 0 );
+      blaze::StaticMatrix<int,2UL,3UL,blaze::rowMajor> mat2( { { 0, -2, 6 },
+                                                               { 5,  0, 0 } } );
 
       mat2 -= mat1;
 
@@ -4875,7 +3574,8 @@ void ClassTest::testSubAssign()
       mat1(1,0) =  3;
       mat1(1,2) = -4;
 
-      blaze::StaticMatrix<int,2UL,3UL,blaze::rowMajor> mat2( 0, -2, 6, 5, 0, 0 );
+      blaze::StaticMatrix<int,2UL,3UL,blaze::rowMajor> mat2( { { 0, -2, 6 },
+                                                               { 5,  0, 0 } } );
 
       mat2 -= mat1;
 
@@ -5038,7 +3738,8 @@ void ClassTest::testSubAssign()
       mat1(1,0) =  3;
       mat1(1,2) = -4;
 
-      blaze::StaticMatrix<int,2UL,3UL,blaze::rowMajor> mat2( 0, -2, 6, 5, 0, 0 );
+      blaze::StaticMatrix<int,2UL,3UL,blaze::rowMajor> mat2( { { 0, -2, 6 },
+                                                               { 5,  0, 0 } } );
 
       mat2 -= mat1;
 
@@ -5070,7 +3771,8 @@ void ClassTest::testSubAssign()
       mat1(1,0) =  3;
       mat1(1,2) = -4;
 
-      blaze::StaticMatrix<int,2UL,3UL,blaze::rowMajor> mat2( 0, -2, 6, 5, 0, 0 );
+      blaze::StaticMatrix<int,2UL,3UL,blaze::rowMajor> mat2( { { 0, -2, 6 },
+                                                               { 5,  0, 0 } } );
 
       mat2 -= mat1;
 
@@ -5239,7 +3941,8 @@ void ClassTest::testSubAssign()
       mat1(1,0) =  3;
       mat1(1,2) = -4;
 
-      blaze::StaticMatrix<int,2UL,3UL,blaze::columnMajor> mat2( 0, 5, -2, 0, 6, 0 );
+      blaze::StaticMatrix<int,2UL,3UL,blaze::columnMajor> mat2( { { 0, -2, 6 },
+                                                                  { 5,  0, 0 } } );
 
       mat2 -= mat1;
 
@@ -5279,7 +3982,8 @@ void ClassTest::testSubAssign()
       mat1(1,0) =  3;
       mat1(1,2) = -4;
 
-      blaze::StaticMatrix<int,2UL,3UL,blaze::columnMajor> mat2( 0, 5, -2, 0, 6, 0 );
+      blaze::StaticMatrix<int,2UL,3UL,blaze::columnMajor> mat2( { { 0, -2, 6 },
+                                                                  { 5,  0, 0 } } );
 
       mat2 -= mat1;
 
@@ -5318,7 +4022,8 @@ void ClassTest::testSubAssign()
       mat1(1,0) =  3;
       mat1(1,2) = -4;
 
-      blaze::StaticMatrix<int,2UL,3UL,blaze::columnMajor> mat2( 0, 5, -2, 0, 6, 0 );
+      blaze::StaticMatrix<int,2UL,3UL,blaze::columnMajor> mat2( { { 0, -2, 6 },
+                                                                  { 5,  0, 0 } } );
 
       mat2 -= mat1;
 
@@ -5358,7 +4063,8 @@ void ClassTest::testSubAssign()
       mat1(1,0) =  3;
       mat1(1,2) = -4;
 
-      blaze::StaticMatrix<int,2UL,3UL,blaze::columnMajor> mat2( 0, 5, -2, 0, 6, 0 );
+      blaze::StaticMatrix<int,2UL,3UL,blaze::columnMajor> mat2( { { 0, -2, 6 },
+                                                                  { 5,  0, 0 } } );
 
       mat2 -= mat1;
 
@@ -5522,7 +4228,8 @@ void ClassTest::testSubAssign()
       mat1(1,0) =  3;
       mat1(1,2) = -4;
 
-      blaze::StaticMatrix<int,2UL,3UL,blaze::columnMajor> mat2( 0, 5, -2,  0, 6, 0 );
+      blaze::StaticMatrix<int,2UL,3UL,blaze::columnMajor> mat2( { { 0, -2, 6 },
+                                                                  { 5,  0, 0 } } );
 
       mat2 -= mat1;
 
@@ -5555,7 +4262,8 @@ void ClassTest::testSubAssign()
       mat1(1,0) =  3;
       mat1(1,2) = -4;
 
-      blaze::StaticMatrix<int,2UL,3UL,blaze::columnMajor> mat2( 0, 5, -2,  0, 6, 0 );
+      blaze::StaticMatrix<int,2UL,3UL,blaze::columnMajor> mat2( { { 0, -2, 6 },
+                                                                  { 5,  0, 0 } } );
 
       mat2 -= mat1;
 
@@ -5739,12 +4447,9 @@ void ClassTest::testMultAssign()
       mat1(1,2) = 4;
       mat1(2,2) = 5;
 
-      blaze::StaticMatrix<int,3UL,3UL,blaze::rowMajor> mat2;
-      mat2(0,0) = 1;
-      mat2(0,2) = 2;
-      mat2(1,1) = 3;
-      mat2(2,0) = 4;
-      mat2(2,2) = 5;
+      blaze::StaticMatrix<int,3UL,3UL,blaze::rowMajor> mat2( { { 1, 0, 2 },
+                                                               { 0, 3, 0 },
+                                                               { 4, 0, 5 } } );
 
       mat2 *= mat1;
 
@@ -5785,12 +4490,9 @@ void ClassTest::testMultAssign()
       mat1(1,2) = 4;
       mat1(2,2) = 5;
 
-      blaze::StaticMatrix<int,3UL,3UL,blaze::rowMajor> mat2;
-      mat2(0,0) = 1;
-      mat2(0,2) = 2;
-      mat2(1,1) = 3;
-      mat2(2,0) = 4;
-      mat2(2,2) = 5;
+      blaze::StaticMatrix<int,3UL,3UL,blaze::rowMajor> mat2( { { 1, 0, 2 },
+                                                               { 0, 3, 0 },
+                                                               { 4, 0, 5 } } );
 
       mat2 *= mat1;
 
@@ -5830,12 +4532,9 @@ void ClassTest::testMultAssign()
       mat1(1,2) = 4;
       mat1(2,2) = 5;
 
-      blaze::StaticMatrix<int,3UL,3UL,blaze::rowMajor> mat2;
-      mat2(0,0) = 1;
-      mat2(0,2) = 2;
-      mat2(1,1) = 3;
-      mat2(2,0) = 4;
-      mat2(2,2) = 5;
+      blaze::StaticMatrix<int,3UL,3UL,blaze::rowMajor> mat2( { { 1, 0, 2 },
+                                                               { 0, 3, 0 },
+                                                               { 4, 0, 5 } } );
 
       mat2 *= mat1;
 
@@ -5876,12 +4575,9 @@ void ClassTest::testMultAssign()
       mat1(1,2) = 4;
       mat1(2,2) = 5;
 
-      blaze::StaticMatrix<int,3UL,3UL,blaze::rowMajor> mat2;
-      mat2(0,0) = 1;
-      mat2(0,2) = 2;
-      mat2(1,1) = 3;
-      mat2(2,0) = 4;
-      mat2(2,2) = 5;
+      blaze::StaticMatrix<int,3UL,3UL,blaze::rowMajor> mat2( { { 1, 0, 2 },
+                                                               { 0, 3, 0 },
+                                                               { 4, 0, 5 } } );
 
       mat2 *= mat1;
 
@@ -5920,12 +4616,9 @@ void ClassTest::testMultAssign()
       mat1(1,2) = 4;
       mat1(2,2) = 5;
 
-      blaze::StaticMatrix<int,3UL,3UL,blaze::rowMajor> mat2;
-      mat2(0,0) = 1;
-      mat2(0,2) = 2;
-      mat2(1,1) = 3;
-      mat2(2,0) = 4;
-      mat2(2,2) = 5;
+      blaze::StaticMatrix<int,3UL,3UL,blaze::rowMajor> mat2( { { 1, 0, 2 },
+                                                               { 0, 3, 0 },
+                                                               { 4, 0, 5 } } );
 
       mat2 *= mat1;
 
@@ -5959,12 +4652,9 @@ void ClassTest::testMultAssign()
       mat1(1,2) = 4;
       mat1(2,2) = 5;
 
-      blaze::StaticMatrix<int,3UL,3UL,blaze::rowMajor> mat2;
-      mat2(0,0) = 1;
-      mat2(0,2) = 2;
-      mat2(1,1) = 3;
-      mat2(2,0) = 4;
-      mat2(2,2) = 5;
+      blaze::StaticMatrix<int,3UL,3UL,blaze::rowMajor> mat2( { { 1, 0, 2 },
+                                                               { 0, 3, 0 },
+                                                               { 4, 0, 5 } } );
 
       mat2 *= mat1;
 
@@ -6009,12 +4699,9 @@ void ClassTest::testMultAssign()
       mat1(1,2) = 4;
       mat1(2,2) = 5;
 
-      blaze::StaticMatrix<int,3UL,3UL,blaze::columnMajor> mat2;
-      mat2(0,0) = 1;
-      mat2(0,2) = 2;
-      mat2(1,1) = 3;
-      mat2(2,0) = 4;
-      mat2(2,2) = 5;
+      blaze::StaticMatrix<int,3UL,3UL,blaze::columnMajor> mat2( { { 1, 0, 2 },
+                                                                  { 0, 3, 0 },
+                                                                  { 4, 0, 5 } } );
 
       mat2 *= mat1;
 
@@ -6055,12 +4742,9 @@ void ClassTest::testMultAssign()
       mat1(1,2) = 4;
       mat1(2,2) = 5;
 
-      blaze::StaticMatrix<int,3UL,3UL,blaze::columnMajor> mat2;
-      mat2(0,0) = 1;
-      mat2(0,2) = 2;
-      mat2(1,1) = 3;
-      mat2(2,0) = 4;
-      mat2(2,2) = 5;
+      blaze::StaticMatrix<int,3UL,3UL,blaze::columnMajor> mat2( { { 1, 0, 2 },
+                                                                  { 0, 3, 0 },
+                                                                  { 4, 0, 5 } } );
 
       mat2 *= mat1;
 
@@ -6100,12 +4784,9 @@ void ClassTest::testMultAssign()
       mat1(1,2) = 4;
       mat1(2,2) = 5;
 
-      blaze::StaticMatrix<int,3UL,3UL,blaze::columnMajor> mat2;
-      mat2(0,0) = 1;
-      mat2(0,2) = 2;
-      mat2(1,1) = 3;
-      mat2(2,0) = 4;
-      mat2(2,2) = 5;
+      blaze::StaticMatrix<int,3UL,3UL,blaze::columnMajor> mat2( { { 1, 0, 2 },
+                                                                  { 0, 3, 0 },
+                                                                  { 4, 0, 5 } } );
 
       mat2 *= mat1;
 
@@ -6146,12 +4827,9 @@ void ClassTest::testMultAssign()
       mat1(1,2) = 4;
       mat1(2,2) = 5;
 
-      blaze::StaticMatrix<int,3UL,3UL,blaze::columnMajor> mat2;
-      mat2(0,0) = 1;
-      mat2(0,2) = 2;
-      mat2(1,1) = 3;
-      mat2(2,0) = 4;
-      mat2(2,2) = 5;
+      blaze::StaticMatrix<int,3UL,3UL,blaze::columnMajor> mat2( { { 1, 0, 2 },
+                                                                  { 0, 3, 0 },
+                                                                  { 4, 0, 5 } } );
 
       mat2 *= mat1;
 
@@ -6190,12 +4868,9 @@ void ClassTest::testMultAssign()
       mat1(1,2) = 4;
       mat1(2,2) = 5;
 
-      blaze::StaticMatrix<int,3UL,3UL,blaze::columnMajor> mat2;
-      mat2(0,0) = 1;
-      mat2(0,2) = 2;
-      mat2(1,1) = 3;
-      mat2(2,0) = 4;
-      mat2(2,2) = 5;
+      blaze::StaticMatrix<int,3UL,3UL,blaze::columnMajor> mat2( { { 1, 0, 2 },
+                                                                  { 0, 3, 0 },
+                                                                  { 4, 0, 5 } } );
 
       mat2 *= mat1;
 
@@ -6229,12 +4904,9 @@ void ClassTest::testMultAssign()
       mat1(1,2) = 4;
       mat1(2,2) = 5;
 
-      blaze::StaticMatrix<int,3UL,3UL,blaze::columnMajor> mat2;
-      mat2(0,0) = 1;
-      mat2(0,2) = 2;
-      mat2(1,1) = 3;
-      mat2(2,0) = 4;
-      mat2(2,2) = 5;
+      blaze::StaticMatrix<int,3UL,3UL,blaze::columnMajor> mat2( { { 1, 0, 2 },
+                                                                  { 0, 3, 0 },
+                                                                  { 4, 0, 5 } } );
 
       mat2 *= mat1;
 
@@ -6279,10 +4951,9 @@ void ClassTest::testScaling()
    {
       test_ = "Row-major self-scaling (M*=s)";
 
-      blaze::StaticMatrix<int,3UL,3UL,blaze::rowMajor> mat( 0 );
-      mat(1,2) =  1;
-      mat(2,0) = -2;
-      mat(2,2) =  3;
+      blaze::StaticMatrix<int,3UL,3UL,blaze::rowMajor> mat( { {  0, 0, 0 },
+                                                              {  0, 0, 1 },
+                                                              { -2, 0, 3 } } );
 
       mat *= 2;
 
@@ -6314,10 +4985,9 @@ void ClassTest::testScaling()
    {
       test_ = "Row-major self-scaling (M=M*s)";
 
-      blaze::StaticMatrix<int,3UL,3UL,blaze::rowMajor> mat( 0 );
-      mat(1,2) =  1;
-      mat(2,0) = -2;
-      mat(2,2) =  3;
+      blaze::StaticMatrix<int,3UL,3UL,blaze::rowMajor> mat( { {  0, 0, 0 },
+                                                              {  0, 0, 1 },
+                                                              { -2, 0, 3 } } );;
 
       mat = mat * 2;
 
@@ -6349,10 +5019,9 @@ void ClassTest::testScaling()
    {
       test_ = "Row-major self-scaling (M=s*M)";
 
-      blaze::StaticMatrix<int,3UL,3UL,blaze::rowMajor> mat( 0 );
-      mat(1,2) =  1;
-      mat(2,0) = -2;
-      mat(2,2) =  3;
+      blaze::StaticMatrix<int,3UL,3UL,blaze::rowMajor> mat( { {  0, 0, 0 },
+                                                              {  0, 0, 1 },
+                                                              { -2, 0, 3 } } );
 
       mat = 2 * mat;
 
@@ -6384,10 +5053,9 @@ void ClassTest::testScaling()
    {
       test_ = "Row-major self-scaling (M/=s)";
 
-      blaze::StaticMatrix<int,3UL,3UL,blaze::rowMajor> mat( 0 );
-      mat(1,2) =  2;
-      mat(2,0) = -4;
-      mat(2,2) =  6;
+      blaze::StaticMatrix<int,3UL,3UL,blaze::rowMajor> mat( { {  0, 0, 0 },
+                                                              {  0, 0, 2 },
+                                                              { -4, 0, 6 } } );
 
       mat /= 2;
 
@@ -6419,10 +5087,9 @@ void ClassTest::testScaling()
    {
       test_ = "Row-major self-scaling (M=M/s)";
 
-      blaze::StaticMatrix<int,3UL,3UL,blaze::rowMajor> mat( 0 );
-      mat(1,2) =  2;
-      mat(2,0) = -4;
-      mat(2,2) =  6;
+      blaze::StaticMatrix<int,3UL,3UL,blaze::rowMajor> mat( { {  0, 0, 0 },
+                                                              {  0, 0, 2 },
+                                                              { -4, 0, 6 } } );
 
       mat = mat / 2;
 
@@ -6455,7 +5122,9 @@ void ClassTest::testScaling()
       test_ = "Row-major StaticMatrix::scale() (int)";
 
       // Initialization check
-      blaze::StaticMatrix<int,3UL,2UL,blaze::rowMajor> mat( 1, 2, 3, 4, 5, 6 );
+      blaze::StaticMatrix<int,3UL,2UL,blaze::rowMajor> mat( { { 1, 2 },
+                                                              { 3, 4 },
+                                                              { 5, 6 } } );
 
       checkRows    ( mat, 3UL );
       checkColumns ( mat, 2UL );
@@ -6563,10 +5232,9 @@ void ClassTest::testScaling()
    {
       test_ = "Column-major self-scaling (M*=s)";
 
-      blaze::StaticMatrix<int,3UL,3UL,blaze::columnMajor> mat( 0 );
-      mat(1,2) =  1;
-      mat(2,0) = -2;
-      mat(2,2) =  3;
+      blaze::StaticMatrix<int,3UL,3UL,blaze::columnMajor> mat( { {  0, 0, 0 },
+                                                                 {  0, 0, 1 },
+                                                                 { -2, 0, 3 } } );
 
       mat *= 2;
 
@@ -6598,10 +5266,9 @@ void ClassTest::testScaling()
    {
       test_ = "Column-major self-scaling (M=M*s)";
 
-      blaze::StaticMatrix<int,3UL,3UL,blaze::columnMajor> mat( 0 );
-      mat(1,2) =  1;
-      mat(2,0) = -2;
-      mat(2,2) =  3;
+      blaze::StaticMatrix<int,3UL,3UL,blaze::columnMajor> mat( { {  0, 0, 0 },
+                                                                 {  0, 0, 1 },
+                                                                 { -2, 0, 3 } } );
 
       mat = mat * 2;
 
@@ -6633,10 +5300,9 @@ void ClassTest::testScaling()
    {
       test_ = "Column-major self-scaling (M=s*M)";
 
-      blaze::StaticMatrix<int,3UL,3UL,blaze::columnMajor> mat( 0 );
-      mat(1,2) =  1;
-      mat(2,0) = -2;
-      mat(2,2) =  3;
+      blaze::StaticMatrix<int,3UL,3UL,blaze::columnMajor> mat( { {  0, 0, 0 },
+                                                                 {  0, 0, 1 },
+                                                                 { -2, 0, 3 } } );
 
       mat = 2 * mat;
 
@@ -6668,10 +5334,9 @@ void ClassTest::testScaling()
    {
       test_ = "Column-major self-scaling (M/=s)";
 
-      blaze::StaticMatrix<int,3UL,3UL,blaze::columnMajor> mat( 0 );
-      mat(1,2) =  2;
-      mat(2,0) = -4;
-      mat(2,2) =  6;
+      blaze::StaticMatrix<int,3UL,3UL,blaze::columnMajor> mat( { {  0, 0, 0 },
+                                                                 {  0, 0, 2 },
+                                                                 { -4, 0, 6 } } );
 
       mat /= 2;
 
@@ -6703,10 +5368,9 @@ void ClassTest::testScaling()
    {
       test_ = "Column-major self-scaling (M=M/s)";
 
-      blaze::StaticMatrix<int,3UL,3UL,blaze::columnMajor> mat( 0 );
-      mat(1,2) =  2;
-      mat(2,0) = -4;
-      mat(2,2) =  6;
+      blaze::StaticMatrix<int,3UL,3UL,blaze::columnMajor> mat( { {  0, 0, 0 },
+                                                                 {  0, 0, 2 },
+                                                                 { -4, 0, 6 } } );
 
       mat = mat / 2;
 
@@ -6739,7 +5403,9 @@ void ClassTest::testScaling()
       test_ = "Column-major StaticMatrix::scale() (int)";
 
       // Initialization check
-      blaze::StaticMatrix<int,3UL,2UL,blaze::columnMajor> mat( 1, 2, 3, 4, 5, 6 );
+      blaze::StaticMatrix<int,3UL,2UL,blaze::columnMajor> mat( { { 1, 4 },
+                                                                 { 2, 5 },
+                                                                 { 3, 6 } } );
 
       checkRows    ( mat, 3UL );
       checkColumns ( mat, 2UL );
@@ -7687,12 +6353,9 @@ void ClassTest::testIterator()
       typedef MatrixType::Iterator                              Iterator;
       typedef MatrixType::ConstIterator                         ConstIterator;
 
-      MatrixType mat( 0 );
-      mat(0,1) =  1;
-      mat(1,0) = -2;
-      mat(1,2) = -3;
-      mat(2,1) =  4;
-      mat(2,2) =  5;
+      MatrixType mat( { {  0, 1,  0 },
+                        { -2, 0, -3 },
+                        {  0, 4,  5 } } );
 
       // Testing the Iterator default constructor
       {
@@ -7990,12 +6653,9 @@ void ClassTest::testIterator()
       typedef MatrixType::Iterator                                 Iterator;
       typedef MatrixType::ConstIterator                            ConstIterator;
 
-      MatrixType mat( 0 );
-      mat(1,0) =  1;
-      mat(0,1) = -2;
-      mat(2,1) = -3;
-      mat(1,2) =  4;
-      mat(2,2) =  5;
+      MatrixType mat( { { 0, -2,  0 },
+                        { 1,  0,  4 },
+                        { 0, -3,  5 } } );
 
       // Testing the Iterator default constructor
       {
@@ -8344,7 +7004,8 @@ void ClassTest::testNonZeros()
       }
 
       {
-         blaze::StaticMatrix<int,2UL,3UL,blaze::rowMajor> mat( 1, 2, 0, 3, 4, 0 );
+         blaze::StaticMatrix<int,2UL,3UL,blaze::rowMajor> mat( { { 1, 2, 0 },
+                                                                 { 3, 4, 0 } } );
 
          checkRows    ( mat, 2UL );
          checkColumns ( mat, 3UL );
@@ -8398,7 +7059,8 @@ void ClassTest::testNonZeros()
       }
 
       {
-         blaze::StaticMatrix<int,2UL,3UL,blaze::columnMajor> mat( 1, 2, 0, 3, 4, 0 );
+         blaze::StaticMatrix<int,2UL,3UL,blaze::columnMajor> mat( { { 1, 0, 4 },
+                                                                    { 2, 3, 0 } } );
 
          checkRows    ( mat, 2UL );
          checkColumns ( mat, 3UL );
@@ -8446,7 +7108,8 @@ void ClassTest::testReset()
       test_ = "Row-major StaticMatrix::reset()";
 
       // Initialization check
-      blaze::StaticMatrix<int,2UL,3UL,blaze::rowMajor> mat( 1, 2, 3, 4, 5, 6 );
+      blaze::StaticMatrix<int,2UL,3UL,blaze::rowMajor> mat( { { 1, 2, 3 },
+                                                              { 4, 5, 6 } } );
 
       checkRows    ( mat, 2UL );
       checkColumns ( mat, 3UL );
@@ -8541,7 +7204,8 @@ void ClassTest::testReset()
 
 
       // Initialization check
-      blaze::StaticMatrix<int,2UL,3UL,blaze::columnMajor> mat( 1, 2, 3, 4, 5, 6 );
+      blaze::StaticMatrix<int,2UL,3UL,blaze::columnMajor> mat( { { 1, 3, 5 },
+                                                                 { 2, 4, 6 } } );
 
       checkRows    ( mat, 2UL );
       checkColumns ( mat, 3UL );
@@ -8654,7 +7318,8 @@ void ClassTest::testClear()
       test_ = "Row-major clear() function";
 
       // Initialization check
-      blaze::StaticMatrix<int,2UL,3UL,blaze::rowMajor> mat( 1, 2, 3, 4, 5, 6 );
+      blaze::StaticMatrix<int,2UL,3UL,blaze::rowMajor> mat( { { 1, 2, 3 },
+                                                              { 4, 5, 6 } } );
 
       checkRows    ( mat, 2UL );
       checkColumns ( mat, 3UL );
@@ -8705,7 +7370,8 @@ void ClassTest::testClear()
       test_ = "Column-major clear() function";
 
       // Initialization check
-      blaze::StaticMatrix<int,2UL,3UL,blaze::columnMajor> mat( 1, 2, 3, 4, 5, 6 );
+      blaze::StaticMatrix<int,2UL,3UL,blaze::columnMajor> mat( { { 1, 3, 5 },
+                                                                 { 2, 4, 6 } } );
 
       checkRows    ( mat, 2UL );
       checkColumns ( mat, 3UL );
@@ -8771,7 +7437,9 @@ void ClassTest::testTranspose()
    {
       test_ = "Row-major self-transpose via transpose()";
 
-      blaze::StaticMatrix<int,3UL,3UL,blaze::rowMajor> mat( 1, 2, 3, 4, 5, 6, 7, 8, 9 );
+      blaze::StaticMatrix<int,3UL,3UL,blaze::rowMajor> mat( { { 1, 2, 3 },
+                                                              { 4, 5, 6 },
+                                                              { 7, 8, 9 } } );
 
       transpose( mat );
 
@@ -8799,7 +7467,9 @@ void ClassTest::testTranspose()
    {
       test_ = "Row-major self-transpose via trans()";
 
-      blaze::StaticMatrix<int,3UL,3UL,blaze::rowMajor> mat( 1, 2, 3, 4, 5, 6, 7, 8, 9 );
+      blaze::StaticMatrix<int,3UL,3UL,blaze::rowMajor> mat( { { 1, 2, 3 },
+                                                              { 4, 5, 6 },
+                                                              { 7, 8, 9 } } );
 
       mat = trans( mat );
 
@@ -8832,7 +7502,9 @@ void ClassTest::testTranspose()
    {
       test_ = "Column-major self-transpose via transpose()";
 
-      blaze::StaticMatrix<int,3UL,3UL,blaze::columnMajor> mat( 1, 2, 3, 4, 5, 6, 7, 8, 9 );
+      blaze::StaticMatrix<int,3UL,3UL,blaze::columnMajor> mat( { { 1, 4, 7 },
+                                                                 { 2, 5, 8 },
+                                                                 { 3, 6, 9 } } );
 
       transpose( mat );
 
@@ -8860,7 +7532,9 @@ void ClassTest::testTranspose()
    {
       test_ = "Column-major self-transpose via trans()";
 
-      blaze::StaticMatrix<int,3UL,3UL,blaze::columnMajor> mat( 1, 2, 3, 4, 5, 6, 7, 8, 9 );
+      blaze::StaticMatrix<int,3UL,3UL,blaze::columnMajor> mat( { { 1, 4, 7 },
+                                                                 { 2, 5, 8 },
+                                                                 { 3, 6, 9 } } );
 
       mat = trans( mat );
 
@@ -8909,9 +7583,9 @@ void ClassTest::testCTranspose()
 
       typedef blaze::complex<int>  cplx;
 
-      blaze::StaticMatrix<cplx,3UL,3UL,blaze::rowMajor> mat( cplx(1,-1), cplx(2,-2), cplx(3,-3),
-                                                             cplx(4,-4), cplx(5,-5), cplx(6,-6),
-                                                             cplx(7,-7), cplx(8,-8), cplx(9,-9) );
+      blaze::StaticMatrix<cplx,3UL,3UL,blaze::rowMajor> mat( { { cplx(1,-1), cplx(2,-2), cplx(3,-3) },
+                                                               { cplx(4,-4), cplx(5,-5), cplx(6,-6) },
+                                                               { cplx(7,-7), cplx(8,-8), cplx(9,-9) } } );
 
       ctranspose( mat );
 
@@ -8943,9 +7617,9 @@ void ClassTest::testCTranspose()
 
       typedef blaze::complex<int>  cplx;
 
-      blaze::StaticMatrix<cplx,3UL,3UL,blaze::rowMajor> mat( cplx(1,-1), cplx(2,-2), cplx(3,-3),
-                                                             cplx(4,-4), cplx(5,-5), cplx(6,-6),
-                                                             cplx(7,-7), cplx(8,-8), cplx(9,-9) );
+      blaze::StaticMatrix<cplx,3UL,3UL,blaze::rowMajor> mat( { { cplx(1,-1), cplx(2,-2), cplx(3,-3) },
+                                                               { cplx(4,-4), cplx(5,-5), cplx(6,-6) },
+                                                               { cplx(7,-7), cplx(8,-8), cplx(9,-9) } } );
 
       mat = ctrans( mat );
 
@@ -8982,9 +7656,9 @@ void ClassTest::testCTranspose()
 
       typedef blaze::complex<int>  cplx;
 
-      blaze::StaticMatrix<cplx,3UL,3UL,blaze::columnMajor> mat( cplx(1,-1), cplx(2,-2), cplx(3,-3),
-                                                                cplx(4,-4), cplx(5,-5), cplx(6,-6),
-                                                                cplx(7,-7), cplx(8,-8), cplx(9,-9) );
+      blaze::StaticMatrix<cplx,3UL,3UL,blaze::columnMajor> mat( { { cplx(1,-1), cplx(4,-4), cplx(7,-7) },
+                                                                  { cplx(2,-2), cplx(5,-5), cplx(8,-8) },
+                                                                  { cplx(3,-3), cplx(6,-6), cplx(9,-9) } } );
 
       ctranspose( mat );
 
@@ -9016,9 +7690,9 @@ void ClassTest::testCTranspose()
 
       typedef blaze::complex<int>  cplx;
 
-      blaze::StaticMatrix<cplx,3UL,3UL,blaze::columnMajor> mat( cplx(1,-1), cplx(2,-2), cplx(3,-3),
-                                                                cplx(4,-4), cplx(5,-5), cplx(6,-6),
-                                                                cplx(7,-7), cplx(8,-8), cplx(9,-9) );
+      blaze::StaticMatrix<cplx,3UL,3UL,blaze::columnMajor> mat( { { cplx(1,-1), cplx(4,-4), cplx(7,-7) },
+                                                                  { cplx(2,-2), cplx(5,-5), cplx(8,-8) },
+                                                                  { cplx(3,-3), cplx(6,-6), cplx(9,-9) } } );
 
       mat = ctrans( mat );
 
@@ -9066,8 +7740,8 @@ void ClassTest::testSwap()
    {
       test_ = "Row-major StaticMatrix swap";
 
-      blaze::StaticMatrix<int,2UL,2UL,blaze::rowMajor> mat1( 1, 2, 0, 3 );
-      blaze::StaticMatrix<int,2UL,2UL,blaze::rowMajor> mat2( 4, 3, 2, 1 );
+      blaze::StaticMatrix<int,2UL,2UL,blaze::rowMajor> mat1( { { 1, 2 }, { 0, 3 } } );
+      blaze::StaticMatrix<int,2UL,2UL,blaze::rowMajor> mat2( { { 4, 3 }, { 2, 1 } } );
 
       swap( mat1, mat2 );
 
@@ -9114,8 +7788,8 @@ void ClassTest::testSwap()
    {
       test_ = "Column-major StaticMatrix swap";
 
-      blaze::StaticMatrix<int,2UL,2UL,blaze::columnMajor> mat1( 1, 2, 0, 3 );
-      blaze::StaticMatrix<int,2UL,2UL,blaze::columnMajor> mat2( 4, 3, 2, 1 );
+      blaze::StaticMatrix<int,2UL,2UL,blaze::columnMajor> mat1( { { 1, 0 }, { 2, 3 } } );
+      blaze::StaticMatrix<int,2UL,2UL,blaze::columnMajor> mat2( { { 4, 2 }, { 3, 1 } } );
 
       swap( mat1, mat2 );
 
@@ -9194,7 +7868,8 @@ void ClassTest::testIsDefault()
 
       // isDefault with non-default matrix
       {
-         blaze::StaticMatrix<int,3UL,2UL,blaze::rowMajor> mat( 0, 1, 0, 0, 0, 0 );
+         blaze::StaticMatrix<int,3UL,2UL,blaze::rowMajor> mat;
+         mat(0,1) = 1;
 
          if( isDefault( mat(0,1) ) != false ) {
             std::ostringstream oss;
@@ -9240,7 +7915,8 @@ void ClassTest::testIsDefault()
 
       // isDefault with non-default matrix
       {
-         blaze::StaticMatrix<int,3UL,2UL,blaze::columnMajor> mat( 0, 0, 0, 1, 0, 0 );
+         blaze::StaticMatrix<int,3UL,2UL,blaze::columnMajor> mat;
+         mat(0,1) = 1;
 
          if( isDefault( mat(0,1) ) != false ) {
             std::ostringstream oss;

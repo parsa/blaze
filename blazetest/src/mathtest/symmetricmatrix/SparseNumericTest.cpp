@@ -266,9 +266,9 @@ void SparseNumericTest::testConstructors()
    {
       test_ = "Row-major SymmetricMatrix conversion constructor (symmetric)";
 
-      const blaze::StaticMatrix<int,3UL,3UL,blaze::rowMajor> mat(  1, -4, 7,
-                                                                  -4,  2, 0,
-                                                                   7,  0, 3 );
+      const blaze::StaticMatrix<int,3UL,3UL,blaze::rowMajor> mat( { {  1, -4, 7 },
+                                                                    { -4,  2, 0 },
+                                                                    {  7,  0, 3 } } );
 
       const ST sym( mat );
 
@@ -294,9 +294,9 @@ void SparseNumericTest::testConstructors()
    {
       test_ = "Row-major SymmetricMatrix conversion constructor (non-symmetric)";
 
-      const blaze::StaticMatrix<int,3UL,3UL,blaze::rowMajor> mat(  1, -4, 7,
-                                                                  -4,  2, 0,
-                                                                  -5,  0, 3 );
+      const blaze::StaticMatrix<int,3UL,3UL,blaze::rowMajor> mat( { {  1, -4, 7 },
+                                                                    { -4,  2, 0 },
+                                                                    { -5,  0, 3 } } );
 
       try {
          const ST sym( mat );
@@ -491,9 +491,9 @@ void SparseNumericTest::testConstructors()
    {
       test_ = "Column-major SymmetricMatrix conversion constructor (symmetric)";
 
-      const blaze::StaticMatrix<int,3UL,3UL,blaze::columnMajor> mat(  1, -4, 7,
-                                                                     -4,  2, 0,
-                                                                      7,  0, 3 );
+      const blaze::StaticMatrix<int,3UL,3UL,blaze::columnMajor> mat( { {  1, -4, 7 },
+                                                                       { -4,  2, 0 },
+                                                                       {  7,  0, 3 } } );
 
       const OST sym( mat );
 
@@ -519,9 +519,9 @@ void SparseNumericTest::testConstructors()
    {
       test_ = "Column-major SymmetricMatrix conversion constructor (non-symmetric)";
 
-      const blaze::StaticMatrix<int,3UL,3UL,blaze::columnMajor> mat(  1, -4, 7,
-                                                                     -4,  2, 0,
-                                                                     -5,  0, 3 );
+      const blaze::StaticMatrix<int,3UL,3UL,blaze::columnMajor> mat( { {  1, -4, 7 },
+                                                                       { -4,  2, 0 },
+                                                                       { -5,  0, 3 } } );
 
       try {
          const OST sym( mat );
@@ -701,9 +701,9 @@ void SparseNumericTest::testAssignment()
    {
       test_ = "Row-major/row-major SymmetricMatrix dense matrix assignment (symmetric)";
 
-      const blaze::StaticMatrix<int,3UL,3UL,blaze::rowMajor> mat(  1, -4, 7,
-                                                                  -4,  2, 0,
-                                                                   7,  0, 3 );
+      const blaze::StaticMatrix<int,3UL,3UL,blaze::rowMajor> mat( { {  1, -4, 7 },
+                                                                    { -4,  2, 0 },
+                                                                    {  7,  0, 3 } } );
 
       ST sym;
       sym = mat;
@@ -729,9 +729,9 @@ void SparseNumericTest::testAssignment()
    {
       test_ = "Row-major/column-major SymmetricMatrix dense matrix assignment (symmetric)";
 
-      const blaze::StaticMatrix<int,3UL,3UL,blaze::columnMajor> mat(  1, -4, 7,
-                                                                     -4,  2, 0,
-                                                                      7,  0, 3 );
+      const blaze::StaticMatrix<int,3UL,3UL,blaze::columnMajor> mat( { {  1, -4, 7 },
+                                                                       { -4,  2, 0 },
+                                                                       {  7,  0, 3 } } );
 
       ST sym;
       sym = mat;
@@ -757,9 +757,9 @@ void SparseNumericTest::testAssignment()
    {
       test_ = "Row-major/row-major SymmetricMatrix dense matrix assignment (non-symmetric)";
 
-      const blaze::StaticMatrix<int,3UL,3UL,blaze::rowMajor> mat(  1, -4, 7,
-                                                                  -4,  2, 0,
-                                                                  -5,  0, 3 );
+      const blaze::StaticMatrix<int,3UL,3UL,blaze::rowMajor> mat( { {  1, -4, 7 },
+                                                                    { -4,  2, 0 },
+                                                                    { -5,  0, 3 } } );
 
       try {
          ST sym;
@@ -779,9 +779,9 @@ void SparseNumericTest::testAssignment()
    {
       test_ = "Row-major/column-major SymmetricMatrix dense matrix assignment (non-symmetric)";
 
-      const blaze::StaticMatrix<int,3UL,3UL,blaze::columnMajor> mat(  1, -4, 7,
-                                                                     -4,  2, 0,
-                                                                     -5,  0, 3 );
+      const blaze::StaticMatrix<int,3UL,3UL,blaze::columnMajor> mat( { {  1, -4, 7 },
+                                                                       { -4,  2, 0 },
+                                                                       { -5,  0, 3 } } );
 
       try {
          ST sym;
@@ -1183,9 +1183,9 @@ void SparseNumericTest::testAssignment()
    {
       test_ = "Column-major/row-major SymmetricMatrix dense matrix assignment (symmetric)";
 
-      const blaze::StaticMatrix<int,3UL,3UL,blaze::rowMajor> mat(  1, -4, 7,
-                                                                  -4,  2, 0,
-                                                                   7,  0, 3 );
+      const blaze::StaticMatrix<int,3UL,3UL,blaze::rowMajor> mat( { {  1, -4, 7 },
+                                                                    { -4,  2, 0 },
+                                                                    {  7,  0, 3 } } );
 
       OST sym;
       sym = mat;
@@ -1211,9 +1211,9 @@ void SparseNumericTest::testAssignment()
    {
       test_ = "Column-major/column-major SymmetricMatrix dense matrix assignment (symmetric)";
 
-      const blaze::StaticMatrix<int,3UL,3UL,blaze::columnMajor> mat(  1, -4, 7,
-                                                                     -4,  2, 0,
-                                                                      7,  0, 3 );
+      const blaze::StaticMatrix<int,3UL,3UL,blaze::columnMajor> mat( { {  1, -4, 7 },
+                                                                       { -4,  2, 0 },
+                                                                       {  7,  0, 3 } } );
 
       OST sym;
       sym = mat;
@@ -1239,9 +1239,9 @@ void SparseNumericTest::testAssignment()
    {
       test_ = "Column-major/row-major SymmetricMatrix dense matrix assignment (non-symmetric)";
 
-      const blaze::StaticMatrix<int,3UL,3UL,blaze::rowMajor> mat(  1, -4, 7,
-                                                                  -4,  2, 0,
-                                                                  -5,  0, 3 );
+      const blaze::StaticMatrix<int,3UL,3UL,blaze::rowMajor> mat( { {  1, -4, 7 },
+                                                                    { -4,  2, 0 },
+                                                                    { -5,  0, 3 } } );
 
       try {
          OST sym;
@@ -1261,9 +1261,9 @@ void SparseNumericTest::testAssignment()
    {
       test_ = "Column-major/column-major SymmetricMatrix dense matrix assignment (non-symmetric)";
 
-      const blaze::StaticMatrix<int,3UL,3UL,blaze::columnMajor> mat(  1, -4, 7,
-                                                                     -4,  2, 0,
-                                                                     -5,  0, 3 );
+      const blaze::StaticMatrix<int,3UL,3UL,blaze::columnMajor> mat( { {  1, -4, 7 },
+                                                                       { -4,  2, 0 },
+                                                                       { -5,  0, 3 } } );
 
       try {
          OST sym;
