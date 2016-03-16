@@ -173,7 +173,7 @@ class HybridVector : public DenseVector< HybridVector<Type,N,TF>, TF >
 
    //**********************************************************************************************
    //! Alignment adjustment
-   static const size_t NN = ( usePadding )?( NextMultiple< SizeT<N>, SizeT<IT::size> >::value ):( N );
+   static constexpr size_t NN = ( usePadding )?( NextMultiple< SizeT<N>, SizeT<IT::size> >::value ):( N );
    //**********************************************************************************************
 
  public:
@@ -222,10 +222,12 @@ class HybridVector : public DenseVector< HybridVector<Type,N,TF>, TF >
    //**Constructors********************************************************************************
    /*!\name Constructors */
    //@{
-                              explicit inline HybridVector();
-                              explicit inline HybridVector( size_t n );
-                              explicit inline HybridVector( size_t n, const Type& init );
-   template< typename Other > explicit inline HybridVector( size_t n, const Other* array );
+   explicit inline HybridVector();
+   explicit inline HybridVector( size_t n );
+   explicit inline HybridVector( size_t n, const Type& init );
+
+   template< typename Other >
+   explicit inline HybridVector( size_t n, const Other* array );
 
    template< typename Other, size_t M >
    explicit inline HybridVector( const Other (&array)[M] );
@@ -242,18 +244,18 @@ class HybridVector : public DenseVector< HybridVector<Type,N,TF>, TF >
    //**Data access functions***********************************************************************
    /*!\name Data access functions */
    //@{
-   inline Reference      operator[]( size_t index );
-   inline ConstReference operator[]( size_t index ) const;
+   inline Reference      operator[]( size_t index ) noexcept;
+   inline ConstReference operator[]( size_t index ) const noexcept;
    inline Reference      at( size_t index );
    inline ConstReference at( size_t index ) const;
-   inline Pointer        data  ();
-   inline ConstPointer   data  () const;
-   inline Iterator       begin ();
-   inline ConstIterator  begin () const;
-   inline ConstIterator  cbegin() const;
-   inline Iterator       end   ();
-   inline ConstIterator  end   () const;
-   inline ConstIterator  cend  () const;
+   inline Pointer        data  () noexcept;
+   inline ConstPointer   data  () const noexcept;
+   inline Iterator       begin () noexcept;
+   inline ConstIterator  begin () const noexcept;
+   inline ConstIterator  cbegin() const noexcept;
+   inline Iterator       end   () noexcept;
+   inline ConstIterator  end   () const noexcept;
+   inline ConstIterator  cend  () const noexcept;
    //@}
    //**********************************************************************************************
 
@@ -283,8 +285,8 @@ class HybridVector : public DenseVector< HybridVector<Type,N,TF>, TF >
    //**Utility functions***************************************************************************
    /*!\name Utility functions */
    //@{
-                              inline size_t        size() const;
-                              inline size_t        capacity() const;
+                              inline size_t        size() const noexcept;
+                              inline size_t        capacity() const noexcept;
                               inline size_t        nonZeros() const;
                               inline void          reset();
                               inline void          clear();
@@ -366,19 +368,19 @@ class HybridVector : public DenseVector< HybridVector<Type,N,TF>, TF >
    //**Expression template evaluation functions****************************************************
    /*!\name Expression template evaluation functions */
    //@{
-   template< typename Other > inline bool canAlias ( const Other* alias ) const;
-   template< typename Other > inline bool isAliased( const Other* alias ) const;
+   template< typename Other > inline bool canAlias ( const Other* alias ) const noexcept;
+   template< typename Other > inline bool isAliased( const Other* alias ) const noexcept;
 
-   inline bool isAligned() const;
+   inline bool isAligned() const noexcept;
 
-   BLAZE_ALWAYS_INLINE IntrinsicType load ( size_t index ) const;
-   BLAZE_ALWAYS_INLINE IntrinsicType loada( size_t index ) const;
-   BLAZE_ALWAYS_INLINE IntrinsicType loadu( size_t index ) const;
+   BLAZE_ALWAYS_INLINE IntrinsicType load ( size_t index ) const noexcept;
+   BLAZE_ALWAYS_INLINE IntrinsicType loada( size_t index ) const noexcept;
+   BLAZE_ALWAYS_INLINE IntrinsicType loadu( size_t index ) const noexcept;
 
-   BLAZE_ALWAYS_INLINE void store ( size_t index, const IntrinsicType& value );
-   BLAZE_ALWAYS_INLINE void storea( size_t index, const IntrinsicType& value );
-   BLAZE_ALWAYS_INLINE void storeu( size_t index, const IntrinsicType& value );
-   BLAZE_ALWAYS_INLINE void stream( size_t index, const IntrinsicType& value );
+   BLAZE_ALWAYS_INLINE void store ( size_t index, const IntrinsicType& value ) noexcept;
+   BLAZE_ALWAYS_INLINE void storea( size_t index, const IntrinsicType& value ) noexcept;
+   BLAZE_ALWAYS_INLINE void storeu( size_t index, const IntrinsicType& value ) noexcept;
+   BLAZE_ALWAYS_INLINE void stream( size_t index, const IntrinsicType& value ) noexcept;
 
    template< typename VT >
    inline typename DisableIf< VectorizedAssign<VT> >::Type
@@ -719,7 +721,7 @@ template< typename Type  // Data type of the vector
         , size_t N       // Number of elements
         , bool TF >      // Transpose flag
 inline typename HybridVector<Type,N,TF>::Reference
-   HybridVector<Type,N,TF>::operator[]( size_t index )
+   HybridVector<Type,N,TF>::operator[]( size_t index ) noexcept
 {
    BLAZE_USER_ASSERT( index < size_, "Invalid vector access index" );
    return v_[index];
@@ -740,7 +742,7 @@ template< typename Type  // Data type of the vector
         , size_t N       // Number of elements
         , bool TF >      // Transpose flag
 inline typename HybridVector<Type,N,TF>::ConstReference
-   HybridVector<Type,N,TF>::operator[]( size_t index ) const
+   HybridVector<Type,N,TF>::operator[]( size_t index ) const noexcept
 {
    BLAZE_USER_ASSERT( index < size_, "Invalid vector access index" );
    return v_[index];
@@ -806,7 +808,7 @@ inline typename HybridVector<Type,N,TF>::ConstReference
 template< typename Type  // Data type of the vector
         , size_t N       // Number of elements
         , bool TF >      // Transpose flag
-inline typename HybridVector<Type,N,TF>::Pointer HybridVector<Type,N,TF>::data()
+inline typename HybridVector<Type,N,TF>::Pointer HybridVector<Type,N,TF>::data() noexcept
 {
    return v_;
 }
@@ -823,7 +825,7 @@ inline typename HybridVector<Type,N,TF>::Pointer HybridVector<Type,N,TF>::data()
 template< typename Type  // Data type of the vector
         , size_t N       // Number of elements
         , bool TF >      // Transpose flag
-inline typename HybridVector<Type,N,TF>::ConstPointer HybridVector<Type,N,TF>::data() const
+inline typename HybridVector<Type,N,TF>::ConstPointer HybridVector<Type,N,TF>::data() const noexcept
 {
    return v_;
 }
@@ -838,7 +840,7 @@ inline typename HybridVector<Type,N,TF>::ConstPointer HybridVector<Type,N,TF>::d
 template< typename Type  // Data type of the vector
         , size_t N       // Number of elements
         , bool TF >      // Transpose flag
-inline typename HybridVector<Type,N,TF>::Iterator HybridVector<Type,N,TF>::begin()
+inline typename HybridVector<Type,N,TF>::Iterator HybridVector<Type,N,TF>::begin() noexcept
 {
    return Iterator( v_ );
 }
@@ -853,7 +855,7 @@ inline typename HybridVector<Type,N,TF>::Iterator HybridVector<Type,N,TF>::begin
 template< typename Type  // Data type of the vector
         , size_t N       // Number of elements
         , bool TF >      // Transpose flag
-inline typename HybridVector<Type,N,TF>::ConstIterator HybridVector<Type,N,TF>::begin() const
+inline typename HybridVector<Type,N,TF>::ConstIterator HybridVector<Type,N,TF>::begin() const noexcept
 {
    return ConstIterator( v_ );
 }
@@ -868,7 +870,7 @@ inline typename HybridVector<Type,N,TF>::ConstIterator HybridVector<Type,N,TF>::
 template< typename Type  // Data type of the vector
         , size_t N       // Number of elements
         , bool TF >      // Transpose flag
-inline typename HybridVector<Type,N,TF>::ConstIterator HybridVector<Type,N,TF>::cbegin() const
+inline typename HybridVector<Type,N,TF>::ConstIterator HybridVector<Type,N,TF>::cbegin() const noexcept
 {
    return ConstIterator( v_ );
 }
@@ -883,7 +885,7 @@ inline typename HybridVector<Type,N,TF>::ConstIterator HybridVector<Type,N,TF>::
 template< typename Type  // Data type of the vector
         , size_t N       // Number of elements
         , bool TF >      // Transpose flag
-inline typename HybridVector<Type,N,TF>::Iterator HybridVector<Type,N,TF>::end()
+inline typename HybridVector<Type,N,TF>::Iterator HybridVector<Type,N,TF>::end() noexcept
 {
    BLAZE_INTERNAL_ASSERT( size_ <= N, "Invalid size detected" );
    return Iterator( v_ + size_ );
@@ -899,7 +901,7 @@ inline typename HybridVector<Type,N,TF>::Iterator HybridVector<Type,N,TF>::end()
 template< typename Type  // Data type of the vector
         , size_t N       // Number of elements
         , bool TF >      // Transpose flag
-inline typename HybridVector<Type,N,TF>::ConstIterator HybridVector<Type,N,TF>::end() const
+inline typename HybridVector<Type,N,TF>::ConstIterator HybridVector<Type,N,TF>::end() const noexcept
 {
    BLAZE_INTERNAL_ASSERT( size_ <= N, "Invalid size detected" );
    return ConstIterator( v_ + size_ );
@@ -915,7 +917,7 @@ inline typename HybridVector<Type,N,TF>::ConstIterator HybridVector<Type,N,TF>::
 template< typename Type  // Data type of the vector
         , size_t N       // Number of elements
         , bool TF >      // Transpose flag
-inline typename HybridVector<Type,N,TF>::ConstIterator HybridVector<Type,N,TF>::cend() const
+inline typename HybridVector<Type,N,TF>::ConstIterator HybridVector<Type,N,TF>::cend() const noexcept
 {
    BLAZE_INTERNAL_ASSERT( size_ <= N, "Invalid size detected" );
    return ConstIterator( v_ + size_ );
@@ -1222,7 +1224,7 @@ inline typename EnableIf< IsNumeric<Other>, HybridVector<Type,N,TF> >::Type&
 template< typename Type  // Data type of the vector
         , size_t N       // Number of elements
         , bool TF >      // Transpose flag
-inline size_t HybridVector<Type,N,TF>::size() const
+inline size_t HybridVector<Type,N,TF>::size() const noexcept
 {
    return size_;
 }
@@ -1237,7 +1239,7 @@ inline size_t HybridVector<Type,N,TF>::size() const
 template< typename Type  // Data type of the vector
         , size_t N       // Number of elements
         , bool TF >      // Transpose flag
-inline size_t HybridVector<Type,N,TF>::capacity() const
+inline size_t HybridVector<Type,N,TF>::capacity() const noexcept
 {
    return NN;
 }
@@ -1404,7 +1406,6 @@ inline HybridVector<Type,N,TF>& HybridVector<Type,N,TF>::scale( const Other& sca
 //
 // \param v The vector to be swapped.
 // \return void
-// \exception no-throw guarantee.
 */
 template< typename Type  // Data type of the vector
         , size_t N       // Number of elements
@@ -1609,7 +1610,7 @@ template< typename Type     // Data type of the vector
         , size_t N          // Number of elements
         , bool TF >         // Transpose flag
 template< typename Other >  // Data type of the foreign expression
-inline bool HybridVector<Type,N,TF>::canAlias( const Other* alias ) const
+inline bool HybridVector<Type,N,TF>::canAlias( const Other* alias ) const noexcept
 {
    return static_cast<const void*>( this ) == static_cast<const void*>( alias );
 }
@@ -1630,7 +1631,7 @@ template< typename Type     // Data type of the vector
         , size_t N          // Number of elements
         , bool TF >         // Transpose flag
 template< typename Other >  // Data type of the foreign expression
-inline bool HybridVector<Type,N,TF>::isAliased( const Other* alias ) const
+inline bool HybridVector<Type,N,TF>::isAliased( const Other* alias ) const noexcept
 {
    return static_cast<const void*>( this ) == static_cast<const void*>( alias );
 }
@@ -1649,7 +1650,7 @@ inline bool HybridVector<Type,N,TF>::isAliased( const Other* alias ) const
 template< typename Type  // Data type of the vector
         , size_t N       // Number of elements
         , bool TF >      // Transpose flag
-inline bool HybridVector<Type,N,TF>::isAligned() const
+inline bool HybridVector<Type,N,TF>::isAligned() const noexcept
 {
    return true;
 }
@@ -1673,7 +1674,7 @@ template< typename Type  // Data type of the vector
         , size_t N       // Number of elements
         , bool TF >      // Transpose flag
 BLAZE_ALWAYS_INLINE typename HybridVector<Type,N,TF>::IntrinsicType
-   HybridVector<Type,N,TF>::load( size_t index ) const
+   HybridVector<Type,N,TF>::load( size_t index ) const noexcept
 {
    return loada( index );
 }
@@ -1697,7 +1698,7 @@ template< typename Type  // Data type of the vector
         , size_t N       // Number of elements
         , bool TF >      // Transpose flag
 BLAZE_ALWAYS_INLINE typename HybridVector<Type,N,TF>::IntrinsicType
-   HybridVector<Type,N,TF>::loada( size_t index ) const
+   HybridVector<Type,N,TF>::loada( size_t index ) const noexcept
 {
    using blaze::loada;
 
@@ -1730,7 +1731,7 @@ template< typename Type  // Data type of the vector
         , size_t N       // Number of elements
         , bool TF >      // Transpose flag
 BLAZE_ALWAYS_INLINE typename HybridVector<Type,N,TF>::IntrinsicType
-   HybridVector<Type,N,TF>::loadu( size_t index ) const
+   HybridVector<Type,N,TF>::loadu( size_t index ) const noexcept
 {
    using blaze::loadu;
 
@@ -1761,7 +1762,8 @@ BLAZE_ALWAYS_INLINE typename HybridVector<Type,N,TF>::IntrinsicType
 template< typename Type  // Data type of the vector
         , size_t N       // Number of elements
         , bool TF >      // Transpose flag
-BLAZE_ALWAYS_INLINE void HybridVector<Type,N,TF>::store( size_t index, const IntrinsicType& value )
+BLAZE_ALWAYS_INLINE void
+   HybridVector<Type,N,TF>::store( size_t index, const IntrinsicType& value ) noexcept
 {
    storea( index, value );
 }
@@ -1785,7 +1787,8 @@ BLAZE_ALWAYS_INLINE void HybridVector<Type,N,TF>::store( size_t index, const Int
 template< typename Type  // Data type of the vector
         , size_t N       // Number of elements
         , bool TF >      // Transpose flag
-BLAZE_ALWAYS_INLINE void HybridVector<Type,N,TF>::storea( size_t index, const IntrinsicType& value )
+BLAZE_ALWAYS_INLINE void
+   HybridVector<Type,N,TF>::storea( size_t index, const IntrinsicType& value ) noexcept
 {
    using blaze::storea;
 
@@ -1818,7 +1821,8 @@ BLAZE_ALWAYS_INLINE void HybridVector<Type,N,TF>::storea( size_t index, const In
 template< typename Type  // Data type of the vector
         , size_t N       // Number of elements
         , bool TF >      // Transpose flag
-BLAZE_ALWAYS_INLINE void HybridVector<Type,N,TF>::storeu( size_t index, const IntrinsicType& value )
+BLAZE_ALWAYS_INLINE void
+   HybridVector<Type,N,TF>::storeu( size_t index, const IntrinsicType& value ) noexcept
 {
    using blaze::storeu;
 
@@ -1849,7 +1853,8 @@ BLAZE_ALWAYS_INLINE void HybridVector<Type,N,TF>::storeu( size_t index, const In
 template< typename Type  // Data type of the vector
         , size_t N       // Number of elements
         , bool TF >      // Transpose flag
-BLAZE_ALWAYS_INLINE void HybridVector<Type,N,TF>::stream( size_t index, const IntrinsicType& value )
+BLAZE_ALWAYS_INLINE void
+   HybridVector<Type,N,TF>::stream( size_t index, const IntrinsicType& value ) noexcept
 {
    using blaze::stream;
 
@@ -2385,7 +2390,6 @@ inline bool isIntact( const HybridVector<Type,N,TF>& v )
 // \param a The first vector to be swapped.
 // \param b The second vector to be swapped.
 // \return void
-// \exception no-throw guarantee.
 */
 template< typename Type  // Data type of the vector
         , size_t N       // Number of elements
