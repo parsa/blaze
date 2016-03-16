@@ -218,10 +218,12 @@ class DynamicVector : public DenseVector< DynamicVector<Type,TF>, TF >
    //**Constructors********************************************************************************
    /*!\name Constructors */
    //@{
-                              explicit inline DynamicVector();
-                              explicit inline DynamicVector( size_t n );
-                              explicit inline DynamicVector( size_t n, const Type& init );
-   template< typename Other > explicit inline DynamicVector( size_t n, const Other* array );
+   explicit inline DynamicVector() noexcept;
+   explicit inline DynamicVector( size_t n );
+   explicit inline DynamicVector( size_t n, const Type& init );
+
+   template< typename Other >
+   explicit inline DynamicVector( size_t n, const Other* array );
 
    template< typename Other, size_t N >
    explicit inline DynamicVector( const Other (&array)[N] );
@@ -242,18 +244,18 @@ class DynamicVector : public DenseVector< DynamicVector<Type,TF>, TF >
    //**Data access functions***********************************************************************
    /*!\name Data access functions */
    //@{
-   inline Reference      operator[]( size_t index );
-   inline ConstReference operator[]( size_t index ) const;
+   inline Reference      operator[]( size_t index ) noexcept;
+   inline ConstReference operator[]( size_t index ) const noexcept;
    inline Reference      at( size_t index );
    inline ConstReference at( size_t index ) const;
-   inline Pointer        data  ();
-   inline ConstPointer   data  () const;
-   inline Iterator       begin ();
-   inline ConstIterator  begin () const;
-   inline ConstIterator  cbegin() const;
-   inline Iterator       end   ();
-   inline ConstIterator  end   () const;
-   inline ConstIterator  cend  () const;
+   inline Pointer        data  () noexcept;
+   inline ConstPointer   data  () const noexcept;
+   inline Iterator       begin () noexcept;
+   inline ConstIterator  begin () const noexcept;
+   inline ConstIterator  cbegin() const noexcept;
+   inline Iterator       end   () noexcept;
+   inline ConstIterator  end   () const noexcept;
+   inline ConstIterator  cend  () const noexcept;
    //@}
    //**********************************************************************************************
 
@@ -285,8 +287,8 @@ class DynamicVector : public DenseVector< DynamicVector<Type,TF>, TF >
    //**Utility functions***************************************************************************
    /*!\name Utility functions */
    //@{
-                              inline size_t         size() const;
-                              inline size_t         capacity() const;
+                              inline size_t         size() const noexcept;
+                              inline size_t         capacity() const noexcept;
                               inline size_t         nonZeros() const;
                               inline void           reset();
                               inline void           clear();
@@ -354,20 +356,20 @@ class DynamicVector : public DenseVector< DynamicVector<Type,TF>, TF >
    //**Expression template evaluation functions****************************************************
    /*!\name Expression template evaluation functions */
    //@{
-   template< typename Other > inline bool canAlias ( const Other* alias ) const;
-   template< typename Other > inline bool isAliased( const Other* alias ) const;
+   template< typename Other > inline bool canAlias ( const Other* alias ) const noexcept;
+   template< typename Other > inline bool isAliased( const Other* alias ) const noexcept;
 
-   inline bool isAligned   () const;
-   inline bool canSMPAssign() const;
+   inline bool isAligned   () const noexcept;
+   inline bool canSMPAssign() const noexcept;
 
-   BLAZE_ALWAYS_INLINE IntrinsicType load ( size_t index ) const;
-   BLAZE_ALWAYS_INLINE IntrinsicType loada( size_t index ) const;
-   BLAZE_ALWAYS_INLINE IntrinsicType loadu( size_t index ) const;
+   BLAZE_ALWAYS_INLINE IntrinsicType load ( size_t index ) const noexcept;
+   BLAZE_ALWAYS_INLINE IntrinsicType loada( size_t index ) const noexcept;
+   BLAZE_ALWAYS_INLINE IntrinsicType loadu( size_t index ) const noexcept;
 
-   BLAZE_ALWAYS_INLINE void store ( size_t index, const IntrinsicType& value );
-   BLAZE_ALWAYS_INLINE void storea( size_t index, const IntrinsicType& value );
-   BLAZE_ALWAYS_INLINE void storeu( size_t index, const IntrinsicType& value );
-   BLAZE_ALWAYS_INLINE void stream( size_t index, const IntrinsicType& value );
+   BLAZE_ALWAYS_INLINE void store ( size_t index, const IntrinsicType& value ) noexcept;
+   BLAZE_ALWAYS_INLINE void storea( size_t index, const IntrinsicType& value ) noexcept;
+   BLAZE_ALWAYS_INLINE void storeu( size_t index, const IntrinsicType& value ) noexcept;
+   BLAZE_ALWAYS_INLINE void stream( size_t index, const IntrinsicType& value ) noexcept;
 
    template< typename VT >
    inline typename DisableIf< VectorizedAssign<VT> >::Type
@@ -415,7 +417,7 @@ class DynamicVector : public DenseVector< DynamicVector<Type,TF>, TF >
    //**Utility functions***************************************************************************
    /*!\name Utility functions */
    //@{
-   inline size_t adjustCapacity( size_t minCapacity ) const;
+   inline size_t adjustCapacity( size_t minCapacity ) const noexcept;
    //@}
    //**********************************************************************************************
 
@@ -458,7 +460,7 @@ class DynamicVector : public DenseVector< DynamicVector<Type,TF>, TF >
 */
 template< typename Type  // Data type of the vector
         , bool TF >      // Transpose flag
-inline DynamicVector<Type,TF>::DynamicVector()
+inline DynamicVector<Type,TF>::DynamicVector() noexcept
    : size_    ( 0UL )      // The current size/dimension of the vector
    , capacity_( 0UL )      // The maximum capacity of the vector
    , v_       ( nullptr )  // The vector elements
@@ -696,7 +698,7 @@ inline DynamicVector<Type,TF>::~DynamicVector()
 template< typename Type  // Data type of the vector
         , bool TF >      // Transpose flag
 inline typename DynamicVector<Type,TF>::Reference
-   DynamicVector<Type,TF>::operator[]( size_t index )
+   DynamicVector<Type,TF>::operator[]( size_t index ) noexcept
 {
    BLAZE_USER_ASSERT( index < size_, "Invalid vector access index" );
    return v_[index];
@@ -716,7 +718,7 @@ inline typename DynamicVector<Type,TF>::Reference
 template< typename Type  // Data type of the vector
         , bool TF >      // Transpose flag
 inline typename DynamicVector<Type,TF>::ConstReference
-   DynamicVector<Type,TF>::operator[]( size_t index ) const
+   DynamicVector<Type,TF>::operator[]( size_t index ) const noexcept
 {
    BLAZE_USER_ASSERT( index < size_, "Invalid vector access index" );
    return v_[index];
@@ -779,7 +781,7 @@ inline typename DynamicVector<Type,TF>::ConstReference
 */
 template< typename Type  // Data type of the vector
         , bool TF >      // Transpose flag
-inline typename DynamicVector<Type,TF>::Pointer DynamicVector<Type,TF>::data()
+inline typename DynamicVector<Type,TF>::Pointer DynamicVector<Type,TF>::data() noexcept
 {
    return v_;
 }
@@ -795,7 +797,7 @@ inline typename DynamicVector<Type,TF>::Pointer DynamicVector<Type,TF>::data()
 */
 template< typename Type  // Data type of the vector
         , bool TF >      // Transpose flag
-inline typename DynamicVector<Type,TF>::ConstPointer DynamicVector<Type,TF>::data() const
+inline typename DynamicVector<Type,TF>::ConstPointer DynamicVector<Type,TF>::data() const noexcept
 {
    return v_;
 }
@@ -809,7 +811,7 @@ inline typename DynamicVector<Type,TF>::ConstPointer DynamicVector<Type,TF>::dat
 */
 template< typename Type  // Data type of the vector
         , bool TF >      // Transpose flag
-inline typename DynamicVector<Type,TF>::Iterator DynamicVector<Type,TF>::begin()
+inline typename DynamicVector<Type,TF>::Iterator DynamicVector<Type,TF>::begin() noexcept
 {
    return Iterator( v_ );
 }
@@ -823,7 +825,7 @@ inline typename DynamicVector<Type,TF>::Iterator DynamicVector<Type,TF>::begin()
 */
 template< typename Type  // Data type of the vector
         , bool TF >      // Transpose flag
-inline typename DynamicVector<Type,TF>::ConstIterator DynamicVector<Type,TF>::begin() const
+inline typename DynamicVector<Type,TF>::ConstIterator DynamicVector<Type,TF>::begin() const noexcept
 {
    return ConstIterator( v_ );
 }
@@ -837,7 +839,7 @@ inline typename DynamicVector<Type,TF>::ConstIterator DynamicVector<Type,TF>::be
 */
 template< typename Type  // Data type of the vector
         , bool TF >      // Transpose flag
-inline typename DynamicVector<Type,TF>::ConstIterator DynamicVector<Type,TF>::cbegin() const
+inline typename DynamicVector<Type,TF>::ConstIterator DynamicVector<Type,TF>::cbegin() const noexcept
 {
    return ConstIterator( v_ );
 }
@@ -851,7 +853,7 @@ inline typename DynamicVector<Type,TF>::ConstIterator DynamicVector<Type,TF>::cb
 */
 template< typename Type  // Data type of the vector
         , bool TF >      // Transpose flag
-inline typename DynamicVector<Type,TF>::Iterator DynamicVector<Type,TF>::end()
+inline typename DynamicVector<Type,TF>::Iterator DynamicVector<Type,TF>::end() noexcept
 {
    return Iterator( v_ + size_ );
 }
@@ -865,7 +867,7 @@ inline typename DynamicVector<Type,TF>::Iterator DynamicVector<Type,TF>::end()
 */
 template< typename Type  // Data type of the vector
         , bool TF >      // Transpose flag
-inline typename DynamicVector<Type,TF>::ConstIterator DynamicVector<Type,TF>::end() const
+inline typename DynamicVector<Type,TF>::ConstIterator DynamicVector<Type,TF>::end() const noexcept
 {
    return ConstIterator( v_ + size_ );
 }
@@ -879,7 +881,7 @@ inline typename DynamicVector<Type,TF>::ConstIterator DynamicVector<Type,TF>::en
 */
 template< typename Type  // Data type of the vector
         , bool TF >      // Transpose flag
-inline typename DynamicVector<Type,TF>::ConstIterator DynamicVector<Type,TF>::cend() const
+inline typename DynamicVector<Type,TF>::ConstIterator DynamicVector<Type,TF>::cend() const noexcept
 {
    return ConstIterator( v_ + size_ );
 }
@@ -1177,7 +1179,7 @@ inline typename EnableIf< IsNumeric<Other>, DynamicVector<Type,TF> >::Type&
 */
 template< typename Type  // Data type of the vector
         , bool TF >      // Transpose flag
-inline size_t DynamicVector<Type,TF>::size() const
+inline size_t DynamicVector<Type,TF>::size() const noexcept
 {
    return size_;
 }
@@ -1191,7 +1193,7 @@ inline size_t DynamicVector<Type,TF>::size() const
 */
 template< typename Type  // Data type of the vector
         , bool TF >      // Transpose flag
-inline size_t DynamicVector<Type,TF>::capacity() const
+inline size_t DynamicVector<Type,TF>::capacity() const noexcept
 {
    return capacity_;
 }
@@ -1399,7 +1401,6 @@ inline DynamicVector<Type,TF>& DynamicVector<Type,TF>::scale( const Other& scala
 //
 // \param v The vector to be swapped.
 // \return void
-// \exception no-throw guarantee.
 */
 template< typename Type  // Data type of the vector
         , bool TF >      // Transpose flag
@@ -1420,7 +1421,7 @@ inline void DynamicVector<Type,TF>::swap( DynamicVector& v ) noexcept
 */
 template< typename Type  // Data type of the vector
         , bool TF >      // Transpose flag
-inline size_t DynamicVector<Type,TF>::adjustCapacity( size_t minCapacity ) const
+inline size_t DynamicVector<Type,TF>::adjustCapacity( size_t minCapacity ) const noexcept
 {
    if( usePadding && IsVectorizable<Type>::value )
       return nextMultiple<size_t>( minCapacity, IT::size );
@@ -1450,7 +1451,7 @@ inline size_t DynamicVector<Type,TF>::adjustCapacity( size_t minCapacity ) const
 template< typename Type     // Data type of the vector
         , bool TF >         // Transpose flag
 template< typename Other >  // Data type of the foreign expression
-inline bool DynamicVector<Type,TF>::canAlias( const Other* alias ) const
+inline bool DynamicVector<Type,TF>::canAlias( const Other* alias ) const noexcept
 {
    return static_cast<const void*>( this ) == static_cast<const void*>( alias );
 }
@@ -1470,7 +1471,7 @@ inline bool DynamicVector<Type,TF>::canAlias( const Other* alias ) const
 template< typename Type     // Data type of the vector
         , bool TF >         // Transpose flag
 template< typename Other >  // Data type of the foreign expression
-inline bool DynamicVector<Type,TF>::isAliased( const Other* alias ) const
+inline bool DynamicVector<Type,TF>::isAliased( const Other* alias ) const noexcept
 {
    return static_cast<const void*>( this ) == static_cast<const void*>( alias );
 }
@@ -1488,7 +1489,7 @@ inline bool DynamicVector<Type,TF>::isAliased( const Other* alias ) const
 */
 template< typename Type  // Data type of the vector
         , bool TF >      // Transpose flag
-inline bool DynamicVector<Type,TF>::isAligned() const
+inline bool DynamicVector<Type,TF>::isAligned() const noexcept
 {
    return true;
 }
@@ -1507,7 +1508,7 @@ inline bool DynamicVector<Type,TF>::isAligned() const
 */
 template< typename Type  // Data type of the vector
         , bool TF >      // Transpose flag
-inline bool DynamicVector<Type,TF>::canSMPAssign() const
+inline bool DynamicVector<Type,TF>::canSMPAssign() const noexcept
 {
    return ( size() > SMP_DVECASSIGN_THRESHOLD );
 }
@@ -1530,7 +1531,7 @@ inline bool DynamicVector<Type,TF>::canSMPAssign() const
 template< typename Type  // Data type of the vector
         , bool TF >      // Transpose flag
 BLAZE_ALWAYS_INLINE typename DynamicVector<Type,TF>::IntrinsicType
-   DynamicVector<Type,TF>::load( size_t index ) const
+   DynamicVector<Type,TF>::load( size_t index ) const noexcept
 {
    return loada( index );
 }
@@ -1553,7 +1554,7 @@ BLAZE_ALWAYS_INLINE typename DynamicVector<Type,TF>::IntrinsicType
 template< typename Type  // Data type of the vector
         , bool TF >      // Transpose flag
 BLAZE_ALWAYS_INLINE typename DynamicVector<Type,TF>::IntrinsicType
-   DynamicVector<Type,TF>::loada( size_t index ) const
+   DynamicVector<Type,TF>::loada( size_t index ) const noexcept
 {
    using blaze::loada;
 
@@ -1585,7 +1586,7 @@ BLAZE_ALWAYS_INLINE typename DynamicVector<Type,TF>::IntrinsicType
 template< typename Type  // Data type of the vector
         , bool TF >      // Transpose flag
 BLAZE_ALWAYS_INLINE typename DynamicVector<Type,TF>::IntrinsicType
-   DynamicVector<Type,TF>::loadu( size_t index ) const
+   DynamicVector<Type,TF>::loadu( size_t index ) const noexcept
 {
    using blaze::loadu;
 
@@ -1615,7 +1616,8 @@ BLAZE_ALWAYS_INLINE typename DynamicVector<Type,TF>::IntrinsicType
 */
 template< typename Type  // Data type of the vector
         , bool TF >      // Transpose flag
-BLAZE_ALWAYS_INLINE void DynamicVector<Type,TF>::store( size_t index, const IntrinsicType& value )
+BLAZE_ALWAYS_INLINE void
+   DynamicVector<Type,TF>::store( size_t index, const IntrinsicType& value ) noexcept
 {
    storea( index, value );
 }
@@ -1638,7 +1640,8 @@ BLAZE_ALWAYS_INLINE void DynamicVector<Type,TF>::store( size_t index, const Intr
 */
 template< typename Type  // Data type of the vector
         , bool TF >      // Transpose flag
-BLAZE_ALWAYS_INLINE void DynamicVector<Type,TF>::storea( size_t index, const IntrinsicType& value )
+BLAZE_ALWAYS_INLINE void
+   DynamicVector<Type,TF>::storea( size_t index, const IntrinsicType& value ) noexcept
 {
    using blaze::storea;
 
@@ -1670,7 +1673,8 @@ BLAZE_ALWAYS_INLINE void DynamicVector<Type,TF>::storea( size_t index, const Int
 */
 template< typename Type  // Data type of the vector
         , bool TF >      // Transpose flag
-BLAZE_ALWAYS_INLINE void DynamicVector<Type,TF>::storeu( size_t index, const IntrinsicType& value )
+BLAZE_ALWAYS_INLINE void
+   DynamicVector<Type,TF>::storeu( size_t index, const IntrinsicType& value ) noexcept
 {
    using blaze::storeu;
 
@@ -1700,7 +1704,8 @@ BLAZE_ALWAYS_INLINE void DynamicVector<Type,TF>::storeu( size_t index, const Int
 */
 template< typename Type  // Data type of the vector
         , bool TF >      // Transpose flag
-BLAZE_ALWAYS_INLINE void DynamicVector<Type,TF>::stream( size_t index, const IntrinsicType& value )
+BLAZE_ALWAYS_INLINE void
+   DynamicVector<Type,TF>::stream( size_t index, const IntrinsicType& value ) noexcept
 {
    using blaze::stream;
 
@@ -2159,7 +2164,7 @@ template< typename Type, bool TF >
 inline bool isDefault( const DynamicVector<Type,TF>& v );
 
 template< typename Type, bool TF >
-inline bool isIntact( const DynamicVector<Type,TF>& v );
+inline bool isIntact( const DynamicVector<Type,TF>& v ) noexcept;
 
 template< typename Type, bool TF >
 inline void swap( DynamicVector<Type,TF>& a, DynamicVector<Type,TF>& b ) noexcept;
@@ -2245,7 +2250,7 @@ inline bool isDefault( const DynamicVector<Type,TF>& v )
 */
 template< typename Type  // Data type of the vector
         , bool TF >      // Transpose flag
-inline bool isIntact( const DynamicVector<Type,TF>& v )
+inline bool isIntact( const DynamicVector<Type,TF>& v ) noexcept
 {
    return ( v.size() <= v.capacity() );
 }
@@ -2259,7 +2264,6 @@ inline bool isIntact( const DynamicVector<Type,TF>& v )
 // \param a The first vector to be swapped.
 // \param b The second vector to be swapped.
 // \return void
-// \exception no-throw guarantee.
 */
 template< typename Type  // Data type of the vector
         , bool TF >      // Transpose flag
