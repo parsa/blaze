@@ -84,7 +84,7 @@ namespace blaze {
 #define BLAZE_CONSTRAINT_VECTORS_MUST_HAVE_SAME_TRANSPOSE_FLAG(T1,T2) \
    static_assert( ::blaze::IsVector<T1>::value && \
                   ::blaze::IsVector<T2>::value && \
-                  ::blaze::TransposeFlag<T1>::value == ::blaze::TransposeFlag<T2>::value >::value > \, "Invalid transpose flag detected" )
+                  ::blaze::TransposeFlag<T1>::value == ::blaze::TransposeFlag<T2>::value, "Invalid transpose flag detected" )
 //*************************************************************************************************
 
 
