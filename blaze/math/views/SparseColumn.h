@@ -458,8 +458,8 @@ class SparseColumn : public SparseVector< SparseColumn<MT,SO,SF>, false >
    //**Utility functions***************************************************************************
    /*!\name Utility functions */
    //@{
-                              inline size_t        size() const;
-                              inline size_t        capacity() const;
+                              inline size_t        size() const noexcept;
+                              inline size_t        capacity() const noexcept;
                               inline size_t        nonZeros() const;
                               inline void          reset();
                               inline Iterator      set    ( size_t index, const ElementType& value );
@@ -494,8 +494,8 @@ class SparseColumn : public SparseVector< SparseColumn<MT,SO,SF>, false >
    //**Expression template evaluation functions****************************************************
    /*!\name Expression template evaluation functions */
    //@{
-   template< typename Other > inline bool canAlias ( const Other* alias ) const;
-   template< typename Other > inline bool isAliased( const Other* alias ) const;
+   template< typename Other > inline bool canAlias ( const Other* alias ) const noexcept;
+   template< typename Other > inline bool isAliased( const Other* alias ) const noexcept;
 
    template< typename VT >    inline void assign   ( const DenseVector <VT,false>& rhs );
    template< typename VT >    inline void assign   ( const SparseVector<VT,false>& rhs );
@@ -510,7 +510,7 @@ class SparseColumn : public SparseVector< SparseColumn<MT,SO,SF>, false >
    //**Utility functions***************************************************************************
    /*!\name Utility functions */
    //@{
-   inline size_t extendCapacity() const;
+   inline size_t extendCapacity() const noexcept;
    //@}
    //**********************************************************************************************
 
@@ -525,10 +525,10 @@ class SparseColumn : public SparseVector< SparseColumn<MT,SO,SF>, false >
    //**Friend declarations*************************************************************************
    /*! \cond BLAZE_INTERNAL */
    template< typename MT2, bool SO2, bool SF2 >
-   friend bool isIntact( const SparseColumn<MT2,SO2,SF2>& column );
+   friend bool isIntact( const SparseColumn<MT2,SO2,SF2>& column ) noexcept;
 
    template< typename MT2, bool SO2, bool SF2 >
-   friend bool isSame( const SparseColumn<MT2,SO2,SF2>& a, const SparseColumn<MT2,SO2,SF2>& b );
+   friend bool isSame( const SparseColumn<MT2,SO2,SF2>& a, const SparseColumn<MT2,SO2,SF2>& b ) noexcept;
 
    template< typename MT2, bool SO2, bool SF2, typename VT >
    friend bool tryAssign( const SparseColumn<MT2,SO2,SF2>& lhs, const Vector<VT,false>& rhs, size_t index );
@@ -1342,7 +1342,7 @@ inline typename EnableIf< IsNumeric<Other>, SparseColumn<MT,SO,SF> >::Type&
 template< typename MT  // Type of the sparse matrix
         , bool SO      // Storage order
         , bool SF >    // Symmetry flag
-inline size_t SparseColumn<MT,SO,SF>::size() const
+inline size_t SparseColumn<MT,SO,SF>::size() const noexcept
 {
    return matrix_.rows();
 }
@@ -1357,7 +1357,7 @@ inline size_t SparseColumn<MT,SO,SF>::size() const
 template< typename MT  // Type of the sparse matrix
         , bool SO      // Storage order
         , bool SF >    // Symmetry flag
-inline size_t SparseColumn<MT,SO,SF>::capacity() const
+inline size_t SparseColumn<MT,SO,SF>::capacity() const noexcept
 {
    return matrix_.capacity( col_ );
 }
@@ -1553,7 +1553,7 @@ inline SparseColumn<MT,SO,SF>& SparseColumn<MT,SO,SF>::scale( const Other& scala
 template< typename MT  // Type of the sparse matrix
         , bool SO      // Storage order
         , bool SF >    // Symmetry flag
-inline size_t SparseColumn<MT,SO,SF>::extendCapacity() const
+inline size_t SparseColumn<MT,SO,SF>::extendCapacity() const noexcept
 {
    using blaze::max;
    using blaze::min;
@@ -1778,7 +1778,7 @@ template< typename MT       // Type of the sparse matrix
         , bool SO           // Storage order
         , bool SF >         // Symmetry flag
 template< typename Other >  // Data type of the foreign expression
-inline bool SparseColumn<MT,SO,SF>::canAlias( const Other* alias ) const
+inline bool SparseColumn<MT,SO,SF>::canAlias( const Other* alias ) const noexcept
 {
    return matrix_.isAliased( alias );
 }
@@ -1799,7 +1799,7 @@ template< typename MT       // Type of the sparse matrix
         , bool SO           // Storage order
         , bool SF >         // Symmetry flag
 template< typename Other >  // Data type of the foreign expression
-inline bool SparseColumn<MT,SO,SF>::isAliased( const Other* alias ) const
+inline bool SparseColumn<MT,SO,SF>::isAliased( const Other* alias ) const noexcept
 {
    return matrix_.isAliased( alias );
 }
@@ -2493,10 +2493,10 @@ class SparseColumn<MT,false,false> : public SparseVector< SparseColumn<MT,false,
 
    //**Friend declarations*************************************************************************
    template< typename MT2, bool SO2, bool SF2 >
-   friend bool isIntact( const SparseColumn<MT2,SO2,SF2>& column );
+   friend bool isIntact( const SparseColumn<MT2,SO2,SF2>& column ) noexcept;
 
    template< typename MT2, bool SO2, bool SF2 >
-   friend bool isSame( const SparseColumn<MT2,SO2,SF2>& a, const SparseColumn<MT2,SO2,SF2>& b );
+   friend bool isSame( const SparseColumn<MT2,SO2,SF2>& a, const SparseColumn<MT2,SO2,SF2>& b ) noexcept;
 
    template< typename MT2, bool SO2, bool SF2, typename VT >
    friend bool tryAssign( const SparseColumn<MT2,SO2,SF2>& lhs, const Vector<VT,false>& rhs, size_t index );
@@ -3859,8 +3859,8 @@ class SparseColumn<MT,false,true> : public SparseVector< SparseColumn<MT,false,t
    //**Utility functions***************************************************************************
    /*!\name Utility functions */
    //@{
-                              inline size_t        size() const;
-                              inline size_t        capacity() const;
+                              inline size_t        size() const noexcept;
+                              inline size_t        capacity() const noexcept;
                               inline size_t        nonZeros() const;
                               inline void          reset();
                               inline Iterator      set    ( size_t index, const ElementType& value );
@@ -3895,8 +3895,8 @@ class SparseColumn<MT,false,true> : public SparseVector< SparseColumn<MT,false,t
    //**Expression template evaluation functions****************************************************
    /*!\name Expression template evaluation functions */
    //@{
-   template< typename Other > inline bool canAlias ( const Other* alias ) const;
-   template< typename Other > inline bool isAliased( const Other* alias ) const;
+   template< typename Other > inline bool canAlias ( const Other* alias ) const noexcept;
+   template< typename Other > inline bool isAliased( const Other* alias ) const noexcept;
 
    template< typename VT >    inline void assign   ( const DenseVector <VT,false>& rhs );
    template< typename VT >    inline void assign   ( const SparseVector<VT,false>& rhs );
@@ -3911,7 +3911,7 @@ class SparseColumn<MT,false,true> : public SparseVector< SparseColumn<MT,false,t
    //**Utility functions***************************************************************************
    /*!\name Utility functions */
    //@{
-   inline size_t extendCapacity() const;
+   inline size_t extendCapacity() const noexcept;
    //@}
    //**********************************************************************************************
 
@@ -3925,10 +3925,10 @@ class SparseColumn<MT,false,true> : public SparseVector< SparseColumn<MT,false,t
 
    //**Friend declarations*************************************************************************
    template< typename MT2, bool SO2, bool SF2 >
-   friend bool isIntact( const SparseColumn<MT2,SO2,SF2>& column );
+   friend bool isIntact( const SparseColumn<MT2,SO2,SF2>& column ) noexcept;
 
    template< typename MT2, bool SO2, bool SF2 >
-   friend bool isSame( const SparseColumn<MT2,SO2,SF2>& a, const SparseColumn<MT2,SO2,SF2>& b );
+   friend bool isSame( const SparseColumn<MT2,SO2,SF2>& a, const SparseColumn<MT2,SO2,SF2>& b ) noexcept;
 
    template< typename MT2, bool SO2, bool SF2, typename VT >
    friend bool tryAssign( const SparseColumn<MT2,SO2,SF2>& lhs, const Vector<VT,false>& rhs, size_t index );
@@ -4751,7 +4751,7 @@ inline typename EnableIf< IsNumeric<Other>, SparseColumn<MT,false,true> >::Type&
 // \return The size of the sparse column.
 */
 template< typename MT >  // Type of the sparse matrix
-inline size_t SparseColumn<MT,false,true>::size() const
+inline size_t SparseColumn<MT,false,true>::size() const noexcept
 {
    return matrix_.rows();
 }
@@ -4766,7 +4766,7 @@ inline size_t SparseColumn<MT,false,true>::size() const
 // \return The capacity of the sparse column.
 */
 template< typename MT >  // Type of the sparse matrix
-inline size_t SparseColumn<MT,false,true>::capacity() const
+inline size_t SparseColumn<MT,false,true>::capacity() const noexcept
 {
    return matrix_.capacity( col_ );
 }
@@ -4963,7 +4963,7 @@ inline SparseColumn<MT,false,true>& SparseColumn<MT,false,true>::scale( const Ot
 // column. Note that the new capacity is restricted to the interval \f$[7..size]\f$.
 */
 template< typename MT >  // Type of the sparse matrix
-inline size_t SparseColumn<MT,false,true>::extendCapacity() const
+inline size_t SparseColumn<MT,false,true>::extendCapacity() const noexcept
 {
    using blaze::max;
    using blaze::min;
@@ -5191,7 +5191,7 @@ inline void SparseColumn<MT,false,true>::append( size_t index, const ElementType
 */
 template< typename MT >     // Type of the sparse matrix
 template< typename Other >  // Data type of the foreign expression
-inline bool SparseColumn<MT,false,true>::canAlias( const Other* alias ) const
+inline bool SparseColumn<MT,false,true>::canAlias( const Other* alias ) const noexcept
 {
    return matrix_.isAliased( alias );
 }
@@ -5212,7 +5212,7 @@ inline bool SparseColumn<MT,false,true>::canAlias( const Other* alias ) const
 */
 template< typename MT >     // Type of the sparse matrix
 template< typename Other >  // Data type of the foreign expression
-inline bool SparseColumn<MT,false,true>::isAliased( const Other* alias ) const
+inline bool SparseColumn<MT,false,true>::isAliased( const Other* alias ) const noexcept
 {
    return matrix_.isAliased( alias );
 }
@@ -5433,10 +5433,10 @@ template< typename MT, bool SO, bool SF >
 inline bool isDefault( const SparseColumn<MT,SO,SF>& column );
 
 template< typename MT, bool SO, bool SF >
-inline bool isIntact( const SparseColumn<MT,SO,SF>& column );
+inline bool isIntact( const SparseColumn<MT,SO,SF>& column ) noexcept;
 
 template< typename MT, bool SO, bool SF >
-inline bool isSame( const SparseColumn<MT,SO,SF>& a, const SparseColumn<MT,SO,SF>& b );
+inline bool isSame( const SparseColumn<MT,SO,SF>& a, const SparseColumn<MT,SO,SF>& b ) noexcept;
 //@}
 //*************************************************************************************************
 
@@ -5531,7 +5531,7 @@ inline bool isDefault( const SparseColumn<MT,SO,SF>& column )
 template< typename MT  // Type of the sparse matrix
         , bool SO      // Storage order
         , bool SF >    // Symmetry flag
-inline bool isIntact( const SparseColumn<MT,SO,SF>& column )
+inline bool isIntact( const SparseColumn<MT,SO,SF>& column ) noexcept
 {
    return ( column.col_ <= column.matrix_.columns() &&
             isIntact( column.matrix_ ) );
@@ -5554,7 +5554,7 @@ inline bool isIntact( const SparseColumn<MT,SO,SF>& column )
 template< typename MT  // Type of the sparse matrix
         , bool SO      // Storage order
         , bool SF >    // Symmetry flag
-inline bool isSame( const SparseColumn<MT,SO,SF>& a, const SparseColumn<MT,SO,SF>& b )
+inline bool isSame( const SparseColumn<MT,SO,SF>& a, const SparseColumn<MT,SO,SF>& b )  noexcept
 {
    return ( isSame( a.matrix_, b.matrix_ ) && ( a.col_ == b.col_ ) );
 }
