@@ -363,10 +363,10 @@ class UniLowerMatrix<MT,SO,false>
    //**Utility functions***************************************************************************
    /*!\name Utility functions */
    //@{
-   inline size_t   rows() const;
-   inline size_t   columns() const;
-   inline size_t   capacity() const;
-   inline size_t   capacity( size_t i ) const;
+   inline size_t   rows() const noexcept;
+   inline size_t   columns() const noexcept;
+   inline size_t   capacity() const noexcept;
+   inline size_t   capacity( size_t i ) const noexcept;
    inline size_t   nonZeros() const;
    inline size_t   nonZeros( size_t i ) const;
    inline void     reset();
@@ -384,8 +384,8 @@ class UniLowerMatrix<MT,SO,false>
    inline void     trim( size_t i );
    inline void     swap( UniLowerMatrix& m ) noexcept;
 
-   static inline size_t maxNonZeros();
-   static inline size_t maxNonZeros( size_t n );
+   static inline constexpr size_t maxNonZeros() noexcept;
+   static inline constexpr size_t maxNonZeros( size_t n ) noexcept;
    //@}
    //**********************************************************************************************
 
@@ -412,17 +412,17 @@ class UniLowerMatrix<MT,SO,false>
    //**Debugging functions*************************************************************************
    /*!\name Debugging functions */
    //@{
-   inline bool isIntact() const;
+   inline bool isIntact() const noexcept;
    //@}
    //**********************************************************************************************
 
    //**Expression template evaluation functions****************************************************
    /*!\name Expression template evaluation functions */
    //@{
-   template< typename Other > inline bool canAlias ( const Other* alias ) const;
-   template< typename Other > inline bool isAliased( const Other* alias ) const;
+   template< typename Other > inline bool canAlias ( const Other* alias ) const noexcept;
+   template< typename Other > inline bool isAliased( const Other* alias ) const noexcept;
 
-   inline bool canSMPAssign() const;
+   inline bool canSMPAssign() const noexcept;
    //@}
    //**********************************************************************************************
 
@@ -1303,7 +1303,7 @@ inline UniLowerMatrix<MT,SO,false>&
 */
 template< typename MT  // Type of the adapted sparse matrix
         , bool SO >    // Storage order of the adapted sparse matrix
-inline size_t UniLowerMatrix<MT,SO,false>::rows() const
+inline size_t UniLowerMatrix<MT,SO,false>::rows() const noexcept
 {
    return matrix_.rows();
 }
@@ -1319,7 +1319,7 @@ inline size_t UniLowerMatrix<MT,SO,false>::rows() const
 */
 template< typename MT  // Type of the adapted sparse matrix
         , bool SO >    // Storage order of the adapted sparse matrix
-inline size_t UniLowerMatrix<MT,SO,false>::columns() const
+inline size_t UniLowerMatrix<MT,SO,false>::columns() const noexcept
 {
    return matrix_.columns();
 }
@@ -1335,7 +1335,7 @@ inline size_t UniLowerMatrix<MT,SO,false>::columns() const
 */
 template< typename MT  // Type of the adapted sparse matrix
         , bool SO >    // Storage order of the adapted sparse matrix
-inline size_t UniLowerMatrix<MT,SO,false>::capacity() const
+inline size_t UniLowerMatrix<MT,SO,false>::capacity() const noexcept
 {
    return matrix_.capacity();
 }
@@ -1357,7 +1357,7 @@ inline size_t UniLowerMatrix<MT,SO,false>::capacity() const
 */
 template< typename MT  // Type of the adapted sparse matrix
         , bool SO >    // Storage order of the adapted sparse matrix
-inline size_t UniLowerMatrix<MT,SO,false>::capacity( size_t i ) const
+inline size_t UniLowerMatrix<MT,SO,false>::capacity( size_t i ) const noexcept
 {
    return matrix_.capacity(i);
 }
@@ -1761,7 +1761,6 @@ inline void UniLowerMatrix<MT,SO,false>::trim( size_t i )
 //
 // \param m The matrix to be swapped.
 // \return void
-// \exception no-throw guarantee.
 */
 template< typename MT  // Type of the adapted sparse matrix
         , bool SO >    // Storage order of the adapted sparse matrix
@@ -1788,7 +1787,7 @@ inline void UniLowerMatrix<MT,SO,false>::swap( UniLowerMatrix& m ) noexcept
 */
 template< typename MT  // Type of the adapted dense matrix
         , bool SO >    // Storage order of the adapted dense matrix
-inline size_t UniLowerMatrix<MT,SO,false>::maxNonZeros()
+inline constexpr size_t UniLowerMatrix<MT,SO,false>::maxNonZeros() noexcept
 {
    BLAZE_CONSTRAINT_MUST_NOT_BE_RESIZABLE( MT );
 
@@ -1810,7 +1809,7 @@ inline size_t UniLowerMatrix<MT,SO,false>::maxNonZeros()
 */
 template< typename MT  // Type of the adapted dense matrix
         , bool SO >    // Storage order of the adapted dense matrix
-inline size_t UniLowerMatrix<MT,SO,false>::maxNonZeros( size_t n )
+inline constexpr size_t UniLowerMatrix<MT,SO,false>::maxNonZeros( size_t n ) noexcept
 {
    return ( ( n + 1UL ) * n ) / 2UL;
 }
@@ -2128,7 +2127,7 @@ inline void UniLowerMatrix<MT,SO,false>::finalize( size_t i )
 */
 template< typename MT  // Type of the adapted sparse matrix
         , bool SO >    // Storage order of the adapted sparse matrix
-inline bool UniLowerMatrix<MT,SO,false>::isIntact() const
+inline bool UniLowerMatrix<MT,SO,false>::isIntact() const noexcept
 {
    using blaze::isIntact;
 
@@ -2160,7 +2159,7 @@ inline bool UniLowerMatrix<MT,SO,false>::isIntact() const
 template< typename MT       // Type of the adapted sparse matrix
         , bool SO >         // Storage order of the adapted sparse matrix
 template< typename Other >  // Data type of the foreign expression
-inline bool UniLowerMatrix<MT,SO,false>::canAlias( const Other* alias ) const
+inline bool UniLowerMatrix<MT,SO,false>::canAlias( const Other* alias ) const noexcept
 {
    return matrix_.canAlias( alias );
 }
@@ -2182,7 +2181,7 @@ inline bool UniLowerMatrix<MT,SO,false>::canAlias( const Other* alias ) const
 template< typename MT       // Type of the adapted sparse matrix
         , bool SO >         // Storage order of the adapted sparse matrix
 template< typename Other >  // Data type of the foreign expression
-inline bool UniLowerMatrix<MT,SO,false>::isAliased( const Other* alias ) const
+inline bool UniLowerMatrix<MT,SO,false>::isAliased( const Other* alias ) const noexcept
 {
    return matrix_.isAliased( alias );
 }
@@ -2203,7 +2202,7 @@ inline bool UniLowerMatrix<MT,SO,false>::isAliased( const Other* alias ) const
 */
 template< typename MT  // Type of the adapted sparse matrix
         , bool SO >    // Storage order of the adapted sparse matrix
-inline bool UniLowerMatrix<MT,SO,false>::canSMPAssign() const
+inline bool UniLowerMatrix<MT,SO,false>::canSMPAssign() const noexcept
 {
    return matrix_.canSMPAssign();
 }

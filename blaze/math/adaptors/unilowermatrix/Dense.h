@@ -167,7 +167,7 @@ class UniLowerMatrix<MT,SO,true>
       //**Constructor******************************************************************************
       /*!\brief Default constructor of the Iterator class.
       */
-      inline Iterator()
+      inline Iterator() noexcept
          : matrix_( nullptr )  // Reference to the adapted dense matrix
          , row_   ( 0UL )      // The current row index of the iterator
          , column_( 0UL )      // The current column index of the iterator
@@ -181,7 +181,7 @@ class UniLowerMatrix<MT,SO,true>
       // \param row Initial row index of the iterator.
       // \param column Initial column index of the iterator.
       */
-      inline Iterator( MT& matrix, size_t row, size_t column )
+      inline Iterator( MT& matrix, size_t row, size_t column ) noexcept
          : matrix_( &matrix )  // Reference to the adapted dense matrix
          , row_   ( row     )  // The current row-index of the iterator
          , column_( column  )  // The current column-index of the iterator
@@ -194,7 +194,7 @@ class UniLowerMatrix<MT,SO,true>
       // \param inc The increment of the iterator.
       // \return The incremented iterator.
       */
-      inline Iterator& operator+=( size_t inc ) {
+      inline Iterator& operator+=( size_t inc ) noexcept {
          ( SO )?( row_ += inc ):( column_ += inc );
          return *this;
       }
@@ -206,7 +206,7 @@ class UniLowerMatrix<MT,SO,true>
       // \param dec The decrement of the iterator.
       // \return The decremented iterator.
       */
-      inline Iterator& operator-=( size_t dec ) {
+      inline Iterator& operator-=( size_t dec ) noexcept {
          ( SO )?( row_ -= dec ):( column_ -= dec );
          return *this;
       }
@@ -217,7 +217,7 @@ class UniLowerMatrix<MT,SO,true>
       //
       // \return Reference to the incremented iterator.
       */
-      inline Iterator& operator++() {
+      inline Iterator& operator++() noexcept {
          ( SO )?( ++row_ ):( ++column_ );
          return *this;
       }
@@ -228,7 +228,7 @@ class UniLowerMatrix<MT,SO,true>
       //
       // \return The previous position of the iterator.
       */
-      inline const Iterator operator++( int ) {
+      inline const Iterator operator++( int ) noexcept {
          const Iterator tmp( *this );
          ++(*this);
          return tmp;
@@ -240,7 +240,7 @@ class UniLowerMatrix<MT,SO,true>
       //
       // \return Reference to the decremented iterator.
       */
-      inline Iterator& operator--() {
+      inline Iterator& operator--() noexcept {
          ( SO )?( --row_ ):( --column_ );
          return *this;
       }
@@ -251,7 +251,7 @@ class UniLowerMatrix<MT,SO,true>
       //
       // \return The previous position of the iterator.
       */
-      inline const Iterator operator--( int ) {
+      inline const Iterator operator--( int ) noexcept {
          const Iterator tmp( *this );
          --(*this);
          return tmp;
@@ -298,7 +298,7 @@ class UniLowerMatrix<MT,SO,true>
       // \param rhs The right-hand side iterator.
       // \return \a true if the iterators refer to the same element, \a false if not.
       */
-      friend inline bool operator==( const Iterator& lhs, const Iterator& rhs ) {
+      friend inline bool operator==( const Iterator& lhs, const Iterator& rhs ) noexcept {
          return ( SO )?( lhs.row_ == rhs.row_ ):( lhs.column_ == rhs.column_ );
       }
       //*******************************************************************************************
@@ -310,7 +310,7 @@ class UniLowerMatrix<MT,SO,true>
       // \param rhs The right-hand side iterator.
       // \return \a true if the iterators refer to the same element, \a false if not.
       */
-      friend inline bool operator==( const Iterator& lhs, const ConstIterator& rhs ) {
+      friend inline bool operator==( const Iterator& lhs, const ConstIterator& rhs ) noexcept {
          return ( ConstIterator( lhs ) == rhs );
       }
       //*******************************************************************************************
@@ -322,7 +322,7 @@ class UniLowerMatrix<MT,SO,true>
       // \param rhs The right-hand side iterator.
       // \return \a true if the iterators refer to the same element, \a false if not.
       */
-      friend inline bool operator==( const ConstIterator& lhs, const Iterator& rhs ) {
+      friend inline bool operator==( const ConstIterator& lhs, const Iterator& rhs ) noexcept {
          return ( lhs == ConstIterator( rhs ) );
       }
       //*******************************************************************************************
@@ -334,7 +334,7 @@ class UniLowerMatrix<MT,SO,true>
       // \param rhs The right-hand side iterator.
       // \return \a true if the iterators don't refer to the same element, \a false if they do.
       */
-      friend inline bool operator!=( const Iterator& lhs, const Iterator& rhs ) {
+      friend inline bool operator!=( const Iterator& lhs, const Iterator& rhs ) noexcept {
          return ( SO )?( lhs.row_ != rhs.row_ ):( lhs.column_ != rhs.column_ );
       }
       //*******************************************************************************************
@@ -370,7 +370,7 @@ class UniLowerMatrix<MT,SO,true>
       // \param rhs The right-hand side iterator.
       // \return \a true if the left-hand side iterator is smaller, \a false if not.
       */
-      friend inline bool operator<( const Iterator& lhs, const Iterator& rhs ) {
+      friend inline bool operator<( const Iterator& lhs, const Iterator& rhs ) noexcept {
          return ( SO )?( lhs.row_ < rhs.row_ ):( lhs.column_ < rhs.column_ );
       }
       //*******************************************************************************************
@@ -406,7 +406,7 @@ class UniLowerMatrix<MT,SO,true>
       // \param rhs The right-hand side iterator.
       // \return \a true if the left-hand side iterator is greater, \a false if not.
       */
-      friend inline bool operator>( const Iterator& lhs, const Iterator& rhs ) {
+      friend inline bool operator>( const Iterator& lhs, const Iterator& rhs ) noexcept {
          return ( SO )?( lhs.row_ > rhs.row_ ):( lhs.column_ > rhs.column_ );
       }
       //*******************************************************************************************
@@ -442,7 +442,7 @@ class UniLowerMatrix<MT,SO,true>
       // \param rhs The right-hand side iterator.
       // \return \a true if the left-hand side iterator is smaller or equal, \a false if not.
       */
-      friend inline bool operator<=( const Iterator& lhs, const Iterator& rhs ) {
+      friend inline bool operator<=( const Iterator& lhs, const Iterator& rhs ) noexcept {
          return ( SO )?( lhs.row_ <= rhs.row_ ):( lhs.column_ <= rhs.column_ );
       }
       //*******************************************************************************************
@@ -478,7 +478,7 @@ class UniLowerMatrix<MT,SO,true>
       // \param rhs The right-hand side iterator.
       // \return \a true if the left-hand side iterator is greater or equal, \a false if not.
       */
-      friend inline bool operator>=( const Iterator& lhs, const Iterator& rhs ) {
+      friend inline bool operator>=( const Iterator& lhs, const Iterator& rhs ) noexcept {
          return ( SO )?( lhs.row_ >= rhs.row_ ):( lhs.column_ >= rhs.column_ );
       }
       //*******************************************************************************************
@@ -513,7 +513,7 @@ class UniLowerMatrix<MT,SO,true>
       // \param rhs The right-hand side iterator.
       // \return The number of elements between the two iterators.
       */
-      inline DifferenceType operator-( const Iterator& rhs ) const {
+      inline DifferenceType operator-( const Iterator& rhs ) const noexcept {
          return ( SO )?( row_ - rhs.row_ ):( column_ - rhs.column_ );
       }
       //*******************************************************************************************
@@ -525,7 +525,7 @@ class UniLowerMatrix<MT,SO,true>
       // \param inc The number of elements the iterator is incremented.
       // \return The incremented iterator.
       */
-      friend inline const Iterator operator+( const Iterator& it, size_t inc ) {
+      friend inline const Iterator operator+( const Iterator& it, size_t inc ) noexcept {
          if( SO )
             return Iterator( *it.matrix_, it.row_ + inc, it.column_ );
          else
@@ -540,7 +540,7 @@ class UniLowerMatrix<MT,SO,true>
       // \param it The iterator to be incremented.
       // \return The incremented iterator.
       */
-      friend inline const Iterator operator+( size_t inc, const Iterator& it ) {
+      friend inline const Iterator operator+( size_t inc, const Iterator& it ) noexcept {
          if( SO )
             return Iterator( *it.matrix_, it.row_ + inc, it.column_ );
          else
@@ -555,7 +555,7 @@ class UniLowerMatrix<MT,SO,true>
       // \param dec The number of elements the iterator is decremented.
       // \return The decremented iterator.
       */
-      friend inline const Iterator operator-( const Iterator& it, size_t dec ) {
+      friend inline const Iterator operator-( const Iterator& it, size_t dec ) noexcept {
          if( SO )
             return Iterator( *it.matrix_, it.row_ - dec, it.column_ );
          else
@@ -612,8 +612,8 @@ class UniLowerMatrix<MT,SO,true>
    inline ConstReference operator()( size_t i, size_t j ) const;
    inline Reference      at( size_t i, size_t j );
    inline ConstReference at( size_t i, size_t j ) const;
-   inline ConstPointer   data  () const;
-   inline ConstPointer   data  ( size_t i ) const;
+   inline ConstPointer   data  () const noexcept;
+   inline ConstPointer   data  ( size_t i ) const noexcept;
    inline Iterator       begin ( size_t i );
    inline ConstIterator  begin ( size_t i ) const;
    inline ConstIterator  cbegin( size_t i ) const;
@@ -662,11 +662,11 @@ class UniLowerMatrix<MT,SO,true>
    //**Utility functions***************************************************************************
    /*!\name Utility functions */
    //@{
-   inline size_t rows() const;
-   inline size_t columns() const;
-   inline size_t spacing() const;
-   inline size_t capacity() const;
-   inline size_t capacity( size_t i ) const;
+   inline size_t rows() const noexcept;
+   inline size_t columns() const noexcept;
+   inline size_t spacing() const noexcept;
+   inline size_t capacity() const noexcept;
+   inline size_t capacity( size_t i ) const noexcept;
    inline size_t nonZeros() const;
    inline size_t nonZeros( size_t i ) const;
    inline void   reset();
@@ -677,30 +677,30 @@ class UniLowerMatrix<MT,SO,true>
    inline void   reserve( size_t elements );
    inline void   swap( UniLowerMatrix& m ) noexcept;
 
-   static inline size_t maxNonZeros();
-   static inline size_t maxNonZeros( size_t n );
+   static inline constexpr size_t maxNonZeros() noexcept;
+   static inline constexpr size_t maxNonZeros( size_t n ) noexcept;
    //@}
    //**********************************************************************************************
 
    //**Debugging functions*************************************************************************
    /*!\name Debugging functions */
    //@{
-   inline bool isIntact() const;
+   inline bool isIntact() const noexcept;
    //@}
    //**********************************************************************************************
 
    //**Expression template evaluation functions****************************************************
    /*!\name Expression template evaluation functions */
    //@{
-   template< typename Other > inline bool canAlias ( const Other* alias ) const;
-   template< typename Other > inline bool isAliased( const Other* alias ) const;
+   template< typename Other > inline bool canAlias ( const Other* alias ) const noexcept;
+   template< typename Other > inline bool isAliased( const Other* alias ) const noexcept;
 
-   inline bool isAligned   () const;
-   inline bool canSMPAssign() const;
+   inline bool isAligned   () const noexcept;
+   inline bool canSMPAssign() const noexcept;
 
-   BLAZE_ALWAYS_INLINE IntrinsicType load ( size_t i, size_t j ) const;
-   BLAZE_ALWAYS_INLINE IntrinsicType loada( size_t i, size_t j ) const;
-   BLAZE_ALWAYS_INLINE IntrinsicType loadu( size_t i, size_t j ) const;
+   BLAZE_ALWAYS_INLINE IntrinsicType load ( size_t i, size_t j ) const noexcept;
+   BLAZE_ALWAYS_INLINE IntrinsicType loada( size_t i, size_t j ) const noexcept;
+   BLAZE_ALWAYS_INLINE IntrinsicType loadu( size_t i, size_t j ) const noexcept;
    //@}
    //**********************************************************************************************
 
@@ -1180,7 +1180,7 @@ inline typename UniLowerMatrix<MT,SO,true>::ConstReference
 template< typename MT  // Type of the adapted dense matrix
         , bool SO >    // Storage order of the adapted dense matrix
 inline typename UniLowerMatrix<MT,SO,true>::ConstPointer
-   UniLowerMatrix<MT,SO,true>::data() const
+   UniLowerMatrix<MT,SO,true>::data() const noexcept
 {
    return matrix_.data();
 }
@@ -1200,7 +1200,7 @@ inline typename UniLowerMatrix<MT,SO,true>::ConstPointer
 template< typename MT  // Type of the adapted dense matrix
         , bool SO >    // Storage order of the adapted dense matrix
 inline typename UniLowerMatrix<MT,SO,true>::ConstPointer
-   UniLowerMatrix<MT,SO,true>::data( size_t i ) const
+   UniLowerMatrix<MT,SO,true>::data( size_t i ) const noexcept
 {
    return matrix_.data(i);
 }
@@ -1741,7 +1741,7 @@ inline UniLowerMatrix<MT,SO,true>&
 */
 template< typename MT  // Type of the adapted dense matrix
         , bool SO >    // Storage order of the adapted dense matrix
-inline size_t UniLowerMatrix<MT,SO,true>::rows() const
+inline size_t UniLowerMatrix<MT,SO,true>::rows() const noexcept
 {
    return matrix_.rows();
 }
@@ -1757,7 +1757,7 @@ inline size_t UniLowerMatrix<MT,SO,true>::rows() const
 */
 template< typename MT  // Type of the adapted dense matrix
         , bool SO >    // Storage order of the adapted dense matrix
-inline size_t UniLowerMatrix<MT,SO,true>::columns() const
+inline size_t UniLowerMatrix<MT,SO,true>::columns() const noexcept
 {
    return matrix_.columns();
 }
@@ -1778,7 +1778,7 @@ inline size_t UniLowerMatrix<MT,SO,true>::columns() const
 */
 template< typename MT  // Type of the adapted dense matrix
         , bool SO >    // Storage order of the adapted dense matrix
-inline size_t UniLowerMatrix<MT,SO,true>::spacing() const
+inline size_t UniLowerMatrix<MT,SO,true>::spacing() const noexcept
 {
    return matrix_.spacing();
 }
@@ -1794,7 +1794,7 @@ inline size_t UniLowerMatrix<MT,SO,true>::spacing() const
 */
 template< typename MT  // Type of the adapted dense matrix
         , bool SO >    // Storage order of the adapted dense matrix
-inline size_t UniLowerMatrix<MT,SO,true>::capacity() const
+inline size_t UniLowerMatrix<MT,SO,true>::capacity() const noexcept
 {
    return matrix_.capacity();
 }
@@ -1816,7 +1816,7 @@ inline size_t UniLowerMatrix<MT,SO,true>::capacity() const
 */
 template< typename MT  // Type of the adapted dense matrix
         , bool SO >    // Storage order of the adapted dense matrix
-inline size_t UniLowerMatrix<MT,SO,true>::capacity( size_t i ) const
+inline size_t UniLowerMatrix<MT,SO,true>::capacity( size_t i ) const noexcept
 {
    return matrix_.capacity(i);
 }
@@ -2065,7 +2065,6 @@ inline void UniLowerMatrix<MT,SO,true>::reserve( size_t elements )
 //
 // \param m The matrix to be swapped.
 // \return void
-// \exception no-throw guarantee.
 */
 template< typename MT  // Type of the adapted dense matrix
         , bool SO >    // Storage order of the adapted dense matrix
@@ -2093,7 +2092,7 @@ inline void UniLowerMatrix<MT,SO,true>::swap( UniLowerMatrix& m ) noexcept
 */
 template< typename MT  // Type of the adapted dense matrix
         , bool SO >    // Storage order of the adapted dense matrix
-inline size_t UniLowerMatrix<MT,SO,true>::maxNonZeros()
+inline constexpr size_t UniLowerMatrix<MT,SO,true>::maxNonZeros() noexcept
 {
    BLAZE_CONSTRAINT_MUST_NOT_BE_RESIZABLE( MT );
 
@@ -2115,7 +2114,7 @@ inline size_t UniLowerMatrix<MT,SO,true>::maxNonZeros()
 */
 template< typename MT  // Type of the adapted dense matrix
         , bool SO >    // Storage order of the adapted dense matrix
-inline size_t UniLowerMatrix<MT,SO,true>::maxNonZeros( size_t n )
+inline constexpr size_t UniLowerMatrix<MT,SO,true>::maxNonZeros( size_t n ) noexcept
 {
    return ( ( n + 1UL ) * n ) / 2UL;
 }
@@ -2143,7 +2142,7 @@ inline size_t UniLowerMatrix<MT,SO,true>::maxNonZeros( size_t n )
 */
 template< typename MT  // Type of the adapted dense matrix
         , bool SO >    // Storage order of the adapted dense matrix
-inline bool UniLowerMatrix<MT,SO,true>::isIntact() const
+inline bool UniLowerMatrix<MT,SO,true>::isIntact() const noexcept
 {
    using blaze::isIntact;
 
@@ -2175,7 +2174,7 @@ inline bool UniLowerMatrix<MT,SO,true>::isIntact() const
 template< typename MT       // Type of the adapted dense matrix
         , bool SO >         // Storage order of the adapted dense matrix
 template< typename Other >  // Data type of the foreign expression
-inline bool UniLowerMatrix<MT,SO,true>::canAlias( const Other* alias ) const
+inline bool UniLowerMatrix<MT,SO,true>::canAlias( const Other* alias ) const noexcept
 {
    return matrix_.canAlias( alias );
 }
@@ -2197,7 +2196,7 @@ inline bool UniLowerMatrix<MT,SO,true>::canAlias( const Other* alias ) const
 template< typename MT       // Type of the adapted dense matrix
         , bool SO >         // Storage order of the adapted dense matrix
 template< typename Other >  // Data type of the foreign expression
-inline bool UniLowerMatrix<MT,SO,true>::isAliased( const Other* alias ) const
+inline bool UniLowerMatrix<MT,SO,true>::isAliased( const Other* alias ) const noexcept
 {
    return matrix_.isAliased( alias );
 }
@@ -2217,7 +2216,7 @@ inline bool UniLowerMatrix<MT,SO,true>::isAliased( const Other* alias ) const
 */
 template< typename MT  // Type of the adapted dense matrix
         , bool SO >    // Storage order of the adapted dense matrix
-inline bool UniLowerMatrix<MT,SO,true>::isAligned() const
+inline bool UniLowerMatrix<MT,SO,true>::isAligned() const noexcept
 {
    return matrix_.isAligned();
 }
@@ -2238,7 +2237,7 @@ inline bool UniLowerMatrix<MT,SO,true>::isAligned() const
 */
 template< typename MT  // Type of the adapted dense matrix
         , bool SO >    // Storage order of the adapted dense matrix
-inline bool UniLowerMatrix<MT,SO,true>::canSMPAssign() const
+inline bool UniLowerMatrix<MT,SO,true>::canSMPAssign() const noexcept
 {
    return matrix_.canSMPAssign();
 }
@@ -2265,7 +2264,7 @@ inline bool UniLowerMatrix<MT,SO,true>::canSMPAssign() const
 template< typename MT  // Type of the adapted dense matrix
         , bool SO >    // Storage order of the adapted dense matrix
 BLAZE_ALWAYS_INLINE typename UniLowerMatrix<MT,SO,true>::IntrinsicType
-   UniLowerMatrix<MT,SO,true>::load( size_t i, size_t j ) const
+   UniLowerMatrix<MT,SO,true>::load( size_t i, size_t j ) const noexcept
 {
    return matrix_.load( i, j );
 }
@@ -2292,7 +2291,7 @@ BLAZE_ALWAYS_INLINE typename UniLowerMatrix<MT,SO,true>::IntrinsicType
 template< typename MT  // Type of the adapted dense matrix
         , bool SO >    // Storage order of the adapted dense matrix
 BLAZE_ALWAYS_INLINE typename UniLowerMatrix<MT,SO,true>::IntrinsicType
-   UniLowerMatrix<MT,SO,true>::loada( size_t i, size_t j ) const
+   UniLowerMatrix<MT,SO,true>::loada( size_t i, size_t j ) const noexcept
 {
    return matrix_.loada( i, j );
 }
@@ -2319,7 +2318,7 @@ BLAZE_ALWAYS_INLINE typename UniLowerMatrix<MT,SO,true>::IntrinsicType
 template< typename MT  // Type of the adapted dense matrix
         , bool SO >    // Storage order of the adapted dense matrix
 BLAZE_ALWAYS_INLINE typename UniLowerMatrix<MT,SO,true>::IntrinsicType
-   UniLowerMatrix<MT,SO,true>::loadu( size_t i, size_t j ) const
+   UniLowerMatrix<MT,SO,true>::loadu( size_t i, size_t j ) const noexcept
 {
    return matrix_.loadu( i, j );
 }
