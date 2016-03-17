@@ -788,7 +788,7 @@ class SparseSubmatrix : public SparseMatrix< SparseSubmatrix<MT,AF,SO>, SO >
       //
       // \return The offset of the submatrix iterator.
       */
-      inline size_t offset() const {
+      inline size_t offset() const noexcept {
          return offset_;
       }
       //*******************************************************************************************
@@ -865,12 +865,12 @@ class SparseSubmatrix : public SparseMatrix< SparseSubmatrix<MT,AF,SO>, SO >
    //**Utility functions***************************************************************************
    /*!\name Utility functions */
    //@{
-                              inline size_t           row() const;
-                              inline size_t           rows() const;
-                              inline size_t           column() const;
-                              inline size_t           columns() const;
-                              inline size_t           capacity() const;
-                              inline size_t           capacity( size_t i ) const;
+                              inline size_t           row() const noexcept;
+                              inline size_t           rows() const noexcept;
+                              inline size_t           column() const noexcept;
+                              inline size_t           columns() const noexcept;
+                              inline size_t           capacity() const noexcept;
+                              inline size_t           capacity( size_t i ) const noexcept;
                               inline size_t           nonZeros() const;
                               inline size_t           nonZeros( size_t i ) const;
                               inline void             reset();
@@ -913,10 +913,10 @@ class SparseSubmatrix : public SparseMatrix< SparseSubmatrix<MT,AF,SO>, SO >
    //**Expression template evaluation functions****************************************************
    /*!\name Expression template evaluation functions */
    //@{
-   template< typename Other > inline bool canAlias ( const Other* alias ) const;
-   template< typename Other > inline bool isAliased( const Other* alias ) const;
+   template< typename Other > inline bool canAlias ( const Other* alias ) const noexcept;
+   template< typename Other > inline bool isAliased( const Other* alias ) const noexcept;
 
-   inline bool canSMPAssign() const;
+   inline bool canSMPAssign() const noexcept;
 
    template< typename MT2, bool SO2 > inline void assign   ( const DenseMatrix<MT2,SO2>&    rhs );
    template< typename MT2 >           inline void assign   ( const SparseMatrix<MT2,false>& rhs );
@@ -932,7 +932,7 @@ class SparseSubmatrix : public SparseMatrix< SparseSubmatrix<MT,AF,SO>, SO >
    //**Utility functions***************************************************************************
    /*!\name Utility functions */
    //@{
-   inline bool hasOverlap() const;
+   inline bool hasOverlap() const noexcept;
    //@}
    //**********************************************************************************************
 
@@ -954,16 +954,16 @@ class SparseSubmatrix : public SparseMatrix< SparseSubmatrix<MT,AF,SO>, SO >
       submatrix( const SparseSubmatrix<MT2,AF2,SO2>& sm, size_t row, size_t column, size_t m, size_t n );
 
    template< typename MT2, bool AF2, bool SO2 >
-   friend bool isIntact( const SparseSubmatrix<MT2,AF2,SO2>& sm );
+   friend bool isIntact( const SparseSubmatrix<MT2,AF2,SO2>& sm ) noexcept;
 
    template< typename MT2, bool AF2, bool SO2 >
-   friend bool isSame( const SparseSubmatrix<MT2,AF2,SO2>& a, const SparseMatrix<MT2,SO2>& b );
+   friend bool isSame( const SparseSubmatrix<MT2,AF2,SO2>& a, const SparseMatrix<MT2,SO2>& b ) noexcept;
 
    template< typename MT2, bool AF2, bool SO2 >
-   friend bool isSame( const SparseMatrix<MT2,SO2>& a, const SparseSubmatrix<MT2,AF2,SO2>& b );
+   friend bool isSame( const SparseMatrix<MT2,SO2>& a, const SparseSubmatrix<MT2,AF2,SO2>& b ) noexcept;
 
    template< typename MT2, bool AF2, bool SO2 >
-   friend bool isSame( const SparseSubmatrix<MT2,AF2,SO2>& a, const SparseSubmatrix<MT2,AF2,SO2>& b );
+   friend bool isSame( const SparseSubmatrix<MT2,AF2,SO2>& a, const SparseSubmatrix<MT2,AF2,SO2>& b ) noexcept;
 
    template< typename MT2, bool AF2, bool SO2, typename VT, bool TF >
    friend bool tryAssign( const SparseSubmatrix<MT2,AF2,SO2>& lhs, const Vector<VT,TF>& rhs,
@@ -1709,7 +1709,7 @@ inline typename EnableIf< IsNumeric<Other>, SparseSubmatrix<MT,AF,SO> >::Type&
 template< typename MT  // Type of the sparse matrix
         , bool AF      // Alignment flag
         , bool SO >    // Storage order
-inline size_t SparseSubmatrix<MT,AF,SO>::row() const
+inline size_t SparseSubmatrix<MT,AF,SO>::row() const noexcept
 {
    return row_;
 }
@@ -1724,7 +1724,7 @@ inline size_t SparseSubmatrix<MT,AF,SO>::row() const
 template< typename MT  // Type of the sparse matrix
         , bool AF      // Alignment flag
         , bool SO >    // Storage order
-inline size_t SparseSubmatrix<MT,AF,SO>::rows() const
+inline size_t SparseSubmatrix<MT,AF,SO>::rows() const noexcept
 {
    return m_;
 }
@@ -1739,7 +1739,7 @@ inline size_t SparseSubmatrix<MT,AF,SO>::rows() const
 template< typename MT  // Type of the sparse matrix
         , bool AF      // Alignment flag
         , bool SO >    // Storage order
-inline size_t SparseSubmatrix<MT,AF,SO>::column() const
+inline size_t SparseSubmatrix<MT,AF,SO>::column() const noexcept
 {
    return column_;
 }
@@ -1754,7 +1754,7 @@ inline size_t SparseSubmatrix<MT,AF,SO>::column() const
 template< typename MT  // Type of the sparse matrix
         , bool AF      // Alignment flag
         , bool SO >    // Storage order
-inline size_t SparseSubmatrix<MT,AF,SO>::columns() const
+inline size_t SparseSubmatrix<MT,AF,SO>::columns() const noexcept
 {
    return n_;
 }
@@ -1769,7 +1769,7 @@ inline size_t SparseSubmatrix<MT,AF,SO>::columns() const
 template< typename MT  // Type of the sparse matrix
         , bool AF      // Alignment flag
         , bool SO >    // Storage order
-inline size_t SparseSubmatrix<MT,AF,SO>::capacity() const
+inline size_t SparseSubmatrix<MT,AF,SO>::capacity() const noexcept
 {
    return nonZeros() + matrix_.capacity() - matrix_.nonZeros();
 }
@@ -1790,7 +1790,7 @@ inline size_t SparseSubmatrix<MT,AF,SO>::capacity() const
 template< typename MT  // Type of the sparse matrix
         , bool AF      // Alignment flag
         , bool SO >    // Storage order
-inline size_t SparseSubmatrix<MT,AF,SO>::capacity( size_t i ) const
+inline size_t SparseSubmatrix<MT,AF,SO>::capacity( size_t i ) const noexcept
 {
    BLAZE_USER_ASSERT( i < rows(), "Invalid row access index" );
    return nonZeros( i ) + matrix_.capacity( row_+i ) - matrix_.nonZeros( row_+i );
@@ -2244,7 +2244,7 @@ inline SparseSubmatrix<MT,AF,SO>& SparseSubmatrix<MT,AF,SO>::scale( const Other&
 template< typename MT  // Type of the sparse matrix
         , bool AF      // Alignment flag
         , bool SO >    // Storage order
-inline bool SparseSubmatrix<MT,AF,SO>::hasOverlap() const
+inline bool SparseSubmatrix<MT,AF,SO>::hasOverlap() const noexcept
 {
    BLAZE_INTERNAL_ASSERT( IsSymmetric<MT>::value || IsHermitian<MT>::value, "Invalid matrix detected" );
 
@@ -2545,7 +2545,7 @@ template< typename MT       // Type of the sparse matrix
         , bool AF           // Alignment flag
         , bool SO >         // Storage order
 template< typename Other >  // Data type of the foreign expression
-inline bool SparseSubmatrix<MT,AF,SO>::canAlias( const Other* alias ) const
+inline bool SparseSubmatrix<MT,AF,SO>::canAlias( const Other* alias ) const noexcept
 {
    return matrix_.isAliased( alias );
 }
@@ -2566,7 +2566,7 @@ template< typename MT       // Type of the sparse matrix
         , bool AF           // Alignment flag
         , bool SO >         // Storage order
 template< typename Other >  // Data type of the foreign expression
-inline bool SparseSubmatrix<MT,AF,SO>::isAliased( const Other* alias ) const
+inline bool SparseSubmatrix<MT,AF,SO>::isAliased( const Other* alias ) const noexcept
 {
    return matrix_.isAliased( alias );
 }
@@ -2586,7 +2586,7 @@ inline bool SparseSubmatrix<MT,AF,SO>::isAliased( const Other* alias ) const
 template< typename MT  // Type of the sparse matrix
         , bool AF      // Alignment flag
         , bool SO >    // Storage order
-inline bool SparseSubmatrix<MT,AF,SO>::canSMPAssign() const
+inline bool SparseSubmatrix<MT,AF,SO>::canSMPAssign() const noexcept
 {
    return false;
 }
@@ -3185,7 +3185,7 @@ class SparseSubmatrix<MT,AF,true> : public SparseMatrix< SparseSubmatrix<MT,AF,t
       //
       // \return The offset of the submatrix iterator.
       */
-      inline size_t offset() const {
+      inline size_t offset() const noexcept {
          return offset_;
       }
       //*******************************************************************************************
@@ -3262,12 +3262,12 @@ class SparseSubmatrix<MT,AF,true> : public SparseMatrix< SparseSubmatrix<MT,AF,t
    //**Utility functions***************************************************************************
    /*!\name Utility functions */
    //@{
-                              inline size_t           row() const;
-                              inline size_t           rows() const;
-                              inline size_t           column() const;
-                              inline size_t           columns() const;
-                              inline size_t           capacity() const;
-                              inline size_t           capacity( size_t i ) const;
+                              inline size_t           row() const noexcept;
+                              inline size_t           rows() const noexcept;
+                              inline size_t           column() const noexcept;
+                              inline size_t           columns() const noexcept;
+                              inline size_t           capacity() const noexcept;
+                              inline size_t           capacity( size_t i ) const noexcept;
                               inline size_t           nonZeros() const;
                               inline size_t           nonZeros( size_t i ) const;
                               inline void             reset();
@@ -3310,10 +3310,10 @@ class SparseSubmatrix<MT,AF,true> : public SparseMatrix< SparseSubmatrix<MT,AF,t
    //**Expression template evaluation functions****************************************************
    /*!\name Expression template evaluation functions */
    //@{
-   template< typename Other > inline bool canAlias ( const Other* alias ) const;
-   template< typename Other > inline bool isAliased( const Other* alias ) const;
+   template< typename Other > inline bool canAlias ( const Other* alias ) const noexcept;
+   template< typename Other > inline bool isAliased( const Other* alias ) const noexcept;
 
-   inline bool canSMPAssign() const;
+   inline bool canSMPAssign() const noexcept;
 
    template< typename MT2, bool SO > inline void assign   ( const DenseMatrix<MT2,SO>&     rhs );
    template< typename MT2 >          inline void assign   ( const SparseMatrix<MT2,true>&  rhs );
@@ -3329,7 +3329,7 @@ class SparseSubmatrix<MT,AF,true> : public SparseMatrix< SparseSubmatrix<MT,AF,t
    //**Utility functions***************************************************************************
    /*!\name Utility functions */
    //@{
-   inline bool hasOverlap() const;
+   inline bool hasOverlap() const noexcept;
    //@}
    //**********************************************************************************************
 
@@ -3350,16 +3350,16 @@ class SparseSubmatrix<MT,AF,true> : public SparseMatrix< SparseSubmatrix<MT,AF,t
       submatrix( const SparseSubmatrix<MT2,AF2,SO2>& sm, size_t row, size_t column, size_t m, size_t n );
 
    template< typename MT2, bool AF2, bool SO2 >
-   friend bool isIntact( const SparseSubmatrix<MT2,AF2,SO2>& sm );
+   friend bool isIntact( const SparseSubmatrix<MT2,AF2,SO2>& sm ) noexcept;
 
    template< typename MT2, bool AF2, bool SO2 >
-   friend bool isSame( const SparseSubmatrix<MT2,AF2,SO2>& a, const SparseMatrix<MT2,SO2>& b );
+   friend bool isSame( const SparseSubmatrix<MT2,AF2,SO2>& a, const SparseMatrix<MT2,SO2>& b ) noexcept;
 
    template< typename MT2, bool AF2, bool SO2 >
-   friend bool isSame( const SparseMatrix<MT2,SO2>& a, const SparseSubmatrix<MT2,AF2,SO2>& b );
+   friend bool isSame( const SparseMatrix<MT2,SO2>& a, const SparseSubmatrix<MT2,AF2,SO2>& b ) noexcept;
 
    template< typename MT2, bool AF2, bool SO2 >
-   friend bool isSame( const SparseSubmatrix<MT2,AF2,SO2>& a, const SparseSubmatrix<MT2,AF2,SO2>& b );
+   friend bool isSame( const SparseSubmatrix<MT2,AF2,SO2>& a, const SparseSubmatrix<MT2,AF2,SO2>& b ) noexcept;
 
    template< typename MT2, bool AF2, bool SO2, typename VT, bool TF >
    friend bool tryAssign( const SparseSubmatrix<MT2,AF2,SO2>& lhs, const Vector<VT,TF>& rhs,
@@ -4091,7 +4091,7 @@ inline typename EnableIf< IsNumeric<Other>, SparseSubmatrix<MT,AF,true> >::Type&
 */
 template< typename MT  // Type of the sparse matrix
         , bool AF >    // Alignment flag
-inline size_t SparseSubmatrix<MT,AF,true>::row() const
+inline size_t SparseSubmatrix<MT,AF,true>::row() const noexcept
 {
    return row_;
 }
@@ -4107,7 +4107,7 @@ inline size_t SparseSubmatrix<MT,AF,true>::row() const
 */
 template< typename MT  // Type of the sparse matrix
         , bool AF >    // Alignment flag
-inline size_t SparseSubmatrix<MT,AF,true>::rows() const
+inline size_t SparseSubmatrix<MT,AF,true>::rows() const noexcept
 {
    return m_;
 }
@@ -4123,7 +4123,7 @@ inline size_t SparseSubmatrix<MT,AF,true>::rows() const
 */
 template< typename MT  // Type of the sparse matrix
         , bool AF >    // Alignment flag
-inline size_t SparseSubmatrix<MT,AF,true>::column() const
+inline size_t SparseSubmatrix<MT,AF,true>::column() const noexcept
 {
    return column_;
 }
@@ -4139,7 +4139,7 @@ inline size_t SparseSubmatrix<MT,AF,true>::column() const
 */
 template< typename MT  // Type of the sparse matrix
         , bool AF >    // Alignment flag
-inline size_t SparseSubmatrix<MT,AF,true>::columns() const
+inline size_t SparseSubmatrix<MT,AF,true>::columns() const noexcept
 {
    return n_;
 }
@@ -4155,7 +4155,7 @@ inline size_t SparseSubmatrix<MT,AF,true>::columns() const
 */
 template< typename MT  // Type of the sparse matrix
         , bool AF >    // Alignment flag
-inline size_t SparseSubmatrix<MT,AF,true>::capacity() const
+inline size_t SparseSubmatrix<MT,AF,true>::capacity() const noexcept
 {
    return nonZeros() + matrix_.capacity() - matrix_.nonZeros();
 }
@@ -4172,7 +4172,7 @@ inline size_t SparseSubmatrix<MT,AF,true>::capacity() const
 */
 template< typename MT  // Type of the sparse matrix
         , bool AF >    // Alignment flag
-inline size_t SparseSubmatrix<MT,AF,true>::capacity( size_t j ) const
+inline size_t SparseSubmatrix<MT,AF,true>::capacity( size_t j ) const noexcept
 {
    BLAZE_USER_ASSERT( j < columns(), "Invalid column access index" );
    return nonZeros( j ) + matrix_.capacity( column_+j ) - matrix_.nonZeros( column_+j );
@@ -4622,7 +4622,7 @@ inline SparseSubmatrix<MT,AF,true>& SparseSubmatrix<MT,AF,true>::scale( const Ot
 */
 template< typename MT  // Type of the sparse matrix
         , bool AF >    // Alignment flag
-inline bool SparseSubmatrix<MT,AF,true>::hasOverlap() const
+inline bool SparseSubmatrix<MT,AF,true>::hasOverlap() const noexcept
 {
    BLAZE_INTERNAL_ASSERT( IsSymmetric<MT>::value || IsHermitian<MT>::value, "Invalid matrix detected" );
 
@@ -4932,7 +4932,7 @@ inline void SparseSubmatrix<MT,AF,true>::finalize( size_t j )
 template< typename MT       // Type of the sparse matrix
         , bool AF >         // Alignment flag
 template< typename Other >  // Data type of the foreign expression
-inline bool SparseSubmatrix<MT,AF,true>::canAlias( const Other* alias ) const
+inline bool SparseSubmatrix<MT,AF,true>::canAlias( const Other* alias ) const noexcept
 {
    return matrix_.isAliased( alias );
 }
@@ -4954,7 +4954,7 @@ inline bool SparseSubmatrix<MT,AF,true>::canAlias( const Other* alias ) const
 template< typename MT       // Type of the sparse matrix
         , bool AF >         // Alignment flag
 template< typename Other >  // Data type of the foreign expression
-inline bool SparseSubmatrix<MT,AF,true>::isAliased( const Other* alias ) const
+inline bool SparseSubmatrix<MT,AF,true>::isAliased( const Other* alias ) const noexcept
 {
    return matrix_.isAliased( alias );
 }
@@ -4975,7 +4975,7 @@ inline bool SparseSubmatrix<MT,AF,true>::isAliased( const Other* alias ) const
 */
 template< typename MT  // Type of the sparse matrix
         , bool AF >    // Alignment flag
-inline bool SparseSubmatrix<MT,AF,true>::canSMPAssign() const
+inline bool SparseSubmatrix<MT,AF,true>::canSMPAssign() const noexcept
 {
    return false;
 }
@@ -5269,7 +5269,7 @@ template< typename MT, bool AF, bool SO >
 inline bool isDefault( const SparseSubmatrix<MT,AF,SO>& sm );
 
 template< typename MT, bool AF, bool SO >
-inline bool isIntact( const SparseSubmatrix<MT,AF,SO>& sm );
+inline bool isIntact( const SparseSubmatrix<MT,AF,SO>& sm ) noexcept;
 
 template< typename MT, bool AF, bool SO >
 inline bool isSymmetric( const SparseSubmatrix<MT,AF,SO>& sm );
@@ -5296,13 +5296,13 @@ template< typename MT, bool AF, bool SO >
 inline bool isStrictlyUpper( const SparseSubmatrix<MT,AF,SO>& sm );
 
 template< typename MT, bool AF, bool SO >
-inline bool isSame( const SparseSubmatrix<MT,AF,SO>& a, const SparseMatrix<MT,SO>& b );
+inline bool isSame( const SparseSubmatrix<MT,AF,SO>& a, const SparseMatrix<MT,SO>& b ) noexcept;
 
 template< typename MT, bool AF, bool SO >
-inline bool isSame( const SparseMatrix<MT,SO>& a, const SparseSubmatrix<MT,AF,SO>& b );
+inline bool isSame( const SparseMatrix<MT,SO>& a, const SparseSubmatrix<MT,AF,SO>& b ) noexcept;
 
 template< typename MT, bool AF, bool SO >
-inline bool isSame( const SparseSubmatrix<MT,AF,SO>& a, const SparseSubmatrix<MT,AF,SO>& b );
+inline bool isSame( const SparseSubmatrix<MT,AF,SO>& a, const SparseSubmatrix<MT,AF,SO>& b ) noexcept;
 //@}
 //*************************************************************************************************
 
@@ -5426,7 +5426,7 @@ inline bool isDefault( const SparseSubmatrix<MT,AF,SO>& sm )
 template< typename MT  // Type of the sparse matrix
         , bool AF      // Alignment flag
         , bool SO >    // Storage order
-inline bool isIntact( const SparseSubmatrix<MT,AF,SO>& sm )
+inline bool isIntact( const SparseSubmatrix<MT,AF,SO>& sm ) noexcept
 {
    return ( sm.row_ + sm.m_ <= sm.matrix_.rows() &&
             sm.column_ + sm.n_ <= sm.matrix_.columns() &&
@@ -5794,7 +5794,7 @@ inline bool isStrictlyUpper( const SparseSubmatrix<MT,AF,SO>& sm )
 template< typename MT  // Type of the sparse matrix
         , bool AF      // Alignment flag
         , bool SO >    // Storage order
-inline bool isSame( const SparseSubmatrix<MT,AF,SO>& a, const SparseMatrix<MT,SO>& b )
+inline bool isSame( const SparseSubmatrix<MT,AF,SO>& a, const SparseMatrix<MT,SO>& b ) noexcept
 {
    return ( isSame( a.matrix_, ~b ) && ( a.rows() == (~b).rows() ) && ( a.columns() == (~b).columns() ) );
 }
@@ -5816,7 +5816,7 @@ inline bool isSame( const SparseSubmatrix<MT,AF,SO>& a, const SparseMatrix<MT,SO
 template< typename MT  // Type of the sparse matrix
         , bool AF      // Alignment flag
         , bool SO >    // Storage order
-inline bool isSame( const SparseMatrix<MT,SO>& a, const SparseSubmatrix<MT,AF,SO>& b )
+inline bool isSame( const SparseMatrix<MT,SO>& a, const SparseSubmatrix<MT,AF,SO>& b ) noexcept
 {
    return ( isSame( ~a, b.matrix_ ) && ( (~a).rows() == b.rows() ) && ( (~a).columns() == b.columns() ) );
 }
@@ -5838,7 +5838,7 @@ inline bool isSame( const SparseMatrix<MT,SO>& a, const SparseSubmatrix<MT,AF,SO
 template< typename MT  // Type of the sparse matrix
         , bool AF      // Alignment flag
         , bool SO >    // Storage order
-inline bool isSame( const SparseSubmatrix<MT,AF,SO>& a, const SparseSubmatrix<MT,AF,SO>& b )
+inline bool isSame( const SparseSubmatrix<MT,AF,SO>& a, const SparseSubmatrix<MT,AF,SO>& b ) noexcept
 {
    return ( isSame( a.matrix_, b.matrix_ ) &&
             ( a.row_ == b.row_ ) && ( a.column_ == b.column_ ) &&
