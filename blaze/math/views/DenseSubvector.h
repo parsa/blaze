@@ -791,8 +791,8 @@ class DenseSubvector : public DenseVector< DenseSubvector<VT,AF,TF>, TF >
    inline ConstReference operator[]( size_t index ) const;
    inline Reference      at( size_t index );
    inline ConstReference at( size_t index ) const;
-   inline Pointer        data  ();
-   inline ConstPointer   data  () const;
+   inline Pointer        data  () noexcept;
+   inline ConstPointer   data  () const noexcept;
    inline Iterator       begin ();
    inline ConstIterator  begin () const;
    inline ConstIterator  cbegin() const;
@@ -826,8 +826,8 @@ class DenseSubvector : public DenseVector< DenseSubvector<VT,AF,TF>, TF >
    //**Utility functions***************************************************************************
    /*!\name Utility functions */
    //@{
-                              inline size_t          size() const;
-                              inline size_t          capacity() const;
+                              inline size_t          size() const noexcept;
+                              inline size_t          capacity() const noexcept;
                               inline size_t          nonZeros() const;
                               inline void            reset();
    template< typename Other > inline DenseSubvector& scale( const Other& scalar );
@@ -891,28 +891,28 @@ class DenseSubvector : public DenseVector< DenseSubvector<VT,AF,TF>, TF >
    /*!\name Expression template evaluation functions */
    //@{
    template< typename Other >
-   inline bool canAlias( const Other* alias ) const;
+   inline bool canAlias( const Other* alias ) const noexcept;
 
    template< typename VT2, bool AF2, bool TF2 >
-   inline bool canAlias( const DenseSubvector<VT2,AF2,TF2>* alias ) const;
+   inline bool canAlias( const DenseSubvector<VT2,AF2,TF2>* alias ) const noexcept;
 
    template< typename Other >
-   inline bool isAliased( const Other* alias ) const;
+   inline bool isAliased( const Other* alias ) const noexcept;
 
    template< typename VT2, bool AF2, bool TF2 >
-   inline bool isAliased( const DenseSubvector<VT2,AF2,TF2>* alias ) const;
+   inline bool isAliased( const DenseSubvector<VT2,AF2,TF2>* alias ) const noexcept;
 
-   inline bool isAligned   () const;
-   inline bool canSMPAssign() const;
+   inline bool isAligned   () const noexcept;
+   inline bool canSMPAssign() const noexcept;
 
-   inline IntrinsicType load ( size_t index ) const;
-   inline IntrinsicType loada( size_t index ) const;
-   inline IntrinsicType loadu( size_t index ) const;
+   BLAZE_ALWAYS_INLINE IntrinsicType load ( size_t index ) const noexcept;
+   BLAZE_ALWAYS_INLINE IntrinsicType loada( size_t index ) const noexcept;
+   BLAZE_ALWAYS_INLINE IntrinsicType loadu( size_t index ) const noexcept;
 
-   inline void store ( size_t index, const IntrinsicType& value );
-   inline void storea( size_t index, const IntrinsicType& value );
-   inline void storeu( size_t index, const IntrinsicType& value );
-   inline void stream( size_t index, const IntrinsicType& value );
+   BLAZE_ALWAYS_INLINE void store ( size_t index, const IntrinsicType& value ) noexcept;
+   BLAZE_ALWAYS_INLINE void storea( size_t index, const IntrinsicType& value ) noexcept;
+   BLAZE_ALWAYS_INLINE void storeu( size_t index, const IntrinsicType& value ) noexcept;
+   BLAZE_ALWAYS_INLINE void stream( size_t index, const IntrinsicType& value ) noexcept;
 
    template< typename VT2 >
    inline typename DisableIf< VectorizedAssign<VT2> >::Type
@@ -985,13 +985,13 @@ class DenseSubvector : public DenseVector< DenseSubvector<VT,AF,TF>, TF >
    friend bool isIntact( const DenseSubvector<VT2,AF2,TF2>& dv );
 
    template< typename VT2, bool AF2, bool TF2 >
-   friend bool isSame( const DenseSubvector<VT2,AF2,TF2>& a, const DenseVector<VT2,TF2>& b );
+   friend bool isSame( const DenseSubvector<VT2,AF2,TF2>& a, const DenseVector<VT2,TF2>& b ) noexcept;
 
    template< typename VT2, bool AF2, bool TF2 >
-   friend bool isSame( const DenseVector<VT2,TF2>& a, const DenseSubvector<VT2,AF2,TF2>& b );
+   friend bool isSame( const DenseVector<VT2,TF2>& a, const DenseSubvector<VT2,AF2,TF2>& b ) noexcept;
 
    template< typename VT2, bool AF2, bool TF2 >
-   friend bool isSame( const DenseSubvector<VT2,AF2,TF2>& a, const DenseSubvector<VT2,AF2,TF2>& b );
+   friend bool isSame( const DenseSubvector<VT2,AF2,TF2>& a, const DenseSubvector<VT2,AF2,TF2>& b ) noexcept;
 
    template< typename VT2, bool AF2, bool TF2, typename VT3 >
    friend bool tryAssign( const DenseSubvector<VT2,AF2,TF2>& lhs, const Vector<VT3,TF2>& rhs, size_t index );
@@ -1168,7 +1168,7 @@ inline typename DenseSubvector<VT,AF,TF>::ConstReference
 template< typename VT  // Type of the dense vector
         , bool AF      // Alignment flag
         , bool TF >    // Transpose flag
-inline typename DenseSubvector<VT,AF,TF>::Pointer DenseSubvector<VT,AF,TF>::data()
+inline typename DenseSubvector<VT,AF,TF>::Pointer DenseSubvector<VT,AF,TF>::data() noexcept
 {
    return vector_.data() + offset_;
 }
@@ -1185,7 +1185,7 @@ inline typename DenseSubvector<VT,AF,TF>::Pointer DenseSubvector<VT,AF,TF>::data
 template< typename VT  // Type of the dense vector
         , bool AF      // Alignment flag
         , bool TF >    // Transpose flag
-inline typename DenseSubvector<VT,AF,TF>::ConstPointer DenseSubvector<VT,AF,TF>::data() const
+inline typename DenseSubvector<VT,AF,TF>::ConstPointer DenseSubvector<VT,AF,TF>::data() const noexcept
 {
    return vector_.data() + offset_;
 }
@@ -1673,7 +1673,7 @@ inline typename EnableIf< IsNumeric<Other>, DenseSubvector<VT,AF,TF> >::Type&
 template< typename VT  // Type of the dense vector
         , bool AF      // Alignment flag
         , bool TF >    // Transpose flag
-inline size_t DenseSubvector<VT,AF,TF>::size() const
+inline size_t DenseSubvector<VT,AF,TF>::size() const noexcept
 {
    return size_;
 }
@@ -1688,7 +1688,7 @@ inline size_t DenseSubvector<VT,AF,TF>::size() const
 template< typename VT  // Type of the dense vector
         , bool AF      // Alignment flag
         , bool TF >    // Transpose flag
-inline size_t DenseSubvector<VT,AF,TF>::capacity() const
+inline size_t DenseSubvector<VT,AF,TF>::capacity() const noexcept
 {
    return vector_.capacity() - offset_;
 }
@@ -1782,7 +1782,7 @@ template< typename VT       // Type of the dense vector
         , bool AF           // Alignment flag
         , bool TF >         // Transpose flag
 template< typename Other >  // Data type of the foreign expression
-inline bool DenseSubvector<VT,AF,TF>::canAlias( const Other* alias ) const
+inline bool DenseSubvector<VT,AF,TF>::canAlias( const Other* alias ) const noexcept
 {
    return vector_.isAliased( alias );
 }
@@ -1805,7 +1805,7 @@ template< typename VT   // Type of the dense vector
 template< typename VT2  // Data type of the foreign dense subvector
         , bool AF2      // Alignment flag of the foreign dense subvector
         , bool TF2 >    // Transpose flag of the foreign dense subvector
-inline bool DenseSubvector<VT,AF,TF>::canAlias( const DenseSubvector<VT2,AF2,TF2>* alias ) const
+inline bool DenseSubvector<VT,AF,TF>::canAlias( const DenseSubvector<VT2,AF2,TF2>* alias ) const noexcept
 {
    return ( vector_.isAliased( &alias->vector_ ) &&
             ( offset_ + size_ > alias->offset_ ) && ( offset_ < alias->offset_ + alias->size_ ) );
@@ -1827,7 +1827,7 @@ template< typename VT       // Type of the dense vector
         , bool AF           // Alignment flag
         , bool TF >         // Transpose flag
 template< typename Other >  // Data type of the foreign expression
-inline bool DenseSubvector<VT,AF,TF>::isAliased( const Other* alias ) const
+inline bool DenseSubvector<VT,AF,TF>::isAliased( const Other* alias ) const noexcept
 {
    return vector_.isAliased( alias );
 }
@@ -1850,7 +1850,7 @@ template< typename VT   // Type of the dense vector
 template< typename VT2  // Data type of the foreign dense subvector
         , bool AF2      // Alignment flag of the foreign dense subvector
         , bool TF2 >    // Transpose flag of the foreign dense subvector
-inline bool DenseSubvector<VT,AF,TF>::isAliased( const DenseSubvector<VT2,AF2,TF2>* alias ) const
+inline bool DenseSubvector<VT,AF,TF>::isAliased( const DenseSubvector<VT2,AF2,TF2>* alias ) const noexcept
 {
    return ( vector_.isAliased( &alias->vector_ ) &&
             ( offset_ + size_ > alias->offset_ ) && ( offset_ < alias->offset_ + alias->size_ ) );
@@ -1870,7 +1870,7 @@ inline bool DenseSubvector<VT,AF,TF>::isAliased( const DenseSubvector<VT2,AF2,TF
 template< typename VT  // Type of the dense vector
         , bool AF      // Alignment flag
         , bool TF >    // Transpose flag
-inline bool DenseSubvector<VT,AF,TF>::isAligned() const
+inline bool DenseSubvector<VT,AF,TF>::isAligned() const noexcept
 {
    return isAligned_;
 }
@@ -1890,7 +1890,7 @@ inline bool DenseSubvector<VT,AF,TF>::isAligned() const
 template< typename VT  // Type of the dense vector
         , bool AF      // Alignment flag
         , bool TF >    // Transpose flag
-inline bool DenseSubvector<VT,AF,TF>::canSMPAssign() const
+inline bool DenseSubvector<VT,AF,TF>::canSMPAssign() const noexcept
 {
    return ( size() > SMP_DVECASSIGN_THRESHOLD );
 }
@@ -1913,8 +1913,8 @@ inline bool DenseSubvector<VT,AF,TF>::canSMPAssign() const
 template< typename VT       // Type of the dense vector
         , bool AF           // Alignment flag
         , bool TF >         // Transpose flag
-inline typename DenseSubvector<VT,AF,TF>::IntrinsicType
-   DenseSubvector<VT,AF,TF>::load( size_t index ) const
+BLAZE_ALWAYS_INLINE typename DenseSubvector<VT,AF,TF>::IntrinsicType
+   DenseSubvector<VT,AF,TF>::load( size_t index ) const noexcept
 {
    if( isAligned_ )
       return loada( index );
@@ -1940,8 +1940,8 @@ inline typename DenseSubvector<VT,AF,TF>::IntrinsicType
 template< typename VT  // Type of the dense vector
         , bool AF      // Alignment flag
         , bool TF >    // Transpose flag
-inline typename DenseSubvector<VT,AF,TF>::IntrinsicType
-   DenseSubvector<VT,AF,TF>::loada( size_t index ) const
+BLAZE_ALWAYS_INLINE typename DenseSubvector<VT,AF,TF>::IntrinsicType
+   DenseSubvector<VT,AF,TF>::loada( size_t index ) const noexcept
 {
    BLAZE_CONSTRAINT_MUST_BE_VECTORIZABLE_TYPE( ElementType );
 
@@ -1970,8 +1970,8 @@ inline typename DenseSubvector<VT,AF,TF>::IntrinsicType
 template< typename VT  // Type of the dense vector
         , bool AF      // Alignment flag
         , bool TF >    // Transpose flag
-inline typename DenseSubvector<VT,AF,TF>::IntrinsicType
-   DenseSubvector<VT,AF,TF>::loadu( size_t index ) const
+BLAZE_ALWAYS_INLINE typename DenseSubvector<VT,AF,TF>::IntrinsicType
+   DenseSubvector<VT,AF,TF>::loadu( size_t index ) const noexcept
 {
    BLAZE_CONSTRAINT_MUST_BE_VECTORIZABLE_TYPE( ElementType );
 
@@ -2001,7 +2001,8 @@ inline typename DenseSubvector<VT,AF,TF>::IntrinsicType
 template< typename VT  // Type of the dense vector
         , bool AF      // Alignment flag
         , bool TF >    // Transpose flag
-inline void DenseSubvector<VT,AF,TF>::store( size_t index, const IntrinsicType& value )
+BLAZE_ALWAYS_INLINE void
+   DenseSubvector<VT,AF,TF>::store( size_t index, const IntrinsicType& value ) noexcept
 {
    if( isAligned_ )
       storea( index, value );
@@ -2028,7 +2029,8 @@ inline void DenseSubvector<VT,AF,TF>::store( size_t index, const IntrinsicType& 
 template< typename VT  // Type of the dense vector
         , bool AF      // Alignment flag
         , bool TF >    // Transpose flag
-inline void DenseSubvector<VT,AF,TF>::storea( size_t index, const IntrinsicType& value )
+BLAZE_ALWAYS_INLINE void
+   DenseSubvector<VT,AF,TF>::storea( size_t index, const IntrinsicType& value ) noexcept
 {
    BLAZE_CONSTRAINT_MUST_BE_VECTORIZABLE_TYPE( ElementType );
 
@@ -2058,7 +2060,8 @@ inline void DenseSubvector<VT,AF,TF>::storea( size_t index, const IntrinsicType&
 template< typename VT  // Type of the dense vector
         , bool AF      // Alignment flag
         , bool TF >    // Transpose flag
-inline void DenseSubvector<VT,AF,TF>::storeu( size_t index, const IntrinsicType& value )
+BLAZE_ALWAYS_INLINE void
+   DenseSubvector<VT,AF,TF>::storeu( size_t index, const IntrinsicType& value ) noexcept
 {
    BLAZE_CONSTRAINT_MUST_BE_VECTORIZABLE_TYPE( ElementType );
 
@@ -2088,7 +2091,8 @@ inline void DenseSubvector<VT,AF,TF>::storeu( size_t index, const IntrinsicType&
 template< typename VT  // Type of the dense vector
         , bool AF      // Alignment flag
         , bool TF >    // Transpose flag
-inline void DenseSubvector<VT,AF,TF>::stream( size_t index, const IntrinsicType& value )
+BLAZE_ALWAYS_INLINE void
+   DenseSubvector<VT,AF,TF>::stream( size_t index, const IntrinsicType& value ) noexcept
 {
    BLAZE_CONSTRAINT_MUST_BE_VECTORIZABLE_TYPE( ElementType );
 
@@ -2619,8 +2623,8 @@ class DenseSubvector<VT,aligned,TF> : public DenseVector< DenseSubvector<VT,alig
    inline ConstReference operator[]( size_t index ) const;
    inline Reference      at( size_t index );
    inline ConstReference at( size_t index ) const;
-   inline Pointer        data  ();
-   inline ConstPointer   data  () const;
+   inline Pointer        data  () noexcept;
+   inline ConstPointer   data  () const noexcept;
    inline Iterator       begin ();
    inline ConstIterator  begin () const;
    inline ConstIterator  cbegin() const;
@@ -2654,8 +2658,8 @@ class DenseSubvector<VT,aligned,TF> : public DenseVector< DenseSubvector<VT,alig
    //**Utility functions***************************************************************************
    /*!\name Utility functions */
    //@{
-                              inline size_t          size() const;
-                              inline size_t          capacity() const;
+                              inline size_t          size() const noexcept;
+                              inline size_t          capacity() const noexcept;
                               inline size_t          nonZeros() const;
                               inline void            reset();
    template< typename Other > inline DenseSubvector& scale( const Other& scalar );
@@ -2711,28 +2715,28 @@ class DenseSubvector<VT,aligned,TF> : public DenseVector< DenseSubvector<VT,alig
    /*!\name Expression template evaluation functions */
    //@{
    template< typename Other >
-   inline bool canAlias( const Other* alias ) const;
+   inline bool canAlias( const Other* alias ) const noexcept;
 
    template< typename VT2, bool AF2, bool TF2 >
-   inline bool canAlias( const DenseSubvector<VT2,AF2,TF2>* alias ) const;
+   inline bool canAlias( const DenseSubvector<VT2,AF2,TF2>* alias ) const noexcept;
 
    template< typename Other >
-   inline bool isAliased( const Other* alias ) const;
+   inline bool isAliased( const Other* alias ) const noexcept;
 
    template< typename VT2, bool AF2, bool TF2 >
-   inline bool isAliased( const DenseSubvector<VT2,AF2,TF2>* alias ) const;
+   inline bool isAliased( const DenseSubvector<VT2,AF2,TF2>* alias ) const noexcept;
 
-   inline bool isAligned   () const;
-   inline bool canSMPAssign() const;
+   inline bool isAligned   () const noexcept;
+   inline bool canSMPAssign() const noexcept;
 
-   inline IntrinsicType load ( size_t index ) const;
-   inline IntrinsicType loada( size_t index ) const;
-   inline IntrinsicType loadu( size_t index ) const;
+   BLAZE_ALWAYS_INLINE IntrinsicType load ( size_t index ) const noexcept;
+   BLAZE_ALWAYS_INLINE IntrinsicType loada( size_t index ) const noexcept;
+   BLAZE_ALWAYS_INLINE IntrinsicType loadu( size_t index ) const noexcept;
 
-   inline void store ( size_t index, const IntrinsicType& value );
-   inline void storea( size_t index, const IntrinsicType& value );
-   inline void storeu( size_t index, const IntrinsicType& value );
-   inline void stream( size_t index, const IntrinsicType& value );
+   BLAZE_ALWAYS_INLINE void store ( size_t index, const IntrinsicType& value ) noexcept;
+   BLAZE_ALWAYS_INLINE void storea( size_t index, const IntrinsicType& value ) noexcept;
+   BLAZE_ALWAYS_INLINE void storeu( size_t index, const IntrinsicType& value ) noexcept;
+   BLAZE_ALWAYS_INLINE void stream( size_t index, const IntrinsicType& value ) noexcept;
 
    template< typename VT2 >
    inline typename DisableIf< VectorizedAssign<VT2> >::Type
@@ -2794,16 +2798,16 @@ class DenseSubvector<VT,aligned,TF> : public DenseVector< DenseSubvector<VT,alig
       subvector( const DenseSubvector<VT2,AF2,TF2>& dv, size_t index, size_t size );
 
    template< typename VT2, bool AF2, bool TF2 >
-   friend bool isIntact( const DenseSubvector<VT2,AF2,TF2>& dv );
+   friend bool isIntact( const DenseSubvector<VT2,AF2,TF2>& dv ) noexcept;
 
    template< typename VT2, bool AF2, bool TF2 >
-   friend bool isSame( const DenseSubvector<VT2,AF2,TF2>& a, const DenseVector<VT2,TF2>& b );
+   friend bool isSame( const DenseSubvector<VT2,AF2,TF2>& a, const DenseVector<VT2,TF2>& b ) noexcept;
 
    template< typename VT2, bool AF2, bool TF2 >
-   friend bool isSame( const DenseVector<VT2,TF2>& a, const DenseSubvector<VT2,AF2,TF2>& b );
+   friend bool isSame( const DenseVector<VT2,TF2>& a, const DenseSubvector<VT2,AF2,TF2>& b ) noexcept;
 
    template< typename VT2, bool AF2, bool TF2 >
-   friend bool isSame( const DenseSubvector<VT2,AF2,TF2>& a, const DenseSubvector<VT2,AF2,TF2>& b );
+   friend bool isSame( const DenseSubvector<VT2,AF2,TF2>& a, const DenseSubvector<VT2,AF2,TF2>& b ) noexcept;
 
    template< typename VT2, bool AF2, bool TF2, typename VT3 >
    friend bool tryAssign( const DenseSubvector<VT2,AF2,TF2>& lhs, const Vector<VT3,TF2>& rhs, size_t index );
@@ -2980,7 +2984,7 @@ inline typename DenseSubvector<VT,aligned,TF>::ConstReference
 */
 template< typename VT  // Type of the dense vector
         , bool TF >    // Transpose flag
-inline typename DenseSubvector<VT,aligned,TF>::Pointer DenseSubvector<VT,aligned,TF>::data()
+inline typename DenseSubvector<VT,aligned,TF>::Pointer DenseSubvector<VT,aligned,TF>::data() noexcept
 {
    return vector_.data() + offset_;
 }
@@ -2998,7 +3002,8 @@ inline typename DenseSubvector<VT,aligned,TF>::Pointer DenseSubvector<VT,aligned
 */
 template< typename VT  // Type of the dense vector
         , bool TF >    // Transpose flag
-inline typename DenseSubvector<VT,aligned,TF>::ConstPointer DenseSubvector<VT,aligned,TF>::data() const
+inline typename DenseSubvector<VT,aligned,TF>::ConstPointer
+   DenseSubvector<VT,aligned,TF>::data() const noexcept
 {
    return vector_.data() + offset_;
 }
@@ -3511,7 +3516,7 @@ inline typename EnableIf< IsNumeric<Other>, DenseSubvector<VT,aligned,TF> >::Typ
 */
 template< typename VT  // Type of the dense vector
         , bool TF >    // Transpose flag
-inline size_t DenseSubvector<VT,aligned,TF>::size() const
+inline size_t DenseSubvector<VT,aligned,TF>::size() const noexcept
 {
    return size_;
 }
@@ -3527,7 +3532,7 @@ inline size_t DenseSubvector<VT,aligned,TF>::size() const
 */
 template< typename VT  // Type of the dense vector
         , bool TF >    // Transpose flag
-inline size_t DenseSubvector<VT,aligned,TF>::capacity() const
+inline size_t DenseSubvector<VT,aligned,TF>::capacity() const noexcept
 {
    return vector_.capacity() - offset_;
 }
@@ -3625,7 +3630,7 @@ inline DenseSubvector<VT,aligned,TF>& DenseSubvector<VT,aligned,TF>::scale( cons
 template< typename VT       // Type of the dense vector
         , bool TF >         // Transpose flag
 template< typename Other >  // Data type of the foreign expression
-inline bool DenseSubvector<VT,aligned,TF>::canAlias( const Other* alias ) const
+inline bool DenseSubvector<VT,aligned,TF>::canAlias( const Other* alias ) const noexcept
 {
    return vector_.isAliased( alias );
 }
@@ -3649,7 +3654,7 @@ template< typename VT   // Type of the dense vector
 template< typename VT2  // Data type of the foreign dense subvector
         , bool AF2      // Alignment flag of the foreign dense subvector
         , bool TF2 >    // Transpose flag of the foreign dense subvector
-inline bool DenseSubvector<VT,aligned,TF>::canAlias( const DenseSubvector<VT2,AF2,TF2>* alias ) const
+inline bool DenseSubvector<VT,aligned,TF>::canAlias( const DenseSubvector<VT2,AF2,TF2>* alias ) const noexcept
 {
    return ( vector_.isAliased( &alias->vector_ ) &&
             ( offset_ + size_ > alias->offset_ ) && ( offset_ < alias->offset_ + alias->size_ ) );
@@ -3672,7 +3677,7 @@ inline bool DenseSubvector<VT,aligned,TF>::canAlias( const DenseSubvector<VT2,AF
 template< typename VT       // Type of the dense vector
         , bool TF >         // Transpose flag
 template< typename Other >  // Data type of the foreign expression
-inline bool DenseSubvector<VT,aligned,TF>::isAliased( const Other* alias ) const
+inline bool DenseSubvector<VT,aligned,TF>::isAliased( const Other* alias ) const noexcept
 {
    return vector_.isAliased( alias );
 }
@@ -3696,7 +3701,7 @@ template< typename VT   // Type of the dense vector
 template< typename VT2  // Data type of the foreign dense subvector
         , bool AF2      // Alignment flag of the foreign dense subvector
         , bool TF2 >    // Transpose flag of the foreign dense subvector
-inline bool DenseSubvector<VT,aligned,TF>::isAliased( const DenseSubvector<VT2,AF2,TF2>* alias ) const
+inline bool DenseSubvector<VT,aligned,TF>::isAliased( const DenseSubvector<VT2,AF2,TF2>* alias ) const noexcept
 {
    return ( vector_.isAliased( &alias->vector_ ) &&
             ( offset_ + size_ > alias->offset_ ) && ( offset_ < alias->offset_ + alias->size_ ) );
@@ -3717,7 +3722,7 @@ inline bool DenseSubvector<VT,aligned,TF>::isAliased( const DenseSubvector<VT2,A
 */
 template< typename VT  // Type of the dense vector
         , bool TF >    // Transpose flag
-inline bool DenseSubvector<VT,aligned,TF>::isAligned() const
+inline bool DenseSubvector<VT,aligned,TF>::isAligned() const noexcept
 {
    return true;
 }
@@ -3738,7 +3743,7 @@ inline bool DenseSubvector<VT,aligned,TF>::isAligned() const
 */
 template< typename VT  // Type of the dense vector
         , bool TF >    // Transpose flag
-inline bool DenseSubvector<VT,aligned,TF>::canSMPAssign() const
+inline bool DenseSubvector<VT,aligned,TF>::canSMPAssign() const noexcept
 {
    return ( size() > SMP_DVECASSIGN_THRESHOLD );
 }
@@ -3763,7 +3768,7 @@ inline bool DenseSubvector<VT,aligned,TF>::canSMPAssign() const
 template< typename VT       // Type of the dense vector
         , bool TF >         // Transpose flag
 BLAZE_ALWAYS_INLINE typename DenseSubvector<VT,aligned,TF>::IntrinsicType
-   DenseSubvector<VT,aligned,TF>::load( size_t index ) const
+   DenseSubvector<VT,aligned,TF>::load( size_t index ) const noexcept
 {
    return loada( index );
 }
@@ -3788,7 +3793,7 @@ BLAZE_ALWAYS_INLINE typename DenseSubvector<VT,aligned,TF>::IntrinsicType
 template< typename VT       // Type of the dense vector
         , bool TF >         // Transpose flag
 BLAZE_ALWAYS_INLINE typename DenseSubvector<VT,aligned,TF>::IntrinsicType
-   DenseSubvector<VT,aligned,TF>::loada( size_t index ) const
+   DenseSubvector<VT,aligned,TF>::loada( size_t index ) const noexcept
 {
    BLAZE_CONSTRAINT_MUST_BE_VECTORIZABLE_TYPE( ElementType );
 
@@ -3819,7 +3824,7 @@ BLAZE_ALWAYS_INLINE typename DenseSubvector<VT,aligned,TF>::IntrinsicType
 template< typename VT  // Type of the dense vector
         , bool TF >    // Transpose flag
 BLAZE_ALWAYS_INLINE typename DenseSubvector<VT,aligned,TF>::IntrinsicType
-   DenseSubvector<VT,aligned,TF>::loadu( size_t index ) const
+   DenseSubvector<VT,aligned,TF>::loadu( size_t index ) const noexcept
 {
    BLAZE_CONSTRAINT_MUST_BE_VECTORIZABLE_TYPE( ElementType );
 
@@ -3851,7 +3856,7 @@ BLAZE_ALWAYS_INLINE typename DenseSubvector<VT,aligned,TF>::IntrinsicType
 template< typename VT  // Type of the dense vector
         , bool TF >    // Transpose flag
 BLAZE_ALWAYS_INLINE void
-   DenseSubvector<VT,aligned,TF>::store( size_t index, const IntrinsicType& value )
+   DenseSubvector<VT,aligned,TF>::store( size_t index, const IntrinsicType& value ) noexcept
 {
    storea( index, value );
 }
@@ -3877,7 +3882,7 @@ BLAZE_ALWAYS_INLINE void
 template< typename VT  // Type of the dense vector
         , bool TF >    // Transpose flag
 BLAZE_ALWAYS_INLINE void
-   DenseSubvector<VT,aligned,TF>::storea( size_t index, const IntrinsicType& value )
+   DenseSubvector<VT,aligned,TF>::storea( size_t index, const IntrinsicType& value ) noexcept
 {
    BLAZE_CONSTRAINT_MUST_BE_VECTORIZABLE_TYPE( ElementType );
 
@@ -3909,7 +3914,7 @@ BLAZE_ALWAYS_INLINE void
 template< typename VT  // Type of the dense vector
         , bool TF >    // Transpose flag
 BLAZE_ALWAYS_INLINE void
-   DenseSubvector<VT,aligned,TF>::storeu( size_t index, const IntrinsicType& value )
+   DenseSubvector<VT,aligned,TF>::storeu( size_t index, const IntrinsicType& value ) noexcept
 {
    BLAZE_CONSTRAINT_MUST_BE_VECTORIZABLE_TYPE( ElementType );
 
@@ -3941,7 +3946,7 @@ BLAZE_ALWAYS_INLINE void
 template< typename VT  // Type of the dense vector
         , bool TF >    // Transpose flag
 BLAZE_ALWAYS_INLINE void
-   DenseSubvector<VT,aligned,TF>::stream( size_t index, const IntrinsicType& value )
+   DenseSubvector<VT,aligned,TF>::stream( size_t index, const IntrinsicType& value ) noexcept
 {
    BLAZE_CONSTRAINT_MUST_BE_VECTORIZABLE_TYPE( ElementType );
 
@@ -4446,7 +4451,7 @@ class DenseSubvector< DVecDVecCrossExpr<VT1,VT2>, unaligned, false >
    // \param index The first index of the subvector in the given expression.
    // \param n The size of the subvector.
    */
-   explicit inline DenseSubvector( const CPE& vector, size_t index, size_t n )
+   explicit inline DenseSubvector( const CPE& vector, size_t index, size_t n ) noexcept
       : vector_( vector )  // The dense vector/dense vector cross product expression
       , offset_( index  )  // The offset of the subvector within the cross product expression
       , size_  ( n      )  // The size of the subvector
@@ -4485,7 +4490,7 @@ class DenseSubvector< DVecDVecCrossExpr<VT1,VT2>, unaligned, false >
    //
    // \return The size of the vector.
    */
-   inline size_t size() const {
+   inline size_t size() const noexcept {
       return size_;
    }
    //**********************************************************************************************
@@ -4497,7 +4502,7 @@ class DenseSubvector< DVecDVecCrossExpr<VT1,VT2>, unaligned, false >
    // \return \a true in case the expression can alias, \a false otherwise.
    */
    template< typename T >
-   inline bool canAlias( const T* alias ) const {
+   inline bool canAlias( const T* alias ) const noexcept {
       return vector_.canAlias( alias );
    }
    //**********************************************************************************************
@@ -4509,7 +4514,7 @@ class DenseSubvector< DVecDVecCrossExpr<VT1,VT2>, unaligned, false >
    // \return \a true in case an alias effect is detected, \a false otherwise.
    */
    template< typename T >
-   inline bool isAliased( const T* alias ) const {
+   inline bool isAliased( const T* alias ) const noexcept {
       return vector_.isAliased( alias );
    }
    //**********************************************************************************************
@@ -4530,16 +4535,16 @@ class DenseSubvector< DVecDVecCrossExpr<VT1,VT2>, unaligned, false >
       subvector( const DenseSubvector<VT,AF2,TF>& dv, size_t index, size_t size );
 
    template< typename VT3, bool AF, bool TF >
-   friend bool isIntact( const DenseSubvector<VT3,AF,TF>& dv );
+   friend bool isIntact( const DenseSubvector<VT3,AF,TF>& dv ) noexcept;
 
    template< typename VT3, bool AF, bool TF >
-   friend bool isSame( const DenseSubvector<VT3,AF,TF>& a, const DenseVector<VT3,TF>& b );
+   friend bool isSame( const DenseSubvector<VT3,AF,TF>& a, const DenseVector<VT3,TF>& b ) noexcept;
 
    template< typename VT3, bool AF, bool TF >
-   friend bool isSame( const DenseVector<VT3,TF>& a, const DenseSubvector<VT3,AF,TF>& b );
+   friend bool isSame( const DenseVector<VT3,TF>& a, const DenseSubvector<VT3,AF,TF>& b ) noexcept;
 
    template< typename VT3, bool AF, bool TF >
-   friend bool isSame( const DenseSubvector<VT3,AF,TF>& a, const DenseSubvector<VT3,AF,TF>& b );
+   friend bool isSame( const DenseSubvector<VT3,AF,TF>& a, const DenseSubvector<VT3,AF,TF>& b ) noexcept;
 
    template< typename VT3, bool AF, bool TF, typename VT4 >
    friend bool tryAssign( const DenseSubvector<VT3,AF,TF>& lhs, const Vector<VT4,TF>& rhs, size_t index );
@@ -4615,7 +4620,7 @@ class DenseSubvector< DVecSVecCrossExpr<VT1,VT2>, unaligned, false >
    // \param index The first index of the subvector in the given expression.
    // \param n The size of the subvector.
    */
-   explicit inline DenseSubvector( const CPE& vector, size_t index, size_t n )
+   explicit inline DenseSubvector( const CPE& vector, size_t index, size_t n ) noexcept
       : vector_( vector )  // The dense vector/sparse vector cross product expression
       , offset_( index  )  // The offset of the subvector within the cross product expression
       , size_  ( n      )  // The size of the subvector
@@ -4654,7 +4659,7 @@ class DenseSubvector< DVecSVecCrossExpr<VT1,VT2>, unaligned, false >
    //
    // \return The size of the vector.
    */
-   inline size_t size() const {
+   inline size_t size() const noexcept {
       return size_;
    }
    //**********************************************************************************************
@@ -4666,7 +4671,7 @@ class DenseSubvector< DVecSVecCrossExpr<VT1,VT2>, unaligned, false >
    // \return \a true in case the expression can alias, \a false otherwise.
    */
    template< typename T >
-   inline bool canAlias( const T* alias ) const {
+   inline bool canAlias( const T* alias ) const noexcept {
       return vector_.canAlias( alias );
    }
    //**********************************************************************************************
@@ -4678,7 +4683,7 @@ class DenseSubvector< DVecSVecCrossExpr<VT1,VT2>, unaligned, false >
    // \return \a true in case an alias effect is detected, \a false otherwise.
    */
    template< typename T >
-   inline bool isAliased( const T* alias ) const {
+   inline bool isAliased( const T* alias ) const noexcept {
       return vector_.isAliased( alias );
    }
    //**********************************************************************************************
@@ -4699,16 +4704,16 @@ class DenseSubvector< DVecSVecCrossExpr<VT1,VT2>, unaligned, false >
       subvector( const DenseSubvector<VT,AF2,TF>& dv, size_t index, size_t size );
 
    template< typename VT3, bool AF, bool TF >
-   friend bool isIntact( const DenseSubvector<VT3,AF,TF>& dv );
+   friend bool isIntact( const DenseSubvector<VT3,AF,TF>& dv ) noexcept;
 
    template< typename VT3, bool AF, bool TF >
-   friend bool isSame( const DenseSubvector<VT3,AF,TF>& a, const DenseVector<VT3,TF>& b );
+   friend bool isSame( const DenseSubvector<VT3,AF,TF>& a, const DenseVector<VT3,TF>& b ) noexcept;
 
    template< typename VT3, bool AF, bool TF >
-   friend bool isSame( const DenseVector<VT3,TF>& a, const DenseSubvector<VT3,AF,TF>& b );
+   friend bool isSame( const DenseVector<VT3,TF>& a, const DenseSubvector<VT3,AF,TF>& b ) noexcept;
 
    template< typename VT3, bool AF, bool TF >
-   friend bool isSame( const DenseSubvector<VT3,AF,TF>& a, const DenseSubvector<VT3,AF,TF>& b );
+   friend bool isSame( const DenseSubvector<VT3,AF,TF>& a, const DenseSubvector<VT3,AF,TF>& b ) noexcept;
 
    template< typename VT3, bool AF, bool TF, typename VT4 >
    friend bool tryAssign( const DenseSubvector<VT3,AF,TF>& lhs, const Vector<VT4,TF>& rhs, size_t index );
@@ -4784,7 +4789,7 @@ class DenseSubvector< SVecDVecCrossExpr<VT1,VT2>, unaligned, false >
    // \param index The first index of the subvector in the given expression.
    // \param n The size of the subvector.
    */
-   explicit inline DenseSubvector( const CPE& vector, size_t index, size_t n )
+   explicit inline DenseSubvector( const CPE& vector, size_t index, size_t n ) noexcept
       : vector_( vector )  // The sparse vector/dense vector cross product expression
       , offset_( index  )  // The offset of the subvector within the cross product expression
       , size_  ( n      )  // The size of the subvector
@@ -4823,7 +4828,7 @@ class DenseSubvector< SVecDVecCrossExpr<VT1,VT2>, unaligned, false >
    //
    // \return The size of the vector.
    */
-   inline size_t size() const {
+   inline size_t size() const noexcept {
       return size_;
    }
    //**********************************************************************************************
@@ -4835,7 +4840,7 @@ class DenseSubvector< SVecDVecCrossExpr<VT1,VT2>, unaligned, false >
    // \return \a true in case the expression can alias, \a false otherwise.
    */
    template< typename T >
-   inline bool canAlias( const T* alias ) const {
+   inline bool canAlias( const T* alias ) const noexcept {
       return vector_.canAlias( alias );
    }
    //**********************************************************************************************
@@ -4847,7 +4852,7 @@ class DenseSubvector< SVecDVecCrossExpr<VT1,VT2>, unaligned, false >
    // \return \a true in case an alias effect is detected, \a false otherwise.
    */
    template< typename T >
-   inline bool isAliased( const T* alias ) const {
+   inline bool isAliased( const T* alias ) const noexcept {
       return vector_.isAliased( alias );
    }
    //**********************************************************************************************
@@ -4868,16 +4873,16 @@ class DenseSubvector< SVecDVecCrossExpr<VT1,VT2>, unaligned, false >
       subvector( const DenseSubvector<VT,AF2,TF>& dv, size_t index, size_t size );
 
    template< typename VT3, bool AF, bool TF >
-   friend bool isIntact( const DenseSubvector<VT3,AF,TF>& dv );
+   friend bool isIntact( const DenseSubvector<VT3,AF,TF>& dv ) noexcept;
 
    template< typename VT3, bool AF, bool TF >
-   friend bool isSame( const DenseSubvector<VT3,AF,TF>& a, const DenseVector<VT3,TF>& b );
+   friend bool isSame( const DenseSubvector<VT3,AF,TF>& a, const DenseVector<VT3,TF>& b ) noexcept;
 
    template< typename VT3, bool AF, bool TF >
-   friend bool isSame( const DenseVector<VT3,TF>& a, const DenseSubvector<VT3,AF,TF>& b );
+   friend bool isSame( const DenseVector<VT3,TF>& a, const DenseSubvector<VT3,AF,TF>& b ) noexcept;
 
    template< typename VT3, bool AF, bool TF >
-   friend bool isSame( const DenseSubvector<VT3,AF,TF>& a, const DenseSubvector<VT3,AF,TF>& b );
+   friend bool isSame( const DenseSubvector<VT3,AF,TF>& a, const DenseSubvector<VT3,AF,TF>& b ) noexcept;
 
    template< typename VT3, bool AF, bool TF, typename VT4 >
    friend bool tryAssign( const DenseSubvector<VT3,AF,TF>& lhs, const Vector<VT4,TF>& rhs, size_t index );
@@ -4953,7 +4958,7 @@ class DenseSubvector< SVecSVecCrossExpr<VT1,VT2>, unaligned, false >
    // \param index The first index of the subvector in the given expression.
    // \param n The size of the subvector.
    */
-   explicit inline DenseSubvector( const CPE& vector, size_t index, size_t n )
+   explicit inline DenseSubvector( const CPE& vector, size_t index, size_t n ) noexcept
       : vector_( vector )  // The sparse vector/sparse vector cross product expression
       , offset_( index  )  // The offset of the subvector within the cross product expression
       , size_  ( n      )  // The size of the subvector
@@ -4992,7 +4997,7 @@ class DenseSubvector< SVecSVecCrossExpr<VT1,VT2>, unaligned, false >
    //
    // \return The size of the vector.
    */
-   inline size_t size() const {
+   inline size_t size() const noexcept {
       return size_;
    }
    //**********************************************************************************************
@@ -5004,7 +5009,7 @@ class DenseSubvector< SVecSVecCrossExpr<VT1,VT2>, unaligned, false >
    // \return \a true in case the expression can alias, \a false otherwise.
    */
    template< typename T >
-   inline bool canAlias( const T* alias ) const {
+   inline bool canAlias( const T* alias ) const noexcept {
       return vector_.canAlias( alias );
    }
    //**********************************************************************************************
@@ -5037,16 +5042,16 @@ class DenseSubvector< SVecSVecCrossExpr<VT1,VT2>, unaligned, false >
       subvector( const DenseSubvector<VT,AF2,TF>& dv, size_t index, size_t size );
 
    template< typename VT3, bool AF, bool TF >
-   friend bool isIntact( const DenseSubvector<VT3,AF,TF>& dv );
+   friend bool isIntact( const DenseSubvector<VT3,AF,TF>& dv ) noexcept;
 
    template< typename VT3, bool AF, bool TF >
-   friend bool isSame( const DenseSubvector<VT3,AF,TF>& a, const DenseVector<VT3,TF>& b );
+   friend bool isSame( const DenseSubvector<VT3,AF,TF>& a, const DenseVector<VT3,TF>& b ) noexcept;
 
    template< typename VT3, bool AF, bool TF >
-   friend bool isSame( const DenseVector<VT3,TF>& a, const DenseSubvector<VT3,AF,TF>& b );
+   friend bool isSame( const DenseVector<VT3,TF>& a, const DenseSubvector<VT3,AF,TF>& b ) noexcept;
 
    template< typename VT3, bool AF, bool TF >
-   friend bool isSame( const DenseSubvector<VT3,AF,TF>& a, const DenseSubvector<VT3,AF,TF>& b );
+   friend bool isSame( const DenseSubvector<VT3,AF,TF>& a, const DenseSubvector<VT3,AF,TF>& b ) noexcept;
 
    template< typename VT3, bool AF, bool TF, typename VT4 >
    friend bool tryAssign( const DenseSubvector<VT3,AF,TF>& lhs, const Vector<VT4,TF>& rhs, size_t index );
@@ -5090,16 +5095,16 @@ template< typename VT, bool AF, bool TF >
 inline bool isDefault( const DenseSubvector<VT,AF,TF>& dv );
 
 template< typename VT, bool AF, bool TF >
-inline bool isIntact( const DenseSubvector<VT,AF,TF>& dv );
+inline bool isIntact( const DenseSubvector<VT,AF,TF>& dv ) noexcept;
 
 template< typename VT, bool AF, bool TF >
-inline bool isSame( const DenseSubvector<VT,AF,TF>& a, const DenseVector<VT,TF>& b );
+inline bool isSame( const DenseSubvector<VT,AF,TF>& a, const DenseVector<VT,TF>& b ) noexcept;
 
 template< typename VT, bool AF, bool TF >
-inline bool isSame( const DenseVector<VT,TF>& a, const DenseSubvector<VT,AF,TF>& b );
+inline bool isSame( const DenseVector<VT,TF>& a, const DenseSubvector<VT,AF,TF>& b ) noexcept;
 
 template< typename VT, bool AF, bool TF >
-inline bool isSame( const DenseSubvector<VT,AF,TF>& a, const DenseSubvector<VT,AF,TF>& b );
+inline bool isSame( const DenseSubvector<VT,AF,TF>& a, const DenseSubvector<VT,AF,TF>& b ) noexcept;
 //@}
 //*************************************************************************************************
 
@@ -5190,7 +5195,7 @@ inline bool isDefault( const DenseSubvector<VT,AF,TF>& dv )
 template< typename VT  // Type of the dense vector
         , bool AF      // Alignment flag
         , bool TF >    // Transpose flag
-inline bool isIntact( const DenseSubvector<VT,AF,TF>& dv )
+inline bool isIntact( const DenseSubvector<VT,AF,TF>& dv ) noexcept
 {
    return ( dv.offset_ + dv.size_ <= dv.vector_.size() &&
             isIntact( dv.vector_ ) );
@@ -5213,7 +5218,7 @@ inline bool isIntact( const DenseSubvector<VT,AF,TF>& dv )
 template< typename VT  // Type of the dense vector
         , bool AF      // Alignment flag
         , bool TF >    // Transpose flag
-inline bool isSame( const DenseSubvector<VT,AF,TF>& a, const DenseVector<VT,TF>& b )
+inline bool isSame( const DenseSubvector<VT,AF,TF>& a, const DenseVector<VT,TF>& b ) noexcept
 {
    return ( isSame( a.vector_, ~b ) && ( a.size() == (~b).size() ) );
 }
@@ -5235,7 +5240,7 @@ inline bool isSame( const DenseSubvector<VT,AF,TF>& a, const DenseVector<VT,TF>&
 template< typename VT  // Type of the dense vector
         , bool AF      // Alignment flag
         , bool TF >    // Transpose flag
-inline bool isSame( const DenseVector<VT,TF>& a, const DenseSubvector<VT,AF,TF>& b )
+inline bool isSame( const DenseVector<VT,TF>& a, const DenseSubvector<VT,AF,TF>& b ) noexcept
 {
    return ( isSame( ~a, b.vector_ ) && ( (~a).size() == b.size() ) );
 }
@@ -5257,7 +5262,7 @@ inline bool isSame( const DenseVector<VT,TF>& a, const DenseSubvector<VT,AF,TF>&
 template< typename VT  // Type of the dense vector
         , bool AF      // Alignment flag
         , bool TF >    // Transpose flag
-inline bool isSame( const DenseSubvector<VT,AF,TF>& a, const DenseSubvector<VT,AF,TF>& b )
+inline bool isSame( const DenseSubvector<VT,AF,TF>& a, const DenseSubvector<VT,AF,TF>& b ) noexcept
 {
    return ( isSame( a.vector_, b.vector_ ) && ( a.offset_ == b.offset_ ) && ( a.size_ == b.size_ ) );
 }
