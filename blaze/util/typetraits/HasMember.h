@@ -40,10 +40,8 @@
 // Includes
 //*************************************************************************************************
 
-#include <blaze/util/FalseType.h>
+#include <blaze/util/IntegralConstant.h>
 #include <blaze/util/mpl/If.h>
-#include <blaze/util/SelectType.h>
-#include <blaze/util/TrueType.h>
 #include <blaze/util/typetraits/IsBuiltin.h>
 
 
@@ -125,15 +123,12 @@ class TYPE_TRAIT_NAME##HELPER                                                   
                                                                                              \
  public:                                                                                     \
    static constexpr bool value = ( sizeof( TEST<DERIVED>( nullptr ) ) == sizeof( YES ) );    \
-   using Type = typename blaze::SelectType<value,blaze::TrueType,blaze::FalseType>::Type;    \
 };                                                                                           \
                                                                                              \
 template< typename TYPE1230 >                                                                \
-struct TYPE_TRAIT_NAME : public TYPE_TRAIT_NAME##HELPER<TYPE1230>::Type                      \
-{                                                                                            \
-   static constexpr bool value = TYPE_TRAIT_NAME##HELPER<TYPE1230>::value;                   \
-   using Type = typename TYPE_TRAIT_NAME##HELPER<TYPE1230>::Type;                            \
-};
+struct TYPE_TRAIT_NAME                                                                       \
+   : public blaze::BoolConstant< TYPE_TRAIT_NAME##HELPER<TYPE1230>::value >                  \
+{};
 //*************************************************************************************************
 
 
@@ -210,15 +205,12 @@ struct TYPE_TRAIT_NAME##HELPER                                                  
                                                                                            \
  public:                                                                                   \
    static constexpr bool value = ( sizeof( TEST<DERIVED>( nullptr ) ) == sizeof( YES ) );  \
-   using Type = typename blaze::SelectType<value,blaze::TrueType,blaze::FalseType>::Type;  \
 };                                                                                         \
                                                                                            \
 template< typename TYPE1231 >                                                              \
-struct TYPE_TRAIT_NAME : public TYPE_TRAIT_NAME##HELPER<TYPE1231>::Type                    \
-{                                                                                          \
-   static constexpr bool value = TYPE_TRAIT_NAME##HELPER<TYPE1231>::value;                 \
-   using Type = typename TYPE_TRAIT_NAME##HELPER<TYPE1231>::Type;                          \
-};
+struct TYPE_TRAIT_NAME                                                                     \
+   : public blaze::BoolConstant< TYPE_TRAIT_NAME##HELPER<TYPE1231>::value >                \
+{};
 //*************************************************************************************************
 
 
@@ -281,16 +273,12 @@ struct TYPE_TRAIT_NAME##HELPER                                                  
  public:                                                                                    \
    static constexpr bool value = ( LOCAL_TYPE_TRAIT_1<Type1232>::value ||                   \
                                    LOCAL_TYPE_TRAIT_2<Type1232>::value );                   \
-   using Type = typename blaze::SelectType<value,blaze::TrueType,blaze::FalseType>::Type;   \
 };                                                                                          \
                                                                                             \
 template< typename Type1232 >                                                               \
-struct TYPE_TRAIT_NAME : public TYPE_TRAIT_NAME##HELPER<Type1232>::Type                     \
-{                                                                                           \
- public:                                                                                    \
-   static constexpr bool value = TYPE_TRAIT_NAME##HELPER<Type1232>::value;                  \
-   using Type = typename TYPE_TRAIT_NAME##HELPER<Type1232>::Type;                           \
-};
+struct TYPE_TRAIT_NAME                                                                      \
+   : public blaze::BoolConstant< TYPE_TRAIT_NAME##HELPER<Type1232>::value >                 \
+{};
 //*************************************************************************************************
 
 #endif

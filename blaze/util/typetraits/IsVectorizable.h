@@ -41,7 +41,7 @@
 //*************************************************************************************************
 
 #include <blaze/system/Vectorization.h>
-#include <blaze/util/SelectType.h>
+#include <blaze/util/mpl/If.h>
 #include <blaze/util/typetraits/IsComplex.h>
 #include <blaze/util/typetraits/IsFloat.h>
 #include <blaze/util/typetraits/IsNumeric.h>
@@ -75,7 +75,7 @@ struct IsVectorizableHelper
    //**********************************************************************************************
 
    //**********************************************************************************************
-   typedef typename SelectType< IsComplex<T>::value, Complex<T>, Builtin<T> >::Type::Type  T2;
+   typedef typename If< IsComplex<T>, Complex<T>, Builtin<T> >::Type::Type  T2;
    //**********************************************************************************************
 
  public:
