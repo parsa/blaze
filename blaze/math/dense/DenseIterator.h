@@ -79,11 +79,11 @@ class DenseIterator
    //**Constructors********************************************************************************
    /*!\name Constructors */
    //@{
-   explicit inline DenseIterator();
-   explicit inline DenseIterator( Type* ptr );
+   explicit inline DenseIterator() noexcept;
+   explicit inline DenseIterator( Type* ptr ) noexcept;
 
    template< typename Other, bool AF2 >
-   inline DenseIterator( const DenseIterator<Other,AF2>& it );
+   inline DenseIterator( const DenseIterator<Other,AF2>& it ) noexcept;
    //@}
    //**********************************************************************************************
 
@@ -95,43 +95,43 @@ class DenseIterator
    /*!\name Assignment operators */
    //@{
    // No explicitly declared copy assignment operator.
-   inline DenseIterator& operator+=( ptrdiff_t inc );
-   inline DenseIterator& operator-=( ptrdiff_t inc );
+   inline DenseIterator& operator+=( ptrdiff_t inc ) noexcept;
+   inline DenseIterator& operator-=( ptrdiff_t inc ) noexcept;
    //@}
    //**********************************************************************************************
 
    //**Increment/decrement operators***************************************************************
    /*!\name Increment/decrement operators */
    //@{
-   inline DenseIterator&      operator++();
-   inline const DenseIterator operator++( int );
-   inline DenseIterator&      operator--();
-   inline const DenseIterator operator--( int );
+   inline DenseIterator&      operator++()      noexcept;
+   inline const DenseIterator operator++( int ) noexcept;
+   inline DenseIterator&      operator--()      noexcept;
+   inline const DenseIterator operator--( int ) noexcept;
    //@}
    //**********************************************************************************************
 
    //**Access operators****************************************************************************
    /*!\name Access operators */
    //@{
-   inline ReferenceType operator[]( size_t index ) const;
-   inline ReferenceType operator* () const;
-   inline PointerType   operator->() const;
+   inline ReferenceType operator[]( size_t index ) const noexcept;
+   inline ReferenceType operator* () const noexcept;
+   inline PointerType   operator->() const noexcept;
    //@}
    //**********************************************************************************************
 
    //**Utility functions***************************************************************************
    /*!\name Utility functions */
    //@{
-   inline PointerType base() const;
+   inline PointerType base() const noexcept;
    //@}
    //**********************************************************************************************
 
    //**Expression template evaluation functions****************************************************
    /*!\name Expression template evaluation functions */
    //@{
-   inline const IntrinsicType load () const;
-   inline const IntrinsicType loada() const;
-   inline const IntrinsicType loadu() const;
+   inline const IntrinsicType load () const noexcept;
+   inline const IntrinsicType loada() const noexcept;
+   inline const IntrinsicType loadu() const noexcept;
    //@}
    //**********************************************************************************************
 
@@ -159,7 +159,7 @@ class DenseIterator
 */
 template< typename Type  // Type of the elements
         , bool AF >      // Alignment flag
-inline DenseIterator<Type,AF>::DenseIterator()
+inline DenseIterator<Type,AF>::DenseIterator() noexcept
    : ptr_( nullptr )  // Pointer to the current element
 {}
 //*************************************************************************************************
@@ -172,7 +172,7 @@ inline DenseIterator<Type,AF>::DenseIterator()
 */
 template< typename Type  // Type of the elements
         , bool AF >      // Alignment flag
-inline DenseIterator<Type,AF>::DenseIterator( Type* ptr )
+inline DenseIterator<Type,AF>::DenseIterator( Type* ptr ) noexcept
    : ptr_( ptr )  // Pointer to the current element
 {}
 //*************************************************************************************************
@@ -187,7 +187,7 @@ template< typename Type   // Type of the elements
         , bool AF >       // Alignment flag
 template< typename Other  // Type of the foreign elements
         , bool AF2 >      // Alignment flag of the foreign iterator
-inline DenseIterator<Type,AF>::DenseIterator( const DenseIterator<Other,AF2>& it )
+inline DenseIterator<Type,AF>::DenseIterator( const DenseIterator<Other,AF2>& it ) noexcept
    : ptr_( it.base() )  // Pointer to the current element
 {}
 //*************************************************************************************************
@@ -209,7 +209,7 @@ inline DenseIterator<Type,AF>::DenseIterator( const DenseIterator<Other,AF2>& it
 */
 template< typename Type  // Type of the elements
         , bool AF >      // Alignment flag
-inline DenseIterator<Type,AF>& DenseIterator<Type,AF>::operator+=( ptrdiff_t inc )
+inline DenseIterator<Type,AF>& DenseIterator<Type,AF>::operator+=( ptrdiff_t inc ) noexcept
 {
    ptr_ += inc;
    return *this;
@@ -225,7 +225,7 @@ inline DenseIterator<Type,AF>& DenseIterator<Type,AF>::operator+=( ptrdiff_t inc
 */
 template< typename Type  // Type of the elements
         , bool AF >      // Alignment flag
-inline DenseIterator<Type,AF>& DenseIterator<Type,AF>::operator-=( ptrdiff_t dec )
+inline DenseIterator<Type,AF>& DenseIterator<Type,AF>::operator-=( ptrdiff_t dec ) noexcept
 {
    ptr_ -= dec;
    return *this;
@@ -248,7 +248,7 @@ inline DenseIterator<Type,AF>& DenseIterator<Type,AF>::operator-=( ptrdiff_t dec
 */
 template< typename Type  // Type of the elements
         , bool AF >      // Alignment flag
-inline DenseIterator<Type,AF>& DenseIterator<Type,AF>::operator++()
+inline DenseIterator<Type,AF>& DenseIterator<Type,AF>::operator++() noexcept
 {
    ++ptr_;
    return *this;
@@ -263,7 +263,7 @@ inline DenseIterator<Type,AF>& DenseIterator<Type,AF>::operator++()
 */
 template< typename Type  // Type of the elements
         , bool AF >      // Alignment flag
-inline const DenseIterator<Type,AF> DenseIterator<Type,AF>::operator++( int )
+inline const DenseIterator<Type,AF> DenseIterator<Type,AF>::operator++( int ) noexcept
 {
    return DenseIterator( ptr_++ );
 }
@@ -277,7 +277,7 @@ inline const DenseIterator<Type,AF> DenseIterator<Type,AF>::operator++( int )
 */
 template< typename Type  // Type of the elements
         , bool AF >      // Alignment flag
-inline DenseIterator<Type,AF>& DenseIterator<Type,AF>::operator--()
+inline DenseIterator<Type,AF>& DenseIterator<Type,AF>::operator--() noexcept
 {
    --ptr_;
    return *this;
@@ -292,7 +292,7 @@ inline DenseIterator<Type,AF>& DenseIterator<Type,AF>::operator--()
 */
 template< typename Type  // Type of the elements
         , bool AF >      // Alignment flag
-inline const DenseIterator<Type,AF> DenseIterator<Type,AF>::operator--( int )
+inline const DenseIterator<Type,AF> DenseIterator<Type,AF>::operator--( int ) noexcept
 {
    return DenseIterator( ptr_-- );
 }
@@ -316,7 +316,7 @@ inline const DenseIterator<Type,AF> DenseIterator<Type,AF>::operator--( int )
 template< typename Type  // Type of the elements
         , bool AF >      // Alignment flag
 inline typename DenseIterator<Type,AF>::ReferenceType
-   DenseIterator<Type,AF>::operator[]( size_t index ) const
+   DenseIterator<Type,AF>::operator[]( size_t index ) const noexcept
 {
    return ptr_[index];
 }
@@ -331,7 +331,7 @@ inline typename DenseIterator<Type,AF>::ReferenceType
 template< typename Type  // Type of the elements
         , bool AF >      // Alignment flag
 inline typename DenseIterator<Type,AF>::ReferenceType
-   DenseIterator<Type,AF>::operator*() const
+   DenseIterator<Type,AF>::operator*() const noexcept
 {
    return *ptr_;
 }
@@ -346,7 +346,7 @@ inline typename DenseIterator<Type,AF>::ReferenceType
 template< typename Type  // Type of the elements
         , bool AF >      // Alignment flag
 inline typename DenseIterator<Type,AF>::PointerType
-   DenseIterator<Type,AF>::operator->() const
+   DenseIterator<Type,AF>::operator->() const noexcept
 {
    return ptr_;
 }
@@ -368,7 +368,7 @@ inline typename DenseIterator<Type,AF>::PointerType
 */
 template< typename Type  // Type of the elements
         , bool AF >      // Alignment flag
-inline typename DenseIterator<Type,AF>::PointerType DenseIterator<Type,AF>::base() const
+inline typename DenseIterator<Type,AF>::PointerType DenseIterator<Type,AF>::base() const noexcept
 {
    return ptr_;
 }
@@ -395,7 +395,8 @@ inline typename DenseIterator<Type,AF>::PointerType DenseIterator<Type,AF>::base
 */
 template< typename Type  // Type of the elements
         , bool AF >      // Alignment flag
-inline const typename DenseIterator<Type,AF>::IntrinsicType DenseIterator<Type,AF>::load() const
+inline const typename DenseIterator<Type,AF>::IntrinsicType
+   DenseIterator<Type,AF>::load() const noexcept
 {
    if( AF )
       return loada();
@@ -417,7 +418,8 @@ inline const typename DenseIterator<Type,AF>::IntrinsicType DenseIterator<Type,A
 */
 template< typename Type  // Type of the elements
         , bool AF >      // Alignment flag
-inline const typename DenseIterator<Type,AF>::IntrinsicType DenseIterator<Type,AF>::loada() const
+inline const typename DenseIterator<Type,AF>::IntrinsicType
+   DenseIterator<Type,AF>::loada() const noexcept
 {
    BLAZE_INTERNAL_ASSERT( checkAlignment( ptr_ ), "Invalid alignment detected" );
 
@@ -438,7 +440,8 @@ inline const typename DenseIterator<Type,AF>::IntrinsicType DenseIterator<Type,A
 */
 template< typename Type  // Type of the elements
         , bool AF >      // Alignment flag
-inline const typename DenseIterator<Type,AF>::IntrinsicType DenseIterator<Type,AF>::loadu() const
+inline const typename DenseIterator<Type,AF>::IntrinsicType
+   DenseIterator<Type,AF>::loadu() const noexcept
 {
    return blaze::loadu( ptr_ );
 }
@@ -457,34 +460,34 @@ inline const typename DenseIterator<Type,AF>::IntrinsicType DenseIterator<Type,A
 /*!\name DenseIterator operators */
 //@{
 template< typename T1, bool AF1, typename T2, bool AF2 >
-inline bool operator==( const DenseIterator<T1,AF1>& lhs, const DenseIterator<T2,AF2>& rhs );
+inline bool operator==( const DenseIterator<T1,AF1>& lhs, const DenseIterator<T2,AF2>& rhs ) noexcept;
 
 template< typename T1, bool AF1, typename T2, bool AF2 >
-inline bool operator!=( const DenseIterator<T1,AF1>& lhs, const DenseIterator<T2,AF2>& rhs );
+inline bool operator!=( const DenseIterator<T1,AF1>& lhs, const DenseIterator<T2,AF2>& rhs ) noexcept;
 
 template< typename T1, bool AF1, typename T2, bool AF2 >
-inline bool operator<( const DenseIterator<T1,AF1>& lhs, const DenseIterator<T2,AF2>& rhs );
+inline bool operator<( const DenseIterator<T1,AF1>& lhs, const DenseIterator<T2,AF2>& rhs ) noexcept;
 
 template< typename T1, bool AF1, typename T2, bool AF2 >
-inline bool operator>( const DenseIterator<T1,AF1>& lhs, const DenseIterator<T2,AF2>& rhs );
+inline bool operator>( const DenseIterator<T1,AF1>& lhs, const DenseIterator<T2,AF2>& rhs ) noexcept;
 
 template< typename T1, bool AF1, typename T2, bool AF2 >
-inline bool operator<=( const DenseIterator<T1,AF1>& lhs, const DenseIterator<T2,AF2>& rhs );
+inline bool operator<=( const DenseIterator<T1,AF1>& lhs, const DenseIterator<T2,AF2>& rhs ) noexcept;
 
 template< typename T1, bool AF1, typename T2, bool AF2 >
-inline bool operator>=( const DenseIterator<T1,AF1>& lhs, const DenseIterator<T2,AF2>& rhs );
+inline bool operator>=( const DenseIterator<T1,AF1>& lhs, const DenseIterator<T2,AF2>& rhs ) noexcept;
 
 template< typename Type, bool AF >
-inline const DenseIterator<Type,AF> operator+( const DenseIterator<Type,AF>& it, ptrdiff_t inc );
+inline const DenseIterator<Type,AF> operator+( const DenseIterator<Type,AF>& it, ptrdiff_t inc ) noexcept;
 
 template< typename Type, bool AF >
-inline const DenseIterator<Type,AF> operator+( ptrdiff_t inc, const DenseIterator<Type,AF>& it );
+inline const DenseIterator<Type,AF> operator+( ptrdiff_t inc, const DenseIterator<Type,AF>& it ) noexcept;
 
 template< typename Type, bool AF >
-inline const DenseIterator<Type,AF> operator-( const DenseIterator<Type,AF>& it, ptrdiff_t inc );
+inline const DenseIterator<Type,AF> operator-( const DenseIterator<Type,AF>& it, ptrdiff_t inc ) noexcept;
 
 template< typename Type, bool AF >
-inline ptrdiff_t operator-( const DenseIterator<Type,AF>& lhs, const DenseIterator<Type,AF>& rhs );
+inline ptrdiff_t operator-( const DenseIterator<Type,AF>& lhs, const DenseIterator<Type,AF>& rhs ) noexcept;
 //@}
 //*************************************************************************************************
 
@@ -500,7 +503,7 @@ template< typename T1  // Element type of the left-hand side iterator
         , bool AF1     // Alignment flag of the left-hand side iterator
         , typename T2  // Element type of the right-hand side iterator
         , bool AF2 >   // Alignment flag of the right-hand side iterator
-inline bool operator==( const DenseIterator<T1,AF1>& lhs, const DenseIterator<T2,AF2>& rhs )
+inline bool operator==( const DenseIterator<T1,AF1>& lhs, const DenseIterator<T2,AF2>& rhs ) noexcept
 {
    return lhs.base() == rhs.base();
 }
@@ -518,7 +521,7 @@ template< typename T1  // Element type of the left-hand side iterator
         , bool AF1     // Alignment flag of the left-hand side iterator
         , typename T2  // Element type of the right-hand side iterator
         , bool AF2 >   // Alignment flag of the right-hand side iterator
-inline bool operator!=( const DenseIterator<T1,AF1>& lhs, const DenseIterator<T2,AF2>& rhs )
+inline bool operator!=( const DenseIterator<T1,AF1>& lhs, const DenseIterator<T2,AF2>& rhs ) noexcept
 {
    return lhs.base() != rhs.base();
 }
@@ -536,7 +539,7 @@ template< typename T1  // Element type of the left-hand side iterator
         , bool AF1     // Alignment flag of the left-hand side iterator
         , typename T2  // Element type of the right-hand side iterator
         , bool AF2 >   // Alignment flag of the right-hand side iterator
-inline bool operator<( const DenseIterator<T1,AF1>& lhs, const DenseIterator<T2,AF2>& rhs )
+inline bool operator<( const DenseIterator<T1,AF1>& lhs, const DenseIterator<T2,AF2>& rhs ) noexcept
 {
    return lhs.base() < rhs.base();
 }
@@ -554,7 +557,7 @@ template< typename T1  // Element type of the left-hand side iterator
         , bool AF1     // Alignment flag of the left-hand side iterator
         , typename T2  // Element type of the right-hand side iterator
         , bool AF2 >   // Alignment flag of the right-hand side iterator
-inline bool operator>( const DenseIterator<T1,AF1>& lhs, const DenseIterator<T2,AF2>& rhs )
+inline bool operator>( const DenseIterator<T1,AF1>& lhs, const DenseIterator<T2,AF2>& rhs ) noexcept
 {
    return lhs.base() > rhs.base();
 }
@@ -572,7 +575,7 @@ template< typename T1  // Element type of the left-hand side iterator
         , bool AF1     // Alignment flag of the left-hand side iterator
         , typename T2  // Element type of the right-hand side iterator
         , bool AF2 >   // Alignment flag of the right-hand side iterator
-inline bool operator<=( const DenseIterator<T1,AF1>& lhs, const DenseIterator<T2,AF2>& rhs )
+inline bool operator<=( const DenseIterator<T1,AF1>& lhs, const DenseIterator<T2,AF2>& rhs ) noexcept
 {
    return lhs.base() <= rhs.base();
 }
@@ -590,7 +593,7 @@ template< typename T1  // Element type of the left-hand side iterator
         , bool AF1     // Alignment flag of the left-hand side iterator
         , typename T2  // Element type of the right-hand side iterator
         , bool AF2 >   // Alignment flag of the right-hand side iterator
-inline bool operator>=( const DenseIterator<T1,AF1>& lhs, const DenseIterator<T2,AF2>& rhs )
+inline bool operator>=( const DenseIterator<T1,AF1>& lhs, const DenseIterator<T2,AF2>& rhs ) noexcept
 {
    return lhs.base() >= rhs.base();
 }
@@ -606,7 +609,7 @@ inline bool operator>=( const DenseIterator<T1,AF1>& lhs, const DenseIterator<T2
 */
 template< typename Type  // Element type of the iterator
         , bool AF >      // Alignment flag of the iterator
-inline const DenseIterator<Type,AF> operator+( const DenseIterator<Type,AF>& it, ptrdiff_t inc )
+inline const DenseIterator<Type,AF> operator+( const DenseIterator<Type,AF>& it, ptrdiff_t inc ) noexcept
 {
    return DenseIterator<Type,AF>( it.base() + inc );
 }
@@ -622,7 +625,7 @@ inline const DenseIterator<Type,AF> operator+( const DenseIterator<Type,AF>& it,
 */
 template< typename Type  // Element type of the iterator
         , bool AF >      // Alignment flag of the iterator
-inline const DenseIterator<Type,AF> operator+( ptrdiff_t inc, const DenseIterator<Type,AF>& it )
+inline const DenseIterator<Type,AF> operator+( ptrdiff_t inc, const DenseIterator<Type,AF>& it ) noexcept
 {
    return DenseIterator<Type,AF>( it.base() + inc );
 }
@@ -638,7 +641,7 @@ inline const DenseIterator<Type,AF> operator+( ptrdiff_t inc, const DenseIterato
 */
 template< typename Type  // Element type of the iterator
         , bool AF >      // Alignment flag of the iterator
-inline const DenseIterator<Type,AF> operator-( const DenseIterator<Type,AF>& it, ptrdiff_t dec )
+inline const DenseIterator<Type,AF> operator-( const DenseIterator<Type,AF>& it, ptrdiff_t dec ) noexcept
 {
    return DenseIterator<Type,AF>( it.base() - dec );
 }
@@ -654,7 +657,7 @@ inline const DenseIterator<Type,AF> operator-( const DenseIterator<Type,AF>& it,
 */
 template< typename Type  // Element type of the iterator
         , bool AF >      // Alignment flag of the iterator
-inline ptrdiff_t operator-( const DenseIterator<Type,AF>& lhs, const DenseIterator<Type,AF>& rhs )
+inline ptrdiff_t operator-( const DenseIterator<Type,AF>& lhs, const DenseIterator<Type,AF>& rhs ) noexcept
 {
    return lhs.base() - rhs.base();
 }
