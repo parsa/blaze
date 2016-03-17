@@ -407,8 +407,8 @@ class DenseColumn : public DenseVector< DenseColumn<MT,SO,SF>, false >
    inline ConstReference operator[]( size_t index ) const;
    inline Reference      at( size_t index );
    inline ConstReference at( size_t index ) const;
-   inline Pointer        data  ();
-   inline ConstPointer   data  () const;
+   inline Pointer        data  () noexcept;
+   inline ConstPointer   data  () const noexcept;
    inline Iterator       begin ();
    inline ConstIterator  begin () const;
    inline ConstIterator  cbegin() const;
@@ -443,8 +443,8 @@ class DenseColumn : public DenseVector< DenseColumn<MT,SO,SF>, false >
    //**Utility functions***************************************************************************
    /*!\name Utility functions */
    //@{
-                              inline size_t       size() const;
-                              inline size_t       capacity() const;
+                              inline size_t       size() const noexcept;
+                              inline size_t       capacity() const noexcept;
                               inline size_t       nonZeros() const;
                               inline void         reset();
    template< typename Other > inline DenseColumn& scale( const Other& scalar );
@@ -508,28 +508,28 @@ class DenseColumn : public DenseVector< DenseColumn<MT,SO,SF>, false >
    /*!\name Expression template evaluation functions */
    //@{
    template< typename Other >
-   inline bool canAlias( const Other* alias ) const;
+   inline bool canAlias( const Other* alias ) const noexcept;
 
    template< typename MT2, bool SO2, bool SF2 >
-   inline bool canAlias( const DenseColumn<MT2,SO2,SF2>* alias ) const;
+   inline bool canAlias( const DenseColumn<MT2,SO2,SF2>* alias ) const noexcept;
 
    template< typename Other >
-   inline bool isAliased( const Other* alias ) const;
+   inline bool isAliased( const Other* alias ) const noexcept;
 
    template< typename MT2, bool SO2, bool SF2 >
-   inline bool isAliased( const DenseColumn<MT2,SO2,SF2>* alias ) const;
+   inline bool isAliased( const DenseColumn<MT2,SO2,SF2>* alias ) const noexcept;
 
-   inline bool isAligned   () const;
-   inline bool canSMPAssign() const;
+   inline bool isAligned   () const noexcept;
+   inline bool canSMPAssign() const noexcept;
 
-   BLAZE_ALWAYS_INLINE IntrinsicType load ( size_t index ) const;
-   BLAZE_ALWAYS_INLINE IntrinsicType loada( size_t index ) const;
-   BLAZE_ALWAYS_INLINE IntrinsicType loadu( size_t index ) const;
+   BLAZE_ALWAYS_INLINE IntrinsicType load ( size_t index ) const noexcept;
+   BLAZE_ALWAYS_INLINE IntrinsicType loada( size_t index ) const noexcept;
+   BLAZE_ALWAYS_INLINE IntrinsicType loadu( size_t index ) const noexcept;
 
-   BLAZE_ALWAYS_INLINE void store ( size_t index, const IntrinsicType& value );
-   BLAZE_ALWAYS_INLINE void storea( size_t index, const IntrinsicType& value );
-   BLAZE_ALWAYS_INLINE void storeu( size_t index, const IntrinsicType& value );
-   BLAZE_ALWAYS_INLINE void stream( size_t index, const IntrinsicType& value );
+   BLAZE_ALWAYS_INLINE void store ( size_t index, const IntrinsicType& value ) noexcept;
+   BLAZE_ALWAYS_INLINE void storea( size_t index, const IntrinsicType& value ) noexcept;
+   BLAZE_ALWAYS_INLINE void storeu( size_t index, const IntrinsicType& value ) noexcept;
+   BLAZE_ALWAYS_INLINE void stream( size_t index, const IntrinsicType& value ) noexcept;
 
    template< typename VT >
    inline typename DisableIf< VectorizedAssign<VT> >::Type
@@ -587,10 +587,10 @@ class DenseColumn : public DenseVector< DenseColumn<MT,SO,SF>, false >
    template< typename MT2, bool SO2, bool SF2 > friend class DenseColumn;
 
    template< typename MT2, bool SO2, bool SF2 >
-   friend bool isIntact( const DenseColumn<MT2,SO2,SF2>& column );
+   friend bool isIntact( const DenseColumn<MT2,SO2,SF2>& column ) noexcept;
 
    template< typename MT2, bool SO2, bool SF2 >
-   friend bool isSame( const DenseColumn<MT2,SO2,SF2>& a, const DenseColumn<MT2,SO2,SF2>& b );
+   friend bool isSame( const DenseColumn<MT2,SO2,SF2>& a, const DenseColumn<MT2,SO2,SF2>& b ) noexcept;
 
    template< typename MT2, bool SO2, bool SF2, typename VT >
    friend bool tryAssign( const DenseColumn<MT2,SO2,SF2>& lhs, const Vector<VT,false>& rhs, size_t index );
@@ -760,7 +760,7 @@ inline typename DenseColumn<MT,SO,SF>::ConstReference
 template< typename MT  // Type of the dense matrix
         , bool SO      // Storage order
         , bool SF >    // Symmetry flag
-inline typename DenseColumn<MT,SO,SF>::Pointer DenseColumn<MT,SO,SF>::data()
+inline typename DenseColumn<MT,SO,SF>::Pointer DenseColumn<MT,SO,SF>::data() noexcept
 {
    return matrix_.data( col_ );
 }
@@ -778,7 +778,7 @@ inline typename DenseColumn<MT,SO,SF>::Pointer DenseColumn<MT,SO,SF>::data()
 template< typename MT  // Type of the dense matrix
         , bool SO      // Storage order
         , bool SF >    // Symmetry flag
-inline typename DenseColumn<MT,SO,SF>::ConstPointer DenseColumn<MT,SO,SF>::data() const
+inline typename DenseColumn<MT,SO,SF>::ConstPointer DenseColumn<MT,SO,SF>::data() const noexcept
 {
    return matrix_.data( col_ );
 }
@@ -1280,7 +1280,7 @@ inline typename EnableIf< IsNumeric<Other>, DenseColumn<MT,SO,SF> >::Type&
 template< typename MT  // Type of the dense matrix
         , bool SO      // Storage order
         , bool SF >    // Symmetry flag
-inline size_t DenseColumn<MT,SO,SF>::size() const
+inline size_t DenseColumn<MT,SO,SF>::size() const noexcept
 {
    return matrix_.rows();
 }
@@ -1295,7 +1295,7 @@ inline size_t DenseColumn<MT,SO,SF>::size() const
 template< typename MT  // Type of the dense matrix
         , bool SO      // Storage order
         , bool SF >    // Symmetry flag
-inline size_t DenseColumn<MT,SO,SF>::capacity() const
+inline size_t DenseColumn<MT,SO,SF>::capacity() const noexcept
 {
    return matrix_.capacity( col_ );
 }
@@ -1395,7 +1395,7 @@ template< typename MT       // Type of the dense matrix
         , bool SO           // Storage order
         , bool SF >         // Symmetry flag
 template< typename Other >  // Data type of the foreign expression
-inline bool DenseColumn<MT,SO,SF>::canAlias( const Other* alias ) const
+inline bool DenseColumn<MT,SO,SF>::canAlias( const Other* alias ) const noexcept
 {
    return matrix_.isAliased( alias );
 }
@@ -1418,7 +1418,7 @@ template< typename MT   // Type of the dense matrix
 template< typename MT2  // Data type of the foreign dense column
         , bool SO2      // Storage order of the foreign dense column
         , bool SF2 >    // Symmetry flag of the foreign dense column
-inline bool DenseColumn<MT,SO,SF>::canAlias( const DenseColumn<MT2,SO2,SF2>* alias ) const
+inline bool DenseColumn<MT,SO,SF>::canAlias( const DenseColumn<MT2,SO2,SF2>* alias ) const noexcept
 {
    return matrix_.isAliased( alias->matrix_ ) && ( col_ == alias->col_ );
 }
@@ -1439,7 +1439,7 @@ template< typename MT       // Type of the dense matrix
         , bool SO           // Storage order
         , bool SF >         // Symmetry flag
 template< typename Other >  // Data type of the foreign expression
-inline bool DenseColumn<MT,SO,SF>::isAliased( const Other* alias ) const
+inline bool DenseColumn<MT,SO,SF>::isAliased( const Other* alias ) const noexcept
 {
    return matrix_.isAliased( alias );
 }
@@ -1462,7 +1462,7 @@ template< typename MT   // Type of the dense matrix
 template< typename MT2  // Data type of the foreign dense column
         , bool SO2      // Storage order of the foreign dense column
         , bool SF2 >    // Symmetry flag of the foreign dense column
-inline bool DenseColumn<MT,SO,SF>::isAliased( const DenseColumn<MT2,SO2,SF2>* alias ) const
+inline bool DenseColumn<MT,SO,SF>::isAliased( const DenseColumn<MT2,SO2,SF2>* alias ) const noexcept
 {
    return matrix_.isAliased( &alias->matrix_ ) && ( col_ == alias->col_ );
 }
@@ -1481,7 +1481,7 @@ inline bool DenseColumn<MT,SO,SF>::isAliased( const DenseColumn<MT2,SO2,SF2>* al
 template< typename MT  // Type of the dense matrix
         , bool SO      // Storage order
         , bool SF >    // Symmetry flag
-inline bool DenseColumn<MT,SO,SF>::isAligned() const
+inline bool DenseColumn<MT,SO,SF>::isAligned() const noexcept
 {
    return matrix_.isAligned();
 }
@@ -1501,7 +1501,7 @@ inline bool DenseColumn<MT,SO,SF>::isAligned() const
 template< typename MT  // Type of the dense matrix
         , bool SO      // Storage order
         , bool SF >    // Symmetry flag
-inline bool DenseColumn<MT,SO,SF>::canSMPAssign() const
+inline bool DenseColumn<MT,SO,SF>::canSMPAssign() const noexcept
 {
    return ( size() > SMP_DVECASSIGN_THRESHOLD );
 }
@@ -1524,7 +1524,7 @@ template< typename MT  // Type of the dense matrix
         , bool SO      // Storage order
         , bool SF >    // Symmetry flag
 BLAZE_ALWAYS_INLINE typename DenseColumn<MT,SO,SF>::IntrinsicType
-   DenseColumn<MT,SO,SF>::load( size_t index ) const
+   DenseColumn<MT,SO,SF>::load( size_t index ) const noexcept
 {
    return matrix_.load( index, col_ );
 }
@@ -1547,7 +1547,7 @@ template< typename MT  // Type of the dense matrix
         , bool SO      // Storage order
         , bool SF >    // Symmetry flag
 BLAZE_ALWAYS_INLINE typename DenseColumn<MT,SO,SF>::IntrinsicType
-   DenseColumn<MT,SO,SF>::loada( size_t index ) const
+   DenseColumn<MT,SO,SF>::loada( size_t index ) const noexcept
 {
    return matrix_.loada( index, col_ );
 }
@@ -1570,7 +1570,7 @@ template< typename MT  // Type of the dense matrix
         , bool SO      // Storage order
         , bool SF >    // Symmetry flag
 BLAZE_ALWAYS_INLINE typename DenseColumn<MT,SO,SF>::IntrinsicType
-   DenseColumn<MT,SO,SF>::loadu( size_t index ) const
+   DenseColumn<MT,SO,SF>::loadu( size_t index ) const noexcept
 {
    return matrix_.loadu( index, col_ );
 }
@@ -1593,7 +1593,8 @@ BLAZE_ALWAYS_INLINE typename DenseColumn<MT,SO,SF>::IntrinsicType
 template< typename MT  // Type of the dense matrix
         , bool SO      // Storage order
         , bool SF >    // Symmetry flag
-BLAZE_ALWAYS_INLINE void DenseColumn<MT,SO,SF>::store( size_t index, const IntrinsicType& value )
+BLAZE_ALWAYS_INLINE void
+   DenseColumn<MT,SO,SF>::store( size_t index, const IntrinsicType& value ) noexcept
 {
    matrix_.store( index, col_, value );
 }
@@ -1616,7 +1617,8 @@ BLAZE_ALWAYS_INLINE void DenseColumn<MT,SO,SF>::store( size_t index, const Intri
 template< typename MT  // Type of the dense matrix
         , bool SO      // Storage order
         , bool SF >    // Symmetry flag
-BLAZE_ALWAYS_INLINE void DenseColumn<MT,SO,SF>::storea( size_t index, const IntrinsicType& value )
+BLAZE_ALWAYS_INLINE void
+   DenseColumn<MT,SO,SF>::storea( size_t index, const IntrinsicType& value ) noexcept
 {
    matrix_.storea( index, col_, value );
 }
@@ -1639,7 +1641,8 @@ BLAZE_ALWAYS_INLINE void DenseColumn<MT,SO,SF>::storea( size_t index, const Intr
 template< typename MT  // Type of the dense matrix
         , bool SO      // Storage order
         , bool SF >    // Symmetry flag
-BLAZE_ALWAYS_INLINE void DenseColumn<MT,SO,SF>::storeu( size_t index, const IntrinsicType& value )
+BLAZE_ALWAYS_INLINE void
+   DenseColumn<MT,SO,SF>::storeu( size_t index, const IntrinsicType& value ) noexcept
 {
    matrix_.storeu( index, col_, value );
 }
@@ -1662,7 +1665,8 @@ BLAZE_ALWAYS_INLINE void DenseColumn<MT,SO,SF>::storeu( size_t index, const Intr
 template< typename MT  // Type of the dense matrix
         , bool SO      // Storage order
         , bool SF >    // Symmetry flag
-BLAZE_ALWAYS_INLINE void DenseColumn<MT,SO,SF>::stream( size_t index, const IntrinsicType& value )
+BLAZE_ALWAYS_INLINE void
+   DenseColumn<MT,SO,SF>::stream( size_t index, const IntrinsicType& value ) noexcept
 {
    matrix_.stream( index, col_, value );
 }
@@ -2193,7 +2197,7 @@ class DenseColumn<MT,false,false> : public DenseVector< DenseColumn<MT,false,fal
       //**Constructor******************************************************************************
       /*!\brief Default constructor of the ColumnIterator class.
       */
-      inline ColumnIterator()
+      inline ColumnIterator() noexcept
          : matrix_( nullptr )  // The dense matrix containing the column.
          , row_   ( 0UL )      // The current row index.
          , column_( 0UL )      // The current column index.
@@ -2207,7 +2211,7 @@ class DenseColumn<MT,false,false> : public DenseVector< DenseColumn<MT,false,fal
       // \param row The row index.
       // \param column The column index.
       */
-      inline ColumnIterator( MatrixType& matrix, size_t row, size_t column )
+      inline ColumnIterator( MatrixType& matrix, size_t row, size_t column ) noexcept
          : matrix_( &matrix )  // The dense matrix containing the column.
          , row_   ( row     )  // The current row index.
          , column_( column  )  // The current column index.
@@ -2220,7 +2224,7 @@ class DenseColumn<MT,false,false> : public DenseVector< DenseColumn<MT,false,fal
       // \param it The column iterator to be copied.
       */
       template< typename MatrixType2 >
-      inline ColumnIterator( const ColumnIterator<MatrixType2>& it )
+      inline ColumnIterator( const ColumnIterator<MatrixType2>& it ) noexcept
          : matrix_( it.matrix_ )  // The dense matrix containing the column.
          , row_   ( it.row_    )  // The current row index.
          , column_( it.column_ )  // The current column index.
@@ -2233,7 +2237,7 @@ class DenseColumn<MT,false,false> : public DenseVector< DenseColumn<MT,false,fal
       // \param inc The increment of the iterator.
       // \return The incremented iterator.
       */
-      inline ColumnIterator& operator+=( size_t inc ) {
+      inline ColumnIterator& operator+=( size_t inc ) noexcept {
          row_ += inc;
          return *this;
       }
@@ -2245,7 +2249,7 @@ class DenseColumn<MT,false,false> : public DenseVector< DenseColumn<MT,false,fal
       // \param dec The decrement of the iterator.
       // \return The decremented iterator.
       */
-      inline ColumnIterator& operator-=( size_t dec ) {
+      inline ColumnIterator& operator-=( size_t dec ) noexcept {
          row_ -= dec;
          return *this;
       }
@@ -2256,7 +2260,7 @@ class DenseColumn<MT,false,false> : public DenseVector< DenseColumn<MT,false,fal
       //
       // \return Reference to the incremented iterator.
       */
-      inline ColumnIterator& operator++() {
+      inline ColumnIterator& operator++() noexcept {
          ++row_;
          return *this;
       }
@@ -2267,7 +2271,7 @@ class DenseColumn<MT,false,false> : public DenseVector< DenseColumn<MT,false,fal
       //
       // \return The previous position of the iterator.
       */
-      inline const ColumnIterator operator++( int ) {
+      inline const ColumnIterator operator++( int ) noexcept {
          const ColumnIterator tmp( *this );
          ++(*this);
          return tmp;
@@ -2279,7 +2283,7 @@ class DenseColumn<MT,false,false> : public DenseVector< DenseColumn<MT,false,fal
       //
       // \return Reference to the decremented iterator.
       */
-      inline ColumnIterator& operator--() {
+      inline ColumnIterator& operator--() noexcept {
          --row_;
          return *this;
       }
@@ -2290,7 +2294,7 @@ class DenseColumn<MT,false,false> : public DenseVector< DenseColumn<MT,false,fal
       //
       // \return The previous position of the iterator.
       */
-      inline const ColumnIterator operator--( int ) {
+      inline const ColumnIterator operator--( int ) noexcept {
          const ColumnIterator tmp( *this );
          --(*this);
          return tmp;
@@ -2335,7 +2339,7 @@ class DenseColumn<MT,false,false> : public DenseVector< DenseColumn<MT,false,fal
       // \return \a true if the iterators refer to the same element, \a false if not.
       */
       template< typename MatrixType2 >
-      inline bool operator==( const ColumnIterator<MatrixType2>& rhs ) const {
+      inline bool operator==( const ColumnIterator<MatrixType2>& rhs ) const noexcept {
          return ( matrix_ == rhs.matrix_ ) && ( row_ == rhs.row_ ) && ( column_ == rhs.column_ );
       }
       //*******************************************************************************************
@@ -2347,7 +2351,7 @@ class DenseColumn<MT,false,false> : public DenseVector< DenseColumn<MT,false,fal
       // \return \a true if the iterators don't refer to the same element, \a false if they do.
       */
       template< typename MatrixType2 >
-      inline bool operator!=( const ColumnIterator<MatrixType2>& rhs ) const {
+      inline bool operator!=( const ColumnIterator<MatrixType2>& rhs ) const noexcept {
          return !( *this == rhs );
       }
       //*******************************************************************************************
@@ -2359,7 +2363,7 @@ class DenseColumn<MT,false,false> : public DenseVector< DenseColumn<MT,false,fal
       // \return \a true if the left-hand side iterator is smaller, \a false if not.
       */
       template< typename MatrixType2 >
-      inline bool operator<( const ColumnIterator<MatrixType2>& rhs ) const {
+      inline bool operator<( const ColumnIterator<MatrixType2>& rhs ) const noexcept {
          return ( matrix_ == rhs.matrix_ ) && ( row_ < rhs.row_ ) && ( column_ == rhs.column_ );
       }
       //*******************************************************************************************
@@ -2371,7 +2375,7 @@ class DenseColumn<MT,false,false> : public DenseVector< DenseColumn<MT,false,fal
       // \return \a true if the left-hand side iterator is greater, \a false if not.
       */
       template< typename MatrixType2 >
-      inline bool operator>( const ColumnIterator<MatrixType2>& rhs ) const {
+      inline bool operator>( const ColumnIterator<MatrixType2>& rhs ) const noexcept {
          return ( matrix_ == rhs.matrix_ ) && ( row_ > rhs.row_ ) && ( column_ == rhs.column_ );
       }
       //*******************************************************************************************
@@ -2383,7 +2387,7 @@ class DenseColumn<MT,false,false> : public DenseVector< DenseColumn<MT,false,fal
       // \return \a true if the left-hand side iterator is smaller or equal, \a false if not.
       */
       template< typename MatrixType2 >
-      inline bool operator<=( const ColumnIterator<MatrixType2>& rhs ) const {
+      inline bool operator<=( const ColumnIterator<MatrixType2>& rhs ) const noexcept {
          return ( matrix_ == rhs.matrix_ ) && ( row_ <= rhs.row_ ) && ( column_ == rhs.column_ );
       }
       //*******************************************************************************************
@@ -2395,7 +2399,7 @@ class DenseColumn<MT,false,false> : public DenseVector< DenseColumn<MT,false,fal
       // \return \a true if the left-hand side iterator is greater or equal, \a false if not.
       */
       template< typename MatrixType2 >
-      inline bool operator>=( const ColumnIterator<MatrixType2>& rhs ) const {
+      inline bool operator>=( const ColumnIterator<MatrixType2>& rhs ) const noexcept {
          return ( matrix_ == rhs.matrix_ ) && ( row_ >= rhs.row_ ) && ( column_ == rhs.column_ );
       }
       //*******************************************************************************************
@@ -2406,7 +2410,7 @@ class DenseColumn<MT,false,false> : public DenseVector< DenseColumn<MT,false,fal
       // \param rhs The right-hand side column iterator.
       // \return The number of elements between the two column iterators.
       */
-      inline DifferenceType operator-( const ColumnIterator& rhs ) const {
+      inline DifferenceType operator-( const ColumnIterator& rhs ) const noexcept {
          return row_ - rhs.row_;
       }
       //*******************************************************************************************
@@ -2418,7 +2422,7 @@ class DenseColumn<MT,false,false> : public DenseVector< DenseColumn<MT,false,fal
       // \param inc The number of elements the iterator is incremented.
       // \return The incremented iterator.
       */
-      friend inline const ColumnIterator operator+( const ColumnIterator& it, size_t inc ) {
+      friend inline const ColumnIterator operator+( const ColumnIterator& it, size_t inc ) noexcept {
          return ColumnIterator( *it.matrix_, it.row_+inc, it.column_ );
       }
       //*******************************************************************************************
@@ -2430,7 +2434,7 @@ class DenseColumn<MT,false,false> : public DenseVector< DenseColumn<MT,false,fal
       // \param it The iterator to be incremented.
       // \return The incremented iterator.
       */
-      friend inline const ColumnIterator operator+( size_t inc, const ColumnIterator& it ) {
+      friend inline const ColumnIterator operator+( size_t inc, const ColumnIterator& it ) noexcept {
          return ColumnIterator( *it.matrix_, it.row_+inc, it.column_ );
       }
       //*******************************************************************************************
@@ -2442,7 +2446,7 @@ class DenseColumn<MT,false,false> : public DenseVector< DenseColumn<MT,false,fal
       // \param inc The number of elements the iterator is decremented.
       // \return The decremented iterator.
       */
-      friend inline const ColumnIterator operator-( const ColumnIterator& it, size_t dec ) {
+      friend inline const ColumnIterator operator-( const ColumnIterator& it, size_t dec ) noexcept {
          return ColumnIterator( *it.matrix_, it.row_-dec, it.column_ );
       }
       //*******************************************************************************************
@@ -2495,8 +2499,8 @@ class DenseColumn<MT,false,false> : public DenseVector< DenseColumn<MT,false,fal
    inline ConstReference operator[]( size_t index ) const;
    inline Reference      at( size_t index );
    inline ConstReference at( size_t index ) const;
-   inline Pointer        data  ();
-   inline ConstPointer   data  () const;
+   inline Pointer        data  () noexcept;
+   inline ConstPointer   data  () const noexcept;
    inline Iterator       begin ();
    inline ConstIterator  begin () const;
    inline ConstIterator  cbegin() const;
@@ -2531,8 +2535,8 @@ class DenseColumn<MT,false,false> : public DenseVector< DenseColumn<MT,false,fal
    //**Utility functions***************************************************************************
    /*!\name Utility functions */
    //@{
-                              inline size_t       size() const;
-                              inline size_t       capacity() const;
+                              inline size_t       size() const noexcept;
+                              inline size_t       capacity() const noexcept;
                               inline size_t       nonZeros() const;
                               inline void         reset();
    template< typename Other > inline DenseColumn& scale( const Other& scalar );
@@ -2544,19 +2548,19 @@ class DenseColumn<MT,false,false> : public DenseVector< DenseColumn<MT,false,fal
    /*!\name Expression template evaluation functions */
    //@{
    template< typename Other >
-   inline bool canAlias ( const Other* alias ) const;
+   inline bool canAlias ( const Other* alias ) const noexcept;
 
    template< typename MT2, bool SO2, bool SF2 >
-   inline bool canAlias ( const DenseColumn<MT2,SO2,SF2>* alias ) const;
+   inline bool canAlias ( const DenseColumn<MT2,SO2,SF2>* alias ) const noexcept;
 
    template< typename Other >
-   inline bool isAliased( const Other* alias ) const;
+   inline bool isAliased( const Other* alias ) const noexcept;
 
    template< typename MT2, bool SO2, bool SF2 >
-   inline bool isAliased( const DenseColumn<MT2,SO2,SF2>* alias ) const;
+   inline bool isAliased( const DenseColumn<MT2,SO2,SF2>* alias ) const noexcept;
 
-   inline bool isAligned   () const;
-   inline bool canSMPAssign() const;
+   inline bool isAligned   () const noexcept;
+   inline bool canSMPAssign() const noexcept;
 
    template< typename VT > inline void assign    ( const DenseVector <VT,false>& rhs );
    template< typename VT > inline void assign    ( const SparseVector<VT,false>& rhs );
@@ -2582,10 +2586,10 @@ class DenseColumn<MT,false,false> : public DenseVector< DenseColumn<MT,false,fal
    template< typename MT2, bool SO2, bool SF2 > friend class DenseColumn;
 
    template< typename MT2, bool SO2, bool SF2 >
-   friend bool isIntact( const DenseColumn<MT2,SO2,SF2>& column );
+   friend bool isIntact( const DenseColumn<MT2,SO2,SF2>& column ) noexcept;
 
    template< typename MT2, bool SO2, bool SF2 >
-   friend bool isSame( const DenseColumn<MT2,SO2,SF2>& a, const DenseColumn<MT2,SO2,SF2>& b );
+   friend bool isSame( const DenseColumn<MT2,SO2,SF2>& a, const DenseColumn<MT2,SO2,SF2>& b ) noexcept;
 
    template< typename MT2, bool SO2, bool SF2, typename VT >
    friend bool tryAssign( const DenseColumn<MT2,SO2,SF2>& lhs, const Vector<VT,false>& rhs, size_t index );
@@ -2755,7 +2759,7 @@ inline typename DenseColumn<MT,false,false>::ConstReference
 // of a row-major matrix you can NOT assume that the column elements lie adjacent to each other!
 */
 template< typename MT >  // Type of the dense matrix
-inline typename DenseColumn<MT,false,false>::Pointer DenseColumn<MT,false,false>::data()
+inline typename DenseColumn<MT,false,false>::Pointer DenseColumn<MT,false,false>::data() noexcept
 {
    return matrix_.data() + col_;
 }
@@ -2773,7 +2777,7 @@ inline typename DenseColumn<MT,false,false>::Pointer DenseColumn<MT,false,false>
 // of a row-major matrix you can NOT assume that the column elements lie adjacent to each other!
 */
 template< typename MT >  // Type of the dense matrix
-inline typename DenseColumn<MT,false,false>::ConstPointer DenseColumn<MT,false,false>::data() const
+inline typename DenseColumn<MT,false,false>::ConstPointer DenseColumn<MT,false,false>::data() const noexcept
 {
    return matrix_.data() + col_;
 }
@@ -3287,7 +3291,7 @@ inline typename EnableIf< IsNumeric<Other>, DenseColumn<MT,false,false> >::Type&
 // \return The size of the column.
 */
 template< typename MT >  // Type of the dense matrix
-inline size_t DenseColumn<MT,false,false>::size() const
+inline size_t DenseColumn<MT,false,false>::size() const noexcept
 {
    return matrix_.rows();
 }
@@ -3302,7 +3306,7 @@ inline size_t DenseColumn<MT,false,false>::size() const
 // \return The capacity of the dense column.
 */
 template< typename MT >  // Type of the dense matrix
-inline size_t DenseColumn<MT,false,false>::capacity() const
+inline size_t DenseColumn<MT,false,false>::capacity() const noexcept
 {
    return matrix_.rows();
 }
@@ -3423,7 +3427,7 @@ inline DenseColumn<MT,false,false>& DenseColumn<MT,false,false>::scale( const Ot
 */
 template< typename MT >     // Type of the dense matrix
 template< typename Other >  // Data type of the foreign expression
-inline bool DenseColumn<MT,false,false>::canAlias( const Other* alias ) const
+inline bool DenseColumn<MT,false,false>::canAlias( const Other* alias ) const noexcept
 {
    return matrix_.isAliased( alias );
 }
@@ -3446,7 +3450,7 @@ template< typename MT >  // Type of the dense matrix
 template< typename MT2   // Data type of the foreign dense column
         , bool SO2       // Storage order of the foreign dense column
         , bool SF2 >     // Symmetry flag of the foreign dense column
-inline bool DenseColumn<MT,false,false>::canAlias( const DenseColumn<MT2,SO2,SF2>* alias ) const
+inline bool DenseColumn<MT,false,false>::canAlias( const DenseColumn<MT2,SO2,SF2>* alias ) const noexcept
 {
    return matrix_.isAliased( &alias->matrix_ ) && ( col_ == alias->col_ );
 }
@@ -3467,7 +3471,7 @@ inline bool DenseColumn<MT,false,false>::canAlias( const DenseColumn<MT2,SO2,SF2
 */
 template< typename MT >     // Type of the dense matrix
 template< typename Other >  // Data type of the foreign expression
-inline bool DenseColumn<MT,false,false>::isAliased( const Other* alias ) const
+inline bool DenseColumn<MT,false,false>::isAliased( const Other* alias ) const noexcept
 {
    return matrix_.isAliased( alias );
 }
@@ -3490,7 +3494,7 @@ template< typename MT >  // Type of the dense matrix
 template< typename MT2   // Data type of the foreign dense column
         , bool SO2       // Storage order of the foreign dense column
         , bool SF2 >     // Symmetry flag of the foreign dense column
-inline bool DenseColumn<MT,false,false>::isAliased( const DenseColumn<MT2,SO2,SF2>* alias ) const
+inline bool DenseColumn<MT,false,false>::isAliased( const DenseColumn<MT2,SO2,SF2>* alias ) const noexcept
 {
    return matrix_.isAliased( &alias->matrix_ ) && ( col_ == alias->col_ );
 }
@@ -3509,7 +3513,7 @@ inline bool DenseColumn<MT,false,false>::isAliased( const DenseColumn<MT2,SO2,SF
 // alignment restrictions of the element type \a Type.
 */
 template< typename MT >  // Type of the dense matrix
-inline bool DenseColumn<MT,false,false>::isAligned() const
+inline bool DenseColumn<MT,false,false>::isAligned() const noexcept
 {
    return false;
 }
@@ -3529,7 +3533,7 @@ inline bool DenseColumn<MT,false,false>::isAligned() const
 // the dense column).
 */
 template< typename MT >  // Type of the dense matrix
-inline bool DenseColumn<MT,false,false>::canSMPAssign() const
+inline bool DenseColumn<MT,false,false>::canSMPAssign() const noexcept
 {
    return ( size() > SMP_DVECASSIGN_THRESHOLD );
 }
@@ -3851,8 +3855,8 @@ class DenseColumn<MT,false,true> : public DenseVector< DenseColumn<MT,false,true
    inline ConstReference operator[]( size_t index ) const;
    inline Reference      at( size_t index );
    inline ConstReference at( size_t index ) const;
-   inline Pointer        data  ();
-   inline ConstPointer   data  () const;
+   inline Pointer        data  () noexcept;
+   inline ConstPointer   data  () const noexcept;
    inline Iterator       begin ();
    inline ConstIterator  begin () const;
    inline ConstIterator  cbegin() const;
@@ -3887,8 +3891,8 @@ class DenseColumn<MT,false,true> : public DenseVector< DenseColumn<MT,false,true
    //**Utility functions***************************************************************************
    /*!\name Utility functions */
    //@{
-                              inline size_t       size() const;
-                              inline size_t       capacity() const;
+                              inline size_t       size() const noexcept;
+                              inline size_t       capacity() const noexcept;
                               inline size_t       nonZeros() const;
                               inline void         reset();
    template< typename Other > inline DenseColumn& scale( const Other& scalar );
@@ -3944,28 +3948,28 @@ class DenseColumn<MT,false,true> : public DenseVector< DenseColumn<MT,false,true
    /*!\name Expression template evaluation functions */
    //@{
    template< typename Other >
-   inline bool canAlias( const Other* alias ) const;
+   inline bool canAlias( const Other* alias ) const noexcept;
 
    template< typename MT2, bool SO2, bool SF2 >
-   inline bool canAlias( const DenseColumn<MT2,SO2,SF2>* alias ) const;
+   inline bool canAlias( const DenseColumn<MT2,SO2,SF2>* alias ) const noexcept;
 
    template< typename Other >
-   inline bool isAliased( const Other* alias ) const;
+   inline bool isAliased( const Other* alias ) const noexcept;
 
    template< typename MT2, bool SO2, bool SF2 >
-   inline bool isAliased( const DenseColumn<MT2,SO2,SF2>* alias ) const;
+   inline bool isAliased( const DenseColumn<MT2,SO2,SF2>* alias ) const noexcept;
 
-   inline bool isAligned   () const;
-   inline bool canSMPAssign() const;
+   inline bool isAligned   () const noexcept;
+   inline bool canSMPAssign() const noexcept;
 
-   BLAZE_ALWAYS_INLINE IntrinsicType load ( size_t index ) const;
-   BLAZE_ALWAYS_INLINE IntrinsicType loada( size_t index ) const;
-   BLAZE_ALWAYS_INLINE IntrinsicType loadu( size_t index ) const;
+   BLAZE_ALWAYS_INLINE IntrinsicType load ( size_t index ) const noexcept;
+   BLAZE_ALWAYS_INLINE IntrinsicType loada( size_t index ) const noexcept;
+   BLAZE_ALWAYS_INLINE IntrinsicType loadu( size_t index ) const noexcept;
 
-   BLAZE_ALWAYS_INLINE void store ( size_t index, const IntrinsicType& value );
-   BLAZE_ALWAYS_INLINE void storea( size_t index, const IntrinsicType& value );
-   BLAZE_ALWAYS_INLINE void storeu( size_t index, const IntrinsicType& value );
-   BLAZE_ALWAYS_INLINE void stream( size_t index, const IntrinsicType& value );
+   BLAZE_ALWAYS_INLINE void store ( size_t index, const IntrinsicType& value ) noexcept;
+   BLAZE_ALWAYS_INLINE void storea( size_t index, const IntrinsicType& value ) noexcept;
+   BLAZE_ALWAYS_INLINE void storeu( size_t index, const IntrinsicType& value ) noexcept;
+   BLAZE_ALWAYS_INLINE void stream( size_t index, const IntrinsicType& value ) noexcept;
 
    template< typename VT >
    inline typename DisableIf< VectorizedAssign<VT> >::Type
@@ -4022,10 +4026,10 @@ class DenseColumn<MT,false,true> : public DenseVector< DenseColumn<MT,false,true
    template< typename MT2, bool SO2, bool SF2 > friend class DenseColumn;
 
    template< typename MT2, bool SO2, bool SF2 >
-   friend bool isIntact( const DenseColumn<MT2,SO2,SF2>& column );
+   friend bool isIntact( const DenseColumn<MT2,SO2,SF2>& column ) noexcept;
 
    template< typename MT2, bool SO2, bool SF2 >
-   friend bool isSame( const DenseColumn<MT2,SO2,SF2>& a, const DenseColumn<MT2,SO2,SF2>& b );
+   friend bool isSame( const DenseColumn<MT2,SO2,SF2>& a, const DenseColumn<MT2,SO2,SF2>& b ) noexcept;
 
    template< typename MT2, bool SO2, bool SF2, typename VT >
    friend bool tryAssign( const DenseColumn<MT2,SO2,SF2>& lhs, const Vector<VT,false>& rhs, size_t index );
@@ -4195,7 +4199,7 @@ inline typename DenseColumn<MT,false,true>::ConstReference
 // of a row-major matrix you can NOT assume that the column elements lie adjacent to each other!
 */
 template< typename MT >  // Type of the dense matrix
-inline typename DenseColumn<MT,false,true>::Pointer DenseColumn<MT,false,true>::data()
+inline typename DenseColumn<MT,false,true>::Pointer DenseColumn<MT,false,true>::data() noexcept
 {
    return matrix_.data( col_ );
 }
@@ -4213,7 +4217,8 @@ inline typename DenseColumn<MT,false,true>::Pointer DenseColumn<MT,false,true>::
 // of a row-major matrix you can NOT assume that the column elements lie adjacent to each other!
 */
 template< typename MT >  // Type of the dense matrix
-inline typename DenseColumn<MT,false,true>::ConstPointer DenseColumn<MT,false,true>::data() const
+inline typename DenseColumn<MT,false,true>::ConstPointer
+   DenseColumn<MT,false,true>::data() const noexcept
 {
    return matrix_.data( col_ );
 }
@@ -4716,7 +4721,7 @@ inline typename EnableIf< IsNumeric<Other>, DenseColumn<MT,false,true> >::Type&
 // \return The size of the column.
 */
 template< typename MT >  // Type of the dense matrix
-inline size_t DenseColumn<MT,false,true>::size() const
+inline size_t DenseColumn<MT,false,true>::size() const noexcept
 {
    return matrix_.rows();
 }
@@ -4731,7 +4736,7 @@ inline size_t DenseColumn<MT,false,true>::size() const
 // \return The capacity of the dense column.
 */
 template< typename MT >  // Type of the dense matrix
-inline size_t DenseColumn<MT,false,true>::capacity() const
+inline size_t DenseColumn<MT,false,true>::capacity() const noexcept
 {
    return matrix_.capacity( col_ );
 }
@@ -4831,7 +4836,7 @@ inline DenseColumn<MT,false,true>& DenseColumn<MT,false,true>::scale( const Othe
 */
 template< typename MT >     // Type of the dense matrix
 template< typename Other >  // Data type of the foreign expression
-inline bool DenseColumn<MT,false,true>::canAlias( const Other* alias ) const
+inline bool DenseColumn<MT,false,true>::canAlias( const Other* alias ) const noexcept
 {
    return matrix_.isAliased( alias );
 }
@@ -4854,7 +4859,7 @@ template< typename MT >  // Type of the dense matrix
 template< typename MT2   // Data type of the foreign dense column
         , bool SO2       // Storage order of the foreign dense column
         , bool SF2 >     // Symmetry flag of the foreign dense column
-inline bool DenseColumn<MT,false,true>::canAlias( const DenseColumn<MT2,SO2,SF2>* alias ) const
+inline bool DenseColumn<MT,false,true>::canAlias( const DenseColumn<MT2,SO2,SF2>* alias ) const noexcept
 {
    return matrix_.isAliased( alias->matrix_ ) && ( col_ == alias->col_ );
 }
@@ -4875,7 +4880,7 @@ inline bool DenseColumn<MT,false,true>::canAlias( const DenseColumn<MT2,SO2,SF2>
 */
 template< typename MT >     // Type of the dense matrix
 template< typename Other >  // Data type of the foreign expression
-inline bool DenseColumn<MT,false,true>::isAliased( const Other* alias ) const
+inline bool DenseColumn<MT,false,true>::isAliased( const Other* alias ) const noexcept
 {
    return matrix_.isAliased( alias );
 }
@@ -4898,7 +4903,7 @@ template< typename MT >  // Type of the dense matrix
 template< typename MT2   // Data type of the foreign dense column
         , bool SO2       // Storage order of the foreign dense column
         , bool SF2 >     // Symmetry flag of the foreign dense column
-inline bool DenseColumn<MT,false,true>::isAliased( const DenseColumn<MT2,SO2,SF2>* alias ) const
+inline bool DenseColumn<MT,false,true>::isAliased( const DenseColumn<MT2,SO2,SF2>* alias ) const noexcept
 {
    return matrix_.isAliased( &alias->matrix_ ) && ( col_ == alias->col_ );
 }
@@ -4917,7 +4922,7 @@ inline bool DenseColumn<MT,false,true>::isAliased( const DenseColumn<MT2,SO2,SF2
 // alignment restrictions of the element type \a Type.
 */
 template< typename MT >  // Type of the dense matrix
-inline bool DenseColumn<MT,false,true>::isAligned() const
+inline bool DenseColumn<MT,false,true>::isAligned() const noexcept
 {
    return matrix_.isAligned();
 }
@@ -4937,7 +4942,7 @@ inline bool DenseColumn<MT,false,true>::isAligned() const
 // the dense column).
 */
 template< typename MT >  // Type of the dense matrix
-inline bool DenseColumn<MT,false,true>::canSMPAssign() const
+inline bool DenseColumn<MT,false,true>::canSMPAssign() const noexcept
 {
    return ( size() > SMP_DVECASSIGN_THRESHOLD );
 }
@@ -4960,7 +4965,7 @@ inline bool DenseColumn<MT,false,true>::canSMPAssign() const
 */
 template< typename MT >  // Type of the dense matrix
 BLAZE_ALWAYS_INLINE typename DenseColumn<MT,false,true>::IntrinsicType
-   DenseColumn<MT,false,true>::load( size_t index ) const
+   DenseColumn<MT,false,true>::load( size_t index ) const noexcept
 {
    return matrix_.load( col_, index );
 }
@@ -4983,7 +4988,7 @@ BLAZE_ALWAYS_INLINE typename DenseColumn<MT,false,true>::IntrinsicType
 */
 template< typename MT >  // Type of the dense matrix
 BLAZE_ALWAYS_INLINE typename DenseColumn<MT,false,true>::IntrinsicType
-   DenseColumn<MT,false,true>::loada( size_t index ) const
+   DenseColumn<MT,false,true>::loada( size_t index ) const noexcept
 {
    return matrix_.loada( col_, index );
 }
@@ -5006,7 +5011,7 @@ BLAZE_ALWAYS_INLINE typename DenseColumn<MT,false,true>::IntrinsicType
 */
 template< typename MT >  // Type of the dense matrix
 BLAZE_ALWAYS_INLINE typename DenseColumn<MT,false,true>::IntrinsicType
-   DenseColumn<MT,false,true>::loadu( size_t index ) const
+   DenseColumn<MT,false,true>::loadu( size_t index ) const noexcept
 {
    return matrix_.loadu( col_, index );
 }
@@ -5029,7 +5034,8 @@ BLAZE_ALWAYS_INLINE typename DenseColumn<MT,false,true>::IntrinsicType
 // compilation errors.
 */
 template< typename MT >  // Type of the dense matrix
-BLAZE_ALWAYS_INLINE void DenseColumn<MT,false,true>::store( size_t index, const IntrinsicType& value )
+BLAZE_ALWAYS_INLINE void
+   DenseColumn<MT,false,true>::store( size_t index, const IntrinsicType& value ) noexcept
 {
    matrix_.store( col_, index, value );
 }
@@ -5052,7 +5058,8 @@ BLAZE_ALWAYS_INLINE void DenseColumn<MT,false,true>::store( size_t index, const 
 // and/or in compilation errors.
 */
 template< typename MT >  // Type of the dense matrix
-BLAZE_ALWAYS_INLINE void DenseColumn<MT,false,true>::storea( size_t index, const IntrinsicType& value )
+BLAZE_ALWAYS_INLINE void
+   DenseColumn<MT,false,true>::storea( size_t index, const IntrinsicType& value ) noexcept
 {
    matrix_.storea( col_, index, value );
 }
@@ -5075,7 +5082,8 @@ BLAZE_ALWAYS_INLINE void DenseColumn<MT,false,true>::storea( size_t index, const
 // and/or in compilation errors.
 */
 template< typename MT >  // Type of the dense matrix
-BLAZE_ALWAYS_INLINE void DenseColumn<MT,false,true>::storeu( size_t index, const IntrinsicType& value )
+BLAZE_ALWAYS_INLINE void
+   DenseColumn<MT,false,true>::storeu( size_t index, const IntrinsicType& value ) noexcept
 {
    matrix_.storeu( col_, index, value );
 }
@@ -5098,7 +5106,8 @@ BLAZE_ALWAYS_INLINE void DenseColumn<MT,false,true>::storeu( size_t index, const
 // and/or in compilation errors.
 */
 template< typename MT >  // Type of the dense matrix
-BLAZE_ALWAYS_INLINE void DenseColumn<MT,false,true>::stream( size_t index, const IntrinsicType& value )
+BLAZE_ALWAYS_INLINE void
+   DenseColumn<MT,false,true>::stream( size_t index, const IntrinsicType& value ) noexcept
 {
    matrix_.stream( col_, index, value );
 }
@@ -5561,10 +5570,10 @@ template< typename MT, bool SO, bool SF >
 inline bool isDefault( const DenseColumn<MT,SO,SF>& column );
 
 template< typename MT, bool SO, bool SF >
-inline bool isIntact( const DenseColumn<MT,SO,SF>& column );
+inline bool isIntact( const DenseColumn<MT,SO,SF>& column ) noexcept;
 
 template< typename MT, bool SO, bool SF >
-inline bool isSame( const DenseColumn<MT,SO,SF>& a, const DenseColumn<MT,SO,SF>& b );
+inline bool isSame( const DenseColumn<MT,SO,SF>& a, const DenseColumn<MT,SO,SF>& b ) noexcept;
 //@}
 //*************************************************************************************************
 
@@ -5656,7 +5665,7 @@ inline bool isDefault( const DenseColumn<MT,SO,SF>& column )
 template< typename MT  // Type of the dense matrix
         , bool SO      // Storage order
         , bool SF >    // Symmetry flag
-inline bool isIntact( const DenseColumn<MT,SO,SF>& column )
+inline bool isIntact( const DenseColumn<MT,SO,SF>& column ) noexcept
 {
    return ( column.col_ <= column.matrix_.columns() &&
             isIntact( column.matrix_ ) );
@@ -5679,7 +5688,7 @@ inline bool isIntact( const DenseColumn<MT,SO,SF>& column )
 template< typename MT  // Type of the dense matrix
         , bool SO      // Storage order
         , bool SF >    // Symmetry flag
-inline bool isSame( const DenseColumn<MT,SO,SF>& a, const DenseColumn<MT,SO,SF>& b )
+inline bool isSame( const DenseColumn<MT,SO,SF>& a, const DenseColumn<MT,SO,SF>& b ) noexcept
 {
    return ( isSame( a.matrix_, b.matrix_ ) && ( a.col_ == b.col_ ) );
 }
