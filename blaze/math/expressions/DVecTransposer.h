@@ -116,7 +116,7 @@ class DVecTransposer : public DenseVector< DVecTransposer<VT,TF>, TF >
    //
    // \param dv The dense vector operand.
    */
-   explicit inline DVecTransposer( VT& dv )
+   explicit inline DVecTransposer( VT& dv ) noexcept
       : dv_( dv )  // The dense vector operand
    {}
    //**********************************************************************************************
@@ -180,7 +180,7 @@ class DVecTransposer : public DenseVector< DVecTransposer<VT,TF>, TF >
    //
    // \return Pointer to the internal element storage.
    */
-   inline Pointer data() {
+   inline Pointer data() noexcept {
       return dv_.data();
    }
    //**********************************************************************************************
@@ -190,7 +190,7 @@ class DVecTransposer : public DenseVector< DVecTransposer<VT,TF>, TF >
    //
    // \return Pointer to the internal element storage.
    */
-   inline ConstPointer data() const {
+   inline ConstPointer data() const noexcept {
       return dv_.data();
    }
    //**********************************************************************************************
@@ -294,7 +294,7 @@ class DVecTransposer : public DenseVector< DVecTransposer<VT,TF>, TF >
    //
    // \return The size of the vector.
    */
-   inline size_t size() const {
+   inline size_t size() const noexcept {
       return dv_.size();
    }
    //**********************************************************************************************
@@ -316,7 +316,7 @@ class DVecTransposer : public DenseVector< DVecTransposer<VT,TF>, TF >
    // \return \a true in case the alias corresponds to this vector, \a false if not.
    */
    template< typename Other >  // Data type of the foreign expression
-   inline bool canAlias( const Other* alias ) const
+   inline bool canAlias( const Other* alias ) const noexcept
    {
       return dv_.canAlias( alias );
    }
@@ -329,7 +329,7 @@ class DVecTransposer : public DenseVector< DVecTransposer<VT,TF>, TF >
    // \return \a true in case the alias corresponds to this vector, \a false if not.
    */
    template< typename Other >  // Data type of the foreign expression
-   inline bool isAliased( const Other* alias ) const
+   inline bool isAliased( const Other* alias ) const noexcept
    {
       return dv_.isAliased( alias );
    }
@@ -340,7 +340,7 @@ class DVecTransposer : public DenseVector< DVecTransposer<VT,TF>, TF >
    //
    // \return \a true in case the vector is aligned, \a false if not.
    */
-   inline bool isAligned() const
+   inline bool isAligned() const noexcept
    {
       return dv_.isAligned();
    }
@@ -351,7 +351,7 @@ class DVecTransposer : public DenseVector< DVecTransposer<VT,TF>, TF >
    //
    // \return \a true in case the vector can be used in SMP assignments, \a false if not.
    */
-   inline bool canSMPAssign() const
+   inline bool canSMPAssign() const noexcept
    {
       return dv_.canSMPAssign();
    }
@@ -367,7 +367,7 @@ class DVecTransposer : public DenseVector< DVecTransposer<VT,TF>, TF >
    // optimized evaluation of expression templates. Calling this function explicitly might result
    // in erroneous results and/or in compilation errors.
    */
-   BLAZE_ALWAYS_INLINE IntrinsicType load( size_t index ) const
+   BLAZE_ALWAYS_INLINE IntrinsicType load( size_t index ) const noexcept
    {
       return dv_.load( index );
    }
@@ -383,7 +383,7 @@ class DVecTransposer : public DenseVector< DVecTransposer<VT,TF>, TF >
    // optimized evaluation of expression templates. Calling this function explicitly might result
    // in erroneous results and/or in compilation errors.
    */
-   BLAZE_ALWAYS_INLINE IntrinsicType loada( size_t index ) const
+   BLAZE_ALWAYS_INLINE IntrinsicType loada( size_t index ) const noexcept
    {
       return dv_.loada( index );
    }
@@ -399,7 +399,7 @@ class DVecTransposer : public DenseVector< DVecTransposer<VT,TF>, TF >
    // optimized evaluation of expression templates. Calling this function explicitly might result
    // in erroneous results and/or in compilation errors.
    */
-   BLAZE_ALWAYS_INLINE IntrinsicType loadu( size_t index ) const
+   BLAZE_ALWAYS_INLINE IntrinsicType loadu( size_t index ) const noexcept
    {
       return dv_.loadu( index );
    }
@@ -416,7 +416,7 @@ class DVecTransposer : public DenseVector< DVecTransposer<VT,TF>, TF >
    // optimized evaluation of expression templates. Calling this function explicitly might result
    // in erroneous results and/or in compilation errors.
    */
-   BLAZE_ALWAYS_INLINE void store( size_t index, const IntrinsicType& value )
+   BLAZE_ALWAYS_INLINE void store( size_t index, const IntrinsicType& value ) noexcept
    {
       dv_.store( index, value );
    }
@@ -433,7 +433,7 @@ class DVecTransposer : public DenseVector< DVecTransposer<VT,TF>, TF >
    // optimized evaluation of expression templates. Calling this function explicitly might result
    // in erroneous results and/or in compilation errors.
    */
-   BLAZE_ALWAYS_INLINE void storea( size_t index, const IntrinsicType& value )
+   BLAZE_ALWAYS_INLINE void storea( size_t index, const IntrinsicType& value ) noexcept
    {
       dv_.storea( index, value );
    }
@@ -450,7 +450,7 @@ class DVecTransposer : public DenseVector< DVecTransposer<VT,TF>, TF >
    // optimized evaluation of expression templates. Calling this function explicitly might result
    // in erroneous results and/or in compilation errors.
    */
-   BLAZE_ALWAYS_INLINE void storeu( size_t index, const IntrinsicType& value )
+   BLAZE_ALWAYS_INLINE void storeu( size_t index, const IntrinsicType& value ) noexcept
    {
       dv_.storeu( index, value );
    }
@@ -467,7 +467,7 @@ class DVecTransposer : public DenseVector< DVecTransposer<VT,TF>, TF >
    // optimized evaluation of expression templates. Calling this function explicitly might result
    // in erroneous results and/or in compilation errors.
    */
-   BLAZE_ALWAYS_INLINE void stream( size_t index, const IntrinsicType& value )
+   BLAZE_ALWAYS_INLINE void stream( size_t index, const IntrinsicType& value ) noexcept
    {
       dv_.stream( index, value );
    }

@@ -293,7 +293,7 @@ class SMatTransExpr : public SparseMatrix< SMatTransExpr<MT,SO>, SO >
    //
    // \param sm The sparse matrix operand of the transposition expression.
    */
-   explicit inline SMatTransExpr( const MT& sm )
+   explicit inline SMatTransExpr( const MT& sm ) noexcept
       : sm_( sm )
    {}
    //**********************************************************************************************
@@ -358,7 +358,7 @@ class SMatTransExpr : public SparseMatrix< SMatTransExpr<MT,SO>, SO >
    //
    // \return The number of rows of the matrix.
    */
-   inline size_t rows() const {
+   inline size_t rows() const noexcept {
       return sm_.columns();
    }
    //**********************************************************************************************
@@ -368,7 +368,7 @@ class SMatTransExpr : public SparseMatrix< SMatTransExpr<MT,SO>, SO >
    //
    // \return The number of columns of the matrix.
    */
-   inline size_t columns() const {
+   inline size_t columns() const noexcept {
       return sm_.rows();
    }
    //**********************************************************************************************
@@ -438,7 +438,7 @@ class SMatTransExpr : public SparseMatrix< SMatTransExpr<MT,SO>, SO >
    //
    // \return The sparse matrix operand.
    */
-   inline Operand operand() const {
+   inline Operand operand() const noexcept {
       return sm_;
    }
    //**********************************************************************************************
@@ -450,7 +450,7 @@ class SMatTransExpr : public SparseMatrix< SMatTransExpr<MT,SO>, SO >
    // \return \a true in case the expression can alias, \a false otherwise.
    */
    template< typename T >
-   inline bool canAlias( const T* alias ) const {
+   inline bool canAlias( const T* alias ) const noexcept {
       return sm_.isAliased( alias );
    }
    //**********************************************************************************************
@@ -462,7 +462,7 @@ class SMatTransExpr : public SparseMatrix< SMatTransExpr<MT,SO>, SO >
    // \return \a true in case an alias effect is detected, \a false otherwise.
    */
    template< typename T >
-   inline bool isAliased( const T* alias ) const {
+   inline bool isAliased( const T* alias ) const noexcept {
       return sm_.isAliased( alias );
    }
    //**********************************************************************************************
@@ -472,7 +472,7 @@ class SMatTransExpr : public SparseMatrix< SMatTransExpr<MT,SO>, SO >
    //
    // \return \a true in case the expression can be used in SMP assignments, \a false if not.
    */
-   inline bool canSMPAssign() const {
+   inline bool canSMPAssign() const noexcept {
       return sm_.canSMPAssign();
    }
    //**********************************************************************************************

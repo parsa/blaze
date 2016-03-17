@@ -301,7 +301,7 @@ class DVecScalarDivExpr : public DenseVector< DVecScalarDivExpr<VT,ST,TF>, TF >
       //
       // \return The resulting intrinsic value.
       */
-      inline IntrinsicType load() const {
+      inline IntrinsicType load() const noexcept {
          return iterator_.load() / set( scalar_ );
       }
       //*******************************************************************************************
@@ -445,7 +445,7 @@ class DVecScalarDivExpr : public DenseVector< DVecScalarDivExpr<VT,ST,TF>, TF >
    // \param vector The left-hand side dense vector of the division expression.
    // \param scalar The right-hand side scalar of the division expression.
    */
-   explicit inline DVecScalarDivExpr( const VT& vector, ST scalar )
+   explicit inline DVecScalarDivExpr( const VT& vector, ST scalar ) noexcept
       : vector_( vector )  // Left-hand side dense vector of the division expression
       , scalar_( scalar )  // Right-hand side scalar of the division expression
    {}
@@ -484,7 +484,7 @@ class DVecScalarDivExpr : public DenseVector< DVecScalarDivExpr<VT,ST,TF>, TF >
    // \param index Access index. The index has to be in the range \f$[0..N-1]\f$.
    // \return Reference to the accessed values.
    */
-   BLAZE_ALWAYS_INLINE IntrinsicType load( size_t index ) const {
+   BLAZE_ALWAYS_INLINE IntrinsicType load( size_t index ) const noexcept {
       typedef IntrinsicTrait<ElementType>  IT;
       BLAZE_INTERNAL_ASSERT( index < vector_.size() , "Invalid vector access index" );
       BLAZE_INTERNAL_ASSERT( index % IT::size == 0UL, "Invalid vector access index" );
@@ -517,7 +517,7 @@ class DVecScalarDivExpr : public DenseVector< DVecScalarDivExpr<VT,ST,TF>, TF >
    //
    // \return The size of the vector.
    */
-   inline size_t size() const {
+   inline size_t size() const noexcept {
       return vector_.size();
    }
    //**********************************************************************************************
@@ -527,7 +527,7 @@ class DVecScalarDivExpr : public DenseVector< DVecScalarDivExpr<VT,ST,TF>, TF >
    //
    // \return The left-hand side dense vector operand.
    */
-   inline LeftOperand leftOperand() const {
+   inline LeftOperand leftOperand() const noexcept {
       return vector_;
    }
    //**********************************************************************************************
@@ -537,7 +537,7 @@ class DVecScalarDivExpr : public DenseVector< DVecScalarDivExpr<VT,ST,TF>, TF >
    //
    // \return The right-hand side scalar operand.
    */
-   inline RightOperand rightOperand() const {
+   inline RightOperand rightOperand() const noexcept {
       return scalar_;
    }
    //**********************************************************************************************
@@ -549,7 +549,7 @@ class DVecScalarDivExpr : public DenseVector< DVecScalarDivExpr<VT,ST,TF>, TF >
    // \return \a true in case the expression can alias, \a false otherwise.
    */
    template< typename T >
-   inline bool canAlias( const T* alias ) const {
+   inline bool canAlias( const T* alias ) const noexcept {
       return IsComputation<VT>::value && vector_.canAlias( alias );
    }
    //**********************************************************************************************
@@ -561,7 +561,7 @@ class DVecScalarDivExpr : public DenseVector< DVecScalarDivExpr<VT,ST,TF>, TF >
    // \return \a true in case an alias effect is detected, \a false otherwise.
    */
    template< typename T >
-   inline bool isAliased( const T* alias ) const {
+   inline bool isAliased( const T* alias ) const noexcept {
       return vector_.isAliased( alias );
    }
    //**********************************************************************************************
@@ -571,7 +571,7 @@ class DVecScalarDivExpr : public DenseVector< DVecScalarDivExpr<VT,ST,TF>, TF >
    //
    // \return \a true in case the operands are aligned, \a false if not.
    */
-   inline bool isAligned() const {
+   inline bool isAligned() const noexcept {
       return vector_.isAligned();
    }
    //**********************************************************************************************
@@ -581,7 +581,7 @@ class DVecScalarDivExpr : public DenseVector< DVecScalarDivExpr<VT,ST,TF>, TF >
    //
    // \return \a true in case the expression can be used in SMP assignments, \a false if not.
    */
-   inline bool canSMPAssign() const {
+   inline bool canSMPAssign() const noexcept {
       return vector_.canSMPAssign() || ( size() > SMP_DVECSCALARMULT_THRESHOLD );
    }
    //**********************************************************************************************

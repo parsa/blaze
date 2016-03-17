@@ -296,7 +296,7 @@ class DMatAbsExpr : public DenseMatrix< DMatAbsExpr<MT,SO>, SO >
       //
       // \return The resulting intrinsic value.
       */
-      inline IntrinsicType load() const {
+      inline IntrinsicType load() const noexcept {
          return abs( it_.load() );
       }
       //*******************************************************************************************
@@ -435,7 +435,7 @@ class DMatAbsExpr : public DenseMatrix< DMatAbsExpr<MT,SO>, SO >
    //
    // \param dm The dense matrix operand of the absolute value expression.
    */
-   explicit inline DMatAbsExpr( const MT& dm )
+   explicit inline DMatAbsExpr( const MT& dm ) noexcept
       : dm_( dm )  // Dense matrix of the absolute value expression
    {}
    //**********************************************************************************************
@@ -447,7 +447,7 @@ class DMatAbsExpr : public DenseMatrix< DMatAbsExpr<MT,SO>, SO >
    // \param j Access index for the column. The index has to be in the range \f$[0..N-1]\f$.
    // \return The resulting value.
    */
-   inline ReturnType operator()( size_t i, size_t j ) const {
+   inline ReturnType operator()( size_t i, size_t j ) const noexcept {
       using std::abs;
       BLAZE_INTERNAL_ASSERT( i < dm_.rows()   , "Invalid row access index"    );
       BLAZE_INTERNAL_ASSERT( j < dm_.columns(), "Invalid column access index" );
@@ -481,7 +481,7 @@ class DMatAbsExpr : public DenseMatrix< DMatAbsExpr<MT,SO>, SO >
    // \param j Access index for the column. The index has to be in the range \f$[0..N-1]\f$.
    // \return Reference to the accessed values.
    */
-   BLAZE_ALWAYS_INLINE IntrinsicType load( size_t i, size_t j ) const {
+   BLAZE_ALWAYS_INLINE IntrinsicType load( size_t i, size_t j ) const noexcept {
       typedef IntrinsicTrait<ElementType>  IT;
       BLAZE_INTERNAL_ASSERT( i < dm_.rows()   , "Invalid row access index"    );
       BLAZE_INTERNAL_ASSERT( j < dm_.columns(), "Invalid column access index" );
@@ -518,7 +518,7 @@ class DMatAbsExpr : public DenseMatrix< DMatAbsExpr<MT,SO>, SO >
    //
    // \return The number of rows of the matrix.
    */
-   inline size_t rows() const {
+   inline size_t rows() const noexcept {
       return dm_.rows();
    }
    //**********************************************************************************************
@@ -528,7 +528,7 @@ class DMatAbsExpr : public DenseMatrix< DMatAbsExpr<MT,SO>, SO >
    //
    // \return The number of columns of the matrix.
    */
-   inline size_t columns() const {
+   inline size_t columns() const noexcept {
       return dm_.columns();
    }
    //**********************************************************************************************
@@ -538,7 +538,7 @@ class DMatAbsExpr : public DenseMatrix< DMatAbsExpr<MT,SO>, SO >
    //
    // \return The dense matrix operand.
    */
-   inline Operand operand() const {
+   inline Operand operand() const noexcept {
       return dm_;
    }
    //**********************************************************************************************
@@ -550,7 +550,7 @@ class DMatAbsExpr : public DenseMatrix< DMatAbsExpr<MT,SO>, SO >
    // \return \a true in case the expression can alias, \a false otherwise.
    */
    template< typename T >
-   inline bool canAlias( const T* alias ) const {
+   inline bool canAlias( const T* alias ) const noexcept {
       return IsComputation<MT>::value && dm_.canAlias( alias );
    }
    //**********************************************************************************************
@@ -562,7 +562,7 @@ class DMatAbsExpr : public DenseMatrix< DMatAbsExpr<MT,SO>, SO >
    // \return \a true in case an alias effect is detected, \a false otherwise.
    */
    template< typename T >
-   inline bool isAliased( const T* alias ) const {
+   inline bool isAliased( const T* alias ) const noexcept {
       return dm_.isAliased( alias );
    }
    //**********************************************************************************************
@@ -572,7 +572,7 @@ class DMatAbsExpr : public DenseMatrix< DMatAbsExpr<MT,SO>, SO >
    //
    // \return \a true in case the operands are aligned, \a false if not.
    */
-   inline bool isAligned() const {
+   inline bool isAligned() const noexcept {
       return dm_.isAligned();
    }
    //**********************************************************************************************
@@ -582,7 +582,7 @@ class DMatAbsExpr : public DenseMatrix< DMatAbsExpr<MT,SO>, SO >
    //
    // \return \a true in case the expression can be used in SMP assignments, \a false if not.
    */
-   inline bool canSMPAssign() const {
+   inline bool canSMPAssign() const noexcept {
       return dm_.canSMPAssign();
    }
    //**********************************************************************************************

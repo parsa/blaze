@@ -99,7 +99,7 @@ class SVecTransposer : public SparseVector< SVecTransposer<VT,TF>, TF >
    //
    // \param sv The sparse vector operand.
    */
-   explicit inline SVecTransposer( VT& sv )
+   explicit inline SVecTransposer( VT& sv ) noexcept
       : sv_( sv )  // The sparse vector operand
    {}
    //**********************************************************************************************
@@ -230,7 +230,7 @@ class SVecTransposer : public SparseVector< SVecTransposer<VT,TF>, TF >
    //
    // \return The size of the vector.
    */
-   inline size_t size() const {
+   inline size_t size() const noexcept {
       return sv_.size();
    }
    //**********************************************************************************************
@@ -331,7 +331,7 @@ class SVecTransposer : public SparseVector< SVecTransposer<VT,TF>, TF >
    // \return \a true in case the alias corresponds to this vector, \a false if not.
    */
    template< typename Other >  // Data type of the foreign expression
-   inline bool canAlias( const Other* alias ) const
+   inline bool canAlias( const Other* alias ) const noexcept
    {
       return sv_.canAlias( alias );
    }
@@ -344,7 +344,7 @@ class SVecTransposer : public SparseVector< SVecTransposer<VT,TF>, TF >
    // \return \a true in case the alias corresponds to this vector, \a false if not.
    */
    template< typename Other >  // Data type of the foreign expression
-   inline bool isAliased( const Other* alias ) const
+   inline bool isAliased( const Other* alias ) const noexcept
    {
       return sv_.isAliased( alias );
    }
@@ -355,7 +355,7 @@ class SVecTransposer : public SparseVector< SVecTransposer<VT,TF>, TF >
    //
    // \return \a true in case the vector can be used in SMP assignments, \a false if not.
    */
-   inline bool canSMPAssign() const
+   inline bool canSMPAssign() const noexcept
    {
       return sv_.canSMPAssign();
    }
@@ -429,7 +429,7 @@ class SVecTransposer : public SparseVector< SVecTransposer<VT,TF>, TF >
    // This function calculates a new vector capacity based on the current capacity of the sparse
    // vector. Note that the new capacity is restricted to the interval \f$[7..size]\f$.
    */
-   inline size_t extendCapacity() const
+   inline size_t extendCapacity() const noexcept
    {
       using blaze::max;
       using blaze::min;

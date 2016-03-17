@@ -120,7 +120,7 @@ class DMatTransposer : public DenseMatrix< DMatTransposer<MT,SO>, SO >
    //
    // \param dm The dense matrix operand.
    */
-   explicit inline DMatTransposer( MT& dm )
+   explicit inline DMatTransposer( MT& dm ) noexcept
       : dm_( dm )  // The dense matrix operand
    {}
    //**********************************************************************************************
@@ -196,7 +196,7 @@ class DMatTransposer : public DenseMatrix< DMatTransposer<MT,SO>, SO >
    //
    // \return Pointer to the internal element storage.
    */
-   inline Pointer data() {
+   inline Pointer data() noexcept {
       return dm_.data();
    }
    //**********************************************************************************************
@@ -206,7 +206,7 @@ class DMatTransposer : public DenseMatrix< DMatTransposer<MT,SO>, SO >
    //
    // \return Pointer to the internal element storage.
    */
-   inline ConstPointer data() const {
+   inline ConstPointer data() const noexcept {
       return dm_.data();
    }
    //**********************************************************************************************
@@ -346,7 +346,7 @@ class DMatTransposer : public DenseMatrix< DMatTransposer<MT,SO>, SO >
    //
    // \return The number of rows of the matrix.
    */
-   inline size_t rows() const {
+   inline size_t rows() const noexcept {
       return dm_.columns();
    }
    //**********************************************************************************************
@@ -356,7 +356,7 @@ class DMatTransposer : public DenseMatrix< DMatTransposer<MT,SO>, SO >
    //
    // \return The number of columns of the matrix.
    */
-   inline size_t columns() const {
+   inline size_t columns() const noexcept {
       return dm_.rows();
    }
    //**********************************************************************************************
@@ -366,7 +366,7 @@ class DMatTransposer : public DenseMatrix< DMatTransposer<MT,SO>, SO >
    //
    // \return The spacing between the beginning of two rows.
    */
-   inline size_t spacing() const {
+   inline size_t spacing() const noexcept {
       return dm_.spacing();
    }
    //**********************************************************************************************
@@ -386,7 +386,7 @@ class DMatTransposer : public DenseMatrix< DMatTransposer<MT,SO>, SO >
    //
    // \return \a true in case the matrix's invariants are intact, \a false otherwise.
    */
-   inline bool isIntact() const {
+   inline bool isIntact() const noexcept {
       using blaze::isIntact;
       return isIntact( dm_ );
    }
@@ -399,7 +399,7 @@ class DMatTransposer : public DenseMatrix< DMatTransposer<MT,SO>, SO >
    // \return \a true in case the alias corresponds to this matrix, \a false if not.
    */
    template< typename Other >  // Data type of the foreign expression
-   inline bool canAlias( const Other* alias ) const
+   inline bool canAlias( const Other* alias ) const noexcept
    {
       return dm_.canAlias( alias );
    }
@@ -412,7 +412,7 @@ class DMatTransposer : public DenseMatrix< DMatTransposer<MT,SO>, SO >
    // \return \a true in case the alias corresponds to this matrix, \a false if not.
    */
    template< typename Other >  // Data type of the foreign expression
-   inline bool isAliased( const Other* alias ) const
+   inline bool isAliased( const Other* alias ) const noexcept
    {
       return dm_.isAliased( alias );
    }
@@ -423,7 +423,7 @@ class DMatTransposer : public DenseMatrix< DMatTransposer<MT,SO>, SO >
    //
    // \return \a true in case the matrix is aligned, \a false if not.
    */
-   inline bool isAligned() const
+   inline bool isAligned() const noexcept
    {
       return dm_.isAligned();
    }
@@ -434,7 +434,7 @@ class DMatTransposer : public DenseMatrix< DMatTransposer<MT,SO>, SO >
    //
    // \return \a true in case the matrix can be used in SMP assignments, \a false if not.
    */
-   inline bool canSMPAssign() const
+   inline bool canSMPAssign() const noexcept
    {
       return dm_.canSMPAssign();
    }
@@ -451,7 +451,7 @@ class DMatTransposer : public DenseMatrix< DMatTransposer<MT,SO>, SO >
    // optimized evaluation of expression templates. Calling this function explicitly might result
    // in erroneous results and/or in compilation errors.
    */
-   BLAZE_ALWAYS_INLINE IntrinsicType load( size_t i, size_t j ) const
+   BLAZE_ALWAYS_INLINE IntrinsicType load( size_t i, size_t j ) const noexcept
    {
       return dm_.load( j, i );
    }
@@ -468,7 +468,7 @@ class DMatTransposer : public DenseMatrix< DMatTransposer<MT,SO>, SO >
    // optimized evaluation of expression templates. Calling this function explicitly might result
    // in erroneous results and/or in compilation errors.
    */
-   BLAZE_ALWAYS_INLINE IntrinsicType loada( size_t i, size_t j ) const
+   BLAZE_ALWAYS_INLINE IntrinsicType loada( size_t i, size_t j ) const noexcept
    {
       return dm_.loada( j, i );
    }
@@ -485,7 +485,7 @@ class DMatTransposer : public DenseMatrix< DMatTransposer<MT,SO>, SO >
    // optimized evaluation of expression templates. Calling this function explicitly might result
    // in erroneous results and/or in compilation errors.
    */
-   BLAZE_ALWAYS_INLINE IntrinsicType loadu( size_t i, size_t j ) const
+   BLAZE_ALWAYS_INLINE IntrinsicType loadu( size_t i, size_t j ) const noexcept
    {
       return dm_.loadu( j, i );
    }
@@ -503,7 +503,7 @@ class DMatTransposer : public DenseMatrix< DMatTransposer<MT,SO>, SO >
    // optimized evaluation of expression templates. Calling this function explicitly might result
    // in erroneous results and/or in compilation errors.
    */
-   BLAZE_ALWAYS_INLINE void store( size_t i, size_t j, const IntrinsicType& value )
+   BLAZE_ALWAYS_INLINE void store( size_t i, size_t j, const IntrinsicType& value ) noexcept
    {
       dm_.store( j, i, value );
    }
@@ -521,7 +521,7 @@ class DMatTransposer : public DenseMatrix< DMatTransposer<MT,SO>, SO >
    // optimized evaluation of expression templates. Calling this function explicitly might result
    // in erroneous results and/or in compilation errors.
    */
-   BLAZE_ALWAYS_INLINE void storea( size_t i, size_t j, const IntrinsicType& value )
+   BLAZE_ALWAYS_INLINE void storea( size_t i, size_t j, const IntrinsicType& value ) noexcept
    {
       dm_.storea( j, i, value );
    }
@@ -539,7 +539,7 @@ class DMatTransposer : public DenseMatrix< DMatTransposer<MT,SO>, SO >
    // optimized evaluation of expression templates. Calling this function explicitly might result
    // in erroneous results and/or in compilation errors.
    */
-   BLAZE_ALWAYS_INLINE void storeu( size_t i, size_t j, const IntrinsicType& value )
+   BLAZE_ALWAYS_INLINE void storeu( size_t i, size_t j, const IntrinsicType& value ) noexcept
    {
       dm_.storeu( j, i, value );
    }
@@ -557,7 +557,7 @@ class DMatTransposer : public DenseMatrix< DMatTransposer<MT,SO>, SO >
    // optimized evaluation of expression templates. Calling this function explicitly might result
    // in erroneous results and/or in compilation errors.
    */
-   BLAZE_ALWAYS_INLINE void stream( size_t i, size_t j, const IntrinsicType& value )
+   BLAZE_ALWAYS_INLINE void stream( size_t i, size_t j, const IntrinsicType& value ) noexcept
    {
       dm_.stream( j, i, value );
    }
@@ -1034,7 +1034,7 @@ class DMatTransposer<MT,true> : public DenseMatrix< DMatTransposer<MT,true>, tru
    //
    // \param dm The dense matrix operand.
    */
-   explicit inline DMatTransposer( MT& dm )
+   explicit inline DMatTransposer( MT& dm ) noexcept
       : dm_( dm )  // The dense matrix operand
    {}
    //**********************************************************************************************
@@ -1110,7 +1110,7 @@ class DMatTransposer<MT,true> : public DenseMatrix< DMatTransposer<MT,true>, tru
    //
    // \return Pointer to the internal element storage.
    */
-   inline Pointer data() {
+   inline Pointer data() noexcept {
       return dm_.data();
    }
    //**********************************************************************************************
@@ -1120,7 +1120,7 @@ class DMatTransposer<MT,true> : public DenseMatrix< DMatTransposer<MT,true>, tru
    //
    // \return Pointer to the internal element storage.
    */
-   inline ConstPointer data() const {
+   inline ConstPointer data() const noexcept {
       return dm_.data();
    }
    //**********************************************************************************************
@@ -1230,7 +1230,7 @@ class DMatTransposer<MT,true> : public DenseMatrix< DMatTransposer<MT,true>, tru
    //
    // \return The number of rows of the matrix.
    */
-   inline size_t rows() const {
+   inline size_t rows() const noexcept {
       return dm_.columns();
    }
    //**********************************************************************************************
@@ -1240,7 +1240,7 @@ class DMatTransposer<MT,true> : public DenseMatrix< DMatTransposer<MT,true>, tru
    //
    // \return The number of columns of the matrix.
    */
-   inline size_t columns() const {
+   inline size_t columns() const noexcept {
       return dm_.rows();
    }
    //**********************************************************************************************
@@ -1250,7 +1250,7 @@ class DMatTransposer<MT,true> : public DenseMatrix< DMatTransposer<MT,true>, tru
    //
    // \return The spacing between the beginning of two columns.
    */
-   inline size_t spacing() const {
+   inline size_t spacing() const noexcept {
       return dm_.spacing();
    }
    //**********************************************************************************************
@@ -1270,7 +1270,7 @@ class DMatTransposer<MT,true> : public DenseMatrix< DMatTransposer<MT,true>, tru
    //
    // \return \a true in case the matrix's invariants are intact, \a false otherwise.
    */
-   inline bool isIntact() const {
+   inline bool isIntact() const noexcept {
       using blaze::isIntact;
       return isIntact( dm_ );
    }
@@ -1283,7 +1283,7 @@ class DMatTransposer<MT,true> : public DenseMatrix< DMatTransposer<MT,true>, tru
    // \return \a true in case the alias corresponds to this matrix, \a false if not.
    */
    template< typename Other >  // Data type of the foreign expression
-   inline bool canAlias( const Other* alias ) const
+   inline bool canAlias( const Other* alias ) const noexcept
    {
       return dm_.canAlias( alias );
    }
@@ -1296,7 +1296,7 @@ class DMatTransposer<MT,true> : public DenseMatrix< DMatTransposer<MT,true>, tru
    // \return \a true in case the alias corresponds to this matrix, \a false if not.
    */
    template< typename Other >  // Data type of the foreign expression
-   inline bool isAliased( const Other* alias ) const
+   inline bool isAliased( const Other* alias ) const noexcept
    {
       return dm_.isAliased( alias );
    }
@@ -1307,7 +1307,7 @@ class DMatTransposer<MT,true> : public DenseMatrix< DMatTransposer<MT,true>, tru
    //
    // \return \a true in case the matrix is aligned, \a false if not.
    */
-   inline bool isAligned() const
+   inline bool isAligned() const noexcept
    {
       return dm_.isAligned();
    }
@@ -1318,7 +1318,7 @@ class DMatTransposer<MT,true> : public DenseMatrix< DMatTransposer<MT,true>, tru
    //
    // \return \a true in case the matrix can be used in SMP assignments, \a false if not.
    */
-   inline bool canSMPAssign() const
+   inline bool canSMPAssign() const noexcept
    {
       return dm_.canSMPAssign();
    }
@@ -1335,7 +1335,7 @@ class DMatTransposer<MT,true> : public DenseMatrix< DMatTransposer<MT,true>, tru
    // optimized evaluation of expression templates. Calling this function explicitly might result
    // in erroneous results and/or in compilation errors.
    */
-   BLAZE_ALWAYS_INLINE IntrinsicType load( size_t i, size_t j ) const
+   BLAZE_ALWAYS_INLINE IntrinsicType load( size_t i, size_t j ) const noexcept
    {
       return dm_.load( j, i );
    }
@@ -1352,7 +1352,7 @@ class DMatTransposer<MT,true> : public DenseMatrix< DMatTransposer<MT,true>, tru
    // optimized evaluation of expression templates. Calling this function explicitly might result
    // in erroneous results and/or in compilation errors.
    */
-   BLAZE_ALWAYS_INLINE IntrinsicType loada( size_t i, size_t j ) const
+   BLAZE_ALWAYS_INLINE IntrinsicType loada( size_t i, size_t j ) const noexcept
    {
       return dm_.loada( j, i );
    }
@@ -1369,7 +1369,7 @@ class DMatTransposer<MT,true> : public DenseMatrix< DMatTransposer<MT,true>, tru
    // optimized evaluation of expression templates. Calling this function explicitly might result
    // in erroneous results and/or in compilation errors.
    */
-   BLAZE_ALWAYS_INLINE IntrinsicType loadu( size_t i, size_t j ) const
+   BLAZE_ALWAYS_INLINE IntrinsicType loadu( size_t i, size_t j ) const noexcept
    {
       return dm_.loadu( j, i );
    }
@@ -1387,7 +1387,7 @@ class DMatTransposer<MT,true> : public DenseMatrix< DMatTransposer<MT,true>, tru
    // optimized evaluation of expression templates. Calling this function explicitly might result
    // in erroneous results and/or in compilation errors.
    */
-   BLAZE_ALWAYS_INLINE void store( size_t i, size_t j, const IntrinsicType& value )
+   BLAZE_ALWAYS_INLINE void store( size_t i, size_t j, const IntrinsicType& value ) noexcept
    {
       dm_.store( j, i, value );
    }
@@ -1405,7 +1405,7 @@ class DMatTransposer<MT,true> : public DenseMatrix< DMatTransposer<MT,true>, tru
    // optimized evaluation of expression templates. Calling this function explicitly might result
    // in erroneous results and/or in compilation errors.
    */
-   BLAZE_ALWAYS_INLINE void storea( size_t i, size_t j, const IntrinsicType& value )
+   BLAZE_ALWAYS_INLINE void storea( size_t i, size_t j, const IntrinsicType& value ) noexcept
    {
       dm_.storea( j, i, value );
    }
@@ -1423,7 +1423,7 @@ class DMatTransposer<MT,true> : public DenseMatrix< DMatTransposer<MT,true>, tru
    // optimized evaluation of expression templates. Calling this function explicitly might result
    // in erroneous results and/or in compilation errors.
    */
-   BLAZE_ALWAYS_INLINE void storeu( size_t i, size_t j, const IntrinsicType& value )
+   BLAZE_ALWAYS_INLINE void storeu( size_t i, size_t j, const IntrinsicType& value ) noexcept
    {
       dm_.storeu( j, i, value );
    }
@@ -1441,7 +1441,7 @@ class DMatTransposer<MT,true> : public DenseMatrix< DMatTransposer<MT,true>, tru
    // optimized evaluation of expression templates. Calling this function explicitly might result
    // in erroneous results and/or in compilation errors.
    */
-   BLAZE_ALWAYS_INLINE void stream( size_t i, size_t j, const IntrinsicType& value )
+   BLAZE_ALWAYS_INLINE void stream( size_t i, size_t j, const IntrinsicType& value ) noexcept
    {
       dm_.stream( j, i, value );
    }
@@ -1892,7 +1892,7 @@ inline void reset( DMatTransposer<MT,SO>& m )
 */
 template< typename MT  // Type of the dense matrix
         , bool SO >    // Storage order
-inline bool isIntact( const DMatTransposer<MT,SO>& m )
+inline bool isIntact( const DMatTransposer<MT,SO>& m ) noexcept
 {
    return m.isIntact();
 }

@@ -177,7 +177,7 @@ class DMatSMatAddExpr : public DenseMatrix< DMatSMatAddExpr<MT1,MT2,SO>, SO >
    // \param lhs The left-hand side dense matrix operand of the addition expression.
    // \param rhs The right-hand side sparse matrix operand of the addition expression.
    */
-   explicit inline DMatSMatAddExpr( const MT1& lhs, const MT2& rhs )
+   explicit inline DMatSMatAddExpr( const MT1& lhs, const MT2& rhs ) noexcept
       : lhs_( lhs )  // Left-hand side dense matrix of the addition expression
       , rhs_( rhs )  // Right-hand side sparse matrix of the addition expression
    {
@@ -224,7 +224,7 @@ class DMatSMatAddExpr : public DenseMatrix< DMatSMatAddExpr<MT1,MT2,SO>, SO >
    //
    // \return The number of rows of the matrix.
    */
-   inline size_t rows() const {
+   inline size_t rows() const noexcept {
       return lhs_.rows();
    }
    //**********************************************************************************************
@@ -234,7 +234,7 @@ class DMatSMatAddExpr : public DenseMatrix< DMatSMatAddExpr<MT1,MT2,SO>, SO >
    //
    // \return The number of columns of the matrix.
    */
-   inline size_t columns() const {
+   inline size_t columns() const noexcept {
       return lhs_.columns();
    }
    //**********************************************************************************************
@@ -254,7 +254,7 @@ class DMatSMatAddExpr : public DenseMatrix< DMatSMatAddExpr<MT1,MT2,SO>, SO >
    //
    // \return The right-hand side sparse matrix operand.
    */
-   inline RightOperand rightOperand() const {
+   inline RightOperand rightOperand() const noexcept {
       return rhs_;
    }
    //**********************************************************************************************
@@ -266,7 +266,7 @@ class DMatSMatAddExpr : public DenseMatrix< DMatSMatAddExpr<MT1,MT2,SO>, SO >
    // \return \a true in case the expression can alias, \a false otherwise.
    */
    template< typename T >
-   inline bool canAlias( const T* alias ) const {
+   inline bool canAlias( const T* alias ) const noexcept {
       return ( IsExpression<MT1>::value && lhs_.canAlias( alias ) ) ||
              ( rhs_.canAlias( alias ) );
    }
@@ -279,7 +279,7 @@ class DMatSMatAddExpr : public DenseMatrix< DMatSMatAddExpr<MT1,MT2,SO>, SO >
    // \return \a true in case an alias effect is detected, \a false otherwise.
    */
    template< typename T >
-   inline bool isAliased( const T* alias ) const {
+   inline bool isAliased( const T* alias ) const noexcept {
       return ( lhs_.isAliased( alias ) || rhs_.isAliased( alias ) );
    }
    //**********************************************************************************************

@@ -327,7 +327,7 @@ class SMatScalarDivExpr : public SparseMatrix< SMatScalarDivExpr<MT,ST,SO>, SO >
    // \param matrix The left-hand side sparse matrix of the division expression.
    // \param scalar The right-hand side scalar of the division expression.
    */
-   explicit inline SMatScalarDivExpr( const MT& matrix, ST scalar )
+   explicit inline SMatScalarDivExpr( const MT& matrix, ST scalar ) noexcept
       : matrix_( matrix )  // Left-hand side sparse matrix of the division expression
       , scalar_( scalar )  // Right-hand side scalar of the division expression
    {}
@@ -393,7 +393,7 @@ class SMatScalarDivExpr : public SparseMatrix< SMatScalarDivExpr<MT,ST,SO>, SO >
    //
    // \return The number of rows of the matrix.
    */
-   inline size_t rows() const {
+   inline size_t rows() const noexcept {
       return matrix_.rows();
    }
    //**********************************************************************************************
@@ -403,7 +403,7 @@ class SMatScalarDivExpr : public SparseMatrix< SMatScalarDivExpr<MT,ST,SO>, SO >
    //
    // \return The number of columns of the matrix.
    */
-   inline size_t columns() const {
+   inline size_t columns() const noexcept {
       return matrix_.columns();
    }
    //**********************************************************************************************
@@ -473,7 +473,7 @@ class SMatScalarDivExpr : public SparseMatrix< SMatScalarDivExpr<MT,ST,SO>, SO >
    //
    // \return The left-hand side sparse matrix operand.
    */
-   inline LeftOperand leftOperand() const {
+   inline LeftOperand leftOperand() const noexcept {
       return matrix_;
    }
    //**********************************************************************************************
@@ -483,7 +483,7 @@ class SMatScalarDivExpr : public SparseMatrix< SMatScalarDivExpr<MT,ST,SO>, SO >
    //
    // \return The right-hand side scalar operand.
    */
-   inline RightOperand rightOperand() const {
+   inline RightOperand rightOperand() const noexcept {
       return scalar_;
    }
    //**********************************************************************************************
@@ -495,7 +495,7 @@ class SMatScalarDivExpr : public SparseMatrix< SMatScalarDivExpr<MT,ST,SO>, SO >
    // \return \a true in case the expression can alias, \a false otherwise.
    */
    template< typename T >
-   inline bool canAlias( const T* alias ) const {
+   inline bool canAlias( const T* alias ) const noexcept {
       return matrix_.canAlias( alias );
    }
    //**********************************************************************************************
@@ -507,7 +507,7 @@ class SMatScalarDivExpr : public SparseMatrix< SMatScalarDivExpr<MT,ST,SO>, SO >
    // \return \a true in case an alias effect is detected, \a false otherwise.
    */
    template< typename T >
-   inline bool isAliased( const T* alias ) const {
+   inline bool isAliased( const T* alias ) const noexcept {
       return matrix_.isAliased( alias );
    }
    //**********************************************************************************************

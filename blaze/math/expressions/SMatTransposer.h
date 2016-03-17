@@ -100,7 +100,7 @@ class SMatTransposer : public SparseMatrix< SMatTransposer<MT,SO>, SO >
    //
    // \param sm The sparse matrix operand.
    */
-   explicit inline SMatTransposer( MT& sm )
+   explicit inline SMatTransposer( MT& sm ) noexcept
       : sm_( sm )  // The sparse matrix operand
    {}
    //**********************************************************************************************
@@ -273,7 +273,7 @@ class SMatTransposer : public SparseMatrix< SMatTransposer<MT,SO>, SO >
    //
    // \return The number of rows of the matrix.
    */
-   inline size_t rows() const {
+   inline size_t rows() const noexcept {
       return sm_.columns();
    }
    //**********************************************************************************************
@@ -283,7 +283,7 @@ class SMatTransposer : public SparseMatrix< SMatTransposer<MT,SO>, SO >
    //
    // \return The number of columns of the matrix.
    */
-   inline size_t columns() const {
+   inline size_t columns() const noexcept {
       return sm_.rows();
    }
    //**********************************************************************************************
@@ -293,7 +293,7 @@ class SMatTransposer : public SparseMatrix< SMatTransposer<MT,SO>, SO >
    //
    // \return The capacity of the matrix.
    */
-   inline size_t capacity() const {
+   inline size_t capacity() const noexcept {
       return sm_.capacity();
    }
    //**********************************************************************************************
@@ -304,7 +304,7 @@ class SMatTransposer : public SparseMatrix< SMatTransposer<MT,SO>, SO >
    // \param i The index of the row/column.
    // \return The current capacity of row/column \a i.
    */
-   inline size_t capacity( size_t i ) const {
+   inline size_t capacity( size_t i ) const noexcept {
       return sm_.capacity( i );
    }
    //**********************************************************************************************
@@ -447,7 +447,7 @@ class SMatTransposer : public SparseMatrix< SMatTransposer<MT,SO>, SO >
    //
    // \return \a true in case the matrix's invariants are intact, \a false otherwise.
    */
-   inline bool isIntact() const {
+   inline bool isIntact() const noexcept {
       return isIntact( sm_ );
    }
    //**********************************************************************************************
@@ -459,7 +459,7 @@ class SMatTransposer : public SparseMatrix< SMatTransposer<MT,SO>, SO >
    // \return \a true in case the alias corresponds to this matrix, \a false if not.
    */
    template< typename Other >  // Data type of the foreign expression
-   inline bool canAlias( const Other* alias ) const
+   inline bool canAlias( const Other* alias ) const noexcept
    {
       return sm_.canAlias( alias );
    }
@@ -472,7 +472,7 @@ class SMatTransposer : public SparseMatrix< SMatTransposer<MT,SO>, SO >
    // \return \a true in case the alias corresponds to this matrix, \a false if not.
    */
    template< typename Other >  // Data type of the foreign expression
-   inline bool isAliased( const Other* alias ) const
+   inline bool isAliased( const Other* alias ) const noexcept
    {
       return sm_.isAliased( alias );
    }
@@ -483,7 +483,7 @@ class SMatTransposer : public SparseMatrix< SMatTransposer<MT,SO>, SO >
    //
    // \return \a true in case the matrix can be used in SMP assignments, \a false if not.
    */
-   inline bool canSMPAssign() const
+   inline bool canSMPAssign() const noexcept
    {
       return sm_.canSMPAssign();
    }
@@ -630,7 +630,7 @@ class SMatTransposer<MT,true> : public SparseMatrix< SMatTransposer<MT,true>, tr
    //
    // \param sm The sparse matrix operand.
    */
-   explicit inline SMatTransposer( MT& sm )
+   explicit inline SMatTransposer( MT& sm ) noexcept
       : sm_( sm )  // The sparse matrix operand
    {}
    //**********************************************************************************************
@@ -773,7 +773,7 @@ class SMatTransposer<MT,true> : public SparseMatrix< SMatTransposer<MT,true>, tr
    //
    // \return The number of rows of the matrix.
    */
-   inline size_t rows() const {
+   inline size_t rows() const noexcept {
       return sm_.columns();
    }
    //**********************************************************************************************
@@ -783,7 +783,7 @@ class SMatTransposer<MT,true> : public SparseMatrix< SMatTransposer<MT,true>, tr
    //
    // \return The number of columns of the matrix.
    */
-   inline size_t columns() const {
+   inline size_t columns() const noexcept {
       return sm_.rows();
    }
    //**********************************************************************************************
@@ -793,7 +793,7 @@ class SMatTransposer<MT,true> : public SparseMatrix< SMatTransposer<MT,true>, tr
    //
    // \return The capacity of the matrix.
    */
-   inline size_t capacity() const {
+   inline size_t capacity() const noexcept {
       return sm_.capacity();
    }
    //**********************************************************************************************
@@ -804,7 +804,7 @@ class SMatTransposer<MT,true> : public SparseMatrix< SMatTransposer<MT,true>, tr
    // \param j The index of the column.
    // \return The current capacity of column \a j.
    */
-   inline size_t capacity( size_t j ) const {
+   inline size_t capacity( size_t j ) const noexcept {
       return sm_.capacity( j );
    }
    //**********************************************************************************************
@@ -944,7 +944,7 @@ class SMatTransposer<MT,true> : public SparseMatrix< SMatTransposer<MT,true>, tr
    //
    // \return \a true in case the matrix's invariants are intact, \a false otherwise.
    */
-   inline bool isIntact() const {
+   inline bool isIntact() const noexcept {
       return isIntact( sm_ );
    }
    //**********************************************************************************************
@@ -956,7 +956,7 @@ class SMatTransposer<MT,true> : public SparseMatrix< SMatTransposer<MT,true>, tr
    // \return \a true in case the alias corresponds to this matrix, \a false if not.
    */
    template< typename Other >  // Data type of the foreign expression
-   inline bool canAlias( const Other* alias ) const
+   inline bool canAlias( const Other* alias ) const noexcept
    {
       return sm_.canAlias( alias );
    }
@@ -969,7 +969,7 @@ class SMatTransposer<MT,true> : public SparseMatrix< SMatTransposer<MT,true>, tr
    // \return \a true in case the alias corresponds to this matrix, \a false if not.
    */
    template< typename Other >  // Data type of the foreign expression
-   inline bool isAliased( const Other* alias ) const
+   inline bool isAliased( const Other* alias ) const noexcept
    {
       return sm_.isAliased( alias );
    }
@@ -980,7 +980,7 @@ class SMatTransposer<MT,true> : public SparseMatrix< SMatTransposer<MT,true>, tr
    //
    // \return \a true in case the matrix can be used in SMP assignments, \a false if not.
    */
-   inline bool canSMPAssign() const
+   inline bool canSMPAssign() const noexcept
    {
       return sm_.canSMPAssign();
    }
@@ -1117,7 +1117,7 @@ inline void reset( SMatTransposer<MT,SO>& m )
 */
 template< typename MT  // Type of the sparse matrix
         , bool SO >    // Storage order
-inline bool isIntact( const SMatTransposer<MT,SO>& m )
+inline bool isIntact( const SMatTransposer<MT,SO>& m ) noexcept
 {
    return m.isIntact();
 }

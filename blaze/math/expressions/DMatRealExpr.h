@@ -425,7 +425,7 @@ class DMatRealExpr : public DenseMatrix< DMatRealExpr<MT,SO>, SO >
    //
    // \param dm The dense matrix operand of the real part expression.
    */
-   explicit inline DMatRealExpr( const MT& dm )
+   explicit inline DMatRealExpr( const MT& dm ) noexcept
       : dm_( dm )  // Dense matrix of the real part expression
    {}
    //**********************************************************************************************
@@ -490,7 +490,7 @@ class DMatRealExpr : public DenseMatrix< DMatRealExpr<MT,SO>, SO >
    //
    // \return The number of rows of the matrix.
    */
-   inline size_t rows() const {
+   inline size_t rows() const noexcept {
       return dm_.rows();
    }
    //**********************************************************************************************
@@ -500,7 +500,7 @@ class DMatRealExpr : public DenseMatrix< DMatRealExpr<MT,SO>, SO >
    //
    // \return The number of columns of the matrix.
    */
-   inline size_t columns() const {
+   inline size_t columns() const noexcept {
       return dm_.columns();
    }
    //**********************************************************************************************
@@ -510,7 +510,7 @@ class DMatRealExpr : public DenseMatrix< DMatRealExpr<MT,SO>, SO >
    //
    // \return The dense matrix operand.
    */
-   inline Operand operand() const {
+   inline Operand operand() const noexcept {
       return dm_;
    }
    //**********************************************************************************************
@@ -522,7 +522,7 @@ class DMatRealExpr : public DenseMatrix< DMatRealExpr<MT,SO>, SO >
    // \return \a true in case the expression can alias, \a false otherwise.
    */
    template< typename T >
-   inline bool canAlias( const T* alias ) const {
+   inline bool canAlias( const T* alias ) const noexcept {
       return IsComputation<MT>::value && dm_.canAlias( alias );
    }
    //**********************************************************************************************
@@ -534,7 +534,7 @@ class DMatRealExpr : public DenseMatrix< DMatRealExpr<MT,SO>, SO >
    // \return \a true in case an alias effect is detected, \a false otherwise.
    */
    template< typename T >
-   inline bool isAliased( const T* alias ) const {
+   inline bool isAliased( const T* alias ) const noexcept {
       return dm_.isAliased( alias );
    }
    //**********************************************************************************************
@@ -544,7 +544,7 @@ class DMatRealExpr : public DenseMatrix< DMatRealExpr<MT,SO>, SO >
    //
    // \return \a true in case the operands are aligned, \a false if not.
    */
-   inline bool isAligned() const {
+   inline bool isAligned() const noexcept {
       return dm_.isAligned();
    }
    //**********************************************************************************************
@@ -554,7 +554,7 @@ class DMatRealExpr : public DenseMatrix< DMatRealExpr<MT,SO>, SO >
    //
    // \return \a true in case the expression can be used in SMP assignments, \a false if not.
    */
-   inline bool canSMPAssign() const {
+   inline bool canSMPAssign() const noexcept {
       return dm_.canSMPAssign();
    }
    //**********************************************************************************************

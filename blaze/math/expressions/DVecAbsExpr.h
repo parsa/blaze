@@ -284,7 +284,7 @@ class DVecAbsExpr : public DenseVector< DVecAbsExpr<VT,TF>, TF >
       //
       // \return The resulting intrinsic value.
       */
-      inline IntrinsicType load() const {
+      inline IntrinsicType load() const noexcept {
          return abs( it_.load() );
       }
       //*******************************************************************************************
@@ -423,7 +423,7 @@ class DVecAbsExpr : public DenseVector< DVecAbsExpr<VT,TF>, TF >
    //
    // \param dv The dense vector operand of the absolute value expression.
    */
-   explicit inline DVecAbsExpr( const VT& dv )
+   explicit inline DVecAbsExpr( const VT& dv ) noexcept
       : dv_( dv )  // Dense vector of the absolute value expression
    {}
    //**********************************************************************************************
@@ -462,7 +462,7 @@ class DVecAbsExpr : public DenseVector< DVecAbsExpr<VT,TF>, TF >
    // \param index Access index. The index has to be in the range \f$[0..N-1]\f$.
    // \return Reference to the accessed values.
    */
-   BLAZE_ALWAYS_INLINE IntrinsicType load( size_t index ) const {
+   BLAZE_ALWAYS_INLINE IntrinsicType load( size_t index ) const noexcept {
       typedef IntrinsicTrait<ElementType>  IT;
       BLAZE_INTERNAL_ASSERT( index < dv_.size()     , "Invalid vector access index" );
       BLAZE_INTERNAL_ASSERT( index % IT::size == 0UL, "Invalid vector access index" );
@@ -495,7 +495,7 @@ class DVecAbsExpr : public DenseVector< DVecAbsExpr<VT,TF>, TF >
    //
    // \return The size of the vector.
    */
-   inline size_t size() const {
+   inline size_t size() const noexcept {
       return dv_.size();
    }
    //**********************************************************************************************
@@ -505,7 +505,7 @@ class DVecAbsExpr : public DenseVector< DVecAbsExpr<VT,TF>, TF >
    //
    // \return The dense vector operand.
    */
-   inline Operand operand() const {
+   inline Operand operand() const noexcept {
       return dv_;
    }
    //**********************************************************************************************
@@ -517,7 +517,7 @@ class DVecAbsExpr : public DenseVector< DVecAbsExpr<VT,TF>, TF >
    // \return \a true in case the expression can alias, \a false otherwise.
    */
    template< typename T >
-   inline bool canAlias( const T* alias ) const {
+   inline bool canAlias( const T* alias ) const noexcept {
       return IsComputation<VT>::value && dv_.canAlias( alias );
    }
    //**********************************************************************************************
@@ -529,7 +529,7 @@ class DVecAbsExpr : public DenseVector< DVecAbsExpr<VT,TF>, TF >
    // \return \a true in case an alias effect is detected, \a false otherwise.
    */
    template< typename T >
-   inline bool isAliased( const T* alias ) const {
+   inline bool isAliased( const T* alias ) const noexcept {
       return dv_.isAliased( alias );
    }
    //**********************************************************************************************
@@ -539,7 +539,7 @@ class DVecAbsExpr : public DenseVector< DVecAbsExpr<VT,TF>, TF >
    //
    // \return \a true in case the operands are aligned, \a false if not.
    */
-   inline bool isAligned() const {
+   inline bool isAligned() const noexcept {
       return dv_.isAligned();
    }
    //**********************************************************************************************
@@ -549,7 +549,7 @@ class DVecAbsExpr : public DenseVector< DVecAbsExpr<VT,TF>, TF >
    //
    // \return \a true in case the expression can be used in SMP assignments, \a false if not.
    */
-   inline bool canSMPAssign() const {
+   inline bool canSMPAssign() const noexcept {
       return dv_.canSMPAssign();
    }
    //**********************************************************************************************

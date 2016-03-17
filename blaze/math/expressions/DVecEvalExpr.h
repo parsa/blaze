@@ -116,7 +116,7 @@ class DVecEvalExpr : public DenseVector< DVecEvalExpr<VT,TF>, TF >
    //
    // \param dv The dense vector operand of the evaluation expression.
    */
-   explicit inline DVecEvalExpr( const VT& dv )
+   explicit inline DVecEvalExpr( const VT& dv ) noexcept
       : dv_( dv )  // Dense vector of the evaluation expression
    {}
    //**********************************************************************************************
@@ -153,7 +153,7 @@ class DVecEvalExpr : public DenseVector< DVecEvalExpr<VT,TF>, TF >
    //
    // \return The size of the vector.
    */
-   inline size_t size() const {
+   inline size_t size() const noexcept {
       return dv_.size();
    }
    //**********************************************************************************************
@@ -163,7 +163,7 @@ class DVecEvalExpr : public DenseVector< DVecEvalExpr<VT,TF>, TF >
    //
    // \return The dense vector operand.
    */
-   inline Operand operand() const {
+   inline Operand operand() const noexcept {
       return dv_;
    }
    //**********************************************************************************************
@@ -175,7 +175,7 @@ class DVecEvalExpr : public DenseVector< DVecEvalExpr<VT,TF>, TF >
    // \return \a true in case the expression can alias, \a false otherwise.
    */
    template< typename T >
-   inline bool canAlias( const T* alias ) const {
+   inline bool canAlias( const T* alias ) const noexcept {
       return dv_.canAlias( alias );
    }
    //**********************************************************************************************
@@ -187,7 +187,7 @@ class DVecEvalExpr : public DenseVector< DVecEvalExpr<VT,TF>, TF >
    // \return \a true in case an alias effect is detected, \a false otherwise.
    */
    template< typename T >
-   inline bool isAliased( const T* alias ) const {
+   inline bool isAliased( const T* alias ) const noexcept {
       return dv_.isAliased( alias );
    }
    //**********************************************************************************************
@@ -197,7 +197,7 @@ class DVecEvalExpr : public DenseVector< DVecEvalExpr<VT,TF>, TF >
    //
    // \return \a true in case the operands are aligned, \a false if not.
    */
-   inline bool isAligned() const {
+   inline bool isAligned() const noexcept {
       return dv_.isAligned();
    }
    //**********************************************************************************************
@@ -207,7 +207,7 @@ class DVecEvalExpr : public DenseVector< DVecEvalExpr<VT,TF>, TF >
    //
    // \return \a true in case the expression can be used in SMP assignments, \a false if not.
    */
-   inline bool canSMPAssign() const {
+   inline bool canSMPAssign() const noexcept {
       return dv_.canSMPAssign();
    }
    //**********************************************************************************************

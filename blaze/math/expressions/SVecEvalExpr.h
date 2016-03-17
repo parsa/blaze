@@ -112,7 +112,7 @@ class SVecEvalExpr : public SparseVector< SVecEvalExpr<VT,TF>, TF >
    //
    // \param sv The sparse vector operand of the evaluation expression.
    */
-   explicit inline SVecEvalExpr( const VT& sv )
+   explicit inline SVecEvalExpr( const VT& sv ) noexcept
       : sv_( sv )  // Sparse vector of the evaluation expression
    {}
    //**********************************************************************************************
@@ -149,7 +149,7 @@ class SVecEvalExpr : public SparseVector< SVecEvalExpr<VT,TF>, TF >
    //
    // \return The size of the vector.
    */
-   inline size_t size() const {
+   inline size_t size() const noexcept {
       return sv_.size();
    }
    //**********************************************************************************************
@@ -169,7 +169,7 @@ class SVecEvalExpr : public SparseVector< SVecEvalExpr<VT,TF>, TF >
    //
    // \return The sparse vector operand.
    */
-   inline Operand operand() const {
+   inline Operand operand() const noexcept {
       return sv_;
    }
    //**********************************************************************************************
@@ -181,7 +181,7 @@ class SVecEvalExpr : public SparseVector< SVecEvalExpr<VT,TF>, TF >
    // \return \a true in case the expression can alias, \a false otherwise.
    */
    template< typename T >
-   inline bool canAlias( const T* alias ) const {
+   inline bool canAlias( const T* alias ) const noexcept {
       return sv_.canAlias( alias );
    }
    //**********************************************************************************************
@@ -193,7 +193,7 @@ class SVecEvalExpr : public SparseVector< SVecEvalExpr<VT,TF>, TF >
    // \return \a true in case an alias effect is detected, \a false otherwise.
    */
    template< typename T >
-   inline bool isAliased( const T* alias ) const {
+   inline bool isAliased( const T* alias ) const noexcept {
       return sv_.isAliased( alias );
    }
    //**********************************************************************************************
@@ -203,7 +203,7 @@ class SVecEvalExpr : public SparseVector< SVecEvalExpr<VT,TF>, TF >
    //
    // \return \a true in case the expression can be used in SMP assignments, \a false if not.
    */
-   inline bool canSMPAssign() const {
+   inline bool canSMPAssign() const noexcept {
       return sv_.canSMPAssign();
    }
    //**********************************************************************************************

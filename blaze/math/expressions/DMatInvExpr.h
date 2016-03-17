@@ -125,7 +125,7 @@ class DMatInvExpr : public DenseMatrix< DMatInvExpr<MT,SO>, SO >
    //
    // \param dm The dense matrix operand of the inversion expression.
    */
-   explicit inline DMatInvExpr( const MT& dm )
+   explicit inline DMatInvExpr( const MT& dm ) noexcept
       : dm_( dm )  // Dense matrix of the inversion expression
    {}
    //**********************************************************************************************
@@ -135,7 +135,7 @@ class DMatInvExpr : public DenseMatrix< DMatInvExpr<MT,SO>, SO >
    //
    // \return The number of rows of the matrix.
    */
-   inline size_t rows() const {
+   inline size_t rows() const noexcept {
       return dm_.columns();
    }
    //**********************************************************************************************
@@ -145,7 +145,7 @@ class DMatInvExpr : public DenseMatrix< DMatInvExpr<MT,SO>, SO >
    //
    // \return The number of columns of the matrix.
    */
-   inline size_t columns() const {
+   inline size_t columns() const noexcept {
       return dm_.rows();
    }
    //**********************************************************************************************
@@ -155,7 +155,7 @@ class DMatInvExpr : public DenseMatrix< DMatInvExpr<MT,SO>, SO >
    //
    // \return The dense matrix operand.
    */
-   inline Operand operand() const {
+   inline Operand operand() const noexcept {
       return dm_;
    }
    //**********************************************************************************************
@@ -167,7 +167,7 @@ class DMatInvExpr : public DenseMatrix< DMatInvExpr<MT,SO>, SO >
    // \return \a true in case the expression can alias, \a false otherwise.
    */
    template< typename T >
-   inline bool canAlias( const T* alias ) const {
+   inline bool canAlias( const T* alias ) const noexcept {
       return dm_.isAliased( alias );
    }
    //**********************************************************************************************
@@ -179,7 +179,7 @@ class DMatInvExpr : public DenseMatrix< DMatInvExpr<MT,SO>, SO >
    // \return \a true in case an alias effect is detected, \a false otherwise.
    */
    template< typename T >
-   inline bool isAliased( const T* alias ) const {
+   inline bool isAliased( const T* alias ) const noexcept {
       return dm_.isAliased( alias );
    }
    //**********************************************************************************************
