@@ -144,15 +144,15 @@ class StrictlyLowerProxy : public Proxy< StrictlyLowerProxy<MT>, typename MT::El
    //**Utility functions***************************************************************************
    /*!\name Utility functions */
    //@{
-   inline RawReference get()          const;
-   inline bool         isRestricted() const;
+   inline RawReference get()          const noexcept;
+   inline bool         isRestricted() const noexcept;
    //@}
    //**********************************************************************************************
 
    //**Conversion operator*************************************************************************
    /*!\name Conversion operator */
    //@{
-   inline operator ConstReference() const;
+   inline operator ConstReference() const noexcept;
    //@}
    //**********************************************************************************************
 
@@ -393,7 +393,7 @@ inline const StrictlyLowerProxy<MT>& StrictlyLowerProxy<MT>::operator/=( const T
 // \return Direct/raw reference to the accessed matrix element.
 */
 template< typename MT >  // Type of the adapted matrix
-inline typename StrictlyLowerProxy<MT>::RawReference StrictlyLowerProxy<MT>::get() const
+inline typename StrictlyLowerProxy<MT>::RawReference StrictlyLowerProxy<MT>::get() const noexcept
 {
    return value_;
 }
@@ -406,7 +406,7 @@ inline typename StrictlyLowerProxy<MT>::RawReference StrictlyLowerProxy<MT>::get
 // \return \a true in case access to the matrix element is restricted, \a false if not.
 */
 template< typename MT >  // Type of the adapted matrix
-inline bool StrictlyLowerProxy<MT>::isRestricted() const
+inline bool StrictlyLowerProxy<MT>::isRestricted() const noexcept
 {
    return restricted_;
 }
@@ -427,7 +427,7 @@ inline bool StrictlyLowerProxy<MT>::isRestricted() const
 // \return Reference-to-const to the accessed matrix element.
 */
 template< typename MT >  // Type of the adapted matrix
-inline StrictlyLowerProxy<MT>::operator ConstReference() const
+inline StrictlyLowerProxy<MT>::operator ConstReference() const noexcept
 {
    return static_cast<ConstReference>( value_ );
 }
