@@ -53,7 +53,7 @@ namespace blaze {
 
 // Valid settings for the defaultStorageOrder are blaze::rowMajor and blaze::columnMajor.
 */
-const bool defaultStorageOrder = rowMajor;
+constexpr bool defaultStorageOrder = rowMajor;
 //*************************************************************************************************
 
 } // namespace blaze

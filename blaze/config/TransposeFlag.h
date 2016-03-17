@@ -53,7 +53,7 @@ namespace blaze {
 
 // Valid settings for the defaultTransposeFlag are blaze::rowVector and blaze::columnVector.
 */
-const bool defaultTransposeFlag = columnVector;
+constexpr bool defaultTransposeFlag = columnVector;
 //*************************************************************************************************
 
 } // namespace blaze

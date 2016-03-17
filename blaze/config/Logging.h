@@ -55,7 +55,7 @@ namespace logging {
 //  - \a debug   : Extends the \a progress setting by debug information.
 //  - \a detail  : Extends the \a debug setting by very fine grained detail information.
 */
-const LogLevel loglevel = info;
+constexpr LogLevel loglevel = info;
 //*************************************************************************************************
 
 
@@ -67,7 +67,7 @@ const LogLevel loglevel = info;
 // to improve readability of log files. If set to \a true, each log message will be appended with
 // an additional empty line. If set to \a false, no line will be appended.
 */
-const bool spacing = false;
+constexpr bool spacing = false;
 //*************************************************************************************************
 
 

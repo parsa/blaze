@@ -49,7 +49,7 @@ namespace blaze {
 // \warning Note that disabling padding can considerably reduce the performance of all dense
 // vector and matrix operations!
 */
-const bool usePadding = true;
+constexpr bool usePadding = true;
 //*************************************************************************************************
 
 
@@ -65,7 +65,7 @@ const bool usePadding = true;
 // Via this compilation switch streaming (i.e. non-temporal stores) can be (de-)activated. If
 // set to \a true streaming is enabled, if set to \a false streaming is disabled.
 */
-const bool useStreaming = true;
+constexpr bool useStreaming = true;
 //*************************************************************************************************
 
 
@@ -81,7 +81,7 @@ const bool useStreaming = true;
 // \warning Note that disabling the optimized kernels causes a severe performance limitiation
 // to nearly all operations!
 */
-const bool useOptimizedKernels = true;
+constexpr bool useOptimizedKernels = true;
 //*************************************************************************************************
 
 } // namespace blaze

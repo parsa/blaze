@@ -49,7 +49,7 @@ namespace blaze {
 //  - Deactivated: \b 0 (default)
 //  - Activated  : \b 1
 */
-#define BLAZE_USE_DEBUG_MODE 0
+#define BLAZE_USE_DEBUG_MODE 1
 //*************************************************************************************************
 
 } // namespace blaze
