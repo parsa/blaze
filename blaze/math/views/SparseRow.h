@@ -456,8 +456,8 @@ class SparseRow : public SparseVector< SparseRow<MT,SO,SF>, true >
    //**Utility functions***************************************************************************
    /*!\name Utility functions */
    //@{
-                              inline size_t     size() const;
-                              inline size_t     capacity() const;
+                              inline size_t     size() const noexcept;
+                              inline size_t     capacity() const noexcept;
                               inline size_t     nonZeros() const;
                               inline void       reset();
                               inline Iterator   set    ( size_t index, const ElementType& value );
@@ -492,8 +492,8 @@ class SparseRow : public SparseVector< SparseRow<MT,SO,SF>, true >
    //**Expression template evaluation functions****************************************************
    /*!\name Expression template evaluation functions */
    //@{
-   template< typename Other > inline bool canAlias ( const Other* alias ) const;
-   template< typename Other > inline bool isAliased( const Other* alias ) const;
+   template< typename Other > inline bool canAlias ( const Other* alias ) const noexcept;
+   template< typename Other > inline bool isAliased( const Other* alias ) const noexcept;
 
    template< typename VT >    inline void assign   ( const DenseVector <VT,true>& rhs );
    template< typename VT >    inline void assign   ( const SparseVector<VT,true>& rhs );
@@ -508,7 +508,7 @@ class SparseRow : public SparseVector< SparseRow<MT,SO,SF>, true >
    //**Utility functions***************************************************************************
    /*!\name Utility functions */
    //@{
-   inline size_t extendCapacity() const;
+   inline size_t extendCapacity() const noexcept;
    //@}
    //**********************************************************************************************
 
@@ -523,10 +523,10 @@ class SparseRow : public SparseVector< SparseRow<MT,SO,SF>, true >
    //**Friend declarations*************************************************************************
    /*! \cond BLAZE_INTERNAL */
    template< typename MT2, bool SO2, bool SF2 >
-   friend bool isIntact( const SparseRow<MT2,SO2,SF2>& row );
+   friend bool isIntact( const SparseRow<MT2,SO2,SF2>& row ) noexcept;
 
    template< typename MT2, bool SO2, bool SF2 >
-   friend bool isSame( const SparseRow<MT2,SO2,SF2>& a, const SparseRow<MT2,SO2,SF2>& b );
+   friend bool isSame( const SparseRow<MT2,SO2,SF2>& a, const SparseRow<MT2,SO2,SF2>& b ) noexcept;
 
    template< typename MT2, bool SO2, bool SF2, typename VT >
    friend bool tryAssign( const SparseRow<MT2,SO2,SF2>& lhs, const Vector<VT,true>& rhs, size_t index );
@@ -1337,7 +1337,7 @@ inline typename EnableIf< IsNumeric<Other>, SparseRow<MT,SO,SF> >::Type&
 template< typename MT  // Type of the sparse matrix
         , bool SO      // Storage order
         , bool SF >    // Symmetry flag
-inline size_t SparseRow<MT,SO,SF>::size() const
+inline size_t SparseRow<MT,SO,SF>::size() const noexcept
 {
    return matrix_.columns();
 }
@@ -1352,7 +1352,7 @@ inline size_t SparseRow<MT,SO,SF>::size() const
 template< typename MT  // Type of the sparse matrix
         , bool SO      // Storage order
         , bool SF >    // Symmetry flag
-inline size_t SparseRow<MT,SO,SF>::capacity() const
+inline size_t SparseRow<MT,SO,SF>::capacity() const noexcept
 {
    return matrix_.capacity( row_ );
 }
@@ -1548,7 +1548,7 @@ inline SparseRow<MT,SO,SF>& SparseRow<MT,SO,SF>::scale( const Other& scalar )
 template< typename MT  // Type of the sparse matrix
         , bool SO      // Storage order
         , bool SF >    // Symmetry flag
-inline size_t SparseRow<MT,SO,SF>::extendCapacity() const
+inline size_t SparseRow<MT,SO,SF>::extendCapacity() const noexcept
 {
    using blaze::max;
    using blaze::min;
@@ -1770,7 +1770,7 @@ template< typename MT  // Type of the sparse matrix
         , bool SO      // Storage order
         , bool SF >    // Symmetry flag
 template< typename Other >  // Data type of the foreign expression
-inline bool SparseRow<MT,SO,SF>::canAlias( const Other* alias ) const
+inline bool SparseRow<MT,SO,SF>::canAlias( const Other* alias ) const noexcept
 {
    return matrix_.isAliased( alias );
 }
@@ -1791,7 +1791,7 @@ template< typename MT       // Type of the sparse matrix
         , bool SO           // Storage order
         , bool SF >         // Symmetry flag
 template< typename Other >  // Data type of the foreign expression
-inline bool SparseRow<MT,SO,SF>::isAliased( const Other* alias ) const
+inline bool SparseRow<MT,SO,SF>::isAliased( const Other* alias ) const noexcept
 {
    return matrix_.isAliased( alias );
 }
@@ -2317,7 +2317,7 @@ class SparseRow<MT,false,false> : public SparseVector< SparseRow<MT,false,false>
       // \return \a true if the iterators refer to the same element, \a false if not.
       */
       template< typename MatrixType2, typename IteratorType2 >
-      inline bool operator==( const RowIterator<MatrixType2,IteratorType2>& rhs ) const {
+      inline bool operator==( const RowIterator<MatrixType2,IteratorType2>& rhs ) const noexcept {
          return ( matrix_ == rhs.matrix_ ) && ( row_ == rhs.row_ ) && ( column_ == rhs.column_ );
       }
       //*******************************************************************************************
@@ -2329,7 +2329,7 @@ class SparseRow<MT,false,false> : public SparseVector< SparseRow<MT,false,false>
       // \return \a true if the iterators don't refer to the same element, \a false if they do.
       */
       template< typename MatrixType2, typename IteratorType2 >
-      inline bool operator!=( const RowIterator<MatrixType2,IteratorType2>& rhs ) const {
+      inline bool operator!=( const RowIterator<MatrixType2,IteratorType2>& rhs ) const noexcept {
          return !( *this == rhs );
       }
       //*******************************************************************************************
@@ -2428,8 +2428,8 @@ class SparseRow<MT,false,false> : public SparseVector< SparseRow<MT,false,false>
    //**Utility functions***************************************************************************
    /*!\name Utility functions */
    //@{
-                              inline size_t     size() const;
-                              inline size_t     capacity() const;
+                              inline size_t     size() const noexcept;
+                              inline size_t     capacity() const noexcept;
                               inline size_t     nonZeros() const;
                               inline void       reset();
                               inline Iterator   set    ( size_t index, const ElementType& value );
@@ -2464,8 +2464,8 @@ class SparseRow<MT,false,false> : public SparseVector< SparseRow<MT,false,false>
    //**Expression template evaluation functions****************************************************
    /*!\name Expression template evaluation functions */
    //@{
-   template< typename Other > inline bool canAlias ( const Other* alias ) const;
-   template< typename Other > inline bool isAliased( const Other* alias ) const;
+   template< typename Other > inline bool canAlias ( const Other* alias ) const noexcept;
+   template< typename Other > inline bool isAliased( const Other* alias ) const noexcept;
 
    template< typename VT >    inline void assign   ( const DenseVector <VT,true>& rhs );
    template< typename VT >    inline void assign   ( const SparseVector<VT,true>& rhs );
@@ -2485,10 +2485,10 @@ class SparseRow<MT,false,false> : public SparseVector< SparseRow<MT,false,false>
 
    //**Friend declarations*************************************************************************
    template< typename MT2, bool SO2, bool SF2 >
-   friend bool isIntact( const SparseRow<MT2,SO2,SF2>& row );
+   friend bool isIntact( const SparseRow<MT2,SO2,SF2>& row ) noexcept;
 
    template< typename MT2, bool SO2, bool SF2 >
-   friend bool isSame( const SparseRow<MT2,SO2,SF2>& a, const SparseRow<MT2,SO2,SF2>& b );
+   friend bool isSame( const SparseRow<MT2,SO2,SF2>& a, const SparseRow<MT2,SO2,SF2>& b ) noexcept;
 
    template< typename MT2, bool SO2, bool SF2, typename VT >
    friend bool tryAssign( const SparseRow<MT2,SO2,SF2>& lhs, const Vector<VT,true>& rhs, size_t index );
@@ -3103,7 +3103,7 @@ inline typename EnableIf< IsNumeric<Other>, SparseRow<MT,false,false> >::Type&
 // \return The size of the row.
 */
 template< typename MT >  // Type of the sparse matrix
-inline size_t SparseRow<MT,false,false>::size() const
+inline size_t SparseRow<MT,false,false>::size() const noexcept
 {
    return matrix_.columns();
 }
@@ -3118,7 +3118,7 @@ inline size_t SparseRow<MT,false,false>::size() const
 // \return The capacity of the sparse row.
 */
 template< typename MT >  // Type of the sparse matrix
-inline size_t SparseRow<MT,false,false>::capacity() const
+inline size_t SparseRow<MT,false,false>::capacity() const noexcept
 {
    return matrix_.columns();
 }
@@ -3585,7 +3585,7 @@ inline void SparseRow<MT,false,false>::append( size_t index, const ElementType& 
 */
 template< typename MT >     // Type of the sparse matrix
 template< typename Other >  // Data type of the foreign expression
-inline bool SparseRow<MT,false,false>::canAlias( const Other* alias ) const
+inline bool SparseRow<MT,false,false>::canAlias( const Other* alias ) const noexcept
 {
    return matrix_.isAliased( alias );
 }
@@ -3602,7 +3602,7 @@ inline bool SparseRow<MT,false,false>::canAlias( const Other* alias ) const
 */
 template< typename MT >     // Type of the sparse matrix
 template< typename Other >  // Data type of the foreign expression
-inline bool SparseRow<MT,false,false>::isAliased( const Other* alias ) const
+inline bool SparseRow<MT,false,false>::isAliased( const Other* alias ) const noexcept
 {
    return matrix_.isAliased( alias );
 }
@@ -3840,8 +3840,8 @@ class SparseRow<MT,false,true> : public SparseVector< SparseRow<MT,false,true>, 
    //**Utility functions***************************************************************************
    /*!\name Utility functions */
    //@{
-                              inline size_t     size() const;
-                              inline size_t     capacity() const;
+                              inline size_t     size() const noexcept;
+                              inline size_t     capacity() const noexcept;
                               inline size_t     nonZeros() const;
                               inline void       reset();
                               inline Iterator   set    ( size_t index, const ElementType& value );
@@ -3876,8 +3876,8 @@ class SparseRow<MT,false,true> : public SparseVector< SparseRow<MT,false,true>, 
    //**Expression template evaluation functions****************************************************
    /*!\name Expression template evaluation functions */
    //@{
-   template< typename Other > inline bool canAlias ( const Other* alias ) const;
-   template< typename Other > inline bool isAliased( const Other* alias ) const;
+   template< typename Other > inline bool canAlias ( const Other* alias ) const noexcept;
+   template< typename Other > inline bool isAliased( const Other* alias ) const noexcept;
 
    template< typename VT >    inline void assign   ( const DenseVector <VT,true>& rhs );
    template< typename VT >    inline void assign   ( const SparseVector<VT,true>& rhs );
@@ -3906,10 +3906,10 @@ class SparseRow<MT,false,true> : public SparseVector< SparseRow<MT,false,true>, 
 
    //**Friend declarations*************************************************************************
    template< typename MT2, bool SO2, bool SF2 >
-   friend bool isIntact( const SparseRow<MT2,SO2,SF2>& row );
+   friend bool isIntact( const SparseRow<MT2,SO2,SF2>& row ) noexcept;
 
    template< typename MT2, bool SO2, bool SF2 >
-   friend bool isSame( const SparseRow<MT2,SO2,SF2>& a, const SparseRow<MT2,SO2,SF2>& b );
+   friend bool isSame( const SparseRow<MT2,SO2,SF2>& a, const SparseRow<MT2,SO2,SF2>& b ) noexcept;
 
    template< typename MT2, bool SO2, bool SF2, typename VT >
    friend bool tryAssign( const SparseRow<MT2,SO2,SF2>& lhs, const Vector<VT,true>& rhs, size_t index );
@@ -4728,7 +4728,7 @@ inline typename EnableIf< IsNumeric<Other>, SparseRow<MT,false,true> >::Type&
 // \return The size of the sparse row.
 */
 template< typename MT >  // Type of the sparse matrix
-inline size_t SparseRow<MT,false,true>::size() const
+inline size_t SparseRow<MT,false,true>::size() const noexcept
 {
    return matrix_.columns();
 }
@@ -4743,7 +4743,7 @@ inline size_t SparseRow<MT,false,true>::size() const
 // \return The capacity of the sparse row.
 */
 template< typename MT >  // Type of the sparse matrix
-inline size_t SparseRow<MT,false,true>::capacity() const
+inline size_t SparseRow<MT,false,true>::capacity() const noexcept
 {
    return matrix_.capacity( row_ );
 }
@@ -5168,7 +5168,7 @@ inline void SparseRow<MT,false,true>::append( size_t index, const ElementType& v
 */
 template< typename MT >     // Type of the sparse matrix
 template< typename Other >  // Data type of the foreign expression
-inline bool SparseRow<MT,false,true>::canAlias( const Other* alias ) const
+inline bool SparseRow<MT,false,true>::canAlias( const Other* alias ) const noexcept
 {
    return matrix_.isAliased( alias );
 }
@@ -5189,7 +5189,7 @@ inline bool SparseRow<MT,false,true>::canAlias( const Other* alias ) const
 */
 template< typename MT >     // Type of the sparse matrix
 template< typename Other >  // Data type of the foreign expression
-inline bool SparseRow<MT,false,true>::isAliased( const Other* alias ) const
+inline bool SparseRow<MT,false,true>::isAliased( const Other* alias ) const noexcept
 {
    return matrix_.isAliased( alias );
 }
@@ -5410,10 +5410,10 @@ template< typename MT, bool SO, bool SF >
 inline bool isDefault( const SparseRow<MT,SO,SF>& row );
 
 template< typename MT, bool SO, bool SF >
-inline bool isIntact( const SparseRow<MT,SO,SF>& row );
+inline bool isIntact( const SparseRow<MT,SO,SF>& row ) noexcept;
 
 template< typename MT, bool SO, bool SF >
-inline bool isSame( const SparseRow<MT,SO,SF>& a, const SparseRow<MT,SO,SF>& b );
+inline bool isSame( const SparseRow<MT,SO,SF>& a, const SparseRow<MT,SO,SF>& b ) noexcept;
 //@}
 //*************************************************************************************************
 
@@ -5507,7 +5507,7 @@ inline bool isDefault( const SparseRow<MT,SO,SF>& row )
 template< typename MT  // Type of the sparse matrix
         , bool SO      // Storage order
         , bool SF >    // Symmetry flag
-inline bool isIntact( const SparseRow<MT,SO,SF>& row )
+inline bool isIntact( const SparseRow<MT,SO,SF>& row ) noexcept
 {
    return ( row.row_ <= row.matrix_.rows() &&
             isIntact( row.matrix_ ) );
@@ -5530,7 +5530,7 @@ inline bool isIntact( const SparseRow<MT,SO,SF>& row )
 template< typename MT  // Type of the sparse matrix
         , bool SO      // Storage order
         , bool SF >    // Symmetry flag
-inline bool isSame( const SparseRow<MT,SO,SF>& a, const SparseRow<MT,SO,SF>& b )
+inline bool isSame( const SparseRow<MT,SO,SF>& a, const SparseRow<MT,SO,SF>& b ) noexcept
 {
    return ( isSame( a.matrix_, b.matrix_ ) && ( a.row_ == b.row_ ) );
 }
