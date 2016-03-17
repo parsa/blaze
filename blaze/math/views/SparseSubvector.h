@@ -706,7 +706,7 @@ class SparseSubvector : public SparseVector< SparseSubvector<VT,AF,TF>, TF >
       //
       // \return The offset of the subvector iterator.
       */
-      inline size_t offset() const {
+      inline size_t offset() const noexcept {
          return offset_;
       }
       //*******************************************************************************************
@@ -782,8 +782,8 @@ class SparseSubvector : public SparseVector< SparseSubvector<VT,AF,TF>, TF >
    //**Utility functions***************************************************************************
    /*!\name Utility functions */
    //@{
-                              inline size_t           size() const;
-                              inline size_t           capacity() const;
+                              inline size_t           size() const noexcept;
+                              inline size_t           capacity() const noexcept;
                               inline size_t           nonZeros() const;
                               inline void             reset();
                               inline Iterator         set    ( size_t index, const ElementType& value );
@@ -818,10 +818,10 @@ class SparseSubvector : public SparseVector< SparseSubvector<VT,AF,TF>, TF >
    //**Expression template evaluation functions****************************************************
    /*!\name Expression template evaluation functions */
    //@{
-   template< typename Other > inline bool canAlias ( const Other* alias ) const;
-   template< typename Other > inline bool isAliased( const Other* alias ) const;
+   template< typename Other > inline bool canAlias ( const Other* alias ) const noexcept;
+   template< typename Other > inline bool isAliased( const Other* alias ) const noexcept;
 
-   inline bool canSMPAssign() const;
+   inline bool canSMPAssign() const noexcept;
 
    template< typename VT2 >   inline void assign   ( const DenseVector <VT2,TF>& rhs );
    template< typename VT2 >   inline void assign   ( const SparseVector<VT2,TF>& rhs );
@@ -849,16 +849,16 @@ class SparseSubvector : public SparseVector< SparseSubvector<VT,AF,TF>, TF >
       subvector( const SparseSubvector<VT2,AF2,TF2>& sv, size_t index, size_t size );
 
    template< typename VT2, bool AF2, bool TF2 >
-   friend bool isIntact( const SparseSubvector<VT2,AF2,TF2>& sv );
+   friend bool isIntact( const SparseSubvector<VT2,AF2,TF2>& sv ) noexcept;
 
    template< typename VT2, bool AF2, bool TF2 >
-   friend bool isSame( const SparseSubvector<VT2,AF2,TF2>& a, const SparseVector<VT2,TF2>& b );
+   friend bool isSame( const SparseSubvector<VT2,AF2,TF2>& a, const SparseVector<VT2,TF2>& b ) noexcept;
 
    template< typename VT2, bool AF2, bool TF2 >
-   friend bool isSame( const SparseVector<VT2,TF2>& a, const SparseSubvector<VT2,AF2,TF2>& b );
+   friend bool isSame( const SparseVector<VT2,TF2>& a, const SparseSubvector<VT2,AF2,TF2>& b ) noexcept;
 
    template< typename VT2, bool AF2, bool TF2 >
-   friend bool isSame( const SparseSubvector<VT2,AF2,TF2>& a, const SparseSubvector<VT2,AF2,TF2>& b );
+   friend bool isSame( const SparseSubvector<VT2,AF2,TF2>& a, const SparseSubvector<VT2,AF2,TF2>& b ) noexcept;
 
    template< typename VT2, bool AF2, bool TF2, typename VT3 >
    friend bool tryAssign( const SparseSubvector<VT2,AF2,TF2>& lhs, const Vector<VT3,TF2>& rhs, size_t index );
@@ -1496,7 +1496,7 @@ inline typename EnableIf< IsNumeric<Other>, SparseSubvector<VT,AF,TF> >::Type&
 template< typename VT  // Type of the sparse vector
         , bool AF      // Alignment flag
         , bool TF >    // Transpose flag
-inline size_t SparseSubvector<VT,AF,TF>::size() const
+inline size_t SparseSubvector<VT,AF,TF>::size() const noexcept
 {
    return size_;
 }
@@ -1511,7 +1511,7 @@ inline size_t SparseSubvector<VT,AF,TF>::size() const
 template< typename VT  // Type of the sparse vector
         , bool AF      // Alignment flag
         , bool TF >    // Transpose flag
-inline size_t SparseSubvector<VT,AF,TF>::capacity() const
+inline size_t SparseSubvector<VT,AF,TF>::capacity() const noexcept
 {
    return nonZeros() + vector_.capacity() - vector_.nonZeros();
 }
@@ -1918,7 +1918,7 @@ template< typename VT       // Type of the sparse vector
         , bool AF           // Alignment flag
         , bool TF >         // Transpose flag
 template< typename Other >  // Data type of the foreign expression
-inline bool SparseSubvector<VT,AF,TF>::canAlias( const Other* alias ) const
+inline bool SparseSubvector<VT,AF,TF>::canAlias( const Other* alias ) const noexcept
 {
    return vector_.isAliased( alias );
 }
@@ -1939,7 +1939,7 @@ template< typename VT       // Type of the sparse vector
         , bool AF           // Alignment flag
         , bool TF >         // Transpose flag
 template< typename Other >  // Data type of the foreign expression
-inline bool SparseSubvector<VT,AF,TF>::isAliased( const Other* alias ) const
+inline bool SparseSubvector<VT,AF,TF>::isAliased( const Other* alias ) const noexcept
 {
    return vector_.isAliased( alias );
 }
@@ -1959,7 +1959,7 @@ inline bool SparseSubvector<VT,AF,TF>::isAliased( const Other* alias ) const
 template< typename VT  // Type of the sparse vector
         , bool AF      // Alignment flag
         , bool TF >    // Transpose flag
-inline bool SparseSubvector<VT,AF,TF>::canSMPAssign() const
+inline bool SparseSubvector<VT,AF,TF>::canSMPAssign() const noexcept
 {
    return false;
 }
@@ -2177,16 +2177,16 @@ template< typename VT, bool AF, bool TF >
 inline bool isDefault( const SparseSubvector<VT,AF,TF>& sv );
 
 template< typename VT, bool AF, bool TF >
-inline bool isIntact( const SparseSubvector<VT,AF,TF>& sv );
+inline bool isIntact( const SparseSubvector<VT,AF,TF>& sv ) noexcept;
 
 template< typename VT, bool AF, bool TF >
-inline bool isSame( const SparseSubvector<VT,AF,TF>& a, const SparseVector<VT,TF>& b );
+inline bool isSame( const SparseSubvector<VT,AF,TF>& a, const SparseVector<VT,TF>& b ) noexcept;
 
 template< typename VT, bool AF, bool TF >
-inline bool isSame( const SparseVector<VT,TF>& a, const SparseSubvector<VT,AF,TF>& b );
+inline bool isSame( const SparseVector<VT,TF>& a, const SparseSubvector<VT,AF,TF>& b ) noexcept;
 
 template< typename VT, bool AF, bool TF >
-inline bool isSame( const SparseSubvector<VT,AF,TF>& a, const SparseSubvector<VT,AF,TF>& b );
+inline bool isSame( const SparseSubvector<VT,AF,TF>& a, const SparseSubvector<VT,AF,TF>& b ) noexcept;
 //@}
 //*************************************************************************************************
 
@@ -2281,7 +2281,7 @@ inline bool isDefault( const SparseSubvector<VT,AF,TF>& sv )
 template< typename VT  // Type of the sparse vector
         , bool AF      // Alignment flag
         , bool TF >    // Transpose flag
-inline bool isIntact( const SparseSubvector<VT,AF,TF>& sv )
+inline bool isIntact( const SparseSubvector<VT,AF,TF>& sv ) noexcept
 {
    return ( sv.offset_ + sv.size_ <= sv.vector_.size() &&
             isIntact( sv.vector_ ) );
@@ -2304,7 +2304,7 @@ inline bool isIntact( const SparseSubvector<VT,AF,TF>& sv )
 template< typename VT  // Type of the sparse vector
         , bool AF      // Alignment flag
         , bool TF >    // Transpose flag
-inline bool isSame( const SparseSubvector<VT,AF,TF>& a, const SparseVector<VT,TF>& b )
+inline bool isSame( const SparseSubvector<VT,AF,TF>& a, const SparseVector<VT,TF>& b ) noexcept
 {
    return ( isSame( a.vector_, ~b ) && ( a.size() == (~b).size() ) );
 }
@@ -2326,7 +2326,7 @@ inline bool isSame( const SparseSubvector<VT,AF,TF>& a, const SparseVector<VT,TF
 template< typename VT  // Type of the sparse vector
         , bool AF      // Alignment flag
         , bool TF >    // Transpose flag
-inline bool isSame( const SparseVector<VT,TF>& a, const SparseSubvector<VT,AF,TF>& b )
+inline bool isSame( const SparseVector<VT,TF>& a, const SparseSubvector<VT,AF,TF>& b ) noexcept
 {
    return ( isSame( ~a, b.vector_ ) && ( (~a).size() == b.size() ) );
 }
@@ -2348,7 +2348,7 @@ inline bool isSame( const SparseVector<VT,TF>& a, const SparseSubvector<VT,AF,TF
 template< typename VT  // Type of the sparse vector
         , bool AF      // Alignment flag
         , bool TF >    // Transpose flag
-inline bool isSame( const SparseSubvector<VT,AF,TF>& a, const SparseSubvector<VT,AF,TF>& b )
+inline bool isSame( const SparseSubvector<VT,AF,TF>& a, const SparseSubvector<VT,AF,TF>& b ) noexcept
 {
    return ( isSame( a.vector_, b.vector_ ) && ( a.offset_ == b.offset_ ) && ( a.size_ == b.size_ ) );
 }
