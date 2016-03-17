@@ -130,7 +130,7 @@ class UniUpperElement : private SparseElement
    //**Access operators****************************************************************************
    /*!\name Access operators */
    //@{
-   inline Pointer operator->();
+   inline Pointer operator->() noexcept;
    //@}
    //**********************************************************************************************
 
@@ -321,7 +321,7 @@ inline UniUpperElement<MT>& UniUpperElement<MT>::operator/=( const T& v )
 // \return Reference to the value of the uniupper element.
 */
 template< typename MT >  // Type of the adapted matrix
-inline typename UniUpperElement<MT>::Pointer UniUpperElement<MT>::operator->()
+inline typename UniUpperElement<MT>::Pointer UniUpperElement<MT>::operator->() noexcept
 {
    return this;
 }

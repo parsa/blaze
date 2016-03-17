@@ -163,15 +163,15 @@ class UniUpperValue : public Proxy< UniUpperValue<MT> >
    inline void clear () const;
    inline void invert() const;
 
-   inline RepresentedType get() const;
-   inline bool            isRestricted() const;
+   inline RepresentedType get() const noexcept;
+   inline bool            isRestricted() const noexcept;
    //@}
    //**********************************************************************************************
 
    //**Conversion operator*************************************************************************
    /*!\name Conversion operator */
    //@{
-   inline operator RepresentedType() const;
+   inline operator RepresentedType() const noexcept;
    //@}
    //**********************************************************************************************
 
@@ -437,7 +437,7 @@ inline void UniUpperValue<MT>::invert() const
 // \return Copy of the represented value.
 */
 template< typename MT >  // Type of the adapted matrix
-inline typename UniUpperValue<MT>::RepresentedType UniUpperValue<MT>::get() const
+inline typename UniUpperValue<MT>::RepresentedType UniUpperValue<MT>::get() const noexcept
 {
    return *value_;
 }
@@ -450,7 +450,7 @@ inline typename UniUpperValue<MT>::RepresentedType UniUpperValue<MT>::get() cons
 // \return \a true in case access to the matrix element is restricted, \a false if not.
 */
 template< typename MT >  // Type of the adapted matrix
-inline bool UniUpperValue<MT>::isRestricted() const
+inline bool UniUpperValue<MT>::isRestricted() const noexcept
 {
    return diagonal_;
 }
@@ -471,7 +471,7 @@ inline bool UniUpperValue<MT>::isRestricted() const
 // \return Copy of the represented value.
 */
 template< typename MT >  // Type of the adapted matrix
-inline UniUpperValue<MT>::operator RepresentedType() const
+inline UniUpperValue<MT>::operator RepresentedType() const noexcept
 {
    return *value_;
 }

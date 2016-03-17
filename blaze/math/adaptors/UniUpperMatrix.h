@@ -284,7 +284,6 @@ inline bool isDefault( const UniUpperMatrix<MT,SO,DF>& m )
 // \param a The first matrix to be swapped.
 // \param b The second matrix to be swapped.
 // \return void
-// \exception no-throw guarantee.
 */
 template< typename MT  // Type of the adapted matrix
         , bool SO      // Storage order of the adapted matrix
