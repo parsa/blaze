@@ -142,15 +142,15 @@ class LowerProxy : public Proxy< LowerProxy<MT>, typename MT::ElementType >
    //**Utility functions***************************************************************************
    /*!\name Utility functions */
    //@{
-   inline RawReference get()          const;
-   inline bool         isRestricted() const;
+   inline RawReference get()          const noexcept;
+   inline bool         isRestricted() const noexcept;
    //@}
    //**********************************************************************************************
 
    //**Conversion operator*************************************************************************
    /*!\name Conversion operator */
    //@{
-   inline operator ConstReference() const;
+   inline operator ConstReference() const noexcept;
    //@}
    //**********************************************************************************************
 
@@ -391,7 +391,7 @@ inline const LowerProxy<MT>& LowerProxy<MT>::operator/=( const T& value ) const
 // \return Direct/raw reference to the accessed matrix element.
 */
 template< typename MT >  // Type of the adapted matrix
-inline typename LowerProxy<MT>::RawReference LowerProxy<MT>::get() const
+inline typename LowerProxy<MT>::RawReference LowerProxy<MT>::get() const noexcept
 {
    return value_;
 }
@@ -404,7 +404,7 @@ inline typename LowerProxy<MT>::RawReference LowerProxy<MT>::get() const
 // \return \a true in case access to the matrix element is restricted, \a false if not.
 */
 template< typename MT >  // Type of the adapted matrix
-inline bool LowerProxy<MT>::isRestricted() const
+inline bool LowerProxy<MT>::isRestricted() const noexcept
 {
    return restricted_;
 }
@@ -425,7 +425,7 @@ inline bool LowerProxy<MT>::isRestricted() const
 // \return Reference-to-const to the accessed matrix element.
 */
 template< typename MT >  // Type of the adapted matrix
-inline LowerProxy<MT>::operator ConstReference() const
+inline LowerProxy<MT>::operator ConstReference() const noexcept
 {
    return static_cast<ConstReference>( value_ );
 }
