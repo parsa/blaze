@@ -158,8 +158,8 @@ class HermitianProxy : public Proxy< HermitianProxy<MT> >
    //**Access operators****************************************************************************
    /*!\name Access operators */
    //@{
-   inline Pointer      operator->();
-   inline ConstPointer operator->() const;
+   inline Pointer      operator->() noexcept;
+   inline ConstPointer operator->() const noexcept;
    //@}
    //**********************************************************************************************
 
@@ -170,14 +170,14 @@ class HermitianProxy : public Proxy< HermitianProxy<MT> >
    inline void clear () const;
    inline void invert() const;
 
-   inline ConstReference get() const;
+   inline ConstReference get() const noexcept;
    //@}
    //**********************************************************************************************
 
    //**Conversion operator*************************************************************************
    /*!\name Conversion operator */
    //@{
-   inline operator ConstReference() const;
+   inline operator ConstReference() const noexcept;
    //@}
    //**********************************************************************************************
 
@@ -456,7 +456,7 @@ inline HermitianProxy<MT>& HermitianProxy<MT>::operator/=( const T& value )
 // \return Pointer to the represented matrix element.
 */
 template< typename MT >  // Type of the adapted matrix
-inline typename HermitianProxy<MT>::Pointer HermitianProxy<MT>::operator->()
+inline typename HermitianProxy<MT>::Pointer HermitianProxy<MT>::operator->() noexcept
 {
    return this;
 }
@@ -469,7 +469,7 @@ inline typename HermitianProxy<MT>::Pointer HermitianProxy<MT>::operator->()
 // \return Pointer to the represented matrix element.
 */
 template< typename MT >  // Type of the adapted matrix
-inline typename HermitianProxy<MT>::ConstPointer HermitianProxy<MT>::operator->() const
+inline typename HermitianProxy<MT>::ConstPointer HermitianProxy<MT>::operator->() const noexcept
 {
    return this;
 }
@@ -545,7 +545,7 @@ inline void HermitianProxy<MT>::invert() const
 // \return Direct/raw reference to the accessed matrix element.
 */
 template< typename MT >  // Type of the adapted matrix
-inline typename HermitianProxy<MT>::ConstReference HermitianProxy<MT>::get() const
+inline typename HermitianProxy<MT>::ConstReference HermitianProxy<MT>::get() const noexcept
 {
    return value1_;
 }
@@ -566,7 +566,7 @@ inline typename HermitianProxy<MT>::ConstReference HermitianProxy<MT>::get() con
 // \return Direct/raw reference to the accessed matrix element.
 */
 template< typename MT >  // Type of the adapted matrix
-inline HermitianProxy<MT>::operator ConstReference() const
+inline HermitianProxy<MT>::operator ConstReference() const noexcept
 {
    return get();
 }

@@ -171,7 +171,7 @@ class HermitianMatrix<MT,SO,true>
       //**Constructor******************************************************************************
       /*!\brief Default constructor of the Iterator class.
       */
-      inline Iterator()
+      inline Iterator() noexcept
          : matrix_( nullptr )  // Reference to the adapted dense matrix
          , row_   ( 0UL )      // The current row index of the iterator
          , column_( 0UL )      // The current column index of the iterator
@@ -185,7 +185,7 @@ class HermitianMatrix<MT,SO,true>
       // \param row Initial row index of the iterator.
       // \param column Initial column index of the iterator.
       */
-      inline Iterator( MT& matrix, size_t row, size_t column )
+      inline Iterator( MT& matrix, size_t row, size_t column ) noexcept
          : matrix_( &matrix )  // Reference to the adapted dense matrix
          , row_   ( row     )  // The current row index of the iterator
          , column_( column  )  // The current column index of the iterator
@@ -198,7 +198,7 @@ class HermitianMatrix<MT,SO,true>
       // \param inc The increment of the iterator.
       // \return The incremented iterator.
       */
-      inline Iterator& operator+=( size_t inc ) {
+      inline Iterator& operator+=( size_t inc ) noexcept {
          ( SO )?( row_ += inc ):( column_ += inc );
          return *this;
       }
@@ -210,7 +210,7 @@ class HermitianMatrix<MT,SO,true>
       // \param dec The decrement of the iterator.
       // \return The decremented iterator.
       */
-      inline Iterator& operator-=( size_t dec ) {
+      inline Iterator& operator-=( size_t dec ) noexcept {
          ( SO )?( row_ -= dec ):( column_ -= dec );
          return *this;
       }
@@ -221,7 +221,7 @@ class HermitianMatrix<MT,SO,true>
       //
       // \return Reference to the incremented iterator.
       */
-      inline Iterator& operator++() {
+      inline Iterator& operator++() noexcept {
          ( SO )?( ++row_ ):( ++column_ );
          return *this;
       }
@@ -232,7 +232,7 @@ class HermitianMatrix<MT,SO,true>
       //
       // \return The previous position of the iterator.
       */
-      inline const Iterator operator++( int ) {
+      inline const Iterator operator++( int ) noexcept {
          const Iterator tmp( *this );
          ++(*this);
          return tmp;
@@ -244,7 +244,7 @@ class HermitianMatrix<MT,SO,true>
       //
       // \return Reference to the decremented iterator.
       */
-      inline Iterator& operator--() {
+      inline Iterator& operator--() noexcept {
          ( SO )?( --row_ ):( --column_ );
          return *this;
       }
@@ -255,7 +255,7 @@ class HermitianMatrix<MT,SO,true>
       //
       // \return The previous position of the iterator.
       */
-      inline const Iterator operator--( int ) {
+      inline const Iterator operator--( int ) noexcept {
          const Iterator tmp( *this );
          --(*this);
          return tmp;
@@ -302,7 +302,7 @@ class HermitianMatrix<MT,SO,true>
       // \param rhs The right-hand side iterator.
       // \return \a true if the iterators refer to the same element, \a false if not.
       */
-      friend inline bool operator==( const Iterator& lhs, const Iterator& rhs ) {
+      friend inline bool operator==( const Iterator& lhs, const Iterator& rhs ) noexcept {
          return ( SO )?( lhs.row_ == rhs.row_ ):( lhs.column_ == rhs.column_ );
       }
       //*******************************************************************************************
@@ -338,7 +338,7 @@ class HermitianMatrix<MT,SO,true>
       // \param rhs The right-hand side iterator.
       // \return \a true if the iterators don't refer to the same element, \a false if they do.
       */
-      friend inline bool operator!=( const Iterator& lhs, const Iterator& rhs ) {
+      friend inline bool operator!=( const Iterator& lhs, const Iterator& rhs ) noexcept {
          return ( SO )?( lhs.row_ != rhs.row_ ):( lhs.column_ != rhs.column_ );
       }
       //*******************************************************************************************
@@ -374,7 +374,7 @@ class HermitianMatrix<MT,SO,true>
       // \param rhs The right-hand side iterator.
       // \return \a true if the left-hand side iterator is smaller, \a false if not.
       */
-      friend inline bool operator<( const Iterator& lhs, const Iterator& rhs ) {
+      friend inline bool operator<( const Iterator& lhs, const Iterator& rhs ) noexcept {
          return ( SO )?( lhs.row_ < rhs.row_ ):( lhs.column_ < rhs.column_ );
       }
       //*******************************************************************************************
@@ -410,7 +410,7 @@ class HermitianMatrix<MT,SO,true>
       // \param rhs The right-hand side iterator.
       // \return \a true if the left-hand side iterator is greater, \a false if not.
       */
-      friend inline bool operator>( const Iterator& lhs, const Iterator& rhs ) {
+      friend inline bool operator>( const Iterator& lhs, const Iterator& rhs ) noexcept {
          return ( SO )?( lhs.row_ > rhs.row_ ):( lhs.column_ > rhs.column_ );
       }
       //*******************************************************************************************
@@ -446,7 +446,7 @@ class HermitianMatrix<MT,SO,true>
       // \param rhs The right-hand side iterator.
       // \return \a true if the left-hand side iterator is smaller or equal, \a false if not.
       */
-      friend inline bool operator<=( const Iterator& lhs, const Iterator& rhs ) {
+      friend inline bool operator<=( const Iterator& lhs, const Iterator& rhs ) noexcept {
          return ( SO )?( lhs.row_ <= rhs.row_ ):( lhs.column_ <= rhs.column_ );
       }
       //*******************************************************************************************
@@ -482,7 +482,7 @@ class HermitianMatrix<MT,SO,true>
       // \param rhs The right-hand side iterator.
       // \return \a true if the left-hand side iterator is greater or equal, \a false if not.
       */
-      friend inline bool operator>=( const Iterator& lhs, const Iterator& rhs ) {
+      friend inline bool operator>=( const Iterator& lhs, const Iterator& rhs ) noexcept {
          return ( SO )?( lhs.row_ >= rhs.row_ ):( lhs.column_ >= rhs.column_ );
       }
       //*******************************************************************************************
@@ -517,7 +517,7 @@ class HermitianMatrix<MT,SO,true>
       // \param rhs The right-hand side iterator.
       // \return The number of elements between the two iterators.
       */
-      inline DifferenceType operator-( const Iterator& rhs ) const {
+      inline DifferenceType operator-( const Iterator& rhs ) const noexcept {
          return ( SO )?( row_ - rhs.row_ ):( column_ - rhs.column_ );
       }
       //*******************************************************************************************
@@ -529,7 +529,7 @@ class HermitianMatrix<MT,SO,true>
       // \param inc The number of elements the iterator is incremented.
       // \return The incremented iterator.
       */
-      friend inline const Iterator operator+( const Iterator& it, size_t inc ) {
+      friend inline const Iterator operator+( const Iterator& it, size_t inc ) noexcept {
          if( SO )
             return Iterator( *it.matrix_, it.row_ + inc, it.column_ );
          else
@@ -544,7 +544,7 @@ class HermitianMatrix<MT,SO,true>
       // \param it The iterator to be incremented.
       // \return The incremented iterator.
       */
-      friend inline const Iterator operator+( size_t inc, const Iterator& it ) {
+      friend inline const Iterator operator+( size_t inc, const Iterator& it ) noexcept {
          if( SO )
             return Iterator( *it.matrix_, it.row_ + inc, it.column_ );
          else
@@ -559,7 +559,7 @@ class HermitianMatrix<MT,SO,true>
       // \param dec The number of elements the iterator is decremented.
       // \return The decremented iterator.
       */
-      friend inline const Iterator operator-( const Iterator& it, size_t dec ) {
+      friend inline const Iterator operator-( const Iterator& it, size_t dec ) noexcept {
          if( SO )
             return Iterator( *it.matrix_, it.row_ - dec, it.column_ );
          else
@@ -618,8 +618,8 @@ class HermitianMatrix<MT,SO,true>
    inline ConstReference operator()( size_t i, size_t j ) const;
    inline Reference      at( size_t i, size_t j );
    inline ConstReference at( size_t i, size_t j ) const;
-   inline ConstPointer   data  () const;
-   inline ConstPointer   data  ( size_t i ) const;
+   inline ConstPointer   data  () const noexcept;
+   inline ConstPointer   data  ( size_t i ) const noexcept;
    inline Iterator       begin ( size_t i );
    inline ConstIterator  begin ( size_t i ) const;
    inline ConstIterator  cbegin( size_t i ) const;
@@ -687,11 +687,11 @@ class HermitianMatrix<MT,SO,true>
    //**Utility functions***************************************************************************
    /*!\name Utility functions */
    //@{
-                              inline size_t           rows() const;
-                              inline size_t           columns() const;
-                              inline size_t           spacing() const;
-                              inline size_t           capacity() const;
-                              inline size_t           capacity( size_t i ) const;
+                              inline size_t           rows() const noexcept;
+                              inline size_t           columns() const noexcept;
+                              inline size_t           spacing() const noexcept;
+                              inline size_t           capacity() const noexcept;
+                              inline size_t           capacity( size_t i ) const noexcept;
                               inline size_t           nonZeros() const;
                               inline size_t           nonZeros( size_t i ) const;
                               inline void             reset();
@@ -710,27 +710,27 @@ class HermitianMatrix<MT,SO,true>
    //**Debugging functions*************************************************************************
    /*!\name Debugging functions */
    //@{
-   inline bool isIntact() const;
+   inline bool isIntact() const noexcept;
    //@}
    //**********************************************************************************************
 
    //**Expression template evaluation functions****************************************************
    /*!\name Expression template evaluation functions */
    //@{
-   template< typename Other > inline bool canAlias ( const Other* alias ) const;
-   template< typename Other > inline bool isAliased( const Other* alias ) const;
+   template< typename Other > inline bool canAlias ( const Other* alias ) const noexcept;
+   template< typename Other > inline bool isAliased( const Other* alias ) const noexcept;
 
-   inline bool isAligned   () const;
-   inline bool canSMPAssign() const;
+   inline bool isAligned   () const noexcept;
+   inline bool canSMPAssign() const noexcept;
 
-   BLAZE_ALWAYS_INLINE IntrinsicType load ( size_t i, size_t j ) const;
-   BLAZE_ALWAYS_INLINE IntrinsicType loada( size_t i, size_t j ) const;
-   BLAZE_ALWAYS_INLINE IntrinsicType loadu( size_t i, size_t j ) const;
+   BLAZE_ALWAYS_INLINE IntrinsicType load ( size_t i, size_t j ) const noexcept;
+   BLAZE_ALWAYS_INLINE IntrinsicType loada( size_t i, size_t j ) const noexcept;
+   BLAZE_ALWAYS_INLINE IntrinsicType loadu( size_t i, size_t j ) const noexcept;
 
-   inline void store ( size_t i, size_t j, const IntrinsicType& value );
-   inline void storea( size_t i, size_t j, const IntrinsicType& value );
-   inline void storeu( size_t i, size_t j, const IntrinsicType& value );
-   inline void stream( size_t i, size_t j, const IntrinsicType& value );
+   inline void store ( size_t i, size_t j, const IntrinsicType& value ) noexcept;
+   inline void storea( size_t i, size_t j, const IntrinsicType& value ) noexcept;
+   inline void storeu( size_t i, size_t j, const IntrinsicType& value ) noexcept;
+   inline void stream( size_t i, size_t j, const IntrinsicType& value ) noexcept;
    //@}
    //**********************************************************************************************
 
@@ -1215,7 +1215,7 @@ inline typename HermitianMatrix<MT,SO,true>::ConstReference
 template< typename MT  // Type of the adapted dense matrix
         , bool SO >    // Storage order of the adapted dense matrix
 inline typename HermitianMatrix<MT,SO,true>::ConstPointer
-   HermitianMatrix<MT,SO,true>::data() const
+   HermitianMatrix<MT,SO,true>::data() const noexcept
 {
    return matrix_.data();
 }
@@ -1237,7 +1237,7 @@ inline typename HermitianMatrix<MT,SO,true>::ConstPointer
 template< typename MT  // Type of the adapted dense matrix
         , bool SO >    // Storage order of the adapted dense matrix
 inline typename HermitianMatrix<MT,SO,true>::ConstPointer
-   HermitianMatrix<MT,SO,true>::data( size_t i ) const
+   HermitianMatrix<MT,SO,true>::data( size_t i ) const noexcept
 {
    return matrix_.data(i);
 }
@@ -1865,7 +1865,7 @@ inline typename EnableIf< IsNumeric<Other>, HermitianMatrix<MT,SO,true> >::Type&
 */
 template< typename MT  // Type of the adapted dense matrix
         , bool SO >    // Storage order of the adapted dense matrix
-inline size_t HermitianMatrix<MT,SO,true>::rows() const
+inline size_t HermitianMatrix<MT,SO,true>::rows() const noexcept
 {
    return matrix_.rows();
 }
@@ -1881,7 +1881,7 @@ inline size_t HermitianMatrix<MT,SO,true>::rows() const
 */
 template< typename MT  // Type of the adapted dense matrix
         , bool SO >    // Storage order of the adapted dense matrix
-inline size_t HermitianMatrix<MT,SO,true>::columns() const
+inline size_t HermitianMatrix<MT,SO,true>::columns() const noexcept
 {
    return matrix_.columns();
 }
@@ -1903,7 +1903,7 @@ inline size_t HermitianMatrix<MT,SO,true>::columns() const
 */
 template< typename MT  // Type of the adapted dense matrix
         , bool SO >    // Storage order of the adapted dense matrix
-inline size_t HermitianMatrix<MT,SO,true>::spacing() const
+inline size_t HermitianMatrix<MT,SO,true>::spacing() const noexcept
 {
    return matrix_.spacing();
 }
@@ -1919,7 +1919,7 @@ inline size_t HermitianMatrix<MT,SO,true>::spacing() const
 */
 template< typename MT  // Type of the adapted dense matrix
         , bool SO >    // Storage order of the adapted dense matrix
-inline size_t HermitianMatrix<MT,SO,true>::capacity() const
+inline size_t HermitianMatrix<MT,SO,true>::capacity() const noexcept
 {
    return matrix_.capacity();
 }
@@ -1940,7 +1940,7 @@ inline size_t HermitianMatrix<MT,SO,true>::capacity() const
 */
 template< typename MT  // Type of the adapted dense matrix
         , bool SO >    // Storage order of the adapted dense matrix
-inline size_t HermitianMatrix<MT,SO,true>::capacity( size_t i ) const
+inline size_t HermitianMatrix<MT,SO,true>::capacity( size_t i ) const noexcept
 {
    return matrix_.capacity(i);
 }
@@ -2238,7 +2238,6 @@ inline HermitianMatrix<MT,SO,true>&
 //
 // \param m The matrix to be swapped.
 // \return void
-// \exception no-throw guarantee.
 */
 template< typename MT  // Type of the adapted dense matrix
         , bool SO >    // Storage order of the adapted dense matrix
@@ -2272,7 +2271,7 @@ inline void HermitianMatrix<MT,SO,true>::swap( HermitianMatrix& m ) noexcept
 */
 template< typename MT  // Type of the adapted dense matrix
         , bool SO >    // Storage order of the adapted dense matrix
-inline bool HermitianMatrix<MT,SO,true>::isIntact() const
+inline bool HermitianMatrix<MT,SO,true>::isIntact() const noexcept
 {
    using blaze::isIntact;
 
@@ -2304,7 +2303,7 @@ inline bool HermitianMatrix<MT,SO,true>::isIntact() const
 template< typename MT       // Type of the adapted dense matrix
         , bool SO >         // Storage order of the adapted dense matrix
 template< typename Other >  // Data type of the foreign expression
-inline bool HermitianMatrix<MT,SO,true>::canAlias( const Other* alias ) const
+inline bool HermitianMatrix<MT,SO,true>::canAlias( const Other* alias ) const noexcept
 {
    return matrix_.canAlias( alias );
 }
@@ -2326,7 +2325,7 @@ inline bool HermitianMatrix<MT,SO,true>::canAlias( const Other* alias ) const
 template< typename MT       // Type of the adapted dense matrix
         , bool SO >         // Storage order of the adapted dense matrix
 template< typename Other >  // Data type of the foreign expression
-inline bool HermitianMatrix<MT,SO,true>::isAliased( const Other* alias ) const
+inline bool HermitianMatrix<MT,SO,true>::isAliased( const Other* alias ) const noexcept
 {
    return matrix_.isAliased( alias );
 }
@@ -2346,7 +2345,7 @@ inline bool HermitianMatrix<MT,SO,true>::isAliased( const Other* alias ) const
 */
 template< typename MT  // Type of the adapted dense matrix
         , bool SO >    // Storage order of the adapted dense matrix
-inline bool HermitianMatrix<MT,SO,true>::isAligned() const
+inline bool HermitianMatrix<MT,SO,true>::isAligned() const noexcept
 {
    return matrix_.isAligned();
 }
@@ -2367,7 +2366,7 @@ inline bool HermitianMatrix<MT,SO,true>::isAligned() const
 */
 template< typename MT  // Type of the adapted dense matrix
         , bool SO >    // Storage order of the adapted dense matrix
-inline bool HermitianMatrix<MT,SO,true>::canSMPAssign() const
+inline bool HermitianMatrix<MT,SO,true>::canSMPAssign() const noexcept
 {
    return matrix_.canSMPAssign();
 }
@@ -2394,7 +2393,7 @@ inline bool HermitianMatrix<MT,SO,true>::canSMPAssign() const
 template< typename MT  // Type of the adapted dense matrix
         , bool SO >    // Storage order of the adapted dense matrix
 BLAZE_ALWAYS_INLINE typename HermitianMatrix<MT,SO,true>::IntrinsicType
-   HermitianMatrix<MT,SO,true>::load( size_t i, size_t j ) const
+   HermitianMatrix<MT,SO,true>::load( size_t i, size_t j ) const noexcept
 {
    return matrix_.load( i, j );
 }
@@ -2421,7 +2420,7 @@ BLAZE_ALWAYS_INLINE typename HermitianMatrix<MT,SO,true>::IntrinsicType
 template< typename MT  // Type of the adapted dense matrix
         , bool SO >    // Storage order of the adapted dense matrix
 BLAZE_ALWAYS_INLINE typename HermitianMatrix<MT,SO,true>::IntrinsicType
-   HermitianMatrix<MT,SO,true>::loada( size_t i, size_t j ) const
+   HermitianMatrix<MT,SO,true>::loada( size_t i, size_t j ) const noexcept
 {
    return matrix_.loada( i, j );
 }
@@ -2448,7 +2447,7 @@ BLAZE_ALWAYS_INLINE typename HermitianMatrix<MT,SO,true>::IntrinsicType
 template< typename MT  // Type of the adapted dense matrix
         , bool SO >    // Storage order of the adapted dense matrix
 BLAZE_ALWAYS_INLINE typename HermitianMatrix<MT,SO,true>::IntrinsicType
-   HermitianMatrix<MT,SO,true>::loadu( size_t i, size_t j ) const
+   HermitianMatrix<MT,SO,true>::loadu( size_t i, size_t j ) const noexcept
 {
    return matrix_.loadu( i, j );
 }
@@ -2475,7 +2474,8 @@ BLAZE_ALWAYS_INLINE typename HermitianMatrix<MT,SO,true>::IntrinsicType
 */
 template< typename MT  // Type of the adapted dense matrix
         , bool SO >    // Storage order of the adapted dense matrix
-inline void HermitianMatrix<MT,SO,true>::store( size_t i, size_t j, const IntrinsicType& value )
+inline void
+   HermitianMatrix<MT,SO,true>::store( size_t i, size_t j, const IntrinsicType& value ) noexcept
 {
    matrix_.store( i, j, value );
 
@@ -2513,7 +2513,8 @@ inline void HermitianMatrix<MT,SO,true>::store( size_t i, size_t j, const Intrin
 */
 template< typename MT  // Type of the adapted dense matrix
         , bool SO >    // Storage order of the adapted dense matrix
-inline void HermitianMatrix<MT,SO,true>::storea( size_t i, size_t j, const IntrinsicType& value )
+inline void
+   HermitianMatrix<MT,SO,true>::storea( size_t i, size_t j, const IntrinsicType& value ) noexcept
 {
    matrix_.storea( i, j, value );
 
@@ -2551,7 +2552,8 @@ inline void HermitianMatrix<MT,SO,true>::storea( size_t i, size_t j, const Intri
 */
 template< typename MT  // Type of the adapted dense matrix
         , bool SO >    // Storage order of the adapted dense matrix
-inline void HermitianMatrix<MT,SO,true>::storeu( size_t i, size_t j, const IntrinsicType& value )
+inline void
+   HermitianMatrix<MT,SO,true>::storeu( size_t i, size_t j, const IntrinsicType& value ) noexcept
 {
    matrix_.storeu( i, j, value );
 
@@ -2589,7 +2591,8 @@ inline void HermitianMatrix<MT,SO,true>::storeu( size_t i, size_t j, const Intri
 */
 template< typename MT  // Type of the adapted dense matrix
         , bool SO >    // Storage order of the adapted dense matrix
-inline void HermitianMatrix<MT,SO,true>::stream( size_t i, size_t j, const IntrinsicType& value )
+inline void
+   HermitianMatrix<MT,SO,true>::stream( size_t i, size_t j, const IntrinsicType& value ) noexcept
 {
    matrix_.stream( i, j, value );
 

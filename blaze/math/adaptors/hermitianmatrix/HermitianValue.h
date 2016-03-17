@@ -176,14 +176,14 @@ class HermitianValue : public Proxy< HermitianValue<MT> >
    inline void clear () const;
    inline void invert() const;
 
-   inline RepresentedType get() const;
+   inline RepresentedType get() const noexcept;
    //@}
    //**********************************************************************************************
 
    //**Conversion operator*************************************************************************
    /*!\name Conversion operator */
    //@{
-   inline operator RepresentedType() const;
+   inline operator RepresentedType() const noexcept;
    //@}
    //**********************************************************************************************
 
@@ -495,7 +495,7 @@ inline void HermitianValue<MT>::invert() const
 // \return Copy of the represented value.
 */
 template< typename MT >  // Type of the adapted matrix
-inline typename HermitianValue<MT>::RepresentedType HermitianValue<MT>::get() const
+inline typename HermitianValue<MT>::RepresentedType HermitianValue<MT>::get() const noexcept
 {
    return pos_->value();
 }
@@ -535,7 +535,7 @@ inline void HermitianValue<MT>::sync() const
 // \return Copy of the represented value.
 */
 template< typename MT >  // Type of the adapted matrix
-inline HermitianValue<MT>::operator RepresentedType() const
+inline HermitianValue<MT>::operator RepresentedType() const noexcept
 {
    return pos_->value();
 }

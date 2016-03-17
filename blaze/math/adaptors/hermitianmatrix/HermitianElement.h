@@ -349,7 +349,7 @@ inline HermitianElement<MT>& HermitianElement<MT>::operator/=( const T& v )
 // \return Reference to the value of the Hermitian element.
 */
 template< typename MT >  // Type of the adapted matrix
-inline typename HermitianElement<MT>::Pointer HermitianElement<MT>::operator->()
+inline typename HermitianElement<MT>::Pointer HermitianElement<MT>::operator->() noexcept
 {
    return this;
 }

@@ -388,10 +388,10 @@ class HermitianMatrix<MT,SO,false>
    //**Utility functions***************************************************************************
    /*!\name Utility functions */
    //@{
-                              inline size_t           rows() const;
-                              inline size_t           columns() const;
-                              inline size_t           capacity() const;
-                              inline size_t           capacity( size_t i ) const;
+                              inline size_t           rows() const noexcept;
+                              inline size_t           columns() const noexcept;
+                              inline size_t           capacity() const noexcept;
+                              inline size_t           capacity( size_t i ) const noexcept;
                               inline size_t           nonZeros() const;
                               inline size_t           nonZeros( size_t i ) const;
                               inline void             reset();
@@ -438,17 +438,17 @@ class HermitianMatrix<MT,SO,false>
    //**Debugging functions*************************************************************************
    /*!\name Debugging functions */
    //@{
-   inline bool isIntact() const;
+   inline bool isIntact() const noexcept;
    //@}
    //**********************************************************************************************
 
    //**Expression template evaluation functions****************************************************
    /*!\name Expression template evaluation functions */
    //@{
-   template< typename Other > inline bool canAlias ( const Other* alias ) const;
-   template< typename Other > inline bool isAliased( const Other* alias ) const;
+   template< typename Other > inline bool canAlias ( const Other* alias ) const noexcept;
+   template< typename Other > inline bool isAliased( const Other* alias ) const noexcept;
 
-   inline bool canSMPAssign() const;
+   inline bool canSMPAssign() const noexcept;
    //@}
    //**********************************************************************************************
 
@@ -1398,7 +1398,7 @@ inline typename EnableIf< IsNumeric<Other>, HermitianMatrix<MT,SO,false> >::Type
 */
 template< typename MT  // Type of the adapted sparse matrix
         , bool SO >    // Storage order of the adapted sparse matrix
-inline size_t HermitianMatrix<MT,SO,false>::rows() const
+inline size_t HermitianMatrix<MT,SO,false>::rows() const noexcept
 {
    return matrix_.rows();
 }
@@ -1414,7 +1414,7 @@ inline size_t HermitianMatrix<MT,SO,false>::rows() const
 */
 template< typename MT  // Type of the adapted sparse matrix
         , bool SO >    // Storage order of the adapted sparse matrix
-inline size_t HermitianMatrix<MT,SO,false>::columns() const
+inline size_t HermitianMatrix<MT,SO,false>::columns() const noexcept
 {
    return matrix_.columns();
 }
@@ -1430,7 +1430,7 @@ inline size_t HermitianMatrix<MT,SO,false>::columns() const
 */
 template< typename MT  // Type of the adapted sparse matrix
         , bool SO >    // Storage order of the adapted sparse matrix
-inline size_t HermitianMatrix<MT,SO,false>::capacity() const
+inline size_t HermitianMatrix<MT,SO,false>::capacity() const noexcept
 {
    return matrix_.capacity();
 }
@@ -1451,7 +1451,7 @@ inline size_t HermitianMatrix<MT,SO,false>::capacity() const
 */
 template< typename MT  // Type of the adapted sparse matrix
         , bool SO >    // Storage order of the adapted sparse matrix
-inline size_t HermitianMatrix<MT,SO,false>::capacity( size_t i ) const
+inline size_t HermitianMatrix<MT,SO,false>::capacity( size_t i ) const noexcept
 {
    return matrix_.capacity(i);
 }
@@ -1974,7 +1974,6 @@ inline HermitianMatrix<MT,SO,false>&
 //
 // \param m The matrix to be swapped.
 // \return void
-// \exception no-throw guarantee.
 */
 template< typename MT  // Type of the adapted sparse matrix
         , bool SO >    // Storage order of the adapted sparse matrix
@@ -2287,7 +2286,7 @@ inline void HermitianMatrix<MT,SO,false>::finalize( size_t i )
 */
 template< typename MT  // Type of the adapted sparse matrix
         , bool SO >    // Storage order of the adapted sparse matrix
-inline bool HermitianMatrix<MT,SO,false>::isIntact() const
+inline bool HermitianMatrix<MT,SO,false>::isIntact() const noexcept
 {
    using blaze::isIntact;
 
@@ -2319,7 +2318,7 @@ inline bool HermitianMatrix<MT,SO,false>::isIntact() const
 template< typename MT       // Type of the adapted sparse matrix
         , bool SO >         // Storage order of the adapted sparse matrix
 template< typename Other >  // Data type of the foreign expression
-inline bool HermitianMatrix<MT,SO,false>::canAlias( const Other* alias ) const
+inline bool HermitianMatrix<MT,SO,false>::canAlias( const Other* alias ) const noexcept
 {
    return matrix_.canAlias( alias );
 }
@@ -2341,7 +2340,7 @@ inline bool HermitianMatrix<MT,SO,false>::canAlias( const Other* alias ) const
 template< typename MT       // Type of the adapted sparse matrix
         , bool SO >         // Storage order of the adapted sparse matrix
 template< typename Other >  // Data type of the foreign expression
-inline bool HermitianMatrix<MT,SO,false>::isAliased( const Other* alias ) const
+inline bool HermitianMatrix<MT,SO,false>::isAliased( const Other* alias ) const noexcept
 {
    return matrix_.isAliased( alias );
 }
@@ -2362,7 +2361,7 @@ inline bool HermitianMatrix<MT,SO,false>::isAliased( const Other* alias ) const
 */
 template< typename MT  // Type of the adapted sparse matrix
         , bool SO >    // Storage order of the adapted sparse matrix
-inline bool HermitianMatrix<MT,SO,false>::canSMPAssign() const
+inline bool HermitianMatrix<MT,SO,false>::canSMPAssign() const noexcept
 {
    return matrix_.canSMPAssign();
 }
