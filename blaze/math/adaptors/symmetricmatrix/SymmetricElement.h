@@ -139,7 +139,7 @@ class SymmetricElement : private SparseElement
    //**Access operators****************************************************************************
    /*!\name Access operators */
    //@{
-   inline Pointer operator->();
+   inline Pointer operator->() noexcept;
    //@}
    //**********************************************************************************************
 
@@ -318,7 +318,7 @@ inline SymmetricElement<MT>& SymmetricElement<MT>::operator/=( const T& v )
 // \return Reference to the value of the Hermitian element.
 */
 template< typename MT >  // Type of the adapted matrix
-inline typename SymmetricElement<MT>::Pointer SymmetricElement<MT>::operator->()
+inline typename SymmetricElement<MT>::Pointer SymmetricElement<MT>::operator->() noexcept
 {
    return this;
 }

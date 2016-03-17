@@ -99,7 +99,7 @@ class SharedValue
    //**Utility functions***************************************************************************
    /*!\name Utility functions */
    //@{
-   inline Pointer base() const;
+   inline Pointer base() const noexcept;
    //@}
    //**********************************************************************************************
 
@@ -214,7 +214,7 @@ inline typename SharedValue<Type>::ConstReference SharedValue<Type>::operator*()
 // \return Pointer to the shared value.
 */
 template< typename Type >  // Type of the shared value
-inline typename SharedValue<Type>::Pointer SharedValue<Type>::base() const
+inline typename SharedValue<Type>::Pointer SharedValue<Type>::base() const noexcept
 {
    return value_.get();
 }

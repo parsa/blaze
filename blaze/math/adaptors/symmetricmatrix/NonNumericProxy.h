@@ -150,14 +150,14 @@ class NonNumericProxy : public Proxy< NonNumericProxy<MT>, typename MT::ElementT
    //**Utility functions***************************************************************************
    /*!\name Utility functions */
    //@{
-   inline RawReference get() const;
+   inline RawReference get() const noexcept;
    //@}
    //**********************************************************************************************
 
    //**Conversion operator*************************************************************************
    /*!\name Conversion operator */
    //@{
-   inline operator RawReference() const;
+   inline operator RawReference() const noexcept;
    //@}
    //**********************************************************************************************
 
@@ -395,7 +395,7 @@ inline NonNumericProxy<MT>& NonNumericProxy<MT>::operator/=( const T& value )
 // \return Direct/raw reference to the accessed matrix element.
 */
 template< typename MT >  // Type of the sparse matrix
-inline typename NonNumericProxy<MT>::RawReference NonNumericProxy<MT>::get() const
+inline typename NonNumericProxy<MT>::RawReference NonNumericProxy<MT>::get() const noexcept
 {
    const typename MT::Iterator pos( matrix_.find( i_, j_ ) );
    BLAZE_INTERNAL_ASSERT( pos != matrix_.end( rmm ? i_ : j_ ), "Missing matrix element detected" );
@@ -418,7 +418,7 @@ inline typename NonNumericProxy<MT>::RawReference NonNumericProxy<MT>::get() con
 // \return Direct/raw reference to the represented matrix element.
 */
 template< typename MT >  // Type of the adapted matrix
-inline NonNumericProxy<MT>::operator RawReference() const
+inline NonNumericProxy<MT>::operator RawReference() const noexcept
 {
    return get();
 }

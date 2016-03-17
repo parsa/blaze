@@ -174,14 +174,14 @@ class SymmetricValue : public Proxy< SymmetricValue<MT> >
    inline void clear () const;
    inline void invert() const;
 
-   inline RepresentedType get() const;
+   inline RepresentedType get() const noexcept;
    //@}
    //**********************************************************************************************
 
    //**Conversion operator*************************************************************************
    /*!\name Conversion operator */
    //@{
-   inline operator RepresentedType() const;
+   inline operator RepresentedType() const noexcept;
    //@}
    //**********************************************************************************************
 
@@ -452,7 +452,7 @@ inline void SymmetricValue<MT>::invert() const
 // \return Copy of the represented value.
 */
 template< typename MT >  // Type of the adapted matrix
-inline typename SymmetricValue<MT>::RepresentedType SymmetricValue<MT>::get() const
+inline typename SymmetricValue<MT>::RepresentedType SymmetricValue<MT>::get() const noexcept
 {
    return pos_->value();
 }
@@ -492,7 +492,7 @@ inline void SymmetricValue<MT>::sync() const
 // \return Copy of the represented value.
 */
 template< typename MT >  // Type of the adapted matrix
-inline SymmetricValue<MT>::operator RepresentedType() const
+inline SymmetricValue<MT>::operator RepresentedType() const noexcept
 {
    return pos_->value();
 }

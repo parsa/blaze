@@ -170,14 +170,14 @@ class NumericProxy : public Proxy< NumericProxy<MT> >
    inline void clear () const;
    inline void invert() const;
 
-   inline ConstReference get() const;
+   inline ConstReference get() const noexcept;
    //@}
    //**********************************************************************************************
 
    //**Conversion operator*************************************************************************
    /*!\name Conversion operator */
    //@{
-   inline operator ConstReference() const;
+   inline operator ConstReference() const noexcept;
    //@}
    //**********************************************************************************************
 
@@ -481,7 +481,7 @@ inline void NumericProxy<MT>::invert() const
 // \return Direct/raw reference to the accessed matrix element.
 */
 template< typename MT >  // Type of the adapted matrix
-inline typename NumericProxy<MT>::ConstReference NumericProxy<MT>::get() const
+inline typename NumericProxy<MT>::ConstReference NumericProxy<MT>::get() const noexcept
 {
    return const_cast<const MT&>( matrix_ )(row_,column_);
 }
@@ -502,7 +502,7 @@ inline typename NumericProxy<MT>::ConstReference NumericProxy<MT>::get() const
 // \return Direct/raw reference to the accessed matrix element.
 */
 template< typename MT >  // Type of the adapted matrix
-inline NumericProxy<MT>::operator ConstReference() const
+inline NumericProxy<MT>::operator ConstReference() const noexcept
 {
    return get();
 }

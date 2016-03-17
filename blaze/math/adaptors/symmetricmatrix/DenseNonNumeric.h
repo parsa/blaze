@@ -168,7 +168,7 @@ class SymmetricMatrix<MT,SO,true,false>
       //**Constructor******************************************************************************
       /*!\brief Default constructor of the MatrixIterator class.
       */
-      inline MatrixIterator()
+      inline MatrixIterator() noexcept
          : matrix_( nullptr )  // Reference to the adapted dense matrix
          , row_   ( 0UL )      // The current row index of the iterator
          , column_( 0UL )      // The current column index of the iterator
@@ -182,7 +182,7 @@ class SymmetricMatrix<MT,SO,true,false>
       // \param row Initial row index of the iterator.
       // \param column Initial column index of the iterator.
       */
-      inline MatrixIterator( MatrixType& matrix, size_t row, size_t column )
+      inline MatrixIterator( MatrixType& matrix, size_t row, size_t column ) noexcept
          : matrix_( &matrix )  // Reference to the adapted dense matrix
          , row_   ( row     )  // The current row index of the iterator
          , column_( column  )  // The current column index of the iterator
@@ -195,7 +195,7 @@ class SymmetricMatrix<MT,SO,true,false>
       // \param it The row iterator to be copied.
       */
       template< typename MatrixType2 >
-      inline MatrixIterator( const MatrixIterator<MatrixType2>& it )
+      inline MatrixIterator( const MatrixIterator<MatrixType2>& it ) noexcept
          : matrix_( it.matrix_ )  // Reference to the adapted dense matrix
          , row_   ( it.row_    )  // The current row index of the iterator
          , column_( it.column_ )  // The current column index of the iterator
@@ -208,7 +208,7 @@ class SymmetricMatrix<MT,SO,true,false>
       // \param inc The increment of the iterator.
       // \return The incremented iterator.
       */
-      inline MatrixIterator& operator+=( size_t inc ) {
+      inline MatrixIterator& operator+=( size_t inc ) noexcept {
          ( SO )?( row_ += inc ):( column_ += inc );
          return *this;
       }
@@ -220,7 +220,7 @@ class SymmetricMatrix<MT,SO,true,false>
       // \param dec The decrement of the iterator.
       // \return The decremented iterator.
       */
-      inline MatrixIterator& operator-=( size_t dec ) {
+      inline MatrixIterator& operator-=( size_t dec ) noexcept {
          ( SO )?( row_ -= dec ):( column_ -= dec );
          return *this;
       }
@@ -231,7 +231,7 @@ class SymmetricMatrix<MT,SO,true,false>
       //
       // \return Reference to the incremented iterator.
       */
-      inline MatrixIterator& operator++() {
+      inline MatrixIterator& operator++() noexcept {
          ( SO )?( ++row_ ):( ++column_ );
          return *this;
       }
@@ -242,7 +242,7 @@ class SymmetricMatrix<MT,SO,true,false>
       //
       // \return The previous position of the iterator.
       */
-      inline const MatrixIterator operator++( int ) {
+      inline const MatrixIterator operator++( int ) noexcept {
          const MatrixIterator tmp( *this );
          ++(*this);
          return tmp;
@@ -254,7 +254,7 @@ class SymmetricMatrix<MT,SO,true,false>
       //
       // \return Reference to the decremented iterator.
       */
-      inline MatrixIterator& operator--() {
+      inline MatrixIterator& operator--() noexcept {
          ( SO )?( --row_ ):( --column_ );
          return *this;
       }
@@ -265,7 +265,7 @@ class SymmetricMatrix<MT,SO,true,false>
       //
       // \return The previous position of the iterator.
       */
-      inline const MatrixIterator operator--( int ) {
+      inline const MatrixIterator operator--( int ) noexcept {
          const MatrixIterator tmp( *this );
          --(*this);
          return tmp;
@@ -305,7 +305,7 @@ class SymmetricMatrix<MT,SO,true,false>
       // \return \a true if the iterators refer to the same element, \a false if not.
       */
       template< typename MatrixType2 >
-      inline bool operator==( const MatrixIterator<MatrixType2>& rhs ) const {
+      inline bool operator==( const MatrixIterator<MatrixType2>& rhs ) const noexcept {
          return ( SO )?( row_ == rhs.row_ ):( column_ == rhs.column_ );
       }
       //*******************************************************************************************
@@ -317,7 +317,7 @@ class SymmetricMatrix<MT,SO,true,false>
       // \return \a true if the iterators don't refer to the same element, \a false if they do.
       */
       template< typename MatrixType2 >
-      inline bool operator!=( const MatrixIterator<MatrixType2>& rhs ) const {
+      inline bool operator!=( const MatrixIterator<MatrixType2>& rhs ) const noexcept {
          return ( SO )?( row_ != rhs.row_ ):( column_ != rhs.column_ );
       }
       //*******************************************************************************************
@@ -329,7 +329,7 @@ class SymmetricMatrix<MT,SO,true,false>
       // \return \a true if the left-hand side iterator is smaller, \a false if not.
       */
       template< typename MatrixType2 >
-      inline bool operator<( const MatrixIterator<MatrixType2>& rhs ) const {
+      inline bool operator<( const MatrixIterator<MatrixType2>& rhs ) const noexcept {
          return ( SO )?( row_ < rhs.row_ ):( column_ < rhs.column_ );
          return ( column_ < rhs.column_ );
       }
@@ -342,7 +342,7 @@ class SymmetricMatrix<MT,SO,true,false>
       // \return \a true if the left-hand side iterator is greater, \a false if not.
       */
       template< typename MatrixType2 >
-      inline bool operator>( const MatrixIterator<MatrixType2>& rhs ) const {
+      inline bool operator>( const MatrixIterator<MatrixType2>& rhs ) const noexcept {
          return ( SO )?( row_ > rhs.row_ ):( column_ > rhs.column_ );
          return ( column_ > rhs.column_ );
       }
@@ -355,7 +355,7 @@ class SymmetricMatrix<MT,SO,true,false>
       // \return \a true if the left-hand side iterator is smaller or equal, \a false if not.
       */
       template< typename MatrixType2 >
-      inline bool operator<=( const MatrixIterator<MatrixType2>& rhs ) const {
+      inline bool operator<=( const MatrixIterator<MatrixType2>& rhs ) const noexcept {
          return ( SO )?( row_ <= rhs.row_ ):( column_ <= rhs.column_ );
       }
       //*******************************************************************************************
@@ -367,7 +367,7 @@ class SymmetricMatrix<MT,SO,true,false>
       // \return \a true if the left-hand side iterator is greater or equal, \a false if not.
       */
       template< typename MatrixType2 >
-      inline bool operator>=( const MatrixIterator<MatrixType2>& rhs ) const {
+      inline bool operator>=( const MatrixIterator<MatrixType2>& rhs ) const noexcept {
          return ( SO )?( row_ >= rhs.row_ ):( column_ >= rhs.column_ );
       }
       //*******************************************************************************************
@@ -378,7 +378,7 @@ class SymmetricMatrix<MT,SO,true,false>
       // \param rhs The right-hand side iterator.
       // \return The number of elements between the two iterators.
       */
-      inline DifferenceType operator-( const MatrixIterator& rhs ) const {
+      inline DifferenceType operator-( const MatrixIterator& rhs ) const noexcept {
          return ( SO )?( row_ - rhs.row_ ):( column_ - rhs.column_ );
       }
       //*******************************************************************************************
@@ -390,7 +390,7 @@ class SymmetricMatrix<MT,SO,true,false>
       // \param inc The number of elements the iterator is incremented.
       // \return The incremented iterator.
       */
-      friend inline const MatrixIterator operator+( const MatrixIterator& it, size_t inc ) {
+      friend inline const MatrixIterator operator+( const MatrixIterator& it, size_t inc ) noexcept {
          if( SO )
             return MatrixIterator( *it.matrix_, it.row_ + inc, it.column_ );
          else
@@ -405,7 +405,7 @@ class SymmetricMatrix<MT,SO,true,false>
       // \param it The iterator to be incremented.
       // \return The incremented iterator.
       */
-      friend inline const MatrixIterator operator+( size_t inc, const MatrixIterator& it ) {
+      friend inline const MatrixIterator operator+( size_t inc, const MatrixIterator& it ) noexcept {
          if( SO )
             return MatrixIterator( *it.matrix_, it.row_ + inc, it.column_ );
          else
@@ -420,7 +420,7 @@ class SymmetricMatrix<MT,SO,true,false>
       // \param dec The number of elements the iterator is decremented.
       // \return The decremented iterator.
       */
-      friend inline const MatrixIterator operator-( const MatrixIterator& it, size_t dec ) {
+      friend inline const MatrixIterator operator-( const MatrixIterator& it, size_t dec ) noexcept {
          if( SO )
             return MatrixIterator( *it.matrix_, it.row_ - dec, it.column_ );
          else
@@ -488,8 +488,8 @@ class SymmetricMatrix<MT,SO,true,false>
    inline ConstReference operator()( size_t i, size_t j ) const;
    inline Reference      at( size_t i, size_t j );
    inline ConstReference at( size_t i, size_t j ) const;
-   inline ConstPointer   data  () const;
-   inline ConstPointer   data  ( size_t i ) const;
+   inline ConstPointer   data  () const noexcept;
+   inline ConstPointer   data  ( size_t i ) const noexcept;
    inline Iterator       begin ( size_t i );
    inline ConstIterator  begin ( size_t i ) const;
    inline ConstIterator  cbegin( size_t i ) const;
@@ -554,11 +554,11 @@ class SymmetricMatrix<MT,SO,true,false>
    //**Utility functions***************************************************************************
    /*!\name Utility functions */
    //@{
-                              inline size_t           rows() const;
-                              inline size_t           columns() const;
-                              inline size_t           spacing() const;
-                              inline size_t           capacity() const;
-                              inline size_t           capacity( size_t i ) const;
+                              inline size_t           rows() const noexcept;
+                              inline size_t           columns() const noexcept;
+                              inline size_t           spacing() const noexcept;
+                              inline size_t           capacity() const noexcept;
+                              inline size_t           capacity( size_t i ) const noexcept;
                               inline size_t           nonZeros() const;
                               inline size_t           nonZeros( size_t i ) const;
                               inline void             reset();
@@ -577,18 +577,18 @@ class SymmetricMatrix<MT,SO,true,false>
    //**Debugging functions*************************************************************************
    /*!\name Utility functions */
    //@{
-   inline bool isIntact() const;
+   inline bool isIntact() const noexcept;
    //@}
    //**********************************************************************************************
 
    //**Expression template evaluation functions****************************************************
    /*!\name Expression template evaluation functions */
    //@{
-   template< typename Other > inline bool canAlias ( const Other* alias ) const;
-   template< typename Other > inline bool isAliased( const Other* alias ) const;
+   template< typename Other > inline bool canAlias ( const Other* alias ) const noexcept;
+   template< typename Other > inline bool isAliased( const Other* alias ) const noexcept;
 
-   inline bool isAligned   () const;
-   inline bool canSMPAssign() const;
+   inline bool isAligned   () const noexcept;
+   inline bool canSMPAssign() const noexcept;
    //@}
    //**********************************************************************************************
 
@@ -1107,7 +1107,7 @@ inline typename SymmetricMatrix<MT,SO,true,false>::ConstReference
 template< typename MT  // Type of the adapted dense matrix
         , bool SO >    // Storage order of the adapted dense matrix
 inline typename SymmetricMatrix<MT,SO,true,false>::ConstPointer
-   SymmetricMatrix<MT,SO,true,false>::data() const
+   SymmetricMatrix<MT,SO,true,false>::data() const noexcept
 {
    return matrix_.data();
 }
@@ -1129,7 +1129,7 @@ inline typename SymmetricMatrix<MT,SO,true,false>::ConstPointer
 template< typename MT  // Type of the adapted dense matrix
         , bool SO >    // Storage order of the adapted dense matrix
 inline typename SymmetricMatrix<MT,SO,true,false>::ConstPointer
-   SymmetricMatrix<MT,SO,true,false>::data( size_t i ) const
+   SymmetricMatrix<MT,SO,true,false>::data( size_t i ) const noexcept
 {
    return matrix_.data(i);
 }
@@ -1818,7 +1818,7 @@ inline typename EnableIf< IsNumeric<Other>, SymmetricMatrix<MT,SO,true,false> >:
 */
 template< typename MT  // Type of the adapted dense matrix
         , bool SO >    // Storage order of the adapted dense matrix
-inline size_t SymmetricMatrix<MT,SO,true,false>::rows() const
+inline size_t SymmetricMatrix<MT,SO,true,false>::rows() const noexcept
 {
    return matrix_.rows();
 }
@@ -1834,7 +1834,7 @@ inline size_t SymmetricMatrix<MT,SO,true,false>::rows() const
 */
 template< typename MT  // Type of the adapted dense matrix
         , bool SO >    // Storage order of the adapted dense matrix
-inline size_t SymmetricMatrix<MT,SO,true,false>::columns() const
+inline size_t SymmetricMatrix<MT,SO,true,false>::columns() const noexcept
 {
    return matrix_.columns();
 }
@@ -1856,7 +1856,7 @@ inline size_t SymmetricMatrix<MT,SO,true,false>::columns() const
 */
 template< typename MT  // Type of the adapted dense matrix
         , bool SO >    // Storage order of the adapted dense matrix
-inline size_t SymmetricMatrix<MT,SO,true,false>::spacing() const
+inline size_t SymmetricMatrix<MT,SO,true,false>::spacing() const noexcept
 {
    return matrix_.spacing();
 }
@@ -1872,7 +1872,7 @@ inline size_t SymmetricMatrix<MT,SO,true,false>::spacing() const
 */
 template< typename MT  // Type of the adapted dense matrix
         , bool SO >    // Storage order of the adapted dense matrix
-inline size_t SymmetricMatrix<MT,SO,true,false>::capacity() const
+inline size_t SymmetricMatrix<MT,SO,true,false>::capacity() const noexcept
 {
    return matrix_.capacity();
 }
@@ -1893,7 +1893,7 @@ inline size_t SymmetricMatrix<MT,SO,true,false>::capacity() const
 */
 template< typename MT  // Type of the adapted dense matrix
         , bool SO >    // Storage order of the adapted dense matrix
-inline size_t SymmetricMatrix<MT,SO,true,false>::capacity( size_t i ) const
+inline size_t SymmetricMatrix<MT,SO,true,false>::capacity( size_t i ) const noexcept
 {
    return matrix_.capacity(i);
 }
@@ -2259,7 +2259,6 @@ inline SymmetricMatrix<MT,SO,true,false>&
 //
 // \param m The matrix to be swapped.
 // \return void
-// \exception no-throw guarantee.
 */
 template< typename MT  // Type of the adapted dense matrix
         , bool SO >    // Storage order of the adapted dense matrix
@@ -2293,7 +2292,7 @@ inline void SymmetricMatrix<MT,SO,true,false>::swap( SymmetricMatrix& m ) noexce
 */
 template< typename MT  // Type of the adapted dense matrix
         , bool SO >    // Storage order of the adapted dense matrix
-inline bool SymmetricMatrix<MT,SO,true,false>::isIntact() const
+inline bool SymmetricMatrix<MT,SO,true,false>::isIntact() const noexcept
 {
    using blaze::isIntact;
 
@@ -2326,7 +2325,7 @@ inline bool SymmetricMatrix<MT,SO,true,false>::isIntact() const
 template< typename MT       // Type of the adapted dense matrix
         , bool SO >         // Storage order of the adapted dense matrix
 template< typename Other >  // Data type of the foreign expression
-inline bool SymmetricMatrix<MT,SO,true,false>::canAlias( const Other* alias ) const
+inline bool SymmetricMatrix<MT,SO,true,false>::canAlias( const Other* alias ) const noexcept
 {
    return matrix_.canAlias( alias );
 }
@@ -2348,7 +2347,7 @@ inline bool SymmetricMatrix<MT,SO,true,false>::canAlias( const Other* alias ) co
 template< typename MT       // Type of the adapted dense matrix
         , bool SO >         // Storage order of the adapted dense matrix
 template< typename Other >  // Data type of the foreign expression
-inline bool SymmetricMatrix<MT,SO,true,false>::isAliased( const Other* alias ) const
+inline bool SymmetricMatrix<MT,SO,true,false>::isAliased( const Other* alias ) const noexcept
 {
    return matrix_.isAliased( alias );
 }
@@ -2368,7 +2367,7 @@ inline bool SymmetricMatrix<MT,SO,true,false>::isAliased( const Other* alias ) c
 */
 template< typename MT  // Type of the adapted dense matrix
         , bool SO >    // Storage order of the adapted dense matrix
-inline bool SymmetricMatrix<MT,SO,true,false>::isAligned() const
+inline bool SymmetricMatrix<MT,SO,true,false>::isAligned() const noexcept
 {
    return matrix_.isAligned();
 }
@@ -2389,7 +2388,7 @@ inline bool SymmetricMatrix<MT,SO,true,false>::isAligned() const
 */
 template< typename MT  // Type of the adapted dense matrix
         , bool SO >    // Storage order of the adapted dense matrix
-inline bool SymmetricMatrix<MT,SO,true,false>::canSMPAssign() const
+inline bool SymmetricMatrix<MT,SO,true,false>::canSMPAssign() const noexcept
 {
    return matrix_.canSMPAssign();
 }
