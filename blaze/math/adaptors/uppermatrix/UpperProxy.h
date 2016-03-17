@@ -391,7 +391,7 @@ inline const UpperProxy<MT>& UpperProxy<MT>::operator/=( const T& value ) const
 // \return Direct/raw reference to the accessed matrix element.
 */
 template< typename MT >  // Type of the adapted matrix
-inline typename UpperProxy<MT>::RawReference UpperProxy<MT>::get() const
+inline typename UpperProxy<MT>::RawReference UpperProxy<MT>::get() const noexcept
 {
    return value_;
 }
@@ -404,7 +404,7 @@ inline typename UpperProxy<MT>::RawReference UpperProxy<MT>::get() const
 // \return \a true in case access to the matrix element is restricted, \a false if not.
 */
 template< typename MT >  // Type of the adapted matrix
-inline bool UpperProxy<MT>::isRestricted() const
+inline bool UpperProxy<MT>::isRestricted() const noexcept
 {
    return restricted_;
 }
@@ -425,7 +425,7 @@ inline bool UpperProxy<MT>::isRestricted() const
 // \return Reference-to-const to the accessed matrix element.
 */
 template< typename MT >  // Type of the adapted matrix
-inline UpperProxy<MT>::operator ConstReference() const
+inline UpperProxy<MT>::operator ConstReference() const noexcept
 {
    return static_cast<ConstReference>( value_ );
 }
