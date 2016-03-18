@@ -80,7 +80,8 @@
 #include <blaze/util/Exception.h>
 #include <blaze/util/IntegralConstant.h>
 #include <blaze/util/logging/FunctionTrace.h>
-#include <blaze/util/SelectType.h>
+#include <blaze/util/mpl/And.h>
+#include <blaze/util/mpl/If.h>
 #include <blaze/util/Types.h>
 #include <blaze/util/typetraits/IsReference.h>
 
@@ -211,22 +212,22 @@ class DVecTDVecMultExpr : public DenseMatrix< DVecTDVecMultExpr<VT1,VT2>, false 
    typedef typename IntrinsicTrait<ElementType>::Type  IntrinsicType;  //!< Resulting intrinsic element type.
 
    //! Return type for expression template evaluations.
-   typedef const typename SelectType< returnExpr, ExprReturnType, ElementType >::Type  ReturnType;
+   typedef const typename IfTrue< returnExpr, ExprReturnType, ElementType >::Type  ReturnType;
 
    //! Data type for composite expression templates.
-   typedef typename SelectType< useAssign, const ResultType, const DVecTDVecMultExpr& >::Type  CompositeType;
+   typedef typename IfTrue< useAssign, const ResultType, const DVecTDVecMultExpr& >::Type  CompositeType;
 
    //! Composite type of the left-hand side dense vector expression.
-   typedef typename SelectType< IsExpression<VT1>::value, const VT1, const VT1& >::Type  LeftOperand;
+   typedef typename If< IsExpression<VT1>, const VT1, const VT1& >::Type  LeftOperand;
 
    //! Composite type of the right-hand side dense vector expression.
-   typedef typename SelectType< IsExpression<VT2>::value, const VT2, const VT2& >::Type  RightOperand;
+   typedef typename If< IsExpression<VT2>, const VT2, const VT2& >::Type  RightOperand;
 
    //! Type for the assignment of the left-hand side dense vector operand.
-   typedef typename SelectType< evaluateLeft, const RT1, CT1 >::Type  LT;
+   typedef typename IfTrue< evaluateLeft, const RT1, CT1 >::Type  LT;
 
    //! Type for the assignment of the right-hand side dense vector operand.
-   typedef typename SelectType< evaluateRight, const RT2, CT2 >::Type  RT;
+   typedef typename IfTrue< evaluateRight, const RT2, CT2 >::Type  RT;
    //**********************************************************************************************
 
    //**ConstIterator class definition**************************************************************
@@ -924,7 +925,7 @@ class DVecTDVecMultExpr : public DenseMatrix< DVecTDVecMultExpr<VT1,VT2>, false 
    {
       BLAZE_FUNCTION_TRACE;
 
-      typedef typename SelectType< SO, OppositeType, ResultType >::Type  TmpType;
+      typedef typename IfTrue< SO, OppositeType, ResultType >::Type  TmpType;
 
       BLAZE_CONSTRAINT_MUST_BE_DENSE_MATRIX_TYPE( ResultType );
       BLAZE_CONSTRAINT_MUST_BE_DENSE_MATRIX_TYPE( OppositeType );
@@ -1506,7 +1507,7 @@ class DVecTDVecMultExpr : public DenseMatrix< DVecTDVecMultExpr<VT1,VT2>, false 
    {
       BLAZE_FUNCTION_TRACE;
 
-      typedef typename SelectType< SO, OppositeType, ResultType >::Type  TmpType;
+      typedef typename IfTrue< SO, OppositeType, ResultType >::Type  TmpType;
 
       BLAZE_CONSTRAINT_MUST_BE_DENSE_MATRIX_TYPE( ResultType );
       BLAZE_CONSTRAINT_MUST_BE_DENSE_MATRIX_TYPE( OppositeType );

@@ -85,7 +85,8 @@
 #include <blaze/util/IntegralConstant.h>
 #include <blaze/util/InvalidType.h>
 #include <blaze/util/logging/FunctionTrace.h>
-#include <blaze/util/SelectType.h>
+#include <blaze/util/mpl/And.h>
+#include <blaze/util/mpl/If.h>
 #include <blaze/util/Types.h>
 
 
@@ -173,13 +174,13 @@ class DMatImagExpr : public DenseMatrix< DMatImagExpr<MT,SO>, SO >
    typedef typename ResultType::ElementType    ElementType;    //!< Resulting element type.
 
    //! Return type for expression template evaluations.
-   typedef const typename SelectType< returnExpr, ExprReturnType, ElementType >::Type  ReturnType;
+   typedef const typename IfTrue< returnExpr, ExprReturnType, ElementType >::Type  ReturnType;
 
    //! Data type for composite expression templates.
-   typedef typename SelectType< useAssign, const ResultType, const DMatImagExpr& >::Type  CompositeType;
+   typedef typename IfTrue< useAssign, const ResultType, const DMatImagExpr& >::Type  CompositeType;
 
    //! Composite data type of the dense matrix expression.
-   typedef typename SelectType< IsExpression<MT>::value, const MT, const MT& >::Type  Operand;
+   typedef typename If< IsExpression<MT>, const MT, const MT& >::Type  Operand;
    //**********************************************************************************************
 
    //**ConstIterator class definition**************************************************************
@@ -619,7 +620,7 @@ class DMatImagExpr : public DenseMatrix< DMatImagExpr<MT,SO>, SO >
    {
       BLAZE_FUNCTION_TRACE;
 
-      typedef typename SelectType< SO == SO2, RT, OT >::Type  TmpType;
+      typedef typename IfTrue< SO == SO2, RT, OT >::Type  TmpType;
 
       BLAZE_CONSTRAINT_MUST_BE_DENSE_MATRIX_TYPE( RT );
       BLAZE_CONSTRAINT_MUST_BE_DENSE_MATRIX_TYPE( OT );
@@ -777,7 +778,7 @@ class DMatImagExpr : public DenseMatrix< DMatImagExpr<MT,SO>, SO >
    {
       BLAZE_FUNCTION_TRACE;
 
-      typedef typename SelectType< SO == SO2, RT, OT >::Type  TmpType;
+      typedef typename IfTrue< SO == SO2, RT, OT >::Type  TmpType;
 
       BLAZE_CONSTRAINT_MUST_BE_DENSE_MATRIX_TYPE( RT );
       BLAZE_CONSTRAINT_MUST_BE_DENSE_MATRIX_TYPE( OT );
@@ -1168,9 +1169,9 @@ struct DMatImagExprTrait< DMatImagExpr<MT,false> >
 {
  public:
    //**********************************************************************************************
-   typedef typename SelectType< IsDenseMatrix<MT>::value && IsRowMajorMatrix<MT>::value
-                              , DMatImagExpr<MT,false>
-                              , INVALID_TYPE >::Type  Type;
+   typedef typename If< And< IsDenseMatrix<MT>, IsRowMajorMatrix<MT> >
+                      , DMatImagExpr<MT,false>
+                      , INVALID_TYPE >::Type  Type;
    //**********************************************************************************************
 };
 /*! \endcond */
@@ -1184,9 +1185,9 @@ struct TDMatImagExprTrait< DMatImagExpr<MT,true> >
 {
  public:
    //**********************************************************************************************
-   typedef typename SelectType< IsDenseMatrix<MT>::value && IsColumnMajorMatrix<MT>::value
-                              , DMatImagExpr<MT,true>
-                              , INVALID_TYPE >::Type  Type;
+   typedef typename If< And< IsDenseMatrix<MT>, IsColumnMajorMatrix<MT> >
+                      , DMatImagExpr<MT,true>
+                      , INVALID_TYPE >::Type  Type;
    //**********************************************************************************************
 };
 /*! \endcond */

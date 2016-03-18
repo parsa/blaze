@@ -71,7 +71,8 @@
 #include <blaze/util/IntegralConstant.h>
 #include <blaze/util/InvalidType.h>
 #include <blaze/util/logging/FunctionTrace.h>
-#include <blaze/util/SelectType.h>
+#include <blaze/util/mpl/And.h>
+#include <blaze/util/mpl/If.h>
 #include <blaze/util/Types.h>
 
 
@@ -94,7 +95,7 @@ template< typename VT  // Type of the dense vector
         , bool TF >    // Transpose flag
 class DVecTransExpr : public DenseVector< DVecTransExpr<VT,TF>, TF >
                     , private VecTransExpr
-                    , private SelectType< IsComputation<VT>::value, Computation, EmptyType >::Type
+                    , private If< IsComputation<VT>, Computation, EmptyType >::Type
 {
  private:
    //**Type definitions****************************************************************************
@@ -146,10 +147,10 @@ class DVecTransExpr : public DenseVector< DVecTransExpr<VT,TF>, TF >
    typedef typename IntrinsicTrait<ElementType>::Type  IntrinsicType;
 
    //! Data type for composite expression templates.
-   typedef typename SelectType< useAssign, const ResultType, const DVecTransExpr& >::Type  CompositeType;
+   typedef typename IfTrue< useAssign, const ResultType, const DVecTransExpr& >::Type  CompositeType;
 
    //! Composite data type of the dense vector expression.
-   typedef typename SelectType< IsExpression<VT>::value, const VT, const VT& >::Type  Operand;
+   typedef typename If< IsExpression<VT>, const VT, const VT& >::Type  Operand;
    //**********************************************************************************************
 
    //**ConstIterator class definition**************************************************************
@@ -1010,9 +1011,9 @@ struct DVecTransExprTrait< DVecTransExpr<VT,false> >
 {
  public:
    //**********************************************************************************************
-   typedef typename SelectType< IsDenseVector<VT>::value && IsRowVector<VT>::value
-                              , typename DVecTransExpr<VT,false>::Operand
-                              , INVALID_TYPE >::Type  Type;
+   typedef typename If< And< IsDenseVector<VT>, IsRowVector<VT> >
+                      , typename DVecTransExpr<VT,false>::Operand
+                      , INVALID_TYPE >::Type  Type;
    //**********************************************************************************************
 };
 /*! \endcond */
@@ -1026,9 +1027,9 @@ struct TDVecTransExprTrait< DVecTransExpr<VT,true> >
 {
  public:
    //**********************************************************************************************
-   typedef typename SelectType< IsDenseVector<VT>::value && IsColumnVector<VT>::value
-                              , typename DVecTransExpr<VT,true>::Operand
-                              , INVALID_TYPE >::Type  Type;
+   typedef typename If< And< IsDenseVector<VT>, IsColumnVector<VT> >
+                      , typename DVecTransExpr<VT,true>::Operand
+                      , INVALID_TYPE >::Type  Type;
    //**********************************************************************************************
 };
 /*! \endcond */

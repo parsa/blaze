@@ -71,7 +71,7 @@
 #include <blaze/util/EnableIf.h>
 #include <blaze/util/Exception.h>
 #include <blaze/util/logging/FunctionTrace.h>
-#include <blaze/util/SelectType.h>
+#include <blaze/util/mpl/If.h>
 #include <blaze/util/Types.h>
 #include <blaze/util/typetraits/RemoveReference.h>
 
@@ -138,16 +138,16 @@ class TSVecSMatMultExpr : public SparseVector< TSVecSMatMultExpr<VT,MT>, true >
    typedef const ResultType                    CompositeType;  //!< Data type for composite expression templates.
 
    //! Composite type of the left-hand side sparse vector expression.
-   typedef typename SelectType< IsExpression<VT>::value, const VT, const VT& >::Type  LeftOperand;
+   typedef typename If< IsExpression<VT>, const VT, const VT& >::Type  LeftOperand;
 
    //! Composite type of the right-hand side sparse matrix expression.
-   typedef typename SelectType< IsExpression<MT>::value, const MT, const MT& >::Type  RightOperand;
+   typedef typename If< IsExpression<MT>, const MT, const MT& >::Type  RightOperand;
 
    //! Type for the assignment of the left-hand side sparse vector operand.
-   typedef typename SelectType< evaluateVector, const VRT, VCT >::Type  LT;
+   typedef typename IfTrue< evaluateVector, const VRT, VCT >::Type  LT;
 
    //! Type for the assignment of the right-hand side sparse matrix operand.
-   typedef typename SelectType< evaluateMatrix, const MRT, MCT >::Type  RT;
+   typedef typename IfTrue< evaluateMatrix, const MRT, MCT >::Type  RT;
    //**********************************************************************************************
 
    //**Compilation flags***************************************************************************

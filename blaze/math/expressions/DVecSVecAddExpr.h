@@ -67,8 +67,9 @@
 #include <blaze/util/Exception.h>
 #include <blaze/util/InvalidType.h>
 #include <blaze/util/logging/FunctionTrace.h>
+#include <blaze/util/mpl/And.h>
+#include <blaze/util/mpl/If.h>
 #include <blaze/util/mpl/Max.h>
-#include <blaze/util/SelectType.h>
 #include <blaze/util/Types.h>
 
 
@@ -141,16 +142,16 @@ class DVecSVecAddExpr : public DenseVector< DVecSVecAddExpr<VT1,VT2,TF>, TF >
    typedef typename ResultType::ElementType    ElementType;    //!< Resulting element type.
 
    //! Return type for expression template evaluations.
-   typedef const typename SelectType< returnExpr, ExprReturnType, ElementType >::Type  ReturnType;
+   typedef const typename IfTrue< returnExpr, ExprReturnType, ElementType >::Type  ReturnType;
 
    //! Data type for composite expression templates.
    typedef const ResultType  CompositeType;
 
    //! Composite type of the left-hand side dense vector expression.
-   typedef typename SelectType< IsExpression<VT1>::value, const VT1, const VT1& >::Type  LeftOperand;
+   typedef typename If< IsExpression<VT1>, const VT1, const VT1& >::Type  LeftOperand;
 
    //! Composite type of the right-hand side sparse vector expression.
-   typedef typename SelectType< IsExpression<VT2>::value, const VT2, const VT2& >::Type  RightOperand;
+   typedef typename If< IsExpression<VT2>, const VT2, const VT2& >::Type  RightOperand;
    //**********************************************************************************************
 
    //**Compilation flags***************************************************************************
@@ -784,11 +785,11 @@ struct DVecDVecAddExprTrait< DVecSVecAddExpr<VT1,VT2,false>, VT3 >
  public:
    //**********************************************************************************************
    /*! \cond BLAZE_INTERNAL */
-   typedef typename SelectType< IsDenseVector<VT1>::value  && IsColumnVector<VT1>::value &&
-                                IsSparseVector<VT2>::value && IsColumnVector<VT2>::value &&
-                                IsDenseVector<VT3>::value  && IsColumnVector<VT3>::value
-                              , typename DVecSVecAddExprTrait< typename DVecDVecAddExprTrait<VT1,VT3>::Type, VT2 >::Type
-                              , INVALID_TYPE >::Type  Type;
+   typedef typename If< And< IsDenseVector<VT1>, IsColumnVector<VT1>
+                           , IsSparseVector<VT2>, IsColumnVector<VT2>
+                           , IsDenseVector<VT3>, IsColumnVector<VT3> >
+                      , typename DVecSVecAddExprTrait< typename DVecDVecAddExprTrait<VT1,VT3>::Type, VT2 >::Type
+                      , INVALID_TYPE >::Type  Type;
    /*! \endcond */
    //**********************************************************************************************
 };
@@ -804,11 +805,11 @@ struct TDVecTDVecAddExprTrait< DVecSVecAddExpr<VT1,VT2,true>, VT3 >
  public:
    //**********************************************************************************************
    /*! \cond BLAZE_INTERNAL */
-   typedef typename SelectType< IsDenseVector<VT1>::value  && IsRowVector<VT1>::value &&
-                                IsSparseVector<VT2>::value && IsRowVector<VT2>::value &&
-                                IsDenseVector<VT3>::value  && IsRowVector<VT3>::value
-                              , typename TDVecTSVecAddExprTrait< typename TDVecTDVecAddExprTrait<VT1,VT3>::Type, VT2 >::Type
-                              , INVALID_TYPE >::Type  Type;
+   typedef typename If< And< IsDenseVector<VT1>, IsRowVector<VT1>
+                           , IsSparseVector<VT2>, IsRowVector<VT2>
+                           , IsDenseVector<VT3>, IsRowVector<VT3> >
+                      , typename TDVecTSVecAddExprTrait< typename TDVecTDVecAddExprTrait<VT1,VT3>::Type, VT2 >::Type
+                      , INVALID_TYPE >::Type  Type;
    /*! \endcond */
    //**********************************************************************************************
 };
@@ -824,11 +825,11 @@ struct DVecDVecSubExprTrait< DVecSVecAddExpr<VT1,VT2,false>, VT3 >
  public:
    //**********************************************************************************************
    /*! \cond BLAZE_INTERNAL */
-   typedef typename SelectType< IsDenseVector<VT1>::value  && IsColumnVector<VT1>::value &&
-                                IsSparseVector<VT2>::value && IsColumnVector<VT2>::value &&
-                                IsDenseVector<VT3>::value  && IsColumnVector<VT3>::value
-                              , typename DVecSVecAddExprTrait< typename DVecDVecSubExprTrait<VT1,VT3>::Type, VT2 >::Type
-                              , INVALID_TYPE >::Type  Type;
+   typedef typename If< And< IsDenseVector<VT1>, IsColumnVector<VT1>
+                           , IsSparseVector<VT2>, IsColumnVector<VT2>
+                           , IsDenseVector<VT3>, IsColumnVector<VT3> >
+                      , typename DVecSVecAddExprTrait< typename DVecDVecSubExprTrait<VT1,VT3>::Type, VT2 >::Type
+                      , INVALID_TYPE >::Type  Type;
    /*! \endcond */
    //**********************************************************************************************
 };
@@ -844,11 +845,11 @@ struct TDVecTDVecSubExprTrait< DVecSVecAddExpr<VT1,VT2,true>, VT3 >
  public:
    //**********************************************************************************************
    /*! \cond BLAZE_INTERNAL */
-   typedef typename SelectType< IsDenseVector<VT1>::value  && IsRowVector<VT1>::value &&
-                                IsSparseVector<VT2>::value && IsRowVector<VT2>::value &&
-                                IsDenseVector<VT3>::value  && IsRowVector<VT3>::value
-                              , typename TDVecTSVecAddExprTrait< typename TDVecTDVecSubExprTrait<VT1,VT3>::Type, VT2 >::Type
-                              , INVALID_TYPE >::Type  Type;
+   typedef typename If< And< IsDenseVector<VT1>, IsRowVector<VT1>
+                           , IsSparseVector<VT2>, IsRowVector<VT2>
+                           , IsDenseVector<VT3>, IsRowVector<VT3> >
+                      , typename TDVecTSVecAddExprTrait< typename TDVecTDVecSubExprTrait<VT1,VT3>::Type, VT2 >::Type
+                      , INVALID_TYPE >::Type  Type;
    /*! \endcond */
    //**********************************************************************************************
 };

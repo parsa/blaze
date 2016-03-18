@@ -80,7 +80,7 @@
 #include <blaze/util/InvalidType.h>
 #include <blaze/util/logging/FunctionTrace.h>
 #include <blaze/util/mpl/And.h>
-#include <blaze/util/SelectType.h>
+#include <blaze/util/mpl/If.h>
 #include <blaze/util/Types.h>
 #include <blaze/util/typetraits/IsNumeric.h>
 #include <blaze/util/typetraits/IsSame.h>
@@ -172,13 +172,13 @@ class DVecScalarDivExpr : public DenseVector< DVecScalarDivExpr<VT,ST,TF>, TF >
    typedef typename IntrinsicTrait<ElementType>::Type  IntrinsicType;  //!< Resulting intrinsic element type.
 
    //! Return type for expression template evaluations.
-   typedef const typename SelectType< returnExpr, ExprReturnType, ElementType >::Type  ReturnType;
+   typedef const typename IfTrue< returnExpr, ExprReturnType, ElementType >::Type  ReturnType;
 
    //! Data type for composite expression templates.
-   typedef typename SelectType< useAssign, const ResultType, const DVecScalarDivExpr& >::Type  CompositeType;
+   typedef typename IfTrue< useAssign, const ResultType, const DVecScalarDivExpr& >::Type  CompositeType;
 
    //! Composite type of the left-hand side dense vector expression.
-   typedef typename SelectType< IsExpression<VT>::value, const VT, const VT& >::Type  LeftOperand;
+   typedef typename If< IsExpression<VT>, const VT, const VT& >::Type  LeftOperand;
 
    //! Composite type of the right-hand side scalar value.
    typedef ST  RightOperand;
@@ -1167,20 +1167,16 @@ struct DVecScalarMultExprTrait< DVecScalarDivExpr<VT,ST1,false>, ST2 >
    //**********************************************************************************************
 
    //**********************************************************************************************
-   enum { condition = IsInvertible<ScalarType>::value };
-   //**********************************************************************************************
-
-   //**********************************************************************************************
    typedef typename DVecScalarMultExprTrait<VT,ScalarType>::Type              T1;
    typedef DVecScalarMultExpr< DVecScalarDivExpr<VT,ST1,false>, ST2, false >  T2;
    //**********************************************************************************************
 
  public:
    //**********************************************************************************************
-   typedef typename SelectType< IsDenseVector<VT>::value && IsColumnVector<VT>::value &&
-                                IsNumeric<ST1>::value && IsNumeric<ST2>::value
-                              , typename SelectType<condition,T1,T2>::Type
-                              , INVALID_TYPE >::Type  Type;
+   typedef typename If< And< IsDenseVector<VT>, IsColumnVector<VT>
+                           , IsNumeric<ST1>, IsNumeric<ST2> >
+                      , typename If< IsInvertible<ScalarType>, T1, T2 >::Type
+                      , INVALID_TYPE >::Type  Type;
    //**********************************************************************************************
 };
 /*! \endcond */
@@ -1206,20 +1202,16 @@ struct TDVecScalarMultExprTrait< DVecScalarDivExpr<VT,ST1,true>, ST2 >
    //**********************************************************************************************
 
    //**********************************************************************************************
-   enum { condition = IsInvertible<ScalarType>::value };
-   //**********************************************************************************************
-
-   //**********************************************************************************************
    typedef typename DVecScalarMultExprTrait<VT,ScalarType>::Type            T1;
    typedef DVecScalarMultExpr< DVecScalarDivExpr<VT,ST1,true>, ST2, true >  T2;
    //**********************************************************************************************
 
  public:
    //**********************************************************************************************
-   typedef typename SelectType< IsDenseVector<VT>::value && IsRowVector<VT>::value &&
-                                IsNumeric<ST1>::value && IsNumeric<ST2>::value
-                              , typename SelectType<condition,T1,T2>::Type
-                              , INVALID_TYPE >::Type  Type;
+   typedef typename If< And< IsDenseVector<VT>, IsRowVector<VT>
+                           , IsNumeric<ST1>, IsNumeric<ST2> >
+                      , typename If< IsInvertible<ScalarType>, T1, T2 >::Type
+                      , INVALID_TYPE >::Type  Type;
    //**********************************************************************************************
 };
 /*! \endcond */

@@ -94,8 +94,8 @@
 #include <blaze/util/InvalidType.h>
 #include <blaze/util/logging/FunctionTrace.h>
 #include <blaze/util/mpl/And.h>
+#include <blaze/util/mpl/If.h>
 #include <blaze/util/mpl/Or.h>
-#include <blaze/util/SelectType.h>
 #include <blaze/util/Types.h>
 #include <blaze/util/typetraits/RemoveReference.h>
 #include <blaze/util/Unused.h>
@@ -181,10 +181,10 @@ class SMatSMatMultExpr : public SparseMatrix< SMatSMatMultExpr<MT1,MT2>, false >
    typedef const ResultType                    CompositeType;  //!< Data type for composite expression templates.
 
    //! Composite type of the left-hand side sparse matrix expression.
-   typedef typename SelectType< IsExpression<MT1>::value, const MT1, const MT1& >::Type  LeftOperand;
+   typedef typename If< IsExpression<MT1>, const MT1, const MT1& >::Type  LeftOperand;
 
    //! Composite type of the right-hand side sparse matrix expression.
-   typedef typename SelectType< IsExpression<MT2>::value, const MT2, const MT2& >::Type  RightOperand;
+   typedef typename If< IsExpression<MT2>, const MT2, const MT2& >::Type  RightOperand;
    //**********************************************************************************************
 
    //**Compilation flags***************************************************************************
@@ -1330,11 +1330,11 @@ struct SMatDVecMultExprTrait< SMatSMatMultExpr<MT1,MT2>, VT >
 {
  public:
    //**********************************************************************************************
-   typedef typename SelectType< IsSparseMatrix<MT1>::value && IsRowMajorMatrix<MT1>::value &&
-                                IsSparseMatrix<MT2>::value && IsRowMajorMatrix<MT2>::value &&
-                                IsDenseVector<VT>::value   && IsColumnVector<VT>::value
-                              , typename SMatDVecMultExprTrait< MT1, typename SMatDVecMultExprTrait<MT2,VT>::Type >::Type
-                              , INVALID_TYPE >::Type  Type;
+   typedef typename If< And< IsSparseMatrix<MT1>, IsRowMajorMatrix<MT1>
+                           , IsSparseMatrix<MT2>, IsRowMajorMatrix<MT2>
+                           , IsDenseVector<VT>, IsColumnVector<VT> >
+                      , typename SMatDVecMultExprTrait< MT1, typename SMatDVecMultExprTrait<MT2,VT>::Type >::Type
+                      , INVALID_TYPE >::Type  Type;
    //**********************************************************************************************
 };
 /*! \endcond */
@@ -1348,11 +1348,11 @@ struct SMatSVecMultExprTrait< SMatSMatMultExpr<MT1,MT2>, VT >
 {
  public:
    //**********************************************************************************************
-   typedef typename SelectType< IsSparseMatrix<MT1>::value && IsRowMajorMatrix<MT1>::value &&
-                                IsSparseMatrix<MT2>::value && IsRowMajorMatrix<MT2>::value &&
-                                IsSparseVector<VT>::value  && IsColumnVector<VT>::value
-                              , typename SMatSVecMultExprTrait< MT1, typename SMatSVecMultExprTrait<MT2,VT>::Type >::Type
-                              , INVALID_TYPE >::Type  Type;
+   typedef typename If< And< IsSparseMatrix<MT1>, IsRowMajorMatrix<MT1>
+                           , IsSparseMatrix<MT2>, IsRowMajorMatrix<MT2>
+                           , IsSparseVector<VT>, IsColumnVector<VT> >
+                      , typename SMatSVecMultExprTrait< MT1, typename SMatSVecMultExprTrait<MT2,VT>::Type >::Type
+                      , INVALID_TYPE >::Type  Type;
    //**********************************************************************************************
 };
 /*! \endcond */
@@ -1366,11 +1366,11 @@ struct TDVecSMatMultExprTrait< VT, SMatSMatMultExpr<MT1,MT2> >
 {
  public:
    //**********************************************************************************************
-   typedef typename SelectType< IsDenseVector<VT>::value   && IsRowVector<VT>::value       &&
-                                IsSparseMatrix<MT1>::value && IsRowMajorMatrix<MT1>::value &&
-                                IsSparseMatrix<MT2>::value && IsRowMajorMatrix<MT2>::value
-                              , typename TDVecSMatMultExprTrait< typename TDVecSMatMultExprTrait<VT,MT1>::Type, MT2 >::Type
-                              , INVALID_TYPE >::Type  Type;
+   typedef typename If< And< IsDenseVector<VT>, IsRowVector<VT>
+                           , IsSparseMatrix<MT1>, IsRowMajorMatrix<MT1>
+                           , IsSparseMatrix<MT2>, IsRowMajorMatrix<MT2> >
+                      , typename TDVecSMatMultExprTrait< typename TDVecSMatMultExprTrait<VT,MT1>::Type, MT2 >::Type
+                      , INVALID_TYPE >::Type  Type;
    //**********************************************************************************************
 };
 /*! \endcond */
@@ -1384,11 +1384,11 @@ struct TSVecSMatMultExprTrait< VT, SMatSMatMultExpr<MT1,MT2> >
 {
  public:
    //**********************************************************************************************
-   typedef typename SelectType< IsSparseVector<VT>::value  && IsRowVector<VT>::value       &&
-                                IsSparseMatrix<MT1>::value && IsRowMajorMatrix<MT1>::value &&
-                                IsSparseMatrix<MT2>::value && IsRowMajorMatrix<MT2>::value
-                              , typename TSVecSMatMultExprTrait< typename TSVecSMatMultExprTrait<VT,MT1>::Type, MT2 >::Type
-                              , INVALID_TYPE >::Type  Type;
+   typedef typename If< And< IsSparseVector<VT>, IsRowVector<VT>
+                           , IsSparseMatrix<MT1>, IsRowMajorMatrix<MT1>
+                           , IsSparseMatrix<MT2>, IsRowMajorMatrix<MT2> >
+                      , typename TSVecSMatMultExprTrait< typename TSVecSMatMultExprTrait<VT,MT1>::Type, MT2 >::Type
+                      , INVALID_TYPE >::Type  Type;
    //**********************************************************************************************
 };
 /*! \endcond */

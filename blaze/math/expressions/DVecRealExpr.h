@@ -74,7 +74,8 @@
 #include <blaze/util/IntegralConstant.h>
 #include <blaze/util/InvalidType.h>
 #include <blaze/util/logging/FunctionTrace.h>
-#include <blaze/util/SelectType.h>
+#include <blaze/util/mpl/And.h>
+#include <blaze/util/mpl/If.h>
 #include <blaze/util/Types.h>
 
 
@@ -160,13 +161,13 @@ class DVecRealExpr : public DenseVector< DVecRealExpr<VT,TF>, TF >
    typedef typename ResultType::ElementType    ElementType;    //!< Resulting element type.
 
    //! Return type for expression template evaluations.
-   typedef const typename SelectType< returnExpr, ExprReturnType, ElementType >::Type  ReturnType;
+   typedef const typename IfTrue< returnExpr, ExprReturnType, ElementType >::Type  ReturnType;
 
    //! Data type for composite expression templates.
-   typedef typename SelectType< useAssign, const ResultType, const DVecRealExpr& >::Type  CompositeType;
+   typedef typename IfTrue< useAssign, const ResultType, const DVecRealExpr& >::Type  CompositeType;
 
    //! Composite data type of the dense vector expression.
-   typedef typename SelectType< IsExpression<VT>::value, const VT, const VT& >::Type  Operand;
+   typedef typename If< IsExpression<VT>, const VT, const VT& >::Type  Operand;
    //**********************************************************************************************
 
    //**ConstIterator class definition**************************************************************
@@ -1006,9 +1007,9 @@ struct DVecRealExprTrait< DVecRealExpr<VT,false> >
 {
  public:
    //**********************************************************************************************
-   typedef typename SelectType< IsDenseVector<VT>::value && IsColumnVector<VT>::value
-                              , DVecRealExpr<VT,false>
-                              , INVALID_TYPE >::Type  Type;
+   typedef typename If< And< IsDenseVector<VT>, IsColumnVector<VT> >
+                      , DVecRealExpr<VT,false>
+                      , INVALID_TYPE >::Type  Type;
    //**********************************************************************************************
 };
 /*! \endcond */
@@ -1022,9 +1023,9 @@ struct TDVecRealExprTrait< DVecRealExpr<VT,true> >
 {
  public:
    //**********************************************************************************************
-   typedef typename SelectType< IsDenseVector<VT>::value && IsRowVector<VT>::value
-                              , DVecRealExpr<VT,true>
-                              , INVALID_TYPE >::Type  Type;
+   typedef typename If< And< IsDenseVector<VT>, IsRowVector<VT> >
+                      , DVecRealExpr<VT,true>
+                      , INVALID_TYPE >::Type  Type;
    //**********************************************************************************************
 };
 /*! \endcond */

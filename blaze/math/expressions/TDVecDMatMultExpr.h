@@ -89,7 +89,8 @@
 #include <blaze/util/Exception.h>
 #include <blaze/util/IntegralConstant.h>
 #include <blaze/util/logging/FunctionTrace.h>
-#include <blaze/util/SelectType.h>
+#include <blaze/util/mpl/And.h>
+#include <blaze/util/mpl/If.h>
 #include <blaze/util/Types.h>
 #include <blaze/util/typetraits/IsBuiltin.h>
 #include <blaze/util/typetraits/IsComplex.h>
@@ -208,16 +209,16 @@ class TDVecDMatMultExpr : public DenseVector< TDVecDMatMultExpr<VT,MT>, true >
    typedef const ResultType                            CompositeType;  //!< Data type for composite expression templates.
 
    //! Composite type of the left-hand side dense vector expression.
-   typedef typename SelectType< IsExpression<VT>::value, const VT, const VT& >::Type  LeftOperand;
+   typedef typename If< IsExpression<VT>, const VT, const VT& >::Type  LeftOperand;
 
    //! Composite type of the right-hand side dense matrix expression.
-   typedef typename SelectType< IsExpression<MT>::value, const MT, const MT& >::Type  RightOperand;
+   typedef typename If< IsExpression<MT>, const MT, const MT& >::Type  RightOperand;
 
    //! Type for the assignment of the left-hand side dense matrix operand.
-   typedef typename SelectType< evaluateVector, const VRT, VCT >::Type  LT;
+   typedef typename IfTrue< evaluateVector, const VRT, VCT >::Type  LT;
 
    //! Type for the assignment of the right-hand side dense vector operand.
-   typedef typename SelectType< evaluateMatrix, const MRT, MCT >::Type  RT;
+   typedef typename IfTrue< evaluateMatrix, const MRT, MCT >::Type  RT;
    //**********************************************************************************************
 
    //**Compilation flags***************************************************************************
@@ -2507,10 +2508,10 @@ class DVecScalarMultExpr< TDVecDMatMultExpr<VT,MT>, ST, true >
    typedef ST  RightOperand;
 
    //! Type for the assignment of the dense vector operand of the left-hand side expression.
-   typedef typename SelectType< evaluateVector, const VRT, VCT >::Type  LT;
+   typedef typename IfTrue< evaluateVector, const VRT, VCT >::Type  LT;
 
    //! Type for the assignment of the dense matrix operand of the left-hand side expression.
-   typedef typename SelectType< evaluateMatrix, const MRT, MCT >::Type  RT;
+   typedef typename IfTrue< evaluateMatrix, const MRT, MCT >::Type  RT;
    //**********************************************************************************************
 
    //**Compilation flags***************************************************************************

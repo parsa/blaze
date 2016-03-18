@@ -77,8 +77,8 @@
 #include <blaze/util/IntegralConstant.h>
 #include <blaze/util/logging/FunctionTrace.h>
 #include <blaze/util/mpl/And.h>
+#include <blaze/util/mpl/If.h>
 #include <blaze/util/mpl/Max.h>
-#include <blaze/util/SelectType.h>
 #include <blaze/util/Types.h>
 #include <blaze/util/typetraits/RemoveReference.h>
 
@@ -165,16 +165,16 @@ class TSMatTSMatSubExpr : public SparseMatrix< TSMatTSMatSubExpr<MT1,MT2>, true 
    typedef typename ResultType::ElementType    ElementType;    //!< Resulting element type.
 
    //! Return type for expression template evaluations.
-   typedef const typename SelectType< returnExpr, ExprReturnType, ElementType >::Type  ReturnType;
+   typedef const typename IfTrue< returnExpr, ExprReturnType, ElementType >::Type  ReturnType;
 
    //! Data type for composite expression templates.
    typedef const ResultType  CompositeType;
 
    //! Composite type of the left-hand side sparse matrix expression.
-   typedef typename SelectType< IsExpression<MT1>::value, const MT1, const MT1& >::Type  LeftOperand;
+   typedef typename If< IsExpression<MT1>, const MT1, const MT1& >::Type  LeftOperand;
 
    //! Composite type of the right-hand side sparse matrix expression.
-   typedef typename SelectType< IsExpression<MT2>::value, const MT2, const MT2& >::Type  RightOperand;
+   typedef typename If< IsExpression<MT2>, const MT2, const MT2& >::Type  RightOperand;
    //**********************************************************************************************
 
    //**Compilation flags***************************************************************************

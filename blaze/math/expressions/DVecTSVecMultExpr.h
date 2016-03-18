@@ -75,7 +75,7 @@
 #include <blaze/util/EnableIf.h>
 #include <blaze/util/Exception.h>
 #include <blaze/util/logging/FunctionTrace.h>
-#include <blaze/util/SelectType.h>
+#include <blaze/util/mpl/If.h>
 #include <blaze/util/Types.h>
 #include <blaze/util/typetraits/IsNumeric.h>
 #include <blaze/util/typetraits/RemoveReference.h>
@@ -186,22 +186,22 @@ class DVecTSVecMultExpr : public SparseMatrix< DVecTSVecMultExpr<VT1,VT2>, false
    typedef typename ResultType::ElementType    ElementType;    //!< Resulting element type.
 
    //! Return type for expression template evaluations.
-   typedef const typename SelectType< returnExpr, ExprReturnType, ElementType >::Type  ReturnType;
+   typedef const typename IfTrue< returnExpr, ExprReturnType, ElementType >::Type  ReturnType;
 
    //! Data type for composite expression templates.
-   typedef typename SelectType< useAssign, const ResultType, const DVecTSVecMultExpr& >::Type  CompositeType;
+   typedef typename IfTrue< useAssign, const ResultType, const DVecTSVecMultExpr& >::Type  CompositeType;
 
    //! Composite type of the left-hand side dense vector expression.
-   typedef typename SelectType< IsExpression<VT1>::value, const VT1, const VT1& >::Type  LeftOperand;
+   typedef typename If< IsExpression<VT1>, const VT1, const VT1& >::Type  LeftOperand;
 
    //! Composite type of the right-hand side sparse vector expression.
-   typedef typename SelectType< IsExpression<VT2>::value, const VT2, const VT2& >::Type  RightOperand;
+   typedef typename If< IsExpression<VT2>, const VT2, const VT2& >::Type  RightOperand;
 
    //! Type for the assignment of the left-hand side dense vector operand.
-   typedef typename SelectType< IsComputation<VT1>::value, const RT1, CT1 >::Type  LT;
+   typedef typename If< IsComputation<VT1>, const RT1, CT1 >::Type  LT;
 
    //! Type for the assignment of the right-hand side dense vector operand.
-   typedef typename SelectType< IsComputation<VT2>::value, const RT2, CT2 >::Type  RT;
+   typedef typename If< IsComputation<VT2>, const RT2, CT2 >::Type  RT;
    //**********************************************************************************************
 
    //**Compilation flags***************************************************************************

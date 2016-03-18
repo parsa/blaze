@@ -84,7 +84,8 @@
 #include <blaze/util/IntegralConstant.h>
 #include <blaze/util/InvalidType.h>
 #include <blaze/util/logging/FunctionTrace.h>
-#include <blaze/util/SelectType.h>
+#include <blaze/util/mpl/And.h>
+#include <blaze/util/mpl/If.h>
 #include <blaze/util/Types.h>
 
 
@@ -172,13 +173,13 @@ class DMatConjExpr : public DenseMatrix< DMatConjExpr<MT,SO>, SO >
    typedef typename IntrinsicTrait<ET>::Type  IntrinsicType;  //!< Resulting intrinsic element type.
 
    //! Return type for expression template evaluations.
-   typedef const typename SelectType< returnExpr, ExprReturnType, ElementType >::Type  ReturnType;
+   typedef const typename IfTrue< returnExpr, ExprReturnType, ElementType >::Type  ReturnType;
 
    //! Data type for composite expression templates.
-   typedef typename SelectType< useAssign, const ResultType, const DMatConjExpr& >::Type  CompositeType;
+   typedef typename IfTrue< useAssign, const ResultType, const DMatConjExpr& >::Type  CompositeType;
 
    //! Composite data type of the dense matrix expression.
-   typedef typename SelectType< IsExpression<MT>::value, const MT, const MT& >::Type  Operand;
+   typedef typename If< IsExpression<MT>, const MT, const MT& >::Type  Operand;
    //**********************************************************************************************
 
    //**ConstIterator class definition**************************************************************
@@ -642,7 +643,7 @@ class DMatConjExpr : public DenseMatrix< DMatConjExpr<MT,SO>, SO >
    {
       BLAZE_FUNCTION_TRACE;
 
-      typedef typename SelectType< SO == SO2, ResultType, OppositeType >::Type  TmpType;
+      typedef typename IfTrue< SO == SO2, ResultType, OppositeType >::Type  TmpType;
 
       BLAZE_CONSTRAINT_MUST_BE_DENSE_MATRIX_TYPE( ResultType );
       BLAZE_CONSTRAINT_MUST_BE_DENSE_MATRIX_TYPE( OppositeType );
@@ -795,7 +796,7 @@ class DMatConjExpr : public DenseMatrix< DMatConjExpr<MT,SO>, SO >
    {
       BLAZE_FUNCTION_TRACE;
 
-      typedef typename SelectType< SO == SO2, ResultType, OppositeType >::Type  TmpType;
+      typedef typename IfTrue< SO == SO2, ResultType, OppositeType >::Type  TmpType;
 
       BLAZE_CONSTRAINT_MUST_BE_DENSE_MATRIX_TYPE( ResultType );
       BLAZE_CONSTRAINT_MUST_BE_DENSE_MATRIX_TYPE( OppositeType );
@@ -1277,9 +1278,9 @@ struct DMatConjExprTrait< DMatConjExpr<MT,false> >
 {
  public:
    //**********************************************************************************************
-   typedef typename SelectType< IsDenseMatrix<MT>::value && IsRowMajorMatrix<MT>::value
-                              , typename DMatConjExpr<MT,false>::Operand
-                              , INVALID_TYPE >::Type  Type;
+   typedef typename If< And< IsDenseMatrix<MT>, IsRowMajorMatrix<MT> >
+                      , typename DMatConjExpr<MT,false>::Operand
+                      , INVALID_TYPE >::Type  Type;
    //**********************************************************************************************
 };
 /*! \endcond */
@@ -1293,9 +1294,9 @@ struct TDMatConjExprTrait< DMatConjExpr<MT,true> >
 {
  public:
    //**********************************************************************************************
-   typedef typename SelectType< IsDenseMatrix<MT>::value && IsColumnMajorMatrix<MT>::value
-                              , typename DMatConjExpr<MT,true>::Operand
-                              , INVALID_TYPE >::Type  Type;
+   typedef typename If< And< IsDenseMatrix<MT>, IsColumnMajorMatrix<MT> >
+                      , typename DMatConjExpr<MT,true>::Operand
+                      , INVALID_TYPE >::Type  Type;
    //**********************************************************************************************
 };
 /*! \endcond */
@@ -1309,9 +1310,9 @@ struct DMatConjExprTrait< DMatTransExpr< DMatConjExpr<MT,true>, false > >
 {
  public:
    //**********************************************************************************************
-   typedef typename SelectType< IsDenseMatrix<MT>::value && IsColumnMajorMatrix<MT>::value
-                              , DMatTransExpr<MT,false>
-                              , INVALID_TYPE >::Type  Type;
+   typedef typename If< And< IsDenseMatrix<MT>, IsColumnMajorMatrix<MT> >
+                      , DMatTransExpr<MT,false>
+                      , INVALID_TYPE >::Type  Type;
    //**********************************************************************************************
 };
 /*! \endcond */
@@ -1325,9 +1326,9 @@ struct TDMatConjExprTrait< DMatTransExpr< DMatConjExpr<MT,false>, true > >
 {
  public:
    //**********************************************************************************************
-   typedef typename SelectType< IsDenseMatrix<MT>::value && IsRowMajorMatrix<MT>::value
-                              , DMatTransExpr<MT,true>
-                              , INVALID_TYPE >::Type  Type;
+   typedef typename If< And< IsDenseMatrix<MT>, IsRowMajorMatrix<MT> >
+                      , DMatTransExpr<MT,true>
+                      , INVALID_TYPE >::Type  Type;
    //**********************************************************************************************
 };
 /*! \endcond */

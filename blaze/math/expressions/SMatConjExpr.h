@@ -83,7 +83,8 @@
 #include <blaze/util/IntegralConstant.h>
 #include <blaze/util/InvalidType.h>
 #include <blaze/util/logging/FunctionTrace.h>
-#include <blaze/util/SelectType.h>
+#include <blaze/util/mpl/And.h>
+#include <blaze/util/mpl/If.h>
 #include <blaze/util/Types.h>
 #include <blaze/util/typetraits/RemoveReference.h>
 
@@ -172,13 +173,13 @@ class SMatConjExpr : public SparseMatrix< SMatConjExpr<MT,SO>, SO >
    typedef typename MT::ElementType    ElementType;    //!< Resulting element type.
 
    //! Return type for expression template evaluations.
-   typedef const typename SelectType< returnExpr, ExprReturnType, ElementType >::Type  ReturnType;
+   typedef const typename IfTrue< returnExpr, ExprReturnType, ElementType >::Type  ReturnType;
 
    //! Data type for composite expression templates.
-   typedef typename SelectType< useAssign, const ResultType, const SMatConjExpr& >::Type  CompositeType;
+   typedef typename IfTrue< useAssign, const ResultType, const SMatConjExpr& >::Type  CompositeType;
 
    //! Composite data type of the sparse matrix expression.
-   typedef typename SelectType< IsExpression<MT>::value, const MT, const MT& >::Type  Operand;
+   typedef typename If< IsExpression<MT>, const MT, const MT& >::Type  Operand;
    //**********************************************************************************************
 
    //**ConstIterator class definition**************************************************************
@@ -1156,9 +1157,9 @@ struct SMatConjExprTrait< SMatConjExpr<MT,false> >
 {
  public:
    //**********************************************************************************************
-   typedef typename SelectType< IsSparseMatrix<MT>::value && IsRowMajorMatrix<MT>::value
-                              , typename SMatConjExpr<MT,false>::Operand
-                              , INVALID_TYPE >::Type  Type;
+   typedef typename If< And< IsSparseMatrix<MT>, IsRowMajorMatrix<MT> >
+                      , typename SMatConjExpr<MT,false>::Operand
+                      , INVALID_TYPE >::Type  Type;
    //**********************************************************************************************
 };
 /*! \endcond */
@@ -1172,9 +1173,9 @@ struct TSMatConjExprTrait< SMatConjExpr<MT,true> >
 {
  public:
    //**********************************************************************************************
-   typedef typename SelectType< IsSparseMatrix<MT>::value && IsColumnMajorMatrix<MT>::value
-                              , typename SMatConjExpr<MT,true>::Operand
-                              , INVALID_TYPE >::Type  Type;
+   typedef typename If< And< IsSparseMatrix<MT>, IsColumnMajorMatrix<MT> >
+                      , typename SMatConjExpr<MT,true>::Operand
+                      , INVALID_TYPE >::Type  Type;
    //**********************************************************************************************
 };
 /*! \endcond */
@@ -1188,9 +1189,9 @@ struct SMatConjExprTrait< SMatTransExpr< SMatConjExpr<MT,true>, false > >
 {
  public:
    //**********************************************************************************************
-   typedef typename SelectType< IsSparseMatrix<MT>::value && IsColumnMajorMatrix<MT>::value
-                              , SMatTransExpr<MT,false>
-                              , INVALID_TYPE >::Type  Type;
+   typedef typename If< And< IsSparseMatrix<MT>, IsColumnMajorMatrix<MT> >
+                      , SMatTransExpr<MT,false>
+                      , INVALID_TYPE >::Type  Type;
    //**********************************************************************************************
 };
 /*! \endcond */
@@ -1204,9 +1205,9 @@ struct TSMatConjExprTrait< SMatTransExpr< SMatConjExpr<MT,false>, true > >
 {
  public:
    //**********************************************************************************************
-   typedef typename SelectType< IsSparseMatrix<MT>::value && IsRowMajorMatrix<MT>::value
-                              , SMatTransExpr<MT,true>
-                              , INVALID_TYPE >::Type  Type;
+   typedef typename If< And< IsSparseMatrix<MT>, IsRowMajorMatrix<MT> >
+                      , SMatTransExpr<MT,true>
+                      , INVALID_TYPE >::Type  Type;
    //**********************************************************************************************
 };
 /*! \endcond */

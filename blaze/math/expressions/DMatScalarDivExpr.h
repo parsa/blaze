@@ -88,7 +88,7 @@
 #include <blaze/util/InvalidType.h>
 #include <blaze/util/logging/FunctionTrace.h>
 #include <blaze/util/mpl/And.h>
-#include <blaze/util/SelectType.h>
+#include <blaze/util/mpl/If.h>
 #include <blaze/util/Types.h>
 #include <blaze/util/typetraits/IsNumeric.h>
 #include <blaze/util/typetraits/IsSame.h>
@@ -181,13 +181,13 @@ class DMatScalarDivExpr : public DenseMatrix< DMatScalarDivExpr<MT,ST,SO>, SO >
    typedef typename IntrinsicTrait<ElementType>::Type  IntrinsicType;  //!< Resulting intrinsic element type.
 
    //! Return type for expression template evaluations.
-   typedef const typename SelectType< returnExpr, ExprReturnType, ElementType >::Type  ReturnType;
+   typedef const typename IfTrue< returnExpr, ExprReturnType, ElementType >::Type  ReturnType;
 
    //! Data type for composite expression templates.
-   typedef typename SelectType< useAssign, const ResultType, const DMatScalarDivExpr& >::Type  CompositeType;
+   typedef typename IfTrue< useAssign, const ResultType, const DMatScalarDivExpr& >::Type  CompositeType;
 
    //! Composite type of the left-hand side dense matrix expression.
-   typedef typename SelectType< IsExpression<MT>::value, const MT, const MT& >::Type  LeftOperand;
+   typedef typename If< IsExpression<MT>, const MT, const MT& >::Type  LeftOperand;
 
    //! Composite type of the right-hand side scalar value.
    typedef ST  RightOperand;
@@ -1281,20 +1281,15 @@ struct DMatScalarMultExprTrait< DMatScalarDivExpr<MT,ST1,false>, ST2 >
    //**********************************************************************************************
 
    //**********************************************************************************************
-   enum { condition = IsInvertible<ScalarType>::value };
-   //**********************************************************************************************
-
-   //**********************************************************************************************
    typedef typename DMatScalarMultExprTrait<MT,ScalarType>::Type              T1;
    typedef DMatScalarMultExpr< DMatScalarDivExpr<MT,ST1,false>, ST2, false >  T2;
    //**********************************************************************************************
 
  public:
    //**********************************************************************************************
-   typedef typename SelectType< IsDenseMatrix<MT>::value && IsRowMajorMatrix<MT>::value &&
-                                IsNumeric<ST1>::value && IsNumeric<ST2>::value
-                              , typename SelectType<condition,T1,T2>::Type
-                              , INVALID_TYPE >::Type  Type;
+   typedef typename If< And< IsDenseMatrix<MT>, IsRowMajorMatrix<MT>, IsNumeric<ST1>, IsNumeric<ST2> >
+                      , typename If< IsInvertible<ScalarType>, T1, T2 >::Type
+                      , INVALID_TYPE >::Type  Type;
    //**********************************************************************************************
 };
 /*! \endcond */
@@ -1320,20 +1315,15 @@ struct TDMatScalarMultExprTrait< DMatScalarDivExpr<MT,ST1,true>, ST2 >
    //**********************************************************************************************
 
    //**********************************************************************************************
-   enum { condition = IsInvertible<ScalarType>::value };
-   //**********************************************************************************************
-
-   //**********************************************************************************************
    typedef typename DMatScalarMultExprTrait<MT,ScalarType>::Type            T1;
    typedef DMatScalarMultExpr< DMatScalarDivExpr<MT,ST1,true>, ST2, true >  T2;
    //**********************************************************************************************
 
  public:
    //**********************************************************************************************
-   typedef typename SelectType< IsDenseMatrix<MT>::value && IsColumnMajorMatrix<MT>::value &&
-                                IsNumeric<ST1>::value && IsNumeric<ST2>::value
-                              , typename SelectType<condition,T1,T2>::Type
-                              , INVALID_TYPE >::Type  Type;
+   typedef typename If< And< IsDenseMatrix<MT>, IsColumnMajorMatrix<MT>, IsNumeric<ST1>, IsNumeric<ST2> >
+                      , typename If< IsInvertible<ScalarType>, T1, T2 >::Type
+                      , INVALID_TYPE >::Type  Type;
    //**********************************************************************************************
 };
 /*! \endcond */

@@ -65,7 +65,8 @@
 #include <blaze/util/Exception.h>
 #include <blaze/util/InvalidType.h>
 #include <blaze/util/logging/FunctionTrace.h>
-#include <blaze/util/SelectType.h>
+#include <blaze/util/mpl/And.h>
+#include <blaze/util/mpl/If.h>
 #include <blaze/util/Types.h>
 #include <blaze/util/typetraits/RemoveReference.h>
 
@@ -89,7 +90,7 @@ template< typename VT  // Type of the sparse vector
         , bool TF >    // Transpose flag
 class SVecTransExpr : public SparseVector< SVecTransExpr<VT,TF>, TF >
                     , private VecTransExpr
-                    , private SelectType< IsComputation<VT>::value, Computation, EmptyType >::Type
+                    , private If< IsComputation<VT>, Computation, EmptyType >::Type
 {
  private:
    //**Type definitions****************************************************************************
@@ -138,10 +139,10 @@ class SVecTransExpr : public SparseVector< SVecTransExpr<VT,TF>, TF >
    typedef typename VT::ReturnType     ReturnType;     //!< Return type for expression template evaluations.
 
    //! Data type for composite expression templates.
-   typedef typename SelectType< useAssign, const ResultType, const SVecTransExpr& >::Type  CompositeType;
+   typedef typename IfTrue< useAssign, const ResultType, const SVecTransExpr& >::Type  CompositeType;
 
    //! Composite data type of the sparse vector expression.
-   typedef typename SelectType< IsExpression<VT>::value, const VT, const VT& >::Type  Operand;
+   typedef typename If< IsExpression<VT>, const VT, const VT& >::Type  Operand;
    //**********************************************************************************************
 
    //**Compilation flags***************************************************************************
@@ -858,9 +859,9 @@ struct SVecTransExprTrait< SVecTransExpr<VT,false> >
 {
  public:
    //**********************************************************************************************
-   typedef typename SelectType< IsSparseVector<VT>::value && IsRowVector<VT>::value
-                              , typename SVecTransExpr<VT,false>::Operand
-                              , INVALID_TYPE >::Type  Type;
+   typedef typename If< And< IsSparseVector<VT>, IsRowVector<VT> >
+                      , typename SVecTransExpr<VT,false>::Operand
+                      , INVALID_TYPE >::Type  Type;
    //**********************************************************************************************
 };
 /*! \endcond */
@@ -874,9 +875,9 @@ struct TSVecTransExprTrait< SVecTransExpr<VT,true> >
 {
  public:
    //**********************************************************************************************
-   typedef typename SelectType< IsSparseVector<VT>::value && IsColumnVector<VT>::value
-                              , typename SVecTransExpr<VT,true>::Operand
-                              , INVALID_TYPE >::Type  Type;
+   typedef typename If< And< IsSparseVector<VT>, IsColumnVector<VT> >
+                      , typename SVecTransExpr<VT,true>::Operand
+                      , INVALID_TYPE >::Type  Type;
    //**********************************************************************************************
 };
 /*! \endcond */

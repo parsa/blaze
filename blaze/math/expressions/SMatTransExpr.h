@@ -79,7 +79,8 @@
 #include <blaze/util/IntegralConstant.h>
 #include <blaze/util/InvalidType.h>
 #include <blaze/util/logging/FunctionTrace.h>
-#include <blaze/util/SelectType.h>
+#include <blaze/util/mpl/And.h>
+#include <blaze/util/mpl/If.h>
 #include <blaze/util/Types.h>
 #include <blaze/util/typetraits/RemoveReference.h>
 
@@ -103,7 +104,7 @@ template< typename MT  // Type of the sparse matrix
         , bool SO >    // Storage order
 class SMatTransExpr : public SparseMatrix< SMatTransExpr<MT,SO>, SO >
                     , private MatTransExpr
-                    , private SelectType< IsComputation<MT>::value, Computation, EmptyType >::Type
+                    , private If< IsComputation<MT>, Computation, EmptyType >::Type
 {
  private:
    //**Type definitions****************************************************************************
@@ -154,10 +155,10 @@ class SMatTransExpr : public SparseMatrix< SMatTransExpr<MT,SO>, SO >
    typedef typename MT::ReturnType     ReturnType;     //!< Return type for expression template evaluations.
 
    //! Data type for composite expression templates.
-   typedef typename SelectType< useAssign, const ResultType, const SMatTransExpr& >::Type  CompositeType;
+   typedef typename IfTrue< useAssign, const ResultType, const SMatTransExpr& >::Type  CompositeType;
 
    //! Composite data type of the sparse matrix expression.
-   typedef typename SelectType< IsExpression<MT>::value, const MT, const MT& >::Type  Operand;
+   typedef typename If< IsExpression<MT>, const MT, const MT& >::Type  Operand;
    //**********************************************************************************************
 
    //**ConstIterator class definition**************************************************************
@@ -1036,9 +1037,9 @@ struct SMatTransExprTrait< SMatTransExpr<MT,false> >
 {
  public:
    //**********************************************************************************************
-   typedef typename SelectType< IsSparseMatrix<MT>::value && IsColumnMajorMatrix<MT>::value
-                              , typename SMatTransExpr<MT,false>::Operand
-                              , INVALID_TYPE >::Type  Type;
+   typedef typename If< And< IsSparseMatrix<MT>, IsColumnMajorMatrix<MT> >
+                      , typename SMatTransExpr<MT,false>::Operand
+                      , INVALID_TYPE >::Type  Type;
    //**********************************************************************************************
 };
 /*! \endcond */
@@ -1052,9 +1053,9 @@ struct TSMatTransExprTrait< SMatTransExpr<MT,true> >
 {
  public:
    //**********************************************************************************************
-   typedef typename SelectType< IsSparseMatrix<MT>::value && IsRowMajorMatrix<MT>::value
-                              , typename SMatTransExpr<MT,true>::Operand
-                              , INVALID_TYPE >::Type  Type;
+   typedef typename If< And< IsSparseMatrix<MT>, IsRowMajorMatrix<MT> >
+                      , typename SMatTransExpr<MT,true>::Operand
+                      , INVALID_TYPE >::Type  Type;
    //**********************************************************************************************
 };
 /*! \endcond */

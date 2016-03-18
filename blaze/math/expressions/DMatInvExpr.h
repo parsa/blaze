@@ -66,7 +66,8 @@
 #include <blaze/util/IntegralConstant.h>
 #include <blaze/util/InvalidType.h>
 #include <blaze/util/logging/FunctionTrace.h>
-#include <blaze/util/SelectType.h>
+#include <blaze/util/mpl/And.h>
+#include <blaze/util/mpl/If.h>
 #include <blaze/util/Types.h>
 
 
@@ -109,7 +110,7 @@ class DMatInvExpr : public DenseMatrix< DMatInvExpr<MT,SO>, SO >
    typedef const ResultType  CompositeType;
 
    //! Composite data type of the dense matrix expression.
-   typedef typename SelectType< IsExpression<MT>::value, const MT, const MT& >::Type  Operand;
+   typedef typename If< IsExpression<MT>, const MT, const MT& >::Type  Operand;
    //**********************************************************************************************
 
    //**Compilation flags***************************************************************************
@@ -234,7 +235,7 @@ class DMatInvExpr : public DenseMatrix< DMatInvExpr<MT,SO>, SO >
    {
       BLAZE_FUNCTION_TRACE;
 
-      typedef typename SelectType< SO == SO2, ResultType, OppositeType >::Type  TmpType;
+      typedef typename IfTrue< SO == SO2, ResultType, OppositeType >::Type  TmpType;
 
       BLAZE_CONSTRAINT_MUST_BE_DENSE_MATRIX_TYPE( ResultType );
       BLAZE_CONSTRAINT_MUST_BE_DENSE_MATRIX_TYPE( OppositeType );
@@ -582,9 +583,9 @@ struct DMatInvExprTrait< DMatInvExpr<MT,false> >
 {
  public:
    //**********************************************************************************************
-   typedef typename SelectType< IsDenseMatrix<MT>::value && IsRowMajorMatrix<MT>::value
-                              , typename DMatInvExpr<MT,false>::Operand
-                              , INVALID_TYPE >::Type  Type;
+   typedef typename If< And< IsDenseMatrix<MT>, IsRowMajorMatrix<MT> >
+                      , typename DMatInvExpr<MT,false>::Operand
+                      , INVALID_TYPE >::Type  Type;
    //**********************************************************************************************
 };
 /*! \endcond */
@@ -598,9 +599,9 @@ struct TDMatInvExprTrait< DMatInvExpr<MT,true> >
 {
  public:
    //**********************************************************************************************
-   typedef typename SelectType< IsDenseMatrix<MT>::value && IsColumnMajorMatrix<MT>::value
-                              , typename DMatInvExpr<MT,true>::Operand
-                              , INVALID_TYPE >::Type  Type;
+   typedef typename If< And< IsDenseMatrix<MT>, IsColumnMajorMatrix<MT> >
+                      , typename DMatInvExpr<MT,true>::Operand
+                      , INVALID_TYPE >::Type  Type;
    //**********************************************************************************************
 };
 /*! \endcond */

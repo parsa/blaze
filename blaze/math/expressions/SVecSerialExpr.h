@@ -62,7 +62,8 @@
 #include <blaze/util/Exception.h>
 #include <blaze/util/InvalidType.h>
 #include <blaze/util/logging/FunctionTrace.h>
-#include <blaze/util/SelectType.h>
+#include <blaze/util/mpl/And.h>
+#include <blaze/util/mpl/If.h>
 #include <blaze/util/Types.h>
 
 
@@ -99,7 +100,7 @@ class SVecSerialExpr : public SparseVector< SVecSerialExpr<VT,TF>, TF >
    typedef const ResultType  CompositeType;
 
    //! Composite data type of the sparse vector expression.
-   typedef typename SelectType< IsExpression<VT>::value, const VT, const VT& >::Type  Operand;
+   typedef typename If< IsExpression<VT>, const VT, const VT& >::Type  Operand;
    //**********************************************************************************************
 
    //**Compilation flags***************************************************************************
@@ -724,9 +725,9 @@ struct SVecSerialExprTrait< SVecSerialExpr<VT,false> >
 {
  public:
    //**********************************************************************************************
-   typedef typename SelectType< IsSparseVector<VT>::value && IsColumnVector<VT>::value
-                              , SVecSerialExpr<VT,false>
-                              , INVALID_TYPE >::Type  Type;
+   typedef typename If< And< IsSparseVector<VT>, IsColumnVector<VT> >
+                      , SVecSerialExpr<VT,false>
+                      , INVALID_TYPE >::Type  Type;
    //**********************************************************************************************
 };
 /*! \endcond */
@@ -740,9 +741,9 @@ struct TSVecSerialExprTrait< SVecSerialExpr<VT,true> >
 {
  public:
    //**********************************************************************************************
-   typedef typename SelectType< IsSparseVector<VT>::value && IsRowVector<VT>::value
-                              , SVecSerialExpr<VT,true>
-                              , INVALID_TYPE >::Type  Type;
+   typedef typename If< And< IsSparseVector<VT>, IsRowVector<VT> >
+                      , SVecSerialExpr<VT,true>
+                      , INVALID_TYPE >::Type  Type;
    //**********************************************************************************************
 };
 /*! \endcond */

@@ -73,7 +73,8 @@
 #include <blaze/util/IntegralConstant.h>
 #include <blaze/util/InvalidType.h>
 #include <blaze/util/logging/FunctionTrace.h>
-#include <blaze/util/SelectType.h>
+#include <blaze/util/mpl/And.h>
+#include <blaze/util/mpl/If.h>
 #include <blaze/util/Types.h>
 
 
@@ -111,7 +112,7 @@ class SMatEvalExpr : public SparseMatrix< SMatEvalExpr<MT,SO>, SO >
    typedef const ResultType  CompositeType;
 
    //! Composite data type of the sparse matrix expression.
-   typedef typename SelectType< IsExpression<MT>::value, const MT, const MT& >::Type  Operand;
+   typedef typename If< IsExpression<MT>, const MT, const MT& >::Type  Operand;
    //**********************************************************************************************
 
    //**Compilation flags***************************************************************************
@@ -938,9 +939,9 @@ struct SMatEvalExprTrait< SMatEvalExpr<MT,false> >
 {
  public:
    //**********************************************************************************************
-   typedef typename SelectType< IsSparseMatrix<MT>::value && IsRowMajorMatrix<MT>::value
-                              , SMatEvalExpr<MT,false>
-                              , INVALID_TYPE >::Type  Type;
+   typedef typename If< And< IsSparseMatrix<MT>, IsRowMajorMatrix<MT> >
+                      , SMatEvalExpr<MT,false>
+                      , INVALID_TYPE >::Type  Type;
    //**********************************************************************************************
 };
 /*! \endcond */
@@ -954,9 +955,9 @@ struct TSMatEvalExprTrait< SMatEvalExpr<MT,true> >
 {
  public:
    //**********************************************************************************************
-   typedef typename SelectType< IsSparseMatrix<MT>::value && IsColumnMajorMatrix<MT>::value
-                              , SMatEvalExpr<MT,true>
-                              , INVALID_TYPE >::Type  Type;
+   typedef typename If< And< IsSparseMatrix<MT>, IsColumnMajorMatrix<MT> >
+                      , SMatEvalExpr<MT,true>
+                      , INVALID_TYPE >::Type  Type;
    //**********************************************************************************************
 };
 /*! \endcond */

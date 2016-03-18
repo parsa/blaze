@@ -64,8 +64,8 @@
 #include <blaze/util/EnableIf.h>
 #include <blaze/util/Exception.h>
 #include <blaze/util/logging/FunctionTrace.h>
+#include <blaze/util/mpl/If.h>
 #include <blaze/util/mpl/Max.h>
-#include <blaze/util/SelectType.h>
 #include <blaze/util/Types.h>
 #include <blaze/util/typetraits/RemoveReference.h>
 
@@ -139,16 +139,16 @@ class SVecSVecAddExpr : public SparseVector< SVecSVecAddExpr<VT1,VT2,TF>, TF >
    typedef typename ResultType::ElementType    ElementType;    //!< Resulting element type.
 
    //! Return type for expression template evaluations.
-   typedef const typename SelectType< returnExpr, ExprReturnType, ElementType >::Type  ReturnType;
+   typedef const typename IfTrue< returnExpr, ExprReturnType, ElementType >::Type  ReturnType;
 
    //! Data type for composite expression templates.
    typedef const ResultType  CompositeType;
 
    //! Composite type of the left-hand side sparse vector expression.
-   typedef typename SelectType< IsExpression<VT1>::value, const VT1, const VT1& >::Type  LeftOperand;
+   typedef typename If< IsExpression<VT1>, const VT1, const VT1& >::Type  LeftOperand;
 
    //! Composite type of the right-hand side sparse vector expression.
-   typedef typename SelectType< IsExpression<VT2>::value, const VT2, const VT2& >::Type  RightOperand;
+   typedef typename If< IsExpression<VT2>, const VT2, const VT2& >::Type  RightOperand;
    //**********************************************************************************************
 
    //**Compilation flags***************************************************************************

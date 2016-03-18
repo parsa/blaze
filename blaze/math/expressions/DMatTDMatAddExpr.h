@@ -79,10 +79,10 @@
 #include <blaze/util/IntegralConstant.h>
 #include <blaze/util/logging/FunctionTrace.h>
 #include <blaze/util/mpl/And.h>
+#include <blaze/util/mpl/If.h>
 #include <blaze/util/mpl/Max.h>
 #include <blaze/util/mpl/Not.h>
 #include <blaze/util/mpl/Or.h>
-#include <blaze/util/SelectType.h>
 #include <blaze/util/Types.h>
 
 
@@ -173,16 +173,16 @@ class DMatTDMatAddExpr : public DenseMatrix< DMatTDMatAddExpr<MT1,MT2>, false >
    typedef typename ResultType::ElementType    ElementType;    //!< Resulting element type.
 
    //! Return type for expression template evaluations.
-   typedef const typename SelectType< returnExpr, ExprReturnType, ElementType >::Type  ReturnType;
+   typedef const typename IfTrue< returnExpr, ExprReturnType, ElementType >::Type  ReturnType;
 
    //! Data type for composite expression templates.
    typedef const ResultType  CompositeType;
 
    //! Composite type of the left-hand side dense matrix expression.
-   typedef typename SelectType< IsExpression<MT1>::value, const MT1, const MT1& >::Type  LeftOperand;
+   typedef typename If< IsExpression<MT1>, const MT1, const MT1& >::Type  LeftOperand;
 
    //! Composite type of the right-hand side dense matrix expression.
-   typedef typename SelectType< IsExpression<MT2>::value, const MT2, const MT2& >::Type  RightOperand;
+   typedef typename If< IsExpression<MT2>, const MT2, const MT2& >::Type  RightOperand;
    //**********************************************************************************************
 
    //**Compilation flags***************************************************************************
@@ -432,7 +432,7 @@ class DMatTDMatAddExpr : public DenseMatrix< DMatTDMatAddExpr<MT1,MT2>, false >
    {
       BLAZE_FUNCTION_TRACE;
 
-      typedef typename SelectType< SO2, OppositeType, ResultType >::Type  TmpType;
+      typedef typename IfTrue< SO2, OppositeType, ResultType >::Type  TmpType;
 
       BLAZE_CONSTRAINT_MUST_BE_DENSE_MATRIX_TYPE( ResultType );
       BLAZE_CONSTRAINT_MUST_BE_DENSE_MATRIX_TYPE( OppositeType );
@@ -671,7 +671,7 @@ class DMatTDMatAddExpr : public DenseMatrix< DMatTDMatAddExpr<MT1,MT2>, false >
    {
       BLAZE_FUNCTION_TRACE;
 
-      typedef typename SelectType< SO2, OppositeType, ResultType >::Type  TmpType;
+      typedef typename IfTrue< SO2, OppositeType, ResultType >::Type  TmpType;
 
       BLAZE_CONSTRAINT_MUST_BE_DENSE_MATRIX_TYPE( ResultType );
       BLAZE_CONSTRAINT_MUST_BE_DENSE_MATRIX_TYPE( OppositeType );
