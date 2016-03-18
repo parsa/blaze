@@ -371,49 +371,9 @@ struct HasCyclicDependency<T,TL,true>
 
 //=================================================================================================
 //
-//  CLASS CYCLIC_LIFETIME_DEPENDENCY_TEST
-//
-//=================================================================================================
-
-//*************************************************************************************************
-/*! \cond BLAZE_INTERNAL */
-/*!\brief Compile time constraint wrapper class.
-// \ingroup singleton
-//
-// Helper class for the blaze::CYCLIC_LIFETIME_DEPENDENCY_DETECTED class template. This class
-// is used as a wrapper for the instantiation of the blaze::CYCLIC_LIFETIME_DEPENDENCY_DETECTED
-// constraint class. It serves the purpose to force the instantiation of either the defined
-// specialization or the undefined basic template during the compilation. In case the compile
-// time condition is met, the type blaze::CYCLIC_LIFETIME_DEPENDENCY_TEST<1> is defined.
-*/
-template< int > struct CYCLIC_LIFETIME_DEPENDENCY_TEST {};
-/*! \endcond */
-//*************************************************************************************************
-
-
-
-
-//=================================================================================================
-//
 //  DETECT_CYCLIC_LIFETIME_DEPENDENCY CONSTRAINT
 //
 //=================================================================================================
-
-//*************************************************************************************************
-/*! \cond BLAZE_INTERNAL */
-/*!\brief Compile time constraint.
-// \ingroup singleton
-//
-// Helper template class for the compile time constraint enforcement. Based on the compile time
-// constant expression used for the template instantiation, either the undefined basic template
-// or the specialization is selected. If the undefined basic template is selected, a compilation
-// error is created.
-*/
-template< bool > struct CYCLIC_LIFETIME_DEPENDENCY_DETECTED;
-template<> struct CYCLIC_LIFETIME_DEPENDENCY_DETECTED<false> { enum { value = 1 }; };
-/*! \endcond */
-//*************************************************************************************************
-
 
 //*************************************************************************************************
 /*!\brief Constraint on the data type.
@@ -422,10 +382,7 @@ template<> struct CYCLIC_LIFETIME_DEPENDENCY_DETECTED<false> { enum { value = 1 
 // In case the given data type \a T is not an integral data type, a compilation error is created.
 */
 #define BLAZE_DETECT_CYCLIC_LIFETIME_DEPENDENCY(T) \
-   typedef \
-      blaze::CYCLIC_LIFETIME_DEPENDENCY_TEST< \
-         blaze::CYCLIC_LIFETIME_DEPENDENCY_DETECTED< blaze::HasCyclicDependency<T,blaze::NullType>::value >::value > \
-      BLAZE_JOIN( DETECT_CYCLIC_LIFETIME_DEPENDENCY_TYPEDEF, __LINE__ )
+   static_assert( !blaze::HasCyclicDependency<T,blaze::NullType>::value, "Cyclic dependency detected" )
 //*************************************************************************************************
 
 
