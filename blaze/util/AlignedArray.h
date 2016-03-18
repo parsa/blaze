@@ -126,7 +126,7 @@ class AlignedArray
    //**Conversion operators************************************************************************
    /*!\name Conversion operators */
    //@{
-   inline constexpr operator Pointer     () noexcept;
+   inline           operator Pointer     () noexcept;
    inline constexpr operator ConstPointer() const noexcept;
    //@}
    //**********************************************************************************************
@@ -230,7 +230,7 @@ inline constexpr AlignedArray<Type,N,Alignment>::AlignedArray( const Ts&... args
 template< typename Type       // Data type of the elements
         , size_t N            // Number of elements
         , size_t Alignment >  // Array alignment
-inline constexpr AlignedArray<Type,N,Alignment>::operator Pointer() noexcept
+inline AlignedArray<Type,N,Alignment>::operator Pointer() noexcept
 {
    return v_;
 }
