@@ -89,7 +89,7 @@ namespace blaze {
 // For more information on the EnableIfTrue/EnableIf functionality, see the Boost library
 // documentation of the enable_if family at:
 //
-//           \a http://www.boost.org/doc/libs/1_40_0/libs/utility/enable_if.html.
+//           \a http://www.boost.org/doc/libs/1_60_0/libs/utility/enable_if.html.
 */
 template< bool Condition     // Compile time condition
         , typename T=void >  // The type to be instantiated
@@ -117,6 +117,25 @@ template< typename T >  // The type to be instantiated
 struct EnableIfTrue<false,T>
 {};
 /*! \endcond */
+//*************************************************************************************************
+
+
+//*************************************************************************************************
+/*!\brief Auxiliary type for the EnableIfTrue class template.
+// \ingroup util
+//
+// The EnableIfTrue_ alias declaration provides a convenient shortcut to access the nested \a Type
+// of the EnableIfTrue class template. For instance, given the type \a T the following two type
+// definitions are identical:
+
+   \code
+   using Type1 = typename EnableIfTrue< IsBuiltin<T>::value >::Type;
+   using Type2 = EnableIfTrue_< IsBuiltin<T>::value >;
+   \endcode
+*/
+template< bool Condition     // Compile time condition
+        , typename T=void >  // The type to be instantiated
+using EnableIfTrue_ = typename EnableIfTrue<Condition,T>::Type;
 //*************************************************************************************************
 
 
@@ -177,12 +196,31 @@ struct EnableIfTrue<false,T>
 // For more information on the EnableIfTrue/EnableIf functionality, see the Boost library
 // documentation of the enable_if family at:
 //
-//           \a http://www.boost.org/doc/libs/1_40_0/libs/utility/enable_if.html.
+//           \a http://www.boost.org/doc/libs/1_60_0/libs/utility/enable_if.html.
 */
-template< typename Condition     // Compile time condition
-        , typename T=void >  // The type to be instantiated
+template< typename Condition  // Compile time condition
+        , typename T=void >   // The type to be instantiated
 struct EnableIf : public EnableIfTrue<Condition::value,T>
 {};
+//*************************************************************************************************
+
+
+//*************************************************************************************************
+/*!\brief Auxiliary alias declaration for the EnableIf class template.
+// \ingroup util
+//
+// The EnableIf_ alias declaration provides a convenient shortcut to access the nested \a Type
+// of the EnableIf class template. For instance, given the type \a T the following two type
+// definitions are identical:
+
+   \code
+   using Type1 = typename EnableIf< IsBuiltin<T> >::Type;
+   using Type2 = EnableIf_< IsBuiltin<T> >;
+   \endcode
+*/
+template< typename Condition  // Compile time condition
+        , typename T=void >   // The type to be instantiated
+using EnableIf_ = typename EnableIf<Condition,T>::Type;
 //*************************************************************************************************
 
 } // namespace blaze
