@@ -89,7 +89,7 @@ namespace blaze {
 // For more information on the DisableIfTrue/DisableIf functionality, see the Boost library
 // documentation of the enable_if family at:
 //
-//           \a http://www.boost.org/doc/libs/1_40_0/libs/utility/enable_if.html.
+//           \a http://www.boost.org/doc/libs/1_60_0/libs/utility/enable_if.html.
 */
 template< bool Condition     // Compile time condition
         , typename T=void >  // The type to be instantiated
@@ -117,6 +117,25 @@ template< typename T >  // The type to be instantiated
 struct DisableIfTrue<true,T>
 {};
 /*! \endcond */
+//*************************************************************************************************
+
+
+//*************************************************************************************************
+/*!\brief Auxiliary type for the DisableIfTrue class template.
+// \ingroup util
+//
+// The DisableIfTrue_ alias declaration provides a convenient shortcut to access the nested \a Type
+// of the DisableIfTrue class template. For instance, given the type \a T the following two type
+// definitions are identical:
+
+   \code
+   using Type1 = typename DisableIfTrue< IsBuiltin<T>::value >::Type;
+   using Type2 = DisableIfTrue_< IsBuiltin<T>::value >;
+   \endcode
+*/
+template< bool Condition     // Compile time condition
+        , typename T=void >  // The type to be instantiated
+using DisableIfTrue_ = typename DisableIfTrue<Condition,T>::Type;
 //*************************************************************************************************
 
 
@@ -177,12 +196,31 @@ struct DisableIfTrue<true,T>
 // For more information on the DisableIfTrue/DisableIf functionality, see the Boost library
 // documentation of the enable_if family at:
 //
-//           \a http://www.boost.org/doc/libs/1_40_0/libs/utility/enable_if.html.
+//           \a http://www.boost.org/doc/libs/1_60_0/libs/utility/enable_if.html.
 */
 template< typename Condition  // Compile time condition
         , typename T=void >   // The type to be instantiated
 struct DisableIf : public DisableIfTrue<Condition::value,T>
 {};
+//*************************************************************************************************
+
+
+//*************************************************************************************************
+/*!\brief Auxiliary type for the DisableIf class template.
+// \ingroup util
+//
+// The DisableIf_ alias declaration provides a convenient shortcut to access the nested \a Type
+// of the DisableIf class template. For instance, given the type \a T the following two type
+// definitions are identical:
+
+   \code
+   using Type1 = typename DisableIf< IsBuiltin<T> >::Type;
+   using Type2 = DisableIf_< IsBuiltin<T> >;
+   \endcode
+*/
+template< typename Condition  // Compile time condition
+        , typename T=void >   // The type to be instantiated
+using DisableIf_ = typename DisableIf<Condition,T>::Type;
 //*************************************************************************************************
 
 } // namespace blaze
