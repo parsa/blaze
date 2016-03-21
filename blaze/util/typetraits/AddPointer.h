@@ -77,6 +77,24 @@ struct AddPointer
 };
 //*************************************************************************************************
 
+
+//*************************************************************************************************
+/*!\brief Auxiliary alias declaration for the AddPointer type trait.
+// \ingroup util
+//
+// The AddPointer_ alias declaration provides a convenient shortcut to access the nested \a Type
+// of the AddPointer class template. For instance, given the type \a T the following two type
+// definitions are identical:
+
+   \code
+   using Type1 = typename AddPointer<T>::Type;
+   using Type2 = AddPointer_<T>;
+   \endcode
+*/
+template< typename T >
+using AddPointer_ = typename AddPointer<T>::Type;
+//*************************************************************************************************
+
 } // namespace blaze
 
 #endif
