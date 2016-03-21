@@ -78,6 +78,24 @@ struct AddCV
 };
 //*************************************************************************************************
 
+
+//*************************************************************************************************
+/*!\brief Auxiliary alias declaration for the AddCV type trait.
+// \ingroup util
+//
+// The AddCV_ alias declaration provides a convenient shortcut to access the nested \a Type
+// of the AddCV class template. For instance, given the type \a T the following two type
+// definitions are identical:
+
+   \code
+   using Type1 = typename AddCV<T>::Type;
+   using Type2 = AddCV_<T>;
+   \endcode
+*/
+template< typename T >
+using AddCV_ = typename AddCV<T>::Type;
+//*************************************************************************************************
+
 } // namespace blaze
 
 #endif
