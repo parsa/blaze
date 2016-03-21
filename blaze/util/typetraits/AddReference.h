@@ -77,6 +77,24 @@ struct AddReference
 };
 //*************************************************************************************************
 
+
+//*************************************************************************************************
+/*!\brief Auxiliary alias declaration for the AddReference type trait.
+// \ingroup util
+//
+// The AddReference_ alias declaration provides a convenient shortcut to access the nested \a Type
+// of the AddReference class template. For instance, given the type \a T the following two type
+// definitions are identical:
+
+   \code
+   using Type1 = typename AddReference<T>::Type;
+   using Type2 = AddReference_<T>;
+   \endcode
+*/
+template< typename T >
+using AddReference_ = typename AddReference<T>::Type;
+//*************************************************************************************************
+
 } // namespace blaze
 
 #endif
