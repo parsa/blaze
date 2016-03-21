@@ -79,6 +79,24 @@ struct RemoveCV
 };
 //*************************************************************************************************
 
+
+//*************************************************************************************************
+/*!\brief Auxiliary alias declaration for the RemoveCV type trait.
+// \ingroup util
+//
+// The RemoveCV_ alias declaration provides a convenient shortcut to access the nested \a Type
+// of the RemoveCV class template. For instance, given the type \a T the following two type
+// definitions are identical:
+
+   \code
+   using Type1 = typename RemoveCV<T>::Type;
+   using Type2 = RemoveCV_<T>;
+   \endcode
+*/
+template< typename T >
+using RemoveCV_ = typename RemoveCV<T>::Type;
+//*************************************************************************************************
+
 } // namespace blaze
 
 #endif
