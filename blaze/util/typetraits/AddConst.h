@@ -77,6 +77,24 @@ struct AddConst
 };
 //*************************************************************************************************
 
+
+//*************************************************************************************************
+/*!\brief Auxiliary alias declaration for the AddConst type trait.
+// \ingroup util
+//
+// The AddConst_ alias declaration provides a convenient shortcut to access the nested \a Type
+// of the AddConst class template. For instance, given the type \a T the following two type
+// definitions are identical:
+
+   \code
+   using Type1 = typename AddConst<T>::Type;
+   using Type2 = AddConst_<T>;
+   \endcode
+*/
+template< typename T >
+using AddConst_ = typename AddConst<T>::Type;
+//*************************************************************************************************
+
 } // namespace blaze
 
 #endif
