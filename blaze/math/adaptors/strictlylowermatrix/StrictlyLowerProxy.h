@@ -102,7 +102,7 @@ class StrictlyLowerProxy : public Proxy< StrictlyLowerProxy<MT>, typename MT::El
  private:
    //**Type definitions****************************************************************************
    //! Reference type of the underlying matrix type.
-   typedef typename AddConst< typename MT::Reference >::Type  ReferenceType;
+   typedef AddConst_< typename MT::Reference >  ReferenceType;
    //**********************************************************************************************
 
  public:

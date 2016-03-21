@@ -100,7 +100,7 @@ class UpperProxy : public Proxy< UpperProxy<MT>, typename MT::ElementType >
  private:
    //**Type definitions****************************************************************************
    //! Reference type of the underlying matrix type.
-   typedef typename AddConst< typename MT::Reference >::Type  ReferenceType;
+   typedef AddConst_< typename MT::Reference >  ReferenceType;
    //**********************************************************************************************
 
  public:
