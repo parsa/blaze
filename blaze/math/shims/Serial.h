@@ -67,7 +67,7 @@ namespace blaze {
 // as for instance built-in data types, the default behavior is not changed.
 */
 template< typename T >
-BLAZE_ALWAYS_INLINE constexpr typename EnableIf< Or< IsBuiltin<T>, IsComplex<T> >, const T& >::Type
+BLAZE_ALWAYS_INLINE constexpr EnableIf_< Or< IsBuiltin<T>, IsComplex<T> >, const T& >
    serial( const T& a ) noexcept
 {
    return a;

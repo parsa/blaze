@@ -1661,13 +1661,13 @@ struct SubTrait< HermitianMatrix<MT1,SO1,DF1>, HermitianMatrix<MT2,SO2,DF2> >
 //*************************************************************************************************
 /*! \cond BLAZE_INTERNAL */
 template< typename MT, bool SO, bool DF, typename T >
-struct MultTrait< HermitianMatrix<MT,SO,DF>, T, typename EnableIf< IsNumeric<T> >::Type >
+struct MultTrait< HermitianMatrix<MT,SO,DF>, T, EnableIf_< IsNumeric<T> > >
 {
    typedef HermitianMatrix< typename MultTrait<MT,T>::Type >  Type;
 };
 
 template< typename T, typename MT, bool SO, bool DF >
-struct MultTrait< T, HermitianMatrix<MT,SO,DF>, typename EnableIf< IsNumeric<T> >::Type >
+struct MultTrait< T, HermitianMatrix<MT,SO,DF>, EnableIf_< IsNumeric<T> > >
 {
    typedef HermitianMatrix< typename MultTrait<T,MT>::Type >  Type;
 };
@@ -1824,7 +1824,7 @@ struct MultTrait< HermitianMatrix<MT1,SO1,DF1>, HermitianMatrix<MT2,SO2,DF2> >
 //*************************************************************************************************
 /*! \cond BLAZE_INTERNAL */
 template< typename MT, bool SO, bool DF, typename T >
-struct DivTrait< HermitianMatrix<MT,SO,DF>, T, typename EnableIf< IsNumeric<T> >::Type >
+struct DivTrait< HermitianMatrix<MT,SO,DF>, T, EnableIf_< IsNumeric<T> > >
 {
    typedef HermitianMatrix< typename DivTrait<MT,T>::Type >  Type;
 };

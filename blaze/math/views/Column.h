@@ -102,8 +102,8 @@ namespace blaze {
 */
 template< typename MT  // Type of the matrix
         , bool SO >    // Storage order
-inline typename DisableIf< Or< IsComputation<MT>, IsTransExpr<MT> >
-                         , typename ColumnExprTrait<MT>::Type >::Type
+inline DisableIf_< Or< IsComputation<MT>, IsTransExpr<MT> >
+                 , typename ColumnExprTrait<MT>::Type >
    column( Matrix<MT,SO>& matrix, size_t index )
 {
    BLAZE_FUNCTION_TRACE;
@@ -144,8 +144,8 @@ inline typename DisableIf< Or< IsComputation<MT>, IsTransExpr<MT> >
 */
 template< typename MT  // Type of the matrix
         , bool SO >    // Storage order
-inline typename DisableIf< Or< IsComputation<MT>, IsTransExpr<MT> >
-                         , typename ColumnExprTrait<const MT>::Type >::Type
+inline DisableIf_< Or< IsComputation<MT>, IsTransExpr<MT> >
+                 , typename ColumnExprTrait<const MT>::Type >
    column( const Matrix<MT,SO>& matrix, size_t index )
 {
    BLAZE_FUNCTION_TRACE;
@@ -178,7 +178,7 @@ inline typename DisableIf< Or< IsComputation<MT>, IsTransExpr<MT> >
 */
 template< typename MT  // Type of the matrix
         , bool SO >    // Storage order
-inline typename EnableIf< IsMatMatAddExpr<MT>, typename ColumnExprTrait<MT>::Type >::Type
+inline EnableIf_< IsMatMatAddExpr<MT>, typename ColumnExprTrait<MT>::Type >
    column( const Matrix<MT,SO>& matrix, size_t index )
 {
    BLAZE_FUNCTION_TRACE;
@@ -203,7 +203,7 @@ inline typename EnableIf< IsMatMatAddExpr<MT>, typename ColumnExprTrait<MT>::Typ
 */
 template< typename MT  // Type of the matrix
         , bool SO >    // Storage order
-inline typename EnableIf< IsMatMatSubExpr<MT>, typename ColumnExprTrait<MT>::Type >::Type
+inline EnableIf_< IsMatMatSubExpr<MT>, typename ColumnExprTrait<MT>::Type >
    column( const Matrix<MT,SO>& matrix, size_t index )
 {
    BLAZE_FUNCTION_TRACE;
@@ -228,7 +228,7 @@ inline typename EnableIf< IsMatMatSubExpr<MT>, typename ColumnExprTrait<MT>::Typ
 */
 template< typename MT  // Type of the matrix
         , bool SO >    // Storage order
-inline typename EnableIf< IsMatMatMultExpr<MT>, typename ColumnExprTrait<MT>::Type >::Type
+inline EnableIf_< IsMatMatMultExpr<MT>, typename ColumnExprTrait<MT>::Type >
    column( const Matrix<MT,SO>& matrix, size_t index )
 {
    BLAZE_FUNCTION_TRACE;
@@ -253,7 +253,7 @@ inline typename EnableIf< IsMatMatMultExpr<MT>, typename ColumnExprTrait<MT>::Ty
 */
 template< typename MT  // Type of the matrix
         , bool SO >    // Storage order
-inline typename EnableIf< IsVecTVecMultExpr<MT>, typename ColumnExprTrait<MT>::Type >::Type
+inline EnableIf_< IsVecTVecMultExpr<MT>, typename ColumnExprTrait<MT>::Type >
    column( const Matrix<MT,SO>& matrix, size_t index )
 {
    BLAZE_FUNCTION_TRACE;
@@ -278,7 +278,7 @@ inline typename EnableIf< IsVecTVecMultExpr<MT>, typename ColumnExprTrait<MT>::T
 */
 template< typename MT  // Type of the matrix
         , bool SO >    // Storage order
-inline typename EnableIf< IsMatScalarMultExpr<MT>, typename ColumnExprTrait<MT>::Type >::Type
+inline EnableIf_< IsMatScalarMultExpr<MT>, typename ColumnExprTrait<MT>::Type >
    column( const Matrix<MT,SO>& matrix, size_t index )
 {
    BLAZE_FUNCTION_TRACE;
@@ -303,7 +303,7 @@ inline typename EnableIf< IsMatScalarMultExpr<MT>, typename ColumnExprTrait<MT>:
 */
 template< typename MT  // Type of the matrix
         , bool SO >    // Storage order
-inline typename EnableIf< IsMatScalarDivExpr<MT>, typename ColumnExprTrait<MT>::Type >::Type
+inline EnableIf_< IsMatScalarDivExpr<MT>, typename ColumnExprTrait<MT>::Type >
    column( const Matrix<MT,SO>& matrix, size_t index )
 {
    BLAZE_FUNCTION_TRACE;
@@ -328,7 +328,7 @@ inline typename EnableIf< IsMatScalarDivExpr<MT>, typename ColumnExprTrait<MT>::
 */
 template< typename MT  // Type of the matrix
         , bool SO >    // Storage order
-inline typename EnableIf< IsMatAbsExpr<MT>, typename ColumnExprTrait<MT>::Type >::Type
+inline EnableIf_< IsMatAbsExpr<MT>, typename ColumnExprTrait<MT>::Type >
    column( const Matrix<MT,SO>& matrix, size_t index )
 {
    BLAZE_FUNCTION_TRACE;
@@ -353,7 +353,7 @@ inline typename EnableIf< IsMatAbsExpr<MT>, typename ColumnExprTrait<MT>::Type >
 */
 template< typename MT  // Type of the matrix
         , bool SO >    // Storage order
-inline typename EnableIf< IsMatConjExpr<MT>, typename ColumnExprTrait<MT>::Type >::Type
+inline EnableIf_< IsMatConjExpr<MT>, typename ColumnExprTrait<MT>::Type >
    column( const Matrix<MT,SO>& matrix, size_t index )
 {
    BLAZE_FUNCTION_TRACE;
@@ -378,7 +378,7 @@ inline typename EnableIf< IsMatConjExpr<MT>, typename ColumnExprTrait<MT>::Type 
 */
 template< typename MT  // Type of the matrix
         , bool SO >    // Storage order
-inline typename EnableIf< IsMatRealExpr<MT>, typename ColumnExprTrait<MT>::Type >::Type
+inline EnableIf_< IsMatRealExpr<MT>, typename ColumnExprTrait<MT>::Type >
    column( const Matrix<MT,SO>& matrix, size_t index )
 {
    BLAZE_FUNCTION_TRACE;
@@ -403,7 +403,7 @@ inline typename EnableIf< IsMatRealExpr<MT>, typename ColumnExprTrait<MT>::Type 
 */
 template< typename MT  // Type of the matrix
         , bool SO >    // Storage order
-inline typename EnableIf< IsMatImagExpr<MT>, typename ColumnExprTrait<MT>::Type >::Type
+inline EnableIf_< IsMatImagExpr<MT>, typename ColumnExprTrait<MT>::Type >
    column( const Matrix<MT,SO>& matrix, size_t index )
 {
    BLAZE_FUNCTION_TRACE;
@@ -428,7 +428,7 @@ inline typename EnableIf< IsMatImagExpr<MT>, typename ColumnExprTrait<MT>::Type 
 */
 template< typename MT  // Type of the matrix
         , bool SO >    // Storage order
-inline typename EnableIf< IsMatEvalExpr<MT>, typename ColumnExprTrait<MT>::Type >::Type
+inline EnableIf_< IsMatEvalExpr<MT>, typename ColumnExprTrait<MT>::Type >
    column( const Matrix<MT,SO>& matrix, size_t index )
 {
    BLAZE_FUNCTION_TRACE;
@@ -453,7 +453,7 @@ inline typename EnableIf< IsMatEvalExpr<MT>, typename ColumnExprTrait<MT>::Type 
 */
 template< typename MT  // Type of the matrix
         , bool SO >    // Storage order
-inline typename EnableIf< IsMatSerialExpr<MT>, typename ColumnExprTrait<MT>::Type >::Type
+inline EnableIf_< IsMatSerialExpr<MT>, typename ColumnExprTrait<MT>::Type >
    column( const Matrix<MT,SO>& matrix, size_t index )
 {
    BLAZE_FUNCTION_TRACE;
@@ -478,7 +478,7 @@ inline typename EnableIf< IsMatSerialExpr<MT>, typename ColumnExprTrait<MT>::Typ
 */
 template< typename MT  // Type of the matrix
         , bool SO >    // Storage order
-inline typename EnableIf< IsMatTransExpr<MT>, typename ColumnExprTrait<MT>::Type >::Type
+inline EnableIf_< IsMatTransExpr<MT>, typename ColumnExprTrait<MT>::Type >
    column( const Matrix<MT,SO>& matrix, size_t index )
 {
    BLAZE_FUNCTION_TRACE;

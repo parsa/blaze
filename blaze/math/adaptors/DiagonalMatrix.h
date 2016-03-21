@@ -1766,13 +1766,13 @@ struct SubTrait< DiagonalMatrix<MT1,SO1,DF1>, DiagonalMatrix<MT2,SO2,DF2> >
 //*************************************************************************************************
 /*! \cond BLAZE_INTERNAL */
 template< typename MT, bool SO, bool DF, typename T >
-struct MultTrait< DiagonalMatrix<MT,SO,DF>, T, typename EnableIf< IsNumeric<T> >::Type >
+struct MultTrait< DiagonalMatrix<MT,SO,DF>, T, EnableIf_< IsNumeric<T> > >
 {
    typedef DiagonalMatrix< typename MultTrait<MT,T>::Type >  Type;
 };
 
 template< typename T, typename MT, bool SO, bool DF >
-struct MultTrait< T, DiagonalMatrix<MT,SO,DF>, typename EnableIf< IsNumeric<T> >::Type >
+struct MultTrait< T, DiagonalMatrix<MT,SO,DF>, EnableIf_< IsNumeric<T> > >
 {
    typedef DiagonalMatrix< typename MultTrait<T,MT>::Type >  Type;
 };
@@ -2013,7 +2013,7 @@ struct MultTrait< DiagonalMatrix<MT1,SO1,DF1>, DiagonalMatrix<MT2,SO2,DF2> >
 //*************************************************************************************************
 /*! \cond BLAZE_INTERNAL */
 template< typename MT, bool SO, bool DF, typename T >
-struct DivTrait< DiagonalMatrix<MT,SO,DF>, T, typename EnableIf< IsNumeric<T> >::Type >
+struct DivTrait< DiagonalMatrix<MT,SO,DF>, T, EnableIf_< IsNumeric<T> > >
 {
    typedef DiagonalMatrix< typename DivTrait<MT,T>::Type >  Type;
 };

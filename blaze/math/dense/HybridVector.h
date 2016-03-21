@@ -273,12 +273,10 @@ class HybridVector : public DenseVector< HybridVector<Type,N,TF>, TF >
    template< typename VT > inline HybridVector& operator*=( const Vector<VT,TF>& rhs );
 
    template< typename Other >
-   inline typename EnableIf< IsNumeric<Other>, HybridVector >::Type&
-      operator*=( Other rhs );
+   inline EnableIf_<IsNumeric<Other>, HybridVector >& operator*=( Other rhs );
 
    template< typename Other >
-   inline typename EnableIf< IsNumeric<Other>, HybridVector >::Type&
-      operator/=( Other rhs );
+   inline EnableIf_<IsNumeric<Other>, HybridVector >& operator/=( Other rhs );
    //@}
    //**********************************************************************************************
 
@@ -383,42 +381,34 @@ class HybridVector : public DenseVector< HybridVector<Type,N,TF>, TF >
    BLAZE_ALWAYS_INLINE void stream( size_t index, const IntrinsicType& value ) noexcept;
 
    template< typename VT >
-   inline typename DisableIf< VectorizedAssign<VT> >::Type
-      assign( const DenseVector<VT,TF>& rhs );
+   inline DisableIf_<VectorizedAssign<VT> > assign( const DenseVector<VT,TF>& rhs );
 
    template< typename VT >
-   inline typename EnableIf< VectorizedAssign<VT> >::Type
-      assign( const DenseVector<VT,TF>& rhs );
+   inline EnableIf_<VectorizedAssign<VT> > assign( const DenseVector<VT,TF>& rhs );
 
    template< typename VT > inline void assign( const SparseVector<VT,TF>& rhs );
 
    template< typename VT >
-   inline typename DisableIf< VectorizedAddAssign<VT> >::Type
-      addAssign( const DenseVector<VT,TF>& rhs );
+   inline DisableIf_<VectorizedAddAssign<VT> > addAssign( const DenseVector<VT,TF>& rhs );
 
    template< typename VT >
-   inline typename EnableIf< VectorizedAddAssign<VT> >::Type
-      addAssign( const DenseVector<VT,TF>& rhs );
+   inline EnableIf_<VectorizedAddAssign<VT> > addAssign( const DenseVector<VT,TF>& rhs );
 
    template< typename VT > inline void addAssign( const SparseVector<VT,TF>& rhs );
 
    template< typename VT >
-   inline typename DisableIf< VectorizedSubAssign<VT> >::Type
-      subAssign( const DenseVector<VT,TF>& rhs );
+   inline DisableIf_<VectorizedSubAssign<VT> > subAssign( const DenseVector<VT,TF>& rhs );
 
    template< typename VT >
-   inline typename EnableIf< VectorizedSubAssign<VT> >::Type
-      subAssign( const DenseVector<VT,TF>& rhs );
+   inline EnableIf_<VectorizedSubAssign<VT> > subAssign( const DenseVector<VT,TF>& rhs );
 
    template< typename VT > inline void subAssign( const SparseVector<VT,TF>& rhs );
 
    template< typename VT >
-   inline typename DisableIf< VectorizedMultAssign<VT> >::Type
-      multAssign( const DenseVector<VT,TF>& rhs );
+   inline DisableIf_<VectorizedMultAssign<VT> > multAssign( const DenseVector<VT,TF>& rhs );
 
    template< typename VT >
-   inline typename EnableIf< VectorizedMultAssign<VT> >::Type
-      multAssign( const DenseVector<VT,TF>& rhs );
+   inline EnableIf_<VectorizedMultAssign<VT> > multAssign( const DenseVector<VT,TF>& rhs );
 
    template< typename VT > inline void multAssign( const SparseVector<VT,TF>& rhs );
    //@}
@@ -1171,7 +1161,7 @@ template< typename Type     // Data type of the vector
         , size_t N          // Number of elements
         , bool TF >         // Transpose flag
 template< typename Other >  // Data type of the right-hand side scalar
-inline typename EnableIf< IsNumeric<Other>, HybridVector<Type,N,TF> >::Type&
+inline EnableIf_<IsNumeric<Other>, HybridVector<Type,N,TF> >&
    HybridVector<Type,N,TF>::operator*=( Other rhs )
 {
    using blaze::assign;
@@ -1195,7 +1185,7 @@ template< typename Type     // Data type of the vector
         , size_t N          // Number of elements
         , bool TF >         // Transpose flag
 template< typename Other >  // Data type of the right-hand side scalar
-inline typename EnableIf< IsNumeric<Other>, HybridVector<Type,N,TF> >::Type&
+inline EnableIf_<IsNumeric<Other>, HybridVector<Type,N,TF> >&
    HybridVector<Type,N,TF>::operator/=( Other rhs )
 {
    using blaze::assign;
@@ -1885,7 +1875,7 @@ template< typename Type  // Data type of the vector
         , size_t N       // Number of elements
         , bool TF >      // Transpose flag
 template< typename VT >  // Type of the right-hand side dense vector
-inline typename DisableIf< typename HybridVector<Type,N,TF>::BLAZE_TEMPLATE VectorizedAssign<VT> >::Type
+inline DisableIf_<typename HybridVector<Type,N,TF>::BLAZE_TEMPLATE VectorizedAssign<VT> >
    HybridVector<Type,N,TF>::assign( const DenseVector<VT,TF>& rhs )
 {
    BLAZE_INTERNAL_ASSERT( (~rhs).size() == size_, "Invalid vector sizes" );
@@ -1911,7 +1901,7 @@ template< typename Type  // Data type of the vector
         , size_t N       // Number of elements
         , bool TF >      // Transpose flag
 template< typename VT >  // Type of the right-hand side dense vector
-inline typename EnableIf< typename HybridVector<Type,N,TF>::BLAZE_TEMPLATE VectorizedAssign<VT> >::Type
+inline EnableIf_<typename HybridVector<Type,N,TF>::BLAZE_TEMPLATE VectorizedAssign<VT> >
    HybridVector<Type,N,TF>::assign( const DenseVector<VT,TF>& rhs )
 {
    BLAZE_CONSTRAINT_MUST_BE_VECTORIZABLE_TYPE( Type );
@@ -1975,7 +1965,7 @@ template< typename Type  // Data type of the vector
         , size_t N       // Number of elements
         , bool TF >      // Transpose flag
 template< typename VT >  // Type of the right-hand side dense vector
-inline typename DisableIf< typename HybridVector<Type,N,TF>::BLAZE_TEMPLATE VectorizedAddAssign<VT> >::Type
+inline DisableIf_<typename HybridVector<Type,N,TF>::BLAZE_TEMPLATE VectorizedAddAssign<VT> >
    HybridVector<Type,N,TF>::addAssign( const DenseVector<VT,TF>& rhs )
 {
    BLAZE_INTERNAL_ASSERT( (~rhs).size() == size_, "Invalid vector sizes" );
@@ -2001,7 +1991,7 @@ template< typename Type  // Data type of the vector
         , size_t N       // Number of elements
         , bool TF >      // Transpose flag
 template< typename VT >  // Type of the right-hand side dense vector
-inline typename EnableIf< typename HybridVector<Type,N,TF>::BLAZE_TEMPLATE VectorizedAddAssign<VT> >::Type
+inline EnableIf_<typename HybridVector<Type,N,TF>::BLAZE_TEMPLATE VectorizedAddAssign<VT> >
    HybridVector<Type,N,TF>::addAssign( const DenseVector<VT,TF>& rhs )
 {
    BLAZE_CONSTRAINT_MUST_BE_VECTORIZABLE_TYPE( Type );
@@ -2065,7 +2055,7 @@ template< typename Type  // Data type of the vector
         , size_t N       // Number of elements
         , bool TF >      // Transpose flag
 template< typename VT >  // Type of the right-hand side dense vector
-inline typename DisableIf< typename HybridVector<Type,N,TF>::BLAZE_TEMPLATE VectorizedSubAssign<VT> >::Type
+inline DisableIf_<typename HybridVector<Type,N,TF>::BLAZE_TEMPLATE VectorizedSubAssign<VT> >
    HybridVector<Type,N,TF>::subAssign( const DenseVector<VT,TF>& rhs )
 {
    BLAZE_INTERNAL_ASSERT( (~rhs).size() == size_, "Invalid vector sizes" );
@@ -2091,7 +2081,7 @@ template< typename Type  // Data type of the vector
         , size_t N       // Number of elements
         , bool TF >      // Transpose flag
 template< typename VT >  // Type of the right-hand side dense vector
-inline typename EnableIf< typename HybridVector<Type,N,TF>::BLAZE_TEMPLATE VectorizedSubAssign<VT> >::Type
+inline EnableIf_<typename HybridVector<Type,N,TF>::BLAZE_TEMPLATE VectorizedSubAssign<VT> >
    HybridVector<Type,N,TF>::subAssign( const DenseVector<VT,TF>& rhs )
 {
    BLAZE_CONSTRAINT_MUST_BE_VECTORIZABLE_TYPE( Type );
@@ -2155,7 +2145,7 @@ template< typename Type  // Data type of the vector
         , size_t N       // Number of elements
         , bool TF >      // Transpose flag
 template< typename VT >  // Type of the right-hand side dense vector
-inline typename DisableIf< typename HybridVector<Type,N,TF>::BLAZE_TEMPLATE VectorizedMultAssign<VT> >::Type
+inline DisableIf_<typename HybridVector<Type,N,TF>::BLAZE_TEMPLATE VectorizedMultAssign<VT> >
    HybridVector<Type,N,TF>::multAssign( const DenseVector<VT,TF>& rhs )
 {
    BLAZE_INTERNAL_ASSERT( (~rhs).size() == size_, "Invalid vector sizes" );
@@ -2181,7 +2171,7 @@ template< typename Type  // Data type of the vector
         , size_t N       // Number of elements
         , bool TF >      // Transpose flag
 template< typename VT >  // Type of the right-hand side dense vector
-inline typename EnableIf< typename HybridVector<Type,N,TF>::BLAZE_TEMPLATE VectorizedMultAssign<VT> >::Type
+inline EnableIf_<typename HybridVector<Type,N,TF>::BLAZE_TEMPLATE VectorizedMultAssign<VT> >
    HybridVector<Type,N,TF>::multAssign( const DenseVector<VT,TF>& rhs )
 {
    BLAZE_CONSTRAINT_MUST_BE_VECTORIZABLE_TYPE( Type );
@@ -2559,13 +2549,13 @@ struct SubTrait< HybridVector<T1,M,TF>, HybridVector<T2,N,TF> >
 //*************************************************************************************************
 /*! \cond BLAZE_INTERNAL */
 template< typename T1, size_t N, bool TF, typename T2 >
-struct MultTrait< HybridVector<T1,N,TF>, T2, typename EnableIf< IsNumeric<T2> >::Type >
+struct MultTrait< HybridVector<T1,N,TF>, T2, EnableIf_<IsNumeric<T2> > >
 {
    typedef HybridVector< typename MultTrait<T1,T2>::Type, N, TF >  Type;
 };
 
 template< typename T1, typename T2, size_t N, bool TF >
-struct MultTrait< T1, HybridVector<T2,N,TF>, typename EnableIf< IsNumeric<T1> >::Type >
+struct MultTrait< T1, HybridVector<T2,N,TF>, EnableIf_<IsNumeric<T1> > >
 {
    typedef HybridVector< typename MultTrait<T1,T2>::Type, N, TF >  Type;
 };
@@ -2681,7 +2671,7 @@ struct CrossTrait< HybridVector<T1,M,false>, HybridVector<T2,N,false> >
 //*************************************************************************************************
 /*! \cond BLAZE_INTERNAL */
 template< typename T1, size_t N, bool TF, typename T2 >
-struct DivTrait< HybridVector<T1,N,TF>, T2, typename EnableIf< IsNumeric<T2> >::Type >
+struct DivTrait< HybridVector<T1,N,TF>, T2, EnableIf_<IsNumeric<T2> > >
 {
    typedef HybridVector< typename DivTrait<T1,T2>::Type, N, TF >  Type;
 };

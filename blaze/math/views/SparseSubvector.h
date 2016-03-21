@@ -770,12 +770,10 @@ class SparseSubvector : public SparseVector< SparseSubvector<VT,AF,TF>, TF >
    template< typename VT2 > inline SparseSubvector& operator*=( const Vector<VT2,TF>& rhs );
 
    template< typename Other >
-   inline typename EnableIf< IsNumeric<Other>, SparseSubvector >::Type&
-      operator*=( Other rhs );
+   inline EnableIf_<IsNumeric<Other>, SparseSubvector >& operator*=( Other rhs );
 
    template< typename Other >
-   inline typename EnableIf< IsNumeric<Other>, SparseSubvector >::Type&
-      operator/=( Other rhs );
+   inline EnableIf_<IsNumeric<Other>, SparseSubvector >& operator/=( Other rhs );
    //@}
    //**********************************************************************************************
 
@@ -1426,7 +1424,7 @@ template< typename VT       // Type of the sparse vector
         , bool AF           // Alignment flag
         , bool TF >         // Transpose flag
 template< typename Other >  // Data type of the right-hand side scalar
-inline typename EnableIf< IsNumeric<Other>, SparseSubvector<VT,AF,TF> >::Type&
+inline EnableIf_<IsNumeric<Other>, SparseSubvector<VT,AF,TF> >&
    SparseSubvector<VT,AF,TF>::operator*=( Other rhs )
 {
    const Iterator last( end() );
@@ -1453,7 +1451,7 @@ template< typename VT       // Type of the sparse vector
         , bool AF           // Alignment flag
         , bool TF >         // Transpose flag
 template< typename Other >  // Data type of the right-hand side scalar
-inline typename EnableIf< IsNumeric<Other>, SparseSubvector<VT,AF,TF> >::Type&
+inline EnableIf_<IsNumeric<Other>, SparseSubvector<VT,AF,TF> >&
    SparseSubvector<VT,AF,TF>::operator/=( Other rhs )
 {
    BLAZE_USER_ASSERT( rhs != Other(0), "Division by zero detected" );

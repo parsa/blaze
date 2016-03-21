@@ -2237,13 +2237,13 @@ struct SubTrait< UniLowerMatrix<MT1,SO1,DF1>, UniLowerMatrix<MT2,SO2,DF2> >
 //*************************************************************************************************
 /*! \cond BLAZE_INTERNAL */
 template< typename MT, bool SO, bool DF, typename T >
-struct MultTrait< UniLowerMatrix<MT,SO,DF>, T, typename EnableIf< IsNumeric<T> >::Type >
+struct MultTrait< UniLowerMatrix<MT,SO,DF>, T, EnableIf_< IsNumeric<T> > >
 {
    typedef LowerMatrix< typename MultTrait<MT,T>::Type >  Type;
 };
 
 template< typename T, typename MT, bool SO, bool DF >
-struct MultTrait< T, UniLowerMatrix<MT,SO,DF>, typename EnableIf< IsNumeric<T> >::Type >
+struct MultTrait< T, UniLowerMatrix<MT,SO,DF>, EnableIf_< IsNumeric<T> > >
 {
    typedef LowerMatrix< typename MultTrait<T,MT>::Type >  Type;
 };
@@ -2424,7 +2424,7 @@ struct MultTrait< UniLowerMatrix<MT1,SO1,DF1>, UniLowerMatrix<MT2,SO2,DF2> >
 //*************************************************************************************************
 /*! \cond BLAZE_INTERNAL */
 template< typename MT, bool SO, bool DF, typename T >
-struct DivTrait< UniLowerMatrix<MT,SO,DF>, T, typename EnableIf< IsNumeric<T> >::Type >
+struct DivTrait< UniLowerMatrix<MT,SO,DF>, T, EnableIf_< IsNumeric<T> > >
 {
    typedef LowerMatrix< typename DivTrait<MT,T>::Type >  Type;
 };

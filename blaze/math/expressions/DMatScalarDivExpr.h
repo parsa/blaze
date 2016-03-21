@@ -639,7 +639,7 @@ class DMatScalarDivExpr : public DenseMatrix< DMatScalarDivExpr<MT,ST,SO>, SO >
    */
    template< typename MT2  // Type of the target dense matrix
            , bool SO2 >    // Storage order of the target dense matrix
-   friend inline typename EnableIf< UseAssign<MT2> >::Type
+   friend inline EnableIf_< UseAssign<MT2> >
       assign( DenseMatrix<MT2,SO2>& lhs, const DMatScalarDivExpr& rhs )
    {
       BLAZE_FUNCTION_TRACE;
@@ -669,7 +669,7 @@ class DMatScalarDivExpr : public DenseMatrix< DMatScalarDivExpr<MT,ST,SO>, SO >
    */
    template< typename MT2  // Type of the target sparse matrix
            , bool SO2 >    // Storage order of the target sparse matrix
-   friend inline typename EnableIf< UseAssign<MT2> >::Type
+   friend inline EnableIf_< UseAssign<MT2> >
       assign( SparseMatrix<MT2,SO2>& lhs, const DMatScalarDivExpr& rhs )
    {
       BLAZE_FUNCTION_TRACE;
@@ -699,7 +699,7 @@ class DMatScalarDivExpr : public DenseMatrix< DMatScalarDivExpr<MT,ST,SO>, SO >
    */
    template< typename MT2  // Type of the target dense matrix
            , bool SO2 >    // Storage order of the target dense matrix
-   friend inline typename EnableIf< UseAssign<MT2> >::Type
+   friend inline EnableIf_< UseAssign<MT2> >
       addAssign( DenseMatrix<MT2,SO2>& lhs, const DMatScalarDivExpr& rhs )
    {
       BLAZE_FUNCTION_TRACE;
@@ -737,7 +737,7 @@ class DMatScalarDivExpr : public DenseMatrix< DMatScalarDivExpr<MT,ST,SO>, SO >
    */
    template< typename MT2  // Type of the target dense matrix
            , bool SO2 >    // Storage order of the target dense matrix
-   friend inline typename EnableIf< UseAssign<MT2> >::Type
+   friend inline EnableIf_< UseAssign<MT2> >
       subAssign( DenseMatrix<MT2,SO2>& lhs, const DMatScalarDivExpr& rhs )
    {
       BLAZE_FUNCTION_TRACE;
@@ -783,7 +783,7 @@ class DMatScalarDivExpr : public DenseMatrix< DMatScalarDivExpr<MT,ST,SO>, SO >
    */
    template< typename MT2  // Type of the target dense matrix
            , bool SO2 >    // Storage order of the target dense matrix
-   friend inline typename EnableIf< UseSMPAssign<MT2> >::Type
+   friend inline EnableIf_< UseSMPAssign<MT2> >
       smpAssign( DenseMatrix<MT2,SO2>& lhs, const DMatScalarDivExpr& rhs )
    {
       BLAZE_FUNCTION_TRACE;
@@ -813,7 +813,7 @@ class DMatScalarDivExpr : public DenseMatrix< DMatScalarDivExpr<MT,ST,SO>, SO >
    */
    template< typename MT2  // Type of the target sparse matrix
            , bool SO2 >    // Storage order of the target sparse matrix
-   friend inline typename EnableIf< UseSMPAssign<MT2> >::Type
+   friend inline EnableIf_< UseSMPAssign<MT2> >
       smpAssign( SparseMatrix<MT2,SO2>& lhs, const DMatScalarDivExpr& rhs )
    {
       BLAZE_FUNCTION_TRACE;
@@ -843,7 +843,7 @@ class DMatScalarDivExpr : public DenseMatrix< DMatScalarDivExpr<MT,ST,SO>, SO >
    */
    template< typename MT2  // Type of the target dense matrix
            , bool SO2 >    // Storage order of the target dense matrix
-   friend inline typename EnableIf< UseSMPAssign<MT2> >::Type
+   friend inline EnableIf_< UseSMPAssign<MT2> >
       smpAddAssign( DenseMatrix<MT2,SO2>& lhs, const DMatScalarDivExpr& rhs )
    {
       BLAZE_FUNCTION_TRACE;
@@ -881,7 +881,7 @@ class DMatScalarDivExpr : public DenseMatrix< DMatScalarDivExpr<MT,ST,SO>, SO >
    */
    template< typename MT2  // Type of the target dense matrix
            , bool SO2 >    // Storage order of the target dense matrix
-   friend inline typename EnableIf< UseSMPAssign<MT2> >::Type
+   friend inline EnableIf_< UseSMPAssign<MT2> >
       smpSubAssign( DenseMatrix<MT2,SO2>& lhs, const DMatScalarDivExpr& rhs )
    {
       BLAZE_FUNCTION_TRACE;
@@ -958,7 +958,7 @@ class DMatScalarDivExpr : public DenseMatrix< DMatScalarDivExpr<MT,ST,SO>, SO >
 template< typename T1    // Type of the left-hand side dense matrix
         , bool SO        // Storage order of the left-hand side dense matrix
         , typename T2 >  // Type of the right-hand side scalar
-inline const typename EnableIf< IsNumeric<T2>, typename DivExprTrait<T1,T2>::Type >::Type
+inline const EnableIf_< IsNumeric<T2>, typename DivExprTrait<T1,T2>::Type >
    operator/( const DenseMatrix<T1,SO>& mat, T2 scalar )
 {
    BLAZE_FUNCTION_TRACE;
@@ -1003,8 +1003,8 @@ template< typename MT     // Type of the dense matrix of the left-hand side expr
         , typename ST1    // Type of the scalar of the left-hand side expression
         , bool SO         // Storage order of the dense matrix
         , typename ST2 >  // Type of the right-hand side scalar
-inline const typename EnableIf< And< IsNumeric<ST2>, IsInvertible<typename DivTrait<ST2,ST1>::Type > >
-                              , typename MultExprTrait< DMatScalarDivExpr<MT,ST1,SO>, ST2 >::Type >::Type
+inline const EnableIf_< And< IsNumeric<ST2>, IsInvertible<typename DivTrait<ST2,ST1>::Type > >
+                      , typename MultExprTrait< DMatScalarDivExpr<MT,ST1,SO>, ST2 >::Type >
    operator*( const DMatScalarDivExpr<MT,ST1,SO>& mat, ST2 scalar )
 {
    BLAZE_FUNCTION_TRACE;
@@ -1032,8 +1032,8 @@ template< typename ST1  // Type of the left-hand side scalar
         , typename MT   // Type of the dense matrix of the right-hand side expression
         , typename ST2  // Type of the scalar of the right-hand side expression
         , bool SO >     // Storage order of the dense matrix
-inline const typename EnableIf< And< IsNumeric<ST1>, IsInvertible<typename DivTrait<ST1,ST2>::Type > >
-                              , typename MultExprTrait< ST1, DMatScalarDivExpr<MT,ST2,SO> >::Type >::Type
+inline const EnableIf_< And< IsNumeric<ST1>, IsInvertible<typename DivTrait<ST1,ST2>::Type > >
+                      , typename MultExprTrait< ST1, DMatScalarDivExpr<MT,ST2,SO> >::Type >
    operator*( ST1 scalar, const DMatScalarDivExpr<MT,ST2,SO>& mat )
 {
    BLAZE_FUNCTION_TRACE;
@@ -1061,8 +1061,8 @@ template< typename MT     // Type of the dense matrix of the left-hand side expr
         , typename ST1    // Type of the scalar of the left-hand side expression
         , bool SO         // Storage order of the dense matrix
         , typename ST2 >  // Type of the right-hand side scalar
-inline const typename EnableIf< IsNumeric<ST2>
-                              , typename DivExprTrait<MT,typename MultTrait<ST1,ST2>::Type>::Type >::Type
+inline const EnableIf_< IsNumeric<ST2>
+                      , typename DivExprTrait<MT,typename MultTrait<ST1,ST2>::Type>::Type >
    operator/( const DMatScalarDivExpr<MT,ST1,SO>& mat, ST2 scalar )
 {
    BLAZE_FUNCTION_TRACE;

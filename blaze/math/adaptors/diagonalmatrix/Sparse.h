@@ -175,39 +175,31 @@ class DiagonalMatrix<MT,SO,false>
    inline DiagonalMatrix& operator=( DiagonalMatrix&& rhs ) noexcept;
 
    template< typename MT2, bool SO2 >
-   inline typename DisableIf< IsComputation<MT2>, DiagonalMatrix& >::Type
-      operator=( const Matrix<MT2,SO2>& rhs );
+   inline DisableIf_< IsComputation<MT2>, DiagonalMatrix& > operator=( const Matrix<MT2,SO2>& rhs );
 
    template< typename MT2, bool SO2 >
-   inline typename EnableIf< IsComputation<MT2>, DiagonalMatrix& >::Type
-      operator=( const Matrix<MT2,SO2>& rhs );
+   inline EnableIf_< IsComputation<MT2>, DiagonalMatrix& > operator=( const Matrix<MT2,SO2>& rhs );
 
    template< typename MT2, bool SO2 >
-   inline typename DisableIf< IsComputation<MT2>, DiagonalMatrix& >::Type
-      operator+=( const Matrix<MT2,SO2>& rhs );
+   inline DisableIf_< IsComputation<MT2>, DiagonalMatrix& > operator+=( const Matrix<MT2,SO2>& rhs );
 
    template< typename MT2, bool SO2 >
-   inline typename EnableIf< IsComputation<MT2>, DiagonalMatrix& >::Type
-      operator+=( const Matrix<MT2,SO2>& rhs );
+   inline EnableIf_< IsComputation<MT2>, DiagonalMatrix& > operator+=( const Matrix<MT2,SO2>& rhs );
 
    template< typename MT2, bool SO2 >
-   inline typename DisableIf< IsComputation<MT2>, DiagonalMatrix& >::Type
-      operator-=( const Matrix<MT2,SO2>& rhs );
+   inline DisableIf_< IsComputation<MT2>, DiagonalMatrix& > operator-=( const Matrix<MT2,SO2>& rhs );
 
    template< typename MT2, bool SO2 >
-   inline typename EnableIf< IsComputation<MT2>, DiagonalMatrix& >::Type
-      operator-=( const Matrix<MT2,SO2>& rhs );
+   inline EnableIf_< IsComputation<MT2>, DiagonalMatrix& > operator-=( const Matrix<MT2,SO2>& rhs );
 
    template< typename MT2, bool SO2 >
    inline DiagonalMatrix& operator*=( const Matrix<MT2,SO2>& rhs );
 
    template< typename Other >
-   inline typename EnableIf< IsNumeric<Other>, DiagonalMatrix >::Type&
-      operator*=( Other rhs );
+   inline EnableIf_< IsNumeric<Other>, DiagonalMatrix >& operator*=( Other rhs );
 
    template< typename Other >
-   inline typename EnableIf< IsNumeric<Other>, DiagonalMatrix >::Type&
-      operator/=( Other rhs );
+   inline EnableIf_< IsNumeric<Other>, DiagonalMatrix >& operator/=( Other rhs );
    //@}
    //**********************************************************************************************
 
@@ -824,7 +816,7 @@ template< typename MT   // Type of the adapted sparse matrix
         , bool SO >     // Storage order of the adapted sparse matrix
 template< typename MT2  // Type of the right-hand side matrix
         , bool SO2 >    // Storage order of the right-hand side matrix
-inline typename DisableIf< IsComputation<MT2>, DiagonalMatrix<MT,SO,false>& >::Type
+inline DisableIf_< IsComputation<MT2>, DiagonalMatrix<MT,SO,false>& >
    DiagonalMatrix<MT,SO,false>::operator=( const Matrix<MT2,SO2>& rhs )
 {
    if( !IsDiagonal<MT2>::value && !isDiagonal( ~rhs ) ) {
@@ -862,7 +854,7 @@ template< typename MT   // Type of the adapted sparse matrix
         , bool SO >     // Storage order of the adapted sparse matrix
 template< typename MT2  // Type of the right-hand side matrix
         , bool SO2 >    // Storage order of the right-hand side matrix
-inline typename EnableIf< IsComputation<MT2>, DiagonalMatrix<MT,SO,false>& >::Type
+inline EnableIf_< IsComputation<MT2>, DiagonalMatrix<MT,SO,false>& >
    DiagonalMatrix<MT,SO,false>::operator=( const Matrix<MT2,SO2>& rhs )
 {
    if( !IsSquare<MT2>::value && !isSquare( ~rhs ) ) {
@@ -911,7 +903,7 @@ template< typename MT   // Type of the adapted sparse matrix
         , bool SO >     // Storage order of the adapted sparse matrix
 template< typename MT2  // Type of the right-hand side matrix
         , bool SO2 >    // Storage order of the right-hand side matrix
-inline typename DisableIf< IsComputation<MT2>, DiagonalMatrix<MT,SO,false>& >::Type
+inline DisableIf_< IsComputation<MT2>, DiagonalMatrix<MT,SO,false>& >
    DiagonalMatrix<MT,SO,false>::operator+=( const Matrix<MT2,SO2>& rhs )
 {
    if( !IsDiagonal<MT2>::value && !isDiagonal( ~rhs ) ) {
@@ -949,7 +941,7 @@ template< typename MT   // Type of the adapted sparse matrix
         , bool SO >     // Storage order of the adapted sparse matrix
 template< typename MT2  // Type of the right-hand side matrix
         , bool SO2 >    // Storage order of the right-hand side matrix
-inline typename EnableIf< IsComputation<MT2>, DiagonalMatrix<MT,SO,false>& >::Type
+inline EnableIf_< IsComputation<MT2>, DiagonalMatrix<MT,SO,false>& >
    DiagonalMatrix<MT,SO,false>::operator+=( const Matrix<MT2,SO2>& rhs )
 {
    if( !IsSquare<MT2>::value && !isSquare( ~rhs ) ) {
@@ -998,7 +990,7 @@ template< typename MT   // Type of the adapted sparse matrix
         , bool SO >     // Storage order of the adapted sparse matrix
 template< typename MT2  // Type of the right-hand side matrix
         , bool SO2 >    // Storage order of the right-hand side matrix
-inline typename DisableIf< IsComputation<MT2>, DiagonalMatrix<MT,SO,false>& >::Type
+inline DisableIf_< IsComputation<MT2>, DiagonalMatrix<MT,SO,false>& >
    DiagonalMatrix<MT,SO,false>::operator-=( const Matrix<MT2,SO2>& rhs )
 {
    if( !IsDiagonal<MT2>::value && !isDiagonal( ~rhs ) ) {
@@ -1036,7 +1028,7 @@ template< typename MT   // Type of the adapted sparse matrix
         , bool SO >     // Storage order of the adapted sparse matrix
 template< typename MT2  // Type of the right-hand side matrix
         , bool SO2 >    // Storage order of the right-hand side matrix
-inline typename EnableIf< IsComputation<MT2>, DiagonalMatrix<MT,SO,false>& >::Type
+inline EnableIf_< IsComputation<MT2>, DiagonalMatrix<MT,SO,false>& >
    DiagonalMatrix<MT,SO,false>::operator-=( const Matrix<MT2,SO2>& rhs )
 {
    if( !IsSquare<MT2>::value && !isSquare( ~rhs ) ) {
@@ -1122,7 +1114,7 @@ inline DiagonalMatrix<MT,SO,false>&
 template< typename MT       // Type of the adapted sparse matrix
         , bool SO >         // Storage order of the adapted sparse matrix
 template< typename Other >  // Data type of the right-hand side scalar
-inline typename EnableIf< IsNumeric<Other>, DiagonalMatrix<MT,SO,false> >::Type&
+inline EnableIf_< IsNumeric<Other>, DiagonalMatrix<MT,SO,false> >&
    DiagonalMatrix<MT,SO,false>::operator*=( Other rhs )
 {
    matrix_ *= rhs;
@@ -1142,7 +1134,7 @@ inline typename EnableIf< IsNumeric<Other>, DiagonalMatrix<MT,SO,false> >::Type&
 template< typename MT       // Type of the adapted sparse matrix
         , bool SO >         // Storage order of the adapted sparse matrix
 template< typename Other >  // Data type of the right-hand side scalar
-inline typename EnableIf< IsNumeric<Other>, DiagonalMatrix<MT,SO,false> >::Type&
+inline EnableIf_< IsNumeric<Other>, DiagonalMatrix<MT,SO,false> >&
    DiagonalMatrix<MT,SO,false>::operator/=( Other rhs )
 {
    BLAZE_USER_ASSERT( rhs != Other(0), "Division by zero detected" );

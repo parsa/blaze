@@ -62,15 +62,15 @@ namespace blaze {
 /*!\name Dense matrix SMP functions */
 //@{
 template< typename MT1, bool SO1, typename MT2, bool SO2 >
-inline typename EnableIf< IsDenseMatrix<MT1> >::Type
+inline EnableIf_< IsDenseMatrix<MT1> >
    smpAssign( Matrix<MT1,SO1>& lhs, const Matrix<MT2,SO2>& rhs );
 
 template< typename MT1, bool SO1, typename MT2, bool SO2 >
-inline typename EnableIf< IsDenseMatrix<MT1> >::Type
+inline EnableIf_< IsDenseMatrix<MT1> >
    smpAddAssign( Matrix<MT1,SO1>& lhs, const Matrix<MT2,SO2>& rhs );
 
 template< typename MT1, bool SO1, typename MT2, bool SO2 >
-inline typename EnableIf< IsDenseMatrix<MT1> >::Type
+inline EnableIf_< IsDenseMatrix<MT1> >
    smpSubAssign( Matrix<MT1,SO1>& lhs, const Matrix<MT2,SO2>& rhs );
 //@}
 //*************************************************************************************************
@@ -94,7 +94,7 @@ template< typename MT1  // Type of the left-hand side dense matrix
         , bool SO1      // Storage order of the left-hand side dense matrix
         , typename MT2  // Type of the right-hand side matrix
         , bool SO2 >    // Storage order of the right-hand side matrix
-inline typename EnableIf< IsDenseMatrix<MT1> >::Type
+inline EnableIf_< IsDenseMatrix<MT1> >
    smpAssign( Matrix<MT1,SO1>& lhs, const Matrix<MT2,SO2>& rhs )
 {
    BLAZE_FUNCTION_TRACE;
@@ -125,7 +125,7 @@ template< typename MT1  // Type of the left-hand side dense matrix
         , bool SO1      // Storage order of the left-hand side dense matrix
         , typename MT2  // Type of the right-hand side matrix
         , bool SO2 >    // Storage order of the right-hand side matrix
-inline typename EnableIf< IsDenseMatrix<MT1> >::Type
+inline EnableIf_< IsDenseMatrix<MT1> >
    smpAddAssign( Matrix<MT1,SO1>& lhs, const Matrix<MT2,SO2>& rhs )
 {
    BLAZE_FUNCTION_TRACE;
@@ -156,7 +156,7 @@ template< typename MT1  // Type of the left-hand side dense matrix
         , bool SO1      // Storage order of the left-hand side dense matrix
         , typename MT2  // Type of the right-hand side matrix
         , bool SO2 >    // Storage order of the right-hand side matrix
-inline typename EnableIf< IsDenseMatrix<MT1> >::Type
+inline EnableIf_< IsDenseMatrix<MT1> >
    smpSubAssign( Matrix<MT1,SO1>& lhs, const Matrix<MT2,SO2>& rhs )
 {
    BLAZE_FUNCTION_TRACE;

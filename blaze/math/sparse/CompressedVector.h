@@ -289,12 +289,10 @@ class CompressedVector : public SparseVector< CompressedVector<Type,TF>, TF >
    template< typename VT > inline CompressedVector& operator*=( const Vector<VT,TF>& rhs );
 
    template< typename Other >
-   inline typename EnableIf< IsNumeric<Other>, CompressedVector >::Type&
-      operator*=( Other rhs );
+   inline EnableIf_< IsNumeric<Other>, CompressedVector >& operator*=( Other rhs );
 
    template< typename Other >
-   inline typename EnableIf< IsNumeric<Other>, CompressedVector >::Type&
-      operator/=( Other rhs );
+   inline EnableIf_< IsNumeric<Other>, CompressedVector >& operator/=( Other rhs );
    //@}
    //**********************************************************************************************
 
@@ -985,7 +983,7 @@ inline CompressedVector<Type,TF>& CompressedVector<Type,TF>::operator*=( const V
 template< typename Type     // Data type of the vector
         , bool TF >         // Transpose flag
 template< typename Other >  // Data type of the right-hand side scalar
-inline typename EnableIf< IsNumeric<Other>, CompressedVector<Type,TF> >::Type&
+inline EnableIf_< IsNumeric<Other>, CompressedVector<Type,TF> >&
    CompressedVector<Type,TF>::operator*=( Other rhs )
 {
    for( Iterator element=begin_; element!=end_; ++element )
@@ -1010,7 +1008,7 @@ inline typename EnableIf< IsNumeric<Other>, CompressedVector<Type,TF> >::Type&
 template< typename Type     // Data type of the vector
         , bool TF >         // Transpose flag
 template< typename Other >  // Data type of the right-hand side scalar
-inline typename EnableIf< IsNumeric<Other>, CompressedVector<Type,TF> >::Type&
+inline EnableIf_< IsNumeric<Other>, CompressedVector<Type,TF> >&
    CompressedVector<Type,TF>::operator/=( Other rhs )
 {
    BLAZE_USER_ASSERT( rhs != Other(0), "Division by zero detected" );
@@ -2150,13 +2148,13 @@ struct SubTrait< CompressedVector<T1,TF>, CompressedVector<T2,TF> >
 //*************************************************************************************************
 /*! \cond BLAZE_INTERNAL */
 template< typename T1, bool TF, typename T2 >
-struct MultTrait< CompressedVector<T1,TF>, T2, typename EnableIf< IsNumeric<T2> >::Type >
+struct MultTrait< CompressedVector<T1,TF>, T2, EnableIf_< IsNumeric<T2> > >
 {
    typedef CompressedVector< typename MultTrait<T1,T2>::Type, TF >  Type;
 };
 
 template< typename T1, typename T2, bool TF >
-struct MultTrait< T1, CompressedVector<T2,TF>, typename EnableIf< IsNumeric<T1> >::Type >
+struct MultTrait< T1, CompressedVector<T2,TF>, EnableIf_< IsNumeric<T1> > >
 {
    typedef CompressedVector< typename MultTrait<T1,T2>::Type, TF >  Type;
 };
@@ -2420,7 +2418,7 @@ struct CrossTrait< CompressedVector<T1,false>, CompressedVector<T2,false> >
 //*************************************************************************************************
 /*! \cond BLAZE_INTERNAL */
 template< typename T1, bool TF, typename T2 >
-struct DivTrait< CompressedVector<T1,TF>, T2, typename EnableIf< IsNumeric<T2> >::Type >
+struct DivTrait< CompressedVector<T1,TF>, T2, EnableIf_< IsNumeric<T2> > >
 {
    typedef CompressedVector< typename DivTrait<T1,T2>::Type, TF >  Type;
 };

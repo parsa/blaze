@@ -555,7 +555,7 @@ class DVecTSVecMultExpr : public SparseMatrix< DVecTSVecMultExpr<VT1,VT2>, false
    // data type.
    */
    template< typename MT >  // Type of the target dense matrix
-   friend inline typename EnableIf< UseAssign<MT> >::Type
+   friend inline EnableIf_< UseAssign<MT> >
       assign( DenseMatrix<MT,false>& lhs, const DVecTSVecMultExpr& rhs )
    {
       BLAZE_FUNCTION_TRACE;
@@ -638,7 +638,7 @@ class DVecTSVecMultExpr : public SparseMatrix< DVecTSVecMultExpr<VT1,VT2>, false
    template< typename MT     // Type of the left-hand side target matrix
            , typename VT3    // Type of the left-hand side vector operand
            , typename VT4 >  // Type of the right-hand side vector operand
-   static inline typename EnableIf< UseDefaultKernel<MT,VT3,VT4> >::Type
+   static inline EnableIf_< UseDefaultKernel<MT,VT3,VT4> >
       selectAssignKernel( DenseMatrix<MT,true>& A, const VT3& x, const VT4& y )
    {
       typedef typename RemoveReference<RT>::Type::ConstIterator  ConstIterator;
@@ -672,7 +672,7 @@ class DVecTSVecMultExpr : public SparseMatrix< DVecTSVecMultExpr<VT1,VT2>, false
    template< typename MT     // Type of the left-hand side target matrix
            , typename VT3    // Type of the left-hand side vector operand
            , typename VT4 >  // Type of the right-hand side vector operand
-   static inline typename EnableIf< UseVectorizedKernel<MT,VT3,VT4> >::Type
+   static inline EnableIf_< UseVectorizedKernel<MT,VT3,VT4> >
       selectAssignKernel( DenseMatrix<MT,true>& A, const VT3& x, const VT4& y )
    {
       typedef typename RemoveReference<RT>::Type::ConstIterator  ConstIterator;
@@ -723,7 +723,7 @@ class DVecTSVecMultExpr : public SparseMatrix< DVecTSVecMultExpr<VT1,VT2>, false
    // types is non-numeric data type.
    */
    template< typename MT >  // Type of the target sparse matrix
-   friend inline typename EnableIf< UseAssign<MT> >::Type
+   friend inline EnableIf_< UseAssign<MT> >
       assign( SparseMatrix<MT,false>& lhs, const DVecTSVecMultExpr& rhs )
    {
       BLAZE_FUNCTION_TRACE;
@@ -839,7 +839,7 @@ class DVecTSVecMultExpr : public SparseMatrix< DVecTSVecMultExpr<VT1,VT2>, false
    // types is non-numeric data type.
    */
    template< typename MT >  // Type of the target dense matrix
-   friend inline typename EnableIf< UseAssign<MT> >::Type
+   friend inline EnableIf_< UseAssign<MT> >
       addAssign( DenseMatrix<MT,false>& lhs, const DVecTSVecMultExpr& rhs )
    {
       BLAZE_FUNCTION_TRACE;
@@ -922,7 +922,7 @@ class DVecTSVecMultExpr : public SparseMatrix< DVecTSVecMultExpr<VT1,VT2>, false
    template< typename MT     // Type of the left-hand side target matrix
            , typename VT3    // Type of the left-hand side vector operand
            , typename VT4 >  // Type of the right-hand side vector operand
-   static inline typename EnableIf< UseDefaultKernel<MT,VT3,VT4> >::Type
+   static inline EnableIf_< UseDefaultKernel<MT,VT3,VT4> >
       selectAddAssignKernel( DenseMatrix<MT,true>& A, const VT3& x, const VT4& y )
    {
       typedef typename RemoveReference<RT>::Type::ConstIterator  ConstIterator;
@@ -956,7 +956,7 @@ class DVecTSVecMultExpr : public SparseMatrix< DVecTSVecMultExpr<VT1,VT2>, false
    template< typename MT     // Type of the left-hand side target matrix
            , typename VT3    // Type of the left-hand side vector operand
            , typename VT4 >  // Type of the right-hand side vector operand
-   static inline typename EnableIf< UseVectorizedKernel<MT,VT3,VT4> >::Type
+   static inline EnableIf_< UseVectorizedKernel<MT,VT3,VT4> >
       selectAddAssignKernel( DenseMatrix<MT,true>& A, const VT3& x, const VT4& y )
    {
       typedef typename RemoveReference<RT>::Type::ConstIterator  ConstIterator;
@@ -1012,7 +1012,7 @@ class DVecTSVecMultExpr : public SparseMatrix< DVecTSVecMultExpr<VT1,VT2>, false
    // types is non-numeric data type.
    */
    template< typename MT >  // Type of the target dense matrix
-   friend inline typename EnableIf< UseAssign<MT> >::Type
+   friend inline EnableIf_< UseAssign<MT> >
       subAssign( DenseMatrix<MT,false>& lhs, const DVecTSVecMultExpr& rhs )
    {
       BLAZE_FUNCTION_TRACE;
@@ -1095,7 +1095,7 @@ class DVecTSVecMultExpr : public SparseMatrix< DVecTSVecMultExpr<VT1,VT2>, false
    template< typename MT     // Type of the left-hand side target matrix
            , typename VT3    // Type of the left-hand side vector operand
            , typename VT4 >  // Type of the right-hand side vector operand
-   static inline typename EnableIf< UseDefaultKernel<MT,VT3,VT4> >::Type
+   static inline EnableIf_< UseDefaultKernel<MT,VT3,VT4> >
       selectSubAssignKernel( DenseMatrix<MT,true>& A, const VT3& x, const VT4& y )
    {
       typedef typename RemoveReference<RT>::Type::ConstIterator  ConstIterator;
@@ -1129,7 +1129,7 @@ class DVecTSVecMultExpr : public SparseMatrix< DVecTSVecMultExpr<VT1,VT2>, false
    template< typename MT     // Type of the left-hand side target matrix
            , typename VT3    // Type of the left-hand side vector operand
            , typename VT4 >  // Type of the right-hand side vector operand
-   static inline typename EnableIf< UseVectorizedKernel<MT,VT3,VT4> >::Type
+   static inline EnableIf_< UseVectorizedKernel<MT,VT3,VT4> >
       selectSubAssignKernel( DenseMatrix<MT,true>& A, const VT3& x, const VT4& y )
    {
       typedef typename RemoveReference<RT>::Type::ConstIterator  ConstIterator;

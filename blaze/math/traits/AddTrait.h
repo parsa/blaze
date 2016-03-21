@@ -169,7 +169,7 @@ struct AddTrait
 // \ingroup math_traits
 */
 template< typename T1, typename T2 >
-struct AddTrait< complex<T1>, T2, typename EnableIf< IsBuiltin<T2> >::Type >
+struct AddTrait< complex<T1>, T2, EnableIf_< IsBuiltin<T2> > >
 {
  public:
    //**********************************************************************************************
@@ -186,7 +186,7 @@ struct AddTrait< complex<T1>, T2, typename EnableIf< IsBuiltin<T2> >::Type >
 // \ingroup math_traits
 */
 template< typename T1, typename T2 >
-struct AddTrait< T1, complex<T2>, typename EnableIf< IsBuiltin<T1> >::Type >
+struct AddTrait< T1, complex<T2>, EnableIf_< IsBuiltin<T1> > >
 {
  public:
    //**********************************************************************************************

@@ -617,7 +617,7 @@ BLAZE_ALWAYS_INLINE size_t nonZeros( const DenseVectorProxy<PT,VT>& proxy )
 */
 template< typename PT    // Type of the proxy
         , typename VT >  // Type of the dense vector
-BLAZE_ALWAYS_INLINE typename DisableIf< IsResizable<VT> >::Type
+BLAZE_ALWAYS_INLINE DisableIf_< IsResizable<VT> >
    resize_backend( const DenseVectorProxy<PT,VT>& proxy, size_t n, bool preserve )
 {
    UNUSED_PARAMETER( preserve );
@@ -644,7 +644,7 @@ BLAZE_ALWAYS_INLINE typename DisableIf< IsResizable<VT> >::Type
 */
 template< typename PT    // Type of the proxy
         , typename VT >  // Type of the dense vector
-BLAZE_ALWAYS_INLINE typename EnableIf< IsResizable<VT> >::Type
+BLAZE_ALWAYS_INLINE EnableIf_< IsResizable<VT> >
    resize_backend( const DenseVectorProxy<PT,VT>& proxy, size_t n, bool preserve )
 {
    proxy.resize( n, preserve );

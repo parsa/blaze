@@ -244,13 +244,13 @@ class VectorSerializer
    void deserializeHeader( Archive& archive, const VT& vec );
 
    template< typename VT, bool TF >
-   typename DisableIf< IsResizable<VT> >::Type prepareVector( DenseVector<VT,TF>& vec );
+   DisableIf_< IsResizable<VT> > prepareVector( DenseVector<VT,TF>& vec );
 
    template< typename VT, bool TF >
-   typename DisableIf< IsResizable<VT> >::Type prepareVector( SparseVector<VT,TF>& vec );
+   DisableIf_< IsResizable<VT> > prepareVector( SparseVector<VT,TF>& vec );
 
    template< typename VT >
-   typename EnableIf< IsResizable<VT> >::Type prepareVector( VT& vec );
+   EnableIf_< IsResizable<VT> > prepareVector( VT& vec );
 
    template< typename Archive, typename VT >
    void deserializeVector( Archive& archive, VT& vec );
@@ -510,7 +510,7 @@ void VectorSerializer::deserializeHeader( Archive& archive, const VT& vec )
 */
 template< typename VT  // Type of the dense vector
         , bool TF >    // Transpose flag
-typename DisableIf< IsResizable<VT> >::Type VectorSerializer::prepareVector( DenseVector<VT,TF>& vec )
+DisableIf_< IsResizable<VT> > VectorSerializer::prepareVector( DenseVector<VT,TF>& vec )
 {
    reset( ~vec );
 }
@@ -525,7 +525,7 @@ typename DisableIf< IsResizable<VT> >::Type VectorSerializer::prepareVector( Den
 */
 template< typename VT  // Type of the sparse vector
         , bool TF >    // Transpose flag
-typename DisableIf< IsResizable<VT> >::Type VectorSerializer::prepareVector( SparseVector<VT,TF>& vec )
+DisableIf_< IsResizable<VT> > VectorSerializer::prepareVector( SparseVector<VT,TF>& vec )
 {
    (~vec).reserve( number_ );
    reset( ~vec );
@@ -540,7 +540,7 @@ typename DisableIf< IsResizable<VT> >::Type VectorSerializer::prepareVector( Spa
 // \return void
 */
 template< typename VT >  // Type of the vector
-typename EnableIf< IsResizable<VT> >::Type VectorSerializer::prepareVector( VT& vec )
+EnableIf_< IsResizable<VT> > VectorSerializer::prepareVector( VT& vec )
 {
    vec.resize ( size_, false );
    vec.reserve( number_ );

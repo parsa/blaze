@@ -494,7 +494,7 @@ class SMatDMatMultExpr : public DenseMatrix< SMatDMatMultExpr<MT1,MT2>, false >
    template< typename MT3    // Type of the left-hand side target matrix
            , typename MT4    // Type of the left-hand side matrix operand
            , typename MT5 >  // Type of the right-hand side matrix operand
-   static inline typename EnableIf< UseDefaultKernel<MT3,MT4,MT5> >::Type
+   static inline EnableIf_< UseDefaultKernel<MT3,MT4,MT5> >
       selectAssignKernel( MT3& C, const MT4& A, const MT5& B )
    {
       typedef typename MT4::ConstIterator  ConstIterator;
@@ -565,7 +565,7 @@ class SMatDMatMultExpr : public DenseMatrix< SMatDMatMultExpr<MT1,MT2>, false >
    template< typename MT3    // Type of the left-hand side target matrix
            , typename MT4    // Type of the left-hand side matrix operand
            , typename MT5 >  // Type of the right-hand side matrix operand
-   static inline typename EnableIf< UseOptimizedKernel<MT3,MT4,MT5> >::Type
+   static inline EnableIf_< UseOptimizedKernel<MT3,MT4,MT5> >
       selectAssignKernel( MT3& C, const MT4& A, const MT5& B )
    {
       typedef typename MT4::ConstIterator  ConstIterator;
@@ -685,7 +685,7 @@ class SMatDMatMultExpr : public DenseMatrix< SMatDMatMultExpr<MT1,MT2>, false >
    template< typename MT3    // Type of the left-hand side target matrix
            , typename MT4    // Type of the left-hand side matrix operand
            , typename MT5 >  // Type of the right-hand side matrix operand
-   static inline typename EnableIf< UseVectorizedKernel<MT3,MT4,MT5> >::Type
+   static inline EnableIf_< UseVectorizedKernel<MT3,MT4,MT5> >
       selectAssignKernel( MT3& C, const MT4& A, const MT5& B )
    {
       typedef IntrinsicTrait<ElementType>  IT;
@@ -870,7 +870,7 @@ class SMatDMatMultExpr : public DenseMatrix< SMatDMatMultExpr<MT1,MT2>, false >
    template< typename MT3    // Type of the left-hand side target matrix
            , typename MT4    // Type of the left-hand side matrix operand
            , typename MT5 >  // Type of the right-hand side matrix operand
-   static inline typename EnableIf< UseDefaultKernel<MT3,MT4,MT5> >::Type
+   static inline EnableIf_< UseDefaultKernel<MT3,MT4,MT5> >
       selectAddAssignKernel( MT3& C, const MT4& A, const MT5& B )
    {
       typedef typename MT4::ConstIterator  ConstIterator;
@@ -946,7 +946,7 @@ class SMatDMatMultExpr : public DenseMatrix< SMatDMatMultExpr<MT1,MT2>, false >
    template< typename MT3    // Type of the left-hand side target matrix
            , typename MT4    // Type of the left-hand side matrix operand
            , typename MT5 >  // Type of the right-hand side matrix operand
-   static inline typename EnableIf< UseOptimizedKernel<MT3,MT4,MT5> >::Type
+   static inline EnableIf_< UseOptimizedKernel<MT3,MT4,MT5> >
       selectAddAssignKernel( MT3& C, const MT4& A, const MT5& B )
    {
       typedef typename MT4::ConstIterator  ConstIterator;
@@ -1064,7 +1064,7 @@ class SMatDMatMultExpr : public DenseMatrix< SMatDMatMultExpr<MT1,MT2>, false >
    template< typename MT3    // Type of the left-hand side target matrix
            , typename MT4    // Type of the left-hand side matrix operand
            , typename MT5 >  // Type of the right-hand side matrix operand
-   static inline typename EnableIf< UseVectorizedKernel<MT3,MT4,MT5> >::Type
+   static inline EnableIf_< UseVectorizedKernel<MT3,MT4,MT5> >
       selectAddAssignKernel( MT3& C, const MT4& A, const MT5& B )
    {
       typedef IntrinsicTrait<ElementType>  IT;
@@ -1214,7 +1214,7 @@ class SMatDMatMultExpr : public DenseMatrix< SMatDMatMultExpr<MT1,MT2>, false >
    template< typename MT3    // Type of the left-hand side target matrix
            , typename MT4    // Type of the left-hand side matrix operand
            , typename MT5 >  // Type of the right-hand side matrix operand
-   static inline typename EnableIf< UseDefaultKernel<MT3,MT4,MT5> >::Type
+   static inline EnableIf_< UseDefaultKernel<MT3,MT4,MT5> >
       selectSubAssignKernel( MT3& C, const MT4& A, const MT5& B )
    {
       typedef typename MT4::ConstIterator  ConstIterator;
@@ -1290,7 +1290,7 @@ class SMatDMatMultExpr : public DenseMatrix< SMatDMatMultExpr<MT1,MT2>, false >
    template< typename MT3    // Type of the left-hand side target matrix
            , typename MT4    // Type of the left-hand side matrix operand
            , typename MT5 >  // Type of the right-hand side matrix operand
-   static inline typename EnableIf< UseOptimizedKernel<MT3,MT4,MT5> >::Type
+   static inline EnableIf_< UseOptimizedKernel<MT3,MT4,MT5> >
       selectSubAssignKernel( MT3& C, const MT4& A, const MT5& B )
    {
       typedef typename MT4::ConstIterator  ConstIterator;
@@ -1408,7 +1408,7 @@ class SMatDMatMultExpr : public DenseMatrix< SMatDMatMultExpr<MT1,MT2>, false >
    template< typename MT3    // Type of the left-hand side target matrix
            , typename MT4    // Type of the left-hand side matrix operand
            , typename MT5 >  // Type of the right-hand side matrix operand
-   static inline typename EnableIf< UseVectorizedKernel<MT3,MT4,MT5> >::Type
+   static inline EnableIf_< UseVectorizedKernel<MT3,MT4,MT5> >
       selectSubAssignKernel( MT3& C, const MT4& A, const MT5& B )
    {
       typedef IntrinsicTrait<ElementType>  IT;
@@ -1529,7 +1529,7 @@ class SMatDMatMultExpr : public DenseMatrix< SMatDMatMultExpr<MT1,MT2>, false >
    */
    template< typename MT  // Type of the target dense matrix
            , bool SO >    // Storage order of the target dense matrix
-   friend inline typename EnableIf< IsEvaluationRequired<MT,MT1,MT2> >::Type
+   friend inline EnableIf_< IsEvaluationRequired<MT,MT1,MT2> >
       smpAssign( DenseMatrix<MT,SO>& lhs, const SMatDMatMultExpr& rhs )
    {
       BLAZE_FUNCTION_TRACE;
@@ -1569,7 +1569,7 @@ class SMatDMatMultExpr : public DenseMatrix< SMatDMatMultExpr<MT1,MT2>, false >
    */
    template< typename MT  // Type of the target sparse matrix
            , bool SO >    // Storage order of the target sparse matrix
-   friend inline typename EnableIf< IsEvaluationRequired<MT,MT1,MT2> >::Type
+   friend inline EnableIf_< IsEvaluationRequired<MT,MT1,MT2> >
       smpAssign( SparseMatrix<MT,SO>& lhs, const SMatDMatMultExpr& rhs )
    {
       BLAZE_FUNCTION_TRACE;
@@ -1610,7 +1610,7 @@ class SMatDMatMultExpr : public DenseMatrix< SMatDMatMultExpr<MT1,MT2>, false >
    */
    template< typename MT  // Type of the target dense matrix
            , bool SO >    // Storage order of the target dense matrix
-   friend inline typename EnableIf< IsEvaluationRequired<MT,MT1,MT2> >::Type
+   friend inline EnableIf_< IsEvaluationRequired<MT,MT1,MT2> >
       smpAddAssign( DenseMatrix<MT,SO>& lhs, const SMatDMatMultExpr& rhs )
    {
       BLAZE_FUNCTION_TRACE;
@@ -1655,7 +1655,7 @@ class SMatDMatMultExpr : public DenseMatrix< SMatDMatMultExpr<MT1,MT2>, false >
    */
    template< typename MT  // Type of the target dense matrix
            , bool SO >    // Storage order of the target dense matrix
-   friend inline typename EnableIf< IsEvaluationRequired<MT,MT1,MT2> >::Type
+   friend inline EnableIf_< IsEvaluationRequired<MT,MT1,MT2> >
       smpSubAssign( DenseMatrix<MT,SO>& lhs, const SMatDMatMultExpr& rhs )
    {
       BLAZE_FUNCTION_TRACE;

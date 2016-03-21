@@ -538,7 +538,7 @@ class SMatScalarMultExpr : public SparseMatrix< SMatScalarMultExpr<MT,ST,SO>, SO
    */
    template< typename MT2  // Type of the target dense matrix
            , bool SO2 >    // Storage order of the target dense matrix
-   friend inline typename EnableIf< UseAssign<MT2> >::Type
+   friend inline EnableIf_< UseAssign<MT2> >
       assign( DenseMatrix<MT2,SO2>& lhs, const SMatScalarMultExpr& rhs )
    {
       BLAZE_FUNCTION_TRACE;
@@ -568,7 +568,7 @@ class SMatScalarMultExpr : public SparseMatrix< SMatScalarMultExpr<MT,ST,SO>, SO
    */
    template< typename MT2  // Type of the target sparse matrix
            , bool SO2 >    // Storage order of the target sparse matrix
-   friend inline typename EnableIf< UseAssign<MT2> >::Type
+   friend inline EnableIf_< UseAssign<MT2> >
       assign( SparseMatrix<MT2,SO2>& lhs, const SMatScalarMultExpr& rhs )
    {
       BLAZE_FUNCTION_TRACE;
@@ -598,7 +598,7 @@ class SMatScalarMultExpr : public SparseMatrix< SMatScalarMultExpr<MT,ST,SO>, SO
    */
    template< typename MT2  // Type of the target dense matrix
            , bool SO2 >    // Storage order of the target dense matrix
-   friend inline typename EnableIf< UseAssign<MT2> >::Type
+   friend inline EnableIf_< UseAssign<MT2> >
       addAssign( DenseMatrix<MT2,SO2>& lhs, const SMatScalarMultExpr& rhs )
    {
       BLAZE_FUNCTION_TRACE;
@@ -635,7 +635,7 @@ class SMatScalarMultExpr : public SparseMatrix< SMatScalarMultExpr<MT,ST,SO>, SO
    */
    template< typename MT2  // Type of the target dense matrix
            , bool SO2 >    // Storage order of the target dense matrix
-   friend inline typename EnableIf< UseAssign<MT2> >::Type
+   friend inline EnableIf_< UseAssign<MT2> >
       subAssign( DenseMatrix<MT2,SO2>& lhs, const SMatScalarMultExpr& rhs )
    {
       BLAZE_FUNCTION_TRACE;
@@ -688,7 +688,7 @@ class SMatScalarMultExpr : public SparseMatrix< SMatScalarMultExpr<MT,ST,SO>, SO
    */
    template< typename MT2  // Type of the target dense matrix
            , bool SO2 >    // Storage order of the target dense matrix
-   friend inline typename EnableIf< UseSMPAssign<MT2> >::Type
+   friend inline EnableIf_< UseSMPAssign<MT2> >
       smpAddAssign( DenseMatrix<MT2,SO2>& lhs, const SMatScalarMultExpr& rhs )
    {
       BLAZE_FUNCTION_TRACE;
@@ -725,7 +725,7 @@ class SMatScalarMultExpr : public SparseMatrix< SMatScalarMultExpr<MT,ST,SO>, SO
    */
    template< typename MT2  // Type of the target dense matrix
            , bool SO2 >    // Storage order of the target dense matrix
-   friend inline typename EnableIf< UseSMPAssign<MT2> >::Type
+   friend inline EnableIf_< UseSMPAssign<MT2> >
       smpSubAssign( DenseMatrix<MT2,SO2>& lhs, const SMatScalarMultExpr& rhs )
    {
       BLAZE_FUNCTION_TRACE;
@@ -836,7 +836,7 @@ inline const SMatScalarMultExpr<MT,typename UnderlyingBuiltin<MT>::Type,SO>
 template< typename T1    // Type of the left-hand side sparse matrix
         , bool SO        // Storage order of the left-hand side sparse matrix
         , typename T2 >  // Type of the right-hand side scalar
-inline const typename EnableIf< IsNumeric<T2>, typename MultExprTrait<T1,T2>::Type >::Type
+inline const EnableIf_< IsNumeric<T2>, typename MultExprTrait<T1,T2>::Type >
    operator*( const SparseMatrix<T1,SO>& mat, T2 scalar )
 {
    BLAZE_FUNCTION_TRACE;
@@ -871,7 +871,7 @@ inline const typename EnableIf< IsNumeric<T2>, typename MultExprTrait<T1,T2>::Ty
 template< typename T1  // Type of the left-hand side scalar
         , typename T2  // Type of the right-hand side sparse matrix
         , bool SO >    // Storage order of the right-hand side sparse matrix
-inline const typename EnableIf< IsNumeric<T1>, typename MultExprTrait<T1,T2>::Type >::Type
+inline const EnableIf_< IsNumeric<T1>, typename MultExprTrait<T1,T2>::Type >
    operator*( T1 scalar, const SparseMatrix<T2,SO>& mat )
 {
    BLAZE_FUNCTION_TRACE;
@@ -941,8 +941,8 @@ template< typename MT     // Type of the sparse matrix
         , typename ST1    // Type of the first scalar
         , bool SO         // Storage order of the sparse matrix
         , typename ST2 >  // Type of the second scalar
-inline const typename EnableIf< IsNumeric<ST2>
-                              , typename MultExprTrait< SMatScalarMultExpr<MT,ST1,SO>, ST2 >::Type >::Type
+inline const EnableIf_< IsNumeric<ST2>
+                      , typename MultExprTrait< SMatScalarMultExpr<MT,ST1,SO>, ST2 >::Type >
    operator*( const SMatScalarMultExpr<MT,ST1,SO>& mat, ST2 scalar )
 {
    BLAZE_FUNCTION_TRACE;
@@ -970,8 +970,8 @@ template< typename ST1  // Type of the first scalar
         , typename MT   // Type of the sparse matrix
         , typename ST2  // Type of the second scalar
         , bool SO >     // Storage order of the sparse matrix
-inline const typename EnableIf< IsNumeric<ST1>
-                              , typename MultExprTrait< ST1, SMatScalarMultExpr<MT,ST2,SO> >::Type >::Type
+inline const EnableIf_< IsNumeric<ST1>
+                      , typename MultExprTrait< ST1, SMatScalarMultExpr<MT,ST2,SO> >::Type >
    operator*( ST1 scalar, const SMatScalarMultExpr<MT,ST2,SO>& mat )
 {
    BLAZE_FUNCTION_TRACE;
@@ -999,8 +999,8 @@ template< typename MT     // Type of the sparse matrix
         , typename ST1    // Type of the first scalar
         , bool SO         // Storage order of the sparse matrix
         , typename ST2 >  // Type of the second scalar
-inline const typename EnableIf< And< IsNumeric<ST2>, IsInvertible< typename DivTrait<ST1,ST2>::Type > >
-                              , typename DivExprTrait< SMatScalarMultExpr<MT,ST1,SO>, ST2 >::Type >::Type
+inline const EnableIf_< And< IsNumeric<ST2>, IsInvertible< typename DivTrait<ST1,ST2>::Type > >
+                      , typename DivExprTrait< SMatScalarMultExpr<MT,ST1,SO>, ST2 >::Type >
    operator/( const SMatScalarMultExpr<MT,ST1,SO>& mat, ST2 scalar )
 {
    BLAZE_FUNCTION_TRACE;

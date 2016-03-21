@@ -444,12 +444,10 @@ class SparseRow : public SparseVector< SparseRow<MT,SO,SF>, true >
    template< typename VT > inline SparseRow& operator*=( const Vector<VT,true>& rhs );
 
    template< typename Other >
-   inline typename EnableIf< IsNumeric<Other>, SparseRow >::Type&
-      operator*=( Other rhs );
+   inline EnableIf_<IsNumeric<Other>, SparseRow >& operator*=( Other rhs );
 
    template< typename Other >
-   inline typename EnableIf< IsNumeric<Other>, SparseRow >::Type&
-      operator/=( Other rhs );
+   inline EnableIf_<IsNumeric<Other>, SparseRow >& operator/=( Other rhs );
    //@}
    //**********************************************************************************************
 
@@ -1261,7 +1259,7 @@ template< typename MT       // Type of the sparse matrix
         , bool SO           // Storage order
         , bool SF >         // Symmetry flag
 template< typename Other >  // Data type of the right-hand side scalar
-inline typename EnableIf< IsNumeric<Other>, SparseRow<MT,SO,SF> >::Type&
+inline EnableIf_<IsNumeric<Other>, SparseRow<MT,SO,SF> >&
    SparseRow<MT,SO,SF>::operator*=( Other rhs )
 {
    BLAZE_CONSTRAINT_MUST_NOT_BE_UNITRIANGULAR_MATRIX_TYPE( MT );
@@ -1294,7 +1292,7 @@ template< typename MT       // Type of the sparse matrix
         , bool SO           // Storage order
         , bool SF >         // Symmetry flag
 template< typename Other >  // Data type of the right-hand side scalar
-inline typename EnableIf< IsNumeric<Other>, SparseRow<MT,SO,SF> >::Type&
+inline EnableIf_<IsNumeric<Other>, SparseRow<MT,SO,SF> >&
    SparseRow<MT,SO,SF>::operator/=( Other rhs )
 {
    BLAZE_CONSTRAINT_MUST_NOT_BE_UNITRIANGULAR_MATRIX_TYPE( MT );
@@ -2416,12 +2414,10 @@ class SparseRow<MT,false,false> : public SparseVector< SparseRow<MT,false,false>
    template< typename VT > inline SparseRow& operator*=( const Vector<VT,true>& rhs );
 
    template< typename Other >
-   inline typename EnableIf< IsNumeric<Other>, SparseRow >::Type&
-      operator*=( Other rhs );
+   inline EnableIf_<IsNumeric<Other>, SparseRow >& operator*=( Other rhs );
 
    template< typename Other >
-   inline typename EnableIf< IsNumeric<Other>, SparseRow >::Type&
-      operator/=( Other rhs );
+   inline EnableIf_<IsNumeric<Other>, SparseRow >& operator/=( Other rhs );
    //@}
    //**********************************************************************************************
 
@@ -3027,7 +3023,7 @@ inline SparseRow<MT,false,false>& SparseRow<MT,false,false>::operator*=( const V
 */
 template< typename MT >     // Type of the sparse matrix
 template< typename Other >  // Data type of the right-hand side scalar
-inline typename EnableIf< IsNumeric<Other>, SparseRow<MT,false,false> >::Type&
+inline EnableIf_<IsNumeric<Other>, SparseRow<MT,false,false> >&
    SparseRow<MT,false,false>::operator*=( Other rhs )
 {
    BLAZE_CONSTRAINT_MUST_NOT_BE_UNITRIANGULAR_MATRIX_TYPE( MT );
@@ -3060,7 +3056,7 @@ inline typename EnableIf< IsNumeric<Other>, SparseRow<MT,false,false> >::Type&
 */
 template< typename MT >     // Type of the sparse matrix
 template< typename Other >  // Data type of the right-hand side scalar
-inline typename EnableIf< IsNumeric<Other>, SparseRow<MT,false,false> >::Type&
+inline EnableIf_<IsNumeric<Other>, SparseRow<MT,false,false> >&
    SparseRow<MT,false,false>::operator/=( Other rhs )
 {
    BLAZE_CONSTRAINT_MUST_NOT_BE_UNITRIANGULAR_MATRIX_TYPE( MT );
@@ -3828,12 +3824,10 @@ class SparseRow<MT,false,true> : public SparseVector< SparseRow<MT,false,true>, 
    template< typename VT > inline SparseRow& operator*=( const Vector<VT,true>& rhs );
 
    template< typename Other >
-   inline typename EnableIf< IsNumeric<Other>, SparseRow >::Type&
-      operator*=( Other rhs );
+   inline EnableIf_<IsNumeric<Other>, SparseRow >& operator*=( Other rhs );
 
    template< typename Other >
-   inline typename EnableIf< IsNumeric<Other>, SparseRow >::Type&
-      operator/=( Other rhs );
+   inline EnableIf_<IsNumeric<Other>, SparseRow >& operator/=( Other rhs );
    //@}
    //**********************************************************************************************
 
@@ -4652,7 +4646,7 @@ inline SparseRow<MT,false,true>&
 */
 template< typename MT >     // Type of the sparse matrix
 template< typename Other >  // Data type of the right-hand side scalar
-inline typename EnableIf< IsNumeric<Other>, SparseRow<MT,false,true> >::Type&
+inline EnableIf_<IsNumeric<Other>, SparseRow<MT,false,true> >&
    SparseRow<MT,false,true>::operator*=( Other rhs )
 {
    BLAZE_CONSTRAINT_MUST_NOT_BE_UNITRIANGULAR_MATRIX_TYPE( MT );
@@ -4685,7 +4679,7 @@ inline typename EnableIf< IsNumeric<Other>, SparseRow<MT,false,true> >::Type&
 */
 template< typename MT >     // Type of the sparse matrix
 template< typename Other >  // Data type of the right-hand side scalar
-inline typename EnableIf< IsNumeric<Other>, SparseRow<MT,false,true> >::Type&
+inline EnableIf_<IsNumeric<Other>, SparseRow<MT,false,true> >&
    SparseRow<MT,false,true>::operator/=( Other rhs )
 {
    BLAZE_CONSTRAINT_MUST_NOT_BE_UNITRIANGULAR_MATRIX_TYPE( MT );

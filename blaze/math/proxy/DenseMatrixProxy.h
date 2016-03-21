@@ -48,6 +48,7 @@
 #include <blaze/math/typetraits/IsResizable.h>
 #include <blaze/math/typetraits/IsSquare.h>
 #include <blaze/system/Inline.h>
+#include <blaze/util/DisableIf.h>
 #include <blaze/util/EnableIf.h>
 #include <blaze/util/Exception.h>
 #include <blaze/util/Types.h>
@@ -907,7 +908,7 @@ BLAZE_ALWAYS_INLINE size_t nonZeros( const DenseMatrixProxy<PT,MT>& proxy, size_
 */
 template< typename PT    // Type of the proxy
         , typename MT >  // Type of the dense matrix
-BLAZE_ALWAYS_INLINE typename DisableIf< IsResizable<MT> >::Type
+BLAZE_ALWAYS_INLINE DisableIf_< IsResizable<MT> >
    resize_backend( const DenseMatrixProxy<PT,MT>& proxy, size_t m, size_t n, bool preserve )
 {
    UNUSED_PARAMETER( preserve );
@@ -935,7 +936,7 @@ BLAZE_ALWAYS_INLINE typename DisableIf< IsResizable<MT> >::Type
 */
 template< typename PT    // Type of the proxy
         , typename MT >  // Type of the dense matrix
-BLAZE_ALWAYS_INLINE typename EnableIf< And< IsResizable<MT>, Not< IsSquare<MT> > > >::Type
+BLAZE_ALWAYS_INLINE EnableIf_< And< IsResizable<MT>, Not< IsSquare<MT> > > >
    resize_backend( const DenseMatrixProxy<PT,MT>& proxy, size_t m, size_t n, bool preserve )
 {
    proxy.resize( m, n, preserve );
@@ -960,7 +961,7 @@ BLAZE_ALWAYS_INLINE typename EnableIf< And< IsResizable<MT>, Not< IsSquare<MT> >
 */
 template< typename PT    // Type of the proxy
         , typename MT >  // Type of the dense matrix
-BLAZE_ALWAYS_INLINE typename EnableIf< And< IsResizable<MT>, IsSquare<MT> > >::Type
+BLAZE_ALWAYS_INLINE EnableIf_< And< IsResizable<MT>, IsSquare<MT> > >
    resize_backend( const DenseMatrixProxy<PT,MT>& proxy, size_t m, size_t n, bool preserve )
 {
    if( m != n ) {

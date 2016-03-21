@@ -349,7 +349,7 @@ class DMatTDMatAddExpr : public DenseMatrix< DMatTDMatAddExpr<MT1,MT2>, false >
    */
    template< typename MT  // Type of the target dense matrix
            , bool SO2 >   // Storage order of the target dense matrix
-   friend inline typename DisableIf< UseAssign<MT> >::Type
+   friend inline DisableIf_< UseAssign<MT> >
       assign( DenseMatrix<MT,SO2>& lhs, const DMatTDMatAddExpr& rhs )
    {
       BLAZE_FUNCTION_TRACE;
@@ -392,7 +392,7 @@ class DMatTDMatAddExpr : public DenseMatrix< DMatTDMatAddExpr<MT1,MT2>, false >
    */
    template< typename MT  // Type of the target dense matrix
            , bool SO2 >   // Storage order of the target dense matrix
-   friend inline typename EnableIf< UseAssign<MT> >::Type
+   friend inline EnableIf_< UseAssign<MT> >
       assign( DenseMatrix<MT,SO2>& lhs, const DMatTDMatAddExpr& rhs )
    {
       BLAZE_FUNCTION_TRACE;
@@ -466,7 +466,7 @@ class DMatTDMatAddExpr : public DenseMatrix< DMatTDMatAddExpr<MT1,MT2>, false >
    */
    template< typename MT  // Type of the target dense matrix
            , bool SO2 >   // Storage order of the target dense matrix
-   friend inline typename DisableIf< UseAssign<MT> >::Type
+   friend inline DisableIf_< UseAssign<MT> >
       addAssign( DenseMatrix<MT,SO2>& lhs, const DMatTDMatAddExpr& rhs )
    {
       BLAZE_FUNCTION_TRACE;
@@ -509,7 +509,7 @@ class DMatTDMatAddExpr : public DenseMatrix< DMatTDMatAddExpr<MT1,MT2>, false >
    */
    template< typename MT  // Type of the target dense matrix
            , bool SO2 >   // Storage order of the target dense matrix
-   friend inline typename EnableIf< UseAssign<MT> >::Type
+   friend inline EnableIf_< UseAssign<MT> >
       addAssign( DenseMatrix<MT,SO2>& lhs, const DMatTDMatAddExpr& rhs )
    {
       BLAZE_FUNCTION_TRACE;
@@ -543,7 +543,7 @@ class DMatTDMatAddExpr : public DenseMatrix< DMatTDMatAddExpr<MT1,MT2>, false >
    */
    template< typename MT  // Type of the target dense matrix
            , bool SO2 >   // Storage order of the target dense matrix
-   friend inline typename DisableIf< UseAssign<MT> >::Type
+   friend inline DisableIf_< UseAssign<MT> >
       subAssign( DenseMatrix<MT,SO2>& lhs, const DMatTDMatAddExpr& rhs )
    {
       BLAZE_FUNCTION_TRACE;
@@ -586,7 +586,7 @@ class DMatTDMatAddExpr : public DenseMatrix< DMatTDMatAddExpr<MT1,MT2>, false >
    */
    template< typename MT  // Type of the target dense matrix
            , bool SO2 >   // Storage order of the target dense matrix
-   friend inline typename EnableIf< UseAssign<MT> >::Type
+   friend inline EnableIf_< UseAssign<MT> >
       subAssign( DenseMatrix<MT,SO2>& lhs, const DMatTDMatAddExpr& rhs )
    {
       BLAZE_FUNCTION_TRACE;
@@ -628,7 +628,7 @@ class DMatTDMatAddExpr : public DenseMatrix< DMatTDMatAddExpr<MT1,MT2>, false >
    */
    template< typename MT  // Type of the target dense matrix
            , bool SO2 >   // Storage order of the target dense matrix
-   friend inline typename EnableIf< UseSMPAssign<MT> >::Type
+   friend inline EnableIf_< UseSMPAssign<MT> >
       smpAssign( DenseMatrix<MT,SO2>& lhs, const DMatTDMatAddExpr& rhs )
    {
       BLAZE_FUNCTION_TRACE;
@@ -666,7 +666,7 @@ class DMatTDMatAddExpr : public DenseMatrix< DMatTDMatAddExpr<MT1,MT2>, false >
    */
    template< typename MT  // Type of the target sparse matrix
            , bool SO2 >   // Storage order of the target sparse matrix
-   friend inline typename EnableIf< UseSMPAssign<MT> >::Type
+   friend inline EnableIf_< UseSMPAssign<MT> >
       smpAssign( SparseMatrix<MT,SO2>& lhs, const DMatTDMatAddExpr& rhs )
    {
       BLAZE_FUNCTION_TRACE;
@@ -706,7 +706,7 @@ class DMatTDMatAddExpr : public DenseMatrix< DMatTDMatAddExpr<MT1,MT2>, false >
    */
    template< typename MT  // Type of the target dense matrix
            , bool SO2 >   // Storage order of the target dense matrix
-   friend inline typename EnableIf< UseSMPAssign<MT> >::Type
+   friend inline EnableIf_< UseSMPAssign<MT> >
       smpAddAssign( DenseMatrix<MT,SO2>& lhs, const DMatTDMatAddExpr& rhs )
    {
       BLAZE_FUNCTION_TRACE;
@@ -741,7 +741,7 @@ class DMatTDMatAddExpr : public DenseMatrix< DMatTDMatAddExpr<MT1,MT2>, false >
    */
    template< typename MT  // Type of the target dense matrix
            , bool SO2 >   // Storage order of the target dense matrix
-   friend inline typename EnableIf< UseSMPAssign<MT> >::Type
+   friend inline EnableIf_< UseSMPAssign<MT> >
       smpSubAssign( DenseMatrix<MT,SO2>& lhs, const DMatTDMatAddExpr& rhs )
    {
       BLAZE_FUNCTION_TRACE;
@@ -819,8 +819,8 @@ class DMatTDMatAddExpr : public DenseMatrix< DMatTDMatAddExpr<MT1,MT2>, false >
 */
 template< typename T1    // Type of the left-hand side dense matrix
         , typename T2 >  // Type of the right-hand side dense matrix
-inline typename EnableIf< And< Not< IsSymmetric<T1> >, Not< IsSymmetric<T2> > >
-                        , const DMatTDMatAddExpr<T1,T2> >::Type
+inline EnableIf_< And< Not< IsSymmetric<T1> >, Not< IsSymmetric<T2> > >
+                , const DMatTDMatAddExpr<T1,T2> >
    operator+( const DenseMatrix<T1,false>& lhs, const DenseMatrix<T2,true>& rhs )
 {
    BLAZE_FUNCTION_TRACE;
@@ -865,8 +865,8 @@ inline typename EnableIf< And< Not< IsSymmetric<T1> >, Not< IsSymmetric<T2> > >
 */
 template< typename T1    // Type of the left-hand side dense matrix
         , typename T2 >  // Type of the right-hand side dense matrix
-inline typename EnableIf< And< Not< IsSymmetric<T1> >, Not< IsSymmetric<T2> > >
-                        , const DMatTDMatAddExpr<T2,T1> >::Type
+inline EnableIf_< And< Not< IsSymmetric<T1> >, Not< IsSymmetric<T2> > >
+                , const DMatTDMatAddExpr<T2,T1> >
    operator+( const DenseMatrix<T1,true>& lhs, const DenseMatrix<T2,false>& rhs )
 {
    BLAZE_FUNCTION_TRACE;
@@ -904,8 +904,8 @@ inline typename EnableIf< And< Not< IsSymmetric<T1> >, Not< IsSymmetric<T2> > >
 */
 template< typename T1    // Type of the left-hand side dense matrix
         , typename T2 >  // Type of the right-hand side dense matrix
-inline typename EnableIf< And< IsSymmetric<T1>, Not< IsSymmetric<T2> > >
-                        , const typename AddExprTrait<T1,T2>::Type >::Type
+inline EnableIf_< And< IsSymmetric<T1>, Not< IsSymmetric<T2> > >
+                , const typename AddExprTrait<T1,T2>::Type >
    operator+( const DenseMatrix<T1,false>& lhs, const DenseMatrix<T2,true>& rhs )
 {
    BLAZE_FUNCTION_TRACE;
@@ -936,8 +936,8 @@ inline typename EnableIf< And< IsSymmetric<T1>, Not< IsSymmetric<T2> > >
 */
 template< typename T1    // Type of the left-hand side dense matrix
         , typename T2 >  // Type of the right-hand side dense matrix
-inline typename EnableIf< IsSymmetric<T2>
-                        , const typename AddExprTrait<T1,T2>::Type >::Type
+inline EnableIf_< IsSymmetric<T2>
+                , const typename AddExprTrait<T1,T2>::Type >
    operator+( const DenseMatrix<T1,false>& lhs, const DenseMatrix<T2,true>& rhs )
 {
    BLAZE_FUNCTION_TRACE;
@@ -968,8 +968,8 @@ inline typename EnableIf< IsSymmetric<T2>
 */
 template< typename T1    // Type of the left-hand side dense matrix
         , typename T2 >  // Type of the right-hand side dense matrix
-inline typename EnableIf< And< Not< IsSymmetric<T1> >, IsSymmetric<T2> >
-                        , const typename AddExprTrait<T2,T1>::Type >::Type
+inline EnableIf_< And< Not< IsSymmetric<T1> >, IsSymmetric<T2> >
+                , const typename AddExprTrait<T2,T1>::Type >
    operator+( const DenseMatrix<T1,true>& lhs, const DenseMatrix<T2,false>& rhs )
 {
    BLAZE_FUNCTION_TRACE;
@@ -1000,8 +1000,8 @@ inline typename EnableIf< And< Not< IsSymmetric<T1> >, IsSymmetric<T2> >
 */
 template< typename T1    // Type of the left-hand side dense matrix
         , typename T2 >  // Type of the right-hand side dense matrix
-inline typename EnableIf< IsSymmetric<T1>
-                        , const typename AddExprTrait<T2,T1>::Type >::Type
+inline EnableIf_< IsSymmetric<T1>
+                , const typename AddExprTrait<T2,T1>::Type >
    operator+( const DenseMatrix<T1,true>& lhs, const DenseMatrix<T2,false>& rhs )
 {
    BLAZE_FUNCTION_TRACE;

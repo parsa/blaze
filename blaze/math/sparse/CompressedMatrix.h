@@ -311,12 +311,10 @@ class CompressedMatrix : public SparseMatrix< CompressedMatrix<Type,SO>, SO >
    template< typename MT, bool SO2 > inline CompressedMatrix& operator*=( const Matrix<MT,SO2>& rhs );
 
    template< typename Other >
-   inline typename EnableIf< IsNumeric<Other>, CompressedMatrix >::Type&
-      operator*=( Other rhs );
+   inline EnableIf_< IsNumeric<Other>, CompressedMatrix >& operator*=( Other rhs );
 
    template< typename Other >
-   inline typename EnableIf< IsNumeric<Other>, CompressedMatrix >::Type&
-      operator/=( Other rhs );
+   inline EnableIf_< IsNumeric<Other>, CompressedMatrix >& operator/=( Other rhs );
    //@}
    //**********************************************************************************************
 
@@ -1168,7 +1166,7 @@ inline CompressedMatrix<Type,SO>&
 template< typename Type     // Data type of the sparse matrix
         , bool SO >         // Storage order
 template< typename Other >  // Data type of the right-hand side scalar
-inline typename EnableIf< IsNumeric<Other>, CompressedMatrix<Type,SO> >::Type&
+inline EnableIf_< IsNumeric<Other>, CompressedMatrix<Type,SO> >&
    CompressedMatrix<Type,SO>::operator*=( Other rhs )
 {
    for( size_t i=0UL; i<m_; ++i ) {
@@ -1191,7 +1189,7 @@ inline typename EnableIf< IsNumeric<Other>, CompressedMatrix<Type,SO> >::Type&
 template< typename Type     // Data type of the sparse matrix
         , bool SO >         // Storage order
 template< typename Other >  // Data type of the right-hand side scalar
-inline typename EnableIf< IsNumeric<Other>, CompressedMatrix<Type,SO> >::Type&
+inline EnableIf_< IsNumeric<Other>, CompressedMatrix<Type,SO> >&
    CompressedMatrix<Type,SO>::operator/=( Other rhs )
 {
    BLAZE_USER_ASSERT( rhs != Other(0), "Division by zero detected" );
@@ -2687,12 +2685,10 @@ class CompressedMatrix<Type,true> : public SparseMatrix< CompressedMatrix<Type,t
    template< typename MT, bool SO > inline CompressedMatrix& operator*=( const Matrix<MT,SO>& rhs );
 
    template< typename Other >
-   inline typename EnableIf< IsNumeric<Other>, CompressedMatrix >::Type&
-      operator*=( Other rhs );
+   inline EnableIf_< IsNumeric<Other>, CompressedMatrix >& operator*=( Other rhs );
 
    template< typename Other >
-   inline typename EnableIf< IsNumeric<Other>, CompressedMatrix >::Type&
-      operator/=( Other rhs );
+   inline EnableIf_< IsNumeric<Other>, CompressedMatrix >& operator/=( Other rhs );
    //@}
    //**********************************************************************************************
 
@@ -3531,7 +3527,7 @@ inline CompressedMatrix<Type,true>&
 */
 template< typename Type >   // Data type of the sparse matrix
 template< typename Other >  // Data type of the right-hand side scalar
-inline typename EnableIf< IsNumeric<Other>, CompressedMatrix<Type,true> >::Type&
+inline EnableIf_< IsNumeric<Other>, CompressedMatrix<Type,true> >&
    CompressedMatrix<Type,true>::operator*=( Other rhs )
 {
    for( size_t j=0UL; j<n_; ++j ) {
@@ -3555,7 +3551,7 @@ inline typename EnableIf< IsNumeric<Other>, CompressedMatrix<Type,true> >::Type&
 */
 template< typename Type >   // Data type of the sparse matrix
 template< typename Other >  // Data type of the right-hand side scalar
-inline typename EnableIf< IsNumeric<Other>, CompressedMatrix<Type,true> >::Type&
+inline EnableIf_< IsNumeric<Other>, CompressedMatrix<Type,true> >&
    CompressedMatrix<Type,true>::operator/=( Other rhs )
 {
    BLAZE_USER_ASSERT( rhs != Other(0), "Division by zero detected" );
@@ -5364,13 +5360,13 @@ struct SubTrait< CompressedMatrix<T1,SO1>, CompressedMatrix<T2,SO2> >
 //*************************************************************************************************
 /*! \cond BLAZE_INTERNAL */
 template< typename T1, bool SO, typename T2 >
-struct MultTrait< CompressedMatrix<T1,SO>, T2, typename EnableIf< IsNumeric<T2> >::Type >
+struct MultTrait< CompressedMatrix<T1,SO>, T2, EnableIf_< IsNumeric<T2> > >
 {
    typedef CompressedMatrix< typename MultTrait<T1,T2>::Type, SO >  Type;
 };
 
 template< typename T1, typename T2, bool SO >
-struct MultTrait< T1, CompressedMatrix<T2,SO>, typename EnableIf< IsNumeric<T1> >::Type >
+struct MultTrait< T1, CompressedMatrix<T2,SO>, EnableIf_< IsNumeric<T1> > >
 {
    typedef CompressedMatrix< typename MultTrait<T1,T2>::Type, SO >  Type;
 };
@@ -5503,7 +5499,7 @@ struct MultTrait< CompressedMatrix<T1,SO1>, CompressedMatrix<T2,SO2> >
 //*************************************************************************************************
 /*! \cond BLAZE_INTERNAL */
 template< typename T1, bool SO, typename T2 >
-struct DivTrait< CompressedMatrix<T1,SO>, T2, typename EnableIf< IsNumeric<T2> >::Type >
+struct DivTrait< CompressedMatrix<T1,SO>, T2, EnableIf_< IsNumeric<T2> > >
 {
    typedef CompressedMatrix< typename DivTrait<T1,T2>::Type, SO >  Type;
 };

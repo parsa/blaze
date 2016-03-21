@@ -1460,13 +1460,13 @@ struct SubTrait< SymmetricMatrix<MT1,SO1,DF1,NF1>, SymmetricMatrix<MT2,SO2,DF2,N
 //*************************************************************************************************
 /*! \cond BLAZE_INTERNAL */
 template< typename MT, bool SO, bool DF, bool NF, typename T >
-struct MultTrait< SymmetricMatrix<MT,SO,DF,NF>, T, typename EnableIf< IsNumeric<T> >::Type >
+struct MultTrait< SymmetricMatrix<MT,SO,DF,NF>, T, EnableIf_< IsNumeric<T> > >
 {
    typedef SymmetricMatrix< typename MultTrait<MT,T>::Type >  Type;
 };
 
 template< typename T, typename MT, bool SO, bool DF, bool NF >
-struct MultTrait< T, SymmetricMatrix<MT,SO,DF,NF>, typename EnableIf< IsNumeric<T> >::Type >
+struct MultTrait< T, SymmetricMatrix<MT,SO,DF,NF>, EnableIf_< IsNumeric<T> > >
 {
    typedef SymmetricMatrix< typename MultTrait<T,MT>::Type >  Type;
 };
@@ -1611,7 +1611,7 @@ struct MultTrait< SymmetricMatrix<MT1,SO1,DF1,NF1>, SymmetricMatrix<MT2,SO2,DF2,
 //*************************************************************************************************
 /*! \cond BLAZE_INTERNAL */
 template< typename MT, bool SO, bool DF, bool NF, typename T >
-struct DivTrait< SymmetricMatrix<MT,SO,DF,NF>, T, typename EnableIf< IsNumeric<T> >::Type >
+struct DivTrait< SymmetricMatrix<MT,SO,DF,NF>, T, EnableIf_< IsNumeric<T> > >
 {
    typedef SymmetricMatrix< typename DivTrait<MT,T>::Type >  Type;
 };

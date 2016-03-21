@@ -1162,7 +1162,7 @@ BLAZE_ALWAYS_INLINE size_t nonZeros( const SparseMatrixProxy<PT,MT>& proxy, size
 */
 template< typename PT    // Type of the proxy
         , typename MT >  // Type of the sparse matrix
-BLAZE_ALWAYS_INLINE typename DisableIf< IsSquare<MT> >::Type
+BLAZE_ALWAYS_INLINE DisableIf_< IsSquare<MT> >
    resize_backend( const SparseMatrixProxy<PT,MT>& proxy, size_t m, size_t n, bool preserve )
 {
    proxy.resize( m, n, preserve );
@@ -1187,7 +1187,7 @@ BLAZE_ALWAYS_INLINE typename DisableIf< IsSquare<MT> >::Type
 */
 template< typename PT    // Type of the proxy
         , typename MT >  // Type of the sparse matrix
-BLAZE_ALWAYS_INLINE typename EnableIf< IsSquare<MT> >::Type
+BLAZE_ALWAYS_INLINE EnableIf_< IsSquare<MT> >
    resize_backend( const SparseMatrixProxy<PT,MT>& proxy, size_t m, size_t n, bool preserve )
 {
    if( m != n ) {

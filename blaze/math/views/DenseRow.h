@@ -431,12 +431,10 @@ class DenseRow : public DenseVector< DenseRow<MT,SO,SF>, true >
    template< typename VT > inline DenseRow& operator*=( const SparseVector<VT,true>& rhs );
 
    template< typename Other >
-   inline typename EnableIf< IsNumeric<Other>, DenseRow >::Type&
-      operator*=( Other rhs );
+   inline EnableIf_< IsNumeric<Other>, DenseRow >& operator*=( Other rhs );
 
    template< typename Other >
-   inline typename EnableIf< IsNumeric<Other>, DenseRow >::Type&
-      operator/=( Other rhs );
+   inline EnableIf_< IsNumeric<Other>, DenseRow >& operator/=( Other rhs );
    //@}
    //**********************************************************************************************
 
@@ -532,42 +530,34 @@ class DenseRow : public DenseVector< DenseRow<MT,SO,SF>, true >
    BLAZE_ALWAYS_INLINE void stream( size_t index, const IntrinsicType& value ) noexcept;
 
    template< typename VT >
-   inline typename DisableIf< VectorizedAssign<VT> >::Type
-      assign( const DenseVector<VT,true>& rhs );
+   inline DisableIf_< VectorizedAssign<VT> > assign( const DenseVector<VT,true>& rhs );
 
    template< typename VT >
-   inline typename EnableIf< VectorizedAssign<VT> >::Type
-      assign( const DenseVector<VT,true>& rhs );
+   inline EnableIf_< VectorizedAssign<VT> > assign( const DenseVector<VT,true>& rhs );
 
    template< typename VT > inline void assign( const SparseVector<VT,true>& rhs );
 
    template< typename VT >
-   inline typename DisableIf< VectorizedAddAssign<VT> >::Type
-      addAssign( const DenseVector<VT,true>& rhs );
+   inline DisableIf_< VectorizedAddAssign<VT> > addAssign( const DenseVector<VT,true>& rhs );
 
    template< typename VT >
-   inline typename EnableIf< VectorizedAddAssign<VT> >::Type
-      addAssign( const DenseVector<VT,true>& rhs );
+   inline EnableIf_< VectorizedAddAssign<VT> > addAssign( const DenseVector<VT,true>& rhs );
 
    template< typename VT > inline void addAssign( const SparseVector<VT,true>& rhs );
 
    template< typename VT >
-   inline typename DisableIf< VectorizedSubAssign<VT> >::Type
-      subAssign( const DenseVector<VT,true>& rhs );
+   inline DisableIf_< VectorizedSubAssign<VT> > subAssign( const DenseVector<VT,true>& rhs );
 
    template< typename VT >
-   inline typename EnableIf< VectorizedSubAssign<VT> >::Type
-      subAssign( const DenseVector<VT,true>& rhs );
+   inline EnableIf_< VectorizedSubAssign<VT> > subAssign( const DenseVector<VT,true>& rhs );
 
    template< typename VT > inline void subAssign( const SparseVector<VT,true>& rhs );
 
    template< typename VT >
-   inline typename DisableIf< VectorizedMultAssign<VT> >::Type
-      multAssign( const DenseVector<VT,true>& rhs );
+   inline DisableIf_< VectorizedMultAssign<VT> > multAssign( const DenseVector<VT,true>& rhs );
 
    template< typename VT >
-   inline typename EnableIf< VectorizedMultAssign<VT> >::Type
-      multAssign( const DenseVector<VT,true>& rhs );
+   inline EnableIf_< VectorizedMultAssign<VT> > multAssign( const DenseVector<VT,true>& rhs );
 
    template< typename VT > inline void multAssign( const SparseVector<VT,true>& rhs );
    //@}
@@ -1225,7 +1215,7 @@ template< typename MT       // Type of the dense matrix
         , bool SO           // Storage order
         , bool SF >         // Symmetry flag
 template< typename Other >  // Data type of the right-hand side scalar
-inline typename EnableIf< IsNumeric<Other>, DenseRow<MT,SO,SF> >::Type&
+inline EnableIf_< IsNumeric<Other>, DenseRow<MT,SO,SF> >&
    DenseRow<MT,SO,SF>::operator*=( Other rhs )
 {
    BLAZE_CONSTRAINT_MUST_NOT_BE_UNITRIANGULAR_MATRIX_TYPE( MT );
@@ -1251,7 +1241,7 @@ template< typename MT       // Type of the dense matrix
         , bool SO           // Storage order
         , bool SF >         // Symmetry flag
 template< typename Other >  // Data type of the right-hand side scalar
-inline typename EnableIf< IsNumeric<Other>, DenseRow<MT,SO,SF> >::Type&
+inline EnableIf_< IsNumeric<Other>, DenseRow<MT,SO,SF> >&
    DenseRow<MT,SO,SF>::operator/=( Other rhs )
 {
    BLAZE_CONSTRAINT_MUST_NOT_BE_UNITRIANGULAR_MATRIX_TYPE( MT );
@@ -1687,7 +1677,7 @@ template< typename MT    // Type of the dense matrix
         , bool SO        // Storage order
         , bool SF >      // Symmetry flag
 template< typename VT >  // Type of the right-hand side dense vector
-inline typename DisableIf< typename DenseRow<MT,SO,SF>::BLAZE_TEMPLATE VectorizedAssign<VT> >::Type
+inline DisableIf_< typename DenseRow<MT,SO,SF>::BLAZE_TEMPLATE VectorizedAssign<VT> >
    DenseRow<MT,SO,SF>::assign( const DenseVector<VT,true>& rhs )
 {
    BLAZE_INTERNAL_ASSERT( size() == (~rhs).size(), "Invalid vector sizes" );
@@ -1718,7 +1708,7 @@ template< typename MT    // Type of the dense matrix
         , bool SO        // Storage order
         , bool SF >      // Symmetry flag
 template< typename VT >  // Type of the right-hand side dense vector
-inline typename EnableIf< typename DenseRow<MT,SO,SF>::BLAZE_TEMPLATE VectorizedAssign<VT> >::Type
+inline EnableIf_< typename DenseRow<MT,SO,SF>::BLAZE_TEMPLATE VectorizedAssign<VT> >
    DenseRow<MT,SO,SF>::assign( const DenseVector<VT,true>& rhs )
 {
    BLAZE_CONSTRAINT_MUST_BE_VECTORIZABLE_TYPE( ElementType );
@@ -1804,7 +1794,7 @@ template< typename MT    // Type of the dense matrix
         , bool SO        // Storage order
         , bool SF >      // Symmetry flag
 template< typename VT >  // Type of the right-hand side dense vector
-inline typename DisableIf< typename DenseRow<MT,SO,SF>::BLAZE_TEMPLATE VectorizedAddAssign<VT> >::Type
+inline DisableIf_< typename DenseRow<MT,SO,SF>::BLAZE_TEMPLATE VectorizedAddAssign<VT> >
    DenseRow<MT,SO,SF>::addAssign( const DenseVector<VT,true>& rhs )
 {
    BLAZE_INTERNAL_ASSERT( size() == (~rhs).size(), "Invalid vector sizes" );
@@ -1835,7 +1825,7 @@ template< typename MT    // Type of the dense matrix
         , bool SO        // Storage order
         , bool SF >      // Symmetry flag
 template< typename VT >  // Type of the right-hand side dense vector
-inline typename EnableIf< typename DenseRow<MT,SO,SF>::BLAZE_TEMPLATE VectorizedAddAssign<VT> >::Type
+inline EnableIf_< typename DenseRow<MT,SO,SF>::BLAZE_TEMPLATE VectorizedAddAssign<VT> >
    DenseRow<MT,SO,SF>::addAssign( const DenseVector<VT,true>& rhs )
 {
    BLAZE_CONSTRAINT_MUST_BE_VECTORIZABLE_TYPE( ElementType );
@@ -1907,7 +1897,7 @@ template< typename MT    // Type of the dense matrix
         , bool SO        // Storage order
         , bool SF >      // Symmetry flag
 template< typename VT >  // Type of the right-hand side dense vector
-inline typename DisableIf< typename DenseRow<MT,SO,SF>::BLAZE_TEMPLATE VectorizedSubAssign<VT> >::Type
+inline DisableIf_< typename DenseRow<MT,SO,SF>::BLAZE_TEMPLATE VectorizedSubAssign<VT> >
    DenseRow<MT,SO,SF>::subAssign( const DenseVector<VT,true>& rhs )
 {
    BLAZE_INTERNAL_ASSERT( size() == (~rhs).size(), "Invalid vector sizes" );
@@ -1938,7 +1928,7 @@ template< typename MT    // Type of the dense matrix
         , bool SO        // Storage order
         , bool SF >      // Symmetry flag
 template< typename VT >  // Type of the right-hand side dense vector
-inline typename EnableIf< typename DenseRow<MT,SO,SF>::BLAZE_TEMPLATE VectorizedSubAssign<VT> >::Type
+inline EnableIf_< typename DenseRow<MT,SO,SF>::BLAZE_TEMPLATE VectorizedSubAssign<VT> >
    DenseRow<MT,SO,SF>::subAssign( const DenseVector<VT,true>& rhs )
 {
    BLAZE_CONSTRAINT_MUST_BE_VECTORIZABLE_TYPE( ElementType );
@@ -2010,7 +2000,7 @@ template< typename MT    // Type of the dense matrix
         , bool SO        // Storage order
         , bool SF >      // Symmetry flag
 template< typename VT >  // Type of the right-hand side dense vector
-inline typename DisableIf< typename DenseRow<MT,SO,SF>::BLAZE_TEMPLATE VectorizedMultAssign<VT> >::Type
+inline DisableIf_< typename DenseRow<MT,SO,SF>::BLAZE_TEMPLATE VectorizedMultAssign<VT> >
    DenseRow<MT,SO,SF>::multAssign( const DenseVector<VT,true>& rhs )
 {
    BLAZE_INTERNAL_ASSERT( size() == (~rhs).size(), "Invalid vector sizes" );
@@ -2041,7 +2031,7 @@ template< typename MT    // Type of the dense matrix
         , bool SO        // Storage order
         , bool SF >      // Symmetry flag
 template< typename VT >  // Type of the right-hand side dense vector
-inline typename EnableIf< typename DenseRow<MT,SO,SF>::BLAZE_TEMPLATE VectorizedMultAssign<VT> >::Type
+inline EnableIf_< typename DenseRow<MT,SO,SF>::BLAZE_TEMPLATE VectorizedMultAssign<VT> >
    DenseRow<MT,SO,SF>::multAssign( const DenseVector<VT,true>& rhs )
 {
    BLAZE_CONSTRAINT_MUST_BE_VECTORIZABLE_TYPE( ElementType );
@@ -2522,12 +2512,10 @@ class DenseRow<MT,false,false> : public DenseVector< DenseRow<MT,false,false>, t
    template< typename VT > inline DenseRow& operator*=( const SparseVector<VT,true>& rhs );
 
    template< typename Other >
-   inline typename EnableIf< IsNumeric<Other>, DenseRow >::Type&
-      operator*=( Other rhs );
+   inline EnableIf_< IsNumeric<Other>, DenseRow >& operator*=( Other rhs );
 
    template< typename Other >
-   inline typename EnableIf< IsNumeric<Other>, DenseRow >::Type&
-      operator/=( Other rhs );
+   inline EnableIf_< IsNumeric<Other>, DenseRow >& operator/=( Other rhs );
    //@}
    //**********************************************************************************************
 
@@ -3225,7 +3213,7 @@ inline DenseRow<MT,false,false>& DenseRow<MT,false,false>::operator*=( const Spa
 */
 template< typename MT >     // Type of the dense matrix
 template< typename Other >  // Data type of the right-hand side scalar
-inline typename EnableIf< IsNumeric<Other>, DenseRow<MT,false,false> >::Type&
+inline EnableIf_< IsNumeric<Other>, DenseRow<MT,false,false> >&
    DenseRow<MT,false,false>::operator*=( Other rhs )
 {
    BLAZE_CONSTRAINT_MUST_NOT_BE_UNITRIANGULAR_MATRIX_TYPE( MT );
@@ -3251,7 +3239,7 @@ inline typename EnableIf< IsNumeric<Other>, DenseRow<MT,false,false> >::Type&
 */
 template< typename MT >     // Type of the dense matrix
 template< typename Other >  // Data type of the right-hand side scalar
-inline typename EnableIf< IsNumeric<Other>, DenseRow<MT,false,false> >::Type&
+inline EnableIf_< IsNumeric<Other>, DenseRow<MT,false,false> >&
    DenseRow<MT,false,false>::operator/=( Other rhs )
 {
    BLAZE_CONSTRAINT_MUST_NOT_BE_UNITRIANGULAR_MATRIX_TYPE( MT );
@@ -3867,12 +3855,10 @@ class DenseRow<MT,false,true> : public DenseVector< DenseRow<MT,false,true>, tru
    template< typename VT > inline DenseRow& operator*=( const SparseVector<VT,true>& rhs );
 
    template< typename Other >
-   inline typename EnableIf< IsNumeric<Other>, DenseRow >::Type&
-      operator*=( Other rhs );
+   inline EnableIf_< IsNumeric<Other>, DenseRow >& operator*=( Other rhs );
 
    template< typename Other >
-   inline typename EnableIf< IsNumeric<Other>, DenseRow >::Type&
-      operator/=( Other rhs );
+   inline EnableIf_< IsNumeric<Other>, DenseRow >& operator/=( Other rhs );
    //@}
    //**********************************************************************************************
 
@@ -3960,42 +3946,34 @@ class DenseRow<MT,false,true> : public DenseVector< DenseRow<MT,false,true>, tru
    BLAZE_ALWAYS_INLINE void stream( size_t index, const IntrinsicType& value ) noexcept;
 
    template< typename VT >
-   inline typename DisableIf< VectorizedAssign<VT> >::Type
-      assign( const DenseVector<VT,true>& rhs );
+   inline DisableIf_< VectorizedAssign<VT> > assign( const DenseVector<VT,true>& rhs );
 
    template< typename VT >
-   inline typename EnableIf< VectorizedAssign<VT> >::Type
-      assign( const DenseVector<VT,true>& rhs );
+   inline EnableIf_< VectorizedAssign<VT> > assign( const DenseVector<VT,true>& rhs );
 
    template< typename VT > inline void assign( const SparseVector<VT,true>& rhs );
 
    template< typename VT >
-   inline typename DisableIf< VectorizedAddAssign<VT> >::Type
-      addAssign( const DenseVector<VT,true>& rhs );
+   inline DisableIf_< VectorizedAddAssign<VT> > addAssign( const DenseVector<VT,true>& rhs );
 
    template< typename VT >
-   inline typename EnableIf< VectorizedAddAssign<VT> >::Type
-      addAssign( const DenseVector<VT,true>& rhs );
+   inline EnableIf_< VectorizedAddAssign<VT> > addAssign( const DenseVector<VT,true>& rhs );
 
    template< typename VT > inline void addAssign( const SparseVector<VT,true>& rhs );
 
    template< typename VT >
-   inline typename DisableIf< VectorizedSubAssign<VT> >::Type
-      subAssign( const DenseVector<VT,true>& rhs );
+   inline DisableIf_< VectorizedSubAssign<VT> > subAssign( const DenseVector<VT,true>& rhs );
 
    template< typename VT >
-   inline typename EnableIf< VectorizedSubAssign<VT> >::Type
-      subAssign( const DenseVector<VT,true>& rhs );
+   inline EnableIf_< VectorizedSubAssign<VT> > subAssign( const DenseVector<VT,true>& rhs );
 
    template< typename VT > inline void subAssign( const SparseVector<VT,true>& rhs );
 
    template< typename VT >
-   inline typename DisableIf< VectorizedMultAssign<VT> >::Type
-      multAssign( const DenseVector<VT,true>& rhs );
+   inline DisableIf_< VectorizedMultAssign<VT> > multAssign( const DenseVector<VT,true>& rhs );
 
    template< typename VT >
-   inline typename EnableIf< VectorizedMultAssign<VT> >::Type
-      multAssign( const DenseVector<VT,true>& rhs );
+   inline EnableIf_< VectorizedMultAssign<VT> > multAssign( const DenseVector<VT,true>& rhs );
 
    template< typename VT > inline void multAssign( const SparseVector<VT,true>& rhs );
    //@}
@@ -4649,7 +4627,7 @@ inline DenseRow<MT,false,true>& DenseRow<MT,false,true>::operator*=( const Spars
 */
 template< typename MT >     // Type of the dense matrix
 template< typename Other >  // Data type of the right-hand side scalar
-inline typename EnableIf< IsNumeric<Other>, DenseRow<MT,false,true> >::Type&
+inline EnableIf_< IsNumeric<Other>, DenseRow<MT,false,true> >&
    DenseRow<MT,false,true>::operator*=( Other rhs )
 {
    BLAZE_CONSTRAINT_MUST_NOT_BE_UNITRIANGULAR_MATRIX_TYPE( MT );
@@ -4675,7 +4653,7 @@ inline typename EnableIf< IsNumeric<Other>, DenseRow<MT,false,true> >::Type&
 */
 template< typename MT >     // Type of the dense matrix
 template< typename Other >  // Data type of the right-hand side scalar
-inline typename EnableIf< IsNumeric<Other>, DenseRow<MT,false,true> >::Type&
+inline EnableIf_< IsNumeric<Other>, DenseRow<MT,false,true> >&
    DenseRow<MT,false,true>::operator/=( Other rhs )
 {
    BLAZE_CONSTRAINT_MUST_NOT_BE_UNITRIANGULAR_MATRIX_TYPE( MT );
@@ -5111,7 +5089,7 @@ BLAZE_ALWAYS_INLINE void
 */
 template< typename MT >  // Type of the dense matrix
 template< typename VT >  // Type of the right-hand side dense vector
-inline typename DisableIf< typename DenseRow<MT,false,true>::BLAZE_TEMPLATE VectorizedAssign<VT> >::Type
+inline DisableIf_< typename DenseRow<MT,false,true>::BLAZE_TEMPLATE VectorizedAssign<VT> >
    DenseRow<MT,false,true>::assign( const DenseVector<VT,true>& rhs )
 {
    BLAZE_INTERNAL_ASSERT( size() == (~rhs).size(), "Invalid vector sizes" );
@@ -5142,7 +5120,7 @@ inline typename DisableIf< typename DenseRow<MT,false,true>::BLAZE_TEMPLATE Vect
 */
 template< typename MT >  // Type of the dense matrix
 template< typename VT >  // Type of the right-hand side dense vector
-inline typename EnableIf< typename DenseRow<MT,false,true>::BLAZE_TEMPLATE VectorizedAssign<VT> >::Type
+inline EnableIf_< typename DenseRow<MT,false,true>::BLAZE_TEMPLATE VectorizedAssign<VT> >
    DenseRow<MT,false,true>::assign( const DenseVector<VT,true>& rhs )
 {
    BLAZE_CONSTRAINT_MUST_BE_VECTORIZABLE_TYPE( ElementType );
@@ -5228,7 +5206,7 @@ inline void DenseRow<MT,false,true>::assign( const SparseVector<VT,true>& rhs )
 */
 template< typename MT >  // Type of the dense matrix
 template< typename VT >  // Type of the right-hand side dense vector
-inline typename DisableIf< typename DenseRow<MT,false,true>::BLAZE_TEMPLATE VectorizedAddAssign<VT> >::Type
+inline DisableIf_< typename DenseRow<MT,false,true>::BLAZE_TEMPLATE VectorizedAddAssign<VT> >
    DenseRow<MT,false,true>::addAssign( const DenseVector<VT,true>& rhs )
 {
    BLAZE_INTERNAL_ASSERT( size() == (~rhs).size(), "Invalid vector sizes" );
@@ -5259,7 +5237,7 @@ inline typename DisableIf< typename DenseRow<MT,false,true>::BLAZE_TEMPLATE Vect
 */
 template< typename MT >  // Type of the dense matrix
 template< typename VT >  // Type of the right-hand side dense vector
-inline typename EnableIf< typename DenseRow<MT,false,true>::BLAZE_TEMPLATE VectorizedAddAssign<VT> >::Type
+inline EnableIf_< typename DenseRow<MT,false,true>::BLAZE_TEMPLATE VectorizedAddAssign<VT> >
    DenseRow<MT,false,true>::addAssign( const DenseVector<VT,true>& rhs )
 {
    BLAZE_CONSTRAINT_MUST_BE_VECTORIZABLE_TYPE( ElementType );
@@ -5331,7 +5309,7 @@ inline void DenseRow<MT,false,true>::addAssign( const SparseVector<VT,true>& rhs
 */
 template< typename MT >  // Type of the dense matrix
 template< typename VT >  // Type of the right-hand side dense vector
-inline typename DisableIf< typename DenseRow<MT,false,true>::BLAZE_TEMPLATE VectorizedSubAssign<VT> >::Type
+inline DisableIf_< typename DenseRow<MT,false,true>::BLAZE_TEMPLATE VectorizedSubAssign<VT> >
    DenseRow<MT,false,true>::subAssign( const DenseVector<VT,true>& rhs )
 {
    BLAZE_INTERNAL_ASSERT( size() == (~rhs).size(), "Invalid vector sizes" );
@@ -5362,7 +5340,7 @@ inline typename DisableIf< typename DenseRow<MT,false,true>::BLAZE_TEMPLATE Vect
 */
 template< typename MT >  // Type of the dense matrix
 template< typename VT >  // Type of the right-hand side dense vector
-inline typename EnableIf< typename DenseRow<MT,false,true>::BLAZE_TEMPLATE VectorizedSubAssign<VT> >::Type
+inline EnableIf_< typename DenseRow<MT,false,true>::BLAZE_TEMPLATE VectorizedSubAssign<VT> >
    DenseRow<MT,false,true>::subAssign( const DenseVector<VT,true>& rhs )
 {
    BLAZE_CONSTRAINT_MUST_BE_VECTORIZABLE_TYPE( ElementType );
@@ -5434,7 +5412,7 @@ inline void DenseRow<MT,false,true>::subAssign( const SparseVector<VT,true>& rhs
 */
 template< typename MT >  // Type of the dense matrix
 template< typename VT >  // Type of the right-hand side dense vector
-inline typename DisableIf< typename DenseRow<MT,false,true>::BLAZE_TEMPLATE VectorizedMultAssign<VT> >::Type
+inline DisableIf_< typename DenseRow<MT,false,true>::BLAZE_TEMPLATE VectorizedMultAssign<VT> >
    DenseRow<MT,false,true>::multAssign( const DenseVector<VT,true>& rhs )
 {
    BLAZE_INTERNAL_ASSERT( size() == (~rhs).size(), "Invalid vector sizes" );
@@ -5465,7 +5443,7 @@ inline typename DisableIf< typename DenseRow<MT,false,true>::BLAZE_TEMPLATE Vect
 */
 template< typename MT >  // Type of the dense matrix
 template< typename VT >  // Type of the right-hand side dense vector
-inline typename EnableIf< typename DenseRow<MT,false,true>::BLAZE_TEMPLATE VectorizedMultAssign<VT> >::Type
+inline EnableIf_< typename DenseRow<MT,false,true>::BLAZE_TEMPLATE VectorizedMultAssign<VT> >
    DenseRow<MT,false,true>::multAssign( const DenseVector<VT,true>& rhs )
 {
    BLAZE_CONSTRAINT_MUST_BE_VECTORIZABLE_TYPE( ElementType );

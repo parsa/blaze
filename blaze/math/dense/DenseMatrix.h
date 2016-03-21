@@ -105,16 +105,13 @@ template< typename T1, bool SO1, typename T2, bool SO2 >
 inline bool operator==( const SparseMatrix<T1,SO1>& lhs, const DenseMatrix<T2,SO2>& rhs );
 
 template< typename T1, typename T2 >
-inline typename EnableIf< IsNumeric<T2>, bool >::Type
-   operator==( const DenseMatrix<T1,false>& mat, T2 scalar );
+inline EnableIf_<IsNumeric<T2>, bool > operator==( const DenseMatrix<T1,false>& mat, T2 scalar );
 
 template< typename T1, typename T2 >
-inline typename EnableIf< IsNumeric<T2>, bool >::Type
-   operator==( const DenseMatrix<T1,true>& mat, T2 scalar );
+inline EnableIf_<IsNumeric<T2>, bool > operator==( const DenseMatrix<T1,true>& mat, T2 scalar );
 
 template< typename T1, typename T2, bool SO >
-inline typename EnableIf< IsNumeric<T2>, bool >::Type
-   operator==( T1 scalar, const DenseMatrix<T2,SO>& mat );
+inline EnableIf_<IsNumeric<T2>, bool > operator==( T1 scalar, const DenseMatrix<T2,SO>& mat );
 
 template< typename T1, bool SO1, typename T2, bool SO2 >
 inline bool operator!=( const DenseMatrix<T1,SO1>& lhs, const DenseMatrix<T2,SO2>& rhs );
@@ -126,12 +123,10 @@ template< typename T1, bool SO1, typename T2, bool SO2 >
 inline bool operator!=( const SparseMatrix<T1,SO1>& lhs, const DenseMatrix<T2,SO2>& rhs );
 
 template< typename T1, typename T2, bool SO >
-inline typename EnableIf< IsNumeric<T2>, bool >::Type
-   operator!=( const DenseMatrix<T1,SO>& mat, T2 scalar );
+inline EnableIf_<IsNumeric<T2>, bool > operator!=( const DenseMatrix<T1,SO>& mat, T2 scalar );
 
 template< typename T1, typename T2, bool SO >
-inline typename EnableIf< IsNumeric<T2>, bool >::Type
-   operator!=( T1 scalar, const DenseMatrix<T2,SO>& mat );
+inline EnableIf_<IsNumeric<T2>, bool > operator!=( T1 scalar, const DenseMatrix<T2,SO>& mat );
 //@}
 //*************************************************************************************************
 
@@ -382,8 +377,7 @@ inline bool operator==( const SparseMatrix<T1,SO1>& lhs, const DenseMatrix<T2,SO
 */
 template< typename T1    // Type of the left-hand side dense matrix
         , typename T2 >  // Type of the right-hand side scalar
-inline typename EnableIf< IsNumeric<T2>, bool >::Type
-   operator==( const DenseMatrix<T1,false>& mat, T2 scalar )
+inline EnableIf_<IsNumeric<T2>, bool > operator==( const DenseMatrix<T1,false>& mat, T2 scalar )
 {
    typedef typename T1::CompositeType  CT1;
 
@@ -417,8 +411,7 @@ inline typename EnableIf< IsNumeric<T2>, bool >::Type
 */
 template< typename T1    // Type of the left-hand side dense matrix
         , typename T2 >  // Type of the right-hand side scalar
-inline typename EnableIf< IsNumeric<T2>, bool >::Type
-   operator==( const DenseMatrix<T1,true>& mat, T2 scalar )
+inline EnableIf_<IsNumeric<T2>, bool > operator==( const DenseMatrix<T1,true>& mat, T2 scalar )
 {
    typedef typename T1::CompositeType  CT1;
 
@@ -453,8 +446,7 @@ inline typename EnableIf< IsNumeric<T2>, bool >::Type
 template< typename T1  // Type of the left-hand side scalar
         , typename T2  // Type of the right-hand side dense matrix
         , bool SO >    // Storage order
-inline typename EnableIf< IsNumeric<T1>, bool >::Type
-   operator==( T1 scalar, const DenseMatrix<T2,SO>& mat )
+inline EnableIf_<IsNumeric<T1>, bool > operator==( T1 scalar, const DenseMatrix<T2,SO>& mat )
 {
    return ( mat == scalar );
 }
@@ -533,8 +525,7 @@ inline bool operator!=( const SparseMatrix<T1,SO1>& lhs, const DenseMatrix<T2,SO
 template< typename T1  // Type of the left-hand side dense matrix
         , typename T2  // Type of the right-hand side scalar
         , bool SO >    // Storage order
-inline typename EnableIf< IsNumeric<T2>, bool >::Type
-   operator!=( const DenseMatrix<T1,SO>& mat, T2 scalar )
+inline EnableIf_<IsNumeric<T2>, bool > operator!=( const DenseMatrix<T1,SO>& mat, T2 scalar )
 {
    return !( mat == scalar );
 }
@@ -556,8 +547,7 @@ inline typename EnableIf< IsNumeric<T2>, bool >::Type
 template< typename T1  // Type of the left-hand side scalar
         , typename T2  // Type of the right-hand side dense matrix
         , bool SO >    // Storage order
-inline typename EnableIf< IsNumeric<T1>, bool >::Type
-   operator!=( T1 scalar, const DenseMatrix<T2,SO>& mat )
+inline EnableIf_<IsNumeric<T1>, bool > operator!=( T1 scalar, const DenseMatrix<T2,SO>& mat )
 {
    return !( mat == scalar );
 }

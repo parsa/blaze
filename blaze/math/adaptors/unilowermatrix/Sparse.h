@@ -332,28 +332,22 @@ class UniLowerMatrix<MT,SO,false>
    inline UniLowerMatrix& operator=( UniLowerMatrix&& rhs ) noexcept;
 
    template< typename MT2, bool SO2 >
-   inline typename DisableIf< IsComputation<MT2>, UniLowerMatrix& >::Type
-      operator=( const Matrix<MT2,SO2>& rhs );
+   inline DisableIf_< IsComputation<MT2>, UniLowerMatrix& > operator=( const Matrix<MT2,SO2>& rhs );
 
    template< typename MT2, bool SO2 >
-   inline typename EnableIf< IsComputation<MT2>, UniLowerMatrix& >::Type
-      operator=( const Matrix<MT2,SO2>& rhs );
+   inline EnableIf_< IsComputation<MT2>, UniLowerMatrix& > operator=( const Matrix<MT2,SO2>& rhs );
 
    template< typename MT2, bool SO2 >
-   inline typename DisableIf< IsComputation<MT2>, UniLowerMatrix& >::Type
-      operator+=( const Matrix<MT2,SO2>& rhs );
+   inline DisableIf_< IsComputation<MT2>, UniLowerMatrix& > operator+=( const Matrix<MT2,SO2>& rhs );
 
    template< typename MT2, bool SO2 >
-   inline typename EnableIf< IsComputation<MT2>, UniLowerMatrix& >::Type
-      operator+=( const Matrix<MT2,SO2>& rhs );
+   inline EnableIf_< IsComputation<MT2>, UniLowerMatrix& > operator+=( const Matrix<MT2,SO2>& rhs );
 
    template< typename MT2, bool SO2 >
-   inline typename DisableIf< IsComputation<MT2>, UniLowerMatrix& >::Type
-      operator-=( const Matrix<MT2,SO2>& rhs );
+   inline DisableIf_< IsComputation<MT2>, UniLowerMatrix& > operator-=( const Matrix<MT2,SO2>& rhs );
 
    template< typename MT2, bool SO2 >
-   inline typename EnableIf< IsComputation<MT2>, UniLowerMatrix& >::Type
-      operator-=( const Matrix<MT2,SO2>& rhs );
+   inline EnableIf_< IsComputation<MT2>, UniLowerMatrix& > operator-=( const Matrix<MT2,SO2>& rhs );
 
    template< typename MT2, bool SO2 >
    inline UniLowerMatrix& operator*=( const Matrix<MT2,SO2>& rhs );
@@ -996,7 +990,7 @@ template< typename MT   // Type of the adapted sparse matrix
         , bool SO >     // Storage order of the adapted sparse matrix
 template< typename MT2  // Type of the right-hand side matrix
         , bool SO2 >    // Storage order of the right-hand side matrix
-inline typename DisableIf< IsComputation<MT2>, UniLowerMatrix<MT,SO,false>& >::Type
+inline DisableIf_< IsComputation<MT2>, UniLowerMatrix<MT,SO,false>& >
    UniLowerMatrix<MT,SO,false>::operator=( const Matrix<MT2,SO2>& rhs )
 {
    if( IsStrictlyTriangular<MT2>::value || ( !IsUniLower<MT2>::value && !isUniLower( ~rhs ) ) ) {
@@ -1034,7 +1028,7 @@ template< typename MT   // Type of the adapted sparse matrix
         , bool SO >     // Storage order of the adapted sparse matrix
 template< typename MT2  // Type of the right-hand side matrix
         , bool SO2 >    // Storage order of the right-hand side matrix
-inline typename EnableIf< IsComputation<MT2>, UniLowerMatrix<MT,SO,false>& >::Type
+inline EnableIf_< IsComputation<MT2>, UniLowerMatrix<MT,SO,false>& >
    UniLowerMatrix<MT,SO,false>::operator=( const Matrix<MT2,SO2>& rhs )
 {
    if( IsStrictlyTriangular<MT2>::value || ( !IsSquare<MT2>::value && !isSquare( ~rhs ) ) ) {
@@ -1083,7 +1077,7 @@ template< typename MT   // Type of the adapted sparse matrix
         , bool SO >     // Storage order of the adapted sparse matrix
 template< typename MT2  // Type of the right-hand side matrix
         , bool SO2 >    // Storage order of the right-hand side matrix
-inline typename DisableIf< IsComputation<MT2>, UniLowerMatrix<MT,SO,false>& >::Type
+inline DisableIf_< IsComputation<MT2>, UniLowerMatrix<MT,SO,false>& >
    UniLowerMatrix<MT,SO,false>::operator+=( const Matrix<MT2,SO2>& rhs )
 {
    if( IsUpper<MT2>::value || IsUniTriangular<MT2>::value ||
@@ -1122,7 +1116,7 @@ template< typename MT   // Type of the adapted sparse matrix
         , bool SO >     // Storage order of the adapted sparse matrix
 template< typename MT2  // Type of the right-hand side matrix
         , bool SO2 >    // Storage order of the right-hand side matrix
-inline typename EnableIf< IsComputation<MT2>, UniLowerMatrix<MT,SO,false>& >::Type
+inline EnableIf_< IsComputation<MT2>, UniLowerMatrix<MT,SO,false>& >
    UniLowerMatrix<MT,SO,false>::operator+=( const Matrix<MT2,SO2>& rhs )
 {
    if( IsUpper<MT2>::value || IsUniTriangular<MT2>::value ||
@@ -1172,7 +1166,7 @@ template< typename MT   // Type of the adapted sparse matrix
         , bool SO >     // Storage order of the adapted sparse matrix
 template< typename MT2  // Type of the right-hand side matrix
         , bool SO2 >    // Storage order of the right-hand side matrix
-inline typename DisableIf< IsComputation<MT2>, UniLowerMatrix<MT,SO,false>& >::Type
+inline DisableIf_< IsComputation<MT2>, UniLowerMatrix<MT,SO,false>& >
    UniLowerMatrix<MT,SO,false>::operator-=( const Matrix<MT2,SO2>& rhs )
 {
    if( IsUpper<MT2>::value || IsUniTriangular<MT2>::value ||
@@ -1211,7 +1205,7 @@ template< typename MT   // Type of the adapted sparse matrix
         , bool SO >     // Storage order of the adapted sparse matrix
 template< typename MT2  // Type of the right-hand side matrix
         , bool SO2 >    // Storage order of the right-hand side matrix
-inline typename EnableIf< IsComputation<MT2>, UniLowerMatrix<MT,SO,false>& >::Type
+inline EnableIf_< IsComputation<MT2>, UniLowerMatrix<MT,SO,false>& >
    UniLowerMatrix<MT,SO,false>::operator-=( const Matrix<MT2,SO2>& rhs )
 {
    if( IsUpper<MT2>::value || IsUniTriangular<MT2>::value ||

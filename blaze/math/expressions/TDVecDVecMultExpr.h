@@ -128,8 +128,8 @@ struct TDVecDVecMultExprHelper
 */
 template< typename T1    // Type of the left-hand side dense vector
         , typename T2 >  // Type of the right-hand side dense vector
-inline typename DisableIf< TDVecDVecMultExprHelper<T1,T2>,
-                           const typename MultTrait<typename T1::ElementType,typename T2::ElementType>::Type >::Type
+inline DisableIf_< TDVecDVecMultExprHelper<T1,T2>
+                 , const typename MultTrait<typename T1::ElementType,typename T2::ElementType>::Type >
    operator*( const DenseVector<T1,true>& lhs, const DenseVector<T2,false>& rhs )
 {
    BLAZE_FUNCTION_TRACE;
@@ -189,8 +189,8 @@ inline typename DisableIf< TDVecDVecMultExprHelper<T1,T2>,
 */
 template< typename T1    // Type of the left-hand side dense vector
         , typename T2 >  // Type of the right-hand side dense vector
-inline typename EnableIf< TDVecDVecMultExprHelper<T1,T2>,
-                          const typename MultTrait<typename T1::ElementType,typename T2::ElementType>::Type >::Type
+inline EnableIf_< TDVecDVecMultExprHelper<T1,T2>
+               , const typename MultTrait<typename T1::ElementType,typename T2::ElementType>::Type >
    operator*( const DenseVector<T1,true>& lhs, const DenseVector<T2,false>& rhs )
 {
    BLAZE_FUNCTION_TRACE;

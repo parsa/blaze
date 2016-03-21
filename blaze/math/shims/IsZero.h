@@ -78,8 +78,7 @@ namespace blaze {
    \endcode
 */
 template< typename Type >
-BLAZE_ALWAYS_INLINE typename EnableIf< IsNumeric<Type>, bool >::Type
-   isZero( const Type& v ) noexcept
+BLAZE_ALWAYS_INLINE EnableIf_< IsNumeric<Type>, bool > isZero( const Type& v ) noexcept
 {
    return isDefault( v );
 }
@@ -95,8 +94,7 @@ BLAZE_ALWAYS_INLINE typename EnableIf< IsNumeric<Type>, bool >::Type
 // \return \a false.
 */
 template< typename Type >
-BLAZE_ALWAYS_INLINE typename DisableIf< IsNumeric<Type>, bool >::Type
-   isZero( const Type& v ) noexcept
+BLAZE_ALWAYS_INLINE DisableIf_< IsNumeric<Type>, bool > isZero( const Type& v ) noexcept
 {
    UNUSED_PARAMETER( v );
 

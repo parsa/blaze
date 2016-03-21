@@ -263,7 +263,7 @@ class DVecTransposer : public DenseVector< DVecTransposer<VT,TF>, TF >
    // \return Reference to this DVecTransposer.
    */
    template< typename Other >  // Data type of the right-hand side scalar
-   inline typename EnableIf< IsNumeric<Other>, DVecTransposer >::Type& operator*=( Other rhs )
+   inline EnableIf_< IsNumeric<Other>, DVecTransposer >& operator*=( Other rhs )
    {
       (~dv_) *= rhs;
       return *this;
@@ -280,7 +280,7 @@ class DVecTransposer : public DenseVector< DVecTransposer<VT,TF>, TF >
    // \note: A division by zero is only checked by an user assert.
    */
    template< typename Other >  // Data type of the right-hand side scalar
-   inline typename EnableIf< IsNumeric<Other>, DVecTransposer >::Type& operator/=( Other rhs )
+   inline EnableIf_< IsNumeric<Other>, DVecTransposer >& operator/=( Other rhs )
    {
       BLAZE_USER_ASSERT( rhs != Other(0), "Division by zero detected" );
 

@@ -478,7 +478,7 @@ class SVecConjExpr : public SparseVector< SVecConjExpr<VT,TF>, TF >
    // requires an intermediate evaluation.
    */
    template< typename VT2 >  // Type of the target dense vector
-   friend inline typename EnableIf< UseAssign<VT2> >::Type
+   friend inline EnableIf_< UseAssign<VT2> >
       assign( DenseVector<VT2,TF>& lhs, const SVecConjExpr& rhs )
    {
       BLAZE_FUNCTION_TRACE;
@@ -506,7 +506,7 @@ class SVecConjExpr : public SparseVector< SVecConjExpr<VT,TF>, TF >
    // requires an intermediate evaluation.
    */
    template< typename VT2 >  // Type of the target sparse vector
-   friend inline typename EnableIf< UseAssign<VT2> >::Type
+   friend inline EnableIf_< UseAssign<VT2> >
       assign( SparseVector<VT2,TF>& lhs, const SVecConjExpr& rhs )
    {
       BLAZE_FUNCTION_TRACE;
@@ -540,7 +540,7 @@ class SVecConjExpr : public SparseVector< SVecConjExpr<VT,TF>, TF >
    // operand requires an intermediate evaluation.
    */
    template< typename VT2 >  // Type of the target dense vector
-   friend inline typename EnableIf< UseAssign<VT2> >::Type
+   friend inline EnableIf_< UseAssign<VT2> >
       addAssign( DenseVector<VT2,TF>& lhs, const SVecConjExpr& rhs )
    {
       BLAZE_FUNCTION_TRACE;
@@ -576,7 +576,7 @@ class SVecConjExpr : public SparseVector< SVecConjExpr<VT,TF>, TF >
    // operand requires an intermediate evaluation.
    */
    template< typename VT2 >  // Type of the target dense vector
-   friend inline typename EnableIf< UseAssign<VT2> >::Type
+   friend inline EnableIf_< UseAssign<VT2> >
       subAssign( DenseVector<VT2,TF>& lhs, const SVecConjExpr& rhs )
    {
       BLAZE_FUNCTION_TRACE;
@@ -612,7 +612,7 @@ class SVecConjExpr : public SparseVector< SVecConjExpr<VT,TF>, TF >
    // requires an intermediate evaluation.
    */
    template< typename VT2 >  // Type of the target dense vector
-   friend inline typename EnableIf< UseAssign<VT2> >::Type
+   friend inline EnableIf_< UseAssign<VT2> >
       multAssign( DenseVector<VT2,TF>& lhs, const SVecConjExpr& rhs )
    {
       BLAZE_FUNCTION_TRACE;
@@ -648,7 +648,7 @@ class SVecConjExpr : public SparseVector< SVecConjExpr<VT,TF>, TF >
    // evaluation strategy is selected.
    */
    template< typename VT2 >  // Type of the target dense vector
-   friend inline typename EnableIf< UseSMPAssign<VT2> >::Type
+   friend inline EnableIf_< UseSMPAssign<VT2> >
       smpAssign( DenseVector<VT2,TF>& lhs, const SVecConjExpr& rhs )
    {
       BLAZE_FUNCTION_TRACE;
@@ -680,7 +680,7 @@ class SVecConjExpr : public SparseVector< SVecConjExpr<VT,TF>, TF >
    // specific parallel evaluation strategy is selected.
    */
    template< typename VT2 >  // Type of the target dense vector
-   friend inline typename EnableIf< UseSMPAssign<VT2> >::Type
+   friend inline EnableIf_< UseSMPAssign<VT2> >
       smpAddAssign( DenseVector<VT2,TF>& lhs, const SVecConjExpr& rhs )
    {
       BLAZE_FUNCTION_TRACE;
@@ -716,7 +716,7 @@ class SVecConjExpr : public SparseVector< SVecConjExpr<VT,TF>, TF >
    // specific parallel evaluation strategy is selected.
    */
    template< typename VT2 >  // Type of the target dense vector
-   friend inline typename EnableIf< UseSMPAssign<VT2> >::Type
+   friend inline EnableIf_< UseSMPAssign<VT2> >
       smpSubAssign( DenseVector<VT2,TF>& lhs, const SVecConjExpr& rhs )
    {
       BLAZE_FUNCTION_TRACE;
@@ -752,7 +752,7 @@ class SVecConjExpr : public SparseVector< SVecConjExpr<VT,TF>, TF >
    // expression specific parallel evaluation strategy is selected.
    */
    template< typename VT2 >  // Type of the target dense vector
-   friend inline typename EnableIf< UseSMPAssign<VT2> >::Type
+   friend inline EnableIf_< UseSMPAssign<VT2> >
       smpMultAssign( DenseVector<VT2,TF>& lhs, const SVecConjExpr& rhs )
    {
       BLAZE_FUNCTION_TRACE;

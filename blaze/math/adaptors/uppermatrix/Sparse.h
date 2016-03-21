@@ -176,39 +176,31 @@ class UpperMatrix<MT,SO,false>
    inline UpperMatrix& operator=( UpperMatrix&& rhs ) noexcept;
 
    template< typename MT2, bool SO2 >
-   inline typename DisableIf< IsComputation<MT2>, UpperMatrix& >::Type
-      operator=( const Matrix<MT2,SO2>& rhs );
+   inline DisableIf_< IsComputation<MT2>, UpperMatrix& > operator=( const Matrix<MT2,SO2>& rhs );
 
    template< typename MT2, bool SO2 >
-   inline typename EnableIf< IsComputation<MT2>, UpperMatrix& >::Type
-      operator=( const Matrix<MT2,SO2>& rhs );
+   inline EnableIf_< IsComputation<MT2>, UpperMatrix& > operator=( const Matrix<MT2,SO2>& rhs );
 
    template< typename MT2, bool SO2 >
-   inline typename DisableIf< IsComputation<MT2>, UpperMatrix& >::Type
-      operator+=( const Matrix<MT2,SO2>& rhs );
+   inline DisableIf_< IsComputation<MT2>, UpperMatrix& > operator+=( const Matrix<MT2,SO2>& rhs );
 
    template< typename MT2, bool SO2 >
-   inline typename EnableIf< IsComputation<MT2>, UpperMatrix& >::Type
-      operator+=( const Matrix<MT2,SO2>& rhs );
+   inline EnableIf_< IsComputation<MT2>, UpperMatrix& > operator+=( const Matrix<MT2,SO2>& rhs );
 
    template< typename MT2, bool SO2 >
-   inline typename DisableIf< IsComputation<MT2>, UpperMatrix& >::Type
-      operator-=( const Matrix<MT2,SO2>& rhs );
+   inline DisableIf_< IsComputation<MT2>, UpperMatrix& > operator-=( const Matrix<MT2,SO2>& rhs );
 
    template< typename MT2, bool SO2 >
-   inline typename EnableIf< IsComputation<MT2>, UpperMatrix& >::Type
-      operator-=( const Matrix<MT2,SO2>& rhs );
+   inline EnableIf_< IsComputation<MT2>, UpperMatrix& > operator-=( const Matrix<MT2,SO2>& rhs );
 
    template< typename MT2, bool SO2 >
    inline UpperMatrix& operator*=( const Matrix<MT2,SO2>& rhs );
 
    template< typename Other >
-   inline typename EnableIf< IsNumeric<Other>, UpperMatrix >::Type&
-      operator*=( Other rhs );
+   inline EnableIf_< IsNumeric<Other>, UpperMatrix >& operator*=( Other rhs );
 
    template< typename Other >
-   inline typename EnableIf< IsNumeric<Other>, UpperMatrix >::Type&
-      operator/=( Other rhs );
+   inline EnableIf_< IsNumeric<Other>, UpperMatrix >& operator/=( Other rhs );
    //@}
    //**********************************************************************************************
 
@@ -828,7 +820,7 @@ template< typename MT   // Type of the adapted sparse matrix
         , bool SO >     // Storage order of the adapted sparse matrix
 template< typename MT2  // Type of the right-hand side matrix
         , bool SO2 >    // Storage order of the right-hand side matrix
-inline typename DisableIf< IsComputation<MT2>, UpperMatrix<MT,SO,false>& >::Type
+inline DisableIf_< IsComputation<MT2>, UpperMatrix<MT,SO,false>& >
    UpperMatrix<MT,SO,false>::operator=( const Matrix<MT2,SO2>& rhs )
 {
    if( !IsUpper<MT2>::value && !isUpper( ~rhs ) ) {
@@ -866,7 +858,7 @@ template< typename MT   // Type of the adapted sparse matrix
         , bool SO >     // Storage order of the adapted sparse matrix
 template< typename MT2  // Type of the right-hand side matrix
         , bool SO2 >    // Storage order of the right-hand side matrix
-inline typename EnableIf< IsComputation<MT2>, UpperMatrix<MT,SO,false>& >::Type
+inline EnableIf_< IsComputation<MT2>, UpperMatrix<MT,SO,false>& >
    UpperMatrix<MT,SO,false>::operator=( const Matrix<MT2,SO2>& rhs )
 {
    if( !IsSquare<MT2>::value && !isSquare( ~rhs ) ) {
@@ -915,7 +907,7 @@ template< typename MT   // Type of the adapted sparse matrix
         , bool SO >     // Storage order of the adapted sparse matrix
 template< typename MT2  // Type of the right-hand side matrix
         , bool SO2 >    // Storage order of the right-hand side matrix
-inline typename DisableIf< IsComputation<MT2>, UpperMatrix<MT,SO,false>& >::Type
+inline DisableIf_< IsComputation<MT2>, UpperMatrix<MT,SO,false>& >
    UpperMatrix<MT,SO,false>::operator+=( const Matrix<MT2,SO2>& rhs )
 {
    if( !IsUpper<MT2>::value && !isUpper( ~rhs ) ) {
@@ -953,7 +945,7 @@ template< typename MT   // Type of the adapted sparse matrix
         , bool SO >     // Storage order of the adapted sparse matrix
 template< typename MT2  // Type of the right-hand side matrix
         , bool SO2 >    // Storage order of the right-hand side matrix
-inline typename EnableIf< IsComputation<MT2>, UpperMatrix<MT,SO,false>& >::Type
+inline EnableIf_< IsComputation<MT2>, UpperMatrix<MT,SO,false>& >
    UpperMatrix<MT,SO,false>::operator+=( const Matrix<MT2,SO2>& rhs )
 {
    if( IsSquare<MT2>::value && !isSquare( ~rhs ) ) {
@@ -1002,7 +994,7 @@ template< typename MT   // Type of the adapted sparse matrix
         , bool SO >     // Storage order of the adapted sparse matrix
 template< typename MT2  // Type of the right-hand side matrix
         , bool SO2 >    // Storage order of the right-hand side matrix
-inline typename DisableIf< IsComputation<MT2>, UpperMatrix<MT,SO,false>& >::Type
+inline DisableIf_< IsComputation<MT2>, UpperMatrix<MT,SO,false>& >
    UpperMatrix<MT,SO,false>::operator-=( const Matrix<MT2,SO2>& rhs )
 {
    if( !IsUpper<MT2>::value && !isUpper( ~rhs ) ) {
@@ -1040,7 +1032,7 @@ template< typename MT   // Type of the adapted sparse matrix
         , bool SO >     // Storage order of the adapted sparse matrix
 template< typename MT2  // Type of the right-hand side matrix
         , bool SO2 >    // Storage order of the right-hand side matrix
-inline typename EnableIf< IsComputation<MT2>, UpperMatrix<MT,SO,false>& >::Type
+inline EnableIf_< IsComputation<MT2>, UpperMatrix<MT,SO,false>& >
    UpperMatrix<MT,SO,false>::operator-=( const Matrix<MT2,SO2>& rhs )
 {
    if( !IsSquare<MT2>::value && !isSquare( ~rhs ) ) {
@@ -1126,7 +1118,7 @@ inline UpperMatrix<MT,SO,false>&
 template< typename MT       // Type of the adapted sparse matrix
         , bool SO >         // Storage order of the adapted sparse matrix
 template< typename Other >  // Data type of the right-hand side scalar
-inline typename EnableIf< IsNumeric<Other>, UpperMatrix<MT,SO,false> >::Type&
+inline EnableIf_< IsNumeric<Other>, UpperMatrix<MT,SO,false> >&
    UpperMatrix<MT,SO,false>::operator*=( Other rhs )
 {
    matrix_ *= rhs;
@@ -1146,7 +1138,7 @@ inline typename EnableIf< IsNumeric<Other>, UpperMatrix<MT,SO,false> >::Type&
 template< typename MT       // Type of the adapted sparse matrix
         , bool SO >         // Storage order of the adapted sparse matrix
 template< typename Other >  // Data type of the right-hand side scalar
-inline typename EnableIf< IsNumeric<Other>, UpperMatrix<MT,SO,false> >::Type&
+inline EnableIf_< IsNumeric<Other>, UpperMatrix<MT,SO,false> >&
    UpperMatrix<MT,SO,false>::operator/=( Other rhs )
 {
    BLAZE_USER_ASSERT( rhs != Other(0), "Division by zero detected" );

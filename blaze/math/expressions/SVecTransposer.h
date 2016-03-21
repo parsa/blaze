@@ -199,7 +199,7 @@ class SVecTransposer : public SparseVector< SVecTransposer<VT,TF>, TF >
    // \return Reference to this SVecTransposer.
    */
    template< typename Other >  // Data type of the right-hand side scalar
-   inline typename EnableIf< IsNumeric<Other>, SVecTransposer >::Type& operator*=( Other rhs )
+   inline EnableIf_< IsNumeric<Other>, SVecTransposer >& operator*=( Other rhs )
    {
       (~sv_) *= rhs;
       return *this;
@@ -216,7 +216,7 @@ class SVecTransposer : public SparseVector< SVecTransposer<VT,TF>, TF >
    // \note: A division by zero is only checked by an user assert.
    */
    template< typename Other >  // Data type of the right-hand side scalar
-   inline typename EnableIf< IsNumeric<Other>, SVecTransposer >::Type& operator/=( Other rhs )
+   inline EnableIf_< IsNumeric<Other>, SVecTransposer >& operator/=( Other rhs )
    {
       BLAZE_USER_ASSERT( rhs != Other(0), "Division by zero detected" );
 

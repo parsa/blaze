@@ -76,6 +76,7 @@
 #include <blaze/util/constraints/Pointer.h>
 #include <blaze/util/constraints/Reference.h>
 #include <blaze/util/constraints/Volatile.h>
+#include <blaze/util/DisableIf.h>
 #include <blaze/util/EnableIf.h>
 #include <blaze/util/Exception.h>
 #include <blaze/util/mpl/If.h>
@@ -491,12 +492,10 @@ class SymmetricMatrix<MT,SO,false,false>
    inline SymmetricMatrix& operator=( SymmetricMatrix&& rhs ) noexcept;
 
    template< typename MT2 >
-   inline typename DisableIf< IsComputation<MT2>, SymmetricMatrix& >::Type
-      operator=( const Matrix<MT2,SO>& rhs );
+   inline DisableIf_< IsComputation<MT2>, SymmetricMatrix& > operator=( const Matrix<MT2,SO>& rhs );
 
    template< typename MT2 >
-   inline typename EnableIf< IsComputation<MT2>, SymmetricMatrix& >::Type
-      operator=( const Matrix<MT2,SO>& rhs );
+   inline EnableIf_< IsComputation<MT2>, SymmetricMatrix& > operator=( const Matrix<MT2,SO>& rhs );
 
    template< typename MT2 >
    inline SymmetricMatrix& operator=( const Matrix<MT2,!SO>& rhs );
@@ -517,12 +516,10 @@ class SymmetricMatrix<MT,SO,false,false>
    inline SymmetricMatrix& operator*=( const Matrix<MT2,SO2>& rhs );
 
    template< typename Other >
-   inline typename EnableIf< IsNumeric<Other>, SymmetricMatrix >::Type&
-      operator*=( Other rhs );
+   inline EnableIf_< IsNumeric<Other>, SymmetricMatrix >& operator*=( Other rhs );
 
    template< typename Other >
-   inline typename EnableIf< IsNumeric<Other>, SymmetricMatrix >::Type&
-      operator/=( Other rhs );
+   inline EnableIf_< IsNumeric<Other>, SymmetricMatrix >& operator/=( Other rhs );
    //@}
    //**********************************************************************************************
 
@@ -1192,7 +1189,7 @@ inline SymmetricMatrix<MT,SO,false,false>&
 template< typename MT     // Type of the adapted sparse matrix
         , bool SO >       // Storage order of the adapted sparse matrix
 template< typename MT2 >  // Type of the right-hand side matrix
-inline typename DisableIf< IsComputation<MT2>, SymmetricMatrix<MT,SO,false,false>& >::Type
+inline DisableIf_< IsComputation<MT2>, SymmetricMatrix<MT,SO,false,false>& >
    SymmetricMatrix<MT,SO,false,false>::operator=( const Matrix<MT2,SO>& rhs )
 {
    using blaze::resize;
@@ -1237,7 +1234,7 @@ inline typename DisableIf< IsComputation<MT2>, SymmetricMatrix<MT,SO,false,false
 template< typename MT     // Type of the adapted sparse matrix
         , bool SO >       // Storage order of the adapted sparse matrix
 template< typename MT2 >  // Type of the right-hand side matrix
-inline typename EnableIf< IsComputation<MT2>, SymmetricMatrix<MT,SO,false,false>& >::Type
+inline EnableIf_< IsComputation<MT2>, SymmetricMatrix<MT,SO,false,false>& >
    SymmetricMatrix<MT,SO,false,false>::operator=( const Matrix<MT2,SO>& rhs )
 {
    using blaze::resize;
@@ -1492,7 +1489,7 @@ inline SymmetricMatrix<MT,SO,false,false>&
 template< typename MT       // Type of the adapted sparse matrix
         , bool SO >         // Storage order of the adapted sparse matrix
 template< typename Other >  // Data type of the right-hand side scalar
-inline typename EnableIf< IsNumeric<Other>, SymmetricMatrix<MT,SO,false,false> >::Type&
+inline EnableIf_< IsNumeric<Other>, SymmetricMatrix<MT,SO,false,false> >&
    SymmetricMatrix<MT,SO,false,false>::operator*=( Other rhs )
 {
    for( size_t i=0UL; i<rows(); ++i ) {
@@ -1518,7 +1515,7 @@ inline typename EnableIf< IsNumeric<Other>, SymmetricMatrix<MT,SO,false,false> >
 template< typename MT       // Type of the adapted sparse matrix
         , bool SO >         // Storage order of the adapted sparse matrix
 template< typename Other >  // Data type of the right-hand side scalar
-inline typename EnableIf< IsNumeric<Other>, SymmetricMatrix<MT,SO,false,false> >::Type&
+inline EnableIf_< IsNumeric<Other>, SymmetricMatrix<MT,SO,false,false> >&
    SymmetricMatrix<MT,SO,false,false>::operator/=( Other rhs )
 {
    BLAZE_USER_ASSERT( rhs != Other(0), "Division by zero detected" );

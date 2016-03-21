@@ -79,8 +79,7 @@ namespace blaze {
    \endcode
 */
 template< typename T >
-BLAZE_ALWAYS_INLINE constexpr typename EnableIf< IsBuiltin<T>, T >::Type
-   real( T a ) noexcept
+BLAZE_ALWAYS_INLINE constexpr EnableIf_< IsBuiltin<T>, T > real( T a ) noexcept
 {
    return a;
 }

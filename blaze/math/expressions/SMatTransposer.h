@@ -242,7 +242,7 @@ class SMatTransposer : public SparseMatrix< SMatTransposer<MT,SO>, SO >
    // \return Reference to this SMatTransposer.
    */
    template< typename Other >  // Data type of the right-hand side scalar
-   inline typename EnableIf< IsNumeric<Other>, SMatTransposer >::Type& operator*=( Other rhs )
+   inline EnableIf_< IsNumeric<Other>, SMatTransposer >& operator*=( Other rhs )
    {
       (~sm_) *= rhs;
       return *this;
@@ -259,7 +259,7 @@ class SMatTransposer : public SparseMatrix< SMatTransposer<MT,SO>, SO >
    // \note: A division by zero is only checked by an user assert.
    */
    template< typename Other >  // Data type of the right-hand side scalar
-   inline typename EnableIf< IsNumeric<Other>, SMatTransposer >::Type& operator/=( Other rhs )
+   inline EnableIf_< IsNumeric<Other>, SMatTransposer >& operator/=( Other rhs )
    {
       BLAZE_USER_ASSERT( rhs != Other(0), "Division by zero detected" );
 
@@ -742,7 +742,7 @@ class SMatTransposer<MT,true> : public SparseMatrix< SMatTransposer<MT,true>, tr
    // \return Reference to this SMatTransposer.
    */
    template< typename Other >  // Data type of the right-hand side scalar
-   inline typename EnableIf< IsNumeric<Other>, SMatTransposer >::Type& operator*=( Other rhs )
+   inline EnableIf_< IsNumeric<Other>, SMatTransposer >& operator*=( Other rhs )
    {
       (~sm_) *= rhs;
       return *this;
@@ -759,7 +759,7 @@ class SMatTransposer<MT,true> : public SparseMatrix< SMatTransposer<MT,true>, tr
    // \note: A division by zero is only checked by an user assert.
    */
    template< typename Other >  // Data type of the right-hand side scalar
-   inline typename EnableIf< IsNumeric<Other>, SMatTransposer >::Type& operator/=( Other rhs )
+   inline EnableIf_< IsNumeric<Other>, SMatTransposer >& operator/=( Other rhs )
    {
       BLAZE_USER_ASSERT( rhs != Other(0), "Division by zero detected" );
 

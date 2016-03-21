@@ -679,7 +679,7 @@ class DVecTDVecMultExpr : public DenseMatrix< DVecTDVecMultExpr<VT1,VT2>, false 
    // in case either of the two operands requires an intermediate evaluation.
    */
    template< typename MT >  // Type of the target dense matrix
-   friend inline typename EnableIf< UseAssign<MT> >::Type
+   friend inline EnableIf_< UseAssign<MT> >
       assign( DenseMatrix<MT,false>& lhs, const DVecTDVecMultExpr& rhs )
    {
       BLAZE_FUNCTION_TRACE;
@@ -717,7 +717,7 @@ class DVecTDVecMultExpr : public DenseMatrix< DVecTDVecMultExpr<VT1,VT2>, false 
    template< typename MT     // Type of the left-hand side target matrix
            , typename VT3    // Type of the left-hand side vector operand
            , typename VT4 >  // Type of the right-hand side vector operand
-   static inline typename EnableIf< UseDefaultKernel<MT,VT3,VT4> >::Type
+   static inline EnableIf_< UseDefaultKernel<MT,VT3,VT4> >
       selectAssignKernel( DenseMatrix<MT,false>& A, const VT3& x, const VT4& y )
    {
       const size_t M( (~A).rows() );
@@ -756,7 +756,7 @@ class DVecTDVecMultExpr : public DenseMatrix< DVecTDVecMultExpr<VT1,VT2>, false 
    template< typename MT     // Type of the left-hand side target matrix
            , typename VT3    // Type of the left-hand side vector operand
            , typename VT4 >  // Type of the right-hand side vector operand
-   static inline typename EnableIf< UseVectorizedKernel<MT,VT3,VT4> >::Type
+   static inline EnableIf_< UseVectorizedKernel<MT,VT3,VT4> >
       selectAssignKernel( DenseMatrix<MT,false>& A, const VT3& x, const VT4& y )
    {
       typedef IntrinsicTrait<ElementType>  IT;
@@ -838,7 +838,7 @@ class DVecTDVecMultExpr : public DenseMatrix< DVecTDVecMultExpr<VT1,VT2>, false 
    template< typename MT     // Type of the left-hand side target matrix
            , typename VT3    // Type of the left-hand side vector operand
            , typename VT4 >  // Type of the right-hand side vector operand
-   static inline typename EnableIf< UseDefaultKernel<MT,VT3,VT4> >::Type
+   static inline EnableIf_< UseDefaultKernel<MT,VT3,VT4> >
       selectAssignKernel( DenseMatrix<MT,true>& A, const VT3& x, const VT4& y )
    {
       const size_t M( (~A).rows() );
@@ -877,7 +877,7 @@ class DVecTDVecMultExpr : public DenseMatrix< DVecTDVecMultExpr<VT1,VT2>, false 
    template< typename MT     // Type of the left-hand side target matrix
            , typename VT3    // Type of the left-hand side vector operand
            , typename VT4 >  // Type of the right-hand side vector operand
-   static inline typename EnableIf< UseVectorizedKernel<MT,VT3,VT4> >::Type
+   static inline EnableIf_< UseVectorizedKernel<MT,VT3,VT4> >
       selectAssignKernel( DenseMatrix<MT,true>& A, const VT3& x, const VT4& y )
    {
       typedef IntrinsicTrait<ElementType>  IT;
@@ -959,7 +959,7 @@ class DVecTDVecMultExpr : public DenseMatrix< DVecTDVecMultExpr<VT1,VT2>, false 
    // in case either of the two operands requires an intermediate evaluation.
    */
    template< typename MT >  // Type of the target dense matrix
-   friend inline typename EnableIf< UseAssign<MT> >::Type
+   friend inline EnableIf_< UseAssign<MT> >
       addAssign( DenseMatrix<MT,false>& lhs, const DVecTDVecMultExpr& rhs )
    {
       BLAZE_FUNCTION_TRACE;
@@ -997,7 +997,7 @@ class DVecTDVecMultExpr : public DenseMatrix< DVecTDVecMultExpr<VT1,VT2>, false 
    template< typename MT     // Type of the left-hand side target matrix
            , typename VT3    // Type of the left-hand side vector operand
            , typename VT4 >  // Type of the right-hand side vector operand
-   static inline typename EnableIf< UseDefaultKernel<MT,VT3,VT4> >::Type
+   static inline EnableIf_< UseDefaultKernel<MT,VT3,VT4> >
       selectAddAssignKernel( DenseMatrix<MT,false>& A, const VT3& x, const VT4& y )
    {
       const size_t M( (~A).rows() );
@@ -1036,7 +1036,7 @@ class DVecTDVecMultExpr : public DenseMatrix< DVecTDVecMultExpr<VT1,VT2>, false 
    template< typename MT     // Type of the left-hand side target matrix
            , typename VT3    // Type of the left-hand side vector operand
            , typename VT4 >  // Type of the right-hand side vector operand
-   static inline typename EnableIf< UseVectorizedKernel<MT,VT3,VT4> >::Type
+   static inline EnableIf_< UseVectorizedKernel<MT,VT3,VT4> >
       selectAddAssignKernel( DenseMatrix<MT,false>& A, const VT3& x, const VT4& y )
    {
       typedef IntrinsicTrait<ElementType>  IT;
@@ -1119,7 +1119,7 @@ class DVecTDVecMultExpr : public DenseMatrix< DVecTDVecMultExpr<VT1,VT2>, false 
    template< typename MT     // Type of the left-hand side target matrix
            , typename VT3    // Type of the left-hand side vector operand
            , typename VT4 >  // Type of the right-hand side vector operand
-   static inline typename EnableIf< UseDefaultKernel<MT,VT3,VT4> >::Type
+   static inline EnableIf_< UseDefaultKernel<MT,VT3,VT4> >
       selectAddAssignKernel( DenseMatrix<MT,true>& A, const VT3& x, const VT4& y )
    {
       const size_t M( (~A).rows() );
@@ -1158,7 +1158,7 @@ class DVecTDVecMultExpr : public DenseMatrix< DVecTDVecMultExpr<VT1,VT2>, false 
    template< typename MT     // Type of the left-hand side target matrix
            , typename VT3    // Type of the left-hand side vector operand
            , typename VT4 >  // Type of the right-hand side vector operand
-   static inline typename EnableIf< UseVectorizedKernel<MT,VT3,VT4> >::Type
+   static inline EnableIf_< UseVectorizedKernel<MT,VT3,VT4> >
       selectAddAssignKernel( DenseMatrix<MT,true>& A, const VT3& x, const VT4& y )
    {
       typedef IntrinsicTrait<ElementType>  IT;
@@ -1208,7 +1208,7 @@ class DVecTDVecMultExpr : public DenseMatrix< DVecTDVecMultExpr<VT1,VT2>, false 
    // in case either of the two operands requires an intermediate evaluation.
    */
    template< typename MT >  // Type of the target dense matrix
-   friend inline typename EnableIf< UseAssign<MT> >::Type
+   friend inline EnableIf_< UseAssign<MT> >
       subAssign( DenseMatrix<MT,false>& lhs, const DVecTDVecMultExpr& rhs )
    {
       BLAZE_FUNCTION_TRACE;
@@ -1246,7 +1246,7 @@ class DVecTDVecMultExpr : public DenseMatrix< DVecTDVecMultExpr<VT1,VT2>, false 
    template< typename MT     // Type of the left-hand side target matrix
            , typename VT3    // Type of the left-hand side vector operand
            , typename VT4 >  // Type of the right-hand side vector operand
-   static inline typename EnableIf< UseDefaultKernel<MT,VT3,VT4> >::Type
+   static inline EnableIf_< UseDefaultKernel<MT,VT3,VT4> >
       selectSubAssignKernel( DenseMatrix<MT,false>& A, const VT3& x, const VT4& y )
    {
       const size_t M( (~A).rows() );
@@ -1285,7 +1285,7 @@ class DVecTDVecMultExpr : public DenseMatrix< DVecTDVecMultExpr<VT1,VT2>, false 
    template< typename MT     // Type of the left-hand side target matrix
            , typename VT3    // Type of the left-hand side vector operand
            , typename VT4 >  // Type of the right-hand side vector operand
-   static inline typename EnableIf< UseVectorizedKernel<MT,VT3,VT4> >::Type
+   static inline EnableIf_< UseVectorizedKernel<MT,VT3,VT4> >
       selectSubAssignKernel( DenseMatrix<MT,false>& A, const VT3& x, const VT4& y )
    {
       typedef IntrinsicTrait<ElementType>  IT;
@@ -1368,7 +1368,7 @@ class DVecTDVecMultExpr : public DenseMatrix< DVecTDVecMultExpr<VT1,VT2>, false 
    template< typename MT     // Type of the left-hand side target matrix
            , typename VT3    // Type of the left-hand side vector operand
            , typename VT4 >  // Type of the right-hand side vector operand
-   static inline typename EnableIf< UseDefaultKernel<MT,VT3,VT4> >::Type
+   static inline EnableIf_< UseDefaultKernel<MT,VT3,VT4> >
       selectSubAssignKernel( DenseMatrix<MT,true>& A, const VT3& x, const VT4& y )
    {
       const size_t M( (~A).rows() );
@@ -1407,7 +1407,7 @@ class DVecTDVecMultExpr : public DenseMatrix< DVecTDVecMultExpr<VT1,VT2>, false 
    template< typename MT     // Type of the left-hand side target matrix
            , typename VT3    // Type of the left-hand side vector operand
            , typename VT4 >  // Type of the right-hand side vector operand
-   static inline typename EnableIf< UseVectorizedKernel<MT,VT3,VT4> >::Type
+   static inline EnableIf_< UseVectorizedKernel<MT,VT3,VT4> >
       selectSubAssignKernel( DenseMatrix<MT,true>& A, const VT3& x, const VT4& y )
    {
       typedef IntrinsicTrait<ElementType>  IT;
@@ -1465,7 +1465,7 @@ class DVecTDVecMultExpr : public DenseMatrix< DVecTDVecMultExpr<VT1,VT2>, false 
    */
    template< typename MT  // Type of the target dense matrix
            , bool SO >    // Storage order of the target dense matrix
-   friend inline typename EnableIf< UseSMPAssign<MT> >::Type
+   friend inline EnableIf_< UseSMPAssign<MT> >
       smpAssign( DenseMatrix<MT,SO>& lhs, const DVecTDVecMultExpr& rhs )
    {
       BLAZE_FUNCTION_TRACE;
@@ -1502,7 +1502,7 @@ class DVecTDVecMultExpr : public DenseMatrix< DVecTDVecMultExpr<VT1,VT2>, false 
    */
    template< typename MT  // Type of the target sparse matrix
            , bool SO >    // Storage order of the target sparse matrix
-   friend inline typename EnableIf< UseSMPAssign<MT> >::Type
+   friend inline EnableIf_< UseSMPAssign<MT> >
       smpAssign( SparseMatrix<MT,SO>& lhs, const DVecTDVecMultExpr& rhs )
    {
       BLAZE_FUNCTION_TRACE;
@@ -1540,7 +1540,7 @@ class DVecTDVecMultExpr : public DenseMatrix< DVecTDVecMultExpr<VT1,VT2>, false 
    // in case the expression specific parallel evaluation strategy is selected.
    */
    template< typename MT >  // Type of the target dense matrix
-   friend inline typename EnableIf< UseSMPAssign<MT> >::Type
+   friend inline EnableIf_< UseSMPAssign<MT> >
       smpAddAssign( DenseMatrix<MT,false>& lhs, const DVecTDVecMultExpr& rhs )
    {
       BLAZE_FUNCTION_TRACE;
@@ -1581,7 +1581,7 @@ class DVecTDVecMultExpr : public DenseMatrix< DVecTDVecMultExpr<VT1,VT2>, false 
    // in case the expression specific parallel evaluation strategy is selected.
    */
    template< typename MT >  // Type of the target dense matrix
-   friend inline typename EnableIf< UseSMPAssign<MT> >::Type
+   friend inline EnableIf_< UseSMPAssign<MT> >
       smpSubAssign( DenseMatrix<MT,false>& lhs, const DVecTDVecMultExpr& rhs )
    {
       BLAZE_FUNCTION_TRACE;

@@ -608,7 +608,7 @@ class DMatConjExpr : public DenseMatrix< DMatConjExpr<MT,SO>, SO >
    */
    template< typename MT2  // Type of the target dense matrix
            , bool SO2 >    // Storage order or the target dense matrix
-   friend inline typename EnableIf< UseAssign<MT2> >::Type
+   friend inline EnableIf_< UseAssign<MT2> >
       assign( DenseMatrix<MT2,SO2>& lhs, const DMatConjExpr& rhs )
    {
       BLAZE_FUNCTION_TRACE;
@@ -638,7 +638,7 @@ class DMatConjExpr : public DenseMatrix< DMatConjExpr<MT,SO>, SO >
    */
    template< typename MT2  // Type of the target sparse matrix
            , bool SO2 >    // Storage order or the target sparse matrix
-   friend inline typename EnableIf< UseAssign<MT2> >::Type
+   friend inline EnableIf_< UseAssign<MT2> >
       assign( SparseMatrix<MT2,SO2>& lhs, const DMatConjExpr& rhs )
    {
       BLAZE_FUNCTION_TRACE;
@@ -677,7 +677,7 @@ class DMatConjExpr : public DenseMatrix< DMatConjExpr<MT,SO>, SO >
    */
    template< typename MT2  // Type of the target dense matrix
            , bool SO2 >    // Storage order of the target dense matrix
-   friend inline typename EnableIf< UseAssign<MT2> >::Type
+   friend inline EnableIf_< UseAssign<MT2> >
       addAssign( DenseMatrix<MT2,SO2>& lhs, const DMatConjExpr& rhs )
    {
       BLAZE_FUNCTION_TRACE;
@@ -715,7 +715,7 @@ class DMatConjExpr : public DenseMatrix< DMatConjExpr<MT,SO>, SO >
    */
    template< typename MT2  // Type of the target dense matrix
            , bool SO2 >    // Storage order of the target dense matrix
-   friend inline typename EnableIf< UseAssign<MT2> >::Type
+   friend inline EnableIf_< UseAssign<MT2> >
       subAssign( DenseMatrix<MT2,SO2>& lhs, const DMatConjExpr& rhs )
    {
       BLAZE_FUNCTION_TRACE;
@@ -761,7 +761,7 @@ class DMatConjExpr : public DenseMatrix< DMatConjExpr<MT,SO>, SO >
    */
    template< typename MT2  // Type of the target dense matrix
            , bool SO2 >    // Storage order or the target dense matrix
-   friend inline typename EnableIf< UseSMPAssign<MT2> >::Type
+   friend inline EnableIf_< UseSMPAssign<MT2> >
       smpAssign( DenseMatrix<MT2,SO2>& lhs, const DMatConjExpr& rhs )
    {
       BLAZE_FUNCTION_TRACE;
@@ -791,7 +791,7 @@ class DMatConjExpr : public DenseMatrix< DMatConjExpr<MT,SO>, SO >
    */
    template< typename MT2  // Type of the target sparse matrix
            , bool SO2 >    // Storage order or the target sparse matrix
-   friend inline typename EnableIf< UseSMPAssign<MT2> >::Type
+   friend inline EnableIf_< UseSMPAssign<MT2> >
       smpAssign( SparseMatrix<MT2,SO2>& lhs, const DMatConjExpr& rhs )
    {
       BLAZE_FUNCTION_TRACE;
@@ -830,7 +830,7 @@ class DMatConjExpr : public DenseMatrix< DMatConjExpr<MT,SO>, SO >
    */
    template< typename MT2  // Type of the target dense matrix
            , bool SO2 >    // Storage order of the target dense matrix
-   friend inline typename EnableIf< UseSMPAssign<MT2> >::Type
+   friend inline EnableIf_< UseSMPAssign<MT2> >
       smpAddAssign( DenseMatrix<MT2,SO2>& lhs, const DMatConjExpr& rhs )
    {
       BLAZE_FUNCTION_TRACE;
@@ -868,7 +868,7 @@ class DMatConjExpr : public DenseMatrix< DMatConjExpr<MT,SO>, SO >
    */
    template< typename MT2  // Type of the target dense matrix
            , bool SO2 >    // Storage order of the target dense matrix
-   friend inline typename EnableIf< UseSMPAssign<MT2> >::Type
+   friend inline EnableIf_< UseSMPAssign<MT2> >
       smpSubAssign( DenseMatrix<MT2,SO2>& lhs, const DMatConjExpr& rhs )
    {
       BLAZE_FUNCTION_TRACE;

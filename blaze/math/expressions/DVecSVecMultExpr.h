@@ -472,7 +472,7 @@ class DVecSVecMultExpr : public SparseVector< DVecSVecMultExpr<VT1,VT2,TF>, TF >
    // of the two operands requires an intermediate evaluation.
    */
    template< typename VT >  // Type of the target dense vector
-   friend inline typename EnableIf< UseAssign<VT> >::Type
+   friend inline EnableIf_< UseAssign<VT> >
       assign( DenseVector<VT,TF>& lhs, const DVecSVecMultExpr& rhs )
    {
       BLAZE_FUNCTION_TRACE;
@@ -509,7 +509,7 @@ class DVecSVecMultExpr : public SparseVector< DVecSVecMultExpr<VT1,VT2,TF>, TF >
    // of the two operands requires an intermediate evaluation.
    */
    template< typename VT >  // Type of the target sparse vector
-   friend inline typename EnableIf< UseAssign<VT> >::Type
+   friend inline EnableIf_< UseAssign<VT> >
       assign( SparseVector<VT,TF>& lhs, const DVecSVecMultExpr& rhs )
    {
       BLAZE_FUNCTION_TRACE;
@@ -546,7 +546,7 @@ class DVecSVecMultExpr : public SparseVector< DVecSVecMultExpr<VT1,VT2,TF>, TF >
    // of the two operands requires an intermediate evaluation.
    */
    template< typename VT >  // Type of the target dense vector
-   friend inline typename EnableIf< UseAssign<VT> >::Type
+   friend inline EnableIf_< UseAssign<VT> >
       addAssign( DenseVector<VT,TF>& lhs, const DVecSVecMultExpr& rhs )
    {
       BLAZE_FUNCTION_TRACE;
@@ -587,7 +587,7 @@ class DVecSVecMultExpr : public SparseVector< DVecSVecMultExpr<VT1,VT2,TF>, TF >
    // of the two operands requires an intermediate evaluation.
    */
    template< typename VT >  // Type of the target dense vector
-   friend inline typename EnableIf< UseAssign<VT> >::Type
+   friend inline EnableIf_< UseAssign<VT> >
       subAssign( DenseVector<VT,TF>& lhs, const DVecSVecMultExpr& rhs )
    {
       BLAZE_FUNCTION_TRACE;
@@ -628,7 +628,7 @@ class DVecSVecMultExpr : public SparseVector< DVecSVecMultExpr<VT1,VT2,TF>, TF >
    // in case either of the two operands requires an intermediate evaluation.
    */
    template< typename VT >  // Type of the target dense vector
-   friend inline typename EnableIf< UseAssign<VT> >::Type
+   friend inline EnableIf_< UseAssign<VT> >
       multAssign( DenseVector<VT,TF>& lhs, const DVecSVecMultExpr& rhs )
    {
       BLAZE_FUNCTION_TRACE;

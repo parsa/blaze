@@ -464,7 +464,7 @@ class SMatSMatAddExpr : public SparseMatrix< SMatSMatAddExpr<MT1,MT2>, false >
    // expression to a column-major sparse matrix.
    */
    template< typename MT >  // Type of the target sparse matrix
-   friend inline typename DisableIf< UseSymmetricKernel<MT,MT1,MT2> >::Type
+   friend inline DisableIf_< UseSymmetricKernel<MT,MT1,MT2> >
       assign( SparseMatrix<MT,true>& lhs, const SMatSMatAddExpr& rhs )
    {
       BLAZE_FUNCTION_TRACE;
@@ -586,7 +586,7 @@ class SMatSMatAddExpr : public SparseMatrix< SMatSMatAddExpr<MT1,MT2>, false >
    // matrix addition expression to a column-major sparse matrix.
    */
    template< typename MT >  // Type of the target sparse matrix
-   friend inline typename EnableIf< UseSymmetricKernel<MT,MT1,MT2> >::Type
+   friend inline EnableIf_< UseSymmetricKernel<MT,MT1,MT2> >
       assign( SparseMatrix<MT,true>& lhs, const SMatSMatAddExpr& rhs )
    {
       BLAZE_FUNCTION_TRACE;
@@ -695,7 +695,7 @@ class SMatSMatAddExpr : public SparseMatrix< SMatSMatAddExpr<MT1,MT2>, false >
    */
    template< typename MT  // Type of the target dense matrix
            , bool SO >    // Storage order of the target dense matrix
-   friend inline typename EnableIf< UseSMPAssign<MT> >::Type
+   friend inline EnableIf_< UseSMPAssign<MT> >
       smpAddAssign( DenseMatrix<MT,SO>& lhs, const SMatSMatAddExpr& rhs )
    {
       BLAZE_FUNCTION_TRACE;
@@ -729,7 +729,7 @@ class SMatSMatAddExpr : public SparseMatrix< SMatSMatAddExpr<MT1,MT2>, false >
    */
    template< typename MT  // Type of the target dense matrix
            , bool SO >    // Storage order of the target dense matrix
-   friend inline typename EnableIf< UseSMPAssign<MT> >::Type
+   friend inline EnableIf_< UseSMPAssign<MT> >
       smpSubAssign( DenseMatrix<MT,SO>& lhs, const SMatSMatAddExpr& rhs )
    {
       BLAZE_FUNCTION_TRACE;

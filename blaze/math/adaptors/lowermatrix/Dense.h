@@ -627,39 +627,31 @@ class LowerMatrix<MT,SO,true>
    inline LowerMatrix& operator=( LowerMatrix&& rhs ) noexcept;
 
    template< typename MT2, bool SO2 >
-   inline typename DisableIf< IsComputation<MT2>, LowerMatrix& >::Type
-      operator=( const Matrix<MT2,SO2>& rhs );
+   inline DisableIf_< IsComputation<MT2>, LowerMatrix& > operator=( const Matrix<MT2,SO2>& rhs );
 
    template< typename MT2, bool SO2 >
-   inline typename EnableIf< IsComputation<MT2>, LowerMatrix& >::Type
-      operator=( const Matrix<MT2,SO2>& rhs );
+   inline EnableIf_< IsComputation<MT2>, LowerMatrix& > operator=( const Matrix<MT2,SO2>& rhs );
 
    template< typename MT2, bool SO2 >
-   inline typename DisableIf< IsComputation<MT2>, LowerMatrix& >::Type
-      operator+=( const Matrix<MT2,SO2>& rhs );
+   inline DisableIf_< IsComputation<MT2>, LowerMatrix& > operator+=( const Matrix<MT2,SO2>& rhs );
 
    template< typename MT2, bool SO2 >
-   inline typename EnableIf< IsComputation<MT2>, LowerMatrix& >::Type
-      operator+=( const Matrix<MT2,SO2>& rhs );
+   inline EnableIf_< IsComputation<MT2>, LowerMatrix& > operator+=( const Matrix<MT2,SO2>& rhs );
 
    template< typename MT2, bool SO2 >
-   inline typename DisableIf< IsComputation<MT2>, LowerMatrix& >::Type
-      operator-=( const Matrix<MT2,SO2>& rhs );
+   inline DisableIf_< IsComputation<MT2>, LowerMatrix& > operator-=( const Matrix<MT2,SO2>& rhs );
 
    template< typename MT2, bool SO2 >
-   inline typename EnableIf< IsComputation<MT2>, LowerMatrix& >::Type
-      operator-=( const Matrix<MT2,SO2>& rhs );
+   inline EnableIf_< IsComputation<MT2>, LowerMatrix& > operator-=( const Matrix<MT2,SO2>& rhs );
 
    template< typename MT2, bool SO2 >
    inline LowerMatrix& operator*=( const Matrix<MT2,SO2>& rhs );
 
    template< typename Other >
-   inline typename EnableIf< IsNumeric<Other>, LowerMatrix >::Type&
-      operator*=( Other rhs );
+   inline EnableIf_< IsNumeric<Other>, LowerMatrix >& operator*=( Other rhs );
 
    template< typename Other >
-   inline typename EnableIf< IsNumeric<Other>, LowerMatrix >::Type&
-      operator/=( Other rhs );
+   inline EnableIf_< IsNumeric<Other>, LowerMatrix >& operator/=( Other rhs );
    //@}
    //**********************************************************************************************
 
@@ -1455,7 +1447,7 @@ template< typename MT   // Type of the adapted dense matrix
         , bool SO >     // Storage order of the adapted dense matrix
 template< typename MT2  // Type of the right-hand side matrix
         , bool SO2 >    // Storage order of the right-hand side matrix
-inline typename DisableIf< IsComputation<MT2>, LowerMatrix<MT,SO,true>& >::Type
+inline DisableIf_< IsComputation<MT2>, LowerMatrix<MT,SO,true>& >
    LowerMatrix<MT,SO,true>::operator=( const Matrix<MT2,SO2>& rhs )
 {
    if( !IsLower<MT2>::value && !isLower( ~rhs ) ) {
@@ -1490,7 +1482,7 @@ template< typename MT   // Type of the adapted dense matrix
         , bool SO >     // Storage order of the adapted dense matrix
 template< typename MT2  // Type of the right-hand side matrix
         , bool SO2 >    // Storage order of the right-hand side matrix
-inline typename EnableIf< IsComputation<MT2>, LowerMatrix<MT,SO,true>& >::Type
+inline EnableIf_< IsComputation<MT2>, LowerMatrix<MT,SO,true>& >
    LowerMatrix<MT,SO,true>::operator=( const Matrix<MT2,SO2>& rhs )
 {
    if( !IsSquare<MT2>::value && !isSquare( ~rhs ) ) {
@@ -1536,7 +1528,7 @@ template< typename MT   // Type of the adapted dense matrix
         , bool SO >     // Storage order of the adapted dense matrix
 template< typename MT2  // Type of the right-hand side matrix
         , bool SO2 >    // Storage order of the right-hand side matrix
-inline typename DisableIf< IsComputation<MT2>, LowerMatrix<MT,SO,true>& >::Type
+inline DisableIf_< IsComputation<MT2>, LowerMatrix<MT,SO,true>& >
    LowerMatrix<MT,SO,true>::operator+=( const Matrix<MT2,SO2>& rhs )
 {
    if( !IsLower<MT2>::value && !isLower( ~rhs ) ) {
@@ -1571,7 +1563,7 @@ template< typename MT   // Type of the adapted dense matrix
         , bool SO >     // Storage order of the adapted dense matrix
 template< typename MT2  // Type of the right-hand side matrix
         , bool SO2 >    // Storage order of the right-hand side matrix
-inline typename EnableIf< IsComputation<MT2>, LowerMatrix<MT,SO,true>& >::Type
+inline EnableIf_< IsComputation<MT2>, LowerMatrix<MT,SO,true>& >
    LowerMatrix<MT,SO,true>::operator+=( const Matrix<MT2,SO2>& rhs )
 {
    if( !IsSquare<MT2>::value && !isSquare( ~rhs ) ) {
@@ -1617,7 +1609,7 @@ template< typename MT   // Type of the adapted dense matrix
         , bool SO >     // Storage order of the adapted dense matrix
 template< typename MT2  // Type of the right-hand side matrix
         , bool SO2 >    // Storage order of the right-hand side matrix
-inline typename DisableIf< IsComputation<MT2>, LowerMatrix<MT,SO,true>& >::Type
+inline DisableIf_< IsComputation<MT2>, LowerMatrix<MT,SO,true>& >
    LowerMatrix<MT,SO,true>::operator-=( const Matrix<MT2,SO2>& rhs )
 {
    if( !IsLower<MT2>::value && !isLower( ~rhs ) ) {
@@ -1652,7 +1644,7 @@ template< typename MT   // Type of the adapted dense matrix
         , bool SO >     // Storage order of the adapted dense matrix
 template< typename MT2  // Type of the right-hand side matrix
         , bool SO2 >    // Storage order of the right-hand side matrix
-inline typename EnableIf< IsComputation<MT2>, LowerMatrix<MT,SO,true>& >::Type
+inline EnableIf_< IsComputation<MT2>, LowerMatrix<MT,SO,true>& >
    LowerMatrix<MT,SO,true>::operator-=( const Matrix<MT2,SO2>& rhs )
 {
    if( !IsSquare<MT2>::value && !isSquare( ~rhs ) ) {
@@ -1732,7 +1724,7 @@ inline LowerMatrix<MT,SO,true>&
 template< typename MT       // Type of the adapted dense matrix
         , bool SO >         // Storage order of the adapted dense matrix
 template< typename Other >  // Data type of the right-hand side scalar
-inline typename EnableIf< IsNumeric<Other>, LowerMatrix<MT,SO,true> >::Type&
+inline EnableIf_< IsNumeric<Other>, LowerMatrix<MT,SO,true> >&
    LowerMatrix<MT,SO,true>::operator*=( Other rhs )
 {
    matrix_ *= rhs;
@@ -1752,7 +1744,7 @@ inline typename EnableIf< IsNumeric<Other>, LowerMatrix<MT,SO,true> >::Type&
 template< typename MT       // Type of the adapted dense matrix
         , bool SO >         // Storage order of the adapted dense matrix
 template< typename Other >  // Data type of the right-hand side scalar
-inline typename EnableIf< IsNumeric<Other>, LowerMatrix<MT,SO,true> >::Type&
+inline EnableIf_< IsNumeric<Other>, LowerMatrix<MT,SO,true> >&
    LowerMatrix<MT,SO,true>::operator/=( Other rhs )
 {
    BLAZE_USER_ASSERT( rhs != Other(0), "Division by zero detected" );

@@ -636,51 +636,43 @@ class HermitianMatrix<MT,SO,true>
    inline HermitianMatrix& operator=( HermitianMatrix&& rhs ) noexcept;
 
    template< typename MT2, bool SO2 >
-   inline typename DisableIf< IsComputation<MT2>, HermitianMatrix& >::Type
-      operator=( const Matrix<MT2,SO2>& rhs );
+   inline DisableIf_< IsComputation<MT2>, HermitianMatrix& > operator=( const Matrix<MT2,SO2>& rhs );
 
    template< typename MT2, bool SO2 >
-   inline typename EnableIf< IsComputation<MT2>, HermitianMatrix& >::Type
-      operator=( const Matrix<MT2,SO2>& rhs );
+   inline EnableIf_< IsComputation<MT2>, HermitianMatrix& > operator=( const Matrix<MT2,SO2>& rhs );
 
    template< typename MT2 >
-   inline typename EnableIf< IsBuiltin<typename MT2::ElementType>, HermitianMatrix& >::Type
+   inline EnableIf_< IsBuiltin<typename MT2::ElementType>, HermitianMatrix& >
       operator=( const Matrix<MT2,!SO>& rhs );
 
    template< typename MT2, bool SO2 >
-   inline typename DisableIf< IsComputation<MT2>, HermitianMatrix& >::Type
-      operator+=( const Matrix<MT2,SO2>& rhs );
+   inline DisableIf_< IsComputation<MT2>, HermitianMatrix& > operator+=( const Matrix<MT2,SO2>& rhs );
 
    template< typename MT2, bool SO2 >
-   inline typename EnableIf< IsComputation<MT2>, HermitianMatrix& >::Type
-      operator+=( const Matrix<MT2,SO2>& rhs );
+   inline EnableIf_< IsComputation<MT2>, HermitianMatrix& > operator+=( const Matrix<MT2,SO2>& rhs );
 
    template< typename MT2 >
-   inline typename EnableIf< IsBuiltin<typename MT2::ElementType>, HermitianMatrix& >::Type
+   inline EnableIf_< IsBuiltin<typename MT2::ElementType>, HermitianMatrix& >
       operator+=( const Matrix<MT2,!SO>& rhs );
 
    template< typename MT2, bool SO2 >
-   inline typename DisableIf< IsComputation<MT2>, HermitianMatrix& >::Type
-      operator-=( const Matrix<MT2,SO2>& rhs );
+   inline DisableIf_< IsComputation<MT2>, HermitianMatrix& > operator-=( const Matrix<MT2,SO2>& rhs );
 
    template< typename MT2, bool SO2 >
-   inline typename EnableIf< IsComputation<MT2>, HermitianMatrix& >::Type
-      operator-=( const Matrix<MT2,SO2>& rhs );
+   inline EnableIf_< IsComputation<MT2>, HermitianMatrix& > operator-=( const Matrix<MT2,SO2>& rhs );
 
    template< typename MT2 >
-   inline typename EnableIf< IsBuiltin<typename MT2::ElementType>, HermitianMatrix& >::Type
+   inline EnableIf_< IsBuiltin<typename MT2::ElementType>, HermitianMatrix& >
       operator-=( const Matrix<MT2,!SO>& rhs );
 
    template< typename MT2, bool SO2 >
    inline HermitianMatrix& operator*=( const Matrix<MT2,SO2>& rhs );
 
    template< typename Other >
-   inline typename EnableIf< IsNumeric<Other>, HermitianMatrix >::Type&
-      operator*=( Other rhs );
+   inline EnableIf_< IsNumeric<Other>, HermitianMatrix >& operator*=( Other rhs );
 
    template< typename Other >
-   inline typename EnableIf< IsNumeric<Other>, HermitianMatrix >::Type&
-      operator/=( Other rhs );
+   inline EnableIf_< IsNumeric<Other>, HermitianMatrix >& operator/=( Other rhs );
    //@}
    //**********************************************************************************************
 
@@ -1463,7 +1455,7 @@ template< typename MT   // Type of the adapted dense matrix
         , bool SO >     // Storage order of the adapted dense matrix
 template< typename MT2  // Type of the right-hand side matrix
         , bool SO2 >    // Storage order of the right-hand side matrix
-inline typename DisableIf< IsComputation<MT2>, HermitianMatrix<MT,SO,true>& >::Type
+inline DisableIf_< IsComputation<MT2>, HermitianMatrix<MT,SO,true>& >
    HermitianMatrix<MT,SO,true>::operator=( const Matrix<MT2,SO2>& rhs )
 {
    if( !IsHermitian<MT2>::value && !isHermitian( ~rhs ) ) {
@@ -1498,7 +1490,7 @@ template< typename MT   // Type of the adapted dense matrix
         , bool SO >     // Storage order of the adapted dense matrix
 template< typename MT2  // Type of the right-hand side matrix
         , bool SO2 >    // Storage order of the right-hand side matrix
-inline typename EnableIf< IsComputation<MT2>, HermitianMatrix<MT,SO,true>& >::Type
+inline EnableIf_< IsComputation<MT2>, HermitianMatrix<MT,SO,true>& >
    HermitianMatrix<MT,SO,true>::operator=( const Matrix<MT2,SO2>& rhs )
 {
    if( !IsSquare<MT2>::value && !isSquare( ~rhs ) ) {
@@ -1543,7 +1535,7 @@ inline typename EnableIf< IsComputation<MT2>, HermitianMatrix<MT,SO,true>& >::Ty
 template< typename MT     // Type of the adapted dense matrix
         , bool SO >       // Storage order of the adapted dense matrix
 template< typename MT2 >  // Type of the right-hand side matrix
-inline typename EnableIf< IsBuiltin<typename MT2::ElementType>, HermitianMatrix<MT,SO,true>& >::Type
+inline EnableIf_< IsBuiltin<typename MT2::ElementType>, HermitianMatrix<MT,SO,true>& >
    HermitianMatrix<MT,SO,true>::operator=( const Matrix<MT2,!SO>& rhs )
 {
    return this->operator=( trans( ~rhs ) );
@@ -1569,7 +1561,7 @@ template< typename MT   // Type of the adapted dense matrix
         , bool SO >     // Storage order of the adapted dense matrix
 template< typename MT2  // Type of the right-hand side matrix
         , bool SO2 >    // Storage order of the right-hand side matrix
-inline typename DisableIf< IsComputation<MT2>, HermitianMatrix<MT,SO,true>& >::Type
+inline DisableIf_< IsComputation<MT2>, HermitianMatrix<MT,SO,true>& >
    HermitianMatrix<MT,SO,true>::operator+=( const Matrix<MT2,SO2>& rhs )
 {
    if( !IsHermitian<MT2>::value && !isHermitian( ~rhs ) ) {
@@ -1604,7 +1596,7 @@ template< typename MT   // Type of the adapted dense matrix
         , bool SO >     // Storage order of the adapted dense matrix
 template< typename MT2  // Type of the right-hand side matrix
         , bool SO2 >    // Storage order of the right-hand side matrix
-inline typename EnableIf< IsComputation<MT2>, HermitianMatrix<MT,SO,true>& >::Type
+inline EnableIf_< IsComputation<MT2>, HermitianMatrix<MT,SO,true>& >
    HermitianMatrix<MT,SO,true>::operator+=( const Matrix<MT2,SO2>& rhs )
 {
    if( !IsSquare<MT2>::value && !isSquare( ~rhs ) ) {
@@ -1650,7 +1642,7 @@ inline typename EnableIf< IsComputation<MT2>, HermitianMatrix<MT,SO,true>& >::Ty
 template< typename MT     // Type of the adapted dense matrix
         , bool SO >       // Storage order of the adapted dense matrix
 template< typename MT2 >  // Type of the right-hand side matrix
-inline typename EnableIf< IsBuiltin<typename MT2::ElementType>, HermitianMatrix<MT,SO,true>& >::Type
+inline EnableIf_< IsBuiltin<typename MT2::ElementType>, HermitianMatrix<MT,SO,true>& >
    HermitianMatrix<MT,SO,true>::operator+=( const Matrix<MT2,!SO>& rhs )
 {
    return this->operator+=( trans( ~rhs ) );
@@ -1676,7 +1668,7 @@ template< typename MT   // Type of the adapted dense matrix
         , bool SO >     // Storage order of the adapted dense matrix
 template< typename MT2  // Type of the right-hand side matrix
         , bool SO2 >    // Storage order of the right-hand side matrix
-inline typename DisableIf< IsComputation<MT2>, HermitianMatrix<MT,SO,true>& >::Type
+inline DisableIf_< IsComputation<MT2>, HermitianMatrix<MT,SO,true>& >
    HermitianMatrix<MT,SO,true>::operator-=( const Matrix<MT2,SO2>& rhs )
 {
    if( !IsHermitian<MT2>::value && !isHermitian( ~rhs ) ) {
@@ -1711,7 +1703,7 @@ template< typename MT   // Type of the adapted dense matrix
         , bool SO >     // Storage order of the adapted dense matrix
 template< typename MT2  // Type of the right-hand side matrix
         , bool SO2 >    // Storage order of the right-hand side matrix
-inline typename EnableIf< IsComputation<MT2>, HermitianMatrix<MT,SO,true>& >::Type
+inline EnableIf_< IsComputation<MT2>, HermitianMatrix<MT,SO,true>& >
    HermitianMatrix<MT,SO,true>::operator-=( const Matrix<MT2,SO2>& rhs )
 {
    if( !IsSquare<MT2>::value && !isSquare( ~rhs ) ) {
@@ -1757,7 +1749,7 @@ inline typename EnableIf< IsComputation<MT2>, HermitianMatrix<MT,SO,true>& >::Ty
 template< typename MT     // Type of the adapted dense matrix
         , bool SO >       // Storage order of the adapted dense matrix
 template< typename MT2 >  // Type of the right-hand side matrix
-inline typename EnableIf< IsBuiltin<typename MT2::ElementType>, HermitianMatrix<MT,SO,true>& >::Type
+inline EnableIf_< IsBuiltin<typename MT2::ElementType>, HermitianMatrix<MT,SO,true>& >
    HermitianMatrix<MT,SO,true>::operator-=( const Matrix<MT2,!SO>& rhs )
 {
    return this->operator-=( trans( ~rhs ) );
@@ -1817,7 +1809,7 @@ inline HermitianMatrix<MT,SO,true>&
 template< typename MT       // Type of the adapted dense matrix
         , bool SO >         // Storage order of the adapted dense matrix
 template< typename Other >  // Data type of the right-hand side scalar
-inline typename EnableIf< IsNumeric<Other>, HermitianMatrix<MT,SO,true> >::Type&
+inline EnableIf_< IsNumeric<Other>, HermitianMatrix<MT,SO,true> >&
    HermitianMatrix<MT,SO,true>::operator*=( Other rhs )
 {
    matrix_ *= rhs;
@@ -1837,7 +1829,7 @@ inline typename EnableIf< IsNumeric<Other>, HermitianMatrix<MT,SO,true> >::Type&
 template< typename MT       // Type of the adapted dense matrix
         , bool SO >         // Storage order of the adapted dense matrix
 template< typename Other >  // Data type of the right-hand side scalar
-inline typename EnableIf< IsNumeric<Other>, HermitianMatrix<MT,SO,true> >::Type&
+inline EnableIf_< IsNumeric<Other>, HermitianMatrix<MT,SO,true> >&
    HermitianMatrix<MT,SO,true>::operator/=( Other rhs )
 {
    BLAZE_USER_ASSERT( rhs != Other(0), "Division by zero detected" );

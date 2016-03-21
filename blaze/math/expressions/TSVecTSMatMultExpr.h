@@ -799,7 +799,7 @@ class TSVecTSMatMultExpr : public SparseVector< TSVecTSMatMultExpr<VT,MT>, true 
    // compiler in case the expression specific parallel evaluation strategy is selected.
    */
    template< typename VT1 >  // Type of the target dense vector
-   friend inline typename EnableIf< UseSMPAssign<VT1> >::Type
+   friend inline EnableIf_< UseSMPAssign<VT1> >
       smpAssign( DenseVector<VT1,true>& lhs, const TSVecTSMatMultExpr& rhs )
    {
       BLAZE_FUNCTION_TRACE;
@@ -848,7 +848,7 @@ class TSVecTSMatMultExpr : public SparseVector< TSVecTSMatMultExpr<VT,MT>, true 
    // the compiler in case the expression specific parallel evaluation strategy is selected.
    */
    template< typename VT1 >  // Type of the target dense vector
-   friend inline typename EnableIf< UseSMPAssign<VT1> >::Type
+   friend inline EnableIf_< UseSMPAssign<VT1> >
       smpAddAssign( DenseVector<VT1,true>& lhs, const TSVecTSMatMultExpr& rhs )
    {
       BLAZE_FUNCTION_TRACE;
@@ -894,7 +894,7 @@ class TSVecTSMatMultExpr : public SparseVector< TSVecTSMatMultExpr<VT,MT>, true 
    // compiler in case the expression specific parallel evaluation strategy is selected.
    */
    template< typename VT1 >  // Type of the target dense vector
-   friend inline typename EnableIf< UseSMPAssign<VT1> >::Type
+   friend inline EnableIf_< UseSMPAssign<VT1> >
       smpSubAssign( DenseVector<VT1,true>& lhs, const TSVecTSMatMultExpr& rhs )
    {
       BLAZE_FUNCTION_TRACE;
@@ -940,7 +940,7 @@ class TSVecTSMatMultExpr : public SparseVector< TSVecTSMatMultExpr<VT,MT>, true 
    // by the compiler in case the expression specific parallel evaluation strategy is selected.
    */
    template< typename VT1 >  // Type of the target dense vector
-   friend inline typename EnableIf< UseSMPAssign<VT1> >::Type
+   friend inline EnableIf_< UseSMPAssign<VT1> >
       smpMultAssign( DenseVector<VT1,true>& lhs, const TSVecTSMatMultExpr& rhs )
    {
       BLAZE_FUNCTION_TRACE;
@@ -1016,8 +1016,7 @@ class TSVecTSMatMultExpr : public SparseVector< TSVecTSMatMultExpr<VT,MT>, true 
 */
 template< typename T1    // Type of the left-hand side sparse vector
         , typename T2 >  // Type of the right-hand side sparse matrix
-inline const typename DisableIf< Or< IsSymmetric<T2>, IsMatMatMultExpr<T2> >
-                               , TSVecTSMatMultExpr<T1,T2> >::Type
+inline const DisableIf_< Or< IsSymmetric<T2>, IsMatMatMultExpr<T2> >, TSVecTSMatMultExpr<T1,T2> >
    operator*( const SparseVector<T1,true>& vec, const SparseMatrix<T2,true>& mat )
 {
    BLAZE_FUNCTION_TRACE;
@@ -1056,7 +1055,7 @@ inline const typename DisableIf< Or< IsSymmetric<T2>, IsMatMatMultExpr<T2> >
 */
 template< typename T1    // Type of the left-hand side sparse vector
         , typename T2 >  // Type of the right-hand side sparse matrix
-inline const typename EnableIf< IsSymmetric<T2>, typename MultExprTrait<T1,T2>::Type >::Type
+inline const EnableIf_< IsSymmetric<T2>, typename MultExprTrait<T1,T2>::Type >
    operator*( const SparseVector<T1,true>& vec, const SparseMatrix<T2,true>& mat )
 {
    BLAZE_FUNCTION_TRACE;

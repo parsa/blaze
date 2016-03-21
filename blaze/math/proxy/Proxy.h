@@ -152,11 +152,11 @@ inline typename AddExprTrait<RT1,RT2>::Type
    operator+( const Proxy<PT1,RT1>& lhs, const Proxy<PT2,RT2>& rhs );
 
 template< typename PT, typename RT, typename T >
-inline typename DisableIf< IsProxy<T>, typename AddExprTrait<RT,T>::Type >::Type
+inline DisableIf_< IsProxy<T>, typename AddExprTrait<RT,T>::Type >
    operator+( const Proxy<PT,RT>& lhs, const T& rhs );
 
 template< typename T, typename PT, typename RT >
-inline typename DisableIf< IsProxy<T>, typename AddExprTrait<T,RT>::Type >::Type
+inline DisableIf_< IsProxy<T>, typename AddExprTrait<T,RT>::Type >
    operator+( const T& lhs, const Proxy<PT,RT>& rhs );
 
 template< typename PT1, typename RT1, typename PT2, typename RT2 >
@@ -164,11 +164,11 @@ inline typename SubExprTrait<RT1,RT2>::Type
    operator-( const Proxy<PT1,RT1>& lhs, const Proxy<PT2,RT2>& rhs );
 
 template< typename PT, typename RT, typename T >
-inline typename DisableIf< IsProxy<T>, typename SubExprTrait<RT,T>::Type >::Type
+inline DisableIf_< IsProxy<T>, typename SubExprTrait<RT,T>::Type >
    operator-( const Proxy<PT,RT>& lhs, const T& rhs );
 
 template< typename T, typename PT, typename RT >
-inline typename DisableIf< IsProxy<T>, typename SubExprTrait<T,RT>::Type >::Type
+inline DisableIf_< IsProxy<T>, typename SubExprTrait<T,RT>::Type >
    operator-( const T& lhs, const Proxy<PT,RT>& rhs );
 
 template< typename PT1, typename RT1, typename PT2, typename RT2 >
@@ -176,11 +176,11 @@ inline typename MultExprTrait<RT1,RT2>::Type
    operator*( const Proxy<PT1,RT1>& lhs, const Proxy<PT2,RT2>& rhs );
 
 template< typename PT, typename RT, typename T >
-inline typename DisableIf< IsProxy<T>, typename MultExprTrait<RT,T>::Type >::Type
+inline DisableIf_< IsProxy<T>, typename MultExprTrait<RT,T>::Type >
    operator*( const Proxy<PT,RT>& lhs, const T& rhs );
 
 template< typename T, typename PT, typename RT >
-inline typename DisableIf< IsProxy<T>, typename MultExprTrait<T,RT>::Type >::Type
+inline DisableIf_< IsProxy<T>, typename MultExprTrait<T,RT>::Type >
    operator*( const T& lhs, const Proxy<PT,RT>& rhs );
 
 template< typename PT1, typename RT1, typename PT2, typename RT2 >
@@ -188,77 +188,77 @@ inline typename DivExprTrait<RT1,RT2>::Type
    operator/( const Proxy<PT1,RT1>& lhs, const Proxy<PT2,RT2>& rhs );
 
 template< typename PT, typename RT, typename T >
-inline typename DisableIf< IsProxy<T>, typename DivExprTrait<RT,T>::Type >::Type
+inline DisableIf_< IsProxy<T>, typename DivExprTrait<RT,T>::Type >
    operator/( const Proxy<PT,RT>& lhs, const T& rhs );
 
 template< typename T, typename PT, typename RT >
-inline typename DisableIf< IsProxy<T>, typename DivExprTrait<T,RT>::Type >::Type
+inline DisableIf_< IsProxy<T>, typename DivExprTrait<T,RT>::Type >
    operator/( const T& lhs, const Proxy<PT,RT>& rhs );
 
 template< typename PT1, typename RT1, typename PT2, typename RT2 >
 inline bool operator==( const Proxy<PT1,RT1>& lhs, const Proxy<PT2,RT2>& rhs );
 
 template< typename PT, typename RT, typename T >
-inline typename DisableIf< IsProxy<T>, bool >::Type
+inline DisableIf_< IsProxy<T>, bool >
    operator==( const Proxy<PT,RT>& lhs, const T& rhs );
 
 template< typename T, typename PT, typename RT >
-inline typename DisableIf< IsProxy<T>, bool >::Type
+inline DisableIf_< IsProxy<T>, bool >
    operator==( const T& lhs, const Proxy<PT,RT>& rhs );
 
 template< typename PT1, typename RT1, typename PT2, typename RT2 >
 inline bool operator!=( const Proxy<PT1,RT1>& lhs, const Proxy<PT2,RT2>& rhs );
 
 template< typename PT, typename RT, typename T >
-inline typename DisableIf< IsProxy<T>, bool >::Type
+inline DisableIf_< IsProxy<T>, bool >
    operator!=( const Proxy<PT,RT>& lhs, const T& rhs );
 
 template< typename T, typename PT, typename RT >
-inline typename DisableIf< IsProxy<T>, bool >::Type
+inline DisableIf_< IsProxy<T>, bool >
    operator!=( const T& lhs, const Proxy<PT,RT>& rhs );
 
 template< typename PT1, typename RT1, typename PT2, typename RT2 >
 inline bool operator<( const Proxy<PT1,RT1>& lhs, const Proxy<PT2,RT2>& rhs );
 
 template< typename PT, typename RT, typename T >
-inline typename DisableIf< IsProxy<T>, bool >::Type
+inline DisableIf_< IsProxy<T>, bool >
    operator<( const Proxy<PT,RT>& lhs, const T& rhs );
 
 template< typename T, typename PT, typename RT >
-inline typename DisableIf< IsProxy<T>, bool >::Type
+inline DisableIf_< IsProxy<T>, bool >
    operator<( const T& lhs, const Proxy<PT,RT>& rhs );
 
 template< typename PT1, typename RT1, typename PT2, typename RT2 >
 inline bool operator>( const Proxy<PT1,RT1>& lhs, const Proxy<PT2,RT2>& rhs );
 
 template< typename PT, typename RT, typename T >
-inline typename DisableIf< IsProxy<T>, bool >::Type
+inline DisableIf_< IsProxy<T>, bool >
    operator>( const Proxy<PT,RT>& lhs, const T& rhs );
 
 template< typename T, typename PT, typename RT >
-inline typename DisableIf< IsProxy<T>, bool >::Type
+inline DisableIf_< IsProxy<T>, bool >
    operator>( const T& lhs, const Proxy<PT,RT>& rhs );
 
 template< typename PT1, typename RT1, typename PT2, typename RT2 >
 inline bool operator<=( const Proxy<PT1,RT1>& lhs, const Proxy<PT2,RT2>& rhs );
 
 template< typename PT, typename RT, typename T >
-inline typename DisableIf< IsProxy<T>, bool >::Type
+inline DisableIf_< IsProxy<T>, bool >
    operator<=( const Proxy<PT,RT>& lhs, const T& rhs );
 
 template< typename T, typename PT, typename RT >
-inline typename DisableIf< IsProxy<T>, bool >::Type
+inline DisableIf_< IsProxy<T>, bool >
    operator<=( const T& lhs, const Proxy<PT,RT>& rhs );
 
 template< typename PT1, typename RT1, typename PT2, typename RT2 >
 inline bool operator>=( const Proxy<PT1,RT1>& lhs, const Proxy<PT2,RT2>& rhs );
 
 template< typename PT, typename RT, typename T >
-inline typename DisableIf< IsProxy<T>, bool >::Type
+inline DisableIf_< IsProxy<T>, bool >
    operator>=( const Proxy<PT,RT>& lhs, const T& rhs );
 
 template< typename T, typename PT, typename RT >
-inline typename DisableIf< IsProxy<T>, bool >::Type
+inline DisableIf_< IsProxy<T>, bool >
    operator>=( const T& lhs, const Proxy<PT,RT>& rhs );
 
 template< typename PT, typename RT >
@@ -293,7 +293,7 @@ inline typename AddExprTrait<RT1,RT2>::Type
 // \return The result of the addition.
 */
 template< typename PT, typename RT, typename T >
-inline typename DisableIf< IsProxy<T>, typename AddExprTrait<RT,T>::Type >::Type
+inline DisableIf_< IsProxy<T>, typename AddExprTrait<RT,T>::Type >
    operator+( const Proxy<PT,RT>& lhs, const T& rhs )
 {
    return (~lhs).get() + rhs;
@@ -310,7 +310,7 @@ inline typename DisableIf< IsProxy<T>, typename AddExprTrait<RT,T>::Type >::Type
 // \return The result of the addition.
 */
 template< typename T, typename PT, typename RT >
-inline typename DisableIf< IsProxy<T>, typename AddExprTrait<T,RT>::Type >::Type
+inline DisableIf_< IsProxy<T>, typename AddExprTrait<T,RT>::Type >
    operator+( const T& lhs, const Proxy<PT,RT>& rhs )
 {
    return lhs + (~rhs).get();
@@ -344,7 +344,7 @@ inline typename SubExprTrait<RT1,RT2>::Type
 // \return The result of the subtraction.
 */
 template< typename PT, typename RT, typename T >
-inline typename DisableIf< IsProxy<T>, typename SubExprTrait<RT,T>::Type >::Type
+inline DisableIf_< IsProxy<T>, typename SubExprTrait<RT,T>::Type >
    operator-( const Proxy<PT,RT>& lhs, const T& rhs )
 {
    return (~lhs).get() - rhs;
@@ -361,7 +361,7 @@ inline typename DisableIf< IsProxy<T>, typename SubExprTrait<RT,T>::Type >::Type
 // \return The result of the subtraction.
 */
 template< typename T, typename PT, typename RT >
-inline typename DisableIf< IsProxy<T>, typename SubExprTrait<T,RT>::Type >::Type
+inline DisableIf_< IsProxy<T>, typename SubExprTrait<T,RT>::Type >
    operator-( const T& lhs, const Proxy<PT,RT>& rhs )
 {
    return lhs - (~rhs).get();
@@ -395,7 +395,7 @@ inline typename MultExprTrait<RT1,RT2>::Type
 // \return The result of the multiplication.
 */
 template< typename PT, typename RT, typename T >
-inline typename DisableIf< IsProxy<T>, typename MultExprTrait<RT,T>::Type >::Type
+inline DisableIf_< IsProxy<T>, typename MultExprTrait<RT,T>::Type >
    operator*( const Proxy<PT,RT>& lhs, const T& rhs )
 {
    return (~lhs).get() * rhs;
@@ -412,7 +412,7 @@ inline typename DisableIf< IsProxy<T>, typename MultExprTrait<RT,T>::Type >::Typ
 // \return The result of the multiplication.
 */
 template< typename T, typename PT, typename RT >
-inline typename DisableIf< IsProxy<T>, typename MultExprTrait<T,RT>::Type >::Type
+inline DisableIf_< IsProxy<T>, typename MultExprTrait<T,RT>::Type >
    operator*( const T& lhs, const Proxy<PT,RT>& rhs )
 {
    return lhs * (~rhs).get();
@@ -446,7 +446,7 @@ inline typename DivExprTrait<RT1,RT2>::Type
 // \return The result of the division.
 */
 template< typename PT, typename RT, typename T >
-inline typename DisableIf< IsProxy<T>, typename DivExprTrait<RT,T>::Type >::Type
+inline DisableIf_< IsProxy<T>, typename DivExprTrait<RT,T>::Type >
    operator/( const Proxy<PT,RT>& lhs, const T& rhs )
 {
    return (~lhs).get() / rhs;
@@ -463,7 +463,7 @@ inline typename DisableIf< IsProxy<T>, typename DivExprTrait<RT,T>::Type >::Type
 // \return The result of the division.
 */
 template< typename T, typename PT, typename RT >
-inline typename DisableIf< IsProxy<T>, typename DivExprTrait<T,RT>::Type >::Type
+inline DisableIf_< IsProxy<T>, typename DivExprTrait<T,RT>::Type >
    operator/( const T& lhs, const Proxy<PT,RT>& rhs )
 {
    return lhs / (~rhs).get();
@@ -496,7 +496,7 @@ inline bool operator==( const Proxy<PT1,RT1>& lhs, const Proxy<PT2,RT2>& rhs )
 // \return \a true if the referenced value and the other object are equal, \a false if they are not.
 */
 template< typename PT, typename RT, typename T >
-inline typename DisableIf< IsProxy<T>, bool >::Type
+inline DisableIf_< IsProxy<T>, bool >
    operator==( const Proxy<PT,RT>& lhs, const T& rhs )
 {
    return ( (~lhs).get() == rhs );
@@ -513,7 +513,7 @@ inline typename DisableIf< IsProxy<T>, bool >::Type
 // \return \a true if the other object and the referenced value are equal, \a false if they are not.
 */
 template< typename T, typename PT, typename RT >
-inline typename DisableIf< IsProxy<T>, bool >::Type
+inline DisableIf_< IsProxy<T>, bool >
    operator==( const T& lhs, const Proxy<PT,RT>& rhs )
 {
    return ( lhs == (~rhs).get() );
@@ -546,7 +546,7 @@ inline bool operator!=( const Proxy<PT1,RT1>& lhs, const Proxy<PT2,RT2>& rhs )
 // \return \a true if the referenced value and the other object are not equal, \a false if they are.
 */
 template< typename PT, typename RT, typename T >
-inline typename DisableIf< IsProxy<T>, bool >::Type
+inline DisableIf_< IsProxy<T>, bool >
    operator!=( const Proxy<PT,RT>& lhs, const T& rhs )
 {
    return ( (~lhs).get() != rhs );
@@ -563,7 +563,7 @@ inline typename DisableIf< IsProxy<T>, bool >::Type
 // \return \a true if the other object and the referenced value are not equal, \a false if they are.
 */
 template< typename T, typename PT, typename RT >
-inline typename DisableIf< IsProxy<T>, bool >::Type
+inline DisableIf_< IsProxy<T>, bool >
    operator!=( const T& lhs, const Proxy<PT,RT>& rhs )
 {
    return ( lhs != (~rhs).get() );
@@ -596,7 +596,7 @@ inline bool operator<( const Proxy<PT1,RT1>& lhs, const Proxy<PT2,RT2>& rhs )
 // \return \a true if the left-hand side referenced value is smaller, \a false if not.
 */
 template< typename PT, typename RT, typename T >
-inline typename DisableIf< IsProxy<T>, bool >::Type
+inline DisableIf_< IsProxy<T>, bool >
    operator<( const Proxy<PT,RT>& lhs, const T& rhs )
 {
    return ( (~lhs).get() < rhs );
@@ -613,7 +613,7 @@ inline typename DisableIf< IsProxy<T>, bool >::Type
 // \return \a true if the left-hand side other object is smaller, \a false if not.
 */
 template< typename T, typename PT, typename RT >
-inline typename DisableIf< IsProxy<T>, bool >::Type
+inline DisableIf_< IsProxy<T>, bool >
    operator<( const T& lhs, const Proxy<PT,RT>& rhs )
 {
    return ( lhs < rhs.get() );
@@ -646,7 +646,7 @@ inline bool operator>( const Proxy<PT1,RT1>& lhs, const Proxy<PT2,RT2>& rhs )
 // \return \a true if the left-hand side referenced value is greater, \a false if not.
 */
 template< typename PT, typename RT, typename T >
-inline typename DisableIf< IsProxy<T>, bool >::Type
+inline DisableIf_< IsProxy<T>, bool >
    operator>( const Proxy<PT,RT>& lhs, const T& rhs )
 {
    return ( (~lhs).get() > rhs );
@@ -663,7 +663,7 @@ inline typename DisableIf< IsProxy<T>, bool >::Type
 // \return \a true if the left-hand side other object is greater, \a false if not.
 */
 template< typename T, typename PT, typename RT >
-inline typename DisableIf< IsProxy<T>, bool >::Type
+inline DisableIf_< IsProxy<T>, bool >
    operator>( const T& lhs, const Proxy<PT,RT>& rhs )
 {
    return ( lhs > (~rhs).get() );
@@ -696,7 +696,7 @@ inline bool operator<=( const Proxy<PT1,RT1>& lhs, const Proxy<PT2,RT2>& rhs )
 // \return \a true if the left-hand side referenced value is smaller or equal, \a false if not.
 */
 template< typename PT, typename RT, typename T >
-inline typename DisableIf< IsProxy<T>, bool >::Type
+inline DisableIf_< IsProxy<T>, bool >
    operator<=( const Proxy<PT,RT>& lhs, const T& rhs )
 {
    return ( (~lhs).get() <= rhs );
@@ -713,7 +713,7 @@ inline typename DisableIf< IsProxy<T>, bool >::Type
 // \return \a true if the left-hand side other object is smaller or equal, \a false if not.
 */
 template< typename T, typename PT, typename RT >
-inline typename DisableIf< IsProxy<T>, bool >::Type
+inline DisableIf_< IsProxy<T>, bool >
    operator<=( const T& lhs, const Proxy<PT,RT>& rhs )
 {
    return ( lhs <= (~rhs).get() );
@@ -746,7 +746,7 @@ inline bool operator>=( const Proxy<PT1,RT1>& lhs, const Proxy<PT2,RT2>& rhs )
 // \return \a true if the left-hand side referenced value is greater or equal, \a false if not.
 */
 template< typename PT, typename RT, typename T >
-inline typename DisableIf< IsProxy<T>, bool >::Type
+inline DisableIf_< IsProxy<T>, bool >
    operator>=( const Proxy<PT,RT>& lhs, const T& rhs )
 {
    return ( (~lhs).get() >= rhs );
@@ -763,7 +763,7 @@ inline typename DisableIf< IsProxy<T>, bool >::Type
 // \return \a true if the left-hand side other object is greater or equal, \a false if not.
 */
 template< typename T, typename PT, typename RT >
-inline typename DisableIf< IsProxy<T>, bool >::Type
+inline DisableIf_< IsProxy<T>, bool >
    operator>=( const T& lhs, const Proxy<PT,RT>& rhs )
 {
    return ( lhs >= (~rhs).get() );

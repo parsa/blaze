@@ -423,7 +423,7 @@ BLAZE_ALWAYS_INLINE size_t nonZeros( const Matrix<MT,SO>& matrix, size_t i )
 */
 template< typename MT  // Type of the matrix
         , bool SO >    // Storage order of the matrix
-BLAZE_ALWAYS_INLINE typename DisableIf< IsResizable<MT> >::Type
+BLAZE_ALWAYS_INLINE DisableIf_< IsResizable<MT> >
    resize_backend( Matrix<MT,SO>& matrix, size_t m, size_t n, bool preserve )
 {
    UNUSED_PARAMETER( preserve );
@@ -451,7 +451,7 @@ BLAZE_ALWAYS_INLINE typename DisableIf< IsResizable<MT> >::Type
 */
 template< typename MT  // Type of the matrix
         , bool SO >    // Storage order of the matrix
-BLAZE_ALWAYS_INLINE typename EnableIf< And< IsResizable<MT>, Not< IsSquare<MT> > > >::Type
+BLAZE_ALWAYS_INLINE EnableIf_< And< IsResizable<MT>, Not< IsSquare<MT> > > >
    resize_backend( Matrix<MT,SO>& matrix, size_t m, size_t n, bool preserve )
 {
    (~matrix).resize( m, n, preserve );
@@ -476,7 +476,7 @@ BLAZE_ALWAYS_INLINE typename EnableIf< And< IsResizable<MT>, Not< IsSquare<MT> >
 */
 template< typename MT  // Type of the matrix
         , bool SO >    // Storage order of the matrix
-BLAZE_ALWAYS_INLINE typename EnableIf< And< IsResizable<MT>, IsSquare<MT> > >::Type
+BLAZE_ALWAYS_INLINE EnableIf_< And< IsResizable<MT>, IsSquare<MT> > >
    resize_backend( Matrix<MT,SO>& matrix, size_t m, size_t n, bool preserve )
 {
    if( m != n ) {
@@ -686,7 +686,7 @@ BLAZE_ALWAYS_INLINE void assign_backend( Matrix<MT1,SO>& lhs, const Matrix<MT2,S
 template< typename MT1    // Type of the left-hand side matrix
         , bool SO         // Storage order of the left-hand side matrix
         , typename MT2 >  // Type of the right-hand side matrix
-BLAZE_ALWAYS_INLINE typename DisableIf< IsSymmetric<MT2> >::Type
+BLAZE_ALWAYS_INLINE DisableIf_< IsSymmetric<MT2> >
    assign_backend( Matrix<MT1,SO>& lhs, const Matrix<MT2,!SO>& rhs )
 {
    BLAZE_FUNCTION_TRACE;
@@ -712,7 +712,7 @@ BLAZE_ALWAYS_INLINE typename DisableIf< IsSymmetric<MT2> >::Type
 template< typename MT1    // Type of the left-hand side matrix
         , bool SO         // Storage order of the left-hand side matrix
         , typename MT2 >  // Type of the right-hand side matrix
-BLAZE_ALWAYS_INLINE typename EnableIf< IsSymmetric<MT2> >::Type
+BLAZE_ALWAYS_INLINE EnableIf_< IsSymmetric<MT2> >
    assign_backend( Matrix<MT1,SO>& lhs, const Matrix<MT2,!SO>& rhs )
 {
    BLAZE_FUNCTION_TRACE;
@@ -795,7 +795,7 @@ BLAZE_ALWAYS_INLINE void addAssign_backend( Matrix<MT1,SO>& lhs, const Matrix<MT
 template< typename MT1    // Type of the left-hand side matrix
         , bool SO         // Storage order of the left-hand side matrix
         , typename MT2 >  // Type of the right-hand side matrix
-BLAZE_ALWAYS_INLINE typename DisableIf< IsSymmetric<MT2> >::Type
+BLAZE_ALWAYS_INLINE DisableIf_< IsSymmetric<MT2> >
    addAssign_backend( Matrix<MT1,SO>& lhs, const Matrix<MT2,!SO>& rhs )
 {
    BLAZE_FUNCTION_TRACE;
@@ -821,7 +821,7 @@ BLAZE_ALWAYS_INLINE typename DisableIf< IsSymmetric<MT2> >::Type
 template< typename MT1    // Type of the left-hand side matrix
         , bool SO         // Storage order of the left-hand side matrix
         , typename MT2 >  // Type of the right-hand side matrix
-BLAZE_ALWAYS_INLINE typename EnableIf< IsSymmetric<MT2> >::Type
+BLAZE_ALWAYS_INLINE EnableIf_< IsSymmetric<MT2> >
    addAssign_backend( Matrix<MT1,SO>& lhs, const Matrix<MT2,!SO>& rhs )
 {
    BLAZE_FUNCTION_TRACE;
@@ -904,7 +904,7 @@ BLAZE_ALWAYS_INLINE void subAssign_backend( Matrix<MT1,SO>& lhs, const Matrix<MT
 template< typename MT1    // Type of the left-hand side matrix
         , bool SO         // Storage order of the left-hand side matrix
         , typename MT2 >  // Type of the right-hand side matrix
-BLAZE_ALWAYS_INLINE typename DisableIf< IsSymmetric<MT2> >::Type
+BLAZE_ALWAYS_INLINE DisableIf_< IsSymmetric<MT2> >
    subAssign_backend( Matrix<MT1,SO>& lhs, const Matrix<MT2,!SO>& rhs )
 {
    BLAZE_FUNCTION_TRACE;
@@ -930,7 +930,7 @@ BLAZE_ALWAYS_INLINE typename DisableIf< IsSymmetric<MT2> >::Type
 template< typename MT1    // Type of the left-hand side matrix
         , bool SO         // Storage order of the left-hand side matrix
         , typename MT2 >  // Type of the right-hand side matrix
-BLAZE_ALWAYS_INLINE typename EnableIf< IsSymmetric<MT2> >::Type
+BLAZE_ALWAYS_INLINE EnableIf_< IsSymmetric<MT2> >
    subAssign_backend( Matrix<MT1,SO>& lhs, const Matrix<MT2,!SO>& rhs )
 {
    BLAZE_FUNCTION_TRACE;

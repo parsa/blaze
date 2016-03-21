@@ -63,6 +63,7 @@
 #include <blaze/math/views/DenseSubmatrix.h>
 #include <blaze/math/views/Submatrix.h>
 #include <blaze/util/constraints/SameType.h>
+#include <blaze/util/EnableIf.h>
 #include <blaze/util/Exception.h>
 #include <blaze/util/mpl/If.h>
 
@@ -97,7 +98,7 @@ void rq( const DenseMatrix<MT1,SO1>& A, DenseMatrix<MT2,SO2>& R, DenseMatrix<MT3
 // reconstruction of the \c Q matrix from the RQ decomposition.
 */
 template< typename MT1 >  // Type of matrix A
-inline typename EnableIf< IsBuiltin< typename MT1::ElementType > >::Type
+inline EnableIf_<IsBuiltin< typename MT1::ElementType > >
    rq_backend( MT1& A, const typename MT1::ElementType* tau )
 {
    BLAZE_CONSTRAINT_MUST_BE_COLUMN_MAJOR_MATRIX_TYPE( MT1 );
@@ -121,7 +122,7 @@ inline typename EnableIf< IsBuiltin< typename MT1::ElementType > >::Type
 // reconstruction of the \c Q matrix from the RQ decomposition.
 */
 template< typename MT1 >  // Type of matrix A
-inline typename EnableIf< IsComplex< typename MT1::ElementType > >::Type
+inline EnableIf_<IsComplex< typename MT1::ElementType > >
    rq_backend( MT1& A, const typename MT1::ElementType* tau )
 {
    BLAZE_CONSTRAINT_MUST_BE_COLUMN_MAJOR_MATRIX_TYPE( MT1 );

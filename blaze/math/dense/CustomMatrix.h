@@ -482,7 +482,7 @@ class CustomMatrix : public DenseMatrix< CustomMatrix<Type,AF,PF,SO>, SO >
    explicit inline CustomMatrix( Type* ptr, size_t m, size_t n );
    explicit inline CustomMatrix( Type* ptr, size_t m, size_t n, size_t nn );
 
-   template< typename Deleter, typename = typename EnableIf< IsClass<Deleter> >::Type >
+   template< typename Deleter, typename = EnableIf_<IsClass<Deleter> > >
    explicit inline CustomMatrix( Type* ptr, size_t m, size_t n, Deleter D );
 
    template< typename Deleter >
@@ -533,12 +533,10 @@ class CustomMatrix : public DenseMatrix< CustomMatrix<Type,AF,PF,SO>, SO >
    template< typename MT, bool SO2 > inline CustomMatrix& operator*=( const Matrix<MT,SO2>& rhs );
 
    template< typename Other >
-   inline typename EnableIf< IsNumeric<Other>, CustomMatrix >::Type&
-      operator*=( Other rhs );
+   inline EnableIf_<IsNumeric<Other>, CustomMatrix >& operator*=( Other rhs );
 
    template< typename Other >
-   inline typename EnableIf< IsNumeric<Other>, CustomMatrix >::Type&
-      operator/=( Other rhs );
+   inline EnableIf_<IsNumeric<Other>, CustomMatrix >& operator/=( Other rhs );
    //@}
    //**********************************************************************************************
 
@@ -568,7 +566,7 @@ class CustomMatrix : public DenseMatrix< CustomMatrix<Type,AF,PF,SO>, SO >
    inline void reset( Type* ptr, size_t m, size_t n );
    inline void reset( Type* ptr, size_t m, size_t n, size_t nn );
 
-   template< typename Deleter, typename = typename EnableIf< IsClass<Deleter> >::Type >
+   template< typename Deleter, typename = EnableIf_<IsClass<Deleter> > >
    inline void reset( Type* ptr, size_t m, size_t n, Deleter d );
 
    template< typename Deleter >
@@ -637,36 +635,30 @@ class CustomMatrix : public DenseMatrix< CustomMatrix<Type,AF,PF,SO>, SO >
    BLAZE_ALWAYS_INLINE void stream( size_t i, size_t j, const IntrinsicType& value ) noexcept;
 
    template< typename MT >
-   inline typename DisableIf< VectorizedAssign<MT> >::Type
-      assign( const DenseMatrix<MT,SO>& rhs );
+   inline DisableIf_<VectorizedAssign<MT> > assign( const DenseMatrix<MT,SO>& rhs );
 
    template< typename MT >
-   inline typename EnableIf< VectorizedAssign<MT> >::Type
-      assign( const DenseMatrix<MT,SO>& rhs );
+   inline EnableIf_<VectorizedAssign<MT> > assign( const DenseMatrix<MT,SO>& rhs );
 
    template< typename MT > inline void assign( const DenseMatrix<MT,!SO>&  rhs );
    template< typename MT > inline void assign( const SparseMatrix<MT,SO>&  rhs );
    template< typename MT > inline void assign( const SparseMatrix<MT,!SO>& rhs );
 
    template< typename MT >
-   inline typename DisableIf< VectorizedAddAssign<MT> >::Type
-      addAssign( const DenseMatrix<MT,SO>& rhs );
+   inline DisableIf_<VectorizedAddAssign<MT> > addAssign( const DenseMatrix<MT,SO>& rhs );
 
    template< typename MT >
-   inline typename EnableIf< VectorizedAddAssign<MT> >::Type
-      addAssign( const DenseMatrix<MT,SO>& rhs );
+   inline EnableIf_<VectorizedAddAssign<MT> > addAssign( const DenseMatrix<MT,SO>& rhs );
 
    template< typename MT > inline void addAssign( const DenseMatrix<MT,!SO>&  rhs );
    template< typename MT > inline void addAssign( const SparseMatrix<MT,SO>&  rhs );
    template< typename MT > inline void addAssign( const SparseMatrix<MT,!SO>& rhs );
 
    template< typename MT >
-   inline typename DisableIf< VectorizedSubAssign<MT> >::Type
-      subAssign( const DenseMatrix<MT,SO>& rhs );
+   inline DisableIf_<VectorizedSubAssign<MT> > subAssign( const DenseMatrix<MT,SO>& rhs );
 
    template< typename MT >
-   inline typename EnableIf< VectorizedSubAssign<MT> >::Type
-      subAssign( const DenseMatrix<MT,SO>& rhs );
+   inline EnableIf_<VectorizedSubAssign<MT> > subAssign( const DenseMatrix<MT,SO>& rhs );
 
    template< typename MT > inline void subAssign( const DenseMatrix<MT,!SO>&  rhs );
    template< typename MT > inline void subAssign( const SparseMatrix<MT,SO>&  rhs );
@@ -1611,7 +1603,7 @@ template< typename Type     // Data type of the matrix
         , bool PF           // Padding flag
         , bool SO >         // Storage order
 template< typename Other >  // Data type of the right-hand side scalar
-inline typename EnableIf< IsNumeric<Other>, CustomMatrix<Type,AF,PF,SO> >::Type&
+inline EnableIf_<IsNumeric<Other>, CustomMatrix<Type,AF,PF,SO> >&
    CustomMatrix<Type,AF,PF,SO>::operator*=( Other rhs )
 {
    smpAssign( *this, (*this) * rhs );
@@ -1632,7 +1624,7 @@ template< typename Type     // Data type of the matrix
         , bool PF           // Padding flag
         , bool SO >         // Storage order
 template< typename Other >  // Data type of the right-hand side scalar
-inline typename EnableIf< IsNumeric<Other>, CustomMatrix<Type,AF,PF,SO> >::Type&
+inline EnableIf_<IsNumeric<Other>, CustomMatrix<Type,AF,PF,SO> >&
    CustomMatrix<Type,AF,PF,SO>::operator/=( Other rhs )
 {
    BLAZE_USER_ASSERT( rhs != Other(0), "Division by zero detected" );
@@ -2477,7 +2469,7 @@ template< typename Type  // Data type of the matrix
         , bool PF        // Padding flag
         , bool SO >      // Storage order
 template< typename MT >  // Type of the right-hand side dense matrix
-inline typename DisableIf< typename CustomMatrix<Type,AF,PF,SO>::BLAZE_TEMPLATE VectorizedAssign<MT> >::Type
+inline DisableIf_<typename CustomMatrix<Type,AF,PF,SO>::BLAZE_TEMPLATE VectorizedAssign<MT> >
    CustomMatrix<Type,AF,PF,SO>::assign( const DenseMatrix<MT,SO>& rhs )
 {
    BLAZE_INTERNAL_ASSERT( m_ == (~rhs).rows()   , "Invalid number of rows"    );
@@ -2515,7 +2507,7 @@ template< typename Type  // Data type of the matrix
         , bool PF        // Padding flag
         , bool SO >      // Storage order
 template< typename MT >  // Type of the right-hand side dense matrix
-inline typename EnableIf< typename CustomMatrix<Type,AF,PF,SO>::BLAZE_TEMPLATE VectorizedAssign<MT> >::Type
+inline EnableIf_<typename CustomMatrix<Type,AF,PF,SO>::BLAZE_TEMPLATE VectorizedAssign<MT> >
    CustomMatrix<Type,AF,PF,SO>::assign( const DenseMatrix<MT,SO>& rhs )
 {
    BLAZE_CONSTRAINT_MUST_BE_VECTORIZABLE_TYPE( Type );
@@ -2682,7 +2674,7 @@ template< typename Type  // Data type of the matrix
         , bool PF        // Padding flag
         , bool SO >      // Storage order
 template< typename MT >  // Type of the right-hand side dense matrix
-inline typename DisableIf< typename CustomMatrix<Type,AF,PF,SO>::BLAZE_TEMPLATE VectorizedAddAssign<MT> >::Type
+inline DisableIf_<typename CustomMatrix<Type,AF,PF,SO>::BLAZE_TEMPLATE VectorizedAddAssign<MT> >
    CustomMatrix<Type,AF,PF,SO>::addAssign( const DenseMatrix<MT,SO>& rhs )
 {
    BLAZE_INTERNAL_ASSERT( m_ == (~rhs).rows()   , "Invalid number of rows"    );
@@ -2735,7 +2727,7 @@ template< typename Type  // Data type of the matrix
         , bool PF        // Padding flag
         , bool SO >      // Storage order
 template< typename MT >  // Type of the right-hand side dense matrix
-inline typename EnableIf< typename CustomMatrix<Type,AF,PF,SO>::BLAZE_TEMPLATE VectorizedAddAssign<MT> >::Type
+inline EnableIf_<typename CustomMatrix<Type,AF,PF,SO>::BLAZE_TEMPLATE VectorizedAddAssign<MT> >
    CustomMatrix<Type,AF,PF,SO>::addAssign( const DenseMatrix<MT,SO>& rhs )
 {
    BLAZE_CONSTRAINT_MUST_BE_VECTORIZABLE_TYPE( Type );
@@ -2905,7 +2897,7 @@ template< typename Type  // Data type of the matrix
         , bool PF        // Padding flag
         , bool SO >      // Storage order
 template< typename MT >  // Type of the right-hand side dense matrix
-inline typename DisableIf< typename CustomMatrix<Type,AF,PF,SO>::BLAZE_TEMPLATE VectorizedSubAssign<MT> >::Type
+inline DisableIf_<typename CustomMatrix<Type,AF,PF,SO>::BLAZE_TEMPLATE VectorizedSubAssign<MT> >
    CustomMatrix<Type,AF,PF,SO>::subAssign( const DenseMatrix<MT,SO>& rhs )
 {
    BLAZE_INTERNAL_ASSERT( m_ == (~rhs).rows()   , "Invalid number of rows"    );
@@ -2958,7 +2950,7 @@ template< typename Type  // Data type of the matrix
         , bool PF        // Padding flag
         , bool SO >      // Storage order
 template< typename MT >  // Type of the right-hand side dense matrix
-inline typename EnableIf< typename CustomMatrix<Type,AF,PF,SO>::BLAZE_TEMPLATE VectorizedSubAssign<MT> >::Type
+inline EnableIf_<typename CustomMatrix<Type,AF,PF,SO>::BLAZE_TEMPLATE VectorizedSubAssign<MT> >
    CustomMatrix<Type,AF,PF,SO>::subAssign( const DenseMatrix<MT,SO>& rhs )
 {
    BLAZE_CONSTRAINT_MUST_BE_VECTORIZABLE_TYPE( Type );
@@ -3193,7 +3185,7 @@ class CustomMatrix<Type,AF,PF,true> : public DenseMatrix< CustomMatrix<Type,AF,P
    explicit inline CustomMatrix( Type* ptr, size_t m, size_t n );
    explicit inline CustomMatrix( Type* ptr, size_t m, size_t n, size_t mm );
 
-   template< typename Deleter, typename = typename EnableIf< IsClass<Deleter> >::Type >
+   template< typename Deleter, typename = EnableIf_<IsClass<Deleter> > >
    explicit inline CustomMatrix( Type* ptr, size_t m, size_t n, Deleter d );
 
    template< typename Deleter >
@@ -3244,12 +3236,10 @@ class CustomMatrix<Type,AF,PF,true> : public DenseMatrix< CustomMatrix<Type,AF,P
    template< typename MT, bool SO > inline CustomMatrix& operator*=( const Matrix<MT,SO>& rhs );
 
    template< typename Other >
-   inline typename EnableIf< IsNumeric<Other>, CustomMatrix >::Type&
-      operator*=( Other rhs );
+   inline EnableIf_<IsNumeric<Other>, CustomMatrix >& operator*=( Other rhs );
 
    template< typename Other >
-   inline typename EnableIf< IsNumeric<Other>, CustomMatrix >::Type&
-      operator/=( Other rhs );
+   inline EnableIf_<IsNumeric<Other>, CustomMatrix >& operator/=( Other rhs );
    //@}
    //**********************************************************************************************
 
@@ -3279,7 +3269,7 @@ class CustomMatrix<Type,AF,PF,true> : public DenseMatrix< CustomMatrix<Type,AF,P
    inline void reset( Type* ptr, size_t m, size_t n );
    inline void reset( Type* ptr, size_t m, size_t n, size_t mm );
 
-   template< typename Deleter, typename = typename EnableIf< IsClass<Deleter> >::Type >
+   template< typename Deleter, typename = EnableIf_<IsClass<Deleter> > >
    inline void reset( Type* ptr, size_t m, size_t n, Deleter d );
 
    template< typename Deleter >
@@ -3342,36 +3332,30 @@ class CustomMatrix<Type,AF,PF,true> : public DenseMatrix< CustomMatrix<Type,AF,P
    BLAZE_ALWAYS_INLINE void stream( size_t i, size_t j, const IntrinsicType& value ) noexcept;
 
    template< typename MT >
-   inline typename DisableIf< VectorizedAssign<MT> >::Type
-      assign( const DenseMatrix<MT,true>& rhs );
+   inline DisableIf_<VectorizedAssign<MT> > assign( const DenseMatrix<MT,true>& rhs );
 
    template< typename MT >
-   inline typename EnableIf< VectorizedAssign<MT> >::Type
-      assign( const DenseMatrix<MT,true>& rhs );
+   inline EnableIf_<VectorizedAssign<MT> > assign( const DenseMatrix<MT,true>& rhs );
 
    template< typename MT > inline void assign( const DenseMatrix<MT,false>&  rhs );
    template< typename MT > inline void assign( const SparseMatrix<MT,true>&  rhs );
    template< typename MT > inline void assign( const SparseMatrix<MT,false>& rhs );
 
    template< typename MT >
-   inline typename DisableIf< VectorizedAddAssign<MT> >::Type
-      addAssign( const DenseMatrix<MT,true>& rhs );
+   inline DisableIf_<VectorizedAddAssign<MT> > addAssign( const DenseMatrix<MT,true>& rhs );
 
    template< typename MT >
-   inline typename EnableIf< VectorizedAddAssign<MT> >::Type
-      addAssign( const DenseMatrix<MT,true>& rhs );
+   inline EnableIf_<VectorizedAddAssign<MT> > addAssign( const DenseMatrix<MT,true>& rhs );
 
    template< typename MT > inline void addAssign( const DenseMatrix<MT,false>&  rhs );
    template< typename MT > inline void addAssign( const SparseMatrix<MT,true>&  rhs );
    template< typename MT > inline void addAssign( const SparseMatrix<MT,false>& rhs );
 
    template< typename MT >
-   inline typename DisableIf< VectorizedSubAssign<MT> >::Type
-      subAssign ( const DenseMatrix<MT,true>& rhs );
+   inline DisableIf_<VectorizedSubAssign<MT> > subAssign ( const DenseMatrix<MT,true>& rhs );
 
    template< typename MT >
-   inline typename EnableIf< VectorizedSubAssign<MT> >::Type
-      subAssign ( const DenseMatrix<MT,true>& rhs );
+   inline EnableIf_<VectorizedSubAssign<MT> > subAssign ( const DenseMatrix<MT,true>& rhs );
 
    template< typename MT > inline void subAssign( const DenseMatrix<MT,false>&  rhs );
    template< typename MT > inline void subAssign( const SparseMatrix<MT,true>&  rhs );
@@ -4312,7 +4296,7 @@ template< typename Type     // Data type of the matrix
         , bool AF           // Alignment flag
         , bool PF >         // Padding flag
 template< typename Other >  // Data type of the right-hand side scalar
-inline typename EnableIf< IsNumeric<Other>, CustomMatrix<Type,AF,PF,true> >::Type&
+inline EnableIf_<IsNumeric<Other>, CustomMatrix<Type,AF,PF,true> >&
    CustomMatrix<Type,AF,PF,true>::operator*=( Other rhs )
 {
    smpAssign( *this, (*this) * rhs );
@@ -4334,7 +4318,7 @@ template< typename Type     // Data type of the matrix
         , bool AF           // Alignment flag
         , bool PF >         // Padding flag
 template< typename Other >  // Data type of the right-hand side scalar
-inline typename EnableIf< IsNumeric<Other>, CustomMatrix<Type,AF,PF,true> >::Type&
+inline EnableIf_<IsNumeric<Other>, CustomMatrix<Type,AF,PF,true> >&
    CustomMatrix<Type,AF,PF,true>::operator/=( Other rhs )
 {
    BLAZE_USER_ASSERT( rhs != Other(0), "Division by zero detected" );
@@ -5188,7 +5172,7 @@ template< typename Type  // Data type of the matrix
         , bool AF        // Alignment flag
         , bool PF >      // Padding flag
 template< typename MT >  // Type of the right-hand side dense matrix
-inline typename DisableIf< typename CustomMatrix<Type,AF,PF,true>::BLAZE_TEMPLATE VectorizedAssign<MT> >::Type
+inline DisableIf_<typename CustomMatrix<Type,AF,PF,true>::BLAZE_TEMPLATE VectorizedAssign<MT> >
    CustomMatrix<Type,AF,PF,true>::assign( const DenseMatrix<MT,true>& rhs )
 {
    BLAZE_INTERNAL_ASSERT( m_ == (~rhs).rows()   , "Invalid number of rows"    );
@@ -5227,7 +5211,7 @@ template< typename Type  // Data type of the matrix
         , bool AF        // Alignment flag
         , bool PF >      // Padding flag
 template< typename MT >  // Type of the right-hand side dense matrix
-inline typename EnableIf< typename CustomMatrix<Type,AF,PF,true>::BLAZE_TEMPLATE VectorizedAssign<MT> >::Type
+inline EnableIf_<typename CustomMatrix<Type,AF,PF,true>::BLAZE_TEMPLATE VectorizedAssign<MT> >
    CustomMatrix<Type,AF,PF,true>::assign( const DenseMatrix<MT,true>& rhs )
 {
    BLAZE_CONSTRAINT_MUST_BE_VECTORIZABLE_TYPE( Type );
@@ -5398,7 +5382,7 @@ template< typename Type  // Data type of the matrix
         , bool AF        // Alignment flag
         , bool PF >      // Padding flag
 template< typename MT >  // Type of the right-hand side dense matrix
-inline typename DisableIf< typename CustomMatrix<Type,AF,PF,true>::BLAZE_TEMPLATE VectorizedAddAssign<MT> >::Type
+inline DisableIf_<typename CustomMatrix<Type,AF,PF,true>::BLAZE_TEMPLATE VectorizedAddAssign<MT> >
    CustomMatrix<Type,AF,PF,true>::addAssign( const DenseMatrix<MT,true>& rhs )
 {
    BLAZE_INTERNAL_ASSERT( m_ == (~rhs).rows()   , "Invalid number of rows"    );
@@ -5452,7 +5436,7 @@ template< typename Type  // Data type of the matrix
         , bool AF        // Alignment flag
         , bool PF >      // Padding flag
 template< typename MT >  // Type of the right-hand side dense matrix
-inline typename EnableIf< typename CustomMatrix<Type,AF,PF,true>::BLAZE_TEMPLATE VectorizedAddAssign<MT> >::Type
+inline EnableIf_<typename CustomMatrix<Type,AF,PF,true>::BLAZE_TEMPLATE VectorizedAddAssign<MT> >
    CustomMatrix<Type,AF,PF,true>::addAssign( const DenseMatrix<MT,true>& rhs )
 {
    BLAZE_CONSTRAINT_MUST_BE_VECTORIZABLE_TYPE( Type );
@@ -5626,7 +5610,7 @@ template< typename Type  // Data type of the matrix
         , bool AF        // Alignment flag
         , bool PF >      // Padding flag
 template< typename MT >  // Type of the right-hand side dense matrix
-inline typename DisableIf< typename CustomMatrix<Type,AF,PF,true>::BLAZE_TEMPLATE VectorizedSubAssign<MT> >::Type
+inline DisableIf_<typename CustomMatrix<Type,AF,PF,true>::BLAZE_TEMPLATE VectorizedSubAssign<MT> >
    CustomMatrix<Type,AF,PF,true>::subAssign( const DenseMatrix<MT,true>& rhs )
 {
    BLAZE_INTERNAL_ASSERT( m_ == (~rhs).rows()   , "Invalid number of rows"    );
@@ -5681,7 +5665,7 @@ template< typename Type  // Data type of the matrix
         , bool AF        // Alignment flag
         , bool PF >      // Padding flag
 template< typename MT >  // Type of the right-hand side dense matrix
-inline typename EnableIf< typename CustomMatrix<Type,AF,PF,true>::BLAZE_TEMPLATE VectorizedSubAssign<MT> >::Type
+inline EnableIf_<typename CustomMatrix<Type,AF,PF,true>::BLAZE_TEMPLATE VectorizedSubAssign<MT> >
    CustomMatrix<Type,AF,PF,true>::subAssign( const DenseMatrix<MT,true>& rhs )
 {
    BLAZE_CONSTRAINT_MUST_BE_VECTORIZABLE_TYPE( Type );
@@ -6308,13 +6292,13 @@ struct SubTrait< CustomMatrix<T1,AF1,PF1,SO1>, CustomMatrix<T2,AF2,PF2,SO2> >
 //*************************************************************************************************
 /*! \cond BLAZE_INTERNAL */
 template< typename T1, bool AF, bool PF, bool SO, typename T2 >
-struct MultTrait< CustomMatrix<T1,AF,PF,SO>, T2, typename EnableIf< IsNumeric<T2> >::Type >
+struct MultTrait< CustomMatrix<T1,AF,PF,SO>, T2, EnableIf_<IsNumeric<T2> > >
 {
    typedef DynamicMatrix< typename MultTrait<T1,T2>::Type, SO >  Type;
 };
 
 template< typename T1, typename T2, bool AF, bool PF, bool SO >
-struct MultTrait< T1, CustomMatrix<T2,AF,PF,SO>, typename EnableIf< IsNumeric<T1> >::Type >
+struct MultTrait< T1, CustomMatrix<T2,AF,PF,SO>, EnableIf_<IsNumeric<T1> > >
 {
    typedef DynamicMatrix< typename MultTrait<T1,T2>::Type, SO >  Type;
 };
@@ -6435,7 +6419,7 @@ struct MultTrait< CustomMatrix<T1,AF1,PF1,SO1>, CustomMatrix<T2,AF2,PF2,SO2> >
 //*************************************************************************************************
 /*! \cond BLAZE_INTERNAL */
 template< typename T1, bool AF, bool PF, bool SO, typename T2 >
-struct DivTrait< CustomMatrix<T1,AF,PF,SO>, T2, typename EnableIf< IsNumeric<T2> >::Type >
+struct DivTrait< CustomMatrix<T1,AF,PF,SO>, T2, EnableIf_<IsNumeric<T2> > >
 {
    typedef DynamicMatrix< typename DivTrait<T1,T2>::Type , SO >  Type;
 };

@@ -826,7 +826,7 @@ inline void invertByLDLT( DenseMatrix<MT,SO>& dm )
 */
 template< typename MT  // Type of the dense matrix
         , bool SO >    // Storage order of the dense matrix
-inline typename EnableIf< IsBuiltin<typename MT::ElementType> >::Type
+inline EnableIf_<IsBuiltin<typename MT::ElementType> >
    invertByLDLH( DenseMatrix<MT,SO>& dm )
 {
    invertByLDLT( ~dm );
@@ -865,7 +865,7 @@ inline typename EnableIf< IsBuiltin<typename MT::ElementType> >::Type
 */
 template< typename MT  // Type of the dense matrix
         , bool SO >    // Storage order of the dense matrix
-inline typename EnableIf< IsComplex<typename MT::ElementType> >::Type
+inline EnableIf_<IsComplex<typename MT::ElementType> >
    invertByLDLH( DenseMatrix<MT,SO>& dm )
 {
    BLAZE_CONSTRAINT_MUST_NOT_BE_ADAPTOR_TYPE( MT );

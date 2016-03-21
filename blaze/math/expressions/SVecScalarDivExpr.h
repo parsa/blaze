@@ -490,7 +490,7 @@ class SVecScalarDivExpr : public SparseVector< SVecScalarDivExpr<VT,ST,TF>, TF >
    // operand requires an intermediate evaluation.
    */
    template< typename VT2 >  // Type of the target dense vector
-   friend inline typename EnableIf< UseAssign<VT2> >::Type
+   friend inline EnableIf_< UseAssign<VT2> >
       assign( DenseVector<VT2,TF>& lhs, const SVecScalarDivExpr& rhs )
    {
       BLAZE_FUNCTION_TRACE;
@@ -518,7 +518,7 @@ class SVecScalarDivExpr : public SparseVector< SVecScalarDivExpr<VT,ST,TF>, TF >
    // operand requires an intermediate evaluation.
    */
    template< typename VT2 >  // Type of the target sparse vector
-   friend inline typename EnableIf< UseAssign<VT2> >::Type
+   friend inline EnableIf_< UseAssign<VT2> >
       assign( SparseVector<VT2,TF>& lhs, const SVecScalarDivExpr& rhs )
    {
       BLAZE_FUNCTION_TRACE;
@@ -546,7 +546,7 @@ class SVecScalarDivExpr : public SparseVector< SVecScalarDivExpr<VT,ST,TF>, TF >
    // operand requires an intermediate evaluation.
    */
    template< typename VT2 >  // Type of the target dense vector
-   friend inline typename EnableIf< UseAssign<VT2> >::Type
+   friend inline EnableIf_< UseAssign<VT2> >
       addAssign( DenseVector<VT2,TF>& lhs, const SVecScalarDivExpr& rhs )
    {
       BLAZE_FUNCTION_TRACE;
@@ -582,7 +582,7 @@ class SVecScalarDivExpr : public SparseVector< SVecScalarDivExpr<VT,ST,TF>, TF >
    // requires an intermediate evaluation.
    */
    template< typename VT2 >  // Type of the target dense vector
-   friend inline typename EnableIf< UseAssign<VT2> >::Type
+   friend inline EnableIf_< UseAssign<VT2> >
       subAssign( DenseVector<VT2,TF>& lhs, const SVecScalarDivExpr& rhs )
    {
       BLAZE_FUNCTION_TRACE;
@@ -618,7 +618,7 @@ class SVecScalarDivExpr : public SparseVector< SVecScalarDivExpr<VT,ST,TF>, TF >
    // vector operand requires an intermediate evaluation.
    */
    template< typename VT2 >  // Type of the target dense vector
-   friend inline typename EnableIf< UseAssign<VT2> >::Type
+   friend inline EnableIf_< UseAssign<VT2> >
       multAssign( DenseVector<VT2,TF>& lhs, const SVecScalarDivExpr& rhs )
    {
       BLAZE_FUNCTION_TRACE;
@@ -662,7 +662,7 @@ class SVecScalarDivExpr : public SparseVector< SVecScalarDivExpr<VT,ST,TF>, TF >
    // expression specific parallel evaluation strategy is selected.
    */
    template< typename VT2 >  // Type of the target dense vector
-   friend inline typename EnableIf< UseSMPAssign<VT2> >::Type
+   friend inline EnableIf_< UseSMPAssign<VT2> >
       smpAddAssign( DenseVector<VT2,TF>& lhs, const SVecScalarDivExpr& rhs )
    {
       BLAZE_FUNCTION_TRACE;
@@ -698,7 +698,7 @@ class SVecScalarDivExpr : public SparseVector< SVecScalarDivExpr<VT,ST,TF>, TF >
    // expression specific parallel evaluation strategy is selected.
    */
    template< typename VT2 >  // Type of the target dense vector
-   friend inline typename EnableIf< UseSMPAssign<VT2> >::Type
+   friend inline EnableIf_< UseSMPAssign<VT2> >
       smpSubAssign( DenseVector<VT2,TF>& lhs, const SVecScalarDivExpr& rhs )
    {
       BLAZE_FUNCTION_TRACE;
@@ -734,7 +734,7 @@ class SVecScalarDivExpr : public SparseVector< SVecScalarDivExpr<VT,ST,TF>, TF >
    // specific parallel evaluation strategy is selected.
    */
    template< typename VT2 >  // Type of the target dense vector
-   friend inline typename EnableIf< UseSMPAssign<VT2> >::Type
+   friend inline EnableIf_< UseSMPAssign<VT2> >
       smpMultAssign( DenseVector<VT2,TF>& lhs, const SVecScalarDivExpr& rhs )
    {
       BLAZE_FUNCTION_TRACE;
@@ -803,7 +803,7 @@ class SVecScalarDivExpr : public SparseVector< SVecScalarDivExpr<VT,ST,TF>, TF >
 template< typename T1  // Type of the left-hand side sparse vector
         , typename T2  // Type of the right-hand side scalar
         , bool TF >    // Transpose flag
-inline const typename EnableIf< IsNumeric<T2>, typename DivExprTrait<T1,T2>::Type >::Type
+inline const EnableIf_< IsNumeric<T2>, typename DivExprTrait<T1,T2>::Type >
    operator/( const SparseVector<T1,TF>& vec, T2 scalar )
 {
    BLAZE_FUNCTION_TRACE;
@@ -848,8 +848,8 @@ template< typename VT     // Type of the sparse vector of the left-hand side exp
         , typename ST1    // Type of the scalar of the left-hand side expression
         , bool TF         // Transpose flag of the sparse vector
         , typename ST2 >  // Type of the right-hand side scalar
-inline const typename EnableIf< And< IsNumeric<ST2>, IsInvertible<typename DivTrait<ST2,ST1>::Type > >
-                              , typename MultExprTrait< SVecScalarDivExpr<VT,ST1,TF>, ST2 >::Type >::Type
+inline const EnableIf_< And< IsNumeric<ST2>, IsInvertible<typename DivTrait<ST2,ST1>::Type > >
+                      , typename MultExprTrait< SVecScalarDivExpr<VT,ST1,TF>, ST2 >::Type >
    operator*( const SVecScalarDivExpr<VT,ST1,TF>& vec, ST2 scalar )
 {
    BLAZE_FUNCTION_TRACE;
@@ -877,8 +877,8 @@ template< typename ST1  // Type of the left-hand side scalar
         , typename VT   // Type of the sparse vector of the right-hand side expression
         , typename ST2  // Type of the scalar of the right-hand side expression
         , bool TF >     // Transpose flag of the sparse vector
-inline const typename EnableIf< And< IsNumeric<ST1>, IsInvertible< typename DivTrait<ST1,ST2>::Type > >
-                              , typename MultExprTrait< ST1, SVecScalarDivExpr<VT,ST2,TF> >::Type >::Type
+inline const EnableIf_< And< IsNumeric<ST1>, IsInvertible< typename DivTrait<ST1,ST2>::Type > >
+                      , typename MultExprTrait< ST1, SVecScalarDivExpr<VT,ST2,TF> >::Type >
    operator*( ST1 scalar, const SVecScalarDivExpr<VT,ST2,TF>& vec )
 {
    BLAZE_FUNCTION_TRACE;
@@ -906,8 +906,8 @@ template< typename VT     // Type of the sparse vector of the left-hand side exp
         , typename ST1    // Type of the scalar of the left-hand side expression
         , bool TF         // Transpose flag of the sparse vector
         , typename ST2 >  // Type of the right-hand side scalar
-inline const typename EnableIf< IsNumeric<ST2>
-                              , typename DivExprTrait<VT,typename MultTrait<ST1,ST2>::Type>::Type >::Type
+inline const EnableIf_< IsNumeric<ST2>
+                      , typename DivExprTrait<VT,typename MultTrait<ST1,ST2>::Type>::Type >
    operator/( const SVecScalarDivExpr<VT,ST1,TF>& vec, ST2 scalar )
 {
    BLAZE_FUNCTION_TRACE;

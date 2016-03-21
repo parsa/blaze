@@ -93,12 +93,10 @@ class ValueIndexPair : private SparseElement
    // No explicitly declared copy assignment operator.
 
    template< typename Other >
-   inline typename EnableIf< IsSparseElement<Other>, ValueIndexPair& >::Type
-      operator=( const Other& rhs );
+   inline EnableIf_< IsSparseElement<Other>, ValueIndexPair& > operator=( const Other& rhs );
 
    template< typename Other >
-   inline typename DisableIf< IsSparseElement<Other>, ValueIndexPair& >::Type
-      operator=( const Other& v );
+   inline DisableIf_< IsSparseElement<Other>, ValueIndexPair& > operator=( const Other& v );
 
    template< typename Other > inline ValueIndexPair& operator+=( const Other& v );
    template< typename Other > inline ValueIndexPair& operator-=( const Other& v );
@@ -197,7 +195,7 @@ inline ValueIndexPair<Type>::ValueIndexPair( const Type& v, size_t i )
 */
 template< typename Type >   // Type of the value element
 template< typename Other >  // Data type of the right-hand side value-index-pair
-inline typename EnableIf< IsSparseElement<Other>, ValueIndexPair<Type>& >::Type
+inline EnableIf_< IsSparseElement<Other>, ValueIndexPair<Type>& >
    ValueIndexPair<Type>::operator=( const Other& rhs )
 {
    value_ = rhs.value();
@@ -215,7 +213,7 @@ inline typename EnableIf< IsSparseElement<Other>, ValueIndexPair<Type>& >::Type
 */
 template< typename Type >   // Type of the value element
 template< typename Other >  // Data type of the right-hand side value
-inline typename DisableIf< IsSparseElement<Other>, ValueIndexPair<Type>& >::Type
+inline DisableIf_< IsSparseElement<Other>, ValueIndexPair<Type>& >
    ValueIndexPair<Type>::operator=( const Other& v )
 {
    value_ = v;

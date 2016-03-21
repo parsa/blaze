@@ -429,7 +429,7 @@ class DVecSVecSubExpr : public DenseVector< DVecSVecSubExpr<VT1,VT2,TF>, TF >
    // specific parallel evaluation strategy is selected.
    */
    template< typename VT >  // Type of the target dense vector
-   friend inline typename EnableIf< UseSMPAssign<VT> >::Type
+   friend inline EnableIf_< UseSMPAssign<VT> >
       smpAssign( DenseVector<VT,TF>& lhs, const DVecSVecSubExpr& rhs )
    {
       BLAZE_FUNCTION_TRACE;
@@ -462,7 +462,7 @@ class DVecSVecSubExpr : public DenseVector< DVecSVecSubExpr<VT1,VT2,TF>, TF >
    // specific parallel evaluation strategy is selected.
    */
    template< typename VT >  // Type of the target sparse vector
-   friend inline typename EnableIf< UseSMPAssign<VT> >::Type
+   friend inline EnableIf_< UseSMPAssign<VT> >
       smpAssign( SparseVector<VT,TF>& lhs, const DVecSVecSubExpr& rhs )
    {
       BLAZE_FUNCTION_TRACE;
@@ -494,7 +494,7 @@ class DVecSVecSubExpr : public DenseVector< DVecSVecSubExpr<VT1,VT2,TF>, TF >
    // in case the expression specific parallel evaluation strategy is selected.
    */
    template< typename VT >  // Type of the target dense vector
-   friend inline typename EnableIf< UseSMPAssign<VT> >::Type
+   friend inline EnableIf_< UseSMPAssign<VT> >
       smpAddAssign( DenseVector<VT,TF>& lhs, const DVecSVecSubExpr& rhs )
    {
       BLAZE_FUNCTION_TRACE;
@@ -527,7 +527,7 @@ class DVecSVecSubExpr : public DenseVector< DVecSVecSubExpr<VT1,VT2,TF>, TF >
    // in case the expression specific parallel evaluation strategy is selected.
    */
    template< typename VT >  // Type of the target dense vector
-   friend inline typename EnableIf< UseSMPAssign<VT> >::Type
+   friend inline EnableIf_< UseSMPAssign<VT> >
       smpSubAssign( DenseVector<VT,TF>& lhs, const DVecSVecSubExpr& rhs )
    {
       BLAZE_FUNCTION_TRACE;
@@ -560,7 +560,7 @@ class DVecSVecSubExpr : public DenseVector< DVecSVecSubExpr<VT1,VT2,TF>, TF >
    // in case the expression specific parallel evaluation strategy is selected.
    */
    template< typename VT >  // Type of the target dense vector
-   friend inline typename EnableIf< UseSMPAssign<VT> >::Type
+   friend inline EnableIf_< UseSMPAssign<VT> >
       smpMultAssign( DenseVector<VT,TF>& lhs, const DVecSVecSubExpr& rhs )
    {
       BLAZE_FUNCTION_TRACE;
