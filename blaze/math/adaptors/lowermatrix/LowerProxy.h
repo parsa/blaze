@@ -105,14 +105,9 @@ class LowerProxy : public Proxy< LowerProxy<MT>, typename MT::ElementType >
 
  public:
    //**Type definitions****************************************************************************
-   //! Type of the represented matrix element.
-   typedef typename MT::ElementType  RepresentedType;
-
-   //! Reference-to-non-const to the represented element.
-   typedef typename AddReference<ReferenceType>::Type  RawReference;
-
-   //! Reference-to-const to the represented element.
-   typedef const RepresentedType&  ConstReference;
+   typedef typename MT::ElementType      RepresentedType;  //! Type of the represented matrix element.
+   typedef AddReference_<ReferenceType>  RawReference;     //! Reference-to-non-const to the represented element.
+   typedef const RepresentedType&        ConstReference;   //! Reference-to-const to the represented element.
    //**********************************************************************************************
 
    //**Constructors********************************************************************************

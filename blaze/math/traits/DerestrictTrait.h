@@ -76,9 +76,7 @@ struct DerestrictTrait
  private:
    //**********************************************************************************************
    /*! \cond BLAZE_INTERNAL */
-   typedef If< Or< IsVector<T>, IsMatrix<T> >
-             , typename AddReference<T>::Type, INVALID_TYPE >  Tmp;
-
+   typedef If< Or< IsVector<T>, IsMatrix<T> >, AddReference_<T>, INVALID_TYPE >  Tmp;
    typedef typename RemoveReference< typename RemoveCV<T>::Type >::Type  Type1;
    /*! \endcond */
    //**********************************************************************************************
