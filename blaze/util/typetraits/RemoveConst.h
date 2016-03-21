@@ -78,6 +78,24 @@ struct RemoveConst
 };
 //*************************************************************************************************
 
+
+//*************************************************************************************************
+/*!\brief Auxiliary alias declaration for the RemoveConst type trait.
+// \ingroup util
+//
+// The RemoveConst_ alias declaration provides a convenient shortcut to access the nested \a Type
+// of the RemoveConst class template. For instance, given the type \a T the following two type
+// definitions are identical:
+
+   \code
+   using Type1 = typename RemoveConst<T>::Type;
+   using Type2 = RemoveConst_<T>;
+   \endcode
+*/
+template< typename T >
+using RemoveConst_ = typename RemoveConst<T>::Type;
+//*************************************************************************************************
+
 } // namespace blaze
 
 #endif
