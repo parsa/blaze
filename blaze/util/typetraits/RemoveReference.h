@@ -77,6 +77,24 @@ struct RemoveReference
 };
 //*************************************************************************************************
 
+
+//*************************************************************************************************
+/*!\brief Auxiliary alias declaration for the RemoveReference type trait.
+// \ingroup util
+//
+// The RemoveReference_ alias declaration provides a convenient shortcut to access the nested
+// \a Type of the RemoveReference class template. For instance, given the type \a T the following
+// two type definitions are identical:
+
+   \code
+   using Type1 = typename RemoveReference<T>::Type;
+   using Type2 = RemoveReference_<T>;
+   \endcode
+*/
+template< typename T >
+using RemoveReference_ = typename RemoveReference<T>::Type;
+//*************************************************************************************************
+
 } // namespace blaze
 
 #endif
