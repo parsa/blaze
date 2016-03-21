@@ -90,6 +90,26 @@ struct IfTrue<false,T1,T2>
 //*************************************************************************************************
 
 
+//*************************************************************************************************
+/*!\brief Auxiliary alias declaration for the IfTrue class template.
+// \ingroup util
+//
+// The IfTrue_ alias declaration provides a convenient shortcut to access the nested \a Type of
+// the IfTrue class template. For instance, given the types \a C, \a T1, and \a T2 the following
+// two type definitions are identical:
+
+   \code
+   using Type1 = typename IfTrue< IsBuiltin<C>::value, T1, T2 >::Type;
+   using Type2 = IfTrue_< IsBuiltin<C>::value, T1, T2 >;
+   \endcode
+*/
+template< bool Condition  // Compile time selection
+        , typename T1     // Type to be selected if Condition=true
+        , typename T2 >   // Type to be selected if Condition=false
+using IfTrue_ = typename IfTrue<Condition,T1,T2>::Type;
+//*************************************************************************************************
+
+
 
 
 //=================================================================================================
@@ -118,6 +138,26 @@ struct If
    /*! \endcond */
    //**********************************************************************************************
 };
+//*************************************************************************************************
+
+
+//*************************************************************************************************
+/*!\brief Auxiliary alias declaration for the If class template.
+// \ingroup util
+//
+// The If_ alias declaration provides a convenient shortcut to access the nested \a Type of the
+// If class template. For instance, given the types \a T1, \a T2, and \a T3 the following two
+// type definitions are identical:
+
+   \code
+   using Type1 = typename If< IsBuiltin<T1>, T2, T3 >::Type;
+   using Type2 = If_< IsBuiltin<T1>, T2, T3 >;
+   \endcode
+*/
+template< typename T1    // Type of the condition
+        , typename T2    // Type to be selected if T1::value=true
+        , typename T3 >  // Type to be selected if T1::value=false
+using If_ = typename If<T1,T2,T3>::Type;
 //*************************************************************************************************
 
 } // namespace blaze
