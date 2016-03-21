@@ -105,16 +105,9 @@ struct IsStrictlySame<T,T> : public TrueType
 template< typename A, typename B >
 struct IsSameHelper
 {
- private:
-   //**********************************************************************************************
-   typedef typename RemoveCV<A>::Type  T1;
-   typedef typename RemoveCV<B>::Type  T2;
-   //**********************************************************************************************
-
  public:
    //**********************************************************************************************
-   enum { value = IsStrictlySame<T1,T2>::value };
-   typedef typename IsStrictlySame<T1,T2>::Type  Type;
+   enum { value = IsStrictlySame< RemoveCV_<A>, RemoveCV_<B> >::value };
    //**********************************************************************************************
 };
 /*! \endcond */
