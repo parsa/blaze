@@ -475,7 +475,7 @@ class SparseSubmatrix : public SparseMatrix< SparseSubmatrix<MT,AF,SO>, SO >
  private:
    //**Type definitions****************************************************************************
    //! Composite data type of the dense matrix expression.
-   typedef typename If< IsExpression<MT>, MT, MT& >::Type  Operand;
+   typedef If_< IsExpression<MT>, MT, MT& >  Operand;
    //**********************************************************************************************
 
  public:
@@ -492,7 +492,7 @@ class SparseSubmatrix : public SparseMatrix< SparseSubmatrix<MT,AF,SO>, SO >
    typedef typename MT::ConstReference  ConstReference;
 
    //! Reference to a non-constant submatrix value.
-   typedef typename If< IsConst<MT>, ConstReference, typename MT::Reference >::Type  Reference;
+   typedef If_< IsConst<MT>, ConstReference, typename MT::Reference >  Reference;
    //**********************************************************************************************
 
    //**SubmatrixElement class definition***********************************************************
@@ -523,10 +523,10 @@ class SparseSubmatrix : public SparseMatrix< SparseSubmatrix<MT,AF,SO>, SO >
 
     public:
       //**Type definitions*************************************************************************
-      typedef typename SET::ValueType                    ValueType;       //!< The value type of the row element.
-      typedef size_t                                     IndexType;       //!< The index type of the row element.
-      typedef typename IfTrue<returnConst,CRT,RT>::Type  Reference;       //!< Reference return type
-      typedef CRT                                        ConstReference;  //!< Reference-to-const return type.
+      typedef typename SET::ValueType      ValueType;       //!< The value type of the row element.
+      typedef size_t                       IndexType;       //!< The index type of the row element.
+      typedef IfTrue_<returnConst,CRT,RT>  Reference;       //!< Reference return type
+      typedef CRT                          ConstReference;  //!< Reference-to-const return type.
       //*******************************************************************************************
 
       //**Constructor******************************************************************************
@@ -806,7 +806,7 @@ class SparseSubmatrix : public SparseMatrix< SparseSubmatrix<MT,AF,SO>, SO >
    typedef SubmatrixIterator<const MT,typename MT::ConstIterator>  ConstIterator;
 
    //! Iterator over non-constant elements.
-   typedef typename If< IsConst<MT>, ConstIterator, SubmatrixIterator<MT,typename MT::Iterator> >::Type  Iterator;
+   typedef If_< IsConst<MT>, ConstIterator, SubmatrixIterator<MT,typename MT::Iterator> >  Iterator;
    //**********************************************************************************************
 
    //**Compilation flags***************************************************************************
@@ -1666,7 +1666,7 @@ inline EnableIf_<IsNumeric<Other>, SparseSubmatrix<MT,AF,SO> >&
    BLAZE_USER_ASSERT( rhs != Other(0), "Division by zero detected" );
 
    typedef typename DivTrait<ElementType,Other>::Type     DT;
-   typedef typename If< IsNumeric<DT>, DT, Other >::Type  Tmp;
+   typedef If_< IsNumeric<DT>, DT, Other >  Tmp;
 
    // Depending on the two involved data types, an integer division is applied or a
    // floating point division is selected.
@@ -2870,7 +2870,7 @@ class SparseSubmatrix<MT,AF,true> : public SparseMatrix< SparseSubmatrix<MT,AF,t
  private:
    //**Type definitions****************************************************************************
    //! Composite data type of the dense matrix expression.
-   typedef typename If< IsExpression<MT>, MT, MT& >::Type  Operand;
+   typedef If_< IsExpression<MT>, MT, MT& >  Operand;
    //**********************************************************************************************
 
  public:
@@ -2887,7 +2887,7 @@ class SparseSubmatrix<MT,AF,true> : public SparseMatrix< SparseSubmatrix<MT,AF,t
    typedef typename MT::ConstReference  ConstReference;
 
    //! Reference to a non-constant submatrix value.
-   typedef typename If< IsConst<MT>, ConstReference, typename MT::Reference >::Type  Reference;
+   typedef If_< IsConst<MT>, ConstReference, typename MT::Reference >  Reference;
    //**********************************************************************************************
 
    //**SubmatrixElement class definition***********************************************************
@@ -2918,10 +2918,10 @@ class SparseSubmatrix<MT,AF,true> : public SparseMatrix< SparseSubmatrix<MT,AF,t
 
     public:
       //**Type definitions*************************************************************************
-      typedef typename SET::ValueType                    ValueType;       //!< The value type of the row element.
-      typedef size_t                                     IndexType;       //!< The index type of the row element.
-      typedef typename IfTrue<returnConst,CRT,RT>::Type  Reference;       //!< Reference return type
-      typedef CRT                                        ConstReference;  //!< Reference-to-const return type.
+      typedef typename SET::ValueType      ValueType;       //!< The value type of the row element.
+      typedef size_t                       IndexType;       //!< The index type of the row element.
+      typedef IfTrue_<returnConst,CRT,RT>  Reference;       //!< Reference return type
+      typedef CRT                          ConstReference;  //!< Reference-to-const return type.
       //*******************************************************************************************
 
       //**Constructor******************************************************************************
@@ -3201,7 +3201,7 @@ class SparseSubmatrix<MT,AF,true> : public SparseMatrix< SparseSubmatrix<MT,AF,t
    typedef SubmatrixIterator<const MT,typename MT::ConstIterator>  ConstIterator;
 
    //! Iterator over non-constant elements.
-   typedef typename If< IsConst<MT>, ConstIterator, SubmatrixIterator<MT,typename MT::Iterator> >::Type  Iterator;
+   typedef If_< IsConst<MT>, ConstIterator, SubmatrixIterator<MT,typename MT::Iterator> >  Iterator;
    //**********************************************************************************************
 
    //**Compilation flags***************************************************************************
@@ -4045,7 +4045,7 @@ inline EnableIf_<IsNumeric<Other>, SparseSubmatrix<MT,AF,true> >&
    BLAZE_USER_ASSERT( rhs != Other(0), "Division by zero detected" );
 
    typedef typename DivTrait<ElementType,Other>::Type     DT;
-   typedef typename If< IsNumeric<DT>, DT, Other >::Type  Tmp;
+   typedef If_< IsNumeric<DT>, DT, Other >  Tmp;
 
    // Depending on the two involved data types, an integer division is applied or a
    // floating point division is selected.

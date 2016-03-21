@@ -85,9 +85,9 @@ struct DVecCTransExprTrait
 
    //**********************************************************************************************
    /*! \cond BLAZE_INTERNAL */
-   typedef typename If< And< IsDenseVector<VT>, IsColumnVector<VT> >
-                      , DVecTransExprTrait< typename DVecConjExprTrait<VT>::Type >
-                      , Failure >::Type  Tmp;
+   typedef If_< And< IsDenseVector<VT>, IsColumnVector<VT> >
+              , DVecTransExprTrait< typename DVecConjExprTrait<VT>::Type >
+              , Failure >  Tmp;
 
    typedef typename RemoveReference< typename RemoveCV<VT>::Type >::Type  Type1;
    /*! \endcond */
@@ -96,8 +96,8 @@ struct DVecCTransExprTrait
  public:
    //**********************************************************************************************
    /*! \cond BLAZE_INTERNAL */
-   typedef typename If< Or< IsConst<VT>, IsVolatile<VT>, IsReference<VT> >
-                      , DVecCTransExprTrait<Type1>, Tmp >::Type::Type  Type;
+   typedef typename If_< Or< IsConst<VT>, IsVolatile<VT>, IsReference<VT> >
+                       , DVecCTransExprTrait<Type1>, Tmp >::Type  Type;
    /*! \endcond */
    //**********************************************************************************************
 };

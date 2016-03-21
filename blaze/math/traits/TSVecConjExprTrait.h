@@ -87,8 +87,8 @@ struct TSVecConjExprTrait
  public:
    //**********************************************************************************************
    /*! \cond BLAZE_INTERNAL */
-   typedef typename If< Or< IsConst<VT>, IsVolatile<VT>, IsReference<VT> >
-                      , TSVecConjExprTrait<Type1>, Tmp >::Type::Type  Type;
+   typedef typename If_< Or< IsConst<VT>, IsVolatile<VT>, IsReference<VT> >
+                       , TSVecConjExprTrait<Type1>, Tmp >::Type  Type;
    /*! \endcond */
    //**********************************************************************************************
 };

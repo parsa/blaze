@@ -85,10 +85,9 @@ struct DMatSVecMultExprTrait
    /*! \cond BLAZE_INTERNAL */
    typedef If< And< IsDenseMatrix<MT> , IsRowMajorMatrix<MT>
                   , IsSparseVector<VT>, IsColumnVector<VT> >
-             , typename If< IsSymmetric<MT>
-                          , TDMatSVecMultExpr< typename DMatTransExprTrait<MT>::Type, VT >
-                          , DMatSVecMultExpr<MT,VT>
-                          >::Type
+             , If_< IsSymmetric<MT>
+                  , TDMatSVecMultExpr< typename DMatTransExprTrait<MT>::Type, VT >
+                  , DMatSVecMultExpr<MT,VT> >
              , INVALID_TYPE
              >  Tmp;
 
@@ -100,9 +99,9 @@ struct DMatSVecMultExprTrait
  public:
    //**********************************************************************************************
    /*! \cond BLAZE_INTERNAL */
-   typedef typename If< Or< IsConst<MT>, IsVolatile<MT>, IsReference<MT>
-                          , IsConst<VT>, IsVolatile<VT>, IsReference<VT> >
-                      , DMatSVecMultExprTrait<Type1,Type2>, Tmp >::Type::Type  Type;
+   typedef typename If_< Or< IsConst<MT>, IsVolatile<MT>, IsReference<MT>
+                           , IsConst<VT>, IsVolatile<VT>, IsReference<VT> >
+                       , DMatSVecMultExprTrait<Type1,Type2>, Tmp >::Type  Type;
    /*! \endcond */
    //**********************************************************************************************
 };

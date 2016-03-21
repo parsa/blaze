@@ -202,7 +202,7 @@ void qr( const DenseMatrix<MT1,SO1>& A, DenseMatrix<MT2,SO2>& Q, DenseMatrix<MT3
    BLAZE_CONSTRAINT_MUST_BE_BLAS_COMPATIBLE_TYPE( typename MT3::ElementType );
 
    typedef typename RemoveAdaptor<MT1>::Type  UMT1;
-   typedef typename If< IsRowMajorMatrix<UMT1>, typename UMT1::OppositeType, UMT1 >::Type  Tmp;
+   typedef If_< IsRowMajorMatrix<UMT1>, typename UMT1::OppositeType, UMT1 >  Tmp;
    typedef typename MT1::ElementType  ET1;
 
    BLAZE_CONSTRAINT_MUST_BE_COLUMN_MAJOR_MATRIX_TYPE( Tmp );

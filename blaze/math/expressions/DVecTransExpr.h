@@ -147,10 +147,10 @@ class DVecTransExpr : public DenseVector< DVecTransExpr<VT,TF>, TF >
    typedef typename IntrinsicTrait<ElementType>::Type  IntrinsicType;
 
    //! Data type for composite expression templates.
-   typedef typename IfTrue< useAssign, const ResultType, const DVecTransExpr& >::Type  CompositeType;
+   typedef IfTrue_< useAssign, const ResultType, const DVecTransExpr& >  CompositeType;
 
    //! Composite data type of the dense vector expression.
-   typedef typename If< IsExpression<VT>, const VT, const VT& >::Type  Operand;
+   typedef If_< IsExpression<VT>, const VT, const VT& >  Operand;
    //**********************************************************************************************
 
    //**ConstIterator class definition**************************************************************
@@ -1011,9 +1011,9 @@ struct DVecTransExprTrait< DVecTransExpr<VT,false> >
 {
  public:
    //**********************************************************************************************
-   typedef typename If< And< IsDenseVector<VT>, IsRowVector<VT> >
-                      , typename DVecTransExpr<VT,false>::Operand
-                      , INVALID_TYPE >::Type  Type;
+   typedef If_< And< IsDenseVector<VT>, IsRowVector<VT> >
+              , typename DVecTransExpr<VT,false>::Operand
+              , INVALID_TYPE >  Type;
    //**********************************************************************************************
 };
 /*! \endcond */
@@ -1027,9 +1027,9 @@ struct TDVecTransExprTrait< DVecTransExpr<VT,true> >
 {
  public:
    //**********************************************************************************************
-   typedef typename If< And< IsDenseVector<VT>, IsColumnVector<VT> >
-                      , typename DVecTransExpr<VT,true>::Operand
-                      , INVALID_TYPE >::Type  Type;
+   typedef If_< And< IsDenseVector<VT>, IsColumnVector<VT> >
+              , typename DVecTransExpr<VT,true>::Operand
+              , INVALID_TYPE >  Type;
    //**********************************************************************************************
 };
 /*! \endcond */

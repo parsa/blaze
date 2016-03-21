@@ -395,7 +395,7 @@ class DenseSubvector : public DenseVector< DenseSubvector<VT,AF,TF>, TF >
  private:
    //**Type definitions****************************************************************************
    //! Composite data type of the dense vector expression.
-   typedef typename If< IsExpression<VT>, VT, VT& >::Type  Operand;
+   typedef If_< IsExpression<VT>, VT, VT& >  Operand;
 
    //! Intrinsic trait for the vector element type.
    typedef IntrinsicTrait<typename VT::ElementType>  IT;
@@ -415,14 +415,13 @@ class DenseSubvector : public DenseVector< DenseSubvector<VT,AF,TF>, TF >
    typedef typename VT::ConstReference  ConstReference;
 
    //! Reference to a non-constant subvector value.
-   typedef typename If< IsConst<VT>, ConstReference, typename VT::Reference >::Type  Reference;
+   typedef If_< IsConst<VT>, ConstReference, typename VT::Reference >  Reference;
 
    //! Pointer to a constant subvector value.
    typedef const ElementType*  ConstPointer;
 
    //! Pointer to a non-constant subvector value.
-   typedef typename If< Or< IsConst<VT>, Not< HasMutableDataAccess<VT> > >
-                      , ConstPointer, ElementType* >::Type  Pointer;
+   typedef If_< Or< IsConst<VT>, Not< HasMutableDataAccess<VT> > >, ConstPointer, ElementType* >  Pointer;
    //**********************************************************************************************
 
    //**SubvectorIterator class definition**********************************************************
@@ -761,7 +760,7 @@ class DenseSubvector : public DenseVector< DenseSubvector<VT,AF,TF>, TF >
    typedef SubvectorIterator<typename VT::ConstIterator>  ConstIterator;
 
    //! Iterator over non-constant elements.
-   typedef typename If< IsConst<VT>, ConstIterator, SubvectorIterator<typename VT::Iterator> >::Type  Iterator;
+   typedef If_< IsConst<VT>, ConstIterator, SubvectorIterator<typename VT::Iterator> >  Iterator;
    //**********************************************************************************************
 
    //**Compilation flags***************************************************************************
@@ -1384,7 +1383,7 @@ inline DenseSubvector<VT,AF,TF>& DenseSubvector<VT,AF,TF>::operator=( const Vect
       BLAZE_THROW_INVALID_ARGUMENT( "Vector sizes do not match" );
    }
 
-   typedef typename If< IsRestricted<VT>, typename VT2::CompositeType, const VT2& >::Type  Right;
+   typedef If_< IsRestricted<VT>, typename VT2::CompositeType, const VT2& >  Right;
    Right right( ~rhs );
 
    if( !tryAssign( vector_, right, offset_ ) ) {
@@ -1434,7 +1433,7 @@ inline DenseSubvector<VT,AF,TF>& DenseSubvector<VT,AF,TF>::operator+=( const Vec
       BLAZE_THROW_INVALID_ARGUMENT( "Vector sizes do not match" );
    }
 
-   typedef typename If< IsRestricted<VT>, typename VT2::CompositeType, const VT2& >::Type  Right;
+   typedef If_< IsRestricted<VT>, typename VT2::CompositeType, const VT2& >  Right;
    Right right( ~rhs );
 
    if( !tryAddAssign( vector_, right, offset_ ) ) {
@@ -1482,7 +1481,7 @@ inline DenseSubvector<VT,AF,TF>& DenseSubvector<VT,AF,TF>::operator-=( const Vec
       BLAZE_THROW_INVALID_ARGUMENT( "Vector sizes do not match" );
    }
 
-   typedef typename If< IsRestricted<VT>, typename VT2::CompositeType, const VT2& >::Type  Right;
+   typedef If_< IsRestricted<VT>, typename VT2::CompositeType, const VT2& >  Right;
    Right right( ~rhs );
 
    if( !trySubAssign( vector_, right, offset_ ) ) {
@@ -1532,7 +1531,7 @@ inline DenseSubvector<VT,AF,TF>&
       BLAZE_THROW_INVALID_ARGUMENT( "Vector sizes do not match" );
    }
 
-   typedef typename If< IsRestricted<VT>, typename VT2::CompositeType, const VT2& >::Type  Right;
+   typedef If_< IsRestricted<VT>, typename VT2::CompositeType, const VT2& >  Right;
    Right right( ~rhs );
 
    if( !tryMultAssign( vector_, right, offset_ ) ) {
@@ -2550,7 +2549,7 @@ class DenseSubvector<VT,aligned,TF> : public DenseVector< DenseSubvector<VT,alig
  private:
    //**Type definitions****************************************************************************
    //! Composite data type of the dense vector expression.
-   typedef typename If< IsExpression<VT>, VT, VT& >::Type  Operand;
+   typedef If_< IsExpression<VT>, VT, VT& >  Operand;
 
    //! Intrinsic trait for the vector element type.
    typedef IntrinsicTrait<typename VT::ElementType>  IT;
@@ -2570,20 +2569,19 @@ class DenseSubvector<VT,aligned,TF> : public DenseVector< DenseSubvector<VT,alig
    typedef typename VT::ConstReference  ConstReference;
 
    //! Reference to a non-constant subvector value.
-   typedef typename If< IsConst<VT>, ConstReference, typename VT::Reference >::Type  Reference;
+   typedef If_< IsConst<VT>, ConstReference, typename VT::Reference >  Reference;
 
    //! Pointer to a constant subvector value.
    typedef const ElementType*  ConstPointer;
 
    //! Pointer to a non-constant subvector value.
-   typedef typename If< Or< IsConst<VT>, Not< HasMutableDataAccess<VT> > >
-                      , ConstPointer, ElementType* >::Type  Pointer;
+   typedef If_< Or< IsConst<VT>, Not< HasMutableDataAccess<VT> > >, ConstPointer, ElementType* >  Pointer;
 
    //! Iterator over constant elements.
    typedef typename VT::ConstIterator  ConstIterator;
 
    //! Iterator over non-constant elements.
-   typedef typename If< IsConst<VT>, ConstIterator, typename VT::Iterator >::Type  Iterator;
+   typedef If_< IsConst<VT>, ConstIterator, typename VT::Iterator >  Iterator;
    //**********************************************************************************************
 
    //**Compilation flags***************************************************************************
@@ -3208,7 +3206,7 @@ inline DenseSubvector<VT,aligned,TF>&
       BLAZE_THROW_INVALID_ARGUMENT( "Vector sizes do not match" );
    }
 
-   typedef typename If< IsRestricted<VT>, typename VT2::CompositeType, const VT2& >::Type  Right;
+   typedef If_< IsRestricted<VT>, typename VT2::CompositeType, const VT2& >  Right;
    Right right( ~rhs );
 
    if( !tryAssign( vector_, right, offset_ ) ) {
@@ -3260,7 +3258,7 @@ inline DenseSubvector<VT,aligned,TF>&
       BLAZE_THROW_INVALID_ARGUMENT( "Vector sizes do not match" );
    }
 
-   typedef typename If< IsRestricted<VT>, typename VT2::CompositeType, const VT2& >::Type  Right;
+   typedef If_< IsRestricted<VT>, typename VT2::CompositeType, const VT2& >  Right;
    Right right( ~rhs );
 
    if( !tryAddAssign( vector_, right, offset_ ) ) {
@@ -3310,7 +3308,7 @@ inline DenseSubvector<VT,aligned,TF>&
       BLAZE_THROW_INVALID_ARGUMENT( "Vector sizes do not match" );
    }
 
-   typedef typename If< IsRestricted<VT>, typename VT2::CompositeType, const VT2& >::Type  Right;
+   typedef If_< IsRestricted<VT>, typename VT2::CompositeType, const VT2& >  Right;
    Right right( ~rhs );
 
    if( !trySubAssign( vector_, right, offset_ ) ) {
@@ -3361,7 +3359,7 @@ inline DenseSubvector<VT,aligned,TF>&
       BLAZE_THROW_INVALID_ARGUMENT( "Vector sizes do not match" );
    }
 
-   typedef typename If< IsRestricted<VT>, typename VT2::CompositeType, const VT2& >::Type  Right;
+   typedef If_< IsRestricted<VT>, typename VT2::CompositeType, const VT2& >  Right;
    Right right( ~rhs );
 
    if( !tryMultAssign( vector_, right, offset_ ) ) {

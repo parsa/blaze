@@ -212,16 +212,16 @@ class DMatSMatMultExpr : public DenseMatrix< DMatSMatMultExpr<MT1,MT2>, false >
    typedef const ResultType                    CompositeType;  //!< Data type for composite expression templates.
 
    //! Composite type of the left-hand side dense matrix expression.
-   typedef typename If< IsExpression<MT1>, const MT1, const MT1& >::Type  LeftOperand;
+   typedef If_< IsExpression<MT1>, const MT1, const MT1& >  LeftOperand;
 
    //! Composite type of the right-hand side sparse matrix expression.
-   typedef typename If< IsExpression<MT2>, const MT2, const MT2& >::Type  RightOperand;
+   typedef If_< IsExpression<MT2>, const MT2, const MT2& >  RightOperand;
 
    //! Type for the assignment of the left-hand side dense matrix operand.
-   typedef typename IfTrue< evaluateLeft, const RT1, CT1 >::Type  LT;
+   typedef IfTrue_< evaluateLeft, const RT1, CT1 >  LT;
 
    //! Type for the assignment of the right-hand side sparse matrix operand.
-   typedef typename IfTrue< evaluateRight, const RT2, CT2 >::Type  RT;
+   typedef IfTrue_< evaluateRight, const RT2, CT2 >  RT;
    //**********************************************************************************************
 
    //**Compilation flags***************************************************************************
@@ -673,7 +673,7 @@ class DMatSMatMultExpr : public DenseMatrix< DMatSMatMultExpr<MT1,MT2>, false >
    {
       BLAZE_FUNCTION_TRACE;
 
-      typedef typename IfTrue< SO, OppositeType, ResultType >::Type  TmpType;
+      typedef IfTrue_< SO, OppositeType, ResultType >  TmpType;
 
       BLAZE_CONSTRAINT_MUST_BE_DENSE_MATRIX_TYPE( ResultType );
       BLAZE_CONSTRAINT_MUST_BE_DENSE_MATRIX_TYPE( OppositeType );
@@ -1178,7 +1178,7 @@ class DMatSMatMultExpr : public DenseMatrix< DMatSMatMultExpr<MT1,MT2>, false >
    {
       BLAZE_FUNCTION_TRACE;
 
-      typedef typename IfTrue< SO, OppositeType, ResultType >::Type  TmpType;
+      typedef IfTrue_< SO, OppositeType, ResultType >  TmpType;
 
       BLAZE_CONSTRAINT_MUST_BE_DENSE_MATRIX_TYPE( ResultType );
       BLAZE_CONSTRAINT_MUST_BE_DENSE_MATRIX_TYPE( OppositeType );
@@ -1647,11 +1647,11 @@ struct DMatDVecMultExprTrait< DMatSMatMultExpr<MT1,MT2>, VT >
 {
  public:
    //**********************************************************************************************
-   typedef typename If< And< IsDenseMatrix<MT1>, IsRowMajorMatrix<MT1>
-                           , IsSparseMatrix<MT2>, IsRowMajorMatrix<MT2>
-                           , IsDenseVector<VT>, IsColumnVector<VT> >
-                      , typename DMatDVecMultExprTrait< MT1, typename SMatDVecMultExprTrait<MT2,VT>::Type >::Type
-                      , INVALID_TYPE >::Type  Type;
+   typedef If_< And< IsDenseMatrix<MT1>, IsRowMajorMatrix<MT1>
+                   , IsSparseMatrix<MT2>, IsRowMajorMatrix<MT2>
+                   , IsDenseVector<VT>, IsColumnVector<VT> >
+              , typename DMatDVecMultExprTrait< MT1, typename SMatDVecMultExprTrait<MT2,VT>::Type >::Type
+              , INVALID_TYPE >  Type;
    //**********************************************************************************************
 };
 /*! \endcond */
@@ -1665,11 +1665,11 @@ struct DMatSVecMultExprTrait< DMatSMatMultExpr<MT1,MT2>, VT >
 {
  public:
    //**********************************************************************************************
-   typedef typename If< And< IsDenseMatrix<MT1>, IsRowMajorMatrix<MT1>
-                           , IsSparseMatrix<MT2>, IsRowMajorMatrix<MT2>
-                           , IsSparseVector<VT>, IsColumnVector<VT> >
-                      , typename DMatSVecMultExprTrait< MT1, typename SMatSVecMultExprTrait<MT2,VT>::Type >::Type
-                      , INVALID_TYPE >::Type  Type;
+   typedef If_< And< IsDenseMatrix<MT1>, IsRowMajorMatrix<MT1>
+                   , IsSparseMatrix<MT2>, IsRowMajorMatrix<MT2>
+                   , IsSparseVector<VT>, IsColumnVector<VT> >
+              , typename DMatSVecMultExprTrait< MT1, typename SMatSVecMultExprTrait<MT2,VT>::Type >::Type
+              , INVALID_TYPE >  Type;
    //**********************************************************************************************
 };
 /*! \endcond */
@@ -1683,11 +1683,11 @@ struct TDVecDMatMultExprTrait< VT, DMatSMatMultExpr<MT1,MT2> >
 {
  public:
    //**********************************************************************************************
-   typedef typename If< And< IsDenseVector<VT>, IsRowVector<VT>
-                           , IsDenseMatrix<MT1>, IsRowMajorMatrix<MT1>
-                           , IsSparseMatrix<MT2>, IsRowMajorMatrix<MT2> >
-                      , typename TDVecSMatMultExprTrait< typename TDVecDMatMultExprTrait<VT,MT1>::Type, MT2 >::Type
-                      , INVALID_TYPE >::Type  Type;
+   typedef If_< And< IsDenseVector<VT>, IsRowVector<VT>
+                   , IsDenseMatrix<MT1>, IsRowMajorMatrix<MT1>
+                   , IsSparseMatrix<MT2>, IsRowMajorMatrix<MT2> >
+              , typename TDVecSMatMultExprTrait< typename TDVecDMatMultExprTrait<VT,MT1>::Type, MT2 >::Type
+              , INVALID_TYPE >  Type;
    //**********************************************************************************************
 };
 /*! \endcond */
@@ -1701,11 +1701,11 @@ struct TSVecDMatMultExprTrait< VT, DMatSMatMultExpr<MT1,MT2> >
 {
  public:
    //**********************************************************************************************
-   typedef typename If< And< IsSparseVector<VT>, IsRowVector<VT>
-                           , IsDenseMatrix<MT1>, IsRowMajorMatrix<MT1>
-                           , IsSparseMatrix<MT2>, IsRowMajorMatrix<MT2> >
-                      , typename TDVecSMatMultExprTrait< typename TDVecDMatMultExprTrait<VT,MT1>::Type, MT2 >::Type
-                      , INVALID_TYPE >::Type  Type;
+   typedef If_< And< IsSparseVector<VT>, IsRowVector<VT>
+                   , IsDenseMatrix<MT1>, IsRowMajorMatrix<MT1>
+                   , IsSparseMatrix<MT2>, IsRowMajorMatrix<MT2> >
+              , typename TDVecSMatMultExprTrait< typename TDVecDMatMultExprTrait<VT,MT1>::Type, MT2 >::Type
+              , INVALID_TYPE >  Type;
    //**********************************************************************************************
 };
 /*! \endcond */

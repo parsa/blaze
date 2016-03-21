@@ -126,22 +126,22 @@ class SVecTSVecMultExpr : public SparseMatrix< SVecTSVecMultExpr<VT1,VT2>, false
    typedef typename ResultType::ElementType    ElementType;    //!< Resulting element type.
 
    //! Return type for expression template evaluations.
-   typedef const typename IfTrue< returnExpr, ExprReturnType, ElementType >::Type  ReturnType;
+   typedef const IfTrue_< returnExpr, ExprReturnType, ElementType >  ReturnType;
 
    //! Data type for composite expression templates.
    typedef const ResultType  CompositeType;
 
    //! Composite type of the left-hand side sparse vector expression.
-   typedef typename If< IsExpression<VT1>, const VT1, const VT1& >::Type  LeftOperand;
+   typedef If_< IsExpression<VT1>, const VT1, const VT1& >  LeftOperand;
 
    //! Composite type of the right-hand side sparse vector expression.
-   typedef typename If< IsExpression<VT2>, const VT2, const VT2& >::Type  RightOperand;
+   typedef If_< IsExpression<VT2>, const VT2, const VT2& >  RightOperand;
 
    //! Type for the assignment of the left-hand side dense vector operand.
-   typedef typename If< IsComputation<VT1>, const RT1, CT1 >::Type  LT;
+   typedef If_< IsComputation<VT1>, const RT1, CT1 >  LT;
 
    //! Type for the assignment of the right-hand side dense vector operand.
-   typedef typename If< IsComputation<VT2>, const RT2, CT2 >::Type  RT;
+   typedef If_< IsComputation<VT2>, const RT2, CT2 >  RT;
    //**********************************************************************************************
 
    //**Compilation flags***************************************************************************

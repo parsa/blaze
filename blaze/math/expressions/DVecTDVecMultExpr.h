@@ -212,22 +212,22 @@ class DVecTDVecMultExpr : public DenseMatrix< DVecTDVecMultExpr<VT1,VT2>, false 
    typedef typename IntrinsicTrait<ElementType>::Type  IntrinsicType;  //!< Resulting intrinsic element type.
 
    //! Return type for expression template evaluations.
-   typedef const typename IfTrue< returnExpr, ExprReturnType, ElementType >::Type  ReturnType;
+   typedef const IfTrue_< returnExpr, ExprReturnType, ElementType >  ReturnType;
 
    //! Data type for composite expression templates.
-   typedef typename IfTrue< useAssign, const ResultType, const DVecTDVecMultExpr& >::Type  CompositeType;
+   typedef IfTrue_< useAssign, const ResultType, const DVecTDVecMultExpr& >  CompositeType;
 
    //! Composite type of the left-hand side dense vector expression.
-   typedef typename If< IsExpression<VT1>, const VT1, const VT1& >::Type  LeftOperand;
+   typedef If_< IsExpression<VT1>, const VT1, const VT1& >  LeftOperand;
 
    //! Composite type of the right-hand side dense vector expression.
-   typedef typename If< IsExpression<VT2>, const VT2, const VT2& >::Type  RightOperand;
+   typedef If_< IsExpression<VT2>, const VT2, const VT2& >  RightOperand;
 
    //! Type for the assignment of the left-hand side dense vector operand.
-   typedef typename IfTrue< evaluateLeft, const RT1, CT1 >::Type  LT;
+   typedef IfTrue_< evaluateLeft, const RT1, CT1 >  LT;
 
    //! Type for the assignment of the right-hand side dense vector operand.
-   typedef typename IfTrue< evaluateRight, const RT2, CT2 >::Type  RT;
+   typedef IfTrue_< evaluateRight, const RT2, CT2 >  RT;
    //**********************************************************************************************
 
    //**ConstIterator class definition**************************************************************
@@ -925,7 +925,7 @@ class DVecTDVecMultExpr : public DenseMatrix< DVecTDVecMultExpr<VT1,VT2>, false 
    {
       BLAZE_FUNCTION_TRACE;
 
-      typedef typename IfTrue< SO, OppositeType, ResultType >::Type  TmpType;
+      typedef IfTrue_< SO, OppositeType, ResultType >  TmpType;
 
       BLAZE_CONSTRAINT_MUST_BE_DENSE_MATRIX_TYPE( ResultType );
       BLAZE_CONSTRAINT_MUST_BE_DENSE_MATRIX_TYPE( OppositeType );
@@ -1507,7 +1507,7 @@ class DVecTDVecMultExpr : public DenseMatrix< DVecTDVecMultExpr<VT1,VT2>, false 
    {
       BLAZE_FUNCTION_TRACE;
 
-      typedef typename IfTrue< SO, OppositeType, ResultType >::Type  TmpType;
+      typedef IfTrue_< SO, OppositeType, ResultType >  TmpType;
 
       BLAZE_CONSTRAINT_MUST_BE_DENSE_MATRIX_TYPE( ResultType );
       BLAZE_CONSTRAINT_MUST_BE_DENSE_MATRIX_TYPE( OppositeType );

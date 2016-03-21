@@ -155,10 +155,10 @@ class SMatTransExpr : public SparseMatrix< SMatTransExpr<MT,SO>, SO >
    typedef typename MT::ReturnType     ReturnType;     //!< Return type for expression template evaluations.
 
    //! Data type for composite expression templates.
-   typedef typename IfTrue< useAssign, const ResultType, const SMatTransExpr& >::Type  CompositeType;
+   typedef IfTrue_< useAssign, const ResultType, const SMatTransExpr& >  CompositeType;
 
    //! Composite data type of the sparse matrix expression.
-   typedef typename If< IsExpression<MT>, const MT, const MT& >::Type  Operand;
+   typedef If_< IsExpression<MT>, const MT, const MT& >  Operand;
    //**********************************************************************************************
 
    //**ConstIterator class definition**************************************************************
@@ -1037,9 +1037,9 @@ struct SMatTransExprTrait< SMatTransExpr<MT,false> >
 {
  public:
    //**********************************************************************************************
-   typedef typename If< And< IsSparseMatrix<MT>, IsColumnMajorMatrix<MT> >
-                      , typename SMatTransExpr<MT,false>::Operand
-                      , INVALID_TYPE >::Type  Type;
+   typedef If_< And< IsSparseMatrix<MT>, IsColumnMajorMatrix<MT> >
+              , typename SMatTransExpr<MT,false>::Operand
+              , INVALID_TYPE >  Type;
    //**********************************************************************************************
 };
 /*! \endcond */
@@ -1053,9 +1053,9 @@ struct TSMatTransExprTrait< SMatTransExpr<MT,true> >
 {
  public:
    //**********************************************************************************************
-   typedef typename If< And< IsSparseMatrix<MT>, IsRowMajorMatrix<MT> >
-                      , typename SMatTransExpr<MT,true>::Operand
-                      , INVALID_TYPE >::Type  Type;
+   typedef If_< And< IsSparseMatrix<MT>, IsRowMajorMatrix<MT> >
+              , typename SMatTransExpr<MT,true>::Operand
+              , INVALID_TYPE >  Type;
    //**********************************************************************************************
 };
 /*! \endcond */

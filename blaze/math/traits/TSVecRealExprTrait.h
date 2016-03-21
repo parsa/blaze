@@ -82,7 +82,7 @@ struct TSVecRealExprTrait
    typedef typename UnderlyingNumeric<VT>::Type  NET;
 
    typedef If< And< IsSparseVector<VT>, IsRowVector<VT> >
-             , typename If< IsBuiltin<NET>, const VT&, SVecRealExpr<VT,true> >::Type
+             , If_< IsBuiltin<NET>, const VT&, SVecRealExpr<VT,true> >
              , INVALID_TYPE >  Tmp;
 
    typedef typename RemoveReference< typename RemoveCV<VT>::Type >::Type  Type1;
@@ -92,8 +92,8 @@ struct TSVecRealExprTrait
  public:
    //**********************************************************************************************
    /*! \cond BLAZE_INTERNAL */
-   typedef typename If< Or< IsConst<VT>, IsVolatile<VT>, IsReference<VT> >
-                      , TSVecRealExprTrait<Type1>, Tmp >::Type::Type  Type;
+   typedef typename If_< Or< IsConst<VT>, IsVolatile<VT>, IsReference<VT> >
+                       , TSVecRealExprTrait<Type1>, Tmp >::Type  Type;
    /*! \endcond */
    //**********************************************************************************************
 };

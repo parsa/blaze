@@ -344,7 +344,7 @@ class DenseRow : public DenseVector< DenseRow<MT,SO,SF>, true >
  private:
    //**Type definitions****************************************************************************
    //! Composite data type of the dense matrix expression.
-   typedef typename If< IsExpression<MT>, MT, MT& >::Type  Operand;
+   typedef If_< IsExpression<MT>, MT, MT& >  Operand;
 
    //! Intrinsic trait for the row element type.
    typedef IntrinsicTrait<typename MT::ElementType>  IT;
@@ -364,20 +364,19 @@ class DenseRow : public DenseVector< DenseRow<MT,SO,SF>, true >
    typedef typename MT::ConstReference  ConstReference;
 
    //! Reference to a non-constant row value.
-   typedef typename If< IsConst<MT>, ConstReference, typename MT::Reference >::Type  Reference;
+   typedef If_< IsConst<MT>, ConstReference, typename MT::Reference >  Reference;
 
    //! Pointer to a constant row value.
    typedef const ElementType*  ConstPointer;
 
    //! Pointer to a non-constant row value.
-   typedef typename If< Or< IsConst<MT>, Not< HasMutableDataAccess<MT> > >
-                      , ConstPointer, ElementType* >::Type  Pointer;
+   typedef If_< Or< IsConst<MT>, Not< HasMutableDataAccess<MT> > >, ConstPointer, ElementType* >  Pointer;
 
    //! Iterator over constant elements.
    typedef typename MT::ConstIterator  ConstIterator;
 
    //! Iterator over non-constant elements.
-   typedef typename If< IsConst<MT>, ConstIterator, typename MT::Iterator >::Type  Iterator;
+   typedef If_< IsConst<MT>, ConstIterator, typename MT::Iterator >  Iterator;
    //**********************************************************************************************
 
    //**Compilation flags***************************************************************************
@@ -983,7 +982,7 @@ inline DenseRow<MT,SO,SF>& DenseRow<MT,SO,SF>::operator=( const Vector<VT,true>&
       BLAZE_THROW_INVALID_ARGUMENT( "Vector sizes do not match" );
    }
 
-   typedef typename If< IsRestricted<MT>, typename VT::CompositeType, const VT& >::Type  Right;
+   typedef If_< IsRestricted<MT>, typename VT::CompositeType, const VT& >  Right;
    Right right( ~rhs );
 
    if( !tryAssign( matrix_, right, row_, 0UL ) ) {
@@ -1035,7 +1034,7 @@ inline DenseRow<MT,SO,SF>& DenseRow<MT,SO,SF>::operator+=( const Vector<VT,true>
       BLAZE_THROW_INVALID_ARGUMENT( "Vector sizes do not match" );
    }
 
-   typedef typename If< IsRestricted<MT>, typename VT::CompositeType, const VT& >::Type  Right;
+   typedef If_< IsRestricted<MT>, typename VT::CompositeType, const VT& >  Right;
    Right right( ~rhs );
 
    if( !tryAddAssign( matrix_, right, row_, 0UL ) ) {
@@ -1085,7 +1084,7 @@ inline DenseRow<MT,SO,SF>& DenseRow<MT,SO,SF>::operator-=( const Vector<VT,true>
       BLAZE_THROW_INVALID_ARGUMENT( "Vector sizes do not match" );
    }
 
-   typedef typename If< IsRestricted<MT>, typename VT::CompositeType, const VT& >::Type  Right;
+   typedef If_< IsRestricted<MT>, typename VT::CompositeType, const VT& >  Right;
    Right right( ~rhs );
 
    if( !trySubAssign( matrix_, right, row_, 0UL ) ) {
@@ -1134,7 +1133,7 @@ inline DenseRow<MT,SO,SF>& DenseRow<MT,SO,SF>::operator*=( const DenseVector<VT,
       BLAZE_THROW_INVALID_ARGUMENT( "Vector sizes do not match" );
    }
 
-   typedef typename If< IsRestricted<MT>, typename VT::CompositeType, const VT& >::Type  Right;
+   typedef If_< IsRestricted<MT>, typename VT::CompositeType, const VT& >  Right;
    Right right( ~rhs );
 
    if( !tryMultAssign( matrix_, right, row_, 0UL ) ) {
@@ -2119,7 +2118,7 @@ class DenseRow<MT,false,false> : public DenseVector< DenseRow<MT,false,false>, t
  private:
    //**Type definitions****************************************************************************
    //! Composite data type of the dense matrix expression.
-   typedef typename If< IsExpression<MT>, MT, MT& >::Type  Operand;
+   typedef If_< IsExpression<MT>, MT, MT& >  Operand;
    //**********************************************************************************************
 
  public:
@@ -2135,14 +2134,13 @@ class DenseRow<MT,false,false> : public DenseVector< DenseRow<MT,false,false>, t
    typedef typename MT::ConstReference  ConstReference;
 
    //! Reference to a non-constant row value.
-   typedef typename If< IsConst<MT>, ConstReference, typename MT::Reference >::Type  Reference;
+   typedef If_< IsConst<MT>, ConstReference, typename MT::Reference >  Reference;
 
    //! Pointer to a constant row value.
    typedef const ElementType*  ConstPointer;
 
    //! Pointer to a non-constant row value.
-   typedef typename If< Or< IsConst<MT>, Not< HasMutableDataAccess<MT> > >
-                      , ConstPointer, ElementType* >::Type  Pointer;
+   typedef If_< Or< IsConst<MT>, Not< HasMutableDataAccess<MT> > >, ConstPointer, ElementType* >  Pointer;
    //**********************************************************************************************
 
    //**RowIterator class definition****************************************************************
@@ -2151,23 +2149,12 @@ class DenseRow<MT,false,false> : public DenseVector< DenseRow<MT,false,false>, t
    template< typename MatrixType >  // Type of the dense matrix
    class RowIterator
    {
-    private:
-      //*******************************************************************************************
-      //! Compilation switch for the return type of the value member function.
-      /*! The \a returnConst compile time constant expression represents a compilation switch for
-          the return type of the member access operators. In case the given matrix type \a MatrixType
-          is const qualified, \a returnConst will be set to 1 and the member access operators will
-          return a reference to const. Otherwise \a returnConst will be set to 0 and the member
-          access operators will offer write access to the dense matrix elements. */
-      enum { returnConst = IsConst<MatrixType>::value };
-      //*******************************************************************************************
-
     public:
       //**Type definitions*************************************************************************
       //! Return type for the access to the value of a dense element.
-      typedef typename IfTrue< returnConst
-                             , typename MatrixType::ConstReference
-                             , typename MatrixType::Reference >::Type  Reference;
+      typedef If_< IsConst<MatrixType>
+                 , typename MatrixType::ConstReference
+                 , typename MatrixType::Reference >  Reference;
 
       typedef std::random_access_iterator_tag  IteratorCategory;  //!< The iterator category.
       typedef RemoveReference<Reference>       ValueType;         //!< Type of the underlying elements.
@@ -2458,7 +2445,7 @@ class DenseRow<MT,false,false> : public DenseVector< DenseRow<MT,false,false>, t
    typedef RowIterator<const MT>  ConstIterator;
 
    //! Iterator over non-constant elements.
-   typedef typename If< IsConst<MT>, ConstIterator, RowIterator<MT> >::Type  Iterator;
+   typedef If_< IsConst<MT>, ConstIterator, RowIterator<MT> >  Iterator;
    //**********************************************************************************************
 
    //**Compilation flags***************************************************************************
@@ -2981,7 +2968,7 @@ inline DenseRow<MT,false,false>& DenseRow<MT,false,false>::operator=( const Vect
       BLAZE_THROW_INVALID_ARGUMENT( "Vector sizes do not match" );
    }
 
-   typedef typename If< IsRestricted<MT>, typename VT::CompositeType, const VT& >::Type  Right;
+   typedef If_< IsRestricted<MT>, typename VT::CompositeType, const VT& >  Right;
    Right right( ~rhs );
 
    if( !tryAssign( matrix_, right, row_, 0UL ) ) {
@@ -3033,7 +3020,7 @@ inline DenseRow<MT,false,false>& DenseRow<MT,false,false>::operator+=( const Vec
       BLAZE_THROW_INVALID_ARGUMENT( "Vector sizes do not match" );
    }
 
-   typedef typename If< IsRestricted<MT>, typename VT::CompositeType, const VT& >::Type  Right;
+   typedef If_< IsRestricted<MT>, typename VT::CompositeType, const VT& >  Right;
    Right right( ~rhs );
 
    if( !tryAddAssign( matrix_, right, row_, 0UL ) ) {
@@ -3083,7 +3070,7 @@ inline DenseRow<MT,false,false>& DenseRow<MT,false,false>::operator-=( const Vec
       BLAZE_THROW_INVALID_ARGUMENT( "Vector sizes do not match" );
    }
 
-   typedef typename If< IsRestricted<MT>, typename VT::CompositeType, const VT& >::Type  Right;
+   typedef If_< IsRestricted<MT>, typename VT::CompositeType, const VT& >  Right;
    Right right( ~rhs );
 
    if( !trySubAssign( matrix_, right, row_, 0UL ) ) {
@@ -3132,7 +3119,7 @@ inline DenseRow<MT,false,false>& DenseRow<MT,false,false>::operator*=( const Den
       BLAZE_THROW_INVALID_ARGUMENT( "Vector sizes do not match" );
    }
 
-   typedef typename If< IsRestricted<MT>, typename VT::CompositeType, const VT& >::Type  Right;
+   typedef If_< IsRestricted<MT>, typename VT::CompositeType, const VT& >  Right;
    Right right( ~rhs );
 
    if( !tryMultAssign( matrix_, right, row_, 0UL ) ) {
@@ -3768,7 +3755,7 @@ class DenseRow<MT,false,true> : public DenseVector< DenseRow<MT,false,true>, tru
  private:
    //**Type definitions****************************************************************************
    //! Composite data type of the dense matrix expression.
-   typedef typename If< IsExpression<MT>, MT, MT& >::Type  Operand;
+   typedef If_< IsExpression<MT>, MT, MT& >  Operand;
 
    //! Intrinsic trait for the row element type.
    typedef IntrinsicTrait<typename MT::ElementType>  IT;
@@ -3788,20 +3775,19 @@ class DenseRow<MT,false,true> : public DenseVector< DenseRow<MT,false,true>, tru
    typedef typename MT::ConstReference  ConstReference;
 
    //! Reference to a non-constant row value.
-   typedef typename If< IsConst<MT>, ConstReference, typename MT::Reference >::Type  Reference;
+   typedef If_< IsConst<MT>, ConstReference, typename MT::Reference >  Reference;
 
    //! Pointer to a constant row value.
    typedef const ElementType*  ConstPointer;
 
    //! Pointer to a non-constant row value.
-   typedef typename If< Or< IsConst<MT>, Not< HasMutableDataAccess<MT> > >
-                      , ConstPointer, ElementType* >::Type  Pointer;
+   typedef If_< Or< IsConst<MT>, Not< HasMutableDataAccess<MT> > >, ConstPointer, ElementType* >  Pointer;
 
    //! Iterator over constant elements.
    typedef typename MT::ConstIterator  ConstIterator;
 
    //! Iterator over non-constant elements.
-   typedef typename If< IsConst<MT>, ConstIterator, typename MT::Iterator >::Type  Iterator;
+   typedef If_< IsConst<MT>, ConstIterator, typename MT::Iterator >  Iterator;
    //**********************************************************************************************
 
    //**Compilation flags***************************************************************************
@@ -4395,7 +4381,7 @@ inline DenseRow<MT,false,true>& DenseRow<MT,false,true>::operator=( const Vector
       BLAZE_THROW_INVALID_ARGUMENT( "Vector sizes do not match" );
    }
 
-   typedef typename If< IsRestricted<MT>, typename VT::CompositeType, const VT& >::Type  Right;
+   typedef If_< IsRestricted<MT>, typename VT::CompositeType, const VT& >  Right;
    Right right( ~rhs );
 
    if( !tryAssign( matrix_, right, row_, 0UL ) ) {
@@ -4447,7 +4433,7 @@ inline DenseRow<MT,false,true>& DenseRow<MT,false,true>::operator+=( const Vecto
       BLAZE_THROW_INVALID_ARGUMENT( "Vector sizes do not match" );
    }
 
-   typedef typename If< IsRestricted<MT>, typename VT::CompositeType, const VT& >::Type  Right;
+   typedef If_< IsRestricted<MT>, typename VT::CompositeType, const VT& >  Right;
    Right right( ~rhs );
 
    if( !tryAddAssign( matrix_, right, row_, 0UL ) ) {
@@ -4497,7 +4483,7 @@ inline DenseRow<MT,false,true>& DenseRow<MT,false,true>::operator-=( const Vecto
       BLAZE_THROW_INVALID_ARGUMENT( "Vector sizes do not match" );
    }
 
-   typedef typename If< IsRestricted<MT>, typename VT::CompositeType, const VT& >::Type  Right;
+   typedef If_< IsRestricted<MT>, typename VT::CompositeType, const VT& >  Right;
    Right right( ~rhs );
 
    if( !trySubAssign( matrix_, right, row_, 0UL ) ) {
@@ -4546,7 +4532,7 @@ inline DenseRow<MT,false,true>& DenseRow<MT,false,true>::operator*=( const Dense
       BLAZE_THROW_INVALID_ARGUMENT( "Vector sizes do not match" );
    }
 
-   typedef typename If< IsRestricted<MT>, typename VT::CompositeType, const VT& >::Type  Right;
+   typedef If_< IsRestricted<MT>, typename VT::CompositeType, const VT& >  Right;
    Right right( ~rhs );
 
    if( !tryMultAssign( matrix_, right, row_, 0UL ) ) {

@@ -164,13 +164,13 @@ class SVecRealExpr : public SparseVector< SVecRealExpr<VT,TF>, TF >
    typedef typename ResultType::ElementType    ElementType;    //!< Resulting element type.
 
    //! Return type for expression template evaluations.
-   typedef const typename IfTrue< returnExpr, ExprReturnType, ElementType >::Type  ReturnType;
+   typedef const IfTrue_< returnExpr, ExprReturnType, ElementType >  ReturnType;
 
    //! Data type for composite expression templates.
-   typedef typename IfTrue< useAssign, const ResultType, const SVecRealExpr& >::Type  CompositeType;
+   typedef IfTrue_< useAssign, const ResultType, const SVecRealExpr& >  CompositeType;
 
    //! Composite data type of the sparse vector expression.
-   typedef typename If< IsExpression<VT>, const VT, const VT& >::Type  Operand;
+   typedef If_< IsExpression<VT>, const VT, const VT& >  Operand;
    //**********************************************************************************************
 
    //**Compilation flags***************************************************************************
@@ -894,9 +894,9 @@ struct SVecRealExprTrait< SVecRealExpr<VT,false> >
 {
  public:
    //**********************************************************************************************
-   typedef typename If< And< IsSparseVector<VT>, IsColumnVector<VT> >
-                      , SVecRealExpr<VT,false>
-                      , INVALID_TYPE >::Type  Type;
+   typedef If_< And< IsSparseVector<VT>, IsColumnVector<VT> >
+              , SVecRealExpr<VT,false>
+              , INVALID_TYPE >  Type;
    //**********************************************************************************************
 };
 /*! \endcond */
@@ -910,9 +910,9 @@ struct TSVecRealExprTrait< SVecRealExpr<VT,true> >
 {
  public:
    //**********************************************************************************************
-   typedef typename If< And< IsSparseVector<VT>, IsRowVector<VT> >
-                      , SVecRealExpr<VT,true>
-                      , INVALID_TYPE >::Type  Type;
+   typedef If_< And< IsSparseVector<VT>, IsRowVector<VT> >
+              , SVecRealExpr<VT,true>
+              , INVALID_TYPE >  Type;
    //**********************************************************************************************
 };
 /*! \endcond */

@@ -43,8 +43,8 @@
 #include <blaze/math/TransposeFlag.h>
 #include <blaze/math/typetraits/IsRowVector.h>
 #include <blaze/math/typetraits/IsVector.h>
-#include <blaze/util/InvalidType.h>
-#include <blaze/util/mpl/If.h>
+#include <blaze/util/EnableIf.h>
+#include <blaze/util/IntegralConstant.h>
 
 
 namespace blaze {
@@ -73,25 +73,9 @@ namespace blaze {
    blaze::TransposeFlag<int>::value           // Compilation error!
    \endcode
 */
-template< typename T >
-struct TransposeFlag
-{
- private:
-   //**struct ValidType****************************************************************************
-   /*! \cond BLAZE_INTERNAL */
-   struct ValidType {
-      static constexpr bool value = ( IsRowVector<T>::value ? rowVector : columnVector );
-   };
-   /*! \endcond */
-   //**********************************************************************************************
-
- public:
-   //**********************************************************************************************
-   /*! \cond BLAZE_INTERNAL */
-   static constexpr bool value = If< IsVector<T>, ValidType, INVALID_TYPE >::Type::value;
-   /*! \endcond */
-   //**********************************************************************************************
-};
+template< typename T, typename = EnableIf_< IsVector<T> > >
+struct TransposeFlag : public BoolConstant< ( IsRowVector<T>::value ? rowVector : columnVector ) >
+{};
 //*************************************************************************************************
 
 } // namespace blaze

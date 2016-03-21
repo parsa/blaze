@@ -82,18 +82,16 @@ struct TDMatScalarDivExprTraitHelper
  private:
    //**********************************************************************************************
    typedef typename UnderlyingNumeric<MT>::Type  NET;
-   typedef typename If< And< IsComplex<NET>, IsBuiltin<ST> >
-                           , typename DivTrait<typename UnderlyingBuiltin<MT>::Type,ST>::Type
-                           , typename DivTrait<NET,ST>::Type
-                           >::Type  ScalarType;
+   typedef If_< And< IsComplex<NET>, IsBuiltin<ST> >
+              , typename DivTrait<typename UnderlyingBuiltin<MT>::Type,ST>::Type
+              , typename DivTrait<NET,ST>::Type >  ScalarType;
    //**********************************************************************************************
 
  public:
    //**********************************************************************************************
-   typedef typename If< IsInvertible<ScalarType>
-                      , DMatScalarMultExpr<MT,ScalarType,true>
-                      , DMatScalarDivExpr<MT,ScalarType,true>
-                      >::Type  Type;
+   typedef If_< IsInvertible<ScalarType>
+              , DMatScalarMultExpr<MT,ScalarType,true>
+              , DMatScalarDivExpr<MT,ScalarType,true> >  Type;
    //**********************************************************************************************
 };
 /*! \endcond */
@@ -152,9 +150,9 @@ struct TDMatScalarDivExprTrait
  public:
    //**********************************************************************************************
    /*! \cond BLAZE_INTERNAL */
-   typedef typename If< Or< IsConst<MT>, IsVolatile<MT>, IsReference<MT>
-                          , IsConst<ST>, IsVolatile<ST>, IsReference<ST> >
-                      , TDMatScalarDivExprTrait<Type1,Type2>, Tmp >::Type::Type  Type;
+   typedef typename If_< Or< IsConst<MT>, IsVolatile<MT>, IsReference<MT>
+                           , IsConst<ST>, IsVolatile<ST>, IsReference<ST> >
+                       , TDMatScalarDivExprTrait<Type1,Type2>, Tmp >::Type  Type;
    /*! \endcond */
    //**********************************************************************************************
 };

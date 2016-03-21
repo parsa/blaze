@@ -86,15 +86,12 @@ struct DMatTDMatSubExprTrait
    /*! \cond BLAZE_INTERNAL */
    typedef If< And< IsDenseMatrix<MT1>, IsRowMajorMatrix<MT1>
                   , IsDenseMatrix<MT2>, IsColumnMajorMatrix<MT2> >
-             , typename If< IsSymmetric<MT2>
-                          , DMatDMatSubExpr< MT1, typename TDMatTransExprTrait<MT2>::Type, false >
-                          , typename If< IsSymmetric<MT1>
-                                       , DMatDMatSubExpr< typename DMatTransExprTrait<MT1>::Type, MT2, true >
-                                       , DMatTDMatSubExpr<MT1,MT2>
-                                       >::Type
-                          >::Type
-             , INVALID_TYPE
-             >  Tmp;
+             , If_< IsSymmetric<MT2>
+                  , DMatDMatSubExpr< MT1, typename TDMatTransExprTrait<MT2>::Type, false >
+                  , If_< IsSymmetric<MT1>
+                       , DMatDMatSubExpr< typename DMatTransExprTrait<MT1>::Type, MT2, true >
+                       , DMatTDMatSubExpr<MT1,MT2> > >
+             , INVALID_TYPE >  Tmp;
 
    typedef typename RemoveReference< typename RemoveCV<MT1>::Type >::Type  Type1;
    typedef typename RemoveReference< typename RemoveCV<MT2>::Type >::Type  Type2;
@@ -104,9 +101,9 @@ struct DMatTDMatSubExprTrait
  public:
    //**********************************************************************************************
    /*! \cond BLAZE_INTERNAL */
-   typedef typename If< Or< IsConst<MT1>, IsVolatile<MT1>, IsReference<MT1>
-                          , IsConst<MT2>, IsVolatile<MT2>, IsReference<MT2> >
-                      , DMatTDMatSubExprTrait<Type1,Type2>, Tmp >::Type::Type  Type;
+   typedef typename If_< Or< IsConst<MT1>, IsVolatile<MT1>, IsReference<MT1>
+                           , IsConst<MT2>, IsVolatile<MT2>, IsReference<MT2> >
+                       , DMatTDMatSubExprTrait<Type1,Type2>, Tmp >::Type  Type;
    /*! \endcond */
    //**********************************************************************************************
 };

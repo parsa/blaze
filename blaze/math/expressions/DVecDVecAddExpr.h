@@ -167,16 +167,16 @@ class DVecDVecAddExpr : public DenseVector< DVecDVecAddExpr<VT1,VT2,TF>, TF >
    typedef typename IntrinsicTrait<ElementType>::Type  IntrinsicType;  //!< Resulting intrinsic element type.
 
    //! Return type for expression template evaluations.
-   typedef const typename IfTrue< returnExpr, ExprReturnType, ElementType >::Type  ReturnType;
+   typedef const IfTrue_< returnExpr, ExprReturnType, ElementType >  ReturnType;
 
    //! Data type for composite expression templates.
-   typedef typename IfTrue< useAssign, const ResultType, const DVecDVecAddExpr& >::Type  CompositeType;
+   typedef IfTrue_< useAssign, const ResultType, const DVecDVecAddExpr& >  CompositeType;
 
    //! Composite type of the left-hand side dense vector expression.
-   typedef typename If< IsExpression<VT1>, const VT1, const VT1& >::Type  LeftOperand;
+   typedef If_< IsExpression<VT1>, const VT1, const VT1& >  LeftOperand;
 
    //! Composite type of the right-hand side dense vector expression.
-   typedef typename If< IsExpression<VT2>, const VT2, const VT2& >::Type  RightOperand;
+   typedef If_< IsExpression<VT2>, const VT2, const VT2& >  RightOperand;
    //**********************************************************************************************
 
    //**ConstIterator class definition**************************************************************

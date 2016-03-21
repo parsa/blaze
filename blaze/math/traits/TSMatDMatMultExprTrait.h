@@ -84,7 +84,7 @@ struct TSMatDMatMultExprTrait
    /*! \cond BLAZE_INTERNAL */
    typedef If< And< IsSparseMatrix<MT1>, IsColumnMajorMatrix<MT1>
                   , IsDenseMatrix<MT2> , IsRowMajorMatrix<MT2> >
-                     , TSMatDMatMultExpr<MT1,MT2>, INVALID_TYPE >  Tmp;
+             , TSMatDMatMultExpr<MT1,MT2>, INVALID_TYPE >  Tmp;
 
    typedef typename RemoveReference< typename RemoveCV<MT1>::Type >::Type  Type1;
    typedef typename RemoveReference< typename RemoveCV<MT2>::Type >::Type  Type2;
@@ -94,9 +94,9 @@ struct TSMatDMatMultExprTrait
  public:
    //**********************************************************************************************
    /*! \cond BLAZE_INTERNAL */
-   typedef typename If< Or< IsConst<MT1>, IsVolatile<MT1>, IsReference<MT1>
-                          , IsConst<MT2>, IsVolatile<MT2>, IsReference<MT2> >
-                      , TSMatDMatMultExprTrait<Type1,Type2>, Tmp >::Type::Type  Type;
+   typedef typename If_< Or< IsConst<MT1>, IsVolatile<MT1>, IsReference<MT1>
+                           , IsConst<MT2>, IsVolatile<MT2>, IsReference<MT2> >
+                       , TSMatDMatMultExprTrait<Type1,Type2>, Tmp >::Type  Type;
    /*! \endcond */
    //**********************************************************************************************
 };

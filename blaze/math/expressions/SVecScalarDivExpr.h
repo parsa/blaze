@@ -165,13 +165,13 @@ class SVecScalarDivExpr : public SparseVector< SVecScalarDivExpr<VT,ST,TF>, TF >
    typedef typename ResultType::ElementType    ElementType;    //!< Resulting element type.
 
    //! Return type for expression template evaluations.
-   typedef const typename IfTrue< returnExpr, ExprReturnType, ElementType >::Type  ReturnType;
+   typedef const IfTrue_< returnExpr, ExprReturnType, ElementType >  ReturnType;
 
    //! Data type for composite expression templates.
-   typedef typename IfTrue< useAssign, const ResultType, const SVecScalarDivExpr& >::Type  CompositeType;
+   typedef IfTrue_< useAssign, const ResultType, const SVecScalarDivExpr& >  CompositeType;
 
    //! Composite type of the left-hand side sparse vector expression.
-   typedef typename If< IsExpression<VT>, const VT, const VT& >::Type  LeftOperand;
+   typedef If_< IsExpression<VT>, const VT, const VT& >  LeftOperand;
 
    //! Composite type of the right-hand side scalar value.
    typedef ST  RightOperand;
@@ -971,10 +971,10 @@ struct SVecScalarMultExprTrait< SVecScalarDivExpr<VT,ST1,false>, ST2 >
 
  public:
    //**********************************************************************************************
-   typedef typename If< And< IsSparseVector<VT>, IsColumnVector<VT>
-                           , IsNumeric<ST1>, IsNumeric<ST2> >
-                      , typename If< IsInvertible<ScalarType>, T1, T2 >::Type
-                      , INVALID_TYPE >::Type  Type;
+   typedef If_< And< IsSparseVector<VT>, IsColumnVector<VT>
+                   , IsNumeric<ST1>, IsNumeric<ST2> >
+              , If_< IsInvertible<ScalarType>, T1, T2 >
+              , INVALID_TYPE >  Type;
    //**********************************************************************************************
 };
 /*! \endcond */
@@ -1006,10 +1006,10 @@ struct TSVecScalarMultExprTrait< SVecScalarDivExpr<VT,ST1,true>, ST2 >
 
  public:
    //**********************************************************************************************
-   typedef typename If< And< IsSparseVector<VT>, IsRowVector<VT>
-                           , IsNumeric<ST1>, IsNumeric<ST2> >
-                      , typename If< IsInvertible<ScalarType>, T1, T2 >::Type
-                      , INVALID_TYPE >::Type  Type;
+   typedef If_< And< IsSparseVector<VT>, IsRowVector<VT>
+                   , IsNumeric<ST1>, IsNumeric<ST2> >
+              , If_< IsInvertible<ScalarType>, T1, T2 >
+              , INVALID_TYPE >  Type;
    //**********************************************************************************************
 };
 /*! \endcond */

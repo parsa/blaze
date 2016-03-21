@@ -82,7 +82,7 @@ struct DMatImagExprTrait
    typedef typename UnderlyingNumeric<MT>::Type  NET;
 
    typedef If< And< IsDenseMatrix<MT>, IsRowMajorMatrix<MT> >
-             , typename If< IsBuiltin<NET>, const MT&, DMatImagExpr<MT,false> >::Type
+             , If_< IsBuiltin<NET>, const MT&, DMatImagExpr<MT,false> >
              , INVALID_TYPE >  Tmp;
 
    typedef typename RemoveReference< typename RemoveCV<MT>::Type >::Type  Type1;
@@ -92,8 +92,8 @@ struct DMatImagExprTrait
  public:
    //**********************************************************************************************
    /*! \cond BLAZE_INTERNAL */
-   typedef typename If< Or< IsConst<MT>, IsVolatile<MT>, IsReference<MT> >
-                      , DMatImagExprTrait<Type1>, Tmp >::Type::Type  Type;
+   typedef typename If_< Or< IsConst<MT>, IsVolatile<MT>, IsReference<MT> >
+                       , DMatImagExprTrait<Type1>, Tmp >::Type  Type;
    /*! \endcond */
    //**********************************************************************************************
 };

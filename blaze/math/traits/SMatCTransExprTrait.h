@@ -85,9 +85,9 @@ struct SMatCTransExprTrait
 
    //**********************************************************************************************
    /*! \cond BLAZE_INTERNAL */
-   typedef typename If< And< IsSparseMatrix<MT>, IsRowMajorMatrix<MT> >
-                      , SMatTransExprTrait< typename SMatConjExprTrait<MT>::Type >
-                      , Failure >::Type  Tmp;
+   typedef If_< And< IsSparseMatrix<MT>, IsRowMajorMatrix<MT> >
+              , SMatTransExprTrait< typename SMatConjExprTrait<MT>::Type >
+              , Failure >  Tmp;
 
    typedef typename RemoveReference< typename RemoveCV<MT>::Type >::Type  Type1;
    /*! \endcond */
@@ -96,8 +96,8 @@ struct SMatCTransExprTrait
  public:
    //**********************************************************************************************
    /*! \cond BLAZE_INTERNAL */
-   typedef typename If< Or< IsConst<MT>, IsVolatile<MT>, IsReference<MT> >
-                      , SMatCTransExprTrait<Type1>, Tmp >::Type::Type  Type;
+   typedef typename If_< Or< IsConst<MT>, IsVolatile<MT>, IsReference<MT> >
+                       , SMatCTransExprTrait<Type1>, Tmp >::Type  Type;
    /*! \endcond */
    //**********************************************************************************************
 };

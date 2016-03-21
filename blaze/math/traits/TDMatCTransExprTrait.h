@@ -85,9 +85,9 @@ struct TDMatCTransExprTrait
 
    //**********************************************************************************************
    /*! \cond BLAZE_INTERNAL */
-   typedef typename If< And< IsDenseMatrix<MT>, IsColumnMajorMatrix<MT> >
-                      , TDMatTransExprTrait< typename TDMatConjExprTrait<MT>::Type >
-                      , Failure >::Type  Tmp;
+   typedef If_< And< IsDenseMatrix<MT>, IsColumnMajorMatrix<MT> >
+              , TDMatTransExprTrait< typename TDMatConjExprTrait<MT>::Type >
+              , Failure >  Tmp;
 
    typedef typename RemoveReference< typename RemoveCV<MT>::Type >::Type  Type1;
    /*! \endcond */
@@ -96,8 +96,8 @@ struct TDMatCTransExprTrait
  public:
    //**********************************************************************************************
    /*! \cond BLAZE_INTERNAL */
-   typedef typename If< Or< IsConst<MT>, IsVolatile<MT>, IsReference<MT> >
-                      , TDMatCTransExprTrait<Type1>, Tmp >::Type::Type  Type;
+   typedef typename If_< Or< IsConst<MT>, IsVolatile<MT>, IsReference<MT> >
+                       , TDMatCTransExprTrait<Type1>, Tmp >::Type  Type;
    /*! \endcond */
    //**********************************************************************************************
 };

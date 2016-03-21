@@ -119,22 +119,22 @@ class DVecDVecCrossExpr : public DenseVector< DVecDVecCrossExpr<VT1,VT2>, false 
    typedef typename ResultType::ElementType    ElementType;    //!< Resulting element type.
 
    //! Return type for expression template evaluations.
-   typedef const typename IfTrue< returnExpr, ExprReturnType, ElementType >::Type  ReturnType;
+   typedef const IfTrue_< returnExpr, ExprReturnType, ElementType >  ReturnType;
 
    //! Data type for composite expression templates.
    typedef const ResultType  CompositeType;
 
    //! Composite type of the left-hand side dense vector expression.
-   typedef typename If< IsExpression<VT1>, const VT1, const VT1& >::Type  LeftOperand;
+   typedef If_< IsExpression<VT1>, const VT1, const VT1& >  LeftOperand;
 
    //! Composite type of the right-hand side dense vector expression.
-   typedef typename If< IsExpression<VT2>, const VT2, const VT2& >::Type  RightOperand;
+   typedef If_< IsExpression<VT2>, const VT2, const VT2& >  RightOperand;
 
    //! Composite type of the left-hand side dense vector expression.
-   typedef typename If< IsComputation<VT1>, const StaticVector<ET1,3UL,false>, CT1 >::Type  LT;
+   typedef If_< IsComputation<VT1>, const StaticVector<ET1,3UL,false>, CT1 >  LT;
 
    //! Composite type of the right-hand side dense vector expression.
-   typedef typename If< IsComputation<VT2>, const StaticVector<ET2,3UL,false>, CT2 >::Type  RT;
+   typedef If_< IsComputation<VT2>, const StaticVector<ET2,3UL,false>, CT2 >  RT;
    //**********************************************************************************************
 
    //**Compilation flags***************************************************************************

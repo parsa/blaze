@@ -114,16 +114,13 @@ struct RealTrait
 
    //**********************************************************************************************
    /*! \cond BLAZE_INTERNAL */
-   typedef typename If< Or< IsMatrix<T>, IsVector<T> >
-                      , MatrixOrVector
-                      , typename If< IsBuiltin<T>
-                                   , Builtin
-                                   , typename If< IsComplex<T>
-                                                , Complex
-                                                , Failure
-                                                >::Type
-                                   >::Type
-                      >::Type  Tmp;
+   typedef If_< Or< IsMatrix<T>, IsVector<T> >
+              , MatrixOrVector
+              , If_< IsBuiltin<T>
+                   , Builtin
+                   , If_< IsComplex<T>
+                        , Complex
+                        , Failure > > >  Tmp;
 
    typedef typename RemoveReference< typename RemoveCV<T>::Type >::Type  Type1;
    /*! \endcond */
@@ -132,8 +129,8 @@ struct RealTrait
  public:
    //**********************************************************************************************
    /*! \cond BLAZE_INTERNAL */
-   typedef typename If< Or< IsConst<T>, IsVolatile<T>, IsReference<T> >
-                      , RealTrait<Type1>, Tmp >::Type::Type  Type;
+   typedef typename If_< Or< IsConst<T>, IsVolatile<T>, IsReference<T> >
+                       , RealTrait<Type1>, Tmp >::Type  Type;
    /*! \endcond */
    //**********************************************************************************************
 };

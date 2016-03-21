@@ -141,16 +141,16 @@ class SMatSVecMultExpr : public SparseVector< SMatSVecMultExpr<MT,VT>, false >
    typedef const ResultType  CompositeType;
 
    //! Composite type of the left-hand side sparse matrix expression.
-   typedef typename If< IsExpression<MT>, const MT, const MT& >::Type  LeftOperand;
+   typedef If_< IsExpression<MT>, const MT, const MT& >  LeftOperand;
 
    //! Composite type of the right-hand side sparse vector expression.
-   typedef typename If< IsExpression<VT>, const VT, const VT& >::Type  RightOperand;
+   typedef If_< IsExpression<VT>, const VT, const VT& >  RightOperand;
 
    //! Type for the assignment of the left-hand side sparse matrix operand.
-   typedef typename IfTrue< evaluateMatrix, const MRT, MCT >::Type  LT;
+   typedef IfTrue_< evaluateMatrix, const MRT, MCT >  LT;
 
    //! Type for the assignment of the right-hand side sparse vector operand.
-   typedef typename IfTrue< evaluateVector, const VRT, VCT >::Type  RT;
+   typedef IfTrue_< evaluateVector, const VRT, VCT >  RT;
    //**********************************************************************************************
 
    //**Compilation flags***************************************************************************

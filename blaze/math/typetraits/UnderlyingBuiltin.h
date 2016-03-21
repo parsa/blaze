@@ -104,13 +104,12 @@ struct UnderlyingBuiltin
  public:
    //**********************************************************************************************
    /*! \cond BLAZE_INTERNAL */
-   typedef typename If< IsBuiltin<T>
-                      , Builtin<T>
-                      , typename If< IsComplex<T>
-                                   , Complex<T>
-                                   , Other<T>
-                                   >::Type
-                      >::Type::Type  Type;
+   typedef typename If_< IsBuiltin<T>
+                       , Builtin<T>
+                       , If_< IsComplex<T>
+                            , Complex<T>
+                            , Other<T> >
+                       >::Type  Type;
    /*! \endcond */
    //**********************************************************************************************
 };

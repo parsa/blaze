@@ -138,8 +138,8 @@ struct SubvectorTrait
  public:
    //**********************************************************************************************
    /*! \cond BLAZE_INTERNAL */
-   typedef typename If< Or< IsConst<VT>, IsVolatile<VT>, IsReference<VT> >
-                      , SubvectorTrait<Tmp>, Failure >::Type::Type  Type;
+   typedef typename If_< Or< IsConst<VT>, IsVolatile<VT>, IsReference<VT> >
+                       , SubvectorTrait<Tmp>, Failure >::Type  Type;
    /*! \endcond */
    //**********************************************************************************************
 };

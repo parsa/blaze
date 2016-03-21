@@ -394,7 +394,7 @@ class SparseSubvector : public SparseVector< SparseSubvector<VT,AF,TF>, TF >
  private:
    //**Type definitions****************************************************************************
    //! Composite data type of the sparse vector expression.
-   typedef typename If< IsExpression<VT>, VT, VT& >::Type  Operand;
+   typedef If_< IsExpression<VT>, VT, VT& >  Operand;
    //**********************************************************************************************
 
  public:
@@ -410,7 +410,7 @@ class SparseSubvector : public SparseVector< SparseSubvector<VT,AF,TF>, TF >
    typedef typename VT::ConstReference  ConstReference;
 
    //! Reference to a non-constant subvector value.
-   typedef typename If< IsConst<VT>, ConstReference, typename VT::Reference >::Type  Reference;
+   typedef If_< IsConst<VT>, ConstReference, typename VT::Reference >  Reference;
    //**********************************************************************************************
 
    //**SubvectorElement class definition***********************************************************
@@ -441,10 +441,10 @@ class SparseSubvector : public SparseVector< SparseSubvector<VT,AF,TF>, TF >
 
     public:
       //**Type definitions*************************************************************************
-      typedef typename SET::ValueType                    ValueType;       //!< The value type of the row element.
-      typedef size_t                                     IndexType;       //!< The index type of the row element.
-      typedef typename IfTrue<returnConst,CRT,RT>::Type  Reference;       //!< Reference return type
-      typedef CRT                                        ConstReference;  //!< Reference-to-const return type.
+      typedef typename SET::ValueType      ValueType;       //!< The value type of the row element.
+      typedef size_t                       IndexType;       //!< The index type of the row element.
+      typedef IfTrue_<returnConst,CRT,RT>  Reference;       //!< Reference return type
+      typedef CRT                          ConstReference;  //!< Reference-to-const return type.
       //*******************************************************************************************
 
       //**Constructor******************************************************************************
@@ -724,7 +724,7 @@ class SparseSubvector : public SparseVector< SparseSubvector<VT,AF,TF>, TF >
    typedef SubvectorIterator<const VT,typename VT::ConstIterator>  ConstIterator;
 
    //! Iterator over non-constant elements.
-   typedef typename If< IsConst<VT>, ConstIterator, SubvectorIterator<VT,typename VT::Iterator> >::Type  Iterator;
+   typedef If_< IsConst<VT>, ConstIterator, SubvectorIterator<VT,typename VT::Iterator> >  Iterator;
    //**********************************************************************************************
 
    //**Compilation flags***************************************************************************
@@ -1229,7 +1229,7 @@ inline SparseSubvector<VT,AF,TF>&
       BLAZE_THROW_INVALID_ARGUMENT( "Vector sizes do not match" );
    }
 
-   typedef typename If< IsRestricted<VT>, typename VT2::CompositeType, const VT2& >::Type  Right;
+   typedef If_< IsRestricted<VT>, typename VT2::CompositeType, const VT2& >  Right;
    Right right( ~rhs );
 
    if( !tryAssign( vector_, right, offset_ ) ) {
@@ -1457,7 +1457,7 @@ inline EnableIf_<IsNumeric<Other>, SparseSubvector<VT,AF,TF> >&
    BLAZE_USER_ASSERT( rhs != Other(0), "Division by zero detected" );
 
    typedef typename DivTrait<ElementType,Other>::Type  DT;
-   typedef typename If< IsNumeric<DT>, DT, Other >::Type  Tmp;
+   typedef If_< IsNumeric<DT>, DT, Other >  Tmp;
 
    const Iterator last( end() );
 

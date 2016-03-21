@@ -421,8 +421,8 @@ bool isSymmetric( const SparseMatrix<MT,SO>& sm )
    typedef typename MT::ResultType     RT;
    typedef typename MT::ReturnType     RN;
    typedef typename MT::CompositeType  CT;
-   typedef typename If< IsExpression<RN>, const RT, CT >::Type  Tmp;
-   typedef typename RemoveReference<Tmp>::Type::ConstIterator   ConstIterator;
+   typedef If_< IsExpression<RN>, const RT, CT >  Tmp;
+   typedef typename RemoveReference<Tmp>::Type::ConstIterator  ConstIterator;
 
    if( IsSymmetric<MT>::value )
       return true;
@@ -507,8 +507,8 @@ bool isHermitian( const SparseMatrix<MT,SO>& sm )
    typedef typename MT::ElementType    ET;
    typedef typename MT::ReturnType     RN;
    typedef typename MT::CompositeType  CT;
-   typedef typename If< IsExpression<RN>, const RT, CT >::Type  Tmp;
-   typedef typename RemoveReference<Tmp>::Type::ConstIterator   ConstIterator;
+   typedef If_< IsExpression<RN>, const RT, CT >  Tmp;
+   typedef typename RemoveReference<Tmp>::Type::ConstIterator  ConstIterator;
 
    if( IsHermitian<MT>::value )
       return true;
@@ -822,8 +822,8 @@ bool isLower( const SparseMatrix<MT,SO>& sm )
    typedef typename MT::ResultType     RT;
    typedef typename MT::ReturnType     RN;
    typedef typename MT::CompositeType  CT;
-   typedef typename If< IsExpression<RN>, const RT, CT >::Type  Tmp;
-   typedef typename RemoveReference<Tmp>::Type::ConstIterator   ConstIterator;
+   typedef If_< IsExpression<RN>, const RT, CT >  Tmp;
+   typedef typename RemoveReference<Tmp>::Type::ConstIterator  ConstIterator;
 
    if( IsLower<MT>::value )
       return true;
@@ -906,8 +906,8 @@ bool isUniLower( const SparseMatrix<MT,SO>& sm )
    typedef typename MT::ElementType    ET;
    typedef typename MT::ReturnType     RN;
    typedef typename MT::CompositeType  CT;
-   typedef typename If< IsExpression<RN>, const RT, CT >::Type  Tmp;
-   typedef typename RemoveReference<Tmp>::Type::ConstIterator   ConstIterator;
+   typedef If_< IsExpression<RN>, const RT, CT >  Tmp;
+   typedef typename RemoveReference<Tmp>::Type::ConstIterator  ConstIterator;
 
    if( IsUniLower<MT>::value )
       return true;
@@ -1006,8 +1006,8 @@ bool isStrictlyLower( const SparseMatrix<MT,SO>& sm )
    typedef typename MT::ElementType    ET;
    typedef typename MT::ReturnType     RN;
    typedef typename MT::CompositeType  CT;
-   typedef typename If< IsExpression<RN>, const RT, CT >::Type  Tmp;
-   typedef typename RemoveReference<Tmp>::Type::ConstIterator   ConstIterator;
+   typedef If_< IsExpression<RN>, const RT, CT >  Tmp;
+   typedef typename RemoveReference<Tmp>::Type::ConstIterator  ConstIterator;
 
    if( IsStrictlyLower<MT>::value )
       return true;
@@ -1087,8 +1087,8 @@ bool isUpper( const SparseMatrix<MT,SO>& sm )
    typedef typename MT::ResultType     RT;
    typedef typename MT::ReturnType     RN;
    typedef typename MT::CompositeType  CT;
-   typedef typename If< IsExpression<RN>, const RT, CT >::Type  Tmp;
-   typedef typename RemoveReference<Tmp>::Type::ConstIterator   ConstIterator;
+   typedef If_< IsExpression<RN>, const RT, CT >  Tmp;
+   typedef typename RemoveReference<Tmp>::Type::ConstIterator  ConstIterator;
 
    if( IsUpper<MT>::value )
       return true;
@@ -1171,8 +1171,8 @@ bool isUniUpper( const SparseMatrix<MT,SO>& sm )
    typedef typename MT::ElementType    ET;
    typedef typename MT::ReturnType     RN;
    typedef typename MT::CompositeType  CT;
-   typedef typename If< IsExpression<RN>, const RT, CT >::Type  Tmp;
-   typedef typename RemoveReference<Tmp>::Type::ConstIterator   ConstIterator;
+   typedef If_< IsExpression<RN>, const RT, CT >  Tmp;
+   typedef typename RemoveReference<Tmp>::Type::ConstIterator  ConstIterator;
 
    if( IsUniUpper<MT>::value )
       return true;
@@ -1271,8 +1271,8 @@ bool isStrictlyUpper( const SparseMatrix<MT,SO>& sm )
    typedef typename MT::ElementType    ET;
    typedef typename MT::ReturnType     RN;
    typedef typename MT::CompositeType  CT;
-   typedef typename If< IsExpression<RN>, const RT, CT >::Type  Tmp;
-   typedef typename RemoveReference<Tmp>::Type::ConstIterator   ConstIterator;
+   typedef If_< IsExpression<RN>, const RT, CT >  Tmp;
+   typedef typename RemoveReference<Tmp>::Type::ConstIterator  ConstIterator;
 
    if( IsStrictlyUpper<MT>::value )
       return true;
@@ -1352,8 +1352,8 @@ bool isDiagonal( const SparseMatrix<MT,SO>& sm )
    typedef typename MT::ResultType     RT;
    typedef typename MT::ReturnType     RN;
    typedef typename MT::CompositeType  CT;
-   typedef typename If< IsExpression<RN>, const RT, CT >::Type  Tmp;
-   typedef typename RemoveReference<Tmp>::Type::ConstIterator   ConstIterator;
+   typedef If_< IsExpression<RN>, const RT, CT >  Tmp;
+   typedef typename RemoveReference<Tmp>::Type::ConstIterator  ConstIterator;
 
    if( IsDiagonal<MT>::value )
       return true;
@@ -1430,8 +1430,8 @@ bool isIdentity( const SparseMatrix<MT,SO>& sm )
    typedef typename MT::ElementType    ET;
    typedef typename MT::ReturnType     RN;
    typedef typename MT::CompositeType  CT;
-   typedef typename If< IsExpression<RN>, const RT, CT >::Type  Tmp;
-   typedef typename RemoveReference<Tmp>::Type::ConstIterator   ConstIterator;
+   typedef If_< IsExpression<RN>, const RT, CT >  Tmp;
+   typedef typename RemoveReference<Tmp>::Type::ConstIterator  ConstIterator;
 
    if( IsIdentity<MT>::value )
       return true;

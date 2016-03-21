@@ -139,10 +139,10 @@ class SVecTransExpr : public SparseVector< SVecTransExpr<VT,TF>, TF >
    typedef typename VT::ReturnType     ReturnType;     //!< Return type for expression template evaluations.
 
    //! Data type for composite expression templates.
-   typedef typename IfTrue< useAssign, const ResultType, const SVecTransExpr& >::Type  CompositeType;
+   typedef IfTrue_< useAssign, const ResultType, const SVecTransExpr& >  CompositeType;
 
    //! Composite data type of the sparse vector expression.
-   typedef typename If< IsExpression<VT>, const VT, const VT& >::Type  Operand;
+   typedef If_< IsExpression<VT>, const VT, const VT& >  Operand;
    //**********************************************************************************************
 
    //**Compilation flags***************************************************************************
@@ -859,9 +859,9 @@ struct SVecTransExprTrait< SVecTransExpr<VT,false> >
 {
  public:
    //**********************************************************************************************
-   typedef typename If< And< IsSparseVector<VT>, IsRowVector<VT> >
-                      , typename SVecTransExpr<VT,false>::Operand
-                      , INVALID_TYPE >::Type  Type;
+   typedef If_< And< IsSparseVector<VT>, IsRowVector<VT> >
+              , typename SVecTransExpr<VT,false>::Operand
+              , INVALID_TYPE >  Type;
    //**********************************************************************************************
 };
 /*! \endcond */
@@ -875,9 +875,9 @@ struct TSVecTransExprTrait< SVecTransExpr<VT,true> >
 {
  public:
    //**********************************************************************************************
-   typedef typename If< And< IsSparseVector<VT>, IsColumnVector<VT> >
-                      , typename SVecTransExpr<VT,true>::Operand
-                      , INVALID_TYPE >::Type  Type;
+   typedef If_< And< IsSparseVector<VT>, IsColumnVector<VT> >
+              , typename SVecTransExpr<VT,true>::Operand
+              , INVALID_TYPE >  Type;
    //**********************************************************************************************
 };
 /*! \endcond */

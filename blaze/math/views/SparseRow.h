@@ -372,7 +372,7 @@ class SparseRow : public SparseVector< SparseRow<MT,SO,SF>, true >
  private:
    //**Type definitions****************************************************************************
    //! Composite data type of the dense matrix expression.
-   typedef typename If< IsExpression<MT>, MT, MT& >::Type  Operand;
+   typedef If_< IsExpression<MT>, MT, MT& >  Operand;
    //**********************************************************************************************
 
  public:
@@ -388,13 +388,13 @@ class SparseRow : public SparseVector< SparseRow<MT,SO,SF>, true >
    typedef typename MT::ConstReference  ConstReference;
 
    //! Reference to a non-constant row value.
-   typedef typename If< IsConst<MT>, ConstReference, typename MT::Reference >::Type  Reference;
+   typedef If_< IsConst<MT>, ConstReference, typename MT::Reference >  Reference;
 
    //! Iterator over constant elements.
    typedef typename MT::ConstIterator  ConstIterator;
 
    //! Iterator over non-constant elements.
-   typedef typename If< IsConst<MT>, ConstIterator, typename MT::Iterator >::Type  Iterator;
+   typedef If_< IsConst<MT>, ConstIterator, typename MT::Iterator >  Iterator;
    //**********************************************************************************************
 
    //**Compilation flags***************************************************************************
@@ -877,7 +877,7 @@ inline SparseRow<MT,SO,SF>& SparseRow<MT,SO,SF>::operator=( const DenseVector<VT
       BLAZE_THROW_INVALID_ARGUMENT( "Vector sizes do not match" );
    }
 
-   typedef typename If< IsRestricted<MT>, typename VT::CompositeType, const VT& >::Type  Right;
+   typedef If_< IsRestricted<MT>, typename VT::CompositeType, const VT& >  Right;
    Right right( ~rhs );
 
    if( !tryAssign( matrix_, right, row_, 0UL ) ) {
@@ -932,7 +932,7 @@ inline SparseRow<MT,SO,SF>& SparseRow<MT,SO,SF>::operator=( const SparseVector<V
       BLAZE_THROW_INVALID_ARGUMENT( "Vector sizes do not match" );
    }
 
-   typedef typename If< IsRestricted<MT>, typename VT::CompositeType, const VT& >::Type  Right;
+   typedef If_< IsRestricted<MT>, typename VT::CompositeType, const VT& >  Right;
    Right right( ~rhs );
 
    if( !tryAssign( matrix_, right, row_, 0UL ) ) {
@@ -1300,7 +1300,7 @@ inline EnableIf_<IsNumeric<Other>, SparseRow<MT,SO,SF> >&
    BLAZE_USER_ASSERT( rhs != Other(0), "Division by zero detected" );
 
    typedef typename DivTrait<ElementType,Other>::Type  DT;
-   typedef typename If< IsNumeric<DT>, DT, Other >::Type  Tmp;
+   typedef If_< IsNumeric<DT>, DT, Other >  Tmp;
 
    // Depending on the two involved data types, an integer division is applied or a
    // floating point division is selected.
@@ -2011,7 +2011,7 @@ class SparseRow<MT,false,false> : public SparseVector< SparseRow<MT,false,false>
  private:
    //**Type definitions****************************************************************************
    //! Composite data type of the dense matrix expression.
-   typedef typename If< IsExpression<MT>, MT, MT& >::Type  Operand;
+   typedef If_< IsExpression<MT>, MT, MT& >  Operand;
    //**********************************************************************************************
 
  public:
@@ -2027,7 +2027,7 @@ class SparseRow<MT,false,false> : public SparseVector< SparseRow<MT,false,false>
    typedef typename MT::ConstReference  ConstReference;
 
    //! Reference to a non-constant row value.
-   typedef typename If< IsConst<MT>, ConstReference, typename MT::Reference >::Type  Reference;
+   typedef If_< IsConst<MT>, ConstReference, typename MT::Reference >  Reference;
    //**********************************************************************************************
 
    //**RowElement class definition*****************************************************************
@@ -2058,10 +2058,10 @@ class SparseRow<MT,false,false> : public SparseVector< SparseRow<MT,false,false>
 
     public:
       //**Type definitions*************************************************************************
-      typedef typename SET::ValueType                    ValueType;       //!< The value type of the row element.
-      typedef size_t                                     IndexType;       //!< The index type of the row element.
-      typedef typename IfTrue<returnConst,CRT,RT>::Type  Reference;       //!< Reference return type
-      typedef CRT                                        ConstReference;  //!< Reference-to-const return type.
+      typedef typename SET::ValueType      ValueType;       //!< The value type of the row element.
+      typedef size_t                       IndexType;       //!< The index type of the row element.
+      typedef IfTrue_<returnConst,CRT,RT>  Reference;       //!< Reference return type
+      typedef CRT                          ConstReference;  //!< Reference-to-const return type.
       //*******************************************************************************************
 
       //**Constructor******************************************************************************
@@ -2368,7 +2368,7 @@ class SparseRow<MT,false,false> : public SparseVector< SparseRow<MT,false,false>
    typedef RowIterator<const MT,typename MT::ConstIterator>  ConstIterator;
 
    //! Iterator over non-constant elements.
-   typedef typename If< IsConst<MT>, ConstIterator, RowIterator<MT,typename MT::Iterator> >::Type  Iterator;
+   typedef If_< IsConst<MT>, ConstIterator, RowIterator<MT,typename MT::Iterator> >  Iterator;
    //**********************************************************************************************
 
    //**Compilation flags***************************************************************************
@@ -3064,7 +3064,7 @@ inline EnableIf_<IsNumeric<Other>, SparseRow<MT,false,false> >&
    BLAZE_USER_ASSERT( rhs != Other(0), "Division by zero detected" );
 
    typedef typename DivTrait<ElementType,Other>::Type  DT;
-   typedef typename If< IsNumeric<DT>, DT, Other >::Type  Tmp;
+   typedef If_< IsNumeric<DT>, DT, Other >  Tmp;
 
    // Depending on the two involved data types, an integer division is applied or a
    // floating point division is selected.
@@ -3752,7 +3752,7 @@ class SparseRow<MT,false,true> : public SparseVector< SparseRow<MT,false,true>, 
  private:
    //**Type definitions****************************************************************************
    //! Composite data type of the dense matrix expression.
-   typedef typename If< IsExpression<MT>, MT, MT& >::Type  Operand;
+   typedef If_< IsExpression<MT>, MT, MT& >  Operand;
    //**********************************************************************************************
 
  public:
@@ -3768,13 +3768,13 @@ class SparseRow<MT,false,true> : public SparseVector< SparseRow<MT,false,true>, 
    typedef typename MT::ConstReference  ConstReference;
 
    //! Reference to a non-constant row value.
-   typedef typename If< IsConst<MT>, ConstReference, typename MT::Reference >::Type  Reference;
+   typedef If_< IsConst<MT>, ConstReference, typename MT::Reference >  Reference;
 
    //! Iterator over constant elements.
    typedef typename MT::ConstIterator  ConstIterator;
 
    //! Iterator over non-constant elements.
-   typedef typename If< IsConst<MT>, ConstIterator, typename MT::Iterator >::Type  Iterator;
+   typedef If_< IsConst<MT>, ConstIterator, typename MT::Iterator >  Iterator;
    //**********************************************************************************************
 
    //**Compilation flags***************************************************************************
@@ -4258,7 +4258,7 @@ inline SparseRow<MT,false,true>&
       BLAZE_THROW_INVALID_ARGUMENT( "Vector sizes do not match" );
    }
 
-   typedef typename If< IsRestricted<MT>, typename VT::CompositeType, const VT& >::Type  Right;
+   typedef If_< IsRestricted<MT>, typename VT::CompositeType, const VT& >  Right;
    Right right( ~rhs );
 
    if( !tryAssign( matrix_, right, row_, 0UL ) ) {
@@ -4314,7 +4314,7 @@ inline SparseRow<MT,false,true>&
       BLAZE_THROW_INVALID_ARGUMENT( "Vector sizes do not match" );
    }
 
-   typedef typename If< IsRestricted<MT>, typename VT::CompositeType, const VT& >::Type  Right;
+   typedef If_< IsRestricted<MT>, typename VT::CompositeType, const VT& >  Right;
    Right right( ~rhs );
 
    if( !tryAssign( matrix_, right, row_, 0UL ) ) {
@@ -4687,7 +4687,7 @@ inline EnableIf_<IsNumeric<Other>, SparseRow<MT,false,true> >&
    BLAZE_USER_ASSERT( rhs != Other(0), "Division by zero detected" );
 
    typedef typename DivTrait<ElementType,Other>::Type  DT;
-   typedef typename If< IsNumeric<DT>, DT, Other >::Type  Tmp;
+   typedef If_< IsNumeric<DT>, DT, Other >  Tmp;
 
    // Depending on the two involved data types, an integer division is applied or a
    // floating point division is selected.

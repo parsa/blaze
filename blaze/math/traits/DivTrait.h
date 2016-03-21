@@ -154,9 +154,9 @@ struct DivTrait
  public:
    //**********************************************************************************************
    /*! \cond BLAZE_INTERNAL */
-   typedef typename If< Or< IsConst<T1>, IsVolatile<T1>, IsReference<T1>
-                          , IsConst<T2>, IsVolatile<T2>, IsReference<T2> >
-                      , DivTrait<Type1,Type2>, DivType >::Type::Type  Type;
+   typedef typename If_< Or< IsConst<T1>, IsVolatile<T1>, IsReference<T1>
+                           , IsConst<T2>, IsVolatile<T2>, IsReference<T2> >
+                       , DivTrait<Type1,Type2>, DivType >::Type  Type;
    /*! \endcond */
    //**********************************************************************************************
 };

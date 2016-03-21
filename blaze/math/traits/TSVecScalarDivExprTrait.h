@@ -82,18 +82,16 @@ struct TSVecScalarDivExprTraitHelper
  private:
    //**********************************************************************************************
    typedef typename UnderlyingNumeric<VT>::Type  NET;
-   typedef typename If< And< IsComplex<NET>, IsBuiltin<ST> >
-                      , typename DivTrait<typename UnderlyingBuiltin<VT>::Type,ST>::Type
-                      , typename DivTrait<NET,ST>::Type
-                      >::Type  ScalarType;
+   typedef If_< And< IsComplex<NET>, IsBuiltin<ST> >
+              , typename DivTrait<typename UnderlyingBuiltin<VT>::Type,ST>::Type
+              , typename DivTrait<NET,ST>::Type >  ScalarType;
    //**********************************************************************************************
 
  public:
    //**********************************************************************************************
-   typedef typename If< IsInvertible<ScalarType>
-                      , SVecScalarMultExpr<VT,ScalarType,true>
-                      , SVecScalarDivExpr<VT,ScalarType,true>
-                      >::Type  Type;
+   typedef If_< IsInvertible<ScalarType>
+              , SVecScalarMultExpr<VT,ScalarType,true>
+              , SVecScalarDivExpr<VT,ScalarType,true> >  Type;
    //**********************************************************************************************
 };
 /*! \endcond */
@@ -152,9 +150,9 @@ struct TSVecScalarDivExprTrait
  public:
    //**********************************************************************************************
    /*! \cond BLAZE_INTERNAL */
-   typedef typename If< Or< IsConst<VT>, IsVolatile<VT>, IsReference<VT>
-                          , IsConst<ST>, IsVolatile<ST>, IsReference<ST> >
-                      , TSVecScalarDivExprTrait<Type1,Type2>, Tmp >::Type::Type  Type;
+   typedef typename If_< Or< IsConst<VT>, IsVolatile<VT>, IsReference<VT>
+                           , IsConst<ST>, IsVolatile<ST>, IsReference<ST> >
+                       , TSVecScalarDivExprTrait<Type1,Type2>, Tmp >::Type  Type;
    /*! \endcond */
    //**********************************************************************************************
 };

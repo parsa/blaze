@@ -76,10 +76,10 @@ struct IsSMPAssignableHelper
 
  public:
    //**********************************************************************************************
-   static constexpr bool value = If< Or< IsVector<T>, IsMatrix<T> >
-                                   , UseNestedMember<T>
-                                   , NotSMPAssignable<T>
-                                   >::Type::value;
+   static constexpr bool value = If_< Or< IsVector<T>, IsMatrix<T> >
+                                    , UseNestedMember<T>
+                                    , NotSMPAssignable<T>
+                                    >::value;
    //**********************************************************************************************
 };
 /*! \endcond */

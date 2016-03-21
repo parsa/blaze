@@ -107,19 +107,16 @@ struct SubvectorExprTrait
  public:
    //**********************************************************************************************
    /*! \cond BLAZE_INTERNAL */
-   typedef typename If< Or< IsComputation<Tmp>, IsTransExpr<Tmp> >
-                      , typename If< Or< IsConst<Tmp>, IsVolatile<Tmp> >
-                                   , SubvectorExprTrait< typename RemoveCV<Tmp>::Type, AF >
-                                   , Failure
-                                   >::Type
-                      , typename If< IsDenseVector<Tmp>
-                                   , DenseResult<Tmp>
-                                   , typename If< IsSparseVector<Tmp>
-                                                , SparseResult<Tmp>
-                                                , Failure
-                                                >::Type
-                                   >::Type
-                      >::Type::Type  Type;
+   typedef typename If_< Or< IsComputation<Tmp>, IsTransExpr<Tmp> >
+                       , If_< Or< IsConst<Tmp>, IsVolatile<Tmp> >
+                            , SubvectorExprTrait< typename RemoveCV<Tmp>::Type, AF >
+                            , Failure >
+                       , If_< IsDenseVector<Tmp>
+                            , DenseResult<Tmp>
+                            , If_< IsSparseVector<Tmp>
+                                 , SparseResult<Tmp>
+                                 , Failure > >
+                       >::Type  Type;
    /*! \endcond */
    //**********************************************************************************************
 };

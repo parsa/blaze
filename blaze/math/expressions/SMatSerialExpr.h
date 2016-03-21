@@ -112,7 +112,7 @@ class SMatSerialExpr : public SparseMatrix< SMatSerialExpr<MT,SO>, SO >
    typedef const ResultType  CompositeType;
 
    //! Composite data type of the sparse matrix expression.
-   typedef typename If< IsExpression<MT>, const MT, const MT& >::Type  Operand;
+   typedef If_< IsExpression<MT>, const MT, const MT& >  Operand;
    //**********************************************************************************************
 
    //**Compilation flags***************************************************************************
@@ -957,9 +957,9 @@ struct SMatSerialExprTrait< SMatSerialExpr<MT,false> >
 {
  public:
    //**********************************************************************************************
-   typedef typename If< And< IsSparseMatrix<MT>, IsRowMajorMatrix<MT> >
-                      , SMatSerialExpr<MT,false>
-                      , INVALID_TYPE >::Type  Type;
+   typedef If_< And< IsSparseMatrix<MT>, IsRowMajorMatrix<MT> >
+              , SMatSerialExpr<MT,false>
+              , INVALID_TYPE >  Type;
    //**********************************************************************************************
 };
 /*! \endcond */
@@ -973,9 +973,9 @@ struct TSMatSerialExprTrait< SMatSerialExpr<MT,true> >
 {
  public:
    //**********************************************************************************************
-   typedef typename If< And< IsSparseMatrix<MT>, IsColumnMajorMatrix<MT> >
-                      , SMatSerialExpr<MT,true>
-                      , INVALID_TYPE >::Type  Type;
+   typedef If_< And< IsSparseMatrix<MT>, IsColumnMajorMatrix<MT> >
+              , SMatSerialExpr<MT,true>
+              , INVALID_TYPE >  Type;
    //**********************************************************************************************
 };
 /*! \endcond */

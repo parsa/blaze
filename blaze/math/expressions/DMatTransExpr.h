@@ -157,10 +157,10 @@ class DMatTransExpr : public DenseMatrix< DMatTransExpr<MT,SO>, SO >
    typedef typename MT::ReturnType                     ReturnType;     //!< Return type for expression template evaluations.
 
    //! Data type for composite expression templates.
-   typedef typename IfTrue< useAssign, const ResultType, const DMatTransExpr& >::Type  CompositeType;
+   typedef IfTrue_< useAssign, const ResultType, const DMatTransExpr& >  CompositeType;
 
    //! Composite data type of the dense matrix expression.
-   typedef typename If< IsExpression<MT>, const MT, const MT& >::Type  Operand;
+   typedef If_< IsExpression<MT>, const MT, const MT& >  Operand;
    //**********************************************************************************************
 
    //**ConstIterator class definition**************************************************************
@@ -664,7 +664,7 @@ class DMatTransExpr : public DenseMatrix< DMatTransExpr<MT,SO>, SO >
    {
       BLAZE_FUNCTION_TRACE;
 
-      typedef typename IfTrue< SO == SO2, ResultType, OppositeType >::Type  TmpType;
+      typedef IfTrue_< SO == SO2, ResultType, OppositeType >  TmpType;
 
       BLAZE_CONSTRAINT_MUST_BE_DENSE_MATRIX_TYPE( ResultType );
       BLAZE_CONSTRAINT_MUST_BE_DENSE_MATRIX_TYPE( OppositeType );
@@ -809,7 +809,7 @@ class DMatTransExpr : public DenseMatrix< DMatTransExpr<MT,SO>, SO >
    {
       BLAZE_FUNCTION_TRACE;
 
-      typedef typename IfTrue< SO == SO2, ResultType, OppositeType >::Type  TmpType;
+      typedef IfTrue_< SO == SO2, ResultType, OppositeType >  TmpType;
 
       BLAZE_CONSTRAINT_MUST_BE_DENSE_MATRIX_TYPE( ResultType );
       BLAZE_CONSTRAINT_MUST_BE_DENSE_MATRIX_TYPE( OppositeType );
@@ -1220,9 +1220,9 @@ struct DMatTransExprTrait< DMatTransExpr<MT,false> >
 {
  public:
    //**********************************************************************************************
-   typedef typename If< And< IsDenseMatrix<MT>, IsColumnMajorMatrix<MT> >
-                      , typename DMatTransExpr<MT,false>::Operand
-                      , INVALID_TYPE >::Type  Type;
+   typedef If_< And< IsDenseMatrix<MT>, IsColumnMajorMatrix<MT> >
+              , typename DMatTransExpr<MT,false>::Operand
+              , INVALID_TYPE >  Type;
    //**********************************************************************************************
 };
 /*! \endcond */
@@ -1236,9 +1236,9 @@ struct TDMatTransExprTrait< DMatTransExpr<MT,true> >
 {
  public:
    //**********************************************************************************************
-   typedef typename If< And< IsDenseMatrix<MT>, IsRowMajorMatrix<MT> >
-                      , typename DMatTransExpr<MT,true>::Operand
-                      , INVALID_TYPE >::Type  Type;
+   typedef If_< And< IsDenseMatrix<MT>, IsRowMajorMatrix<MT> >
+              , typename DMatTransExpr<MT,true>::Operand
+              , INVALID_TYPE >  Type;
    //**********************************************************************************************
 };
 /*! \endcond */

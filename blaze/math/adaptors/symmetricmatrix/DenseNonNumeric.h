@@ -147,9 +147,9 @@ class SymmetricMatrix<MT,SO,true,false>
     public:
       //**Type definitions*************************************************************************
       //! Return type for the access to the value of a dense matrix element.
-      typedef typename IfTrue< IsConst<MatrixType>::value
-                             , typename MatrixType::ConstReference
-                             , typename MatrixType::Reference >::Type  Reference;
+      typedef If_< IsConst<MatrixType>
+                 , typename MatrixType::ConstReference
+                 , typename MatrixType::Reference >  Reference;
 
       typedef std::random_access_iterator_tag  IteratorCategory;  //!< The iterator category.
       typedef RemoveReference<Reference>       ValueType;         //!< Type of the underlying elements.
@@ -876,8 +876,8 @@ inline SymmetricMatrix<MT,SO,true,false>::SymmetricMatrix( const Matrix<MT2,SO>&
 {
    using blaze::resize;
 
-   typedef typename RemoveAdaptor<typename MT2::ResultType>::Type   RT;
-   typedef typename If< IsComputation<MT2>, RT, const MT2& >::Type  Tmp;
+   typedef typename RemoveAdaptor<typename MT2::ResultType>::Type  RT;
+   typedef If_< IsComputation<MT2>, RT, const MT2& >  Tmp;
 
    if( IsSymmetric<MT2>::value ) {
       resize( matrix_, (~m).rows(), (~m).columns() );
@@ -919,8 +919,8 @@ inline SymmetricMatrix<MT,SO,true,false>::SymmetricMatrix( const Matrix<MT2,!SO>
 {
    using blaze::resize;
 
-   typedef typename RemoveAdaptor<typename MT2::ResultType>::Type   RT;
-   typedef typename If< IsComputation<MT2>, RT, const MT2& >::Type  Tmp;
+   typedef typename RemoveAdaptor<typename MT2::ResultType>::Type  RT;
+   typedef If_< IsComputation<MT2>, RT, const MT2& >  Tmp;
 
    if( IsSymmetric<MT2>::value ) {
       resize( matrix_, (~m).rows(), (~m).columns() );
@@ -1415,9 +1415,7 @@ inline EnableIf_< IsComputation<MT2>, SymmetricMatrix<MT,SO,true,false>& >
 {
    using blaze::resize;
 
-   typedef typename If< IsSymmetric<MT2>
-                      , typename MT2::CompositeType
-                      , typename MT2::ResultType >::Type  Tmp;
+   typedef If_< IsSymmetric<MT2>, typename MT2::CompositeType, typename MT2::ResultType >  Tmp;
 
    if( !IsSquare<MT2>::value && !isSquare( ~rhs ) ) {
       BLAZE_THROW_INVALID_ARGUMENT( "Invalid assignment to symmetric matrix" );
@@ -1524,9 +1522,7 @@ template< typename MT2 >  // Type of the right-hand side matrix
 inline EnableIf_< IsComputation<MT2>, SymmetricMatrix<MT,SO,true,false>& >
    SymmetricMatrix<MT,SO,true,false>::operator+=( const Matrix<MT2,SO>& rhs )
 {
-   typedef typename If< IsSymmetric<MT2>
-                      , typename MT2::CompositeType
-                      , typename MT2::ResultType >::Type  Tmp;
+   typedef If_< IsSymmetric<MT2>, typename MT2::CompositeType, typename MT2::ResultType >  Tmp;
 
    if( !IsSquare<MT2>::value && !isSquare( ~rhs ) ) {
       BLAZE_THROW_INVALID_ARGUMENT( "Invalid assignment to symmetric matrix" );
@@ -1630,9 +1626,7 @@ template< typename MT2 >  // Type of the right-hand side matrix
 inline EnableIf_< IsComputation<MT2>, SymmetricMatrix<MT,SO,true,false>& >
    SymmetricMatrix<MT,SO,true,false>::operator-=( const Matrix<MT2,SO>& rhs )
 {
-   typedef typename If< IsSymmetric<MT2>
-                      , typename MT2::CompositeType
-                      , typename MT2::ResultType >::Type  Tmp;
+   typedef If_< IsSymmetric<MT2>, typename MT2::CompositeType, typename MT2::ResultType >  Tmp;
 
    if( !IsSquare<MT2>::value && !isSquare( ~rhs ) ) {
       BLAZE_THROW_INVALID_ARGUMENT( "Invalid assignment to symmetric matrix" );

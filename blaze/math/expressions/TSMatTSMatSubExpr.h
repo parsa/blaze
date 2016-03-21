@@ -165,16 +165,16 @@ class TSMatTSMatSubExpr : public SparseMatrix< TSMatTSMatSubExpr<MT1,MT2>, true 
    typedef typename ResultType::ElementType    ElementType;    //!< Resulting element type.
 
    //! Return type for expression template evaluations.
-   typedef const typename IfTrue< returnExpr, ExprReturnType, ElementType >::Type  ReturnType;
+   typedef const IfTrue_< returnExpr, ExprReturnType, ElementType >  ReturnType;
 
    //! Data type for composite expression templates.
    typedef const ResultType  CompositeType;
 
    //! Composite type of the left-hand side sparse matrix expression.
-   typedef typename If< IsExpression<MT1>, const MT1, const MT1& >::Type  LeftOperand;
+   typedef If_< IsExpression<MT1>, const MT1, const MT1& >  LeftOperand;
 
    //! Composite type of the right-hand side sparse matrix expression.
-   typedef typename If< IsExpression<MT2>, const MT2, const MT2& >::Type  RightOperand;
+   typedef If_< IsExpression<MT2>, const MT2, const MT2& >  RightOperand;
    //**********************************************************************************************
 
    //**Compilation flags***************************************************************************

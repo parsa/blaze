@@ -100,7 +100,7 @@ class SVecSerialExpr : public SparseVector< SVecSerialExpr<VT,TF>, TF >
    typedef const ResultType  CompositeType;
 
    //! Composite data type of the sparse vector expression.
-   typedef typename If< IsExpression<VT>, const VT, const VT& >::Type  Operand;
+   typedef If_< IsExpression<VT>, const VT, const VT& >  Operand;
    //**********************************************************************************************
 
    //**Compilation flags***************************************************************************
@@ -725,9 +725,9 @@ struct SVecSerialExprTrait< SVecSerialExpr<VT,false> >
 {
  public:
    //**********************************************************************************************
-   typedef typename If< And< IsSparseVector<VT>, IsColumnVector<VT> >
-                      , SVecSerialExpr<VT,false>
-                      , INVALID_TYPE >::Type  Type;
+   typedef If_< And< IsSparseVector<VT>, IsColumnVector<VT> >
+              , SVecSerialExpr<VT,false>
+              , INVALID_TYPE >  Type;
    //**********************************************************************************************
 };
 /*! \endcond */
@@ -741,9 +741,9 @@ struct TSVecSerialExprTrait< SVecSerialExpr<VT,true> >
 {
  public:
    //**********************************************************************************************
-   typedef typename If< And< IsSparseVector<VT>, IsRowVector<VT> >
-                      , SVecSerialExpr<VT,true>
-                      , INVALID_TYPE >::Type  Type;
+   typedef If_< And< IsSparseVector<VT>, IsRowVector<VT> >
+              , SVecSerialExpr<VT,true>
+              , INVALID_TYPE >  Type;
    //**********************************************************************************************
 };
 /*! \endcond */

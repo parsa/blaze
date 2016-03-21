@@ -145,253 +145,171 @@ struct MultExprTrait
 
    //**********************************************************************************************
    /*! \cond BLAZE_INTERNAL */
-   typedef typename If< IsMatrix<T1>
-                      , typename If< IsDenseMatrix<T1>
-                                   , typename If< IsRowMajorMatrix<T1>
-                                                , typename If< IsMatrix<T2>
-                                                             , typename If< IsDenseMatrix<T2>
-                                                                          , typename If< IsRowMajorMatrix<T2>
-                                                                                       , DMatDMatMultExprTrait<T1,T2>
-                                                                                       , DMatTDMatMultExprTrait<T1,T2>
-                                                                                       >::Type
-                                                                          , typename If< IsRowMajorMatrix<T2>
-                                                                                       , DMatSMatMultExprTrait<T1,T2>
-                                                                                       , DMatTSMatMultExprTrait<T1,T2>
-                                                                                       >::Type
-                                                                          >::Type
-                                                             , typename If< IsVector<T2>
-                                                                          , typename If< IsDenseVector<T2>
-                                                                                       , typename If< IsColumnVector<T2>
-                                                                                                    , DMatDVecMultExprTrait<T1,T2>
-                                                                                                    , Failure
-                                                                                                    >::Type
-                                                                                       , typename If< IsColumnVector<T2>
-                                                                                                    , DMatSVecMultExprTrait<T1,T2>
-                                                                                                    , Failure
-                                                                                                    >::Type
-                                                                                       >::Type
-                                                                          , typename If< IsNumeric<T2>
-                                                                                       , DMatScalarMultExprTrait<T1,T2>
-                                                                                       , Failure
-                                                                                       >::Type
-                                                                          >::Type
-                                                             >::Type
-                                                , typename If< IsMatrix<T2>
-                                                             , typename If< IsDenseMatrix<T2>
-                                                                          , typename If< IsRowMajorMatrix<T2>
-                                                                                       , TDMatDMatMultExprTrait<T1,T2>
-                                                                                       , TDMatTDMatMultExprTrait<T1,T2>
-                                                                                       >::Type
-                                                                          , typename If< IsRowMajorMatrix<T2>
-                                                                                       , TDMatSMatMultExprTrait<T1,T2>
-                                                                                       , TDMatTSMatMultExprTrait<T1,T2>
-                                                                                       >::Type
-                                                                          >::Type
-                                                             , typename If< IsVector<T2>
-                                                                          , typename If< IsDenseVector<T2>
-                                                                                       , typename If< IsColumnVector<T2>
-                                                                                                    , TDMatDVecMultExprTrait<T1,T2>
-                                                                                                    , Failure
-                                                                                                    >::Type
-                                                                                       , typename If< IsColumnVector<T2>
-                                                                                                    , TDMatSVecMultExprTrait<T1,T2>
-                                                                                                    , Failure
-                                                                                                    >::Type
-                                                                                       >::Type
-                                                                          , typename If< IsNumeric<T2>
-                                                                                       , TDMatScalarMultExprTrait<T1,T2>
-                                                                                       , Failure
-                                                                                       >::Type
-                                                                          >::Type
-                                                             >::Type
-                                                >::Type
-                                   , typename If< IsRowMajorMatrix<T1>
-                                                , typename If< IsMatrix<T2>
-                                                             , typename If< IsDenseMatrix<T2>
-                                                                          , typename If< IsRowMajorMatrix<T2>
-                                                                                       , SMatDMatMultExprTrait<T1,T2>
-                                                                                       , SMatTDMatMultExprTrait<T1,T2>
-                                                                                       >::Type
-                                                                          , typename If< IsRowMajorMatrix<T2>
-                                                                                       , SMatSMatMultExprTrait<T1,T2>
-                                                                                       , SMatTSMatMultExprTrait<T1,T2>
-                                                                                       >::Type
-                                                                          >::Type
-                                                             , typename If< IsVector<T2>
-                                                                          , typename If< IsDenseVector<T2>
-                                                                                       , typename If< IsColumnVector<T2>
-                                                                                                    , SMatDVecMultExprTrait<T1,T2>
-                                                                                                    , Failure
-                                                                                                    >::Type
-                                                                                       , typename If< IsColumnVector<T2>
-                                                                                                    , SMatSVecMultExprTrait<T1,T2>
-                                                                                                    , Failure
-                                                                                                    >::Type
-                                                                                       >::Type
-                                                                          , typename If< IsNumeric<T2>
-                                                                                       , SMatScalarMultExprTrait<T1,T2>
-                                                                                       , Failure
-                                                                                       >::Type
-                                                                          >::Type
-                                                             >::Type
-                                                , typename If< IsMatrix<T2>
-                                                             , typename If< IsDenseMatrix<T2>
-                                                                          , typename If< IsRowMajorMatrix<T2>
-                                                                                       , TSMatDMatMultExprTrait<T1,T2>
-                                                                                       , TSMatTDMatMultExprTrait<T1,T2>
-                                                                                       >::Type
-                                                                          , typename If< IsRowMajorMatrix<T2>
-                                                                                       , TSMatSMatMultExprTrait<T1,T2>
-                                                                                       , TSMatTSMatMultExprTrait<T1,T2>
-                                                                                       >::Type
-                                                                          >::Type
-                                                             , typename If< IsVector<T2>
-                                                                          , typename If< IsDenseVector<T2>
-                                                                                       , typename If< IsColumnVector<T2>
-                                                                                                    , TSMatDVecMultExprTrait<T1,T2>
-                                                                                                    , Failure
-                                                                                                    >::Type
-                                                                                       , typename If< IsColumnVector<T2>
-                                                                                                    , TSMatSVecMultExprTrait<T1,T2>
-                                                                                                    , Failure
-                                                                                                    >::Type
-                                                                                       >::Type
-                                                                          , typename If< IsNumeric<T2>
-                                                                                       , TSMatScalarMultExprTrait<T1,T2>
-                                                                                       , Failure
-                                                                                       >::Type
-                                                                          >::Type
-                                                             >::Type
-                                                >::Type
-                                   >::Type
-                      , typename If< IsVector<T1>
-                                   , typename If< IsDenseVector<T1>
-                                                , typename If< IsRowVector<T1>
-                                                             , typename If< IsMatrix<T2>
-                                                                          , typename If< IsDenseMatrix<T2>
-                                                                                       , typename If< IsRowMajorMatrix<T2>
-                                                                                                    , TDVecDMatMultExprTrait<T1,T2>
-                                                                                                    , TDVecTDMatMultExprTrait<T1,T2>
-                                                                                                    >::Type
-                                                                                       , typename If< IsRowMajorMatrix<T2>
-                                                                                                    , TDVecSMatMultExprTrait<T1,T2>
-                                                                                                    , TDVecTSMatMultExprTrait<T1,T2>
-                                                                                                    >::Type
-                                                                                       >::Type
-                                                                          , typename If< IsVector<T2>
-                                                                                       , typename If< IsDenseVector<T2>
-                                                                                                    , typename If< IsRowVector<T2>
-                                                                                                                 , TDVecTDVecMultExprTrait<T1,T2>
-                                                                                                                 , TDVecDVecMultExprTrait<T1,T2>
-                                                                                                                 >::Type
-                                                                                                    , typename If< IsRowVector<T2>
-                                                                                                                 , TDVecTSVecMultExprTrait<T1,T2>
-                                                                                                                 , TDVecSVecMultExprTrait<T1,T2>
-                                                                                                                 >::Type
-                                                                                                    >::Type
-                                                                                       , typename If< IsNumeric<T2>
-                                                                                                    , TDVecScalarMultExprTrait<T1,T2>
-                                                                                                    , Failure
-                                                                                                    >::Type
-                                                                                       >::Type
-                                                                          >::Type
-                                                             , typename If< IsVector<T2>
-                                                                          , typename If< IsDenseVector<T2>
-                                                                                       , typename If< IsRowVector<T2>
-                                                                                                    , DVecTDVecMultExprTrait<T1,T2>
-                                                                                                    , DVecDVecMultExprTrait<T1,T2>
-                                                                                                    >::Type
-                                                                                       , typename If< IsRowVector<T2>
-                                                                                                    , DVecTSVecMultExprTrait<T1,T2>
-                                                                                                    , DVecSVecMultExprTrait<T1,T2>
-                                                                                                    >::Type
-                                                                                       >::Type
-                                                                          , typename If< IsNumeric<T2>
-                                                                                       , DVecScalarMultExprTrait<T1,T2>
-                                                                                       , Failure
-                                                                                       >::Type
-                                                                          >::Type
-                                                             >::Type
-                                                , typename If< IsRowVector<T1>
-                                                             , typename If< IsMatrix<T2>
-                                                                          , typename If< IsDenseMatrix<T2>
-                                                                                       , typename If< IsRowMajorMatrix<T2>
-                                                                                                    , TSVecDMatMultExprTrait<T1,T2>
-                                                                                                    , TSVecTDMatMultExprTrait<T1,T2>
-                                                                                                    >::Type
-                                                                                       , typename If< IsRowMajorMatrix<T2>
-                                                                                                    , TSVecSMatMultExprTrait<T1,T2>
-                                                                                                    , TSVecTSMatMultExprTrait<T1,T2>
-                                                                                                    >::Type
-                                                                                       >::Type
-                                                                          , typename If< IsVector<T2>
-                                                                                       , typename If< IsDenseVector<T2>
-                                                                                                    , typename If< IsRowVector<T2>
-                                                                                                                 , TSVecTDVecMultExprTrait<T1,T2>
-                                                                                                                 , TSVecDVecMultExprTrait<T1,T2>
-                                                                                                                 >::Type
-                                                                                                    , typename If< IsRowVector<T2>
-                                                                                                                 , TSVecTSVecMultExprTrait<T1,T2>
-                                                                                                                 , TSVecSVecMultExprTrait<T1,T2>
-                                                                                                                 >::Type
-                                                                                                    >::Type
-                                                                                       , typename If< IsNumeric<T2>
-                                                                                                    , TSVecScalarMultExprTrait<T1,T2>
-                                                                                                    , Failure
-                                                                                                    >::Type
-                                                                                       >::Type
-                                                                          >::Type
-                                                             , typename If< IsVector<T2>
-                                                                          , typename If< IsDenseVector<T2>
-                                                                                       , typename If< IsRowVector<T2>
-                                                                                                    , SVecTDVecMultExprTrait<T1,T2>
-                                                                                                    , SVecDVecMultExprTrait<T1,T2>
-                                                                                                    >::Type
-                                                                                       , typename If< IsRowVector<T2>
-                                                                                                    , SVecTSVecMultExprTrait<T1,T2>
-                                                                                                    , SVecSVecMultExprTrait<T1,T2>
-                                                                                                    >::Type
-                                                                                       >::Type
-                                                                          , typename If< IsNumeric<T2>
-                                                                                       , SVecScalarMultExprTrait<T1,T2>
-                                                                                       , Failure
-                                                                                       >::Type
-                                                                          >::Type
-                                                             >::Type
-                                                >::Type
-                                   , typename If< IsNumeric<T1>
-                                                , typename If< IsMatrix<T2>
-                                                    , typename If< IsDenseMatrix<T2>
-                                                                 , typename If< IsRowMajorMatrix<T2>
-                                                                              , DMatScalarMultExprTrait<T2,T1>
-                                                                              , TDMatScalarMultExprTrait<T2,T1>
-                                                                              >::Type
-                                                                 , typename If< IsRowMajorMatrix<T2>
-                                                                              , SMatScalarMultExprTrait<T2,T1>
-                                                                              , TSMatScalarMultExprTrait<T2,T1>
-                                                                              >::Type
-                                                                 >::Type
-                                                    , typename If< IsVector<T2>
-                                                                 , typename If< IsDenseVector<T2>
-                                                                              , typename If< IsRowVector<T2>
-                                                                                           , TDVecScalarMultExprTrait<T2,T1>
-                                                                                           , DVecScalarMultExprTrait<T2,T1>
-                                                                                           >::Type
-                                                                              , typename If< IsRowVector<T2>
-                                                                                           , TSVecScalarMultExprTrait<T2,T1>
-                                                                                           , SVecScalarMultExprTrait<T2,T1>
-                                                                                           >::Type
-                                                                              >::Type
-                                                                 , typename If< IsNumeric<T2>
-                                                                              , MultTrait<T1,T2>
-                                                                              , Failure
-                                                                              >::Type
-                                                                 >::Type
-                                                    >::Type
-                                                , Failure
-                                                >::Type
-                                   >::Type
-                      >::Type  Tmp;
+   typedef If_< IsMatrix<T1>
+              , If_< IsDenseMatrix<T1>
+                   , If_< IsRowMajorMatrix<T1>
+                        , If_< IsMatrix<T2>
+                             , If_< IsDenseMatrix<T2>
+                                  , If_< IsRowMajorMatrix<T2>
+                                       , DMatDMatMultExprTrait<T1,T2>
+                                       , DMatTDMatMultExprTrait<T1,T2> >
+                                  , If_< IsRowMajorMatrix<T2>
+                                       , DMatSMatMultExprTrait<T1,T2>
+                                       , DMatTSMatMultExprTrait<T1,T2> > >
+                             , If_< IsVector<T2>
+                                  , If_< IsDenseVector<T2>
+                                       , If_< IsColumnVector<T2>
+                                            , DMatDVecMultExprTrait<T1,T2>
+                                            , Failure >
+                                       , If_< IsColumnVector<T2>
+                                            , DMatSVecMultExprTrait<T1,T2>
+                                            , Failure > >
+                                  , If_< IsNumeric<T2>
+                                       , DMatScalarMultExprTrait<T1,T2>
+                                       , Failure > > >
+                        , If_< IsMatrix<T2>
+                             , If_< IsDenseMatrix<T2>
+                                  , If_< IsRowMajorMatrix<T2>
+                                       , TDMatDMatMultExprTrait<T1,T2>
+                                       , TDMatTDMatMultExprTrait<T1,T2> >
+                                  , If_< IsRowMajorMatrix<T2>
+                                       , TDMatSMatMultExprTrait<T1,T2>
+                                       , TDMatTSMatMultExprTrait<T1,T2> > >
+                             , If_< IsVector<T2>
+                                  , If_< IsDenseVector<T2>
+                                       , If_< IsColumnVector<T2>
+                                            , TDMatDVecMultExprTrait<T1,T2>
+                                            , Failure >
+                                       , If_< IsColumnVector<T2>
+                                            , TDMatSVecMultExprTrait<T1,T2>
+                                            , Failure > >
+                                  , If_< IsNumeric<T2>
+                                       , TDMatScalarMultExprTrait<T1,T2>
+                                       , Failure > > > >
+                   , If_< IsRowMajorMatrix<T1>
+                        , If_< IsMatrix<T2>
+                             , If_< IsDenseMatrix<T2>
+                                  , If_< IsRowMajorMatrix<T2>
+                                       , SMatDMatMultExprTrait<T1,T2>
+                                       , SMatTDMatMultExprTrait<T1,T2> >
+                                  , If_< IsRowMajorMatrix<T2>
+                                       , SMatSMatMultExprTrait<T1,T2>
+                                       , SMatTSMatMultExprTrait<T1,T2> > >
+                             , If_< IsVector<T2>
+                                  , If_< IsDenseVector<T2>
+                                       , If_< IsColumnVector<T2>
+                                            , SMatDVecMultExprTrait<T1,T2>
+                                            , Failure >
+                                       , If_< IsColumnVector<T2>
+                                            , SMatSVecMultExprTrait<T1,T2>
+                                            , Failure > >
+                                  , If_< IsNumeric<T2>
+                                       , SMatScalarMultExprTrait<T1,T2>
+                                       , Failure > > >
+                        , If_< IsMatrix<T2>
+                             , If_< IsDenseMatrix<T2>
+                                  , If_< IsRowMajorMatrix<T2>
+                                       , TSMatDMatMultExprTrait<T1,T2>
+                                       , TSMatTDMatMultExprTrait<T1,T2> >
+                                  , If_< IsRowMajorMatrix<T2>
+                                       , TSMatSMatMultExprTrait<T1,T2>
+                                       , TSMatTSMatMultExprTrait<T1,T2> > >
+                             , If_< IsVector<T2>
+                                  , If_< IsDenseVector<T2>
+                                       , If_< IsColumnVector<T2>
+                                            , TSMatDVecMultExprTrait<T1,T2>
+                                            , Failure >
+                                       , If_< IsColumnVector<T2>
+                                            , TSMatSVecMultExprTrait<T1,T2>
+                                            , Failure > >
+                                  , If_< IsNumeric<T2>
+                                       , TSMatScalarMultExprTrait<T1,T2>
+                                       , Failure > > > > >
+              , If_< IsVector<T1>
+                   , If_< IsDenseVector<T1>
+                        , If_< IsRowVector<T1>
+                             , If_< IsMatrix<T2>
+                                  , If_< IsDenseMatrix<T2>
+                                       , If_< IsRowMajorMatrix<T2>
+                                            , TDVecDMatMultExprTrait<T1,T2>
+                                            , TDVecTDMatMultExprTrait<T1,T2> >
+                                       , If_< IsRowMajorMatrix<T2>
+                                            , TDVecSMatMultExprTrait<T1,T2>
+                                            , TDVecTSMatMultExprTrait<T1,T2> > >
+                                  , If_< IsVector<T2>
+                                       , If_< IsDenseVector<T2>
+                                            , If_< IsRowVector<T2>
+                                                 , TDVecTDVecMultExprTrait<T1,T2>
+                                                 , TDVecDVecMultExprTrait<T1,T2> >
+                                            , If_< IsRowVector<T2>
+                                                 , TDVecTSVecMultExprTrait<T1,T2>
+                                                 , TDVecSVecMultExprTrait<T1,T2> > >
+                                       , If_< IsNumeric<T2>
+                                            , TDVecScalarMultExprTrait<T1,T2>
+                                            , Failure > > >
+                             , If_< IsVector<T2>
+                                  , If_< IsDenseVector<T2>
+                                       , If_< IsRowVector<T2>
+                                            , DVecTDVecMultExprTrait<T1,T2>
+                                            , DVecDVecMultExprTrait<T1,T2> >
+                                       , If_< IsRowVector<T2>
+                                            , DVecTSVecMultExprTrait<T1,T2>
+                                            , DVecSVecMultExprTrait<T1,T2> > >
+                                  , If_< IsNumeric<T2>
+                                       , DVecScalarMultExprTrait<T1,T2>
+                                       , Failure > > >
+                        , If_< IsRowVector<T1>
+                             , If_< IsMatrix<T2>
+                                  , If_< IsDenseMatrix<T2>
+                                       , If_< IsRowMajorMatrix<T2>
+                                            , TSVecDMatMultExprTrait<T1,T2>
+                                            , TSVecTDMatMultExprTrait<T1,T2> >
+                                       , If_< IsRowMajorMatrix<T2>
+                                            , TSVecSMatMultExprTrait<T1,T2>
+                                            , TSVecTSMatMultExprTrait<T1,T2> > >
+                                  , If_< IsVector<T2>
+                                       , If_< IsDenseVector<T2>
+                                            , If_< IsRowVector<T2>
+                                                 , TSVecTDVecMultExprTrait<T1,T2>
+                                                 , TSVecDVecMultExprTrait<T1,T2> >
+                                            , If_< IsRowVector<T2>
+                                                 , TSVecTSVecMultExprTrait<T1,T2>
+                                                 , TSVecSVecMultExprTrait<T1,T2> > >
+                                       , If_< IsNumeric<T2>
+                                            , TSVecScalarMultExprTrait<T1,T2>
+                                            , Failure > > >
+                             , If_< IsVector<T2>
+                                  , If_< IsDenseVector<T2>
+                                       , If_< IsRowVector<T2>
+                                            , SVecTDVecMultExprTrait<T1,T2>
+                                            , SVecDVecMultExprTrait<T1,T2> >
+                                       , If_< IsRowVector<T2>
+                                            , SVecTSVecMultExprTrait<T1,T2>
+                                            , SVecSVecMultExprTrait<T1,T2> > >
+                                  , If_< IsNumeric<T2>
+                                       , SVecScalarMultExprTrait<T1,T2>
+                                       , Failure > > > >
+                   , If_< IsNumeric<T1>
+                        , If_< IsMatrix<T2>
+                             , If_< IsDenseMatrix<T2>
+                                  , If_< IsRowMajorMatrix<T2>
+                                       , DMatScalarMultExprTrait<T2,T1>
+                                       , TDMatScalarMultExprTrait<T2,T1> >
+                                  , If_< IsRowMajorMatrix<T2>
+                                       , SMatScalarMultExprTrait<T2,T1>
+                                       , TSMatScalarMultExprTrait<T2,T1> > >
+                             , If_< IsVector<T2>
+                                  , If_< IsDenseVector<T2>
+                                       , If_< IsRowVector<T2>
+                                            , TDVecScalarMultExprTrait<T2,T1>
+                                            , DVecScalarMultExprTrait<T2,T1> >
+                                       , If_< IsRowVector<T2>
+                                            , TSVecScalarMultExprTrait<T2,T1>
+                                            , SVecScalarMultExprTrait<T2,T1> > >
+                                  , If_< IsNumeric<T2>
+                                       , MultTrait<T1,T2>
+                                       , Failure > > >
+                        , Failure > > >  Tmp;
 
    typedef typename RemoveReference< typename RemoveCV<T1>::Type >::Type  Type1;
    typedef typename RemoveReference< typename RemoveCV<T2>::Type >::Type  Type2;
@@ -401,9 +319,9 @@ struct MultExprTrait
  public:
    //**********************************************************************************************
    /*! \cond BLAZE_INTERNAL */
-   typedef typename If< Or< IsConst<T1>, IsVolatile<T1>, IsReference<T1>
-                          , IsConst<T2>, IsVolatile<T2>, IsReference<T2> >
-                      , MultExprTrait<Type1,Type2>, Tmp >::Type::Type  Type;
+   typedef typename If_< Or< IsConst<T1>, IsVolatile<T1>, IsReference<T1>
+                           , IsConst<T2>, IsVolatile<T2>, IsReference<T2> >
+                       , MultExprTrait<Type1,Type2>, Tmp >::Type  Type;
    /*! \endcond */
    //**********************************************************************************************
 };

@@ -160,13 +160,13 @@ class SVecAbsExpr : public SparseVector< SVecAbsExpr<VT,TF>, TF >
    typedef ET                  ElementType;    //!< Resulting element type.
 
    //! Return type for expression template evaluations.
-   typedef const typename IfTrue< returnExpr, ExprReturnType, ElementType >::Type  ReturnType;
+   typedef const IfTrue_< returnExpr, ExprReturnType, ElementType >  ReturnType;
 
    //! Data type for composite expression templates.
-   typedef typename IfTrue< useAssign, const ResultType, const SVecAbsExpr& >::Type  CompositeType;
+   typedef IfTrue_< useAssign, const ResultType, const SVecAbsExpr& >  CompositeType;
 
    //! Composite data type of the sparse vector expression.
-   typedef typename If< IsExpression<VT>, const VT, const VT& >::Type  Operand;
+   typedef If_< IsExpression<VT>, const VT, const VT& >  Operand;
    //**********************************************************************************************
 
    //**Compilation flags***************************************************************************
@@ -888,9 +888,9 @@ struct SVecAbsExprTrait< SVecAbsExpr<VT,false> >
 {
  public:
    //**********************************************************************************************
-   typedef typename If< And< IsSparseVector<VT>, IsColumnVector<VT> >
-                      , SVecAbsExpr<VT,false>
-                      , INVALID_TYPE >::Type  Type;
+   typedef If_< And< IsSparseVector<VT>, IsColumnVector<VT> >
+              , SVecAbsExpr<VT,false>
+              , INVALID_TYPE >  Type;
    //**********************************************************************************************
 };
 /*! \endcond */
@@ -904,9 +904,9 @@ struct TSVecAbsExprTrait< SVecAbsExpr<VT,true> >
 {
  public:
    //**********************************************************************************************
-   typedef typename If< And< IsSparseVector<VT>, IsRowVector<VT> >
-                      , SVecAbsExpr<VT,true>
-                      , INVALID_TYPE >::Type  Type;
+   typedef If_< And< IsSparseVector<VT>, IsRowVector<VT> >
+              , SVecAbsExpr<VT,true>
+              , INVALID_TYPE >  Type;
    //**********************************************************************************************
 };
 /*! \endcond */

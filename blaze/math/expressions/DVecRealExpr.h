@@ -161,13 +161,13 @@ class DVecRealExpr : public DenseVector< DVecRealExpr<VT,TF>, TF >
    typedef typename ResultType::ElementType    ElementType;    //!< Resulting element type.
 
    //! Return type for expression template evaluations.
-   typedef const typename IfTrue< returnExpr, ExprReturnType, ElementType >::Type  ReturnType;
+   typedef const IfTrue_< returnExpr, ExprReturnType, ElementType >  ReturnType;
 
    //! Data type for composite expression templates.
-   typedef typename IfTrue< useAssign, const ResultType, const DVecRealExpr& >::Type  CompositeType;
+   typedef IfTrue_< useAssign, const ResultType, const DVecRealExpr& >  CompositeType;
 
    //! Composite data type of the dense vector expression.
-   typedef typename If< IsExpression<VT>, const VT, const VT& >::Type  Operand;
+   typedef If_< IsExpression<VT>, const VT, const VT& >  Operand;
    //**********************************************************************************************
 
    //**ConstIterator class definition**************************************************************
@@ -1007,9 +1007,9 @@ struct DVecRealExprTrait< DVecRealExpr<VT,false> >
 {
  public:
    //**********************************************************************************************
-   typedef typename If< And< IsDenseVector<VT>, IsColumnVector<VT> >
-                      , DVecRealExpr<VT,false>
-                      , INVALID_TYPE >::Type  Type;
+   typedef If_< And< IsDenseVector<VT>, IsColumnVector<VT> >
+              , DVecRealExpr<VT,false>
+              , INVALID_TYPE >  Type;
    //**********************************************************************************************
 };
 /*! \endcond */
@@ -1023,9 +1023,9 @@ struct TDVecRealExprTrait< DVecRealExpr<VT,true> >
 {
  public:
    //**********************************************************************************************
-   typedef typename If< And< IsDenseVector<VT>, IsRowVector<VT> >
-                      , DVecRealExpr<VT,true>
-                      , INVALID_TYPE >::Type  Type;
+   typedef If_< And< IsDenseVector<VT>, IsRowVector<VT> >
+              , DVecRealExpr<VT,true>
+              , INVALID_TYPE >  Type;
    //**********************************************************************************************
 };
 /*! \endcond */

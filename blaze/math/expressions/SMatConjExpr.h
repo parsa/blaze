@@ -173,13 +173,13 @@ class SMatConjExpr : public SparseMatrix< SMatConjExpr<MT,SO>, SO >
    typedef typename MT::ElementType    ElementType;    //!< Resulting element type.
 
    //! Return type for expression template evaluations.
-   typedef const typename IfTrue< returnExpr, ExprReturnType, ElementType >::Type  ReturnType;
+   typedef const IfTrue_< returnExpr, ExprReturnType, ElementType >  ReturnType;
 
    //! Data type for composite expression templates.
-   typedef typename IfTrue< useAssign, const ResultType, const SMatConjExpr& >::Type  CompositeType;
+   typedef IfTrue_< useAssign, const ResultType, const SMatConjExpr& >  CompositeType;
 
    //! Composite data type of the sparse matrix expression.
-   typedef typename If< IsExpression<MT>, const MT, const MT& >::Type  Operand;
+   typedef If_< IsExpression<MT>, const MT, const MT& >  Operand;
    //**********************************************************************************************
 
    //**ConstIterator class definition**************************************************************
@@ -1157,9 +1157,9 @@ struct SMatConjExprTrait< SMatConjExpr<MT,false> >
 {
  public:
    //**********************************************************************************************
-   typedef typename If< And< IsSparseMatrix<MT>, IsRowMajorMatrix<MT> >
-                      , typename SMatConjExpr<MT,false>::Operand
-                      , INVALID_TYPE >::Type  Type;
+   typedef If_< And< IsSparseMatrix<MT>, IsRowMajorMatrix<MT> >
+              , typename SMatConjExpr<MT,false>::Operand
+              , INVALID_TYPE >  Type;
    //**********************************************************************************************
 };
 /*! \endcond */
@@ -1173,9 +1173,9 @@ struct TSMatConjExprTrait< SMatConjExpr<MT,true> >
 {
  public:
    //**********************************************************************************************
-   typedef typename If< And< IsSparseMatrix<MT>, IsColumnMajorMatrix<MT> >
-                      , typename SMatConjExpr<MT,true>::Operand
-                      , INVALID_TYPE >::Type  Type;
+   typedef If_< And< IsSparseMatrix<MT>, IsColumnMajorMatrix<MT> >
+              , typename SMatConjExpr<MT,true>::Operand
+              , INVALID_TYPE >  Type;
    //**********************************************************************************************
 };
 /*! \endcond */
@@ -1189,9 +1189,9 @@ struct SMatConjExprTrait< SMatTransExpr< SMatConjExpr<MT,true>, false > >
 {
  public:
    //**********************************************************************************************
-   typedef typename If< And< IsSparseMatrix<MT>, IsColumnMajorMatrix<MT> >
-                      , SMatTransExpr<MT,false>
-                      , INVALID_TYPE >::Type  Type;
+   typedef If_< And< IsSparseMatrix<MT>, IsColumnMajorMatrix<MT> >
+              , SMatTransExpr<MT,false>
+              , INVALID_TYPE >  Type;
    //**********************************************************************************************
 };
 /*! \endcond */
@@ -1205,9 +1205,9 @@ struct TSMatConjExprTrait< SMatTransExpr< SMatConjExpr<MT,false>, true > >
 {
  public:
    //**********************************************************************************************
-   typedef typename If< And< IsSparseMatrix<MT>, IsRowMajorMatrix<MT> >
-                      , SMatTransExpr<MT,true>
-                      , INVALID_TYPE >::Type  Type;
+   typedef If_< And< IsSparseMatrix<MT>, IsRowMajorMatrix<MT> >
+              , SMatTransExpr<MT,true>
+              , INVALID_TYPE >  Type;
    //**********************************************************************************************
 };
 /*! \endcond */

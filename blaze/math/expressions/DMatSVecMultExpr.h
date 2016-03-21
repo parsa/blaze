@@ -166,19 +166,19 @@ class DMatSVecMultExpr : public DenseVector< DMatSVecMultExpr<MT,VT>, false >
    typedef const ElementType                   ReturnType;     //!< Return type for expression template evaluations.
 
    //! Data type for composite expression templates.
-   typedef typename IfTrue< useAssign, const ResultType, const DMatSVecMultExpr& >::Type  CompositeType;
+   typedef IfTrue_< useAssign, const ResultType, const DMatSVecMultExpr& >  CompositeType;
 
    //! Composite type of the left-hand side dense matrix expression.
-   typedef typename If< IsExpression<MT>, const MT, const MT& >::Type  LeftOperand;
+   typedef If_< IsExpression<MT>, const MT, const MT& >  LeftOperand;
 
    //! Composite type of the right-hand side dense vector expression.
-   typedef typename If< IsExpression<VT>, const VT, const VT& >::Type  RightOperand;
+   typedef If_< IsExpression<VT>, const VT, const VT& >  RightOperand;
 
    //! Type for the assignment of the left-hand side dense matrix operand.
-   typedef typename IfTrue< evaluateMatrix, const MRT, MCT >::Type  LT;
+   typedef IfTrue_< evaluateMatrix, const MRT, MCT >  LT;
 
    //! Type for the assignment of the right-hand side dense matrix operand.
-   typedef typename IfTrue< evaluateVector, const VRT, VCT >::Type  RT;
+   typedef IfTrue_< evaluateVector, const VRT, VCT >  RT;
    //**********************************************************************************************
 
    //**Compilation flags***************************************************************************

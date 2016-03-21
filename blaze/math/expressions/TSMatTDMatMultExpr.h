@@ -214,16 +214,16 @@ class TSMatTDMatMultExpr : public DenseMatrix< TSMatTDMatMultExpr<MT1,MT2>, true
    typedef const ResultType                    CompositeType;  //!< Data type for composite expression templates.
 
    //! Composite type of the left-hand side sparse matrix expression.
-   typedef typename If< IsExpression<MT1>, const MT1, const MT1& >::Type  LeftOperand;
+   typedef If_< IsExpression<MT1>, const MT1, const MT1& >  LeftOperand;
 
    //! Composite type of the right-hand side dense matrix expression.
-   typedef typename If< IsExpression<MT2>, const MT2, const MT2& >::Type  RightOperand;
+   typedef If_< IsExpression<MT2>, const MT2, const MT2& >  RightOperand;
 
    //! Type for the assignment of the left-hand side sparse matrix operand.
-   typedef typename IfTrue< evaluateLeft, const RT1, CT1 >::Type  LT;
+   typedef IfTrue_< evaluateLeft, const RT1, CT1 >  LT;
 
    //! Type for the assignment of the right-hand side dense matrix operand.
-   typedef typename IfTrue< evaluateRight, const RT2, CT2 >::Type  RT;
+   typedef IfTrue_< evaluateRight, const RT2, CT2 >  RT;
    //**********************************************************************************************
 
    //**Compilation flags***************************************************************************
@@ -727,7 +727,7 @@ class TSMatTDMatMultExpr : public DenseMatrix< TSMatTDMatMultExpr<MT1,MT2>, true
    {
       BLAZE_FUNCTION_TRACE;
 
-      typedef typename IfTrue< SO, ResultType, OppositeType >::Type  TmpType;
+      typedef IfTrue_< SO, ResultType, OppositeType >  TmpType;
 
       BLAZE_CONSTRAINT_MUST_BE_DENSE_MATRIX_TYPE( ResultType );
       BLAZE_CONSTRAINT_MUST_BE_DENSE_MATRIX_TYPE( OppositeType );
@@ -1530,7 +1530,7 @@ class TSMatTDMatMultExpr : public DenseMatrix< TSMatTDMatMultExpr<MT1,MT2>, true
    {
       BLAZE_FUNCTION_TRACE;
 
-      typedef typename IfTrue< SO, ResultType, OppositeType >::Type  TmpType;
+      typedef IfTrue_< SO, ResultType, OppositeType >  TmpType;
 
       BLAZE_CONSTRAINT_MUST_BE_DENSE_MATRIX_TYPE( ResultType );
       BLAZE_CONSTRAINT_MUST_BE_DENSE_MATRIX_TYPE( OppositeType );
@@ -2000,11 +2000,11 @@ struct TDMatDVecMultExprTrait< TSMatTDMatMultExpr<MT1,MT2>, VT >
 {
  public:
    //**********************************************************************************************
-   typedef typename If< And< IsSparseMatrix<MT1>, IsColumnMajorMatrix<MT1>
-                           , IsDenseMatrix<MT2>, IsColumnMajorMatrix<MT2>
-                           , IsDenseVector<VT>, IsColumnVector<VT> >
-                      , typename TSMatDVecMultExprTrait< MT1, typename TDMatDVecMultExprTrait<MT2,VT>::Type >::Type
-                      , INVALID_TYPE >::Type  Type;
+   typedef If_< And< IsSparseMatrix<MT1>, IsColumnMajorMatrix<MT1>
+                   , IsDenseMatrix<MT2>, IsColumnMajorMatrix<MT2>
+                   , IsDenseVector<VT>, IsColumnVector<VT> >
+              , typename TSMatDVecMultExprTrait< MT1, typename TDMatDVecMultExprTrait<MT2,VT>::Type >::Type
+              , INVALID_TYPE >  Type;
    //**********************************************************************************************
 };
 /*! \endcond */
@@ -2018,11 +2018,11 @@ struct TDMatSVecMultExprTrait< TSMatTDMatMultExpr<MT1,MT2>, VT >
 {
  public:
    //**********************************************************************************************
-   typedef typename If< And< IsSparseMatrix<MT1>, IsColumnMajorMatrix<MT1>
-                           , IsDenseMatrix<MT2>, IsColumnMajorMatrix<MT2>
-                           , IsSparseVector<VT>, IsColumnVector<VT> >
-                      , typename TSMatDVecMultExprTrait< MT1, typename TDMatSVecMultExprTrait<MT2,VT>::Type >::Type
-                      , INVALID_TYPE >::Type  Type;
+   typedef If_< And< IsSparseMatrix<MT1>, IsColumnMajorMatrix<MT1>
+                   , IsDenseMatrix<MT2>, IsColumnMajorMatrix<MT2>
+                   , IsSparseVector<VT>, IsColumnVector<VT> >
+              , typename TSMatDVecMultExprTrait< MT1, typename TDMatSVecMultExprTrait<MT2,VT>::Type >::Type
+              , INVALID_TYPE >  Type;
    //**********************************************************************************************
 };
 /*! \endcond */
@@ -2036,11 +2036,11 @@ struct TDVecTDMatMultExprTrait< VT, TSMatTDMatMultExpr<MT1,MT2> >
 {
  public:
    //**********************************************************************************************
-   typedef typename If< And< IsDenseVector<VT>, IsRowVector<VT>
-                           , IsSparseMatrix<MT1>, IsColumnMajorMatrix<MT1>
-                           , IsDenseMatrix<MT2>, IsColumnMajorMatrix<MT2> >
-                      , typename TDVecTDMatMultExprTrait< typename TDVecTSMatMultExprTrait<VT,MT1>::Type, MT2 >::Type
-                      , INVALID_TYPE >::Type  Type;
+   typedef If_< And< IsDenseVector<VT>, IsRowVector<VT>
+                   , IsSparseMatrix<MT1>, IsColumnMajorMatrix<MT1>
+                   , IsDenseMatrix<MT2>, IsColumnMajorMatrix<MT2> >
+              , typename TDVecTDMatMultExprTrait< typename TDVecTSMatMultExprTrait<VT,MT1>::Type, MT2 >::Type
+              , INVALID_TYPE >  Type;
    //**********************************************************************************************
 };
 /*! \endcond */
@@ -2054,11 +2054,11 @@ struct TSVecTDMatMultExprTrait< VT, TSMatTDMatMultExpr<MT1,MT2> >
 {
  public:
    //**********************************************************************************************
-   typedef typename If< And< IsSparseVector<VT>, IsRowVector<VT>
-                           , IsSparseMatrix<MT1>, IsColumnMajorMatrix<MT1>
-                           , IsDenseMatrix<MT2>, IsColumnMajorMatrix<MT2> >
-                      , typename TSVecTDMatMultExprTrait< typename TSVecTSMatMultExprTrait<VT,MT1>::Type, MT2 >::Type
-                      , INVALID_TYPE >::Type  Type;
+   typedef If_< And< IsSparseVector<VT>, IsRowVector<VT>
+                   , IsSparseMatrix<MT1>, IsColumnMajorMatrix<MT1>
+                   , IsDenseMatrix<MT2>, IsColumnMajorMatrix<MT2> >
+              , typename TSVecTDMatMultExprTrait< typename TSVecTSMatMultExprTrait<VT,MT1>::Type, MT2 >::Type
+              , INVALID_TYPE >  Type;
    //**********************************************************************************************
 };
 /*! \endcond */

@@ -110,37 +110,27 @@ struct AbsExprTrait
 
    //**********************************************************************************************
    /*! \cond BLAZE_INTERNAL */
-   typedef typename If< IsMatrix<T>
-                      , typename If< IsDenseMatrix<T>
-                                   , typename If< IsRowMajorMatrix<T>
-                                                , DMatAbsExprTrait<T>
-                                                , TDMatAbsExprTrait<T>
-                                                >::Type
-                                   , typename If< IsRowMajorMatrix<T>
-                                                , SMatAbsExprTrait<T>
-                                                , TSMatAbsExprTrait<T>
-                                                >::Type
-                                   >::Type
-                      , typename If< IsVector<T>
-                                   , typename If< IsDenseVector<T>
-                                                , typename If< IsRowVector<T>
-                                                             , TDVecAbsExprTrait<T>
-                                                             , DVecAbsExprTrait<T>
-                                                             >::Type
-                                                , typename If< IsRowVector<T>
-                                                             , TSVecAbsExprTrait<T>
-                                                             , SVecAbsExprTrait<T>
-                                                             >::Type
-                                                >::Type
-                                   , typename If< IsNumeric<T>
-                                                , typename If< IsComplex<T>
-                                                             , Complex<T>
-                                                             , Builtin<T>
-                                                             >::Type
-                                                , Failure
-                                                >::Type
-                                   >::Type
-                      >::Type  Tmp;
+   typedef If_< IsMatrix<T>
+              , If_< IsDenseMatrix<T>
+                   , If_< IsRowMajorMatrix<T>
+                        , DMatAbsExprTrait<T>
+                        , TDMatAbsExprTrait<T> >
+                   , If_< IsRowMajorMatrix<T>
+                        , SMatAbsExprTrait<T>
+                        , TSMatAbsExprTrait<T> > >
+              , If_< IsVector<T>
+                   , If_< IsDenseVector<T>
+                        , If_< IsRowVector<T>
+                             , TDVecAbsExprTrait<T>
+                             , DVecAbsExprTrait<T> >
+                        , If_< IsRowVector<T>
+                             , TSVecAbsExprTrait<T>
+                             , SVecAbsExprTrait<T> > >
+                   , If_< IsNumeric<T>
+                        , If_< IsComplex<T>
+                             , Complex<T>
+                             , Builtin<T> >
+                        , Failure > > >  Tmp;
 
    typedef typename RemoveReference< typename RemoveCV<T>::Type >::Type  Type1;
    /*! \endcond */
@@ -149,8 +139,8 @@ struct AbsExprTrait
  public:
    //**********************************************************************************************
    /*! \cond BLAZE_INTERNAL */
-   typedef typename If< Or< IsConst<T>, IsVolatile<T>, IsReference<T> >
-                      , AbsExprTrait<Type1>, Tmp >::Type::Type  Type;
+   typedef typename If_< Or< IsConst<T>, IsVolatile<T>, IsReference<T> >
+                       , AbsExprTrait<Type1>, Tmp >::Type  Type;
    /*! \endcond */
    //**********************************************************************************************
 };

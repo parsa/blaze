@@ -82,7 +82,7 @@ struct SMatRealExprTrait
    typedef typename UnderlyingNumeric<MT>::Type  NET;
 
    typedef If< And< IsSparseMatrix<MT>, IsRowMajorMatrix<MT> >
-             , typename If< IsBuiltin<NET>, const MT&, SMatRealExpr<MT,false> >::Type
+             , If_< IsBuiltin<NET>, const MT&, SMatRealExpr<MT,false> >
              , INVALID_TYPE >  Tmp;
 
    typedef typename RemoveReference< typename RemoveCV<MT>::Type >::Type  Type1;
@@ -92,8 +92,8 @@ struct SMatRealExprTrait
  public:
    //**********************************************************************************************
    /*! \cond BLAZE_INTERNAL */
-   typedef typename If< Or< IsConst<MT>, IsVolatile<MT>, IsReference<MT> >
-                      , SMatRealExprTrait<Type1>, Tmp >::Type::Type  Type;
+   typedef typename If_< Or< IsConst<MT>, IsVolatile<MT>, IsReference<MT> >
+                       , SMatRealExprTrait<Type1>, Tmp >::Type  Type;
    /*! \endcond */
    //**********************************************************************************************
 };

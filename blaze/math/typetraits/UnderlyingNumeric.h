@@ -98,10 +98,10 @@ struct UnderlyingNumeric
  public:
    //**********************************************************************************************
    /*! \cond BLAZE_INTERNAL */
-   typedef typename If< Or< IsBuiltin<T>, IsComplex<T> >
-                      , BuiltinOrComplex<T>
-                      , Other<T>
-                      >::Type::Type  Type;
+   typedef typename If_< Or< IsBuiltin<T>, IsComplex<T> >
+                       , BuiltinOrComplex<T>
+                       , Other<T>
+                       >::Type  Type;
    /*! \endcond */
    //**********************************************************************************************
 };

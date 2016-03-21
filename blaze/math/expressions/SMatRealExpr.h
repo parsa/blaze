@@ -175,13 +175,13 @@ class SMatRealExpr : public SparseMatrix< SMatRealExpr<MT,SO>, SO >
    typedef typename ResultType::ElementType    ElementType;    //!< Resulting element type.
 
    //! Return type for expression template evaluations.
-   typedef const typename IfTrue< returnExpr, ExprReturnType, ElementType >::Type  ReturnType;
+   typedef const IfTrue_< returnExpr, ExprReturnType, ElementType >  ReturnType;
 
    //! Data type for composite expression templates.
-   typedef typename IfTrue< useAssign, const ResultType, const SMatRealExpr& >::Type  CompositeType;
+   typedef IfTrue_< useAssign, const ResultType, const SMatRealExpr& >  CompositeType;
 
    //! Composite data type of the sparse matrix expression.
-   typedef typename If< IsExpression<MT>, const MT, const MT& >::Type  Operand;
+   typedef If_< IsExpression<MT>, const MT, const MT& >  Operand;
    //**********************************************************************************************
 
    //**ConstIterator class definition**************************************************************
@@ -1057,9 +1057,9 @@ struct SMatRealExprTrait< SMatRealExpr<MT,false> >
 {
  public:
    //**********************************************************************************************
-   typedef typename If< And< IsSparseMatrix<MT>, IsRowMajorMatrix<MT> >
-                      , SMatRealExpr<MT,false>
-                      , INVALID_TYPE >::Type  Type;
+   typedef If_< And< IsSparseMatrix<MT>, IsRowMajorMatrix<MT> >
+              , SMatRealExpr<MT,false>
+              , INVALID_TYPE >  Type;
    //**********************************************************************************************
 };
 /*! \endcond */
@@ -1073,9 +1073,9 @@ struct TSMatRealExprTrait< SMatRealExpr<MT,true> >
 {
  public:
    //**********************************************************************************************
-   typedef typename If< And< IsSparseMatrix<MT>, IsColumnMajorMatrix<MT> >
-                      , SMatRealExpr<MT,true>
-                      , INVALID_TYPE >::Type  Type;
+   typedef If_< And< IsSparseMatrix<MT>, IsColumnMajorMatrix<MT> >
+              , SMatRealExpr<MT,true>
+              , INVALID_TYPE >  Type;
    //**********************************************************************************************
 };
 /*! \endcond */

@@ -1195,7 +1195,7 @@ inline EnableIf_< IsNumeric<Other>, CompressedMatrix<Type,SO> >&
    BLAZE_USER_ASSERT( rhs != Other(0), "Division by zero detected" );
 
    typedef typename DivTrait<Type,Other>::Type  DT;
-   typedef typename If< IsNumeric<DT>, DT, Other >::Type  Tmp;
+   typedef If_< IsNumeric<DT>, DT, Other >  Tmp;
 
    // Depending on the two involved data types, an integer division is applied or a
    // floating point division is selected.
@@ -3557,7 +3557,7 @@ inline EnableIf_< IsNumeric<Other>, CompressedMatrix<Type,true> >&
    BLAZE_USER_ASSERT( rhs != Other(0), "Division by zero detected" );
 
    typedef typename DivTrait<Type,Other>::Type  DT;
-   typedef typename If< IsNumeric<DT>, DT, Other >::Type  Tmp;
+   typedef If_< IsNumeric<DT>, DT, Other >  Tmp;
 
    // Depending on the two involved data types, an integer division is applied or a
    // floating point division is selected.

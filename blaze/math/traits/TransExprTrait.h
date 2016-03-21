@@ -95,31 +95,23 @@ struct TransExprTrait
 
    //**********************************************************************************************
    /*! \cond BLAZE_INTERNAL */
-   typedef typename If< IsMatrix<T>
-                      , typename If< IsDenseMatrix<T>
-                                   , typename If< IsRowMajorMatrix<T>
-                                                , DMatTransExprTrait<T>
-                                                , TDMatTransExprTrait<T>
-                                                >::Type
-                                   , typename If< IsRowMajorMatrix<T>
-                                                , SMatTransExprTrait<T>
-                                                , TSMatTransExprTrait<T>
-                                                >::Type
-                                   >::Type
-                      , typename If< IsVector<T>
-                                   , typename If< IsDenseVector<T>
-                                                , typename If< IsRowVector<T>
-                                                             , TDVecTransExprTrait<T>
-                                                             , DVecTransExprTrait<T>
-                                                             >::Type
-                                                , typename If< IsRowVector<T>
-                                                             , TSVecTransExprTrait<T>
-                                                             , SVecTransExprTrait<T>
-                                                             >::Type
-                                                >::Type
-                                   , Failure
-                                   >::Type
-                      >::Type  Tmp;
+   typedef If_< IsMatrix<T>
+              , If_< IsDenseMatrix<T>
+                   , If_< IsRowMajorMatrix<T>
+                        , DMatTransExprTrait<T>
+                        , TDMatTransExprTrait<T> >
+                   , If_< IsRowMajorMatrix<T>
+                        , SMatTransExprTrait<T>
+                        , TSMatTransExprTrait<T> > >
+              , If_< IsVector<T>
+                   , If_< IsDenseVector<T>
+                        , If_< IsRowVector<T>
+                             , TDVecTransExprTrait<T>
+                             , DVecTransExprTrait<T> >
+                        , If_< IsRowVector<T>
+                             , TSVecTransExprTrait<T>
+                             , SVecTransExprTrait<T> > >
+                   , Failure > >  Tmp;
 
    typedef typename RemoveReference< typename RemoveCV<T>::Type >::Type  Type1;
    /*! \endcond */
@@ -128,8 +120,8 @@ struct TransExprTrait
  public:
    //**********************************************************************************************
    /*! \cond BLAZE_INTERNAL */
-   typedef typename If< Or< IsConst<T>, IsVolatile<T>, IsReference<T> >
-                      , TransExprTrait<Type1>, Tmp >::Type::Type  Type;
+   typedef typename If_< Or< IsConst<T>, IsVolatile<T>, IsReference<T> >
+                       , TransExprTrait<Type1>, Tmp >::Type  Type;
    /*! \endcond */
    //**********************************************************************************************
 };

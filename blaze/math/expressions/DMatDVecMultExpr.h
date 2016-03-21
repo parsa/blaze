@@ -208,16 +208,16 @@ class DMatDVecMultExpr : public DenseVector< DMatDVecMultExpr<MT,VT>, false >
    typedef const ResultType                            CompositeType;  //!< Data type for composite expression templates.
 
    //! Composite type of the left-hand side dense matrix expression.
-   typedef typename If< IsExpression<MT>, const MT, const MT& >::Type  LeftOperand;
+   typedef If_< IsExpression<MT>, const MT, const MT& >  LeftOperand;
 
    //! Composite type of the right-hand side dense vector expression.
-   typedef typename If< IsExpression<VT>, const VT, const VT& >::Type  RightOperand;
+   typedef If_< IsExpression<VT>, const VT, const VT& >  RightOperand;
 
    //! Type for the assignment of the left-hand side dense matrix operand.
-   typedef typename IfTrue< evaluateMatrix, const MRT, MCT >::Type  LT;
+   typedef IfTrue_< evaluateMatrix, const MRT, MCT >  LT;
 
    //! Type for the assignment of the right-hand side dense vector operand.
-   typedef typename IfTrue< evaluateVector, const VRT, VCT >::Type  RT;
+   typedef IfTrue_< evaluateVector, const VRT, VCT >  RT;
    //**********************************************************************************************
 
    //**Compilation flags***************************************************************************
@@ -2760,10 +2760,10 @@ class DVecScalarMultExpr< DMatDVecMultExpr<MT,VT>, ST, false >
    typedef ST  RightOperand;
 
    //! Type for the assignment of the dense matrix operand of the left-hand side expression.
-   typedef typename IfTrue< evaluateMatrix, const MRT, MCT >::Type  LT;
+   typedef IfTrue_< evaluateMatrix, const MRT, MCT >  LT;
 
    //! Type for the assignment of the dense vector operand of the left-hand side expression.
-   typedef typename IfTrue< evaluateVector, const VRT, VCT >::Type  RT;
+   typedef IfTrue_< evaluateVector, const VRT, VCT >  RT;
    //**********************************************************************************************
 
    //**Compilation flags***************************************************************************

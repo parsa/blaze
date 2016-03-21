@@ -94,9 +94,9 @@ struct TDMatDVecMultExprTrait
  public:
    //**********************************************************************************************
    /*! \cond BLAZE_INTERNAL */
-   typedef typename If< Or< IsConst<MT>, IsVolatile<MT>, IsReference<MT>
-                          , IsConst<VT>, IsVolatile<VT>, IsReference<VT> >
-                      , TDMatDVecMultExprTrait<Type1,Type2>, Tmp >::Type::Type  Type;
+   typedef typename If_< Or< IsConst<MT>, IsVolatile<MT>, IsReference<MT>
+                           , IsConst<VT>, IsVolatile<VT>, IsReference<VT> >
+                       , TDMatDVecMultExprTrait<Type1,Type2>, Tmp >::Type  Type;
    /*! \endcond */
    //**********************************************************************************************
 };

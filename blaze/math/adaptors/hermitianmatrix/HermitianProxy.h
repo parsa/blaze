@@ -126,9 +126,9 @@ class HermitianProxy : public Proxy< HermitianProxy<MT> >
    typedef const HermitianProxy*        ConstPointer;     //!< Pointer-to-const to the represented element.
 
    //! Value type of the represented complex element.
-   typedef typename If< IsComplex<RepresentedType>
-                      , ComplexType<RepresentedType>
-                      , BuiltinType<RepresentedType> >::Type::Type  ValueType;
+   typedef typename If_< IsComplex<RepresentedType>
+                       , ComplexType<RepresentedType>
+                       , BuiltinType<RepresentedType> >::Type  ValueType;
    //**********************************************************************************************
 
    //**Constructors********************************************************************************

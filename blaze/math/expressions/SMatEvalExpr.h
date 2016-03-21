@@ -112,7 +112,7 @@ class SMatEvalExpr : public SparseMatrix< SMatEvalExpr<MT,SO>, SO >
    typedef const ResultType  CompositeType;
 
    //! Composite data type of the sparse matrix expression.
-   typedef typename If< IsExpression<MT>, const MT, const MT& >::Type  Operand;
+   typedef If_< IsExpression<MT>, const MT, const MT& >  Operand;
    //**********************************************************************************************
 
    //**Compilation flags***************************************************************************
@@ -939,9 +939,9 @@ struct SMatEvalExprTrait< SMatEvalExpr<MT,false> >
 {
  public:
    //**********************************************************************************************
-   typedef typename If< And< IsSparseMatrix<MT>, IsRowMajorMatrix<MT> >
-                      , SMatEvalExpr<MT,false>
-                      , INVALID_TYPE >::Type  Type;
+   typedef If_< And< IsSparseMatrix<MT>, IsRowMajorMatrix<MT> >
+              , SMatEvalExpr<MT,false>
+              , INVALID_TYPE >  Type;
    //**********************************************************************************************
 };
 /*! \endcond */
@@ -955,9 +955,9 @@ struct TSMatEvalExprTrait< SMatEvalExpr<MT,true> >
 {
  public:
    //**********************************************************************************************
-   typedef typename If< And< IsSparseMatrix<MT>, IsColumnMajorMatrix<MT> >
-                      , SMatEvalExpr<MT,true>
-                      , INVALID_TYPE >::Type  Type;
+   typedef If_< And< IsSparseMatrix<MT>, IsColumnMajorMatrix<MT> >
+              , SMatEvalExpr<MT,true>
+              , INVALID_TYPE >  Type;
    //**********************************************************************************************
 };
 /*! \endcond */

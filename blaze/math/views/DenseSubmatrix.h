@@ -483,7 +483,7 @@ class DenseSubmatrix : public DenseMatrix< DenseSubmatrix<MT,AF,SO>, SO >
  private:
    //**Type definitions****************************************************************************
    //! Composite data type of the dense matrix expression.
-   typedef typename If< IsExpression<MT>, MT, MT& >::Type  Operand;
+   typedef If_< IsExpression<MT>, MT, MT& >  Operand;
 
    //! Intrinsic trait for the matrix element type.
    typedef IntrinsicTrait<typename MT::ElementType>  IT;
@@ -504,14 +504,13 @@ class DenseSubmatrix : public DenseMatrix< DenseSubmatrix<MT,AF,SO>, SO >
    typedef typename MT::ConstReference  ConstReference;
 
    //! Reference to a non-constant submatrix value.
-   typedef typename If< IsConst<MT>, ConstReference, typename MT::Reference >::Type  Reference;
+   typedef If_< IsConst<MT>, ConstReference, typename MT::Reference >  Reference;
 
    //! Pointer to a constant submatrix value.
    typedef const ElementType*  ConstPointer;
 
    //! Pointer to a non-constant submatrix value.
-   typedef typename If< Or< IsConst<MT>, Not< HasMutableDataAccess<MT> > >
-                      , ConstPointer, ElementType* >::Type  Pointer;
+   typedef If_< Or< IsConst<MT>, Not< HasMutableDataAccess<MT> > >, ConstPointer, ElementType* >  Pointer;
    //**********************************************************************************************
 
    //**SubmatrixIterator class definition**********************************************************
@@ -848,7 +847,7 @@ class DenseSubmatrix : public DenseMatrix< DenseSubmatrix<MT,AF,SO>, SO >
    typedef SubmatrixIterator<typename MT::ConstIterator>  ConstIterator;
 
    //! Iterator over non-constant elements.
-   typedef typename If< IsConst<MT>, ConstIterator, SubmatrixIterator<typename MT::Iterator> >::Type  Iterator;
+   typedef If_< IsConst<MT>, ConstIterator, SubmatrixIterator<typename MT::Iterator> >  Iterator;
    //**********************************************************************************************
 
    //**Compilation flags***************************************************************************
@@ -1632,7 +1631,7 @@ inline DenseSubmatrix<MT,AF,SO>& DenseSubmatrix<MT,AF,SO>::operator=( const Matr
       BLAZE_THROW_INVALID_ARGUMENT( "Matrix sizes do not match" );
    }
 
-   typedef typename If< IsRestricted<MT>, typename MT2::CompositeType, const MT2& >::Type  Right;
+   typedef If_< IsRestricted<MT>, typename MT2::CompositeType, const MT2& >  Right;
    Right right( ~rhs );
 
    if( !tryAssign( matrix_, right, row_, column_ ) ) {
@@ -3349,7 +3348,7 @@ class DenseSubmatrix<MT,unaligned,true> : public DenseMatrix< DenseSubmatrix<MT,
  private:
    //**Type definitions****************************************************************************
    //! Composite data type of the dense matrix expression.
-   typedef typename If< IsExpression<MT>, MT, MT& >::Type  Operand;
+   typedef If_< IsExpression<MT>, MT, MT& >  Operand;
 
    //! Intrinsic trait for the matrix element type.
    typedef IntrinsicTrait<typename MT::ElementType>  IT;
@@ -3370,14 +3369,13 @@ class DenseSubmatrix<MT,unaligned,true> : public DenseMatrix< DenseSubmatrix<MT,
    typedef typename MT::ConstReference  ConstReference;
 
    //! Reference to a non-constant submatrix value.
-   typedef typename If< IsConst<MT>, ConstReference, typename MT::Reference >::Type  Reference;
+   typedef If_< IsConst<MT>, ConstReference, typename MT::Reference >  Reference;
 
    //! Pointer to a constant submatrix value.
    typedef const ElementType*  ConstPointer;
 
    //! Pointer to a non-constant submatrix value.
-   typedef typename If< Or< IsConst<MT>, Not< HasMutableDataAccess<MT> > >
-                      , ConstPointer, ElementType* >::Type  Pointer;
+   typedef If_< Or< IsConst<MT>, Not< HasMutableDataAccess<MT> > >, ConstPointer, ElementType* >  Pointer;
    //**********************************************************************************************
 
    //**SubmatrixIterator class definition**********************************************************
@@ -3716,7 +3714,7 @@ class DenseSubmatrix<MT,unaligned,true> : public DenseMatrix< DenseSubmatrix<MT,
    typedef SubmatrixIterator<typename MT::ConstIterator>  ConstIterator;
 
    //! Iterator over non-constant elements.
-   typedef typename If< IsConst<MT>, ConstIterator, SubmatrixIterator<typename MT::Iterator> >::Type  Iterator;
+   typedef If_< IsConst<MT>, ConstIterator, SubmatrixIterator<typename MT::Iterator> >  Iterator;
    //**********************************************************************************************
 
    //**Compilation flags***************************************************************************
@@ -4464,7 +4462,7 @@ inline DenseSubmatrix<MT,unaligned,true>&
       BLAZE_THROW_INVALID_ARGUMENT( "Matrix sizes do not match" );
    }
 
-   typedef typename If< IsRestricted<MT>, typename MT2::CompositeType, const MT2& >::Type  Right;
+   typedef If_< IsRestricted<MT>, typename MT2::CompositeType, const MT2& >  Right;
    Right right( ~rhs );
 
    if( !tryAssign( matrix_, right, row_, column_ ) ) {
@@ -6160,7 +6158,7 @@ class DenseSubmatrix<MT,aligned,false> : public DenseMatrix< DenseSubmatrix<MT,a
  private:
    //**Type definitions****************************************************************************
    //! Composite data type of the dense matrix expression.
-   typedef typename If< IsExpression<MT>, MT, MT& >::Type  Operand;
+   typedef If_< IsExpression<MT>, MT, MT& >  Operand;
 
    //! Intrinsic trait for the matrix element type.
    typedef IntrinsicTrait<typename MT::ElementType>  IT;
@@ -6181,20 +6179,19 @@ class DenseSubmatrix<MT,aligned,false> : public DenseMatrix< DenseSubmatrix<MT,a
    typedef typename MT::ConstReference  ConstReference;
 
    //! Reference to a non-constant submatrix value.
-   typedef typename If< IsConst<MT>, ConstReference, typename MT::Reference >::Type  Reference;
+   typedef If_< IsConst<MT>, ConstReference, typename MT::Reference >  Reference;
 
    //! Pointer to a constant submatrix value.
    typedef const ElementType*  ConstPointer;
 
    //! Pointer to a non-constant submatrix value.
-   typedef typename If< Or< IsConst<MT>, Not< HasMutableDataAccess<MT> > >
-                      , ConstPointer, ElementType* >::Type  Pointer;
+   typedef If_< Or< IsConst<MT>, Not< HasMutableDataAccess<MT> > >, ConstPointer, ElementType* >  Pointer;
 
    //! Iterator over constant elements.
    typedef typename MT::ConstIterator  ConstIterator;
 
    //! Iterator over non-constant elements.
-   typedef typename If< IsConst<MT>, ConstIterator, typename MT::Iterator >::Type  Iterator;
+   typedef If_< IsConst<MT>, ConstIterator, typename MT::Iterator >  Iterator;
    //**********************************************************************************************
 
    //**Compilation flags***************************************************************************
@@ -6968,7 +6965,7 @@ inline DenseSubmatrix<MT,aligned,false>&
       BLAZE_THROW_INVALID_ARGUMENT( "Matrix sizes do not match" );
    }
 
-   typedef typename If< IsRestricted<MT>, typename MT2::CompositeType, const MT2& >::Type  Right;
+   typedef If_< IsRestricted<MT>, typename MT2::CompositeType, const MT2& >  Right;
    Right right( ~rhs );
 
    if( !tryAssign( matrix_, right, row_, column_ ) ) {
@@ -8678,7 +8675,7 @@ class DenseSubmatrix<MT,aligned,true> : public DenseMatrix< DenseSubmatrix<MT,al
  private:
    //**Type definitions****************************************************************************
    //! Composite data type of the dense matrix expression.
-   typedef typename If< IsExpression<MT>, MT, MT& >::Type  Operand;
+   typedef If_< IsExpression<MT>, MT, MT& >  Operand;
 
    //! Intrinsic trait for the matrix element type.
    typedef IntrinsicTrait<typename MT::ElementType>  IT;
@@ -8699,20 +8696,19 @@ class DenseSubmatrix<MT,aligned,true> : public DenseMatrix< DenseSubmatrix<MT,al
    typedef typename MT::ConstReference  ConstReference;
 
    //! Reference to a non-constant submatrix value.
-   typedef typename If< IsConst<MT>, ConstReference, typename MT::Reference >::Type  Reference;
+   typedef If_< IsConst<MT>, ConstReference, typename MT::Reference >  Reference;
 
    //! Pointer to a constant submatrix value.
    typedef const ElementType*  ConstPointer;
 
    //! Pointer to a non-constant submatrix value.
-   typedef typename If< Or< IsConst<MT>, Not< HasMutableDataAccess<MT> > >
-                      , ConstPointer, ElementType* >::Type  Pointer;
+   typedef If_< Or< IsConst<MT>, Not< HasMutableDataAccess<MT> > >, ConstPointer, ElementType* >  Pointer;
 
    //! Iterator over constant elements.
    typedef typename MT::ConstIterator  ConstIterator;
 
    //! Iterator over non-constant elements.
-   typedef typename If< IsConst<MT>, ConstIterator, typename MT::Iterator >::Type  Iterator;
+   typedef If_< IsConst<MT>, ConstIterator, typename MT::Iterator >  Iterator;
    //**********************************************************************************************
 
    //**Compilation flags***************************************************************************
@@ -9455,7 +9451,7 @@ inline DenseSubmatrix<MT,aligned,true>&
       BLAZE_THROW_INVALID_ARGUMENT( "Matrix sizes do not match" );
    }
 
-   typedef typename If< IsRestricted<MT>, typename MT2::CompositeType, const MT2& >::Type  Right;
+   typedef If_< IsRestricted<MT>, typename MT2::CompositeType, const MT2& >  Right;
    Right right( ~rhs );
 
    if( !tryAssign( matrix_, right, row_, column_ ) ) {

@@ -177,16 +177,16 @@ class DMatDMatAddExpr : public DenseMatrix< DMatDMatAddExpr<MT1,MT2,SO>, SO >
    typedef typename IntrinsicTrait<ElementType>::Type  IntrinsicType;  //!< Resulting intrinsic element type.
 
    //! Return type for expression template evaluations.
-   typedef const typename IfTrue< returnExpr, ExprReturnType, ElementType >::Type  ReturnType;
+   typedef const IfTrue_< returnExpr, ExprReturnType, ElementType >  ReturnType;
 
    //! Data type for composite expression templates.
-   typedef typename IfTrue< useAssign, const ResultType, const DMatDMatAddExpr& >::Type  CompositeType;
+   typedef IfTrue_< useAssign, const ResultType, const DMatDMatAddExpr& >  CompositeType;
 
    //! Composite type of the left-hand side dense matrix expression.
-   typedef typename If< IsExpression<MT1>, const MT1, const MT1& >::Type  LeftOperand;
+   typedef If_< IsExpression<MT1>, const MT1, const MT1& >  LeftOperand;
 
    //! Composite type of the right-hand side dense matrix expression.
-   typedef typename If< IsExpression<MT2>, const MT2, const MT2& >::Type  RightOperand;
+   typedef If_< IsExpression<MT2>, const MT2, const MT2& >  RightOperand;
    //**********************************************************************************************
 
    //**ConstIterator class definition**************************************************************
@@ -687,7 +687,7 @@ class DMatDMatAddExpr : public DenseMatrix< DMatDMatAddExpr<MT1,MT2,SO>, SO >
    {
       BLAZE_FUNCTION_TRACE;
 
-      typedef typename IfTrue< SO == SO2, ResultType, OppositeType >::Type  TmpType;
+      typedef IfTrue_< SO == SO2, ResultType, OppositeType >  TmpType;
 
       BLAZE_CONSTRAINT_MUST_BE_DENSE_MATRIX_TYPE( ResultType );
       BLAZE_CONSTRAINT_MUST_BE_DENSE_MATRIX_TYPE( OppositeType );
@@ -840,7 +840,7 @@ class DMatDMatAddExpr : public DenseMatrix< DMatDMatAddExpr<MT1,MT2,SO>, SO >
    {
       BLAZE_FUNCTION_TRACE;
 
-      typedef typename IfTrue< SO == SO2, ResultType, OppositeType >::Type  TmpType;
+      typedef IfTrue_< SO == SO2, ResultType, OppositeType >  TmpType;
 
       BLAZE_CONSTRAINT_MUST_BE_DENSE_MATRIX_TYPE( ResultType );
       BLAZE_CONSTRAINT_MUST_BE_DENSE_MATRIX_TYPE( OppositeType );

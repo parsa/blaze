@@ -94,9 +94,9 @@ struct TDMatTSMatAddExprTrait
  public:
    //**********************************************************************************************
    /*! \cond BLAZE_INTERNAL */
-   typedef typename If< Or< IsConst<MT1>, IsVolatile<MT1>, IsReference<MT1>
-                          , IsConst<MT2>, IsVolatile<MT2>, IsReference<MT2> >
-                      , TDMatTSMatAddExprTrait<Type1,Type2>, Tmp >::Type::Type  Type;
+   typedef typename If_< Or< IsConst<MT1>, IsVolatile<MT1>, IsReference<MT1>
+                           , IsConst<MT2>, IsVolatile<MT2>, IsReference<MT2> >
+                       , TDMatTSMatAddExprTrait<Type1,Type2>, Tmp >::Type  Type;
    /*! \endcond */
    //**********************************************************************************************
 };

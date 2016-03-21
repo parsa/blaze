@@ -81,10 +81,9 @@ struct SMatScalarMultExprTraitHelper
  private:
    //**********************************************************************************************
    typedef typename UnderlyingNumeric<MT>::Type  NET;
-   typedef typename If< And< IsComplex<NET>, IsBuiltin<ST> >
-                      , typename MultTrait<typename UnderlyingBuiltin<MT>::Type,ST>::Type
-                      , typename MultTrait<NET,ST>::Type
-                      >::Type  ScalarType;
+   typedef If_< And< IsComplex<NET>, IsBuiltin<ST> >
+              , typename MultTrait<typename UnderlyingBuiltin<MT>::Type,ST>::Type
+              , typename MultTrait<NET,ST>::Type >  ScalarType;
    //**********************************************************************************************
 
  public:
@@ -148,9 +147,9 @@ struct SMatScalarMultExprTrait
  public:
    //**********************************************************************************************
    /*! \cond BLAZE_INTERNAL */
-   typedef typename If< Or< IsConst<MT>, IsVolatile<MT>, IsReference<MT>
-                          , IsConst<ST>, IsVolatile<ST>, IsReference<ST> >
-                      , SMatScalarMultExprTrait<Type1,Type2>, Tmp >::Type::Type  Type;
+   typedef typename If_< Or< IsConst<MT>, IsVolatile<MT>, IsReference<MT>
+                           , IsConst<ST>, IsVolatile<ST>, IsReference<ST> >
+                       , SMatScalarMultExprTrait<Type1,Type2>, Tmp >::Type  Type;
    /*! \endcond */
    //**********************************************************************************************
 };

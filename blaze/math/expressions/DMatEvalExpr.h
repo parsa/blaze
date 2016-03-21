@@ -113,7 +113,7 @@ class DMatEvalExpr : public DenseMatrix< DMatEvalExpr<MT,SO>, SO >
    typedef const ResultType  CompositeType;
 
    //! Composite data type of the dense matrix expression.
-   typedef typename If< IsExpression<MT>, const MT, const MT& >::Type  Operand;
+   typedef If_< IsExpression<MT>, const MT, const MT& >  Operand;
    //**********************************************************************************************
 
    //**Compilation flags***************************************************************************
@@ -950,9 +950,9 @@ struct DMatEvalExprTrait< DMatEvalExpr<MT,false> >
 {
  public:
    //**********************************************************************************************
-   typedef typename If< And< IsDenseMatrix<MT>, IsRowMajorMatrix<MT> >
-                      , DMatEvalExpr<MT,false>
-                      , INVALID_TYPE >::Type  Type;
+   typedef If_< And< IsDenseMatrix<MT>, IsRowMajorMatrix<MT> >
+              , DMatEvalExpr<MT,false>
+              , INVALID_TYPE >  Type;
    //**********************************************************************************************
 };
 /*! \endcond */
@@ -966,9 +966,9 @@ struct TDMatEvalExprTrait< DMatEvalExpr<MT,true> >
 {
  public:
    //**********************************************************************************************
-   typedef typename If< And< IsDenseMatrix<MT>, IsColumnMajorMatrix<MT> >
-                      , DMatEvalExpr<MT,true>
-                      , INVALID_TYPE >::Type  Type;
+   typedef If_< And< IsDenseMatrix<MT>, IsColumnMajorMatrix<MT> >
+              , DMatEvalExpr<MT,true>
+              , INVALID_TYPE >  Type;
    //**********************************************************************************************
 };
 /*! \endcond */

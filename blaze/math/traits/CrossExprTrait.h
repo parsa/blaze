@@ -88,28 +88,21 @@ struct CrossExprTrait
 
    //**********************************************************************************************
    /*! \cond BLAZE_INTERNAL */
-   typedef typename If< IsVector<T1>
-                      , typename If< IsVector<T2>
-                                   , typename If< IsColumnVector<T1>
-                                                , typename If< IsColumnVector<T2>
-                                                             , typename If< IsDenseVector<T1>
-                                                                          , typename If< IsDenseVector<T2>
-                                                                                       , DVecDVecCrossExprTrait<T1,T2>
-                                                                                       , DVecSVecCrossExprTrait<T1,T2>
-                                                                                       >::Type
-                                                                          , typename If< IsDenseVector<T2>
-                                                                                       , SVecDVecCrossExprTrait<T1,T2>
-                                                                                       , SVecSVecCrossExprTrait<T1,T2>
-                                                                                       >::Type
-                                                                          >::Type
-                                                             , Failure
-                                                             >::Type
-                                                , Failure
-                                                >::Type
-                                   , Failure
-                                   >::Type
-                      , Failure
-                      >::Type  Tmp;
+   typedef If_< IsVector<T1>
+              , If_< IsVector<T2>
+                   , If_< IsColumnVector<T1>
+                        , If_< IsColumnVector<T2>
+                             , If_< IsDenseVector<T1>
+                                  , If_< IsDenseVector<T2>
+                                       , DVecDVecCrossExprTrait<T1,T2>
+                                       , DVecSVecCrossExprTrait<T1,T2> >
+                                  , If_< IsDenseVector<T2>
+                                       , SVecDVecCrossExprTrait<T1,T2>
+                                       , SVecSVecCrossExprTrait<T1,T2> > >
+                             , Failure >
+                        , Failure >
+                   , Failure >
+              , Failure >  Tmp;
 
    typedef typename RemoveReference< typename RemoveCV<T1>::Type >::Type  Type1;
    typedef typename RemoveReference< typename RemoveCV<T2>::Type >::Type  Type2;
@@ -119,9 +112,9 @@ struct CrossExprTrait
  public:
    //**********************************************************************************************
    /*! \cond BLAZE_INTERNAL */
-   typedef typename If< Or< IsConst<T1>, IsVolatile<T1>, IsReference<T1>
-                          , IsConst<T2>, IsVolatile<T2>, IsReference<T2> >
-                      , CrossExprTrait<Type1,Type2>, Tmp >::Type::Type  Type;
+   typedef typename If_< Or< IsConst<T1>, IsVolatile<T1>, IsReference<T1>
+                           , IsConst<T2>, IsVolatile<T2>, IsReference<T2> >
+                       , CrossExprTrait<Type1,Type2>, Tmp >::Type  Type;
    /*! \endcond */
    //**********************************************************************************************
 };

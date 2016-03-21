@@ -1036,7 +1036,7 @@ bool isLower( const DenseMatrix<MT,SO>& dm )
    typedef typename MT::ResultType     RT;
    typedef typename MT::ReturnType     RN;
    typedef typename MT::CompositeType  CT;
-   typedef typename If< IsExpression<RN>, const RT, CT >::Type  Tmp;
+   typedef If_< IsExpression<RN>, const RT, CT >  Tmp;
 
    if( IsLower<MT>::value )
       return true;
@@ -1114,7 +1114,7 @@ bool isUniLower( const DenseMatrix<MT,SO>& dm )
    typedef typename MT::ElementType    ET;
    typedef typename MT::ReturnType     RN;
    typedef typename MT::CompositeType  CT;
-   typedef typename If< IsExpression<RN>, const RT, CT >::Type  Tmp;
+   typedef If_< IsExpression<RN>, const RT, CT >  Tmp;
 
    if( IsUniLower<MT>::value )
       return true;
@@ -1194,7 +1194,7 @@ bool isStrictlyLower( const DenseMatrix<MT,SO>& dm )
    typedef typename MT::ElementType    ET;
    typedef typename MT::ReturnType     RN;
    typedef typename MT::CompositeType  CT;
-   typedef typename If< IsExpression<RN>, const RT, CT >::Type  Tmp;
+   typedef If_< IsExpression<RN>, const RT, CT >  Tmp;
 
    if( IsStrictlyLower<MT>::value )
       return true;
@@ -1269,7 +1269,7 @@ bool isUpper( const DenseMatrix<MT,SO>& dm )
    typedef typename MT::ResultType     RT;
    typedef typename MT::ReturnType     RN;
    typedef typename MT::CompositeType  CT;
-   typedef typename If< IsExpression<RN>, const RT, CT >::Type  Tmp;
+   typedef If_< IsExpression<RN>, const RT, CT >  Tmp;
 
    if( IsUpper<MT>::value )
       return true;
@@ -1347,7 +1347,7 @@ bool isUniUpper( const DenseMatrix<MT,SO>& dm )
    typedef typename MT::ElementType    ET;
    typedef typename MT::ReturnType     RN;
    typedef typename MT::CompositeType  CT;
-   typedef typename If< IsExpression<RN>, const RT, CT >::Type  Tmp;
+   typedef If_< IsExpression<RN>, const RT, CT >  Tmp;
 
    if( IsUniUpper<MT>::value )
       return true;
@@ -1427,7 +1427,7 @@ bool isStrictlyUpper( const DenseMatrix<MT,SO>& dm )
    typedef typename MT::ElementType    ET;
    typedef typename MT::ReturnType     RN;
    typedef typename MT::CompositeType  CT;
-   typedef typename If< IsExpression<RN>, const RT, CT >::Type  Tmp;
+   typedef If_< IsExpression<RN>, const RT, CT >  Tmp;
 
    if( IsStrictlyUpper<MT>::value )
       return true;
@@ -1503,7 +1503,7 @@ bool isDiagonal( const DenseMatrix<MT,SO>& dm )
    typedef typename MT::ResultType     RT;
    typedef typename MT::ReturnType     RN;
    typedef typename MT::CompositeType  CT;
-   typedef typename If< IsExpression<RN>, const RT, CT >::Type  Tmp;
+   typedef If_< IsExpression<RN>, const RT, CT >  Tmp;
 
    if( IsDiagonal<MT>::value )
       return true;
@@ -1598,7 +1598,7 @@ bool isIdentity( const DenseMatrix<MT,SO>& dm )
    typedef typename MT::ElementType    ET;
    typedef typename MT::ReturnType     RN;
    typedef typename MT::CompositeType  CT;
-   typedef typename If< IsExpression<RN>, const RT, CT >::Type  Tmp;
+   typedef If_< IsExpression<RN>, const RT, CT >  Tmp;
 
    if( IsIdentity<MT>::value )
       return true;

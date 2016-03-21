@@ -97,18 +97,15 @@ struct InvExprTrait
    /*! \cond BLAZE_INTERNAL */
    typedef typename UnderlyingElement<T>::Type  ElementType;
 
-   typedef typename If< And< IsDenseMatrix<T>
-                           , IsBlasCompatible<ElementType> >
-                      , typename If< IsRowMajorMatrix<T>
-                                   , DMatInvExprTrait<T>
-                                   , TDMatInvExprTrait<T>
-                                   >::Type
-                      , typename If< Or< IsFloatingPoint<T>,
-                                         And< IsComplex<T>, IsFloatingPoint<ElementType> > >
-                                   , Scalar
-                                   , Failure
-                                   >::Type
-                      >::Type  Tmp;
+   typedef If_< And< IsDenseMatrix<T>
+                   , IsBlasCompatible<ElementType> >
+              , If_< IsRowMajorMatrix<T>
+                   , DMatInvExprTrait<T>
+                   , TDMatInvExprTrait<T> >
+              , If_< Or< IsFloatingPoint<T>
+                       , And< IsComplex<T>, IsFloatingPoint<ElementType> > >
+                   , Scalar
+                   , Failure > >  Tmp;
 
    typedef typename RemoveReference< typename RemoveCV<T>::Type >::Type  Type1;
    /*! \endcond */
@@ -117,8 +114,8 @@ struct InvExprTrait
  public:
    //**********************************************************************************************
    /*! \cond BLAZE_INTERNAL */
-   typedef typename If< Or< IsConst<T>, IsVolatile<T>, IsReference<T> >
-                      , InvExprTrait<Type1>, Tmp >::Type::Type  Type;
+   typedef typename If_< Or< IsConst<T>, IsVolatile<T>, IsReference<T> >
+                       , InvExprTrait<Type1>, Tmp >::Type  Type;
    /*! \endcond */
    //**********************************************************************************************
 };

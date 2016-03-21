@@ -92,9 +92,9 @@ struct SVecDVecSubExprTrait
  public:
    //**********************************************************************************************
    /*! \cond BLAZE_INTERNAL */
-   typedef typename If< Or< IsConst<VT1>, IsVolatile<VT1>, IsReference<VT1>
+   typedef typename If_< Or< IsConst<VT1>, IsVolatile<VT1>, IsReference<VT1>
                           , IsConst<VT2>, IsVolatile<VT2>, IsReference<VT2> >
-                      , SVecDVecSubExprTrait<Type1,Type2>, Tmp >::Type::Type  Type;
+                      , SVecDVecSubExprTrait<Type1,Type2>, Tmp >::Type  Type;
    /*! \endcond */
    //**********************************************************************************************
 };

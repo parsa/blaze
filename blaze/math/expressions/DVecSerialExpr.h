@@ -101,7 +101,7 @@ class DVecSerialExpr : public DenseVector< DVecSerialExpr<VT,TF>, TF >
    typedef const ResultType  CompositeType;
 
    //! Composite data type of the dense vector expression.
-   typedef typename If< IsExpression<VT>, const VT, const VT& >::Type  Operand;
+   typedef If_< IsExpression<VT>, const VT, const VT& >  Operand;
    //**********************************************************************************************
 
    //**Compilation flags***************************************************************************
@@ -747,9 +747,9 @@ struct DVecSerialExprTrait< DVecSerialExpr<VT,false> >
 {
  public:
    //**********************************************************************************************
-   typedef typename If< And< IsDenseVector<VT>, IsColumnVector<VT> >
-                      , DVecSerialExpr<VT,false>
-                      , INVALID_TYPE >::Type  Type;
+   typedef If_< And< IsDenseVector<VT>, IsColumnVector<VT> >
+              , DVecSerialExpr<VT,false>
+              , INVALID_TYPE >  Type;
    //**********************************************************************************************
 };
 /*! \endcond */
@@ -763,9 +763,9 @@ struct TDVecSerialExprTrait< DVecSerialExpr<VT,true> >
 {
  public:
    //**********************************************************************************************
-   typedef typename If< And< IsDenseVector<VT>, IsRowVector<VT> >
-                      , DVecSerialExpr<VT,true>
-                      , INVALID_TYPE >::Type  Type;
+   typedef If_< And< IsDenseVector<VT>, IsRowVector<VT> >
+              , DVecSerialExpr<VT,true>
+              , INVALID_TYPE >  Type;
    //**********************************************************************************************
 };
 /*! \endcond */

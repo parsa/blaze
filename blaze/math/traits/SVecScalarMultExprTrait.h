@@ -81,10 +81,9 @@ struct SVecScalarMultExprTraitHelper
  private:
    //**********************************************************************************************
    typedef typename UnderlyingNumeric<VT>::Type  NET;
-   typedef typename If< And< IsComplex<NET>, IsBuiltin<ST> >
-                      , typename MultTrait<typename UnderlyingBuiltin<VT>::Type,ST>::Type
-                      , typename MultTrait<NET,ST>::Type
-                      >::Type  ScalarType;
+   typedef If_< And< IsComplex<NET>, IsBuiltin<ST> >
+              , typename MultTrait<typename UnderlyingBuiltin<VT>::Type,ST>::Type
+              , typename MultTrait<NET,ST>::Type >  ScalarType;
    //**********************************************************************************************
 
  public:
@@ -148,9 +147,9 @@ struct SVecScalarMultExprTrait
  public:
    //**********************************************************************************************
    /*! \cond BLAZE_INTERNAL */
-   typedef typename If< Or< IsConst<VT>, IsVolatile<VT>, IsReference<VT>
-                          , IsConst<ST>, IsVolatile<ST>, IsReference<ST> >
-                      , SVecScalarMultExprTrait<Type1,Type2>, Tmp >::Type::Type  Type;
+   typedef typename If_< Or< IsConst<VT>, IsVolatile<VT>, IsReference<VT>
+                           , IsConst<ST>, IsVolatile<ST>, IsReference<ST> >
+                       , SVecScalarMultExprTrait<Type1,Type2>, Tmp >::Type  Type;
    /*! \endcond */
    //**********************************************************************************************
 };

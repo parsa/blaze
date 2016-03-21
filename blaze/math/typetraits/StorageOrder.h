@@ -43,8 +43,8 @@
 #include <blaze/math/StorageOrder.h>
 #include <blaze/math/typetraits/IsMatrix.h>
 #include <blaze/math/typetraits/IsRowMajorMatrix.h>
-#include <blaze/util/InvalidType.h>
-#include <blaze/util/mpl/If.h>
+#include <blaze/util/EnableIf.h>
+#include <blaze/util/IntegralConstant.h>
 
 
 namespace blaze {
@@ -73,25 +73,9 @@ namespace blaze {
    blaze::StorageOrder<int>::value                // Compilation error!
    \endcode
 */
-template< typename T >
-struct StorageOrder
-{
- private:
-   //**struct ValidType****************************************************************************
-   /*! \cond BLAZE_INTERNAL */
-   struct ValidType {
-      static constexpr bool value = ( IsRowMajorMatrix<T>::value ? rowMajor : columnMajor );
-   };
-   /*! \endcond */
-   //**********************************************************************************************
-
- public:
-   //**********************************************************************************************
-   /*! \cond BLAZE_INTERNAL */
-   static constexpr bool value = If< IsMatrix<T>, ValidType, INVALID_TYPE >::Type::value;
-   /*! \endcond */
-   //**********************************************************************************************
-};
+template< typename T, typename = EnableIf_< IsMatrix<T> > >
+struct StorageOrder : public BoolConstant< ( IsRowMajorMatrix<T>::value ? rowMajor : columnMajor ) >
+{};
 //*************************************************************************************************
 
 } // namespace blaze

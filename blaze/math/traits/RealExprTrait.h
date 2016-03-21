@@ -110,37 +110,27 @@ struct RealExprTrait
 
    //**********************************************************************************************
    /*! \cond BLAZE_INTERNAL */
-   typedef typename If< IsMatrix<T>
-                      , typename If< IsDenseMatrix<T>
-                                   , typename If< IsRowMajorMatrix<T>
-                                                , DMatRealExprTrait<T>
-                                                , TDMatRealExprTrait<T>
-                                                >::Type
-                                   , typename If< IsRowMajorMatrix<T>
-                                                , SMatRealExprTrait<T>
-                                                , TSMatRealExprTrait<T>
-                                                >::Type
-                                   >::Type
-                      , typename If< IsVector<T>
-                                   , typename If< IsDenseVector<T>
-                                                , typename If< IsRowVector<T>
-                                                             , TDVecRealExprTrait<T>
-                                                             , DVecRealExprTrait<T>
-                                                             >::Type
-                                                , typename If< IsRowVector<T>
-                                                             , TSVecRealExprTrait<T>
-                                                             , SVecRealExprTrait<T>
-                                                             >::Type
-                                                >::Type
-                                   , typename If< IsNumeric<T>
-                                                , typename If< IsComplex<T>
-                                                             , Complex<T>
-                                                             , Builtin<T>
-                                                             >::Type
-                                                , Failure
-                                                >::Type
-                                   >::Type
-                      >::Type  Tmp;
+   typedef If_< IsMatrix<T>
+              , If_< IsDenseMatrix<T>
+                   , If_< IsRowMajorMatrix<T>
+                        , DMatRealExprTrait<T>
+                        , TDMatRealExprTrait<T> >
+                   , If_< IsRowMajorMatrix<T>
+                        , SMatRealExprTrait<T>
+                        , TSMatRealExprTrait<T> > >
+              , If_< IsVector<T>
+                   , If_< IsDenseVector<T>
+                        , If_< IsRowVector<T>
+                             , TDVecRealExprTrait<T>
+                             , DVecRealExprTrait<T> >
+                        , If_< IsRowVector<T>
+                             , TSVecRealExprTrait<T>
+                             , SVecRealExprTrait<T> > >
+                   , If_< IsNumeric<T>
+                        , If_< IsComplex<T>
+                             , Complex<T>
+                             , Builtin<T> >
+                        , Failure > > >  Tmp;
 
    typedef typename RemoveReference< typename RemoveCV<T>::Type >::Type  Type1;
    /*! \endcond */
@@ -149,8 +139,8 @@ struct RealExprTrait
  public:
    //**********************************************************************************************
    /*! \cond BLAZE_INTERNAL */
-   typedef typename If< Or< IsConst<T>, IsVolatile<T>, IsReference<T> >
-                      , RealExprTrait<Type1>, Tmp >::Type::Type  Type;
+   typedef typename If_< Or< IsConst<T>, IsVolatile<T>, IsReference<T> >
+                       , RealExprTrait<Type1>, Tmp >::Type  Type;
    /*! \endcond */
    //**********************************************************************************************
 };

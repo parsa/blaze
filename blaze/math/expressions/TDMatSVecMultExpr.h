@@ -200,16 +200,16 @@ class TDMatSVecMultExpr : public DenseVector< TDMatSVecMultExpr<MT,VT>, false >
    typedef const ResultType                            CompositeType;  //!< Data type for composite expression templates.
 
    //! Composite type of the left-hand side dense matrix expression.
-   typedef typename If< IsExpression<MT>, const MT, const MT& >::Type  LeftOperand;
+   typedef If_< IsExpression<MT>, const MT, const MT& >  LeftOperand;
 
    //! Composite type of the right-hand side dense vector expression.
-   typedef typename If< IsExpression<VT>, const VT, const VT& >::Type  RightOperand;
+   typedef If_< IsExpression<VT>, const VT, const VT& >  RightOperand;
 
    //! Type for the assignment of the left-hand side dense matrix operand.
-   typedef typename IfTrue< evaluateMatrix, const MRT, MCT >::Type  LT;
+   typedef IfTrue_< evaluateMatrix, const MRT, MCT >  LT;
 
    //! Type for the assignment of the right-hand side dense matrix operand.
-   typedef typename IfTrue< evaluateVector, const VRT, typename VT::CompositeType >::Type  RT;
+   typedef IfTrue_< evaluateVector, const VRT, typename VT::CompositeType >  RT;
    //**********************************************************************************************
 
    //**Compilation flags***************************************************************************

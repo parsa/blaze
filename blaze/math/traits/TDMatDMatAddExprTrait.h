@@ -85,13 +85,11 @@ struct TDMatDMatAddExprTrait
    /*! \cond BLAZE_INTERNAL */
    typedef If< And< IsDenseMatrix<MT1>, IsColumnMajorMatrix<MT1>
                   , IsDenseMatrix<MT2>, IsRowMajorMatrix<MT2> >
-             , typename If< IsSymmetric<MT1>
-                          , DMatDMatAddExpr< MT2, typename TDMatTransExprTrait<MT1>::Type, false >
-                          , typename If< IsSymmetric<MT2>
-                                       , DMatDMatAddExpr< typename DMatTransExprTrait<MT2>::Type, MT1, true >
-                                       , DMatTDMatAddExpr<MT2,MT1>
-                                       >::Type
-                          >::Type
+             , If_< IsSymmetric<MT1>
+                  , DMatDMatAddExpr< MT2, typename TDMatTransExprTrait<MT1>::Type, false >
+                  , If_< IsSymmetric<MT2>
+                       , DMatDMatAddExpr< typename DMatTransExprTrait<MT2>::Type, MT1, true >
+                       , DMatTDMatAddExpr<MT2,MT1> > >
              , INVALID_TYPE
              >  Tmp;
 
@@ -103,9 +101,9 @@ struct TDMatDMatAddExprTrait
  public:
    //**********************************************************************************************
    /*! \cond BLAZE_INTERNAL */
-   typedef typename If< Or< IsConst<MT1>, IsVolatile<MT1>, IsReference<MT1>
-                          , IsConst<MT2>, IsVolatile<MT2>, IsReference<MT2> >
-                      , TDMatDMatAddExprTrait<Type1,Type2>, Tmp >::Type::Type  Type;
+   typedef typename If_< Or< IsConst<MT1>, IsVolatile<MT1>, IsReference<MT1>
+                           , IsConst<MT2>, IsVolatile<MT2>, IsReference<MT2> >
+                       , TDMatDMatAddExprTrait<Type1,Type2>, Tmp >::Type  Type;
    /*! \endcond */
    //**********************************************************************************************
 };

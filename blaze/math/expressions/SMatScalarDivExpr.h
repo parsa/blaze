@@ -176,13 +176,13 @@ class SMatScalarDivExpr : public SparseMatrix< SMatScalarDivExpr<MT,ST,SO>, SO >
    typedef typename ResultType::ElementType    ElementType;    //!< Resulting element type.
 
    //! Return type for expression template evaluations.
-   typedef const typename IfTrue< returnExpr, ExprReturnType, ElementType >::Type  ReturnType;
+   typedef const IfTrue_< returnExpr, ExprReturnType, ElementType >  ReturnType;
 
    //! Data type for composite expression templates.
-   typedef typename IfTrue< useAssign, const ResultType, const SMatScalarDivExpr& >::Type  CompositeType;
+   typedef IfTrue_< useAssign, const ResultType, const SMatScalarDivExpr& >  CompositeType;
 
    //! Composite data type of the sparse matrix expression.
-   typedef typename If< IsExpression<MT>, const MT, const MT& >::Type  LeftOperand;
+   typedef If_< IsExpression<MT>, const MT, const MT& >  LeftOperand;
 
    //! Composite type of the right-hand side scalar value.
    typedef ST  RightOperand;
@@ -1090,10 +1090,10 @@ struct SMatScalarMultExprTrait< SMatScalarDivExpr<MT,ST1,false>, ST2 >
 
  public:
    //**********************************************************************************************
-   typedef typename If< And< IsSparseMatrix<MT>, IsRowMajorMatrix<MT>
-                           , IsNumeric<ST1>, IsNumeric<ST2> >
-                      , typename If< IsInvertible<ScalarType>, T1, T2 >::Type
-                      , INVALID_TYPE >::Type  Type;
+   typedef If_< And< IsSparseMatrix<MT>, IsRowMajorMatrix<MT>
+                   , IsNumeric<ST1>, IsNumeric<ST2> >
+              , If_< IsInvertible<ScalarType>, T1, T2 >
+              , INVALID_TYPE >  Type;
    //**********************************************************************************************
 };
 /*! \endcond */
@@ -1125,10 +1125,10 @@ struct TSMatScalarMultExprTrait< SMatScalarDivExpr<MT,ST1,true>, ST2 >
 
  public:
    //**********************************************************************************************
-   typedef typename If< And< IsSparseMatrix<MT>, IsColumnMajorMatrix<MT>
-                           , IsNumeric<ST1>, IsNumeric<ST2> >
-                      , typename If< IsInvertible<ScalarType>, T1, T2 >::Type
-                      , INVALID_TYPE >::Type  Type;
+   typedef If_< And< IsSparseMatrix<MT>, IsColumnMajorMatrix<MT>
+                   , IsNumeric<ST1>, IsNumeric<ST2> >
+              , If_< IsInvertible<ScalarType>, T1, T2 >
+              , INVALID_TYPE >  Type;
    //**********************************************************************************************
 };
 /*! \endcond */

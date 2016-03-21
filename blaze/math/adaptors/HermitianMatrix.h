@@ -1533,17 +1533,17 @@ struct AddTrait< CompressedMatrix<T,SO1>, HermitianMatrix<MT,SO2,DF> >
 template< typename MT1, bool SO1, bool DF1, typename MT2, bool SO2, bool DF2, bool NF >
 struct AddTrait< HermitianMatrix<MT1,SO1,DF1>, SymmetricMatrix<MT2,SO2,DF2,NF> >
 {
-   typedef typename If< IsSymmetric< HermitianMatrix<MT1,SO1,DF1> >
-                      , SymmetricMatrix< typename AddTrait<MT1,MT2>::Type >
-                      , typename AddTrait<MT1,MT2>::Type >::Type  Type;
+   typedef If_< IsSymmetric< HermitianMatrix<MT1,SO1,DF1> >
+              , SymmetricMatrix< typename AddTrait<MT1,MT2>::Type >
+              , typename AddTrait<MT1,MT2>::Type >  Type;
 };
 
 template< typename MT1, bool SO1, bool DF1, typename MT2, bool SO2, bool DF2 >
 struct AddTrait< SymmetricMatrix<MT1,SO1,DF1>, HermitianMatrix<MT2,SO2,DF2> >
 {
-   typedef typename If< IsSymmetric< HermitianMatrix<MT2,SO2,DF2> >
-                      , SymmetricMatrix< typename AddTrait<MT1,MT2>::Type >
-                      , typename AddTrait<MT1,MT2>::Type >::Type  Type;
+   typedef If_< IsSymmetric< HermitianMatrix<MT2,SO2,DF2> >
+              , SymmetricMatrix< typename AddTrait<MT1,MT2>::Type >
+              , typename AddTrait<MT1,MT2>::Type >  Type;
 };
 
 template< typename MT1, bool SO1, bool DF1, typename MT2, bool SO2, bool DF2 >
@@ -1628,17 +1628,17 @@ struct SubTrait< CompressedMatrix<T,SO1>, HermitianMatrix<MT,SO2,DF> >
 template< typename MT1, bool SO1, bool DF1, typename MT2, bool SO2, bool DF2 >
 struct SubTrait< HermitianMatrix<MT1,SO1,DF1>, SymmetricMatrix<MT2,SO2,DF2> >
 {
-   typedef typename If< IsSymmetric< HermitianMatrix<MT1,SO1,DF1> >
-                      , SymmetricMatrix< typename SubTrait<MT1,MT2>::Type >
-                      , typename SubTrait<MT1,MT2>::Type >::Type  Type;
+   typedef If_< IsSymmetric< HermitianMatrix<MT1,SO1,DF1> >
+              , SymmetricMatrix< typename SubTrait<MT1,MT2>::Type >
+              , typename SubTrait<MT1,MT2>::Type >  Type;
 };
 
 template< typename MT1, bool SO1, bool DF1, typename MT2, bool SO2, bool DF2 >
 struct SubTrait< SymmetricMatrix<MT1,SO1,DF1>, HermitianMatrix<MT2,SO2,DF2> >
 {
-   typedef typename If< IsSymmetric< HermitianMatrix<MT2,SO2,DF2> >
-                      , SymmetricMatrix< typename SubTrait<MT1,MT2>::Type >
-                      , typename SubTrait<MT1,MT2>::Type >::Type  Type;
+   typedef If_< IsSymmetric< HermitianMatrix<MT2,SO2,DF2> >
+              , SymmetricMatrix< typename SubTrait<MT1,MT2>::Type >
+              , typename SubTrait<MT1,MT2>::Type >  Type;
 };
 
 template< typename MT1, bool SO1, bool DF1, typename MT2, bool SO2, bool DF2 >

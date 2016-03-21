@@ -101,7 +101,7 @@ class DVecEvalExpr : public DenseVector< DVecEvalExpr<VT,TF>, TF >
    typedef const ResultType  CompositeType;
 
    //! Composite data type of the dense vector expression.
-   typedef typename If< IsExpression<VT>, const VT, const VT& >::Type  Operand;
+   typedef If_< IsExpression<VT>, const VT, const VT& >  Operand;
    //**********************************************************************************************
 
    //**Compilation flags***************************************************************************
@@ -727,9 +727,9 @@ struct DVecEvalExprTrait< DVecEvalExpr<VT,false> >
 {
  public:
    //**********************************************************************************************
-   typedef typename If< And< IsDenseVector<VT>, IsColumnVector<VT> >
-                      , DVecEvalExpr<VT,false>
-                      , INVALID_TYPE >::Type  Type;
+   typedef If_< And< IsDenseVector<VT>, IsColumnVector<VT> >
+              , DVecEvalExpr<VT,false>
+              , INVALID_TYPE >  Type;
    //**********************************************************************************************
 };
 /*! \endcond */
@@ -743,9 +743,9 @@ struct TDVecEvalExprTrait< DVecEvalExpr<VT,true> >
 {
  public:
    //**********************************************************************************************
-   typedef typename If< And< IsDenseVector<VT>, IsRowVector<VT> >
-                      , DVecEvalExpr<VT,true>
-                      , INVALID_TYPE >::Type  Type;
+   typedef If_< And< IsDenseVector<VT>, IsRowVector<VT> >
+              , DVecEvalExpr<VT,true>
+              , INVALID_TYPE >  Type;
    //**********************************************************************************************
 };
 /*! \endcond */

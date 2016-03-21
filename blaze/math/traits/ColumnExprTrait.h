@@ -112,19 +112,16 @@ struct ColumnExprTrait
  public:
    //**********************************************************************************************
    /*! \cond BLAZE_INTERNAL */
-   typedef typename If< Or< IsComputation<Tmp>, IsTransExpr<Tmp> >
-                      , typename If< Or< IsConst<Tmp>, IsVolatile<Tmp> >
-                                   , ColumnExprTrait< typename RemoveCV<Tmp>::Type >
-                                   , Failure
-                                   >::Type
-                      , typename If< IsDenseMatrix<Tmp>
-                                   , DenseResult<Tmp>
-                                   , typename If< IsSparseMatrix<Tmp>
-                                                , SparseResult<Tmp>
-                                                , Failure
-                                                >::Type
-                                   >::Type
-                      >::Type::Type  Type;
+   typedef typename If_< Or< IsComputation<Tmp>, IsTransExpr<Tmp> >
+                       , If_< Or< IsConst<Tmp>, IsVolatile<Tmp> >
+                            , ColumnExprTrait< typename RemoveCV<Tmp>::Type >
+                            , Failure >
+                       , If_< IsDenseMatrix<Tmp>
+                            , DenseResult<Tmp>
+                            , If_< IsSparseMatrix<Tmp>
+                                 , SparseResult<Tmp>
+                                 , Failure > >
+                       >::Type  Type;
    /*! \endcond */
    //**********************************************************************************************
 };

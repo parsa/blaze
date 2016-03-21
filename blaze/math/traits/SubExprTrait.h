@@ -113,115 +113,79 @@ struct SubExprTrait
  public:
    //**********************************************************************************************
    /*! \cond BLAZE_INTERNAL */
-   typedef typename If< IsMatrix<T1>
-                      , typename If< IsMatrix<T2>
-                                   , typename If< IsDenseMatrix<T1>
-                                                , typename If< IsDenseMatrix<T2>
-                                                             , typename If< IsRowMajorMatrix<T1>
-                                                                          , typename If< IsRowMajorMatrix<T2>
-                                                                                       , DMatDMatSubExprTrait<T1,T2>
-                                                                                       , DMatTDMatSubExprTrait<T1,T2>
-                                                                                       >::Type
-                                                                          , typename If< IsRowMajorMatrix<T2>
-                                                                                       , TDMatDMatSubExprTrait<T1,T2>
-                                                                                       , TDMatTDMatSubExprTrait<T1,T2>
-                                                                                       >::Type
-                                                                          >::Type
-                                                             , typename If< IsRowMajorMatrix<T1>
-                                                                          , typename If< IsRowMajorMatrix<T2>
-                                                                                       , DMatSMatSubExprTrait<T1,T2>
-                                                                                       , DMatTSMatSubExprTrait<T1,T2>
-                                                                                       >::Type
-                                                                          , typename If< IsRowMajorMatrix<T2>
-                                                                                       , TDMatSMatSubExprTrait<T1,T2>
-                                                                                       , TDMatTSMatSubExprTrait<T1,T2>
-                                                                                       >::Type
-                                                                          >::Type
-                                                             >::Type
-                                                , typename If< IsDenseMatrix<T2>
-                                                             , typename If< IsRowMajorMatrix<T1>
-                                                                          , typename If< IsRowMajorMatrix<T2>
-                                                                                       , SMatDMatSubExprTrait<T1,T2>
-                                                                                       , SMatTDMatSubExprTrait<T1,T2>
-                                                                                       >::Type
-                                                                          , typename If< IsRowMajorMatrix<T2>
-                                                                                       , TSMatDMatSubExprTrait<T1,T2>
-                                                                                       , TSMatTDMatSubExprTrait<T1,T2>
-                                                                                       >::Type
-                                                                          >::Type
-                                                             , typename If< IsRowMajorMatrix<T1>
-                                                                          , typename If< IsRowMajorMatrix<T2>
-                                                                                       , SMatSMatSubExprTrait<T1,T2>
-                                                                                       , SMatTSMatSubExprTrait<T1,T2>
-                                                                                       >::Type
-                                                                          , typename If< IsRowMajorMatrix<T2>
-                                                                                       , TSMatSMatSubExprTrait<T1,T2>
-                                                                                       , TSMatTSMatSubExprTrait<T1,T2>
-                                                                                       >::Type
-                                                                          >::Type
-                                                             >::Type
-                                                >::Type
-                                   , Failure
-                                   >::Type
-                      , typename If< IsVector<T1>
-                                   , typename If< IsVector<T2>
-                                                , typename If< IsDenseVector<T1>
-                                                             , typename If< IsDenseVector<T2>
-                                                                          , typename If< IsRowVector<T1>
-                                                                                       , typename If< IsRowVector<T2>
-                                                                                                    , TDVecTDVecSubExprTrait<T1,T2>
-                                                                                                    , Failure
-                                                                                                    >::Type
-                                                                                       , typename If< IsRowVector<T2>
-                                                                                                    , Failure
-                                                                                                    , DVecDVecSubExprTrait<T1,T2>
-                                                                                                    >::Type
-                                                                                       >::Type
-                                                                          , typename If< IsRowVector<T1>
-                                                                                       , typename If< IsRowVector<T2>
-                                                                                                    , TDVecTSVecSubExprTrait<T1,T2>
-                                                                                                    , Failure
-                                                                                                    >::Type
-                                                                                       , typename If< IsRowVector<T2>
-                                                                                                    , Failure
-                                                                                                    , DVecSVecSubExprTrait<T1,T2>
-                                                                                                    >::Type
-                                                                                       >::Type
-                                                                          >::Type
-                                                             , typename If< IsDenseVector<T2>
-                                                                          , typename If< IsRowVector<T1>
-                                                                                       , typename If< IsRowVector<T2>
-                                                                                                    , TSVecTDVecSubExprTrait<T1,T2>
-                                                                                                    , Failure
-                                                                                                    >::Type
-                                                                                       , typename If< IsRowVector<T2>
-                                                                                                    , Failure
-                                                                                                    , SVecDVecSubExprTrait<T1,T2>
-                                                                                                    >::Type
-                                                                                       >::Type
-                                                                          , typename If< IsRowVector<T1>
-                                                                                       , typename If< IsRowVector<T2>
-                                                                                                    , TSVecTSVecSubExprTrait<T1,T2>
-                                                                                                    , Failure
-                                                                                                    >::Type
-                                                                                       , typename If< IsRowVector<T2>
-                                                                                                    , Failure
-                                                                                                    , SVecSVecSubExprTrait<T1,T2>
-                                                                                                    >::Type
-                                                                                       >::Type
-                                                                          >::Type
-                                                             >::Type
-                                                , Failure
-                                                >::Type
-                                   , typename If< IsNumeric<T1>
-                                                , typename If< IsNumeric<T2>
-                                                             , SubTrait<T1,T2>
-                                                             , Failure
-                                                             >::Type
-                                                , Failure
-                                                >::Type
-                                   >::Type
-                      >::Type  Tmp;
+   typedef If_< IsMatrix<T1>
+              , If_< IsMatrix<T2>
+                   , If_< IsDenseMatrix<T1>
+                        , If_< IsDenseMatrix<T2>
+                             , If_< IsRowMajorMatrix<T1>
+                                  , If_< IsRowMajorMatrix<T2>
+                                       , DMatDMatSubExprTrait<T1,T2>
+                                       , DMatTDMatSubExprTrait<T1,T2> >
+                                  , If_< IsRowMajorMatrix<T2>
+                                       , TDMatDMatSubExprTrait<T1,T2>
+                                       , TDMatTDMatSubExprTrait<T1,T2> > >
+                             , If_< IsRowMajorMatrix<T1>
+                                  , If_< IsRowMajorMatrix<T2>
+                                       , DMatSMatSubExprTrait<T1,T2>
+                                       , DMatTSMatSubExprTrait<T1,T2> >
+                                  , If_< IsRowMajorMatrix<T2>
+                                       , TDMatSMatSubExprTrait<T1,T2>
+                                       , TDMatTSMatSubExprTrait<T1,T2> > > >
+                        , If_< IsDenseMatrix<T2>
+                             , If_< IsRowMajorMatrix<T1>
+                                  , If_< IsRowMajorMatrix<T2>
+                                       , SMatDMatSubExprTrait<T1,T2>
+                                       , SMatTDMatSubExprTrait<T1,T2> >
+                                  , If_< IsRowMajorMatrix<T2>
+                                       , TSMatDMatSubExprTrait<T1,T2>
+                                       , TSMatTDMatSubExprTrait<T1,T2> > >
+                             , If_< IsRowMajorMatrix<T1>
+                                  , If_< IsRowMajorMatrix<T2>
+                                       , SMatSMatSubExprTrait<T1,T2>
+                                       , SMatTSMatSubExprTrait<T1,T2> >
+                                  , If_< IsRowMajorMatrix<T2>
+                                       , TSMatSMatSubExprTrait<T1,T2>
+                                       , TSMatTSMatSubExprTrait<T1,T2> > > > >
+                   , Failure >
+              , If_< IsVector<T1>
+                   , If_< IsVector<T2>
+                        , If_< IsDenseVector<T1>
+                             , If_< IsDenseVector<T2>
+                                  , If_< IsRowVector<T1>
+                                       , If_< IsRowVector<T2>
+                                            , TDVecTDVecSubExprTrait<T1,T2>
+                                            , Failure >
+                                       , If_< IsRowVector<T2>
+                                            , Failure
+                                            , DVecDVecSubExprTrait<T1,T2> > >
+                                  , If_< IsRowVector<T1>
+                                       , If_< IsRowVector<T2>
+                                            , TDVecTSVecSubExprTrait<T1,T2>
+                                            , Failure >
+                                       , If_< IsRowVector<T2>
+                                            , Failure
+                                            , DVecSVecSubExprTrait<T1,T2> > > >
+                             , If_< IsDenseVector<T2>
+                                  , If_< IsRowVector<T1>
+                                       , If_< IsRowVector<T2>
+                                            , TSVecTDVecSubExprTrait<T1,T2>
+                                            , Failure >
+                                       , If_< IsRowVector<T2>
+                                            , Failure
+                                            , SVecDVecSubExprTrait<T1,T2> > >
+                                  , If_< IsRowVector<T1>
+                                       , If_< IsRowVector<T2>
+                                            , TSVecTSVecSubExprTrait<T1,T2>
+                                            , Failure >
+                                       , If_< IsRowVector<T2>
+                                            , Failure
+                                            , SVecSVecSubExprTrait<T1,T2> > > > >
+                        , Failure >
+                   , If_< IsNumeric<T1>
+                        , If_< IsNumeric<T2>
+                             , SubTrait<T1,T2>
+                             , Failure >
+                        , Failure > > >  Tmp;
 
    typedef typename RemoveReference< typename RemoveCV<T1>::Type >::Type  Type1;
    typedef typename RemoveReference< typename RemoveCV<T2>::Type >::Type  Type2;
@@ -231,9 +195,9 @@ struct SubExprTrait
  public:
    //**********************************************************************************************
    /*! \cond BLAZE_INTERNAL */
-   typedef typename If< Or< IsConst<T1>, IsVolatile<T1>, IsReference<T1>
-                          , IsConst<T2>, IsVolatile<T2>, IsReference<T2> >
-                      , SubExprTrait<Type1,Type2>, Tmp >::Type::Type  Type;
+   typedef typename If_< Or< IsConst<T1>, IsVolatile<T1>, IsReference<T1>
+                           , IsConst<T2>, IsVolatile<T2>, IsReference<T2> >
+                       , SubExprTrait<Type1,Type2>, Tmp >::Type  Type;
    /*! \endcond */
    //**********************************************************************************************
 };

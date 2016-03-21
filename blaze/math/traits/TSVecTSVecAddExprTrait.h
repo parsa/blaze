@@ -92,9 +92,9 @@ struct TSVecTSVecAddExprTrait
  public:
    //**********************************************************************************************
    /*! \cond BLAZE_INTERNAL */
-   typedef typename If< Or< IsConst<VT1>, IsVolatile<VT1>, IsReference<VT1>
-                          , IsConst<VT2>, IsVolatile<VT2>, IsReference<VT2> >
-                      , TSVecTSVecAddExprTrait<Type1,Type2>, Tmp >::Type::Type  Type;
+   typedef typename If_< Or< IsConst<VT1>, IsVolatile<VT1>, IsReference<VT1>
+                           , IsConst<VT2>, IsVolatile<VT2>, IsReference<VT2> >
+                       , TSVecTSVecAddExprTrait<Type1,Type2>, Tmp >::Type  Type;
    /*! \endcond */
    //**********************************************************************************************
 };

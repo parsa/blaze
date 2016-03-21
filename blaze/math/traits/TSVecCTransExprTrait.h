@@ -85,9 +85,9 @@ struct TSVecCTransExprTrait
 
    //**********************************************************************************************
    /*! \cond BLAZE_INTERNAL */
-   typedef typename If< And< IsSparseVector<VT>, IsRowVector<VT> >
-                      , TSVecTransExprTrait< typename TSVecConjExprTrait<VT>::Type >
-                      , Failure >::Type  Tmp;
+   typedef If_< And< IsSparseVector<VT>, IsRowVector<VT> >
+              , TSVecTransExprTrait< typename TSVecConjExprTrait<VT>::Type >
+              , Failure >  Tmp;
 
    typedef typename RemoveReference< typename RemoveCV<VT>::Type >::Type  Type1;
    /*! \endcond */
@@ -96,8 +96,8 @@ struct TSVecCTransExprTrait
  public:
    //**********************************************************************************************
    /*! \cond BLAZE_INTERNAL */
-   typedef typename If< Or< IsConst<VT>, IsVolatile<VT>, IsReference<VT> >
-                      , TSVecCTransExprTrait<Type1>, Tmp >::Type::Type  Type;
+   typedef typename If_< Or< IsConst<VT>, IsVolatile<VT>, IsReference<VT> >
+                       , TSVecCTransExprTrait<Type1>, Tmp >::Type  Type;
    /*! \endcond */
    //**********************************************************************************************
 };

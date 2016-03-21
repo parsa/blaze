@@ -131,9 +131,9 @@ class UniLowerProxy : public Proxy< UniLowerProxy<MT> >
    typedef typename MT::ElementType  RepresentedType;
 
    //! Value type of the represented complex element.
-   typedef typename If< IsComplex<RepresentedType>
-                      , ComplexType<RepresentedType>
-                      , BuiltinType<RepresentedType> >::Type::Type  ValueType;
+   typedef typename If_< IsComplex<RepresentedType>
+                       , ComplexType<RepresentedType>
+                       , BuiltinType<RepresentedType> >::Type  ValueType;
 
    typedef ValueType  value_type;  //!< Value type of the represented complex element.
    //**********************************************************************************************
