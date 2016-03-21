@@ -93,8 +93,8 @@ struct TDMatDMatAddExprTrait
              , INVALID_TYPE
              >  Tmp;
 
-   typedef typename RemoveReference< typename RemoveCV<MT1>::Type >::Type  Type1;
-   typedef typename RemoveReference< typename RemoveCV<MT2>::Type >::Type  Type2;
+   typedef typename RemoveReference< RemoveCV_<MT1> >::Type  Type1;
+   typedef typename RemoveReference< RemoveCV_<MT2> >::Type  Type2;
    /*! \endcond */
    //**********************************************************************************************
 

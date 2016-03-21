@@ -113,7 +113,7 @@ struct RowExprTrait
    /*! \cond BLAZE_INTERNAL */
    typedef typename If_< Or< IsComputation<Tmp>, IsTransExpr<Tmp> >
                        , If_< Or< IsConst<Tmp>, IsVolatile<Tmp> >
-                            , RowExprTrait< typename RemoveCV<Tmp>::Type >
+                            , RowExprTrait< RemoveCV_<Tmp> >
                             , Failure >
                        , If_< IsDenseMatrix<Tmp>
                             , DenseResult<Tmp>

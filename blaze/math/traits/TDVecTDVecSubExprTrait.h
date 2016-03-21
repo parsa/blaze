@@ -84,8 +84,8 @@ struct TDVecTDVecSubExprTrait
                   , IsDenseVector<VT2>, IsRowVector<VT2> >
              , DVecDVecSubExpr<VT1,VT2,true>, INVALID_TYPE >  Tmp;
 
-   typedef typename RemoveReference< typename RemoveCV<VT1>::Type >::Type  Type1;
-   typedef typename RemoveReference< typename RemoveCV<VT2>::Type >::Type  Type2;
+   typedef typename RemoveReference< RemoveCV_<VT1> >::Type  Type1;
+   typedef typename RemoveReference< RemoveCV_<VT2> >::Type  Type2;
    /*! \endcond */
    //**********************************************************************************************
 

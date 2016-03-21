@@ -131,7 +131,7 @@ struct SubvectorTrait
 
    //**********************************************************************************************
    /*! \cond BLAZE_INTERNAL */
-   typedef typename RemoveReference< typename RemoveCV<VT>::Type >::Type  Tmp;
+   typedef typename RemoveReference< RemoveCV_<VT> >::Type  Tmp;
    /*! \endcond */
    //**********************************************************************************************
 

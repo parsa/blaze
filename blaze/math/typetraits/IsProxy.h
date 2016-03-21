@@ -64,8 +64,6 @@ struct IsProxyHelper
 {
  private:
    //**********************************************************************************************
-   typedef typename RemoveCV<T>::Type  T2;
-
    typedef char (&Yes)[1];
    typedef char (&No) [2];
 
@@ -77,7 +75,7 @@ struct IsProxyHelper
 
  public:
    //**********************************************************************************************
-   static constexpr bool value = ( sizeof( test( std::declval<T2>() ) ) == sizeof( Yes ) );
+   static constexpr bool value = ( sizeof( test( std::declval< RemoveCV_<T> >() ) ) == sizeof( Yes ) );
    //**********************************************************************************************
 };
 /*! \endcond */

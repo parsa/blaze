@@ -132,7 +132,7 @@ struct AbsExprTrait
                              , Builtin<T> >
                         , Failure > > >  Tmp;
 
-   typedef typename RemoveReference< typename RemoveCV<T>::Type >::Type  Type1;
+   typedef typename RemoveReference< RemoveCV_<T> >::Type  Type1;
    /*! \endcond */
    //**********************************************************************************************
 

@@ -89,7 +89,7 @@ struct TDMatCTransExprTrait
               , TDMatTransExprTrait< typename TDMatConjExprTrait<MT>::Type >
               , Failure >  Tmp;
 
-   typedef typename RemoveReference< typename RemoveCV<MT>::Type >::Type  Type1;
+   typedef typename RemoveReference< RemoveCV_<MT> >::Type  Type1;
    /*! \endcond */
    //**********************************************************************************************
 

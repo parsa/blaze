@@ -109,7 +109,7 @@ struct SubmatrixExprTrait
    /*! \cond BLAZE_INTERNAL */
    typedef typename If_< Or< IsComputation<Tmp>, IsTransExpr<Tmp> >
                        , If_< Or< IsConst<Tmp>, IsVolatile<Tmp> >
-                            , SubmatrixExprTrait< typename RemoveCV<Tmp>::Type, AF >
+                            , SubmatrixExprTrait< RemoveCV_<Tmp>, AF >
                             , Failure >
                        , If_< IsDenseMatrix<Tmp>
                             , DenseResult<Tmp>

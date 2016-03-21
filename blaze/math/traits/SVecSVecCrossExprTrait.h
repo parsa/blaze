@@ -83,8 +83,8 @@ struct SVecSVecCrossExprTrait
                   , IsSparseVector<VT2>, IsColumnVector<VT2> >
              , SVecSVecCrossExpr<VT1,VT2>, INVALID_TYPE >  Tmp;
 
-   typedef typename RemoveReference< typename RemoveCV<VT1>::Type >::Type  Type1;
-   typedef typename RemoveReference< typename RemoveCV<VT2>::Type >::Type  Type2;
+   typedef typename RemoveReference< RemoveCV_<VT1> >::Type  Type1;
+   typedef typename RemoveReference< RemoveCV_<VT2> >::Type  Type2;
    /*! \endcond */
    //**********************************************************************************************
 

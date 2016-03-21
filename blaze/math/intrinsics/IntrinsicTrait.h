@@ -1229,7 +1229,7 @@ struct IntrinsicTraitBase< complex<double> >
 //    1. If it cannot be used in multiplications, it is set to 0.
 */
 template< typename T >
-class IntrinsicTrait : public IntrinsicTraitBase< typename RemoveCV<T>::Type >
+class IntrinsicTrait : public IntrinsicTraitBase< RemoveCV_<T> >
 {};
 //*************************************************************************************************
 

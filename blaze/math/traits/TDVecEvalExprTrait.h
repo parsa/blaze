@@ -80,7 +80,7 @@ struct TDVecEvalExprTrait
    typedef If< And< IsDenseVector<VT>, IsRowVector<VT> >
              , DVecEvalExpr<VT,true>, INVALID_TYPE >  Tmp;
 
-   typedef typename RemoveReference< typename RemoveCV<VT>::Type >::Type  Type1;
+   typedef typename RemoveReference< RemoveCV_<VT> >::Type  Type1;
    /*! \endcond */
    //**********************************************************************************************
 

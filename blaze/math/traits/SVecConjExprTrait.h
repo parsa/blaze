@@ -80,7 +80,7 @@ struct SVecConjExprTrait
    typedef If< And< IsSparseVector<VT>, IsColumnVector<VT> >
              , SVecConjExpr<VT,false>, INVALID_TYPE >  Tmp;
 
-   typedef typename RemoveReference< typename RemoveCV<VT>::Type >::Type  Type1;
+   typedef typename RemoveReference< RemoveCV_<VT> >::Type  Type1;
    /*! \endcond */
    //**********************************************************************************************
 

@@ -187,8 +187,8 @@ struct SubExprTrait
                              , Failure >
                         , Failure > > >  Tmp;
 
-   typedef typename RemoveReference< typename RemoveCV<T1>::Type >::Type  Type1;
-   typedef typename RemoveReference< typename RemoveCV<T2>::Type >::Type  Type2;
+   typedef typename RemoveReference< RemoveCV_<T1> >::Type  Type1;
+   typedef typename RemoveReference< RemoveCV_<T2> >::Type  Type2;
    /*! \endcond */
    //**********************************************************************************************
 

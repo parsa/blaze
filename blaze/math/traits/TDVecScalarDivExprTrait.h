@@ -142,8 +142,8 @@ struct TDVecScalarDivExprTrait
    /*! \cond BLAZE_INTERNAL */
    typedef TDVecScalarDivExprTraitHelper<VT,ST,condition>  Tmp;
 
-   typedef typename RemoveReference< typename RemoveCV<VT>::Type >::Type  Type1;
-   typedef typename RemoveReference< typename RemoveCV<ST>::Type >::Type  Type2;
+   typedef typename RemoveReference< RemoveCV_<VT> >::Type  Type1;
+   typedef typename RemoveReference< RemoveCV_<ST> >::Type  Type2;
    /*! \endcond */
    //**********************************************************************************************
 

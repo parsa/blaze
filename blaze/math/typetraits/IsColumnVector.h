@@ -80,8 +80,8 @@ namespace blaze {
 */
 template< typename T >
 struct IsColumnVector
-   : public BoolConstant< Or< IsBaseOf<DenseVector<typename RemoveCV<T>::Type,false>,T>
-                            , IsBaseOf<SparseVector<typename RemoveCV<T>::Type,false>,T> >::value >
+   : public BoolConstant< Or< IsBaseOf<DenseVector<RemoveCV_<T>,false>,T>
+                            , IsBaseOf<SparseVector<RemoveCV_<T>,false>,T> >::value >
 {};
 //*************************************************************************************************
 

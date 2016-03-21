@@ -76,8 +76,8 @@ namespace blaze {
 */
 template< typename T >
 struct IsDenseMatrix
-   : public BoolConstant< Or< IsBaseOf<DenseMatrix<typename RemoveCV<T>::Type,false>,T>
-                            , IsBaseOf<DenseMatrix<typename RemoveCV<T>::Type,true>,T> >::value >
+   : public BoolConstant< Or< IsBaseOf<DenseMatrix<RemoveCV_<T>,false>,T>
+                            , IsBaseOf<DenseMatrix<RemoveCV_<T>,true>,T> >::value >
 {};
 //*************************************************************************************************
 

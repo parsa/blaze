@@ -142,8 +142,8 @@ struct DMatScalarDivExprTrait
    /*! \cond BLAZE_INTERNAL */
    typedef DMatScalarDivExprTraitHelper<MT,ST,condition>  Tmp;
 
-   typedef typename RemoveReference< typename RemoveCV<MT>::Type >::Type  Type1;
-   typedef typename RemoveReference< typename RemoveCV<ST>::Type >::Type  Type2;
+   typedef typename RemoveReference< RemoveCV_<MT> >::Type  Type1;
+   typedef typename RemoveReference< RemoveCV_<ST> >::Type  Type2;
    /*! \endcond */
    //**********************************************************************************************
 

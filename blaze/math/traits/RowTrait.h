@@ -123,7 +123,7 @@ struct RowTrait
 
    //**********************************************************************************************
    /*! \cond BLAZE_INTERNAL */
-   typedef typename RemoveReference< typename RemoveCV<MT>::Type >::Type  Tmp;
+   typedef typename RemoveReference< RemoveCV_<MT> >::Type  Tmp;
    /*! \endcond */
    //**********************************************************************************************
 

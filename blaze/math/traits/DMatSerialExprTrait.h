@@ -80,7 +80,7 @@ struct DMatSerialExprTrait
    typedef If< And< IsDenseMatrix<MT>, IsRowMajorMatrix<MT> >
              , DMatSerialExpr<MT,false>, INVALID_TYPE >  Tmp;
 
-   typedef typename RemoveReference< typename RemoveCV<MT>::Type >::Type  Type1;
+   typedef typename RemoveReference< RemoveCV_<MT> >::Type  Type1;
    /*! \endcond */
    //**********************************************************************************************
 

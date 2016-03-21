@@ -86,8 +86,8 @@ struct TDMatSVecMultExprTrait
                   , IsSparseVector<VT>, IsColumnVector<VT> >
              , TDMatSVecMultExpr<MT,VT>, INVALID_TYPE >  Tmp;
 
-   typedef typename RemoveReference< typename RemoveCV<MT>::Type >::Type  Type1;
-   typedef typename RemoveReference< typename RemoveCV<VT>::Type >::Type  Type2;
+   typedef typename RemoveReference< RemoveCV_<MT> >::Type  Type1;
+   typedef typename RemoveReference< RemoveCV_<VT> >::Type  Type2;
    /*! \endcond */
    //**********************************************************************************************
 
