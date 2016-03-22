@@ -56,7 +56,7 @@ namespace blaze {
 // \ingroup type_traits
 //
 // The AddPointer type trait adds a top level pointer to the given type \a T. It has the same
-// effect as \c blaze::RemoveReference<T>::Type*.
+// effect as \c blaze::RemovePointer<T>::Type*.
 
    \code
    blaze::AddPointer<int>::Type        // Results in 'int*'
@@ -80,7 +80,7 @@ struct AddPointer
 
 //*************************************************************************************************
 /*!\brief Auxiliary alias declaration for the AddPointer type trait.
-// \ingroup util
+// \ingroup type_traits
 //
 // The AddPointer_ alias declaration provides a convenient shortcut to access the nested \a Type
 // of the AddPointer class template. For instance, given the type \a T the following two type

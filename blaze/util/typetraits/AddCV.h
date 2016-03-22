@@ -81,7 +81,7 @@ struct AddCV
 
 //*************************************************************************************************
 /*!\brief Auxiliary alias declaration for the AddCV type trait.
-// \ingroup util
+// \ingroup type_traits
 //
 // The AddCV_ alias declaration provides a convenient shortcut to access the nested \a Type
 // of the AddCV class template. For instance, given the type \a T the following two type

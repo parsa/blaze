@@ -80,7 +80,7 @@ struct RemoveReference
 
 //*************************************************************************************************
 /*!\brief Auxiliary alias declaration for the RemoveReference type trait.
-// \ingroup util
+// \ingroup type_traits
 //
 // The RemoveReference_ alias declaration provides a convenient shortcut to access the nested
 // \a Type of the RemoveReference class template. For instance, given the type \a T the following

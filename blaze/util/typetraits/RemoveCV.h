@@ -82,7 +82,7 @@ struct RemoveCV
 
 //*************************************************************************************************
 /*!\brief Auxiliary alias declaration for the RemoveCV type trait.
-// \ingroup util
+// \ingroup type_traits
 //
 // The RemoveCV_ alias declaration provides a convenient shortcut to access the nested \a Type
 // of the RemoveCV class template. For instance, given the type \a T the following two type

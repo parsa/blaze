@@ -80,7 +80,7 @@ struct RemovePointer
 
 //*************************************************************************************************
 /*!\brief Auxiliary alias declaration for the RemovePointer type trait.
-// \ingroup util
+// \ingroup type_traits
 //
 // The RemovePointer_ alias declaration provides a convenient shortcut to access the nested
 // \a Type of the RemovePointer class template. For instance, given the type \a T the following
