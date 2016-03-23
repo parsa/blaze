@@ -70,7 +70,7 @@ namespace blaze {
 template< typename T1    // Type of the first compile time value
         , typename T2 >  // Type of the second compile time value
 struct Plus
-   : public IntegralConstant< typename CommonType<typename T1::ValueType,typename T2::ValueType>::Type
+   : public IntegralConstant< CommonType_< typename T1::ValueType, typename T2::ValueType >
                             , ( T1::value + T2::value ) >
 {};
 //*************************************************************************************************
