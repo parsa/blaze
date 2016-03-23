@@ -151,7 +151,7 @@ inline bool operator==( const DenseVector<T1,TF1>& lhs, const SparseVector<T2,TF
 {
    typedef typename T1::CompositeType  CT1;
    typedef typename T2::CompositeType  CT2;
-   typedef typename RemoveReference<CT2>::Type::ConstIterator  ConstIterator;
+   typedef typename RemoveReference_<CT2>::ConstIterator  ConstIterator;
 
    // Early exit in case the vector sizes don't match
    if( (~lhs).size() != (~rhs).size() ) return false;
@@ -451,7 +451,7 @@ template< typename VT  // Type of the dense vector
 bool isUniform( const DenseVector<VT,TF>& dv )
 {
    typedef typename VT::CompositeType  CT;
-   typedef typename RemoveReference<CT>::Type::ConstReference  ConstReference;
+   typedef typename RemoveReference_<CT>::ConstReference  ConstReference;
 
    if( (~dv).size() < 2UL )
       return true;

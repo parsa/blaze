@@ -2157,7 +2157,7 @@ class DenseRow<MT,false,false> : public DenseVector< DenseRow<MT,false,false>, t
                  , typename MatrixType::Reference >  Reference;
 
       typedef std::random_access_iterator_tag  IteratorCategory;  //!< The iterator category.
-      typedef RemoveReference<Reference>       ValueType;         //!< Type of the underlying elements.
+      typedef RemoveReference_<Reference>      ValueType;         //!< Type of the underlying elements.
       typedef ValueType*                       PointerType;       //!< Pointer return type.
       typedef Reference                        ReferenceType;     //!< Reference return type.
       typedef ptrdiff_t                        DifferenceType;    //!< Difference between two iterators.
@@ -5818,7 +5818,7 @@ struct IsRestricted< DenseRow<MT,SO,SF> > : public BoolConstant< IsRestricted<MT
 template< typename MT, bool SO, bool SF >
 struct DerestrictTrait< DenseRow<MT,SO,SF> >
 {
-   typedef DenseRow< typename RemoveReference< typename DerestrictTrait<MT>::Type >::Type >  Type;
+   typedef DenseRow< RemoveReference_< typename DerestrictTrait<MT>::Type > >  Type;
 };
 /*! \endcond */
 //*************************************************************************************************

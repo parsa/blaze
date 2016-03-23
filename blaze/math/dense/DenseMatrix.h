@@ -265,7 +265,7 @@ inline bool operator==( const DenseMatrix<T1,SO>& lhs, const SparseMatrix<T2,fal
 {
    typedef typename T1::CompositeType  CT1;
    typedef typename T2::CompositeType  CT2;
-   typedef typename RemoveReference<CT2>::Type::ConstIterator  ConstIterator;
+   typedef typename RemoveReference_<CT2>::ConstIterator  ConstIterator;
 
    // Early exit in case the matrix sizes don't match
    if( (~lhs).rows() != (~rhs).rows() || (~lhs).columns() != (~rhs).columns() )
@@ -312,7 +312,7 @@ inline bool operator==( const DenseMatrix<T1,SO>& lhs, const SparseMatrix<T2,tru
 {
    typedef typename T1::CompositeType  CT1;
    typedef typename T2::CompositeType  CT2;
-   typedef typename RemoveReference<CT2>::Type::ConstIterator  ConstIterator;
+   typedef typename RemoveReference_<CT2>::ConstIterator  ConstIterator;
 
    // Early exit in case the matrix sizes don't match
    if( (~lhs).rows() != (~rhs).rows() || (~lhs).columns() != (~rhs).columns() )

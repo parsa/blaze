@@ -5467,7 +5467,7 @@ struct IsRestricted< DenseSubvector<VT,AF,TF> > : public BoolConstant< IsRestric
 template< typename VT, bool AF, bool TF >
 struct DerestrictTrait< DenseSubvector<VT,AF,TF> >
 {
-   typedef DenseSubvector< typename RemoveReference< typename DerestrictTrait<VT>::Type >::Type, AF, TF >  Type;
+   typedef DenseSubvector< RemoveReference_< typename DerestrictTrait<VT>::Type >, AF, TF >  Type;
 };
 /*! \endcond */
 //*************************************************************************************************

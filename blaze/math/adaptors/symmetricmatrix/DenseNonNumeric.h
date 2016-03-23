@@ -152,7 +152,7 @@ class SymmetricMatrix<MT,SO,true,false>
                  , typename MatrixType::Reference >  Reference;
 
       typedef std::random_access_iterator_tag  IteratorCategory;  //!< The iterator category.
-      typedef RemoveReference<Reference>       ValueType;         //!< Type of the underlying elements.
+      typedef RemoveReference_<Reference>      ValueType;         //!< Type of the underlying elements.
       typedef ValueType*                       PointerType;       //!< Pointer return type.
       typedef Reference                        ReferenceType;     //!< Reference return type.
       typedef ptrdiff_t                        DifferenceType;    //!< Difference between two iterators.

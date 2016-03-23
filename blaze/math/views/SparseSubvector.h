@@ -2573,7 +2573,7 @@ struct IsRestricted< SparseSubvector<VT,AF,TF> > : public BoolConstant< IsRestri
 template< typename VT, bool AF, bool TF >
 struct DerestrictTrait< SparseSubvector<VT,AF,TF> >
 {
-   typedef SparseSubvector< typename RemoveReference< typename DerestrictTrait<VT>::Type >::Type, AF, TF >  Type;
+   typedef SparseSubvector< RemoveReference_< typename DerestrictTrait<VT>::Type >, AF, TF >  Type;
 };
 /*! \endcond */
 //*************************************************************************************************

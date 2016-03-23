@@ -492,8 +492,8 @@ inline EnableIf_< IsMatMatMultExpr<MT>, typename SubmatrixExprTrait<MT,AF>::Type
 {
    BLAZE_FUNCTION_TRACE;
 
-   typedef typename RemoveReference< typename MT::LeftOperand >::Type   MT1;
-   typedef typename RemoveReference< typename MT::RightOperand >::Type  MT2;
+   typedef RemoveReference_< typename MT::LeftOperand >   MT1;
+   typedef RemoveReference_< typename MT::RightOperand >  MT2;
 
    typename MT::LeftOperand  left ( (~matrix).leftOperand()  );
    typename MT::RightOperand right( (~matrix).rightOperand() );

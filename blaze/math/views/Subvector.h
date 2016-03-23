@@ -530,7 +530,7 @@ inline EnableIf_< IsMatVecMultExpr<VT>, typename SubvectorExprTrait<VT,AF>::Type
 {
    BLAZE_FUNCTION_TRACE;
 
-   typedef typename RemoveReference< typename VT::LeftOperand >::Type  MT;
+   typedef RemoveReference_< typename VT::LeftOperand >  MT;
 
    typename VT::LeftOperand  left ( (~vector).leftOperand()  );
    typename VT::RightOperand right( (~vector).rightOperand() );
@@ -573,7 +573,7 @@ inline EnableIf_< IsTVecMatMultExpr<VT>, typename SubvectorExprTrait<VT,AF>::Typ
 {
    BLAZE_FUNCTION_TRACE;
 
-   typedef typename RemoveReference< typename VT::RightOperand>::Type  MT;
+   typedef RemoveReference_< typename VT::RightOperand>  MT;
 
    typename VT::LeftOperand  left ( (~vector).leftOperand()  );
    typename VT::RightOperand right( (~vector).rightOperand() );

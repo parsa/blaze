@@ -12119,7 +12119,7 @@ struct IsRestricted< DenseSubmatrix<MT,AF,SO> > : public BoolConstant< IsRestric
 template< typename MT, bool AF, bool SO >
 struct DerestrictTrait< DenseSubmatrix<MT,AF,SO> >
 {
-   typedef DenseSubmatrix< typename RemoveReference< typename DerestrictTrait<MT>::Type >::Type, AF >  Type;
+   typedef DenseSubmatrix< RemoveReference_< typename DerestrictTrait<MT>::Type >, AF >  Type;
 };
 /*! \endcond */
 //*************************************************************************************************

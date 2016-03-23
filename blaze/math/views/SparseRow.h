@@ -5709,7 +5709,7 @@ struct IsRestricted< SparseRow<MT,SO,SF> > : public BoolConstant< IsRestricted<M
 template< typename MT, bool SO, bool SF >
 struct DerestrictTrait< SparseRow<MT,SO,SF> >
 {
-   typedef SparseRow< typename RemoveReference< typename DerestrictTrait<MT>::Type >::Type >  Type;
+   typedef SparseRow< RemoveReference_< typename DerestrictTrait<MT>::Type > >  Type;
 };
 /*! \endcond */
 //*************************************************************************************************

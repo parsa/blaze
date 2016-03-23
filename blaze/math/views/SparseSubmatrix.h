@@ -6191,7 +6191,7 @@ struct IsRestricted< SparseSubmatrix<MT,AF,SO> > : public BoolConstant< IsRestri
 template< typename MT, bool AF, bool SO >
 struct DerestrictTrait< SparseSubmatrix<MT,AF,SO> >
 {
-   typedef SparseSubmatrix< typename RemoveReference< typename DerestrictTrait<MT>::Type >::Type, AF >  Type;
+   typedef SparseSubmatrix< RemoveReference_< typename DerestrictTrait<MT>::Type >, AF >  Type;
 };
 /*! \endcond */
 //*************************************************************************************************
