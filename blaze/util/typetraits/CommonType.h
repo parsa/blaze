@@ -91,8 +91,8 @@ struct CommonType
    using Type2 = CommonType_<T1,T2>;
    \endcode
 */
-template< typename T >
-using CommonType_ = typename CommonType<T>::Type;
+template< typename... T >
+using CommonType_ = typename CommonType<T...>::Type;
 //*************************************************************************************************
 
 } // namespace blaze
