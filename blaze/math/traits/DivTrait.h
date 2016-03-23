@@ -173,7 +173,7 @@ struct DivTrait< complex<T1>, T2, EnableIf_< IsBuiltin<T2> > >
 {
  public:
    //**********************************************************************************************
-   using Type = typename CommonType< complex<T1> , T2 >::Type;
+   using Type = CommonType_< complex<T1> , T2 >;
    //**********************************************************************************************
 };
 /*! \endcond */
@@ -190,7 +190,7 @@ struct DivTrait< T1, complex<T2>, EnableIf_< IsBuiltin<T1> > >
 {
  public:
    //**********************************************************************************************
-   using Type = typename CommonType< T1, complex<T2> >::Type;
+   using Type = CommonType_< T1, complex<T2> >;
    //**********************************************************************************************
 };
 /*! \endcond */
@@ -207,7 +207,7 @@ struct DivTrait< complex<T1>, complex<T2> >
 {
  public:
    //**********************************************************************************************
-   using Type = typename CommonType< complex<T1>, complex<T2> >::Type;
+   using Type = CommonType_< complex<T1>, complex<T2> >;
    //**********************************************************************************************
 };
 /*! \endcond */

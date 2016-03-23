@@ -72,19 +72,19 @@ template< typename T >
 inline size_t digits( T a ) noexcept;
 
 template< typename T1, typename T2 >
-BLAZE_ALWAYS_INLINE constexpr typename CommonType<T1,T2>::Type
+BLAZE_ALWAYS_INLINE constexpr CommonType_<T1,T2>
    min( const T1& a, const T2& b ) noexcept( All<IsNumeric,T1,T2>::value );
 
 template< typename T1, typename T2, typename... Ts >
-BLAZE_ALWAYS_INLINE constexpr typename CommonType<T1,T2,Ts...>::Type
+BLAZE_ALWAYS_INLINE constexpr CommonType_<T1,T2,Ts...>
    min( const T1& a, const T2& b, const Ts&... args ) noexcept( All<IsNumeric,T1,T2,Ts...>::value );
 
 template< typename T1, typename T2 >
-BLAZE_ALWAYS_INLINE constexpr typename CommonType<T1,T2>::Type
+BLAZE_ALWAYS_INLINE constexpr CommonType_<T1,T2>
    max( const T1& a, const T2& b ) noexcept( All<IsNumeric,T1,T2>::value );
 
 template< typename T1, typename T2, typename... Ts >
-BLAZE_ALWAYS_INLINE constexpr typename CommonType<T1,T2,Ts...>::Type
+BLAZE_ALWAYS_INLINE constexpr CommonType_<T1,T2,Ts...>
    max( const T1& a, const T2& b, const Ts&... args ) noexcept( All<IsNumeric,T1,T2,Ts...>::value );
 
 template< typename T >
@@ -95,7 +95,7 @@ BLAZE_ALWAYS_INLINE constexpr T nextMultiple( T value, T factor ) noexcept;
 
 template< typename T1, typename T2 >
 BLAZE_ALWAYS_INLINE constexpr bool lessThan( T1 a, T2 b )
-   noexcept( IsBuiltin< typename CommonType<T1,T2>::Type >::value );
+   noexcept( IsBuiltin< CommonType_<T1,T2> >::value );
 //@}
 //*************************************************************************************************
 
@@ -170,7 +170,7 @@ inline size_t digits( T a ) noexcept
 // class description).
 */
 template< typename T1, typename T2 >
-BLAZE_ALWAYS_INLINE constexpr typename CommonType<T1,T2>::Type
+BLAZE_ALWAYS_INLINE constexpr CommonType_<T1,T2>
    min( const T1& a, const T2& b ) noexcept( All<IsNumeric,T1,T2>::value )
 {
    return ( a < b )?( a ):( b );
@@ -192,7 +192,7 @@ BLAZE_ALWAYS_INLINE constexpr typename CommonType<T1,T2>::Type
 // class description).
 */
 template< typename T1, typename T2, typename... Ts >
-BLAZE_ALWAYS_INLINE constexpr typename CommonType<T1,T2,Ts...>::Type
+BLAZE_ALWAYS_INLINE constexpr CommonType_<T1,T2,Ts...>
    min( const T1& a, const T2& b, const Ts&... args ) noexcept( All<IsNumeric,T1,T2,Ts...>::value )
 {
    return min( a, min( b, args... ) );
@@ -213,7 +213,7 @@ BLAZE_ALWAYS_INLINE constexpr typename CommonType<T1,T2,Ts...>::Type
 // class description).
 */
 template< typename T1, typename T2 >
-BLAZE_ALWAYS_INLINE constexpr typename CommonType<T1,T2>::Type
+BLAZE_ALWAYS_INLINE constexpr CommonType_<T1,T2>
    max( const T1& a, const T2& b ) noexcept( All<IsNumeric,T1,T2>::value )
 {
    return ( a < b )?( b ):( a );
@@ -235,7 +235,7 @@ BLAZE_ALWAYS_INLINE constexpr typename CommonType<T1,T2>::Type
 // class description).
 */
 template< typename T1, typename T2, typename... Ts >
-BLAZE_ALWAYS_INLINE constexpr typename CommonType<T1,T2,Ts...>::Type
+BLAZE_ALWAYS_INLINE constexpr CommonType_<T1,T2,Ts...>
    max( const T1& a, const T2& b, const Ts&... args ) noexcept( All<IsNumeric,T1,T2,Ts...>::value )
 {
    return max( a, max( b, args... ) );
@@ -451,9 +451,9 @@ BLAZE_ALWAYS_INLINE constexpr bool lessThan_backend( long double a, long double 
 */
 template< typename T1, typename T2 >
 BLAZE_ALWAYS_INLINE constexpr bool lessThan( const T1& a, const T2& b )
-   noexcept( IsBuiltin< typename CommonType<T1,T2>::Type >::value )
+   noexcept( IsBuiltin< CommonType_<T1,T2> >::value )
 {
-   return lessThan_backend<typename CommonType<T1,T2>::Type>( a, b );
+   return lessThan_backend< CommonType_<T1,T2> >( a, b );
 }
 //*************************************************************************************************
 
