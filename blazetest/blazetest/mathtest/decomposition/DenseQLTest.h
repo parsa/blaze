@@ -141,7 +141,7 @@ void DenseQLTest::testRandom()
 
    test_ = "QL decomposition";
 
-   typedef typename blaze::RemoveAdaptor<Type>::Type  MT;
+   typedef blaze::RemoveAdaptor_<Type>  MT;
 
    const size_t m( blaze::rand<size_t>( 3UL, 8UL ) );
    const size_t n( blaze::IsSquare<Type>::value ? m : blaze::rand<size_t>( 3UL, 8UL ) );

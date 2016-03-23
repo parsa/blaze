@@ -107,7 +107,7 @@ using blaze::StaticVector;
 // This type represents the underlying numeric element type of the specified TypeA. It is used
 // for vector and matrix type that only support numeric data types.
 */
-typedef blaze::UnderlyingNumeric<TypeA>::Type  NumericA;
+typedef blaze::UnderlyingNumeric_<TypeA>  NumericA;
 //*************************************************************************************************
 
 
@@ -117,7 +117,7 @@ typedef blaze::UnderlyingNumeric<TypeA>::Type  NumericA;
 // This type represents the underlying numeric element type of the specified TypeB. It is used
 // for vector and matrix type that only support numeric data types.
 */
-typedef blaze::UnderlyingNumeric<TypeB>::Type  NumericB;
+typedef blaze::UnderlyingNumeric_<TypeB>  NumericB;
 //*************************************************************************************************
 
 

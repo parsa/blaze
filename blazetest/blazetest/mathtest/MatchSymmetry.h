@@ -76,7 +76,7 @@ struct MatchSymmetry
  private:
    //**********************************************************************************************
    /*! \cond BLAZE_INTERNAL */
-   typedef typename blaze::RemoveAdaptor<T2>::Type  Tmp;
+   typedef blaze::RemoveAdaptor_<T2>  Tmp;
    /*! \endcond */
    //**********************************************************************************************
 
