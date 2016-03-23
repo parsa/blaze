@@ -619,7 +619,7 @@ template< typename MT  // Type of the adapted matrix
         , bool NF >    // Numeric flag
 void makeHermitian( SymmetricMatrix<MT,SO,true,NF>& matrix )
 {
-   typedef typename UnderlyingBuiltin<typename MT::ElementType>::Type  BT;
+   typedef UnderlyingBuiltin_<typename MT::ElementType>  BT;
 
    const size_t n( matrix.rows() );
 
@@ -650,7 +650,7 @@ template< typename MT     // Type of the adapted matrix
         , typename Arg >  // Min/max argument type
 void makeHermitian( SymmetricMatrix<MT,SO,true,NF>& matrix, const Arg& min, const Arg& max )
 {
-   typedef typename UnderlyingBuiltin<typename MT::ElementType>::Type  BT;
+   typedef UnderlyingBuiltin_<typename MT::ElementType>  BT;
 
    const size_t n( matrix.rows() );
 
@@ -678,7 +678,7 @@ template< typename MT  // Type of the adapted matrix
         , bool NF >    // Numeric flag
 void makePositiveDefinite( SymmetricMatrix<MT,SO,true,NF>& matrix )
 {
-   typedef typename UnderlyingBuiltin<typename MT::ElementType>::Type  BT;
+   typedef UnderlyingBuiltin_<typename MT::ElementType>  BT;
 
    const size_t n( matrix.rows() );
 

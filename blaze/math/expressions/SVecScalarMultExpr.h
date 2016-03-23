@@ -799,12 +799,12 @@ class SVecScalarMultExpr : public SparseVector< SVecScalarMultExpr<VT,ST,TF>, TF
 */
 template< typename VT  // Type of the sparse vector
         , bool TF >    // Transpose flag
-inline const SVecScalarMultExpr<VT,typename UnderlyingBuiltin<VT>::Type,TF>
+inline const SVecScalarMultExpr<VT,UnderlyingBuiltin_<VT>,TF>
    operator-( const SparseVector<VT,TF>& sv )
 {
    BLAZE_FUNCTION_TRACE;
 
-   typedef typename UnderlyingBuiltin<VT>::Type  ElementType;
+   typedef UnderlyingBuiltin_<VT>  ElementType;
    return SVecScalarMultExpr<VT,ElementType,TF>( ~sv, ElementType(-1) );
 }
 //*************************************************************************************************

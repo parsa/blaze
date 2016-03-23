@@ -956,12 +956,12 @@ class DMatScalarMultExpr : public DenseMatrix< DMatScalarMultExpr<MT,ST,SO>, SO 
 */
 template< typename MT  // Type of the dense matrix
         , bool SO >    // Storage order
-inline const DMatScalarMultExpr<MT,typename UnderlyingBuiltin<MT>::Type,SO>
+inline const DMatScalarMultExpr<MT,UnderlyingBuiltin_<MT>,SO>
    operator-( const DenseMatrix<MT,SO>& dm )
 {
    BLAZE_FUNCTION_TRACE;
 
-   typedef typename UnderlyingBuiltin<MT>::Type  ElementType;
+   typedef UnderlyingBuiltin_<MT>  ElementType;
    return DMatScalarMultExpr<MT,ElementType,SO>( ~dm, ElementType(-1) );
 }
 //*************************************************************************************************

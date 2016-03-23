@@ -82,7 +82,7 @@ struct SMatScalarMultExprTraitHelper
    using NET = typename UnderlyingNumeric<MT>::Type;
 
    using ScalarType = If_< And< IsComplex<NET>, IsBuiltin<ST> >
-                         , typename MultTrait<typename UnderlyingBuiltin<MT>::Type,ST>::Type
+                         , typename MultTrait<UnderlyingBuiltin_<MT>,ST>::Type
                          , typename MultTrait<NET,ST>::Type >;
    //**********************************************************************************************
 

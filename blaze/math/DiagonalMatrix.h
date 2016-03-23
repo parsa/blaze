@@ -47,6 +47,7 @@
 #include <blaze/math/DenseMatrix.h>
 #include <blaze/math/SparseMatrix.h>
 #include <blaze/math/typetraits/IsDenseMatrix.h>
+#include <blaze/math/typetraits/UnderlyingBuiltin.h>
 #include <blaze/util/Exception.h>
 #include <blaze/util/FalseType.h>
 #include <blaze/util/Random.h>
@@ -614,7 +615,7 @@ template< typename MT  // Type of the adapted matrix
         , bool DF >    // Density flag
 void makeHermitian( DiagonalMatrix<MT,SO,DF>& matrix )
 {
-   typedef typename UnderlyingBuiltin<typename MT::ElementType>::Type  Type;
+   typedef UnderlyingBuiltin_<typename MT::ElementType>  Type;
 
    const size_t n( matrix.rows() );
 
@@ -645,7 +646,7 @@ template< typename MT     // Type of the adapted matrix
         , typename Arg >  // Min/max argument type
 void makeHermitian( DiagonalMatrix<MT,SO,DF>& matrix, const Arg& min, const Arg& max )
 {
-   typedef typename UnderlyingBuiltin<typename MT::ElementType>::Type  Type;
+   typedef UnderlyingBuiltin_<typename MT::ElementType>  Type;
 
    const size_t n( matrix.rows() );
 

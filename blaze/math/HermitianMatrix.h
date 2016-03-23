@@ -323,8 +323,8 @@ inline void Rand< HermitianMatrix<MT,SO,DF> >::randomize( HermitianMatrix<MT,SO,
 {
    BLAZE_CONSTRAINT_MUST_BE_DENSE_MATRIX_TYPE( MT );
 
-   typedef typename MT::ElementType              ET;
-   typedef typename UnderlyingBuiltin<ET>::Type  BT;
+   typedef typename MT::ElementType  ET;
+   typedef UnderlyingBuiltin_<ET>    BT;
 
    const size_t n( matrix.rows() );
 
@@ -353,8 +353,8 @@ inline void Rand< HermitianMatrix<MT,SO,DF> >::randomize( HermitianMatrix<MT,SO,
 {
    BLAZE_CONSTRAINT_MUST_BE_SPARSE_MATRIX_TYPE( MT );
 
-   typedef typename MT::ElementType              ET;
-   typedef typename UnderlyingBuiltin<ET>::Type  BT;
+   typedef typename MT::ElementType  ET;
+   typedef UnderlyingBuiltin_<ET>    BT;
 
    const size_t n( matrix.rows() );
 
@@ -396,8 +396,8 @@ inline void Rand< HermitianMatrix<MT,SO,DF> >::randomize( HermitianMatrix<MT,SO,
 {
    BLAZE_CONSTRAINT_MUST_BE_SPARSE_MATRIX_TYPE( MT );
 
-   typedef typename MT::ElementType              ET;
-   typedef typename UnderlyingBuiltin<ET>::Type  BT;
+   typedef typename MT::ElementType  ET;
+   typedef UnderlyingBuiltin_<ET>    BT;
 
    const size_t n( matrix.rows() );
 
@@ -464,8 +464,8 @@ inline void Rand< HermitianMatrix<MT,SO,DF> >::randomize( HermitianMatrix<MT,SO,
 {
    BLAZE_CONSTRAINT_MUST_BE_DENSE_MATRIX_TYPE( MT );
 
-   typedef typename MT::ElementType              ET;
-   typedef typename UnderlyingBuiltin<ET>::Type  BT;
+   typedef typename MT::ElementType  ET;
+   typedef UnderlyingBuiltin_<ET>    BT;
 
    const size_t n( matrix.rows() );
 
@@ -498,8 +498,8 @@ inline void Rand< HermitianMatrix<MT,SO,DF> >::randomize( HermitianMatrix<MT,SO,
 {
    BLAZE_CONSTRAINT_MUST_BE_SPARSE_MATRIX_TYPE( MT );
 
-   typedef typename MT::ElementType              ET;
-   typedef typename UnderlyingBuiltin<ET>::Type  BT;
+   typedef typename MT::ElementType  ET;
+   typedef UnderlyingBuiltin_<ET>    BT;
 
    const size_t n( matrix.rows() );
 
@@ -545,8 +545,8 @@ inline void Rand< HermitianMatrix<MT,SO,DF> >::randomize( HermitianMatrix<MT,SO,
 {
    BLAZE_CONSTRAINT_MUST_BE_SPARSE_MATRIX_TYPE( MT );
 
-   typedef typename MT::ElementType              ET;
-   typedef typename UnderlyingBuiltin<ET>::Type  BT;
+   typedef typename MT::ElementType  ET;
+   typedef UnderlyingBuiltin_<ET>    BT;
 
    const size_t n( matrix.rows() );
 
@@ -593,7 +593,7 @@ template< typename MT  // Type of the adapted matrix
         , bool DF >    // Density flag
 void makeSymmetric( HermitianMatrix<MT,SO,DF>& matrix )
 {
-   typedef typename UnderlyingBuiltin<typename MT::ElementType>::Type  BT;
+   typedef UnderlyingBuiltin_<typename MT::ElementType>  BT;
 
    const size_t n( matrix.rows() );
 
@@ -624,7 +624,7 @@ template< typename MT     // Type of the adapted matrix
         , typename Arg >  // Min/max argument type
 void makeSymmetric( HermitianMatrix<MT,SO,DF>& matrix, const Arg& min, const Arg& max )
 {
-   typedef typename UnderlyingBuiltin<typename MT::ElementType>::Type  BT;
+   typedef UnderlyingBuiltin_<typename MT::ElementType>  BT;
 
    const size_t n( matrix.rows() );
 
@@ -697,7 +697,7 @@ void makePositiveDefinite( HermitianMatrix<MT,SO,DF>& matrix )
 {
    using blaze::randomize;
 
-   typedef typename UnderlyingBuiltin<typename MT::ElementType>::Type  BT;
+   typedef UnderlyingBuiltin_<typename MT::ElementType>  BT;
 
    const size_t n( matrix.rows() );
 

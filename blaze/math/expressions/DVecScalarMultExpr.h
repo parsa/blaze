@@ -967,12 +967,12 @@ class DVecScalarMultExpr : public DenseVector< DVecScalarMultExpr<VT,ST,TF>, TF 
 */
 template< typename VT  // Type of the dense vector
         , bool TF >    // Transpose flag
-inline const DVecScalarMultExpr<VT,typename UnderlyingBuiltin<VT>::Type,TF>
+inline const DVecScalarMultExpr<VT,UnderlyingBuiltin_<VT>,TF>
    operator-( const DenseVector<VT,TF>& dv )
 {
    BLAZE_FUNCTION_TRACE;
 
-   typedef typename UnderlyingBuiltin<VT>::Type  ElementType;
+   typedef UnderlyingBuiltin_<VT>  ElementType;
    return DVecScalarMultExpr<VT,ElementType,TF>( ~dv, ElementType(-1) );
 }
 //*************************************************************************************************

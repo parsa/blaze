@@ -793,12 +793,12 @@ class SMatScalarMultExpr : public SparseMatrix< SMatScalarMultExpr<MT,ST,SO>, SO
 */
 template< typename MT  // Data type of the sparse matrix
         , bool SO >    // Storage order
-inline const SMatScalarMultExpr<MT,typename UnderlyingBuiltin<MT>::Type,SO>
+inline const SMatScalarMultExpr<MT,UnderlyingBuiltin_<MT>,SO>
    operator-( const SparseMatrix<MT,SO>& sm )
 {
    BLAZE_FUNCTION_TRACE;
 
-   typedef typename UnderlyingBuiltin<MT>::Type  ElementType;
+   typedef UnderlyingBuiltin_<MT>  ElementType;
    return SMatScalarMultExpr<MT,ElementType,SO>( ~sm, ElementType(-1) );
 }
 //*************************************************************************************************
