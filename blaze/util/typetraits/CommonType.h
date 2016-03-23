@@ -77,6 +77,24 @@ struct CommonType
 };
 //*************************************************************************************************
 
+
+//*************************************************************************************************
+/*!\brief Auxiliary alias declaration for the CommonType type trait.
+// \ingroup type_traits
+//
+// The CommonType_ alias declaration provides a convenient shortcut to access the nested \a Type
+// of the CommonType class template. For instance, given the types \a T1 and \a T2 the following
+// two type definitions are identical:
+
+   \code
+   using Type1 = typename CommonType<T1,T2>::Type;
+   using Type2 = CommonType_<T1,T2>;
+   \endcode
+*/
+template< typename T >
+using CommonType_ = typename CommonType<T>::Type;
+//*************************************************************************************************
+
 } // namespace blaze
 
 #endif
