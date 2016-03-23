@@ -51,14 +51,13 @@
 #include <blaze/util/mpl/And.h>
 #include <blaze/util/mpl/If.h>
 #include <blaze/util/mpl/Or.h>
+#include <blaze/util/typetraits/Decay.h>
 #include <blaze/util/typetraits/IsBuiltin.h>
 #include <blaze/util/typetraits/IsComplex.h>
 #include <blaze/util/typetraits/IsConst.h>
 #include <blaze/util/typetraits/IsNumeric.h>
 #include <blaze/util/typetraits/IsReference.h>
 #include <blaze/util/typetraits/IsVolatile.h>
-#include <blaze/util/typetraits/RemoveCV.h>
-#include <blaze/util/typetraits/RemoveReference.h>
 
 
 namespace blaze {
@@ -81,17 +80,18 @@ struct DMatScalarDivExprTraitHelper
 {
  private:
    //**********************************************************************************************
-   typedef typename UnderlyingNumeric<MT>::Type  NET;
-   typedef If_< And< IsComplex<NET>, IsBuiltin<ST> >
-              , typename DivTrait<typename UnderlyingBuiltin<MT>::Type,ST>::Type
-              , typename DivTrait<NET,ST>::Type >  ScalarType;
+   using NET = typename UnderlyingNumeric<MT>::Type;
+
+   using ScalarType = If_< And< IsComplex<NET>, IsBuiltin<ST> >
+                         , typename DivTrait<typename UnderlyingBuiltin<MT>::Type,ST>::Type
+                         , typename DivTrait<NET,ST>::Type >;
    //**********************************************************************************************
 
  public:
    //**********************************************************************************************
-   typedef If_< IsInvertible<ScalarType>
-              , DMatScalarMultExpr<MT,ScalarType,false>
-              , DMatScalarDivExpr<MT,ScalarType,false> >  Type;
+   using Type = If_< IsInvertible<ScalarType>
+                   , DMatScalarMultExpr<MT,ScalarType,false>
+                   , DMatScalarDivExpr<MT,ScalarType,false> >;
    //**********************************************************************************************
 };
 /*! \endcond */
@@ -109,7 +109,7 @@ struct DMatScalarDivExprTraitHelper<MT,ST,false>
 {
  public:
    //**********************************************************************************************
-   typedef INVALID_TYPE  Type;
+   using Type = INVALID_TYPE;
    //**********************************************************************************************
 };
 /*! \endcond */
@@ -133,26 +133,17 @@ struct DMatScalarDivExprTrait
  private:
    //**********************************************************************************************
    /*! \cond BLAZE_INTERNAL */
-   enum { condition = IsDenseMatrix<MT>::value && IsRowMajorMatrix<MT>::value &&
-                      IsNumeric<ST>::value };
-   /*! \endcond */
-   //**********************************************************************************************
-
-   //**********************************************************************************************
-   /*! \cond BLAZE_INTERNAL */
-   typedef DMatScalarDivExprTraitHelper<MT,ST,condition>  Tmp;
-
-   typedef typename RemoveReference< RemoveCV_<MT> >::Type  Type1;
-   typedef typename RemoveReference< RemoveCV_<ST> >::Type  Type2;
+   enum { condition = And< IsDenseMatrix<MT>, IsRowMajorMatrix<MT>, IsNumeric<ST> >::value };
    /*! \endcond */
    //**********************************************************************************************
 
  public:
    //**********************************************************************************************
    /*! \cond BLAZE_INTERNAL */
-   typedef typename If_< Or< IsConst<MT>, IsVolatile<MT>, IsReference<MT>
-                           , IsConst<ST>, IsVolatile<ST>, IsReference<ST> >
-                       , DMatScalarDivExprTrait<Type1,Type2>, Tmp >::Type  Type;
+   using Type = typename If_< Or< IsConst<MT>, IsVolatile<MT>, IsReference<MT>
+                                , IsConst<ST>, IsVolatile<ST>, IsReference<ST> >
+                            , DMatScalarDivExprTrait< Decay_<MT>, Decay_<ST> >
+                            , DMatScalarDivExprTraitHelper<MT,ST,condition> >::Type;
    /*! \endcond */
    //**********************************************************************************************
 };

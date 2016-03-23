@@ -43,11 +43,10 @@
 #include <blaze/util/InvalidType.h>
 #include <blaze/util/mpl/If.h>
 #include <blaze/util/mpl/Or.h>
+#include <blaze/util/typetraits/Decay.h>
 #include <blaze/util/typetraits/IsConst.h>
 #include <blaze/util/typetraits/IsReference.h>
 #include <blaze/util/typetraits/IsVolatile.h>
-#include <blaze/util/typetraits/RemoveCV.h>
-#include <blaze/util/typetraits/RemoveReference.h>
 
 
 namespace blaze {
@@ -117,21 +116,16 @@ struct RowTrait
  private:
    //**********************************************************************************************
    /*! \cond BLAZE_INTERNAL */
-   struct Failure { typedef INVALID_TYPE  Type; };
-   /*! \endcond */
-   //**********************************************************************************************
-
-   //**********************************************************************************************
-   /*! \cond BLAZE_INTERNAL */
-   typedef typename RemoveReference< RemoveCV_<MT> >::Type  Tmp;
+   struct Failure { using Type = INVALID_TYPE; };
    /*! \endcond */
    //**********************************************************************************************
 
  public:
    //**********************************************************************************************
    /*! \cond BLAZE_INTERNAL */
-   typedef typename If_< Or< IsConst<MT>, IsVolatile<MT>, IsReference<MT> >
-                       , RowTrait<Tmp>, Failure >::Type  Type;
+   using Type = typename If_< Or< IsConst<MT>, IsVolatile<MT>, IsReference<MT> >
+                            , RowTrait< Decay_<MT> >
+                            , Failure >::Type;
    /*! \endcond */
    //**********************************************************************************************
 };

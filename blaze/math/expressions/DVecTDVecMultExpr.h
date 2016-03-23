@@ -1759,8 +1759,8 @@ struct SubmatrixExprTrait< DVecTDVecMultExpr<VT1,VT2>, AF >
 {
  public:
    //**********************************************************************************************
-   typedef typename MultExprTrait< typename SubvectorExprTrait<const VT1,AF>::Type
-                                 , typename SubvectorExprTrait<const VT2,AF>::Type >::Type  Type;
+   using Type = typename MultExprTrait< typename SubvectorExprTrait<const VT1,AF>::Type
+                                      , typename SubvectorExprTrait<const VT2,AF>::Type >::Type;
    //**********************************************************************************************
 };
 /*! \endcond */
@@ -1774,7 +1774,7 @@ struct RowExprTrait< DVecTDVecMultExpr<VT1,VT2> >
 {
  public:
    //**********************************************************************************************
-   typedef typename MultExprTrait< typename VT1::ReturnType, VT2 >::Type  Type;
+   using Type = typename MultExprTrait< typename VT1::ReturnType, VT2 >::Type;
    //**********************************************************************************************
 };
 /*! \endcond */
@@ -1788,7 +1788,7 @@ struct ColumnExprTrait< DVecTDVecMultExpr<VT1,VT2> >
 {
  public:
    //**********************************************************************************************
-   typedef typename MultExprTrait< VT1, typename VT2::ReturnType >::Type  Type;
+   using Type = typename MultExprTrait< VT1, typename VT2::ReturnType >::Type;
    //**********************************************************************************************
 };
 /*! \endcond */

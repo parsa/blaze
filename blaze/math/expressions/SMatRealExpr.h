@@ -195,7 +195,7 @@ class SMatRealExpr : public SparseMatrix< SMatRealExpr<MT,SO>, SO >
       typedef ValueIndexPair<ElementType>  Element;
 
       //! Iterator type of the sparse matrix expression.
-      typedef typename RemoveReference<Operand>::Type::ConstIterator  IteratorType;
+      typedef typename RemoveReference_<Operand>::ConstIterator  IteratorType;
 
       typedef std::forward_iterator_tag  IteratorCategory;  //!< The iterator category.
       typedef Element                    ValueType;         //!< Type of the underlying pointers.
@@ -1057,9 +1057,9 @@ struct SMatRealExprTrait< SMatRealExpr<MT,false> >
 {
  public:
    //**********************************************************************************************
-   typedef If_< And< IsSparseMatrix<MT>, IsRowMajorMatrix<MT> >
-              , SMatRealExpr<MT,false>
-              , INVALID_TYPE >  Type;
+   using Type = If_< And< IsSparseMatrix<MT>, IsRowMajorMatrix<MT> >
+                   , SMatRealExpr<MT,false>
+                   , INVALID_TYPE >;
    //**********************************************************************************************
 };
 /*! \endcond */
@@ -1073,9 +1073,9 @@ struct TSMatRealExprTrait< SMatRealExpr<MT,true> >
 {
  public:
    //**********************************************************************************************
-   typedef If_< And< IsSparseMatrix<MT>, IsColumnMajorMatrix<MT> >
-              , SMatRealExpr<MT,true>
-              , INVALID_TYPE >  Type;
+   using Type = If_< And< IsSparseMatrix<MT>, IsColumnMajorMatrix<MT> >
+                   , SMatRealExpr<MT,true>
+                   , INVALID_TYPE >;
    //**********************************************************************************************
 };
 /*! \endcond */
@@ -1089,7 +1089,7 @@ struct SubmatrixExprTrait< SMatRealExpr<MT,SO>, AF >
 {
  public:
    //**********************************************************************************************
-   typedef typename RealExprTrait< typename SubmatrixExprTrait<const MT,AF>::Type >::Type  Type;
+   using Type = typename RealExprTrait< typename SubmatrixExprTrait<const MT,AF>::Type >::Type;
    //**********************************************************************************************
 };
 /*! \endcond */
@@ -1103,7 +1103,7 @@ struct RowExprTrait< SMatRealExpr<MT,SO> >
 {
  public:
    //**********************************************************************************************
-   typedef typename RealExprTrait< typename RowExprTrait<const MT>::Type >::Type  Type;
+   using Type = typename RealExprTrait< typename RowExprTrait<const MT>::Type >::Type;
    //**********************************************************************************************
 };
 /*! \endcond */
@@ -1117,7 +1117,7 @@ struct ColumnExprTrait< SMatRealExpr<MT,SO> >
 {
  public:
    //**********************************************************************************************
-   typedef typename RealExprTrait< typename ColumnExprTrait<const MT>::Type >::Type  Type;
+   using Type = typename RealExprTrait< typename ColumnExprTrait<const MT>::Type >::Type;
    //**********************************************************************************************
 };
 /*! \endcond */

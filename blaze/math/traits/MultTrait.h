@@ -46,12 +46,11 @@
 #include <blaze/util/mpl/If.h>
 #include <blaze/util/mpl/Or.h>
 #include <blaze/util/typetraits/CommonType.h>
+#include <blaze/util/typetraits/Decay.h>
 #include <blaze/util/typetraits/IsBuiltin.h>
 #include <blaze/util/typetraits/IsConst.h>
 #include <blaze/util/typetraits/IsReference.h>
 #include <blaze/util/typetraits/IsVolatile.h>
-#include <blaze/util/typetraits/RemoveCV.h>
-#include <blaze/util/typetraits/RemoveReference.h>
 
 
 namespace blaze {
@@ -140,23 +139,24 @@ struct MultTrait
  private:
    //**********************************************************************************************
    /*! \cond BLAZE_INTERNAL */
-   typedef typename RemoveReference< RemoveCV_<T1> >::Type  Type1;
-   typedef typename RemoveReference< RemoveCV_<T2> >::Type  Type2;
+   using Type1 = Decay_<T1>;
+   using Type2 = Decay_<T2>;
    /*! \endcond */
    //**********************************************************************************************
 
    //**********************************************************************************************
    /*! \cond BLAZE_INTERNAL */
-   struct MultType { typedef BOOST_TYPEOF_TPL( Type1() * Type2() )  Type; };
+   struct MultType { using Type = BOOST_TYPEOF_TPL( Type1() * Type2() ); };
    /*! \endcond */
    //**********************************************************************************************
 
  public:
    //**********************************************************************************************
    /*! \cond BLAZE_INTERNAL */
-   typedef typename If_< Or< IsConst<T1>, IsVolatile<T1>, IsReference<T1>
-                           , IsConst<T2>, IsVolatile<T2>, IsReference<T2> >
-                       , MultTrait<Type1,Type2>, MultType >::Type  Type;
+   using Type = typename If_< Or< IsConst<T1>, IsVolatile<T1>, IsReference<T1>
+                                , IsConst<T2>, IsVolatile<T2>, IsReference<T2> >
+                            , MultTrait<Type1,Type2>
+                            , MultType >::Type;
    /*! \endcond */
    //**********************************************************************************************
 };
@@ -173,7 +173,7 @@ struct MultTrait< complex<T1>, T2, EnableIf_< IsBuiltin<T2> > >
 {
  public:
    //**********************************************************************************************
-   typedef typename CommonType< complex<T1> , T2 >::Type  Type;
+   using Type = typename CommonType< complex<T1> , T2 >::Type;
    //**********************************************************************************************
 };
 /*! \endcond */
@@ -190,7 +190,7 @@ struct MultTrait< T1, complex<T2>, EnableIf_< IsBuiltin<T1> > >
 {
  public:
    //**********************************************************************************************
-   typedef typename CommonType< T1, complex<T2> >::Type  Type;
+   using Type = typename CommonType< T1, complex<T2> >::Type;
    //**********************************************************************************************
 };
 /*! \endcond */
@@ -207,7 +207,7 @@ struct MultTrait< complex<T1>, complex<T2> >
 {
  public:
    //**********************************************************************************************
-   typedef typename CommonType< complex<T1>, complex<T2> >::Type  Type;
+   using Type = typename CommonType< complex<T1>, complex<T2> >::Type;
    //**********************************************************************************************
 };
 /*! \endcond */

@@ -1123,8 +1123,8 @@ struct SubvectorExprTrait< DVecDVecMultExpr<VT1,VT2,TF>, AF >
 {
  public:
    //**********************************************************************************************
-   typedef typename MultExprTrait< typename SubvectorExprTrait<const VT1,AF>::Type
-                                 , typename SubvectorExprTrait<const VT2,AF>::Type >::Type  Type;
+   using Type = typename MultExprTrait< typename SubvectorExprTrait<const VT1,AF>::Type
+                                      , typename SubvectorExprTrait<const VT2,AF>::Type >::Type;
    //**********************************************************************************************
 };
 /*! \endcond */

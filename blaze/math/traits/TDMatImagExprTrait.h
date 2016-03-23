@@ -48,12 +48,11 @@
 #include <blaze/util/mpl/And.h>
 #include <blaze/util/mpl/If.h>
 #include <blaze/util/mpl/Or.h>
+#include <blaze/util/typetraits/Decay.h>
 #include <blaze/util/typetraits/IsBuiltin.h>
 #include <blaze/util/typetraits/IsConst.h>
 #include <blaze/util/typetraits/IsReference.h>
 #include <blaze/util/typetraits/IsVolatile.h>
-#include <blaze/util/typetraits/RemoveCV.h>
-#include <blaze/util/typetraits/RemoveReference.h>
 
 
 namespace blaze {
@@ -79,21 +78,20 @@ struct TDMatImagExprTrait
  private:
    //**********************************************************************************************
    /*! \cond BLAZE_INTERNAL */
-   typedef typename UnderlyingNumeric<MT>::Type  NET;
-
-   typedef If< And< IsDenseMatrix<MT>, IsColumnMajorMatrix<MT> >
-             , If_< IsBuiltin<NET>, const MT&, DMatImagExpr<MT,true> >
-             , INVALID_TYPE >  Tmp;
-
-   typedef typename RemoveReference< RemoveCV_<MT> >::Type  Type1;
+   using Tmp = If< And< IsDenseMatrix<MT>, IsColumnMajorMatrix<MT> >
+                 , If_< IsBuiltin< typename UnderlyingNumeric<MT>::Type >
+                      , const MT&
+                      , DMatImagExpr<MT,true> >
+                 , INVALID_TYPE >;
    /*! \endcond */
    //**********************************************************************************************
 
  public:
    //**********************************************************************************************
    /*! \cond BLAZE_INTERNAL */
-   typedef typename If_< Or< IsConst<MT>, IsVolatile<MT>, IsReference<MT> >
-                       , TDMatImagExprTrait<Type1>, Tmp >::Type  Type;
+   using Type = typename If_< Or< IsConst<MT>, IsVolatile<MT>, IsReference<MT> >
+                            , TDMatImagExprTrait< Decay_<MT> >
+                            , Tmp >::Type;
    /*! \endcond */
    //**********************************************************************************************
 };

@@ -81,7 +81,7 @@ struct ColumnExprTrait
  private:
    //**struct Failure******************************************************************************
    /*! \cond BLAZE_INTERNAL */
-   struct Failure { typedef INVALID_TYPE  Type; };
+   struct Failure { using Type = INVALID_TYPE; };
    /*! \endcond */
    //**********************************************************************************************
 
@@ -89,7 +89,7 @@ struct ColumnExprTrait
    /*! \cond BLAZE_INTERNAL */
    template< typename T >
    struct DenseResult {
-      typedef DenseColumn<T,IsColumnMajorMatrix<T>::value,IsSymmetric<T>::value>  Type;
+      using Type = DenseColumn<T,IsColumnMajorMatrix<T>::value,IsSymmetric<T>::value>;
    };
    /*! \endcond */
    //**********************************************************************************************
@@ -98,30 +98,30 @@ struct ColumnExprTrait
    /*! \cond BLAZE_INTERNAL */
    template< typename T >
    struct SparseResult {
-      typedef SparseColumn<T,IsColumnMajorMatrix<T>::value,IsSymmetric<T>::value>  Type;
+      using Type = SparseColumn<T,IsColumnMajorMatrix<T>::value,IsSymmetric<T>::value>;
    };
    /*! \endcond */
    //**********************************************************************************************
 
    //**********************************************************************************************
    /*! \cond BLAZE_INTERNAL */
-   typedef typename RemoveReference<MT>::Type  Tmp;
+   using Tmp = RemoveReference_<MT>;
    /*! \endcond */
    //**********************************************************************************************
 
  public:
    //**********************************************************************************************
    /*! \cond BLAZE_INTERNAL */
-   typedef typename If_< Or< IsComputation<Tmp>, IsTransExpr<Tmp> >
-                       , If_< Or< IsConst<Tmp>, IsVolatile<Tmp> >
-                            , ColumnExprTrait< RemoveCV_<Tmp> >
-                            , Failure >
-                       , If_< IsDenseMatrix<Tmp>
-                            , DenseResult<Tmp>
-                            , If_< IsSparseMatrix<Tmp>
-                                 , SparseResult<Tmp>
-                                 , Failure > >
-                       >::Type  Type;
+   using Type = typename If_< Or< IsComputation<Tmp>, IsTransExpr<Tmp> >
+                            , If_< Or< IsConst<Tmp>, IsVolatile<Tmp> >
+                                 , ColumnExprTrait< RemoveCV_<Tmp> >
+                                 , Failure >
+                            , If_< IsDenseMatrix<Tmp>
+                                 , DenseResult<Tmp>
+                                 , If_< IsSparseMatrix<Tmp>
+                                      , SparseResult<Tmp>
+                                      , Failure > >
+                            >::Type;
    /*! \endcond */
    //**********************************************************************************************
 };

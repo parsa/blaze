@@ -189,7 +189,7 @@ class SVecImagExpr : public SparseVector< SVecImagExpr<VT,TF>, TF >
       typedef ValueIndexPair<ElementType>  Element;
 
       //! Iterator type of the sparse vector expression.
-      typedef typename RemoveReference<Operand>::Type::ConstIterator  IteratorType;
+      typedef typename RemoveReference_<Operand>::ConstIterator  IteratorType;
 
       typedef std::forward_iterator_tag  IteratorCategory;  //!< The iterator category.
       typedef Element                    ValueType;         //!< Type of the underlying pointers.
@@ -894,9 +894,9 @@ struct SVecImagExprTrait< SVecImagExpr<VT,false> >
 {
  public:
    //**********************************************************************************************
-   typedef If_< And< IsSparseVector<VT>, IsColumnVector<VT> >
-              , SVecImagExpr<VT,false>
-              , INVALID_TYPE >  Type;
+   using Type = If_< And< IsSparseVector<VT>, IsColumnVector<VT> >
+                   , SVecImagExpr<VT,false>
+                   , INVALID_TYPE >;
    //**********************************************************************************************
 };
 /*! \endcond */
@@ -910,9 +910,9 @@ struct TSVecImagExprTrait< SVecImagExpr<VT,true> >
 {
  public:
    //**********************************************************************************************
-   typedef If_< And< IsSparseVector<VT>, IsRowVector<VT> >
-              , SVecImagExpr<VT,true>
-              , INVALID_TYPE >  Type;
+   using Type = If_< And< IsSparseVector<VT>, IsRowVector<VT> >
+                   , SVecImagExpr<VT,true>
+                   , INVALID_TYPE >;
    //**********************************************************************************************
 };
 /*! \endcond */
@@ -926,7 +926,7 @@ struct SubvectorExprTrait< SVecImagExpr<VT,TF>, AF >
 {
  public:
    //**********************************************************************************************
-   typedef typename ImagExprTrait< typename SubvectorExprTrait<const VT,AF>::Type >::Type  Type;
+   using Type = typename ImagExprTrait< typename SubvectorExprTrait<const VT,AF>::Type >::Type;
    //**********************************************************************************************
 };
 /*! \endcond */

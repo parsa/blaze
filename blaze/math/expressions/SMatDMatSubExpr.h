@@ -895,11 +895,11 @@ struct DMatDMatAddExprTrait< SMatDMatSubExpr<MT1,MT2,false>, MT3 >
  public:
    //**********************************************************************************************
    /*! \cond BLAZE_INTERNAL */
-   typedef If_< And< IsSparseMatrix<MT1>, IsRowMajorMatrix<MT1>
-                   , IsDenseMatrix<MT2>, IsRowMajorMatrix<MT2>
-                   , IsDenseMatrix<MT3>, IsRowMajorMatrix<MT3> >
-              , typename DMatSMatAddExprTrait< typename DMatDMatSubExprTrait<MT3,MT2>::Type, MT1 >::Type
-              , INVALID_TYPE >  Type;
+   using Type = If_< And< IsSparseMatrix<MT1>, IsRowMajorMatrix<MT1>
+                        , IsDenseMatrix<MT2>, IsRowMajorMatrix<MT2>
+                        , IsDenseMatrix<MT3>, IsRowMajorMatrix<MT3> >
+                   , typename DMatSMatAddExprTrait< typename DMatDMatSubExprTrait<MT3,MT2>::Type, MT1 >::Type
+                   , INVALID_TYPE >;
    /*! \endcond */
    //**********************************************************************************************
 };
@@ -915,11 +915,11 @@ struct DMatTDMatAddExprTrait< SMatDMatSubExpr<MT1,MT2,false>, MT3 >
  public:
    //**********************************************************************************************
    /*! \cond BLAZE_INTERNAL */
-   typedef If_< And< IsSparseMatrix<MT1>, IsRowMajorMatrix<MT1>
-                   , IsDenseMatrix<MT2>, IsRowMajorMatrix<MT2>
-                   , IsDenseMatrix<MT3>, IsColumnMajorMatrix<MT3> >
-              , typename DMatSMatAddExprTrait< typename TDMatDMatSubExprTrait<MT3,MT2>::Type, MT1 >::Type
-              , INVALID_TYPE >  Type;
+   using Type = If_< And< IsSparseMatrix<MT1>, IsRowMajorMatrix<MT1>
+                        , IsDenseMatrix<MT2>, IsRowMajorMatrix<MT2>
+                        , IsDenseMatrix<MT3>, IsColumnMajorMatrix<MT3> >
+                   , typename DMatSMatAddExprTrait< typename TDMatDMatSubExprTrait<MT3,MT2>::Type, MT1 >::Type
+                   , INVALID_TYPE >;
    /*! \endcond */
    //**********************************************************************************************
 };
@@ -935,11 +935,11 @@ struct TDMatDMatAddExprTrait< SMatDMatSubExpr<MT1,MT2,true>, MT3 >
  public:
    //**********************************************************************************************
    /*! \cond BLAZE_INTERNAL */
-   typedef If_< And< IsSparseMatrix<MT1>, IsColumnMajorMatrix<MT1>
-                   , IsDenseMatrix<MT2>, IsColumnMajorMatrix<MT2>
-                   , IsDenseMatrix<MT3>, IsRowMajorMatrix<MT3> >
-              , typename DMatTSMatAddExprTrait< typename DMatTDMatSubExprTrait<MT3,MT2>::Type, MT1 >::Type
-              , INVALID_TYPE >  Type;
+   using Type = If_< And< IsSparseMatrix<MT1>, IsColumnMajorMatrix<MT1>
+                        , IsDenseMatrix<MT2>, IsColumnMajorMatrix<MT2>
+                        , IsDenseMatrix<MT3>, IsRowMajorMatrix<MT3> >
+                   , typename DMatTSMatAddExprTrait< typename DMatTDMatSubExprTrait<MT3,MT2>::Type, MT1 >::Type
+                   , INVALID_TYPE >;
    /*! \endcond */
    //**********************************************************************************************
 };
@@ -955,11 +955,11 @@ struct TDMatTDMatAddExprTrait< SMatDMatSubExpr<MT1,MT2,true>, MT3 >
  public:
    //**********************************************************************************************
    /*! \cond BLAZE_INTERNAL */
-   typedef If_< And< IsSparseMatrix<MT1>, IsColumnMajorMatrix<MT1>
-                   , IsDenseMatrix<MT2>, IsColumnMajorMatrix<MT2>
-                   , IsDenseMatrix<MT3>, IsColumnMajorMatrix<MT3> >
-              , typename TDMatTSMatAddExprTrait< typename TDMatTDMatSubExprTrait<MT3,MT2>::Type, MT1 >::Type
-              , INVALID_TYPE >  Type;
+   using Type = If_< And< IsSparseMatrix<MT1>, IsColumnMajorMatrix<MT1>
+                        , IsDenseMatrix<MT2>, IsColumnMajorMatrix<MT2>
+                        , IsDenseMatrix<MT3>, IsColumnMajorMatrix<MT3> >
+                   , typename TDMatTSMatAddExprTrait< typename TDMatTDMatSubExprTrait<MT3,MT2>::Type, MT1 >::Type
+                   , INVALID_TYPE >;
    /*! \endcond */
    //**********************************************************************************************
 };
@@ -975,11 +975,11 @@ struct DMatDMatSubExprTrait< SMatDMatSubExpr<MT1,MT2,false>, MT3 >
  public:
    //**********************************************************************************************
    /*! \cond BLAZE_INTERNAL */
-   typedef If_< And< IsSparseMatrix<MT1>, IsRowMajorMatrix<MT1>
-                   , IsDenseMatrix<MT2>, IsRowMajorMatrix<MT2>
-                   , IsDenseMatrix<MT3>, IsRowMajorMatrix<MT3> >
-              , typename SMatDMatSubExprTrait< MT1, typename DMatDMatAddExprTrait<MT2,MT3>::Type >::Type
-              , INVALID_TYPE >  Type;
+   using Type = If_< And< IsSparseMatrix<MT1>, IsRowMajorMatrix<MT1>
+                        , IsDenseMatrix<MT2>, IsRowMajorMatrix<MT2>
+                        , IsDenseMatrix<MT3>, IsRowMajorMatrix<MT3> >
+                   , typename SMatDMatSubExprTrait< MT1, typename DMatDMatAddExprTrait<MT2,MT3>::Type >::Type
+                   , INVALID_TYPE >;
    /*! \endcond */
    //**********************************************************************************************
 };
@@ -995,11 +995,11 @@ struct DMatTDMatSubExprTrait< SMatDMatSubExpr<MT1,MT2,false>, MT3 >
  public:
    //**********************************************************************************************
    /*! \cond BLAZE_INTERNAL */
-   typedef If_< And< IsSparseMatrix<MT1>, IsRowMajorMatrix<MT1>
-                   , IsDenseMatrix<MT2>, IsRowMajorMatrix<MT2>
-                   , IsDenseMatrix<MT3>, IsColumnMajorMatrix<MT3> >
-              , typename SMatDMatSubExprTrait< MT1, typename DMatTDMatAddExprTrait<MT2,MT3>::Type >::Type
-              , INVALID_TYPE >  Type;
+   using Type = If_< And< IsSparseMatrix<MT1>, IsRowMajorMatrix<MT1>
+                        , IsDenseMatrix<MT2>, IsRowMajorMatrix<MT2>
+                        , IsDenseMatrix<MT3>, IsColumnMajorMatrix<MT3> >
+                   , typename SMatDMatSubExprTrait< MT1, typename DMatTDMatAddExprTrait<MT2,MT3>::Type >::Type
+                   , INVALID_TYPE >;
    /*! \endcond */
    //**********************************************************************************************
 };
@@ -1015,11 +1015,11 @@ struct TDMatDMatSubExprTrait< SMatDMatSubExpr<MT1,MT2,true>, MT3 >
  public:
    //**********************************************************************************************
    /*! \cond BLAZE_INTERNAL */
-   typedef If_< And< IsSparseMatrix<MT1>, IsColumnMajorMatrix<MT1>
-                   , IsDenseMatrix<MT2>, IsColumnMajorMatrix<MT2>
-                   , IsDenseMatrix<MT3>, IsRowMajorMatrix<MT3> >
-              , typename TSMatDMatSubExprTrait< MT1, typename TDMatDMatAddExprTrait<MT2,MT3>::Type >::Type
-              , INVALID_TYPE >  Type;
+   using Type = If_< And< IsSparseMatrix<MT1>, IsColumnMajorMatrix<MT1>
+                        , IsDenseMatrix<MT2>, IsColumnMajorMatrix<MT2>
+                        , IsDenseMatrix<MT3>, IsRowMajorMatrix<MT3> >
+                   , typename TSMatDMatSubExprTrait< MT1, typename TDMatDMatAddExprTrait<MT2,MT3>::Type >::Type
+                   , INVALID_TYPE >;
    /*! \endcond */
    //**********************************************************************************************
 };
@@ -1035,11 +1035,11 @@ struct TDMatTDMatSubExprTrait< SMatDMatSubExpr<MT1,MT2,true>, MT3 >
  public:
    //**********************************************************************************************
    /*! \cond BLAZE_INTERNAL */
-   typedef If_< And< IsSparseMatrix<MT1>, IsColumnMajorMatrix<MT1>
-                   , IsDenseMatrix<MT2>, IsColumnMajorMatrix<MT2>
-                   , IsDenseMatrix<MT3>, IsColumnMajorMatrix<MT3> >
-              , typename TSMatTDMatSubExprTrait< MT1, typename TDMatTDMatAddExprTrait<MT2,MT3>::Type >::Type
-              , INVALID_TYPE >  Type;
+   using Type = If_< And< IsSparseMatrix<MT1>, IsColumnMajorMatrix<MT1>
+                        , IsDenseMatrix<MT2>, IsColumnMajorMatrix<MT2>
+                        , IsDenseMatrix<MT3>, IsColumnMajorMatrix<MT3> >
+                   , typename TSMatTDMatSubExprTrait< MT1, typename TDMatTDMatAddExprTrait<MT2,MT3>::Type >::Type
+                   , INVALID_TYPE >;
    /*! \endcond */
    //**********************************************************************************************
 };
@@ -1054,8 +1054,8 @@ struct SubmatrixExprTrait< SMatDMatSubExpr<MT1,MT2,SO>, AF >
 {
  public:
    //**********************************************************************************************
-   typedef typename SubExprTrait< typename SubmatrixExprTrait<const MT1,AF>::Type
-                                , typename SubmatrixExprTrait<const MT2,AF>::Type >::Type  Type;
+   using Type = typename SubExprTrait< typename SubmatrixExprTrait<const MT1,AF>::Type
+                                     , typename SubmatrixExprTrait<const MT2,AF>::Type >::Type;
    //**********************************************************************************************
 };
 /*! \endcond */
@@ -1069,8 +1069,8 @@ struct RowExprTrait< SMatDMatSubExpr<MT1,MT2,SO> >
 {
  public:
    //**********************************************************************************************
-   typedef typename SubExprTrait< typename RowExprTrait<const MT1>::Type
-                                , typename RowExprTrait<const MT2>::Type >::Type  Type;
+   using Type = typename SubExprTrait< typename RowExprTrait<const MT1>::Type
+                                     , typename RowExprTrait<const MT2>::Type >::Type;
    //**********************************************************************************************
 };
 /*! \endcond */
@@ -1084,8 +1084,8 @@ struct ColumnExprTrait< SMatDMatSubExpr<MT1,MT2,SO> >
 {
  public:
    //**********************************************************************************************
-   typedef typename SubExprTrait< typename ColumnExprTrait<const MT1>::Type
-                                , typename ColumnExprTrait<const MT2>::Type >::Type  Type;
+   using Type = typename SubExprTrait< typename ColumnExprTrait<const MT1>::Type
+                                     , typename ColumnExprTrait<const MT2>::Type >::Type;
    //**********************************************************************************************
 };
 /*! \endcond */

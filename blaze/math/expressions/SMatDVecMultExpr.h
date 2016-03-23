@@ -205,7 +205,7 @@ class SMatDVecMultExpr : public DenseVector< SMatDVecMultExpr<MT,VT>, false >
    inline ReturnType operator[]( size_t index ) const {
       BLAZE_INTERNAL_ASSERT( index < mat_.rows(), "Invalid vector access index" );
 
-      typedef typename RemoveReference<MCT>::Type::ConstIterator  ConstIterator;
+      typedef typename RemoveReference_<MCT>::ConstIterator  ConstIterator;
 
       ElementType tmp = ElementType();
 
@@ -390,7 +390,7 @@ class SMatDVecMultExpr : public DenseVector< SMatDVecMultExpr<MT,VT>, false >
 
       BLAZE_INTERNAL_ASSERT( (~lhs).size() == rhs.size(), "Invalid vector sizes" );
 
-      typedef typename RemoveReference<LT>::Type::ConstIterator  ConstIterator;
+      typedef typename RemoveReference_<LT>::ConstIterator  ConstIterator;
 
       if( rhs.mat_.columns() == 0UL ) {
          reset( ~lhs );
@@ -468,7 +468,7 @@ class SMatDVecMultExpr : public DenseVector< SMatDVecMultExpr<MT,VT>, false >
 
       BLAZE_INTERNAL_ASSERT( (~lhs).size() == rhs.size(), "Invalid vector sizes" );
 
-      typedef typename RemoveReference<LT>::Type::ConstIterator  ConstIterator;
+      typedef typename RemoveReference_<LT>::ConstIterator  ConstIterator;
 
       if( rhs.mat_.columns() == 0UL ) {
          return;
@@ -515,7 +515,7 @@ class SMatDVecMultExpr : public DenseVector< SMatDVecMultExpr<MT,VT>, false >
 
       BLAZE_INTERNAL_ASSERT( (~lhs).size() == rhs.size(), "Invalid vector sizes" );
 
-      typedef typename RemoveReference<LT>::Type::ConstIterator  ConstIterator;
+      typedef typename RemoveReference_<LT>::ConstIterator  ConstIterator;
 
       if( rhs.mat_.columns() == 0UL ) {
          return;
@@ -599,7 +599,7 @@ class SMatDVecMultExpr : public DenseVector< SMatDVecMultExpr<MT,VT>, false >
 
       BLAZE_INTERNAL_ASSERT( (~lhs).size() == rhs.size(), "Invalid vector sizes" );
 
-      typedef typename RemoveReference<LT>::Type::ConstIterator  ConstIterator;
+      typedef typename RemoveReference_<LT>::ConstIterator  ConstIterator;
 
       if( rhs.mat_.columns() == 0UL ) {
          reset( ~lhs );
@@ -675,7 +675,7 @@ class SMatDVecMultExpr : public DenseVector< SMatDVecMultExpr<MT,VT>, false >
 
       BLAZE_INTERNAL_ASSERT( (~lhs).size() == rhs.size(), "Invalid vector sizes" );
 
-      typedef typename RemoveReference<LT>::Type::ConstIterator  ConstIterator;
+      typedef typename RemoveReference_<LT>::ConstIterator  ConstIterator;
 
       if( rhs.mat_.columns() == 0UL ) {
          return;
@@ -721,7 +721,7 @@ class SMatDVecMultExpr : public DenseVector< SMatDVecMultExpr<MT,VT>, false >
 
       BLAZE_INTERNAL_ASSERT( (~lhs).size() == rhs.size(), "Invalid vector sizes" );
 
-      typedef typename RemoveReference<LT>::Type::ConstIterator  ConstIterator;
+      typedef typename RemoveReference_<LT>::ConstIterator  ConstIterator;
 
       if( rhs.mat_.columns() == 0UL ) {
          return;
@@ -935,8 +935,8 @@ struct SubvectorExprTrait< SMatDVecMultExpr<MT,VT>, AF >
 {
  public:
    //**********************************************************************************************
-   typedef typename MultExprTrait< typename SubmatrixExprTrait<const MT,AF>::Type
-                                 , typename SubvectorExprTrait<const VT,AF>::Type >::Type  Type;
+   using Type = typename MultExprTrait< typename SubmatrixExprTrait<const MT,AF>::Type
+                                      , typename SubvectorExprTrait<const VT,AF>::Type >::Type;
    //**********************************************************************************************
 };
 /*! \endcond */

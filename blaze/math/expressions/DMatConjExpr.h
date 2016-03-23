@@ -1278,9 +1278,9 @@ struct DMatConjExprTrait< DMatConjExpr<MT,false> >
 {
  public:
    //**********************************************************************************************
-   typedef If_< And< IsDenseMatrix<MT>, IsRowMajorMatrix<MT> >
-              , typename DMatConjExpr<MT,false>::Operand
-              , INVALID_TYPE >  Type;
+   using Type = If_< And< IsDenseMatrix<MT>, IsRowMajorMatrix<MT> >
+                   , typename DMatConjExpr<MT,false>::Operand
+                   , INVALID_TYPE >;
    //**********************************************************************************************
 };
 /*! \endcond */
@@ -1294,9 +1294,9 @@ struct TDMatConjExprTrait< DMatConjExpr<MT,true> >
 {
  public:
    //**********************************************************************************************
-   typedef If_< And< IsDenseMatrix<MT>, IsColumnMajorMatrix<MT> >
-              , typename DMatConjExpr<MT,true>::Operand
-              , INVALID_TYPE >  Type;
+   using Type = If_< And< IsDenseMatrix<MT>, IsColumnMajorMatrix<MT> >
+                   , typename DMatConjExpr<MT,true>::Operand
+                   , INVALID_TYPE >;
    //**********************************************************************************************
 };
 /*! \endcond */
@@ -1310,9 +1310,9 @@ struct DMatConjExprTrait< DMatTransExpr< DMatConjExpr<MT,true>, false > >
 {
  public:
    //**********************************************************************************************
-   typedef If_< And< IsDenseMatrix<MT>, IsColumnMajorMatrix<MT> >
-              , DMatTransExpr<MT,false>
-              , INVALID_TYPE >  Type;
+   using Type = If_< And< IsDenseMatrix<MT>, IsColumnMajorMatrix<MT> >
+                   , DMatTransExpr<MT,false>
+                   , INVALID_TYPE >;
    //**********************************************************************************************
 };
 /*! \endcond */
@@ -1326,9 +1326,9 @@ struct TDMatConjExprTrait< DMatTransExpr< DMatConjExpr<MT,false>, true > >
 {
  public:
    //**********************************************************************************************
-   typedef If_< And< IsDenseMatrix<MT>, IsRowMajorMatrix<MT> >
-              , DMatTransExpr<MT,true>
-              , INVALID_TYPE >  Type;
+   using Type = If_< And< IsDenseMatrix<MT>, IsRowMajorMatrix<MT> >
+                   , DMatTransExpr<MT,true>
+                   , INVALID_TYPE >;
    //**********************************************************************************************
 };
 /*! \endcond */
@@ -1342,7 +1342,7 @@ struct SubmatrixExprTrait< DMatConjExpr<MT,SO>, AF >
 {
  public:
    //**********************************************************************************************
-   typedef typename ConjExprTrait< typename SubmatrixExprTrait<const MT,AF>::Type >::Type  Type;
+   using Type = typename ConjExprTrait< typename SubmatrixExprTrait<const MT,AF>::Type >::Type;
    //**********************************************************************************************
 };
 /*! \endcond */
@@ -1356,7 +1356,7 @@ struct RowExprTrait< DMatConjExpr<MT,SO> >
 {
  public:
    //**********************************************************************************************
-   typedef typename ConjExprTrait< typename RowExprTrait<const MT>::Type >::Type  Type;
+   using Type = typename ConjExprTrait< typename RowExprTrait<const MT>::Type >::Type;
    //**********************************************************************************************
 };
 /*! \endcond */
@@ -1370,7 +1370,7 @@ struct ColumnExprTrait< DMatConjExpr<MT,SO> >
 {
  public:
    //**********************************************************************************************
-   typedef typename ConjExprTrait< typename ColumnExprTrait<const MT>::Type >::Type  Type;
+   using Type = typename ConjExprTrait< typename ColumnExprTrait<const MT>::Type >::Type;
    //**********************************************************************************************
 };
 /*! \endcond */

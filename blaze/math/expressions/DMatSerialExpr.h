@@ -968,9 +968,9 @@ struct DMatSerialExprTrait< DMatSerialExpr<MT,false> >
 {
  public:
    //**********************************************************************************************
-   typedef If_< And< IsDenseMatrix<MT>, IsRowMajorMatrix<MT> >
-              , DMatSerialExpr<MT,false>
-              , INVALID_TYPE >  Type;
+   using Type = If_< And< IsDenseMatrix<MT>, IsRowMajorMatrix<MT> >
+                   , DMatSerialExpr<MT,false>
+                   , INVALID_TYPE >;
    //**********************************************************************************************
 };
 /*! \endcond */
@@ -984,9 +984,9 @@ struct TDMatSerialExprTrait< DMatSerialExpr<MT,true> >
 {
  public:
    //**********************************************************************************************
-   typedef If_< And< IsDenseMatrix<MT>, IsColumnMajorMatrix<MT> >
-              , DMatSerialExpr<MT,true>
-              , INVALID_TYPE >  Type;
+   using Type = If_< And< IsDenseMatrix<MT>, IsColumnMajorMatrix<MT> >
+                   , DMatSerialExpr<MT,true>
+                   , INVALID_TYPE >;
    //**********************************************************************************************
 };
 /*! \endcond */
@@ -1000,7 +1000,7 @@ struct SubmatrixExprTrait< DMatSerialExpr<MT,SO>, AF >
 {
  public:
    //**********************************************************************************************
-   typedef typename SerialExprTrait< typename SubmatrixExprTrait<const MT,AF>::Type >::Type  Type;
+   using Type = typename SerialExprTrait< typename SubmatrixExprTrait<const MT,AF>::Type >::Type;
    //**********************************************************************************************
 };
 /*! \endcond */
@@ -1014,7 +1014,7 @@ struct RowExprTrait< DMatSerialExpr<MT,SO> >
 {
  public:
    //**********************************************************************************************
-   typedef typename SerialExprTrait< typename RowExprTrait<const MT>::Type >::Type  Type;
+   using Type = typename SerialExprTrait< typename RowExprTrait<const MT>::Type >::Type;
    //**********************************************************************************************
 };
 /*! \endcond */
@@ -1028,7 +1028,7 @@ struct ColumnExprTrait< DMatSerialExpr<MT,SO> >
 {
  public:
    //**********************************************************************************************
-   typedef typename SerialExprTrait< typename ColumnExprTrait<const MT>::Type >::Type  Type;
+   using Type = typename SerialExprTrait< typename ColumnExprTrait<const MT>::Type >::Type;
    //**********************************************************************************************
 };
 /*! \endcond */

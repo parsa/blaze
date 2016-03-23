@@ -57,11 +57,10 @@
 #include <blaze/util/InvalidType.h>
 #include <blaze/util/mpl/If.h>
 #include <blaze/util/mpl/Or.h>
+#include <blaze/util/typetraits/Decay.h>
 #include <blaze/util/typetraits/IsConst.h>
 #include <blaze/util/typetraits/IsReference.h>
 #include <blaze/util/typetraits/IsVolatile.h>
-#include <blaze/util/typetraits/RemoveCV.h>
-#include <blaze/util/typetraits/RemoveReference.h>
 
 
 namespace blaze {
@@ -88,39 +87,38 @@ struct EvalExprTrait
  private:
    //**struct Failure******************************************************************************
    /*! \cond BLAZE_INTERNAL */
-   struct Failure { typedef INVALID_TYPE  Type; };
+   struct Failure { using Type = INVALID_TYPE; };
    /*! \endcond */
    //**********************************************************************************************
 
    //**********************************************************************************************
    /*! \cond BLAZE_INTERNAL */
-   typedef If_< IsMatrix<T>
-              , If_< IsDenseMatrix<T>
-                   , If_< IsRowMajorMatrix<T>
-                        , DMatEvalExprTrait<T>
-                        , TDMatEvalExprTrait<T> >
-                   , If_< IsRowMajorMatrix<T>
-                        , SMatEvalExprTrait<T>
-                        , TSMatEvalExprTrait<T> > >
-              , If_< IsVector<T>
-                   , If_< IsDenseVector<T>
-                        , If_< IsRowVector<T>
-                             , TDVecEvalExprTrait<T>
-                             , DVecEvalExprTrait<T> >
-                        , If_< IsRowVector<T>
-                             , TSVecEvalExprTrait<T>
-                             , SVecEvalExprTrait<T> > >
-                   , Failure > >  Tmp;
-
-   typedef typename RemoveReference< RemoveCV_<T> >::Type  Type1;
+   using Tmp = If_< IsMatrix<T>
+                  , If_< IsDenseMatrix<T>
+                       , If_< IsRowMajorMatrix<T>
+                            , DMatEvalExprTrait<T>
+                            , TDMatEvalExprTrait<T> >
+                       , If_< IsRowMajorMatrix<T>
+                            , SMatEvalExprTrait<T>
+                            , TSMatEvalExprTrait<T> > >
+                  , If_< IsVector<T>
+                       , If_< IsDenseVector<T>
+                            , If_< IsRowVector<T>
+                                 , TDVecEvalExprTrait<T>
+                                 , DVecEvalExprTrait<T> >
+                            , If_< IsRowVector<T>
+                                 , TSVecEvalExprTrait<T>
+                                 , SVecEvalExprTrait<T> > >
+                       , Failure > >;
    /*! \endcond */
    //**********************************************************************************************
 
  public:
    //**********************************************************************************************
    /*! \cond BLAZE_INTERNAL */
-   typedef typename If_< Or< IsConst<T>, IsVolatile<T>, IsReference<T> >
-                       , EvalExprTrait<Type1>, Tmp >::Type  Type;
+   using Type = typename If_< Or< IsConst<T>, IsVolatile<T>, IsReference<T> >
+                            , EvalExprTrait< Decay_<T> >
+                            , Tmp >::Type;
    /*! \endcond */
    //**********************************************************************************************
 };

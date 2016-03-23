@@ -1057,8 +1057,8 @@ struct SubvectorExprTrait< DVecDVecSubExpr<VT1,VT2,TF>, AF >
 {
  public:
    //**********************************************************************************************
-   typedef typename SubExprTrait< typename SubvectorExprTrait<const VT1,AF>::Type
-                                , typename SubvectorExprTrait<const VT2,AF>::Type >::Type  Type;
+   using Type = typename SubExprTrait< typename SubvectorExprTrait<const VT1,AF>::Type
+                                     , typename SubvectorExprTrait<const VT2,AF>::Type >::Type;
    //**********************************************************************************************
 };
 /*! \endcond */

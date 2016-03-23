@@ -1225,8 +1225,8 @@ struct SubmatrixExprTrait< DMatTDMatSubExpr<MT1,MT2>, AF >
 {
  public:
    //**********************************************************************************************
-   typedef typename SubExprTrait< typename SubmatrixExprTrait<const MT1,AF>::Type
-                                , typename SubmatrixExprTrait<const MT2,AF>::Type >::Type  Type;
+   using Type = typename SubExprTrait< typename SubmatrixExprTrait<const MT1,AF>::Type
+                                     , typename SubmatrixExprTrait<const MT2,AF>::Type >::Type;
    //**********************************************************************************************
 };
 /*! \endcond */
@@ -1240,8 +1240,8 @@ struct RowExprTrait< DMatTDMatSubExpr<MT1,MT2> >
 {
  public:
    //**********************************************************************************************
-   typedef typename SubExprTrait< typename RowExprTrait<const MT1>::Type
-                                , typename RowExprTrait<const MT2>::Type >::Type  Type;
+   using Type = typename SubExprTrait< typename RowExprTrait<const MT1>::Type
+                                     , typename RowExprTrait<const MT2>::Type >::Type;
    //**********************************************************************************************
 };
 /*! \endcond */
@@ -1255,8 +1255,8 @@ struct ColumnExprTrait< DMatTDMatSubExpr<MT1,MT2> >
 {
  public:
    //**********************************************************************************************
-   typedef typename SubExprTrait< typename ColumnExprTrait<const MT1>::Type
-                                , typename ColumnExprTrait<const MT2>::Type >::Type  Type;
+   using Type = typename SubExprTrait< typename ColumnExprTrait<const MT1>::Type
+                                     , typename ColumnExprTrait<const MT2>::Type >::Type;
    //**********************************************************************************************
 };
 /*! \endcond */

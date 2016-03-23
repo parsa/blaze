@@ -50,13 +50,12 @@
 #include <blaze/util/mpl/And.h>
 #include <blaze/util/mpl/If.h>
 #include <blaze/util/mpl/Or.h>
+#include <blaze/util/typetraits/Decay.h>
 #include <blaze/util/typetraits/IsComplex.h>
 #include <blaze/util/typetraits/IsConst.h>
 #include <blaze/util/typetraits/IsFloatingPoint.h>
 #include <blaze/util/typetraits/IsReference.h>
 #include <blaze/util/typetraits/IsVolatile.h>
-#include <blaze/util/typetraits/RemoveCV.h>
-#include <blaze/util/typetraits/RemoveReference.h>
 
 
 namespace blaze {
@@ -83,39 +82,38 @@ struct InvExprTrait
  private:
    //**struct Scalar*******************************************************************************
    /*! \cond BLAZE_INTERNAL */
-   struct Scalar { typedef T  Type; };
+   struct Scalar { using Type = T; };
    /*! \endcond */
    //**********************************************************************************************
 
    //**struct Failure******************************************************************************
    /*! \cond BLAZE_INTERNAL */
-   struct Failure { typedef INVALID_TYPE  Type; };
+   struct Failure { using Type = INVALID_TYPE; };
    /*! \endcond */
    //**********************************************************************************************
 
    //**********************************************************************************************
    /*! \cond BLAZE_INTERNAL */
-   typedef typename UnderlyingElement<T>::Type  ElementType;
+   using ElementType = typename UnderlyingElement<T>::Type;
 
-   typedef If_< And< IsDenseMatrix<T>
-                   , IsBlasCompatible<ElementType> >
-              , If_< IsRowMajorMatrix<T>
-                   , DMatInvExprTrait<T>
-                   , TDMatInvExprTrait<T> >
-              , If_< Or< IsFloatingPoint<T>
-                       , And< IsComplex<T>, IsFloatingPoint<ElementType> > >
-                   , Scalar
-                   , Failure > >  Tmp;
-
-   typedef typename RemoveReference< RemoveCV_<T> >::Type  Type1;
+   using Tmp = If_< And< IsDenseMatrix<T>
+                       , IsBlasCompatible<ElementType> >
+                  , If_< IsRowMajorMatrix<T>
+                       , DMatInvExprTrait<T>
+                       , TDMatInvExprTrait<T> >
+                  , If_< Or< IsFloatingPoint<T>
+                           , And< IsComplex<T>, IsFloatingPoint<ElementType> > >
+                       , Scalar
+                       , Failure > >;
    /*! \endcond */
    //**********************************************************************************************
 
  public:
    //**********************************************************************************************
    /*! \cond BLAZE_INTERNAL */
-   typedef typename If_< Or< IsConst<T>, IsVolatile<T>, IsReference<T> >
-                       , InvExprTrait<Type1>, Tmp >::Type  Type;
+   using Type = typename If_< Or< IsConst<T>, IsVolatile<T>, IsReference<T> >
+                            , InvExprTrait< Decay_<T> >
+                            , Tmp >::Type;
    /*! \endcond */
    //**********************************************************************************************
 };

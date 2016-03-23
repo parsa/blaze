@@ -725,9 +725,9 @@ struct SVecSerialExprTrait< SVecSerialExpr<VT,false> >
 {
  public:
    //**********************************************************************************************
-   typedef If_< And< IsSparseVector<VT>, IsColumnVector<VT> >
+   using Type = If_< And< IsSparseVector<VT>, IsColumnVector<VT> >
               , SVecSerialExpr<VT,false>
-              , INVALID_TYPE >  Type;
+              , INVALID_TYPE >;
    //**********************************************************************************************
 };
 /*! \endcond */
@@ -741,9 +741,9 @@ struct TSVecSerialExprTrait< SVecSerialExpr<VT,true> >
 {
  public:
    //**********************************************************************************************
-   typedef If_< And< IsSparseVector<VT>, IsRowVector<VT> >
+   using Type = If_< And< IsSparseVector<VT>, IsRowVector<VT> >
               , SVecSerialExpr<VT,true>
-              , INVALID_TYPE >  Type;
+              , INVALID_TYPE >;
    //**********************************************************************************************
 };
 /*! \endcond */
@@ -757,7 +757,7 @@ struct SubvectorExprTrait< SVecSerialExpr<VT,TF>, AF >
 {
  public:
    //**********************************************************************************************
-   typedef typename SerialExprTrait< typename SubvectorExprTrait<const VT,AF>::Type >::Type  Type;
+   using Type = typename SerialExprTrait< typename SubvectorExprTrait<const VT,AF>::Type >::Type;
    //**********************************************************************************************
 };
 /*! \endcond */

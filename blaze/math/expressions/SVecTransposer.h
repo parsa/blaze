@@ -498,7 +498,7 @@ inline void reset( SVecTransposer<VT,TF>& v )
 template< typename VT, bool TF >
 struct SubvectorTrait< SVecTransposer<VT,TF> >
 {
-   typedef typename SubvectorTrait< typename SVecTransposer<VT,TF>::ResultType >::Type  Type;
+   using Type = typename SubvectorTrait< typename SVecTransposer<VT,TF>::ResultType >::Type;
 };
 /*! \endcond */
 //*************************************************************************************************

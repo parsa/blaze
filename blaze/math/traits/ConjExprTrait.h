@@ -90,47 +90,46 @@ struct ConjExprTrait
    //**struct ScalarConj***************************************************************************
    /*! \cond BLAZE_INTERNAL */
    template< typename ST >
-   struct ScalarConj { typedef T  Type; };
+   struct ScalarConj { using Type = T; };
    /*! \endcond */
    //**********************************************************************************************
 
    //**struct Failure******************************************************************************
    /*! \cond BLAZE_INTERNAL */
-   struct Failure { typedef INVALID_TYPE  Type; };
+   struct Failure { using Type = INVALID_TYPE; };
    /*! \endcond */
    //**********************************************************************************************
 
    //**********************************************************************************************
    /*! \cond BLAZE_INTERNAL */
-   typedef If_< IsMatrix<T>
-              , If_< IsDenseMatrix<T>
-                   , If_< IsRowMajorMatrix<T>
-                        , DMatConjExprTrait<T>
-                        , TDMatConjExprTrait<T> >
-                   , If_< IsRowMajorMatrix<T>
-                        , SMatConjExprTrait<T>
-                        , TSMatConjExprTrait<T> > >
-              , If_< IsVector<T>
-                   , If_< IsDenseVector<T>
-                        , If_< IsRowVector<T>
-                             , TDVecConjExprTrait<T>
-                             , DVecConjExprTrait<T> >
-                        , If_< IsRowVector<T>
-                             , TSVecConjExprTrait<T>
-                             , SVecConjExprTrait<T> > >
-                   , If_< IsNumeric<T>
-                        , ScalarConj<T>
-                        , Failure > > >  Tmp;
-
-   typedef typename RemoveReference< RemoveCV_<T> >::Type  Type1;
+   using Tmp = If_< IsMatrix<T>
+                  , If_< IsDenseMatrix<T>
+                       , If_< IsRowMajorMatrix<T>
+                            , DMatConjExprTrait<T>
+                            , TDMatConjExprTrait<T> >
+                       , If_< IsRowMajorMatrix<T>
+                            , SMatConjExprTrait<T>
+                            , TSMatConjExprTrait<T> > >
+                  , If_< IsVector<T>
+                       , If_< IsDenseVector<T>
+                            , If_< IsRowVector<T>
+                                 , TDVecConjExprTrait<T>
+                                 , DVecConjExprTrait<T> >
+                            , If_< IsRowVector<T>
+                                 , TSVecConjExprTrait<T>
+                                 , SVecConjExprTrait<T> > >
+                       , If_< IsNumeric<T>
+                            , ScalarConj<T>
+                            , Failure > > >;
    /*! \endcond */
    //**********************************************************************************************
 
  public:
    //**********************************************************************************************
    /*! \cond BLAZE_INTERNAL */
-   typedef typename If_< Or< IsConst<T>, IsVolatile<T>, IsReference<T> >
-                       , ConjExprTrait<Type1>, Tmp >::Type  Type;
+   using Type = typename If_< Or< IsConst<T>, IsVolatile<T>, IsReference<T> >
+                            , ConjExprTrait< Decay_<T> >
+                            , Tmp >::Type;
    /*! \endcond */
    //**********************************************************************************************
 };

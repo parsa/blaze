@@ -57,12 +57,11 @@
 #include <blaze/util/InvalidType.h>
 #include <blaze/util/mpl/If.h>
 #include <blaze/util/mpl/Or.h>
+#include <blaze/util/typetraits/Decay.h>
 #include <blaze/util/typetraits/IsConst.h>
 #include <blaze/util/typetraits/IsNumeric.h>
 #include <blaze/util/typetraits/IsReference.h>
 #include <blaze/util/typetraits/IsVolatile.h>
-#include <blaze/util/typetraits/RemoveCV.h>
-#include <blaze/util/typetraits/RemoveReference.h>
 
 
 namespace blaze {
@@ -90,61 +89,59 @@ struct DivExprTrait
  private:
    //**struct Failure******************************************************************************
    /*! \cond BLAZE_INTERNAL */
-   struct Failure { typedef INVALID_TYPE  Type; };
+   struct Failure { using Type = INVALID_TYPE; };
    /*! \endcond */
    //**********************************************************************************************
 
    //**********************************************************************************************
    /*! \cond BLAZE_INTERNAL */
-   typedef If_< IsMatrix<T1>
-              , If_< IsDenseMatrix<T1>
-                   , If_< IsRowMajorMatrix<T1>
-                        , If_< IsNumeric<T2>
-                             , DMatScalarDivExprTrait<T1,T2>
-                             , Failure >
-                        , If_< IsNumeric<T2>
-                             , TDMatScalarDivExprTrait<T1,T2>
-                             , Failure > >
-                   , If_< IsRowMajorMatrix<T1>
-                        , If_< IsNumeric<T2>
-                             , SMatScalarDivExprTrait<T1,T2>
-                             , Failure >
-                        , If_< IsNumeric<T2>
-                             , TSMatScalarDivExprTrait<T1,T2>
-                             , Failure > > >
-              , If_< IsVector<T1>
-                   , If_< IsDenseVector<T1>
-                        , If_< IsRowVector<T1>
+   using Tmp = If_< IsMatrix<T1>
+                   , If_< IsDenseMatrix<T1>
+                        , If_< IsRowMajorMatrix<T1>
                              , If_< IsNumeric<T2>
-                                  , TDVecScalarDivExprTrait<T1,T2>
+                                  , DMatScalarDivExprTrait<T1,T2>
                                   , Failure >
                              , If_< IsNumeric<T2>
-                                  , DVecScalarDivExprTrait<T1,T2>
+                                  , TDMatScalarDivExprTrait<T1,T2>
                                   , Failure > >
-                        , If_< IsRowVector<T1>
+                        , If_< IsRowMajorMatrix<T1>
                              , If_< IsNumeric<T2>
-                                  , TSVecScalarDivExprTrait<T1,T2>
+                                  , SMatScalarDivExprTrait<T1,T2>
                                   , Failure >
                              , If_< IsNumeric<T2>
-                                  , SVecScalarDivExprTrait<T1,T2>
+                                  , TSMatScalarDivExprTrait<T1,T2>
                                   , Failure > > >
-                   , If_< IsNumeric<T1>
-                        , If_< IsNumeric<T2>
-                             , DivTrait<T1,T2>
-                             , Failure >
-                        , Failure > > >  Tmp;
-
-   typedef typename RemoveReference< RemoveCV_<T1> >::Type  Type1;
-   typedef typename RemoveReference< RemoveCV_<T2> >::Type  Type2;
+                   , If_< IsVector<T1>
+                        , If_< IsDenseVector<T1>
+                             , If_< IsRowVector<T1>
+                                  , If_< IsNumeric<T2>
+                                       , TDVecScalarDivExprTrait<T1,T2>
+                                       , Failure >
+                                  , If_< IsNumeric<T2>
+                                       , DVecScalarDivExprTrait<T1,T2>
+                                       , Failure > >
+                             , If_< IsRowVector<T1>
+                                  , If_< IsNumeric<T2>
+                                       , TSVecScalarDivExprTrait<T1,T2>
+                                       , Failure >
+                                  , If_< IsNumeric<T2>
+                                       , SVecScalarDivExprTrait<T1,T2>
+                                       , Failure > > >
+                        , If_< IsNumeric<T1>
+                             , If_< IsNumeric<T2>
+                                  , DivTrait<T1,T2>
+                                  , Failure >
+                             , Failure > > >;
    /*! \endcond */
    //**********************************************************************************************
 
  public:
    //**********************************************************************************************
    /*! \cond BLAZE_INTERNAL */
-   typedef typename If_< Or< IsConst<T1>, IsVolatile<T1>, IsReference<T1>
-                           , IsConst<T2>, IsVolatile<T2>, IsReference<T2> >
-                       , DivExprTrait<Type1,Type2>, Tmp >::Type  Type;
+   using Type = typename If_< Or< IsConst<T1>, IsVolatile<T1>, IsReference<T1>
+                                , IsConst<T2>, IsVolatile<T2>, IsReference<T2> >
+                            , DivExprTrait< Decay_<T1>, Decay_<T2> >
+                            , Tmp >::Type;
    /*! \endcond */
    //**********************************************************************************************
 };

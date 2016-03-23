@@ -727,9 +727,9 @@ struct DVecEvalExprTrait< DVecEvalExpr<VT,false> >
 {
  public:
    //**********************************************************************************************
-   typedef If_< And< IsDenseVector<VT>, IsColumnVector<VT> >
-              , DVecEvalExpr<VT,false>
-              , INVALID_TYPE >  Type;
+   using Type = If_< And< IsDenseVector<VT>, IsColumnVector<VT> >
+                   , DVecEvalExpr<VT,false>
+                   , INVALID_TYPE >;
    //**********************************************************************************************
 };
 /*! \endcond */
@@ -743,9 +743,9 @@ struct TDVecEvalExprTrait< DVecEvalExpr<VT,true> >
 {
  public:
    //**********************************************************************************************
-   typedef If_< And< IsDenseVector<VT>, IsRowVector<VT> >
-              , DVecEvalExpr<VT,true>
-              , INVALID_TYPE >  Type;
+   using Type = If_< And< IsDenseVector<VT>, IsRowVector<VT> >
+                   , DVecEvalExpr<VT,true>
+                   , INVALID_TYPE >;
    //**********************************************************************************************
 };
 /*! \endcond */
@@ -759,7 +759,7 @@ struct SubvectorExprTrait< DVecEvalExpr<VT,TF>, AF >
 {
  public:
    //**********************************************************************************************
-   typedef typename EvalExprTrait< typename SubvectorExprTrait<const VT,AF>::Type >::Type  Type;
+   using Type = typename EvalExprTrait< typename SubvectorExprTrait<const VT,AF>::Type >::Type;
    //**********************************************************************************************
 };
 /*! \endcond */

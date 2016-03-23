@@ -46,11 +46,10 @@
 #include <blaze/util/mpl/If.h>
 #include <blaze/util/mpl/Or.h>
 #include <blaze/util/typetraits/AddReference.h>
+#include <blaze/util/typetraits/Decay.h>
 #include <blaze/util/typetraits/IsConst.h>
 #include <blaze/util/typetraits/IsReference.h>
 #include <blaze/util/typetraits/IsVolatile.h>
-#include <blaze/util/typetraits/RemoveCV.h>
-#include <blaze/util/typetraits/RemoveReference.h>
 
 
 namespace blaze {
@@ -76,16 +75,18 @@ struct DerestrictTrait
  private:
    //**********************************************************************************************
    /*! \cond BLAZE_INTERNAL */
-   typedef If< Or< IsVector<T>, IsMatrix<T> >, AddReference_<T>, INVALID_TYPE >  Tmp;
-   typedef typename RemoveReference< RemoveCV_<T> >::Type  Type1;
+   using Tmp = If< Or< IsVector<T>, IsMatrix<T> >
+                 , AddReference_<T>
+                 , INVALID_TYPE >;
    /*! \endcond */
    //**********************************************************************************************
 
  public:
    //**********************************************************************************************
    /*! \cond BLAZE_INTERNAL */
-   typedef typename If_< Or< IsConst<T>, IsVolatile<T>, IsReference<T> >
-                       , DerestrictTrait<Type1>, Tmp >::Type  Type;
+   using Type = typename If_< Or< IsConst<T>, IsVolatile<T>, IsReference<T> >
+                            , DerestrictTrait< Decay_<T> >
+                            , Tmp >::Type;
    /*! \endcond */
    //**********************************************************************************************
 };

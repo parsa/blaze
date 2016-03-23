@@ -199,7 +199,7 @@ class SMatScalarDivExpr : public SparseMatrix< SMatScalarDivExpr<MT,ST,SO>, SO >
       typedef ValueIndexPair<ElementType>  Element;
 
       //! Iterator type of the sparse matrix expression.
-      typedef typename RemoveReference<LeftOperand>::Type::ConstIterator  IteratorType;
+      typedef typename RemoveReference_<LeftOperand>::ConstIterator  IteratorType;
 
       typedef std::forward_iterator_tag  IteratorCategory;  //!< The iterator category.
       typedef Element                    ValueType;         //!< Type of the underlying pointers.
@@ -1080,20 +1080,17 @@ struct SMatScalarMultExprTrait< SMatScalarDivExpr<MT,ST1,false>, ST2 >
 {
  private:
    //**********************************************************************************************
-   typedef typename DivTrait<ST2,ST1>::Type  ScalarType;
-   //**********************************************************************************************
-
-   //**********************************************************************************************
-   typedef typename SMatScalarMultExprTrait<MT,ScalarType>::Type              T1;
-   typedef SMatScalarMultExpr< SMatScalarDivExpr<MT,ST1,false>, ST2, false >  T2;
+   using ScalarType = typename DivTrait<ST2,ST1>::Type;
    //**********************************************************************************************
 
  public:
    //**********************************************************************************************
-   typedef If_< And< IsSparseMatrix<MT>, IsRowMajorMatrix<MT>
-                   , IsNumeric<ST1>, IsNumeric<ST2> >
-              , If_< IsInvertible<ScalarType>, T1, T2 >
-              , INVALID_TYPE >  Type;
+   using Type = If_< And< IsSparseMatrix<MT>, IsRowMajorMatrix<MT>
+                        , IsNumeric<ST1>, IsNumeric<ST2> >
+                   , If_< IsInvertible<ScalarType>
+                        , typename SMatScalarMultExprTrait<MT,ScalarType>::Type
+                        , SMatScalarMultExpr< SMatScalarDivExpr<MT,ST1,false>, ST2, false > >
+                   , INVALID_TYPE >;
    //**********************************************************************************************
 };
 /*! \endcond */
@@ -1115,20 +1112,17 @@ struct TSMatScalarMultExprTrait< SMatScalarDivExpr<MT,ST1,true>, ST2 >
 {
  private:
    //**********************************************************************************************
-   typedef typename DivTrait<ST2,ST1>::Type  ScalarType;
-   //**********************************************************************************************
-
-   //**********************************************************************************************
-   typedef typename SMatScalarMultExprTrait<MT,ScalarType>::Type            T1;
-   typedef SMatScalarMultExpr< SMatScalarDivExpr<MT,ST1,true>, ST2, true >  T2;
+   using ScalarType = typename DivTrait<ST2,ST1>::Type;
    //**********************************************************************************************
 
  public:
    //**********************************************************************************************
-   typedef If_< And< IsSparseMatrix<MT>, IsColumnMajorMatrix<MT>
-                   , IsNumeric<ST1>, IsNumeric<ST2> >
-              , If_< IsInvertible<ScalarType>, T1, T2 >
-              , INVALID_TYPE >  Type;
+   using Type = If_< And< IsSparseMatrix<MT>, IsColumnMajorMatrix<MT>
+                        , IsNumeric<ST1>, IsNumeric<ST2> >
+                   , If_< IsInvertible<ScalarType>
+                        , typename SMatScalarMultExprTrait<MT,ScalarType>::Type
+                        , SMatScalarMultExpr< SMatScalarDivExpr<MT,ST1,true>, ST2, true > >
+                   , INVALID_TYPE >;
    //**********************************************************************************************
 };
 /*! \endcond */
@@ -1150,7 +1144,7 @@ struct SubmatrixExprTrait< SMatScalarDivExpr<MT,ST,SO>, AF >
 {
  public:
    //**********************************************************************************************
-   typedef typename DivExprTrait< typename SubmatrixExprTrait<const MT,AF>::Type, ST >::Type  Type;
+   using Type = typename DivExprTrait< typename SubmatrixExprTrait<const MT,AF>::Type, ST >::Type;
    //**********************************************************************************************
 };
 /*! \endcond */
@@ -1172,7 +1166,7 @@ struct RowExprTrait< SMatScalarDivExpr<MT,ST,SO> >
 {
  public:
    //**********************************************************************************************
-   typedef typename DivExprTrait< typename RowExprTrait<const MT>::Type, ST >::Type  Type;
+   using Type = typename DivExprTrait< typename RowExprTrait<const MT>::Type, ST >::Type;
    //**********************************************************************************************
 };
 /*! \endcond */
@@ -1194,7 +1188,7 @@ struct ColumnExprTrait< SMatScalarDivExpr<MT,ST,SO> >
 {
  public:
    //**********************************************************************************************
-   typedef typename DivExprTrait< typename ColumnExprTrait<const MT>::Type, ST >::Type  Type;
+   using Type = typename DivExprTrait< typename ColumnExprTrait<const MT>::Type, ST >::Type;
    //**********************************************************************************************
 };
 /*! \endcond */

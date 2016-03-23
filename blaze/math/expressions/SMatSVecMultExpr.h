@@ -182,8 +182,8 @@ class SMatSVecMultExpr : public SparseVector< SMatSVecMultExpr<MT,VT>, false >
    inline ReturnType operator[]( size_t index ) const {
       BLAZE_INTERNAL_ASSERT( index < mat_.rows(), "Invalid vector access index" );
 
-      typedef typename RemoveReference<MCT>::Type::ConstIterator  MatrixIterator;
-      typedef typename RemoveReference<VCT>::Type::ConstIterator  VectorIterator;
+      typedef typename RemoveReference_<MCT>::ConstIterator  MatrixIterator;
+      typedef typename RemoveReference_<VCT>::ConstIterator  VectorIterator;
 
       ElementType res = ElementType();
 
@@ -452,8 +452,8 @@ class SMatSVecMultExpr : public SparseVector< SMatSVecMultExpr<MT,VT>, false >
            , typename VT2 >  // Type of the right-hand side vector operand
    static inline void selectAssignKernel( VT1& y, const MT1& A, const VT2& x )
    {
-      typedef typename RemoveReference<LT>::Type::ConstIterator  MatrixIterator;
-      typedef typename RemoveReference<RT>::Type::ConstIterator  VectorIterator;
+      typedef typename RemoveReference_<LT>::ConstIterator  MatrixIterator;
+      typedef typename RemoveReference_<RT>::ConstIterator  VectorIterator;
 
       const VectorIterator vend( x.end() );
 
@@ -527,8 +527,8 @@ class SMatSVecMultExpr : public SparseVector< SMatSVecMultExpr<MT,VT>, false >
 
       BLAZE_INTERNAL_ASSERT( (~lhs).size() == rhs.size(), "Invalid vector sizes" );
 
-      typedef typename RemoveReference<LT>::Type::ConstIterator  MatrixIterator;
-      typedef typename RemoveReference<RT>::Type::ConstIterator  VectorIterator;
+      typedef typename RemoveReference_<LT>::ConstIterator  MatrixIterator;
+      typedef typename RemoveReference_<RT>::ConstIterator  VectorIterator;
 
       RT x( rhs.vec_ );  // Evaluation of the right-hand side sparse vector operand
       if( x.nonZeros() == 0UL ) return;
@@ -656,8 +656,8 @@ class SMatSVecMultExpr : public SparseVector< SMatSVecMultExpr<MT,VT>, false >
            , typename VT2 >  // Type of the right-hand side vector operand
    static inline void selectAddAssignKernel( VT1& y, const MT1& A, const VT2& x )
    {
-      typedef typename RemoveReference<LT>::Type::ConstIterator  MatrixIterator;
-      typedef typename RemoveReference<RT>::Type::ConstIterator  VectorIterator;
+      typedef typename RemoveReference_<LT>::ConstIterator  MatrixIterator;
+      typedef typename RemoveReference_<RT>::ConstIterator  VectorIterator;
 
       const VectorIterator vend( x.end() );
 
@@ -715,8 +715,8 @@ class SMatSVecMultExpr : public SparseVector< SMatSVecMultExpr<MT,VT>, false >
 
       BLAZE_INTERNAL_ASSERT( (~lhs).size() == rhs.size(), "Invalid vector sizes" );
 
-      typedef typename RemoveReference<LT>::Type::ConstIterator  MatrixIterator;
-      typedef typename RemoveReference<RT>::Type::ConstIterator  VectorIterator;
+      typedef typename RemoveReference_<LT>::ConstIterator  MatrixIterator;
+      typedef typename RemoveReference_<RT>::ConstIterator  VectorIterator;
 
       // Evaluation of the right-hand side sparse vector operand
       RT x( serial( rhs.vec_ ) );
@@ -756,8 +756,8 @@ class SMatSVecMultExpr : public SparseVector< SMatSVecMultExpr<MT,VT>, false >
            , typename VT2 >  // Type of the right-hand side vector operand
    static inline void selectSubAssignKernel( VT1& y, const MT1& A, const VT2& x )
    {
-      typedef typename RemoveReference<LT>::Type::ConstIterator  MatrixIterator;
-      typedef typename RemoveReference<RT>::Type::ConstIterator  VectorIterator;
+      typedef typename RemoveReference_<LT>::ConstIterator  MatrixIterator;
+      typedef typename RemoveReference_<RT>::ConstIterator  VectorIterator;
 
       const VectorIterator vend( x.end() );
 
@@ -946,8 +946,8 @@ class SMatSVecMultExpr : public SparseVector< SMatSVecMultExpr<MT,VT>, false >
 
       BLAZE_INTERNAL_ASSERT( (~lhs).size() == rhs.size(), "Invalid vector sizes" );
 
-      typedef typename RemoveReference<LT>::Type::ConstIterator  MatrixIterator;
-      typedef typename RemoveReference<RT>::Type::ConstIterator  VectorIterator;
+      typedef typename RemoveReference_<LT>::ConstIterator  MatrixIterator;
+      typedef typename RemoveReference_<RT>::ConstIterator  VectorIterator;
 
       // Evaluation of the right-hand side sparse vector operand
       RT x( rhs.vec_ );
@@ -1182,8 +1182,8 @@ struct SubvectorExprTrait< SMatSVecMultExpr<MT,VT>, AF >
 {
  public:
    //**********************************************************************************************
-   typedef typename MultExprTrait< typename SubmatrixExprTrait<const MT,AF>::Type
-                                 , typename SubvectorExprTrait<const VT,AF>::Type >::Type  Type;
+   using Type = typename MultExprTrait< typename SubmatrixExprTrait<const MT,AF>::Type
+                                      , typename SubvectorExprTrait<const VT,AF>::Type >::Type;
    //**********************************************************************************************
 };
 /*! \endcond */

@@ -353,7 +353,7 @@ class TSMatDVecMultExpr : public DenseVector< TSMatDVecMultExpr<MT,VT>, false >
            , typename VT2 >  // Type of the right-hand side vector operand
    static inline void selectAssignKernel( VT1& y, const MT1& A, const VT2& x )
    {
-      typedef typename RemoveReference<MT1>::Type::ConstIterator  ConstIterator;
+      typedef typename RemoveReference_<MT1>::ConstIterator  ConstIterator;
 
       for( size_t j=0UL; j<A.columns(); ++j )
       {
@@ -456,7 +456,7 @@ class TSMatDVecMultExpr : public DenseVector< TSMatDVecMultExpr<MT,VT>, false >
            , typename VT2 >  // Type of the right-hand side vector operand
    static inline void selectAddAssignKernel( VT1& y, const MT1& A, const VT2& x )
    {
-      typedef typename RemoveReference<MT1>::Type::ConstIterator  ConstIterator;
+      typedef typename RemoveReference_<MT1>::ConstIterator  ConstIterator;
 
       for( size_t j=0UL; j<A.columns(); ++j )
       {
@@ -495,7 +495,7 @@ class TSMatDVecMultExpr : public DenseVector< TSMatDVecMultExpr<MT,VT>, false >
 
       BLAZE_INTERNAL_ASSERT( (~lhs).size() == rhs.size(), "Invalid vector sizes" );
 
-      typedef typename RemoveReference<LT>::Type::ConstIterator  ConstIterator;
+      typedef typename RemoveReference_<LT>::ConstIterator  ConstIterator;
 
       if( rhs.mat_.columns() == 0UL ) return;
 
@@ -531,7 +531,7 @@ class TSMatDVecMultExpr : public DenseVector< TSMatDVecMultExpr<MT,VT>, false >
            , typename VT2 >  // Type of the right-hand side vector operand
    static inline void selectSubAssignKernel( VT1& y, const MT1& A, const VT2& x )
    {
-      typedef typename RemoveReference<MT1>::Type::ConstIterator  ConstIterator;
+      typedef typename RemoveReference_<MT1>::ConstIterator  ConstIterator;
 
       for( size_t j=0UL; j<A.columns(); ++j )
       {
@@ -722,7 +722,7 @@ class TSMatDVecMultExpr : public DenseVector< TSMatDVecMultExpr<MT,VT>, false >
 
       BLAZE_INTERNAL_ASSERT( (~lhs).size() == rhs.size(), "Invalid vector sizes" );
 
-      typedef typename RemoveReference<LT>::Type::ConstIterator  ConstIterator;
+      typedef typename RemoveReference_<LT>::ConstIterator  ConstIterator;
 
       if( rhs.mat_.columns() == 0UL ) return;
 
@@ -941,8 +941,8 @@ struct SubvectorExprTrait< TSMatDVecMultExpr<MT,VT>, AF >
 {
  public:
    //**********************************************************************************************
-   typedef typename MultExprTrait< typename SubmatrixExprTrait<const MT,AF>::Type
-                                 , typename SubvectorExprTrait<const VT,AF>::Type >::Type  Type;
+   using Type = typename MultExprTrait< typename SubmatrixExprTrait<const MT,AF>::Type
+                                      , typename SubvectorExprTrait<const VT,AF>::Type >::Type;
    //**********************************************************************************************
 };
 /*! \endcond */

@@ -1280,16 +1280,13 @@ struct DMatScalarMultExprTrait< DMatScalarDivExpr<MT,ST1,false>, ST2 >
    typedef typename DivTrait<ST2,ST1>::Type  ScalarType;
    //**********************************************************************************************
 
-   //**********************************************************************************************
-   typedef typename DMatScalarMultExprTrait<MT,ScalarType>::Type              T1;
-   typedef DMatScalarMultExpr< DMatScalarDivExpr<MT,ST1,false>, ST2, false >  T2;
-   //**********************************************************************************************
-
  public:
    //**********************************************************************************************
-   typedef If_< And< IsDenseMatrix<MT>, IsRowMajorMatrix<MT>, IsNumeric<ST1>, IsNumeric<ST2> >
-              , If_< IsInvertible<ScalarType>, T1, T2 >
-              , INVALID_TYPE >  Type;
+   using Type = If_< And< IsDenseMatrix<MT>, IsRowMajorMatrix<MT>, IsNumeric<ST1>, IsNumeric<ST2> >
+                   , If_< IsInvertible<ScalarType>
+                        , typename DMatScalarMultExprTrait<MT,ScalarType>::Type
+                        , DMatScalarMultExpr< DMatScalarDivExpr<MT,ST1,false>, ST2, false > >
+                   , INVALID_TYPE >;
    //**********************************************************************************************
 };
 /*! \endcond */
@@ -1314,16 +1311,13 @@ struct TDMatScalarMultExprTrait< DMatScalarDivExpr<MT,ST1,true>, ST2 >
    typedef typename DivTrait<ST2,ST1>::Type  ScalarType;
    //**********************************************************************************************
 
-   //**********************************************************************************************
-   typedef typename DMatScalarMultExprTrait<MT,ScalarType>::Type            T1;
-   typedef DMatScalarMultExpr< DMatScalarDivExpr<MT,ST1,true>, ST2, true >  T2;
-   //**********************************************************************************************
-
  public:
    //**********************************************************************************************
-   typedef If_< And< IsDenseMatrix<MT>, IsColumnMajorMatrix<MT>, IsNumeric<ST1>, IsNumeric<ST2> >
-              , If_< IsInvertible<ScalarType>, T1, T2 >
-              , INVALID_TYPE >  Type;
+   using Type = If_< And< IsDenseMatrix<MT>, IsColumnMajorMatrix<MT>, IsNumeric<ST1>, IsNumeric<ST2> >
+                   , If_< IsInvertible<ScalarType>
+                        , typename DMatScalarMultExprTrait<MT,ScalarType>::Type
+                        , DMatScalarMultExpr< DMatScalarDivExpr<MT,ST1,true>, ST2, true > >
+                   , INVALID_TYPE >;
    //**********************************************************************************************
 };
 /*! \endcond */
@@ -1345,7 +1339,7 @@ struct SubmatrixExprTrait< DMatScalarDivExpr<MT,ST,SO>, AF >
 {
  public:
    //**********************************************************************************************
-   typedef typename DivExprTrait< typename SubmatrixExprTrait<const MT,AF>::Type, ST >::Type  Type;
+   using Type = typename DivExprTrait< typename SubmatrixExprTrait<const MT,AF>::Type, ST >::Type;
    //**********************************************************************************************
 };
 /*! \endcond */
@@ -1367,7 +1361,7 @@ struct RowExprTrait< DMatScalarDivExpr<MT,ST,SO> >
 {
  public:
    //**********************************************************************************************
-   typedef typename DivExprTrait< typename RowExprTrait<const MT>::Type, ST >::Type  Type;
+   using Type = typename DivExprTrait< typename RowExprTrait<const MT>::Type, ST >::Type;
    //**********************************************************************************************
 };
 /*! \endcond */
@@ -1389,7 +1383,7 @@ struct ColumnExprTrait< DMatScalarDivExpr<MT,ST,SO> >
 {
  public:
    //**********************************************************************************************
-   typedef typename DivExprTrait< typename ColumnExprTrait<const MT>::Type, ST >::Type  Type;
+   using Type = typename DivExprTrait< typename ColumnExprTrait<const MT>::Type, ST >::Type;
    //**********************************************************************************************
 };
 /*! \endcond */

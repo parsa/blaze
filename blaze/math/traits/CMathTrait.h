@@ -76,7 +76,7 @@ namespace blaze {
 template< typename T >
 struct CMathTrait
 {
-   typedef double Type;  //!< Return type of the \<cmath\> functions for integral and double arguments.
+   using Type = double;  //!< Return type of the \<cmath\> functions for integral and double arguments.
 };
 //*************************************************************************************************
 
@@ -89,7 +89,7 @@ struct CMathTrait
 template<>
 struct CMathTrait<float>
 {
-   typedef float Type;  //!< Return type of the \<cmath\> functions for float arguments.
+   using Type = float;  //!< Return type of the \<cmath\> functions for float arguments.
 };
 /*! \endcond */
 //*************************************************************************************************
@@ -103,7 +103,7 @@ struct CMathTrait<float>
 template<>
 struct CMathTrait<long double>
 {
-   typedef long double Type;  //!< Return type of the \<cmath\> functions for long double arguments.
+   using Type = long double;  //!< Return type of the \<cmath\> functions for long double arguments.
 };
 /*! \endcond */
 //*************************************************************************************************

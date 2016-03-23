@@ -732,11 +732,11 @@ struct DVecDVecAddExprTrait< SVecDVecSubExpr<VT1,VT2,false>, VT3 >
  public:
    //**********************************************************************************************
    /*! \cond BLAZE_INTERNAL */
-   typedef If_< And< IsSparseVector<VT1>, IsColumnVector<VT1>
-                   , IsDenseVector<VT2>, IsColumnVector<VT2>
-                   , IsDenseVector<VT3>, IsColumnVector<VT3> >
-              , typename DVecSVecAddExprTrait< typename DVecDVecSubExprTrait<VT3,VT2>::Type, VT1 >::Type
-              , INVALID_TYPE >  Type;
+   using Type = If_< And< IsSparseVector<VT1>, IsColumnVector<VT1>
+                        , IsDenseVector<VT2>, IsColumnVector<VT2>
+                        , IsDenseVector<VT3>, IsColumnVector<VT3> >
+                   , typename DVecSVecAddExprTrait< typename DVecDVecSubExprTrait<VT3,VT2>::Type, VT1 >::Type
+                   , INVALID_TYPE >;
    /*! \endcond */
    //**********************************************************************************************
 };
@@ -752,11 +752,11 @@ struct TDVecTDVecAddExprTrait< SVecDVecSubExpr<VT1,VT2,true>, VT3 >
  public:
    //**********************************************************************************************
    /*! \cond BLAZE_INTERNAL */
-   typedef If_< And< IsSparseVector<VT1>, IsRowVector<VT1>
-                   , IsDenseVector<VT2>, IsRowVector<VT2>
-                   , IsDenseVector<VT3>, IsRowVector<VT3> >
-              , typename TDVecTSVecAddExprTrait< typename TDVecTDVecSubExprTrait<VT3,VT2>::Type, VT1 >::Type
-              , INVALID_TYPE >  Type;
+   using Type = If_< And< IsSparseVector<VT1>, IsRowVector<VT1>
+                        , IsDenseVector<VT2>, IsRowVector<VT2>
+                        , IsDenseVector<VT3>, IsRowVector<VT3> >
+                   , typename TDVecTSVecAddExprTrait< typename TDVecTDVecSubExprTrait<VT3,VT2>::Type, VT1 >::Type
+                   , INVALID_TYPE >;
    /*! \endcond */
    //**********************************************************************************************
 };
@@ -772,11 +772,11 @@ struct DVecDVecSubExprTrait< SVecDVecSubExpr<VT1,VT2,false>, VT3 >
  public:
    //**********************************************************************************************
    /*! \cond BLAZE_INTERNAL */
-   typedef If_< And< IsSparseVector<VT1>, IsColumnVector<VT1>
-                    , IsDenseVector<VT2>, IsColumnVector<VT2>
-                    , IsDenseVector<VT3>, IsColumnVector<VT3> >
-               , typename SVecDVecSubExprTrait< VT1, typename DVecDVecAddExprTrait<VT2,VT3>::Type >::Type
-               , INVALID_TYPE >  Type;
+   using Type = If_< And< IsSparseVector<VT1>, IsColumnVector<VT1>
+                        , IsDenseVector<VT2>, IsColumnVector<VT2>
+                        , IsDenseVector<VT3>, IsColumnVector<VT3> >
+                   , typename SVecDVecSubExprTrait< VT1, typename DVecDVecAddExprTrait<VT2,VT3>::Type >::Type
+                   , INVALID_TYPE >;
    /*! \endcond */
    //**********************************************************************************************
 };
@@ -792,11 +792,11 @@ struct TDVecTDVecSubExprTrait< SVecDVecSubExpr<VT1,VT2,true>, VT3 >
  public:
    //**********************************************************************************************
    /*! \cond BLAZE_INTERNAL */
-   typedef If_< And< IsSparseVector<VT1>, IsRowVector<VT1>
-                   , IsDenseVector<VT2>, IsRowVector<VT2>
-                   , IsDenseVector<VT3>, IsRowVector<VT3> >
-              , typename TSVecTDVecSubExprTrait< VT1, typename TDVecTDVecAddExprTrait<VT2,VT3>::Type >::Type
-              , INVALID_TYPE >  Type;
+   using Type = If_< And< IsSparseVector<VT1>, IsRowVector<VT1>
+                        , IsDenseVector<VT2>, IsRowVector<VT2>
+                        , IsDenseVector<VT3>, IsRowVector<VT3> >
+                   , typename TSVecTDVecSubExprTrait< VT1, typename TDVecTDVecAddExprTrait<VT2,VT3>::Type >::Type
+                   , INVALID_TYPE >;
    /*! \endcond */
    //**********************************************************************************************
 };
@@ -811,8 +811,8 @@ struct SubvectorExprTrait< SVecDVecSubExpr<VT1,VT2,TF>, AF >
 {
  public:
    //**********************************************************************************************
-   typedef typename SubExprTrait< typename SubvectorExprTrait<const VT1,AF>::Type
-                                , typename SubvectorExprTrait<const VT2,AF>::Type >::Type  Type;
+   using Type = typename SubExprTrait< typename SubvectorExprTrait<const VT1,AF>::Type
+                                     , typename SubvectorExprTrait<const VT2,AF>::Type >::Type;
    //**********************************************************************************************
 };
 /*! \endcond */

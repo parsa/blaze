@@ -583,9 +583,9 @@ struct DMatInvExprTrait< DMatInvExpr<MT,false> >
 {
  public:
    //**********************************************************************************************
-   typedef If_< And< IsDenseMatrix<MT>, IsRowMajorMatrix<MT> >
-              , typename DMatInvExpr<MT,false>::Operand
-              , INVALID_TYPE >  Type;
+   using Type = If_< And< IsDenseMatrix<MT>, IsRowMajorMatrix<MT> >
+                   , typename DMatInvExpr<MT,false>::Operand
+                   , INVALID_TYPE >;
    //**********************************************************************************************
 };
 /*! \endcond */
@@ -599,9 +599,9 @@ struct TDMatInvExprTrait< DMatInvExpr<MT,true> >
 {
  public:
    //**********************************************************************************************
-   typedef If_< And< IsDenseMatrix<MT>, IsColumnMajorMatrix<MT> >
-              , typename DMatInvExpr<MT,true>::Operand
-              , INVALID_TYPE >  Type;
+   using Type = If_< And< IsDenseMatrix<MT>, IsColumnMajorMatrix<MT> >
+                   , typename DMatInvExpr<MT,true>::Operand
+                   , INVALID_TYPE >;
    //**********************************************************************************************
 };
 /*! \endcond */

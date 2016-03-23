@@ -179,7 +179,7 @@ class TSVecSMatMultExpr : public SparseVector< TSVecSMatMultExpr<VT,MT>, true >
    inline ReturnType operator[]( size_t index ) const {
       BLAZE_INTERNAL_ASSERT( index < mat_.columns(), "Invalid vector access index" );
 
-      typedef typename RemoveReference<VCT>::Type::ConstIterator  VectorIterator;
+      typedef typename RemoveReference_<VCT>::ConstIterator  VectorIterator;
 
       VCT x( vec_ );  // Evaluation of the left-hand side sparse vector operand
       MCT A( mat_ );  // Evaluation of the right-hand side sparse matrix operand
@@ -363,8 +363,8 @@ class TSVecSMatMultExpr : public SparseVector< TSVecSMatMultExpr<VT,MT>, true >
            , typename MT1 >  // Type of the right-hand side matrix operand
    static inline void selectAssignKernel( VT1& y, const VT2& x, const MT1& A )
    {
-      typedef typename RemoveReference<VT2>::Type::ConstIterator  VectorIterator;
-      typedef typename RemoveReference<MT1>::Type::ConstIterator  MatrixIterator;
+      typedef typename RemoveReference_<VT2>::ConstIterator  VectorIterator;
+      typedef typename RemoveReference_<MT1>::ConstIterator  MatrixIterator;
 
       const VectorIterator vend( x.end() );
       VectorIterator velem( x.begin() );
@@ -405,8 +405,8 @@ class TSVecSMatMultExpr : public SparseVector< TSVecSMatMultExpr<VT,MT>, true >
 
       BLAZE_INTERNAL_ASSERT( (~lhs).size() == rhs.size(), "Invalid vector sizes" );
 
-      typedef typename RemoveReference<LT>::Type::ConstIterator  VectorIterator;
-      typedef typename RemoveReference<RT>::Type::ConstIterator  MatrixIterator;
+      typedef typename RemoveReference_<LT>::ConstIterator  VectorIterator;
+      typedef typename RemoveReference_<RT>::ConstIterator  MatrixIterator;
 
       // Evaluation of the left-hand side sparse vector operand
       LT x( serial( rhs.vec_ ) );
@@ -515,8 +515,8 @@ class TSVecSMatMultExpr : public SparseVector< TSVecSMatMultExpr<VT,MT>, true >
            , typename MT1 >  // Type of the right-hand side matrix operand
    static inline void selectAddAssignKernel( VT1& y, const VT2& x, const MT1& A )
    {
-      typedef typename RemoveReference<VT2>::Type::ConstIterator  VectorIterator;
-      typedef typename RemoveReference<MT1>::Type::ConstIterator  MatrixIterator;
+      typedef typename RemoveReference_<VT2>::ConstIterator  VectorIterator;
+      typedef typename RemoveReference_<MT1>::ConstIterator  MatrixIterator;
 
       const VectorIterator vend( x.end() );
       VectorIterator velem( x.begin() );
@@ -596,8 +596,8 @@ class TSVecSMatMultExpr : public SparseVector< TSVecSMatMultExpr<VT,MT>, true >
            , typename MT1 >  // Type of the right-hand side matrix operand
    static inline void selectSubAssignKernel( VT1& y, const VT2& x, const MT1& A )
    {
-      typedef typename RemoveReference<VT2>::Type::ConstIterator  VectorIterator;
-      typedef typename RemoveReference<MT1>::Type::ConstIterator  MatrixIterator;
+      typedef typename RemoveReference_<VT2>::ConstIterator  VectorIterator;
+      typedef typename RemoveReference_<MT1>::ConstIterator  MatrixIterator;
 
       const VectorIterator vend( x.end() );
       VectorIterator velem( x.begin() );
@@ -967,8 +967,8 @@ struct SubvectorExprTrait< TSVecSMatMultExpr<VT,MT>, AF >
 {
  public:
    //**********************************************************************************************
-   typedef typename MultExprTrait< typename SubvectorExprTrait<const VT,AF>::Type
-                                 , typename SubmatrixExprTrait<const MT,AF>::Type >::Type  Type;
+   using Type = typename MultExprTrait< typename SubvectorExprTrait<const VT,AF>::Type
+                                      , typename SubmatrixExprTrait<const MT,AF>::Type >::Type;
    //**********************************************************************************************
 };
 /*! \endcond */

@@ -193,7 +193,7 @@ class SVecScalarDivExpr : public SparseVector< SVecScalarDivExpr<VT,ST,TF>, TF >
       typedef ValueIndexPair<ElementType>  Element;
 
       //! Iterator type of the sparse vector expression.
-      typedef typename RemoveReference<LeftOperand>::Type::ConstIterator  IteratorType;
+      typedef typename RemoveReference_<LeftOperand>::ConstIterator  IteratorType;
 
       typedef std::forward_iterator_tag  IteratorCategory;  //!< The iterator category.
       typedef Element                    ValueType;         //!< Type of the underlying pointers.
@@ -961,20 +961,17 @@ struct SVecScalarMultExprTrait< SVecScalarDivExpr<VT,ST1,false>, ST2 >
 {
  private:
    //**********************************************************************************************
-   typedef typename DivTrait<ST2,ST1>::Type  ScalarType;
-   //**********************************************************************************************
-
-   //**********************************************************************************************
-   typedef typename SVecScalarMultExprTrait<VT,ScalarType>::Type              T1;
-   typedef SVecScalarMultExpr< SVecScalarDivExpr<VT,ST1,false>, ST2, false >  T2;
+   using ScalarType = typename DivTrait<ST2,ST1>::Type;
    //**********************************************************************************************
 
  public:
    //**********************************************************************************************
-   typedef If_< And< IsSparseVector<VT>, IsColumnVector<VT>
-                   , IsNumeric<ST1>, IsNumeric<ST2> >
-              , If_< IsInvertible<ScalarType>, T1, T2 >
-              , INVALID_TYPE >  Type;
+   using Type = If_< And< IsSparseVector<VT>, IsColumnVector<VT>
+                        , IsNumeric<ST1>, IsNumeric<ST2> >
+                   , If_< IsInvertible<ScalarType>
+                        , typename SVecScalarMultExprTrait<VT,ScalarType>::Type
+                        , SVecScalarMultExpr< SVecScalarDivExpr<VT,ST1,false>, ST2, false > >
+                   , INVALID_TYPE >;
    //**********************************************************************************************
 };
 /*! \endcond */
@@ -996,20 +993,17 @@ struct TSVecScalarMultExprTrait< SVecScalarDivExpr<VT,ST1,true>, ST2 >
 {
  private:
    //**********************************************************************************************
-   typedef typename DivTrait<ST2,ST1>::Type  ScalarType;
-   //**********************************************************************************************
-
-   //**********************************************************************************************
-   typedef typename SVecScalarMultExprTrait<VT,ScalarType>::Type            T1;
-   typedef SVecScalarMultExpr< SVecScalarDivExpr<VT,ST1,true>, ST2, true >  T2;
+   using ScalarType = typename DivTrait<ST2,ST1>::Type;
    //**********************************************************************************************
 
  public:
    //**********************************************************************************************
-   typedef If_< And< IsSparseVector<VT>, IsRowVector<VT>
-                   , IsNumeric<ST1>, IsNumeric<ST2> >
-              , If_< IsInvertible<ScalarType>, T1, T2 >
-              , INVALID_TYPE >  Type;
+   using Type = If_< And< IsSparseVector<VT>, IsRowVector<VT>
+                        , IsNumeric<ST1>, IsNumeric<ST2> >
+                   , If_< IsInvertible<ScalarType>
+                        , typename SVecScalarMultExprTrait<VT,ScalarType>::Type
+                        , SVecScalarMultExpr< SVecScalarDivExpr<VT,ST1,true>, ST2, true > >
+                   , INVALID_TYPE >;
    //**********************************************************************************************
 };
 /*! \endcond */
@@ -1031,7 +1025,7 @@ struct SubvectorExprTrait< SVecScalarDivExpr<VT,ST,TF>, AF >
 {
  public:
    //**********************************************************************************************
-   typedef typename DivExprTrait< typename SubvectorExprTrait<const VT,AF>::Type, ST >::Type  Type;
+   using Type = typename DivExprTrait< typename SubvectorExprTrait<const VT,AF>::Type, ST >::Type;
    //**********************************************************************************************
 };
 /*! \endcond */

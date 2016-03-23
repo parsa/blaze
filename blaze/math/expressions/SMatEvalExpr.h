@@ -939,9 +939,9 @@ struct SMatEvalExprTrait< SMatEvalExpr<MT,false> >
 {
  public:
    //**********************************************************************************************
-   typedef If_< And< IsSparseMatrix<MT>, IsRowMajorMatrix<MT> >
-              , SMatEvalExpr<MT,false>
-              , INVALID_TYPE >  Type;
+   using Type = If_< And< IsSparseMatrix<MT>, IsRowMajorMatrix<MT> >
+                   , SMatEvalExpr<MT,false>
+                   , INVALID_TYPE >;
    //**********************************************************************************************
 };
 /*! \endcond */
@@ -955,9 +955,9 @@ struct TSMatEvalExprTrait< SMatEvalExpr<MT,true> >
 {
  public:
    //**********************************************************************************************
-   typedef If_< And< IsSparseMatrix<MT>, IsColumnMajorMatrix<MT> >
-              , SMatEvalExpr<MT,true>
-              , INVALID_TYPE >  Type;
+   using Type = If_< And< IsSparseMatrix<MT>, IsColumnMajorMatrix<MT> >
+                   , SMatEvalExpr<MT,true>
+                   , INVALID_TYPE >;
    //**********************************************************************************************
 };
 /*! \endcond */
@@ -971,7 +971,7 @@ struct SubmatrixExprTrait< SMatEvalExpr<MT,SO>, AF >
 {
  public:
    //**********************************************************************************************
-   typedef typename EvalExprTrait< typename SubmatrixExprTrait<const MT,AF>::Type >::Type  Type;
+   using Type = typename EvalExprTrait< typename SubmatrixExprTrait<const MT,AF>::Type >::Type;
    //**********************************************************************************************
 };
 /*! \endcond */
@@ -985,7 +985,7 @@ struct RowExprTrait< SMatEvalExpr<MT,SO> >
 {
  public:
    //**********************************************************************************************
-   typedef typename EvalExprTrait< typename RowExprTrait<const MT>::Type >::Type  Type;
+   using Type = typename EvalExprTrait< typename RowExprTrait<const MT>::Type >::Type;
    //**********************************************************************************************
 };
 /*! \endcond */
@@ -999,7 +999,7 @@ struct ColumnExprTrait< SMatEvalExpr<MT,SO> >
 {
  public:
    //**********************************************************************************************
-   typedef typename EvalExprTrait< typename ColumnExprTrait<const MT>::Type >::Type  Type;
+   using Type = typename EvalExprTrait< typename ColumnExprTrait<const MT>::Type >::Type;
    //**********************************************************************************************
 };
 /*! \endcond */

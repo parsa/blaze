@@ -186,7 +186,7 @@ class SVecConjExpr : public SparseVector< SVecConjExpr<VT,TF>, TF >
       typedef ValueIndexPair<ElementType>  Element;
 
       //! Iterator type of the sparse vector expression.
-      typedef typename RemoveReference<Operand>::Type::ConstIterator  IteratorType;
+      typedef typename RemoveReference_<Operand>::ConstIterator  IteratorType;
 
       typedef std::forward_iterator_tag  IteratorCategory;  //!< The iterator category.
       typedef Element                    ValueType;         //!< Type of the underlying pointers.
@@ -956,9 +956,9 @@ struct SVecConjExprTrait< SVecConjExpr<VT,false> >
 {
  public:
    //**********************************************************************************************
-   typedef If_< And< IsSparseVector<VT>, IsColumnVector<VT> >
-              , typename SVecConjExpr<VT,false>::Operand
-              , INVALID_TYPE >  Type;
+   using Type = If_< And< IsSparseVector<VT>, IsColumnVector<VT> >
+                   , typename SVecConjExpr<VT,false>::Operand
+                   , INVALID_TYPE >;
    //**********************************************************************************************
 };
 /*! \endcond */
@@ -972,9 +972,9 @@ struct TSVecConjExprTrait< SVecConjExpr<VT,true> >
 {
  public:
    //**********************************************************************************************
-   typedef If_< And< IsSparseVector<VT>, IsRowVector<VT> >
-              , typename SVecConjExpr<VT,true>::Operand
-              , INVALID_TYPE >  Type;
+   using Type = If_< And< IsSparseVector<VT>, IsRowVector<VT> >
+                   , typename SVecConjExpr<VT,true>::Operand
+                   , INVALID_TYPE >;
    //**********************************************************************************************
 };
 /*! \endcond */
@@ -988,9 +988,9 @@ struct SVecConjExprTrait< SVecTransExpr< SVecConjExpr<VT,true>, false > >
 {
  public:
    //**********************************************************************************************
-   typedef If_< And< IsSparseVector<VT>, IsRowVector<VT> >
-              , SVecTransExpr<VT,false>
-              , INVALID_TYPE >  Type;
+   using Type = If_< And< IsSparseVector<VT>, IsRowVector<VT> >
+                   , SVecTransExpr<VT,false>
+                   , INVALID_TYPE >;
    //**********************************************************************************************
 };
 /*! \endcond */
@@ -1004,9 +1004,9 @@ struct TSVecConjExprTrait< SVecTransExpr< SVecConjExpr<VT,false>, true > >
 {
  public:
    //**********************************************************************************************
-   typedef If_< And< IsSparseVector<VT>, IsColumnVector<VT> >
-              , SVecTransExpr<VT,true>
-              , INVALID_TYPE >  Type;
+   using Type = If_< And< IsSparseVector<VT>, IsColumnVector<VT> >
+                   , SVecTransExpr<VT,true>
+                   , INVALID_TYPE >;
    //**********************************************************************************************
 };
 /*! \endcond */
@@ -1020,7 +1020,7 @@ struct SubvectorExprTrait< SVecConjExpr<VT,TF>, AF >
 {
  public:
    //**********************************************************************************************
-   typedef typename ConjExprTrait< typename SubvectorExprTrait<const VT,AF>::Type >::Type  Type;
+   using Type = typename ConjExprTrait< typename SubvectorExprTrait<const VT,AF>::Type >::Type;
    //**********************************************************************************************
 };
 /*! \endcond */

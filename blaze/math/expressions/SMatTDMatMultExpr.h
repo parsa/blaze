@@ -248,7 +248,7 @@ class SMatTDMatMultExpr : public DenseMatrix< SMatTDMatMultExpr<MT1,MT2>, false 
       BLAZE_INTERNAL_ASSERT( i < lhs_.rows()   , "Invalid row access index"    );
       BLAZE_INTERNAL_ASSERT( j < rhs_.columns(), "Invalid column access index" );
 
-      typedef typename RemoveReference<CT1>::Type::ConstIterator  ConstIterator;
+      typedef typename RemoveReference_<CT1>::ConstIterator  ConstIterator;
 
       ElementType tmp = ElementType();
 
@@ -2000,11 +2000,11 @@ struct DMatDVecMultExprTrait< SMatTDMatMultExpr<MT1,MT2>, VT >
 {
  public:
    //**********************************************************************************************
-   typedef If_< And< IsSparseMatrix<MT1>, IsRowMajorMatrix<MT1>
-                   , IsDenseMatrix<MT2>, IsColumnMajorMatrix<MT2>
-                   , IsDenseVector<VT>, IsColumnVector<VT> >
-              , typename SMatDVecMultExprTrait< MT1, typename TDMatDVecMultExprTrait<MT2,VT>::Type >::Type
-              , INVALID_TYPE >  Type;
+   using Type = If_< And< IsSparseMatrix<MT1>, IsRowMajorMatrix<MT1>
+                        , IsDenseMatrix<MT2>, IsColumnMajorMatrix<MT2>
+                        , IsDenseVector<VT>, IsColumnVector<VT> >
+                   , typename SMatDVecMultExprTrait< MT1, typename TDMatDVecMultExprTrait<MT2,VT>::Type >::Type
+                   , INVALID_TYPE >;
    //**********************************************************************************************
 };
 /*! \endcond */
@@ -2018,11 +2018,11 @@ struct DMatSVecMultExprTrait< SMatTDMatMultExpr<MT1,MT2>, VT >
 {
  public:
    //**********************************************************************************************
-   typedef If_< And< IsSparseMatrix<MT1>, IsRowMajorMatrix<MT1>
-                   , IsDenseMatrix<MT2>, IsColumnMajorMatrix<MT2>
-                   , IsSparseVector<VT>, IsColumnVector<VT> >
-              , typename SMatDVecMultExprTrait< MT1, typename TDMatSVecMultExprTrait<MT2,VT>::Type >::Type
-              , INVALID_TYPE >  Type;
+   using Type = If_< And< IsSparseMatrix<MT1>, IsRowMajorMatrix<MT1>
+                        , IsDenseMatrix<MT2>, IsColumnMajorMatrix<MT2>
+                        , IsSparseVector<VT>, IsColumnVector<VT> >
+                   , typename SMatDVecMultExprTrait< MT1, typename TDMatSVecMultExprTrait<MT2,VT>::Type >::Type
+                   , INVALID_TYPE >;
    //**********************************************************************************************
 };
 /*! \endcond */
@@ -2036,11 +2036,11 @@ struct TDVecDMatMultExprTrait< VT, SMatTDMatMultExpr<MT1,MT2> >
 {
  public:
    //**********************************************************************************************
-   typedef If_< And< IsDenseVector<VT>, IsRowVector<VT>
-                   , IsSparseMatrix<MT1>, IsRowMajorMatrix<MT1>
-                   , IsDenseMatrix<MT2>, IsColumnMajorMatrix<MT2> >
-              , typename TDVecTDMatMultExprTrait< typename TDVecSMatMultExprTrait<VT,MT1>::Type, MT2 >::Type
-              , INVALID_TYPE >  Type;
+   using Type = If_< And< IsDenseVector<VT>, IsRowVector<VT>
+                        , IsSparseMatrix<MT1>, IsRowMajorMatrix<MT1>
+                        , IsDenseMatrix<MT2>, IsColumnMajorMatrix<MT2> >
+                   , typename TDVecTDMatMultExprTrait< typename TDVecSMatMultExprTrait<VT,MT1>::Type, MT2 >::Type
+                   , INVALID_TYPE >;
    //**********************************************************************************************
 };
 /*! \endcond */
@@ -2054,11 +2054,11 @@ struct TSVecDMatMultExprTrait< VT, SMatTDMatMultExpr<MT1,MT2> >
 {
  public:
    //**********************************************************************************************
-   typedef If_< And< IsSparseVector<VT>, IsRowVector<VT>
-                   , IsSparseMatrix<MT1>, IsRowMajorMatrix<MT1>
-                   , IsDenseMatrix<MT2>, IsColumnMajorMatrix<MT2> >
-              , typename TSVecTDMatMultExprTrait< typename TSVecSMatMultExprTrait<VT,MT1>::Type, MT2 >::Type
-              , INVALID_TYPE >  Type;
+   using Type = If_< And< IsSparseVector<VT>, IsRowVector<VT>
+                        , IsSparseMatrix<MT1>, IsRowMajorMatrix<MT1>
+                        , IsDenseMatrix<MT2>, IsColumnMajorMatrix<MT2> >
+                   , typename TSVecTDMatMultExprTrait< typename TSVecSMatMultExprTrait<VT,MT1>::Type, MT2 >::Type
+                   , INVALID_TYPE >;
    //**********************************************************************************************
 };
 /*! \endcond */
@@ -2072,8 +2072,8 @@ struct SubmatrixExprTrait< SMatTDMatMultExpr<MT1,MT2>, AF >
 {
  public:
    //**********************************************************************************************
-   typedef typename MultExprTrait< typename SubmatrixExprTrait<const MT1,AF>::Type
-                                 , typename SubmatrixExprTrait<const MT2,AF>::Type >::Type  Type;
+   using Type = typename MultExprTrait< typename SubmatrixExprTrait<const MT1,AF>::Type
+                                      , typename SubmatrixExprTrait<const MT2,AF>::Type >::Type;
    //**********************************************************************************************
 };
 /*! \endcond */
@@ -2087,7 +2087,7 @@ struct RowExprTrait< SMatTDMatMultExpr<MT1,MT2> >
 {
  public:
    //**********************************************************************************************
-   typedef typename MultExprTrait< typename RowExprTrait<const MT1>::Type, MT2 >::Type  Type;
+   using Type = typename MultExprTrait< typename RowExprTrait<const MT1>::Type, MT2 >::Type;
    //**********************************************************************************************
 };
 /*! \endcond */
@@ -2101,7 +2101,7 @@ struct ColumnExprTrait< SMatTDMatMultExpr<MT1,MT2> >
 {
  public:
    //**********************************************************************************************
-   typedef typename MultExprTrait< MT1, typename ColumnExprTrait<const MT2>::Type >::Type  Type;
+   using Type = typename MultExprTrait< MT1, typename ColumnExprTrait<const MT2>::Type >::Type;
    //**********************************************************************************************
 };
 /*! \endcond */

@@ -51,11 +51,10 @@
 #include <blaze/util/mpl/And.h>
 #include <blaze/util/mpl/If.h>
 #include <blaze/util/mpl/Or.h>
+#include <blaze/util/typetraits/Decay.h>
 #include <blaze/util/typetraits/IsConst.h>
 #include <blaze/util/typetraits/IsReference.h>
 #include <blaze/util/typetraits/IsVolatile.h>
-#include <blaze/util/typetraits/RemoveCV.h>
-#include <blaze/util/typetraits/RemoveReference.h>
 
 
 namespace blaze {
@@ -84,26 +83,24 @@ struct DMatTDMatAddExprTrait
  private:
    //**********************************************************************************************
    /*! \cond BLAZE_INTERNAL */
-   typedef If< And< IsDenseMatrix<MT1>, IsRowMajorMatrix<MT1>
-                  , IsDenseMatrix<MT2>, IsColumnMajorMatrix<MT2> >
-             , If_< IsSymmetric<MT2>
-                  , DMatDMatAddExpr< MT1, typename TDMatTransExprTrait<MT2>::Type, false >
-                  , If_< IsSymmetric<MT1>
-                       , DMatDMatAddExpr< typename DMatTransExprTrait<MT1>::Type, MT2, true >
-                       , DMatTDMatAddExpr<MT1,MT2> > >
-             , INVALID_TYPE >  Tmp;
-
-   typedef typename RemoveReference< RemoveCV_<MT1> >::Type  Type1;
-   typedef typename RemoveReference< RemoveCV_<MT2> >::Type  Type2;
+   using Tmp = If< And< IsDenseMatrix<MT1>, IsRowMajorMatrix<MT1>
+                      , IsDenseMatrix<MT2>, IsColumnMajorMatrix<MT2> >
+                 , If_< IsSymmetric<MT2>
+                      , DMatDMatAddExpr< MT1, typename TDMatTransExprTrait<MT2>::Type, false >
+                      , If_< IsSymmetric<MT1>
+                           , DMatDMatAddExpr< typename DMatTransExprTrait<MT1>::Type, MT2, true >
+                           , DMatTDMatAddExpr<MT1,MT2> > >
+                 , INVALID_TYPE >;
    /*! \endcond */
    //**********************************************************************************************
 
  public:
    //**********************************************************************************************
    /*! \cond BLAZE_INTERNAL */
-   typedef typename If_< Or< IsConst<MT1>, IsVolatile<MT1>, IsReference<MT1>
-                           , IsConst<MT2>, IsVolatile<MT2>, IsReference<MT2> >
-                       , DMatTDMatAddExprTrait<Type1,Type2>, Tmp >::Type  Type;
+   using Type = typename If_< Or< IsConst<MT1>, IsVolatile<MT1>, IsReference<MT1>
+                                , IsConst<MT2>, IsVolatile<MT2>, IsReference<MT2> >
+                            , DMatTDMatAddExprTrait< Decay_<MT1>, Decay_<MT2> >
+                            , Tmp >::Type;
    /*! \endcond */
    //**********************************************************************************************
 };

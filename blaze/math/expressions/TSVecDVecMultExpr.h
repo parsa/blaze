@@ -99,14 +99,14 @@ inline const typename MultTrait<typename T1::ElementType,typename T2::ElementTyp
 {
    BLAZE_FUNCTION_TRACE;
 
-   typedef typename T1::CompositeType           Lhs;            // Composite type of the left-hand side sparse vector expression
-   typedef typename T2::CompositeType           Rhs;            // Composite type of the right-hand side dense vector expression
-   typedef typename RemoveReference<Lhs>::Type  X1;             // Auxiliary type for the left-hand side composite type
-   typedef typename RemoveReference<Rhs>::Type  X2;             // Auxiliary type for the right-hand side composite type
-   typedef typename X1::ElementType             ET1;            // Element type of the left-hand side sparse vector expression
-   typedef typename X2::ElementType             ET2;            // Element type of the right-hand side dense vector expression
-   typedef typename MultTrait<ET1,ET2>::Type    MultType;       // Multiplication result type
-   typedef typename X1::ConstIterator           ConstIterator;  // Iterator type of the left-hand sparse vector expression
+   typedef typename T1::CompositeType         Lhs;            // Composite type of the left-hand side sparse vector expression
+   typedef typename T2::CompositeType         Rhs;            // Composite type of the right-hand side dense vector expression
+   typedef RemoveReference_<Lhs>              X1;             // Auxiliary type for the left-hand side composite type
+   typedef RemoveReference_<Rhs>              X2;             // Auxiliary type for the right-hand side composite type
+   typedef typename X1::ElementType           ET1;            // Element type of the left-hand side sparse vector expression
+   typedef typename X2::ElementType           ET2;            // Element type of the right-hand side dense vector expression
+   typedef typename MultTrait<ET1,ET2>::Type  MultType;       // Multiplication result type
+   typedef typename X1::ConstIterator         ConstIterator;  // Iterator type of the left-hand sparse vector expression
 
    BLAZE_CONSTRAINT_MUST_BE_SPARSE_VECTOR_TYPE( T1 );
    BLAZE_CONSTRAINT_MUST_BE_DENSE_VECTOR_TYPE ( T2 );

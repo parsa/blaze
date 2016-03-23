@@ -49,11 +49,10 @@
 #include <blaze/util/mpl/And.h>
 #include <blaze/util/mpl/If.h>
 #include <blaze/util/mpl/Or.h>
+#include <blaze/util/typetraits/Decay.h>
 #include <blaze/util/typetraits/IsConst.h>
 #include <blaze/util/typetraits/IsReference.h>
 #include <blaze/util/typetraits/IsVolatile.h>
-#include <blaze/util/typetraits/RemoveCV.h>
-#include <blaze/util/typetraits/RemoveReference.h>
 
 
 namespace blaze {
@@ -75,7 +74,7 @@ template< typename VT1
 struct TSVecDVecMultExprTraitHelper
 {
    //**********************************************************************************************
-   typedef INVALID_TYPE  Type;
+   using Type = INVALID_TYPE;
    //**********************************************************************************************
 };
 /*! \endcond */
@@ -92,7 +91,7 @@ template< typename VT1
 struct TSVecDVecMultExprTraitHelper<VT1,VT2,true>
 {
    //**********************************************************************************************
-   typedef typename MultTrait<typename VT1::ElementType,typename VT2::ElementType>::Type  Type;
+   using Type = typename MultTrait<typename VT1::ElementType,typename VT2::ElementType>::Type;
    //**********************************************************************************************
 };
 /*! \endcond */
@@ -122,21 +121,13 @@ struct TSVecDVecMultExprTrait
    /*! \endcond */
    //**********************************************************************************************
 
-   //**********************************************************************************************
-   /*! \cond BLAZE_INTERNAL */
-   typedef TSVecDVecMultExprTraitHelper<VT1,VT2,valid>  Tmp;
-
-   typedef typename RemoveReference< RemoveCV_<VT1> >::Type  Type1;
-   typedef typename RemoveReference< RemoveCV_<VT2> >::Type  Type2;
-   /*! \endcond */
-   //**********************************************************************************************
-
  public:
    //**********************************************************************************************
    /*! \cond BLAZE_INTERNAL */
-   typedef typename If_< Or< IsConst<VT1>, IsVolatile<VT1>, IsReference<VT1>
-                           , IsConst<VT2>, IsVolatile<VT2>, IsReference<VT2> >
-                       , TSVecDVecMultExprTrait<Type1,Type2>, Tmp >::Type  Type;
+   using Type = typename If_< Or< IsConst<VT1>, IsVolatile<VT1>, IsReference<VT1>
+                                , IsConst<VT2>, IsVolatile<VT2>, IsReference<VT2> >
+                            , TSVecDVecMultExprTrait< Decay_<VT1>, Decay_<VT2> >
+                            , TSVecDVecMultExprTraitHelper<VT1,VT2,valid> >::Type;
    /*! \endcond */
    //**********************************************************************************************
 };

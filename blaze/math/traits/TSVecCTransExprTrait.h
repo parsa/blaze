@@ -49,11 +49,10 @@
 #include <blaze/util/mpl/And.h>
 #include <blaze/util/mpl/If.h>
 #include <blaze/util/mpl/Or.h>
+#include <blaze/util/typetraits/Decay.h>
 #include <blaze/util/typetraits/IsConst.h>
 #include <blaze/util/typetraits/IsReference.h>
 #include <blaze/util/typetraits/IsVolatile.h>
-#include <blaze/util/typetraits/RemoveCV.h>
-#include <blaze/util/typetraits/RemoveReference.h>
 
 
 namespace blaze {
@@ -79,25 +78,24 @@ struct TSVecCTransExprTrait
  private:
    //**struct Failure******************************************************************************
    /*! \cond BLAZE_INTERNAL */
-   struct Failure { typedef INVALID_TYPE  Type; };
+   struct Failure { using Type = INVALID_TYPE; };
    /*! \endcond */
    //**********************************************************************************************
 
    //**********************************************************************************************
    /*! \cond BLAZE_INTERNAL */
-   typedef If_< And< IsSparseVector<VT>, IsRowVector<VT> >
-              , TSVecTransExprTrait< typename TSVecConjExprTrait<VT>::Type >
-              , Failure >  Tmp;
-
-   typedef typename RemoveReference< RemoveCV_<VT> >::Type  Type1;
+   using Tmp = If_< And< IsSparseVector<VT>, IsRowVector<VT> >
+                  , TSVecTransExprTrait< typename TSVecConjExprTrait<VT>::Type >
+                  , Failure >;
    /*! \endcond */
    //**********************************************************************************************
 
  public:
    //**********************************************************************************************
    /*! \cond BLAZE_INTERNAL */
-   typedef typename If_< Or< IsConst<VT>, IsVolatile<VT>, IsReference<VT> >
-                       , TSVecCTransExprTrait<Type1>, Tmp >::Type  Type;
+   using Type = typename If_< Or< IsConst<VT>, IsVolatile<VT>, IsReference<VT> >
+                            , TSVecCTransExprTrait< Decay_<VT> >
+                            , Tmp >::Type;
    /*! \endcond */
    //**********************************************************************************************
 };

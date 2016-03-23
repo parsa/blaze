@@ -73,12 +73,11 @@
 #include <blaze/util/InvalidType.h>
 #include <blaze/util/mpl/If.h>
 #include <blaze/util/mpl/Or.h>
+#include <blaze/util/typetraits/Decay.h>
 #include <blaze/util/typetraits/IsConst.h>
 #include <blaze/util/typetraits/IsNumeric.h>
 #include <blaze/util/typetraits/IsReference.h>
 #include <blaze/util/typetraits/IsVolatile.h>
-#include <blaze/util/typetraits/RemoveCV.h>
-#include <blaze/util/typetraits/RemoveReference.h>
 
 
 namespace blaze {
@@ -106,98 +105,96 @@ struct SubExprTrait
  private:
    //**struct Failure******************************************************************************
    /*! \cond BLAZE_INTERNAL */
-   struct Failure { typedef INVALID_TYPE  Type; };
+   struct Failure { using Type = INVALID_TYPE; };
    /*! \endcond */
    //**********************************************************************************************
 
  public:
    //**********************************************************************************************
    /*! \cond BLAZE_INTERNAL */
-   typedef If_< IsMatrix<T1>
-              , If_< IsMatrix<T2>
-                   , If_< IsDenseMatrix<T1>
-                        , If_< IsDenseMatrix<T2>
-                             , If_< IsRowMajorMatrix<T1>
-                                  , If_< IsRowMajorMatrix<T2>
-                                       , DMatDMatSubExprTrait<T1,T2>
-                                       , DMatTDMatSubExprTrait<T1,T2> >
-                                  , If_< IsRowMajorMatrix<T2>
-                                       , TDMatDMatSubExprTrait<T1,T2>
-                                       , TDMatTDMatSubExprTrait<T1,T2> > >
-                             , If_< IsRowMajorMatrix<T1>
-                                  , If_< IsRowMajorMatrix<T2>
-                                       , DMatSMatSubExprTrait<T1,T2>
-                                       , DMatTSMatSubExprTrait<T1,T2> >
-                                  , If_< IsRowMajorMatrix<T2>
-                                       , TDMatSMatSubExprTrait<T1,T2>
-                                       , TDMatTSMatSubExprTrait<T1,T2> > > >
-                        , If_< IsDenseMatrix<T2>
-                             , If_< IsRowMajorMatrix<T1>
-                                  , If_< IsRowMajorMatrix<T2>
-                                       , SMatDMatSubExprTrait<T1,T2>
-                                       , SMatTDMatSubExprTrait<T1,T2> >
-                                  , If_< IsRowMajorMatrix<T2>
-                                       , TSMatDMatSubExprTrait<T1,T2>
-                                       , TSMatTDMatSubExprTrait<T1,T2> > >
-                             , If_< IsRowMajorMatrix<T1>
-                                  , If_< IsRowMajorMatrix<T2>
-                                       , SMatSMatSubExprTrait<T1,T2>
-                                       , SMatTSMatSubExprTrait<T1,T2> >
-                                  , If_< IsRowMajorMatrix<T2>
-                                       , TSMatSMatSubExprTrait<T1,T2>
-                                       , TSMatTSMatSubExprTrait<T1,T2> > > > >
-                   , Failure >
-              , If_< IsVector<T1>
-                   , If_< IsVector<T2>
-                        , If_< IsDenseVector<T1>
-                             , If_< IsDenseVector<T2>
-                                  , If_< IsRowVector<T1>
-                                       , If_< IsRowVector<T2>
-                                            , TDVecTDVecSubExprTrait<T1,T2>
-                                            , Failure >
-                                       , If_< IsRowVector<T2>
-                                            , Failure
-                                            , DVecDVecSubExprTrait<T1,T2> > >
-                                  , If_< IsRowVector<T1>
-                                       , If_< IsRowVector<T2>
-                                            , TDVecTSVecSubExprTrait<T1,T2>
-                                            , Failure >
-                                       , If_< IsRowVector<T2>
-                                            , Failure
-                                            , DVecSVecSubExprTrait<T1,T2> > > >
-                             , If_< IsDenseVector<T2>
-                                  , If_< IsRowVector<T1>
-                                       , If_< IsRowVector<T2>
-                                            , TSVecTDVecSubExprTrait<T1,T2>
-                                            , Failure >
-                                       , If_< IsRowVector<T2>
-                                            , Failure
-                                            , SVecDVecSubExprTrait<T1,T2> > >
-                                  , If_< IsRowVector<T1>
-                                       , If_< IsRowVector<T2>
-                                            , TSVecTSVecSubExprTrait<T1,T2>
-                                            , Failure >
-                                       , If_< IsRowVector<T2>
-                                            , Failure
-                                            , SVecSVecSubExprTrait<T1,T2> > > > >
-                        , Failure >
-                   , If_< IsNumeric<T1>
-                        , If_< IsNumeric<T2>
-                             , SubTrait<T1,T2>
-                             , Failure >
-                        , Failure > > >  Tmp;
-
-   typedef typename RemoveReference< RemoveCV_<T1> >::Type  Type1;
-   typedef typename RemoveReference< RemoveCV_<T2> >::Type  Type2;
+   using Tmp = If_< IsMatrix<T1>
+                  , If_< IsMatrix<T2>
+                       , If_< IsDenseMatrix<T1>
+                            , If_< IsDenseMatrix<T2>
+                                 , If_< IsRowMajorMatrix<T1>
+                                      , If_< IsRowMajorMatrix<T2>
+                                           , DMatDMatSubExprTrait<T1,T2>
+                                           , DMatTDMatSubExprTrait<T1,T2> >
+                                      , If_< IsRowMajorMatrix<T2>
+                                           , TDMatDMatSubExprTrait<T1,T2>
+                                           , TDMatTDMatSubExprTrait<T1,T2> > >
+                                 , If_< IsRowMajorMatrix<T1>
+                                      , If_< IsRowMajorMatrix<T2>
+                                           , DMatSMatSubExprTrait<T1,T2>
+                                           , DMatTSMatSubExprTrait<T1,T2> >
+                                      , If_< IsRowMajorMatrix<T2>
+                                           , TDMatSMatSubExprTrait<T1,T2>
+                                           , TDMatTSMatSubExprTrait<T1,T2> > > >
+                            , If_< IsDenseMatrix<T2>
+                                 , If_< IsRowMajorMatrix<T1>
+                                      , If_< IsRowMajorMatrix<T2>
+                                           , SMatDMatSubExprTrait<T1,T2>
+                                           , SMatTDMatSubExprTrait<T1,T2> >
+                                      , If_< IsRowMajorMatrix<T2>
+                                           , TSMatDMatSubExprTrait<T1,T2>
+                                           , TSMatTDMatSubExprTrait<T1,T2> > >
+                                 , If_< IsRowMajorMatrix<T1>
+                                      , If_< IsRowMajorMatrix<T2>
+                                           , SMatSMatSubExprTrait<T1,T2>
+                                           , SMatTSMatSubExprTrait<T1,T2> >
+                                      , If_< IsRowMajorMatrix<T2>
+                                           , TSMatSMatSubExprTrait<T1,T2>
+                                           , TSMatTSMatSubExprTrait<T1,T2> > > > >
+                       , Failure >
+                  , If_< IsVector<T1>
+                       , If_< IsVector<T2>
+                            , If_< IsDenseVector<T1>
+                                 , If_< IsDenseVector<T2>
+                                      , If_< IsRowVector<T1>
+                                           , If_< IsRowVector<T2>
+                                                , TDVecTDVecSubExprTrait<T1,T2>
+                                                , Failure >
+                                           , If_< IsRowVector<T2>
+                                                , Failure
+                                                , DVecDVecSubExprTrait<T1,T2> > >
+                                      , If_< IsRowVector<T1>
+                                           , If_< IsRowVector<T2>
+                                                , TDVecTSVecSubExprTrait<T1,T2>
+                                                , Failure >
+                                           , If_< IsRowVector<T2>
+                                                , Failure
+                                                , DVecSVecSubExprTrait<T1,T2> > > >
+                                 , If_< IsDenseVector<T2>
+                                      , If_< IsRowVector<T1>
+                                           , If_< IsRowVector<T2>
+                                                , TSVecTDVecSubExprTrait<T1,T2>
+                                                , Failure >
+                                           , If_< IsRowVector<T2>
+                                                , Failure
+                                                , SVecDVecSubExprTrait<T1,T2> > >
+                                      , If_< IsRowVector<T1>
+                                           , If_< IsRowVector<T2>
+                                                , TSVecTSVecSubExprTrait<T1,T2>
+                                                , Failure >
+                                           , If_< IsRowVector<T2>
+                                                , Failure
+                                                , SVecSVecSubExprTrait<T1,T2> > > > >
+                            , Failure >
+                       , If_< IsNumeric<T1>
+                            , If_< IsNumeric<T2>
+                                 , SubTrait<T1,T2>
+                                 , Failure >
+                            , Failure > > >;
    /*! \endcond */
    //**********************************************************************************************
 
  public:
    //**********************************************************************************************
    /*! \cond BLAZE_INTERNAL */
-   typedef typename If_< Or< IsConst<T1>, IsVolatile<T1>, IsReference<T1>
-                           , IsConst<T2>, IsVolatile<T2>, IsReference<T2> >
-                       , SubExprTrait<Type1,Type2>, Tmp >::Type  Type;
+   using Type = typename If_< Or< IsConst<T1>, IsVolatile<T1>, IsReference<T1>
+                                , IsConst<T2>, IsVolatile<T2>, IsReference<T2> >
+                            , SubExprTrait< Decay_<T1>, Decay_<T2> >
+                            , Tmp >::Type;
    /*! \endcond */
    //**********************************************************************************************
 };

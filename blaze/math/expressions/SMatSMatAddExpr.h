@@ -343,7 +343,7 @@ class SMatSMatAddExpr : public SparseMatrix< SMatSMatAddExpr<MT1,MT2>, false >
       BLAZE_INTERNAL_ASSERT( (~lhs).rows()    == rhs.rows()   , "Invalid number of rows"    );
       BLAZE_INTERNAL_ASSERT( (~lhs).columns() == rhs.columns(), "Invalid number of columns" );
 
-      typedef typename RemoveReference<CT2>::Type::ConstIterator  RightIterator;
+      typedef typename RemoveReference_<CT2>::ConstIterator  RightIterator;
 
       assign( ~lhs, rhs.lhs_ );
 
@@ -393,8 +393,8 @@ class SMatSMatAddExpr : public SparseMatrix< SMatSMatAddExpr<MT1,MT2>, false >
       BLAZE_INTERNAL_ASSERT( (~lhs).rows()    == rhs.rows()   , "Invalid number of rows"    );
       BLAZE_INTERNAL_ASSERT( (~lhs).columns() == rhs.columns(), "Invalid number of columns" );
 
-      typedef typename RemoveReference<CT1>::Type::ConstIterator  LeftIterator;
-      typedef typename RemoveReference<CT2>::Type::ConstIterator  RightIterator;
+      typedef typename RemoveReference_<CT1>::ConstIterator  LeftIterator;
+      typedef typename RemoveReference_<CT2>::ConstIterator  RightIterator;
 
       CT1 A( serial( rhs.lhs_ ) );  // Evaluation of the left-hand side sparse matrix operand
       CT2 B( serial( rhs.rhs_ ) );  // Evaluation of the right-hand side sparse matrix operand
@@ -474,8 +474,8 @@ class SMatSMatAddExpr : public SparseMatrix< SMatSMatAddExpr<MT1,MT2>, false >
       BLAZE_INTERNAL_ASSERT( (~lhs).rows()    == rhs.rows()   , "Invalid number of rows"    );
       BLAZE_INTERNAL_ASSERT( (~lhs).columns() == rhs.columns(), "Invalid number of columns" );
 
-      typedef typename RemoveReference<CT1>::Type::ConstIterator  LeftIterator;
-      typedef typename RemoveReference<CT2>::Type::ConstIterator  RightIterator;
+      typedef typename RemoveReference_<CT1>::ConstIterator  LeftIterator;
+      typedef typename RemoveReference_<CT2>::ConstIterator  RightIterator;
 
       CT1 A( serial( rhs.lhs_ ) );  // Evaluation of the left-hand side sparse matrix operand
       CT2 B( serial( rhs.rhs_ ) );  // Evaluation of the right-hand side sparse matrix operand
@@ -1015,8 +1015,8 @@ struct SubmatrixExprTrait< SMatSMatAddExpr<MT1,MT2>, AF >
 {
  public:
    //**********************************************************************************************
-   typedef typename AddExprTrait< typename SubmatrixExprTrait<const MT1,AF>::Type
-                                , typename SubmatrixExprTrait<const MT2,AF>::Type >::Type  Type;
+   using Type = typename AddExprTrait< typename SubmatrixExprTrait<const MT1,AF>::Type
+                                     , typename SubmatrixExprTrait<const MT2,AF>::Type >::Type;
    //**********************************************************************************************
 };
 /*! \endcond */
@@ -1030,8 +1030,8 @@ struct RowExprTrait< SMatSMatAddExpr<MT1,MT2> >
 {
  public:
    //**********************************************************************************************
-   typedef typename AddExprTrait< typename RowExprTrait<const MT1>::Type
-                                , typename RowExprTrait<const MT2>::Type >::Type  Type;
+   using Type = typename AddExprTrait< typename RowExprTrait<const MT1>::Type
+                                     , typename RowExprTrait<const MT2>::Type >::Type;
    //**********************************************************************************************
 };
 /*! \endcond */
@@ -1045,8 +1045,8 @@ struct ColumnExprTrait< SMatSMatAddExpr<MT1,MT2> >
 {
  public:
    //**********************************************************************************************
-   typedef typename AddExprTrait< typename ColumnExprTrait<const MT1>::Type
-                                , typename ColumnExprTrait<const MT2>::Type >::Type  Type;
+   using Type = typename AddExprTrait< typename ColumnExprTrait<const MT1>::Type
+                                     , typename ColumnExprTrait<const MT2>::Type >::Type;
    //**********************************************************************************************
 };
 /*! \endcond */

@@ -285,8 +285,8 @@ class SVecSVecSubExpr : public SparseVector< SVecSVecSubExpr<VT1,VT2,TF>, TF >
 
       BLAZE_INTERNAL_ASSERT( (~lhs).size() == rhs.size(), "Invalid vector sizes" );
 
-      typedef typename RemoveReference<CT1>::Type::ConstIterator  LeftIterator;
-      typedef typename RemoveReference<CT2>::Type::ConstIterator  RightIterator;
+      typedef typename RemoveReference_<CT1>::ConstIterator  LeftIterator;
+      typedef typename RemoveReference_<CT2>::ConstIterator  RightIterator;
 
       CT1 x( serial( rhs.lhs_ ) );  // Evaluation of the left-hand side sparse vector operand
       CT2 y( serial( rhs.rhs_ ) );  // Evaluation of the right-hand side sparse vector operand
@@ -333,8 +333,8 @@ class SVecSVecSubExpr : public SparseVector< SVecSVecSubExpr<VT1,VT2,TF>, TF >
 
       BLAZE_INTERNAL_ASSERT( (~lhs).size() == rhs.size(), "Invalid vector sizes" );
 
-      typedef typename RemoveReference<CT1>::Type::ConstIterator  LeftIterator;
-      typedef typename RemoveReference<CT2>::Type::ConstIterator  RightIterator;
+      typedef typename RemoveReference_<CT1>::ConstIterator  LeftIterator;
+      typedef typename RemoveReference_<CT2>::ConstIterator  RightIterator;
 
       CT1 x( serial( rhs.lhs_ ) );  // Evaluation of the left-hand side sparse vector operand
       CT2 y( serial( rhs.rhs_ ) );  // Evaluation of the right-hand side sparse vector operand
@@ -376,8 +376,8 @@ class SVecSVecSubExpr : public SparseVector< SVecSVecSubExpr<VT1,VT2,TF>, TF >
 
       BLAZE_INTERNAL_ASSERT( (~lhs).size() == rhs.size(), "Invalid vector sizes" );
 
-      typedef typename RemoveReference<CT1>::Type::ConstIterator  LeftIterator;
-      typedef typename RemoveReference<CT2>::Type::ConstIterator  RightIterator;
+      typedef typename RemoveReference_<CT1>::ConstIterator  LeftIterator;
+      typedef typename RemoveReference_<CT2>::ConstIterator  RightIterator;
 
       CT1 x( serial( rhs.lhs_ ) );  // Evaluation of the left-hand side sparse vector operand
       CT2 y( serial( rhs.rhs_ ) );  // Evaluation of the right-hand side sparse vector operand
@@ -718,8 +718,8 @@ struct SubvectorExprTrait< SVecSVecSubExpr<VT1,VT2,TF>, AF >
 {
  public:
    //**********************************************************************************************
-   typedef typename SubExprTrait< typename SubvectorExprTrait<const VT1,AF>::Type
-                                , typename SubvectorExprTrait<const VT2,AF>::Type >::Type  Type;
+   using Type = typename SubExprTrait< typename SubvectorExprTrait<const VT1,AF>::Type
+                                     , typename SubvectorExprTrait<const VT2,AF>::Type >::Type;
    //**********************************************************************************************
 };
 /*! \endcond */

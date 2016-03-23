@@ -1114,9 +1114,9 @@ struct DVecConjExprTrait< DVecConjExpr<VT,false> >
 {
  public:
    //**********************************************************************************************
-   typedef If_< And< IsDenseVector<VT>, IsColumnVector<VT> >
-              , typename DVecConjExpr<VT,false>::Operand
-              , INVALID_TYPE >  Type;
+   using Type = If_< And< IsDenseVector<VT>, IsColumnVector<VT> >
+                   , typename DVecConjExpr<VT,false>::Operand
+                   , INVALID_TYPE >;
    //**********************************************************************************************
 };
 /*! \endcond */
@@ -1130,9 +1130,9 @@ struct TDVecConjExprTrait< DVecConjExpr<VT,true> >
 {
  public:
    //**********************************************************************************************
-   typedef If_< And< IsDenseVector<VT>, IsRowVector<VT> >
-              , typename DVecConjExpr<VT,true>::Operand
-              , INVALID_TYPE >  Type;
+   using Type = If_< And< IsDenseVector<VT>, IsRowVector<VT> >
+                   , typename DVecConjExpr<VT,true>::Operand
+                   , INVALID_TYPE >;
    //**********************************************************************************************
 };
 /*! \endcond */
@@ -1146,9 +1146,9 @@ struct DVecConjExprTrait< DVecTransExpr< DVecConjExpr<VT,true>, false > >
 {
  public:
    //**********************************************************************************************
-   typedef If_< And< IsDenseVector<VT>, IsRowVector<VT> >
-              , DVecTransExpr<VT,false>
-              , INVALID_TYPE >  Type;
+   using Type = If_< And< IsDenseVector<VT>, IsRowVector<VT> >
+                   , DVecTransExpr<VT,false>
+                   , INVALID_TYPE >;
    //**********************************************************************************************
 };
 /*! \endcond */
@@ -1162,9 +1162,9 @@ struct TDVecConjExprTrait< DVecTransExpr< DVecConjExpr<VT,false>, true > >
 {
  public:
    //**********************************************************************************************
-   typedef If_< And< IsDenseVector<VT>, IsColumnVector<VT> >
-              , DVecTransExpr<VT,true>
-              , INVALID_TYPE >  Type;
+   using Type = If_< And< IsDenseVector<VT>, IsColumnVector<VT> >
+                   , DVecTransExpr<VT,true>
+                   , INVALID_TYPE >;
    //**********************************************************************************************
 };
 /*! \endcond */
@@ -1178,7 +1178,7 @@ struct SubvectorExprTrait< DVecConjExpr<VT,TF>, AF >
 {
  public:
    //**********************************************************************************************
-   typedef typename ConjExprTrait< typename SubvectorExprTrait<const VT,AF>::Type >::Type  Type;
+   using Type = typename ConjExprTrait< typename SubvectorExprTrait<const VT,AF>::Type >::Type;
    //**********************************************************************************************
 };
 /*! \endcond */

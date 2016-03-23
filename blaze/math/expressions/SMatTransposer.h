@@ -1138,7 +1138,7 @@ inline bool isIntact( const SMatTransposer<MT,SO>& m ) noexcept
 template< typename MT, bool SO >
 struct SubmatrixTrait< SMatTransposer<MT,SO> >
 {
-   typedef typename SubmatrixTrait< typename SMatTransposer<MT,SO>::ResultType >::Type  Type;
+   using Type = typename SubmatrixTrait< typename SMatTransposer<MT,SO>::ResultType >::Type;
 };
 /*! \endcond */
 //*************************************************************************************************

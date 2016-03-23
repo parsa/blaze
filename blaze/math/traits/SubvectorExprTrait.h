@@ -49,11 +49,10 @@
 #include <blaze/util/InvalidType.h>
 #include <blaze/util/mpl/If.h>
 #include <blaze/util/mpl/Or.h>
+#include <blaze/util/typetraits/Decay.h>
 #include <blaze/util/typetraits/IsConst.h>
 #include <blaze/util/typetraits/IsReference.h>
 #include <blaze/util/typetraits/IsVolatile.h>
-#include <blaze/util/typetraits/RemoveCV.h>
-#include <blaze/util/typetraits/RemoveReference.h>
 
 
 namespace blaze {
@@ -80,43 +79,43 @@ struct SubvectorExprTrait
  private:
    //**struct Failure******************************************************************************
    /*! \cond BLAZE_INTERNAL */
-   struct Failure { typedef INVALID_TYPE  Type; };
+   struct Failure { using Type = INVALID_TYPE; };
    /*! \endcond */
    //**********************************************************************************************
 
    //**struct DenseResult**************************************************************************
    /*! \cond BLAZE_INTERNAL */
    template< typename T >
-   struct DenseResult { typedef DenseSubvector<T,AF,IsRowVector<T>::value>  Type; };
+   struct DenseResult { using Type = DenseSubvector<T,AF,IsRowVector<T>::value>; };
    /*! \endcond */
    //**********************************************************************************************
 
    //**struct SparseResult*************************************************************************
    /*! \cond BLAZE_INTERNAL */
    template< typename T >
-   struct SparseResult { typedef SparseSubvector<T,AF,IsRowVector<T>::value>  Type; };
+   struct SparseResult { using Type = SparseSubvector<T,AF,IsRowVector<T>::value>; };
    /*! \endcond */
    //**********************************************************************************************
 
    //**********************************************************************************************
    /*! \cond BLAZE_INTERNAL */
-   typedef typename RemoveReference<VT>::Type  Tmp;
+   using Tmp = RemoveReference_<VT>;
    /*! \endcond */
    //**********************************************************************************************
 
  public:
    //**********************************************************************************************
    /*! \cond BLAZE_INTERNAL */
-   typedef typename If_< Or< IsComputation<Tmp>, IsTransExpr<Tmp> >
-                       , If_< Or< IsConst<Tmp>, IsVolatile<Tmp> >
-                            , SubvectorExprTrait< RemoveCV_<Tmp>, AF >
-                            , Failure >
-                       , If_< IsDenseVector<Tmp>
-                            , DenseResult<Tmp>
-                            , If_< IsSparseVector<Tmp>
-                                 , SparseResult<Tmp>
-                                 , Failure > >
-                       >::Type  Type;
+   using Type = typename If_< Or< IsComputation<Tmp>, IsTransExpr<Tmp> >
+                            , If_< Or< IsConst<Tmp>, IsVolatile<Tmp> >
+                                 , SubvectorExprTrait< RemoveCV_<Tmp>, AF >
+                                 , Failure >
+                            , If_< IsDenseVector<Tmp>
+                                 , DenseResult<Tmp>
+                                 , If_< IsSparseVector<Tmp>
+                                      , SparseResult<Tmp>
+                                      , Failure > >
+                            >::Type;
    /*! \endcond */
    //**********************************************************************************************
 };

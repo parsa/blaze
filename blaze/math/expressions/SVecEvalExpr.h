@@ -705,9 +705,9 @@ struct SVecEvalExprTrait< SVecEvalExpr<VT,false> >
 {
  public:
    //**********************************************************************************************
-   typedef If_< And< IsSparseVector<VT>, IsColumnVector<VT> >
-              , SVecEvalExpr<VT,false>
-              , INVALID_TYPE >  Type;
+   using Type = If_< And< IsSparseVector<VT>, IsColumnVector<VT> >
+                   , SVecEvalExpr<VT,false>
+                   , INVALID_TYPE >;
    //**********************************************************************************************
 };
 /*! \endcond */
@@ -721,9 +721,9 @@ struct TSVecEvalExprTrait< SVecEvalExpr<VT,true> >
 {
  public:
    //**********************************************************************************************
-   typedef If_< And< IsSparseVector<VT>, IsRowVector<VT> >
-              , SVecEvalExpr<VT,true>
-              , INVALID_TYPE >  Type;
+   using Type = If_< And< IsSparseVector<VT>, IsRowVector<VT> >
+                   , SVecEvalExpr<VT,true>
+                   , INVALID_TYPE >;
    //**********************************************************************************************
 };
 /*! \endcond */
@@ -737,7 +737,7 @@ struct SubvectorExprTrait< SVecEvalExpr<VT,TF>, AF >
 {
  public:
    //**********************************************************************************************
-   typedef typename EvalExprTrait< typename SubvectorExprTrait<const VT,AF>::Type >::Type  Type;
+   using Type = typename EvalExprTrait< typename SubvectorExprTrait<const VT,AF>::Type >::Type;
    //**********************************************************************************************
 };
 /*! \endcond */

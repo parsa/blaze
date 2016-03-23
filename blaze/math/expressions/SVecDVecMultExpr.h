@@ -173,7 +173,7 @@ class SVecDVecMultExpr : public SparseVector< SVecDVecMultExpr<VT1,VT2,TF>, TF >
       typedef ValueIndexPair<ElementType>  Element;
 
       //! Iterator type of the sparse vector expression.
-      typedef typename RemoveReference<LeftOperand>::Type::ConstIterator  IteratorType;
+      typedef typename RemoveReference_<LeftOperand>::ConstIterator  IteratorType;
 
       typedef std::forward_iterator_tag  IteratorCategory;  //!< The iterator category.
       typedef ElementType                ValueType;         //!< Type of the underlying pointers.
@@ -479,7 +479,7 @@ class SVecDVecMultExpr : public SparseVector< SVecDVecMultExpr<VT1,VT2,TF>, TF >
 
       BLAZE_INTERNAL_ASSERT( (~lhs).size() == rhs.size(), "Invalid vector sizes" );
 
-      typedef typename RemoveReference<CT1>::Type::ConstIterator  ConstIterator;
+      typedef typename RemoveReference_<CT1>::ConstIterator  ConstIterator;
 
       CT1 x( serial( rhs.lhs_ ) );  // Evaluation of the left-hand side sparse vector operand
       CT2 y( serial( rhs.rhs_ ) );  // Evaluation of the right-hand side dense vector operand
@@ -516,7 +516,7 @@ class SVecDVecMultExpr : public SparseVector< SVecDVecMultExpr<VT1,VT2,TF>, TF >
 
       BLAZE_INTERNAL_ASSERT( (~lhs).size() == rhs.size(), "Invalid vector sizes" );
 
-      typedef typename RemoveReference<CT1>::Type::ConstIterator  ConstIterator;
+      typedef typename RemoveReference_<CT1>::ConstIterator  ConstIterator;
 
       CT1 x( serial( rhs.lhs_ ) );  // Evaluation of the left-hand side sparse vector operand
       CT2 y( serial( rhs.rhs_ ) );  // Evaluation of the right-hand side dense vector operand
@@ -553,7 +553,7 @@ class SVecDVecMultExpr : public SparseVector< SVecDVecMultExpr<VT1,VT2,TF>, TF >
 
       BLAZE_INTERNAL_ASSERT( (~lhs).size() == rhs.size(), "Invalid vector sizes" );
 
-      typedef typename RemoveReference<CT1>::Type::ConstIterator  ConstIterator;
+      typedef typename RemoveReference_<CT1>::ConstIterator  ConstIterator;
 
       CT1 x( serial( rhs.lhs_ ) );  // Evaluation of the left-hand side sparse vector operand
       CT2 y( serial( rhs.rhs_ ) );  // Evaluation of the right-hand side dense vector operand
@@ -594,7 +594,7 @@ class SVecDVecMultExpr : public SparseVector< SVecDVecMultExpr<VT1,VT2,TF>, TF >
 
       BLAZE_INTERNAL_ASSERT( (~lhs).size() == rhs.size(), "Invalid vector sizes" );
 
-      typedef typename RemoveReference<CT1>::Type::ConstIterator  ConstIterator;
+      typedef typename RemoveReference_<CT1>::ConstIterator  ConstIterator;
 
       CT1 x( serial( rhs.lhs_ ) );  // Evaluation of the left-hand side sparse vector operand
       CT2 y( serial( rhs.rhs_ ) );  // Evaluation of the right-hand side dense vector operand
@@ -635,7 +635,7 @@ class SVecDVecMultExpr : public SparseVector< SVecDVecMultExpr<VT1,VT2,TF>, TF >
 
       BLAZE_INTERNAL_ASSERT( (~lhs).size() == rhs.size(), "Invalid vector sizes" );
 
-      typedef typename RemoveReference<CT1>::Type::ConstIterator  ConstIterator;
+      typedef typename RemoveReference_<CT1>::ConstIterator  ConstIterator;
 
       CT1 x( serial( rhs.lhs_ ) );  // Evaluation of the left-hand side sparse vector operand
       CT2 y( serial( rhs.rhs_ ) );  // Evaluation of the right-hand side dense vector operand
@@ -764,8 +764,8 @@ struct SubvectorExprTrait< SVecDVecMultExpr<VT1,VT2,TF>, AF >
 {
  public:
    //**********************************************************************************************
-   typedef typename MultExprTrait< typename SubvectorExprTrait<const VT1,AF>::Type
-                                 , typename SubvectorExprTrait<const VT2,AF>::Type >::Type  Type;
+   using Type = typename MultExprTrait< typename SubvectorExprTrait<const VT1,AF>::Type
+                                      , typename SubvectorExprTrait<const VT2,AF>::Type >::Type;
    //**********************************************************************************************
 };
 /*! \endcond */

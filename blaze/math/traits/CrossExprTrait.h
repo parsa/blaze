@@ -49,12 +49,11 @@
 #include <blaze/util/InvalidType.h>
 #include <blaze/util/mpl/If.h>
 #include <blaze/util/mpl/Or.h>
+#include <blaze/util/typetraits/Decay.h>
 #include <blaze/util/typetraits/IsConst.h>
 #include <blaze/util/typetraits/IsNumeric.h>
 #include <blaze/util/typetraits/IsReference.h>
 #include <blaze/util/typetraits/IsVolatile.h>
-#include <blaze/util/typetraits/RemoveCV.h>
-#include <blaze/util/typetraits/RemoveReference.h>
 
 
 namespace blaze {
@@ -82,39 +81,37 @@ struct CrossExprTrait
  private:
    //**struct Failure******************************************************************************
    /*! \cond BLAZE_INTERNAL */
-   struct Failure { typedef INVALID_TYPE  Type; };
+   struct Failure { using Type = INVALID_TYPE; };
    /*! \endcond */
    //**********************************************************************************************
 
    //**********************************************************************************************
    /*! \cond BLAZE_INTERNAL */
-   typedef If_< IsVector<T1>
-              , If_< IsVector<T2>
-                   , If_< IsColumnVector<T1>
-                        , If_< IsColumnVector<T2>
-                             , If_< IsDenseVector<T1>
-                                  , If_< IsDenseVector<T2>
-                                       , DVecDVecCrossExprTrait<T1,T2>
-                                       , DVecSVecCrossExprTrait<T1,T2> >
-                                  , If_< IsDenseVector<T2>
-                                       , SVecDVecCrossExprTrait<T1,T2>
-                                       , SVecSVecCrossExprTrait<T1,T2> > >
-                             , Failure >
-                        , Failure >
-                   , Failure >
-              , Failure >  Tmp;
-
-   typedef typename RemoveReference< RemoveCV_<T1> >::Type  Type1;
-   typedef typename RemoveReference< RemoveCV_<T2> >::Type  Type2;
+   using Tmp = If_< IsVector<T1>
+                  , If_< IsVector<T2>
+                       , If_< IsColumnVector<T1>
+                            , If_< IsColumnVector<T2>
+                                 , If_< IsDenseVector<T1>
+                                      , If_< IsDenseVector<T2>
+                                           , DVecDVecCrossExprTrait<T1,T2>
+                                           , DVecSVecCrossExprTrait<T1,T2> >
+                                      , If_< IsDenseVector<T2>
+                                           , SVecDVecCrossExprTrait<T1,T2>
+                                           , SVecSVecCrossExprTrait<T1,T2> > >
+                                 , Failure >
+                            , Failure >
+                       , Failure >
+                  , Failure >;
    /*! \endcond */
    //**********************************************************************************************
 
  public:
    //**********************************************************************************************
    /*! \cond BLAZE_INTERNAL */
-   typedef typename If_< Or< IsConst<T1>, IsVolatile<T1>, IsReference<T1>
-                           , IsConst<T2>, IsVolatile<T2>, IsReference<T2> >
-                       , CrossExprTrait<Type1,Type2>, Tmp >::Type  Type;
+   using Type = typename If_< Or< IsConst<T1>, IsVolatile<T1>, IsReference<T1>
+                                , IsConst<T2>, IsVolatile<T2>, IsReference<T2> >
+                            , CrossExprTrait< Decay_<T1>, Decay_<T2> >
+                            , Tmp >::Type;
    /*! \endcond */
    //**********************************************************************************************
 };

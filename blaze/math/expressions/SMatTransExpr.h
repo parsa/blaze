@@ -169,7 +169,7 @@ class SMatTransExpr : public SparseMatrix< SMatTransExpr<MT,SO>, SO >
     public:
       //**Type definitions*************************************************************************
       //! Iterator type of the sparse matrix expression.
-      typedef typename RemoveReference<Operand>::Type::ConstIterator  IteratorType;
+      typedef typename RemoveReference_<Operand>::ConstIterator  IteratorType;
 
       typedef std::forward_iterator_tag                                     IteratorCategory;  //!< The iterator category.
       typedef typename std::iterator_traits<IteratorType>::value_type       ValueType;         //!< Type of the underlying pointers.
@@ -1037,9 +1037,9 @@ struct SMatTransExprTrait< SMatTransExpr<MT,false> >
 {
  public:
    //**********************************************************************************************
-   typedef If_< And< IsSparseMatrix<MT>, IsColumnMajorMatrix<MT> >
-              , typename SMatTransExpr<MT,false>::Operand
-              , INVALID_TYPE >  Type;
+   using Type = If_< And< IsSparseMatrix<MT>, IsColumnMajorMatrix<MT> >
+                   , typename SMatTransExpr<MT,false>::Operand
+                   , INVALID_TYPE >;
    //**********************************************************************************************
 };
 /*! \endcond */
@@ -1053,9 +1053,9 @@ struct TSMatTransExprTrait< SMatTransExpr<MT,true> >
 {
  public:
    //**********************************************************************************************
-   typedef If_< And< IsSparseMatrix<MT>, IsRowMajorMatrix<MT> >
-              , typename SMatTransExpr<MT,true>::Operand
-              , INVALID_TYPE >  Type;
+   using Type = If_< And< IsSparseMatrix<MT>, IsRowMajorMatrix<MT> >
+                   , typename SMatTransExpr<MT,true>::Operand
+                   , INVALID_TYPE >;
    //**********************************************************************************************
 };
 /*! \endcond */
@@ -1069,7 +1069,7 @@ struct SubmatrixExprTrait< SMatTransExpr<MT,SO>, AF >
 {
  public:
    //**********************************************************************************************
-   typedef typename TransExprTrait< typename SubmatrixExprTrait<const MT,AF>::Type >::Type  Type;
+   using Type = typename TransExprTrait< typename SubmatrixExprTrait<const MT,AF>::Type >::Type;
    //**********************************************************************************************
 };
 /*! \endcond */
@@ -1083,7 +1083,7 @@ struct RowExprTrait< SMatTransExpr<MT,SO> >
 {
  public:
    //**********************************************************************************************
-   typedef typename TransExprTrait< typename ColumnExprTrait<const MT>::Type >::Type  Type;
+   using Type = typename TransExprTrait< typename ColumnExprTrait<const MT>::Type >::Type;
    //**********************************************************************************************
 };
 /*! \endcond */
@@ -1097,7 +1097,7 @@ struct ColumnExprTrait< SMatTransExpr<MT,SO> >
 {
  public:
    //**********************************************************************************************
-   typedef typename TransExprTrait< typename RowExprTrait<const MT>::Type >::Type  Type;
+   using Type = typename TransExprTrait< typename RowExprTrait<const MT>::Type >::Type;
    //**********************************************************************************************
 };
 /*! \endcond */

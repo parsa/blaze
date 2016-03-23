@@ -1166,17 +1166,14 @@ struct DVecScalarMultExprTrait< DVecScalarDivExpr<VT,ST1,false>, ST2 >
    typedef typename DivTrait<ST2,ST1>::Type  ScalarType;
    //**********************************************************************************************
 
-   //**********************************************************************************************
-   typedef typename DVecScalarMultExprTrait<VT,ScalarType>::Type              T1;
-   typedef DVecScalarMultExpr< DVecScalarDivExpr<VT,ST1,false>, ST2, false >  T2;
-   //**********************************************************************************************
-
  public:
    //**********************************************************************************************
-   typedef If_< And< IsDenseVector<VT>, IsColumnVector<VT>
-                   , IsNumeric<ST1>, IsNumeric<ST2> >
-              , If_< IsInvertible<ScalarType>, T1, T2 >
-              , INVALID_TYPE >  Type;
+   using Type = If_< And< IsDenseVector<VT>, IsColumnVector<VT>
+                        , IsNumeric<ST1>, IsNumeric<ST2> >
+                   , If_< IsInvertible<ScalarType>
+                        , typename DVecScalarMultExprTrait<VT,ScalarType>::Type
+                        , DVecScalarMultExpr< DVecScalarDivExpr<VT,ST1,false>, ST2, false > >
+                   , INVALID_TYPE >;
    //**********************************************************************************************
 };
 /*! \endcond */
@@ -1201,17 +1198,14 @@ struct TDVecScalarMultExprTrait< DVecScalarDivExpr<VT,ST1,true>, ST2 >
    typedef typename DivTrait<ST2,ST1>::Type  ScalarType;
    //**********************************************************************************************
 
-   //**********************************************************************************************
-   typedef typename DVecScalarMultExprTrait<VT,ScalarType>::Type            T1;
-   typedef DVecScalarMultExpr< DVecScalarDivExpr<VT,ST1,true>, ST2, true >  T2;
-   //**********************************************************************************************
-
  public:
    //**********************************************************************************************
-   typedef If_< And< IsDenseVector<VT>, IsRowVector<VT>
-                   , IsNumeric<ST1>, IsNumeric<ST2> >
-              , If_< IsInvertible<ScalarType>, T1, T2 >
-              , INVALID_TYPE >  Type;
+   using Type = If_< And< IsDenseVector<VT>, IsRowVector<VT>
+                        , IsNumeric<ST1>, IsNumeric<ST2> >
+                   , If_< IsInvertible<ScalarType>
+                        , typename DVecScalarMultExprTrait<VT,ScalarType>::Type
+                        , DVecScalarMultExpr< DVecScalarDivExpr<VT,ST1,true>, ST2, true > >
+                   , INVALID_TYPE >;
    //**********************************************************************************************
 };
 /*! \endcond */
@@ -1233,7 +1227,7 @@ struct SubvectorExprTrait< DVecScalarDivExpr<VT,ST,TF>, AF >
 {
  public:
    //**********************************************************************************************
-   typedef typename DivExprTrait< typename SubvectorExprTrait<const VT,AF>::Type, ST >::Type  Type;
+   using Type = typename DivExprTrait< typename SubvectorExprTrait<const VT,AF>::Type, ST >::Type;
    //**********************************************************************************************
 };
 /*! \endcond */

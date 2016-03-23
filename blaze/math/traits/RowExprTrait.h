@@ -50,11 +50,10 @@
 #include <blaze/util/InvalidType.h>
 #include <blaze/util/mpl/If.h>
 #include <blaze/util/mpl/Or.h>
+#include <blaze/util/typetraits/Decay.h>
 #include <blaze/util/typetraits/IsConst.h>
 #include <blaze/util/typetraits/IsReference.h>
 #include <blaze/util/typetraits/IsVolatile.h>
-#include <blaze/util/typetraits/RemoveCV.h>
-#include <blaze/util/typetraits/RemoveReference.h>
 
 
 namespace blaze {
@@ -80,7 +79,7 @@ struct RowExprTrait
  private:
    //**struct Failure******************************************************************************
    /*! \cond BLAZE_INTERNAL */
-   struct Failure { typedef INVALID_TYPE  Type; };
+   struct Failure { using Type = INVALID_TYPE; };
    /*! \endcond */
    //**********************************************************************************************
 
@@ -88,7 +87,7 @@ struct RowExprTrait
    /*! \cond BLAZE_INTERNAL */
    template< typename T >
    struct DenseResult {
-      typedef DenseRow<T,IsRowMajorMatrix<T>::value,IsSymmetric<T>::value>  Type;
+      using Type = DenseRow<T,IsRowMajorMatrix<T>::value,IsSymmetric<T>::value>;
    };
    /*! \endcond */
    //**********************************************************************************************
@@ -97,30 +96,30 @@ struct RowExprTrait
    /*! \cond BLAZE_INTERNAL */
    template< typename T >
    struct SparseResult {
-      typedef SparseRow<T,IsRowMajorMatrix<T>::value,IsSymmetric<T>::value>  Type;
+      using Type = SparseRow<T,IsRowMajorMatrix<T>::value,IsSymmetric<T>::value>;
    };
    /*! \endcond */
    //**********************************************************************************************
 
    //**********************************************************************************************
    /*! \cond BLAZE_INTERNAL */
-   typedef typename RemoveReference<MT>::Type  Tmp;
+   using Tmp = RemoveReference_<MT>;
    /*! \endcond */
    //**********************************************************************************************
 
  public:
    //**********************************************************************************************
    /*! \cond BLAZE_INTERNAL */
-   typedef typename If_< Or< IsComputation<Tmp>, IsTransExpr<Tmp> >
-                       , If_< Or< IsConst<Tmp>, IsVolatile<Tmp> >
-                            , RowExprTrait< RemoveCV_<Tmp> >
-                            , Failure >
-                       , If_< IsDenseMatrix<Tmp>
-                            , DenseResult<Tmp>
-                            , If_< IsSparseMatrix<Tmp>
-                                 , SparseResult<Tmp>
-                                 , Failure > >
-                       >::Type  Type;
+   using Type = typename If_< Or< IsComputation<Tmp>, IsTransExpr<Tmp> >
+                            , If_< Or< IsConst<Tmp>, IsVolatile<Tmp> >
+                                 , RowExprTrait< RemoveCV_<Tmp> >
+                                 , Failure >
+                            , If_< IsDenseMatrix<Tmp>
+                                 , DenseResult<Tmp>
+                                 , If_< IsSparseMatrix<Tmp>
+                                      , SparseResult<Tmp>
+                                      , Failure > >
+                            >::Type;
    /*! \endcond */
    //**********************************************************************************************
 };

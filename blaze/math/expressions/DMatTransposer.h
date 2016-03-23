@@ -1967,7 +1967,7 @@ struct IsPadded< DMatTransposer<MT,SO> >
 template< typename MT, bool SO >
 struct SubmatrixTrait< DMatTransposer<MT,SO> >
 {
-   typedef typename SubmatrixTrait< typename DMatTransposer<MT,SO>::ResultType >::Type  Type;
+   using Type = typename SubmatrixTrait< typename DMatTransposer<MT,SO>::ResultType >::Type;
 };
 /*! \endcond */
 //*************************************************************************************************

@@ -158,7 +158,7 @@ class SVecTransExpr : public SparseVector< SVecTransExpr<VT,TF>, TF >
     public:
       //**Type definitions*************************************************************************
       //! Iterator type of the sparse vector expression.
-      typedef typename RemoveReference<Operand>::Type::ConstIterator  IteratorType;
+      typedef typename RemoveReference_<Operand>::ConstIterator  IteratorType;
 
       typedef std::forward_iterator_tag                                     IteratorCategory;  //!< The iterator category.
       typedef typename std::iterator_traits<IteratorType>::value_type       ValueType;         //!< Type of the underlying pointers.
@@ -859,9 +859,9 @@ struct SVecTransExprTrait< SVecTransExpr<VT,false> >
 {
  public:
    //**********************************************************************************************
-   typedef If_< And< IsSparseVector<VT>, IsRowVector<VT> >
-              , typename SVecTransExpr<VT,false>::Operand
-              , INVALID_TYPE >  Type;
+   using Type = If_< And< IsSparseVector<VT>, IsRowVector<VT> >
+                   , typename SVecTransExpr<VT,false>::Operand
+                   , INVALID_TYPE >;
    //**********************************************************************************************
 };
 /*! \endcond */
@@ -875,9 +875,9 @@ struct TSVecTransExprTrait< SVecTransExpr<VT,true> >
 {
  public:
    //**********************************************************************************************
-   typedef If_< And< IsSparseVector<VT>, IsColumnVector<VT> >
-              , typename SVecTransExpr<VT,true>::Operand
-              , INVALID_TYPE >  Type;
+   using Type = If_< And< IsSparseVector<VT>, IsColumnVector<VT> >
+                   , typename SVecTransExpr<VT,true>::Operand
+                   , INVALID_TYPE >;
    //**********************************************************************************************
 };
 /*! \endcond */
@@ -891,7 +891,7 @@ struct SubvectorExprTrait< SVecTransExpr<VT,TF>, AF >
 {
  public:
    //**********************************************************************************************
-   typedef typename TransExprTrait< typename SubvectorExprTrait<const VT,AF>::Type >::Type  Type;
+   using Type = typename TransExprTrait< typename SubvectorExprTrait<const VT,AF>::Type >::Type;
    //**********************************************************************************************
 };
 /*! \endcond */

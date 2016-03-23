@@ -139,30 +139,30 @@ struct MathTrait
    //**********************************************************************************************
    /*! \cond BLAZE_INTERNAL */
    struct Failure {
-      typedef INVALID_TYPE  HighType;
-      typedef INVALID_TYPE  LowType;
+      using HighType = INVALID_TYPE;
+      using LowType  = INVALID_TYPE;
    };
    /*! \endcond */
    //**********************************************************************************************
 
    //**********************************************************************************************
    /*! \cond BLAZE_INTERNAL */
-   typedef typename RemoveReference< RemoveCV_<T1> >::Type  Type1;
-   typedef typename RemoveReference< RemoveCV_<T2> >::Type  Type2;
-   typedef MathTrait<Type1,Type2>  Helper;
+   using Helper = MathTrait< Decay_<T1>, Decay_<T2> >;
    /*! \endcond */
    //**********************************************************************************************
 
  public:
    //**********************************************************************************************
    /*! \cond BLAZE_INTERNAL */
-   typedef typename If_< Or< IsConst<T1>, IsVolatile<T1>, IsReference<T1>
-                           , IsConst<T2>, IsVolatile<T2>, IsReference<T2> >
-                       , Helper, Failure >::HighType  HighType;
+   using HighType = typename If_< Or< IsConst<T1>, IsVolatile<T1>, IsReference<T1>
+                                    , IsConst<T2>, IsVolatile<T2>, IsReference<T2> >
+                                , Helper
+                                , Failure >::HighType;
 
-   typedef typename If_< Or< IsConst<T1>, IsVolatile<T1>, IsReference<T1>
-                           , IsConst<T2>, IsVolatile<T2>, IsReference<T2> >
-                       , Helper, Failure >::LowType  LowType;
+   using LowType = typename If_< Or< IsConst<T1>, IsVolatile<T1>, IsReference<T1>
+                                   , IsConst<T2>, IsVolatile<T2>, IsReference<T2> >
+                               , Helper
+                               , Failure >::LowType;
    /*! \endcond */
    //**********************************************************************************************
 };
@@ -191,8 +191,8 @@ template< typename T >
 struct MathTrait<T,T>
 {
    //**********************************************************************************************
-   typedef typename RemoveReference< RemoveCV_<T>::Type >::Type  HighType;
-   typedef HighType                                              LowType;
+   using HighType = Decay_<T>;
+   using LowType  = HighType;
    //**********************************************************************************************
 };
 /*! \endcond */
@@ -218,8 +218,8 @@ struct MathTrait<T,T>
    template<> \
    struct MathTrait< T1, T2 > \
    { \
-      typedef HIGH  HighType; \
-      typedef LOW   LowType;  \
+      using HighType = HIGH; \
+      using LowType  = LOW;  \
    }
 /*! \endcond */
 //*************************************************************************************************
@@ -236,14 +236,14 @@ struct MathTrait<T,T>
    template< typename T2 > \
    struct MathTrait< T1, complex<T2> > \
    { \
-      typedef complex<T2>  HighType; \
-      typedef T1           LowType;  \
+      using HighType = complex<T2>; \
+      using LowType  = T1;  \
    }; \
    template< typename T2 > \
    struct MathTrait< complex<T2>, T1 > \
    { \
-      typedef complex<T2>  HighType; \
-      typedef T1           LowType;  \
+      using HighType = complex<T2>; \
+      using LowType  = T1;  \
    }
 /*! \endcond */
 //*************************************************************************************************
@@ -765,8 +765,8 @@ BLAZE_CREATE_COMPLEX_MATHTRAIT_SPECIALIZATION( long double    );
 template< typename T1, typename T2 >
 struct MathTrait< complex<T1>, complex<T2> >
 {
-   typedef complex<typename MathTrait<T1,T2>::HighType>  HighType;
-   typedef complex<typename MathTrait<T1,T2>::LowType>   LowType;
+   using HighType = complex<typename MathTrait<T1,T2>::HighType>;
+   using LowType  = complex<typename MathTrait<T1,T2>::LowType>;
 };
 /*! \endcond */
 //*************************************************************************************************

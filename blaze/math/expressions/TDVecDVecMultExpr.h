@@ -73,10 +73,10 @@ struct TDVecDVecMultExprHelper
 {
    //**Type definitions****************************************************************************
    //! Composite type of the left-hand side dense vector expression.
-   typedef typename RemoveReference< typename T1::CompositeType >::Type  CT1;
+   typedef RemoveReference_< typename T1::CompositeType >  CT1;
 
    //! Composite type of the right-hand side dense vector expression.
-   typedef typename RemoveReference< typename T2::CompositeType >::Type  CT2;
+   typedef RemoveReference_< typename T2::CompositeType >  CT2;
    //**********************************************************************************************
 
    //**********************************************************************************************

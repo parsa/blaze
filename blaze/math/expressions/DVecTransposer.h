@@ -795,7 +795,7 @@ struct IsPadded< DVecTransposer<VT,TF> >
 template< typename VT, bool TF >
 struct SubvectorTrait< DVecTransposer<VT,TF> >
 {
-   typedef typename SubvectorTrait< typename DVecTransposer<VT,TF>::ResultType >::Type  Type;
+   using Type = typename SubvectorTrait< typename DVecTransposer<VT,TF>::ResultType >::Type;
 };
 /*! \endcond */
 //*************************************************************************************************
