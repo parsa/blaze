@@ -79,7 +79,7 @@ struct DVecRealExprTrait
    //**********************************************************************************************
    /*! \cond BLAZE_INTERNAL */
    using Tmp = If< And< IsDenseVector<VT>, IsColumnVector<VT> >
-                 , If_< IsBuiltin< typename UnderlyingNumeric<VT>::Type >
+                 , If_< IsBuiltin< UnderlyingNumeric_<VT> >
                       , const VT&
                       , DVecRealExpr<VT,false> >
                  , INVALID_TYPE >;

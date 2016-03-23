@@ -79,7 +79,7 @@ struct TDVecImagExprTrait
    //**********************************************************************************************
    /*! \cond BLAZE_INTERNAL */
    using Tmp = If< And< IsDenseVector<VT>, IsRowVector<VT> >
-                 , If_< IsBuiltin< typename UnderlyingNumeric<VT>::Type >
+                 , If_< IsBuiltin< UnderlyingNumeric_<VT> >
                       , const VT&
                       , DVecImagExpr<VT,true> >
                  , INVALID_TYPE >;

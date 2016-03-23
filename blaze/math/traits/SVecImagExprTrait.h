@@ -79,7 +79,7 @@ struct SVecImagExprTrait
    //**********************************************************************************************
    /*! \cond BLAZE_INTERNAL */
    using Tmp = If< And< IsSparseVector<VT>, IsColumnVector<VT> >
-                 , If_< IsBuiltin< typename UnderlyingNumeric<VT>::Type >
+                 , If_< IsBuiltin< UnderlyingNumeric_<VT> >
                       , const VT&
                       , SVecImagExpr<VT,false> >
                  , INVALID_TYPE >;

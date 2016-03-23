@@ -79,11 +79,9 @@ struct TDVecScalarMultExprTraitHelper
 {
  private:
    //**********************************************************************************************
-   using NET = typename UnderlyingNumeric<VT>::Type;
-
-   using ScalarType = If_< And< IsComplex<NET>, IsBuiltin<ST> >
-                         , typename MultTrait<UnderlyingBuiltin_<VT>,ST>::Type
-                         , typename MultTrait<NET,ST>::Type >;
+   using ScalarType = If_< And< IsComplex< UnderlyingNumeric_<VT> >, IsBuiltin<ST> >
+                         , typename MultTrait< UnderlyingBuiltin_<VT> ,ST >::Type
+                         , typename MultTrait< UnderlyingNumeric_<VT>, ST >::Type >;
    //**********************************************************************************************
 
  public:

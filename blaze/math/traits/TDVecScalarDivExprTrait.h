@@ -80,11 +80,9 @@ struct TDVecScalarDivExprTraitHelper
 {
  private:
    //**********************************************************************************************
-   using NET = typename UnderlyingNumeric<VT>::Type;
-
-   using ScalarType = If_< And< IsComplex<NET>, IsBuiltin<ST> >
-                         , typename DivTrait<UnderlyingBuiltin_<VT>,ST>::Type
-                         , typename DivTrait<NET,ST>::Type >;
+   using ScalarType = If_< And< IsComplex< UnderlyingNumeric_<VT> >, IsBuiltin<ST> >
+                         , typename DivTrait< UnderlyingBuiltin_<VT>, ST >::Type
+                         , typename DivTrait< UnderlyingNumeric_<VT>, ST >::Type >;
    //**********************************************************************************************
 
  public:

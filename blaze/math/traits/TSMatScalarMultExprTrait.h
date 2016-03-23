@@ -79,11 +79,9 @@ struct TSMatScalarMultExprTraitHelper
 {
  private:
    //**********************************************************************************************
-   using NET = typename UnderlyingNumeric<MT>::Type;
-
-   using ScalarType = If_< And< IsComplex<NET>, IsBuiltin<ST> >
-                         , typename MultTrait<UnderlyingBuiltin_<MT>,ST>::Type
-                         , typename MultTrait<NET,ST>::Type >;
+   using ScalarType = If_< And< IsComplex< UnderlyingNumeric_<MT> >, IsBuiltin<ST> >
+                         , typename MultTrait< UnderlyingBuiltin_<MT>, ST >::Type
+                         , typename MultTrait< UnderlyingNumeric_<MT>, ST >::Type >;
    //**********************************************************************************************
 
  public:

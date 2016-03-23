@@ -79,7 +79,7 @@ struct TSVecRealExprTrait
    //**********************************************************************************************
    /*! \cond BLAZE_INTERNAL */
    using Tmp = If< And< IsSparseVector<VT>, IsRowVector<VT> >
-                 , If_< IsBuiltin< typename UnderlyingNumeric<VT>::Type >
+                 , If_< IsBuiltin< UnderlyingNumeric_<VT> >
                       , const VT&
                       , SVecRealExpr<VT,true> >
                  , INVALID_TYPE >;

@@ -79,7 +79,7 @@ struct SVecRealExprTrait
    //**********************************************************************************************
    /*! \cond BLAZE_INTERNAL */
    using Tmp = If< And< IsSparseVector<VT>, IsColumnVector<VT> >
-                 , If_< IsBuiltin< typename UnderlyingNumeric<VT>::Type >
+                 , If_< IsBuiltin< UnderlyingNumeric_<VT> >
                       , const VT&
                       , SVecRealExpr<VT,false> >
                  , INVALID_TYPE >;

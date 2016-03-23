@@ -790,7 +790,7 @@ class SMatRealExpr : public SparseMatrix< SMatRealExpr<MT,SO>, SO >
    /*! \cond BLAZE_INTERNAL */
    BLAZE_CONSTRAINT_MUST_BE_SPARSE_MATRIX_TYPE( MT );
    BLAZE_CONSTRAINT_MUST_BE_MATRIX_WITH_STORAGE_ORDER( MT, SO );
-   BLAZE_CONSTRAINT_MUST_NOT_BE_BUILTIN_TYPE( typename UnderlyingNumeric<MT>::Type );
+   BLAZE_CONSTRAINT_MUST_NOT_BE_BUILTIN_TYPE( UnderlyingNumeric_<MT> );
    /*! \endcond */
    //**********************************************************************************************
 };

@@ -80,11 +80,9 @@ struct SMatScalarDivExprTraitHelper
 {
  private:
    //**********************************************************************************************
-   using NET = typename UnderlyingNumeric<MT>::Type;
-
-   using ScalarType = If_< And< IsComplex<NET>, IsBuiltin<ST> >
-                         , typename DivTrait<UnderlyingBuiltin_<MT>,ST>::Type
-                         , typename DivTrait<NET,ST>::Type >;
+   using ScalarType = If_< And< IsComplex< UnderlyingNumeric_<MT> >, IsBuiltin<ST> >
+                         , typename DivTrait< UnderlyingBuiltin_<MT>, ST >::Type
+                         , typename DivTrait< UnderlyingNumeric_<MT>, ST >::Type >;
    //**********************************************************************************************
 
  public:

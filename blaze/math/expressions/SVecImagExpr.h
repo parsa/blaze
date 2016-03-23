@@ -788,7 +788,7 @@ class SVecImagExpr : public SparseVector< SVecImagExpr<VT,TF>, TF >
    /*! \cond BLAZE_INTERNAL */
    BLAZE_CONSTRAINT_MUST_BE_SPARSE_VECTOR_TYPE( VT );
    BLAZE_CONSTRAINT_MUST_BE_VECTOR_WITH_TRANSPOSE_FLAG( VT, TF );
-   BLAZE_CONSTRAINT_MUST_NOT_BE_BUILTIN_TYPE( typename UnderlyingNumeric<VT>::Type );
+   BLAZE_CONSTRAINT_MUST_NOT_BE_BUILTIN_TYPE( UnderlyingNumeric_<VT> );
    /*! \endcond */
    //**********************************************************************************************
 };

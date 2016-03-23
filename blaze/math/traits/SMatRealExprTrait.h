@@ -79,7 +79,7 @@ struct SMatRealExprTrait
    //**********************************************************************************************
    /*! \cond BLAZE_INTERNAL */
    using Tmp = If< And< IsSparseMatrix<MT>, IsRowMajorMatrix<MT> >
-                 , If_< IsBuiltin< typename UnderlyingNumeric<MT>::Type >
+                 , If_< IsBuiltin< UnderlyingNumeric_<MT> >
                       , const MT&
                       , SMatRealExpr<MT,false> >
                  , INVALID_TYPE >;

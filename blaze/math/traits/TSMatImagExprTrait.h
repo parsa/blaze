@@ -79,7 +79,7 @@ struct TSMatImagExprTrait
    //**********************************************************************************************
    /*! \cond BLAZE_INTERNAL */
    using Tmp = If< And< IsSparseMatrix<MT>, IsColumnMajorMatrix<MT> >
-                 , If_< IsBuiltin< typename UnderlyingNumeric<MT>::Type >
+                 , If_< IsBuiltin< UnderlyingNumeric_<MT> >
                       , const MT&
                       , SMatImagExpr<MT,true> >
                  , INVALID_TYPE >;
