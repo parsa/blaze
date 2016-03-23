@@ -783,7 +783,7 @@ inline SymmetricMatrix<MT,SO,false,false>::SymmetricMatrix( const Matrix<MT2,SO>
 {
    using blaze::resize;
 
-   typedef typename RemoveAdaptor<typename MT2::ResultType>::Type  RT;
+   typedef RemoveAdaptor_<typename MT2::ResultType>   RT;
    typedef If_< IsComputation<MT2>, RT, const MT2& >  Tmp;
 
    Tmp tmp( ~m );
@@ -820,7 +820,7 @@ inline SymmetricMatrix<MT,SO,false,false>::SymmetricMatrix( const Matrix<MT2,!SO
 {
    using blaze::resize;
 
-   typedef typename RemoveAdaptor<typename MT2::ResultType>::Type  RT;
+   typedef RemoveAdaptor_<typename MT2::ResultType>   RT;
    typedef If_< IsComputation<MT2>, RT, const MT2& >  Tmp;
 
    Tmp tmp( ~m );
