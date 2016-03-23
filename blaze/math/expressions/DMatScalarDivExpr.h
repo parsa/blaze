@@ -441,7 +441,7 @@ class DMatScalarDivExpr : public DenseMatrix< DMatScalarDivExpr<MT,ST,SO>, SO >
    enum { vectorizable = MT::vectorizable &&
                          IsNumeric<ET>::value &&
                          ( IsSame<ET,RightOperand>::value ||
-                           IsSame<typename UnderlyingElement<ET>::Type,RightOperand>::value ) &&
+                           IsSame<UnderlyingElement_<ET>,RightOperand>::value ) &&
                          IntrinsicTrait<RightOperand>::division };
 
    //! Compilation switch for the expression template assignment strategy.

@@ -432,7 +432,7 @@ class DVecScalarDivExpr : public DenseVector< DVecScalarDivExpr<VT,ST,TF>, TF >
    enum { vectorizable = VT::vectorizable &&
                          IsNumeric<ET>::value &&
                          ( IsSame<ET,RightOperand>::value ||
-                           IsSame<typename UnderlyingElement<ET>::Type,RightOperand>::value ) &&
+                           IsSame<UnderlyingElement_<ET>,RightOperand>::value ) &&
                          IntrinsicTrait<RightOperand>::division };
 
    //! Compilation switch for the expression template assignment strategy.

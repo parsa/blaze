@@ -83,7 +83,7 @@ struct IsInvertible
    : public BoolConstant< Or< IsBlasCompatible<T>
                             , IsLongDouble<T>
                             , And< IsDenseMatrix<T>
-                                 , IsBlasCompatible<typename UnderlyingElement<T>::Type> >
+                                 , IsBlasCompatible< UnderlyingElement_<T> > >
                             >::value >
 {};
 //*************************************************************************************************

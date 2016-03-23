@@ -94,15 +94,12 @@ struct InvExprTrait
 
    //**********************************************************************************************
    /*! \cond BLAZE_INTERNAL */
-   using ElementType = typename UnderlyingElement<T>::Type;
-
-   using Tmp = If_< And< IsDenseMatrix<T>
-                       , IsBlasCompatible<ElementType> >
+   using Tmp = If_< And< IsDenseMatrix<T>, IsBlasCompatible< UnderlyingElement_<T> > >
                   , If_< IsRowMajorMatrix<T>
                        , DMatInvExprTrait<T>
                        , TDMatInvExprTrait<T> >
                   , If_< Or< IsFloatingPoint<T>
-                           , And< IsComplex<T>, IsFloatingPoint<ElementType> > >
+                           , And< IsComplex<T>, IsFloatingPoint< UnderlyingElement_<T> > > >
                        , Scalar
                        , Failure > >;
    /*! \endcond */
