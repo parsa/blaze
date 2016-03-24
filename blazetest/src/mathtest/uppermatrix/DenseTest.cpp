@@ -384,6 +384,70 @@ void DenseTest::testConstructors()
 
 
    //=====================================================================================
+   // Row-major array initialization
+   //=====================================================================================
+
+   // Dynamic array initialization constructor
+   {
+      test_ = "Row-major UpperMatrix dynamic array initialization constructor";
+
+      std::unique_ptr<int[]> array( new int[9] );
+      array[0] = 1;
+      array[1] = 2;
+      array[2] = 3;
+      array[3] = 0;
+      array[4] = 4;
+      array[5] = 5;
+      array[6] = 0;
+      array[7] = 0;
+      array[8] = 6;
+      const UT upper( 3UL, array.get() );
+
+      checkRows    ( upper, 3UL );
+      checkColumns ( upper, 3UL );
+      checkCapacity( upper, 9UL );
+      checkNonZeros( upper, 6UL );
+
+      if( upper(0,0) != 1 || upper(0,1) != 2 || upper(0,2) != 3 ||
+          upper(1,0) != 0 || upper(1,1) != 4 || upper(1,2) != 5 ||
+          upper(2,0) != 0 || upper(2,1) != 0 || upper(2,2) != 6 ) {
+         std::ostringstream oss;
+         oss << " Test: " << test_ << "\n"
+             << " Error: Construction failed\n"
+             << " Details:\n"
+             << "   Result:\n" << upper << "\n"
+             << "   Expected result:\n( 1 2 3 )\n( 0 4 5 )\n( 0 0 6 )\n";
+         throw std::runtime_error( oss.str() );
+      }
+   }
+
+   // Static array initialization constructor
+   {
+      test_ = "Row-major UpperMatrix static array initialization constructor";
+
+      const int array[3][3] = { { 1, 2, 3 }, { 0, 4, 5 }, { 0, 0, 6 } };
+      const UT upper( array );
+
+      checkRows    ( upper, 3UL );
+      checkColumns ( upper, 3UL );
+      checkCapacity( upper, 9UL );
+      checkNonZeros( upper, 6UL );
+
+      if( upper(0,0) != 1 || upper(0,1) != 2 || upper(0,2) != 3 ||
+          upper(1,0) != 0 || upper(1,1) != 4 || upper(1,2) != 5 ||
+          upper(2,0) != 0 || upper(2,1) != 0 || upper(2,2) != 6 ) {
+         std::ostringstream oss;
+         oss << " Test: " << test_ << "\n"
+             << " Error: Construction failed\n"
+             << " Details:\n"
+             << "   Result:\n" << upper << "\n"
+             << "   Expected result:\n( 1 2 3 )\n( 0 4 5 )\n( 0 0 6 )\n";
+         throw std::runtime_error( oss.str() );
+      }
+   }
+
+
+   //=====================================================================================
    // Row-major custom matrix constructors
    //=====================================================================================
 
@@ -891,6 +955,70 @@ void DenseTest::testConstructors()
 
 
    //=====================================================================================
+   // Column-major array initialization
+   //=====================================================================================
+
+   // Dynamic array initialization constructor
+   {
+      test_ = "Column-major UpperMatrix dynamic array initialization constructor";
+
+      std::unique_ptr<int[]> array( new int[9] );
+      array[0] = 1;
+      array[1] = 0;
+      array[2] = 0;
+      array[3] = 2;
+      array[4] = 4;
+      array[5] = 0;
+      array[6] = 3;
+      array[7] = 5;
+      array[8] = 6;
+      const OUT upper( 3UL, array.get() );
+
+      checkRows    ( upper, 3UL );
+      checkColumns ( upper, 3UL );
+      checkCapacity( upper, 9UL );
+      checkNonZeros( upper, 6UL );
+
+      if( upper(0,0) != 1 || upper(0,1) != 2 || upper(0,2) != 3 ||
+          upper(1,0) != 0 || upper(1,1) != 4 || upper(1,2) != 5 ||
+          upper(2,0) != 0 || upper(2,1) != 0 || upper(2,2) != 6 ) {
+         std::ostringstream oss;
+         oss << " Test: " << test_ << "\n"
+             << " Error: Construction failed\n"
+             << " Details:\n"
+             << "   Result:\n" << upper << "\n"
+             << "   Expected result:\n( 1 2 3 )\n( 0 4 5 )\n( 0 0 6 )\n";
+         throw std::runtime_error( oss.str() );
+      }
+   }
+
+   // Static array initialization constructor
+   {
+      test_ = "Column-major UpperMatrix static array initialization constructor";
+
+      const int array[3][3] = { { 1, 2, 3 }, { 0, 4, 5 }, { 0, 0, 6 } };
+      const OUT upper( array );
+
+      checkRows    ( upper, 3UL );
+      checkColumns ( upper, 3UL );
+      checkCapacity( upper, 9UL );
+      checkNonZeros( upper, 6UL );
+
+      if( upper(0,0) != 1 || upper(0,1) != 2 || upper(0,2) != 3 ||
+          upper(1,0) != 0 || upper(1,1) != 4 || upper(1,2) != 5 ||
+          upper(2,0) != 0 || upper(2,1) != 0 || upper(2,2) != 6 ) {
+         std::ostringstream oss;
+         oss << " Test: " << test_ << "\n"
+             << " Error: Construction failed\n"
+             << " Details:\n"
+             << "   Result:\n" << upper << "\n"
+             << "   Expected result:\n( 1 2 3 )\n( 0 4 5 )\n( 0 0 6 )\n";
+         throw std::runtime_error( oss.str() );
+      }
+   }
+
+
+   //=====================================================================================
    // Column-major custom matrix constructors
    //=====================================================================================
 
@@ -1169,6 +1297,40 @@ void DenseTest::testAssignment()
              << " Details:\n"
              << "   Result:\n" << upper << "\n"
              << "   Expected result:\n( 2 2 2 )\n( 0 2 2 )\n( 0 0 2 )\n";
+         throw std::runtime_error( oss.str() );
+      }
+   }
+
+
+   //=====================================================================================
+   // Row-major array assignment
+   //=====================================================================================
+
+   // Array assignment
+   {
+      test_ = "Row-major UpperMatrix array assignment";
+
+      const int array[3][3] = { { 1, 2, 3 }, { 0, 4, 5 }, { 0, 0, 6 } };
+      UT upper;
+      upper = array;
+
+      checkRows    ( upper, 3UL );
+      checkColumns ( upper, 3UL );
+      checkCapacity( upper, 9UL );
+      checkNonZeros( upper, 6UL );
+      checkNonZeros( upper, 0UL, 3UL );
+      checkNonZeros( upper, 1UL, 2UL );
+      checkNonZeros( upper, 2UL, 1UL );
+
+      if( upper(0,0) != 1 || upper(0,1) != 2 || upper(0,2) != 3 ||
+          upper(1,0) != 0 || upper(1,1) != 4 || upper(1,2) != 5 ||
+          upper(2,0) != 0 || upper(2,1) != 0 || upper(2,2) != 6 ) {
+         std::ostringstream oss;
+         oss << " Test: " << test_ << "\n"
+             << " Error: Assignment failed\n"
+             << " Details:\n"
+             << "   Result:\n" << upper << "\n"
+             << "   Expected result:\n( 1 2 3 )\n( 0 4 5 )\n( 0 0 6 )\n";
          throw std::runtime_error( oss.str() );
       }
    }
@@ -1723,6 +1885,40 @@ void DenseTest::testAssignment()
              << " Details:\n"
              << "   Result:\n" << upper << "\n"
              << "   Expected result:\n( 2 2 2 )\n( 0 2 2 )\n( 0 0 2 )\n";
+         throw std::runtime_error( oss.str() );
+      }
+   }
+
+
+   //=====================================================================================
+   // Column-major array assignment
+   //=====================================================================================
+
+   // Array assignment
+   {
+      test_ = "Column-major UpperMatrix array assignment";
+
+      const int array[3][3] = { { 1, 2, 3 }, { 0, 4, 5 }, { 0, 0, 6 } };
+      OUT upper;
+      upper = array;
+
+      checkRows    ( upper, 3UL );
+      checkColumns ( upper, 3UL );
+      checkCapacity( upper, 9UL );
+      checkNonZeros( upper, 6UL );
+      checkNonZeros( upper, 0UL, 1UL );
+      checkNonZeros( upper, 1UL, 2UL );
+      checkNonZeros( upper, 2UL, 3UL );
+
+      if( upper(0,0) != 1 || upper(0,1) != 2 || upper(0,2) != 3 ||
+          upper(1,0) != 0 || upper(1,1) != 4 || upper(1,2) != 5 ||
+          upper(2,0) != 0 || upper(2,1) != 0 || upper(2,2) != 6 ) {
+         std::ostringstream oss;
+         oss << " Test: " << test_ << "\n"
+             << " Error: Assignment failed\n"
+             << " Details:\n"
+             << "   Result:\n" << upper << "\n"
+             << "   Expected result:\n( 1 2 3 )\n( 0 4 5 )\n( 0 0 6 )\n";
          throw std::runtime_error( oss.str() );
       }
    }
