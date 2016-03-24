@@ -583,6 +583,12 @@ class LowerMatrix<MT,SO,true>
    template< typename A1 > explicit inline LowerMatrix( const A1& a1 );
                            explicit inline LowerMatrix( size_t n, const ElementType& init );
 
+   template< typename Other >
+   explicit inline LowerMatrix( size_t n, const Other* array );
+
+   template< typename Other, size_t N >
+   explicit inline LowerMatrix( const Other (&array)[N][N] );
+
    explicit inline LowerMatrix( ElementType* ptr, size_t n );
    explicit inline LowerMatrix( ElementType* ptr, size_t n, size_t nn );
 
@@ -622,6 +628,9 @@ class LowerMatrix<MT,SO,true>
    //**Assignment operators************************************************************************
    /*!\name Assignment operators */
    //@{
+   template< typename Other, size_t N >
+   inline LowerMatrix& operator=( const Other (&array)[N][N] );
+
    inline LowerMatrix& operator=( const ElementType& rhs );
    inline LowerMatrix& operator=( const LowerMatrix& rhs );
    inline LowerMatrix& operator=( LowerMatrix&& rhs ) noexcept;
@@ -829,6 +838,88 @@ inline LowerMatrix<MT,SO,true>::LowerMatrix( size_t n, const ElementType& init )
    }
 
    BLAZE_INTERNAL_ASSERT( isSquare( matrix_ ), "Non-square lower matrix detected" );
+   BLAZE_INTERNAL_ASSERT( isIntact(), "Broken invariant detected" );
+}
+/*! \endcond */
+//*************************************************************************************************
+
+
+//*************************************************************************************************
+/*! \cond BLAZE_INTERNAL */
+/*!\brief Array initialization of all lower matrix elements.
+//
+// \param n The number of rows and columns of the matrix.
+// \param array Dynamic array for the initialization.
+// \exception std::invalid_argument Invalid setup of lower matrix.
+//
+// This constructor offers the option to directly initialize the elements of the lower matrix
+// with a dynamic array:
+
+   \code
+   using blaze::rowMajor;
+
+   int* array = new int[16];
+   // ... Initialization of the dynamic array
+   blaze::LowerMatrix< blaze::DynamicMatrix<int,rowMajor> > v( 4UL, array );
+   delete[] array;
+   \endcode
+
+// The matrix is sized accoring to the given size of the array and initialized with the values
+// from the given array. Note that it is expected that the given \a array has at least \a n by
+// \a n elements. Providing an array with less elements results in undefined behavior! Also, in
+// case the given array does not represent a lower triangular matrix, a \a std::invalid_argument
+// exception is thrown.
+*/
+template< typename MT       // Type of the adapted dense matrix
+        , bool SO >         // Storage order of the adapted dense matrix
+template< typename Other >  // Data type of the initialization array
+inline LowerMatrix<MT,SO,true>::LowerMatrix( size_t n, const Other* array )
+   : matrix_( n, n, array )  // The adapted dense matrix
+{
+   if( !isLower( matrix_ ) ) {
+      BLAZE_THROW_INVALID_ARGUMENT( "Invalid setup of lower matrix" );
+   }
+
+   BLAZE_INTERNAL_ASSERT( isIntact(), "Broken invariant detected" );
+}
+/*! \endcond */
+//*************************************************************************************************
+
+
+//*************************************************************************************************
+/*! \cond BLAZE_INTERNAL */
+/*!\brief Array initialization of all lower matrix elements.
+//
+// \param array \f$ N \times N \f$ dimensional array for the initialization.
+// \exception std::invalid_argument Invalid setup of lower matrix.
+//
+// This constructor offers the option to directly initialize the elements of the lower matrix
+// with a static array:
+
+   \code
+   using blaze::rowMajor;
+
+   const int init[3][3] = { { 1, 0, 0 },
+                            { 2, 3 },
+                            { 4, 5 } };
+   blaze::LowerMatrix< blaze::StaticMatrix<int,3,3,rowMajor> > A( init );
+   \endcode
+
+// The matrix is initialized with the values from the given array. Missing values are initialized
+// with default values. In case the given array does not represent a lower triangular matrix, a
+// \a std::invalid_argument exception is thrown.
+*/
+template< typename MT     // Type of the adapted dense matrix
+        , bool SO >       // Storage order of the adapted dense matrix
+template< typename Other  // Data type of the initialization array
+        , size_t N >      // Number of rows and columns of the initialization array
+inline LowerMatrix<MT,SO,true>::LowerMatrix( const Other (&array)[N][N] )
+   : matrix_( array )  // The adapted dense matrix
+{
+   if( !isLower( matrix_ ) ) {
+      BLAZE_THROW_INVALID_ARGUMENT( "Invalid setup of lower matrix" );
+   }
+
    BLAZE_INTERNAL_ASSERT( isIntact(), "Broken invariant detected" );
 }
 /*! \endcond */
@@ -1351,6 +1442,54 @@ inline typename LowerMatrix<MT,SO,true>::ConstIterator
 //  ASSIGNMENT OPERATORS
 //
 //=================================================================================================
+
+//*************************************************************************************************
+/*! \cond BLAZE_INTERNAL */
+/*!\brief Array assignment to all lower matrix elements.
+//
+// \param array \f$ N \times N \f$ dimensional array for the assignment.
+// \return Reference to the assigned matrix.
+// \exception std::invalid_argument Invalid assignment to lower matrix.
+//
+// This assignment operator offers the option to directly set all elements of the lower matrix:
+
+   \code
+   using blaze::rowMajor;
+
+   const int init[3][3] = { { 1, 0, 0 },
+                            { 2, 3 },
+                            { 4, 5 } };
+   blaze::LowerMatrix< blaze::StaticMatrix<int,3UL,3UL,rowMajor> > A;
+   A = init;
+   \endcode
+
+// The matrix is assigned the values from the given array. Missing values are initialized with
+// default values. In case the given array does not represent a lower triangular matrix, a
+// \a std::invalid_argument exception is thrown.
+*/
+template< typename MT     // Type of the adapted dense matrix
+        , bool SO >       // Storage order of the adapted dense matrix
+template< typename Other  // Data type of the initialization array
+        , size_t N >      // Number of rows and columns of the initialization array
+inline LowerMatrix<MT,SO,true>&
+   LowerMatrix<MT,SO,true>::operator=( const Other (&array)[N][N] )
+{
+   MT tmp( array );
+
+   if( !isLower( tmp ) ) {
+      BLAZE_THROW_INVALID_ARGUMENT( "Invalid assignment to lower matrix" );
+   }
+
+   matrix_ = std::move( tmp );
+
+   BLAZE_INTERNAL_ASSERT( isSquare( matrix_ ), "Non-square lower matrix detected" );
+   BLAZE_INTERNAL_ASSERT( isIntact(), "Broken invariant detected" );
+
+   return *this;
+}
+/*! \endcond */
+//*************************************************************************************************
+
 
 //*************************************************************************************************
 /*! \cond BLAZE_INTERNAL */
