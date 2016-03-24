@@ -183,6 +183,70 @@ void DenseRealTest::testConstructors()
 
 
    //=====================================================================================
+   // Row-major array initialization
+   //=====================================================================================
+
+   // Dynamic array initialization constructor
+   {
+      test_ = "Row-major HermitianMatrix dynamic array initialization constructor";
+
+      std::unique_ptr<int[]> array( new int[9] );
+      array[0] = 1;
+      array[1] = 2;
+      array[2] = 3;
+      array[3] = 2;
+      array[4] = 4;
+      array[5] = 0;
+      array[6] = 3;
+      array[7] = 0;
+      array[8] = 6;
+      const HT herm( 3UL, array.get() );
+
+      checkRows    ( herm, 3UL );
+      checkColumns ( herm, 3UL );
+      checkCapacity( herm, 9UL );
+      checkNonZeros( herm, 7UL );
+
+      if( herm(0,0) != 1 || herm(0,1) != 2 || herm(0,2) != 3 ||
+          herm(1,0) != 2 || herm(1,1) != 4 || herm(1,2) != 0 ||
+          herm(2,0) != 3 || herm(2,1) != 0 || herm(2,2) != 6 ) {
+         std::ostringstream oss;
+         oss << " Test: " << test_ << "\n"
+             << " Error: Construction failed\n"
+             << " Details:\n"
+             << "   Result:\n" << herm << "\n"
+             << "   Expected result:\n( 1 2 3 )\n( 2 4 0 )\n( 3 0 6 )\n";
+         throw std::runtime_error( oss.str() );
+      }
+   }
+
+   // Static array initialization constructor
+   {
+      test_ = "Row-major HermitianMatrix static array initialization constructor";
+
+      const int array[3][3] = { { 1, 2, 3 }, { 2, 4, 0 }, { 3, 0, 6 } };
+      const HT herm( array );
+
+      checkRows    ( herm, 3UL );
+      checkColumns ( herm, 3UL );
+      checkCapacity( herm, 9UL );
+      checkNonZeros( herm, 7UL );
+
+      if( herm(0,0) != 1 || herm(0,1) != 2 || herm(0,2) != 3 ||
+          herm(1,0) != 2 || herm(1,1) != 4 || herm(1,2) != 0 ||
+          herm(2,0) != 3 || herm(2,1) != 0 || herm(2,2) != 6 ) {
+         std::ostringstream oss;
+         oss << " Test: " << test_ << "\n"
+             << " Error: Construction failed\n"
+             << " Details:\n"
+             << "   Result:\n" << herm << "\n"
+             << "   Expected result:\n( 1 2 3 )\n( 2 4 0 )\n( 3 0 6 )\n";
+         throw std::runtime_error( oss.str() );
+      }
+   }
+
+
+   //=====================================================================================
    // Row-major custom matrix constructors
    //=====================================================================================
 
@@ -578,6 +642,70 @@ void DenseRealTest::testConstructors()
 
 
    //=====================================================================================
+   // Column-major array initialization
+   //=====================================================================================
+
+   // Dynamic array initialization constructor
+   {
+      test_ = "Column-major HermitianMatrix dynamic array initialization constructor";
+
+      std::unique_ptr<int[]> array( new int[9] );
+      array[0] = 1;
+      array[1] = 2;
+      array[2] = 3;
+      array[3] = 2;
+      array[4] = 4;
+      array[5] = 0;
+      array[6] = 3;
+      array[7] = 0;
+      array[8] = 6;
+      const OHT herm( 3UL, array.get() );
+
+      checkRows    ( herm, 3UL );
+      checkColumns ( herm, 3UL );
+      checkCapacity( herm, 9UL );
+      checkNonZeros( herm, 7UL );
+
+      if( herm(0,0) != 1 || herm(0,1) != 2 || herm(0,2) != 3 ||
+          herm(1,0) != 2 || herm(1,1) != 4 || herm(1,2) != 0 ||
+          herm(2,0) != 3 || herm(2,1) != 0 || herm(2,2) != 6 ) {
+         std::ostringstream oss;
+         oss << " Test: " << test_ << "\n"
+             << " Error: Construction failed\n"
+             << " Details:\n"
+             << "   Result:\n" << herm << "\n"
+             << "   Expected result:\n( 1 2 3 )\n( 2 4 0 )\n( 3 0 6 )\n";
+         throw std::runtime_error( oss.str() );
+      }
+   }
+
+   // Static array initialization constructor
+   {
+      test_ = "Column-major HermitianMatrix static array initialization constructor";
+
+      const int array[3][3] = { { 1, 2, 3 }, { 2, 4, 0 }, { 3, 0, 6 } };
+      const OHT herm( array );
+
+      checkRows    ( herm, 3UL );
+      checkColumns ( herm, 3UL );
+      checkCapacity( herm, 9UL );
+      checkNonZeros( herm, 7UL );
+
+      if( herm(0,0) != 1 || herm(0,1) != 2 || herm(0,2) != 3 ||
+          herm(1,0) != 2 || herm(1,1) != 4 || herm(1,2) != 0 ||
+          herm(2,0) != 3 || herm(2,1) != 0 || herm(2,2) != 6 ) {
+         std::ostringstream oss;
+         oss << " Test: " << test_ << "\n"
+             << " Error: Construction failed\n"
+             << " Details:\n"
+             << "   Result:\n" << herm << "\n"
+             << "   Expected result:\n( 1 2 3 )\n( 2 4 0 )\n( 3 0 6 )\n";
+         throw std::runtime_error( oss.str() );
+      }
+   }
+
+
+   //=====================================================================================
    // Column-major custom matrix constructors
    //=====================================================================================
 
@@ -920,6 +1048,40 @@ void DenseRealTest::testConstructors()
 */
 void DenseRealTest::testAssignment()
 {
+   //=====================================================================================
+   // Row-major array assignment
+   //=====================================================================================
+
+   // Array assignment
+   {
+      test_ = "Row-major HermitianMatrix array assignment";
+
+      const int array[3][3] = { { 1, 2, 3 }, { 2, 4, 0 }, { 3, 0, 6 } };
+      HT herm;
+      herm = array;
+
+      checkRows    ( herm, 3UL );
+      checkColumns ( herm, 3UL );
+      checkCapacity( herm, 9UL );
+      checkNonZeros( herm, 7UL );
+      checkNonZeros( herm, 0UL, 3UL );
+      checkNonZeros( herm, 1UL, 2UL );
+      checkNonZeros( herm, 2UL, 2UL );
+
+      if( herm(0,0) != 1 || herm(0,1) != 2 || herm(0,2) != 3 ||
+          herm(1,0) != 2 || herm(1,1) != 4 || herm(1,2) != 0 ||
+          herm(2,0) != 3 || herm(2,1) != 0 || herm(2,2) != 6 ) {
+         std::ostringstream oss;
+         oss << " Test: " << test_ << "\n"
+             << " Error: Assignment failed\n"
+             << " Details:\n"
+             << "   Result:\n" << herm << "\n"
+             << "   Expected result:\n( 1 2 3 )\n( 2 4 0 )\n( 3 0 6 )\n";
+         throw std::runtime_error( oss.str() );
+      }
+   }
+
+
    //=====================================================================================
    // Row-major copy assignment
    //=====================================================================================
@@ -1397,6 +1559,40 @@ void DenseRealTest::testAssignment()
              << " Details:\n"
              << "   Result:\n" << herm2 << "\n"
              << "   Expected result:\n(  1 -4  7 )\n( -4  2  0 )\n(  7  0  3 )\n";
+         throw std::runtime_error( oss.str() );
+      }
+   }
+
+
+   //=====================================================================================
+   // Column-major array assignment
+   //=====================================================================================
+
+   // Array assignment
+   {
+      test_ = "Column-major HermitianMatrix array assignment";
+
+      const int array[3][3] = { { 1, 2, 3 }, { 2, 4, 0 }, { 3, 0, 6 } };
+      OHT herm;
+      herm = array;
+
+      checkRows    ( herm, 3UL );
+      checkColumns ( herm, 3UL );
+      checkCapacity( herm, 9UL );
+      checkNonZeros( herm, 7UL );
+      checkNonZeros( herm, 0UL, 3UL );
+      checkNonZeros( herm, 1UL, 2UL );
+      checkNonZeros( herm, 2UL, 2UL );
+
+      if( herm(0,0) != 1 || herm(0,1) != 2 || herm(0,2) != 3 ||
+          herm(1,0) != 2 || herm(1,1) != 4 || herm(1,2) != 0 ||
+          herm(2,0) != 3 || herm(2,1) != 0 || herm(2,2) != 6 ) {
+         std::ostringstream oss;
+         oss << " Test: " << test_ << "\n"
+             << " Error: Assignment failed\n"
+             << " Details:\n"
+             << "   Result:\n" << herm << "\n"
+             << "   Expected result:\n( 1 2 3 )\n( 2 4 0 )\n( 3 0 6 )\n";
          throw std::runtime_error( oss.str() );
       }
    }

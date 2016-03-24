@@ -183,6 +183,76 @@ void DenseComplexTest::testConstructors()
 
 
    //=====================================================================================
+   // Row-major array initialization
+   //=====================================================================================
+
+   // Dynamic array initialization constructor
+   {
+      test_ = "Row-major HermitianMatrix dynamic array initialization constructor";
+
+      std::unique_ptr<cplx[]> array( new cplx[9] );
+      array[0] = cplx(1, 0);
+      array[1] = cplx(2, 2);
+      array[2] = cplx(3,-3);
+      array[3] = cplx(2,-2);
+      array[4] = cplx(4, 0);
+      array[5] = cplx(0, 5);
+      array[6] = cplx(3, 3);
+      array[7] = cplx(0,-5);
+      array[8] = cplx(6, 0);
+      const HT herm( 3UL, array.get() );
+
+      checkRows    ( herm, 3UL );
+      checkColumns ( herm, 3UL );
+      checkCapacity( herm, 9UL );
+      checkNonZeros( herm, 9UL );
+
+      if( herm(0,0) != cplx(1, 0) || herm(0,1) != cplx(2, 2) || herm(0,2) != cplx(3,-3) ||
+          herm(1,0) != cplx(2,-2) || herm(1,1) != cplx(4, 0) || herm(1,2) != cplx(0, 5) ||
+          herm(2,0) != cplx(3, 3) || herm(2,1) != cplx(0,-5) || herm(2,2) != cplx(6, 0) ) {
+         std::ostringstream oss;
+         oss << " Test: " << test_ << "\n"
+             << " Error: Construction failed\n"
+             << " Details:\n"
+             << "   Result:\n" << herm << "\n"
+             << "   Expected result:\n( (1, 0) (2, 2) (3,-3) )\n"
+                                     "( (2,-2) (4, 0) (0, 5) )\n"
+                                     "( (3, 3) (0,-5) (6, 0) )\n";
+         throw std::runtime_error( oss.str() );
+      }
+   }
+
+   // Static array initialization constructor
+   {
+      test_ = "Row-major HermitianMatrix static array initialization constructor";
+
+      const cplx array[3][3] = { { cplx(1, 0), cplx(2, 2), cplx(3,-3) },
+                                 { cplx(2,-2), cplx(4, 0), cplx(0, 5) },
+                                 { cplx(3, 3), cplx(0,-5), cplx(6, 0) } };
+      const HT herm( array );
+
+      checkRows    ( herm, 3UL );
+      checkColumns ( herm, 3UL );
+      checkCapacity( herm, 9UL );
+      checkNonZeros( herm, 9UL );
+
+      if( herm(0,0) != cplx(1, 0) || herm(0,1) != cplx(2, 2) || herm(0,2) != cplx(3,-3) ||
+          herm(1,0) != cplx(2,-2) || herm(1,1) != cplx(4, 0) || herm(1,2) != cplx(0, 5) ||
+          herm(2,0) != cplx(3, 3) || herm(2,1) != cplx(0,-5) || herm(2,2) != cplx(6, 0) ) {
+         std::ostringstream oss;
+         oss << " Test: " << test_ << "\n"
+             << " Error: Construction failed\n"
+             << " Details:\n"
+             << "   Result:\n" << herm << "\n"
+             << "   Expected result:\n( (1, 0) (2, 2) (3,-3) )\n"
+                                     "( (2,-2) (4, 0) (0, 5) )\n"
+                                     "( (3, 3) (0,-5) (6, 0) )\n";
+         throw std::runtime_error( oss.str() );
+      }
+   }
+
+
+   //=====================================================================================
    // Row-major custom matrix constructors
    //=====================================================================================
 
@@ -630,6 +700,76 @@ void DenseComplexTest::testConstructors()
 
 
    //=====================================================================================
+   // Column-major array initialization
+   //=====================================================================================
+
+   // Dynamic array initialization constructor
+   {
+      test_ = "Column-major HermitianMatrix dynamic array initialization constructor";
+
+      std::unique_ptr<cplx[]> array( new cplx[9] );
+      array[0] = cplx(1, 0);
+      array[1] = cplx(2,-2);
+      array[2] = cplx(3, 3);
+      array[3] = cplx(2, 2);
+      array[4] = cplx(4, 0);
+      array[5] = cplx(0,-5);
+      array[6] = cplx(3,-3);
+      array[7] = cplx(0, 5);
+      array[8] = cplx(6, 0);
+      const OHT herm( 3UL, array.get() );
+
+      checkRows    ( herm, 3UL );
+      checkColumns ( herm, 3UL );
+      checkCapacity( herm, 9UL );
+      checkNonZeros( herm, 9UL );
+
+      if( herm(0,0) != cplx(1, 0) || herm(0,1) != cplx(2, 2) || herm(0,2) != cplx(3,-3) ||
+          herm(1,0) != cplx(2,-2) || herm(1,1) != cplx(4, 0) || herm(1,2) != cplx(0, 5) ||
+          herm(2,0) != cplx(3, 3) || herm(2,1) != cplx(0,-5) || herm(2,2) != cplx(6, 0) ) {
+         std::ostringstream oss;
+         oss << " Test: " << test_ << "\n"
+             << " Error: Construction failed\n"
+             << " Details:\n"
+             << "   Result:\n" << herm << "\n"
+             << "   Expected result:\n( (1, 0) (2, 2) (3,-3) )\n"
+                                     "( (2,-2) (4, 0) (0, 5) )\n"
+                                     "( (3, 3) (0,-5) (6, 0) )\n";
+         throw std::runtime_error( oss.str() );
+      }
+   }
+
+   // Static array initialization constructor
+   {
+      test_ = "Column-major HermitianMatrix static array initialization constructor";
+
+      const cplx array[3][3] = { { cplx(1, 0), cplx(2, 2), cplx(3,-3) },
+                                 { cplx(2,-2), cplx(4, 0), cplx(0, 5) },
+                                 { cplx(3, 3), cplx(0,-5), cplx(6, 0) } };
+      const OHT herm( array );
+
+      checkRows    ( herm, 3UL );
+      checkColumns ( herm, 3UL );
+      checkCapacity( herm, 9UL );
+      checkNonZeros( herm, 9UL );
+
+      if( herm(0,0) != cplx(1, 0) || herm(0,1) != cplx(2, 2) || herm(0,2) != cplx(3,-3) ||
+          herm(1,0) != cplx(2,-2) || herm(1,1) != cplx(4, 0) || herm(1,2) != cplx(0, 5) ||
+          herm(2,0) != cplx(3, 3) || herm(2,1) != cplx(0,-5) || herm(2,2) != cplx(6, 0) ) {
+         std::ostringstream oss;
+         oss << " Test: " << test_ << "\n"
+             << " Error: Construction failed\n"
+             << " Details:\n"
+             << "   Result:\n" << herm << "\n"
+             << "   Expected result:\n( (1, 0) (2, 2) (3,-3) )\n"
+                                     "( (2,-2) (4, 0) (0, 5) )\n"
+                                     "( (3, 3) (0,-5) (6, 0) )\n";
+         throw std::runtime_error( oss.str() );
+      }
+   }
+
+
+   //=====================================================================================
    // Column-major custom matrix constructors
    //=====================================================================================
 
@@ -1022,6 +1162,44 @@ void DenseComplexTest::testConstructors()
 */
 void DenseComplexTest::testAssignment()
 {
+   //=====================================================================================
+   // Row-major array assignment
+   //=====================================================================================
+
+   // Array assignment
+   {
+      test_ = "Row-major HermitianMatrix array assignment";
+
+      const cplx array[3][3] = { { cplx(1, 0), cplx(2, 2), cplx(3,-3) },
+                                 { cplx(2,-2), cplx(4, 0), cplx(0, 5) },
+                                 { cplx(3, 3), cplx(0,-5), cplx(6, 0) } };
+      HT herm;
+      herm = array;
+
+      checkRows    ( herm, 3UL );
+      checkColumns ( herm, 3UL );
+      checkCapacity( herm, 9UL );
+      checkNonZeros( herm, 9UL );
+      checkNonZeros( herm, 0UL, 3UL );
+      checkNonZeros( herm, 1UL, 3UL );
+      checkNonZeros( herm, 2UL, 3UL );
+
+      if( herm(0,0) != cplx(1, 0) || herm(0,1) != cplx(2, 2) || herm(0,2) != cplx(3,-3) ||
+          herm(1,0) != cplx(2,-2) || herm(1,1) != cplx(4, 0) || herm(1,2) != cplx(0, 5) ||
+          herm(2,0) != cplx(3, 3) || herm(2,1) != cplx(0,-5) || herm(2,2) != cplx(6, 0) ) {
+         std::ostringstream oss;
+         oss << " Test: " << test_ << "\n"
+             << " Error: Assignment failed\n"
+             << " Details:\n"
+             << "   Result:\n" << herm << "\n"
+             << "   Expected result:\n( (1, 0) (2, 2) (3,-3) )\n"
+                                     "( (2,-2) (4, 0) (0, 5) )\n"
+                                     "( (3, 3) (0,-5) (6, 0) )\n";
+         throw std::runtime_error( oss.str() );
+      }
+   }
+
+
    //=====================================================================================
    // Row-major copy assignment
    //=====================================================================================
@@ -1659,6 +1837,44 @@ void DenseComplexTest::testAssignment()
              << "   Expected result:\n( ( 1, 0) (-4,-1) (7,3) )\n"
                                      "( (-4, 1) ( 2, 0) (0,0) )\n"
                                      "( ( 7,-3) ( 0, 0) (3,0) )\n";
+         throw std::runtime_error( oss.str() );
+      }
+   }
+
+
+   //=====================================================================================
+   // Column-major array assignment
+   //=====================================================================================
+
+   // Array assignment
+   {
+      test_ = "Column-major HermitianMatrix array assignment";
+
+      const cplx array[3][3] = { { cplx(1, 0), cplx(2, 2), cplx(3,-3) },
+                                 { cplx(2,-2), cplx(4, 0), cplx(0, 5) },
+                                 { cplx(3, 3), cplx(0,-5), cplx(6, 0) } };
+      OHT herm;
+      herm = array;
+
+      checkRows    ( herm, 3UL );
+      checkColumns ( herm, 3UL );
+      checkCapacity( herm, 9UL );
+      checkNonZeros( herm, 9UL );
+      checkNonZeros( herm, 0UL, 3UL );
+      checkNonZeros( herm, 1UL, 3UL );
+      checkNonZeros( herm, 2UL, 3UL );
+
+      if( herm(0,0) != cplx(1, 0) || herm(0,1) != cplx(2, 2) || herm(0,2) != cplx(3,-3) ||
+          herm(1,0) != cplx(2,-2) || herm(1,1) != cplx(4, 0) || herm(1,2) != cplx(0, 5) ||
+          herm(2,0) != cplx(3, 3) || herm(2,1) != cplx(0,-5) || herm(2,2) != cplx(6, 0) ) {
+         std::ostringstream oss;
+         oss << " Test: " << test_ << "\n"
+             << " Error: Assignment failed\n"
+             << " Details:\n"
+             << "   Result:\n" << herm << "\n"
+             << "   Expected result:\n( (1, 0) (2, 2) (3,-3) )\n"
+                                     "( (2,-2) (4, 0) (0, 5) )\n"
+                                     "( (3, 3) (0,-5) (6, 0) )\n";
          throw std::runtime_error( oss.str() );
       }
    }
