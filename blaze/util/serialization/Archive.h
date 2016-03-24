@@ -189,6 +189,8 @@ class Archive : private NonCopyable
    //**Utility functions***************************************************************************
    /*!\name Utility functions */
    //@{
+   inline typename Stream::int_type peek() const;
+
    inline bool good() const;
    inline bool eof () const;
    inline bool fail() const;
@@ -424,6 +426,19 @@ inline EnableIf_< IsNumeric<Type>, Archive<Stream>& >
 //  UTILITY FUNCTIONS
 //
 //=================================================================================================
+
+//*************************************************************************************************
+/*!\brief Reads the next character from the input stream without extracting it.
+//
+// \return The next character contained in the input stream.
+*/
+template< typename Stream >  // Type of the bound stream
+inline typename Stream::int_type Archive<Stream>::peek() const
+{
+   return stream_.peek();
+}
+//*************************************************************************************************
+
 
 //*************************************************************************************************
 /*!\brief Checks if no error has occurred, i.e. I/O operations are available.
