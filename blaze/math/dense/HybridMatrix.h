@@ -1177,9 +1177,9 @@ inline typename HybridMatrix<Type,M,N,SO>::ConstIterator
    \code
    using blaze::rowMajor;
 
-   const real init[3][3] = { { 1, 2, 3 },
-                             { 4, 5 },
-                             { 7, 8, 9 } };
+   const int init[3][3] = { { 1, 2, 3 },
+                            { 4, 5 },
+                            { 7, 8, 9 } };
    blaze::HybridMatrix<int,3UL,3UL,rowMajor> A;
    A = init;
    \endcode
@@ -3854,9 +3854,9 @@ inline typename HybridMatrix<Type,M,N,true>::ConstIterator
    \code
    using blaze::columnMajor;
 
-   const real init[3][3] = { { 1, 2, 3 },
-                             { 4, 5 },
-                             { 7, 8, 9 } };
+   const int init[3][3] = { { 1, 2, 3 },
+                            { 4, 5 },
+                            { 7, 8, 9 } };
    blaze::HybridMatrix<int,3UL,3UL,columnMajor> A;
    A = init;
    \endcode

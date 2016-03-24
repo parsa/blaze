@@ -519,7 +519,7 @@ inline DynamicVector<Type,TF>::DynamicVector( size_t n, const Type& init )
    \code
    double* array = new double[4];
    // ... Initialization of the dynamic array
-   blaze::DynamicVector<real_t> v( array, 4UL );
+   blaze::DynamicVector<double> v( array, 4UL );
    delete[] array;
    \endcode
 
@@ -555,8 +555,8 @@ inline DynamicVector<Type,TF>::DynamicVector( size_t n, const Other* array )
 // with a static array:
 
    \code
-   const real_t init[4] = { 1, 2, 3 };
-   blaze::DynamicVector<real_t> v( init );
+   const int init[4] = { 1, 2, 3 };
+   blaze::DynamicVector<int> v( init );
    \endcode
 
 // The vector is sized accoring to the size of the array and initialized with the values from the
@@ -895,8 +895,8 @@ inline typename DynamicVector<Type,TF>::ConstIterator DynamicVector<Type,TF>::ce
 // This assignment operator offers the option to directly set all elements of the vector:
 
    \code
-   const real_t init[4] = { 1, 2, 3 };
-   blaze::DynamicVector<real_t> v;
+   const int init[4] = { 1, 2, 3 };
+   blaze::DynamicVector<int> v;
    v = init;
    \endcode
 

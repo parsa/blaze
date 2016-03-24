@@ -1074,9 +1074,9 @@ inline typename DynamicMatrix<Type,SO>::ConstIterator
    \code
    using blaze::rowMajor;
 
-   const real init[3][3] = { { 1, 2, 3 },
-                             { 4, 5 },
-                             { 7, 8, 9 } };
+   const int init[3][3] = { { 1, 2, 3 },
+                            { 4, 5 },
+                            { 7, 8, 9 } };
    blaze::DynamicMatrix<int,rowMajor> A;
    A = init;
    \endcode
