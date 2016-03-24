@@ -590,6 +590,12 @@ class HermitianMatrix<MT,SO,true>
    explicit inline HermitianMatrix();
    explicit inline HermitianMatrix( size_t n );
 
+   template< typename Other >
+   explicit inline HermitianMatrix( size_t n, const Other* array );
+
+   template< typename Other, size_t N >
+   explicit inline HermitianMatrix( const Other (&array)[N][N] );
+
    explicit inline HermitianMatrix( ElementType* ptr, size_t n );
    explicit inline HermitianMatrix( ElementType* ptr, size_t n, size_t nn );
 
@@ -632,6 +638,9 @@ class HermitianMatrix<MT,SO,true>
    //**Assignment operators************************************************************************
    /*!\name Assignment operators */
    //@{
+   template< typename Other, size_t N >
+   inline HermitianMatrix& operator=( const Other (&array)[N][N] );
+
    inline HermitianMatrix& operator=( const HermitianMatrix& rhs );
    inline HermitianMatrix& operator=( HermitianMatrix&& rhs ) noexcept;
 
@@ -836,6 +845,93 @@ inline HermitianMatrix<MT,SO,true>::HermitianMatrix( size_t n )
    BLAZE_CONSTRAINT_MUST_BE_RESIZABLE( MT );
 
    BLAZE_INTERNAL_ASSERT( isSquare( matrix_ ), "Non-square Hermitian matrix detected" );
+   BLAZE_INTERNAL_ASSERT( isIntact(), "Broken invariant detected" );
+}
+/*! \endcond */
+//*************************************************************************************************
+
+
+//*************************************************************************************************
+/*! \cond BLAZE_INTERNAL */
+/*!\brief Array initialization of all Hermitian matrix elements.
+//
+// \param m The number of rows of the matrix.
+// \param n The number of columns of the matrix.
+// \param array Dynamic array for the initialization.
+// \exception std::invalid_argument Invalid setup of Hermitian matrix.
+//
+// This constructor offers the option to directly initialize the elements of the Hermitian matrix
+// with a dynamic array:
+
+   \code
+   using blaze::rowMajor;
+
+   typedef complex<int>  cplx;
+
+   cplx* array = new cplx[16];
+   // ... Initialization of the dynamic array
+   blaze::HermitianMatrix< blaze::DynamicMatrix<cplx,rowMajor> > v( 4UL, array );
+   delete[] array;
+   \endcode
+
+// The matrix is sized accoring to the given size of the array and initialized with the values
+// from the given array. Note that it is expected that the given \a array has at least \a n by
+// \a n elements. Providing an array with less elements results in undefined behavior! Also, in
+// case the given array does not represent a Hermitian matrix, a \a std::invalid_argument
+// exception is thrown.
+*/
+template< typename MT       // Type of the adapted dense matrix
+        , bool SO >         // Storage order of the adapted dense matrix
+template< typename Other >  // Data type of the initialization array
+inline HermitianMatrix<MT,SO,true>::HermitianMatrix( size_t n, const Other* array )
+   : matrix_( n, n, array )  // The adapted dense matrix
+{
+   if( !isHermitian( matrix_ ) ) {
+      BLAZE_THROW_INVALID_ARGUMENT( "Invalid setup of Hermitian matrix" );
+   }
+
+   BLAZE_INTERNAL_ASSERT( isIntact(), "Broken invariant detected" );
+}
+/*! \endcond */
+//*************************************************************************************************
+
+
+//*************************************************************************************************
+/*! \cond BLAZE_INTERNAL */
+/*!\brief Array initialization of all Hermitian matrix elements.
+//
+// \param array \f$ N \times N \f$ dimensional array for the initialization.
+// \exception std::invalid_argument Invalid setup of Hermitian matrix.
+//
+// This constructor offers the option to directly initialize the elements of the Hermitian matrix
+// with a static array:
+
+   \code
+   using blaze::rowMajor;
+
+   typedef complex<int>  cplx;
+
+   const cplx init[3][3] = { { cplx(1, 0), cplx(2, 2), cplx(4,-4) },
+                             { cplx(2,-2), cplx(3, 0), cplx(5, 5) },
+                             { cplx(4, 4), cplx(5,-5), cplx(4, 0) } };
+   blaze::HermitianMatrix< blaze::StaticMatrix<int,3,3,rowMajor> > A( init );
+   \endcode
+
+// The matrix is initialized with the values from the given array. Missing values are initialized
+// with default values. In case the given array does not represent a Hermitian matrix, a
+// \a std::invalid_argument exception is thrown.
+*/
+template< typename MT     // Type of the adapted dense matrix
+        , bool SO >       // Storage order of the adapted dense matrix
+template< typename Other  // Data type of the initialization array
+        , size_t N >      // Number of rows and columns of the initialization array
+inline HermitianMatrix<MT,SO,true>::HermitianMatrix( const Other (&array)[N][N] )
+   : matrix_( array )  // The adapted dense matrix
+{
+   if( !isHermitian( matrix_ ) ) {
+      BLAZE_THROW_INVALID_ARGUMENT( "Invalid setup of Hermitian matrix" );
+   }
+
    BLAZE_INTERNAL_ASSERT( isIntact(), "Broken invariant detected" );
 }
 /*! \endcond */
@@ -1388,6 +1484,56 @@ inline typename HermitianMatrix<MT,SO,true>::ConstIterator
 //  ASSIGNMENT OPERATORS
 //
 //=================================================================================================
+
+//*************************************************************************************************
+/*! \cond BLAZE_INTERNAL */
+/*!\brief Array assignment to all Hermitian matrix elements.
+//
+// \param array \f$ N \times N \f$ dimensional array for the assignment.
+// \return Reference to the assigned matrix.
+// \exception std::invalid_argument Invalid assignment to Hermitian matrix.
+//
+// This assignment operator offers the option to directly set all elements of the Hermitian matrix:
+
+   \code
+   using blaze::rowMajor;
+
+   typedef complex<int>  cplx;
+
+   const cplx init[3][3] = { { cplx(1, 0), cplx(2, 2), cplx(4,-4) },
+                             { cplx(2,-2), cplx(3, 0), cplx(5, 5) },
+                             { cplx(4, 4), cplx(5,-5), cplx(4, 0) } };
+   blaze::HermitianMatrix< blaze::StaticMatrix<cplx,3UL,3UL,rowMajor> > A;
+   A = init;
+   \endcode
+
+// The matrix is assigned the values from the given array. Missing values are initialized with
+// default values. In case the given array does not represent a Hermitian matrix, a
+// \a std::invalid_argument exception is thrown.
+*/
+template< typename MT     // Type of the adapted dense matrix
+        , bool SO >       // Storage order of the adapted dense matrix
+template< typename Other  // Data type of the initialization array
+        , size_t N >      // Number of rows and columns of the initialization array
+inline HermitianMatrix<MT,SO,true>&
+   HermitianMatrix<MT,SO,true>::operator=( const Other (&array)[N][N] )
+{
+   MT tmp( array );
+
+   if( !isHermitian( tmp ) ) {
+      BLAZE_THROW_INVALID_ARGUMENT( "Invalid assignment to Hermitian matrix" );
+   }
+
+   matrix_ = std::move( tmp );
+
+   BLAZE_INTERNAL_ASSERT( isSquare( matrix_ ), "Non-square Hermitian matrix detected" );
+   BLAZE_INTERNAL_ASSERT( isIntact(), "Broken invariant detected" );
+
+   return *this;
+}
+/*! \endcond */
+//*************************************************************************************************
+
 
 //*************************************************************************************************
 /*! \cond BLAZE_INTERNAL */
