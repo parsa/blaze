@@ -587,6 +587,12 @@ class SymmetricMatrix<MT,SO,true,true>
    explicit inline SymmetricMatrix();
    explicit inline SymmetricMatrix( size_t n );
 
+   template< typename Other >
+   explicit inline SymmetricMatrix( size_t n, const Other* array );
+
+   template< typename Other, size_t N >
+   explicit inline SymmetricMatrix( const Other (&array)[N][N] );
+
    explicit inline SymmetricMatrix( ElementType* ptr, size_t n );
    explicit inline SymmetricMatrix( ElementType* ptr, size_t n, size_t nn );
 
@@ -629,6 +635,9 @@ class SymmetricMatrix<MT,SO,true,true>
    //**Assignment operators************************************************************************
    /*!\name Assignment operators */
    //@{
+   template< typename Other, size_t N >
+   inline SymmetricMatrix& operator=( const Other (&array)[N][N] );
+
    inline SymmetricMatrix& operator=( const SymmetricMatrix& rhs );
    inline SymmetricMatrix& operator=( SymmetricMatrix&& rhs ) noexcept;
 
@@ -819,6 +828,88 @@ inline SymmetricMatrix<MT,SO,true,true>::SymmetricMatrix( size_t n )
    BLAZE_CONSTRAINT_MUST_BE_RESIZABLE( MT );
 
    BLAZE_INTERNAL_ASSERT( isSquare( matrix_ ), "Non-square symmetric matrix detected" );
+   BLAZE_INTERNAL_ASSERT( isIntact(), "Broken invariant detected" );
+}
+/*! \endcond */
+//*************************************************************************************************
+
+
+//*************************************************************************************************
+/*! \cond BLAZE_INTERNAL */
+/*!\brief Array initialization of all symmetric matrix elements.
+//
+// \param n The number of rows and columns of the matrix.
+// \param array Dynamic array for the initialization.
+// \exception std::invalid_argument Invalid setup of symmetric matrix.
+//
+// This constructor offers the option to directly initialize the elements of the symmetric matrix
+// with a dynamic array:
+
+   \code
+   using blaze::rowMajor;
+
+   int* array = new int[16];
+   // ... Initialization of the dynamic array
+   blaze::SymmetricMatrix< blaze::DynamicMatrix<int,rowMajor> > v( 4UL, array );
+   delete[] array;
+   \endcode
+
+// The matrix is sized accoring to the given size of the array and initialized with the values
+// from the given array. Note that it is expected that the given \a array has at least \a n by
+// \a n elements. Providing an array with less elements results in undefined behavior! Also, in
+// case the given array does not represent a symmetric matrix, a \a std::invalid_argument
+// exception is thrown.
+*/
+template< typename MT       // Type of the adapted dense matrix
+        , bool SO >         // Storage order of the adapted dense matrix
+template< typename Other >  // Data type of the initialization array
+inline SymmetricMatrix<MT,SO,true,true>::SymmetricMatrix( size_t n, const Other* array )
+   : matrix_( n, n, array )  // The adapted dense matrix
+{
+   if( !isSymmetric( matrix_ ) ) {
+      BLAZE_THROW_INVALID_ARGUMENT( "Invalid setup of symmetric matrix" );
+   }
+
+   BLAZE_INTERNAL_ASSERT( isIntact(), "Broken invariant detected" );
+}
+/*! \endcond */
+//*************************************************************************************************
+
+
+//*************************************************************************************************
+/*! \cond BLAZE_INTERNAL */
+/*!\brief Array initialization of all symmetric matrix elements.
+//
+// \param array \f$ N \times N \f$ dimensional array for the initialization.
+// \exception std::invalid_argument Invalid setup of symmetric matrix.
+//
+// This constructor offers the option to directly initialize the elements of the symmetric matrix
+// with a static array:
+
+   \code
+   using blaze::rowMajor;
+
+   const int init[3][3] = { { 1,  4,  5 },
+                            { 4,  2, -6 },
+                            { 5, -6,  3 } };
+   blaze::SymmetricMatrix< blaze::StaticMatrix<int,3,3,rowMajor> > A( init );
+   \endcode
+
+// The matrix is initialized with the values from the given array. Missing values are initialized
+// with default values. In case the given array does not represent a symmetric matrix, a
+// \a std::invalid_argument exception is thrown.
+*/
+template< typename MT     // Type of the adapted dense matrix
+        , bool SO >       // Storage order of the adapted dense matrix
+template< typename Other  // Data type of the initialization array
+        , size_t N >      // Number of rows and columns of the initialization array
+inline SymmetricMatrix<MT,SO,true,true>::SymmetricMatrix( const Other (&array)[N][N] )
+   : matrix_( array )  // The adapted dense matrix
+{
+   if( !isSymmetric( matrix_ ) ) {
+      BLAZE_THROW_INVALID_ARGUMENT( "Invalid setup of symmetric matrix" );
+   }
+
    BLAZE_INTERNAL_ASSERT( isIntact(), "Broken invariant detected" );
 }
 /*! \endcond */
@@ -1394,6 +1485,54 @@ inline typename SymmetricMatrix<MT,SO,true,true>::ConstIterator
 //  ASSIGNMENT OPERATORS
 //
 //=================================================================================================
+
+//*************************************************************************************************
+/*! \cond BLAZE_INTERNAL */
+/*!\brief Array assignment to all symmetric matrix elements.
+//
+// \param array \f$ N \times N \f$ dimensional array for the assignment.
+// \return Reference to the assigned matrix.
+// \exception std::invalid_argument Invalid assignment to symmetric matrix.
+//
+// This assignment operator offers the option to directly set all elements of the symmetric matrix:
+
+   \code
+   using blaze::rowMajor;
+
+   const int init[3][3] = { { 1,  4,  5 },
+                            { 4,  2, -6 },
+                            { 5, -6,  3 } };
+   blaze::SymmetricMatrix< blaze::StaticMatrix<int,3UL,3UL,rowMajor> > A;
+   A = init;
+   \endcode
+
+// The matrix is assigned the values from the given array. Missing values are initialized with
+// default values. In case the given array does not represent a symmetric matrix, a
+// \a std::invalid_argument exception is thrown.
+*/
+template< typename MT     // Type of the adapted dense matrix
+        , bool SO >       // Storage order of the adapted dense matrix
+template< typename Other  // Data type of the initialization array
+        , size_t N >      // Number of rows and columns of the initialization array
+inline SymmetricMatrix<MT,SO,true,true>&
+   SymmetricMatrix<MT,SO,true,true>::operator=( const Other (&array)[N][N] )
+{
+   MT tmp( array );
+
+   if( !isSymmetric( tmp ) ) {
+      BLAZE_THROW_INVALID_ARGUMENT( "Invalid assignment to symmetric matrix" );
+   }
+
+   matrix_ = std::move( tmp );
+
+   BLAZE_INTERNAL_ASSERT( isSquare( matrix_ ), "Non-square symmetric matrix detected" );
+   BLAZE_INTERNAL_ASSERT( isIntact(), "Broken invariant detected" );
+
+   return *this;
+}
+/*! \endcond */
+//*************************************************************************************************
+
 
 //*************************************************************************************************
 /*! \cond BLAZE_INTERNAL */
