@@ -184,6 +184,70 @@ void DenseNumericTest::testConstructors()
 
 
    //=====================================================================================
+   // Row-major array initialization
+   //=====================================================================================
+
+   // Dynamic array initialization constructor
+   {
+      test_ = "Row-major SymmetricMatrix dynamic array initialization constructor";
+
+      std::unique_ptr<int[]> array( new int[9] );
+      array[0] = 1;
+      array[1] = 2;
+      array[2] = 3;
+      array[3] = 2;
+      array[4] = 4;
+      array[5] = 0;
+      array[6] = 3;
+      array[7] = 0;
+      array[8] = 6;
+      const ST sym( 3UL, array.get() );
+
+      checkRows    ( sym, 3UL );
+      checkColumns ( sym, 3UL );
+      checkCapacity( sym, 9UL );
+      checkNonZeros( sym, 7UL );
+
+      if( sym(0,0) != 1 || sym(0,1) != 2 || sym(0,2) != 3 ||
+          sym(1,0) != 2 || sym(1,1) != 4 || sym(1,2) != 0 ||
+          sym(2,0) != 3 || sym(2,1) != 0 || sym(2,2) != 6 ) {
+         std::ostringstream oss;
+         oss << " Test: " << test_ << "\n"
+             << " Error: Construction failed\n"
+             << " Details:\n"
+             << "   Result:\n" << sym << "\n"
+             << "   Expected result:\n( 1 2 3 )\n( 2 4 0 )\n( 3 0 6 )\n";
+         throw std::runtime_error( oss.str() );
+      }
+   }
+
+   // Static array initialization constructor
+   {
+      test_ = "Row-major SymmetricMatrix static array initialization constructor";
+
+      const int array[3][3] = { { 1, 2, 3 }, { 2, 4, 0 }, { 3, 0, 6 } };
+      const ST sym( array );
+
+      checkRows    ( sym, 3UL );
+      checkColumns ( sym, 3UL );
+      checkCapacity( sym, 9UL );
+      checkNonZeros( sym, 7UL );
+
+      if( sym(0,0) != 1 || sym(0,1) != 2 || sym(0,2) != 3 ||
+          sym(1,0) != 2 || sym(1,1) != 4 || sym(1,2) != 0 ||
+          sym(2,0) != 3 || sym(2,1) != 0 || sym(2,2) != 6 ) {
+         std::ostringstream oss;
+         oss << " Test: " << test_ << "\n"
+             << " Error: Construction failed\n"
+             << " Details:\n"
+             << "   Result:\n" << sym << "\n"
+             << "   Expected result:\n( 1 2 3 )\n( 2 4 0 )\n( 3 0 6 )\n";
+         throw std::runtime_error( oss.str() );
+      }
+   }
+
+
+   //=====================================================================================
    // Row-major custom matrix constructors
    //=====================================================================================
 
@@ -579,6 +643,70 @@ void DenseNumericTest::testConstructors()
 
 
    //=====================================================================================
+   // Column-major array initialization
+   //=====================================================================================
+
+   // Dynamic array initialization constructor
+   {
+      test_ = "Column-major SymmetricMatrix dynamic array initialization constructor";
+
+      std::unique_ptr<int[]> array( new int[9] );
+      array[0] = 1;
+      array[1] = 2;
+      array[2] = 3;
+      array[3] = 2;
+      array[4] = 4;
+      array[5] = 0;
+      array[6] = 3;
+      array[7] = 0;
+      array[8] = 6;
+      const OST sym( 3UL, array.get() );
+
+      checkRows    ( sym, 3UL );
+      checkColumns ( sym, 3UL );
+      checkCapacity( sym, 9UL );
+      checkNonZeros( sym, 7UL );
+
+      if( sym(0,0) != 1 || sym(0,1) != 2 || sym(0,2) != 3 ||
+          sym(1,0) != 2 || sym(1,1) != 4 || sym(1,2) != 0 ||
+          sym(2,0) != 3 || sym(2,1) != 0 || sym(2,2) != 6 ) {
+         std::ostringstream oss;
+         oss << " Test: " << test_ << "\n"
+             << " Error: Construction failed\n"
+             << " Details:\n"
+             << "   Result:\n" << sym << "\n"
+             << "   Expected result:\n( 1 2 3 )\n( 2 4 0 )\n( 3 0 6 )\n";
+         throw std::runtime_error( oss.str() );
+      }
+   }
+
+   // Static array initialization constructor
+   {
+      test_ = "Column-major SymmetricMatrix static array initialization constructor";
+
+      const int array[3][3] = { { 1, 2, 3 }, { 2, 4, 0 }, { 3, 0, 6 } };
+      const OST sym( array );
+
+      checkRows    ( sym, 3UL );
+      checkColumns ( sym, 3UL );
+      checkCapacity( sym, 9UL );
+      checkNonZeros( sym, 7UL );
+
+      if( sym(0,0) != 1 || sym(0,1) != 2 || sym(0,2) != 3 ||
+          sym(1,0) != 2 || sym(1,1) != 4 || sym(1,2) != 0 ||
+          sym(2,0) != 3 || sym(2,1) != 0 || sym(2,2) != 6 ) {
+         std::ostringstream oss;
+         oss << " Test: " << test_ << "\n"
+             << " Error: Construction failed\n"
+             << " Details:\n"
+             << "   Result:\n" << sym << "\n"
+             << "   Expected result:\n( 1 2 3 )\n( 2 4 0 )\n( 3 0 6 )\n";
+         throw std::runtime_error( oss.str() );
+      }
+   }
+
+
+   //=====================================================================================
    // Column-major custom matrix constructors
    //=====================================================================================
 
@@ -921,6 +1049,40 @@ void DenseNumericTest::testConstructors()
 */
 void DenseNumericTest::testAssignment()
 {
+   //=====================================================================================
+   // Row-major array assignment
+   //=====================================================================================
+
+   // Array assignment
+   {
+      test_ = "Row-major SymmetricMatrix array assignment";
+
+      const int array[3][3] = { { 1, 2, 3 }, { 2, 4, 0 }, { 3, 0, 6 } };
+      ST sym;
+      sym = array;
+
+      checkRows    ( sym, 3UL );
+      checkColumns ( sym, 3UL );
+      checkCapacity( sym, 9UL );
+      checkNonZeros( sym, 7UL );
+      checkNonZeros( sym, 0UL, 3UL );
+      checkNonZeros( sym, 1UL, 2UL );
+      checkNonZeros( sym, 2UL, 2UL );
+
+      if( sym(0,0) != 1 || sym(0,1) != 2 || sym(0,2) != 3 ||
+          sym(1,0) != 2 || sym(1,1) != 4 || sym(1,2) != 0 ||
+          sym(2,0) != 3 || sym(2,1) != 0 || sym(2,2) != 6 ) {
+         std::ostringstream oss;
+         oss << " Test: " << test_ << "\n"
+             << " Error: Assignment failed\n"
+             << " Details:\n"
+             << "   Result:\n" << sym << "\n"
+             << "   Expected result:\n( 1 2 3 )\n( 2 4 0 )\n( 3 0 6 )\n";
+         throw std::runtime_error( oss.str() );
+      }
+   }
+
+
    //=====================================================================================
    // Row-major copy assignment
    //=====================================================================================
@@ -1398,6 +1560,40 @@ void DenseNumericTest::testAssignment()
              << " Details:\n"
              << "   Result:\n" << sym2 << "\n"
              << "   Expected result:\n(  1 -4  7 )\n( -4  2  0 )\n(  7  0  3 )\n";
+         throw std::runtime_error( oss.str() );
+      }
+   }
+
+
+   //=====================================================================================
+   // Column-major array assignment
+   //=====================================================================================
+
+   // Array assignment
+   {
+      test_ = "Column-major SymmetricMatrix array assignment";
+
+      const int array[3][3] = { { 1, 2, 3 }, { 2, 4, 0 }, { 3, 0, 6 } };
+      OST sym;
+      sym = array;
+
+      checkRows    ( sym, 3UL );
+      checkColumns ( sym, 3UL );
+      checkCapacity( sym, 9UL );
+      checkNonZeros( sym, 7UL );
+      checkNonZeros( sym, 0UL, 3UL );
+      checkNonZeros( sym, 1UL, 2UL );
+      checkNonZeros( sym, 2UL, 2UL );
+
+      if( sym(0,0) != 1 || sym(0,1) != 2 || sym(0,2) != 3 ||
+          sym(1,0) != 2 || sym(1,1) != 4 || sym(1,2) != 0 ||
+          sym(2,0) != 3 || sym(2,1) != 0 || sym(2,2) != 6 ) {
+         std::ostringstream oss;
+         oss << " Test: " << test_ << "\n"
+             << " Error: Assignment failed\n"
+             << " Details:\n"
+             << "   Result:\n" << sym << "\n"
+             << "   Expected result:\n( 1 2 3 )\n( 2 4 0 )\n( 3 0 6 )\n";
          throw std::runtime_error( oss.str() );
       }
    }
