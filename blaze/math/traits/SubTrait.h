@@ -102,7 +102,7 @@ namespace blaze {
 //
 // \n \section subtrait_specializations Creating custom specializations
 //
-// AddTrait is guaranteed to work for all data types that provide a subtraction operator (i.e.
+// SubTrait is guaranteed to work for all data types that provide a subtraction operator (i.e.
 // \c operator-). In order to add support for user-defined data types that either don't provide
 // a subtraction operator or whose subtraction operator returns a proxy object instead of a
 // concrete type (as it is for instance common in expression template libraries) it is possible
@@ -211,6 +211,24 @@ struct SubTrait< complex<T1>, complex<T2> >
    //**********************************************************************************************
 };
 /*! \endcond */
+//*************************************************************************************************
+
+
+//*************************************************************************************************
+/*!\brief Auxiliary alias declaration for the SubTrait class template.
+// \ingroup math_traits
+//
+// The SubTrait_ alias declaration provides a convenient shortcut to access the nested \a Type
+// of the SubTrait class template. For instance, given the types \a T1 and \a T2 the following
+// two type definitions are identical:
+
+   \code
+   using Type1 = typename SubTrait<T1,T2>::Type;
+   using Type2 = SubTrait_<T1,T2>;
+   \endcode
+*/
+template< typename T1, typename T2 >
+using SubTrait_ = typename SubTrait<T1,T2>::Type;
 //*************************************************************************************************
 
 } // namespace blaze
