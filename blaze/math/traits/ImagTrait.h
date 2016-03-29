@@ -134,6 +134,24 @@ struct ImagTrait
 };
 //*************************************************************************************************
 
+
+//*************************************************************************************************
+/*!\brief Auxiliary alias declaration for the ImagTrait class template.
+// \ingroup math_traits
+//
+// The ImagTrait_ alias declaration provides a convenient shortcut to access the nested \a Type
+// of the ImagTrait class template. For instance, given the type \a T the following two type
+// definitions are identical:
+
+   \code
+   using Type1 = typename ImagTrait<T>::Type;
+   using Type2 = ImagTrait_<T>;
+   \endcode
+*/
+template< typename T >  // Type of the operand
+using ImagTrait_ = typename ImagTrait<T>::Type;
+//*************************************************************************************************
+
 } // namespace blaze
 
 #endif
