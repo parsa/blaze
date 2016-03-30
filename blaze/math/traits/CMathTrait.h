@@ -108,6 +108,24 @@ struct CMathTrait<long double>
 /*! \endcond */
 //*************************************************************************************************
 
+
+//*************************************************************************************************
+/*!\brief Auxiliary alias declaration for the CMathTrait class template.
+// \ingroup math_traits
+//
+// The CMathTrait_ alias declaration provides a convenient shortcut to access the nested \a Type
+// of the CMathTrait class template. For instance, given the type \a T the following two type
+// definitions are identical:
+
+   \code
+   using Type1 = typename CMathTrait<T>::Type;
+   using Type2 = CMathTrait_<T>;
+   \endcode
+*/
+template< typename T >
+using CMathTrait_ = typename CMathTrait<T>::Type;
+//*************************************************************************************************
+
 } // namespace blaze
 
 #endif
