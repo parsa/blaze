@@ -200,6 +200,25 @@ struct SubExprTrait
 };
 //*************************************************************************************************
 
+
+//*************************************************************************************************
+/*!\brief Auxiliary alias declaration for the SubExprTrait class template.
+// \ingroup math_traits
+//
+// The SubExprTrait_ alias declaration provides a convenient shortcut to access the nested \a Type
+// of the SubExprTrait class template. For instance, given the types \a T1 and \a T2 the following
+// two type definitions are identical:
+
+   \code
+   using Type1 = typename SubExprTrait<T1,T2>::Type;
+   using Type2 = SubExprTrait_<T1,T2>;
+   \endcode
+*/
+template< typename T1    // Type of the left-hand side subtraction operand
+        , typename T2 >  // Type of the right-hand side subtraction operand
+using SubExprTrait_ = typename SubExprTrait<T1,T2>::Type;
+//*************************************************************************************************
+
 } // namespace blaze
 
 #endif
