@@ -139,6 +139,24 @@ struct SubvectorTrait
 };
 //*************************************************************************************************
 
+
+//*************************************************************************************************
+/*!\brief Auxiliary alias declaration for the SubvectorTrait type trait.
+// \ingroup math_traits
+//
+// The SubvectorTrait_ alias declaration provides a convenient shortcut to access the nested
+// \a Type of the SubvectorTrait class template. For instance, given the vector type \a VT the
+// following two type definitions are identical:
+
+   \code
+   using Type1 = typename SubvectorTrait<VT>::Type;
+   using Type2 = SubvectorTrait_<VT>;
+   \endcode
+*/
+template< typename VT >  // Type of the vector
+using SubvectorTrait_ = typename SubvectorTrait<VT>::Type;
+//*************************************************************************************************
+
 } // namespace blaze
 
 #endif
