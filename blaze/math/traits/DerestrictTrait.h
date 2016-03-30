@@ -92,6 +92,24 @@ struct DerestrictTrait
 };
 //*************************************************************************************************
 
+
+//*************************************************************************************************
+/*!\brief Auxiliary alias declaration for the DerestrictTrait type trait.
+// \ingroup math_traits
+//
+// The DerestrictTrait_ alias declaration provides a convenient shortcut to access the
+// nested \a Type of the DerestrictTrait class template. For instance, given the type \a T
+// the following two type definitions are identical:
+
+   \code
+   using Type1 = typename DerestrictTrait<T>::Type;
+   using Type2 = DerestrictTrait_<T>;
+   \endcode
+*/
+template< typename T >
+using DerestrictTrait_ = typename DerestrictTrait<T>::Type;
+//*************************************************************************************************
+
 } // namespace blaze
 
 #endif
