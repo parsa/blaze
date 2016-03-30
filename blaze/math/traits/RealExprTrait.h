@@ -144,6 +144,24 @@ struct RealExprTrait
 };
 //*************************************************************************************************
 
+
+//*************************************************************************************************
+/*!\brief Auxiliary alias declaration for the RealExprTrait class template.
+// \ingroup math_traits
+//
+// The RealExprTrait_ alias declaration provides a convenient shortcut to access the nested
+// \a Type of the RealExprTrait class template. For instance, given the type \a T the following
+// two type definitions are identical:
+
+   \code
+   using Type1 = typename RealExprTrait<T>::Type;
+   using Type2 = RealExprTrait_<T>;
+   \endcode
+*/
+template< typename T >  // Type of the real part operand
+using RealExprTrait_ = typename RealExprTrait<T>::Type;
+//*************************************************************************************************
+
 } // namespace blaze
 
 #endif
