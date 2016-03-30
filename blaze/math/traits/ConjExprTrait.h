@@ -135,6 +135,24 @@ struct ConjExprTrait
 };
 //*************************************************************************************************
 
+
+//*************************************************************************************************
+/*!\brief Auxiliary alias declaration for the ConjExprTrait class template.
+// \ingroup math_traits
+//
+// The ConjExprTrait_ alias declaration provides a convenient shortcut to access the nested \a Type
+// of the ConjExprTrait class template. For instance, given the type \a T the following two type
+// definitions are identical:
+
+   \code
+   using Type1 = typename ConjExprTrait<T>::Type;
+   using Type2 = ConjExprTrait_<T>;
+   \endcode
+*/
+template< typename T >  // Type of the complex conjugate operand
+using ConjExprTrait_ = typename ConjExprTrait<T>::Type;
+//*************************************************************************************************
+
 } // namespace blaze
 
 #endif
