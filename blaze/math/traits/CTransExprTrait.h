@@ -125,6 +125,24 @@ struct CTransExprTrait
 };
 //*************************************************************************************************
 
+
+//*************************************************************************************************
+/*!\brief Auxiliary alias declaration for the CTransExprTrait class template.
+// \ingroup math_traits
+//
+// The CTransExprTrait_ alias declaration provides a convenient shortcut to access the nested
+// \a Type of the CTransExprTrait class template. For instance, given the type \a T the following
+// two type definitions are identical:
+
+   \code
+   using Type1 = typename CTransExprTrait<T>::Type;
+   using Type2 = CTransExprTrait_<T>;
+   \endcode
+*/
+template< typename T >  // Type of the conjugate transpose operand
+using CTransExprTrait_ = typename CTransExprTrait<T>::Type;
+//*************************************************************************************************
+
 } // namespace blaze
 
 #endif
