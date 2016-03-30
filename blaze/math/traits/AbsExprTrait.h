@@ -144,6 +144,24 @@ struct AbsExprTrait
 };
 //*************************************************************************************************
 
+
+//*************************************************************************************************
+/*!\brief Auxiliary alias declaration for the AbsExprTrait class template.
+// \ingroup math_traits
+//
+// The AbsExprTrait_ alias declaration provides a convenient shortcut to access the nested \a Type
+// of the AbsExprTrait class template. For instance, given the type \a T the following two type
+// definitions are identical:
+
+   \code
+   using Type1 = typename AbsExprTrait<T>::Type;
+   using Type2 = AbsExprTrait_<T>;
+   \endcode
+*/
+template< typename T >  // Type of the absolute value operand
+using AbsExprTrait_ = typename AbsExprTrait<T>::Type;
+//*************************************************************************************************
+
 } // namespace blaze
 
 #endif
