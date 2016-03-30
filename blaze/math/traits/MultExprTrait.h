@@ -324,6 +324,25 @@ struct MultExprTrait
 };
 //*************************************************************************************************
 
+
+//*************************************************************************************************
+/*!\brief Auxiliary alias declaration for the MultExprTrait class template.
+// \ingroup math_traits
+//
+// The MultExprTrait_ alias declaration provides a convenient shortcut to access the nested \a Type
+// of the MultExprTrait class template. For instance, given the types \a T1 and \a T2 the following
+// two type definitions are identical:
+
+   \code
+   using Type1 = typename MultExprTrait<T1,T2>::Type;
+   using Type2 = MultExprTrait_<T1,T2>;
+   \endcode
+*/
+template< typename T1    // Type of the left-hand side multiplication operand
+        , typename T2 >  // Type of the right-hand side multiplication operand
+using MultExprTrait_ = typename MultExprTrait<T1,T2>::Type;
+//*************************************************************************************************
+
 } // namespace blaze
 
 #endif
