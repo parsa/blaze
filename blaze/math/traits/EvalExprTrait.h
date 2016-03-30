@@ -124,6 +124,24 @@ struct EvalExprTrait
 };
 //*************************************************************************************************
 
+
+//*************************************************************************************************
+/*!\brief Auxiliary alias declaration for the EvalExprTrait class template.
+// \ingroup math_traits
+//
+// The EvalExprTrait_ alias declaration provides a convenient shortcut to access the nested \a Type
+// of the EvalExprTrait class template. For instance, given the type \a T the following two type
+// definitions are identical:
+
+   \code
+   using Type1 = typename EvalExprTrait<T>::Type;
+   using Type2 = EvalExprTrait_<T>;
+   \endcode
+*/
+template< typename T >  // Type of the evaluation operand
+using EvalExprTrait_ = typename EvalExprTrait<T>::Type;
+//*************************************************************************************************
+
 } // namespace blaze
 
 #endif
