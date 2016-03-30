@@ -124,6 +124,24 @@ struct SerialExprTrait
 };
 //*************************************************************************************************
 
+
+//*************************************************************************************************
+/*!\brief Auxiliary alias declaration for the SerialExprTrait class template.
+// \ingroup math_traits
+//
+// The SerialExprTrait_ alias declaration provides a convenient shortcut to access the nested \a Type
+// of the SerialExprTrait class template. For instance, given the type \a T the following two type
+// definitions are identical:
+
+   \code
+   using Type1 = typename SerialExprTrait<T>::Type;
+   using Type2 = SerialExprTrait_<T>;
+   \endcode
+*/
+template< typename T >  // Type of the serial evaluation operand
+using SerialExprTrait_ = typename SerialExprTrait<T>::Type;
+//*************************************************************************************************
+
 } // namespace blaze
 
 #endif
