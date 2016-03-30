@@ -144,6 +144,24 @@ struct ImagExprTrait
 };
 //*************************************************************************************************
 
+
+//*************************************************************************************************
+/*!\brief Auxiliary alias declaration for the ImagExprTrait class template.
+// \ingroup math_traits
+//
+// The ImagExprTrait_ alias declaration provides a convenient shortcut to access the nested
+// \a Type of the ImagExprTrait class template. For instance, given the type \a T the following
+// two type definitions are identical:
+
+   \code
+   using Type1 = typename ImagExprTrait<T>::Type;
+   using Type2 = ImagExprTrait_<T>;
+   \endcode
+*/
+template< typename T >  // Type of the imaginary part operand
+using ImagExprTrait_ = typename ImagExprTrait<T>::Type;
+//*************************************************************************************************
+
 } // namespace blaze
 
 #endif
