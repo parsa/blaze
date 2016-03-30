@@ -131,6 +131,24 @@ struct RowTrait
 };
 //*************************************************************************************************
 
+
+//*************************************************************************************************
+/*!\brief Auxiliary alias declaration for the RowTrait type trait.
+// \ingroup math_traits
+//
+// The RowTrait_ alias declaration provides a convenient shortcut to access the nested
+// \a Type of the RowTrait class template. For instance, given the matrix type \a MT the
+// following two type definitions are identical:
+
+   \code
+   using Type1 = typename RowTrait<MT>::Type;
+   using Type2 = RowTrait_<MT>;
+   \endcode
+*/
+template< typename MT >  // Type of the matrix
+using RowTrait_ = typename RowTrait<MT>::Type;
+//*************************************************************************************************
+
 } // namespace blaze
 
 #endif
