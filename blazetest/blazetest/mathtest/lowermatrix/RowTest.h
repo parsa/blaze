@@ -160,7 +160,7 @@ class RowTest
 template< typename LT >  // Type of the lower matrix
 void RowTest::testAssignment()
 {
-   typedef typename blaze::RowExprTrait<LT>::Type  RT;
+   typedef blaze::RowExprTrait_<LT>  RT;
 
 
    //=====================================================================================
@@ -332,7 +332,7 @@ void RowTest::testAssignment()
 template< typename LT >  // Type of the lower matrix
 void RowTest::testAddAssign()
 {
-   typedef typename blaze::RowExprTrait<LT>::Type  RT;
+   typedef blaze::RowExprTrait_<LT>  RT;
 
 
    //=====================================================================================
@@ -503,7 +503,7 @@ void RowTest::testAddAssign()
 template< typename LT >  // Type of the lower matrix
 void RowTest::testSubAssign()
 {
-   typedef typename blaze::RowExprTrait<LT>::Type  RT;
+   typedef blaze::RowExprTrait_<LT>  RT;
 
 
    //=====================================================================================
@@ -674,7 +674,7 @@ void RowTest::testSubAssign()
 template< typename LT >  // Type of the lower matrix
 void RowTest::testMultAssign()
 {
-   typedef typename blaze::RowExprTrait<LT>::Type  RT;
+   typedef blaze::RowExprTrait_<LT>  RT;
 
 
    //=====================================================================================

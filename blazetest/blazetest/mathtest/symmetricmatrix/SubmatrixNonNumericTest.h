@@ -159,7 +159,7 @@ class SubmatrixNonNumericTest
 template< typename ST >  // Type of the symmetric matrix
 void SubmatrixNonNumericTest::testAssignment()
 {
-   typedef typename blaze::SubmatrixExprTrait<ST,blaze::unaligned>::Type  SMT;
+   typedef blaze::SubmatrixExprTrait_<ST,blaze::unaligned>  SMT;
 
 
    //=====================================================================================

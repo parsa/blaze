@@ -44,6 +44,7 @@
 #include <stdexcept>
 #include <string>
 #include <typeinfo>
+#include <blaze/math/Aliases.h>
 #include <blaze/math/CompressedVector.h>
 #include <blaze/math/constraints/Computation.h>
 #include <blaze/math/constraints/DenseVector.h>
@@ -97,33 +98,33 @@ class OperationTest
    //**********************************************************************************************
 
    //**Type definitions****************************************************************************
-   typedef typename VT1::ElementType  ET1;  //!< Element type 1
-   typedef typename VT2::ElementType  ET2;  //!< Element type 2
+   typedef blaze::ElementType_<VT1>  ET1;  //!< Element type 1
+   typedef blaze::ElementType_<VT2>  ET2;  //!< Element type 2
 
-   typedef typename VT1::TransposeType  TVT1;  //!< Transpose vector type 1
-   typedef typename VT2::TransposeType  TVT2;  //!< Transpose vector type 2
+   typedef blaze::TransposeType_<VT1>  TVT1;  //!< Transpose vector type 1
+   typedef blaze::TransposeType_<VT2>  TVT2;  //!< Transpose vector type 2
 
-   typedef typename blaze::SubTrait<VT1,VT2>::Type    DRE;   //!< Dense result type
-   typedef typename blaze::SubTrait<TVT1,TVT2>::Type  TDRE;  //!< Transpose dense result type
-   typedef typename DRE::ElementType                  DET;   //!< Element type of the dense result
+   typedef blaze::SubTrait_<VT1,VT2>    DRE;   //!< Dense result type
+   typedef blaze::SubTrait_<TVT1,TVT2>  TDRE;  //!< Transpose dense result type
+   typedef blaze::ElementType_<DRE>     DET;   //!< Element type of the dense result
 
    typedef blaze::CompressedVector<DET,TF>  SRE;   //!< Sparse result type
-   typedef typename SRE::TransposeType      TSRE;  //!< Transpose sparse result type
-   typedef typename SRE::ElementType        SET;   //!< Element type of the sparse result
+   typedef blaze::TransposeType_<SRE>       TSRE;  //!< Transpose sparse result type
+   typedef blaze::ElementType_<SRE>         SET;   //!< Element type of the sparse result
 
-   typedef blaze::DynamicVector<ET1,TF>             RT1;  //!< Reference type 1
-   typedef blaze::DynamicVector<ET2,TF>             RT2;  //!< Reference type 2
-   typedef typename blaze::SubTrait<RT1,RT2>::Type  RRE;  //!< Reference result type
+   typedef blaze::DynamicVector<ET1,TF>  RT1;  //!< Reference type 1
+   typedef blaze::DynamicVector<ET2,TF>  RT2;  //!< Reference type 2
+   typedef blaze::SubTrait_<RT1,RT2>     RRE;  //!< Reference result type
 
-   typedef typename RT1::TransposeType                TRT1;  //!< Transpose reference type 1
-   typedef typename RT2::TransposeType                TRT2;  //!< Transpose reference type 2
-   typedef typename blaze::SubTrait<TRT1,TRT2>::Type  TRRE;  //!< Transpose reference result type
+   typedef blaze::TransposeType_<RT1>   TRT1;  //!< Transpose reference type 1
+   typedef blaze::TransposeType_<RT2>   TRT2;  //!< Transpose reference type 2
+   typedef blaze::SubTrait_<TRT1,TRT2>  TRRE;  //!< Transpose reference result type
 
    //! Type of the vector/vector subtraction expression
-   typedef typename blaze::SubExprTrait<VT1,VT2>::Type  VecVecSubExprType;
+   typedef blaze::SubExprTrait_<VT1,VT2>  VecVecSubExprType;
 
    //! Type of the transpose vector/transpose vector subtraction expression
-   typedef typename blaze::SubExprTrait<TVT1,TVT2>::Type  TVecTVecSubExprType;
+   typedef blaze::SubExprTrait_<TVT1,TVT2>  TVecTVecSubExprType;
    //**********************************************************************************************
 
  public:
@@ -231,18 +232,18 @@ class OperationTest
    BLAZE_CONSTRAINT_VECTORS_MUST_HAVE_SAME_TRANSPOSE_FLAG( TVT1, TDRE );
    BLAZE_CONSTRAINT_VECTORS_MUST_HAVE_SAME_TRANSPOSE_FLAG( TVT1, TSRE );
 
-   BLAZE_CONSTRAINT_MUST_BE_SAME_TYPE( ET1, typename TVT1::ElementType   );
-   BLAZE_CONSTRAINT_MUST_BE_SAME_TYPE( ET2, typename TVT2::ElementType   );
-   BLAZE_CONSTRAINT_MUST_BE_SAME_TYPE( DET, typename DRE::ElementType    );
-   BLAZE_CONSTRAINT_MUST_BE_SAME_TYPE( DET, typename TDRE::ElementType   );
-   BLAZE_CONSTRAINT_MUST_BE_SAME_TYPE( DET, typename SRE::ElementType    );
-   BLAZE_CONSTRAINT_MUST_BE_SAME_TYPE( SET, typename SRE::ElementType    );
-   BLAZE_CONSTRAINT_MUST_BE_SAME_TYPE( SET, typename TSRE::ElementType   );
-   BLAZE_CONSTRAINT_MUST_BE_SAME_TYPE( SET, typename DRE::ElementType    );
-   BLAZE_CONSTRAINT_MUST_BE_SAME_TYPE( VT1, typename TVT1::TransposeType );
-   BLAZE_CONSTRAINT_MUST_BE_SAME_TYPE( VT2, typename TVT2::TransposeType );
-   BLAZE_CONSTRAINT_MUST_BE_SAME_TYPE( RT1, typename TRT1::TransposeType );
-   BLAZE_CONSTRAINT_MUST_BE_SAME_TYPE( RT2, typename TRT2::TransposeType );
+   BLAZE_CONSTRAINT_MUST_BE_SAME_TYPE( ET1, blaze::ElementType_<TVT1>   );
+   BLAZE_CONSTRAINT_MUST_BE_SAME_TYPE( ET2, blaze::ElementType_<TVT2>   );
+   BLAZE_CONSTRAINT_MUST_BE_SAME_TYPE( DET, blaze::ElementType_<DRE>    );
+   BLAZE_CONSTRAINT_MUST_BE_SAME_TYPE( DET, blaze::ElementType_<TDRE>   );
+   BLAZE_CONSTRAINT_MUST_BE_SAME_TYPE( DET, blaze::ElementType_<SRE>    );
+   BLAZE_CONSTRAINT_MUST_BE_SAME_TYPE( SET, blaze::ElementType_<SRE>    );
+   BLAZE_CONSTRAINT_MUST_BE_SAME_TYPE( SET, blaze::ElementType_<TSRE>   );
+   BLAZE_CONSTRAINT_MUST_BE_SAME_TYPE( SET, blaze::ElementType_<DRE>    );
+   BLAZE_CONSTRAINT_MUST_BE_SAME_TYPE( VT1, blaze::TransposeType_<TVT1> );
+   BLAZE_CONSTRAINT_MUST_BE_SAME_TYPE( VT2, blaze::TransposeType_<TVT2> );
+   BLAZE_CONSTRAINT_MUST_BE_SAME_TYPE( RT1, blaze::TransposeType_<TRT1> );
+   BLAZE_CONSTRAINT_MUST_BE_SAME_TYPE( RT2, blaze::TransposeType_<TRT2> );
 
    BLAZE_CONSTRAINT_MUST_BE_VECVECSUBEXPR_TYPE( VecVecSubExprType   );
    BLAZE_CONSTRAINT_MUST_BE_VECVECSUBEXPR_TYPE( TVecTVecSubExprType );

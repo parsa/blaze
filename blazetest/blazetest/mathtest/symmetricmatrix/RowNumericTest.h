@@ -160,7 +160,7 @@ class RowNumericTest
 template< typename ST >  // Type of the symmetric matrix
 void RowNumericTest::testAssignment()
 {
-   typedef typename blaze::RowExprTrait<ST>::Type  RT;
+   typedef blaze::RowExprTrait_<ST>  RT;
 
 
    //=====================================================================================
@@ -275,7 +275,7 @@ void RowNumericTest::testAssignment()
 template< typename ST >  // Type of the symmetric matrix
 void RowNumericTest::testAddAssign()
 {
-   typedef typename blaze::RowExprTrait<ST>::Type  RT;
+   typedef blaze::RowExprTrait_<ST>  RT;
 
 
    //=====================================================================================
@@ -390,7 +390,7 @@ void RowNumericTest::testAddAssign()
 template< typename ST >  // Type of the symmetric matrix
 void RowNumericTest::testSubAssign()
 {
-   typedef typename blaze::RowExprTrait<ST>::Type  RT;
+   typedef blaze::RowExprTrait_<ST>  RT;
 
 
    //=====================================================================================
@@ -505,7 +505,7 @@ void RowNumericTest::testSubAssign()
 template< typename ST >  // Type of the symmetric matrix
 void RowNumericTest::testMultAssign()
 {
-   typedef typename blaze::RowExprTrait<ST>::Type  RT;
+   typedef blaze::RowExprTrait_<ST>  RT;
 
 
    //=====================================================================================

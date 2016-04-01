@@ -44,6 +44,7 @@
 #include <stdexcept>
 #include <string>
 #include <typeinfo>
+#include <blaze/math/Aliases.h>
 #include <blaze/math/CompressedVector.h>
 #include <blaze/math/constraints/DenseVector.h>
 #include <blaze/math/constraints/SparseVector.h>
@@ -83,12 +84,12 @@ class OperationTest
 {
  private:
    //**Type definitions****************************************************************************
-   typedef typename VT1::ElementType  ET1;  //!< Element type 1
-   typedef typename VT2::ElementType  ET2;  //!< Element type 2
+   typedef blaze::ElementType_<VT1>  ET1;  //!< Element type 1
+   typedef blaze::ElementType_<VT2>  ET2;  //!< Element type 2
 
-   typedef typename VT1::TransposeType                TVT1;  //!< Transpose vector type 1
-   typedef typename VT2::TransposeType                TVT2;  //!< Transpose vector type 2
-   typedef typename blaze::MultTrait<TVT1,VT2>::Type  RE;    //!< Result type
+   typedef blaze::TransposeType_<VT1>   TVT1;  //!< Transpose vector type 1
+   typedef blaze::TransposeType_<VT2>   TVT2;  //!< Transpose vector type 2
+   typedef blaze::MultTrait_<TVT1,VT2>  RE;    //!< Result type
 
    typedef blaze::DynamicVector<ET1,true>   RT1;  //!< Reference type 1
    typedef blaze::DynamicVector<ET2,false>  RT2;  //!< Reference type 2
@@ -148,22 +149,22 @@ class OperationTest
 
    //**Compile time checks*************************************************************************
    /*! \cond BLAZE_INTERNAL */
-   BLAZE_CONSTRAINT_MUST_BE_DENSE_VECTOR_TYPE ( VT1   );
-   BLAZE_CONSTRAINT_MUST_BE_SPARSE_VECTOR_TYPE( VT2   );
-   BLAZE_CONSTRAINT_MUST_BE_DENSE_VECTOR_TYPE ( TVT1  );
-   BLAZE_CONSTRAINT_MUST_BE_SPARSE_VECTOR_TYPE( TVT2  );
-   BLAZE_CONSTRAINT_MUST_BE_DENSE_VECTOR_TYPE ( RT1   );
-   BLAZE_CONSTRAINT_MUST_BE_DENSE_VECTOR_TYPE ( RT2   );
+   BLAZE_CONSTRAINT_MUST_BE_DENSE_VECTOR_TYPE ( VT1  );
+   BLAZE_CONSTRAINT_MUST_BE_SPARSE_VECTOR_TYPE( VT2  );
+   BLAZE_CONSTRAINT_MUST_BE_DENSE_VECTOR_TYPE ( TVT1 );
+   BLAZE_CONSTRAINT_MUST_BE_SPARSE_VECTOR_TYPE( TVT2 );
+   BLAZE_CONSTRAINT_MUST_BE_DENSE_VECTOR_TYPE ( RT1  );
+   BLAZE_CONSTRAINT_MUST_BE_DENSE_VECTOR_TYPE ( RT2  );
 
-   BLAZE_CONSTRAINT_MUST_BE_COLUMN_VECTOR_TYPE( VT1   );
-   BLAZE_CONSTRAINT_MUST_BE_COLUMN_VECTOR_TYPE( VT2   );
-   BLAZE_CONSTRAINT_MUST_BE_ROW_VECTOR_TYPE   ( TVT1  );
-   BLAZE_CONSTRAINT_MUST_BE_ROW_VECTOR_TYPE   ( TVT2  );
-   BLAZE_CONSTRAINT_MUST_BE_ROW_VECTOR_TYPE   ( RT1   );
-   BLAZE_CONSTRAINT_MUST_BE_COLUMN_VECTOR_TYPE( RT2   );
+   BLAZE_CONSTRAINT_MUST_BE_COLUMN_VECTOR_TYPE( VT1  );
+   BLAZE_CONSTRAINT_MUST_BE_COLUMN_VECTOR_TYPE( VT2  );
+   BLAZE_CONSTRAINT_MUST_BE_ROW_VECTOR_TYPE   ( TVT1 );
+   BLAZE_CONSTRAINT_MUST_BE_ROW_VECTOR_TYPE   ( TVT2 );
+   BLAZE_CONSTRAINT_MUST_BE_ROW_VECTOR_TYPE   ( RT1  );
+   BLAZE_CONSTRAINT_MUST_BE_COLUMN_VECTOR_TYPE( RT2  );
 
-   BLAZE_CONSTRAINT_MUST_BE_SAME_TYPE( ET1, typename TVT1::ElementType );
-   BLAZE_CONSTRAINT_MUST_BE_SAME_TYPE( ET2, typename TVT2::ElementType );
+   BLAZE_CONSTRAINT_MUST_BE_SAME_TYPE( ET1, blaze::ElementType_<TVT1> );
+   BLAZE_CONSTRAINT_MUST_BE_SAME_TYPE( ET2, blaze::ElementType_<TVT2> );
    /*! \endcond */
    //**********************************************************************************************
 };

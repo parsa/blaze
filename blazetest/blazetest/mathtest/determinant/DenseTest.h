@@ -44,6 +44,7 @@
 #include <stdexcept>
 #include <string>
 #include <typeinfo>
+#include <blaze/math/Aliases.h>
 #include <blaze/math/shims/Equal.h>
 #include <blazetest/system/LAPACK.h>
 
@@ -138,7 +139,7 @@ void DenseTest::testRandom2x2()
 
    using blaze::equal;
 
-   typedef typename Type::ElementType  ET;
+   typedef blaze::ElementType_<Type>  ET;
 
    Type A;
    resize( A, 2UL, 2UL );
@@ -184,7 +185,7 @@ void DenseTest::testRandom3x3()
 
    using blaze::equal;
 
-   typedef typename Type::ElementType  ET;
+   typedef blaze::ElementType_<Type>  ET;
 
    Type A;
    resize( A, 3UL, 3UL );
@@ -230,7 +231,7 @@ void DenseTest::testRandom4x4()
 
    using blaze::equal;
 
-   typedef typename Type::ElementType  ET;
+   typedef blaze::ElementType_<Type>  ET;
 
    Type A;
    resize( A, 4UL, 4UL );
@@ -276,7 +277,7 @@ void DenseTest::testRandom5x5()
 
    using blaze::equal;
 
-   typedef typename Type::ElementType  ET;
+   typedef blaze::ElementType_<Type>  ET;
 
    Type A;
    resize( A, 5UL, 5UL );
@@ -322,7 +323,7 @@ void DenseTest::testRandom6x6()
 
    using blaze::equal;
 
-   typedef typename Type::ElementType  ET;
+   typedef blaze::ElementType_<Type>  ET;
 
    Type A;
    resize( A, 6UL, 6UL );

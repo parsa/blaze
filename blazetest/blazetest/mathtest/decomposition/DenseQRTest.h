@@ -44,6 +44,7 @@
 #include <stdexcept>
 #include <string>
 #include <typeinfo>
+#include <blaze/math/Aliases.h>
 #include <blaze/math/typetraits/IsSquare.h>
 #include <blaze/math/typetraits/RemoveAdaptor.h>
 #include <blaze/util/Complex.h>
@@ -164,7 +165,7 @@ void DenseQRTest::testRandom()
           << "   Matrix type:\n"
           << "     " << typeid( Type ).name() << "\n"
           << "   Element type:\n"
-          << "     " << typeid( typename Type::ElementType ).name() << "\n"
+          << "     " << typeid( blaze::ElementType_<Type> ).name() << "\n"
           << "   Result:\n" << QR << "\n"
           << "   Expected result:\n" << A << "\n";
       throw std::runtime_error( oss.str() );

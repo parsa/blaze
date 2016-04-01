@@ -160,7 +160,7 @@ class RowTest
 template< typename DT >  // Type of the diagonal matrix
 void RowTest::testAssignment()
 {
-   typedef typename blaze::RowExprTrait<DT>::Type  RT;
+   typedef blaze::RowExprTrait_<DT>  RT;
 
 
    //=====================================================================================
@@ -387,7 +387,7 @@ void RowTest::testAssignment()
 template< typename DT >  // Type of the diagonal matrix
 void RowTest::testAddAssign()
 {
-   typedef typename blaze::RowExprTrait<DT>::Type  RT;
+   typedef blaze::RowExprTrait_<DT>  RT;
 
 
    //=====================================================================================
@@ -614,7 +614,7 @@ void RowTest::testAddAssign()
 template< typename DT >  // Type of the diagonal matrix
 void RowTest::testSubAssign()
 {
-   typedef typename blaze::RowExprTrait<DT>::Type  RT;
+   typedef blaze::RowExprTrait_<DT>  RT;
 
 
    //=====================================================================================
@@ -841,7 +841,7 @@ void RowTest::testSubAssign()
 template< typename DT >  // Type of the diagonal matrix
 void RowTest::testMultAssign()
 {
-   typedef typename blaze::RowExprTrait<DT>::Type  RT;
+   typedef blaze::RowExprTrait_<DT>  RT;
 
 
    //=====================================================================================

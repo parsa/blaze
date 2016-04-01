@@ -160,7 +160,7 @@ class ColumnTest
 template< typename LT >  // Type of the unilower matrix
 void ColumnTest::testAssignment()
 {
-   typedef typename blaze::ColumnExprTrait<LT>::Type  CT;
+   typedef blaze::ColumnExprTrait_<LT>  CT;
 
 
    //=====================================================================================
@@ -386,7 +386,7 @@ void ColumnTest::testAssignment()
 template< typename LT >  // Type of the unilower matrix
 void ColumnTest::testAddAssign()
 {
-   typedef typename blaze::ColumnExprTrait<LT>::Type  CT;
+   typedef blaze::ColumnExprTrait_<LT>  CT;
 
 
    //=====================================================================================
@@ -610,7 +610,7 @@ void ColumnTest::testAddAssign()
 template< typename LT >  // Type of the unilower matrix
 void ColumnTest::testSubAssign()
 {
-   typedef typename blaze::ColumnExprTrait<LT>::Type  CT;
+   typedef blaze::ColumnExprTrait_<LT>  CT;
 
 
    //=====================================================================================
@@ -834,7 +834,7 @@ void ColumnTest::testSubAssign()
 template< typename LT >  // Type of the unilower matrix
 void ColumnTest::testMultAssign()
 {
-   typedef typename blaze::ColumnExprTrait<LT>::Type  CT;
+   typedef blaze::ColumnExprTrait_<LT>  CT;
 
 
    //=====================================================================================

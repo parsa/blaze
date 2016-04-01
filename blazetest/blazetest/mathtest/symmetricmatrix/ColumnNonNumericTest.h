@@ -161,7 +161,7 @@ class ColumnNonNumericTest
 template< typename ST >  // Type of the symmetric matrix
 void ColumnNonNumericTest::testAssignment()
 {
-   typedef typename blaze::ColumnExprTrait<ST>::Type  CT;
+   typedef blaze::ColumnExprTrait_<ST>  CT;
 
 
    //=====================================================================================

@@ -160,7 +160,7 @@ class ColumnTest
 template< typename UT >  // Type of the strictly upper matrix
 void ColumnTest::testAssignment()
 {
-   typedef typename blaze::ColumnExprTrait<UT>::Type  CT;
+   typedef blaze::ColumnExprTrait_<UT>  CT;
 
 
    //=====================================================================================
@@ -384,7 +384,7 @@ void ColumnTest::testAssignment()
 template< typename UT >  // Type of the strictly upper matrix
 void ColumnTest::testAddAssign()
 {
-   typedef typename blaze::ColumnExprTrait<UT>::Type  CT;
+   typedef blaze::ColumnExprTrait_<UT>  CT;
 
 
    //=====================================================================================
@@ -608,7 +608,7 @@ void ColumnTest::testAddAssign()
 template< typename UT >  // Type of the strictly upper matrix
 void ColumnTest::testSubAssign()
 {
-   typedef typename blaze::ColumnExprTrait<UT>::Type  CT;
+   typedef blaze::ColumnExprTrait_<UT>  CT;
 
 
    //=====================================================================================
@@ -832,7 +832,7 @@ void ColumnTest::testSubAssign()
 template< typename UT >  // Type of the strictly upper matrix
 void ColumnTest::testMultAssign()
 {
-   typedef typename blaze::ColumnExprTrait<UT>::Type  CT;
+   typedef blaze::ColumnExprTrait_<UT>  CT;
 
 
    //=====================================================================================

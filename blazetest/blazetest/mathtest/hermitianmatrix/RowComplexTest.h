@@ -163,7 +163,7 @@ class RowComplexTest
 template< typename HT >  // Type of the Hermitian matrix
 void RowComplexTest::testAssignment()
 {
-   typedef typename blaze::RowExprTrait<HT>::Type  RT;
+   typedef blaze::RowExprTrait_<HT>  RT;
 
 
    //=====================================================================================
@@ -340,7 +340,7 @@ void RowComplexTest::testAssignment()
 template< typename HT >  // Type of the Hermitian matrix
 void RowComplexTest::testAddAssign()
 {
-   typedef typename blaze::RowExprTrait<HT>::Type  RT;
+   typedef blaze::RowExprTrait_<HT>  RT;
 
 
    //=====================================================================================
@@ -517,7 +517,7 @@ void RowComplexTest::testAddAssign()
 template< typename HT >  // Type of the Hermitian matrix
 void RowComplexTest::testSubAssign()
 {
-   typedef typename blaze::RowExprTrait<HT>::Type  RT;
+   typedef blaze::RowExprTrait_<HT>  RT;
 
 
    //=====================================================================================
@@ -694,7 +694,7 @@ void RowComplexTest::testSubAssign()
 template< typename HT >  // Type of the Hermitian matrix
 void RowComplexTest::testMultAssign()
 {
-   typedef typename blaze::RowExprTrait<HT>::Type  RT;
+   typedef blaze::RowExprTrait_<HT>  RT;
 
 
    //=====================================================================================

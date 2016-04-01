@@ -43,6 +43,7 @@
 #include <sstream>
 #include <stdexcept>
 #include <string>
+#include <blaze/math/Aliases.h>
 #include <blaze/math/CompressedVector.h>
 #include <blaze/math/constraints/Vector.h>
 #include <blaze/math/DenseSubvector.h>
@@ -190,7 +191,7 @@ void ClassTest::runStaticVectorTests( const VT& src )
 {
    BLAZE_CONSTRAINT_MUST_BE_VECTOR_TYPE( VT );
 
-   typedef typename VT::ElementType  ET;
+   typedef blaze::ElementType_<VT>  ET;
 
    {
       blaze::StaticVector<ET,N> dst;
@@ -222,7 +223,7 @@ void ClassTest::runDynamicVectorTests( const VT& src )
 {
    BLAZE_CONSTRAINT_MUST_BE_VECTOR_TYPE( VT );
 
-   typedef typename VT::ElementType  ET;
+   typedef blaze::ElementType_<VT>  ET;
 
    {
       blaze::DynamicVector<ET> dst;
@@ -255,7 +256,7 @@ void ClassTest::runDenseSubvectorTests( const VT& src )
 {
    BLAZE_CONSTRAINT_MUST_BE_VECTOR_TYPE( VT );
 
-   typedef typename VT::ElementType  ET;
+   typedef blaze::ElementType_<VT>   ET;
    typedef blaze::DynamicVector<ET>  DV;
 
    {
@@ -290,7 +291,7 @@ void ClassTest::runCompressedVectorTests( const VT& src )
 {
    BLAZE_CONSTRAINT_MUST_BE_VECTOR_TYPE( VT );
 
-   typedef typename VT::ElementType  ET;
+   typedef blaze::ElementType_<VT>  ET;
 
    {
       blaze::CompressedVector<ET> dst;
@@ -323,7 +324,7 @@ void ClassTest::runSparseSubvectorTests( const VT& src )
 {
    BLAZE_CONSTRAINT_MUST_BE_VECTOR_TYPE( VT );
 
-   typedef typename VT::ElementType     ET;
+   typedef blaze::ElementType_<VT>      ET;
    typedef blaze::CompressedVector<ET>  SV;
 
    {

@@ -44,6 +44,7 @@
 #include <stdexcept>
 #include <string>
 #include <typeinfo>
+#include <blaze/math/Aliases.h>
 #include <blaze/math/CompressedMatrix.h>
 #include <blaze/math/constraints/Computation.h>
 #include <blaze/math/constraints/DenseMatrix.h>
@@ -95,36 +96,36 @@ class OperationTest
 {
  private:
    //**Type definitions****************************************************************************
-   typedef typename MT::ElementType  MET;  //!< Element type of the matrix type
-   typedef typename VT::ElementType  VET;  //!< Element type of the vector type
+   typedef blaze::ElementType_<MT>  MET;  //!< Element type of the matrix type
+   typedef blaze::ElementType_<VT>  VET;  //!< Element type of the vector type
 
-   typedef typename MT::OppositeType    OMT;   //!< Matrix type with opposite storage order
-   typedef typename MT::TransposeType   TMT;   //!< Transpose matrix type
-   typedef typename OMT::TransposeType  TOMT;  //!< Transpose matrix type with opposite storage order
-   typedef typename VT::TransposeType   TVT;   //!< Transpose vector type
+   typedef blaze::OppositeType_<MT>    OMT;   //!< Matrix type with opposite storage order
+   typedef blaze::TransposeType_<MT>   TMT;   //!< Transpose matrix type
+   typedef blaze::TransposeType_<OMT>  TOMT;  //!< Transpose matrix type with opposite storage order
+   typedef blaze::TransposeType_<VT>   TVT;   //!< Transpose vector type
 
    //! Dense result type
-   typedef typename blaze::MultTrait<MT,VT>::Type  DRE;
+   typedef blaze::MultTrait_<MT,VT>  DRE;
 
-   typedef typename DRE::ElementType    DET;   //!< Element type of the dense result
-   typedef typename DRE::TransposeType  TDRE;  //!< Transpose dense result type
+   typedef blaze::ElementType_<DRE>    DET;   //!< Element type of the dense result
+   typedef blaze::TransposeType_<DRE>  TDRE;  //!< Transpose dense result type
 
    //! Sparse result type
    typedef blaze::CompressedVector<DET,false>  SRE;
 
-   typedef typename SRE::ElementType    SET;   //!< Element type of the sparse result
-   typedef typename SRE::TransposeType  TSRE;  //!< Transpose sparse result type
+   typedef blaze::ElementType_<SRE>    SET;   //!< Element type of the sparse result
+   typedef blaze::TransposeType_<SRE>  TSRE;  //!< Transpose sparse result type
 
-   typedef blaze::DynamicMatrix<MET,false>           MRT;   //!< Matrix reference type
-   typedef blaze::CompressedVector<VET,false>        VRT;   //!< Vector reference type
-   typedef typename blaze::MultTrait<MRT,VRT>::Type  RRE;   //!< Reference result type
-   typedef typename RRE::TransposeType               TRRE;  //!< Transpose reference result type
+   typedef blaze::DynamicMatrix<MET,false>     MRT;   //!< Matrix reference type
+   typedef blaze::CompressedVector<VET,false>  VRT;   //!< Vector reference type
+   typedef blaze::MultTrait_<MRT,VRT>          RRE;   //!< Reference result type
+   typedef blaze::TransposeType_<RRE>          TRRE;  //!< Transpose reference result type
 
    //! Type of the matrix/vector multiplication expression
-   typedef typename blaze::MultExprTrait<MT,VT>::Type  MatVecMultExprType;
+   typedef blaze::MultExprTrait_<MT,VT>  MatVecMultExprType;
 
    //! Type of the transpose matrix/vector multiplication expression
-   typedef typename blaze::MultExprTrait<OMT,VT>::Type  TMatVecMultExprType;
+   typedef blaze::MultExprTrait_<OMT,VT>  TMatVecMultExprType;
    //**********************************************************************************************
 
  public:
@@ -226,21 +227,21 @@ class OperationTest
    BLAZE_CONSTRAINT_MUST_BE_ROW_VECTOR_TYPE         ( TDRE );
    BLAZE_CONSTRAINT_MUST_BE_ROW_VECTOR_TYPE         ( TSRE );
 
-   BLAZE_CONSTRAINT_MUST_BE_SAME_TYPE( MET, typename OMT::ElementType    );
-   BLAZE_CONSTRAINT_MUST_BE_SAME_TYPE( MET, typename TMT::ElementType    );
-   BLAZE_CONSTRAINT_MUST_BE_SAME_TYPE( MET, typename TOMT::ElementType   );
-   BLAZE_CONSTRAINT_MUST_BE_SAME_TYPE( VET, typename TVT::ElementType    );
-   BLAZE_CONSTRAINT_MUST_BE_SAME_TYPE( DET, typename DRE::ElementType    );
-   BLAZE_CONSTRAINT_MUST_BE_SAME_TYPE( DET, typename TDRE::ElementType   );
-   BLAZE_CONSTRAINT_MUST_BE_SAME_TYPE( DET, typename SRE::ElementType    );
-   BLAZE_CONSTRAINT_MUST_BE_SAME_TYPE( SET, typename SRE::ElementType    );
-   BLAZE_CONSTRAINT_MUST_BE_SAME_TYPE( SET, typename TSRE::ElementType   );
-   BLAZE_CONSTRAINT_MUST_BE_SAME_TYPE( SET, typename DRE::ElementType    );
-   BLAZE_CONSTRAINT_MUST_BE_SAME_TYPE( MT , typename OMT::OppositeType   );
-   BLAZE_CONSTRAINT_MUST_BE_SAME_TYPE( MT , typename TMT::TransposeType  );
-   BLAZE_CONSTRAINT_MUST_BE_SAME_TYPE( VT , typename TVT::TransposeType  );
-   BLAZE_CONSTRAINT_MUST_BE_SAME_TYPE( DRE, typename TDRE::TransposeType );
-   BLAZE_CONSTRAINT_MUST_BE_SAME_TYPE( SRE, typename TSRE::TransposeType );
+   BLAZE_CONSTRAINT_MUST_BE_SAME_TYPE( MET, blaze::ElementType_<OMT>    );
+   BLAZE_CONSTRAINT_MUST_BE_SAME_TYPE( MET, blaze::ElementType_<TMT>    );
+   BLAZE_CONSTRAINT_MUST_BE_SAME_TYPE( MET, blaze::ElementType_<TOMT>   );
+   BLAZE_CONSTRAINT_MUST_BE_SAME_TYPE( VET, blaze::ElementType_<TVT>    );
+   BLAZE_CONSTRAINT_MUST_BE_SAME_TYPE( DET, blaze::ElementType_<DRE>    );
+   BLAZE_CONSTRAINT_MUST_BE_SAME_TYPE( DET, blaze::ElementType_<TDRE>   );
+   BLAZE_CONSTRAINT_MUST_BE_SAME_TYPE( DET, blaze::ElementType_<SRE>    );
+   BLAZE_CONSTRAINT_MUST_BE_SAME_TYPE( SET, blaze::ElementType_<SRE>    );
+   BLAZE_CONSTRAINT_MUST_BE_SAME_TYPE( SET, blaze::ElementType_<TSRE>   );
+   BLAZE_CONSTRAINT_MUST_BE_SAME_TYPE( SET, blaze::ElementType_<DRE>    );
+   BLAZE_CONSTRAINT_MUST_BE_SAME_TYPE( MT , blaze::OppositeType_<OMT>   );
+   BLAZE_CONSTRAINT_MUST_BE_SAME_TYPE( MT , blaze::TransposeType_<TMT>  );
+   BLAZE_CONSTRAINT_MUST_BE_SAME_TYPE( VT , blaze::TransposeType_<TVT>  );
+   BLAZE_CONSTRAINT_MUST_BE_SAME_TYPE( DRE, blaze::TransposeType_<TDRE> );
+   BLAZE_CONSTRAINT_MUST_BE_SAME_TYPE( SRE, blaze::TransposeType_<TSRE> );
 
    BLAZE_CONSTRAINT_MUST_BE_MATVECMULTEXPR_TYPE( MatVecMultExprType  );
    BLAZE_CONSTRAINT_MUST_BE_MATVECMULTEXPR_TYPE( TMatVecMultExprType );

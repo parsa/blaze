@@ -43,6 +43,7 @@
 #include <sstream>
 #include <stdexcept>
 #include <string>
+#include <blaze/math/Aliases.h>
 #include <blaze/math/CompressedMatrix.h>
 #include <blaze/math/constraints/Matrix.h>
 #include <blaze/math/DenseSubmatrix.h>
@@ -192,7 +193,7 @@ void ClassTest::runStaticMatrixTests( const MT& src )
 {
    BLAZE_CONSTRAINT_MUST_BE_MATRIX_TYPE( MT );
 
-   typedef typename MT::ElementType  ET;
+   typedef blaze::ElementType_<MT>  ET;
 
    {
       blaze::StaticMatrix<ET,M,N,blaze::rowMajor> dst;
@@ -225,7 +226,7 @@ void ClassTest::runDynamicMatrixTests( const MT& src )
 {
    BLAZE_CONSTRAINT_MUST_BE_MATRIX_TYPE( MT );
 
-   typedef typename MT::ElementType  ET;
+   typedef blaze::ElementType_<MT>  ET;
 
    {
       blaze::DynamicMatrix<ET,blaze::rowMajor> dst;
@@ -270,7 +271,7 @@ void ClassTest::runDenseSubmatrixTests( const MT& src )
 {
    BLAZE_CONSTRAINT_MUST_BE_MATRIX_TYPE( MT );
 
-   typedef typename MT::ElementType                     ET;
+   typedef blaze::ElementType_<MT>                      ET;
    typedef blaze::DynamicMatrix<ET,blaze::rowMajor>     RM;
    typedef blaze::DynamicMatrix<ET,blaze::columnMajor>  CM;
 
@@ -307,7 +308,7 @@ void ClassTest::runCompressedMatrixTests( const MT& src )
 {
    BLAZE_CONSTRAINT_MUST_BE_MATRIX_TYPE( MT );
 
-   typedef typename MT::ElementType  ET;
+   typedef blaze::ElementType_<MT>  ET;
 
    {
       blaze::CompressedMatrix<ET,blaze::rowMajor> dst;
@@ -352,7 +353,7 @@ void ClassTest::runSparseSubmatrixTests( const MT& src )
 {
    BLAZE_CONSTRAINT_MUST_BE_MATRIX_TYPE( MT );
 
-   typedef typename MT::ElementType                        ET;
+   typedef blaze::ElementType_<MT>                         ET;
    typedef blaze::CompressedMatrix<ET,blaze::rowMajor>     RM;
    typedef blaze::CompressedMatrix<ET,blaze::columnMajor>  CM;
 

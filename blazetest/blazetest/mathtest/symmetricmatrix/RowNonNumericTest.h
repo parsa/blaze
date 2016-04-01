@@ -161,7 +161,7 @@ class RowNonNumericTest
 template< typename ST >  // Type of the symmetric matrix
 void RowNonNumericTest::testAssignment()
 {
-   typedef typename blaze::RowExprTrait<ST>::Type  RT;
+   typedef blaze::RowExprTrait_<ST>  RT;
 
 
    //=====================================================================================

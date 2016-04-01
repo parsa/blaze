@@ -157,7 +157,7 @@ class SubmatrixTest
 template< typename DT >  // Type of the diagonal matrix
 void SubmatrixTest::testAssignment()
 {
-   typedef typename blaze::SubmatrixExprTrait<DT,blaze::unaligned>::Type  SMT;
+   typedef blaze::SubmatrixExprTrait_<DT,blaze::unaligned>  SMT;
 
 
    //=====================================================================================
@@ -836,7 +836,7 @@ void SubmatrixTest::testAssignment()
 template< typename DT >  // Type of the diagonal matrix
 void SubmatrixTest::testAddAssign()
 {
-   typedef typename blaze::SubmatrixExprTrait<DT,blaze::unaligned>::Type  SMT;
+   typedef blaze::SubmatrixExprTrait_<DT,blaze::unaligned>  SMT;
 
 
    //=====================================================================================
@@ -1515,7 +1515,7 @@ void SubmatrixTest::testAddAssign()
 template< typename DT >  // Type of the diagonal matrix
 void SubmatrixTest::testSubAssign()
 {
-   typedef typename blaze::SubmatrixExprTrait<DT,blaze::unaligned>::Type  SMT;
+   typedef blaze::SubmatrixExprTrait_<DT,blaze::unaligned>  SMT;
 
 
    //=====================================================================================

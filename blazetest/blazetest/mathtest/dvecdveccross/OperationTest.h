@@ -44,6 +44,7 @@
 #include <stdexcept>
 #include <string>
 #include <typeinfo>
+#include <blaze/math/Aliases.h>
 #include <blaze/math/CompressedVector.h>
 #include <blaze/math/constraints/Computation.h>
 #include <blaze/math/constraints/DenseVector.h>
@@ -92,24 +93,24 @@ class OperationTest
 {
  private:
    //**Type definitions****************************************************************************
-   typedef typename VT1::ElementType  ET1;  //!< Element type 1
-   typedef typename VT2::ElementType  ET2;  //!< Element type 2
+   typedef blaze::ElementType_<VT1>  ET1;  //!< Element type 1
+   typedef blaze::ElementType_<VT2>  ET2;  //!< Element type 2
 
-   typedef typename blaze::CrossTrait<VT1,VT2>::Type  DRE;   //!< Dense result type
-   typedef typename DRE::TransposeType                TDRE;  //!< Transpose dense result type
-   typedef typename DRE::ElementType                  DET;   //!< Element type of the dense result
+   typedef blaze::CrossTrait_<VT1,VT2>  DRE;   //!< Dense result type
+   typedef blaze::TransposeType_<DRE>   TDRE;  //!< Transpose dense result type
+   typedef blaze::ElementType_<DRE>     DET;   //!< Element type of the dense result
 
    typedef blaze::CompressedVector<DET,false>  SRE;   //!< Sparse result type
-   typedef typename SRE::TransposeType         TSRE;  //!< Transpose sparse result type
-   typedef typename SRE::ElementType           SET;   //!< Element type of the sparse result
+   typedef blaze::TransposeType_<SRE>          TSRE;  //!< Transpose sparse result type
+   typedef blaze::ElementType_<SRE>            SET;   //!< Element type of the sparse result
 
-   typedef blaze::DynamicVector<ET1,false>            RT1;   //!< Reference type 1
-   typedef blaze::CompressedVector<ET2,false>         RT2;   //!< Reference type 2
-   typedef typename blaze::CrossTrait<RT1,RT2>::Type  RRE;   //!< Reference result type
-   typedef typename RRE::TransposeType                TRRE;  //!< Transpose reference result type
+   typedef blaze::DynamicVector<ET1,false>     RT1;   //!< Reference type 1
+   typedef blaze::CompressedVector<ET2,false>  RT2;   //!< Reference type 2
+   typedef blaze::CrossTrait_<RT1,RT2>         RRE;   //!< Reference result type
+   typedef blaze::TransposeType_<RRE>          TRRE;  //!< Transpose reference result type
 
    //! Type of the cross product expression
-   typedef typename blaze::CrossExprTrait<VT1,VT2>::Type  CrossExprType;
+   typedef blaze::CrossExprTrait_<VT1,VT2>  CrossExprType;
    //**********************************************************************************************
 
  public:

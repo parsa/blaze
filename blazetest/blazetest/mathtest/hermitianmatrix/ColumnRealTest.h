@@ -160,7 +160,7 @@ class ColumnRealTest
 template< typename HT >  // Type of the Hermitian matrix
 void ColumnRealTest::testAssignment()
 {
-   typedef typename blaze::ColumnExprTrait<HT>::Type  CT;
+   typedef blaze::ColumnExprTrait_<HT>  CT;
 
 
    //=====================================================================================
@@ -275,7 +275,7 @@ void ColumnRealTest::testAssignment()
 template< typename HT >  // Type of the Hermitian matrix
 void ColumnRealTest::testAddAssign()
 {
-   typedef typename blaze::ColumnExprTrait<HT>::Type  CT;
+   typedef blaze::ColumnExprTrait_<HT>  CT;
 
 
    //=====================================================================================
@@ -390,7 +390,7 @@ void ColumnRealTest::testAddAssign()
 template< typename HT >  // Type of the Hermitian matrix
 void ColumnRealTest::testSubAssign()
 {
-   typedef typename blaze::ColumnExprTrait<HT>::Type  CT;
+   typedef blaze::ColumnExprTrait_<HT>  CT;
 
 
    //=====================================================================================
@@ -505,7 +505,7 @@ void ColumnRealTest::testSubAssign()
 template< typename HT >  // Type of the Hermitian matrix
 void ColumnRealTest::testMultAssign()
 {
-   typedef typename blaze::ColumnExprTrait<HT>::Type  CT;
+   typedef blaze::ColumnExprTrait_<HT>  CT;
 
 
    //=====================================================================================

@@ -157,7 +157,7 @@ class SubmatrixRealTest
 template< typename HT >  // Type of the Hermitian matrix
 void SubmatrixRealTest::testAssignment()
 {
-   typedef typename blaze::SubmatrixExprTrait<HT,blaze::unaligned>::Type  SMT;
+   typedef blaze::SubmatrixExprTrait_<HT,blaze::unaligned>  SMT;
 
 
    //=====================================================================================
@@ -1734,7 +1734,7 @@ void SubmatrixRealTest::testAssignment()
 template< typename HT >  // Type of the Hermitian matrix
 void SubmatrixRealTest::testAddAssign()
 {
-   typedef typename blaze::SubmatrixExprTrait<HT,blaze::unaligned>::Type  SMT;
+   typedef blaze::SubmatrixExprTrait_<HT,blaze::unaligned>  SMT;
 
 
    //=====================================================================================
@@ -3311,7 +3311,7 @@ void SubmatrixRealTest::testAddAssign()
 template< typename HT >  // Type of the Hermitian matrix
 void SubmatrixRealTest::testSubAssign()
 {
-   typedef typename blaze::SubmatrixExprTrait<HT,blaze::unaligned>::Type  SMT;
+   typedef blaze::SubmatrixExprTrait_<HT,blaze::unaligned>  SMT;
 
 
    //=====================================================================================

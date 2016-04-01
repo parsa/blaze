@@ -44,6 +44,7 @@
 #include <stdexcept>
 #include <string>
 #include <typeinfo>
+#include <blaze/math/Aliases.h>
 #include <blaze/math/CompressedMatrix.h>
 #include <blaze/math/constraints/Computation.h>
 #include <blaze/math/constraints/DenseMatrix.h>
@@ -102,49 +103,49 @@ class OperationTest
 {
  private:
    //**Type definitions****************************************************************************
-   typedef typename MT1::ElementType  ET1;  //!< Element type 1
-   typedef typename MT2::ElementType  ET2;  //!< Element type 2
+   typedef blaze::ElementType_<MT1>  ET1;  //!< Element type 1
+   typedef blaze::ElementType_<MT2>  ET2;  //!< Element type 2
 
-   typedef typename MT1::OppositeType    OMT1;   //!< Matrix type 1 with opposite storage order
-   typedef typename MT2::OppositeType    OMT2;   //!< Matrix type 2 with opposite storage order
-   typedef typename MT1::TransposeType   TMT1;   //!< Transpose matrix type 1
-   typedef typename MT2::TransposeType   TMT2;   //!< Transpose matrix type 2
-   typedef typename OMT1::TransposeType  TOMT1;  //!< Transpose matrix type 1 with opposite storage order
-   typedef typename OMT2::TransposeType  TOMT2;  //!< Transpose matrix type 2 with opposite storage order
+   typedef blaze::OppositeType_<MT1>    OMT1;   //!< Matrix type 1 with opposite storage order
+   typedef blaze::OppositeType_<MT2>    OMT2;   //!< Matrix type 2 with opposite storage order
+   typedef blaze::TransposeType_<MT1>   TMT1;   //!< Transpose matrix type 1
+   typedef blaze::TransposeType_<MT2>   TMT2;   //!< Transpose matrix type 2
+   typedef blaze::TransposeType_<OMT1>  TOMT1;  //!< Transpose matrix type 1 with opposite storage order
+   typedef blaze::TransposeType_<OMT2>  TOMT2;  //!< Transpose matrix type 2 with opposite storage order
 
    //! Dense result type
-   typedef typename blaze::SubTrait<MT1,MT2>::Type  DRE;
+   typedef blaze::SubTrait_<MT1,MT2>  DRE;
 
-   typedef typename DRE::ElementType     DET;    //!< Element type of the dense result
-   typedef typename DRE::OppositeType    ODRE;   //!< Dense result type with opposite storage order
-   typedef typename DRE::TransposeType   TDRE;   //!< Transpose dense result type
-   typedef typename ODRE::TransposeType  TODRE;  //!< Transpose dense result type with opposite storage order
+   typedef blaze::ElementType_<DRE>     DET;    //!< Element type of the dense result
+   typedef blaze::OppositeType_<DRE>    ODRE;   //!< Dense result type with opposite storage order
+   typedef blaze::TransposeType_<DRE>   TDRE;   //!< Transpose dense result type
+   typedef blaze::TransposeType_<ODRE>  TODRE;  //!< Transpose dense result type with opposite storage order
 
    //! Sparse result type
-   typedef typename MatchAdaptor< DRE, blaze::CompressedMatrix<DET,false> >::Type  SRE;
+   typedef MatchAdaptor_< DRE, blaze::CompressedMatrix<DET,false> >  SRE;
 
-   typedef typename SRE::ElementType     SET;    //!< Element type of the sparse result
-   typedef typename SRE::OppositeType    OSRE;   //!< Sparse result type with opposite storage order
-   typedef typename SRE::TransposeType   TSRE;   //!< Transpose sparse result type
-   typedef typename OSRE::TransposeType  TOSRE;  //!< Transpose sparse result type with opposite storage order
+   typedef blaze::ElementType_<SRE>     SET;    //!< Element type of the sparse result
+   typedef blaze::OppositeType_<SRE>    OSRE;   //!< Sparse result type with opposite storage order
+   typedef blaze::TransposeType_<SRE>   TSRE;   //!< Transpose sparse result type
+   typedef blaze::TransposeType_<OSRE>  TOSRE;  //!< Transpose sparse result type with opposite storage order
 
    typedef blaze::DynamicMatrix<ET1,false>  RT1;  //!< Reference type 1
    typedef blaze::DynamicMatrix<ET2,false>  RT2;  //!< Reference type 2
 
    //! Reference result type
-   typedef typename MatchSymmetry< DRE, typename blaze::SubTrait<RT1,RT2>::Type >::Type  RRE;
+   typedef MatchSymmetry_< DRE, blaze::SubTrait_<RT1,RT2> >  RRE;
 
    //! Type of the matrix/matrix subtraction expression
-   typedef typename blaze::SubExprTrait<MT1,MT2>::Type  MatMatSubExprType;
+   typedef blaze::SubExprTrait_<MT1,MT2>  MatMatSubExprType;
 
    //! Type of the matrix/transpose matrix subtraction expression
-   typedef typename blaze::SubExprTrait<MT1,OMT2>::Type  MatTMatSubExprType;
+   typedef blaze::SubExprTrait_<MT1,OMT2>  MatTMatSubExprType;
 
    //! Type of the transpose matrix/matrix subtraction expression
-   typedef typename blaze::SubExprTrait<OMT1,MT2>::Type  TMatMatSubExprType;
+   typedef blaze::SubExprTrait_<OMT1,MT2>  TMatMatSubExprType;
 
    //! Type of the transpose matrix/transpose matrix subtraction expression
-   typedef typename blaze::SubExprTrait<OMT1,OMT2>::Type  TMatTMatSubExprType;
+   typedef blaze::SubExprTrait_<OMT1,OMT2>  TMatTMatSubExprType;
    //**********************************************************************************************
 
  public:
@@ -267,30 +268,30 @@ class OperationTest
    BLAZE_CONSTRAINT_MUST_BE_ROW_MAJOR_MATRIX_TYPE   ( TODRE );
    BLAZE_CONSTRAINT_MUST_BE_ROW_MAJOR_MATRIX_TYPE   ( TOSRE );
 
-   BLAZE_CONSTRAINT_MUST_BE_SAME_TYPE( ET1, typename OMT1::ElementType   );
-   BLAZE_CONSTRAINT_MUST_BE_SAME_TYPE( ET2, typename OMT2::ElementType   );
-   BLAZE_CONSTRAINT_MUST_BE_SAME_TYPE( ET1, typename TMT1::ElementType   );
-   BLAZE_CONSTRAINT_MUST_BE_SAME_TYPE( ET2, typename TMT2::ElementType   );
-   BLAZE_CONSTRAINT_MUST_BE_SAME_TYPE( ET1, typename TOMT1::ElementType  );
-   BLAZE_CONSTRAINT_MUST_BE_SAME_TYPE( ET2, typename TOMT2::ElementType  );
-   BLAZE_CONSTRAINT_MUST_BE_SAME_TYPE( DET, typename DRE::ElementType    );
-   BLAZE_CONSTRAINT_MUST_BE_SAME_TYPE( DET, typename ODRE::ElementType   );
-   BLAZE_CONSTRAINT_MUST_BE_SAME_TYPE( DET, typename TDRE::ElementType   );
-   BLAZE_CONSTRAINT_MUST_BE_SAME_TYPE( DET, typename TODRE::ElementType  );
-   BLAZE_CONSTRAINT_MUST_BE_SAME_TYPE( DET, typename SRE::ElementType    );
-   BLAZE_CONSTRAINT_MUST_BE_SAME_TYPE( SET, typename SRE::ElementType    );
-   BLAZE_CONSTRAINT_MUST_BE_SAME_TYPE( SET, typename OSRE::ElementType   );
-   BLAZE_CONSTRAINT_MUST_BE_SAME_TYPE( SET, typename TSRE::ElementType   );
-   BLAZE_CONSTRAINT_MUST_BE_SAME_TYPE( SET, typename TOSRE::ElementType  );
-   BLAZE_CONSTRAINT_MUST_BE_SAME_TYPE( SET, typename DRE::ElementType    );
-   BLAZE_CONSTRAINT_MUST_BE_SAME_TYPE( MT1, typename OMT1::OppositeType  );
-   BLAZE_CONSTRAINT_MUST_BE_SAME_TYPE( MT2, typename OMT2::OppositeType  );
-   BLAZE_CONSTRAINT_MUST_BE_SAME_TYPE( MT1, typename TMT1::TransposeType );
-   BLAZE_CONSTRAINT_MUST_BE_SAME_TYPE( MT2, typename TMT2::TransposeType );
-   BLAZE_CONSTRAINT_MUST_BE_SAME_TYPE( DRE, typename ODRE::OppositeType  );
-   BLAZE_CONSTRAINT_MUST_BE_SAME_TYPE( DRE, typename TDRE::TransposeType );
-   BLAZE_CONSTRAINT_MUST_BE_SAME_TYPE( SRE, typename OSRE::OppositeType  );
-   BLAZE_CONSTRAINT_MUST_BE_SAME_TYPE( SRE, typename TSRE::TransposeType );
+   BLAZE_CONSTRAINT_MUST_BE_SAME_TYPE( ET1, blaze::ElementType_<OMT1>   );
+   BLAZE_CONSTRAINT_MUST_BE_SAME_TYPE( ET2, blaze::ElementType_<OMT2>   );
+   BLAZE_CONSTRAINT_MUST_BE_SAME_TYPE( ET1, blaze::ElementType_<TMT1>   );
+   BLAZE_CONSTRAINT_MUST_BE_SAME_TYPE( ET2, blaze::ElementType_<TMT2>   );
+   BLAZE_CONSTRAINT_MUST_BE_SAME_TYPE( ET1, blaze::ElementType_<TOMT1>  );
+   BLAZE_CONSTRAINT_MUST_BE_SAME_TYPE( ET2, blaze::ElementType_<TOMT2>  );
+   BLAZE_CONSTRAINT_MUST_BE_SAME_TYPE( DET, blaze::ElementType_<DRE>    );
+   BLAZE_CONSTRAINT_MUST_BE_SAME_TYPE( DET, blaze::ElementType_<ODRE>   );
+   BLAZE_CONSTRAINT_MUST_BE_SAME_TYPE( DET, blaze::ElementType_<TDRE>   );
+   BLAZE_CONSTRAINT_MUST_BE_SAME_TYPE( DET, blaze::ElementType_<TODRE>  );
+   BLAZE_CONSTRAINT_MUST_BE_SAME_TYPE( DET, blaze::ElementType_<SRE>    );
+   BLAZE_CONSTRAINT_MUST_BE_SAME_TYPE( SET, blaze::ElementType_<SRE>    );
+   BLAZE_CONSTRAINT_MUST_BE_SAME_TYPE( SET, blaze::ElementType_<OSRE>   );
+   BLAZE_CONSTRAINT_MUST_BE_SAME_TYPE( SET, blaze::ElementType_<TSRE>   );
+   BLAZE_CONSTRAINT_MUST_BE_SAME_TYPE( SET, blaze::ElementType_<TOSRE>  );
+   BLAZE_CONSTRAINT_MUST_BE_SAME_TYPE( SET, blaze::ElementType_<DRE>    );
+   BLAZE_CONSTRAINT_MUST_BE_SAME_TYPE( MT1, blaze::OppositeType_<OMT1>  );
+   BLAZE_CONSTRAINT_MUST_BE_SAME_TYPE( MT2, blaze::OppositeType_<OMT2>  );
+   BLAZE_CONSTRAINT_MUST_BE_SAME_TYPE( MT1, blaze::TransposeType_<TMT1> );
+   BLAZE_CONSTRAINT_MUST_BE_SAME_TYPE( MT2, blaze::TransposeType_<TMT2> );
+   BLAZE_CONSTRAINT_MUST_BE_SAME_TYPE( DRE, blaze::OppositeType_<ODRE>  );
+   BLAZE_CONSTRAINT_MUST_BE_SAME_TYPE( DRE, blaze::TransposeType_<TDRE> );
+   BLAZE_CONSTRAINT_MUST_BE_SAME_TYPE( SRE, blaze::OppositeType_<OSRE>  );
+   BLAZE_CONSTRAINT_MUST_BE_SAME_TYPE( SRE, blaze::TransposeType_<TSRE> );
 
    BLAZE_CONSTRAINT_MUST_BE_MATMATSUBEXPR_TYPE( MatMatSubExprType   );
    BLAZE_CONSTRAINT_MUST_BE_MATMATSUBEXPR_TYPE( MatTMatSubExprType  );

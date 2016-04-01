@@ -44,6 +44,7 @@
 #include <stdexcept>
 #include <string>
 #include <typeinfo>
+#include <blaze/math/Aliases.h>
 #include <blaze/math/DenseMatrix.h>
 #include <blaze/math/DenseSubmatrix.h>
 #include <blaze/math/shims/IsDefault.h>
@@ -185,7 +186,7 @@ void DenseTest::testRandom1x1()
           << "   Matrix type:\n"
           << "     " << typeid( Type ).name() << "\n"
           << "   Element type:\n"
-          << "     " << typeid( typename Type::ElementType ).name() << "\n"
+          << "     " << typeid( blaze::ElementType_<Type> ).name() << "\n"
           << "   Result invert   ():\n" << A << "\n"
           << "   Result invertNxN():\n" << B << "\n";
       throw std::runtime_error( oss.str() );
@@ -234,7 +235,7 @@ void DenseTest::testRandom2x2()
           << "   Matrix type:\n"
           << "     " << typeid( Type ).name() << "\n"
           << "   Element type:\n"
-          << "     " << typeid( typename Type::ElementType ).name() << "\n"
+          << "     " << typeid( blaze::ElementType_<Type> ).name() << "\n"
           << "   Result invert   ():\n" << A << "\n"
           << "   Result invert2x2():\n" << B << "\n"
           << "   Result invertNxN():\n" << C << "\n";
@@ -284,7 +285,7 @@ void DenseTest::testRandom3x3()
           << "   Matrix type:\n"
           << "     " << typeid( Type ).name() << "\n"
           << "   Element type:\n"
-          << "     " << typeid( typename Type::ElementType ).name() << "\n"
+          << "     " << typeid( blaze::ElementType_<Type> ).name() << "\n"
           << "   Result invert   ():\n" << A << "\n"
           << "   Result invert3x3():\n" << B << "\n"
           << "   Result invertNxN():\n" << C << "\n";
@@ -334,7 +335,7 @@ void DenseTest::testRandom4x4()
           << "   Matrix type:\n"
           << "     " << typeid( Type ).name() << "\n"
           << "   Element type:\n"
-          << "     " << typeid( typename Type::ElementType ).name() << "\n"
+          << "     " << typeid( blaze::ElementType_<Type> ).name() << "\n"
           << "   Result invert   ():\n" << A << "\n"
           << "   Result invert4x4():\n" << B << "\n"
           << "   Result invertNxN():\n" << C << "\n";
@@ -384,7 +385,7 @@ void DenseTest::testRandom5x5()
           << "   Matrix type:\n"
           << "     " << typeid( Type ).name() << "\n"
           << "   Element type:\n"
-          << "     " << typeid( typename Type::ElementType ).name() << "\n"
+          << "     " << typeid( blaze::ElementType_<Type> ).name() << "\n"
           << "   Result invert   ():\n" << A << "\n"
           << "   Result invert5x5():\n" << B << "\n"
           << "   Result invertNxN():\n" << C << "\n";
@@ -434,7 +435,7 @@ void DenseTest::testRandom6x6()
           << "   Matrix type:\n"
           << "     " << typeid( Type ).name() << "\n"
           << "   Element type:\n"
-          << "     " << typeid( typename Type::ElementType ).name() << "\n"
+          << "     " << typeid( blaze::ElementType_<Type> ).name() << "\n"
           << "   Result invert   ():\n" << A << "\n"
           << "   Result invert6x6():\n" << B << "\n"
           << "   Result invertNxN():\n" << C << "\n";
@@ -467,7 +468,7 @@ void DenseTest::testRandomNxN()
    using blaze::byLDLH;
    using blaze::byLLH;
 
-   typedef typename Type::ElementType  ET;
+   typedef blaze::ElementType_<Type>  ET;
 
 
    //=====================================================================================
