@@ -79,41 +79,32 @@ struct MatchAdaptor
  private:
    //**********************************************************************************************
    /*! \cond BLAZE_INTERNAL */
-   typedef blaze::RemoveAdaptor_<T2>  Tmp;
+   using Tmp = blaze::RemoveAdaptor_<T2>;
    /*! \endcond */
    //**********************************************************************************************
 
  public:
    //**********************************************************************************************
    /*! \cond BLAZE_INTERNAL */
-   typedef typename blaze::If< blaze::IsLower<T1>
-                             , typename blaze::If< blaze::IsUpper<T1>
-                                                 , blaze::DiagonalMatrix<Tmp>
-                                                 , typename blaze::If< blaze::IsStrictlyLower<T1>
-                                                                     , blaze::StrictlyLowerMatrix<Tmp>
-                                                                     , typename blaze::If< blaze::IsUniLower<T1>
-                                                                                         , blaze::UniLowerMatrix<Tmp>
-                                                                                         , blaze::LowerMatrix<Tmp>
-                                                                                         >::Type
-                                                                     >::Type
-                                                 >::Type
-                             , typename blaze::If< blaze::IsUpper<T1>
-                                                 , typename blaze::If< blaze::IsStrictlyUpper<T1>
-                                                                     , blaze::StrictlyUpperMatrix<Tmp>
-                                                                     , typename blaze::If< blaze::IsUniUpper<T1>
-                                                                                         , blaze::UniUpperMatrix<Tmp>
-                                                                                         , blaze::UpperMatrix<Tmp>
-                                                                                         >::Type
-                                                                     >::Type
-                                                 , typename blaze::If< blaze::IsSymmetric<T1>
-                                                                     , blaze::SymmetricMatrix<Tmp>
-                                                                     , typename blaze::If< blaze::IsHermitian<T1>
-                                                                                         , blaze::HermitianMatrix<Tmp>
-                                                                                         , T2
-                                                                                         >::Type
-                                                                     >::Type
-                                                 >::Type
-                             >::Type  Type;
+   using Type =  blaze::If_< blaze::IsLower<T1>
+                           , blaze::If_< blaze::IsUpper<T1>
+                                       , blaze::DiagonalMatrix<Tmp>
+                                       , blaze::If_< blaze::IsStrictlyLower<T1>
+                                                   , blaze::StrictlyLowerMatrix<Tmp>
+                                                   , blaze::If_< blaze::IsUniLower<T1>
+                                                               , blaze::UniLowerMatrix<Tmp>
+                                                               , blaze::LowerMatrix<Tmp> > > >
+                           , blaze::If_< blaze::IsUpper<T1>
+                                       , blaze::If_< blaze::IsStrictlyUpper<T1>
+                                                   , blaze::StrictlyUpperMatrix<Tmp>
+                                                   , blaze::If_< blaze::IsUniUpper<T1>
+                                                               , blaze::UniUpperMatrix<Tmp>
+                                                               , blaze::UpperMatrix<Tmp> > >
+                                       , blaze::If_< blaze::IsSymmetric<T1>
+                                                   , blaze::SymmetricMatrix<Tmp>
+                                                   , blaze::If_< blaze::IsHermitian<T1>
+                                                               , blaze::HermitianMatrix<Tmp>
+                                                               , T2 > > > >;
    /*! \endcond */
    //**********************************************************************************************
 
@@ -125,6 +116,24 @@ struct MatchAdaptor
    /*! \endcond */
    //**********************************************************************************************
 };
+//*************************************************************************************************
+
+
+//*************************************************************************************************
+/*!\brief Auxiliary alias declaration for the MatchAdaptor class template.
+//
+// The MatchAdaptor_ alias declaration provides a convenient shortcut to access the nested \a Type
+// of the MatchAdaptor class template. For instance, given the types \a T1 and \a T2 the following
+// two type definitions are identical:
+
+   \code
+   using Type1 = typename MatchAdaptor<T>::Type;
+   using Type2 = MatchAdaptor_<T>;
+   \endcode
+*/
+template< typename T1    // The adapted type
+        , typename T2 >  // The type to be adapted
+using MatchAdaptor_ = typename MatchAdaptor<T1,T2>::Type;
 //*************************************************************************************************
 
 } // namespace blazetest
