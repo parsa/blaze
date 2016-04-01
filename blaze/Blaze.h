@@ -323,7 +323,7 @@ namespace blaze {}
 
    // Instantiation of a static 3D column vector. The vector is directly initialized as
    //   ( 4 -2  5 )
-   StaticVector<int,3UL> a( 4, -2, 5 );
+   StaticVector<int,3UL> a( { 4, -2, 5 } );
 
    // Instantiation of a dynamic 3D column vector. Via the subscript operator the values are set to
    //   ( 2  5 -3 )
@@ -378,10 +378,7 @@ namespace blaze {}
    using namespace blaze;
 
    // Instantiating a dynamic 3D column vector
-   DynamicVector<int> x( 3UL );
-   x[0] =  4;
-   x[1] = -1;
-   x[2] =  3;
+   DynamicVector<int> x( { 4, -1, 3 } );
 
    // Instantiating a dynamic 2x3 row-major matrix, preinitialized with 0. Via the function call
    // operator three values of the matrix are explicitly set to get the matrix
@@ -402,7 +399,7 @@ namespace blaze {}
    //   (  3 -1 )
    //   (  0  2 )
    //   ( -1  0 )
-   StaticMatrix<int,3UL,2UL,columnMajor> B( 3, 0, -1, -1, 2, 0 );
+   StaticMatrix<int,3UL,2UL,columnMajor> B( { { 3, -1 }, { 0, 2 }, { -1, 0 } } );
 
    // Performing a matrix/matrix multiplication
    DynamicMatrix<int> C = A * B;
@@ -501,19 +498,13 @@ namespace blaze {}
    //    ( 2 )
    //    ( 3 )
    //
-   DynamicVector<int,columnVector> a( 3UL );
-   a[0] = 1;
-   a[1] = 2;
-   a[2] = 3;
+   DynamicVector<int,columnVector> a( { 1, 2, 3 } );
 
    // Setup of the 3-dimensional dense row vector
    //
    //    ( 4  5  6 )
    //
-   DynamicVector<int,rowVector> b( 3UL );
-   b[0] = 4;
-   b[1] = 5;
-   b[2] = 6;
+   DynamicVector<int,rowVector> b( { 4, 5, 6 } );
    \endcode
 
 // Per default, all vectors in \b Blaze are column vectors:
@@ -1053,21 +1044,6 @@ namespace blaze {}
                                                         // space for at least 3 non-zero elements.
    \endcode
 
-// The \c StaticVector class offers a special initialization constructor. For \c StaticVectors of
-// up to 6 elements (i.e. 6D vectors) the vector elements can be individually specified in the
-// constructor:
-
-   \code
-   using blaze::StaticVector;
-
-   StaticVector<int,1UL>                v13( 4 );
-   StaticVector<long,2UL>               v14( 1L, -2L );
-   StaticVector<float,3UL,columnVector> v15( -0.1F, 4.2F, -7.1F );
-   StaticVector<double,4UL,rowVector>   v16( 1.3, -0.4, 8.3, -1.2 );
-   StaticVector<size_t,5UL>             v17( 3UL, 4UL, 1UL, 9UL, 4UL );
-   StaticVector<long,6UL>               v18( 1L, 3L, -2L, 9L, 4L, -3L );
-   \endcode
-
 // \n \subsection vector_operations_array_construction Array Construction
 //
 // Alternatively, all dense vector classes offer a constructor for an initialization with a dynamic
@@ -1076,15 +1052,14 @@ namespace blaze {}
 // array, the fixed size of the array is used:
 
    \code
-   const double array1* = new double[2];
+   const unique_ptr<double[]> array1( new double[2] );
    // ... Initialization of the dynamic array
+   blaze::StaticVector<double,2UL> v13( 2UL, array1 );
 
-   float array2[4] = { 1.0F, 2.0F, 3.0F, 4.0F };
+   int array2[4] = { 4, -5, -6, 7 };
+   blaze::StaticVector<int,4UL> v14( array2 );
 
-   blaze::StaticVector<double,2UL> v1( 2UL, array1 );
-   blaze::DynamicVector<float>     v2( array2 );
-
-   delete[] array1;
+   blaze::DynamicVector<float> v15( { 1.0F, 2.0F, 3.0F, 4.0F } );
    \endcode
 
 // \n \subsection vector_operations_copy_construction Copy Construction
@@ -1093,13 +1068,13 @@ namespace blaze {}
 // with the same transpose flag (i.e. blaze::rowVector or blaze::columnVector).
 
    \code
-   StaticVector<int,9UL,columnVector> v19( v7 );  // Instantiation of the dense column vector v19
+   StaticVector<int,9UL,columnVector> v16( v7 );  // Instantiation of the dense column vector v19
                                                   // as copy of the dense column vector v7.
-   DynamicVector<int,rowVector> v20( v9 );        // Instantiation of the dense row vector v20 as
+   DynamicVector<int,rowVector> v17( v9 );        // Instantiation of the dense row vector v20 as
                                                   // copy of the sparse row vector v9.
-   CompressedVector<int,columnVector> v21( v1 );  // Instantiation of the sparse column vector v21
+   CompressedVector<int,columnVector> v18( v1 );  // Instantiation of the sparse column vector v21
                                                   // as copy of the dense column vector v1.
-   CompressedVector<float,rowVector> v22( v12 );  // Instantiation of the sparse row vector v22 as
+   CompressedVector<float,rowVector> v19( v12 );  // Instantiation of the sparse row vector v22 as
                                                   // copy of the row vector v12.
    \endcode
 
@@ -1142,11 +1117,10 @@ namespace blaze {}
    blaze::StaticVector<float,2UL> v1;
    blaze::DynamicVector<double,rowVector> v2;
 
-   float  array1[2] = { 1.0F, 2.0F };
-   double array2[5] = { 2.1, 4.0, -1.7, 8.6, -7.2 };
+   float array[2] = { 1.0F, 2.0F };
 
-   v1 = array1;
-   v2 = array2;
+   v1 = array;
+   v2 = { 2.1, 4.0, -1.7, 8.6, -7.2 };
    \endcode
 
 // \n \subsection vector_operations_copy_assignment Copy Assignment
@@ -1546,7 +1520,7 @@ namespace blaze {}
 // For instance, the following computation
 
    \code
-   blaze::StaticVector<int,3UL,rowVector> a( -1, 2, -3 );
+   blaze::StaticVector<int,3UL,rowVector> a( { -1, 2, -3 } );
    blaze::StaticVector<int,3UL,rowVector> b( abs( a ) );
    \endcode
 
@@ -1564,8 +1538,8 @@ namespace blaze {}
 // dense or sparse vector, respectively:
 
    \code
-   blaze::StaticVector<int,4UL,rowVector> a( -5, 2,  7,  4 );
-   blaze::StaticVector<int,4UL,rowVector> b( -5, 2, -7, -4 );
+   blaze::StaticVector<int,4UL,rowVector> a( { -5, 2,  7,  4 } );
+   blaze::StaticVector<int,4UL,rowVector> b( { -5, 2, -7, -4 } );
 
    min( a );  // Returns -5
    min( b );  // Returns -7
@@ -1608,7 +1582,7 @@ namespace blaze {}
    // Creating the vector
    //    ( (-2,-1) )
    //    ( ( 1, 1) )
-   StaticVector<cplx,2UL> a( cplx(-2.0,-1.0), cplx(1.0,1.0) );
+   StaticVector<cplx,2UL> a( { cplx(-2.0,-1.0), cplx(1.0,1.0) } );
 
    // Computing the vector of complex conjugates
    //    ( (-2, 1) )
@@ -1639,7 +1613,7 @@ namespace blaze {}
    // Creating the vector
    //    ( (-2,-1) )
    //    ( ( 1, 1) )
-   StaticVector<cplx,2UL> a( cplx(-2.0,-1.0), cplx(1.0,1.0) );
+   StaticVector<cplx,2UL> a( { cplx(-2.0,-1.0), cplx(1.0,1.0) } );
 
    // Extracting the real part of each vector element
    //    ( -2 )
@@ -1661,7 +1635,7 @@ namespace blaze {}
    // Creating the vector
    //    ( (-2,-1) )
    //    ( ( 1, 1) )
-   StaticVector<cplx,2UL> a( cplx(-2.0,-1.0), cplx(1.0,1.0) );
+   StaticVector<cplx,2UL> a( { cplx(-2.0,-1.0), cplx(1.0,1.0) } );
 
    // Extracting the imaginary part of each vector element
    //    ( -1 )
@@ -1676,7 +1650,7 @@ namespace blaze {}
 // can be used:
 
    \code
-   blaze::StaticVector<float,3UL,rowVector> v( -1.2F, 2.7F, -2.3F );
+   blaze::StaticVector<float,3UL,rowVector> v( { -1.2F, 2.7F, -2.3F } );
 
    const float len    = length   ( v );  // Computes the current length of the vector
    const float sqrlen = sqrLength( v );  // Computes the square length of the vector
@@ -1782,9 +1756,8 @@ namespace blaze {}
    //    ( 1  2  3 )
    //    ( 4  5  6 )
    //
-   DynamicMatrix<int,rowMajor> A( 2UL, 3UL );
-   A(0,0) = 1;   A(0,1) = 2;   A(0,2) = 3;
-   A(1,0) = 4;   A(1,1) = 5;   A(1,2) = 6;
+   DynamicMatrix<int,rowMajor> A( { { 1, 2, 3 },
+                                    { 4, 5, 6 } } );
 
    // Setup of the 3x2 column-major dense matrix
    //
@@ -1792,10 +1765,9 @@ namespace blaze {}
    //    ( 2  5 )
    //    ( 3  6 )
    //
-   DynamicMatrix<int,columnMajor> B( 3UL, 2UL );
-   B(0,0) = 1;   B(0,1) = 4;
-   B(1,0) = 2;   B(1,1) = 5;
-   B(2,0) = 3;   B(2,1) = 6;
+   DynamicMatrix<int,columnMajor> B( { { 1, 4 },
+                                       { 2, 5 },
+                                       { 3, 6 } } );
    \endcode
 
 // Per default, all matrices in \b Blaze are row-major matrices:
@@ -2343,20 +2315,6 @@ namespace blaze {}
                                                    // matrix with capacity for 4 non-zero elements.
    \endcode
 
-// The \c StaticMatrix class offers a special initialization constructor. For \c StaticMatrix of
-// up to 10 elements the matrix elements can be individually specified in the constructor:
-
-   \code
-   using blaze::StaticMatrix;
-
-   StaticMatrix<int,3UL,1UL>               M12( 2, 5, -1 );
-   StaticMatrix<float,2UL,3UL,columnMajor> M13( -0.1F, 4.2F, -7.1F,
-                                                -0.8F, 1.3F,  4.2F );
-   StaticMatrix<double,3UL,3UL,rowVector>  M14( 1.3, -0.4,  8.3,
-                                                0.2, -1.5, -2.6,
-                                                1.3,  9.3, -7.1 );
-   \endcode
-
 // \n \subsection matrix_operations_array_construction Array Construction
 //
 // Alternatively, all dense matrix classes offer a constructor for an initialization with a
@@ -2365,15 +2323,16 @@ namespace blaze {}
 // array as third argument. In case of a static array, the fixed size of the array is used:
 
    \code
-   const double array1* = new double[6];
+   const std::unique_ptr<double[]> array1( new double[6] );
    // ... Initialization of the dynamic array
+   blaze::StaticMatrix<double,2UL,3UL> M12( 2UL, 3UL, array1.get() );
 
-   float array2[3][2] = { { 3.1F, 6.4F }, { -0.9F, -1.2F }, { 4.8F, 0.6F } };
+   int array2[2][2] = { { 4, -5 }, { -6, 7 } };
+   blaze::StaticMatrix<int,2UL,2UL,rowMajor> M13( array2 );
 
-   blaze::StaticMatrix<double,2UL,3UL> v1( 2UL, 3UL, array1 );
-   blaze::DynamicMatrix<float>         v2( array2 );
-
-   delete[] array1;
+   blaze::DynamicMatrix<float,columnMajor> M14( { {  3.1F,  6.4F },
+                                                  { -0.9F, -1.2F },
+                                                  {  4.8F,  0.6F } } );
    \endcode
 
 // \n \subsection matrix_operations_copy_construction Copy Construction
@@ -2434,27 +2393,14 @@ namespace blaze {}
    blaze::StaticMatrix<int,2UL,2UL,columnMajor> M2;
    blaze::DynamicMatrix<double> M3;
 
-   int array1[2][2] = { { 1, 2 }, { 3, 4 } };
-   double array2[3][2] = { { 3.1, 6.4 }, { -0.9, -1.2 }, { 4.8, 0.6 } };
+   int array[2][2] = { { 1, 2 }, { 3, 4 } };
 
-   M1 = array1;
-   M2 = array1;
-   M3 = array2;
+   M1 = array;
+   M2 = array;
+   M3 = { { 3.1, 6.4 }, { -0.9, -1.2 }, { 4.8, 0.6 } };
    \endcode
 
-// Note that due to the different storage order, the matrix M1 is initialized differently than
-// matrix M2:
-
-                          \f$ M1 = \left(\begin{array}{*{2}{c}}
-                          1 & 2 \\
-                          3 & 4 \\
-                          \end{array}\right),\quad
-                          M2 = \left(\begin{array}{*{2}{c}}
-                          1 & 3 \\
-                          2 & 4 \\
-                          \end{array}\right)\f$
-
-// Also note that the dimensions of the static array have to match the size of a \c StaticMatrix,
+// Note that the dimensions of the static array have to match the size of a \c StaticMatrix,
 // whereas a \c DynamicMatrix is resized according to the array dimensions:
 
                           \f$ M1 = \left(\begin{array}{*{2}{c}}
@@ -3094,7 +3040,8 @@ namespace blaze {}
 // For instance, the following computation
 
    \code
-   blaze::StaticMatrix<int,2UL,3UL,rowMajor> A( -1, 2, -3, 4, -5, 6 );
+   blaze::StaticMatrix<int,2UL,3UL,rowMajor> A( { { -1,  2, -3 },
+                                                  {  4, -5,  6 } } );
    blaze::StaticMatrix<int,2UL,3UL,rowMajor> B( abs( A ) );
    \endcode
 
@@ -3111,10 +3058,10 @@ namespace blaze {}
 // dense or sparse matrix, respectively:
 
    \code
-   blaze::StaticMatrix<int,2UL,3UL,rowMajor> A( -5, 2,  7,
-                                                 4, 0,  1 );
-   blaze::StaticMatrix<int,2UL,3UL,rowMajor> B( -5, 2, -7,
-                                                -4, 0, -1 );
+   blaze::StaticMatrix<int,2UL,3UL,rowMajor> A( { { -5, 2, 7 },
+                                                     4, 0, 1 } } );
+   blaze::StaticMatrix<int,2UL,3UL,rowMajor> B( { { -5, 2, -7 },
+                                                  { -4, 0, -1 } } );
 
    min( A );  // Returns -5
    min( B );  // Returns -7
@@ -3157,8 +3104,8 @@ namespace blaze {}
    // Creating the matrix
    //    ( (1,0)  (-2,-1) )
    //    ( (1,1)  ( 0, 1) )
-   StaticMatrix<cplx,2UL,2UL> A( cplx( 1.0, 0.0 ), cplx( -2.0, -1.0 ),
-                                 cplx( 1.0, 1.0 ), cplx(  0.0,  1.0 ) );
+   StaticMatrix<cplx,2UL,2UL> A( { { cplx( 1.0, 0.0 ), cplx( -2.0, -1.0 ) },
+                                   { cplx( 1.0, 1.0 ), cplx(  0.0,  1.0 ) } } );
 
    // Computing the matrix of conjugate values
    //    ( (1, 0)  (-2, 1) )
@@ -3189,8 +3136,8 @@ namespace blaze {}
    // Creating the matrix
    //    ( (1,0)  (-2,-1) )
    //    ( (1,1)  ( 0, 1) )
-   StaticMatrix<cplx,2UL,2UL> A( cplx( 1.0, 0.0 ), cplx( -2.0, -1.0 ),
-                                 cplx( 1.0, 1.0 ), cplx(  0.0,  1.0 ) );
+   StaticMatrix<cplx,2UL,2UL> A( { { cplx( 1.0, 0.0 ), cplx( -2.0, -1.0 ) },
+                                   { cplx( 1.0, 1.0 ), cplx(  0.0,  1.0 ) } } );
 
    // Extracting the real part of each matrix element
    //    ( 1 -2 )
@@ -3212,8 +3159,8 @@ namespace blaze {}
    // Creating the matrix
    //    ( (1,0)  (-2,-1) )
    //    ( (1,1)  ( 0, 1) )
-   StaticMatrix<cplx,2UL,2UL> A( cplx( 1.0, 0.0 ), cplx( -2.0, -1.0 ),
-                                 cplx( 1.0, 1.0 ), cplx(  0.0,  1.0 ) );
+   StaticMatrix<cplx,2UL,2UL> A( { { cplx( 1.0, 0.0 ), cplx( -2.0, -1.0 ) },
+                                   { cplx( 1.0, 1.0 ), cplx(  0.0,  1.0 ) } } );
 
    // Extracting the imaginary part of each matrix element
    //    ( 0 -1 )
@@ -3899,16 +3846,16 @@ namespace blaze {}
    A.erase( 0, 2 );  // Erasing the elements (0,2) and (2,0)
 
    // Construction from a symmetric dense matrix
-   StaticMatrix<double,3UL,3UL> B(  3.0,  8.0, -2.0,
-                                    8.0,  0.0, -1.0,
-                                   -2.0, -1.0,  4.0 );
+   StaticMatrix<double,3UL,3UL> B( { {  3.0,  8.0, -2.0 },
+                                     {  8.0,  0.0, -1.0 },
+                                     { -2.0, -1.0,  4.0 } } );
 
    SymmetricMatrix< DynamicMatrix<double,rowMajor> > C( B );  // OK
 
    // Assignment of a non-symmetric dense matrix
-   StaticMatrix<double,3UL,3UL> D(  3.0,  7.0, -2.0,
-                                    8.0,  0.0, -1.0,
-                                   -2.0, -1.0,  4.0 );
+   StaticMatrix<double,3UL,3UL> D( { {  3.0,  7.0, -2.0 },
+                                     {  8.0,  0.0, -1.0 },
+                                     { -2.0, -1.0,  4.0 } } );
 
    C = D;  // Throws an exception; symmetric invariant would be violated!
    \endcode
@@ -4013,17 +3960,11 @@ namespace blaze {}
 
    // Setup of the 3x2 dynamic matrix
    //
-   //       ( 0 9 )
-   //   B = ( 9 8 )
-   //       ( 0 7 )
+   //       ( 1 2 )
+   //   B = ( 3 4 )
+   //       ( 5 6 )
    //
-   DynamicMatrix<int> B( 3UL, 2UL );
-   B(0,0) = 1;
-   B(0,1) = 2;
-   B(1,0) = 3;
-   B(1,1) = 4;
-   B(2,1) = 5;
-   B(2,2) = 6;
+   DynamicMatrix<int> B( { { 1, 2 }, { 3, 4 }, { 5, 6 } } );
 
    // OK: Assigning B to a submatrix of A1 such that the symmetry can be preserved
    //
@@ -4116,9 +4057,9 @@ namespace blaze {}
 
    \code
    // Inserting the elements (2,4) and (4,2)
-   A.insert( 2, 4, StaticMatrix<int,3UL,3UL>( 1, -4,  5,
-                                              6,  8, -3,
-                                              2, -1,  2 ) );
+   A.insert( 2, 4, StaticMatrix<int,3UL,3UL>( { { 1, -4,  5 },
+                                                { 6,  8, -3 },
+                                                { 2, -1,  2 } } ) );
 
    // Manipulating the elements (2,4) and (4,2)
    A(2,4)(1,1) = -5;
@@ -4482,16 +4423,16 @@ namespace blaze {}
    A.erase( 0, 2 );  // Erasing the elements (0,2) and (2,0)
 
    // Construction from a Hermitian dense matrix
-   StaticMatrix<cplx,3UL,3UL> B( (  3.0,  0.0 ), (  8.0, 2.0 ), ( -2.0,  2.0 ),
-                                 (  8.0,  1.0 ), (  0.0, 0.0 ), ( -1.0, -1.0 ),
-                                 ( -2.0, -2.0 ), ( -1.0, 1.0 ), (  4.0,  0.0 ) );
+   StaticMatrix<cplx,3UL,3UL> B( { { cplx(  3.0,  0.0 ), cplx(  8.0, 2.0 ), cplx( -2.0,  2.0 ) },
+                                   { cplx(  8.0,  1.0 ), cplx(  0.0, 0.0 ), cplx( -1.0, -1.0 ) },
+                                   { cplx( -2.0, -2.0 ), cplx( -1.0, 1.0 ), cplx(  4.0,  0.0 ) } } );
 
    HermitianMatrix< DynamicMatrix<double,rowMajor> > C( B );  // OK
 
    // Assignment of a non-Hermitian dense matrix
-	StaticMatrix<cplx,3UL,3UL> D( (  3.0, 0.0 ), (  7.0, 2.0 ), ( 3.0, 2.0 ),
-                                 (  8.0, 1.0 ), (  0.0, 0.0 ), ( 6.0, 4.0 ),
-                                 ( -2.0, 2.0 ), ( -1.0, 1.0 ), ( 4.0, 0.0 ) );
+	StaticMatrix<cplx,3UL,3UL> D( { { cplx(  3.0, 0.0 ), cplx(  7.0, 2.0 ), cplx( 3.0, 2.0 ) },
+                                   { cplx(  8.0, 1.0 ), cplx(  0.0, 0.0 ), cplx( 6.0, 4.0 ) },
+                                   { cplx( -2.0, 2.0 ), cplx( -1.0, 1.0 ), cplx( 4.0, 0.0 ) } } );
 
    C = D;  // Throws an exception; Hermitian invariant would be violated!
    \endcode
@@ -5376,16 +5317,16 @@ namespace blaze {}
    A.erase( 2, 0 );  // Erasing the lower element (2,0)
 
    // Construction from a lower dense matrix
-   StaticMatrix<double,3UL,3UL> B(  3.0,  0.0,  0.0,
-                                    8.0,  0.0,  0.0,
-                                   -2.0, -1.0,  4.0 );
+   StaticMatrix<double,3UL,3UL> B( { {  3.0,  0.0,  0.0 },
+                                     {  8.0,  0.0,  0.0 },
+                                     { -2.0, -1.0,  4.0 } } );
 
    LowerMatrix< DynamicMatrix<double,rowMajor> > C( B );  // OK
 
    // Assignment of a non-lower dense matrix
-   StaticMatrix<double,3UL,3UL> D(  3.0,  0.0, -2.0,
-                                    8.0,  0.0,  0.0,
-                                   -2.0, -1.0,  4.0 );
+   StaticMatrix<double,3UL,3UL> D( { {  3.0,  0.0, -2.0 },
+                                     {  8.0,  0.0,  0.0 },
+                                     { -2.0, -1.0,  4.0 } } );
 
    C = D;  // Throws an exception; lower matrix invariant would be violated!
    \endcode
@@ -5474,10 +5415,7 @@ namespace blaze {}
    //
    //   v = ( 1 2 3 0 )
    //
-   DynamicVector<int,rowVector> v( 4, 0 );
-   v[0] = 1;
-   v[1] = 2;
-   v[2] = 3;
+   DynamicVector<int,rowVector> v( { 1, 2, 3, 0 } );
 
    // OK: Assigning v to the 2nd row of A1 preserves the lower matrix invariant
    //
@@ -5661,9 +5599,9 @@ namespace blaze {}
 // triangular matrix) of the matrix:
 
    \code
-   const StaticMatrix<int,3UL,3UL> C( 1, -4,  5,
-                                      6,  8, -3,
-                                      2, -1,  2 )
+   const StaticMatrix<int,3UL,3UL> C( { { 1, -4,  5 },
+                                        { 6,  8, -3 },
+                                        { 2, -1,  2 } } )
 
    A(2,4)(1,1) = -5;     // Invalid manipulation of upper matrix element; Results in an exception
    B.insert( 4, 2, C );  // Invalid insertion of the elements (4,2); Results in an exception
@@ -5838,16 +5776,15 @@ namespace blaze {}
    //  ( 0  2  5 -1 -1 )
    //  ( 1  0  0  2  1 )
    //
-   DynamicMatrix<int> A( 3UL, 5UL );
-   A(0,0) = 1;   A(0,1) = 0;   A(0,2) = -2;   A(0,3) =  3;   A(0,4) =  0;
-   A(1,0) = 0;   A(1,1) = 2;   A(1,2) =  5;   A(1,3) = -1;   A(1,4) = -1;
-   A(2,0) = 1;   A(2,1) = 0;   A(2,2) =  0;   A(2,3) =  2;   A(2,4) =  1;
+   DynamicMatrix<int> A( { { 1,  0, -2,  3,  0 },
+                           { 0,  2,  5, -1, -1 },
+                           { 1,  0,  0,  2,  1 } } );
 
    // Setup of the 2-dimensional row vector
    //
    //  ( 18 19 )
    //
-   StaticVector<int,rowVector> vec( 18, 19 );
+   StaticVector<int,rowVector> vec( { 18, 19 } );
 
    // Assigning to the elements (1,2) and (1,3) via a subvector of a row
    //
@@ -6730,17 +6667,11 @@ namespace blaze {}
 
    // Setup of the 3x2 dynamic matrix
    //
-   //       ( 0 9 )
-   //   B = ( 9 8 )
-   //       ( 0 7 )
+   //       ( 1 2 )
+   //   B = ( 3 4 )
+   //       ( 5 6 )
    //
-   DynamicMatrix<int> B( 3UL, 2UL );
-   B(0,0) = 1;
-   B(0,1) = 2;
-   B(1,0) = 3;
-   B(1,1) = 4;
-   B(2,1) = 5;
-   B(2,2) = 6;
+   DynamicMatrix<int> B( { { 1, 2 }, { 3, 4 }, { 5, 6 } } );
 
    // OK: Assigning B to a submatrix of A1 such that the symmetry can be preserved
    //
@@ -7572,14 +7503,14 @@ namespace blaze {}
 // types as element type.
 
    \code
-   blaze::StaticVector<int,3UL> v1( 1, 2, 3 );
+   blaze::StaticVector<int,3UL> v1( { 1, 2, 3 } );
 
    blaze::DynamicVector<double>   v2 = v1 * 1.2;
    blaze::CompressedVector<float> v3 = -0.3F * v1;
    \endcode
 
    \code
-   blaze::StaticMatrix<int,3UL,2UL> M1( 1, 2, 3, 4, 5, 6 );
+   blaze::StaticMatrix<int,3UL,2UL> M1( { { 1, 2 }, { 3, 4 }, { 5, 6 } } );
 
    blaze::DynamicMatrix<double>   M2 = M1 * 1.2;
    blaze::CompressedMatrix<float> M3 = -0.3F * M1;
@@ -7639,12 +7570,8 @@ namespace blaze {}
 // the two vectors:
 
    \code
-   blaze::StaticVector<int,3UL,rowVector> v1( 2, 5, -1 );
-
-   blaze::DynamicVector<int,columnVector> v2( 3UL );
-   v2[0] = -1;
-   v2[1] = 3;
-   v2[2] = -2;
+   blaze::StaticVector<int,3UL,rowVector> v1( {  2, 5, -1 } );
+   blaze::DynamicVector<int,columnVector> v2( { -1, 3, -2 } );
 
    int result = v1 * v2;  // Results in the value 15
    \endcode
@@ -7652,8 +7579,8 @@ namespace blaze {}
 // The \c trans() function can be used to transpose a vector as necessary:
 
    \code
-   blaze::StaticVector<int,3UL,rowVector> v1(  2, 5, -1 );
-   blaze::StaticVector<int,3UL,rowVector> v2( -1, 3, -2 );
+   blaze::StaticVector<int,3UL,rowVector> v1( {  2, 5, -1 } );
+   blaze::StaticVector<int,3UL,rowVector> v2( { -1, 3, -2 } );
 
    int result = v1 * trans( v2 );  // Also results in the value 15
    \endcode
@@ -7662,8 +7589,8 @@ namespace blaze {}
 // to perform an inner product:
 
    \code
-   blaze::StaticVector<int,3UL,rowVector> v1(  2, 5, -1 );
-   blaze::StaticVector<int,3UL,rowVector> v2( -1, 3, -2 );
+   blaze::StaticVector<int,3UL,rowVector> v1( {  2, 5, -1 } );
+   blaze::StaticVector<int,3UL,rowVector> v2( { -1, 3, -2 } );
 
    int result = (v1,v2);  // Inner product between two row vectors
    \endcode
@@ -7680,12 +7607,8 @@ namespace blaze {}
 // the two vectors:
 
    \code
-   blaze::StaticVector<int,3UL,columnVector> v1( 2, 5, -1 );
-
-   blaze::DynamicVector<int,rowVector> v2( 3UL );
-   v2[0] = -1;
-   v2[1] = 3;
-   v2[2] = -2;
+   blaze::StaticVector<int,3UL,columnVector> v1( { 2, 5, -1 } );
+   blaze::DynamicVector<int,rowVector> v2( { -1, 3, -2 } );
 
    StaticMatrix<int,3UL,3UL> M1 = v1 * v2;
    \endcode
@@ -7693,8 +7616,8 @@ namespace blaze {}
 // The \c trans() function can be used to transpose a vector as necessary:
 
    \code
-   blaze::StaticVector<int,3UL,rowVector> v1(  2, 5, -1 );
-   blaze::StaticVector<int,3UL,rowVector> v2( -1, 3, -2 );
+   blaze::StaticVector<int,3UL,rowVector> v1( {  2, 5, -1 } );
+   blaze::StaticVector<int,3UL,rowVector> v2( { -1, 3, -2 } );
 
    int result = trans( v1 ) * v2;
    \endcode
@@ -7723,12 +7646,8 @@ namespace blaze {}
 // realized via the modulo operator (i.e. \c operator%):
 
    \code
-   blaze::StaticVector<int,3UL,columnVector> v1( 2, 5, -1 );
-
-   blaze::DynamicVector<int,columnVector> v2( 3UL );
-   v2[0] = -1;
-   v2[1] = 3;
-   v2[2] = -2;
+   blaze::StaticVector<int,3UL,columnVector> v1( { 2, 5, -1 } );
+   blaze::DynamicVector<int,columnVector> v2( { -1, 3, -2 } );
 
    blaze::StaticVector<int,3UL,columnVector> v3( v1 % v2 );
    \endcode
