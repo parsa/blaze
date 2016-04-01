@@ -208,16 +208,16 @@ namespace blaze {
    A.erase( 0, 2 );  // Erasing the upper element (0,2)
 
    // Construction from an upper dense matrix
-   StaticMatrix<double,3UL,3UL> B( 3.0,  8.0, -2.0,
-                                   0.0,  0.0, -1.0,
-                                   0.0,  0.0,  4.0 );
+   StaticMatrix<double,3UL,3UL> B( { { 3.0,  8.0, -2.0 },
+                                     { 0.0,  0.0, -1.0 },
+                                     { 0.0,  0.0,  4.0 } } );
 
    UpperMatrix< DynamicMatrix<double,rowMajor> > C( B );  // OK
 
    // Assignment of a non-upper dense matrix
-   StaticMatrix<double,3UL,3UL> D(  3.0,  8.0, -2.0,
-                                    0.0,  0.0, -1.0,
-                                   -2.0,  0.0,  4.0 );
+   StaticMatrix<double,3UL,3UL> D( { {  3.0,  8.0, -2.0 },
+                                     {  0.0,  0.0, -1.0 },
+                                     { -2.0,  0.0,  4.0 } } );
 
    C = D;  // Throws an exception; upper matrix invariant would be violated!
    \endcode
@@ -441,9 +441,9 @@ namespace blaze {
 // elements in the lower part of the matrix:
 
    \code
-   const StaticMatrix<int,3UL,3UL> B( 1, -4,  5,
-                                      6,  8, -3,
-                                      2, -1,  2 )
+   const StaticMatrix<int,3UL,3UL> B( { { 1, -4,  5 },
+                                        { 6,  8, -3 },
+                                        { 2, -1,  2 } } )
 
    A.insert( 2, 4, B );  // Inserting the elements (2,4)
    A(4,2)(1,1) = -5;     // Invalid manipulation of lower matrix element; Results in an exception

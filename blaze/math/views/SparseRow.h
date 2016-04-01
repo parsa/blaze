@@ -41,6 +41,7 @@
 //*************************************************************************************************
 
 #include <iterator>
+#include <blaze/math/Aliases.h>
 #include <blaze/math/constraints/ColumnMajorMatrix.h>
 #include <blaze/math/constraints/Computation.h>
 #include <blaze/math/constraints/DenseVector.h>
@@ -377,24 +378,24 @@ class SparseRow : public SparseVector< SparseRow<MT,SO,SF>, true >
 
  public:
    //**Type definitions****************************************************************************
-   typedef SparseRow<MT,SO,SF>                 This;           //!< Type of this SparseRow instance.
-   typedef typename RowTrait<MT>::Type         ResultType;     //!< Result type for expression template evaluations.
-   typedef typename ResultType::TransposeType  TransposeType;  //!< Transpose type for expression template evaluations.
-   typedef typename MT::ElementType            ElementType;    //!< Type of the row elements.
-   typedef typename MT::ReturnType             ReturnType;     //!< Return type for expression template evaluations
-   typedef const SparseRow&                    CompositeType;  //!< Data type for composite expression templates.
+   typedef SparseRow<MT,SO,SF>         This;           //!< Type of this SparseRow instance.
+   typedef RowTrait_<MT>               ResultType;     //!< Result type for expression template evaluations.
+   typedef TransposeType_<ResultType>  TransposeType;  //!< Transpose type for expression template evaluations.
+   typedef ElementType_<MT>            ElementType;    //!< Type of the row elements.
+   typedef ReturnType_<MT>             ReturnType;     //!< Return type for expression template evaluations
+   typedef const SparseRow&            CompositeType;  //!< Data type for composite expression templates.
 
    //! Reference to a constant row value.
-   typedef typename MT::ConstReference  ConstReference;
+   typedef ConstReference_<MT>  ConstReference;
 
    //! Reference to a non-constant row value.
-   typedef If_< IsConst<MT>, ConstReference, typename MT::Reference >  Reference;
+   typedef If_< IsConst<MT>, ConstReference, Reference_<MT> >  Reference;
 
    //! Iterator over constant elements.
-   typedef typename MT::ConstIterator  ConstIterator;
+   typedef ConstIterator_<MT>  ConstIterator;
 
    //! Iterator over non-constant elements.
-   typedef If_< IsConst<MT>, ConstIterator, typename MT::Iterator >  Iterator;
+   typedef If_< IsConst<MT>, ConstIterator, Iterator_<MT> >  Iterator;
    //**********************************************************************************************
 
    //**Compilation flags***************************************************************************
@@ -539,8 +540,7 @@ class SparseRow : public SparseVector< SparseRow<MT,SO,SF>, true >
    friend bool tryMultAssign( const SparseRow<MT2,SO2,SF2>& lhs, const Vector<VT,true>& rhs, size_t index );
 
    template< typename MT2, bool SO2, bool SF2 >
-   friend typename DerestrictTrait< SparseRow<MT2,SO2,SF2> >::Type
-      derestrict( SparseRow<MT2,SO2,SF2>& dm );
+   friend DerestrictTrait_< SparseRow<MT2,SO2,SF2> > derestrict( SparseRow<MT2,SO2,SF2>& dm );
    /*! \endcond */
    //**********************************************************************************************
 
@@ -827,7 +827,7 @@ inline SparseRow<MT,SO,SF>& SparseRow<MT,SO,SF>::operator=( const SparseRow& rhs
       BLAZE_THROW_INVALID_ARGUMENT( "Invalid assignment to restricted matrix" );
    }
 
-   typename DerestrictTrait<This>::Type left( derestrict( *this ) );
+   DerestrictTrait_<This> left( derestrict( *this ) );
 
    if( rhs.canAlias( &matrix_ ) ) {
       const ResultType tmp( rhs );
@@ -869,25 +869,25 @@ inline SparseRow<MT,SO,SF>& SparseRow<MT,SO,SF>::operator=( const DenseVector<VT
 {
    using blaze::assign;
 
-   BLAZE_CONSTRAINT_MUST_BE_DENSE_VECTOR_TYPE  ( typename VT::ResultType );
-   BLAZE_CONSTRAINT_MUST_BE_ROW_VECTOR_TYPE    ( typename VT::ResultType );
-   BLAZE_CONSTRAINT_MUST_NOT_REQUIRE_EVALUATION( typename VT::ResultType );
+   BLAZE_CONSTRAINT_MUST_BE_DENSE_VECTOR_TYPE  ( ResultType_<VT> );
+   BLAZE_CONSTRAINT_MUST_BE_ROW_VECTOR_TYPE    ( ResultType_<VT> );
+   BLAZE_CONSTRAINT_MUST_NOT_REQUIRE_EVALUATION( ResultType_<VT> );
 
    if( size() != (~rhs).size() ) {
       BLAZE_THROW_INVALID_ARGUMENT( "Vector sizes do not match" );
    }
 
-   typedef If_< IsRestricted<MT>, typename VT::CompositeType, const VT& >  Right;
+   typedef If_< IsRestricted<MT>, CompositeType_<VT>, const VT& >  Right;
    Right right( ~rhs );
 
    if( !tryAssign( matrix_, right, row_, 0UL ) ) {
       BLAZE_THROW_INVALID_ARGUMENT( "Invalid assignment to restricted matrix" );
    }
 
-   typename DerestrictTrait<This>::Type left( derestrict( *this ) );
+   DerestrictTrait_<This> left( derestrict( *this ) );
 
    if( IsReference<Right>::value && right.canAlias( &matrix_ ) ) {
-      const typename VT::ResultType tmp( right );
+      const ResultType_<VT> tmp( right );
       left.reset();
       assign( left, tmp );
    }
@@ -924,25 +924,25 @@ inline SparseRow<MT,SO,SF>& SparseRow<MT,SO,SF>::operator=( const SparseVector<V
 {
    using blaze::assign;
 
-   BLAZE_CONSTRAINT_MUST_BE_SPARSE_VECTOR_TYPE ( typename VT::ResultType );
-   BLAZE_CONSTRAINT_MUST_BE_ROW_VECTOR_TYPE    ( typename VT::ResultType );
-   BLAZE_CONSTRAINT_MUST_NOT_REQUIRE_EVALUATION( typename VT::ResultType );
+   BLAZE_CONSTRAINT_MUST_BE_SPARSE_VECTOR_TYPE ( ResultType_<VT> );
+   BLAZE_CONSTRAINT_MUST_BE_ROW_VECTOR_TYPE    ( ResultType_<VT> );
+   BLAZE_CONSTRAINT_MUST_NOT_REQUIRE_EVALUATION( ResultType_<VT> );
 
    if( size() != (~rhs).size() ) {
       BLAZE_THROW_INVALID_ARGUMENT( "Vector sizes do not match" );
    }
 
-   typedef If_< IsRestricted<MT>, typename VT::CompositeType, const VT& >  Right;
+   typedef If_< IsRestricted<MT>, CompositeType_<VT>, const VT& >  Right;
    Right right( ~rhs );
 
    if( !tryAssign( matrix_, right, row_, 0UL ) ) {
       BLAZE_THROW_INVALID_ARGUMENT( "Invalid assignment to restricted matrix" );
    }
 
-   typename DerestrictTrait<This>::Type left( derestrict( *this ) );
+   DerestrictTrait_<This> left( derestrict( *this ) );
 
    if( IsReference<Right>::value && right.canAlias( &matrix_ ) ) {
-      const typename VT::ResultType tmp( right );
+      const ResultType_<VT> tmp( right );
       left.reset();
       left.reserve( tmp.nonZeros() );
       assign( left, tmp );
@@ -984,11 +984,11 @@ inline SparseRow<MT,SO,SF>& SparseRow<MT,SO,SF>::operator+=( const DenseVector<V
    BLAZE_CONSTRAINT_MUST_BE_SPARSE_VECTOR_TYPE ( ResultType );
    BLAZE_CONSTRAINT_MUST_BE_ROW_VECTOR_TYPE    ( ResultType );
    BLAZE_CONSTRAINT_MUST_NOT_REQUIRE_EVALUATION( ResultType );
-   BLAZE_CONSTRAINT_MUST_BE_DENSE_VECTOR_TYPE  ( typename VT::ResultType );
-   BLAZE_CONSTRAINT_MUST_BE_ROW_VECTOR_TYPE    ( typename VT::ResultType );
-   BLAZE_CONSTRAINT_MUST_NOT_REQUIRE_EVALUATION( typename VT::ResultType );
+   BLAZE_CONSTRAINT_MUST_BE_DENSE_VECTOR_TYPE  ( ResultType_<VT> );
+   BLAZE_CONSTRAINT_MUST_BE_ROW_VECTOR_TYPE    ( ResultType_<VT> );
+   BLAZE_CONSTRAINT_MUST_NOT_REQUIRE_EVALUATION( ResultType_<VT> );
 
-   typedef typename AddTrait<ResultType,typename VT::ResultType>::Type  AddType;
+   typedef AddTrait_< ResultType, ResultType_<VT> >  AddType;
 
    BLAZE_CONSTRAINT_MUST_BE_DENSE_VECTOR_TYPE  ( AddType );
    BLAZE_CONSTRAINT_MUST_BE_ROW_VECTOR_TYPE    ( AddType );
@@ -1004,7 +1004,7 @@ inline SparseRow<MT,SO,SF>& SparseRow<MT,SO,SF>::operator+=( const DenseVector<V
       BLAZE_THROW_INVALID_ARGUMENT( "Invalid assignment to restricted matrix" );
    }
 
-   typename DerestrictTrait<This>::Type left( derestrict( *this ) );
+   DerestrictTrait_<This> left( derestrict( *this ) );
 
    left.reset();
    assign( left, tmp );
@@ -1040,11 +1040,11 @@ inline SparseRow<MT,SO,SF>& SparseRow<MT,SO,SF>::operator+=( const SparseVector<
    BLAZE_CONSTRAINT_MUST_BE_SPARSE_VECTOR_TYPE ( ResultType );
    BLAZE_CONSTRAINT_MUST_BE_ROW_VECTOR_TYPE    ( ResultType );
    BLAZE_CONSTRAINT_MUST_NOT_REQUIRE_EVALUATION( ResultType );
-   BLAZE_CONSTRAINT_MUST_BE_SPARSE_VECTOR_TYPE ( typename VT::ResultType );
-   BLAZE_CONSTRAINT_MUST_BE_ROW_VECTOR_TYPE    ( typename VT::ResultType );
-   BLAZE_CONSTRAINT_MUST_NOT_REQUIRE_EVALUATION( typename VT::ResultType );
+   BLAZE_CONSTRAINT_MUST_BE_SPARSE_VECTOR_TYPE ( ResultType_<VT> );
+   BLAZE_CONSTRAINT_MUST_BE_ROW_VECTOR_TYPE    ( ResultType_<VT> );
+   BLAZE_CONSTRAINT_MUST_NOT_REQUIRE_EVALUATION( ResultType_<VT> );
 
-   typedef typename AddTrait<ResultType,typename VT::ResultType>::Type  AddType;
+   typedef AddTrait_< ResultType, ResultType_<VT> >  AddType;
 
    BLAZE_CONSTRAINT_MUST_BE_SPARSE_VECTOR_TYPE ( AddType );
    BLAZE_CONSTRAINT_MUST_BE_ROW_VECTOR_TYPE    ( AddType );
@@ -1060,7 +1060,7 @@ inline SparseRow<MT,SO,SF>& SparseRow<MT,SO,SF>::operator+=( const SparseVector<
       BLAZE_THROW_INVALID_ARGUMENT( "Invalid assignment to restricted matrix" );
    }
 
-   typename DerestrictTrait<This>::Type left( derestrict( *this ) );
+   DerestrictTrait_<This> left( derestrict( *this ) );
 
    left.reset();
    left.reserve( tmp.nonZeros() );
@@ -1098,11 +1098,11 @@ inline SparseRow<MT,SO,SF>& SparseRow<MT,SO,SF>::operator-=( const DenseVector<V
    BLAZE_CONSTRAINT_MUST_BE_SPARSE_VECTOR_TYPE ( ResultType );
    BLAZE_CONSTRAINT_MUST_BE_ROW_VECTOR_TYPE    ( ResultType );
    BLAZE_CONSTRAINT_MUST_NOT_REQUIRE_EVALUATION( ResultType );
-   BLAZE_CONSTRAINT_MUST_BE_DENSE_VECTOR_TYPE  ( typename VT::ResultType );
-   BLAZE_CONSTRAINT_MUST_BE_ROW_VECTOR_TYPE    ( typename VT::ResultType );
-   BLAZE_CONSTRAINT_MUST_NOT_REQUIRE_EVALUATION( typename VT::ResultType );
+   BLAZE_CONSTRAINT_MUST_BE_DENSE_VECTOR_TYPE  ( ResultType_<VT> );
+   BLAZE_CONSTRAINT_MUST_BE_ROW_VECTOR_TYPE    ( ResultType_<VT> );
+   BLAZE_CONSTRAINT_MUST_NOT_REQUIRE_EVALUATION( ResultType_<VT> );
 
-   typedef typename SubTrait<ResultType,typename VT::ResultType>::Type  SubType;
+   typedef SubTrait_< ResultType, ResultType_<VT> >  SubType;
 
    BLAZE_CONSTRAINT_MUST_BE_DENSE_VECTOR_TYPE  ( SubType );
    BLAZE_CONSTRAINT_MUST_BE_ROW_VECTOR_TYPE    ( SubType );
@@ -1118,7 +1118,7 @@ inline SparseRow<MT,SO,SF>& SparseRow<MT,SO,SF>::operator-=( const DenseVector<V
       BLAZE_THROW_INVALID_ARGUMENT( "Invalid assignment to restricted matrix" );
    }
 
-   typename DerestrictTrait<This>::Type left( derestrict( *this ) );
+   DerestrictTrait_<This> left( derestrict( *this ) );
 
    left.reset();
    assign( left, tmp );
@@ -1155,11 +1155,11 @@ inline SparseRow<MT,SO,SF>& SparseRow<MT,SO,SF>::operator-=( const SparseVector<
    BLAZE_CONSTRAINT_MUST_BE_SPARSE_VECTOR_TYPE ( ResultType );
    BLAZE_CONSTRAINT_MUST_BE_ROW_VECTOR_TYPE    ( ResultType );
    BLAZE_CONSTRAINT_MUST_NOT_REQUIRE_EVALUATION( ResultType );
-   BLAZE_CONSTRAINT_MUST_BE_SPARSE_VECTOR_TYPE ( typename VT::ResultType );
-   BLAZE_CONSTRAINT_MUST_BE_ROW_VECTOR_TYPE    ( typename VT::ResultType );
-   BLAZE_CONSTRAINT_MUST_NOT_REQUIRE_EVALUATION( typename VT::ResultType );
+   BLAZE_CONSTRAINT_MUST_BE_SPARSE_VECTOR_TYPE ( ResultType_<VT> );
+   BLAZE_CONSTRAINT_MUST_BE_ROW_VECTOR_TYPE    ( ResultType_<VT> );
+   BLAZE_CONSTRAINT_MUST_NOT_REQUIRE_EVALUATION( ResultType_<VT> );
 
-   typedef typename SubTrait<ResultType,typename VT::ResultType>::Type  SubType;
+   typedef SubTrait_< ResultType, ResultType_<VT> >  SubType;
 
    BLAZE_CONSTRAINT_MUST_BE_SPARSE_VECTOR_TYPE ( SubType );
    BLAZE_CONSTRAINT_MUST_BE_ROW_VECTOR_TYPE    ( SubType );
@@ -1175,7 +1175,7 @@ inline SparseRow<MT,SO,SF>& SparseRow<MT,SO,SF>::operator-=( const SparseVector<
       BLAZE_THROW_INVALID_ARGUMENT( "Invalid assignment to restricted matrix" );
    }
 
-   typename DerestrictTrait<This>::Type left( derestrict( *this ) );
+   DerestrictTrait_<This> left( derestrict( *this ) );
 
    left.reset();
    left.reserve( tmp.nonZeros() );
@@ -1211,10 +1211,10 @@ inline SparseRow<MT,SO,SF>& SparseRow<MT,SO,SF>::operator*=( const Vector<VT,tru
    BLAZE_CONSTRAINT_MUST_BE_SPARSE_VECTOR_TYPE ( ResultType );
    BLAZE_CONSTRAINT_MUST_BE_ROW_VECTOR_TYPE    ( ResultType );
    BLAZE_CONSTRAINT_MUST_NOT_REQUIRE_EVALUATION( ResultType );
-   BLAZE_CONSTRAINT_MUST_BE_ROW_VECTOR_TYPE    ( typename VT::ResultType );
-   BLAZE_CONSTRAINT_MUST_NOT_REQUIRE_EVALUATION( typename VT::ResultType );
+   BLAZE_CONSTRAINT_MUST_BE_ROW_VECTOR_TYPE    ( ResultType_<VT> );
+   BLAZE_CONSTRAINT_MUST_NOT_REQUIRE_EVALUATION( ResultType_<VT> );
 
-   typedef typename MultTrait<ResultType,typename VT::ResultType>::Type  MultType;
+   typedef MultTrait_< ResultType, ResultType_<VT> >  MultType;
 
    BLAZE_CONSTRAINT_MUST_BE_ROW_VECTOR_TYPE    ( MultType );
    BLAZE_CONSTRAINT_MUST_NOT_REQUIRE_EVALUATION( MultType );
@@ -1229,7 +1229,7 @@ inline SparseRow<MT,SO,SF>& SparseRow<MT,SO,SF>::operator*=( const Vector<VT,tru
       BLAZE_THROW_INVALID_ARGUMENT( "Invalid assignment to restricted matrix" );
    }
 
-   typename DerestrictTrait<This>::Type left( derestrict( *this ) );
+   DerestrictTrait_<This> left( derestrict( *this ) );
 
    left.reset();
    assign( left, tmp );
@@ -1299,7 +1299,7 @@ inline EnableIf_<IsNumeric<Other>, SparseRow<MT,SO,SF> >&
 
    BLAZE_USER_ASSERT( rhs != Other(0), "Division by zero detected" );
 
-   typedef typename DivTrait<ElementType,Other>::Type  DT;
+   typedef DivTrait_<ElementType,Other>     DT;
    typedef If_< IsNumeric<DT>, DT, Other >  Tmp;
 
    // Depending on the two involved data types, an integer division is applied or a
@@ -1847,7 +1847,7 @@ inline void SparseRow<MT,SO,SF>::assign( const SparseVector<VT,true>& rhs )
    BLAZE_INTERNAL_ASSERT( size() == (~rhs).size(), "Invalid vector sizes" );
    BLAZE_INTERNAL_ASSERT( nonZeros() == 0UL, "Invalid non-zero elements detected" );
 
-   for( typename VT::ConstIterator element=(~rhs).begin(); element!=(~rhs).end(); ++element ) {
+   for( ConstIterator_<VT> element=(~rhs).begin(); element!=(~rhs).end(); ++element ) {
       matrix_.append( row_, element->index(), element->value(), true );
    }
 }
@@ -1871,7 +1871,7 @@ template< typename MT    // Type of the sparse matrix
 template< typename VT >  // Type of the right-hand side dense vector
 inline void SparseRow<MT,SO,SF>::addAssign( const DenseVector<VT,true>& rhs )
 {
-   typedef typename AddTrait<ResultType,typename VT::ResultType>::Type  AddType;
+   typedef AddTrait_< ResultType, ResultType_<VT> >  AddType;
 
    BLAZE_CONSTRAINT_MUST_BE_DENSE_VECTOR_TYPE  ( AddType );
    BLAZE_CONSTRAINT_MUST_BE_ROW_VECTOR_TYPE    ( AddType );
@@ -1903,7 +1903,7 @@ template< typename MT    // Type of the sparse matrix
 template< typename VT >  // Type of the right-hand side sparse vector
 inline void SparseRow<MT,SO,SF>::addAssign( const SparseVector<VT,true>& rhs )
 {
-   typedef typename AddTrait<ResultType,typename VT::ResultType>::Type  AddType;
+   typedef AddTrait_< ResultType, ResultType_<VT> >  AddType;
 
    BLAZE_CONSTRAINT_MUST_BE_SPARSE_VECTOR_TYPE ( AddType );
    BLAZE_CONSTRAINT_MUST_BE_ROW_VECTOR_TYPE    ( AddType );
@@ -1936,7 +1936,7 @@ template< typename MT    // Type of the sparse matrix
 template< typename VT >  // Type of the right-hand side dense vector
 inline void SparseRow<MT,SO,SF>::subAssign( const DenseVector<VT,true>& rhs )
 {
-   typedef typename SubTrait<ResultType,typename VT::ResultType>::Type  SubType;
+   typedef SubTrait_< ResultType, ResultType_<VT> >  SubType;
 
    BLAZE_CONSTRAINT_MUST_BE_DENSE_VECTOR_TYPE  ( SubType );
    BLAZE_CONSTRAINT_MUST_BE_ROW_VECTOR_TYPE    ( SubType );
@@ -1968,7 +1968,7 @@ template< typename MT    // Type of the sparse matrix
 template< typename VT >  // Type of the right-hand side sparse vector
 inline void SparseRow<MT,SO,SF>::subAssign( const SparseVector<VT,true>& rhs )
 {
-   typedef typename SubTrait<ResultType,typename VT::ResultType>::Type  SubType;
+   typedef SubTrait_< ResultType, ResultType_<VT> >  SubType;
 
    BLAZE_CONSTRAINT_MUST_BE_SPARSE_VECTOR_TYPE ( SubType );
    BLAZE_CONSTRAINT_MUST_BE_ROW_VECTOR_TYPE    ( SubType );
@@ -2016,18 +2016,18 @@ class SparseRow<MT,false,false> : public SparseVector< SparseRow<MT,false,false>
 
  public:
    //**Type definitions****************************************************************************
-   typedef SparseRow<MT,false,false>           This;            //!< Type of this SparseRow instance.
-   typedef typename RowTrait<MT>::Type         ResultType;      //!< Result type for expression template evaluations.
-   typedef typename ResultType::TransposeType  TransposeType;   //!< Transpose type for expression template evaluations.
-   typedef typename MT::ElementType            ElementType;     //!< Type of the row elements.
-   typedef typename MT::ReturnType             ReturnType;      //!< Return type for expression template evaluations
-   typedef const SparseRow&                    CompositeType;   //!< Data type for composite expression templates.
+   typedef SparseRow<MT,false,false>   This;            //!< Type of this SparseRow instance.
+   typedef RowTrait_<MT>               ResultType;      //!< Result type for expression template evaluations.
+   typedef TransposeType_<ResultType>  TransposeType;   //!< Transpose type for expression template evaluations.
+   typedef ElementType_<MT>            ElementType;     //!< Type of the row elements.
+   typedef ReturnType_<MT>             ReturnType;      //!< Return type for expression template evaluations
+   typedef const SparseRow&            CompositeType;   //!< Data type for composite expression templates.
 
    //! Reference to a constant row value.
-   typedef typename MT::ConstReference  ConstReference;
+   typedef ConstReference_<MT>  ConstReference;
 
    //! Reference to a non-constant row value.
-   typedef If_< IsConst<MT>, ConstReference, typename MT::Reference >  Reference;
+   typedef If_< IsConst<MT>, ConstReference, Reference_<MT> >  Reference;
    //**********************************************************************************************
 
    //**RowElement class definition*****************************************************************
@@ -2052,13 +2052,13 @@ class SparseRow<MT,false,false> : public SparseVector< SparseRow<MT,false,false>
       //! Type of the underlying sparse elements.
       typedef typename std::iterator_traits<IteratorType>::value_type  SET;
 
-      typedef typename SET::Reference       RT;   //!< Reference type of the underlying sparse element.
-      typedef typename SET::ConstReference  CRT;  //!< Reference-to-const type of the underlying sparse element.
+      typedef Reference_<SET>       RT;   //!< Reference type of the underlying sparse element.
+      typedef ConstReference_<SET>  CRT;  //!< Reference-to-const type of the underlying sparse element.
       //*******************************************************************************************
 
     public:
       //**Type definitions*************************************************************************
-      typedef typename SET::ValueType      ValueType;       //!< The value type of the row element.
+      typedef ValueType_<SET>              ValueType;       //!< The value type of the row element.
       typedef size_t                       IndexType;       //!< The index type of the row element.
       typedef IfTrue_<returnConst,CRT,RT>  Reference;       //!< Reference return type
       typedef CRT                          ConstReference;  //!< Reference-to-const return type.
@@ -2365,10 +2365,10 @@ class SparseRow<MT,false,false> : public SparseVector< SparseRow<MT,false,false>
 
    //**Type definitions****************************************************************************
    //! Iterator over constant elements.
-   typedef RowIterator<const MT,typename MT::ConstIterator>  ConstIterator;
+   typedef RowIterator< const MT, ConstIterator_<MT> >  ConstIterator;
 
    //! Iterator over non-constant elements.
-   typedef If_< IsConst<MT>, ConstIterator, RowIterator<MT,typename MT::Iterator> >  Iterator;
+   typedef If_< IsConst<MT>, ConstIterator, RowIterator< MT, Iterator_<MT> > >  Iterator;
    //**********************************************************************************************
 
    //**Compilation flags***************************************************************************
@@ -2499,8 +2499,7 @@ class SparseRow<MT,false,false> : public SparseVector< SparseRow<MT,false,false>
    friend bool tryMultAssign( const SparseRow<MT2,SO2,SF2>& lhs, const Vector<VT,true>& rhs, size_t index );
 
    template< typename MT2, bool SO2, bool SF2 >
-   friend typename DerestrictTrait< SparseRow<MT2,SO2,SF2> >::Type
-      derestrict( SparseRow<MT2,SO2,SF2>& dm );
+   friend DerestrictTrait_< SparseRow<MT2,SO2,SF2> > derestrict( SparseRow<MT2,SO2,SF2>& dm );
    //**********************************************************************************************
 
    //**Compile time checks*************************************************************************
@@ -2788,7 +2787,7 @@ inline SparseRow<MT,false,false>& SparseRow<MT,false,false>::operator=( const Sp
       BLAZE_THROW_INVALID_ARGUMENT( "Invalid assignment to restricted matrix" );
    }
 
-   typename DerestrictTrait<This>::Type left( derestrict( *this ) );
+   DerestrictTrait_<This> left( derestrict( *this ) );
 
    if( rhs.canAlias( &matrix_ ) ) {
       const ResultType tmp( rhs );
@@ -2830,13 +2829,13 @@ inline SparseRow<MT,false,false>& SparseRow<MT,false,false>::operator=( const Ve
       BLAZE_THROW_INVALID_ARGUMENT( "Vector sizes do not match" );
    }
 
-   const typename VT::CompositeType tmp( ~rhs );
+   const CompositeType_<VT> tmp( ~rhs );
 
    if( !tryAssign( matrix_, tmp, row_, 0UL ) ) {
       BLAZE_THROW_INVALID_ARGUMENT( "Invalid assignment to restricted matrix" );
    }
 
-   typename DerestrictTrait<This>::Type left( derestrict( *this ) );
+   DerestrictTrait_<This> left( derestrict( *this ) );
 
    assign( left, tmp );
 
@@ -2871,10 +2870,10 @@ inline SparseRow<MT,false,false>& SparseRow<MT,false,false>::operator+=( const V
    BLAZE_CONSTRAINT_MUST_BE_SPARSE_VECTOR_TYPE ( ResultType );
    BLAZE_CONSTRAINT_MUST_BE_ROW_VECTOR_TYPE    ( ResultType );
    BLAZE_CONSTRAINT_MUST_NOT_REQUIRE_EVALUATION( ResultType );
-   BLAZE_CONSTRAINT_MUST_BE_ROW_VECTOR_TYPE    ( typename VT::ResultType );
-   BLAZE_CONSTRAINT_MUST_NOT_REQUIRE_EVALUATION( typename VT::ResultType );
+   BLAZE_CONSTRAINT_MUST_BE_ROW_VECTOR_TYPE    ( ResultType_<VT> );
+   BLAZE_CONSTRAINT_MUST_NOT_REQUIRE_EVALUATION( ResultType_<VT> );
 
-   typedef typename AddTrait<ResultType,typename VT::ResultType>::Type  AddType;
+   typedef AddTrait_< ResultType, ResultType_<VT> >  AddType;
 
    BLAZE_CONSTRAINT_MUST_BE_ROW_VECTOR_TYPE    ( AddType );
    BLAZE_CONSTRAINT_MUST_NOT_REQUIRE_EVALUATION( AddType );
@@ -2889,7 +2888,7 @@ inline SparseRow<MT,false,false>& SparseRow<MT,false,false>::operator+=( const V
       BLAZE_THROW_INVALID_ARGUMENT( "Invalid assignment to restricted matrix" );
    }
 
-   typename DerestrictTrait<This>::Type left( derestrict( *this ) );
+   DerestrictTrait_<This> left( derestrict( *this ) );
 
    assign( left, tmp );
 
@@ -2924,10 +2923,10 @@ inline SparseRow<MT,false,false>& SparseRow<MT,false,false>::operator-=( const V
    BLAZE_CONSTRAINT_MUST_BE_SPARSE_VECTOR_TYPE ( ResultType );
    BLAZE_CONSTRAINT_MUST_BE_ROW_VECTOR_TYPE    ( ResultType );
    BLAZE_CONSTRAINT_MUST_NOT_REQUIRE_EVALUATION( ResultType );
-   BLAZE_CONSTRAINT_MUST_BE_ROW_VECTOR_TYPE    ( typename VT::ResultType );
-   BLAZE_CONSTRAINT_MUST_NOT_REQUIRE_EVALUATION( typename VT::ResultType );
+   BLAZE_CONSTRAINT_MUST_BE_ROW_VECTOR_TYPE    ( ResultType_<VT> );
+   BLAZE_CONSTRAINT_MUST_NOT_REQUIRE_EVALUATION( ResultType_<VT> );
 
-   typedef typename SubTrait<ResultType,typename VT::ResultType>::Type  SubType;
+   typedef SubTrait_< ResultType, ResultType_<VT> >  SubType;
 
    BLAZE_CONSTRAINT_MUST_BE_ROW_VECTOR_TYPE    ( SubType );
    BLAZE_CONSTRAINT_MUST_NOT_REQUIRE_EVALUATION( SubType );
@@ -2942,7 +2941,7 @@ inline SparseRow<MT,false,false>& SparseRow<MT,false,false>::operator-=( const V
       BLAZE_THROW_INVALID_ARGUMENT( "Invalid assignment to restricted matrix" );
    }
 
-   typename DerestrictTrait<This>::Type left( derestrict( *this ) );
+   DerestrictTrait_<This> left( derestrict( *this ) );
 
    assign( left, tmp );
 
@@ -2976,10 +2975,10 @@ inline SparseRow<MT,false,false>& SparseRow<MT,false,false>::operator*=( const V
    BLAZE_CONSTRAINT_MUST_BE_SPARSE_VECTOR_TYPE ( ResultType );
    BLAZE_CONSTRAINT_MUST_BE_ROW_VECTOR_TYPE    ( ResultType );
    BLAZE_CONSTRAINT_MUST_NOT_REQUIRE_EVALUATION( ResultType );
-   BLAZE_CONSTRAINT_MUST_BE_ROW_VECTOR_TYPE    ( typename VT::ResultType );
-   BLAZE_CONSTRAINT_MUST_NOT_REQUIRE_EVALUATION( typename VT::ResultType );
+   BLAZE_CONSTRAINT_MUST_BE_ROW_VECTOR_TYPE    ( ResultType_<VT> );
+   BLAZE_CONSTRAINT_MUST_NOT_REQUIRE_EVALUATION( ResultType_<VT> );
 
-   typedef typename MultTrait<ResultType,typename VT::ResultType>::Type  MultType;
+   typedef MultTrait_< ResultType, ResultType_<VT> >  MultType;
 
    BLAZE_CONSTRAINT_MUST_BE_ROW_VECTOR_TYPE    ( MultType );
    BLAZE_CONSTRAINT_MUST_NOT_REQUIRE_EVALUATION( MultType );
@@ -2994,7 +2993,7 @@ inline SparseRow<MT,false,false>& SparseRow<MT,false,false>::operator*=( const V
       BLAZE_THROW_INVALID_ARGUMENT( "Invalid assignment to restricted matrix" );
    }
 
-   typename DerestrictTrait<This>::Type left( derestrict( *this ) );
+   DerestrictTrait_<This> left( derestrict( *this ) );
 
    assign( left, tmp );
 
@@ -3063,7 +3062,7 @@ inline EnableIf_<IsNumeric<Other>, SparseRow<MT,false,false> >&
 
    BLAZE_USER_ASSERT( rhs != Other(0), "Division by zero detected" );
 
-   typedef typename DivTrait<ElementType,Other>::Type  DT;
+   typedef DivTrait_<ElementType,Other>     DT;
    typedef If_< IsNumeric<DT>, DT, Other >  Tmp;
 
    // Depending on the two involved data types, an integer division is applied or a
@@ -3353,7 +3352,7 @@ inline SparseRow<MT,false,false>& SparseRow<MT,false,false>::scale( const Other&
 template< typename MT >  // Type of the sparse matrix
 inline typename SparseRow<MT,false,false>::Iterator SparseRow<MT,false,false>::find( size_t index )
 {
-   const typename MT::Iterator pos( matrix_.find( row_, index ) );
+   const Iterator_<MT> pos( matrix_.find( row_, index ) );
 
    if( pos != matrix_.end( index ) )
       return Iterator( matrix_, row_, index, pos );
@@ -3382,7 +3381,7 @@ template< typename MT >  // Type of the sparse matrix
 inline typename SparseRow<MT,false,false>::ConstIterator
    SparseRow<MT,false,false>::find( size_t index ) const
 {
-   const typename MT::ConstIterator pos( matrix_.find( row_, index ) );
+   const ConstIterator_<MT> pos( matrix_.find( row_, index ) );
 
    if( pos != matrix_.end( index ) )
       return ConstIterator( matrix_, row_, index, pos );
@@ -3412,7 +3411,7 @@ inline typename SparseRow<MT,false,false>::Iterator
 {
    for( size_t i=index; i<size(); ++i )
    {
-      const typename MT::Iterator pos( matrix_.find( row_, i ) );
+      const Iterator_<MT> pos( matrix_.find( row_, i ) );
 
       if( pos != matrix_.end( i ) )
          return Iterator( matrix_, row_, i, pos );
@@ -3443,7 +3442,7 @@ inline typename SparseRow<MT,false,false>::ConstIterator
 {
    for( size_t i=index; i<size(); ++i )
    {
-      const typename MT::ConstIterator pos( matrix_.find( row_, i ) );
+      const ConstIterator_<MT> pos( matrix_.find( row_, i ) );
 
       if( pos != matrix_.end( i ) )
          return ConstIterator( matrix_, row_, i, pos );
@@ -3474,7 +3473,7 @@ inline typename SparseRow<MT,false,false>::Iterator
 {
    for( size_t i=index+1UL; i<size(); ++i )
    {
-      const typename MT::Iterator pos( matrix_.find( row_, i ) );
+      const Iterator_<MT> pos( matrix_.find( row_, i ) );
 
       if( pos != matrix_.end( i ) )
          return Iterator( matrix_, row_, i, pos );
@@ -3505,7 +3504,7 @@ inline typename SparseRow<MT,false,false>::ConstIterator
 {
    for( size_t i=index+1UL; i<size(); ++i )
    {
-      const typename MT::ConstIterator pos( matrix_.find( row_, i ) );
+      const ConstIterator_<MT> pos( matrix_.find( row_, i ) );
 
       if( pos != matrix_.end( i ) )
          return ConstIterator( matrix_, row_, i, pos );
@@ -3652,7 +3651,7 @@ inline void SparseRow<MT,false,false>::assign( const SparseVector<VT,true>& rhs 
 
    size_t j( 0UL );
 
-   for( typename VT::ConstIterator element=(~rhs).begin(); element!=(~rhs).end(); ++element ) {
+   for( ConstIterator_<VT> element=(~rhs).begin(); element!=(~rhs).end(); ++element ) {
       for( ; j<element->index(); ++j )
          matrix_.erase( row_, j );
       matrix_(row_,j++) = element->value();
@@ -3681,7 +3680,7 @@ template< typename MT >  // Type of the sparse matrix
 template< typename VT >  // Type of the right-hand side vector
 inline void SparseRow<MT,false,false>::addAssign( const Vector<VT,true>& rhs )
 {
-   typedef typename AddTrait<ResultType,typename VT::ResultType>::Type  AddType;
+   typedef AddTrait_< ResultType, ResultType_<VT> >  AddType;
 
    BLAZE_CONSTRAINT_MUST_BE_ROW_VECTOR_TYPE    ( AddType );
    BLAZE_CONSTRAINT_MUST_NOT_REQUIRE_EVALUATION( AddType );
@@ -3711,7 +3710,7 @@ template< typename MT >  // Type of the sparse matrix
 template< typename VT >  // Type of the right-hand side vector
 inline void SparseRow<MT,false,false>::subAssign( const Vector<VT,true>& rhs )
 {
-   typedef typename SubTrait<ResultType,typename VT::ResultType>::Type  SubType;
+   typedef SubTrait_< ResultType, ResultType_<VT> >  SubType;
 
    BLAZE_CONSTRAINT_MUST_BE_ROW_VECTOR_TYPE    ( SubType );
    BLAZE_CONSTRAINT_MUST_NOT_REQUIRE_EVALUATION( SubType );
@@ -3757,24 +3756,24 @@ class SparseRow<MT,false,true> : public SparseVector< SparseRow<MT,false,true>, 
 
  public:
    //**Type definitions****************************************************************************
-   typedef SparseRow<MT,false,true>            This;           //!< Type of this SparseRow instance.
-   typedef typename RowTrait<MT>::Type         ResultType;     //!< Result type for expression template evaluations.
-   typedef typename ResultType::TransposeType  TransposeType;  //!< Transpose type for expression template evaluations.
-   typedef typename MT::ElementType            ElementType;    //!< Type of the row elements.
-   typedef typename MT::ReturnType             ReturnType;     //!< Return type for expression template evaluations
-   typedef const SparseRow&                    CompositeType;  //!< Data type for composite expression templates.
+   typedef SparseRow<MT,false,true>    This;           //!< Type of this SparseRow instance.
+   typedef RowTrait_<MT>               ResultType;     //!< Result type for expression template evaluations.
+   typedef TransposeType_<ResultType>  TransposeType;  //!< Transpose type for expression template evaluations.
+   typedef ElementType_<MT>            ElementType;    //!< Type of the row elements.
+   typedef ReturnType_<MT>             ReturnType;     //!< Return type for expression template evaluations
+   typedef const SparseRow&            CompositeType;  //!< Data type for composite expression templates.
 
    //! Reference to a constant row value.
-   typedef typename MT::ConstReference  ConstReference;
+   typedef ConstReference_<MT>  ConstReference;
 
    //! Reference to a non-constant row value.
-   typedef If_< IsConst<MT>, ConstReference, typename MT::Reference >  Reference;
+   typedef If_< IsConst<MT>, ConstReference, Reference_<MT> >  Reference;
 
    //! Iterator over constant elements.
-   typedef typename MT::ConstIterator  ConstIterator;
+   typedef ConstIterator_<MT>  ConstIterator;
 
    //! Iterator over non-constant elements.
-   typedef If_< IsConst<MT>, ConstIterator, typename MT::Iterator >  Iterator;
+   typedef If_< IsConst<MT>, ConstIterator, Iterator_<MT> >  Iterator;
    //**********************************************************************************************
 
    //**Compilation flags***************************************************************************
@@ -3918,8 +3917,7 @@ class SparseRow<MT,false,true> : public SparseVector< SparseRow<MT,false,true>, 
    friend bool tryMultAssign( const SparseRow<MT2,SO2,SF2>& lhs, const Vector<VT,true>& rhs, size_t index );
 
    template< typename MT2, bool SO2, bool SF2 >
-   friend typename DerestrictTrait< SparseRow<MT2,SO2,SF2> >::Type
-      derestrict( SparseRow<MT2,SO2,SF2>& dm );
+   friend DerestrictTrait_< SparseRow<MT2,SO2,SF2> > derestrict( SparseRow<MT2,SO2,SF2>& dm );
    //**********************************************************************************************
 
    //**Compile time checks*************************************************************************
@@ -4207,7 +4205,7 @@ inline SparseRow<MT,false,true>& SparseRow<MT,false,true>::operator=( const Spar
       BLAZE_THROW_INVALID_ARGUMENT( "Invalid assignment to restricted matrix" );
    }
 
-   typename DerestrictTrait<This>::Type left( derestrict( *this ) );
+   DerestrictTrait_<This> left( derestrict( *this ) );
 
    if( rhs.canAlias( &matrix_ ) ) {
       const ResultType tmp( rhs );
@@ -4250,25 +4248,25 @@ inline SparseRow<MT,false,true>&
 {
    using blaze::assign;
 
-   BLAZE_CONSTRAINT_MUST_BE_DENSE_VECTOR_TYPE  ( typename VT::ResultType );
-   BLAZE_CONSTRAINT_MUST_BE_ROW_VECTOR_TYPE    ( typename VT::ResultType );
-   BLAZE_CONSTRAINT_MUST_NOT_REQUIRE_EVALUATION( typename VT::ResultType );
+   BLAZE_CONSTRAINT_MUST_BE_DENSE_VECTOR_TYPE  ( ResultType_<VT> );
+   BLAZE_CONSTRAINT_MUST_BE_ROW_VECTOR_TYPE    ( ResultType_<VT> );
+   BLAZE_CONSTRAINT_MUST_NOT_REQUIRE_EVALUATION( ResultType_<VT> );
 
    if( size() != (~rhs).size() ) {
       BLAZE_THROW_INVALID_ARGUMENT( "Vector sizes do not match" );
    }
 
-   typedef If_< IsRestricted<MT>, typename VT::CompositeType, const VT& >  Right;
+   typedef If_< IsRestricted<MT>, CompositeType_<VT>, const VT& >  Right;
    Right right( ~rhs );
 
    if( !tryAssign( matrix_, right, row_, 0UL ) ) {
       BLAZE_THROW_INVALID_ARGUMENT( "Invalid assignment to restricted matrix" );
    }
 
-   typename DerestrictTrait<This>::Type left( derestrict( *this ) );
+   DerestrictTrait_<This> left( derestrict( *this ) );
 
    if( IsReference<Right>::value && right.canAlias( &matrix_ ) ) {
-      const typename VT::ResultType tmp( right );
+      const ResultType_<VT> tmp( right );
       left.reset();
       assign( left, tmp );
    }
@@ -4306,25 +4304,25 @@ inline SparseRow<MT,false,true>&
 {
    using blaze::assign;
 
-   BLAZE_CONSTRAINT_MUST_BE_SPARSE_VECTOR_TYPE ( typename VT::ResultType );
-   BLAZE_CONSTRAINT_MUST_BE_ROW_VECTOR_TYPE    ( typename VT::ResultType );
-   BLAZE_CONSTRAINT_MUST_NOT_REQUIRE_EVALUATION( typename VT::ResultType );
+   BLAZE_CONSTRAINT_MUST_BE_SPARSE_VECTOR_TYPE ( ResultType_<VT> );
+   BLAZE_CONSTRAINT_MUST_BE_ROW_VECTOR_TYPE    ( ResultType_<VT> );
+   BLAZE_CONSTRAINT_MUST_NOT_REQUIRE_EVALUATION( ResultType_<VT> );
 
    if( size() != (~rhs).size() ) {
       BLAZE_THROW_INVALID_ARGUMENT( "Vector sizes do not match" );
    }
 
-   typedef If_< IsRestricted<MT>, typename VT::CompositeType, const VT& >  Right;
+   typedef If_< IsRestricted<MT>, CompositeType_<VT>, const VT& >  Right;
    Right right( ~rhs );
 
    if( !tryAssign( matrix_, right, row_, 0UL ) ) {
       BLAZE_THROW_INVALID_ARGUMENT( "Invalid assignment to restricted matrix" );
    }
 
-   typename DerestrictTrait<This>::Type left( derestrict( *this ) );
+   DerestrictTrait_<This> left( derestrict( *this ) );
 
    if( IsReference<Right>::value && right.canAlias( &matrix_ ) ) {
-      const typename VT::ResultType tmp( right );
+      const ResultType_<VT> tmp( right );
       left.reset();
       left.reserve( tmp.nonZeros() );
       assign( left, tmp );
@@ -4367,11 +4365,11 @@ inline SparseRow<MT,false,true>&
    BLAZE_CONSTRAINT_MUST_BE_SPARSE_VECTOR_TYPE ( ResultType );
    BLAZE_CONSTRAINT_MUST_BE_ROW_VECTOR_TYPE    ( ResultType );
    BLAZE_CONSTRAINT_MUST_NOT_REQUIRE_EVALUATION( ResultType );
-   BLAZE_CONSTRAINT_MUST_BE_DENSE_VECTOR_TYPE  ( typename VT::ResultType );
-   BLAZE_CONSTRAINT_MUST_BE_ROW_VECTOR_TYPE    ( typename VT::ResultType );
-   BLAZE_CONSTRAINT_MUST_NOT_REQUIRE_EVALUATION( typename VT::ResultType );
+   BLAZE_CONSTRAINT_MUST_BE_DENSE_VECTOR_TYPE  ( ResultType_<VT> );
+   BLAZE_CONSTRAINT_MUST_BE_ROW_VECTOR_TYPE    ( ResultType_<VT> );
+   BLAZE_CONSTRAINT_MUST_NOT_REQUIRE_EVALUATION( ResultType_<VT> );
 
-   typedef typename AddTrait<ResultType,typename VT::ResultType>::Type  AddType;
+   typedef AddTrait_< ResultType, ResultType_<VT> >  AddType;
 
    BLAZE_CONSTRAINT_MUST_BE_DENSE_VECTOR_TYPE  ( AddType );
    BLAZE_CONSTRAINT_MUST_BE_ROW_VECTOR_TYPE    ( AddType );
@@ -4387,7 +4385,7 @@ inline SparseRow<MT,false,true>&
       BLAZE_THROW_INVALID_ARGUMENT( "Invalid assignment to restricted matrix" );
    }
 
-   typename DerestrictTrait<This>::Type left( derestrict( *this ) );
+   DerestrictTrait_<This> left( derestrict( *this ) );
 
    left.reset();
    assign( left, tmp );
@@ -4424,11 +4422,11 @@ inline SparseRow<MT,false,true>&
    BLAZE_CONSTRAINT_MUST_BE_SPARSE_VECTOR_TYPE ( ResultType );
    BLAZE_CONSTRAINT_MUST_BE_ROW_VECTOR_TYPE    ( ResultType );
    BLAZE_CONSTRAINT_MUST_NOT_REQUIRE_EVALUATION( ResultType );
-   BLAZE_CONSTRAINT_MUST_BE_SPARSE_VECTOR_TYPE ( typename VT::ResultType );
-   BLAZE_CONSTRAINT_MUST_BE_ROW_VECTOR_TYPE    ( typename VT::ResultType );
-   BLAZE_CONSTRAINT_MUST_NOT_REQUIRE_EVALUATION( typename VT::ResultType );
+   BLAZE_CONSTRAINT_MUST_BE_SPARSE_VECTOR_TYPE ( ResultType_<VT> );
+   BLAZE_CONSTRAINT_MUST_BE_ROW_VECTOR_TYPE    ( ResultType_<VT> );
+   BLAZE_CONSTRAINT_MUST_NOT_REQUIRE_EVALUATION( ResultType_<VT> );
 
-   typedef typename AddTrait<ResultType,typename VT::ResultType>::Type  AddType;
+   typedef AddTrait_< ResultType, ResultType_<VT> >  AddType;
 
    BLAZE_CONSTRAINT_MUST_BE_SPARSE_VECTOR_TYPE ( AddType );
    BLAZE_CONSTRAINT_MUST_BE_ROW_VECTOR_TYPE    ( AddType );
@@ -4444,7 +4442,7 @@ inline SparseRow<MT,false,true>&
       BLAZE_THROW_INVALID_ARGUMENT( "Invalid assignment to restricted matrix" );
    }
 
-   typename DerestrictTrait<This>::Type left( derestrict( *this ) );
+   DerestrictTrait_<This> left( derestrict( *this ) );
 
    left.reset();
    left.reserve( tmp.nonZeros() );
@@ -4483,11 +4481,11 @@ inline SparseRow<MT,false,true>&
    BLAZE_CONSTRAINT_MUST_BE_SPARSE_VECTOR_TYPE ( ResultType );
    BLAZE_CONSTRAINT_MUST_BE_ROW_VECTOR_TYPE    ( ResultType );
    BLAZE_CONSTRAINT_MUST_NOT_REQUIRE_EVALUATION( ResultType );
-   BLAZE_CONSTRAINT_MUST_BE_DENSE_VECTOR_TYPE  ( typename VT::ResultType );
-   BLAZE_CONSTRAINT_MUST_BE_ROW_VECTOR_TYPE    ( typename VT::ResultType );
-   BLAZE_CONSTRAINT_MUST_NOT_REQUIRE_EVALUATION( typename VT::ResultType );
+   BLAZE_CONSTRAINT_MUST_BE_DENSE_VECTOR_TYPE  ( ResultType_<VT> );
+   BLAZE_CONSTRAINT_MUST_BE_ROW_VECTOR_TYPE    ( ResultType_<VT> );
+   BLAZE_CONSTRAINT_MUST_NOT_REQUIRE_EVALUATION( ResultType_<VT> );
 
-   typedef typename SubTrait<ResultType,typename VT::ResultType>::Type  SubType;
+   typedef SubTrait_< ResultType, ResultType_<VT> >  SubType;
 
    BLAZE_CONSTRAINT_MUST_BE_DENSE_VECTOR_TYPE  ( SubType );
    BLAZE_CONSTRAINT_MUST_BE_ROW_VECTOR_TYPE    ( SubType );
@@ -4503,7 +4501,7 @@ inline SparseRow<MT,false,true>&
       BLAZE_THROW_INVALID_ARGUMENT( "Invalid assignment to restricted matrix" );
    }
 
-   typename DerestrictTrait<This>::Type left( derestrict( *this ) );
+   DerestrictTrait_<This> left( derestrict( *this ) );
 
    left.reset();
    assign( left, tmp );
@@ -4541,11 +4539,11 @@ inline SparseRow<MT,false,true>&
    BLAZE_CONSTRAINT_MUST_BE_SPARSE_VECTOR_TYPE ( ResultType );
    BLAZE_CONSTRAINT_MUST_BE_ROW_VECTOR_TYPE    ( ResultType );
    BLAZE_CONSTRAINT_MUST_NOT_REQUIRE_EVALUATION( ResultType );
-   BLAZE_CONSTRAINT_MUST_BE_SPARSE_VECTOR_TYPE ( typename VT::ResultType );
-   BLAZE_CONSTRAINT_MUST_BE_ROW_VECTOR_TYPE    ( typename VT::ResultType );
-   BLAZE_CONSTRAINT_MUST_NOT_REQUIRE_EVALUATION( typename VT::ResultType );
+   BLAZE_CONSTRAINT_MUST_BE_SPARSE_VECTOR_TYPE ( ResultType_<VT> );
+   BLAZE_CONSTRAINT_MUST_BE_ROW_VECTOR_TYPE    ( ResultType_<VT> );
+   BLAZE_CONSTRAINT_MUST_NOT_REQUIRE_EVALUATION( ResultType_<VT> );
 
-   typedef typename SubTrait<ResultType,typename VT::ResultType>::Type  SubType;
+   typedef SubTrait_< ResultType, ResultType_<VT> >  SubType;
 
    BLAZE_CONSTRAINT_MUST_BE_SPARSE_VECTOR_TYPE ( SubType );
    BLAZE_CONSTRAINT_MUST_BE_ROW_VECTOR_TYPE    ( SubType );
@@ -4561,7 +4559,7 @@ inline SparseRow<MT,false,true>&
       BLAZE_THROW_INVALID_ARGUMENT( "Invalid assignment to restricted matrix" );
    }
 
-   typename DerestrictTrait<This>::Type left( derestrict( *this ) );
+   DerestrictTrait_<This> left( derestrict( *this ) );
 
    left.reset();
    left.reserve( tmp.nonZeros() );
@@ -4598,10 +4596,10 @@ inline SparseRow<MT,false,true>&
    BLAZE_CONSTRAINT_MUST_BE_SPARSE_VECTOR_TYPE ( ResultType );
    BLAZE_CONSTRAINT_MUST_BE_ROW_VECTOR_TYPE    ( ResultType );
    BLAZE_CONSTRAINT_MUST_NOT_REQUIRE_EVALUATION( ResultType );
-   BLAZE_CONSTRAINT_MUST_BE_ROW_VECTOR_TYPE    ( typename VT::ResultType );
-   BLAZE_CONSTRAINT_MUST_NOT_REQUIRE_EVALUATION( typename VT::ResultType );
+   BLAZE_CONSTRAINT_MUST_BE_ROW_VECTOR_TYPE    ( ResultType_<VT> );
+   BLAZE_CONSTRAINT_MUST_NOT_REQUIRE_EVALUATION( ResultType_<VT> );
 
-   typedef typename MultTrait<ResultType,typename VT::ResultType>::Type  MultType;
+   typedef MultTrait_< ResultType, ResultType_<VT> >  MultType;
 
    BLAZE_CONSTRAINT_MUST_BE_ROW_VECTOR_TYPE    ( MultType );
    BLAZE_CONSTRAINT_MUST_NOT_REQUIRE_EVALUATION( MultType );
@@ -4616,7 +4614,7 @@ inline SparseRow<MT,false,true>&
       BLAZE_THROW_INVALID_ARGUMENT( "Invalid assignment to restricted matrix" );
    }
 
-   typename DerestrictTrait<This>::Type left( derestrict( *this ) );
+   DerestrictTrait_<This> left( derestrict( *this ) );
 
    left.reset();
    assign( left, tmp );
@@ -4686,7 +4684,7 @@ inline EnableIf_<IsNumeric<Other>, SparseRow<MT,false,true> >&
 
    BLAZE_USER_ASSERT( rhs != Other(0), "Division by zero detected" );
 
-   typedef typename DivTrait<ElementType,Other>::Type  DT;
+   typedef DivTrait_<ElementType,Other>     DT;
    typedef If_< IsNumeric<DT>, DT, Other >  Tmp;
 
    // Depending on the two involved data types, an integer division is applied or a
@@ -5241,7 +5239,7 @@ inline void SparseRow<MT,false,true>::assign( const SparseVector<VT,true>& rhs )
    BLAZE_INTERNAL_ASSERT( size() == (~rhs).size(), "Invalid vector sizes" );
    BLAZE_INTERNAL_ASSERT( nonZeros() == 0UL, "Invalid non-zero elements detected" );
 
-   for( typename VT::ConstIterator element=(~rhs).begin(); element!=(~rhs).end(); ++element ) {
+   for( ConstIterator_<VT> element=(~rhs).begin(); element!=(~rhs).end(); ++element ) {
       matrix_.append( element->index(), row_, element->value(), true );
    }
 }
@@ -5265,7 +5263,7 @@ template< typename MT >  // Type of the sparse matrix
 template< typename VT >  // Type of the right-hand side dense vector
 inline void SparseRow<MT,false,true>::addAssign( const DenseVector<VT,true>& rhs )
 {
-   typedef typename AddTrait<ResultType,typename VT::ResultType>::Type  AddType;
+   typedef AddTrait_< ResultType, ResultType_<VT> >  AddType;
 
    BLAZE_CONSTRAINT_MUST_BE_DENSE_VECTOR_TYPE  ( AddType );
    BLAZE_CONSTRAINT_MUST_BE_ROW_VECTOR_TYPE    ( AddType );
@@ -5297,7 +5295,7 @@ template< typename MT >  // Type of the sparse matrix
 template< typename VT >  // Type of the right-hand side sparse vector
 inline void SparseRow<MT,false,true>::addAssign( const SparseVector<VT,true>& rhs )
 {
-   typedef typename AddTrait<ResultType,typename VT::ResultType>::Type  AddType;
+   typedef AddTrait_< ResultType, ResultType_<VT> >  AddType;
 
    BLAZE_CONSTRAINT_MUST_BE_SPARSE_VECTOR_TYPE ( AddType );
    BLAZE_CONSTRAINT_MUST_BE_ROW_VECTOR_TYPE    ( AddType );
@@ -5330,7 +5328,7 @@ template< typename MT >  // Type of the sparse matrix
 template< typename VT >  // Type of the right-hand side dense vector
 inline void SparseRow<MT,false,true>::subAssign( const DenseVector<VT,true>& rhs )
 {
-   typedef typename SubTrait<ResultType,typename VT::ResultType>::Type  SubType;
+   typedef SubTrait_< ResultType, ResultType_<VT> >  SubType;
 
    BLAZE_CONSTRAINT_MUST_BE_DENSE_VECTOR_TYPE  ( SubType );
    BLAZE_CONSTRAINT_MUST_BE_ROW_VECTOR_TYPE    ( SubType );
@@ -5362,7 +5360,7 @@ template< typename MT >  // Type of the sparse matrix
 template< typename VT >  // Type of the right-hand side sparse vector
 inline void SparseRow<MT,false,true>::subAssign( const SparseVector<VT,true>& rhs )
 {
-   typedef typename SubTrait<ResultType,typename VT::ResultType>::Type  SubType;
+   typedef SubTrait_< ResultType, ResultType_<VT> >  SubType;
 
    BLAZE_CONSTRAINT_MUST_BE_SPARSE_VECTOR_TYPE ( SubType );
    BLAZE_CONSTRAINT_MUST_BE_ROW_VECTOR_TYPE    ( SubType );
@@ -5471,7 +5469,7 @@ template< typename MT  // Type of the sparse matrix
         , bool SF >    // Symmetry flag
 inline bool isDefault( const SparseRow<MT,SO,SF>& row )
 {
-   typedef typename SparseRow<MT,SO,SF>::ConstIterator  ConstIterator;
+   typedef ConstIterator_< SparseRow<MT,SO,SF> >  ConstIterator;
 
    const ConstIterator end( row.end() );
    for( ConstIterator element=row.begin(); element!=end; ++element )
@@ -5669,10 +5667,9 @@ inline bool tryMultAssign( const SparseRow<MT,SO,SF>& lhs, const Vector<VT,true>
 template< typename MT  // Type of the sparse matrix
         , bool SO      // Storage order
         , bool SF >    // Symmetry flag
-inline typename DerestrictTrait< SparseRow<MT,SO,SF> >::Type
-   derestrict( SparseRow<MT,SO,SF>& row )
+inline DerestrictTrait_< SparseRow<MT,SO,SF> > derestrict( SparseRow<MT,SO,SF>& row )
 {
-   typedef typename DerestrictTrait< SparseRow<MT,SO,SF> >::Type  ReturnType;
+   typedef DerestrictTrait_< SparseRow<MT,SO,SF> >  ReturnType;
    return ReturnType( derestrict( row.matrix_ ), row.row_ );
 }
 /*! \endcond */
@@ -5709,7 +5706,7 @@ struct IsRestricted< SparseRow<MT,SO,SF> > : public BoolConstant< IsRestricted<M
 template< typename MT, bool SO, bool SF >
 struct DerestrictTrait< SparseRow<MT,SO,SF> >
 {
-   typedef SparseRow< RemoveReference_< typename DerestrictTrait<MT>::Type > >  Type;
+   using Type = SparseRow< RemoveReference_< DerestrictTrait_<MT> > >;
 };
 /*! \endcond */
 //*************************************************************************************************
@@ -5728,13 +5725,13 @@ struct DerestrictTrait< SparseRow<MT,SO,SF> >
 template< typename MT, bool SO, bool SF, typename T >
 struct AddTrait< SparseRow<MT,SO,SF>, T >
 {
-   typedef typename AddTrait< typename RowTrait<MT>::Type, T >::Type  Type;
+   using Type = AddTrait_< RowTrait_<MT>, T >;
 };
 
 template< typename T, typename MT, bool SO, bool SF >
 struct AddTrait< T, SparseRow<MT,SO,SF> >
 {
-   typedef typename AddTrait< T, typename RowTrait<MT>::Type >::Type  Type;
+   using Type = AddTrait_< T, RowTrait_<MT> >;
 };
 /*! \endcond */
 //*************************************************************************************************
@@ -5753,13 +5750,13 @@ struct AddTrait< T, SparseRow<MT,SO,SF> >
 template< typename MT, bool SO, bool SF, typename T >
 struct SubTrait< SparseRow<MT,SO,SF>, T >
 {
-   typedef typename SubTrait< typename RowTrait<MT>::Type, T >::Type  Type;
+   using Type = SubTrait_< RowTrait_<MT>, T >;
 };
 
 template< typename T, typename MT, bool SO, bool SF >
 struct SubTrait< T, SparseRow<MT,SO,SF> >
 {
-   typedef typename SubTrait< T, typename RowTrait<MT>::Type >::Type  Type;
+   using Type = SubTrait_< T, RowTrait_<MT> >;
 };
 /*! \endcond */
 //*************************************************************************************************
@@ -5778,13 +5775,13 @@ struct SubTrait< T, SparseRow<MT,SO,SF> >
 template< typename MT, bool SO, bool SF, typename T >
 struct MultTrait< SparseRow<MT,SO,SF>, T >
 {
-   typedef typename MultTrait< typename RowTrait<MT>::Type, T >::Type  Type;
+   using Type = MultTrait_< RowTrait_<MT>, T >;
 };
 
 template< typename T, typename MT, bool SO, bool SF >
 struct MultTrait< T, SparseRow<MT,SO,SF> >
 {
-   typedef typename MultTrait< T, typename RowTrait<MT>::Type >::Type  Type;
+   using Type = MultTrait_< T, RowTrait_<MT> >;
 };
 /*! \endcond */
 //*************************************************************************************************
@@ -5803,13 +5800,13 @@ struct MultTrait< T, SparseRow<MT,SO,SF> >
 template< typename MT, bool SO, bool SF, typename T >
 struct CrossTrait< SparseRow<MT,SO,SF>, T >
 {
-   typedef typename CrossTrait< typename RowTrait<MT>::Type, T >::Type  Type;
+   using Type = CrossTrait_< RowTrait_<MT>, T >;
 };
 
 template< typename T, typename MT, bool SO, bool SF >
 struct CrossTrait< T, SparseRow<MT,SO,SF> >
 {
-   typedef typename CrossTrait< T, typename RowTrait<MT>::Type >::Type  Type;
+   using Type = CrossTrait_< T, RowTrait_<MT> >;
 };
 /*! \endcond */
 //*************************************************************************************************
@@ -5828,13 +5825,13 @@ struct CrossTrait< T, SparseRow<MT,SO,SF> >
 template< typename MT, bool SO, bool SF, typename T >
 struct DivTrait< SparseRow<MT,SO,SF>, T >
 {
-   typedef typename DivTrait< typename RowTrait<MT>::Type, T >::Type  Type;
+   using Type = DivTrait_< RowTrait_<MT>, T >;
 };
 
 template< typename T, typename MT, bool SO, bool SF >
 struct DivTrait< T, SparseRow<MT,SO,SF> >
 {
-   typedef typename DivTrait< T, typename RowTrait<MT>::Type >::Type  Type;
+   using Type = DivTrait_< T, RowTrait_<MT> >;
 };
 /*! \endcond */
 //*************************************************************************************************
@@ -5853,7 +5850,7 @@ struct DivTrait< T, SparseRow<MT,SO,SF> >
 template< typename MT, bool SO, bool SF >
 struct SubvectorTrait< SparseRow<MT,SO,SF> >
 {
-   typedef typename SubvectorTrait< typename SparseRow<MT,SO,SF>::ResultType >::Type  Type;
+   using Type = SubvectorTrait_< ResultType_< SparseRow<MT,SO,SF> > >;
 };
 /*! \endcond */
 //*************************************************************************************************

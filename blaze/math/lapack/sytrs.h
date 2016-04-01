@@ -41,6 +41,7 @@
 //*************************************************************************************************
 
 #include <boost/cast.hpp>
+#include <blaze/math/Aliases.h>
 #include <blaze/math/constraints/Adaptor.h>
 #include <blaze/math/constraints/BlasCompatible.h>
 #include <blaze/math/constraints/Computation.h>
@@ -378,11 +379,11 @@ inline void sytrs( const DenseMatrix<MT,SO>& A, DenseVector<VT,TF>& b, char uplo
    BLAZE_CONSTRAINT_MUST_NOT_BE_COMPUTATION_TYPE( VT );
    BLAZE_CONSTRAINT_MUST_HAVE_MUTABLE_DATA_ACCESS( MT );
    BLAZE_CONSTRAINT_MUST_HAVE_MUTABLE_DATA_ACCESS( VT );
-   BLAZE_CONSTRAINT_MUST_BE_BLAS_COMPATIBLE_TYPE( typename MT::ElementType );
-   BLAZE_CONSTRAINT_MUST_BE_SAME_TYPE( typename MT::ElementType, typename VT::ElementType );
+   BLAZE_CONSTRAINT_MUST_BE_BLAS_COMPATIBLE_TYPE( ElementType_<MT> );
+   BLAZE_CONSTRAINT_MUST_BE_SAME_TYPE( ElementType_<MT>, ElementType_<VT> );
 
-   typedef typename MT::OppositeType  OT;
-   typedef typename MT::ElementType   ET;
+   typedef OppositeType_<MT>  OT;
+   typedef ElementType_<MT>   ET;
 
    if( !isSquare( ~A ) ) {
       BLAZE_THROW_INVALID_ARGUMENT( "Invalid non-square matrix provided" );
@@ -511,12 +512,12 @@ inline void sytrs( const DenseMatrix<MT1,SO1>& A, DenseMatrix<MT2,SO2>& B, char 
    BLAZE_CONSTRAINT_MUST_NOT_BE_COMPUTATION_TYPE( MT2 );
    BLAZE_CONSTRAINT_MUST_HAVE_MUTABLE_DATA_ACCESS( MT1 );
    BLAZE_CONSTRAINT_MUST_HAVE_MUTABLE_DATA_ACCESS( MT2 );
-   BLAZE_CONSTRAINT_MUST_BE_BLAS_COMPATIBLE_TYPE( typename MT1::ElementType );
-   BLAZE_CONSTRAINT_MUST_BE_SAME_TYPE( typename MT1::ElementType, typename MT2::ElementType );
+   BLAZE_CONSTRAINT_MUST_BE_BLAS_COMPATIBLE_TYPE( ElementType_<MT1> );
+   BLAZE_CONSTRAINT_MUST_BE_SAME_TYPE( ElementType_<MT1>, ElementType_<MT2> );
 
-   typedef typename MT1::OppositeType  OT1;
-   typedef typename MT2::OppositeType  OT2;
-   typedef typename MT1::ElementType   ET1;
+   typedef OppositeType_<MT1>  OT1;
+   typedef OppositeType_<MT2>  OT2;
+   typedef ElementType_<MT1>   ET1;
 
    if( !isSquare( ~A ) ) {
       BLAZE_THROW_INVALID_ARGUMENT( "Invalid non-square matrix provided" );

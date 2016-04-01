@@ -42,6 +42,7 @@
 
 #include <iomanip>
 #include <ostream>
+#include <blaze/math/Aliases.h>
 #include <blaze/math/expressions/Vector.h>
 #include <blaze/math/traits/MultTrait.h>
 #include <blaze/math/TransposeFlag.h>
@@ -59,19 +60,19 @@ namespace blaze {
 /*!\name Vector operators */
 //@{
 template< typename T1, typename T2 >
-inline const typename MultTrait<typename T1::ElementType,typename T2::ElementType>::Type
+inline const MultTrait_< ElementType_<T1>, ElementType_<T2> >
    operator,( const Vector<T1,false>& lhs, const Vector<T2,false>& rhs );
 
 template< typename T1, typename T2 >
-inline const typename MultTrait<typename T1::ElementType,typename T2::ElementType>::Type
+inline const MultTrait_< ElementType_<T1>, ElementType_<T2> >
    operator,( const Vector<T1,false>& lhs, const Vector<T2,true>& rhs );
 
 template< typename T1, typename T2 >
-inline const typename MultTrait<typename T1::ElementType,typename T2::ElementType>::Type
+inline const MultTrait_< ElementType_<T1>, ElementType_<T2> >
    operator,( const Vector<T1,true>& lhs, const Vector<T2,false>& rhs );
 
 template< typename T1, typename T2 >
-inline const typename MultTrait<typename T1::ElementType,typename T2::ElementType>::Type
+inline const MultTrait_< ElementType_<T1>, ElementType_<T2> >
    operator,( const Vector<T1,true>& lhs, const Vector<T2,true>& rhs );
 
 template< typename VT, bool TF >
@@ -91,7 +92,7 @@ inline std::ostream& operator<<( std::ostream& os, const Vector<VT,TF>& v );
 */
 template< typename T1    // Type of the left-hand side vector
         , typename T2 >  // Type of the right-hand side vector
-inline const typename MultTrait<typename T1::ElementType,typename T2::ElementType>::Type
+inline const MultTrait_< ElementType_<T1>, ElementType_<T2> >
    operator,( const Vector<T1,false>& lhs, const Vector<T2,false>& rhs )
 {
    return trans(~lhs) * (~rhs);
@@ -110,7 +111,7 @@ inline const typename MultTrait<typename T1::ElementType,typename T2::ElementTyp
 */
 template< typename T1    // Type of the left-hand side vector
         , typename T2 >  // Type of the right-hand side vector
-inline const typename MultTrait<typename T1::ElementType,typename T2::ElementType>::Type
+inline const MultTrait_< ElementType_<T1>, ElementType_<T2> >
    operator,( const Vector<T1,false>& lhs, const Vector<T2,true>& rhs )
 {
    return trans(~lhs) * trans(~rhs);
@@ -129,7 +130,7 @@ inline const typename MultTrait<typename T1::ElementType,typename T2::ElementTyp
 */
 template< typename T1    // Type of the left-hand side vector
         , typename T2 >  // Type of the right-hand side vector
-inline const typename MultTrait<typename T1::ElementType,typename T2::ElementType>::Type
+inline const MultTrait_< ElementType_<T1>, ElementType_<T2> >
    operator,( const Vector<T1,true>& lhs, const Vector<T2,false>& rhs )
 {
    return (~lhs) * (~rhs);
@@ -148,7 +149,7 @@ inline const typename MultTrait<typename T1::ElementType,typename T2::ElementTyp
 */
 template< typename T1    // Type of the left-hand side vector
         , typename T2 >  // Type of the right-hand side vector
-inline const typename MultTrait<typename T1::ElementType,typename T2::ElementType>::Type
+inline const MultTrait_< ElementType_<T1>, ElementType_<T2> >
    operator,( const Vector<T1,true>& lhs, const Vector<T2,true>& rhs )
 {
    return (~lhs) * trans(~rhs);
@@ -168,7 +169,7 @@ template< typename VT  // Type of the vector
         , bool TF >    // Transpose flag
 inline std::ostream& operator<<( std::ostream& os, const Vector<VT,TF>& v )
 {
-   typename VT::CompositeType tmp( ~v );
+   CompositeType_<VT> tmp( ~v );
 
    if( tmp.size() == 0UL ) {
       os << "( )\n";

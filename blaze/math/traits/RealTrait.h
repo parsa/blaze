@@ -40,6 +40,7 @@
 // Includes
 //*************************************************************************************************
 
+#include <blaze/math/Aliases.h>
 #include <blaze/math/typetraits/IsMatrix.h>
 #include <blaze/math/typetraits/IsVector.h>
 #include <blaze/util/Complex.h>
@@ -80,8 +81,7 @@ struct RealTrait
    //**********************************************************************************************
    /*! \cond BLAZE_INTERNAL */
    struct MatrixOrVector {
-      using ET   = typename T::ElementType;
-      using RT   = typename RealTrait<ET>::Type;
+      using RT   = typename RealTrait< ElementType_<T> >::Type;
       using Type = typename T::template Rebind<RT>::Other;
    };
    /*! \endcond */

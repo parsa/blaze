@@ -42,6 +42,7 @@
 
 #include <algorithm>
 #include <boost/smart_ptr/shared_array.hpp>
+#include <blaze/math/Aliases.h>
 #include <blaze/math/AlignmentFlag.h>
 #include <blaze/math/constraints/RequiresEvaluation.h>
 #include <blaze/math/constraints/TransposeFlag.h>
@@ -561,7 +562,7 @@ class CustomVector : public DenseVector< CustomVector<Type,AF,PF,TF>, TF >
    struct VectorizedAssign {
       enum { value = useOptimizedKernels &&
                      vectorizable && VT::vectorizable &&
-                     IsSame<Type,typename VT::ElementType>::value };
+                     IsSame< Type, ElementType_<VT> >::value };
    };
    /*! \endcond */
    //**********************************************************************************************
@@ -573,7 +574,7 @@ class CustomVector : public DenseVector< CustomVector<Type,AF,PF,TF>, TF >
    struct VectorizedAddAssign {
       enum { value = useOptimizedKernels &&
                      vectorizable && VT::vectorizable &&
-                     IsSame<Type,typename VT::ElementType>::value &&
+                     IsSame< Type, ElementType_<VT> >::value &&
                      IntrinsicTrait<Type>::addition };
    };
    /*! \endcond */
@@ -586,7 +587,7 @@ class CustomVector : public DenseVector< CustomVector<Type,AF,PF,TF>, TF >
    struct VectorizedSubAssign {
       enum { value = useOptimizedKernels &&
                      vectorizable && VT::vectorizable &&
-                     IsSame<Type,typename VT::ElementType>::value &&
+                     IsSame< Type, ElementType_<VT> >::value &&
                      IntrinsicTrait<Type>::subtraction };
    };
    /*! \endcond */
@@ -599,7 +600,7 @@ class CustomVector : public DenseVector< CustomVector<Type,AF,PF,TF>, TF >
    struct VectorizedMultAssign {
       enum { value = useOptimizedKernels &&
                      vectorizable && VT::vectorizable &&
-                     IsSame<Type,typename VT::ElementType>::value &&
+                     IsSame< Type, ElementType_<VT> >::value &&
                      IntrinsicTrait<Type>::multiplication };
    };
    /*! \endcond */
@@ -1289,7 +1290,7 @@ inline CustomVector<Type,AF,PF,TF>& CustomVector<Type,AF,PF,TF>::operator=( cons
    }
 
    if( (~rhs).canAlias( this ) ) {
-      const typename VT::ResultType tmp( ~rhs );
+      const ResultType_<VT> tmp( ~rhs );
       smpAssign( *this, tmp );
    }
    else {
@@ -1325,7 +1326,7 @@ inline CustomVector<Type,AF,PF,TF>& CustomVector<Type,AF,PF,TF>::operator+=( con
    }
 
    if( (~rhs).canAlias( this ) ) {
-      const typename VT::ResultType tmp( ~rhs );
+      const ResultType_<VT> tmp( ~rhs );
       smpAddAssign( *this, tmp );
    }
    else {
@@ -1360,7 +1361,7 @@ inline CustomVector<Type,AF,PF,TF>& CustomVector<Type,AF,PF,TF>::operator-=( con
    }
 
    if( (~rhs).canAlias( this ) ) {
-      const typename VT::ResultType tmp( ~rhs );
+      const ResultType_<VT> tmp( ~rhs );
       smpSubAssign( *this, tmp );
    }
    else {
@@ -1391,9 +1392,9 @@ template< typename VT >  // Type of the right-hand side vector
 inline CustomVector<Type,AF,PF,TF>& CustomVector<Type,AF,PF,TF>::operator*=( const Vector<VT,TF>& rhs )
 {
    BLAZE_CONSTRAINT_MUST_BE_VECTOR_WITH_TRANSPOSE_FLAG( VT, TF );
-   BLAZE_CONSTRAINT_MUST_NOT_REQUIRE_EVALUATION( typename VT::ResultType );
+   BLAZE_CONSTRAINT_MUST_NOT_REQUIRE_EVALUATION( ResultType_<VT> );
 
-   typedef typename MultTrait<ResultType,typename VT::ResultType>::Type  MultType;
+   typedef MultTrait_< ResultType, ResultType_<VT> >  MultType;
 
    BLAZE_CONSTRAINT_MUST_BE_VECTOR_WITH_TRANSPOSE_FLAG( MultType, TF );
    BLAZE_CONSTRAINT_MUST_NOT_REQUIRE_EVALUATION( MultType );
@@ -2153,7 +2154,7 @@ inline EnableIf_<typename CustomVector<Type,AF,PF,TF>::BLAZE_TEMPLATE Vectorized
       BLAZE_INTERNAL_ASSERT( i4way <= ipos, "Invalid end calculation" );
 
       size_t i( 0UL );
-      typename VT::ConstIterator it( (~rhs).begin() );
+      ConstIterator_<VT> it( (~rhs).begin() );
 
       for( ; i<i4way; i+=IT::size*4UL ) {
          store( i             , it.load() ); it += IT::size;
@@ -2192,7 +2193,7 @@ inline void CustomVector<Type,AF,PF,TF>::assign( const SparseVector<VT,TF>& rhs 
 {
    BLAZE_INTERNAL_ASSERT( size_ == (~rhs).size(), "Invalid vector sizes" );
 
-   for( typename VT::ConstIterator element=(~rhs).begin(); element!=(~rhs).end(); ++element )
+   for( ConstIterator_<VT> element=(~rhs).begin(); element!=(~rhs).end(); ++element )
       v_[element->index()] = element->value();
 }
 //*************************************************************************************************
@@ -2263,7 +2264,7 @@ inline EnableIf_<typename CustomVector<Type,AF,PF,TF>::BLAZE_TEMPLATE Vectorized
    BLAZE_INTERNAL_ASSERT( i4way <= ipos, "Invalid end calculation" );
 
    size_t i( 0UL );
-   typename VT::ConstIterator it( (~rhs).begin() );
+   ConstIterator_<VT> it( (~rhs).begin() );
 
    for( ; i<i4way; i+=IT::size*4UL ) {
       store( i             , load(i             ) + it.load() ); it += IT::size;
@@ -2301,7 +2302,7 @@ inline void CustomVector<Type,AF,PF,TF>::addAssign( const SparseVector<VT,TF>& r
 {
    BLAZE_INTERNAL_ASSERT( size_ == (~rhs).size(), "Invalid vector sizes" );
 
-   for( typename VT::ConstIterator element=(~rhs).begin(); element!=(~rhs).end(); ++element )
+   for( ConstIterator_<VT> element=(~rhs).begin(); element!=(~rhs).end(); ++element )
       v_[element->index()] += element->value();
 }
 //*************************************************************************************************
@@ -2372,7 +2373,7 @@ inline EnableIf_<typename CustomVector<Type,AF,PF,TF>::BLAZE_TEMPLATE Vectorized
    BLAZE_INTERNAL_ASSERT( i4way <= ipos, "Invalid end calculation" );
 
    size_t i( 0UL );
-   typename VT::ConstIterator it( (~rhs).begin() );
+   ConstIterator_<VT> it( (~rhs).begin() );
 
    for( ; i<i4way; i+=IT::size*4UL ) {
       store( i             , load(i             ) - it.load() ); it += IT::size;
@@ -2410,7 +2411,7 @@ inline void CustomVector<Type,AF,PF,TF>::subAssign( const SparseVector<VT,TF>& r
 {
    BLAZE_INTERNAL_ASSERT( size_ == (~rhs).size(), "Invalid vector sizes" );
 
-   for( typename VT::ConstIterator element=(~rhs).begin(); element!=(~rhs).end(); ++element )
+   for( ConstIterator_<VT> element=(~rhs).begin(); element!=(~rhs).end(); ++element )
       v_[element->index()] -= element->value();
 }
 //*************************************************************************************************
@@ -2481,7 +2482,7 @@ inline EnableIf_<typename CustomVector<Type,AF,PF,TF>::BLAZE_TEMPLATE Vectorized
    BLAZE_INTERNAL_ASSERT( i4way <= ipos, "Invalid end calculation" );
 
    size_t i( 0UL );
-   typename VT::ConstIterator it( (~rhs).begin() );
+   ConstIterator_<VT> it( (~rhs).begin() );
 
    for( ; i<i4way; i+=IT::size*4UL ) {
       store( i             , load(i             ) * it.load() ); it += IT::size;
@@ -2523,7 +2524,7 @@ inline void CustomVector<Type,AF,PF,TF>::multAssign( const SparseVector<VT,TF>& 
 
    reset();
 
-   for( typename VT::ConstIterator element=(~rhs).begin(); element!=(~rhs).end(); ++element )
+   for( ConstIterator_<VT> element=(~rhs).begin(); element!=(~rhs).end(); ++element )
       v_[element->index()] = tmp[element->index()] * element->value();
 }
 //*************************************************************************************************
@@ -2690,7 +2691,7 @@ class CustomVector<Type,AF,padded,TF>
    struct VectorizedAssign {
       enum { value = useOptimizedKernels &&
                      vectorizable && VT::vectorizable &&
-                     IsSame<Type,typename VT::ElementType>::value };
+                     IsSame< Type, ElementType_<VT> >::value };
    };
    //**********************************************************************************************
 
@@ -2700,7 +2701,7 @@ class CustomVector<Type,AF,padded,TF>
    struct VectorizedAddAssign {
       enum { value = useOptimizedKernels &&
                      vectorizable && VT::vectorizable &&
-                     IsSame<Type,typename VT::ElementType>::value &&
+                     IsSame< Type, ElementType_<VT> >::value &&
                      IntrinsicTrait<Type>::addition };
    };
    //**********************************************************************************************
@@ -2711,7 +2712,7 @@ class CustomVector<Type,AF,padded,TF>
    struct VectorizedSubAssign {
       enum { value = useOptimizedKernels &&
                      vectorizable && VT::vectorizable &&
-                     IsSame<Type,typename VT::ElementType>::value &&
+                     IsSame< Type, ElementType_<VT> >::value &&
                      IntrinsicTrait<Type>::subtraction };
    };
    //**********************************************************************************************
@@ -2722,7 +2723,7 @@ class CustomVector<Type,AF,padded,TF>
    struct VectorizedMultAssign {
       enum { value = useOptimizedKernels &&
                      vectorizable && VT::vectorizable &&
-                     IsSame<Type,typename VT::ElementType>::value &&
+                     IsSame< Type, ElementType_<VT> >::value &&
                      IntrinsicTrait<Type>::multiplication };
    };
    //**********************************************************************************************
@@ -3391,7 +3392,7 @@ inline CustomVector<Type,AF,padded,TF>&
    }
 
    if( (~rhs).canAlias( this ) ) {
-      const typename VT::ResultType tmp( ~rhs );
+      const ResultType_<VT> tmp( ~rhs );
       smpAssign( *this, tmp );
    }
    else {
@@ -3429,7 +3430,7 @@ inline CustomVector<Type,AF,padded,TF>&
    }
 
    if( (~rhs).canAlias( this ) ) {
-      const typename VT::ResultType tmp( ~rhs );
+      const ResultType_<VT> tmp( ~rhs );
       smpAddAssign( *this, tmp );
    }
    else {
@@ -3466,7 +3467,7 @@ inline CustomVector<Type,AF,padded,TF>&
    }
 
    if( (~rhs).canAlias( this ) ) {
-      const typename VT::ResultType tmp( ~rhs );
+      const ResultType_<VT> tmp( ~rhs );
       smpSubAssign( *this, tmp );
    }
    else {
@@ -3499,9 +3500,9 @@ inline CustomVector<Type,AF,padded,TF>&
    CustomVector<Type,AF,padded,TF>::operator*=( const Vector<VT,TF>& rhs )
 {
    BLAZE_CONSTRAINT_MUST_BE_VECTOR_WITH_TRANSPOSE_FLAG( VT, TF );
-   BLAZE_CONSTRAINT_MUST_NOT_REQUIRE_EVALUATION( typename VT::ResultType );
+   BLAZE_CONSTRAINT_MUST_NOT_REQUIRE_EVALUATION( ResultType_<VT> );
 
-   typedef typename MultTrait<ResultType,typename VT::ResultType>::Type  MultType;
+   typedef MultTrait_< ResultType, ResultType_<VT> >  MultType;
 
    BLAZE_CONSTRAINT_MUST_BE_VECTOR_WITH_TRANSPOSE_FLAG( MultType, TF );
    BLAZE_CONSTRAINT_MUST_NOT_REQUIRE_EVALUATION( MultType );
@@ -4215,7 +4216,7 @@ inline EnableIf_<typename CustomVector<Type,AF,padded,TF>::BLAZE_TEMPLATE Vector
       BLAZE_INTERNAL_ASSERT( i4way <= ipos, "Invalid end calculation" );
 
       size_t i( 0UL );
-      typename VT::ConstIterator it( (~rhs).begin() );
+      ConstIterator_<VT> it( (~rhs).begin() );
 
       for( ; i<i4way; i+=IT::size*4UL ) {
          store( i             , it.load() ); it += IT::size;
@@ -4255,7 +4256,7 @@ inline void CustomVector<Type,AF,padded,TF>::assign( const SparseVector<VT,TF>& 
 {
    BLAZE_INTERNAL_ASSERT( size_ == (~rhs).size(), "Invalid vector sizes" );
 
-   for( typename VT::ConstIterator element=(~rhs).begin(); element!=(~rhs).end(); ++element )
+   for( ConstIterator_<VT> element=(~rhs).begin(); element!=(~rhs).end(); ++element )
       v_[element->index()] = element->value();
 }
 /*! \endcond */
@@ -4330,7 +4331,7 @@ inline EnableIf_<typename CustomVector<Type,AF,padded,TF>::BLAZE_TEMPLATE Vector
    BLAZE_INTERNAL_ASSERT( i4way <= ipos, "Invalid end calculation" );
 
    size_t i( 0UL );
-   typename VT::ConstIterator it( (~rhs).begin() );
+   ConstIterator_<VT> it( (~rhs).begin() );
 
    for( ; i<i4way; i+=IT::size*4UL ) {
       store( i             , load(i             ) + it.load() ); it += IT::size;
@@ -4369,7 +4370,7 @@ inline void CustomVector<Type,AF,padded,TF>::addAssign( const SparseVector<VT,TF
 {
    BLAZE_INTERNAL_ASSERT( size_ == (~rhs).size(), "Invalid vector sizes" );
 
-   for( typename VT::ConstIterator element=(~rhs).begin(); element!=(~rhs).end(); ++element )
+   for( ConstIterator_<VT> element=(~rhs).begin(); element!=(~rhs).end(); ++element )
       v_[element->index()] += element->value();
 }
 /*! \endcond */
@@ -4444,7 +4445,7 @@ inline EnableIf_<typename CustomVector<Type,AF,padded,TF>::BLAZE_TEMPLATE Vector
    BLAZE_INTERNAL_ASSERT( i4way <= ipos, "Invalid end calculation" );
 
    size_t i( 0UL );
-   typename VT::ConstIterator it( (~rhs).begin() );
+   ConstIterator_<VT> it( (~rhs).begin() );
 
    for( ; i<i4way; i+=IT::size*4UL ) {
       store( i             , load(i             ) - it.load() ); it += IT::size;
@@ -4483,7 +4484,7 @@ inline void CustomVector<Type,AF,padded,TF>::subAssign( const SparseVector<VT,TF
 {
    BLAZE_INTERNAL_ASSERT( size_ == (~rhs).size(), "Invalid vector sizes" );
 
-   for( typename VT::ConstIterator element=(~rhs).begin(); element!=(~rhs).end(); ++element )
+   for( ConstIterator_<VT> element=(~rhs).begin(); element!=(~rhs).end(); ++element )
       v_[element->index()] -= element->value();
 }
 /*! \endcond */
@@ -4558,7 +4559,7 @@ inline EnableIf_<typename CustomVector<Type,AF,padded,TF>::BLAZE_TEMPLATE Vector
    BLAZE_INTERNAL_ASSERT( i4way <= ipos, "Invalid end calculation" );
 
    size_t i( 0UL );
-   typename VT::ConstIterator it( (~rhs).begin() );
+   ConstIterator_<VT> it( (~rhs).begin() );
 
    for( ; i<i4way; i+=IT::size*4UL ) {
       store( i             , load(i             ) * it.load() ); it += IT::size;
@@ -4601,7 +4602,7 @@ inline void CustomVector<Type,AF,padded,TF>::multAssign( const SparseVector<VT,T
 
    reset();
 
-   for( typename VT::ConstIterator element=(~rhs).begin(); element!=(~rhs).end(); ++element )
+   for( ConstIterator_<VT> element=(~rhs).begin(); element!=(~rhs).end(); ++element )
       v_[element->index()] = tmp[element->index()] * element->value();
 }
 /*! \endcond */
@@ -4858,43 +4859,43 @@ struct IsPadded< CustomVector<T,AF,padded,TF> > : public TrueType
 template< typename T1, bool AF, bool PF, bool TF, typename T2, size_t N >
 struct AddTrait< CustomVector<T1,AF,PF,TF>, StaticVector<T2,N,TF> >
 {
-   typedef StaticVector< typename AddTrait<T1,T2>::Type, N, TF >  Type;
+   using Type = StaticVector< AddTrait_<T1,T2>, N, TF >;
 };
 
 template< typename T1, size_t N, bool TF, typename T2, bool AF, bool PF >
 struct AddTrait< StaticVector<T1,N,TF>, CustomVector<T2,AF,PF,TF> >
 {
-   typedef StaticVector< typename AddTrait<T1,T2>::Type, N, TF >  Type;
+   using Type = StaticVector< AddTrait_<T1,T2>, N, TF >;
 };
 
 template< typename T1, bool AF, bool PF, bool TF, typename T2, size_t N >
 struct AddTrait< CustomVector<T1,AF,PF,TF>, HybridVector<T2,N,TF> >
 {
-   typedef HybridVector< typename AddTrait<T1,T2>::Type, N, TF >  Type;
+   using Type = HybridVector< AddTrait_<T1,T2>, N, TF >;
 };
 
 template< typename T1, size_t N, bool TF, typename T2, bool AF, bool PF >
 struct AddTrait< HybridVector<T1,N,TF>, CustomVector<T2,AF,PF,TF> >
 {
-   typedef HybridVector< typename AddTrait<T1,T2>::Type, N, TF >  Type;
+   using Type = HybridVector< AddTrait_<T1,T2>, N, TF >;
 };
 
 template< typename T1, bool AF, bool PF, bool TF, typename T2 >
 struct AddTrait< CustomVector<T1,AF,PF,TF>, DynamicVector<T2,TF> >
 {
-   typedef DynamicVector< typename AddTrait<T1,T2>::Type, TF >  Type;
+   using Type = DynamicVector< AddTrait_<T1,T2>, TF >;
 };
 
 template< typename T1, bool TF, typename T2, bool AF, bool PF >
 struct AddTrait< DynamicVector<T1,TF>, CustomVector<T2,AF,PF,TF> >
 {
-   typedef DynamicVector< typename AddTrait<T1,T2>::Type, TF >  Type;
+   using Type = DynamicVector< AddTrait_<T1,T2>, TF >;
 };
 
 template< typename T1, bool AF1, bool PF1, bool TF, typename T2, bool AF2, bool PF2 >
 struct AddTrait< CustomVector<T1,AF1,PF1,TF>, CustomVector<T2,AF2,PF2,TF> >
 {
-   typedef DynamicVector< typename AddTrait<T1,T2>::Type, TF >  Type;
+   using Type = DynamicVector< AddTrait_<T1,T2>, TF >;
 };
 /*! \endcond */
 //*************************************************************************************************
@@ -4913,43 +4914,43 @@ struct AddTrait< CustomVector<T1,AF1,PF1,TF>, CustomVector<T2,AF2,PF2,TF> >
 template< typename T1, bool AF, bool PF, bool TF, typename T2, size_t N >
 struct SubTrait< CustomVector<T1,AF,PF,TF>, StaticVector<T2,N,TF> >
 {
-   typedef StaticVector< typename SubTrait<T1,T2>::Type, N, TF >  Type;
+   using Type = StaticVector< SubTrait_<T1,T2>, N, TF >;
 };
 
 template< typename T1, size_t N, bool TF, typename T2, bool AF, bool PF >
 struct SubTrait< StaticVector<T1,N,TF>, CustomVector<T2,AF,PF,TF> >
 {
-   typedef StaticVector< typename SubTrait<T1,T2>::Type, N, TF >  Type;
+   using Type = StaticVector< SubTrait_<T1,T2>, N, TF >;
 };
 
 template< typename T1, bool AF, bool PF, bool TF, typename T2, size_t N >
 struct SubTrait< CustomVector<T1,AF,PF,TF>, HybridVector<T2,N,TF> >
 {
-   typedef HybridVector< typename SubTrait<T1,T2>::Type, N, TF >  Type;
+   using Type = HybridVector< SubTrait_<T1,T2>, N, TF >;
 };
 
 template< typename T1, size_t N, bool TF, typename T2, bool AF, bool PF >
 struct SubTrait< HybridVector<T1,N,TF>, CustomVector<T2,AF,PF,TF> >
 {
-   typedef HybridVector< typename SubTrait<T1,T2>::Type, N, TF >  Type;
+   using Type = HybridVector< SubTrait_<T1,T2>, N, TF >;
 };
 
 template< typename T1, bool AF, bool PF, bool TF, typename T2 >
 struct SubTrait< CustomVector<T1,AF,PF,TF>, DynamicVector<T2,TF> >
 {
-   typedef DynamicVector< typename SubTrait<T1,T2>::Type, TF >  Type;
+   using Type = DynamicVector< SubTrait_<T1,T2>, TF >;
 };
 
 template< typename T1, bool TF, typename T2, bool AF, bool PF >
 struct SubTrait< DynamicVector<T1,TF>, CustomVector<T2,AF,PF,TF> >
 {
-   typedef DynamicVector< typename SubTrait<T1,T2>::Type, TF >  Type;
+   using Type = DynamicVector< SubTrait_<T1,T2>, TF >;
 };
 
 template< typename T1, bool AF1, bool PF1, bool TF, typename T2, bool AF2, bool PF2 >
 struct SubTrait< CustomVector<T1,AF1,PF1,TF>, CustomVector<T2,AF2,PF2,TF> >
 {
-   typedef DynamicVector< typename SubTrait<T1,T2>::Type, TF >  Type;
+   using Type = DynamicVector< SubTrait_<T1,T2>, TF >;
 };
 /*! \endcond */
 //*************************************************************************************************
@@ -4968,139 +4969,139 @@ struct SubTrait< CustomVector<T1,AF1,PF1,TF>, CustomVector<T2,AF2,PF2,TF> >
 template< typename T1, bool AF, bool PF, bool TF, typename T2 >
 struct MultTrait< CustomVector<T1,AF,PF,TF>, T2, EnableIf_<IsNumeric<T2> > >
 {
-   typedef DynamicVector< typename MultTrait<T1,T2>::Type, TF >  Type;
+   using Type = DynamicVector< MultTrait_<T1,T2>, TF >;
 };
 
 template< typename T1, typename T2, bool AF, bool PF, bool TF >
 struct MultTrait< T1, CustomVector<T2,AF,PF,TF>, EnableIf_<IsNumeric<T1> > >
 {
-   typedef DynamicVector< typename MultTrait<T1,T2>::Type, TF >  Type;
+   using Type = DynamicVector< MultTrait_<T1,T2>, TF >;
 };
 
 template< typename T1, bool AF, bool PF, bool TF, typename T2, size_t N >
 struct MultTrait< CustomVector<T1,AF,PF,TF>, StaticVector<T2,N,TF> >
 {
-   typedef StaticVector< typename MultTrait<T1,T2>::Type, N, TF >  Type;
+   using Type = StaticVector< MultTrait_<T1,T2>, N, TF >;
 };
 
 template< typename T1, bool AF, bool PF, typename T2, size_t N >
 struct MultTrait< CustomVector<T1,AF,PF,false>, StaticVector<T2,N,true> >
 {
-   typedef DynamicMatrix< typename MultTrait<T1,T2>::Type, false >  Type;
+   using Type = DynamicMatrix< MultTrait_<T1,T2>, false >;
 };
 
 template< typename T1, bool AF, bool PF, typename T2, size_t N >
 struct MultTrait< CustomVector<T1,AF,PF,true>, StaticVector<T2,N,false> >
 {
-   typedef typename MultTrait<T1,T2>::Type  Type;
+   using Type = MultTrait_<T1,T2>;
 };
 
 template< typename T1, size_t N, bool TF, typename T2, bool AF, bool PF >
 struct MultTrait< StaticVector<T1,N,TF>, CustomVector<T2,AF,PF,TF> >
 {
-   typedef StaticVector< typename MultTrait<T1,T2>::Type, N, TF >  Type;
+   using Type = StaticVector< MultTrait_<T1,T2>, N, TF >;
 };
 
 template< typename T1, size_t N, typename T2, bool AF, bool PF >
 struct MultTrait< StaticVector<T1,N,false>, CustomVector<T2,AF,PF,true> >
 {
-   typedef DynamicMatrix< typename MultTrait<T1,T2>::Type, false >  Type;
+   using Type = DynamicMatrix< MultTrait_<T1,T2>, false >;
 };
 
 template< typename T1, size_t N, typename T2, bool AF, bool PF >
 struct MultTrait< StaticVector<T1,N,true>, CustomVector<T2,AF,PF,false> >
 {
-   typedef typename MultTrait<T1,T2>::Type  Type;
+   using Type = MultTrait_<T1,T2>;
 };
 
 template< typename T1, bool AF, bool PF, bool TF, typename T2, size_t N >
 struct MultTrait< CustomVector<T1,AF,PF,TF>, HybridVector<T2,N,TF> >
 {
-   typedef HybridVector< typename MultTrait<T1,T2>::Type, N, TF >  Type;
+   using Type = HybridVector< MultTrait_<T1,T2>, N, TF >;
 };
 
 template< typename T1, bool AF, bool PF, typename T2, size_t N >
 struct MultTrait< CustomVector<T1,AF,PF,false>, HybridVector<T2,N,true> >
 {
-   typedef DynamicMatrix< typename MultTrait<T1,T2>::Type, false >  Type;
+   using Type = DynamicMatrix< MultTrait_<T1,T2>, false >;
 };
 
 template< typename T1, bool AF, bool PF, typename T2, size_t N >
 struct MultTrait< CustomVector<T1,AF,PF,true>, HybridVector<T2,N,false> >
 {
-   typedef typename MultTrait<T1,T2>::Type  Type;
+   using Type = MultTrait_<T1,T2>;
 };
 
 template< typename T1, size_t N, bool TF, typename T2, bool AF, bool PF >
 struct MultTrait< HybridVector<T1,N,TF>, CustomVector<T2,AF,PF,TF> >
 {
-   typedef HybridVector< typename MultTrait<T1,T2>::Type, N, TF >  Type;
+   using Type = HybridVector< MultTrait_<T1,T2>, N, TF >;
 };
 
 template< typename T1, size_t N, typename T2, bool AF, bool PF >
 struct MultTrait< HybridVector<T1,N,false>, CustomVector<T2,AF,PF,true> >
 {
-   typedef DynamicMatrix< typename MultTrait<T1,T2>::Type, false >  Type;
+   using Type = DynamicMatrix< MultTrait_<T1,T2>, false >;
 };
 
 template< typename T1, size_t N, typename T2, bool AF, bool PF >
 struct MultTrait< HybridVector<T1,N,true>, CustomVector<T2,AF,PF,false> >
 {
-   typedef typename MultTrait<T1,T2>::Type  Type;
+   using Type = MultTrait_<T1,T2>;
 };
 
 template< typename T1, bool AF, bool PF, bool TF, typename T2 >
 struct MultTrait< CustomVector<T1,AF,PF,TF>, DynamicVector<T2,TF> >
 {
-   typedef DynamicVector< typename MultTrait<T1,T2>::Type, TF >  Type;
+   using Type = DynamicVector< MultTrait_<T1,T2>, TF >;
 };
 
 template< typename T1, bool AF, bool PF, typename T2 >
 struct MultTrait< CustomVector<T1,AF,PF,false>, DynamicVector<T2,true> >
 {
-   typedef DynamicMatrix< typename MultTrait<T1,T2>::Type, false >  Type;
+   using Type = DynamicMatrix< MultTrait_<T1,T2>, false >;
 };
 
 template< typename T1, bool AF, bool PF, typename T2 >
 struct MultTrait< CustomVector<T1,AF,PF,true>, DynamicVector<T2,false> >
 {
-   typedef typename MultTrait<T1,T2>::Type  Type;
+   using Type = MultTrait_<T1,T2>;
 };
 
 template< typename T1, bool TF, typename T2, bool AF, bool PF >
 struct MultTrait< DynamicVector<T1,TF>, CustomVector<T2,AF,PF,TF> >
 {
-   typedef DynamicVector< typename MultTrait<T1,T2>::Type, TF >  Type;
+   using Type = DynamicVector< MultTrait_<T1,T2>, TF >;
 };
 
 template< typename T1, typename T2, bool AF, bool PF >
 struct MultTrait< DynamicVector<T1,false>, CustomVector<T2,AF,PF,true> >
 {
-   typedef DynamicMatrix< typename MultTrait<T1,T2>::Type, false >  Type;
+   using Type = DynamicMatrix< MultTrait_<T1,T2>, false >;
 };
 
 template< typename T1, typename T2, bool AF, bool PF >
 struct MultTrait< DynamicVector<T1,true>, CustomVector<T2,AF,PF,false> >
 {
-   typedef typename MultTrait<T1,T2>::Type  Type;
+   using Type = MultTrait_<T1,T2>;
 };
 
 template< typename T1, bool AF1, bool PF1, bool TF, typename T2, bool AF2, bool PF2 >
 struct MultTrait< CustomVector<T1,AF1,PF1,TF>, CustomVector<T2,AF2,PF2,TF> >
 {
-   typedef DynamicVector< typename MultTrait<T1,T2>::Type, TF >  Type;
+   using Type = DynamicVector< MultTrait_<T1,T2>, TF >;
 };
 
 template< typename T1, bool AF1, bool PF1, typename T2, bool AF2, bool PF2 >
 struct MultTrait< CustomVector<T1,AF1,PF1,false>, CustomVector<T2,AF2,PF2,true> >
 {
-   typedef DynamicMatrix< typename MultTrait<T1,T2>::Type, false >  Type;
+   using Type = DynamicMatrix< MultTrait_<T1,T2>, false >;
 };
 
 template< typename T1, bool AF1, bool PF1, typename T2, bool AF2, bool PF2 >
 struct MultTrait< CustomVector<T1,AF1,PF1,true>, CustomVector<T2,AF2,PF2,false> >
 {
-   typedef typename MultTrait<T1,T2>::Type  Type;
+   using Type = MultTrait_<T1,T2>;
 };
 /*! \endcond */
 //*************************************************************************************************
@@ -5120,70 +5121,70 @@ template< typename T1, bool AF, bool PF, typename T2 >
 struct CrossTrait< CustomVector<T1,AF,PF,false>, StaticVector<T2,3UL,false> >
 {
  private:
-   typedef typename MultTrait<T1,T2>::Type  T;
+   using T = MultTrait_<T1,T2>;
 
  public:
-   typedef StaticVector< typename SubTrait<T,T>::Type, 3UL, false >  Type;
+   using Type = StaticVector< SubTrait_<T,T>, 3UL, false >;
 };
 
 template< typename T1, typename T2, bool AF, bool PF >
 struct CrossTrait< StaticVector<T1,3UL,false>, CustomVector<T2,AF,PF,false> >
 {
  private:
-   typedef typename MultTrait<T1,T2>::Type  T;
+   using T = MultTrait_<T1,T2>;
 
  public:
-   typedef StaticVector< typename SubTrait<T,T>::Type, 3UL, false >  Type;
+   using Type = StaticVector< SubTrait_<T,T>, 3UL, false >;
 };
 
 template< typename T1, bool AF, bool PF, typename T2, size_t N >
 struct CrossTrait< CustomVector<T1,AF,PF,false>, HybridVector<T2,N,false> >
 {
  private:
-   typedef typename MultTrait<T1,T2>::Type  T;
+   using T = MultTrait_<T1,T2>;
 
  public:
-   typedef StaticVector< typename SubTrait<T,T>::Type, 3UL, false >  Type;
+   using Type = StaticVector< SubTrait_<T,T>, 3UL, false >;
 };
 
 template< typename T1, size_t N, typename T2, bool AF, bool PF >
 struct CrossTrait< HybridVector<T1,N,false>, CustomVector<T2,AF,PF,false> >
 {
  private:
-   typedef typename MultTrait<T1,T2>::Type  T;
+   using T = MultTrait_<T1,T2>;
 
  public:
-   typedef StaticVector< typename SubTrait<T,T>::Type, 3UL, false >  Type;
+   using Type = StaticVector< SubTrait_<T,T>, 3UL, false >;
 };
 
 template< typename T1, bool AF, bool PF, typename T2 >
 struct CrossTrait< CustomVector<T1,AF,PF,false>, DynamicVector<T2,false> >
 {
  private:
-   typedef typename MultTrait<T1,T2>::Type  T;
+   using T = MultTrait_<T1,T2>;
 
  public:
-   typedef StaticVector< typename SubTrait<T,T>::Type, 3UL, false >  Type;
+   using Type = StaticVector< SubTrait_<T,T>, 3UL, false >;
 };
 
 template< typename T1, typename T2, bool AF, bool PF >
 struct CrossTrait< DynamicVector<T1,false>, CustomVector<T2,AF,PF,false> >
 {
  private:
-   typedef typename MultTrait<T1,T2>::Type  T;
+   using T = MultTrait_<T1,T2>;
 
  public:
-   typedef StaticVector< typename SubTrait<T,T>::Type, 3UL, false >  Type;
+   using Type = StaticVector< SubTrait_<T,T>, 3UL, false >;
 };
 
 template< typename T1, bool AF1, bool PF1, typename T2, bool AF2, bool PF2 >
 struct CrossTrait< CustomVector<T1,AF1,PF1,false>, CustomVector<T2,AF2,PF2,false> >
 {
  private:
-   typedef typename MultTrait<T1,T2>::Type  T;
+   using T = MultTrait_<T1,T2>;
 
  public:
-   typedef StaticVector< typename SubTrait<T,T>::Type, 3UL, false >  Type;
+   using Type = StaticVector< SubTrait_<T,T>, 3UL, false >;
 };
 /*! \endcond */
 //*************************************************************************************************
@@ -5202,7 +5203,7 @@ struct CrossTrait< CustomVector<T1,AF1,PF1,false>, CustomVector<T2,AF2,PF2,false
 template< typename T1, bool AF, bool PF, bool TF, typename T2 >
 struct DivTrait< CustomVector<T1,AF,PF,TF>, T2, EnableIf_<IsNumeric<T2> > >
 {
-   typedef DynamicVector< typename DivTrait<T1,T2>::Type, TF >  Type;
+   using Type = DynamicVector< DivTrait_<T1,T2>, TF >;
 };
 /*! \endcond */
 //*************************************************************************************************
@@ -5221,7 +5222,7 @@ struct DivTrait< CustomVector<T1,AF,PF,TF>, T2, EnableIf_<IsNumeric<T2> > >
 template< typename T1, bool AF, bool PF, bool TF >
 struct SubvectorTrait< CustomVector<T1,AF,PF,TF> >
 {
-   typedef DynamicVector<T1,TF>  Type;
+   using Type = DynamicVector<T1,TF>;
 };
 /*! \endcond */
 //*************************************************************************************************

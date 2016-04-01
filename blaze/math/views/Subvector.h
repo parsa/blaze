@@ -139,7 +139,7 @@ namespace blaze {
 */
 template< typename VT  // Type of the vector
         , bool TF >    // Transpose flag
-inline typename SubvectorExprTrait<VT,unaligned>::Type
+inline SubvectorExprTrait_<VT,unaligned>
    subvector( Vector<VT,TF>& vector, size_t index, size_t size )
 {
    BLAZE_FUNCTION_TRACE;
@@ -207,7 +207,7 @@ inline typename SubvectorExprTrait<VT,unaligned>::Type
 */
 template< typename VT  // Type of the vector
         , bool TF >    // Transpose flag
-inline typename SubvectorExprTrait<const VT,unaligned>::Type
+inline SubvectorExprTrait_<const VT,unaligned>
    subvector( const Vector<VT,TF>& vector, size_t index, size_t size )
 {
    BLAZE_FUNCTION_TRACE;
@@ -291,14 +291,12 @@ inline typename SubvectorExprTrait<const VT,unaligned>::Type
 template< bool AF      // Alignment flag
         , typename VT  // Type of the dense vector
         , bool TF >    // Transpose flag
-inline DisableIf_< Or< IsComputation<VT>, IsTransExpr<VT> >
-                 , typename SubvectorExprTrait<VT,AF>::Type >
+inline DisableIf_< Or< IsComputation<VT>, IsTransExpr<VT> >, SubvectorExprTrait_<VT,AF> >
    subvector( Vector<VT,TF>& vector, size_t index, size_t size )
 {
    BLAZE_FUNCTION_TRACE;
 
-   typedef typename SubvectorExprTrait<VT,AF>::Type  ReturnType;
-   return ReturnType( ~vector, index, size );
+   return SubvectorExprTrait_<VT,AF>( ~vector, index, size );
 }
 //*************************************************************************************************
 
@@ -377,14 +375,12 @@ inline DisableIf_< Or< IsComputation<VT>, IsTransExpr<VT> >
 template< bool AF      // Alignment flag
         , typename VT  // Type of the dense vector
         , bool TF >    // Transpose flag
-inline DisableIf_< Or< IsComputation<VT>, IsTransExpr<VT> >
-                 , typename SubvectorExprTrait<const VT,AF>::Type >
+inline DisableIf_< Or< IsComputation<VT>, IsTransExpr<VT> >, SubvectorExprTrait_<const VT,AF> >
    subvector( const Vector<VT,TF>& vector, size_t index, size_t size )
 {
    BLAZE_FUNCTION_TRACE;
 
-   typedef typename SubvectorExprTrait<const VT,AF>::Type  ReturnType;
-   return ReturnType( ~vector, index, size );
+   return SubvectorExprTrait_<const VT,AF>( ~vector, index, size );
 }
 //*************************************************************************************************
 
@@ -413,7 +409,7 @@ inline DisableIf_< Or< IsComputation<VT>, IsTransExpr<VT> >
 template< bool AF      // Alignment flag
         , typename VT  // Type of the vector
         , bool TF >    // Transpose flag
-inline EnableIf_< IsVecVecAddExpr<VT>, typename SubvectorExprTrait<VT,AF>::Type >
+inline EnableIf_< IsVecVecAddExpr<VT>, SubvectorExprTrait_<VT,AF> >
    subvector( const Vector<VT,TF>& vector, size_t index, size_t size )
 {
    BLAZE_FUNCTION_TRACE;
@@ -441,7 +437,7 @@ inline EnableIf_< IsVecVecAddExpr<VT>, typename SubvectorExprTrait<VT,AF>::Type 
 template< bool AF      // Alignment flag
         , typename VT  // Type of the vector
         , bool TF >    // Transpose flag
-inline EnableIf_< IsVecVecSubExpr<VT>, typename SubvectorExprTrait<VT,AF>::Type >
+inline EnableIf_< IsVecVecSubExpr<VT>, SubvectorExprTrait_<VT,AF> >
    subvector( const Vector<VT,TF>& vector, size_t index, size_t size )
 {
    BLAZE_FUNCTION_TRACE;
@@ -469,7 +465,7 @@ inline EnableIf_< IsVecVecSubExpr<VT>, typename SubvectorExprTrait<VT,AF>::Type 
 template< bool AF      // Alignment flag
         , typename VT  // Type of the vector
         , bool TF >    // Transpose flag
-inline EnableIf_< IsVecVecMultExpr<VT>, typename SubvectorExprTrait<VT,AF>::Type >
+inline EnableIf_< IsVecVecMultExpr<VT>, SubvectorExprTrait_<VT,AF> >
    subvector( const Vector<VT,TF>& vector, size_t index, size_t size )
 {
    BLAZE_FUNCTION_TRACE;
@@ -497,13 +493,12 @@ inline EnableIf_< IsVecVecMultExpr<VT>, typename SubvectorExprTrait<VT,AF>::Type
 template< bool AF      // Alignment flag
         , typename VT  // Type of the vector
         , bool TF >    // Transpose flag
-inline EnableIf_< IsCrossExpr<VT>, typename SubvectorExprTrait<VT,unaligned>::Type >
+inline EnableIf_< IsCrossExpr<VT>, SubvectorExprTrait_<VT,unaligned> >
    subvector( const Vector<VT,TF>& vector, size_t index, size_t size )
 {
    BLAZE_FUNCTION_TRACE;
 
-   typedef typename SubvectorExprTrait<VT,unaligned>::Type  ReturnType;
-   return ReturnType( ~vector, index, size );
+   return SubvectorExprTrait_<VT,unaligned>( ~vector, index, size );
 }
 /*! \endcond */
 //*************************************************************************************************
@@ -525,15 +520,15 @@ inline EnableIf_< IsCrossExpr<VT>, typename SubvectorExprTrait<VT,unaligned>::Ty
 template< bool AF      // Alignment flag
         , typename VT  // Type of the vector
         , bool TF >    // Transpose flag
-inline EnableIf_< IsMatVecMultExpr<VT>, typename SubvectorExprTrait<VT,AF>::Type >
+inline EnableIf_< IsMatVecMultExpr<VT>, SubvectorExprTrait_<VT,AF> >
    subvector( const Vector<VT,TF>& vector, size_t index, size_t size )
 {
    BLAZE_FUNCTION_TRACE;
 
-   typedef RemoveReference_< typename VT::LeftOperand >  MT;
+   typedef RemoveReference_< LeftOperand_<VT> >  MT;
 
-   typename VT::LeftOperand  left ( (~vector).leftOperand()  );
-   typename VT::RightOperand right( (~vector).rightOperand() );
+   LeftOperand_<VT>  left ( (~vector).leftOperand()  );
+   RightOperand_<VT> right( (~vector).rightOperand() );
 
    const size_t column( ( IsUpper<MT>::value )
                         ?( ( !AF && IsStrictlyUpper<MT>::value )?( index + 1UL ):( index ) )
@@ -568,15 +563,15 @@ inline EnableIf_< IsMatVecMultExpr<VT>, typename SubvectorExprTrait<VT,AF>::Type
 template< bool AF      // Alignment flag
         , typename VT  // Type of the vector
         , bool TF >    // Transpose flag
-inline EnableIf_< IsTVecMatMultExpr<VT>, typename SubvectorExprTrait<VT,AF>::Type >
+inline EnableIf_< IsTVecMatMultExpr<VT>, SubvectorExprTrait_<VT,AF> >
    subvector( const Vector<VT,TF>& vector, size_t index, size_t size )
 {
    BLAZE_FUNCTION_TRACE;
 
-   typedef RemoveReference_< typename VT::RightOperand>  MT;
+   typedef RemoveReference_< RightOperand_<VT> >  MT;
 
-   typename VT::LeftOperand  left ( (~vector).leftOperand()  );
-   typename VT::RightOperand right( (~vector).rightOperand() );
+   LeftOperand_<VT>  left ( (~vector).leftOperand()  );
+   RightOperand_<VT> right( (~vector).rightOperand() );
 
    const size_t row( ( IsLower<MT>::value )
                      ?( ( !AF && IsStrictlyLower<MT>::value )?( index + 1UL ):( index ) )
@@ -611,7 +606,7 @@ inline EnableIf_< IsTVecMatMultExpr<VT>, typename SubvectorExprTrait<VT,AF>::Typ
 template< bool AF      // Alignment flag
         , typename VT  // Type of the vector
         , bool TF >    // Transpose flag
-inline EnableIf_< IsVecScalarMultExpr<VT>, typename SubvectorExprTrait<VT,AF>::Type >
+inline EnableIf_< IsVecScalarMultExpr<VT>, SubvectorExprTrait_<VT,AF> >
    subvector( const Vector<VT,TF>& vector, size_t index, size_t size )
 {
    BLAZE_FUNCTION_TRACE;
@@ -638,7 +633,7 @@ inline EnableIf_< IsVecScalarMultExpr<VT>, typename SubvectorExprTrait<VT,AF>::T
 template< bool AF      // Alignment flag
         , typename VT  // Type of the vector
         , bool TF >    // Transpose flag
-inline EnableIf_< IsVecScalarDivExpr<VT>, typename SubvectorExprTrait<VT,AF>::Type >
+inline EnableIf_< IsVecScalarDivExpr<VT>, SubvectorExprTrait_<VT,AF> >
    subvector( const Vector<VT,TF>& vector, size_t index, size_t size )
 {
    BLAZE_FUNCTION_TRACE;
@@ -665,7 +660,7 @@ inline EnableIf_< IsVecScalarDivExpr<VT>, typename SubvectorExprTrait<VT,AF>::Ty
 template< bool AF      // Alignment flag
         , typename VT  // Type of the vector
         , bool TF >    // Transpose flag
-inline EnableIf_< IsVecAbsExpr<VT>, typename SubvectorExprTrait<VT,AF>::Type >
+inline EnableIf_< IsVecAbsExpr<VT>, SubvectorExprTrait_<VT,AF> >
    subvector( const Vector<VT,TF>& vector, size_t index, size_t size )
 {
    BLAZE_FUNCTION_TRACE;
@@ -692,7 +687,7 @@ inline EnableIf_< IsVecAbsExpr<VT>, typename SubvectorExprTrait<VT,AF>::Type >
 template< bool AF      // Alignment flag
         , typename VT  // Type of the vector
         , bool TF >    // Transpose flag
-inline EnableIf_< IsVecConjExpr<VT>, typename SubvectorExprTrait<VT,AF>::Type >
+inline EnableIf_< IsVecConjExpr<VT>, SubvectorExprTrait_<VT,AF> >
    subvector( const Vector<VT,TF>& vector, size_t index, size_t size )
 {
    BLAZE_FUNCTION_TRACE;
@@ -719,7 +714,7 @@ inline EnableIf_< IsVecConjExpr<VT>, typename SubvectorExprTrait<VT,AF>::Type >
 template< bool AF      // Alignment flag
         , typename VT  // Type of the vector
         , bool TF >    // Transpose flag
-inline EnableIf_< IsVecRealExpr<VT>, typename SubvectorExprTrait<VT,AF>::Type >
+inline EnableIf_< IsVecRealExpr<VT>, SubvectorExprTrait_<VT,AF> >
    subvector( const Vector<VT,TF>& vector, size_t index, size_t size )
 {
    BLAZE_FUNCTION_TRACE;
@@ -746,7 +741,7 @@ inline EnableIf_< IsVecRealExpr<VT>, typename SubvectorExprTrait<VT,AF>::Type >
 template< bool AF      // Alignment flag
         , typename VT  // Type of the vector
         , bool TF >    // Transpose flag
-inline EnableIf_< IsVecImagExpr<VT>, typename SubvectorExprTrait<VT,AF>::Type >
+inline EnableIf_< IsVecImagExpr<VT>, SubvectorExprTrait_<VT,AF> >
    subvector( const Vector<VT,TF>& vector, size_t index, size_t size )
 {
    BLAZE_FUNCTION_TRACE;
@@ -773,7 +768,7 @@ inline EnableIf_< IsVecImagExpr<VT>, typename SubvectorExprTrait<VT,AF>::Type >
 template< bool AF      // Alignment flag
         , typename VT  // Type of the vector
         , bool TF >    // Transpose flag
-inline EnableIf_< IsVecEvalExpr<VT>, typename SubvectorExprTrait<VT,AF>::Type >
+inline EnableIf_< IsVecEvalExpr<VT>, SubvectorExprTrait_<VT,AF> >
    subvector( const Vector<VT,TF>& vector, size_t index, size_t size )
 {
    BLAZE_FUNCTION_TRACE;
@@ -800,7 +795,7 @@ inline EnableIf_< IsVecEvalExpr<VT>, typename SubvectorExprTrait<VT,AF>::Type >
 template< bool AF      // Alignment flag
         , typename VT  // Type of the vector
         , bool TF >    // Transpose flag
-inline EnableIf_< IsVecSerialExpr<VT>, typename SubvectorExprTrait<VT,AF>::Type >
+inline EnableIf_< IsVecSerialExpr<VT>, SubvectorExprTrait_<VT,AF> >
    subvector( const Vector<VT,TF>& vector, size_t index, size_t size )
 {
    BLAZE_FUNCTION_TRACE;
@@ -827,7 +822,7 @@ inline EnableIf_< IsVecSerialExpr<VT>, typename SubvectorExprTrait<VT,AF>::Type 
 template< bool AF      // Alignment flag
         , typename VT  // Type of the vector
         , bool TF >    // Transpose flag
-inline EnableIf_< IsVecTransExpr<VT>, typename SubvectorExprTrait<VT,AF>::Type >
+inline EnableIf_< IsVecTransExpr<VT>, SubvectorExprTrait_<VT,AF> >
    subvector( const Vector<VT,TF>& vector, size_t index, size_t size )
 {
    BLAZE_FUNCTION_TRACE;

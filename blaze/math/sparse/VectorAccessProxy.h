@@ -41,6 +41,7 @@
 //*************************************************************************************************
 
 #include <algorithm>
+#include <blaze/math/Aliases.h>
 #include <blaze/math/constraints/SparseVector.h>
 #include <blaze/math/proxy/Proxy.h>
 #include <blaze/math/shims/Clear.h>
@@ -97,12 +98,12 @@ namespace blaze {
 //
 */
 template< typename VT >  // Type of the sparse vector
-class VectorAccessProxy : public Proxy< VectorAccessProxy<VT>, typename VT::ElementType >
+class VectorAccessProxy : public Proxy< VectorAccessProxy<VT>, ElementType_<VT> >
 {
  public:
    //**Type definitions****************************************************************************
-   typedef typename VT::ElementType  RepresentedType;  //!< Type of the represented sparse vector element.
-   typedef RepresentedType&          RawReference;     //!< Raw reference to the represented element.
+   typedef ElementType_<VT>  RepresentedType;  //!< Type of the represented sparse vector element.
+   typedef RepresentedType&  RawReference;     //!< Raw reference to the represented element.
    //**********************************************************************************************
 
    //**Constructors********************************************************************************
@@ -191,7 +192,7 @@ inline VectorAccessProxy<VT>::VectorAccessProxy( VT& sv, size_t i )
    : sv_( sv )  // Reference to the accessed sparse vector
    , i_ ( i  )  // Index of the accessed sparse vector element
 {
-   const typename VT::Iterator element( sv_.find( i_ ) );
+   const Iterator_<VT> element( sv_.find( i_ ) );
    if( element == sv_.end() )
       sv_.insert( i_, RepresentedType() );
 }
@@ -227,7 +228,7 @@ inline VectorAccessProxy<VT>::VectorAccessProxy( const VectorAccessProxy& vap )
 template< typename VT >  // Type of the sparse vector
 inline VectorAccessProxy<VT>::~VectorAccessProxy()
 {
-   const typename VT::Iterator element( sv_.find( i_ ) );
+   const Iterator_<VT> element( sv_.find( i_ ) );
    if( element != sv_.end() && isDefault( element->value() ) )
       sv_.erase( element );
 }
@@ -353,7 +354,7 @@ inline const VectorAccessProxy<VT>& VectorAccessProxy<VT>::operator/=( const T& 
 template< typename VT >  // Type of the sparse vector
 inline typename VectorAccessProxy<VT>::RawReference VectorAccessProxy<VT>::get() const noexcept
 {
-   const typename VT::Iterator element( sv_.find( i_ ) );
+   const Iterator_<VT> element( sv_.find( i_ ) );
    BLAZE_INTERNAL_ASSERT( element != sv_.end(), "Missing vector element detected" );
    return element->value();
 }
@@ -406,7 +407,7 @@ inline VectorAccessProxy<VT>::operator RawReference() const noexcept
 /*!\name VectorAccessProxy global functions */
 //@{
 template< typename VT >
-inline typename ConjExprTrait< typename VectorAccessProxy<VT>::RepresentedType >::Type
+inline ConjExprTrait_< RepresentedType_< VectorAccessProxy<VT> > >
    conj( const VectorAccessProxy<VT>& proxy );
 
 template< typename VT >
@@ -454,7 +455,7 @@ inline void swap( T& a, const VectorAccessProxy<VT>& v ) noexcept;
 // expression representing the complex conjugate of the vector/matrix.
 */
 template< typename VT >
-inline typename ConjExprTrait< typename VectorAccessProxy<VT>::RepresentedType >::Type
+inline ConjExprTrait_< RepresentedType_< VectorAccessProxy<VT> > >
    conj( const VectorAccessProxy<VT>& proxy )
 {
    using blaze::conj;

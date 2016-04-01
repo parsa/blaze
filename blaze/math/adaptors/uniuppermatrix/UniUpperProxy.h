@@ -40,6 +40,7 @@
 // Includes
 //*************************************************************************************************
 
+#include <blaze/math/Aliases.h>
 #include <blaze/math/constraints/Expression.h>
 #include <blaze/math/constraints/Hermitian.h>
 #include <blaze/math/constraints/Lower.h>
@@ -128,7 +129,7 @@ class UniUpperProxy : public Proxy< UniUpperProxy<MT> >
  public:
    //**Type definitions****************************************************************************
    //! Type of the represented matrix element.
-   typedef typename MT::ElementType  RepresentedType;
+   typedef ElementType_<MT>  RepresentedType;
 
    //! Value type of the represented complex element.
    typedef typename If_< IsComplex<RepresentedType>
@@ -627,7 +628,7 @@ inline void UniUpperProxy<MT>::imag( ValueType value ) const
 /*!\name UniUpperProxy global functions */
 //@{
 template< typename MT >
-inline typename ConjExprTrait< typename UniUpperProxy<MT>::RepresentedType >::Type
+inline ConjExprTrait_< RepresentedType_< UniUpperProxy<MT> > >
    conj( const UniUpperProxy<MT>& proxy );
 
 template< typename MT >
@@ -669,7 +670,7 @@ inline bool isnan( const UniUpperProxy<MT>& proxy );
 // expression representing the complex conjugate of the vector/matrix.
 */
 template< typename MT >
-inline typename ConjExprTrait< typename UniUpperProxy<MT>::RepresentedType >::Type
+inline ConjExprTrait_< RepresentedType_< UniUpperProxy<MT> > >
    conj( const UniUpperProxy<MT>& proxy )
 {
    using blaze::conj;

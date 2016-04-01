@@ -41,6 +41,7 @@
 //*************************************************************************************************
 
 #include <cmath>
+#include <blaze/math/Aliases.h>
 #include <blaze/math/constraints/SparseMatrix.h>
 #include <blaze/math/constraints/StorageOrder.h>
 #include <blaze/math/expressions/Computation.h>
@@ -101,12 +102,12 @@ class SMatEvalExpr : public SparseMatrix< SMatEvalExpr<MT,SO>, SO >
 {
  public:
    //**Type definitions****************************************************************************
-   typedef SMatEvalExpr<MT,SO>         This;           //!< Type of this SMatEvalExpr instance.
-   typedef typename MT::ResultType     ResultType;     //!< Result type for expression template evaluations.
-   typedef typename MT::OppositeType   OppositeType;   //!< Result type with opposite storage order for expression template evaluations.
-   typedef typename MT::TransposeType  TransposeType;  //!< Transpose type for expression template evaluations.
-   typedef typename MT::ElementType    ElementType;    //!< Resulting element type.
-   typedef typename MT::ReturnType     ReturnType;     //!< Return type for expression template evaluations.
+   typedef SMatEvalExpr<MT,SO>  This;           //!< Type of this SMatEvalExpr instance.
+   typedef ResultType_<MT>      ResultType;     //!< Result type for expression template evaluations.
+   typedef OppositeType_<MT>    OppositeType;   //!< Result type with opposite storage order for expression template evaluations.
+   typedef TransposeType_<MT>   TransposeType;  //!< Transpose type for expression template evaluations.
+   typedef ElementType_<MT>     ElementType;    //!< Resulting element type.
+   typedef ReturnType_<MT>      ReturnType;     //!< Return type for expression template evaluations.
 
    //! Data type for composite expression templates.
    typedef const ResultType  CompositeType;
@@ -971,7 +972,7 @@ struct SubmatrixExprTrait< SMatEvalExpr<MT,SO>, AF >
 {
  public:
    //**********************************************************************************************
-   using Type = typename EvalExprTrait< typename SubmatrixExprTrait<const MT,AF>::Type >::Type;
+   using Type = EvalExprTrait_< SubmatrixExprTrait_<const MT,AF> >;
    //**********************************************************************************************
 };
 /*! \endcond */
@@ -985,7 +986,7 @@ struct RowExprTrait< SMatEvalExpr<MT,SO> >
 {
  public:
    //**********************************************************************************************
-   using Type = typename EvalExprTrait< typename RowExprTrait<const MT>::Type >::Type;
+   using Type = EvalExprTrait_< RowExprTrait_<const MT> >;
    //**********************************************************************************************
 };
 /*! \endcond */
@@ -999,7 +1000,7 @@ struct ColumnExprTrait< SMatEvalExpr<MT,SO> >
 {
  public:
    //**********************************************************************************************
-   using Type = typename EvalExprTrait< typename ColumnExprTrait<const MT>::Type >::Type;
+   using Type = EvalExprTrait_< ColumnExprTrait_<const MT> >;
    //**********************************************************************************************
 };
 /*! \endcond */

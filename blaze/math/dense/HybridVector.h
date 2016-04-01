@@ -32,6 +32,7 @@
 //*************************************************************************************************
 
 #include <algorithm>
+#include <blaze/math/Aliases.h>
 #include <blaze/math/AlignmentFlag.h>
 #include <blaze/math/dense/DenseIterator.h>
 #include <blaze/math/expressions/DenseVector.h>
@@ -318,7 +319,7 @@ class HybridVector : public DenseVector< HybridVector<Type,N,TF>, TF >
    struct VectorizedAssign {
       enum { value = useOptimizedKernels &&
                      vectorizable && VT::vectorizable &&
-                     IsSame<Type,typename VT::ElementType>::value };
+                     IsSame< Type, ElementType_<VT> >::value };
    };
    /*! \endcond */
    //**********************************************************************************************
@@ -330,7 +331,7 @@ class HybridVector : public DenseVector< HybridVector<Type,N,TF>, TF >
    struct VectorizedAddAssign {
       enum { value = useOptimizedKernels &&
                      vectorizable && VT::vectorizable &&
-                     IsSame<Type,typename VT::ElementType>::value &&
+                     IsSame< Type, ElementType_<VT> >::value &&
                      IntrinsicTrait<Type>::addition };
    };
    /*! \endcond */
@@ -343,7 +344,7 @@ class HybridVector : public DenseVector< HybridVector<Type,N,TF>, TF >
    struct VectorizedSubAssign {
       enum { value = useOptimizedKernels &&
                      vectorizable && VT::vectorizable &&
-                     IsSame<Type,typename VT::ElementType>::value &&
+                     IsSame< Type, ElementType_<VT> >::value &&
                      IntrinsicTrait<Type>::subtraction };
    };
    /*! \endcond */
@@ -356,7 +357,7 @@ class HybridVector : public DenseVector< HybridVector<Type,N,TF>, TF >
    struct VectorizedMultAssign {
       enum { value = useOptimizedKernels &&
                      vectorizable && VT::vectorizable &&
-                     IsSame<Type,typename VT::ElementType>::value &&
+                     IsSame< Type, ElementType_<VT> >::value &&
                      IntrinsicTrait<Type>::multiplication };
    };
    /*! \endcond */
@@ -1067,7 +1068,7 @@ inline HybridVector<Type,N,TF>& HybridVector<Type,N,TF>::operator+=( const Vecto
    }
 
    if( (~rhs).canAlias( this ) ) {
-      typename VT::ResultType tmp( ~rhs );
+      const ResultType_<VT> tmp( ~rhs );
       addAssign( *this, tmp );
    }
    else {
@@ -1102,7 +1103,7 @@ inline HybridVector<Type,N,TF>& HybridVector<Type,N,TF>::operator-=( const Vecto
    }
 
    if( (~rhs).canAlias( this ) ) {
-      typename VT::ResultType tmp( ~rhs );
+      const ResultType_<VT> tmp( ~rhs );
       subAssign( *this, tmp );
    }
    else {
@@ -1944,7 +1945,7 @@ inline void HybridVector<Type,N,TF>::assign( const SparseVector<VT,TF>& rhs )
 {
    BLAZE_INTERNAL_ASSERT( (~rhs).size() == size_, "Invalid vector sizes" );
 
-   for( typename VT::ConstIterator element=(~rhs).begin(); element!=(~rhs).end(); ++element )
+   for( ConstIterator_<VT> element=(~rhs).begin(); element!=(~rhs).end(); ++element )
       v_[element->index()] = element->value();
 }
 //*************************************************************************************************
@@ -2034,7 +2035,7 @@ inline void HybridVector<Type,N,TF>::addAssign( const SparseVector<VT,TF>& rhs )
 {
    BLAZE_INTERNAL_ASSERT( (~rhs).size() == size_, "Invalid vector sizes" );
 
-   for( typename VT::ConstIterator element=(~rhs).begin(); element!=(~rhs).end(); ++element )
+   for( ConstIterator_<VT> element=(~rhs).begin(); element!=(~rhs).end(); ++element )
       v_[element->index()] += element->value();
 }
 //*************************************************************************************************
@@ -2124,7 +2125,7 @@ inline void HybridVector<Type,N,TF>::subAssign( const SparseVector<VT,TF>& rhs )
 {
    BLAZE_INTERNAL_ASSERT( (~rhs).size() == size_, "Invalid vector sizes" );
 
-   for( typename VT::ConstIterator element=(~rhs).begin(); element!=(~rhs).end(); ++element )
+   for( ConstIterator_<VT> element=(~rhs).begin(); element!=(~rhs).end(); ++element )
       v_[element->index()] -= element->value();
 }
 //*************************************************************************************************
@@ -2218,7 +2219,7 @@ inline void HybridVector<Type,N,TF>::multAssign( const SparseVector<VT,TF>& rhs 
 
    reset();
 
-   for( typename VT::ConstIterator element=(~rhs).begin(); element!=(~rhs).end(); ++element )
+   for( ConstIterator_<VT> element=(~rhs).begin(); element!=(~rhs).end(); ++element )
       v_[element->index()] = tmp[element->index()] * element->value();
 }
 //*************************************************************************************************
@@ -2489,19 +2490,19 @@ struct IsResizable< HybridVector<T,N,TF> > : public TrueType
 template< typename T1, size_t M, bool TF, typename T2, size_t N >
 struct AddTrait< HybridVector<T1,M,TF>, StaticVector<T2,N,TF> >
 {
-   typedef StaticVector< typename AddTrait<T1,T2>::Type, N, TF >  Type;
+   using Type = StaticVector< AddTrait_<T1,T2>, N, TF >;
 };
 
 template< typename T1, size_t M, bool TF, typename T2, size_t N >
 struct AddTrait< StaticVector<T1,M,TF>, HybridVector<T2,N,TF> >
 {
-   typedef StaticVector< typename AddTrait<T1,T2>::Type, M, TF >  Type;
+   using Type = StaticVector< AddTrait_<T1,T2>, M, TF >;
 };
 
 template< typename T1, size_t M, bool TF, typename T2, size_t N >
 struct AddTrait< HybridVector<T1,M,TF>, HybridVector<T2,N,TF> >
 {
-   typedef HybridVector< typename AddTrait<T1,T2>::Type, ( M < N )?( M ):( N ), TF >  Type;
+   using Type = HybridVector< AddTrait_<T1,T2>, ( M < N )?( M ):( N ), TF >;
 };
 /*! \endcond */
 //*************************************************************************************************
@@ -2520,19 +2521,19 @@ struct AddTrait< HybridVector<T1,M,TF>, HybridVector<T2,N,TF> >
 template< typename T1, size_t M, bool TF, typename T2, size_t N >
 struct SubTrait< HybridVector<T1,M,TF>, StaticVector<T2,N,TF> >
 {
-   typedef StaticVector< typename SubTrait<T1,T2>::Type, N, TF >  Type;
+   using Type = StaticVector< SubTrait_<T1,T2>, N, TF >;
 };
 
 template< typename T1, size_t M, bool TF, typename T2, size_t N >
 struct SubTrait< StaticVector<T1,M,TF>, HybridVector<T2,N,TF> >
 {
-   typedef StaticVector< typename SubTrait<T1,T2>::Type, M, TF >  Type;
+   using Type = StaticVector< SubTrait_<T1,T2>, M, TF >;
 };
 
 template< typename T1, size_t M, bool TF, typename T2, size_t N >
 struct SubTrait< HybridVector<T1,M,TF>, HybridVector<T2,N,TF> >
 {
-   typedef HybridVector< typename SubTrait<T1,T2>::Type, ( M < N )?( M ):( N ), TF >  Type;
+   using Type = HybridVector< SubTrait_<T1,T2>, ( M < N )?( M ):( N ), TF >;
 };
 /*! \endcond */
 //*************************************************************************************************
@@ -2551,67 +2552,67 @@ struct SubTrait< HybridVector<T1,M,TF>, HybridVector<T2,N,TF> >
 template< typename T1, size_t N, bool TF, typename T2 >
 struct MultTrait< HybridVector<T1,N,TF>, T2, EnableIf_<IsNumeric<T2> > >
 {
-   typedef HybridVector< typename MultTrait<T1,T2>::Type, N, TF >  Type;
+   using Type = HybridVector< MultTrait_<T1,T2>, N, TF >;
 };
 
 template< typename T1, typename T2, size_t N, bool TF >
 struct MultTrait< T1, HybridVector<T2,N,TF>, EnableIf_<IsNumeric<T1> > >
 {
-   typedef HybridVector< typename MultTrait<T1,T2>::Type, N, TF >  Type;
+   using Type = HybridVector< MultTrait_<T1,T2>, N, TF >;
 };
 
 template< typename T1, size_t M, bool TF, typename T2, size_t N >
 struct MultTrait< HybridVector<T1,M,TF>, StaticVector<T2,N,TF> >
 {
-   typedef StaticVector< typename MultTrait<T1,T2>::Type, N, TF >  Type;
+   using Type = StaticVector< MultTrait_<T1,T2>, N, TF >;
 };
 
 template< typename T1, size_t M, typename T2, size_t N >
 struct MultTrait< HybridVector<T1,M,false>, StaticVector<T2,N,true> >
 {
-   typedef DynamicMatrix< typename MultTrait<T1,T2>::Type, false >  Type;
+   using Type = DynamicMatrix< MultTrait_<T1,T2>, false >;
 };
 
 template< typename T1, size_t M, typename T2, size_t N >
 struct MultTrait< HybridVector<T1,M,true>, StaticVector<T2,N,false> >
 {
-   typedef typename MultTrait<T1,T2>::Type  Type;
+   using Type = MultTrait_<T1,T2>;
 };
 
 template< typename T1, size_t M, bool TF, typename T2, size_t N >
 struct MultTrait< StaticVector<T1,M,TF>, HybridVector<T2,N,TF> >
 {
-   typedef StaticVector< typename MultTrait<T1,T2>::Type, M, TF >  Type;
+   using Type = StaticVector< MultTrait_<T1,T2>, M, TF >;
 };
 
 template< typename T1, size_t M, typename T2, size_t N >
 struct MultTrait< StaticVector<T1,M,false>, HybridVector<T2,N,true> >
 {
-   typedef DynamicMatrix< typename MultTrait<T1,T2>::Type, false >  Type;
+   using Type = DynamicMatrix< MultTrait_<T1,T2>, false >;
 };
 
 template< typename T1, size_t M, typename T2, size_t N >
 struct MultTrait< StaticVector<T1,M,true>, HybridVector<T2,N,false> >
 {
-   typedef typename MultTrait<T1,T2>::Type  Type;
+   using Type = MultTrait_<T1,T2>;
 };
 
 template< typename T1, size_t M, bool TF, typename T2, size_t N >
 struct MultTrait< HybridVector<T1,M,TF>, HybridVector<T2,N,TF> >
 {
-   typedef HybridVector< typename MultTrait<T1,T2>::Type, ( M < N )?( M ):( N ), TF >  Type;
+   using Type = HybridVector< MultTrait_<T1,T2>, ( M < N )?( M ):( N ), TF >;
 };
 
 template< typename T1, size_t M, typename T2, size_t N >
 struct MultTrait< HybridVector<T1,M,false>, HybridVector<T2,N,true> >
 {
-   typedef DynamicMatrix< typename MultTrait<T1,T2>::Type, false >  Type;
+   using Type = DynamicMatrix< MultTrait_<T1,T2>, false >;
 };
 
 template< typename T1, size_t M, typename T2, size_t N >
 struct MultTrait< HybridVector<T1,M,true>, HybridVector<T2,N,false> >
 {
-   typedef typename MultTrait<T1,T2>::Type  Type;
+   using Type = MultTrait_<T1,T2>;
 };
 /*! \endcond */
 //*************************************************************************************************
@@ -2631,30 +2632,30 @@ template< typename T1, size_t N, typename T2 >
 struct CrossTrait< HybridVector<T1,N,false>, StaticVector<T2,3UL,false> >
 {
  private:
-   typedef typename MultTrait<T1,T2>::Type  T;
+   using T = MultTrait_<T1,T2>;
 
  public:
-   typedef StaticVector< typename SubTrait<T,T>::Type, 3UL, false >  Type;
+   using Type = StaticVector< SubTrait_<T,T>, 3UL, false >;
 };
 
 template< typename T1, typename T2, size_t N >
 struct CrossTrait< StaticVector<T1,3UL,false>, HybridVector<T2,N,false> >
 {
  private:
-   typedef typename MultTrait<T1,T2>::Type  T;
+   using T = MultTrait_<T1,T2>;
 
  public:
-   typedef StaticVector< typename SubTrait<T,T>::Type, 3UL, false >  Type;
+   using Type = StaticVector< SubTrait_<T,T>, 3UL, false >;
 };
 
 template< typename T1, size_t M, typename T2, size_t N >
 struct CrossTrait< HybridVector<T1,M,false>, HybridVector<T2,N,false> >
 {
  private:
-   typedef typename MultTrait<T1,T2>::Type  T;
+   using T = MultTrait_<T1,T2>;
 
  public:
-   typedef StaticVector< typename SubTrait<T,T>::Type, 3UL, false >  Type;
+   using Type = StaticVector< SubTrait_<T,T>, 3UL, false >;
 };
 /*! \endcond */
 //*************************************************************************************************
@@ -2673,7 +2674,7 @@ struct CrossTrait< HybridVector<T1,M,false>, HybridVector<T2,N,false> >
 template< typename T1, size_t N, bool TF, typename T2 >
 struct DivTrait< HybridVector<T1,N,TF>, T2, EnableIf_<IsNumeric<T2> > >
 {
-   typedef HybridVector< typename DivTrait<T1,T2>::Type, N, TF >  Type;
+   using Type = HybridVector< DivTrait_<T1,T2>, N, TF >;
 };
 /*! \endcond */
 //*************************************************************************************************
@@ -2692,8 +2693,8 @@ struct DivTrait< HybridVector<T1,N,TF>, T2, EnableIf_<IsNumeric<T2> > >
 template< typename T1, size_t N, bool TF, typename T2 >
 struct MathTrait< HybridVector<T1,N,TF>, HybridVector<T2,N,TF> >
 {
-   typedef StaticVector< typename MathTrait<T1,T2>::HighType, N, TF >  HighType;
-   typedef StaticVector< typename MathTrait<T1,T2>::LowType , N, TF >  LowType;
+   using HighType = StaticVector< typename MathTrait<T1,T2>::HighType, N, TF >;
+   using LowType  = StaticVector< typename MathTrait<T1,T2>::LowType , N, TF >;
 };
 /*! \endcond */
 //*************************************************************************************************
@@ -2712,7 +2713,7 @@ struct MathTrait< HybridVector<T1,N,TF>, HybridVector<T2,N,TF> >
 template< typename T1, size_t N, bool TF >
 struct SubvectorTrait< HybridVector<T1,N,TF> >
 {
-   typedef HybridVector<T1,N,TF>  Type;
+   using Type = HybridVector<T1,N,TF>;
 };
 /*! \endcond */
 //*************************************************************************************************

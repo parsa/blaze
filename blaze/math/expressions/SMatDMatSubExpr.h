@@ -40,6 +40,7 @@
 // Includes
 //*************************************************************************************************
 
+#include <blaze/math/Aliases.h>
 #include <blaze/math/constraints/DenseMatrix.h>
 #include <blaze/math/constraints/MatMatSubExpr.h>
 #include <blaze/math/constraints/SparseMatrix.h>
@@ -108,10 +109,10 @@ class SMatDMatSubExpr : public DenseMatrix< SMatDMatSubExpr<MT1,MT2,SO>, SO >
 {
  private:
    //**Type definitions****************************************************************************
-   typedef typename MT1::ResultType  RT1;  //!< Result type of the left-hand side sparse matrix expression.
-   typedef typename MT2::ResultType  RT2;  //!< Result type of the right-hand side dense matrix expression.
-   typedef typename MT1::ReturnType  RN1;  //!< Return type of the left-hand side sparse matrix expression.
-   typedef typename MT2::ReturnType  RN2;  //!< Return type of the right-hand side dense matrix expression.
+   typedef ResultType_<MT1>  RT1;  //!< Result type of the left-hand side sparse matrix expression.
+   typedef ResultType_<MT2>  RT2;  //!< Result type of the right-hand side dense matrix expression.
+   typedef ReturnType_<MT1>  RN1;  //!< Return type of the left-hand side sparse matrix expression.
+   typedef ReturnType_<MT2>  RN2;  //!< Return type of the right-hand side dense matrix expression.
    //**********************************************************************************************
 
    //**Return type evaluation**********************************************************************
@@ -124,7 +125,7 @@ class SMatDMatSubExpr : public DenseMatrix< SMatDMatSubExpr<MT1,MT2,SO>, SO >
    enum { returnExpr = !IsTemporary<RN1>::value && !IsTemporary<RN2>::value };
 
    //! Expression return type for the subscript operator.
-   typedef typename SubExprTrait<RN1,RN2>::Type  ExprReturnType;
+   typedef SubExprTrait_<RN1,RN2>  ExprReturnType;
    //**********************************************************************************************
 
    //**Parallel evaluation strategy****************************************************************
@@ -143,11 +144,11 @@ class SMatDMatSubExpr : public DenseMatrix< SMatDMatSubExpr<MT1,MT2,SO>, SO >
 
  public:
    //**Type definitions****************************************************************************
-   typedef SMatDMatSubExpr<MT1,MT2,SO>         This;           //!< Type of this SMatDMatSubExpr instance.
-   typedef typename SubTrait<RT1,RT2>::Type    ResultType;     //!< Result type for expression template evaluations.
-   typedef typename ResultType::OppositeType   OppositeType;   //!< Result type with opposite storage order for expression template evaluations.
-   typedef typename ResultType::TransposeType  TransposeType;  //!< Transpose type for expression template evaluations.
-   typedef typename ResultType::ElementType    ElementType;    //!< Resulting element type.
+   typedef SMatDMatSubExpr<MT1,MT2,SO>  This;           //!< Type of this SMatDMatSubExpr instance.
+   typedef SubTrait_<RT1,RT2>           ResultType;     //!< Result type for expression template evaluations.
+   typedef OppositeType_<ResultType>    OppositeType;   //!< Result type with opposite storage order for expression template evaluations.
+   typedef TransposeType_<ResultType>   TransposeType;  //!< Transpose type for expression template evaluations.
+   typedef ElementType_<ResultType>     ElementType;    //!< Resulting element type.
 
    //! Return type for expression template evaluations.
    typedef const IfTrue_< returnExpr, ExprReturnType, ElementType >  ReturnType;
@@ -341,7 +342,7 @@ class SMatDMatSubExpr : public DenseMatrix< SMatDMatSubExpr<MT1,MT2,SO>, SO >
       BLAZE_CONSTRAINT_MUST_BE_MATRIX_WITH_STORAGE_ORDER( ResultType, SO );
       BLAZE_CONSTRAINT_MUST_BE_MATRIX_WITH_STORAGE_ORDER( OppositeType, !SO );
       BLAZE_CONSTRAINT_MATRICES_MUST_HAVE_SAME_STORAGE_ORDER( MT, TmpType );
-      BLAZE_CONSTRAINT_MUST_BE_REFERENCE_TYPE( typename TmpType::CompositeType );
+      BLAZE_CONSTRAINT_MUST_BE_REFERENCE_TYPE( CompositeType_<TmpType> );
 
       BLAZE_INTERNAL_ASSERT( (~lhs).rows()    == rhs.rows()   , "Invalid number of rows"    );
       BLAZE_INTERNAL_ASSERT( (~lhs).columns() == rhs.columns(), "Invalid number of columns" );
@@ -480,7 +481,7 @@ class SMatDMatSubExpr : public DenseMatrix< SMatDMatSubExpr<MT1,MT2,SO>, SO >
       BLAZE_CONSTRAINT_MUST_BE_MATRIX_WITH_STORAGE_ORDER( ResultType, SO );
       BLAZE_CONSTRAINT_MUST_BE_MATRIX_WITH_STORAGE_ORDER( OppositeType, !SO );
       BLAZE_CONSTRAINT_MATRICES_MUST_HAVE_SAME_STORAGE_ORDER( MT, TmpType );
-      BLAZE_CONSTRAINT_MUST_BE_REFERENCE_TYPE( typename TmpType::CompositeType );
+      BLAZE_CONSTRAINT_MUST_BE_REFERENCE_TYPE( CompositeType_<TmpType> );
 
       BLAZE_INTERNAL_ASSERT( (~lhs).rows()    == rhs.rows()   , "Invalid number of rows"    );
       BLAZE_INTERNAL_ASSERT( (~lhs).columns() == rhs.columns(), "Invalid number of columns" );
@@ -659,7 +660,7 @@ template< typename T1  // Type of the sparse matrix of the left-hand side expres
         , bool SO1     // Storage order of the left-hand side expression
         , typename T3  // Type of the right-hand side dense matrix
         , bool SO2 >   // Storage order of the right-hand side dense matrix
-inline const typename AddExprTrait< SMatDMatSubExpr<T1,T2,SO1>, T3 >::Type
+inline const AddExprTrait_< SMatDMatSubExpr<T1,T2,SO1>, T3 >
    operator+( const SMatDMatSubExpr<T1,T2,SO1>& lhs, const DenseMatrix<T3,SO2>& rhs )
 {
    BLAZE_FUNCTION_TRACE;
@@ -688,7 +689,7 @@ template< typename T1  // Type of the sparse matrix of the left-hand side expres
         , bool SO1     // Storage order of the left-hand side expression
         , typename T3  // Type of the right-hand side dense matrix
         , bool SO2 >   // Storage order of the right-hand side dense matrix
-inline const typename SubExprTrait< SMatDMatSubExpr<T1,T2,SO1>, T3 >::Type
+inline const SubExprTrait_< SMatDMatSubExpr<T1,T2,SO1>, T3 >
    operator-( const SMatDMatSubExpr<T1,T2,SO1>& lhs, const DenseMatrix<T3,SO2>& rhs )
 {
    BLAZE_FUNCTION_TRACE;
@@ -1054,8 +1055,8 @@ struct SubmatrixExprTrait< SMatDMatSubExpr<MT1,MT2,SO>, AF >
 {
  public:
    //**********************************************************************************************
-   using Type = typename SubExprTrait< typename SubmatrixExprTrait<const MT1,AF>::Type
-                                     , typename SubmatrixExprTrait<const MT2,AF>::Type >::Type;
+   using Type = SubExprTrait_< SubmatrixExprTrait_<const MT1,AF>
+                             , SubmatrixExprTrait_<const MT2,AF> >;
    //**********************************************************************************************
 };
 /*! \endcond */
@@ -1069,8 +1070,8 @@ struct RowExprTrait< SMatDMatSubExpr<MT1,MT2,SO> >
 {
  public:
    //**********************************************************************************************
-   using Type = typename SubExprTrait< typename RowExprTrait<const MT1>::Type
-                                     , typename RowExprTrait<const MT2>::Type >::Type;
+   using Type = SubExprTrait_< RowExprTrait_<const MT1>
+                             , RowExprTrait_<const MT2> >;
    //**********************************************************************************************
 };
 /*! \endcond */
@@ -1084,8 +1085,8 @@ struct ColumnExprTrait< SMatDMatSubExpr<MT1,MT2,SO> >
 {
  public:
    //**********************************************************************************************
-   using Type = typename SubExprTrait< typename ColumnExprTrait<const MT1>::Type
-                                     , typename ColumnExprTrait<const MT2>::Type >::Type;
+   using Type = SubExprTrait_< ColumnExprTrait_<const MT1>
+                             , ColumnExprTrait_<const MT2> >;
    //**********************************************************************************************
 };
 /*! \endcond */

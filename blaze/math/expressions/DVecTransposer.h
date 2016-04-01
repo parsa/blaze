@@ -40,6 +40,7 @@
 // Includes
 //*************************************************************************************************
 
+#include <blaze/math/Aliases.h>
 #include <blaze/math/constraints/Computation.h>
 #include <blaze/math/constraints/DenseVector.h>
 #include <blaze/math/constraints/TransposeFlag.h>
@@ -77,24 +78,24 @@ class DVecTransposer : public DenseVector< DVecTransposer<VT,TF>, TF >
 {
  private:
    //**Type definitions****************************************************************************
-   typedef IntrinsicTrait<typename VT::ElementType>  IT;  //!< Intrinsic trait for the vector element type.
+   typedef IntrinsicTrait< ElementType_<VT> >  IT;  //!< Intrinsic trait for the vector element type.
    //**********************************************************************************************
 
  public:
    //**Type definitions****************************************************************************
-   typedef DVecTransposer<VT,TF>        This;            //!< Type of this DVecTransposer instance.
-   typedef typename VT::TransposeType   ResultType;      //!< Result type for expression template evaluations.
-   typedef typename VT::ResultType      TransposeType;   //!< Transpose type for expression template evaluations.
-   typedef typename VT::ElementType     ElementType;     //!< Type of the vector elements.
-   typedef typename IT::Type            IntrinsicType;   //!< Intrinsic type of the vector elements.
-   typedef typename VT::ReturnType      ReturnType;      //!< Return type for expression template evaluations.
-   typedef const This&                  CompositeType;   //!< Data type for composite expression templates.
-   typedef typename VT::Reference       Reference;       //!< Reference to a non-constant vector value.
-   typedef typename VT::ConstReference  ConstReference;  //!< Reference to a constant vector value.
-   typedef typename VT::Pointer         Pointer;         //!< Pointer to a non-constant vector value.
-   typedef typename VT::ConstPointer    ConstPointer;    //!< Pointer to a constant vector value.
-   typedef typename VT::Iterator        Iterator;        //!< Iterator over non-constant elements.
-   typedef typename VT::ConstIterator   ConstIterator;   //!< Iterator over constant elements.
+   typedef DVecTransposer<VT,TF>  This;            //!< Type of this DVecTransposer instance.
+   typedef TransposeType_<VT>     ResultType;      //!< Result type for expression template evaluations.
+   typedef ResultType_<VT>        TransposeType;   //!< Transpose type for expression template evaluations.
+   typedef ElementType_<VT>       ElementType;     //!< Type of the vector elements.
+   typedef typename IT::Type      IntrinsicType;   //!< Intrinsic type of the vector elements.
+   typedef ReturnType_<VT>        ReturnType;      //!< Return type for expression template evaluations.
+   typedef const This&            CompositeType;   //!< Data type for composite expression templates.
+   typedef Reference_<VT>         Reference;       //!< Reference to a non-constant vector value.
+   typedef ConstReference_<VT>    ConstReference;  //!< Reference to a constant vector value.
+   typedef Pointer_<VT>           Pointer;         //!< Pointer to a non-constant vector value.
+   typedef ConstPointer_<VT>      ConstPointer;    //!< Pointer to a constant vector value.
+   typedef Iterator_<VT>          Iterator;        //!< Iterator over non-constant elements.
+   typedef ConstIterator_<VT>     ConstIterator;   //!< Iterator over constant elements.
    //**********************************************************************************************
 
    //**Compilation flags***************************************************************************
@@ -523,7 +524,7 @@ class DVecTransposer : public DenseVector< DVecTransposer<VT,TF>, TF >
 
       BLAZE_INTERNAL_ASSERT( dv_.size() == (~rhs).size(), "Invalid vector sizes" );
 
-      typedef typename VT2::ConstIterator  RhsConstIterator;
+      typedef ConstIterator_<VT2>  RhsConstIterator;
 
       for( RhsConstIterator element=(~rhs).begin(); element!=(~rhs).end(); ++element )
          dv_[element->index()] = element->value();
@@ -580,7 +581,7 @@ class DVecTransposer : public DenseVector< DVecTransposer<VT,TF>, TF >
 
       BLAZE_INTERNAL_ASSERT( dv_.size() == (~rhs).size(), "Invalid vector sizes" );
 
-      typedef typename VT2::ConstIterator  RhsConstIterator;
+      typedef ConstIterator_<VT2>  RhsConstIterator;
 
       for( RhsConstIterator element=(~rhs).begin(); element!=(~rhs).end(); ++element )
          dv_[element->index()] += element->value();
@@ -637,7 +638,7 @@ class DVecTransposer : public DenseVector< DVecTransposer<VT,TF>, TF >
 
       BLAZE_INTERNAL_ASSERT( dv_.size() == (~rhs).size(), "Invalid vector sizes" );
 
-      typedef typename VT2::ConstIterator  RhsConstIterator;
+      typedef ConstIterator_<VT2>  RhsConstIterator;
 
       for( RhsConstIterator element=(~rhs).begin(); element!=(~rhs).end(); ++element )
          dv_[element->index()] -= element->value();
@@ -694,7 +695,7 @@ class DVecTransposer : public DenseVector< DVecTransposer<VT,TF>, TF >
 
       BLAZE_INTERNAL_ASSERT( dv_.size() == (~rhs).size(), "Invalid vector sizes" );
 
-      typedef typename VT2::ConstIterator  RhsConstIterator;
+      typedef ConstIterator_<VT2>  RhsConstIterator;
 
       const VT tmp( dv_ );
       dv_.reset();
@@ -795,7 +796,7 @@ struct IsPadded< DVecTransposer<VT,TF> >
 template< typename VT, bool TF >
 struct SubvectorTrait< DVecTransposer<VT,TF> >
 {
-   using Type = typename SubvectorTrait< typename DVecTransposer<VT,TF>::ResultType >::Type;
+   using Type = SubvectorTrait_< ResultType_< DVecTransposer<VT,TF> > >;
 };
 /*! \endcond */
 //*************************************************************************************************

@@ -41,6 +41,7 @@
 //*************************************************************************************************
 
 #include <algorithm>
+#include <blaze/math/Aliases.h>
 #include <blaze/math/constraints/DenseVector.h>
 #include <blaze/math/constraints/TransposeFlag.h>
 #include <blaze/math/expressions/DenseVector.h>
@@ -1013,7 +1014,7 @@ inline EnableIf_< IsNumeric<Other>, CompressedVector<Type,TF> >&
 {
    BLAZE_USER_ASSERT( rhs != Other(0), "Division by zero detected" );
 
-   typedef typename DivTrait<Type,Other>::Type  DT;
+   typedef DivTrait_<Type,Other>            DT;
    typedef If_< IsNumeric<DT>, DT, Other >  Tmp;
 
    // Depending on the two involved data types, an integer division is applied or a
@@ -1736,7 +1737,7 @@ inline void CompressedVector<Type,TF>::assign( const SparseVector<VT,TF>& rhs )
    //
    // results in much less requirements on the ConstIterator type provided from the right-hand
    // sparse vector type
-   for( typename VT::ConstIterator element=(~rhs).begin(); element!=(~rhs).end(); ++element )
+   for( ConstIterator_<VT> element=(~rhs).begin(); element!=(~rhs).end(); ++element )
       append( element->index(), element->value() );
 }
 //*************************************************************************************************
@@ -1758,11 +1759,11 @@ template< typename Type  // Data type of the vector
 template< typename VT >  // Type of the right-hand side dense vector
 inline void CompressedVector<Type,TF>::addAssign( const DenseVector<VT,TF>& rhs )
 {
-   typedef typename AddTrait<This,typename VT::ResultType>::Type  AddType;
+   typedef AddTrait_< This, ResultType_<VT> >  AddType;
 
    BLAZE_CONSTRAINT_MUST_BE_DENSE_VECTOR_TYPE( AddType );
    BLAZE_CONSTRAINT_MUST_BE_VECTOR_WITH_TRANSPOSE_FLAG( AddType, TF );
-   BLAZE_CONSTRAINT_MUST_BE_REFERENCE_TYPE( typename AddType::CompositeType );
+   BLAZE_CONSTRAINT_MUST_BE_REFERENCE_TYPE( CompositeType_<AddType> );
 
    BLAZE_INTERNAL_ASSERT( size_ == (~rhs).size(), "Invalid vector sizes" );
 
@@ -1813,11 +1814,11 @@ template< typename Type  // Data type of the vector
 template< typename VT >  // Type of the right-hand side dense vector
 inline void CompressedVector<Type,TF>::subAssign( const DenseVector<VT,TF>& rhs )
 {
-   typedef typename SubTrait<This,typename VT::ResultType>::Type  SubType;
+   typedef SubTrait_< This, ResultType_<VT> >  SubType;
 
    BLAZE_CONSTRAINT_MUST_BE_DENSE_VECTOR_TYPE( SubType );
    BLAZE_CONSTRAINT_MUST_BE_VECTOR_WITH_TRANSPOSE_FLAG( SubType, TF );
-   BLAZE_CONSTRAINT_MUST_BE_REFERENCE_TYPE( typename SubType::CompositeType );
+   BLAZE_CONSTRAINT_MUST_BE_REFERENCE_TYPE( CompositeType_<SubType> );
 
    BLAZE_INTERNAL_ASSERT( size_ == (~rhs).size(), "Invalid vector sizes" );
 
@@ -1995,10 +1996,7 @@ inline void swap( CompressedVector<Type,TF>& a, CompressedVector<Type,TF>& b ) n
 /*! \cond BLAZE_INTERNAL */
 template< typename T, bool TF >
 struct IsResizable< CompressedVector<T,TF> > : public TrueType
-{
-   enum { value = 1 };
-   typedef TrueType  Type;
-};
+{};
 /*! \endcond */
 //*************************************************************************************************
 
@@ -2016,55 +2014,55 @@ struct IsResizable< CompressedVector<T,TF> > : public TrueType
 template< typename T1, bool TF, typename T2, size_t N >
 struct AddTrait< CompressedVector<T1,TF>, StaticVector<T2,N,TF> >
 {
-   typedef StaticVector< typename AddTrait<T1,T2>::Type, N, TF >  Type;
+   using Type =  StaticVector< AddTrait_<T1,T2>, N, TF >;
 };
 
 template< typename T1, size_t N, bool TF, typename T2 >
 struct AddTrait< StaticVector<T1,N,TF>, CompressedVector<T2,TF> >
 {
-   typedef StaticVector< typename AddTrait<T1,T2>::Type, N, TF >  Type;
+   using Type =  StaticVector< AddTrait_<T1,T2>, N, TF >;
 };
 
 template< typename T1, bool TF, typename T2, size_t N >
 struct AddTrait< CompressedVector<T1,TF>, HybridVector<T2,N,TF> >
 {
-   typedef HybridVector< typename AddTrait<T1,T2>::Type, N, TF >  Type;
+   using Type =  HybridVector< AddTrait_<T1,T2>, N, TF >;
 };
 
 template< typename T1, size_t N, bool TF, typename T2 >
 struct AddTrait< HybridVector<T1,N,TF>, CompressedVector<T2,TF> >
 {
-   typedef HybridVector< typename AddTrait<T1,T2>::Type, N, TF >  Type;
+   using Type =  HybridVector< AddTrait_<T1,T2>, N, TF >;
 };
 
 template< typename T1, bool TF, typename T2 >
 struct AddTrait< CompressedVector<T1,TF>, DynamicVector<T2,TF> >
 {
-   typedef DynamicVector< typename AddTrait<T1,T2>::Type, TF >  Type;
+   using Type =  DynamicVector< AddTrait_<T1,T2>, TF >;
 };
 
 template< typename T1, bool TF, typename T2 >
 struct AddTrait< DynamicVector<T1,TF>, CompressedVector<T2,TF> >
 {
-   typedef DynamicVector< typename AddTrait<T1,T2>::Type, TF >  Type;
+   using Type =  DynamicVector< AddTrait_<T1,T2>, TF >;
 };
 
 template< typename T1, bool TF, typename T2, bool AF, bool PF >
 struct AddTrait< CompressedVector<T1,TF>, CustomVector<T2,AF,PF,TF> >
 {
-   typedef DynamicVector< typename AddTrait<T1,T2>::Type, TF >  Type;
+   using Type =  DynamicVector< AddTrait_<T1,T2>, TF >;
 };
 
 template< typename T1, bool AF, bool PF, bool TF, typename T2 >
 struct AddTrait< CustomVector<T1,AF,PF,TF>, CompressedVector<T2,TF> >
 {
-   typedef DynamicVector< typename AddTrait<T1,T2>::Type, TF >  Type;
+   using Type =  DynamicVector< AddTrait_<T1,T2>, TF >;
 };
 
 template< typename T1, bool TF, typename T2 >
 struct AddTrait< CompressedVector<T1,TF>, CompressedVector<T2,TF> >
 {
-   typedef CompressedVector< typename AddTrait<T1,T2>::Type, TF >  Type;
+   using Type =  CompressedVector< AddTrait_<T1,T2>, TF >;
 };
 /*! \endcond */
 //*************************************************************************************************
@@ -2083,55 +2081,55 @@ struct AddTrait< CompressedVector<T1,TF>, CompressedVector<T2,TF> >
 template< typename T1, bool TF, typename T2, size_t N >
 struct SubTrait< CompressedVector<T1,TF>, StaticVector<T2,N,TF> >
 {
-   typedef StaticVector< typename SubTrait<T1,T2>::Type, N, TF >  Type;
+   using Type =  StaticVector< SubTrait_<T1,T2>, N, TF >;
 };
 
 template< typename T1, size_t N, bool TF, typename T2 >
 struct SubTrait< StaticVector<T1,N,TF>, CompressedVector<T2,TF> >
 {
-   typedef StaticVector< typename SubTrait<T1,T2>::Type, N, TF >  Type;
+   using Type =  StaticVector< SubTrait_<T1,T2>, N, TF >;
 };
 
 template< typename T1, bool TF, typename T2, size_t N >
 struct SubTrait< CompressedVector<T1,TF>, HybridVector<T2,N,TF> >
 {
-   typedef HybridVector< typename SubTrait<T1,T2>::Type, N, TF >  Type;
+   using Type =  HybridVector< SubTrait_<T1,T2>, N, TF >;
 };
 
 template< typename T1, size_t N, bool TF, typename T2 >
 struct SubTrait< HybridVector<T1,N,TF>, CompressedVector<T2,TF> >
 {
-   typedef HybridVector< typename SubTrait<T1,T2>::Type, N, TF >  Type;
+   using Type =  HybridVector< SubTrait_<T1,T2>, N, TF >;
 };
 
 template< typename T1, bool TF, typename T2 >
 struct SubTrait< CompressedVector<T1,TF>, DynamicVector<T2,TF> >
 {
-   typedef DynamicVector< typename SubTrait<T1,T2>::Type, TF >  Type;
+   using Type =  DynamicVector< SubTrait_<T1,T2>, TF >;
 };
 
 template< typename T1, bool TF, typename T2 >
 struct SubTrait< DynamicVector<T1,TF>, CompressedVector<T2,TF> >
 {
-   typedef DynamicVector< typename SubTrait<T1,T2>::Type, TF >  Type;
+   using Type =  DynamicVector< SubTrait_<T1,T2>, TF >;
 };
 
 template< typename T1, bool TF, typename T2, bool AF, bool PF >
 struct SubTrait< CompressedVector<T1,TF>, CustomVector<T2,AF,PF,TF> >
 {
-   typedef DynamicVector< typename SubTrait<T1,T2>::Type, TF >  Type;
+   using Type =  DynamicVector< SubTrait_<T1,T2>, TF >;
 };
 
 template< typename T1, bool AF, bool PF, bool TF, typename T2 >
 struct SubTrait< CustomVector<T1,AF,PF,TF>, CompressedVector<T2,TF> >
 {
-   typedef DynamicVector< typename SubTrait<T1,T2>::Type, TF >  Type;
+   using Type =  DynamicVector< SubTrait_<T1,T2>, TF >;
 };
 
 template< typename T1, bool TF, typename T2 >
 struct SubTrait< CompressedVector<T1,TF>, CompressedVector<T2,TF> >
 {
-   typedef CompressedVector< typename SubTrait<T1,T2>::Type, TF >  Type;
+   using Type =  CompressedVector< SubTrait_<T1,T2>, TF >;
 };
 /*! \endcond */
 //*************************************************************************************************
@@ -2150,175 +2148,175 @@ struct SubTrait< CompressedVector<T1,TF>, CompressedVector<T2,TF> >
 template< typename T1, bool TF, typename T2 >
 struct MultTrait< CompressedVector<T1,TF>, T2, EnableIf_< IsNumeric<T2> > >
 {
-   typedef CompressedVector< typename MultTrait<T1,T2>::Type, TF >  Type;
+   using Type =  CompressedVector< MultTrait_<T1,T2>, TF >;
 };
 
 template< typename T1, typename T2, bool TF >
 struct MultTrait< T1, CompressedVector<T2,TF>, EnableIf_< IsNumeric<T1> > >
 {
-   typedef CompressedVector< typename MultTrait<T1,T2>::Type, TF >  Type;
+   using Type =  CompressedVector< MultTrait_<T1,T2>, TF >;
 };
 
 template< typename T1, bool TF, typename T2, size_t N >
 struct MultTrait< CompressedVector<T1,TF>, StaticVector<T2,N,TF> >
 {
-   typedef CompressedVector< typename MultTrait<T1,T2>::Type, TF >  Type;
+   using Type =  CompressedVector< MultTrait_<T1,T2>, TF >;
 };
 
 template< typename T1, typename T2, size_t N >
 struct MultTrait< CompressedVector<T1,false>, StaticVector<T2,N,true> >
 {
-   typedef CompressedMatrix< typename MultTrait<T1,T2>::Type, true >  Type;
+   using Type =  CompressedMatrix< MultTrait_<T1,T2>, true >;
 };
 
 template< typename T1, typename T2, size_t N >
 struct MultTrait< CompressedVector<T1,true>, StaticVector<T2,N,false> >
 {
-   typedef typename MultTrait<T1,T2>::Type  Type;
+   using Type =  MultTrait_<T1,T2>;
 };
 
 template< typename T1, size_t N, bool TF, typename T2 >
 struct MultTrait< StaticVector<T1,N,TF>, CompressedVector<T2,TF> >
 {
-   typedef CompressedVector< typename MultTrait<T1,T2>::Type, TF >  Type;
+   using Type =  CompressedVector< MultTrait_<T1,T2>, TF >;
 };
 
 template< typename T1, size_t N, typename T2 >
 struct MultTrait< StaticVector<T1,N,false>, CompressedVector<T2,true> >
 {
-   typedef CompressedMatrix< typename MultTrait<T1,T2>::Type, false >  Type;
+   using Type =  CompressedMatrix< MultTrait_<T1,T2>, false >;
 };
 
 template< typename T1, size_t N, typename T2 >
 struct MultTrait< StaticVector<T1,N,true>, CompressedVector<T2,false> >
 {
-   typedef typename MultTrait<T1,T2>::Type  Type;
+   using Type =  MultTrait_<T1,T2>;
 };
 
 template< typename T1, bool TF, typename T2, size_t N >
 struct MultTrait< CompressedVector<T1,TF>, HybridVector<T2,N,TF> >
 {
-   typedef CompressedVector< typename MultTrait<T1,T2>::Type, TF >  Type;
+   using Type =  CompressedVector< MultTrait_<T1,T2>, TF >;
 };
 
 template< typename T1, typename T2, size_t N >
 struct MultTrait< CompressedVector<T1,false>, HybridVector<T2,N,true> >
 {
-   typedef CompressedMatrix< typename MultTrait<T1,T2>::Type, true >  Type;
+   using Type =  CompressedMatrix< MultTrait_<T1,T2>, true >;
 };
 
 template< typename T1, typename T2, size_t N >
 struct MultTrait< CompressedVector<T1,true>, HybridVector<T2,N,false> >
 {
-   typedef typename MultTrait<T1,T2>::Type  Type;
+   using Type =  MultTrait_<T1,T2>;
 };
 
 template< typename T1, size_t N, bool TF, typename T2 >
 struct MultTrait< HybridVector<T1,N,TF>, CompressedVector<T2,TF> >
 {
-   typedef CompressedVector< typename MultTrait<T1,T2>::Type, TF >  Type;
+   using Type =  CompressedVector< MultTrait_<T1,T2>, TF >;
 };
 
 template< typename T1, size_t N, typename T2 >
 struct MultTrait< HybridVector<T1,N,false>, CompressedVector<T2,true> >
 {
-   typedef CompressedMatrix< typename MultTrait<T1,T2>::Type, false >  Type;
+   using Type =  CompressedMatrix< MultTrait_<T1,T2>, false >;
 };
 
 template< typename T1, size_t N, typename T2 >
 struct MultTrait< HybridVector<T1,N,true>, CompressedVector<T2,false> >
 {
-   typedef typename MultTrait<T1,T2>::Type  Type;
+   using Type =  MultTrait_<T1,T2>;
 };
 
 template< typename T1, bool TF, typename T2 >
 struct MultTrait< CompressedVector<T1,TF>, DynamicVector<T2,TF> >
 {
-   typedef CompressedVector< typename MultTrait<T1,T2>::Type, TF >  Type;
+   using Type =  CompressedVector< MultTrait_<T1,T2>, TF >;
 };
 
 template< typename T1, typename T2 >
 struct MultTrait< CompressedVector<T1,false>, DynamicVector<T2,true> >
 {
-   typedef CompressedMatrix< typename MultTrait<T1,T2>::Type, true >  Type;
+   using Type =  CompressedMatrix< MultTrait_<T1,T2>, true >;
 };
 
 template< typename T1, typename T2 >
 struct MultTrait< CompressedVector<T1,true>, DynamicVector<T2,false> >
 {
-   typedef typename MultTrait<T1,T2>::Type  Type;
+   using Type =  MultTrait_<T1,T2>;
 };
 
 template< typename T1, bool TF, typename T2 >
 struct MultTrait< DynamicVector<T1,TF>, CompressedVector<T2,TF> >
 {
-   typedef CompressedVector< typename MultTrait<T1,T2>::Type, TF >  Type;
+   using Type =  CompressedVector< MultTrait_<T1,T2>, TF >;
 };
 
 template< typename T1, typename T2 >
 struct MultTrait< DynamicVector<T1,false>, CompressedVector<T2,true> >
 {
-   typedef CompressedMatrix< typename MultTrait<T1,T2>::Type, false >  Type;
+   using Type =  CompressedMatrix< MultTrait_<T1,T2>, false >;
 };
 
 template< typename T1, typename T2 >
 struct MultTrait< DynamicVector<T1,true>, CompressedVector<T2,false> >
 {
-   typedef typename MultTrait<T1,T2>::Type  Type;
+   using Type =  MultTrait_<T1,T2>;
 };
 
 template< typename T1, bool TF, typename T2, bool AF, bool PF >
 struct MultTrait< CompressedVector<T1,TF>, CustomVector<T2,AF,PF,TF> >
 {
-   typedef CompressedVector< typename MultTrait<T1,T2>::Type, TF >  Type;
+   using Type =  CompressedVector< MultTrait_<T1,T2>, TF >;
 };
 
 template< typename T1, typename T2, bool AF, bool PF >
 struct MultTrait< CompressedVector<T1,false>, CustomVector<T2,AF,PF,true> >
 {
-   typedef CompressedMatrix< typename MultTrait<T1,T2>::Type, true >  Type;
+   using Type =  CompressedMatrix< MultTrait_<T1,T2>, true >;
 };
 
 template< typename T1, typename T2, bool AF, bool PF >
 struct MultTrait< CompressedVector<T1,true>, CustomVector<T2,AF,PF,false> >
 {
-   typedef typename MultTrait<T1,T2>::Type  Type;
+   using Type =  MultTrait_<T1,T2>;
 };
 
 template< typename T1, bool AF, bool PF, bool TF, typename T2 >
 struct MultTrait< CustomVector<T1,AF,PF,TF>, CompressedVector<T2,TF> >
 {
-   typedef CompressedVector< typename MultTrait<T1,T2>::Type, TF >  Type;
+   using Type =  CompressedVector< MultTrait_<T1,T2>, TF >;
 };
 
 template< typename T1, bool AF, bool PF, typename T2 >
 struct MultTrait< CustomVector<T1,AF,PF,false>, CompressedVector<T2,true> >
 {
-   typedef CompressedMatrix< typename MultTrait<T1,T2>::Type, false >  Type;
+   using Type =  CompressedMatrix< MultTrait_<T1,T2>, false >;
 };
 
 template< typename T1, bool AF, bool PF, typename T2 >
 struct MultTrait< CustomVector<T1,AF,PF,true>, CompressedVector<T2,false> >
 {
-   typedef typename MultTrait<T1,T2>::Type  Type;
+   using Type =  MultTrait_<T1,T2>;
 };
 
 template< typename T1, bool TF, typename T2 >
 struct MultTrait< CompressedVector<T1,TF>, CompressedVector<T2,TF> >
 {
-   typedef CompressedVector< typename MultTrait<T1,T2>::Type, TF >  Type;
+   using Type =  CompressedVector< MultTrait_<T1,T2>, TF >;
 };
 
 template< typename T1, typename T2 >
 struct MultTrait< CompressedVector<T1,false>, CompressedVector<T2,true> >
 {
-   typedef CompressedMatrix< typename MultTrait<T1,T2>::Type, false >  Type;
+   using Type =  CompressedMatrix< MultTrait_<T1,T2>, false >;
 };
 
 template< typename T1, typename T2 >
 struct MultTrait< CompressedVector<T1,true>, CompressedVector<T2,false> >
 {
-   typedef typename MultTrait<T1,T2>::Type  Type;
+   using Type =  MultTrait_<T1,T2>;
 };
 /*! \endcond */
 //*************************************************************************************************
@@ -2338,70 +2336,70 @@ template< typename T1, typename T2 >
 struct CrossTrait< CompressedVector<T1,false>, StaticVector<T2,3UL,false> >
 {
  private:
-   typedef typename MultTrait<T1,T2>::Type  T;
+   using T = MultTrait_<T1,T2>;
 
  public:
-   typedef StaticVector< typename SubTrait<T,T>::Type, 3UL, false >  Type;
+   using Type = StaticVector< SubTrait_<T,T>, 3UL, false >;
 };
 
 template< typename T1, typename T2 >
 struct CrossTrait< StaticVector<T1,3UL,false>, CompressedVector<T2,false> >
 {
  private:
-   typedef typename MultTrait<T1,T2>::Type  T;
+   using T = MultTrait_<T1,T2>;
 
  public:
-   typedef StaticVector< typename SubTrait<T,T>::Type, 3UL, false >  Type;
+   using Type = StaticVector< SubTrait_<T,T>, 3UL, false >;
 };
 
 template< typename T1, typename T2, size_t N >
 struct CrossTrait< CompressedVector<T1,false>, HybridVector<T2,N,false> >
 {
  private:
-   typedef typename MultTrait<T1,T2>::Type  T;
+   using T = MultTrait_<T1,T2>;
 
  public:
-   typedef StaticVector< typename SubTrait<T,T>::Type, 3UL, false >  Type;
+   using Type = StaticVector< SubTrait_<T,T>, 3UL, false >;
 };
 
 template< typename T1, size_t N, typename T2 >
 struct CrossTrait< HybridVector<T1,N,false>, CompressedVector<T2,false> >
 {
  private:
-   typedef typename MultTrait<T1,T2>::Type  T;
+   using T = MultTrait_<T1,T2>;
 
  public:
-   typedef StaticVector< typename SubTrait<T,T>::Type, 3UL, false >  Type;
+   using Type = StaticVector< SubTrait_<T,T>, 3UL, false >;
 };
 
 template< typename T1, typename T2 >
 struct CrossTrait< CompressedVector<T1,false>, DynamicVector<T2,false> >
 {
  private:
-   typedef typename MultTrait<T1,T2>::Type  T;
+   using T = MultTrait_<T1,T2>;
 
  public:
-   typedef StaticVector< typename SubTrait<T,T>::Type, 3UL, false >  Type;
+   using Type = StaticVector< SubTrait_<T,T>, 3UL, false >;
 };
 
 template< typename T1, typename T2 >
 struct CrossTrait< DynamicVector<T1,false>, CompressedVector<T2,false> >
 {
  private:
-   typedef typename MultTrait<T1,T2>::Type  T;
+   using T = MultTrait_<T1,T2>;
 
  public:
-   typedef StaticVector< typename SubTrait<T,T>::Type, 3UL, false >  Type;
+   using Type = StaticVector< SubTrait_<T,T>, 3UL, false >;
 };
 
 template< typename T1, typename T2 >
 struct CrossTrait< CompressedVector<T1,false>, CompressedVector<T2,false> >
 {
  private:
-   typedef typename MultTrait<T1,T2>::Type  T;
+   using T = MultTrait_<T1,T2>;
 
  public:
-   typedef StaticVector< typename SubTrait<T,T>::Type, 3UL, false >  Type;
+   using Type = StaticVector< SubTrait_<T,T>, 3UL, false >;
 };
 /*! \endcond */
 //*************************************************************************************************
@@ -2420,7 +2418,7 @@ struct CrossTrait< CompressedVector<T1,false>, CompressedVector<T2,false> >
 template< typename T1, bool TF, typename T2 >
 struct DivTrait< CompressedVector<T1,TF>, T2, EnableIf_< IsNumeric<T2> > >
 {
-   typedef CompressedVector< typename DivTrait<T1,T2>::Type, TF >  Type;
+   using Type = CompressedVector< DivTrait_<T1,T2>, TF >;
 };
 /*! \endcond */
 //*************************************************************************************************
@@ -2439,8 +2437,8 @@ struct DivTrait< CompressedVector<T1,TF>, T2, EnableIf_< IsNumeric<T2> > >
 template< typename T1, bool TF, typename T2 >
 struct MathTrait< CompressedVector<T1,TF>, CompressedVector<T2,TF> >
 {
-   typedef CompressedVector< typename MathTrait<T1,T2>::HighType, TF >  HighType;
-   typedef CompressedVector< typename MathTrait<T1,T2>::LowType , TF >  LowType;
+   using HighType = CompressedVector< typename MathTrait<T1,T2>::HighType, TF >;
+   using LowType  = CompressedVector< typename MathTrait<T1,T2>::LowType , TF >;
 };
 /*! \endcond */
 //*************************************************************************************************
@@ -2459,7 +2457,7 @@ struct MathTrait< CompressedVector<T1,TF>, CompressedVector<T2,TF> >
 template< typename T1, bool TF >
 struct SubvectorTrait< CompressedVector<T1,TF> >
 {
-   typedef CompressedVector<T1,TF>  Type;
+   using Type = CompressedVector<T1,TF>;
 };
 /*! \endcond */
 //*************************************************************************************************

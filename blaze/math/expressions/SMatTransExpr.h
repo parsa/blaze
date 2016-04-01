@@ -41,6 +41,7 @@
 //*************************************************************************************************
 
 #include <iterator>
+#include <blaze/math/Aliases.h>
 #include <blaze/math/constraints/RequiresEvaluation.h>
 #include <blaze/math/constraints/SparseMatrix.h>
 #include <blaze/math/constraints/StorageOrder.h>
@@ -108,8 +109,8 @@ class SMatTransExpr : public SparseMatrix< SMatTransExpr<MT,SO>, SO >
 {
  private:
    //**Type definitions****************************************************************************
-   typedef typename MT::ResultType     RT;  //!< Result type of the sparse matrix expression.
-   typedef typename MT::CompositeType  CT;  //!< Composite type of the sparse matrix expression.
+   typedef ResultType_<MT>     RT;  //!< Result type of the sparse matrix expression.
+   typedef CompositeType_<MT>  CT;  //!< Composite type of the sparse matrix expression.
    //**********************************************************************************************
 
    //**Serial evaluation strategy******************************************************************
@@ -147,12 +148,12 @@ class SMatTransExpr : public SparseMatrix< SMatTransExpr<MT,SO>, SO >
 
  public:
    //**Type definitions****************************************************************************
-   typedef SMatTransExpr<MT,SO>        This;           //!< Type of this SMatTransExpr instance.
-   typedef typename MT::TransposeType  ResultType;     //!< Result type for expression template evaluations.
-   typedef typename MT::OppositeType   OppositeType;   //!< Result type with opposite storage order for expression template evaluations.
-   typedef typename MT::ResultType     TransposeType;  //!< Transpose type for expression template evaluations.
-   typedef typename MT::ElementType    ElementType;    //!< Resulting element type.
-   typedef typename MT::ReturnType     ReturnType;     //!< Return type for expression template evaluations.
+   typedef SMatTransExpr<MT,SO>  This;           //!< Type of this SMatTransExpr instance.
+   typedef TransposeType_<MT>    ResultType;     //!< Result type for expression template evaluations.
+   typedef OppositeType_<MT>     OppositeType;   //!< Result type with opposite storage order for expression template evaluations.
+   typedef ResultType_<MT>       TransposeType;  //!< Transpose type for expression template evaluations.
+   typedef ElementType_<MT>      ElementType;    //!< Resulting element type.
+   typedef ReturnType_<MT>       ReturnType;     //!< Return type for expression template evaluations.
 
    //! Data type for composite expression templates.
    typedef IfTrue_< useAssign, const ResultType, const SMatTransExpr& >  CompositeType;
@@ -169,7 +170,7 @@ class SMatTransExpr : public SparseMatrix< SMatTransExpr<MT,SO>, SO >
     public:
       //**Type definitions*************************************************************************
       //! Iterator type of the sparse matrix expression.
-      typedef typename RemoveReference_<Operand>::ConstIterator  IteratorType;
+      typedef ConstIterator_< RemoveReference_<Operand> >  IteratorType;
 
       typedef std::forward_iterator_tag                                     IteratorCategory;  //!< The iterator category.
       typedef typename std::iterator_traits<IteratorType>::value_type       ValueType;         //!< Type of the underlying pointers.
@@ -1038,7 +1039,7 @@ struct SMatTransExprTrait< SMatTransExpr<MT,false> >
  public:
    //**********************************************************************************************
    using Type = If_< And< IsSparseMatrix<MT>, IsColumnMajorMatrix<MT> >
-                   , typename SMatTransExpr<MT,false>::Operand
+                   , Operand_< SMatTransExpr<MT,false> >
                    , INVALID_TYPE >;
    //**********************************************************************************************
 };
@@ -1054,7 +1055,7 @@ struct TSMatTransExprTrait< SMatTransExpr<MT,true> >
  public:
    //**********************************************************************************************
    using Type = If_< And< IsSparseMatrix<MT>, IsRowMajorMatrix<MT> >
-                   , typename SMatTransExpr<MT,true>::Operand
+                   , Operand_< SMatTransExpr<MT,true> >
                    , INVALID_TYPE >;
    //**********************************************************************************************
 };
@@ -1069,7 +1070,7 @@ struct SubmatrixExprTrait< SMatTransExpr<MT,SO>, AF >
 {
  public:
    //**********************************************************************************************
-   using Type = typename TransExprTrait< typename SubmatrixExprTrait<const MT,AF>::Type >::Type;
+   using Type = TransExprTrait_< SubmatrixExprTrait_<const MT,AF> >;
    //**********************************************************************************************
 };
 /*! \endcond */
@@ -1083,7 +1084,7 @@ struct RowExprTrait< SMatTransExpr<MT,SO> >
 {
  public:
    //**********************************************************************************************
-   using Type = typename TransExprTrait< typename ColumnExprTrait<const MT>::Type >::Type;
+   using Type = TransExprTrait_< ColumnExprTrait_<const MT> >;
    //**********************************************************************************************
 };
 /*! \endcond */
@@ -1097,7 +1098,7 @@ struct ColumnExprTrait< SMatTransExpr<MT,SO> >
 {
  public:
    //**********************************************************************************************
-   using Type = typename TransExprTrait< typename RowExprTrait<const MT>::Type >::Type;
+   using Type = TransExprTrait_< RowExprTrait_<const MT> >;
    //**********************************************************************************************
 };
 /*! \endcond */

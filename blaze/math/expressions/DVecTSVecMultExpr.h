@@ -41,6 +41,7 @@
 //*************************************************************************************************
 
 #include <iterator>
+#include <blaze/math/Aliases.h>
 #include <blaze/math/constraints/ColumnVector.h>
 #include <blaze/math/constraints/DenseVector.h>
 #include <blaze/math/constraints/RequiresEvaluation.h>
@@ -105,14 +106,14 @@ class DVecTSVecMultExpr : public SparseMatrix< DVecTSVecMultExpr<VT1,VT2>, false
 {
  private:
    //**Type definitions****************************************************************************
-   typedef typename VT1::ResultType     RT1;  //!< Result type of the left-hand side dense vector expression.
-   typedef typename VT2::ResultType     RT2;  //!< Result type of the right-hand side sparse vector expression.
-   typedef typename VT1::ReturnType     RN1;  //!< Return type of the left-hand side dense vector expression.
-   typedef typename VT2::ReturnType     RN2;  //!< Return type of the right-hand side sparse vector expression.
-   typedef typename VT1::CompositeType  CT1;  //!< Composite type of the left-hand side dense vector expression.
-   typedef typename VT2::CompositeType  CT2;  //!< Composite type of the right-hand side sparse vector expression.
-   typedef typename VT1::ElementType    ET1;  //!< Element type of the left-hand side dense vector expression.
-   typedef typename VT2::ElementType    ET2;  //!< Element type of the right-hand side sparse vector expression.
+   typedef ResultType_<VT1>     RT1;  //!< Result type of the left-hand side dense vector expression.
+   typedef ResultType_<VT2>     RT2;  //!< Result type of the right-hand side sparse vector expression.
+   typedef ReturnType_<VT1>     RN1;  //!< Return type of the left-hand side dense vector expression.
+   typedef ReturnType_<VT2>     RN2;  //!< Return type of the right-hand side sparse vector expression.
+   typedef CompositeType_<VT1>  CT1;  //!< Composite type of the left-hand side dense vector expression.
+   typedef CompositeType_<VT2>  CT2;  //!< Composite type of the right-hand side sparse vector expression.
+   typedef ElementType_<VT1>    ET1;  //!< Element type of the left-hand side dense vector expression.
+   typedef ElementType_<VT2>    ET2;  //!< Element type of the right-hand side sparse vector expression.
    //**********************************************************************************************
 
    //**Return type evaluation**********************************************************************
@@ -125,7 +126,7 @@ class DVecTSVecMultExpr : public SparseMatrix< DVecTSVecMultExpr<VT1,VT2>, false
    enum { returnExpr = !IsTemporary<RN1>::value && !IsTemporary<RN2>::value };
 
    //! Expression return type for the subscript operator.
-   typedef typename MultExprTrait<RN1,RN2>::Type  ExprReturnType;
+   typedef MultExprTrait_<RN1,RN2>  ExprReturnType;
    //**********************************************************************************************
 
    //**Evaluation strategy*************************************************************************
@@ -158,9 +159,9 @@ class DVecTSVecMultExpr : public SparseMatrix< DVecTSVecMultExpr<VT1,VT2>, false
    struct UseVectorizedKernel {
       enum { value = useOptimizedKernels &&
                      T1::vectorizable && T2::vectorizable &&
-                     IsSame<typename T1::ElementType,typename T2::ElementType>::value &&
-                     IsSame<typename T1::ElementType,typename T3::ElementType>::value &&
-                     IntrinsicTrait<typename T1::ElementType>::multiplication };
+                     IsSame< ElementType_<T1>, ElementType_<T2> >::value &&
+                     IsSame< ElementType_<T1>, ElementType_<T3> >::value &&
+                     IntrinsicTrait< ElementType_<T1> >::multiplication };
    };
    /*! \endcond */
    //**********************************************************************************************
@@ -179,11 +180,11 @@ class DVecTSVecMultExpr : public SparseMatrix< DVecTSVecMultExpr<VT1,VT2>, false
 
  public:
    //**Type definitions****************************************************************************
-   typedef DVecTSVecMultExpr<VT1,VT2>          This;           //!< Type of this DVecTSVecMultExpr instance.
-   typedef typename MultTrait<RT1,RT2>::Type   ResultType;     //!< Result type for expression template evaluations.
-   typedef typename ResultType::OppositeType   OppositeType;   //!< Result type with opposite storage order for expression template evaluations.
-   typedef typename ResultType::TransposeType  TransposeType;  //!< Transpose type for expression template evaluations.
-   typedef typename ResultType::ElementType    ElementType;    //!< Resulting element type.
+   typedef DVecTSVecMultExpr<VT1,VT2>  This;           //!< Type of this DVecTSVecMultExpr instance.
+   typedef MultTrait_<RT1,RT2>         ResultType;     //!< Result type for expression template evaluations.
+   typedef OppositeType_<ResultType>   OppositeType;   //!< Result type with opposite storage order for expression template evaluations.
+   typedef TransposeType_<ResultType>  TransposeType;  //!< Transpose type for expression template evaluations.
+   typedef ElementType_<ResultType>    ElementType;    //!< Resulting element type.
 
    //! Return type for expression template evaluations.
    typedef const IfTrue_< returnExpr, ExprReturnType, ElementType >  ReturnType;
@@ -223,7 +224,7 @@ class DVecTSVecMultExpr : public SparseMatrix< DVecTSVecMultExpr<VT1,VT2>, false
       typedef ET1  LeftElement;
 
       //! Iterator type of the sparse vector expression.
-      typedef typename RemoveReference_<RightOperand>::ConstIterator  IteratorType;
+      typedef ConstIterator_< RemoveReference_<RightOperand> >  IteratorType;
 
       typedef std::forward_iterator_tag  IteratorCategory;  //!< The iterator category.
       typedef Element                    ValueType;         //!< Type of the underlying pointers.
@@ -563,7 +564,7 @@ class DVecTSVecMultExpr : public SparseMatrix< DVecTSVecMultExpr<VT1,VT2>, false
       BLAZE_INTERNAL_ASSERT( (~lhs).rows()    == rhs.rows()   , "Invalid number of rows"    );
       BLAZE_INTERNAL_ASSERT( (~lhs).columns() == rhs.columns(), "Invalid number of columns" );
 
-      typedef typename RemoveReference_<RT>::ConstIterator  ConstIterator;
+      typedef ConstIterator_< RemoveReference_<RT> >  ConstIterator;
 
       LT x( serial( rhs.lhs_ ) );  // Evaluation of the left-hand side dense vector operand
       RT y( serial( rhs.rhs_ ) );  // Evaluation of the right-hand side sparse vector operand
@@ -641,7 +642,7 @@ class DVecTSVecMultExpr : public SparseMatrix< DVecTSVecMultExpr<VT1,VT2>, false
    static inline EnableIf_< UseDefaultKernel<MT,VT3,VT4> >
       selectAssignKernel( DenseMatrix<MT,true>& A, const VT3& x, const VT4& y )
    {
-      typedef typename RemoveReference_<RT>::ConstIterator  ConstIterator;
+      typedef ConstIterator_< RemoveReference_<RT> >  ConstIterator;
 
       const ConstIterator begin( y.begin() );
       const ConstIterator end  ( y.end()   );
@@ -675,7 +676,7 @@ class DVecTSVecMultExpr : public SparseMatrix< DVecTSVecMultExpr<VT1,VT2>, false
    static inline EnableIf_< UseVectorizedKernel<MT,VT3,VT4> >
       selectAssignKernel( DenseMatrix<MT,true>& A, const VT3& x, const VT4& y )
    {
-      typedef typename RemoveReference_<RT>::ConstIterator  ConstIterator;
+      typedef ConstIterator_< RemoveReference_<RT> >  ConstIterator;
 
       typedef IntrinsicTrait<ElementType>  IT;
       typedef typename IT::Type            IntrinsicType;
@@ -732,7 +733,7 @@ class DVecTSVecMultExpr : public SparseMatrix< DVecTSVecMultExpr<VT1,VT2>, false
       BLAZE_INTERNAL_ASSERT( (~lhs).columns()  == rhs.columns() , "Invalid number of columns" );
       BLAZE_INTERNAL_ASSERT( (~lhs).capacity() >= rhs.nonZeros(), "Insufficient capacity"     );
 
-      typedef typename RemoveReference_<RT>::ConstIterator  ConstIterator;
+      typedef ConstIterator_< RemoveReference_<RT> >  ConstIterator;
 
       LT x( serial( rhs.lhs_ ) );  // Evaluation of the left-hand side dense vector operand
       RT y( serial( rhs.rhs_ ) );  // Evaluation of the right-hand side sparse vector operand
@@ -783,7 +784,7 @@ class DVecTSVecMultExpr : public SparseMatrix< DVecTSVecMultExpr<VT1,VT2>, false
       BLAZE_INTERNAL_ASSERT( (~lhs).rows()    == rhs.rows()    , "Invalid number of rows"    );
       BLAZE_INTERNAL_ASSERT( (~lhs).columns() == rhs.columns() , "Invalid number of columns" );
 
-      typedef typename RemoveReference_<RT>::ConstIterator  ConstIterator;
+      typedef ConstIterator_< RemoveReference_<RT> >  ConstIterator;
 
       LT x( serial( rhs.lhs_ ) );  // Evaluation of the left-hand side dense vector operand
       RT y( serial( rhs.rhs_ ) );  // Evaluation of the right-hand side sparse vector operand
@@ -847,7 +848,7 @@ class DVecTSVecMultExpr : public SparseMatrix< DVecTSVecMultExpr<VT1,VT2>, false
       BLAZE_INTERNAL_ASSERT( (~lhs).rows()    == rhs.rows()   , "Invalid number of rows"    );
       BLAZE_INTERNAL_ASSERT( (~lhs).columns() == rhs.columns(), "Invalid number of columns" );
 
-      typedef typename RemoveReference_<RT>::ConstIterator  ConstIterator;
+      typedef ConstIterator_< RemoveReference_<RT> >  ConstIterator;
 
       LT x( serial( rhs.lhs_ ) );  // Evaluation of the left-hand side dense vector operand
       RT y( serial( rhs.rhs_ ) );  // Evaluation of the right-hand side sparse vector operand
@@ -925,7 +926,7 @@ class DVecTSVecMultExpr : public SparseMatrix< DVecTSVecMultExpr<VT1,VT2>, false
    static inline EnableIf_< UseDefaultKernel<MT,VT3,VT4> >
       selectAddAssignKernel( DenseMatrix<MT,true>& A, const VT3& x, const VT4& y )
    {
-      typedef typename RemoveReference_<RT>::ConstIterator  ConstIterator;
+      typedef ConstIterator_< RemoveReference_<RT> >  ConstIterator;
 
       const ConstIterator begin( y.begin() );
       const ConstIterator end  ( y.end()   );
@@ -959,7 +960,7 @@ class DVecTSVecMultExpr : public SparseMatrix< DVecTSVecMultExpr<VT1,VT2>, false
    static inline EnableIf_< UseVectorizedKernel<MT,VT3,VT4> >
       selectAddAssignKernel( DenseMatrix<MT,true>& A, const VT3& x, const VT4& y )
    {
-      typedef typename RemoveReference_<RT>::ConstIterator  ConstIterator;
+      typedef ConstIterator_< RemoveReference_<RT> >  ConstIterator;
 
       typedef IntrinsicTrait<ElementType>  IT;
       typedef typename IT::Type            IntrinsicType;
@@ -1020,7 +1021,7 @@ class DVecTSVecMultExpr : public SparseMatrix< DVecTSVecMultExpr<VT1,VT2>, false
       BLAZE_INTERNAL_ASSERT( (~lhs).rows()    == rhs.rows()   , "Invalid number of rows"    );
       BLAZE_INTERNAL_ASSERT( (~lhs).columns() == rhs.columns(), "Invalid number of columns" );
 
-      typedef typename RemoveReference_<RT>::ConstIterator  ConstIterator;
+      typedef ConstIterator_< RemoveReference_<RT> >  ConstIterator;
 
       LT x( serial( rhs.lhs_ ) );  // Evaluation of the left-hand side dense vector operand
       RT y( serial( rhs.rhs_ ) );  // Evaluation of the right-hand side sparse vector operand
@@ -1098,7 +1099,7 @@ class DVecTSVecMultExpr : public SparseMatrix< DVecTSVecMultExpr<VT1,VT2>, false
    static inline EnableIf_< UseDefaultKernel<MT,VT3,VT4> >
       selectSubAssignKernel( DenseMatrix<MT,true>& A, const VT3& x, const VT4& y )
    {
-      typedef typename RemoveReference_<RT>::ConstIterator  ConstIterator;
+      typedef ConstIterator_< RemoveReference_<RT> >  ConstIterator;
 
       const ConstIterator begin( y.begin() );
       const ConstIterator end  ( y.end()   );
@@ -1132,7 +1133,7 @@ class DVecTSVecMultExpr : public SparseMatrix< DVecTSVecMultExpr<VT1,VT2>, false
    static inline EnableIf_< UseVectorizedKernel<MT,VT3,VT4> >
       selectSubAssignKernel( DenseMatrix<MT,true>& A, const VT3& x, const VT4& y )
    {
-      typedef typename RemoveReference_<RT>::ConstIterator  ConstIterator;
+      typedef ConstIterator_< RemoveReference_<RT> >  ConstIterator;
 
       typedef IntrinsicTrait<ElementType>  IT;
       typedef typename IT::Type            IntrinsicType;
@@ -1287,8 +1288,8 @@ struct SubmatrixExprTrait< DVecTSVecMultExpr<VT1,VT2>, AF >
 {
  public:
    //**********************************************************************************************
-   using Type = typename MultExprTrait< typename SubvectorExprTrait<const VT1,AF>::Type
-                                      , typename SubvectorExprTrait<const VT2,AF>::Type >::Type;
+   using Type = MultExprTrait_< SubvectorExprTrait_<const VT1,AF>
+                              , SubvectorExprTrait_<const VT2,AF> >;
    //**********************************************************************************************
 };
 /*! \endcond */
@@ -1302,7 +1303,7 @@ struct RowExprTrait< DVecTSVecMultExpr<VT1,VT2> >
 {
  public:
    //**********************************************************************************************
-   using Type = typename MultExprTrait< typename VT1::ReturnType, VT2 >::Type;
+   using Type = MultExprTrait_< ReturnType_<VT1>, VT2 >;
    //**********************************************************************************************
 };
 /*! \endcond */
@@ -1316,7 +1317,7 @@ struct ColumnExprTrait< DVecTSVecMultExpr<VT1,VT2> >
 {
  public:
    //**********************************************************************************************
-   using Type = typename MultExprTrait< VT1, typename VT2::ReturnType >::Type;
+   using Type = MultExprTrait_< VT1, ReturnType_<VT2> >;
    //**********************************************************************************************
 };
 /*! \endcond */

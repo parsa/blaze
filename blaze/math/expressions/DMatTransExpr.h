@@ -41,6 +41,7 @@
 //*************************************************************************************************
 
 #include <iterator>
+#include <blaze/math/Aliases.h>
 #include <blaze/math/constraints/DenseMatrix.h>
 #include <blaze/math/constraints/StorageOrder.h>
 #include <blaze/math/expressions/Computation.h>
@@ -109,8 +110,8 @@ class DMatTransExpr : public DenseMatrix< DMatTransExpr<MT,SO>, SO >
 {
  private:
    //**Type definitions****************************************************************************
-   typedef typename MT::ResultType     RT;  //!< Result type of the dense matrix expression.
-   typedef typename MT::CompositeType  CT;  //!< Composite type of the dense matrix expression.
+   typedef ResultType_<MT>     RT;  //!< Result type of the dense matrix expression.
+   typedef CompositeType_<MT>  CT;  //!< Composite type of the dense matrix expression.
    //**********************************************************************************************
 
    //**Serial evaluation strategy******************************************************************
@@ -149,12 +150,12 @@ class DMatTransExpr : public DenseMatrix< DMatTransExpr<MT,SO>, SO >
  public:
    //**Type definitions****************************************************************************
    typedef DMatTransExpr<MT,SO>                        This;           //!< Type of this DMatTransExpr instance.
-   typedef typename MT::TransposeType                  ResultType;     //!< Result type for expression template evaluations.
-   typedef typename ResultType::OppositeType           OppositeType;   //!< Result type with opposite storage order for expression template evaluations.
-   typedef typename MT::ResultType                     TransposeType;  //!< Transpose type for expression template evaluations.
-   typedef typename MT::ElementType                    ElementType;    //!< Resulting element type.
+   typedef TransposeType_<MT>                          ResultType;     //!< Result type for expression template evaluations.
+   typedef OppositeType_<ResultType>                   OppositeType;   //!< Result type with opposite storage order for expression template evaluations.
+   typedef ResultType_<MT>                             TransposeType;  //!< Transpose type for expression template evaluations.
+   typedef ElementType_<MT>                            ElementType;    //!< Resulting element type.
    typedef typename IntrinsicTrait<ElementType>::Type  IntrinsicType;  //!< Resulting intrinsic element type.
-   typedef typename MT::ReturnType                     ReturnType;     //!< Return type for expression template evaluations.
+   typedef ReturnType_<MT>                             ReturnType;     //!< Return type for expression template evaluations.
 
    //! Data type for composite expression templates.
    typedef IfTrue_< useAssign, const ResultType, const DMatTransExpr& >  CompositeType;
@@ -184,7 +185,7 @@ class DMatTransExpr : public DenseMatrix< DMatTransExpr<MT,SO>, SO >
       typedef DifferenceType    difference_type;    //!< Difference between two iterators.
 
       //! ConstIterator type of the dense matrix expression.
-      typedef typename MT::ConstIterator  IteratorType;
+      typedef ConstIterator_<MT>  IteratorType;
       //*******************************************************************************************
 
       //**Constructor******************************************************************************
@@ -671,7 +672,7 @@ class DMatTransExpr : public DenseMatrix< DMatTransExpr<MT,SO>, SO >
       BLAZE_CONSTRAINT_MUST_BE_MATRIX_WITH_STORAGE_ORDER( ResultType, SO );
       BLAZE_CONSTRAINT_MUST_BE_MATRIX_WITH_STORAGE_ORDER( OppositeType, !SO );
       BLAZE_CONSTRAINT_MATRICES_MUST_HAVE_SAME_STORAGE_ORDER( MT2, TmpType );
-      BLAZE_CONSTRAINT_MUST_BE_REFERENCE_TYPE( typename TmpType::CompositeType );
+      BLAZE_CONSTRAINT_MUST_BE_REFERENCE_TYPE( CompositeType_<TmpType> );
 
       BLAZE_INTERNAL_ASSERT( (~lhs).rows()    == rhs.rows()   , "Invalid number of rows"    );
       BLAZE_INTERNAL_ASSERT( (~lhs).columns() == rhs.columns(), "Invalid number of columns" );
@@ -816,7 +817,7 @@ class DMatTransExpr : public DenseMatrix< DMatTransExpr<MT,SO>, SO >
       BLAZE_CONSTRAINT_MUST_BE_MATRIX_WITH_STORAGE_ORDER( ResultType, SO );
       BLAZE_CONSTRAINT_MUST_BE_MATRIX_WITH_STORAGE_ORDER( OppositeType, !SO );
       BLAZE_CONSTRAINT_MATRICES_MUST_HAVE_SAME_STORAGE_ORDER( MT2, TmpType );
-      BLAZE_CONSTRAINT_MUST_BE_REFERENCE_TYPE( typename TmpType::CompositeType );
+      BLAZE_CONSTRAINT_MUST_BE_REFERENCE_TYPE( CompositeType_<TmpType> );
 
       BLAZE_INTERNAL_ASSERT( (~lhs).rows()    == rhs.rows()   , "Invalid number of rows"    );
       BLAZE_INTERNAL_ASSERT( (~lhs).columns() == rhs.columns(), "Invalid number of columns" );
@@ -1221,7 +1222,7 @@ struct DMatTransExprTrait< DMatTransExpr<MT,false> >
  public:
    //**********************************************************************************************
    using Type = If_< And< IsDenseMatrix<MT>, IsColumnMajorMatrix<MT> >
-                   , typename DMatTransExpr<MT,false>::Operand
+                   , Operand_< DMatTransExpr<MT,false> >
                    , INVALID_TYPE >;
    //**********************************************************************************************
 };
@@ -1237,7 +1238,7 @@ struct TDMatTransExprTrait< DMatTransExpr<MT,true> >
  public:
    //**********************************************************************************************
    using Type = If_< And< IsDenseMatrix<MT>, IsRowMajorMatrix<MT> >
-                   , typename DMatTransExpr<MT,true>::Operand
+                   , Operand_< DMatTransExpr<MT,true> >
                    , INVALID_TYPE >;
    //**********************************************************************************************
 };
@@ -1252,7 +1253,7 @@ struct SubmatrixExprTrait< DMatTransExpr<MT,SO>, AF >
 {
  public:
    //**********************************************************************************************
-   using Type = typename TransExprTrait< typename SubmatrixExprTrait<const MT,AF>::Type >::Type;
+   using Type = TransExprTrait_< SubmatrixExprTrait_<const MT,AF> >;
    //**********************************************************************************************
 };
 /*! \endcond */
@@ -1266,7 +1267,7 @@ struct RowExprTrait< DMatTransExpr<MT,SO> >
 {
  public:
    //**********************************************************************************************
-   using Type = typename TransExprTrait< typename ColumnExprTrait<const MT>::Type >::Type;
+   using Type = TransExprTrait_< ColumnExprTrait_<const MT> >;
    //**********************************************************************************************
 };
 /*! \endcond */
@@ -1280,7 +1281,7 @@ struct ColumnExprTrait< DMatTransExpr<MT,SO> >
 {
  public:
    //**********************************************************************************************
-   using Type = typename TransExprTrait< typename RowExprTrait<const MT>::Type >::Type;
+   using Type = TransExprTrait_< RowExprTrait_<const MT> >;
    //**********************************************************************************************
 };
 /*! \endcond */

@@ -41,6 +41,7 @@
 //*************************************************************************************************
 
 #include <algorithm>
+#include <blaze/math/Aliases.h>
 #include <blaze/math/AlignmentFlag.h>
 #include <blaze/math/constraints/Diagonal.h>
 #include <blaze/math/constraints/Symmetric.h>
@@ -363,7 +364,7 @@ class StaticMatrix : public DenseMatrix< StaticMatrix<Type,M,N,SO>, SO >
    struct VectorizedAssign {
       enum { value = useOptimizedKernels &&
                      vectorizable && MT::vectorizable &&
-                     IsSame<Type,typename MT::ElementType>::value &&
+                     IsSame< Type, ElementType_<MT> >::value &&
                      IsRowMajorMatrix<MT>::value };
    };
    /*! \endcond */
@@ -376,7 +377,7 @@ class StaticMatrix : public DenseMatrix< StaticMatrix<Type,M,N,SO>, SO >
    struct VectorizedAddAssign {
       enum { value = useOptimizedKernels &&
                      vectorizable && MT::vectorizable &&
-                     IsSame<Type,typename MT::ElementType>::value &&
+                     IsSame< Type, ElementType_<MT> >::value &&
                      IntrinsicTrait<Type>::addition &&
                      IsRowMajorMatrix<MT>::value &&
                      !IsDiagonal<MT>::value };
@@ -391,7 +392,7 @@ class StaticMatrix : public DenseMatrix< StaticMatrix<Type,M,N,SO>, SO >
    struct VectorizedSubAssign {
       enum { value = useOptimizedKernels &&
                      vectorizable && MT::vectorizable &&
-                     IsSame<Type,typename MT::ElementType>::value &&
+                     IsSame< Type, ElementType_<MT> >::value &&
                      IntrinsicTrait<Type>::subtraction &&
                      IsRowMajorMatrix<MT>::value &&
                      !IsDiagonal<MT>::value };
@@ -1209,8 +1210,8 @@ inline StaticMatrix<Type,M,N,SO>& StaticMatrix<Type,M,N,SO>::operator=( const Ma
 {
    using blaze::assign;
 
-   typedef typename TransExprTrait<This>::Type   TT;
-   typedef typename CTransExprTrait<This>::Type  CT;
+   typedef TransExprTrait_<This>   TT;
+   typedef CTransExprTrait_<This>  CT;
 
    if( (~rhs).rows() != M || (~rhs).columns() != N ) {
       BLAZE_THROW_INVALID_ARGUMENT( "Invalid assignment to static matrix" );
@@ -1262,7 +1263,7 @@ inline StaticMatrix<Type,M,N,SO>& StaticMatrix<Type,M,N,SO>::operator+=( const M
    }
 
    if( (~rhs).canAlias( this ) ) {
-      const typename MT::ResultType tmp( ~rhs );
+      const ResultType_<MT> tmp( ~rhs );
       addAssign( *this, tmp );
    }
    else {
@@ -1299,7 +1300,7 @@ inline StaticMatrix<Type,M,N,SO>& StaticMatrix<Type,M,N,SO>::operator-=( const M
    }
 
    if( (~rhs).canAlias( this ) ) {
-      const typename MT::ResultType tmp( ~rhs );
+      const ResultType_<MT> tmp( ~rhs );
       subAssign( *this, tmp );
    }
    else {
@@ -2376,10 +2377,8 @@ inline void StaticMatrix<Type,M,N,SO>::assign( const SparseMatrix<MT,SO>& rhs )
 {
    BLAZE_INTERNAL_ASSERT( (~rhs).rows() == M && (~rhs).columns() == N, "Invalid matrix size" );
 
-   typedef typename MT::ConstIterator  RhsConstIterator;
-
    for( size_t i=0UL; i<M; ++i )
-      for( RhsConstIterator element=(~rhs).begin(i); element!=(~rhs).end(i); ++element )
+      for( ConstIterator_<MT> element=(~rhs).begin(i); element!=(~rhs).end(i); ++element )
          v_[i*NN+element->index()] = element->value();
 }
 //*************************************************************************************************
@@ -2407,10 +2406,8 @@ inline void StaticMatrix<Type,M,N,SO>::assign( const SparseMatrix<MT,!SO>& rhs )
 
    BLAZE_INTERNAL_ASSERT( (~rhs).rows() == M && (~rhs).columns() == N, "Invalid matrix size" );
 
-   typedef typename MT::ConstIterator  RhsConstIterator;
-
    for( size_t j=0UL; j<N; ++j )
-      for( RhsConstIterator element=(~rhs).begin(j); element!=(~rhs).end(j); ++element )
+      for( ConstIterator_<MT> element=(~rhs).begin(j); element!=(~rhs).end(j); ++element )
          v_[element->index()*NN+j] = element->value();
 }
 //*************************************************************************************************
@@ -2536,10 +2533,8 @@ inline void StaticMatrix<Type,M,N,SO>::addAssign( const SparseMatrix<MT,SO>& rhs
 {
    BLAZE_INTERNAL_ASSERT( (~rhs).rows() == M && (~rhs).columns() == N, "Invalid matrix size" );
 
-   typedef typename MT::ConstIterator  RhsConstIterator;
-
    for( size_t i=0UL; i<M; ++i )
-      for( RhsConstIterator element=(~rhs).begin(i); element!=(~rhs).end(i); ++element )
+      for( ConstIterator_<MT> element=(~rhs).begin(i); element!=(~rhs).end(i); ++element )
          v_[i*NN+element->index()] += element->value();
 }
 //*************************************************************************************************
@@ -2567,10 +2562,8 @@ inline void StaticMatrix<Type,M,N,SO>::addAssign( const SparseMatrix<MT,!SO>& rh
 
    BLAZE_INTERNAL_ASSERT( (~rhs).rows() == M && (~rhs).columns() == N, "Invalid matrix size" );
 
-   typedef typename MT::ConstIterator  RhsConstIterator;
-
    for( size_t j=0UL; j<N; ++j )
-      for( RhsConstIterator element=(~rhs).begin(j); element!=(~rhs).end(j); ++element )
+      for( ConstIterator_<MT> element=(~rhs).begin(j); element!=(~rhs).end(j); ++element )
          v_[element->index()*NN+j] += element->value();
 }
 //*************************************************************************************************
@@ -2696,10 +2689,8 @@ inline void StaticMatrix<Type,M,N,SO>::subAssign( const SparseMatrix<MT,SO>& rhs
 {
    BLAZE_INTERNAL_ASSERT( (~rhs).rows() == M && (~rhs).columns() == N, "Invalid matrix size" );
 
-   typedef typename MT::ConstIterator  RhsConstIterator;
-
    for( size_t i=0UL; i<M; ++i )
-      for( RhsConstIterator element=(~rhs).begin(i); element!=(~rhs).end(i); ++element )
+      for( ConstIterator_<MT> element=(~rhs).begin(i); element!=(~rhs).end(i); ++element )
          v_[i*NN+element->index()] -= element->value();
 }
 //*************************************************************************************************
@@ -2727,10 +2718,8 @@ inline void StaticMatrix<Type,M,N,SO>::subAssign( const SparseMatrix<MT,!SO>& rh
 
    BLAZE_INTERNAL_ASSERT( (~rhs).rows() == M && (~rhs).columns() == N, "Invalid matrix size" );
 
-   typedef typename MT::ConstIterator  RhsConstIterator;
-
    for( size_t j=0UL; j<N; ++j )
-      for( RhsConstIterator element=(~rhs).begin(j); element!=(~rhs).end(j); ++element )
+      for( ConstIterator_<MT> element=(~rhs).begin(j); element!=(~rhs).end(j); ++element )
          v_[element->index()*NN+j] -= element->value();
 }
 //*************************************************************************************************
@@ -2917,7 +2906,7 @@ class StaticMatrix<Type,M,N,true> : public DenseMatrix< StaticMatrix<Type,M,N,tr
    struct VectorizedAssign {
       enum { value = useOptimizedKernels &&
                      vectorizable && MT::vectorizable &&
-                     IsSame<Type,typename MT::ElementType>::value &&
+                     IsSame< Type, ElementType_<MT> >::value &&
                      IsColumnMajorMatrix<MT>::value };
    };
    //**********************************************************************************************
@@ -2928,7 +2917,7 @@ class StaticMatrix<Type,M,N,true> : public DenseMatrix< StaticMatrix<Type,M,N,tr
    struct VectorizedAddAssign {
       enum { value = useOptimizedKernels &&
                      vectorizable && MT::vectorizable &&
-                     IsSame<Type,typename MT::ElementType>::value &&
+                     IsSame< Type, ElementType_<MT> >::value &&
                      IntrinsicTrait<Type>::addition &&
                      IsColumnMajorMatrix<MT>::value &&
                      !IsDiagonal<MT>::value };
@@ -2941,7 +2930,7 @@ class StaticMatrix<Type,M,N,true> : public DenseMatrix< StaticMatrix<Type,M,N,tr
    struct VectorizedSubAssign {
       enum { value = useOptimizedKernels &&
                      vectorizable && MT::vectorizable &&
-                     IsSame<Type,typename MT::ElementType>::value &&
+                     IsSame< Type, ElementType_<MT> >::value &&
                      IntrinsicTrait<Type>::subtraction &&
                      IsColumnMajorMatrix<MT>::value &&
                      !IsDiagonal<MT>::value };
@@ -3744,8 +3733,8 @@ inline StaticMatrix<Type,M,N,true>& StaticMatrix<Type,M,N,true>::operator=( cons
 {
    using blaze::assign;
 
-   typedef typename TransExprTrait<This>::Type   TT;
-   typedef typename CTransExprTrait<This>::Type  CT;
+   typedef TransExprTrait_<This>   TT;
+   typedef CTransExprTrait_<This>  CT;
 
    if( (~rhs).rows() != M || (~rhs).columns() != N ) {
       BLAZE_THROW_INVALID_ARGUMENT( "Invalid assignment to static matrix" );
@@ -3798,7 +3787,7 @@ inline StaticMatrix<Type,M,N,true>& StaticMatrix<Type,M,N,true>::operator+=( con
    }
 
    if( (~rhs).canAlias( this ) ) {
-      const typename MT::ResultType tmp( ~rhs );
+      const ResultType_<MT> tmp( ~rhs );
       addAssign( *this, tmp );
    }
    else {
@@ -3836,7 +3825,7 @@ inline StaticMatrix<Type,M,N,true>& StaticMatrix<Type,M,N,true>::operator-=( con
    }
 
    if( (~rhs).canAlias( this ) ) {
-      const typename MT::ResultType tmp( ~rhs );
+      const ResultType_<MT> tmp( ~rhs );
       subAssign( *this, tmp );
    }
    else {
@@ -4928,10 +4917,8 @@ inline void StaticMatrix<Type,M,N,true>::assign( const SparseMatrix<MT,true>& rh
 {
    BLAZE_INTERNAL_ASSERT( (~rhs).rows() == M && (~rhs).columns() == N, "Invalid matrix size" );
 
-   typedef typename MT::ConstIterator  RhsConstIterator;
-
    for( size_t j=0UL; j<N; ++j )
-      for( RhsConstIterator element=(~rhs).begin(j); element!=(~rhs).end(j); ++element )
+      for( ConstIterator_<MT> element=(~rhs).begin(j); element!=(~rhs).end(j); ++element )
          v_[element->index()+j*MM] = element->value();
 }
 /*! \endcond */
@@ -4960,10 +4947,8 @@ inline void StaticMatrix<Type,M,N,true>::assign( const SparseMatrix<MT,false>& r
 
    BLAZE_INTERNAL_ASSERT( (~rhs).rows() == M && (~rhs).columns() == N, "Invalid matrix size" );
 
-   typedef typename MT::ConstIterator  RhsConstIterator;
-
    for( size_t i=0UL; i<M; ++i )
-      for( RhsConstIterator element=(~rhs).begin(i); element!=(~rhs).end(i); ++element )
+      for( ConstIterator_<MT> element=(~rhs).begin(i); element!=(~rhs).end(i); ++element )
          v_[i+element->index()*MM] = element->value();
 }
 /*! \endcond */
@@ -5092,10 +5077,8 @@ inline void StaticMatrix<Type,M,N,true>::addAssign( const SparseMatrix<MT,true>&
 {
    BLAZE_INTERNAL_ASSERT( (~rhs).rows() == M && (~rhs).columns() == N, "Invalid matrix size" );
 
-   typedef typename MT::ConstIterator  RhsConstIterator;
-
    for( size_t j=0UL; j<N; ++j )
-      for( RhsConstIterator element=(~rhs).begin(j); element!=(~rhs).end(j); ++element )
+      for( ConstIterator_<MT> element=(~rhs).begin(j); element!=(~rhs).end(j); ++element )
          v_[element->index()+j*MM] += element->value();
 }
 /*! \endcond */
@@ -5124,10 +5107,8 @@ inline void StaticMatrix<Type,M,N,true>::addAssign( const SparseMatrix<MT,false>
 
    BLAZE_INTERNAL_ASSERT( (~rhs).rows() == M && (~rhs).columns() == N, "Invalid matrix size" );
 
-   typedef typename MT::ConstIterator  RhsConstIterator;
-
    for( size_t i=0UL; i<M; ++i )
-      for( RhsConstIterator element=(~rhs).begin(i); element!=(~rhs).end(i); ++element )
+      for( ConstIterator_<MT> element=(~rhs).begin(i); element!=(~rhs).end(i); ++element )
          v_[i+element->index()*MM] += element->value();
 }
 /*! \endcond */
@@ -5256,10 +5237,8 @@ inline void StaticMatrix<Type,M,N,true>::subAssign( const SparseMatrix<MT,true>&
 {
    BLAZE_INTERNAL_ASSERT( (~rhs).rows() == M && (~rhs).columns() == N, "Invalid matrix size" );
 
-   typedef typename MT::ConstIterator  RhsConstIterator;
-
    for( size_t j=0UL; j<N; ++j )
-      for( RhsConstIterator element=(~rhs).begin(j); element!=(~rhs).end(j); ++element )
+      for( ConstIterator_<MT> element=(~rhs).begin(j); element!=(~rhs).end(j); ++element )
          v_[element->index()+j*MM] -= element->value();
 }
 /*! \endcond */
@@ -5288,10 +5267,8 @@ inline void StaticMatrix<Type,M,N,true>::subAssign( const SparseMatrix<MT,false>
 
    BLAZE_INTERNAL_ASSERT( (~rhs).rows() == M && (~rhs).columns() == N, "Invalid matrix size" );
 
-   typedef typename MT::ConstIterator  RhsConstIterator;
-
    for( size_t i=0UL; i<M; ++i )
-      for( RhsConstIterator element=(~rhs).begin(i); element!=(~rhs).end(i); ++element )
+      for( ConstIterator_<MT> element=(~rhs).begin(i); element!=(~rhs).end(i); ++element )
          v_[i+element->index()*MM] -= element->value();
 }
 /*! \endcond */
@@ -5676,13 +5653,13 @@ struct IsPadded< StaticMatrix<T,M,N,SO> > : public BoolConstant<usePadding>
 template< typename T1, size_t M, size_t N, bool SO, typename T2 >
 struct AddTrait< StaticMatrix<T1,M,N,SO>, StaticMatrix<T2,M,N,SO> >
 {
-   typedef StaticMatrix< typename AddTrait<T1,T2>::Type, M, N, SO >  Type;
+   using Type = StaticMatrix< AddTrait_<T1,T2>, M, N, SO >;
 };
 
 template< typename T1, size_t M, size_t N, bool SO1, typename T2, bool SO2 >
 struct AddTrait< StaticMatrix<T1,M,N,SO1>, StaticMatrix<T2,M,N,SO2> >
 {
-   typedef StaticMatrix< typename AddTrait<T1,T2>::Type, M, N, false >  Type;
+   using Type = StaticMatrix< AddTrait_<T1,T2>, M, N, false >;
 };
 /*! \endcond */
 //*************************************************************************************************
@@ -5701,13 +5678,13 @@ struct AddTrait< StaticMatrix<T1,M,N,SO1>, StaticMatrix<T2,M,N,SO2> >
 template< typename T1, size_t M, size_t N, bool SO, typename T2 >
 struct SubTrait< StaticMatrix<T1,M,N,SO>, StaticMatrix<T2,M,N,SO> >
 {
-   typedef StaticMatrix< typename SubTrait<T1,T2>::Type, M, N, SO >  Type;
+   using Type = StaticMatrix< SubTrait_<T1,T2>, M, N, SO >;
 };
 
 template< typename T1, size_t M, size_t N, bool SO1, typename T2, bool SO2 >
 struct SubTrait< StaticMatrix<T1,M,N,SO1>, StaticMatrix<T2,M,N,SO2> >
 {
-   typedef StaticMatrix< typename SubTrait<T1,T2>::Type, M, N, false >  Type;
+   using Type = StaticMatrix< SubTrait_<T1,T2>, M, N, false >;
 };
 /*! \endcond */
 //*************************************************************************************************
@@ -5726,79 +5703,79 @@ struct SubTrait< StaticMatrix<T1,M,N,SO1>, StaticMatrix<T2,M,N,SO2> >
 template< typename T1, size_t M, size_t N, bool SO, typename T2 >
 struct MultTrait< StaticMatrix<T1,M,N,SO>, T2, EnableIf_<IsNumeric<T2> > >
 {
-   typedef StaticMatrix< typename MultTrait<T1,T2>::Type, M, N, SO >  Type;
+   using Type = StaticMatrix< MultTrait_<T1,T2>, M, N, SO >;
 };
 
 template< typename T1, typename T2, size_t M, size_t N, bool SO >
 struct MultTrait< T1, StaticMatrix<T2,M,N,SO>, EnableIf_<IsNumeric<T1> > >
 {
-   typedef StaticMatrix< typename MultTrait<T1,T2>::Type, M, N, SO >  Type;
+   using Type = StaticMatrix< MultTrait_<T1,T2>, M, N, SO >;
 };
 
 template< typename T1, size_t M, size_t N, bool SO, typename T2 >
 struct MultTrait< StaticMatrix<T1,M,N,SO>, StaticVector<T2,N,false> >
 {
-   typedef StaticVector< typename MultTrait<T1,T2>::Type, M, false >  Type;
+   using Type = StaticVector< MultTrait_<T1,T2>, M, false >;
 };
 
 template< typename T1, size_t M, typename T2, size_t N, bool SO >
 struct MultTrait< StaticVector<T1,M,true>, StaticMatrix<T2,M,N,SO> >
 {
-   typedef StaticVector< typename MultTrait<T1,T2>::Type, N, true >  Type;
+   using Type = StaticVector< MultTrait_<T1,T2>, N, true >;
 };
 
 template< typename T1, size_t M, size_t N, bool SO, typename T2, size_t L >
 struct MultTrait< StaticMatrix<T1,M,N,SO>, HybridVector<T2,L,false> >
 {
-   typedef StaticVector< typename MultTrait<T1,T2>::Type, M, false >  Type;
+   using Type = StaticVector< MultTrait_<T1,T2>, M, false >;
 };
 
 template< typename T1, size_t L, typename T2, size_t M, size_t N, bool SO >
 struct MultTrait< HybridVector<T1,L,true>, StaticMatrix<T2,M,N,SO> >
 {
-   typedef StaticVector< typename MultTrait<T1,T2>::Type, N, true >  Type;
+   using Type = StaticVector< MultTrait_<T1,T2>, N, true >;
 };
 
 template< typename T1, size_t M, size_t N, bool SO, typename T2 >
 struct MultTrait< StaticMatrix<T1,M,N,SO>, DynamicVector<T2,false> >
 {
-   typedef StaticVector< typename MultTrait<T1,T2>::Type, M, false >  Type;
+   using Type = StaticVector< MultTrait_<T1,T2>, M, false >;
 };
 
 template< typename T1, typename T2, size_t M, size_t N, bool SO >
 struct MultTrait< DynamicVector<T1,true>, StaticMatrix<T2,M,N,SO> >
 {
-   typedef StaticVector< typename MultTrait<T1,T2>::Type, N, true >  Type;
+   using Type = StaticVector< MultTrait_<T1,T2>, N, true >;
 };
 
 template< typename T1, size_t M, size_t N, bool SO, typename T2, bool AF, bool PF >
 struct MultTrait< StaticMatrix<T1,M,N,SO>, CustomVector<T2,AF,PF,false> >
 {
-   typedef StaticVector< typename MultTrait<T1,T2>::Type, M, false >  Type;
+   using Type = StaticVector< MultTrait_<T1,T2>, M, false >;
 };
 
 template< typename T1, bool AF, bool PF, typename T2, size_t M, size_t N, bool SO >
 struct MultTrait< CustomVector<T1,AF,PF,true>, StaticMatrix<T2,M,N,SO> >
 {
-   typedef StaticVector< typename MultTrait<T1,T2>::Type, N, true >  Type;
+   using Type = StaticVector< MultTrait_<T1,T2>, N, true >;
 };
 
 template< typename T1, size_t M, size_t N, bool SO, typename T2 >
 struct MultTrait< StaticMatrix<T1,M,N,SO>, CompressedVector<T2,false> >
 {
-   typedef StaticVector< typename MultTrait<T1,T2>::Type, M, false >  Type;
+   using Type = StaticVector< MultTrait_<T1,T2>, M, false >;
 };
 
 template< typename T1, typename T2, size_t M, size_t N, bool SO >
 struct MultTrait< CompressedVector<T1,true>, StaticMatrix<T2,M,N,SO> >
 {
-   typedef StaticVector< typename MultTrait<T1,T2>::Type, N, true >  Type;
+   using Type = StaticVector< MultTrait_<T1,T2>, N, true >;
 };
 
 template< typename T1, size_t M, size_t K, bool SO1, typename T2, size_t N, bool SO2 >
 struct MultTrait< StaticMatrix<T1,M,K,SO1>, StaticMatrix<T2,K,N,SO2> >
 {
-   typedef StaticMatrix< typename MultTrait<T1,T2>::Type, M, N, SO1 >  Type;
+   using Type = StaticMatrix< MultTrait_<T1,T2>, M, N, SO1 >;
 };
 /*! \endcond */
 //*************************************************************************************************
@@ -5817,7 +5794,7 @@ struct MultTrait< StaticMatrix<T1,M,K,SO1>, StaticMatrix<T2,K,N,SO2> >
 template< typename T1, size_t M, size_t N, bool SO, typename T2 >
 struct DivTrait< StaticMatrix<T1,M,N,SO>, T2, EnableIf_<IsNumeric<T2> > >
 {
-   typedef StaticMatrix< typename DivTrait<T1,T2>::Type, M, N, SO >  Type;
+   using Type = StaticMatrix< DivTrait_<T1,T2>, M, N, SO >;
 };
 /*! \endcond */
 //*************************************************************************************************
@@ -5836,8 +5813,8 @@ struct DivTrait< StaticMatrix<T1,M,N,SO>, T2, EnableIf_<IsNumeric<T2> > >
 template< typename T1, size_t M, size_t N, bool SO, typename T2 >
 struct MathTrait< StaticMatrix<T1,M,N,SO>, StaticMatrix<T2,M,N,SO> >
 {
-   typedef StaticMatrix< typename MathTrait<T1,T2>::HighType, M, N, SO >  HighType;
-   typedef StaticMatrix< typename MathTrait<T1,T2>::LowType , M, N, SO >  LowType;
+   using HighType = StaticMatrix< typename MathTrait<T1,T2>::HighType, M, N, SO >;
+   using LowType  = StaticMatrix< typename MathTrait<T1,T2>::LowType , M, N, SO >;
 };
 /*! \endcond */
 //*************************************************************************************************
@@ -5856,7 +5833,7 @@ struct MathTrait< StaticMatrix<T1,M,N,SO>, StaticMatrix<T2,M,N,SO> >
 template< typename T1, size_t M, size_t N, bool SO >
 struct SubmatrixTrait< StaticMatrix<T1,M,N,SO> >
 {
-   typedef HybridMatrix<T1,M,N,SO>  Type;
+   using Type = HybridMatrix<T1,M,N,SO>;
 };
 /*! \endcond */
 //*************************************************************************************************
@@ -5875,7 +5852,7 @@ struct SubmatrixTrait< StaticMatrix<T1,M,N,SO> >
 template< typename T1, size_t M, size_t N, bool SO >
 struct RowTrait< StaticMatrix<T1,M,N,SO> >
 {
-   typedef StaticVector<T1,N,true>  Type;
+   using Type = StaticVector<T1,N,true>;
 };
 /*! \endcond */
 //*************************************************************************************************
@@ -5894,7 +5871,7 @@ struct RowTrait< StaticMatrix<T1,M,N,SO> >
 template< typename T1, size_t M, size_t N, bool SO >
 struct ColumnTrait< StaticMatrix<T1,M,N,SO> >
 {
-   typedef StaticVector<T1,M,false>  Type;
+   using Type = StaticVector<T1,M,false>;
 };
 /*! \endcond */
 //*************************************************************************************************

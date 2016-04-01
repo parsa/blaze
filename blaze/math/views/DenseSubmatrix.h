@@ -41,6 +41,7 @@
 //*************************************************************************************************
 
 #include <iterator>
+#include <blaze/math/Aliases.h>
 #include <blaze/math/AlignmentFlag.h>
 #include <blaze/math/constraints/ColumnMajorMatrix.h>
 #include <blaze/math/constraints/Computation.h>
@@ -486,25 +487,25 @@ class DenseSubmatrix : public DenseMatrix< DenseSubmatrix<MT,AF,SO>, SO >
    typedef If_< IsExpression<MT>, MT, MT& >  Operand;
 
    //! Intrinsic trait for the matrix element type.
-   typedef IntrinsicTrait<typename MT::ElementType>  IT;
+   typedef IntrinsicTrait< ElementType_<MT> >  IT;
    //**********************************************************************************************
 
  public:
    //**Type definitions****************************************************************************
-   typedef DenseSubmatrix<MT,AF,SO>            This;           //!< Type of this DenseSubmatrix instance.
-   typedef typename SubmatrixTrait<MT>::Type   ResultType;     //!< Result type for expression template evaluations.
-   typedef typename ResultType::OppositeType   OppositeType;   //!< Result type with opposite storage order for expression template evaluations.
-   typedef typename ResultType::TransposeType  TransposeType;  //!< Transpose type for expression template evaluations.
-   typedef typename MT::ElementType            ElementType;    //!< Type of the submatrix elements.
-   typedef typename IT::Type                   IntrinsicType;  //!< Intrinsic type of the submatrix elements.
-   typedef typename MT::ReturnType             ReturnType;     //!< Return type for expression template evaluations
-   typedef const DenseSubmatrix&               CompositeType;  //!< Data type for composite expression templates.
+   typedef DenseSubmatrix<MT,AF,SO>    This;           //!< Type of this DenseSubmatrix instance.
+   typedef SubmatrixTrait_<MT>         ResultType;     //!< Result type for expression template evaluations.
+   typedef OppositeType_<ResultType>   OppositeType;   //!< Result type with opposite storage order for expression template evaluations.
+   typedef TransposeType_<ResultType>  TransposeType;  //!< Transpose type for expression template evaluations.
+   typedef ElementType_<MT>            ElementType;    //!< Type of the submatrix elements.
+   typedef typename IT::Type           IntrinsicType;  //!< Intrinsic type of the submatrix elements.
+   typedef ReturnType_<MT>             ReturnType;     //!< Return type for expression template evaluations
+   typedef const DenseSubmatrix&       CompositeType;  //!< Data type for composite expression templates.
 
    //! Reference to a constant submatrix value.
-   typedef typename MT::ConstReference  ConstReference;
+   typedef ConstReference_<MT>  ConstReference;
 
    //! Reference to a non-constant submatrix value.
-   typedef If_< IsConst<MT>, ConstReference, typename MT::Reference >  Reference;
+   typedef If_< IsConst<MT>, ConstReference, Reference_<MT> >  Reference;
 
    //! Pointer to a constant submatrix value.
    typedef const ElementType*  ConstPointer;
@@ -844,10 +845,10 @@ class DenseSubmatrix : public DenseMatrix< DenseSubmatrix<MT,AF,SO>, SO >
 
    //**Type definitions****************************************************************************
    //! Iterator over constant elements.
-   typedef SubmatrixIterator<typename MT::ConstIterator>  ConstIterator;
+   typedef SubmatrixIterator< ConstIterator_<MT> >  ConstIterator;
 
    //! Iterator over non-constant elements.
-   typedef If_< IsConst<MT>, ConstIterator, SubmatrixIterator<typename MT::Iterator> >  Iterator;
+   typedef If_< IsConst<MT>, ConstIterator, SubmatrixIterator< Iterator_<MT> > >  Iterator;
    //**********************************************************************************************
 
    //**Compilation flags***************************************************************************
@@ -954,7 +955,7 @@ class DenseSubmatrix : public DenseMatrix< DenseSubmatrix<MT,AF,SO>, SO >
    struct VectorizedAssign {
       enum { value = useOptimizedKernels &&
                      vectorizable && MT2::vectorizable &&
-                     IsSame<ElementType,typename MT2::ElementType>::value };
+                     IsSame< ElementType, ElementType_<MT2> >::value };
    };
    /*! \endcond */
    //**********************************************************************************************
@@ -966,7 +967,7 @@ class DenseSubmatrix : public DenseMatrix< DenseSubmatrix<MT,AF,SO>, SO >
    struct VectorizedAddAssign {
       enum { value = useOptimizedKernels &&
                      vectorizable && MT2::vectorizable &&
-                     IsSame<ElementType,typename MT2::ElementType>::value &&
+                     IsSame< ElementType, ElementType_<MT2> >::value &&
                      IntrinsicTrait<ElementType>::addition };
    };
    /*! \endcond */
@@ -979,7 +980,7 @@ class DenseSubmatrix : public DenseMatrix< DenseSubmatrix<MT,AF,SO>, SO >
    struct VectorizedSubAssign {
       enum { value = useOptimizedKernels &&
                      vectorizable && MT2::vectorizable &&
-                     IsSame<ElementType,typename MT2::ElementType>::value &&
+                     IsSame< ElementType, ElementType_<MT2> >::value &&
                      IntrinsicTrait<ElementType>::subtraction };
    };
    /*! \endcond */
@@ -1120,8 +1121,7 @@ class DenseSubmatrix : public DenseMatrix< DenseSubmatrix<MT,AF,SO>, SO >
                               size_t row, size_t column );
 
    template< typename MT2, bool AF2, bool SO2 >
-   friend typename DerestrictTrait< DenseSubmatrix<MT2,AF2,SO2> >::Type
-      derestrict( DenseSubmatrix<MT2,AF2,SO2>& dm );
+   friend DerestrictTrait_< DenseSubmatrix<MT2,AF2,SO2> > derestrict( DenseSubmatrix<MT2,AF2,SO2>& dm );
    /*! \endcond */
    //**********************************************************************************************
 
@@ -1587,7 +1587,7 @@ inline DenseSubmatrix<MT,AF,SO>& DenseSubmatrix<MT,AF,SO>::operator=( const Dens
       BLAZE_THROW_INVALID_ARGUMENT( "Invalid assignment to restricted matrix" );
    }
 
-   typename DerestrictTrait<This>::Type left( derestrict( *this ) );
+   DerestrictTrait_<This> left( derestrict( *this ) );
 
    if( rhs.canAlias( &matrix_ ) ) {
       const ResultType tmp( rhs );
@@ -1625,13 +1625,13 @@ template< typename MT2  // Type of the right-hand side matrix
         , bool SO2 >    // Storage order of the right-hand side matrix
 inline DenseSubmatrix<MT,AF,SO>& DenseSubmatrix<MT,AF,SO>::operator=( const Matrix<MT2,SO2>& rhs )
 {
-   BLAZE_CONSTRAINT_MUST_NOT_REQUIRE_EVALUATION( typename MT2::ResultType );
+   BLAZE_CONSTRAINT_MUST_NOT_REQUIRE_EVALUATION( ResultType_<MT2> );
 
    if( rows() != (~rhs).rows() || columns() != (~rhs).columns() ) {
       BLAZE_THROW_INVALID_ARGUMENT( "Matrix sizes do not match" );
    }
 
-   typedef If_< IsRestricted<MT>, typename MT2::CompositeType, const MT2& >  Right;
+   typedef If_< IsRestricted<MT>, CompositeType_<MT2>, const MT2& >  Right;
    Right right( ~rhs );
 
    if( !tryAssign( matrix_, right, row_, column_ ) ) {
@@ -1641,10 +1641,10 @@ inline DenseSubmatrix<MT,AF,SO>& DenseSubmatrix<MT,AF,SO>::operator=( const Matr
    if( IsSparseMatrix<MT2>::value )
       reset();
 
-   typename DerestrictTrait<This>::Type left( derestrict( *this ) );
+   DerestrictTrait_<This> left( derestrict( *this ) );
 
    if( IsReference<Right>::value && right.canAlias( &matrix_ ) ) {
-      const typename MT2::ResultType tmp( right );
+      const ResultType_<MT2> tmp( right );
       smpAssign( left, tmp );
    }
    else {
@@ -1681,9 +1681,9 @@ inline DisableIf_< And< IsRestricted<MT>, RequiresEvaluation<MT2> >, DenseSubmat
 {
    BLAZE_CONSTRAINT_MUST_BE_DENSE_MATRIX_TYPE  ( ResultType );
    BLAZE_CONSTRAINT_MUST_NOT_REQUIRE_EVALUATION( ResultType );
-   BLAZE_CONSTRAINT_MUST_NOT_REQUIRE_EVALUATION( typename MT2::ResultType );
+   BLAZE_CONSTRAINT_MUST_NOT_REQUIRE_EVALUATION( ResultType_<MT2> );
 
-   typedef typename AddTrait<ResultType,typename MT2::ResultType>::Type  AddType;
+   typedef AddTrait_< ResultType, ResultType_<MT2> >  AddType;
 
    BLAZE_CONSTRAINT_MUST_BE_DENSE_MATRIX_TYPE  ( AddType );
    BLAZE_CONSTRAINT_MUST_NOT_REQUIRE_EVALUATION( AddType );
@@ -1696,7 +1696,7 @@ inline DisableIf_< And< IsRestricted<MT>, RequiresEvaluation<MT2> >, DenseSubmat
       BLAZE_THROW_INVALID_ARGUMENT( "Invalid assignment to restricted matrix" );
    }
 
-   typename DerestrictTrait<This>::Type left( derestrict( *this ) );
+   DerestrictTrait_<This> left( derestrict( *this ) );
 
    if( ( ( IsSymmetric<MT>::value || IsHermitian<MT>::value ) && hasOverlap() ) ||
        (~rhs).canAlias( &matrix_ ) ) {
@@ -1737,9 +1737,9 @@ inline EnableIf_< And< IsRestricted<MT>, RequiresEvaluation<MT2> >, DenseSubmatr
 {
    BLAZE_CONSTRAINT_MUST_BE_DENSE_MATRIX_TYPE  ( ResultType );
    BLAZE_CONSTRAINT_MUST_NOT_REQUIRE_EVALUATION( ResultType );
-   BLAZE_CONSTRAINT_MUST_NOT_REQUIRE_EVALUATION( typename MT2::ResultType );
+   BLAZE_CONSTRAINT_MUST_NOT_REQUIRE_EVALUATION( ResultType_<MT2> );
 
-   typedef typename AddTrait<ResultType,typename MT2::ResultType>::Type  AddType;
+   typedef AddTrait_< ResultType, ResultType_<MT2> >  AddType;
 
    BLAZE_CONSTRAINT_MUST_BE_DENSE_MATRIX_TYPE  ( AddType );
    BLAZE_CONSTRAINT_MUST_NOT_REQUIRE_EVALUATION( AddType );
@@ -1754,7 +1754,7 @@ inline EnableIf_< And< IsRestricted<MT>, RequiresEvaluation<MT2> >, DenseSubmatr
       BLAZE_THROW_INVALID_ARGUMENT( "Invalid assignment to restricted matrix" );
    }
 
-   typename DerestrictTrait<This>::Type left( derestrict( *this ) );
+   DerestrictTrait_<This> left( derestrict( *this ) );
 
    smpAssign( left, tmp );
 
@@ -1788,9 +1788,9 @@ inline DisableIf_< And< IsRestricted<MT>, RequiresEvaluation<MT2> >, DenseSubmat
 {
    BLAZE_CONSTRAINT_MUST_BE_DENSE_MATRIX_TYPE  ( ResultType );
    BLAZE_CONSTRAINT_MUST_NOT_REQUIRE_EVALUATION( ResultType );
-   BLAZE_CONSTRAINT_MUST_NOT_REQUIRE_EVALUATION( typename MT2::ResultType );
+   BLAZE_CONSTRAINT_MUST_NOT_REQUIRE_EVALUATION( ResultType_<MT2> );
 
-   typedef typename SubTrait<ResultType,typename MT2::ResultType>::Type  SubType;
+   typedef SubTrait_< ResultType, ResultType_<MT2> >  SubType;
 
    BLAZE_CONSTRAINT_MUST_BE_DENSE_MATRIX_TYPE  ( SubType );
    BLAZE_CONSTRAINT_MUST_NOT_REQUIRE_EVALUATION( SubType );
@@ -1803,7 +1803,7 @@ inline DisableIf_< And< IsRestricted<MT>, RequiresEvaluation<MT2> >, DenseSubmat
       BLAZE_THROW_INVALID_ARGUMENT( "Invalid assignment to restricted matrix" );
    }
 
-   typename DerestrictTrait<This>::Type left( derestrict( *this ) );
+   DerestrictTrait_<This> left( derestrict( *this ) );
 
    if( ( ( IsSymmetric<MT>::value || IsHermitian<MT>::value ) && hasOverlap() ) ||
        (~rhs).canAlias( &matrix_ ) ) {
@@ -1844,9 +1844,9 @@ inline EnableIf_< And< IsRestricted<MT>, RequiresEvaluation<MT2> >, DenseSubmatr
 {
    BLAZE_CONSTRAINT_MUST_BE_DENSE_MATRIX_TYPE  ( ResultType );
    BLAZE_CONSTRAINT_MUST_NOT_REQUIRE_EVALUATION( ResultType );
-   BLAZE_CONSTRAINT_MUST_NOT_REQUIRE_EVALUATION( typename MT2::ResultType );
+   BLAZE_CONSTRAINT_MUST_NOT_REQUIRE_EVALUATION( ResultType_<MT2> );
 
-   typedef typename SubTrait<ResultType,typename MT2::ResultType>::Type  SubType;
+   typedef SubTrait_< ResultType, ResultType_<MT2> >  SubType;
 
    BLAZE_CONSTRAINT_MUST_BE_DENSE_MATRIX_TYPE  ( SubType );
    BLAZE_CONSTRAINT_MUST_NOT_REQUIRE_EVALUATION( SubType );
@@ -1861,7 +1861,7 @@ inline EnableIf_< And< IsRestricted<MT>, RequiresEvaluation<MT2> >, DenseSubmatr
       BLAZE_THROW_INVALID_ARGUMENT( "Invalid assignment to restricted matrix" );
    }
 
-   typename DerestrictTrait<This>::Type left( derestrict( *this ) );
+   DerestrictTrait_<This> left( derestrict( *this ) );
 
    smpAssign( left, tmp );
 
@@ -1894,9 +1894,9 @@ inline DenseSubmatrix<MT,AF,SO>& DenseSubmatrix<MT,AF,SO>::operator*=( const Mat
 {
    BLAZE_CONSTRAINT_MUST_BE_DENSE_MATRIX_TYPE  ( ResultType );
    BLAZE_CONSTRAINT_MUST_NOT_REQUIRE_EVALUATION( ResultType );
-   BLAZE_CONSTRAINT_MUST_NOT_REQUIRE_EVALUATION( typename MT2::ResultType );
+   BLAZE_CONSTRAINT_MUST_NOT_REQUIRE_EVALUATION( ResultType_<MT2> );
 
-   typedef typename MultTrait<ResultType,typename MT2::ResultType>::Type  MultType;
+   typedef MultTrait_< ResultType, ResultType_<MT2> >  MultType;
 
    BLAZE_CONSTRAINT_MUST_BE_DENSE_MATRIX_TYPE  ( MultType );
    BLAZE_CONSTRAINT_MUST_NOT_REQUIRE_EVALUATION( MultType );
@@ -1911,7 +1911,7 @@ inline DenseSubmatrix<MT,AF,SO>& DenseSubmatrix<MT,AF,SO>::operator*=( const Mat
       BLAZE_THROW_INVALID_ARGUMENT( "Invalid assignment to restricted matrix" );
    }
 
-   typename DerestrictTrait<This>::Type left( derestrict( *this ) );
+   DerestrictTrait_<This> left( derestrict( *this ) );
 
    smpAssign( left, tmp );
 
@@ -1941,7 +1941,7 @@ inline EnableIf_< IsNumeric<Other>, DenseSubmatrix<MT,AF,SO> >&
 {
    BLAZE_CONSTRAINT_MUST_NOT_BE_UNITRIANGULAR_MATRIX_TYPE( MT );
 
-   typename DerestrictTrait<This>::Type left( derestrict( *this ) );
+   DerestrictTrait_<This> left( derestrict( *this ) );
    smpAssign( left, (*this) * rhs );
 
    return *this;
@@ -1972,7 +1972,7 @@ inline EnableIf_< IsNumeric<Other>, DenseSubmatrix<MT,AF,SO> >&
 
    BLAZE_USER_ASSERT( rhs != Other(0), "Division by zero detected" );
 
-   typename DerestrictTrait<This>::Type left( derestrict( *this ) );
+   DerestrictTrait_<This> left( derestrict( *this ) );
    smpAssign( left, (*this) / rhs );
 
    return *this;
@@ -2261,7 +2261,7 @@ inline DenseSubmatrix<MT,AF,SO>& DenseSubmatrix<MT,AF,SO>::transpose()
       BLAZE_THROW_LOGIC_ERROR( "Invalid transpose operation" );
    }
 
-   typename DerestrictTrait<This>::Type left( derestrict( *this ) );
+   DerestrictTrait_<This> left( derestrict( *this ) );
    const ResultType tmp( trans( *this ) );
    smpAssign( left, tmp );
 
@@ -2300,7 +2300,7 @@ inline DenseSubmatrix<MT,AF,SO>& DenseSubmatrix<MT,AF,SO>::ctranspose()
       BLAZE_THROW_LOGIC_ERROR( "Invalid transpose operation" );
    }
 
-   typename DerestrictTrait<This>::Type left( derestrict( *this ) );
+   DerestrictTrait_<This> left( derestrict( *this ) );
    const ResultType tmp( ctrans( *this ) );
    smpAssign( left, tmp );
 
@@ -2830,7 +2830,7 @@ inline EnableIf_< typename DenseSubmatrix<MT,AF,SO>::BLAZE_TEMPLATE VectorizedAs
       for( size_t i=0UL; i<m_; ++i )
       {
          size_t j( 0UL );
-         typename MT2::ConstIterator it( (~rhs).begin(i) );
+         ConstIterator_<MT2> it( (~rhs).begin(i) );
 
          for( ; (j+IT::size*3UL) < jpos; j+=IT::size*4UL ) {
             store( i, j             , it.load() ); it += IT::size;
@@ -2910,7 +2910,7 @@ inline void DenseSubmatrix<MT,AF,SO>::assign( const SparseMatrix<MT2,SO>& rhs )
    BLAZE_INTERNAL_ASSERT( n_ == (~rhs).columns(), "Invalid number of columns" );
 
    for( size_t i=0UL; i<m_; ++i )
-      for( typename MT2::ConstIterator element=(~rhs).begin(i); element!=(~rhs).end(i); ++element )
+      for( ConstIterator_<MT2> element=(~rhs).begin(i); element!=(~rhs).end(i); ++element )
          matrix_(row_+i,column_+element->index()) = element->value();
 }
 //*************************************************************************************************
@@ -2939,7 +2939,7 @@ inline void DenseSubmatrix<MT,AF,SO>::assign( const SparseMatrix<MT2,!SO>& rhs )
    BLAZE_INTERNAL_ASSERT( n_ == (~rhs).columns(), "Invalid number of columns" );
 
    for( size_t j=0UL; j<n_; ++j )
-      for( typename MT2::ConstIterator element=(~rhs).begin(j); element!=(~rhs).end(j); ++element )
+      for( ConstIterator_<MT2> element=(~rhs).begin(j); element!=(~rhs).end(j); ++element )
          matrix_(row_+element->index(),column_+j) = element->value();
 }
 //*************************************************************************************************
@@ -3019,7 +3019,7 @@ inline EnableIf_< typename DenseSubmatrix<MT,AF,SO>::BLAZE_TEMPLATE VectorizedAd
       BLAZE_INTERNAL_ASSERT( ( jend - ( jend % (IT::size) ) ) == jpos, "Invalid end calculation" );
 
       size_t j( jbegin );
-      typename MT2::ConstIterator it( (~rhs).begin(i) );
+      ConstIterator_<MT2> it( (~rhs).begin(i) );
 
       for( ; (j+IT::size*3UL) < jpos; j+=IT::size*4UL ) {
          store( i, j             , load(i,j             ) + it.load() ); it += IT::size;
@@ -3098,7 +3098,7 @@ inline void DenseSubmatrix<MT,AF,SO>::addAssign( const SparseMatrix<MT2,SO>& rhs
    BLAZE_INTERNAL_ASSERT( n_ == (~rhs).columns(), "Invalid number of columns" );
 
    for( size_t i=0UL; i<m_; ++i )
-      for( typename MT2::ConstIterator element=(~rhs).begin(i); element!=(~rhs).end(i); ++element )
+      for( ConstIterator_<MT2> element=(~rhs).begin(i); element!=(~rhs).end(i); ++element )
          matrix_(row_+i,column_+element->index()) += element->value();
 }
 //*************************************************************************************************
@@ -3127,7 +3127,7 @@ inline void DenseSubmatrix<MT,AF,SO>::addAssign( const SparseMatrix<MT2,!SO>& rh
    BLAZE_INTERNAL_ASSERT( n_ == (~rhs).columns(), "Invalid number of columns" );
 
    for( size_t j=0UL; j<n_; ++j )
-      for( typename MT2::ConstIterator element=(~rhs).begin(j); element!=(~rhs).end(j); ++element )
+      for( ConstIterator_<MT2> element=(~rhs).begin(j); element!=(~rhs).end(j); ++element )
          matrix_(row_+element->index(),column_+j) += element->value();
 }
 //*************************************************************************************************
@@ -3207,7 +3207,7 @@ inline EnableIf_< typename DenseSubmatrix<MT,AF,SO>::BLAZE_TEMPLATE VectorizedSu
       BLAZE_INTERNAL_ASSERT( ( jend - ( jend % (IT::size) ) ) == jpos, "Invalid end calculation" );
 
       size_t j( jbegin );
-      typename MT2::ConstIterator it( (~rhs).begin(i) );
+      ConstIterator_<MT2> it( (~rhs).begin(i) );
 
       for( ; (j+IT::size*3UL) < jpos; j+=IT::size*4UL ) {
          store( i, j             , load(i,j             ) - it.load() ); it += IT::size;
@@ -3286,7 +3286,7 @@ inline void DenseSubmatrix<MT,AF,SO>::subAssign( const SparseMatrix<MT2,SO>& rhs
    BLAZE_INTERNAL_ASSERT( n_ == (~rhs).columns(), "Invalid number of columns" );
 
    for( size_t i=0UL; i<m_; ++i )
-      for( typename MT2::ConstIterator element=(~rhs).begin(i); element!=(~rhs).end(i); ++element )
+      for( ConstIterator_<MT2> element=(~rhs).begin(i); element!=(~rhs).end(i); ++element )
          matrix_(row_+i,column_+element->index()) -= element->value();
 }
 //*************************************************************************************************
@@ -3315,7 +3315,7 @@ inline void DenseSubmatrix<MT,AF,SO>::subAssign( const SparseMatrix<MT2,!SO>& rh
    BLAZE_INTERNAL_ASSERT( n_ == (~rhs).columns(), "Invalid number of columns" );
 
    for( size_t j=0UL; j<n_; ++j )
-      for( typename MT2::ConstIterator element=(~rhs).begin(j); element!=(~rhs).end(j); ++element )
+      for( ConstIterator_<MT2> element=(~rhs).begin(j); element!=(~rhs).end(j); ++element )
          matrix_(row_+element->index(),column_+j) -= element->value();
 }
 //*************************************************************************************************
@@ -3351,25 +3351,25 @@ class DenseSubmatrix<MT,unaligned,true> : public DenseMatrix< DenseSubmatrix<MT,
    typedef If_< IsExpression<MT>, MT, MT& >  Operand;
 
    //! Intrinsic trait for the matrix element type.
-   typedef IntrinsicTrait<typename MT::ElementType>  IT;
+   typedef IntrinsicTrait< ElementType_<MT> >  IT;
    //**********************************************************************************************
 
  public:
    //**Type definitions****************************************************************************
-   typedef DenseSubmatrix<MT,unaligned,true>   This;           //!< Type of this DenseSubmatrix instance.
-   typedef typename SubmatrixTrait<MT>::Type   ResultType;     //!< Result type for expression template evaluations.
-   typedef typename ResultType::OppositeType   OppositeType;   //!< Result type with opposite storage order for expression template evaluations.
-   typedef typename ResultType::TransposeType  TransposeType;  //!< Transpose type for expression template evaluations.
-   typedef typename MT::ElementType            ElementType;    //!< Type of the submatrix elements.
-   typedef typename IT::Type                   IntrinsicType;  //!< Intrinsic type of the submatrix elements.
-   typedef typename MT::ReturnType             ReturnType;     //!< Return type for expression template evaluations
-   typedef const DenseSubmatrix&               CompositeType;  //!< Data type for composite expression templates.
+   typedef DenseSubmatrix<MT,unaligned,true>  This;           //!< Type of this DenseSubmatrix instance.
+   typedef SubmatrixTrait_<MT>                ResultType;     //!< Result type for expression template evaluations.
+   typedef OppositeType_<ResultType>          OppositeType;   //!< Result type with opposite storage order for expression template evaluations.
+   typedef TransposeType_<ResultType>         TransposeType;  //!< Transpose type for expression template evaluations.
+   typedef ElementType_<MT>                   ElementType;    //!< Type of the submatrix elements.
+   typedef typename IT::Type                  IntrinsicType;  //!< Intrinsic type of the submatrix elements.
+   typedef ReturnType_<MT>                    ReturnType;     //!< Return type for expression template evaluations
+   typedef const DenseSubmatrix&              CompositeType;  //!< Data type for composite expression templates.
 
    //! Reference to a constant submatrix value.
-   typedef typename MT::ConstReference  ConstReference;
+   typedef ConstReference_<MT>  ConstReference;
 
    //! Reference to a non-constant submatrix value.
-   typedef If_< IsConst<MT>, ConstReference, typename MT::Reference >  Reference;
+   typedef If_< IsConst<MT>, ConstReference, Reference_<MT> >  Reference;
 
    //! Pointer to a constant submatrix value.
    typedef const ElementType*  ConstPointer;
@@ -3711,10 +3711,10 @@ class DenseSubmatrix<MT,unaligned,true> : public DenseMatrix< DenseSubmatrix<MT,
 
    //**Type definitions****************************************************************************
    //! Iterator over constant elements.
-   typedef SubmatrixIterator<typename MT::ConstIterator>  ConstIterator;
+   typedef SubmatrixIterator< ConstIterator_<MT> >  ConstIterator;
 
    //! Iterator over non-constant elements.
-   typedef If_< IsConst<MT>, ConstIterator, SubmatrixIterator<typename MT::Iterator> >  Iterator;
+   typedef If_< IsConst<MT>, ConstIterator, SubmatrixIterator< Iterator_<MT> > >  Iterator;
    //**********************************************************************************************
 
    //**Compilation flags***************************************************************************
@@ -3820,7 +3820,7 @@ class DenseSubmatrix<MT,unaligned,true> : public DenseMatrix< DenseSubmatrix<MT,
    struct VectorizedAssign {
       enum { value = useOptimizedKernels &&
                      vectorizable && MT2::vectorizable &&
-                     IsSame<ElementType,typename MT2::ElementType>::value };
+                     IsSame< ElementType, ElementType_<MT2> >::value };
    };
    //**********************************************************************************************
 
@@ -3830,7 +3830,7 @@ class DenseSubmatrix<MT,unaligned,true> : public DenseMatrix< DenseSubmatrix<MT,
    struct VectorizedAddAssign {
       enum { value = useOptimizedKernels &&
                      vectorizable && MT2::vectorizable &&
-                     IsSame<ElementType,typename MT2::ElementType>::value &&
+                     IsSame< ElementType, ElementType_<MT2> >::value &&
                      IntrinsicTrait<ElementType>::addition };
    };
    //**********************************************************************************************
@@ -3841,7 +3841,7 @@ class DenseSubmatrix<MT,unaligned,true> : public DenseMatrix< DenseSubmatrix<MT,
    struct VectorizedSubAssign {
       enum { value = useOptimizedKernels &&
                      vectorizable && MT2::vectorizable &&
-                     IsSame<ElementType,typename MT2::ElementType>::value &&
+                     IsSame< ElementType, ElementType_<MT2> >::value &&
                      IntrinsicTrait<ElementType>::subtraction };
    };
    //**********************************************************************************************
@@ -3980,8 +3980,7 @@ class DenseSubmatrix<MT,unaligned,true> : public DenseMatrix< DenseSubmatrix<MT,
                               size_t row, size_t column );
 
    template< typename MT2, bool AF2, bool SO2 >
-   friend typename DerestrictTrait< DenseSubmatrix<MT2,AF2,SO2> >::Type
-      derestrict( DenseSubmatrix<MT2,AF2,SO2>& dm );
+   friend DerestrictTrait_< DenseSubmatrix<MT2,AF2,SO2> > derestrict( DenseSubmatrix<MT2,AF2,SO2>& dm );
    //**********************************************************************************************
 
    //**Compile time checks*************************************************************************
@@ -4417,7 +4416,7 @@ inline DenseSubmatrix<MT,unaligned,true>&
       BLAZE_THROW_INVALID_ARGUMENT( "Invalid assignment to restricted matrix" );
    }
 
-   typename DerestrictTrait<This>::Type left( derestrict( *this ) );
+   DerestrictTrait_<This> left( derestrict( *this ) );
 
    if( rhs.canAlias( &matrix_ ) ) {
       const ResultType tmp( rhs );
@@ -4456,13 +4455,13 @@ template< typename MT2   // Type of the right-hand side matrix
 inline DenseSubmatrix<MT,unaligned,true>&
    DenseSubmatrix<MT,unaligned,true>::operator=( const Matrix<MT2,SO>& rhs )
 {
-   BLAZE_CONSTRAINT_MUST_NOT_REQUIRE_EVALUATION( typename MT2::ResultType );
+   BLAZE_CONSTRAINT_MUST_NOT_REQUIRE_EVALUATION( ResultType_<MT2> );
 
    if( rows() != (~rhs).rows() || columns() != (~rhs).columns() ) {
       BLAZE_THROW_INVALID_ARGUMENT( "Matrix sizes do not match" );
    }
 
-   typedef If_< IsRestricted<MT>, typename MT2::CompositeType, const MT2& >  Right;
+   typedef If_< IsRestricted<MT>, CompositeType_<MT2>, const MT2& >  Right;
    Right right( ~rhs );
 
    if( !tryAssign( matrix_, right, row_, column_ ) ) {
@@ -4472,10 +4471,10 @@ inline DenseSubmatrix<MT,unaligned,true>&
    if( IsSparseMatrix<MT2>::value )
       reset();
 
-   typename DerestrictTrait<This>::Type left( derestrict( *this ) );
+   DerestrictTrait_<This> left( derestrict( *this ) );
 
    if( IsReference<Right>::value && right.canAlias( &matrix_ ) ) {
-      const typename MT2::ResultType tmp( right );
+      const ResultType_<MT2> tmp( right );
       smpAssign( left, tmp );
    }
    else {
@@ -4512,9 +4511,9 @@ inline DisableIf_< And< IsRestricted<MT>, RequiresEvaluation<MT2> >, DenseSubmat
 {
    BLAZE_CONSTRAINT_MUST_BE_DENSE_MATRIX_TYPE  ( ResultType );
    BLAZE_CONSTRAINT_MUST_NOT_REQUIRE_EVALUATION( ResultType );
-   BLAZE_CONSTRAINT_MUST_NOT_REQUIRE_EVALUATION( typename MT2::ResultType );
+   BLAZE_CONSTRAINT_MUST_NOT_REQUIRE_EVALUATION( ResultType_<MT2> );
 
-   typedef typename AddTrait<ResultType,typename MT2::ResultType>::Type  AddType;
+   typedef AddTrait_< ResultType, ResultType_<MT2> >  AddType;
 
    BLAZE_CONSTRAINT_MUST_BE_DENSE_MATRIX_TYPE  ( AddType );
    BLAZE_CONSTRAINT_MUST_NOT_REQUIRE_EVALUATION( AddType );
@@ -4527,7 +4526,7 @@ inline DisableIf_< And< IsRestricted<MT>, RequiresEvaluation<MT2> >, DenseSubmat
       BLAZE_THROW_INVALID_ARGUMENT( "Invalid assignment to restricted matrix" );
    }
 
-   typename DerestrictTrait<This>::Type left( derestrict( *this ) );
+   DerestrictTrait_<This> left( derestrict( *this ) );
 
    if( ( ( IsSymmetric<MT>::value || IsHermitian<MT>::value ) && hasOverlap() ) ||
        (~rhs).canAlias( &matrix_ ) ) {
@@ -4568,9 +4567,9 @@ inline EnableIf_< And< IsRestricted<MT>, RequiresEvaluation<MT2> >, DenseSubmatr
 {
    BLAZE_CONSTRAINT_MUST_BE_DENSE_MATRIX_TYPE  ( ResultType );
    BLAZE_CONSTRAINT_MUST_NOT_REQUIRE_EVALUATION( ResultType );
-   BLAZE_CONSTRAINT_MUST_NOT_REQUIRE_EVALUATION( typename MT2::ResultType );
+   BLAZE_CONSTRAINT_MUST_NOT_REQUIRE_EVALUATION( ResultType_<MT2> );
 
-   typedef typename AddTrait<ResultType,typename MT2::ResultType>::Type  AddType;
+   typedef AddTrait_< ResultType, ResultType_<MT2> >  AddType;
 
    BLAZE_CONSTRAINT_MUST_BE_DENSE_MATRIX_TYPE  ( AddType );
    BLAZE_CONSTRAINT_MUST_NOT_REQUIRE_EVALUATION( AddType );
@@ -4585,7 +4584,7 @@ inline EnableIf_< And< IsRestricted<MT>, RequiresEvaluation<MT2> >, DenseSubmatr
       BLAZE_THROW_INVALID_ARGUMENT( "Invalid assignment to restricted matrix" );
    }
 
-   typename DerestrictTrait<This>::Type left( derestrict( *this ) );
+   DerestrictTrait_<This> left( derestrict( *this ) );
 
    smpAssign( left, tmp );
 
@@ -4619,9 +4618,9 @@ inline DisableIf_< And< IsRestricted<MT>, RequiresEvaluation<MT2> >, DenseSubmat
 {
    BLAZE_CONSTRAINT_MUST_BE_DENSE_MATRIX_TYPE  ( ResultType );
    BLAZE_CONSTRAINT_MUST_NOT_REQUIRE_EVALUATION( ResultType );
-   BLAZE_CONSTRAINT_MUST_NOT_REQUIRE_EVALUATION( typename MT2::ResultType );
+   BLAZE_CONSTRAINT_MUST_NOT_REQUIRE_EVALUATION( ResultType_<MT2> );
 
-   typedef typename SubTrait<ResultType,typename MT2::ResultType>::Type  SubType;
+   typedef SubTrait_< ResultType, ResultType_<MT2> >  SubType;
 
    BLAZE_CONSTRAINT_MUST_BE_DENSE_MATRIX_TYPE  ( SubType );
    BLAZE_CONSTRAINT_MUST_NOT_REQUIRE_EVALUATION( SubType );
@@ -4634,7 +4633,7 @@ inline DisableIf_< And< IsRestricted<MT>, RequiresEvaluation<MT2> >, DenseSubmat
       BLAZE_THROW_INVALID_ARGUMENT( "Invalid assignment to restricted matrix" );
    }
 
-   typename DerestrictTrait<This>::Type left( derestrict( *this ) );
+   DerestrictTrait_<This> left( derestrict( *this ) );
 
    if( ( ( IsSymmetric<MT>::value || IsHermitian<MT>::value ) && hasOverlap() ) ||
        (~rhs).canAlias( &matrix_ ) ) {
@@ -4675,9 +4674,9 @@ inline EnableIf_< And< IsRestricted<MT>, RequiresEvaluation<MT2> >, DenseSubmatr
 {
    BLAZE_CONSTRAINT_MUST_BE_DENSE_MATRIX_TYPE  ( ResultType );
    BLAZE_CONSTRAINT_MUST_NOT_REQUIRE_EVALUATION( ResultType );
-   BLAZE_CONSTRAINT_MUST_NOT_REQUIRE_EVALUATION( typename MT2::ResultType );
+   BLAZE_CONSTRAINT_MUST_NOT_REQUIRE_EVALUATION( ResultType_<MT2> );
 
-   typedef typename SubTrait<ResultType,typename MT2::ResultType>::Type  SubType;
+   typedef SubTrait_< ResultType, ResultType_<MT2> >  SubType;
 
    BLAZE_CONSTRAINT_MUST_BE_DENSE_MATRIX_TYPE  ( SubType );
    BLAZE_CONSTRAINT_MUST_NOT_REQUIRE_EVALUATION( SubType );
@@ -4692,7 +4691,7 @@ inline EnableIf_< And< IsRestricted<MT>, RequiresEvaluation<MT2> >, DenseSubmatr
       BLAZE_THROW_INVALID_ARGUMENT( "Invalid assignment to restricted matrix" );
    }
 
-   typename DerestrictTrait<This>::Type left( derestrict( *this ) );
+   DerestrictTrait_<This> left( derestrict( *this ) );
 
    smpAssign( left, tmp );
 
@@ -4726,9 +4725,9 @@ inline DenseSubmatrix<MT,unaligned,true>&
 {
    BLAZE_CONSTRAINT_MUST_BE_DENSE_MATRIX_TYPE  ( ResultType );
    BLAZE_CONSTRAINT_MUST_NOT_REQUIRE_EVALUATION( ResultType );
-   BLAZE_CONSTRAINT_MUST_NOT_REQUIRE_EVALUATION( typename MT2::ResultType );
+   BLAZE_CONSTRAINT_MUST_NOT_REQUIRE_EVALUATION( ResultType_<MT2> );
 
-   typedef typename MultTrait<ResultType,typename MT2::ResultType>::Type  MultType;
+   typedef MultTrait_< ResultType, ResultType_<MT2> >  MultType;
 
    BLAZE_CONSTRAINT_MUST_BE_DENSE_MATRIX_TYPE  ( MultType );
    BLAZE_CONSTRAINT_MUST_NOT_REQUIRE_EVALUATION( MultType );
@@ -4743,7 +4742,7 @@ inline DenseSubmatrix<MT,unaligned,true>&
       BLAZE_THROW_INVALID_ARGUMENT( "Invalid assignment to restricted matrix" );
    }
 
-   typename DerestrictTrait<This>::Type left( derestrict( *this ) );
+   DerestrictTrait_<This> left( derestrict( *this ) );
 
    smpAssign( left, tmp );
 
@@ -4773,7 +4772,7 @@ inline EnableIf_< IsNumeric<Other>, DenseSubmatrix<MT,unaligned,true> >&
 {
    BLAZE_CONSTRAINT_MUST_NOT_BE_UNITRIANGULAR_MATRIX_TYPE( MT );
 
-   typename DerestrictTrait<This>::Type left( derestrict( *this ) );
+   DerestrictTrait_<This> left( derestrict( *this ) );
    smpAssign( left, (*this) * rhs );
 
    return *this;
@@ -4804,7 +4803,7 @@ inline EnableIf_< IsNumeric<Other>, DenseSubmatrix<MT,unaligned,true> >&
 
    BLAZE_USER_ASSERT( rhs != Other(0), "Division by zero detected" );
 
-   typename DerestrictTrait<This>::Type left( derestrict( *this ) );
+   DerestrictTrait_<This> left( derestrict( *this ) );
    smpAssign( left, (*this) / rhs );
 
    return *this;
@@ -5076,7 +5075,7 @@ inline DenseSubmatrix<MT,unaligned,true>& DenseSubmatrix<MT,unaligned,true>::tra
       BLAZE_THROW_LOGIC_ERROR( "Invalid transpose operation" );
    }
 
-   typename DerestrictTrait<This>::Type left( derestrict( *this ) );
+   DerestrictTrait_<This> left( derestrict( *this ) );
    const ResultType tmp( trans( *this ) );
    smpAssign( left, tmp );
 
@@ -5115,7 +5114,7 @@ inline DenseSubmatrix<MT,unaligned,true>& DenseSubmatrix<MT,unaligned,true>::ctr
       BLAZE_THROW_LOGIC_ERROR( "Invalid transpose operation" );
    }
 
-   typename DerestrictTrait<This>::Type left( derestrict( *this ) );
+   DerestrictTrait_<This> left( derestrict( *this ) );
    const ResultType tmp( ctrans( *this ) );
    smpAssign( left, tmp );
 
@@ -5639,7 +5638,7 @@ inline EnableIf_< typename DenseSubmatrix<MT,unaligned,true>::BLAZE_TEMPLATE Vec
       for( size_t j=0UL; j<n_; ++j )
       {
          size_t i( 0UL );
-         typename MT2::ConstIterator it( (~rhs).begin(j) );
+         ConstIterator_<MT2> it( (~rhs).begin(j) );
 
          for( ; (i+IT::size*3UL) < ipos; i+=IT::size*4UL ) {
             store( i             , j, it.load() ); it += IT::size;
@@ -5719,7 +5718,7 @@ inline void DenseSubmatrix<MT,unaligned,true>::assign( const SparseMatrix<MT2,tr
    BLAZE_INTERNAL_ASSERT( n_ == (~rhs).columns(), "Invalid number of columns" );
 
    for( size_t j=0UL; j<n_; ++j )
-      for( typename MT2::ConstIterator element=(~rhs).begin(j); element!=(~rhs).end(j); ++element )
+      for( ConstIterator_<MT2> element=(~rhs).begin(j); element!=(~rhs).end(j); ++element )
          matrix_(row_+element->index(),column_+j) = element->value();
 }
 /*! \endcond */
@@ -5748,7 +5747,7 @@ inline void DenseSubmatrix<MT,unaligned,true>::assign( const SparseMatrix<MT2,fa
    BLAZE_INTERNAL_ASSERT( n_ == (~rhs).columns(), "Invalid number of columns" );
 
    for( size_t i=0UL; i<m_; ++i )
-      for( typename MT2::ConstIterator element=(~rhs).begin(i); element!=(~rhs).end(i); ++element )
+      for( ConstIterator_<MT2> element=(~rhs).begin(i); element!=(~rhs).end(i); ++element )
          matrix_(row_+i,column_+element->index()) = element->value();
 }
 /*! \endcond */
@@ -5828,7 +5827,7 @@ inline EnableIf_< typename DenseSubmatrix<MT,unaligned,true>::BLAZE_TEMPLATE Vec
       BLAZE_INTERNAL_ASSERT( ( iend - ( iend % (IT::size) ) ) == ipos, "Invalid end calculation" );
 
       size_t i( ibegin );
-      typename MT2::ConstIterator it( (~rhs).begin(j) );
+      ConstIterator_<MT2> it( (~rhs).begin(j) );
 
       for( ; (i+IT::size*3UL) < ipos; i+=IT::size*4UL ) {
          store( i             , j, load(i             ,j) + it.load() ); it += IT::size;
@@ -5907,7 +5906,7 @@ inline void DenseSubmatrix<MT,unaligned,true>::addAssign( const SparseMatrix<MT2
    BLAZE_INTERNAL_ASSERT( n_ == (~rhs).columns(), "Invalid number of columns" );
 
    for( size_t j=0UL; j<n_; ++j )
-      for( typename MT2::ConstIterator element=(~rhs).begin(j); element!=(~rhs).end(j); ++element )
+      for( ConstIterator_<MT2> element=(~rhs).begin(j); element!=(~rhs).end(j); ++element )
          matrix_(row_+element->index(),column_+j) += element->value();
 }
 /*! \endcond */
@@ -5936,7 +5935,7 @@ inline void DenseSubmatrix<MT,unaligned,true>::addAssign( const SparseMatrix<MT2
    BLAZE_INTERNAL_ASSERT( n_ == (~rhs).columns(), "Invalid number of columns" );
 
    for( size_t i=0UL; i<m_; ++i )
-      for( typename MT2::ConstIterator element=(~rhs).begin(i); element!=(~rhs).end(i); ++element )
+      for( ConstIterator_<MT2> element=(~rhs).begin(i); element!=(~rhs).end(i); ++element )
          matrix_(row_+i,column_+element->index()) += element->value();
 }
 /*! \endcond */
@@ -6016,7 +6015,7 @@ inline EnableIf_< typename DenseSubmatrix<MT,unaligned,true>::BLAZE_TEMPLATE Vec
       BLAZE_INTERNAL_ASSERT( ( iend - ( iend % (IT::size) ) ) == ipos, "Invalid end calculation" );
 
       size_t i( ibegin );
-      typename MT2::ConstIterator it( (~rhs).begin(j) );
+      ConstIterator_<MT2> it( (~rhs).begin(j) );
 
       for( ; (i+IT::size*3UL) < ipos; i+=IT::size*4UL ) {
          store( i             , j, load(i             ,j) - it.load() ); it += IT::size;
@@ -6095,7 +6094,7 @@ inline void DenseSubmatrix<MT,unaligned,true>::subAssign( const SparseMatrix<MT2
    BLAZE_INTERNAL_ASSERT( n_ == (~rhs).columns(), "Invalid number of columns" );
 
    for( size_t j=0UL; j<n_; ++j )
-      for( typename MT2::ConstIterator element=(~rhs).begin(j); element!=(~rhs).end(j); ++element )
+      for( ConstIterator_<MT2> element=(~rhs).begin(j); element!=(~rhs).end(j); ++element )
          matrix_(row_+element->index(),column_+j) -= element->value();
 }
 /*! \endcond */
@@ -6124,7 +6123,7 @@ inline void DenseSubmatrix<MT,unaligned,true>::subAssign( const SparseMatrix<MT2
    BLAZE_INTERNAL_ASSERT( n_ == (~rhs).columns(), "Invalid number of columns" );
 
    for( size_t i=0UL; i<m_; ++i )
-      for( typename MT2::ConstIterator element=(~rhs).begin(i); element!=(~rhs).end(i); ++element )
+      for( ConstIterator_<MT2> element=(~rhs).begin(i); element!=(~rhs).end(i); ++element )
          matrix_(row_+i,column_+element->index()) -= element->value();
 }
 /*! \endcond */
@@ -6161,25 +6160,25 @@ class DenseSubmatrix<MT,aligned,false> : public DenseMatrix< DenseSubmatrix<MT,a
    typedef If_< IsExpression<MT>, MT, MT& >  Operand;
 
    //! Intrinsic trait for the matrix element type.
-   typedef IntrinsicTrait<typename MT::ElementType>  IT;
+   typedef IntrinsicTrait< ElementType_<MT> >  IT;
    //**********************************************************************************************
 
  public:
    //**Type definitions****************************************************************************
-   typedef DenseSubmatrix<MT,aligned,false>    This;           //!< Type of this DenseSubmatrix instance.
-   typedef typename SubmatrixTrait<MT>::Type   ResultType;     //!< Result type for expression template evaluations.
-   typedef typename ResultType::OppositeType   OppositeType;   //!< Result type with opposite storage order for expression template evaluations.
-   typedef typename ResultType::TransposeType  TransposeType;  //!< Transpose type for expression template evaluations.
-   typedef typename MT::ElementType            ElementType;    //!< Type of the submatrix elements.
-   typedef typename IT::Type                   IntrinsicType;  //!< Intrinsic type of the submatrix elements.
-   typedef typename MT::ReturnType             ReturnType;     //!< Return type for expression template evaluations
-   typedef const DenseSubmatrix&               CompositeType;  //!< Data type for composite expression templates.
+   typedef DenseSubmatrix<MT,aligned,false>  This;           //!< Type of this DenseSubmatrix instance.
+   typedef SubmatrixTrait_<MT>               ResultType;     //!< Result type for expression template evaluations.
+   typedef OppositeType_<ResultType>         OppositeType;   //!< Result type with opposite storage order for expression template evaluations.
+   typedef TransposeType_<ResultType>        TransposeType;  //!< Transpose type for expression template evaluations.
+   typedef ElementType_<MT>                  ElementType;    //!< Type of the submatrix elements.
+   typedef typename IT::Type                 IntrinsicType;  //!< Intrinsic type of the submatrix elements.
+   typedef ReturnType_<MT>                   ReturnType;     //!< Return type for expression template evaluations
+   typedef const DenseSubmatrix&             CompositeType;  //!< Data type for composite expression templates.
 
    //! Reference to a constant submatrix value.
-   typedef typename MT::ConstReference  ConstReference;
+   typedef ConstReference_<MT>  ConstReference;
 
    //! Reference to a non-constant submatrix value.
-   typedef If_< IsConst<MT>, ConstReference, typename MT::Reference >  Reference;
+   typedef If_< IsConst<MT>, ConstReference, Reference_<MT> >  Reference;
 
    //! Pointer to a constant submatrix value.
    typedef const ElementType*  ConstPointer;
@@ -6188,10 +6187,10 @@ class DenseSubmatrix<MT,aligned,false> : public DenseMatrix< DenseSubmatrix<MT,a
    typedef If_< Or< IsConst<MT>, Not< HasMutableDataAccess<MT> > >, ConstPointer, ElementType* >  Pointer;
 
    //! Iterator over constant elements.
-   typedef typename MT::ConstIterator  ConstIterator;
+   typedef ConstIterator_<MT>  ConstIterator;
 
    //! Iterator over non-constant elements.
-   typedef If_< IsConst<MT>, ConstIterator, typename MT::Iterator >  Iterator;
+   typedef If_< IsConst<MT>, ConstIterator, Iterator_<MT> >  Iterator;
    //**********************************************************************************************
 
    //**Compilation flags***************************************************************************
@@ -6297,7 +6296,7 @@ class DenseSubmatrix<MT,aligned,false> : public DenseMatrix< DenseSubmatrix<MT,a
    struct VectorizedAssign {
       enum { value = useOptimizedKernels &&
                      vectorizable && MT2::vectorizable &&
-                     IsSame<ElementType,typename MT2::ElementType>::value };
+                     IsSame< ElementType, ElementType_<MT2> >::value };
    };
    //**********************************************************************************************
 
@@ -6307,7 +6306,7 @@ class DenseSubmatrix<MT,aligned,false> : public DenseMatrix< DenseSubmatrix<MT,a
    struct VectorizedAddAssign {
       enum { value = useOptimizedKernels &&
                      vectorizable && MT2::vectorizable &&
-                     IsSame<ElementType,typename MT2::ElementType>::value &&
+                     IsSame< ElementType, ElementType_<MT2> >::value &&
                      IntrinsicTrait<ElementType>::addition };
    };
    //**********************************************************************************************
@@ -6318,7 +6317,7 @@ class DenseSubmatrix<MT,aligned,false> : public DenseMatrix< DenseSubmatrix<MT,a
    struct VectorizedSubAssign {
       enum { value = useOptimizedKernels &&
                      vectorizable && MT2::vectorizable &&
-                     IsSame<ElementType,typename MT2::ElementType>::value &&
+                     IsSame< ElementType, ElementType_<MT2> >::value &&
                      IntrinsicTrait<ElementType>::subtraction };
    };
    //**********************************************************************************************
@@ -6450,8 +6449,7 @@ class DenseSubmatrix<MT,aligned,false> : public DenseMatrix< DenseSubmatrix<MT,a
                               size_t row, size_t column );
 
    template< typename MT2, bool AF2, bool SO2 >
-   friend typename DerestrictTrait< DenseSubmatrix<MT2,AF2,SO2> >::Type
-      derestrict( DenseSubmatrix<MT2,AF2,SO2>& dm );
+   friend DerestrictTrait_< DenseSubmatrix<MT2,AF2,SO2> > derestrict( DenseSubmatrix<MT2,AF2,SO2>& dm );
    //**********************************************************************************************
 
    //**Compile time checks*************************************************************************
@@ -6920,7 +6918,7 @@ inline DenseSubmatrix<MT,aligned,false>&
       BLAZE_THROW_INVALID_ARGUMENT( "Invalid assignment to restricted matrix" );
    }
 
-   typename DerestrictTrait<This>::Type left( derestrict( *this ) );
+   DerestrictTrait_<This> left( derestrict( *this ) );
 
    if( rhs.canAlias( &matrix_ ) ) {
       const ResultType tmp( rhs );
@@ -6959,13 +6957,13 @@ template< typename MT2   // Type of the right-hand side matrix
 inline DenseSubmatrix<MT,aligned,false>&
    DenseSubmatrix<MT,aligned,false>::operator=( const Matrix<MT2,SO>& rhs )
 {
-   BLAZE_CONSTRAINT_MUST_NOT_REQUIRE_EVALUATION( typename MT2::ResultType );
+   BLAZE_CONSTRAINT_MUST_NOT_REQUIRE_EVALUATION( ResultType_<MT2> );
 
    if( rows() != (~rhs).rows() || columns() != (~rhs).columns() ) {
       BLAZE_THROW_INVALID_ARGUMENT( "Matrix sizes do not match" );
    }
 
-   typedef If_< IsRestricted<MT>, typename MT2::CompositeType, const MT2& >  Right;
+   typedef If_< IsRestricted<MT>, CompositeType_<MT2>, const MT2& >  Right;
    Right right( ~rhs );
 
    if( !tryAssign( matrix_, right, row_, column_ ) ) {
@@ -6975,10 +6973,10 @@ inline DenseSubmatrix<MT,aligned,false>&
    if( IsSparseMatrix<MT2>::value )
       reset();
 
-   typename DerestrictTrait<This>::Type left( derestrict( *this ) );
+   DerestrictTrait_<This> left( derestrict( *this ) );
 
    if( IsReference<Right>::value && right.canAlias( &matrix_ ) ) {
-      const typename MT2::ResultType tmp( right );
+      const ResultType_<MT2> tmp( right );
       smpAssign( left, tmp );
    }
    else {
@@ -7015,9 +7013,9 @@ inline DisableIf_< And< IsRestricted<MT>, RequiresEvaluation<MT2> >, DenseSubmat
 {
    BLAZE_CONSTRAINT_MUST_BE_DENSE_MATRIX_TYPE  ( ResultType );
    BLAZE_CONSTRAINT_MUST_NOT_REQUIRE_EVALUATION( ResultType );
-   BLAZE_CONSTRAINT_MUST_NOT_REQUIRE_EVALUATION( typename MT2::ResultType );
+   BLAZE_CONSTRAINT_MUST_NOT_REQUIRE_EVALUATION( ResultType_<MT2> );
 
-   typedef typename AddTrait<ResultType,typename MT2::ResultType>::Type  AddType;
+   typedef AddTrait_< ResultType, ResultType_<MT2> >  AddType;
 
    BLAZE_CONSTRAINT_MUST_BE_DENSE_MATRIX_TYPE  ( AddType );
    BLAZE_CONSTRAINT_MUST_NOT_REQUIRE_EVALUATION( AddType );
@@ -7030,7 +7028,7 @@ inline DisableIf_< And< IsRestricted<MT>, RequiresEvaluation<MT2> >, DenseSubmat
       BLAZE_THROW_INVALID_ARGUMENT( "Invalid assignment to restricted matrix" );
    }
 
-   typename DerestrictTrait<This>::Type left( derestrict( *this ) );
+   DerestrictTrait_<This> left( derestrict( *this ) );
 
    if( ( ( IsSymmetric<MT>::value || IsHermitian<MT>::value ) && hasOverlap() ) ||
        (~rhs).canAlias( &matrix_ ) ) {
@@ -7071,9 +7069,9 @@ inline EnableIf_< And< IsRestricted<MT>, RequiresEvaluation<MT2> >, DenseSubmatr
 {
    BLAZE_CONSTRAINT_MUST_BE_DENSE_MATRIX_TYPE  ( ResultType );
    BLAZE_CONSTRAINT_MUST_NOT_REQUIRE_EVALUATION( ResultType );
-   BLAZE_CONSTRAINT_MUST_NOT_REQUIRE_EVALUATION( typename MT2::ResultType );
+   BLAZE_CONSTRAINT_MUST_NOT_REQUIRE_EVALUATION( ResultType_<MT2> );
 
-   typedef typename AddTrait<ResultType,typename MT2::ResultType>::Type  AddType;
+   typedef AddTrait_< ResultType, ResultType_<MT2> >  AddType;
 
    BLAZE_CONSTRAINT_MUST_BE_DENSE_MATRIX_TYPE  ( AddType );
    BLAZE_CONSTRAINT_MUST_NOT_REQUIRE_EVALUATION( AddType );
@@ -7088,7 +7086,7 @@ inline EnableIf_< And< IsRestricted<MT>, RequiresEvaluation<MT2> >, DenseSubmatr
       BLAZE_THROW_INVALID_ARGUMENT( "Invalid assignment to restricted matrix" );
    }
 
-   typename DerestrictTrait<This>::Type left( derestrict( *this ) );
+   DerestrictTrait_<This> left( derestrict( *this ) );
 
    smpAssign( left, tmp );
 
@@ -7122,9 +7120,9 @@ inline DisableIf_< And< IsRestricted<MT>, RequiresEvaluation<MT2> >, DenseSubmat
 {
    BLAZE_CONSTRAINT_MUST_BE_DENSE_MATRIX_TYPE  ( ResultType );
    BLAZE_CONSTRAINT_MUST_NOT_REQUIRE_EVALUATION( ResultType );
-   BLAZE_CONSTRAINT_MUST_NOT_REQUIRE_EVALUATION( typename MT2::ResultType );
+   BLAZE_CONSTRAINT_MUST_NOT_REQUIRE_EVALUATION( ResultType_<MT2> );
 
-   typedef typename SubTrait<ResultType,typename MT2::ResultType>::Type  SubType;
+   typedef SubTrait_< ResultType, ResultType_<MT2> >  SubType;
 
    BLAZE_CONSTRAINT_MUST_BE_DENSE_MATRIX_TYPE  ( SubType );
    BLAZE_CONSTRAINT_MUST_NOT_REQUIRE_EVALUATION( SubType );
@@ -7137,7 +7135,7 @@ inline DisableIf_< And< IsRestricted<MT>, RequiresEvaluation<MT2> >, DenseSubmat
       BLAZE_THROW_INVALID_ARGUMENT( "Invalid assignment to restricted matrix" );
    }
 
-   typename DerestrictTrait<This>::Type left( derestrict( *this ) );
+   DerestrictTrait_<This> left( derestrict( *this ) );
 
    if( ( ( IsSymmetric<MT>::value || IsHermitian<MT>::value ) && hasOverlap() ) ||
        (~rhs).canAlias( &matrix_ ) ) {
@@ -7178,9 +7176,9 @@ inline EnableIf_< And< IsRestricted<MT>, RequiresEvaluation<MT2> >, DenseSubmatr
 {
    BLAZE_CONSTRAINT_MUST_BE_DENSE_MATRIX_TYPE  ( ResultType );
    BLAZE_CONSTRAINT_MUST_NOT_REQUIRE_EVALUATION( ResultType );
-   BLAZE_CONSTRAINT_MUST_NOT_REQUIRE_EVALUATION( typename MT2::ResultType );
+   BLAZE_CONSTRAINT_MUST_NOT_REQUIRE_EVALUATION( ResultType_<MT2> );
 
-   typedef typename SubTrait<ResultType,typename MT2::ResultType>::Type  SubType;
+   typedef SubTrait_< ResultType, ResultType_<MT2> >  SubType;
 
    BLAZE_CONSTRAINT_MUST_BE_DENSE_MATRIX_TYPE  ( SubType );
    BLAZE_CONSTRAINT_MUST_NOT_REQUIRE_EVALUATION( SubType );
@@ -7195,7 +7193,7 @@ inline EnableIf_< And< IsRestricted<MT>, RequiresEvaluation<MT2> >, DenseSubmatr
       BLAZE_THROW_INVALID_ARGUMENT( "Invalid assignment to restricted matrix" );
    }
 
-   typename DerestrictTrait<This>::Type left( derestrict( *this ) );
+   DerestrictTrait_<This> left( derestrict( *this ) );
 
    smpAssign( left, tmp );
 
@@ -7229,9 +7227,9 @@ inline DenseSubmatrix<MT,aligned,false>&
 {
    BLAZE_CONSTRAINT_MUST_BE_DENSE_MATRIX_TYPE  ( ResultType );
    BLAZE_CONSTRAINT_MUST_NOT_REQUIRE_EVALUATION( ResultType );
-   BLAZE_CONSTRAINT_MUST_NOT_REQUIRE_EVALUATION( typename MT2::ResultType );
+   BLAZE_CONSTRAINT_MUST_NOT_REQUIRE_EVALUATION( ResultType_<MT2> );
 
-   typedef typename MultTrait<ResultType,typename MT2::ResultType>::Type  MultType;
+   typedef MultTrait_< ResultType, ResultType_<MT2> >  MultType;
 
    BLAZE_CONSTRAINT_MUST_BE_DENSE_MATRIX_TYPE  ( MultType );
    BLAZE_CONSTRAINT_MUST_NOT_REQUIRE_EVALUATION( MultType );
@@ -7246,7 +7244,7 @@ inline DenseSubmatrix<MT,aligned,false>&
       BLAZE_THROW_INVALID_ARGUMENT( "Invalid assignment to restricted matrix" );
    }
 
-   typename DerestrictTrait<This>::Type left( derestrict( *this ) );
+   DerestrictTrait_<This> left( derestrict( *this ) );
 
    smpAssign( left, tmp );
 
@@ -7276,7 +7274,7 @@ inline EnableIf_< IsNumeric<Other>, DenseSubmatrix<MT,aligned,false> >&
 {
    BLAZE_CONSTRAINT_MUST_NOT_BE_UNITRIANGULAR_MATRIX_TYPE( MT );
 
-   typename DerestrictTrait<This>::Type left( derestrict( *this ) );
+   DerestrictTrait_<This> left( derestrict( *this ) );
    smpAssign( left, (*this) * rhs );
 
    return *this;
@@ -7307,7 +7305,7 @@ inline EnableIf_< IsNumeric<Other>, DenseSubmatrix<MT,aligned,false> >&
 
    BLAZE_USER_ASSERT( rhs != Other(0), "Division by zero detected" );
 
-   typename DerestrictTrait<This>::Type left( derestrict( *this ) );
+   DerestrictTrait_<This> left( derestrict( *this ) );
    smpAssign( left, (*this) / rhs );
 
    return *this;
@@ -7596,7 +7594,7 @@ inline DenseSubmatrix<MT,aligned,false>& DenseSubmatrix<MT,aligned,false>::trans
       BLAZE_THROW_LOGIC_ERROR( "Invalid transpose operation" );
    }
 
-   typename DerestrictTrait<This>::Type left( derestrict( *this ) );
+   DerestrictTrait_<This> left( derestrict( *this ) );
    const ResultType tmp( trans( *this ) );
    smpAssign( left, tmp );
 
@@ -7635,7 +7633,7 @@ inline DenseSubmatrix<MT,aligned,false>& DenseSubmatrix<MT,aligned,false>::ctran
       BLAZE_THROW_LOGIC_ERROR( "Invalid transpose operation" );
    }
 
-   typename DerestrictTrait<This>::Type left( derestrict( *this ) );
+   DerestrictTrait_<This> left( derestrict( *this ) );
    const ResultType tmp( ctrans( *this ) );
    smpAssign( left, tmp );
 
@@ -8156,7 +8154,7 @@ inline EnableIf_< typename DenseSubmatrix<MT,aligned,false>::BLAZE_TEMPLATE Vect
       for( size_t i=0UL; i<m_; ++i )
       {
          size_t j( 0UL );
-         typename MT2::ConstIterator it( (~rhs).begin(i) );
+         ConstIterator_<MT2> it( (~rhs).begin(i) );
 
          for( ; (j+IT::size*3UL) < jpos; j+=IT::size*4UL ) {
             store( i, j             , it.load() ); it += IT::size;
@@ -8236,7 +8234,7 @@ inline void DenseSubmatrix<MT,aligned,false>::assign( const SparseMatrix<MT2,fal
    BLAZE_INTERNAL_ASSERT( n_ == (~rhs).columns(), "Invalid number of columns" );
 
    for( size_t i=0UL; i<m_; ++i )
-      for( typename MT2::ConstIterator element=(~rhs).begin(i); element!=(~rhs).end(i); ++element )
+      for( ConstIterator_<MT2> element=(~rhs).begin(i); element!=(~rhs).end(i); ++element )
          matrix_(row_+i,column_+element->index()) = element->value();
 }
 /*! \endcond */
@@ -8265,7 +8263,7 @@ inline void DenseSubmatrix<MT,aligned,false>::assign( const SparseMatrix<MT2,tru
    BLAZE_INTERNAL_ASSERT( n_ == (~rhs).columns(), "Invalid number of columns" );
 
    for( size_t j=0UL; j<n_; ++j )
-      for( typename MT2::ConstIterator element=(~rhs).begin(j); element!=(~rhs).end(j); ++element )
+      for( ConstIterator_<MT2> element=(~rhs).begin(j); element!=(~rhs).end(j); ++element )
          matrix_(row_+element->index(),column_+j) = element->value();
 }
 /*! \endcond */
@@ -8345,7 +8343,7 @@ inline EnableIf_< typename DenseSubmatrix<MT,aligned,false>::BLAZE_TEMPLATE Vect
       BLAZE_INTERNAL_ASSERT( ( jend - ( jend % (IT::size) ) ) == jpos, "Invalid end calculation" );
 
       size_t j( jbegin );
-      typename MT2::ConstIterator it( (~rhs).begin(i) );
+      ConstIterator_<MT2> it( (~rhs).begin(i) );
 
       for( ; (j+IT::size*3UL) < jpos; j+=IT::size*4UL ) {
          store( i, j             , load(i,j             ) + it.load() ); it += IT::size;
@@ -8424,7 +8422,7 @@ inline void DenseSubmatrix<MT,aligned,false>::addAssign( const SparseMatrix<MT2,
    BLAZE_INTERNAL_ASSERT( n_ == (~rhs).columns(), "Invalid number of columns" );
 
    for( size_t i=0UL; i<m_; ++i )
-      for( typename MT2::ConstIterator element=(~rhs).begin(i); element!=(~rhs).end(i); ++element )
+      for( ConstIterator_<MT2> element=(~rhs).begin(i); element!=(~rhs).end(i); ++element )
          matrix_(row_+i,column_+element->index()) += element->value();
 }
 /*! \endcond */
@@ -8453,7 +8451,7 @@ inline void DenseSubmatrix<MT,aligned,false>::addAssign( const SparseMatrix<MT2,
    BLAZE_INTERNAL_ASSERT( n_ == (~rhs).columns(), "Invalid number of columns" );
 
    for( size_t j=0UL; j<n_; ++j )
-      for( typename MT2::ConstIterator element=(~rhs).begin(j); element!=(~rhs).end(j); ++element )
+      for( ConstIterator_<MT2> element=(~rhs).begin(j); element!=(~rhs).end(j); ++element )
          matrix_(row_+element->index(),column_+j) += element->value();
 }
 /*! \endcond */
@@ -8533,7 +8531,7 @@ inline EnableIf_< typename DenseSubmatrix<MT,aligned,false>::BLAZE_TEMPLATE Vect
       BLAZE_INTERNAL_ASSERT( ( jend - ( jend % (IT::size) ) ) == jpos, "Invalid end calculation" );
 
       size_t j( jbegin );
-      typename MT2::ConstIterator it( (~rhs).begin(i) );
+      ConstIterator_<MT2> it( (~rhs).begin(i) );
 
       for( ; (j+IT::size*3UL) < jpos; j+=IT::size*4UL ) {
          store( i, j             , load(i,j             ) - it.load() ); it += IT::size;
@@ -8612,7 +8610,7 @@ inline void DenseSubmatrix<MT,aligned,false>::subAssign( const SparseMatrix<MT2,
    BLAZE_INTERNAL_ASSERT( n_ == (~rhs).columns(), "Invalid number of columns" );
 
    for( size_t i=0UL; i<m_; ++i )
-      for( typename MT2::ConstIterator element=(~rhs).begin(i); element!=(~rhs).end(i); ++element )
+      for( ConstIterator_<MT2> element=(~rhs).begin(i); element!=(~rhs).end(i); ++element )
          matrix_(row_+i,column_+element->index()) -= element->value();
 }
 /*! \endcond */
@@ -8641,7 +8639,7 @@ inline void DenseSubmatrix<MT,aligned,false>::subAssign( const SparseMatrix<MT2,
    BLAZE_INTERNAL_ASSERT( n_ == (~rhs).columns(), "Invalid number of columns" );
 
    for( size_t j=0UL; j<n_; ++j )
-      for( typename MT2::ConstIterator element=(~rhs).begin(j); element!=(~rhs).end(j); ++element )
+      for( ConstIterator_<MT2> element=(~rhs).begin(j); element!=(~rhs).end(j); ++element )
          matrix_(row_+element->index(),column_+j) -= element->value();
 }
 /*! \endcond */
@@ -8678,25 +8676,25 @@ class DenseSubmatrix<MT,aligned,true> : public DenseMatrix< DenseSubmatrix<MT,al
    typedef If_< IsExpression<MT>, MT, MT& >  Operand;
 
    //! Intrinsic trait for the matrix element type.
-   typedef IntrinsicTrait<typename MT::ElementType>  IT;
+   typedef IntrinsicTrait< ElementType_<MT> >  IT;
    //**********************************************************************************************
 
  public:
    //**Type definitions****************************************************************************
-   typedef DenseSubmatrix<MT,aligned,true>     This;           //!< Type of this DenseSubmatrix instance.
-   typedef typename SubmatrixTrait<MT>::Type   ResultType;     //!< Result type for expression template evaluations.
-   typedef typename ResultType::OppositeType   OppositeType;   //!< Result type with opposite storage order for expression template evaluations.
-   typedef typename ResultType::TransposeType  TransposeType;  //!< Transpose type for expression template evaluations.
-   typedef typename MT::ElementType            ElementType;    //!< Type of the submatrix elements.
-   typedef typename IT::Type                   IntrinsicType;  //!< Intrinsic type of the submatrix elements.
-   typedef typename MT::ReturnType             ReturnType;     //!< Return type for expression template evaluations
-   typedef const DenseSubmatrix&               CompositeType;  //!< Data type for composite expression templates.
+   typedef DenseSubmatrix<MT,aligned,true>  This;           //!< Type of this DenseSubmatrix instance.
+   typedef SubmatrixTrait_<MT>              ResultType;     //!< Result type for expression template evaluations.
+   typedef OppositeType_<ResultType>        OppositeType;   //!< Result type with opposite storage order for expression template evaluations.
+   typedef TransposeType_<ResultType>       TransposeType;  //!< Transpose type for expression template evaluations.
+   typedef ElementType_<MT>                 ElementType;    //!< Type of the submatrix elements.
+   typedef typename IT::Type                IntrinsicType;  //!< Intrinsic type of the submatrix elements.
+   typedef ReturnType_<MT>                  ReturnType;     //!< Return type for expression template evaluations
+   typedef const DenseSubmatrix&            CompositeType;  //!< Data type for composite expression templates.
 
    //! Reference to a constant submatrix value.
-   typedef typename MT::ConstReference  ConstReference;
+   typedef ConstReference_<MT>  ConstReference;
 
    //! Reference to a non-constant submatrix value.
-   typedef If_< IsConst<MT>, ConstReference, typename MT::Reference >  Reference;
+   typedef If_< IsConst<MT>, ConstReference, Reference_<MT> >  Reference;
 
    //! Pointer to a constant submatrix value.
    typedef const ElementType*  ConstPointer;
@@ -8705,10 +8703,10 @@ class DenseSubmatrix<MT,aligned,true> : public DenseMatrix< DenseSubmatrix<MT,al
    typedef If_< Or< IsConst<MT>, Not< HasMutableDataAccess<MT> > >, ConstPointer, ElementType* >  Pointer;
 
    //! Iterator over constant elements.
-   typedef typename MT::ConstIterator  ConstIterator;
+   typedef ConstIterator_<MT>  ConstIterator;
 
    //! Iterator over non-constant elements.
-   typedef If_< IsConst<MT>, ConstIterator, typename MT::Iterator >  Iterator;
+   typedef If_< IsConst<MT>, ConstIterator, Iterator_<MT> >  Iterator;
    //**********************************************************************************************
 
    //**Compilation flags***************************************************************************
@@ -8814,7 +8812,7 @@ class DenseSubmatrix<MT,aligned,true> : public DenseMatrix< DenseSubmatrix<MT,al
    struct VectorizedAssign {
       enum { value = useOptimizedKernels &&
                      vectorizable && MT2::vectorizable &&
-                     IsSame<ElementType,typename MT2::ElementType>::value };
+                     IsSame< ElementType, ElementType_<MT2> >::value };
    };
    //**********************************************************************************************
 
@@ -8824,7 +8822,7 @@ class DenseSubmatrix<MT,aligned,true> : public DenseMatrix< DenseSubmatrix<MT,al
    struct VectorizedAddAssign {
       enum { value = useOptimizedKernels &&
                      vectorizable && MT2::vectorizable &&
-                     IsSame<ElementType,typename MT2::ElementType>::value &&
+                     IsSame< ElementType, ElementType_<MT2> >::value &&
                      IntrinsicTrait<ElementType>::addition };
    };
    //**********************************************************************************************
@@ -8835,7 +8833,7 @@ class DenseSubmatrix<MT,aligned,true> : public DenseMatrix< DenseSubmatrix<MT,al
    struct VectorizedSubAssign {
       enum { value = useOptimizedKernels &&
                      vectorizable && MT2::vectorizable &&
-                     IsSame<ElementType,typename MT2::ElementType>::value &&
+                     IsSame< ElementType, ElementType_<MT2> >::value &&
                      IntrinsicTrait<ElementType>::subtraction };
    };
    //**********************************************************************************************
@@ -8967,8 +8965,7 @@ class DenseSubmatrix<MT,aligned,true> : public DenseMatrix< DenseSubmatrix<MT,al
                               size_t row, size_t column );
 
    template< typename MT2, bool AF2, bool SO2 >
-   friend typename DerestrictTrait< DenseSubmatrix<MT2,AF2,SO2> >::Type
-      derestrict( DenseSubmatrix<MT2,AF2,SO2>& dm );
+   friend DerestrictTrait_< DenseSubmatrix<MT2,AF2,SO2> > derestrict( DenseSubmatrix<MT2,AF2,SO2>& dm );
    //**********************************************************************************************
 
    //**Compile time checks*************************************************************************
@@ -9407,7 +9404,7 @@ inline DenseSubmatrix<MT,aligned,true>&
       BLAZE_THROW_INVALID_ARGUMENT( "Invalid assignment to restricted matrix" );
    }
 
-   typename DerestrictTrait<This>::Type left( derestrict( *this ) );
+   DerestrictTrait_<This> left( derestrict( *this ) );
 
    if( rhs.canAlias( &matrix_ ) ) {
       const ResultType tmp( rhs );
@@ -9445,13 +9442,13 @@ template< typename MT2   // Type of the right-hand side matrix
 inline DenseSubmatrix<MT,aligned,true>&
    DenseSubmatrix<MT,aligned,true>::operator=( const Matrix<MT2,SO>& rhs )
 {
-   BLAZE_CONSTRAINT_MUST_NOT_REQUIRE_EVALUATION( typename MT2::ResultType );
+   BLAZE_CONSTRAINT_MUST_NOT_REQUIRE_EVALUATION( ResultType_<MT2> );
 
    if( rows() != (~rhs).rows() || columns() != (~rhs).columns() ) {
       BLAZE_THROW_INVALID_ARGUMENT( "Matrix sizes do not match" );
    }
 
-   typedef If_< IsRestricted<MT>, typename MT2::CompositeType, const MT2& >  Right;
+   typedef If_< IsRestricted<MT>, CompositeType_<MT2>, const MT2& >  Right;
    Right right( ~rhs );
 
    if( !tryAssign( matrix_, right, row_, column_ ) ) {
@@ -9461,10 +9458,10 @@ inline DenseSubmatrix<MT,aligned,true>&
    if( IsSparseMatrix<MT2>::value )
       reset();
 
-   typename DerestrictTrait<This>::Type left( derestrict( *this ) );
+   DerestrictTrait_<This> left( derestrict( *this ) );
 
    if( IsReference<Right>::value && right.canAlias( &matrix_ ) ) {
-      const typename MT2::ResultType tmp( right );
+      const ResultType_<MT2> tmp( right );
       smpAssign( left, tmp );
    }
    else {
@@ -9501,9 +9498,9 @@ inline DisableIf_< And< IsRestricted<MT>, RequiresEvaluation<MT2> >, DenseSubmat
 {
    BLAZE_CONSTRAINT_MUST_BE_DENSE_MATRIX_TYPE  ( ResultType );
    BLAZE_CONSTRAINT_MUST_NOT_REQUIRE_EVALUATION( ResultType );
-   BLAZE_CONSTRAINT_MUST_NOT_REQUIRE_EVALUATION( typename MT2::ResultType );
+   BLAZE_CONSTRAINT_MUST_NOT_REQUIRE_EVALUATION( ResultType_<MT2> );
 
-   typedef typename AddTrait<ResultType,typename MT2::ResultType>::Type  AddType;
+   typedef AddTrait_< ResultType, ResultType_<MT2> >  AddType;
 
    BLAZE_CONSTRAINT_MUST_BE_DENSE_MATRIX_TYPE  ( AddType );
    BLAZE_CONSTRAINT_MUST_NOT_REQUIRE_EVALUATION( AddType );
@@ -9516,7 +9513,7 @@ inline DisableIf_< And< IsRestricted<MT>, RequiresEvaluation<MT2> >, DenseSubmat
       BLAZE_THROW_INVALID_ARGUMENT( "Invalid assignment to restricted matrix" );
    }
 
-   typename DerestrictTrait<This>::Type left( derestrict( *this ) );
+   DerestrictTrait_<This> left( derestrict( *this ) );
 
    if( ( ( IsSymmetric<MT>::value || IsHermitian<MT>::value ) && hasOverlap() ) ||
        (~rhs).canAlias( &matrix_ ) ) {
@@ -9557,9 +9554,9 @@ inline EnableIf_< And< IsRestricted<MT>, RequiresEvaluation<MT2> >, DenseSubmatr
 {
    BLAZE_CONSTRAINT_MUST_BE_DENSE_MATRIX_TYPE  ( ResultType );
    BLAZE_CONSTRAINT_MUST_NOT_REQUIRE_EVALUATION( ResultType );
-   BLAZE_CONSTRAINT_MUST_NOT_REQUIRE_EVALUATION( typename MT2::ResultType );
+   BLAZE_CONSTRAINT_MUST_NOT_REQUIRE_EVALUATION( ResultType_<MT2> );
 
-   typedef typename AddTrait<ResultType,typename MT2::ResultType>::Type  AddType;
+   typedef AddTrait_< ResultType, ResultType_<MT2> >  AddType;
 
    BLAZE_CONSTRAINT_MUST_BE_DENSE_MATRIX_TYPE  ( AddType );
    BLAZE_CONSTRAINT_MUST_NOT_REQUIRE_EVALUATION( AddType );
@@ -9574,7 +9571,7 @@ inline EnableIf_< And< IsRestricted<MT>, RequiresEvaluation<MT2> >, DenseSubmatr
       BLAZE_THROW_INVALID_ARGUMENT( "Invalid assignment to restricted matrix" );
    }
 
-   typename DerestrictTrait<This>::Type left( derestrict( *this ) );
+   DerestrictTrait_<This> left( derestrict( *this ) );
 
    smpAssign( left, tmp );
 
@@ -9608,9 +9605,9 @@ inline DisableIf_< And< IsRestricted<MT>, RequiresEvaluation<MT2> >, DenseSubmat
 {
    BLAZE_CONSTRAINT_MUST_BE_DENSE_MATRIX_TYPE  ( ResultType );
    BLAZE_CONSTRAINT_MUST_NOT_REQUIRE_EVALUATION( ResultType );
-   BLAZE_CONSTRAINT_MUST_NOT_REQUIRE_EVALUATION( typename MT2::ResultType );
+   BLAZE_CONSTRAINT_MUST_NOT_REQUIRE_EVALUATION( ResultType_<MT2> );
 
-   typedef typename SubTrait<ResultType,typename MT2::ResultType>::Type  SubType;
+   typedef SubTrait_< ResultType, ResultType_<MT2> >  SubType;
 
    BLAZE_CONSTRAINT_MUST_BE_DENSE_MATRIX_TYPE  ( SubType );
    BLAZE_CONSTRAINT_MUST_NOT_REQUIRE_EVALUATION( SubType );
@@ -9623,7 +9620,7 @@ inline DisableIf_< And< IsRestricted<MT>, RequiresEvaluation<MT2> >, DenseSubmat
       BLAZE_THROW_INVALID_ARGUMENT( "Invalid assignment to restricted matrix" );
    }
 
-   typename DerestrictTrait<This>::Type left( derestrict( *this ) );
+   DerestrictTrait_<This> left( derestrict( *this ) );
 
    if( ( ( IsSymmetric<MT>::value || IsHermitian<MT>::value ) && hasOverlap() ) ||
        (~rhs).canAlias( &matrix_ ) ) {
@@ -9664,9 +9661,9 @@ inline EnableIf_< And< IsRestricted<MT>, RequiresEvaluation<MT2> >, DenseSubmatr
 {
    BLAZE_CONSTRAINT_MUST_BE_DENSE_MATRIX_TYPE  ( ResultType );
    BLAZE_CONSTRAINT_MUST_NOT_REQUIRE_EVALUATION( ResultType );
-   BLAZE_CONSTRAINT_MUST_NOT_REQUIRE_EVALUATION( typename MT2::ResultType );
+   BLAZE_CONSTRAINT_MUST_NOT_REQUIRE_EVALUATION( ResultType_<MT2> );
 
-   typedef typename SubTrait<ResultType,typename MT2::ResultType>::Type  SubType;
+   typedef SubTrait_< ResultType, ResultType_<MT2> >  SubType;
 
    BLAZE_CONSTRAINT_MUST_BE_DENSE_MATRIX_TYPE  ( SubType );
    BLAZE_CONSTRAINT_MUST_NOT_REQUIRE_EVALUATION( SubType );
@@ -9681,7 +9678,7 @@ inline EnableIf_< And< IsRestricted<MT>, RequiresEvaluation<MT2> >, DenseSubmatr
       BLAZE_THROW_INVALID_ARGUMENT( "Invalid assignment to restricted matrix" );
    }
 
-   typename DerestrictTrait<This>::Type left( derestrict( *this ) );
+   DerestrictTrait_<This> left( derestrict( *this ) );
 
    smpAssign( left, tmp );
 
@@ -9715,9 +9712,9 @@ inline DenseSubmatrix<MT,aligned,true>&
 {
    BLAZE_CONSTRAINT_MUST_BE_DENSE_MATRIX_TYPE  ( ResultType );
    BLAZE_CONSTRAINT_MUST_NOT_REQUIRE_EVALUATION( ResultType );
-   BLAZE_CONSTRAINT_MUST_NOT_REQUIRE_EVALUATION( typename MT2::ResultType );
+   BLAZE_CONSTRAINT_MUST_NOT_REQUIRE_EVALUATION( ResultType_<MT2> );
 
-   typedef typename MultTrait<ResultType,typename MT2::ResultType>::Type  MultType;
+   typedef MultTrait_< ResultType, ResultType_<MT2> >  MultType;
 
    BLAZE_CONSTRAINT_MUST_BE_DENSE_MATRIX_TYPE  ( MultType );
    BLAZE_CONSTRAINT_MUST_NOT_REQUIRE_EVALUATION( MultType );
@@ -9732,7 +9729,7 @@ inline DenseSubmatrix<MT,aligned,true>&
       BLAZE_THROW_INVALID_ARGUMENT( "Invalid assignment to restricted matrix" );
    }
 
-   typename DerestrictTrait<This>::Type left( derestrict( *this ) );
+   DerestrictTrait_<This> left( derestrict( *this ) );
 
    smpAssign( left, tmp );
 
@@ -9762,7 +9759,7 @@ inline EnableIf_< IsNumeric<Other>, DenseSubmatrix<MT,aligned,true> >&
 {
    BLAZE_CONSTRAINT_MUST_NOT_BE_UNITRIANGULAR_MATRIX_TYPE( MT );
 
-   typename DerestrictTrait<This>::Type left( derestrict( *this ) );
+   DerestrictTrait_<This> left( derestrict( *this ) );
    smpAssign( left, (*this) * rhs );
 
    return *this;
@@ -9793,7 +9790,7 @@ inline EnableIf_< IsNumeric<Other>, DenseSubmatrix<MT,aligned,true> >&
 
    BLAZE_USER_ASSERT( rhs != Other(0), "Division by zero detected" );
 
-   typename DerestrictTrait<This>::Type left( derestrict( *this ) );
+   DerestrictTrait_<This> left( derestrict( *this ) );
    smpAssign( left, (*this) / rhs );
 
    return *this;
@@ -10065,7 +10062,7 @@ inline DenseSubmatrix<MT,aligned,true>& DenseSubmatrix<MT,aligned,true>::transpo
       BLAZE_THROW_LOGIC_ERROR( "Invalid transpose operation" );
    }
 
-   typename DerestrictTrait<This>::Type left( derestrict( *this ) );
+   DerestrictTrait_<This> left( derestrict( *this ) );
    const ResultType tmp( trans( *this ) );
    smpAssign( left, tmp );
 
@@ -10104,7 +10101,7 @@ inline DenseSubmatrix<MT,aligned,true>& DenseSubmatrix<MT,aligned,true>::ctransp
       BLAZE_THROW_LOGIC_ERROR( "Invalid transpose operation" );
    }
 
-   typename DerestrictTrait<This>::Type left( derestrict( *this ) );
+   DerestrictTrait_<This> left( derestrict( *this ) );
    const ResultType tmp( ctrans( *this ) );
    smpAssign( left, tmp );
 
@@ -10619,7 +10616,7 @@ inline EnableIf_< typename DenseSubmatrix<MT,aligned,true>::BLAZE_TEMPLATE Vecto
       for( size_t j=0UL; j<n_; ++j )
       {
          size_t i( 0UL );
-         typename MT2::ConstIterator it( (~rhs).begin(j) );
+         ConstIterator_<MT2> it( (~rhs).begin(j) );
 
          for( ; (i+IT::size*3UL) < ipos; i+=IT::size*4UL ) {
             store( i             , j, it.load() ); it += IT::size;
@@ -10699,7 +10696,7 @@ inline void DenseSubmatrix<MT,aligned,true>::assign( const SparseMatrix<MT2,true
    BLAZE_INTERNAL_ASSERT( n_ == (~rhs).columns(), "Invalid number of columns" );
 
    for( size_t j=0UL; j<n_; ++j )
-      for( typename MT2::ConstIterator element=(~rhs).begin(j); element!=(~rhs).end(j); ++element )
+      for( ConstIterator_<MT2> element=(~rhs).begin(j); element!=(~rhs).end(j); ++element )
          matrix_(row_+element->index(),column_+j) = element->value();
 }
 /*! \endcond */
@@ -10728,7 +10725,7 @@ inline void DenseSubmatrix<MT,aligned,true>::assign( const SparseMatrix<MT2,fals
    BLAZE_INTERNAL_ASSERT( n_ == (~rhs).columns(), "Invalid number of columns" );
 
    for( size_t i=0UL; i<m_; ++i )
-      for( typename MT2::ConstIterator element=(~rhs).begin(i); element!=(~rhs).end(i); ++element )
+      for( ConstIterator_<MT2> element=(~rhs).begin(i); element!=(~rhs).end(i); ++element )
          matrix_(row_+i,column_+element->index()) = element->value();
 }
 /*! \endcond */
@@ -10808,7 +10805,7 @@ inline EnableIf_< typename DenseSubmatrix<MT,aligned,true>::BLAZE_TEMPLATE Vecto
       BLAZE_INTERNAL_ASSERT( ( iend - ( iend % (IT::size) ) ) == ipos, "Invalid end calculation" );
 
       size_t i( ibegin );
-      typename MT2::ConstIterator it( (~rhs).begin(j) );
+      ConstIterator_<MT2> it( (~rhs).begin(j) );
 
       for( ; (i+IT::size*3UL) < ipos; i+=IT::size*4UL ) {
          store( i             , j, load(i             ,j) + it.load() ); it += IT::size;
@@ -10887,7 +10884,7 @@ inline void DenseSubmatrix<MT,aligned,true>::addAssign( const SparseMatrix<MT2,t
    BLAZE_INTERNAL_ASSERT( n_ == (~rhs).columns(), "Invalid number of columns" );
 
    for( size_t j=0UL; j<n_; ++j )
-      for( typename MT2::ConstIterator element=(~rhs).begin(j); element!=(~rhs).end(j); ++element )
+      for( ConstIterator_<MT2> element=(~rhs).begin(j); element!=(~rhs).end(j); ++element )
          matrix_(row_+element->index(),column_+j) += element->value();
 }
 /*! \endcond */
@@ -10916,7 +10913,7 @@ inline void DenseSubmatrix<MT,aligned,true>::addAssign( const SparseMatrix<MT2,f
    BLAZE_INTERNAL_ASSERT( n_ == (~rhs).columns(), "Invalid number of columns" );
 
    for( size_t i=0UL; i<m_; ++i )
-      for( typename MT2::ConstIterator element=(~rhs).begin(i); element!=(~rhs).end(i); ++element )
+      for( ConstIterator_<MT2> element=(~rhs).begin(i); element!=(~rhs).end(i); ++element )
          matrix_(row_+i,column_+element->index()) += element->value();
 }
 /*! \endcond */
@@ -10996,7 +10993,7 @@ inline EnableIf_< typename DenseSubmatrix<MT,aligned,true>::BLAZE_TEMPLATE Vecto
       BLAZE_INTERNAL_ASSERT( ( iend - ( iend % (IT::size) ) ) == ipos, "Invalid end calculation" );
 
       size_t i( ibegin );
-      typename MT2::ConstIterator it( (~rhs).begin(j) );
+      ConstIterator_<MT2> it( (~rhs).begin(j) );
 
       for( ; (i+IT::size*3UL) < ipos; i+=IT::size*4UL ) {
          store( i             , j, load(i             ,j) - it.load() ); it += IT::size;
@@ -11075,7 +11072,7 @@ inline void DenseSubmatrix<MT,aligned,true>::subAssign( const SparseMatrix<MT2,t
    BLAZE_INTERNAL_ASSERT( n_ == (~rhs).columns(), "Invalid number of columns" );
 
    for( size_t j=0UL; j<n_; ++j )
-      for( typename MT2::ConstIterator element=(~rhs).begin(j); element!=(~rhs).end(j); ++element )
+      for( ConstIterator_<MT2> element=(~rhs).begin(j); element!=(~rhs).end(j); ++element )
          matrix_(row_+element->index(),column_+j) -= element->value();
 }
 /*! \endcond */
@@ -11104,7 +11101,7 @@ inline void DenseSubmatrix<MT,aligned,true>::subAssign( const SparseMatrix<MT2,f
    BLAZE_INTERNAL_ASSERT( n_ == (~rhs).columns(), "Invalid number of columns" );
 
    for( size_t i=0UL; i<m_; ++i )
-      for( typename MT2::ConstIterator element=(~rhs).begin(i); element!=(~rhs).end(i); ++element )
+      for( ConstIterator_<MT2> element=(~rhs).begin(i); element!=(~rhs).end(i); ++element )
          matrix_(row_+i,column_+element->index()) -= element->value();
 }
 /*! \endcond */
@@ -11760,7 +11757,7 @@ template< InversionFlag IF  // Inversion algorithm
         , bool SO >         // Storage order
 inline DisableIf_< HasMutableDataAccess<MT> > invert( DenseSubmatrix<MT,AF,SO>& dm )
 {
-   typedef typename DenseSubmatrix<MT,AF,SO>::ResultType  RT;
+   typedef ResultType_< DenseSubmatrix<MT,AF,SO> >  RT;
 
    BLAZE_CONSTRAINT_MUST_NOT_REQUIRE_EVALUATION  ( RT );
    BLAZE_CONSTRAINT_MUST_HAVE_MUTABLE_DATA_ACCESS( RT );
@@ -12037,10 +12034,9 @@ inline bool tryMultAssign( const DenseSubmatrix<MT,AF,SO>& lhs, const Vector<VT,
 template< typename MT  // Type of the dense matrix
         , bool AF      // Alignment flag
         , bool SO >    // Storage order
-inline typename DerestrictTrait< DenseSubmatrix<MT,AF,SO> >::Type
-   derestrict( DenseSubmatrix<MT,AF,SO>& dm )
+inline DerestrictTrait_< DenseSubmatrix<MT,AF,SO> > derestrict( DenseSubmatrix<MT,AF,SO>& dm )
 {
-   typedef typename DerestrictTrait< DenseSubmatrix<MT,AF,SO> >::Type  ReturnType;
+   typedef DerestrictTrait_< DenseSubmatrix<MT,AF,SO> >  ReturnType;
    return ReturnType( derestrict( dm.matrix_ ), dm.row_, dm.column_, dm.m_, dm.n_ );
 }
 /*! \endcond */
@@ -12119,7 +12115,7 @@ struct IsRestricted< DenseSubmatrix<MT,AF,SO> > : public BoolConstant< IsRestric
 template< typename MT, bool AF, bool SO >
 struct DerestrictTrait< DenseSubmatrix<MT,AF,SO> >
 {
-   typedef DenseSubmatrix< RemoveReference_< typename DerestrictTrait<MT>::Type >, AF >  Type;
+   using Type = DenseSubmatrix< RemoveReference_< DerestrictTrait_<MT> >, AF >;
 };
 /*! \endcond */
 //*************************************************************************************************
@@ -12191,13 +12187,13 @@ struct IsAligned< DenseSubmatrix<MT,aligned,SO> > : public TrueType
 template< typename MT, bool AF, bool SO, typename T >
 struct AddTrait< DenseSubmatrix<MT,AF,SO>, T >
 {
-   typedef typename AddTrait< typename SubmatrixTrait<MT>::Type, T >::Type  Type;
+   using Type = AddTrait_< SubmatrixTrait_<MT>, T >;
 };
 
 template< typename T, typename MT, bool AF, bool TF >
 struct AddTrait< T, DenseSubmatrix<MT,AF,TF> >
 {
-   typedef typename AddTrait< T, typename SubmatrixTrait<MT>::Type >::Type  Type;
+   using Type = AddTrait_< T, SubmatrixTrait_<MT> >;
 };
 /*! \endcond */
 //*************************************************************************************************
@@ -12216,13 +12212,13 @@ struct AddTrait< T, DenseSubmatrix<MT,AF,TF> >
 template< typename MT, bool AF, bool SO, typename T >
 struct SubTrait< DenseSubmatrix<MT,AF,SO>, T >
 {
-   typedef typename SubTrait< typename SubmatrixTrait<MT>::Type, T >::Type  Type;
+   using Type = SubTrait_< SubmatrixTrait_<MT>, T >;
 };
 
 template< typename T, typename MT, bool AF, bool TF >
 struct SubTrait< T, DenseSubmatrix<MT,AF,TF> >
 {
-   typedef typename SubTrait< T, typename SubmatrixTrait<MT>::Type >::Type  Type;
+   using Type = SubTrait_< T, SubmatrixTrait_<MT> >;
 };
 /*! \endcond */
 //*************************************************************************************************
@@ -12241,13 +12237,13 @@ struct SubTrait< T, DenseSubmatrix<MT,AF,TF> >
 template< typename MT, bool AF, bool SO, typename T >
 struct MultTrait< DenseSubmatrix<MT,AF,SO>, T >
 {
-   typedef typename MultTrait< typename SubmatrixTrait<MT>::Type, T >::Type  Type;
+   using Type = MultTrait_< SubmatrixTrait_<MT>, T >;
 };
 
 template< typename T, typename MT, bool AF, bool TF >
 struct MultTrait< T, DenseSubmatrix<MT,AF,TF> >
 {
-   typedef typename MultTrait< T, typename SubmatrixTrait<MT>::Type >::Type  Type;
+   using Type = MultTrait_< T, SubmatrixTrait_<MT> >;
 };
 /*! \endcond */
 //*************************************************************************************************
@@ -12266,13 +12262,13 @@ struct MultTrait< T, DenseSubmatrix<MT,AF,TF> >
 template< typename MT, bool AF, bool SO, typename T >
 struct DivTrait< DenseSubmatrix<MT,AF,SO>, T >
 {
-   typedef typename DivTrait< typename SubmatrixTrait<MT>::Type, T >::Type  Type;
+   using Type = DivTrait_< SubmatrixTrait_<MT>, T >;
 };
 
 template< typename T, typename MT, bool AF, bool TF >
 struct DivTrait< T, DenseSubmatrix<MT,AF,TF> >
 {
-   typedef typename DivTrait< T, typename SubmatrixTrait<MT>::Type >::Type  Type;
+   using Type = DivTrait_< T, SubmatrixTrait_<MT> >;
 };
 /*! \endcond */
 //*************************************************************************************************
@@ -12291,7 +12287,7 @@ struct DivTrait< T, DenseSubmatrix<MT,AF,TF> >
 template< typename MT, bool AF, bool SO >
 struct SubmatrixTrait< DenseSubmatrix<MT,AF,SO> >
 {
-   typedef typename SubmatrixTrait< typename DenseSubmatrix<MT,AF,SO>::ResultType >::Type  Type;
+   using Type = SubmatrixTrait_< ResultType_< DenseSubmatrix<MT,AF,SO> > >;
 };
 /*! \endcond */
 //*************************************************************************************************
@@ -12310,7 +12306,7 @@ struct SubmatrixTrait< DenseSubmatrix<MT,AF,SO> >
 template< typename MT, bool AF1, bool SO, bool AF2 >
 struct SubmatrixExprTrait< DenseSubmatrix<MT,AF1,SO>, AF2 >
 {
-   typedef DenseSubmatrix<MT,AF2,SO>  Type;
+   using Type = DenseSubmatrix<MT,AF2,SO>;
 };
 /*! \endcond */
 //*************************************************************************************************
@@ -12321,7 +12317,7 @@ struct SubmatrixExprTrait< DenseSubmatrix<MT,AF1,SO>, AF2 >
 template< typename MT, bool AF1, bool SO, bool AF2 >
 struct SubmatrixExprTrait< const DenseSubmatrix<MT,AF1,SO>, AF2 >
 {
-   typedef DenseSubmatrix<MT,AF2,SO>  Type;
+   using Type = DenseSubmatrix<MT,AF2,SO>;
 };
 /*! \endcond */
 //*************************************************************************************************
@@ -12332,7 +12328,7 @@ struct SubmatrixExprTrait< const DenseSubmatrix<MT,AF1,SO>, AF2 >
 template< typename MT, bool AF1, bool SO, bool AF2 >
 struct SubmatrixExprTrait< volatile DenseSubmatrix<MT,AF1,SO>, AF2 >
 {
-   typedef DenseSubmatrix<MT,AF2,SO>  Type;
+   using Type = DenseSubmatrix<MT,AF2,SO>;
 };
 /*! \endcond */
 //*************************************************************************************************
@@ -12343,7 +12339,7 @@ struct SubmatrixExprTrait< volatile DenseSubmatrix<MT,AF1,SO>, AF2 >
 template< typename MT, bool AF1, bool SO, bool AF2 >
 struct SubmatrixExprTrait< const volatile DenseSubmatrix<MT,AF1,SO>, AF2 >
 {
-   typedef DenseSubmatrix<MT,AF2,SO>  Type;
+   using Type = DenseSubmatrix<MT,AF2,SO>;
 };
 /*! \endcond */
 //*************************************************************************************************
@@ -12362,7 +12358,7 @@ struct SubmatrixExprTrait< const volatile DenseSubmatrix<MT,AF1,SO>, AF2 >
 template< typename MT, bool AF, bool SO >
 struct RowTrait< DenseSubmatrix<MT,AF,SO> >
 {
-   typedef typename RowTrait< typename DenseSubmatrix<MT,AF,SO>::ResultType >::Type  Type;
+   using Type = RowTrait_< ResultType_< DenseSubmatrix<MT,AF,SO> > >;
 };
 /*! \endcond */
 //*************************************************************************************************
@@ -12381,7 +12377,7 @@ struct RowTrait< DenseSubmatrix<MT,AF,SO> >
 template< typename MT, bool AF, bool SO >
 struct ColumnTrait< DenseSubmatrix<MT,AF,SO> >
 {
-   typedef typename ColumnTrait< typename DenseSubmatrix<MT,AF,SO>::ResultType >::Type  Type;
+   using Type = ColumnTrait_< ResultType_< DenseSubmatrix<MT,AF,SO> > >;
 };
 /*! \endcond */
 //*************************************************************************************************

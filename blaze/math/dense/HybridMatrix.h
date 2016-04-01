@@ -42,6 +42,7 @@
 
 #include <algorithm>
 #include <cmath>
+#include <blaze/math/Aliases.h>
 #include <blaze/math/AlignmentFlag.h>
 #include <blaze/math/constraints/Diagonal.h>
 #include <blaze/math/constraints/Symmetric.h>
@@ -366,7 +367,7 @@ class HybridMatrix : public DenseMatrix< HybridMatrix<Type,M,N,SO>, SO >
    struct VectorizedAssign {
       enum { value = useOptimizedKernels &&
                      vectorizable && MT::vectorizable &&
-                     IsSame<Type,typename MT::ElementType>::value &&
+                     IsSame< Type, ElementType_<MT> >::value &&
                      IsRowMajorMatrix<MT>::value };
    };
    /*! \endcond */
@@ -379,7 +380,7 @@ class HybridMatrix : public DenseMatrix< HybridMatrix<Type,M,N,SO>, SO >
    struct VectorizedAddAssign {
       enum { value = useOptimizedKernels &&
                      vectorizable && MT::vectorizable &&
-                     IsSame<Type,typename MT::ElementType>::value &&
+                     IsSame< Type, ElementType_<MT> >::value &&
                      IntrinsicTrait<Type>::addition &&
                      IsRowMajorMatrix<MT>::value &&
                      !IsDiagonal<MT>::value };
@@ -394,7 +395,7 @@ class HybridMatrix : public DenseMatrix< HybridMatrix<Type,M,N,SO>, SO >
    struct VectorizedSubAssign {
       enum { value = useOptimizedKernels &&
                      vectorizable && MT::vectorizable &&
-                     IsSame<Type,typename MT::ElementType>::value &&
+                     IsSame< Type, ElementType_<MT> >::value &&
                      IntrinsicTrait<Type>::subtraction &&
                      IsRowMajorMatrix<MT>::value &&
                      !IsDiagonal<MT>::value };
@@ -1282,8 +1283,8 @@ inline HybridMatrix<Type,M,N,SO>& HybridMatrix<Type,M,N,SO>::operator=( const Ma
 {
    using blaze::assign;
 
-   typedef typename TransExprTrait<This>::Type   TT;
-   typedef typename CTransExprTrait<This>::Type  CT;
+   typedef TransExprTrait_<This>   TT;
+   typedef CTransExprTrait_<This>  CT;
 
    if( (~rhs).rows() > M || (~rhs).columns() > N ) {
       BLAZE_THROW_INVALID_ARGUMENT( "Invalid assignment to hybrid matrix" );
@@ -1337,7 +1338,7 @@ inline HybridMatrix<Type,M,N,SO>& HybridMatrix<Type,M,N,SO>::operator+=( const M
    }
 
    if( (~rhs).canAlias( this ) ) {
-      const typename MT::ResultType tmp( ~rhs );
+      const ResultType_<MT> tmp( ~rhs );
       addAssign( *this, tmp );
    }
    else {
@@ -1374,7 +1375,7 @@ inline HybridMatrix<Type,M,N,SO>& HybridMatrix<Type,M,N,SO>::operator-=( const M
    }
 
    if( (~rhs).canAlias( this ) ) {
-      const typename MT::ResultType tmp( ~rhs );
+      const ResultType_<MT> tmp( ~rhs );
       subAssign( *this, tmp );
    }
    else {
@@ -2522,10 +2523,8 @@ inline void HybridMatrix<Type,M,N,SO>::assign( const SparseMatrix<MT,SO>& rhs )
 {
    BLAZE_INTERNAL_ASSERT( (~rhs).rows() == m_ && (~rhs).columns() == n_, "Invalid matrix size" );
 
-   typedef typename MT::ConstIterator  RhsConstIterator;
-
    for( size_t i=0UL; i<m_; ++i )
-      for( RhsConstIterator element=(~rhs).begin(i); element!=(~rhs).end(i); ++element )
+      for( ConstIterator_<MT> element=(~rhs).begin(i); element!=(~rhs).end(i); ++element )
          v_[i*NN+element->index()] = element->value();
 }
 //*************************************************************************************************
@@ -2553,10 +2552,8 @@ inline void HybridMatrix<Type,M,N,SO>::assign( const SparseMatrix<MT,!SO>& rhs )
 
    BLAZE_INTERNAL_ASSERT( (~rhs).rows() == m_ && (~rhs).columns() == n_, "Invalid matrix size" );
 
-   typedef typename MT::ConstIterator  RhsConstIterator;
-
    for( size_t j=0UL; j<n_; ++j )
-      for( RhsConstIterator element=(~rhs).begin(j); element!=(~rhs).end(j); ++element )
+      for( ConstIterator_<MT> element=(~rhs).begin(j); element!=(~rhs).end(j); ++element )
          v_[element->index()*NN+j] = element->value();
 }
 //*************************************************************************************************
@@ -2682,10 +2679,8 @@ inline void HybridMatrix<Type,M,N,SO>::addAssign( const SparseMatrix<MT,SO>& rhs
 {
    BLAZE_INTERNAL_ASSERT( (~rhs).rows() == m_ && (~rhs).columns() == n_, "Invalid matrix size" );
 
-   typedef typename MT::ConstIterator  RhsConstIterator;
-
    for( size_t i=0UL; i<m_; ++i )
-      for( RhsConstIterator element=(~rhs).begin(i); element!=(~rhs).end(i); ++element )
+      for( ConstIterator_<MT> element=(~rhs).begin(i); element!=(~rhs).end(i); ++element )
          v_[i*NN+element->index()] += element->value();
 }
 //*************************************************************************************************
@@ -2713,10 +2708,8 @@ inline void HybridMatrix<Type,M,N,SO>::addAssign( const SparseMatrix<MT,!SO>& rh
 
    BLAZE_INTERNAL_ASSERT( (~rhs).rows() == m_ && (~rhs).columns() == n_, "Invalid matrix size" );
 
-   typedef typename MT::ConstIterator  RhsConstIterator;
-
    for( size_t j=0UL; j<n_; ++j )
-      for( RhsConstIterator element=(~rhs).begin(j); element!=(~rhs).end(j); ++element )
+      for( ConstIterator_<MT> element=(~rhs).begin(j); element!=(~rhs).end(j); ++element )
          v_[element->index()*NN+j] += element->value();
 }
 //*************************************************************************************************
@@ -2842,10 +2835,8 @@ inline void HybridMatrix<Type,M,N,SO>::subAssign( const SparseMatrix<MT,SO>& rhs
 {
    BLAZE_INTERNAL_ASSERT( (~rhs).rows() == m_ && (~rhs).columns() == n_, "Invalid matrix size" );
 
-   typedef typename MT::ConstIterator  RhsConstIterator;
-
    for( size_t i=0UL; i<m_; ++i )
-      for( RhsConstIterator element=(~rhs).begin(i); element!=(~rhs).end(i); ++element )
+      for( ConstIterator_<MT> element=(~rhs).begin(i); element!=(~rhs).end(i); ++element )
          v_[i*NN+element->index()] -= element->value();
 }
 //*************************************************************************************************
@@ -2873,10 +2864,8 @@ inline void HybridMatrix<Type,M,N,SO>::subAssign( const SparseMatrix<MT,!SO>& rh
 
    BLAZE_INTERNAL_ASSERT( (~rhs).rows() == m_ && (~rhs).columns() == n_, "Invalid matrix size" );
 
-   typedef typename MT::ConstIterator  RhsConstIterator;
-
    for( size_t j=0UL; j<n_; ++j )
-      for( RhsConstIterator element=(~rhs).begin(j); element!=(~rhs).end(j); ++element )
+      for( ConstIterator_<MT> element=(~rhs).begin(j); element!=(~rhs).end(j); ++element )
          v_[element->index()*NN+j] -= element->value();
 }
 //*************************************************************************************************
@@ -3066,7 +3055,7 @@ class HybridMatrix<Type,M,N,true> : public DenseMatrix< HybridMatrix<Type,M,N,tr
    struct VectorizedAssign {
       enum { value = useOptimizedKernels &&
                      vectorizable && MT::vectorizable &&
-                     IsSame<Type,typename MT::ElementType>::value &&
+                     IsSame< Type, ElementType_<MT> >::value &&
                      IsColumnMajorMatrix<MT>::value };
    };
    //**********************************************************************************************
@@ -3077,7 +3066,7 @@ class HybridMatrix<Type,M,N,true> : public DenseMatrix< HybridMatrix<Type,M,N,tr
    struct VectorizedAddAssign {
       enum { value = useOptimizedKernels &&
                      vectorizable && MT::vectorizable &&
-                     IsSame<Type,typename MT::ElementType>::value &&
+                     IsSame< Type, ElementType_<MT> >::value &&
                      IntrinsicTrait<Type>::addition &&
                      IsColumnMajorMatrix<MT>::value &&
                      !IsDiagonal<MT>::value };
@@ -3090,7 +3079,7 @@ class HybridMatrix<Type,M,N,true> : public DenseMatrix< HybridMatrix<Type,M,N,tr
    struct VectorizedSubAssign {
       enum { value = useOptimizedKernels &&
                      vectorizable && MT::vectorizable &&
-                     IsSame<Type,typename MT::ElementType>::value &&
+                     IsSame< Type, ElementType_<MT> >::value &&
                      IntrinsicTrait<Type>::subtraction &&
                      IsColumnMajorMatrix<MT>::value &&
                      !IsDiagonal<MT>::value };
@@ -3964,8 +3953,8 @@ inline HybridMatrix<Type,M,N,true>& HybridMatrix<Type,M,N,true>::operator=( cons
 {
    using blaze::assign;
 
-   typedef typename TransExprTrait<This>::Type   TT;
-   typedef typename CTransExprTrait<This>::Type  CT;
+   typedef TransExprTrait_<This>   TT;
+   typedef CTransExprTrait_<This>  CT;
 
    if( (~rhs).rows() > M || (~rhs).columns() > N ) {
       BLAZE_THROW_INVALID_ARGUMENT( "Invalid assignment to hybrid matrix" );
@@ -4020,7 +4009,7 @@ inline HybridMatrix<Type,M,N,true>& HybridMatrix<Type,M,N,true>::operator+=( con
    }
 
    if( (~rhs).canAlias( this ) ) {
-      const typename MT::ResultType tmp( ~rhs );
+      const ResultType_<MT> tmp( ~rhs );
       addAssign( *this, tmp );
    }
    else {
@@ -4058,7 +4047,7 @@ inline HybridMatrix<Type,M,N,true>& HybridMatrix<Type,M,N,true>::operator-=( con
    }
 
    if( (~rhs).canAlias( this ) ) {
-      const typename MT::ResultType tmp( ~rhs );
+      const ResultType_<MT> tmp( ~rhs );
       subAssign( *this, tmp );
    }
    else {
@@ -5224,10 +5213,8 @@ inline void HybridMatrix<Type,M,N,true>::assign( const SparseMatrix<MT,true>& rh
 {
    BLAZE_INTERNAL_ASSERT( (~rhs).rows() == m_ && (~rhs).columns() == n_, "Invalid matrix size" );
 
-   typedef typename MT::ConstIterator  RhsConstIterator;
-
    for( size_t j=0UL; j<n_; ++j )
-      for( RhsConstIterator element=(~rhs).begin(j); element!=(~rhs).end(j); ++element )
+      for( ConstIterator_<MT> element=(~rhs).begin(j); element!=(~rhs).end(j); ++element )
          v_[element->index()+j*MM] = element->value();
 }
 /*! \endcond */
@@ -5256,10 +5243,8 @@ inline void HybridMatrix<Type,M,N,true>::assign( const SparseMatrix<MT,false>& r
 
    BLAZE_INTERNAL_ASSERT( (~rhs).rows() == m_ && (~rhs).columns() == n_, "Invalid matrix size" );
 
-   typedef typename MT::ConstIterator  RhsConstIterator;
-
    for( size_t i=0UL; i<m_; ++i )
-      for( RhsConstIterator element=(~rhs).begin(i); element!=(~rhs).end(i); ++element )
+      for( ConstIterator_<MT> element=(~rhs).begin(i); element!=(~rhs).end(i); ++element )
          v_[i+element->index()*MM] = element->value();
 }
 /*! \endcond */
@@ -5388,10 +5373,8 @@ inline void HybridMatrix<Type,M,N,true>::addAssign( const SparseMatrix<MT,true>&
 {
    BLAZE_INTERNAL_ASSERT( (~rhs).rows() == m_ && (~rhs).columns() == n_, "Invalid matrix size" );
 
-   typedef typename MT::ConstIterator  RhsConstIterator;
-
    for( size_t j=0UL; j<n_; ++j )
-      for( RhsConstIterator element=(~rhs).begin(j); element!=(~rhs).end(j); ++element )
+      for( ConstIterator_<MT> element=(~rhs).begin(j); element!=(~rhs).end(j); ++element )
          v_[element->index()+j*MM] += element->value();
 }
 /*! \endcond */
@@ -5420,10 +5403,8 @@ inline void HybridMatrix<Type,M,N,true>::addAssign( const SparseMatrix<MT,false>
 
    BLAZE_INTERNAL_ASSERT( (~rhs).rows() == m_ && (~rhs).columns() == n_, "Invalid matrix size" );
 
-   typedef typename MT::ConstIterator  RhsConstIterator;
-
    for( size_t i=0UL; i<m_; ++i )
-      for( RhsConstIterator element=(~rhs).begin(i); element!=(~rhs).end(i); ++element )
+      for( ConstIterator_<MT> element=(~rhs).begin(i); element!=(~rhs).end(i); ++element )
          v_[i+element->index()*MM] += element->value();
 }
 /*! \endcond */
@@ -5552,7 +5533,7 @@ inline void HybridMatrix<Type,M,N,true>::subAssign( const SparseMatrix<MT,true>&
 {
    BLAZE_INTERNAL_ASSERT( (~rhs).rows() == m_ && (~rhs).columns() == n_, "Invalid matrix size" );
 
-   typedef typename MT::ConstIterator  RhsConstIterator;
+   typedef ConstIterator_<MT>  RhsConstIterator;
 
    for( size_t j=0UL; j<n_; ++j )
       for( RhsConstIterator element=(~rhs).begin(j); element!=(~rhs).end(j); ++element )
@@ -5584,7 +5565,7 @@ inline void HybridMatrix<Type,M,N,true>::subAssign( const SparseMatrix<MT,false>
 
    BLAZE_INTERNAL_ASSERT( (~rhs).rows() == m_ && (~rhs).columns() == n_, "Invalid matrix size" );
 
-   typedef typename MT::ConstIterator  RhsConstIterator;
+   typedef ConstIterator_<MT>  RhsConstIterator;
 
    for( size_t i=0UL; i<m_; ++i )
       for( RhsConstIterator element=(~rhs).begin(i); element!=(~rhs).end(i); ++element )
@@ -5924,37 +5905,37 @@ struct IsResizable< HybridMatrix<T,M,N,SO> > : public TrueType
 template< typename T1, size_t M1, size_t N1, bool SO, typename T2, size_t M2, size_t N2 >
 struct AddTrait< HybridMatrix<T1,M1,N1,SO>, StaticMatrix<T2,M2,N2,SO> >
 {
-   typedef StaticMatrix< typename AddTrait<T1,T2>::Type, M2, N2, SO >  Type;
+   using Type = StaticMatrix< AddTrait_<T1,T2>, M2, N2, SO >;
 };
 
 template< typename T1, size_t M1, size_t N1, bool SO1, typename T2, size_t M2, size_t N2, bool SO2 >
 struct AddTrait< HybridMatrix<T1,M1,N1,SO1>, StaticMatrix<T2,M2,N2,SO2> >
 {
-   typedef StaticMatrix< typename AddTrait<T1,T2>::Type, M2, N2, false >  Type;
+   using Type = StaticMatrix< AddTrait_<T1,T2>, M2, N2, false >;
 };
 
 template< typename T1, size_t M1, size_t N1, bool SO, typename T2, size_t M2, size_t N2 >
 struct AddTrait< StaticMatrix<T1,M1,N1,SO>, HybridMatrix<T2,M2,N2,SO> >
 {
-   typedef StaticMatrix< typename AddTrait<T1,T2>::Type, M2, N2, SO >  Type;
+   using Type = StaticMatrix< AddTrait_<T1,T2>, M2, N2, SO >;
 };
 
 template< typename T1, size_t M1, size_t N1, bool SO1, typename T2, size_t M2, size_t N2, bool SO2 >
 struct AddTrait< StaticMatrix<T1,M1,N1,SO1>, HybridMatrix<T2,M2,N2,SO2> >
 {
-   typedef StaticMatrix< typename AddTrait<T1,T2>::Type, M2, N2, false >  Type;
+   using Type = StaticMatrix< AddTrait_<T1,T2>, M2, N2, false >;
 };
 
 template< typename T1, size_t M1, size_t N1, bool SO, typename T2, size_t M2, size_t N2 >
 struct AddTrait< HybridMatrix<T1,M1,N1,SO>, HybridMatrix<T2,M2,N2,SO> >
 {
-   typedef HybridMatrix< typename AddTrait<T1,T2>::Type, ( M1 < M2 )?( M1 ):( M2 ), ( N1 < N2 )?( N1 ):( N2 ), SO >  Type;
+   using Type = HybridMatrix< AddTrait_<T1,T2>, ( M1 < M2 )?( M1 ):( M2 ), ( N1 < N2 )?( N1 ):( N2 ), SO >;
 };
 
 template< typename T1, size_t M1, size_t N1, bool SO1, typename T2, size_t M2, size_t N2, bool SO2 >
 struct AddTrait< HybridMatrix<T1,M1,N1,SO1>, HybridMatrix<T2,M2,N2,SO2> >
 {
-   typedef HybridMatrix< typename AddTrait<T1,T2>::Type, ( M1 < M2 )?( M1 ):( M2 ), ( N1 < N2 )?( N1 ):( N2 ), false >  Type;
+   using Type = HybridMatrix< AddTrait_<T1,T2>, ( M1 < M2 )?( M1 ):( M2 ), ( N1 < N2 )?( N1 ):( N2 ), false >;
 };
 /*! \endcond */
 //*************************************************************************************************
@@ -5973,37 +5954,37 @@ struct AddTrait< HybridMatrix<T1,M1,N1,SO1>, HybridMatrix<T2,M2,N2,SO2> >
 template< typename T1, size_t M1, size_t N1, bool SO, typename T2, size_t M2, size_t N2 >
 struct SubTrait< HybridMatrix<T1,M1,N1,SO>, StaticMatrix<T2,M2,N2,SO> >
 {
-   typedef StaticMatrix< typename SubTrait<T1,T2>::Type, M2, N2, SO >  Type;
+   using Type = StaticMatrix< SubTrait_<T1,T2>, M2, N2, SO >;
 };
 
 template< typename T1, size_t M1, size_t N1, bool SO1, typename T2, size_t M2, size_t N2, bool SO2 >
 struct SubTrait< HybridMatrix<T1,M1,N1,SO1>, StaticMatrix<T2,M2,N2,SO2> >
 {
-   typedef StaticMatrix< typename SubTrait<T1,T2>::Type, M2, N2, false >  Type;
+   using Type = StaticMatrix< SubTrait_<T1,T2>, M2, N2, false >;
 };
 
 template< typename T1, size_t M1, size_t N1, bool SO, typename T2, size_t M2, size_t N2 >
 struct SubTrait< StaticMatrix<T1,M1,N1,SO>, HybridMatrix<T2,M2,N2,SO> >
 {
-   typedef StaticMatrix< typename SubTrait<T1,T2>::Type, M2, N2, SO >  Type;
+   using Type = StaticMatrix< SubTrait_<T1,T2>, M2, N2, SO >;
 };
 
 template< typename T1, size_t M1, size_t N1, bool SO1, typename T2, size_t M2, size_t N2, bool SO2 >
 struct SubTrait< StaticMatrix<T1,M1,N1,SO1>, HybridMatrix<T2,M2,N2,SO2> >
 {
-   typedef StaticMatrix< typename SubTrait<T1,T2>::Type, M2, N2, false >  Type;
+   using Type = StaticMatrix< SubTrait_<T1,T2>, M2, N2, false >;
 };
 
 template< typename T1, size_t M1, size_t N1, bool SO, typename T2, size_t M2, size_t N2 >
 struct SubTrait< HybridMatrix<T1,M1,N1,SO>, HybridMatrix<T2,M2,N2,SO> >
 {
-   typedef HybridMatrix< typename SubTrait<T1,T2>::Type, ( M1 < M2 )?( M1 ):( M2 ), ( N1 < N2 )?( N1 ):( N2 ), SO >  Type;
+   using Type = HybridMatrix< SubTrait_<T1,T2>, ( M1 < M2 )?( M1 ):( M2 ), ( N1 < N2 )?( N1 ):( N2 ), SO >;
 };
 
 template< typename T1, size_t M1, size_t N1, bool SO1, typename T2, size_t M2, size_t N2, bool SO2 >
 struct SubTrait< HybridMatrix<T1,M1,N1,SO1>, HybridMatrix<T2,M2,N2,SO2> >
 {
-   typedef HybridMatrix< typename SubTrait<T1,T2>::Type, ( M1 < M2 )?( M1 ):( M2 ), ( N1 < N2 )?( N1 ):( N2 ), false >  Type;
+   using Type = HybridMatrix< SubTrait_<T1,T2>, ( M1 < M2 )?( M1 ):( M2 ), ( N1 < N2 )?( N1 ):( N2 ), false >;
 };
 /*! \endcond */
 //*************************************************************************************************
@@ -6022,91 +6003,91 @@ struct SubTrait< HybridMatrix<T1,M1,N1,SO1>, HybridMatrix<T2,M2,N2,SO2> >
 template< typename T1, size_t M, size_t N, bool SO, typename T2 >
 struct MultTrait< HybridMatrix<T1,M,N,SO>, T2, EnableIf_<IsNumeric<T2> > >
 {
-   typedef HybridMatrix< typename MultTrait<T1,T2>::Type, M, N, SO >  Type;
+   using Type = HybridMatrix< MultTrait_<T1,T2>, M, N, SO >;
 };
 
 template< typename T1, typename T2, size_t M, size_t N, bool SO >
 struct MultTrait< T1, HybridMatrix<T2,M,N,SO>, EnableIf_<IsNumeric<T1> > >
 {
-   typedef HybridMatrix< typename MultTrait<T1,T2>::Type, M, N, SO >  Type;
+   using Type = HybridMatrix< MultTrait_<T1,T2>, M, N, SO >;
 };
 
 template< typename T1, size_t M, size_t N, bool SO, typename T2, size_t K >
 struct MultTrait< HybridMatrix<T1,M,N,SO>, StaticVector<T2,K,false> >
 {
-   typedef HybridVector< typename MultTrait<T1,T2>::Type, M, false >  Type;
+   using Type = HybridVector< MultTrait_<T1,T2>, M, false >;
 };
 
 template< typename T1, size_t K, typename T2, size_t M, size_t N, bool SO >
 struct MultTrait< StaticVector<T1,K,true>, HybridMatrix<T2,M,N,SO> >
 {
-   typedef HybridVector< typename MultTrait<T1,T2>::Type, N, true >  Type;
+   using Type = HybridVector< MultTrait_<T1,T2>, N, true >;
 };
 
 template< typename T1, size_t M, size_t N, bool SO, typename T2, size_t K >
 struct MultTrait< HybridMatrix<T1,M,N,SO>, HybridVector<T2,K,false> >
 {
-   typedef HybridVector< typename MultTrait<T1,T2>::Type, M, false >  Type;
+   using Type = HybridVector< MultTrait_<T1,T2>, M, false >;
 };
 
 template< typename T1, size_t K, typename T2, size_t M, size_t N, bool SO >
 struct MultTrait< HybridVector<T1,K,true>, HybridMatrix<T2,M,N,SO> >
 {
-   typedef HybridVector< typename MultTrait<T1,T2>::Type, N, true >  Type;
+   using Type = HybridVector< MultTrait_<T1,T2>, N, true >;
 };
 
 template< typename T1, size_t M, size_t N, bool SO, typename T2 >
 struct MultTrait< HybridMatrix<T1,M,N,SO>, DynamicVector<T2,false> >
 {
-   typedef HybridVector< typename MultTrait<T1,T2>::Type, M, false >  Type;
+   using Type = HybridVector< MultTrait_<T1,T2>, M, false >;
 };
 
 template< typename T1, typename T2, size_t M, size_t N, bool SO >
 struct MultTrait< DynamicVector<T1,true>, HybridMatrix<T2,M,N,SO> >
 {
-   typedef HybridVector< typename MultTrait<T1,T2>::Type, N, true >  Type;
+   using Type = HybridVector< MultTrait_<T1,T2>, N, true >;
 };
 
 template< typename T1, size_t M, size_t N, bool SO, typename T2, bool AF, bool PF >
 struct MultTrait< HybridMatrix<T1,M,N,SO>, CustomVector<T2,AF,PF,false> >
 {
-   typedef HybridVector< typename MultTrait<T1,T2>::Type, M, false >  Type;
+   using Type = HybridVector< MultTrait_<T1,T2>, M, false >;
 };
 
 template< typename T1, bool AF, bool PF, typename T2, size_t M, size_t N, bool SO >
 struct MultTrait< CustomVector<T1,AF,PF,true>, HybridMatrix<T2,M,N,SO> >
 {
-   typedef HybridVector< typename MultTrait<T1,T2>::Type, N, true >  Type;
+   using Type = HybridVector< MultTrait_<T1,T2>, N, true >;
 };
 
 template< typename T1, size_t M, size_t N, bool SO, typename T2 >
 struct MultTrait< HybridMatrix<T1,M,N,SO>, CompressedVector<T2,false> >
 {
-   typedef HybridVector< typename MultTrait<T1,T2>::Type, M, false >  Type;
+   using Type = HybridVector< MultTrait_<T1,T2>, M, false >;
 };
 
 template< typename T1, typename T2, size_t M, size_t N, bool SO >
 struct MultTrait< CompressedVector<T1,true>, HybridMatrix<T2,M,N,SO> >
 {
-   typedef HybridVector< typename MultTrait<T1,T2>::Type, N, true >  Type;
+   using Type = HybridVector< MultTrait_<T1,T2>, N, true >;
 };
 
 template< typename T1, size_t M1, size_t N1, bool SO1, typename T2, size_t M2, size_t N2, bool SO2 >
 struct MultTrait< HybridMatrix<T1,M1,N1,SO1>, StaticMatrix<T2,M2,N2,SO2> >
 {
-   typedef HybridMatrix< typename MultTrait<T1,T2>::Type, M1, N2, SO1 >  Type;
+   using Type = HybridMatrix< MultTrait_<T1,T2>, M1, N2, SO1 >;
 };
 
 template< typename T1, size_t M1, size_t N1, bool SO1, typename T2, size_t M2, size_t N2, bool SO2 >
 struct MultTrait< StaticMatrix<T1,M1,N1,SO1>, HybridMatrix<T2,M2,N2,SO2> >
 {
-   typedef HybridMatrix< typename MultTrait<T1,T2>::Type, M1, N2, SO1 >  Type;
+   using Type = HybridMatrix< MultTrait_<T1,T2>, M1, N2, SO1 >;
 };
 
 template< typename T1, size_t M1, size_t N1, bool SO1, typename T2, size_t M2, size_t N2, bool SO2 >
 struct MultTrait< HybridMatrix<T1,M1,N1,SO1>, HybridMatrix<T2,M2,N2,SO2> >
 {
-   typedef HybridMatrix< typename MultTrait<T1,T2>::Type, M1, N2, SO1 >  Type;
+   using Type = HybridMatrix< MultTrait_<T1,T2>, M1, N2, SO1 >;
 };
 /*! \endcond */
 //*************************************************************************************************
@@ -6125,7 +6106,7 @@ struct MultTrait< HybridMatrix<T1,M1,N1,SO1>, HybridMatrix<T2,M2,N2,SO2> >
 template< typename T1, size_t M, size_t N, bool SO, typename T2 >
 struct DivTrait< HybridMatrix<T1,M,N,SO>, T2, EnableIf_<IsNumeric<T2> > >
 {
-   typedef HybridMatrix< typename DivTrait<T1,T2>::Type, M, N, SO >  Type;
+   using Type = HybridMatrix< DivTrait_<T1,T2>, M, N, SO >;
 };
 /*! \endcond */
 //*************************************************************************************************
@@ -6144,8 +6125,8 @@ struct DivTrait< HybridMatrix<T1,M,N,SO>, T2, EnableIf_<IsNumeric<T2> > >
 template< typename T1, size_t M, size_t N, bool SO, typename T2 >
 struct MathTrait< HybridMatrix<T1,M,N,SO>, HybridMatrix<T2,M,N,SO> >
 {
-   typedef HybridMatrix< typename MathTrait<T1,T2>::HighType, M, N, SO >  HighType;
-   typedef HybridMatrix< typename MathTrait<T1,T2>::LowType , M, N, SO >  LowType;
+   using HighType = HybridMatrix< typename MathTrait<T1,T2>::HighType, M, N, SO >;
+   using LowType  = HybridMatrix< typename MathTrait<T1,T2>::LowType , M, N, SO >;
 };
 /*! \endcond */
 //*************************************************************************************************
@@ -6164,7 +6145,7 @@ struct MathTrait< HybridMatrix<T1,M,N,SO>, HybridMatrix<T2,M,N,SO> >
 template< typename T1, size_t M, size_t N, bool SO >
 struct SubmatrixTrait< HybridMatrix<T1,M,N,SO> >
 {
-   typedef HybridMatrix<T1,M,N,SO>  Type;
+   using Type = HybridMatrix<T1,M,N,SO>;
 };
 /*! \endcond */
 //*************************************************************************************************
@@ -6183,7 +6164,7 @@ struct SubmatrixTrait< HybridMatrix<T1,M,N,SO> >
 template< typename T1, size_t M, size_t N, bool SO >
 struct RowTrait< HybridMatrix<T1,M,N,SO> >
 {
-   typedef HybridVector<T1,N,true>  Type;
+   using Type = HybridVector<T1,N,true>;
 };
 /*! \endcond */
 //*************************************************************************************************
@@ -6202,7 +6183,7 @@ struct RowTrait< HybridMatrix<T1,M,N,SO> >
 template< typename T1, size_t M, size_t N, bool SO >
 struct ColumnTrait< HybridMatrix<T1,M,N,SO> >
 {
-   typedef HybridVector<T1,M,false>  Type;
+   using Type = HybridVector<T1,M,false>;
 };
 /*! \endcond */
 //*************************************************************************************************

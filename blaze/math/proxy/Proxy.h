@@ -40,6 +40,7 @@
 // Includes
 //*************************************************************************************************
 
+#include <blaze/math/Aliases.h>
 #include <blaze/math/InversionFlag.h>
 #include <blaze/math/proxy/ComplexProxy.h>
 #include <blaze/math/proxy/DefaultProxy.h>
@@ -143,51 +144,51 @@ class Proxy : public If_< IsVector<RT>
 /*!\name Proxy operators */
 //@{
 template< typename PT1, typename RT1, typename PT2, typename RT2 >
-inline typename AddExprTrait<RT1,RT2>::Type
+inline AddExprTrait_<RT1,RT2>
    operator+( const Proxy<PT1,RT1>& lhs, const Proxy<PT2,RT2>& rhs );
 
 template< typename PT, typename RT, typename T >
-inline DisableIf_< IsProxy<T>, typename AddExprTrait<RT,T>::Type >
+inline DisableIf_< IsProxy<T>, AddExprTrait_<RT,T> >
    operator+( const Proxy<PT,RT>& lhs, const T& rhs );
 
 template< typename T, typename PT, typename RT >
-inline DisableIf_< IsProxy<T>, typename AddExprTrait<T,RT>::Type >
+inline DisableIf_< IsProxy<T>, AddExprTrait_<T,RT> >
    operator+( const T& lhs, const Proxy<PT,RT>& rhs );
 
 template< typename PT1, typename RT1, typename PT2, typename RT2 >
-inline typename SubExprTrait<RT1,RT2>::Type
+inline SubExprTrait_<RT1,RT2>
    operator-( const Proxy<PT1,RT1>& lhs, const Proxy<PT2,RT2>& rhs );
 
 template< typename PT, typename RT, typename T >
-inline DisableIf_< IsProxy<T>, typename SubExprTrait<RT,T>::Type >
+inline DisableIf_< IsProxy<T>, SubExprTrait_<RT,T> >
    operator-( const Proxy<PT,RT>& lhs, const T& rhs );
 
 template< typename T, typename PT, typename RT >
-inline DisableIf_< IsProxy<T>, typename SubExprTrait<T,RT>::Type >
+inline DisableIf_< IsProxy<T>, SubExprTrait_<T,RT> >
    operator-( const T& lhs, const Proxy<PT,RT>& rhs );
 
 template< typename PT1, typename RT1, typename PT2, typename RT2 >
-inline typename MultExprTrait<RT1,RT2>::Type
+inline MultExprTrait_<RT1,RT2>
    operator*( const Proxy<PT1,RT1>& lhs, const Proxy<PT2,RT2>& rhs );
 
 template< typename PT, typename RT, typename T >
-inline DisableIf_< IsProxy<T>, typename MultExprTrait<RT,T>::Type >
+inline DisableIf_< IsProxy<T>, MultExprTrait_<RT,T> >
    operator*( const Proxy<PT,RT>& lhs, const T& rhs );
 
 template< typename T, typename PT, typename RT >
-inline DisableIf_< IsProxy<T>, typename MultExprTrait<T,RT>::Type >
+inline DisableIf_< IsProxy<T>, MultExprTrait_<T,RT> >
    operator*( const T& lhs, const Proxy<PT,RT>& rhs );
 
 template< typename PT1, typename RT1, typename PT2, typename RT2 >
-inline typename DivExprTrait<RT1,RT2>::Type
+inline DivExprTrait_<RT1,RT2>
    operator/( const Proxy<PT1,RT1>& lhs, const Proxy<PT2,RT2>& rhs );
 
 template< typename PT, typename RT, typename T >
-inline DisableIf_< IsProxy<T>, typename DivExprTrait<RT,T>::Type >
+inline DisableIf_< IsProxy<T>, DivExprTrait_<RT,T> >
    operator/( const Proxy<PT,RT>& lhs, const T& rhs );
 
 template< typename T, typename PT, typename RT >
-inline DisableIf_< IsProxy<T>, typename DivExprTrait<T,RT>::Type >
+inline DisableIf_< IsProxy<T>, DivExprTrait_<T,RT> >
    operator/( const T& lhs, const Proxy<PT,RT>& rhs );
 
 template< typename PT1, typename RT1, typename PT2, typename RT2 >
@@ -271,7 +272,7 @@ inline std::ostream& operator<<( std::ostream& os, const Proxy<PT,RT>& proxy );
 // \return The result of the addition.
 */
 template< typename PT1, typename RT1, typename PT2, typename RT2 >
-inline typename AddExprTrait<RT1,RT2>::Type
+inline AddExprTrait_<RT1,RT2>
    operator+( const Proxy<PT1,RT1>& lhs, const Proxy<PT2,RT2>& rhs )
 {
    return (~lhs).get() + (~rhs).get();
@@ -288,7 +289,7 @@ inline typename AddExprTrait<RT1,RT2>::Type
 // \return The result of the addition.
 */
 template< typename PT, typename RT, typename T >
-inline DisableIf_< IsProxy<T>, typename AddExprTrait<RT,T>::Type >
+inline DisableIf_< IsProxy<T>, AddExprTrait_<RT,T> >
    operator+( const Proxy<PT,RT>& lhs, const T& rhs )
 {
    return (~lhs).get() + rhs;
@@ -305,7 +306,7 @@ inline DisableIf_< IsProxy<T>, typename AddExprTrait<RT,T>::Type >
 // \return The result of the addition.
 */
 template< typename T, typename PT, typename RT >
-inline DisableIf_< IsProxy<T>, typename AddExprTrait<T,RT>::Type >
+inline DisableIf_< IsProxy<T>, AddExprTrait_<T,RT> >
    operator+( const T& lhs, const Proxy<PT,RT>& rhs )
 {
    return lhs + (~rhs).get();
@@ -322,7 +323,7 @@ inline DisableIf_< IsProxy<T>, typename AddExprTrait<T,RT>::Type >
 // \return The result of the subtraction.
 */
 template< typename PT1, typename RT1, typename PT2, typename RT2 >
-inline typename SubExprTrait<RT1,RT2>::Type
+inline SubExprTrait_<RT1,RT2>
    operator-( const Proxy<PT1,RT1>& lhs, const Proxy<PT2,RT2>& rhs )
 {
    return (~lhs).get() - (~rhs).get();
@@ -339,7 +340,7 @@ inline typename SubExprTrait<RT1,RT2>::Type
 // \return The result of the subtraction.
 */
 template< typename PT, typename RT, typename T >
-inline DisableIf_< IsProxy<T>, typename SubExprTrait<RT,T>::Type >
+inline DisableIf_< IsProxy<T>, SubExprTrait_<RT,T> >
    operator-( const Proxy<PT,RT>& lhs, const T& rhs )
 {
    return (~lhs).get() - rhs;
@@ -356,7 +357,7 @@ inline DisableIf_< IsProxy<T>, typename SubExprTrait<RT,T>::Type >
 // \return The result of the subtraction.
 */
 template< typename T, typename PT, typename RT >
-inline DisableIf_< IsProxy<T>, typename SubExprTrait<T,RT>::Type >
+inline DisableIf_< IsProxy<T>, SubExprTrait_<T,RT> >
    operator-( const T& lhs, const Proxy<PT,RT>& rhs )
 {
    return lhs - (~rhs).get();
@@ -373,7 +374,7 @@ inline DisableIf_< IsProxy<T>, typename SubExprTrait<T,RT>::Type >
 // \return The result of the multiplication.
 */
 template< typename PT1, typename RT1, typename PT2, typename RT2 >
-inline typename MultExprTrait<RT1,RT2>::Type
+inline MultExprTrait_<RT1,RT2>
    operator*( const Proxy<PT1,RT1>& lhs, const Proxy<PT2,RT2>& rhs )
 {
    return (~lhs).get() * (~rhs).get();
@@ -390,7 +391,7 @@ inline typename MultExprTrait<RT1,RT2>::Type
 // \return The result of the multiplication.
 */
 template< typename PT, typename RT, typename T >
-inline DisableIf_< IsProxy<T>, typename MultExprTrait<RT,T>::Type >
+inline DisableIf_< IsProxy<T>, MultExprTrait_<RT,T> >
    operator*( const Proxy<PT,RT>& lhs, const T& rhs )
 {
    return (~lhs).get() * rhs;
@@ -407,7 +408,7 @@ inline DisableIf_< IsProxy<T>, typename MultExprTrait<RT,T>::Type >
 // \return The result of the multiplication.
 */
 template< typename T, typename PT, typename RT >
-inline DisableIf_< IsProxy<T>, typename MultExprTrait<T,RT>::Type >
+inline DisableIf_< IsProxy<T>, MultExprTrait_<T,RT> >
    operator*( const T& lhs, const Proxy<PT,RT>& rhs )
 {
    return lhs * (~rhs).get();
@@ -424,7 +425,7 @@ inline DisableIf_< IsProxy<T>, typename MultExprTrait<T,RT>::Type >
 // \return The result of the division.
 */
 template< typename PT1, typename RT1, typename PT2, typename RT2 >
-inline typename DivExprTrait<RT1,RT2>::Type
+inline DivExprTrait_<RT1,RT2>
    operator/( const Proxy<PT1,RT1>& lhs, const Proxy<PT2,RT2>& rhs )
 {
    return (~lhs).get() / (~rhs).get();
@@ -441,7 +442,7 @@ inline typename DivExprTrait<RT1,RT2>::Type
 // \return The result of the division.
 */
 template< typename PT, typename RT, typename T >
-inline DisableIf_< IsProxy<T>, typename DivExprTrait<RT,T>::Type >
+inline DisableIf_< IsProxy<T>, DivExprTrait_<RT,T> >
    operator/( const Proxy<PT,RT>& lhs, const T& rhs )
 {
    return (~lhs).get() / rhs;
@@ -458,7 +459,7 @@ inline DisableIf_< IsProxy<T>, typename DivExprTrait<RT,T>::Type >
 // \return The result of the division.
 */
 template< typename T, typename PT, typename RT >
-inline DisableIf_< IsProxy<T>, typename DivExprTrait<T,RT>::Type >
+inline DisableIf_< IsProxy<T>, DivExprTrait_<T,RT> >
    operator/( const T& lhs, const Proxy<PT,RT>& rhs )
 {
    return lhs / (~rhs).get();
@@ -794,23 +795,23 @@ inline std::ostream& operator<<( std::ostream& os, const Proxy<PT,RT>& proxy )
 /*!\name Proxy global functions */
 //@{
 template< typename PT, typename RT >
-inline typename TransExprTrait< typename PT::RepresentedType >::Type
+inline TransExprTrait_< RepresentedType_<PT> >
    trans( const Proxy<PT,RT>& proxy );
 
 template< typename PT, typename RT >
-inline typename AbsExprTrait< typename PT::RepresentedType >::Type
+inline AbsExprTrait_< RepresentedType_<PT> >
    abs( const Proxy<PT,RT>& proxy );
 
 template< typename PT, typename RT >
-inline typename CTransExprTrait< typename PT::RepresentedType >::Type
+inline CTransExprTrait_< RepresentedType_<PT> >
    ctrans( const Proxy<PT,RT>& proxy );
 
 template< typename PT, typename RT >
-inline typename RealExprTrait< typename PT::RepresentedType >::Type
+inline RealExprTrait_< RepresentedType_<PT> >
    real( const Proxy<PT,RT>& proxy );
 
 template< typename PT, typename RT >
-inline typename ImagExprTrait< typename PT::RepresentedType >::Type
+inline ImagExprTrait_< RepresentedType_<PT> >
    imag( const Proxy<PT,RT>& proxy );
 
 template< typename PT, typename RT >
@@ -851,8 +852,8 @@ inline bool isnan( const Proxy<PT,RT>& proxy );
 // the proxy.
 */
 template< typename PT, typename RT >
-inline typename TransExprTrait< typename PT::RepresentedType >::Typ
-    trans( const Proxy<PT,RT>& proxy )
+inline TransExprTrait_< RepresentedType_<PT> >
+   trans( const Proxy<PT,RT>& proxy )
 {
    using blaze::trans;
 
@@ -873,7 +874,7 @@ inline typename TransExprTrait< typename PT::RepresentedType >::Typ
 // an expression representing the absolute values of the elements of the vector/matrix.
 */
 template< typename PT, typename RT >
-inline typename AbsExprTrait< typename PT::RepresentedType >::Type
+inline AbsExprTrait_< RepresentedType_<PT> >
    abs( const Proxy<PT,RT>& proxy )
 {
    using std::abs;
@@ -894,7 +895,7 @@ inline typename AbsExprTrait< typename PT::RepresentedType >::Type
 // represented by the proxy.
 */
 template< typename PT, typename RT >
-inline typename CTransExprTrait< typename PT::RepresentedType >::Type
+inline CTransExprTrait_< RepresentedType_<PT> >
    ctrans( const Proxy<PT,RT>& proxy )
 {
    using blaze::ctrans;
@@ -916,7 +917,7 @@ inline typename CTransExprTrait< typename PT::RepresentedType >::Type
 // representing the real part of each each element of the vector/matrix.
 */
 template< typename PT, typename RT >
-inline typename RealExprTrait< typename PT::RepresentedType >::Type
+inline RealExprTrait_< RepresentedType_<PT> >
    real( const Proxy<PT,RT>& proxy )
 {
    using blaze::real;
@@ -938,7 +939,7 @@ inline typename RealExprTrait< typename PT::RepresentedType >::Type
 // representing the real part of each each element of the vector/matrix.
 */
 template< typename PT, typename RT >
-inline typename ImagExprTrait< typename PT::RepresentedType >::Type
+inline ImagExprTrait_< RepresentedType_<PT> >
    imag( const Proxy<PT,RT>& proxy )
 {
    using blaze::imag;

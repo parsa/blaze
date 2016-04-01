@@ -40,6 +40,7 @@
 // Includes
 //*************************************************************************************************
 
+#include <blaze/math/Aliases.h>
 #include <blaze/math/constraints/Expression.h>
 #include <blaze/math/constraints/Hermitian.h>
 #include <blaze/math/constraints/Lower.h>
@@ -119,11 +120,11 @@ class NumericProxy : public Proxy< NumericProxy<MT> >
 
  public:
    //**Type definitions****************************************************************************
-   typedef typename MT::ElementType     RepresentedType;  //!< Type of the represented matrix element.
-   typedef typename MT::Reference       Reference;        //!< Reference to the represented element.
-   typedef typename MT::ConstReference  ConstReference;   //!< Reference-to-const to the represented element.
-   typedef NumericProxy*                Pointer;          //!< Pointer to the represented element.
-   typedef const NumericProxy*          ConstPointer;     //!< Pointer-to-const to the represented element.
+   typedef ElementType_<MT>     RepresentedType;  //!< Type of the represented matrix element.
+   typedef Reference_<MT>       Reference;        //!< Reference to the represented element.
+   typedef ConstReference_<MT>  ConstReference;   //!< Reference-to-const to the represented element.
+   typedef NumericProxy*        Pointer;          //!< Pointer to the represented element.
+   typedef const NumericProxy*  ConstPointer;     //!< Pointer-to-const to the represented element.
 
    //! Value type of the represented complex element.
    typedef typename If_< IsComplex<RepresentedType>
@@ -598,7 +599,7 @@ inline void NumericProxy<MT>::imag( ValueType value ) const
 /*!\name NumericProxy global functions */
 //@{
 template< typename MT >
-inline typename ConjExprTrait< typename NumericProxy<MT>::RepresentedType >::Type
+inline ConjExprTrait_< RepresentedType_< NumericProxy<MT> > >
    conj( const NumericProxy<MT>& proxy );
 
 template< typename MT >
@@ -640,7 +641,7 @@ inline bool isnan( const NumericProxy<MT>& proxy );
 // expression representing the complex conjugate of the vector/matrix.
 */
 template< typename MT >
-inline typename ConjExprTrait< typename NumericProxy<MT>::RepresentedType >::Type
+inline ConjExprTrait_< RepresentedType_< NumericProxy<MT> > >
    conj( const NumericProxy<MT>& proxy )
 {
    using blaze::conj;

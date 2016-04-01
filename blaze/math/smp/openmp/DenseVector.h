@@ -41,6 +41,7 @@
 //*************************************************************************************************
 
 #include <omp.h>
+#include <blaze/math/Aliases.h>
 #include <blaze/math/constraints/SMPAssignable.h>
 #include <blaze/math/DenseSubvector.h>
 #include <blaze/math/expressions/DenseVector.h>
@@ -99,11 +100,11 @@ void smpAssign_backend( DenseVector<VT1,TF1>& lhs, const DenseVector<VT2,TF2>& r
 
    BLAZE_INTERNAL_ASSERT( isParallelSectionActive(), "Invalid call outside a parallel section" );
 
-   typedef typename VT1::ElementType                         ET1;
-   typedef typename VT2::ElementType                         ET2;
-   typedef IntrinsicTrait<typename VT1::ElementType>         IT;
-   typedef typename SubvectorExprTrait<VT1,aligned>::Type    AlignedTarget;
-   typedef typename SubvectorExprTrait<VT1,unaligned>::Type  UnalignedTarget;
+   typedef ElementType_<VT1>                    ET1;
+   typedef ElementType_<VT2>                    ET2;
+   typedef IntrinsicTrait< ElementType_<VT1> >  IT;
+   typedef SubvectorExprTrait_<VT1,aligned>     AlignedTarget;
+   typedef SubvectorExprTrait_<VT1,unaligned>   UnalignedTarget;
 
    const bool vectorizable( VT1::vectorizable && VT2::vectorizable && IsSame<ET1,ET2>::value );
    const bool lhsAligned  ( (~lhs).isAligned() );
@@ -173,9 +174,9 @@ void smpAssign_backend( DenseVector<VT1,TF1>& lhs, const SparseVector<VT2,TF2>& 
 
    BLAZE_INTERNAL_ASSERT( isParallelSectionActive(), "Invalid call outside a parallel section" );
 
-   typedef typename VT1::ElementType                         ET1;
-   typedef typename VT2::ElementType                         ET2;
-   typedef typename SubvectorExprTrait<VT1,unaligned>::Type  UnalignedTarget;
+   typedef ElementType_<VT1>                   ET1;
+   typedef ElementType_<VT2>                   ET2;
+   typedef SubvectorExprTrait_<VT1,unaligned>  UnalignedTarget;
 
    const int    threads      ( omp_get_num_threads() );
    const size_t addon        ( ( ( (~lhs).size() % threads ) != 0UL )? 1UL : 0UL );
@@ -262,8 +263,8 @@ inline EnableIf_< And< IsDenseVector<VT1>, IsSMPAssignable<VT1>, IsSMPAssignable
 {
    BLAZE_FUNCTION_TRACE;
 
-   BLAZE_CONSTRAINT_MUST_NOT_BE_SMP_ASSIGNABLE( typename VT1::ElementType );
-   BLAZE_CONSTRAINT_MUST_NOT_BE_SMP_ASSIGNABLE( typename VT2::ElementType );
+   BLAZE_CONSTRAINT_MUST_NOT_BE_SMP_ASSIGNABLE( ElementType_<VT1> );
+   BLAZE_CONSTRAINT_MUST_NOT_BE_SMP_ASSIGNABLE( ElementType_<VT2> );
 
    BLAZE_INTERNAL_ASSERT( (~lhs).size() == (~rhs).size(), "Invalid vector sizes" );
 
@@ -316,11 +317,11 @@ void smpAddAssign_backend( DenseVector<VT1,TF1>& lhs, const DenseVector<VT2,TF2>
 
    BLAZE_INTERNAL_ASSERT( isParallelSectionActive(), "Invalid call outside a parallel section" );
 
-   typedef typename VT1::ElementType                         ET1;
-   typedef typename VT2::ElementType                         ET2;
-   typedef IntrinsicTrait<typename VT1::ElementType>         IT;
-   typedef typename SubvectorExprTrait<VT1,aligned>::Type    AlignedTarget;
-   typedef typename SubvectorExprTrait<VT1,unaligned>::Type  UnalignedTarget;
+   typedef ElementType_<VT1>                    ET1;
+   typedef ElementType_<VT2>                    ET2;
+   typedef IntrinsicTrait< ElementType_<VT1> >  IT;
+   typedef SubvectorExprTrait_<VT1,aligned>     AlignedTarget;
+   typedef SubvectorExprTrait_<VT1,unaligned>   UnalignedTarget;
 
    const bool vectorizable( VT1::vectorizable && VT2::vectorizable && IsSame<ET1,ET2>::value );
    const bool lhsAligned  ( (~lhs).isAligned() );
@@ -390,9 +391,9 @@ void smpAddAssign_backend( DenseVector<VT1,TF1>& lhs, const SparseVector<VT2,TF2
 
    BLAZE_INTERNAL_ASSERT( isParallelSectionActive(), "Invalid call outside a parallel section" );
 
-   typedef typename VT1::ElementType                         ET1;
-   typedef typename VT2::ElementType                         ET2;
-   typedef typename SubvectorExprTrait<VT1,unaligned>::Type  UnalignedTarget;
+   typedef ElementType_<VT1>                   ET1;
+   typedef ElementType_<VT2>                   ET2;
+   typedef SubvectorExprTrait_<VT1,unaligned>  UnalignedTarget;
 
    const int    threads      ( omp_get_num_threads() );
    const size_t addon        ( ( ( (~lhs).size() % threads ) != 0UL )? 1UL : 0UL );
@@ -479,8 +480,8 @@ inline EnableIf_< And< IsDenseVector<VT1>, IsSMPAssignable<VT1>, IsSMPAssignable
 {
    BLAZE_FUNCTION_TRACE;
 
-   BLAZE_CONSTRAINT_MUST_NOT_BE_SMP_ASSIGNABLE( typename VT1::ElementType );
-   BLAZE_CONSTRAINT_MUST_NOT_BE_SMP_ASSIGNABLE( typename VT2::ElementType );
+   BLAZE_CONSTRAINT_MUST_NOT_BE_SMP_ASSIGNABLE( ElementType_<VT1> );
+   BLAZE_CONSTRAINT_MUST_NOT_BE_SMP_ASSIGNABLE( ElementType_<VT2> );
 
    BLAZE_INTERNAL_ASSERT( (~lhs).size() == (~rhs).size(), "Invalid vector sizes" );
 
@@ -533,11 +534,11 @@ void smpSubAssign_backend( DenseVector<VT1,TF1>& lhs, const DenseVector<VT2,TF2>
 
    BLAZE_INTERNAL_ASSERT( isParallelSectionActive(), "Invalid call outside a parallel section" );
 
-   typedef typename VT1::ElementType                         ET1;
-   typedef typename VT2::ElementType                         ET2;
-   typedef IntrinsicTrait<typename VT1::ElementType>         IT;
-   typedef typename SubvectorExprTrait<VT1,aligned>::Type    AlignedTarget;
-   typedef typename SubvectorExprTrait<VT1,unaligned>::Type  UnalignedTarget;
+   typedef ElementType_<VT1>                    ET1;
+   typedef ElementType_<VT2>                    ET2;
+   typedef IntrinsicTrait< ElementType_<VT1> >  IT;
+   typedef SubvectorExprTrait_<VT1,aligned>     AlignedTarget;
+   typedef SubvectorExprTrait_<VT1,unaligned>   UnalignedTarget;
 
    const bool vectorizable( VT1::vectorizable && VT2::vectorizable && IsSame<ET1,ET2>::value );
    const bool lhsAligned  ( (~lhs).isAligned() );
@@ -607,9 +608,9 @@ void smpSubAssign_backend( DenseVector<VT1,TF1>& lhs, const SparseVector<VT2,TF2
 
    BLAZE_INTERNAL_ASSERT( isParallelSectionActive(), "Invalid call outside a parallel section" );
 
-   typedef typename VT1::ElementType                         ET1;
-   typedef typename VT2::ElementType                         ET2;
-   typedef typename SubvectorExprTrait<VT1,unaligned>::Type  UnalignedTarget;
+   typedef ElementType_<VT1>                   ET1;
+   typedef ElementType_<VT2>                   ET2;
+   typedef SubvectorExprTrait_<VT1,unaligned>  UnalignedTarget;
 
    const int    threads      ( omp_get_num_threads() );
    const size_t addon        ( ( ( (~lhs).size() % threads ) != 0UL )? 1UL : 0UL );
@@ -696,8 +697,8 @@ inline EnableIf_< And< IsDenseVector<VT1>, IsSMPAssignable<VT1>, IsSMPAssignable
 {
    BLAZE_FUNCTION_TRACE;
 
-   BLAZE_CONSTRAINT_MUST_NOT_BE_SMP_ASSIGNABLE( typename VT1::ElementType );
-   BLAZE_CONSTRAINT_MUST_NOT_BE_SMP_ASSIGNABLE( typename VT2::ElementType );
+   BLAZE_CONSTRAINT_MUST_NOT_BE_SMP_ASSIGNABLE( ElementType_<VT1> );
+   BLAZE_CONSTRAINT_MUST_NOT_BE_SMP_ASSIGNABLE( ElementType_<VT2> );
 
    BLAZE_INTERNAL_ASSERT( (~lhs).size() == (~rhs).size(), "Invalid vector sizes" );
 
@@ -751,11 +752,11 @@ void smpMultAssign_backend( DenseVector<VT1,TF1>& lhs, const DenseVector<VT2,TF2
 
    BLAZE_INTERNAL_ASSERT( isParallelSectionActive(), "Invalid call outside a parallel section" );
 
-   typedef typename VT1::ElementType                         ET1;
-   typedef typename VT2::ElementType                         ET2;
-   typedef IntrinsicTrait<typename VT1::ElementType>         IT;
-   typedef typename SubvectorExprTrait<VT1,aligned>::Type    AlignedTarget;
-   typedef typename SubvectorExprTrait<VT1,unaligned>::Type  UnalignedTarget;
+   typedef ElementType_<VT1>                    ET1;
+   typedef ElementType_<VT2>                    ET2;
+   typedef IntrinsicTrait< ElementType_<VT1> >  IT;
+   typedef SubvectorExprTrait_<VT1,aligned>     AlignedTarget;
+   typedef SubvectorExprTrait_<VT1,unaligned>   UnalignedTarget;
 
    const bool vectorizable( VT1::vectorizable && VT2::vectorizable && IsSame<ET1,ET2>::value );
    const bool lhsAligned  ( (~lhs).isAligned() );
@@ -826,9 +827,9 @@ void smpMultAssign_backend( DenseVector<VT1,TF1>& lhs, const SparseVector<VT2,TF
 
    BLAZE_INTERNAL_ASSERT( isParallelSectionActive(), "Invalid call outside a parallel section" );
 
-   typedef typename VT1::ElementType                         ET1;
-   typedef typename VT2::ElementType                         ET2;
-   typedef typename SubvectorExprTrait<VT1,unaligned>::Type  UnalignedTarget;
+   typedef ElementType_<VT1>                   ET1;
+   typedef ElementType_<VT2>                   ET2;
+   typedef SubvectorExprTrait_<VT1,unaligned>  UnalignedTarget;
 
    const int    threads      ( omp_get_num_threads() );
    const size_t addon        ( ( ( (~lhs).size() % threads ) != 0UL )? 1UL : 0UL );
@@ -915,8 +916,8 @@ inline EnableIf_< And< IsDenseVector<VT1>, IsSMPAssignable<VT1>, IsSMPAssignable
 {
    BLAZE_FUNCTION_TRACE;
 
-   BLAZE_CONSTRAINT_MUST_NOT_BE_SMP_ASSIGNABLE( typename VT1::ElementType );
-   BLAZE_CONSTRAINT_MUST_NOT_BE_SMP_ASSIGNABLE( typename VT2::ElementType );
+   BLAZE_CONSTRAINT_MUST_NOT_BE_SMP_ASSIGNABLE( ElementType_<VT1> );
+   BLAZE_CONSTRAINT_MUST_NOT_BE_SMP_ASSIGNABLE( ElementType_<VT2> );
 
    BLAZE_INTERNAL_ASSERT( (~lhs).size() == (~rhs).size(), "Invalid vector sizes" );
 

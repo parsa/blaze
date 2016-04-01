@@ -40,6 +40,7 @@
 // Includes
 //*************************************************************************************************
 
+#include <blaze/math/Aliases.h>
 #include <blaze/math/constraints/ColumnMajorMatrix.h>
 #include <blaze/math/constraints/DenseMatrix.h>
 #include <blaze/math/constraints/MatMatMultExpr.h>
@@ -133,12 +134,12 @@ class TSMatDMatMultExpr : public DenseMatrix< TSMatDMatMultExpr<MT1,MT2>, true >
 {
  private:
    //**Type definitions****************************************************************************
-   typedef typename MT1::ResultType     RT1;  //!< Result type of the left-hand side sparse matrix expression.
-   typedef typename MT2::ResultType     RT2;  //!< Result type of the right-hand side dense matrix expression.
-   typedef typename RT1::ElementType    ET1;  //!< Element type of the left-hand side dense matrix expression.
-   typedef typename RT2::ElementType    ET2;  //!< Element type of the right-hand side sparse matrix expression.
-   typedef typename MT1::CompositeType  CT1;  //!< Composite type of the left-hand side sparse matrix expression.
-   typedef typename MT2::CompositeType  CT2;  //!< Composite type of the right-hand side dense matrix expression.
+   typedef ResultType_<MT1>     RT1;  //!< Result type of the left-hand side sparse matrix expression.
+   typedef ResultType_<MT2>     RT2;  //!< Result type of the right-hand side dense matrix expression.
+   typedef ElementType_<RT1>    ET1;  //!< Element type of the left-hand side dense matrix expression.
+   typedef ElementType_<RT2>    ET2;  //!< Element type of the right-hand side sparse matrix expression.
+   typedef CompositeType_<MT1>  CT1;  //!< Composite type of the left-hand side sparse matrix expression.
+   typedef CompositeType_<MT2>  CT2;  //!< Composite type of the right-hand side dense matrix expression.
    //**********************************************************************************************
 
    //**********************************************************************************************
@@ -189,7 +190,7 @@ class TSMatDMatMultExpr : public DenseMatrix< TSMatDMatMultExpr<MT1,MT2>, true >
    struct UseOptimizedKernel {
       enum { value = useOptimizedKernels &&
                      !IsDiagonal<T3>::value &&
-                     !IsResizable<typename T1::ElementType>::value &&
+                     !IsResizable< ElementType_<T1> >::value &&
                      !IsResizable<ET1>::value };
    };
    /*! \endcond */
@@ -209,13 +210,13 @@ class TSMatDMatMultExpr : public DenseMatrix< TSMatDMatMultExpr<MT1,MT2>, true >
 
  public:
    //**Type definitions****************************************************************************
-   typedef TSMatDMatMultExpr<MT1,MT2>          This;           //!< Type of this TSMatDMatMultExpr instance.
-   typedef typename MultTrait<RT1,RT2>::Type   ResultType;     //!< Result type for expression template evaluations.
-   typedef typename ResultType::OppositeType   OppositeType;   //!< Result type with opposite storage order for expression template evaluations.
-   typedef typename ResultType::TransposeType  TransposeType;  //!< Transpose type for expression template evaluations.
-   typedef typename ResultType::ElementType    ElementType;    //!< Resulting element type.
-   typedef const ElementType                   ReturnType;     //!< Return type for expression template evaluations.
-   typedef const ResultType                    CompositeType;  //!< Data type for composite expression templates.
+   typedef TSMatDMatMultExpr<MT1,MT2>  This;           //!< Type of this TSMatDMatMultExpr instance.
+   typedef MultTrait_<RT1,RT2>         ResultType;     //!< Result type for expression template evaluations.
+   typedef OppositeType_<ResultType>   OppositeType;   //!< Result type with opposite storage order for expression template evaluations.
+   typedef TransposeType_<ResultType>  TransposeType;  //!< Transpose type for expression template evaluations.
+   typedef ElementType_<ResultType>    ElementType;    //!< Resulting element type.
+   typedef const ElementType           ReturnType;     //!< Return type for expression template evaluations.
+   typedef const ResultType            CompositeType;  //!< Data type for composite expression templates.
 
    //! Composite type of the left-hand side sparse matrix expression.
    typedef If_< IsExpression<MT1>, const MT1, const MT1& >  LeftOperand;
@@ -488,7 +489,7 @@ class TSMatDMatMultExpr : public DenseMatrix< TSMatDMatMultExpr<MT1,MT2>, true >
            , typename MT5 >  // Type of the right-hand side matrix operand
    static inline void selectDefaultAssignKernel( MT3& C, const MT4& A, const MT5& B )
    {
-      typedef typename MT4::ConstIterator  ConstIterator;
+      typedef ConstIterator_<MT4>  ConstIterator;
 
       reset( C );
 
@@ -588,7 +589,7 @@ class TSMatDMatMultExpr : public DenseMatrix< TSMatDMatMultExpr<MT1,MT2>, true >
    static inline EnableIf_< UseOptimizedKernel<MT3,MT4,MT5> >
       selectSmallAssignKernel( MT3& C, const MT4& A, const MT5& B )
    {
-      typedef typename MT4::ConstIterator  ConstIterator;
+      typedef ConstIterator_<MT4>  ConstIterator;
 
       const size_t block( ( IsRowMajorMatrix<MT3>::value )?( 256UL ):( 8UL ) );
 
@@ -699,9 +700,9 @@ class TSMatDMatMultExpr : public DenseMatrix< TSMatDMatMultExpr<MT1,MT2>, true >
    static inline EnableIf_< UseOptimizedKernel<MT3,MT4,MT5> >
       selectLargeAssignKernel( MT3& C, const MT4& A, const MT5& B )
    {
-      BLAZE_CONSTRAINT_MUST_BE_ROW_MAJOR_MATRIX_TYPE( typename MT4::OppositeType );
+      BLAZE_CONSTRAINT_MUST_BE_ROW_MAJOR_MATRIX_TYPE( OppositeType_<MT4> );
 
-      const typename MT4::OppositeType tmp( serial( A ) );
+      const OppositeType_<MT4> tmp( serial( A ) );
       assign( C, tmp * B );
    }
    /*! \endcond */
@@ -734,7 +735,7 @@ class TSMatDMatMultExpr : public DenseMatrix< TSMatDMatMultExpr<MT1,MT2>, true >
       BLAZE_CONSTRAINT_MUST_BE_COLUMN_MAJOR_MATRIX_TYPE( ResultType );
       BLAZE_CONSTRAINT_MUST_BE_ROW_MAJOR_MATRIX_TYPE( OppositeType );
       BLAZE_CONSTRAINT_MATRICES_MUST_HAVE_SAME_STORAGE_ORDER( MT, TmpType );
-      BLAZE_CONSTRAINT_MUST_BE_REFERENCE_TYPE( typename TmpType::CompositeType );
+      BLAZE_CONSTRAINT_MUST_BE_REFERENCE_TYPE( CompositeType_<TmpType> );
 
       BLAZE_INTERNAL_ASSERT( (~lhs).rows()    == rhs.rows()   , "Invalid number of rows"    );
       BLAZE_INTERNAL_ASSERT( (~lhs).columns() == rhs.columns(), "Invalid number of columns" );
@@ -862,7 +863,7 @@ class TSMatDMatMultExpr : public DenseMatrix< TSMatDMatMultExpr<MT1,MT2>, true >
            , typename MT5 >  // Type of the right-hand side matrix operand
    static inline void selectDefaultAddAssignKernel( MT3& C, const MT4& A, const MT5& B )
    {
-      typedef typename MT4::ConstIterator  ConstIterator;
+      typedef ConstIterator_<MT4>  ConstIterator;
 
       if( IsDiagonal<MT5>::value )
       {
@@ -957,7 +958,7 @@ class TSMatDMatMultExpr : public DenseMatrix< TSMatDMatMultExpr<MT1,MT2>, true >
    static inline EnableIf_< UseOptimizedKernel<MT3,MT4,MT5> >
       selectSmallAddAssignKernel( MT3& C, const MT4& A, const MT5& B )
    {
-      typedef typename MT4::ConstIterator  ConstIterator;
+      typedef ConstIterator_<MT4>  ConstIterator;
 
       const size_t block( ( IsRowMajorMatrix<MT3>::value )?( 256UL ):( 8UL ) );
 
@@ -1066,9 +1067,9 @@ class TSMatDMatMultExpr : public DenseMatrix< TSMatDMatMultExpr<MT1,MT2>, true >
    static inline EnableIf_< UseOptimizedKernel<MT3,MT4,MT5> >
       selectLargeAddAssignKernel( MT3& C, const MT4& A, const MT5& B )
    {
-      BLAZE_CONSTRAINT_MUST_BE_ROW_MAJOR_MATRIX_TYPE( typename MT4::OppositeType );
+      BLAZE_CONSTRAINT_MUST_BE_ROW_MAJOR_MATRIX_TYPE( OppositeType_<MT4> );
 
-      const typename MT4::OppositeType tmp( serial( A ) );
+      const OppositeType_<MT4> tmp( serial( A ) );
       addAssign( C, tmp * B );
    }
    /*! \endcond */
@@ -1195,7 +1196,7 @@ class TSMatDMatMultExpr : public DenseMatrix< TSMatDMatMultExpr<MT1,MT2>, true >
            , typename MT5 >  // Type of the right-hand side matrix operand
    static inline void selectDefaultSubAssignKernel( MT3& C, const MT4& A, const MT5& B )
    {
-      typedef typename MT4::ConstIterator  ConstIterator;
+      typedef ConstIterator_<MT4>  ConstIterator;
 
       if( IsDiagonal<MT5>::value )
       {
@@ -1290,7 +1291,7 @@ class TSMatDMatMultExpr : public DenseMatrix< TSMatDMatMultExpr<MT1,MT2>, true >
    static inline EnableIf_< UseOptimizedKernel<MT3,MT4,MT5> >
       selectSmallSubAssignKernel( MT3& C, const MT4& A, const MT5& B )
    {
-      typedef typename MT4::ConstIterator  ConstIterator;
+      typedef ConstIterator_<MT4>  ConstIterator;
 
       const size_t block( ( IsRowMajorMatrix<MT3>::value )?( 256UL ):( 8UL ) );
 
@@ -1399,9 +1400,9 @@ class TSMatDMatMultExpr : public DenseMatrix< TSMatDMatMultExpr<MT1,MT2>, true >
    static inline EnableIf_< UseOptimizedKernel<MT3,MT4,MT5> >
       selectLargeSubAssignKernel( MT3& C, const MT4& A, const MT5& B )
    {
-      BLAZE_CONSTRAINT_MUST_BE_ROW_MAJOR_MATRIX_TYPE( typename MT4::OppositeType );
+      BLAZE_CONSTRAINT_MUST_BE_ROW_MAJOR_MATRIX_TYPE( OppositeType_<MT4> );
 
-      const typename MT4::OppositeType tmp( serial( A ) );
+      const OppositeType_<MT4> tmp( serial( A ) );
       subAssign( C, tmp * B );
    }
    /*! \endcond */
@@ -1522,7 +1523,7 @@ class TSMatDMatMultExpr : public DenseMatrix< TSMatDMatMultExpr<MT1,MT2>, true >
       BLAZE_CONSTRAINT_MUST_BE_COLUMN_MAJOR_MATRIX_TYPE( ResultType );
       BLAZE_CONSTRAINT_MUST_BE_ROW_MAJOR_MATRIX_TYPE( OppositeType );
       BLAZE_CONSTRAINT_MATRICES_MUST_HAVE_SAME_STORAGE_ORDER( MT, TmpType );
-      BLAZE_CONSTRAINT_MUST_BE_REFERENCE_TYPE( typename TmpType::CompositeType );
+      BLAZE_CONSTRAINT_MUST_BE_REFERENCE_TYPE( CompositeType_<TmpType> );
 
       BLAZE_INTERNAL_ASSERT( (~lhs).rows()    == rhs.rows()   , "Invalid number of rows"    );
       BLAZE_INTERNAL_ASSERT( (~lhs).columns() == rhs.columns(), "Invalid number of columns" );
@@ -2038,8 +2039,8 @@ struct SubmatrixExprTrait< TSMatDMatMultExpr<MT1,MT2>, AF >
 {
  public:
    //**********************************************************************************************
-   using Type = typename MultExprTrait< typename SubmatrixExprTrait<const MT1,AF>::Type
-                                      , typename SubmatrixExprTrait<const MT2,AF>::Type >::Type;
+   using Type = MultExprTrait_< SubmatrixExprTrait_<const MT1,AF>
+                              , SubmatrixExprTrait_<const MT2,AF> >;
    //**********************************************************************************************
 };
 /*! \endcond */
@@ -2053,7 +2054,7 @@ struct RowExprTrait< TSMatDMatMultExpr<MT1,MT2> >
 {
  public:
    //**********************************************************************************************
-   using Type = typename MultExprTrait< typename RowExprTrait<const MT1>::Type, MT2 >::Type;
+   using Type = MultExprTrait_< RowExprTrait_<const MT1>, MT2 >;
    //**********************************************************************************************
 };
 /*! \endcond */
@@ -2067,7 +2068,7 @@ struct ColumnExprTrait< TSMatDMatMultExpr<MT1,MT2> >
 {
  public:
    //**********************************************************************************************
-   using Type = typename MultExprTrait< MT1, typename ColumnExprTrait<const MT2>::Type >::Type;
+   using Type = MultExprTrait_< MT1, ColumnExprTrait_<const MT2> >;
    //**********************************************************************************************
 };
 /*! \endcond */

@@ -41,6 +41,7 @@
 //*************************************************************************************************
 
 #include <algorithm>
+#include <blaze/math/Aliases.h>
 #include <blaze/math/AlignmentFlag.h>
 #include <blaze/math/dense/DenseIterator.h>
 #include <blaze/math/expressions/DenseVector.h>
@@ -320,7 +321,7 @@ class StaticVector : public DenseVector< StaticVector<Type,N,TF>, TF >
    struct VectorizedAssign {
       enum { value = useOptimizedKernels &&
                      vectorizable && VT::vectorizable &&
-                     IsSame<Type,typename VT::ElementType>::value };
+                     IsSame< Type, ElementType_<VT> >::value };
    };
    /*! \endcond */
    //**********************************************************************************************
@@ -332,7 +333,7 @@ class StaticVector : public DenseVector< StaticVector<Type,N,TF>, TF >
    struct VectorizedAddAssign {
       enum { value = useOptimizedKernels &&
                      vectorizable && VT::vectorizable &&
-                     IsSame<Type,typename VT::ElementType>::value &&
+                     IsSame< Type, ElementType_<VT> >::value &&
                      IntrinsicTrait<Type>::addition };
    };
    /*! \endcond */
@@ -345,7 +346,7 @@ class StaticVector : public DenseVector< StaticVector<Type,N,TF>, TF >
    struct VectorizedSubAssign {
       enum { value = useOptimizedKernels &&
                      vectorizable && VT::vectorizable &&
-                     IsSame<Type,typename VT::ElementType>::value &&
+                     IsSame< Type, ElementType_<VT> >::value &&
                      IntrinsicTrait<Type>::subtraction };
    };
    /*! \endcond */
@@ -358,7 +359,7 @@ class StaticVector : public DenseVector< StaticVector<Type,N,TF>, TF >
    struct VectorizedMultAssign {
       enum { value = useOptimizedKernels &&
                      vectorizable && VT::vectorizable &&
-                     IsSame<Type,typename VT::ElementType>::value &&
+                     IsSame< Type, ElementType_<VT> >::value &&
                      IntrinsicTrait<Type>::multiplication };
    };
    /*! \endcond */
@@ -1812,7 +1813,7 @@ inline void StaticVector<Type,N,TF>::assign( const SparseVector<VT,TF>& rhs )
 {
    BLAZE_INTERNAL_ASSERT( (~rhs).size() == N, "Invalid vector sizes" );
 
-   for( typename VT::ConstIterator element=(~rhs).begin(); element!=(~rhs).end(); ++element )
+   for( ConstIterator_<VT> element=(~rhs).begin(); element!=(~rhs).end(); ++element )
       v_[element->index()] = element->value();
 }
 //*************************************************************************************************
@@ -1902,7 +1903,7 @@ inline void StaticVector<Type,N,TF>::addAssign( const SparseVector<VT,TF>& rhs )
 {
    BLAZE_INTERNAL_ASSERT( (~rhs).size() == N, "Invalid vector sizes" );
 
-   for( typename VT::ConstIterator element=(~rhs).begin(); element!=(~rhs).end(); ++element )
+   for( ConstIterator_<VT> element=(~rhs).begin(); element!=(~rhs).end(); ++element )
       v_[element->index()] += element->value();
 }
 //*************************************************************************************************
@@ -1992,7 +1993,7 @@ inline void StaticVector<Type,N,TF>::subAssign( const SparseVector<VT,TF>& rhs )
 {
    BLAZE_INTERNAL_ASSERT( (~rhs).size() == N, "Invalid vector sizes" );
 
-   for( typename VT::ConstIterator element=(~rhs).begin(); element!=(~rhs).end(); ++element )
+   for( ConstIterator_<VT> element=(~rhs).begin(); element!=(~rhs).end(); ++element )
       v_[element->index()] -= element->value();
 }
 //*************************************************************************************************
@@ -2086,7 +2087,7 @@ inline void StaticVector<Type,N,TF>::multAssign( const SparseVector<VT,TF>& rhs 
 
    reset();
 
-   for( typename VT::ConstIterator element=(~rhs).begin(); element!=(~rhs).end(); ++element )
+   for( ConstIterator_<VT> element=(~rhs).begin(); element!=(~rhs).end(); ++element )
       v_[element->index()] = tmp[element->index()] * element->value();
 }
 //*************************************************************************************************
@@ -2412,7 +2413,7 @@ struct IsPadded< StaticVector<T,N,TF> > : public BoolConstant<usePadding>
 template< typename T1, size_t N, bool TF, typename T2 >
 struct AddTrait< StaticVector<T1,N,TF>, StaticVector<T2,N,TF> >
 {
-   typedef StaticVector< typename AddTrait<T1,T2>::Type, N, TF >  Type;
+   using Type = StaticVector< AddTrait_<T1,T2>, N, TF >;
 };
 /*! \endcond */
 //*************************************************************************************************
@@ -2431,7 +2432,7 @@ struct AddTrait< StaticVector<T1,N,TF>, StaticVector<T2,N,TF> >
 template< typename T1, size_t N, bool TF, typename T2 >
 struct SubTrait< StaticVector<T1,N,TF>, StaticVector<T2,N,TF> >
 {
-   typedef StaticVector< typename SubTrait<T1,T2>::Type, N, TF >  Type;
+   using Type = StaticVector< SubTrait_<T1,T2>, N, TF >;
 };
 /*! \endcond */
 //*************************************************************************************************
@@ -2450,31 +2451,31 @@ struct SubTrait< StaticVector<T1,N,TF>, StaticVector<T2,N,TF> >
 template< typename T1, size_t N, bool TF, typename T2 >
 struct MultTrait< StaticVector<T1,N,TF>, T2, EnableIf_<IsNumeric<T2> > >
 {
-   typedef StaticVector< typename MultTrait<T1,T2>::Type, N, TF >  Type;
+   using Type = StaticVector< MultTrait_<T1,T2>, N, TF >;
 };
 
 template< typename T1, typename T2, size_t N, bool TF >
 struct MultTrait< T1, StaticVector<T2,N,TF>, EnableIf_<IsNumeric<T1> > >
 {
-   typedef StaticVector< typename MultTrait<T1,T2>::Type, N, TF >  Type;
+   using Type = StaticVector< MultTrait_<T1,T2>, N, TF >;
 };
 
 template< typename T1, size_t N, bool TF, typename T2 >
 struct MultTrait< StaticVector<T1,N,TF>, StaticVector<T2,N,TF> >
 {
-   typedef StaticVector< typename MultTrait<T1,T2>::Type, N, TF >  Type;
+   using Type = StaticVector< MultTrait_<T1,T2>, N, TF >;
 };
 
 template< typename T1, size_t M, typename T2, size_t N >
 struct MultTrait< StaticVector<T1,M,false>, StaticVector<T2,N,true> >
 {
-   typedef StaticMatrix< typename MultTrait<T1,T2>::Type, M, N, false >  Type;
+   using Type = StaticMatrix< MultTrait_<T1,T2>, M, N, false >;
 };
 
 template< typename T1, size_t N, typename T2 >
 struct MultTrait< StaticVector<T1,N,true>, StaticVector<T2,N,false> >
 {
-   typedef typename MultTrait<T1,T2>::Type  Type;
+   using Type = MultTrait_<T1,T2>;
 };
 /*! \endcond */
 //*************************************************************************************************
@@ -2494,10 +2495,10 @@ template< typename T1, typename T2 >
 struct CrossTrait< StaticVector<T1,3UL,false>, StaticVector<T2,3UL,false> >
 {
  private:
-   typedef typename MultTrait<T1,T2>::Type  T;
+   using T = MultTrait_<T1,T2>;
 
  public:
-   typedef StaticVector< typename SubTrait<T,T>::Type, 3UL, false >  Type;
+   using Type = StaticVector< SubTrait_<T,T>, 3UL, false >;
 };
 /*! \endcond */
 //*************************************************************************************************
@@ -2516,7 +2517,7 @@ struct CrossTrait< StaticVector<T1,3UL,false>, StaticVector<T2,3UL,false> >
 template< typename T1, size_t N, bool TF, typename T2 >
 struct DivTrait< StaticVector<T1,N,TF>, T2, EnableIf_<IsNumeric<T2> > >
 {
-   typedef StaticVector< typename DivTrait<T1,T2>::Type, N, TF >  Type;
+   using Type = StaticVector< DivTrait_<T1,T2>, N, TF >;
 };
 /*! \endcond */
 //*************************************************************************************************
@@ -2535,8 +2536,8 @@ struct DivTrait< StaticVector<T1,N,TF>, T2, EnableIf_<IsNumeric<T2> > >
 template< typename T1, size_t N, bool TF, typename T2 >
 struct MathTrait< StaticVector<T1,N,TF>, StaticVector<T2,N,TF> >
 {
-   typedef StaticVector< typename MathTrait<T1,T2>::HighType, N, TF >  HighType;
-   typedef StaticVector< typename MathTrait<T1,T2>::LowType , N, TF >  LowType;
+   using HighType = StaticVector< typename MathTrait<T1,T2>::HighType, N, TF >;
+   using LowType  = StaticVector< typename MathTrait<T1,T2>::LowType , N, TF >;
 };
 /*! \endcond */
 //*************************************************************************************************
@@ -2555,7 +2556,7 @@ struct MathTrait< StaticVector<T1,N,TF>, StaticVector<T2,N,TF> >
 template< typename T1, size_t N, bool TF >
 struct SubvectorTrait< StaticVector<T1,N,TF> >
 {
-   typedef HybridVector<T1,N,TF>  Type;
+   using Type = HybridVector<T1,N,TF>;
 };
 /*! \endcond */
 //*************************************************************************************************

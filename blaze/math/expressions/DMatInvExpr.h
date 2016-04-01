@@ -40,6 +40,7 @@
 // Includes
 //*************************************************************************************************
 
+#include <blaze/math/Aliases.h>
 #include <blaze/math/constraints/DenseMatrix.h>
 #include <blaze/math/constraints/StorageOrder.h>
 #include <blaze/math/expressions/Computation.h>
@@ -93,18 +94,18 @@ class DMatInvExpr : public DenseMatrix< DMatInvExpr<MT,SO>, SO >
 {
  private:
    //**Type definitions****************************************************************************
-   typedef typename MT::ResultType     RT;  //!< Result type of the dense matrix expression.
-   typedef typename MT::CompositeType  CT;  //!< Composite type of the dense matrix expression.
+   typedef ResultType_<MT>     RT;  //!< Result type of the dense matrix expression.
+   typedef CompositeType_<MT>  CT;  //!< Composite type of the dense matrix expression.
    //**********************************************************************************************
 
  public:
    //**Type definitions****************************************************************************
-   typedef DMatInvExpr<MT,SO>          This;           //!< Type of this DMatInvExpr instance.
-   typedef typename MT::ResultType     ResultType;     //!< Result type for expression template evaluations.
-   typedef typename MT::OppositeType   OppositeType;   //!< Result type with opposite storage order for expression template evaluations.
-   typedef typename MT::TransposeType  TransposeType;  //!< Transpose type for expression template evaluations.
-   typedef typename MT::ElementType    ElementType;    //!< Resulting element type.
-   typedef typename MT::ReturnType     ReturnType;     //!< Return type for expression template evaluations.
+   typedef DMatInvExpr<MT,SO>  This;           //!< Type of this DMatInvExpr instance.
+   typedef ResultType_<MT>     ResultType;     //!< Result type for expression template evaluations.
+   typedef OppositeType_<MT>   OppositeType;   //!< Result type with opposite storage order for expression template evaluations.
+   typedef TransposeType_<MT>  TransposeType;  //!< Transpose type for expression template evaluations.
+   typedef ElementType_<MT>    ElementType;    //!< Resulting element type.
+   typedef ReturnType_<MT>     ReturnType;     //!< Return type for expression template evaluations.
 
    //! Data type for composite expression templates.
    typedef const ResultType  CompositeType;
@@ -242,7 +243,7 @@ class DMatInvExpr : public DenseMatrix< DMatInvExpr<MT,SO>, SO >
       BLAZE_CONSTRAINT_MUST_BE_MATRIX_WITH_STORAGE_ORDER( ResultType, SO );
       BLAZE_CONSTRAINT_MUST_BE_MATRIX_WITH_STORAGE_ORDER( OppositeType, !SO );
       BLAZE_CONSTRAINT_MATRICES_MUST_HAVE_SAME_STORAGE_ORDER( MT2, TmpType );
-      BLAZE_CONSTRAINT_MUST_BE_REFERENCE_TYPE( typename TmpType::CompositeType );
+      BLAZE_CONSTRAINT_MUST_BE_REFERENCE_TYPE( CompositeType_<TmpType> );
 
       BLAZE_INTERNAL_ASSERT( (~lhs).rows()    == rhs.rows()   , "Invalid number of rows"    );
       BLAZE_INTERNAL_ASSERT( (~lhs).columns() == rhs.columns(), "Invalid number of columns" );
@@ -584,7 +585,7 @@ struct DMatInvExprTrait< DMatInvExpr<MT,false> >
  public:
    //**********************************************************************************************
    using Type = If_< And< IsDenseMatrix<MT>, IsRowMajorMatrix<MT> >
-                   , typename DMatInvExpr<MT,false>::Operand
+                   , Operand_< DMatInvExpr<MT,false> >
                    , INVALID_TYPE >;
    //**********************************************************************************************
 };
@@ -600,7 +601,7 @@ struct TDMatInvExprTrait< DMatInvExpr<MT,true> >
  public:
    //**********************************************************************************************
    using Type = If_< And< IsDenseMatrix<MT>, IsColumnMajorMatrix<MT> >
-                   , typename DMatInvExpr<MT,true>::Operand
+                   , Operand_< DMatInvExpr<MT,true> >
                    , INVALID_TYPE >;
    //**********************************************************************************************
 };

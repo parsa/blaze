@@ -40,6 +40,7 @@
 // Includes
 //*************************************************************************************************
 
+#include <blaze/math/Aliases.h>
 #include <blaze/math/constraints/ColumnMajorMatrix.h>
 #include <blaze/math/constraints/MatMatAddExpr.h>
 #include <blaze/math/constraints/RowMajorMatrix.h>
@@ -108,12 +109,12 @@ class SMatTSMatAddExpr : public SparseMatrix< SMatTSMatAddExpr<MT1,MT2>, false >
 {
  private:
    //**Type definitions****************************************************************************
-   typedef typename MT1::ResultType     RT1;  //!< Result type of the left-hand side sparse matrix expression.
-   typedef typename MT2::ResultType     RT2;  //!< Result type of the right-hand side sparse matrix expression.
-   typedef typename MT1::ReturnType     RN1;  //!< Evaluation type of the left-hand side sparse matrix expression.
-   typedef typename MT2::ReturnType     RN2;  //!< Evaluation type of the right-hand side sparse matrix expression.
-   typedef typename MT1::CompositeType  CT1;  //!< Composite type of the left-hand side sparse matrix expression.
-   typedef typename MT2::CompositeType  CT2;  //!< Composite type of the right-hand side sparse matrix expression.
+   typedef ResultType_<MT1>     RT1;  //!< Result type of the left-hand side sparse matrix expression.
+   typedef ResultType_<MT2>     RT2;  //!< Result type of the right-hand side sparse matrix expression.
+   typedef ReturnType_<MT1>     RN1;  //!< Evaluation type of the left-hand side sparse matrix expression.
+   typedef ReturnType_<MT2>     RN2;  //!< Evaluation type of the right-hand side sparse matrix expression.
+   typedef CompositeType_<MT1>  CT1;  //!< Composite type of the left-hand side sparse matrix expression.
+   typedef CompositeType_<MT2>  CT2;  //!< Composite type of the right-hand side sparse matrix expression.
    //**********************************************************************************************
 
    //**Return type evaluation**********************************************************************
@@ -126,7 +127,7 @@ class SMatTSMatAddExpr : public SparseMatrix< SMatTSMatAddExpr<MT1,MT2>, false >
    enum { returnExpr = !IsTemporary<RN1>::value && !IsTemporary<RN2>::value };
 
    //! Expression return type for the subscript operator.
-   typedef typename AddExprTrait<RN1,RN2>::Type  ExprReturnType;
+   typedef AddExprTrait_<RN1,RN2>  ExprReturnType;
    //**********************************************************************************************
 
    //**Serial evaluation strategy******************************************************************
@@ -161,11 +162,11 @@ class SMatTSMatAddExpr : public SparseMatrix< SMatTSMatAddExpr<MT1,MT2>, false >
 
  public:
    //**Type definitions****************************************************************************
-   typedef SMatTSMatAddExpr<MT1,MT2>           This;           //!< Type of this SMatTSMatAddExpr instance.
-   typedef typename AddTrait<RT1,RT2>::Type    ResultType;     //!< Result type for expression template evaluations.
-   typedef typename ResultType::OppositeType   OppositeType;   //!< Result type with opposite storage order for expression template evaluations.
-   typedef typename ResultType::TransposeType  TransposeType;  //!< Transpose type for expression template evaluations.
-   typedef typename ResultType::ElementType    ElementType;    //!< Resulting element type.
+   typedef SMatTSMatAddExpr<MT1,MT2>   This;           //!< Type of this SMatTSMatAddExpr instance.
+   typedef AddTrait_<RT1,RT2>          ResultType;     //!< Result type for expression template evaluations.
+   typedef OppositeType_<ResultType>   OppositeType;   //!< Result type with opposite storage order for expression template evaluations.
+   typedef TransposeType_<ResultType>  TransposeType;  //!< Transpose type for expression template evaluations.
+   typedef ElementType_<ResultType>    ElementType;    //!< Resulting element type.
 
    //! Return type for expression template evaluations.
    typedef const IfTrue_< returnExpr, ExprReturnType, ElementType >  ReturnType;
@@ -345,11 +346,11 @@ class SMatTSMatAddExpr : public SparseMatrix< SMatTSMatAddExpr<MT1,MT2>, false >
       BLAZE_INTERNAL_ASSERT( (~lhs).rows()    == rhs.rows()   , "Invalid number of rows"    );
       BLAZE_INTERNAL_ASSERT( (~lhs).columns() == rhs.columns(), "Invalid number of columns" );
 
-      typedef typename RemoveReference_<CT2>::ConstIterator  RightIterator;
+      typedef ConstIterator_< RemoveReference_<CT2> >  RightIterator;
 
       assign( ~lhs, rhs.lhs_ );
 
-      if( !IsResizable<typename MT::ElementType>::value ) {
+      if( !IsResizable< ElementType_<MT> >::value ) {
          addAssign( ~lhs, rhs.rhs_ );
       }
       else
@@ -397,14 +398,14 @@ class SMatTSMatAddExpr : public SparseMatrix< SMatTSMatAddExpr<MT1,MT2>, false >
       BLAZE_INTERNAL_ASSERT( (~lhs).rows()    == rhs.rows()   , "Invalid number of rows"    );
       BLAZE_INTERNAL_ASSERT( (~lhs).columns() == rhs.columns(), "Invalid number of columns" );
 
-      typedef typename RemoveReference_<CT1>::ConstIterator  LeftIterator;
-      typedef typename RT2::OppositeType::ConstIterator      RightIterator;
+      typedef ConstIterator_< RemoveReference_<CT1> >  LeftIterator;
+      typedef ConstIterator_< OppositeType_<RT2> >     RightIterator;
 
       // Evaluation of the left-hand side sparse matrix operand
       CT1 A( serial( rhs.lhs_ ) );
 
       // Evaluation of the right-hand side sparse matrix operand
-      const typename RT2::OppositeType B( serial( rhs.rhs_ ) );
+      const OppositeType_<RT2> B( serial( rhs.rhs_ ) );
 
       BLAZE_INTERNAL_ASSERT( A.rows()    == rhs.lhs_.rows()   , "Invalid number of rows"    );
       BLAZE_INTERNAL_ASSERT( A.columns() == rhs.lhs_.columns(), "Invalid number of columns" );
@@ -509,11 +510,11 @@ class SMatTSMatAddExpr : public SparseMatrix< SMatTSMatAddExpr<MT1,MT2>, false >
       BLAZE_INTERNAL_ASSERT( (~lhs).rows()    == rhs.rows()   , "Invalid number of rows"    );
       BLAZE_INTERNAL_ASSERT( (~lhs).columns() == rhs.columns(), "Invalid number of columns" );
 
-      typedef typename RT1::OppositeType::ConstIterator      LeftIterator;
-      typedef typename RemoveReference_<CT2>::ConstIterator  RightIterator;
+      typedef ConstIterator_< OppositeType_<RT1> >     LeftIterator;
+      typedef ConstIterator_< RemoveReference_<CT2> >  RightIterator;
 
       // Evaluation of the left-hand side sparse matrix operand
-      const typename RT1::OppositeType A( serial( rhs.lhs_ ) );
+      const OppositeType_<RT1> A( serial( rhs.lhs_ ) );
 
       // Evaluation of the right-hand side sparse matrix operand
       CT2 B( serial( rhs.rhs_ ) );
@@ -1065,8 +1066,8 @@ struct SubmatrixExprTrait< SMatTSMatAddExpr<MT1,MT2>, AF >
 {
  public:
    //**********************************************************************************************
-   using Type = typename AddExprTrait< typename SubmatrixExprTrait<const MT1,AF>::Type
-                                     , typename SubmatrixExprTrait<const MT2,AF>::Type >::Type;
+   using Type = AddExprTrait_< SubmatrixExprTrait_<const MT1,AF>
+                             , SubmatrixExprTrait_<const MT2,AF> >;
    //**********************************************************************************************
 };
 /*! \endcond */
@@ -1080,8 +1081,8 @@ struct RowExprTrait< SMatTSMatAddExpr<MT1,MT2> >
 {
  public:
    //**********************************************************************************************
-   using Type = typename AddExprTrait< typename RowExprTrait<const MT1>::Type
-                                     , typename RowExprTrait<const MT2>::Type >::Type;
+   using Type = AddExprTrait_< RowExprTrait_<const MT1>
+                             , RowExprTrait_<const MT2> >;
    //**********************************************************************************************
 };
 /*! \endcond */
@@ -1095,8 +1096,8 @@ struct ColumnExprTrait< SMatTSMatAddExpr<MT1,MT2> >
 {
  public:
    //**********************************************************************************************
-   using Type = typename AddExprTrait< typename ColumnExprTrait<const MT1>::Type
-                                     , typename ColumnExprTrait<const MT2>::Type >::Type;
+   using Type = AddExprTrait_< ColumnExprTrait_<const MT1>
+                             , ColumnExprTrait_<const MT2> >;
    //**********************************************************************************************
 };
 /*! \endcond */

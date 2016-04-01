@@ -40,6 +40,7 @@
 // Includes
 //*************************************************************************************************
 
+#include <blaze/math/Aliases.h>
 #include <blaze/math/views/DenseSubvector.h>
 #include <blaze/math/views/SparseSubmatrix.h>
 #include <blaze/math/views/SparseSubvector.h>
@@ -101,7 +102,7 @@ template< typename MT  // Type of the sparse matrix
         , bool SO >    // Storage order
 inline void Rand< SparseSubmatrix<MT,AF,SO> >::randomize( SparseSubmatrix<MT,AF,SO>& submatrix ) const
 {
-   typedef typename SparseSubmatrix<MT,AF,SO>::ElementType  ElementType;
+   typedef ElementType_< SparseSubmatrix<MT,AF,SO> >  ElementType;
 
    const size_t m( submatrix.rows()    );
    const size_t n( submatrix.columns() );
@@ -135,7 +136,7 @@ template< typename MT  // Type of the sparse matrix
         , bool SO >    // Storage order
 inline void Rand< SparseSubmatrix<MT,AF,SO> >::randomize( SparseSubmatrix<MT,AF,SO>& submatrix, size_t nonzeros ) const
 {
-   typedef typename SparseSubmatrix<MT,AF,SO>::ElementType  ElementType;
+   typedef ElementType_< SparseSubmatrix<MT,AF,SO> >  ElementType;
 
    const size_t m( submatrix.rows()    );
    const size_t n( submatrix.columns() );
@@ -173,7 +174,7 @@ template< typename Arg >  // Min/max argument type
 inline void Rand< SparseSubmatrix<MT,AF,SO> >::randomize( SparseSubmatrix<MT,AF,SO>& submatrix,
                                                           const Arg& min, const Arg& max ) const
 {
-   typedef typename SparseSubmatrix<MT,AF,SO>::ElementType  ElementType;
+   typedef ElementType_< SparseSubmatrix<MT,AF,SO> >  ElementType;
 
    const size_t m( submatrix.rows()    );
    const size_t n( submatrix.columns() );
@@ -211,7 +212,7 @@ template< typename Arg >  // Min/max argument type
 inline void Rand< SparseSubmatrix<MT,AF,SO> >::randomize( SparseSubmatrix<MT,AF,SO>& submatrix,
                                                           size_t nonzeros, const Arg& min, const Arg& max ) const
 {
-   typedef typename SparseSubmatrix<MT,AF,SO>::ElementType  ElementType;
+   typedef ElementType_< SparseSubmatrix<MT,AF,SO> >  ElementType;
 
    const size_t m( submatrix.rows()    );
    const size_t n( submatrix.columns() );

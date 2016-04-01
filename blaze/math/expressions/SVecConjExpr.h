@@ -41,6 +41,7 @@
 //*************************************************************************************************
 
 #include <iterator>
+#include <blaze/math/Aliases.h>
 #include <blaze/math/constraints/RequiresEvaluation.h>
 #include <blaze/math/constraints/SparseVector.h>
 #include <blaze/math/constraints/TransposeFlag.h>
@@ -99,11 +100,11 @@ class SVecConjExpr : public SparseVector< SVecConjExpr<VT,TF>, TF >
 {
  private:
    //**Type definitions****************************************************************************
-   typedef typename VT::ResultType     RT;  //!< Result type of the sparse vector expression.
-   typedef typename VT::ReturnType     RN;  //!< Return type of the sparse vector expression.
-   typedef typename VT::CompositeType  CT;  //!< Composite type of the sparse vector expression.
-   typedef typename VT::TransposeType  TT;  //!< Transpose type of the sparse vector expression.
-   typedef typename VT::ElementType    ET;  //!< Element type of the sparse vector expression.
+   typedef ResultType_<VT>     RT;  //!< Result type of the sparse vector expression.
+   typedef ReturnType_<VT>     RN;  //!< Return type of the sparse vector expression.
+   typedef CompositeType_<VT>  CT;  //!< Composite type of the sparse vector expression.
+   typedef TransposeType_<VT>  TT;  //!< Transpose type of the sparse vector expression.
+   typedef ElementType_<VT>    ET;  //!< Element type of the sparse vector expression.
    //**********************************************************************************************
 
    //**Return type evaluation**********************************************************************
@@ -116,7 +117,7 @@ class SVecConjExpr : public SparseVector< SVecConjExpr<VT,TF>, TF >
    enum { returnExpr = !IsTemporary<RN>::value };
 
    //! Expression return type for the subscript operator.
-   typedef typename ConjExprTrait<RN>::Type  ExprReturnType;
+   typedef ConjExprTrait_<RN>  ExprReturnType;
    //**********************************************************************************************
 
    //**Serial evaluation strategy******************************************************************
@@ -186,7 +187,7 @@ class SVecConjExpr : public SparseVector< SVecConjExpr<VT,TF>, TF >
       typedef ValueIndexPair<ElementType>  Element;
 
       //! Iterator type of the sparse vector expression.
-      typedef typename RemoveReference_<Operand>::ConstIterator  IteratorType;
+      typedef ConstIterator_< RemoveReference_<Operand> >  IteratorType;
 
       typedef std::forward_iterator_tag  IteratorCategory;  //!< The iterator category.
       typedef Element                    ValueType;         //!< Type of the underlying pointers.
@@ -513,7 +514,7 @@ class SVecConjExpr : public SparseVector< SVecConjExpr<VT,TF>, TF >
 
       BLAZE_INTERNAL_ASSERT( (~lhs).size() == rhs.size(), "Invalid vector sizes" );
 
-      typedef typename VT2::Iterator  Iterator;
+      typedef Iterator_<VT2>  Iterator;
 
       assign( ~lhs, rhs.sv_ );
 
@@ -547,7 +548,7 @@ class SVecConjExpr : public SparseVector< SVecConjExpr<VT,TF>, TF >
 
       BLAZE_CONSTRAINT_MUST_BE_SPARSE_VECTOR_TYPE( ResultType );
       BLAZE_CONSTRAINT_MUST_BE_VECTOR_WITH_TRANSPOSE_FLAG( ResultType, TF );
-      BLAZE_CONSTRAINT_MUST_BE_REFERENCE_TYPE( typename ResultType::CompositeType );
+      BLAZE_CONSTRAINT_MUST_BE_REFERENCE_TYPE( CompositeType_<ResultType> );
 
       BLAZE_INTERNAL_ASSERT( (~lhs).size() == rhs.size(), "Invalid vector sizes" );
 
@@ -583,7 +584,7 @@ class SVecConjExpr : public SparseVector< SVecConjExpr<VT,TF>, TF >
 
       BLAZE_CONSTRAINT_MUST_BE_SPARSE_VECTOR_TYPE( ResultType );
       BLAZE_CONSTRAINT_MUST_BE_VECTOR_WITH_TRANSPOSE_FLAG( ResultType, TF );
-      BLAZE_CONSTRAINT_MUST_BE_REFERENCE_TYPE( typename ResultType::CompositeType );
+      BLAZE_CONSTRAINT_MUST_BE_REFERENCE_TYPE( CompositeType_<ResultType> );
 
       BLAZE_INTERNAL_ASSERT( (~lhs).size() == rhs.size(), "Invalid vector sizes" );
 
@@ -619,7 +620,7 @@ class SVecConjExpr : public SparseVector< SVecConjExpr<VT,TF>, TF >
 
       BLAZE_CONSTRAINT_MUST_BE_SPARSE_VECTOR_TYPE( ResultType );
       BLAZE_CONSTRAINT_MUST_BE_VECTOR_WITH_TRANSPOSE_FLAG( ResultType, TF );
-      BLAZE_CONSTRAINT_MUST_BE_REFERENCE_TYPE( typename ResultType::CompositeType );
+      BLAZE_CONSTRAINT_MUST_BE_REFERENCE_TYPE( CompositeType_<ResultType> );
 
       BLAZE_INTERNAL_ASSERT( (~lhs).size() == rhs.size(), "Invalid vector sizes" );
 
@@ -687,7 +688,7 @@ class SVecConjExpr : public SparseVector< SVecConjExpr<VT,TF>, TF >
 
       BLAZE_CONSTRAINT_MUST_BE_SPARSE_VECTOR_TYPE( ResultType );
       BLAZE_CONSTRAINT_MUST_BE_VECTOR_WITH_TRANSPOSE_FLAG( ResultType, TF );
-      BLAZE_CONSTRAINT_MUST_BE_REFERENCE_TYPE( typename ResultType::CompositeType );
+      BLAZE_CONSTRAINT_MUST_BE_REFERENCE_TYPE( CompositeType_<ResultType> );
 
       BLAZE_INTERNAL_ASSERT( (~lhs).size() == rhs.size(), "Invalid vector sizes" );
 
@@ -723,7 +724,7 @@ class SVecConjExpr : public SparseVector< SVecConjExpr<VT,TF>, TF >
 
       BLAZE_CONSTRAINT_MUST_BE_SPARSE_VECTOR_TYPE( ResultType );
       BLAZE_CONSTRAINT_MUST_BE_VECTOR_WITH_TRANSPOSE_FLAG( ResultType, TF );
-      BLAZE_CONSTRAINT_MUST_BE_REFERENCE_TYPE( typename ResultType::CompositeType );
+      BLAZE_CONSTRAINT_MUST_BE_REFERENCE_TYPE( CompositeType_<ResultType> );
 
       BLAZE_INTERNAL_ASSERT( (~lhs).size() == rhs.size(), "Invalid vector sizes" );
 
@@ -759,7 +760,7 @@ class SVecConjExpr : public SparseVector< SVecConjExpr<VT,TF>, TF >
 
       BLAZE_CONSTRAINT_MUST_BE_SPARSE_VECTOR_TYPE( ResultType );
       BLAZE_CONSTRAINT_MUST_BE_VECTOR_WITH_TRANSPOSE_FLAG( ResultType, TF );
-      BLAZE_CONSTRAINT_MUST_BE_REFERENCE_TYPE( typename ResultType::CompositeType );
+      BLAZE_CONSTRAINT_MUST_BE_REFERENCE_TYPE( CompositeType_<ResultType> );
 
       BLAZE_INTERNAL_ASSERT( (~lhs).size() == rhs.size(), "Invalid vector sizes" );
 
@@ -847,7 +848,7 @@ inline const SVecConjExpr<VT,TF> conj( const SparseVector<VT,TF>& sv )
 */
 template< typename VT  // Type of the sparse vector
         , bool TF >    // Transpose flag
-inline const typename CTransExprTrait<VT>::Type ctrans( const SparseVector<VT,TF>& sv )
+inline const CTransExprTrait_<VT> ctrans( const SparseVector<VT,TF>& sv )
 {
    BLAZE_FUNCTION_TRACE;
 
@@ -957,7 +958,7 @@ struct SVecConjExprTrait< SVecConjExpr<VT,false> >
  public:
    //**********************************************************************************************
    using Type = If_< And< IsSparseVector<VT>, IsColumnVector<VT> >
-                   , typename SVecConjExpr<VT,false>::Operand
+                   , Operand_< SVecConjExpr<VT,false> >
                    , INVALID_TYPE >;
    //**********************************************************************************************
 };
@@ -973,7 +974,7 @@ struct TSVecConjExprTrait< SVecConjExpr<VT,true> >
  public:
    //**********************************************************************************************
    using Type = If_< And< IsSparseVector<VT>, IsRowVector<VT> >
-                   , typename SVecConjExpr<VT,true>::Operand
+                   , Operand_< SVecConjExpr<VT,true> >
                    , INVALID_TYPE >;
    //**********************************************************************************************
 };
@@ -1020,7 +1021,7 @@ struct SubvectorExprTrait< SVecConjExpr<VT,TF>, AF >
 {
  public:
    //**********************************************************************************************
-   using Type = typename ConjExprTrait< typename SubvectorExprTrait<const VT,AF>::Type >::Type;
+   using Type = ConjExprTrait_< SubvectorExprTrait_<const VT,AF> >;
    //**********************************************************************************************
 };
 /*! \endcond */

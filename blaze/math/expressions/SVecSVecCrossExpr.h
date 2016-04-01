@@ -40,6 +40,7 @@
 // Includes
 //*************************************************************************************************
 
+#include <blaze/math/Aliases.h>
 #include <blaze/math/constraints/ColumnVector.h>
 #include <blaze/math/constraints/SparseVector.h>
 #include <blaze/math/dense/Forward.h>
@@ -87,14 +88,14 @@ class SVecSVecCrossExpr : public DenseVector< SVecSVecCrossExpr<VT1,VT2>, false 
 {
  private:
    //**Type definitions****************************************************************************
-   typedef typename VT1::ResultType     RT1;  //!< Result type of the left-hand side sparse vector expression.
-   typedef typename VT2::ResultType     RT2;  //!< Result type of the right-hand side sparse vector expression.
-   typedef typename VT1::ReturnType     RN1;  //!< Return type of the left-hand side sparse vector expression.
-   typedef typename VT2::ReturnType     RN2;  //!< Return type of the right-hand side sparse vector expression.
-   typedef typename VT1::CompositeType  CT1;  //!< Composite type of the left-hand side sparse vector expression.
-   typedef typename VT2::CompositeType  CT2;  //!< Composite type of the right-hand side sparse vector expression.
-   typedef typename VT1::ElementType    ET1;  //!< Element type of the left-hand side sparse vector expression.
-   typedef typename VT2::ElementType    ET2;  //!< Element type of the right-hand side sparse vector expression.
+   typedef ResultType_<VT1>     RT1;  //!< Result type of the left-hand side sparse vector expression.
+   typedef ResultType_<VT2>     RT2;  //!< Result type of the right-hand side sparse vector expression.
+   typedef ReturnType_<VT1>     RN1;  //!< Return type of the left-hand side sparse vector expression.
+   typedef ReturnType_<VT2>     RN2;  //!< Return type of the right-hand side sparse vector expression.
+   typedef CompositeType_<VT1>  CT1;  //!< Composite type of the left-hand side sparse vector expression.
+   typedef CompositeType_<VT2>  CT2;  //!< Composite type of the right-hand side sparse vector expression.
+   typedef ElementType_<VT1>    ET1;  //!< Element type of the left-hand side sparse vector expression.
+   typedef ElementType_<VT2>    ET2;  //!< Element type of the right-hand side sparse vector expression.
    //**********************************************************************************************
 
    //**Return type evaluation**********************************************************************
@@ -107,16 +108,15 @@ class SVecSVecCrossExpr : public DenseVector< SVecSVecCrossExpr<VT1,VT2>, false 
    enum { returnExpr = !IsTemporary<RN1>::value && !IsTemporary<RN2>::value };
 
    //! Expression return type for the subscript operator.
-   typedef typename SubExprTrait< typename MultExprTrait<RN1,RN2>::Type
-                                , typename MultExprTrait<RN1,RN2>::Type >::Type  ExprReturnType;
+   typedef SubExprTrait_< MultExprTrait_<RN1,RN2>, MultExprTrait_<RN1,RN2> >  ExprReturnType;
    //**********************************************************************************************
 
  public:
    //**Type definitions****************************************************************************
-   typedef SVecSVecCrossExpr<VT1,VT2>          This;           //!< Type of this SVecSVecCrossExpr instance.
-   typedef typename CrossTrait<RT1,RT2>::Type  ResultType;     //!< Result type for expression template evaluations.
-   typedef typename ResultType::TransposeType  TransposeType;  //!< Transpose type for expression template evaluations.
-   typedef typename ResultType::ElementType    ElementType;    //!< Resulting element type.
+   typedef SVecSVecCrossExpr<VT1,VT2>  This;           //!< Type of this SVecSVecCrossExpr instance.
+   typedef CrossTrait_<RT1,RT2>        ResultType;     //!< Result type for expression template evaluations.
+   typedef TransposeType_<ResultType>  TransposeType;  //!< Transpose type for expression template evaluations.
+   typedef ElementType_<ResultType>    ElementType;    //!< Resulting element type.
 
    //! Return type for expression template evaluations.
    typedef const IfTrue_< returnExpr, ExprReturnType, ElementType >  ReturnType;
@@ -302,7 +302,7 @@ class SVecSVecCrossExpr : public DenseVector< SVecSVecCrossExpr<VT1,VT2>, false 
 
       BLAZE_CONSTRAINT_MUST_BE_DENSE_VECTOR_TYPE ( ResultType );
       BLAZE_CONSTRAINT_MUST_BE_COLUMN_VECTOR_TYPE( ResultType );
-      BLAZE_CONSTRAINT_MUST_BE_REFERENCE_TYPE( typename ResultType::CompositeType );
+      BLAZE_CONSTRAINT_MUST_BE_REFERENCE_TYPE( CompositeType_<ResultType> );
 
       BLAZE_INTERNAL_ASSERT( (~lhs).size() == 3UL, "Invalid vector size" );
       BLAZE_INTERNAL_ASSERT( (~rhs).size() == 3UL, "Invalid vector size" );

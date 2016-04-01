@@ -106,27 +106,27 @@ class UpperMatrix<MT,SO,true>
 {
  private:
    //**Type definitions****************************************************************************
-   typedef typename MT::OppositeType   OT;  //!< Opposite type of the dense matrix.
-   typedef typename MT::TransposeType  TT;  //!< Transpose type of the dense matrix.
-   typedef typename MT::ElementType    ET;  //!< Element type of the dense matrix.
-   typedef IntrinsicTrait<ET>          IT;  //!< Intrinsic trait for the matrix element type.
+   typedef OppositeType_<MT>   OT;  //!< Opposite type of the dense matrix.
+   typedef TransposeType_<MT>  TT;  //!< Transpose type of the dense matrix.
+   typedef ElementType_<MT>    ET;  //!< Element type of the dense matrix.
+   typedef IntrinsicTrait<ET>  IT;  //!< Intrinsic trait for the matrix element type.
    //**********************************************************************************************
 
  public:
    //**Type definitions****************************************************************************
-   typedef UpperMatrix<MT,SO,true>      This;            //!< Type of this UpperMatrix instance.
-   typedef This                         ResultType;      //!< Result type for expression template evaluations.
-   typedef UpperMatrix<OT,!SO,true>     OppositeType;    //!< Result type with opposite storage order for expression template evaluations.
-   typedef LowerMatrix<TT,!SO,true>     TransposeType;   //!< Transpose type for expression template evaluations.
-   typedef ET                           ElementType;     //!< Type of the matrix elements.
-   typedef typename MT::IntrinsicType   IntrinsicType;   //!< Intrinsic type of the matrix elements.
-   typedef typename MT::ReturnType      ReturnType;      //!< Return type for expression template evaluations.
-   typedef const This&                  CompositeType;   //!< Data type for composite expression templates.
-   typedef UpperProxy<MT>               Reference;       //!< Reference to a non-constant matrix value.
-   typedef typename MT::ConstReference  ConstReference;  //!< Reference to a constant matrix value.
-   typedef typename MT::Pointer         Pointer;         //!< Pointer to a non-constant matrix value.
-   typedef typename MT::ConstPointer    ConstPointer;    //!< Pointer to a constant matrix value.
-   typedef typename MT::ConstIterator   ConstIterator;   //!< Iterator over constant elements.
+   typedef UpperMatrix<MT,SO,true>     This;            //!< Type of this UpperMatrix instance.
+   typedef This                        ResultType;      //!< Result type for expression template evaluations.
+   typedef UpperMatrix<OT,!SO,true>    OppositeType;    //!< Result type with opposite storage order for expression template evaluations.
+   typedef LowerMatrix<TT,!SO,true>    TransposeType;   //!< Transpose type for expression template evaluations.
+   typedef ET                          ElementType;     //!< Type of the matrix elements.
+   typedef typename MT::IntrinsicType  IntrinsicType;   //!< Intrinsic type of the matrix elements.
+   typedef ReturnType_<MT>             ReturnType;      //!< Return type for expression template evaluations.
+   typedef const This&                 CompositeType;   //!< Data type for composite expression templates.
+   typedef UpperProxy<MT>              Reference;       //!< Reference to a non-constant matrix value.
+   typedef ConstReference_<MT>         ConstReference;  //!< Reference to a constant matrix value.
+   typedef Pointer_<MT>                Pointer;         //!< Pointer to a non-constant matrix value.
+   typedef ConstPointer_<MT>           ConstPointer;    //!< Pointer to a constant matrix value.
+   typedef ConstIterator_<MT>          ConstIterator;   //!< Iterator over constant elements.
    //**********************************************************************************************
 
    //**Rebind struct definition********************************************************************
@@ -147,7 +147,7 @@ class UpperMatrix<MT,SO,true>
     public:
       //**Type definitions*************************************************************************
       typedef std::random_access_iterator_tag  IteratorCategory;  //!< The iterator category.
-      typedef typename MT::ElementType         ValueType;         //!< Type of the underlying elements.
+      typedef ElementType_<MT>                 ValueType;         //!< Type of the underlying elements.
       typedef UpperProxy<MT>                   PointerType;       //!< Pointer return type.
       typedef UpperProxy<MT>                   ReferenceType;     //!< Reference return type.
       typedef ptrdiff_t                        DifferenceType;    //!< Difference between two iterators.
@@ -1713,7 +1713,7 @@ inline EnableIf_< IsComputation<MT2>, UpperMatrix<MT,SO,true>& >
       matrix_ += ~rhs;
    }
    else {
-      typename MT2::ResultType tmp( ~rhs );
+      const ResultType_<MT2> tmp( ~rhs );
 
       if( !isUpper( tmp ) ) {
          BLAZE_THROW_INVALID_ARGUMENT( "Invalid assignment to upper matrix" );
@@ -1794,7 +1794,7 @@ inline EnableIf_< IsComputation<MT2>, UpperMatrix<MT,SO,true>& >
       matrix_ -= ~rhs;
    }
    else {
-      typename MT2::ResultType tmp( ~rhs );
+      const ResultType_<MT2> tmp( ~rhs );
 
       if( !isUpper( tmp ) ) {
          BLAZE_THROW_INVALID_ARGUMENT( "Invalid assignment to upper matrix" );

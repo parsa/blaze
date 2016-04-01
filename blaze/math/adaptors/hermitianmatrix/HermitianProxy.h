@@ -40,6 +40,7 @@
 // Includes
 //*************************************************************************************************
 
+#include <blaze/math/Aliases.h>
 #include <blaze/math/constraints/Expression.h>
 #include <blaze/math/constraints/Hermitian.h>
 #include <blaze/math/constraints/Lower.h>
@@ -119,11 +120,11 @@ class HermitianProxy : public Proxy< HermitianProxy<MT> >
 
  public:
    //**Type definitions****************************************************************************
-   typedef typename MT::ElementType     RepresentedType;  //!< Type of the represented matrix element.
-   typedef typename MT::Reference       Reference;        //!< Reference to the represented element.
-   typedef typename MT::ConstReference  ConstReference;   //!< Reference-to-const to the represented element.
-   typedef HermitianProxy*              Pointer;          //!< Pointer to the represented element.
-   typedef const HermitianProxy*        ConstPointer;     //!< Pointer-to-const to the represented element.
+   typedef ElementType_<MT>       RepresentedType;  //!< Type of the represented matrix element.
+   typedef Reference_<MT>         Reference;        //!< Reference to the represented element.
+   typedef ConstReference_<MT>    ConstReference;   //!< Reference-to-const to the represented element.
+   typedef HermitianProxy*        Pointer;          //!< Pointer to the represented element.
+   typedef const HermitianProxy*  ConstPointer;     //!< Pointer-to-const to the represented element.
 
    //! Value type of the represented complex element.
    typedef typename If_< IsComplex<RepresentedType>
@@ -282,7 +283,7 @@ inline HermitianProxy<MT>::HermitianProxy( const HermitianProxy& hp )
 template< typename MT >  // Type of the adapted matrix
 inline HermitianProxy<MT>& HermitianProxy<MT>::operator=( const HermitianProxy& hp )
 {
-   typedef typename MT::ElementType  ET;
+   typedef ElementType_<MT>  ET;
 
    if( IsComplex<ET>::value && diagonal_ && !isReal( hp.value1_ ) ) {
       BLAZE_THROW_INVALID_ARGUMENT( "Invalid assignment to diagonal matrix element" );
@@ -311,7 +312,7 @@ template< typename MT >  // Type of the adapted matrix
 template< typename T >   // Type of the right-hand side value
 inline HermitianProxy<MT>& HermitianProxy<MT>::operator=( const T& value )
 {
-   typedef typename MT::ElementType  ET;
+   typedef ElementType_<MT>  ET;
 
    if( IsComplex<ET>::value && diagonal_ && !isReal( value ) ) {
       BLAZE_THROW_INVALID_ARGUMENT( "Invalid assignment to diagonal matrix element" );
@@ -340,7 +341,7 @@ template< typename MT >  // Type of the adapted matrix
 template< typename T >   // Type of the right-hand side value
 inline HermitianProxy<MT>& HermitianProxy<MT>::operator+=( const T& value )
 {
-   typedef typename MT::ElementType  ET;
+   typedef ElementType_<MT>  ET;
 
    if( IsComplex<ET>::value && diagonal_ && !isReal( value ) ) {
       BLAZE_THROW_INVALID_ARGUMENT( "Invalid assignment to diagonal matrix element" );
@@ -369,7 +370,7 @@ template< typename MT >  // Type of the adapted matrix
 template< typename T >   // Type of the right-hand side value
 inline HermitianProxy<MT>& HermitianProxy<MT>::operator-=( const T& value )
 {
-   typedef typename MT::ElementType  ET;
+   typedef ElementType_<MT>  ET;
 
    if( IsComplex<ET>::value && diagonal_ && !isReal( value ) ) {
       BLAZE_THROW_INVALID_ARGUMENT( "Invalid assignment to diagonal matrix element" );
@@ -398,7 +399,7 @@ template< typename MT >  // Type of the adapted matrix
 template< typename T >   // Type of the right-hand side value
 inline HermitianProxy<MT>& HermitianProxy<MT>::operator*=( const T& value )
 {
-   typedef typename MT::ElementType  ET;
+   typedef ElementType_<MT>  ET;
 
    if( IsComplex<ET>::value && diagonal_ && !isReal( value ) ) {
       BLAZE_THROW_INVALID_ARGUMENT( "Invalid assignment to diagonal matrix element" );
@@ -427,7 +428,7 @@ template< typename MT >  // Type of the adapted matrix
 template< typename T >   // Type of the right-hand side value
 inline HermitianProxy<MT>& HermitianProxy<MT>::operator/=( const T& value )
 {
-   typedef typename MT::ElementType  ET;
+   typedef ElementType_<MT>  ET;
 
    if( IsComplex<ET>::value && diagonal_ && !isReal( value ) ) {
       BLAZE_THROW_INVALID_ARGUMENT( "Invalid assignment to diagonal matrix element" );
@@ -668,7 +669,7 @@ inline void HermitianProxy<MT>::imag( ValueType value ) const
 /*!\name HermitianProxy global functions */
 //@{
 template< typename MT >
-inline typename ConjExprTrait< typename HermitianProxy<MT>::RepresentedType >::Type
+inline ConjExprTrait_< RepresentedType_< HermitianProxy<MT> > >
    conj( const HermitianProxy<MT>& proxy );
 
 template< typename MT >
@@ -710,7 +711,7 @@ inline bool isnan( const HermitianProxy<MT>& proxy );
 // expression representing the complex conjugate of the vector/matrix.
 */
 template< typename MT >
-inline typename ConjExprTrait< typename HermitianProxy<MT>::RepresentedType >::Type
+inline ConjExprTrait_< RepresentedType_< HermitianProxy<MT> > >
    conj( const HermitianProxy<MT>& proxy )
 {
    using blaze::conj;

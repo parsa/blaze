@@ -41,6 +41,7 @@
 //*************************************************************************************************
 
 #include <cmath>
+#include <blaze/math/Aliases.h>
 #include <blaze/math/expressions/SparseVector.h>
 #include <blaze/math/Functions.h>
 #include <blaze/math/shims/Equal.h>
@@ -89,10 +90,10 @@ template< typename T1  // Type of the left-hand side sparse vector
         , bool TF2 >   // Transpose flag of the right-hand side sparse vector
 inline bool operator==( const SparseVector<T1,TF1>& lhs, const SparseVector<T2,TF2>& rhs )
 {
-   typedef typename T1::CompositeType  CT1;
-   typedef typename T2::CompositeType  CT2;
-   typedef typename RemoveReference_<CT1>::ConstIterator  LhsConstIterator;
-   typedef typename RemoveReference_<CT2>::ConstIterator  RhsConstIterator;
+   typedef CompositeType_<T1>  CT1;
+   typedef CompositeType_<T2>  CT2;
+   typedef ConstIterator_< RemoveReference_<CT1> >  LhsConstIterator;
+   typedef ConstIterator_< RemoveReference_<CT2> >  RhsConstIterator;
 
    // Early exit in case the vector sizes don't match
    if( (~lhs).size() != (~rhs).size() ) return false;
@@ -177,16 +178,16 @@ template< typename VT, bool TF >
 bool isUniform( const SparseVector<VT,TF>& dv );
 
 template< typename VT, bool TF >
-typename CMathTrait<typename VT::ElementType>::Type length( const SparseVector<VT,TF>& sv );
+CMathTrait_< ElementType_<VT> > length( const SparseVector<VT,TF>& sv );
 
 template< typename VT, bool TF >
-const typename VT::ElementType sqrLength( const SparseVector<VT,TF>& sv );
+const ElementType_<VT> sqrLength( const SparseVector<VT,TF>& sv );
 
 template< typename VT, bool TF >
-const typename VT::ElementType min( const SparseVector<VT,TF>& sv );
+const ElementType_<VT> min( const SparseVector<VT,TF>& sv );
 
 template< typename VT, bool TF >
-const typename VT::ElementType max( const SparseVector<VT,TF>& sv );
+const ElementType_<VT> max( const SparseVector<VT,TF>& sv );
 //@}
 //*************************************************************************************************
 
@@ -215,8 +216,8 @@ template< typename VT  // Type of the sparse vector
         , bool TF >    // Transpose flag
 inline bool isnan( const SparseVector<VT,TF>& sv )
 {
-   typedef typename VT::CompositeType  CT;
-   typedef typename RemoveReference_<CT>::ConstIterator  ConstIterator;
+   typedef CompositeType_<VT>  CT;
+   typedef ConstIterator_< RemoveReference_<CT> >  ConstIterator;
 
    CT a( ~sv );  // Evaluation of the sparse vector operand
 
@@ -259,9 +260,9 @@ template< typename VT  // Type of the sparse vector
         , bool TF >    // Transpose flag
 bool isUniform( const SparseVector<VT,TF>& sv )
 {
-   typedef typename VT::CompositeType  CT;
-   typedef typename RemoveReference_<CT>::ConstReference  ConstReference;
-   typedef typename RemoveReference_<CT>::ConstIterator   ConstIterator;
+   typedef CompositeType_<VT>  CT;
+   typedef ConstReference_< RemoveReference_<CT> >  ConstReference;
+   typedef ConstIterator_< RemoveReference_<CT> >   ConstIterator;
 
    if( (~sv).size() < 2UL )
       return true;
@@ -328,11 +329,11 @@ bool isUniform( const SparseVector<VT,TF>& sv )
 */
 template< typename VT  // Type of the sparse vector
         , bool TF >    // Transpose flag
-typename CMathTrait<typename VT::ElementType>::Type length( const SparseVector<VT,TF>& sv )
+CMathTrait_< ElementType_<VT> > length( const SparseVector<VT,TF>& sv )
 {
-   typedef typename VT::ElementType                ElementType;
-   typedef typename VT::ConstIterator              ConstIterator;
-   typedef typename CMathTrait<ElementType>::Type  LengthType;
+   typedef ElementType_<VT>          ElementType;
+   typedef ConstIterator_<VT>        ConstIterator;
+   typedef CMathTrait_<ElementType>  LengthType;
 
    BLAZE_CONSTRAINT_MUST_BE_NUMERIC_TYPE( ElementType );
 
@@ -359,10 +360,10 @@ typename CMathTrait<typename VT::ElementType>::Type length( const SparseVector<V
 */
 template< typename VT  // Type of the sparse vector
         , bool TF >    // Transpose flag
-const typename VT::ElementType sqrLength( const SparseVector<VT,TF>& sv )
+const ElementType_<VT> sqrLength( const SparseVector<VT,TF>& sv )
 {
-   typedef typename VT::ElementType    ElementType;
-   typedef typename VT::ConstIterator  ConstIterator;
+   typedef ElementType_<VT>    ElementType;
+   typedef ConstIterator_<VT>  ConstIterator;
 
    BLAZE_CONSTRAINT_MUST_BE_NUMERIC_TYPE( ElementType );
 
@@ -398,13 +399,13 @@ const typename VT::ElementType sqrLength( const SparseVector<VT,TF>& sv )
 */
 template< typename VT  // Type of the sparse vector
         , bool TF >    // Transpose flag
-const typename VT::ElementType min( const SparseVector<VT,TF>& sv )
+const ElementType_<VT> min( const SparseVector<VT,TF>& sv )
 {
    using blaze::min;
 
-   typedef typename VT::ElementType    ET;
-   typedef typename VT::CompositeType  CT;
-   typedef typename RemoveReference_<CT>::ConstIterator  ConstIterator;
+   typedef ElementType_<VT>    ET;
+   typedef CompositeType_<VT>  CT;
+   typedef ConstIterator_< RemoveReference_<CT> >  ConstIterator;
 
    CT a( ~sv );  // Evaluation of the sparse vector operand
 
@@ -455,13 +456,13 @@ const typename VT::ElementType min( const SparseVector<VT,TF>& sv )
 */
 template< typename VT  // Type of the sparse vector
         , bool TF >    // Transpose flag
-const typename VT::ElementType max( const SparseVector<VT,TF>& sv )
+const ElementType_<VT> max( const SparseVector<VT,TF>& sv )
 {
    using blaze::max;
 
-   typedef typename VT::ElementType    ET;
-   typedef typename VT::CompositeType  CT;
-   typedef typename RemoveReference_<CT>::ConstIterator  ConstIterator;
+   typedef ElementType_<VT>    ET;
+   typedef CompositeType_<VT>  CT;
+   typedef ConstIterator_< RemoveReference_<CT> >  ConstIterator;
 
    CT a( ~sv );  // Evaluation of the sparse vector operand
 

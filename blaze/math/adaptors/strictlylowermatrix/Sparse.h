@@ -45,6 +45,7 @@
 #include <blaze/math/adaptors/Forward.h>
 #include <blaze/math/adaptors/strictlylowermatrix/BaseTemplate.h>
 #include <blaze/math/adaptors/strictlylowermatrix/StrictlyLowerProxy.h>
+#include <blaze/math/Aliases.h>
 #include <blaze/math/constraints/Expression.h>
 #include <blaze/math/constraints/Hermitian.h>
 #include <blaze/math/constraints/Lower.h>
@@ -102,9 +103,9 @@ class StrictlyLowerMatrix<MT,SO,false>
 {
  private:
    //**Type definitions****************************************************************************
-   typedef typename MT::OppositeType   OT;  //!< Opposite type of the sparse matrix.
-   typedef typename MT::TransposeType  TT;  //!< Transpose type of the sparse matrix.
-   typedef typename MT::ElementType    ET;  //!< Element type of the sparse matrix.
+   typedef OppositeType_<MT>   OT;  //!< Opposite type of the sparse matrix.
+   typedef TransposeType_<MT>  TT;  //!< Transpose type of the sparse matrix.
+   typedef ElementType_<MT>    ET;  //!< Element type of the sparse matrix.
    //**********************************************************************************************
 
  public:
@@ -114,12 +115,12 @@ class StrictlyLowerMatrix<MT,SO,false>
    typedef StrictlyLowerMatrix<OT,!SO,false> OppositeType;    //!< Result type with opposite storage order for expression template evaluations.
    typedef StrictlyUpperMatrix<TT,!SO,false> TransposeType;   //!< Transpose type for expression template evaluations.
    typedef ET                                ElementType;     //!< Type of the matrix elements.
-   typedef typename MT::ReturnType           ReturnType;      //!< Return type for expression template evaluations.
+   typedef ReturnType_<MT>                   ReturnType;      //!< Return type for expression template evaluations.
    typedef const This&                       CompositeType;   //!< Data type for composite expression templates.
    typedef StrictlyLowerProxy<MT>            Reference;       //!< Reference to a non-constant matrix value.
-   typedef typename MT::ConstReference       ConstReference;  //!< Reference to a constant matrix value.
-   typedef typename MT::Iterator             Iterator;        //!< Iterator over non-constant elements.
-   typedef typename MT::ConstIterator        ConstIterator;   //!< Iterator over constant elements.
+   typedef ConstReference_<MT>               ConstReference;  //!< Reference to a constant matrix value.
+   typedef Iterator_<MT>                     Iterator;        //!< Iterator over non-constant elements.
+   typedef ConstIterator_<MT>                ConstIterator;   //!< Iterator over constant elements.
    //**********************************************************************************************
 
    //**Rebind struct definition********************************************************************
@@ -973,7 +974,7 @@ inline EnableIf_< IsComputation<MT2>, StrictlyLowerMatrix<MT,SO,false>& >
       matrix_ += ~rhs;
    }
    else {
-      typename MT2::ResultType tmp( ~rhs );
+      const ResultType_<MT2> tmp( ~rhs );
 
       if( !isStrictlyLower( tmp ) ) {
          BLAZE_THROW_INVALID_ARGUMENT( "Invalid assignment to strictly lower matrix" );
@@ -1061,7 +1062,7 @@ inline EnableIf_< IsComputation<MT2>, StrictlyLowerMatrix<MT,SO,false>& >
       matrix_ -= ~rhs;
    }
    else {
-      typename MT2::ResultType tmp( ~rhs );
+      const ResultType_<MT2> tmp( ~rhs );
 
       if( !isStrictlyLower( tmp ) ) {
          BLAZE_THROW_INVALID_ARGUMENT( "Invalid assignment to strictly lower matrix" );

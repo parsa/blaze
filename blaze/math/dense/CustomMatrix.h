@@ -42,6 +42,7 @@
 
 #include <algorithm>
 #include <boost/smart_ptr/shared_array.hpp>
+#include <blaze/math/Aliases.h>
 #include <blaze/math/AlignmentFlag.h>
 #include <blaze/math/constraints/Diagonal.h>
 #include <blaze/math/constraints/Symmetric.h>
@@ -582,7 +583,7 @@ class CustomMatrix : public DenseMatrix< CustomMatrix<Type,AF,PF,SO>, SO >
    struct VectorizedAssign {
       enum { value = useOptimizedKernels &&
                      vectorizable && MT::vectorizable &&
-                     IsSame<Type,typename MT::ElementType>::value };
+                     IsSame< Type, ElementType_<MT> >::value };
    };
    /*! \endcond */
    //**********************************************************************************************
@@ -594,7 +595,7 @@ class CustomMatrix : public DenseMatrix< CustomMatrix<Type,AF,PF,SO>, SO >
    struct VectorizedAddAssign {
       enum { value = useOptimizedKernels &&
                      vectorizable && MT::vectorizable &&
-                     IsSame<Type,typename MT::ElementType>::value &&
+                     IsSame< Type, ElementType_<MT> >::value &&
                      IntrinsicTrait<Type>::addition &&
                      !IsDiagonal<MT>::value };
    };
@@ -608,7 +609,7 @@ class CustomMatrix : public DenseMatrix< CustomMatrix<Type,AF,PF,SO>, SO >
    struct VectorizedSubAssign {
       enum { value = useOptimizedKernels &&
                      vectorizable && MT::vectorizable &&
-                     IsSame<Type,typename MT::ElementType>::value &&
+                     IsSame< Type, ElementType_<MT> >::value &&
                      IntrinsicTrait<Type>::subtraction &&
                      !IsDiagonal<MT>::value };
    };
@@ -1477,7 +1478,7 @@ inline CustomMatrix<Type,AF,PF,SO>& CustomMatrix<Type,AF,PF,SO>::operator=( cons
    }
 
    if( (~rhs).canAlias( this ) ) {
-      const typename MT::ResultType tmp( ~rhs );
+      const ResultType_<MT> tmp( ~rhs );
       smpAssign( *this, tmp );
    }
    else {
@@ -1514,7 +1515,7 @@ inline CustomMatrix<Type,AF,PF,SO>& CustomMatrix<Type,AF,PF,SO>::operator+=( con
    }
 
    if( (~rhs).canAlias( this ) ) {
-      const typename MT::ResultType tmp( ~rhs );
+      const ResultType_<MT> tmp( ~rhs );
       smpAddAssign( *this, tmp );
    }
    else {
@@ -1549,7 +1550,7 @@ inline CustomMatrix<Type,AF,PF,SO>& CustomMatrix<Type,AF,PF,SO>::operator-=( con
    }
 
    if( (~rhs).canAlias( this ) ) {
-      const typename MT::ResultType tmp( ~rhs );
+      const ResultType_<MT> tmp( ~rhs );
       smpSubAssign( *this, tmp );
    }
    else {
@@ -1583,7 +1584,7 @@ inline CustomMatrix<Type,AF,PF,SO>& CustomMatrix<Type,AF,PF,SO>::operator*=( con
       BLAZE_THROW_INVALID_ARGUMENT( "Matrix sizes do not match" );
    }
 
-   const typename MultTrait<ResultType,typename MT::ResultType>::Type tmp( *this * (~rhs) );
+   const MultTrait_< ResultType, ResultType_<MT> > tmp( *this * (~rhs) );
    smpAssign( *this, tmp );
 
    return *this;
@@ -2540,7 +2541,7 @@ inline EnableIf_<typename CustomMatrix<Type,AF,PF,SO>::BLAZE_TEMPLATE Vectorized
       for( size_t i=0UL; i<m_; ++i )
       {
          size_t j( 0UL );
-         typename MT::ConstIterator it( (~rhs).begin(i) );
+         ConstIterator_<MT> it( (~rhs).begin(i) );
 
          for( ; (j+IT::size*3UL) < jpos; j+=IT::size*4UL ) {
             store( i, j             , it.load() ); it += IT::size;
@@ -2622,7 +2623,7 @@ inline void CustomMatrix<Type,AF,PF,SO>::assign( const SparseMatrix<MT,SO>& rhs 
    BLAZE_INTERNAL_ASSERT( n_ == (~rhs).columns(), "Invalid number of columns" );
 
    for( size_t i=0UL; i<m_; ++i )
-      for( typename MT::ConstIterator element=(~rhs).begin(i); element!=(~rhs).end(i); ++element )
+      for( ConstIterator_<MT> element=(~rhs).begin(i); element!=(~rhs).end(i); ++element )
          v_[i*nn_+element->index()] = element->value();
 }
 //*************************************************************************************************
@@ -2652,7 +2653,7 @@ inline void CustomMatrix<Type,AF,PF,SO>::assign( const SparseMatrix<MT,!SO>& rhs
    BLAZE_INTERNAL_ASSERT( n_ == (~rhs).columns(), "Invalid number of columns" );
 
    for( size_t j=0UL; j<n_; ++j )
-      for( typename MT::ConstIterator element=(~rhs).begin(j); element!=(~rhs).end(j); ++element )
+      for( ConstIterator_<MT> element=(~rhs).begin(j); element!=(~rhs).end(j); ++element )
          v_[element->index()*nn_+j] = element->value();
 }
 //*************************************************************************************************
@@ -2752,7 +2753,7 @@ inline EnableIf_<typename CustomMatrix<Type,AF,PF,SO>::BLAZE_TEMPLATE Vectorized
       BLAZE_INTERNAL_ASSERT( !remainder || ( jend - ( jend % (IT::size) ) ) == jpos, "Invalid end calculation" );
 
       size_t j( jbegin );
-      typename MT::ConstIterator it( (~rhs).begin(i) + jbegin );
+      ConstIterator_<MT> it( (~rhs).begin(i) + jbegin );
 
       for( ; (j+IT::size*3UL) < jpos; j+=IT::size*4UL ) {
          store( i, j             , load(i,j             ) + it.load() ); it += IT::size;
@@ -2845,7 +2846,7 @@ inline void CustomMatrix<Type,AF,PF,SO>::addAssign( const SparseMatrix<MT,SO>& r
    BLAZE_INTERNAL_ASSERT( n_ == (~rhs).columns(), "Invalid number of columns" );
 
    for( size_t i=0UL; i<m_; ++i )
-      for( typename MT::ConstIterator element=(~rhs).begin(i); element!=(~rhs).end(i); ++element )
+      for( ConstIterator_<MT> element=(~rhs).begin(i); element!=(~rhs).end(i); ++element )
          v_[i*nn_+element->index()] += element->value();
 }
 //*************************************************************************************************
@@ -2875,7 +2876,7 @@ inline void CustomMatrix<Type,AF,PF,SO>::addAssign( const SparseMatrix<MT,!SO>& 
    BLAZE_INTERNAL_ASSERT( n_ == (~rhs).columns(), "Invalid number of columns" );
 
    for( size_t j=0UL; j<n_; ++j )
-      for( typename MT::ConstIterator element=(~rhs).begin(j); element!=(~rhs).end(j); ++element )
+      for( ConstIterator_<MT> element=(~rhs).begin(j); element!=(~rhs).end(j); ++element )
          v_[element->index()*nn_+j] += element->value();
 }
 //*************************************************************************************************
@@ -2975,7 +2976,7 @@ inline EnableIf_<typename CustomMatrix<Type,AF,PF,SO>::BLAZE_TEMPLATE Vectorized
       BLAZE_INTERNAL_ASSERT( !remainder || ( jend - ( jend % (IT::size) ) ) == jpos, "Invalid end calculation" );
 
       size_t j( jbegin );
-      typename MT::ConstIterator it( (~rhs).begin(i) + jbegin );
+      ConstIterator_<MT> it( (~rhs).begin(i) + jbegin );
 
       for( ; (j+IT::size*3UL) < jpos; j+=IT::size*4UL ) {
          store( i, j             , load(i,j             ) - it.load() ); it += IT::size;
@@ -3068,7 +3069,7 @@ inline void CustomMatrix<Type,AF,PF,SO>::subAssign( const SparseMatrix<MT,SO>& r
    BLAZE_INTERNAL_ASSERT( n_ == (~rhs).columns(), "Invalid number of columns" );
 
    for( size_t i=0UL; i<m_; ++i )
-      for( typename MT::ConstIterator element=(~rhs).begin(i); element!=(~rhs).end(i); ++element )
+      for( ConstIterator_<MT> element=(~rhs).begin(i); element!=(~rhs).end(i); ++element )
          v_[i*nn_+element->index()] -= element->value();
 }
 //*************************************************************************************************
@@ -3098,7 +3099,7 @@ inline void CustomMatrix<Type,AF,PF,SO>::subAssign( const SparseMatrix<MT,!SO>& 
    BLAZE_INTERNAL_ASSERT( n_ == (~rhs).columns(), "Invalid number of columns" );
 
    for( size_t j=0UL; j<n_; ++j )
-      for( typename MT::ConstIterator element=(~rhs).begin(j); element!=(~rhs).end(j); ++element )
+      for( ConstIterator_<MT> element=(~rhs).begin(j); element!=(~rhs).end(j); ++element )
          v_[element->index()*nn_+j] -= element->value();
 }
 //*************************************************************************************************
@@ -3284,7 +3285,7 @@ class CustomMatrix<Type,AF,PF,true> : public DenseMatrix< CustomMatrix<Type,AF,P
    struct VectorizedAssign {
       enum { value = useOptimizedKernels &&
                      vectorizable && MT::vectorizable &&
-                     IsSame<Type,typename MT::ElementType>::value };
+                     IsSame< Type, ElementType_<MT> >::value };
    };
    //**********************************************************************************************
 
@@ -3294,7 +3295,7 @@ class CustomMatrix<Type,AF,PF,true> : public DenseMatrix< CustomMatrix<Type,AF,P
    struct VectorizedAddAssign {
       enum { value = useOptimizedKernels &&
                      vectorizable && MT::vectorizable &&
-                     IsSame<Type,typename MT::ElementType>::value &&
+                     IsSame< Type, ElementType_<MT> >::value &&
                      IntrinsicTrait<Type>::addition &&
                      !IsDiagonal<MT>::value };
    };
@@ -3306,7 +3307,7 @@ class CustomMatrix<Type,AF,PF,true> : public DenseMatrix< CustomMatrix<Type,AF,P
    struct VectorizedSubAssign {
       enum { value = useOptimizedKernels &&
                      vectorizable && MT::vectorizable &&
-                     IsSame<Type,typename MT::ElementType>::value &&
+                     IsSame< Type, ElementType_<MT> >::value &&
                      IntrinsicTrait<Type>::subtraction &&
                      !IsDiagonal<MT>::value };
    };
@@ -4163,7 +4164,7 @@ inline CustomMatrix<Type,AF,PF,true>&
    }
 
    if( (~rhs).canAlias( this ) ) {
-      const typename MT::ResultType tmp( ~rhs );
+      const ResultType_<MT> tmp( ~rhs );
       smpAssign( *this, tmp );
    }
    else {
@@ -4202,7 +4203,7 @@ inline CustomMatrix<Type,AF,PF,true>&
    }
 
    if( (~rhs).canAlias( this ) ) {
-      const typename MT::ResultType tmp( ~rhs );
+      const ResultType_<MT> tmp( ~rhs );
       smpAddAssign( *this, tmp );
    }
    else {
@@ -4239,7 +4240,7 @@ inline CustomMatrix<Type,AF,PF,true>&
    }
 
    if( (~rhs).canAlias( this ) ) {
-      const typename MT::ResultType tmp( ~rhs );
+      const ResultType_<MT> tmp( ~rhs );
       smpSubAssign( *this, tmp );
    }
    else {
@@ -4275,7 +4276,7 @@ inline CustomMatrix<Type,AF,PF,true>&
       BLAZE_THROW_INVALID_ARGUMENT( "Matrix sizes do not match" );
    }
 
-   const typename MultTrait<ResultType,typename MT::ResultType>::Type tmp( *this * (~rhs) );
+   const MultTrait_< ResultType, ResultType_<MT> > tmp( *this * (~rhs) );
    smpAssign( *this, tmp );
 
    return *this;
@@ -5244,7 +5245,7 @@ inline EnableIf_<typename CustomMatrix<Type,AF,PF,true>::BLAZE_TEMPLATE Vectoriz
       for( size_t j=0UL; j<n_; ++j )
       {
          size_t i( 0UL );
-         typename MT::ConstIterator it( (~rhs).begin(j) );
+         ConstIterator_<MT> it( (~rhs).begin(j) );
 
          for( ; (i+IT::size*3UL) < ipos; i+=IT::size*4UL ) {
             store( i             , j, it.load() ); it += IT::size;
@@ -5328,7 +5329,7 @@ inline void CustomMatrix<Type,AF,PF,true>::assign( const SparseMatrix<MT,true>& 
    BLAZE_INTERNAL_ASSERT( n_ == (~rhs).columns(), "Invalid number of columns" );
 
    for( size_t j=0UL; j<(~rhs).columns(); ++j )
-      for( typename MT::ConstIterator element=(~rhs).begin(j); element!=(~rhs).end(j); ++element )
+      for( ConstIterator_<MT> element=(~rhs).begin(j); element!=(~rhs).end(j); ++element )
          v_[element->index()+j*mm_] = element->value();
 }
 /*! \endcond */
@@ -5359,7 +5360,7 @@ inline void CustomMatrix<Type,AF,PF,true>::assign( const SparseMatrix<MT,false>&
    BLAZE_INTERNAL_ASSERT( n_ == (~rhs).columns(), "Invalid number of columns" );
 
    for( size_t i=0UL; i<(~rhs).rows(); ++i )
-      for( typename MT::ConstIterator element=(~rhs).begin(i); element!=(~rhs).end(i); ++element )
+      for( ConstIterator_<MT> element=(~rhs).begin(i); element!=(~rhs).end(i); ++element )
          v_[i+element->index()*mm_] = element->value();
 }
 /*! \endcond */
@@ -5461,7 +5462,7 @@ inline EnableIf_<typename CustomMatrix<Type,AF,PF,true>::BLAZE_TEMPLATE Vectoriz
       BLAZE_INTERNAL_ASSERT( !remainder || ( iend - ( iend % (IT::size) ) ) == ipos, "Invalid end calculation" );
 
       size_t i( ibegin );
-      typename MT::ConstIterator it( (~rhs).begin(j) + ibegin );
+      ConstIterator_<MT> it( (~rhs).begin(j) + ibegin );
 
       for( ; (i+IT::size*3UL) < ipos; i+=IT::size*4UL ) {
          store( i             , j, load(i             ,j) + it.load() ); it += IT::size;
@@ -5556,7 +5557,7 @@ inline void CustomMatrix<Type,AF,PF,true>::addAssign( const SparseMatrix<MT,true
    BLAZE_INTERNAL_ASSERT( n_ == (~rhs).columns(), "Invalid number of columns" );
 
    for( size_t j=0UL; j<(~rhs).columns(); ++j )
-      for( typename MT::ConstIterator element=(~rhs).begin(j); element!=(~rhs).end(j); ++element )
+      for( ConstIterator_<MT> element=(~rhs).begin(j); element!=(~rhs).end(j); ++element )
          v_[element->index()+j*mm_] += element->value();
 }
 /*! \endcond */
@@ -5587,7 +5588,7 @@ inline void CustomMatrix<Type,AF,PF,true>::addAssign( const SparseMatrix<MT,fals
    BLAZE_INTERNAL_ASSERT( n_ == (~rhs).columns(), "Invalid number of columns" );
 
    for( size_t i=0UL; i<(~rhs).rows(); ++i )
-      for( typename MT::ConstIterator element=(~rhs).begin(i); element!=(~rhs).end(i); ++element )
+      for( ConstIterator_<MT> element=(~rhs).begin(i); element!=(~rhs).end(i); ++element )
          v_[i+element->index()*mm_] += element->value();
 }
 /*! \endcond */
@@ -5690,7 +5691,7 @@ inline EnableIf_<typename CustomMatrix<Type,AF,PF,true>::BLAZE_TEMPLATE Vectoriz
       BLAZE_INTERNAL_ASSERT( !remainder || ( iend - ( iend % (IT::size) ) ) == ipos, "Invalid end calculation" );
 
       size_t i( ibegin );
-      typename MT::ConstIterator it( (~rhs).begin(j) + ibegin );
+      ConstIterator_<MT> it( (~rhs).begin(j) + ibegin );
 
       for( ; (i+IT::size*3UL) < ipos; i+=IT::size*4UL ) {
          store( i             , j, load(i             ,j) - it.load() ); it += IT::size;
@@ -5785,7 +5786,7 @@ inline void CustomMatrix<Type,AF,PF,true>::subAssign( const SparseMatrix<MT,true
    BLAZE_INTERNAL_ASSERT( n_ == (~rhs).columns(), "Invalid number of columns" );
 
    for( size_t j=0UL; j<(~rhs).columns(); ++j )
-      for( typename MT::ConstIterator element=(~rhs).begin(j); element!=(~rhs).end(j); ++element )
+      for( ConstIterator_<MT> element=(~rhs).begin(j); element!=(~rhs).end(j); ++element )
          v_[element->index()+j*mm_] -= element->value();
 }
 /*! \endcond */
@@ -5816,7 +5817,7 @@ inline void CustomMatrix<Type,AF,PF,true>::subAssign( const SparseMatrix<MT,fals
    BLAZE_INTERNAL_ASSERT( n_ == (~rhs).columns(), "Invalid number of columns" );
 
    for( size_t i=0UL; i<(~rhs).rows(); ++i )
-      for( typename MT::ConstIterator element=(~rhs).begin(i); element!=(~rhs).end(i); ++element )
+      for( ConstIterator_<MT> element=(~rhs).begin(i); element!=(~rhs).end(i); ++element )
          v_[i+element->index()*mm_] -= element->value();
 }
 /*! \endcond */
@@ -6100,85 +6101,85 @@ struct IsPadded< CustomMatrix<T,AF,padded,SO> > : public TrueType
 template< typename T1, bool AF, bool PF, bool SO, typename T2, size_t M, size_t N >
 struct AddTrait< CustomMatrix<T1,AF,PF,SO>, StaticMatrix<T2,M,N,SO> >
 {
-   typedef StaticMatrix< typename AddTrait<T1,T2>::Type, M, N, SO >  Type;
+   using Type = StaticMatrix< AddTrait_<T1,T2>, M, N, SO >;
 };
 
 template< typename T1, bool AF, bool PF, bool SO1, typename T2, size_t M, size_t N, bool SO2 >
 struct AddTrait< CustomMatrix<T1,AF,PF,SO1>, StaticMatrix<T2,M,N,SO2> >
 {
-   typedef StaticMatrix< typename AddTrait<T1,T2>::Type, M, N, false >  Type;
+   using Type = StaticMatrix< AddTrait_<T1,T2>, M, N, false >;
 };
 
 template< typename T1, size_t M, size_t N, bool SO, typename T2, bool AF, bool PF >
 struct AddTrait< StaticMatrix<T1,M,N,SO>, CustomMatrix<T2,AF,PF,SO> >
 {
-   typedef StaticMatrix< typename AddTrait<T1,T2>::Type, M, N, SO >  Type;
+   using Type = StaticMatrix< AddTrait_<T1,T2>, M, N, SO >;
 };
 
 template< typename T1, size_t M, size_t N, bool SO1, typename T2, bool AF, bool PF, bool SO2 >
 struct AddTrait< StaticMatrix<T1,M,N,SO1>, CustomMatrix<T2,AF,PF,SO2> >
 {
-   typedef StaticMatrix< typename AddTrait<T1,T2>::Type, M, N, false >  Type;
+   using Type = StaticMatrix< AddTrait_<T1,T2>, M, N, false >;
 };
 
 template< typename T1, bool AF, bool PF, bool SO, typename T2, size_t M, size_t N >
 struct AddTrait< CustomMatrix<T1,AF,PF,SO>, HybridMatrix<T2,M,N,SO> >
 {
-   typedef HybridMatrix< typename AddTrait<T1,T2>::Type, M, N, SO >  Type;
+   using Type = HybridMatrix< AddTrait_<T1,T2>, M, N, SO >;
 };
 
 template< typename T1, bool AF, bool PF, bool SO1, typename T2, size_t M, size_t N, bool SO2 >
 struct AddTrait< CustomMatrix<T1,AF,PF,SO1>, HybridMatrix<T2,M,N,SO2> >
 {
-   typedef HybridMatrix< typename AddTrait<T1,T2>::Type, M, N, false >  Type;
+   using Type = HybridMatrix< AddTrait_<T1,T2>, M, N, false >;
 };
 
 template< typename T1, size_t M, size_t N, bool SO, typename T2, bool AF, bool PF >
 struct AddTrait< HybridMatrix<T1,M,N,SO>, CustomMatrix<T2,AF,PF,SO> >
 {
-   typedef HybridMatrix< typename AddTrait<T1,T2>::Type, M, N, SO >  Type;
+   using Type = HybridMatrix< AddTrait_<T1,T2>, M, N, SO >;
 };
 
 template< typename T1, size_t M, size_t N, bool SO1, typename T2, bool AF, bool PF, bool SO2 >
 struct AddTrait< HybridMatrix<T1,M,N,SO1>, CustomMatrix<T2,AF,PF,SO2> >
 {
-   typedef HybridMatrix< typename AddTrait<T1,T2>::Type, M, N, false >  Type;
+   using Type = HybridMatrix< AddTrait_<T1,T2>, M, N, false >;
 };
 
 template< typename T1, bool AF, bool PF, bool SO, typename T2 >
 struct AddTrait< CustomMatrix<T1,AF,PF,SO>, DynamicMatrix<T2,SO> >
 {
-   typedef DynamicMatrix< typename AddTrait<T1,T2>::Type, SO >  Type;
+   using Type = DynamicMatrix< AddTrait_<T1,T2>, SO >;
 };
 
 template< typename T1, bool AF, bool PF, bool SO1, typename T2, bool SO2 >
 struct AddTrait< CustomMatrix<T1,AF,PF,SO1>, DynamicMatrix<T2,SO2> >
 {
-   typedef DynamicMatrix< typename AddTrait<T1,T2>::Type, false >  Type;
+   using Type = DynamicMatrix< AddTrait_<T1,T2>, false >;
 };
 
 template< typename T1, bool SO, typename T2, bool AF, bool PF >
 struct AddTrait< DynamicMatrix<T1,SO>, CustomMatrix<T2,AF,PF,SO> >
 {
-   typedef DynamicMatrix< typename AddTrait<T1,T2>::Type, SO >  Type;
+   using Type = DynamicMatrix< AddTrait_<T1,T2>, SO >;
 };
 
 template< typename T1, bool SO1, typename T2, bool AF, bool PF, bool SO2 >
 struct AddTrait< DynamicMatrix<T1,SO1>, CustomMatrix<T2,AF,PF,SO2> >
 {
-   typedef DynamicMatrix< typename AddTrait<T1,T2>::Type, false >  Type;
+   using Type = DynamicMatrix< AddTrait_<T1,T2>, false >;
 };
 
 template< typename T1, bool AF1, bool PF1, bool SO, typename T2, bool AF2, bool PF2 >
 struct AddTrait< CustomMatrix<T1,AF1,PF1,SO>, CustomMatrix<T2,AF2,PF2,SO> >
 {
-   typedef DynamicMatrix< typename AddTrait<T1,T2>::Type, SO >  Type;
+   using Type = DynamicMatrix< AddTrait_<T1,T2>, SO >;
 };
 
 template< typename T1, bool AF1, bool PF1, bool SO1, typename T2, bool AF2, bool PF2, bool SO2 >
 struct AddTrait< CustomMatrix<T1,AF1,PF1,SO1>, CustomMatrix<T2,AF2,PF2,SO2> >
 {
-   typedef DynamicMatrix< typename AddTrait<T1,T2>::Type, false >  Type;
+   using Type = DynamicMatrix< AddTrait_<T1,T2>, false >;
 };
 /*! \endcond */
 //*************************************************************************************************
@@ -6197,85 +6198,85 @@ struct AddTrait< CustomMatrix<T1,AF1,PF1,SO1>, CustomMatrix<T2,AF2,PF2,SO2> >
 template< typename T1, bool AF, bool PF, bool SO, typename T2, size_t M, size_t N >
 struct SubTrait< CustomMatrix<T1,AF,PF,SO>, StaticMatrix<T2,M,N,SO> >
 {
-   typedef StaticMatrix< typename SubTrait<T1,T2>::Type, M, N, SO >  Type;
+   using Type = StaticMatrix< SubTrait_<T1,T2>, M, N, SO >;
 };
 
 template< typename T1, bool AF, bool PF, bool SO1, typename T2, size_t M, size_t N, bool SO2 >
 struct SubTrait< CustomMatrix<T1,AF,PF,SO1>, StaticMatrix<T2,M,N,SO2> >
 {
-   typedef StaticMatrix< typename SubTrait<T1,T2>::Type, M, N, false >  Type;
+   using Type = StaticMatrix< SubTrait_<T1,T2>, M, N, false >;
 };
 
 template< typename T1, size_t M, size_t N, bool SO, typename T2, bool AF, bool PF >
 struct SubTrait< StaticMatrix<T1,M,N,SO>, CustomMatrix<T2,AF,PF,SO> >
 {
-   typedef StaticMatrix< typename SubTrait<T1,T2>::Type, M, N, SO >  Type;
+   using Type = StaticMatrix< SubTrait_<T1,T2>, M, N, SO >;
 };
 
 template< typename T1, size_t M, size_t N, bool SO1, typename T2, bool AF, bool PF, bool SO2 >
 struct SubTrait< StaticMatrix<T1,M,N,SO1>, CustomMatrix<T2,AF,PF,SO2> >
 {
-   typedef StaticMatrix< typename SubTrait<T1,T2>::Type, M, N, false >  Type;
+   using Type = StaticMatrix< SubTrait_<T1,T2>, M, N, false >;
 };
 
 template< typename T1, bool AF, bool PF, bool SO, typename T2, size_t M, size_t N >
 struct SubTrait< CustomMatrix<T1,AF,PF,SO>, HybridMatrix<T2,M,N,SO> >
 {
-   typedef HybridMatrix< typename SubTrait<T1,T2>::Type, M, N, SO >  Type;
+   using Type = HybridMatrix< SubTrait_<T1,T2>, M, N, SO >;
 };
 
 template< typename T1, bool AF, bool PF, bool SO1, typename T2, size_t M, size_t N, bool SO2 >
 struct SubTrait< CustomMatrix<T1,AF,PF,SO1>, HybridMatrix<T2,M,N,SO2> >
 {
-   typedef HybridMatrix< typename SubTrait<T1,T2>::Type, M, N, false >  Type;
+   using Type = HybridMatrix< SubTrait_<T1,T2>, M, N, false >;
 };
 
 template< typename T1, size_t M, size_t N, bool SO, typename T2, bool AF, bool PF >
 struct SubTrait< HybridMatrix<T1,M,N,SO>, CustomMatrix<T2,AF,PF,SO> >
 {
-   typedef HybridMatrix< typename SubTrait<T1,T2>::Type, M, N, SO >  Type;
+   using Type = HybridMatrix< SubTrait_<T1,T2>, M, N, SO >;
 };
 
 template< typename T1, size_t M, size_t N, bool SO1, typename T2, bool AF, bool PF, bool SO2 >
 struct SubTrait< HybridMatrix<T1,M,N,SO1>, CustomMatrix<T2,AF,PF,SO2> >
 {
-   typedef HybridMatrix< typename SubTrait<T1,T2>::Type, M, N, false >  Type;
+   using Type = HybridMatrix< SubTrait_<T1,T2>, M, N, false >;
 };
 
 template< typename T1, bool AF, bool PF, bool SO, typename T2 >
 struct SubTrait< CustomMatrix<T1,AF,PF,SO>, DynamicMatrix<T2,SO> >
 {
-   typedef DynamicMatrix< typename SubTrait<T1,T2>::Type, SO >  Type;
+   using Type = DynamicMatrix< SubTrait_<T1,T2>, SO >;
 };
 
 template< typename T1, bool AF, bool PF, bool SO1, typename T2, bool SO2 >
 struct SubTrait< CustomMatrix<T1,AF,PF,SO1>, DynamicMatrix<T2,SO2> >
 {
-   typedef DynamicMatrix< typename SubTrait<T1,T2>::Type, false >  Type;
+   using Type = DynamicMatrix< SubTrait_<T1,T2>, false >;
 };
 
 template< typename T1, bool SO, typename T2, bool AF, bool PF >
 struct SubTrait< DynamicMatrix<T1,SO>, CustomMatrix<T2,AF,PF,SO> >
 {
-   typedef DynamicMatrix< typename SubTrait<T1,T2>::Type, SO >  Type;
+   using Type = DynamicMatrix< SubTrait_<T1,T2>, SO >;
 };
 
 template< typename T1, bool SO1, typename T2, bool AF, bool PF, bool SO2 >
 struct SubTrait< DynamicMatrix<T1,SO1>, CustomMatrix<T2,AF,PF,SO2> >
 {
-   typedef DynamicMatrix< typename SubTrait<T1,T2>::Type, false >  Type;
+   using Type = DynamicMatrix< SubTrait_<T1,T2>, false >;
 };
 
 template< typename T1, bool AF1, bool PF1, bool SO, typename T2, bool AF2, bool PF2 >
 struct SubTrait< CustomMatrix<T1,AF1,PF1,SO>, CustomMatrix<T2,AF2,PF2,SO> >
 {
-   typedef DynamicMatrix< typename SubTrait<T1,T2>::Type, SO >  Type;
+   using Type = DynamicMatrix< SubTrait_<T1,T2>, SO >;
 };
 
 template< typename T1, bool AF1, bool PF1, bool SO1, typename T2, bool AF2, bool PF2, bool SO2 >
 struct SubTrait< CustomMatrix<T1,AF1,PF1,SO1>, CustomMatrix<T2,AF2,PF2,SO2> >
 {
-   typedef DynamicMatrix< typename SubTrait<T1,T2>::Type, false >  Type;
+   using Type = DynamicMatrix< SubTrait_<T1,T2>, false >;
 };
 /*! \endcond */
 //*************************************************************************************************
@@ -6294,115 +6295,115 @@ struct SubTrait< CustomMatrix<T1,AF1,PF1,SO1>, CustomMatrix<T2,AF2,PF2,SO2> >
 template< typename T1, bool AF, bool PF, bool SO, typename T2 >
 struct MultTrait< CustomMatrix<T1,AF,PF,SO>, T2, EnableIf_<IsNumeric<T2> > >
 {
-   typedef DynamicMatrix< typename MultTrait<T1,T2>::Type, SO >  Type;
+   using Type = DynamicMatrix< MultTrait_<T1,T2>, SO >;
 };
 
 template< typename T1, typename T2, bool AF, bool PF, bool SO >
 struct MultTrait< T1, CustomMatrix<T2,AF,PF,SO>, EnableIf_<IsNumeric<T1> > >
 {
-   typedef DynamicMatrix< typename MultTrait<T1,T2>::Type, SO >  Type;
+   using Type = DynamicMatrix< MultTrait_<T1,T2>, SO >;
 };
 
 template< typename T1, bool AF, bool PF, bool SO, typename T2, size_t N >
 struct MultTrait< CustomMatrix<T1,AF,PF,SO>, StaticVector<T2,N,false> >
 {
-   typedef DynamicVector< typename MultTrait<T1,T2>::Type, false >  Type;
+   using Type = DynamicVector< MultTrait_<T1,T2>, false >;
 };
 
 template< typename T1, size_t N, typename T2, bool AF, bool PF, bool SO >
 struct MultTrait< StaticVector<T1,N,true>, CustomMatrix<T2,AF,PF,SO> >
 {
-   typedef DynamicVector< typename MultTrait<T1,T2>::Type, true >  Type;
+   using Type = DynamicVector< MultTrait_<T1,T2>, true >;
 };
 
 template< typename T1, bool AF, bool PF, bool SO, typename T2, size_t N >
 struct MultTrait< CustomMatrix<T1,AF,PF,SO>, HybridVector<T2,N,false> >
 {
-   typedef DynamicVector< typename MultTrait<T1,T2>::Type, false >  Type;
+   using Type = DynamicVector< MultTrait_<T1,T2>, false >;
 };
 
 template< typename T1, size_t N, typename T2, bool AF, bool PF, bool SO >
 struct MultTrait< HybridVector<T1,N,true>, CustomMatrix<T2,AF,PF,SO> >
 {
-   typedef DynamicVector< typename MultTrait<T1,T2>::Type, true >  Type;
+   using Type = DynamicVector< MultTrait_<T1,T2>, true >;
 };
 
 template< typename T1, bool AF, bool PF, bool SO, typename T2 >
 struct MultTrait< CustomMatrix<T1,AF,PF,SO>, DynamicVector<T2,false> >
 {
-   typedef DynamicVector< typename MultTrait<T1,T2>::Type, false >  Type;
+   using Type = DynamicVector< MultTrait_<T1,T2>, false >;
 };
 
 template< typename T1, typename T2, bool AF, bool PF, bool SO >
 struct MultTrait< DynamicVector<T1,true>, CustomMatrix<T2,AF,PF,SO> >
 {
-   typedef DynamicVector< typename MultTrait<T1,T2>::Type, true >  Type;
+   using Type = DynamicVector< MultTrait_<T1,T2>, true >;
 };
 
 template< typename T1, bool AF1, bool PF1, bool SO, typename T2, bool AF2, bool PF2 >
 struct MultTrait< CustomMatrix<T1,AF1,PF1,SO>, CustomVector<T2,AF2,PF2,false> >
 {
-   typedef DynamicVector< typename MultTrait<T1,T2>::Type, false >  Type;
+   using Type = DynamicVector< MultTrait_<T1,T2>, false >;
 };
 
 template< typename T1, bool AF1, bool PF1, typename T2, bool AF2, bool PF2, bool SO >
 struct MultTrait< CustomVector<T1,AF1,PF1,true>, CustomMatrix<T2,AF2,PF2,SO> >
 {
-   typedef DynamicVector< typename MultTrait<T1,T2>::Type, true >  Type;
+   using Type = DynamicVector< MultTrait_<T1,T2>, true >;
 };
 
 template< typename T1, bool AF, bool PF, bool SO, typename T2 >
 struct MultTrait< CustomMatrix<T1,AF,PF,SO>, CompressedVector<T2,false> >
 {
-   typedef DynamicVector< typename MultTrait<T1,T2>::Type, false >  Type;
+   using Type = DynamicVector< MultTrait_<T1,T2>, false >;
 };
 
 template< typename T1, typename T2, bool AF, bool PF, bool SO >
 struct MultTrait< CompressedVector<T1,true>, CustomMatrix<T2,AF,PF,SO> >
 {
-   typedef DynamicVector< typename MultTrait<T1,T2>::Type, true >  Type;
+   using Type = DynamicVector< MultTrait_<T1,T2>, true >;
 };
 
 template< typename T1, bool AF, bool PF, bool SO1, typename T2, size_t M, size_t N, bool SO2 >
 struct MultTrait< CustomMatrix<T1,AF,PF,SO1>, StaticMatrix<T2,M,N,SO2> >
 {
-   typedef DynamicMatrix< typename MultTrait<T1,T2>::Type, SO1 >  Type;
+   using Type = DynamicMatrix< MultTrait_<T1,T2>, SO1 >;
 };
 
 template< typename T1, size_t M, size_t N, bool SO1, typename T2, bool AF, bool PF, bool SO2 >
 struct MultTrait< StaticMatrix<T1,M,N,SO1>, CustomMatrix<T2,AF,PF,SO2> >
 {
-   typedef DynamicMatrix< typename MultTrait<T1,T2>::Type, SO1 >  Type;
+   using Type = DynamicMatrix< MultTrait_<T1,T2>, SO1 >;
 };
 
 template< typename T1, bool AF, bool PF, bool SO1, typename T2, size_t M, size_t N, bool SO2 >
 struct MultTrait< CustomMatrix<T1,AF,PF,SO1>, HybridMatrix<T2,M,N,SO2> >
 {
-   typedef DynamicMatrix< typename MultTrait<T1,T2>::Type, SO1 >  Type;
+   using Type = DynamicMatrix< MultTrait_<T1,T2>, SO1 >;
 };
 
 template< typename T1, size_t M, size_t N, bool SO1, typename T2, bool AF, bool PF, bool SO2 >
 struct MultTrait< HybridMatrix<T1,M,N,SO1>, CustomMatrix<T2,AF,PF,SO2> >
 {
-   typedef DynamicMatrix< typename MultTrait<T1,T2>::Type, SO1 >  Type;
+   using Type = DynamicMatrix< MultTrait_<T1,T2>, SO1 >;
 };
 
 template< typename T1, bool AF, bool PF, bool SO1, typename T2, bool SO2 >
 struct MultTrait< CustomMatrix<T1,AF,PF,SO1>, DynamicMatrix<T2,SO2> >
 {
-   typedef DynamicMatrix< typename MultTrait<T1,T2>::Type, SO1 >  Type;
+   using Type = DynamicMatrix< MultTrait_<T1,T2>, SO1 >;
 };
 
 template< typename T1, bool SO1, typename T2, bool AF, bool PF, bool SO2 >
 struct MultTrait< DynamicMatrix<T1,SO1>, CustomMatrix<T2,AF,PF,SO2> >
 {
-   typedef DynamicMatrix< typename MultTrait<T1,T2>::Type, SO1 >  Type;
+   using Type = DynamicMatrix< MultTrait_<T1,T2>, SO1 >;
 };
 
 template< typename T1, bool AF1, bool PF1, bool SO1, typename T2, bool AF2, bool PF2, bool SO2 >
 struct MultTrait< CustomMatrix<T1,AF1,PF1,SO1>, CustomMatrix<T2,AF2,PF2,SO2> >
 {
-   typedef DynamicMatrix< typename MultTrait<T1,T2>::Type, SO1 >  Type;
+   using Type = DynamicMatrix< MultTrait_<T1,T2>, SO1 >;
 };
 /*! \endcond */
 //*************************************************************************************************
@@ -6421,7 +6422,7 @@ struct MultTrait< CustomMatrix<T1,AF1,PF1,SO1>, CustomMatrix<T2,AF2,PF2,SO2> >
 template< typename T1, bool AF, bool PF, bool SO, typename T2 >
 struct DivTrait< CustomMatrix<T1,AF,PF,SO>, T2, EnableIf_<IsNumeric<T2> > >
 {
-   typedef DynamicMatrix< typename DivTrait<T1,T2>::Type , SO >  Type;
+   using Type = DynamicMatrix< DivTrait_<T1,T2>, SO >;
 };
 /*! \endcond */
 //*************************************************************************************************
@@ -6440,7 +6441,7 @@ struct DivTrait< CustomMatrix<T1,AF,PF,SO>, T2, EnableIf_<IsNumeric<T2> > >
 template< typename T1, bool AF, bool PF, bool SO >
 struct SubmatrixTrait< CustomMatrix<T1,AF,PF,SO> >
 {
-   typedef DynamicMatrix<T1,SO>  Type;
+   using Type = DynamicMatrix<T1,SO>;
 };
 /*! \endcond */
 //*************************************************************************************************
@@ -6459,7 +6460,7 @@ struct SubmatrixTrait< CustomMatrix<T1,AF,PF,SO> >
 template< typename T1, bool AF, bool PF, bool SO >
 struct RowTrait< CustomMatrix<T1,AF,PF,SO> >
 {
-   typedef DynamicVector<T1,true>  Type;
+   using Type = DynamicVector<T1,true>;
 };
 /*! \endcond */
 //*************************************************************************************************
@@ -6478,7 +6479,7 @@ struct RowTrait< CustomMatrix<T1,AF,PF,SO> >
 template< typename T1, bool AF, bool PF, bool SO >
 struct ColumnTrait< CustomMatrix<T1,AF,PF,SO> >
 {
-   typedef DynamicVector<T1,false>  Type;
+   using Type = DynamicVector<T1,false>;
 };
 /*! \endcond */
 //*************************************************************************************************

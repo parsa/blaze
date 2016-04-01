@@ -41,6 +41,7 @@
 //*************************************************************************************************
 
 #include <iterator>
+#include <blaze/math/Aliases.h>
 #include <blaze/math/constraints/DenseVector.h>
 #include <blaze/math/constraints/TransposeFlag.h>
 #include <blaze/math/expressions/Computation.h>
@@ -99,7 +100,7 @@ class DVecTransExpr : public DenseVector< DVecTransExpr<VT,TF>, TF >
 {
  private:
    //**Type definitions****************************************************************************
-   typedef typename VT::CompositeType  CT;  //!< Composite type of the dense vector expression.
+   typedef CompositeType_<VT>  CT;  //!< Composite type of the dense vector expression.
    //**********************************************************************************************
 
    //**Serial evaluation strategy******************************************************************
@@ -137,11 +138,11 @@ class DVecTransExpr : public DenseVector< DVecTransExpr<VT,TF>, TF >
 
  public:
    //**Type definitions****************************************************************************
-   typedef DVecTransExpr<VT,TF>        This;           //!< Type of this DVecTransExpr instance.
-   typedef typename VT::TransposeType  ResultType;     //!< Result type for expression template evaluations.
-   typedef typename VT::ResultType     TransposeType;  //!< Transpose type for expression template evaluations.
-   typedef typename VT::ElementType    ElementType;    //!< Resulting element type.
-   typedef typename VT::ReturnType     ReturnType;     //!< Return type for expression template evaluations.
+   typedef DVecTransExpr<VT,TF>  This;           //!< Type of this DVecTransExpr instance.
+   typedef TransposeType_<VT>    ResultType;     //!< Result type for expression template evaluations.
+   typedef ResultType_<VT>       TransposeType;  //!< Transpose type for expression template evaluations.
+   typedef ElementType_<VT>      ElementType;    //!< Resulting element type.
+   typedef ReturnType_<VT>       ReturnType;     //!< Return type for expression template evaluations.
 
    //! Resulting intrinsic element type.
    typedef typename IntrinsicTrait<ElementType>::Type  IntrinsicType;
@@ -174,7 +175,7 @@ class DVecTransExpr : public DenseVector< DVecTransExpr<VT,TF>, TF >
       typedef DifferenceType    difference_type;    //!< Difference between two iterators.
 
       //! ConstIterator type of the dense vector expression.
-      typedef typename VT::ConstIterator  IteratorType;
+      typedef ConstIterator_<VT>  IteratorType;
       //*******************************************************************************************
 
       //**Constructor******************************************************************************
@@ -1012,7 +1013,7 @@ struct DVecTransExprTrait< DVecTransExpr<VT,false> >
  public:
    //**********************************************************************************************
    using Type = If_< And< IsDenseVector<VT>, IsRowVector<VT> >
-                   , typename DVecTransExpr<VT,false>::Operand
+                   , Operand_< DVecTransExpr<VT,false> >
                    , INVALID_TYPE >;
    //**********************************************************************************************
 };
@@ -1028,7 +1029,7 @@ struct TDVecTransExprTrait< DVecTransExpr<VT,true> >
  public:
    //**********************************************************************************************
    using Type = If_< And< IsDenseVector<VT>, IsColumnVector<VT> >
-                   , typename DVecTransExpr<VT,true>::Operand
+                   , Operand_< DVecTransExpr<VT,true> >
                    , INVALID_TYPE >;
    //**********************************************************************************************
 };
@@ -1043,7 +1044,7 @@ struct SubvectorExprTrait< DVecTransExpr<VT,TF>, AF >
 {
  public:
    //**********************************************************************************************
-   using Type = typename TransExprTrait< typename SubvectorExprTrait<const VT,AF>::Type >::Type;
+   using Type = TransExprTrait_< SubvectorExprTrait_<const VT,AF> >;
    //**********************************************************************************************
 };
 /*! \endcond */

@@ -41,6 +41,7 @@
 //*************************************************************************************************
 
 #include <vector>
+#include <blaze/math/Aliases.h>
 #include <blaze/math/constraints/ColumnMajorMatrix.h>
 #include <blaze/math/constraints/ColumnVector.h>
 #include <blaze/math/constraints/MatVecMultExpr.h>
@@ -97,10 +98,10 @@ class TSMatSVecMultExpr : public SparseVector< TSMatSVecMultExpr<MT,VT>, false >
 {
  private:
    //**Type definitions****************************************************************************
-   typedef typename MT::ResultType     MRT;  //!< Result type of the left-hand side sparse matrix expression.
-   typedef typename VT::ResultType     VRT;  //!< Result type of the right-hand side sparse vector expression.
-   typedef typename MT::CompositeType  MCT;  //!< Composite type of the left-hand side sparse matrix expression.
-   typedef typename VT::CompositeType  VCT;  //!< Composite type of the right-hand side sparse vector expression.
+   typedef ResultType_<MT>     MRT;  //!< Result type of the left-hand side sparse matrix expression.
+   typedef ResultType_<VT>     VRT;  //!< Result type of the right-hand side sparse vector expression.
+   typedef CompositeType_<MT>  MCT;  //!< Composite type of the left-hand side sparse matrix expression.
+   typedef CompositeType_<VT>  VCT;  //!< Composite type of the right-hand side sparse vector expression.
    //**********************************************************************************************
 
    //**********************************************************************************************
@@ -128,11 +129,11 @@ class TSMatSVecMultExpr : public SparseVector< TSMatSVecMultExpr<MT,VT>, false >
 
  public:
    //**Type definitions****************************************************************************
-   typedef TSMatSVecMultExpr<MT,VT>            This;           //!< Type of this TSMatSVecMultExpr instance.
-   typedef typename MultTrait<MRT,VRT>::Type   ResultType;     //!< Result type for expression template evaluations.
-   typedef typename ResultType::TransposeType  TransposeType;  //!< Transpose type for expression template evaluations.
-   typedef typename ResultType::ElementType    ElementType;    //!< Resulting element type.
-   typedef const ElementType                   ReturnType;     //!< Return type for expression template evaluations.
+   typedef TSMatSVecMultExpr<MT,VT>    This;           //!< Type of this TSMatSVecMultExpr instance.
+   typedef MultTrait_<MRT,VRT>         ResultType;     //!< Result type for expression template evaluations.
+   typedef TransposeType_<ResultType>  TransposeType;  //!< Transpose type for expression template evaluations.
+   typedef ElementType_<ResultType>    ElementType;    //!< Resulting element type.
+   typedef const ElementType           ReturnType;     //!< Return type for expression template evaluations.
 
    //! Data type for composite expression templates.
    typedef const ResultType  CompositeType;
@@ -179,8 +180,7 @@ class TSMatSVecMultExpr : public SparseVector< TSMatSVecMultExpr<MT,VT>, false >
    inline ReturnType operator[]( size_t index ) const {
       BLAZE_INTERNAL_ASSERT( index < mat_.rows(), "Invalid vector access index" );
 
-      typedef typename RemoveReference_<MCT>::ConstIterator  MatrixIterator;
-      typedef typename RemoveReference_<VCT>::ConstIterator  VectorIterator;
+      typedef ConstIterator_< RemoveReference_<VCT> >  VectorIterator;
 
       MCT A( mat_ );  // Evaluation of the left-hand side sparse matrix operand
       VCT x( vec_ );  // Evaluation of the right-hand side sparse vector operand
@@ -364,8 +364,8 @@ class TSMatSVecMultExpr : public SparseVector< TSMatSVecMultExpr<MT,VT>, false >
            , typename VT2 >  // Type of the right-hand side vector operand
    static inline void selectAssignKernel( VT1& y, const MT1& A, const VT2& x )
    {
-      typedef typename RemoveReference_<MT1>::ConstIterator  MatrixIterator;
-      typedef typename RemoveReference_<VT2>::ConstIterator  VectorIterator;
+      typedef ConstIterator_< RemoveReference_<MT1> >  MatrixIterator;
+      typedef ConstIterator_< RemoveReference_<VT2> >  VectorIterator;
 
       const VectorIterator vend ( x.end() );
       VectorIterator       velem( x.begin() );
@@ -376,7 +376,7 @@ class TSMatSVecMultExpr : public SparseVector< TSMatSVecMultExpr<MT,VT>, false >
          MatrixIterator       melem( A.begin( velem->index() ) );
 
          for( ; melem!=mend; ++melem ) {
-            if( IsResizable<typename VT1::ElementType>::value &&
+            if( IsResizable< ElementType_<VT1> >::value &&
                 isDefault( y[melem->index()] ) )
                y[melem->index()] = melem->value() * velem->value();
             else
@@ -406,8 +406,8 @@ class TSMatSVecMultExpr : public SparseVector< TSMatSVecMultExpr<MT,VT>, false >
 
       BLAZE_INTERNAL_ASSERT( (~lhs).size() == rhs.size(), "Invalid vector sizes" );
 
-      typedef typename RemoveReference_<LT>::ConstIterator  MatrixIterator;
-      typedef typename RemoveReference_<RT>::ConstIterator  VectorIterator;
+      typedef ConstIterator_< RemoveReference_<LT> >  MatrixIterator;
+      typedef ConstIterator_< RemoveReference_<RT> >  VectorIterator;
 
       RT x( serial( rhs.vec_ ) );  // Evaluation of the right-hand side sparse vector operand
       if( x.nonZeros() == 0UL ) return;
@@ -512,8 +512,8 @@ class TSMatSVecMultExpr : public SparseVector< TSMatSVecMultExpr<MT,VT>, false >
            , typename VT2 >  // Type of the right-hand side vector operand
    static inline void selectAddAssignKernel( VT1& y, const MT1& A, const VT2& x )
    {
-      typedef typename RemoveReference_<MT1>::ConstIterator  MatrixIterator;
-      typedef typename RemoveReference_<VT2>::ConstIterator  VectorIterator;
+      typedef ConstIterator_< RemoveReference_<MT1> >  MatrixIterator;
+      typedef ConstIterator_< RemoveReference_<VT2> >  VectorIterator;
 
       const VectorIterator vend ( x.end() );
       VectorIterator       velem( x.begin() );
@@ -593,8 +593,8 @@ class TSMatSVecMultExpr : public SparseVector< TSMatSVecMultExpr<MT,VT>, false >
            , typename VT2 >  // Type of the right-hand side vector operand
    static inline void selectSubAssignKernel( VT1& y, const MT1& A, const VT2& x )
    {
-      typedef typename RemoveReference_<MT1>::ConstIterator  MatrixIterator;
-      typedef typename RemoveReference_<VT2>::ConstIterator  VectorIterator;
+      typedef ConstIterator_< RemoveReference_<MT1> >  MatrixIterator;
+      typedef ConstIterator_< RemoveReference_<VT2> >  VectorIterator;
 
       const VectorIterator vend ( x.end() );
       VectorIterator       velem( x.begin() );
@@ -636,7 +636,7 @@ class TSMatSVecMultExpr : public SparseVector< TSMatSVecMultExpr<MT,VT>, false >
 
       BLAZE_CONSTRAINT_MUST_BE_SPARSE_VECTOR_TYPE( ResultType );
       BLAZE_CONSTRAINT_MUST_BE_COLUMN_VECTOR_TYPE( ResultType );
-      BLAZE_CONSTRAINT_MUST_BE_REFERENCE_TYPE( typename ResultType::CompositeType );
+      BLAZE_CONSTRAINT_MUST_BE_REFERENCE_TYPE( CompositeType_<ResultType> );
 
       BLAZE_INTERNAL_ASSERT( (~lhs).size() == rhs.size(), "Invalid vector sizes" );
 
@@ -814,7 +814,7 @@ class TSMatSVecMultExpr : public SparseVector< TSMatSVecMultExpr<MT,VT>, false >
 
       BLAZE_CONSTRAINT_MUST_BE_SPARSE_VECTOR_TYPE( ResultType );
       BLAZE_CONSTRAINT_MUST_BE_COLUMN_VECTOR_TYPE( ResultType );
-      BLAZE_CONSTRAINT_MUST_BE_REFERENCE_TYPE( typename ResultType::CompositeType );
+      BLAZE_CONSTRAINT_MUST_BE_REFERENCE_TYPE( CompositeType_<ResultType> );
 
       BLAZE_INTERNAL_ASSERT( (~lhs).size() == rhs.size(), "Invalid vector sizes" );
 
@@ -928,8 +928,8 @@ struct SubvectorExprTrait< TSMatSVecMultExpr<MT,VT>, AF >
 {
  public:
    //**********************************************************************************************
-   using Type = typename MultExprTrait< typename SubmatrixExprTrait<const MT,AF>::Type
-                                      , typename SubvectorExprTrait<const VT,AF>::Type >::Type;
+   using Type = MultExprTrait_< SubmatrixExprTrait_<const MT,AF>
+                              , SubvectorExprTrait_<const VT,AF> >;
    //**********************************************************************************************
 };
 /*! \endcond */

@@ -46,6 +46,7 @@
 #include <blaze/math/adaptors/symmetricmatrix/NumericProxy.h>
 #include <blaze/math/adaptors/symmetricmatrix/SymmetricElement.h>
 #include <blaze/math/adaptors/symmetricmatrix/SymmetricValue.h>
+#include <blaze/math/Aliases.h>
 #include <blaze/math/constraints/Expression.h>
 #include <blaze/math/constraints/Hermitian.h>
 #include <blaze/math/constraints/Lower.h>
@@ -104,9 +105,9 @@ class SymmetricMatrix<MT,SO,false,true>
 {
  private:
    //**Type definitions****************************************************************************
-   typedef typename MT::OppositeType   OT;  //!< Opposite type of the sparse matrix.
-   typedef typename MT::TransposeType  TT;  //!< Transpose type of the sparse matrix.
-   typedef typename MT::ElementType    ET;  //!< Element type of the sparse matrix.
+   typedef OppositeType_<MT>   OT;  //!< Opposite type of the sparse matrix.
+   typedef TransposeType_<MT>  TT;  //!< Transpose type of the sparse matrix.
+   typedef ElementType_<MT>    ET;  //!< Element type of the sparse matrix.
    //**********************************************************************************************
 
  public:
@@ -116,11 +117,11 @@ class SymmetricMatrix<MT,SO,false,true>
    typedef SymmetricMatrix<OT,!SO,false,true>  OppositeType;    //!< Result type with opposite storage order for expression template evaluations.
    typedef SymmetricMatrix<TT,!SO,false,true>  TransposeType;   //!< Transpose type for expression template evaluations.
    typedef ET                                  ElementType;     //!< Type of the matrix elements.
-   typedef typename MT::ReturnType             ReturnType;      //!< Return type for expression template evaluations.
+   typedef ReturnType_<MT>                     ReturnType;      //!< Return type for expression template evaluations.
    typedef const This&                         CompositeType;   //!< Data type for composite expression templates.
    typedef NumericProxy<MT>                    Reference;       //!< Reference to a non-constant matrix value.
-   typedef typename MT::ConstReference         ConstReference;  //!< Reference to a constant matrix value.
-   typedef typename MT::ConstIterator          ConstIterator;   //!< Iterator over constant elements.
+   typedef ConstReference_<MT>                 ConstReference;  //!< Reference to a constant matrix value.
+   typedef ConstIterator_<MT>                  ConstIterator;   //!< Iterator over constant elements.
    //**********************************************************************************************
 
    //**Rebind struct definition********************************************************************
@@ -140,7 +141,7 @@ class SymmetricMatrix<MT,SO,false,true>
    {
     public:
       //**Type definitions*************************************************************************
-      typedef typename MT::Iterator  IteratorType;  //!< Type of the underlying sparse matrix iterators.
+      typedef Iterator_<MT>  IteratorType;  //!< Type of the underlying sparse matrix iterators.
 
       typedef std::forward_iterator_tag  IteratorCategory;  //!< The iterator category.
       typedef SymmetricElement<MT>       ValueType;         //!< Type of the underlying elements.
@@ -1143,7 +1144,7 @@ inline EnableIf_< IsComputation<MT2>, SymmetricMatrix<MT,SO,false,true>& >
       matrix_ += ~rhs;
    }
    else {
-      typename MT2::ResultType tmp( ~rhs );
+      const ResultType_<MT2> tmp( ~rhs );
 
       if( !isSymmetric( tmp ) ) {
          BLAZE_THROW_INVALID_ARGUMENT( "Invalid assignment to symmetric matrix" );
@@ -1248,7 +1249,7 @@ inline EnableIf_< IsComputation<MT2>, SymmetricMatrix<MT,SO,false,true>& >
       matrix_ -= ~rhs;
    }
    else {
-      typename MT2::ResultType tmp( ~rhs );
+      const ResultType_<MT2> tmp( ~rhs );
 
       if( !isSymmetric( tmp ) ) {
          BLAZE_THROW_INVALID_ARGUMENT( "Invalid assignment to symmetric matrix" );
@@ -1546,7 +1547,7 @@ template< typename MT  // Type of the adapted sparse matrix
         , bool SO >    // Storage order of the adapted sparse matrix
 inline void SymmetricMatrix<MT,SO,false,true>::reset( size_t i )
 {
-   for( typename MT::Iterator it=matrix_.begin(i); it!=matrix_.end(i); ++it )
+   for( Iterator_<MT> it=matrix_.begin(i); it!=matrix_.end(i); ++it )
    {
       const size_t j( it->index() );
 
@@ -1554,12 +1555,12 @@ inline void SymmetricMatrix<MT,SO,false,true>::reset( size_t i )
          continue;
 
       if( SO ) {
-         const typename MT::Iterator pos( matrix_.find( i, j ) );
+         const Iterator_<MT> pos( matrix_.find( i, j ) );
          BLAZE_INTERNAL_ASSERT( pos != matrix_.end( j ), "Missing element detected" );
          matrix_.erase( j, pos );
       }
       else {
-         const typename MT::Iterator pos( matrix_.find( j, i ) );
+         const Iterator_<MT> pos( matrix_.find( j, i ) );
          BLAZE_INTERNAL_ASSERT( pos != matrix_.end( j ), "Missing element detected" );
          matrix_.erase( j, pos );
       }
@@ -1685,7 +1686,7 @@ template< typename MT  // Type of the adapted sparse matrix
 inline typename SymmetricMatrix<MT,SO,false,true>::Iterator
    SymmetricMatrix<MT,SO,false,true>::erase( size_t i, Iterator pos )
 {
-   const typename MT::Iterator base( pos.base() );
+   const Iterator_<MT> base( pos.base() );
 
    if( base == matrix_.end( i ) )
       return pos;
@@ -1731,7 +1732,7 @@ template< typename MT  // Type of the adapted sparse matrix
 inline typename SymmetricMatrix<MT,SO,false,true>::Iterator
    SymmetricMatrix<MT,SO,false,true>::erase( size_t i, Iterator first, Iterator last )
 {
-   for( typename MT::Iterator it=first.base(); it!=last.base(); ++it )
+   for( Iterator_<MT> it=first.base(); it!=last.base(); ++it )
    {
       const size_t j( it->index() );
 

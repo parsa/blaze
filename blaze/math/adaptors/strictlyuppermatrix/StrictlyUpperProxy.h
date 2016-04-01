@@ -40,6 +40,7 @@
 // Includes
 //*************************************************************************************************
 
+#include <blaze/math/Aliases.h>
 #include <blaze/math/constraints/Expression.h>
 #include <blaze/math/constraints/Hermitian.h>
 #include <blaze/math/constraints/Lower.h>
@@ -97,17 +98,17 @@ namespace blaze {
    \endcode
 */
 template< typename MT >  // Type of the adapted matrix
-class StrictlyUpperProxy : public Proxy< StrictlyUpperProxy<MT>, typename MT::ElementType >
+class StrictlyUpperProxy : public Proxy< StrictlyUpperProxy<MT>, ElementType_<MT> >
 {
  private:
    //**Type definitions****************************************************************************
    //! Reference type of the underlying matrix type.
-   typedef AddConst_< typename MT::Reference >  ReferenceType;
+   typedef AddConst_< Reference_<MT> >  ReferenceType;
    //**********************************************************************************************
 
  public:
    //**Type definitions****************************************************************************
-   typedef typename MT::ElementType      RepresentedType;  //! Type of the represented matrix element.
+   typedef ElementType_<MT>              RepresentedType;  //! Type of the represented matrix element.
    typedef AddReference_<ReferenceType>  RawReference;     //! Reference-to-non-const to the represented element.
    typedef const RepresentedType&        ConstReference;   //! Reference-to-const to the represented element.
    //**********************************************************************************************
@@ -441,7 +442,7 @@ inline StrictlyUpperProxy<MT>::operator ConstReference() const noexcept
 /*!\name StrictlyUpperProxy global functions */
 //@{
 template< typename MT >
-inline typename ConjExprTrait< typename StrictlyUpperProxy<MT>::RepresentedType >::Type
+inline ConjExprTrait_< RepresentedType_< StrictlyUpperProxy<MT> > >
    conj( const StrictlyUpperProxy<MT>& proxy );
 
 template< typename MT >
@@ -480,7 +481,7 @@ inline bool isnan( const StrictlyUpperProxy<MT>& proxy );
 // expression representing the complex conjugate of the vector/matrix.
 */
 template< typename MT >
-inline typename ConjExprTrait< typename StrictlyUpperProxy<MT>::RepresentedType >::Type
+inline ConjExprTrait_< RepresentedType_< StrictlyUpperProxy<MT> > >
    conj( const StrictlyUpperProxy<MT>& proxy )
 {
    using blaze::conj;

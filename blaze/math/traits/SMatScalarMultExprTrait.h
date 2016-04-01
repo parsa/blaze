@@ -80,8 +80,8 @@ struct SMatScalarMultExprTraitHelper
  private:
    //**********************************************************************************************
    using ScalarType = If_< And< IsComplex< UnderlyingNumeric_<MT> >, IsBuiltin<ST> >
-                         , typename MultTrait< UnderlyingBuiltin_<MT>, ST >::Type
-                         , typename MultTrait< UnderlyingNumeric_<MT>, ST >::Type >;
+                         , MultTrait_< UnderlyingBuiltin_<MT>, ST >
+                         , MultTrait_< UnderlyingNumeric_<MT>, ST > >;
    //**********************************************************************************************
 
  public:

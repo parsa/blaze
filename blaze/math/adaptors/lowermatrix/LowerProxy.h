@@ -40,6 +40,7 @@
 // Includes
 //*************************************************************************************************
 
+#include <blaze/math/Aliases.h>
 #include <blaze/math/constraints/Expression.h>
 #include <blaze/math/constraints/Hermitian.h>
 #include <blaze/math/constraints/Lower.h>
@@ -95,17 +96,17 @@ namespace blaze {
    \endcode
 */
 template< typename MT >  // Type of the adapted matrix
-class LowerProxy : public Proxy< LowerProxy<MT>, typename MT::ElementType >
+class LowerProxy : public Proxy< LowerProxy<MT>, ElementType_<MT> >
 {
  private:
    //**Type definitions****************************************************************************
    //! Reference type of the underlying matrix type.
-   typedef AddConst_< typename MT::Reference >  ReferenceType;
+   typedef AddConst_< Reference_<MT> >  ReferenceType;
    //**********************************************************************************************
 
  public:
    //**Type definitions****************************************************************************
-   typedef typename MT::ElementType      RepresentedType;  //! Type of the represented matrix element.
+   typedef ElementType_<MT>              RepresentedType;  //! Type of the represented matrix element.
    typedef AddReference_<ReferenceType>  RawReference;     //! Reference-to-non-const to the represented element.
    typedef const RepresentedType&        ConstReference;   //! Reference-to-const to the represented element.
    //**********************************************************************************************
@@ -439,7 +440,7 @@ inline LowerProxy<MT>::operator ConstReference() const noexcept
 /*!\name LowerProxy global functions */
 //@{
 template< typename MT >
-inline typename ConjExprTrait< typename LowerProxy<MT>::RepresentedType >::Type
+inline ConjExprTrait_< RepresentedType_< LowerProxy<MT> > >
    conj( const LowerProxy<MT>& proxy );
 
 template< typename MT >
@@ -478,7 +479,7 @@ inline bool isnan( const LowerProxy<MT>& proxy );
 // expression representing the complex conjugate of the vector/matrix.
 */
 template< typename MT >
-inline typename ConjExprTrait< typename LowerProxy<MT>::RepresentedType >::Type
+inline ConjExprTrait_< RepresentedType_< LowerProxy<MT> > >
    conj( const LowerProxy<MT>& proxy )
 {
    using blaze::conj;

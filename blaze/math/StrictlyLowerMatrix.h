@@ -41,6 +41,7 @@
 //*************************************************************************************************
 
 #include <cmath>
+#include <blaze/math/Aliases.h>
 #include <blaze/math/adaptors/StrictlyLowerMatrix.h>
 #include <blaze/math/constraints/DenseMatrix.h>
 #include <blaze/math/constraints/Resizable.h>
@@ -323,7 +324,7 @@ inline void Rand< StrictlyLowerMatrix<MT,SO,DF> >::randomize( StrictlyLowerMatri
 {
    BLAZE_CONSTRAINT_MUST_BE_DENSE_MATRIX_TYPE( MT );
 
-   typedef typename MT::ElementType  ET;
+   typedef ElementType_<MT>  ET;
 
    const size_t n( matrix.rows() );
 
@@ -351,7 +352,7 @@ inline void Rand< StrictlyLowerMatrix<MT,SO,DF> >::randomize( StrictlyLowerMatri
 {
    BLAZE_CONSTRAINT_MUST_BE_SPARSE_MATRIX_TYPE( MT );
 
-   typedef typename MT::ElementType  ET;
+   typedef ElementType_<MT>  ET;
 
    const size_t n( matrix.rows() );
 
@@ -388,7 +389,7 @@ inline void Rand< StrictlyLowerMatrix<MT,SO,DF> >::randomize( StrictlyLowerMatri
 {
    BLAZE_CONSTRAINT_MUST_BE_SPARSE_MATRIX_TYPE( MT );
 
-   typedef typename MT::ElementType  ET;
+   typedef ElementType_<MT>  ET;
 
    const size_t n( matrix.rows() );
 
@@ -451,7 +452,7 @@ inline void Rand< StrictlyLowerMatrix<MT,SO,DF> >::randomize( StrictlyLowerMatri
 {
    BLAZE_CONSTRAINT_MUST_BE_DENSE_MATRIX_TYPE( MT );
 
-   typedef typename MT::ElementType  ET;
+   typedef ElementType_<MT>  ET;
 
    const size_t n( matrix.rows() );
 
@@ -483,7 +484,7 @@ inline void Rand< StrictlyLowerMatrix<MT,SO,DF> >::randomize( StrictlyLowerMatri
 {
    BLAZE_CONSTRAINT_MUST_BE_SPARSE_MATRIX_TYPE( MT );
 
-   typedef typename MT::ElementType  ET;
+   typedef ElementType_<MT>  ET;
 
    const size_t n( matrix.rows() );
 
@@ -524,7 +525,7 @@ inline void Rand< StrictlyLowerMatrix<MT,SO,DF> >::randomize( StrictlyLowerMatri
 {
    BLAZE_CONSTRAINT_MUST_BE_SPARSE_MATRIX_TYPE( MT );
 
-   typedef typename MT::ElementType  ET;
+   typedef ElementType_<MT>  ET;
 
    const size_t n( matrix.rows() );
 

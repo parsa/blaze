@@ -41,6 +41,7 @@
 //*************************************************************************************************
 
 #include <memory>
+#include <blaze/math/Aliases.h>
 #include <blaze/math/constraints/Adaptor.h>
 #include <blaze/math/constraints/BlasCompatible.h>
 #include <blaze/math/constraints/Hermitian.h>
@@ -98,8 +99,8 @@ void rq( const DenseMatrix<MT1,SO1>& A, DenseMatrix<MT2,SO2>& R, DenseMatrix<MT3
 // reconstruction of the \c Q matrix from the RQ decomposition.
 */
 template< typename MT1 >  // Type of matrix A
-inline EnableIf_<IsBuiltin< typename MT1::ElementType > >
-   rq_backend( MT1& A, const typename MT1::ElementType* tau )
+inline EnableIf_<IsBuiltin< ElementType_<MT1> > >
+   rq_backend( MT1& A, const ElementType_<MT1>* tau )
 {
    BLAZE_CONSTRAINT_MUST_BE_COLUMN_MAJOR_MATRIX_TYPE( MT1 );
 
@@ -122,8 +123,8 @@ inline EnableIf_<IsBuiltin< typename MT1::ElementType > >
 // reconstruction of the \c Q matrix from the RQ decomposition.
 */
 template< typename MT1 >  // Type of matrix A
-inline EnableIf_<IsComplex< typename MT1::ElementType > >
-   rq_backend( MT1& A, const typename MT1::ElementType* tau )
+inline EnableIf_<IsComplex< ElementType_<MT1> > >
+   rq_backend( MT1& A, const ElementType_<MT1>* tau )
 {
    BLAZE_CONSTRAINT_MUST_BE_COLUMN_MAJOR_MATRIX_TYPE( MT1 );
 
@@ -191,24 +192,24 @@ template< typename MT1  // Type of matrix A
 void rq( const DenseMatrix<MT1,SO1>& A, DenseMatrix<MT2,SO2>& R, DenseMatrix<MT3,SO3>& Q )
 {
    BLAZE_CONSTRAINT_MUST_NOT_BE_STRICTLY_TRIANGULAR_MATRIX_TYPE( MT1 );
-   BLAZE_CONSTRAINT_MUST_BE_BLAS_COMPATIBLE_TYPE( typename MT1::ElementType );
+   BLAZE_CONSTRAINT_MUST_BE_BLAS_COMPATIBLE_TYPE( ElementType_<MT1> );
 
    BLAZE_CONSTRAINT_MUST_NOT_BE_SYMMETRIC_MATRIX_TYPE( MT2 );
    BLAZE_CONSTRAINT_MUST_NOT_BE_HERMITIAN_MATRIX_TYPE( MT2 );
    BLAZE_CONSTRAINT_MUST_NOT_BE_UNITRIANGULAR_MATRIX_TYPE( MT2 );
    BLAZE_CONSTRAINT_MUST_NOT_BE_STRICTLY_TRIANGULAR_MATRIX_TYPE( MT2 );
    BLAZE_CONSTRAINT_MUST_NOT_BE_LOWER_MATRIX_TYPE( MT2 );
-   BLAZE_CONSTRAINT_MUST_BE_BLAS_COMPATIBLE_TYPE( typename MT2::ElementType );
+   BLAZE_CONSTRAINT_MUST_BE_BLAS_COMPATIBLE_TYPE( ElementType_<MT2> );
 
    BLAZE_CONSTRAINT_MUST_NOT_BE_ADAPTOR_TYPE( MT3 );
-   BLAZE_CONSTRAINT_MUST_BE_BLAS_COMPATIBLE_TYPE( typename MT3::ElementType );
+   BLAZE_CONSTRAINT_MUST_BE_BLAS_COMPATIBLE_TYPE( ElementType_<MT3> );
 
-   typedef typename RemoveAdaptor<MT1>::Type  UMT1;
-   typedef If_< IsRowMajorMatrix<UMT1>, typename UMT1::OppositeType, UMT1 >  Tmp;
-   typedef typename MT1::ElementType  ET1;
+   typedef RemoveAdaptor_<MT1>  UMT1;
+   typedef If_< IsRowMajorMatrix<UMT1>, OppositeType_<UMT1>, UMT1 >  Tmp;
+   typedef ElementType_<MT1>  ET1;
 
    BLAZE_CONSTRAINT_MUST_BE_COLUMN_MAJOR_MATRIX_TYPE( Tmp );
-   BLAZE_CONSTRAINT_MUST_BE_SAME_TYPE( ET1, typename Tmp::ElementType );
+   BLAZE_CONSTRAINT_MUST_BE_SAME_TYPE( ET1, ElementType_<Tmp> );
 
    const size_t m( (~A).rows() );
    const size_t n( (~A).columns() );
@@ -228,7 +229,7 @@ void rq( const DenseMatrix<MT1,SO1>& A, DenseMatrix<MT2,SO2>& R, DenseMatrix<MT3
 
    gerqf( tmp, tau.get() );
 
-   typename DerestrictTrait<MT2>::Type r( derestrict( ~R ) );
+   DerestrictTrait_<MT2> r( derestrict( ~R ) );
    resize( ~R, m, mindim );
    reset( r );
 

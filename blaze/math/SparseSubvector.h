@@ -40,6 +40,7 @@
 // Includes
 //*************************************************************************************************
 
+#include <blaze/math/Aliases.h>
 #include <blaze/math/views/DenseSubvector.h>
 #include <blaze/math/views/SparseSubmatrix.h>
 #include <blaze/math/views/SparseSubvector.h>
@@ -100,7 +101,7 @@ template< typename VT  // Type of the sparse vector
         , bool TF >    // Transpose flag
 inline void Rand< SparseSubvector<VT,AF,TF> >::randomize( SparseSubvector<VT,AF,TF>& subvector ) const
 {
-   typedef typename SparseSubvector<VT,AF,TF>::ElementType  ElementType;
+   typedef ElementType_< SparseSubvector<VT,AF,TF> >  ElementType;
 
    const size_t size( subvector.size() );
 
@@ -133,7 +134,7 @@ template< typename VT  // Type of the sparse vector
         , bool TF >    // Transpose flag
 inline void Rand< SparseSubvector<VT,AF,TF> >::randomize( SparseSubvector<VT,AF,TF>& subvector, size_t nonzeros ) const
 {
-   typedef typename SparseSubvector<VT,AF,TF>::ElementType  ElementType;
+   typedef ElementType_< SparseSubvector<VT,AF,TF> >  ElementType;
 
    const size_t size( subvector.size() );
 
@@ -170,7 +171,7 @@ template< typename Arg >  // Min/max argument type
 inline void Rand< SparseSubvector<VT,AF,TF> >::randomize( SparseSubvector<VT,AF,TF>& subvector,
                                                           const Arg& min, const Arg& max ) const
 {
-   typedef typename SparseSubvector<VT,AF,TF>::ElementType  ElementType;
+   typedef ElementType_< SparseSubvector<VT,AF,TF> >  ElementType;
 
    const size_t size( subvector.size() );
 
@@ -207,7 +208,7 @@ template< typename Arg >  // Min/max argument type
 inline void Rand< SparseSubvector<VT,AF,TF> >::randomize( SparseSubvector<VT,AF,TF>& subvector,
                                                           size_t nonzeros, const Arg& min, const Arg& max ) const
 {
-   typedef typename SparseSubvector<VT,AF,TF>::ElementType  ElementType;
+   typedef ElementType_< SparseSubvector<VT,AF,TF> >  ElementType;
 
    const size_t size( subvector.size() );
 

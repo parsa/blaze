@@ -42,6 +42,7 @@
 
 #include <cmath>
 #include <iterator>
+#include <blaze/math/Aliases.h>
 #include <blaze/math/constraints/DenseVector.h>
 #include <blaze/math/constraints/TransposeFlag.h>
 #include <blaze/math/expressions/Computation.h>
@@ -100,8 +101,8 @@ class DVecAbsExpr : public DenseVector< DVecAbsExpr<VT,TF>, TF >
 {
  private:
    //**Type definitions****************************************************************************
-   typedef typename VT::ReturnType   RN;  //!< Return type of the dense vector expression.
-   typedef typename VT::ElementType  ET;  //!< Element type of the dense vector expression.
+   typedef ReturnType_<VT>   RN;  //!< Return type of the dense vector expression.
+   typedef ElementType_<VT>  ET;  //!< Element type of the dense vector expression.
    //**********************************************************************************************
 
    //**Return type evaluation**********************************************************************
@@ -114,7 +115,7 @@ class DVecAbsExpr : public DenseVector< DVecAbsExpr<VT,TF>, TF >
    enum { returnExpr = !IsTemporary<RN>::value };
 
    //! Expression return type for the subscript operator.
-   typedef typename AbsExprTrait<RN>::Type  ExprReturnType;
+   typedef AbsExprTrait_<RN>  ExprReturnType;
    //**********************************************************************************************
 
    //**Serial evaluation strategy******************************************************************
@@ -154,9 +155,9 @@ class DVecAbsExpr : public DenseVector< DVecAbsExpr<VT,TF>, TF >
  public:
    //**Type definitions****************************************************************************
    typedef DVecAbsExpr<VT,TF>                 This;           //!< Type of this DVecAbsExpr instance.
-   typedef typename VT::ResultType            ResultType;     //!< Result type for expression template evaluations.
-   typedef typename VT::TransposeType         TransposeType;  //!< Transpose type for expression template evaluations.
-   typedef typename VT::ElementType           ElementType;    //!< Resulting element type.
+   typedef ResultType_<VT>                    ResultType;     //!< Result type for expression template evaluations.
+   typedef TransposeType_<VT>                 TransposeType;  //!< Transpose type for expression template evaluations.
+   typedef ElementType_<VT>                   ElementType;    //!< Resulting element type.
    typedef typename IntrinsicTrait<ET>::Type  IntrinsicType;  //!< Resulting intrinsic element type.
 
    //! Return type for expression template evaluations.
@@ -190,7 +191,7 @@ class DVecAbsExpr : public DenseVector< DVecAbsExpr<VT,TF>, TF >
       typedef DifferenceType    difference_type;    //!< Difference between two iterators.
 
       //! ConstIterator type of the left-hand side dense vector expression.
-      typedef typename VT::ConstIterator  IteratorType;
+      typedef ConstIterator_<VT>  IteratorType;
       //*******************************************************************************************
 
       //**Constructor******************************************************************************
@@ -610,7 +611,7 @@ class DVecAbsExpr : public DenseVector< DVecAbsExpr<VT,TF>, TF >
 
       BLAZE_CONSTRAINT_MUST_BE_DENSE_VECTOR_TYPE( ResultType );
       BLAZE_CONSTRAINT_MUST_BE_VECTOR_WITH_TRANSPOSE_FLAG( ResultType, TF );
-      BLAZE_CONSTRAINT_MUST_BE_REFERENCE_TYPE( typename ResultType::CompositeType );
+      BLAZE_CONSTRAINT_MUST_BE_REFERENCE_TYPE( CompositeType_<ResultType> );
 
       BLAZE_INTERNAL_ASSERT( (~lhs).size() == rhs.size(), "Invalid vector sizes" );
 
@@ -642,7 +643,7 @@ class DVecAbsExpr : public DenseVector< DVecAbsExpr<VT,TF>, TF >
 
       BLAZE_CONSTRAINT_MUST_BE_DENSE_VECTOR_TYPE( ResultType );
       BLAZE_CONSTRAINT_MUST_BE_VECTOR_WITH_TRANSPOSE_FLAG( ResultType, TF );
-      BLAZE_CONSTRAINT_MUST_BE_REFERENCE_TYPE( typename ResultType::CompositeType );
+      BLAZE_CONSTRAINT_MUST_BE_REFERENCE_TYPE( CompositeType_<ResultType> );
 
       BLAZE_INTERNAL_ASSERT( (~lhs).size() == rhs.size(), "Invalid vector sizes" );
 
@@ -678,7 +679,7 @@ class DVecAbsExpr : public DenseVector< DVecAbsExpr<VT,TF>, TF >
 
       BLAZE_CONSTRAINT_MUST_BE_DENSE_VECTOR_TYPE( ResultType );
       BLAZE_CONSTRAINT_MUST_BE_VECTOR_WITH_TRANSPOSE_FLAG( ResultType, TF );
-      BLAZE_CONSTRAINT_MUST_BE_REFERENCE_TYPE( typename ResultType::CompositeType );
+      BLAZE_CONSTRAINT_MUST_BE_REFERENCE_TYPE( CompositeType_<ResultType> );
 
       BLAZE_INTERNAL_ASSERT( (~lhs).size() == rhs.size(), "Invalid vector sizes" );
 
@@ -714,7 +715,7 @@ class DVecAbsExpr : public DenseVector< DVecAbsExpr<VT,TF>, TF >
 
       BLAZE_CONSTRAINT_MUST_BE_DENSE_VECTOR_TYPE( ResultType );
       BLAZE_CONSTRAINT_MUST_BE_VECTOR_WITH_TRANSPOSE_FLAG( ResultType, TF );
-      BLAZE_CONSTRAINT_MUST_BE_REFERENCE_TYPE( typename ResultType::CompositeType );
+      BLAZE_CONSTRAINT_MUST_BE_REFERENCE_TYPE( CompositeType_<ResultType> );
 
       BLAZE_INTERNAL_ASSERT( (~lhs).size() == rhs.size(), "Invalid vector sizes" );
 
@@ -778,7 +779,7 @@ class DVecAbsExpr : public DenseVector< DVecAbsExpr<VT,TF>, TF >
 
       BLAZE_CONSTRAINT_MUST_BE_DENSE_VECTOR_TYPE( ResultType );
       BLAZE_CONSTRAINT_MUST_BE_VECTOR_WITH_TRANSPOSE_FLAG( ResultType, TF );
-      BLAZE_CONSTRAINT_MUST_BE_REFERENCE_TYPE( typename ResultType::CompositeType );
+      BLAZE_CONSTRAINT_MUST_BE_REFERENCE_TYPE( CompositeType_<ResultType> );
 
       BLAZE_INTERNAL_ASSERT( (~lhs).size() == rhs.size(), "Invalid vector sizes" );
 
@@ -810,7 +811,7 @@ class DVecAbsExpr : public DenseVector< DVecAbsExpr<VT,TF>, TF >
 
       BLAZE_CONSTRAINT_MUST_BE_DENSE_VECTOR_TYPE( ResultType );
       BLAZE_CONSTRAINT_MUST_BE_VECTOR_WITH_TRANSPOSE_FLAG( ResultType, TF );
-      BLAZE_CONSTRAINT_MUST_BE_REFERENCE_TYPE( typename ResultType::CompositeType );
+      BLAZE_CONSTRAINT_MUST_BE_REFERENCE_TYPE( CompositeType_<ResultType> );
 
       BLAZE_INTERNAL_ASSERT( (~lhs).size() == rhs.size(), "Invalid vector sizes" );
 
@@ -846,7 +847,7 @@ class DVecAbsExpr : public DenseVector< DVecAbsExpr<VT,TF>, TF >
 
       BLAZE_CONSTRAINT_MUST_BE_DENSE_VECTOR_TYPE( ResultType );
       BLAZE_CONSTRAINT_MUST_BE_VECTOR_WITH_TRANSPOSE_FLAG( ResultType, TF );
-      BLAZE_CONSTRAINT_MUST_BE_REFERENCE_TYPE( typename ResultType::CompositeType );
+      BLAZE_CONSTRAINT_MUST_BE_REFERENCE_TYPE( CompositeType_<ResultType> );
 
       BLAZE_INTERNAL_ASSERT( (~lhs).size() == rhs.size(), "Invalid vector sizes" );
 
@@ -882,7 +883,7 @@ class DVecAbsExpr : public DenseVector< DVecAbsExpr<VT,TF>, TF >
 
       BLAZE_CONSTRAINT_MUST_BE_DENSE_VECTOR_TYPE( ResultType );
       BLAZE_CONSTRAINT_MUST_BE_VECTOR_WITH_TRANSPOSE_FLAG( ResultType, TF );
-      BLAZE_CONSTRAINT_MUST_BE_REFERENCE_TYPE( typename ResultType::CompositeType );
+      BLAZE_CONSTRAINT_MUST_BE_REFERENCE_TYPE( CompositeType_<ResultType> );
 
       BLAZE_INTERNAL_ASSERT( (~lhs).size() == rhs.size(), "Invalid vector sizes" );
 
@@ -1073,7 +1074,7 @@ struct SubvectorExprTrait< DVecAbsExpr<VT,TF>, AF >
 {
  public:
    //**********************************************************************************************
-   using Type = typename AbsExprTrait< typename SubvectorExprTrait<const VT,AF>::Type >::Type;
+   using Type = AbsExprTrait_< SubvectorExprTrait_<const VT,AF> >;
    //**********************************************************************************************
 };
 /*! \endcond */

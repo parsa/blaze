@@ -41,6 +41,7 @@
 //*************************************************************************************************
 
 #include <iterator>
+#include <blaze/math/Aliases.h>
 #include <blaze/math/constraints/ColumnMajorMatrix.h>
 #include <blaze/math/constraints/ColumnVector.h>
 #include <blaze/math/constraints/DenseMatrix.h>
@@ -109,14 +110,14 @@ class DVecTDVecMultExpr : public DenseMatrix< DVecTDVecMultExpr<VT1,VT2>, false 
 {
  private:
    //**Type definitions****************************************************************************
-   typedef typename VT1::ResultType     RT1;  //!< Result type of the left-hand side dense vector expression.
-   typedef typename VT2::ResultType     RT2;  //!< Result type of the right-hand side dense vector expression.
-   typedef typename RT1::ElementType    ET1;  //!< Element type of the left-hand side dense vector expression.
-   typedef typename RT2::ElementType    ET2;  //!< Element type of the right-hand side dense vector expression.
-   typedef typename VT1::ReturnType     RN1;  //!< Return type of the left-hand side dense vector expression.
-   typedef typename VT2::ReturnType     RN2;  //!< Return type of the right-hand side dense vector expression.
-   typedef typename VT1::CompositeType  CT1;  //!< Composite type of the left-hand side dense vector expression.
-   typedef typename VT2::CompositeType  CT2;  //!< Composite type of the right-hand side dense vector expression.
+   typedef ResultType_<VT1>     RT1;  //!< Result type of the left-hand side dense vector expression.
+   typedef ResultType_<VT2>     RT2;  //!< Result type of the right-hand side dense vector expression.
+   typedef ElementType_<RT1>    ET1;  //!< Element type of the left-hand side dense vector expression.
+   typedef ElementType_<RT2>    ET2;  //!< Element type of the right-hand side dense vector expression.
+   typedef ReturnType_<VT1>     RN1;  //!< Return type of the left-hand side dense vector expression.
+   typedef ReturnType_<VT2>     RN2;  //!< Return type of the right-hand side dense vector expression.
+   typedef CompositeType_<VT1>  CT1;  //!< Composite type of the left-hand side dense vector expression.
+   typedef CompositeType_<VT2>  CT2;  //!< Composite type of the right-hand side dense vector expression.
    //**********************************************************************************************
 
    //**********************************************************************************************
@@ -139,7 +140,7 @@ class DVecTDVecMultExpr : public DenseMatrix< DVecTDVecMultExpr<VT1,VT2>, false 
    enum { returnExpr = !IsTemporary<RN1>::value && !IsTemporary<RN2>::value };
 
    //! Expression return type for the subscript operator.
-   typedef typename MultExprTrait<RN1,RN2>::Type  ExprReturnType;
+   typedef MultExprTrait_<RN1,RN2>  ExprReturnType;
    //**********************************************************************************************
 
    //**Serial evaluation strategy******************************************************************
@@ -183,9 +184,9 @@ class DVecTDVecMultExpr : public DenseMatrix< DVecTDVecMultExpr<VT1,VT2>, false 
    struct UseVectorizedKernel {
       enum { value = useOptimizedKernels &&
                      T1::vectorizable && T2::vectorizable && T3::vectorizable &&
-                     IsSame<typename T1::ElementType,typename T2::ElementType>::value &&
-                     IsSame<typename T1::ElementType,typename T3::ElementType>::value &&
-                     IntrinsicTrait<typename T1::ElementType>::multiplication };
+                     IsSame< ElementType_<T1>, ElementType_<T2> >::value &&
+                     IsSame< ElementType_<T1>, ElementType_<T3> >::value &&
+                     IntrinsicTrait< ElementType_<T1> >::multiplication };
    };
    /*! \endcond */
    //**********************************************************************************************
@@ -205,10 +206,10 @@ class DVecTDVecMultExpr : public DenseMatrix< DVecTDVecMultExpr<VT1,VT2>, false 
  public:
    //**Type definitions****************************************************************************
    typedef DVecTDVecMultExpr<VT1,VT2>                  This;           //!< Type of this DVecTDVecMultExpr instance.
-   typedef typename MultTrait<RT1,RT2>::Type           ResultType;     //!< Result type for expression template evaluations.
-   typedef typename ResultType::OppositeType           OppositeType;   //!< Result type with opposite storage order for expression template evaluations.
-   typedef typename ResultType::TransposeType          TransposeType;  //!< Transpose type for expression template evaluations.
-   typedef typename ResultType::ElementType            ElementType;    //!< Resulting element type.
+   typedef MultTrait_<RT1,RT2>                         ResultType;     //!< Result type for expression template evaluations.
+   typedef OppositeType_<ResultType>                   OppositeType;   //!< Result type with opposite storage order for expression template evaluations.
+   typedef TransposeType_<ResultType>                  TransposeType;  //!< Transpose type for expression template evaluations.
+   typedef ElementType_<ResultType>                    ElementType;    //!< Resulting element type.
    typedef typename IntrinsicTrait<ElementType>::Type  IntrinsicType;  //!< Resulting intrinsic element type.
 
    //! Return type for expression template evaluations.
@@ -251,10 +252,10 @@ class DVecTDVecMultExpr : public DenseMatrix< DVecTDVecMultExpr<VT1,VT2>, false 
       typedef DifferenceType    difference_type;    //!< Difference between two iterators.
 
       //! ConstIterator type of the left-hand side dense matrix expression.
-      typedef typename VT1::ConstIterator  LeftIteratorType;
+      typedef ConstIterator_<VT1>  LeftIteratorType;
 
       //! ConstIterator type of the right-hand side dense matrix expression.
-      typedef typename VT2::ConstIterator  RightIteratorType;
+      typedef ConstIterator_<VT2>  RightIteratorType;
       //*******************************************************************************************
 
       //**Constructor******************************************************************************
@@ -932,7 +933,7 @@ class DVecTDVecMultExpr : public DenseMatrix< DVecTDVecMultExpr<VT1,VT2>, false 
       BLAZE_CONSTRAINT_MUST_BE_ROW_MAJOR_MATRIX_TYPE( ResultType );
       BLAZE_CONSTRAINT_MUST_BE_COLUMN_MAJOR_MATRIX_TYPE( OppositeType );
       BLAZE_CONSTRAINT_MATRICES_MUST_HAVE_SAME_STORAGE_ORDER( MT, TmpType );
-      BLAZE_CONSTRAINT_MUST_BE_REFERENCE_TYPE( typename TmpType::CompositeType );
+      BLAZE_CONSTRAINT_MUST_BE_REFERENCE_TYPE( CompositeType_<TmpType> );
 
       BLAZE_INTERNAL_ASSERT( (~lhs).rows()    == rhs.rows()   , "Invalid number of rows"    );
       BLAZE_INTERNAL_ASSERT( (~lhs).columns() == rhs.columns(), "Invalid number of columns" );
@@ -1514,7 +1515,7 @@ class DVecTDVecMultExpr : public DenseMatrix< DVecTDVecMultExpr<VT1,VT2>, false 
       BLAZE_CONSTRAINT_MUST_BE_ROW_MAJOR_MATRIX_TYPE( ResultType );
       BLAZE_CONSTRAINT_MUST_BE_COLUMN_MAJOR_MATRIX_TYPE( OppositeType );
       BLAZE_CONSTRAINT_MATRICES_MUST_HAVE_SAME_STORAGE_ORDER( MT, TmpType );
-      BLAZE_CONSTRAINT_MUST_BE_REFERENCE_TYPE( typename TmpType::CompositeType );
+      BLAZE_CONSTRAINT_MUST_BE_REFERENCE_TYPE( CompositeType_<TmpType> );
 
       BLAZE_INTERNAL_ASSERT( (~lhs).rows()    == rhs.rows()   , "Invalid number of rows"    );
       BLAZE_INTERNAL_ASSERT( (~lhs).columns() == rhs.columns(), "Invalid number of columns" );
@@ -1759,8 +1760,8 @@ struct SubmatrixExprTrait< DVecTDVecMultExpr<VT1,VT2>, AF >
 {
  public:
    //**********************************************************************************************
-   using Type = typename MultExprTrait< typename SubvectorExprTrait<const VT1,AF>::Type
-                                      , typename SubvectorExprTrait<const VT2,AF>::Type >::Type;
+   using Type = MultExprTrait_< SubvectorExprTrait_<const VT1,AF>
+                              , SubvectorExprTrait_<const VT2,AF> >;
    //**********************************************************************************************
 };
 /*! \endcond */
@@ -1774,7 +1775,7 @@ struct RowExprTrait< DVecTDVecMultExpr<VT1,VT2> >
 {
  public:
    //**********************************************************************************************
-   using Type = typename MultExprTrait< typename VT1::ReturnType, VT2 >::Type;
+   using Type = MultExprTrait_< ReturnType_<VT1>, VT2 >;
    //**********************************************************************************************
 };
 /*! \endcond */
@@ -1788,7 +1789,7 @@ struct ColumnExprTrait< DVecTDVecMultExpr<VT1,VT2> >
 {
  public:
    //**********************************************************************************************
-   using Type = typename MultExprTrait< VT1, typename VT2::ReturnType >::Type;
+   using Type = MultExprTrait_< VT1, ReturnType_<VT2> >;
    //**********************************************************************************************
 };
 /*! \endcond */

@@ -42,6 +42,7 @@
 
 #include <iomanip>
 #include <ostream>
+#include <blaze/math/Aliases.h>
 #include <blaze/math/expressions/Matrix.h>
 
 
@@ -74,7 +75,7 @@ template< typename MT  // Type of the matrix
         , bool SO >    // Storage order
 inline std::ostream& operator<<( std::ostream& os, const Matrix<MT,SO>& m )
 {
-   typename MT::CompositeType tmp( ~m );
+   CompositeType_<MT> tmp( ~m );
 
    for( size_t i=0UL; i<tmp.rows(); ++i ) {
       os << "( ";

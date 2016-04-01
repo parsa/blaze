@@ -40,6 +40,7 @@
 // Includes
 //*************************************************************************************************
 
+#include <blaze/math/Aliases.h>
 #include <blaze/math/constraints/SparseVector.h>
 #include <blaze/math/constraints/TransposeFlag.h>
 #include <blaze/math/constraints/VecVecSubExpr.h>
@@ -94,14 +95,12 @@ class SVecSVecSubExpr : public SparseVector< SVecSVecSubExpr<VT1,VT2,TF>, TF >
 {
  private:
    //**Type definitions****************************************************************************
-   typedef typename VT1::ResultType     RT1;  //!< Result type of the left-hand side sparse vector expression.
-   typedef typename VT2::ResultType     RT2;  //!< Result type of the right-hand side sparse vector expression.
-   typedef typename VT1::ReturnType     RN1;  //!< Return type of the left-hand side sparse vector expression.
-   typedef typename VT2::ReturnType     RN2;  //!< Return type of the right-hand side sparse vector expression.
-   typedef typename VT1::CompositeType  CT1;  //!< Composite type of the left-hand side sparse vector expression.
-   typedef typename VT2::CompositeType  CT2;  //!< Composite type of the right-hand side sparse vector expression.
-   typedef typename VT1::TransposeType  TT1;  //!< Transpose type of the left-hand side sparse vector expression.
-   typedef typename VT2::TransposeType  TT2;  //!< Transpose type of the right-hand side sparse vector expression.
+   typedef ResultType_<VT1>     RT1;  //!< Result type of the left-hand side sparse vector expression.
+   typedef ResultType_<VT2>     RT2;  //!< Result type of the right-hand side sparse vector expression.
+   typedef ReturnType_<VT1>     RN1;  //!< Return type of the left-hand side sparse vector expression.
+   typedef ReturnType_<VT2>     RN2;  //!< Return type of the right-hand side sparse vector expression.
+   typedef CompositeType_<VT1>  CT1;  //!< Composite type of the left-hand side sparse vector expression.
+   typedef CompositeType_<VT2>  CT2;  //!< Composite type of the right-hand side sparse vector expression.
    //**********************************************************************************************
 
    //**Return type evaluation**********************************************************************
@@ -114,7 +113,7 @@ class SVecSVecSubExpr : public SparseVector< SVecSVecSubExpr<VT1,VT2,TF>, TF >
    enum { returnExpr = !IsTemporary<RN1>::value && !IsTemporary<RN2>::value };
 
    //! Expression return type for the subscript operator.
-   typedef typename SubExprTrait<RN1,RN2>::Type  ExprReturnType;
+   typedef SubExprTrait_<RN1,RN2>  ExprReturnType;
    //**********************************************************************************************
 
    //**Parallel evaluation strategy****************************************************************
@@ -133,10 +132,10 @@ class SVecSVecSubExpr : public SparseVector< SVecSVecSubExpr<VT1,VT2,TF>, TF >
 
  public:
    //**Type definitions****************************************************************************
-   typedef SVecSVecSubExpr<VT1,VT2,TF>         This;           //!< Type of this SVecSVecSubExpr instance.
-   typedef typename SubTrait<RT1,RT2>::Type    ResultType;     //!< Result type for expression template evaluations.
-   typedef typename ResultType::TransposeType  TransposeType;  //!< Transpose type for expression template evaluations.
-   typedef typename ResultType::ElementType    ElementType;    //!< Resulting element type.
+   typedef SVecSVecSubExpr<VT1,VT2,TF>  This;           //!< Type of this SVecSVecSubExpr instance.
+   typedef SubTrait_<RT1,RT2>           ResultType;     //!< Result type for expression template evaluations.
+   typedef TransposeType_<ResultType>   TransposeType;  //!< Transpose type for expression template evaluations.
+   typedef ElementType_<ResultType>     ElementType;    //!< Resulting element type.
 
    //! Return type for expression template evaluations.
    typedef const IfTrue_< returnExpr, ExprReturnType, ElementType >  ReturnType;
@@ -278,15 +277,15 @@ class SVecSVecSubExpr : public SparseVector< SVecSVecSubExpr<VT1,VT2,TF>, TF >
    // type is resizable.
    */
    template< typename VT >  // Type of the target dense vector
-   friend inline EnableIf_< IsResizable<typename VT::ElementType> >
+   friend inline EnableIf_< IsResizable< ElementType_<VT> > >
       assign( DenseVector<VT,TF>& lhs, const SVecSVecSubExpr& rhs )
    {
       BLAZE_FUNCTION_TRACE;
 
       BLAZE_INTERNAL_ASSERT( (~lhs).size() == rhs.size(), "Invalid vector sizes" );
 
-      typedef typename RemoveReference_<CT1>::ConstIterator  LeftIterator;
-      typedef typename RemoveReference_<CT2>::ConstIterator  RightIterator;
+      typedef ConstIterator_< RemoveReference_<CT1> >  LeftIterator;
+      typedef ConstIterator_< RemoveReference_<CT2> >  RightIterator;
 
       CT1 x( serial( rhs.lhs_ ) );  // Evaluation of the left-hand side sparse vector operand
       CT2 y( serial( rhs.rhs_ ) );  // Evaluation of the right-hand side sparse vector operand
@@ -326,15 +325,15 @@ class SVecSVecSubExpr : public SparseVector< SVecSVecSubExpr<VT1,VT2,TF>, TF >
    // type is not resizable.
    */
    template< typename VT >  // Type of the target dense vector
-   friend inline DisableIf_< IsResizable<typename VT::ElementType> >
+   friend inline DisableIf_< IsResizable< ElementType_<VT> > >
       assign( DenseVector<VT,TF>& lhs, const SVecSVecSubExpr& rhs )
    {
       BLAZE_FUNCTION_TRACE;
 
       BLAZE_INTERNAL_ASSERT( (~lhs).size() == rhs.size(), "Invalid vector sizes" );
 
-      typedef typename RemoveReference_<CT1>::ConstIterator  LeftIterator;
-      typedef typename RemoveReference_<CT2>::ConstIterator  RightIterator;
+      typedef ConstIterator_< RemoveReference_<CT1> >  LeftIterator;
+      typedef ConstIterator_< RemoveReference_<CT2> >  RightIterator;
 
       CT1 x( serial( rhs.lhs_ ) );  // Evaluation of the left-hand side sparse vector operand
       CT2 y( serial( rhs.rhs_ ) );  // Evaluation of the right-hand side sparse vector operand
@@ -376,8 +375,8 @@ class SVecSVecSubExpr : public SparseVector< SVecSVecSubExpr<VT1,VT2,TF>, TF >
 
       BLAZE_INTERNAL_ASSERT( (~lhs).size() == rhs.size(), "Invalid vector sizes" );
 
-      typedef typename RemoveReference_<CT1>::ConstIterator  LeftIterator;
-      typedef typename RemoveReference_<CT2>::ConstIterator  RightIterator;
+      typedef ConstIterator_< RemoveReference_<CT1> >  LeftIterator;
+      typedef ConstIterator_< RemoveReference_<CT2> >  RightIterator;
 
       CT1 x( serial( rhs.lhs_ ) );  // Evaluation of the left-hand side sparse vector operand
       CT2 y( serial( rhs.rhs_ ) );  // Evaluation of the right-hand side sparse vector operand
@@ -499,7 +498,7 @@ class SVecSVecSubExpr : public SparseVector< SVecSVecSubExpr<VT1,VT2,TF>, TF >
 
       BLAZE_CONSTRAINT_MUST_BE_SPARSE_VECTOR_TYPE( ResultType );
       BLAZE_CONSTRAINT_MUST_BE_VECTOR_WITH_TRANSPOSE_FLAG( ResultType, TF );
-      BLAZE_CONSTRAINT_MUST_BE_REFERENCE_TYPE( typename ResultType::CompositeType );
+      BLAZE_CONSTRAINT_MUST_BE_REFERENCE_TYPE( CompositeType_<ResultType> );
 
       BLAZE_INTERNAL_ASSERT( (~lhs).size() == rhs.size(), "Invalid vector sizes" );
 
@@ -609,7 +608,7 @@ class SVecSVecSubExpr : public SparseVector< SVecSVecSubExpr<VT1,VT2,TF>, TF >
 
       BLAZE_CONSTRAINT_MUST_BE_SPARSE_VECTOR_TYPE( ResultType );
       BLAZE_CONSTRAINT_MUST_BE_VECTOR_WITH_TRANSPOSE_FLAG( ResultType, TF );
-      BLAZE_CONSTRAINT_MUST_BE_REFERENCE_TYPE( typename ResultType::CompositeType );
+      BLAZE_CONSTRAINT_MUST_BE_REFERENCE_TYPE( CompositeType_<ResultType> );
 
       BLAZE_INTERNAL_ASSERT( (~lhs).size() == rhs.size(), "Invalid vector sizes" );
 
@@ -718,8 +717,8 @@ struct SubvectorExprTrait< SVecSVecSubExpr<VT1,VT2,TF>, AF >
 {
  public:
    //**********************************************************************************************
-   using Type = typename SubExprTrait< typename SubvectorExprTrait<const VT1,AF>::Type
-                                     , typename SubvectorExprTrait<const VT2,AF>::Type >::Type;
+   using Type = SubExprTrait_< SubvectorExprTrait_<const VT1,AF>
+                             , SubvectorExprTrait_<const VT2,AF> >;
    //**********************************************************************************************
 };
 /*! \endcond */

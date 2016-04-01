@@ -42,6 +42,7 @@
 
 #include <memory>
 #include <boost/cast.hpp>
+#include <blaze/math/Aliases.h>
 #include <blaze/math/constraints/Adaptor.h>
 #include <blaze/math/constraints/BlasCompatible.h>
 #include <blaze/math/constraints/Computation.h>
@@ -91,7 +92,7 @@ inline void orgql( int m, int n, int k, double* A, int lda, const double* tau,
                    double* work, int lwork, int* info );
 
 template< typename MT, bool SO >
-inline void orgql( DenseMatrix<MT,SO>& A, const typename MT::ElementType* tau );
+inline void orgql( DenseMatrix<MT,SO>& A, const ElementType_<MT>* tau );
 //@}
 //*************************************************************************************************
 
@@ -232,17 +233,17 @@ inline void orgql( int m, int n, int k, double* A, int lda, const double* tau, d
 // the executable. Otherwise a call to this function will result in a linker error.
 */
 template< typename MT, bool SO >
-inline void orgql( DenseMatrix<MT,SO>& A, const typename MT::ElementType* tau )
+inline void orgql( DenseMatrix<MT,SO>& A, const ElementType_<MT>* tau )
 {
    using boost::numeric_cast;
 
    BLAZE_CONSTRAINT_MUST_NOT_BE_ADAPTOR_TYPE( MT );
    BLAZE_CONSTRAINT_MUST_NOT_BE_COMPUTATION_TYPE( MT );
    BLAZE_CONSTRAINT_MUST_HAVE_MUTABLE_DATA_ACCESS( MT );
-   BLAZE_CONSTRAINT_MUST_BE_BLAS_COMPATIBLE_TYPE( typename MT::ElementType );
-   BLAZE_CONSTRAINT_MUST_BE_BUILTIN_TYPE( typename MT::ElementType );
+   BLAZE_CONSTRAINT_MUST_BE_BLAS_COMPATIBLE_TYPE( ElementType_<MT> );
+   BLAZE_CONSTRAINT_MUST_BE_BUILTIN_TYPE( ElementType_<MT> );
 
-   typedef typename MT::ElementType  ET;
+   typedef ElementType_<MT>  ET;
 
    int n   ( numeric_cast<int>( SO ? (~A).columns() : (~A).rows() ) );
    int m   ( numeric_cast<int>( SO ? (~A).rows() : (~A).columns() ) );

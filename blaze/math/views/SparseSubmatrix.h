@@ -42,6 +42,7 @@
 
 #include <iterator>
 #include <vector>
+#include <blaze/math/Aliases.h>
 #include <blaze/math/AlignmentFlag.h>
 #include <blaze/math/constraints/ColumnMajorMatrix.h>
 #include <blaze/math/constraints/Computation.h>
@@ -480,19 +481,19 @@ class SparseSubmatrix : public SparseMatrix< SparseSubmatrix<MT,AF,SO>, SO >
 
  public:
    //**Type definitions****************************************************************************
-   typedef SparseSubmatrix<MT,AF,SO>           This;           //!< Type of this SparseSubmatrix instance.
-   typedef typename SubmatrixTrait<MT>::Type   ResultType;     //!< Result type for expression template evaluations.
-   typedef typename ResultType::OppositeType   OppositeType;   //!< Result type with opposite storage order for expression template evaluations.
-   typedef typename ResultType::TransposeType  TransposeType;  //!< Transpose type for expression template evaluations.
-   typedef typename MT::ElementType            ElementType;    //!< Type of the submatrix elements.
-   typedef typename MT::ReturnType             ReturnType;     //!< Return type for expression template evaluations
-   typedef const SparseSubmatrix&              CompositeType;  //!< Data type for composite expression templates.
+   typedef SparseSubmatrix<MT,AF,SO>   This;           //!< Type of this SparseSubmatrix instance.
+   typedef SubmatrixTrait_<MT>         ResultType;     //!< Result type for expression template evaluations.
+   typedef OppositeType_<ResultType>   OppositeType;   //!< Result type with opposite storage order for expression template evaluations.
+   typedef TransposeType_<ResultType>  TransposeType;  //!< Transpose type for expression template evaluations.
+   typedef ElementType_<MT>            ElementType;    //!< Type of the submatrix elements.
+   typedef ReturnType_<MT>             ReturnType;     //!< Return type for expression template evaluations
+   typedef const SparseSubmatrix&      CompositeType;  //!< Data type for composite expression templates.
 
    //! Reference to a constant submatrix value.
-   typedef typename MT::ConstReference  ConstReference;
+   typedef ConstReference_<MT>  ConstReference;
 
    //! Reference to a non-constant submatrix value.
-   typedef If_< IsConst<MT>, ConstReference, typename MT::Reference >  Reference;
+   typedef If_< IsConst<MT>, ConstReference, Reference_<MT> >  Reference;
    //**********************************************************************************************
 
    //**SubmatrixElement class definition***********************************************************
@@ -517,13 +518,13 @@ class SparseSubmatrix : public SparseMatrix< SparseSubmatrix<MT,AF,SO>, SO >
       //! Type of the underlying sparse elements.
       typedef typename std::iterator_traits<IteratorType>::value_type  SET;
 
-      typedef typename SET::Reference       RT;   //!< Reference type of the underlying sparse element.
-      typedef typename SET::ConstReference  CRT;  //!< Reference-to-const type of the underlying sparse element.
+      typedef Reference_<SET>       RT;   //!< Reference type of the underlying sparse element.
+      typedef ConstReference_<SET>  CRT;  //!< Reference-to-const type of the underlying sparse element.
       //*******************************************************************************************
 
     public:
       //**Type definitions*************************************************************************
-      typedef typename SET::ValueType      ValueType;       //!< The value type of the row element.
+      typedef ValueType_<SET>              ValueType;       //!< The value type of the row element.
       typedef size_t                       IndexType;       //!< The index type of the row element.
       typedef IfTrue_<returnConst,CRT,RT>  Reference;       //!< Reference return type
       typedef CRT                          ConstReference;  //!< Reference-to-const return type.
@@ -803,10 +804,10 @@ class SparseSubmatrix : public SparseMatrix< SparseSubmatrix<MT,AF,SO>, SO >
 
    //**Type definitions****************************************************************************
    //! Iterator over constant elements.
-   typedef SubmatrixIterator<const MT,typename MT::ConstIterator>  ConstIterator;
+   typedef SubmatrixIterator< const MT, ConstIterator_<MT> >  ConstIterator;
 
    //! Iterator over non-constant elements.
-   typedef If_< IsConst<MT>, ConstIterator, SubmatrixIterator<MT,typename MT::Iterator> >  Iterator;
+   typedef If_< IsConst<MT>, ConstIterator, SubmatrixIterator< MT, Iterator_<MT> > >  Iterator;
    //**********************************************************************************************
 
    //**Compilation flags***************************************************************************
@@ -992,8 +993,7 @@ class SparseSubmatrix : public SparseMatrix< SparseSubmatrix<MT,AF,SO>, SO >
                               size_t row, size_t column );
 
    template< typename MT2, bool AF2, bool SO2 >
-   friend typename DerestrictTrait< SparseSubmatrix<MT2,AF2,SO2> >::Type
-      derestrict( SparseSubmatrix<MT2,AF2,SO2>& sm );
+   friend DerestrictTrait_< SparseSubmatrix<MT2,AF2,SO2> > derestrict( SparseSubmatrix<MT2,AF2,SO2>& sm );
    /*! \endcond */
    //**********************************************************************************************
 
@@ -1368,7 +1368,7 @@ inline SparseSubmatrix<MT,AF,SO>&
       BLAZE_THROW_INVALID_ARGUMENT( "Invalid assignment to restricted matrix" );
    }
 
-   typename DerestrictTrait<This>::Type left( derestrict( *this ) );
+   DerestrictTrait_<This> left( derestrict( *this ) );
 
    if( rhs.canAlias( &matrix_ ) ) {
       const ResultType tmp( rhs );
@@ -1411,23 +1411,23 @@ inline SparseSubmatrix<MT,AF,SO>&
 {
    using blaze::assign;
 
-   BLAZE_CONSTRAINT_MUST_NOT_REQUIRE_EVALUATION( typename MT2::ResultType );
+   BLAZE_CONSTRAINT_MUST_NOT_REQUIRE_EVALUATION( ResultType_<MT2> );
 
    if( rows() != (~rhs).rows() || columns() != (~rhs).columns() ) {
       BLAZE_THROW_INVALID_ARGUMENT( "Matrix sizes do not match" );
    }
 
-   typedef typename MT2::CompositeType  Right;
+   typedef CompositeType_<MT2>  Right;
    Right right( ~rhs );
 
    if( !tryAssign( matrix_, right, row_, column_ ) ) {
       BLAZE_THROW_INVALID_ARGUMENT( "Invalid assignment to restricted matrix" );
    }
 
-   typename DerestrictTrait<This>::Type left( derestrict( *this ) );
+   DerestrictTrait_<This> left( derestrict( *this ) );
 
    if( IsReference<Right>::value && right.canAlias( &matrix_ ) ) {
-      const typename MT2::ResultType tmp( right );
+      const ResultType_<MT2> tmp( right );
       left.reset();
       assign( left, tmp );
    }
@@ -1468,9 +1468,9 @@ inline SparseSubmatrix<MT,AF,SO>&
 
    BLAZE_CONSTRAINT_MUST_BE_SPARSE_MATRIX_TYPE ( ResultType );
    BLAZE_CONSTRAINT_MUST_NOT_REQUIRE_EVALUATION( ResultType );
-   BLAZE_CONSTRAINT_MUST_NOT_REQUIRE_EVALUATION( typename MT2::ResultType );
+   BLAZE_CONSTRAINT_MUST_NOT_REQUIRE_EVALUATION( ResultType_<MT2> );
 
-   typedef typename AddTrait<ResultType,typename MT2::ResultType>::Type  AddType;
+   typedef AddTrait_< ResultType, ResultType_<MT2> >  AddType;
 
    BLAZE_CONSTRAINT_MUST_NOT_REQUIRE_EVALUATION( AddType );
 
@@ -1484,7 +1484,7 @@ inline SparseSubmatrix<MT,AF,SO>&
       BLAZE_THROW_INVALID_ARGUMENT( "Invalid assignment to restricted matrix" );
    }
 
-   typename DerestrictTrait<This>::Type left( derestrict( *this ) );
+   DerestrictTrait_<This> left( derestrict( *this ) );
 
    left.reset();
    assign( left, tmp );
@@ -1521,9 +1521,9 @@ inline SparseSubmatrix<MT,AF,SO>&
 
    BLAZE_CONSTRAINT_MUST_BE_SPARSE_MATRIX_TYPE ( ResultType );
    BLAZE_CONSTRAINT_MUST_NOT_REQUIRE_EVALUATION( ResultType );
-   BLAZE_CONSTRAINT_MUST_NOT_REQUIRE_EVALUATION( typename MT2::ResultType );
+   BLAZE_CONSTRAINT_MUST_NOT_REQUIRE_EVALUATION( ResultType_<MT2> );
 
-   typedef typename SubTrait<ResultType,typename MT2::ResultType>::Type  SubType;
+   typedef SubTrait_< ResultType, ResultType_<MT2> >  SubType;
 
    BLAZE_CONSTRAINT_MUST_NOT_REQUIRE_EVALUATION( SubType );
 
@@ -1537,7 +1537,7 @@ inline SparseSubmatrix<MT,AF,SO>&
       BLAZE_THROW_INVALID_ARGUMENT( "Invalid assignment to restricted matrix" );
    }
 
-   typename DerestrictTrait<This>::Type left( derestrict( *this ) );
+   DerestrictTrait_<This> left( derestrict( *this ) );
 
    left.reset();
    assign( left, tmp );
@@ -1574,9 +1574,9 @@ inline SparseSubmatrix<MT,AF,SO>&
 
    BLAZE_CONSTRAINT_MUST_BE_SPARSE_MATRIX_TYPE ( ResultType );
    BLAZE_CONSTRAINT_MUST_NOT_REQUIRE_EVALUATION( ResultType );
-   BLAZE_CONSTRAINT_MUST_NOT_REQUIRE_EVALUATION( typename MT2::ResultType );
+   BLAZE_CONSTRAINT_MUST_NOT_REQUIRE_EVALUATION( ResultType_<MT2> );
 
-   typedef typename MultTrait<ResultType,typename MT2::ResultType>::Type  MultType;
+   typedef MultTrait_< ResultType, ResultType_<MT2> >  MultType;
 
    BLAZE_CONSTRAINT_MUST_BE_MATRIX_TYPE        ( MultType );
    BLAZE_CONSTRAINT_MUST_NOT_REQUIRE_EVALUATION( MultType );
@@ -1591,7 +1591,7 @@ inline SparseSubmatrix<MT,AF,SO>&
       BLAZE_THROW_INVALID_ARGUMENT( "Invalid assignment to restricted matrix" );
    }
 
-   typename DerestrictTrait<This>::Type left( derestrict( *this ) );
+   DerestrictTrait_<This> left( derestrict( *this ) );
 
    left.reset();
    assign( left, tmp );
@@ -1665,7 +1665,7 @@ inline EnableIf_<IsNumeric<Other>, SparseSubmatrix<MT,AF,SO> >&
 
    BLAZE_USER_ASSERT( rhs != Other(0), "Division by zero detected" );
 
-   typedef typename DivTrait<ElementType,Other>::Type     DT;
+   typedef DivTrait_<ElementType,Other>     DT;
    typedef If_< IsNumeric<DT>, DT, Other >  Tmp;
 
    // Depending on the two involved data types, an integer division is applied or a
@@ -2149,7 +2149,7 @@ inline SparseSubmatrix<MT,AF,SO>& SparseSubmatrix<MT,AF,SO>::transpose()
       BLAZE_THROW_LOGIC_ERROR( "Invalid transpose operation" );
    }
 
-   typename DerestrictTrait<This>::Type left( derestrict( *this ) );
+   DerestrictTrait_<This> left( derestrict( *this ) );
    const ResultType tmp( trans( *this ) );
    reset();
    assign( left, tmp );
@@ -2191,7 +2191,7 @@ inline SparseSubmatrix<MT,AF,SO>& SparseSubmatrix<MT,AF,SO>::ctranspose()
       BLAZE_THROW_LOGIC_ERROR( "Invalid transpose operation" );
    }
 
-   typename DerestrictTrait<This>::Type left( derestrict( *this ) );
+   DerestrictTrait_<This> left( derestrict( *this ) );
    const ResultType tmp( ctrans( *this ) );
    reset();
    assign( left, tmp );
@@ -2282,7 +2282,7 @@ template< typename MT  // Type of the sparse matrix
 inline typename SparseSubmatrix<MT,AF,SO>::Iterator
    SparseSubmatrix<MT,AF,SO>::find( size_t i, size_t j )
 {
-   const typename MT::Iterator pos( matrix_.find( row_ + i, column_ + j ) );
+   const Iterator_<MT> pos( matrix_.find( row_ + i, column_ + j ) );
 
    if( pos != matrix_.end( row_ + i ) )
       return Iterator( pos, column_ );
@@ -2313,7 +2313,7 @@ template< typename MT  // Type of the sparse matrix
 inline typename SparseSubmatrix<MT,AF,SO>::ConstIterator
    SparseSubmatrix<MT,AF,SO>::find( size_t i, size_t j ) const
 {
-   const typename MT::ConstIterator pos( matrix_.find( row_ + i, column_ + j ) );
+   const ConstIterator_<MT> pos( matrix_.find( row_ + i, column_ + j ) );
 
    if( pos != matrix_.end( row_ + i ) )
       return ConstIterator( pos, column_ );
@@ -2650,7 +2650,7 @@ inline void SparseSubmatrix<MT,AF,SO>::assign( const SparseMatrix<MT2,false>& rh
    reserve( 0UL, (~rhs).nonZeros() );
 
    for( size_t i=0UL; i<(~rhs).rows(); ++i ) {
-      for( typename MT2::ConstIterator element=(~rhs).begin(i); element!=(~rhs).end(i); ++element ) {
+      for( ConstIterator_<MT2> element=(~rhs).begin(i); element!=(~rhs).end(i); ++element ) {
          if( IsSymmetric<MT>::value || IsHermitian<MT>::value )
             set( i, element->index(), element->value() );
          else
@@ -2684,7 +2684,7 @@ inline void SparseSubmatrix<MT,AF,SO>::assign( const SparseMatrix<MT2,true>& rhs
    BLAZE_INTERNAL_ASSERT( rows()    == (~rhs).rows()   , "Invalid number of rows"    );
    BLAZE_INTERNAL_ASSERT( columns() == (~rhs).columns(), "Invalid number of columns" );
 
-   typedef typename MT2::ConstIterator  RhsIterator;
+   typedef ConstIterator_<MT2>  RhsIterator;
 
    // Counting the number of elements per row
    std::vector<size_t> rowLengths( m_, 0UL );
@@ -2728,7 +2728,7 @@ template< typename MT2  // Type of the right-hand side dense matrix
         , bool SO2 >    // Storage order of the right-hand side dense matrix
 inline void SparseSubmatrix<MT,AF,SO>::addAssign( const DenseMatrix<MT2,SO2>& rhs )
 {
-   typedef typename AddTrait<ResultType,typename MT2::ResultType>::Type  AddType;
+   typedef AddTrait_< ResultType, ResultType_<MT2> >  AddType;
 
    BLAZE_CONSTRAINT_MUST_BE_DENSE_MATRIX_TYPE  ( AddType );
    BLAZE_CONSTRAINT_MUST_NOT_REQUIRE_EVALUATION( AddType );
@@ -2761,7 +2761,7 @@ template< typename MT2  // Type of the right-hand side sparse matrix
         , bool SO2 >    // Storage order of the right-hand side sparse matrix
 inline void SparseSubmatrix<MT,AF,SO>::addAssign( const SparseMatrix<MT2,SO2>& rhs )
 {
-   typedef typename AddTrait<ResultType,typename MT2::ResultType>::Type  AddType;
+   typedef AddTrait_< ResultType, ResultType_<MT2> >  AddType;
 
    BLAZE_CONSTRAINT_MUST_BE_SPARSE_MATRIX_TYPE ( AddType );
    BLAZE_CONSTRAINT_MUST_NOT_REQUIRE_EVALUATION( AddType );
@@ -2794,7 +2794,7 @@ template< typename MT2  // Type of the right-hand side dense matrix
         , bool SO2 >    // Storage order of the right-hand side dense matrix
 inline void SparseSubmatrix<MT,AF,SO>::subAssign( const DenseMatrix<MT2,SO2>& rhs )
 {
-   typedef typename SubTrait<ResultType,typename MT2::ResultType>::Type  SubType;
+   typedef SubTrait_< ResultType, ResultType_<MT2> >  SubType;
 
    BLAZE_CONSTRAINT_MUST_BE_DENSE_MATRIX_TYPE  ( SubType );
    BLAZE_CONSTRAINT_MUST_NOT_REQUIRE_EVALUATION( SubType );
@@ -2827,7 +2827,7 @@ template< typename MT2  // Type of the right-hand side sparse matrix
         , bool SO2 >    // Storage order of the right-hand sparse matrix
 inline void SparseSubmatrix<MT,AF,SO>::subAssign( const SparseMatrix<MT2,SO2>& rhs )
 {
-   typedef typename SubTrait<ResultType,typename MT2::ResultType>::Type  SubType;
+   typedef SubTrait_< ResultType, ResultType_<MT2> >  SubType;
 
    BLAZE_CONSTRAINT_MUST_BE_SPARSE_MATRIX_TYPE ( SubType );
    BLAZE_CONSTRAINT_MUST_NOT_REQUIRE_EVALUATION( SubType );
@@ -2875,19 +2875,19 @@ class SparseSubmatrix<MT,AF,true> : public SparseMatrix< SparseSubmatrix<MT,AF,t
 
  public:
    //**Type definitions****************************************************************************
-   typedef SparseSubmatrix<MT,AF,true>         This;           //!< Type of this SparseSubmatrix instance.
-   typedef typename SubmatrixTrait<MT>::Type   ResultType;     //!< Result type for expression template evaluations.
-   typedef typename ResultType::OppositeType   OppositeType;   //!< Result type with opposite storage order for expression template evaluations.
-   typedef typename ResultType::TransposeType  TransposeType;  //!< Transpose type for expression template evaluations.
-   typedef typename MT::ElementType            ElementType;    //!< Type of the submatrix elements.
-   typedef typename MT::ReturnType             ReturnType;     //!< Return type for expression template evaluations
-   typedef const SparseSubmatrix&              CompositeType;  //!< Data type for composite expression templates.
+   typedef SparseSubmatrix<MT,AF,true>  This;           //!< Type of this SparseSubmatrix instance.
+   typedef SubmatrixTrait_<MT>          ResultType;     //!< Result type for expression template evaluations.
+   typedef OppositeType_<ResultType>    OppositeType;   //!< Result type with opposite storage order for expression template evaluations.
+   typedef TransposeType_<ResultType>   TransposeType;  //!< Transpose type for expression template evaluations.
+   typedef ElementType_<MT>             ElementType;    //!< Type of the submatrix elements.
+   typedef ReturnType_<MT>              ReturnType;     //!< Return type for expression template evaluations
+   typedef const SparseSubmatrix&       CompositeType;  //!< Data type for composite expression templates.
 
    //! Reference to a constant submatrix value.
-   typedef typename MT::ConstReference  ConstReference;
+   typedef ConstReference_<MT>  ConstReference;
 
    //! Reference to a non-constant submatrix value.
-   typedef If_< IsConst<MT>, ConstReference, typename MT::Reference >  Reference;
+   typedef If_< IsConst<MT>, ConstReference, Reference_<MT> >  Reference;
    //**********************************************************************************************
 
    //**SubmatrixElement class definition***********************************************************
@@ -2912,13 +2912,13 @@ class SparseSubmatrix<MT,AF,true> : public SparseMatrix< SparseSubmatrix<MT,AF,t
       //! Type of the underlying sparse elements.
       typedef typename std::iterator_traits<IteratorType>::value_type  SET;
 
-      typedef typename SET::Reference       RT;   //!< Reference type of the underlying sparse element.
-      typedef typename SET::ConstReference  CRT;  //!< Reference-to-const type of the underlying sparse element.
+      typedef Reference_<SET>       RT;   //!< Reference type of the underlying sparse element.
+      typedef ConstReference_<SET>  CRT;  //!< Reference-to-const type of the underlying sparse element.
       //*******************************************************************************************
 
     public:
       //**Type definitions*************************************************************************
-      typedef typename SET::ValueType      ValueType;       //!< The value type of the row element.
+      typedef ValueType_<SET>              ValueType;       //!< The value type of the row element.
       typedef size_t                       IndexType;       //!< The index type of the row element.
       typedef IfTrue_<returnConst,CRT,RT>  Reference;       //!< Reference return type
       typedef CRT                          ConstReference;  //!< Reference-to-const return type.
@@ -3198,10 +3198,10 @@ class SparseSubmatrix<MT,AF,true> : public SparseMatrix< SparseSubmatrix<MT,AF,t
 
    //**Type definitions****************************************************************************
    //! Iterator over constant elements.
-   typedef SubmatrixIterator<const MT,typename MT::ConstIterator>  ConstIterator;
+   typedef SubmatrixIterator< const MT, ConstIterator_<MT> >  ConstIterator;
 
    //! Iterator over non-constant elements.
-   typedef If_< IsConst<MT>, ConstIterator, SubmatrixIterator<MT,typename MT::Iterator> >  Iterator;
+   typedef If_< IsConst<MT>, ConstIterator, SubmatrixIterator< MT, Iterator_<MT> > >  Iterator;
    //**********************************************************************************************
 
    //**Compilation flags***************************************************************************
@@ -3386,8 +3386,7 @@ class SparseSubmatrix<MT,AF,true> : public SparseMatrix< SparseSubmatrix<MT,AF,t
                               size_t row, size_t column );
 
    template< typename MT2, bool AF2, bool SO2 >
-   friend typename DerestrictTrait< SparseSubmatrix<MT2,AF2,SO2> >::Type
-      derestrict( SparseSubmatrix<MT2,AF2,SO2>& sm );
+   friend DerestrictTrait_< SparseSubmatrix<MT2,AF2,SO2> > derestrict( SparseSubmatrix<MT2,AF2,SO2>& sm );
    //**********************************************************************************************
 
    //**Compile time checks*************************************************************************
@@ -3741,7 +3740,7 @@ inline SparseSubmatrix<MT,AF,true>&
       BLAZE_THROW_INVALID_ARGUMENT( "Invalid assignment to restricted matrix" );
    }
 
-   typename DerestrictTrait<This>::Type left( derestrict( *this ) );
+   DerestrictTrait_<This> left( derestrict( *this ) );
 
    if( rhs.canAlias( &matrix_ ) ) {
       const ResultType tmp( rhs );
@@ -3785,23 +3784,23 @@ inline SparseSubmatrix<MT,AF,true>&
 {
    using blaze::assign;
 
-   BLAZE_CONSTRAINT_MUST_NOT_REQUIRE_EVALUATION( typename MT2::ResultType );
+   BLAZE_CONSTRAINT_MUST_NOT_REQUIRE_EVALUATION( ResultType_<MT2> );
 
    if( rows() != (~rhs).rows() || columns() != (~rhs).columns() ) {
       BLAZE_THROW_INVALID_ARGUMENT( "Matrix sizes do not match" );
    }
 
-   typedef typename MT2::CompositeType  Right;
+   typedef CompositeType_<MT2>  Right;
    Right right( ~rhs );
 
    if( !tryAssign( matrix_, right, row_, column_ ) ) {
       BLAZE_THROW_INVALID_ARGUMENT( "Invalid assignment to restricted matrix" );
    }
 
-   typename DerestrictTrait<This>::Type left( derestrict( *this ) );
+   DerestrictTrait_<This> left( derestrict( *this ) );
 
    if( IsReference<Right>::value && right.canAlias( &matrix_ ) ) {
-      const typename MT2::ResultType tmp( right );
+      const ResultType_<MT2> tmp( right );
       left.reset();
       assign( left, tmp );
    }
@@ -3843,9 +3842,9 @@ inline SparseSubmatrix<MT,AF,true>&
 
    BLAZE_CONSTRAINT_MUST_BE_SPARSE_MATRIX_TYPE ( ResultType );
    BLAZE_CONSTRAINT_MUST_NOT_REQUIRE_EVALUATION( ResultType );
-   BLAZE_CONSTRAINT_MUST_NOT_REQUIRE_EVALUATION( typename MT2::ResultType );
+   BLAZE_CONSTRAINT_MUST_NOT_REQUIRE_EVALUATION( ResultType_<MT2> );
 
-   typedef typename AddTrait<ResultType,typename MT2::ResultType>::Type  AddType;
+   typedef AddTrait_< ResultType, ResultType_<MT2> >  AddType;
 
    BLAZE_CONSTRAINT_MUST_NOT_REQUIRE_EVALUATION( AddType );
 
@@ -3859,7 +3858,7 @@ inline SparseSubmatrix<MT,AF,true>&
       BLAZE_THROW_INVALID_ARGUMENT( "Invalid assignment to restricted matrix" );
    }
 
-   typename DerestrictTrait<This>::Type left( derestrict( *this ) );
+   DerestrictTrait_<This> left( derestrict( *this ) );
 
    left.reset();
    assign( left, tmp );
@@ -3897,9 +3896,9 @@ inline SparseSubmatrix<MT,AF,true>&
 
    BLAZE_CONSTRAINT_MUST_BE_SPARSE_MATRIX_TYPE ( ResultType );
    BLAZE_CONSTRAINT_MUST_NOT_REQUIRE_EVALUATION( ResultType );
-   BLAZE_CONSTRAINT_MUST_NOT_REQUIRE_EVALUATION( typename MT2::ResultType );
+   BLAZE_CONSTRAINT_MUST_NOT_REQUIRE_EVALUATION( ResultType_<MT2> );
 
-   typedef typename SubTrait<ResultType,typename MT2::ResultType>::Type  SubType;
+   typedef SubTrait_< ResultType, ResultType_<MT2> >  SubType;
 
    BLAZE_CONSTRAINT_MUST_NOT_REQUIRE_EVALUATION( SubType );
 
@@ -3913,7 +3912,7 @@ inline SparseSubmatrix<MT,AF,true>&
       BLAZE_THROW_INVALID_ARGUMENT( "Invalid assignment to restricted matrix" );
    }
 
-   typename DerestrictTrait<This>::Type left( derestrict( *this ) );
+   DerestrictTrait_<This> left( derestrict( *this ) );
 
    left.reset();
    assign( left, tmp );
@@ -3951,9 +3950,9 @@ inline SparseSubmatrix<MT,AF,true>&
 
    BLAZE_CONSTRAINT_MUST_BE_SPARSE_MATRIX_TYPE ( ResultType );
    BLAZE_CONSTRAINT_MUST_NOT_REQUIRE_EVALUATION( ResultType );
-   BLAZE_CONSTRAINT_MUST_NOT_REQUIRE_EVALUATION( typename MT2::ResultType );
+   BLAZE_CONSTRAINT_MUST_NOT_REQUIRE_EVALUATION( ResultType_<MT2> );
 
-   typedef typename MultTrait<ResultType,typename MT2::ResultType>::Type  MultType;
+   typedef MultTrait_< ResultType, ResultType_<MT2> >  MultType;
 
    BLAZE_CONSTRAINT_MUST_BE_MATRIX_TYPE        ( MultType   );
    BLAZE_CONSTRAINT_MUST_NOT_REQUIRE_EVALUATION( MultType   );
@@ -3968,7 +3967,7 @@ inline SparseSubmatrix<MT,AF,true>&
       BLAZE_THROW_INVALID_ARGUMENT( "Invalid assignment to restricted matrix" );
    }
 
-   typename DerestrictTrait<This>::Type left( derestrict( *this ) );
+   DerestrictTrait_<This> left( derestrict( *this ) );
 
    left.reset();
    assign( left, tmp );
@@ -4044,7 +4043,7 @@ inline EnableIf_<IsNumeric<Other>, SparseSubmatrix<MT,AF,true> >&
 
    BLAZE_USER_ASSERT( rhs != Other(0), "Division by zero detected" );
 
-   typedef typename DivTrait<ElementType,Other>::Type     DT;
+   typedef DivTrait_<ElementType,Other>     DT;
    typedef If_< IsNumeric<DT>, DT, Other >  Tmp;
 
    // Depending on the two involved data types, an integer division is applied or a
@@ -4522,7 +4521,7 @@ inline SparseSubmatrix<MT,AF,true>& SparseSubmatrix<MT,AF,true>::transpose()
       BLAZE_THROW_LOGIC_ERROR( "Invalid transpose operation" );
    }
 
-   typename DerestrictTrait<This>::Type left( derestrict( *this ) );
+   DerestrictTrait_<This> left( derestrict( *this ) );
    const ResultType tmp( trans( *this ) );
    reset();
    assign( left, tmp );
@@ -4565,7 +4564,7 @@ inline SparseSubmatrix<MT,AF,true>& SparseSubmatrix<MT,AF,true>::ctranspose()
       BLAZE_THROW_LOGIC_ERROR( "Invalid transpose operation" );
    }
 
-   typename DerestrictTrait<This>::Type left( derestrict( *this ) );
+   DerestrictTrait_<This> left( derestrict( *this ) );
    const ResultType tmp( ctrans(*this) );
    reset();
    assign( left, tmp );
@@ -4659,7 +4658,7 @@ template< typename MT  // Type of the sparse matrix
 inline typename SparseSubmatrix<MT,AF,true>::Iterator
    SparseSubmatrix<MT,AF,true>::find( size_t i, size_t j )
 {
-   const typename MT::Iterator pos( matrix_.find( row_ + i, column_ + j ) );
+   const Iterator_<MT> pos( matrix_.find( row_ + i, column_ + j ) );
 
    if( pos != matrix_.end( column_ + j ) )
       return Iterator( pos, row_ );
@@ -4691,7 +4690,7 @@ template< typename MT  // Type of the sparse matrix
 inline typename SparseSubmatrix<MT,AF,true>::ConstIterator
    SparseSubmatrix<MT,AF,true>::find( size_t i, size_t j ) const
 {
-   const typename MT::ConstIterator pos( matrix_.find( row_ + i, column_ + j ) );
+   const ConstIterator_<MT> pos( matrix_.find( row_ + i, column_ + j ) );
 
    if( pos != matrix_.end( column_ + j ) )
       return ConstIterator( pos, row_ );
@@ -5039,7 +5038,7 @@ inline void SparseSubmatrix<MT,AF,true>::assign( const SparseMatrix<MT2,true>& r
    reserve( 0UL, (~rhs).nonZeros() );
 
    for( size_t j=0UL; j<(~rhs).columns(); ++j ) {
-      for( typename MT2::ConstIterator element=(~rhs).begin(j); element!=(~rhs).end(j); ++element ) {
+      for( ConstIterator_<MT2> element=(~rhs).begin(j); element!=(~rhs).end(j); ++element ) {
          if( IsSymmetric<MT>::value || IsHermitian<MT>::value )
             set( element->index(), j, element->value() );
          else
@@ -5074,7 +5073,7 @@ inline void SparseSubmatrix<MT,AF,true>::assign( const SparseMatrix<MT2,false>& 
    BLAZE_INTERNAL_ASSERT( rows()    == (~rhs).rows()   , "Invalid number of rows"    );
    BLAZE_INTERNAL_ASSERT( columns() == (~rhs).columns(), "Invalid number of columns" );
 
-   typedef typename MT2::ConstIterator  RhsIterator;
+   typedef ConstIterator_<MT2>  RhsIterator;
 
    // Counting the number of elements per column
    std::vector<size_t> columnLengths( n_, 0UL );
@@ -5119,7 +5118,7 @@ template< typename MT2  // Type of the right-hand side dense matrix
         , bool SO >     // Storage order of the right-hand side dense matrix
 inline void SparseSubmatrix<MT,AF,true>::addAssign( const DenseMatrix<MT2,SO>& rhs )
 {
-   typedef typename AddTrait<ResultType,typename MT2::ResultType>::Type  AddType;
+   typedef AddTrait_< ResultType, ResultType_<MT2> >  AddType;
 
    BLAZE_CONSTRAINT_MUST_BE_DENSE_MATRIX_TYPE  ( AddType );
    BLAZE_CONSTRAINT_MUST_NOT_REQUIRE_EVALUATION( AddType );
@@ -5153,7 +5152,7 @@ template< typename MT2  // Type of the right-hand side sparse matrix
         , bool SO >     // Storage order of the right-hand side sparse matrix
 inline void SparseSubmatrix<MT,AF,true>::addAssign( const SparseMatrix<MT2,SO>& rhs )
 {
-   typedef typename AddTrait<ResultType,typename MT2::ResultType>::Type  AddType;
+   typedef AddTrait_< ResultType, ResultType_<MT2> >  AddType;
 
    BLAZE_CONSTRAINT_MUST_BE_SPARSE_MATRIX_TYPE ( AddType );
    BLAZE_CONSTRAINT_MUST_NOT_REQUIRE_EVALUATION( AddType );
@@ -5187,7 +5186,7 @@ template< typename MT2  // Type of the right-hand side dense matrix
         , bool SO >     // Storage order of the right-hand side dense matrix
 inline void SparseSubmatrix<MT,AF,true>::subAssign( const DenseMatrix<MT2,SO>& rhs )
 {
-   typedef typename SubTrait<ResultType,typename MT2::ResultType>::Type  SubType;
+   typedef SubTrait_< ResultType, ResultType_<MT2> >  SubType;
 
    BLAZE_CONSTRAINT_MUST_BE_DENSE_MATRIX_TYPE  ( SubType );
    BLAZE_CONSTRAINT_MUST_NOT_REQUIRE_EVALUATION( SubType );
@@ -5221,7 +5220,7 @@ template< typename MT2  // Type of the right-hand side sparse matrix
         , bool SO >     // Storage order of the right-hand sparse matrix
 inline void SparseSubmatrix<MT,AF,true>::subAssign( const SparseMatrix<MT2,SO>& rhs )
 {
-   typedef typename SubTrait<ResultType,typename MT2::ResultType>::Type  SubType;
+   typedef SubTrait_< ResultType, ResultType_<MT2> >  SubType;
 
    BLAZE_CONSTRAINT_MUST_BE_SPARSE_MATRIX_TYPE ( SubType );
    BLAZE_CONSTRAINT_MUST_NOT_REQUIRE_EVALUATION( SubType );
@@ -5387,7 +5386,7 @@ inline bool isDefault( const SparseSubmatrix<MT,AF,SO>& sm )
 {
    using blaze::isDefault;
 
-   typedef typename SparseSubmatrix<MT,AF,SO>::ConstIterator  ConstIterator;
+   typedef ConstIterator_< SparseSubmatrix<MT,AF,SO> >  ConstIterator;
 
    const size_t iend( ( SO == rowMajor)?( sm.rows() ):( sm.columns() ) );
 
@@ -6109,10 +6108,9 @@ inline bool tryMultAssign( const SparseSubmatrix<MT,AF,SO>& lhs, const Vector<VT
 template< typename MT  // Type of the sparse matrix
         , bool AF      // Alignment flag
         , bool SO >    // Storage order
-inline typename DerestrictTrait< SparseSubmatrix<MT,AF,SO> >::Type
-   derestrict( SparseSubmatrix<MT,AF,SO>& sm )
+inline DerestrictTrait_< SparseSubmatrix<MT,AF,SO> > derestrict( SparseSubmatrix<MT,AF,SO>& sm )
 {
-   typedef typename DerestrictTrait< SparseSubmatrix<MT,AF,SO> >::Type  ReturnType;
+   typedef DerestrictTrait_< SparseSubmatrix<MT,AF,SO> >  ReturnType;
    return ReturnType( derestrict( sm.matrix_ ), sm.row_, sm.column_, sm.m_, sm.n_ );
 }
 /*! \endcond */
@@ -6191,7 +6189,7 @@ struct IsRestricted< SparseSubmatrix<MT,AF,SO> > : public BoolConstant< IsRestri
 template< typename MT, bool AF, bool SO >
 struct DerestrictTrait< SparseSubmatrix<MT,AF,SO> >
 {
-   typedef SparseSubmatrix< RemoveReference_< typename DerestrictTrait<MT>::Type >, AF >  Type;
+   using Type = SparseSubmatrix< RemoveReference_< DerestrictTrait_<MT> >, AF >;
 };
 /*! \endcond */
 //*************************************************************************************************
@@ -6210,13 +6208,13 @@ struct DerestrictTrait< SparseSubmatrix<MT,AF,SO> >
 template< typename MT, bool AF, bool SO, typename T >
 struct AddTrait< SparseSubmatrix<MT,AF,SO>, T >
 {
-   typedef typename AddTrait< typename SubmatrixTrait<MT>::Type, T >::Type  Type;
+   using Type = AddTrait_< SubmatrixTrait_<MT>, T >;
 };
 
 template< typename T, typename MT, bool AF, bool TF >
 struct AddTrait< T, SparseSubmatrix<MT,AF,TF> >
 {
-   typedef typename AddTrait< T, typename SubmatrixTrait<MT>::Type >::Type  Type;
+   using Type = AddTrait_< T, SubmatrixTrait_<MT> >;
 };
 /*! \endcond */
 //*************************************************************************************************
@@ -6235,13 +6233,13 @@ struct AddTrait< T, SparseSubmatrix<MT,AF,TF> >
 template< typename MT, bool AF, bool SO, typename T >
 struct SubTrait< SparseSubmatrix<MT,AF,SO>, T >
 {
-   typedef typename SubTrait< typename SubmatrixTrait<MT>::Type, T >::Type  Type;
+   using Type = SubTrait_< SubmatrixTrait_<MT>, T >;
 };
 
 template< typename T, typename MT, bool AF, bool TF >
 struct SubTrait< T, SparseSubmatrix<MT,AF,TF> >
 {
-   typedef typename SubTrait< T, typename SubmatrixTrait<MT>::Type >::Type  Type;
+   using Type = SubTrait_< T, SubmatrixTrait_<MT> >;
 };
 /*! \endcond */
 //*************************************************************************************************
@@ -6260,13 +6258,13 @@ struct SubTrait< T, SparseSubmatrix<MT,AF,TF> >
 template< typename MT, bool AF, bool SO, typename T >
 struct MultTrait< SparseSubmatrix<MT,AF,SO>, T >
 {
-   typedef typename MultTrait< typename SubmatrixTrait<MT>::Type, T >::Type  Type;
+   using Type = MultTrait_< SubmatrixTrait_<MT>, T >;
 };
 
 template< typename T, typename MT, bool AF, bool TF >
 struct MultTrait< T, SparseSubmatrix<MT,AF,TF> >
 {
-   typedef typename MultTrait< T, typename SubmatrixTrait<MT>::Type >::Type  Type;
+   using Type = MultTrait_< T, SubmatrixTrait_<MT> >;
 };
 /*! \endcond */
 //*************************************************************************************************
@@ -6285,13 +6283,13 @@ struct MultTrait< T, SparseSubmatrix<MT,AF,TF> >
 template< typename MT, bool AF, bool SO, typename T >
 struct DivTrait< SparseSubmatrix<MT,AF,SO>, T >
 {
-   typedef typename DivTrait< typename SubmatrixTrait<MT>::Type, T >::Type  Type;
+   using Type = DivTrait_< SubmatrixTrait_<MT>, T >;
 };
 
 template< typename T, typename MT, bool AF, bool TF >
 struct DivTrait< T, SparseSubmatrix<MT,AF,TF> >
 {
-   typedef typename DivTrait< T, typename SubmatrixTrait<MT>::Type >::Type  Type;
+   using Type = DivTrait_< T, SubmatrixTrait_<MT> >;
 };
 /*! \endcond */
 //*************************************************************************************************
@@ -6310,7 +6308,7 @@ struct DivTrait< T, SparseSubmatrix<MT,AF,TF> >
 template< typename MT, bool AF, bool SO >
 struct SubmatrixTrait< SparseSubmatrix<MT,AF,SO> >
 {
-   typedef typename SubmatrixTrait< typename SparseSubmatrix<MT,AF,SO>::ResultType >::Type  Type;
+   using Type = SubmatrixTrait_< ResultType_< SparseSubmatrix<MT,AF,SO> > >;
 };
 /*! \endcond */
 //*************************************************************************************************
@@ -6329,7 +6327,7 @@ struct SubmatrixTrait< SparseSubmatrix<MT,AF,SO> >
 template< typename MT, bool AF1, bool SO, bool AF2 >
 struct SubmatrixExprTrait< SparseSubmatrix<MT,AF1,SO>, AF2 >
 {
-   typedef SparseSubmatrix<MT,AF2,SO>  Type;
+   using Type = SparseSubmatrix<MT,AF2,SO>;
 };
 /*! \endcond */
 //*************************************************************************************************
@@ -6340,7 +6338,7 @@ struct SubmatrixExprTrait< SparseSubmatrix<MT,AF1,SO>, AF2 >
 template< typename MT, bool AF1, bool SO, bool AF2 >
 struct SubmatrixExprTrait< const SparseSubmatrix<MT,AF1,SO>, AF2 >
 {
-   typedef SparseSubmatrix<MT,AF2,SO>  Type;
+   using Type = SparseSubmatrix<MT,AF2,SO>;
 };
 /*! \endcond */
 //*************************************************************************************************
@@ -6351,7 +6349,7 @@ struct SubmatrixExprTrait< const SparseSubmatrix<MT,AF1,SO>, AF2 >
 template< typename MT, bool AF1, bool SO, bool AF2 >
 struct SubmatrixExprTrait< volatile SparseSubmatrix<MT,AF1,SO>, AF2 >
 {
-   typedef SparseSubmatrix<MT,AF2,SO>  Type;
+   using Type = SparseSubmatrix<MT,AF2,SO>;
 };
 /*! \endcond */
 //*************************************************************************************************
@@ -6362,7 +6360,7 @@ struct SubmatrixExprTrait< volatile SparseSubmatrix<MT,AF1,SO>, AF2 >
 template< typename MT, bool AF1, bool SO, bool AF2 >
 struct SubmatrixExprTrait< const volatile SparseSubmatrix<MT,AF1,SO>, AF2 >
 {
-   typedef SparseSubmatrix<MT,AF2,SO>  Type;
+   using Type = SparseSubmatrix<MT,AF2,SO>;
 };
 /*! \endcond */
 //*************************************************************************************************
@@ -6381,7 +6379,7 @@ struct SubmatrixExprTrait< const volatile SparseSubmatrix<MT,AF1,SO>, AF2 >
 template< typename MT, bool AF, bool SO >
 struct RowTrait< SparseSubmatrix<MT,AF,SO> >
 {
-   typedef typename RowTrait< typename SparseSubmatrix<MT,AF,SO>::ResultType >::Type  Type;
+   using Type = RowTrait_< ResultType_< SparseSubmatrix<MT,AF,SO> > >;
 };
 /*! \endcond */
 //*************************************************************************************************
@@ -6400,7 +6398,7 @@ struct RowTrait< SparseSubmatrix<MT,AF,SO> >
 template< typename MT, bool AF, bool SO >
 struct ColumnTrait< SparseSubmatrix<MT,AF,SO> >
 {
-   typedef typename ColumnTrait< typename SparseSubmatrix<MT,AF,SO>::ResultType >::Type  Type;
+   using Type = ColumnTrait_< ResultType_< SparseSubmatrix<MT,AF,SO> > >;
 };
 /*! \endcond */
 //*************************************************************************************************

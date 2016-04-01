@@ -41,6 +41,7 @@
 //*************************************************************************************************
 
 #include <iterator>
+#include <blaze/math/Aliases.h>
 #include <blaze/math/constraints/DenseMatrix.h>
 #include <blaze/math/constraints/StorageOrder.h>
 #include <blaze/math/expressions/Computation.h>
@@ -112,8 +113,8 @@ class DMatConjExpr : public DenseMatrix< DMatConjExpr<MT,SO>, SO >
 {
  private:
    //**Type definitions****************************************************************************
-   typedef typename MT::ReturnType   RN;  //!< Return type of the dense matrix expression.
-   typedef typename MT::ElementType  ET;  //!< Element type of the dense matrix expression.
+   typedef ReturnType_<MT>   RN;  //!< Return type of the dense matrix expression.
+   typedef ElementType_<MT>  ET;  //!< Element type of the dense matrix expression.
    //**********************************************************************************************
 
    //**Return type evaluation**********************************************************************
@@ -126,7 +127,7 @@ class DMatConjExpr : public DenseMatrix< DMatConjExpr<MT,SO>, SO >
    enum { returnExpr = !IsTemporary<RN>::value };
 
    //! Expression return type for the subscript operator.
-   typedef typename ConjExprTrait<RN>::Type  ExprReturnType;
+   typedef ConjExprTrait_<RN>  ExprReturnType;
    //**********************************************************************************************
 
    //**Serial evaluation strategy******************************************************************
@@ -166,10 +167,10 @@ class DMatConjExpr : public DenseMatrix< DMatConjExpr<MT,SO>, SO >
  public:
    //**Type definitions****************************************************************************
    typedef DMatConjExpr<MT,SO>                This;           //!< Type of this DMatConjExpr instance.
-   typedef typename MT::ResultType            ResultType;     //!< Result type for expression template evaluations.
-   typedef typename MT::OppositeType          OppositeType;   //!< Result type with opposite storage order for expression template evaluations.
-   typedef typename MT::TransposeType         TransposeType;  //!< Transpose type for expression template evaluations.
-   typedef typename MT::ElementType           ElementType;    //!< Resulting element type.
+   typedef ResultType_<MT>                    ResultType;     //!< Result type for expression template evaluations.
+   typedef OppositeType_<MT>                  OppositeType;   //!< Result type with opposite storage order for expression template evaluations.
+   typedef TransposeType_<MT>                 TransposeType;  //!< Transpose type for expression template evaluations.
+   typedef ElementType_<MT>                   ElementType;    //!< Resulting element type.
    typedef typename IntrinsicTrait<ET>::Type  IntrinsicType;  //!< Resulting intrinsic element type.
 
    //! Return type for expression template evaluations.
@@ -203,7 +204,7 @@ class DMatConjExpr : public DenseMatrix< DMatConjExpr<MT,SO>, SO >
       typedef DifferenceType    difference_type;    //!< Difference between two iterators.
 
       //! ConstIterator type of the dense matrix expression.
-      typedef typename MT::ConstIterator  IteratorType;
+      typedef ConstIterator_<MT>  IteratorType;
       //*******************************************************************************************
 
       //**Constructor******************************************************************************
@@ -650,7 +651,7 @@ class DMatConjExpr : public DenseMatrix< DMatConjExpr<MT,SO>, SO >
       BLAZE_CONSTRAINT_MUST_BE_MATRIX_WITH_STORAGE_ORDER( ResultType, SO );
       BLAZE_CONSTRAINT_MUST_BE_MATRIX_WITH_STORAGE_ORDER( OppositeType, !SO );
       BLAZE_CONSTRAINT_MATRICES_MUST_HAVE_SAME_STORAGE_ORDER( MT2, TmpType );
-      BLAZE_CONSTRAINT_MUST_BE_REFERENCE_TYPE( typename TmpType::CompositeType );
+      BLAZE_CONSTRAINT_MUST_BE_REFERENCE_TYPE( CompositeType_<TmpType> );
 
       BLAZE_INTERNAL_ASSERT( (~lhs).rows()    == rhs.rows()   , "Invalid number of rows"    );
       BLAZE_INTERNAL_ASSERT( (~lhs).columns() == rhs.columns(), "Invalid number of columns" );
@@ -684,7 +685,7 @@ class DMatConjExpr : public DenseMatrix< DMatConjExpr<MT,SO>, SO >
 
       BLAZE_CONSTRAINT_MUST_BE_DENSE_MATRIX_TYPE( ResultType );
       BLAZE_CONSTRAINT_MUST_BE_MATRIX_WITH_STORAGE_ORDER( ResultType, SO );
-      BLAZE_CONSTRAINT_MUST_BE_REFERENCE_TYPE( typename ResultType::CompositeType );
+      BLAZE_CONSTRAINT_MUST_BE_REFERENCE_TYPE( CompositeType_<ResultType> );
 
       BLAZE_INTERNAL_ASSERT( (~lhs).rows()    == rhs.rows()   , "Invalid number of rows"    );
       BLAZE_INTERNAL_ASSERT( (~lhs).columns() == rhs.columns(), "Invalid number of columns" );
@@ -722,7 +723,7 @@ class DMatConjExpr : public DenseMatrix< DMatConjExpr<MT,SO>, SO >
 
       BLAZE_CONSTRAINT_MUST_BE_DENSE_MATRIX_TYPE( ResultType );
       BLAZE_CONSTRAINT_MUST_BE_MATRIX_WITH_STORAGE_ORDER( ResultType, SO );
-      BLAZE_CONSTRAINT_MUST_BE_REFERENCE_TYPE( typename ResultType::CompositeType );
+      BLAZE_CONSTRAINT_MUST_BE_REFERENCE_TYPE( CompositeType_<ResultType> );
 
       BLAZE_INTERNAL_ASSERT( (~lhs).rows()    == rhs.rows()   , "Invalid number of rows"    );
       BLAZE_INTERNAL_ASSERT( (~lhs).columns() == rhs.columns(), "Invalid number of columns" );
@@ -803,7 +804,7 @@ class DMatConjExpr : public DenseMatrix< DMatConjExpr<MT,SO>, SO >
       BLAZE_CONSTRAINT_MUST_BE_MATRIX_WITH_STORAGE_ORDER( ResultType, SO );
       BLAZE_CONSTRAINT_MUST_BE_MATRIX_WITH_STORAGE_ORDER( OppositeType, !SO );
       BLAZE_CONSTRAINT_MATRICES_MUST_HAVE_SAME_STORAGE_ORDER( MT2, TmpType );
-      BLAZE_CONSTRAINT_MUST_BE_REFERENCE_TYPE( typename TmpType::CompositeType );
+      BLAZE_CONSTRAINT_MUST_BE_REFERENCE_TYPE( CompositeType_<TmpType> );
 
       BLAZE_INTERNAL_ASSERT( (~lhs).rows()    == rhs.rows()   , "Invalid number of rows"    );
       BLAZE_INTERNAL_ASSERT( (~lhs).columns() == rhs.columns(), "Invalid number of columns" );
@@ -837,7 +838,7 @@ class DMatConjExpr : public DenseMatrix< DMatConjExpr<MT,SO>, SO >
 
       BLAZE_CONSTRAINT_MUST_BE_DENSE_MATRIX_TYPE( ResultType );
       BLAZE_CONSTRAINT_MUST_BE_MATRIX_WITH_STORAGE_ORDER( ResultType, SO );
-      BLAZE_CONSTRAINT_MUST_BE_REFERENCE_TYPE( typename ResultType::CompositeType );
+      BLAZE_CONSTRAINT_MUST_BE_REFERENCE_TYPE( CompositeType_<ResultType> );
 
       BLAZE_INTERNAL_ASSERT( (~lhs).rows()    == rhs.rows()   , "Invalid number of rows"    );
       BLAZE_INTERNAL_ASSERT( (~lhs).columns() == rhs.columns(), "Invalid number of columns" );
@@ -875,7 +876,7 @@ class DMatConjExpr : public DenseMatrix< DMatConjExpr<MT,SO>, SO >
 
       BLAZE_CONSTRAINT_MUST_BE_DENSE_MATRIX_TYPE( ResultType );
       BLAZE_CONSTRAINT_MUST_BE_MATRIX_WITH_STORAGE_ORDER( ResultType, SO );
-      BLAZE_CONSTRAINT_MUST_BE_REFERENCE_TYPE( typename ResultType::CompositeType );
+      BLAZE_CONSTRAINT_MUST_BE_REFERENCE_TYPE( CompositeType_<ResultType> );
 
       BLAZE_INTERNAL_ASSERT( (~lhs).rows()    == rhs.rows()   , "Invalid number of rows"    );
       BLAZE_INTERNAL_ASSERT( (~lhs).columns() == rhs.columns(), "Invalid number of columns" );
@@ -972,7 +973,7 @@ inline const DMatConjExpr<MT,SO> conj( const DenseMatrix<MT,SO>& dm )
 */
 template< typename MT  // Type of the dense matrix
         , bool SO >    // Storage order
-inline const typename CTransExprTrait<MT>::Type ctrans( const DenseMatrix<MT,SO>& dm )
+inline const CTransExprTrait_<MT> ctrans( const DenseMatrix<MT,SO>& dm )
 {
    BLAZE_FUNCTION_TRACE;
 
@@ -1279,7 +1280,7 @@ struct DMatConjExprTrait< DMatConjExpr<MT,false> >
  public:
    //**********************************************************************************************
    using Type = If_< And< IsDenseMatrix<MT>, IsRowMajorMatrix<MT> >
-                   , typename DMatConjExpr<MT,false>::Operand
+                   , Operand_< DMatConjExpr<MT,false> >
                    , INVALID_TYPE >;
    //**********************************************************************************************
 };
@@ -1295,7 +1296,7 @@ struct TDMatConjExprTrait< DMatConjExpr<MT,true> >
  public:
    //**********************************************************************************************
    using Type = If_< And< IsDenseMatrix<MT>, IsColumnMajorMatrix<MT> >
-                   , typename DMatConjExpr<MT,true>::Operand
+                   , Operand_< DMatConjExpr<MT,true> >
                    , INVALID_TYPE >;
    //**********************************************************************************************
 };
@@ -1342,7 +1343,7 @@ struct SubmatrixExprTrait< DMatConjExpr<MT,SO>, AF >
 {
  public:
    //**********************************************************************************************
-   using Type = typename ConjExprTrait< typename SubmatrixExprTrait<const MT,AF>::Type >::Type;
+   using Type = ConjExprTrait_< SubmatrixExprTrait_<const MT,AF> >;
    //**********************************************************************************************
 };
 /*! \endcond */
@@ -1356,7 +1357,7 @@ struct RowExprTrait< DMatConjExpr<MT,SO> >
 {
  public:
    //**********************************************************************************************
-   using Type = typename ConjExprTrait< typename RowExprTrait<const MT>::Type >::Type;
+   using Type = ConjExprTrait_< RowExprTrait_<const MT> >;
    //**********************************************************************************************
 };
 /*! \endcond */
@@ -1370,7 +1371,7 @@ struct ColumnExprTrait< DMatConjExpr<MT,SO> >
 {
  public:
    //**********************************************************************************************
-   using Type = typename ConjExprTrait< typename ColumnExprTrait<const MT>::Type >::Type;
+   using Type = ConjExprTrait_< ColumnExprTrait_<const MT> >;
    //**********************************************************************************************
 };
 /*! \endcond */

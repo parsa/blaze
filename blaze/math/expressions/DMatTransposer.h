@@ -40,6 +40,7 @@
 // Includes
 //*************************************************************************************************
 
+#include <blaze/math/Aliases.h>
 #include <blaze/math/constraints/ColumnMajorMatrix.h>
 #include <blaze/math/constraints/Computation.h>
 #include <blaze/math/constraints/DenseMatrix.h>
@@ -80,25 +81,25 @@ class DMatTransposer : public DenseMatrix< DMatTransposer<MT,SO>, SO >
 {
  private:
    //**Type definitions****************************************************************************
-   typedef IntrinsicTrait<typename MT::ElementType>  IT;  //!< Intrinsic trait for the vector element type.
+   typedef IntrinsicTrait< ElementType_<MT> >  IT;  //!< Intrinsic trait for the vector element type.
    //**********************************************************************************************
 
  public:
    //**Type definitions****************************************************************************
-   typedef DMatTransposer<MT,SO>        This;            //!< Type of this DMatTransposer instance.
-   typedef typename MT::TransposeType   ResultType;      //!< Result type for expression template evaluations.
-   typedef typename MT::OppositeType    OppositeType;    //!< Result type with opposite storage order for expression template evaluations.
-   typedef typename MT::ResultType      TransposeType;   //!< Transpose type for expression template evaluations.
-   typedef typename MT::ElementType     ElementType;     //!< Type of the matrix elements.
-   typedef typename IT::Type            IntrinsicType;   //!< Intrinsic type of the matrix elements.
-   typedef typename MT::ReturnType      ReturnType;      //!< Return type for expression template evaluations.
-   typedef const This&                  CompositeType;   //!< Data type for composite expression templates.
-   typedef typename MT::Reference       Reference;       //!< Reference to a non-constant matrix value.
-   typedef typename MT::ConstReference  ConstReference;  //!< Reference to a constant matrix value.
-   typedef typename MT::Pointer         Pointer;         //!< Pointer to a non-constant matrix value.
-   typedef typename MT::ConstPointer    ConstPointer;    //!< Pointer to a constant matrix value.
-   typedef typename MT::Iterator        Iterator;        //!< Iterator over non-constant elements.
-   typedef typename MT::ConstIterator   ConstIterator;   //!< Iterator over constant elements.
+   typedef DMatTransposer<MT,SO>  This;            //!< Type of this DMatTransposer instance.
+   typedef TransposeType_<MT>     ResultType;      //!< Result type for expression template evaluations.
+   typedef OppositeType_<MT>      OppositeType;    //!< Result type with opposite storage order for expression template evaluations.
+   typedef ResultType_<MT>        TransposeType;   //!< Transpose type for expression template evaluations.
+   typedef ElementType_<MT>       ElementType;     //!< Type of the matrix elements.
+   typedef typename IT::Type      IntrinsicType;   //!< Intrinsic type of the matrix elements.
+   typedef ReturnType_<MT>        ReturnType;      //!< Return type for expression template evaluations.
+   typedef const This&            CompositeType;   //!< Data type for composite expression templates.
+   typedef Reference_<MT>         Reference;       //!< Reference to a non-constant matrix value.
+   typedef ConstReference_<MT>    ConstReference;  //!< Reference to a constant matrix value.
+   typedef Pointer_<MT>           Pointer;         //!< Pointer to a non-constant matrix value.
+   typedef ConstPointer_<MT>      ConstPointer;    //!< Pointer to a constant matrix value.
+   typedef Iterator_<MT>          Iterator;        //!< Iterator over non-constant elements.
+   typedef ConstIterator_<MT>     ConstIterator;   //!< Iterator over constant elements.
    //**********************************************************************************************
 
    //**Compilation flags***************************************************************************
@@ -656,7 +657,7 @@ class DMatTransposer : public DenseMatrix< DMatTransposer<MT,SO>, SO >
       BLAZE_INTERNAL_ASSERT( dm_.columns() == (~rhs).rows(), "Invalid number of rows"    );
       BLAZE_INTERNAL_ASSERT( dm_.rows() == (~rhs).columns(), "Invalid number of columns" );
 
-      typedef typename MT2::ConstIterator  RhsConstIterator;
+      typedef ConstIterator_<MT2>  RhsConstIterator;
 
       for( size_t i=0UL; i<(~rhs).rows(); ++i )
          for( RhsConstIterator element=(~rhs).begin(i); element!=(~rhs).end(i); ++element )
@@ -683,7 +684,7 @@ class DMatTransposer : public DenseMatrix< DMatTransposer<MT,SO>, SO >
       BLAZE_INTERNAL_ASSERT( dm_.columns() == (~rhs).rows(), "Invalid number of rows"    );
       BLAZE_INTERNAL_ASSERT( dm_.rows() == (~rhs).columns(), "Invalid number of columns" );
 
-      typedef typename MT2::ConstIterator  RhsConstIterator;
+      typedef ConstIterator_<MT2>  RhsConstIterator;
 
       for( size_t j=0UL; j<(~rhs).columns(); ++j )
          for( RhsConstIterator element=(~rhs).begin(j); element!=(~rhs).end(j); ++element )
@@ -785,7 +786,7 @@ class DMatTransposer : public DenseMatrix< DMatTransposer<MT,SO>, SO >
       BLAZE_INTERNAL_ASSERT( dm_.columns() == (~rhs).rows(), "Invalid number of rows"    );
       BLAZE_INTERNAL_ASSERT( dm_.rows() == (~rhs).columns(), "Invalid number of columns" );
 
-      typedef typename MT2::ConstIterator  RhsConstIterator;
+      typedef ConstIterator_<MT2>  RhsConstIterator;
 
       for( size_t i=0UL; i<(~rhs).rows(); ++i )
          for( RhsConstIterator element=(~rhs).begin(i); element!=(~rhs).end(i); ++element )
@@ -812,7 +813,7 @@ class DMatTransposer : public DenseMatrix< DMatTransposer<MT,SO>, SO >
       BLAZE_INTERNAL_ASSERT( dm_.columns() == (~rhs).rows(), "Invalid number of rows"    );
       BLAZE_INTERNAL_ASSERT( dm_.rows() == (~rhs).columns(), "Invalid number of columns" );
 
-      typedef typename MT2::ConstIterator  RhsConstIterator;
+      typedef ConstIterator_<MT2>  RhsConstIterator;
 
       for( size_t j=0UL; j<(~rhs).columns(); ++j )
          for( RhsConstIterator element=(~rhs).begin(j); element!=(~rhs).end(j); ++element )
@@ -914,7 +915,7 @@ class DMatTransposer : public DenseMatrix< DMatTransposer<MT,SO>, SO >
       BLAZE_INTERNAL_ASSERT( dm_.columns() == (~rhs).rows(), "Invalid number of rows"    );
       BLAZE_INTERNAL_ASSERT( dm_.rows() == (~rhs).columns(), "Invalid number of columns" );
 
-      typedef typename MT2::ConstIterator  RhsConstIterator;
+      typedef ConstIterator_<MT2>  RhsConstIterator;
 
       for( size_t i=0UL; i<(~rhs).rows(); ++i )
          for( RhsConstIterator element=(~rhs).begin(i); element!=(~rhs).end(i); ++element )
@@ -941,7 +942,7 @@ class DMatTransposer : public DenseMatrix< DMatTransposer<MT,SO>, SO >
       BLAZE_INTERNAL_ASSERT( dm_.columns() == (~rhs).rows(), "Invalid number of rows"    );
       BLAZE_INTERNAL_ASSERT( dm_.rows() == (~rhs).columns(), "Invalid number of columns" );
 
-      typedef typename MT2::ConstIterator  RhsConstIterator;
+      typedef ConstIterator_<MT2>  RhsConstIterator;
 
       for( size_t j=0UL; j<(~rhs).columns(); ++j )
          for( RhsConstIterator element=(~rhs).begin(j); element!=(~rhs).end(j); ++element )
@@ -994,25 +995,25 @@ class DMatTransposer<MT,true> : public DenseMatrix< DMatTransposer<MT,true>, tru
 {
  private:
    //**Type definitions****************************************************************************
-   typedef IntrinsicTrait<typename MT::ElementType>  IT;  //!< Intrinsic trait for the vector element type.
+   typedef IntrinsicTrait< ElementType_<MT> >  IT;  //!< Intrinsic trait for the vector element type.
    //**********************************************************************************************
 
  public:
    //**Type definitions****************************************************************************
-   typedef DMatTransposer<MT,true>      This;            //!< Type of this DMatTransposer instance.
-   typedef typename MT::TransposeType   ResultType;      //!< Result type for expression template evaluations.
-   typedef typename MT::OppositeType    OppositeType;    //!< Result type with opposite storage order for expression template evaluations.
-   typedef typename MT::ResultType      TransposeType;   //!< Transpose type for expression template evaluations.
-   typedef typename MT::ElementType     ElementType;     //!< Type of the matrix elements.
-   typedef typename IT::Type            IntrinsicType;   //!< Intrinsic type of the matrix elements.
-   typedef typename MT::ReturnType      ReturnType;      //!< Return type for expression template evaluations.
-   typedef const This&                  CompositeType;   //!< Data type for composite expression templates.
-   typedef typename MT::Reference       Reference;       //!< Reference to a non-constant matrix value.
-   typedef typename MT::ConstReference  ConstReference;  //!< Reference to a constant matrix value.
-   typedef typename MT::Pointer         Pointer;         //!< Pointer to a non-constant matrix value.
-   typedef typename MT::ConstPointer    ConstPointer;    //!< Pointer to a constant matrix value.
-   typedef typename MT::Iterator        Iterator;        //!< Iterator over non-constant elements.
-   typedef typename MT::ConstIterator   ConstIterator;   //!< Iterator over constant elements.
+   typedef DMatTransposer<MT,true>  This;            //!< Type of this DMatTransposer instance.
+   typedef TransposeType_<MT>       ResultType;      //!< Result type for expression template evaluations.
+   typedef OppositeType_<MT>        OppositeType;    //!< Result type with opposite storage order for expression template evaluations.
+   typedef ResultType_<MT>          TransposeType;   //!< Transpose type for expression template evaluations.
+   typedef ElementType_<MT>         ElementType;     //!< Type of the matrix elements.
+   typedef typename IT::Type        IntrinsicType;   //!< Intrinsic type of the matrix elements.
+   typedef ReturnType_<MT>          ReturnType;      //!< Return type for expression template evaluations.
+   typedef const This&              CompositeType;   //!< Data type for composite expression templates.
+   typedef Reference_<MT>           Reference;       //!< Reference to a non-constant matrix value.
+   typedef ConstReference_<MT>      ConstReference;  //!< Reference to a constant matrix value.
+   typedef Pointer_<MT>             Pointer;         //!< Pointer to a non-constant matrix value.
+   typedef ConstPointer_<MT>        ConstPointer;    //!< Pointer to a constant matrix value.
+   typedef Iterator_<MT>            Iterator;        //!< Iterator over non-constant elements.
+   typedef ConstIterator_<MT>       ConstIterator;   //!< Iterator over constant elements.
    //**********************************************************************************************
 
    //**Compilation flags***************************************************************************
@@ -1540,7 +1541,7 @@ class DMatTransposer<MT,true> : public DenseMatrix< DMatTransposer<MT,true>, tru
       BLAZE_INTERNAL_ASSERT( dm_.columns() == (~rhs).rows(), "Invalid number of rows"    );
       BLAZE_INTERNAL_ASSERT( dm_.rows() == (~rhs).columns(), "Invalid number of columns" );
 
-      typedef typename MT2::ConstIterator  RhsConstIterator;
+      typedef ConstIterator_<MT2>  RhsConstIterator;
 
       for( size_t j=0UL; j<(~rhs).columns(); ++j )
          for( RhsConstIterator element=(~rhs).begin(j); element!=(~rhs).end(j); ++element )
@@ -1567,7 +1568,7 @@ class DMatTransposer<MT,true> : public DenseMatrix< DMatTransposer<MT,true>, tru
       BLAZE_INTERNAL_ASSERT( dm_.columns() == (~rhs).rows(), "Invalid number of rows"    );
       BLAZE_INTERNAL_ASSERT( dm_.rows() == (~rhs).columns(), "Invalid number of columns" );
 
-      typedef typename MT2::ConstIterator  RhsConstIterator;
+      typedef ConstIterator_<MT2>  RhsConstIterator;
 
       for( size_t i=0UL; i<(~rhs).rows(); ++i )
          for( RhsConstIterator element=(~rhs).begin(i); element!=(~rhs).end(i); ++element )
@@ -1668,7 +1669,7 @@ class DMatTransposer<MT,true> : public DenseMatrix< DMatTransposer<MT,true>, tru
       BLAZE_INTERNAL_ASSERT( dm_.columns() == (~rhs).rows(), "Invalid number of rows"    );
       BLAZE_INTERNAL_ASSERT( dm_.rows() == (~rhs).columns(), "Invalid number of columns" );
 
-      typedef typename MT2::ConstIterator  RhsConstIterator;
+      typedef ConstIterator_<MT2>  RhsConstIterator;
 
       for( size_t j=0UL; j<(~rhs).columns(); ++j )
          for( RhsConstIterator element=(~rhs).begin(j); element!=(~rhs).end(j); ++element )
@@ -1695,7 +1696,7 @@ class DMatTransposer<MT,true> : public DenseMatrix< DMatTransposer<MT,true>, tru
       BLAZE_INTERNAL_ASSERT( dm_.columns() == (~rhs).rows(), "Invalid number of rows"    );
       BLAZE_INTERNAL_ASSERT( dm_.rows() == (~rhs).columns(), "Invalid number of columns" );
 
-      typedef typename MT2::ConstIterator  RhsConstIterator;
+      typedef ConstIterator_<MT2>  RhsConstIterator;
 
       for( size_t i=0UL; i<(~rhs).rows(); ++i )
          for( RhsConstIterator element=(~rhs).begin(i); element!=(~rhs).end(i); ++element )
@@ -1796,7 +1797,7 @@ class DMatTransposer<MT,true> : public DenseMatrix< DMatTransposer<MT,true>, tru
       BLAZE_INTERNAL_ASSERT( dm_.columns() == (~rhs).rows(), "Invalid number of rows"    );
       BLAZE_INTERNAL_ASSERT( dm_.rows() == (~rhs).columns(), "Invalid number of columns" );
 
-      typedef typename MT2::ConstIterator  RhsConstIterator;
+      typedef ConstIterator_<MT2>  RhsConstIterator;
 
       for( size_t j=0UL; j<(~rhs).columns(); ++j )
          for( RhsConstIterator element=(~rhs).begin(j); element!=(~rhs).end(j); ++element )
@@ -1823,7 +1824,7 @@ class DMatTransposer<MT,true> : public DenseMatrix< DMatTransposer<MT,true>, tru
       BLAZE_INTERNAL_ASSERT( dm_.columns() == (~rhs).rows(), "Invalid number of rows"    );
       BLAZE_INTERNAL_ASSERT( dm_.rows() == (~rhs).columns(), "Invalid number of columns" );
 
-      typedef typename MT2::ConstIterator  RhsConstIterator;
+      typedef ConstIterator_<MT2>  RhsConstIterator;
 
       for( size_t i=0UL; i<(~rhs).rows(); ++i )
          for( RhsConstIterator element=(~rhs).begin(i); element!=(~rhs).end(i); ++element )
@@ -1967,7 +1968,7 @@ struct IsPadded< DMatTransposer<MT,SO> >
 template< typename MT, bool SO >
 struct SubmatrixTrait< DMatTransposer<MT,SO> >
 {
-   using Type = typename SubmatrixTrait< typename DMatTransposer<MT,SO>::ResultType >::Type;
+   using Type = SubmatrixTrait_< ResultType_< DMatTransposer<MT,SO> > >;
 };
 /*! \endcond */
 //*************************************************************************************************

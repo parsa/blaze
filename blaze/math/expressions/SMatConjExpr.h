@@ -42,6 +42,7 @@
 
 #include <cmath>
 #include <iterator>
+#include <blaze/math/Aliases.h>
 #include <blaze/math/constraints/RequiresEvaluation.h>
 #include <blaze/math/constraints/SparseMatrix.h>
 #include <blaze/math/constraints/StorageOrder.h>
@@ -112,9 +113,9 @@ class SMatConjExpr : public SparseMatrix< SMatConjExpr<MT,SO>, SO >
 {
  private:
    //**Type definitions****************************************************************************
-   typedef typename MT::ResultType     RT;  //!< Result type of the sparse matrix expression.
-   typedef typename MT::ReturnType     RN;  //!< Return type of the sparse matrix expression.
-   typedef typename MT::CompositeType  CT;  //!< Composite type of the sparse matrix expression.
+   typedef ResultType_<MT>     RT;  //!< Result type of the sparse matrix expression.
+   typedef ReturnType_<MT>     RN;  //!< Return type of the sparse matrix expression.
+   typedef CompositeType_<MT>  CT;  //!< Composite type of the sparse matrix expression.
    //**********************************************************************************************
 
    //**Return type evaluation**********************************************************************
@@ -127,7 +128,7 @@ class SMatConjExpr : public SparseMatrix< SMatConjExpr<MT,SO>, SO >
    enum { returnExpr = !IsTemporary<RN>::value };
 
    //! Expression return type for the subscript operator.
-   typedef typename ConjExprTrait<RN>::Type  ExprReturnType;
+   typedef ConjExprTrait_<RN>  ExprReturnType;
    //**********************************************************************************************
 
    //**Serial evaluation strategy******************************************************************
@@ -166,11 +167,11 @@ class SMatConjExpr : public SparseMatrix< SMatConjExpr<MT,SO>, SO >
 
  public:
    //**Type definitions****************************************************************************
-   typedef SMatConjExpr<MT,SO>         This;           //!< Type of this SMatConjExpr instance.
-   typedef typename MT::ResultType     ResultType;     //!< Result type for expression template evaluations.
-   typedef typename MT::OppositeType   OppositeType;   //!< Result type with opposite storage order for expression template evaluations.
-   typedef typename MT::TransposeType  TransposeType;  //!< Transpose type for expression template evaluations.
-   typedef typename MT::ElementType    ElementType;    //!< Resulting element type.
+   typedef SMatConjExpr<MT,SO>  This;           //!< Type of this SMatConjExpr instance.
+   typedef ResultType_<MT>      ResultType;     //!< Result type for expression template evaluations.
+   typedef OppositeType_<MT>    OppositeType;   //!< Result type with opposite storage order for expression template evaluations.
+   typedef TransposeType_<MT>   TransposeType;  //!< Transpose type for expression template evaluations.
+   typedef ElementType_<MT>     ElementType;    //!< Resulting element type.
 
    //! Return type for expression template evaluations.
    typedef const IfTrue_< returnExpr, ExprReturnType, ElementType >  ReturnType;
@@ -193,7 +194,7 @@ class SMatConjExpr : public SparseMatrix< SMatConjExpr<MT,SO>, SO >
       typedef ValueIndexPair<ElementType>  Element;
 
       //! Iterator type of the sparse matrix expression.
-      typedef typename RemoveReference_<Operand>::ConstIterator  IteratorType;
+      typedef ConstIterator_< RemoveReference_<Operand> >  IteratorType;
 
       typedef std::forward_iterator_tag  IteratorCategory;  //!< The iterator category.
       typedef Element                    ValueType;         //!< Type of the underlying pointers.
@@ -560,7 +561,7 @@ class SMatConjExpr : public SparseMatrix< SMatConjExpr<MT,SO>, SO >
       BLAZE_INTERNAL_ASSERT( (~lhs).rows()    == rhs.rows()   , "Invalid number of rows"    );
       BLAZE_INTERNAL_ASSERT( (~lhs).columns() == rhs.columns(), "Invalid number of columns" );
 
-      typedef typename MT2::Iterator  Iterator;
+      typedef Iterator_<MT2>  Iterator;
 
       assign( ~lhs, rhs.sm_ );
 
@@ -599,7 +600,7 @@ class SMatConjExpr : public SparseMatrix< SMatConjExpr<MT,SO>, SO >
       BLAZE_INTERNAL_ASSERT( (~lhs).rows()    == rhs.rows()   , "Invalid number of rows"    );
       BLAZE_INTERNAL_ASSERT( (~lhs).columns() == rhs.columns(), "Invalid number of columns" );
 
-      typedef typename MT2::Iterator  Iterator;
+      typedef Iterator_<MT2>  Iterator;
 
       assign( ~lhs, rhs.sm_ );
 
@@ -637,7 +638,7 @@ class SMatConjExpr : public SparseMatrix< SMatConjExpr<MT,SO>, SO >
       BLAZE_FUNCTION_TRACE;
 
       BLAZE_CONSTRAINT_MUST_BE_SPARSE_MATRIX_TYPE( ResultType );
-      BLAZE_CONSTRAINT_MUST_BE_REFERENCE_TYPE( typename ResultType::CompositeType );
+      BLAZE_CONSTRAINT_MUST_BE_REFERENCE_TYPE( CompositeType_<ResultType> );
 
       BLAZE_INTERNAL_ASSERT( (~lhs).rows()    == rhs.rows()   , "Invalid number of rows"    );
       BLAZE_INTERNAL_ASSERT( (~lhs).columns() == rhs.columns(), "Invalid number of columns" );
@@ -674,7 +675,7 @@ class SMatConjExpr : public SparseMatrix< SMatConjExpr<MT,SO>, SO >
       BLAZE_FUNCTION_TRACE;
 
       BLAZE_CONSTRAINT_MUST_BE_SPARSE_MATRIX_TYPE( ResultType );
-      BLAZE_CONSTRAINT_MUST_BE_REFERENCE_TYPE( typename ResultType::CompositeType );
+      BLAZE_CONSTRAINT_MUST_BE_REFERENCE_TYPE( CompositeType_<ResultType> );
 
       BLAZE_INTERNAL_ASSERT( (~lhs).rows()    == rhs.rows()   , "Invalid number of rows"    );
       BLAZE_INTERNAL_ASSERT( (~lhs).columns() == rhs.columns(), "Invalid number of columns" );
@@ -753,7 +754,7 @@ class SMatConjExpr : public SparseMatrix< SMatConjExpr<MT,SO>, SO >
       BLAZE_FUNCTION_TRACE;
 
       BLAZE_CONSTRAINT_MUST_BE_SPARSE_MATRIX_TYPE( ResultType );
-      BLAZE_CONSTRAINT_MUST_BE_REFERENCE_TYPE( typename ResultType::CompositeType );
+      BLAZE_CONSTRAINT_MUST_BE_REFERENCE_TYPE( CompositeType_<ResultType> );
 
       BLAZE_INTERNAL_ASSERT( (~lhs).rows()    == rhs.rows()   , "Invalid number of rows"    );
       BLAZE_INTERNAL_ASSERT( (~lhs).columns() == rhs.columns(), "Invalid number of columns" );
@@ -790,7 +791,7 @@ class SMatConjExpr : public SparseMatrix< SMatConjExpr<MT,SO>, SO >
       BLAZE_FUNCTION_TRACE;
 
       BLAZE_CONSTRAINT_MUST_BE_SPARSE_MATRIX_TYPE( ResultType );
-      BLAZE_CONSTRAINT_MUST_BE_REFERENCE_TYPE( typename ResultType::CompositeType );
+      BLAZE_CONSTRAINT_MUST_BE_REFERENCE_TYPE( CompositeType_<ResultType> );
 
       BLAZE_INTERNAL_ASSERT( (~lhs).rows()    == rhs.rows()   , "Invalid number of rows"    );
       BLAZE_INTERNAL_ASSERT( (~lhs).columns() == rhs.columns(), "Invalid number of columns" );
@@ -887,7 +888,7 @@ inline const SMatConjExpr<MT,SO> conj( const SparseMatrix<MT,SO>& sm )
 */
 template< typename MT  // Type of the sparse matrix
         , bool SO >    // Storage order
-inline const typename CTransExprTrait<MT>::Type ctrans( const SparseMatrix<MT,SO>& sm )
+inline const CTransExprTrait_<MT> ctrans( const SparseMatrix<MT,SO>& sm )
 {
    BLAZE_FUNCTION_TRACE;
 
@@ -1158,7 +1159,7 @@ struct SMatConjExprTrait< SMatConjExpr<MT,false> >
  public:
    //**********************************************************************************************
    using Type = If_< And< IsSparseMatrix<MT>, IsRowMajorMatrix<MT> >
-                   , typename SMatConjExpr<MT,false>::Operand
+                   , Operand_< SMatConjExpr<MT,false> >
                    , INVALID_TYPE >;
    //**********************************************************************************************
 };
@@ -1174,7 +1175,7 @@ struct TSMatConjExprTrait< SMatConjExpr<MT,true> >
  public:
    //**********************************************************************************************
    using Type = If_< And< IsSparseMatrix<MT>, IsColumnMajorMatrix<MT> >
-                   , typename SMatConjExpr<MT,true>::Operand
+                   , Operand_< SMatConjExpr<MT,true> >
                    , INVALID_TYPE >;
    //**********************************************************************************************
 };
@@ -1221,7 +1222,7 @@ struct SubmatrixExprTrait< SMatConjExpr<MT,SO>, AF >
 {
  public:
    //**********************************************************************************************
-   using Type = typename ConjExprTrait< typename SubmatrixExprTrait<const MT,AF>::Type >::Type;
+   using Type = ConjExprTrait_< SubmatrixExprTrait_<const MT,AF> >;
    //**********************************************************************************************
 };
 /*! \endcond */
@@ -1235,7 +1236,7 @@ struct RowExprTrait< SMatConjExpr<MT,SO> >
 {
  public:
    //**********************************************************************************************
-   using Type = typename ConjExprTrait< typename RowExprTrait<const MT>::Type >::Type;
+   using Type = ConjExprTrait_< RowExprTrait_<const MT> >;
    //**********************************************************************************************
 };
 /*! \endcond */
@@ -1249,7 +1250,7 @@ struct ColumnExprTrait< SMatConjExpr<MT,SO> >
 {
  public:
    //**********************************************************************************************
-   using Type = typename ConjExprTrait< typename ColumnExprTrait<const MT>::Type >::Type;
+   using Type = ConjExprTrait_< ColumnExprTrait_<const MT> >;
    //**********************************************************************************************
 };
 /*! \endcond */

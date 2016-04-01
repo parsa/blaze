@@ -41,6 +41,7 @@
 //*************************************************************************************************
 
 #include <iterator>
+#include <blaze/math/Aliases.h>
 #include <blaze/math/AlignmentFlag.h>
 #include <blaze/math/constraints/Computation.h>
 #include <blaze/math/constraints/DenseVector.h>
@@ -399,18 +400,18 @@ class SparseSubvector : public SparseVector< SparseSubvector<VT,AF,TF>, TF >
 
  public:
    //**Type definitions****************************************************************************
-   typedef SparseSubvector<VT,AF,TF>           This;           //!< Type of this SparseSubvector instance.
-   typedef typename SubvectorTrait<VT>::Type   ResultType;     //!< Result type for expression template evaluations.
-   typedef typename ResultType::TransposeType  TransposeType;  //!< Transpose type for expression template evaluations.
-   typedef typename VT::ElementType            ElementType;    //!< Type of the subvector elements.
-   typedef typename VT::ReturnType             ReturnType;     //!< Return type for expression template evaluations
-   typedef const SparseSubvector&              CompositeType;  //!< Data type for composite expression templates.
+   typedef SparseSubvector<VT,AF,TF>   This;           //!< Type of this SparseSubvector instance.
+   typedef SubvectorTrait_<VT>         ResultType;     //!< Result type for expression template evaluations.
+   typedef TransposeType_<ResultType>  TransposeType;  //!< Transpose type for expression template evaluations.
+   typedef ElementType_<VT>            ElementType;    //!< Type of the subvector elements.
+   typedef ReturnType_<VT>             ReturnType;     //!< Return type for expression template evaluations
+   typedef const SparseSubvector&      CompositeType;  //!< Data type for composite expression templates.
 
    //! Reference to a constant subvector value.
-   typedef typename VT::ConstReference  ConstReference;
+   typedef ConstReference_<VT>  ConstReference;
 
    //! Reference to a non-constant subvector value.
-   typedef If_< IsConst<VT>, ConstReference, typename VT::Reference >  Reference;
+   typedef If_< IsConst<VT>, ConstReference, Reference_<VT> >  Reference;
    //**********************************************************************************************
 
    //**SubvectorElement class definition***********************************************************
@@ -435,13 +436,13 @@ class SparseSubvector : public SparseVector< SparseSubvector<VT,AF,TF>, TF >
       //! Type of the underlying sparse elements.
       typedef typename std::iterator_traits<IteratorType>::value_type  SET;
 
-      typedef typename SET::Reference       RT;   //!< Reference type of the underlying sparse element.
-      typedef typename SET::ConstReference  CRT;  //!< Reference-to-const type of the underlying sparse element.
+      typedef Reference_<SET>       RT;   //!< Reference type of the underlying sparse element.
+      typedef ConstReference_<SET>  CRT;  //!< Reference-to-const type of the underlying sparse element.
       //*******************************************************************************************
 
     public:
       //**Type definitions*************************************************************************
-      typedef typename SET::ValueType      ValueType;       //!< The value type of the row element.
+      typedef ValueType_<SET>              ValueType;       //!< The value type of the row element.
       typedef size_t                       IndexType;       //!< The index type of the row element.
       typedef IfTrue_<returnConst,CRT,RT>  Reference;       //!< Reference return type
       typedef CRT                          ConstReference;  //!< Reference-to-const return type.
@@ -721,10 +722,10 @@ class SparseSubvector : public SparseVector< SparseSubvector<VT,AF,TF>, TF >
 
    //**Type definitions****************************************************************************
    //! Iterator over constant elements.
-   typedef SubvectorIterator<const VT,typename VT::ConstIterator>  ConstIterator;
+   typedef SubvectorIterator< const VT, ConstIterator_<VT> >  ConstIterator;
 
    //! Iterator over non-constant elements.
-   typedef If_< IsConst<VT>, ConstIterator, SubvectorIterator<VT,typename VT::Iterator> >  Iterator;
+   typedef If_< IsConst<VT>, ConstIterator, SubvectorIterator< VT, Iterator_<VT> > >  Iterator;
    //**********************************************************************************************
 
    //**Compilation flags***************************************************************************
@@ -871,8 +872,7 @@ class SparseSubvector : public SparseVector< SparseSubvector<VT,AF,TF>, TF >
    friend bool tryMultAssign( const SparseSubvector<VT2,AF2,TF2>& lhs, const Vector<VT3,TF2>& rhs, size_t index );
 
    template< typename VT2, bool AF2, bool TF2 >
-   friend typename DerestrictTrait< SparseSubvector<VT2,AF2,TF2> >::Type
-      derestrict( SparseSubvector<VT2,AF2,TF2>& sv );
+   friend DerestrictTrait_< SparseSubvector<VT2,AF2,TF2> > derestrict( SparseSubvector<VT2,AF2,TF2>& sv );
    /*! \endcond */
    //**********************************************************************************************
 
@@ -1183,7 +1183,7 @@ inline SparseSubvector<VT,AF,TF>&
       BLAZE_THROW_INVALID_ARGUMENT( "Invalid assignment to restricted vector" );
    }
 
-   typename DerestrictTrait<This>::Type left( derestrict( *this ) );
+   DerestrictTrait_<This> left( derestrict( *this ) );
 
    if( rhs.canAlias( &vector_ ) ) {
       const ResultType tmp( rhs );
@@ -1222,24 +1222,24 @@ inline SparseSubvector<VT,AF,TF>&
 {
    using blaze::assign;
 
-   BLAZE_CONSTRAINT_MUST_BE_VECTOR_WITH_TRANSPOSE_FLAG( typename VT2::ResultType, TF );
-   BLAZE_CONSTRAINT_MUST_NOT_REQUIRE_EVALUATION( typename VT2::ResultType );
+   BLAZE_CONSTRAINT_MUST_BE_VECTOR_WITH_TRANSPOSE_FLAG( ResultType_<VT2>, TF );
+   BLAZE_CONSTRAINT_MUST_NOT_REQUIRE_EVALUATION( ResultType_<VT2> );
 
    if( size() != (~rhs).size() ) {
       BLAZE_THROW_INVALID_ARGUMENT( "Vector sizes do not match" );
    }
 
-   typedef If_< IsRestricted<VT>, typename VT2::CompositeType, const VT2& >  Right;
+   typedef If_< IsRestricted<VT>, CompositeType_<VT2>, const VT2& >  Right;
    Right right( ~rhs );
 
    if( !tryAssign( vector_, right, offset_ ) ) {
       BLAZE_THROW_INVALID_ARGUMENT( "Invalid assignment to restricted vector" );
    }
 
-   typename DerestrictTrait<This>::Type left( derestrict( *this ) );
+   DerestrictTrait_<This> left( derestrict( *this ) );
 
    if( IsReference<Right>::value || right.canAlias( &vector_ ) ) {
-      const typename VT2::ResultType tmp( right );
+      const ResultType_<VT2> tmp( right );
       reset();
       assign( left, tmp );
    }
@@ -1277,9 +1277,9 @@ inline SparseSubvector<VT,AF,TF>&
 
    BLAZE_CONSTRAINT_MUST_BE_SPARSE_VECTOR_TYPE ( ResultType );
    BLAZE_CONSTRAINT_MUST_NOT_REQUIRE_EVALUATION( ResultType );
-   BLAZE_CONSTRAINT_MUST_NOT_REQUIRE_EVALUATION( typename VT2::ResultType );
+   BLAZE_CONSTRAINT_MUST_NOT_REQUIRE_EVALUATION( ResultType_<VT2> );
 
-   typedef typename AddTrait<ResultType,typename VT2::ResultType>::Type  AddType;
+   typedef AddTrait_< ResultType, ResultType_<VT2> >  AddType;
 
    BLAZE_CONSTRAINT_MUST_BE_VECTOR_WITH_TRANSPOSE_FLAG( AddType, TF );
    BLAZE_CONSTRAINT_MUST_NOT_REQUIRE_EVALUATION( AddType );
@@ -1294,7 +1294,7 @@ inline SparseSubvector<VT,AF,TF>&
       BLAZE_THROW_INVALID_ARGUMENT( "Invalid assignment to restricted vector" );
    }
 
-   typename DerestrictTrait<This>::Type left( derestrict( *this ) );
+   DerestrictTrait_<This> left( derestrict( *this ) );
 
    left.reset();
    assign( left, tmp );
@@ -1328,9 +1328,9 @@ inline SparseSubvector<VT,AF,TF>&
 
    BLAZE_CONSTRAINT_MUST_BE_SPARSE_VECTOR_TYPE ( ResultType );
    BLAZE_CONSTRAINT_MUST_NOT_REQUIRE_EVALUATION( ResultType );
-   BLAZE_CONSTRAINT_MUST_NOT_REQUIRE_EVALUATION( typename VT2::ResultType );
+   BLAZE_CONSTRAINT_MUST_NOT_REQUIRE_EVALUATION( ResultType_<VT2> );
 
-   typedef typename SubTrait<ResultType,typename VT2::ResultType>::Type  SubType;
+   typedef SubTrait_< ResultType, ResultType_<VT2> >  SubType;
 
    BLAZE_CONSTRAINT_MUST_BE_VECTOR_WITH_TRANSPOSE_FLAG( SubType, TF );
    BLAZE_CONSTRAINT_MUST_NOT_REQUIRE_EVALUATION( SubType );
@@ -1345,7 +1345,7 @@ inline SparseSubvector<VT,AF,TF>&
       BLAZE_THROW_INVALID_ARGUMENT( "Invalid assignment to restricted vector" );
    }
 
-   typename DerestrictTrait<This>::Type left( derestrict( *this ) );
+   DerestrictTrait_<This> left( derestrict( *this ) );
 
    left.reset();
    assign( left, tmp );
@@ -1378,11 +1378,11 @@ inline SparseSubvector<VT,AF,TF>&
 {
    using blaze::assign;
 
-   BLAZE_CONSTRAINT_MUST_BE_SPARSE_VECTOR_TYPE( ResultType );
+   BLAZE_CONSTRAINT_MUST_BE_SPARSE_VECTOR_TYPE ( ResultType );
    BLAZE_CONSTRAINT_MUST_NOT_REQUIRE_EVALUATION( ResultType );
-   BLAZE_CONSTRAINT_MUST_NOT_REQUIRE_EVALUATION( typename VT2::ResultType );
+   BLAZE_CONSTRAINT_MUST_NOT_REQUIRE_EVALUATION( ResultType_<VT2> );
 
-   typedef typename MultTrait<ResultType,typename VT2::ResultType>::Type  MultType;
+   typedef MultTrait_< ResultType, ResultType_<VT2> >  MultType;
 
    BLAZE_CONSTRAINT_MUST_BE_VECTOR_WITH_TRANSPOSE_FLAG( MultType, TF );
    BLAZE_CONSTRAINT_MUST_NOT_REQUIRE_EVALUATION( MultType );
@@ -1397,7 +1397,7 @@ inline SparseSubvector<VT,AF,TF>&
       BLAZE_THROW_INVALID_ARGUMENT( "Invalid assignment to restricted vector" );
    }
 
-   typename DerestrictTrait<This>::Type left( derestrict( *this ) );
+   DerestrictTrait_<This> left( derestrict( *this ) );
 
    left.reset();
    assign( left, tmp );
@@ -1456,7 +1456,7 @@ inline EnableIf_<IsNumeric<Other>, SparseSubvector<VT,AF,TF> >&
 {
    BLAZE_USER_ASSERT( rhs != Other(0), "Division by zero detected" );
 
-   typedef typename DivTrait<ElementType,Other>::Type  DT;
+   typedef DivTrait_<ElementType,Other>     DT;
    typedef If_< IsNumeric<DT>, DT, Other >  Tmp;
 
    const Iterator last( end() );
@@ -1718,7 +1718,7 @@ template< typename VT  // Type of the sparse vector
 inline typename SparseSubvector<VT,AF,TF>::Iterator
    SparseSubvector<VT,AF,TF>::find( size_t index )
 {
-   const typename VT::Iterator pos( vector_.find( offset_ + index ) );
+   const Iterator_<VT> pos( vector_.find( offset_ + index ) );
 
    if( pos != vector_.end() )
       return Iterator( pos, offset_ );
@@ -1747,7 +1747,7 @@ template< typename VT  // Type of the sparse vector
 inline typename SparseSubvector<VT,AF,TF>::ConstIterator
    SparseSubvector<VT,AF,TF>::find( size_t index ) const
 {
-   const typename VT::ConstIterator pos( vector_.find( offset_ + index ) );
+   const ConstIterator_<VT> pos( vector_.find( offset_ + index ) );
 
    if( pos != vector_.end() )
       return Iterator( pos, offset_ );
@@ -2015,7 +2015,7 @@ inline void SparseSubvector<VT,AF,TF>::assign( const SparseVector<VT2,TF>& rhs )
 
    reserve( (~rhs).nonZeros() );
 
-   for( typename VT2::ConstIterator element=(~rhs).begin(); element!=(~rhs).end(); ++element ) {
+   for( ConstIterator_<VT2> element=(~rhs).begin(); element!=(~rhs).end(); ++element ) {
       append( element->index(), element->value(), true );
    }
 }
@@ -2039,7 +2039,7 @@ template< typename VT     // Type of the sparse vector
 template< typename VT2 >  // Type of the right-hand side dense vector
 inline void SparseSubvector<VT,AF,TF>::addAssign( const DenseVector<VT2,TF>& rhs )
 {
-   typedef typename AddTrait<ResultType,typename VT2::ResultType>::Type  AddType;
+   typedef AddTrait_< ResultType, ResultType_<VT2> >  AddType;
 
    BLAZE_CONSTRAINT_MUST_BE_DENSE_VECTOR_TYPE( AddType );
    BLAZE_CONSTRAINT_MUST_BE_VECTOR_WITH_TRANSPOSE_FLAG( AddType, TF );
@@ -2071,7 +2071,7 @@ template< typename VT     // Type of the sparse vector
 template< typename VT2 >  // Type of the right-hand side sparse vector
 inline void SparseSubvector<VT,AF,TF>::addAssign( const SparseVector<VT2,TF>& rhs )
 {
-   typedef typename AddTrait<ResultType,typename VT2::ResultType>::Type  AddType;
+   typedef AddTrait_< ResultType, ResultType_<VT2> >  AddType;
 
    BLAZE_CONSTRAINT_MUST_BE_SPARSE_VECTOR_TYPE( AddType );
    BLAZE_CONSTRAINT_MUST_BE_VECTOR_WITH_TRANSPOSE_FLAG( AddType, TF );
@@ -2103,7 +2103,7 @@ template< typename VT     // Type of the sparse vector
 template< typename VT2 >  // Type of the right-hand side dense vector
 inline void SparseSubvector<VT,AF,TF>::subAssign( const DenseVector<VT2,TF>& rhs )
 {
-   typedef typename SubTrait<ResultType,typename VT2::ResultType>::Type  SubType;
+   typedef SubTrait_< ResultType, ResultType_<VT2> >  SubType;
 
    BLAZE_CONSTRAINT_MUST_BE_DENSE_VECTOR_TYPE( SubType );
    BLAZE_CONSTRAINT_MUST_BE_VECTOR_WITH_TRANSPOSE_FLAG( SubType, TF );
@@ -2135,7 +2135,7 @@ template< typename VT     // Type of the sparse vector
 template< typename VT2 >  // Type of the right-hand side sparse vector
 inline void SparseSubvector<VT,AF,TF>::subAssign( const SparseVector<VT2,TF>& rhs )
 {
-   typedef typename SubTrait<ResultType,typename VT2::ResultType>::Type  SubType;
+   typedef SubTrait_< ResultType, ResultType_<VT2> >  SubType;
 
    BLAZE_CONSTRAINT_MUST_BE_SPARSE_VECTOR_TYPE( SubType );
    BLAZE_CONSTRAINT_MUST_BE_VECTOR_WITH_TRANSPOSE_FLAG( SubType, TF );
@@ -2248,7 +2248,7 @@ template< typename VT  // Type of the sparse vector
         , bool TF >    // Transpose flag
 inline bool isDefault( const SparseSubvector<VT,AF,TF>& sv )
 {
-   typedef typename SparseSubvector<VT,AF,TF>::ConstIterator  ConstIterator;
+   typedef ConstIterator_< SparseSubvector<VT,AF,TF> >  ConstIterator;
 
    const ConstIterator end( sv.end() );
    for( ConstIterator element=sv.begin(); element!=end; ++element )
@@ -2493,10 +2493,9 @@ inline bool tryMultAssign( const SparseSubvector<VT1,AF,TF>& lhs, const Vector<V
 template< typename VT  // Type of the sparse vector
         , bool AF      // Alignment flag
         , bool TF >    // Transpose flag
-inline typename DerestrictTrait< SparseSubvector<VT,AF,TF> >::Type
-   derestrict( SparseSubvector<VT,AF,TF>& sv )
+inline DerestrictTrait_< SparseSubvector<VT,AF,TF> > derestrict( SparseSubvector<VT,AF,TF>& sv )
 {
-   typedef typename DerestrictTrait< SparseSubvector<VT,AF,TF> >::Type  ReturnType;
+   typedef DerestrictTrait_< SparseSubvector<VT,AF,TF> >  ReturnType;
    return ReturnType( derestrict( sv.vector_ ), sv.offset_, sv.size_ );
 }
 /*! \endcond */
@@ -2573,7 +2572,7 @@ struct IsRestricted< SparseSubvector<VT,AF,TF> > : public BoolConstant< IsRestri
 template< typename VT, bool AF, bool TF >
 struct DerestrictTrait< SparseSubvector<VT,AF,TF> >
 {
-   typedef SparseSubvector< RemoveReference_< typename DerestrictTrait<VT>::Type >, AF, TF >  Type;
+   using Type = SparseSubvector< RemoveReference_< DerestrictTrait_<VT> >, AF, TF >;
 };
 /*! \endcond */
 //*************************************************************************************************
@@ -2592,13 +2591,13 @@ struct DerestrictTrait< SparseSubvector<VT,AF,TF> >
 template< typename VT, bool AF, bool TF, typename T >
 struct AddTrait< SparseSubvector<VT,AF,TF>, T >
 {
-   typedef typename AddTrait< typename SubvectorTrait<VT>::Type, T >::Type  Type;
+   using Type = AddTrait_< SubvectorTrait_<VT>, T >;
 };
 
 template< typename T, typename VT, bool AF, bool TF >
 struct AddTrait< T, SparseSubvector<VT,AF,TF> >
 {
-   typedef typename AddTrait< T, typename SubvectorTrait<VT>::Type >::Type  Type;
+   using Type = AddTrait_< T, SubvectorTrait_<VT> >;
 };
 /*! \endcond */
 //*************************************************************************************************
@@ -2617,13 +2616,13 @@ struct AddTrait< T, SparseSubvector<VT,AF,TF> >
 template< typename VT, bool AF, bool TF, typename T >
 struct SubTrait< SparseSubvector<VT,AF,TF>, T >
 {
-   typedef typename SubTrait< typename SubvectorTrait<VT>::Type, T >::Type  Type;
+   using Type = SubTrait_< SubvectorTrait_<VT>, T >;
 };
 
 template< typename T, typename VT, bool AF, bool TF >
 struct SubTrait< T, SparseSubvector<VT,AF,TF> >
 {
-   typedef typename SubTrait< T, typename SubvectorTrait<VT>::Type >::Type  Type;
+   using Type = SubTrait_< T, SubvectorTrait_<VT> >;
 };
 /*! \endcond */
 //*************************************************************************************************
@@ -2642,13 +2641,13 @@ struct SubTrait< T, SparseSubvector<VT,AF,TF> >
 template< typename VT, bool AF, bool TF, typename T >
 struct MultTrait< SparseSubvector<VT,AF,TF>, T >
 {
-   typedef typename MultTrait< typename SubvectorTrait<VT>::Type, T >::Type  Type;
+   using Type = MultTrait_< SubvectorTrait_<VT>, T >;
 };
 
 template< typename T, typename VT, bool AF, bool TF >
 struct MultTrait< T, SparseSubvector<VT,AF,TF> >
 {
-   typedef typename MultTrait< T, typename SubvectorTrait<VT>::Type >::Type  Type;
+   using Type = MultTrait_< T, SubvectorTrait_<VT> >;
 };
 /*! \endcond */
 //*************************************************************************************************
@@ -2667,13 +2666,13 @@ struct MultTrait< T, SparseSubvector<VT,AF,TF> >
 template< typename VT, bool AF, bool TF, typename T >
 struct CrossTrait< SparseSubvector<VT,AF,TF>, T >
 {
-   typedef typename CrossTrait< typename SubvectorTrait<VT>::Type, T >::Type  Type;
+   using Type = CrossTrait_< SubvectorTrait_<VT>, T >;
 };
 
 template< typename T, typename VT, bool AF, bool TF >
 struct CrossTrait< T, SparseSubvector<VT,AF,TF> >
 {
-   typedef typename CrossTrait< T, typename SubvectorTrait<VT>::Type >::Type  Type;
+   using Type = CrossTrait_< T, SubvectorTrait_<VT> >;
 };
 /*! \endcond */
 //*************************************************************************************************
@@ -2692,13 +2691,13 @@ struct CrossTrait< T, SparseSubvector<VT,AF,TF> >
 template< typename VT, bool AF, bool TF, typename T >
 struct DivTrait< SparseSubvector<VT,AF,TF>, T >
 {
-   typedef typename DivTrait< typename SubvectorTrait<VT>::Type, T >::Type  Type;
+   using Type = DivTrait_< SubvectorTrait_<VT>, T >;
 };
 
 template< typename T, typename VT, bool AF, bool TF >
 struct DivTrait< T, SparseSubvector<VT,AF,TF> >
 {
-   typedef typename DivTrait< T, typename SubvectorTrait<VT>::Type >::Type  Type;
+   using Type = DivTrait_< T, SubvectorTrait_<VT> >;
 };
 /*! \endcond */
 //*************************************************************************************************
@@ -2717,7 +2716,7 @@ struct DivTrait< T, SparseSubvector<VT,AF,TF> >
 template< typename VT, bool AF, bool TF >
 struct SubvectorTrait< SparseSubvector<VT,AF,TF> >
 {
-   typedef typename SubvectorTrait< typename SparseSubvector<VT,AF,TF>::ResultType >::Type  Type;
+   using Type = SubvectorTrait_< ResultType_< SparseSubvector<VT,AF,TF> > >;
 };
 /*! \endcond */
 //*************************************************************************************************
@@ -2736,7 +2735,7 @@ struct SubvectorTrait< SparseSubvector<VT,AF,TF> >
 template< typename VT, bool AF1, bool TF, bool AF2 >
 struct SubvectorExprTrait< SparseSubvector<VT,AF1,TF>, AF2 >
 {
-   typedef SparseSubvector<VT,AF2,TF>  Type;
+   using Type = SparseSubvector<VT,AF2,TF>;
 };
 /*! \endcond */
 //*************************************************************************************************
@@ -2747,7 +2746,7 @@ struct SubvectorExprTrait< SparseSubvector<VT,AF1,TF>, AF2 >
 template< typename VT, bool AF1, bool TF, bool AF2 >
 struct SubvectorExprTrait< const SparseSubvector<VT,AF1,TF>, AF2 >
 {
-   typedef SparseSubvector<VT,AF2,TF>  Type;
+   using Type = SparseSubvector<VT,AF2,TF>;
 };
 /*! \endcond */
 //*************************************************************************************************
@@ -2758,7 +2757,7 @@ struct SubvectorExprTrait< const SparseSubvector<VT,AF1,TF>, AF2 >
 template< typename VT, bool AF1, bool TF, bool AF2 >
 struct SubvectorExprTrait< volatile SparseSubvector<VT,AF1,TF>, AF2 >
 {
-   typedef SparseSubvector<VT,AF2,TF>  Type;
+   using Type = SparseSubvector<VT,AF2,TF>;
 };
 /*! \endcond */
 //*************************************************************************************************
@@ -2769,7 +2768,7 @@ struct SubvectorExprTrait< volatile SparseSubvector<VT,AF1,TF>, AF2 >
 template< typename VT, bool AF1, bool TF, bool AF2 >
 struct SubvectorExprTrait< const volatile SparseSubvector<VT,AF1,TF>, AF2 >
 {
-   typedef SparseSubvector<VT,AF2,TF>  Type;
+   using Type = SparseSubvector<VT,AF2,TF>;
 };
 /*! \endcond */
 //*************************************************************************************************

@@ -41,6 +41,7 @@
 //*************************************************************************************************
 
 #include <iterator>
+#include <blaze/math/Aliases.h>
 #include <blaze/math/constraints/RequiresEvaluation.h>
 #include <blaze/math/constraints/SparseVector.h>
 #include <blaze/math/expressions/Computation.h>
@@ -94,7 +95,7 @@ class SVecTransExpr : public SparseVector< SVecTransExpr<VT,TF>, TF >
 {
  private:
    //**Type definitions****************************************************************************
-   typedef typename VT::CompositeType  CT;  //!< Composite type of the sparse vector expression.
+   typedef CompositeType_<VT>  CT;  //!< Composite type of the sparse vector expression.
    //**********************************************************************************************
 
    //**Serial evaluation strategy******************************************************************
@@ -132,11 +133,11 @@ class SVecTransExpr : public SparseVector< SVecTransExpr<VT,TF>, TF >
 
  public:
    //**Type definitions****************************************************************************
-   typedef SVecTransExpr<VT,TF>        This;           //!< Type of this SVecTransExpr instance.
-   typedef typename VT::TransposeType  ResultType;     //!< Result type for expression template evaluations.
-   typedef typename VT::ResultType     TransposeType;  //!< Transpose type for expression template evaluations.
-   typedef typename VT::ElementType    ElementType;    //!< Resulting element type.
-   typedef typename VT::ReturnType     ReturnType;     //!< Return type for expression template evaluations.
+   typedef SVecTransExpr<VT,TF>  This;           //!< Type of this SVecTransExpr instance.
+   typedef TransposeType_<VT>    ResultType;     //!< Result type for expression template evaluations.
+   typedef ResultType_<VT>       TransposeType;  //!< Transpose type for expression template evaluations.
+   typedef ElementType_<VT>      ElementType;    //!< Resulting element type.
+   typedef ReturnType_<VT>       ReturnType;     //!< Return type for expression template evaluations.
 
    //! Data type for composite expression templates.
    typedef IfTrue_< useAssign, const ResultType, const SVecTransExpr& >  CompositeType;
@@ -158,7 +159,7 @@ class SVecTransExpr : public SparseVector< SVecTransExpr<VT,TF>, TF >
     public:
       //**Type definitions*************************************************************************
       //! Iterator type of the sparse vector expression.
-      typedef typename RemoveReference_<Operand>::ConstIterator  IteratorType;
+      typedef ConstIterator_< RemoveReference_<Operand> >  IteratorType;
 
       typedef std::forward_iterator_tag                                     IteratorCategory;  //!< The iterator category.
       typedef typename std::iterator_traits<IteratorType>::value_type       ValueType;         //!< Type of the underlying pointers.
@@ -860,7 +861,7 @@ struct SVecTransExprTrait< SVecTransExpr<VT,false> >
  public:
    //**********************************************************************************************
    using Type = If_< And< IsSparseVector<VT>, IsRowVector<VT> >
-                   , typename SVecTransExpr<VT,false>::Operand
+                   , Operand_< SVecTransExpr<VT,false> >
                    , INVALID_TYPE >;
    //**********************************************************************************************
 };
@@ -876,7 +877,7 @@ struct TSVecTransExprTrait< SVecTransExpr<VT,true> >
  public:
    //**********************************************************************************************
    using Type = If_< And< IsSparseVector<VT>, IsColumnVector<VT> >
-                   , typename SVecTransExpr<VT,true>::Operand
+                   , Operand_< SVecTransExpr<VT,true> >
                    , INVALID_TYPE >;
    //**********************************************************************************************
 };
@@ -891,7 +892,7 @@ struct SubvectorExprTrait< SVecTransExpr<VT,TF>, AF >
 {
  public:
    //**********************************************************************************************
-   using Type = typename TransExprTrait< typename SubvectorExprTrait<const VT,AF>::Type >::Type;
+   using Type = TransExprTrait_< SubvectorExprTrait_<const VT,AF> >;
    //**********************************************************************************************
 };
 /*! \endcond */

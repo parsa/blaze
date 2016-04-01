@@ -40,6 +40,7 @@
 // Includes
 //*************************************************************************************************
 
+#include <blaze/math/Aliases.h>
 #include <blaze/math/constraints/DenseMatrix.h>
 #include <blaze/math/constraints/DenseVector.h>
 #include <blaze/math/constraints/RowMajorMatrix.h>
@@ -109,12 +110,12 @@ class TSVecDMatMultExpr : public DenseVector< TSVecDMatMultExpr<VT,MT>, true >
 {
  private:
    //**Type definitions****************************************************************************
-   typedef typename VT::ResultType     VRT;  //!< Result type of the left-hand side sparse vector expression.
-   typedef typename MT::ResultType     MRT;  //!< Result type of the right-hand side dense matrix expression.
-   typedef typename VRT::ElementType   VET;  //!< Element type of the left-hand side sparse vector expression.
-   typedef typename MRT::ElementType   MET;  //!< Element type of the right-hand side dense matrix expression.
-   typedef typename VT::CompositeType  VCT;  //!< Composite type of the left-hand side sparse vector expression.
-   typedef typename MT::CompositeType  MCT;  //!< Composite type of the right-hand side dense matrix expression.
+   typedef ResultType_<VT>     VRT;  //!< Result type of the left-hand side sparse vector expression.
+   typedef ResultType_<MT>     MRT;  //!< Result type of the right-hand side dense matrix expression.
+   typedef ElementType_<VRT>   VET;  //!< Element type of the left-hand side sparse vector expression.
+   typedef ElementType_<MRT>   MET;  //!< Element type of the right-hand side dense matrix expression.
+   typedef CompositeType_<VT>  VCT;  //!< Composite type of the left-hand side sparse vector expression.
+   typedef CompositeType_<MT>  MCT;  //!< Composite type of the right-hand side dense matrix expression.
    //**********************************************************************************************
 
    //**********************************************************************************************
@@ -152,10 +153,10 @@ class TSVecDMatMultExpr : public DenseVector< TSVecDMatMultExpr<VT,MT>, true >
       enum { value = useOptimizedKernels &&
                      !IsDiagonal<T3>::value &&
                      T1::vectorizable && T3::vectorizable &&
-                     IsSame<typename T1::ElementType,typename T2::ElementType>::value &&
-                     IsSame<typename T1::ElementType,typename T3::ElementType>::value &&
-                     IntrinsicTrait<typename T1::ElementType>::addition &&
-                     IntrinsicTrait<typename T1::ElementType>::multiplication };
+                     IsSame< ElementType_<T1>, ElementType_<T2> >::value &&
+                     IsSame< ElementType_<T1>, ElementType_<T3> >::value &&
+                     IntrinsicTrait< ElementType_<T1> >::addition &&
+                     IntrinsicTrait< ElementType_<T1> >::multiplication };
    };
    /*! \endcond */
    //**********************************************************************************************
@@ -171,7 +172,7 @@ class TSVecDMatMultExpr : public DenseVector< TSVecDMatMultExpr<VT,MT>, true >
       enum { value = useOptimizedKernels &&
                      !UseVectorizedKernel<T1,T2,T3>::value &&
                      !IsDiagonal<T3>::value &&
-                     !IsResizable<typename T1::ElementType>::value &&
+                     !IsResizable< ElementType_<T1> >::value &&
                      !IsResizable<VET>::value };
    };
    /*! \endcond */
@@ -193,9 +194,9 @@ class TSVecDMatMultExpr : public DenseVector< TSVecDMatMultExpr<VT,MT>, true >
  public:
    //**Type definitions****************************************************************************
    typedef TSVecDMatMultExpr<VT,MT>                    This;           //!< Type of this TSVecDMatMultExpr instance.
-   typedef typename MultTrait<VRT,MRT>::Type           ResultType;     //!< Result type for expression template evaluations.
-   typedef typename ResultType::TransposeType          TransposeType;  //!< Transpose type for expression template evaluations.
-   typedef typename ResultType::ElementType            ElementType;    //!< Resulting element type.
+   typedef MultTrait_<VRT,MRT>                         ResultType;     //!< Result type for expression template evaluations.
+   typedef TransposeType_<ResultType>                  TransposeType;  //!< Transpose type for expression template evaluations.
+   typedef ElementType_<ResultType>                    ElementType;    //!< Resulting element type.
    typedef typename IntrinsicTrait<ElementType>::Type  IntrinsicType;  //!< Resulting intrinsic element type.
    typedef const ElementType                           ReturnType;     //!< Return type for expression template evaluations.
    typedef const ResultType                            CompositeType;  //!< Data type for composite expression templates.
@@ -249,7 +250,7 @@ class TSVecDMatMultExpr : public DenseVector< TSVecDMatMultExpr<VT,MT>, true >
    inline ReturnType operator[]( size_t index ) const {
       BLAZE_INTERNAL_ASSERT( index < mat_.columns(), "Invalid vector access index" );
 
-      typedef typename RemoveReference_<LT>::ConstIterator  ConstIterator;
+      typedef ConstIterator_< RemoveReference_<LT> >  ConstIterator;
 
       LT x( vec_ );  // Evaluation of the left-hand side sparse vector operand
 
@@ -433,7 +434,7 @@ class TSVecDMatMultExpr : public DenseVector< TSVecDMatMultExpr<VT,MT>, true >
    static inline EnableIf_< UseDefaultKernel<VT1,VT2,MT1> >
       selectAssignKernel( VT1& y, const VT2& x, const MT1& A )
    {
-      typedef typename RemoveReference_<LT>::ConstIterator  ConstIterator;
+      typedef ConstIterator_< RemoveReference_<LT> >  ConstIterator;
 
       BLAZE_INTERNAL_ASSERT( x.nonZeros() != 0UL, "Invalid number of non-zero elements" );
 
@@ -513,7 +514,7 @@ class TSVecDMatMultExpr : public DenseVector< TSVecDMatMultExpr<VT,MT>, true >
    static inline EnableIf_< UseOptimizedKernel<VT1,VT2,MT1> >
       selectAssignKernel( VT1& y, const VT2& x, const MT1& A )
    {
-      typedef typename RemoveReference_<LT>::ConstIterator  ConstIterator;
+      typedef ConstIterator_< RemoveReference_<LT> >  ConstIterator;
 
       BLAZE_INTERNAL_ASSERT( x.nonZeros() != 0UL, "Invalid number of non-zero elements" );
 
@@ -628,7 +629,7 @@ class TSVecDMatMultExpr : public DenseVector< TSVecDMatMultExpr<VT,MT>, true >
       selectAssignKernel( VT1& y, const VT2& x, const MT1& A )
    {
       typedef IntrinsicTrait<ElementType>  IT;
-      typedef typename RemoveReference_<LT>::ConstIterator  ConstIterator;
+      typedef ConstIterator_< RemoveReference_<LT> >  ConstIterator;
 
       BLAZE_INTERNAL_ASSERT( x.nonZeros() != 0UL, "Invalid number of non-zero elements" );
 
@@ -790,7 +791,7 @@ class TSVecDMatMultExpr : public DenseVector< TSVecDMatMultExpr<VT,MT>, true >
 
       BLAZE_CONSTRAINT_MUST_BE_DENSE_VECTOR_TYPE( ResultType );
       BLAZE_CONSTRAINT_MUST_BE_ROW_VECTOR_TYPE  ( ResultType );
-      BLAZE_CONSTRAINT_MUST_BE_REFERENCE_TYPE( typename ResultType::CompositeType );
+      BLAZE_CONSTRAINT_MUST_BE_REFERENCE_TYPE( CompositeType_<ResultType> );
 
       BLAZE_INTERNAL_ASSERT( (~lhs).size() == rhs.size(), "Invalid vector sizes" );
 
@@ -857,7 +858,7 @@ class TSVecDMatMultExpr : public DenseVector< TSVecDMatMultExpr<VT,MT>, true >
    static inline EnableIf_< UseDefaultKernel<VT1,VT2,MT1> >
       selectAddAssignKernel( VT1& y, const VT2& x, const MT1& A )
    {
-      typedef typename RemoveReference_<LT>::ConstIterator  ConstIterator;
+      typedef ConstIterator_< RemoveReference_<LT> >  ConstIterator;
 
       BLAZE_INTERNAL_ASSERT( x.nonZeros() != 0UL, "Invalid number of non-zero elements" );
 
@@ -913,7 +914,7 @@ class TSVecDMatMultExpr : public DenseVector< TSVecDMatMultExpr<VT,MT>, true >
    static inline EnableIf_< UseOptimizedKernel<VT1,VT2,MT1> >
       selectAddAssignKernel( VT1& y, const VT2& x, const MT1& A )
    {
-      typedef typename RemoveReference_<LT>::ConstIterator  ConstIterator;
+      typedef ConstIterator_< RemoveReference_<LT> >  ConstIterator;
 
       BLAZE_INTERNAL_ASSERT( x.nonZeros() != 0UL, "Invalid number of non-zero elements" );
 
@@ -996,7 +997,7 @@ class TSVecDMatMultExpr : public DenseVector< TSVecDMatMultExpr<VT,MT>, true >
       selectAddAssignKernel( VT1& y, const VT2& x, const MT1& A )
    {
       typedef IntrinsicTrait<ElementType>  IT;
-      typedef typename RemoveReference_<LT>::ConstIterator  ConstIterator;
+      typedef ConstIterator_< RemoveReference_<LT> >  ConstIterator;
 
       BLAZE_INTERNAL_ASSERT( x.nonZeros() != 0UL, "Invalid number of non-zero elements" );
 
@@ -1106,8 +1107,6 @@ class TSVecDMatMultExpr : public DenseVector< TSVecDMatMultExpr<VT,MT>, true >
 
       BLAZE_INTERNAL_ASSERT( (~lhs).size() == rhs.size(), "Invalid vector sizes" );
 
-      typedef typename RemoveReference_<LT>::ConstIterator  ConstIterator;
-
       // Evaluation of the left-hand side sparse vector operand
       LT x( serial( rhs.vec_ ) );
       if( x.nonZeros() == 0UL ) return;
@@ -1146,7 +1145,7 @@ class TSVecDMatMultExpr : public DenseVector< TSVecDMatMultExpr<VT,MT>, true >
    static inline EnableIf_< UseDefaultKernel<VT1,VT2,MT1> >
       selectSubAssignKernel( VT1& y, const VT2& x, const MT1& A )
    {
-      typedef typename RemoveReference_<LT>::ConstIterator  ConstIterator;
+      typedef ConstIterator_< RemoveReference_<LT> >  ConstIterator;
 
       BLAZE_INTERNAL_ASSERT( x.nonZeros() != 0UL, "Invalid number of non-zero elements" );
 
@@ -1202,7 +1201,7 @@ class TSVecDMatMultExpr : public DenseVector< TSVecDMatMultExpr<VT,MT>, true >
    static inline EnableIf_< UseOptimizedKernel<VT1,VT2,MT1> >
       selectSubAssignKernel( VT1& y, const VT2& x, const MT1& A )
    {
-      typedef typename RemoveReference_<LT>::ConstIterator  ConstIterator;
+      typedef ConstIterator_< RemoveReference_<LT> >  ConstIterator;
 
       BLAZE_INTERNAL_ASSERT( x.nonZeros() != 0UL, "Invalid number of non-zero elements" );
 
@@ -1285,7 +1284,7 @@ class TSVecDMatMultExpr : public DenseVector< TSVecDMatMultExpr<VT,MT>, true >
       selectSubAssignKernel( VT1& y, const VT2& x, const MT1& A )
    {
       typedef IntrinsicTrait<ElementType>  IT;
-      typedef typename RemoveReference_<LT>::ConstIterator  ConstIterator;
+      typedef ConstIterator_< RemoveReference_<LT> >  ConstIterator;
 
       BLAZE_INTERNAL_ASSERT( x.nonZeros() != 0UL, "Invalid number of non-zero elements" );
 
@@ -1395,7 +1394,7 @@ class TSVecDMatMultExpr : public DenseVector< TSVecDMatMultExpr<VT,MT>, true >
 
       BLAZE_CONSTRAINT_MUST_BE_DENSE_VECTOR_TYPE( ResultType );
       BLAZE_CONSTRAINT_MUST_BE_ROW_VECTOR_TYPE  ( ResultType );
-      BLAZE_CONSTRAINT_MUST_BE_REFERENCE_TYPE( typename ResultType::CompositeType );
+      BLAZE_CONSTRAINT_MUST_BE_REFERENCE_TYPE( CompositeType_<ResultType> );
 
       BLAZE_INTERNAL_ASSERT( (~lhs).size() == rhs.size(), "Invalid vector sizes" );
 
@@ -1476,7 +1475,7 @@ class TSVecDMatMultExpr : public DenseVector< TSVecDMatMultExpr<VT,MT>, true >
 
       BLAZE_CONSTRAINT_MUST_BE_DENSE_VECTOR_TYPE( ResultType );
       BLAZE_CONSTRAINT_MUST_BE_ROW_VECTOR_TYPE  ( ResultType );
-      BLAZE_CONSTRAINT_MUST_BE_REFERENCE_TYPE( typename ResultType::CompositeType );
+      BLAZE_CONSTRAINT_MUST_BE_REFERENCE_TYPE( CompositeType_<ResultType> );
 
       BLAZE_INTERNAL_ASSERT( (~lhs).size() == rhs.size(), "Invalid vector sizes" );
 
@@ -1552,8 +1551,6 @@ class TSVecDMatMultExpr : public DenseVector< TSVecDMatMultExpr<VT,MT>, true >
 
       BLAZE_INTERNAL_ASSERT( (~lhs).size() == rhs.size(), "Invalid vector sizes" );
 
-      typedef typename RemoveReference_<LT>::ConstIterator  ConstIterator;
-
       // Evaluation of the left-hand side sparse vector operand
       LT x( rhs.vec_ );
       if( x.nonZeros() == 0UL ) return;
@@ -1598,7 +1595,7 @@ class TSVecDMatMultExpr : public DenseVector< TSVecDMatMultExpr<VT,MT>, true >
 
       BLAZE_CONSTRAINT_MUST_BE_DENSE_VECTOR_TYPE( ResultType );
       BLAZE_CONSTRAINT_MUST_BE_ROW_VECTOR_TYPE  ( ResultType );
-      BLAZE_CONSTRAINT_MUST_BE_REFERENCE_TYPE( typename ResultType::CompositeType );
+      BLAZE_CONSTRAINT_MUST_BE_REFERENCE_TYPE( CompositeType_<ResultType> );
 
       BLAZE_INTERNAL_ASSERT( (~lhs).size() == rhs.size(), "Invalid vector sizes" );
 
@@ -1702,7 +1699,7 @@ inline const DisableIf_< IsMatMatMultExpr<T2>, TSVecDMatMultExpr<T1,T2> >
 template< typename T1  // Type of the left-hand side sparse vector
         , typename T2  // Type of the right-hand side dense matrix
         , bool SO >    // Storage order of the right-hand side dense matrix
-inline const EnableIf_< IsMatMatMultExpr<T2>, typename MultExprTrait<T1,T2>::Type >
+inline const EnableIf_< IsMatMatMultExpr<T2>, MultExprTrait_<T1,T2> >
    operator*( const SparseVector<T1,true>& vec, const DenseMatrix<T2,SO>& mat )
 {
    BLAZE_FUNCTION_TRACE;
@@ -1764,8 +1761,8 @@ struct SubvectorExprTrait< TSVecDMatMultExpr<VT,MT>, AF >
 {
  public:
    //**********************************************************************************************
-   using Type = typename MultExprTrait< typename SubvectorExprTrait<const VT,AF>::Type
-                                      , typename SubmatrixExprTrait<const MT,AF>::Type >::Type;
+   using Type = MultExprTrait_< SubvectorExprTrait_<const VT,AF>
+                              , SubmatrixExprTrait_<const MT,AF> >;
    //**********************************************************************************************
 };
 /*! \endcond */

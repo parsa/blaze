@@ -41,6 +41,7 @@
 //*************************************************************************************************
 
 #include <cmath>
+#include <blaze/math/Aliases.h>
 #include <blaze/math/constraints/DenseMatrix.h>
 #include <blaze/math/constraints/StorageOrder.h>
 #include <blaze/math/expressions/Computation.h>
@@ -102,12 +103,12 @@ class DMatSerialExpr : public DenseMatrix< DMatSerialExpr<MT,SO>, SO >
 {
  public:
    //**Type definitions****************************************************************************
-   typedef DMatSerialExpr<MT,SO>       This;           //!< Type of this DMatSerialExpr instance.
-   typedef typename MT::ResultType     ResultType;     //!< Result type for expression template evaluations.
-   typedef typename MT::OppositeType   OppositeType;   //!< Result type with opposite storage order for expression template evaluations.
-   typedef typename MT::TransposeType  TransposeType;  //!< Transpose type for expression template evaluations.
-   typedef typename MT::ElementType    ElementType;    //!< Resulting element type.
-   typedef typename MT::ReturnType     ReturnType;     //!< Return type for expression template evaluations.
+   typedef DMatSerialExpr<MT,SO>  This;           //!< Type of this DMatSerialExpr instance.
+   typedef ResultType_<MT>        ResultType;     //!< Result type for expression template evaluations.
+   typedef OppositeType_<MT>      OppositeType;   //!< Result type with opposite storage order for expression template evaluations.
+   typedef TransposeType_<MT>     TransposeType;  //!< Transpose type for expression template evaluations.
+   typedef ElementType_<MT>       ElementType;    //!< Resulting element type.
+   typedef ReturnType_<MT>        ReturnType;     //!< Return type for expression template evaluations.
 
    //! Data type for composite expression templates.
    typedef const ResultType  CompositeType;
@@ -1000,7 +1001,7 @@ struct SubmatrixExprTrait< DMatSerialExpr<MT,SO>, AF >
 {
  public:
    //**********************************************************************************************
-   using Type = typename SerialExprTrait< typename SubmatrixExprTrait<const MT,AF>::Type >::Type;
+   using Type = SerialExprTrait_< SubmatrixExprTrait_<const MT,AF> >;
    //**********************************************************************************************
 };
 /*! \endcond */
@@ -1014,7 +1015,7 @@ struct RowExprTrait< DMatSerialExpr<MT,SO> >
 {
  public:
    //**********************************************************************************************
-   using Type = typename SerialExprTrait< typename RowExprTrait<const MT>::Type >::Type;
+   using Type = SerialExprTrait_< RowExprTrait_<const MT> >;
    //**********************************************************************************************
 };
 /*! \endcond */
@@ -1028,7 +1029,7 @@ struct ColumnExprTrait< DMatSerialExpr<MT,SO> >
 {
  public:
    //**********************************************************************************************
-   using Type = typename SerialExprTrait< typename ColumnExprTrait<const MT>::Type >::Type;
+   using Type = SerialExprTrait_< ColumnExprTrait_<const MT> >;
    //**********************************************************************************************
 };
 /*! \endcond */

@@ -42,6 +42,7 @@
 
 #include <memory>
 #include <boost/cast.hpp>
+#include <blaze/math/Aliases.h>
 #include <blaze/math/constraints/Adaptor.h>
 #include <blaze/math/constraints/BlasCompatible.h>
 #include <blaze/math/constraints/Computation.h>
@@ -322,9 +323,9 @@ inline void getri( DenseMatrix<MT,SO>& A, const int* ipiv )
    BLAZE_CONSTRAINT_MUST_NOT_BE_ADAPTOR_TYPE( MT );
    BLAZE_CONSTRAINT_MUST_NOT_BE_COMPUTATION_TYPE( MT );
    BLAZE_CONSTRAINT_MUST_HAVE_MUTABLE_DATA_ACCESS( MT );
-   BLAZE_CONSTRAINT_MUST_BE_BLAS_COMPATIBLE_TYPE( typename MT::ElementType );
+   BLAZE_CONSTRAINT_MUST_BE_BLAS_COMPATIBLE_TYPE( ElementType_<MT> );
 
-   typedef typename MT::ElementType  ET;
+   typedef ElementType_<MT>  ET;
 
    if( !isSquare( ~A ) ) {
       BLAZE_THROW_INVALID_ARGUMENT( "Invalid non-square matrix provided" );

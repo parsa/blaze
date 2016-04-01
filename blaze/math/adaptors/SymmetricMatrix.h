@@ -40,6 +40,7 @@
 // Includes
 //*************************************************************************************************
 
+#include <blaze/math/Aliases.h>
 #include <blaze/math/adaptors/symmetricmatrix/BaseTemplate.h>
 #include <blaze/math/adaptors/symmetricmatrix/DenseNonNumeric.h>
 #include <blaze/math/adaptors/symmetricmatrix/DenseNumeric.h>
@@ -272,12 +273,12 @@ template< typename MT  // Type of the dense matrix
         , bool SO >    // Storage order of the dense matrix
 inline void invert2x2( SymmetricMatrix<MT,SO,true,true>& m )
 {
-   BLAZE_CONSTRAINT_MUST_BE_BLAS_COMPATIBLE_TYPE( typename MT::ElementType );
+   BLAZE_CONSTRAINT_MUST_BE_BLAS_COMPATIBLE_TYPE( ElementType_<MT> );
 
    BLAZE_INTERNAL_ASSERT( m.rows()    == 2UL, "Invalid number of rows detected"    );
    BLAZE_INTERNAL_ASSERT( m.columns() == 2UL, "Invalid number of columns detected" );
 
-   typedef typename MT::ElementType  ET;
+   typedef ElementType_<MT>  ET;
 
    const MT& A( m.matrix_ );
    MT& B( m.matrix_ );
@@ -323,12 +324,12 @@ template< typename MT  // Type of the dense matrix
         , bool SO >    // Storage order of the dense matrix
 inline void invert3x3( SymmetricMatrix<MT,SO,true,true>& m )
 {
-   BLAZE_CONSTRAINT_MUST_BE_BLAS_COMPATIBLE_TYPE( typename MT::ElementType );
+   BLAZE_CONSTRAINT_MUST_BE_BLAS_COMPATIBLE_TYPE( ElementType_<MT> );
 
    BLAZE_INTERNAL_ASSERT( m.rows()    == 3UL, "Invalid number of rows detected"    );
    BLAZE_INTERNAL_ASSERT( m.columns() == 3UL, "Invalid number of columns detected" );
 
-   typedef typename MT::ElementType  ET;
+   typedef ElementType_<MT>  ET;
 
    const StaticMatrix<ET,3UL,3UL,SO> A( m.matrix_ );
    MT& B( m.matrix_ );
@@ -379,12 +380,12 @@ template< typename MT  // Type of the dense matrix
         , bool SO >    // Storage order of the dense matrix
 inline void invert4x4( SymmetricMatrix<MT,SO,true,true>& m )
 {
-   BLAZE_CONSTRAINT_MUST_BE_BLAS_COMPATIBLE_TYPE( typename MT::ElementType );
+   BLAZE_CONSTRAINT_MUST_BE_BLAS_COMPATIBLE_TYPE( ElementType_<MT> );
 
    BLAZE_INTERNAL_ASSERT( m.rows()    == 4UL, "Invalid number of rows detected"    );
    BLAZE_INTERNAL_ASSERT( m.columns() == 4UL, "Invalid number of columns detected" );
 
-   typedef typename MT::ElementType  ET;
+   typedef ElementType_<MT>  ET;
 
    const StaticMatrix<ET,4UL,4UL,SO> A( m.matrix_ );
    MT& B( m.matrix_ );
@@ -460,12 +461,12 @@ template< typename MT  // Type of the dense matrix
         , bool SO >    // Storage order of the dense matrix
 inline void invert5x5( SymmetricMatrix<MT,SO,true,true>& m )
 {
-   BLAZE_CONSTRAINT_MUST_BE_BLAS_COMPATIBLE_TYPE( typename MT::ElementType );
+   BLAZE_CONSTRAINT_MUST_BE_BLAS_COMPATIBLE_TYPE( ElementType_<MT> );
 
    BLAZE_INTERNAL_ASSERT( m.rows()    == 5UL, "Invalid number of rows detected"    );
    BLAZE_INTERNAL_ASSERT( m.columns() == 5UL, "Invalid number of columns detected" );
 
-   typedef typename MT::ElementType  ET;
+   typedef ElementType_<MT>  ET;
 
    const StaticMatrix<ET,5UL,5UL,SO> A( m.matrix_ );
    MT& B( m.matrix_ );
@@ -584,12 +585,12 @@ template< typename MT  // Type of the dense matrix
         , bool SO >    // Storage order of the dense matrix
 inline void invert6x6( SymmetricMatrix<MT,SO,true,true>& m )
 {
-   BLAZE_CONSTRAINT_MUST_BE_BLAS_COMPATIBLE_TYPE( typename MT::ElementType );
+   BLAZE_CONSTRAINT_MUST_BE_BLAS_COMPATIBLE_TYPE( ElementType_<MT> );
 
    BLAZE_INTERNAL_ASSERT( m.rows()    == 6UL, "Invalid number of rows detected"    );
    BLAZE_INTERNAL_ASSERT( m.columns() == 6UL, "Invalid number of columns detected" );
 
-   typedef typename MT::ElementType  ET;
+   typedef ElementType_<MT>  ET;
 
    const StaticMatrix<ET,6UL,6UL,SO> A( m.matrix_ );
    MT& B( m.matrix_ );
@@ -837,7 +838,7 @@ template< typename MT  // Type of the dense matrix
         , bool SO >    // Storage order of the dense matrix
 inline void invertByLU( SymmetricMatrix<MT,SO,true,true>& m )
 {
-   BLAZE_CONSTRAINT_MUST_BE_BLAS_COMPATIBLE_TYPE( typename MT::ElementType );
+   BLAZE_CONSTRAINT_MUST_BE_BLAS_COMPATIBLE_TYPE( ElementType_<MT> );
 
    MT tmp( m.matrix_ );
    invertByLU( tmp );
@@ -876,7 +877,7 @@ template< typename MT  // Type of the dense matrix
         , bool SO >    // Storage order of the dense matrix
 inline void invertByLDLT( SymmetricMatrix<MT,SO,true,true>& m )
 {
-   BLAZE_CONSTRAINT_MUST_BE_BLAS_COMPATIBLE_TYPE( typename MT::ElementType );
+   BLAZE_CONSTRAINT_MUST_BE_BLAS_COMPATIBLE_TYPE( ElementType_<MT> );
 
    MT tmp( m.matrix_ );
    invertByLDLT( tmp );
@@ -915,7 +916,7 @@ template< typename MT  // Type of the dense matrix
         , bool SO >    // Storage order of the dense matrix
 inline void invertByLDLH( SymmetricMatrix<MT,SO,true,true>& m )
 {
-   BLAZE_CONSTRAINT_MUST_BE_BLAS_COMPATIBLE_TYPE( typename MT::ElementType );
+   BLAZE_CONSTRAINT_MUST_BE_BLAS_COMPATIBLE_TYPE( ElementType_<MT> );
 
    MT tmp( m.matrix_ );
    invertByLDLH( tmp );
@@ -954,7 +955,7 @@ template< typename MT  // Type of the dense matrix
         , bool SO >    // Storage order of the dense matrix
 inline void invertByLLH( SymmetricMatrix<MT,SO,true,true>& m )
 {
-   BLAZE_CONSTRAINT_MUST_BE_BLAS_COMPATIBLE_TYPE( typename MT::ElementType );
+   BLAZE_CONSTRAINT_MUST_BE_BLAS_COMPATIBLE_TYPE( ElementType_<MT> );
 
    MT tmp( m.matrix_ );
    invertByLLH( tmp );
@@ -1164,7 +1165,7 @@ struct IsSymmetric< SymmetricMatrix<MT,SO,DF,NF> > : public TrueType
 /*! \cond BLAZE_INTERNAL */
 template< typename MT, bool SO, bool DF, bool NF >
 struct IsHermitian< SymmetricMatrix<MT,SO,DF,NF> >
-   : public BoolConstant< IsBuiltin<typename MT::ElementType>::value >
+   : public BoolConstant< IsBuiltin< ElementType_<MT> >::value >
 {};
 /*! \endcond */
 //*************************************************************************************************
@@ -1285,7 +1286,7 @@ struct IsResizable< SymmetricMatrix<MT,SO,DF,NF> > : public BoolConstant< IsResi
 template< typename MT, bool SO, bool DF, bool NF >
 struct RemoveAdaptor< SymmetricMatrix<MT,SO,DF,NF> >
 {
-   typedef MT  Type;
+   using Type = MT;
 };
 /*! \endcond */
 //*************************************************************************************************
@@ -1304,67 +1305,67 @@ struct RemoveAdaptor< SymmetricMatrix<MT,SO,DF,NF> >
 template< typename MT, bool SO1, bool DF, bool NF, typename T, size_t M, size_t N, bool SO2 >
 struct AddTrait< SymmetricMatrix<MT,SO1,DF,NF>, StaticMatrix<T,M,N,SO2> >
 {
-   typedef typename AddTrait< MT, StaticMatrix<T,M,N,SO2> >::Type  Type;
+   using Type = AddTrait_< MT, StaticMatrix<T,M,N,SO2> >;
 };
 
 template< typename T, size_t M, size_t N, bool SO1, typename MT, bool SO2, bool DF, bool NF >
 struct AddTrait< StaticMatrix<T,M,N,SO1>, SymmetricMatrix<MT,SO2,DF,NF> >
 {
-   typedef typename AddTrait< StaticMatrix<T,M,N,SO1>, MT >::Type  Type;
+   using Type = AddTrait_< StaticMatrix<T,M,N,SO1>, MT >;
 };
 
 template< typename MT, bool SO1, bool DF, bool NF, typename T, size_t M, size_t N, bool SO2 >
 struct AddTrait< SymmetricMatrix<MT,SO1,DF,NF>, HybridMatrix<T,M,N,SO2> >
 {
-   typedef typename AddTrait< MT, HybridMatrix<T,M,N,SO2> >::Type  Type;
+   using Type = AddTrait_< MT, HybridMatrix<T,M,N,SO2> >;
 };
 
 template< typename T, size_t M, size_t N, bool SO1, typename MT, bool SO2, bool DF, bool NF >
 struct AddTrait< HybridMatrix<T,M,N,SO1>, SymmetricMatrix<MT,SO2,DF,NF> >
 {
-   typedef typename AddTrait< HybridMatrix<T,M,N,SO1>, MT >::Type  Type;
+   using Type = AddTrait_< HybridMatrix<T,M,N,SO1>, MT >;
 };
 
 template< typename MT, bool SO1, bool DF, bool NF, typename T, bool SO2 >
 struct AddTrait< SymmetricMatrix<MT,SO1,DF,NF>, DynamicMatrix<T,SO2> >
 {
-   typedef typename AddTrait< MT, DynamicMatrix<T,SO2> >::Type  Type;
+   using Type = AddTrait_< MT, DynamicMatrix<T,SO2> >;
 };
 
 template< typename T, bool SO1, typename MT, bool SO2, bool DF, bool NF >
 struct AddTrait< DynamicMatrix<T,SO1>, SymmetricMatrix<MT,SO2,DF,NF> >
 {
-   typedef typename AddTrait< DynamicMatrix<T,SO1>, MT >::Type  Type;
+   using Type = AddTrait_< DynamicMatrix<T,SO1>, MT >;
 };
 
 template< typename MT, bool SO1, bool DF, bool NF, typename T, bool AF, bool PF, bool SO2 >
 struct AddTrait< SymmetricMatrix<MT,SO1,DF,NF>, CustomMatrix<T,AF,PF,SO2> >
 {
-   typedef typename AddTrait< MT, CustomMatrix<T,AF,PF,SO2> >::Type  Type;
+   using Type = AddTrait_< MT, CustomMatrix<T,AF,PF,SO2> >;
 };
 
 template< typename T, bool AF, bool PF, bool SO1, typename MT, bool SO2, bool DF, bool NF >
 struct AddTrait< CustomMatrix<T,AF,PF,SO1>, SymmetricMatrix<MT,SO2,DF,NF> >
 {
-   typedef typename AddTrait< CustomMatrix<T,AF,PF,SO1>, MT >::Type  Type;
+   using Type = AddTrait_< CustomMatrix<T,AF,PF,SO1>, MT >;
 };
 
 template< typename MT, bool SO1, bool DF, bool NF, typename T, bool SO2 >
 struct AddTrait< SymmetricMatrix<MT,SO1,DF,NF>, CompressedMatrix<T,SO2> >
 {
-   typedef typename AddTrait< MT, CompressedMatrix<T,SO2> >::Type  Type;
+   using Type = AddTrait_< MT, CompressedMatrix<T,SO2> >;
 };
 
 template< typename T, bool SO1, typename MT, bool SO2, bool DF, bool NF >
 struct AddTrait< CompressedMatrix<T,SO1>, SymmetricMatrix<MT,SO2,DF,NF> >
 {
-   typedef typename AddTrait< CompressedMatrix<T,SO1>, MT >::Type  Type;
+   using Type = AddTrait_< CompressedMatrix<T,SO1>, MT >;
 };
 
 template< typename MT1, bool SO1, bool DF1, bool NF1, typename MT2, bool SO2, bool DF2, bool NF2 >
 struct AddTrait< SymmetricMatrix<MT1,SO1,DF1,NF1>, SymmetricMatrix<MT2,SO2,DF2,NF2> >
 {
-   typedef SymmetricMatrix< typename AddTrait<MT1,MT2>::Type >  Type;
+   using Type = SymmetricMatrix< AddTrait_<MT1,MT2> >;
 };
 /*! \endcond */
 //*************************************************************************************************
@@ -1383,67 +1384,67 @@ struct AddTrait< SymmetricMatrix<MT1,SO1,DF1,NF1>, SymmetricMatrix<MT2,SO2,DF2,N
 template< typename MT, bool SO1, bool DF, bool NF, typename T, size_t M, size_t N, bool SO2 >
 struct SubTrait< SymmetricMatrix<MT,SO1,DF,NF>, StaticMatrix<T,M,N,SO2> >
 {
-   typedef typename SubTrait< MT, StaticMatrix<T,M,N,SO2> >::Type  Type;
+   using Type = SubTrait_< MT, StaticMatrix<T,M,N,SO2> >;
 };
 
 template< typename T, size_t M, size_t N, bool SO1, typename MT, bool SO2, bool DF, bool NF >
 struct SubTrait< StaticMatrix<T,M,N,SO1>, SymmetricMatrix<MT,SO2,DF,NF> >
 {
-   typedef typename SubTrait< StaticMatrix<T,M,N,SO1>, MT >::Type  Type;
+   using Type = SubTrait_< StaticMatrix<T,M,N,SO1>, MT >;
 };
 
 template< typename MT, bool SO1, bool DF, bool NF, typename T, size_t M, size_t N, bool SO2 >
 struct SubTrait< SymmetricMatrix<MT,SO1,DF,NF>, HybridMatrix<T,M,N,SO2> >
 {
-   typedef typename SubTrait< MT, HybridMatrix<T,M,N,SO2> >::Type  Type;
+   using Type = SubTrait_< MT, HybridMatrix<T,M,N,SO2> >;
 };
 
 template< typename T, size_t M, size_t N, bool SO1, typename MT, bool SO2, bool DF, bool NF >
 struct SubTrait< HybridMatrix<T,M,N,SO1>, SymmetricMatrix<MT,SO2,DF,NF> >
 {
-   typedef typename SubTrait< HybridMatrix<T,M,N,SO1>, MT >::Type  Type;
+   using Type = SubTrait_< HybridMatrix<T,M,N,SO1>, MT >;
 };
 
 template< typename MT, bool SO1, bool DF, bool NF, typename T, bool SO2 >
 struct SubTrait< SymmetricMatrix<MT,SO1,DF,NF>, DynamicMatrix<T,SO2> >
 {
-   typedef typename SubTrait< MT, DynamicMatrix<T,SO2> >::Type  Type;
+   using Type = SubTrait_< MT, DynamicMatrix<T,SO2> >;
 };
 
 template< typename T, bool SO1, typename MT, bool SO2, bool DF, bool NF >
 struct SubTrait< DynamicMatrix<T,SO1>, SymmetricMatrix<MT,SO2,DF,NF> >
 {
-   typedef typename SubTrait< DynamicMatrix<T,SO1>, MT >::Type  Type;
+   using Type = SubTrait_< DynamicMatrix<T,SO1>, MT >;
 };
 
 template< typename MT, bool SO1, bool DF, bool NF, typename T, bool AF, bool PF, bool SO2 >
 struct SubTrait< SymmetricMatrix<MT,SO1,DF,NF>, CustomMatrix<T,AF,PF,SO2> >
 {
-   typedef typename SubTrait< MT, CustomMatrix<T,AF,PF,SO2> >::Type  Type;
+   using Type = SubTrait_< MT, CustomMatrix<T,AF,PF,SO2> >;
 };
 
 template< typename T, bool AF, bool PF, bool SO1, typename MT, bool SO2, bool DF, bool NF >
 struct SubTrait< CustomMatrix<T,AF,PF,SO1>, SymmetricMatrix<MT,SO2,DF,NF> >
 {
-   typedef typename SubTrait< CustomMatrix<T,AF,PF,SO1>, MT >::Type  Type;
+   using Type = SubTrait_< CustomMatrix<T,AF,PF,SO1>, MT >;
 };
 
 template< typename MT, bool SO1, bool DF, bool NF, typename T, bool SO2 >
 struct SubTrait< SymmetricMatrix<MT,SO1,DF,NF>, CompressedMatrix<T,SO2> >
 {
-   typedef typename SubTrait< MT, CompressedMatrix<T,SO2> >::Type  Type;
+   using Type = SubTrait_< MT, CompressedMatrix<T,SO2> >;
 };
 
 template< typename T, bool SO1, typename MT, bool SO2, bool DF, bool NF >
 struct SubTrait< CompressedMatrix<T,SO1>, SymmetricMatrix<MT,SO2,DF,NF> >
 {
-   typedef typename SubTrait< CompressedMatrix<T,SO1>, MT >::Type  Type;
+   using Type = SubTrait_< CompressedMatrix<T,SO1>, MT >;
 };
 
 template< typename MT1, bool SO1, bool DF1, bool NF1, typename MT2, bool SO2, bool DF2, bool NF2 >
 struct SubTrait< SymmetricMatrix<MT1,SO1,DF1,NF1>, SymmetricMatrix<MT2,SO2,DF2,NF2> >
 {
-   typedef SymmetricMatrix< typename SubTrait<MT1,MT2>::Type >  Type;
+   using Type = SymmetricMatrix< SubTrait_<MT1,MT2> >;
 };
 /*! \endcond */
 //*************************************************************************************************
@@ -1462,139 +1463,139 @@ struct SubTrait< SymmetricMatrix<MT1,SO1,DF1,NF1>, SymmetricMatrix<MT2,SO2,DF2,N
 template< typename MT, bool SO, bool DF, bool NF, typename T >
 struct MultTrait< SymmetricMatrix<MT,SO,DF,NF>, T, EnableIf_< IsNumeric<T> > >
 {
-   typedef SymmetricMatrix< typename MultTrait<MT,T>::Type >  Type;
+   using Type = SymmetricMatrix< MultTrait_<MT,T> >;
 };
 
 template< typename T, typename MT, bool SO, bool DF, bool NF >
 struct MultTrait< T, SymmetricMatrix<MT,SO,DF,NF>, EnableIf_< IsNumeric<T> > >
 {
-   typedef SymmetricMatrix< typename MultTrait<T,MT>::Type >  Type;
+   using Type = SymmetricMatrix< MultTrait_<T,MT> >;
 };
 
 template< typename MT, bool SO, bool DF, bool NF, typename T, size_t N >
 struct MultTrait< SymmetricMatrix<MT,SO,DF,NF>, StaticVector<T,N,false> >
 {
-   typedef typename MultTrait< MT, StaticVector<T,N,false> >::Type  Type;
+   using Type = MultTrait_< MT, StaticVector<T,N,false> >;
 };
 
 template< typename T, size_t N, typename MT, bool SO, bool DF, bool NF >
 struct MultTrait< StaticVector<T,N,true>, SymmetricMatrix<MT,SO,DF,NF> >
 {
-   typedef typename MultTrait< StaticVector<T,N,true>, MT >::Type  Type;
+   using Type = MultTrait_< StaticVector<T,N,true>, MT >;
 };
 
 template< typename MT, bool SO, bool DF, bool NF, typename T, size_t N >
 struct MultTrait< SymmetricMatrix<MT,SO,DF,NF>, HybridVector<T,N,false> >
 {
-   typedef typename MultTrait< MT, HybridVector<T,N,false> >::Type  Type;
+   using Type = MultTrait_< MT, HybridVector<T,N,false> >;
 };
 
 template< typename T, size_t N, typename MT, bool SO, bool DF, bool NF >
 struct MultTrait< HybridVector<T,N,true>, SymmetricMatrix<MT,SO,DF,NF> >
 {
-   typedef typename MultTrait< HybridVector<T,N,true>, MT >::Type  Type;
+   using Type = MultTrait_< HybridVector<T,N,true>, MT >;
 };
 
 template< typename MT, bool SO, bool DF, bool NF, typename T >
 struct MultTrait< SymmetricMatrix<MT,SO,DF,NF>, DynamicVector<T,false> >
 {
-   typedef typename MultTrait< MT, DynamicVector<T,false> >::Type  Type;
+   using Type = MultTrait_< MT, DynamicVector<T,false> >;
 };
 
 template< typename T, typename MT, bool SO, bool DF, bool NF >
 struct MultTrait< DynamicVector<T,true>, SymmetricMatrix<MT,SO,DF,NF> >
 {
-   typedef typename MultTrait< DynamicVector<T,true>, MT >::Type  Type;
+   using Type = MultTrait_< DynamicVector<T,true>, MT >;
 };
 
 template< typename MT, bool SO, bool DF, bool NF, typename T, bool AF, bool PF >
 struct MultTrait< SymmetricMatrix<MT,SO,DF,NF>, CustomVector<T,AF,PF,false> >
 {
-   typedef typename MultTrait< MT, CustomVector<T,AF,PF,false> >::Type  Type;
+   using Type = MultTrait_< MT, CustomVector<T,AF,PF,false> >;
 };
 
 template< typename T, bool AF, bool PF, typename MT, bool SO, bool DF, bool NF >
 struct MultTrait< CustomVector<T,AF,PF,true>, SymmetricMatrix<MT,SO,DF,NF> >
 {
-   typedef typename MultTrait< CustomVector<T,AF,PF,true>, MT >::Type  Type;
+   using Type = MultTrait_< CustomVector<T,AF,PF,true>, MT >;
 };
 
 template< typename MT, bool SO, bool DF, bool NF, typename T >
 struct MultTrait< SymmetricMatrix<MT,SO,DF,NF>, CompressedVector<T,false> >
 {
-   typedef typename MultTrait< MT, CompressedVector<T,false> >::Type  Type;
+   using Type = MultTrait_< MT, CompressedVector<T,false> >;
 };
 
 template< typename T, typename MT, bool SO, bool DF, bool NF >
 struct MultTrait< CompressedVector<T,true>, SymmetricMatrix<MT,SO,DF,NF> >
 {
-   typedef typename MultTrait< CompressedVector<T,true>, MT >::Type  Type;
+   using Type = MultTrait_< CompressedVector<T,true>, MT >;
 };
 
 template< typename MT, bool SO1, bool DF, bool NF, typename T, size_t M, size_t N, bool SO2 >
 struct MultTrait< SymmetricMatrix<MT,SO1,DF,NF>, StaticMatrix<T,M,N,SO2> >
 {
-   typedef typename MultTrait< MT, StaticMatrix<T,M,N,SO2> >::Type  Type;
+   using Type = MultTrait_< MT, StaticMatrix<T,M,N,SO2> >;
 };
 
 template< typename T, size_t M, size_t N, bool SO1, typename MT, bool SO2, bool DF, bool NF >
 struct MultTrait< StaticMatrix<T,M,N,SO1>, SymmetricMatrix<MT,SO2,DF,NF> >
 {
-   typedef typename MultTrait< StaticMatrix<T,M,N,SO1>, MT >::Type  Type;
+   using Type = MultTrait_< StaticMatrix<T,M,N,SO1>, MT >;
 };
 
 template< typename MT, bool SO1, bool DF, bool NF, typename T, size_t M, size_t N, bool SO2 >
 struct MultTrait< SymmetricMatrix<MT,SO1,DF,NF>, HybridMatrix<T,M,N,SO2> >
 {
-   typedef typename MultTrait< MT, HybridMatrix<T,M,N,SO2> >::Type  Type;
+   using Type = MultTrait_< MT, HybridMatrix<T,M,N,SO2> >;
 };
 
 template< typename T, size_t M, size_t N, bool SO1, typename MT, bool SO2, bool DF, bool NF >
 struct MultTrait< HybridMatrix<T,M,N,SO1>, SymmetricMatrix<MT,SO2,DF,NF> >
 {
-   typedef typename MultTrait< HybridMatrix<T,M,N,SO1>, MT >::Type  Type;
+   using Type = MultTrait_< HybridMatrix<T,M,N,SO1>, MT >;
 };
 
 template< typename MT, bool SO1, bool DF, bool NF, typename T, bool SO2 >
 struct MultTrait< SymmetricMatrix<MT,SO1,DF,NF>, DynamicMatrix<T,SO2> >
 {
-   typedef typename MultTrait< MT, DynamicMatrix<T,SO2> >::Type  Type;
+   using Type = MultTrait_< MT, DynamicMatrix<T,SO2> >;
 };
 
 template< typename T, bool SO1, typename MT, bool SO2, bool DF, bool NF >
 struct MultTrait< DynamicMatrix<T,SO1>, SymmetricMatrix<MT,SO2,DF,NF> >
 {
-   typedef typename MultTrait< DynamicMatrix<T,SO1>, MT >::Type  Type;
+   using Type = MultTrait_< DynamicMatrix<T,SO1>, MT >;
 };
 
 template< typename MT, bool SO1, bool DF, bool NF, typename T, bool AF, bool PF, bool SO2 >
 struct MultTrait< SymmetricMatrix<MT,SO1,DF,NF>, CustomMatrix<T,AF,PF,SO2> >
 {
-   typedef typename MultTrait< MT, CustomMatrix<T,AF,PF,SO2> >::Type  Type;
+   using Type = MultTrait_< MT, CustomMatrix<T,AF,PF,SO2> >;
 };
 
 template< typename T, bool AF, bool PF, bool SO1, typename MT, bool SO2, bool DF, bool NF >
 struct MultTrait< CustomMatrix<T,AF,PF,SO1>, SymmetricMatrix<MT,SO2,DF,NF> >
 {
-   typedef typename MultTrait< DynamicMatrix<T,SO1>, MT >::Type  Type;
+   using Type = MultTrait_< DynamicMatrix<T,SO1>, MT >;
 };
 
 template< typename MT, bool SO1, bool DF, bool NF, typename T, bool SO2 >
 struct MultTrait< SymmetricMatrix<MT,SO1,DF,NF>, CompressedMatrix<T,SO2> >
 {
-   typedef typename MultTrait< MT, CompressedMatrix<T,SO2> >::Type  Type;
+   using Type = MultTrait_< MT, CompressedMatrix<T,SO2> >;
 };
 
 template< typename T, bool SO1, typename MT, bool SO2, bool DF, bool NF >
 struct MultTrait< CompressedMatrix<T,SO1>, SymmetricMatrix<MT,SO2,DF,NF> >
 {
-   typedef typename MultTrait< CompressedMatrix<T,SO1>, MT >::Type  Type;
+   using Type = MultTrait_< CompressedMatrix<T,SO1>, MT >;
 };
 
 template< typename MT1, bool SO1, bool DF1, bool NF1, typename MT2, bool SO2, bool DF2, bool NF2 >
 struct MultTrait< SymmetricMatrix<MT1,SO1,DF1,NF1>, SymmetricMatrix<MT2,SO2,DF2,NF2> >
 {
-   typedef typename MultTrait<MT1,MT2>::Type  Type;
+   using Type = MultTrait_<MT1,MT2>;
 };
 /*! \endcond */
 //*************************************************************************************************
@@ -1613,7 +1614,7 @@ struct MultTrait< SymmetricMatrix<MT1,SO1,DF1,NF1>, SymmetricMatrix<MT2,SO2,DF2,
 template< typename MT, bool SO, bool DF, bool NF, typename T >
 struct DivTrait< SymmetricMatrix<MT,SO,DF,NF>, T, EnableIf_< IsNumeric<T> > >
 {
-   typedef SymmetricMatrix< typename DivTrait<MT,T>::Type >  Type;
+   using Type = SymmetricMatrix< DivTrait_<MT,T> >;
 };
 /*! \endcond */
 //*************************************************************************************************
@@ -1652,7 +1653,7 @@ struct MathTrait< SymmetricMatrix<MT1,SO1,DF1,NF1>, SymmetricMatrix<MT2,SO2,DF2,
 template< typename MT, bool SO, bool DF, bool NF >
 struct SubmatrixTrait< SymmetricMatrix<MT,SO,DF,NF> >
 {
-   typedef typename SubmatrixTrait<MT>::Type  Type;
+   using Type = SubmatrixTrait_<MT>;
 };
 /*! \endcond */
 //*************************************************************************************************
@@ -1671,7 +1672,7 @@ struct SubmatrixTrait< SymmetricMatrix<MT,SO,DF,NF> >
 template< typename MT, bool SO, bool DF, bool NF >
 struct RowTrait< SymmetricMatrix<MT,SO,DF,NF> >
 {
-   typedef typename RowTrait<MT>::Type  Type;
+   using Type = RowTrait_<MT>;
 };
 /*! \endcond */
 //*************************************************************************************************
@@ -1690,7 +1691,7 @@ struct RowTrait< SymmetricMatrix<MT,SO,DF,NF> >
 template< typename MT, bool SO, bool DF, bool NF >
 struct ColumnTrait< SymmetricMatrix<MT,SO,DF,NF> >
 {
-   typedef typename ColumnTrait<MT>::Type  Type;
+   using Type = ColumnTrait_<MT>;
 };
 /*! \endcond */
 //*************************************************************************************************

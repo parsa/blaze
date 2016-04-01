@@ -41,6 +41,7 @@
 //*************************************************************************************************
 
 #include <memory>
+#include <blaze/math/Aliases.h>
 #include <blaze/math/constraints/Adaptor.h>
 #include <blaze/math/constraints/BlasCompatible.h>
 #include <blaze/math/constraints/StrictlyTriangular.h>
@@ -108,12 +109,12 @@ template< typename MT  // Type of the dense matrix
 inline void invert2x2( DenseMatrix<MT,SO>& dm )
 {
    BLAZE_CONSTRAINT_MUST_NOT_BE_ADAPTOR_TYPE( MT );
-   BLAZE_CONSTRAINT_MUST_BE_BLAS_COMPATIBLE_TYPE( typename MT::ElementType );
+   BLAZE_CONSTRAINT_MUST_BE_BLAS_COMPATIBLE_TYPE( ElementType_<MT> );
 
    BLAZE_INTERNAL_ASSERT( (~dm).rows()    == 2UL, "Invalid number of rows detected"    );
    BLAZE_INTERNAL_ASSERT( (~dm).columns() == 2UL, "Invalid number of columns detected" );
 
-   typedef typename MT::ElementType  ET;
+   typedef ElementType_<MT>  ET;
 
    MT& A( ~dm );
 
@@ -158,12 +159,12 @@ template< typename MT  // Type of the dense matrix
 inline void invert3x3( DenseMatrix<MT,SO>& dm )
 {
    BLAZE_CONSTRAINT_MUST_NOT_BE_ADAPTOR_TYPE( MT );
-   BLAZE_CONSTRAINT_MUST_BE_BLAS_COMPATIBLE_TYPE( typename MT::ElementType );
+   BLAZE_CONSTRAINT_MUST_BE_BLAS_COMPATIBLE_TYPE( ElementType_<MT> );
 
    BLAZE_INTERNAL_ASSERT( (~dm).rows()    == 3UL, "Invalid number of rows detected"    );
    BLAZE_INTERNAL_ASSERT( (~dm).columns() == 3UL, "Invalid number of columns detected" );
 
-   typedef typename MT::ElementType  ET;
+   typedef ElementType_<MT>  ET;
 
    const StaticMatrix<ET,3UL,3UL,SO> A( ~dm );
    MT& B( ~dm );
@@ -214,12 +215,12 @@ template< typename MT  // Type of the dense matrix
 inline void invert4x4( DenseMatrix<MT,SO>& dm )
 {
    BLAZE_CONSTRAINT_MUST_NOT_BE_ADAPTOR_TYPE( MT );
-   BLAZE_CONSTRAINT_MUST_BE_BLAS_COMPATIBLE_TYPE( typename MT::ElementType );
+   BLAZE_CONSTRAINT_MUST_BE_BLAS_COMPATIBLE_TYPE( ElementType_<MT> );
 
    BLAZE_INTERNAL_ASSERT( (~dm).rows()    == 4UL, "Invalid number of rows detected"    );
    BLAZE_INTERNAL_ASSERT( (~dm).columns() == 4UL, "Invalid number of columns detected" );
 
-   typedef typename MT::ElementType  ET;
+   typedef ElementType_<MT>  ET;
 
    const StaticMatrix<ET,4UL,4UL,SO> A( ~dm );
    MT& B( ~dm );
@@ -299,12 +300,12 @@ template< typename MT  // Type of the dense matrix
 inline void invert5x5( DenseMatrix<MT,SO>& dm )
 {
    BLAZE_CONSTRAINT_MUST_NOT_BE_ADAPTOR_TYPE( MT );
-   BLAZE_CONSTRAINT_MUST_BE_BLAS_COMPATIBLE_TYPE( typename MT::ElementType );
+   BLAZE_CONSTRAINT_MUST_BE_BLAS_COMPATIBLE_TYPE( ElementType_<MT> );
 
    BLAZE_INTERNAL_ASSERT( (~dm).rows()    == 5UL, "Invalid number of rows detected"    );
    BLAZE_INTERNAL_ASSERT( (~dm).columns() == 5UL, "Invalid number of columns detected" );
 
-   typedef typename MT::ElementType  ET;
+   typedef ElementType_<MT>  ET;
 
    const StaticMatrix<ET,5UL,5UL,SO> A( ~dm );
    MT& B( ~dm );
@@ -440,12 +441,12 @@ template< typename MT  // Type of the dense matrix
 inline void invert6x6( DenseMatrix<MT,SO>& dm )
 {
    BLAZE_CONSTRAINT_MUST_NOT_BE_ADAPTOR_TYPE( MT );
-   BLAZE_CONSTRAINT_MUST_BE_BLAS_COMPATIBLE_TYPE( typename MT::ElementType );
+   BLAZE_CONSTRAINT_MUST_BE_BLAS_COMPATIBLE_TYPE( ElementType_<MT> );
 
    BLAZE_INTERNAL_ASSERT( (~dm).rows()    == 6UL, "Invalid number of rows detected"    );
    BLAZE_INTERNAL_ASSERT( (~dm).columns() == 6UL, "Invalid number of columns detected" );
 
-   typedef typename MT::ElementType  ET;
+   typedef ElementType_<MT>  ET;
 
    const StaticMatrix<ET,6UL,6UL,SO> A( ~dm );
    MT& B( ~dm );
@@ -722,7 +723,7 @@ template< typename MT  // Type of the dense matrix
 inline void invertByLU( DenseMatrix<MT,SO>& dm )
 {
    BLAZE_CONSTRAINT_MUST_NOT_BE_ADAPTOR_TYPE( MT );
-   BLAZE_CONSTRAINT_MUST_BE_BLAS_COMPATIBLE_TYPE( typename MT::ElementType );
+   BLAZE_CONSTRAINT_MUST_BE_BLAS_COMPATIBLE_TYPE( ElementType_<MT> );
 
    const size_t n( min( (~dm).rows(), (~dm).columns() ) );
    const std::unique_ptr<int[]> ipiv( new int[n] );
@@ -767,7 +768,7 @@ template< typename MT  // Type of the dense matrix
 inline void invertByLDLT( DenseMatrix<MT,SO>& dm )
 {
    BLAZE_CONSTRAINT_MUST_NOT_BE_ADAPTOR_TYPE( MT );
-   BLAZE_CONSTRAINT_MUST_BE_BLAS_COMPATIBLE_TYPE( typename MT::ElementType );
+   BLAZE_CONSTRAINT_MUST_BE_BLAS_COMPATIBLE_TYPE( ElementType_<MT> );
 
    BLAZE_USER_ASSERT( isSymmetric( ~dm ), "Invalid non-symmetric matrix detected" );
 
@@ -826,7 +827,7 @@ inline void invertByLDLT( DenseMatrix<MT,SO>& dm )
 */
 template< typename MT  // Type of the dense matrix
         , bool SO >    // Storage order of the dense matrix
-inline EnableIf_<IsBuiltin<typename MT::ElementType> >
+inline EnableIf_<IsBuiltin< ElementType_<MT> > >
    invertByLDLH( DenseMatrix<MT,SO>& dm )
 {
    invertByLDLT( ~dm );
@@ -865,11 +866,11 @@ inline EnableIf_<IsBuiltin<typename MT::ElementType> >
 */
 template< typename MT  // Type of the dense matrix
         , bool SO >    // Storage order of the dense matrix
-inline EnableIf_<IsComplex<typename MT::ElementType> >
+inline EnableIf_<IsComplex< ElementType_<MT> > >
    invertByLDLH( DenseMatrix<MT,SO>& dm )
 {
    BLAZE_CONSTRAINT_MUST_NOT_BE_ADAPTOR_TYPE( MT );
-   BLAZE_CONSTRAINT_MUST_BE_BLAS_COMPATIBLE_TYPE( typename MT::ElementType );
+   BLAZE_CONSTRAINT_MUST_BE_BLAS_COMPATIBLE_TYPE( ElementType_<MT> );
 
    BLAZE_USER_ASSERT( isHermitian( ~dm ), "Invalid non-Hermitian matrix detected" );
 
@@ -931,7 +932,7 @@ template< typename MT  // Type of the dense matrix
 inline void invertByLLH( DenseMatrix<MT,SO>& dm )
 {
    BLAZE_CONSTRAINT_MUST_NOT_BE_ADAPTOR_TYPE( MT );
-   BLAZE_CONSTRAINT_MUST_BE_BLAS_COMPATIBLE_TYPE( typename MT::ElementType );
+   BLAZE_CONSTRAINT_MUST_BE_BLAS_COMPATIBLE_TYPE( ElementType_<MT> );
 
    BLAZE_USER_ASSERT( isHermitian( ~dm ), "Invalid non-symmetric matrix detected" );
 
@@ -996,7 +997,7 @@ template< InversionFlag IF  // Inversion algorithm
 inline void invertNxN( DenseMatrix<MT,SO>& dm )
 {
    BLAZE_CONSTRAINT_MUST_NOT_BE_STRICTLY_TRIANGULAR_MATRIX_TYPE( MT );
-   BLAZE_CONSTRAINT_MUST_BE_BLAS_COMPATIBLE_TYPE( typename MT::ElementType );
+   BLAZE_CONSTRAINT_MUST_BE_BLAS_COMPATIBLE_TYPE( ElementType_<MT> );
 
    BLAZE_INTERNAL_ASSERT( isSquare( ~dm ), "Non-square matrix detected" );
 
@@ -1094,7 +1095,7 @@ template< InversionFlag IF  // Inversion algorithm
 inline void invert( DenseMatrix<MT,SO>& dm )
 {
    BLAZE_CONSTRAINT_MUST_NOT_BE_STRICTLY_TRIANGULAR_MATRIX_TYPE( MT );
-   BLAZE_CONSTRAINT_MUST_BE_BLAS_COMPATIBLE_TYPE( typename MT::ElementType );
+   BLAZE_CONSTRAINT_MUST_BE_BLAS_COMPATIBLE_TYPE( ElementType_<MT> );
 
    if( !isSquare( ~dm ) ) {
       BLAZE_THROW_INVALID_ARGUMENT( "Invalid non-square matrix provided" );

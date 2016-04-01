@@ -42,6 +42,7 @@
 
 #include <cmath>
 #include <iterator>
+#include <blaze/math/Aliases.h>
 #include <blaze/math/constraints/DenseVector.h>
 #include <blaze/math/constraints/TransposeFlag.h>
 #include <blaze/math/expressions/Computation.h>
@@ -102,8 +103,8 @@ class DVecImagExpr : public DenseVector< DVecImagExpr<VT,TF>, TF >
 {
  private:
    //**Type definitions****************************************************************************
-   typedef typename VT::ResultType  RT;  //!< Result type of the dense vector expression.
-   typedef typename VT::ReturnType  RN;  //!< Return type of the dense vector expression.
+   typedef ResultType_<VT>  RT;  //!< Result type of the dense vector expression.
+   typedef ReturnType_<VT>  RN;  //!< Return type of the dense vector expression.
    //**********************************************************************************************
 
    //**Return type evaluation**********************************************************************
@@ -116,7 +117,7 @@ class DVecImagExpr : public DenseVector< DVecImagExpr<VT,TF>, TF >
    enum { returnExpr = !IsTemporary<RN>::value };
 
    //! Expression return type for the subscript operator.
-   typedef typename ImagExprTrait<RN>::Type  ExprReturnType;
+   typedef ImagExprTrait_<RN>  ExprReturnType;
    //**********************************************************************************************
 
    //**Serial evaluation strategy******************************************************************
@@ -155,10 +156,10 @@ class DVecImagExpr : public DenseVector< DVecImagExpr<VT,TF>, TF >
 
  public:
    //**Type definitions****************************************************************************
-   typedef DVecImagExpr<VT,TF>                 This;           //!< Type of this DVecImagExpr instance.
-   typedef typename ImagTrait<RT>::Type        ResultType;     //!< Result type for expression template evaluations.
-   typedef typename ResultType::TransposeType  TransposeType;  //!< Transpose type for expression template evaluations.
-   typedef typename ResultType::ElementType    ElementType;    //!< Resulting element type.
+   typedef DVecImagExpr<VT,TF>         This;           //!< Type of this DVecImagExpr instance.
+   typedef ImagTrait_<RT>              ResultType;     //!< Result type for expression template evaluations.
+   typedef TransposeType_<ResultType>  TransposeType;  //!< Transpose type for expression template evaluations.
+   typedef ElementType_<ResultType>    ElementType;    //!< Resulting element type.
 
    //! Return type for expression template evaluations.
    typedef const IfTrue_< returnExpr, ExprReturnType, ElementType >  ReturnType;
@@ -191,7 +192,7 @@ class DVecImagExpr : public DenseVector< DVecImagExpr<VT,TF>, TF >
       typedef DifferenceType    difference_type;    //!< Difference between two iterators.
 
       //! ConstIterator type of the left-hand side dense vector expression.
-      typedef typename VT::ConstIterator  IteratorType;
+      typedef ConstIterator_<VT>  IteratorType;
       //*******************************************************************************************
 
       //**Constructor******************************************************************************
@@ -556,7 +557,7 @@ class DVecImagExpr : public DenseVector< DVecImagExpr<VT,TF>, TF >
 
       BLAZE_CONSTRAINT_MUST_BE_DENSE_VECTOR_TYPE( RT );
       BLAZE_CONSTRAINT_MUST_BE_VECTOR_WITH_TRANSPOSE_FLAG( RT, TF );
-      BLAZE_CONSTRAINT_MUST_BE_REFERENCE_TYPE( typename RT::CompositeType );
+      BLAZE_CONSTRAINT_MUST_BE_REFERENCE_TYPE( CompositeType_<RT> );
 
       BLAZE_INTERNAL_ASSERT( (~lhs).size() == rhs.size(), "Invalid vector sizes" );
 
@@ -588,7 +589,7 @@ class DVecImagExpr : public DenseVector< DVecImagExpr<VT,TF>, TF >
 
       BLAZE_CONSTRAINT_MUST_BE_DENSE_VECTOR_TYPE( RT );
       BLAZE_CONSTRAINT_MUST_BE_VECTOR_WITH_TRANSPOSE_FLAG( RT, TF );
-      BLAZE_CONSTRAINT_MUST_BE_REFERENCE_TYPE( typename RT::CompositeType );
+      BLAZE_CONSTRAINT_MUST_BE_REFERENCE_TYPE( CompositeType_<RT> );
 
       BLAZE_INTERNAL_ASSERT( (~lhs).size() == rhs.size(), "Invalid vector sizes" );
 
@@ -620,7 +621,7 @@ class DVecImagExpr : public DenseVector< DVecImagExpr<VT,TF>, TF >
 
       BLAZE_CONSTRAINT_MUST_BE_DENSE_VECTOR_TYPE( RT );
       BLAZE_CONSTRAINT_MUST_BE_VECTOR_WITH_TRANSPOSE_FLAG( RT, TF );
-      BLAZE_CONSTRAINT_MUST_BE_REFERENCE_TYPE( typename RT::CompositeType );
+      BLAZE_CONSTRAINT_MUST_BE_REFERENCE_TYPE( CompositeType_<RT> );
 
       BLAZE_INTERNAL_ASSERT( (~lhs).size() == rhs.size(), "Invalid vector sizes" );
 
@@ -656,7 +657,7 @@ class DVecImagExpr : public DenseVector< DVecImagExpr<VT,TF>, TF >
 
       BLAZE_CONSTRAINT_MUST_BE_DENSE_VECTOR_TYPE( RT );
       BLAZE_CONSTRAINT_MUST_BE_VECTOR_WITH_TRANSPOSE_FLAG( RT, TF );
-      BLAZE_CONSTRAINT_MUST_BE_REFERENCE_TYPE( typename RT::CompositeType );
+      BLAZE_CONSTRAINT_MUST_BE_REFERENCE_TYPE( CompositeType_<RT> );
 
       BLAZE_INTERNAL_ASSERT( (~lhs).size() == rhs.size(), "Invalid vector sizes" );
 
@@ -692,7 +693,7 @@ class DVecImagExpr : public DenseVector< DVecImagExpr<VT,TF>, TF >
 
       BLAZE_CONSTRAINT_MUST_BE_DENSE_VECTOR_TYPE( RT );
       BLAZE_CONSTRAINT_MUST_BE_VECTOR_WITH_TRANSPOSE_FLAG( RT, TF );
-      BLAZE_CONSTRAINT_MUST_BE_REFERENCE_TYPE( typename RT::CompositeType );
+      BLAZE_CONSTRAINT_MUST_BE_REFERENCE_TYPE( CompositeType_<RT> );
 
       BLAZE_INTERNAL_ASSERT( (~lhs).size() == rhs.size(), "Invalid vector sizes" );
 
@@ -729,7 +730,7 @@ class DVecImagExpr : public DenseVector< DVecImagExpr<VT,TF>, TF >
 
       BLAZE_CONSTRAINT_MUST_BE_DENSE_VECTOR_TYPE( RT );
       BLAZE_CONSTRAINT_MUST_BE_VECTOR_WITH_TRANSPOSE_FLAG( RT, TF );
-      BLAZE_CONSTRAINT_MUST_BE_REFERENCE_TYPE( typename RT::CompositeType );
+      BLAZE_CONSTRAINT_MUST_BE_REFERENCE_TYPE( CompositeType_<RT> );
 
       BLAZE_INTERNAL_ASSERT( (~lhs).size() == rhs.size(), "Invalid vector sizes" );
 
@@ -761,7 +762,7 @@ class DVecImagExpr : public DenseVector< DVecImagExpr<VT,TF>, TF >
 
       BLAZE_CONSTRAINT_MUST_BE_DENSE_VECTOR_TYPE( RT );
       BLAZE_CONSTRAINT_MUST_BE_VECTOR_WITH_TRANSPOSE_FLAG( RT, TF );
-      BLAZE_CONSTRAINT_MUST_BE_REFERENCE_TYPE( typename RT::CompositeType );
+      BLAZE_CONSTRAINT_MUST_BE_REFERENCE_TYPE( CompositeType_<RT> );
 
       BLAZE_INTERNAL_ASSERT( (~lhs).size() == rhs.size(), "Invalid vector sizes" );
 
@@ -793,7 +794,7 @@ class DVecImagExpr : public DenseVector< DVecImagExpr<VT,TF>, TF >
 
       BLAZE_CONSTRAINT_MUST_BE_DENSE_VECTOR_TYPE( RT );
       BLAZE_CONSTRAINT_MUST_BE_VECTOR_WITH_TRANSPOSE_FLAG( RT, TF );
-      BLAZE_CONSTRAINT_MUST_BE_REFERENCE_TYPE( typename RT::CompositeType );
+      BLAZE_CONSTRAINT_MUST_BE_REFERENCE_TYPE( CompositeType_<RT> );
 
       BLAZE_INTERNAL_ASSERT( (~lhs).size() == rhs.size(), "Invalid vector sizes" );
 
@@ -829,7 +830,7 @@ class DVecImagExpr : public DenseVector< DVecImagExpr<VT,TF>, TF >
 
       BLAZE_CONSTRAINT_MUST_BE_DENSE_VECTOR_TYPE( RT );
       BLAZE_CONSTRAINT_MUST_BE_VECTOR_WITH_TRANSPOSE_FLAG( RT, TF );
-      BLAZE_CONSTRAINT_MUST_BE_REFERENCE_TYPE( typename RT::CompositeType );
+      BLAZE_CONSTRAINT_MUST_BE_REFERENCE_TYPE( CompositeType_<RT> );
 
       BLAZE_INTERNAL_ASSERT( (~lhs).size() == rhs.size(), "Invalid vector sizes" );
 
@@ -865,7 +866,7 @@ class DVecImagExpr : public DenseVector< DVecImagExpr<VT,TF>, TF >
 
       BLAZE_CONSTRAINT_MUST_BE_DENSE_VECTOR_TYPE( RT );
       BLAZE_CONSTRAINT_MUST_BE_VECTOR_WITH_TRANSPOSE_FLAG( RT, TF );
-      BLAZE_CONSTRAINT_MUST_BE_REFERENCE_TYPE( typename RT::CompositeType );
+      BLAZE_CONSTRAINT_MUST_BE_REFERENCE_TYPE( CompositeType_<RT> );
 
       BLAZE_INTERNAL_ASSERT( (~lhs).size() == rhs.size(), "Invalid vector sizes" );
 
@@ -917,11 +918,11 @@ class DVecImagExpr : public DenseVector< DVecImagExpr<VT,TF>, TF >
 */
 template< typename VT  // Type of the dense vector
         , bool TF >    // Transpose flag
-inline const typename ImagExprTrait<VT>::Type imag( const DenseVector<VT,TF>& dv )
+inline const ImagExprTrait_<VT> imag( const DenseVector<VT,TF>& dv )
 {
    BLAZE_FUNCTION_TRACE;
 
-   return typename ImagExprTrait<VT>::Type( ~dv );
+   return ImagExprTrait_<VT>( ~dv );
 }
 //*************************************************************************************************
 
@@ -1039,7 +1040,7 @@ struct SubvectorExprTrait< DVecImagExpr<VT,TF>, AF >
 {
  public:
    //**********************************************************************************************
-   using Type = typename ImagExprTrait< typename SubvectorExprTrait<const VT,AF>::Type >::Type;
+   using Type = ImagExprTrait_< SubvectorExprTrait_<const VT,AF> >;
    //**********************************************************************************************
 };
 /*! \endcond */

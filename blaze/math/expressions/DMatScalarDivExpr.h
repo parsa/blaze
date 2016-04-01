@@ -41,6 +41,7 @@
 //*************************************************************************************************
 
 #include <iterator>
+#include <blaze/math/Aliases.h>
 #include <blaze/math/constraints/DenseMatrix.h>
 #include <blaze/math/constraints/StorageOrder.h>
 #include <blaze/math/expressions/Computation.h>
@@ -118,10 +119,10 @@ class DMatScalarDivExpr : public DenseMatrix< DMatScalarDivExpr<MT,ST,SO>, SO >
 {
  private:
    //**Type definitions****************************************************************************
-   typedef typename MT::ResultType     RT;  //!< Result type of the dense matrix expression.
-   typedef typename MT::ReturnType     RN;  //!< Return type of the dense matrix expression.
-   typedef typename MT::ElementType    ET;  //!< Element type of the dense matrix expression.
-   typedef typename MT::CompositeType  CT;  //!< Composite type of the dense matrix expression.
+   typedef ResultType_<MT>     RT;  //!< Result type of the dense matrix expression.
+   typedef ReturnType_<MT>     RN;  //!< Return type of the dense matrix expression.
+   typedef ElementType_<MT>    ET;  //!< Element type of the dense matrix expression.
+   typedef CompositeType_<MT>  CT;  //!< Composite type of the dense matrix expression.
    //**********************************************************************************************
 
    //**Return type evaluation**********************************************************************
@@ -134,7 +135,7 @@ class DMatScalarDivExpr : public DenseMatrix< DMatScalarDivExpr<MT,ST,SO>, SO >
    enum { returnExpr = !IsTemporary<RN>::value };
 
    //! Expression return type for the subscript operator.
-   typedef typename DivExprTrait<RN,ST>::Type  ExprReturnType;
+   typedef DivExprTrait_<RN,ST>  ExprReturnType;
    //**********************************************************************************************
 
    //**Serial evaluation strategy******************************************************************
@@ -174,10 +175,10 @@ class DMatScalarDivExpr : public DenseMatrix< DMatScalarDivExpr<MT,ST,SO>, SO >
  public:
    //**Type definitions****************************************************************************
    typedef DMatScalarDivExpr<MT,ST,SO>                 This;           //!< Type of this DMatScalarDivExpr instance.
-   typedef typename DivTrait<RT,ST>::Type              ResultType;     //!< Result type for expression template evaluations.
-   typedef typename ResultType::OppositeType           OppositeType;   //!< Result type with opposite storage order for expression template evaluations.
-   typedef typename ResultType::TransposeType          TransposeType;  //!< Transpose type for expression template evaluations.
-   typedef typename ResultType::ElementType            ElementType;    //!< Resulting element type.
+   typedef DivTrait_<RT,ST>                            ResultType;     //!< Result type for expression template evaluations.
+   typedef OppositeType_<ResultType>                   OppositeType;   //!< Result type with opposite storage order for expression template evaluations.
+   typedef TransposeType_<ResultType>                  TransposeType;  //!< Transpose type for expression template evaluations.
+   typedef ElementType_<ResultType>                    ElementType;    //!< Resulting element type.
    typedef typename IntrinsicTrait<ElementType>::Type  IntrinsicType;  //!< Resulting intrinsic element type.
 
    //! Return type for expression template evaluations.
@@ -214,7 +215,7 @@ class DMatScalarDivExpr : public DenseMatrix< DMatScalarDivExpr<MT,ST,SO>, SO >
       typedef DifferenceType    difference_type;    //!< Difference between two iterators.
 
       //! ConstIterator type of the dense matrix expression.
-      typedef typename MT::ConstIterator  IteratorType;
+      typedef ConstIterator_<MT>  IteratorType;
       //*******************************************************************************************
 
       //**Constructor******************************************************************************
@@ -706,7 +707,7 @@ class DMatScalarDivExpr : public DenseMatrix< DMatScalarDivExpr<MT,ST,SO>, SO >
 
       BLAZE_CONSTRAINT_MUST_BE_DENSE_MATRIX_TYPE( ResultType );
       BLAZE_CONSTRAINT_MUST_BE_MATRIX_WITH_STORAGE_ORDER( ResultType, SO );
-      BLAZE_CONSTRAINT_MUST_BE_REFERENCE_TYPE( typename ResultType::CompositeType );
+      BLAZE_CONSTRAINT_MUST_BE_REFERENCE_TYPE( CompositeType_<ResultType> );
 
       BLAZE_INTERNAL_ASSERT( (~lhs).rows()    == rhs.rows()   , "Invalid number of rows"    );
       BLAZE_INTERNAL_ASSERT( (~lhs).columns() == rhs.columns(), "Invalid number of columns" );
@@ -744,7 +745,7 @@ class DMatScalarDivExpr : public DenseMatrix< DMatScalarDivExpr<MT,ST,SO>, SO >
 
       BLAZE_CONSTRAINT_MUST_BE_DENSE_MATRIX_TYPE( ResultType );
       BLAZE_CONSTRAINT_MUST_BE_MATRIX_WITH_STORAGE_ORDER( ResultType, SO );
-      BLAZE_CONSTRAINT_MUST_BE_REFERENCE_TYPE( typename ResultType::CompositeType );
+      BLAZE_CONSTRAINT_MUST_BE_REFERENCE_TYPE( CompositeType_<ResultType> );
 
       BLAZE_INTERNAL_ASSERT( (~lhs).rows()    == rhs.rows()   , "Invalid number of rows"    );
       BLAZE_INTERNAL_ASSERT( (~lhs).columns() == rhs.columns(), "Invalid number of columns" );
@@ -850,7 +851,7 @@ class DMatScalarDivExpr : public DenseMatrix< DMatScalarDivExpr<MT,ST,SO>, SO >
 
       BLAZE_CONSTRAINT_MUST_BE_DENSE_MATRIX_TYPE( ResultType );
       BLAZE_CONSTRAINT_MUST_BE_MATRIX_WITH_STORAGE_ORDER( ResultType, SO );
-      BLAZE_CONSTRAINT_MUST_BE_REFERENCE_TYPE( typename ResultType::CompositeType );
+      BLAZE_CONSTRAINT_MUST_BE_REFERENCE_TYPE( CompositeType_<ResultType> );
 
       BLAZE_INTERNAL_ASSERT( (~lhs).rows()    == rhs.rows()   , "Invalid number of rows"    );
       BLAZE_INTERNAL_ASSERT( (~lhs).columns() == rhs.columns(), "Invalid number of columns" );
@@ -888,7 +889,7 @@ class DMatScalarDivExpr : public DenseMatrix< DMatScalarDivExpr<MT,ST,SO>, SO >
 
       BLAZE_CONSTRAINT_MUST_BE_DENSE_MATRIX_TYPE( ResultType );
       BLAZE_CONSTRAINT_MUST_BE_MATRIX_WITH_STORAGE_ORDER( ResultType, SO );
-      BLAZE_CONSTRAINT_MUST_BE_REFERENCE_TYPE( typename ResultType::CompositeType );
+      BLAZE_CONSTRAINT_MUST_BE_REFERENCE_TYPE( CompositeType_<ResultType> );
 
       BLAZE_INTERNAL_ASSERT( (~lhs).rows()    == rhs.rows()   , "Invalid number of rows"    );
       BLAZE_INTERNAL_ASSERT( (~lhs).columns() == rhs.columns(), "Invalid number of columns" );
@@ -958,15 +959,15 @@ class DMatScalarDivExpr : public DenseMatrix< DMatScalarDivExpr<MT,ST,SO>, SO >
 template< typename T1    // Type of the left-hand side dense matrix
         , bool SO        // Storage order of the left-hand side dense matrix
         , typename T2 >  // Type of the right-hand side scalar
-inline const EnableIf_< IsNumeric<T2>, typename DivExprTrait<T1,T2>::Type >
+inline const EnableIf_< IsNumeric<T2>, DivExprTrait_<T1,T2> >
    operator/( const DenseMatrix<T1,SO>& mat, T2 scalar )
 {
    BLAZE_FUNCTION_TRACE;
 
    BLAZE_USER_ASSERT( scalar != T2(0), "Division by zero detected" );
 
-   typedef typename DivExprTrait<T1,T2>::Type  ReturnType;
-   typedef typename ReturnType::RightOperand   ScalarType;
+   typedef DivExprTrait_<T1,T2>       ReturnType;
+   typedef RightOperand_<ReturnType>  ScalarType;
 
    if( IsMultExpr<ReturnType>::value ) {
       return ReturnType( ~mat, ScalarType(1)/ScalarType(scalar) );
@@ -1003,8 +1004,8 @@ template< typename MT     // Type of the dense matrix of the left-hand side expr
         , typename ST1    // Type of the scalar of the left-hand side expression
         , bool SO         // Storage order of the dense matrix
         , typename ST2 >  // Type of the right-hand side scalar
-inline const EnableIf_< And< IsNumeric<ST2>, IsInvertible<typename DivTrait<ST2,ST1>::Type > >
-                      , typename MultExprTrait< DMatScalarDivExpr<MT,ST1,SO>, ST2 >::Type >
+inline const EnableIf_< And< IsNumeric<ST2>, IsInvertible< DivTrait_<ST2,ST1> > >
+                      , MultExprTrait_< DMatScalarDivExpr<MT,ST1,SO>, ST2 > >
    operator*( const DMatScalarDivExpr<MT,ST1,SO>& mat, ST2 scalar )
 {
    BLAZE_FUNCTION_TRACE;
@@ -1032,8 +1033,8 @@ template< typename ST1  // Type of the left-hand side scalar
         , typename MT   // Type of the dense matrix of the right-hand side expression
         , typename ST2  // Type of the scalar of the right-hand side expression
         , bool SO >     // Storage order of the dense matrix
-inline const EnableIf_< And< IsNumeric<ST1>, IsInvertible<typename DivTrait<ST1,ST2>::Type > >
-                      , typename MultExprTrait< ST1, DMatScalarDivExpr<MT,ST2,SO> >::Type >
+inline const EnableIf_< And< IsNumeric<ST1>, IsInvertible< DivTrait_<ST1,ST2> > >
+                      , MultExprTrait_< ST1, DMatScalarDivExpr<MT,ST2,SO> > >
    operator*( ST1 scalar, const DMatScalarDivExpr<MT,ST2,SO>& mat )
 {
    BLAZE_FUNCTION_TRACE;
@@ -1062,16 +1063,16 @@ template< typename MT     // Type of the dense matrix of the left-hand side expr
         , bool SO         // Storage order of the dense matrix
         , typename ST2 >  // Type of the right-hand side scalar
 inline const EnableIf_< IsNumeric<ST2>
-                      , typename DivExprTrait<MT,typename MultTrait<ST1,ST2>::Type>::Type >
+                      , DivExprTrait_< MT, MultTrait_<ST1,ST2> > >
    operator/( const DMatScalarDivExpr<MT,ST1,SO>& mat, ST2 scalar )
 {
    BLAZE_FUNCTION_TRACE;
 
    BLAZE_USER_ASSERT( scalar != ST2(0), "Division by zero detected" );
 
-   typedef typename MultTrait<ST1,ST2>::Type         MultType;
-   typedef typename DivExprTrait<MT,MultType>::Type  ReturnType;
-   typedef typename ReturnType::RightOperand         ScalarType;
+   typedef MultTrait_<ST1,ST2>         MultType;
+   typedef DivExprTrait_<MT,MultType>  ReturnType;
+   typedef RightOperand_<ReturnType>   ScalarType;
 
    if( IsMultExpr<ReturnType>::value ) {
       return ReturnType( mat.leftOperand(), ScalarType(1)/( mat.rightOperand() * scalar ) );
@@ -1277,7 +1278,7 @@ struct DMatScalarMultExprTrait< DMatScalarDivExpr<MT,ST1,false>, ST2 >
 {
  private:
    //**********************************************************************************************
-   typedef typename DivTrait<ST2,ST1>::Type  ScalarType;
+   typedef DivTrait_<ST2,ST1>  ScalarType;
    //**********************************************************************************************
 
  public:
@@ -1308,7 +1309,7 @@ struct TDMatScalarMultExprTrait< DMatScalarDivExpr<MT,ST1,true>, ST2 >
 {
  private:
    //**********************************************************************************************
-   typedef typename DivTrait<ST2,ST1>::Type  ScalarType;
+   typedef DivTrait_<ST2,ST1>  ScalarType;
    //**********************************************************************************************
 
  public:
@@ -1339,7 +1340,7 @@ struct SubmatrixExprTrait< DMatScalarDivExpr<MT,ST,SO>, AF >
 {
  public:
    //**********************************************************************************************
-   using Type = typename DivExprTrait< typename SubmatrixExprTrait<const MT,AF>::Type, ST >::Type;
+   using Type = DivExprTrait_< SubmatrixExprTrait_<const MT,AF>, ST >;
    //**********************************************************************************************
 };
 /*! \endcond */
@@ -1361,7 +1362,7 @@ struct RowExprTrait< DMatScalarDivExpr<MT,ST,SO> >
 {
  public:
    //**********************************************************************************************
-   using Type = typename DivExprTrait< typename RowExprTrait<const MT>::Type, ST >::Type;
+   using Type = DivExprTrait_< RowExprTrait_<const MT>, ST >;
    //**********************************************************************************************
 };
 /*! \endcond */
@@ -1383,7 +1384,7 @@ struct ColumnExprTrait< DMatScalarDivExpr<MT,ST,SO> >
 {
  public:
    //**********************************************************************************************
-   using Type = typename DivExprTrait< typename ColumnExprTrait<const MT>::Type, ST >::Type;
+   using Type = DivExprTrait_< ColumnExprTrait_<const MT>, ST >;
    //**********************************************************************************************
 };
 /*! \endcond */

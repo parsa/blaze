@@ -40,6 +40,7 @@
 // Includes
 //*************************************************************************************************
 
+#include <blaze/math/Aliases.h>
 #include <blaze/math/constraints/DenseVector.h>
 #include <blaze/math/expressions/DenseVector.h>
 #include <blaze/math/shims/Clear.h>
@@ -76,17 +77,17 @@ class DenseVectorProxy : public DenseVector< PT, IsRowVector<VT>::value >
 {
  public:
    //**Type definitions****************************************************************************
-   typedef typename VT::ResultType      ResultType;      //!< Result type for expression template evaluations.
-   typedef typename VT::TransposeType   TransposeType;   //!< Transpose type for expression template evaluations.
-   typedef typename VT::ElementType     ElementType;     //!< Type of the vector elements.
-   typedef typename VT::ReturnType      ReturnType;      //!< Return type for expression template evaluations
-   typedef typename VT::CompositeType   CompositeType;   //!< Data type for composite expression templates.
-   typedef typename VT::Reference       Reference;       //!< Reference to a non-constant vector value.
-   typedef typename VT::ConstReference  ConstReference;  //!< Reference to a constant vector value.
-   typedef typename VT::Pointer         Pointer;         //!< Pointer to a non-constant vector value.
-   typedef typename VT::ConstPointer    ConstPointer;    //!< Pointer to a constant vector value.
-   typedef typename VT::Iterator        Iterator;        //!< Iterator over non-constant elements.
-   typedef typename VT::ConstIterator   ConstIterator;   //!< Iterator over constant elements.
+   typedef ResultType_<VT>      ResultType;      //!< Result type for expression template evaluations.
+   typedef TransposeType_<VT>   TransposeType;   //!< Transpose type for expression template evaluations.
+   typedef ElementType_<VT>     ElementType;     //!< Type of the vector elements.
+   typedef ReturnType_<VT>      ReturnType;      //!< Return type for expression template evaluations
+   typedef CompositeType_<VT>   CompositeType;   //!< Data type for composite expression templates.
+   typedef Reference_<VT>       Reference;       //!< Reference to a non-constant vector value.
+   typedef ConstReference_<VT>  ConstReference;  //!< Reference to a constant vector value.
+   typedef Pointer_<VT>         Pointer;         //!< Pointer to a non-constant vector value.
+   typedef ConstPointer_<VT>    ConstPointer;    //!< Pointer to a constant vector value.
+   typedef Iterator_<VT>        Iterator;        //!< Iterator over non-constant elements.
+   typedef ConstIterator_<VT>   ConstIterator;   //!< Iterator over constant elements.
    //**********************************************************************************************
 
    //**Compilation flags***************************************************************************

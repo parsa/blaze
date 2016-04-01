@@ -90,7 +90,7 @@ template< typename VT1
 struct TDVecDVecMultExprTraitHelper<VT1,VT2,true>
 {
    //**********************************************************************************************
-   using Type = typename MultTrait<typename VT1::ElementType,typename VT2::ElementType>::Type;
+   using Type = MultTrait_< ElementType_<VT1>, ElementType_<VT2> >;
    //**********************************************************************************************
 };
 /*! \endcond */

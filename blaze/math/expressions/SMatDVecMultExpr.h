@@ -40,6 +40,7 @@
 // Includes
 //*************************************************************************************************
 
+#include <blaze/math/Aliases.h>
 #include <blaze/math/constraints/ColumnVector.h>
 #include <blaze/math/constraints/DenseVector.h>
 #include <blaze/math/constraints/MatVecMultExpr.h>
@@ -99,10 +100,10 @@ class SMatDVecMultExpr : public DenseVector< SMatDVecMultExpr<MT,VT>, false >
 {
  private:
    //**Type definitions****************************************************************************
-   typedef typename MT::ResultType     MRT;  //!< Result type of the left-hand side sparse matrix expression.
-   typedef typename VT::ResultType     VRT;  //!< Result type of the right-hand side dense vector expression.
-   typedef typename MT::CompositeType  MCT;  //!< Composite type of the left-hand side sparse matrix expression.
-   typedef typename VT::CompositeType  VCT;  //!< Composite type of the right-hand side dense vector expression.
+   typedef ResultType_<MT>     MRT;  //!< Result type of the left-hand side sparse matrix expression.
+   typedef ResultType_<VT>     VRT;  //!< Result type of the right-hand side dense vector expression.
+   typedef CompositeType_<MT>  MCT;  //!< Composite type of the left-hand side sparse matrix expression.
+   typedef CompositeType_<VT>  VCT;  //!< Composite type of the right-hand side dense vector expression.
    //**********************************************************************************************
 
    //**********************************************************************************************
@@ -151,11 +152,11 @@ class SMatDVecMultExpr : public DenseVector< SMatDVecMultExpr<MT,VT>, false >
 
  public:
    //**Type definitions****************************************************************************
-   typedef SMatDVecMultExpr<MT,VT>             This;           //!< Type of this SMatDVecMultExpr instance.
-   typedef typename MultTrait<MRT,VRT>::Type   ResultType;     //!< Result type for expression template evaluations.
-   typedef typename ResultType::TransposeType  TransposeType;  //!< Transpose type for expression template evaluations.
-   typedef typename ResultType::ElementType    ElementType;    //!< Resulting element type.
-   typedef const ElementType                   ReturnType;     //!< Return type for expression template evaluations.
+   typedef SMatDVecMultExpr<MT,VT>     This;           //!< Type of this SMatDVecMultExpr instance.
+   typedef MultTrait_<MRT,VRT>         ResultType;     //!< Result type for expression template evaluations.
+   typedef TransposeType_<ResultType>  TransposeType;  //!< Transpose type for expression template evaluations.
+   typedef ElementType_<ResultType>    ElementType;    //!< Resulting element type.
+   typedef const ElementType           ReturnType;     //!< Return type for expression template evaluations.
 
    //! Data type for composite expression templates.
    typedef IfTrue_< useAssign, const ResultType, const SMatDVecMultExpr& >  CompositeType;
@@ -205,7 +206,7 @@ class SMatDVecMultExpr : public DenseVector< SMatDVecMultExpr<MT,VT>, false >
    inline ReturnType operator[]( size_t index ) const {
       BLAZE_INTERNAL_ASSERT( index < mat_.rows(), "Invalid vector access index" );
 
-      typedef typename RemoveReference_<MCT>::ConstIterator  ConstIterator;
+      typedef ConstIterator_< RemoveReference_<MCT> >  ConstIterator;
 
       ElementType tmp = ElementType();
 
@@ -390,7 +391,7 @@ class SMatDVecMultExpr : public DenseVector< SMatDVecMultExpr<MT,VT>, false >
 
       BLAZE_INTERNAL_ASSERT( (~lhs).size() == rhs.size(), "Invalid vector sizes" );
 
-      typedef typename RemoveReference_<LT>::ConstIterator  ConstIterator;
+      typedef ConstIterator_< RemoveReference_<LT> >  ConstIterator;
 
       if( rhs.mat_.columns() == 0UL ) {
          reset( ~lhs );
@@ -434,7 +435,7 @@ class SMatDVecMultExpr : public DenseVector< SMatDVecMultExpr<MT,VT>, false >
 
       BLAZE_CONSTRAINT_MUST_BE_DENSE_VECTOR_TYPE ( ResultType );
       BLAZE_CONSTRAINT_MUST_BE_COLUMN_VECTOR_TYPE( ResultType );
-      BLAZE_CONSTRAINT_MUST_BE_REFERENCE_TYPE( typename ResultType::CompositeType );
+      BLAZE_CONSTRAINT_MUST_BE_REFERENCE_TYPE( CompositeType_<ResultType> );
 
       BLAZE_INTERNAL_ASSERT( (~lhs).size() == rhs.size(), "Invalid vector sizes" );
 
@@ -468,7 +469,7 @@ class SMatDVecMultExpr : public DenseVector< SMatDVecMultExpr<MT,VT>, false >
 
       BLAZE_INTERNAL_ASSERT( (~lhs).size() == rhs.size(), "Invalid vector sizes" );
 
-      typedef typename RemoveReference_<LT>::ConstIterator  ConstIterator;
+      typedef ConstIterator_< RemoveReference_<LT> >  ConstIterator;
 
       if( rhs.mat_.columns() == 0UL ) {
          return;
@@ -515,7 +516,7 @@ class SMatDVecMultExpr : public DenseVector< SMatDVecMultExpr<MT,VT>, false >
 
       BLAZE_INTERNAL_ASSERT( (~lhs).size() == rhs.size(), "Invalid vector sizes" );
 
-      typedef typename RemoveReference_<LT>::ConstIterator  ConstIterator;
+      typedef ConstIterator_< RemoveReference_<LT> >  ConstIterator;
 
       if( rhs.mat_.columns() == 0UL ) {
          return;
@@ -562,7 +563,7 @@ class SMatDVecMultExpr : public DenseVector< SMatDVecMultExpr<MT,VT>, false >
 
       BLAZE_CONSTRAINT_MUST_BE_DENSE_VECTOR_TYPE ( ResultType );
       BLAZE_CONSTRAINT_MUST_BE_COLUMN_VECTOR_TYPE( ResultType );
-      BLAZE_CONSTRAINT_MUST_BE_REFERENCE_TYPE( typename ResultType::CompositeType );
+      BLAZE_CONSTRAINT_MUST_BE_REFERENCE_TYPE( CompositeType_<ResultType> );
 
       BLAZE_INTERNAL_ASSERT( (~lhs).size() == rhs.size(), "Invalid vector sizes" );
 
@@ -599,7 +600,7 @@ class SMatDVecMultExpr : public DenseVector< SMatDVecMultExpr<MT,VT>, false >
 
       BLAZE_INTERNAL_ASSERT( (~lhs).size() == rhs.size(), "Invalid vector sizes" );
 
-      typedef typename RemoveReference_<LT>::ConstIterator  ConstIterator;
+      typedef ConstIterator_< RemoveReference_<LT> >  ConstIterator;
 
       if( rhs.mat_.columns() == 0UL ) {
          reset( ~lhs );
@@ -642,7 +643,7 @@ class SMatDVecMultExpr : public DenseVector< SMatDVecMultExpr<MT,VT>, false >
 
       BLAZE_CONSTRAINT_MUST_BE_DENSE_VECTOR_TYPE ( ResultType );
       BLAZE_CONSTRAINT_MUST_BE_COLUMN_VECTOR_TYPE( ResultType );
-      BLAZE_CONSTRAINT_MUST_BE_REFERENCE_TYPE( typename ResultType::CompositeType );
+      BLAZE_CONSTRAINT_MUST_BE_REFERENCE_TYPE( CompositeType_<ResultType> );
 
       BLAZE_INTERNAL_ASSERT( (~lhs).size() == rhs.size(), "Invalid vector sizes" );
 
@@ -675,7 +676,7 @@ class SMatDVecMultExpr : public DenseVector< SMatDVecMultExpr<MT,VT>, false >
 
       BLAZE_INTERNAL_ASSERT( (~lhs).size() == rhs.size(), "Invalid vector sizes" );
 
-      typedef typename RemoveReference_<LT>::ConstIterator  ConstIterator;
+      typedef ConstIterator_< RemoveReference_<LT> >  ConstIterator;
 
       if( rhs.mat_.columns() == 0UL ) {
          return;
@@ -721,7 +722,7 @@ class SMatDVecMultExpr : public DenseVector< SMatDVecMultExpr<MT,VT>, false >
 
       BLAZE_INTERNAL_ASSERT( (~lhs).size() == rhs.size(), "Invalid vector sizes" );
 
-      typedef typename RemoveReference_<LT>::ConstIterator  ConstIterator;
+      typedef ConstIterator_< RemoveReference_<LT> >  ConstIterator;
 
       if( rhs.mat_.columns() == 0UL ) {
          return;
@@ -767,7 +768,7 @@ class SMatDVecMultExpr : public DenseVector< SMatDVecMultExpr<MT,VT>, false >
 
       BLAZE_CONSTRAINT_MUST_BE_DENSE_VECTOR_TYPE ( ResultType );
       BLAZE_CONSTRAINT_MUST_BE_COLUMN_VECTOR_TYPE( ResultType );
-      BLAZE_CONSTRAINT_MUST_BE_REFERENCE_TYPE( typename ResultType::CompositeType );
+      BLAZE_CONSTRAINT_MUST_BE_REFERENCE_TYPE( CompositeType_<ResultType> );
 
       BLAZE_INTERNAL_ASSERT( (~lhs).size() == rhs.size(), "Invalid vector sizes" );
 
@@ -873,7 +874,7 @@ inline const DisableIf_< IsMatMatMultExpr<T1>, SMatDVecMultExpr<T1,T2> >
 template< typename T1    // Type of the left-hand side sparse matrix
         , bool SO        // Storage order of the left-hand side sparse matrix
         , typename T2 >  // Type of the right-hand side dense vector
-inline const EnableIf_< IsMatMatMultExpr<T1>, typename MultExprTrait<T1,T2>::Type >
+inline const EnableIf_< IsMatMatMultExpr<T1>, MultExprTrait_<T1,T2> >
    operator*( const SparseMatrix<T1,SO>& mat, const DenseVector<T2,false>& vec )
 {
    BLAZE_FUNCTION_TRACE;
@@ -935,8 +936,8 @@ struct SubvectorExprTrait< SMatDVecMultExpr<MT,VT>, AF >
 {
  public:
    //**********************************************************************************************
-   using Type = typename MultExprTrait< typename SubmatrixExprTrait<const MT,AF>::Type
-                                      , typename SubvectorExprTrait<const VT,AF>::Type >::Type;
+   using Type = MultExprTrait_< SubmatrixExprTrait_<const MT,AF>
+                              , SubvectorExprTrait_<const VT,AF> >;
    //**********************************************************************************************
 };
 /*! \endcond */

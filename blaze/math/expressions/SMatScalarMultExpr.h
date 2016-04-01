@@ -41,6 +41,7 @@
 //*************************************************************************************************
 
 #include <iterator>
+#include <blaze/math/Aliases.h>
 #include <blaze/math/constraints/RequiresEvaluation.h>
 #include <blaze/math/constraints/SparseMatrix.h>
 #include <blaze/math/constraints/StorageOrder.h>
@@ -119,9 +120,9 @@ class SMatScalarMultExpr : public SparseMatrix< SMatScalarMultExpr<MT,ST,SO>, SO
 {
  private:
    //**Type definitions****************************************************************************
-   typedef typename MT::ResultType     RT;  //!< Result type of the sparse matrix expression.
-   typedef typename MT::ReturnType     RN;  //!< Return type of the sparse matrix expression.
-   typedef typename MT::CompositeType  CT;  //!< Composite type of the sparse matrix expression.
+   typedef ResultType_<MT>     RT;  //!< Result type of the sparse matrix expression.
+   typedef ReturnType_<MT>     RN;  //!< Return type of the sparse matrix expression.
+   typedef CompositeType_<MT>  CT;  //!< Composite type of the sparse matrix expression.
    //**********************************************************************************************
 
    //**Return type evaluation**********************************************************************
@@ -134,7 +135,7 @@ class SMatScalarMultExpr : public SparseMatrix< SMatScalarMultExpr<MT,ST,SO>, SO
    enum { returnExpr = !IsTemporary<RN>::value };
 
    //! Expression return type for the subscript operator.
-   typedef typename MultExprTrait<RN,ST>::Type  ExprReturnType;
+   typedef MultExprTrait_<RN,ST>  ExprReturnType;
    //**********************************************************************************************
 
    //**Serial evaluation strategy******************************************************************
@@ -173,11 +174,11 @@ class SMatScalarMultExpr : public SparseMatrix< SMatScalarMultExpr<MT,ST,SO>, SO
 
  public:
    //**Type definitions****************************************************************************
-   typedef SMatScalarMultExpr<MT,ST,SO>        This;           //!< Type of this SMatScalarMultExpr instance.
-   typedef typename MultTrait<RT,ST>::Type     ResultType;     //!< Result type for expression template evaluations.
-   typedef typename ResultType::OppositeType   OppositeType;   //!< Result type with opposite storage order for expression template evaluations.
-   typedef typename ResultType::TransposeType  TransposeType;  //!< Transpose type for expression template evaluations.
-   typedef typename ResultType::ElementType    ElementType;    //!< Resulting element type.
+   typedef SMatScalarMultExpr<MT,ST,SO>  This;           //!< Type of this SMatScalarMultExpr instance.
+   typedef MultTrait_<RT,ST>             ResultType;     //!< Result type for expression template evaluations.
+   typedef OppositeType_<ResultType>     OppositeType;   //!< Result type with opposite storage order for expression template evaluations.
+   typedef TransposeType_<ResultType>    TransposeType;  //!< Transpose type for expression template evaluations.
+   typedef ElementType_<ResultType>      ElementType;    //!< Resulting element type.
 
    //! Return type for expression template evaluations.
    typedef const IfTrue_< returnExpr, ExprReturnType, ElementType >  ReturnType;
@@ -203,7 +204,7 @@ class SMatScalarMultExpr : public SparseMatrix< SMatScalarMultExpr<MT,ST,SO>, SO
       typedef ValueIndexPair<ElementType>  Element;
 
       //! Iterator type of the sparse matrix expression.
-      typedef typename RemoveReference_<LeftOperand>::ConstIterator  IteratorType;
+      typedef ConstIterator_< RemoveReference_<LeftOperand> >  IteratorType;
 
       typedef std::forward_iterator_tag  IteratorCategory;  //!< The iterator category.
       typedef Element                    ValueType;         //!< Type of the underlying pointers.
@@ -604,7 +605,7 @@ class SMatScalarMultExpr : public SparseMatrix< SMatScalarMultExpr<MT,ST,SO>, SO
       BLAZE_FUNCTION_TRACE;
 
       BLAZE_CONSTRAINT_MUST_BE_SPARSE_MATRIX_TYPE( ResultType );
-      BLAZE_CONSTRAINT_MUST_BE_REFERENCE_TYPE( typename ResultType::CompositeType );
+      BLAZE_CONSTRAINT_MUST_BE_REFERENCE_TYPE( CompositeType_<ResultType> );
 
       BLAZE_INTERNAL_ASSERT( (~lhs).rows()    == rhs.rows()   , "Invalid number of rows"    );
       BLAZE_INTERNAL_ASSERT( (~lhs).columns() == rhs.columns(), "Invalid number of columns" );
@@ -641,7 +642,7 @@ class SMatScalarMultExpr : public SparseMatrix< SMatScalarMultExpr<MT,ST,SO>, SO
       BLAZE_FUNCTION_TRACE;
 
       BLAZE_CONSTRAINT_MUST_BE_SPARSE_MATRIX_TYPE( ResultType );
-      BLAZE_CONSTRAINT_MUST_BE_REFERENCE_TYPE( typename ResultType::CompositeType );
+      BLAZE_CONSTRAINT_MUST_BE_REFERENCE_TYPE( CompositeType_<ResultType> );
 
       BLAZE_INTERNAL_ASSERT( (~lhs).rows()    == rhs.rows()   , "Invalid number of rows"    );
       BLAZE_INTERNAL_ASSERT( (~lhs).columns() == rhs.columns(), "Invalid number of columns" );
@@ -694,7 +695,7 @@ class SMatScalarMultExpr : public SparseMatrix< SMatScalarMultExpr<MT,ST,SO>, SO
       BLAZE_FUNCTION_TRACE;
 
       BLAZE_CONSTRAINT_MUST_BE_SPARSE_MATRIX_TYPE( ResultType );
-      BLAZE_CONSTRAINT_MUST_BE_REFERENCE_TYPE( typename ResultType::CompositeType );
+      BLAZE_CONSTRAINT_MUST_BE_REFERENCE_TYPE( CompositeType_<ResultType> );
 
       BLAZE_INTERNAL_ASSERT( (~lhs).rows()    == rhs.rows()   , "Invalid number of rows"    );
       BLAZE_INTERNAL_ASSERT( (~lhs).columns() == rhs.columns(), "Invalid number of columns" );
@@ -731,7 +732,7 @@ class SMatScalarMultExpr : public SparseMatrix< SMatScalarMultExpr<MT,ST,SO>, SO
       BLAZE_FUNCTION_TRACE;
 
       BLAZE_CONSTRAINT_MUST_BE_SPARSE_MATRIX_TYPE( ResultType );
-      BLAZE_CONSTRAINT_MUST_BE_REFERENCE_TYPE( typename ResultType::CompositeType );
+      BLAZE_CONSTRAINT_MUST_BE_REFERENCE_TYPE( CompositeType_<ResultType> );
 
       BLAZE_INTERNAL_ASSERT( (~lhs).rows()    == rhs.rows()   , "Invalid number of rows"    );
       BLAZE_INTERNAL_ASSERT( (~lhs).columns() == rhs.columns(), "Invalid number of columns" );
@@ -836,13 +837,12 @@ inline const SMatScalarMultExpr<MT,UnderlyingBuiltin_<MT>,SO>
 template< typename T1    // Type of the left-hand side sparse matrix
         , bool SO        // Storage order of the left-hand side sparse matrix
         , typename T2 >  // Type of the right-hand side scalar
-inline const EnableIf_< IsNumeric<T2>, typename MultExprTrait<T1,T2>::Type >
+inline const EnableIf_< IsNumeric<T2>, MultExprTrait_<T1,T2> >
    operator*( const SparseMatrix<T1,SO>& mat, T2 scalar )
 {
    BLAZE_FUNCTION_TRACE;
 
-   typedef typename MultExprTrait<T1,T2>::Type  Type;
-   return Type( ~mat, scalar );
+   return MultExprTrait_<T1,T2>( ~mat, scalar );
 }
 //*************************************************************************************************
 
@@ -871,13 +871,12 @@ inline const EnableIf_< IsNumeric<T2>, typename MultExprTrait<T1,T2>::Type >
 template< typename T1  // Type of the left-hand side scalar
         , typename T2  // Type of the right-hand side sparse matrix
         , bool SO >    // Storage order of the right-hand side sparse matrix
-inline const EnableIf_< IsNumeric<T1>, typename MultExprTrait<T1,T2>::Type >
+inline const EnableIf_< IsNumeric<T1>, MultExprTrait_<T1,T2> >
    operator*( T1 scalar, const SparseMatrix<T2,SO>& mat )
 {
    BLAZE_FUNCTION_TRACE;
 
-   typedef typename MultExprTrait<T1,T2>::Type  Type;
-   return Type( ~mat, scalar );
+   return MultExprTrait_<T1,T2>( ~mat, scalar );
 }
 //*************************************************************************************************
 
@@ -942,7 +941,7 @@ template< typename MT     // Type of the sparse matrix
         , bool SO         // Storage order of the sparse matrix
         , typename ST2 >  // Type of the second scalar
 inline const EnableIf_< IsNumeric<ST2>
-                      , typename MultExprTrait< SMatScalarMultExpr<MT,ST1,SO>, ST2 >::Type >
+                      , MultExprTrait_< SMatScalarMultExpr<MT,ST1,SO>, ST2 > >
    operator*( const SMatScalarMultExpr<MT,ST1,SO>& mat, ST2 scalar )
 {
    BLAZE_FUNCTION_TRACE;
@@ -971,7 +970,7 @@ template< typename ST1  // Type of the first scalar
         , typename ST2  // Type of the second scalar
         , bool SO >     // Storage order of the sparse matrix
 inline const EnableIf_< IsNumeric<ST1>
-                      , typename MultExprTrait< ST1, SMatScalarMultExpr<MT,ST2,SO> >::Type >
+                      , MultExprTrait_< ST1, SMatScalarMultExpr<MT,ST2,SO> > >
    operator*( ST1 scalar, const SMatScalarMultExpr<MT,ST2,SO>& mat )
 {
    BLAZE_FUNCTION_TRACE;
@@ -999,8 +998,8 @@ template< typename MT     // Type of the sparse matrix
         , typename ST1    // Type of the first scalar
         , bool SO         // Storage order of the sparse matrix
         , typename ST2 >  // Type of the second scalar
-inline const EnableIf_< And< IsNumeric<ST2>, IsInvertible< typename DivTrait<ST1,ST2>::Type > >
-                      , typename DivExprTrait< SMatScalarMultExpr<MT,ST1,SO>, ST2 >::Type >
+inline const EnableIf_< And< IsNumeric<ST2>, IsInvertible< DivTrait_<ST1,ST2> > >
+                      , DivExprTrait_< SMatScalarMultExpr<MT,ST1,SO>, ST2 > >
    operator/( const SMatScalarMultExpr<MT,ST1,SO>& mat, ST2 scalar )
 {
    BLAZE_FUNCTION_TRACE;
@@ -1029,7 +1028,7 @@ template< typename MT    // Type of the sparse matrix of the left-hand side expr
         , typename ST    // Type of the scalar of the left-hand side expression
         , bool SO        // Storage order of the left-hand side expression
         , typename VT >  // Type of the right-hand side dense vector
-inline const typename MultExprTrait< SMatScalarMultExpr<MT,ST,SO>, VT >::Type
+inline const MultExprTrait_< SMatScalarMultExpr<MT,ST,SO>, VT >
    operator*( const SMatScalarMultExpr<MT,ST,SO>& mat, const DenseVector<VT,false>& vec )
 {
    BLAZE_FUNCTION_TRACE;
@@ -1058,7 +1057,7 @@ template< typename VT  // Type of the left-hand side dense vector
         , typename MT  // Type of the sparse matrix of the right-hand side expression
         , typename ST  // Type of the scalar of the right-hand side expression
         , bool SO >    // Storage order of the right-hand side expression
-inline const typename MultExprTrait< VT, SMatScalarMultExpr<MT,ST,SO> >::Type
+inline const MultExprTrait_< VT, SMatScalarMultExpr<MT,ST,SO> >
    operator*( const DenseVector<VT,true>& vec, const SMatScalarMultExpr<MT,ST,SO>& mat )
 {
    BLAZE_FUNCTION_TRACE;
@@ -1090,7 +1089,7 @@ template< typename MT     // Type of the sparse matrix of the left-hand side exp
         , bool SO         // Storage order of the left-hand side expression
         , typename VT     // Type of the dense vector of the right-hand side expression
         , typename ST2 >  // Type of the scalar of the right-hand side expression
-inline const typename MultExprTrait< SMatScalarMultExpr<MT,ST1,SO>, DVecScalarMultExpr<VT,ST2,false> >::Type
+inline const MultExprTrait_< SMatScalarMultExpr<MT,ST1,SO>, DVecScalarMultExpr<VT,ST2,false> >
    operator*( const SMatScalarMultExpr<MT,ST1,SO>& mat, const DVecScalarMultExpr<VT,ST2,false>& vec )
 {
    BLAZE_FUNCTION_TRACE;
@@ -1122,7 +1121,7 @@ template< typename VT   // Type of the dense vector of the left-hand side expres
         , typename MT   // Type of the sparse matrix of the right-hand side expression
         , typename ST2  // Type of the scalar of the right-hand side expression
         , bool SO >     // Storage order of the right-hand side expression
-inline const typename MultExprTrait< DVecScalarMultExpr<VT,ST1,true>, SMatScalarMultExpr<MT,ST2,SO> >::Type
+inline const MultExprTrait_< DVecScalarMultExpr<VT,ST1,true>, SMatScalarMultExpr<MT,ST2,SO> >
    operator*( const DVecScalarMultExpr<VT,ST1,true>& vec, const SMatScalarMultExpr<MT,ST2,SO>& mat )
 {
    BLAZE_FUNCTION_TRACE;
@@ -1151,7 +1150,7 @@ template< typename MT    // Type of the sparse matrix of the left-hand side expr
         , typename ST    // Type of the scalar of the left-hand side expression
         , bool SO        // Storage order of the left-hand side expression
         , typename VT >  // Type of the right-hand side sparse vector
-inline const typename MultExprTrait< SMatScalarMultExpr<MT,ST,SO>, VT >::Type
+inline const MultExprTrait_< SMatScalarMultExpr<MT,ST,SO>, VT >
    operator*( const SMatScalarMultExpr<MT,ST,SO>& mat, const SparseVector<VT,false>& vec )
 {
    BLAZE_FUNCTION_TRACE;
@@ -1180,7 +1179,7 @@ template< typename VT  // Type of the left-hand side sparse vector
         , typename MT  // Type of the sparse matrix of the right-hand side expression
         , typename ST  // Type of the scalar of the right-hand side expression
         , bool SO >    // Storage order of the right-hand side expression
-inline const typename MultExprTrait< VT, SMatScalarMultExpr<MT,ST,SO> >::Type
+inline const MultExprTrait_< VT, SMatScalarMultExpr<MT,ST,SO> >
    operator*( const SparseVector<VT,true>& vec, const SMatScalarMultExpr<MT,ST,SO>& mat )
 {
    BLAZE_FUNCTION_TRACE;
@@ -1212,7 +1211,7 @@ template< typename MT     // Type of the sparse matrix of the left-hand side exp
         , bool SO         // Storage order of the left-hand side expression
         , typename VT     // Type of the sparse vector of the right-hand side expression
         , typename ST2 >  // Type of the scalar of the right-hand side expression
-inline const typename MultExprTrait< SMatScalarMultExpr<MT,ST1,SO>, SVecScalarMultExpr<VT,ST2,false> >::Type
+inline const MultExprTrait_< SMatScalarMultExpr<MT,ST1,SO>, SVecScalarMultExpr<VT,ST2,false> >
    operator*( const SMatScalarMultExpr<MT,ST1,SO>& mat, const SVecScalarMultExpr<VT,ST2,false>& vec )
 {
    BLAZE_FUNCTION_TRACE;
@@ -1244,7 +1243,7 @@ template< typename VT   // Type of the sparse vector of the left-hand side expre
         , typename MT   // Type of the sparse matrix of the right-hand side expression
         , typename ST2  // Type of the scalar of the right-hand side expression
         , bool SO >     // Storage order of the right-hand side expression
-inline const typename MultExprTrait< SVecScalarMultExpr<VT,ST1,true>, SMatScalarMultExpr<MT,ST2,SO> >::Type
+inline const MultExprTrait_< SVecScalarMultExpr<VT,ST1,true>, SMatScalarMultExpr<MT,ST2,SO> >
    operator*( const SVecScalarMultExpr<VT,ST1,true>& vec, const SMatScalarMultExpr<MT,ST2,SO>& mat )
 {
    BLAZE_FUNCTION_TRACE;
@@ -1274,7 +1273,7 @@ template< typename MT1    // Type of the sparse matrix of the left-hand side exp
         , bool SO1        // Storage order of the left-hand side expression
         , typename MT2    // Type of the right-hand side dense matrix
         , bool SO2 >      // Storage order of the right-hand side dense matrix
-inline const typename MultExprTrait< SMatScalarMultExpr<MT1,ST,SO1>, MT2 >::Type
+inline const MultExprTrait_< SMatScalarMultExpr<MT1,ST,SO1>, MT2 >
    operator*( const SMatScalarMultExpr<MT1,ST,SO1>& lhs, const DenseMatrix<MT2,SO2>& rhs )
 {
    BLAZE_FUNCTION_TRACE;
@@ -1304,7 +1303,7 @@ template< typename MT1    // Type of the left-hand side dense matrix
         , typename MT2    // Type of the sparse matrix of the right-hand side expression
         , typename ST     // Type of the scalar of the right-hand side expression
         , bool SO2 >      // Storage order of the right-hand side expression
-inline const typename MultExprTrait< MT1, SMatScalarMultExpr<MT2,ST,SO2> >::Type
+inline const MultExprTrait_< MT1, SMatScalarMultExpr<MT2,ST,SO2> >
    operator*( const DenseMatrix<MT1,SO1>& lhs, const SMatScalarMultExpr<MT2,ST,SO2>& rhs )
 {
    BLAZE_FUNCTION_TRACE;
@@ -1334,7 +1333,7 @@ template< typename MT1    // Type of the sparse matrix of the left-hand side exp
         , bool SO1        // Storage order of the left-hand side expression
         , typename MT2    // Type of the right-hand side sparse matrix
         , bool SO2 >      // Storage order of the right-hand side sparse matrix
-inline const typename MultExprTrait< SMatScalarMultExpr<MT1,ST,SO1>, MT2 >::Type
+inline const MultExprTrait_< SMatScalarMultExpr<MT1,ST,SO1>, MT2 >
    operator*( const SMatScalarMultExpr<MT1,ST,SO1>& lhs, const SparseMatrix<MT2,SO2>& rhs )
 {
    BLAZE_FUNCTION_TRACE;
@@ -1364,7 +1363,7 @@ template< typename MT1    // Type of the left-hand side sparse matrix
         , typename MT2    // Type of the sparse matrix of the right-hand side expression
         , typename ST     // Type of the scalar of the right-hand side expression
         , bool SO2 >      // Storage order of the right-hand side expression
-inline const typename MultExprTrait< MT1, SMatScalarMultExpr<MT2,ST,SO2> >::Type
+inline const MultExprTrait_< MT1, SMatScalarMultExpr<MT2,ST,SO2> >
    operator*( const SparseMatrix<MT1,SO1>& lhs, const SMatScalarMultExpr<MT2,ST,SO2>& rhs )
 {
    BLAZE_FUNCTION_TRACE;
@@ -1395,7 +1394,7 @@ template< typename MT1  // Type of the sparse matrix of the left-hand side expre
         , typename MT2  // Type of the right-hand side sparse matrix
         , typename ST2  // Type of the scalar of the right-hand side expression
         , bool SO2 >    // Storage order of the right-hand side expression
-inline const typename MultExprTrait< SMatScalarMultExpr<MT1,ST1,SO1>, SMatScalarMultExpr<MT2,ST2,SO2> >::Type
+inline const MultExprTrait_< SMatScalarMultExpr<MT1,ST1,SO1>, SMatScalarMultExpr<MT2,ST2,SO2> >
    operator*( const SMatScalarMultExpr<MT1,ST1,SO1>& lhs, const SMatScalarMultExpr<MT2,ST2,SO2>& rhs )
 {
    BLAZE_FUNCTION_TRACE;
@@ -1565,7 +1564,7 @@ struct SMatScalarMultExprTrait< SMatScalarMultExpr<MT,ST1,false>, ST2 >
    //**********************************************************************************************
    using Type = If_< And< IsSparseMatrix<MT>, IsRowMajorMatrix<MT>
                         , IsNumeric<ST1>, IsNumeric<ST2> >
-                   , typename SMatScalarMultExprTrait<MT,typename MultTrait<ST1,ST2>::Type>::Type
+                   , typename SMatScalarMultExprTrait< MT, MultTrait_<ST1,ST2> >::Type
                    , INVALID_TYPE >;
    //**********************************************************************************************
 };
@@ -1590,7 +1589,7 @@ struct TSMatScalarMultExprTrait< SMatScalarMultExpr<MT,ST1,true>, ST2 >
    //**********************************************************************************************
    using Type = If_< And< IsSparseMatrix<MT>, IsColumnMajorMatrix<MT>
                         , IsNumeric<ST1>, IsNumeric<ST2> >
-                   , typename TSMatScalarMultExprTrait<MT,typename MultTrait<ST1,ST2>::Type>::Type
+                   , typename TSMatScalarMultExprTrait< MT, MultTrait_<ST1,ST2> >::Type
                    , INVALID_TYPE >;
    //**********************************************************************************************
 };
@@ -1613,7 +1612,7 @@ struct SMatScalarDivExprTrait< SMatScalarMultExpr<MT,ST1,false>, ST2 >
 {
  private:
    //**********************************************************************************************
-   using ScalarType = typename DivTrait<ST1,ST2>::Type;
+   using ScalarType = DivTrait_<ST1,ST2>;
    //**********************************************************************************************
 
  public:
@@ -1645,7 +1644,7 @@ struct TSMatScalarDivExprTrait< SMatScalarMultExpr<MT,ST1,true>, ST2 >
 {
  private:
    //**********************************************************************************************
-   using ScalarType = typename DivTrait<ST1,ST2>::Type;
+   using ScalarType = DivTrait_<ST1,ST2>;
    //**********************************************************************************************
 
  public:
@@ -1698,7 +1697,7 @@ struct SMatDVecMultExprTrait< SMatScalarMultExpr<MT,ST1,false>, DVecScalarMultEx
    using Type = If_< And< IsSparseMatrix<MT>, IsRowMajorMatrix<MT>
                         , IsDenseVector<VT>, IsColumnVector<VT>
                         , IsNumeric<ST1>, IsNumeric<ST2> >
-                   , typename DVecScalarMultExprTrait<typename SMatDVecMultExprTrait<MT,VT>::Type,typename MultTrait<ST1,ST2>::Type>::Type
+                   , typename DVecScalarMultExprTrait< typename SMatDVecMultExprTrait<MT,VT>::Type, MultTrait_<ST1,ST2> >::Type
                    , INVALID_TYPE >;
    //**********************************************************************************************
 };
@@ -1742,7 +1741,7 @@ struct TSMatDVecMultExprTrait< SMatScalarMultExpr<MT,ST1,true>, DVecScalarMultEx
    using Type = If_< And< IsSparseMatrix<MT>, IsColumnMajorMatrix<MT>
                         , IsDenseVector<VT>, IsColumnVector<VT>
                         , IsNumeric<ST1>, IsNumeric<ST2> >
-                   , typename DVecScalarMultExprTrait<typename TSMatDVecMultExprTrait<MT,VT>::Type,typename MultTrait<ST1,ST2>::Type>::Type
+                   , typename DVecScalarMultExprTrait< typename TSMatDVecMultExprTrait<MT,VT>::Type, MultTrait_<ST1,ST2> >::Type
                    , INVALID_TYPE >;
    //**********************************************************************************************
 };
@@ -1786,7 +1785,7 @@ struct TDVecSMatMultExprTrait< DVecScalarMultExpr<VT,ST1,true>, SMatScalarMultEx
    using Type = If_< And< IsDenseVector<VT>, IsRowVector<VT>
                         , IsSparseMatrix<MT>, IsRowMajorMatrix<MT>
                         , IsNumeric<ST1>, IsNumeric<ST2> >
-                   , typename TDVecScalarMultExprTrait<typename TDVecSMatMultExprTrait<VT,MT>::Type,typename MultTrait<ST1,ST2>::Type>::Type
+                   , typename TDVecScalarMultExprTrait< typename TDVecSMatMultExprTrait<VT,MT>::Type, MultTrait_<ST1,ST2> >::Type
                    , INVALID_TYPE >;
    //**********************************************************************************************
 };
@@ -1830,7 +1829,7 @@ struct TDVecTSMatMultExprTrait< DVecScalarMultExpr<VT,ST1,true>, SMatScalarMultE
    using Type = If_< And< IsDenseVector<VT>, IsRowVector<VT>
                         , IsSparseMatrix<MT>, IsColumnMajorMatrix<MT>
                         , IsNumeric<ST1>, IsNumeric<ST2> >
-                   , typename TDVecScalarMultExprTrait<typename TDVecTSMatMultExprTrait<VT,MT>::Type,typename MultTrait<ST1,ST2>::Type>::Type
+                   , typename TDVecScalarMultExprTrait< typename TDVecTSMatMultExprTrait<VT,MT>::Type, MultTrait_<ST1,ST2> >::Type
                    , INVALID_TYPE >;
    //**********************************************************************************************
 };
@@ -1874,7 +1873,7 @@ struct SMatSVecMultExprTrait< SMatScalarMultExpr<MT,ST1,false>, SVecScalarMultEx
    using Type = If_< And< IsSparseMatrix<MT>, IsRowMajorMatrix<MT>
                         , IsSparseVector<VT>, IsColumnVector<VT>
                         , IsNumeric<ST1>, IsNumeric<ST2> >
-                   , typename SVecScalarMultExprTrait<typename SMatSVecMultExprTrait<MT,VT>::Type,typename MultTrait<ST1,ST2>::Type>::Type
+                   , typename SVecScalarMultExprTrait< typename SMatSVecMultExprTrait<MT,VT>::Type, MultTrait_<ST1,ST2> >::Type
                    , INVALID_TYPE >;
    //**********************************************************************************************
 };
@@ -1918,7 +1917,7 @@ struct TSMatSVecMultExprTrait< SMatScalarMultExpr<MT,ST1,true>, SVecScalarMultEx
    using Type = If_< And< IsSparseMatrix<MT>, IsColumnMajorMatrix<MT>
                         , IsSparseVector<VT>, IsColumnVector<VT>
                         , IsNumeric<ST1>, IsNumeric<ST2> >
-                   , typename SVecScalarMultExprTrait<typename TSMatSVecMultExprTrait<MT,VT>::Type,typename MultTrait<ST1,ST2>::Type>::Type
+                   , typename SVecScalarMultExprTrait< typename TSMatSVecMultExprTrait<MT,VT>::Type, MultTrait_<ST1,ST2> >::Type
                    , INVALID_TYPE >;
    //**********************************************************************************************
 };
@@ -1962,7 +1961,7 @@ struct TSVecSMatMultExprTrait< SVecScalarMultExpr<VT,ST1,true>, SMatScalarMultEx
    using Type = If_< And< IsSparseVector<VT>, IsRowVector<VT>
                         , IsSparseMatrix<MT>, IsRowMajorMatrix<MT>
                         , IsNumeric<ST1>, IsNumeric<ST2> >
-                   , typename TSVecScalarMultExprTrait<typename TSVecSMatMultExprTrait<VT,MT>::Type,typename MultTrait<ST1,ST2>::Type>::Type
+                   , typename TSVecScalarMultExprTrait< typename TSVecSMatMultExprTrait<VT,MT>::Type, MultTrait_<ST1,ST2> >::Type
                    , INVALID_TYPE >;
    //**********************************************************************************************
 };
@@ -2006,7 +2005,7 @@ struct TSVecTSMatMultExprTrait< SVecScalarMultExpr<VT,ST1,true>, SMatScalarMultE
    using Type = If_< And< IsSparseVector<VT>, IsRowVector<VT>
                         , IsSparseMatrix<MT>, IsColumnMajorMatrix<MT>
                         , IsNumeric<ST1>, IsNumeric<ST2> >
-                   , typename TSVecScalarMultExprTrait<typename TSVecTSMatMultExprTrait<VT,MT>::Type,typename MultTrait<ST1,ST2>::Type>::Type
+                   , typename TSVecScalarMultExprTrait< typename TSVecTSMatMultExprTrait<VT,MT>::Type, MultTrait_<ST1,ST2> >::Type
                    , INVALID_TYPE >;
    //**********************************************************************************************
 };
@@ -2276,7 +2275,7 @@ struct SMatSMatMultExprTrait< SMatScalarMultExpr<MT1,ST1,false>, SMatScalarMultE
    using Type = If_< And< IsSparseMatrix<MT1>, IsRowMajorMatrix<MT1>
                         , IsSparseMatrix<MT2>, IsRowMajorMatrix<MT2>
                         , IsNumeric<ST1>, IsNumeric<ST2> >
-                   , typename SMatScalarMultExprTrait<typename SMatSMatMultExprTrait<MT1,MT2>::Type,typename MultTrait<ST1,ST2>::Type>::Type
+                   , typename SMatScalarMultExprTrait< typename SMatSMatMultExprTrait<MT1,MT2>::Type, MultTrait_<ST1,ST2> >::Type
                    , INVALID_TYPE >;
    //**********************************************************************************************
 };
@@ -2338,7 +2337,7 @@ struct SMatTSMatMultExprTrait< SMatScalarMultExpr<MT1,ST1,false>, SMatScalarMult
    using Type = If_< And< IsSparseMatrix<MT1>, IsRowMajorMatrix<MT1>
                         , IsSparseMatrix<MT2>, IsColumnMajorMatrix<MT2>
                         , IsNumeric<ST1>, IsNumeric<ST2> >
-                   , typename SMatScalarMultExprTrait<typename SMatTSMatMultExprTrait<MT1,MT2>::Type,typename MultTrait<ST1,ST2>::Type>::Type
+                   , typename SMatScalarMultExprTrait< typename SMatTSMatMultExprTrait<MT1,MT2>::Type, MultTrait_<ST1,ST2> >::Type
                    , INVALID_TYPE >;
    //**********************************************************************************************
 };
@@ -2400,7 +2399,7 @@ struct TSMatSMatMultExprTrait< SMatScalarMultExpr<MT1,ST1,true>, SMatScalarMultE
    using Type = If_< And< IsSparseMatrix<MT1>, IsColumnMajorMatrix<MT1>
                         , IsSparseMatrix<MT2>, IsRowMajorMatrix<MT2>
                         , IsNumeric<ST1>, IsNumeric<ST2> >
-                   , typename TSMatScalarMultExprTrait<typename TSMatSMatMultExprTrait<MT1,MT2>::Type,typename MultTrait<ST1,ST2>::Type>::Type
+                   , typename TSMatScalarMultExprTrait< typename TSMatSMatMultExprTrait<MT1,MT2>::Type, MultTrait_<ST1,ST2> >::Type
                    , INVALID_TYPE >;
    //**********************************************************************************************
 };
@@ -2462,7 +2461,7 @@ struct TSMatTSMatMultExprTrait< SMatScalarMultExpr<MT1,ST1,true>, SMatScalarMult
    using Type = If_< And< IsSparseMatrix<MT1>, IsColumnMajorMatrix<MT1>
                         , IsSparseMatrix<MT2>, IsColumnMajorMatrix<MT2>
                         , IsNumeric<ST1>, IsNumeric<ST2> >
-                   , typename TSMatScalarMultExprTrait<typename TSMatTSMatMultExprTrait<MT1,MT2>::Type,typename MultTrait<ST1,ST2>::Type>::Type
+                   , typename TSMatScalarMultExprTrait< typename TSMatTSMatMultExprTrait<MT1,MT2>::Type, MultTrait_<ST1,ST2> >::Type
                    , INVALID_TYPE >;
    //**********************************************************************************************
 };
@@ -2485,7 +2484,7 @@ struct SubmatrixExprTrait< SMatScalarMultExpr<MT,ST,SO>, AF >
 {
  public:
    //**********************************************************************************************
-   using Type = typename MultExprTrait< typename SubmatrixExprTrait<const MT,AF>::Type, ST >::Type;
+   using Type = MultExprTrait_< SubmatrixExprTrait_<const MT,AF>, ST >;
    //**********************************************************************************************
 };
 /*! \endcond */
@@ -2507,7 +2506,7 @@ struct RowExprTrait< SMatScalarMultExpr<MT,ST,SO> >
 {
  public:
    //**********************************************************************************************
-   using Type = typename MultExprTrait< typename RowExprTrait<const MT>::Type, ST >::Type;
+   using Type = MultExprTrait_< RowExprTrait_<const MT>, ST >;
    //**********************************************************************************************
 };
 /*! \endcond */
@@ -2529,7 +2528,7 @@ struct ColumnExprTrait< SMatScalarMultExpr<MT,ST,SO> >
 {
  public:
    //**********************************************************************************************
-   using Type = typename MultExprTrait< typename ColumnExprTrait<const MT>::Type, ST >::Type;
+   using Type = MultExprTrait_< ColumnExprTrait_<const MT>, ST >;
    //**********************************************************************************************
 };
 /*! \endcond */

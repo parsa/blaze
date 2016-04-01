@@ -41,6 +41,7 @@
 //*************************************************************************************************
 
 #include <omp.h>
+#include <blaze/math/Aliases.h>
 #include <blaze/math/constraints/SMPAssignable.h>
 #include <blaze/math/DenseSubmatrix.h>
 #include <blaze/math/expressions/DenseMatrix.h>
@@ -99,11 +100,11 @@ void smpAssign_backend( DenseMatrix<MT1,SO>& lhs, const DenseMatrix<MT2,rowMajor
 
    BLAZE_INTERNAL_ASSERT( isParallelSectionActive(), "Invalid call outside a parallel section" );
 
-   typedef typename MT1::ElementType                         ET1;
-   typedef typename MT2::ElementType                         ET2;
-   typedef IntrinsicTrait<typename MT1::ElementType>         IT;
-   typedef typename SubmatrixExprTrait<MT1,aligned>::Type    AlignedTarget;
-   typedef typename SubmatrixExprTrait<MT1,unaligned>::Type  UnalignedTarget;
+   typedef ElementType_<MT1>                    ET1;
+   typedef ElementType_<MT2>                    ET2;
+   typedef IntrinsicTrait< ElementType_<MT1> >  IT;
+   typedef SubmatrixExprTrait_<MT1,aligned>     AlignedTarget;
+   typedef SubmatrixExprTrait_<MT1,unaligned>   UnalignedTarget;
 
    const bool vectorizable( MT1::vectorizable && MT2::vectorizable && IsSame<ET1,ET2>::value );
    const bool lhsAligned  ( (~lhs).isAligned() );
@@ -172,11 +173,11 @@ void smpAssign_backend( DenseMatrix<MT1,SO>& lhs, const DenseMatrix<MT2,columnMa
 
    BLAZE_INTERNAL_ASSERT( isParallelSectionActive(), "Invalid call outside a parallel section" );
 
-   typedef typename MT1::ElementType                         ET1;
-   typedef typename MT2::ElementType                         ET2;
-   typedef IntrinsicTrait<typename MT1::ElementType>         IT;
-   typedef typename SubmatrixExprTrait<MT1,aligned>::Type    AlignedTarget;
-   typedef typename SubmatrixExprTrait<MT1,unaligned>::Type  UnalignedTarget;
+   typedef ElementType_<MT1>                    ET1;
+   typedef ElementType_<MT2>                    ET2;
+   typedef IntrinsicTrait< ElementType_<MT1> >  IT;
+   typedef SubmatrixExprTrait_<MT1,aligned>     AlignedTarget;
+   typedef SubmatrixExprTrait_<MT1,unaligned>   UnalignedTarget;
 
    const bool vectorizable( MT1::vectorizable && MT2::vectorizable && IsSame<ET1,ET2>::value );
    const bool lhsAligned  ( (~lhs).isAligned() );
@@ -245,9 +246,9 @@ void smpAssign_backend( DenseMatrix<MT1,SO>& lhs, const SparseMatrix<MT2,rowMajo
 
    BLAZE_INTERNAL_ASSERT( isParallelSectionActive(), "Invalid call outside a parallel section" );
 
-   typedef typename MT1::ElementType                         ET1;
-   typedef typename MT2::ElementType                         ET2;
-   typedef typename SubmatrixExprTrait<MT1,unaligned>::Type  UnalignedTarget;
+   typedef ElementType_<MT1>                   ET1;
+   typedef ElementType_<MT2>                   ET2;
+   typedef SubmatrixExprTrait_<MT1,unaligned>  UnalignedTarget;
 
    const int    threads      ( omp_get_num_threads() );
    const size_t addon        ( ( ( (~lhs).rows() % threads ) != 0UL )? 1UL : 0UL );
@@ -295,9 +296,9 @@ void smpAssign_backend( DenseMatrix<MT1,SO>& lhs, const SparseMatrix<MT2,columnM
 
    BLAZE_INTERNAL_ASSERT( isParallelSectionActive(), "Invalid call outside a parallel section" );
 
-   typedef typename MT1::ElementType                         ET1;
-   typedef typename MT2::ElementType                         ET2;
-   typedef typename SubmatrixExprTrait<MT1,unaligned>::Type  UnalignedTarget;
+   typedef ElementType_<MT1>                   ET1;
+   typedef ElementType_<MT2>                   ET2;
+   typedef SubmatrixExprTrait_<MT1,unaligned>  UnalignedTarget;
 
    const int    threads      ( omp_get_num_threads() );
    const size_t addon        ( ( ( (~lhs).columns() % threads ) != 0UL )? 1UL : 0UL );
@@ -385,8 +386,8 @@ inline EnableIf_< And< IsDenseMatrix<MT1>, IsSMPAssignable<MT1>, IsSMPAssignable
 {
    BLAZE_FUNCTION_TRACE;
 
-   BLAZE_CONSTRAINT_MUST_NOT_BE_SMP_ASSIGNABLE( typename MT1::ElementType );
-   BLAZE_CONSTRAINT_MUST_NOT_BE_SMP_ASSIGNABLE( typename MT2::ElementType );
+   BLAZE_CONSTRAINT_MUST_NOT_BE_SMP_ASSIGNABLE( ElementType_<MT1> );
+   BLAZE_CONSTRAINT_MUST_NOT_BE_SMP_ASSIGNABLE( ElementType_<MT2> );
 
    BLAZE_INTERNAL_ASSERT( (~lhs).rows()    == (~rhs).rows()   , "Invalid number of rows"    );
    BLAZE_INTERNAL_ASSERT( (~lhs).columns() == (~rhs).columns(), "Invalid number of columns" );
@@ -440,11 +441,11 @@ void smpAddAssign_backend( DenseMatrix<MT1,SO>& lhs, const DenseMatrix<MT2,rowMa
 
    BLAZE_INTERNAL_ASSERT( isParallelSectionActive(), "Invalid call outside a parallel section" );
 
-   typedef typename MT1::ElementType                         ET1;
-   typedef typename MT2::ElementType                         ET2;
-   typedef IntrinsicTrait<typename MT1::ElementType>         IT;
-   typedef typename SubmatrixExprTrait<MT1,aligned>::Type    AlignedTarget;
-   typedef typename SubmatrixExprTrait<MT1,unaligned>::Type  UnalignedTarget;
+   typedef ElementType_<MT1>                    ET1;
+   typedef ElementType_<MT2>                    ET2;
+   typedef IntrinsicTrait< ElementType_<MT1> >  IT;
+   typedef SubmatrixExprTrait_<MT1,aligned>     AlignedTarget;
+   typedef SubmatrixExprTrait_<MT1,unaligned>   UnalignedTarget;
 
    const bool vectorizable( MT1::vectorizable && MT2::vectorizable && IsSame<ET1,ET2>::value );
    const bool lhsAligned  ( (~lhs).isAligned() );
@@ -514,11 +515,11 @@ void smpAddAssign_backend( DenseMatrix<MT1,SO>& lhs, const DenseMatrix<MT2,colum
 
    BLAZE_INTERNAL_ASSERT( isParallelSectionActive(), "Invalid call outside a parallel section" );
 
-   typedef typename MT1::ElementType                         ET1;
-   typedef typename MT2::ElementType                         ET2;
-   typedef IntrinsicTrait<typename MT1::ElementType>         IT;
-   typedef typename SubmatrixExprTrait<MT1,aligned>::Type    AlignedTarget;
-   typedef typename SubmatrixExprTrait<MT1,unaligned>::Type  UnalignedTarget;
+   typedef ElementType_<MT1>                    ET1;
+   typedef ElementType_<MT2>                    ET2;
+   typedef IntrinsicTrait< ElementType_<MT1> >  IT;
+   typedef SubmatrixExprTrait_<MT1,aligned>     AlignedTarget;
+   typedef SubmatrixExprTrait_<MT1,unaligned>   UnalignedTarget;
 
    const bool vectorizable( MT1::vectorizable && MT2::vectorizable && IsSame<ET1,ET2>::value );
    const bool lhsAligned  ( (~lhs).isAligned() );
@@ -588,9 +589,9 @@ void smpAddAssign_backend( DenseMatrix<MT1,SO>& lhs, const SparseMatrix<MT2,rowM
 
    BLAZE_INTERNAL_ASSERT( isParallelSectionActive(), "Invalid call outside a parallel section" );
 
-   typedef typename MT1::ElementType                         ET1;
-   typedef typename MT2::ElementType                         ET2;
-   typedef typename SubmatrixExprTrait<MT1,unaligned>::Type  UnalignedTarget;
+   typedef ElementType_<MT1>                   ET1;
+   typedef ElementType_<MT2>                   ET2;
+   typedef SubmatrixExprTrait_<MT1,unaligned>  UnalignedTarget;
 
    const int    threads      ( omp_get_num_threads() );
    const size_t addon        ( ( ( (~lhs).rows() % threads ) != 0UL )? 1UL : 0UL );
@@ -639,9 +640,9 @@ void smpAddAssign_backend( DenseMatrix<MT1,SO>& lhs, const SparseMatrix<MT2,colu
 
    BLAZE_INTERNAL_ASSERT( isParallelSectionActive(), "Invalid call outside a parallel section" );
 
-   typedef typename MT1::ElementType                         ET1;
-   typedef typename MT2::ElementType                         ET2;
-   typedef typename SubmatrixExprTrait<MT1,unaligned>::Type  UnalignedTarget;
+   typedef ElementType_<MT1>                   ET1;
+   typedef ElementType_<MT2>                   ET2;
+   typedef SubmatrixExprTrait_<MT1,unaligned>  UnalignedTarget;
 
    const int    threads      ( omp_get_num_threads() );
    const size_t addon        ( ( ( (~lhs).columns() % threads ) != 0UL )? 1UL : 0UL );
@@ -729,8 +730,8 @@ inline EnableIf_< And< IsDenseMatrix<MT1>, IsSMPAssignable<MT1>, IsSMPAssignable
 {
    BLAZE_FUNCTION_TRACE;
 
-   BLAZE_CONSTRAINT_MUST_NOT_BE_SMP_ASSIGNABLE( typename MT1::ElementType );
-   BLAZE_CONSTRAINT_MUST_NOT_BE_SMP_ASSIGNABLE( typename MT2::ElementType );
+   BLAZE_CONSTRAINT_MUST_NOT_BE_SMP_ASSIGNABLE( ElementType_<MT1> );
+   BLAZE_CONSTRAINT_MUST_NOT_BE_SMP_ASSIGNABLE( ElementType_<MT2> );
 
    BLAZE_INTERNAL_ASSERT( (~lhs).rows()    == (~rhs).rows()   , "Invalid number of rows"    );
    BLAZE_INTERNAL_ASSERT( (~lhs).columns() == (~rhs).columns(), "Invalid number of columns" );
@@ -784,11 +785,11 @@ void smpSubAssign_backend( DenseMatrix<MT1,SO>& lhs, const DenseMatrix<MT2,rowMa
 
    BLAZE_INTERNAL_ASSERT( isParallelSectionActive(), "Invalid call outside a parallel section" );
 
-   typedef typename MT1::ElementType                         ET1;
-   typedef typename MT2::ElementType                         ET2;
-   typedef IntrinsicTrait<typename MT1::ElementType>         IT;
-   typedef typename SubmatrixExprTrait<MT1,aligned>::Type    AlignedTarget;
-   typedef typename SubmatrixExprTrait<MT1,unaligned>::Type  UnalignedTarget;
+   typedef ElementType_<MT1>                    ET1;
+   typedef ElementType_<MT2>                    ET2;
+   typedef IntrinsicTrait< ElementType_<MT1> >  IT;
+   typedef SubmatrixExprTrait_<MT1,aligned>     AlignedTarget;
+   typedef SubmatrixExprTrait_<MT1,unaligned>   UnalignedTarget;
 
    const bool vectorizable( MT1::vectorizable && MT2::vectorizable && IsSame<ET1,ET2>::value );
    const bool lhsAligned  ( (~lhs).isAligned() );
@@ -858,11 +859,11 @@ void smpSubAssign_backend( DenseMatrix<MT1,SO>& lhs, const DenseMatrix<MT2,colum
 
    BLAZE_INTERNAL_ASSERT( isParallelSectionActive(), "Invalid call outside a parallel section" );
 
-   typedef typename MT1::ElementType                         ET1;
-   typedef typename MT2::ElementType                         ET2;
-   typedef IntrinsicTrait<typename MT1::ElementType>         IT;
-   typedef typename SubmatrixExprTrait<MT1,aligned>::Type    AlignedTarget;
-   typedef typename SubmatrixExprTrait<MT1,unaligned>::Type  UnalignedTarget;
+   typedef ElementType_<MT1>                    ET1;
+   typedef ElementType_<MT2>                    ET2;
+   typedef IntrinsicTrait< ElementType_<MT1> >  IT;
+   typedef SubmatrixExprTrait_<MT1,aligned>     AlignedTarget;
+   typedef SubmatrixExprTrait_<MT1,unaligned>   UnalignedTarget;
 
    const bool vectorizable( MT1::vectorizable && MT2::vectorizable && IsSame<ET1,ET2>::value );
    const bool lhsAligned  ( (~lhs).isAligned() );
@@ -932,9 +933,9 @@ void smpSubAssign_backend( DenseMatrix<MT1,SO>& lhs, const SparseMatrix<MT2,rowM
 
    BLAZE_INTERNAL_ASSERT( isParallelSectionActive(), "Invalid call outside a parallel section" );
 
-   typedef typename MT1::ElementType                         ET1;
-   typedef typename MT2::ElementType                         ET2;
-   typedef typename SubmatrixExprTrait<MT1,unaligned>::Type  UnalignedTarget;
+   typedef ElementType_<MT1>                   ET1;
+   typedef ElementType_<MT2>                   ET2;
+   typedef SubmatrixExprTrait_<MT1,unaligned>  UnalignedTarget;
 
    const int    threads      ( omp_get_num_threads() );
    const size_t addon        ( ( ( (~lhs).rows() % threads ) != 0UL )? 1UL : 0UL );
@@ -983,9 +984,9 @@ void smpSubAssign_backend( DenseMatrix<MT1,SO>& lhs, const SparseMatrix<MT2,colu
 
    BLAZE_INTERNAL_ASSERT( isParallelSectionActive(), "Invalid call outside a parallel section" );
 
-   typedef typename MT1::ElementType                         ET1;
-   typedef typename MT2::ElementType                         ET2;
-   typedef typename SubmatrixExprTrait<MT1,unaligned>::Type  UnalignedTarget;
+   typedef ElementType_<MT1>                   ET1;
+   typedef ElementType_<MT2>                   ET2;
+   typedef SubmatrixExprTrait_<MT1,unaligned>  UnalignedTarget;
 
    const int    threads      ( omp_get_num_threads() );
    const size_t addon        ( ( ( (~lhs).columns() % threads ) != 0UL )? 1UL : 0UL );
@@ -1073,8 +1074,8 @@ inline EnableIf_< And< IsDenseMatrix<MT1>, IsSMPAssignable<MT1>, IsSMPAssignable
 {
    BLAZE_FUNCTION_TRACE;
 
-   BLAZE_CONSTRAINT_MUST_NOT_BE_SMP_ASSIGNABLE( typename MT1::ElementType );
-   BLAZE_CONSTRAINT_MUST_NOT_BE_SMP_ASSIGNABLE( typename MT2::ElementType );
+   BLAZE_CONSTRAINT_MUST_NOT_BE_SMP_ASSIGNABLE( ElementType_<MT1> );
+   BLAZE_CONSTRAINT_MUST_NOT_BE_SMP_ASSIGNABLE( ElementType_<MT2> );
 
    BLAZE_INTERNAL_ASSERT( (~lhs).rows()    == (~rhs).rows()   , "Invalid number of rows"    );
    BLAZE_INTERNAL_ASSERT( (~lhs).columns() == (~rhs).columns(), "Invalid number of columns" );

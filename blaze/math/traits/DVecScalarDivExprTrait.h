@@ -81,8 +81,8 @@ struct DVecScalarDivExprTraitHelper
  private:
    //**********************************************************************************************
    using ScalarType = If_< And< IsComplex< UnderlyingNumeric_<VT> >, IsBuiltin<ST> >
-                         , typename DivTrait< UnderlyingBuiltin_<VT>, ST >::Type
-                         , typename DivTrait< UnderlyingNumeric_<VT>, ST >::Type >;
+                         , DivTrait_< UnderlyingBuiltin_<VT>, ST >
+                         , DivTrait_< UnderlyingNumeric_<VT>, ST > >;
    //**********************************************************************************************
 
  public:

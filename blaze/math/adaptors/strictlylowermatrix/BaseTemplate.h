@@ -442,9 +442,9 @@ namespace blaze {
 // manipulate elements in the upper part of the matrix:
 
    \code
-   const StaticMatrix<int,3UL,3UL> B( 1, -4,  5,
-                                      6,  8, -3,
-                                      2, -1,  2 )
+   const StaticMatrix<int,3UL,3UL> B( { { 1, -4,  5 },
+                                        { 6,  8, -3 },
+                                        { 2, -1,  2 } } )
 
    A.insert( 4, 2, B );  // Inserting the elements (4,2)
    A(2,4)(1,1) = -5;     // Invalid manipulation of upper matrix element; Results in an exception

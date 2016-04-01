@@ -65,7 +65,7 @@ namespace blaze {
 
    \code
    using blaze::rowMajor;
-   blaze::StaticMatrix<int,2UL,3UL,rowMajor> A( 1, 2, 3, 4, 5, 6 );
+   blaze::StaticMatrix<int,2UL,3UL,rowMajor> A( { { 1, 2, 3 }, { 4, 5, 6 } } );
    \endcode
 */
 const bool rowMajor = false;
@@ -93,7 +93,7 @@ const bool rowMajor = false;
 
    \code
    using blaze::columnMajor;
-   blaze::StaticMatrix<int,2UL,3UL,columnMajor> A( 1, 2, 3, 4, 5, 6 );
+   blaze::StaticMatrix<int,2UL,3UL,columnMajor> A( { { 1, 2, 3 }, { 4, 5, 6 } } );
    \endcode
 */
 const bool columnMajor = true;

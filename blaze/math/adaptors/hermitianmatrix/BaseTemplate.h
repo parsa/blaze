@@ -262,16 +262,16 @@ namespace blaze {
    A.erase( 0, 2 );  // Erasing the elements (0,2) and (2,0)
 
    // Construction from a Hermitian dense matrix
-   StaticMatrix<cplx,3UL,3UL> B( (  3.0,  0.0 ), (  8.0, 2.0 ), ( -2.0,  2.0 ),
-                                 (  8.0,  1.0 ), (  0.0, 0.0 ), ( -1.0, -1.0 ),
-                                 ( -2.0, -2.0 ), ( -1.0, 1.0 ), (  4.0,  0.0 ) );
+   StaticMatrix<cplx,3UL,3UL> B( { { cplx(  3.0,  0.0 ), cplx(  8.0, 2.0 ), cplx( -2.0,  2.0 ) },
+                                   { cplx(  8.0,  1.0 ), cplx(  0.0, 0.0 ), cplx( -1.0, -1.0 ) },
+                                   { cplx( -2.0, -2.0 ), cplx( -1.0, 1.0 ), cplx(  4.0,  0.0 ) } } );
 
    HermitianMatrix< DynamicMatrix<double,rowMajor> > C( B );  // OK
 
    // Assignment of a non-Hermitian dense matrix
-	StaticMatrix<cplx,3UL,3UL> D( (  3.0, 0.0 ), (  7.0, 2.0 ), ( 3.0, 2.0 ),
-                                 (  8.0, 1.0 ), (  0.0, 0.0 ), ( 6.0, 4.0 ),
-                                 ( -2.0, 2.0 ), ( -1.0, 1.0 ), ( 4.0, 0.0 ) );
+	StaticMatrix<cplx,3UL,3UL> D( { { cplx(  3.0, 0.0 ), cplx(  7.0, 2.0 ), cplx( 3.0, 2.0 ) },
+                                   { cplx(  8.0, 1.0 ), cplx(  0.0, 0.0 ), cplx( 6.0, 4.0 ) },
+                                   { cplx( -2.0, 2.0 ), cplx( -1.0, 1.0 ), cplx( 4.0, 0.0 ) } } );
 
    C = D;  // Throws an exception; Hermitian invariant would be violated!
    \endcode

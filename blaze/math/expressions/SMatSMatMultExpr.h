@@ -42,6 +42,7 @@
 
 #include <algorithm>
 #include <vector>
+#include <blaze/math/Aliases.h>
 #include <blaze/math/constraints/MatMatMultExpr.h>
 #include <blaze/math/constraints/RowMajorMatrix.h>
 #include <blaze/math/constraints/SparseMatrix.h>
@@ -124,10 +125,10 @@ class SMatSMatMultExpr : public SparseMatrix< SMatSMatMultExpr<MT1,MT2>, false >
 {
  private:
    //**Type definitions****************************************************************************
-   typedef typename MT1::ResultType     RT1;  //!< Result type of the left-hand side sparse matrix expression.
-   typedef typename MT2::ResultType     RT2;  //!< Result type of the right-hand side sparse matrix expression.
-   typedef typename MT1::CompositeType  CT1;  //!< Composite type of the left-hand side sparse matrix expression.
-   typedef typename MT2::CompositeType  CT2;  //!< Composite type of the right-hand side sparse matrix expression.
+   typedef ResultType_<MT1>     RT1;  //!< Result type of the left-hand side sparse matrix expression.
+   typedef ResultType_<MT2>     RT2;  //!< Result type of the right-hand side sparse matrix expression.
+   typedef CompositeType_<MT1>  CT1;  //!< Composite type of the left-hand side sparse matrix expression.
+   typedef CompositeType_<MT2>  CT2;  //!< Composite type of the right-hand side sparse matrix expression.
    //**********************************************************************************************
 
    //**********************************************************************************************
@@ -172,13 +173,13 @@ class SMatSMatMultExpr : public SparseMatrix< SMatSMatMultExpr<MT1,MT2>, false >
 
  public:
    //**Type definitions****************************************************************************
-   typedef SMatSMatMultExpr<MT1,MT2>           This;           //!< Type of this SMatSMatMultExpr instance.
-   typedef typename MultTrait<RT1,RT2>::Type   ResultType;     //!< Result type for expression template evaluations.
-   typedef typename ResultType::OppositeType   OppositeType;   //!< Result type with opposite storage order for expression template evaluations.
-   typedef typename ResultType::TransposeType  TransposeType;  //!< Transpose type for expression template evaluations.
-   typedef typename ResultType::ElementType    ElementType;    //!< Resulting element type.
-   typedef const ElementType                   ReturnType;     //!< Return type for expression template evaluations.
-   typedef const ResultType                    CompositeType;  //!< Data type for composite expression templates.
+   typedef SMatSMatMultExpr<MT1,MT2>   This;           //!< Type of this SMatSMatMultExpr instance.
+   typedef MultTrait_<RT1,RT2>         ResultType;     //!< Result type for expression template evaluations.
+   typedef OppositeType_<ResultType>   OppositeType;   //!< Result type with opposite storage order for expression template evaluations.
+   typedef TransposeType_<ResultType>  TransposeType;  //!< Transpose type for expression template evaluations.
+   typedef ElementType_<ResultType>    ElementType;    //!< Resulting element type.
+   typedef const ElementType           ReturnType;     //!< Return type for expression template evaluations.
+   typedef const ResultType            CompositeType;  //!< Data type for composite expression templates.
 
    //! Composite type of the left-hand side sparse matrix expression.
    typedef If_< IsExpression<MT1>, const MT1, const MT1& >  LeftOperand;
@@ -218,7 +219,7 @@ class SMatSMatMultExpr : public SparseMatrix< SMatSMatMultExpr<MT1,MT2>, false >
       BLAZE_INTERNAL_ASSERT( i < lhs_.rows()   , "Invalid row access index"    );
       BLAZE_INTERNAL_ASSERT( j < rhs_.columns(), "Invalid column access index" );
 
-      typedef typename RemoveReference_<CT1>::ConstIterator  ConstIterator;
+      typedef ConstIterator_< RemoveReference_<CT1> >  ConstIterator;
 
       ElementType tmp = ElementType();
 
@@ -441,8 +442,8 @@ class SMatSMatMultExpr : public SparseMatrix< SMatSMatMultExpr<MT1,MT2>, false >
            , typename MT5 >  // Type of the right-hand side matrix operand
    static inline void selectAssignKernel( MT3& C, const MT4& A, const MT5& B )
    {
-      typedef typename MT4::ConstIterator  LeftIterator;
-      typedef typename MT5::ConstIterator  RightIterator;
+      typedef ConstIterator_<MT4>  LeftIterator;
+      typedef ConstIterator_<MT5>  RightIterator;
 
       for( size_t i=0UL; i<C.rows(); ++i ) {
          const LeftIterator lend( A.end(i) );
@@ -450,7 +451,7 @@ class SMatSMatMultExpr : public SparseMatrix< SMatSMatMultExpr<MT1,MT2>, false >
             const RightIterator rend( B.end( lelem->index() ) );
             for( RightIterator relem=B.begin( lelem->index() ); relem!=rend; ++relem )
             {
-               if( IsResizable<typename MT3::ElementType>::value &&
+               if( IsResizable< ElementType_<MT3> >::value &&
                    isDefault( C(i,relem->index()) ) ) {
                   C(i,relem->index()) = lelem->value() * relem->value();
                }
@@ -485,8 +486,8 @@ class SMatSMatMultExpr : public SparseMatrix< SMatSMatMultExpr<MT1,MT2>, false >
       BLAZE_INTERNAL_ASSERT( (~lhs).rows()    == rhs.rows()   , "Invalid number of rows"    );
       BLAZE_INTERNAL_ASSERT( (~lhs).columns() == rhs.columns(), "Invalid number of columns" );
 
-      typedef typename RemoveReference_<CT1>::ConstIterator  LeftIterator;
-      typedef typename RemoveReference_<CT2>::ConstIterator  RightIterator;
+      typedef ConstIterator_< RemoveReference_<CT1> >  LeftIterator;
+      typedef ConstIterator_< RemoveReference_<CT2> >  RightIterator;
 
       CT1 A( serial( rhs.lhs_ ) );  // Evaluation of the left-hand side sparse matrix operand
       CT2 B( serial( rhs.rhs_ ) );  // Evaluation of the right-hand side sparse matrix operand
@@ -709,8 +710,8 @@ class SMatSMatMultExpr : public SparseMatrix< SMatSMatMultExpr<MT1,MT2>, false >
            , typename MT5 >  // Type of the right-hand side matrix operand
    static inline void selectAddAssignKernel( MT3& C, const MT4& A, const MT5& B )
    {
-      typedef typename MT4::ConstIterator  LeftIterator;
-      typedef typename MT5::ConstIterator  RightIterator;
+      typedef ConstIterator_<MT4>  LeftIterator;
+      typedef ConstIterator_<MT5>  RightIterator;
 
       for( size_t i=0UL; i<C.rows(); ++i ) {
          const LeftIterator lend( A.end(i) );
@@ -817,8 +818,8 @@ class SMatSMatMultExpr : public SparseMatrix< SMatSMatMultExpr<MT1,MT2>, false >
            , typename MT5 >  // Type of the right-hand side matrix operand
    static inline void selectSubAssignKernel( MT3& C, const MT4& A, const MT5& B )
    {
-      typedef typename MT4::ConstIterator  LeftIterator;
-      typedef typename MT5::ConstIterator  RightIterator;
+      typedef ConstIterator_<MT4>  LeftIterator;
+      typedef ConstIterator_<MT5>  RightIterator;
 
       for( size_t i=0UL; i<C.rows(); ++i ) {
          const LeftIterator lend( A.end(i) );
@@ -1402,8 +1403,8 @@ struct SubmatrixExprTrait< SMatSMatMultExpr<MT1,MT2>, AF >
 {
  public:
    //**********************************************************************************************
-   using Type = typename MultExprTrait< typename SubmatrixExprTrait<const MT1,AF>::Type
-                                      , typename SubmatrixExprTrait<const MT2,AF>::Type >::Type;
+   using Type = MultExprTrait_< SubmatrixExprTrait_<const MT1,AF>
+                              , SubmatrixExprTrait_<const MT2,AF> >;
    //**********************************************************************************************
 };
 /*! \endcond */
@@ -1417,7 +1418,7 @@ struct RowExprTrait< SMatSMatMultExpr<MT1,MT2> >
 {
  public:
    //**********************************************************************************************
-   using Type = typename MultExprTrait< typename RowExprTrait<const MT1>::Type, MT2 >::Type;
+   using Type = MultExprTrait_< RowExprTrait_<const MT1>, MT2 >;
    //**********************************************************************************************
 };
 /*! \endcond */
@@ -1431,7 +1432,7 @@ struct ColumnExprTrait< SMatSMatMultExpr<MT1,MT2> >
 {
  public:
    //**********************************************************************************************
-   using Type = typename MultExprTrait< MT1, typename ColumnExprTrait<const MT2>::Type >::Type;
+   using Type = MultExprTrait_< MT1, ColumnExprTrait_<const MT2> >;
    //**********************************************************************************************
 };
 /*! \endcond */

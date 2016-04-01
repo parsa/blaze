@@ -81,8 +81,8 @@ struct TDMatScalarDivExprTraitHelper
  private:
    //**********************************************************************************************
    using ScalarType = If_< And< IsComplex< UnderlyingNumeric_<MT> >, IsBuiltin<ST> >
-                         , typename DivTrait< UnderlyingBuiltin_<MT>, ST >::Type
-                         , typename DivTrait< UnderlyingNumeric_<MT>, ST >::Type >;
+                         , DivTrait_< UnderlyingBuiltin_<MT>, ST >
+                         , DivTrait_< UnderlyingNumeric_<MT>, ST > >;
    //**********************************************************************************************
 
  public:

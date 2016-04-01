@@ -41,6 +41,7 @@
 //*************************************************************************************************
 
 #include <iterator>
+#include <blaze/math/Aliases.h>
 #include <blaze/math/constraints/DenseVector.h>
 #include <blaze/math/constraints/TransposeFlag.h>
 #include <blaze/math/expressions/Computation.h>
@@ -110,10 +111,10 @@ class DVecScalarDivExpr : public DenseVector< DVecScalarDivExpr<VT,ST,TF>, TF >
 {
  private:
    //**Type definitions****************************************************************************
-   typedef typename VT::ResultType     RT;  //!< Result type of the dense vector expression.
-   typedef typename VT::ReturnType     RN;  //!< Return type of the dense vector expression.
-   typedef typename VT::ElementType    ET;  //!< Element type of the dense vector expression.
-   typedef typename VT::CompositeType  CT;  //!< Composite type of the dense vector expression.
+   typedef ResultType_<VT>     RT;  //!< Result type of the dense vector expression.
+   typedef ReturnType_<VT>     RN;  //!< Return type of the dense vector expression.
+   typedef ElementType_<VT>    ET;  //!< Element type of the dense vector expression.
+   typedef CompositeType_<VT>  CT;  //!< Composite type of the dense vector expression.
    //**********************************************************************************************
 
    //**Return type evaluation**********************************************************************
@@ -126,7 +127,7 @@ class DVecScalarDivExpr : public DenseVector< DVecScalarDivExpr<VT,ST,TF>, TF >
    enum { returnExpr = !IsTemporary<RN>::value };
 
    //! Expression return type for the subscript operator.
-   typedef typename DivExprTrait<RN,ST>::Type  ExprReturnType;
+   typedef DivExprTrait_<RN,ST>  ExprReturnType;
    //**********************************************************************************************
 
    //**Serial evaluation strategy******************************************************************
@@ -166,9 +167,9 @@ class DVecScalarDivExpr : public DenseVector< DVecScalarDivExpr<VT,ST,TF>, TF >
  public:
    //**Type definitions****************************************************************************
    typedef DVecScalarDivExpr<VT,ST,TF>                 This;           //!< Type of this DVecScalarDivExpr instance.
-   typedef typename DivTrait<RT,ST>::Type              ResultType;     //!< Result type for expression template evaluations.
-   typedef typename ResultType::TransposeType          TransposeType;  //!< Transpose type for expression template evaluations.
-   typedef typename ResultType::ElementType            ElementType;    //!< Resulting element type.
+   typedef DivTrait_<RT,ST>                            ResultType;     //!< Result type for expression template evaluations.
+   typedef TransposeType_<ResultType>                  TransposeType;  //!< Transpose type for expression template evaluations.
+   typedef ElementType_<ResultType>                    ElementType;    //!< Resulting element type.
    typedef typename IntrinsicTrait<ElementType>::Type  IntrinsicType;  //!< Resulting intrinsic element type.
 
    //! Return type for expression template evaluations.
@@ -205,7 +206,7 @@ class DVecScalarDivExpr : public DenseVector< DVecScalarDivExpr<VT,ST,TF>, TF >
       typedef DifferenceType    difference_type;    //!< Difference between two iterators.
 
       //! ConstIterator type of the dense vector expression.
-      typedef typename VT::ConstIterator  IteratorType;
+      typedef ConstIterator_<VT>  IteratorType;
       //*******************************************************************************************
 
       //**Constructor******************************************************************************
@@ -670,7 +671,7 @@ class DVecScalarDivExpr : public DenseVector< DVecScalarDivExpr<VT,ST,TF>, TF >
 
       BLAZE_CONSTRAINT_MUST_BE_DENSE_VECTOR_TYPE( ResultType );
       BLAZE_CONSTRAINT_MUST_BE_VECTOR_WITH_TRANSPOSE_FLAG( ResultType, TF );
-      BLAZE_CONSTRAINT_MUST_BE_REFERENCE_TYPE( typename ResultType::CompositeType );
+      BLAZE_CONSTRAINT_MUST_BE_REFERENCE_TYPE( CompositeType_<ResultType> );
 
       BLAZE_INTERNAL_ASSERT( (~lhs).size() == rhs.size(), "Invalid vector sizes" );
 
@@ -706,7 +707,7 @@ class DVecScalarDivExpr : public DenseVector< DVecScalarDivExpr<VT,ST,TF>, TF >
 
       BLAZE_CONSTRAINT_MUST_BE_DENSE_VECTOR_TYPE( ResultType );
       BLAZE_CONSTRAINT_MUST_BE_VECTOR_WITH_TRANSPOSE_FLAG( ResultType, TF );
-      BLAZE_CONSTRAINT_MUST_BE_REFERENCE_TYPE( typename ResultType::CompositeType );
+      BLAZE_CONSTRAINT_MUST_BE_REFERENCE_TYPE( CompositeType_<ResultType> );
 
       BLAZE_INTERNAL_ASSERT( (~lhs).size() == rhs.size(), "Invalid vector sizes" );
 
@@ -742,7 +743,7 @@ class DVecScalarDivExpr : public DenseVector< DVecScalarDivExpr<VT,ST,TF>, TF >
 
       BLAZE_CONSTRAINT_MUST_BE_DENSE_VECTOR_TYPE( ResultType );
       BLAZE_CONSTRAINT_MUST_BE_VECTOR_WITH_TRANSPOSE_FLAG( ResultType, TF );
-      BLAZE_CONSTRAINT_MUST_BE_REFERENCE_TYPE( typename ResultType::CompositeType );
+      BLAZE_CONSTRAINT_MUST_BE_REFERENCE_TYPE( CompositeType_<ResultType> );
 
       BLAZE_INTERNAL_ASSERT( (~lhs).size() == rhs.size(), "Invalid vector sizes" );
 
@@ -834,7 +835,7 @@ class DVecScalarDivExpr : public DenseVector< DVecScalarDivExpr<VT,ST,TF>, TF >
 
       BLAZE_CONSTRAINT_MUST_BE_DENSE_VECTOR_TYPE( ResultType );
       BLAZE_CONSTRAINT_MUST_BE_VECTOR_WITH_TRANSPOSE_FLAG( ResultType, TF );
-      BLAZE_CONSTRAINT_MUST_BE_REFERENCE_TYPE( typename ResultType::CompositeType );
+      BLAZE_CONSTRAINT_MUST_BE_REFERENCE_TYPE( CompositeType_<ResultType> );
 
       BLAZE_INTERNAL_ASSERT( (~lhs).size() == rhs.size(), "Invalid vector sizes" );
 
@@ -870,7 +871,7 @@ class DVecScalarDivExpr : public DenseVector< DVecScalarDivExpr<VT,ST,TF>, TF >
 
       BLAZE_CONSTRAINT_MUST_BE_DENSE_VECTOR_TYPE( ResultType );
       BLAZE_CONSTRAINT_MUST_BE_VECTOR_WITH_TRANSPOSE_FLAG( ResultType, TF );
-      BLAZE_CONSTRAINT_MUST_BE_REFERENCE_TYPE( typename ResultType::CompositeType );
+      BLAZE_CONSTRAINT_MUST_BE_REFERENCE_TYPE( CompositeType_<ResultType> );
 
       BLAZE_INTERNAL_ASSERT( (~lhs).size() == rhs.size(), "Invalid vector sizes" );
 
@@ -906,7 +907,7 @@ class DVecScalarDivExpr : public DenseVector< DVecScalarDivExpr<VT,ST,TF>, TF >
 
       BLAZE_CONSTRAINT_MUST_BE_DENSE_VECTOR_TYPE( ResultType );
       BLAZE_CONSTRAINT_MUST_BE_VECTOR_WITH_TRANSPOSE_FLAG( ResultType, TF );
-      BLAZE_CONSTRAINT_MUST_BE_REFERENCE_TYPE( typename ResultType::CompositeType );
+      BLAZE_CONSTRAINT_MUST_BE_REFERENCE_TYPE( CompositeType_<ResultType> );
 
       BLAZE_INTERNAL_ASSERT( (~lhs).size() == rhs.size(), "Invalid vector sizes" );
 
@@ -969,15 +970,15 @@ class DVecScalarDivExpr : public DenseVector< DVecScalarDivExpr<VT,ST,TF>, TF >
 template< typename T1  // Type of the left-hand side dense vector
         , typename T2  // Type of the right-hand side scalar
         , bool TF >    // Transpose flag
-inline const EnableIf_< IsNumeric<T2>, typename DivExprTrait<T1,T2>::Type >
+inline const EnableIf_< IsNumeric<T2>, DivExprTrait_<T1,T2> >
    operator/( const DenseVector<T1,TF>& vec, T2 scalar )
 {
    BLAZE_FUNCTION_TRACE;
 
    BLAZE_USER_ASSERT( scalar != T2(0), "Division by zero detected" );
 
-   typedef typename DivExprTrait<T1,T2>::Type  ReturnType;
-   typedef typename ReturnType::RightOperand   ScalarType;
+   typedef DivExprTrait_<T1,T2>       ReturnType;
+   typedef RightOperand_<ReturnType>  ScalarType;
 
    if( IsMultExpr<ReturnType>::value ) {
       return ReturnType( ~vec, ScalarType(1)/ScalarType(scalar) );
@@ -1014,8 +1015,8 @@ template< typename VT     // Type of the dense vector of the left-hand side expr
         , typename ST1    // Type of the scalar of the left-hand side expression
         , bool TF         // Transpose flag of the dense vector
         , typename ST2 >  // Type of the right-hand side scalar
-inline const EnableIf_< And< IsNumeric<ST2>, IsInvertible<typename DivTrait<ST2,ST1>::Type > >
-                      , typename MultExprTrait< DVecScalarDivExpr<VT,ST1,TF>, ST2 >::Type >
+inline const EnableIf_< And< IsNumeric<ST2>, IsInvertible< DivTrait_<ST2,ST1> > >
+                      , MultExprTrait_< DVecScalarDivExpr<VT,ST1,TF>, ST2 > >
    operator*( const DVecScalarDivExpr<VT,ST1,TF>& vec, ST2 scalar )
 {
    BLAZE_FUNCTION_TRACE;
@@ -1043,8 +1044,8 @@ template< typename ST1  // Type of the left-hand side scalar
         , typename VT   // Type of the dense vector of the right-hand side expression
         , typename ST2  // Type of the scalar of the right-hand side expression
         , bool TF >     // Transpose flag of the dense vector
-inline const EnableIf_< And< IsNumeric<ST1>, IsInvertible< typename DivTrait<ST1,ST2>::Type > >
-                      , typename MultExprTrait< ST1, DVecScalarDivExpr<VT,ST2,TF> >::Type >
+inline const EnableIf_< And< IsNumeric<ST1>, IsInvertible< DivTrait_<ST1,ST2> > >
+                      , MultExprTrait_< ST1, DVecScalarDivExpr<VT,ST2,TF> > >
    operator*( ST1 scalar, const DVecScalarDivExpr<VT,ST2,TF>& vec )
 {
    BLAZE_FUNCTION_TRACE;
@@ -1073,16 +1074,16 @@ template< typename VT     // Type of the dense vector of the left-hand side expr
         , bool TF         // Transpose flag of the dense vector
         , typename ST2 >  // Type of the right-hand side scalar
 inline const EnableIf_< IsNumeric<ST2>
-                      , typename DivExprTrait<VT,typename MultTrait<ST1,ST2>::Type>::Type >
+                      , DivExprTrait_< VT, MultTrait_<ST1,ST2> > >
    operator/( const DVecScalarDivExpr<VT,ST1,TF>& vec, ST2 scalar )
 {
    BLAZE_FUNCTION_TRACE;
 
    BLAZE_USER_ASSERT( scalar != ST2(0), "Division by zero detected" );
 
-   typedef typename MultTrait<ST1,ST2>::Type         MultType;
-   typedef typename DivExprTrait<VT,MultType>::Type  ReturnType;
-   typedef typename ReturnType::RightOperand         ScalarType;
+   typedef MultTrait_<ST1,ST2>         MultType;
+   typedef DivExprTrait_<VT,MultType>  ReturnType;
+   typedef RightOperand_<ReturnType>   ScalarType;
 
    if( IsMultExpr<ReturnType>::value ) {
       return ReturnType( vec.leftOperand(), ScalarType(1)/( vec.rightOperand() * scalar ) );
@@ -1163,7 +1164,7 @@ struct DVecScalarMultExprTrait< DVecScalarDivExpr<VT,ST1,false>, ST2 >
 {
  private:
    //**********************************************************************************************
-   typedef typename DivTrait<ST2,ST1>::Type  ScalarType;
+   typedef DivTrait_<ST2,ST1>  ScalarType;
    //**********************************************************************************************
 
  public:
@@ -1195,7 +1196,7 @@ struct TDVecScalarMultExprTrait< DVecScalarDivExpr<VT,ST1,true>, ST2 >
 {
  private:
    //**********************************************************************************************
-   typedef typename DivTrait<ST2,ST1>::Type  ScalarType;
+   typedef DivTrait_<ST2,ST1>  ScalarType;
    //**********************************************************************************************
 
  public:
@@ -1227,7 +1228,7 @@ struct SubvectorExprTrait< DVecScalarDivExpr<VT,ST,TF>, AF >
 {
  public:
    //**********************************************************************************************
-   using Type = typename DivExprTrait< typename SubvectorExprTrait<const VT,AF>::Type, ST >::Type;
+   using Type = DivExprTrait_< SubvectorExprTrait_<const VT,AF>, ST >;
    //**********************************************************************************************
 };
 /*! \endcond */

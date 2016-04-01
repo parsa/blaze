@@ -40,6 +40,7 @@
 // Includes
 //*************************************************************************************************
 
+#include <blaze/math/Aliases.h>
 #include <blaze/math/typetraits/IsMatrix.h>
 #include <blaze/math/typetraits/IsVector.h>
 #include <blaze/util/Complex.h>
@@ -80,8 +81,7 @@ struct ImagTrait
    //**********************************************************************************************
    /*! \cond BLAZE_INTERNAL */
    struct MatrixOrVector {
-      using ET   = typename T::ElementType;
-      using RT   = typename ImagTrait<ET>::Type;
+      using RT   = typename ImagTrait< ElementType_<T> >::Type;
       using Type = typename T::template Rebind<RT>::Other;
    };
    /*! \endcond */

@@ -40,6 +40,7 @@
 // Includes
 //*************************************************************************************************
 
+#include <blaze/math/Aliases.h>
 #include <blaze/math/constraints/Computation.h>
 #include <blaze/math/constraints/SparseVector.h>
 #include <blaze/math/constraints/TransposeFlag.h>
@@ -74,16 +75,16 @@ class SVecTransposer : public SparseVector< SVecTransposer<VT,TF>, TF >
 {
  public:
    //**Type definitions****************************************************************************
-   typedef SVecTransposer<VT,TF>        This;            //!< Type of this SVecTransposer instance.
-   typedef typename VT::TransposeType   ResultType;      //!< Result type for expression template evaluations.
-   typedef typename VT::ResultType      TransposeType;   //!< Transpose type for expression template evaluations.
-   typedef typename VT::ElementType     ElementType;     //!< Resulting element type.
-   typedef typename VT::ReturnType      ReturnType;      //!< Return type for expression template evaluations.
-   typedef const This&                  CompositeType;   //!< Data type for composite expression templates.
-   typedef typename VT::Reference       Reference;       //!< Reference to a non-constant matrix value.
-   typedef typename VT::ConstReference  ConstReference;  //!< Reference to a constant matrix value.
-   typedef typename VT::Iterator        Iterator;        //!< Iterator over non-constant elements.
-   typedef typename VT::ConstIterator   ConstIterator;   //!< Iterator over constant elements.
+   typedef SVecTransposer<VT,TF>  This;            //!< Type of this SVecTransposer instance.
+   typedef TransposeType_<VT>     ResultType;      //!< Result type for expression template evaluations.
+   typedef ResultType_<VT>        TransposeType;   //!< Transpose type for expression template evaluations.
+   typedef ElementType_<VT>       ElementType;     //!< Resulting element type.
+   typedef ReturnType_<VT>        ReturnType;      //!< Return type for expression template evaluations.
+   typedef const This&            CompositeType;   //!< Data type for composite expression templates.
+   typedef Reference_<VT>         Reference;       //!< Reference to a non-constant matrix value.
+   typedef ConstReference_<VT>    ConstReference;  //!< Reference to a constant matrix value.
+   typedef Iterator_<VT>          Iterator;        //!< Iterator over non-constant elements.
+   typedef ConstIterator_<VT>     ConstIterator;   //!< Iterator over constant elements.
    //**********************************************************************************************
 
    //**Compilation flags***************************************************************************
@@ -415,7 +416,7 @@ class SVecTransposer : public SparseVector< SVecTransposer<VT,TF>, TF >
       //
       // results in much less requirements on the ConstIterator type provided from the right-hand
       // sparse vector type
-      for( typename VT2::ConstIterator element=(~rhs).begin(); element!=(~rhs).end(); ++element )
+      for( ConstIterator_<VT2> element=(~rhs).begin(); element!=(~rhs).end(); ++element )
          sv_.append( element->index(), element->value() );
    }
    //**********************************************************************************************
@@ -498,7 +499,7 @@ inline void reset( SVecTransposer<VT,TF>& v )
 template< typename VT, bool TF >
 struct SubvectorTrait< SVecTransposer<VT,TF> >
 {
-   using Type = typename SubvectorTrait< typename SVecTransposer<VT,TF>::ResultType >::Type;
+   using Type = SubvectorTrait_< ResultType_< SVecTransposer<VT,TF> > >;
 };
 /*! \endcond */
 //*************************************************************************************************

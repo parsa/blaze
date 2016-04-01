@@ -44,6 +44,7 @@
 #include <iterator>
 #include <blaze/math/adaptors/hermitianmatrix/BaseTemplate.h>
 #include <blaze/math/adaptors/hermitianmatrix/HermitianProxy.h>
+#include <blaze/math/Aliases.h>
 #include <blaze/math/constraints/DenseMatrix.h>
 #include <blaze/math/constraints/Expression.h>
 #include <blaze/math/constraints/Hermitian.h>
@@ -114,10 +115,10 @@ class HermitianMatrix<MT,SO,true>
 {
  private:
    //**Type definitions****************************************************************************
-   typedef typename MT::OppositeType   OT;  //!< Opposite type of the dense matrix.
-   typedef typename MT::TransposeType  TT;  //!< Transpose type of the dense matrix.
-   typedef typename MT::ElementType    ET;  //!< Element type of the dense matrix.
-   typedef IntrinsicTrait<ET>          IT;  //!< Intrinsic trait for the matrix element type.
+   typedef OppositeType_<MT>   OT;  //!< Opposite type of the dense matrix.
+   typedef TransposeType_<MT>  TT;  //!< Transpose type of the dense matrix.
+   typedef ElementType_<MT>    ET;  //!< Element type of the dense matrix.
+   typedef IntrinsicTrait<ET>  IT;  //!< Intrinsic trait for the matrix element type.
    //**********************************************************************************************
 
  public:
@@ -128,13 +129,13 @@ class HermitianMatrix<MT,SO,true>
    typedef HermitianMatrix<TT,!SO,true>  TransposeType;   //!< Transpose type for expression template evaluations.
    typedef ET                            ElementType;     //!< Type of the matrix elements.
    typedef typename MT::IntrinsicType    IntrinsicType;   //!< Intrinsic type of the matrix elements.
-   typedef typename MT::ReturnType       ReturnType;      //!< Return type for expression template evaluations.
+   typedef ReturnType_<MT>               ReturnType;      //!< Return type for expression template evaluations.
    typedef const This&                   CompositeType;   //!< Data type for composite expression templates.
    typedef HermitianProxy<MT>            Reference;       //!< Reference to a non-constant matrix value.
-   typedef typename MT::ConstReference   ConstReference;  //!< Reference to a constant matrix value.
-   typedef typename MT::Pointer          Pointer;         //!< Pointer to a non-constant matrix value.
-   typedef typename MT::ConstPointer     ConstPointer;    //!< Pointer to a constant matrix value.
-   typedef typename MT::ConstIterator    ConstIterator;   //!< Iterator over constant elements.
+   typedef ConstReference_<MT>           ConstReference;  //!< Reference to a constant matrix value.
+   typedef Pointer_<MT>                  Pointer;         //!< Pointer to a non-constant matrix value.
+   typedef ConstPointer_<MT>             ConstPointer;    //!< Pointer to a constant matrix value.
+   typedef ConstIterator_<MT>            ConstIterator;   //!< Iterator over constant elements.
    //**********************************************************************************************
 
    //**Rebind struct definition********************************************************************
@@ -155,7 +156,7 @@ class HermitianMatrix<MT,SO,true>
     public:
       //**Type definitions*************************************************************************
       typedef std::random_access_iterator_tag  IteratorCategory;  //!< The iterator category.
-      typedef typename MT::ElementType         ValueType;         //!< Type of the underlying elements.
+      typedef ElementType_<MT>                 ValueType;         //!< Type of the underlying elements.
       typedef HermitianProxy<MT>               PointerType;       //!< Pointer return type.
       typedef HermitianProxy<MT>               ReferenceType;     //!< Reference return type.
       typedef ptrdiff_t                        DifferenceType;    //!< Difference between two iterators.
@@ -651,7 +652,7 @@ class HermitianMatrix<MT,SO,true>
    inline EnableIf_< IsComputation<MT2>, HermitianMatrix& > operator=( const Matrix<MT2,SO2>& rhs );
 
    template< typename MT2 >
-   inline EnableIf_< IsBuiltin<typename MT2::ElementType>, HermitianMatrix& >
+   inline EnableIf_< IsBuiltin< ElementType_<MT2> >, HermitianMatrix& >
       operator=( const Matrix<MT2,!SO>& rhs );
 
    template< typename MT2, bool SO2 >
@@ -661,7 +662,7 @@ class HermitianMatrix<MT,SO,true>
    inline EnableIf_< IsComputation<MT2>, HermitianMatrix& > operator+=( const Matrix<MT2,SO2>& rhs );
 
    template< typename MT2 >
-   inline EnableIf_< IsBuiltin<typename MT2::ElementType>, HermitianMatrix& >
+   inline EnableIf_< IsBuiltin< ElementType_<MT2> >, HermitianMatrix& >
       operator+=( const Matrix<MT2,!SO>& rhs );
 
    template< typename MT2, bool SO2 >
@@ -671,7 +672,7 @@ class HermitianMatrix<MT,SO,true>
    inline EnableIf_< IsComputation<MT2>, HermitianMatrix& > operator-=( const Matrix<MT2,SO2>& rhs );
 
    template< typename MT2 >
-   inline EnableIf_< IsBuiltin<typename MT2::ElementType>, HermitianMatrix& >
+   inline EnableIf_< IsBuiltin< ElementType_<MT2> >, HermitianMatrix& >
       operator-=( const Matrix<MT2,!SO>& rhs );
 
    template< typename MT2, bool SO2 >
@@ -743,7 +744,7 @@ class HermitianMatrix<MT,SO,true>
    inline const MT2& construct( const Matrix<MT2,SO2>& m, T );
 
    template< typename MT2 >
-   inline typename TransExprTrait<MT2>::Type construct( const Matrix<MT2,!SO>& m, TrueType );
+   inline TransExprTrait_<MT2> construct( const Matrix<MT2,!SO>& m, TrueType );
    //@}
    //**********************************************************************************************
 
@@ -1138,7 +1139,7 @@ template< typename MT   // Type of the adapted dense matrix
 template< typename MT2  // Type of the foreign matrix
         , bool SO2 >    // Storage order of the foreign matrix
 inline HermitianMatrix<MT,SO,true>::HermitianMatrix( const Matrix<MT2,SO2>& m )
-   : matrix_( construct( m, typename IsBuiltin<typename MT2::ElementType>::Type() ) )  // The adapted dense matrix
+   : matrix_( construct( m, typename IsBuiltin< ElementType_<MT2> >::Type() ) )  // The adapted dense matrix
 {
    if( !IsHermitian<MT2>::value && !isHermitian( matrix_ ) ) {
       BLAZE_THROW_INVALID_ARGUMENT( "Invalid setup of Hermitian matrix" );
@@ -1681,7 +1682,7 @@ inline EnableIf_< IsComputation<MT2>, HermitianMatrix<MT,SO,true>& >
 template< typename MT     // Type of the adapted dense matrix
         , bool SO >       // Storage order of the adapted dense matrix
 template< typename MT2 >  // Type of the right-hand side matrix
-inline EnableIf_< IsBuiltin<typename MT2::ElementType>, HermitianMatrix<MT,SO,true>& >
+inline EnableIf_< IsBuiltin< ElementType_<MT2> >, HermitianMatrix<MT,SO,true>& >
    HermitianMatrix<MT,SO,true>::operator=( const Matrix<MT2,!SO>& rhs )
 {
    return this->operator=( trans( ~rhs ) );
@@ -1753,7 +1754,7 @@ inline EnableIf_< IsComputation<MT2>, HermitianMatrix<MT,SO,true>& >
       matrix_ += ~rhs;
    }
    else {
-      typename MT2::ResultType tmp( ~rhs );
+      const ResultType_<MT2> tmp( ~rhs );
 
       if( !isHermitian( tmp ) ) {
          BLAZE_THROW_INVALID_ARGUMENT( "Invalid assignment to Hermitian matrix" );
@@ -1788,7 +1789,7 @@ inline EnableIf_< IsComputation<MT2>, HermitianMatrix<MT,SO,true>& >
 template< typename MT     // Type of the adapted dense matrix
         , bool SO >       // Storage order of the adapted dense matrix
 template< typename MT2 >  // Type of the right-hand side matrix
-inline EnableIf_< IsBuiltin<typename MT2::ElementType>, HermitianMatrix<MT,SO,true>& >
+inline EnableIf_< IsBuiltin< ElementType_<MT2> >, HermitianMatrix<MT,SO,true>& >
    HermitianMatrix<MT,SO,true>::operator+=( const Matrix<MT2,!SO>& rhs )
 {
    return this->operator+=( trans( ~rhs ) );
@@ -1860,7 +1861,7 @@ inline EnableIf_< IsComputation<MT2>, HermitianMatrix<MT,SO,true>& >
       matrix_ -= ~rhs;
    }
    else {
-      typename MT2::ResultType tmp( ~rhs );
+      const ResultType_<MT2> tmp( ~rhs );
 
       if( !isHermitian( tmp ) ) {
          BLAZE_THROW_INVALID_ARGUMENT( "Invalid assignment to Hermitian matrix" );
@@ -1895,7 +1896,7 @@ inline EnableIf_< IsComputation<MT2>, HermitianMatrix<MT,SO,true>& >
 template< typename MT     // Type of the adapted dense matrix
         , bool SO >       // Storage order of the adapted dense matrix
 template< typename MT2 >  // Type of the right-hand side matrix
-inline EnableIf_< IsBuiltin<typename MT2::ElementType>, HermitianMatrix<MT,SO,true>& >
+inline EnableIf_< IsBuiltin< ElementType_<MT2> >, HermitianMatrix<MT,SO,true>& >
    HermitianMatrix<MT,SO,true>::operator-=( const Matrix<MT2,!SO>& rhs )
 {
    return this->operator-=( trans( ~rhs ) );
@@ -2777,7 +2778,7 @@ inline const MT2& HermitianMatrix<MT,SO,true>::construct( const Matrix<MT2,SO2>&
 template< typename MT     // Type of the adapted dense matrix
         , bool SO >       // Storage order of the adapted dense matrix
 template< typename MT2 >  // Type of the foreign matrix
-inline typename TransExprTrait<MT2>::Type
+inline TransExprTrait_<MT2>
    HermitianMatrix<MT,SO,true>::construct( const Matrix<MT2,!SO>& m, TrueType )
 {
    return trans( ~m );

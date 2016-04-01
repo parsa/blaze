@@ -40,6 +40,7 @@
 // Includes
 //*************************************************************************************************
 
+#include <blaze/math/Aliases.h>
 #include <blaze/math/typetraits/IsColumnMajorMatrix.h>
 #include <blaze/math/typetraits/IsDenseMatrix.h>
 #include <blaze/util/typetraits/IsNumeric.h>
@@ -459,9 +460,9 @@ namespace blaze {
 
    \code
    // Inserting the elements (2,4) and (4,2)
-   A.insert( 2, 4, StaticMatrix<int,3UL,3UL>( 1, -4,  5,
-                                              6,  8, -3,
-                                              2, -1,  2 ) );
+   A.insert( 2, 4, StaticMatrix<int,3UL,3UL>( { { 1, -4,  5 },
+                                                { 6,  8, -3 },
+                                                { 2, -1,  2 } } ) );
 
    // Manipulating the elements (2,4) and (4,2)
    A(2,4)(1,1) = -5;
@@ -600,10 +601,10 @@ namespace blaze {
    C = A * B;  // Is not guaranteed to result in a symmetric matrix; some runtime overhead
    \endcode
 */
-template< typename MT                                             // Type of the adapted matrix
-        , bool SO = IsColumnMajorMatrix<MT>::value                // Storage order of the adapted matrix
-        , bool DF = IsDenseMatrix<MT>::value                      // Density flag
-        , bool NF = IsNumeric<typename MT::ElementType>::value >  // Numeric flag
+template< typename MT                                       // Type of the adapted matrix
+        , bool SO = IsColumnMajorMatrix<MT>::value          // Storage order of the adapted matrix
+        , bool DF = IsDenseMatrix<MT>::value                // Density flag
+        , bool NF = IsNumeric< ElementType_<MT> >::value >  // Numeric flag
 class SymmetricMatrix
 {};
 //*************************************************************************************************

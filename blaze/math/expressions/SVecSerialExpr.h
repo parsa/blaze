@@ -41,6 +41,7 @@
 //*************************************************************************************************
 
 #include <cmath>
+#include <blaze/math/Aliases.h>
 #include <blaze/math/constraints/SparseVector.h>
 #include <blaze/math/constraints/TransposeFlag.h>
 #include <blaze/math/expressions/Computation.h>
@@ -90,11 +91,11 @@ class SVecSerialExpr : public SparseVector< SVecSerialExpr<VT,TF>, TF >
 {
  public:
    //**Type definitions****************************************************************************
-   typedef SVecSerialExpr<VT,TF>       This;           //!< Type of this SVecSerialExpr instance.
-   typedef typename VT::ResultType     ResultType;     //!< Result type for expression template evaluations.
-   typedef typename VT::TransposeType  TransposeType;  //!< Transpose type for expression template evaluations.
-   typedef typename VT::ElementType    ElementType;    //!< Resulting element type.
-   typedef typename VT::ReturnType     ReturnType;     //!< Return type for expression template evaluations.
+   typedef SVecSerialExpr<VT,TF>  This;           //!< Type of this SVecSerialExpr instance.
+   typedef ResultType_<VT>        ResultType;     //!< Result type for expression template evaluations.
+   typedef TransposeType_<VT>     TransposeType;  //!< Transpose type for expression template evaluations.
+   typedef ElementType_<VT>       ElementType;    //!< Resulting element type.
+   typedef ReturnType_<VT>        ReturnType;     //!< Return type for expression template evaluations.
 
    //! Data type for composite expression templates.
    typedef const ResultType  CompositeType;
@@ -757,7 +758,7 @@ struct SubvectorExprTrait< SVecSerialExpr<VT,TF>, AF >
 {
  public:
    //**********************************************************************************************
-   using Type = typename SerialExprTrait< typename SubvectorExprTrait<const VT,AF>::Type >::Type;
+   using Type = SerialExprTrait_< SubvectorExprTrait_<const VT,AF> >;
    //**********************************************************************************************
 };
 /*! \endcond */

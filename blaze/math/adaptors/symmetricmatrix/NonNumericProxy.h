@@ -40,6 +40,7 @@
 // Includes
 //*************************************************************************************************
 
+#include <blaze/math/Aliases.h>
 #include <blaze/math/constraints/Expression.h>
 #include <blaze/math/constraints/Hermitian.h>
 #include <blaze/math/constraints/Lower.h>
@@ -100,7 +101,7 @@ namespace blaze {
    \endcode
 */
 template< typename MT >  // Type of the adapted matrix
-class NonNumericProxy : public Proxy< NonNumericProxy<MT>, typename MT::ElementType::ValueType >
+class NonNumericProxy : public Proxy< NonNumericProxy<MT>, ValueType_< ElementType_<MT> > >
 {
  private:
    //**Enumerations********************************************************************************
@@ -110,14 +111,14 @@ class NonNumericProxy : public Proxy< NonNumericProxy<MT>, typename MT::ElementT
 
    //**Type definitions****************************************************************************
    /*! \cond BLAZE_INTERNAL */
-   typedef typename MT::ElementType  ET;  //!< Element type of the adapted matrix.
+   typedef ElementType_<MT>  ET;  //!< Element type of the adapted matrix.
    /*! \endcond */
    //**********************************************************************************************
 
  public:
    //**Type definitions****************************************************************************
-   typedef typename ET::ValueType  RepresentedType;  //!< Type of the represented matrix element.
-   typedef typename ET::Reference  RawReference;     //!< Raw reference to the represented element.
+   typedef ValueType_<ET>  RepresentedType;  //!< Type of the represented matrix element.
+   typedef Reference_<ET>  RawReference;     //!< Raw reference to the represented element.
    //**********************************************************************************************
 
    //**Constructors********************************************************************************
@@ -223,7 +224,7 @@ inline NonNumericProxy<MT>::NonNumericProxy( MT& matrix, size_t i, size_t j )
 
    if( pos == matrix_.end(index) )
    {
-      const typename MT::ElementType element( ( RepresentedType() ) );
+      const ElementType_<MT> element( ( RepresentedType() ) );
       matrix_.insert( i_, j_, element );
       if( i_ != j_ )
          matrix_.insert( j_, i_, element );
@@ -437,7 +438,7 @@ inline NonNumericProxy<MT>::operator RawReference() const noexcept
 /*!\name NonNumericProxy global functions */
 //@{
 template< typename MT >
-inline typename ConjExprTrait< typename NonNumericProxy<MT>::RepresentedType >::Type
+inline ConjExprTrait_< RepresentedType_< NonNumericProxy<MT> > >
    conj( const NonNumericProxy<MT>& proxy );
 
 template< typename MT >
@@ -476,7 +477,7 @@ inline bool isnan( const NonNumericProxy<MT>& proxy );
 // expression representing the complex conjugate of the vector/matrix.
 */
 template< typename MT >
-inline typename ConjExprTrait< typename NonNumericProxy<MT>::RepresentedType >::Type
+inline ConjExprTrait_< RepresentedType_< NonNumericProxy<MT> > >
    conj( const NonNumericProxy<MT>& proxy )
 {
    using blaze::conj;

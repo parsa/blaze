@@ -40,6 +40,7 @@
 // Includes
 //*************************************************************************************************
 
+#include <blaze/math/Aliases.h>
 #include <blaze/math/constraints/DenseMatrix.h>
 #include <blaze/math/expressions/DenseMatrix.h>
 #include <blaze/math/shims/Clear.h>
@@ -77,18 +78,18 @@ class DenseMatrixProxy : public DenseMatrix< PT, IsColumnMajorMatrix<MT>::value 
 {
  public:
    //**Type definitions****************************************************************************
-   typedef typename MT::ResultType      ResultType;      //!< Result type for expression template evaluations.
-   typedef typename MT::OppositeType    OppositeType;    //!< Result type with opposite storage order for expression template evaluations.
-   typedef typename MT::TransposeType   TransposeType;   //!< Transpose type for expression template evaluations.
-   typedef typename MT::ElementType     ElementType;     //!< Type of the matrix elements.
-   typedef typename MT::ReturnType      ReturnType;      //!< Return type for expression template evaluations.
-   typedef typename MT::CompositeType   CompositeType;   //!< Data type for composite expression templates.
-   typedef typename MT::Reference       Reference;       //!< Reference to a non-constant matrix value.
-   typedef typename MT::ConstReference  ConstReference;  //!< Reference to a constant matrix value.
-   typedef typename MT::Pointer         Pointer;         //!< Pointer to a non-constant matrix value.
-   typedef typename MT::ConstPointer    ConstPointer;    //!< Pointer to a constant matrix value.
-   typedef typename MT::Iterator        Iterator;        //!< Iterator over non-constant elements.
-   typedef typename MT::ConstIterator   ConstIterator;   //!< Iterator over constant elements.
+   typedef ResultType_<MT>      ResultType;      //!< Result type for expression template evaluations.
+   typedef OppositeType_<MT>    OppositeType;    //!< Result type with opposite storage order for expression template evaluations.
+   typedef TransposeType_<MT>   TransposeType;   //!< Transpose type for expression template evaluations.
+   typedef ElementType_<MT>     ElementType;     //!< Type of the matrix elements.
+   typedef ReturnType_<MT>      ReturnType;      //!< Return type for expression template evaluations.
+   typedef CompositeType_<MT>   CompositeType;   //!< Data type for composite expression templates.
+   typedef Reference_<MT>       Reference;       //!< Reference to a non-constant matrix value.
+   typedef ConstReference_<MT>  ConstReference;  //!< Reference to a constant matrix value.
+   typedef Pointer_<MT>         Pointer;         //!< Pointer to a non-constant matrix value.
+   typedef ConstPointer_<MT>    ConstPointer;    //!< Pointer to a constant matrix value.
+   typedef Iterator_<MT>        Iterator;        //!< Iterator over non-constant elements.
+   typedef ConstIterator_<MT>   ConstIterator;   //!< Iterator over constant elements.
    //**********************************************************************************************
 
    //**Compilation flags***************************************************************************

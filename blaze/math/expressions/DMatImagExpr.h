@@ -42,6 +42,7 @@
 
 #include <cmath>
 #include <iterator>
+#include <blaze/math/Aliases.h>
 #include <blaze/math/constraints/DenseMatrix.h>
 #include <blaze/math/constraints/StorageOrder.h>
 #include <blaze/math/expressions/Computation.h>
@@ -113,9 +114,9 @@ class DMatImagExpr : public DenseMatrix< DMatImagExpr<MT,SO>, SO >
 {
  private:
    //**Type definitions****************************************************************************
-   typedef typename MT::ResultType    RT;  //!< Result type of the dense matrix expression.
-   typedef typename MT::OppositeType  OT;  //!< Opposite type of the dense matrix expression.
-   typedef typename MT::ReturnType    RN;  //!< Return type of the dense matrix expression.
+   typedef ResultType_<MT>    RT;  //!< Result type of the dense matrix expression.
+   typedef OppositeType_<MT>  OT;  //!< Opposite type of the dense matrix expression.
+   typedef ReturnType_<MT>    RN;  //!< Return type of the dense matrix expression.
    //**********************************************************************************************
 
    //**Return type evaluation**********************************************************************
@@ -128,7 +129,7 @@ class DMatImagExpr : public DenseMatrix< DMatImagExpr<MT,SO>, SO >
    enum { returnExpr = !IsTemporary<RN>::value };
 
    //! Expression return type for the subscript operator.
-   typedef typename ImagExprTrait<RN>::Type  ExprReturnType;
+   typedef ImagExprTrait_<RN>  ExprReturnType;
    //**********************************************************************************************
 
    //**Serial evaluation strategy******************************************************************
@@ -167,17 +168,17 @@ class DMatImagExpr : public DenseMatrix< DMatImagExpr<MT,SO>, SO >
 
  public:
    //**Type definitions****************************************************************************
-   typedef DMatImagExpr<MT,SO>                 This;           //!< Type of this DMatImagExpr instance.
-   typedef typename ImagTrait<RT>::Type        ResultType;     //!< Result type for expression template evaluations.
-   typedef typename ResultType::OppositeType   OppositeType;   //!< Result type with opposite storage order for expression template evaluations.
-   typedef typename ResultType::TransposeType  TransposeType;  //!< Transpose type for expression template evaluations.
-   typedef typename ResultType::ElementType    ElementType;    //!< Resulting element type.
+   typedef DMatImagExpr<MT,SO>         This;           //!< Type of this DMatImagExpr instance.
+   typedef ImagTrait_<RT>              ResultType;     //!< Result type for expression template evaluations.
+   typedef OppositeType_<ResultType>   OppositeType;   //!< Result type with opposite storage order for expression template evaluations.
+   typedef TransposeType_<ResultType>  TransposeType;  //!< Transpose type for expression template evaluations.
+   typedef ElementType_<ResultType>    ElementType;    //!< Resulting element type.
 
    //! Return type for expression template evaluations.
    typedef const IfTrue_< returnExpr, ExprReturnType, ElementType >  ReturnType;
 
    //! Data type for composite expression templates.
-   typedef IfTrue< useAssign, const ResultType, const DMatImagExpr& >  CompositeType;
+   typedef IfTrue_< useAssign, const ResultType, const DMatImagExpr& >  CompositeType;
 
    //! Composite data type of the dense matrix expression.
    typedef If_< IsExpression<MT>, const MT, const MT& >  Operand;
@@ -204,7 +205,7 @@ class DMatImagExpr : public DenseMatrix< DMatImagExpr<MT,SO>, SO >
       typedef DifferenceType    difference_type;    //!< Difference between two iterators.
 
       //! ConstIterator type of the dense matrix expression.
-      typedef typename MT::ConstIterator  IteratorType;
+      typedef ConstIterator_<MT>  IteratorType;
       //*******************************************************************************************
 
       //**Constructor******************************************************************************
@@ -588,7 +589,7 @@ class DMatImagExpr : public DenseMatrix< DMatImagExpr<MT,SO>, SO >
 
       BLAZE_CONSTRAINT_MUST_BE_DENSE_MATRIX_TYPE( RT );
       BLAZE_CONSTRAINT_MUST_BE_MATRIX_WITH_STORAGE_ORDER( RT, SO );
-      BLAZE_CONSTRAINT_MUST_BE_REFERENCE_TYPE( typename RT::CompositeType );
+      BLAZE_CONSTRAINT_MUST_BE_REFERENCE_TYPE( CompositeType_<RT> );
 
       BLAZE_INTERNAL_ASSERT( (~lhs).rows()    == rhs.rows()   , "Invalid number of rows"    );
       BLAZE_INTERNAL_ASSERT( (~lhs).columns() == rhs.columns(), "Invalid number of columns" );
@@ -627,7 +628,7 @@ class DMatImagExpr : public DenseMatrix< DMatImagExpr<MT,SO>, SO >
       BLAZE_CONSTRAINT_MUST_BE_MATRIX_WITH_STORAGE_ORDER( RT, SO );
       BLAZE_CONSTRAINT_MUST_BE_MATRIX_WITH_STORAGE_ORDER( OT, !SO );
       BLAZE_CONSTRAINT_MATRICES_MUST_HAVE_SAME_STORAGE_ORDER( MT2, TmpType );
-      BLAZE_CONSTRAINT_MUST_BE_REFERENCE_TYPE( typename TmpType::CompositeType );
+      BLAZE_CONSTRAINT_MUST_BE_REFERENCE_TYPE( CompositeType_<TmpType> );
 
       BLAZE_INTERNAL_ASSERT( (~lhs).rows()    == rhs.rows()   , "Invalid number of rows"    );
       BLAZE_INTERNAL_ASSERT( (~lhs).columns() == rhs.columns(), "Invalid number of columns" );
@@ -661,7 +662,7 @@ class DMatImagExpr : public DenseMatrix< DMatImagExpr<MT,SO>, SO >
 
       BLAZE_CONSTRAINT_MUST_BE_DENSE_MATRIX_TYPE( RT );
       BLAZE_CONSTRAINT_MUST_BE_MATRIX_WITH_STORAGE_ORDER( RT, SO );
-      BLAZE_CONSTRAINT_MUST_BE_REFERENCE_TYPE( typename RT::CompositeType );
+      BLAZE_CONSTRAINT_MUST_BE_REFERENCE_TYPE( CompositeType_<RT> );
 
       BLAZE_INTERNAL_ASSERT( (~lhs).rows()    == rhs.rows()   , "Invalid number of rows"    );
       BLAZE_INTERNAL_ASSERT( (~lhs).columns() == rhs.columns(), "Invalid number of columns" );
@@ -699,7 +700,7 @@ class DMatImagExpr : public DenseMatrix< DMatImagExpr<MT,SO>, SO >
 
       BLAZE_CONSTRAINT_MUST_BE_DENSE_MATRIX_TYPE( RT );
       BLAZE_CONSTRAINT_MUST_BE_MATRIX_WITH_STORAGE_ORDER( RT, SO );
-      BLAZE_CONSTRAINT_MUST_BE_REFERENCE_TYPE( typename RT::CompositeType );
+      BLAZE_CONSTRAINT_MUST_BE_REFERENCE_TYPE( CompositeType_<RT> );
 
       BLAZE_INTERNAL_ASSERT( (~lhs).rows()    == rhs.rows()   , "Invalid number of rows"    );
       BLAZE_INTERNAL_ASSERT( (~lhs).columns() == rhs.columns(), "Invalid number of columns" );
@@ -746,7 +747,7 @@ class DMatImagExpr : public DenseMatrix< DMatImagExpr<MT,SO>, SO >
 
       BLAZE_CONSTRAINT_MUST_BE_DENSE_MATRIX_TYPE( RT );
       BLAZE_CONSTRAINT_MUST_BE_MATRIX_WITH_STORAGE_ORDER( RT, SO );
-      BLAZE_CONSTRAINT_MUST_BE_REFERENCE_TYPE( typename RT::CompositeType );
+      BLAZE_CONSTRAINT_MUST_BE_REFERENCE_TYPE( CompositeType_<RT> );
 
       BLAZE_INTERNAL_ASSERT( (~lhs).rows()    == rhs.rows()   , "Invalid number of rows"    );
       BLAZE_INTERNAL_ASSERT( (~lhs).columns() == rhs.columns(), "Invalid number of columns" );
@@ -785,7 +786,7 @@ class DMatImagExpr : public DenseMatrix< DMatImagExpr<MT,SO>, SO >
       BLAZE_CONSTRAINT_MUST_BE_MATRIX_WITH_STORAGE_ORDER( RT, SO );
       BLAZE_CONSTRAINT_MUST_BE_MATRIX_WITH_STORAGE_ORDER( OT, !SO );
       BLAZE_CONSTRAINT_MATRICES_MUST_HAVE_SAME_STORAGE_ORDER( MT2, TmpType );
-      BLAZE_CONSTRAINT_MUST_BE_REFERENCE_TYPE( typename TmpType::CompositeType );
+      BLAZE_CONSTRAINT_MUST_BE_REFERENCE_TYPE( CompositeType_<TmpType> );
 
       BLAZE_INTERNAL_ASSERT( (~lhs).rows()    == rhs.rows()   , "Invalid number of rows"    );
       BLAZE_INTERNAL_ASSERT( (~lhs).columns() == rhs.columns(), "Invalid number of columns" );
@@ -819,7 +820,7 @@ class DMatImagExpr : public DenseMatrix< DMatImagExpr<MT,SO>, SO >
 
       BLAZE_CONSTRAINT_MUST_BE_DENSE_MATRIX_TYPE( RT );
       BLAZE_CONSTRAINT_MUST_BE_MATRIX_WITH_STORAGE_ORDER( RT, SO );
-      BLAZE_CONSTRAINT_MUST_BE_REFERENCE_TYPE( typename RT::CompositeType );
+      BLAZE_CONSTRAINT_MUST_BE_REFERENCE_TYPE( CompositeType_<RT> );
 
       BLAZE_INTERNAL_ASSERT( (~lhs).rows()    == rhs.rows()   , "Invalid number of rows"    );
       BLAZE_INTERNAL_ASSERT( (~lhs).columns() == rhs.columns(), "Invalid number of columns" );
@@ -857,7 +858,7 @@ class DMatImagExpr : public DenseMatrix< DMatImagExpr<MT,SO>, SO >
 
       BLAZE_CONSTRAINT_MUST_BE_DENSE_MATRIX_TYPE( RT );
       BLAZE_CONSTRAINT_MUST_BE_MATRIX_WITH_STORAGE_ORDER( RT, SO );
-      BLAZE_CONSTRAINT_MUST_BE_REFERENCE_TYPE( typename RT::CompositeType );
+      BLAZE_CONSTRAINT_MUST_BE_REFERENCE_TYPE( CompositeType_<RT> );
 
       BLAZE_INTERNAL_ASSERT( (~lhs).rows()    == rhs.rows()   , "Invalid number of rows"    );
       BLAZE_INTERNAL_ASSERT( (~lhs).columns() == rhs.columns(), "Invalid number of columns" );
@@ -918,11 +919,11 @@ class DMatImagExpr : public DenseMatrix< DMatImagExpr<MT,SO>, SO >
 */
 template< typename MT  // Type of the dense matrix
         , bool SO >    // Storage order
-inline const typename ImagExprTrait<MT>::Type imag( const DenseMatrix<MT,SO>& dm )
+inline const ImagExprTrait_<MT> imag( const DenseMatrix<MT,SO>& dm )
 {
    BLAZE_FUNCTION_TRACE;
 
-   return typename ImagExprTrait<MT>::Type( ~dm );
+   return ImagExprTrait_<MT>( ~dm );
 }
 //*************************************************************************************************
 
@@ -1201,7 +1202,7 @@ struct SubmatrixExprTrait< DMatImagExpr<MT,SO>, AF >
 {
  public:
    //**********************************************************************************************
-   using Type = typename ImagExprTrait< typename SubmatrixExprTrait<const MT,AF>::Type >::Type;
+   using Type = ImagExprTrait_< SubmatrixExprTrait_<const MT,AF> >;
    //**********************************************************************************************
 };
 /*! \endcond */
@@ -1215,7 +1216,7 @@ struct RowExprTrait< DMatImagExpr<MT,SO> >
 {
  public:
    //**********************************************************************************************
-   using Type = typename ImagExprTrait< typename RowExprTrait<const MT>::Type >::Type;
+   using Type = ImagExprTrait_< RowExprTrait_<const MT> >;
    //**********************************************************************************************
 };
 /*! \endcond */
@@ -1229,7 +1230,7 @@ struct ColumnExprTrait< DMatImagExpr<MT,SO> >
 {
  public:
    //**********************************************************************************************
-   using Type = typename ImagExprTrait< typename ColumnExprTrait<const MT>::Type >::Type;
+   using Type = ImagExprTrait_< ColumnExprTrait_<const MT> >;
    //**********************************************************************************************
 };
 /*! \endcond */

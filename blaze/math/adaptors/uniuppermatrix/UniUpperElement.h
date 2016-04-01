@@ -40,6 +40,7 @@
 // Includes
 //*************************************************************************************************
 
+#include <blaze/math/Aliases.h>
 #include <blaze/math/adaptors/uniuppermatrix/UniUpperValue.h>
 #include <blaze/math/constraints/Expression.h>
 #include <blaze/math/constraints/Hermitian.h>
@@ -96,8 +97,8 @@ class UniUpperElement : private SparseElement
 {
  private:
    //**Type definitions****************************************************************************
-   typedef typename MT::ElementType  ElementType;   //!< Type of the represented matrix element.
-   typedef typename MT::Iterator     IteratorType;  //!< Type of the underlying sparse matrix iterators.
+   typedef ElementType_<MT>  ElementType;   //!< Type of the represented matrix element.
+   typedef Iterator_<MT>     IteratorType;  //!< Type of the underlying sparse matrix iterators.
    //**********************************************************************************************
 
  public:

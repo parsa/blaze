@@ -41,6 +41,7 @@
 //*************************************************************************************************
 
 #include <algorithm>
+#include <blaze/math/Aliases.h>
 #include <blaze/math/constraints/SparseMatrix.h>
 #include <blaze/math/proxy/Proxy.h>
 #include <blaze/math/shims/Clear.h>
@@ -97,7 +98,7 @@ namespace blaze {
 // to the sparse matrix elements while preserving the intuitive use of the function call operator.
 */
 template< typename MT >  // Type of the sparse matrix
-class MatrixAccessProxy : public Proxy< MatrixAccessProxy<MT>, typename MT::ElementType >
+class MatrixAccessProxy : public Proxy< MatrixAccessProxy<MT>, ElementType_<MT> >
 {
  private:
    //**Enumerations********************************************************************************
@@ -107,8 +108,8 @@ class MatrixAccessProxy : public Proxy< MatrixAccessProxy<MT>, typename MT::Elem
 
  public:
    //**Type definitions****************************************************************************
-   typedef typename MT::ElementType  RepresentedType;  //!< Type of the represented sparse matrix element.
-   typedef RepresentedType&          RawReference;     //!< Raw reference to the represented element.
+   typedef ElementType_<MT>  RepresentedType;  //!< Type of the represented sparse matrix element.
+   typedef RepresentedType&  RawReference;     //!< Raw reference to the represented element.
    //**********************************************************************************************
 
    //**Constructors********************************************************************************
@@ -200,7 +201,7 @@ inline MatrixAccessProxy<MT>::MatrixAccessProxy( MT& sm, size_t i, size_t j )
    , i_ ( i  )  // Row-index of the accessed sparse matrix element
    , j_ ( j  )  // Column-index of the accessed sparse matrix element
 {
-   const typename MT::Iterator element( sm_.find( i_, j_ ) );
+   const Iterator_<MT> element( sm_.find( i_, j_ ) );
    const size_t index( rmm ? i_ : j_ );
    if( element == sm_.end(index) )
       sm_.insert( i_, j_, RepresentedType() );
@@ -238,7 +239,7 @@ inline MatrixAccessProxy<MT>::MatrixAccessProxy( const MatrixAccessProxy& map )
 template< typename MT >  // Type of the sparse matrix
 inline MatrixAccessProxy<MT>::~MatrixAccessProxy()
 {
-   const typename MT::Iterator element( sm_.find( i_, j_ ) );
+   const Iterator_<MT> element( sm_.find( i_, j_ ) );
    const size_t index( rmm ? i_ : j_ );
    if( element != sm_.end( index ) && isDefault( element->value() ) )
       sm_.erase( index, element );
@@ -365,7 +366,7 @@ inline const MatrixAccessProxy<MT>& MatrixAccessProxy<MT>::operator/=( const T& 
 template< typename MT >  // Type of the sparse matrix
 inline typename MatrixAccessProxy<MT>::RawReference MatrixAccessProxy<MT>::get() const noexcept
 {
-   const typename MT::Iterator element( sm_.find( i_, j_ ) );
+   const Iterator_<MT> element( sm_.find( i_, j_ ) );
    BLAZE_INTERNAL_ASSERT( element != sm_.end( rmm ? i_ : j_ ), "Missing matrix element detected" );
    return element->value();
 }
@@ -418,7 +419,7 @@ inline MatrixAccessProxy<MT>::operator RawReference() const noexcept
 /*!\name MatrixAccessProxy global functions */
 //@{
 template< typename MT >
-inline typename ConjExprTrait< typename MatrixAccessProxy<MT>::RepresentedType >::Type
+inline ConjExprTrait_< RepresentedType_< MatrixAccessProxy<MT> > >
    conj( const MatrixAccessProxy<MT>& proxy );
 
 template< typename MT >
@@ -466,7 +467,7 @@ inline void swap( T& a, const MatrixAccessProxy<MT>& v ) noexcept;
 // expression representing the complex conjugate of the vector/matrix.
 */
 template< typename MT >
-inline typename ConjExprTrait< typename MatrixAccessProxy<MT>::RepresentedType >::Type
+inline ConjExprTrait_< RepresentedType_< MatrixAccessProxy<MT> > >
    conj( const MatrixAccessProxy<MT>& proxy )
 {
    using blaze::conj;

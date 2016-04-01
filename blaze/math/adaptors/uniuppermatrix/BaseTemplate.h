@@ -235,16 +235,16 @@ namespace blaze {
    A.erase( 0, 2 );  // Erasing the upper element (0,2)
 
    // Construction from an uniupper dense matrix
-   StaticMatrix<double,3UL,3UL> B( 1.0,  8.0, -2.0,
-                                   0.0,  1.0, -1.0,
-                                   0.0,  0.0,  1.0 );
+   StaticMatrix<double,3UL,3UL> B( { { 1.0,  8.0, -2.0 },
+                                     { 0.0,  1.0, -1.0 },
+                                     { 0.0,  0.0,  1.0 } } );
 
    UniUpperMatrix< DynamicMatrix<double,rowMajor> > C( B );  // OK
 
    // Assignment of a non-uniupper dense matrix
-   StaticMatrix<double,3UL,3UL> D(  3.0,  8.0, -2.0,
-                                    0.0,  0.0, -1.0,
-                                   -2.0,  0.0,  4.0 );
+   StaticMatrix<double,3UL,3UL> D( { {  3.0,  8.0, -2.0 },
+                                     {  0.0,  0.0, -1.0 },
+                                     { -2.0,  0.0,  4.0 } } );
 
    C = D;  // Throws an exception; upper unitriangular matrix invariant would be violated!
    \endcode

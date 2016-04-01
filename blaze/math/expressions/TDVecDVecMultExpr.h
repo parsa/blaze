@@ -40,6 +40,7 @@
 // Includes
 //*************************************************************************************************
 
+#include <blaze/math/Aliases.h>
 #include <blaze/math/expressions/DenseVector.h>
 #include <blaze/math/Intrinsics.h>
 #include <blaze/math/traits/MultTrait.h>
@@ -73,19 +74,19 @@ struct TDVecDVecMultExprHelper
 {
    //**Type definitions****************************************************************************
    //! Composite type of the left-hand side dense vector expression.
-   typedef RemoveReference_< typename T1::CompositeType >  CT1;
+   typedef RemoveReference_< CompositeType_<T1> >  CT1;
 
    //! Composite type of the right-hand side dense vector expression.
-   typedef RemoveReference_< typename T2::CompositeType >  CT2;
+   typedef RemoveReference_< CompositeType_<T2> >  CT2;
    //**********************************************************************************************
 
    //**********************************************************************************************
    enum { value = useOptimizedKernels &&
                   CT1::vectorizable &&
                   CT2::vectorizable &&
-                  IsSame< typename CT1::ElementType, typename CT2::ElementType>::value &&
-                  IntrinsicTrait< typename CT1::ElementType >::addition &&
-                  IntrinsicTrait< typename CT2::ElementType >::multiplication };
+                  IsSame< ElementType_<CT1>, ElementType_<CT2> >::value &&
+                  IntrinsicTrait< ElementType_<CT1> >::addition &&
+                  IntrinsicTrait< ElementType_<CT2> >::multiplication };
    //**********************************************************************************************
 };
 /*! \endcond */
@@ -129,7 +130,7 @@ struct TDVecDVecMultExprHelper
 template< typename T1    // Type of the left-hand side dense vector
         , typename T2 >  // Type of the right-hand side dense vector
 inline DisableIf_< TDVecDVecMultExprHelper<T1,T2>
-                 , const typename MultTrait<typename T1::ElementType,typename T2::ElementType>::Type >
+                 , const MultTrait_< ElementType_<T1>, ElementType_<T2> > >
    operator*( const DenseVector<T1,true>& lhs, const DenseVector<T2,false>& rhs )
 {
    BLAZE_FUNCTION_TRACE;
@@ -138,11 +139,11 @@ inline DisableIf_< TDVecDVecMultExprHelper<T1,T2>
       BLAZE_THROW_INVALID_ARGUMENT( "Vector sizes do not match" );
    }
 
-   typedef typename T1::CompositeType         Lhs;
-   typedef typename T2::CompositeType         Rhs;
-   typedef typename T1::ElementType           ET1;
-   typedef typename T2::ElementType           ET2;
-   typedef typename MultTrait<ET1,ET2>::Type  MultType;
+   typedef CompositeType_<T1>   Lhs;
+   typedef CompositeType_<T2>   Rhs;
+   typedef ElementType_<T1>     ET1;
+   typedef ElementType_<T2>     ET2;
+   typedef MultTrait_<ET1,ET2>  MultType;
 
    if( (~lhs).size() == 0UL ) return MultType();
 
@@ -190,7 +191,7 @@ inline DisableIf_< TDVecDVecMultExprHelper<T1,T2>
 template< typename T1    // Type of the left-hand side dense vector
         , typename T2 >  // Type of the right-hand side dense vector
 inline EnableIf_< TDVecDVecMultExprHelper<T1,T2>
-               , const typename MultTrait<typename T1::ElementType,typename T2::ElementType>::Type >
+               , const MultTrait_< ElementType_<T1>, ElementType_<T2> > >
    operator*( const DenseVector<T1,true>& lhs, const DenseVector<T2,false>& rhs )
 {
    BLAZE_FUNCTION_TRACE;
@@ -199,12 +200,12 @@ inline EnableIf_< TDVecDVecMultExprHelper<T1,T2>
       BLAZE_THROW_INVALID_ARGUMENT( "Vector sizes do not match" );
    }
 
-   typedef typename T1::CompositeType         Lhs;
-   typedef typename T2::CompositeType         Rhs;
-   typedef typename T1::ElementType           ET1;
-   typedef typename T2::ElementType           ET2;
-   typedef typename MultTrait<ET1,ET2>::Type  MultType;
-   typedef IntrinsicTrait<MultType>           IT;
+   typedef CompositeType_<T1>        Lhs;
+   typedef CompositeType_<T2>        Rhs;
+   typedef ElementType_<T1>          ET1;
+   typedef ElementType_<T2>          ET2;
+   typedef MultTrait_<ET1,ET2>       MultType;
+   typedef IntrinsicTrait<MultType>  IT;
 
    if( (~lhs).size() == 0UL ) return MultType();
 

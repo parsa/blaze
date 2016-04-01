@@ -41,6 +41,7 @@
 //*************************************************************************************************
 
 #include <iterator>
+#include <blaze/math/Aliases.h>
 #include <blaze/math/constraints/ColumnMajorMatrix.h>
 #include <blaze/math/constraints/ColumnVector.h>
 #include <blaze/math/constraints/Computation.h>
@@ -347,24 +348,24 @@ class DenseColumn : public DenseVector< DenseColumn<MT,SO,SF>, false >
    typedef If_< IsExpression<MT>, MT, MT& >  Operand;
 
    //! Intrinsic trait for the column element type.
-   typedef IntrinsicTrait<typename MT::ElementType>  IT;
+   typedef IntrinsicTrait< ElementType_<MT> >  IT;
    //**********************************************************************************************
 
  public:
    //**Type definitions****************************************************************************
-   typedef DenseColumn<MT,SO,SF>               This;           //!< Type of this DenseColumn instance.
-   typedef typename ColumnTrait<MT>::Type      ResultType;     //!< Result type for expression template evaluations.
-   typedef typename ResultType::TransposeType  TransposeType;  //!< Transpose type for expression template evaluations.
-   typedef typename MT::ElementType            ElementType;    //!< Type of the column elements.
-   typedef typename IT::Type                   IntrinsicType;  //!< Intrinsic type of the column elements.
-   typedef typename MT::ReturnType             ReturnType;     //!< Return type for expression template evaluations
-   typedef const DenseColumn&                  CompositeType;  //!< Data type for composite expression templates.
+   typedef DenseColumn<MT,SO,SF>       This;           //!< Type of this DenseColumn instance.
+   typedef ColumnTrait_<MT>            ResultType;     //!< Result type for expression template evaluations.
+   typedef TransposeType_<ResultType>  TransposeType;  //!< Transpose type for expression template evaluations.
+   typedef ElementType_<MT>            ElementType;    //!< Type of the column elements.
+   typedef typename IT::Type           IntrinsicType;  //!< Intrinsic type of the column elements.
+   typedef ReturnType_<MT>             ReturnType;     //!< Return type for expression template evaluations
+   typedef const DenseColumn&          CompositeType;  //!< Data type for composite expression templates.
 
    //! Reference to a constant column value.
-   typedef typename MT::ConstReference  ConstReference;
+   typedef ConstReference_<MT>  ConstReference;
 
    //! Reference to a non-constant column value.
-   typedef If_< IsConst<MT>, ConstReference, typename MT::Reference >  Reference;
+   typedef If_< IsConst<MT>, ConstReference, Reference_<MT> >  Reference;
 
    //! Pointer to a constant column value.
    typedef const ElementType*  ConstPointer;
@@ -373,10 +374,10 @@ class DenseColumn : public DenseVector< DenseColumn<MT,SO,SF>, false >
    typedef If_< Or< IsConst<MT>, Not< HasMutableDataAccess<MT> > >, ConstPointer, ElementType* >  Pointer;
 
    //! Iterator over constant elements.
-   typedef typename MT::ConstIterator  ConstIterator;
+   typedef ConstIterator_<MT>  ConstIterator;
 
    //! Iterator over non-constant elements.
-   typedef If_< IsConst<MT>, ConstIterator, typename MT::Iterator >  Iterator;
+   typedef If_< IsConst<MT>, ConstIterator, Iterator_<MT> >  Iterator;
    //**********************************************************************************************
 
    //**Compilation flags***************************************************************************
@@ -456,7 +457,7 @@ class DenseColumn : public DenseVector< DenseColumn<MT,SO,SF>, false >
    struct VectorizedAssign {
       enum { value = useOptimizedKernels &&
                      vectorizable && VT::vectorizable &&
-                     IsSame<ElementType,typename VT::ElementType>::value };
+                     IsSame< ElementType, ElementType_<VT> >::value };
    };
    /*! \endcond */
    //**********************************************************************************************
@@ -468,7 +469,7 @@ class DenseColumn : public DenseVector< DenseColumn<MT,SO,SF>, false >
    struct VectorizedAddAssign {
       enum { value = useOptimizedKernels &&
                      vectorizable && VT::vectorizable &&
-                     IsSame<ElementType,typename VT::ElementType>::value &&
+                     IsSame< ElementType, ElementType_<VT> >::value &&
                      IntrinsicTrait<ElementType>::addition };
    };
    /*! \endcond */
@@ -481,7 +482,7 @@ class DenseColumn : public DenseVector< DenseColumn<MT,SO,SF>, false >
    struct VectorizedSubAssign {
       enum { value = useOptimizedKernels &&
                      vectorizable && VT::vectorizable &&
-                     IsSame<ElementType,typename VT::ElementType>::value &&
+                     IsSame< ElementType, ElementType_<VT> >::value &&
                      IntrinsicTrait<ElementType>::subtraction };
    };
    /*! \endcond */
@@ -494,7 +495,7 @@ class DenseColumn : public DenseVector< DenseColumn<MT,SO,SF>, false >
    struct VectorizedMultAssign {
       enum { value = useOptimizedKernels &&
                      vectorizable && VT::vectorizable &&
-                     IsSame<ElementType,typename VT::ElementType>::value &&
+                     IsSame< ElementType, ElementType_<VT> >::value &&
                      IntrinsicTrait<ElementType>::multiplication };
    };
    /*! \endcond */
@@ -594,8 +595,7 @@ class DenseColumn : public DenseVector< DenseColumn<MT,SO,SF>, false >
    friend bool tryMultAssign( const DenseColumn<MT2,SO2,SF2>& lhs, const Vector<VT,false>& rhs, size_t index );
 
    template< typename MT2, bool SO2, bool SF2 >
-   friend typename DerestrictTrait< DenseColumn<MT2,SO2,SF2> >::Type
-      derestrict( DenseColumn<MT2,SO2,SF2>& dm );
+   friend DerestrictTrait_< DenseColumn<MT2,SO2,SF2> > derestrict( DenseColumn<MT2,SO2,SF2>& dm );
    /*! \endcond */
    //**********************************************************************************************
 
@@ -946,7 +946,7 @@ inline DenseColumn<MT,SO,SF>& DenseColumn<MT,SO,SF>::operator=( const DenseColum
       BLAZE_THROW_INVALID_ARGUMENT( "Invalid assignment to restricted matrix" );
    }
 
-   typename DerestrictTrait<This>::Type left( derestrict( *this ) );
+   DerestrictTrait_<This> left( derestrict( *this ) );
 
    smpAssign( left, rhs );
 
@@ -976,24 +976,24 @@ template< typename MT  // Type of the dense matrix
 template< typename VT >  // Type of the right-hand side vector
 inline DenseColumn<MT,SO,SF>& DenseColumn<MT,SO,SF>::operator=( const Vector<VT,false>& rhs )
 {
-   BLAZE_CONSTRAINT_MUST_BE_COLUMN_VECTOR_TYPE ( typename VT::ResultType );
-   BLAZE_CONSTRAINT_MUST_NOT_REQUIRE_EVALUATION( typename VT::ResultType );
+   BLAZE_CONSTRAINT_MUST_BE_COLUMN_VECTOR_TYPE ( ResultType_<VT> );
+   BLAZE_CONSTRAINT_MUST_NOT_REQUIRE_EVALUATION( ResultType_<VT> );
 
    if( size() != (~rhs).size() ) {
       BLAZE_THROW_INVALID_ARGUMENT( "Vector sizes do not match" );
    }
 
-   typedef If_< IsRestricted<MT>, typename VT::CompositeType, const VT& >  Right;
+   typedef If_< IsRestricted<MT>, CompositeType_<VT>, const VT& >  Right;
    Right right( ~rhs );
 
    if( !tryAssign( matrix_, right, 0UL, col_ ) ) {
       BLAZE_THROW_INVALID_ARGUMENT( "Invalid assignment to restricted matrix" );
    }
 
-   typename DerestrictTrait<This>::Type left( derestrict( *this ) );
+   DerestrictTrait_<This> left( derestrict( *this ) );
 
    if( IsReference<Right>::value && right.canAlias( &matrix_ ) ) {
-      const typename VT::ResultType tmp( right );
+      const ResultType_<VT> tmp( right );
       smpAssign( left, tmp );
    }
    else {
@@ -1028,24 +1028,24 @@ template< typename MT    // Type of the dense matrix
 template< typename VT >  // Type of the right-hand side vector
 inline DenseColumn<MT,SO,SF>& DenseColumn<MT,SO,SF>::operator+=( const Vector<VT,false>& rhs )
 {
-   BLAZE_CONSTRAINT_MUST_BE_COLUMN_VECTOR_TYPE ( typename VT::ResultType );
-   BLAZE_CONSTRAINT_MUST_NOT_REQUIRE_EVALUATION( typename VT::ResultType );
+   BLAZE_CONSTRAINT_MUST_BE_COLUMN_VECTOR_TYPE ( ResultType_<VT> );
+   BLAZE_CONSTRAINT_MUST_NOT_REQUIRE_EVALUATION( ResultType_<VT> );
 
    if( size() != (~rhs).size() ) {
       BLAZE_THROW_INVALID_ARGUMENT( "Vector sizes do not match" );
    }
 
-   typedef If_< IsRestricted<MT>, typename VT::CompositeType, const VT& >  Right;
+   typedef If_< IsRestricted<MT>, CompositeType_<VT>, const VT& >  Right;
    Right right( ~rhs );
 
    if( !tryAddAssign( matrix_, right, 0UL, col_ ) ) {
       BLAZE_THROW_INVALID_ARGUMENT( "Invalid assignment to restricted matrix" );
    }
 
-   typename DerestrictTrait<This>::Type left( derestrict( *this ) );
+   DerestrictTrait_<This> left( derestrict( *this ) );
 
    if( IsReference<Right>::value && right.canAlias( &matrix_ ) ) {
-      const typename VT::ResultType tmp( right );
+      const ResultType_<VT> tmp( right );
       smpAddAssign( left, tmp );
    }
    else {
@@ -1078,24 +1078,24 @@ template< typename MT    // Type of the dense matrix
 template< typename VT >  // Type of the right-hand side vector
 inline DenseColumn<MT,SO,SF>& DenseColumn<MT,SO,SF>::operator-=( const Vector<VT,false>& rhs )
 {
-   BLAZE_CONSTRAINT_MUST_BE_COLUMN_VECTOR_TYPE ( typename VT::ResultType );
-   BLAZE_CONSTRAINT_MUST_NOT_REQUIRE_EVALUATION( typename VT::ResultType );
+   BLAZE_CONSTRAINT_MUST_BE_COLUMN_VECTOR_TYPE ( ResultType_<VT> );
+   BLAZE_CONSTRAINT_MUST_NOT_REQUIRE_EVALUATION( ResultType_<VT> );
 
    if( size() != (~rhs).size() ) {
       BLAZE_THROW_INVALID_ARGUMENT( "Vector sizes do not match" );
    }
 
-   typedef If_< IsRestricted<MT>, typename VT::CompositeType, const VT& >  Right;
+   typedef If_< IsRestricted<MT>, CompositeType_<VT>, const VT& >  Right;
    Right right( ~rhs );
 
    if( !trySubAssign( matrix_, right, 0UL, col_ ) ) {
       BLAZE_THROW_INVALID_ARGUMENT( "Invalid assignment to restricted matrix" );
    }
 
-   typename DerestrictTrait<This>::Type left( derestrict( *this ) );
+   DerestrictTrait_<This> left( derestrict( *this ) );
 
    if( IsReference<Right>::value && right.canAlias( &matrix_ ) ) {
-      const typename VT::ResultType tmp( right );
+      const ResultType_<VT> tmp( right );
       smpSubAssign( left, tmp );
    }
    else {
@@ -1127,24 +1127,24 @@ template< typename MT    // Type of the dense matrix
 template< typename VT >  // Type of the right-hand side dense vector
 inline DenseColumn<MT,SO,SF>& DenseColumn<MT,SO,SF>::operator*=( const DenseVector<VT,false>& rhs )
 {
-   BLAZE_CONSTRAINT_MUST_BE_COLUMN_VECTOR_TYPE ( typename VT::ResultType );
-   BLAZE_CONSTRAINT_MUST_NOT_REQUIRE_EVALUATION( typename VT::ResultType );
+   BLAZE_CONSTRAINT_MUST_BE_COLUMN_VECTOR_TYPE ( ResultType_<VT> );
+   BLAZE_CONSTRAINT_MUST_NOT_REQUIRE_EVALUATION( ResultType_<VT> );
 
    if( size() != (~rhs).size() ) {
       BLAZE_THROW_INVALID_ARGUMENT( "Vector sizes do not match" );
    }
 
-   typedef If_< IsRestricted<MT>, typename VT::CompositeType, const VT& >  Right;
+   typedef If_< IsRestricted<MT>, CompositeType_<VT>, const VT& >  Right;
    Right right( ~rhs );
 
    if( !tryMultAssign( matrix_, right, 0UL, col_ ) ) {
       BLAZE_THROW_INVALID_ARGUMENT( "Invalid assignment to restricted matrix" );
    }
 
-   typename DerestrictTrait<This>::Type left( derestrict( *this ) );
+   DerestrictTrait_<This> left( derestrict( *this ) );
 
    if( IsReference<Right>::value && right.canAlias( &matrix_ ) ) {
-      const typename VT::ResultType tmp( right );
+      const ResultType_<VT> tmp( right );
       smpMultAssign( left, tmp );
    }
    else {
@@ -1190,7 +1190,7 @@ inline DenseColumn<MT,SO,SF>& DenseColumn<MT,SO,SF>::operator*=( const SparseVec
       BLAZE_THROW_INVALID_ARGUMENT( "Invalid assignment to restricted matrix" );
    }
 
-   typename DerestrictTrait<This>::Type left( derestrict( *this ) );
+   DerestrictTrait_<This> left( derestrict( *this ) );
 
    smpAssign( left, right );
 
@@ -1735,7 +1735,7 @@ inline EnableIf_< typename DenseColumn<MT,SO,SF>::BLAZE_TEMPLATE VectorizedAssig
    else
    {
       size_t i( 0UL );
-      typename VT::ConstIterator it( (~rhs).begin() );
+      ConstIterator_<VT> it( (~rhs).begin() );
 
       for( ; (i+IT::size*3UL) < ipos; i+=IT::size*4UL ) {
          matrix_.store( i             , col_, it.load() ); it+=IT::size;
@@ -1773,7 +1773,7 @@ inline void DenseColumn<MT,SO,SF>::assign( const SparseVector<VT,false>& rhs )
 {
    BLAZE_INTERNAL_ASSERT( size() == (~rhs).size(), "Invalid vector sizes" );
 
-   for( typename VT::ConstIterator element=(~rhs).begin(); element!=(~rhs).end(); ++element )
+   for( ConstIterator_<VT> element=(~rhs).begin(); element!=(~rhs).end(); ++element )
       matrix_(element->index(),col_) = element->value();
 }
 //*************************************************************************************************
@@ -1839,7 +1839,7 @@ inline EnableIf_< typename DenseColumn<MT,SO,SF>::BLAZE_TEMPLATE VectorizedAddAs
    BLAZE_INTERNAL_ASSERT( !remainder || ( rows - ( rows % (IT::size) ) ) == ipos, "Invalid end calculation" );
 
    size_t i( 0UL );
-   typename VT::ConstIterator it( (~rhs).begin() );
+   ConstIterator_<VT> it( (~rhs).begin() );
 
    for( ; (i+IT::size*3UL) < ipos; i+=IT::size*4UL ) {
       matrix_.store( i             , col_, matrix_.load(i             ,col_) + it.load() ); it += IT::size;
@@ -1876,7 +1876,7 @@ inline void DenseColumn<MT,SO,SF>::addAssign( const SparseVector<VT,false>& rhs 
 {
    BLAZE_INTERNAL_ASSERT( size() == (~rhs).size(), "Invalid vector sizes" );
 
-   for( typename VT::ConstIterator element=(~rhs).begin(); element!=(~rhs).end(); ++element )
+   for( ConstIterator_<VT> element=(~rhs).begin(); element!=(~rhs).end(); ++element )
       matrix_(element->index(),col_) += element->value();
 }
 //*************************************************************************************************
@@ -1942,7 +1942,7 @@ inline EnableIf_< typename DenseColumn<MT,SO,SF>::BLAZE_TEMPLATE VectorizedSubAs
    BLAZE_INTERNAL_ASSERT( !remainder || ( rows - ( rows % (IT::size) ) ) == ipos, "Invalid end calculation" );
 
    size_t i( 0UL );
-   typename VT::ConstIterator it( (~rhs).begin() );
+   ConstIterator_<VT> it( (~rhs).begin() );
 
    for( ; (i+IT::size*3UL) < ipos; i+=IT::size*4UL ) {
       matrix_.store( i             , col_, matrix_.load(i             ,col_) - it.load() ); it += IT::size;
@@ -1979,7 +1979,7 @@ inline void DenseColumn<MT,SO,SF>::subAssign( const SparseVector<VT,false>& rhs 
 {
    BLAZE_INTERNAL_ASSERT( size() == (~rhs).size(), "Invalid vector sizes" );
 
-   for( typename VT::ConstIterator element=(~rhs).begin(); element!=(~rhs).end(); ++element )
+   for( ConstIterator_<VT> element=(~rhs).begin(); element!=(~rhs).end(); ++element )
       matrix_(element->index(),col_) -= element->value();
 }
 //*************************************************************************************************
@@ -2045,7 +2045,7 @@ inline EnableIf_< typename DenseColumn<MT,SO,SF>::BLAZE_TEMPLATE VectorizedMultA
    BLAZE_INTERNAL_ASSERT( !remainder || ( rows - ( rows % (IT::size) ) ) == ipos, "Invalid end calculation" );
 
    size_t i( 0UL );
-   typename VT::ConstIterator it( (~rhs).begin() );
+   ConstIterator_<VT> it( (~rhs).begin() );
 
    for( ; (i+IT::size*3UL) < ipos; i+=IT::size*4UL ) {
       matrix_.store( i             , col_, matrix_.load(i             ,col_) * it.load() ); it += IT::size;
@@ -2086,7 +2086,7 @@ inline void DenseColumn<MT,SO,SF>::multAssign( const SparseVector<VT,false>& rhs
 
    reset();
 
-   for( typename VT::ConstIterator element=(~rhs).begin(); element!=(~rhs).end(); ++element )
+   for( ConstIterator_<VT> element=(~rhs).begin(); element!=(~rhs).end(); ++element )
       matrix_(element->index(),col_) = tmp[element->index()] * element->value();
 }
 //*************************************************************************************************
@@ -2124,18 +2124,18 @@ class DenseColumn<MT,false,false> : public DenseVector< DenseColumn<MT,false,fal
 
  public:
    //**Type definitions****************************************************************************
-   typedef DenseColumn<MT,false,false>         This;            //!< Type of this DenseColumn instance.
-   typedef typename ColumnTrait<MT>::Type      ResultType;      //!< Result type for expression template evaluations.
-   typedef typename ResultType::TransposeType  TransposeType;   //!< Transpose type for expression template evaluations.
-   typedef typename MT::ElementType            ElementType;     //!< Type of the column elements.
-   typedef typename MT::ReturnType             ReturnType;      //!< Return type for expression template evaluations
-   typedef const DenseColumn&                  CompositeType;   //!< Data type for composite expression templates.
+   typedef DenseColumn<MT,false,false>  This;            //!< Type of this DenseColumn instance.
+   typedef ColumnTrait_<MT>             ResultType;      //!< Result type for expression template evaluations.
+   typedef TransposeType_<ResultType>   TransposeType;   //!< Transpose type for expression template evaluations.
+   typedef ElementType_<MT>             ElementType;     //!< Type of the column elements.
+   typedef ReturnType_<MT>              ReturnType;      //!< Return type for expression template evaluations
+   typedef const DenseColumn&           CompositeType;   //!< Data type for composite expression templates.
 
    //! Reference to a constant column value.
-   typedef typename MT::ConstReference  ConstReference;
+   typedef ConstReference_<MT>  ConstReference;
 
    //! Reference to a non-constant column value.
-   typedef If_< IsConst<MT>, ConstReference, typename MT::Reference >  Reference;
+   typedef If_< IsConst<MT>, ConstReference, Reference_<MT> >  Reference;
 
    //! Pointer to a constant column value.
    typedef const ElementType*  ConstPointer;
@@ -2153,9 +2153,7 @@ class DenseColumn<MT,false,false> : public DenseVector< DenseColumn<MT,false,fal
     public:
       //**Type definitions*************************************************************************
       //! Return type for the access to the value of a dense element.
-      typedef If_< IsConst<MatrixType>
-                 , typename MatrixType::ConstReference
-                 , typename MatrixType::Reference >  Reference;
+      typedef If_< IsConst<MatrixType>, ConstReference_<MatrixType>, Reference_<MatrixType> >  Reference;
 
       typedef std::random_access_iterator_tag  IteratorCategory;  //!< The iterator category.
       typedef RemoveReference_<Reference>      ValueType;         //!< Type of the underlying elements.
@@ -2579,8 +2577,7 @@ class DenseColumn<MT,false,false> : public DenseVector< DenseColumn<MT,false,fal
    friend bool tryMultAssign( const DenseColumn<MT2,SO2,SF2>& lhs, const Vector<VT,false>& rhs, size_t index );
 
    template< typename MT2, bool SO2, bool SF2 >
-   friend typename DerestrictTrait< DenseColumn<MT2,SO2,SF2> >::Type
-      derestrict( DenseColumn<MT2,SO2,SF2>& dm );
+   friend DerestrictTrait_< DenseColumn<MT2,SO2,SF2> > derestrict( DenseColumn<MT2,SO2,SF2>& dm );
    //**********************************************************************************************
 
    //**Compile time checks*************************************************************************
@@ -2937,7 +2934,7 @@ inline DenseColumn<MT,false,false>&
       BLAZE_THROW_INVALID_ARGUMENT( "Invalid assignment to restricted matrix" );
    }
 
-   typename DerestrictTrait<This>::Type left( derestrict( *this ) );
+   DerestrictTrait_<This> left( derestrict( *this ) );
 
    smpAssign( left, rhs );
 
@@ -2976,14 +2973,14 @@ inline DenseColumn<MT,false,false>&
       BLAZE_THROW_INVALID_ARGUMENT( "Vector sizes do not match" );
    }
 
-   typedef If_< IsRestricted<MT>, typename VT::CompositeType, const VT& >  Right;
+   typedef If_< IsRestricted<MT>, CompositeType_<VT>, const VT& >  Right;
    Right right( ~rhs );
 
    if( !tryAssign( matrix_, right, 0UL, col_ ) ) {
       BLAZE_THROW_INVALID_ARGUMENT( "Invalid assignment to restricted matrix" );
    }
 
-   typename DerestrictTrait<This>::Type left( derestrict( *this ) );
+   DerestrictTrait_<This> left( derestrict( *this ) );
 
    if( IsReference<Right>::value && right.canAlias( &matrix_ ) ) {
       const ResultType tmp( right );
@@ -3022,24 +3019,24 @@ template< typename VT >  // Type of the right-hand side vector
 inline DenseColumn<MT,false,false>&
    DenseColumn<MT,false,false>::operator+=( const Vector<VT,false>& rhs )
 {
-   BLAZE_CONSTRAINT_MUST_BE_COLUMN_VECTOR_TYPE ( typename VT::ResultType );
-   BLAZE_CONSTRAINT_MUST_NOT_REQUIRE_EVALUATION( typename VT::ResultType );
+   BLAZE_CONSTRAINT_MUST_BE_COLUMN_VECTOR_TYPE ( ResultType_<VT> );
+   BLAZE_CONSTRAINT_MUST_NOT_REQUIRE_EVALUATION( ResultType_<VT> );
 
    if( size() != (~rhs).size() ) {
       BLAZE_THROW_INVALID_ARGUMENT( "Vector sizes do not match" );
    }
 
-   typedef If_< IsRestricted<MT>, typename VT::CompositeType, const VT& >  Right;
+   typedef If_< IsRestricted<MT>, CompositeType_<VT>, const VT& >  Right;
    Right right( ~rhs );
 
    if( !tryAddAssign( matrix_, right, 0UL, col_ ) ) {
       BLAZE_THROW_INVALID_ARGUMENT( "Invalid assignment to restricted matrix" );
    }
 
-   typename DerestrictTrait<This>::Type left( derestrict( *this ) );
+   DerestrictTrait_<This> left( derestrict( *this ) );
 
    if( IsReference<Right>::value && right.canAlias( &matrix_ ) ) {
-      const typename VT::ResultType tmp( right );
+      const ResultType_<VT> tmp( right );
       smpAddAssign( left, tmp );
    }
    else {
@@ -3073,24 +3070,24 @@ template< typename VT >  // Type of the right-hand side vector
 inline DenseColumn<MT,false,false>&
    DenseColumn<MT,false,false>::operator-=( const Vector<VT,false>& rhs )
 {
-   BLAZE_CONSTRAINT_MUST_BE_COLUMN_VECTOR_TYPE ( typename VT::ResultType );
-   BLAZE_CONSTRAINT_MUST_NOT_REQUIRE_EVALUATION( typename VT::ResultType );
+   BLAZE_CONSTRAINT_MUST_BE_COLUMN_VECTOR_TYPE ( ResultType_<VT> );
+   BLAZE_CONSTRAINT_MUST_NOT_REQUIRE_EVALUATION( ResultType_<VT> );
 
    if( size() != (~rhs).size() ) {
       BLAZE_THROW_INVALID_ARGUMENT( "Vector sizes do not match" );
    }
 
-   typedef If_< IsRestricted<MT>, typename VT::CompositeType, const VT& >  Right;
+   typedef If_< IsRestricted<MT>, CompositeType_<VT>, const VT& >  Right;
    Right right( ~rhs );
 
    if( !trySubAssign( matrix_, right, 0UL, col_ ) ) {
       BLAZE_THROW_INVALID_ARGUMENT( "Invalid assignment to restricted matrix" );
    }
 
-   typename DerestrictTrait<This>::Type left( derestrict( *this ) );
+   DerestrictTrait_<This> left( derestrict( *this ) );
 
    if( IsReference<Right>::value && right.canAlias( &matrix_ ) ) {
-      const typename VT::ResultType tmp( right );
+      const ResultType_<VT> tmp( right );
       smpSubAssign( left, tmp );
    }
    else {
@@ -3123,24 +3120,24 @@ template< typename VT >  // Type of the right-hand side dense vector
 inline DenseColumn<MT,false,false>&
    DenseColumn<MT,false,false>::operator*=( const DenseVector<VT,false>& rhs )
 {
-   BLAZE_CONSTRAINT_MUST_BE_COLUMN_VECTOR_TYPE ( typename VT::ResultType );
-   BLAZE_CONSTRAINT_MUST_NOT_REQUIRE_EVALUATION( typename VT::ResultType );
+   BLAZE_CONSTRAINT_MUST_BE_COLUMN_VECTOR_TYPE ( ResultType_<VT> );
+   BLAZE_CONSTRAINT_MUST_NOT_REQUIRE_EVALUATION( ResultType_<VT> );
 
    if( size() != (~rhs).size() ) {
       BLAZE_THROW_INVALID_ARGUMENT( "Vector sizes do not match" );
    }
 
-   typedef If_< IsRestricted<MT>, typename VT::CompositeType, const VT& >  Right;
+   typedef If_< IsRestricted<MT>, CompositeType_<VT>, const VT& >  Right;
    Right right( ~rhs );
 
    if( !tryMultAssign( matrix_, right, 0UL, col_ ) ) {
       BLAZE_THROW_INVALID_ARGUMENT( "Invalid assignment to restricted matrix" );
    }
 
-   typename DerestrictTrait<This>::Type left( derestrict( *this ) );
+   DerestrictTrait_<This> left( derestrict( *this ) );
 
    if( IsReference<Right>::value && right.canAlias( &matrix_ ) ) {
-      const typename VT::ResultType tmp( right );
+      const ResultType_<VT> tmp( right );
       smpMultAssign( left, tmp );
    }
    else {
@@ -3187,7 +3184,7 @@ inline DenseColumn<MT,false,false>&
       BLAZE_THROW_INVALID_ARGUMENT( "Invalid assignment to restricted matrix" );
    }
 
-   typename DerestrictTrait<This>::Type left( derestrict( *this ) );
+   DerestrictTrait_<This> left( derestrict( *this ) );
 
    smpAssign( left, right );
 
@@ -3564,7 +3561,7 @@ inline void DenseColumn<MT,false,false>::assign( const SparseVector<VT,false>& r
 {
    BLAZE_INTERNAL_ASSERT( size() == (~rhs).size(), "Invalid vector sizes" );
 
-   for( typename VT::ConstIterator element=(~rhs).begin(); element!=(~rhs).end(); ++element )
+   for( ConstIterator_<VT> element=(~rhs).begin(); element!=(~rhs).end(); ++element )
       matrix_(element->index(),col_) = element->value();
 }
 /*! \endcond */
@@ -3619,7 +3616,7 @@ inline void DenseColumn<MT,false,false>::addAssign( const SparseVector<VT,false>
 {
    BLAZE_INTERNAL_ASSERT( size() == (~rhs).size(), "Invalid vector sizes" );
 
-   for( typename VT::ConstIterator element=(~rhs).begin(); element!=(~rhs).end(); ++element )
+   for( ConstIterator_<VT> element=(~rhs).begin(); element!=(~rhs).end(); ++element )
       matrix_(element->index(),col_) += element->value();
 }
 /*! \endcond */
@@ -3674,7 +3671,7 @@ inline void DenseColumn<MT,false,false>::subAssign( const SparseVector<VT,false>
 {
    BLAZE_INTERNAL_ASSERT( size() == (~rhs).size(), "Invalid vector sizes" );
 
-   for( typename VT::ConstIterator element=(~rhs).begin(); element!=(~rhs).end(); ++element )
+   for( ConstIterator_<VT> element=(~rhs).begin(); element!=(~rhs).end(); ++element )
       matrix_(element->index(),col_) -= element->value();
 }
 /*! \endcond */
@@ -3733,7 +3730,7 @@ inline void DenseColumn<MT,false,false>::multAssign( const SparseVector<VT,false
 
    reset();
 
-   for( typename VT::ConstIterator element=(~rhs).begin(); element!=(~rhs).end(); ++element )
+   for( ConstIterator_<VT> element=(~rhs).begin(); element!=(~rhs).end(); ++element )
       matrix_(element->index(),col_) = tmp[element->index()] * element->value();
 }
 /*! \endcond */
@@ -3770,24 +3767,24 @@ class DenseColumn<MT,false,true> : public DenseVector< DenseColumn<MT,false,true
    typedef If_< IsExpression<MT>, MT, MT& >  Operand;
 
    //! Intrinsic trait for the column element type.
-   typedef IntrinsicTrait<typename MT::ElementType>  IT;
+   typedef IntrinsicTrait< ElementType_<MT> >  IT;
    //**********************************************************************************************
 
  public:
    //**Type definitions****************************************************************************
-   typedef DenseColumn<MT,false,true>          This;           //!< Type of this DenseColumn instance.
-   typedef typename ColumnTrait<MT>::Type      ResultType;     //!< Result type for expression template evaluations.
-   typedef typename ResultType::TransposeType  TransposeType;  //!< Transpose type for expression template evaluations.
-   typedef typename MT::ElementType            ElementType;    //!< Type of the column elements.
-   typedef typename IT::Type                   IntrinsicType;  //!< Intrinsic type of the column elements.
-   typedef typename MT::ReturnType             ReturnType;     //!< Return type for expression template evaluations
-   typedef const DenseColumn&                  CompositeType;  //!< Data type for composite expression templates.
+   typedef DenseColumn<MT,false,true>  This;           //!< Type of this DenseColumn instance.
+   typedef ColumnTrait_<MT>            ResultType;     //!< Result type for expression template evaluations.
+   typedef TransposeType_<ResultType>  TransposeType;  //!< Transpose type for expression template evaluations.
+   typedef ElementType_<MT>            ElementType;    //!< Type of the column elements.
+   typedef typename IT::Type           IntrinsicType;  //!< Intrinsic type of the column elements.
+   typedef ReturnType_<MT>             ReturnType;     //!< Return type for expression template evaluations
+   typedef const DenseColumn&          CompositeType;  //!< Data type for composite expression templates.
 
    //! Reference to a constant column value.
-   typedef typename MT::ConstReference  ConstReference;
+   typedef ConstReference_<MT>  ConstReference;
 
    //! Reference to a non-constant column value.
-   typedef If_< IsConst<MT>, ConstReference, typename MT::Reference >  Reference;
+   typedef If_< IsConst<MT>, ConstReference, Reference_<MT> >  Reference;
 
    //! Pointer to a constant column value.
    typedef const ElementType*  ConstPointer;
@@ -3796,10 +3793,10 @@ class DenseColumn<MT,false,true> : public DenseVector< DenseColumn<MT,false,true
    typedef If_< Or< IsConst<MT>, Not< HasMutableDataAccess<MT> > >, ConstPointer, ElementType* >  Pointer;
 
    //! Iterator over constant elements.
-   typedef typename MT::ConstIterator  ConstIterator;
+   typedef ConstIterator_<MT>  ConstIterator;
 
    //! Iterator over non-constant elements.
-   typedef If_< IsConst<MT>, ConstIterator, typename MT::Iterator >  Iterator;
+   typedef If_< IsConst<MT>, ConstIterator, Iterator_<MT> >  Iterator;
    //**********************************************************************************************
 
    //**Compilation flags***************************************************************************
@@ -3878,7 +3875,7 @@ class DenseColumn<MT,false,true> : public DenseVector< DenseColumn<MT,false,true
    struct VectorizedAssign {
       enum { value = useOptimizedKernels &&
                      vectorizable && VT::vectorizable &&
-                     IsSame<ElementType,typename VT::ElementType>::value };
+                     IsSame< ElementType, ElementType_<VT> >::value };
    };
    //**********************************************************************************************
 
@@ -3888,7 +3885,7 @@ class DenseColumn<MT,false,true> : public DenseVector< DenseColumn<MT,false,true
    struct VectorizedAddAssign {
       enum { value = useOptimizedKernels &&
                      vectorizable && VT::vectorizable &&
-                     IsSame<ElementType,typename VT::ElementType>::value &&
+                     IsSame< ElementType, ElementType_<VT> >::value &&
                      IntrinsicTrait<ElementType>::addition };
    };
    //**********************************************************************************************
@@ -3899,7 +3896,7 @@ class DenseColumn<MT,false,true> : public DenseVector< DenseColumn<MT,false,true
    struct VectorizedSubAssign {
       enum { value = useOptimizedKernels &&
                      vectorizable && VT::vectorizable &&
-                     IsSame<ElementType,typename VT::ElementType>::value &&
+                     IsSame< ElementType, ElementType_<VT> >::value &&
                      IntrinsicTrait<ElementType>::subtraction };
    };
    //**********************************************************************************************
@@ -3910,7 +3907,7 @@ class DenseColumn<MT,false,true> : public DenseVector< DenseColumn<MT,false,true
    struct VectorizedMultAssign {
       enum { value = useOptimizedKernels &&
                      vectorizable && VT::vectorizable &&
-                     IsSame<ElementType,typename VT::ElementType>::value &&
+                     IsSame< ElementType, ElementType_<VT> >::value &&
                      IntrinsicTrait<ElementType>::multiplication };
    };
    //**********************************************************************************************
@@ -4008,8 +4005,7 @@ class DenseColumn<MT,false,true> : public DenseVector< DenseColumn<MT,false,true
    friend bool tryMultAssign( const DenseColumn<MT2,SO2,SF2>& lhs, const Vector<VT,false>& rhs, size_t index );
 
    template< typename MT2, bool SO2, bool SF2 >
-   friend typename DerestrictTrait< DenseColumn<MT2,SO2,SF2> >::Type
-      derestrict( DenseColumn<MT2,SO2,SF2>& dm );
+   friend DerestrictTrait_< DenseColumn<MT2,SO2,SF2> > derestrict( DenseColumn<MT2,SO2,SF2>& dm );
    //**********************************************************************************************
 
    //**Compile time checks*************************************************************************
@@ -4357,7 +4353,7 @@ inline DenseColumn<MT,false,true>& DenseColumn<MT,false,true>::operator=( const 
       BLAZE_THROW_INVALID_ARGUMENT( "Invalid assignment to restricted matrix" );
    }
 
-   typename DerestrictTrait<This>::Type left( derestrict( *this ) );
+   DerestrictTrait_<This> left( derestrict( *this ) );
 
    smpAssign( left, rhs );
 
@@ -4388,24 +4384,24 @@ template< typename VT >  // Type of the right-hand side vector
 inline DenseColumn<MT,false,true>&
    DenseColumn<MT,false,true>::operator=( const Vector<VT,false>& rhs )
 {
-   BLAZE_CONSTRAINT_MUST_BE_COLUMN_VECTOR_TYPE ( typename VT::ResultType );
-   BLAZE_CONSTRAINT_MUST_NOT_REQUIRE_EVALUATION( typename VT::ResultType );
+   BLAZE_CONSTRAINT_MUST_BE_COLUMN_VECTOR_TYPE ( ResultType_<VT> );
+   BLAZE_CONSTRAINT_MUST_NOT_REQUIRE_EVALUATION( ResultType_<VT> );
 
    if( size() != (~rhs).size() ) {
       BLAZE_THROW_INVALID_ARGUMENT( "Vector sizes do not match" );
    }
 
-   typedef If_< IsRestricted<MT>, typename VT::CompositeType, const VT& >  Right;
+   typedef If_< IsRestricted<MT>, CompositeType_<VT>, const VT& >  Right;
    Right right( ~rhs );
 
    if( !tryAssign( matrix_, right, 0UL, col_ ) ) {
       BLAZE_THROW_INVALID_ARGUMENT( "Invalid assignment to restricted matrix" );
    }
 
-   typename DerestrictTrait<This>::Type left( derestrict( *this ) );
+   DerestrictTrait_<This> left( derestrict( *this ) );
 
    if( IsReference<Right>::value && right.canAlias( &matrix_ ) ) {
-      const typename VT::ResultType tmp( right );
+      const ResultType_<VT> tmp( right );
       smpAssign( left, tmp );
    }
    else {
@@ -4441,24 +4437,24 @@ template< typename VT >  // Type of the right-hand side vector
 inline DenseColumn<MT,false,true>&
    DenseColumn<MT,false,true>::operator+=( const Vector<VT,false>& rhs )
 {
-   BLAZE_CONSTRAINT_MUST_BE_COLUMN_VECTOR_TYPE ( typename VT::ResultType );
-   BLAZE_CONSTRAINT_MUST_NOT_REQUIRE_EVALUATION( typename VT::ResultType );
+   BLAZE_CONSTRAINT_MUST_BE_COLUMN_VECTOR_TYPE ( ResultType_<VT> );
+   BLAZE_CONSTRAINT_MUST_NOT_REQUIRE_EVALUATION( ResultType_<VT> );
 
    if( size() != (~rhs).size() ) {
       BLAZE_THROW_INVALID_ARGUMENT( "Vector sizes do not match" );
    }
 
-   typedef If_< IsRestricted<MT>, typename VT::CompositeType, const VT& >  Right;
+   typedef If_< IsRestricted<MT>, CompositeType_<VT>, const VT& >  Right;
    Right right( ~rhs );
 
    if( !tryAddAssign( matrix_, right, 0UL, col_ ) ) {
       BLAZE_THROW_INVALID_ARGUMENT( "Invalid assignment to restricted matrix" );
    }
 
-   typename DerestrictTrait<This>::Type left( derestrict( *this ) );
+   DerestrictTrait_<This> left( derestrict( *this ) );
 
    if( IsReference<Right>::value && right.canAlias( &matrix_ ) ) {
-      const typename VT::ResultType tmp( right );
+      const ResultType_<VT> tmp( right );
       smpAddAssign( left, tmp );
    }
    else {
@@ -4492,24 +4488,24 @@ template< typename VT >  // Type of the right-hand side vector
 inline DenseColumn<MT,false,true>&
    DenseColumn<MT,false,true>::operator-=( const Vector<VT,false>& rhs )
 {
-   BLAZE_CONSTRAINT_MUST_BE_COLUMN_VECTOR_TYPE ( typename VT::ResultType );
-   BLAZE_CONSTRAINT_MUST_NOT_REQUIRE_EVALUATION( typename VT::ResultType );
+   BLAZE_CONSTRAINT_MUST_BE_COLUMN_VECTOR_TYPE ( ResultType_<VT> );
+   BLAZE_CONSTRAINT_MUST_NOT_REQUIRE_EVALUATION( ResultType_<VT> );
 
    if( size() != (~rhs).size() ) {
       BLAZE_THROW_INVALID_ARGUMENT( "Vector sizes do not match" );
    }
 
-   typedef If_< IsRestricted<MT>, typename VT::CompositeType, const VT& >  Right;
+   typedef If_< IsRestricted<MT>, CompositeType_<VT>, const VT& >  Right;
    Right right( ~rhs );
 
    if( !trySubAssign( matrix_, right, 0UL, col_ ) ) {
       BLAZE_THROW_INVALID_ARGUMENT( "Invalid assignment to restricted matrix" );
    }
 
-   typename DerestrictTrait<This>::Type left( derestrict( *this ) );
+   DerestrictTrait_<This> left( derestrict( *this ) );
 
    if( IsReference<Right>::value && right.canAlias( &matrix_ ) ) {
-      const typename VT::ResultType tmp( right );
+      const ResultType_<VT> tmp( right );
       smpSubAssign( left, tmp );
    }
    else {
@@ -4542,24 +4538,24 @@ template< typename VT >  // Type of the right-hand side dense vector
 inline DenseColumn<MT,false,true>&
    DenseColumn<MT,false,true>::operator*=( const DenseVector<VT,false>& rhs )
 {
-   BLAZE_CONSTRAINT_MUST_BE_COLUMN_VECTOR_TYPE ( typename VT::ResultType );
-   BLAZE_CONSTRAINT_MUST_NOT_REQUIRE_EVALUATION( typename VT::ResultType );
+   BLAZE_CONSTRAINT_MUST_BE_COLUMN_VECTOR_TYPE ( ResultType_<VT> );
+   BLAZE_CONSTRAINT_MUST_NOT_REQUIRE_EVALUATION( ResultType_<VT> );
 
    if( size() != (~rhs).size() ) {
       BLAZE_THROW_INVALID_ARGUMENT( "Vector sizes do not match" );
    }
 
-   typedef If_< IsRestricted<MT>, typename VT::CompositeType, const VT& >  Right;
+   typedef If_< IsRestricted<MT>, CompositeType_<VT>, const VT& >  Right;
    Right right( ~rhs );
 
    if( !tryMultAssign( matrix_, right, 0UL, col_ ) ) {
       BLAZE_THROW_INVALID_ARGUMENT( "Invalid assignment to restricted matrix" );
    }
 
-   typename DerestrictTrait<This>::Type left( derestrict( *this ) );
+   DerestrictTrait_<This> left( derestrict( *this ) );
 
    if( IsReference<Right>::value && right.canAlias( &matrix_ ) ) {
-      const typename VT::ResultType tmp( right );
+      const ResultType_<VT> tmp( right );
       smpMultAssign( left, tmp );
    }
    else {
@@ -4606,7 +4602,7 @@ inline DenseColumn<MT,false,true>&
       BLAZE_THROW_INVALID_ARGUMENT( "Invalid assignment to restricted matrix" );
    }
 
-   typename DerestrictTrait<This>::Type left( derestrict( *this ) );
+   DerestrictTrait_<This> left( derestrict( *this ) );
 
    smpAssign( left, right );
 
@@ -5151,7 +5147,7 @@ inline EnableIf_< typename DenseColumn<MT,false,true>::BLAZE_TEMPLATE Vectorized
    else
    {
       size_t j( 0UL );
-      typename VT::ConstIterator it( (~rhs).begin() );
+      ConstIterator_<VT> it( (~rhs).begin() );
 
       for( ; (j+IT::size*3UL) < jpos; j+=IT::size*4UL ) {
          matrix_.store( col_, j             , it.load() ); it+=IT::size;
@@ -5189,7 +5185,7 @@ inline void DenseColumn<MT,false,true>::assign( const SparseVector<VT,false>& rh
 {
    BLAZE_INTERNAL_ASSERT( size() == (~rhs).size(), "Invalid vector sizes" );
 
-   for( typename VT::ConstIterator element=(~rhs).begin(); element!=(~rhs).end(); ++element )
+   for( ConstIterator_<VT> element=(~rhs).begin(); element!=(~rhs).end(); ++element )
       matrix_(col_,element->index()) = element->value();
 }
 /*! \endcond */
@@ -5255,7 +5251,7 @@ inline EnableIf_< typename DenseColumn<MT,false,true>::BLAZE_TEMPLATE Vectorized
    BLAZE_INTERNAL_ASSERT( !remainder || ( columns - ( columns % (IT::size) ) ) == jpos, "Invalid end calculation" );
 
    size_t j( 0UL );
-   typename VT::ConstIterator it( (~rhs).begin() );
+   ConstIterator_<VT> it( (~rhs).begin() );
 
    for( ; (j+IT::size*3UL) < jpos; j+=IT::size*4UL ) {
       matrix_.store( col_, j             , matrix_.load(col_,j             ) + it.load() ); it += IT::size;
@@ -5292,7 +5288,7 @@ inline void DenseColumn<MT,false,true>::addAssign( const SparseVector<VT,false>&
 {
    BLAZE_INTERNAL_ASSERT( size() == (~rhs).size(), "Invalid vector sizes" );
 
-   for( typename VT::ConstIterator element=(~rhs).begin(); element!=(~rhs).end(); ++element )
+   for( ConstIterator_<VT> element=(~rhs).begin(); element!=(~rhs).end(); ++element )
       matrix_(col_,element->index()) += element->value();
 }
 /*! \endcond */
@@ -5358,7 +5354,7 @@ inline EnableIf_< typename DenseColumn<MT,false,true>::BLAZE_TEMPLATE Vectorized
    BLAZE_INTERNAL_ASSERT( !remainder || ( columns - ( columns % (IT::size) ) ) == jpos, "Invalid end calculation" );
 
    size_t j( 0UL );
-   typename VT::ConstIterator it( (~rhs).begin() );
+   ConstIterator_<VT> it( (~rhs).begin() );
 
    for( ; (j+IT::size*3UL) < jpos; j+=IT::size*4UL ) {
       matrix_.store( col_, j             , matrix_.load(col_,j             ) - it.load() ); it += IT::size;
@@ -5395,7 +5391,7 @@ inline void DenseColumn<MT,false,true>::subAssign( const SparseVector<VT,false>&
 {
    BLAZE_INTERNAL_ASSERT( size() == (~rhs).size(), "Invalid vector sizes" );
 
-   for( typename VT::ConstIterator element=(~rhs).begin(); element!=(~rhs).end(); ++element )
+   for( ConstIterator_<VT> element=(~rhs).begin(); element!=(~rhs).end(); ++element )
       matrix_(col_,element->index()) -= element->value();
 }
 /*! \endcond */
@@ -5461,7 +5457,7 @@ inline EnableIf_< typename DenseColumn<MT,false,true>::BLAZE_TEMPLATE Vectorized
    BLAZE_INTERNAL_ASSERT( !remainder || ( columns - ( columns % (IT::size) ) ) == jpos, "Invalid end calculation" );
 
    size_t j( 0UL );
-   typename VT::ConstIterator it( (~rhs).begin() );
+   ConstIterator_<VT> it( (~rhs).begin() );
 
    for( ; (j+IT::size*3UL) < jpos; j+=IT::size*4UL ) {
       matrix_.store( col_, j             , matrix_.load(col_,j             ) * it.load() ); it += IT::size;
@@ -5502,7 +5498,7 @@ inline void DenseColumn<MT,false,true>::multAssign( const SparseVector<VT,false>
 
    reset();
 
-   for( typename VT::ConstIterator element=(~rhs).begin(); element!=(~rhs).end(); ++element )
+   for( ConstIterator_<VT> element=(~rhs).begin(); element!=(~rhs).end(); ++element )
       matrix_(col_,element->index()) = tmp[element->index()] * element->value();
 }
 /*! \endcond */
@@ -5797,10 +5793,9 @@ inline bool tryMultAssign( const DenseColumn<MT,SO,SF>& lhs, const Vector<VT,fal
 template< typename MT  // Type of the dense matrix
         , bool SO      // Storage order
         , bool SF >    // Symmetry flag
-inline typename DerestrictTrait< DenseColumn<MT,SO,SF> >::Type
-   derestrict( DenseColumn<MT,SO,SF>& column )
+inline DerestrictTrait_< DenseColumn<MT,SO,SF> > derestrict( DenseColumn<MT,SO,SF>& column )
 {
-   typedef typename DerestrictTrait< DenseColumn<MT,SO,SF> >::Type  ReturnType;
+   typedef DerestrictTrait_< DenseColumn<MT,SO,SF> >  ReturnType;
    return ReturnType( derestrict( column.matrix_ ), column.col_ );
 }
 /*! \endcond */
@@ -5837,7 +5832,7 @@ struct IsRestricted< DenseColumn<MT,SO,SF> > : public BoolConstant< IsRestricted
 template< typename MT, bool SO, bool SF >
 struct DerestrictTrait< DenseColumn<MT,SO,SF> >
 {
-   typedef DenseColumn< RemoveReference_< typename DerestrictTrait<MT>::Type > >  Type;
+   using Type = DenseColumn< RemoveReference_< DerestrictTrait_<MT> > >;
 };
 /*! \endcond */
 //*************************************************************************************************
@@ -5928,13 +5923,13 @@ struct IsPadded< DenseColumn<MT,SO,SF> >
 template< typename MT, bool SO, bool SF, typename T >
 struct AddTrait< DenseColumn<MT,SO,SF>, T >
 {
-   typedef typename AddTrait< typename ColumnTrait<MT>::Type, T >::Type  Type;
+   using Type = AddTrait_< ColumnTrait_<MT>, T >;
 };
 
 template< typename T, typename MT, bool SO, bool SF >
 struct AddTrait< T, DenseColumn<MT,SO,SF> >
 {
-   typedef typename AddTrait< T, typename ColumnTrait<MT>::Type >::Type  Type;
+   using Type = AddTrait_< T, ColumnTrait_<MT> >;
 };
 /*! \endcond */
 //*************************************************************************************************
@@ -5953,13 +5948,13 @@ struct AddTrait< T, DenseColumn<MT,SO,SF> >
 template< typename MT, bool SO, bool SF, typename T >
 struct SubTrait< DenseColumn<MT,SO,SF>, T >
 {
-   typedef typename SubTrait< typename ColumnTrait<MT>::Type, T >::Type  Type;
+   using Type = SubTrait_< ColumnTrait_<MT>, T >;
 };
 
 template< typename T, typename MT, bool SO, bool SF >
 struct SubTrait< T, DenseColumn<MT,SO,SF> >
 {
-   typedef typename SubTrait< T, typename ColumnTrait<MT>::Type >::Type  Type;
+   using Type = SubTrait_< T, ColumnTrait_<MT> >;
 };
 /*! \endcond */
 //*************************************************************************************************
@@ -5978,13 +5973,13 @@ struct SubTrait< T, DenseColumn<MT,SO,SF> >
 template< typename MT, bool SO, bool SF, typename T >
 struct MultTrait< DenseColumn<MT,SO,SF>, T >
 {
-   typedef typename MultTrait< typename ColumnTrait<MT>::Type, T >::Type  Type;
+   using Type = MultTrait_< ColumnTrait_<MT>, T >;
 };
 
 template< typename T, typename MT, bool SO, bool SF >
 struct MultTrait< T, DenseColumn<MT,SO,SF> >
 {
-   typedef typename MultTrait< T, typename ColumnTrait<MT>::Type >::Type  Type;
+   using Type = MultTrait_< T, ColumnTrait_<MT> >;
 };
 /*! \endcond */
 //*************************************************************************************************
@@ -6003,13 +5998,13 @@ struct MultTrait< T, DenseColumn<MT,SO,SF> >
 template< typename MT, bool SO, bool SF, typename T >
 struct CrossTrait< DenseColumn<MT,SO,SF>, T >
 {
-   typedef typename CrossTrait< typename ColumnTrait<MT>::Type, T >::Type  Type;
+   using Type = CrossTrait_< ColumnTrait_<MT>, T >;
 };
 
 template< typename T, typename MT, bool SO, bool SF >
 struct CrossTrait< T, DenseColumn<MT,SO,SF> >
 {
-   typedef typename CrossTrait< T, typename ColumnTrait<MT>::Type >::Type  Type;
+   using Type = CrossTrait_< T, ColumnTrait_<MT> >;
 };
 /*! \endcond */
 //*************************************************************************************************
@@ -6028,13 +6023,13 @@ struct CrossTrait< T, DenseColumn<MT,SO,SF> >
 template< typename MT, bool SO, bool SF, typename T >
 struct DivTrait< DenseColumn<MT,SO,SF>, T >
 {
-   typedef typename DivTrait< typename ColumnTrait<MT>::Type, T >::Type  Type;
+   using Type = DivTrait_< ColumnTrait_<MT>, T >;
 };
 
 template< typename T, typename MT, bool SO, bool SF >
 struct DivTrait< T, DenseColumn<MT,SO,SF> >
 {
-   typedef typename DivTrait< T, typename ColumnTrait<MT>::Type >::Type  Type;
+   using Type = DivTrait_< T, ColumnTrait_<MT> >;
 };
 /*! \endcond */
 //*************************************************************************************************
@@ -6053,7 +6048,7 @@ struct DivTrait< T, DenseColumn<MT,SO,SF> >
 template< typename MT, bool SO, bool SF >
 struct SubvectorTrait< DenseColumn<MT,SO,SF> >
 {
-   typedef typename SubvectorTrait< typename DenseColumn<MT,SO,SF>::ResultType >::Type  Type;
+   using Type = SubvectorTrait_< ResultType_< DenseColumn<MT,SO,SF> > >;
 };
 /*! \endcond */
 //*************************************************************************************************

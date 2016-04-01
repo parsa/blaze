@@ -40,6 +40,7 @@
 // Includes
 //*************************************************************************************************
 
+#include <blaze/math/Aliases.h>
 #include <blaze/math/views/Column.h>
 #include <blaze/math/views/Row.h>
 #include <blaze/math/views/SparseColumn.h>
@@ -97,7 +98,7 @@ template< typename MT  // Type of the sparse matrix
         , bool SO >    // Storage order
 inline void Rand< SparseRow<MT,SO> >::randomize( SparseRow<MT,SO>& row ) const
 {
-   typedef typename SparseRow<MT,SO>::ElementType  ElementType;
+   typedef ElementType_< SparseRow<MT,SO> >  ElementType;
 
    const size_t size( row.size() );
 
@@ -129,7 +130,7 @@ template< typename MT  // Type of the sparse matrix
         , bool SO >    // Storage order
 inline void Rand< SparseRow<MT,SO> >::randomize( SparseRow<MT,SO>& row, size_t nonzeros ) const
 {
-   typedef typename SparseRow<MT,SO>::ElementType  ElementType;
+   typedef ElementType_< SparseRow<MT,SO> >  ElementType;
 
    const size_t size( row.size() );
 
@@ -165,7 +166,7 @@ template< typename Arg >  // Min/max argument type
 inline void Rand< SparseRow<MT,SO> >::randomize( SparseRow<MT,SO>& row,
                                                  const Arg& min, const Arg& max ) const
 {
-   typedef typename SparseRow<MT,SO>::ElementType  ElementType;
+   typedef ElementType_< SparseRow<MT,SO> >  ElementType;
 
    const size_t size( row.size() );
 
@@ -201,7 +202,7 @@ template< typename Arg >  // Min/max argument type
 inline void Rand< SparseRow<MT,SO> >::randomize( SparseRow<MT,SO>& row, size_t nonzeros,
                                                  const Arg& min, const Arg& max ) const
 {
-   typedef typename SparseRow<MT,SO>::ElementType  ElementType;
+   typedef ElementType_< SparseRow<MT,SO> >  ElementType;
 
    const size_t size( row.size() );
 
