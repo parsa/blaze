@@ -35,7 +35,7 @@
 # Build rules
 default: all
 
-all: functions intrinsics lapack typetraits \
+all: functions simd lapack typetraits \
      densevector sparsevector densematrix sparsematrix \
      staticvector hybridvector dynamicvector customvector compressedvector \
      staticmatrix hybridmatrix dynamicmatrix custommatrix compressedmatrix \
@@ -64,7 +64,7 @@ essential: all
 
 single: all
 
-noop: functions intrinsics lapack typetraits \
+noop: functions simd lapack typetraits \
       densevector sparsevector densematrix sparsematrix \
       staticvector hybridvector dynamicvector customvector compressedvector \
       staticmatrix hybridmatrix dynamicmatrix custommatrix compressedmatrix \
@@ -85,10 +85,10 @@ functions:
 	@echo "Building the mathematical functions operation tests..."
 	@$(MAKE) --no-print-directory -C ./functions $(MAKECMDGOALS)
 
-intrinsics:
+simd:
 	@echo
-	@echo "Building the intrinsics operation tests..."
-	@$(MAKE) --no-print-directory -C ./intrinsics $(MAKECMDGOALS)
+	@echo "Building the SIMD operation tests..."
+	@$(MAKE) --no-print-directory -C ./simd $(MAKECMDGOALS)
 
 lapack:
 	@echo
@@ -504,7 +504,7 @@ matrixserializer:
 # Cleanup
 clean:
 	@$(MAKE) --no-print-directory -C ./functions clean
-	@$(MAKE) --no-print-directory -C ./intrinsics clean
+	@$(MAKE) --no-print-directory -C ./simd clean
 	@$(MAKE) --no-print-directory -C ./lapack clean
 	@$(MAKE) --no-print-directory -C ./typetraits clean
 	@$(MAKE) --no-print-directory -C ./densevector clean
@@ -592,7 +592,7 @@ clean:
 
 # Setting the independent commands
 .PHONY: default all essential single noop clean \
-        functions intrinsics lapack typetraits \
+        functions simd lapack typetraits \
         densevector sparsevector densematrix sparsematrix \
         staticvector hybridvector dynamicvector customvector compressedvector \
         staticmatrix hybridmatrix dynamicmatrix custommatrix compressedmatrix \

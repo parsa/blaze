@@ -44,10 +44,10 @@ $BLAZETEST_PATH/src/mathtest/functions/run; if [ $? != 0 ]; then exit 1; fi
 
 
 #==================================================================================================
-# Intrinsics Operations
+# SIMD Operations
 #==================================================================================================
 
-$BLAZETEST_PATH/src/mathtest/intrinsics/run; if [ $? != 0 ]; then exit 1; fi
+$BLAZETEST_PATH/src/mathtest/simd/run; if [ $? != 0 ]; then exit 1; fi
 
 
 #==================================================================================================

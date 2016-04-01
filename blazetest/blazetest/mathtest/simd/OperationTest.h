@@ -1,7 +1,7 @@
 //=================================================================================================
 /*!
-//  \file blazetest/mathtest/intrinsics/OperationTest.h
-//  \brief Header file for the intrinsics operation test
+//  \file blazetest/mathtest/simd/OperationTest.h
+//  \brief Header file for the SIMD operation test
 //
 //  Copyright (C) 2013 Klaus Iglberger - All Rights Reserved
 //
@@ -32,8 +32,8 @@
 */
 //=================================================================================================
 
-#ifndef _BLAZETEST_MATHTEST_INTRINSICS_OPERATIONTEST_H_
-#define _BLAZETEST_MATHTEST_INTRINSICS_OPERATIONTEST_H_
+#ifndef _BLAZETEST_MATHTEST_SIMD_OPERATIONTEST_H_
+#define _BLAZETEST_MATHTEST_SIMD_OPERATIONTEST_H_
 
 
 //*************************************************************************************************
@@ -45,9 +45,9 @@
 #include <stdexcept>
 #include <string>
 #include <typeinfo>
-#include <blaze/math/Intrinsics.h>
 #include <blaze/math/shims/Conjugate.h>
 #include <blaze/math/shims/Equal.h>
+#include <blaze/math/SIMD.h>
 #include <blaze/util/constraints/Numeric.h>
 #include <blaze/util/FalseType.h>
 #include <blaze/util/IntegralConstant.h>
@@ -62,7 +62,7 @@ namespace blazetest {
 
 namespace mathtest {
 
-namespace intrinsics {
+namespace simd {
 
 //=================================================================================================
 //
@@ -71,11 +71,11 @@ namespace intrinsics {
 //=================================================================================================
 
 //*************************************************************************************************
-/*!\brief Auxiliary class template for the intrinsics operation test.
+/*!\brief Auxiliary class template for the SIMD operation test.
 //
-// This class template represents the tests of all available intrinsics operations for the given
-// numeric data type \a T. In these tests both aligned and unaligned load/store operations are
-// used.
+// This class template represents the tests of all available SIMD operations for the given
+// numeric data type \a T. In these tests both aligned and unaligned load/store operations
+// are used.
 */
 template< typename T >  // Data type of the intrinsic test
 class OperationTest : private blaze::NonCopyable
@@ -173,7 +173,7 @@ class OperationTest : private blaze::NonCopyable
 //=================================================================================================
 
 //*************************************************************************************************
-/*!\brief Constructor for the intrinsics operation test.
+/*!\brief Constructor for the SIMD operation test.
 //
 // \exception std::runtime_error Operation error detected.
 */
@@ -724,7 +724,7 @@ void OperationTest<T>::initialize()
 //=================================================================================================
 
 //*************************************************************************************************
-/*!\brief Testing the intrinsics operations of a specific numeric data type.
+/*!\brief Testing the SIMD operations of a specific numeric data type.
 //
 // \return void
 */
@@ -746,14 +746,14 @@ void runTest()
 
 //*************************************************************************************************
 /*! \cond BLAZE_INTERNAL */
-/*!\brief Macro for the execution of an intrinsics operation test case.
+/*!\brief Macro for the execution of an SIMD operation test case.
 */
-#define RUN_INTRINSICS_OPERATION_TEST( T ) \
-   blazetest::mathtest::intrinsics::runTest<T>()
+#define RUN_SIMD_OPERATION_TEST( T ) \
+   blazetest::mathtest::simd::runTest<T>()
 /*! \endcond */
 //*************************************************************************************************
 
-} // namespace intrinsics
+} // namespace simd
 
 } // namespace mathtest
 

@@ -1,7 +1,7 @@
 //=================================================================================================
 /*!
-//  \file src/mathtest/intrinsics/ComplexLong.cpp
-//  \brief Source file for the intrinsics operation test for 'complex<long>'
+//  \file src/mathtest/simd/ComplexUnsignedShort.cpp
+//  \brief Source file for the SIMD operation test for 'complex<unsigned short>'
 //
 //  Copyright (C) 2013 Klaus Iglberger - All Rights Reserved
 //
@@ -40,7 +40,7 @@
 #include <cstdlib>
 #include <iostream>
 #include <blaze/util/Complex.h>
-#include <blazetest/mathtest/intrinsics/OperationTest.h>
+#include <blazetest/mathtest/simd/OperationTest.h>
 
 
 //=================================================================================================
@@ -52,14 +52,14 @@
 //*************************************************************************************************
 int main()
 {
-   std::cout << "   Running intrinsics test for 'complex<long>'..." << std::endl;
+   std::cout << "   Running SIMD test for 'complex<unsigned short>'..." << std::endl;
 
    try
    {
-      RUN_INTRINSICS_OPERATION_TEST( blaze::complex<long> );
+      RUN_SIMD_OPERATION_TEST( blaze::complex<unsigned short> );
    }
    catch( std::exception& ex ) {
-      std::cerr << "\n\n ERROR DETECTED during intrinsics operation:\n"
+      std::cerr << "\n\n ERROR DETECTED during SIMD operation:\n"
                 << ex.what() << "\n";
       return EXIT_FAILURE;
    }

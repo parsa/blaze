@@ -1,7 +1,7 @@
 #!/bin/bash
 #==================================================================================================
 #
-#  Run script for the intrinsics module of the Blaze test suite
+#  Run script for the SIMD module of the Blaze test suite
 #
 #  Copyright (C) 2013 Klaus Iglberger - All Rights Reserved
 #
@@ -33,23 +33,23 @@
 #==================================================================================================
 
 
-PATH_INTRINSICS=$( dirname "${BASH_SOURCE[0]}" )
+PATH_SIMD=$( dirname "${BASH_SOURCE[0]}" )
 
-echo " Running intrinsics tests..."
+echo " Running SIMD tests..."
 
-EXE=$PATH_INTRINSICS/Short;                if [ -x $EXE ]; then $EXE; if [ $? != 0 ]; then exit 1; fi fi
-EXE=$PATH_INTRINSICS/UnsignedShort;        if [ -x $EXE ]; then $EXE; if [ $? != 0 ]; then exit 1; fi fi
-EXE=$PATH_INTRINSICS/Int;                  if [ -x $EXE ]; then $EXE; if [ $? != 0 ]; then exit 1; fi fi
-EXE=$PATH_INTRINSICS/UnsignedInt;          if [ -x $EXE ]; then $EXE; if [ $? != 0 ]; then exit 1; fi fi
-EXE=$PATH_INTRINSICS/Long;                 if [ -x $EXE ]; then $EXE; if [ $? != 0 ]; then exit 1; fi fi
-EXE=$PATH_INTRINSICS/UnsignedLong;         if [ -x $EXE ]; then $EXE; if [ $? != 0 ]; then exit 1; fi fi
-EXE=$PATH_INTRINSICS/Float;                if [ -x $EXE ]; then $EXE; if [ $? != 0 ]; then exit 1; fi fi
-EXE=$PATH_INTRINSICS/Double;               if [ -x $EXE ]; then $EXE; if [ $? != 0 ]; then exit 1; fi fi
-EXE=$PATH_INTRINSICS/ComplexShort;         if [ -x $EXE ]; then $EXE; if [ $? != 0 ]; then exit 1; fi fi
-EXE=$PATH_INTRINSICS/ComplexUnsignedShort; if [ -x $EXE ]; then $EXE; if [ $? != 0 ]; then exit 1; fi fi
-EXE=$PATH_INTRINSICS/ComplexInt;           if [ -x $EXE ]; then $EXE; if [ $? != 0 ]; then exit 1; fi fi
-EXE=$PATH_INTRINSICS/ComplexUnsignedInt;   if [ -x $EXE ]; then $EXE; if [ $? != 0 ]; then exit 1; fi fi
-EXE=$PATH_INTRINSICS/ComplexLong;          if [ -x $EXE ]; then $EXE; if [ $? != 0 ]; then exit 1; fi fi
-EXE=$PATH_INTRINSICS/ComplexUnsignedLong;  if [ -x $EXE ]; then $EXE; if [ $? != 0 ]; then exit 1; fi fi
-EXE=$PATH_INTRINSICS/ComplexFloat;         if [ -x $EXE ]; then $EXE; if [ $? != 0 ]; then exit 1; fi fi
-EXE=$PATH_INTRINSICS/ComplexDouble;        if [ -x $EXE ]; then $EXE; if [ $? != 0 ]; then exit 1; fi fi
+EXE=$PATH_SIMD/Short;                if [ -x $EXE ]; then $EXE; if [ $? != 0 ]; then exit 1; fi fi
+EXE=$PATH_SIMD/UnsignedShort;        if [ -x $EXE ]; then $EXE; if [ $? != 0 ]; then exit 1; fi fi
+EXE=$PATH_SIMD/Int;                  if [ -x $EXE ]; then $EXE; if [ $? != 0 ]; then exit 1; fi fi
+EXE=$PATH_SIMD/UnsignedInt;          if [ -x $EXE ]; then $EXE; if [ $? != 0 ]; then exit 1; fi fi
+EXE=$PATH_SIMD/Long;                 if [ -x $EXE ]; then $EXE; if [ $? != 0 ]; then exit 1; fi fi
+EXE=$PATH_SIMD/UnsignedLong;         if [ -x $EXE ]; then $EXE; if [ $? != 0 ]; then exit 1; fi fi
+EXE=$PATH_SIMD/Float;                if [ -x $EXE ]; then $EXE; if [ $? != 0 ]; then exit 1; fi fi
+EXE=$PATH_SIMD/Double;               if [ -x $EXE ]; then $EXE; if [ $? != 0 ]; then exit 1; fi fi
+EXE=$PATH_SIMD/ComplexShort;         if [ -x $EXE ]; then $EXE; if [ $? != 0 ]; then exit 1; fi fi
+EXE=$PATH_SIMD/ComplexUnsignedShort; if [ -x $EXE ]; then $EXE; if [ $? != 0 ]; then exit 1; fi fi
+EXE=$PATH_SIMD/ComplexInt;           if [ -x $EXE ]; then $EXE; if [ $? != 0 ]; then exit 1; fi fi
+EXE=$PATH_SIMD/ComplexUnsignedInt;   if [ -x $EXE ]; then $EXE; if [ $? != 0 ]; then exit 1; fi fi
+EXE=$PATH_SIMD/ComplexLong;          if [ -x $EXE ]; then $EXE; if [ $? != 0 ]; then exit 1; fi fi
+EXE=$PATH_SIMD/ComplexUnsignedLong;  if [ -x $EXE ]; then $EXE; if [ $? != 0 ]; then exit 1; fi fi
+EXE=$PATH_SIMD/ComplexFloat;         if [ -x $EXE ]; then $EXE; if [ $? != 0 ]; then exit 1; fi fi
+EXE=$PATH_SIMD/ComplexDouble;        if [ -x $EXE ]; then $EXE; if [ $? != 0 ]; then exit 1; fi fi

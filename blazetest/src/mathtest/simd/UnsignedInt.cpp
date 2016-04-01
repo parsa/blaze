@@ -1,7 +1,7 @@
 //=================================================================================================
 /*!
-//  \file src/mathtest/intrinsics/UnsignedLong.cpp
-//  \brief Source file for the intrinsics operation test for 'unsigned long'
+//  \file src/mathtest/simd/UnsignedInt.cpp
+//  \brief Source file for the SIMD operation test for 'unsigned int'
 //
 //  Copyright (C) 2013 Klaus Iglberger - All Rights Reserved
 //
@@ -39,7 +39,7 @@
 
 #include <cstdlib>
 #include <iostream>
-#include <blazetest/mathtest/intrinsics/OperationTest.h>
+#include <blazetest/mathtest/simd/OperationTest.h>
 
 
 //=================================================================================================
@@ -51,14 +51,14 @@
 //*************************************************************************************************
 int main()
 {
-   std::cout << "   Running intrinsics test for 'unsigned long'..." << std::endl;
+   std::cout << "   Running SIMD test for 'unsigned int'..." << std::endl;
 
    try
    {
-      RUN_INTRINSICS_OPERATION_TEST( unsigned long );
+      RUN_SIMD_OPERATION_TEST( unsigned int );
    }
    catch( std::exception& ex ) {
-      std::cerr << "\n\n ERROR DETECTED during intrinsics operation:\n"
+      std::cerr << "\n\n ERROR DETECTED during SIMD operation:\n"
                 << ex.what() << "\n";
       return EXIT_FAILURE;
    }
