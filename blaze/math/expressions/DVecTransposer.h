@@ -45,7 +45,7 @@
 #include <blaze/math/constraints/DenseVector.h>
 #include <blaze/math/constraints/TransposeFlag.h>
 #include <blaze/math/expressions/DenseVector.h>
-#include <blaze/math/intrinsics/IntrinsicTrait.h>
+#include <blaze/math/simd/IntrinsicTrait.h>
 #include <blaze/math/traits/SubvectorTrait.h>
 #include <blaze/math/typetraits/IsAligned.h>
 #include <blaze/math/typetraits/IsPadded.h>

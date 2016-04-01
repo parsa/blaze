@@ -54,9 +54,9 @@
 #include <blaze/math/expressions/Forward.h>
 #include <blaze/math/expressions/MatVecMultExpr.h>
 #include <blaze/math/expressions/VecScalarMultExpr.h>
-#include <blaze/math/Intrinsics.h>
 #include <blaze/math/shims/Reset.h>
 #include <blaze/math/shims/Serial.h>
+#include <blaze/math/SIMD.h>
 #include <blaze/math/traits/MultExprTrait.h>
 #include <blaze/math/traits/MultTrait.h>
 #include <blaze/math/traits/SubmatrixExprTrait.h>

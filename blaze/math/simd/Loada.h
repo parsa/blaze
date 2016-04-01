@@ -1,7 +1,7 @@
 //=================================================================================================
 /*!
-//  \file blaze/math/intrinsics/Loadu.h
-//  \brief Header file for the intrinsic unaligned load functionality
+//  \file blaze/math/simd/Loada.h
+//  \brief Header file for the intrinsic aligned load functionality
 //
 //  Copyright (C) 2013 Klaus Iglberger - All Rights Reserved
 //
@@ -32,17 +32,19 @@
 */
 //=================================================================================================
 
-#ifndef _BLAZE_MATH_INTRINSICS_LOADU_H_
-#define _BLAZE_MATH_INTRINSICS_LOADU_H_
+#ifndef _BLAZE_MATH_SIMD_LOADA_H_
+#define _BLAZE_MATH_SIMD_LOADA_H_
 
 
 //*************************************************************************************************
 // Includes
 //*************************************************************************************************
 
-#include <blaze/math/intrinsics/BasicTypes.h>
+#include <blaze/math/simd/BasicTypes.h>
 #include <blaze/system/Inline.h>
 #include <blaze/system/Vectorization.h>
+#include <blaze/util/AlignmentCheck.h>
+#include <blaze/util/Assert.h>
 #include <blaze/util/Complex.h>
 #include <blaze/util/EnableIf.h>
 #include <blaze/util/mpl/And.h>
@@ -55,28 +57,31 @@ namespace blaze {
 
 //=================================================================================================
 //
-//  INTRINSIC LOADU FUNCTIONS
+//  INTRINSIC LOAD FUNCTIONS
 //
 //=================================================================================================
 
 //*************************************************************************************************
 /*!\brief Loads a vector of 2-byte integral values.
-// \ingroup intrinsics
+// \ingroup simd
 //
 // \param address The first integral value to be loaded.
 // \return The loaded vector of integral values.
 //
-// This function loads a vector of 2-byte integral values. In contrast to the according load
-// function, the given address is not required to be properly aligned.
+// This function loads a vector of 2-byte integral values. The given address must be aligned
+// according to the enabled instruction set (16-byte alignment in case of SSE, 32-byte alignment
+// in case of AVX, and 64-byte alignment in case of MIC.
 */
 template< typename T >  // Type of the integral value
 BLAZE_ALWAYS_INLINE EnableIf_< And< IsIntegral<T>, HasSize<T,2UL> >, simd_int16_t >
-   loadu( const T* address ) noexcept
+   loada( const T* address ) noexcept
 {
+   BLAZE_INTERNAL_ASSERT( checkAlignment( address ), "Invalid alignment detected" );
+
 #if BLAZE_AVX2_MODE
-   return _mm256_loadu_si256( reinterpret_cast<const __m256i*>( address ) );
+   return _mm256_load_si256( reinterpret_cast<const __m256i*>( address ) );
 #elif BLAZE_SSE2_MODE
-   return _mm_loadu_si128( reinterpret_cast<const __m128i*>( address ) );
+   return _mm_load_si128( reinterpret_cast<const __m128i*>( address ) );
 #else
    return *address;
 #endif
@@ -86,27 +91,27 @@ BLAZE_ALWAYS_INLINE EnableIf_< And< IsIntegral<T>, HasSize<T,2UL> >, simd_int16_
 
 //*************************************************************************************************
 /*!\brief Loads a vector of 4-byte integral values.
-// \ingroup intrinsics
+// \ingroup simd
 //
 // \param address The first integral value to be loaded.
 // \return The loaded vector of integral values.
 //
-// This function loads a vector of 4-byte integral values. In contrast to the according load
-// function, the given address is not required to be properly aligned.
+// This function loads a vector of 4-byte integral values. The given address must be aligned
+// according to the enabled instruction set (16-byte alignment in case of SSE, 32-byte alignment
+// in case of AVX, and 64-byte alignment in case of MIC.
 */
 template< typename T >  // Type of the integral value
 BLAZE_ALWAYS_INLINE EnableIf_< And< IsIntegral<T>, HasSize<T,4UL> >, simd_int32_t >
-   loadu( const T* address ) noexcept
+   loada( const T* address ) noexcept
 {
+   BLAZE_INTERNAL_ASSERT( checkAlignment( address ), "Invalid alignment detected" );
+
 #if BLAZE_MIC_MODE
-   __m512i v1 = _mm512_setzero_epi32();
-   v1 = _mm512_loadunpacklo_epi32( v1, address );
-   v1 = _mm512_loadunpackhi_epi32( v1, address+16UL );
-   return v1;
+   return _mm512_load_epi32( address );
 #elif BLAZE_AVX2_MODE
-   return _mm256_loadu_si256( reinterpret_cast<const __m256i*>( address ) );
+   return _mm256_load_si256( reinterpret_cast<const __m256i*>( address ) );
 #elif BLAZE_SSE2_MODE
-   return _mm_loadu_si128( reinterpret_cast<const __m128i*>( address ) );
+   return _mm_load_si128( reinterpret_cast<const __m128i*>( address ) );
 #else
    return *address;
 #endif
@@ -116,27 +121,27 @@ BLAZE_ALWAYS_INLINE EnableIf_< And< IsIntegral<T>, HasSize<T,4UL> >, simd_int32_
 
 //*************************************************************************************************
 /*!\brief Loads a vector of 8-byte integral values.
-// \ingroup intrinsics
+// \ingroup simd
 //
 // \param address The first integral value to be loaded.
 // \return The loaded vector of integral values.
 //
-// This function loads a vector of 8-byte integral values. In contrast to the according load
-// function, the given address is not required to be properly aligned.
+// This function loads a vector of 8-byte integral values. The given address must be aligned
+// according to the enabled instruction set (16-byte alignment in case of SSE, 32-byte alignment
+// in case of AVX, and 64-byte alignment in case of MIC.
 */
 template< typename T >  // Type of the integral value
 BLAZE_ALWAYS_INLINE EnableIf_< And< IsIntegral<T>, HasSize<T,8UL> >, simd_int64_t >
-   loadu( const T* address ) noexcept
+   loada( const T* address ) noexcept
 {
+   BLAZE_INTERNAL_ASSERT( checkAlignment( address ), "Invalid alignment detected" );
+
 #if BLAZE_MIC_MODE
-   __m512i v1 = _mm512_setzero_epi32();
-   v1 = _mm512_loadunpacklo_epi64( v1, address );
-   v1 = _mm512_loadunpackhi_epi64( v1, address+8UL );
-   return v1;
+   return _mm512_load_epi64( address );
 #elif BLAZE_AVX2_MODE
-   return _mm256_loadu_si256( reinterpret_cast<const __m256i*>( address ) );
+   return _mm256_load_si256( reinterpret_cast<const __m256i*>( address ) );
 #elif BLAZE_SSE2_MODE
-   return _mm_loadu_si128( reinterpret_cast<const __m128i*>( address ) );
+   return _mm_load_si128( reinterpret_cast<const __m128i*>( address ) );
 #else
    return *address;
 #endif
@@ -146,25 +151,25 @@ BLAZE_ALWAYS_INLINE EnableIf_< And< IsIntegral<T>, HasSize<T,8UL> >, simd_int64_
 
 //*************************************************************************************************
 /*!\brief Loads a vector of 'float' values.
-// \ingroup intrinsics
+// \ingroup simd
 //
 // \param address The first 'float' value to be loaded.
 // \return The loaded vector of 'float' values.
 //
-// This function loads a vector of 'float' values. In contrast to the according load function,
-// the given address is not required to be properly aligned.
+// This function loads a vector of 'float' values. The given address must be aligned according
+// to the enabled instruction set (16-byte alignment in case of SSE, 32-byte alignment in case
+// of AVX, and 64-byte alignment in case of MIC.
 */
-BLAZE_ALWAYS_INLINE simd_float_t loadu( const float* address ) noexcept
+BLAZE_ALWAYS_INLINE simd_float_t loada( const float* address ) noexcept
 {
+   BLAZE_INTERNAL_ASSERT( checkAlignment( address ), "Invalid alignment detected" );
+
 #if BLAZE_MIC_MODE
-   __m512 v1 = _mm512_setzero_ps();
-   v1 = _mm512_loadunpacklo_ps( v1, address );
-   v1 = _mm512_loadunpackhi_ps( v1, address+16UL );
-   return v1;
+   return _mm512_load_ps( address );
 #elif BLAZE_AVX_MODE
-   return _mm256_loadu_ps( address );
+   return _mm256_load_ps( address );
 #elif BLAZE_SSE_MODE
-   return _mm_loadu_ps( address );
+   return _mm_load_ps( address );
 #else
    return *address;
 #endif
@@ -174,25 +179,25 @@ BLAZE_ALWAYS_INLINE simd_float_t loadu( const float* address ) noexcept
 
 //*************************************************************************************************
 /*!\brief Loads a vector of 'double' values.
-// \ingroup intrinsics
+// \ingroup simd
 //
 // \param address The first 'double' value to be loaded.
 // \return The loaded vector of 'double' values.
 //
-// This function loads a vector of 'double' values. In contrast to the according load function,
-// the given address is not required to be properly aligned.
+// This function loads a vector of 'double' values. The given address must be aligned according
+// to the enabled instruction set (16-byte alignment in case of SSE, 32-byte alignment in case
+// of AVX, and 64-byte alignment in case of MIC.
 */
-BLAZE_ALWAYS_INLINE simd_double_t loadu( const double* address ) noexcept
+BLAZE_ALWAYS_INLINE simd_double_t loada( const double* address ) noexcept
 {
+   BLAZE_INTERNAL_ASSERT( checkAlignment( address ), "Invalid alignment detected" );
+
 #if BLAZE_MIC_MODE
-   __m512d v1 = _mm512_setzero_pd();
-   v1 = _mm512_loadunpacklo_pd( v1, address );
-   v1 = _mm512_loadunpackhi_pd( v1, address+8UL );
-   return v1;
+   return _mm512_load_pd( address );
 #elif BLAZE_AVX_MODE
-   return _mm256_loadu_pd( address );
+   return _mm256_load_pd( address );
 #elif BLAZE_SSE2_MODE
-   return _mm_loadu_pd( address );
+   return _mm_load_pd( address );
 #else
    return *address;
 #endif
@@ -202,24 +207,26 @@ BLAZE_ALWAYS_INLINE simd_double_t loadu( const double* address ) noexcept
 
 //*************************************************************************************************
 /*!\brief Loads a vector of 2-byte integral complex values.
-// \ingroup intrinsics
+// \ingroup simd
 //
 // \param address The first integral complex value to be loaded.
 // \return The loaded vector of integral complex values.
 //
-// This function loads a vector of 2-byte integral complex values. In contrast to the according
-// load function, the given address is not required to be properly aligned.
+// This function loads a vector of 2-byte integral complex values. The given address must be
+// aligned according to the enabled instruction set (16-byte alignment in case of SSE, 32-byte
+// alignment in case of AVX, and 64-byte alignment in case of MIC.
 */
 template< typename T >  // Type of the integral value
 BLAZE_ALWAYS_INLINE EnableIf_< And< IsIntegral<T>, HasSize<T,2UL> >, simd_cint16_t >
-   loadu( const complex<T>* address ) noexcept
+   loada( const complex<T>* address ) noexcept
 {
    BLAZE_STATIC_ASSERT( sizeof( complex<T> ) == 2UL*sizeof( T ) );
+   BLAZE_INTERNAL_ASSERT( checkAlignment( address ), "Invalid alignment detected" );
 
 #if BLAZE_AVX2_MODE
-   return _mm256_loadu_si256( reinterpret_cast<const __m256i*>( address ) );
+   return _mm256_load_si256( reinterpret_cast<const __m256i*>( address ) );
 #elif BLAZE_SSE2_MODE
-   return _mm_loadu_si128( reinterpret_cast<const __m128i*>( address ) );
+   return _mm_load_si128( reinterpret_cast<const __m128i*>( address ) );
 #else
    return *address;
 #endif
@@ -229,29 +236,28 @@ BLAZE_ALWAYS_INLINE EnableIf_< And< IsIntegral<T>, HasSize<T,2UL> >, simd_cint16
 
 //*************************************************************************************************
 /*!\brief Loads a vector of 4-byte integral complex values.
-// \ingroup intrinsics
+// \ingroup simd
 //
 // \param address The first integral complex value to be loaded.
 // \return The loaded vector of integral complex values.
 //
-// This function loads a vector of 4-byte integral complex values. In contrast to the according
-// load function, the given address is not required to be properly aligned.
+// This function loads a vector of 4-byte integral complex values. The given address must be
+// aligned according to the enabled instruction set (16-byte alignment in case of SSE, 32-byte
+// alignment in case of AVX, and 64-byte alignment in case of MIC.
 */
 template< typename T >  // Type of the integral value
 BLAZE_ALWAYS_INLINE EnableIf_< And< IsIntegral<T>, HasSize<T,4UL> >, simd_cint32_t >
-   loadu( const complex<T>* address ) noexcept
+   loada( const complex<T>* address ) noexcept
 {
    BLAZE_STATIC_ASSERT( sizeof( complex<T> ) == 2UL*sizeof( T ) );
+   BLAZE_INTERNAL_ASSERT( checkAlignment( address ), "Invalid alignment detected" );
 
 #if BLAZE_MIC_MODE
-   __m512i v1 = _mm512_setzero_epi32();
-   v1 = _mm512_loadunpacklo_epi32( v1, address );
-   v1 = _mm512_loadunpackhi_epi32( v1, address+16UL );
-   return v1;
+   return _mm512_load_epi32( address );
 #elif BLAZE_AVX2_MODE
-   return _mm256_loadu_si256( reinterpret_cast<const __m256i*>( address ) );
+   return _mm256_load_si256( reinterpret_cast<const __m256i*>( address ) );
 #elif BLAZE_SSE2_MODE
-   return _mm_loadu_si128( reinterpret_cast<const __m128i*>( address ) );
+   return _mm_load_si128( reinterpret_cast<const __m128i*>( address ) );
 #else
    return *address;
 #endif
@@ -261,29 +267,28 @@ BLAZE_ALWAYS_INLINE EnableIf_< And< IsIntegral<T>, HasSize<T,4UL> >, simd_cint32
 
 //*************************************************************************************************
 /*!\brief Loads a vector of 8-byte integral complex values.
-// \ingroup intrinsics
+// \ingroup simd
 //
 // \param address The first integral complex value to be loaded.
 // \return The loaded vector of integral complex values.
 //
-// This function loads a vector of 8-byte integral complex values. In contrast to the according
-// load function, the given address is not required to be properly aligned.
+// This function loads a vector of 8-byte integral complex values. The given address must be
+// aligned according to the enabled instruction set (16-byte alignment in case of SSE, 32-byte
+// alignment in case of AVX, and 64-byte alignment in case of MIC.
 */
 template< typename T >  // Type of the integral value
 BLAZE_ALWAYS_INLINE EnableIf_< And< IsIntegral<T>, HasSize<T,8UL> >, simd_cint64_t >
-   loadu( const complex<T>* address ) noexcept
+   loada( const complex<T>* address ) noexcept
 {
    BLAZE_STATIC_ASSERT( sizeof( complex<T> ) == 2UL*sizeof( T ) );
+   BLAZE_INTERNAL_ASSERT( checkAlignment( address ), "Invalid alignment detected" );
 
 #if BLAZE_MIC_MODE
-   __m512i v1 = _mm512_setzero_epi32();
-   v1 = _mm512_loadunpacklo_epi64( v1, address );
-   v1 = _mm512_loadunpackhi_epi64( v1, address+8UL );
-   return v1;
+   return _mm512_load_epi64( address );
 #elif BLAZE_AVX2_MODE
-   return _mm256_loadu_si256( reinterpret_cast<const __m256i*>( address ) );
+   return _mm256_load_si256( reinterpret_cast<const __m256i*>( address ) );
 #elif BLAZE_SSE2_MODE
-   return _mm_loadu_si128( reinterpret_cast<const __m128i*>( address ) );
+   return _mm_load_si128( reinterpret_cast<const __m128i*>( address ) );
 #else
    return *address;
 #endif
@@ -293,27 +298,26 @@ BLAZE_ALWAYS_INLINE EnableIf_< And< IsIntegral<T>, HasSize<T,8UL> >, simd_cint64
 
 //*************************************************************************************************
 /*!\brief Loads a vector of 'complex<float>' values.
-// \ingroup intrinsics
+// \ingroup simd
 //
 // \param address The first 'complex<float>' value to be loaded.
 // \return The loaded vector of 'complex<float>' values.
 //
-// This function loads a vector of 'complex<float>' values. In contrast to the according load
-// function, the given address is not required to be properly aligned.
+// This function loads a vector of 'complex<float>' values. The given address must be aligned
+// according to the enabled instruction set (16-byte alignment in case of SSE, 32-byte alignment
+// in case of AVX, and 64-byte alignment in case of MIC.
 */
-BLAZE_ALWAYS_INLINE simd_cfloat_t loadu( const complex<float>* address ) noexcept
+BLAZE_ALWAYS_INLINE simd_cfloat_t loada( const complex<float>* address ) noexcept
 {
-   BLAZE_STATIC_ASSERT( sizeof( complex<float> ) == 2UL*sizeof( float ) );
+   BLAZE_STATIC_ASSERT  ( sizeof( complex<float> ) == 2UL*sizeof( float ) );
+   BLAZE_INTERNAL_ASSERT( checkAlignment( address ), "Invalid alignment detected" );
 
 #if BLAZE_MIC_MODE
-   __m512 v1 = _mm512_setzero_ps();
-   v1 = _mm512_loadunpacklo_ps( v1, reinterpret_cast<const float*>( address     ) );
-   v1 = _mm512_loadunpackhi_ps( v1, reinterpret_cast<const float*>( address+8UL ) );
-   return v1;
+   return _mm512_load_ps( reinterpret_cast<const float*>( address ) );
 #elif BLAZE_AVX_MODE
-   return _mm256_loadu_ps( reinterpret_cast<const float*>( address ) );
+   return _mm256_load_ps( reinterpret_cast<const float*>( address ) );
 #elif BLAZE_SSE_MODE
-   return _mm_loadu_ps( reinterpret_cast<const float*>( address ) );
+   return _mm_load_ps( reinterpret_cast<const float*>( address ) );
 #else
    return *address;
 #endif
@@ -323,27 +327,26 @@ BLAZE_ALWAYS_INLINE simd_cfloat_t loadu( const complex<float>* address ) noexcep
 
 //*************************************************************************************************
 /*!\brief Loads a vector of 'complex<double>' values.
-// \ingroup intrinsics
+// \ingroup simd
 //
 // \param address The first 'complex<double>' value to be loaded.
 // \return The loaded vector of 'complex<double>' values.
 //
-// This function loads a vector of 'complex<double>' values. In contrast to the according load
-// function, the given address is not required to be properly aligned.
+// This function loads a vector of 'complex<double>' values. The given address must be aligned
+// according to the enabled instruction set (16-byte alignment in case of SSE, 32-byte alignment
+// in case of AVX, and 64-byte alignment in case of MIC.
 */
-BLAZE_ALWAYS_INLINE simd_cdouble_t loadu( const complex<double>* address ) noexcept
+BLAZE_ALWAYS_INLINE simd_cdouble_t loada( const complex<double>* address ) noexcept
 {
-   BLAZE_STATIC_ASSERT( sizeof( complex<double> ) == 2UL*sizeof( double ) );
+   BLAZE_STATIC_ASSERT  ( sizeof( complex<double> ) == 2UL*sizeof( double ) );
+   BLAZE_INTERNAL_ASSERT( checkAlignment( address ), "Invalid alignment detected" );
 
 #if BLAZE_MIC_MODE
-   __m512d v1 = _mm512_setzero_pd();
-   v1 = _mm512_loadunpacklo_pd( v1, reinterpret_cast<const double*>( address     ) );
-   v1 = _mm512_loadunpackhi_pd( v1, reinterpret_cast<const double*>( address+4UL ) );
-   return v1;
+   return _mm512_load_pd( reinterpret_cast<const double*>( address ) );
 #elif BLAZE_AVX_MODE
-   return _mm256_loadu_pd( reinterpret_cast<const double*>( address ) );
+   return _mm256_load_pd( reinterpret_cast<const double*>( address ) );
 #elif BLAZE_SSE2_MODE
-   return _mm_loadu_pd( reinterpret_cast<const double*>( address ) );
+   return _mm_load_pd( reinterpret_cast<const double*>( address ) );
 #else
    return *address;
 #endif

@@ -55,9 +55,9 @@
 #include <blaze/math/constraints/Upper.h>
 #include <blaze/math/dense/DenseMatrix.h>
 #include <blaze/math/expressions/DenseMatrix.h>
-#include <blaze/math/Intrinsics.h>
 #include <blaze/math/shims/Clear.h>
 #include <blaze/math/shims/IsDefault.h>
+#include <blaze/math/SIMD.h>
 #include <blaze/math/typetraits/Columns.h>
 #include <blaze/math/typetraits/IsComputation.h>
 #include <blaze/math/typetraits/IsResizable.h>

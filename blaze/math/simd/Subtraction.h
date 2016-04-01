@@ -1,6 +1,6 @@
 //=================================================================================================
 /*!
-//  \file blaze/math/intrinsics/Subtraction.h
+//  \file blaze/math/simd/Subtraction.h
 //  \brief Header file for the intrinisc subtraction functionality
 //
 //  Copyright (C) 2013 Klaus Iglberger - All Rights Reserved
@@ -32,15 +32,15 @@
 */
 //=================================================================================================
 
-#ifndef _BLAZE_MATH_INTRINSICS_SUBTRACTION_H_
-#define _BLAZE_MATH_INTRINSICS_SUBTRACTION_H_
+#ifndef _BLAZE_MATH_SIMD_SUBTRACTION_H_
+#define _BLAZE_MATH_SIMD_SUBTRACTION_H_
 
 
 //*************************************************************************************************
 // Includes
 //*************************************************************************************************
 
-#include <blaze/math/intrinsics/BasicTypes.h>
+#include <blaze/math/simd/BasicTypes.h>
 #include <blaze/system/Inline.h>
 #include <blaze/system/Vectorization.h>
 
@@ -56,7 +56,7 @@ namespace blaze {
 //*************************************************************************************************
 /*!\fn simd_int8_t operator-( simd_int8_t, simd_int8_t )
 // \brief Subtraction of two vectors of 8-bit integral values.
-// \ingroup intrinsics
+// \ingroup simd
 //
 // \param a The left-hand side operand.
 // \param b The right-hand side operand.
@@ -79,7 +79,7 @@ BLAZE_ALWAYS_INLINE simd_int8_t operator-( const simd_int8_t& a, const simd_int8
 //*************************************************************************************************
 /*!\fn simd_int16_t operator-( simd_int16_t, simd_int16_t )
 // \brief Subtraction of two vectors of 16-bit integral values.
-// \ingroup intrinsics
+// \ingroup simd
 //
 // \param a The left-hand side operand.
 // \param b The right-hand side operand.
@@ -102,7 +102,7 @@ BLAZE_ALWAYS_INLINE simd_int16_t operator-( const simd_int16_t& a, const simd_in
 //*************************************************************************************************
 /*!\fn simd_int32_t operator-( simd_int32_t, simd_int32_t )
 // \brief Subtraction of two vectors of 32-bit integral values.
-// \ingroup intrinsics
+// \ingroup simd
 //
 // \param a The left-hand side operand.
 // \param b The right-hand side operand.
@@ -130,7 +130,7 @@ BLAZE_ALWAYS_INLINE simd_int32_t operator-( const simd_int32_t& a, const simd_in
 //*************************************************************************************************
 /*!\fn simd_int64_t operator-( simd_int64_t, simd_int64_t )
 // \brief Subtraction of two vectors of 64-bit integral values.
-// \ingroup intrinsics
+// \ingroup simd
 //
 // \param a The left-hand side operand.
 // \param b The right-hand side operand.
@@ -158,7 +158,7 @@ BLAZE_ALWAYS_INLINE simd_int64_t operator-( const simd_int64_t& a, const simd_in
 //*************************************************************************************************
 /*!\fn simd_float_t operator-( simd_float_t, simd_float_t )
 // \brief Subtraction of two vectors of single precision floating point values.
-// \ingroup intrinsics
+// \ingroup simd
 //
 // \param a The left-hand side operand.
 // \param b The right-hand side operand.
@@ -186,7 +186,7 @@ BLAZE_ALWAYS_INLINE simd_float_t operator-( const simd_float_t& a, const simd_fl
 //*************************************************************************************************
 /*!\fn simd_double_t operator-( simd_double_t, simd_double_t )
 // \brief Subtraction of two vectors of double precision floating point values.
-// \ingroup intrinsics
+// \ingroup simd
 //
 // \param a The left-hand side operand.
 // \param b The right-hand side operand.
@@ -214,7 +214,7 @@ BLAZE_ALWAYS_INLINE simd_double_t operator-( const simd_double_t& a, const simd_
 //*************************************************************************************************
 /*!\fn simd_cint8_t operator-( simd_cint8_t, simd_cint8_t )
 // \brief Subtraction of two vectors of 8-bit integral complex values.
-// \ingroup intrinsics
+// \ingroup simd
 //
 // \param a The left-hand side operand.
 // \param b The right-hand side operand.
@@ -237,7 +237,7 @@ BLAZE_ALWAYS_INLINE simd_cint8_t operator-( const simd_cint8_t& a, const simd_ci
 //*************************************************************************************************
 /*!\fn simd_cint16_t operator-( simd_cint16_t, simd_cint16_t )
 // \brief Subtraction of two vectors of 16-bit integral complex values.
-// \ingroup intrinsics
+// \ingroup simd
 //
 // \param a The left-hand side operand.
 // \param b The right-hand side operand.
@@ -260,7 +260,7 @@ BLAZE_ALWAYS_INLINE simd_cint16_t operator-( const simd_cint16_t& a, const simd_
 //*************************************************************************************************
 /*!\fn simd_cint32_t operator-( simd_cint32_t, simd_cint32_t )
 // \brief Subtraction of two vectors of 32-bit integral complex values.
-// \ingroup intrinsics
+// \ingroup simd
 //
 // \param a The left-hand side operand.
 // \param b The right-hand side operand.
@@ -288,7 +288,7 @@ BLAZE_ALWAYS_INLINE simd_cint32_t operator-( const simd_cint32_t& a, const simd_
 //*************************************************************************************************
 /*!\fn simd_cint64_t operator-( simd_cint64_t, simd_cint64_t )
 // \brief Subtraction of two vectors of 64-bit integral complex values.
-// \ingroup intrinsics
+// \ingroup simd
 //
 // \param a The left-hand side operand.
 // \param b The right-hand side operand.
@@ -316,7 +316,7 @@ BLAZE_ALWAYS_INLINE simd_cint64_t operator-( const simd_cint64_t& a, const simd_
 //*************************************************************************************************
 /*!\fn simd_cfloat_t operator-( simd_cfloat_t, simd_cfloat_t )
 // \brief Subtraction of two vectors of single precision complex values.
-// \ingroup intrinsics
+// \ingroup simd
 //
 // \param a The left-hand side operand.
 // \param b The right-hand side operand.
@@ -344,7 +344,7 @@ BLAZE_ALWAYS_INLINE simd_cfloat_t operator-( const simd_cfloat_t& a, const simd_
 //*************************************************************************************************
 /*!\fn simd_cdouble_t operator-( simd_cdouble_t, simd_cdouble_t )
 // \brief Subtraction of two vectors of double precision complex values.
-// \ingroup intrinsics
+// \ingroup simd
 //
 // \param a The left-hand side operand.
 // \param b The right-hand side operand.

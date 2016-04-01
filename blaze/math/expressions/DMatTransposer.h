@@ -46,7 +46,7 @@
 #include <blaze/math/constraints/DenseMatrix.h>
 #include <blaze/math/constraints/RowMajorMatrix.h>
 #include <blaze/math/expressions/DenseMatrix.h>
-#include <blaze/math/intrinsics/IntrinsicTrait.h>
+#include <blaze/math/simd/IntrinsicTrait.h>
 #include <blaze/math/traits/SubmatrixTrait.h>
 #include <blaze/math/typetraits/HasMutableDataAccess.h>
 #include <blaze/math/typetraits/IsAligned.h>

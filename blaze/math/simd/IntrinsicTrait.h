@@ -1,6 +1,6 @@
 //=================================================================================================
 /*!
-//  \file blaze/math/intrinsics/IntrinsicTrait.h
+//  \file blaze/math/simd/IntrinsicTrait.h
 //  \brief Header file for the intrinsic trait
 //
 //  Copyright (C) 2013 Klaus Iglberger - All Rights Reserved
@@ -32,15 +32,15 @@
 */
 //=================================================================================================
 
-#ifndef _BLAZE_MATH_INTRINSICS_INTRINSICTRAIT_H_
-#define _BLAZE_MATH_INTRINSICS_INTRINSICTRAIT_H_
+#ifndef _BLAZE_MATH_SIMD_INTRINSICTRAIT_H_
+#define _BLAZE_MATH_SIMD_INTRINSICTRAIT_H_
 
 
 //*************************************************************************************************
 // Includes
 //*************************************************************************************************
 
-#include <blaze/math/intrinsics/BasicTypes.h>
+#include <blaze/math/simd/BasicTypes.h>
 #include <blaze/system/Vectorization.h>
 #include <blaze/util/Complex.h>
 #include <blaze/util/StaticAssert.h>
@@ -60,7 +60,7 @@ namespace blaze {
 //*************************************************************************************************
 /*! \cond BLAZE_INTERNAL */
 /*!\brief Auxiliary helper struct for the IntrinsicTrait class template.
-// \ingroup intrinsics
+// \ingroup simd
 //
 // This helper structure provides the mapping between the size of an integral data type and the
 // according intrinsic data type.
@@ -74,7 +74,7 @@ struct IntrinsicTraitHelper;
 //*************************************************************************************************
 /*! \cond BLAZE_INTERNAL */
 /*!\brief IntrinsicTraitHelper specialization for 1-byte integral data types.
-// \ingroup intrinsics
+// \ingroup simd
 */
 #if BLAZE_AVX2_MODE
 template<>
@@ -110,7 +110,7 @@ struct IntrinsicTraitHelper<false,1UL>
 //*************************************************************************************************
 /*! \cond BLAZE_INTERNAL */
 /*!\brief IntrinsicTraitHelper specialization for 2-byte integral data types.
-// \ingroup intrinsics
+// \ingroup simd
 */
 #if BLAZE_AVX2_MODE
 template<>
@@ -146,7 +146,7 @@ struct IntrinsicTraitHelper<false,2UL>
 //*************************************************************************************************
 /*! \cond BLAZE_INTERNAL */
 /*!\brief IntrinsicTraitHelper specialization for 4-byte integral data types.
-// \ingroup intrinsics
+// \ingroup simd
 */
 #if BLAZE_MIC_MODE
 template<>
@@ -195,7 +195,7 @@ struct IntrinsicTraitHelper<false,4UL>
 //*************************************************************************************************
 /*! \cond BLAZE_INTERNAL */
 /*!\brief IntrinsicTraitHelper specialization for 8-byte integral data types.
-// \ingroup intrinsics
+// \ingroup simd
 */
 #if BLAZE_MIC_MODE
 template<>
@@ -244,7 +244,7 @@ struct IntrinsicTraitHelper<false,8UL>
 //*************************************************************************************************
 /*! \cond BLAZE_INTERNAL */
 /*!\brief IntrinsicTraitHelper specialization for 1-byte integral complex data types.
-// \ingroup intrinsics
+// \ingroup simd
 */
 #if BLAZE_AVX2_MODE
 template<>
@@ -280,7 +280,7 @@ struct IntrinsicTraitHelper<true,1UL>
 //*************************************************************************************************
 /*! \cond BLAZE_INTERNAL */
 /*!\brief IntrinsicTraitHelper specialization for 2-byte integral complex data types.
-// \ingroup intrinsics
+// \ingroup simd
 */
 #if BLAZE_AVX2_MODE
 template<>
@@ -316,7 +316,7 @@ struct IntrinsicTraitHelper<true,2UL>
 //*************************************************************************************************
 /*! \cond BLAZE_INTERNAL */
 /*!\brief IntrinsicTraitHelper specialization for 4-byte integral complex data types.
-// \ingroup intrinsics
+// \ingroup simd
 */
 #if BLAZE_MIC_MODE
 template<>
@@ -365,7 +365,7 @@ struct IntrinsicTraitHelper<true,4UL>
 //*************************************************************************************************
 /*! \cond BLAZE_INTERNAL */
 /*!\brief IntrinsicTraitHelper specialization for 8-byte integral complex data types.
-// \ingroup intrinsics
+// \ingroup simd
 */
 #if BLAZE_MIC_MODE
 template<>
@@ -422,7 +422,7 @@ struct IntrinsicTraitHelper<true,8UL>
 //*************************************************************************************************
 /*! \cond BLAZE_INTERNAL */
 /*!\brief Base template for the IntrinsicTraitBase class.
-// \ingroup intrinsics
+// \ingroup simd
 */
 template< typename T >
 struct IntrinsicTraitBase
@@ -444,7 +444,7 @@ struct IntrinsicTraitBase
 //*************************************************************************************************
 /*! \cond BLAZE_INTERNAL */
 /*!\brief Specialization of the IntrinsicTraitBase class template for 'char'.
-// \ingroup intrinsics
+// \ingroup simd
 */
 template<>
 struct IntrinsicTraitBase<char>
@@ -470,7 +470,7 @@ struct IntrinsicTraitBase<char>
 //*************************************************************************************************
 /*! \cond BLAZE_INTERNAL */
 /*!\brief Specialization of the IntrinsicTraitBase class template for 'signed char'.
-// \ingroup intrinsics
+// \ingroup simd
 */
 template<>
 struct IntrinsicTraitBase<signed char>
@@ -496,7 +496,7 @@ struct IntrinsicTraitBase<signed char>
 //*************************************************************************************************
 /*! \cond BLAZE_INTERNAL */
 /*!\brief Specialization of the IntrinsicTraitBase class template for 'unsigned char'.
-// \ingroup intrinsics
+// \ingroup simd
 */
 template<>
 struct IntrinsicTraitBase<unsigned char>
@@ -522,7 +522,7 @@ struct IntrinsicTraitBase<unsigned char>
 //*************************************************************************************************
 /*! \cond BLAZE_INTERNAL */
 /*!\brief Specialization of the IntrinsicTraitBase class template for 'wchar_t'.
-// \ingroup intrinsics
+// \ingroup simd
 */
 template<>
 struct IntrinsicTraitBase<wchar_t>
@@ -548,7 +548,7 @@ struct IntrinsicTraitBase<wchar_t>
 //*************************************************************************************************
 /*! \cond BLAZE_INTERNAL */
 /*!\brief Specialization of the IntrinsicTraitBase class template for 'short'.
-// \ingroup intrinsics
+// \ingroup simd
 */
 template<>
 struct IntrinsicTraitBase<short>
@@ -574,7 +574,7 @@ struct IntrinsicTraitBase<short>
 //*************************************************************************************************
 /*! \cond BLAZE_INTERNAL */
 /*!\brief Specialization of the IntrinsicTraitBase class template for 'unsigned short'.
-// \ingroup intrinsics
+// \ingroup simd
 */
 template<>
 struct IntrinsicTraitBase<unsigned short>
@@ -600,7 +600,7 @@ struct IntrinsicTraitBase<unsigned short>
 //*************************************************************************************************
 /*! \cond BLAZE_INTERNAL */
 /*!\brief Specialization of the IntrinsicTraitBase class template for 'int'.
-// \ingroup intrinsics
+// \ingroup simd
 */
 template<>
 struct IntrinsicTraitBase<int>
@@ -626,7 +626,7 @@ struct IntrinsicTraitBase<int>
 //*************************************************************************************************
 /*! \cond BLAZE_INTERNAL */
 /*!\brief Specialization of the IntrinsicTraitBase class template for 'unsigned int'.
-// \ingroup intrinsics
+// \ingroup simd
 */
 template<>
 struct IntrinsicTraitBase<unsigned int>
@@ -652,7 +652,7 @@ struct IntrinsicTraitBase<unsigned int>
 //*************************************************************************************************
 /*! \cond BLAZE_INTERNAL */
 /*!\brief Specialization of the IntrinsicTraitBase class template for 'long'.
-// \ingroup intrinsics
+// \ingroup simd
 */
 template<>
 struct IntrinsicTraitBase<long>
@@ -678,7 +678,7 @@ struct IntrinsicTraitBase<long>
 //*************************************************************************************************
 /*! \cond BLAZE_INTERNAL */
 /*!\brief Specialization of the IntrinsicTraitBase class template for 'unsigned long'.
-// \ingroup intrinsics
+// \ingroup simd
 */
 template<>
 struct IntrinsicTraitBase<unsigned long>
@@ -704,7 +704,7 @@ struct IntrinsicTraitBase<unsigned long>
 //*************************************************************************************************
 /*! \cond BLAZE_INTERNAL */
 /*!\brief Specialization of the IntrinsicTraitBase class template for 'float'.
-// \ingroup intrinsics
+// \ingroup simd
 */
 #if BLAZE_MIC_MODE
 struct IntrinsicTraitBase<float>
@@ -755,7 +755,7 @@ struct IntrinsicTraitBase<float>
 //*************************************************************************************************
 /*! \cond BLAZE_INTERNAL */
 /*!\brief Specialization of the IntrinsicTraitBase class template for 'double'.
-// \ingroup intrinsics
+// \ingroup simd
 */
 #if BLAZE_MIC_MODE
 template<>
@@ -807,7 +807,7 @@ struct IntrinsicTraitBase<double>
 //*************************************************************************************************
 /*! \cond BLAZE_INTERNAL */
 /*!\brief Specialization of the IntrinsicTraitBase class template for 'complex<char>'.
-// \ingroup intrinsics
+// \ingroup simd
 */
 template<>
 struct IntrinsicTraitBase< complex<char> >
@@ -835,7 +835,7 @@ struct IntrinsicTraitBase< complex<char> >
 //*************************************************************************************************
 /*! \cond BLAZE_INTERNAL */
 /*!\brief Specialization of the IntrinsicTraitBase class template for 'complex<signed char>'.
-// \ingroup intrinsics
+// \ingroup simd
 */
 template<>
 struct IntrinsicTraitBase< complex<signed char> >
@@ -863,7 +863,7 @@ struct IntrinsicTraitBase< complex<signed char> >
 //*************************************************************************************************
 /*! \cond BLAZE_INTERNAL */
 /*!\brief Specialization of the IntrinsicTraitBase class template for 'complex<unsigned char>'.
-// \ingroup intrinsics
+// \ingroup simd
 */
 template<>
 struct IntrinsicTraitBase< complex<unsigned char> >
@@ -891,7 +891,7 @@ struct IntrinsicTraitBase< complex<unsigned char> >
 //*************************************************************************************************
 /*! \cond BLAZE_INTERNAL */
 /*!\brief Specialization of the IntrinsicTraitBase class template for 'complex<wchar_t>'.
-// \ingroup intrinsics
+// \ingroup simd
 */
 template<>
 struct IntrinsicTraitBase< complex<wchar_t> >
@@ -919,7 +919,7 @@ struct IntrinsicTraitBase< complex<wchar_t> >
 //*************************************************************************************************
 /*! \cond BLAZE_INTERNAL */
 /*!\brief Specialization of the IntrinsicTraitBase class template for 'complex<short>'.
-// \ingroup intrinsics
+// \ingroup simd
 */
 template<>
 struct IntrinsicTraitBase< complex<short> >
@@ -947,7 +947,7 @@ struct IntrinsicTraitBase< complex<short> >
 //*************************************************************************************************
 /*! \cond BLAZE_INTERNAL */
 /*!\brief Specialization of the IntrinsicTraitBase class template for 'complex<unsigned short>'.
-// \ingroup intrinsics
+// \ingroup simd
 */
 template<>
 struct IntrinsicTraitBase< complex<unsigned short> >
@@ -975,7 +975,7 @@ struct IntrinsicTraitBase< complex<unsigned short> >
 //*************************************************************************************************
 /*! \cond BLAZE_INTERNAL */
 /*!\brief Specialization of the IntrinsicTraitBase class template for 'complex<int>'.
-// \ingroup intrinsics
+// \ingroup simd
 */
 template<>
 struct IntrinsicTraitBase< complex<int> >
@@ -1003,7 +1003,7 @@ struct IntrinsicTraitBase< complex<int> >
 //*************************************************************************************************
 /*! \cond BLAZE_INTERNAL */
 /*!\brief Specialization of the IntrinsicTraitBase class template for 'complex<unsigned int>'.
-// \ingroup intrinsics
+// \ingroup simd
 */
 template<>
 struct IntrinsicTraitBase< complex<unsigned int> >
@@ -1031,7 +1031,7 @@ struct IntrinsicTraitBase< complex<unsigned int> >
 //*************************************************************************************************
 /*! \cond BLAZE_INTERNAL */
 /*!\brief Specialization of the IntrinsicTraitBase class template for 'complex<long>'.
-// \ingroup intrinsics
+// \ingroup simd
 */
 template<>
 struct IntrinsicTraitBase< complex<long> >
@@ -1059,7 +1059,7 @@ struct IntrinsicTraitBase< complex<long> >
 //*************************************************************************************************
 /*! \cond BLAZE_INTERNAL */
 /*!\brief Specialization of the IntrinsicTraitBase class template for 'complex<unsigned long>'.
-// \ingroup intrinsics
+// \ingroup simd
 */
 template<>
 struct IntrinsicTraitBase< complex<unsigned long> >
@@ -1087,7 +1087,7 @@ struct IntrinsicTraitBase< complex<unsigned long> >
 //*************************************************************************************************
 /*! \cond BLAZE_INTERNAL */
 /*!\brief Specialization of the IntrinsicTraitBase class template for 'complex<float>'.
-// \ingroup intrinsics
+// \ingroup simd
 */
 #if BLAZE_MIC_MODE
 template<>
@@ -1145,7 +1145,7 @@ struct IntrinsicTraitBase< complex<float> >
 //*************************************************************************************************
 /*! \cond BLAZE_INTERNAL */
 /*!\brief Specialization of the IntrinsicTraitBase class template for 'complex<double>'.
-// \ingroup intrinsics
+// \ingroup simd
 */
 #if BLAZE_MIC_MODE
 template<>
@@ -1210,7 +1210,7 @@ struct IntrinsicTraitBase< complex<double> >
 
 //*************************************************************************************************
 /*!\brief Intrinsic characteristics of data types.
-// \ingroup intrinsics
+// \ingroup simd
 //
 // The IntrinsicTrait class template provides the intrinsic characteristics of a specific data
 // type:

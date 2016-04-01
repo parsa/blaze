@@ -1,7 +1,7 @@
 //=================================================================================================
 /*!
-//  \file blaze/math/Intrinsics.h
-//  \brief Header file for all intrinsic functionality
+//  \file blaze/math/simd/Functions.h
+//  \brief Header file for all intrinsic functions
 //
 //  Copyright (C) 2013 Klaus Iglberger - All Rights Reserved
 //
@@ -32,17 +32,27 @@
 */
 //=================================================================================================
 
-#ifndef _BLAZE_MATH_INTRINSICS_H_
-#define _BLAZE_MATH_INTRINSICS_H_
+#ifndef _BLAZE_MATH_SIMD_FUNCTIONS_H_
+#define _BLAZE_MATH_SIMD_FUNCTIONS_H_
 
 
 //*************************************************************************************************
 // Includes
 //*************************************************************************************************
 
-#include <blaze/math/intrinsics/BasicTypes.h>
-#include <blaze/math/intrinsics/DerivedTypes.h>
-#include <blaze/math/intrinsics/Functions.h>
-#include <blaze/math/intrinsics/IntrinsicTrait.h>
+#include <blaze/math/simd/Abs.h>
+#include <blaze/math/simd/Addition.h>
+#include <blaze/math/simd/Conj.h>
+#include <blaze/math/simd/Division.h>
+#include <blaze/math/simd/Loada.h>
+#include <blaze/math/simd/Loadu.h>
+#include <blaze/math/simd/Multiplication.h>
+#include <blaze/math/simd/Reduction.h>
+#include <blaze/math/simd/Set.h>
+#include <blaze/math/simd/Setzero.h>
+#include <blaze/math/simd/Storea.h>
+#include <blaze/math/simd/Storeu.h>
+#include <blaze/math/simd/Stream.h>
+#include <blaze/math/simd/Subtraction.h>
 
 #endif

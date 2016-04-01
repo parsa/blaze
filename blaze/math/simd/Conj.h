@@ -1,6 +1,6 @@
 //=================================================================================================
 /*!
-//  \file blaze/math/intrinsics/Conj.h
+//  \file blaze/math/simd/Conj.h
 //  \brief Header file for the intrinisc conj functionality
 //
 //  Copyright (C) 2013 Klaus Iglberger - All Rights Reserved
@@ -32,15 +32,15 @@
 */
 //=================================================================================================
 
-#ifndef _BLAZE_MATH_INTRINSICS_CONJ_H_
-#define _BLAZE_MATH_INTRINSICS_CONJ_H_
+#ifndef _BLAZE_MATH_SIMD_CONJ_H_
+#define _BLAZE_MATH_SIMD_CONJ_H_
 
 
 //*************************************************************************************************
 // Includes
 //*************************************************************************************************
 
-#include <blaze/math/intrinsics/BasicTypes.h>
+#include <blaze/math/simd/BasicTypes.h>
 #include <blaze/system/Inline.h>
 #include <blaze/system/Vectorization.h>
 
@@ -56,7 +56,7 @@ namespace blaze {
 //*************************************************************************************************
 /*!\fn simd_int8_t conj( const simd_int8_t& )
 // \brief Complex conjugate of a vector of 8-bit integral values.
-// \ingroup intrinsics
+// \ingroup simd
 //
 // \param a The vector of 8-bit integral values.
 // \return The complex conjugate values.
@@ -71,7 +71,7 @@ BLAZE_ALWAYS_INLINE simd_int8_t conj( const simd_int8_t& a ) noexcept
 //*************************************************************************************************
 /*!\fn simd_int16_t conj( const simd_int16_t& )
 // \brief Complex conjugate of a vector of 16-bit integral values.
-// \ingroup intrinsics
+// \ingroup simd
 //
 // \param a The vector of 16-bit integral values.
 // \return The complex conjugate values.
@@ -86,7 +86,7 @@ BLAZE_ALWAYS_INLINE simd_int16_t conj( const simd_int16_t& a ) noexcept
 //*************************************************************************************************
 /*!\fn simd_int32_t conj( const simd_int32_t& )
 // \brief Complex conjugate of a vector of 32-bit integral values.
-// \ingroup intrinsics
+// \ingroup simd
 //
 // \param a The vector of 32-bit integral values.
 // \return The complex conjugate values.
@@ -101,7 +101,7 @@ BLAZE_ALWAYS_INLINE simd_int32_t conj( const simd_int32_t& a ) noexcept
 //*************************************************************************************************
 /*!\fn simd_int64_t conj( const simd_int64_t& )
 // \brief Complex conjugate of a vector of 64-bit integral values.
-// \ingroup intrinsics
+// \ingroup simd
 //
 // \param a The vector of 64-bit integral values.
 // \return The complex conjugate values.
@@ -116,7 +116,7 @@ BLAZE_ALWAYS_INLINE simd_int64_t conj( const simd_int64_t& a ) noexcept
 //*************************************************************************************************
 /*!\fn simd_float_t conj( const simd_float_t& )
 // \brief Complex conjugate of a vector of single precision floating point values.
-// \ingroup intrinsics
+// \ingroup simd
 //
 // \param a The vector of single precision floating point values.
 // \return The complex conjugate values.
@@ -131,7 +131,7 @@ BLAZE_ALWAYS_INLINE simd_float_t conj( const simd_float_t& a ) noexcept
 //*************************************************************************************************
 /*!\fn simd_double_t conj( const simd_double_t& )
 // \brief Complex conjugate of a vector of double precision floating point values.
-// \ingroup intrinsics
+// \ingroup simd
 //
 // \param a The vector of double precision floating point values.
 // \return The complex conjugate values.
@@ -146,7 +146,7 @@ BLAZE_ALWAYS_INLINE simd_double_t conj( const simd_double_t& a ) noexcept
 //*************************************************************************************************
 /*!\fn simd_cint16_t conj( const simd_cint16_t& )
 // \brief Complex conjugate of a vector of 16-bit integral complex values.
-// \ingroup intrinsics
+// \ingroup simd
 //
 // \param a The vector of 16-bit integral complex values.
 // \return The complex conjugate values.
@@ -169,7 +169,7 @@ BLAZE_ALWAYS_INLINE simd_cint16_t conj( const simd_cint16_t& a ) noexcept
 //*************************************************************************************************
 /*!\fn simd_cint32_t conj( const simd_cint32_t& )
 // \brief Complex conjugate of a vector of 32-bit integral complex values.
-// \ingroup intrinsics
+// \ingroup simd
 //
 // \param a The vector of 32-bit integral complex values.
 // \return The complex conjugate values.
@@ -197,7 +197,7 @@ BLAZE_ALWAYS_INLINE simd_cint32_t conj( const simd_cint32_t& a ) noexcept
 //*************************************************************************************************
 /*!\fn simd_cfloat_t conj( const simd_cfloat_t& )
 // \brief Complex conjugate of a vector of single precision complex values.
-// \ingroup intrinsics
+// \ingroup simd
 //
 // \param a The vector of single precision complex values.
 // \return The complex conjugate values.
@@ -225,7 +225,7 @@ BLAZE_ALWAYS_INLINE simd_cfloat_t conj( const simd_cfloat_t& a ) noexcept
 //*************************************************************************************************
 /*!\fn simd_cdouble_t conj( const simd_cdouble_t& )
 // \brief Complex conjugate of a vector of double precision complex values.
-// \ingroup intrinsics
+// \ingroup simd
 //
 // \param a The vector of double precision complex values.
 // \return The complex conjugate values.

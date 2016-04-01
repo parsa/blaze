@@ -46,7 +46,7 @@
 #include <blaze/math/expressions/DenseVector.h>
 #include <blaze/math/expressions/SparseVector.h>
 #include <blaze/math/Functions.h>
-#include <blaze/math/intrinsics/IntrinsicTrait.h>
+#include <blaze/math/simd/IntrinsicTrait.h>
 #include <blaze/math/smp/ParallelSection.h>
 #include <blaze/math/smp/SerialSection.h>
 #include <blaze/math/smp/threads/ThreadBackend.h>

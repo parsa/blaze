@@ -1,6 +1,6 @@
 //=================================================================================================
 /*!
-//  \file blaze/math/intrinsics/Abs.h
+//  \file blaze/math/simd/Abs.h
 //  \brief Header file for the intrinisc abs functionality
 //
 //  Copyright (C) 2013 Klaus Iglberger - All Rights Reserved
@@ -32,15 +32,15 @@
 */
 //=================================================================================================
 
-#ifndef _BLAZE_MATH_INTRINSICS_ABS_H_
-#define _BLAZE_MATH_INTRINSICS_ABS_H_
+#ifndef _BLAZE_MATH_SIMD_ABS_H_
+#define _BLAZE_MATH_SIMD_ABS_H_
 
 
 //*************************************************************************************************
 // Includes
 //*************************************************************************************************
 
-#include <blaze/math/intrinsics/BasicTypes.h>
+#include <blaze/math/simd/BasicTypes.h>
 #include <blaze/system/Inline.h>
 #include <blaze/system/Vectorization.h>
 
@@ -56,7 +56,7 @@ namespace blaze {
 //*************************************************************************************************
 /*!\fn simd_int8_t abs( simd_int8_t )
 // \brief Absolute value of a vector of 8-bit integral values.
-// \ingroup intrinsics
+// \ingroup simd
 //
 // \param a The vector of 8-bit integral values.
 // \return The absolute values.
@@ -78,7 +78,7 @@ BLAZE_ALWAYS_INLINE simd_int8_t abs( const simd_int8_t& a ) noexcept
 //*************************************************************************************************
 /*!\fn simd_int16_t abs( simd_int16_t )
 // \brief Absolute value of a vector of 16-bit integral values.
-// \ingroup intrinsics
+// \ingroup simd
 //
 // \param a The vector of 16-bit integral values.
 // \return The absolute values.
@@ -100,7 +100,7 @@ BLAZE_ALWAYS_INLINE simd_int16_t abs( const simd_int16_t& a ) noexcept
 //*************************************************************************************************
 /*!\fn simd_int32_t abs( simd_int32_t )
 // \brief Absolute value of a vector of 32-bit integral values.
-// \ingroup intrinsics
+// \ingroup simd
 //
 // \param a The vector of 32-bit integral values.
 // \return The absolute values.

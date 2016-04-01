@@ -1,6 +1,6 @@
 //=================================================================================================
 /*!
-//  \file blaze/math/intrinsics/Set.h
+//  \file blaze/math/simd/Set.h
 //  \brief Header file for the intrinsic set functionality
 //
 //  Copyright (C) 2013 Klaus Iglberger - All Rights Reserved
@@ -32,15 +32,15 @@
 */
 //=================================================================================================
 
-#ifndef _BLAZE_MATH_INTRINSICS_SET_H_
-#define _BLAZE_MATH_INTRINSICS_SET_H_
+#ifndef _BLAZE_MATH_SIMD_SET_H_
+#define _BLAZE_MATH_SIMD_SET_H_
 
 
 //*************************************************************************************************
 // Includes
 //*************************************************************************************************
 
-#include <blaze/math/intrinsics/BasicTypes.h>
+#include <blaze/math/simd/BasicTypes.h>
 #include <blaze/system/Inline.h>
 #include <blaze/system/Vectorization.h>
 #include <blaze/util/Assert.h>
@@ -63,7 +63,7 @@ namespace blaze {
 
 //*************************************************************************************************
 /*!\brief Sets all values in the vector to the given 2-byte integral value.
-// \ingroup intrinsics
+// \ingroup simd
 //
 // \param value The given 2-byte integral value.
 // \return The set vector of 2-byte integral values.
@@ -85,7 +85,7 @@ BLAZE_ALWAYS_INLINE EnableIf_< And< IsIntegral<T>, HasSize<T,2UL> >, simd_int16_
 
 //*************************************************************************************************
 /*!\brief Sets all values in the vector to the given 4-byte integral value.
-// \ingroup intrinsics
+// \ingroup simd
 //
 // \param value The given 4-byte integral value.
 // \return The set vector of 4-byte integral values.
@@ -109,7 +109,7 @@ BLAZE_ALWAYS_INLINE EnableIf_< And< IsIntegral<T>, HasSize<T,4UL> >, simd_int32_
 
 //*************************************************************************************************
 /*!\brief Sets all values in the vector to the given 8-byte integral value.
-// \ingroup intrinsics
+// \ingroup simd
 //
 // \param value The given 8-byte integral value.
 // \return The set vector of 8-byte integral values.
@@ -133,7 +133,7 @@ BLAZE_ALWAYS_INLINE EnableIf_< And< IsIntegral<T>, HasSize<T,8UL> >, simd_int64_
 
 //*************************************************************************************************
 /*!\brief Sets all values in the vector to the given 'float' value.
-// \ingroup intrinsics
+// \ingroup simd
 //
 // \param value The given 'float' value.
 // \return The set vector of 'float' values.
@@ -155,7 +155,7 @@ BLAZE_ALWAYS_INLINE simd_float_t set( float value ) noexcept
 
 //*************************************************************************************************
 /*!\brief Sets all values in the vector to the given 'double' value.
-// \ingroup intrinsics
+// \ingroup simd
 //
 // \param value The given 'double' value.
 // \return The set vector of 'double' values.
@@ -177,7 +177,7 @@ BLAZE_ALWAYS_INLINE simd_double_t set( double value ) noexcept
 
 //*************************************************************************************************
 /*!\brief Sets all values in the vector to the given 2-byte integral complex value.
-// \ingroup intrinsics
+// \ingroup simd
 //
 // \param value The given 2-byte integral complex value.
 // \return The set vector of 2-byte integral complex values.
@@ -204,7 +204,7 @@ BLAZE_ALWAYS_INLINE EnableIf_< And< IsIntegral<T>, HasSize<T,2UL> >, simd_cint16
 
 //*************************************************************************************************
 /*!\brief Sets all values in the vector to the given 4-byte integral complex value.
-// \ingroup intrinsics
+// \ingroup simd
 //
 // \param value The given 4-byte integral complex value.
 // \return The set vector of 4-byte integral complex values.
@@ -233,7 +233,7 @@ BLAZE_ALWAYS_INLINE EnableIf_< And< IsIntegral<T>, HasSize<T,4UL> >, simd_cint32
 
 //*************************************************************************************************
 /*!\brief Sets all values in the vector to the given 8-byte integral complex value.
-// \ingroup intrinsics
+// \ingroup simd
 //
 // \param value The given 8-byte integral complex value.
 // \return The set vector of 8-byte integral complex values.
@@ -259,7 +259,7 @@ BLAZE_ALWAYS_INLINE EnableIf_< And< IsIntegral<T>, HasSize<T,8UL> >, simd_cint64
 
 //*************************************************************************************************
 /*!\brief Sets all values in the vector to the given 'complex<float>' value.
-// \ingroup intrinsics
+// \ingroup simd
 //
 // \param value The given 'complex<float>' value.
 // \return The set vector of 'complex<float>' values.
@@ -286,7 +286,7 @@ BLAZE_ALWAYS_INLINE simd_cfloat_t set( const complex<float>& value ) noexcept
 
 //*************************************************************************************************
 /*!\brief Sets all values in the vector to the given 'complex<double>' value.
-// \ingroup intrinsics
+// \ingroup simd
 //
 // \param value The given 'complex<double>' value.
 // \return The set vector of 'complex<double>' values.

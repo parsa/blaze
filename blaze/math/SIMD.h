@@ -1,7 +1,7 @@
 //=================================================================================================
 /*!
-//  \file blaze/math/intrinsics/Intrinsics.h
-//  \brief Mathematical intrinsics module documentation
+//  \file blaze/math/SIMD.h
+//  \brief Header file for all intrinsic functionality
 //
 //  Copyright (C) 2013 Klaus Iglberger - All Rights Reserved
 //
@@ -32,20 +32,17 @@
 */
 //=================================================================================================
 
-#ifndef _BLAZE_MATH_INTRINSICS_INTRINSICS_H_
-#define _BLAZE_MATH_INTRINSICS_INTRINSICS_H_
+#ifndef _BLAZE_MATH_SIMD_H_
+#define _BLAZE_MATH_SIMD_H_
 
-
-//=================================================================================================
-//
-//  DOXYGEN DOCUMENTATION
-//
-//=================================================================================================
 
 //*************************************************************************************************
-/*!\defgroup intrinsics Intrinsics
-// \ingroup math
-*/
+// Includes
 //*************************************************************************************************
+
+#include <blaze/math/simd/BasicTypes.h>
+#include <blaze/math/simd/DerivedTypes.h>
+#include <blaze/math/simd/Functions.h>
+#include <blaze/math/simd/IntrinsicTrait.h>
 
 #endif

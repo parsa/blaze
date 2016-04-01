@@ -32,7 +32,7 @@
 //*************************************************************************************************
 
 #include <iterator>
-#include <blaze/math/Intrinsics.h>
+#include <blaze/math/SIMD.h>
 #include <blaze/util/AlignmentCheck.h>
 #include <blaze/util/Assert.h>
 #include <blaze/util/Types.h>

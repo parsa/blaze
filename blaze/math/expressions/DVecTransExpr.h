@@ -50,7 +50,7 @@
 #include <blaze/math/expressions/Forward.h>
 #include <blaze/math/expressions/SVecTransposer.h>
 #include <blaze/math/expressions/VecTransExpr.h>
-#include <blaze/math/Intrinsics.h>
+#include <blaze/math/SIMD.h>
 #include <blaze/math/traits/DVecTransExprTrait.h>
 #include <blaze/math/traits/SubvectorExprTrait.h>
 #include <blaze/math/traits/TDVecTransExprTrait.h>

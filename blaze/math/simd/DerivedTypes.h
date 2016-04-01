@@ -1,6 +1,6 @@
 //=================================================================================================
 /*!
-//  \file blaze/math/intrinsics/DerivedTypes.h
+//  \file blaze/math/simd/DerivedTypes.h
 //  \brief Header file for the derived intrinsic types
 //
 //  Copyright (C) 2013 Klaus Iglberger - All Rights Reserved
@@ -32,15 +32,15 @@
 */
 //=================================================================================================
 
-#ifndef _BLAZE_MATH_INTRINSICS_DERIVEDTYPES_H_
-#define _BLAZE_MATH_INTRINSICS_DERIVEDTYPES_H_
+#ifndef _BLAZE_MATH_SIMD_DERIVEDTYPES_H_
+#define _BLAZE_MATH_SIMD_DERIVEDTYPES_H_
 
 
 //*************************************************************************************************
 // Includes
 //*************************************************************************************************
 
-#include <blaze/math/intrinsics/IntrinsicTrait.h>
+#include <blaze/math/simd/IntrinsicTrait.h>
 #include <blaze/system/Vectorization.h>
 
 
@@ -54,7 +54,7 @@ namespace blaze {
 
 //*************************************************************************************************
 /*!\brief The intrinsic data type for 'short'.
-// \ingroup intrinsics
+// \ingroup simd
 */
 typedef IntrinsicTrait<short>::Type  simd_short_t;
 //*************************************************************************************************
@@ -62,7 +62,7 @@ typedef IntrinsicTrait<short>::Type  simd_short_t;
 
 //*************************************************************************************************
 /*!\brief The intrinsic data type for 'unsigned short'.
-// \ingroup intrinsics
+// \ingroup simd
 */
 typedef IntrinsicTrait<unsigned short>::Type  simd_ushort_t;
 //*************************************************************************************************
@@ -70,7 +70,7 @@ typedef IntrinsicTrait<unsigned short>::Type  simd_ushort_t;
 
 //*************************************************************************************************
 /*!\brief The intrinsic data type for 'int'.
-// \ingroup intrinsics
+// \ingroup simd
 */
 typedef IntrinsicTrait<int>::Type  simd_int_t;
 //*************************************************************************************************
@@ -78,7 +78,7 @@ typedef IntrinsicTrait<int>::Type  simd_int_t;
 
 //*************************************************************************************************
 /*!\brief The intrinsic data type for 'unsigned int'.
-// \ingroup intrinsics
+// \ingroup simd
 */
 typedef IntrinsicTrait<unsigned int>::Type  simd_uint_t;
 //*************************************************************************************************
@@ -86,7 +86,7 @@ typedef IntrinsicTrait<unsigned int>::Type  simd_uint_t;
 
 //*************************************************************************************************
 /*!\brief The intrinsic data type for 'long int'.
-// \ingroup intrinsics
+// \ingroup simd
 */
 typedef IntrinsicTrait<long>::Type  simd_long_t;
 //*************************************************************************************************
@@ -94,7 +94,7 @@ typedef IntrinsicTrait<long>::Type  simd_long_t;
 
 //*************************************************************************************************
 /*!\brief The intrinsic data type for 'unsigned long int'.
-// \ingroup intrinsics
+// \ingroup simd
 */
 typedef IntrinsicTrait<unsigned long>::Type  simd_ulong_t;
 //*************************************************************************************************
@@ -102,7 +102,7 @@ typedef IntrinsicTrait<unsigned long>::Type  simd_ulong_t;
 
 //*************************************************************************************************
 /*!\brief The intrinsic data type for 'complex<short>'.
-// \ingroup intrinsics
+// \ingroup simd
 */
 typedef IntrinsicTrait< complex<short> >::Type  simd_cshort_t;
 //*************************************************************************************************
@@ -110,7 +110,7 @@ typedef IntrinsicTrait< complex<short> >::Type  simd_cshort_t;
 
 //*************************************************************************************************
 /*!\brief The intrinsic data type for 'complex<unsigned short>'.
-// \ingroup intrinsics
+// \ingroup simd
 */
 typedef IntrinsicTrait< complex<unsigned short> >::Type  simd_cushort_t;
 //*************************************************************************************************
@@ -118,7 +118,7 @@ typedef IntrinsicTrait< complex<unsigned short> >::Type  simd_cushort_t;
 
 //*************************************************************************************************
 /*!\brief The intrinsic data type for 'complex<int>'.
-// \ingroup intrinsics
+// \ingroup simd
 */
 typedef IntrinsicTrait< complex<int> >::Type  simd_cint_t;
 //*************************************************************************************************
@@ -126,7 +126,7 @@ typedef IntrinsicTrait< complex<int> >::Type  simd_cint_t;
 
 //*************************************************************************************************
 /*!\brief The intrinsic data type for 'complex<unsigned int>'.
-// \ingroup intrinsics
+// \ingroup simd
 */
 typedef IntrinsicTrait< complex<unsigned int> >::Type  simd_cuint_t;
 //*************************************************************************************************
@@ -134,7 +134,7 @@ typedef IntrinsicTrait< complex<unsigned int> >::Type  simd_cuint_t;
 
 //*************************************************************************************************
 /*!\brief The intrinsic data type for 'complex<long int>'.
-// \ingroup intrinsics
+// \ingroup simd
 */
 typedef IntrinsicTrait< complex<long> >::Type  simd_clong_t;
 //*************************************************************************************************
@@ -142,7 +142,7 @@ typedef IntrinsicTrait< complex<long> >::Type  simd_clong_t;
 
 //*************************************************************************************************
 /*!\brief The intrinsic data type for 'complex<unsigned long int>'.
-// \ingroup intrinsics
+// \ingroup simd
 */
 typedef IntrinsicTrait< complex<unsigned long> >::Type  simd_culong_t;
 //*************************************************************************************************

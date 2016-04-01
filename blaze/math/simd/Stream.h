@@ -1,7 +1,7 @@
 //=================================================================================================
 /*!
-//  \file blaze/math/intrinsics/Storea.h
-//  \brief Header file for the intrinsic aligned store functionality
+//  \file blaze/math/simd/Stream.h
+//  \brief Header file for the intrinsic stream functionality
 //
 //  Copyright (C) 2013 Klaus Iglberger - All Rights Reserved
 //
@@ -32,15 +32,15 @@
 */
 //=================================================================================================
 
-#ifndef _BLAZE_MATH_INTRINSICS_STOREA_H_
-#define _BLAZE_MATH_INTRINSICS_STOREA_H_
+#ifndef _BLAZE_MATH_SIMD_STREAM_H_
+#define _BLAZE_MATH_SIMD_STREAM_H_
 
 
 //*************************************************************************************************
 // Includes
 //*************************************************************************************************
 
-#include <blaze/math/intrinsics/BasicTypes.h>
+#include <blaze/math/simd/BasicTypes.h>
 #include <blaze/system/Inline.h>
 #include <blaze/system/Vectorization.h>
 #include <blaze/util/AlignmentCheck.h>
@@ -57,32 +57,28 @@ namespace blaze {
 
 //=================================================================================================
 //
-//  INTRINSIC STORE FUNCTIONS
+//  INTRINSIC STREAM FUNCTIONS
 //
 //=================================================================================================
 
 //*************************************************************************************************
-/*!\brief Aligned store of a vector of 2-byte integral values.
-// \ingroup intrinsics
+/*!\brief Aligned, non-temporal store of a vector of 2-byte integral values.
+// \ingroup simd
 //
 // \param address The target address.
-// \param value The 2-byte integral vector to be stored.
+// \param value The 2-byte integral vector to be streamed.
 // \return void
-//
-// This function stores a vector of 2-byte integral values. The given address must be aligned
-// according to the enabled instruction set (16-byte alignment in case of SSE, 32-byte alignment
-// in case of AVX, and 64-byte alignment in case of MIC.
 */
 template< typename T >  // Type of the integral value
 BLAZE_ALWAYS_INLINE EnableIf_< And< IsIntegral<T>, HasSize<T,2UL> > >
-   storea( T* address, const simd_int16_t& value ) noexcept
+   stream( T* address, const simd_int16_t& value ) noexcept
 {
    BLAZE_INTERNAL_ASSERT( checkAlignment( address ), "Invalid alignment detected" );
 
 #if BLAZE_AVX2_MODE
-   _mm256_store_si256( reinterpret_cast<__m256i*>( address ), value.value );
+   _mm256_stream_si256( reinterpret_cast<__m256i*>( address ), value.value );
 #elif BLAZE_SSE2_MODE
-   _mm_store_si128( reinterpret_cast<__m128i*>( address ), value.value );
+   _mm_stream_si128( reinterpret_cast<__m128i*>( address ), value.value );
 #else
    *address = value.value;
 #endif
@@ -91,29 +87,25 @@ BLAZE_ALWAYS_INLINE EnableIf_< And< IsIntegral<T>, HasSize<T,2UL> > >
 
 
 //*************************************************************************************************
-/*!\brief Aligned store of a vector of 4-byte integral values.
-// \ingroup intrinsics
+/*!\brief Aligned, non-temporal store of a vector of 4-byte integral values.
+// \ingroup simd
 //
 // \param address The target address.
-// \param value The 4-byte integral vector to be stored.
+// \param value The 4-byte integral vector to be streamed.
 // \return void
-//
-// This function stores a vector of 4-byte integral values. The given address must be aligned
-// according to the enabled instruction set (16-byte alignment in case of SSE, 32-byte alignment
-// in case of AVX, and 64-byte alignment in case of MIC.
 */
 template< typename T >  // Type of the integral value
 BLAZE_ALWAYS_INLINE EnableIf_< And< IsIntegral<T>, HasSize<T,4UL> > >
-   storea( T* address, const simd_int32_t& value ) noexcept
+   stream( T* address, const simd_int32_t& value ) noexcept
 {
    BLAZE_INTERNAL_ASSERT( checkAlignment( address ), "Invalid alignment detected" );
 
 #if BLAZE_MIC_MODE
    _mm512_store_epi32( address, value.value );
 #elif BLAZE_AVX2_MODE
-   _mm256_store_si256( reinterpret_cast<__m256i*>( address ), value.value );
+   _mm256_stream_si256( reinterpret_cast<__m256i*>( address ), value.value );
 #elif BLAZE_SSE2_MODE
-   _mm_store_si128( reinterpret_cast<__m128i*>( address ), value.value );
+   _mm_stream_si128( reinterpret_cast<__m128i*>( address ), value.value );
 #else
    *address = value.value;
 #endif
@@ -122,29 +114,25 @@ BLAZE_ALWAYS_INLINE EnableIf_< And< IsIntegral<T>, HasSize<T,4UL> > >
 
 
 //*************************************************************************************************
-/*!\brief Aligned store of a vector of 8-byte integral values.
-// \ingroup intrinsics
+/*!\brief Aligned, non-temporal store of a vector of 8-byte integral values.
+// \ingroup simd
 //
 // \param address The target address.
-// \param value The 8-byte integral vector to be stored.
+// \param value The 8-byte integral vector to be streamed.
 // \return void
-//
-// This function stores a vector of 8-byte integral values. The given address must be aligned
-// according to the enabled instruction set (16-byte alignment in case of SSE, 32-byte alignment
-// in case of AVX, and 64-byte alignment in case of MIC.
 */
 template< typename T >  // Type of the integral value
 BLAZE_ALWAYS_INLINE EnableIf_< And< IsIntegral<T>, HasSize<T,8UL> > >
-   storea( T* address, const simd_int64_t& value ) noexcept
+   stream( T* address, const simd_int64_t& value ) noexcept
 {
    BLAZE_INTERNAL_ASSERT( checkAlignment( address ), "Invalid alignment detected" );
 
 #if BLAZE_MIC_MODE
    _mm512_store_epi64( address, value.value );
 #elif BLAZE_AVX2_MODE
-   _mm256_store_si256( reinterpret_cast<__m256i*>( address ), value.value );
+   _mm256_stream_si256( reinterpret_cast<__m256i*>( address ), value.value );
 #elif BLAZE_SSE2_MODE
-   _mm_store_si128( reinterpret_cast<__m128i*>( address ), value.value );
+   _mm_stream_si128( reinterpret_cast<__m128i*>( address ), value.value );
 #else
    *address = value.value;
 #endif
@@ -153,27 +141,23 @@ BLAZE_ALWAYS_INLINE EnableIf_< And< IsIntegral<T>, HasSize<T,8UL> > >
 
 
 //*************************************************************************************************
-/*!\brief Aligned store of a vector of 'float' values.
-// \ingroup intrinsics
+/*!\brief Aligned, non-temporal store of a vector of 'float' values.
+// \ingroup simd
 //
 // \param address The target address.
-// \param value The 'float' vector to be stored.
+// \param value The 'float' vector to be streamed.
 // \return void
-//
-// This function stores a vector of 'float' values. The given address must be aligned according
-// to the enabled instruction set (16-byte alignment in case of SSE, 32-byte alignment in case of
-// AVX, and 64-byte alignment in case of MIC.
 */
-BLAZE_ALWAYS_INLINE void storea( float* address, const simd_float_t& value ) noexcept
+BLAZE_ALWAYS_INLINE void stream( float* address, const simd_float_t& value ) noexcept
 {
    BLAZE_INTERNAL_ASSERT( checkAlignment( address ), "Invalid alignment detected" );
 
 #if BLAZE_MIC_MODE
-   _mm512_store_ps( address, value.value );
+   _mm512_storenr_ps( address, value.value );
 #elif BLAZE_AVX_MODE
-   _mm256_store_ps( address, value.value );
+   _mm256_stream_ps( address, value.value );
 #elif BLAZE_SSE_MODE
-   _mm_store_ps( address, value.value );
+   _mm_stream_ps( address, value.value );
 #else
    *address = value.value;
 #endif
@@ -182,27 +166,23 @@ BLAZE_ALWAYS_INLINE void storea( float* address, const simd_float_t& value ) noe
 
 
 //*************************************************************************************************
-/*!\brief Aligned store of a vector of 'double' values.
-// \ingroup intrinsics
+/*!\brief Aligned, non-temporal store of a vector of 'double' values.
+// \ingroup simd
 //
 // \param address The target address.
-// \param value The 'double' vector to be stored.
+// \param value The 'double' vector to be streamed.
 // \return void
-//
-// This function stores a vector of 'double' values. The given address must be aligned according
-// to the enabled instruction set (16-byte alignment in case of SSE, 32-byte alignment in case of
-// AVX, and 64-byte alignment in case of MIC.
 */
-BLAZE_ALWAYS_INLINE void storea( double* address, const simd_double_t& value ) noexcept
+BLAZE_ALWAYS_INLINE void stream( double* address, const simd_double_t& value ) noexcept
 {
    BLAZE_INTERNAL_ASSERT( checkAlignment( address ), "Invalid alignment detected" );
 
 #if BLAZE_MIC_MODE
-   _mm512_store_pd( address, value.value );
+   _mm512_storenr_pd( address, value.value );
 #elif BLAZE_AVX_MODE
-   _mm256_store_pd( address, value.value );
+   _mm256_stream_pd( address, value.value );
 #elif BLAZE_SSE2_MODE
-   _mm_store_pd( address, value.value );
+   _mm_stream_pd( address, value.value );
 #else
    *address = value.value;
 #endif
@@ -211,28 +191,24 @@ BLAZE_ALWAYS_INLINE void storea( double* address, const simd_double_t& value ) n
 
 
 //*************************************************************************************************
-/*!\brief Aligned store of a vector of 2-byte integral complex values.
-// \ingroup intrinsics
+/*!\brief Aligned, non-temporal store of a vector of 2-byte integral complex values.
+// \ingroup simd
 //
 // \param address The target address.
-// \param value The 2-byte integral complex vector to be stored.
+// \param value The 2-byte integral complex vector to be streamed.
 // \return void
-//
-// This function stores a vector of 2-byte integral complex values. The given address must be
-// aligned according to the enabled instruction set (16-byte alignment in case of SSE, 32-byte
-// alignment in case of AVX, and 64-byte alignment in case of MIC.
 */
 template< typename T >  // Type of the integral value
 BLAZE_ALWAYS_INLINE EnableIf_< And< IsIntegral<T>, HasSize<T,2UL> > >
-   storea( complex<T>* address, const simd_cint16_t& value ) noexcept
+   stream( complex<T>* address, const simd_cint16_t& value ) noexcept
 {
    BLAZE_STATIC_ASSERT( sizeof( complex<T> ) == 2UL*sizeof( T ) );
    BLAZE_INTERNAL_ASSERT( checkAlignment( address ), "Invalid alignment detected" );
 
 #if BLAZE_AVX2_MODE
-   _mm256_store_si256( reinterpret_cast<__m256i*>( address ), value.value );
+   _mm256_stream_si256( reinterpret_cast<__m256i*>( address ), value.value );
 #elif BLAZE_SSE2_MODE
-   _mm_store_si128( reinterpret_cast<__m128i*>( address ), value.value );
+   _mm_stream_si128( reinterpret_cast<__m128i*>( address ), value.value );
 #else
    *address = value.value;
 #endif
@@ -241,20 +217,16 @@ BLAZE_ALWAYS_INLINE EnableIf_< And< IsIntegral<T>, HasSize<T,2UL> > >
 
 
 //*************************************************************************************************
-/*!\brief Aligned store of a vector of 4-byte integral complex values.
-// \ingroup intrinsics
+/*!\brief Aligned, non-temporal store of a vector of 4-byte integral complex values.
+// \ingroup simd
 //
 // \param address The target address.
-// \param value The 4-byte integral complex vector to be stored.
+// \param value The 4-byte integral complex vector to be streamed.
 // \return void
-//
-// This function stores a vector of 4-byte integral complex values. The given address must be
-// aligned according to the enabled instruction set (16-byte alignment in case of SSE, 32-byte
-// alignment in case of AVX, and 64-byte alignment in case of MIC.
 */
 template< typename T >  // Type of the integral value
 BLAZE_ALWAYS_INLINE EnableIf_< And< IsIntegral<T>, HasSize<T,4UL> > >
-   storea( complex<T>* address, const simd_cint32_t& value ) noexcept
+   stream( complex<T>* address, const simd_cint32_t& value ) noexcept
 {
    BLAZE_STATIC_ASSERT( sizeof( complex<T> ) == 2UL*sizeof( T ) );
    BLAZE_INTERNAL_ASSERT( checkAlignment( address ), "Invalid alignment detected" );
@@ -262,9 +234,9 @@ BLAZE_ALWAYS_INLINE EnableIf_< And< IsIntegral<T>, HasSize<T,4UL> > >
 #if BLAZE_MIC_MODE
    _mm512_store_epi32( address, value.value );
 #elif BLAZE_AVX2_MODE
-   _mm256_store_si256( reinterpret_cast<__m256i*>( address ), value.value );
+   _mm256_stream_si256( reinterpret_cast<__m256i*>( address ), value.value );
 #elif BLAZE_SSE2_MODE
-   _mm_store_si128( reinterpret_cast<__m128i*>( address ), value.value );
+   _mm_stream_si128( reinterpret_cast<__m128i*>( address ), value.value );
 #else
    *address = value.value;
 #endif
@@ -273,20 +245,16 @@ BLAZE_ALWAYS_INLINE EnableIf_< And< IsIntegral<T>, HasSize<T,4UL> > >
 
 
 //*************************************************************************************************
-/*!\brief Aligned store of a vector of 8-byte integral complex values.
-// \ingroup intrinsics
+/*!\brief Aligned, non-temporal store of a vector of 8-byte integral complex values.
+// \ingroup simd
 //
 // \param address The target address.
-// \param value The 8-byte integral complex vector to be stored.
+// \param value The 8-byte integral complex vector to be streamed.
 // \return void
-//
-// This function stores a vector of 8-byte integral complex values. The given address must be
-// aligned according to the enabled instruction set (16-byte alignment in case of SSE, 32-byte
-// alignment in case of AVX, and 64-byte alignment in case of MIC.
 */
 template< typename T >  // Type of the integral value
 BLAZE_ALWAYS_INLINE EnableIf_< And< IsIntegral<T>, HasSize<T,8UL> > >
-   storea( complex<T>* address, const simd_cint64_t& value ) noexcept
+   stream( complex<T>* address, const simd_cint64_t& value ) noexcept
 {
    BLAZE_STATIC_ASSERT( sizeof( complex<T> ) == 2UL*sizeof( T ) );
    BLAZE_INTERNAL_ASSERT( checkAlignment( address ), "Invalid alignment detected" );
@@ -294,9 +262,9 @@ BLAZE_ALWAYS_INLINE EnableIf_< And< IsIntegral<T>, HasSize<T,8UL> > >
 #if BLAZE_MIC_MODE
    _mm512_store_epi64( address, value.value );
 #elif BLAZE_AVX2_MODE
-   _mm256_store_si256( reinterpret_cast<__m256i*>( address ), value.value );
+   _mm256_stream_si256( reinterpret_cast<__m256i*>( address ), value.value );
 #elif BLAZE_SSE2_MODE
-   _mm_store_si128( reinterpret_cast<__m128i*>( address ), value.value );
+   _mm_stream_si128( reinterpret_cast<__m128i*>( address ), value.value );
 #else
    *address = value.value;
 #endif
@@ -305,28 +273,24 @@ BLAZE_ALWAYS_INLINE EnableIf_< And< IsIntegral<T>, HasSize<T,8UL> > >
 
 
 //*************************************************************************************************
-/*!\brief Aligned store of a vector of 'complex<float>' values.
-// \ingroup intrinsics
+/*!\brief Aligned, non-temporal store of a vector of 'complex<float>' values.
+// \ingroup simd
 //
 // \param address The target address.
-// \param value The 'complex<float>' vector to be stored.
+// \param value The 'complex<float>' vector to be streamed.
 // \return void
-//
-// This function stores a vector of 'complex<float>' values. The given address must be aligned
-// according to the enabled instruction set (16-byte alignment in case of SSE, 32-byte alignment
-// in case of AVX, and 64-byte alignment in case of MIC.
 */
-BLAZE_ALWAYS_INLINE void storea( complex<float>* address, const simd_cfloat_t& value ) noexcept
+BLAZE_ALWAYS_INLINE void stream( complex<float>* address, const simd_cfloat_t& value ) noexcept
 {
    BLAZE_STATIC_ASSERT  ( sizeof( complex<float> ) == 2UL*sizeof( float ) );
    BLAZE_INTERNAL_ASSERT( checkAlignment( address ), "Invalid alignment detected" );
 
 #if BLAZE_MIC_MODE
-   _mm512_store_ps( reinterpret_cast<float*>( address ), value.value );
+   _mm512_storenr_ps( reinterpret_cast<float*>( address ), value.value );
 #elif BLAZE_AVX_MODE
-   _mm256_store_ps( reinterpret_cast<float*>( address ), value.value );
+   _mm256_stream_ps( reinterpret_cast<float*>( address ), value.value );
 #elif BLAZE_SSE_MODE
-   _mm_store_ps( reinterpret_cast<float*>( address ), value.value );
+   _mm_stream_ps( reinterpret_cast<float*>( address ), value.value );
 #else
    *address = value.value;
 #endif
@@ -335,28 +299,24 @@ BLAZE_ALWAYS_INLINE void storea( complex<float>* address, const simd_cfloat_t& v
 
 
 //*************************************************************************************************
-/*!\brief Aligned store of a vector of 'complex<double>' values.
-// \ingroup intrinsics
+/*!\brief Aligned, non-temporal store of a vector of 'complex<double>' values.
+// \ingroup simd
 //
 // \param address The target address.
-// \param value The 'complex<double>' vector to be stored.
+// \param value The 'complex<double>' vector to be streamed.
 // \return void
-//
-// This function stores a vector of 'complex<double>' values. The given address must be aligned
-// according to the enabled instruction set (16-byte alignment in case of SSE, 32-byte alignment
-// in case of AVX, and 64-byte alignment in case of MIC.
 */
-BLAZE_ALWAYS_INLINE void storea( complex<double>* address, const simd_cdouble_t& value ) noexcept
+BLAZE_ALWAYS_INLINE void stream( complex<double>* address, const simd_cdouble_t& value ) noexcept
 {
    BLAZE_STATIC_ASSERT  ( sizeof( complex<double> ) == 2UL*sizeof( double ) );
    BLAZE_INTERNAL_ASSERT( checkAlignment( address ), "Invalid alignment detected" );
 
 #if BLAZE_MIC_MODE
-   _mm512_store_pd( reinterpret_cast<double*>( address ), value.value );
+   _mm512_storenr_pd( reinterpret_cast<double*>( address ), value.value );
 #elif BLAZE_AVX_MODE
-   _mm256_store_pd( reinterpret_cast<double*>( address ), value.value );
+   _mm256_stream_pd( reinterpret_cast<double*>( address ), value.value );
 #elif BLAZE_SSE2_MODE
-   _mm_store_pd( reinterpret_cast<double*>( address ), value.value );
+   _mm_stream_pd( reinterpret_cast<double*>( address ), value.value );
 #else
    *address = value.value;
 #endif

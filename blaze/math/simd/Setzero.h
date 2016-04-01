@@ -1,6 +1,6 @@
 //=================================================================================================
 /*!
-//  \file blaze/math/intrinsics/Setzero.h
+//  \file blaze/math/simd/Setzero.h
 //  \brief Header file for the intrinisc setzero functionality
 //
 //  Copyright (C) 2013 Klaus Iglberger - All Rights Reserved
@@ -32,15 +32,15 @@
 */
 //=================================================================================================
 
-#ifndef _BLAZE_MATH_INTRINSICS_SETZERO_H_
-#define _BLAZE_MATH_INTRINSICS_SETZERO_H_
+#ifndef _BLAZE_MATH_SIMD_SETZERO_H_
+#define _BLAZE_MATH_SIMD_SETZERO_H_
 
 
 //*************************************************************************************************
 // Includes
 //*************************************************************************************************
 
-#include <blaze/math/intrinsics/BasicTypes.h>
+#include <blaze/math/simd/BasicTypes.h>
 #include <blaze/system/Inline.h>
 #include <blaze/system/Vectorization.h>
 
@@ -55,7 +55,7 @@ namespace blaze {
 
 //*************************************************************************************************
 /*!\brief Setting an integral intrinsic type with 16 8-bit data values to zero.
-// \ingroup intrinsics
+// \ingroup simd
 //
 // \param value The value to be set to zero.
 // \return void
@@ -75,7 +75,7 @@ BLAZE_ALWAYS_INLINE void setzero( simd_int8_t& value ) noexcept
 
 //*************************************************************************************************
 /*!\brief Setting an integral intrinsic type with 8 16-bit data values to zero.
-// \ingroup intrinsics
+// \ingroup simd
 //
 // \param value The value to be set to zero.
 // \return void
@@ -95,7 +95,7 @@ BLAZE_ALWAYS_INLINE void setzero( simd_int16_t& value ) noexcept
 
 //*************************************************************************************************
 /*!\brief Setting an integral intrinsic type with 4 32-bit data values to zero.
-// \ingroup intrinsics
+// \ingroup simd
 //
 // \param value The value to be set to zero.
 // \return void
@@ -117,7 +117,7 @@ BLAZE_ALWAYS_INLINE void setzero( simd_int32_t& value ) noexcept
 
 //*************************************************************************************************
 /*!\brief Setting an integral intrinsic type with 2 64-bit data values to zero.
-// \ingroup intrinsics
+// \ingroup simd
 //
 // \param value The value to be set to zero.
 // \return void
@@ -139,7 +139,7 @@ BLAZE_ALWAYS_INLINE void setzero( simd_int64_t& value ) noexcept
 
 //*************************************************************************************************
 /*!\brief Setting a floating point intrinsic type with 4 32-bit single precision data values to zero.
-// \ingroup intrinsics
+// \ingroup simd
 //
 // \param value The value to be set to zero.
 // \return void
@@ -161,7 +161,7 @@ BLAZE_ALWAYS_INLINE void setzero( simd_float_t& value ) noexcept
 
 //*************************************************************************************************
 /*!\brief Setting a floating point intrinsic type with 4 32-bit double precision data values to zero.
-// \ingroup intrinsics
+// \ingroup simd
 //
 // \param value The value to be set to zero.
 // \return void
@@ -183,7 +183,7 @@ BLAZE_ALWAYS_INLINE void setzero( simd_double_t& value ) noexcept
 
 //*************************************************************************************************
 /*!\brief Setting a floating point intrinsic type with 4 32-bit single precision complex values to zero.
-// \ingroup intrinsics
+// \ingroup simd
 //
 // \param value The value to be set to zero.
 // \return void
@@ -205,7 +205,7 @@ BLAZE_ALWAYS_INLINE void setzero( simd_cfloat_t& value ) noexcept
 
 //*************************************************************************************************
 /*!\brief Setting a floating point intrinsic type with 4 32-bit double precision complex values to zero.
-// \ingroup intrinsics
+// \ingroup simd
 //
 // \param value The value to be set to zero.
 // \return void

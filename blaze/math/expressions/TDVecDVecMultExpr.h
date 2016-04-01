@@ -42,7 +42,7 @@
 
 #include <blaze/math/Aliases.h>
 #include <blaze/math/expressions/DenseVector.h>
-#include <blaze/math/Intrinsics.h>
+#include <blaze/math/SIMD.h>
 #include <blaze/math/traits/MultTrait.h>
 #include <blaze/system/Optimizations.h>
 #include <blaze/util/Assert.h>
