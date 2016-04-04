@@ -1,7 +1,7 @@
 //=================================================================================================
 /*!
 //  \file blaze/math/simd/BasicTypes.h
-//  \brief Header file for the basic intrinsic types
+//  \brief Header file for the basic SIMD types
 //
 //  Copyright (C) 2013 Klaus Iglberger - All Rights Reserved
 //
@@ -50,13 +50,13 @@ namespace blaze {
 
 //=================================================================================================
 //
-//  BASIC INTRINSIC TYPES
+//  BASIC SIMD TYPES
 //
 //=================================================================================================
 
 //*************************************************************************************************
 /*!\class blaze::simd_int8_t
-// \brief Intrinsic type for 8-bit integral data values.
+// \brief SIMD type for 8-bit integral data values.
 // \ingroup simd
 */
 /*! \cond BLAZE_INTERNAL */
@@ -88,7 +88,7 @@ struct simd_int8_t {
 
 //*************************************************************************************************
 /*!\class blaze::simd_int16_t
-// \brief Intrinsic type for 16-bit integral data values.
+// \brief SIMD type for 16-bit integral data values.
 // \ingroup simd
 */
 /*! \cond BLAZE_INTERNAL */
@@ -120,7 +120,7 @@ struct simd_int16_t {
 
 //*************************************************************************************************
 /*!\class blaze::simd_int32_t
-// \brief Intrinsic type for 32-bit integral data values.
+// \brief SIMD type for 32-bit integral data values.
 // \ingroup simd
 */
 /*! \cond BLAZE_INTERNAL */
@@ -159,7 +159,7 @@ struct simd_int32_t {
 
 //*************************************************************************************************
 /*!\class blaze::simd_int64_t
-// \brief Intrinsic type for 64-bit integral data values.
+// \brief SIMD type for 64-bit integral data values.
 // \ingroup simd
 */
 /*! \cond BLAZE_INTERNAL */
@@ -198,7 +198,7 @@ struct simd_int64_t {
 
 //*************************************************************************************************
 /*!\class blaze::simd_float_t
-// \brief Intrinsic type for 32-bit single precision floating point data values.
+// \brief SIMD type for 32-bit single precision floating point data values.
 // \ingroup simd
 */
 /*! \cond BLAZE_INTERNAL */
@@ -237,7 +237,7 @@ struct simd_float_t {
 
 //*************************************************************************************************
 /*!\class blaze::simd_double_t
-// \brief Intrinsic type for 64-bit double precision floating point data values.
+// \brief SIMD type for 64-bit double precision floating point data values.
 // \ingroup simd
 */
 /*! \cond BLAZE_INTERNAL */
@@ -276,7 +276,7 @@ struct simd_double_t {
 
 //*************************************************************************************************
 /*!\class blaze::simd_cint8_t
-// \brief Intrinsic type for 8-bit integral complex values.
+// \brief SIMD type for 8-bit integral complex values.
 // \ingroup simd
 */
 /*! \cond BLAZE_INTERNAL */
@@ -308,7 +308,7 @@ struct simd_cint8_t {
 
 //*************************************************************************************************
 /*!\class blaze::simd_cint16_t
-// \brief Intrinsic type for 16-bit integral complex values.
+// \brief SIMD type for 16-bit integral complex values.
 // \ingroup simd
 */
 /*! \cond BLAZE_INTERNAL */
@@ -328,9 +328,9 @@ struct simd_cint16_t {
 };
 #else
 struct simd_cint16_t {
-   BLAZE_ALWAYS_INLINE cosntexpr simd_cint16_t() noexcept : value( 0, 0 ) {}
-   BLAZE_ALWAYS_INLINE cosntexpr simd_cint16_t( complex<int16_t> v ) noexcept : value( v ) {}
-   BLAZE_ALWAYS_INLINE cosntexpr complex<int16_t> operator[]( size_t /*i*/ ) const noexcept { return value; }
+   BLAZE_ALWAYS_INLINE constexpr simd_cint16_t() noexcept : value( 0, 0 ) {}
+   BLAZE_ALWAYS_INLINE constexpr simd_cint16_t( complex<int16_t> v ) noexcept : value( v ) {}
+   BLAZE_ALWAYS_INLINE constexpr complex<int16_t> operator[]( size_t /*i*/ ) const noexcept { return value; }
    complex<int16_t> value;
 };
 #endif
@@ -340,7 +340,7 @@ struct simd_cint16_t {
 
 //*************************************************************************************************
 /*!\class blaze::simd_cint32_t
-// \brief Intrinsic type for 32-bit integral complex values.
+// \brief SIMD type for 32-bit integral complex values.
 // \ingroup simd
 */
 /*! \cond BLAZE_INTERNAL */
@@ -379,7 +379,7 @@ struct simd_cint32_t {
 
 //*************************************************************************************************
 /*!\class blaze::simd_cint64_t
-// \brief Intrinsic type for 64-bit integral complex values.
+// \brief SIMD type for 64-bit integral complex values.
 // \ingroup simd
 */
 /*! \cond BLAZE_INTERNAL */
@@ -418,7 +418,7 @@ struct simd_cint64_t {
 
 //*************************************************************************************************
 /*!\class blaze::simd_cfloat_t
-// \brief Intrinsic type for 32-bit single precision complex values.
+// \brief SIMD type for 32-bit single precision complex values.
 // \ingroup simd
 */
 /*! \cond BLAZE_INTERNAL */
@@ -457,7 +457,7 @@ struct simd_cfloat_t {
 
 //*************************************************************************************************
 /*!\class blaze::simd_cdouble_t
-// \brief Intrinsic type for 64-bit double precision complex values.
+// \brief SIMD type for 64-bit double precision complex values.
 // \ingroup simd
 */
 /*! \cond BLAZE_INTERNAL */
