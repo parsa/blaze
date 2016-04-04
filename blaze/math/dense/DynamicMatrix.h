@@ -66,6 +66,7 @@
 #include <blaze/math/traits/TransExprTrait.h>
 #include <blaze/math/typetraits/HasConstDataAccess.h>
 #include <blaze/math/typetraits/HasMutableDataAccess.h>
+#include <blaze/math/typetraits/HasSIMDAdd.h>
 #include <blaze/math/typetraits/IsAligned.h>
 #include <blaze/math/typetraits/IsDiagonal.h>
 #include <blaze/math/typetraits/IsLower.h>
@@ -355,7 +356,7 @@ class DynamicMatrix : public DenseMatrix< DynamicMatrix<Type,SO>, SO >
       enum { value = useOptimizedKernels &&
                      vectorizable && MT::vectorizable &&
                      IsSame< Type, ElementType_<MT> >::value &&
-                     IntrinsicTrait<Type>::addition &&
+                     HasSIMDAdd<Type,Type>::value &&
                      !IsDiagonal<MT>::value };
    };
    /*! \endcond */
@@ -2936,7 +2937,7 @@ class DynamicMatrix<Type,true> : public DenseMatrix< DynamicMatrix<Type,true>, t
       enum { value = useOptimizedKernels &&
                      vectorizable && MT::vectorizable &&
                      IsSame< Type, ElementType_<MT> >::value &&
-                     IntrinsicTrait<Type>::addition &&
+                     HasSIMDAdd<Type,Type>::value &&
                      !IsDiagonal<MT>::value };
    };
    //**********************************************************************************************

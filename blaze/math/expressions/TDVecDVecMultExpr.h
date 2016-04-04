@@ -44,6 +44,7 @@
 #include <blaze/math/expressions/DenseVector.h>
 #include <blaze/math/SIMD.h>
 #include <blaze/math/traits/MultTrait.h>
+#include <blaze/math/typetraits/HasSIMDAdd.h>
 #include <blaze/system/Optimizations.h>
 #include <blaze/util/Assert.h>
 #include <blaze/util/DisableIf.h>
@@ -85,7 +86,7 @@ struct TDVecDVecMultExprHelper
                   CT1::vectorizable &&
                   CT2::vectorizable &&
                   IsSame< ElementType_<CT1>, ElementType_<CT2> >::value &&
-                  IntrinsicTrait< ElementType_<CT1> >::addition &&
+                  HasSIMDAdd< ElementType_<CT1>, ElementType_<CT1> >::value &&
                   IntrinsicTrait< ElementType_<CT2> >::multiplication };
    //**********************************************************************************************
 };

@@ -54,6 +54,7 @@
 #include <blaze/math/traits/AddExprTrait.h>
 #include <blaze/math/traits/AddTrait.h>
 #include <blaze/math/traits/SubvectorExprTrait.h>
+#include <blaze/math/typetraits/HasSIMDAdd.h>
 #include <blaze/math/typetraits/IsAligned.h>
 #include <blaze/math/typetraits/IsComputation.h>
 #include <blaze/math/typetraits/IsExpression.h>
@@ -434,7 +435,7 @@ class DVecDVecAddExpr : public DenseVector< DVecDVecAddExpr<VT1,VT2,TF>, TF >
    //! Compilation switch for the expression template evaluation strategy.
    enum { vectorizable = VT1::vectorizable && VT2::vectorizable &&
                          IsSame<ET1,ET2>::value &&
-                         IntrinsicTrait<ET1>::addition };
+                         HasSIMDAdd<ET1,ET1>::value };
 
    //! Compilation switch for the expression template assignment strategy.
    enum { smpAssignable = VT1::smpAssignable && VT2::smpAssignable };

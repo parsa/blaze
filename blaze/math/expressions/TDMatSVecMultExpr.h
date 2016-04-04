@@ -59,6 +59,7 @@
 #include <blaze/math/traits/MultTrait.h>
 #include <blaze/math/traits/SubmatrixExprTrait.h>
 #include <blaze/math/traits/SubvectorExprTrait.h>
+#include <blaze/math/typetraits/HasSIMDAdd.h>
 #include <blaze/math/typetraits/IsAligned.h>
 #include <blaze/math/typetraits/IsComputation.h>
 #include <blaze/math/typetraits/IsDiagonal.h>
@@ -155,7 +156,7 @@ class TDMatSVecMultExpr : public DenseVector< TDMatSVecMultExpr<MT,VT>, false >
                      T1::vectorizable && T2::vectorizable &&
                      IsSame< ElementType_<T1>, ElementType_<T2> >::value &&
                      IsSame< ElementType_<T1>, ElementType_<T3> >::value &&
-                     IntrinsicTrait< ElementType_<T1> >::addition &&
+                     HasSIMDAdd< ElementType_<T1>, ElementType_<T1> >::value &&
                      IntrinsicTrait< ElementType_<T1> >::multiplication };
    };
    /*! \endcond */
@@ -218,7 +219,7 @@ class TDMatSVecMultExpr : public DenseVector< TDMatSVecMultExpr<MT,VT>, false >
    enum { vectorizable = !IsDiagonal<MT>::value &&
                          MT::vectorizable &&
                          IsSame<MET,VET>::value &&
-                         IntrinsicTrait<MET>::addition &&
+                         HasSIMDAdd<MET,MET>::value &&
                          IntrinsicTrait<MET>::multiplication };
 
    //! Compilation switch for the expression template assignment strategy.

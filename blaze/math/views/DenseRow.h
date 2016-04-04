@@ -67,6 +67,7 @@
 #include <blaze/math/traits/SubvectorTrait.h>
 #include <blaze/math/typetraits/HasConstDataAccess.h>
 #include <blaze/math/typetraits/HasMutableDataAccess.h>
+#include <blaze/math/typetraits/HasSIMDAdd.h>
 #include <blaze/math/typetraits/IsAligned.h>
 #include <blaze/math/typetraits/IsDiagonal.h>
 #include <blaze/math/typetraits/IsExpression.h>
@@ -470,7 +471,7 @@ class DenseRow : public DenseVector< DenseRow<MT,SO,SF>, true >
       enum { value = useOptimizedKernels &&
                      vectorizable && VT::vectorizable &&
                      IsSame< ElementType, ElementType_<VT> >::value &&
-                     IntrinsicTrait<ElementType>::addition };
+                     HasSIMDAdd< ElementType, ElementType >::value };
    };
    /*! \endcond */
    //**********************************************************************************************
@@ -3874,7 +3875,7 @@ class DenseRow<MT,false,true> : public DenseVector< DenseRow<MT,false,true>, tru
       enum { value = useOptimizedKernels &&
                      vectorizable && VT::vectorizable &&
                      IsSame< ElementType, ElementType_<VT> >::value &&
-                     IntrinsicTrait<ElementType>::addition };
+                     HasSIMDAdd< ElementType, ElementType >::value };
    };
    //**********************************************************************************************
 

@@ -68,6 +68,7 @@
 #include <blaze/math/traits/TSVecDMatMultExprTrait.h>
 #include <blaze/math/traits/TSVecSMatMultExprTrait.h>
 #include <blaze/math/typetraits/Columns.h>
+#include <blaze/math/typetraits/HasSIMDAdd.h>
 #include <blaze/math/typetraits/IsAligned.h>
 #include <blaze/math/typetraits/IsColumnVector.h>
 #include <blaze/math/typetraits/IsComputation.h>
@@ -172,7 +173,7 @@ class SMatDMatMultExpr : public DenseMatrix< SMatDMatMultExpr<MT1,MT2>, false >
                      IsRowMajorMatrix<T1>::value &&
                      IsSame< ElementType_<T1>, ElementType_<T2> >::value &&
                      IsSame< ElementType_<T1>, ElementType_<T3> >::value &&
-                     IntrinsicTrait< ElementType_<T1> >::addition &&
+                     HasSIMDAdd< ElementType_<T1>, ElementType_<T1> >::value &&
                      IntrinsicTrait< ElementType_<T1> >::subtraction &&
                      IntrinsicTrait< ElementType_<T1> >::multiplication };
    };
@@ -238,7 +239,7 @@ class SMatDMatMultExpr : public DenseMatrix< SMatDMatMultExpr<MT1,MT2>, false >
    enum { vectorizable = !IsDiagonal<MT2>::value &&
                          MT2::vectorizable &&
                          IsSame<ET1,ET2>::value &&
-                         IntrinsicTrait<ET1>::addition &&
+                         HasSIMDAdd<ET1,ET1>::value &&
                          IntrinsicTrait<ET1>::multiplication };
 
    //! Compilation switch for the expression template assignment strategy.

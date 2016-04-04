@@ -72,6 +72,7 @@
 #include <blaze/math/typetraits/Columns.h>
 #include <blaze/math/typetraits/HasConstDataAccess.h>
 #include <blaze/math/typetraits/HasMutableDataAccess.h>
+#include <blaze/math/typetraits/HasSIMDAdd.h>
 #include <blaze/math/typetraits/IsAligned.h>
 #include <blaze/math/typetraits/IsColumnMajorMatrix.h>
 #include <blaze/math/typetraits/IsColumnVector.h>
@@ -230,7 +231,7 @@ class DMatDMatMultExpr : public DenseMatrix< DMatDMatMultExpr<MT1,MT2>, false >
                      T1::vectorizable && T2::vectorizable && T3::vectorizable &&
                      IsSame< ElementType_<T1>, ElementType_<T2> >::value &&
                      IsSame< ElementType_<T1>, ElementType_<T3> >::value &&
-                     IntrinsicTrait< ElementType_<T1> >::addition &&
+                     HasSIMDAdd< ElementType_<T1>, ElementType_<T1> >::value &&
                      IntrinsicTrait< ElementType_<T1> >::subtraction &&
                      IntrinsicTrait< ElementType_<T1> >::multiplication };
    };
@@ -266,7 +267,7 @@ class DMatDMatMultExpr : public DenseMatrix< DMatDMatMultExpr<MT1,MT2>, false >
    enum { vectorizable = !IsDiagonal<MT2>::value &&
                          MT1::vectorizable && MT2::vectorizable &&
                          IsSame<ET1,ET2>::value &&
-                         IntrinsicTrait<ET1>::addition &&
+                         HasSIMDAdd<ET1,ET1>::value &&
                          IntrinsicTrait<ET1>::multiplication };
 
    //! Compilation switch for the expression template assignment strategy.
@@ -4146,7 +4147,7 @@ class DMatScalarMultExpr< DMatDMatMultExpr<MT1,MT2>, ST, false >
                      IsSame< ElementType_<T1>, ElementType_<T2> >::value &&
                      IsSame< ElementType_<T1>, ElementType_<T3> >::value &&
                      IsSame< ElementType_<T1>, T4 >::value &&
-                     IntrinsicTrait< ElementType_<T1> >::addition &&
+                     HasSIMDAdd< ElementType_<T1>, ElementType_<T1> >::value &&
                      IntrinsicTrait< ElementType_<T1> >::subtraction &&
                      IntrinsicTrait< ElementType_<T1> >::multiplication };
    };
@@ -4182,7 +4183,7 @@ class DMatScalarMultExpr< DMatDMatMultExpr<MT1,MT2>, ST, false >
                          MT1::vectorizable && MT2::vectorizable &&
                          IsSame<ET1,ET2>::value &&
                          IsSame<ET1,ST>::value &&
-                         IntrinsicTrait<ET1>::addition &&
+                         HasSIMDAdd<ET1,ET1>::value &&
                          IntrinsicTrait<ET1>::multiplication };
 
    //! Compilation switch for the expression template assignment strategy.

@@ -57,6 +57,7 @@
 #include <blaze/math/traits/RowExprTrait.h>
 #include <blaze/math/traits/SubmatrixExprTrait.h>
 #include <blaze/math/typetraits/Columns.h>
+#include <blaze/math/typetraits/HasSIMDAdd.h>
 #include <blaze/math/typetraits/IsAligned.h>
 #include <blaze/math/typetraits/IsExpression.h>
 #include <blaze/math/typetraits/IsHermitian.h>
@@ -444,7 +445,7 @@ class DMatDMatAddExpr : public DenseMatrix< DMatDMatAddExpr<MT1,MT2,SO>, SO >
    //! Compilation switch for the expression template evaluation strategy.
    enum { vectorizable = MT1::vectorizable && MT2::vectorizable &&
                          IsSame<ET1,ET2>::value &&
-                         IntrinsicTrait<ET1>::addition };
+                         HasSIMDAdd<ET1,ET1>::value };
 
    //! Compilation switch for the expression template assignment strategy.
    enum { smpAssignable = MT1::smpAssignable && MT2::smpAssignable };

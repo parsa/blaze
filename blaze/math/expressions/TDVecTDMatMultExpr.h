@@ -63,6 +63,7 @@
 #include <blaze/math/typetraits/Columns.h>
 #include <blaze/math/typetraits/HasConstDataAccess.h>
 #include <blaze/math/typetraits/HasMutableDataAccess.h>
+#include <blaze/math/typetraits/HasSIMDAdd.h>
 #include <blaze/math/typetraits/IsAligned.h>
 #include <blaze/math/typetraits/IsBlasCompatible.h>
 #include <blaze/math/typetraits/IsComputation.h>
@@ -191,7 +192,7 @@ class TDVecTDMatMultExpr : public DenseVector< TDVecTDMatMultExpr<VT,MT>, true >
                      T1::vectorizable && T2::vectorizable && T3::vectorizable &&
                      IsSame< ElementType_<T1>, ElementType_<T2> >::value &&
                      IsSame< ElementType_<T1>, ElementType_<T3> >::value &&
-                     IntrinsicTrait< ElementType_<T1> >::addition &&
+                     HasSIMDAdd< ElementType_<T1>, ElementType_<T1> >::value &&
                      IntrinsicTrait< ElementType_<T1> >::multiplication };
    };
    /*! \endcond */
@@ -225,7 +226,7 @@ class TDVecTDMatMultExpr : public DenseVector< TDVecTDMatMultExpr<VT,MT>, true >
    enum { vectorizable = !IsDiagonal<MT>::value &&
                          VT::vectorizable && MT::vectorizable &&
                          IsSame<VET,MET>::value &&
-                         IntrinsicTrait<VET>::addition &&
+                         HasSIMDAdd<VET,VET>::value &&
                          IntrinsicTrait<VET>::multiplication };
 
    //! Compilation switch for the expression template assignment strategy.
@@ -2742,7 +2743,7 @@ class DVecScalarMultExpr< TDVecTDMatMultExpr<VT,MT>, ST, true >
                      IsSame< ElementType_<T1>, ElementType_<T2> >::value &&
                      IsSame< ElementType_<T1>, ElementType_<T3> >::value &&
                      IsSame< ElementType_<T1>, T4 >::value &&
-                     IntrinsicTrait< ElementType_<T1> >::addition &&
+                     HasSIMDAdd< ElementType_<T1>, ElementType_<T1> >::value &&
                      IntrinsicTrait< ElementType_<T1> >::multiplication };
    };
    //**********************************************************************************************
@@ -2776,7 +2777,7 @@ class DVecScalarMultExpr< TDVecTDMatMultExpr<VT,MT>, ST, true >
                          VT::vectorizable && MT::vectorizable &&
                          IsSame<VET,MET>::value &&
                          IsSame<VET,ST>::value &&
-                         IntrinsicTrait<VET>::addition &&
+                         HasSIMDAdd<VET,VET>::value &&
                          IntrinsicTrait<VET>::multiplication };
 
    //! Compilation switch for the expression template assignment strategy.

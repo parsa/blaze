@@ -64,6 +64,7 @@
 #include <blaze/math/traits/SubvectorTrait.h>
 #include <blaze/math/typetraits/HasConstDataAccess.h>
 #include <blaze/math/typetraits/HasMutableDataAccess.h>
+#include <blaze/math/typetraits/HasSIMDAdd.h>
 #include <blaze/math/typetraits/IsCustom.h>
 #include <blaze/math/typetraits/IsPadded.h>
 #include <blaze/math/typetraits/IsSMPAssignable.h>
@@ -575,7 +576,7 @@ class CustomVector : public DenseVector< CustomVector<Type,AF,PF,TF>, TF >
       enum { value = useOptimizedKernels &&
                      vectorizable && VT::vectorizable &&
                      IsSame< Type, ElementType_<VT> >::value &&
-                     IntrinsicTrait<Type>::addition };
+                     HasSIMDAdd<Type,Type>::value };
    };
    /*! \endcond */
    //**********************************************************************************************
@@ -2702,7 +2703,7 @@ class CustomVector<Type,AF,padded,TF>
       enum { value = useOptimizedKernels &&
                      vectorizable && VT::vectorizable &&
                      IsSame< Type, ElementType_<VT> >::value &&
-                     IntrinsicTrait<Type>::addition };
+                     HasSIMDAdd<Type,Type>::value };
    };
    //**********************************************************************************************
 
