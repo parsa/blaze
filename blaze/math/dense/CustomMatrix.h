@@ -66,6 +66,7 @@
 #include <blaze/math/typetraits/HasConstDataAccess.h>
 #include <blaze/math/typetraits/HasMutableDataAccess.h>
 #include <blaze/math/typetraits/HasSIMDAdd.h>
+#include <blaze/math/typetraits/HasSIMDSub.h>
 #include <blaze/math/typetraits/IsAligned.h>
 #include <blaze/math/typetraits/IsCustom.h>
 #include <blaze/math/typetraits/IsDiagonal.h>
@@ -611,7 +612,7 @@ class CustomMatrix : public DenseMatrix< CustomMatrix<Type,AF,PF,SO>, SO >
       enum { value = useOptimizedKernels &&
                      vectorizable && MT::vectorizable &&
                      IsSame< Type, ElementType_<MT> >::value &&
-                     IntrinsicTrait<Type>::subtraction &&
+                     HasSIMDSub<Type,Type>::value &&
                      !IsDiagonal<MT>::value };
    };
    /*! \endcond */
@@ -3309,7 +3310,7 @@ class CustomMatrix<Type,AF,PF,true> : public DenseMatrix< CustomMatrix<Type,AF,P
       enum { value = useOptimizedKernels &&
                      vectorizable && MT::vectorizable &&
                      IsSame< Type, ElementType_<MT> >::value &&
-                     IntrinsicTrait<Type>::subtraction &&
+                     HasSIMDSub<Type,Type>::value &&
                      !IsDiagonal<MT>::value };
    };
    //**********************************************************************************************

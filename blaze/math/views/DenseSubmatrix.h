@@ -74,6 +74,7 @@
 #include <blaze/math/typetraits/HasConstDataAccess.h>
 #include <blaze/math/typetraits/HasMutableDataAccess.h>
 #include <blaze/math/typetraits/HasSIMDAdd.h>
+#include <blaze/math/typetraits/HasSIMDSub.h>
 #include <blaze/math/typetraits/IsAligned.h>
 #include <blaze/math/typetraits/IsColumnMajorMatrix.h>
 #include <blaze/math/typetraits/IsDiagonal.h>
@@ -982,7 +983,7 @@ class DenseSubmatrix : public DenseMatrix< DenseSubmatrix<MT,AF,SO>, SO >
       enum { value = useOptimizedKernels &&
                      vectorizable && MT2::vectorizable &&
                      IsSame< ElementType, ElementType_<MT2> >::value &&
-                     IntrinsicTrait<ElementType>::subtraction };
+                     HasSIMDSub< ElementType, ElementType >::value };
    };
    /*! \endcond */
    //**********************************************************************************************
@@ -3843,7 +3844,7 @@ class DenseSubmatrix<MT,unaligned,true> : public DenseMatrix< DenseSubmatrix<MT,
       enum { value = useOptimizedKernels &&
                      vectorizable && MT2::vectorizable &&
                      IsSame< ElementType, ElementType_<MT2> >::value &&
-                     IntrinsicTrait<ElementType>::subtraction };
+                     HasSIMDSub< ElementType, ElementType >::value };
    };
    //**********************************************************************************************
 
@@ -6319,7 +6320,7 @@ class DenseSubmatrix<MT,aligned,false> : public DenseMatrix< DenseSubmatrix<MT,a
       enum { value = useOptimizedKernels &&
                      vectorizable && MT2::vectorizable &&
                      IsSame< ElementType, ElementType_<MT2> >::value &&
-                     IntrinsicTrait<ElementType>::subtraction };
+                     HasSIMDSub< ElementType, ElementType >::value };
    };
    //**********************************************************************************************
 
@@ -8835,7 +8836,7 @@ class DenseSubmatrix<MT,aligned,true> : public DenseMatrix< DenseSubmatrix<MT,al
       enum { value = useOptimizedKernels &&
                      vectorizable && MT2::vectorizable &&
                      IsSame< ElementType, ElementType_<MT2> >::value &&
-                     IntrinsicTrait<ElementType>::subtraction };
+                     HasSIMDSub< ElementType, ElementType >::value };
    };
    //**********************************************************************************************
 

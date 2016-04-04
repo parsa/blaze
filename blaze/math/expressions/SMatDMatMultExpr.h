@@ -69,6 +69,7 @@
 #include <blaze/math/traits/TSVecSMatMultExprTrait.h>
 #include <blaze/math/typetraits/Columns.h>
 #include <blaze/math/typetraits/HasSIMDAdd.h>
+#include <blaze/math/typetraits/HasSIMDSub.h>
 #include <blaze/math/typetraits/IsAligned.h>
 #include <blaze/math/typetraits/IsColumnVector.h>
 #include <blaze/math/typetraits/IsComputation.h>
@@ -174,7 +175,7 @@ class SMatDMatMultExpr : public DenseMatrix< SMatDMatMultExpr<MT1,MT2>, false >
                      IsSame< ElementType_<T1>, ElementType_<T2> >::value &&
                      IsSame< ElementType_<T1>, ElementType_<T3> >::value &&
                      HasSIMDAdd< ElementType_<T1>, ElementType_<T1> >::value &&
-                     IntrinsicTrait< ElementType_<T1> >::subtraction &&
+                     HasSIMDSub< ElementType_<T1>, ElementType_<T1> >::value &&
                      IntrinsicTrait< ElementType_<T1> >::multiplication };
    };
    /*! \endcond */

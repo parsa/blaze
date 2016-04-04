@@ -67,6 +67,7 @@
 #include <blaze/math/typetraits/HasConstDataAccess.h>
 #include <blaze/math/typetraits/HasMutableDataAccess.h>
 #include <blaze/math/typetraits/HasSIMDAdd.h>
+#include <blaze/math/typetraits/HasSIMDSub.h>
 #include <blaze/math/typetraits/IsAligned.h>
 #include <blaze/math/typetraits/IsDiagonal.h>
 #include <blaze/math/typetraits/IsLower.h>
@@ -394,7 +395,7 @@ class StaticMatrix : public DenseMatrix< StaticMatrix<Type,M,N,SO>, SO >
       enum { value = useOptimizedKernels &&
                      vectorizable && MT::vectorizable &&
                      IsSame< Type, ElementType_<MT> >::value &&
-                     IntrinsicTrait<Type>::subtraction &&
+                     HasSIMDSub<Type,Type>::value &&
                      IsRowMajorMatrix<MT>::value &&
                      !IsDiagonal<MT>::value };
    };
@@ -2932,7 +2933,7 @@ class StaticMatrix<Type,M,N,true> : public DenseMatrix< StaticMatrix<Type,M,N,tr
       enum { value = useOptimizedKernels &&
                      vectorizable && MT::vectorizable &&
                      IsSame< Type, ElementType_<MT> >::value &&
-                     IntrinsicTrait<Type>::subtraction &&
+                     HasSIMDSub<Type,Type>::value &&
                      IsColumnMajorMatrix<MT>::value &&
                      !IsDiagonal<MT>::value };
    };

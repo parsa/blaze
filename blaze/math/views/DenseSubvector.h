@@ -69,6 +69,7 @@
 #include <blaze/math/typetraits/HasConstDataAccess.h>
 #include <blaze/math/typetraits/HasMutableDataAccess.h>
 #include <blaze/math/typetraits/HasSIMDAdd.h>
+#include <blaze/math/typetraits/HasSIMDSub.h>
 #include <blaze/math/typetraits/IsAligned.h>
 #include <blaze/math/typetraits/IsExpression.h>
 #include <blaze/math/typetraits/IsPadded.h>
@@ -867,7 +868,7 @@ class DenseSubvector : public DenseVector< DenseSubvector<VT,AF,TF>, TF >
       enum { value = useOptimizedKernels &&
                      vectorizable && VT2::vectorizable &&
                      IsSame< ElementType, ElementType_<VT2> >::value &&
-                     IntrinsicTrait<ElementType>::subtraction };
+                     HasSIMDSub< ElementType, ElementType >::value };
    };
    /*! \endcond */
    //**********************************************************************************************
@@ -2682,7 +2683,7 @@ class DenseSubvector<VT,aligned,TF> : public DenseVector< DenseSubvector<VT,alig
       enum { value = useOptimizedKernels &&
                      vectorizable && VT2::vectorizable &&
                      IsSame< ElementType, ElementType_<VT2> >::value &&
-                     IntrinsicTrait<ElementType>::subtraction };
+                     HasSIMDSub< ElementType, ElementType >::value };
    };
    //**********************************************************************************************
 

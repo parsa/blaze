@@ -73,6 +73,7 @@
 #include <blaze/math/typetraits/HasConstDataAccess.h>
 #include <blaze/math/typetraits/HasMutableDataAccess.h>
 #include <blaze/math/typetraits/HasSIMDAdd.h>
+#include <blaze/math/typetraits/HasSIMDSub.h>
 #include <blaze/math/typetraits/IsAligned.h>
 #include <blaze/math/typetraits/IsColumnMajorMatrix.h>
 #include <blaze/math/typetraits/IsColumnVector.h>
@@ -216,7 +217,7 @@ class TDMatDMatMultExpr : public DenseMatrix< TDMatDMatMultExpr<MT1,MT2>, true >
                      IsSame< ElementType_<T1>, ElementType_<T2> >::value &&
                      IsSame< ElementType_<T1>, ElementType_<T3> >::value &&
                      HasSIMDAdd< ElementType_<T1>, ElementType_<T1> >::value &&
-                     IntrinsicTrait< ElementType_<T1> >::subtraction &&
+                     HasSIMDSub< ElementType_<T1>, ElementType_<T1> >::value &&
                      IntrinsicTrait< ElementType_<T1> >::multiplication };
    };
    /*! \endcond */
@@ -5937,7 +5938,7 @@ class DMatScalarMultExpr< TDMatDMatMultExpr<MT1,MT2>, ST, true >
                      IsSame< ElementType_<T1>, ElementType_<T3> >::value &&
                      IsSame< ElementType_<T1>, T4>::value &&
                      HasSIMDAdd< ElementType_<T1>, ElementType_<T1> >::value &&
-                     IntrinsicTrait< ElementType_<T1> >::subtraction &&
+                     HasSIMDSub< ElementType_<T1>, ElementType_<T1> >::value &&
                      IntrinsicTrait< ElementType_<T1> >::multiplication };
    };
    //**********************************************************************************************

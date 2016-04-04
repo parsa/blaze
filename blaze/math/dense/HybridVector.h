@@ -53,6 +53,7 @@
 #include <blaze/math/typetraits/HasConstDataAccess.h>
 #include <blaze/math/typetraits/HasMutableDataAccess.h>
 #include <blaze/math/typetraits/HasSIMDAdd.h>
+#include <blaze/math/typetraits/HasSIMDSub.h>
 #include <blaze/math/typetraits/IsAligned.h>
 #include <blaze/math/typetraits/IsPadded.h>
 #include <blaze/math/typetraits/IsResizable.h>
@@ -346,7 +347,7 @@ class HybridVector : public DenseVector< HybridVector<Type,N,TF>, TF >
       enum { value = useOptimizedKernels &&
                      vectorizable && VT::vectorizable &&
                      IsSame< Type, ElementType_<VT> >::value &&
-                     IntrinsicTrait<Type>::subtraction };
+                     HasSIMDSub<Type,Type>::value };
    };
    /*! \endcond */
    //**********************************************************************************************
