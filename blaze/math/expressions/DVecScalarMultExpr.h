@@ -58,6 +58,7 @@
 #include <blaze/math/traits/MultExprTrait.h>
 #include <blaze/math/traits/MultTrait.h>
 #include <blaze/math/traits/SubvectorExprTrait.h>
+#include <blaze/math/typetraits/HasSIMDMult.h>
 #include <blaze/math/typetraits/IsAligned.h>
 #include <blaze/math/typetraits/IsColumnMajorMatrix.h>
 #include <blaze/math/typetraits/IsColumnVector.h>
@@ -442,7 +443,7 @@ class DVecScalarMultExpr : public DenseVector< DVecScalarMultExpr<VT,ST,TF>, TF 
                          IsNumeric<ET>::value &&
                          ( IsSame<ET,RightOperand>::value ||
                            IsSame<UnderlyingElement_<ET>,RightOperand>::value ) &&
-                         IntrinsicTrait<RightOperand>::multiplication };
+                         HasSIMDMult<ET,RightOperand>::value };
 
    //! Compilation switch for the expression template assignment strategy.
    enum { smpAssignable = VT::smpAssignable };

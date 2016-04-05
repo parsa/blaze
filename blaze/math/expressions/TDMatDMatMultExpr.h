@@ -73,6 +73,7 @@
 #include <blaze/math/typetraits/HasConstDataAccess.h>
 #include <blaze/math/typetraits/HasMutableDataAccess.h>
 #include <blaze/math/typetraits/HasSIMDAdd.h>
+#include <blaze/math/typetraits/HasSIMDMult.h>
 #include <blaze/math/typetraits/HasSIMDSub.h>
 #include <blaze/math/typetraits/IsAligned.h>
 #include <blaze/math/typetraits/IsColumnMajorMatrix.h>
@@ -218,7 +219,7 @@ class TDMatDMatMultExpr : public DenseMatrix< TDMatDMatMultExpr<MT1,MT2>, true >
                      IsSame< ElementType_<T1>, ElementType_<T3> >::value &&
                      HasSIMDAdd< ElementType_<T1>, ElementType_<T1> >::value &&
                      HasSIMDSub< ElementType_<T1>, ElementType_<T1> >::value &&
-                     IntrinsicTrait< ElementType_<T1> >::multiplication };
+                     HasSIMDMult< ElementType_<T1>, ElementType_<T1> >::value };
    };
    /*! \endcond */
    //**********************************************************************************************
@@ -253,7 +254,7 @@ class TDMatDMatMultExpr : public DenseMatrix< TDMatDMatMultExpr<MT1,MT2>, true >
                          MT1::vectorizable && MT2::vectorizable &&
                          IsSame<ET1,ET2>::value &&
                          HasSIMDAdd<ET1,ET1>::value &&
-                         IntrinsicTrait<ET1>::multiplication };
+                         HasSIMDMult<ET1,ET1>::value };
 
    //! Compilation switch for the expression template assignment strategy.
    enum { smpAssignable = !evaluateLeft  && MT1::smpAssignable &&
@@ -5939,7 +5940,7 @@ class DMatScalarMultExpr< TDMatDMatMultExpr<MT1,MT2>, ST, true >
                      IsSame< ElementType_<T1>, T4>::value &&
                      HasSIMDAdd< ElementType_<T1>, ElementType_<T1> >::value &&
                      HasSIMDSub< ElementType_<T1>, ElementType_<T1> >::value &&
-                     IntrinsicTrait< ElementType_<T1> >::multiplication };
+                     HasSIMDMult< ElementType_<T1>, ElementType_<T1> >::value };
    };
    //**********************************************************************************************
 
@@ -5974,7 +5975,7 @@ class DMatScalarMultExpr< TDMatDMatMultExpr<MT1,MT2>, ST, true >
                          IsSame<ET1,ET2>::value &&
                          IsSame<ET1,ST>::value &&
                          HasSIMDAdd<ET1,ET1>::value &&
-                         IntrinsicTrait<ET1>::multiplication };
+                         HasSIMDMult<ET1,ET1>::value };
 
    //! Compilation switch for the expression template assignment strategy.
    enum { smpAssignable = !evaluateLeft  && MT1::smpAssignable &&

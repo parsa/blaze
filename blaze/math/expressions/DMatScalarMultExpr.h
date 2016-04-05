@@ -59,6 +59,7 @@
 #include <blaze/math/traits/RowExprTrait.h>
 #include <blaze/math/traits/SubmatrixExprTrait.h>
 #include <blaze/math/typetraits/Columns.h>
+#include <blaze/math/typetraits/HasSIMDMult.h>
 #include <blaze/math/typetraits/IsAligned.h>
 #include <blaze/math/typetraits/IsColumnMajorMatrix.h>
 #include <blaze/math/typetraits/IsColumnVector.h>
@@ -449,7 +450,7 @@ class DMatScalarMultExpr : public DenseMatrix< DMatScalarMultExpr<MT,ST,SO>, SO 
                          IsNumeric<ET>::value &&
                          ( IsSame<ET,RightOperand>::value ||
                            IsSame<UnderlyingElement_<ET>,RightOperand>::value ) &&
-                         IntrinsicTrait<RightOperand>::multiplication };
+                         HasSIMDMult<ET,RightOperand>::value };
 
    //! Compilation switch for the expression template assignment strategy.
    enum { smpAssignable = MT::smpAssignable };

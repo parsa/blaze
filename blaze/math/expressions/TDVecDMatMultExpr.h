@@ -66,6 +66,7 @@
 #include <blaze/math/typetraits/HasConstDataAccess.h>
 #include <blaze/math/typetraits/HasMutableDataAccess.h>
 #include <blaze/math/typetraits/HasSIMDAdd.h>
+#include <blaze/math/typetraits/HasSIMDMult.h>
 #include <blaze/math/typetraits/IsAligned.h>
 #include <blaze/math/typetraits/IsBlasCompatible.h>
 #include <blaze/math/typetraits/IsComputation.h>
@@ -195,7 +196,7 @@ class TDVecDMatMultExpr : public DenseVector< TDVecDMatMultExpr<VT,MT>, true >
                      IsSame< ElementType_<T1>, ElementType_<T2> >::value &&
                      IsSame< ElementType_<T1>, ElementType_<T3> >::value &&
                      HasSIMDAdd< ElementType_<T1>, ElementType_<T1> >::value &&
-                     IntrinsicTrait< ElementType_<T1> >::multiplication };
+                     HasSIMDMult< ElementType_<T1>, ElementType_<T1> >::value };
    };
    /*! \endcond */
    //**********************************************************************************************
@@ -229,7 +230,7 @@ class TDVecDMatMultExpr : public DenseVector< TDVecDMatMultExpr<VT,MT>, true >
                          VT::vectorizable && MT::vectorizable &&
                          IsSame<VET,MET>::value &&
                          HasSIMDAdd<VET,VET>::value &&
-                         IntrinsicTrait<VET>::multiplication };
+                         HasSIMDMult<VET,VET>::value };
 
    //! Compilation switch for the expression template assignment strategy.
    enum { smpAssignable = !evaluateVector && VT::smpAssignable &&
@@ -2489,7 +2490,7 @@ class DVecScalarMultExpr< TDVecDMatMultExpr<VT,MT>, ST, true >
                      IsSame< ElementType_<T1>, ElementType_<T3> >::value &&
                      IsSame< ElementType_<T1>, T4 >::value &&
                      HasSIMDAdd< ElementType_<T1>, ElementType_<T1> >::value &&
-                     IntrinsicTrait< ElementType_<T1> >::multiplication };
+                     HasSIMDMult< ElementType_<T1>, ElementType_<T1> >::value };
    };
    //**********************************************************************************************
 
@@ -2523,7 +2524,7 @@ class DVecScalarMultExpr< TDVecDMatMultExpr<VT,MT>, ST, true >
                          IsSame<VET,MET>::value &&
                          IsSame<VET,ST>::value &&
                          HasSIMDAdd<VET,VET>::value &&
-                         IntrinsicTrait<VET>::multiplication };
+                         HasSIMDMult<VET,VET>::value };
 
    //! Compilation switch for the expression template assignment strategy.
    enum { smpAssignable = !evaluateVector && VT::smpAssignable &&

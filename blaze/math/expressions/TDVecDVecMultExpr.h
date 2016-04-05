@@ -45,6 +45,7 @@
 #include <blaze/math/SIMD.h>
 #include <blaze/math/traits/MultTrait.h>
 #include <blaze/math/typetraits/HasSIMDAdd.h>
+#include <blaze/math/typetraits/HasSIMDMult.h>
 #include <blaze/system/Optimizations.h>
 #include <blaze/util/Assert.h>
 #include <blaze/util/DisableIf.h>
@@ -87,7 +88,7 @@ struct TDVecDVecMultExprHelper
                   CT2::vectorizable &&
                   IsSame< ElementType_<CT1>, ElementType_<CT2> >::value &&
                   HasSIMDAdd< ElementType_<CT1>, ElementType_<CT1> >::value &&
-                  IntrinsicTrait< ElementType_<CT2> >::multiplication };
+                  HasSIMDMult< ElementType_<CT1>, ElementType_<CT1> >::value };
    //**********************************************************************************************
 };
 /*! \endcond */
