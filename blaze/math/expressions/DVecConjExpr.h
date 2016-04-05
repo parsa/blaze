@@ -56,6 +56,7 @@
 #include <blaze/math/traits/DVecConjExprTrait.h>
 #include <blaze/math/traits/SubvectorExprTrait.h>
 #include <blaze/math/traits/TDVecConjExprTrait.h>
+#include <blaze/math/typetraits/HasSIMDConj.h>
 #include <blaze/math/typetraits/IsAligned.h>
 #include <blaze/math/typetraits/IsColumnVector.h>
 #include <blaze/math/typetraits/IsComputation.h>
@@ -413,8 +414,7 @@ class DVecConjExpr : public DenseVector< DVecConjExpr<VT,TF>, TF >
 
    //**Compilation flags***************************************************************************
    //! Compilation switch for the expression template evaluation strategy.
-   enum { vectorizable = VT::vectorizable &&
-                         IntrinsicTrait<ET>::conjugate };
+   enum { vectorizable = VT::vectorizable && HasSIMDConj<ET>::value };
 
    //! Compilation switch for the expression template assignment strategy.
    enum { smpAssignable = VT::smpAssignable };

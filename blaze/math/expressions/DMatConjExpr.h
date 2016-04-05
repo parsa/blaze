@@ -59,6 +59,7 @@
 #include <blaze/math/traits/SubmatrixExprTrait.h>
 #include <blaze/math/traits/TDMatConjExprTrait.h>
 #include <blaze/math/typetraits/Columns.h>
+#include <blaze/math/typetraits/HasSIMDConj.h>
 #include <blaze/math/typetraits/IsAligned.h>
 #include <blaze/math/typetraits/IsColumnMajorMatrix.h>
 #include <blaze/math/typetraits/IsComputation.h>
@@ -425,8 +426,7 @@ class DMatConjExpr : public DenseMatrix< DMatConjExpr<MT,SO>, SO >
 
    //**Compilation flags***************************************************************************
    //! Compilation switch for the expression template evaluation strategy.
-   enum { vectorizable = MT::vectorizable &&
-                         IntrinsicTrait<ET>::conjugate };
+   enum { vectorizable = MT::vectorizable && HasSIMDConj<ET>::value };
 
    //! Compilation switch for the expression template assignment strategy.
    enum { smpAssignable = MT::smpAssignable };
