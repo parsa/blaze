@@ -48,9 +48,14 @@
 #include <blaze/math/shims/Conjugate.h>
 #include <blaze/math/shims/Equal.h>
 #include <blaze/math/SIMD.h>
+#include <blaze/math/typetraits/HasSIMDAbs.h>
+#include <blaze/math/typetraits/HasSIMDAdd.h>
+#include <blaze/math/typetraits/HasSIMDConj.h>
+#include <blaze/math/typetraits/HasSIMDDiv.h>
+#include <blaze/math/typetraits/HasSIMDMult.h>
+#include <blaze/math/typetraits/HasSIMDSub.h>
 #include <blaze/util/constraints/Numeric.h>
 #include <blaze/util/FalseType.h>
-#include <blaze/util/IntegralConstant.h>
 #include <blaze/util/Memory.h>
 #include <blaze/util/NonCopyable.h>
 #include <blaze/util/policies/Deallocate.h>
@@ -192,12 +197,12 @@ OperationTest<T>::OperationTest()
       testStoreu( offset );
    }
 
-   testAddition      ( typename blaze::BoolConstant< IT::addition       >::Type() );
-   testSubtraction   ( typename blaze::BoolConstant< IT::subtraction    >::Type() );
-   testMultiplication( typename blaze::BoolConstant< IT::multiplication >::Type() );
-   testDivision      ( typename blaze::BoolConstant< IT::division       >::Type() );
-   testAbsoluteValue ( typename blaze::BoolConstant< IT::absoluteValue  >::Type() );
-   testConjugate     ( typename blaze::BoolConstant< IT::conjugate      >::Type() );
+   testAddition      ( typename blaze::HasSIMDAdd <T,T>::Type() );
+   testSubtraction   ( typename blaze::HasSIMDSub <T,T>::Type() );
+   testMultiplication( typename blaze::HasSIMDMult<T,T>::Type() );
+   testDivision      ( typename blaze::HasSIMDDiv <T,T>::Type() );
+   testAbsoluteValue ( typename blaze::HasSIMDAbs < T >::Type() );
+   testConjugate     ( typename blaze::HasSIMDConj< T >::Type() );
    testReduction     ();
 }
 //*************************************************************************************************
