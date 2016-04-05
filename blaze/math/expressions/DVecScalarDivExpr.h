@@ -55,6 +55,7 @@
 #include <blaze/math/traits/MultExprTrait.h>
 #include <blaze/math/traits/MultTrait.h>
 #include <blaze/math/traits/SubvectorExprTrait.h>
+#include <blaze/math/typetraits/HasSIMDDiv.h>
 #include <blaze/math/typetraits/IsAligned.h>
 #include <blaze/math/typetraits/IsColumnVector.h>
 #include <blaze/math/typetraits/IsComputation.h>
@@ -434,7 +435,7 @@ class DVecScalarDivExpr : public DenseVector< DVecScalarDivExpr<VT,ST,TF>, TF >
                          IsNumeric<ET>::value &&
                          ( IsSame<ET,RightOperand>::value ||
                            IsSame<UnderlyingElement_<ET>,RightOperand>::value ) &&
-                         IntrinsicTrait<RightOperand>::division };
+                         HasSIMDDiv<ET,RightOperand>::value };
 
    //! Compilation switch for the expression template assignment strategy.
    enum { smpAssignable = VT::smpAssignable };

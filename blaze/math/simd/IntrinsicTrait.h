@@ -82,7 +82,6 @@ struct IntrinsicTraitHelper<false,1UL>
 {
    typedef simd_int8_t  Type;
    enum { size           = 32,
-          division       = 0,
           absoluteValue  = !BLAZE_MIC_MODE,
           conjugate      = 1 };
 };
@@ -92,7 +91,6 @@ struct IntrinsicTraitHelper<false,1UL>
 {
    typedef simd_int8_t  Type;
    enum { size           = ( BLAZE_SSE2_MODE )?( 16 ):( 1 ),
-          division       = 0,
           absoluteValue  = !BLAZE_MIC_MODE && BLAZE_SSSE3_MODE,
           conjugate      = 1 };
 };
@@ -112,7 +110,6 @@ struct IntrinsicTraitHelper<false,2UL>
 {
    typedef simd_int16_t  Type;
    enum { size           = 16,
-          division       = 0,
           absoluteValue  = !BLAZE_MIC_MODE,
           conjugate      = 1 };
 };
@@ -122,7 +119,6 @@ struct IntrinsicTraitHelper<false,2UL>
 {
    typedef simd_int16_t  Type;
    enum { size           = ( BLAZE_SSE2_MODE )?( 8 ):( 1 ),
-          division       = 0,
           absoluteValue  = !BLAZE_MIC_MODE && BLAZE_SSSE3_MODE,
           conjugate      = 1 };
 };
@@ -142,7 +138,6 @@ struct IntrinsicTraitHelper<false,4UL>
 {
    typedef simd_int32_t  Type;
    enum { size           = 16,
-          division       = 1,
           absoluteValue  = 0,
           conjugate      = 1 };
 };
@@ -152,7 +147,6 @@ struct IntrinsicTraitHelper<false,4UL>
 {
    typedef simd_int32_t  Type;
    enum { size           = 8,
-          division       = 0,
           absoluteValue  = 1,
           conjugate      = 1 };
 };
@@ -162,7 +156,6 @@ struct IntrinsicTraitHelper<false,4UL>
 {
    typedef simd_int32_t  Type;
    enum { size           = ( BLAZE_SSE2_MODE )?( 4 ):( 1 ),
-          division       = 0,
           absoluteValue  = BLAZE_SSSE3_MODE,
           conjugate      = 1 };
 };
@@ -182,7 +175,6 @@ struct IntrinsicTraitHelper<false,8UL>
 {
    typedef simd_int64_t  Type;
    enum { size           = 8,
-          division       = 1,
           absoluteValue  = 0,
           conjugate      = 1 };
 };
@@ -192,7 +184,6 @@ struct IntrinsicTraitHelper<false,8UL>
 {
    typedef simd_int64_t  Type;
    enum { size           = 4,
-          division       = 0,
           absoluteValue  = 0,
           conjugate      = 1 };
 };
@@ -202,7 +193,6 @@ struct IntrinsicTraitHelper<false,8UL>
 {
    typedef simd_int64_t  Type;
    enum { size           = ( BLAZE_SSE2_MODE )?( 2 ):( 1 ),
-          division       = 0,
           absoluteValue  = 0,
           conjugate      = 1 };
 };
@@ -222,7 +212,6 @@ struct IntrinsicTraitHelper<true,1UL>
 {
    typedef simd_cint8_t  Type;
    enum { size           = 16,
-          division       = 0,
           absoluteValue  = 0,
           conjugate      = 0 };
 };
@@ -232,7 +221,6 @@ struct IntrinsicTraitHelper<true,1UL>
 {
    typedef simd_cint8_t  Type;
    enum { size           = ( BLAZE_SSE2_MODE )?( 8 ):( 1 ),
-          division       = 0,
           absoluteValue  = 0,
           conjugate      = 0 };
 };
@@ -252,7 +240,6 @@ struct IntrinsicTraitHelper<true,2UL>
 {
    typedef simd_cint16_t  Type;
    enum { size           = 8,
-          division       = 0,
           absoluteValue  = 0,
           conjugate      = 1 };
 };
@@ -262,7 +249,6 @@ struct IntrinsicTraitHelper<true,2UL>
 {
    typedef simd_cint16_t  Type;
    enum { size           = ( BLAZE_SSE2_MODE )?( 4 ):( 1 ),
-          division       = 0,
           absoluteValue  = 0,
           conjugate      = BLAZE_SSE2_MODE };
 };
@@ -282,7 +268,6 @@ struct IntrinsicTraitHelper<true,4UL>
 {
    typedef simd_cint32_t  Type;
    enum { size           = 8,
-          division       = 0,
           absoluteValue  = 0,
           conjugate      = 1 };
 };
@@ -292,7 +277,6 @@ struct IntrinsicTraitHelper<true,4UL>
 {
    typedef simd_cint32_t  Type;
    enum { size           = 4,
-          division       = 0,
           absoluteValue  = 0,
           conjugate      = 1 };
 };
@@ -302,7 +286,6 @@ struct IntrinsicTraitHelper<true,4UL>
 {
    typedef simd_cint32_t  Type;
    enum { size           = ( BLAZE_SSE2_MODE )?( 2 ):( 1 ),
-          division       = 0,
           absoluteValue  = 0,
           conjugate      = BLAZE_SSE4_MODE };
 };
@@ -322,7 +305,6 @@ struct IntrinsicTraitHelper<true,8UL>
 {
    typedef simd_cint64_t  Type;
    enum { size           = 4,
-          division       = 0,
           absoluteValue  = 0,
           conjugate      = 0 };
 };
@@ -332,7 +314,6 @@ struct IntrinsicTraitHelper<true,8UL>
 {
    typedef simd_cint64_t  Type;
    enum { size           = 2,
-          division       = 0,
           absoluteValue  = 0,
           conjugate      = 0 };
 };
@@ -342,7 +323,6 @@ struct IntrinsicTraitHelper<true,8UL>
 {
    typedef simd_cint64_t  Type;
    enum { size           = 1,
-          division       = 0,
           absoluteValue  = 0,
           conjugate      = 0 };
 };
@@ -370,7 +350,6 @@ struct IntrinsicTraitBase
    typedef T  Type;
    enum { size           = 1,
           alignment      = AlignmentOf<T>::value,
-          division       = 0,
           absoluteValue  = 0,
           conjugate      = 0 };
 };
@@ -393,7 +372,6 @@ struct IntrinsicTraitBase<char>
    typedef Helper::Type  Type;
    enum { size           = Helper::size,
           alignment      = AlignmentOf<char>::value,
-          division       = Helper::division,
           absoluteValue  = Helper::absoluteValue,
           conjugate      = Helper::conjugate };
 };
@@ -416,7 +394,6 @@ struct IntrinsicTraitBase<signed char>
    typedef Helper::Type  Type;
    enum { size           = Helper::size,
           alignment      = AlignmentOf<signed char>::value,
-          division       = Helper::division,
           absoluteValue  = Helper::absoluteValue,
           conjugate      = Helper::conjugate };
 };
@@ -439,7 +416,6 @@ struct IntrinsicTraitBase<unsigned char>
    typedef Helper::Type  Type;
    enum { size           = Helper::size,
           alignment      = AlignmentOf<unsigned char>::value,
-          division       = Helper::division,
           absoluteValue  = 0,
           conjugate      = Helper::conjugate };
 };
@@ -462,7 +438,6 @@ struct IntrinsicTraitBase<wchar_t>
    typedef Helper::Type  Type;
    enum { size           = Helper::size,
           alignment      = AlignmentOf<wchar_t>::value,
-          division       = Helper::division,
           absoluteValue  = Helper::absoluteValue,
           conjugate      = Helper::conjugate };
 };
@@ -485,7 +460,6 @@ struct IntrinsicTraitBase<short>
    typedef Helper::Type  Type;
    enum { size           = Helper::size,
           alignment      = AlignmentOf<short>::value,
-          division       = Helper::division,
           absoluteValue  = Helper::absoluteValue,
           conjugate      = Helper::conjugate };
 };
@@ -508,7 +482,6 @@ struct IntrinsicTraitBase<unsigned short>
    typedef Helper::Type  Type;
    enum { size           = Helper::size,
           alignment      = AlignmentOf<unsigned short>::value,
-          division       = Helper::division,
           absoluteValue  = 0,
           conjugate      = Helper::conjugate };
 };
@@ -531,7 +504,6 @@ struct IntrinsicTraitBase<int>
    typedef Helper::Type  Type;
    enum { size           = Helper::size,
           alignment      = AlignmentOf<int>::value,
-          division       = Helper::division,
           absoluteValue  = Helper::absoluteValue,
           conjugate      = Helper::conjugate };
 };
@@ -554,7 +526,6 @@ struct IntrinsicTraitBase<unsigned int>
    typedef Helper::Type  Type;
    enum { size           = Helper::size,
           alignment      = AlignmentOf<unsigned int>::value,
-          division       = Helper::division,
           absoluteValue  = 0,
           conjugate      = Helper::conjugate };
 };
@@ -577,7 +548,6 @@ struct IntrinsicTraitBase<long>
    typedef Helper::Type  Type;
    enum { size           = Helper::size,
           alignment      = AlignmentOf<long>::value,
-          division       = Helper::division,
           absoluteValue  = Helper::absoluteValue,
           conjugate      = Helper::conjugate };
 };
@@ -600,7 +570,6 @@ struct IntrinsicTraitBase<unsigned long>
    typedef Helper::Type  Type;
    enum { size           = Helper::size,
           alignment      = AlignmentOf<unsigned long>::value,
-          division       = Helper::division,
           absoluteValue  = 0,
           conjugate      = Helper::conjugate };
 };
@@ -620,7 +589,6 @@ struct IntrinsicTraitBase<float>
    typedef simd_float_t  Type;
    enum { size           = ( 64UL / sizeof(float) ),
           alignment      = AlignmentOf<float>::value,
-          division       = 1,
           absoluteValue  = 0,
           conjugate      = 1 };
 };
@@ -631,7 +599,6 @@ struct IntrinsicTraitBase<float>
    typedef simd_float_t  Type;
    enum { size           = ( 32UL / sizeof(float) ),
           alignment      = AlignmentOf<float>::value,
-          division       = 1,
           absoluteValue  = 0,
           conjugate      = 1 };
 };
@@ -642,7 +609,6 @@ struct IntrinsicTraitBase<float>
    typedef simd_float_t  Type;
    enum { size           = ( BLAZE_SSE_MODE )?( 16UL / sizeof(float) ):( 1 ),
           alignment      = AlignmentOf<float>::value,
-          division       = BLAZE_SSE_MODE,
           absoluteValue  = 0,
           conjugate      = 1 };
 };
@@ -663,7 +629,6 @@ struct IntrinsicTraitBase<double>
    typedef simd_double_t  Type;
    enum { size           = ( 64UL / sizeof(double) ),
           alignment      = AlignmentOf<double>::value,
-          division       = 1,
           absoluteValue  = 0,
           conjugate      = 1 };
 };
@@ -674,7 +639,6 @@ struct IntrinsicTraitBase<double>
    typedef simd_double_t  Type;
    enum { size           = ( 32UL / sizeof(double) ),
           alignment      = AlignmentOf<double>::value,
-          division       = 1,
           absoluteValue  = 0,
           conjugate      = 1 };
 };
@@ -685,7 +649,6 @@ struct IntrinsicTraitBase<double>
    typedef simd_double_t  Type;
    enum { size           = ( BLAZE_SSE2_MODE )?( 16UL / sizeof(double) ):( 1 ),
           alignment      = AlignmentOf<double>::value,
-          division       = BLAZE_SSE2_MODE,
           absoluteValue  = 0,
           conjugate      = 1 };
 };
@@ -709,7 +672,6 @@ struct IntrinsicTraitBase< complex<char> >
    typedef Helper::Type  Type;
    enum { size           = Helper::size,
           alignment      = AlignmentOf< complex<char> >::value,
-          division       = Helper::division,
           absoluteValue  = Helper::absoluteValue,
           conjugate      = Helper::conjugate };
 
@@ -734,7 +696,6 @@ struct IntrinsicTraitBase< complex<signed char> >
    typedef Helper::Type  Type;
    enum { size           = Helper::size,
           alignment      = AlignmentOf< complex<signed char> >::value,
-          division       = Helper::division,
           absoluteValue  = Helper::absoluteValue,
           conjugate      = Helper::conjugate };
 
@@ -759,7 +720,6 @@ struct IntrinsicTraitBase< complex<unsigned char> >
    typedef Helper::Type  Type;
    enum { size           = Helper::size,
           alignment      = AlignmentOf< complex<unsigned char> >::value,
-          division       = Helper::division,
           absoluteValue  = 0,
           conjugate      = Helper::conjugate };
 
@@ -784,7 +744,6 @@ struct IntrinsicTraitBase< complex<wchar_t> >
    typedef Helper::Type  Type;
    enum { size           = Helper::size,
           alignment      = AlignmentOf< complex<wchar_t> >::value,
-          division       = Helper::division,
           absoluteValue  = Helper::absoluteValue,
           conjugate      = Helper::conjugate };
 
@@ -809,7 +768,6 @@ struct IntrinsicTraitBase< complex<short> >
    typedef Helper::Type  Type;
    enum { size           = Helper::size,
           alignment      = AlignmentOf< complex<short> >::value,
-          division       = Helper::division,
           absoluteValue  = Helper::absoluteValue,
           conjugate      = Helper::conjugate };
 
@@ -834,7 +792,6 @@ struct IntrinsicTraitBase< complex<unsigned short> >
    typedef Helper::Type  Type;
    enum { size           = Helper::size,
           alignment      = AlignmentOf< complex<unsigned short> >::value,
-          division       = Helper::division,
           absoluteValue  = 0,
           conjugate      = Helper::conjugate };
 
@@ -859,7 +816,6 @@ struct IntrinsicTraitBase< complex<int> >
    typedef Helper::Type  Type;
    enum { size           = Helper::size,
           alignment      = AlignmentOf< complex<int> >::value,
-          division       = Helper::division,
           absoluteValue  = Helper::absoluteValue,
           conjugate      = Helper::conjugate };
 
@@ -884,7 +840,6 @@ struct IntrinsicTraitBase< complex<unsigned int> >
    typedef Helper::Type  Type;
    enum { size           = Helper::size,
           alignment      = AlignmentOf< complex<unsigned int> >::value,
-          division       = Helper::division,
           absoluteValue  = 0,
           conjugate      = Helper::conjugate };
 
@@ -909,7 +864,6 @@ struct IntrinsicTraitBase< complex<long> >
    typedef Helper::Type  Type;
    enum { size           = Helper::size,
           alignment      = AlignmentOf< complex<long> >::value,
-          division       = Helper::division,
           absoluteValue  = Helper::absoluteValue,
           conjugate      = Helper::conjugate };
 
@@ -934,7 +888,6 @@ struct IntrinsicTraitBase< complex<unsigned long> >
    typedef Helper::Type  Type;
    enum { size           = Helper::size,
           alignment      = AlignmentOf< complex<unsigned long> >::value,
-          division       = Helper::division,
           absoluteValue  = 0,
           conjugate      = Helper::conjugate };
 
@@ -956,7 +909,6 @@ struct IntrinsicTraitBase< complex<float> >
    typedef simd_cfloat_t  Type;
    enum { size           = ( 64UL / sizeof(complex<float>) ),
           alignment      = AlignmentOf< complex<float> >::value,
-          division       = 0,
           absoluteValue  = 0,
           conjugate      = 1 };
 
@@ -969,7 +921,6 @@ struct IntrinsicTraitBase< complex<float> >
    typedef simd_cfloat_t  Type;
    enum { size           = ( 32UL / sizeof(complex<float>) ),
           alignment      = AlignmentOf< complex<float> >::value,
-          division       = 0,
           absoluteValue  = 0,
           conjugate      = 1 };
 
@@ -982,7 +933,6 @@ struct IntrinsicTraitBase< complex<float> >
    typedef simd_cfloat_t  Type;
    enum { size           = ( BLAZE_SSE_MODE )?( 16UL / sizeof(complex<float>) ):( 1 ),
           alignment      = AlignmentOf< complex<float> >::value,
-          division       = 0,
           absoluteValue  = 0,
           conjugate      = BLAZE_SSE_MODE };
 
@@ -1005,7 +955,6 @@ struct IntrinsicTraitBase< complex<double> >
    typedef simd_cdouble_t  Type;
    enum { size           = ( 64UL / sizeof(complex<double>) ),
           alignment      = AlignmentOf< complex<double> >::value,
-          division       = 0,
           absoluteValue  = 0,
           conjugate      = 1 };
 
@@ -1018,7 +967,6 @@ struct IntrinsicTraitBase< complex<double> >
    typedef simd_cdouble_t  Type;
    enum { size           = ( 32UL / sizeof(complex<double>) ),
           alignment      = AlignmentOf< complex<double> >::value,
-          division       = 0,
           absoluteValue  = 0,
           conjugate      = 1 };
 
@@ -1031,7 +979,6 @@ struct IntrinsicTraitBase< complex<double> >
    typedef simd_cdouble_t  Type;
    enum { size           = ( BLAZE_SSE2_MODE )?( 16UL / sizeof(complex<double>) ):( 1 ),
           alignment      = AlignmentOf< complex<double> >::value,
-          division       = 0,
           absoluteValue  = 0,
           conjugate      = BLAZE_SSE2_MODE };
 
