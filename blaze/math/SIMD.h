@@ -44,5 +44,6 @@
 #include <blaze/math/simd/DerivedTypes.h>
 #include <blaze/math/simd/Functions.h>
 #include <blaze/math/simd/IntrinsicTrait.h>
+#include <blaze/math/simd/SIMDTrait.h>
 
 #endif
