@@ -55,6 +55,7 @@
 #include <blaze/math/traits/DVecAbsExprTrait.h>
 #include <blaze/math/traits/SubvectorExprTrait.h>
 #include <blaze/math/traits/TDVecAbsExprTrait.h>
+#include <blaze/math/typetraits/HasSIMDAbs.h>
 #include <blaze/math/typetraits/IsAligned.h>
 #include <blaze/math/typetraits/IsColumnVector.h>
 #include <blaze/math/typetraits/IsComputation.h>
@@ -413,8 +414,7 @@ class DVecAbsExpr : public DenseVector< DVecAbsExpr<VT,TF>, TF >
 
    //**Compilation flags***************************************************************************
    //! Compilation switch for the expression template evaluation strategy.
-   enum { vectorizable = VT::vectorizable &&
-                         IntrinsicTrait<ET>::absoluteValue };
+   enum { vectorizable = VT::vectorizable && HasSIMDAbs<ET>::value };
 
    //! Compilation switch for the expression template assignment strategy.
    enum { smpAssignable = VT::smpAssignable };
