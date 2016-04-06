@@ -80,9 +80,9 @@ struct IsVectorizableHelper
 
  public:
    //**********************************************************************************************
-   enum { value = ( BLAZE_SSE_MODE  && ( IsFloat<T2>::value   ) ) ||
-                  ( BLAZE_SSE2_MODE && ( IsNumeric<T2>::value ) ) ||
-                  ( BLAZE_MIC_MODE  && ( IsNumeric<T2>::value && sizeof(T2) >= 4UL ) ) };
+   enum : bool { value = ( BLAZE_SSE_MODE  && ( IsFloat<T2>::value   ) ) ||
+                         ( BLAZE_SSE2_MODE && ( IsNumeric<T2>::value ) ) ||
+                         ( BLAZE_MIC_MODE  && ( IsNumeric<T2>::value && sizeof(T2) >= 4UL ) ) };
    //**********************************************************************************************
 };
 /*! \endcond */

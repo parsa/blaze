@@ -76,7 +76,7 @@ struct AlignmentOfHelper
 #elif BLAZE_SSE2_MODE
    static constexpr size_t value = ( IsVectorizable<T>::value )?( 16UL ):( defaultAlignment );
 #else
-   enum { value = defaultAlignment };
+   static constexpr size_t value = defaultAlignment;
 #endif
    //**********************************************************************************************
 };

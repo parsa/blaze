@@ -107,7 +107,7 @@ struct IsSameHelper
 {
  public:
    //**********************************************************************************************
-   enum { value = IsStrictlySame< RemoveCV_<A>, RemoveCV_<B> >::value };
+   enum : bool { value = IsStrictlySame< RemoveCV_<A>, RemoveCV_<B> >::value };
    //**********************************************************************************************
 };
 /*! \endcond */
