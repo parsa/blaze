@@ -184,7 +184,7 @@ class DVecTDVecMultExpr : public DenseMatrix< DVecTDVecMultExpr<VT1,VT2>, false 
    template< typename T1, typename T2, typename T3 >
    struct UseVectorizedKernel {
       enum : bool { value = useOptimizedKernels &&
-                            T1::vectorizable && T2::vectorizable && T3::vectorizable &&
+                            T1::simdEnabled && T2::simdEnabled && T3::simdEnabled &&
                             IsSame< ElementType_<T1>, ElementType_<T2> >::value &&
                             IsSame< ElementType_<T1>, ElementType_<T3> >::value &&
                             HasSIMDMult< ElementType_<T1>, ElementType_<T1> >::value };
@@ -480,9 +480,9 @@ class DVecTDVecMultExpr : public DenseMatrix< DVecTDVecMultExpr<VT1,VT2>, false 
 
    //**Compilation flags***************************************************************************
    //! Compilation switch for the expression template evaluation strategy.
-   enum : bool { vectorizable = VT1::vectorizable && VT2::vectorizable &&
-                                IsSame<ET1,ET2>::value &&
-                                HasSIMDMult<ET1,ET1>::value };
+   enum : bool { simdEnabled = VT1::simdEnabled && VT2::simdEnabled &&
+                               IsSame<ET1,ET2>::value &&
+                               HasSIMDMult<ET1,ET1>::value };
 
    //! Compilation switch for the expression template assignment strategy.
    enum : bool { smpAssignable = VT1::smpAssignable && !evaluateRight };

@@ -107,15 +107,15 @@ void smpAssign_backend( DenseVector<VT1,TF1>& lhs, const DenseVector<VT2,TF2>& r
 
    enum : size_t { SIMDSIZE = SIMDTrait< ElementType_<VT1> >::size };
 
-   const bool vectorizable( VT1::vectorizable && VT2::vectorizable && IsSame<ET1,ET2>::value );
-   const bool lhsAligned  ( (~lhs).isAligned() );
-   const bool rhsAligned  ( (~rhs).isAligned() );
+   const bool simdEnabled( VT1::simdEnabled && VT2::simdEnabled && IsSame<ET1,ET2>::value );
+   const bool lhsAligned ( (~lhs).isAligned() );
+   const bool rhsAligned ( (~rhs).isAligned() );
 
    const size_t threads      ( TheThreadBackend::size() );
    const size_t addon        ( ( ( (~lhs).size() % threads ) != 0UL )? 1UL : 0UL );
    const size_t equalShare   ( (~lhs).size() / threads + addon );
    const size_t rest         ( equalShare & ( SIMDSIZE - 1UL ) );
-   const size_t sizePerThread( ( vectorizable && rest )?( equalShare - rest + SIMDSIZE ):( equalShare ) );
+   const size_t sizePerThread( ( simdEnabled && rest )?( equalShare - rest + SIMDSIZE ):( equalShare ) );
 
    for( size_t i=0UL; i<threads; ++i )
    {
@@ -126,15 +126,15 @@ void smpAssign_backend( DenseVector<VT1,TF1>& lhs, const DenseVector<VT2,TF2>& r
 
       const size_t size( min( sizePerThread, (~lhs).size() - index ) );
 
-      if( vectorizable && lhsAligned && rhsAligned ) {
+      if( simdEnabled && lhsAligned && rhsAligned ) {
          AlignedTarget target( subvector<aligned>( ~lhs, index, size ) );
          TheThreadBackend::scheduleAssign( target, subvector<aligned>( ~rhs, index, size ) );
       }
-      else if( vectorizable && lhsAligned ) {
+      else if( simdEnabled && lhsAligned ) {
          AlignedTarget target( subvector<aligned>( ~lhs, index, size ) );
          TheThreadBackend::scheduleAssign( target, subvector<unaligned>( ~rhs, index, size ) );
       }
-      else if( vectorizable && rhsAligned ) {
+      else if( simdEnabled && rhsAligned ) {
          UnalignedTarget target( subvector<unaligned>( ~lhs, index, size ) );
          TheThreadBackend::scheduleAssign( target, subvector<aligned>( ~rhs, index, size ) );
       }
@@ -328,15 +328,15 @@ void smpAddAssign_backend( DenseVector<VT1,TF1>& lhs, const DenseVector<VT2,TF2>
 
    enum : size_t { SIMDSIZE = SIMDTrait< ElementType_<VT1> >::size };
 
-   const bool vectorizable( VT1::vectorizable && VT2::vectorizable && IsSame<ET1,ET2>::value );
-   const bool lhsAligned  ( (~lhs).isAligned() );
-   const bool rhsAligned  ( (~rhs).isAligned() );
+   const bool simdEnabled( VT1::simdEnabled && VT2::simdEnabled && IsSame<ET1,ET2>::value );
+   const bool lhsAligned ( (~lhs).isAligned() );
+   const bool rhsAligned ( (~rhs).isAligned() );
 
    const size_t threads      ( TheThreadBackend::size() );
    const size_t addon        ( ( ( (~lhs).size() % threads ) != 0UL )? 1UL : 0UL );
    const size_t equalShare   ( (~lhs).size() / threads + addon );
    const size_t rest         ( equalShare & ( SIMDSIZE - 1UL ) );
-   const size_t sizePerThread( ( vectorizable && rest )?( equalShare - rest + SIMDSIZE ):( equalShare ) );
+   const size_t sizePerThread( ( simdEnabled && rest )?( equalShare - rest + SIMDSIZE ):( equalShare ) );
 
    for( size_t i=0UL; i<threads; ++i )
    {
@@ -347,15 +347,15 @@ void smpAddAssign_backend( DenseVector<VT1,TF1>& lhs, const DenseVector<VT2,TF2>
 
       const size_t size( min( sizePerThread, (~lhs).size() - index ) );
 
-      if( vectorizable && lhsAligned && rhsAligned ) {
+      if( simdEnabled && lhsAligned && rhsAligned ) {
          AlignedTarget target( subvector<aligned>( ~lhs, index, size ) );
          TheThreadBackend::scheduleAddAssign( target, subvector<aligned>( ~rhs, index, size ) );
       }
-      else if( vectorizable && lhsAligned ) {
+      else if( simdEnabled && lhsAligned ) {
          AlignedTarget target( subvector<aligned>( ~lhs, index, size ) );
          TheThreadBackend::scheduleAddAssign( target, subvector<unaligned>( ~rhs, index, size ) );
       }
-      else if( vectorizable && rhsAligned ) {
+      else if( simdEnabled && rhsAligned ) {
          UnalignedTarget target( subvector<unaligned>( ~lhs, index, size ) );
          TheThreadBackend::scheduleAddAssign( target, subvector<aligned>( ~rhs, index, size ) );
       }
@@ -550,15 +550,15 @@ void smpSubAssign_backend( DenseVector<VT1,TF1>& lhs, const DenseVector<VT2,TF2>
 
    enum : size_t { SIMDSIZE = SIMDTrait< ElementType_<VT1> >::size };
 
-   const bool vectorizable( VT1::vectorizable && VT2::vectorizable && IsSame<ET1,ET2>::value );
-   const bool lhsAligned  ( (~lhs).isAligned() );
-   const bool rhsAligned  ( (~rhs).isAligned() );
+   const bool simdEnabled( VT1::simdEnabled && VT2::simdEnabled && IsSame<ET1,ET2>::value );
+   const bool lhsAligned ( (~lhs).isAligned() );
+   const bool rhsAligned ( (~rhs).isAligned() );
 
    const size_t threads      ( TheThreadBackend::size() );
    const size_t addon        ( ( ( (~lhs).size() % threads ) != 0UL )? 1UL : 0UL );
    const size_t equalShare   ( (~lhs).size() / threads + addon );
    const size_t rest         ( equalShare & ( SIMDSIZE - 1UL ) );
-   const size_t sizePerThread( ( vectorizable && rest )?( equalShare - rest + SIMDSIZE ):( equalShare ) );
+   const size_t sizePerThread( ( simdEnabled && rest )?( equalShare - rest + SIMDSIZE ):( equalShare ) );
 
    for( size_t i=0UL; i<threads; ++i )
    {
@@ -569,15 +569,15 @@ void smpSubAssign_backend( DenseVector<VT1,TF1>& lhs, const DenseVector<VT2,TF2>
 
       const size_t size( min( sizePerThread, (~lhs).size() - index ) );
 
-      if( vectorizable && lhsAligned && rhsAligned ) {
+      if( simdEnabled && lhsAligned && rhsAligned ) {
          AlignedTarget target( subvector<aligned>( ~lhs, index, size ) );
          TheThreadBackend::scheduleSubAssign( target, subvector<aligned>( ~rhs, index, size ) );
       }
-      else if( vectorizable && lhsAligned ) {
+      else if( simdEnabled && lhsAligned ) {
          AlignedTarget target( subvector<aligned>( ~lhs, index, size ) );
          TheThreadBackend::scheduleSubAssign( target, subvector<unaligned>( ~rhs, index, size ) );
       }
-      else if( vectorizable && rhsAligned ) {
+      else if( simdEnabled && rhsAligned ) {
          UnalignedTarget target( subvector<unaligned>( ~lhs, index, size ) );
          TheThreadBackend::scheduleSubAssign( target, subvector<aligned>( ~rhs, index, size ) );
       }
@@ -773,15 +773,15 @@ void smpMultAssign_backend( DenseVector<VT1,TF1>& lhs, const DenseVector<VT2,TF2
 
    enum : size_t { SIMDSIZE = SIMDTrait< ElementType_<VT1> >::size };
 
-   const bool vectorizable( VT1::vectorizable && VT2::vectorizable && IsSame<ET1,ET2>::value );
-   const bool lhsAligned  ( (~lhs).isAligned() );
-   const bool rhsAligned  ( (~rhs).isAligned() );
+   const bool simdEnabled( VT1::simdEnabled && VT2::simdEnabled && IsSame<ET1,ET2>::value );
+   const bool lhsAligned ( (~lhs).isAligned() );
+   const bool rhsAligned ( (~rhs).isAligned() );
 
    const size_t threads      ( TheThreadBackend::size() );
    const size_t addon        ( ( ( (~lhs).size() % threads ) != 0UL )? 1UL : 0UL );
    const size_t equalShare   ( (~lhs).size() / threads + addon );
    const size_t rest         ( equalShare & ( SIMDSIZE - 1UL ) );
-   const size_t sizePerThread( ( vectorizable && rest )?( equalShare - rest + SIMDSIZE ):( equalShare ) );
+   const size_t sizePerThread( ( simdEnabled && rest )?( equalShare - rest + SIMDSIZE ):( equalShare ) );
 
    for( size_t i=0UL; i<threads; ++i )
    {
@@ -792,15 +792,15 @@ void smpMultAssign_backend( DenseVector<VT1,TF1>& lhs, const DenseVector<VT2,TF2
 
       const size_t size( min( sizePerThread, (~lhs).size() - index ) );
 
-      if( vectorizable && lhsAligned && rhsAligned ) {
+      if( simdEnabled && lhsAligned && rhsAligned ) {
          AlignedTarget target( subvector<aligned>( ~lhs, index, size ) );
          TheThreadBackend::scheduleMultAssign( target, subvector<aligned>( ~rhs, index, size ) );
       }
-      else if( vectorizable && lhsAligned ) {
+      else if( simdEnabled && lhsAligned ) {
          AlignedTarget target( subvector<aligned>( ~lhs, index, size ) );
          TheThreadBackend::scheduleMultAssign( target, subvector<unaligned>( ~rhs, index, size ) );
       }
-      else if( vectorizable && rhsAligned ) {
+      else if( simdEnabled && rhsAligned ) {
          UnalignedTarget target( subvector<unaligned>( ~lhs, index, size ) );
          TheThreadBackend::scheduleMultAssign( target, subvector<aligned>( ~rhs, index, size ) );
       }

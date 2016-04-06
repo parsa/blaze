@@ -165,7 +165,7 @@ class DMatSMatSubExpr : public DenseMatrix< DMatSMatSubExpr<MT1,MT2,SO>, SO >
 
    //**Compilation flags***************************************************************************
    //! Compilation switch for the expression template evaluation strategy.
-   enum : bool { vectorizable = false };
+   enum : bool { simdEnabled = false };
 
    //! Compilation switch for the expression template assignment strategy.
    enum : bool { smpAssignable = false };

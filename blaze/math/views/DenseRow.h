@@ -382,7 +382,7 @@ class DenseRow : public DenseVector< DenseRow<MT,SO,SF>, true >
 
    //**Compilation flags***************************************************************************
    //! Compilation switch for the expression template evaluation strategy.
-   enum : bool { vectorizable = MT::vectorizable };
+   enum : bool { simdEnabled = MT::simdEnabled };
 
    //! Compilation switch for the expression template assignment strategy.
    enum : bool { smpAssignable = MT::smpAssignable };
@@ -456,7 +456,7 @@ class DenseRow : public DenseVector< DenseRow<MT,SO,SF>, true >
    template< typename VT >
    struct VectorizedAssign {
       enum : bool { value = useOptimizedKernels &&
-                            vectorizable && VT::vectorizable &&
+                            simdEnabled && VT::simdEnabled &&
                             IsSame< ElementType, ElementType_<VT> >::value };
    };
    /*! \endcond */
@@ -468,7 +468,7 @@ class DenseRow : public DenseVector< DenseRow<MT,SO,SF>, true >
    template< typename VT >
    struct VectorizedAddAssign {
       enum : bool { value = useOptimizedKernels &&
-                            vectorizable && VT::vectorizable &&
+                            simdEnabled && VT::simdEnabled &&
                             IsSame< ElementType, ElementType_<VT> >::value &&
                             HasSIMDAdd< ElementType, ElementType >::value };
    };
@@ -481,7 +481,7 @@ class DenseRow : public DenseVector< DenseRow<MT,SO,SF>, true >
    template< typename VT >
    struct VectorizedSubAssign {
       enum : bool { value = useOptimizedKernels &&
-                            vectorizable && VT::vectorizable &&
+                            simdEnabled && VT::simdEnabled &&
                             IsSame< ElementType, ElementType_<VT> >::value &&
                             HasSIMDSub< ElementType, ElementType >::value };
    };
@@ -494,7 +494,7 @@ class DenseRow : public DenseVector< DenseRow<MT,SO,SF>, true >
    template< typename VT >
    struct VectorizedMultAssign {
       enum : bool { value = useOptimizedKernels &&
-                            vectorizable && VT::vectorizable &&
+                            simdEnabled && VT::simdEnabled &&
                             IsSame< ElementType, ElementType_<VT> >::value &&
                             HasSIMDMult< ElementType, ElementType >::value };
    };
@@ -2453,7 +2453,7 @@ class DenseRow<MT,false,false> : public DenseVector< DenseRow<MT,false,false>, t
 
    //**Compilation flags***************************************************************************
    //! Compilation switch for the expression template evaluation strategy.
-   enum : bool { vectorizable = false };
+   enum : bool { simdEnabled = false };
 
    //! Compilation switch for the expression template assignment strategy.
    enum : bool { smpAssignable = MT::smpAssignable };
@@ -3791,7 +3791,7 @@ class DenseRow<MT,false,true> : public DenseVector< DenseRow<MT,false,true>, tru
 
    //**Compilation flags***************************************************************************
    //! Compilation switch for the expression template evaluation strategy.
-   enum : bool { vectorizable = MT::vectorizable };
+   enum : bool { simdEnabled = MT::simdEnabled };
 
    //! Compilation switch for the expression template assignment strategy.
    enum : bool { smpAssignable = MT::smpAssignable };
@@ -3864,7 +3864,7 @@ class DenseRow<MT,false,true> : public DenseVector< DenseRow<MT,false,true>, tru
    template< typename VT >
    struct VectorizedAssign {
       enum : bool { value = useOptimizedKernels &&
-                            vectorizable && VT::vectorizable &&
+                            simdEnabled && VT::simdEnabled &&
                             IsSame< ElementType, ElementType_<VT> >::value };
    };
    //**********************************************************************************************
@@ -3874,7 +3874,7 @@ class DenseRow<MT,false,true> : public DenseVector< DenseRow<MT,false,true>, tru
    template< typename VT >
    struct VectorizedAddAssign {
       enum : bool { value = useOptimizedKernels &&
-                            vectorizable && VT::vectorizable &&
+                            simdEnabled && VT::simdEnabled &&
                             IsSame< ElementType, ElementType_<VT> >::value &&
                             HasSIMDAdd< ElementType, ElementType >::value };
    };
@@ -3885,7 +3885,7 @@ class DenseRow<MT,false,true> : public DenseVector< DenseRow<MT,false,true>, tru
    template< typename VT >
    struct VectorizedSubAssign {
       enum : bool { value = useOptimizedKernels &&
-                            vectorizable && VT::vectorizable &&
+                            simdEnabled && VT::simdEnabled &&
                             IsSame< ElementType, ElementType_<VT> >::value &&
                             HasSIMDSub< ElementType, ElementType >::value };
    };
@@ -3896,7 +3896,7 @@ class DenseRow<MT,false,true> : public DenseVector< DenseRow<MT,false,true>, tru
    template< typename VT >
    struct VectorizedMultAssign {
       enum : bool { value = useOptimizedKernels &&
-                            vectorizable && VT::vectorizable &&
+                            simdEnabled && VT::simdEnabled &&
                             IsSame< ElementType, ElementType_<VT> >::value &&
                             HasSIMDMult< ElementType, ElementType >::value };
    };

@@ -431,9 +431,9 @@ class DVecDVecMultExpr : public DenseVector< DVecDVecMultExpr<VT1,VT2,TF>, TF >
 
    //**Compilation flags***************************************************************************
    //! Compilation switch for the expression template evaluation strategy.
-   enum : bool { vectorizable = VT1::vectorizable && VT2::vectorizable &&
-                                IsSame<ET1,ET2>::value &&
-                                HasSIMDMult<ET1,ET1>::value };
+   enum : bool { simdEnabled = VT1::simdEnabled && VT2::simdEnabled &&
+                               IsSame<ET1,ET2>::value &&
+                               HasSIMDMult<ET1,ET1>::value };
 
    //! Compilation switch for the expression template assignment strategy.
    enum : bool { smpAssignable = VT1::smpAssignable && VT2::smpAssignable };

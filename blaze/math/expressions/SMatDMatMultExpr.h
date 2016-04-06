@@ -171,7 +171,7 @@ class SMatDMatMultExpr : public DenseMatrix< SMatDMatMultExpr<MT1,MT2>, false >
    struct UseVectorizedKernel {
       enum : bool { value = useOptimizedKernels &&
                             !IsDiagonal<T3>::value &&
-                            T1::vectorizable && T3::vectorizable &&
+                            T1::simdEnabled && T3::simdEnabled &&
                             IsRowMajorMatrix<T1>::value &&
                             IsSame< ElementType_<T1>, ElementType_<T2> >::value &&
                             IsSame< ElementType_<T1>, ElementType_<T3> >::value &&
@@ -238,11 +238,11 @@ class SMatDMatMultExpr : public DenseMatrix< SMatDMatMultExpr<MT1,MT2>, false >
 
    //**Compilation flags***************************************************************************
    //! Compilation switch for the expression template evaluation strategy.
-   enum : bool { vectorizable = !IsDiagonal<MT2>::value &&
-                                MT2::vectorizable &&
-                                IsSame<ET1,ET2>::value &&
-                                HasSIMDAdd<ET1,ET1>::value &&
-                                HasSIMDMult<ET1,ET1>::value };
+   enum : bool { simdEnabled = !IsDiagonal<MT2>::value &&
+                               MT2::simdEnabled &&
+                               IsSame<ET1,ET2>::value &&
+                               HasSIMDAdd<ET1,ET1>::value &&
+                               HasSIMDMult<ET1,ET1>::value };
 
    //! Compilation switch for the expression template assignment strategy.
    enum : bool { smpAssignable = !evaluateLeft  && MT1::smpAssignable &&

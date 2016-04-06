@@ -440,11 +440,11 @@ class DMatScalarDivExpr : public DenseMatrix< DMatScalarDivExpr<MT,ST,SO>, SO >
 
    //**Compilation flags***************************************************************************
    //! Compilation switch for the expression template evaluation strategy.
-   enum : bool { vectorizable = MT::vectorizable &&
-                                IsNumeric<ET>::value &&
-                                ( IsSame<ET,RightOperand>::value ||
-                                  IsSame<UnderlyingElement_<ET>,RightOperand>::value ) &&
-                                HasSIMDDiv<ET,RightOperand>::value };
+   enum : bool { simdEnabled = MT::simdEnabled &&
+                               IsNumeric<ET>::value &&
+                               ( IsSame<ET,RightOperand>::value ||
+                                 IsSame<UnderlyingElement_<ET>,RightOperand>::value ) &&
+                               HasSIMDDiv<ET,RightOperand>::value };
 
    //! Compilation switch for the expression template assignment strategy.
    enum : bool { smpAssignable = MT::smpAssignable };

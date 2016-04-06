@@ -394,7 +394,7 @@ class DVecTransExpr : public DenseVector< DVecTransExpr<VT,TF>, TF >
 
    //**Compilation flags***************************************************************************
    //! Compilation switch for the expression template evaluation strategy.
-   enum : bool { vectorizable = VT::vectorizable };
+   enum : bool { simdEnabled = VT::simdEnabled };
 
    //! Compilation switch for the expression template assignment strategy.
    enum : bool { smpAssignable = VT::smpAssignable };

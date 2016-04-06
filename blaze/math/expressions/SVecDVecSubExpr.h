@@ -157,7 +157,7 @@ class SVecDVecSubExpr : public DenseVector< SVecDVecSubExpr<VT1,VT2,TF>, TF >
 
    //**Compilation flags***************************************************************************
    //! Compilation switch for the expression template evaluation strategy.
-   enum : bool { vectorizable = false };
+   enum : bool { simdEnabled = false };
 
    //! Compilation switch for the expression template assignment strategy.
    enum : bool { smpAssignable = false };

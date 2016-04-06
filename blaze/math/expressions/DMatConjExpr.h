@@ -426,7 +426,7 @@ class DMatConjExpr : public DenseMatrix< DMatConjExpr<MT,SO>, SO >
 
    //**Compilation flags***************************************************************************
    //! Compilation switch for the expression template evaluation strategy.
-   enum : bool { vectorizable = MT::vectorizable && HasSIMDConj<ET>::value };
+   enum : bool { simdEnabled = MT::simdEnabled && HasSIMDConj<ET>::value };
 
    //! Compilation switch for the expression template assignment strategy.
    enum : bool { smpAssignable = MT::smpAssignable };

@@ -578,7 +578,7 @@ class HermitianMatrix<MT,SO,true>
 
    //**Compilation flags***************************************************************************
    //! Compilation switch for the expression template evaluation strategy.
-   enum : bool { vectorizable = MT::vectorizable };
+   enum : bool { simdEnabled = MT::simdEnabled };
 
    //! Compilation switch for the expression template assignment strategy.
    enum : bool { smpAssignable = MT::smpAssignable };

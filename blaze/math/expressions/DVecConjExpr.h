@@ -414,7 +414,7 @@ class DVecConjExpr : public DenseVector< DVecConjExpr<VT,TF>, TF >
 
    //**Compilation flags***************************************************************************
    //! Compilation switch for the expression template evaluation strategy.
-   enum : bool { vectorizable = VT::vectorizable && HasSIMDConj<ET>::value };
+   enum : bool { simdEnabled = VT::simdEnabled && HasSIMDConj<ET>::value };
 
    //! Compilation switch for the expression template assignment strategy.
    enum : bool { smpAssignable = VT::smpAssignable };

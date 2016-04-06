@@ -171,7 +171,7 @@ class TDMatDVecMultExpr : public DenseVector< TDMatDVecMultExpr<MT,VT>, false >
                             HasConstDataAccess<T2>::value &&
                             HasConstDataAccess<T3>::value &&
                             !IsDiagonal<T2>::value &&
-                            T1::vectorizable && T2::vectorizable && T3::vectorizable &&
+                            T1::simdEnabled && T2::simdEnabled && T3::simdEnabled &&
                             IsBlasCompatible< ElementType_<T1> >::value &&
                             IsBlasCompatible< ElementType_<T2> >::value &&
                             IsBlasCompatible< ElementType_<T3> >::value &&
@@ -191,7 +191,7 @@ class TDMatDVecMultExpr : public DenseVector< TDMatDVecMultExpr<MT,VT>, false >
    struct UseVectorizedDefaultKernel {
       enum : bool { value = useOptimizedKernels &&
                             !IsDiagonal<T2>::value &&
-                            T1::vectorizable && T2::vectorizable && T3::vectorizable &&
+                            T1::simdEnabled && T2::simdEnabled && T3::simdEnabled &&
                             IsSame< ElementType_<T1>, ElementType_<T2> >::value &&
                             IsSame< ElementType_<T1>, ElementType_<T3> >::value &&
                             HasSIMDAdd< ElementType_<T1>, ElementType_<T1> >::value &&
@@ -225,11 +225,11 @@ class TDMatDVecMultExpr : public DenseVector< TDMatDVecMultExpr<MT,VT>, false >
 
    //**Compilation flags***************************************************************************
    //! Compilation switch for the expression template evaluation strategy.
-   enum : bool { vectorizable = !IsDiagonal<MT>::value &&
-                                MT::vectorizable && VT::vectorizable &&
-                                IsSame<MET,VET>::value &&
-                                HasSIMDAdd<MET,MET>::value &&
-                                HasSIMDMult<MET,MET>::value };
+   enum : bool { simdEnabled = !IsDiagonal<MT>::value &&
+                               MT::simdEnabled && VT::simdEnabled &&
+                               IsSame<MET,VET>::value &&
+                               HasSIMDAdd<MET,MET>::value &&
+                               HasSIMDMult<MET,MET>::value };
 
    //! Compilation switch for the expression template assignment strategy.
    enum : bool { smpAssignable = !evaluateMatrix && MT::smpAssignable &&
@@ -2458,7 +2458,7 @@ class DVecScalarMultExpr< TDMatDVecMultExpr<MT,VT>, ST, false >
                             HasConstDataAccess<T2>::value &&
                             HasConstDataAccess<T3>::value &&
                             !IsDiagonal<T2>::value &&
-                            T1::vectorizable && T2::vectorizable && T3::vectorizable &&
+                            T1::simdEnabled && T2::simdEnabled && T3::simdEnabled &&
                             IsBlasCompatible< ElementType_<T1> >::value &&
                             IsBlasCompatible< ElementType_<T2> >::value &&
                             IsBlasCompatible< ElementType_<T3> >::value &&
@@ -2477,7 +2477,7 @@ class DVecScalarMultExpr< TDMatDVecMultExpr<MT,VT>, ST, false >
    struct UseVectorizedDefaultKernel {
       enum : bool { value = useOptimizedKernels &&
                             !IsDiagonal<T2>::value &&
-                            T1::vectorizable && T2::vectorizable && T3::vectorizable &&
+                            T1::simdEnabled && T2::simdEnabled && T3::simdEnabled &&
                             IsSame< ElementType_<T1>, ElementType_<T2> >::value &&
                             IsSame< ElementType_<T1>, ElementType_<T3> >::value &&
                             IsSame< ElementType_<T1>,T4>::value &&
@@ -2511,12 +2511,12 @@ class DVecScalarMultExpr< TDMatDVecMultExpr<MT,VT>, ST, false >
 
    //**Compilation flags***************************************************************************
    //! Compilation switch for the expression template evaluation strategy.
-   enum : bool { vectorizable = !IsDiagonal<MT>::value &&
-                                MT::vectorizable && VT::vectorizable &&
-                                IsSame<MET,VET>::value &&
-                                IsSame<MET,ST>::value &&
-                                HasSIMDAdd<MET,MET>::value &&
-                                HasSIMDMult<MET,MET>::value };
+   enum : bool { simdEnabled = !IsDiagonal<MT>::value &&
+                               MT::simdEnabled && VT::simdEnabled &&
+                               IsSame<MET,VET>::value &&
+                               IsSame<MET,ST>::value &&
+                               HasSIMDAdd<MET,MET>::value &&
+                               HasSIMDMult<MET,MET>::value };
 
    //! Compilation switch for the expression template assignment strategy.
    enum : bool { smpAssignable = !evaluateMatrix && MT::smpAssignable &&

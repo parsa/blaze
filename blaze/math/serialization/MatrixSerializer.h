@@ -261,7 +261,7 @@ class MatrixSerializer
    void deserializeMatrix( Archive& archive, MT& mat );
 
    template< typename Archive, typename MT >
-   EnableIfTrue_< MT::vectorizable >
+   EnableIfTrue_< MT::simdEnabled >
       deserializeDenseRowMatrix( Archive& archive, DenseMatrix<MT,rowMajor>& mat );
 
    template< typename Archive, typename MT, bool SO >
@@ -276,7 +276,7 @@ class MatrixSerializer
       deserializeDenseRowMatrix( Archive& archive, SparseMatrix<MT,SO>& mat );
 
    template< typename Archive, typename MT >
-   EnableIfTrue_< MT::vectorizable >
+   EnableIfTrue_< MT::simdEnabled>
       deserializeDenseColumnMatrix( Archive& archive, DenseMatrix<MT,columnMajor>& mat );
 
    template< typename Archive, typename MT, bool SO >
@@ -649,7 +649,7 @@ void MatrixSerializer::deserializeMatrix( Archive& archive, MT& mat )
 */
 template< typename Archive  // Type of the archive
         , typename MT >     // Type of the matrix
-EnableIfTrue_< MT::vectorizable >
+EnableIfTrue_< MT::simdEnabled >
    MatrixSerializer::deserializeDenseRowMatrix( Archive& archive, DenseMatrix<MT,rowMajor>& mat )
 {
    if( columns_ == 0UL ) return;
@@ -788,7 +788,7 @@ DisableIf_< IsNumeric< ElementType_<MT> > >
 */
 template< typename Archive  // Type of the archive
         , typename MT >     // Type of the matrix
-EnableIfTrue_< MT::vectorizable >
+EnableIfTrue_< MT::simdEnabled >
    MatrixSerializer::deserializeDenseColumnMatrix( Archive& archive, DenseMatrix<MT,columnMajor>& mat )
 {
    if( rows_ == 0UL ) return;

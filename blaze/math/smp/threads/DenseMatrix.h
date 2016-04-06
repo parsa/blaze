@@ -108,15 +108,15 @@ void smpAssign_backend( DenseMatrix<MT1,SO>& lhs, const DenseMatrix<MT2,rowMajor
 
    enum : size_ { SIMDSIZE = SIMDTrait< ElementType_<MT1> >::size; };
 
-   const bool vectorizable( MT1::vectorizable && MT2::vectorizable && IsSame<ET1,ET2>::value );
-   const bool lhsAligned  ( (~lhs).isAligned() );
-   const bool rhsAligned  ( (~rhs).isAligned() );
+   const bool simdEnabled( MT1::simdEnabled && MT2::simdEnabled && IsSame<ET1,ET2>::value );
+   const bool lhsAligned ( (~lhs).isAligned() );
+   const bool rhsAligned ( (~rhs).isAligned() );
 
    const size_t threads      ( TheThreadBackend::size() );
    const size_t addon        ( ( ( (~lhs).rows() % threads ) != 0UL )? 1UL : 0UL );
    const size_t equalShare   ( (~lhs).rows() / threads + addon );
    const size_t rest         ( equalShare & ( SIMDSIZE - 1UL ) );
-   const size_t rowsPerThread( ( vectorizable && rest )?( equalShare - rest + SIMDSIZE ):( equalShare ) );
+   const size_t rowsPerThread( ( simdEnabled && rest )?( equalShare - rest + SIMDSIZE ):( equalShare ) );
 
    for( size_t i=0UL; i<threads; ++i )
    {
@@ -127,15 +127,15 @@ void smpAssign_backend( DenseMatrix<MT1,SO>& lhs, const DenseMatrix<MT2,rowMajor
 
       const size_t m( min( rowsPerThread, (~lhs).rows() - row ) );
 
-      if( vectorizable && lhsAligned && rhsAligned ) {
+      if( simdEnabled && lhsAligned && rhsAligned ) {
          AlignedTarget target( submatrix<aligned>( ~lhs, row, 0UL, m, (~lhs).columns() ) );
          TheThreadBackend::scheduleAssign( target, submatrix<aligned>( ~rhs, row, 0UL, m, (~lhs).columns() ) );
       }
-      else if( vectorizable && lhsAligned ) {
+      else if( simdEnabled && lhsAligned ) {
          AlignedTarget target( submatrix<aligned>( ~lhs, row, 0UL, m, (~lhs).columns() ) );
          TheThreadBackend::scheduleAssign( target, submatrix<unaligned>( ~rhs, row, 0UL, m, (~lhs).columns() ) );
       }
-      else if( vectorizable && rhsAligned ) {
+      else if( simdEnabled && rhsAligned ) {
          UnalignedTarget target( submatrix<unaligned>( ~lhs, row, 0UL, m, (~lhs).columns() ) );
          TheThreadBackend::scheduleAssign( target, submatrix<aligned>( ~rhs, row, 0UL, m, (~lhs).columns() ) );
       }
@@ -184,15 +184,15 @@ void smpAssign_backend( DenseMatrix<MT1,SO>& lhs, const DenseMatrix<MT2,columnMa
 
    enum : size_ { SIMDSIZE = SIMDTrait< ElementType_<MT1> >::size; };
 
-   const bool vectorizable( MT1::vectorizable && MT2::vectorizable && IsSame<ET1,ET2>::value );
-   const bool lhsAligned  ( (~lhs).isAligned() );
-   const bool rhsAligned  ( (~rhs).isAligned() );
+   const bool simdEnabled( MT1::simdEnabled && MT2::simdEnabled && IsSame<ET1,ET2>::value );
+   const bool lhsAligned ( (~lhs).isAligned() );
+   const bool rhsAligned ( (~rhs).isAligned() );
 
    const size_t threads      ( TheThreadBackend::size() );
    const size_t addon        ( ( ( (~lhs).columns() % threads ) != 0UL )? 1UL : 0UL );
    const size_t equalShare   ( (~lhs).columns() / threads + addon );
    const size_t rest         ( equalShare & ( SIMDSIZE - 1UL ) );
-   const size_t colsPerThread( ( vectorizable && rest )?( equalShare - rest + SIMDSIZE ):( equalShare ) );
+   const size_t colsPerThread( ( simdEnabled && rest )?( equalShare - rest + SIMDSIZE ):( equalShare ) );
 
    for( size_t i=0UL; i<threads; ++i )
    {
@@ -203,15 +203,15 @@ void smpAssign_backend( DenseMatrix<MT1,SO>& lhs, const DenseMatrix<MT2,columnMa
 
       const size_t n( min( colsPerThread, (~lhs).columns() - column ) );
 
-      if( vectorizable && lhsAligned && rhsAligned ) {
+      if( simdEnabled && lhsAligned && rhsAligned ) {
          AlignedTarget target( submatrix<aligned>( ~lhs, 0UL, column, (~lhs).rows(), n ) );
          TheThreadBackend::scheduleAssign( target, submatrix<aligned>( ~rhs, 0UL, column, (~lhs).rows(), n ) );
       }
-      else if( vectorizable && lhsAligned ) {
+      else if( simdEnabled && lhsAligned ) {
          AlignedTarget target( submatrix<aligned>( ~lhs, 0UL, column, (~lhs).rows(), n ) );
          TheThreadBackend::scheduleAssign( target, submatrix<unaligned>( ~rhs, 0UL, column, (~lhs).rows(), n ) );
       }
-      else if( vectorizable && rhsAligned ) {
+      else if( simdEnabled && rhsAligned ) {
          UnalignedTarget target( submatrix<unaligned>( ~lhs, 0UL, column, (~lhs).rows(), n ) );
          TheThreadBackend::scheduleAssign( target, submatrix<aligned>( ~rhs, 0UL, column, (~lhs).rows(), n ) );
       }
@@ -457,15 +457,15 @@ void smpAddAssign_backend( DenseMatrix<MT1,SO>& lhs, const DenseMatrix<MT2,rowMa
 
    enum : size_ { SIMDSIZE = SIMDTrait< ElementType_<MT1> >::size; };
 
-   const bool vectorizable( MT1::vectorizable && MT2::vectorizable && IsSame<ET1,ET2>::value );
-   const bool lhsAligned  ( (~lhs).isAligned() );
-   const bool rhsAligned  ( (~rhs).isAligned() );
+   const bool simdEnabled( MT1::simdEnabled && MT2::simdEnabled && IsSame<ET1,ET2>::value );
+   const bool lhsAligned ( (~lhs).isAligned() );
+   const bool rhsAligned ( (~rhs).isAligned() );
 
    const size_t threads      ( TheThreadBackend::size() );
    const size_t addon        ( ( ( (~lhs).rows() % threads ) != 0UL )? 1UL : 0UL );
    const size_t equalShare   ( (~lhs).rows() / threads + addon );
    const size_t rest         ( equalShare & ( SIMDSIZE - 1UL ) );
-   const size_t rowsPerThread( ( vectorizable && rest )?( equalShare - rest + SIMDSIZE ):( equalShare ) );
+   const size_t rowsPerThread( ( simdEnabled && rest )?( equalShare - rest + SIMDSIZE ):( equalShare ) );
 
    for( size_t i=0UL; i<threads; ++i )
    {
@@ -476,15 +476,15 @@ void smpAddAssign_backend( DenseMatrix<MT1,SO>& lhs, const DenseMatrix<MT2,rowMa
 
       const size_t m( min( rowsPerThread, (~lhs).rows() - row ) );
 
-      if( vectorizable && lhsAligned && rhsAligned ) {
+      if( simdEnabled && lhsAligned && rhsAligned ) {
          AlignedTarget target( submatrix<aligned>( ~lhs, row, 0UL, m, (~lhs).columns() ) );
          TheThreadBackend::scheduleAddAssign( target, submatrix<aligned>( ~rhs, row, 0UL, m, (~lhs).columns() ) );
       }
-      else if( vectorizable && lhsAligned ) {
+      else if( simdEnabled && lhsAligned ) {
          AlignedTarget target( submatrix<aligned>( ~lhs, row, 0UL, m, (~lhs).columns() ) );
          TheThreadBackend::scheduleAddAssign( target, submatrix<unaligned>( ~rhs, row, 0UL, m, (~lhs).columns() ) );
       }
-      else if( vectorizable && rhsAligned ) {
+      else if( simdEnabled && rhsAligned ) {
          UnalignedTarget target( submatrix<unaligned>( ~lhs, row, 0UL, m, (~lhs).columns() ) );
          TheThreadBackend::scheduleAddAssign( target, submatrix<aligned>( ~rhs, row, 0UL, m, (~lhs).columns() ) );
       }
@@ -533,15 +533,15 @@ void smpAddAssign_backend( DenseMatrix<MT1,SO>& lhs, const DenseMatrix<MT2,colum
 
    enum : size_ { SIMDSIZE = SIMDTrait< ElementType_<MT1> >::size; };
 
-   const bool vectorizable( MT1::vectorizable && MT2::vectorizable && IsSame<ET1,ET2>::value );
-   const bool lhsAligned  ( (~lhs).isAligned() );
-   const bool rhsAligned  ( (~rhs).isAligned() );
+   const bool simdEnabled( MT1::simdEnabled && MT2::simdEnabled && IsSame<ET1,ET2>::value );
+   const bool lhsAligned ( (~lhs).isAligned() );
+   const bool rhsAligned ( (~rhs).isAligned() );
 
    const size_t threads      ( TheThreadBackend::size() );
    const size_t addon        ( ( ( (~lhs).columns() % threads ) != 0UL )? 1UL : 0UL );
    const size_t equalShare   ( (~lhs).columns() / threads + addon );
    const size_t rest         ( equalShare & ( SIMDSIZE - 1UL ) );
-   const size_t colsPerThread( ( vectorizable && rest )?( equalShare - rest + SIMDSIZE ):( equalShare ) );
+   const size_t colsPerThread( ( simdEnabled && rest )?( equalShare - rest + SIMDSIZE ):( equalShare ) );
 
    for( size_t i=0UL; i<threads; ++i )
    {
@@ -552,15 +552,15 @@ void smpAddAssign_backend( DenseMatrix<MT1,SO>& lhs, const DenseMatrix<MT2,colum
 
       const size_t n( min( colsPerThread, (~lhs).columns() - column ) );
 
-      if( vectorizable && lhsAligned && rhsAligned ) {
+      if( simdEnabled && lhsAligned && rhsAligned ) {
          AlignedTarget target( submatrix<aligned>( ~lhs, 0UL, column, (~lhs).rows(), n ) );
          TheThreadBackend::scheduleAddAssign( target, submatrix<aligned>( ~rhs, 0UL, column, (~lhs).rows(), n ) );
       }
-      else if( vectorizable && lhsAligned ) {
+      else if( simdEnabled && lhsAligned ) {
          AlignedTarget target( submatrix<aligned>( ~lhs, 0UL, column, (~lhs).rows(), n ) );
          TheThreadBackend::scheduleAddAssign( target, submatrix<unaligned>( ~rhs, 0UL, column, (~lhs).rows(), n ) );
       }
-      else if( vectorizable && rhsAligned ) {
+      else if( simdEnabled && rhsAligned ) {
          UnalignedTarget target( submatrix<unaligned>( ~lhs, 0UL, column, (~lhs).rows(), n ) );
          TheThreadBackend::scheduleAddAssign( target, submatrix<aligned>( ~rhs, 0UL, column, (~lhs).rows(), n ) );
       }
@@ -807,15 +807,15 @@ void smpSubAssign_backend( DenseMatrix<MT1,SO>& lhs, const DenseMatrix<MT2,rowMa
 
    enum : size_ { SIMDSIZE = SIMDTrait< ElementType_<MT1> >::size; };
 
-   const bool vectorizable( MT1::vectorizable && MT2::vectorizable && IsSame<ET1,ET2>::value );
-   const bool lhsAligned  ( (~lhs).isAligned() );
-   const bool rhsAligned  ( (~rhs).isAligned() );
+   const bool simdEnabled( MT1::simdEnabled && MT2::simdEnabled && IsSame<ET1,ET2>::value );
+   const bool lhsAligned ( (~lhs).isAligned() );
+   const bool rhsAligned ( (~rhs).isAligned() );
 
    const size_t threads      ( TheThreadBackend::size() );
    const size_t addon        ( ( ( (~lhs).rows() % threads ) != 0UL )? 1UL : 0UL );
    const size_t equalShare   ( (~lhs).rows() / threads + addon );
    const size_t rest         ( equalShare & ( SIMDSIZE - 1UL ) );
-   const size_t rowsPerThread( ( vectorizable && rest )?( equalShare - rest + SIMDSIZE ):( equalShare ) );
+   const size_t rowsPerThread( ( simdEnabled && rest )?( equalShare - rest + SIMDSIZE ):( equalShare ) );
 
    for( size_t i=0UL; i<threads; ++i )
    {
@@ -826,15 +826,15 @@ void smpSubAssign_backend( DenseMatrix<MT1,SO>& lhs, const DenseMatrix<MT2,rowMa
 
       const size_t m( min( rowsPerThread, (~lhs).rows() - row ) );
 
-      if( vectorizable && lhsAligned && rhsAligned ) {
+      if( simdEnabled && lhsAligned && rhsAligned ) {
          AlignedTarget target( submatrix<aligned>( ~lhs, row, 0UL, m, (~lhs).columns() ) );
          TheThreadBackend::scheduleSubAssign( target, submatrix<aligned>( ~rhs, row, 0UL, m, (~lhs).columns() ) );
       }
-      else if( vectorizable && lhsAligned ) {
+      else if( simdEnabled && lhsAligned ) {
          AlignedTarget target( submatrix<aligned>( ~lhs, row, 0UL, m, (~lhs).columns() ) );
          TheThreadBackend::scheduleSubAssign( target, submatrix<unaligned>( ~rhs, row, 0UL, m, (~lhs).columns() ) );
       }
-      else if( vectorizable && rhsAligned ) {
+      else if( simdEnabled && rhsAligned ) {
          UnalignedTarget target( submatrix<unaligned>( ~lhs, row, 0UL, m, (~lhs).columns() ) );
          TheThreadBackend::scheduleSubAssign( target, submatrix<aligned>( ~rhs, row, 0UL, m, (~lhs).columns() ) );
       }
@@ -883,15 +883,15 @@ void smpSubAssign_backend( DenseMatrix<MT1,SO>& lhs, const DenseMatrix<MT2,colum
 
    enum : size_ { SIMDSIZE = SIMDTrait< ElementType_<MT1> >::size; };
 
-   const bool vectorizable( MT1::vectorizable && MT2::vectorizable && IsSame<ET1,ET2>::value );
-   const bool lhsAligned  ( (~lhs).isAligned() );
-   const bool rhsAligned  ( (~rhs).isAligned() );
+   const bool simdEnabled( MT1::simdEnabled && MT2::simdEnabled && IsSame<ET1,ET2>::value );
+   const bool lhsAligned ( (~lhs).isAligned() );
+   const bool rhsAligned ( (~rhs).isAligned() );
 
    const size_t threads      ( TheThreadBackend::size() );
    const size_t addon        ( ( ( (~lhs).columns() % threads ) != 0UL )? 1UL : 0UL );
    const size_t equalShare   ( (~lhs).columns() / threads + addon );
    const size_t rest         ( equalShare & ( SIMDSIZE - 1UL ) );
-   const size_t colsPerThread( ( vectorizable && rest )?( equalShare - rest + SIMDSIZE ):( equalShare ) );
+   const size_t colsPerThread( ( simdEnabled && rest )?( equalShare - rest + SIMDSIZE ):( equalShare ) );
 
    for( size_t i=0UL; i<threads; ++i )
    {
@@ -902,15 +902,15 @@ void smpSubAssign_backend( DenseMatrix<MT1,SO>& lhs, const DenseMatrix<MT2,colum
 
       const size_t n( min( colsPerThread, (~lhs).columns() - column ) );
 
-      if( vectorizable && lhsAligned && rhsAligned ) {
+      if( simdEnabled && lhsAligned && rhsAligned ) {
          AlignedTarget target( submatrix<aligned>( ~lhs, 0UL, column, (~lhs).rows(), n ) );
          TheThreadBackend::scheduleSubAssign( target, submatrix<aligned>( ~rhs, 0UL, column, (~lhs).rows(), n ) );
       }
-      else if( vectorizable && lhsAligned ) {
+      else if( simdEnabled && lhsAligned ) {
          AlignedTarget target( submatrix<aligned>( ~lhs, 0UL, column, (~lhs).rows(), n ) );
          TheThreadBackend::scheduleSubAssign( target, submatrix<unaligned>( ~rhs, 0UL, column, (~lhs).rows(), n ) );
       }
-      else if( vectorizable && rhsAligned ) {
+      else if( simdEnabled && rhsAligned ) {
          UnalignedTarget target( submatrix<unaligned>( ~lhs, 0UL, column, (~lhs).rows(), n ) );
          TheThreadBackend::scheduleSubAssign( target, submatrix<aligned>( ~rhs, 0UL, column, (~lhs).rows(), n ) );
       }

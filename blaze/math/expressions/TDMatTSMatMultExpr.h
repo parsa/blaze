@@ -172,7 +172,7 @@ class TDMatTSMatMultExpr : public DenseMatrix< TDMatTSMatMultExpr<MT1,MT2>, true
    struct UseVectorizedKernel {
       enum : bool { value = useOptimizedKernels &&
                             !IsDiagonal<T2>::value &&
-                            T1::vectorizable && T2::vectorizable &&
+                            T1::simdEnabled && T2::simdEnabled &&
                             IsColumnMajorMatrix<T1>::value &&
                             IsSame< ElementType_<T1>, ElementType_<T2> >::value &&
                             IsSame< ElementType_<T1>, ElementType_<T3> >::value &&
@@ -239,11 +239,11 @@ class TDMatTSMatMultExpr : public DenseMatrix< TDMatTSMatMultExpr<MT1,MT2>, true
 
    //**Compilation flags***************************************************************************
    //! Compilation switch for the expression template evaluation strategy.
-   enum : bool { vectorizable = !IsDiagonal<MT1>::value &&
-                                MT1::vectorizable &&
-                                IsSame<ET1,ET2>::value &&
-                                HasSIMDAdd<ET1,ET1>::value &&
-                                HasSIMDMult<ET1,ET1>::value };
+   enum : bool { simdEnabled = !IsDiagonal<MT1>::value &&
+                               MT1::simdEnabled &&
+                               IsSame<ET1,ET2>::value &&
+                               HasSIMDAdd<ET1,ET1>::value &&
+                               HasSIMDMult<ET1,ET1>::value };
 
    //! Compilation switch for the expression template assignment strategy.
    enum : bool { smpAssignable = !evaluateLeft  && MT1::smpAssignable &&

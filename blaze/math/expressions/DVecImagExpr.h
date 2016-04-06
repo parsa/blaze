@@ -403,7 +403,7 @@ class DVecImagExpr : public DenseVector< DVecImagExpr<VT,TF>, TF >
 
    //**Compilation flags***************************************************************************
    //! Compilation switch for the expression template evaluation strategy.
-   enum : bool { vectorizable = false };
+   enum : bool { simdEnabled = false };
 
    //! Compilation switch for the expression template assignment strategy.
    enum : bool { smpAssignable = VT::smpAssignable };

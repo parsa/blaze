@@ -158,7 +158,7 @@ class SVecTDVecMultExpr : public SparseMatrix< SVecTDVecMultExpr<VT1,VT2>, true 
    template< typename T1, typename T2, typename T3 >
    struct UseVectorizedKernel {
       enum : bool { value = useOptimizedKernels &&
-                            T1::vectorizable && T3::vectorizable &&
+                            T1::simdEnabled && T3::simdEnabled &&
                             IsSame< ElementType_<T1>, ElementType_<T2> >::value &&
                             IsSame< ElementType_<T1>, ElementType_<T3> >::value &&
                             HasSIMDMult< ElementType_<T1>, ElementType_<T1> >::value };

@@ -431,11 +431,11 @@ class DVecScalarDivExpr : public DenseVector< DVecScalarDivExpr<VT,ST,TF>, TF >
 
    //**Compilation flags***************************************************************************
    //! Compilation switch for the expression template evaluation strategy.
-   enum : bool { vectorizable = VT::vectorizable &&
-                                IsNumeric<ET>::value &&
-                                ( IsSame<ET,RightOperand>::value ||
-                                  IsSame<UnderlyingElement_<ET>,RightOperand>::value ) &&
-                                HasSIMDDiv<ET,RightOperand>::value };
+   enum : bool { simdEnabled = VT::simdEnabled &&
+                               IsNumeric<ET>::value &&
+                               ( IsSame<ET,RightOperand>::value ||
+                                 IsSame<UnderlyingElement_<ET>,RightOperand>::value ) &&
+                               HasSIMDDiv<ET,RightOperand>::value };
 
    //! Compilation switch for the expression template assignment strategy.
    enum : bool { smpAssignable = VT::smpAssignable };

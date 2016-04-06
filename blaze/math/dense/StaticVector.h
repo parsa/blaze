@@ -204,11 +204,11 @@ class StaticVector : public DenseVector< StaticVector<Type,N,TF>, TF >
 
    //**Compilation flags***************************************************************************
    //! Compilation flag for SIMD optimization.
-   /*! The \a vectorizable compilation flag indicates whether expressions the vector is involved
+   /*! The \a simdEnabled compilation flag indicates whether expressions the vector is involved
        in can be optimized via SIMD operations. In case the element type of the vector is a
-       vectorizable data type, the \a vectorizable compilation flag is set to \a true, otherwise
+       vectorizable data type, the \a simdEnabled compilation flag is set to \a true, otherwise
        it is set to \a false. */
-   enum : bool { vectorizable = IsVectorizable<Type>::value };
+   enum : bool { simdEnabled = IsVectorizable<Type>::value };
 
    //! Compilation flag for SMP assignments.
    /*! The \a smpAssignable compilation flag indicates whether the vector can be used in SMP
@@ -313,7 +313,7 @@ class StaticVector : public DenseVector< StaticVector<Type,N,TF>, TF >
    template< typename VT >
    struct VectorizedAssign {
       enum : bool { value = useOptimizedKernels &&
-                            vectorizable && VT::vectorizable &&
+                            simdEnabled && VT::simdEnabled &&
                             IsSame< Type, ElementType_<VT> >::value };
    };
    /*! \endcond */
@@ -325,7 +325,7 @@ class StaticVector : public DenseVector< StaticVector<Type,N,TF>, TF >
    template< typename VT >
    struct VectorizedAddAssign {
       enum : bool { value = useOptimizedKernels &&
-                            vectorizable && VT::vectorizable &&
+                            simdEnabled && VT::simdEnabled &&
                             IsSame< Type, ElementType_<VT> >::value &&
                             HasSIMDAdd<Type,Type>::value };
    };
@@ -338,7 +338,7 @@ class StaticVector : public DenseVector< StaticVector<Type,N,TF>, TF >
    template< typename VT >
    struct VectorizedSubAssign {
       enum : bool { value = useOptimizedKernels &&
-                            vectorizable && VT::vectorizable &&
+                            simdEnabled && VT::simdEnabled &&
                             IsSame< Type, ElementType_<VT> >::value &&
                             HasSIMDSub<Type,Type>::value };
    };
@@ -351,7 +351,7 @@ class StaticVector : public DenseVector< StaticVector<Type,N,TF>, TF >
    template< typename VT >
    struct VectorizedMultAssign {
       enum : bool { value = useOptimizedKernels &&
-                            vectorizable && VT::vectorizable &&
+                            simdEnabled && VT::simdEnabled &&
                             IsSame< Type, ElementType_<VT> >::value &&
                             HasSIMDMult<Type,Type>::value };
    };

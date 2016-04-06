@@ -766,7 +766,7 @@ class DenseSubvector : public DenseVector< DenseSubvector<VT,AF,TF>, TF >
 
    //**Compilation flags***************************************************************************
    //! Compilation switch for the expression template evaluation strategy.
-   enum : bool { vectorizable = VT::vectorizable };
+   enum : bool { simdEnabled = VT::simdEnabled };
 
    //! Compilation switch for the expression template assignment strategy.
    enum : bool { smpAssignable = VT::smpAssignable };
@@ -839,7 +839,7 @@ class DenseSubvector : public DenseVector< DenseSubvector<VT,AF,TF>, TF >
    template< typename VT2 >
    struct VectorizedAssign {
       enum : bool { value = useOptimizedKernels &&
-                            vectorizable && VT2::vectorizable &&
+                            simdEnabled && VT2::simdEnabled &&
                             IsSame< ElementType, ElementType_<VT2> >::value };
    };
    /*! \endcond */
@@ -851,7 +851,7 @@ class DenseSubvector : public DenseVector< DenseSubvector<VT,AF,TF>, TF >
    template< typename VT2 >
    struct VectorizedAddAssign {
       enum : bool { value = useOptimizedKernels &&
-                            vectorizable && VT2::vectorizable &&
+                            simdEnabled && VT2::simdEnabled &&
                             IsSame< ElementType, ElementType_<VT2> >::value &&
                             HasSIMDAdd< ElementType, ElementType >::value };
    };
@@ -864,7 +864,7 @@ class DenseSubvector : public DenseVector< DenseSubvector<VT,AF,TF>, TF >
    template< typename VT2 >
    struct VectorizedSubAssign {
       enum : bool { value = useOptimizedKernels &&
-                            vectorizable && VT2::vectorizable &&
+                            simdEnabled && VT2::simdEnabled &&
                             IsSame< ElementType, ElementType_<VT2> >::value &&
                             HasSIMDSub< ElementType, ElementType >::value };
    };
@@ -877,7 +877,7 @@ class DenseSubvector : public DenseVector< DenseSubvector<VT,AF,TF>, TF >
    template< typename VT2 >
    struct VectorizedMultAssign {
       enum : bool { value = useOptimizedKernels &&
-                            vectorizable && VT2::vectorizable &&
+                            simdEnabled && VT2::simdEnabled &&
                             IsSame< ElementType, ElementType_<VT2> >::value &&
                             HasSIMDMult< ElementType, ElementType >::value };
    };
@@ -1045,7 +1045,7 @@ inline DenseSubvector<VT,AF,TF>::DenseSubvector( Operand vector, size_t index, s
    : vector_   ( vector )  // The vector containing the subvector
    , offset_   ( index  )  // The offset of the subvector within the dense vector
    , size_     ( n      )  // The size of the subvector
-   , isAligned_( vectorizable && vector.data() != nullptr && checkAlignment( data() ) )
+   , isAligned_( simdEnabled && vector.data() != nullptr && checkAlignment( data() ) )
 {
    if( index + n > vector.size() ) {
       BLAZE_THROW_INVALID_ARGUMENT( "Invalid subvector specification" );
@@ -2588,7 +2588,7 @@ class DenseSubvector<VT,aligned,TF> : public DenseVector< DenseSubvector<VT,alig
 
    //**Compilation flags***************************************************************************
    //! Compilation switch for the expression template evaluation strategy.
-   enum : bool { vectorizable = VT::vectorizable };
+   enum : bool { simdEnabled = VT::simdEnabled };
 
    //! Compilation switch for the expression template assignment strategy.
    enum : bool { smpAssignable = VT::smpAssignable };
@@ -2660,7 +2660,7 @@ class DenseSubvector<VT,aligned,TF> : public DenseVector< DenseSubvector<VT,alig
    template< typename VT2 >
    struct VectorizedAssign {
       enum : bool { value = useOptimizedKernels &&
-                            vectorizable && VT2::vectorizable &&
+                            simdEnabled && VT2::simdEnabled &&
                             IsSame< ElementType, ElementType_<VT2> >::value };
    };
    //**********************************************************************************************
@@ -2670,7 +2670,7 @@ class DenseSubvector<VT,aligned,TF> : public DenseVector< DenseSubvector<VT,alig
    template< typename VT2 >
    struct VectorizedAddAssign {
       enum : bool { value = useOptimizedKernels &&
-                            vectorizable && VT2::vectorizable &&
+                            simdEnabled && VT2::simdEnabled &&
                             IsSame< ElementType, ElementType_<VT2> >::value &&
                             HasSIMDAdd< ElementType, ElementType >::value };
    };
@@ -2681,7 +2681,7 @@ class DenseSubvector<VT,aligned,TF> : public DenseVector< DenseSubvector<VT,alig
    template< typename VT2 >
    struct VectorizedSubAssign {
       enum : bool { value = useOptimizedKernels &&
-                            vectorizable && VT2::vectorizable &&
+                            simdEnabled && VT2::simdEnabled &&
                             IsSame< ElementType, ElementType_<VT2> >::value &&
                             HasSIMDSub< ElementType, ElementType >::value };
    };
@@ -2692,7 +2692,7 @@ class DenseSubvector<VT,aligned,TF> : public DenseVector< DenseSubvector<VT,alig
    template< typename VT2 >
    struct VectorizedMultAssign {
       enum : bool { value = useOptimizedKernels &&
-                            vectorizable && VT2::vectorizable &&
+                            simdEnabled && VT2::simdEnabled &&
                             IsSame< ElementType, ElementType_<VT2> >::value &&
                             HasSIMDMult< ElementType, ElementType >::value };
    };
@@ -2854,7 +2854,7 @@ inline DenseSubvector<VT,aligned,TF>::DenseSubvector( Operand vector, size_t ind
       BLAZE_THROW_INVALID_ARGUMENT( "Invalid subvector specification" );
    }
 
-   if( vectorizable && vector_.data() != nullptr && !checkAlignment( data() ) ) {
+   if( simdEnabled && vector_.data() != nullptr && !checkAlignment( data() ) ) {
       BLAZE_THROW_INVALID_ARGUMENT( "Invalid subvector alignment" );
    }
 }
@@ -4422,7 +4422,7 @@ class DenseSubvector< DVecDVecCrossExpr<VT1,VT2>, unaligned, false >
 
    //**Compilation flags***************************************************************************
    //! Compilation switch for the expression template evaluation strategy.
-   enum : bool { vectorizable = false };
+   enum : bool { simdEnabled = false };
 
    //! Compilation switch for the expression template assignment strategy.
    enum : bool { smpAssignable = false };
@@ -4591,7 +4591,7 @@ class DenseSubvector< DVecSVecCrossExpr<VT1,VT2>, unaligned, false >
 
    //**Compilation flags***************************************************************************
    //! Compilation switch for the expression template evaluation strategy.
-   enum : bool { vectorizable = false };
+   enum : bool { simdEnabled = false };
 
    //! Compilation switch for the expression template assignment strategy.
    enum : bool { smpAssignable = false };
@@ -4760,7 +4760,7 @@ class DenseSubvector< SVecDVecCrossExpr<VT1,VT2>, unaligned, false >
 
    //**Compilation flags***************************************************************************
    //! Compilation switch for the expression template evaluation strategy.
-   enum : bool { vectorizable = false };
+   enum : bool { simdEnabled = false };
 
    //! Compilation switch for the expression template assignment strategy.
    enum : bool { smpAssignable = false };
@@ -4929,7 +4929,7 @@ class DenseSubvector< SVecSVecCrossExpr<VT1,VT2>, unaligned, false >
 
    //**Compilation flags***************************************************************************
    //! Compilation switch for the expression template evaluation strategy.
-   enum : bool { vectorizable = false };
+   enum : bool { simdEnabled = false };
 
    //! Compilation switch for the expression template assignment strategy.
    enum : bool { smpAssignable = false };

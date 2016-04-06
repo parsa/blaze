@@ -95,10 +95,10 @@ class DVecTransposer : public DenseVector< DVecTransposer<VT,TF>, TF >
 
    //**Compilation flags***************************************************************************
    //! Compilation flag for SIMD optimization.
-   /*! The \a vectorizable compilation flag indicates whether expressions the vector is involved
+   /*! The \a simdEnabled compilation flag indicates whether expressions the vector is involved
        in can be optimized via SIMD operations. In case the dense vector operand is vectorizable,
-       the \a vectorizable compilation flag is set to \a true, otherwise it is set to \a false. */
-   enum : bool { vectorizable = VT::vectorizable };
+       the \a simdEnabled compilation flag is set to \a true, otherwise it is set to \a false. */
+   enum : bool { simdEnabled = VT::simdEnabled };
 
    //! Compilation flag for SMP assignments.
    /*! The \a smpAssignable compilation flag indicates whether the vector can be used in SMP

@@ -257,11 +257,11 @@ class VectorSerializer
    void deserializeVector( Archive& archive, VT& vec );
 
    template< typename Archive, typename VT, bool TF >
-   typename DisableIfTrue< VT::vectorizable >::Type
+   typename DisableIfTrue< VT::simdEnabled >::Type
       deserializeDenseVector( Archive& archive, DenseVector<VT,TF>& vec );
 
    template< typename Archive, typename VT, bool TF >
-   EnableIfTrue_< VT::vectorizable >
+   EnableIfTrue_< VT::simdEnabled >
       deserializeDenseVector( Archive& archive, DenseVector<VT,TF>& vec );
 
    template< typename Archive, typename VT, bool TF >
@@ -593,7 +593,7 @@ void VectorSerializer::deserializeVector( Archive& archive, VT& vec )
 template< typename Archive  // Type of the archive
         , typename VT       // Type of the vector
         , bool TF >         // Transpose flag
-typename DisableIfTrue< VT::vectorizable >::Type
+typename DisableIfTrue< VT::simdEnabled >::Type
    VectorSerializer::deserializeDenseVector( Archive& archive, DenseVector<VT,TF>& vec )
 {
    typedef ElementType_<VT>  ET;
@@ -628,7 +628,7 @@ typename DisableIfTrue< VT::vectorizable >::Type
 template< typename Archive  // Type of the archive
         , typename VT       // Type of the vector
         , bool TF >         // Transpose flag
-EnableIfTrue_< VT::vectorizable >
+EnableIfTrue_< VT::simdEnabled >
    VectorSerializer::deserializeDenseVector( Archive& archive, DenseVector<VT,TF>& vec )
 {
    if( size_ == 0UL ) return;

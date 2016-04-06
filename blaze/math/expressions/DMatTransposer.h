@@ -99,10 +99,10 @@ class DMatTransposer : public DenseMatrix< DMatTransposer<MT,SO>, SO >
 
    //**Compilation flags***************************************************************************
    //! Compilation flag for SIMD optimization.
-   /*! The \a vectorizable compilation flag indicates whether expressions the matrix is involved
+   /*! The \a simdEnabled compilation flag indicates whether expressions the matrix is involved
        in can be optimized via SIMD operations. In case the dense matrix operand is vectorizable,
-       the \a vectorizable compilation flag is set to \a true, otherwise it is set to \a false. */
-   enum : bool { vectorizable = MT::vectorizable };
+       the \a simdEnabled compilation flag is set to \a true, otherwise it is set to \a false. */
+   enum : bool { simdEnabled = MT::simdEnabled };
 
    //! Compilation flag for SMP assignments.
    /*! The \a smpAssignable compilation flag indicates whether the matrix can be used in SMP
@@ -1008,10 +1008,10 @@ class DMatTransposer<MT,true> : public DenseMatrix< DMatTransposer<MT,true>, tru
 
    //**Compilation flags***************************************************************************
    //! Compilation flag for SIMD optimization.
-   /*! The \a vectorizable compilation flag indicates whether expressions the matrix is involved
+   /*! The \a simdEnabled compilation flag indicates whether expressions the matrix is involved
        in can be optimized via SIMD operations. In case the dense matrix operand is vectorizable,
-       the \a vectorizable compilation flag is set to \a true, otherwise it is set to \a false. */
-   enum : bool { vectorizable = MT::vectorizable };
+       the \a simdEnabled compilation flag is set to \a true, otherwise it is set to \a false. */
+   enum : bool { simdEnabled = MT::simdEnabled };
 
    //! Compilation flag for SMP assignments.
    /*! The \a smpAssignable compilation flag indicates whether the matrix can be used in SMP

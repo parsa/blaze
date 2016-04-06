@@ -442,9 +442,9 @@ class DMatDMatSubExpr : public DenseMatrix< DMatDMatSubExpr<MT1,MT2,SO>, SO >
 
    //**Compilation flags***************************************************************************
    //! Compilation switch for the expression template evaluation strategy.
-   enum : bool { vectorizable = MT1::vectorizable && MT2::vectorizable &&
-                                IsSame<ET1,ET2>::value &&
-                                HasSIMDSub<ET1,ET1>::value };
+   enum : bool { simdEnabled = MT1::simdEnabled && MT2::simdEnabled &&
+                               IsSame<ET1,ET2>::value &&
+                               HasSIMDSub<ET1,ET1>::value };
 
    //! Compilation switch for the expression template assignment strategy.
    enum : bool { smpAssignable = MT1::smpAssignable && MT2::smpAssignable };

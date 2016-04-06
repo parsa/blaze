@@ -414,7 +414,7 @@ class DVecAbsExpr : public DenseVector< DVecAbsExpr<VT,TF>, TF >
 
    //**Compilation flags***************************************************************************
    //! Compilation switch for the expression template evaluation strategy.
-   enum : bool { vectorizable = VT::vectorizable && HasSIMDAbs<ET>::value };
+   enum : bool { simdEnabled = VT::simdEnabled && HasSIMDAbs<ET>::value };
 
    //! Compilation switch for the expression template assignment strategy.
    enum : bool { smpAssignable = VT::smpAssignable };

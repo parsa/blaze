@@ -426,7 +426,7 @@ class DMatAbsExpr : public DenseMatrix< DMatAbsExpr<MT,SO>, SO >
 
    //**Compilation flags***************************************************************************
    //! Compilation switch for the expression template evaluation strategy.
-   enum : bool { vectorizable = MT::vectorizable && HasSIMDAbs<ET>::value };
+   enum : bool { simdEnabled = MT::simdEnabled && HasSIMDAbs<ET>::value };
 
    //! Compilation switch for the expression template assignment strategy.
    enum : bool { smpAssignable = MT::smpAssignable };

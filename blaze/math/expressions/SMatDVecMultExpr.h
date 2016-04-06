@@ -176,7 +176,7 @@ class SMatDVecMultExpr : public DenseVector< SMatDVecMultExpr<MT,VT>, false >
 
    //**Compilation flags***************************************************************************
    //! Compilation switch for the expression template evaluation strategy.
-   enum : bool { vectorizable = false };
+   enum : bool { simdEnabled = false };
 
    //! Compilation switch for the expression template assignment strategy.
    enum : bool { smpAssignable = !evaluateMatrix && MT::smpAssignable &&

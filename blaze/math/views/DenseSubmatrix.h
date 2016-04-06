@@ -852,7 +852,7 @@ class DenseSubmatrix : public DenseMatrix< DenseSubmatrix<MT,AF,SO>, SO >
 
    //**Compilation flags***************************************************************************
    //! Compilation switch for the expression template evaluation strategy.
-   enum : bool { vectorizable = MT::vectorizable };
+   enum : bool { simdEnabled = MT::simdEnabled };
 
    //! Compilation switch for the expression template assignment strategy.
    enum : bool { smpAssignable = MT::smpAssignable };
@@ -953,7 +953,7 @@ class DenseSubmatrix : public DenseMatrix< DenseSubmatrix<MT,AF,SO>, SO >
    template< typename MT2 >
    struct VectorizedAssign {
       enum : bool { value = useOptimizedKernels &&
-                            vectorizable && MT2::vectorizable &&
+                            simdEnabled && MT2::simdEnabled &&
                             IsSame< ElementType, ElementType_<MT2> >::value };
    };
    /*! \endcond */
@@ -965,7 +965,7 @@ class DenseSubmatrix : public DenseMatrix< DenseSubmatrix<MT,AF,SO>, SO >
    template< typename MT2 >
    struct VectorizedAddAssign {
       enum : bool { value = useOptimizedKernels &&
-                            vectorizable && MT2::vectorizable &&
+                            simdEnabled && MT2::simdEnabled &&
                             IsSame< ElementType, ElementType_<MT2> >::value &&
                             HasSIMDAdd< ElementType, ElementType >::value };
    };
@@ -978,7 +978,7 @@ class DenseSubmatrix : public DenseMatrix< DenseSubmatrix<MT,AF,SO>, SO >
    template< typename MT2 >
    struct VectorizedSubAssign {
       enum : bool { value = useOptimizedKernels &&
-                            vectorizable && MT2::vectorizable &&
+                            simdEnabled && MT2::simdEnabled &&
                             IsSame< ElementType, ElementType_<MT2> >::value &&
                             HasSIMDSub< ElementType, ElementType >::value };
    };
@@ -1174,7 +1174,7 @@ inline DenseSubmatrix<MT,AF,SO>::DenseSubmatrix( Operand matrix, size_t rindex, 
    , column_   ( cindex )  // The first column of the submatrix
    , m_        ( m      )  // The number of rows of the submatrix
    , n_        ( n      )  // The number of columns of the submatrix
-   , isAligned_( vectorizable && matrix.data() != nullptr && checkAlignment( data() ) &&
+   , isAligned_( simdEnabled && matrix.data() != nullptr && checkAlignment( data() ) &&
                  ( m < 2UL || ( matrix.spacing() & size_t(-SIMDSIZE) ) == 0UL ) )
 {
    if( ( row_ + m_ > matrix_.rows() ) || ( column_ + n_ > matrix_.columns() ) ) {
@@ -3717,7 +3717,7 @@ class DenseSubmatrix<MT,unaligned,true> : public DenseMatrix< DenseSubmatrix<MT,
 
    //**Compilation flags***************************************************************************
    //! Compilation switch for the expression template evaluation strategy.
-   enum : bool { vectorizable = MT::vectorizable };
+   enum : bool { simdEnabled = MT::simdEnabled };
 
    //! Compilation switch for the expression template assignment strategy.
    enum : bool { smpAssignable = MT::smpAssignable };
@@ -3817,7 +3817,7 @@ class DenseSubmatrix<MT,unaligned,true> : public DenseMatrix< DenseSubmatrix<MT,
    template< typename MT2 >
    struct VectorizedAssign {
       enum : bool { value = useOptimizedKernels &&
-                            vectorizable && MT2::vectorizable &&
+                            simdEnabled && MT2::simdEnabled &&
                             IsSame< ElementType, ElementType_<MT2> >::value };
    };
    //**********************************************************************************************
@@ -3827,7 +3827,7 @@ class DenseSubmatrix<MT,unaligned,true> : public DenseMatrix< DenseSubmatrix<MT,
    template< typename MT2 >
    struct VectorizedAddAssign {
       enum : bool { value = useOptimizedKernels &&
-                            vectorizable && MT2::vectorizable &&
+                            simdEnabled && MT2::simdEnabled &&
                             IsSame< ElementType, ElementType_<MT2> >::value &&
                             HasSIMDAdd< ElementType, ElementType >::value };
    };
@@ -3838,7 +3838,7 @@ class DenseSubmatrix<MT,unaligned,true> : public DenseMatrix< DenseSubmatrix<MT,
    template< typename MT2 >
    struct VectorizedSubAssign {
       enum : bool { value = useOptimizedKernels &&
-                            vectorizable && MT2::vectorizable &&
+                            simdEnabled && MT2::simdEnabled &&
                             IsSame< ElementType, ElementType_<MT2> >::value &&
                             HasSIMDSub< ElementType, ElementType >::value };
    };
@@ -4029,7 +4029,7 @@ inline DenseSubmatrix<MT,unaligned,true>::DenseSubmatrix( Operand matrix, size_t
    , column_   ( cindex )  // The first column of the submatrix
    , m_        ( m      )  // The number of rows of the submatrix
    , n_        ( n      )  // The number of columns of the submatrix
-   , isAligned_( vectorizable && matrix.data() != nullptr && checkAlignment( data() ) &&
+   , isAligned_( simdEnabled && matrix.data() != nullptr && checkAlignment( data() ) &&
                  ( n < 2UL || ( matrix.spacing() & size_t(-SIMDSIZE) ) == 0UL ) )
 {
    if( ( row_ + m_ > matrix_.rows() ) || ( column_ + n_ > matrix_.columns() ) ) {
@@ -6192,7 +6192,7 @@ class DenseSubmatrix<MT,aligned,false> : public DenseMatrix< DenseSubmatrix<MT,a
 
    //**Compilation flags***************************************************************************
    //! Compilation switch for the expression template evaluation strategy.
-   enum : bool { vectorizable = MT::vectorizable };
+   enum : bool { simdEnabled = MT::simdEnabled };
 
    //! Compilation switch for the expression template assignment strategy.
    enum : bool { smpAssignable = MT::smpAssignable };
@@ -6292,7 +6292,7 @@ class DenseSubmatrix<MT,aligned,false> : public DenseMatrix< DenseSubmatrix<MT,a
    template< typename MT2 >
    struct VectorizedAssign {
       enum : bool { value = useOptimizedKernels &&
-                            vectorizable && MT2::vectorizable &&
+                            simdEnabled && MT2::simdEnabled &&
                             IsSame< ElementType, ElementType_<MT2> >::value };
    };
    //**********************************************************************************************
@@ -6302,7 +6302,7 @@ class DenseSubmatrix<MT,aligned,false> : public DenseMatrix< DenseSubmatrix<MT,a
    template< typename MT2 >
    struct VectorizedAddAssign {
       enum : bool { value = useOptimizedKernels &&
-                            vectorizable && MT2::vectorizable &&
+                            simdEnabled && MT2::simdEnabled &&
                             IsSame< ElementType, ElementType_<MT2> >::value &&
                             HasSIMDAdd< ElementType, ElementType >::value };
    };
@@ -6313,7 +6313,7 @@ class DenseSubmatrix<MT,aligned,false> : public DenseMatrix< DenseSubmatrix<MT,a
    template< typename MT2 >
    struct VectorizedSubAssign {
       enum : bool { value = useOptimizedKernels &&
-                            vectorizable && MT2::vectorizable &&
+                            simdEnabled && MT2::simdEnabled &&
                             IsSame< ElementType, ElementType_<MT2> >::value &&
                             HasSIMDSub< ElementType, ElementType >::value };
    };
@@ -6502,7 +6502,7 @@ inline DenseSubmatrix<MT,aligned,false>::DenseSubmatrix( Operand matrix, size_t 
       BLAZE_THROW_INVALID_ARGUMENT( "Invalid submatrix specification" );
    }
 
-   if( ( vectorizable && matrix_.data() != nullptr && !checkAlignment( data() ) ) ||
+   if( ( simdEnabled && matrix_.data() != nullptr && !checkAlignment( data() ) ) ||
        ( m_ > 1UL && matrix_.spacing() % SIMDSIZE != 0UL ) ) {
       BLAZE_THROW_INVALID_ARGUMENT( "Invalid submatrix alignment" );
    }
@@ -8708,7 +8708,7 @@ class DenseSubmatrix<MT,aligned,true> : public DenseMatrix< DenseSubmatrix<MT,al
 
    //**Compilation flags***************************************************************************
    //! Compilation switch for the expression template evaluation strategy.
-   enum : bool { vectorizable = MT::vectorizable };
+   enum : bool { simdEnabled = MT::simdEnabled };
 
    //! Compilation switch for the expression template assignment strategy.
    enum : bool { smpAssignable = MT::smpAssignable };
@@ -8808,7 +8808,7 @@ class DenseSubmatrix<MT,aligned,true> : public DenseMatrix< DenseSubmatrix<MT,al
    template< typename MT2 >
    struct VectorizedAssign {
       enum : bool { value = useOptimizedKernels &&
-                            vectorizable && MT2::vectorizable &&
+                            simdEnabled && MT2::simdEnabled &&
                             IsSame< ElementType, ElementType_<MT2> >::value };
    };
    //**********************************************************************************************
@@ -8818,7 +8818,7 @@ class DenseSubmatrix<MT,aligned,true> : public DenseMatrix< DenseSubmatrix<MT,al
    template< typename MT2 >
    struct VectorizedAddAssign {
       enum : bool { value = useOptimizedKernels &&
-                            vectorizable && MT2::vectorizable &&
+                            simdEnabled && MT2::simdEnabled &&
                             IsSame< ElementType, ElementType_<MT2> >::value &&
                             HasSIMDAdd< ElementType, ElementType >::value };
    };
@@ -8829,7 +8829,7 @@ class DenseSubmatrix<MT,aligned,true> : public DenseMatrix< DenseSubmatrix<MT,al
    template< typename MT2 >
    struct VectorizedSubAssign {
       enum : bool { value = useOptimizedKernels &&
-                            vectorizable && MT2::vectorizable &&
+                            simdEnabled && MT2::simdEnabled &&
                             IsSame< ElementType, ElementType_<MT2> >::value &&
                             HasSIMDSub< ElementType, ElementType >::value };
    };
@@ -9018,7 +9018,7 @@ inline DenseSubmatrix<MT,aligned,true>::DenseSubmatrix( Operand matrix, size_t r
       BLAZE_THROW_INVALID_ARGUMENT( "Invalid submatrix specification" );
    }
 
-   if( ( vectorizable && matrix_.data() != nullptr && !checkAlignment( data() ) ) ||
+   if( ( simdEnabled && matrix_.data() != nullptr && !checkAlignment( data() ) ) ||
        ( n_ > 1UL && matrix_.spacing() % SIMDSIZE != 0UL ) ) {
       BLAZE_THROW_INVALID_ARGUMENT( "Invalid submatrix alignment" );
    }
