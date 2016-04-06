@@ -47,7 +47,6 @@
 #include <blaze/math/Aliases.h>
 #include <blaze/math/DenseMatrix.h>
 #include <blaze/math/DenseSubmatrix.h>
-#include <blaze/math/shims/IsDefault.h>
 #include <blaze/util/Random.h>
 #include <blazetest/system/LAPACK.h>
 #include <blazetest/system/Types.h>
@@ -171,7 +170,7 @@ void DenseTest::testRandom1x1()
 
    do {
       randomize( A );
-   } while( blaze::isDefault( det( A ) ) );
+   } while( det( A ) == blaze::ElementType_<Type>( 0 ) );
 
    Type B( A );
 
@@ -218,7 +217,7 @@ void DenseTest::testRandom2x2()
 
    do {
       randomize( A );
-   } while( blaze::isDefault( det( A ) ) );
+   } while( det( A ) == blaze::ElementType_<Type>( 0 ) );
 
    Type B( A );
    Type C( A );
@@ -268,7 +267,7 @@ void DenseTest::testRandom3x3()
 
    do {
       randomize( A );
-   } while( blaze::isDefault( det( A ) ) );
+   } while( det( A ) == blaze::ElementType_<Type>( 0 ) );
 
    Type B( A );
    Type C( A );
@@ -318,7 +317,7 @@ void DenseTest::testRandom4x4()
 
    do {
       randomize( A );
-   } while( blaze::isDefault( det( A ) ) );
+   } while( det( A ) == blaze::ElementType_<Type>( 0 ) );
 
    Type B( A );
    Type C( A );
@@ -368,7 +367,7 @@ void DenseTest::testRandom5x5()
 
    do {
       randomize( A );
-   } while( blaze::isDefault( det( A ) ) );
+   } while( det( A ) == blaze::ElementType_<Type>( 0 ) );
 
    Type B( A );
    Type C( A );
@@ -418,7 +417,7 @@ void DenseTest::testRandom6x6()
 
    do {
       randomize( A );
-   } while( blaze::isDefault( det( A ) ) );
+   } while( det( A ) == blaze::ElementType_<Type>( 0 ) );
 
    Type B( A );
    Type C( A );
