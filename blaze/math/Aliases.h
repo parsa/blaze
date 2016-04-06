@@ -345,6 +345,26 @@ using RightOperand_ = typename T::RightOperand;
 
 
 //*************************************************************************************************
+/*!\brief Alias declaration for nested \c SIMDType type definitions.
+// \ingroup aliases
+//
+// The SIMDType_ alias declaration provides a convenient shortcut to access the nested
+// \a SIMDType type definition of the given type \a T. The following code example shows
+// both ways to access the nested type definition:
+
+   \code
+   using Type1 = typename T::SIMDType;
+   using Type2 = SIMDType_<T>;
+
+   BLAZE_CONSTRAINT_MUST_BE_STRICTLY_SAME_TYPE( Type1, Type2 );
+   \endcode
+*/
+template< typename T >
+using SIMDType_ = typename T::SIMDType;
+//*************************************************************************************************
+
+
+//*************************************************************************************************
 /*!\brief Alias declaration for nested \c TransposeType type definitions.
 // \ingroup aliases
 //
