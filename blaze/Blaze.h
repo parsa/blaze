@@ -865,7 +865,7 @@ namespace blaze {}
 //
 // Adding padding elements to the end of an array can have a significant impact on the performance.
 // For instance, assuming that AVX is available, then two aligned, padded, 3-dimensional vectors
-// of double precision values can be added via a single intrinsic addition instruction:
+// of double precision values can be added via a single SIMD addition operation:
 
    \code
    using blaze::CustomVector;
@@ -915,9 +915,9 @@ namespace blaze {}
 //
 // The number of padding elements is required to be sufficient with respect to the available
 // instruction set: In case of an aligned padded custom vector the added padding elements must
-// guarantee that the capacity is a multiple of the intrinsic vector width. In case of unaligned
-// padded vectors \f$ N-1 \f$ additional padding elements are required, where \f$ N \f$ is the
-// intrinsic vector width. In case the padding is insufficient with respect to the available
+// guarantee that the capacity is a multiple of the SIMD vector width. In case of unaligned
+// padded vectors \f$ N-1 \f$ additional padding elements are required, where \f$ N \f$ is
+// the SIMD vector width. In case the padding is insufficient with respect to the available
 // instruction set, a \c std::invalid_argument exception is thrown.
 //
 // Please also note that \b Blaze will zero initialize the padding elements in order to achieve
@@ -2140,7 +2140,7 @@ namespace blaze {}
 //
 // Adding padding elements to the end of each row/column can have a significant impact on the
 // performance. For instance, assuming that AVX is available, then two aligned, padded, 3x3 double
-// precision matrices can be added via three intrinsic addition instruction:
+// precision matrices can be added via three SIMD addition operations:
 
    \code
    using blaze::CustomMatrix;
@@ -2191,7 +2191,7 @@ namespace blaze {}
 //
 // The number of padding elements is required to be sufficient with respect to the available
 // instruction set: In case of an aligned padded custom matrix the added padding elements must
-// guarantee that the total number of elements in each row/column is a multiple of the intrinsic
+// guarantee that the total number of elements in each row/column is a multiple of the SIMD
 // vector width. In case of an unaligned padded matrix the number of padding elements can be
 // greater or equal the number of padding elements of an aligned padded custom matrix. In case
 // the padding is insufficient with respect to the available instruction set, a
@@ -6152,7 +6152,7 @@ namespace blaze {}
 // type and the available vectorization mode (SSE, AVX, ...). In order to be properly aligned the
 // first element of the subvector must be aligned. The following source code gives some examples
 // for a double precision dynamic vector, assuming that AVX is available, which packs 4 \c double
-// values into an intrinsic vector:
+// values into a SIMD vector:
 
    \code
    using blaze::aligned;
@@ -6567,7 +6567,7 @@ namespace blaze {}
 // type and the available vectorization mode (SSE, AVX, ...). In order to be properly aligned the
 // first element of each row/column of the submatrix must be aligned. The following source code
 // gives some examples for a double precision row-major dynamic matrix, assuming that padding is
-// enabled and that AVX is available, which packs 4 \c double values into an intrinsic vector:
+// enabled and that AVX is available, which packs 4 \c double values into a SIMD vector:
 
    \code
    using blaze::aligned;
