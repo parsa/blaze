@@ -95,6 +95,7 @@ inline void invert( DenseMatrix<MT,SO>& dm );
 //
 // \param dm The general dense matrix to be inverted.
 // \return void
+// \exception std::invalid_argument Inversion of singular matrix failed.
 //
 // This function inverts the given general dense \f$ 2 \times 2 \f$ matrix via the rule of Sarrus.
 // The matrix inversion fails if the given matrix is singular and not invertible. In this case a
@@ -145,6 +146,7 @@ inline void invert2x2( DenseMatrix<MT,SO>& dm )
 //
 // \param dm The general dense matrix to be inverted.
 // \return void
+// \exception std::invalid_argument Inversion of singular matrix failed.
 //
 // This function inverts the given general dense \f$ 3 \times 3 \f$ matrix via the rule of Sarrus.
 // The matrix inversion fails if the given matrix is singular and not invertible. In this case a
@@ -201,6 +203,7 @@ inline void invert3x3( DenseMatrix<MT,SO>& dm )
 //
 // \param dm The general dense matrix to be inverted.
 // \return void
+// \exception std::invalid_argument Inversion of singular matrix failed.
 //
 // This function inverts the given general dense \f$ 4 \times 4 \f$ matrix via the rule of Sarrus.
 // The matrix inversion fails if the given matrix is singular and not invertible. In this case a
@@ -286,6 +289,7 @@ inline void invert4x4( DenseMatrix<MT,SO>& dm )
 //
 // \param dm The general dense matrix to be inverted.
 // \return void
+// \exception std::invalid_argument Inversion of singular matrix failed.
 //
 // This function inverts the given general dense \f$ 5 \times 5 \f$ matrix via the rule of Sarrus.
 // The matrix inversion fails if the given matrix is singular and not invertible. In this case a
@@ -427,6 +431,7 @@ inline void invert5x5( DenseMatrix<MT,SO>& dm )
 //
 // \param dm The general dense matrix to be inverted.
 // \return void
+// \exception std::invalid_argument Inversion of singular matrix failed.
 //
 // This function inverts the given general dense \f$ 6 \times 6 \f$ matrix via the rule of Sarrus.
 // The matrix inversion fails if the given matrix is singular and not invertible. In this case a

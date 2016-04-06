@@ -202,13 +202,13 @@ class TDMatDVecMultExpr : public DenseVector< TDMatDVecMultExpr<MT,VT>, false >
 
  public:
    //**Type definitions****************************************************************************
-   typedef TDMatDVecMultExpr<MT,VT>                    This;           //!< Type of this TDMatDVecMultExpr instance.
-   typedef MultTrait_<MRT,VRT>                         ResultType;     //!< Result type for expression template evaluations.
-   typedef TransposeType_<ResultType>                  TransposeType;  //!< Transpose type for expression template evaluations.
-   typedef ElementType_<ResultType>                    ElementType;    //!< Resulting element type.
-   typedef typename IntrinsicTrait<ElementType>::Type  IntrinsicType;  //!< Resulting intrinsic element type.
-   typedef const ElementType                           ReturnType;     //!< Return type for expression template evaluations.
-   typedef const ResultType                            CompositeType;  //!< Data type for composite expression templates.
+   typedef TDMatDVecMultExpr<MT,VT>    This;           //!< Type of this TDMatDVecMultExpr instance.
+   typedef MultTrait_<MRT,VRT>         ResultType;     //!< Result type for expression template evaluations.
+   typedef TransposeType_<ResultType>  TransposeType;  //!< Transpose type for expression template evaluations.
+   typedef ElementType_<ResultType>    ElementType;    //!< Resulting element type.
+   typedef SIMDTrait_<ElementType>     SIMDType;       //!< Resulting SIMD element type.
+   typedef const ElementType           ReturnType;     //!< Return type for expression template evaluations.
+   typedef const ResultType            CompositeType;  //!< Data type for composite expression templates.
 
    //! Composite type of the left-hand side dense matrix expression.
    typedef If_< IsExpression<MT>, const MT, const MT& >  LeftOperand;
@@ -234,6 +234,11 @@ class TDMatDVecMultExpr : public DenseVector< TDMatDVecMultExpr<MT,VT>, false >
    //! Compilation switch for the expression template assignment strategy.
    enum { smpAssignable = !evaluateMatrix && MT::smpAssignable &&
                           !evaluateVector && VT::smpAssignable };
+   //**********************************************************************************************
+
+   //**SIMD properties*****************************************************************************
+   //! The number of elements packed within a single SIMD element.
+   enum : size_t { SIMDSIZE = SIMDTrait<ElementType>::size };
    //**********************************************************************************************
 
    //**Constructor*********************************************************************************
@@ -573,135 +578,133 @@ class TDMatDVecMultExpr : public DenseVector< TDMatDVecMultExpr<MT,VT>, false >
    static inline EnableIf_< UseVectorizedDefaultKernel<VT1,MT1,VT2> >
       selectSmallAssignKernel( VT1& y, const MT1& A, const VT2& x )
    {
-      typedef IntrinsicTrait<ElementType>  IT;
-
       const size_t M( A.rows()    );
       const size_t N( A.columns() );
 
       const bool remainder( !IsPadded<MT1>::value || !IsPadded<VT1>::value );
 
-      const size_t ipos( remainder ? ( M & size_t(-IT::size) ) : M );
-      BLAZE_INTERNAL_ASSERT( !remainder || ( M - ( M % IT::size ) ) == ipos, "Invalid end calculation" );
+      const size_t ipos( remainder ? ( M & size_t(-SIMDSIZE) ) : M );
+      BLAZE_INTERNAL_ASSERT( !remainder || ( M - ( M % SIMDSIZE ) ) == ipos, "Invalid end calculation" );
 
       size_t i( 0UL );
 
-      for( ; (i+IT::size*7UL) < ipos; i+=IT::size*8UL )
+      for( ; (i+SIMDSIZE*7UL) < ipos; i+=SIMDSIZE*8UL )
       {
          const size_t jbegin( ( IsUpper<MT1>::value )
                               ?( IsStrictlyUpper<MT1>::value ? i+1UL : i )
                               :( 0UL ) );
          const size_t jend( ( IsLower<MT1>::value )
-                            ?( min( i+IT::size*8UL, N ) - ( IsStrictlyLower<MT1>::value ? 1UL : 0UL ) )
+                            ?( min( i+SIMDSIZE*8UL, N ) - ( IsStrictlyLower<MT1>::value ? 1UL : 0UL ) )
                             :( N ) );
          BLAZE_INTERNAL_ASSERT( jbegin <= jend, "Invalid loop indices detected" );
 
-         IntrinsicType xmm1, xmm2, xmm3, xmm4, xmm5, xmm6, xmm7, xmm8;
+         SIMDType xmm1, xmm2, xmm3, xmm4, xmm5, xmm6, xmm7, xmm8;
 
          for( size_t j=jbegin; j<jend; ++j ) {
-            const IntrinsicType x1( set( x[j] ) );
+            const SIMDType x1( set( x[j] ) );
             xmm1 = xmm1 + A.load(i             ,j) * x1;
-            xmm2 = xmm2 + A.load(i+IT::size    ,j) * x1;
-            xmm3 = xmm3 + A.load(i+IT::size*2UL,j) * x1;
-            xmm4 = xmm4 + A.load(i+IT::size*3UL,j) * x1;
-            xmm5 = xmm5 + A.load(i+IT::size*4UL,j) * x1;
-            xmm6 = xmm6 + A.load(i+IT::size*5UL,j) * x1;
-            xmm7 = xmm7 + A.load(i+IT::size*6UL,j) * x1;
-            xmm8 = xmm8 + A.load(i+IT::size*7UL,j) * x1;
+            xmm2 = xmm2 + A.load(i+SIMDSIZE    ,j) * x1;
+            xmm3 = xmm3 + A.load(i+SIMDSIZE*2UL,j) * x1;
+            xmm4 = xmm4 + A.load(i+SIMDSIZE*3UL,j) * x1;
+            xmm5 = xmm5 + A.load(i+SIMDSIZE*4UL,j) * x1;
+            xmm6 = xmm6 + A.load(i+SIMDSIZE*5UL,j) * x1;
+            xmm7 = xmm7 + A.load(i+SIMDSIZE*6UL,j) * x1;
+            xmm8 = xmm8 + A.load(i+SIMDSIZE*7UL,j) * x1;
          }
 
          y.store( i             , xmm1 );
-         y.store( i+IT::size    , xmm2 );
-         y.store( i+IT::size*2UL, xmm3 );
-         y.store( i+IT::size*3UL, xmm4 );
-         y.store( i+IT::size*4UL, xmm5 );
-         y.store( i+IT::size*5UL, xmm6 );
-         y.store( i+IT::size*6UL, xmm7 );
-         y.store( i+IT::size*7UL, xmm8 );
+         y.store( i+SIMDSIZE    , xmm2 );
+         y.store( i+SIMDSIZE*2UL, xmm3 );
+         y.store( i+SIMDSIZE*3UL, xmm4 );
+         y.store( i+SIMDSIZE*4UL, xmm5 );
+         y.store( i+SIMDSIZE*5UL, xmm6 );
+         y.store( i+SIMDSIZE*6UL, xmm7 );
+         y.store( i+SIMDSIZE*7UL, xmm8 );
       }
 
-      for( ; (i+IT::size*3UL) < ipos; i+=IT::size*4UL )
+      for( ; (i+SIMDSIZE*3UL) < ipos; i+=SIMDSIZE*4UL )
       {
          const size_t jbegin( ( IsUpper<MT1>::value )
                               ?( IsStrictlyUpper<MT1>::value ? i+1UL : i )
                               :( 0UL ) );
          const size_t jend( ( IsLower<MT1>::value )
-                            ?( min( i+IT::size*4UL, N ) - ( IsStrictlyLower<MT1>::value ? 1UL : 0UL ) )
+                            ?( min( i+SIMDSIZE*4UL, N ) - ( IsStrictlyLower<MT1>::value ? 1UL : 0UL ) )
                             :( N ) );
          BLAZE_INTERNAL_ASSERT( jbegin <= jend, "Invalid loop indices detected" );
 
-         IntrinsicType xmm1, xmm2, xmm3, xmm4;
+         SIMDType xmm1, xmm2, xmm3, xmm4;
 
          for( size_t j=jbegin; j<jend; ++j ) {
-            const IntrinsicType x1( set( x[j] ) );
+            const SIMDType x1( set( x[j] ) );
             xmm1 = xmm1 + A.load(i             ,j) * x1;
-            xmm2 = xmm2 + A.load(i+IT::size    ,j) * x1;
-            xmm3 = xmm3 + A.load(i+IT::size*2UL,j) * x1;
-            xmm4 = xmm4 + A.load(i+IT::size*3UL,j) * x1;
+            xmm2 = xmm2 + A.load(i+SIMDSIZE    ,j) * x1;
+            xmm3 = xmm3 + A.load(i+SIMDSIZE*2UL,j) * x1;
+            xmm4 = xmm4 + A.load(i+SIMDSIZE*3UL,j) * x1;
          }
 
          y.store( i             , xmm1 );
-         y.store( i+IT::size    , xmm2 );
-         y.store( i+IT::size*2UL, xmm3 );
-         y.store( i+IT::size*3UL, xmm4 );
+         y.store( i+SIMDSIZE    , xmm2 );
+         y.store( i+SIMDSIZE*2UL, xmm3 );
+         y.store( i+SIMDSIZE*3UL, xmm4 );
       }
 
-      for( ; (i+IT::size*2UL) < ipos; i+=IT::size*3UL )
+      for( ; (i+SIMDSIZE*2UL) < ipos; i+=SIMDSIZE*3UL )
       {
          const size_t jbegin( ( IsUpper<MT1>::value )
                               ?( IsStrictlyUpper<MT1>::value ? i+1UL : i )
                               :( 0UL ) );
          const size_t jend( ( IsLower<MT1>::value )
-                            ?( min( i+IT::size*3UL, N ) - ( IsStrictlyLower<MT1>::value ? 1UL : 0UL ) )
+                            ?( min( i+SIMDSIZE*3UL, N ) - ( IsStrictlyLower<MT1>::value ? 1UL : 0UL ) )
                             :( N ) );
          BLAZE_INTERNAL_ASSERT( jbegin <= jend, "Invalid loop indices detected" );
 
-         IntrinsicType xmm1, xmm2, xmm3;
+         SIMDType xmm1, xmm2, xmm3;
 
          for( size_t j=jbegin; j<jend; ++j ) {
-            const IntrinsicType x1( set( x[j] ) );
+            const SIMDType x1( set( x[j] ) );
             xmm1 = xmm1 + A.load(i             ,j) * x1;
-            xmm2 = xmm2 + A.load(i+IT::size    ,j) * x1;
-            xmm3 = xmm3 + A.load(i+IT::size*2UL,j) * x1;
+            xmm2 = xmm2 + A.load(i+SIMDSIZE    ,j) * x1;
+            xmm3 = xmm3 + A.load(i+SIMDSIZE*2UL,j) * x1;
          }
 
          y.store( i             , xmm1 );
-         y.store( i+IT::size    , xmm2 );
-         y.store( i+IT::size*2UL, xmm3 );
+         y.store( i+SIMDSIZE    , xmm2 );
+         y.store( i+SIMDSIZE*2UL, xmm3 );
       }
 
-      for( ; (i+IT::size) < ipos; i+=IT::size*2UL )
+      for( ; (i+SIMDSIZE) < ipos; i+=SIMDSIZE*2UL )
       {
          const size_t jbegin( ( IsUpper<MT1>::value )
                               ?( IsStrictlyUpper<MT1>::value ? i+1UL : i )
                               :( 0UL ) );
          const size_t jend( ( IsLower<MT1>::value )
-                            ?( min( i+IT::size*2UL, N ) - ( IsStrictlyLower<MT1>::value ? 1UL : 0UL ) )
+                            ?( min( i+SIMDSIZE*2UL, N ) - ( IsStrictlyLower<MT1>::value ? 1UL : 0UL ) )
                             :( N ) );
          BLAZE_INTERNAL_ASSERT( jbegin <= jend, "Invalid loop indices detected" );
 
-         IntrinsicType xmm1, xmm2;
+         SIMDType xmm1, xmm2;
 
          for( size_t j=jbegin; j<jend; ++j ) {
-            const IntrinsicType x1( set( x[j] ) );
+            const SIMDType x1( set( x[j] ) );
             xmm1 = xmm1 + A.load(i         ,j) * x1;
-            xmm2 = xmm2 + A.load(i+IT::size,j) * x1;
+            xmm2 = xmm2 + A.load(i+SIMDSIZE,j) * x1;
          }
 
          y.store( i         , xmm1 );
-         y.store( i+IT::size, xmm2 );
+         y.store( i+SIMDSIZE, xmm2 );
       }
 
-      for( ; i<ipos; i+=IT::size )
+      for( ; i<ipos; i+=SIMDSIZE )
       {
          const size_t jbegin( ( IsUpper<MT1>::value )
                               ?( IsStrictlyUpper<MT1>::value ? i+1UL : i )
                               :( 0UL ) );
          const size_t jend( ( IsLower<MT1>::value )
-                            ?( min( i+IT::size, N ) - ( IsStrictlyLower<MT1>::value ? 1UL : 0UL ) )
+                            ?( min( i+SIMDSIZE, N ) - ( IsStrictlyLower<MT1>::value ? 1UL : 0UL ) )
                             :( N ) );
          BLAZE_INTERNAL_ASSERT( jbegin <= jend, "Invalid loop indices detected" );
 
-         IntrinsicType xmm1;
+         SIMDType xmm1;
 
          for( size_t j=jbegin; j<jend; ++j ) {
             xmm1 = xmm1 + A.load(i,j) * set( x[j] );
@@ -777,8 +780,6 @@ class TDMatDVecMultExpr : public DenseVector< TDMatDVecMultExpr<MT,VT>, false >
    static inline EnableIf_< UseVectorizedDefaultKernel<VT1,MT1,VT2> >
       selectLargeAssignKernel( VT1& y, const MT1& A, const VT2& x )
    {
-      typedef IntrinsicTrait<ElementType>  IT;
-
       const size_t M( A.rows()    );
       const size_t N( A.columns() );
 
@@ -787,7 +788,7 @@ class TDMatDVecMultExpr : public DenseVector< TDMatDVecMultExpr<MT,VT>, false >
       const size_t iblock( 32768UL / sizeof( ElementType ) );
       const size_t jblock( ( N < iblock )?( 8UL ):( 4UL ) );
 
-      BLAZE_INTERNAL_ASSERT( ( iblock % IT::size ) == 0UL, "Invalid block size detected" );
+      BLAZE_INTERNAL_ASSERT( ( iblock % SIMDSIZE ) == 0UL, "Invalid block size detected" );
 
       reset( y );
 
@@ -800,90 +801,90 @@ class TDMatDVecMultExpr : public DenseVector< TDMatDVecMultExpr<MT,VT>, false >
                                ?( min( itmp, ( IsStrictlyUpper<MT1>::value ? jend-1UL : jend ) ) )
                                :( itmp ) );
 
-            const size_t ipos( remainder ? ( iend & size_t(-IT::size) ) : iend );
-            BLAZE_INTERNAL_ASSERT( !remainder || ( iend - ( iend % IT::size ) ) == ipos, "Invalid end calculation" );
+            const size_t ipos( remainder ? ( iend & size_t(-SIMDSIZE) ) : iend );
+            BLAZE_INTERNAL_ASSERT( !remainder || ( iend - ( iend % SIMDSIZE ) ) == ipos, "Invalid end calculation" );
 
             size_t i( ( IsLower<MT1>::value )
-                      ?( max( ii, ( IsStrictlyLower<MT1>::value ? jj+1UL : jj ) & size_t(-IT::size) ) )
+                      ?( max( ii, ( IsStrictlyLower<MT1>::value ? jj+1UL : jj ) & size_t(-SIMDSIZE) ) )
                       :( ii ) );
 
-            for( ; (i+IT::size*7UL) < ipos; i+=IT::size*8UL )
+            for( ; (i+SIMDSIZE*7UL) < ipos; i+=SIMDSIZE*8UL )
             {
-               IntrinsicType xmm1, xmm2, xmm3, xmm4, xmm5, xmm6, xmm7, xmm8;
+               SIMDType xmm1, xmm2, xmm3, xmm4, xmm5, xmm6, xmm7, xmm8;
 
                for( size_t j=jj; j<jend; ++j ) {
-                  const IntrinsicType x1( set( x[j] ) );
+                  const SIMDType x1( set( x[j] ) );
                   xmm1 = xmm1 + A.load(i             ,j) * x1;
-                  xmm2 = xmm2 + A.load(i+IT::size    ,j) * x1;
-                  xmm3 = xmm3 + A.load(i+IT::size*2UL,j) * x1;
-                  xmm4 = xmm4 + A.load(i+IT::size*3UL,j) * x1;
-                  xmm5 = xmm5 + A.load(i+IT::size*4UL,j) * x1;
-                  xmm6 = xmm6 + A.load(i+IT::size*5UL,j) * x1;
-                  xmm7 = xmm7 + A.load(i+IT::size*6UL,j) * x1;
-                  xmm8 = xmm8 + A.load(i+IT::size*7UL,j) * x1;
+                  xmm2 = xmm2 + A.load(i+SIMDSIZE    ,j) * x1;
+                  xmm3 = xmm3 + A.load(i+SIMDSIZE*2UL,j) * x1;
+                  xmm4 = xmm4 + A.load(i+SIMDSIZE*3UL,j) * x1;
+                  xmm5 = xmm5 + A.load(i+SIMDSIZE*4UL,j) * x1;
+                  xmm6 = xmm6 + A.load(i+SIMDSIZE*5UL,j) * x1;
+                  xmm7 = xmm7 + A.load(i+SIMDSIZE*6UL,j) * x1;
+                  xmm8 = xmm8 + A.load(i+SIMDSIZE*7UL,j) * x1;
                }
 
                y.store( i             , y.load(i             ) + xmm1 );
-               y.store( i+IT::size    , y.load(i+IT::size    ) + xmm2 );
-               y.store( i+IT::size*2UL, y.load(i+IT::size*2UL) + xmm3 );
-               y.store( i+IT::size*3UL, y.load(i+IT::size*3UL) + xmm4 );
-               y.store( i+IT::size*4UL, y.load(i+IT::size*4UL) + xmm5 );
-               y.store( i+IT::size*5UL, y.load(i+IT::size*5UL) + xmm6 );
-               y.store( i+IT::size*6UL, y.load(i+IT::size*6UL) + xmm7 );
-               y.store( i+IT::size*7UL, y.load(i+IT::size*7UL) + xmm8 );
+               y.store( i+SIMDSIZE    , y.load(i+SIMDSIZE    ) + xmm2 );
+               y.store( i+SIMDSIZE*2UL, y.load(i+SIMDSIZE*2UL) + xmm3 );
+               y.store( i+SIMDSIZE*3UL, y.load(i+SIMDSIZE*3UL) + xmm4 );
+               y.store( i+SIMDSIZE*4UL, y.load(i+SIMDSIZE*4UL) + xmm5 );
+               y.store( i+SIMDSIZE*5UL, y.load(i+SIMDSIZE*5UL) + xmm6 );
+               y.store( i+SIMDSIZE*6UL, y.load(i+SIMDSIZE*6UL) + xmm7 );
+               y.store( i+SIMDSIZE*7UL, y.load(i+SIMDSIZE*7UL) + xmm8 );
             }
 
-            for( ; (i+IT::size*3UL) < ipos; i+=IT::size*4UL )
+            for( ; (i+SIMDSIZE*3UL) < ipos; i+=SIMDSIZE*4UL )
             {
-               IntrinsicType xmm1, xmm2, xmm3, xmm4;
+               SIMDType xmm1, xmm2, xmm3, xmm4;
 
                for( size_t j=jj; j<jend; ++j ) {
-                  const IntrinsicType x1( set( x[j] ) );
+                  const SIMDType x1( set( x[j] ) );
                   xmm1 = xmm1 + A.load(i             ,j) * x1;
-                  xmm2 = xmm2 + A.load(i+IT::size    ,j) * x1;
-                  xmm3 = xmm3 + A.load(i+IT::size*2UL,j) * x1;
-                  xmm4 = xmm4 + A.load(i+IT::size*3UL,j) * x1;
+                  xmm2 = xmm2 + A.load(i+SIMDSIZE    ,j) * x1;
+                  xmm3 = xmm3 + A.load(i+SIMDSIZE*2UL,j) * x1;
+                  xmm4 = xmm4 + A.load(i+SIMDSIZE*3UL,j) * x1;
                }
 
                y.store( i             , y.load(i             ) + xmm1 );
-               y.store( i+IT::size    , y.load(i+IT::size    ) + xmm2 );
-               y.store( i+IT::size*2UL, y.load(i+IT::size*2UL) + xmm3 );
-               y.store( i+IT::size*3UL, y.load(i+IT::size*3UL) + xmm4 );
+               y.store( i+SIMDSIZE    , y.load(i+SIMDSIZE    ) + xmm2 );
+               y.store( i+SIMDSIZE*2UL, y.load(i+SIMDSIZE*2UL) + xmm3 );
+               y.store( i+SIMDSIZE*3UL, y.load(i+SIMDSIZE*3UL) + xmm4 );
             }
 
-            for( ; (i+IT::size*2UL) < ipos; i+=IT::size*3UL )
+            for( ; (i+SIMDSIZE*2UL) < ipos; i+=SIMDSIZE*3UL )
             {
-               IntrinsicType xmm1, xmm2, xmm3;
+               SIMDType xmm1, xmm2, xmm3;
 
                for( size_t j=jj; j<jend; ++j ) {
-                  const IntrinsicType x1( set( x[j] ) );
+                  const SIMDType x1( set( x[j] ) );
                   xmm1 = xmm1 + A.load(i             ,j) * x1;
-                  xmm2 = xmm2 + A.load(i+IT::size    ,j) * x1;
-                  xmm3 = xmm3 + A.load(i+IT::size*2UL,j) * x1;
+                  xmm2 = xmm2 + A.load(i+SIMDSIZE    ,j) * x1;
+                  xmm3 = xmm3 + A.load(i+SIMDSIZE*2UL,j) * x1;
                }
 
                y.store( i             , y.load(i             ) + xmm1 );
-               y.store( i+IT::size    , y.load(i+IT::size    ) + xmm2 );
-               y.store( i+IT::size*2UL, y.load(i+IT::size*2UL) + xmm3 );
+               y.store( i+SIMDSIZE    , y.load(i+SIMDSIZE    ) + xmm2 );
+               y.store( i+SIMDSIZE*2UL, y.load(i+SIMDSIZE*2UL) + xmm3 );
             }
 
-            for( ; (i+IT::size) < ipos; i+=IT::size*2UL )
+            for( ; (i+SIMDSIZE) < ipos; i+=SIMDSIZE*2UL )
             {
-               IntrinsicType xmm1, xmm2;
+               SIMDType xmm1, xmm2;
 
                for( size_t j=jj; j<jend; ++j ) {
-                  const IntrinsicType x1( set( x[j] ) );
+                  const SIMDType x1( set( x[j] ) );
                   xmm1 = xmm1 + A.load(i         ,j) * x1;
-                  xmm2 = xmm2 + A.load(i+IT::size,j) * x1;
+                  xmm2 = xmm2 + A.load(i+SIMDSIZE,j) * x1;
                }
 
                y.store( i         , y.load(i         ) + xmm1 );
-               y.store( i+IT::size, y.load(i+IT::size) + xmm2 );
+               y.store( i+SIMDSIZE, y.load(i+SIMDSIZE) + xmm2 );
             }
 
-            for( ; i<ipos; i+=IT::size )
+            for( ; i<ipos; i+=SIMDSIZE )
             {
-               IntrinsicType xmm1;
+               SIMDType xmm1;
 
                for( size_t j=jj; j<jend; ++j ) {
                   xmm1 = xmm1 + A.load(i,j) * set( x[j] );
@@ -1160,148 +1161,146 @@ class TDMatDVecMultExpr : public DenseVector< TDMatDVecMultExpr<MT,VT>, false >
    static inline EnableIf_< UseVectorizedDefaultKernel<VT1,MT1,VT2> >
       selectSmallAddAssignKernel( VT1& y, const MT1& A, const VT2& x )
    {
-      typedef IntrinsicTrait<ElementType>  IT;
-
       const size_t M( A.rows()    );
       const size_t N( A.columns() );
 
       const bool remainder( !IsPadded<MT1>::value || !IsPadded<VT1>::value );
 
-      const size_t ipos( remainder ? ( M & size_t(-IT::size) ) : M );
-      BLAZE_INTERNAL_ASSERT( !remainder || ( M - ( M % IT::size ) ) == ipos, "Invalid end calculation" );
+      const size_t ipos( remainder ? ( M & size_t(-SIMDSIZE) ) : M );
+      BLAZE_INTERNAL_ASSERT( !remainder || ( M - ( M % SIMDSIZE ) ) == ipos, "Invalid end calculation" );
 
       size_t i( 0UL );
 
-      for( ; (i+IT::size*7UL) < ipos; i+=IT::size*8UL )
+      for( ; (i+SIMDSIZE*7UL) < ipos; i+=SIMDSIZE*8UL )
       {
          const size_t jbegin( ( IsUpper<MT1>::value )
                               ?( IsStrictlyUpper<MT1>::value ? i+1UL : i )
                               :( 0UL ) );
          const size_t jend( ( IsLower<MT1>::value )
-                            ?( min( i+IT::size*8UL, N ) - ( IsStrictlyLower<MT1>::value ? 1UL : 0UL ) )
+                            ?( min( i+SIMDSIZE*8UL, N ) - ( IsStrictlyLower<MT1>::value ? 1UL : 0UL ) )
                             :( N ) );
          BLAZE_INTERNAL_ASSERT( jbegin <= jend, "Invalid loop indices detected" );
 
-         IntrinsicType xmm1( y.load(i             ) );
-         IntrinsicType xmm2( y.load(i+IT::size    ) );
-         IntrinsicType xmm3( y.load(i+IT::size*2UL) );
-         IntrinsicType xmm4( y.load(i+IT::size*3UL) );
-         IntrinsicType xmm5( y.load(i+IT::size*4UL) );
-         IntrinsicType xmm6( y.load(i+IT::size*5UL) );
-         IntrinsicType xmm7( y.load(i+IT::size*6UL) );
-         IntrinsicType xmm8( y.load(i+IT::size*7UL) );
+         SIMDType xmm1( y.load(i             ) );
+         SIMDType xmm2( y.load(i+SIMDSIZE    ) );
+         SIMDType xmm3( y.load(i+SIMDSIZE*2UL) );
+         SIMDType xmm4( y.load(i+SIMDSIZE*3UL) );
+         SIMDType xmm5( y.load(i+SIMDSIZE*4UL) );
+         SIMDType xmm6( y.load(i+SIMDSIZE*5UL) );
+         SIMDType xmm7( y.load(i+SIMDSIZE*6UL) );
+         SIMDType xmm8( y.load(i+SIMDSIZE*7UL) );
 
          for( size_t j=jbegin; j<jend; ++j ) {
-            const IntrinsicType x1( set( x[j] ) );
+            const SIMDType x1( set( x[j] ) );
             xmm1 = xmm1 + A.load(i             ,j) * x1;
-            xmm2 = xmm2 + A.load(i+IT::size    ,j) * x1;
-            xmm3 = xmm3 + A.load(i+IT::size*2UL,j) * x1;
-            xmm4 = xmm4 + A.load(i+IT::size*3UL,j) * x1;
-            xmm5 = xmm5 + A.load(i+IT::size*4UL,j) * x1;
-            xmm6 = xmm6 + A.load(i+IT::size*5UL,j) * x1;
-            xmm7 = xmm7 + A.load(i+IT::size*6UL,j) * x1;
-            xmm8 = xmm8 + A.load(i+IT::size*7UL,j) * x1;
+            xmm2 = xmm2 + A.load(i+SIMDSIZE    ,j) * x1;
+            xmm3 = xmm3 + A.load(i+SIMDSIZE*2UL,j) * x1;
+            xmm4 = xmm4 + A.load(i+SIMDSIZE*3UL,j) * x1;
+            xmm5 = xmm5 + A.load(i+SIMDSIZE*4UL,j) * x1;
+            xmm6 = xmm6 + A.load(i+SIMDSIZE*5UL,j) * x1;
+            xmm7 = xmm7 + A.load(i+SIMDSIZE*6UL,j) * x1;
+            xmm8 = xmm8 + A.load(i+SIMDSIZE*7UL,j) * x1;
          }
 
          y.store( i             , xmm1 );
-         y.store( i+IT::size    , xmm2 );
-         y.store( i+IT::size*2UL, xmm3 );
-         y.store( i+IT::size*3UL, xmm4 );
-         y.store( i+IT::size*4UL, xmm5 );
-         y.store( i+IT::size*5UL, xmm6 );
-         y.store( i+IT::size*6UL, xmm7 );
-         y.store( i+IT::size*7UL, xmm8 );
+         y.store( i+SIMDSIZE    , xmm2 );
+         y.store( i+SIMDSIZE*2UL, xmm3 );
+         y.store( i+SIMDSIZE*3UL, xmm4 );
+         y.store( i+SIMDSIZE*4UL, xmm5 );
+         y.store( i+SIMDSIZE*5UL, xmm6 );
+         y.store( i+SIMDSIZE*6UL, xmm7 );
+         y.store( i+SIMDSIZE*7UL, xmm8 );
       }
 
-      for( ; (i+IT::size*3UL) < ipos; i+=IT::size*4UL )
+      for( ; (i+SIMDSIZE*3UL) < ipos; i+=SIMDSIZE*4UL )
       {
          const size_t jbegin( ( IsUpper<MT1>::value )
                               ?( IsStrictlyUpper<MT1>::value ? i+1UL : i )
                               :( 0UL ) );
          const size_t jend( ( IsLower<MT1>::value )
-                            ?( min( i+IT::size*4UL, N ) - ( IsStrictlyLower<MT1>::value ? 1UL : 0UL ) )
+                            ?( min( i+SIMDSIZE*4UL, N ) - ( IsStrictlyLower<MT1>::value ? 1UL : 0UL ) )
                             :( N ) );
          BLAZE_INTERNAL_ASSERT( jbegin <= jend, "Invalid loop indices detected" );
 
-         IntrinsicType xmm1( y.load(i             ) );
-         IntrinsicType xmm2( y.load(i+IT::size    ) );
-         IntrinsicType xmm3( y.load(i+IT::size*2UL) );
-         IntrinsicType xmm4( y.load(i+IT::size*3UL) );
+         SIMDType xmm1( y.load(i             ) );
+         SIMDType xmm2( y.load(i+SIMDSIZE    ) );
+         SIMDType xmm3( y.load(i+SIMDSIZE*2UL) );
+         SIMDType xmm4( y.load(i+SIMDSIZE*3UL) );
 
          for( size_t j=jbegin; j<jend; ++j ) {
-            const IntrinsicType x1( set( x[j] ) );
+            const SIMDType x1( set( x[j] ) );
             xmm1 = xmm1 + A.load(i             ,j) * x1;
-            xmm2 = xmm2 + A.load(i+IT::size    ,j) * x1;
-            xmm3 = xmm3 + A.load(i+IT::size*2UL,j) * x1;
-            xmm4 = xmm4 + A.load(i+IT::size*3UL,j) * x1;
+            xmm2 = xmm2 + A.load(i+SIMDSIZE    ,j) * x1;
+            xmm3 = xmm3 + A.load(i+SIMDSIZE*2UL,j) * x1;
+            xmm4 = xmm4 + A.load(i+SIMDSIZE*3UL,j) * x1;
          }
 
          y.store( i             , xmm1 );
-         y.store( i+IT::size    , xmm2 );
-         y.store( i+IT::size*2UL, xmm3 );
-         y.store( i+IT::size*3UL, xmm4 );
+         y.store( i+SIMDSIZE    , xmm2 );
+         y.store( i+SIMDSIZE*2UL, xmm3 );
+         y.store( i+SIMDSIZE*3UL, xmm4 );
       }
 
-      for( ; (i+IT::size*2UL) < ipos; i+=IT::size*3UL )
+      for( ; (i+SIMDSIZE*2UL) < ipos; i+=SIMDSIZE*3UL )
       {
          const size_t jbegin( ( IsUpper<MT1>::value )
                               ?( IsStrictlyUpper<MT1>::value ? i+1UL : i )
                               :( 0UL ) );
          const size_t jend( ( IsLower<MT1>::value )
-                            ?( min( i+IT::size*3UL, N ) - ( IsStrictlyLower<MT1>::value ? 1UL : 0UL ) )
+                            ?( min( i+SIMDSIZE*3UL, N ) - ( IsStrictlyLower<MT1>::value ? 1UL : 0UL ) )
                             :( N ) );
          BLAZE_INTERNAL_ASSERT( jbegin <= jend, "Invalid loop indices detected" );
 
-         IntrinsicType xmm1( y.load(i             ) );
-         IntrinsicType xmm2( y.load(i+IT::size    ) );
-         IntrinsicType xmm3( y.load(i+IT::size*2UL) );
+         SIMDType xmm1( y.load(i             ) );
+         SIMDType xmm2( y.load(i+SIMDSIZE    ) );
+         SIMDType xmm3( y.load(i+SIMDSIZE*2UL) );
 
          for( size_t j=jbegin; j<jend; ++j ) {
-            const IntrinsicType x1( set( x[j] ) );
+            const SIMDType x1( set( x[j] ) );
             xmm1 = xmm1 + A.load(i             ,j) * x1;
-            xmm2 = xmm2 + A.load(i+IT::size    ,j) * x1;
-            xmm3 = xmm3 + A.load(i+IT::size*2UL,j) * x1;
+            xmm2 = xmm2 + A.load(i+SIMDSIZE    ,j) * x1;
+            xmm3 = xmm3 + A.load(i+SIMDSIZE*2UL,j) * x1;
          }
 
          y.store( i             , xmm1 );
-         y.store( i+IT::size    , xmm2 );
-         y.store( i+IT::size*2UL, xmm3 );
+         y.store( i+SIMDSIZE    , xmm2 );
+         y.store( i+SIMDSIZE*2UL, xmm3 );
       }
 
-      for( ; (i+IT::size) < ipos; i+=IT::size*2UL )
+      for( ; (i+SIMDSIZE) < ipos; i+=SIMDSIZE*2UL )
       {
          const size_t jbegin( ( IsUpper<MT1>::value )
                               ?( IsStrictlyUpper<MT1>::value ? i+1UL : i )
                               :( 0UL ) );
          const size_t jend( ( IsLower<MT1>::value )
-                            ?( min( i+IT::size*2UL, N ) - ( IsStrictlyLower<MT1>::value ? 1UL : 0UL ) )
+                            ?( min( i+SIMDSIZE*2UL, N ) - ( IsStrictlyLower<MT1>::value ? 1UL : 0UL ) )
                             :( N ) );
          BLAZE_INTERNAL_ASSERT( jbegin <= jend, "Invalid loop indices detected" );
 
-         IntrinsicType xmm1( y.load(i         ) );
-         IntrinsicType xmm2( y.load(i+IT::size) );
+         SIMDType xmm1( y.load(i         ) );
+         SIMDType xmm2( y.load(i+SIMDSIZE) );
 
          for( size_t j=jbegin; j<jend; ++j ) {
-            const IntrinsicType x1( set( x[j] ) );
+            const SIMDType x1( set( x[j] ) );
             xmm1 = xmm1 + A.load(i         ,j) * x1;
-            xmm2 = xmm2 + A.load(i+IT::size,j) * x1;
+            xmm2 = xmm2 + A.load(i+SIMDSIZE,j) * x1;
          }
 
          y.store( i         , xmm1 );
-         y.store( i+IT::size, xmm2 );
+         y.store( i+SIMDSIZE, xmm2 );
       }
 
-      for( ; i<ipos; i+=IT::size )
+      for( ; i<ipos; i+=SIMDSIZE )
       {
          const size_t jbegin( ( IsUpper<MT1>::value )
                               ?( IsStrictlyUpper<MT1>::value ? i+1UL : i )
                               :( 0UL ) );
          const size_t jend( ( IsLower<MT1>::value )
-                            ?( min( i+IT::size, N ) - ( IsStrictlyLower<MT1>::value ? 1UL : 0UL ) )
+                            ?( min( i+SIMDSIZE, N ) - ( IsStrictlyLower<MT1>::value ? 1UL : 0UL ) )
                             :( N ) );
          BLAZE_INTERNAL_ASSERT( jbegin <= jend, "Invalid loop indices detected" );
 
-         IntrinsicType xmm1( y.load(i) );
+         SIMDType xmm1( y.load(i) );
 
          for( size_t j=jbegin; j<jend; ++j ) {
             xmm1 = xmm1 + A.load(i,j) * set( x[j] );
@@ -1377,8 +1376,6 @@ class TDMatDVecMultExpr : public DenseVector< TDMatDVecMultExpr<MT,VT>, false >
    static inline EnableIf_< UseVectorizedDefaultKernel<VT1,MT1,VT2> >
       selectLargeAddAssignKernel( VT1& y, const MT1& A, const VT2& x )
    {
-      typedef IntrinsicTrait<ElementType>  IT;
-
       const size_t M( A.rows()    );
       const size_t N( A.columns() );
 
@@ -1387,7 +1384,7 @@ class TDMatDVecMultExpr : public DenseVector< TDMatDVecMultExpr<MT,VT>, false >
       const size_t iblock( 32768UL / sizeof( ElementType ) );
       const size_t jblock( ( N < iblock )?( 8UL ):( 4UL ) );
 
-      BLAZE_INTERNAL_ASSERT( ( iblock % IT::size ) == 0UL, "Invalid block size detected" );
+      BLAZE_INTERNAL_ASSERT( ( iblock % SIMDSIZE ) == 0UL, "Invalid block size detected" );
 
       for( size_t ii=0U; ii<M; ii+=iblock ) {
          for( size_t jj=0UL; jj<N; jj+=jblock )
@@ -1398,90 +1395,90 @@ class TDMatDVecMultExpr : public DenseVector< TDMatDVecMultExpr<MT,VT>, false >
                                ?( min( itmp, ( IsStrictlyUpper<MT1>::value ? jend-1UL : jend ) ) )
                                :( itmp ) );
 
-            const size_t ipos( remainder ? ( iend & size_t(-IT::size) ) : iend );
-            BLAZE_INTERNAL_ASSERT( !remainder || ( iend - ( iend % IT::size ) ) == ipos, "Invalid end calculation" );
+            const size_t ipos( remainder ? ( iend & size_t(-SIMDSIZE) ) : iend );
+            BLAZE_INTERNAL_ASSERT( !remainder || ( iend - ( iend % SIMDSIZE ) ) == ipos, "Invalid end calculation" );
 
             size_t i( ( IsLower<MT1>::value )
-                      ?( max( ii, ( IsStrictlyLower<MT1>::value ? jj+1UL : jj ) & size_t(-IT::size) ) )
+                      ?( max( ii, ( IsStrictlyLower<MT1>::value ? jj+1UL : jj ) & size_t(-SIMDSIZE) ) )
                       :( ii ) );
 
-            for( ; (i+IT::size*7UL) < ipos; i+=IT::size*8UL )
+            for( ; (i+SIMDSIZE*7UL) < ipos; i+=SIMDSIZE*8UL )
             {
-               IntrinsicType xmm1, xmm2, xmm3, xmm4, xmm5, xmm6, xmm7, xmm8;
+               SIMDType xmm1, xmm2, xmm3, xmm4, xmm5, xmm6, xmm7, xmm8;
 
                for( size_t j=jj; j<jend; ++j ) {
-                  const IntrinsicType x1( set( x[j] ) );
+                  const SIMDType x1( set( x[j] ) );
                   xmm1 = xmm1 + A.load(i             ,j) * x1;
-                  xmm2 = xmm2 + A.load(i+IT::size    ,j) * x1;
-                  xmm3 = xmm3 + A.load(i+IT::size*2UL,j) * x1;
-                  xmm4 = xmm4 + A.load(i+IT::size*3UL,j) * x1;
-                  xmm5 = xmm5 + A.load(i+IT::size*4UL,j) * x1;
-                  xmm6 = xmm6 + A.load(i+IT::size*5UL,j) * x1;
-                  xmm7 = xmm7 + A.load(i+IT::size*6UL,j) * x1;
-                  xmm8 = xmm8 + A.load(i+IT::size*7UL,j) * x1;
+                  xmm2 = xmm2 + A.load(i+SIMDSIZE    ,j) * x1;
+                  xmm3 = xmm3 + A.load(i+SIMDSIZE*2UL,j) * x1;
+                  xmm4 = xmm4 + A.load(i+SIMDSIZE*3UL,j) * x1;
+                  xmm5 = xmm5 + A.load(i+SIMDSIZE*4UL,j) * x1;
+                  xmm6 = xmm6 + A.load(i+SIMDSIZE*5UL,j) * x1;
+                  xmm7 = xmm7 + A.load(i+SIMDSIZE*6UL,j) * x1;
+                  xmm8 = xmm8 + A.load(i+SIMDSIZE*7UL,j) * x1;
                }
 
                y.store( i             , y.load(i             ) + xmm1 );
-               y.store( i+IT::size    , y.load(i+IT::size    ) + xmm2 );
-               y.store( i+IT::size*2UL, y.load(i+IT::size*2UL) + xmm3 );
-               y.store( i+IT::size*3UL, y.load(i+IT::size*3UL) + xmm4 );
-               y.store( i+IT::size*4UL, y.load(i+IT::size*4UL) + xmm5 );
-               y.store( i+IT::size*5UL, y.load(i+IT::size*5UL) + xmm6 );
-               y.store( i+IT::size*6UL, y.load(i+IT::size*6UL) + xmm7 );
-               y.store( i+IT::size*7UL, y.load(i+IT::size*7UL) + xmm8 );
+               y.store( i+SIMDSIZE    , y.load(i+SIMDSIZE    ) + xmm2 );
+               y.store( i+SIMDSIZE*2UL, y.load(i+SIMDSIZE*2UL) + xmm3 );
+               y.store( i+SIMDSIZE*3UL, y.load(i+SIMDSIZE*3UL) + xmm4 );
+               y.store( i+SIMDSIZE*4UL, y.load(i+SIMDSIZE*4UL) + xmm5 );
+               y.store( i+SIMDSIZE*5UL, y.load(i+SIMDSIZE*5UL) + xmm6 );
+               y.store( i+SIMDSIZE*6UL, y.load(i+SIMDSIZE*6UL) + xmm7 );
+               y.store( i+SIMDSIZE*7UL, y.load(i+SIMDSIZE*7UL) + xmm8 );
             }
 
-            for( ; (i+IT::size*3UL) < ipos; i+=IT::size*4UL )
+            for( ; (i+SIMDSIZE*3UL) < ipos; i+=SIMDSIZE*4UL )
             {
-               IntrinsicType xmm1, xmm2, xmm3, xmm4;
+               SIMDType xmm1, xmm2, xmm3, xmm4;
 
                for( size_t j=jj; j<jend; ++j ) {
-                  const IntrinsicType x1( set( x[j] ) );
+                  const SIMDType x1( set( x[j] ) );
                   xmm1 = xmm1 + A.load(i             ,j) * x1;
-                  xmm2 = xmm2 + A.load(i+IT::size    ,j) * x1;
-                  xmm3 = xmm3 + A.load(i+IT::size*2UL,j) * x1;
-                  xmm4 = xmm4 + A.load(i+IT::size*3UL,j) * x1;
+                  xmm2 = xmm2 + A.load(i+SIMDSIZE    ,j) * x1;
+                  xmm3 = xmm3 + A.load(i+SIMDSIZE*2UL,j) * x1;
+                  xmm4 = xmm4 + A.load(i+SIMDSIZE*3UL,j) * x1;
                }
 
                y.store( i             , y.load(i             ) + xmm1 );
-               y.store( i+IT::size    , y.load(i+IT::size    ) + xmm2 );
-               y.store( i+IT::size*2UL, y.load(i+IT::size*2UL) + xmm3 );
-               y.store( i+IT::size*3UL, y.load(i+IT::size*3UL) + xmm4 );
+               y.store( i+SIMDSIZE    , y.load(i+SIMDSIZE    ) + xmm2 );
+               y.store( i+SIMDSIZE*2UL, y.load(i+SIMDSIZE*2UL) + xmm3 );
+               y.store( i+SIMDSIZE*3UL, y.load(i+SIMDSIZE*3UL) + xmm4 );
             }
 
-            for( ; (i+IT::size*2UL) < ipos; i+=IT::size*3UL )
+            for( ; (i+SIMDSIZE*2UL) < ipos; i+=SIMDSIZE*3UL )
             {
-               IntrinsicType xmm1, xmm2, xmm3;
+               SIMDType xmm1, xmm2, xmm3;
 
                for( size_t j=jj; j<jend; ++j ) {
-                  const IntrinsicType x1( set( x[j] ) );
+                  const SIMDType x1( set( x[j] ) );
                   xmm1 = xmm1 + A.load(i             ,j) * x1;
-                  xmm2 = xmm2 + A.load(i+IT::size    ,j) * x1;
-                  xmm3 = xmm3 + A.load(i+IT::size*2UL,j) * x1;
+                  xmm2 = xmm2 + A.load(i+SIMDSIZE    ,j) * x1;
+                  xmm3 = xmm3 + A.load(i+SIMDSIZE*2UL,j) * x1;
                }
 
                y.store( i             , y.load(i             ) + xmm1 );
-               y.store( i+IT::size    , y.load(i+IT::size    ) + xmm2 );
-               y.store( i+IT::size*2UL, y.load(i+IT::size*2UL) + xmm3 );
+               y.store( i+SIMDSIZE    , y.load(i+SIMDSIZE    ) + xmm2 );
+               y.store( i+SIMDSIZE*2UL, y.load(i+SIMDSIZE*2UL) + xmm3 );
             }
 
-            for( ; (i+IT::size) < ipos; i+=IT::size*2UL )
+            for( ; (i+SIMDSIZE) < ipos; i+=SIMDSIZE*2UL )
             {
-               IntrinsicType xmm1, xmm2;
+               SIMDType xmm1, xmm2;
 
                for( size_t j=jj; j<jend; ++j ) {
-                  const IntrinsicType x1( set( x[j] ) );
+                  const SIMDType x1( set( x[j] ) );
                   xmm1 = xmm1 + A.load(i         ,j) * x1;
-                  xmm2 = xmm2 + A.load(i+IT::size,j) * x1;
+                  xmm2 = xmm2 + A.load(i+SIMDSIZE,j) * x1;
                }
 
                y.store( i         , y.load(i         ) + xmm1 );
-               y.store( i+IT::size, y.load(i+IT::size) + xmm2 );
+               y.store( i+SIMDSIZE, y.load(i+SIMDSIZE) + xmm2 );
             }
 
-            for( ; i<ipos; i+=IT::size )
+            for( ; i<ipos; i+=SIMDSIZE )
             {
-               IntrinsicType xmm1;
+               SIMDType xmm1;
 
                for( size_t j=jj; j<jend; ++j ) {
                   xmm1 = xmm1 + A.load(i,j) * set( x[j] );
@@ -1734,148 +1731,146 @@ class TDMatDVecMultExpr : public DenseVector< TDMatDVecMultExpr<MT,VT>, false >
    static inline EnableIf_< UseVectorizedDefaultKernel<VT1,MT1,VT2> >
       selectSmallSubAssignKernel( VT1& y, const MT1& A, const VT2& x )
    {
-      typedef IntrinsicTrait<ElementType>  IT;
-
       const size_t M( A.rows()    );
       const size_t N( A.columns() );
 
       const bool remainder( !IsPadded<MT1>::value || !IsPadded<VT1>::value );
 
-      const size_t ipos( remainder ? ( M & size_t(-IT::size) ) : M );
-      BLAZE_INTERNAL_ASSERT( !remainder || ( M - ( M % IT::size ) ) == ipos, "Invalid end calculation" );
+      const size_t ipos( remainder ? ( M & size_t(-SIMDSIZE) ) : M );
+      BLAZE_INTERNAL_ASSERT( !remainder || ( M - ( M % SIMDSIZE ) ) == ipos, "Invalid end calculation" );
 
       size_t i( 0UL );
 
-      for( ; (i+IT::size*7UL) < ipos; i+=IT::size*8UL )
+      for( ; (i+SIMDSIZE*7UL) < ipos; i+=SIMDSIZE*8UL )
       {
          const size_t jbegin( ( IsUpper<MT1>::value )
                               ?( IsStrictlyUpper<MT1>::value ? i+1UL : i )
                               :( 0UL ) );
          const size_t jend( ( IsLower<MT1>::value )
-                            ?( min( i+IT::size*8UL, N ) - ( IsStrictlyLower<MT1>::value ? 1UL : 0UL ) )
+                            ?( min( i+SIMDSIZE*8UL, N ) - ( IsStrictlyLower<MT1>::value ? 1UL : 0UL ) )
                             :( N ) );
          BLAZE_INTERNAL_ASSERT( jbegin <= jend, "Invalid loop indices detected" );
 
-         IntrinsicType xmm1( y.load(i             ) );
-         IntrinsicType xmm2( y.load(i+IT::size    ) );
-         IntrinsicType xmm3( y.load(i+IT::size*2UL) );
-         IntrinsicType xmm4( y.load(i+IT::size*3UL) );
-         IntrinsicType xmm5( y.load(i+IT::size*4UL) );
-         IntrinsicType xmm6( y.load(i+IT::size*5UL) );
-         IntrinsicType xmm7( y.load(i+IT::size*6UL) );
-         IntrinsicType xmm8( y.load(i+IT::size*7UL) );
+         SIMDType xmm1( y.load(i             ) );
+         SIMDType xmm2( y.load(i+SIMDSIZE    ) );
+         SIMDType xmm3( y.load(i+SIMDSIZE*2UL) );
+         SIMDType xmm4( y.load(i+SIMDSIZE*3UL) );
+         SIMDType xmm5( y.load(i+SIMDSIZE*4UL) );
+         SIMDType xmm6( y.load(i+SIMDSIZE*5UL) );
+         SIMDType xmm7( y.load(i+SIMDSIZE*6UL) );
+         SIMDType xmm8( y.load(i+SIMDSIZE*7UL) );
 
          for( size_t j=jbegin; j<jend; ++j ) {
-            const IntrinsicType x1( set( x[j] ) );
+            const SIMDType x1( set( x[j] ) );
             xmm1 = xmm1 - A.load(i             ,j) * x1;
-            xmm2 = xmm2 - A.load(i+IT::size    ,j) * x1;
-            xmm3 = xmm3 - A.load(i+IT::size*2UL,j) * x1;
-            xmm4 = xmm4 - A.load(i+IT::size*3UL,j) * x1;
-            xmm5 = xmm5 - A.load(i+IT::size*4UL,j) * x1;
-            xmm6 = xmm6 - A.load(i+IT::size*5UL,j) * x1;
-            xmm7 = xmm7 - A.load(i+IT::size*6UL,j) * x1;
-            xmm8 = xmm8 - A.load(i+IT::size*7UL,j) * x1;
+            xmm2 = xmm2 - A.load(i+SIMDSIZE    ,j) * x1;
+            xmm3 = xmm3 - A.load(i+SIMDSIZE*2UL,j) * x1;
+            xmm4 = xmm4 - A.load(i+SIMDSIZE*3UL,j) * x1;
+            xmm5 = xmm5 - A.load(i+SIMDSIZE*4UL,j) * x1;
+            xmm6 = xmm6 - A.load(i+SIMDSIZE*5UL,j) * x1;
+            xmm7 = xmm7 - A.load(i+SIMDSIZE*6UL,j) * x1;
+            xmm8 = xmm8 - A.load(i+SIMDSIZE*7UL,j) * x1;
          }
 
          y.store( i             , xmm1 );
-         y.store( i+IT::size    , xmm2 );
-         y.store( i+IT::size*2UL, xmm3 );
-         y.store( i+IT::size*3UL, xmm4 );
-         y.store( i+IT::size*4UL, xmm5 );
-         y.store( i+IT::size*5UL, xmm6 );
-         y.store( i+IT::size*6UL, xmm7 );
-         y.store( i+IT::size*7UL, xmm8 );
+         y.store( i+SIMDSIZE    , xmm2 );
+         y.store( i+SIMDSIZE*2UL, xmm3 );
+         y.store( i+SIMDSIZE*3UL, xmm4 );
+         y.store( i+SIMDSIZE*4UL, xmm5 );
+         y.store( i+SIMDSIZE*5UL, xmm6 );
+         y.store( i+SIMDSIZE*6UL, xmm7 );
+         y.store( i+SIMDSIZE*7UL, xmm8 );
       }
 
-      for( ; (i+IT::size*3UL) < ipos; i+=IT::size*4UL )
+      for( ; (i+SIMDSIZE*3UL) < ipos; i+=SIMDSIZE*4UL )
       {
          const size_t jbegin( ( IsUpper<MT1>::value )
                               ?( IsStrictlyUpper<MT1>::value ? i+1UL : i )
                               :( 0UL ) );
          const size_t jend( ( IsLower<MT1>::value )
-                            ?( min( i+IT::size*4UL, N ) - ( IsStrictlyLower<MT1>::value ? 1UL : 0UL ) )
+                            ?( min( i+SIMDSIZE*4UL, N ) - ( IsStrictlyLower<MT1>::value ? 1UL : 0UL ) )
                             :( N ) );
          BLAZE_INTERNAL_ASSERT( jbegin <= jend, "Invalid loop indices detected" );
 
-         IntrinsicType xmm1( y.load(i             ) );
-         IntrinsicType xmm2( y.load(i+IT::size    ) );
-         IntrinsicType xmm3( y.load(i+IT::size*2UL) );
-         IntrinsicType xmm4( y.load(i+IT::size*3UL) );
+         SIMDType xmm1( y.load(i             ) );
+         SIMDType xmm2( y.load(i+SIMDSIZE    ) );
+         SIMDType xmm3( y.load(i+SIMDSIZE*2UL) );
+         SIMDType xmm4( y.load(i+SIMDSIZE*3UL) );
 
          for( size_t j=jbegin; j<jend; ++j ) {
-            const IntrinsicType x1( set( x[j] ) );
+            const SIMDType x1( set( x[j] ) );
             xmm1 = xmm1 - A.load(i             ,j) * x1;
-            xmm2 = xmm2 - A.load(i+IT::size    ,j) * x1;
-            xmm3 = xmm3 - A.load(i+IT::size*2UL,j) * x1;
-            xmm4 = xmm4 - A.load(i+IT::size*3UL,j) * x1;
+            xmm2 = xmm2 - A.load(i+SIMDSIZE    ,j) * x1;
+            xmm3 = xmm3 - A.load(i+SIMDSIZE*2UL,j) * x1;
+            xmm4 = xmm4 - A.load(i+SIMDSIZE*3UL,j) * x1;
          }
 
          y.store( i             , xmm1 );
-         y.store( i+IT::size    , xmm2 );
-         y.store( i+IT::size*2UL, xmm3 );
-         y.store( i+IT::size*3UL, xmm4 );
+         y.store( i+SIMDSIZE    , xmm2 );
+         y.store( i+SIMDSIZE*2UL, xmm3 );
+         y.store( i+SIMDSIZE*3UL, xmm4 );
       }
 
-      for( ; (i+IT::size*2UL) < ipos; i+=IT::size*3UL )
+      for( ; (i+SIMDSIZE*2UL) < ipos; i+=SIMDSIZE*3UL )
       {
          const size_t jbegin( ( IsUpper<MT1>::value )
                               ?( IsStrictlyUpper<MT1>::value ? i+1UL : i )
                               :( 0UL ) );
          const size_t jend( ( IsLower<MT1>::value )
-                            ?( min( i+IT::size*3UL, N ) - ( IsStrictlyLower<MT1>::value ? 1UL : 0UL ) )
+                            ?( min( i+SIMDSIZE*3UL, N ) - ( IsStrictlyLower<MT1>::value ? 1UL : 0UL ) )
                             :( N ) );
          BLAZE_INTERNAL_ASSERT( jbegin <= jend, "Invalid loop indices detected" );
 
-         IntrinsicType xmm1( y.load(i             ) );
-         IntrinsicType xmm2( y.load(i+IT::size    ) );
-         IntrinsicType xmm3( y.load(i+IT::size*2UL) );
+         SIMDType xmm1( y.load(i             ) );
+         SIMDType xmm2( y.load(i+SIMDSIZE    ) );
+         SIMDType xmm3( y.load(i+SIMDSIZE*2UL) );
 
          for( size_t j=jbegin; j<jend; ++j ) {
-            const IntrinsicType x1( set( x[j] ) );
+            const SIMDType x1( set( x[j] ) );
             xmm1 = xmm1 - A.load(i             ,j) * x1;
-            xmm2 = xmm2 - A.load(i+IT::size    ,j) * x1;
-            xmm3 = xmm3 - A.load(i+IT::size*2UL,j) * x1;
+            xmm2 = xmm2 - A.load(i+SIMDSIZE    ,j) * x1;
+            xmm3 = xmm3 - A.load(i+SIMDSIZE*2UL,j) * x1;
          }
 
          y.store( i             , xmm1 );
-         y.store( i+IT::size    , xmm2 );
-         y.store( i+IT::size*2UL, xmm3 );
+         y.store( i+SIMDSIZE    , xmm2 );
+         y.store( i+SIMDSIZE*2UL, xmm3 );
       }
 
-      for( ; (i+IT::size) < ipos; i+=IT::size*2UL )
+      for( ; (i+SIMDSIZE) < ipos; i+=SIMDSIZE*2UL )
       {
          const size_t jbegin( ( IsUpper<MT1>::value )
                               ?( IsStrictlyUpper<MT1>::value ? i+1UL : i )
                               :( 0UL ) );
          const size_t jend( ( IsLower<MT1>::value )
-                            ?( min( i+IT::size*2UL, N ) - ( IsStrictlyLower<MT1>::value ? 1UL : 0UL ) )
+                            ?( min( i+SIMDSIZE*2UL, N ) - ( IsStrictlyLower<MT1>::value ? 1UL : 0UL ) )
                             :( N ) );
          BLAZE_INTERNAL_ASSERT( jbegin <= jend, "Invalid loop indices detected" );
 
-         IntrinsicType xmm1( y.load(i         ) );
-         IntrinsicType xmm2( y.load(i+IT::size) );
+         SIMDType xmm1( y.load(i         ) );
+         SIMDType xmm2( y.load(i+SIMDSIZE) );
 
          for( size_t j=jbegin; j<jend; ++j ) {
-            const IntrinsicType x1( set( x[j] ) );
+            const SIMDType x1( set( x[j] ) );
             xmm1 = xmm1 - A.load(i         ,j) * x1;
-            xmm2 = xmm2 - A.load(i+IT::size,j) * x1;
+            xmm2 = xmm2 - A.load(i+SIMDSIZE,j) * x1;
          }
 
          y.store( i         , xmm1 );
-         y.store( i+IT::size, xmm2 );
+         y.store( i+SIMDSIZE, xmm2 );
       }
 
-      for( ; i<ipos; i+=IT::size )
+      for( ; i<ipos; i+=SIMDSIZE )
       {
          const size_t jbegin( ( IsUpper<MT1>::value )
                               ?( IsStrictlyUpper<MT1>::value ? i+1UL : i )
                               :( 0UL ) );
          const size_t jend( ( IsLower<MT1>::value )
-                            ?( min( i+IT::size, N ) - ( IsStrictlyLower<MT1>::value ? 1UL : 0UL ) )
+                            ?( min( i+SIMDSIZE, N ) - ( IsStrictlyLower<MT1>::value ? 1UL : 0UL ) )
                             :( N ) );
          BLAZE_INTERNAL_ASSERT( jbegin <= jend, "Invalid loop indices detected" );
 
-         IntrinsicType xmm1( y.load(i) );
+         SIMDType xmm1( y.load(i) );
 
          for( size_t j=jbegin; j<jend; ++j ) {
             xmm1 = xmm1 - A.load(i,j) * set( x[j] );
@@ -1952,8 +1947,6 @@ class TDMatDVecMultExpr : public DenseVector< TDMatDVecMultExpr<MT,VT>, false >
    static inline EnableIf_< UseVectorizedDefaultKernel<VT1,MT1,VT2> >
       selectLargeSubAssignKernel( VT1& y, const MT1& A, const VT2& x )
    {
-      typedef IntrinsicTrait<ElementType>  IT;
-
       const size_t M( A.rows()    );
       const size_t N( A.columns() );
 
@@ -1962,7 +1955,7 @@ class TDMatDVecMultExpr : public DenseVector< TDMatDVecMultExpr<MT,VT>, false >
       const size_t iblock( 32768UL / sizeof( ElementType ) );
       const size_t jblock( ( N < iblock )?( 8UL ):( 4UL ) );
 
-      BLAZE_INTERNAL_ASSERT( ( iblock % IT::size ) == 0UL, "Invalid block size detected" );
+      BLAZE_INTERNAL_ASSERT( ( iblock % SIMDSIZE ) == 0UL, "Invalid block size detected" );
 
       for( size_t ii=0U; ii<M; ii+=iblock ) {
          for( size_t jj=0UL; jj<N; jj+=jblock )
@@ -1973,90 +1966,90 @@ class TDMatDVecMultExpr : public DenseVector< TDMatDVecMultExpr<MT,VT>, false >
                                ?( min( itmp, ( IsStrictlyUpper<MT1>::value ? jend-1UL : jend ) ) )
                                :( itmp ) );
 
-            const size_t ipos( remainder ? ( iend & size_t(-IT::size) ) : iend );
-            BLAZE_INTERNAL_ASSERT( !remainder || ( iend - ( iend % IT::size ) ) == ipos, "Invalid end calculation" );
+            const size_t ipos( remainder ? ( iend & size_t(-SIMDSIZE) ) : iend );
+            BLAZE_INTERNAL_ASSERT( !remainder || ( iend - ( iend % SIMDSIZE ) ) == ipos, "Invalid end calculation" );
 
             size_t i( ( IsLower<MT1>::value )
-                      ?( max( ii, ( IsStrictlyLower<MT1>::value ? jj+1UL : jj ) & size_t(-IT::size) ) )
+                      ?( max( ii, ( IsStrictlyLower<MT1>::value ? jj+1UL : jj ) & size_t(-SIMDSIZE) ) )
                       :( ii ) );
 
-            for( ; (i+IT::size*7UL) < ipos; i+=IT::size*8UL )
+            for( ; (i+SIMDSIZE*7UL) < ipos; i+=SIMDSIZE*8UL )
             {
-               IntrinsicType xmm1, xmm2, xmm3, xmm4, xmm5, xmm6, xmm7, xmm8;
+               SIMDType xmm1, xmm2, xmm3, xmm4, xmm5, xmm6, xmm7, xmm8;
 
                for( size_t j=jj; j<jend; ++j ) {
-                  const IntrinsicType x1( set( x[j] ) );
+                  const SIMDType x1( set( x[j] ) );
                   xmm1 = xmm1 + A.load(i             ,j) * x1;
-                  xmm2 = xmm2 + A.load(i+IT::size    ,j) * x1;
-                  xmm3 = xmm3 + A.load(i+IT::size*2UL,j) * x1;
-                  xmm4 = xmm4 + A.load(i+IT::size*3UL,j) * x1;
-                  xmm5 = xmm5 + A.load(i+IT::size*4UL,j) * x1;
-                  xmm6 = xmm6 + A.load(i+IT::size*5UL,j) * x1;
-                  xmm7 = xmm7 + A.load(i+IT::size*6UL,j) * x1;
-                  xmm8 = xmm8 + A.load(i+IT::size*7UL,j) * x1;
+                  xmm2 = xmm2 + A.load(i+SIMDSIZE    ,j) * x1;
+                  xmm3 = xmm3 + A.load(i+SIMDSIZE*2UL,j) * x1;
+                  xmm4 = xmm4 + A.load(i+SIMDSIZE*3UL,j) * x1;
+                  xmm5 = xmm5 + A.load(i+SIMDSIZE*4UL,j) * x1;
+                  xmm6 = xmm6 + A.load(i+SIMDSIZE*5UL,j) * x1;
+                  xmm7 = xmm7 + A.load(i+SIMDSIZE*6UL,j) * x1;
+                  xmm8 = xmm8 + A.load(i+SIMDSIZE*7UL,j) * x1;
                }
 
                y.store( i             , y.load(i             ) - xmm1 );
-               y.store( i+IT::size    , y.load(i+IT::size    ) - xmm2 );
-               y.store( i+IT::size*2UL, y.load(i+IT::size*2UL) - xmm3 );
-               y.store( i+IT::size*3UL, y.load(i+IT::size*3UL) - xmm4 );
-               y.store( i+IT::size*4UL, y.load(i+IT::size*4UL) - xmm5 );
-               y.store( i+IT::size*5UL, y.load(i+IT::size*5UL) - xmm6 );
-               y.store( i+IT::size*6UL, y.load(i+IT::size*6UL) - xmm7 );
-               y.store( i+IT::size*7UL, y.load(i+IT::size*7UL) - xmm8 );
+               y.store( i+SIMDSIZE    , y.load(i+SIMDSIZE    ) - xmm2 );
+               y.store( i+SIMDSIZE*2UL, y.load(i+SIMDSIZE*2UL) - xmm3 );
+               y.store( i+SIMDSIZE*3UL, y.load(i+SIMDSIZE*3UL) - xmm4 );
+               y.store( i+SIMDSIZE*4UL, y.load(i+SIMDSIZE*4UL) - xmm5 );
+               y.store( i+SIMDSIZE*5UL, y.load(i+SIMDSIZE*5UL) - xmm6 );
+               y.store( i+SIMDSIZE*6UL, y.load(i+SIMDSIZE*6UL) - xmm7 );
+               y.store( i+SIMDSIZE*7UL, y.load(i+SIMDSIZE*7UL) - xmm8 );
             }
 
-            for( ; (i+IT::size*3UL) < ipos; i+=IT::size*4UL )
+            for( ; (i+SIMDSIZE*3UL) < ipos; i+=SIMDSIZE*4UL )
             {
-               IntrinsicType xmm1, xmm2, xmm3, xmm4;
+               SIMDType xmm1, xmm2, xmm3, xmm4;
 
                for( size_t j=jj; j<jend; ++j ) {
-                  const IntrinsicType x1( set( x[j] ) );
+                  const SIMDType x1( set( x[j] ) );
                   xmm1 = xmm1 + A.load(i             ,j) * x1;
-                  xmm2 = xmm2 + A.load(i+IT::size    ,j) * x1;
-                  xmm3 = xmm3 + A.load(i+IT::size*2UL,j) * x1;
-                  xmm4 = xmm4 + A.load(i+IT::size*3UL,j) * x1;
+                  xmm2 = xmm2 + A.load(i+SIMDSIZE    ,j) * x1;
+                  xmm3 = xmm3 + A.load(i+SIMDSIZE*2UL,j) * x1;
+                  xmm4 = xmm4 + A.load(i+SIMDSIZE*3UL,j) * x1;
                }
 
                y.store( i             , y.load(i             ) - xmm1 );
-               y.store( i+IT::size    , y.load(i+IT::size    ) - xmm2 );
-               y.store( i+IT::size*2UL, y.load(i+IT::size*2UL) - xmm3 );
-               y.store( i+IT::size*3UL, y.load(i+IT::size*3UL) - xmm4 );
+               y.store( i+SIMDSIZE    , y.load(i+SIMDSIZE    ) - xmm2 );
+               y.store( i+SIMDSIZE*2UL, y.load(i+SIMDSIZE*2UL) - xmm3 );
+               y.store( i+SIMDSIZE*3UL, y.load(i+SIMDSIZE*3UL) - xmm4 );
             }
 
-            for( ; (i+IT::size*2UL) < ipos; i+=IT::size*3UL )
+            for( ; (i+SIMDSIZE*2UL) < ipos; i+=SIMDSIZE*3UL )
             {
-               IntrinsicType xmm1, xmm2, xmm3;
+               SIMDType xmm1, xmm2, xmm3;
 
                for( size_t j=jj; j<jend; ++j ) {
-                  const IntrinsicType x1( set( x[j] ) );
+                  const SIMDType x1( set( x[j] ) );
                   xmm1 = xmm1 + A.load(i             ,j) * x1;
-                  xmm2 = xmm2 + A.load(i+IT::size    ,j) * x1;
-                  xmm3 = xmm3 + A.load(i+IT::size*2UL,j) * x1;
+                  xmm2 = xmm2 + A.load(i+SIMDSIZE    ,j) * x1;
+                  xmm3 = xmm3 + A.load(i+SIMDSIZE*2UL,j) * x1;
                }
 
                y.store( i             , y.load(i             ) - xmm1 );
-               y.store( i+IT::size    , y.load(i+IT::size    ) - xmm2 );
-               y.store( i+IT::size*2UL, y.load(i+IT::size*2UL) - xmm3 );
+               y.store( i+SIMDSIZE    , y.load(i+SIMDSIZE    ) - xmm2 );
+               y.store( i+SIMDSIZE*2UL, y.load(i+SIMDSIZE*2UL) - xmm3 );
             }
 
-            for( ; (i+IT::size) < ipos; i+=IT::size*2UL )
+            for( ; (i+SIMDSIZE) < ipos; i+=SIMDSIZE*2UL )
             {
-               IntrinsicType xmm1, xmm2;
+               SIMDType xmm1, xmm2;
 
                for( size_t j=jj; j<jend; ++j ) {
-                  const IntrinsicType x1( set( x[j] ) );
+                  const SIMDType x1( set( x[j] ) );
                   xmm1 = xmm1 + A.load(i         ,j) * x1;
-                  xmm2 = xmm2 + A.load(i+IT::size,j) * x1;
+                  xmm2 = xmm2 + A.load(i+SIMDSIZE,j) * x1;
                }
 
                y.store( i         , y.load(i         ) - xmm1 );
-               y.store( i+IT::size, y.load(i+IT::size) - xmm2 );
+               y.store( i+SIMDSIZE, y.load(i+SIMDSIZE) - xmm2 );
             }
 
-            for( ; i<ipos; i+=IT::size )
+            for( ; i<ipos; i+=SIMDSIZE )
             {
-               IntrinsicType xmm1;
+               SIMDType xmm1;
 
                for( size_t j=jj; j<jend; ++j ) {
                   xmm1 = xmm1 + A.load(i,j) * set( x[j] );
@@ -2495,13 +2488,13 @@ class DVecScalarMultExpr< TDMatDVecMultExpr<MT,VT>, ST, false >
 
  public:
    //**Type definitions****************************************************************************
-   typedef DVecScalarMultExpr<MVM,ST,false>            This;           //!< Type of this DVecScalarMultExpr instance.
-   typedef MultTrait_<RES,ST>                          ResultType;     //!< Result type for expression template evaluations.
-   typedef TransposeType_<ResultType>                  TransposeType;  //!< Transpose type for expression template evaluations.
-   typedef ElementType_<ResultType>                    ElementType;    //!< Resulting element type.
-   typedef typename IntrinsicTrait<ElementType>::Type  IntrinsicType;  //!< Resulting intrinsic element type.
-   typedef const ElementType                           ReturnType;     //!< Return type for expression template evaluations.
-   typedef const ResultType                            CompositeType;  //!< Data type for composite expression templates.
+   typedef DVecScalarMultExpr<MVM,ST,false>  This;           //!< Type of this DVecScalarMultExpr instance.
+   typedef MultTrait_<RES,ST>                ResultType;     //!< Result type for expression template evaluations.
+   typedef TransposeType_<ResultType>        TransposeType;  //!< Transpose type for expression template evaluations.
+   typedef ElementType_<ResultType>          ElementType;    //!< Resulting element type.
+   typedef SIMDTrait_<ElementType>           SIMDType;       //!< Resulting SIMD element type.
+   typedef const ElementType                 ReturnType;     //!< Return type for expression template evaluations.
+   typedef const ResultType                  CompositeType;  //!< Data type for composite expression templates.
 
    //! Composite type of the left-hand side dense vector expression.
    typedef const TDMatDVecMultExpr<MT,VT>  LeftOperand;
@@ -2528,6 +2521,11 @@ class DVecScalarMultExpr< TDMatDVecMultExpr<MT,VT>, ST, false >
    //! Compilation switch for the expression template assignment strategy.
    enum { smpAssignable = !evaluateMatrix && MT::smpAssignable &&
                           !evaluateVector && VT::smpAssignable };
+   //**********************************************************************************************
+
+   //**SIMD properties*****************************************************************************
+   //! The number of elements packed within a single SIMD element.
+   enum : size_t { SIMDSIZE = SIMDTrait<ElementType>::size };
    //**********************************************************************************************
 
    //**Constructor*********************************************************************************
@@ -2847,140 +2845,138 @@ class DVecScalarMultExpr< TDMatDVecMultExpr<MT,VT>, ST, false >
    static inline EnableIf_< UseVectorizedDefaultKernel<VT1,MT1,VT2,ST2> >
       selectSmallAssignKernel( VT1& y, const MT1& A, const VT2& x, ST2 scalar )
    {
-      typedef IntrinsicTrait<ElementType>  IT;
-
       const size_t M( A.rows()    );
       const size_t N( A.columns() );
 
       const bool remainder( !IsPadded<MT1>::value || !IsPadded<VT1>::value );
 
-      const size_t ipos( remainder ? ( M & size_t(-IT::size) ) : M );
-      BLAZE_INTERNAL_ASSERT( !remainder || ( M - ( M % IT::size ) ) == ipos, "Invalid end calculation" );
+      const size_t ipos( remainder ? ( M & size_t(-SIMDSIZE) ) : M );
+      BLAZE_INTERNAL_ASSERT( !remainder || ( M - ( M % SIMDSIZE ) ) == ipos, "Invalid end calculation" );
 
-      const IntrinsicType factor( set( scalar ) );
+      const SIMDType factor( set( scalar ) );
 
       size_t i( 0UL );
 
-      for( ; (i+IT::size*7UL) < ipos; i+=IT::size*8UL )
+      for( ; (i+SIMDSIZE*7UL) < ipos; i+=SIMDSIZE*8UL )
       {
          const size_t jbegin( ( IsUpper<MT1>::value )
                               ?( IsStrictlyUpper<MT1>::value ? i+1UL : i )
                               :( 0UL ) );
          const size_t jend( ( IsLower<MT1>::value )
-                            ?( min( i+IT::size*8UL, N ) - ( IsStrictlyLower<MT1>::value ? 1UL : 0UL ) )
+                            ?( min( i+SIMDSIZE*8UL, N ) - ( IsStrictlyLower<MT1>::value ? 1UL : 0UL ) )
                             :( N ) );
          BLAZE_INTERNAL_ASSERT( jbegin <= jend, "Invalid loop indices detected" );
 
-         IntrinsicType xmm1, xmm2, xmm3, xmm4, xmm5, xmm6, xmm7, xmm8;
+         SIMDType xmm1, xmm2, xmm3, xmm4, xmm5, xmm6, xmm7, xmm8;
 
          for( size_t j=jbegin; j<jend; ++j ) {
-            const IntrinsicType x1( set( x[j] ) );
+            const SIMDType x1( set( x[j] ) );
             xmm1 = xmm1 + A.load(i             ,j) * x1;
-            xmm2 = xmm2 + A.load(i+IT::size    ,j) * x1;
-            xmm3 = xmm3 + A.load(i+IT::size*2UL,j) * x1;
-            xmm4 = xmm4 + A.load(i+IT::size*3UL,j) * x1;
-            xmm5 = xmm5 + A.load(i+IT::size*4UL,j) * x1;
-            xmm6 = xmm6 + A.load(i+IT::size*5UL,j) * x1;
-            xmm7 = xmm7 + A.load(i+IT::size*6UL,j) * x1;
-            xmm8 = xmm8 + A.load(i+IT::size*7UL,j) * x1;
+            xmm2 = xmm2 + A.load(i+SIMDSIZE    ,j) * x1;
+            xmm3 = xmm3 + A.load(i+SIMDSIZE*2UL,j) * x1;
+            xmm4 = xmm4 + A.load(i+SIMDSIZE*3UL,j) * x1;
+            xmm5 = xmm5 + A.load(i+SIMDSIZE*4UL,j) * x1;
+            xmm6 = xmm6 + A.load(i+SIMDSIZE*5UL,j) * x1;
+            xmm7 = xmm7 + A.load(i+SIMDSIZE*6UL,j) * x1;
+            xmm8 = xmm8 + A.load(i+SIMDSIZE*7UL,j) * x1;
          }
 
          y.store( i             , xmm1*factor );
-         y.store( i+IT::size    , xmm2*factor );
-         y.store( i+IT::size*2UL, xmm3*factor );
-         y.store( i+IT::size*3UL, xmm4*factor );
-         y.store( i+IT::size*4UL, xmm5*factor );
-         y.store( i+IT::size*5UL, xmm6*factor );
-         y.store( i+IT::size*6UL, xmm7*factor );
-         y.store( i+IT::size*7UL, xmm8*factor );
+         y.store( i+SIMDSIZE    , xmm2*factor );
+         y.store( i+SIMDSIZE*2UL, xmm3*factor );
+         y.store( i+SIMDSIZE*3UL, xmm4*factor );
+         y.store( i+SIMDSIZE*4UL, xmm5*factor );
+         y.store( i+SIMDSIZE*5UL, xmm6*factor );
+         y.store( i+SIMDSIZE*6UL, xmm7*factor );
+         y.store( i+SIMDSIZE*7UL, xmm8*factor );
       }
 
-      for( ; (i+IT::size*3UL) < ipos; i+=IT::size*4UL )
+      for( ; (i+SIMDSIZE*3UL) < ipos; i+=SIMDSIZE*4UL )
       {
          const size_t jbegin( ( IsUpper<MT1>::value )
                               ?( IsStrictlyUpper<MT1>::value ? i+1UL : i )
                               :( 0UL ) );
          const size_t jend( ( IsLower<MT1>::value )
-                            ?( min( i+IT::size*4UL, N ) - ( IsStrictlyLower<MT1>::value ? 1UL : 0UL ) )
+                            ?( min( i+SIMDSIZE*4UL, N ) - ( IsStrictlyLower<MT1>::value ? 1UL : 0UL ) )
                             :( N ) );
          BLAZE_INTERNAL_ASSERT( jbegin <= jend, "Invalid loop indices detected" );
 
-         IntrinsicType xmm1, xmm2, xmm3, xmm4;
+         SIMDType xmm1, xmm2, xmm3, xmm4;
 
          for( size_t j=jbegin; j<jend; ++j ) {
-            const IntrinsicType x1( set( x[j] ) );
+            const SIMDType x1( set( x[j] ) );
             xmm1 = xmm1 + A.load(i             ,j) * x1;
-            xmm2 = xmm2 + A.load(i+IT::size    ,j) * x1;
-            xmm3 = xmm3 + A.load(i+IT::size*2UL,j) * x1;
-            xmm4 = xmm4 + A.load(i+IT::size*3UL,j) * x1;
+            xmm2 = xmm2 + A.load(i+SIMDSIZE    ,j) * x1;
+            xmm3 = xmm3 + A.load(i+SIMDSIZE*2UL,j) * x1;
+            xmm4 = xmm4 + A.load(i+SIMDSIZE*3UL,j) * x1;
          }
 
          y.store( i             , xmm1*factor );
-         y.store( i+IT::size    , xmm2*factor );
-         y.store( i+IT::size*2UL, xmm3*factor );
-         y.store( i+IT::size*3UL, xmm4*factor );
+         y.store( i+SIMDSIZE    , xmm2*factor );
+         y.store( i+SIMDSIZE*2UL, xmm3*factor );
+         y.store( i+SIMDSIZE*3UL, xmm4*factor );
       }
 
-      for( ; (i+IT::size*2UL) < ipos; i+=IT::size*3UL )
+      for( ; (i+SIMDSIZE*2UL) < ipos; i+=SIMDSIZE*3UL )
       {
          const size_t jbegin( ( IsUpper<MT1>::value )
                               ?( IsStrictlyUpper<MT1>::value ? i+1UL : i )
                               :( 0UL ) );
          const size_t jend( ( IsLower<MT1>::value )
-                            ?( min( i+IT::size*3UL, N ) - ( IsStrictlyLower<MT1>::value ? 1UL : 0UL ) )
+                            ?( min( i+SIMDSIZE*3UL, N ) - ( IsStrictlyLower<MT1>::value ? 1UL : 0UL ) )
                             :( N ) );
          BLAZE_INTERNAL_ASSERT( jbegin <= jend, "Invalid loop indices detected" );
 
-         IntrinsicType xmm1, xmm2, xmm3;
+         SIMDType xmm1, xmm2, xmm3;
 
          for( size_t j=jbegin; j<jend; ++j ) {
-            const IntrinsicType x1( set( x[j] ) );
+            const SIMDType x1( set( x[j] ) );
             xmm1 = xmm1 + A.load(i             ,j) * x1;
-            xmm2 = xmm2 + A.load(i+IT::size    ,j) * x1;
-            xmm3 = xmm3 + A.load(i+IT::size*2UL,j) * x1;
+            xmm2 = xmm2 + A.load(i+SIMDSIZE    ,j) * x1;
+            xmm3 = xmm3 + A.load(i+SIMDSIZE*2UL,j) * x1;
          }
 
          y.store( i             , xmm1*factor );
-         y.store( i+IT::size    , xmm2*factor );
-         y.store( i+IT::size*2UL, xmm3*factor );
+         y.store( i+SIMDSIZE    , xmm2*factor );
+         y.store( i+SIMDSIZE*2UL, xmm3*factor );
       }
 
-      for( ; (i+IT::size) < ipos; i+=IT::size*2UL )
+      for( ; (i+SIMDSIZE) < ipos; i+=SIMDSIZE*2UL )
       {
          const size_t jbegin( ( IsUpper<MT1>::value )
                               ?( IsStrictlyUpper<MT1>::value ? i+1UL : i )
                               :( 0UL ) );
          const size_t jend( ( IsLower<MT1>::value )
-                            ?( min( i+IT::size*2UL, N ) - ( IsStrictlyLower<MT1>::value ? 1UL : 0UL ) )
+                            ?( min( i+SIMDSIZE*2UL, N ) - ( IsStrictlyLower<MT1>::value ? 1UL : 0UL ) )
                             :( N ) );
          BLAZE_INTERNAL_ASSERT( jbegin <= jend, "Invalid loop indices detected" );
 
-         IntrinsicType xmm1, xmm2;
+         SIMDType xmm1, xmm2;
 
          for( size_t j=jbegin; j<jend; ++j ) {
-            const IntrinsicType x1( set( x[j] ) );
+            const SIMDType x1( set( x[j] ) );
             xmm1 = xmm1 + A.load(i         ,j) * x1;
-            xmm2 = xmm2 + A.load(i+IT::size,j) * x1;
+            xmm2 = xmm2 + A.load(i+SIMDSIZE,j) * x1;
          }
 
          y.store( i         , xmm1*factor );
-         y.store( i+IT::size, xmm2*factor );
+         y.store( i+SIMDSIZE, xmm2*factor );
       }
 
-      for( ; i<ipos; i+=IT::size )
+      for( ; i<ipos; i+=SIMDSIZE )
       {
          const size_t jbegin( ( IsUpper<MT1>::value )
                               ?( IsStrictlyUpper<MT1>::value ? i+1UL : i )
                               :( 0UL ) );
          const size_t jend( ( IsLower<MT1>::value )
-                            ?( min( i+IT::size, N ) - ( IsStrictlyLower<MT1>::value ? 1UL : 0UL ) )
+                            ?( min( i+SIMDSIZE, N ) - ( IsStrictlyLower<MT1>::value ? 1UL : 0UL ) )
                             :( N ) );
          BLAZE_INTERNAL_ASSERT( jbegin <= jend, "Invalid loop indices detected" );
 
-         IntrinsicType xmm1;
+         SIMDType xmm1;
 
          for( size_t j=jbegin; j<jend; ++j ) {
-            const IntrinsicType x1( set( x[j] ) );
+            const SIMDType x1( set( x[j] ) );
             xmm1 = xmm1 + A.load(i,j) * x1;
          }
 
@@ -3054,8 +3050,6 @@ class DVecScalarMultExpr< TDMatDVecMultExpr<MT,VT>, ST, false >
    static inline EnableIf_< UseVectorizedDefaultKernel<VT1,MT1,VT2,ST2> >
       selectLargeAssignKernel( VT1& y, const MT1& A, const VT2& x, ST2 scalar )
    {
-      typedef IntrinsicTrait<ElementType>  IT;
-
       const size_t M( A.rows()    );
       const size_t N( A.columns() );
 
@@ -3064,9 +3058,9 @@ class DVecScalarMultExpr< TDMatDVecMultExpr<MT,VT>, ST, false >
       const size_t iblock( 32768UL / sizeof( ElementType ) );
       const size_t jblock( ( N < iblock )?( 8UL ):( 4UL ) );
 
-      BLAZE_INTERNAL_ASSERT( ( iblock % IT::size ) == 0UL, "Invalid block size detected" );
+      BLAZE_INTERNAL_ASSERT( ( iblock % SIMDSIZE ) == 0UL, "Invalid block size detected" );
 
-      const IntrinsicType factor( set( scalar ) );
+      const SIMDType factor( set( scalar ) );
 
       reset( y );
 
@@ -3079,90 +3073,90 @@ class DVecScalarMultExpr< TDMatDVecMultExpr<MT,VT>, ST, false >
                                ?( min( itmp, ( IsStrictlyUpper<MT1>::value ? jend-1UL : jend ) ) )
                                :( itmp ) );
 
-            const size_t ipos( remainder ? ( iend & size_t(-IT::size) ) : iend );
-            BLAZE_INTERNAL_ASSERT( !remainder || ( iend - ( iend % IT::size ) ) == ipos, "Invalid end calculation" );
+            const size_t ipos( remainder ? ( iend & size_t(-SIMDSIZE) ) : iend );
+            BLAZE_INTERNAL_ASSERT( !remainder || ( iend - ( iend % SIMDSIZE ) ) == ipos, "Invalid end calculation" );
 
             size_t i( ( IsLower<MT1>::value )
-                      ?( max( ii, ( IsStrictlyLower<MT1>::value ? jj+1UL : jj ) & size_t(-IT::size) ) )
+                      ?( max( ii, ( IsStrictlyLower<MT1>::value ? jj+1UL : jj ) & size_t(-SIMDSIZE) ) )
                       :( ii ) );
 
-            for( ; (i+IT::size*7UL) < ipos; i+=IT::size*8UL )
+            for( ; (i+SIMDSIZE*7UL) < ipos; i+=SIMDSIZE*8UL )
             {
-               IntrinsicType xmm1, xmm2, xmm3, xmm4, xmm5, xmm6, xmm7, xmm8;
+               SIMDType xmm1, xmm2, xmm3, xmm4, xmm5, xmm6, xmm7, xmm8;
 
                for( size_t j=jj; j<jend; ++j ) {
-                  const IntrinsicType x1( set( x[j] ) );
+                  const SIMDType x1( set( x[j] ) );
                   xmm1 = xmm1 + A.load(i             ,j) * x1;
-                  xmm2 = xmm2 + A.load(i+IT::size    ,j) * x1;
-                  xmm3 = xmm3 + A.load(i+IT::size*2UL,j) * x1;
-                  xmm4 = xmm4 + A.load(i+IT::size*3UL,j) * x1;
-                  xmm5 = xmm5 + A.load(i+IT::size*4UL,j) * x1;
-                  xmm6 = xmm6 + A.load(i+IT::size*5UL,j) * x1;
-                  xmm7 = xmm7 + A.load(i+IT::size*6UL,j) * x1;
-                  xmm8 = xmm8 + A.load(i+IT::size*7UL,j) * x1;
+                  xmm2 = xmm2 + A.load(i+SIMDSIZE    ,j) * x1;
+                  xmm3 = xmm3 + A.load(i+SIMDSIZE*2UL,j) * x1;
+                  xmm4 = xmm4 + A.load(i+SIMDSIZE*3UL,j) * x1;
+                  xmm5 = xmm5 + A.load(i+SIMDSIZE*4UL,j) * x1;
+                  xmm6 = xmm6 + A.load(i+SIMDSIZE*5UL,j) * x1;
+                  xmm7 = xmm7 + A.load(i+SIMDSIZE*6UL,j) * x1;
+                  xmm8 = xmm8 + A.load(i+SIMDSIZE*7UL,j) * x1;
                }
 
                y.store( i             , y.load(i             ) + xmm1*factor );
-               y.store( i+IT::size    , y.load(i+IT::size    ) + xmm2*factor );
-               y.store( i+IT::size*2UL, y.load(i+IT::size*2UL) + xmm3*factor );
-               y.store( i+IT::size*3UL, y.load(i+IT::size*3UL) + xmm4*factor );
-               y.store( i+IT::size*4UL, y.load(i+IT::size*4UL) + xmm5*factor );
-               y.store( i+IT::size*5UL, y.load(i+IT::size*5UL) + xmm6*factor );
-               y.store( i+IT::size*6UL, y.load(i+IT::size*6UL) + xmm7*factor );
-               y.store( i+IT::size*7UL, y.load(i+IT::size*7UL) + xmm8*factor );
+               y.store( i+SIMDSIZE    , y.load(i+SIMDSIZE    ) + xmm2*factor );
+               y.store( i+SIMDSIZE*2UL, y.load(i+SIMDSIZE*2UL) + xmm3*factor );
+               y.store( i+SIMDSIZE*3UL, y.load(i+SIMDSIZE*3UL) + xmm4*factor );
+               y.store( i+SIMDSIZE*4UL, y.load(i+SIMDSIZE*4UL) + xmm5*factor );
+               y.store( i+SIMDSIZE*5UL, y.load(i+SIMDSIZE*5UL) + xmm6*factor );
+               y.store( i+SIMDSIZE*6UL, y.load(i+SIMDSIZE*6UL) + xmm7*factor );
+               y.store( i+SIMDSIZE*7UL, y.load(i+SIMDSIZE*7UL) + xmm8*factor );
             }
 
-            for( ; (i+IT::size*3UL) < ipos; i+=IT::size*4UL )
+            for( ; (i+SIMDSIZE*3UL) < ipos; i+=SIMDSIZE*4UL )
             {
-               IntrinsicType xmm1, xmm2, xmm3, xmm4;
+               SIMDType xmm1, xmm2, xmm3, xmm4;
 
                for( size_t j=jj; j<jend; ++j ) {
-                  const IntrinsicType x1( set( x[j] ) );
+                  const SIMDType x1( set( x[j] ) );
                   xmm1 = xmm1 + A.load(i             ,j) * x1;
-                  xmm2 = xmm2 + A.load(i+IT::size    ,j) * x1;
-                  xmm3 = xmm3 + A.load(i+IT::size*2UL,j) * x1;
-                  xmm4 = xmm4 + A.load(i+IT::size*3UL,j) * x1;
+                  xmm2 = xmm2 + A.load(i+SIMDSIZE    ,j) * x1;
+                  xmm3 = xmm3 + A.load(i+SIMDSIZE*2UL,j) * x1;
+                  xmm4 = xmm4 + A.load(i+SIMDSIZE*3UL,j) * x1;
                }
 
                y.store( i             , y.load(i             ) + xmm1*factor );
-               y.store( i+IT::size    , y.load(i+IT::size    ) + xmm2*factor );
-               y.store( i+IT::size*2UL, y.load(i+IT::size*2UL) + xmm3*factor );
-               y.store( i+IT::size*3UL, y.load(i+IT::size*3UL) + xmm4*factor );
+               y.store( i+SIMDSIZE    , y.load(i+SIMDSIZE    ) + xmm2*factor );
+               y.store( i+SIMDSIZE*2UL, y.load(i+SIMDSIZE*2UL) + xmm3*factor );
+               y.store( i+SIMDSIZE*3UL, y.load(i+SIMDSIZE*3UL) + xmm4*factor );
             }
 
-            for( ; (i+IT::size*2UL) < ipos; i+=IT::size*3UL )
+            for( ; (i+SIMDSIZE*2UL) < ipos; i+=SIMDSIZE*3UL )
             {
-               IntrinsicType xmm1, xmm2, xmm3;
+               SIMDType xmm1, xmm2, xmm3;
 
                for( size_t j=jj; j<jend; ++j ) {
-                  const IntrinsicType x1( set( x[j] ) );
+                  const SIMDType x1( set( x[j] ) );
                   xmm1 = xmm1 + A.load(i             ,j) * x1;
-                  xmm2 = xmm2 + A.load(i+IT::size    ,j) * x1;
-                  xmm3 = xmm3 + A.load(i+IT::size*2UL,j) * x1;
+                  xmm2 = xmm2 + A.load(i+SIMDSIZE    ,j) * x1;
+                  xmm3 = xmm3 + A.load(i+SIMDSIZE*2UL,j) * x1;
                }
 
                y.store( i             , y.load(i             ) + xmm1*factor );
-               y.store( i+IT::size    , y.load(i+IT::size    ) + xmm2*factor );
-               y.store( i+IT::size*2UL, y.load(i+IT::size*2UL) + xmm3*factor );
+               y.store( i+SIMDSIZE    , y.load(i+SIMDSIZE    ) + xmm2*factor );
+               y.store( i+SIMDSIZE*2UL, y.load(i+SIMDSIZE*2UL) + xmm3*factor );
             }
 
-            for( ; (i+IT::size) < ipos; i+=IT::size*2UL )
+            for( ; (i+SIMDSIZE) < ipos; i+=SIMDSIZE*2UL )
             {
-               IntrinsicType xmm1, xmm2;
+               SIMDType xmm1, xmm2;
 
                for( size_t j=jj; j<jend; ++j ) {
-                  const IntrinsicType x1( set( x[j] ) );
+                  const SIMDType x1( set( x[j] ) );
                   xmm1 = xmm1 + A.load(i         ,j) * x1;
-                  xmm2 = xmm2 + A.load(i+IT::size,j) * x1;
+                  xmm2 = xmm2 + A.load(i+SIMDSIZE,j) * x1;
                }
 
                y.store( i         , y.load(i         ) + xmm1*factor );
-               y.store( i+IT::size, y.load(i+IT::size) + xmm2*factor );
+               y.store( i+SIMDSIZE, y.load(i+SIMDSIZE) + xmm2*factor );
             }
 
-            for( ; i<ipos; i+=IT::size )
+            for( ; i<ipos; i+=SIMDSIZE )
             {
-               IntrinsicType xmm1;
+               SIMDType xmm1;
 
                for( size_t j=jj; j<jend; ++j ) {
                   xmm1 = xmm1 + A.load(i,j) * set( x[j] );
@@ -3409,137 +3403,135 @@ class DVecScalarMultExpr< TDMatDVecMultExpr<MT,VT>, ST, false >
    static inline EnableIf_< UseVectorizedDefaultKernel<VT1,MT1,VT2,ST2> >
       selectSmallAddAssignKernel( VT1& y, const MT1& A, const VT2& x, ST2 scalar )
    {
-      typedef IntrinsicTrait<ElementType>  IT;
-
       const size_t M( A.rows()    );
       const size_t N( A.columns() );
 
       const bool remainder( !IsPadded<MT1>::value || !IsPadded<VT1>::value );
 
-      const size_t ipos( remainder ? ( M & size_t(-IT::size) ) : M );
-      BLAZE_INTERNAL_ASSERT( !remainder || ( M - ( M % IT::size ) ) == ipos, "Invalid end calculation" );
+      const size_t ipos( remainder ? ( M & size_t(-SIMDSIZE) ) : M );
+      BLAZE_INTERNAL_ASSERT( !remainder || ( M - ( M % SIMDSIZE ) ) == ipos, "Invalid end calculation" );
 
-      const IntrinsicType factor( set( scalar ) );
+      const SIMDType factor( set( scalar ) );
 
       size_t i( 0UL );
 
-      for( ; (i+IT::size*7UL) < ipos; i+=IT::size*8UL )
+      for( ; (i+SIMDSIZE*7UL) < ipos; i+=SIMDSIZE*8UL )
       {
          const size_t jbegin( ( IsUpper<MT1>::value )
                               ?( IsStrictlyUpper<MT1>::value ? i+1UL : i )
                               :( 0UL ) );
          const size_t jend( ( IsLower<MT1>::value )
-                            ?( min( i+IT::size*8UL, N ) - ( IsStrictlyLower<MT1>::value ? 1UL : 0UL ) )
+                            ?( min( i+SIMDSIZE*8UL, N ) - ( IsStrictlyLower<MT1>::value ? 1UL : 0UL ) )
                             :( N ) );
          BLAZE_INTERNAL_ASSERT( jbegin <= jend, "Invalid loop indices detected" );
 
-         IntrinsicType xmm1, xmm2, xmm3, xmm4, xmm5, xmm6, xmm7, xmm8;
+         SIMDType xmm1, xmm2, xmm3, xmm4, xmm5, xmm6, xmm7, xmm8;
 
          for( size_t j=jbegin; j<jend; ++j ) {
-            const IntrinsicType x1( set( x[j] ) );
+            const SIMDType x1( set( x[j] ) );
             xmm1 = xmm1 + A.load(i             ,j) * x1;
-            xmm2 = xmm2 + A.load(i+IT::size    ,j) * x1;
-            xmm3 = xmm3 + A.load(i+IT::size*2UL,j) * x1;
-            xmm4 = xmm4 + A.load(i+IT::size*3UL,j) * x1;
-            xmm5 = xmm5 + A.load(i+IT::size*4UL,j) * x1;
-            xmm6 = xmm6 + A.load(i+IT::size*5UL,j) * x1;
-            xmm7 = xmm7 + A.load(i+IT::size*6UL,j) * x1;
-            xmm8 = xmm8 + A.load(i+IT::size*7UL,j) * x1;
+            xmm2 = xmm2 + A.load(i+SIMDSIZE    ,j) * x1;
+            xmm3 = xmm3 + A.load(i+SIMDSIZE*2UL,j) * x1;
+            xmm4 = xmm4 + A.load(i+SIMDSIZE*3UL,j) * x1;
+            xmm5 = xmm5 + A.load(i+SIMDSIZE*4UL,j) * x1;
+            xmm6 = xmm6 + A.load(i+SIMDSIZE*5UL,j) * x1;
+            xmm7 = xmm7 + A.load(i+SIMDSIZE*6UL,j) * x1;
+            xmm8 = xmm8 + A.load(i+SIMDSIZE*7UL,j) * x1;
          }
 
          y.store( i             , y.load(i             ) + xmm1*factor );
-         y.store( i+IT::size    , y.load(i+IT::size    ) + xmm2*factor );
-         y.store( i+IT::size*2UL, y.load(i+IT::size*2UL) + xmm3*factor );
-         y.store( i+IT::size*3UL, y.load(i+IT::size*3UL) + xmm4*factor );
-         y.store( i+IT::size*4UL, y.load(i+IT::size*4UL) + xmm5*factor );
-         y.store( i+IT::size*5UL, y.load(i+IT::size*5UL) + xmm6*factor );
-         y.store( i+IT::size*6UL, y.load(i+IT::size*6UL) + xmm7*factor );
-         y.store( i+IT::size*7UL, y.load(i+IT::size*7UL) + xmm8*factor );
+         y.store( i+SIMDSIZE    , y.load(i+SIMDSIZE    ) + xmm2*factor );
+         y.store( i+SIMDSIZE*2UL, y.load(i+SIMDSIZE*2UL) + xmm3*factor );
+         y.store( i+SIMDSIZE*3UL, y.load(i+SIMDSIZE*3UL) + xmm4*factor );
+         y.store( i+SIMDSIZE*4UL, y.load(i+SIMDSIZE*4UL) + xmm5*factor );
+         y.store( i+SIMDSIZE*5UL, y.load(i+SIMDSIZE*5UL) + xmm6*factor );
+         y.store( i+SIMDSIZE*6UL, y.load(i+SIMDSIZE*6UL) + xmm7*factor );
+         y.store( i+SIMDSIZE*7UL, y.load(i+SIMDSIZE*7UL) + xmm8*factor );
       }
 
-      for( ; (i+IT::size*3UL) < ipos; i+=IT::size*4UL )
+      for( ; (i+SIMDSIZE*3UL) < ipos; i+=SIMDSIZE*4UL )
       {
          const size_t jbegin( ( IsUpper<MT1>::value )
                               ?( IsStrictlyUpper<MT1>::value ? i+1UL : i )
                               :( 0UL ) );
          const size_t jend( ( IsLower<MT1>::value )
-                            ?( min( i+IT::size*4UL, N ) - ( IsStrictlyLower<MT1>::value ? 1UL : 0UL ) )
+                            ?( min( i+SIMDSIZE*4UL, N ) - ( IsStrictlyLower<MT1>::value ? 1UL : 0UL ) )
                             :( N ) );
          BLAZE_INTERNAL_ASSERT( jbegin <= jend, "Invalid loop indices detected" );
 
-         IntrinsicType xmm1, xmm2, xmm3, xmm4;
+         SIMDType xmm1, xmm2, xmm3, xmm4;
 
          for( size_t j=jbegin; j<jend; ++j ) {
-            const IntrinsicType x1( set( x[j] ) );
+            const SIMDType x1( set( x[j] ) );
             xmm1 = xmm1 + A.load(i             ,j) * x1;
-            xmm2 = xmm2 + A.load(i+IT::size    ,j) * x1;
-            xmm3 = xmm3 + A.load(i+IT::size*2UL,j) * x1;
-            xmm4 = xmm4 + A.load(i+IT::size*3UL,j) * x1;
+            xmm2 = xmm2 + A.load(i+SIMDSIZE    ,j) * x1;
+            xmm3 = xmm3 + A.load(i+SIMDSIZE*2UL,j) * x1;
+            xmm4 = xmm4 + A.load(i+SIMDSIZE*3UL,j) * x1;
          }
 
          y.store( i             , y.load(i             ) + xmm1*factor );
-         y.store( i+IT::size    , y.load(i+IT::size    ) + xmm2*factor );
-         y.store( i+IT::size*2UL, y.load(i+IT::size*2UL) + xmm3*factor );
-         y.store( i+IT::size*3UL, y.load(i+IT::size*3UL) + xmm4*factor );
+         y.store( i+SIMDSIZE    , y.load(i+SIMDSIZE    ) + xmm2*factor );
+         y.store( i+SIMDSIZE*2UL, y.load(i+SIMDSIZE*2UL) + xmm3*factor );
+         y.store( i+SIMDSIZE*3UL, y.load(i+SIMDSIZE*3UL) + xmm4*factor );
       }
 
-      for( ; (i+IT::size*2UL) < ipos; i+=IT::size*3UL )
+      for( ; (i+SIMDSIZE*2UL) < ipos; i+=SIMDSIZE*3UL )
       {
          const size_t jbegin( ( IsUpper<MT1>::value )
                               ?( IsStrictlyUpper<MT1>::value ? i+1UL : i )
                               :( 0UL ) );
          const size_t jend( ( IsLower<MT1>::value )
-                            ?( min( i+IT::size*3UL, N ) - ( IsStrictlyLower<MT1>::value ? 1UL : 0UL ) )
+                            ?( min( i+SIMDSIZE*3UL, N ) - ( IsStrictlyLower<MT1>::value ? 1UL : 0UL ) )
                             :( N ) );
          BLAZE_INTERNAL_ASSERT( jbegin <= jend, "Invalid loop indices detected" );
 
-         IntrinsicType xmm1, xmm2, xmm3;
+         SIMDType xmm1, xmm2, xmm3;
 
          for( size_t j=jbegin; j<jend; ++j ) {
-            const IntrinsicType x1( set( x[j] ) );
+            const SIMDType x1( set( x[j] ) );
             xmm1 = xmm1 + A.load(i             ,j) * x1;
-            xmm2 = xmm2 + A.load(i+IT::size    ,j) * x1;
-            xmm3 = xmm3 + A.load(i+IT::size*2UL,j) * x1;
+            xmm2 = xmm2 + A.load(i+SIMDSIZE    ,j) * x1;
+            xmm3 = xmm3 + A.load(i+SIMDSIZE*2UL,j) * x1;
          }
 
          y.store( i             , y.load(i             ) + xmm1*factor );
-         y.store( i+IT::size    , y.load(i+IT::size    ) + xmm2*factor );
-         y.store( i+IT::size*2UL, y.load(i+IT::size*2UL) + xmm3*factor );
+         y.store( i+SIMDSIZE    , y.load(i+SIMDSIZE    ) + xmm2*factor );
+         y.store( i+SIMDSIZE*2UL, y.load(i+SIMDSIZE*2UL) + xmm3*factor );
       }
 
-      for( ; (i+IT::size) < ipos; i+=IT::size*2UL )
+      for( ; (i+SIMDSIZE) < ipos; i+=SIMDSIZE*2UL )
       {
          const size_t jbegin( ( IsUpper<MT1>::value )
                               ?( IsStrictlyUpper<MT1>::value ? i+1UL : i )
                               :( 0UL ) );
          const size_t jend( ( IsLower<MT1>::value )
-                            ?( min( i+IT::size*2UL, N ) - ( IsStrictlyLower<MT1>::value ? 1UL : 0UL ) )
+                            ?( min( i+SIMDSIZE*2UL, N ) - ( IsStrictlyLower<MT1>::value ? 1UL : 0UL ) )
                             :( N ) );
          BLAZE_INTERNAL_ASSERT( jbegin <= jend, "Invalid loop indices detected" );
 
-         IntrinsicType xmm1, xmm2;
+         SIMDType xmm1, xmm2;
 
          for( size_t j=jbegin; j<jend; ++j ) {
-            const IntrinsicType x1( set( x[j] ) );
+            const SIMDType x1( set( x[j] ) );
             xmm1 = xmm1 + A.load(i         ,j) * x1;
-            xmm2 = xmm2 + A.load(i+IT::size,j) * x1;
+            xmm2 = xmm2 + A.load(i+SIMDSIZE,j) * x1;
          }
 
          y.store( i         , y.load(i         ) + xmm1*factor );
-         y.store( i+IT::size, y.load(i+IT::size) + xmm2*factor );
+         y.store( i+SIMDSIZE, y.load(i+SIMDSIZE) + xmm2*factor );
       }
 
-      for( ; i<ipos; i+=IT::size )
+      for( ; i<ipos; i+=SIMDSIZE )
       {
          const size_t jbegin( ( IsUpper<MT1>::value )
                               ?( IsStrictlyUpper<MT1>::value ? i+1UL : i )
                               :( 0UL ) );
          const size_t jend( ( IsLower<MT1>::value )
-                            ?( min( i+IT::size, N ) - ( IsStrictlyLower<MT1>::value ? 1UL : 0UL ) )
+                            ?( min( i+SIMDSIZE, N ) - ( IsStrictlyLower<MT1>::value ? 1UL : 0UL ) )
                             :( N ) );
          BLAZE_INTERNAL_ASSERT( jbegin <= jend, "Invalid loop indices detected" );
 
-         IntrinsicType xmm1;
+         SIMDType xmm1;
 
          for( size_t j=jbegin; j<jend; ++j ) {
             xmm1 = xmm1 + A.load(i,j) * set( x[j] );
@@ -3616,8 +3608,6 @@ class DVecScalarMultExpr< TDMatDVecMultExpr<MT,VT>, ST, false >
    static inline EnableIf_< UseVectorizedDefaultKernel<VT1,MT1,VT2,ST2> >
       selectLargeAddAssignKernel( VT1& y, const MT1& A, const VT2& x, ST2 scalar )
    {
-      typedef IntrinsicTrait<ElementType>  IT;
-
       const size_t M( A.rows()    );
       const size_t N( A.columns() );
 
@@ -3626,9 +3616,9 @@ class DVecScalarMultExpr< TDMatDVecMultExpr<MT,VT>, ST, false >
       const size_t iblock( 32768UL / sizeof( ElementType ) );
       const size_t jblock( ( N < iblock )?( 8UL ):( 4UL ) );
 
-      BLAZE_INTERNAL_ASSERT( ( iblock % IT::size ) == 0UL, "Invalid block size detected" );
+      BLAZE_INTERNAL_ASSERT( ( iblock % SIMDSIZE ) == 0UL, "Invalid block size detected" );
 
-      const IntrinsicType factor( set( scalar ) );
+      const SIMDType factor( set( scalar ) );
 
       for( size_t ii=0U; ii<M; ii+=iblock ) {
          for( size_t jj=0UL; jj<N; jj+=jblock )
@@ -3639,90 +3629,90 @@ class DVecScalarMultExpr< TDMatDVecMultExpr<MT,VT>, ST, false >
                                ?( min( itmp, ( IsStrictlyUpper<MT1>::value ? jend-1UL : jend ) ) )
                                :( itmp ) );
 
-            const size_t ipos( remainder ? ( iend & size_t(-IT::size) ) : iend );
-            BLAZE_INTERNAL_ASSERT( !remainder || ( iend - ( iend % IT::size ) ) == ipos, "Invalid end calculation" );
+            const size_t ipos( remainder ? ( iend & size_t(-SIMDSIZE) ) : iend );
+            BLAZE_INTERNAL_ASSERT( !remainder || ( iend - ( iend % SIMDSIZE ) ) == ipos, "Invalid end calculation" );
 
             size_t i( ( IsLower<MT1>::value )
-                      ?( max( ii, ( IsStrictlyLower<MT1>::value ? jj+1UL : jj ) & size_t(-IT::size) ) )
+                      ?( max( ii, ( IsStrictlyLower<MT1>::value ? jj+1UL : jj ) & size_t(-SIMDSIZE) ) )
                       :( ii ) );
 
-            for( ; (i+IT::size*7UL) < ipos; i+=IT::size*8UL )
+            for( ; (i+SIMDSIZE*7UL) < ipos; i+=SIMDSIZE*8UL )
             {
-               IntrinsicType xmm1, xmm2, xmm3, xmm4, xmm5, xmm6, xmm7, xmm8;
+               SIMDType xmm1, xmm2, xmm3, xmm4, xmm5, xmm6, xmm7, xmm8;
 
                for( size_t j=jj; j<jend; ++j ) {
-                  const IntrinsicType x1( set( x[j] ) );
+                  const SIMDType x1( set( x[j] ) );
                   xmm1 = xmm1 + A.load(i             ,j) * x1;
-                  xmm2 = xmm2 + A.load(i+IT::size    ,j) * x1;
-                  xmm3 = xmm3 + A.load(i+IT::size*2UL,j) * x1;
-                  xmm4 = xmm4 + A.load(i+IT::size*3UL,j) * x1;
-                  xmm5 = xmm5 + A.load(i+IT::size*4UL,j) * x1;
-                  xmm6 = xmm6 + A.load(i+IT::size*5UL,j) * x1;
-                  xmm7 = xmm7 + A.load(i+IT::size*6UL,j) * x1;
-                  xmm8 = xmm8 + A.load(i+IT::size*7UL,j) * x1;
+                  xmm2 = xmm2 + A.load(i+SIMDSIZE    ,j) * x1;
+                  xmm3 = xmm3 + A.load(i+SIMDSIZE*2UL,j) * x1;
+                  xmm4 = xmm4 + A.load(i+SIMDSIZE*3UL,j) * x1;
+                  xmm5 = xmm5 + A.load(i+SIMDSIZE*4UL,j) * x1;
+                  xmm6 = xmm6 + A.load(i+SIMDSIZE*5UL,j) * x1;
+                  xmm7 = xmm7 + A.load(i+SIMDSIZE*6UL,j) * x1;
+                  xmm8 = xmm8 + A.load(i+SIMDSIZE*7UL,j) * x1;
                }
 
                y.store( i             , y.load(i             ) + xmm1*factor );
-               y.store( i+IT::size    , y.load(i+IT::size    ) + xmm2*factor );
-               y.store( i+IT::size*2UL, y.load(i+IT::size*2UL) + xmm3*factor );
-               y.store( i+IT::size*3UL, y.load(i+IT::size*3UL) + xmm4*factor );
-               y.store( i+IT::size*4UL, y.load(i+IT::size*4UL) + xmm5*factor );
-               y.store( i+IT::size*5UL, y.load(i+IT::size*5UL) + xmm6*factor );
-               y.store( i+IT::size*6UL, y.load(i+IT::size*6UL) + xmm7*factor );
-               y.store( i+IT::size*7UL, y.load(i+IT::size*7UL) + xmm8*factor );
+               y.store( i+SIMDSIZE    , y.load(i+SIMDSIZE    ) + xmm2*factor );
+               y.store( i+SIMDSIZE*2UL, y.load(i+SIMDSIZE*2UL) + xmm3*factor );
+               y.store( i+SIMDSIZE*3UL, y.load(i+SIMDSIZE*3UL) + xmm4*factor );
+               y.store( i+SIMDSIZE*4UL, y.load(i+SIMDSIZE*4UL) + xmm5*factor );
+               y.store( i+SIMDSIZE*5UL, y.load(i+SIMDSIZE*5UL) + xmm6*factor );
+               y.store( i+SIMDSIZE*6UL, y.load(i+SIMDSIZE*6UL) + xmm7*factor );
+               y.store( i+SIMDSIZE*7UL, y.load(i+SIMDSIZE*7UL) + xmm8*factor );
             }
 
-            for( ; (i+IT::size*3UL) < ipos; i+=IT::size*4UL )
+            for( ; (i+SIMDSIZE*3UL) < ipos; i+=SIMDSIZE*4UL )
             {
-               IntrinsicType xmm1, xmm2, xmm3, xmm4;
+               SIMDType xmm1, xmm2, xmm3, xmm4;
 
                for( size_t j=jj; j<jend; ++j ) {
-                  const IntrinsicType x1( set( x[j] ) );
+                  const SIMDType x1( set( x[j] ) );
                   xmm1 = xmm1 + A.load(i             ,j) * x1;
-                  xmm2 = xmm2 + A.load(i+IT::size    ,j) * x1;
-                  xmm3 = xmm3 + A.load(i+IT::size*2UL,j) * x1;
-                  xmm4 = xmm4 + A.load(i+IT::size*3UL,j) * x1;
+                  xmm2 = xmm2 + A.load(i+SIMDSIZE    ,j) * x1;
+                  xmm3 = xmm3 + A.load(i+SIMDSIZE*2UL,j) * x1;
+                  xmm4 = xmm4 + A.load(i+SIMDSIZE*3UL,j) * x1;
                }
 
                y.store( i             , y.load(i             ) + xmm1*factor );
-               y.store( i+IT::size    , y.load(i+IT::size    ) + xmm2*factor );
-               y.store( i+IT::size*2UL, y.load(i+IT::size*2UL) + xmm3*factor );
-               y.store( i+IT::size*3UL, y.load(i+IT::size*3UL) + xmm4*factor );
+               y.store( i+SIMDSIZE    , y.load(i+SIMDSIZE    ) + xmm2*factor );
+               y.store( i+SIMDSIZE*2UL, y.load(i+SIMDSIZE*2UL) + xmm3*factor );
+               y.store( i+SIMDSIZE*3UL, y.load(i+SIMDSIZE*3UL) + xmm4*factor );
             }
 
-            for( ; (i+IT::size*2UL) < ipos; i+=IT::size*3UL )
+            for( ; (i+SIMDSIZE*2UL) < ipos; i+=SIMDSIZE*3UL )
             {
-               IntrinsicType xmm1, xmm2, xmm3;
+               SIMDType xmm1, xmm2, xmm3;
 
                for( size_t j=jj; j<jend; ++j ) {
-                  const IntrinsicType x1( set( x[j] ) );
+                  const SIMDType x1( set( x[j] ) );
                   xmm1 = xmm1 + A.load(i             ,j) * x1;
-                  xmm2 = xmm2 + A.load(i+IT::size    ,j) * x1;
-                  xmm3 = xmm3 + A.load(i+IT::size*2UL,j) * x1;
+                  xmm2 = xmm2 + A.load(i+SIMDSIZE    ,j) * x1;
+                  xmm3 = xmm3 + A.load(i+SIMDSIZE*2UL,j) * x1;
                }
 
                y.store( i             , y.load(i             ) + xmm1*factor );
-               y.store( i+IT::size    , y.load(i+IT::size    ) + xmm2*factor );
-               y.store( i+IT::size*2UL, y.load(i+IT::size*2UL) + xmm3*factor );
+               y.store( i+SIMDSIZE    , y.load(i+SIMDSIZE    ) + xmm2*factor );
+               y.store( i+SIMDSIZE*2UL, y.load(i+SIMDSIZE*2UL) + xmm3*factor );
             }
 
-            for( ; (i+IT::size) < ipos; i+=IT::size*2UL )
+            for( ; (i+SIMDSIZE) < ipos; i+=SIMDSIZE*2UL )
             {
-               IntrinsicType xmm1, xmm2;
+               SIMDType xmm1, xmm2;
 
                for( size_t j=jj; j<jend; ++j ) {
-                  const IntrinsicType x1( set( x[j] ) );
+                  const SIMDType x1( set( x[j] ) );
                   xmm1 = xmm1 + A.load(i         ,j) * x1;
-                  xmm2 = xmm2 + A.load(i+IT::size,j) * x1;
+                  xmm2 = xmm2 + A.load(i+SIMDSIZE,j) * x1;
                }
 
                y.store( i         , y.load(i         ) + xmm1*factor );
-               y.store( i+IT::size, y.load(i+IT::size) + xmm2*factor );
+               y.store( i+SIMDSIZE, y.load(i+SIMDSIZE) + xmm2*factor );
             }
 
-            for( ; i<ipos; i+=IT::size )
+            for( ; i<ipos; i+=SIMDSIZE )
             {
-               IntrinsicType xmm1;
+               SIMDType xmm1;
 
                for( size_t j=jj; j<jend; ++j ) {
                   xmm1 = xmm1 + A.load(i,j) * set( x[j] );
@@ -3946,137 +3936,135 @@ class DVecScalarMultExpr< TDMatDVecMultExpr<MT,VT>, ST, false >
    static inline EnableIf_< UseVectorizedDefaultKernel<VT1,MT1,VT2,ST2> >
       selectSmallSubAssignKernel( VT1& y, const MT1& A, const VT2& x, ST2 scalar )
    {
-      typedef IntrinsicTrait<ElementType>  IT;
-
       const size_t M( A.rows()    );
       const size_t N( A.columns() );
 
       const bool remainder( !IsPadded<MT1>::value || !IsPadded<VT1>::value );
 
-      const size_t ipos( remainder ? ( M & size_t(-IT::size) ) : M );
-      BLAZE_INTERNAL_ASSERT( !remainder || ( M - ( M % IT::size ) ) == ipos, "Invalid end calculation" );
+      const size_t ipos( remainder ? ( M & size_t(-SIMDSIZE) ) : M );
+      BLAZE_INTERNAL_ASSERT( !remainder || ( M - ( M % SIMDSIZE ) ) == ipos, "Invalid end calculation" );
 
-      const IntrinsicType factor( set( scalar ) );
+      const SIMDType factor( set( scalar ) );
 
       size_t i( 0UL );
 
-      for( ; (i+IT::size*7UL) < ipos; i+=IT::size*8UL )
+      for( ; (i+SIMDSIZE*7UL) < ipos; i+=SIMDSIZE*8UL )
       {
          const size_t jbegin( ( IsUpper<MT1>::value )
                               ?( IsStrictlyUpper<MT1>::value ? i+1UL : i )
                               :( 0UL ) );
          const size_t jend( ( IsLower<MT1>::value )
-                            ?( min( i+IT::size*8UL, N ) - ( IsStrictlyLower<MT1>::value ? 1UL : 0UL ) )
+                            ?( min( i+SIMDSIZE*8UL, N ) - ( IsStrictlyLower<MT1>::value ? 1UL : 0UL ) )
                             :( N ) );
          BLAZE_INTERNAL_ASSERT( jbegin <= jend, "Invalid loop indices detected" );
 
-         IntrinsicType xmm1, xmm2, xmm3, xmm4, xmm5, xmm6, xmm7, xmm8;
+         SIMDType xmm1, xmm2, xmm3, xmm4, xmm5, xmm6, xmm7, xmm8;
 
          for( size_t j=jbegin; j<jend; ++j ) {
-            const IntrinsicType x1( set( x[j] ) );
+            const SIMDType x1( set( x[j] ) );
             xmm1 = xmm1 + A.load(i             ,j) * x1;
-            xmm2 = xmm2 + A.load(i+IT::size    ,j) * x1;
-            xmm3 = xmm3 + A.load(i+IT::size*2UL,j) * x1;
-            xmm4 = xmm4 + A.load(i+IT::size*3UL,j) * x1;
-            xmm5 = xmm5 + A.load(i+IT::size*4UL,j) * x1;
-            xmm6 = xmm6 + A.load(i+IT::size*5UL,j) * x1;
-            xmm7 = xmm7 + A.load(i+IT::size*6UL,j) * x1;
-            xmm8 = xmm8 + A.load(i+IT::size*7UL,j) * x1;
+            xmm2 = xmm2 + A.load(i+SIMDSIZE    ,j) * x1;
+            xmm3 = xmm3 + A.load(i+SIMDSIZE*2UL,j) * x1;
+            xmm4 = xmm4 + A.load(i+SIMDSIZE*3UL,j) * x1;
+            xmm5 = xmm5 + A.load(i+SIMDSIZE*4UL,j) * x1;
+            xmm6 = xmm6 + A.load(i+SIMDSIZE*5UL,j) * x1;
+            xmm7 = xmm7 + A.load(i+SIMDSIZE*6UL,j) * x1;
+            xmm8 = xmm8 + A.load(i+SIMDSIZE*7UL,j) * x1;
          }
 
          y.store( i             , y.load(i             ) - xmm1*factor );
-         y.store( i+IT::size    , y.load(i+IT::size    ) - xmm2*factor );
-         y.store( i+IT::size*2UL, y.load(i+IT::size*2UL) - xmm3*factor );
-         y.store( i+IT::size*3UL, y.load(i+IT::size*3UL) - xmm4*factor );
-         y.store( i+IT::size*4UL, y.load(i+IT::size*4UL) - xmm5*factor );
-         y.store( i+IT::size*5UL, y.load(i+IT::size*5UL) - xmm6*factor );
-         y.store( i+IT::size*6UL, y.load(i+IT::size*6UL) - xmm7*factor );
-         y.store( i+IT::size*7UL, y.load(i+IT::size*7UL) - xmm8*factor );
+         y.store( i+SIMDSIZE    , y.load(i+SIMDSIZE    ) - xmm2*factor );
+         y.store( i+SIMDSIZE*2UL, y.load(i+SIMDSIZE*2UL) - xmm3*factor );
+         y.store( i+SIMDSIZE*3UL, y.load(i+SIMDSIZE*3UL) - xmm4*factor );
+         y.store( i+SIMDSIZE*4UL, y.load(i+SIMDSIZE*4UL) - xmm5*factor );
+         y.store( i+SIMDSIZE*5UL, y.load(i+SIMDSIZE*5UL) - xmm6*factor );
+         y.store( i+SIMDSIZE*6UL, y.load(i+SIMDSIZE*6UL) - xmm7*factor );
+         y.store( i+SIMDSIZE*7UL, y.load(i+SIMDSIZE*7UL) - xmm8*factor );
       }
 
-      for( ; (i+IT::size*3UL) < ipos; i+=IT::size*4UL )
+      for( ; (i+SIMDSIZE*3UL) < ipos; i+=SIMDSIZE*4UL )
       {
          const size_t jbegin( ( IsUpper<MT1>::value )
                               ?( IsStrictlyUpper<MT1>::value ? i+1UL : i )
                               :( 0UL ) );
          const size_t jend( ( IsLower<MT1>::value )
-                            ?( min( i+IT::size*4UL, N ) - ( IsStrictlyLower<MT1>::value ? 1UL : 0UL ) )
+                            ?( min( i+SIMDSIZE*4UL, N ) - ( IsStrictlyLower<MT1>::value ? 1UL : 0UL ) )
                             :( N ) );
          BLAZE_INTERNAL_ASSERT( jbegin <= jend, "Invalid loop indices detected" );
 
-         IntrinsicType xmm1, xmm2, xmm3, xmm4;
+         SIMDType xmm1, xmm2, xmm3, xmm4;
 
          for( size_t j=jbegin; j<jend; ++j ) {
-            const IntrinsicType x1( set( x[j] ) );
+            const SIMDType x1( set( x[j] ) );
             xmm1 = xmm1 + A.load(i             ,j) * x1;
-            xmm2 = xmm2 + A.load(i+IT::size    ,j) * x1;
-            xmm3 = xmm3 + A.load(i+IT::size*2UL,j) * x1;
-            xmm4 = xmm4 + A.load(i+IT::size*3UL,j) * x1;
+            xmm2 = xmm2 + A.load(i+SIMDSIZE    ,j) * x1;
+            xmm3 = xmm3 + A.load(i+SIMDSIZE*2UL,j) * x1;
+            xmm4 = xmm4 + A.load(i+SIMDSIZE*3UL,j) * x1;
          }
 
          y.store( i             , y.load(i             ) - xmm1*factor );
-         y.store( i+IT::size    , y.load(i+IT::size    ) - xmm2*factor );
-         y.store( i+IT::size*2UL, y.load(i+IT::size*2UL) - xmm3*factor );
-         y.store( i+IT::size*3UL, y.load(i+IT::size*3UL) - xmm4*factor );
+         y.store( i+SIMDSIZE    , y.load(i+SIMDSIZE    ) - xmm2*factor );
+         y.store( i+SIMDSIZE*2UL, y.load(i+SIMDSIZE*2UL) - xmm3*factor );
+         y.store( i+SIMDSIZE*3UL, y.load(i+SIMDSIZE*3UL) - xmm4*factor );
       }
 
-      for( ; (i+IT::size*2UL) < ipos; i+=IT::size*3UL )
+      for( ; (i+SIMDSIZE*2UL) < ipos; i+=SIMDSIZE*3UL )
       {
          const size_t jbegin( ( IsUpper<MT1>::value )
                               ?( IsStrictlyUpper<MT1>::value ? i+1UL : i )
                               :( 0UL ) );
          const size_t jend( ( IsLower<MT1>::value )
-                            ?( min( i+IT::size*3UL, N ) - ( IsStrictlyLower<MT1>::value ? 1UL : 0UL ) )
+                            ?( min( i+SIMDSIZE*3UL, N ) - ( IsStrictlyLower<MT1>::value ? 1UL : 0UL ) )
                             :( N ) );
          BLAZE_INTERNAL_ASSERT( jbegin <= jend, "Invalid loop indices detected" );
 
-         IntrinsicType xmm1, xmm2, xmm3;
+         SIMDType xmm1, xmm2, xmm3;
 
          for( size_t j=jbegin; j<jend; ++j ) {
-            const IntrinsicType x1( set( x[j] ) );
+            const SIMDType x1( set( x[j] ) );
             xmm1 = xmm1 + A.load(i             ,j) * x1;
-            xmm2 = xmm2 + A.load(i+IT::size    ,j) * x1;
-            xmm3 = xmm3 + A.load(i+IT::size*2UL,j) * x1;
+            xmm2 = xmm2 + A.load(i+SIMDSIZE    ,j) * x1;
+            xmm3 = xmm3 + A.load(i+SIMDSIZE*2UL,j) * x1;
          }
 
          y.store( i             , y.load(i             ) - xmm1*factor );
-         y.store( i+IT::size    , y.load(i+IT::size    ) - xmm2*factor );
-         y.store( i+IT::size*2UL, y.load(i+IT::size*2UL) - xmm3*factor );
+         y.store( i+SIMDSIZE    , y.load(i+SIMDSIZE    ) - xmm2*factor );
+         y.store( i+SIMDSIZE*2UL, y.load(i+SIMDSIZE*2UL) - xmm3*factor );
       }
 
-      for( ; (i+IT::size) < ipos; i+=IT::size*2UL )
+      for( ; (i+SIMDSIZE) < ipos; i+=SIMDSIZE*2UL )
       {
          const size_t jbegin( ( IsUpper<MT1>::value )
                               ?( IsStrictlyUpper<MT1>::value ? i+1UL : i )
                               :( 0UL ) );
          const size_t jend( ( IsLower<MT1>::value )
-                            ?( min( i+IT::size*2UL, N ) - ( IsStrictlyLower<MT1>::value ? 1UL : 0UL ) )
+                            ?( min( i+SIMDSIZE*2UL, N ) - ( IsStrictlyLower<MT1>::value ? 1UL : 0UL ) )
                             :( N ) );
          BLAZE_INTERNAL_ASSERT( jbegin <= jend, "Invalid loop indices detected" );
 
-         IntrinsicType xmm1, xmm2;
+         SIMDType xmm1, xmm2;
 
          for( size_t j=jbegin; j<jend; ++j ) {
-            const IntrinsicType x1( set( x[j] ) );
+            const SIMDType x1( set( x[j] ) );
             xmm1 = xmm1 + A.load(i         ,j) * x1;
-            xmm2 = xmm2 + A.load(i+IT::size,j) * x1;
+            xmm2 = xmm2 + A.load(i+SIMDSIZE,j) * x1;
          }
 
          y.store( i         , y.load(i         ) - xmm1*factor );
-         y.store( i+IT::size, y.load(i+IT::size) - xmm2*factor );
+         y.store( i+SIMDSIZE, y.load(i+SIMDSIZE) - xmm2*factor );
       }
 
-      for( ; i<ipos; i+=IT::size )
+      for( ; i<ipos; i+=SIMDSIZE )
       {
          const size_t jbegin( ( IsUpper<MT1>::value )
                               ?( IsStrictlyUpper<MT1>::value ? i+1UL : i )
                               :( 0UL ) );
          const size_t jend( ( IsLower<MT1>::value )
-                            ?( min( i+IT::size, N ) - ( IsStrictlyLower<MT1>::value ? 1UL : 0UL ) )
+                            ?( min( i+SIMDSIZE, N ) - ( IsStrictlyLower<MT1>::value ? 1UL : 0UL ) )
                             :( N ) );
          BLAZE_INTERNAL_ASSERT( jbegin <= jend, "Invalid loop indices detected" );
 
-         IntrinsicType xmm1;
+         SIMDType xmm1;
 
          for( size_t j=jbegin; j<jend; ++j ) {
             xmm1 = xmm1 + A.load(i,j) * set( x[j] );
@@ -4153,8 +4141,6 @@ class DVecScalarMultExpr< TDMatDVecMultExpr<MT,VT>, ST, false >
    static inline EnableIf_< UseVectorizedDefaultKernel<VT1,MT1,VT2,ST2> >
       selectLargeSubAssignKernel( VT1& y, const MT1& A, const VT2& x, ST2 scalar )
    {
-      typedef IntrinsicTrait<ElementType>  IT;
-
       const size_t M( A.rows()    );
       const size_t N( A.columns() );
 
@@ -4163,9 +4149,9 @@ class DVecScalarMultExpr< TDMatDVecMultExpr<MT,VT>, ST, false >
       const size_t iblock( 32768UL / sizeof( ElementType ) );
       const size_t jblock( ( N < iblock )?( 8UL ):( 4UL ) );
 
-      BLAZE_INTERNAL_ASSERT( ( iblock % IT::size ) == 0UL, "Invalid block size detected" );
+      BLAZE_INTERNAL_ASSERT( ( iblock % SIMDSIZE ) == 0UL, "Invalid block size detected" );
 
-      const IntrinsicType factor( set( scalar ) );
+      const SIMDType factor( set( scalar ) );
 
       for( size_t ii=0U; ii<M; ii+=iblock ) {
          for( size_t jj=0UL; jj<N; jj+=jblock )
@@ -4176,90 +4162,90 @@ class DVecScalarMultExpr< TDMatDVecMultExpr<MT,VT>, ST, false >
                                ?( min( itmp, ( IsStrictlyUpper<MT1>::value ? jend-1UL : jend ) ) )
                                :( itmp ) );
 
-            const size_t ipos( remainder ? ( iend & size_t(-IT::size) ) : iend );
-            BLAZE_INTERNAL_ASSERT( !remainder || ( iend - ( iend % IT::size ) ) == ipos, "Invalid end calculation" );
+            const size_t ipos( remainder ? ( iend & size_t(-SIMDSIZE) ) : iend );
+            BLAZE_INTERNAL_ASSERT( !remainder || ( iend - ( iend % SIMDSIZE ) ) == ipos, "Invalid end calculation" );
 
             size_t i( ( IsLower<MT1>::value )
-                      ?( max( ii, ( IsStrictlyLower<MT1>::value ? jj+1UL : jj ) & size_t(-IT::size) ) )
+                      ?( max( ii, ( IsStrictlyLower<MT1>::value ? jj+1UL : jj ) & size_t(-SIMDSIZE) ) )
                       :( ii ) );
 
-            for( ; (i+IT::size*7UL) < ipos; i+=IT::size*8UL )
+            for( ; (i+SIMDSIZE*7UL) < ipos; i+=SIMDSIZE*8UL )
             {
-               IntrinsicType xmm1, xmm2, xmm3, xmm4, xmm5, xmm6, xmm7, xmm8;
+               SIMDType xmm1, xmm2, xmm3, xmm4, xmm5, xmm6, xmm7, xmm8;
 
                for( size_t j=jj; j<jend; ++j ) {
-                  const IntrinsicType x1( set( x[j] ) );
+                  const SIMDType x1( set( x[j] ) );
                   xmm1 = xmm1 + A.load(i             ,j) * x1;
-                  xmm2 = xmm2 + A.load(i+IT::size    ,j) * x1;
-                  xmm3 = xmm3 + A.load(i+IT::size*2UL,j) * x1;
-                  xmm4 = xmm4 + A.load(i+IT::size*3UL,j) * x1;
-                  xmm5 = xmm5 + A.load(i+IT::size*4UL,j) * x1;
-                  xmm6 = xmm6 + A.load(i+IT::size*5UL,j) * x1;
-                  xmm7 = xmm7 + A.load(i+IT::size*6UL,j) * x1;
-                  xmm8 = xmm8 + A.load(i+IT::size*7UL,j) * x1;
+                  xmm2 = xmm2 + A.load(i+SIMDSIZE    ,j) * x1;
+                  xmm3 = xmm3 + A.load(i+SIMDSIZE*2UL,j) * x1;
+                  xmm4 = xmm4 + A.load(i+SIMDSIZE*3UL,j) * x1;
+                  xmm5 = xmm5 + A.load(i+SIMDSIZE*4UL,j) * x1;
+                  xmm6 = xmm6 + A.load(i+SIMDSIZE*5UL,j) * x1;
+                  xmm7 = xmm7 + A.load(i+SIMDSIZE*6UL,j) * x1;
+                  xmm8 = xmm8 + A.load(i+SIMDSIZE*7UL,j) * x1;
                }
 
                y.store( i             , y.load(i             ) - xmm1*factor );
-               y.store( i+IT::size    , y.load(i+IT::size    ) - xmm2*factor );
-               y.store( i+IT::size*2UL, y.load(i+IT::size*2UL) - xmm3*factor );
-               y.store( i+IT::size*3UL, y.load(i+IT::size*3UL) - xmm4*factor );
-               y.store( i+IT::size*4UL, y.load(i+IT::size*4UL) - xmm5*factor );
-               y.store( i+IT::size*5UL, y.load(i+IT::size*5UL) - xmm6*factor );
-               y.store( i+IT::size*6UL, y.load(i+IT::size*6UL) - xmm7*factor );
-               y.store( i+IT::size*7UL, y.load(i+IT::size*7UL) - xmm8*factor );
+               y.store( i+SIMDSIZE    , y.load(i+SIMDSIZE    ) - xmm2*factor );
+               y.store( i+SIMDSIZE*2UL, y.load(i+SIMDSIZE*2UL) - xmm3*factor );
+               y.store( i+SIMDSIZE*3UL, y.load(i+SIMDSIZE*3UL) - xmm4*factor );
+               y.store( i+SIMDSIZE*4UL, y.load(i+SIMDSIZE*4UL) - xmm5*factor );
+               y.store( i+SIMDSIZE*5UL, y.load(i+SIMDSIZE*5UL) - xmm6*factor );
+               y.store( i+SIMDSIZE*6UL, y.load(i+SIMDSIZE*6UL) - xmm7*factor );
+               y.store( i+SIMDSIZE*7UL, y.load(i+SIMDSIZE*7UL) - xmm8*factor );
             }
 
-            for( ; (i+IT::size*3UL) < ipos; i+=IT::size*4UL )
+            for( ; (i+SIMDSIZE*3UL) < ipos; i+=SIMDSIZE*4UL )
             {
-               IntrinsicType xmm1, xmm2, xmm3, xmm4;
+               SIMDType xmm1, xmm2, xmm3, xmm4;
 
                for( size_t j=jj; j<jend; ++j ) {
-                  const IntrinsicType x1( set( x[j] ) );
+                  const SIMDType x1( set( x[j] ) );
                   xmm1 = xmm1 + A.load(i             ,j) * x1;
-                  xmm2 = xmm2 + A.load(i+IT::size    ,j) * x1;
-                  xmm3 = xmm3 + A.load(i+IT::size*2UL,j) * x1;
-                  xmm4 = xmm4 + A.load(i+IT::size*3UL,j) * x1;
+                  xmm2 = xmm2 + A.load(i+SIMDSIZE    ,j) * x1;
+                  xmm3 = xmm3 + A.load(i+SIMDSIZE*2UL,j) * x1;
+                  xmm4 = xmm4 + A.load(i+SIMDSIZE*3UL,j) * x1;
                }
 
                y.store( i             , y.load(i             ) - xmm1*factor );
-               y.store( i+IT::size    , y.load(i+IT::size    ) - xmm2*factor );
-               y.store( i+IT::size*2UL, y.load(i+IT::size*2UL) - xmm3*factor );
-               y.store( i+IT::size*3UL, y.load(i+IT::size*3UL) - xmm4*factor );
+               y.store( i+SIMDSIZE    , y.load(i+SIMDSIZE    ) - xmm2*factor );
+               y.store( i+SIMDSIZE*2UL, y.load(i+SIMDSIZE*2UL) - xmm3*factor );
+               y.store( i+SIMDSIZE*3UL, y.load(i+SIMDSIZE*3UL) - xmm4*factor );
             }
 
-            for( ; (i+IT::size*2UL) < ipos; i+=IT::size*3UL )
+            for( ; (i+SIMDSIZE*2UL) < ipos; i+=SIMDSIZE*3UL )
             {
-               IntrinsicType xmm1, xmm2, xmm3;
+               SIMDType xmm1, xmm2, xmm3;
 
                for( size_t j=jj; j<jend; ++j ) {
-                  const IntrinsicType x1( set( x[j] ) );
+                  const SIMDType x1( set( x[j] ) );
                   xmm1 = xmm1 + A.load(i             ,j) * x1;
-                  xmm2 = xmm2 + A.load(i+IT::size    ,j) * x1;
-                  xmm3 = xmm3 + A.load(i+IT::size*2UL,j) * x1;
+                  xmm2 = xmm2 + A.load(i+SIMDSIZE    ,j) * x1;
+                  xmm3 = xmm3 + A.load(i+SIMDSIZE*2UL,j) * x1;
                }
 
                y.store( i             , y.load(i             ) - xmm1*factor );
-               y.store( i+IT::size    , y.load(i+IT::size    ) - xmm2*factor );
-               y.store( i+IT::size*2UL, y.load(i+IT::size*2UL) - xmm3*factor );
+               y.store( i+SIMDSIZE    , y.load(i+SIMDSIZE    ) - xmm2*factor );
+               y.store( i+SIMDSIZE*2UL, y.load(i+SIMDSIZE*2UL) - xmm3*factor );
             }
 
-            for( ; (i+IT::size) < ipos; i+=IT::size*2UL )
+            for( ; (i+SIMDSIZE) < ipos; i+=SIMDSIZE*2UL )
             {
-               IntrinsicType xmm1, xmm2;
+               SIMDType xmm1, xmm2;
 
                for( size_t j=jj; j<jend; ++j ) {
-                  const IntrinsicType x1( set( x[j] ) );
+                  const SIMDType x1( set( x[j] ) );
                   xmm1 = xmm1 + A.load(i         ,j) * x1;
-                  xmm2 = xmm2 + A.load(i+IT::size,j) * x1;
+                  xmm2 = xmm2 + A.load(i+SIMDSIZE,j) * x1;
                }
 
                y.store( i         , y.load(i         ) - xmm1*factor );
-               y.store( i+IT::size, y.load(i+IT::size) - xmm2*factor );
+               y.store( i+SIMDSIZE, y.load(i+SIMDSIZE) - xmm2*factor );
             }
 
-            for( ; i<ipos; i+=IT::size )
+            for( ; i<ipos; i+=SIMDSIZE )
             {
-               IntrinsicType xmm1;
+               SIMDType xmm1;
 
                for( size_t j=jj; j<jend; ++j ) {
                   xmm1 = xmm1 + A.load(i,j) * set( x[j] );

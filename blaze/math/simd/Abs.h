@@ -1,7 +1,7 @@
 //=================================================================================================
 /*!
 //  \file blaze/math/simd/Abs.h
-//  \brief Header file for the intrinisc abs functionality
+//  \brief Header file for the SIMD abs functionality
 //
 //  Copyright (C) 2013 Klaus Iglberger - All Rights Reserved
 //

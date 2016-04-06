@@ -1,7 +1,7 @@
 //=================================================================================================
 /*!
 //  \file blaze/math/simd/Addition.h
-//  \brief Header file for the intrinisc addition functionality
+//  \brief Header file for the SIMD addition functionality
 //
 //  Copyright (C) 2013 Klaus Iglberger - All Rights Reserved
 //

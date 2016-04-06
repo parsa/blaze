@@ -1,7 +1,7 @@
 //=================================================================================================
 /*!
 //  \file blaze/math/SIMD.h
-//  \brief Header file for all intrinsic functionality
+//  \brief Header file for all SIMD functionality
 //
 //  Copyright (C) 2013 Klaus Iglberger - All Rights Reserved
 //
@@ -43,7 +43,6 @@
 #include <blaze/math/simd/BasicTypes.h>
 #include <blaze/math/simd/DerivedTypes.h>
 #include <blaze/math/simd/Functions.h>
-#include <blaze/math/simd/IntrinsicTrait.h>
 #include <blaze/math/simd/SIMDTrait.h>
 
 #endif

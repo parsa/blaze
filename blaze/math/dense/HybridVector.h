@@ -170,23 +170,13 @@ template< typename Type                     // Data type of the vector
         , bool TF = defaultTransposeFlag >  // Transpose flag
 class HybridVector : public DenseVector< HybridVector<Type,N,TF>, TF >
 {
- private:
-   //**Type definitions****************************************************************************
-   typedef IntrinsicTrait<Type>  IT;  //!< Intrinsic trait for the vector element type.
-   //**********************************************************************************************
-
-   //**********************************************************************************************
-   //! Alignment adjustment
-   static constexpr size_t NN = ( usePadding )?( NextMultiple< SizeT<N>, SizeT<IT::size> >::value ):( N );
-   //**********************************************************************************************
-
  public:
    //**Type definitions****************************************************************************
    typedef HybridVector<Type,N,TF>   This;           //!< Type of this HybridVector instance.
    typedef This                      ResultType;     //!< Result type for expression template evaluations.
    typedef HybridVector<Type,N,!TF>  TransposeType;  //!< Transpose type for expression template evaluations.
    typedef Type                      ElementType;    //!< Type of the vector elements.
-   typedef typename IT::Type         IntrinsicType;  //!< Intrinsic type of the vector elements.
+   typedef SIMDTrait_<ElementType>   SIMDType;       //!< SIMD type of the vector elements.
    typedef const Type&               ReturnType;     //!< Return type for expression template evaluations.
    typedef const HybridVector&       CompositeType;  //!< Data type for composite expression templates.
 
@@ -209,11 +199,11 @@ class HybridVector : public DenseVector< HybridVector<Type,N,TF>, TF >
    //**********************************************************************************************
 
    //**Compilation flags***************************************************************************
-   //! Compilation flag for intrinsic optimization.
+   //! Compilation flag for SIMD optimization.
    /*! The \a vectorizable compilation flag indicates whether expressions the vector is involved
-       in can be optimized via intrinsics. In case the element type of the vector is a vectorizable
-       data type, the \a vectorizable compilation flag is set to \a true, otherwise it is set to
-       \a false. */
+       in can be optimized via SIMD operations. In case the element type of the vector is a
+       vectorizable data type, the \a vectorizable compilation flag is set to \a true, otherwise
+       it is set to \a false. */
    enum { vectorizable = IsVectorizable<Type>::value };
 
    //! Compilation flag for SMP assignments.
@@ -366,6 +356,11 @@ class HybridVector : public DenseVector< HybridVector<Type,N,TF>, TF >
    /*! \endcond */
    //**********************************************************************************************
 
+   //**********************************************************************************************
+   //! The number of elements packed within a single SIMD element.
+   enum : size_t { SIMDSIZE = SIMDTrait<ElementType>::size };
+   //**********************************************************************************************
+
  public:
    //**Expression template evaluation functions****************************************************
    /*!\name Expression template evaluation functions */
@@ -375,14 +370,14 @@ class HybridVector : public DenseVector< HybridVector<Type,N,TF>, TF >
 
    inline bool isAligned() const noexcept;
 
-   BLAZE_ALWAYS_INLINE IntrinsicType load ( size_t index ) const noexcept;
-   BLAZE_ALWAYS_INLINE IntrinsicType loada( size_t index ) const noexcept;
-   BLAZE_ALWAYS_INLINE IntrinsicType loadu( size_t index ) const noexcept;
+   BLAZE_ALWAYS_INLINE SIMDType load ( size_t index ) const noexcept;
+   BLAZE_ALWAYS_INLINE SIMDType loada( size_t index ) const noexcept;
+   BLAZE_ALWAYS_INLINE SIMDType loadu( size_t index ) const noexcept;
 
-   BLAZE_ALWAYS_INLINE void store ( size_t index, const IntrinsicType& value ) noexcept;
-   BLAZE_ALWAYS_INLINE void storea( size_t index, const IntrinsicType& value ) noexcept;
-   BLAZE_ALWAYS_INLINE void storeu( size_t index, const IntrinsicType& value ) noexcept;
-   BLAZE_ALWAYS_INLINE void stream( size_t index, const IntrinsicType& value ) noexcept;
+   BLAZE_ALWAYS_INLINE void store ( size_t index, const SIMDType& value ) noexcept;
+   BLAZE_ALWAYS_INLINE void storea( size_t index, const SIMDType& value ) noexcept;
+   BLAZE_ALWAYS_INLINE void storeu( size_t index, const SIMDType& value ) noexcept;
+   BLAZE_ALWAYS_INLINE void stream( size_t index, const SIMDType& value ) noexcept;
 
    template< typename VT >
    inline DisableIf_<VectorizedAssign<VT> > assign( const DenseVector<VT,TF>& rhs );
@@ -419,6 +414,11 @@ class HybridVector : public DenseVector< HybridVector<Type,N,TF>, TF >
    //**********************************************************************************************
 
  private:
+   //**********************************************************************************************
+   //! Alignment adjustment.
+   enum : size_t { NN = ( usePadding )?( NextMultiple< SizeT<N>, SizeT<SIMDSIZE> >::value ):( N ) };
+   //**********************************************************************************************
+
    //**Member variables****************************************************************************
    /*!\name Member variables */
    //@{
@@ -438,7 +438,7 @@ class HybridVector : public DenseVector< HybridVector<Type,N,TF>, TF >
    BLAZE_CONSTRAINT_MUST_NOT_BE_REFERENCE_TYPE( Type );
    BLAZE_CONSTRAINT_MUST_NOT_BE_CONST         ( Type );
    BLAZE_CONSTRAINT_MUST_NOT_BE_VOLATILE      ( Type );
-   BLAZE_STATIC_ASSERT( !usePadding || NN % IT::size == 0UL );
+   BLAZE_STATIC_ASSERT( !usePadding || NN % SIMDSIZE == 0UL );
    BLAZE_STATIC_ASSERT( NN >= N );
    /*! \endcond */
    //**********************************************************************************************
@@ -1652,22 +1652,21 @@ inline bool HybridVector<Type,N,TF>::isAligned() const noexcept
 
 
 //*************************************************************************************************
-/*!\brief Load of an intrinsic element of the vector.
+/*!\brief Load of a SIMD element of the vector.
 //
 // \param index Access index. The index must be smaller than the number of vector elements.
-// \return The loaded intrinsic element.
+// \return The loaded SIMD element.
 //
-// This function performs a load of a specific intrinsic element of the dense vector. The
-// index must be smaller than the number of vector elements and it must be a multiple of
-// the number of values inside the intrinsic element. This function must \b NOT be called
-// explicitly! It is used internally for the performance optimized evaluation of expression
-// templates. Calling this function explicitly might result in erroneous results and/or in
-// compilation errors.
+// This function performs a load of a specific SIMD element of the dense vector. The index
+// must be smaller than the number of vector elements and it must be a multiple of the number
+// of values inside the SIMD element. This function must \b NOT be called explicitly! It is
+// used internally for the performance optimized evaluation of expression templates. Calling
+// this function explicitly might result in erroneous results and/or in compilation errors.
 */
 template< typename Type  // Data type of the vector
         , size_t N       // Number of elements
         , bool TF >      // Transpose flag
-BLAZE_ALWAYS_INLINE typename HybridVector<Type,N,TF>::IntrinsicType
+BLAZE_ALWAYS_INLINE typename HybridVector<Type,N,TF>::SIMDType
    HybridVector<Type,N,TF>::load( size_t index ) const noexcept
 {
    return loada( index );
@@ -1676,22 +1675,22 @@ BLAZE_ALWAYS_INLINE typename HybridVector<Type,N,TF>::IntrinsicType
 
 
 //*************************************************************************************************
-/*!\brief Aligned load of an intrinsic element of the vector.
+/*!\brief Aligned load of a SIMD element of the vector.
 //
 // \param index Access index. The index must be smaller than the number of vector elements.
-// \return The loaded intrinsic element.
+// \return The loaded SIMD element.
 //
-// This function performs an aligned load of a specific intrinsic element of the dense vector.
-// The index must be smaller than the number of vector elements and it must be a multiple of
-// the number of values inside the intrinsic element. This function must \b NOT be called
-// explicitly! It is used internally for the performance optimized evaluation of expression
-// templates. Calling this function explicitly might result in erroneous results and/or in
-// compilation errors.
+// This function performs an aligned load of a specific SIMD element of the dense vector. The
+// index must be smaller than the number of vector elements and it must be a multiple of the
+// number of values inside the SIMD element. This function must \b NOT be called explicitly!
+// It is used internally for the performance optimized evaluation of expression templates.
+// Calling this function explicitly might result in erroneous results and/or in compilation
+// errors.
 */
 template< typename Type  // Data type of the vector
         , size_t N       // Number of elements
         , bool TF >      // Transpose flag
-BLAZE_ALWAYS_INLINE typename HybridVector<Type,N,TF>::IntrinsicType
+BLAZE_ALWAYS_INLINE typename HybridVector<Type,N,TF>::SIMDType
    HybridVector<Type,N,TF>::loada( size_t index ) const noexcept
 {
    using blaze::loada;
@@ -1699,8 +1698,8 @@ BLAZE_ALWAYS_INLINE typename HybridVector<Type,N,TF>::IntrinsicType
    BLAZE_CONSTRAINT_MUST_BE_VECTORIZABLE_TYPE( Type );
 
    BLAZE_INTERNAL_ASSERT( index < size_, "Invalid vector access index" );
-   BLAZE_INTERNAL_ASSERT( index + IT::size <= NN, "Invalid vector access index" );
-   BLAZE_INTERNAL_ASSERT( index % IT::size == 0UL, "Invalid vector access index" );
+   BLAZE_INTERNAL_ASSERT( index + SIMDSIZE <= NN, "Invalid vector access index" );
+   BLAZE_INTERNAL_ASSERT( index % SIMDSIZE == 0UL, "Invalid vector access index" );
    BLAZE_INTERNAL_ASSERT( checkAlignment( &v_[index] ), "Invalid alignment detected" );
 
    return loada( &v_[index] );
@@ -1709,22 +1708,22 @@ BLAZE_ALWAYS_INLINE typename HybridVector<Type,N,TF>::IntrinsicType
 
 
 //*************************************************************************************************
-/*!\brief Unaligned load of an intrinsic element of the vector.
+/*!\brief Unaligned load of a SIMD element of the vector.
 //
 // \param index Access index. The index must be smaller than the number of vector elements.
-// \return The loaded intrinsic element.
+// \return The loaded SIMD element.
 //
-// This function performs an unaligned load of a specific intrinsic element of the dense vector.
-// The index must be smaller than the number of vector elements and it must be a multiple of
-// the number of values inside the intrinsic element. This function must \b NOT be called
-// explicitly! It is used internally for the performance optimized evaluation of expression
-// templates. Calling this function explicitly might result in erroneous results and/or in
-// compilation errors.
+// This function performs an unaligned load of a specific SIMD element of the dense vector. The
+// index must be smaller than the number of vector elements and it must be a multiple of the
+// number of values inside the SIMD element. This function must \b NOT be called explicitly!
+// It is used internally for the performance optimized evaluation of expression templates.
+// Calling this function explicitly might result in erroneous results and/or in compilation
+// errors.
 */
 template< typename Type  // Data type of the vector
         , size_t N       // Number of elements
         , bool TF >      // Transpose flag
-BLAZE_ALWAYS_INLINE typename HybridVector<Type,N,TF>::IntrinsicType
+BLAZE_ALWAYS_INLINE typename HybridVector<Type,N,TF>::SIMDType
    HybridVector<Type,N,TF>::loadu( size_t index ) const noexcept
 {
    using blaze::loadu;
@@ -1732,7 +1731,7 @@ BLAZE_ALWAYS_INLINE typename HybridVector<Type,N,TF>::IntrinsicType
    BLAZE_CONSTRAINT_MUST_BE_VECTORIZABLE_TYPE( Type );
 
    BLAZE_INTERNAL_ASSERT( index < size_, "Invalid vector access index" );
-   BLAZE_INTERNAL_ASSERT( index + IT::size <= NN, "Invalid vector access index" );
+   BLAZE_INTERNAL_ASSERT( index + SIMDSIZE <= NN, "Invalid vector access index" );
 
    return loadu( &v_[index] );
 }
@@ -1740,24 +1739,23 @@ BLAZE_ALWAYS_INLINE typename HybridVector<Type,N,TF>::IntrinsicType
 
 
 //*************************************************************************************************
-/*!\brief Store of an intrinsic element of the vector.
+/*!\brief Store of a SIMD element of the vector.
 //
 // \param index Access index. The index must be smaller than the number of vector elements.
-// \param value The intrinsic element to be stored.
+// \param value The SIMD element to be stored.
 // \return void
 //
-// This function performs a store of a specific intrinsic element of the dense vector. The
-// index must be smaller than the number of vector elements and it must be a multiple of
-// the number of values inside the intrinsic element. This function must \b NOT be called
-// explicitly! It is used internally for the performance optimized evaluation of expression
-// templates. Calling this function explicitly might result in erroneous results and/or in
-// compilation errors.
+// This function performs a store of a specific SIMD element of the dense vector. The index
+// must be smaller than the number of vector elements and it must be a multiple of the number
+// of values inside the SIMD element. This function must \b NOT be called explicitly! It is
+// used internally for the performance optimized evaluation of expression templates. Calling
+// this function explicitly might result in erroneous results and/or in compilation errors.
 */
 template< typename Type  // Data type of the vector
         , size_t N       // Number of elements
         , bool TF >      // Transpose flag
 BLAZE_ALWAYS_INLINE void
-   HybridVector<Type,N,TF>::store( size_t index, const IntrinsicType& value ) noexcept
+   HybridVector<Type,N,TF>::store( size_t index, const SIMDType& value ) noexcept
 {
    storea( index, value );
 }
@@ -1765,32 +1763,31 @@ BLAZE_ALWAYS_INLINE void
 
 
 //*************************************************************************************************
-/*!\brief Aligned store of an intrinsic element of the vector.
+/*!\brief Aligned store of a SIMD element of the vector.
 //
 // \param index Access index. The index must be smaller than the number of vector elements.
-// \param value The intrinsic element to be stored.
+// \param value The SIMD element to be stored.
 // \return void
 //
-// This function performs an aligned store of a specific intrinsic element of the dense vector.
-// The index must be smaller than the number of vector elements and it must be a multiple of
-// the number of values inside the intrinsic element. This function must \b NOT be called
-// explicitly! It is used internally for the performance optimized evaluation of expression
-// templates. Calling this function explicitly might result in erroneous results and/or in
-// compilation errors.
+// This function performs an aligned store of a specific SIMD element of the dense vector. The
+// index must be smaller than the number of vector elements and it must be a multiple of the
+// number of values inside the SIMD element. This function must \b NOT be called explicitly! It
+// is used internally for the performance optimized evaluation of expression templates. Calling
+// this function explicitly might result in erroneous results and/or in compilation errors.
 */
 template< typename Type  // Data type of the vector
         , size_t N       // Number of elements
         , bool TF >      // Transpose flag
 BLAZE_ALWAYS_INLINE void
-   HybridVector<Type,N,TF>::storea( size_t index, const IntrinsicType& value ) noexcept
+   HybridVector<Type,N,TF>::storea( size_t index, const SIMDType& value ) noexcept
 {
    using blaze::storea;
 
    BLAZE_CONSTRAINT_MUST_BE_VECTORIZABLE_TYPE( Type );
 
    BLAZE_INTERNAL_ASSERT( index < size_, "Invalid vector access index" );
-   BLAZE_INTERNAL_ASSERT( index + IT::size <= NN, "Invalid vector access index" );
-   BLAZE_INTERNAL_ASSERT( index % IT::size == 0UL, "Invalid vector access index" );
+   BLAZE_INTERNAL_ASSERT( index + SIMDSIZE <= NN, "Invalid vector access index" );
+   BLAZE_INTERNAL_ASSERT( index % SIMDSIZE == 0UL, "Invalid vector access index" );
    BLAZE_INTERNAL_ASSERT( checkAlignment( &v_[index] ), "Invalid alignment detected" );
 
    storea( &v_[index], value );
@@ -1799,31 +1796,30 @@ BLAZE_ALWAYS_INLINE void
 
 
 //*************************************************************************************************
-/*!\brief Unaligned store of an intrinsic element of the vector.
+/*!\brief Unaligned store of a SIMD element of the vector.
 //
 // \param index Access index. The index must be smaller than the number of vector elements.
-// \param value The intrinsic element to be stored.
+// \param value The SIMD element to be stored.
 // \return void
 //
-// This function performs an unaligned store of a specific intrinsic element of the dense vector.
+// This function performs an unaligned store of a specific SIMD element of the dense vector.
 // The index must be smaller than the number of vector elements and it must be a multiple of the
-// number of values inside the intrinsic element. This function must \b NOT be called explicitly!
-// It is used internally for the performance optimized evaluation of expression templates.
-// Calling this function explicitly might result in erroneous results and/or in compilation
-// errors.
+// number of values inside the SIMD element. This function must \b NOT be called explicitly! It
+// is used internally for the performance optimized evaluation of expression templates. Calling
+// this function explicitly might result in erroneous results and/or in compilation errors.
 */
 template< typename Type  // Data type of the vector
         , size_t N       // Number of elements
         , bool TF >      // Transpose flag
 BLAZE_ALWAYS_INLINE void
-   HybridVector<Type,N,TF>::storeu( size_t index, const IntrinsicType& value ) noexcept
+   HybridVector<Type,N,TF>::storeu( size_t index, const SIMDType& value ) noexcept
 {
    using blaze::storeu;
 
    BLAZE_CONSTRAINT_MUST_BE_VECTORIZABLE_TYPE( Type );
 
    BLAZE_INTERNAL_ASSERT( index < size_, "Invalid vector access index" );
-   BLAZE_INTERNAL_ASSERT( index + IT::size <= NN, "Invalid vector access index" );
+   BLAZE_INTERNAL_ASSERT( index + SIMDSIZE <= NN, "Invalid vector access index" );
 
    storeu( &v_[index], value );
 }
@@ -1831,32 +1827,32 @@ BLAZE_ALWAYS_INLINE void
 
 
 //*************************************************************************************************
-/*!\brief Aligned, non-temporal store of an intrinsic element of the vector.
+/*!\brief Aligned, non-temporal store of a SIMD element of the vector.
 //
 // \param index Access index. The index must be smaller than the number of vector elements.
-// \param value The intrinsic element to be stored.
+// \param value The SIMD element to be stored.
 // \return void
 //
-// This function performs an aligned, non-temporal store of a specific intrinsic element of
-// the dense vector. The index must be smaller than the number of vector elements and it must
-// be a multiple of the number of values inside the intrinsic element. This function must
-// \b NOT be called explicitly! It is used internally for the performance optimized evaluation
-// of expression templates. Calling this function explicitly might result in erroneous results
+// This function performs an aligned, non-temporal store of a specific SIMD element of the
+// dense vector. The index must be smaller than the number of vector elements and it must be
+// a multiple of the number of values inside the SIMD element. This function must \b NOT be
+// called explicitly! It is used internally for the performance optimized evaluation of
+// expression templates. Calling this function explicitly might result in erroneous results
 // and/or in compilation errors.
 */
 template< typename Type  // Data type of the vector
         , size_t N       // Number of elements
         , bool TF >      // Transpose flag
 BLAZE_ALWAYS_INLINE void
-   HybridVector<Type,N,TF>::stream( size_t index, const IntrinsicType& value ) noexcept
+   HybridVector<Type,N,TF>::stream( size_t index, const SIMDType& value ) noexcept
 {
    using blaze::stream;
 
    BLAZE_CONSTRAINT_MUST_BE_VECTORIZABLE_TYPE( Type );
 
    BLAZE_INTERNAL_ASSERT( index < size_, "Invalid vector access index" );
-   BLAZE_INTERNAL_ASSERT( index + IT::size <= NN, "Invalid vector access index" );
-   BLAZE_INTERNAL_ASSERT( index % IT::size == 0UL, "Invalid vector access index" );
+   BLAZE_INTERNAL_ASSERT( index + SIMDSIZE <= NN, "Invalid vector access index" );
+   BLAZE_INTERNAL_ASSERT( index % SIMDSIZE == 0UL, "Invalid vector access index" );
    BLAZE_INTERNAL_ASSERT( checkAlignment( &v_[index] ), "Invalid alignment detected" );
 
    stream( &v_[index], value );
@@ -1891,7 +1887,7 @@ inline DisableIf_<typename HybridVector<Type,N,TF>::BLAZE_TEMPLATE VectorizedAss
 
 
 //*************************************************************************************************
-/*!\brief Intrinsic optimized implementation of the assignment of a dense vector.
+/*!\brief SIMD optimized implementation of the assignment of a dense vector.
 //
 // \param rhs The right-hand side dense vector to be assigned.
 // \return void
@@ -1914,12 +1910,12 @@ inline EnableIf_<typename HybridVector<Type,N,TF>::BLAZE_TEMPLATE VectorizedAssi
 
    const bool remainder( !usePadding || !IsPadded<VT>::value );
 
-   const size_t ipos( ( remainder )?( size_ & size_t(-IT::size) ):( size_ ) );
-   BLAZE_INTERNAL_ASSERT( !remainder || ( size_ - ( size_ % (IT::size) ) ) == ipos, "Invalid end calculation" );
+   const size_t ipos( ( remainder )?( size_ & size_t(-SIMDSIZE) ):( size_ ) );
+   BLAZE_INTERNAL_ASSERT( !remainder || ( size_ - ( size_ % (SIMDSIZE) ) ) == ipos, "Invalid end calculation" );
 
    size_t i( 0UL );
 
-   for( ; i<ipos; i+=IT::size ) {
+   for( ; i<ipos; i+=SIMDSIZE ) {
       store( i, (~rhs).load(i) );
    }
    for( ; remainder && i<size_; ++i ) {
@@ -1981,7 +1977,7 @@ inline DisableIf_<typename HybridVector<Type,N,TF>::BLAZE_TEMPLATE VectorizedAdd
 
 
 //*************************************************************************************************
-/*!\brief Intrinsic optimized implementation of the addition assignment of a dense vector.
+/*!\brief SIMD optimized implementation of the addition assignment of a dense vector.
 //
 // \param rhs The right-hand side dense vector to be added.
 // \return void
@@ -2004,12 +2000,12 @@ inline EnableIf_<typename HybridVector<Type,N,TF>::BLAZE_TEMPLATE VectorizedAddA
 
    const bool remainder( !usePadding || !IsPadded<VT>::value );
 
-   const size_t ipos( ( remainder )?( size_ & size_t(-IT::size) ):( size_ ) );
-   BLAZE_INTERNAL_ASSERT( !remainder || ( size_ - ( size_ % (IT::size) ) ) == ipos, "Invalid end calculation" );
+   const size_t ipos( ( remainder )?( size_ & size_t(-SIMDSIZE) ):( size_ ) );
+   BLAZE_INTERNAL_ASSERT( !remainder || ( size_ - ( size_ % (SIMDSIZE) ) ) == ipos, "Invalid end calculation" );
 
    size_t i( 0UL );
 
-   for( ; i<ipos; i+=IT::size ) {
+   for( ; i<ipos; i+=SIMDSIZE ) {
       store( i, load(i) + (~rhs).load(i) );
    }
    for( ; remainder && i<size_; ++i ) {
@@ -2071,7 +2067,7 @@ inline DisableIf_<typename HybridVector<Type,N,TF>::BLAZE_TEMPLATE VectorizedSub
 
 
 //*************************************************************************************************
-/*!\brief Intrinsic optimized implementation of the subtraction assignment of a dense vector.
+/*!\brief SIMD optimized implementation of the subtraction assignment of a dense vector.
 //
 // \param rhs The right-hand side dense vector to be subtracted.
 // \return void
@@ -2094,12 +2090,12 @@ inline EnableIf_<typename HybridVector<Type,N,TF>::BLAZE_TEMPLATE VectorizedSubA
 
    const bool remainder( !usePadding || !IsPadded<VT>::value );
 
-   const size_t ipos( ( remainder )?( size_ & size_t(-IT::size) ):( size_ ) );
-   BLAZE_INTERNAL_ASSERT( !remainder || ( size_ - ( size_ % (IT::size) ) ) == ipos, "Invalid end calculation" );
+   const size_t ipos( ( remainder )?( size_ & size_t(-SIMDSIZE) ):( size_ ) );
+   BLAZE_INTERNAL_ASSERT( !remainder || ( size_ - ( size_ % (SIMDSIZE) ) ) == ipos, "Invalid end calculation" );
 
    size_t i( 0UL );
 
-   for( ; i<ipos; i+=IT::size ) {
+   for( ; i<ipos; i+=SIMDSIZE ) {
       store( i, load(i) - (~rhs).load(i) );
    }
    for( ; remainder && i<size_; ++i ) {
@@ -2161,7 +2157,7 @@ inline DisableIf_<typename HybridVector<Type,N,TF>::BLAZE_TEMPLATE VectorizedMul
 
 
 //*************************************************************************************************
-/*!\brief Intrinsic optimized implementation of the multiplication assignment of a dense vector.
+/*!\brief SIMD optimized implementation of the multiplication assignment of a dense vector.
 //
 // \param rhs The right-hand side dense vector to be multiplied.
 // \return void
@@ -2184,12 +2180,12 @@ inline EnableIf_<typename HybridVector<Type,N,TF>::BLAZE_TEMPLATE VectorizedMult
 
    const bool remainder( !usePadding || !IsPadded<VT>::value );
 
-   const size_t ipos( ( remainder )?( size_ & size_t(-IT::size) ):( size_ ) );
-   BLAZE_INTERNAL_ASSERT( !remainder || ( size_ - ( size_ % (IT::size) ) ) == ipos, "Invalid end calculation" );
+   const size_t ipos( ( remainder )?( size_ & size_t(-SIMDSIZE) ):( size_ ) );
+   BLAZE_INTERNAL_ASSERT( !remainder || ( size_ - ( size_ % (SIMDSIZE) ) ) == ipos, "Invalid end calculation" );
 
    size_t i( 0UL );
 
-   for( ; i<ipos; i+=IT::size ) {
+   for( ; i<ipos; i+=SIMDSIZE ) {
       store( i, load(i) * (~rhs).load(i) );
    }
    for( ; remainder && i<size_; ++i ) {

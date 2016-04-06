@@ -156,11 +156,11 @@ class DVecConjExpr : public DenseVector< DVecConjExpr<VT,TF>, TF >
 
  public:
    //**Type definitions****************************************************************************
-   typedef DVecConjExpr<VT,TF>                This;           //!< Type of this DVecConjExpr instance.
-   typedef ResultType_<VT>                    ResultType;     //!< Result type for expression template evaluations.
-   typedef TransposeType_<VT>                 TransposeType;  //!< Transpose type for expression template evaluations.
-   typedef ElementType_<VT>                   ElementType;    //!< Resulting element type.
-   typedef typename IntrinsicTrait<ET>::Type  IntrinsicType;  //!< Resulting intrinsic element type.
+   typedef DVecConjExpr<VT,TF>  This;           //!< Type of this DVecConjExpr instance.
+   typedef ResultType_<VT>      ResultType;     //!< Result type for expression template evaluations.
+   typedef TransposeType_<VT>   TransposeType;  //!< Transpose type for expression template evaluations.
+   typedef ElementType_<VT>     ElementType;    //!< Resulting element type.
+   typedef SIMDTrait_<ET>       SIMDType;       //!< Resulting SIMD element type.
 
    //! Return type for expression template evaluations.
    typedef const IfTrue_< returnExpr, ExprReturnType, ElementType >  ReturnType;
@@ -283,11 +283,11 @@ class DVecConjExpr : public DenseVector< DVecConjExpr<VT,TF>, TF >
       //*******************************************************************************************
 
       //**Load function****************************************************************************
-      /*!\brief Access to the intrinsic elements of the vector.
+      /*!\brief Access to the SIMD elements of the vector.
       //
-      // \return The resulting intrinsic value.
+      // \return The resulting SIMD element.
       */
-      inline IntrinsicType load() const noexcept {
+      inline SIMDType load() const noexcept {
          return conj( it_.load() );
       }
       //*******************************************************************************************
@@ -420,6 +420,11 @@ class DVecConjExpr : public DenseVector< DVecConjExpr<VT,TF>, TF >
    enum { smpAssignable = VT::smpAssignable };
    //**********************************************************************************************
 
+   //**SIMD properties*****************************************************************************
+   //! The number of elements packed within a single SIMD element.
+   enum : size_t { SIMDSIZE = SIMDTrait<ElementType>::size };
+   //**********************************************************************************************
+
    //**Constructor*********************************************************************************
    /*!\brief Constructor for the DVecConjExpr class.
    //
@@ -458,15 +463,14 @@ class DVecConjExpr : public DenseVector< DVecConjExpr<VT,TF>, TF >
    //**********************************************************************************************
 
    //**Load function*******************************************************************************
-   /*!\brief Access to the intrinsic elements of the vector.
+   /*!\brief Access to the SIMD elements of the vector.
    //
    // \param index Access index. The index has to be in the range \f$[0..N-1]\f$.
    // \return Reference to the accessed values.
    */
-   BLAZE_ALWAYS_INLINE IntrinsicType load( size_t index ) const noexcept {
-      typedef IntrinsicTrait<ElementType>  IT;
+   BLAZE_ALWAYS_INLINE SIMDType load( size_t index ) const noexcept {
       BLAZE_INTERNAL_ASSERT( index < dv_.size()     , "Invalid vector access index" );
-      BLAZE_INTERNAL_ASSERT( index % IT::size == 0UL, "Invalid vector access index" );
+      BLAZE_INTERNAL_ASSERT( index % SIMDSIZE == 0UL, "Invalid vector access index" );
       return conj( dv_.load( index ) );
    }
    //**********************************************************************************************

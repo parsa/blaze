@@ -283,11 +283,11 @@ struct SIMDTraitBase< complex<double> >
 //
 // The SIMDTrait class template provides the SIMD characteristics of a specific data type:
 //
-//  - The nested data type \a Type corresponds to the according packed, intrinsic data type. In
-//    case the data type doesn't have an intrinsic representation, \a Type corresonds to the given
-//    data type itself.
+//  - The nested data type \a Type corresponds to the according packed, SIMD data type. In case
+//    the data type doesn't have a SIMD representation, \a Type corresonds to the given data
+//    type itself.
 //  - The \a size member constant corresponds to the number of values of the given data type that
-//    are packed together in one intrinsic vector type. In case the data type cannot be vectorized,
+//    are packed together in one SIMD vector type. In case the data type cannot be vectorized,
 //    \a size is set to 1.
 */
 template< typename T >

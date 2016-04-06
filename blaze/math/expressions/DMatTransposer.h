@@ -46,7 +46,7 @@
 #include <blaze/math/constraints/DenseMatrix.h>
 #include <blaze/math/constraints/RowMajorMatrix.h>
 #include <blaze/math/expressions/DenseMatrix.h>
-#include <blaze/math/simd/IntrinsicTrait.h>
+#include <blaze/math/simd/SIMDTrait.h>
 #include <blaze/math/traits/SubmatrixTrait.h>
 #include <blaze/math/typetraits/HasMutableDataAccess.h>
 #include <blaze/math/typetraits/IsAligned.h>
@@ -79,11 +79,6 @@ template< typename MT  // Type of the dense matrix
         , bool SO >    // Storage order
 class DMatTransposer : public DenseMatrix< DMatTransposer<MT,SO>, SO >
 {
- private:
-   //**Type definitions****************************************************************************
-   typedef IntrinsicTrait< ElementType_<MT> >  IT;  //!< Intrinsic trait for the vector element type.
-   //**********************************************************************************************
-
  public:
    //**Type definitions****************************************************************************
    typedef DMatTransposer<MT,SO>  This;            //!< Type of this DMatTransposer instance.
@@ -91,7 +86,7 @@ class DMatTransposer : public DenseMatrix< DMatTransposer<MT,SO>, SO >
    typedef OppositeType_<MT>      OppositeType;    //!< Result type with opposite storage order for expression template evaluations.
    typedef ResultType_<MT>        TransposeType;   //!< Transpose type for expression template evaluations.
    typedef ElementType_<MT>       ElementType;     //!< Type of the matrix elements.
-   typedef typename IT::Type      IntrinsicType;   //!< Intrinsic type of the matrix elements.
+   typedef SIMDType_<MT>          SIMDType;        //!< SIMD type of the matrix elements.
    typedef ReturnType_<MT>        ReturnType;      //!< Return type for expression template evaluations.
    typedef const This&            CompositeType;   //!< Data type for composite expression templates.
    typedef Reference_<MT>         Reference;       //!< Reference to a non-constant matrix value.
@@ -103,10 +98,10 @@ class DMatTransposer : public DenseMatrix< DMatTransposer<MT,SO>, SO >
    //**********************************************************************************************
 
    //**Compilation flags***************************************************************************
-   //! Compilation flag for intrinsic optimization.
+   //! Compilation flag for SIMD optimization.
    /*! The \a vectorizable compilation flag indicates whether expressions the matrix is involved
-       in can be optimized via intrinsics. In case the dense matrix operand is vectorizable, the
-       \a vectorizable compilation flag is set to \a true, otherwise it is set to \a false. */
+       in can be optimized via SIMD operations. In case the dense matrix operand is vectorizable,
+       the \a vectorizable compilation flag is set to \a true, otherwise it is set to \a false. */
    enum { vectorizable = MT::vectorizable };
 
    //! Compilation flag for SMP assignments.
@@ -442,123 +437,123 @@ class DMatTransposer : public DenseMatrix< DMatTransposer<MT,SO>, SO >
    //**********************************************************************************************
 
    //**Load function*******************************************************************************
-   /*!\brief Load of an intrinsic element of the matrix.
+   /*!\brief Load of a SIMD element of the matrix.
    //
    // \param i Access index for the row. The index has to be in the range [0..M-1].
    // \param j Access index for the column. The index has to be in the range [0..N-1].
-   // \return The loaded intrinsic element.
+   // \return The loaded SIMD element.
    //
    // This function must \b NOT be called explicitly! It is used internally for the performance
    // optimized evaluation of expression templates. Calling this function explicitly might result
    // in erroneous results and/or in compilation errors.
    */
-   BLAZE_ALWAYS_INLINE IntrinsicType load( size_t i, size_t j ) const noexcept
+   BLAZE_ALWAYS_INLINE SIMDType load( size_t i, size_t j ) const noexcept
    {
       return dm_.load( j, i );
    }
    //**********************************************************************************************
 
    //**Loada function******************************************************************************
-   /*!\brief Aligned load of an intrinsic element of the matrix.
+   /*!\brief Aligned load of a SIMD element of the matrix.
    //
    // \param i Access index for the row. The index has to be in the range [0..M-1].
    // \param j Access index for the column. The index has to be in the range [0..N-1].
-   // \return The loaded intrinsic element.
+   // \return The loaded SIMD element.
    //
    // This function must \b NOT be called explicitly! It is used internally for the performance
    // optimized evaluation of expression templates. Calling this function explicitly might result
    // in erroneous results and/or in compilation errors.
    */
-   BLAZE_ALWAYS_INLINE IntrinsicType loada( size_t i, size_t j ) const noexcept
+   BLAZE_ALWAYS_INLINE SIMDType loada( size_t i, size_t j ) const noexcept
    {
       return dm_.loada( j, i );
    }
    //**********************************************************************************************
 
    //**Loadu function******************************************************************************
-   /*!\brief Unaligned load of an intrinsic element of the matrix.
+   /*!\brief Unaligned load of a SIMD element of the matrix.
    //
    // \param i Access index for the row. The index has to be in the range [0..M-1].
    // \param j Access index for the column. The index has to be in the range [0..N-1].
-   // \return The loaded intrinsic element.
+   // \return The loaded SIMD element.
    //
    // This function must \b NOT be called explicitly! It is used internally for the performance
    // optimized evaluation of expression templates. Calling this function explicitly might result
    // in erroneous results and/or in compilation errors.
    */
-   BLAZE_ALWAYS_INLINE IntrinsicType loadu( size_t i, size_t j ) const noexcept
+   BLAZE_ALWAYS_INLINE SIMDType loadu( size_t i, size_t j ) const noexcept
    {
       return dm_.loadu( j, i );
    }
    //**********************************************************************************************
 
    //**Store function******************************************************************************
-   /*!\brief Store of an intrinsic element of the matrix.
+   /*!\brief Store of a SIMD element of the matrix.
    //
    // \param i Access index for the row. The index has to be in the range [0..M-1].
    // \param j Access index for the column. The index has to be in the range [0..N-1].
-   // \param value The intrinsic element to be stored.
+   // \param value The SIMD element to be stored.
    // \return void
    //
    // This function must \b NOT be called explicitly! It is used internally for the performance
    // optimized evaluation of expression templates. Calling this function explicitly might result
    // in erroneous results and/or in compilation errors.
    */
-   BLAZE_ALWAYS_INLINE void store( size_t i, size_t j, const IntrinsicType& value ) noexcept
+   BLAZE_ALWAYS_INLINE void store( size_t i, size_t j, const SIMDType& value ) noexcept
    {
       dm_.store( j, i, value );
    }
    //**********************************************************************************************
 
    //**Storea function******************************************************************************
-   /*!\brief Aligned store of an intrinsic element of the matrix.
+   /*!\brief Aligned store of a SIMD element of the matrix.
    //
    // \param i Access index for the row. The index has to be in the range [0..M-1].
    // \param j Access index for the column. The index has to be in the range [0..N-1].
-   // \param value The intrinsic element to be stored.
+   // \param value The SIMD element to be stored.
    // \return void
    //
    // This function must \b NOT be called explicitly! It is used internally for the performance
    // optimized evaluation of expression templates. Calling this function explicitly might result
    // in erroneous results and/or in compilation errors.
    */
-   BLAZE_ALWAYS_INLINE void storea( size_t i, size_t j, const IntrinsicType& value ) noexcept
+   BLAZE_ALWAYS_INLINE void storea( size_t i, size_t j, const SIMDType& value ) noexcept
    {
       dm_.storea( j, i, value );
    }
    //**********************************************************************************************
 
    //**Storeu function*****************************************************************************
-   /*!\brief Unaligned store of an intrinsic element of the matrix.
+   /*!\brief Unaligned store of a SIMD element of the matrix.
    //
    // \param i Access index for the row. The index has to be in the range [0..M-1].
    // \param j Access index for the column. The index has to be in the range [0..N-1].
-   // \param value The intrinsic element to be stored.
+   // \param value The SIMD element to be stored.
    // \return void
    //
    // This function must \b NOT be called explicitly! It is used internally for the performance
    // optimized evaluation of expression templates. Calling this function explicitly might result
    // in erroneous results and/or in compilation errors.
    */
-   BLAZE_ALWAYS_INLINE void storeu( size_t i, size_t j, const IntrinsicType& value ) noexcept
+   BLAZE_ALWAYS_INLINE void storeu( size_t i, size_t j, const SIMDType& value ) noexcept
    {
       dm_.storeu( j, i, value );
    }
    //**********************************************************************************************
 
    //**Stream function*****************************************************************************
-   /*!\brief Aligned, non-temporal store of an intrinsic element of the matrix.
+   /*!\brief Aligned, non-temporal store of a SIMD element of the matrix.
    //
    // \param i Access index for the row. The index has to be in the range [0..M-1].
    // \param j Access index for the column. The index has to be in the range [0..N-1].
-   // \param value The intrinsic element to be stored.
+   // \param value The SIMD element to be stored.
    // \return void
    //
    // This function must \b NOT be called explicitly! It is used internally for the performance
    // optimized evaluation of expression templates. Calling this function explicitly might result
    // in erroneous results and/or in compilation errors.
    */
-   BLAZE_ALWAYS_INLINE void stream( size_t i, size_t j, const IntrinsicType& value ) noexcept
+   BLAZE_ALWAYS_INLINE void stream( size_t i, size_t j, const SIMDType& value ) noexcept
    {
       dm_.stream( j, i, value );
    }
@@ -993,11 +988,6 @@ class DMatTransposer : public DenseMatrix< DMatTransposer<MT,SO>, SO >
 template< typename MT >  // Type of the dense matrix
 class DMatTransposer<MT,true> : public DenseMatrix< DMatTransposer<MT,true>, true >
 {
- private:
-   //**Type definitions****************************************************************************
-   typedef IntrinsicTrait< ElementType_<MT> >  IT;  //!< Intrinsic trait for the vector element type.
-   //**********************************************************************************************
-
  public:
    //**Type definitions****************************************************************************
    typedef DMatTransposer<MT,true>  This;            //!< Type of this DMatTransposer instance.
@@ -1005,7 +995,7 @@ class DMatTransposer<MT,true> : public DenseMatrix< DMatTransposer<MT,true>, tru
    typedef OppositeType_<MT>        OppositeType;    //!< Result type with opposite storage order for expression template evaluations.
    typedef ResultType_<MT>          TransposeType;   //!< Transpose type for expression template evaluations.
    typedef ElementType_<MT>         ElementType;     //!< Type of the matrix elements.
-   typedef typename IT::Type        IntrinsicType;   //!< Intrinsic type of the matrix elements.
+   typedef SIMDType_<MT>            SIMDType;        //!< SIMD type of the matrix elements.
    typedef ReturnType_<MT>          ReturnType;      //!< Return type for expression template evaluations.
    typedef const This&              CompositeType;   //!< Data type for composite expression templates.
    typedef Reference_<MT>           Reference;       //!< Reference to a non-constant matrix value.
@@ -1017,10 +1007,10 @@ class DMatTransposer<MT,true> : public DenseMatrix< DMatTransposer<MT,true>, tru
    //**********************************************************************************************
 
    //**Compilation flags***************************************************************************
-   //! Compilation flag for intrinsic optimization.
+   //! Compilation flag for SIMD optimization.
    /*! The \a vectorizable compilation flag indicates whether expressions the matrix is involved
-       in can be optimized via intrinsics. In case the dense matrix operand is vectorizable, the
-       \a vectorizable compilation flag is set to \a true, otherwise it is set to \a false. */
+       in can be optimized via SIMD operations. In case the dense matrix operand is vectorizable,
+       the \a vectorizable compilation flag is set to \a true, otherwise it is set to \a false. */
    enum { vectorizable = MT::vectorizable };
 
    //! Compilation flag for SMP assignments.
@@ -1326,123 +1316,123 @@ class DMatTransposer<MT,true> : public DenseMatrix< DMatTransposer<MT,true>, tru
    //**********************************************************************************************
 
    //**Load function*******************************************************************************
-   /*!\brief Load of an intrinsic element of the matrix.
+   /*!\brief Load of a SIMD element of the matrix.
    //
    // \param i Access index for the row. The index has to be in the range [0..M-1].
    // \param j Access index for the column. The index has to be in the range [0..N-1].
-   // \return The loaded intrinsic element.
+   // \return The loaded SIMD element.
    //
    // This function must \b NOT be called explicitly! It is used internally for the performance
    // optimized evaluation of expression templates. Calling this function explicitly might result
    // in erroneous results and/or in compilation errors.
    */
-   BLAZE_ALWAYS_INLINE IntrinsicType load( size_t i, size_t j ) const noexcept
+   BLAZE_ALWAYS_INLINE SIMDType load( size_t i, size_t j ) const noexcept
    {
       return dm_.load( j, i );
    }
    //**********************************************************************************************
 
    //**Loada function*******************************************************************************
-   /*!\brief Aligned load of an intrinsic element of the matrix.
+   /*!\brief Aligned load of a SIMD element of the matrix.
    //
    // \param i Access index for the row. The index has to be in the range [0..M-1].
    // \param j Access index for the column. The index has to be in the range [0..N-1].
-   // \return The loaded intrinsic element.
+   // \return The loaded SIMD element.
    //
    // This function must \b NOT be called explicitly! It is used internally for the performance
    // optimized evaluation of expression templates. Calling this function explicitly might result
    // in erroneous results and/or in compilation errors.
    */
-   BLAZE_ALWAYS_INLINE IntrinsicType loada( size_t i, size_t j ) const noexcept
+   BLAZE_ALWAYS_INLINE SIMDType loada( size_t i, size_t j ) const noexcept
    {
       return dm_.loada( j, i );
    }
    //**********************************************************************************************
 
    //**Loadu function******************************************************************************
-   /*!\brief Unaligned load of an intrinsic element of the matrix.
+   /*!\brief Unaligned load of a SIMD element of the matrix.
    //
    // \param i Access index for the row. The index has to be in the range [0..M-1].
    // \param j Access index for the column. The index has to be in the range [0..N-1].
-   // \return The loaded intrinsic element.
+   // \return The loaded SIMD element.
    //
    // This function must \b NOT be called explicitly! It is used internally for the performance
    // optimized evaluation of expression templates. Calling this function explicitly might result
    // in erroneous results and/or in compilation errors.
    */
-   BLAZE_ALWAYS_INLINE IntrinsicType loadu( size_t i, size_t j ) const noexcept
+   BLAZE_ALWAYS_INLINE SIMDType loadu( size_t i, size_t j ) const noexcept
    {
       return dm_.loadu( j, i );
    }
    //**********************************************************************************************
 
    //**Store function******************************************************************************
-   /*!\brief Store of an intrinsic element of the matrix.
+   /*!\brief Store of a SIMD element of the matrix.
    //
    // \param i Access index for the row. The index has to be in the range [0..M-1].
    // \param j Access index for the column. The index has to be in the range [0..N-1].
-   // \param value The intrinsic element to be stored.
+   // \param value The SIMD element to be stored.
    // \return void
    //
    // This function must \b NOT be called explicitly! It is used internally for the performance
    // optimized evaluation of expression templates. Calling this function explicitly might result
    // in erroneous results and/or in compilation errors.
    */
-   BLAZE_ALWAYS_INLINE void store( size_t i, size_t j, const IntrinsicType& value ) noexcept
+   BLAZE_ALWAYS_INLINE void store( size_t i, size_t j, const SIMDType& value ) noexcept
    {
       dm_.store( j, i, value );
    }
    //**********************************************************************************************
 
    //**Storea function******************************************************************************
-   /*!\brief Aligned store of an intrinsic element of the matrix.
+   /*!\brief Aligned store of a SIMD element of the matrix.
    //
    // \param i Access index for the row. The index has to be in the range [0..M-1].
    // \param j Access index for the column. The index has to be in the range [0..N-1].
-   // \param value The intrinsic element to be stored.
+   // \param value The SIMD element to be stored.
    // \return void
    //
    // This function must \b NOT be called explicitly! It is used internally for the performance
    // optimized evaluation of expression templates. Calling this function explicitly might result
    // in erroneous results and/or in compilation errors.
    */
-   BLAZE_ALWAYS_INLINE void storea( size_t i, size_t j, const IntrinsicType& value ) noexcept
+   BLAZE_ALWAYS_INLINE void storea( size_t i, size_t j, const SIMDType& value ) noexcept
    {
       dm_.storea( j, i, value );
    }
    //**********************************************************************************************
 
    //**Storeu function*****************************************************************************
-   /*!\brief Unaligned store of an intrinsic element of the matrix.
+   /*!\brief Unaligned store of a SIMD element of the matrix.
    //
    // \param i Access index for the row. The index has to be in the range [0..M-1].
    // \param j Access index for the column. The index has to be in the range [0..N-1].
-   // \param value The intrinsic element to be stored.
+   // \param value The SIMD element to be stored.
    // \return void
    //
    // This function must \b NOT be called explicitly! It is used internally for the performance
    // optimized evaluation of expression templates. Calling this function explicitly might result
    // in erroneous results and/or in compilation errors.
    */
-   BLAZE_ALWAYS_INLINE void storeu( size_t i, size_t j, const IntrinsicType& value ) noexcept
+   BLAZE_ALWAYS_INLINE void storeu( size_t i, size_t j, const SIMDType& value ) noexcept
    {
       dm_.storeu( j, i, value );
    }
    //**********************************************************************************************
 
    //**Stream function*****************************************************************************
-   /*!\brief Aligned, non-temporal store of an intrinsic element of the matrix.
+   /*!\brief Aligned, non-temporal store of a SIMD element of the matrix.
    //
    // \param i Access index for the row. The index has to be in the range [0..M-1].
    // \param j Access index for the column. The index has to be in the range [0..N-1].
-   // \param value The intrinsic element to be stored.
+   // \param value The SIMD element to be stored.
    // \return void
    //
    // This function must \b NOT be called explicitly! It is used internally for the performance
    // optimized evaluation of expression templates. Calling this function explicitly might result
    // in erroneous results and/or in compilation errors.
    */
-   BLAZE_ALWAYS_INLINE void stream( size_t i, size_t j, const IntrinsicType& value ) noexcept
+   BLAZE_ALWAYS_INLINE void stream( size_t i, size_t j, const SIMDType& value ) noexcept
    {
       dm_.stream( j, i, value );
    }

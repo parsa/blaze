@@ -72,8 +72,8 @@ class DenseIterator
    typedef ReferenceType     reference;          //!< Reference return type.
    typedef DifferenceType    difference_type;    //!< Difference between two iterators.
 
-   //! Intrinsic type of the elements.
-   typedef typename IntrinsicTrait<Type>::Type  IntrinsicType;
+   //! SIMD type of the elements.
+   typedef SIMDTrait_<Type>  SIMDType;
    //**********************************************************************************************
 
    //**Constructors********************************************************************************
@@ -129,9 +129,9 @@ class DenseIterator
    //**Expression template evaluation functions****************************************************
    /*!\name Expression template evaluation functions */
    //@{
-   inline const IntrinsicType load () const noexcept;
-   inline const IntrinsicType loada() const noexcept;
-   inline const IntrinsicType loadu() const noexcept;
+   inline const SIMDType load () const noexcept;
+   inline const SIMDType loada() const noexcept;
+   inline const SIMDType loadu() const noexcept;
    //@}
    //**********************************************************************************************
 
@@ -384,18 +384,18 @@ inline typename DenseIterator<Type,AF>::PointerType DenseIterator<Type,AF>::base
 //=================================================================================================
 
 //*************************************************************************************************
-/*!\brief Aligned load of the intrinsic element at the current iterator position.
+/*!\brief Aligned load of the SIMD element at the current iterator position.
 //
-// \return The loaded intrinsic element.
+// \return The loaded SIMD element.
 //
-// This function performs an aligned load of the intrinsic element of the current element.
-// This function must \b NOT be called explicitly! It is used internally for the performance
-// optimized evaluation of expression templates. Calling this function explicitly might result
-// in erroneous results and/or in compilation errors.
+// This function performs an aligned load of the SIMD element of the current element. This
+// function must \b NOT be called explicitly! It is used internally for the performance optimized
+// evaluation of expression templates. Calling this function explicitly might result in erroneous
+// results and/or in compilation errors.
 */
 template< typename Type  // Type of the elements
         , bool AF >      // Alignment flag
-inline const typename DenseIterator<Type,AF>::IntrinsicType
+inline const typename DenseIterator<Type,AF>::SIMDType
    DenseIterator<Type,AF>::load() const noexcept
 {
    if( AF )
@@ -407,18 +407,18 @@ inline const typename DenseIterator<Type,AF>::IntrinsicType
 
 
 //*************************************************************************************************
-/*!\brief Aligned load of the intrinsic element at the current iterator position.
+/*!\brief Aligned load of the SIMD element at the current iterator position.
 //
-// \return The loaded intrinsic element.
+// \return The loaded SIMD element.
 //
-// This function performs an aligned load of the intrinsic element of the current element.
-// This function must \b NOT be called explicitly! It is used internally for the performance
-// optimized evaluation of expression templates. Calling this function explicitly might result
-// in erroneous results and/or in compilation errors.
+// This function performs an aligned load of the SIMD element of the current element. This
+// function must \b NOT be called explicitly! It is used internally for the performance optimized
+// evaluation of expression templates. Calling this function explicitly might result in erroneous
+// results and/or in compilation errors.
 */
 template< typename Type  // Type of the elements
         , bool AF >      // Alignment flag
-inline const typename DenseIterator<Type,AF>::IntrinsicType
+inline const typename DenseIterator<Type,AF>::SIMDType
    DenseIterator<Type,AF>::loada() const noexcept
 {
    BLAZE_INTERNAL_ASSERT( checkAlignment( ptr_ ), "Invalid alignment detected" );
@@ -429,18 +429,18 @@ inline const typename DenseIterator<Type,AF>::IntrinsicType
 
 
 //*************************************************************************************************
-/*!\brief Unaligned load of the intrinsic element at the current iterator position.
+/*!\brief Unaligned load of the SIMD element at the current iterator position.
 //
-// \return The loaded intrinsic element.
+// \return The loaded SIMD element.
 //
-// This function performs an unaligned load of the intrinsic element of the current element.
-// This function must \b NOT be called explicitly! It is used internally for the performance
-// optimized evaluation of expression templates. Calling this function explicitly might result
-// in erroneous results and/or in compilation errors.
+// This function performs an unaligned load of the SIMD element of the current element. This
+// function must \b NOT be called explicitly! It is used internally for the performance optimized
+// evaluation of expression templates. Calling this function explicitly might result in erroneous
+// results and/or in compilation errors.
 */
 template< typename Type  // Type of the elements
         , bool AF >      // Alignment flag
-inline const typename DenseIterator<Type,AF>::IntrinsicType
+inline const typename DenseIterator<Type,AF>::SIMDType
    DenseIterator<Type,AF>::loadu() const noexcept
 {
    return blaze::loadu( ptr_ );

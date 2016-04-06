@@ -271,7 +271,7 @@ inline SubmatrixExprTrait_<const MT,unaligned>
 // type and the available vectorization mode (SSE, AVX, ...). In order to be properly aligned the
 // first element of each row/column of the submatrix must be aligned. The following source code
 // gives some examples for a double precision row-major dynamic matrix, assuming that padding is
-// enabled and that AVX is available, which packs 4 \c double values into an intrinsic vector:
+// enabled and that AVX is available, which packs 4 \c double values into a SIMD vector:
 
    \code
    using blaze::rowMajor;
@@ -358,7 +358,7 @@ inline DisableIf_< Or< IsComputation<MT>, IsTransExpr<MT> >, SubmatrixExprTrait_
 // type and the available vectorization mode (SSE, AVX, ...). In order to be properly aligned the
 // first element of each row/column of the submatrix must be aligned. The following source code
 // gives some examples for a double precision row-major dynamic matrix, assuming that padding is
-// enabled and that AVX is available, which packs 4 \c double values into an intrinsic vector:
+// enabled and that AVX is available, which packs 4 \c double values into a SIMD vector:
 
    \code
    using blaze::rowMajor;

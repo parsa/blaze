@@ -205,11 +205,6 @@ class SVecTDVecMultExpr : public SparseMatrix< SVecTDVecMultExpr<VT1,VT2>, true 
    typedef If_< IsComputation<VT2>, const RT2, CT2 >  RT;
    //**********************************************************************************************
 
-   //**Compilation flags***************************************************************************
-   //! Compilation switch for the expression template assignment strategy.
-   enum { smpAssignable = 0 };
-   //**********************************************************************************************
-
    //**ConstIterator class definition**************************************************************
    /*!\brief Iterator over the elements of the sparse vector-dense vector outer product expression.
    */
@@ -339,6 +334,16 @@ class SVecTDVecMultExpr : public SparseMatrix< SVecTDVecMultExpr<VT1,VT2>, true 
       RightElement v_;   //!< Element of the right-hand side dense vector expression.
       //*******************************************************************************************
    };
+   //**********************************************************************************************
+
+   //**Compilation flags***************************************************************************
+   //! Compilation switch for the expression template assignment strategy.
+   enum { smpAssignable = 0 };
+   //**********************************************************************************************
+
+   //**SIMD properties*****************************************************************************
+   //! The number of elements packed within a single SIMD element.
+   enum : size_t { SIMDSIZE = SIMDTrait<ElementType>::size };
    //**********************************************************************************************
 
    //**Constructor*********************************************************************************
@@ -632,26 +637,23 @@ class SVecTDVecMultExpr : public SparseMatrix< SVecTDVecMultExpr<VT1,VT2>, true 
    {
       typedef ConstIterator_< RemoveReference_<LT> >  ConstIterator;
 
-      typedef IntrinsicTrait<ElementType>  IT;
-      typedef typename IT::Type            IntrinsicType;
-
       const size_t N( (~A).columns() );
 
       const bool remainder( !IsPadded<MT>::value || !IsPadded<VT4>::value );
 
-      const size_t jpos( remainder ? ( N & size_t(-IT::size) ) : N );
-      BLAZE_INTERNAL_ASSERT( !remainder || ( N - ( N % IT::size ) ) == jpos, "Invalid end calculation" );
+      const size_t jpos( remainder ? ( N & size_t(-SIMDSIZE) ) : N );
+      BLAZE_INTERNAL_ASSERT( !remainder || ( N - ( N % SIMDSIZE ) ) == jpos, "Invalid end calculation" );
 
       const ConstIterator begin( x.begin() );
       const ConstIterator end  ( x.end()   );
 
       for( ConstIterator element=begin; element!=end; ++element )
       {
-         const IntrinsicType x1( set( element->value() ) );
+         const SIMDTrait_<ElementType> x1( set( element->value() ) );
 
          size_t j( 0UL );
 
-         for( ; j<jpos; j+=IT::size ) {
+         for( ; j<jpos; j+=SIMDSIZE ) {
             (~A).store( element->index(), j, x1 * y.load(j) );
          }
          for( ; remainder && j<N; ++j ) {
@@ -918,26 +920,23 @@ class SVecTDVecMultExpr : public SparseMatrix< SVecTDVecMultExpr<VT1,VT2>, true 
    {
       typedef ConstIterator_< RemoveReference_<LT> >  ConstIterator;
 
-      typedef IntrinsicTrait<ElementType>  IT;
-      typedef typename IT::Type            IntrinsicType;
-
       const size_t N( (~A).columns() );
 
       const bool remainder( !IsPadded<MT>::value || !IsPadded<VT4>::value );
 
-      const size_t jpos( remainder ? ( N & size_t(-IT::size) ) : N );
-      BLAZE_INTERNAL_ASSERT( !remainder || ( N - ( N % IT::size ) ) == jpos, "Invalid end calculation" );
+      const size_t jpos( remainder ? ( N & size_t(-SIMDSIZE) ) : N );
+      BLAZE_INTERNAL_ASSERT( !remainder || ( N - ( N % SIMDSIZE ) ) == jpos, "Invalid end calculation" );
 
       const ConstIterator begin( x.begin() );
       const ConstIterator end  ( x.end()   );
 
       for( ConstIterator element=begin; element!=end; ++element )
       {
-         const IntrinsicType x1( set( element->value() ) );
+         const SIMDTrait_<ElementType> x1( set( element->value() ) );
 
          size_t j( 0UL );
 
-         for( ; j<jpos; j+=IT::size ) {
+         for( ; j<jpos; j+=SIMDSIZE ) {
             (~A).store( element->index(), j, (~A).load(element->index(),j) + x1 * y.load(j) );
          }
          for( ; remainder && j<N; ++j ) {
@@ -1093,26 +1092,23 @@ class SVecTDVecMultExpr : public SparseMatrix< SVecTDVecMultExpr<VT1,VT2>, true 
    {
       typedef ConstIterator_< RemoveReference_<LT> >  ConstIterator;
 
-      typedef IntrinsicTrait<ElementType>  IT;
-      typedef typename IT::Type            IntrinsicType;
-
       const size_t N( (~A).columns() );
 
       const bool remainder( !IsPadded<MT>::value || !IsPadded<VT4>::value );
 
-      const size_t jpos( remainder ? ( N & size_t(-IT::size) ) : N );
-      BLAZE_INTERNAL_ASSERT( !remainder || ( N - ( N % IT::size ) ) == jpos, "Invalid end calculation" );
+      const size_t jpos( remainder ? ( N & size_t(-SIMDSIZE) ) : N );
+      BLAZE_INTERNAL_ASSERT( !remainder || ( N - ( N % SIMDSIZE ) ) == jpos, "Invalid end calculation" );
 
       const ConstIterator begin( x.begin() );
       const ConstIterator end  ( x.end()   );
 
       for( ConstIterator element=begin; element!=end; ++element )
       {
-         const IntrinsicType x1( set( element->value() ) );
+         const SIMDTrait_<ElementType> x1( set( element->value() ) );
 
          size_t j( 0UL );
 
-         for( ; j<jpos; j+=IT::size ) {
+         for( ; j<jpos; j+=SIMDSIZE ) {
             (~A).store( element->index(), j, (~A).load(element->index(),j) - x1 * y.load(j) );
          }
          for( ; remainder && j<N; ++j ) {

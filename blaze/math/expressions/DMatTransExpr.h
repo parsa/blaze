@@ -149,13 +149,13 @@ class DMatTransExpr : public DenseMatrix< DMatTransExpr<MT,SO>, SO >
 
  public:
    //**Type definitions****************************************************************************
-   typedef DMatTransExpr<MT,SO>                        This;           //!< Type of this DMatTransExpr instance.
-   typedef TransposeType_<MT>                          ResultType;     //!< Result type for expression template evaluations.
-   typedef OppositeType_<ResultType>                   OppositeType;   //!< Result type with opposite storage order for expression template evaluations.
-   typedef ResultType_<MT>                             TransposeType;  //!< Transpose type for expression template evaluations.
-   typedef ElementType_<MT>                            ElementType;    //!< Resulting element type.
-   typedef typename IntrinsicTrait<ElementType>::Type  IntrinsicType;  //!< Resulting intrinsic element type.
-   typedef ReturnType_<MT>                             ReturnType;     //!< Return type for expression template evaluations.
+   typedef DMatTransExpr<MT,SO>       This;           //!< Type of this DMatTransExpr instance.
+   typedef TransposeType_<MT>         ResultType;     //!< Result type for expression template evaluations.
+   typedef OppositeType_<ResultType>  OppositeType;   //!< Result type with opposite storage order for expression template evaluations.
+   typedef ResultType_<MT>            TransposeType;  //!< Transpose type for expression template evaluations.
+   typedef ElementType_<MT>           ElementType;    //!< Resulting element type.
+   typedef SIMDTrait_<ElementType>    SIMDType;       //!< Resulting SIMD element type.
+   typedef ReturnType_<MT>            ReturnType;     //!< Return type for expression template evaluations.
 
    //! Data type for composite expression templates.
    typedef IfTrue_< useAssign, const ResultType, const DMatTransExpr& >  CompositeType;
@@ -275,11 +275,11 @@ class DMatTransExpr : public DenseMatrix< DMatTransExpr<MT,SO>, SO >
       //*******************************************************************************************
 
       //**Load function****************************************************************************
-      /*!\brief Access to the intrinsic elements of the matrix.
+      /*!\brief Access to the SIMD elements of the matrix.
       //
-      // \return The resulting intrinsic value.
+      // \return The resulting SIMD element.
       */
-      inline IntrinsicType load() const noexcept {
+      inline SIMDType load() const noexcept {
          return iterator_.load();
       }
       //*******************************************************************************************
@@ -412,6 +412,11 @@ class DMatTransExpr : public DenseMatrix< DMatTransExpr<MT,SO>, SO >
    enum { smpAssignable = MT::smpAssignable };
    //**********************************************************************************************
 
+   //**SIMD properties*****************************************************************************
+   //! The number of elements packed within a single SIMD element.
+   enum : size_t { SIMDSIZE = SIMDTrait<ElementType>::size };
+   //**********************************************************************************************
+
    //**Constructor*********************************************************************************
    /*!\brief Constructor for the DMatTransExpr class.
    //
@@ -456,18 +461,17 @@ class DMatTransExpr : public DenseMatrix< DMatTransExpr<MT,SO>, SO >
    //**********************************************************************************************
 
    //**Load function*******************************************************************************
-   /*!\brief Access to the intrinsic elements of the matrix.
+   /*!\brief Access to the SIMD elements of the matrix.
    //
    // \param i Access index for the row. The index has to be in the range \f$[0..M-1]\f$.
    // \param j Access index for the column. The index has to be in the range \f$[0..N-1]\f$.
    // \return Reference to the accessed values.
    */
-   BLAZE_ALWAYS_INLINE IntrinsicType load( size_t i, size_t j ) const noexcept {
-      typedef IntrinsicTrait<ElementType>  IT;
+   BLAZE_ALWAYS_INLINE SIMDType load( size_t i, size_t j ) const noexcept {
       BLAZE_INTERNAL_ASSERT( i < dm_.columns(), "Invalid row access index"    );
       BLAZE_INTERNAL_ASSERT( j < dm_.rows()   , "Invalid column access index" );
-      BLAZE_INTERNAL_ASSERT( !SO || ( i % IT::size == 0UL ), "Invalid row access index"    );
-      BLAZE_INTERNAL_ASSERT( SO  || ( j % IT::size == 0UL ), "Invalid column access index" );
+      BLAZE_INTERNAL_ASSERT( !SO || ( i % SIMDSIZE == 0UL ), "Invalid row access index"    );
+      BLAZE_INTERNAL_ASSERT( SO  || ( j % SIMDSIZE == 0UL ), "Invalid column access index" );
       return dm_.load(j,i);
    }
    //**********************************************************************************************

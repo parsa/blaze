@@ -138,14 +138,12 @@ class DVecTransExpr : public DenseVector< DVecTransExpr<VT,TF>, TF >
 
  public:
    //**Type definitions****************************************************************************
-   typedef DVecTransExpr<VT,TF>  This;           //!< Type of this DVecTransExpr instance.
-   typedef TransposeType_<VT>    ResultType;     //!< Result type for expression template evaluations.
-   typedef ResultType_<VT>       TransposeType;  //!< Transpose type for expression template evaluations.
-   typedef ElementType_<VT>      ElementType;    //!< Resulting element type.
-   typedef ReturnType_<VT>       ReturnType;     //!< Return type for expression template evaluations.
-
-   //! Resulting intrinsic element type.
-   typedef typename IntrinsicTrait<ElementType>::Type  IntrinsicType;
+   typedef DVecTransExpr<VT,TF>     This;           //!< Type of this DVecTransExpr instance.
+   typedef TransposeType_<VT>       ResultType;     //!< Result type for expression template evaluations.
+   typedef ResultType_<VT>          TransposeType;  //!< Transpose type for expression template evaluations.
+   typedef ElementType_<VT>         ElementType;    //!< Resulting element type.
+   typedef ReturnType_<VT>          ReturnType;     //!< Return type for expression template evaluations.
+   typedef SIMDTrait_<ElementType>  SIMDType;       //!< Resulting SIMD element type.
 
    //! Data type for composite expression templates.
    typedef IfTrue_< useAssign, const ResultType, const DVecTransExpr& >  CompositeType;
@@ -265,11 +263,11 @@ class DVecTransExpr : public DenseVector< DVecTransExpr<VT,TF>, TF >
       //*******************************************************************************************
 
       //**Load function****************************************************************************
-      /*!\brief Access to the intrinsic elements of the vector.
+      /*!\brief Access to the SIMD elements of the vector.
       //
-      // \return The resulting intrinsic value.
+      // \return The resulting SIMD element.
       */
-      inline IntrinsicType load() const noexcept {
+      inline SIMDType load() const noexcept {
          return iterator_.load();
       }
       //*******************************************************************************************
@@ -402,6 +400,11 @@ class DVecTransExpr : public DenseVector< DVecTransExpr<VT,TF>, TF >
    enum { smpAssignable = VT::smpAssignable };
    //**********************************************************************************************
 
+   //**SIMD properties*****************************************************************************
+   //! The number of elements packed within a single SIMD element.
+   enum : size_t { SIMDSIZE = SIMDTrait<ElementType>::size };
+   //**********************************************************************************************
+
    //**Constructor*********************************************************************************
    /*!\brief Constructor for the DVecTransExpr class.
    //
@@ -440,15 +443,14 @@ class DVecTransExpr : public DenseVector< DVecTransExpr<VT,TF>, TF >
    //**********************************************************************************************
 
    //**Load function*******************************************************************************
-   /*!\brief Access to the intrinsic elements of the vector.
+   /*!\brief Access to the SIMD elements of the vector.
    //
    // \param index Access index. The index has to be in the range \f$[0..N-1]\f$.
    // \return Reference to the accessed values.
    */
-   BLAZE_ALWAYS_INLINE IntrinsicType load( size_t index ) const noexcept {
-      typedef IntrinsicTrait<ElementType>  IT;
+   BLAZE_ALWAYS_INLINE SIMDType load( size_t index ) const noexcept {
       BLAZE_INTERNAL_ASSERT( index < dv_.size()      , "Invalid vector access index" );
-      BLAZE_INTERNAL_ASSERT( index % IT::size == 0UL , "Invalid vector access index" );
+      BLAZE_INTERNAL_ASSERT( index % SIMDSIZE == 0UL , "Invalid vector access index" );
       return dv_.load( index );
    }
    //**********************************************************************************************

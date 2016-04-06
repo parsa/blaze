@@ -45,7 +45,7 @@
 #include <blaze/math/constraints/DenseVector.h>
 #include <blaze/math/constraints/TransposeFlag.h>
 #include <blaze/math/expressions/DenseVector.h>
-#include <blaze/math/simd/IntrinsicTrait.h>
+#include <blaze/math/simd/SIMDTrait.h>
 #include <blaze/math/traits/SubvectorTrait.h>
 #include <blaze/math/typetraits/IsAligned.h>
 #include <blaze/math/typetraits/IsPadded.h>
@@ -76,33 +76,28 @@ template< typename VT  // Type of the dense vector
         , bool TF >    // Transpose flag
 class DVecTransposer : public DenseVector< DVecTransposer<VT,TF>, TF >
 {
- private:
-   //**Type definitions****************************************************************************
-   typedef IntrinsicTrait< ElementType_<VT> >  IT;  //!< Intrinsic trait for the vector element type.
-   //**********************************************************************************************
-
  public:
    //**Type definitions****************************************************************************
-   typedef DVecTransposer<VT,TF>  This;            //!< Type of this DVecTransposer instance.
-   typedef TransposeType_<VT>     ResultType;      //!< Result type for expression template evaluations.
-   typedef ResultType_<VT>        TransposeType;   //!< Transpose type for expression template evaluations.
-   typedef ElementType_<VT>       ElementType;     //!< Type of the vector elements.
-   typedef typename IT::Type      IntrinsicType;   //!< Intrinsic type of the vector elements.
-   typedef ReturnType_<VT>        ReturnType;      //!< Return type for expression template evaluations.
-   typedef const This&            CompositeType;   //!< Data type for composite expression templates.
-   typedef Reference_<VT>         Reference;       //!< Reference to a non-constant vector value.
-   typedef ConstReference_<VT>    ConstReference;  //!< Reference to a constant vector value.
-   typedef Pointer_<VT>           Pointer;         //!< Pointer to a non-constant vector value.
-   typedef ConstPointer_<VT>      ConstPointer;    //!< Pointer to a constant vector value.
-   typedef Iterator_<VT>          Iterator;        //!< Iterator over non-constant elements.
-   typedef ConstIterator_<VT>     ConstIterator;   //!< Iterator over constant elements.
+   typedef DVecTransposer<VT,TF>    This;            //!< Type of this DVecTransposer instance.
+   typedef TransposeType_<VT>       ResultType;      //!< Result type for expression template evaluations.
+   typedef ResultType_<VT>          TransposeType;   //!< Transpose type for expression template evaluations.
+   typedef ElementType_<VT>         ElementType;     //!< Type of the vector elements.
+   typedef SIMDType_<VT>            SIMDType;        //!< SIMD type of the vector elements.
+   typedef ReturnType_<VT>          ReturnType;      //!< Return type for expression template evaluations.
+   typedef const This&              CompositeType;   //!< Data type for composite expression templates.
+   typedef Reference_<VT>           Reference;       //!< Reference to a non-constant vector value.
+   typedef ConstReference_<VT>      ConstReference;  //!< Reference to a constant vector value.
+   typedef Pointer_<VT>             Pointer;         //!< Pointer to a non-constant vector value.
+   typedef ConstPointer_<VT>        ConstPointer;    //!< Pointer to a constant vector value.
+   typedef Iterator_<VT>            Iterator;        //!< Iterator over non-constant elements.
+   typedef ConstIterator_<VT>       ConstIterator;   //!< Iterator over constant elements.
    //**********************************************************************************************
 
    //**Compilation flags***************************************************************************
-   //! Compilation flag for intrinsic optimization.
+   //! Compilation flag for SIMD optimization.
    /*! The \a vectorizable compilation flag indicates whether expressions the vector is involved
-       in can be optimized via intrinsics. In case the dense vector operand is vectorizable, the
-       \a vectorizable compilation flag is set to \a true, otherwise it is set to \a false. */
+       in can be optimized via SIMD operations. In case the dense vector operand is vectorizable,
+       the \a vectorizable compilation flag is set to \a true, otherwise it is set to \a false. */
    enum { vectorizable = VT::vectorizable };
 
    //! Compilation flag for SMP assignments.
@@ -359,116 +354,116 @@ class DVecTransposer : public DenseVector< DVecTransposer<VT,TF>, TF >
    //**********************************************************************************************
 
    //**Load function*******************************************************************************
-   /*!\brief Load of an intrinsic element of the vector.
+   /*!\brief Load of a SIMD element of the vector.
    //
    // \param index Access index. The index must be smaller than the number of vector elements.
-   // \return The loaded intrinsic element.
+   // \return The loaded SIMD element.
    //
    // This function must \b NOT be called explicitly! It is used internally for the performance
    // optimized evaluation of expression templates. Calling this function explicitly might result
    // in erroneous results and/or in compilation errors.
    */
-   BLAZE_ALWAYS_INLINE IntrinsicType load( size_t index ) const noexcept
+   BLAZE_ALWAYS_INLINE SIMDType load( size_t index ) const noexcept
    {
       return dv_.load( index );
    }
    //**********************************************************************************************
 
    //**Loada function******************************************************************************
-   /*!\brief Aligned load of an intrinsic element of the vector.
+   /*!\brief Aligned load of a SIMD element of the vector.
    //
    // \param index Access index. The index must be smaller than the number of vector elements.
-   // \return The loaded intrinsic element.
+   // \return The loaded SIMD element.
    //
    // This function must \b NOT be called explicitly! It is used internally for the performance
    // optimized evaluation of expression templates. Calling this function explicitly might result
    // in erroneous results and/or in compilation errors.
    */
-   BLAZE_ALWAYS_INLINE IntrinsicType loada( size_t index ) const noexcept
+   BLAZE_ALWAYS_INLINE SIMDType loada( size_t index ) const noexcept
    {
       return dv_.loada( index );
    }
    //**********************************************************************************************
 
    //**Loadu function******************************************************************************
-   /*!\brief Unaligned load of an intrinsic element of the vector.
+   /*!\brief Unaligned load of a SIMD element of the vector.
    //
    // \param index Access index. The index must be smaller than the number of vector elements.
-   // \return The loaded intrinsic element.
+   // \return The loaded SIMD element.
    //
    // This function must \b NOT be called explicitly! It is used internally for the performance
    // optimized evaluation of expression templates. Calling this function explicitly might result
    // in erroneous results and/or in compilation errors.
    */
-   BLAZE_ALWAYS_INLINE IntrinsicType loadu( size_t index ) const noexcept
+   BLAZE_ALWAYS_INLINE SIMDType loadu( size_t index ) const noexcept
    {
       return dv_.loadu( index );
    }
    //**********************************************************************************************
 
    //**Store function******************************************************************************
-   /*!\brief Store of an intrinsic element of the vector.
+   /*!\brief Store of a SIMD element of the vector.
    //
    // \param index Access index. The index must be smaller than the number of vector elements.
-   // \param value The intrinsic element to be stored.
+   // \param value The SIMD element to be stored.
    // \return void
    //
    // This function must \b NOT be called explicitly! It is used internally for the performance
    // optimized evaluation of expression templates. Calling this function explicitly might result
    // in erroneous results and/or in compilation errors.
    */
-   BLAZE_ALWAYS_INLINE void store( size_t index, const IntrinsicType& value ) noexcept
+   BLAZE_ALWAYS_INLINE void store( size_t index, const SIMDType& value ) noexcept
    {
       dv_.store( index, value );
    }
    //**********************************************************************************************
 
    //**Storea function******************************************************************************
-   /*!\brief Aligned store of an intrinsic element of the vector.
+   /*!\brief Aligned store of a SIMD element of the vector.
    //
    // \param index Access index. The index must be smaller than the number of vector elements.
-   // \param value The intrinsic element to be stored.
+   // \param value The SIMD element to be stored.
    // \return void
    //
    // This function must \b NOT be called explicitly! It is used internally for the performance
    // optimized evaluation of expression templates. Calling this function explicitly might result
    // in erroneous results and/or in compilation errors.
    */
-   BLAZE_ALWAYS_INLINE void storea( size_t index, const IntrinsicType& value ) noexcept
+   BLAZE_ALWAYS_INLINE void storea( size_t index, const SIMDType& value ) noexcept
    {
       dv_.storea( index, value );
    }
    //**********************************************************************************************
 
    //**Storeu function*****************************************************************************
-   /*!\brief Unaligned store of an intrinsic element of the vector.
+   /*!\brief Unaligned store of a SIMD element of the vector.
    //
    // \param index Access index. The index must be smaller than the number of vector elements.
-   // \param value The intrinsic element to be stored.
+   // \param value The SIMD element to be stored.
    // \return void
    //
    // This function must \b NOT be called explicitly! It is used internally for the performance
    // optimized evaluation of expression templates. Calling this function explicitly might result
    // in erroneous results and/or in compilation errors.
    */
-   BLAZE_ALWAYS_INLINE void storeu( size_t index, const IntrinsicType& value ) noexcept
+   BLAZE_ALWAYS_INLINE void storeu( size_t index, const SIMDType& value ) noexcept
    {
       dv_.storeu( index, value );
    }
    //**********************************************************************************************
 
    //**Stream function*****************************************************************************
-   /*!\brief Aligned, non-temporal store of an intrinsic element of the vector.
+   /*!\brief Aligned, non-temporal store of a SIMD element of the vector.
    //
    // \param index Access index. The index must be smaller than the number of vector elements.
-   // \param value The intrinsic element to be stored.
+   // \param value The SIMD element to be stored.
    // \return void
    //
    // This function must \b NOT be called explicitly! It is used internally for the performance
    // optimized evaluation of expression templates. Calling this function explicitly might result
    // in erroneous results and/or in compilation errors.
    */
-   BLAZE_ALWAYS_INLINE void stream( size_t index, const IntrinsicType& value ) noexcept
+   BLAZE_ALWAYS_INLINE void stream( size_t index, const SIMDType& value ) noexcept
    {
       dv_.stream( index, value );
    }

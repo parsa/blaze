@@ -1,7 +1,7 @@
 //=================================================================================================
 /*!
 //  \file blaze/math/simd/Loadu.h
-//  \brief Header file for the intrinsic unaligned load functionality
+//  \brief Header file for the SIMD unaligned load functionality
 //
 //  Copyright (C) 2013 Klaus Iglberger - All Rights Reserved
 //
@@ -55,7 +55,7 @@ namespace blaze {
 
 //=================================================================================================
 //
-//  INTRINSIC LOADU FUNCTIONS
+//  SIMD LOADU FUNCTIONS
 //
 //=================================================================================================
 

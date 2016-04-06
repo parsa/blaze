@@ -206,12 +206,12 @@ class DVecTDVecMultExpr : public DenseMatrix< DVecTDVecMultExpr<VT1,VT2>, false 
 
  public:
    //**Type definitions****************************************************************************
-   typedef DVecTDVecMultExpr<VT1,VT2>                  This;           //!< Type of this DVecTDVecMultExpr instance.
-   typedef MultTrait_<RT1,RT2>                         ResultType;     //!< Result type for expression template evaluations.
-   typedef OppositeType_<ResultType>                   OppositeType;   //!< Result type with opposite storage order for expression template evaluations.
-   typedef TransposeType_<ResultType>                  TransposeType;  //!< Transpose type for expression template evaluations.
-   typedef ElementType_<ResultType>                    ElementType;    //!< Resulting element type.
-   typedef typename IntrinsicTrait<ElementType>::Type  IntrinsicType;  //!< Resulting intrinsic element type.
+   typedef DVecTDVecMultExpr<VT1,VT2>  This;           //!< Type of this DVecTDVecMultExpr instance.
+   typedef MultTrait_<RT1,RT2>         ResultType;     //!< Result type for expression template evaluations.
+   typedef OppositeType_<ResultType>   OppositeType;   //!< Result type with opposite storage order for expression template evaluations.
+   typedef TransposeType_<ResultType>  TransposeType;  //!< Transpose type for expression template evaluations.
+   typedef ElementType_<ResultType>    ElementType;    //!< Resulting element type.
+   typedef SIMDTrait_<ElementType>     SIMDType;       //!< Resulting SIMD element type.
 
    //! Return type for expression template evaluations.
    typedef const IfTrue_< returnExpr, ExprReturnType, ElementType >  ReturnType;
@@ -348,11 +348,11 @@ class DVecTDVecMultExpr : public DenseMatrix< DVecTDVecMultExpr<VT1,VT2>, false 
       //*******************************************************************************************
 
       //**Load function****************************************************************************
-      /*!\brief Access to the intrinsic elements of the matrix.
+      /*!\brief Access to the SIMD elements of the matrix.
       //
-      // \return The resulting intrinsic value.
+      // \return The resulting SIMD element.
       */
-      inline IntrinsicType load() const noexcept {
+      inline SIMDType load() const noexcept {
          return set( *left_ ) * right_.load();
       }
       //*******************************************************************************************
@@ -488,6 +488,11 @@ class DVecTDVecMultExpr : public DenseMatrix< DVecTDVecMultExpr<VT1,VT2>, false 
    enum { smpAssignable = VT1::smpAssignable && !evaluateRight };
    //**********************************************************************************************
 
+   //**SIMD properties*****************************************************************************
+   //! The number of elements packed within a single SIMD element.
+   enum : size_t { SIMDSIZE = SIMDTrait<ElementType>::size };
+   //**********************************************************************************************
+
    //**Constructor*********************************************************************************
    /*!\brief Constructor for the DVecTDVecMultExpr class.
    //
@@ -535,20 +540,17 @@ class DVecTDVecMultExpr : public DenseMatrix< DVecTDVecMultExpr<VT1,VT2>, false 
    //**********************************************************************************************
 
    //**Load function*******************************************************************************
-   /*!\brief Access to the intrinsic elements of the matrix.
+   /*!\brief Access to the SIMD elements of the matrix.
    //
    // \param i Access index for the row. The index has to be in the range \f$[0..M-1]\f$.
    // \param j Access index for the column. The index has to be in the range \f$[0..N-1]\f$.
    // \return Reference to the accessed values.
    */
-   BLAZE_ALWAYS_INLINE IntrinsicType load( size_t i, size_t j ) const noexcept {
-      typedef IntrinsicTrait<ElementType>  IT;
+   BLAZE_ALWAYS_INLINE SIMDType load( size_t i, size_t j ) const noexcept {
       BLAZE_INTERNAL_ASSERT( i < lhs_.size()    , "Invalid row access index"    );
       BLAZE_INTERNAL_ASSERT( j < rhs_.size()    , "Invalid column access index" );
-      BLAZE_INTERNAL_ASSERT( j % IT::size == 0UL, "Invalid column access index" );
-      const IntrinsicType xmm1( set( lhs_[i] ) );
-      const IntrinsicType xmm2( rhs_.load( j ) );
-      return xmm1 * xmm2;
+      BLAZE_INTERNAL_ASSERT( j % SIMDSIZE == 0UL, "Invalid column access index" );
+      return set( lhs_[i] ) * rhs_.load( j );
    }
    //**********************************************************************************************
 
@@ -761,23 +763,21 @@ class DVecTDVecMultExpr : public DenseMatrix< DVecTDVecMultExpr<VT1,VT2>, false 
    static inline EnableIf_< UseVectorizedKernel<MT,VT3,VT4> >
       selectAssignKernel( DenseMatrix<MT,false>& A, const VT3& x, const VT4& y )
    {
-      typedef IntrinsicTrait<ElementType>  IT;
-
       const size_t M( (~A).rows() );
       const size_t N( (~A).columns() );
 
       const bool remainder( !IsPadded<MT>::value || !IsPadded<VT4>::value );
 
-      const size_t jpos( remainder ? ( N & size_t(-IT::size) ) : N );
-      BLAZE_INTERNAL_ASSERT( !remainder || ( N - ( N % IT::size ) ) == jpos, "Invalid end calculation" );
+      const size_t jpos( remainder ? ( N & size_t(-SIMDSIZE) ) : N );
+      BLAZE_INTERNAL_ASSERT( !remainder || ( N - ( N % SIMDSIZE ) ) == jpos, "Invalid end calculation" );
 
       for( size_t i=0UL; i<M; ++i )
       {
-         const IntrinsicType x1( set( x[i] ) );
+         const SIMDType x1( set( x[i] ) );
 
          size_t j( 0UL );
 
-         for( ; j<jpos; j+=IT::size ) {
+         for( ; j<jpos; j+=SIMDSIZE ) {
             (~A).store( i, j, x1 * y.load(j) );
          }
          for( ; remainder && j<N; ++j ) {
@@ -882,23 +882,21 @@ class DVecTDVecMultExpr : public DenseMatrix< DVecTDVecMultExpr<VT1,VT2>, false 
    static inline EnableIf_< UseVectorizedKernel<MT,VT3,VT4> >
       selectAssignKernel( DenseMatrix<MT,true>& A, const VT3& x, const VT4& y )
    {
-      typedef IntrinsicTrait<ElementType>  IT;
-
       const size_t M( (~A).rows() );
       const size_t N( (~A).columns() );
 
       const bool remainder( !IsPadded<MT>::value || !IsPadded<VT3>::value );
 
-      const size_t ipos( remainder ? ( M & size_t(-IT::size) ) : M );
-      BLAZE_INTERNAL_ASSERT( !remainder || ( M - ( M % IT::size ) ) == ipos, "Invalid end calculation" );
+      const size_t ipos( remainder ? ( M & size_t(-SIMDSIZE) ) : M );
+      BLAZE_INTERNAL_ASSERT( !remainder || ( M - ( M % SIMDSIZE ) ) == ipos, "Invalid end calculation" );
 
       for( size_t j=0UL; j<N; ++j )
       {
-         const IntrinsicType y1( set( y[j] ) );
+         const SIMDType y1( set( y[j] ) );
 
          size_t i( 0UL );
 
-         for( ; i<ipos; i+=IT::size ) {
+         for( ; i<ipos; i+=SIMDSIZE ) {
             (~A).store( i, j, x.load(i) * y1 );
          }
          for( ; remainder && i<M; ++i ) {
@@ -1041,23 +1039,21 @@ class DVecTDVecMultExpr : public DenseMatrix< DVecTDVecMultExpr<VT1,VT2>, false 
    static inline EnableIf_< UseVectorizedKernel<MT,VT3,VT4> >
       selectAddAssignKernel( DenseMatrix<MT,false>& A, const VT3& x, const VT4& y )
    {
-      typedef IntrinsicTrait<ElementType>  IT;
-
       const size_t M( (~A).rows() );
       const size_t N( (~A).columns() );
 
       const bool remainder( !IsPadded<MT>::value || !IsPadded<VT4>::value );
 
-      const size_t jpos( remainder ? ( N & size_t(-IT::size) ) : N );
-      BLAZE_INTERNAL_ASSERT( !remainder || ( N - ( N % IT::size ) ) == jpos, "Invalid end calculation" );
+      const size_t jpos( remainder ? ( N & size_t(-SIMDSIZE) ) : N );
+      BLAZE_INTERNAL_ASSERT( !remainder || ( N - ( N % SIMDSIZE ) ) == jpos, "Invalid end calculation" );
 
       for( size_t i=0UL; i<M; ++i )
       {
-         const IntrinsicType x1( set( x[i] ) );
+         const SIMDType x1( set( x[i] ) );
 
          size_t j( 0UL );
 
-         for( ; j<jpos; j+=IT::size ) {
+         for( ; j<jpos; j+=SIMDSIZE ) {
             (~A).store( i, j, (~A).load(i,j) + x1 * y.load(j) );
          }
          for( ; remainder && j<N; ++j ) {
@@ -1163,23 +1159,21 @@ class DVecTDVecMultExpr : public DenseMatrix< DVecTDVecMultExpr<VT1,VT2>, false 
    static inline EnableIf_< UseVectorizedKernel<MT,VT3,VT4> >
       selectAddAssignKernel( DenseMatrix<MT,true>& A, const VT3& x, const VT4& y )
    {
-      typedef IntrinsicTrait<ElementType>  IT;
-
       const size_t M( (~A).rows() );
       const size_t N( (~A).columns() );
 
       const bool remainder( !IsPadded<MT>::value || !IsPadded<VT3>::value );
 
-      const size_t ipos( remainder ? ( M & size_t(-IT::size) ) : M );
-      BLAZE_INTERNAL_ASSERT( !remainder || ( M - ( M % IT::size ) ) == ipos, "Invalid end calculation" );
+      const size_t ipos( remainder ? ( M & size_t(-SIMDSIZE) ) : M );
+      BLAZE_INTERNAL_ASSERT( !remainder || ( M - ( M % SIMDSIZE ) ) == ipos, "Invalid end calculation" );
 
       for( size_t j=0UL; j<N; ++j )
       {
-         const IntrinsicType y1( set( y[j] ) );
+         const SIMDType y1( set( y[j] ) );
 
          size_t i( 0UL );
 
-         for( ; i<ipos; i+=IT::size ) {
+         for( ; i<ipos; i+=SIMDSIZE ) {
             (~A).store( i, j, (~A).load(i,j) + x.load(i) * y1 );
          }
          for( ; remainder && i<M; ++i ) {
@@ -1290,23 +1284,21 @@ class DVecTDVecMultExpr : public DenseMatrix< DVecTDVecMultExpr<VT1,VT2>, false 
    static inline EnableIf_< UseVectorizedKernel<MT,VT3,VT4> >
       selectSubAssignKernel( DenseMatrix<MT,false>& A, const VT3& x, const VT4& y )
    {
-      typedef IntrinsicTrait<ElementType>  IT;
-
       const size_t M( (~A).rows() );
       const size_t N( (~A).columns() );
 
       const bool remainder( !IsPadded<MT>::value || !IsPadded<VT4>::value );
 
-      const size_t jpos( remainder ? ( N & size_t(-IT::size) ) : N );
-      BLAZE_INTERNAL_ASSERT( !remainder || ( N - ( N % IT::size ) ) == jpos, "Invalid end calculation" );
+      const size_t jpos( remainder ? ( N & size_t(-SIMDSIZE) ) : N );
+      BLAZE_INTERNAL_ASSERT( !remainder || ( N - ( N % SIMDSIZE ) ) == jpos, "Invalid end calculation" );
 
       for( size_t i=0UL; i<M; ++i )
       {
-         const IntrinsicType x1( set( x[i] ) );
+         const SIMDType x1( set( x[i] ) );
 
          size_t j( 0UL );
 
-         for( ; j<jpos; j+=IT::size ) {
+         for( ; j<jpos; j+=SIMDSIZE ) {
             (~A).store( i, j, (~A).load(i,j) - x1 * y.load(j) );
          }
          for( ; remainder && j<N; ++j ) {
@@ -1412,23 +1404,21 @@ class DVecTDVecMultExpr : public DenseMatrix< DVecTDVecMultExpr<VT1,VT2>, false 
    static inline EnableIf_< UseVectorizedKernel<MT,VT3,VT4> >
       selectSubAssignKernel( DenseMatrix<MT,true>& A, const VT3& x, const VT4& y )
    {
-      typedef IntrinsicTrait<ElementType>  IT;
-
       const size_t M( (~A).rows() );
       const size_t N( (~A).columns() );
 
       const bool remainder( !IsPadded<MT>::value || !IsPadded<VT3>::value );
 
-      const size_t ipos( remainder ? ( M & size_t(-IT::size) ) : M );
-      BLAZE_INTERNAL_ASSERT( !remainder || ( M - ( M % IT::size ) ) == ipos, "Invalid end calculation" );
+      const size_t ipos( remainder ? ( M & size_t(-SIMDSIZE) ) : M );
+      BLAZE_INTERNAL_ASSERT( !remainder || ( M - ( M % SIMDSIZE ) ) == ipos, "Invalid end calculation" );
 
       for( size_t j=0UL; j<N; ++j )
       {
-         const IntrinsicType y1( set( y[j] ) );
+         const SIMDType y1( set( y[j] ) );
 
          size_t i( 0UL );
 
-         for( ; i<ipos; i+=IT::size ) {
+         for( ; i<ipos; i+=SIMDSIZE ) {
             (~A).store( i, j, (~A).load(i,j) - x.load(i) * y1 );
          }
          for( ; remainder && i<M; ++i ) {

@@ -1,7 +1,7 @@
 //=================================================================================================
 /*!
 //  \file blaze/math/simd/Subtraction.h
-//  \brief Header file for the intrinisc subtraction functionality
+//  \brief Header file for the SIMD subtraction functionality
 //
 //  Copyright (C) 2013 Klaus Iglberger - All Rights Reserved
 //
@@ -49,7 +49,7 @@ namespace blaze {
 
 //=================================================================================================
 //
-//  INTRINSIC SUBTRACTION OPERATORS
+//  SIMD SUBTRACTION OPERATORS
 //
 //=================================================================================================
 

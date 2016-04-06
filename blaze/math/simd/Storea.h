@@ -1,7 +1,7 @@
 //=================================================================================================
 /*!
 //  \file blaze/math/simd/Storea.h
-//  \brief Header file for the intrinsic aligned store functionality
+//  \brief Header file for the SIMD aligned store functionality
 //
 //  Copyright (C) 2013 Klaus Iglberger - All Rights Reserved
 //
@@ -57,7 +57,7 @@ namespace blaze {
 
 //=================================================================================================
 //
-//  INTRINSIC STORE FUNCTIONS
+//  SIMD STORE FUNCTIONS
 //
 //=================================================================================================
 

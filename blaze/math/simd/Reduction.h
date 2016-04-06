@@ -1,7 +1,7 @@
 //=================================================================================================
 /*!
 //  \file blaze/math/simd/Reduction.h
-//  \brief Header file for the intrinisc reduction functionality
+//  \brief Header file for the SIMD reduction functionality
 //
 //  Copyright (C) 2013 Klaus Iglberger - All Rights Reserved
 //
@@ -49,12 +49,12 @@ namespace blaze {
 
 //=================================================================================================
 //
-//  INTRINSIC SUM OPERATION
+//  SIMD SUM OPERATION
 //
 //=================================================================================================
 
 //*************************************************************************************************
-/*!\brief Returns the sum of all elements in the 16-bit integral intrinsic vector.
+/*!\brief Returns the sum of all elements in the 16-bit integral SIMD vector.
 // \ingroup simd
 //
 // \param a The vector to be sumed up.
@@ -84,7 +84,7 @@ BLAZE_ALWAYS_INLINE int16_t sum( const simd_int16_t& a ) noexcept
 
 
 //*************************************************************************************************
-/*!\brief Returns the sum of all elements in the 32-bit integral intrinsic vector.
+/*!\brief Returns the sum of all elements in the 32-bit integral SIMD vector.
 // \ingroup simd
 //
 // \param a The vector to be sumed up.
@@ -114,7 +114,7 @@ BLAZE_ALWAYS_INLINE int32_t sum( const simd_int32_t& a ) noexcept
 
 
 //*************************************************************************************************
-/*!\brief Returns the sum of all elements in the 64-bit integral intrinsic vector.
+/*!\brief Returns the sum of all elements in the 64-bit integral SIMD vector.
 // \ingroup simd
 //
 // \param a The vector to be sumed up.
@@ -136,7 +136,7 @@ BLAZE_ALWAYS_INLINE int64_t sum( const simd_int64_t& a ) noexcept
 
 
 //*************************************************************************************************
-/*!\brief Returns the sum of all elements in the single precision floating point intrinsic vector.
+/*!\brief Returns the sum of all elements in the single precision floating point SIMD vector.
 // \ingroup simd
 //
 // \param a The vector to be sumed up.
@@ -166,7 +166,7 @@ BLAZE_ALWAYS_INLINE float sum( const simd_float_t& a ) noexcept
 
 
 //*************************************************************************************************
-/*!\brief Returns the sum of all elements in the double precision floating point intrinsic vector.
+/*!\brief Returns the sum of all elements in the double precision floating point SIMD vector.
 // \ingroup simd
 //
 // \param a The vector to be sumed up.
@@ -194,7 +194,7 @@ BLAZE_ALWAYS_INLINE double sum( const simd_double_t& a ) noexcept
 
 
 //*************************************************************************************************
-/*!\brief Returns the sum of all elements in the 8-bit integral complex intrinsic vector.
+/*!\brief Returns the sum of all elements in the 8-bit integral complex SIMD vector.
 // \ingroup simd
 //
 // \param a The vector to be sumed up.
@@ -215,7 +215,7 @@ BLAZE_ALWAYS_INLINE complex<int8_t> sum( const simd_cint8_t& a ) noexcept
 
 
 //*************************************************************************************************
-/*!\brief Returns the sum of all elements in the 16-bit integral complex intrinsic vector.
+/*!\brief Returns the sum of all elements in the 16-bit integral complex SIMD vector.
 // \ingroup simd
 //
 // \param a The vector to be sumed up.
@@ -235,7 +235,7 @@ BLAZE_ALWAYS_INLINE complex<int16_t> sum( const simd_cint16_t& a ) noexcept
 
 
 //*************************************************************************************************
-/*!\brief Returns the sum of all elements in the 32-bit integral complex intrinsic vector.
+/*!\brief Returns the sum of all elements in the 32-bit integral complex SIMD vector.
 // \ingroup simd
 //
 // \param a The vector to be sumed up.
@@ -255,7 +255,7 @@ BLAZE_ALWAYS_INLINE complex<int32_t> sum( const simd_cint32_t& a ) noexcept
 
 
 //*************************************************************************************************
-/*!\brief Returns the sum of all elements in the 64-bit integral complex intrinsic vector.
+/*!\brief Returns the sum of all elements in the 64-bit integral complex SIMD vector.
 // \ingroup simd
 //
 // \param a The vector to be sumed up.
@@ -275,7 +275,7 @@ BLAZE_ALWAYS_INLINE complex<int64_t> sum( const simd_cint64_t& a ) noexcept
 
 
 //*************************************************************************************************
-/*!\brief Returns the sum of all elements in the single precision complex intrinsic vector.
+/*!\brief Returns the sum of all elements in the single precision complex SIMD vector.
 // \ingroup simd
 //
 // \param a The vector to be sumed up.
@@ -297,7 +297,7 @@ BLAZE_ALWAYS_INLINE complex<float> sum( const simd_cfloat_t& a ) noexcept
 
 
 //*************************************************************************************************
-/*!\brief Returns the sum of all elements in the double precision complex intrinsic vector.
+/*!\brief Returns the sum of all elements in the double precision complex SIMD vector.
 // \ingroup simd
 //
 // \param a The vector to be sumed up.

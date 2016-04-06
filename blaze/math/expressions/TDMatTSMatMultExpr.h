@@ -215,14 +215,14 @@ class TDMatTSMatMultExpr : public DenseMatrix< TDMatTSMatMultExpr<MT1,MT2>, true
 
  public:
    //**Type definitions****************************************************************************
-   typedef TDMatTSMatMultExpr<MT1,MT2>                 This;           //!< Type of this TDMatTSMatMultExpr instance.
-   typedef MultTrait_<RT1,RT2>                         ResultType;     //!< Result type for expression template evaluations.
-   typedef OppositeType_<ResultType>                   OppositeType;   //!< Result type with opposite storage order for expression template evaluations.
-   typedef TransposeType_<ResultType>                  TransposeType;  //!< Transpose type for expression template evaluations.
-   typedef ElementType_<ResultType>                    ElementType;    //!< Resulting element type.
-   typedef typename IntrinsicTrait<ElementType>::Type  IntrinsicType;  //!< Resulting intrinsic element type.
-   typedef const ElementType                           ReturnType;     //!< Return type for expression template evaluations.
-   typedef const ResultType                            CompositeType;  //!< Data type for composite expression templates.
+   typedef TDMatTSMatMultExpr<MT1,MT2>  This;           //!< Type of this TDMatTSMatMultExpr instance.
+   typedef MultTrait_<RT1,RT2>          ResultType;     //!< Result type for expression template evaluations.
+   typedef OppositeType_<ResultType>    OppositeType;   //!< Result type with opposite storage order for expression template evaluations.
+   typedef TransposeType_<ResultType>   TransposeType;  //!< Transpose type for expression template evaluations.
+   typedef ElementType_<ResultType>     ElementType;    //!< Resulting element type.
+   typedef SIMDTrait_<ElementType>      SIMDType;       //!< Resulting SIMD element type.
+   typedef const ElementType            ReturnType;     //!< Return type for expression template evaluations.
+   typedef const ResultType             CompositeType;  //!< Data type for composite expression templates.
 
    //! Composite type of the left-hand side dense matrix expression.
    typedef If_< IsExpression<MT1>, const MT1, const MT1& >  LeftOperand;
@@ -248,6 +248,11 @@ class TDMatTSMatMultExpr : public DenseMatrix< TDMatTSMatMultExpr<MT1,MT2>, true
    //! Compilation switch for the expression template assignment strategy.
    enum { smpAssignable = !evaluateLeft  && MT1::smpAssignable &&
                           !evaluateRight && MT2::smpAssignable };
+   //**********************************************************************************************
+
+   //**SIMD properties*****************************************************************************
+   //! The number of elements packed within a single SIMD element.
+   enum : size_t { SIMDSIZE = SIMDTrait<ElementType>::size };
    //**********************************************************************************************
 
    //**Constructor*********************************************************************************
@@ -693,7 +698,6 @@ class TDMatTSMatMultExpr : public DenseMatrix< TDMatTSMatMultExpr<MT1,MT2>, true
    static inline EnableIf_< UseVectorizedKernel<MT3,MT4,MT5> >
       selectAssignKernel( MT3& C, const MT4& A, const MT5& B )
    {
-      typedef IntrinsicTrait<ElementType>  IT;
       typedef ConstIterator_<MT5>  ConstIterator;
 
       const bool remainder( !IsPadded<MT3>::value || !IsPadded<MT4>::value );
@@ -726,25 +730,25 @@ class TDMatTSMatMultExpr : public DenseMatrix< TDMatTSMatMultExpr<MT1,MT2>, true
 
             BLAZE_INTERNAL_ASSERT( j1 < j2 && j2 < j3 && j3 < j4, "Invalid sparse matrix index detected" );
 
-            const IntrinsicType xmm1( set( v1 ) );
-            const IntrinsicType xmm2( set( v2 ) );
-            const IntrinsicType xmm3( set( v3 ) );
-            const IntrinsicType xmm4( set( v4 ) );
+            const SIMDType xmm1( set( v1 ) );
+            const SIMDType xmm2( set( v2 ) );
+            const SIMDType xmm3( set( v3 ) );
+            const SIMDType xmm4( set( v4 ) );
 
             const size_t ibegin( ( IsLower<MT4>::value )
-                                 ?( ( IsStrictlyLower<MT4>::value ? j1+1UL : j1 ) & size_t(-IT::size) )
+                                 ?( ( IsStrictlyLower<MT4>::value ? j1+1UL : j1 ) & size_t(-SIMDSIZE) )
                                  :( 0UL ) );
             const size_t iend( ( IsUpper<MT4>::value )
                                ?( IsStrictlyUpper<MT4>::value ? j4 : j4+1UL )
                                :( A.rows() ) );
             BLAZE_INTERNAL_ASSERT( ibegin <= iend, "Invalid loop indices detected" );
 
-            const size_t ipos( remainder ? ( iend & size_t(-IT::size) ) : iend );
-            BLAZE_INTERNAL_ASSERT( !remainder || ( iend - ( iend % (IT::size) ) ) == ipos, "Invalid end calculation" );
+            const size_t ipos( remainder ? ( iend & size_t(-SIMDSIZE) ) : iend );
+            BLAZE_INTERNAL_ASSERT( !remainder || ( iend - ( iend % (SIMDSIZE) ) ) == ipos, "Invalid end calculation" );
 
             size_t i( ibegin );
 
-            for( ; i<ipos; i+=IT::size ) {
+            for( ; i<ipos; i+=SIMDSIZE ) {
                C.store( i, j, C.load(i,j) + A.load(i,j1) * xmm1 + A.load(i,j2) * xmm2 + A.load(i,j3) * xmm3 + A.load(i,j4) * xmm4 );
             }
             for( ; remainder && i<iend; ++i ) {
@@ -757,22 +761,22 @@ class TDMatTSMatMultExpr : public DenseMatrix< TDMatTSMatMultExpr<MT1,MT2>, true
             const size_t j1( element->index() );
             const ET2    v1( element->value() );
 
-            const IntrinsicType xmm1( set( v1 ) );
+            const SIMDType xmm1( set( v1 ) );
 
             const size_t ibegin( ( IsLower<MT4>::value )
-                                 ?( ( IsStrictlyLower<MT4>::value ? j1+1UL : j1 ) & size_t(-IT::size) )
+                                 ?( ( IsStrictlyLower<MT4>::value ? j1+1UL : j1 ) & size_t(-SIMDSIZE) )
                                  :( 0UL ) );
             const size_t iend( ( IsUpper<MT4>::value )
                                ?( IsStrictlyUpper<MT4>::value ? j1 : j1+1UL )
                                :( A.rows() ) );
             BLAZE_INTERNAL_ASSERT( ibegin <= iend, "Invalid loop indices detected" );
 
-            const size_t ipos( remainder ? ( iend & size_t(-IT::size) ) : iend );
-            BLAZE_INTERNAL_ASSERT( !remainder || ( iend - ( iend % (IT::size) ) ) == ipos, "Invalid end calculation" );
+            const size_t ipos( remainder ? ( iend & size_t(-SIMDSIZE) ) : iend );
+            BLAZE_INTERNAL_ASSERT( !remainder || ( iend - ( iend % (SIMDSIZE) ) ) == ipos, "Invalid end calculation" );
 
             size_t i( ibegin );
 
-            for( ; i<ipos; i+=IT::size ) {
+            for( ; i<ipos; i+=SIMDSIZE ) {
                C.store( i, j, C.load(i,j) + A.load(i,j1) * xmm1 );
             }
             for( ; remainder && i<iend; ++i ) {
@@ -1072,7 +1076,6 @@ class TDMatTSMatMultExpr : public DenseMatrix< TDMatTSMatMultExpr<MT1,MT2>, true
    static inline EnableIf_< UseVectorizedKernel<MT3,MT4,MT5> >
       selectAddAssignKernel( MT3& C, const MT4& A, const MT5& B )
    {
-      typedef IntrinsicTrait<ElementType>  IT;
       typedef ConstIterator_<MT5>  ConstIterator;
 
       const bool remainder( !IsPadded<MT3>::value || !IsPadded<MT4>::value );
@@ -1103,25 +1106,25 @@ class TDMatTSMatMultExpr : public DenseMatrix< TDMatTSMatMultExpr<MT1,MT2>, true
 
             BLAZE_INTERNAL_ASSERT( j1 < j2 && j2 < j3 && j3 < j4, "Invalid sparse matrix index detected" );
 
-            const IntrinsicType xmm1( set( v1 ) );
-            const IntrinsicType xmm2( set( v2 ) );
-            const IntrinsicType xmm3( set( v3 ) );
-            const IntrinsicType xmm4( set( v4 ) );
+            const SIMDType xmm1( set( v1 ) );
+            const SIMDType xmm2( set( v2 ) );
+            const SIMDType xmm3( set( v3 ) );
+            const SIMDType xmm4( set( v4 ) );
 
             const size_t ibegin( ( IsLower<MT4>::value )
-                                 ?( ( IsStrictlyLower<MT4>::value ? j1+1UL : j1 ) & size_t(-IT::size) )
+                                 ?( ( IsStrictlyLower<MT4>::value ? j1+1UL : j1 ) & size_t(-SIMDSIZE) )
                                  :( 0UL ) );
             const size_t iend( ( IsUpper<MT4>::value )
                                ?( IsStrictlyUpper<MT4>::value ? j4 : j4+1UL )
                                :( A.rows() ) );
             BLAZE_INTERNAL_ASSERT( ibegin <= iend, "Invalid loop indices detected" );
 
-            const size_t ipos( remainder ? ( iend & size_t(-IT::size) ) : iend );
-            BLAZE_INTERNAL_ASSERT( !remainder || ( iend - ( iend % (IT::size) ) ) == ipos, "Invalid end calculation" );
+            const size_t ipos( remainder ? ( iend & size_t(-SIMDSIZE) ) : iend );
+            BLAZE_INTERNAL_ASSERT( !remainder || ( iend - ( iend % (SIMDSIZE) ) ) == ipos, "Invalid end calculation" );
 
             size_t i( ibegin );
 
-            for( ; i<ipos; i+=IT::size ) {
+            for( ; i<ipos; i+=SIMDSIZE ) {
                C.store( i, j, C.load(i,j) + A.load(i,j1) * xmm1 + A.load(i,j2) * xmm2 + A.load(i,j3) * xmm3 + A.load(i,j4) * xmm4 );
             }
             for( ; remainder && i<iend; ++i ) {
@@ -1134,22 +1137,22 @@ class TDMatTSMatMultExpr : public DenseMatrix< TDMatTSMatMultExpr<MT1,MT2>, true
             const size_t j1( element->index() );
             const ET2    v1( element->value() );
 
-            const IntrinsicType xmm1( set( v1 ) );
+            const SIMDType xmm1( set( v1 ) );
 
             const size_t ibegin( ( IsLower<MT4>::value )
-                                 ?( ( IsStrictlyLower<MT4>::value ? j1+1UL : j1 ) & size_t(-IT::size) )
+                                 ?( ( IsStrictlyLower<MT4>::value ? j1+1UL : j1 ) & size_t(-SIMDSIZE) )
                                  :( 0UL ) );
             const size_t iend( ( IsUpper<MT4>::value )
                                ?( IsStrictlyUpper<MT4>::value ? j1 : j1+1UL )
                                :( A.rows() ) );
             BLAZE_INTERNAL_ASSERT( ibegin <= iend, "Invalid loop indices detected" );
 
-            const size_t ipos( remainder ? ( iend & size_t(-IT::size) ) : iend );
-            BLAZE_INTERNAL_ASSERT( !remainder || ( iend - ( iend % (IT::size) ) ) == ipos, "Invalid end calculation" );
+            const size_t ipos( remainder ? ( iend & size_t(-SIMDSIZE) ) : iend );
+            BLAZE_INTERNAL_ASSERT( !remainder || ( iend - ( iend % (SIMDSIZE) ) ) == ipos, "Invalid end calculation" );
 
             size_t i( ibegin );
 
-            for( ; i<ipos; i+=IT::size ) {
+            for( ; i<ipos; i+=SIMDSIZE ) {
                C.store( i, j, C.load(i,j) + A.load(i,j1) * xmm1 );
             }
             for( ; remainder && i<iend; ++i ) {
@@ -1416,7 +1419,6 @@ class TDMatTSMatMultExpr : public DenseMatrix< TDMatTSMatMultExpr<MT1,MT2>, true
    static inline EnableIf_< UseVectorizedKernel<MT3,MT4,MT5> >
       selectSubAssignKernel( MT3& C, const MT4& A, const MT5& B )
    {
-      typedef IntrinsicTrait<ElementType>  IT;
       typedef ConstIterator_<MT5>  ConstIterator;
 
       const bool remainder( !IsPadded<MT3>::value || !IsPadded<MT4>::value );
@@ -1447,25 +1449,25 @@ class TDMatTSMatMultExpr : public DenseMatrix< TDMatTSMatMultExpr<MT1,MT2>, true
 
             BLAZE_INTERNAL_ASSERT( j1 < j2 && j2 < j3 && j3 < j4, "Invalid sparse matrix index detected" );
 
-            const IntrinsicType xmm1( set( v1 ) );
-            const IntrinsicType xmm2( set( v2 ) );
-            const IntrinsicType xmm3( set( v3 ) );
-            const IntrinsicType xmm4( set( v4 ) );
+            const SIMDType xmm1( set( v1 ) );
+            const SIMDType xmm2( set( v2 ) );
+            const SIMDType xmm3( set( v3 ) );
+            const SIMDType xmm4( set( v4 ) );
 
             const size_t ibegin( ( IsLower<MT4>::value )
-                                 ?( ( IsStrictlyLower<MT4>::value ? j1+1UL : j1 ) & size_t(-IT::size) )
+                                 ?( ( IsStrictlyLower<MT4>::value ? j1+1UL : j1 ) & size_t(-SIMDSIZE) )
                                  :( 0UL ) );
             const size_t iend( ( IsUpper<MT4>::value )
                                ?( IsStrictlyUpper<MT4>::value ? j4 : j4+1UL )
                                :( A.rows() ) );
             BLAZE_INTERNAL_ASSERT( ibegin <= iend, "Invalid loop indices detected" );
 
-            const size_t ipos( remainder ? ( iend & size_t(-IT::size) ) : iend );
-            BLAZE_INTERNAL_ASSERT( !remainder || ( iend - ( iend % (IT::size) ) ) == ipos, "Invalid end calculation" );
+            const size_t ipos( remainder ? ( iend & size_t(-SIMDSIZE) ) : iend );
+            BLAZE_INTERNAL_ASSERT( !remainder || ( iend - ( iend % (SIMDSIZE) ) ) == ipos, "Invalid end calculation" );
 
             size_t i( ibegin );
 
-            for( ; i<ipos; i+=IT::size ) {
+            for( ; i<ipos; i+=SIMDSIZE ) {
                C.store( i, j, C.load(i,j) - A.load(i,j1) * xmm1 - A.load(i,j2) * xmm2 - A.load(i,j3) * xmm3 - A.load(i,j4) * xmm4 );
             }
             for( ; remainder && i<iend; ++i ) {
@@ -1478,22 +1480,22 @@ class TDMatTSMatMultExpr : public DenseMatrix< TDMatTSMatMultExpr<MT1,MT2>, true
             const size_t j1( element->index() );
             const ET2    v1( element->value() );
 
-            const IntrinsicType xmm1( set( v1 ) );
+            const SIMDType xmm1( set( v1 ) );
 
             const size_t ibegin( ( IsLower<MT4>::value )
-                                 ?( ( IsStrictlyLower<MT4>::value ? j1+1UL : j1 ) & size_t(-IT::size) )
+                                 ?( ( IsStrictlyLower<MT4>::value ? j1+1UL : j1 ) & size_t(-SIMDSIZE) )
                                  :( 0UL ) );
             const size_t iend( ( IsUpper<MT4>::value )
                                ?( IsStrictlyUpper<MT4>::value ? j1 : j1+1UL )
                                :( A.rows() ) );
             BLAZE_INTERNAL_ASSERT( ibegin <= iend, "Invalid loop indices detected" );
 
-            const size_t ipos( remainder ? ( iend & size_t(-IT::size) ) : iend );
-            BLAZE_INTERNAL_ASSERT( !remainder || ( iend - ( iend % (IT::size) ) ) == ipos, "Invalid end calculation" );
+            const size_t ipos( remainder ? ( iend & size_t(-SIMDSIZE) ) : iend );
+            BLAZE_INTERNAL_ASSERT( !remainder || ( iend - ( iend % (SIMDSIZE) ) ) == ipos, "Invalid end calculation" );
 
             size_t i( ibegin );
 
-            for( ; i<ipos; i+=IT::size ) {
+            for( ; i<ipos; i+=SIMDSIZE ) {
                C.store( i, j, C.load(i,j) - A.load(i,j1) * xmm1 );
             }
             for( ; remainder && i<iend; ++i ) {

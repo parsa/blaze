@@ -118,7 +118,6 @@ class HermitianMatrix<MT,SO,true>
    typedef OppositeType_<MT>   OT;  //!< Opposite type of the dense matrix.
    typedef TransposeType_<MT>  TT;  //!< Transpose type of the dense matrix.
    typedef ElementType_<MT>    ET;  //!< Element type of the dense matrix.
-   typedef IntrinsicTrait<ET>  IT;  //!< Intrinsic trait for the matrix element type.
    //**********************************************************************************************
 
  public:
@@ -128,7 +127,7 @@ class HermitianMatrix<MT,SO,true>
    typedef HermitianMatrix<OT,!SO,true>  OppositeType;    //!< Result type with opposite storage order for expression template evaluations.
    typedef HermitianMatrix<TT,!SO,true>  TransposeType;   //!< Transpose type for expression template evaluations.
    typedef ET                            ElementType;     //!< Type of the matrix elements.
-   typedef typename MT::IntrinsicType    IntrinsicType;   //!< Intrinsic type of the matrix elements.
+   typedef SIMDType_<MT>                 SIMDType;        //!< SIMD type of the matrix elements.
    typedef ReturnType_<MT>               ReturnType;      //!< Return type for expression template evaluations.
    typedef const This&                   CompositeType;   //!< Data type for composite expression templates.
    typedef HermitianProxy<MT>            Reference;       //!< Reference to a non-constant matrix value.
@@ -725,14 +724,14 @@ class HermitianMatrix<MT,SO,true>
    inline bool isAligned   () const noexcept;
    inline bool canSMPAssign() const noexcept;
 
-   BLAZE_ALWAYS_INLINE IntrinsicType load ( size_t i, size_t j ) const noexcept;
-   BLAZE_ALWAYS_INLINE IntrinsicType loada( size_t i, size_t j ) const noexcept;
-   BLAZE_ALWAYS_INLINE IntrinsicType loadu( size_t i, size_t j ) const noexcept;
+   BLAZE_ALWAYS_INLINE SIMDType load ( size_t i, size_t j ) const noexcept;
+   BLAZE_ALWAYS_INLINE SIMDType loada( size_t i, size_t j ) const noexcept;
+   BLAZE_ALWAYS_INLINE SIMDType loadu( size_t i, size_t j ) const noexcept;
 
-   inline void store ( size_t i, size_t j, const IntrinsicType& value ) noexcept;
-   inline void storea( size_t i, size_t j, const IntrinsicType& value ) noexcept;
-   inline void storeu( size_t i, size_t j, const IntrinsicType& value ) noexcept;
-   inline void stream( size_t i, size_t j, const IntrinsicType& value ) noexcept;
+   inline void store ( size_t i, size_t j, const SIMDType& value ) noexcept;
+   inline void storea( size_t i, size_t j, const SIMDType& value ) noexcept;
+   inline void storeu( size_t i, size_t j, const SIMDType& value ) noexcept;
+   inline void stream( size_t i, size_t j, const SIMDType& value ) noexcept;
    //@}
    //**********************************************************************************************
 
@@ -746,6 +745,11 @@ class HermitianMatrix<MT,SO,true>
    template< typename MT2 >
    inline TransExprTrait_<MT2> construct( const Matrix<MT2,!SO>& m, TrueType );
    //@}
+   //**********************************************************************************************
+
+   //**SIMD properties*****************************************************************************
+   //! The number of elements packed within a single SIMD element.
+   enum : size_t { SIMDSIZE = SIMDTrait<ET>::size };
    //**********************************************************************************************
 
    //**Member variables****************************************************************************
@@ -2515,23 +2519,23 @@ inline bool HermitianMatrix<MT,SO,true>::canSMPAssign() const noexcept
 
 //*************************************************************************************************
 /*! \cond BLAZE_INTERNAL */
-/*!\brief Load of an intrinsic element of the matrix.
+/*!\brief Load of a SIMD element of the matrix.
 //
 // \param i Access index for the row. The index has to be in the range [0..M-1].
 // \param j Access index for the column. The index has to be in the range [0..N-1].
-// \return The loaded intrinsic element.
+// \return The loaded SIMD element.
 //
-// This function performs a load of a specific intrinsic element of the Hermitian matrix. The
-// row index must be smaller than the number of rows and the column index must be smaller than
-// the number of columns. Additionally, the column index (in case of a row-major matrix) or
-// the row index (in case of a column-major matrix) must be a multiple of the number of values
-// inside the intrinsic element. This function must \b NOT be called explicitly! It is used
-// internally for the performance optimized evaluation of expression templates. Calling this
-// function explicitly might result in erroneous results and/or in compilation errors.
+// This function performs a load of a specific SIMD element of the Hermitian matrix. The row
+// index must be smaller than the number of rows and the column index must be smaller than the
+// number of columns. Additionally, the column index (in case of a row-major matrix) or the row
+// index (in case of a column-major matrix) must be a multiple of the number or values inside
+// the SIMD element. This function must \b NOT be called explicitly! It is used internally
+// for the performance optimized evaluation of expression templates. Calling this function
+// explicitly might result in erroneous results and/or in compilation errors.
 */
 template< typename MT  // Type of the adapted dense matrix
         , bool SO >    // Storage order of the adapted dense matrix
-BLAZE_ALWAYS_INLINE typename HermitianMatrix<MT,SO,true>::IntrinsicType
+BLAZE_ALWAYS_INLINE typename HermitianMatrix<MT,SO,true>::SIMDType
    HermitianMatrix<MT,SO,true>::load( size_t i, size_t j ) const noexcept
 {
    return matrix_.load( i, j );
@@ -2542,23 +2546,23 @@ BLAZE_ALWAYS_INLINE typename HermitianMatrix<MT,SO,true>::IntrinsicType
 
 //*************************************************************************************************
 /*! \cond BLAZE_INTERNAL */
-/*!\brief Aligned load of an intrinsic element of the matrix.
+/*!\brief Aligned load of a SIMD element of the matrix.
 //
 // \param i Access index for the row. The index has to be in the range [0..M-1].
 // \param j Access index for the column. The index has to be in the range [0..N-1].
-// \return The loaded intrinsic element.
+// \return The loaded SIMD element.
 //
-// This function performs an aligned load of a specific intrinsic element of the Hermitian matrix.
+// This function performs an aligned load of a specific SIMD element of the Hermitian matrix.
 // The row index must be smaller than the number of rows and the column index must be smaller
 // than the number of columns. Additionally, the column index (in case of a row-major matrix)
 // or the row index (in case of a column-major matrix) must be a multiple of the number of
-// values inside the intrinsic element. This function must \b NOT be called explicitly! It is
-// used internally for the performance optimized evaluation of expression templates. Calling
-// this function explicitly might result in erroneous results and/or in compilation errors.
+// values inside the SIMD element. This function must \b NOT be called explicitly! It is used
+// internally for the performance optimized evaluation of expression templates. Calling this
+// function explicitly might result in erroneous results and/or in compilation errors.
 */
 template< typename MT  // Type of the adapted dense matrix
         , bool SO >    // Storage order of the adapted dense matrix
-BLAZE_ALWAYS_INLINE typename HermitianMatrix<MT,SO,true>::IntrinsicType
+BLAZE_ALWAYS_INLINE typename HermitianMatrix<MT,SO,true>::SIMDType
    HermitianMatrix<MT,SO,true>::loada( size_t i, size_t j ) const noexcept
 {
    return matrix_.loada( i, j );
@@ -2569,23 +2573,23 @@ BLAZE_ALWAYS_INLINE typename HermitianMatrix<MT,SO,true>::IntrinsicType
 
 //*************************************************************************************************
 /*! \cond BLAZE_INTERNAL */
-/*!\brief Unaligned load of an intrinsic element of the matrix.
+/*!\brief Unaligned load of a SIMD element of the matrix.
 //
 // \param i Access index for the row. The index has to be in the range [0..M-1].
 // \param j Access index for the column. The index has to be in the range [0..N-1].
-// \return The loaded intrinsic element.
+// \return The loaded SIMD element.
 //
-// This function performs an unaligned load of a specific intrinsic element of the Hermitian
-// matrix. The row index must be smaller than the number of rows and the column index must be
-// smaller than the number of columns. Additionally, the column index (in case of a row-major
-// matrix) or the row index (in case of a column-major matrix) must be a multiple of the number
-// of values inside the intrinsic element. This function must \b NOT be called explicitly! It
-// is used internally for the performance optimized evaluation of expression templates. Calling
-// this function explicitly might result in erroneous results and/or in compilation errors.
+// This function performs an unaligned load of a specific SIMD element of the Hermitian matrix.
+// The row index must be smaller than the number of rows and the column index must be smaller
+// than the number of columns. Additionally, the column index (in case of a row-major matrix)
+// or the row index (in case of a column-major matrix) must be a multiple of the number of
+// values inside the SIMD element. This function must \b NOT be called explicitly! It is used
+// internally for the performance optimized evaluation of expression templates. Calling this
+// function explicitly might result in erroneous results and/or in compilation errors.
 */
 template< typename MT  // Type of the adapted dense matrix
         , bool SO >    // Storage order of the adapted dense matrix
-BLAZE_ALWAYS_INLINE typename HermitianMatrix<MT,SO,true>::IntrinsicType
+BLAZE_ALWAYS_INLINE typename HermitianMatrix<MT,SO,true>::SIMDType
    HermitianMatrix<MT,SO,true>::loadu( size_t i, size_t j ) const noexcept
 {
    return matrix_.loadu( i, j );
@@ -2596,35 +2600,35 @@ BLAZE_ALWAYS_INLINE typename HermitianMatrix<MT,SO,true>::IntrinsicType
 
 //*************************************************************************************************
 /*! \cond BLAZE_INTERNAL */
-/*!\brief Store of an intrinsic element of the matrix.
+/*!\brief Store of a SIMD element of the matrix.
 //
 // \param i Access index for the row. The index has to be in the range [0..M-1].
 // \param j Access index for the column. The index has to be in the range [0..N-1].
-// \param value The intrinsic element to be stored.
+// \param value The SIMD element to be stored.
 // \return void
 //
-// This function performs a store of a specific intrinsic element of the dense matrix. The row
-// index must be smaller than the number of rows and the column index must be smaller than the
-// number of columns. Additionally, the column index (in case of a row-major matrix) or the row
-// index (in case of a column-major matrix) must be a multiple of the number of values inside
-// the intrinsic element. This function must \b NOT be called explicitly! It is used internally
-// for the performance optimized evaluation of expression templates. Calling this function
-// explicitly might result in erroneous results and/or in compilation errors.
+// This function performs a store of a specific SIMD element of the dense matrix. The row index
+// must be smaller than the number of rows and the column index must be smaller than the number
+// of columns. Additionally, the column index (in case of a row-major matrix) or the row index
+// (in case of a column-major matrix) must be a multiple of the number of values inside the
+// SIMD element. This function must \b NOT be called explicitly! It is used internally for the
+// performance optimized evaluation of expression templates. Calling this function explicitly
+// might result in erroneous results and/or in compilation errors.
 */
 template< typename MT  // Type of the adapted dense matrix
         , bool SO >    // Storage order of the adapted dense matrix
 inline void
-   HermitianMatrix<MT,SO,true>::store( size_t i, size_t j, const IntrinsicType& value ) noexcept
+   HermitianMatrix<MT,SO,true>::store( size_t i, size_t j, const SIMDType& value ) noexcept
 {
    matrix_.store( i, j, value );
 
    if( SO ) {
-      const size_t kend( min( i+IT::size, rows() ) );
+      const size_t kend( min( i+SIMDSIZE, rows() ) );
       for( size_t k=i; k<kend; ++k )
          matrix_(j,k) = conj( matrix_(k,j) );
    }
    else {
-      const size_t kend( min( j+IT::size, columns() ) );
+      const size_t kend( min( j+SIMDSIZE, columns() ) );
       for( size_t k=j; k<kend; ++k )
          matrix_(k,i) = conj( matrix_(i,k) );
    }
@@ -2635,35 +2639,35 @@ inline void
 
 //*************************************************************************************************
 /*! \cond BLAZE_INTERNAL */
-/*!\brief Aligned store of an intrinsic element of the matrix.
+/*!\brief Aligned store of a SIMD element of the matrix.
 //
 // \param i Access index for the row. The index has to be in the range [0..M-1].
 // \param j Access index for the column. The index has to be in the range [0..N-1].
-// \param value The intrinsic element to be stored.
+// \param value The SIMD element to be stored.
 // \return void
 //
-// This function performs an aligned store of a specific intrinsic element of the dense matrix.
+// This function performs an aligned store of a specific SIMD element of the dense matrix.
 // The row index must be smaller than the number of rows and the column index must be smaller
 // than the number of columns. Additionally, the column index (in case of a row-major matrix)
 // or the row index (in case of a column-major matrix) must be a multiple of the number of
-// values inside the intrinsic element. This function must \b NOT be called explicitly! It is
-// used internally for the performance optimized evaluation of expression templates. Calling
-// this function explicitly might result in erroneous results and/or in compilation errors.
+// values inside the SIMD element. This function must \b NOT be called explicitly! It is used
+// internally for the performance optimized evaluation of expression templates. Calling this
+// function explicitly might result in erroneous results and/or in compilation errors.
 */
 template< typename MT  // Type of the adapted dense matrix
         , bool SO >    // Storage order of the adapted dense matrix
 inline void
-   HermitianMatrix<MT,SO,true>::storea( size_t i, size_t j, const IntrinsicType& value ) noexcept
+   HermitianMatrix<MT,SO,true>::storea( size_t i, size_t j, const SIMDType& value ) noexcept
 {
    matrix_.storea( i, j, value );
 
    if( SO ) {
-      const size_t kend( min( i+IT::size, rows() ) );
+      const size_t kend( min( i+SIMDSIZE, rows() ) );
       for( size_t k=i; k<kend; ++k )
          matrix_(j,k) = conj( matrix_(k,j) );
    }
    else {
-      const size_t kend( min( j+IT::size, columns() ) );
+      const size_t kend( min( j+SIMDSIZE, columns() ) );
       for( size_t k=j; k<kend; ++k )
          matrix_(k,i) = conj( matrix_(i,k) );
    }
@@ -2674,74 +2678,74 @@ inline void
 
 //*************************************************************************************************
 /*! \cond BLAZE_INTERNAL */
-/*!\brief Unaligned store of an intrinsic element of the matrix.
+/*!\brief Unaligned store of a SIMD element of the matrix.
 //
 // \param i Access index for the row. The index has to be in the range [0..M-1].
 // \param j Access index for the column. The index has to be in the range [0..N-1].
-// \param value The intrinsic element to be stored.
+// \param value The SIMD element to be stored.
 // \return void
 //
-// This function performs an unaligned store of a specific intrinsic element of the dense matrix.
+// This function performs an unaligned store of a specific SIMD element of the dense matrix.
 // The row index must be smaller than the number of rows and the column index must be smaller
 // than the number of columns. Additionally, the column index (in case of a row-major matrix)
 // or the row index (in case of a column-major matrix) must be a multiple of the number of
-// values inside the intrinsic element. This function must \b NOT be called explicitly! It is
+// values inside the SIMD element. This function must \b NOT be called explicitly! It is used
+// internally for the performance optimized evaluation of expression templates. Calling this
+// function explicitly might result in erroneous results and/or in compilation errors.
+*/
+template< typename MT  // Type of the adapted dense matrix
+        , bool SO >    // Storage order of the adapted dense matrix
+inline void
+   HermitianMatrix<MT,SO,true>::storeu( size_t i, size_t j, const SIMDType& value ) noexcept
+{
+   matrix_.storeu( i, j, value );
+
+   if( SO ) {
+      const size_t kend( min( i+SIMDSIZE, rows() ) );
+      for( size_t k=i; k<kend; ++k )
+         matrix_(j,k) = conj( matrix_(k,j) );
+   }
+   else {
+      const size_t kend( min( j+SIMDSIZE, columns() ) );
+      for( size_t k=j; k<kend; ++k )
+         matrix_(k,i) = conj( matrix_(i,k) );
+   }
+}
+/*! \endcond */
+//*************************************************************************************************
+
+
+//*************************************************************************************************
+/*! \cond BLAZE_INTERNAL */
+/*!\brief Aligned, non-temporal store of a SIMD element of the matrix.
+//
+// \param i Access index for the row. The index has to be in the range [0..M-1].
+// \param j Access index for the column. The index has to be in the range [0..N-1].
+// \param value The SIMD element to be stored.
+// \return void
+//
+// This function performs an aligned, non-temporal store of a specific SIMD element of the dense
+// matrix. The row index must be smaller than the number of rows and the column index must be
+// smaller than the number of columns. Additionally, the column index (in case of a row-major
+// matrix) or the row index (in case of a column-major matrix) must be a multiple of the number
+// of values inside the SIMD element. This function must \b NOT be called explicitly! It is
 // used internally for the performance optimized evaluation of expression templates. Calling
 // this function explicitly might result in erroneous results and/or in compilation errors.
 */
 template< typename MT  // Type of the adapted dense matrix
         , bool SO >    // Storage order of the adapted dense matrix
 inline void
-   HermitianMatrix<MT,SO,true>::storeu( size_t i, size_t j, const IntrinsicType& value ) noexcept
-{
-   matrix_.storeu( i, j, value );
-
-   if( SO ) {
-      const size_t kend( min( i+IT::size, rows() ) );
-      for( size_t k=i; k<kend; ++k )
-         matrix_(j,k) = conj( matrix_(k,j) );
-   }
-   else {
-      const size_t kend( min( j+IT::size, columns() ) );
-      for( size_t k=j; k<kend; ++k )
-         matrix_(k,i) = conj( matrix_(i,k) );
-   }
-}
-/*! \endcond */
-//*************************************************************************************************
-
-
-//*************************************************************************************************
-/*! \cond BLAZE_INTERNAL */
-/*!\brief Aligned, non-temporal store of an intrinsic element of the matrix.
-//
-// \param i Access index for the row. The index has to be in the range [0..M-1].
-// \param j Access index for the column. The index has to be in the range [0..N-1].
-// \param value The intrinsic element to be stored.
-// \return void
-//
-// This function performs an aligned, non-temporal store of a specific intrinsic element of the
-// dense matrix. The row index must be smaller than the number of rows and the column index must
-// be smaller than the number of columns. Additionally, the column index (in case of a row-major
-// matrix) or the row index (in case of a column-major matrix) must be a multiple of the number
-// of values inside the intrinsic element. This function must \b NOT be called explicitly! It
-// is used internally for the performance optimized evaluation of expression templates. Calling
-// this function explicitly might result in erroneous results and/or in compilation errors.
-*/
-template< typename MT  // Type of the adapted dense matrix
-        , bool SO >    // Storage order of the adapted dense matrix
-inline void
-   HermitianMatrix<MT,SO,true>::stream( size_t i, size_t j, const IntrinsicType& value ) noexcept
+   HermitianMatrix<MT,SO,true>::stream( size_t i, size_t j, const SIMDType& value ) noexcept
 {
    matrix_.stream( i, j, value );
 
    if( SO ) {
-      const size_t kend( min( i+IT::size, rows() ) );
+      const size_t kend( min( i+SIMDSIZE, rows() ) );
       for( size_t k=i; k<kend; ++k )
          matrix_(j,k) = conj( matrix_(k,j) );
    }
    else {
-      const size_t kend( min( j+IT::size, columns() ) );
+      const size_t kend( min( j+SIMDSIZE, columns() ) );
       for( size_t k=j; k<kend; ++k )
          matrix_(k,i) = conj( matrix_(i,k) );
    }

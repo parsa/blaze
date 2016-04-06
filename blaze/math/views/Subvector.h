@@ -262,7 +262,7 @@ inline SubvectorExprTrait_<const VT,unaligned>
 // type and the available vectorization mode (SSE, AVX, ...). In order to be properly aligned the
 // first element of the subvector must be aligned. The following source code gives some examples
 // for a double precision dynamic vector, assuming that AVX is available, which packs 4 \c double
-// values into an intrinsic vector:
+// values into a SIMD vector:
 
    \code
    using blaze::columnVector;
@@ -346,7 +346,7 @@ inline DisableIf_< Or< IsComputation<VT>, IsTransExpr<VT> >, SubvectorExprTrait_
 // type and the available vectorization mode (SSE, AVX, ...). In order to be properly aligned the
 // first element of the subvector must be aligned. The following source code gives some examples
 // for a double precision dynamic vector, assuming that AVX is available, which packs 4 \c double
-// values into an intrinsic vector:
+// values into a SIMD vector:
 
    \code
    using blaze::columnVector;

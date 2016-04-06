@@ -56,7 +56,6 @@
 #include <blaze/math/expressions/DenseMatrix.h>
 #include <blaze/math/shims/Clear.h>
 #include <blaze/math/shims/IsDefault.h>
-#include <blaze/math/SIMD.h>
 #include <blaze/math/typetraits/Columns.h>
 #include <blaze/math/typetraits/IsComputation.h>
 #include <blaze/math/typetraits/IsResizable.h>
@@ -109,24 +108,23 @@ class UpperMatrix<MT,SO,true>
    typedef OppositeType_<MT>   OT;  //!< Opposite type of the dense matrix.
    typedef TransposeType_<MT>  TT;  //!< Transpose type of the dense matrix.
    typedef ElementType_<MT>    ET;  //!< Element type of the dense matrix.
-   typedef IntrinsicTrait<ET>  IT;  //!< Intrinsic trait for the matrix element type.
    //**********************************************************************************************
 
  public:
    //**Type definitions****************************************************************************
-   typedef UpperMatrix<MT,SO,true>     This;            //!< Type of this UpperMatrix instance.
-   typedef This                        ResultType;      //!< Result type for expression template evaluations.
-   typedef UpperMatrix<OT,!SO,true>    OppositeType;    //!< Result type with opposite storage order for expression template evaluations.
-   typedef LowerMatrix<TT,!SO,true>    TransposeType;   //!< Transpose type for expression template evaluations.
-   typedef ET                          ElementType;     //!< Type of the matrix elements.
-   typedef typename MT::IntrinsicType  IntrinsicType;   //!< Intrinsic type of the matrix elements.
-   typedef ReturnType_<MT>             ReturnType;      //!< Return type for expression template evaluations.
-   typedef const This&                 CompositeType;   //!< Data type for composite expression templates.
-   typedef UpperProxy<MT>              Reference;       //!< Reference to a non-constant matrix value.
-   typedef ConstReference_<MT>         ConstReference;  //!< Reference to a constant matrix value.
-   typedef Pointer_<MT>                Pointer;         //!< Pointer to a non-constant matrix value.
-   typedef ConstPointer_<MT>           ConstPointer;    //!< Pointer to a constant matrix value.
-   typedef ConstIterator_<MT>          ConstIterator;   //!< Iterator over constant elements.
+   typedef UpperMatrix<MT,SO,true>   This;            //!< Type of this UpperMatrix instance.
+   typedef This                      ResultType;      //!< Result type for expression template evaluations.
+   typedef UpperMatrix<OT,!SO,true>  OppositeType;    //!< Result type with opposite storage order for expression template evaluations.
+   typedef LowerMatrix<TT,!SO,true>  TransposeType;   //!< Transpose type for expression template evaluations.
+   typedef ET                        ElementType;     //!< Type of the matrix elements.
+   typedef SIMDType_<MT>             SIMDType;        //!< SIMD type of the matrix elements.
+   typedef ReturnType_<MT>           ReturnType;      //!< Return type for expression template evaluations.
+   typedef const This&               CompositeType;   //!< Data type for composite expression templates.
+   typedef UpperProxy<MT>            Reference;       //!< Reference to a non-constant matrix value.
+   typedef ConstReference_<MT>       ConstReference;  //!< Reference to a constant matrix value.
+   typedef Pointer_<MT>              Pointer;         //!< Pointer to a non-constant matrix value.
+   typedef ConstPointer_<MT>         ConstPointer;    //!< Pointer to a constant matrix value.
+   typedef ConstIterator_<MT>        ConstIterator;   //!< Iterator over constant elements.
    //**********************************************************************************************
 
    //**Rebind struct definition********************************************************************
@@ -704,9 +702,9 @@ class UpperMatrix<MT,SO,true>
    inline bool isAligned   () const noexcept;
    inline bool canSMPAssign() const noexcept;
 
-   BLAZE_ALWAYS_INLINE IntrinsicType load ( size_t i, size_t j ) const noexcept;
-   BLAZE_ALWAYS_INLINE IntrinsicType loada( size_t i, size_t j ) const noexcept;
-   BLAZE_ALWAYS_INLINE IntrinsicType loadu( size_t i, size_t j ) const noexcept;
+   BLAZE_ALWAYS_INLINE SIMDType load ( size_t i, size_t j ) const noexcept;
+   BLAZE_ALWAYS_INLINE SIMDType loada( size_t i, size_t j ) const noexcept;
+   BLAZE_ALWAYS_INLINE SIMDType loadu( size_t i, size_t j ) const noexcept;
    //@}
    //**********************************************************************************************
 
@@ -2432,23 +2430,23 @@ inline bool UpperMatrix<MT,SO,true>::canSMPAssign() const noexcept
 
 //*************************************************************************************************
 /*! \cond BLAZE_INTERNAL */
-/*!\brief Load of an intrinsic element of the matrix.
+/*!\brief Load of a SIMD element of the matrix.
 //
 // \param i Access index for the row. The index has to be in the range [0..M-1].
 // \param j Access index for the column. The index has to be in the range [0..N-1].
-// \return The loaded intrinsic element.
+// \return The loaded SIMD element.
 //
-// This function performs a load of a specific intrinsic element of the upper matrix. The row
-// index must be smaller than the number of rows and the column index must be smaller than the
-// number of columns. Additionally, the column index (in case of a row-major matrix) or the row
-// index (in case of a column-major matrix) must be a multiple of the number of values inside
-// the intrinsic element. This function must \b NOT be called explicitly! It is used internally
-// for the performance optimized evaluation of expression templates. Calling this function
-// explicitly might result in erroneous results and/or in compilation errors.
+// This function performs a load of a specific SIMD element of the upper matrix. The row index
+// must be smaller than the number of rows and the column index must be smaller than the number
+// of columns. Additionally, the column index (in case of a row-major matrix) or the row index
+// (in case of a column-major matrix) must be a multiple of the number of values inside the
+// SIMD element. This function must \b NOT be called explicitly! It is used internally for the
+// performance optimized evaluation of expression templates. Calling this function explicitly
+// might result in erroneous results and/or in compilation errors.
 */
 template< typename MT  // Type of the adapted dense matrix
         , bool SO >    // Storage order of the adapted dense matrix
-BLAZE_ALWAYS_INLINE typename UpperMatrix<MT,SO,true>::IntrinsicType
+BLAZE_ALWAYS_INLINE typename UpperMatrix<MT,SO,true>::SIMDType
    UpperMatrix<MT,SO,true>::load( size_t i, size_t j ) const noexcept
 {
    return matrix_.load( i, j );
@@ -2459,23 +2457,23 @@ BLAZE_ALWAYS_INLINE typename UpperMatrix<MT,SO,true>::IntrinsicType
 
 //*************************************************************************************************
 /*! \cond BLAZE_INTERNAL */
-/*!\brief Aligned load of an intrinsic element of the matrix.
+/*!\brief Aligned load of a SIMD element of the matrix.
 //
 // \param i Access index for the row. The index has to be in the range [0..M-1].
 // \param j Access index for the column. The index has to be in the range [0..N-1].
-// \return The loaded intrinsic element.
+// \return The loaded SIMD element.
 //
-// This function performs an aligned load of a specific intrinsic element of the upper matrix.
+// This function performs an aligned load of a specific SIMD element of the upper matrix.
 // The row index must be smaller than the number of rows and the column index must be smaller
 // than the number of columns. Additionally, the column index (in case of a row-major matrix)
 // or the row index (in case of a column-major matrix) must be a multiple of the number of
-// values inside the intrinsic element. This function must \b NOT be called explicitly! It is
-// used internally for the performance optimized evaluation of expression templates. Calling
-// this function explicitly might result in erroneous results and/or in compilation errors.
+// values inside the SIMD element. This function must \b NOT be called explicitly! It is used
+// internally for the performance optimized evaluation of expression templates. Calling this
+// function explicitly might result in erroneous results and/or in compilation errors.
 */
 template< typename MT  // Type of the adapted dense matrix
         , bool SO >    // Storage order of the adapted dense matrix
-BLAZE_ALWAYS_INLINE typename UpperMatrix<MT,SO,true>::IntrinsicType
+BLAZE_ALWAYS_INLINE typename UpperMatrix<MT,SO,true>::SIMDType
    UpperMatrix<MT,SO,true>::loada( size_t i, size_t j ) const noexcept
 {
    return matrix_.loada( i, j );
@@ -2486,23 +2484,23 @@ BLAZE_ALWAYS_INLINE typename UpperMatrix<MT,SO,true>::IntrinsicType
 
 //*************************************************************************************************
 /*! \cond BLAZE_INTERNAL */
-/*!\brief Unaligned load of an intrinsic element of the matrix.
+/*!\brief Unaligned load of a SIMD element of the matrix.
 //
 // \param i Access index for the row. The index has to be in the range [0..M-1].
 // \param j Access index for the column. The index has to be in the range [0..N-1].
-// \return The loaded intrinsic element.
+// \return The loaded SIMD element.
 //
-// This function performs an unaligned load of a specific intrinsic element of the upper matrix.
+// This function performs an unaligned load of a specific SIMD element of the upper matrix.
 // The row index must be smaller than the number of rows and the column index must be smaller
 // than the number of columns. Additionally, the column index (in case of a row-major matrix)
 // or the row index (in case of a column-major matrix) must be a multiple of the number of
-// values inside the intrinsic element. This function must \b NOT be called explicitly! It is
-// used internally for the performance optimized evaluation of expression templates. Calling
-// this function explicitly might result in erroneous results and/or in compilation errors.
+// values inside the SIMD element. This function must \b NOT be called explicitly! It is used
+// internally for the performance optimized evaluation of expression templates. Calling this
+// function explicitly might result in erroneous results and/or in compilation errors.
 */
 template< typename MT  // Type of the adapted dense matrix
         , bool SO >    // Storage order of the adapted dense matrix
-BLAZE_ALWAYS_INLINE typename UpperMatrix<MT,SO,true>::IntrinsicType
+BLAZE_ALWAYS_INLINE typename UpperMatrix<MT,SO,true>::SIMDType
    UpperMatrix<MT,SO,true>::loadu( size_t i, size_t j ) const noexcept
 {
    return matrix_.loadu( i, j );

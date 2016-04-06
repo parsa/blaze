@@ -1,7 +1,7 @@
 //=================================================================================================
 /*!
 //  \file blaze/math/simd/Functions.h
-//  \brief Header file for all intrinsic functions
+//  \brief Header file for all SIMD functions
 //
 //  Copyright (C) 2013 Klaus Iglberger - All Rights Reserved
 //

@@ -349,9 +349,6 @@ class DenseColumn : public DenseVector< DenseColumn<MT,SO,SF>, false >
    //**Type definitions****************************************************************************
    //! Composite data type of the dense matrix expression.
    typedef If_< IsExpression<MT>, MT, MT& >  Operand;
-
-   //! Intrinsic trait for the column element type.
-   typedef IntrinsicTrait< ElementType_<MT> >  IT;
    //**********************************************************************************************
 
  public:
@@ -360,7 +357,7 @@ class DenseColumn : public DenseVector< DenseColumn<MT,SO,SF>, false >
    typedef ColumnTrait_<MT>            ResultType;     //!< Result type for expression template evaluations.
    typedef TransposeType_<ResultType>  TransposeType;  //!< Transpose type for expression template evaluations.
    typedef ElementType_<MT>            ElementType;    //!< Type of the column elements.
-   typedef typename IT::Type           IntrinsicType;  //!< Intrinsic type of the column elements.
+   typedef SIMDTrait_<ElementType>     SIMDType;       //!< SIMD type of the column elements.
    typedef ReturnType_<MT>             ReturnType;     //!< Return type for expression template evaluations
    typedef const DenseColumn&          CompositeType;  //!< Data type for composite expression templates.
 
@@ -504,6 +501,11 @@ class DenseColumn : public DenseVector< DenseColumn<MT,SO,SF>, false >
    /*! \endcond */
    //**********************************************************************************************
 
+   //**SIMD properties*****************************************************************************
+   //! The number of elements packed within a single SIMD element.
+   enum : size_t { SIMDSIZE = SIMDTrait<ElementType>::size };
+   //**********************************************************************************************
+
  public:
    //**Expression template evaluation functions****************************************************
    /*!\name Expression template evaluation functions */
@@ -523,14 +525,14 @@ class DenseColumn : public DenseVector< DenseColumn<MT,SO,SF>, false >
    inline bool isAligned   () const noexcept;
    inline bool canSMPAssign() const noexcept;
 
-   BLAZE_ALWAYS_INLINE IntrinsicType load ( size_t index ) const noexcept;
-   BLAZE_ALWAYS_INLINE IntrinsicType loada( size_t index ) const noexcept;
-   BLAZE_ALWAYS_INLINE IntrinsicType loadu( size_t index ) const noexcept;
+   BLAZE_ALWAYS_INLINE SIMDType load ( size_t index ) const noexcept;
+   BLAZE_ALWAYS_INLINE SIMDType loada( size_t index ) const noexcept;
+   BLAZE_ALWAYS_INLINE SIMDType loadu( size_t index ) const noexcept;
 
-   BLAZE_ALWAYS_INLINE void store ( size_t index, const IntrinsicType& value ) noexcept;
-   BLAZE_ALWAYS_INLINE void storea( size_t index, const IntrinsicType& value ) noexcept;
-   BLAZE_ALWAYS_INLINE void storeu( size_t index, const IntrinsicType& value ) noexcept;
-   BLAZE_ALWAYS_INLINE void stream( size_t index, const IntrinsicType& value ) noexcept;
+   BLAZE_ALWAYS_INLINE void store ( size_t index, const SIMDType& value ) noexcept;
+   BLAZE_ALWAYS_INLINE void storea( size_t index, const SIMDType& value ) noexcept;
+   BLAZE_ALWAYS_INLINE void storeu( size_t index, const SIMDType& value ) noexcept;
+   BLAZE_ALWAYS_INLINE void stream( size_t index, const SIMDType& value ) noexcept;
 
    template< typename VT >
    inline DisableIf_< VectorizedAssign<VT> > assign( const DenseVector<VT,false>& rhs );
@@ -1501,21 +1503,20 @@ inline bool DenseColumn<MT,SO,SF>::canSMPAssign() const noexcept
 
 
 //*************************************************************************************************
-/*!\brief Load of an intrinsic element of the dense column.
+/*!\brief Load of a SIMD element of the dense column.
 //
 // \param index Access index. The index must be smaller than the number of matrix rows.
-// \return The loaded intrinsic element.
+// \return The loaded SIMD element.
 //
-// This function performs a load of a specific intrinsic element of the dense column. The
-// index must be smaller than the number of matrix rows. This function must \b NOT be called
-// explicitly! It is used internally for the performance optimized evaluation of expression
-// templates. Calling this function explicitly might result in erroneous results and/or in
-// compilation errors.
+// This function performs a load of a specific SIMD element of the dense column. The index must
+// be smaller than the number of matrix rows. This function must \b NOT be called explicitly! It
+// is used internally for the performance optimized evaluation of expression templates. Calling
+// this function explicitly might result in erroneous results and/or in compilation errors.
 */
 template< typename MT  // Type of the dense matrix
         , bool SO      // Storage order
         , bool SF >    // Symmetry flag
-BLAZE_ALWAYS_INLINE typename DenseColumn<MT,SO,SF>::IntrinsicType
+BLAZE_ALWAYS_INLINE typename DenseColumn<MT,SO,SF>::SIMDType
    DenseColumn<MT,SO,SF>::load( size_t index ) const noexcept
 {
    return matrix_.load( index, col_ );
@@ -1524,13 +1525,13 @@ BLAZE_ALWAYS_INLINE typename DenseColumn<MT,SO,SF>::IntrinsicType
 
 
 //*************************************************************************************************
-/*!\brief Aligned load of an intrinsic element of the dense column.
+/*!\brief Aligned load of a SIMD element of the dense column.
 //
 // \param index Access index. The index must be smaller than the number of matrix rows.
-// \return The loaded intrinsic element.
+// \return The loaded SIMD element.
 //
-// This function performs an aligned load of a specific intrinsic element of the dense column.
-// The index must be smaller than the number of matrix rows. This function must \b NOT be called
+// This function performs an aligned load of a specific SIMD element of the dense column. The
+// index must be smaller than the number of matrix rows. This function must \b NOT be called
 // explicitly! It is used internally for the performance optimized evaluation of expression
 // templates. Calling this function explicitly might result in erroneous results and/or in
 // compilation errors.
@@ -1538,7 +1539,7 @@ BLAZE_ALWAYS_INLINE typename DenseColumn<MT,SO,SF>::IntrinsicType
 template< typename MT  // Type of the dense matrix
         , bool SO      // Storage order
         , bool SF >    // Symmetry flag
-BLAZE_ALWAYS_INLINE typename DenseColumn<MT,SO,SF>::IntrinsicType
+BLAZE_ALWAYS_INLINE typename DenseColumn<MT,SO,SF>::SIMDType
    DenseColumn<MT,SO,SF>::loada( size_t index ) const noexcept
 {
    return matrix_.loada( index, col_ );
@@ -1547,13 +1548,13 @@ BLAZE_ALWAYS_INLINE typename DenseColumn<MT,SO,SF>::IntrinsicType
 
 
 //*************************************************************************************************
-/*!\brief Unaligned load of an intrinsic element of the dense column.
+/*!\brief Unaligned load of a SIMD element of the dense column.
 //
 // \param index Access index. The index must be smaller than the number of matrix rows.
-// \return The loaded intrinsic element.
+// \return The loaded SIMD element.
 //
-// This function performs an unaligned load of a specific intrinsic element of the dense column.
-// The index must be smaller than the number of matrix rows. This function must \b NOT be called
+// This function performs an unaligned load of a specific SIMD element of the dense column. The
+// index must be smaller than the number of matrix rows. This function must \b NOT be called
 // explicitly! It is used internally for the performance optimized evaluation of expression
 // templates. Calling this function explicitly might result in erroneous results and/or in
 // compilation errors.
@@ -1561,7 +1562,7 @@ BLAZE_ALWAYS_INLINE typename DenseColumn<MT,SO,SF>::IntrinsicType
 template< typename MT  // Type of the dense matrix
         , bool SO      // Storage order
         , bool SF >    // Symmetry flag
-BLAZE_ALWAYS_INLINE typename DenseColumn<MT,SO,SF>::IntrinsicType
+BLAZE_ALWAYS_INLINE typename DenseColumn<MT,SO,SF>::SIMDType
    DenseColumn<MT,SO,SF>::loadu( size_t index ) const noexcept
 {
    return matrix_.loadu( index, col_ );
@@ -1570,13 +1571,36 @@ BLAZE_ALWAYS_INLINE typename DenseColumn<MT,SO,SF>::IntrinsicType
 
 
 //*************************************************************************************************
-/*!\brief Store of an intrinsic element of the dense column.
+/*!\brief Store of a SIMD element of the dense column.
 //
 // \param index Access index. The index must be smaller than the number of matrix rows.
-// \param value The intrinsic element to be stored.
+// \param value The SIMD element to be stored.
 // \return void
 //
-// This function performs a store a specific intrinsic element of the dense column. The
+// This function performs a store a specific SIMD element of the dense column. The index must
+// be smaller than the number of matrix rows. This function must \b NOT be called explicitly! It
+// is used internally for the performance optimized evaluation of expression templates. Calling
+// this function explicitly might result in erroneous results and/or in compilation errors.
+*/
+template< typename MT  // Type of the dense matrix
+        , bool SO      // Storage order
+        , bool SF >    // Symmetry flag
+BLAZE_ALWAYS_INLINE void
+   DenseColumn<MT,SO,SF>::store( size_t index, const SIMDType& value ) noexcept
+{
+   matrix_.store( index, col_, value );
+}
+//*************************************************************************************************
+
+
+//*************************************************************************************************
+/*!\brief Aligned store of a SIMD element of the dense column.
+//
+// \param index Access index. The index must be smaller than the number of matrix rows.
+// \param value The SIMD element to be stored.
+// \return void
+//
+// This function performs an aligned store a specific SIMD element of the dense column. The
 // index must be smaller than the number of matrix rows. This function must \b NOT be called
 // explicitly! It is used internally for the performance optimized evaluation of expression
 // templates. Calling this function explicitly might result in erroneous results and/or in
@@ -1586,31 +1610,7 @@ template< typename MT  // Type of the dense matrix
         , bool SO      // Storage order
         , bool SF >    // Symmetry flag
 BLAZE_ALWAYS_INLINE void
-   DenseColumn<MT,SO,SF>::store( size_t index, const IntrinsicType& value ) noexcept
-{
-   matrix_.store( index, col_, value );
-}
-//*************************************************************************************************
-
-
-//*************************************************************************************************
-/*!\brief Aligned store of an intrinsic element of the dense column.
-//
-// \param index Access index. The index must be smaller than the number of matrix rows.
-// \param value The intrinsic element to be stored.
-// \return void
-//
-// This function performs an aligned store a specific intrinsic element of the dense column.
-// The index must be smaller than the number of matrix rows. This function must \b NOT be
-// called explicitly! It is used internally for the performance optimized evaluation of
-// expression templates. Calling this function explicitly might result in erroneous results
-// and/or in compilation errors.
-*/
-template< typename MT  // Type of the dense matrix
-        , bool SO      // Storage order
-        , bool SF >    // Symmetry flag
-BLAZE_ALWAYS_INLINE void
-   DenseColumn<MT,SO,SF>::storea( size_t index, const IntrinsicType& value ) noexcept
+   DenseColumn<MT,SO,SF>::storea( size_t index, const SIMDType& value ) noexcept
 {
    matrix_.storea( index, col_, value );
 }
@@ -1618,23 +1618,23 @@ BLAZE_ALWAYS_INLINE void
 
 
 //*************************************************************************************************
-/*!\brief Unaligned store of an intrinsic element of the dense column.
+/*!\brief Unaligned store of a SIMD element of the dense column.
 //
 // \param index Access index. The index must be smaller than the number of matrix rows.
-// \param value The intrinsic element to be stored.
+// \param value The SIMD element to be stored.
 // \return void
 //
-// This function performs an unaligned store a specific intrinsic element of the dense column.
-// The index must be smaller than the number of matrix rows. This function must \b NOT be
-// called explicitly! It is used internally for the performance optimized evaluation of
-// expression templates. Calling this function explicitly might result in erroneous results
-// and/or in compilation errors.
+// This function performs an unaligned store a specific SIMD element of the dense column. The
+// index must be smaller than the number of matrix rows. This function must \b NOT be called
+// explicitly! It is used internally for the performance optimized evaluation of expression
+// templates. Calling this function explicitly might result in erroneous results and/or in
+// compilation errors.
 */
 template< typename MT  // Type of the dense matrix
         , bool SO      // Storage order
         , bool SF >    // Symmetry flag
 BLAZE_ALWAYS_INLINE void
-   DenseColumn<MT,SO,SF>::storeu( size_t index, const IntrinsicType& value ) noexcept
+   DenseColumn<MT,SO,SF>::storeu( size_t index, const SIMDType& value ) noexcept
 {
    matrix_.storeu( index, col_, value );
 }
@@ -1642,23 +1642,23 @@ BLAZE_ALWAYS_INLINE void
 
 
 //*************************************************************************************************
-/*!\brief Aligned, non-temporal store of an intrinsic element of the dense column.
+/*!\brief Aligned, non-temporal store of a SIMD element of the dense column.
 //
 // \param index Access index. The index must be smaller than the number of matrix rows.
-// \param value The intrinsic element to be stored.
+// \param value The SIMD element to be stored.
 // \return void
 //
-// This function performs an aligned, non-temporal store a specific intrinsic element of the
-// dense column. The index must be smaller than the number of matrix rows. This function must
-// \b NOT be called explicitly! It is used internally for the performance optimized evaluation
-// of expression templates. Calling this function explicitly might result in erroneous results
+// This function performs an aligned, non-temporal store a specific SIMD element of the dense
+// column. The index must be smaller than the number of matrix rows. This function must \b NOT
+// be called explicitly! It is used internally for the performance optimized evaluation of
+// expression templates. Calling this function explicitly might result in erroneous results
 // and/or in compilation errors.
 */
 template< typename MT  // Type of the dense matrix
         , bool SO      // Storage order
         , bool SF >    // Symmetry flag
 BLAZE_ALWAYS_INLINE void
-   DenseColumn<MT,SO,SF>::stream( size_t index, const IntrinsicType& value ) noexcept
+   DenseColumn<MT,SO,SF>::stream( size_t index, const SIMDType& value ) noexcept
 {
    matrix_.stream( index, col_, value );
 }
@@ -1697,7 +1697,7 @@ inline DisableIf_< typename DenseColumn<MT,SO,SF>::BLAZE_TEMPLATE VectorizedAssi
 
 
 //*************************************************************************************************
-/*!\brief Intrinsic optimized implementation of the assignment of a dense vector.
+/*!\brief SIMD optimized implementation of the assignment of a dense vector.
 //
 // \param rhs The right-hand side dense vector to be assigned.
 // \return void
@@ -1721,14 +1721,14 @@ inline EnableIf_< typename DenseColumn<MT,SO,SF>::BLAZE_TEMPLATE VectorizedAssig
    const bool remainder( !IsPadded<MT>::value || !IsPadded<VT>::value );
    const size_t rows( size() );
 
-   const size_t ipos( ( remainder )?( rows & size_t(-IT::size) ):( rows ) );
-   BLAZE_INTERNAL_ASSERT( !remainder || ( rows - ( rows % (IT::size) ) ) == ipos, "Invalid end calculation" );
+   const size_t ipos( ( remainder )?( rows & size_t(-SIMDSIZE) ):( rows ) );
+   BLAZE_INTERNAL_ASSERT( !remainder || ( rows - ( rows % (SIMDSIZE) ) ) == ipos, "Invalid end calculation" );
 
    if( useStreaming && rows > ( cacheSize/( sizeof(ElementType) * 3UL ) ) && !(~rhs).isAliased( this ) )
    {
       size_t i( 0UL );
 
-      for( ; i<ipos; i+=IT::size ) {
+      for( ; i<ipos; i+=SIMDSIZE ) {
          matrix_.stream( i, col_, (~rhs).load(i) );
       }
       for( ; remainder && i<rows; ++i ) {
@@ -1740,13 +1740,13 @@ inline EnableIf_< typename DenseColumn<MT,SO,SF>::BLAZE_TEMPLATE VectorizedAssig
       size_t i( 0UL );
       ConstIterator_<VT> it( (~rhs).begin() );
 
-      for( ; (i+IT::size*3UL) < ipos; i+=IT::size*4UL ) {
-         matrix_.store( i             , col_, it.load() ); it+=IT::size;
-         matrix_.store( i+IT::size    , col_, it.load() ); it+=IT::size;
-         matrix_.store( i+IT::size*2UL, col_, it.load() ); it+=IT::size;
-         matrix_.store( i+IT::size*3UL, col_, it.load() ); it+=IT::size;
+      for( ; (i+SIMDSIZE*3UL) < ipos; i+=SIMDSIZE*4UL ) {
+         matrix_.store( i             , col_, it.load() ); it+=SIMDSIZE;
+         matrix_.store( i+SIMDSIZE    , col_, it.load() ); it+=SIMDSIZE;
+         matrix_.store( i+SIMDSIZE*2UL, col_, it.load() ); it+=SIMDSIZE;
+         matrix_.store( i+SIMDSIZE*3UL, col_, it.load() ); it+=SIMDSIZE;
       }
-      for( ; i<ipos; i+=IT::size, it+=IT::size ) {
+      for( ; i<ipos; i+=SIMDSIZE, it+=SIMDSIZE ) {
          matrix_.store( i, col_, it.load() );
       }
       for( ; remainder && i<rows; ++i, ++it ) {
@@ -1814,7 +1814,7 @@ inline DisableIf_< typename DenseColumn<MT,SO,SF>::BLAZE_TEMPLATE VectorizedAddA
 
 
 //*************************************************************************************************
-/*!\brief Intrinsic optimized implementation of the addition assignment of a dense vector.
+/*!\brief SIMD optimized implementation of the addition assignment of a dense vector.
 //
 // \param rhs The right-hand side dense vector to be added.
 // \return void
@@ -1838,19 +1838,19 @@ inline EnableIf_< typename DenseColumn<MT,SO,SF>::BLAZE_TEMPLATE VectorizedAddAs
    const bool remainder( !IsPadded<MT>::value || !IsPadded<VT>::value );
    const size_t rows( size() );
 
-   const size_t ipos( ( remainder )?( rows & size_t(-IT::size) ):( rows ) );
-   BLAZE_INTERNAL_ASSERT( !remainder || ( rows - ( rows % (IT::size) ) ) == ipos, "Invalid end calculation" );
+   const size_t ipos( ( remainder )?( rows & size_t(-SIMDSIZE) ):( rows ) );
+   BLAZE_INTERNAL_ASSERT( !remainder || ( rows - ( rows % (SIMDSIZE) ) ) == ipos, "Invalid end calculation" );
 
    size_t i( 0UL );
    ConstIterator_<VT> it( (~rhs).begin() );
 
-   for( ; (i+IT::size*3UL) < ipos; i+=IT::size*4UL ) {
-      matrix_.store( i             , col_, matrix_.load(i             ,col_) + it.load() ); it += IT::size;
-      matrix_.store( i+IT::size    , col_, matrix_.load(i+IT::size    ,col_) + it.load() ); it += IT::size;
-      matrix_.store( i+IT::size*2UL, col_, matrix_.load(i+IT::size*2UL,col_) + it.load() ); it += IT::size;
-      matrix_.store( i+IT::size*3UL, col_, matrix_.load(i+IT::size*3UL,col_) + it.load() ); it += IT::size;
+   for( ; (i+SIMDSIZE*3UL) < ipos; i+=SIMDSIZE*4UL ) {
+      matrix_.store( i             , col_, matrix_.load(i             ,col_) + it.load() ); it += SIMDSIZE;
+      matrix_.store( i+SIMDSIZE    , col_, matrix_.load(i+SIMDSIZE    ,col_) + it.load() ); it += SIMDSIZE;
+      matrix_.store( i+SIMDSIZE*2UL, col_, matrix_.load(i+SIMDSIZE*2UL,col_) + it.load() ); it += SIMDSIZE;
+      matrix_.store( i+SIMDSIZE*3UL, col_, matrix_.load(i+SIMDSIZE*3UL,col_) + it.load() ); it += SIMDSIZE;
    }
-   for( ; i<ipos; i+=IT::size, it+=IT::size ) {
+   for( ; i<ipos; i+=SIMDSIZE, it+=SIMDSIZE ) {
       matrix_.store( i, col_, matrix_.load(i,col_) + it.load() );
    }
    for( ; remainder && i<rows; ++i, ++it ) {
@@ -1917,7 +1917,7 @@ inline DisableIf_< typename DenseColumn<MT,SO,SF>::BLAZE_TEMPLATE VectorizedSubA
 
 
 //*************************************************************************************************
-/*!\brief Intrinsic optimized implementation of the subtraction assignment of a dense vector.
+/*!\brief SIMD optimized implementation of the subtraction assignment of a dense vector.
 //
 // \param rhs The right-hand side dense vector to be subtracted.
 // \return void
@@ -1941,19 +1941,19 @@ inline EnableIf_< typename DenseColumn<MT,SO,SF>::BLAZE_TEMPLATE VectorizedSubAs
    const bool remainder( !IsPadded<MT>::value || !IsPadded<VT>::value );
    const size_t rows( size() );
 
-   const size_t ipos( ( remainder )?( rows & size_t(-IT::size) ):( rows ) );
-   BLAZE_INTERNAL_ASSERT( !remainder || ( rows - ( rows % (IT::size) ) ) == ipos, "Invalid end calculation" );
+   const size_t ipos( ( remainder )?( rows & size_t(-SIMDSIZE) ):( rows ) );
+   BLAZE_INTERNAL_ASSERT( !remainder || ( rows - ( rows % (SIMDSIZE) ) ) == ipos, "Invalid end calculation" );
 
    size_t i( 0UL );
    ConstIterator_<VT> it( (~rhs).begin() );
 
-   for( ; (i+IT::size*3UL) < ipos; i+=IT::size*4UL ) {
-      matrix_.store( i             , col_, matrix_.load(i             ,col_) - it.load() ); it += IT::size;
-      matrix_.store( i+IT::size    , col_, matrix_.load(i+IT::size    ,col_) - it.load() ); it += IT::size;
-      matrix_.store( i+IT::size*2UL, col_, matrix_.load(i+IT::size*2UL,col_) - it.load() ); it += IT::size;
-      matrix_.store( i+IT::size*3UL, col_, matrix_.load(i+IT::size*3UL,col_) - it.load() ); it += IT::size;
+   for( ; (i+SIMDSIZE*3UL) < ipos; i+=SIMDSIZE*4UL ) {
+      matrix_.store( i             , col_, matrix_.load(i             ,col_) - it.load() ); it += SIMDSIZE;
+      matrix_.store( i+SIMDSIZE    , col_, matrix_.load(i+SIMDSIZE    ,col_) - it.load() ); it += SIMDSIZE;
+      matrix_.store( i+SIMDSIZE*2UL, col_, matrix_.load(i+SIMDSIZE*2UL,col_) - it.load() ); it += SIMDSIZE;
+      matrix_.store( i+SIMDSIZE*3UL, col_, matrix_.load(i+SIMDSIZE*3UL,col_) - it.load() ); it += SIMDSIZE;
    }
-   for( ; i<ipos; i+=IT::size, it+=IT::size ) {
+   for( ; i<ipos; i+=SIMDSIZE, it+=SIMDSIZE ) {
       matrix_.store( i, col_, matrix_.load(i,col_) - it.load() );
    }
    for( ; remainder && i<rows; ++i, ++it ) {
@@ -2020,7 +2020,7 @@ inline DisableIf_< typename DenseColumn<MT,SO,SF>::BLAZE_TEMPLATE VectorizedMult
 
 
 //*************************************************************************************************
-/*!\brief Intrinsic optimized implementation of the multiplication assignment of a dense vector.
+/*!\brief SIMD optimized implementation of the multiplication assignment of a dense vector.
 //
 // \param rhs The right-hand side dense vector to be multiplied.
 // \return void
@@ -2044,19 +2044,19 @@ inline EnableIf_< typename DenseColumn<MT,SO,SF>::BLAZE_TEMPLATE VectorizedMultA
    const bool remainder( !IsPadded<MT>::value || !IsPadded<VT>::value );
    const size_t rows( size() );
 
-   const size_t ipos( ( remainder )?( rows & size_t(-IT::size) ):( rows ) );
-   BLAZE_INTERNAL_ASSERT( !remainder || ( rows - ( rows % (IT::size) ) ) == ipos, "Invalid end calculation" );
+   const size_t ipos( ( remainder )?( rows & size_t(-SIMDSIZE) ):( rows ) );
+   BLAZE_INTERNAL_ASSERT( !remainder || ( rows - ( rows % (SIMDSIZE) ) ) == ipos, "Invalid end calculation" );
 
    size_t i( 0UL );
    ConstIterator_<VT> it( (~rhs).begin() );
 
-   for( ; (i+IT::size*3UL) < ipos; i+=IT::size*4UL ) {
-      matrix_.store( i             , col_, matrix_.load(i             ,col_) * it.load() ); it += IT::size;
-      matrix_.store( i+IT::size    , col_, matrix_.load(i+IT::size    ,col_) * it.load() ); it += IT::size;
-      matrix_.store( i+IT::size*2UL, col_, matrix_.load(i+IT::size*2UL,col_) * it.load() ); it += IT::size;
-      matrix_.store( i+IT::size*3UL, col_, matrix_.load(i+IT::size*3UL,col_) * it.load() ); it += IT::size;
+   for( ; (i+SIMDSIZE*3UL) < ipos; i+=SIMDSIZE*4UL ) {
+      matrix_.store( i             , col_, matrix_.load(i             ,col_) * it.load() ); it += SIMDSIZE;
+      matrix_.store( i+SIMDSIZE    , col_, matrix_.load(i+SIMDSIZE    ,col_) * it.load() ); it += SIMDSIZE;
+      matrix_.store( i+SIMDSIZE*2UL, col_, matrix_.load(i+SIMDSIZE*2UL,col_) * it.load() ); it += SIMDSIZE;
+      matrix_.store( i+SIMDSIZE*3UL, col_, matrix_.load(i+SIMDSIZE*3UL,col_) * it.load() ); it += SIMDSIZE;
    }
-   for( ; i<ipos; i+=IT::size, it+=IT::size ) {
+   for( ; i<ipos; i+=SIMDSIZE, it+=SIMDSIZE ) {
       matrix_.store( i, col_, matrix_.load(i,col_) * it.load() );
    }
    for( ; remainder && i<rows; ++i, ++it ) {
@@ -3768,9 +3768,6 @@ class DenseColumn<MT,false,true> : public DenseVector< DenseColumn<MT,false,true
    //**Type definitions****************************************************************************
    //! Composite data type of the dense matrix expression.
    typedef If_< IsExpression<MT>, MT, MT& >  Operand;
-
-   //! Intrinsic trait for the column element type.
-   typedef IntrinsicTrait< ElementType_<MT> >  IT;
    //**********************************************************************************************
 
  public:
@@ -3779,7 +3776,7 @@ class DenseColumn<MT,false,true> : public DenseVector< DenseColumn<MT,false,true
    typedef ColumnTrait_<MT>            ResultType;     //!< Result type for expression template evaluations.
    typedef TransposeType_<ResultType>  TransposeType;  //!< Transpose type for expression template evaluations.
    typedef ElementType_<MT>            ElementType;    //!< Type of the column elements.
-   typedef typename IT::Type           IntrinsicType;  //!< Intrinsic type of the column elements.
+   typedef SIMDTrait_<ElementType>     SIMDType;       //!< SIMD type of the column elements.
    typedef ReturnType_<MT>             ReturnType;     //!< Return type for expression template evaluations
    typedef const DenseColumn&          CompositeType;  //!< Data type for composite expression templates.
 
@@ -3915,6 +3912,11 @@ class DenseColumn<MT,false,true> : public DenseVector< DenseColumn<MT,false,true
    };
    //**********************************************************************************************
 
+   //**SIMD properties*****************************************************************************
+   //! The number of elements packed within a single SIMD element.
+   enum : size_t { SIMDSIZE = SIMDTrait<ElementType>::size };
+   //**********************************************************************************************
+
  public:
    //**Expression template evaluation functions****************************************************
    /*!\name Expression template evaluation functions */
@@ -3934,14 +3936,14 @@ class DenseColumn<MT,false,true> : public DenseVector< DenseColumn<MT,false,true
    inline bool isAligned   () const noexcept;
    inline bool canSMPAssign() const noexcept;
 
-   BLAZE_ALWAYS_INLINE IntrinsicType load ( size_t index ) const noexcept;
-   BLAZE_ALWAYS_INLINE IntrinsicType loada( size_t index ) const noexcept;
-   BLAZE_ALWAYS_INLINE IntrinsicType loadu( size_t index ) const noexcept;
+   BLAZE_ALWAYS_INLINE SIMDType load ( size_t index ) const noexcept;
+   BLAZE_ALWAYS_INLINE SIMDType loada( size_t index ) const noexcept;
+   BLAZE_ALWAYS_INLINE SIMDType loadu( size_t index ) const noexcept;
 
-   BLAZE_ALWAYS_INLINE void store ( size_t index, const IntrinsicType& value ) noexcept;
-   BLAZE_ALWAYS_INLINE void storea( size_t index, const IntrinsicType& value ) noexcept;
-   BLAZE_ALWAYS_INLINE void storeu( size_t index, const IntrinsicType& value ) noexcept;
-   BLAZE_ALWAYS_INLINE void stream( size_t index, const IntrinsicType& value ) noexcept;
+   BLAZE_ALWAYS_INLINE void store ( size_t index, const SIMDType& value ) noexcept;
+   BLAZE_ALWAYS_INLINE void storea( size_t index, const SIMDType& value ) noexcept;
+   BLAZE_ALWAYS_INLINE void storeu( size_t index, const SIMDType& value ) noexcept;
+   BLAZE_ALWAYS_INLINE void stream( size_t index, const SIMDType& value ) noexcept;
 
    template< typename VT >
    inline DisableIf_< VectorizedAssign<VT> > assign( const DenseVector<VT,false>& rhs );
@@ -4914,20 +4916,18 @@ inline bool DenseColumn<MT,false,true>::canSMPAssign() const noexcept
 
 
 //*************************************************************************************************
-/*! \cond BLAZE_INTERNAL */
-/*!\brief Load of an intrinsic element of the dense column.
+/*!\brief Load of a SIMD element of the dense column.
 //
 // \param index Access index. The index must be smaller than the number of matrix rows.
-// \return The loaded intrinsic element.
+// \return The loaded SIMD element.
 //
-// This function performs a load of a specific intrinsic element of the dense column. The
-// index must be smaller than the number of matrix rows. This function must \b NOT be called
-// explicitly! It is used internally for the performance optimized evaluation of expression
-// templates. Calling this function explicitly might result in erroneous results and/or in
-// compilation errors.
+// This function performs a load of a specific SIMD element of the dense column. The index must
+// be smaller than the number of matrix rows. This function must \b NOT be called explicitly! It
+// is used internally for the performance optimized evaluation of expression templates. Calling
+// this function explicitly might result in erroneous results and/or in compilation errors.
 */
 template< typename MT >  // Type of the dense matrix
-BLAZE_ALWAYS_INLINE typename DenseColumn<MT,false,true>::IntrinsicType
+BLAZE_ALWAYS_INLINE typename DenseColumn<MT,false,true>::SIMDType
    DenseColumn<MT,false,true>::load( size_t index ) const noexcept
 {
    return matrix_.load( col_, index );
@@ -4938,19 +4938,19 @@ BLAZE_ALWAYS_INLINE typename DenseColumn<MT,false,true>::IntrinsicType
 
 //*************************************************************************************************
 /*! \cond BLAZE_INTERNAL */
-/*!\brief Aligned load of an intrinsic element of the dense column.
+/*!\brief Aligned load of a SIMD element of the dense column.
 //
 // \param index Access index. The index must be smaller than the number of matrix rows.
-// \return The loaded intrinsic element.
+// \return The loaded SIMD element.
 //
-// This function performs an aligned load of a specific intrinsic element of the dense column.
-// The index must be smaller than the number of matrix rows. This function must \b NOT be called
+// This function performs an aligned load of a specific SIMD element of the dense column. The
+// index must be smaller than the number of matrix rows. This function must \b NOT be called
 // explicitly! It is used internally for the performance optimized evaluation of expression
 // templates. Calling this function explicitly might result in erroneous results and/or in
 // compilation errors.
 */
 template< typename MT >  // Type of the dense matrix
-BLAZE_ALWAYS_INLINE typename DenseColumn<MT,false,true>::IntrinsicType
+BLAZE_ALWAYS_INLINE typename DenseColumn<MT,false,true>::SIMDType
    DenseColumn<MT,false,true>::loada( size_t index ) const noexcept
 {
    return matrix_.loada( col_, index );
@@ -4961,19 +4961,19 @@ BLAZE_ALWAYS_INLINE typename DenseColumn<MT,false,true>::IntrinsicType
 
 //*************************************************************************************************
 /*! \cond BLAZE_INTERNAL */
-/*!\brief Unaligned load of an intrinsic element of the dense column.
+/*!\brief Unaligned load of a SIMD element of the dense column.
 //
 // \param index Access index. The index must be smaller than the number of matrix rows.
-// \return The loaded intrinsic element.
+// \return The loaded SIMD element.
 //
-// This function performs an unaligned load of a specific intrinsic element of the dense column.
-// The index must be smaller than the number of matrix rows. This function must \b NOT be called
+// This function performs an unaligned load of a specific SIMD element of the dense column. The
+// index must be smaller than the number of matrix rows. This function must \b NOT be called
 // explicitly! It is used internally for the performance optimized evaluation of expression
 // templates. Calling this function explicitly might result in erroneous results and/or in
 // compilation errors.
 */
 template< typename MT >  // Type of the dense matrix
-BLAZE_ALWAYS_INLINE typename DenseColumn<MT,false,true>::IntrinsicType
+BLAZE_ALWAYS_INLINE typename DenseColumn<MT,false,true>::SIMDType
    DenseColumn<MT,false,true>::loadu( size_t index ) const noexcept
 {
    return matrix_.loadu( col_, index );
@@ -4984,21 +4984,20 @@ BLAZE_ALWAYS_INLINE typename DenseColumn<MT,false,true>::IntrinsicType
 
 //*************************************************************************************************
 /*! \cond BLAZE_INTERNAL */
-/*!\brief Store of an intrinsic element of the dense column.
+/*!\brief Store of a SIMD element of the dense column.
 //
 // \param index Access index. The index must be smaller than the number of matrix rows.
-// \param value The intrinsic element to be stored.
+// \param value The SIMD element to be stored.
 // \return void
 //
-// This function performs a store a specific intrinsic element of the dense column. The
-// index must be smaller than the number of matrix rows. This function must \b NOT be called
-// explicitly! It is used internally for the performance optimized evaluation of expression
-// templates. Calling this function explicitly might result in erroneous results and/or in
-// compilation errors.
+// This function performs a store a specific SIMD element of the dense column. The index must
+// be smaller than the number of matrix rows. This function must \b NOT be called explicitly! It
+// is used internally for the performance optimized evaluation of expression templates. Calling
+// this function explicitly might result in erroneous results and/or in compilation errors.
 */
 template< typename MT >  // Type of the dense matrix
 BLAZE_ALWAYS_INLINE void
-   DenseColumn<MT,false,true>::store( size_t index, const IntrinsicType& value ) noexcept
+   DenseColumn<MT,false,true>::store( size_t index, const SIMDType& value ) noexcept
 {
    matrix_.store( col_, index, value );
 }
@@ -5008,21 +5007,21 @@ BLAZE_ALWAYS_INLINE void
 
 //*************************************************************************************************
 /*! \cond BLAZE_INTERNAL */
-/*!\brief Aligned store of an intrinsic element of the dense column.
+/*!\brief Aligned store of a SIMD element of the dense column.
 //
 // \param index Access index. The index must be smaller than the number of matrix rows.
-// \param value The intrinsic element to be stored.
+// \param value The SIMD element to be stored.
 // \return void
 //
-// This function performs an aligned store a specific intrinsic element of the dense column.
-// The index must be smaller than the number of matrix rows. This function must \b NOT be
-// called explicitly! It is used internally for the performance optimized evaluation of
-// expression templates. Calling this function explicitly might result in erroneous results
-// and/or in compilation errors.
+// This function performs an aligned store a specific SIMD element of the dense column. The
+// index must be smaller than the number of matrix rows. This function must \b NOT be called
+// explicitly! It is used internally for the performance optimized evaluation of expression
+// templates. Calling this function explicitly might result in erroneous results and/or in
+// compilation errors.
 */
 template< typename MT >  // Type of the dense matrix
 BLAZE_ALWAYS_INLINE void
-   DenseColumn<MT,false,true>::storea( size_t index, const IntrinsicType& value ) noexcept
+   DenseColumn<MT,false,true>::storea( size_t index, const SIMDType& value ) noexcept
 {
    matrix_.storea( col_, index, value );
 }
@@ -5032,21 +5031,21 @@ BLAZE_ALWAYS_INLINE void
 
 //*************************************************************************************************
 /*! \cond BLAZE_INTERNAL */
-/*!\brief Unaligned store of an intrinsic element of the dense column.
+/*!\brief Unaligned store of a SIMD element of the dense column.
 //
 // \param index Access index. The index must be smaller than the number of matrix rows.
-// \param value The intrinsic element to be stored.
+// \param value The SIMD element to be stored.
 // \return void
 //
-// This function performs an unaligned store a specific intrinsic element of the dense column.
-// The index must be smaller than the number of matrix rows. This function must \b NOT be
-// called explicitly! It is used internally for the performance optimized evaluation of
-// expression templates. Calling this function explicitly might result in erroneous results
-// and/or in compilation errors.
+// This function performs an unaligned store a specific SIMD element of the dense column. The
+// index must be smaller than the number of matrix rows. This function must \b NOT be called
+// explicitly! It is used internally for the performance optimized evaluation of expression
+// templates. Calling this function explicitly might result in erroneous results and/or in
+// compilation errors.
 */
 template< typename MT >  // Type of the dense matrix
 BLAZE_ALWAYS_INLINE void
-   DenseColumn<MT,false,true>::storeu( size_t index, const IntrinsicType& value ) noexcept
+   DenseColumn<MT,false,true>::storeu( size_t index, const SIMDType& value ) noexcept
 {
    matrix_.storeu( col_, index, value );
 }
@@ -5056,21 +5055,21 @@ BLAZE_ALWAYS_INLINE void
 
 //*************************************************************************************************
 /*! \cond BLAZE_INTERNAL */
-/*!\brief Aligned, non-temporal store of an intrinsic element of the dense column.
+/*!\brief Aligned, non-temporal store of a SIMD element of the dense column.
 //
 // \param index Access index. The index must be smaller than the number of matrix rows.
-// \param value The intrinsic element to be stored.
+// \param value The SIMD element to be stored.
 // \return void
 //
-// This function performs an aligned, non-temporal store a specific intrinsic element of the
-// dense column. The index must be smaller than the number of matrix rows. This function must
-// \b NOT be called explicitly! It is used internally for the performance optimized evaluation
-// of expression templates. Calling this function explicitly might result in erroneous results
+// This function performs an aligned, non-temporal store a specific SIMD element of the dense
+// column. The index must be smaller than the number of matrix rows. This function must \b NOT
+// be called explicitly! It is used internally for the performance optimized evaluation of
+// expression templates. Calling this function explicitly might result in erroneous results
 // and/or in compilation errors.
 */
 template< typename MT >  // Type of the dense matrix
 BLAZE_ALWAYS_INLINE void
-   DenseColumn<MT,false,true>::stream( size_t index, const IntrinsicType& value ) noexcept
+   DenseColumn<MT,false,true>::stream( size_t index, const SIMDType& value ) noexcept
 {
    matrix_.stream( col_, index, value );
 }
@@ -5111,7 +5110,7 @@ inline DisableIf_< typename DenseColumn<MT,false,true>::BLAZE_TEMPLATE Vectorize
 
 //*************************************************************************************************
 /*! \cond BLAZE_INTERNAL */
-/*!\brief Intrinsic optimized implementation of the assignment of a dense vector.
+/*!\brief SIMD optimized implementation of the assignment of a dense vector.
 //
 // \param rhs The right-hand side dense vector to be assigned.
 // \return void
@@ -5133,14 +5132,14 @@ inline EnableIf_< typename DenseColumn<MT,false,true>::BLAZE_TEMPLATE Vectorized
    const bool remainder( !IsPadded<MT>::value || !IsPadded<VT>::value );
    const size_t columns( size() );
 
-   const size_t jpos( ( remainder )?( columns & size_t(-IT::size) ):( columns ) );
-   BLAZE_INTERNAL_ASSERT( !remainder || ( columns - ( columns % (IT::size) ) ) == jpos, "Invalid end calculation" );
+   const size_t jpos( ( remainder )?( columns & size_t(-SIMDSIZE) ):( columns ) );
+   BLAZE_INTERNAL_ASSERT( !remainder || ( columns - ( columns % (SIMDSIZE) ) ) == jpos, "Invalid end calculation" );
 
    if( useStreaming && columns > ( cacheSize/( sizeof(ElementType) * 3UL ) ) && !(~rhs).isAliased( this ) )
    {
       size_t j( 0UL );
 
-      for( ; j<jpos; j+=IT::size ) {
+      for( ; j<jpos; j+=SIMDSIZE ) {
          matrix_.stream( col_, j, (~rhs).load(j) );
       }
       for( ; remainder && j<columns; ++j ) {
@@ -5152,13 +5151,13 @@ inline EnableIf_< typename DenseColumn<MT,false,true>::BLAZE_TEMPLATE Vectorized
       size_t j( 0UL );
       ConstIterator_<VT> it( (~rhs).begin() );
 
-      for( ; (j+IT::size*3UL) < jpos; j+=IT::size*4UL ) {
-         matrix_.store( col_, j             , it.load() ); it+=IT::size;
-         matrix_.store( col_, j+IT::size    , it.load() ); it+=IT::size;
-         matrix_.store( col_, j+IT::size*2UL, it.load() ); it+=IT::size;
-         matrix_.store( col_, j+IT::size*3UL, it.load() ); it+=IT::size;
+      for( ; (j+SIMDSIZE*3UL) < jpos; j+=SIMDSIZE*4UL ) {
+         matrix_.store( col_, j             , it.load() ); it+=SIMDSIZE;
+         matrix_.store( col_, j+SIMDSIZE    , it.load() ); it+=SIMDSIZE;
+         matrix_.store( col_, j+SIMDSIZE*2UL, it.load() ); it+=SIMDSIZE;
+         matrix_.store( col_, j+SIMDSIZE*3UL, it.load() ); it+=SIMDSIZE;
       }
-      for( ; j<jpos; j+=IT::size, it+=IT::size ) {
+      for( ; j<jpos; j+=SIMDSIZE, it+=SIMDSIZE ) {
          matrix_.store( col_, j, it.load() );
       }
       for( ; remainder && j<columns; ++j, ++it ) {
@@ -5228,7 +5227,7 @@ inline DisableIf_< typename DenseColumn<MT,false,true>::BLAZE_TEMPLATE Vectorize
 
 //*************************************************************************************************
 /*! \cond BLAZE_INTERNAL */
-/*!\brief Intrinsic optimized implementation of the addition assignment of a dense vector.
+/*!\brief SIMD optimized implementation of the addition assignment of a dense vector.
 //
 // \param rhs The right-hand side dense vector to be added.
 // \return void
@@ -5250,19 +5249,19 @@ inline EnableIf_< typename DenseColumn<MT,false,true>::BLAZE_TEMPLATE Vectorized
    const bool remainder( !IsPadded<MT>::value || !IsPadded<VT>::value );
    const size_t columns( size() );
 
-   const size_t jpos( ( remainder )?( columns & size_t(-IT::size) ):( columns ) );
-   BLAZE_INTERNAL_ASSERT( !remainder || ( columns - ( columns % (IT::size) ) ) == jpos, "Invalid end calculation" );
+   const size_t jpos( ( remainder )?( columns & size_t(-SIMDSIZE) ):( columns ) );
+   BLAZE_INTERNAL_ASSERT( !remainder || ( columns - ( columns % (SIMDSIZE) ) ) == jpos, "Invalid end calculation" );
 
    size_t j( 0UL );
    ConstIterator_<VT> it( (~rhs).begin() );
 
-   for( ; (j+IT::size*3UL) < jpos; j+=IT::size*4UL ) {
-      matrix_.store( col_, j             , matrix_.load(col_,j             ) + it.load() ); it += IT::size;
-      matrix_.store( col_, j+IT::size    , matrix_.load(col_,j+IT::size    ) + it.load() ); it += IT::size;
-      matrix_.store( col_, j+IT::size*2UL, matrix_.load(col_,j+IT::size*2UL) + it.load() ); it += IT::size;
-      matrix_.store( col_, j+IT::size*3UL, matrix_.load(col_,j+IT::size*3UL) + it.load() ); it += IT::size;
+   for( ; (j+SIMDSIZE*3UL) < jpos; j+=SIMDSIZE*4UL ) {
+      matrix_.store( col_, j             , matrix_.load(col_,j             ) + it.load() ); it += SIMDSIZE;
+      matrix_.store( col_, j+SIMDSIZE    , matrix_.load(col_,j+SIMDSIZE    ) + it.load() ); it += SIMDSIZE;
+      matrix_.store( col_, j+SIMDSIZE*2UL, matrix_.load(col_,j+SIMDSIZE*2UL) + it.load() ); it += SIMDSIZE;
+      matrix_.store( col_, j+SIMDSIZE*3UL, matrix_.load(col_,j+SIMDSIZE*3UL) + it.load() ); it += SIMDSIZE;
    }
-   for( ; j<jpos; j+=IT::size, it+=IT::size ) {
+   for( ; j<jpos; j+=SIMDSIZE, it+=SIMDSIZE ) {
       matrix_.store( col_, j, matrix_.load(col_,j) + it.load() );
    }
    for( ; remainder && j<columns; ++j, ++it ) {
@@ -5331,7 +5330,7 @@ inline DisableIf_< typename DenseColumn<MT,false,true>::BLAZE_TEMPLATE Vectorize
 
 //*************************************************************************************************
 /*! \cond BLAZE_INTERNAL */
-/*!\brief Intrinsic optimized implementation of the subtraction assignment of a dense vector.
+/*!\brief SIMD optimized implementation of the subtraction assignment of a dense vector.
 //
 // \param rhs The right-hand side dense vector to be subtracted.
 // \return void
@@ -5353,19 +5352,19 @@ inline EnableIf_< typename DenseColumn<MT,false,true>::BLAZE_TEMPLATE Vectorized
    const bool remainder( !IsPadded<MT>::value || !IsPadded<VT>::value );
    const size_t columns( size() );
 
-   const size_t jpos( ( remainder )?( columns & size_t(-IT::size) ):( columns ) );
-   BLAZE_INTERNAL_ASSERT( !remainder || ( columns - ( columns % (IT::size) ) ) == jpos, "Invalid end calculation" );
+   const size_t jpos( ( remainder )?( columns & size_t(-SIMDSIZE) ):( columns ) );
+   BLAZE_INTERNAL_ASSERT( !remainder || ( columns - ( columns % (SIMDSIZE) ) ) == jpos, "Invalid end calculation" );
 
    size_t j( 0UL );
    ConstIterator_<VT> it( (~rhs).begin() );
 
-   for( ; (j+IT::size*3UL) < jpos; j+=IT::size*4UL ) {
-      matrix_.store( col_, j             , matrix_.load(col_,j             ) - it.load() ); it += IT::size;
-      matrix_.store( col_, j+IT::size    , matrix_.load(col_,j+IT::size    ) - it.load() ); it += IT::size;
-      matrix_.store( col_, j+IT::size*2UL, matrix_.load(col_,j+IT::size*2UL) - it.load() ); it += IT::size;
-      matrix_.store( col_, j+IT::size*3UL, matrix_.load(col_,j+IT::size*3UL) - it.load() ); it += IT::size;
+   for( ; (j+SIMDSIZE*3UL) < jpos; j+=SIMDSIZE*4UL ) {
+      matrix_.store( col_, j             , matrix_.load(col_,j             ) - it.load() ); it += SIMDSIZE;
+      matrix_.store( col_, j+SIMDSIZE    , matrix_.load(col_,j+SIMDSIZE    ) - it.load() ); it += SIMDSIZE;
+      matrix_.store( col_, j+SIMDSIZE*2UL, matrix_.load(col_,j+SIMDSIZE*2UL) - it.load() ); it += SIMDSIZE;
+      matrix_.store( col_, j+SIMDSIZE*3UL, matrix_.load(col_,j+SIMDSIZE*3UL) - it.load() ); it += SIMDSIZE;
    }
-   for( ; j<jpos; j+=IT::size, it+=IT::size ) {
+   for( ; j<jpos; j+=SIMDSIZE, it+=SIMDSIZE ) {
       matrix_.store( col_, j, matrix_.load(col_,j) - it.load() );
    }
    for( ; remainder && j<columns; ++j, ++it ) {
@@ -5434,7 +5433,7 @@ inline DisableIf_< typename DenseColumn<MT,false,true>::BLAZE_TEMPLATE Vectorize
 
 //*************************************************************************************************
 /*! \cond BLAZE_INTERNAL */
-/*!\brief Intrinsic optimized implementation of the multiplication assignment of a dense vector.
+/*!\brief SIMD optimized implementation of the multiplication assignment of a dense vector.
 //
 // \param rhs The right-hand side dense vector to be multiplied.
 // \return void
@@ -5456,19 +5455,19 @@ inline EnableIf_< typename DenseColumn<MT,false,true>::BLAZE_TEMPLATE Vectorized
    const bool remainder( !IsPadded<MT>::value || !IsPadded<VT>::value );
    const size_t columns( size() );
 
-   const size_t jpos( ( remainder )?( columns & size_t(-IT::size) ):( columns ) );
-   BLAZE_INTERNAL_ASSERT( !remainder || ( columns - ( columns % (IT::size) ) ) == jpos, "Invalid end calculation" );
+   const size_t jpos( ( remainder )?( columns & size_t(-SIMDSIZE) ):( columns ) );
+   BLAZE_INTERNAL_ASSERT( !remainder || ( columns - ( columns % (SIMDSIZE) ) ) == jpos, "Invalid end calculation" );
 
    size_t j( 0UL );
    ConstIterator_<VT> it( (~rhs).begin() );
 
-   for( ; (j+IT::size*3UL) < jpos; j+=IT::size*4UL ) {
-      matrix_.store( col_, j             , matrix_.load(col_,j             ) * it.load() ); it += IT::size;
-      matrix_.store( col_, j+IT::size    , matrix_.load(col_,j+IT::size    ) * it.load() ); it += IT::size;
-      matrix_.store( col_, j+IT::size*2UL, matrix_.load(col_,j+IT::size*2UL) * it.load() ); it += IT::size;
-      matrix_.store( col_, j+IT::size*3UL, matrix_.load(col_,j+IT::size*3UL) * it.load() ); it += IT::size;
+   for( ; (j+SIMDSIZE*3UL) < jpos; j+=SIMDSIZE*4UL ) {
+      matrix_.store( col_, j             , matrix_.load(col_,j             ) * it.load() ); it += SIMDSIZE;
+      matrix_.store( col_, j+SIMDSIZE    , matrix_.load(col_,j+SIMDSIZE    ) * it.load() ); it += SIMDSIZE;
+      matrix_.store( col_, j+SIMDSIZE*2UL, matrix_.load(col_,j+SIMDSIZE*2UL) * it.load() ); it += SIMDSIZE;
+      matrix_.store( col_, j+SIMDSIZE*3UL, matrix_.load(col_,j+SIMDSIZE*3UL) * it.load() ); it += SIMDSIZE;
    }
-   for( ; j<jpos; j+=IT::size, it+=IT::size ) {
+   for( ; j<jpos; j+=SIMDSIZE, it+=SIMDSIZE ) {
       matrix_.store( col_, j, matrix_.load(col_,j) * it.load() );
    }
    for( ; remainder && j<columns; ++j, ++it ) {

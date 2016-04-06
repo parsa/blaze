@@ -1,7 +1,7 @@
 //=================================================================================================
 /*!
 //  \file blaze/math/simd/Storeu.h
-//  \brief Header file for the intrinsic unaligned store functionality
+//  \brief Header file for the SIMD unaligned store functionality
 //
 //  Copyright (C) 2013 Klaus Iglberger - All Rights Reserved
 //
@@ -55,7 +55,7 @@ namespace blaze {
 
 //=================================================================================================
 //
-//  INTRINSIC STOREU FUNCTIONS
+//  SIMD STOREU FUNCTIONS
 //
 //=================================================================================================
 

@@ -1,7 +1,7 @@
 //=================================================================================================
 /*!
 //  \file blaze/math/simd/Multiplication.h
-//  \brief Header file for the intrinisc multiplication functionality
+//  \brief Header file for the SIMD multiplication functionality
 //
 //  Copyright (C) 2013 Klaus Iglberger - All Rights Reserved
 //
@@ -49,7 +49,7 @@ namespace blaze {
 
 //=================================================================================================
 //
-//  INTRINSIC MULTIPLICATION OPERATORS
+//  SIMD MULTIPLICATION OPERATORS
 //
 //=================================================================================================
 

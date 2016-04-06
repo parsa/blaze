@@ -163,8 +163,8 @@ inline DisableIf_< TDVecDVecMultExprHelper<T1,T2>
 
 
 //*************************************************************************************************
-/*!\brief Intrinsic optimized multiplication operator for the scalar product (inner product) of
-//        two dense vectors (\f$ s=\vec{a}*\vec{b} \f$).
+/*!\brief SIMD optimized multiplication operator for the scalar product (inner product) of two
+//        dense vectors (\f$ s=\vec{a}*\vec{b} \f$).
 // \ingroup dense_vector
 //
 // \param lhs The left-hand side dense vector for the inner product.
@@ -202,29 +202,30 @@ inline EnableIf_< TDVecDVecMultExprHelper<T1,T2>
       BLAZE_THROW_INVALID_ARGUMENT( "Vector sizes do not match" );
    }
 
-   typedef CompositeType_<T1>        Lhs;
-   typedef CompositeType_<T2>        Rhs;
-   typedef ElementType_<T1>          ET1;
-   typedef ElementType_<T2>          ET2;
-   typedef MultTrait_<ET1,ET2>       MultType;
-   typedef IntrinsicTrait<MultType>  IT;
+   typedef CompositeType_<T1>   Lhs;
+   typedef CompositeType_<T2>   Rhs;
+   typedef ElementType_<T1>     ET1;
+   typedef ElementType_<T2>     ET2;
+   typedef MultTrait_<ET1,ET2>  MultType;
+
+   enum : size_t { SIMDSIZE = SIMDTrait<MultType>::size };
 
    if( (~lhs).size() == 0UL ) return MultType();
 
    Lhs left ( ~lhs );
    Rhs right( ~rhs );
 
-   typename IT::Type xmm1, xmm2, xmm3, xmm4;
+   SIMDTrait_<MultType> xmm1, xmm2, xmm3, xmm4;
 
    const size_t N   ( left.size() );
-   const size_t iend( N - N % (IT::size*4UL) );
-   BLAZE_INTERNAL_ASSERT( iend % (IT::size*4UL) == 0, "Invalid end calculation" );
+   const size_t iend( N - N % (SIMDSIZE*4UL) );
+   BLAZE_INTERNAL_ASSERT( iend % (SIMDSIZE*4UL) == 0, "Invalid end calculation" );
 
-   for( size_t i=0UL; i<iend; i+=IT::size*4UL ) {
+   for( size_t i=0UL; i<iend; i+=SIMDSIZE*4UL ) {
       xmm1 = xmm1 + ( left.load(i             ) * right.load(i             ) );
-      xmm2 = xmm2 + ( left.load(i+IT::size    ) * right.load(i+IT::size    ) );
-      xmm3 = xmm3 + ( left.load(i+IT::size*2UL) * right.load(i+IT::size*2UL) );
-      xmm4 = xmm4 + ( left.load(i+IT::size*3UL) * right.load(i+IT::size*3UL) );
+      xmm2 = xmm2 + ( left.load(i+SIMDSIZE    ) * right.load(i+SIMDSIZE    ) );
+      xmm3 = xmm3 + ( left.load(i+SIMDSIZE*2UL) * right.load(i+SIMDSIZE*2UL) );
+      xmm4 = xmm4 + ( left.load(i+SIMDSIZE*3UL) * right.load(i+SIMDSIZE*3UL) );
    }
 
    MultType sp( sum( xmm1 + xmm2 + xmm3 + xmm4 ) );

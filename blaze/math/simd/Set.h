@@ -1,7 +1,7 @@
 //=================================================================================================
 /*!
 //  \file blaze/math/simd/Set.h
-//  \brief Header file for the intrinsic set functionality
+//  \brief Header file for the SIMD set functionality
 //
 //  Copyright (C) 2013 Klaus Iglberger - All Rights Reserved
 //
@@ -57,7 +57,7 @@ namespace blaze {
 
 //=================================================================================================
 //
-//  INTRINSIC SET FUNCTIONS
+//  SIMD SET FUNCTIONS
 //
 //=================================================================================================
 

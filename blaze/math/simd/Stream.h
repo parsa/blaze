@@ -1,7 +1,7 @@
 //=================================================================================================
 /*!
 //  \file blaze/math/simd/Stream.h
-//  \brief Header file for the intrinsic stream functionality
+//  \brief Header file for the SIMD stream functionality
 //
 //  Copyright (C) 2013 Klaus Iglberger - All Rights Reserved
 //
@@ -57,7 +57,7 @@ namespace blaze {
 
 //=================================================================================================
 //
-//  INTRINSIC STREAM FUNCTIONS
+//  SIMD STREAM FUNCTIONS
 //
 //=================================================================================================
 

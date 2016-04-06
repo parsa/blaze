@@ -93,7 +93,7 @@ class DenseMatrixProxy : public DenseMatrix< PT, IsColumnMajorMatrix<MT>::value 
    //**********************************************************************************************
 
    //**Compilation flags***************************************************************************
-   //! Compilation flag for intrinsic optimization.
+   //! Compilation flag for SIMD optimization.
    enum { vectorizable = MT::vectorizable };
 
    //! Compilation flag for SMP assignments.

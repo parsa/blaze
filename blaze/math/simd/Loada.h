@@ -1,7 +1,7 @@
 //=================================================================================================
 /*!
 //  \file blaze/math/simd/Loada.h
-//  \brief Header file for the intrinsic aligned load functionality
+//  \brief Header file for the SIMD aligned load functionality
 //
 //  Copyright (C) 2013 Klaus Iglberger - All Rights Reserved
 //
@@ -57,7 +57,7 @@ namespace blaze {
 
 //=================================================================================================
 //
-//  INTRINSIC LOAD FUNCTIONS
+//  SIMD LOAD FUNCTIONS
 //
 //=================================================================================================
 

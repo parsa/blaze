@@ -341,7 +341,7 @@ namespace blaze {
 // The alignment restrictions refer to system dependent address restrictions for the used element
 // type and the available vectorization mode (SSE, AVX, ...). The following source code gives some
 // examples for a double precision dense vector, assuming that AVX is available, which packs 4
-// \c double values into an intrinsic vector:
+// \c double values into a SIMD vector:
 
    \code
    using blaze::columnVector;
@@ -400,9 +400,6 @@ class DenseSubvector : public DenseVector< DenseSubvector<VT,AF,TF>, TF >
    //**Type definitions****************************************************************************
    //! Composite data type of the dense vector expression.
    typedef If_< IsExpression<VT>, VT, VT& >  Operand;
-
-   //! Intrinsic trait for the vector element type.
-   typedef IntrinsicTrait< ElementType_<VT> >  IT;
    //**********************************************************************************************
 
  public:
@@ -411,7 +408,7 @@ class DenseSubvector : public DenseVector< DenseSubvector<VT,AF,TF>, TF >
    typedef SubvectorTrait_<VT>         ResultType;     //!< Result type for expression template evaluations.
    typedef TransposeType_<ResultType>  TransposeType;  //!< Transpose type for expression template evaluations.
    typedef ElementType_<VT>            ElementType;    //!< Type of the subvector elements.
-   typedef typename IT::Type           IntrinsicType;  //!< Intrinsic type of the subvector elements.
+   typedef SIMDTrait_<ElementType>     SIMDType;       //!< SIMD type of the subvector elements.
    typedef ReturnType_<VT>             ReturnType;     //!< Return type for expression template evaluations
    typedef const DenseSubvector&       CompositeType;  //!< Data type for composite expression templates.
 
@@ -569,46 +566,46 @@ class DenseSubvector : public DenseVector< DenseSubvector<VT,AF,TF>, TF >
       //*******************************************************************************************
 
       //**Load function****************************************************************************
-      /*!\brief Aligned load of an intrinsic element of the dense subvector.
+      /*!\brief Aligned load of a SIMD element of the dense subvector.
       //
-      // \return The loaded intrinsic element.
+      // \return The loaded SIMD element.
       //
-      // This function performs an aligned load of the current intrinsic element of the subvector
+      // This function performs an aligned load of the current SIMD element of the subvector
       // iterator. This function must \b NOT be called explicitly! It is used internally for the
       // performance optimized evaluation of expression templates. Calling this function explicitly
       // might result in erroneous results and/or in compilation errors.
       */
-      inline IntrinsicType load() const {
+      inline SIMDType load() const {
          return loadu();
       }
       //*******************************************************************************************
 
       //**Loada function***************************************************************************
-      /*!\brief Aligned load of an intrinsic element of the dense subvector.
+      /*!\brief Aligned load of a SIMD element of the dense subvector.
       //
-      // \return The loaded intrinsic element.
+      // \return The loaded SIMD element.
       //
-      // This function performs an aligned load of the current intrinsic element of the subvector
+      // This function performs an aligned load of the current SIMD element of the subvector
       // iterator. This function must \b NOT be called explicitly! It is used internally for the
       // performance optimized evaluation of expression templates. Calling this function explicitly
       // might result in erroneous results and/or in compilation errors.
       */
-      inline IntrinsicType loada() const {
+      inline SIMDType loada() const {
          return iterator_.loada();
       }
       //*******************************************************************************************
 
       //**Loadu function***************************************************************************
-      /*!\brief Unaligned load of an intrinsic element of the dense subvector.
+      /*!\brief Unaligned load of a SIMD element of the dense subvector.
       //
-      // \return The loaded intrinsic element.
+      // \return The loaded SIMD element.
       //
-      // This function performs an unaligned load of the current intrinsic element of the subvector
+      // This function performs an unaligned load of the current SIMD element of the subvector
       // iterator. This function must \b NOT be called explicitly! It is used internally for the
       // performance optimized evaluation of expression templates. Calling this function explicitly
       // might result in erroneous results and/or in compilation errors.
       */
-      inline IntrinsicType loadu() const {
+      inline SIMDType loadu() const {
          if( isAligned_ ) {
             return iterator_.loada();
          }
@@ -887,6 +884,11 @@ class DenseSubvector : public DenseVector< DenseSubvector<VT,AF,TF>, TF >
    /*! \endcond */
    //**********************************************************************************************
 
+   //**SIMD properties*****************************************************************************
+   //! The number of elements packed within a single SIMD element.
+   enum : size_t { SIMDSIZE = SIMDTrait<ElementType>::size };
+   //**********************************************************************************************
+
  public:
    //**Expression template evaluation functions****************************************************
    /*!\name Expression template evaluation functions */
@@ -906,14 +908,14 @@ class DenseSubvector : public DenseVector< DenseSubvector<VT,AF,TF>, TF >
    inline bool isAligned   () const noexcept;
    inline bool canSMPAssign() const noexcept;
 
-   BLAZE_ALWAYS_INLINE IntrinsicType load ( size_t index ) const noexcept;
-   BLAZE_ALWAYS_INLINE IntrinsicType loada( size_t index ) const noexcept;
-   BLAZE_ALWAYS_INLINE IntrinsicType loadu( size_t index ) const noexcept;
+   BLAZE_ALWAYS_INLINE SIMDType load ( size_t index ) const noexcept;
+   BLAZE_ALWAYS_INLINE SIMDType loada( size_t index ) const noexcept;
+   BLAZE_ALWAYS_INLINE SIMDType loadu( size_t index ) const noexcept;
 
-   BLAZE_ALWAYS_INLINE void store ( size_t index, const IntrinsicType& value ) noexcept;
-   BLAZE_ALWAYS_INLINE void storea( size_t index, const IntrinsicType& value ) noexcept;
-   BLAZE_ALWAYS_INLINE void storeu( size_t index, const IntrinsicType& value ) noexcept;
-   BLAZE_ALWAYS_INLINE void stream( size_t index, const IntrinsicType& value ) noexcept;
+   BLAZE_ALWAYS_INLINE void store ( size_t index, const SIMDType& value ) noexcept;
+   BLAZE_ALWAYS_INLINE void storea( size_t index, const SIMDType& value ) noexcept;
+   BLAZE_ALWAYS_INLINE void storeu( size_t index, const SIMDType& value ) noexcept;
+   BLAZE_ALWAYS_INLINE void stream( size_t index, const SIMDType& value ) noexcept;
 
    template< typename VT2 >
    inline DisableIf_< VectorizedAssign<VT2> > assign( const DenseVector <VT2,TF>& rhs );
@@ -1890,14 +1892,14 @@ inline bool DenseSubvector<VT,AF,TF>::canSMPAssign() const noexcept
 
 
 //*************************************************************************************************
-/*!\brief Aligned load of an intrinsic element of the dense subvector.
+/*!\brief Aligned load of a SIMD element of the dense subvector.
 //
 // \param index Access index. The index must be smaller than the number of subvector elements.
-// \return The loaded intrinsic element.
+// \return The loaded SIMD element.
 //
-// This function performs an aligned load of a specific intrinsic element of the dense subvector.
+// This function performs an aligned load of a specific SIMD element of the dense subvector.
 // The index must be smaller than the number of subvector elements and it must be a multiple
-// of the number of values inside the intrinsic element. This function must \b NOT be called
+// of the number of values inside the SIMD element. This function must \b NOT be called
 // explicitly! It is used internally for the performance optimized evaluation of expression
 // templates. Calling this function explicitly might result in erroneous results and/or in
 // compilation errors.
@@ -1905,7 +1907,7 @@ inline bool DenseSubvector<VT,AF,TF>::canSMPAssign() const noexcept
 template< typename VT       // Type of the dense vector
         , bool AF           // Alignment flag
         , bool TF >         // Transpose flag
-BLAZE_ALWAYS_INLINE typename DenseSubvector<VT,AF,TF>::IntrinsicType
+BLAZE_ALWAYS_INLINE typename DenseSubvector<VT,AF,TF>::SIMDType
    DenseSubvector<VT,AF,TF>::load( size_t index ) const noexcept
 {
    if( isAligned_ )
@@ -1917,14 +1919,14 @@ BLAZE_ALWAYS_INLINE typename DenseSubvector<VT,AF,TF>::IntrinsicType
 
 
 //*************************************************************************************************
-/*!\brief Aligned load of an intrinsic element of the dense subvector.
+/*!\brief Aligned load of a SIMD element of the dense subvector.
 //
 // \param index Access index. The index must be smaller than the number of subvector elements.
-// \return The loaded intrinsic element.
+// \return The loaded SIMD element.
 //
-// This function performs an aligned load of a specific intrinsic element of the dense subvector.
+// This function performs an aligned load of a specific SIMD element of the dense subvector.
 // The index must be smaller than the number of subvector elements and it must be a multiple
-// of the number of values inside the intrinsic element. This function must \b NOT be called
+// of the number of values inside the SIMD element. This function must \b NOT be called
 // explicitly! It is used internally for the performance optimized evaluation of expression
 // templates. Calling this function explicitly might result in erroneous results and/or in
 // compilation errors.
@@ -1932,14 +1934,14 @@ BLAZE_ALWAYS_INLINE typename DenseSubvector<VT,AF,TF>::IntrinsicType
 template< typename VT  // Type of the dense vector
         , bool AF      // Alignment flag
         , bool TF >    // Transpose flag
-BLAZE_ALWAYS_INLINE typename DenseSubvector<VT,AF,TF>::IntrinsicType
+BLAZE_ALWAYS_INLINE typename DenseSubvector<VT,AF,TF>::SIMDType
    DenseSubvector<VT,AF,TF>::loada( size_t index ) const noexcept
 {
    BLAZE_CONSTRAINT_MUST_BE_VECTORIZABLE_TYPE( ElementType );
 
    BLAZE_INTERNAL_ASSERT( index < size()            , "Invalid subvector access index" );
-   BLAZE_INTERNAL_ASSERT( index + IT::size <= size(), "Invalid subvector access index" );
-   BLAZE_INTERNAL_ASSERT( index % IT::size == 0UL   , "Invalid subvector access index" );
+   BLAZE_INTERNAL_ASSERT( index + SIMDSIZE <= size(), "Invalid subvector access index" );
+   BLAZE_INTERNAL_ASSERT( index % SIMDSIZE == 0UL   , "Invalid subvector access index" );
 
    return vector_.loada( offset_+index );
 }
@@ -1947,14 +1949,14 @@ BLAZE_ALWAYS_INLINE typename DenseSubvector<VT,AF,TF>::IntrinsicType
 
 
 //*************************************************************************************************
-/*!\brief Unaligned load of an intrinsic element of the dense subvector.
+/*!\brief Unaligned load of a SIMD element of the dense subvector.
 //
 // \param index Access index. The index must be smaller than the number of subvector elements.
-// \return The loaded intrinsic element.
+// \return The loaded SIMD element.
 //
-// This function performs an unaligned load of a specific intrinsic element of the dense
+// This function performs an unaligned load of a specific SIMD element of the dense
 // subvector. The index must be smaller than the number of subvector elements and it must be
-// a multiple of the number of values inside the intrinsic element. This function must \b NOT
+// a multiple of the number of values inside the SIMD element. This function must \b NOT
 // be called explicitly! It is used internally for the performance optimized evaluation of
 // expression templates. Calling this function explicitly might result in erroneous results
 // and/or in compilation errors.
@@ -1962,14 +1964,14 @@ BLAZE_ALWAYS_INLINE typename DenseSubvector<VT,AF,TF>::IntrinsicType
 template< typename VT  // Type of the dense vector
         , bool AF      // Alignment flag
         , bool TF >    // Transpose flag
-BLAZE_ALWAYS_INLINE typename DenseSubvector<VT,AF,TF>::IntrinsicType
+BLAZE_ALWAYS_INLINE typename DenseSubvector<VT,AF,TF>::SIMDType
    DenseSubvector<VT,AF,TF>::loadu( size_t index ) const noexcept
 {
    BLAZE_CONSTRAINT_MUST_BE_VECTORIZABLE_TYPE( ElementType );
 
    BLAZE_INTERNAL_ASSERT( index < size()            , "Invalid subvector access index" );
-   BLAZE_INTERNAL_ASSERT( index + IT::size <= size(), "Invalid subvector access index" );
-   BLAZE_INTERNAL_ASSERT( index % IT::size == 0UL   , "Invalid subvector access index" );
+   BLAZE_INTERNAL_ASSERT( index + SIMDSIZE <= size(), "Invalid subvector access index" );
+   BLAZE_INTERNAL_ASSERT( index % SIMDSIZE == 0UL   , "Invalid subvector access index" );
 
    return vector_.loadu( offset_+index );
 }
@@ -1977,15 +1979,15 @@ BLAZE_ALWAYS_INLINE typename DenseSubvector<VT,AF,TF>::IntrinsicType
 
 
 //*************************************************************************************************
-/*!\brief Aligned store of an intrinsic element of the subvector.
+/*!\brief Aligned store of a SIMD element of the subvector.
 //
 // \param index Access index. The index must be smaller than the number of subvector elements.
-// \param value The intrinsic element to be stored.
+// \param value The SIMD element to be stored.
 // \return void
 //
-// This function performs an aligned store a specific intrinsic element of the dense subvector.
+// This function performs an aligned store a specific SIMD element of the dense subvector.
 // The index must be smaller than the number of subvector elements and it must be a multiple
-// of the number of values inside the intrinsic element. This function must \b NOT be called
+// of the number of values inside the SIMD element. This function must \b NOT be called
 // explicitly! It is used internally for the performance optimized evaluation of expression
 // templates. Calling this function explicitly might result in erroneous results and/or in
 // compilation errors.
@@ -1994,7 +1996,7 @@ template< typename VT  // Type of the dense vector
         , bool AF      // Alignment flag
         , bool TF >    // Transpose flag
 BLAZE_ALWAYS_INLINE void
-   DenseSubvector<VT,AF,TF>::store( size_t index, const IntrinsicType& value ) noexcept
+   DenseSubvector<VT,AF,TF>::store( size_t index, const SIMDType& value ) noexcept
 {
    if( isAligned_ )
       storea( index, value );
@@ -2005,15 +2007,15 @@ BLAZE_ALWAYS_INLINE void
 
 
 //*************************************************************************************************
-/*!\brief Aligned store of an intrinsic element of the subvector.
+/*!\brief Aligned store of a SIMD element of the subvector.
 //
 // \param index Access index. The index must be smaller than the number of subvector elements.
-// \param value The intrinsic element to be stored.
+// \param value The SIMD element to be stored.
 // \return void
 //
-// This function performs an aligned store a specific intrinsic element of the dense subvector.
+// This function performs an aligned store a specific SIMD element of the dense subvector.
 // The index must be smaller than the number of subvector elements and it must be a multiple
-// of the number of values inside the intrinsic element. This function must \b NOT be called
+// of the number of values inside the SIMD element. This function must \b NOT be called
 // explicitly! It is used internally for the performance optimized evaluation of expression
 // templates. Calling this function explicitly might result in erroneous results and/or in
 // compilation errors.
@@ -2022,13 +2024,13 @@ template< typename VT  // Type of the dense vector
         , bool AF      // Alignment flag
         , bool TF >    // Transpose flag
 BLAZE_ALWAYS_INLINE void
-   DenseSubvector<VT,AF,TF>::storea( size_t index, const IntrinsicType& value ) noexcept
+   DenseSubvector<VT,AF,TF>::storea( size_t index, const SIMDType& value ) noexcept
 {
    BLAZE_CONSTRAINT_MUST_BE_VECTORIZABLE_TYPE( ElementType );
 
    BLAZE_INTERNAL_ASSERT( index < size()            , "Invalid subvector access index" );
-   BLAZE_INTERNAL_ASSERT( index + IT::size <= size(), "Invalid subvector access index" );
-   BLAZE_INTERNAL_ASSERT( index % IT::size == 0UL   , "Invalid subvector access index" );
+   BLAZE_INTERNAL_ASSERT( index + SIMDSIZE <= size(), "Invalid subvector access index" );
+   BLAZE_INTERNAL_ASSERT( index % SIMDSIZE == 0UL   , "Invalid subvector access index" );
 
    vector_.storea( offset_+index, value );
 }
@@ -2036,15 +2038,15 @@ BLAZE_ALWAYS_INLINE void
 
 
 //*************************************************************************************************
-/*!\brief Unaligned store of an intrinsic element of the subvector.
+/*!\brief Unaligned store of a SIMD element of the subvector.
 //
 // \param index Access index. The index must be smaller than the number of subvector elements.
-// \param value The intrinsic element to be stored.
+// \param value The SIMD element to be stored.
 // \return void
 //
-// This function performs an unaligned store a specific intrinsic element of the dense subvector.
+// This function performs an unaligned store a specific SIMD element of the dense subvector.
 // The index must be smaller than the number of subvector elements and it must be a multiple
-// of the number of values inside the intrinsic element. This function must \b NOT be called
+// of the number of values inside the SIMD element. This function must \b NOT be called
 // explicitly! It is used internally for the performance optimized evaluation of expression
 // templates. Calling this function explicitly might result in erroneous results and/or in
 // compilation errors.
@@ -2053,13 +2055,13 @@ template< typename VT  // Type of the dense vector
         , bool AF      // Alignment flag
         , bool TF >    // Transpose flag
 BLAZE_ALWAYS_INLINE void
-   DenseSubvector<VT,AF,TF>::storeu( size_t index, const IntrinsicType& value ) noexcept
+   DenseSubvector<VT,AF,TF>::storeu( size_t index, const SIMDType& value ) noexcept
 {
    BLAZE_CONSTRAINT_MUST_BE_VECTORIZABLE_TYPE( ElementType );
 
    BLAZE_INTERNAL_ASSERT( index < size()            , "Invalid subvector access index" );
-   BLAZE_INTERNAL_ASSERT( index + IT::size <= size(), "Invalid subvector access index" );
-   BLAZE_INTERNAL_ASSERT( index % IT::size == 0UL   , "Invalid subvector access index" );
+   BLAZE_INTERNAL_ASSERT( index + SIMDSIZE <= size(), "Invalid subvector access index" );
+   BLAZE_INTERNAL_ASSERT( index % SIMDSIZE == 0UL   , "Invalid subvector access index" );
 
    vector_.storeu( offset_+index, value );
 }
@@ -2067,15 +2069,15 @@ BLAZE_ALWAYS_INLINE void
 
 
 //*************************************************************************************************
-/*!\brief Aligned, non-temporal store of an intrinsic element of the subvector.
+/*!\brief Aligned, non-temporal store of a SIMD element of the subvector.
 //
 // \param index Access index. The index must be smaller than the number of subvector elements.
-// \param value The intrinsic element to be stored.
+// \param value The SIMD element to be stored.
 // \return void
 //
-// This function performs an aligned, non-temporal store a specific intrinsic element of the
+// This function performs an aligned, non-temporal store a specific SIMD element of the
 // dense subvector. The index must be smaller than the number of subvector elements and it
-// must be a multiple of the number of values inside the intrinsic element. This function
+// must be a multiple of the number of values inside the SIMD element. This function
 // must \b NOT be called explicitly! It is used internally for the performance optimized
 // evaluation of expression templates. Calling this function explicitly might result in
 // erroneous results and/or in compilation errors.
@@ -2084,13 +2086,13 @@ template< typename VT  // Type of the dense vector
         , bool AF      // Alignment flag
         , bool TF >    // Transpose flag
 BLAZE_ALWAYS_INLINE void
-   DenseSubvector<VT,AF,TF>::stream( size_t index, const IntrinsicType& value ) noexcept
+   DenseSubvector<VT,AF,TF>::stream( size_t index, const SIMDType& value ) noexcept
 {
    BLAZE_CONSTRAINT_MUST_BE_VECTORIZABLE_TYPE( ElementType );
 
    BLAZE_INTERNAL_ASSERT( index < size()            , "Invalid subvector access index" );
-   BLAZE_INTERNAL_ASSERT( index + IT::size <= size(), "Invalid subvector access index" );
-   BLAZE_INTERNAL_ASSERT( index % IT::size == 0UL   , "Invalid subvector access index" );
+   BLAZE_INTERNAL_ASSERT( index + SIMDSIZE <= size(), "Invalid subvector access index" );
+   BLAZE_INTERNAL_ASSERT( index % SIMDSIZE == 0UL   , "Invalid subvector access index" );
 
    if( isAligned_ )
       vector_.stream( offset_+index, value );
@@ -2133,7 +2135,7 @@ inline DisableIf_< typename DenseSubvector<VT,AF,TF>::BLAZE_TEMPLATE VectorizedA
 
 
 //*************************************************************************************************
-/*!\brief Intrinsic optimized implementation of the assignment of a dense vector.
+/*!\brief SIMD optimized implementation of the assignment of a dense vector.
 //
 // \param rhs The right-hand side dense vector to be assigned.
 // \return void
@@ -2154,8 +2156,8 @@ inline EnableIf_< typename DenseSubvector<VT,AF,TF>::BLAZE_TEMPLATE VectorizedAs
 
    BLAZE_INTERNAL_ASSERT( size() == (~rhs).size(), "Invalid vector sizes" );
 
-   const size_t ipos( size_ & size_t(-IT::size) );
-   BLAZE_INTERNAL_ASSERT( ( size_ - ( size_ % (IT::size) ) ) == ipos, "Invalid end calculation" );
+   const size_t ipos( size_ & size_t(-SIMDSIZE) );
+   BLAZE_INTERNAL_ASSERT( ( size_ - ( size_ % (SIMDSIZE) ) ) == ipos, "Invalid end calculation" );
 
    if( useStreaming && isAligned_ &&
        ( size_ > ( cacheSize/( sizeof(ElementType) * 3UL ) ) ) &&
@@ -2163,7 +2165,7 @@ inline EnableIf_< typename DenseSubvector<VT,AF,TF>::BLAZE_TEMPLATE VectorizedAs
    {
       size_t i( 0UL );
 
-      for( ; i<ipos; i+=IT::size ) {
+      for( ; i<ipos; i+=SIMDSIZE ) {
          vector_.stream( offset_+i, (~rhs).load(i) );
       }
       for( ; i<size_; ++i ) {
@@ -2175,13 +2177,13 @@ inline EnableIf_< typename DenseSubvector<VT,AF,TF>::BLAZE_TEMPLATE VectorizedAs
       size_t i( 0UL );
       ConstIterator_<VT2> it( (~rhs).begin() );
 
-      for( ; (i+IT::size*3UL) < ipos; i+=IT::size*4UL ) {
-         store( i             , it.load() ); it += IT::size;
-         store( i+IT::size    , it.load() ); it += IT::size;
-         store( i+IT::size*2UL, it.load() ); it += IT::size;
-         store( i+IT::size*3UL, it.load() ); it += IT::size;
+      for( ; (i+SIMDSIZE*3UL) < ipos; i+=SIMDSIZE*4UL ) {
+         store( i             , it.load() ); it += SIMDSIZE;
+         store( i+SIMDSIZE    , it.load() ); it += SIMDSIZE;
+         store( i+SIMDSIZE*2UL, it.load() ); it += SIMDSIZE;
+         store( i+SIMDSIZE*3UL, it.load() ); it += SIMDSIZE;
       }
-      for( ; i<ipos; i+=IT::size, it+=IT::size ) {
+      for( ; i<ipos; i+=SIMDSIZE, it+=SIMDSIZE ) {
          store( i, it.load() );
       }
       for( ; i<size_; ++i, ++it ) {
@@ -2250,7 +2252,7 @@ inline DisableIf_< typename DenseSubvector<VT,AF,TF>::BLAZE_TEMPLATE VectorizedA
 
 
 //*************************************************************************************************
-/*!\brief Intrinsic optimized implementation of the addition assignment of a dense vector.
+/*!\brief SIMD optimized implementation of the addition assignment of a dense vector.
 //
 // \param rhs The right-hand side dense vector to be added.
 // \return void
@@ -2271,19 +2273,19 @@ inline EnableIf_< typename DenseSubvector<VT,AF,TF>::BLAZE_TEMPLATE VectorizedAd
 
    BLAZE_INTERNAL_ASSERT( size() == (~rhs).size(), "Invalid vector sizes" );
 
-   const size_t ipos( size_ & size_t(-IT::size) );
-   BLAZE_INTERNAL_ASSERT( ( size_ - ( size_ % (IT::size) ) ) == ipos, "Invalid end calculation" );
+   const size_t ipos( size_ & size_t(-SIMDSIZE) );
+   BLAZE_INTERNAL_ASSERT( ( size_ - ( size_ % (SIMDSIZE) ) ) == ipos, "Invalid end calculation" );
 
    size_t i( 0UL );
    ConstIterator_<VT2> it( (~rhs).begin() );
 
-   for( ; (i+IT::size*3UL) < ipos; i+=IT::size*4UL ) {
-      store( i             , load(i             ) + it.load() ); it += IT::size;
-      store( i+IT::size    , load(i+IT::size    ) + it.load() ); it += IT::size;
-      store( i+IT::size*2UL, load(i+IT::size*2UL) + it.load() ); it += IT::size;
-      store( i+IT::size*3UL, load(i+IT::size*3UL) + it.load() ); it += IT::size;
+   for( ; (i+SIMDSIZE*3UL) < ipos; i+=SIMDSIZE*4UL ) {
+      store( i             , load(i             ) + it.load() ); it += SIMDSIZE;
+      store( i+SIMDSIZE    , load(i+SIMDSIZE    ) + it.load() ); it += SIMDSIZE;
+      store( i+SIMDSIZE*2UL, load(i+SIMDSIZE*2UL) + it.load() ); it += SIMDSIZE;
+      store( i+SIMDSIZE*3UL, load(i+SIMDSIZE*3UL) + it.load() ); it += SIMDSIZE;
    }
-   for( ; i<ipos; i+=IT::size, it+=IT::size ) {
+   for( ; i<ipos; i+=SIMDSIZE, it+=SIMDSIZE ) {
       store( i, load(i) + it.load() );
    }
    for( ; i<size_; ++i, ++it ) {
@@ -2351,7 +2353,7 @@ inline DisableIf_< typename DenseSubvector<VT,AF,TF>::BLAZE_TEMPLATE VectorizedS
 
 
 //*************************************************************************************************
-/*!\brief Intrinsic optimized implementation of the subtraction assignment of a dense vector.
+/*!\brief SIMD optimized implementation of the subtraction assignment of a dense vector.
 //
 // \param rhs The right-hand side dense vector to be subtracted.
 // \return void
@@ -2372,19 +2374,19 @@ inline EnableIf_< typename DenseSubvector<VT,AF,TF>::BLAZE_TEMPLATE VectorizedSu
 
    BLAZE_INTERNAL_ASSERT( size() == (~rhs).size(), "Invalid vector sizes" );
 
-   const size_t ipos( size_ & size_t(-IT::size) );
-   BLAZE_INTERNAL_ASSERT( ( size_ - ( size_ % (IT::size) ) ) == ipos, "Invalid end calculation" );
+   const size_t ipos( size_ & size_t(-SIMDSIZE) );
+   BLAZE_INTERNAL_ASSERT( ( size_ - ( size_ % (SIMDSIZE) ) ) == ipos, "Invalid end calculation" );
 
    size_t i( 0UL );
    ConstIterator_<VT2> it( (~rhs).begin() );
 
-   for( ; (i+IT::size*3UL) < ipos; i+=IT::size*4UL ) {
-      store( i             , load(i             ) - it.load() ); it += IT::size;
-      store( i+IT::size    , load(i+IT::size    ) - it.load() ); it += IT::size;
-      store( i+IT::size*2UL, load(i+IT::size*2UL) - it.load() ); it += IT::size;
-      store( i+IT::size*3UL, load(i+IT::size*3UL) - it.load() ); it += IT::size;
+   for( ; (i+SIMDSIZE*3UL) < ipos; i+=SIMDSIZE*4UL ) {
+      store( i             , load(i             ) - it.load() ); it += SIMDSIZE;
+      store( i+SIMDSIZE    , load(i+SIMDSIZE    ) - it.load() ); it += SIMDSIZE;
+      store( i+SIMDSIZE*2UL, load(i+SIMDSIZE*2UL) - it.load() ); it += SIMDSIZE;
+      store( i+SIMDSIZE*3UL, load(i+SIMDSIZE*3UL) - it.load() ); it += SIMDSIZE;
    }
-   for( ; i<ipos; i+=IT::size, it+=IT::size ) {
+   for( ; i<ipos; i+=SIMDSIZE, it+=SIMDSIZE ) {
       store( i, load(i) - it.load() );
    }
    for( ; i<size_; ++i, ++it ) {
@@ -2452,7 +2454,7 @@ inline DisableIf_< typename DenseSubvector<VT,AF,TF>::BLAZE_TEMPLATE VectorizedM
 
 
 //*************************************************************************************************
-/*!\brief Intrinsic optimized implementation of the multiplication assignment of a dense vector.
+/*!\brief SIMD optimized implementation of the multiplication assignment of a dense vector.
 //
 // \param rhs The right-hand side dense vector to be multiplied.
 // \return void
@@ -2473,19 +2475,19 @@ inline EnableIf_< typename DenseSubvector<VT,AF,TF>::BLAZE_TEMPLATE VectorizedMu
 
    BLAZE_INTERNAL_ASSERT( size() == (~rhs).size(), "Invalid vector sizes" );
 
-   const size_t ipos( size_ & size_t(-IT::size) );
-   BLAZE_INTERNAL_ASSERT( ( size_ - ( size_ % (IT::size) ) ) == ipos, "Invalid end calculation" );
+   const size_t ipos( size_ & size_t(-SIMDSIZE) );
+   BLAZE_INTERNAL_ASSERT( ( size_ - ( size_ % (SIMDSIZE) ) ) == ipos, "Invalid end calculation" );
 
    size_t i( 0UL );
    ConstIterator_<VT2> it( (~rhs).begin() );
 
-   for( ; (i+IT::size*3UL) < ipos; i+=IT::size*4UL ) {
-      store( i             , load(i             ) * it.load() ); it += IT::size;
-      store( i+IT::size    , load(i+IT::size    ) * it.load() ); it += IT::size;
-      store( i+IT::size*2UL, load(i+IT::size*2UL) * it.load() ); it += IT::size;
-      store( i+IT::size*3UL, load(i+IT::size*3UL) * it.load() ); it += IT::size;
+   for( ; (i+SIMDSIZE*3UL) < ipos; i+=SIMDSIZE*4UL ) {
+      store( i             , load(i             ) * it.load() ); it += SIMDSIZE;
+      store( i+SIMDSIZE    , load(i+SIMDSIZE    ) * it.load() ); it += SIMDSIZE;
+      store( i+SIMDSIZE*2UL, load(i+SIMDSIZE*2UL) * it.load() ); it += SIMDSIZE;
+      store( i+SIMDSIZE*3UL, load(i+SIMDSIZE*3UL) * it.load() ); it += SIMDSIZE;
    }
-   for( ; i<ipos; i+=IT::size, it+=IT::size ) {
+   for( ; i<ipos; i+=SIMDSIZE, it+=SIMDSIZE ) {
       store( i, load(i) * it.load() );
    }
    for( ; i<size_; ++i, ++it ) {
@@ -2553,9 +2555,6 @@ class DenseSubvector<VT,aligned,TF> : public DenseVector< DenseSubvector<VT,alig
    //**Type definitions****************************************************************************
    //! Composite data type of the dense vector expression.
    typedef If_< IsExpression<VT>, VT, VT& >  Operand;
-
-   //! Intrinsic trait for the vector element type.
-   typedef IntrinsicTrait< ElementType_<VT> >  IT;
    //**********************************************************************************************
 
  public:
@@ -2564,7 +2563,7 @@ class DenseSubvector<VT,aligned,TF> : public DenseVector< DenseSubvector<VT,alig
    typedef SubvectorTrait_<VT>            ResultType;     //!< Result type for expression template evaluations.
    typedef TransposeType_<ResultType>     TransposeType;  //!< Transpose type for expression template evaluations.
    typedef ElementType_<VT>               ElementType;    //!< Type of the subvector elements.
-   typedef typename IT::Type              IntrinsicType;  //!< Intrinsic type of the subvector elements.
+   typedef SIMDTrait_<ElementType>        SIMDType;       //!< SIMD type of the subvector elements.
    typedef ReturnType_<VT>                ReturnType;     //!< Return type for expression template evaluations
    typedef const DenseSubvector&          CompositeType;  //!< Data type for composite expression templates.
 
@@ -2699,6 +2698,11 @@ class DenseSubvector<VT,aligned,TF> : public DenseVector< DenseSubvector<VT,alig
    };
    //**********************************************************************************************
 
+   //**SIMD properties*****************************************************************************
+   //! The number of elements packed within a single SIMD element.
+   enum : size_t { SIMDSIZE = SIMDTrait<ElementType>::size };
+   //**********************************************************************************************
+
  public:
    //**Expression template evaluation functions****************************************************
    /*!\name Expression template evaluation functions */
@@ -2718,14 +2722,14 @@ class DenseSubvector<VT,aligned,TF> : public DenseVector< DenseSubvector<VT,alig
    inline bool isAligned   () const noexcept;
    inline bool canSMPAssign() const noexcept;
 
-   BLAZE_ALWAYS_INLINE IntrinsicType load ( size_t index ) const noexcept;
-   BLAZE_ALWAYS_INLINE IntrinsicType loada( size_t index ) const noexcept;
-   BLAZE_ALWAYS_INLINE IntrinsicType loadu( size_t index ) const noexcept;
+   BLAZE_ALWAYS_INLINE SIMDType load ( size_t index ) const noexcept;
+   BLAZE_ALWAYS_INLINE SIMDType loada( size_t index ) const noexcept;
+   BLAZE_ALWAYS_INLINE SIMDType loadu( size_t index ) const noexcept;
 
-   BLAZE_ALWAYS_INLINE void store ( size_t index, const IntrinsicType& value ) noexcept;
-   BLAZE_ALWAYS_INLINE void storea( size_t index, const IntrinsicType& value ) noexcept;
-   BLAZE_ALWAYS_INLINE void storeu( size_t index, const IntrinsicType& value ) noexcept;
-   BLAZE_ALWAYS_INLINE void stream( size_t index, const IntrinsicType& value ) noexcept;
+   BLAZE_ALWAYS_INLINE void store ( size_t index, const SIMDType& value ) noexcept;
+   BLAZE_ALWAYS_INLINE void storea( size_t index, const SIMDType& value ) noexcept;
+   BLAZE_ALWAYS_INLINE void storeu( size_t index, const SIMDType& value ) noexcept;
+   BLAZE_ALWAYS_INLINE void stream( size_t index, const SIMDType& value ) noexcept;
 
    template< typename VT2 >
    inline DisableIf_< VectorizedAssign<VT2> > assign( const DenseVector <VT2,TF>& rhs );
@@ -3733,21 +3737,21 @@ inline bool DenseSubvector<VT,aligned,TF>::canSMPAssign() const noexcept
 
 //*************************************************************************************************
 /*! \cond BLAZE_INTERNAL */
-/*!\brief Load of an intrinsic element of the dense subvector.
+/*!\brief Load of a SIMD element of the dense subvector.
 //
 // \param index Access index. The index must be smaller than the number of subvector elements.
-// \return The loaded intrinsic element.
+// \return The loaded SIMD element.
 //
-// This function performs a load of a specific intrinsic element of the dense subvector. The
-// index must be smaller than the number of subvector elements and it must be a multiple of
-// the number of values inside the intrinsic element. This function must \b NOT be called
-// explicitly! It is used internally for the performance optimized evaluation of expression
-// templates. Calling this function explicitly might result in erroneous results and/or in
-// compilation errors.
+// This function performs a load of a specific SIMD element of the dense subvector. The index
+// must be smaller than the number of subvector elements and it must be a multiple of the
+// number of values inside the SIMD element. This function must \b NOT be called explicitly!
+// It is used internally for the performance optimized evaluation of expression templates.
+// Calling this function explicitly might result in erroneous results and/or in compilation
+// errors.
 */
 template< typename VT       // Type of the dense vector
         , bool TF >         // Transpose flag
-BLAZE_ALWAYS_INLINE typename DenseSubvector<VT,aligned,TF>::IntrinsicType
+BLAZE_ALWAYS_INLINE typename DenseSubvector<VT,aligned,TF>::SIMDType
    DenseSubvector<VT,aligned,TF>::load( size_t index ) const noexcept
 {
    return loada( index );
@@ -3758,28 +3762,28 @@ BLAZE_ALWAYS_INLINE typename DenseSubvector<VT,aligned,TF>::IntrinsicType
 
 //*************************************************************************************************
 /*! \cond BLAZE_INTERNAL */
-/*!\brief Aligned load of an intrinsic element of the dense subvector.
+/*!\brief Aligned load of a SIMD element of the dense subvector.
 //
 // \param index Access index. The index must be smaller than the number of subvector elements.
-// \return The loaded intrinsic element.
+// \return The loaded SIMD element.
 //
-// This function performs an aligned load of a specific intrinsic element of the dense subvector.
+// This function performs an aligned load of a specific SIMD element of the dense subvector.
 // The index must be smaller than the number of subvector elements and it must be a multiple
-// of the number of values inside the intrinsic element. This function must \b NOT be called
+// of the number of values inside the SIMD element. This function must \b NOT be called
 // explicitly! It is used internally for the performance optimized evaluation of expression
 // templates. Calling this function explicitly might result in erroneous results and/or in
 // compilation errors.
 */
 template< typename VT       // Type of the dense vector
         , bool TF >         // Transpose flag
-BLAZE_ALWAYS_INLINE typename DenseSubvector<VT,aligned,TF>::IntrinsicType
+BLAZE_ALWAYS_INLINE typename DenseSubvector<VT,aligned,TF>::SIMDType
    DenseSubvector<VT,aligned,TF>::loada( size_t index ) const noexcept
 {
    BLAZE_CONSTRAINT_MUST_BE_VECTORIZABLE_TYPE( ElementType );
 
    BLAZE_INTERNAL_ASSERT( index < size()            , "Invalid subvector access index" );
-   BLAZE_INTERNAL_ASSERT( index + IT::size <= size(), "Invalid subvector access index" );
-   BLAZE_INTERNAL_ASSERT( index % IT::size == 0UL   , "Invalid subvector access index" );
+   BLAZE_INTERNAL_ASSERT( index + SIMDSIZE <= size(), "Invalid subvector access index" );
+   BLAZE_INTERNAL_ASSERT( index % SIMDSIZE == 0UL   , "Invalid subvector access index" );
 
    return vector_.loada( offset_+index );
 }
@@ -3789,28 +3793,28 @@ BLAZE_ALWAYS_INLINE typename DenseSubvector<VT,aligned,TF>::IntrinsicType
 
 //*************************************************************************************************
 /*! \cond BLAZE_INTERNAL */
-/*!\brief Unaligned load of an intrinsic element of the dense subvector.
+/*!\brief Unaligned load of a SIMD element of the dense subvector.
 //
 // \param index Access index. The index must be smaller than the number of subvector elements.
-// \return The loaded intrinsic element.
+// \return The loaded SIMD element.
 //
-// This function performs an unaligned load of a specific intrinsic element of the dense
-// subvector. The index must be smaller than the number of subvector elements and it must be
-// a multiple of the number of values inside the intrinsic element. This function must \b NOT
-// be called explicitly! It is used internally for the performance optimized evaluation of
-// expression templates. Calling this function explicitly might result in erroneous results
-// and/or in compilation errors.
+// This function performs an unaligned load of a specific SIMD element of the dense subvector.
+// The index must be smaller than the number of subvector elements and it must be a multiple
+// of the number of values inside the SIMD element. This function must \b NOT be called
+// explicitly! It is used internally for the performance optimized evaluation of expression
+// templates. Calling this function explicitly might result in erroneous results and/or in
+// compilation errors.
 */
 template< typename VT  // Type of the dense vector
         , bool TF >    // Transpose flag
-BLAZE_ALWAYS_INLINE typename DenseSubvector<VT,aligned,TF>::IntrinsicType
+BLAZE_ALWAYS_INLINE typename DenseSubvector<VT,aligned,TF>::SIMDType
    DenseSubvector<VT,aligned,TF>::loadu( size_t index ) const noexcept
 {
    BLAZE_CONSTRAINT_MUST_BE_VECTORIZABLE_TYPE( ElementType );
 
    BLAZE_INTERNAL_ASSERT( index < size()            , "Invalid subvector access index" );
-   BLAZE_INTERNAL_ASSERT( index + IT::size <= size(), "Invalid subvector access index" );
-   BLAZE_INTERNAL_ASSERT( index % IT::size == 0UL   , "Invalid subvector access index" );
+   BLAZE_INTERNAL_ASSERT( index + SIMDSIZE <= size(), "Invalid subvector access index" );
+   BLAZE_INTERNAL_ASSERT( index % SIMDSIZE == 0UL   , "Invalid subvector access index" );
 
    return vector_.loadu( offset_+index );
 }
@@ -3820,23 +3824,23 @@ BLAZE_ALWAYS_INLINE typename DenseSubvector<VT,aligned,TF>::IntrinsicType
 
 //*************************************************************************************************
 /*! \cond BLAZE_INTERNAL */
-/*!\brief Store of an intrinsic element of the subvector.
+/*!\brief Store of a SIMD element of the subvector.
 //
 // \param index Access index. The index must be smaller than the number of subvector elements.
-// \param value The intrinsic element to be stored.
+// \param value The SIMD element to be stored.
 // \return void
 //
-// This function performs a store a specific intrinsic element of the dense subvector. The
-// index must be smaller than the number of subvector elements and it must be a multiple of
-// the number of values inside the intrinsic element. This function must \b NOT be called
-// explicitly! It is used internally for the performance optimized evaluation of expression
-// templates. Calling this function explicitly might result in erroneous results and/or in
-// compilation errors.
+// This function performs a store a specific SIMD element of the dense subvector. The index
+// must be smaller than the number of subvector elements and it must be a multiple of the
+// number of values inside the SIMD element. This function must \b NOT be called explicitly!
+// It is used internally for the performance optimized evaluation of expression templates.
+// Calling this function explicitly might result in erroneous results and/or in compilation
+// errors.
 */
 template< typename VT  // Type of the dense vector
         , bool TF >    // Transpose flag
 BLAZE_ALWAYS_INLINE void
-   DenseSubvector<VT,aligned,TF>::store( size_t index, const IntrinsicType& value ) noexcept
+   DenseSubvector<VT,aligned,TF>::store( size_t index, const SIMDType& value ) noexcept
 {
    storea( index, value );
 }
@@ -3846,15 +3850,15 @@ BLAZE_ALWAYS_INLINE void
 
 //*************************************************************************************************
 /*! \cond BLAZE_INTERNAL */
-/*!\brief Aligned store of an intrinsic element of the subvector.
+/*!\brief Aligned store of a SIMD element of the subvector.
 //
 // \param index Access index. The index must be smaller than the number of subvector elements.
-// \param value The intrinsic element to be stored.
+// \param value The SIMD element to be stored.
 // \return void
 //
-// This function performs an aligned store a specific intrinsic element of the dense subvector.
+// This function performs an aligned store a specific SIMD element of the dense subvector.
 // The index must be smaller than the number of subvector elements and it must be a multiple
-// of the number of values inside the intrinsic element. This function must \b NOT be called
+// of the number of values inside the SIMD element. This function must \b NOT be called
 // explicitly! It is used internally for the performance optimized evaluation of expression
 // templates. Calling this function explicitly might result in erroneous results and/or in
 // compilation errors.
@@ -3862,13 +3866,13 @@ BLAZE_ALWAYS_INLINE void
 template< typename VT  // Type of the dense vector
         , bool TF >    // Transpose flag
 BLAZE_ALWAYS_INLINE void
-   DenseSubvector<VT,aligned,TF>::storea( size_t index, const IntrinsicType& value ) noexcept
+   DenseSubvector<VT,aligned,TF>::storea( size_t index, const SIMDType& value ) noexcept
 {
    BLAZE_CONSTRAINT_MUST_BE_VECTORIZABLE_TYPE( ElementType );
 
    BLAZE_INTERNAL_ASSERT( index < size()            , "Invalid subvector access index" );
-   BLAZE_INTERNAL_ASSERT( index + IT::size <= size(), "Invalid subvector access index" );
-   BLAZE_INTERNAL_ASSERT( index % IT::size == 0UL   , "Invalid subvector access index" );
+   BLAZE_INTERNAL_ASSERT( index + SIMDSIZE <= size(), "Invalid subvector access index" );
+   BLAZE_INTERNAL_ASSERT( index % SIMDSIZE == 0UL   , "Invalid subvector access index" );
 
    vector_.storea( offset_+index, value );
 }
@@ -3878,15 +3882,15 @@ BLAZE_ALWAYS_INLINE void
 
 //*************************************************************************************************
 /*! \cond BLAZE_INTERNAL */
-/*!\brief Unaligned store of an intrinsic element of the subvector.
+/*!\brief Unaligned store of a SIMD element of the subvector.
 //
 // \param index Access index. The index must be smaller than the number of subvector elements.
-// \param value The intrinsic element to be stored.
+// \param value The SIMD element to be stored.
 // \return void
 //
-// This function performs an unaligned store a specific intrinsic element of the dense subvector.
+// This function performs an unaligned store a specific SIMD element of the dense subvector.
 // The index must be smaller than the number of subvector elements and it must be a multiple
-// of the number of values inside the intrinsic element. This function must \b NOT be called
+// of the number of values inside the SIMD element. This function must \b NOT be called
 // explicitly! It is used internally for the performance optimized evaluation of expression
 // templates. Calling this function explicitly might result in erroneous results and/or in
 // compilation errors.
@@ -3894,13 +3898,13 @@ BLAZE_ALWAYS_INLINE void
 template< typename VT  // Type of the dense vector
         , bool TF >    // Transpose flag
 BLAZE_ALWAYS_INLINE void
-   DenseSubvector<VT,aligned,TF>::storeu( size_t index, const IntrinsicType& value ) noexcept
+   DenseSubvector<VT,aligned,TF>::storeu( size_t index, const SIMDType& value ) noexcept
 {
    BLAZE_CONSTRAINT_MUST_BE_VECTORIZABLE_TYPE( ElementType );
 
    BLAZE_INTERNAL_ASSERT( index < size()            , "Invalid subvector access index" );
-   BLAZE_INTERNAL_ASSERT( index + IT::size <= size(), "Invalid subvector access index" );
-   BLAZE_INTERNAL_ASSERT( index % IT::size == 0UL   , "Invalid subvector access index" );
+   BLAZE_INTERNAL_ASSERT( index + SIMDSIZE <= size(), "Invalid subvector access index" );
+   BLAZE_INTERNAL_ASSERT( index % SIMDSIZE == 0UL   , "Invalid subvector access index" );
 
    vector_.storeu( offset_+index, value );
 }
@@ -3910,15 +3914,15 @@ BLAZE_ALWAYS_INLINE void
 
 //*************************************************************************************************
 /*! \cond BLAZE_INTERNAL */
-/*!\brief Aligned, non-temporal store of an intrinsic element of the subvector.
+/*!\brief Aligned, non-temporal store of a SIMD element of the subvector.
 //
 // \param index Access index. The index must be smaller than the number of subvector elements.
-// \param value The intrinsic element to be stored.
+// \param value The SIMD element to be stored.
 // \return void
 //
-// This function performs an aligned, non-temporal store a specific intrinsic element of the
+// This function performs an aligned, non-temporal store a specific SIMD element of the
 // dense subvector. The index must be smaller than the number of subvector elements and it
-// must be a multiple of the number of values inside the intrinsic element. This function
+// must be a multiple of the number of values inside the SIMD element. This function
 // must \b NOT be called explicitly! It is used internally for the performance optimized
 // evaluation of expression templates. Calling this function explicitly might result in
 // erroneous results and/or in compilation errors.
@@ -3926,13 +3930,13 @@ BLAZE_ALWAYS_INLINE void
 template< typename VT  // Type of the dense vector
         , bool TF >    // Transpose flag
 BLAZE_ALWAYS_INLINE void
-   DenseSubvector<VT,aligned,TF>::stream( size_t index, const IntrinsicType& value ) noexcept
+   DenseSubvector<VT,aligned,TF>::stream( size_t index, const SIMDType& value ) noexcept
 {
    BLAZE_CONSTRAINT_MUST_BE_VECTORIZABLE_TYPE( ElementType );
 
    BLAZE_INTERNAL_ASSERT( index < size()            , "Invalid subvector access index" );
-   BLAZE_INTERNAL_ASSERT( index + IT::size <= size(), "Invalid subvector access index" );
-   BLAZE_INTERNAL_ASSERT( index % IT::size == 0UL   , "Invalid subvector access index" );
+   BLAZE_INTERNAL_ASSERT( index + SIMDSIZE <= size(), "Invalid subvector access index" );
+   BLAZE_INTERNAL_ASSERT( index % SIMDSIZE == 0UL   , "Invalid subvector access index" );
 
    vector_.stream( offset_+index, value );
 }
@@ -3975,7 +3979,7 @@ inline DisableIf_< typename DenseSubvector<VT,aligned,TF>::BLAZE_TEMPLATE Vector
 
 //*************************************************************************************************
 /*! \cond BLAZE_INTERNAL */
-/*!\brief Intrinsic optimized implementation of the assignment of a dense vector.
+/*!\brief SIMD optimized implementation of the assignment of a dense vector.
 //
 // \param rhs The right-hand side dense vector to be assigned.
 // \return void
@@ -3995,14 +3999,14 @@ inline EnableIf_< typename DenseSubvector<VT,aligned,TF>::BLAZE_TEMPLATE Vectori
 
    BLAZE_INTERNAL_ASSERT( size() == (~rhs).size(), "Invalid vector sizes" );
 
-   const size_t ipos( size_ & size_t(-IT::size) );
-   BLAZE_INTERNAL_ASSERT( ( size_ - ( size_ % (IT::size) ) ) == ipos, "Invalid end calculation" );
+   const size_t ipos( size_ & size_t(-SIMDSIZE) );
+   BLAZE_INTERNAL_ASSERT( ( size_ - ( size_ % (SIMDSIZE) ) ) == ipos, "Invalid end calculation" );
 
    if( useStreaming && size_ > ( cacheSize/( sizeof(ElementType) * 3UL ) ) && !(~rhs).isAliased( &vector_ ) )
    {
       size_t i( 0UL );
 
-      for( ; i<ipos; i+=IT::size ) {
+      for( ; i<ipos; i+=SIMDSIZE ) {
          stream( i, (~rhs).load(i) );
       }
       for( ; i<size_; ++i ) {
@@ -4014,13 +4018,13 @@ inline EnableIf_< typename DenseSubvector<VT,aligned,TF>::BLAZE_TEMPLATE Vectori
       size_t i( 0UL );
       ConstIterator_<VT2> it( (~rhs).begin() );
 
-      for( ; (i+IT::size*3UL) < ipos; i+=IT::size*4UL ) {
-         store( i             , it.load() ); it += IT::size;
-         store( i+IT::size    , it.load() ); it += IT::size;
-         store( i+IT::size*2UL, it.load() ); it += IT::size;
-         store( i+IT::size*3UL, it.load() ); it += IT::size;
+      for( ; (i+SIMDSIZE*3UL) < ipos; i+=SIMDSIZE*4UL ) {
+         store( i             , it.load() ); it += SIMDSIZE;
+         store( i+SIMDSIZE    , it.load() ); it += SIMDSIZE;
+         store( i+SIMDSIZE*2UL, it.load() ); it += SIMDSIZE;
+         store( i+SIMDSIZE*3UL, it.load() ); it += SIMDSIZE;
       }
-      for( ; i<ipos; i+=IT::size, it+=IT::size ) {
+      for( ; i<ipos; i+=SIMDSIZE, it+=SIMDSIZE ) {
          store( i, it.load() );
       }
       for( ; i<size_; ++i, ++it ) {
@@ -4093,7 +4097,7 @@ inline DisableIf_< typename DenseSubvector<VT,aligned,TF>::BLAZE_TEMPLATE Vector
 
 //*************************************************************************************************
 /*! \cond BLAZE_INTERNAL */
-/*!\brief Intrinsic optimized implementation of the addition assignment of a dense vector.
+/*!\brief SIMD optimized implementation of the addition assignment of a dense vector.
 //
 // \param rhs The right-hand side dense vector to be added.
 // \return void
@@ -4113,19 +4117,19 @@ inline EnableIf_< typename DenseSubvector<VT,aligned,TF>::BLAZE_TEMPLATE Vectori
 
    BLAZE_INTERNAL_ASSERT( size() == (~rhs).size(), "Invalid vector sizes" );
 
-   const size_t ipos( size_ & size_t(-IT::size) );
-   BLAZE_INTERNAL_ASSERT( ( size_ - ( size_ % (IT::size) ) ) == ipos, "Invalid end calculation" );
+   const size_t ipos( size_ & size_t(-SIMDSIZE) );
+   BLAZE_INTERNAL_ASSERT( ( size_ - ( size_ % (SIMDSIZE) ) ) == ipos, "Invalid end calculation" );
 
    size_t i( 0UL );
    ConstIterator_<VT2> it( (~rhs).begin() );
 
-   for( ; (i+IT::size*3UL) < ipos; i+=IT::size*4UL ) {
-      store( i             , load(i             ) + it.load() ); it += IT::size;
-      store( i+IT::size    , load(i+IT::size    ) + it.load() ); it += IT::size;
-      store( i+IT::size*2UL, load(i+IT::size*2UL) + it.load() ); it += IT::size;
-      store( i+IT::size*3UL, load(i+IT::size*3UL) + it.load() ); it += IT::size;
+   for( ; (i+SIMDSIZE*3UL) < ipos; i+=SIMDSIZE*4UL ) {
+      store( i             , load(i             ) + it.load() ); it += SIMDSIZE;
+      store( i+SIMDSIZE    , load(i+SIMDSIZE    ) + it.load() ); it += SIMDSIZE;
+      store( i+SIMDSIZE*2UL, load(i+SIMDSIZE*2UL) + it.load() ); it += SIMDSIZE;
+      store( i+SIMDSIZE*3UL, load(i+SIMDSIZE*3UL) + it.load() ); it += SIMDSIZE;
    }
-   for( ; i<ipos; i+=IT::size, it+=IT::size ) {
+   for( ; i<ipos; i+=SIMDSIZE, it+=SIMDSIZE ) {
       store( i, load(i) + it.load() );
    }
    for( ; i<size_; ++i, ++it ) {
@@ -4197,7 +4201,7 @@ inline DisableIf_< typename DenseSubvector<VT,aligned,TF>::BLAZE_TEMPLATE Vector
 
 //*************************************************************************************************
 /*! \cond BLAZE_INTERNAL */
-/*!\brief Intrinsic optimized implementation of the subtraction assignment of a dense vector.
+/*!\brief SIMD optimized implementation of the subtraction assignment of a dense vector.
 //
 // \param rhs The right-hand side dense vector to be subtracted.
 // \return void
@@ -4217,19 +4221,19 @@ inline EnableIf_< typename DenseSubvector<VT,aligned,TF>::BLAZE_TEMPLATE Vectori
 
    BLAZE_INTERNAL_ASSERT( size() == (~rhs).size(), "Invalid vector sizes" );
 
-   const size_t ipos( size_ & size_t(-IT::size) );
-   BLAZE_INTERNAL_ASSERT( ( size_ - ( size_ % (IT::size) ) ) == ipos, "Invalid end calculation" );
+   const size_t ipos( size_ & size_t(-SIMDSIZE) );
+   BLAZE_INTERNAL_ASSERT( ( size_ - ( size_ % (SIMDSIZE) ) ) == ipos, "Invalid end calculation" );
 
    size_t i( 0UL );
    ConstIterator_<VT2> it( (~rhs).begin() );
 
-   for( ; (i+IT::size*3UL) < ipos; i+=IT::size*4UL ) {
-      store( i             , load(i             ) - it.load() ); it += IT::size;
-      store( i+IT::size    , load(i+IT::size    ) - it.load() ); it += IT::size;
-      store( i+IT::size*2UL, load(i+IT::size*2UL) - it.load() ); it += IT::size;
-      store( i+IT::size*3UL, load(i+IT::size*3UL) - it.load() ); it += IT::size;
+   for( ; (i+SIMDSIZE*3UL) < ipos; i+=SIMDSIZE*4UL ) {
+      store( i             , load(i             ) - it.load() ); it += SIMDSIZE;
+      store( i+SIMDSIZE    , load(i+SIMDSIZE    ) - it.load() ); it += SIMDSIZE;
+      store( i+SIMDSIZE*2UL, load(i+SIMDSIZE*2UL) - it.load() ); it += SIMDSIZE;
+      store( i+SIMDSIZE*3UL, load(i+SIMDSIZE*3UL) - it.load() ); it += SIMDSIZE;
    }
-   for( ; i<ipos; i+=IT::size, it+=IT::size ) {
+   for( ; i<ipos; i+=SIMDSIZE, it+=SIMDSIZE ) {
       store( i, load(i) - it.load() );
    }
    for( ; i<size_; ++i, ++it ) {
@@ -4301,7 +4305,7 @@ inline DisableIf_< typename DenseSubvector<VT,aligned,TF>::BLAZE_TEMPLATE Vector
 
 //*************************************************************************************************
 /*! \cond BLAZE_INTERNAL */
-/*!\brief Intrinsic optimized implementation of the multiplication assignment of a dense vector.
+/*!\brief SIMD optimized implementation of the multiplication assignment of a dense vector.
 //
 // \param rhs The right-hand side dense vector to be multiplied.
 // \return void
@@ -4321,19 +4325,19 @@ inline EnableIf_< typename DenseSubvector<VT,aligned,TF>::BLAZE_TEMPLATE Vectori
 
    BLAZE_INTERNAL_ASSERT( size() == (~rhs).size(), "Invalid vector sizes" );
 
-   const size_t ipos( size_ & size_t(-IT::size) );
-   BLAZE_INTERNAL_ASSERT( ( size_ - ( size_ % (IT::size) ) ) == ipos, "Invalid end calculation" );
+   const size_t ipos( size_ & size_t(-SIMDSIZE) );
+   BLAZE_INTERNAL_ASSERT( ( size_ - ( size_ % (SIMDSIZE) ) ) == ipos, "Invalid end calculation" );
 
    size_t i( 0UL );
    ConstIterator_<VT2> it( (~rhs).begin() );
 
-   for( ; (i+IT::size*3UL) < ipos; i+=IT::size*4UL ) {
-      store( i             , load(i             ) * it.load() ); it += IT::size;
-      store( i+IT::size    , load(i+IT::size    ) * it.load() ); it += IT::size;
-      store( i+IT::size*2UL, load(i+IT::size*2UL) * it.load() ); it += IT::size;
-      store( i+IT::size*3UL, load(i+IT::size*3UL) * it.load() ); it += IT::size;
+   for( ; (i+SIMDSIZE*3UL) < ipos; i+=SIMDSIZE*4UL ) {
+      store( i             , load(i             ) * it.load() ); it += SIMDSIZE;
+      store( i+SIMDSIZE    , load(i+SIMDSIZE    ) * it.load() ); it += SIMDSIZE;
+      store( i+SIMDSIZE*2UL, load(i+SIMDSIZE*2UL) * it.load() ); it += SIMDSIZE;
+      store( i+SIMDSIZE*3UL, load(i+SIMDSIZE*3UL) * it.load() ); it += SIMDSIZE;
    }
-   for( ; i<ipos; i+=IT::size, it+=IT::size ) {
+   for( ; i<ipos; i+=SIMDSIZE, it+=SIMDSIZE ) {
       store( i, load(i) * it.load() );
    }
    for( ; i<size_; ++i, ++it ) {

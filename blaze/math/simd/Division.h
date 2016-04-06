@@ -1,7 +1,7 @@
 //=================================================================================================
 /*!
 //  \file blaze/math/simd/Division.h
-//  \brief Header file for the intrinisc division functionality
+//  \brief Header file for the SIMD division functionality
 //
 //  Copyright (C) 2013 Klaus Iglberger - All Rights Reserved
 //
@@ -49,7 +49,7 @@ namespace blaze {
 
 //=================================================================================================
 //
-//  INTRINSIC DIVISION OPERATORS
+//  SIMD DIVISION OPERATORS
 //
 //=================================================================================================
 

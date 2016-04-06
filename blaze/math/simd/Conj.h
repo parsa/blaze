@@ -1,7 +1,7 @@
 //=================================================================================================
 /*!
 //  \file blaze/math/simd/Conj.h
-//  \brief Header file for the intrinisc conj functionality
+//  \brief Header file for the SIMD conj functionality
 //
 //  Copyright (C) 2013 Klaus Iglberger - All Rights Reserved
 //

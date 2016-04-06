@@ -47,7 +47,7 @@
 #include <blaze/math/expressions/DenseMatrix.h>
 #include <blaze/math/expressions/SparseMatrix.h>
 #include <blaze/math/Functions.h>
-#include <blaze/math/simd/IntrinsicTrait.h>
+#include <blaze/math/simd/SIMDTrait.h>
 #include <blaze/math/smp/ParallelSection.h>
 #include <blaze/math/smp/SerialSection.h>
 #include <blaze/math/SparseSubmatrix.h>
@@ -100,11 +100,12 @@ void smpAssign_backend( DenseMatrix<MT1,SO>& lhs, const DenseMatrix<MT2,rowMajor
 
    BLAZE_INTERNAL_ASSERT( isParallelSectionActive(), "Invalid call outside a parallel section" );
 
-   typedef ElementType_<MT1>                    ET1;
-   typedef ElementType_<MT2>                    ET2;
-   typedef IntrinsicTrait< ElementType_<MT1> >  IT;
-   typedef SubmatrixExprTrait_<MT1,aligned>     AlignedTarget;
-   typedef SubmatrixExprTrait_<MT1,unaligned>   UnalignedTarget;
+   typedef ElementType_<MT1>                   ET1;
+   typedef ElementType_<MT2>                   ET2;
+   typedef SubmatrixExprTrait_<MT1,aligned>    AlignedTarget;
+   typedef SubmatrixExprTrait_<MT1,unaligned>  UnalignedTarget;
+
+   enum : size_t { SIMDSIZE = SIMDTrait< ElementType_<MT1> >::size };
 
    const bool vectorizable( MT1::vectorizable && MT2::vectorizable && IsSame<ET1,ET2>::value );
    const bool lhsAligned  ( (~lhs).isAligned() );
@@ -113,8 +114,8 @@ void smpAssign_backend( DenseMatrix<MT1,SO>& lhs, const DenseMatrix<MT2,rowMajor
    const int    threads      ( omp_get_num_threads() );
    const size_t addon        ( ( ( (~lhs).rows() % threads ) != 0UL )? 1UL : 0UL );
    const size_t equalShare   ( (~lhs).rows() / threads + addon );
-   const size_t rest         ( equalShare & ( IT::size - 1UL ) );
-   const size_t rowsPerThread( ( vectorizable && rest )?( equalShare - rest + IT::size ):( equalShare ) );
+   const size_t rest         ( equalShare & ( SIMDSIZE - 1UL ) );
+   const size_t rowsPerThread( ( vectorizable && rest )?( equalShare - rest + SIMDSIZE ):( equalShare ) );
 
 #pragma omp for schedule(dynamic,1) nowait
    for( int i=0UL; i<threads; ++i )
@@ -173,11 +174,12 @@ void smpAssign_backend( DenseMatrix<MT1,SO>& lhs, const DenseMatrix<MT2,columnMa
 
    BLAZE_INTERNAL_ASSERT( isParallelSectionActive(), "Invalid call outside a parallel section" );
 
-   typedef ElementType_<MT1>                    ET1;
-   typedef ElementType_<MT2>                    ET2;
-   typedef IntrinsicTrait< ElementType_<MT1> >  IT;
-   typedef SubmatrixExprTrait_<MT1,aligned>     AlignedTarget;
-   typedef SubmatrixExprTrait_<MT1,unaligned>   UnalignedTarget;
+   typedef ElementType_<MT1>                   ET1;
+   typedef ElementType_<MT2>                   ET2;
+   typedef SubmatrixExprTrait_<MT1,aligned>    AlignedTarget;
+   typedef SubmatrixExprTrait_<MT1,unaligned>  UnalignedTarget;
+
+   enum : size_t { SIMDSIZE = SIMDTrait< ElementType_<MT1> >::size };
 
    const bool vectorizable( MT1::vectorizable && MT2::vectorizable && IsSame<ET1,ET2>::value );
    const bool lhsAligned  ( (~lhs).isAligned() );
@@ -186,8 +188,8 @@ void smpAssign_backend( DenseMatrix<MT1,SO>& lhs, const DenseMatrix<MT2,columnMa
    const int    threads      ( omp_get_num_threads() );
    const size_t addon        ( ( ( (~lhs).columns() % threads ) != 0UL )? 1UL : 0UL );
    const size_t equalShare   ( (~lhs).columns() / threads + addon );
-   const size_t rest         ( equalShare & ( IT::size - 1UL ) );
-   const size_t colsPerThread( ( vectorizable && rest )?( equalShare - rest + IT::size ):( equalShare ) );
+   const size_t rest         ( equalShare & ( SIMDSIZE - 1UL ) );
+   const size_t colsPerThread( ( vectorizable && rest )?( equalShare - rest + SIMDSIZE ):( equalShare ) );
 
 #pragma omp for schedule(dynamic,1) nowait
    for( int i=0UL; i<threads; ++i )
@@ -441,11 +443,12 @@ void smpAddAssign_backend( DenseMatrix<MT1,SO>& lhs, const DenseMatrix<MT2,rowMa
 
    BLAZE_INTERNAL_ASSERT( isParallelSectionActive(), "Invalid call outside a parallel section" );
 
-   typedef ElementType_<MT1>                    ET1;
-   typedef ElementType_<MT2>                    ET2;
-   typedef IntrinsicTrait< ElementType_<MT1> >  IT;
-   typedef SubmatrixExprTrait_<MT1,aligned>     AlignedTarget;
-   typedef SubmatrixExprTrait_<MT1,unaligned>   UnalignedTarget;
+   typedef ElementType_<MT1>                   ET1;
+   typedef ElementType_<MT2>                   ET2;
+   typedef SubmatrixExprTrait_<MT1,aligned>    AlignedTarget;
+   typedef SubmatrixExprTrait_<MT1,unaligned>  UnalignedTarget;
+
+   enum : size_t { SIMDSIZE = SIMDTrait< ElementType_<MT1> >::size };
 
    const bool vectorizable( MT1::vectorizable && MT2::vectorizable && IsSame<ET1,ET2>::value );
    const bool lhsAligned  ( (~lhs).isAligned() );
@@ -454,8 +457,8 @@ void smpAddAssign_backend( DenseMatrix<MT1,SO>& lhs, const DenseMatrix<MT2,rowMa
    const int    threads      ( omp_get_num_threads() );
    const size_t addon        ( ( ( (~lhs).rows() % threads ) != 0UL )? 1UL : 0UL );
    const size_t equalShare   ( (~lhs).rows() / threads + addon );
-   const size_t rest         ( equalShare & ( IT::size - 1UL ) );
-   const size_t rowsPerThread( ( vectorizable && rest )?( equalShare - rest + IT::size ):( equalShare ) );
+   const size_t rest         ( equalShare & ( SIMDSIZE - 1UL ) );
+   const size_t rowsPerThread( ( vectorizable && rest )?( equalShare - rest + SIMDSIZE ):( equalShare ) );
 
 #pragma omp for schedule(dynamic,1) nowait
    for( int i=0UL; i<threads; ++i )
@@ -515,11 +518,12 @@ void smpAddAssign_backend( DenseMatrix<MT1,SO>& lhs, const DenseMatrix<MT2,colum
 
    BLAZE_INTERNAL_ASSERT( isParallelSectionActive(), "Invalid call outside a parallel section" );
 
-   typedef ElementType_<MT1>                    ET1;
-   typedef ElementType_<MT2>                    ET2;
-   typedef IntrinsicTrait< ElementType_<MT1> >  IT;
-   typedef SubmatrixExprTrait_<MT1,aligned>     AlignedTarget;
-   typedef SubmatrixExprTrait_<MT1,unaligned>   UnalignedTarget;
+   typedef ElementType_<MT1>                   ET1;
+   typedef ElementType_<MT2>                   ET2;
+   typedef SubmatrixExprTrait_<MT1,aligned>    AlignedTarget;
+   typedef SubmatrixExprTrait_<MT1,unaligned>  UnalignedTarget;
+
+   enum : size_t { SIMDSIZE = SIMDTrait< ElementType_<MT1> >::size };
 
    const bool vectorizable( MT1::vectorizable && MT2::vectorizable && IsSame<ET1,ET2>::value );
    const bool lhsAligned  ( (~lhs).isAligned() );
@@ -528,8 +532,8 @@ void smpAddAssign_backend( DenseMatrix<MT1,SO>& lhs, const DenseMatrix<MT2,colum
    const int    threads      ( omp_get_num_threads() );
    const size_t addon        ( ( ( (~lhs).columns() % threads ) != 0UL )? 1UL : 0UL );
    const size_t equalShare   ( (~lhs).columns() / threads + addon );
-   const size_t rest         ( equalShare & ( IT::size - 1UL ) );
-   const size_t colsPerThread( ( vectorizable && rest )?( equalShare - rest + IT::size ):( equalShare ) );
+   const size_t rest         ( equalShare & ( SIMDSIZE - 1UL ) );
+   const size_t colsPerThread( ( vectorizable && rest )?( equalShare - rest + SIMDSIZE ):( equalShare ) );
 
 #pragma omp for schedule(dynamic,1) nowait
    for( int i=0UL; i<threads; ++i )
@@ -785,11 +789,12 @@ void smpSubAssign_backend( DenseMatrix<MT1,SO>& lhs, const DenseMatrix<MT2,rowMa
 
    BLAZE_INTERNAL_ASSERT( isParallelSectionActive(), "Invalid call outside a parallel section" );
 
-   typedef ElementType_<MT1>                    ET1;
-   typedef ElementType_<MT2>                    ET2;
-   typedef IntrinsicTrait< ElementType_<MT1> >  IT;
-   typedef SubmatrixExprTrait_<MT1,aligned>     AlignedTarget;
-   typedef SubmatrixExprTrait_<MT1,unaligned>   UnalignedTarget;
+   typedef ElementType_<MT1>                   ET1;
+   typedef ElementType_<MT2>                   ET2;
+   typedef SubmatrixExprTrait_<MT1,aligned>    AlignedTarget;
+   typedef SubmatrixExprTrait_<MT1,unaligned>  UnalignedTarget;
+
+   enum : size_t { SIMDSIZE = SIMDTrait< ElementType_<MT1> >::size };
 
    const bool vectorizable( MT1::vectorizable && MT2::vectorizable && IsSame<ET1,ET2>::value );
    const bool lhsAligned  ( (~lhs).isAligned() );
@@ -798,8 +803,8 @@ void smpSubAssign_backend( DenseMatrix<MT1,SO>& lhs, const DenseMatrix<MT2,rowMa
    const int    threads      ( omp_get_num_threads() );
    const size_t addon        ( ( ( (~lhs).rows() % threads ) != 0UL )? 1UL : 0UL );
    const size_t equalShare   ( (~lhs).rows() / threads + addon );
-   const size_t rest         ( equalShare & ( IT::size - 1UL ) );
-   const size_t rowsPerThread( ( vectorizable && rest )?( equalShare - rest + IT::size ):( equalShare ) );
+   const size_t rest         ( equalShare & ( SIMDSIZE - 1UL ) );
+   const size_t rowsPerThread( ( vectorizable && rest )?( equalShare - rest + SIMDSIZE ):( equalShare ) );
 
 #pragma omp for schedule(dynamic,1) nowait
    for( int i=0UL; i<threads; ++i )
@@ -859,11 +864,12 @@ void smpSubAssign_backend( DenseMatrix<MT1,SO>& lhs, const DenseMatrix<MT2,colum
 
    BLAZE_INTERNAL_ASSERT( isParallelSectionActive(), "Invalid call outside a parallel section" );
 
-   typedef ElementType_<MT1>                    ET1;
-   typedef ElementType_<MT2>                    ET2;
-   typedef IntrinsicTrait< ElementType_<MT1> >  IT;
-   typedef SubmatrixExprTrait_<MT1,aligned>     AlignedTarget;
-   typedef SubmatrixExprTrait_<MT1,unaligned>   UnalignedTarget;
+   typedef ElementType_<MT1>                   ET1;
+   typedef ElementType_<MT2>                   ET2;
+   typedef SubmatrixExprTrait_<MT1,aligned>    AlignedTarget;
+   typedef SubmatrixExprTrait_<MT1,unaligned>  UnalignedTarget;
+
+   enum : size_t { SIMDSIZE = SIMDTrait< ElementType_<MT1> >::size };
 
    const bool vectorizable( MT1::vectorizable && MT2::vectorizable && IsSame<ET1,ET2>::value );
    const bool lhsAligned  ( (~lhs).isAligned() );
@@ -872,8 +878,8 @@ void smpSubAssign_backend( DenseMatrix<MT1,SO>& lhs, const DenseMatrix<MT2,colum
    const int    threads      ( omp_get_num_threads() );
    const size_t addon        ( ( ( (~lhs).columns() % threads ) != 0UL )? 1UL : 0UL );
    const size_t equalShare   ( (~lhs).columns() / threads + addon );
-   const size_t rest         ( equalShare & ( IT::size - 1UL ) );
-   const size_t colsPerThread( ( vectorizable && rest )?( equalShare - rest + IT::size ):( equalShare ) );
+   const size_t rest         ( equalShare & ( SIMDSIZE - 1UL ) );
+   const size_t colsPerThread( ( vectorizable && rest )?( equalShare - rest + SIMDSIZE ):( equalShare ) );
 
 #pragma omp for schedule(dynamic,1) nowait
    for( int i=0UL; i<threads; ++i )
