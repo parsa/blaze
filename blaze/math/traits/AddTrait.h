@@ -40,7 +40,7 @@
 // Includes
 //*************************************************************************************************
 
-#include <boost/typeof/typeof.hpp>
+#include <utility>
 #include <blaze/util/Complex.h>
 #include <blaze/util/EnableIf.h>
 #include <blaze/util/mpl/If.h>
@@ -146,7 +146,7 @@ struct AddTrait
 
    //**********************************************************************************************
    /*! \cond BLAZE_INTERNAL */
-   struct AddType { using Type = BOOST_TYPEOF_TPL( Type1() + Type2() ); };
+   struct AddType { using Type = decltype( std::declval<Type1>() + std::declval<Type2>() ); };
    /*! \endcond */
    //**********************************************************************************************
 

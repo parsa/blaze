@@ -40,7 +40,7 @@
 // Includes
 //*************************************************************************************************
 
-#include <boost/typeof/typeof.hpp>
+#include <utility>
 #include <blaze/util/Complex.h>
 #include <blaze/util/EnableIf.h>
 #include <blaze/util/mpl/If.h>
@@ -146,7 +146,7 @@ struct DivTrait
 
    //**********************************************************************************************
    /*! \cond BLAZE_INTERNAL */
-   struct DivType { using Type = BOOST_TYPEOF_TPL( Type1() / Type2() ); };
+   struct DivType { using Type = decltype( std::declval<Type1>() / std::declval<Type2>() ); };
    /*! \endcond */
    //**********************************************************************************************
 
