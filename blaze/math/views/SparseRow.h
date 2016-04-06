@@ -400,7 +400,7 @@ class SparseRow : public SparseVector< SparseRow<MT,SO,SF>, true >
 
    //**Compilation flags***************************************************************************
    //! Compilation switch for the expression template assignment strategy.
-   enum : bool { smpAssignable = 0 };
+   enum : bool { smpAssignable = false };
    //**********************************************************************************************
 
    //**Constructors********************************************************************************
@@ -2373,7 +2373,7 @@ class SparseRow<MT,false,false> : public SparseVector< SparseRow<MT,false,false>
 
    //**Compilation flags***************************************************************************
    //! Compilation switch for the expression template assignment strategy.
-   enum : bool { smpAssignable = 0 };
+   enum : bool { smpAssignable = false };
    //**********************************************************************************************
 
    //**Constructors********************************************************************************
@@ -3778,7 +3778,7 @@ class SparseRow<MT,false,true> : public SparseVector< SparseRow<MT,false,true>, 
 
    //**Compilation flags***************************************************************************
    //! Compilation switch for the expression template assignment strategy.
-   enum : bool { smpAssignable = 0 };
+   enum : bool { smpAssignable = false };
    //**********************************************************************************************
 
    //**Constructors********************************************************************************

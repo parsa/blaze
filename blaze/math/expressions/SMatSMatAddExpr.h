@@ -181,7 +181,7 @@ class SMatSMatAddExpr : public SparseMatrix< SMatSMatAddExpr<MT1,MT2>, false >
 
    //**Compilation flags***************************************************************************
    //! Compilation switch for the expression template assignment strategy.
-   enum : bool { smpAssignable = 0 };
+   enum : bool { smpAssignable = false };
    //**********************************************************************************************
 
    //**Constructor*********************************************************************************
