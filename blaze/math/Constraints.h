@@ -94,6 +94,7 @@
 #include <blaze/math/constraints/Rows.h>
 #include <blaze/math/constraints/RowVector.h>
 #include <blaze/math/constraints/SerialExpr.h>
+#include <blaze/math/constraints/SIMDEnabled.h>
 #include <blaze/math/constraints/Size.h>
 #include <blaze/math/constraints/SMPAssignable.h>
 #include <blaze/math/constraints/SparseElement.h>
