@@ -511,7 +511,7 @@ class SparseSubmatrix : public SparseMatrix< SparseSubmatrix<MT,AF,SO>, SO >
           is const qualified, \a returnConst will be set to 1 and the value member function will
           return a reference to const. Otherwise \a returnConst will be set to 0 and the value
           member function will offer write access to the sparse matrix elements. */
-      enum { returnConst = IsConst<MatrixType>::value };
+      enum : bool { returnConst = IsConst<MatrixType>::value };
       //*******************************************************************************************
 
       //**Type definitions*************************************************************************
@@ -812,7 +812,7 @@ class SparseSubmatrix : public SparseMatrix< SparseSubmatrix<MT,AF,SO>, SO >
 
    //**Compilation flags***************************************************************************
    //! Compilation switch for the expression template assignment strategy.
-   enum { smpAssignable = MT::smpAssignable };
+   enum : bool { smpAssignable = MT::smpAssignable };
    //**********************************************************************************************
 
    //**Constructors********************************************************************************
@@ -2905,7 +2905,7 @@ class SparseSubmatrix<MT,AF,true> : public SparseMatrix< SparseSubmatrix<MT,AF,t
           is const qualified, \a returnConst will be set to 1 and the value member function will
           return a reference to const. Otherwise \a returnConst will be set to 0 and the value
           member function will offer write access to the sparse matrix elements. */
-      enum { returnConst = IsConst<MatrixType>::value };
+      enum : bool { returnConst = IsConst<MatrixType>::value };
       //*******************************************************************************************
 
       //**Type definitions*************************************************************************
@@ -3206,7 +3206,7 @@ class SparseSubmatrix<MT,AF,true> : public SparseMatrix< SparseSubmatrix<MT,AF,t
 
    //**Compilation flags***************************************************************************
    //! Compilation switch for the expression template assignment strategy.
-   enum { smpAssignable = MT::smpAssignable };
+   enum : bool { smpAssignable = MT::smpAssignable };
    //**********************************************************************************************
 
    //**Constructors********************************************************************************

@@ -131,7 +131,7 @@ struct SMatScalarDivExprTrait
  private:
    //**********************************************************************************************
    /*! \cond BLAZE_INTERNAL */
-   enum { condition = And< IsSparseMatrix<MT>, IsRowMajorMatrix<MT>, IsNumeric<ST> >::value };
+   enum : bool { condition = And< IsSparseMatrix<MT>, IsRowMajorMatrix<MT>, IsNumeric<ST> >::value };
    /*! \endcond */
    //**********************************************************************************************
 

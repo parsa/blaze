@@ -159,12 +159,12 @@ class TDMatTDMatMultExpr : public DenseMatrix< TDMatTDMatMultExpr<MT1,MT2>, true
 
    //**********************************************************************************************
    //! Compilation switch for the composite type of the left-hand side dense matrix expression.
-   enum { evaluateLeft = IsComputation<MT1>::value || RequiresEvaluation<MT1>::value };
+   enum : bool { evaluateLeft = IsComputation<MT1>::value || RequiresEvaluation<MT1>::value };
    //**********************************************************************************************
 
    //**********************************************************************************************
    //! Compilation switch for the composite type of the right-hand side dense matrix expression.
-   enum { evaluateRight = IsComputation<MT2>::value || RequiresEvaluation<MT2>::value };
+   enum : bool { evaluateRight = IsComputation<MT2>::value || RequiresEvaluation<MT2>::value };
    //**********************************************************************************************
 
    //**********************************************************************************************
@@ -177,8 +177,8 @@ class TDMatTDMatMultExpr : public DenseMatrix< TDMatTDMatMultExpr<MT1,MT2>, true
        chosen. */
    template< typename T1, typename T2, typename T3 >
    struct CanExploitSymmetry {
-      enum { value = IsRowMajorMatrix<T1>::value &&
-                     ( IsSymmetric<T2>::value || IsSymmetric<T3>::value ) };
+      enum : bool { value = IsRowMajorMatrix<T1>::value &&
+                            ( IsSymmetric<T2>::value || IsSymmetric<T3>::value ) };
    };
    /*! \endcond */
    //**********************************************************************************************
@@ -191,8 +191,8 @@ class TDMatTDMatMultExpr : public DenseMatrix< TDMatTDMatMultExpr<MT1,MT2>, true
        evaluation, the nested \value will be set to 1, otherwise it will be 0. */
    template< typename T1, typename T2, typename T3 >
    struct IsEvaluationRequired {
-      enum { value = ( evaluateLeft || evaluateRight ) &&
-                     CanExploitSymmetry<T1,T2,T3>::value };
+      enum : bool { value = ( evaluateLeft || evaluateRight ) &&
+                            CanExploitSymmetry<T1,T2,T3>::value };
    };
    /*! \endcond */
    //**********************************************************************************************
@@ -204,17 +204,17 @@ class TDMatTDMatMultExpr : public DenseMatrix< TDMatTDMatMultExpr<MT1,MT2>, true
        \a value will be set to 1, otherwise it will be 0. */
    template< typename T1, typename T2, typename T3 >
    struct UseBlasKernel {
-      enum { value = BLAZE_BLAS_MODE &&
-                     HasMutableDataAccess<T1>::value &&
-                     HasConstDataAccess<T2>::value &&
-                     HasConstDataAccess<T3>::value &&
-                     !IsDiagonal<T2>::value && !IsDiagonal<T3>::value &&
-                     T1::vectorizable && T2::vectorizable && T3::vectorizable &&
-                     IsBlasCompatible< ElementType_<T1> >::value &&
-                     IsBlasCompatible< ElementType_<T2> >::value &&
-                     IsBlasCompatible< ElementType_<T3> >::value &&
-                     IsSame< ElementType_<T1>, ElementType_<T2> >::value &&
-                     IsSame< ElementType_<T1>, ElementType_<T3> >::value };
+      enum : bool { value = BLAZE_BLAS_MODE &&
+                            HasMutableDataAccess<T1>::value &&
+                            HasConstDataAccess<T2>::value &&
+                            HasConstDataAccess<T3>::value &&
+                            !IsDiagonal<T2>::value && !IsDiagonal<T3>::value &&
+                            T1::vectorizable && T2::vectorizable && T3::vectorizable &&
+                            IsBlasCompatible< ElementType_<T1> >::value &&
+                            IsBlasCompatible< ElementType_<T2> >::value &&
+                            IsBlasCompatible< ElementType_<T3> >::value &&
+                            IsSame< ElementType_<T1>, ElementType_<T2> >::value &&
+                            IsSame< ElementType_<T1>, ElementType_<T3> >::value };
    };
    /*! \endcond */
    //**********************************************************************************************
@@ -226,14 +226,14 @@ class TDMatTDMatMultExpr : public DenseMatrix< TDMatTDMatMultExpr<MT1,MT2>, true
        matrix multiplication, the nested \value will be set to 1, otherwise it will be 0. */
    template< typename T1, typename T2, typename T3 >
    struct UseVectorizedDefaultKernel {
-      enum { value = useOptimizedKernels &&
-                     !IsDiagonal<T2>::value &&
-                     T1::vectorizable && T2::vectorizable && T3::vectorizable &&
-                     IsSame< ElementType_<T1>, ElementType_<T2> >::value &&
-                     IsSame< ElementType_<T1>, ElementType_<T3> >::value &&
-                     HasSIMDAdd< ElementType_<T1>, ElementType_<T1> >::value &&
-                     HasSIMDSub< ElementType_<T1>, ElementType_<T1> >::value &&
-                     HasSIMDMult< ElementType_<T1>, ElementType_<T1> >::value };
+      enum : bool { value = useOptimizedKernels &&
+                            !IsDiagonal<T2>::value &&
+                            T1::vectorizable && T2::vectorizable && T3::vectorizable &&
+                            IsSame< ElementType_<T1>, ElementType_<T2> >::value &&
+                            IsSame< ElementType_<T1>, ElementType_<T3> >::value &&
+                            HasSIMDAdd< ElementType_<T1>, ElementType_<T1> >::value &&
+                            HasSIMDSub< ElementType_<T1>, ElementType_<T1> >::value &&
+                            HasSIMDMult< ElementType_<T1>, ElementType_<T1> >::value };
    };
    /*! \endcond */
    //**********************************************************************************************
@@ -264,15 +264,15 @@ class TDMatTDMatMultExpr : public DenseMatrix< TDMatTDMatMultExpr<MT1,MT2>, true
 
    //**Compilation flags***************************************************************************
    //! Compilation switch for the expression template evaluation strategy.
-   enum { vectorizable = !IsDiagonal<MT1>::value &&
-                         MT1::vectorizable && MT2::vectorizable &&
-                         IsSame<ET1,ET2>::value &&
-                         HasSIMDAdd<ET1,ET1>::value &&
-                         HasSIMDMult<ET1,ET1>::value };
+   enum : bool { vectorizable = !IsDiagonal<MT1>::value &&
+                                MT1::vectorizable && MT2::vectorizable &&
+                                IsSame<ET1,ET2>::value &&
+                                HasSIMDAdd<ET1,ET1>::value &&
+                                HasSIMDMult<ET1,ET1>::value };
 
    //! Compilation switch for the expression template assignment strategy.
-   enum { smpAssignable = !evaluateLeft  && MT1::smpAssignable &&
-                          !evaluateRight && MT2::smpAssignable };
+   enum : bool { smpAssignable = !evaluateLeft  && MT1::smpAssignable &&
+                                 !evaluateRight && MT2::smpAssignable };
    //**********************************************************************************************
 
    //**SIMD properties*****************************************************************************
@@ -4085,12 +4085,12 @@ class DMatScalarMultExpr< TDMatTDMatMultExpr<MT1,MT2>, ST, true >
 
    //**********************************************************************************************
    //! Compilation switch for the composite type of the left-hand side dense matrix expression.
-   enum { evaluateLeft = IsComputation<MT1>::value || RequiresEvaluation<MT1>::value };
+   enum : bool { evaluateLeft = IsComputation<MT1>::value || RequiresEvaluation<MT1>::value };
    //**********************************************************************************************
 
    //**********************************************************************************************
    //! Compilation switch for the composite type of the right-hand side dense matrix expression.
-   enum { evaluateRight = IsComputation<MT2>::value || RequiresEvaluation<MT2>::value };
+   enum : bool { evaluateRight = IsComputation<MT2>::value || RequiresEvaluation<MT2>::value };
    //**********************************************************************************************
 
    //**********************************************************************************************
@@ -4102,8 +4102,8 @@ class DMatScalarMultExpr< TDMatTDMatMultExpr<MT1,MT2>, ST, true >
        chosen. */
    template< typename T1, typename T2, typename T3 >
    struct CanExploitSymmetry {
-      enum { value = IsRowMajorMatrix<T1>::value &&
-                     ( IsSymmetric<T2>::value || IsSymmetric<T3>::value ) };
+      enum : bool { value = IsRowMajorMatrix<T1>::value &&
+                            ( IsSymmetric<T2>::value || IsSymmetric<T3>::value ) };
    };
    //**********************************************************************************************
 
@@ -4114,8 +4114,8 @@ class DMatScalarMultExpr< TDMatTDMatMultExpr<MT1,MT2>, ST, true >
        evaluation, the nested \value will be set to 1, otherwise it will be 0. */
    template< typename T1, typename T2, typename T3 >
    struct IsEvaluationRequired {
-      enum { value = ( evaluateLeft || evaluateRight ) &&
-                     !CanExploitSymmetry<T1,T2,T3>::value };
+      enum : bool { value = ( evaluateLeft || evaluateRight ) &&
+                            !CanExploitSymmetry<T1,T2,T3>::value };
    };
    //**********************************************************************************************
 
@@ -4125,18 +4125,18 @@ class DMatScalarMultExpr< TDMatTDMatMultExpr<MT1,MT2>, ST, true >
        kernel, the nested \a value will be set to 1, otherwise it will be 0. */
    template< typename T1, typename T2, typename T3, typename T4 >
    struct UseBlasKernel {
-      enum { value = BLAZE_BLAS_MODE &&
-                     HasMutableDataAccess<T1>::value &&
-                     HasConstDataAccess<T2>::value &&
-                     HasConstDataAccess<T3>::value &&
-                     !IsDiagonal<T2>::value && !IsDiagonal<T3>::value &&
-                     T1::vectorizable && T2::vectorizable && T3::vectorizable &&
-                     IsBlasCompatible< ElementType_<T1> >::value &&
-                     IsBlasCompatible< ElementType_<T2> >::value &&
-                     IsBlasCompatible< ElementType_<T3> >::value &&
-                     IsSame< ElementType_<T1>, ElementType_<T2> >::value &&
-                     IsSame< ElementType_<T1>, ElementType_<T3> >::value &&
-                     !( IsBuiltin< ElementType_<T1> >::value && IsComplex<T4>::value ) };
+      enum : bool { value = BLAZE_BLAS_MODE &&
+                            HasMutableDataAccess<T1>::value &&
+                            HasConstDataAccess<T2>::value &&
+                            HasConstDataAccess<T3>::value &&
+                            !IsDiagonal<T2>::value && !IsDiagonal<T3>::value &&
+                            T1::vectorizable && T2::vectorizable && T3::vectorizable &&
+                            IsBlasCompatible< ElementType_<T1> >::value &&
+                            IsBlasCompatible< ElementType_<T2> >::value &&
+                            IsBlasCompatible< ElementType_<T3> >::value &&
+                            IsSame< ElementType_<T1>, ElementType_<T2> >::value &&
+                            IsSame< ElementType_<T1>, ElementType_<T3> >::value &&
+                            !( IsBuiltin< ElementType_<T1> >::value && IsComplex<T4>::value ) };
    };
    //**********************************************************************************************
 
@@ -4146,15 +4146,15 @@ class DMatScalarMultExpr< TDMatTDMatMultExpr<MT1,MT2>, ST, true >
        matrix multiplication, the nested \value will be set to 1, otherwise it will be 0. */
    template< typename T1, typename T2, typename T3, typename T4 >
    struct UseVectorizedDefaultKernel {
-      enum { value = useOptimizedKernels &&
-                     !IsDiagonal<T2>::value &&
-                     T1::vectorizable && T2::vectorizable && T3::vectorizable &&
-                     IsSame< ElementType_<T1>, ElementType_<T2> >::value &&
-                     IsSame< ElementType_<T1>, ElementType_<T3> >::value &&
-                     IsSame< ElementType_<T1>, T4>::value &&
-                     HasSIMDAdd< ElementType_<T1>, ElementType_<T1> >::value &&
-                     HasSIMDSub< ElementType_<T1>, ElementType_<T1> >::value &&
-                     HasSIMDMult< ElementType_<T1>, ElementType_<T1> >::value };
+      enum : bool { value = useOptimizedKernels &&
+                            !IsDiagonal<T2>::value &&
+                            T1::vectorizable && T2::vectorizable && T3::vectorizable &&
+                            IsSame< ElementType_<T1>, ElementType_<T2> >::value &&
+                            IsSame< ElementType_<T1>, ElementType_<T3> >::value &&
+                            IsSame< ElementType_<T1>, T4>::value &&
+                            HasSIMDAdd< ElementType_<T1>, ElementType_<T1> >::value &&
+                            HasSIMDSub< ElementType_<T1>, ElementType_<T1> >::value &&
+                            HasSIMDMult< ElementType_<T1>, ElementType_<T1> >::value };
    };
    //**********************************************************************************************
 
@@ -4184,16 +4184,16 @@ class DMatScalarMultExpr< TDMatTDMatMultExpr<MT1,MT2>, ST, true >
 
    //**Compilation flags***************************************************************************
    //! Compilation switch for the expression template evaluation strategy.
-   enum { vectorizable = !IsDiagonal<MT1>::value &&
-                         MT1::vectorizable && MT2::vectorizable &&
-                         IsSame<ET1,ET2>::value &&
-                         IsSame<ET1,ST>::value &&
-                         HasSIMDAdd<ET1,ET1>::value &&
-                         HasSIMDMult<ET1,ET1>::value };
+   enum : bool { vectorizable = !IsDiagonal<MT1>::value &&
+                                MT1::vectorizable && MT2::vectorizable &&
+                                IsSame<ET1,ET2>::value &&
+                                IsSame<ET1,ST>::value &&
+                                HasSIMDAdd<ET1,ET1>::value &&
+                                HasSIMDMult<ET1,ET1>::value };
 
    //! Compilation switch for the expression template assignment strategy.
-   enum { smpAssignable = !evaluateLeft  && MT1::smpAssignable &&
-                          !evaluateRight && MT2::smpAssignable };
+   enum : bool { smpAssignable = !evaluateLeft  && MT1::smpAssignable &&
+                                 !evaluateRight && MT2::smpAssignable };
    //**********************************************************************************************
 
    //**SIMD properties*****************************************************************************

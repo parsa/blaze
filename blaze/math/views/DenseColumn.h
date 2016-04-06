@@ -382,10 +382,10 @@ class DenseColumn : public DenseVector< DenseColumn<MT,SO,SF>, false >
 
    //**Compilation flags***************************************************************************
    //! Compilation switch for the expression template evaluation strategy.
-   enum { vectorizable = MT::vectorizable };
+   enum : bool { vectorizable = MT::vectorizable };
 
    //! Compilation switch for the expression template assignment strategy.
-   enum { smpAssignable = MT::smpAssignable };
+   enum : bool { smpAssignable = MT::smpAssignable };
    //**********************************************************************************************
 
    //**Constructors********************************************************************************
@@ -455,9 +455,9 @@ class DenseColumn : public DenseVector< DenseColumn<MT,SO,SF>, false >
    //! Helper structure for the explicit application of the SFINAE principle.
    template< typename VT >
    struct VectorizedAssign {
-      enum { value = useOptimizedKernels &&
-                     vectorizable && VT::vectorizable &&
-                     IsSame< ElementType, ElementType_<VT> >::value };
+      enum : bool { value = useOptimizedKernels &&
+                            vectorizable && VT::vectorizable &&
+                            IsSame< ElementType, ElementType_<VT> >::value };
    };
    /*! \endcond */
    //**********************************************************************************************
@@ -467,10 +467,10 @@ class DenseColumn : public DenseVector< DenseColumn<MT,SO,SF>, false >
    //! Helper structure for the explicit application of the SFINAE principle.
    template< typename VT >
    struct VectorizedAddAssign {
-      enum { value = useOptimizedKernels &&
-                     vectorizable && VT::vectorizable &&
-                     IsSame< ElementType, ElementType_<VT> >::value &&
-                     HasSIMDAdd< ElementType, ElementType >::value };
+      enum : bool { value = useOptimizedKernels &&
+                            vectorizable && VT::vectorizable &&
+                            IsSame< ElementType, ElementType_<VT> >::value &&
+                            HasSIMDAdd< ElementType, ElementType >::value };
    };
    /*! \endcond */
    //**********************************************************************************************
@@ -480,10 +480,10 @@ class DenseColumn : public DenseVector< DenseColumn<MT,SO,SF>, false >
    //! Helper structure for the explicit application of the SFINAE principle.
    template< typename VT >
    struct VectorizedSubAssign {
-      enum { value = useOptimizedKernels &&
-                     vectorizable && VT::vectorizable &&
-                     IsSame< ElementType, ElementType_<VT> >::value &&
-                     HasSIMDSub< ElementType, ElementType >::value };
+      enum : bool { value = useOptimizedKernels &&
+                            vectorizable && VT::vectorizable &&
+                            IsSame< ElementType, ElementType_<VT> >::value &&
+                            HasSIMDSub< ElementType, ElementType >::value };
    };
    /*! \endcond */
    //**********************************************************************************************
@@ -493,10 +493,10 @@ class DenseColumn : public DenseVector< DenseColumn<MT,SO,SF>, false >
    //! Helper structure for the explicit application of the SFINAE principle.
    template< typename VT >
    struct VectorizedMultAssign {
-      enum { value = useOptimizedKernels &&
-                     vectorizable && VT::vectorizable &&
-                     IsSame< ElementType, ElementType_<VT> >::value &&
-                     HasSIMDMult< ElementType, ElementType >::value };
+      enum : bool { value = useOptimizedKernels &&
+                            vectorizable && VT::vectorizable &&
+                            IsSame< ElementType, ElementType_<VT> >::value &&
+                            HasSIMDMult< ElementType, ElementType >::value };
    };
    /*! \endcond */
    //**********************************************************************************************
@@ -2452,10 +2452,10 @@ class DenseColumn<MT,false,false> : public DenseVector< DenseColumn<MT,false,fal
 
    //**Compilation flags***************************************************************************
    //! Compilation switch for the expression template evaluation strategy.
-   enum { vectorizable = 0 };
+   enum : bool { vectorizable = 0 };
 
    //! Compilation switch for the expression template assignment strategy.
-   enum { smpAssignable = MT::smpAssignable };
+   enum : bool { smpAssignable = MT::smpAssignable };
    //**********************************************************************************************
 
    //**Constructors********************************************************************************
@@ -3801,10 +3801,10 @@ class DenseColumn<MT,false,true> : public DenseVector< DenseColumn<MT,false,true
 
    //**Compilation flags***************************************************************************
    //! Compilation switch for the expression template evaluation strategy.
-   enum { vectorizable = MT::vectorizable };
+   enum : bool { vectorizable = MT::vectorizable };
 
    //! Compilation switch for the expression template assignment strategy.
-   enum { smpAssignable = MT::smpAssignable };
+   enum : bool { smpAssignable = MT::smpAssignable };
    //**********************************************************************************************
 
    //**Constructors********************************************************************************
@@ -3873,9 +3873,9 @@ class DenseColumn<MT,false,true> : public DenseVector< DenseColumn<MT,false,true
    //! Helper structure for the explicit application of the SFINAE principle.
    template< typename VT >
    struct VectorizedAssign {
-      enum { value = useOptimizedKernels &&
-                     vectorizable && VT::vectorizable &&
-                     IsSame< ElementType, ElementType_<VT> >::value };
+      enum : bool { value = useOptimizedKernels &&
+                            vectorizable && VT::vectorizable &&
+                            IsSame< ElementType, ElementType_<VT> >::value };
    };
    //**********************************************************************************************
 
@@ -3883,10 +3883,10 @@ class DenseColumn<MT,false,true> : public DenseVector< DenseColumn<MT,false,true
    //! Helper structure for the explicit application of the SFINAE principle.
    template< typename VT >
    struct VectorizedAddAssign {
-      enum { value = useOptimizedKernels &&
-                     vectorizable && VT::vectorizable &&
-                     IsSame< ElementType, ElementType_<VT> >::value &&
-                     HasSIMDAdd< ElementType, ElementType >::value };
+      enum : bool { value = useOptimizedKernels &&
+                            vectorizable && VT::vectorizable &&
+                            IsSame< ElementType, ElementType_<VT> >::value &&
+                            HasSIMDAdd< ElementType, ElementType >::value };
    };
    //**********************************************************************************************
 
@@ -3894,10 +3894,10 @@ class DenseColumn<MT,false,true> : public DenseVector< DenseColumn<MT,false,true
    //! Helper structure for the explicit application of the SFINAE principle.
    template< typename VT >
    struct VectorizedSubAssign {
-      enum { value = useOptimizedKernels &&
-                     vectorizable && VT::vectorizable &&
-                     IsSame< ElementType, ElementType_<VT> >::value &&
-                     HasSIMDSub< ElementType, ElementType >::value };
+      enum : bool { value = useOptimizedKernels &&
+                            vectorizable && VT::vectorizable &&
+                            IsSame< ElementType, ElementType_<VT> >::value &&
+                            HasSIMDSub< ElementType, ElementType >::value };
    };
    //**********************************************************************************************
 
@@ -3905,10 +3905,10 @@ class DenseColumn<MT,false,true> : public DenseVector< DenseColumn<MT,false,true
    //! Helper structure for the explicit application of the SFINAE principle.
    template< typename VT >
    struct VectorizedMultAssign {
-      enum { value = useOptimizedKernels &&
-                     vectorizable && VT::vectorizable &&
-                     IsSame< ElementType, ElementType_<VT> >::value &&
-                     HasSIMDMult< ElementType, ElementType >::value };
+      enum : bool { value = useOptimizedKernels &&
+                            vectorizable && VT::vectorizable &&
+                            IsSame< ElementType, ElementType_<VT> >::value &&
+                            HasSIMDMult< ElementType, ElementType >::value };
    };
    //**********************************************************************************************
 

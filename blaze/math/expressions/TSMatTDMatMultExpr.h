@@ -140,12 +140,12 @@ class TSMatTDMatMultExpr : public DenseMatrix< TSMatTDMatMultExpr<MT1,MT2>, true
 
    //**********************************************************************************************
    //! Compilation switch for the composite type of the left-hand side sparse matrix expression.
-   enum { evaluateLeft = IsComputation<MT1>::value || RequiresEvaluation<MT1>::value };
+   enum : bool { evaluateLeft = IsComputation<MT1>::value || RequiresEvaluation<MT1>::value };
    //**********************************************************************************************
 
    //**********************************************************************************************
    //! Compilation switch for the composite type of the right-hand side dense matrix expression.
-   enum { evaluateRight = IsComputation<MT2>::value || RequiresEvaluation<MT2>::value };
+   enum : bool { evaluateRight = IsComputation<MT2>::value || RequiresEvaluation<MT2>::value };
    //**********************************************************************************************
 
    //**********************************************************************************************
@@ -157,7 +157,7 @@ class TSMatTDMatMultExpr : public DenseMatrix< TSMatTDMatMultExpr<MT1,MT2>, true
        \a value is set to 0 and the default strategy is chosen. */
    template< typename T1, typename T2, typename T3 >
    struct CanExploitSymmetry {
-      enum { value = ( IsSymmetric<T2>::value || IsSymmetric<T3>::value ) };
+      enum : bool { value = ( IsSymmetric<T2>::value || IsSymmetric<T3>::value ) };
    };
    /*! \endcond */
    //**********************************************************************************************
@@ -170,8 +170,8 @@ class TSMatTDMatMultExpr : public DenseMatrix< TSMatTDMatMultExpr<MT1,MT2>, true
        evaluation, the nested \value will be set to 1, otherwise it will be 0. */
    template< typename T1, typename T2, typename T3 >
    struct IsEvaluationRequired {
-      enum { value = ( evaluateLeft || evaluateRight ) &&
-                     !CanExploitSymmetry<T1,T2,T3>::value };
+      enum : bool { value = ( evaluateLeft || evaluateRight ) &&
+                            !CanExploitSymmetry<T1,T2,T3>::value };
    };
    /*! \endcond */
    //**********************************************************************************************
@@ -184,10 +184,10 @@ class TSMatTDMatMultExpr : public DenseMatrix< TSMatTDMatMultExpr<MT1,MT2>, true
        will be 0. */
    template< typename T1, typename T2, typename T3 >
    struct UseOptimizedKernel {
-      enum { value = useOptimizedKernels &&
-                     !IsDiagonal<T3>::value &&
-                     !IsResizable< ElementType_<T1> >::value &&
-                     !IsResizable<ET1>::value };
+      enum : bool { value = useOptimizedKernels &&
+                            !IsDiagonal<T3>::value &&
+                            !IsResizable< ElementType_<T1> >::value &&
+                            !IsResizable<ET1>::value };
    };
    /*! \endcond */
    //**********************************************************************************************
@@ -199,7 +199,7 @@ class TSMatTDMatMultExpr : public DenseMatrix< TSMatTDMatMultExpr<MT1,MT2>, true
        resizable, the nested \value will be set to 1, otherwise it will be 0. */
    template< typename T1, typename T2, typename T3 >
    struct UseDefaultKernel {
-      enum { value = !UseOptimizedKernel<T1,T2,T3>::value };
+      enum : bool { value = !UseOptimizedKernel<T1,T2,T3>::value };
    };
    /*! \endcond */
    //**********************************************************************************************
@@ -229,11 +229,11 @@ class TSMatTDMatMultExpr : public DenseMatrix< TSMatTDMatMultExpr<MT1,MT2>, true
 
    //**Compilation flags***************************************************************************
    //! Compilation switch for the expression template evaluation strategy.
-   enum { vectorizable = 0 };
+   enum : bool { vectorizable = 0 };
 
    //! Compilation switch for the expression template assignment strategy.
-   enum { smpAssignable = !evaluateLeft  && MT1::smpAssignable &&
-                          !evaluateRight && MT2::smpAssignable };
+   enum : bool { smpAssignable = !evaluateLeft  && MT1::smpAssignable &&
+                                 !evaluateRight && MT2::smpAssignable };
    //**********************************************************************************************
 
    //**Constructor*********************************************************************************

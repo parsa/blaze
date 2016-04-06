@@ -90,7 +90,7 @@ class SparseMatrixProxy : public SparseMatrix< PT, IsColumnMajorMatrix<MT>::valu
 
    //**Compilation flags***************************************************************************
    //! Compilation flag for SMP assignments.
-   enum { smpAssignable = MT::smpAssignable };
+   enum : bool { smpAssignable = MT::smpAssignable };
    //**********************************************************************************************
 
    //**Data access functions***********************************************************************

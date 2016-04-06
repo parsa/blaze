@@ -125,7 +125,7 @@ class DVecScalarDivExpr : public DenseVector< DVecScalarDivExpr<VT,ST,TF>, TF >
        or matrix, \a returnExpr will be set to \a false and the subscript operator will
        return it's result by value. Otherwise \a returnExpr will be set to \a true and
        the subscript operator may return it's result as an expression. */
-   enum { returnExpr = !IsTemporary<RN>::value };
+   enum : bool { returnExpr = !IsTemporary<RN>::value };
 
    //! Expression return type for the subscript operator.
    typedef DivExprTrait_<RN,ST>  ExprReturnType;
@@ -139,13 +139,13 @@ class DVecScalarDivExpr : public DenseVector< DVecScalarDivExpr<VT,ST,TF>, TF >
        evaluation, \a useAssign will be set to 1 and the division expression will be evaluated
        via the \a assign function family. Otherwise \a useAssign will be set to 0 and the
        expression will be evaluated via the subscript operator. */
-   enum { useAssign = IsComputation<VT>::value && RequiresEvaluation<VT>::value };
+   enum : bool { useAssign = IsComputation<VT>::value && RequiresEvaluation<VT>::value };
 
    /*! \cond BLAZE_INTERNAL */
    //! Helper structure for the explicit application of the SFINAE principle.
    template< typename VT2 >
    struct UseAssign {
-      enum { value = useAssign };
+      enum : bool { value = useAssign };
    };
    /*! \endcond */
    //**********************************************************************************************
@@ -160,7 +160,7 @@ class DVecScalarDivExpr : public DenseVector< DVecScalarDivExpr<VT,ST,TF>, TF >
        \a value is set to 0 and the default strategy is chosen. */
    template< typename VT2 >
    struct UseSMPAssign {
-      enum { value = ( !VT2::smpAssignable || !VT::smpAssignable ) && useAssign };
+      enum : bool { value = ( !VT2::smpAssignable || !VT::smpAssignable ) && useAssign };
    };
    /*! \endcond */
    //**********************************************************************************************
@@ -431,14 +431,14 @@ class DVecScalarDivExpr : public DenseVector< DVecScalarDivExpr<VT,ST,TF>, TF >
 
    //**Compilation flags***************************************************************************
    //! Compilation switch for the expression template evaluation strategy.
-   enum { vectorizable = VT::vectorizable &&
-                         IsNumeric<ET>::value &&
-                         ( IsSame<ET,RightOperand>::value ||
-                           IsSame<UnderlyingElement_<ET>,RightOperand>::value ) &&
-                         HasSIMDDiv<ET,RightOperand>::value };
+   enum : bool { vectorizable = VT::vectorizable &&
+                                IsNumeric<ET>::value &&
+                                ( IsSame<ET,RightOperand>::value ||
+                                  IsSame<UnderlyingElement_<ET>,RightOperand>::value ) &&
+                                HasSIMDDiv<ET,RightOperand>::value };
 
    //! Compilation switch for the expression template assignment strategy.
-   enum { smpAssignable = VT::smpAssignable };
+   enum : bool { smpAssignable = VT::smpAssignable };
    //**********************************************************************************************
 
    //**SIMD properties*****************************************************************************

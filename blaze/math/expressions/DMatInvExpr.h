@@ -116,10 +116,10 @@ class DMatInvExpr : public DenseMatrix< DMatInvExpr<MT,SO>, SO >
 
    //**Compilation flags***************************************************************************
    //! Compilation switch for the expression template evaluation strategy.
-   enum { vectorizable = 0 };
+   enum : bool { vectorizable = 0 };
 
    //! Compilation switch for the expression template assignment strategy.
-   enum { smpAssignable = 0 };
+   enum : bool { smpAssignable = 0 };
    //**********************************************************************************************
 
    //**Constructor*********************************************************************************

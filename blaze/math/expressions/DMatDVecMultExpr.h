@@ -137,13 +137,13 @@ class DMatDVecMultExpr : public DenseVector< DMatDVecMultExpr<MT,VT>, false >
 
    //**********************************************************************************************
    //! Compilation switch for the composite type of the left-hand side dense matrix expression.
-   enum { evaluateMatrix = ( IsComputation<MT>::value && IsSame<MET,VET>::value &&
-                             IsBlasCompatible<MET>::value ) || RequiresEvaluation<MT>::value };
+   enum : bool { evaluateMatrix = ( IsComputation<MT>::value && IsSame<MET,VET>::value &&
+                                    IsBlasCompatible<MET>::value ) || RequiresEvaluation<MT>::value };
    //**********************************************************************************************
 
    //**********************************************************************************************
    //! Compilation switch for the composite type of the right-hand side dense vector expression.
-   enum { evaluateVector = IsComputation<VT>::value || RequiresEvaluation<VT>::value };
+   enum : bool { evaluateVector = IsComputation<VT>::value || RequiresEvaluation<VT>::value };
    //**********************************************************************************************
 
    //**********************************************************************************************
@@ -154,7 +154,7 @@ class DMatDVecMultExpr : public DenseVector< DMatDVecMultExpr<MT,VT>, false >
        evaluation, the nested \a value will be set to 1, otherwise it will be 0. */
    template< typename T1 >
    struct UseSMPAssign {
-      enum { value = ( evaluateMatrix || evaluateVector ) };
+      enum : bool { value = ( evaluateMatrix || evaluateVector ) };
    };
    /*! \endcond */
    //**********************************************************************************************
@@ -166,7 +166,7 @@ class DMatDVecMultExpr : public DenseVector< DMatDVecMultExpr<MT,VT>, false >
        the nested \a value will be set to 1, otherwise it will be 0. */
    template< typename T1, typename T2, typename T3 >
    struct UseBlasKernel {
-      enum { value = BLAZE_BLAS_MODE &&
+      enum : bool { value = BLAZE_BLAS_MODE &&
                      HasMutableDataAccess<T1>::value &&
                      HasConstDataAccess<T2>::value &&
                      HasConstDataAccess<T3>::value &&
@@ -189,13 +189,13 @@ class DMatDVecMultExpr : public DenseVector< DMatDVecMultExpr<MT,VT>, false >
        otherwise it will be 0. */
    template< typename T1, typename T2, typename T3 >
    struct UseVectorizedDefaultKernel {
-      enum { value = useOptimizedKernels &&
-                     !IsDiagonal<T2>::value &&
-                     T1::vectorizable && T2::vectorizable && T3::vectorizable &&
-                     IsSame< ElementType_<T1>, ElementType_<T2> >::value &&
-                     IsSame< ElementType_<T1>, ElementType_<T3> >::value &&
-                     HasSIMDAdd< ElementType_<T1>, ElementType_<T1> >::value &&
-                     HasSIMDMult< ElementType_<T1>, ElementType_<T1> >::value };
+      enum : bool { value = useOptimizedKernels &&
+                            !IsDiagonal<T2>::value &&
+                            T1::vectorizable && T2::vectorizable && T3::vectorizable &&
+                            IsSame< ElementType_<T1>, ElementType_<T2> >::value &&
+                            IsSame< ElementType_<T1>, ElementType_<T3> >::value &&
+                            HasSIMDAdd< ElementType_<T1>, ElementType_<T1> >::value &&
+                            HasSIMDMult< ElementType_<T1>, ElementType_<T1> >::value };
    };
    /*! \endcond */
    //**********************************************************************************************
@@ -225,15 +225,15 @@ class DMatDVecMultExpr : public DenseVector< DMatDVecMultExpr<MT,VT>, false >
 
    //**Compilation flags***************************************************************************
    //! Compilation switch for the expression template evaluation strategy.
-   enum { vectorizable = !IsDiagonal<MT>::value &&
-                         MT::vectorizable && VT::vectorizable &&
-                         IsSame<MET,VET>::value &&
-                         HasSIMDAdd<MET,MET>::value &&
-                         HasSIMDMult<MET,MET>::value };
+   enum : bool { vectorizable = !IsDiagonal<MT>::value &&
+                                MT::vectorizable && VT::vectorizable &&
+                                IsSame<MET,VET>::value &&
+                                HasSIMDAdd<MET,MET>::value &&
+                                HasSIMDMult<MET,MET>::value };
 
    //! Compilation switch for the expression template assignment strategy.
-   enum { smpAssignable = !evaluateMatrix && MT::smpAssignable &&
-                          !evaluateVector && VT::smpAssignable };
+   enum : bool { smpAssignable = !evaluateMatrix && MT::smpAssignable &&
+                                 !evaluateVector && VT::smpAssignable };
    //**********************************************************************************************
 
    //**SIMD properties*****************************************************************************
@@ -2680,13 +2680,13 @@ class DVecScalarMultExpr< DMatDVecMultExpr<MT,VT>, ST, false >
 
    //**********************************************************************************************
    //! Compilation switch for the composite type of the right-hand side dense matrix expression.
-   enum { evaluateMatrix = ( IsComputation<MT>::value && IsSame<MET,VET>::value &&
-                             IsBlasCompatible<MET>::value ) || RequiresEvaluation<MT>::value };
+   enum : bool { evaluateMatrix = ( IsComputation<MT>::value && IsSame<MET,VET>::value &&
+                                    IsBlasCompatible<MET>::value ) || RequiresEvaluation<MT>::value };
    //**********************************************************************************************
 
    //**********************************************************************************************
    //! Compilation switch for the composite type of the right-hand side dense vector expression.
-   enum { evaluateVector = IsComputation<VT>::value || RequiresEvaluation<MT>::value };
+   enum : bool { evaluateVector = IsComputation<VT>::value || RequiresEvaluation<MT>::value };
    //**********************************************************************************************
 
    //**********************************************************************************************
@@ -2696,7 +2696,7 @@ class DVecScalarMultExpr< DMatDVecMultExpr<MT,VT>, ST, false >
        evaluation, the nested \a value will be set to 1, otherwise it will be 0. */
    template< typename T1 >
    struct UseSMPAssign {
-      enum { value = ( evaluateMatrix || evaluateVector ) };
+      enum : bool { value = ( evaluateMatrix || evaluateVector ) };
    };
    //**********************************************************************************************
 
@@ -2706,18 +2706,18 @@ class DVecScalarMultExpr< DMatDVecMultExpr<MT,VT>, ST, false >
        for a BLAS kernel, the nested \a value will be set to 1, otherwise it will be 0. */
    template< typename T1, typename T2, typename T3, typename T4 >
    struct UseBlasKernel {
-      enum { value = BLAZE_BLAS_MODE &&
-                     HasMutableDataAccess<T1>::value &&
-                     HasConstDataAccess<T2>::value &&
-                     HasConstDataAccess<T3>::value &&
-                     !IsDiagonal<T2>::value &&
-                     T1::vectorizable && T2::vectorizable && T3::vectorizable &&
-                     IsBlasCompatible< ElementType_<T1> >::value &&
-                     IsBlasCompatible< ElementType_<T2> >::value &&
-                     IsBlasCompatible< ElementType_<T3> >::value &&
-                     IsSame< ElementType_<T1>, ElementType_<T2> >::value &&
-                     IsSame< ElementType_<T1>, ElementType_<T3> >::value &&
-                     !( IsBuiltin< ElementType_<T1> >::value && IsComplex<T4>::value ) };
+      enum : bool { value = BLAZE_BLAS_MODE &&
+                            HasMutableDataAccess<T1>::value &&
+                            HasConstDataAccess<T2>::value &&
+                            HasConstDataAccess<T3>::value &&
+                            !IsDiagonal<T2>::value &&
+                            T1::vectorizable && T2::vectorizable && T3::vectorizable &&
+                            IsBlasCompatible< ElementType_<T1> >::value &&
+                            IsBlasCompatible< ElementType_<T2> >::value &&
+                            IsBlasCompatible< ElementType_<T3> >::value &&
+                            IsSame< ElementType_<T1>, ElementType_<T2> >::value &&
+                            IsSame< ElementType_<T1>, ElementType_<T3> >::value &&
+                            !( IsBuiltin< ElementType_<T1> >::value && IsComplex<T4>::value ) };
    };
    //**********************************************************************************************
 
@@ -2728,14 +2728,14 @@ class DVecScalarMultExpr< DMatDVecMultExpr<MT,VT>, ST, false >
        \a value will be set to 1, otherwise it will be 0. */
    template< typename T1, typename T2, typename T3, typename T4 >
    struct UseVectorizedDefaultKernel {
-      enum { value = useOptimizedKernels &&
-                     !IsDiagonal<T2>::value &&
-                     T1::vectorizable && T2::vectorizable && T3::vectorizable &&
-                     IsSame< ElementType_<T1>, ElementType_<T2> >::value &&
-                     IsSame< ElementType_<T1>, ElementType_<T3> >::value &&
-                     IsSame< ElementType_<T1>, T4 >::value &&
-                     HasSIMDAdd< ElementType_<T1>, ElementType_<T1> >::value &&
-                     HasSIMDMult< ElementType_<T1>, ElementType_<T1> >::value };
+      enum : bool { value = useOptimizedKernels &&
+                            !IsDiagonal<T2>::value &&
+                            T1::vectorizable && T2::vectorizable && T3::vectorizable &&
+                            IsSame< ElementType_<T1>, ElementType_<T2> >::value &&
+                            IsSame< ElementType_<T1>, ElementType_<T3> >::value &&
+                            IsSame< ElementType_<T1>, T4 >::value &&
+                            HasSIMDAdd< ElementType_<T1>, ElementType_<T1> >::value &&
+                            HasSIMDMult< ElementType_<T1>, ElementType_<T1> >::value };
    };
    //**********************************************************************************************
 
@@ -2764,16 +2764,16 @@ class DVecScalarMultExpr< DMatDVecMultExpr<MT,VT>, ST, false >
 
    //**Compilation flags***************************************************************************
    //! Compilation switch for the expression template evaluation strategy.
-   enum { vectorizable = !IsDiagonal<MT>::value &&
-                         MT::vectorizable && VT::vectorizable &&
-                         IsSame<MET,VET>::value &&
-                         IsSame<MET,ST>::value &&
-                         HasSIMDAdd<MET,MET>::value &&
-                         HasSIMDMult<MET,MET>::value };
+   enum : bool { vectorizable = !IsDiagonal<MT>::value &&
+                                MT::vectorizable && VT::vectorizable &&
+                                IsSame<MET,VET>::value &&
+                                IsSame<MET,ST>::value &&
+                                HasSIMDAdd<MET,MET>::value &&
+                                HasSIMDMult<MET,MET>::value };
 
    //! Compilation switch for the expression template assignment strategy.
-   enum { smpAssignable = !evaluateMatrix && MT::smpAssignable &&
-                          !evaluateVector && VT::smpAssignable };
+   enum : bool { smpAssignable = !evaluateMatrix && MT::smpAssignable &&
+                                 !evaluateVector && VT::smpAssignable };
    //**********************************************************************************************
 
    //**SIMD properties*****************************************************************************

@@ -141,12 +141,12 @@ class SMatDMatMultExpr : public DenseMatrix< SMatDMatMultExpr<MT1,MT2>, false >
 
    //**********************************************************************************************
    //! Compilation switch for the composite type of the left-hand side sparse matrix expression.
-   enum { evaluateLeft = IsComputation<MT1>::value || RequiresEvaluation<MT1>::value };
+   enum : bool { evaluateLeft = IsComputation<MT1>::value || RequiresEvaluation<MT1>::value };
    //**********************************************************************************************
 
    //**********************************************************************************************
    //! Compilation switch for the composite type of the right-hand side dense matrix expression.
-   enum { evaluateRight = IsComputation<MT2>::value || RequiresEvaluation<MT2>::value };
+   enum : bool { evaluateRight = IsComputation<MT2>::value || RequiresEvaluation<MT2>::value };
    //**********************************************************************************************
 
    //**********************************************************************************************
@@ -157,7 +157,7 @@ class SMatDMatMultExpr : public DenseMatrix< SMatDMatMultExpr<MT1,MT2>, false >
        evaluation, the nested \value will be set to 1, otherwise it will be 0. */
    template< typename T1, typename T2, typename T3 >
    struct IsEvaluationRequired {
-      enum { value = ( evaluateLeft || evaluateRight ) };
+      enum : bool { value = ( evaluateLeft || evaluateRight ) };
    };
    /*! \endcond */
    //**********************************************************************************************
@@ -169,15 +169,15 @@ class SMatDMatMultExpr : public DenseMatrix< SMatDMatMultExpr<MT1,MT2>, false >
        matrix multiplication, the nested \value will be set to 1, otherwise it will be 0. */
    template< typename T1, typename T2, typename T3 >
    struct UseVectorizedKernel {
-      enum { value = useOptimizedKernels &&
-                     !IsDiagonal<T3>::value &&
-                     T1::vectorizable && T3::vectorizable &&
-                     IsRowMajorMatrix<T1>::value &&
-                     IsSame< ElementType_<T1>, ElementType_<T2> >::value &&
-                     IsSame< ElementType_<T1>, ElementType_<T3> >::value &&
-                     HasSIMDAdd< ElementType_<T1>, ElementType_<T1> >::value &&
-                     HasSIMDSub< ElementType_<T1>, ElementType_<T1> >::value &&
-                     HasSIMDMult< ElementType_<T1>, ElementType_<T1> >::value };
+      enum : bool { value = useOptimizedKernels &&
+                            !IsDiagonal<T3>::value &&
+                            T1::vectorizable && T3::vectorizable &&
+                            IsRowMajorMatrix<T1>::value &&
+                            IsSame< ElementType_<T1>, ElementType_<T2> >::value &&
+                            IsSame< ElementType_<T1>, ElementType_<T3> >::value &&
+                            HasSIMDAdd< ElementType_<T1>, ElementType_<T1> >::value &&
+                            HasSIMDSub< ElementType_<T1>, ElementType_<T1> >::value &&
+                            HasSIMDMult< ElementType_<T1>, ElementType_<T1> >::value };
    };
    /*! \endcond */
    //**********************************************************************************************
@@ -190,11 +190,11 @@ class SMatDMatMultExpr : public DenseMatrix< SMatDMatMultExpr<MT1,MT2>, false >
        it will be 0. */
    template< typename T1, typename T2, typename T3 >
    struct UseOptimizedKernel {
-      enum { value = useOptimizedKernels &&
-                     !UseVectorizedKernel<T1,T2,T3>::value &&
-                     !IsDiagonal<T3>::value &&
-                     !IsResizable< ElementType_<T1> >::value &&
-                     !IsResizable<ET1>::value };
+      enum : bool { value = useOptimizedKernels &&
+                            !UseVectorizedKernel<T1,T2,T3>::value &&
+                            !IsDiagonal<T3>::value &&
+                            !IsResizable< ElementType_<T1> >::value &&
+                            !IsResizable<ET1>::value };
    };
    /*! \endcond */
    //**********************************************************************************************
@@ -206,8 +206,8 @@ class SMatDMatMultExpr : public DenseMatrix< SMatDMatMultExpr<MT1,MT2>, false >
        be set to 1, otherwise it will be 0. */
    template< typename T1, typename T2, typename T3 >
    struct UseDefaultKernel {
-      enum { value = !UseVectorizedKernel<T1,T2,T3>::value &&
-                     !UseOptimizedKernel<T1,T2,T3>::value };
+      enum : bool { value = !UseVectorizedKernel<T1,T2,T3>::value &&
+                            !UseOptimizedKernel<T1,T2,T3>::value };
    };
    /*! \endcond */
    //**********************************************************************************************
@@ -238,15 +238,15 @@ class SMatDMatMultExpr : public DenseMatrix< SMatDMatMultExpr<MT1,MT2>, false >
 
    //**Compilation flags***************************************************************************
    //! Compilation switch for the expression template evaluation strategy.
-   enum { vectorizable = !IsDiagonal<MT2>::value &&
-                         MT2::vectorizable &&
-                         IsSame<ET1,ET2>::value &&
-                         HasSIMDAdd<ET1,ET1>::value &&
-                         HasSIMDMult<ET1,ET1>::value };
+   enum : bool { vectorizable = !IsDiagonal<MT2>::value &&
+                                MT2::vectorizable &&
+                                IsSame<ET1,ET2>::value &&
+                                HasSIMDAdd<ET1,ET1>::value &&
+                                HasSIMDMult<ET1,ET1>::value };
 
    //! Compilation switch for the expression template assignment strategy.
-   enum { smpAssignable = !evaluateLeft  && MT1::smpAssignable &&
-                          !evaluateRight && MT2::smpAssignable };
+   enum : bool { smpAssignable = !evaluateLeft  && MT1::smpAssignable &&
+                                 !evaluateRight && MT2::smpAssignable };
    //**********************************************************************************************
 
    //**SIMD properties*****************************************************************************

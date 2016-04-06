@@ -94,10 +94,10 @@ class DenseMatrixProxy : public DenseMatrix< PT, IsColumnMajorMatrix<MT>::value 
 
    //**Compilation flags***************************************************************************
    //! Compilation flag for SIMD optimization.
-   enum { vectorizable = MT::vectorizable };
+   enum : bool { vectorizable = MT::vectorizable };
 
    //! Compilation flag for SMP assignments.
-   enum { smpAssignable = MT::smpAssignable };
+   enum : bool { smpAssignable = MT::smpAssignable };
    //**********************************************************************************************
 
    //**Data access functions***********************************************************************

@@ -204,13 +204,13 @@ class HybridVector : public DenseVector< HybridVector<Type,N,TF>, TF >
        in can be optimized via SIMD operations. In case the element type of the vector is a
        vectorizable data type, the \a vectorizable compilation flag is set to \a true, otherwise
        it is set to \a false. */
-   enum { vectorizable = IsVectorizable<Type>::value };
+   enum : bool { vectorizable = IsVectorizable<Type>::value };
 
    //! Compilation flag for SMP assignments.
    /*! The \a smpAssignable compilation flag indicates whether the vector can be used in SMP
        (shared memory parallel) assignments (both on the left-hand and right-hand side of the
        assignment). */
-   enum { smpAssignable = 0 };
+   enum : bool { smpAssignable = 0 };
    //**********************************************************************************************
 
    //**Constructors********************************************************************************
@@ -310,9 +310,9 @@ class HybridVector : public DenseVector< HybridVector<Type,N,TF>, TF >
    //! Helper structure for the explicit application of the SFINAE principle.
    template< typename VT >
    struct VectorizedAssign {
-      enum { value = useOptimizedKernels &&
-                     vectorizable && VT::vectorizable &&
-                     IsSame< Type, ElementType_<VT> >::value };
+      enum : bool { value = useOptimizedKernels &&
+                            vectorizable && VT::vectorizable &&
+                            IsSame< Type, ElementType_<VT> >::value };
    };
    /*! \endcond */
    //**********************************************************************************************
@@ -322,10 +322,10 @@ class HybridVector : public DenseVector< HybridVector<Type,N,TF>, TF >
    //! Helper structure for the explicit application of the SFINAE principle.
    template< typename VT >
    struct VectorizedAddAssign {
-      enum { value = useOptimizedKernels &&
-                     vectorizable && VT::vectorizable &&
-                     IsSame< Type, ElementType_<VT> >::value &&
-                     HasSIMDAdd<Type,Type>::value };
+      enum : bool { value = useOptimizedKernels &&
+                            vectorizable && VT::vectorizable &&
+                            IsSame< Type, ElementType_<VT> >::value &&
+                            HasSIMDAdd<Type,Type>::value };
    };
    /*! \endcond */
    //**********************************************************************************************
@@ -335,10 +335,10 @@ class HybridVector : public DenseVector< HybridVector<Type,N,TF>, TF >
    //! Helper structure for the explicit application of the SFINAE principle.
    template< typename VT >
    struct VectorizedSubAssign {
-      enum { value = useOptimizedKernels &&
-                     vectorizable && VT::vectorizable &&
-                     IsSame< Type, ElementType_<VT> >::value &&
-                     HasSIMDSub<Type,Type>::value };
+      enum : bool { value = useOptimizedKernels &&
+                            vectorizable && VT::vectorizable &&
+                            IsSame< Type, ElementType_<VT> >::value &&
+                            HasSIMDSub<Type,Type>::value };
    };
    /*! \endcond */
    //**********************************************************************************************
@@ -348,10 +348,10 @@ class HybridVector : public DenseVector< HybridVector<Type,N,TF>, TF >
    //! Helper structure for the explicit application of the SFINAE principle.
    template< typename VT >
    struct VectorizedMultAssign {
-      enum { value = useOptimizedKernels &&
-                     vectorizable && VT::vectorizable &&
-                     IsSame< Type, ElementType_<VT> >::value &&
-                     HasSIMDMult<Type,Type>::value };
+      enum : bool { value = useOptimizedKernels &&
+                            vectorizable && VT::vectorizable &&
+                            IsSame< Type, ElementType_<VT> >::value &&
+                            HasSIMDMult<Type,Type>::value };
    };
    /*! \endcond */
    //**********************************************************************************************

@@ -83,12 +83,12 @@ struct TDVecDVecMultExprHelper
    //**********************************************************************************************
 
    //**********************************************************************************************
-   enum { value = useOptimizedKernels &&
-                  CT1::vectorizable &&
-                  CT2::vectorizable &&
-                  IsSame< ElementType_<CT1>, ElementType_<CT2> >::value &&
-                  HasSIMDAdd< ElementType_<CT1>, ElementType_<CT1> >::value &&
-                  HasSIMDMult< ElementType_<CT1>, ElementType_<CT1> >::value };
+   enum : bool { value = useOptimizedKernels &&
+                         CT1::vectorizable &&
+                         CT2::vectorizable &&
+                         IsSame< ElementType_<CT1>, ElementType_<CT2> >::value &&
+                         HasSIMDAdd< ElementType_<CT1>, ElementType_<CT1> >::value &&
+                         HasSIMDMult< ElementType_<CT1>, ElementType_<CT1> >::value };
    //**********************************************************************************************
 };
 /*! \endcond */

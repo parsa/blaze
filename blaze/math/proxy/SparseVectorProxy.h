@@ -87,7 +87,7 @@ class SparseVectorProxy : public SparseVector< PT, IsRowVector<VT>::value >
 
    //**Compilation flags***************************************************************************
    //! Compilation flag for SMP assignments.
-   enum { smpAssignable = VT::smpAssignable };
+   enum : bool { smpAssignable = VT::smpAssignable };
    //**********************************************************************************************
 
    //**Data access functions***********************************************************************

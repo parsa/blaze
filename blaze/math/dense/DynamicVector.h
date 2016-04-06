@@ -205,13 +205,13 @@ class DynamicVector : public DenseVector< DynamicVector<Type,TF>, TF >
        in can be optimized via SIMD operationss. In case the element type of the vector is a
        vectorizable data type, the \a vectorizable compilation flag is set to \a true, otherwise
        it is set to \a false. */
-   enum { vectorizable = IsVectorizable<Type>::value };
+   enum : bool { vectorizable = IsVectorizable<Type>::value };
 
    //! Compilation flag for SMP assignments.
    /*! The \a smpAssignable compilation flag indicates whether the vector can be used in SMP
        (shared memory parallel) assignments (both on the left-hand and right-hand side of the
        assignment). */
-   enum { smpAssignable = !IsSMPAssignable<Type>::value };
+   enum : bool { smpAssignable = !IsSMPAssignable<Type>::value };
    //**********************************************************************************************
 
    //**Constructors********************************************************************************
@@ -303,9 +303,9 @@ class DynamicVector : public DenseVector< DynamicVector<Type,TF>, TF >
    //! Helper structure for the explicit application of the SFINAE principle.
    template< typename VT >
    struct VectorizedAssign {
-      enum { value = useOptimizedKernels &&
-                     vectorizable && VT::vectorizable &&
-                     IsSame< Type, ElementType_<VT> >::value };
+      enum : bool { value = useOptimizedKernels &&
+                            vectorizable && VT::vectorizable &&
+                            IsSame< Type, ElementType_<VT> >::value };
    };
    /*! \endcond */
    //**********************************************************************************************
@@ -315,10 +315,10 @@ class DynamicVector : public DenseVector< DynamicVector<Type,TF>, TF >
    //! Helper structure for the explicit application of the SFINAE principle.
    template< typename VT >
    struct VectorizedAddAssign {
-      enum { value = useOptimizedKernels &&
-                     vectorizable && VT::vectorizable &&
-                     IsSame< Type, ElementType_<VT> >::value &&
-                     HasSIMDAdd<Type,Type>::value };
+      enum : bool { value = useOptimizedKernels &&
+                            vectorizable && VT::vectorizable &&
+                            IsSame< Type, ElementType_<VT> >::value &&
+                            HasSIMDAdd<Type,Type>::value };
    };
    /*! \endcond */
    //**********************************************************************************************
@@ -328,10 +328,10 @@ class DynamicVector : public DenseVector< DynamicVector<Type,TF>, TF >
    //! Helper structure for the explicit application of the SFINAE principle.
    template< typename VT >
    struct VectorizedSubAssign {
-      enum { value = useOptimizedKernels &&
-                     vectorizable && VT::vectorizable &&
-                     IsSame< Type, ElementType_<VT> >::value &&
-                     HasSIMDSub<Type,Type>::value };
+      enum : bool { value = useOptimizedKernels &&
+                            vectorizable && VT::vectorizable &&
+                            IsSame< Type, ElementType_<VT> >::value &&
+                            HasSIMDSub<Type,Type>::value };
    };
    /*! \endcond */
    //**********************************************************************************************
@@ -341,10 +341,10 @@ class DynamicVector : public DenseVector< DynamicVector<Type,TF>, TF >
    //! Helper structure for the explicit application of the SFINAE principle.
    template< typename VT >
    struct VectorizedMultAssign {
-      enum { value = useOptimizedKernels &&
-                     vectorizable && VT::vectorizable &&
-                     IsSame< Type, ElementType_<VT> >::value &&
-                     HasSIMDMult<Type,Type>::value };
+      enum : bool { value = useOptimizedKernels &&
+                            vectorizable && VT::vectorizable &&
+                            IsSame< Type, ElementType_<VT> >::value &&
+                            HasSIMDMult<Type,Type>::value };
    };
    /*! \endcond */
    //**********************************************************************************************

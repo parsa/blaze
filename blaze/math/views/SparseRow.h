@@ -400,7 +400,7 @@ class SparseRow : public SparseVector< SparseRow<MT,SO,SF>, true >
 
    //**Compilation flags***************************************************************************
    //! Compilation switch for the expression template assignment strategy.
-   enum { smpAssignable = 0 };
+   enum : bool { smpAssignable = 0 };
    //**********************************************************************************************
 
    //**Constructors********************************************************************************
@@ -2045,7 +2045,7 @@ class SparseRow<MT,false,false> : public SparseVector< SparseRow<MT,false,false>
           is const qualified, \a returnConst will be set to 1 and the value member function will
           return a reference to const. Otherwise \a returnConst will be set to 0 and the value
           member function will offer write access to the sparse matrix elements. */
-      enum { returnConst = IsConst<MatrixType>::value };
+      enum : bool { returnConst = IsConst<MatrixType>::value };
       //*******************************************************************************************
 
       //**Type definitions*************************************************************************
@@ -2373,7 +2373,7 @@ class SparseRow<MT,false,false> : public SparseVector< SparseRow<MT,false,false>
 
    //**Compilation flags***************************************************************************
    //! Compilation switch for the expression template assignment strategy.
-   enum { smpAssignable = 0 };
+   enum : bool { smpAssignable = 0 };
    //**********************************************************************************************
 
    //**Constructors********************************************************************************
@@ -3778,7 +3778,7 @@ class SparseRow<MT,false,true> : public SparseVector< SparseRow<MT,false,true>, 
 
    //**Compilation flags***************************************************************************
    //! Compilation switch for the expression template assignment strategy.
-   enum { smpAssignable = 0 };
+   enum : bool { smpAssignable = 0 };
    //**********************************************************************************************
 
    //**Constructors********************************************************************************

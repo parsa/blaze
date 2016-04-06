@@ -176,7 +176,7 @@ template< typename T >
 struct SIMDTraitBase< complex<T>, EnableIf_< And< IsNumeric<T>, IsIntegral<T>, Has1Byte<T> > > >
 {
    using Type = simd_cint8_t;
-   enum { size = Type::size };
+   enum : size_t { size = Type::size };
 
    BLAZE_STATIC_ASSERT( sizeof( complex<T> ) == 2UL*sizeof( T ) );
 };
@@ -193,7 +193,7 @@ template< typename T >
 struct SIMDTraitBase< complex<T>, EnableIf_< And< IsNumeric<T>, IsIntegral<T>, Has2Bytes<T> > > >
 {
    using Type = simd_cint16_t;
-   enum { size = Type::size };
+   enum : size_t { size = Type::size };
 
    BLAZE_STATIC_ASSERT( sizeof( complex<T> ) == 2UL*sizeof( T ) );
 };
@@ -210,7 +210,7 @@ template< typename T >
 struct SIMDTraitBase< complex<T>, EnableIf_< And< IsNumeric<T>, IsIntegral<T>, Has4Bytes<T> > > >
 {
    using Type = simd_cint32_t;
-   enum { size = Type::size };
+   enum : size_t { size = Type::size };
 
    BLAZE_STATIC_ASSERT( sizeof( complex<T> ) == 2UL*sizeof( T ) );
 };
@@ -227,7 +227,7 @@ template< typename T >
 struct SIMDTraitBase< complex<T>, EnableIf_< And< IsNumeric<T>, IsIntegral<T>, Has8Bytes<T> > > >
 {
    using Type = simd_cint64_t;
-   enum { size = Type::size };
+   enum : size_t { size = Type::size };
 
    BLAZE_STATIC_ASSERT( sizeof( complex<T> ) == 2UL*sizeof( T ) );
 };

@@ -123,12 +123,12 @@ class DVecTDVecMultExpr : public DenseMatrix< DVecTDVecMultExpr<VT1,VT2>, false 
 
    //**********************************************************************************************
    //! Compilation switch for the composite type of the left-hand side dense vector expression.
-   enum { evaluateLeft = IsComputation<VT1>::value || RequiresEvaluation<VT1>::value };
+   enum : bool { evaluateLeft = IsComputation<VT1>::value || RequiresEvaluation<VT1>::value };
    //**********************************************************************************************
 
    //**********************************************************************************************
    //! Compilation switch for the composite type of the right-hand side dense vector expression.
-   enum { evaluateRight = IsComputation<VT2>::value || RequiresEvaluation<VT2>::value };
+   enum : bool { evaluateRight = IsComputation<VT2>::value || RequiresEvaluation<VT2>::value };
    //**********************************************************************************************
 
    //**Return type evaluation**********************************************************************
@@ -138,7 +138,7 @@ class DVecTDVecMultExpr : public DenseMatrix< DVecTDVecMultExpr<VT1,VT2>, false 
        or matrix, \a returnExpr will be set to \a false and the subscript operator will
        return it's result by value. Otherwise \a returnExpr will be set to \a true and
        the subscript operator may return it's result as an expression. */
-   enum { returnExpr = !IsTemporary<RN1>::value && !IsTemporary<RN2>::value };
+   enum : bool { returnExpr = !IsTemporary<RN1>::value && !IsTemporary<RN2>::value };
 
    //! Expression return type for the subscript operator.
    typedef MultExprTrait_<RN1,RN2>  ExprReturnType;
@@ -152,13 +152,13 @@ class DVecTDVecMultExpr : public DenseMatrix< DVecTDVecMultExpr<VT1,VT2>, false 
        and the outer product expression will be evaluated via the \a assign function family.
        Otherwise \a useAssign will be set to \a false and the expression will be evaluated
        via the function call operator. */
-   enum { useAssign = ( evaluateLeft || evaluateRight ) };
+   enum : bool { useAssign = ( evaluateLeft || evaluateRight ) };
 
    /*! \cond BLAZE_INTERNAL */
    //! Helper structure for the explicit application of the SFINAE principle.
    template< typename VT >
    struct UseAssign {
-      enum { value = useAssign };
+      enum : bool { value = useAssign };
    };
    /*! \endcond */
    //**********************************************************************************************
@@ -171,7 +171,7 @@ class DVecTDVecMultExpr : public DenseMatrix< DVecTDVecMultExpr<VT1,VT2>, false 
        the nested \value will be set to 1, otherwise it will be 0. */
    template< typename VT >
    struct UseSMPAssign {
-      enum { value = evaluateRight };
+      enum : bool { value = evaluateRight };
    };
    /*! \endcond */
    //**********************************************************************************************
@@ -183,11 +183,11 @@ class DVecTDVecMultExpr : public DenseMatrix< DVecTDVecMultExpr<VT1,VT2>, false 
        outer product, the nested \value will be set to 1, otherwise it will be 0. */
    template< typename T1, typename T2, typename T3 >
    struct UseVectorizedKernel {
-      enum { value = useOptimizedKernels &&
-                     T1::vectorizable && T2::vectorizable && T3::vectorizable &&
-                     IsSame< ElementType_<T1>, ElementType_<T2> >::value &&
-                     IsSame< ElementType_<T1>, ElementType_<T3> >::value &&
-                     HasSIMDMult< ElementType_<T1>, ElementType_<T1> >::value };
+      enum : bool { value = useOptimizedKernels &&
+                            T1::vectorizable && T2::vectorizable && T3::vectorizable &&
+                            IsSame< ElementType_<T1>, ElementType_<T2> >::value &&
+                            IsSame< ElementType_<T1>, ElementType_<T3> >::value &&
+                            HasSIMDMult< ElementType_<T1>, ElementType_<T1> >::value };
    };
    /*! \endcond */
    //**********************************************************************************************
@@ -199,7 +199,7 @@ class DVecTDVecMultExpr : public DenseMatrix< DVecTDVecMultExpr<VT1,VT2>, false 
        otherwise it will be 0. */
    template< typename T1, typename T2, typename T3 >
    struct UseDefaultKernel {
-      enum { value = !UseVectorizedKernel<T1,T2,T3>::value };
+      enum : bool { value = !UseVectorizedKernel<T1,T2,T3>::value };
    };
    /*! \endcond */
    //**********************************************************************************************
@@ -480,12 +480,12 @@ class DVecTDVecMultExpr : public DenseMatrix< DVecTDVecMultExpr<VT1,VT2>, false 
 
    //**Compilation flags***************************************************************************
    //! Compilation switch for the expression template evaluation strategy.
-   enum { vectorizable = VT1::vectorizable && VT2::vectorizable &&
-                         IsSame<ET1,ET2>::value &&
-                         HasSIMDMult<ET1,ET1>::value };
+   enum : bool { vectorizable = VT1::vectorizable && VT2::vectorizable &&
+                                IsSame<ET1,ET2>::value &&
+                                HasSIMDMult<ET1,ET1>::value };
 
    //! Compilation switch for the expression template assignment strategy.
-   enum { smpAssignable = VT1::smpAssignable && !evaluateRight };
+   enum : bool { smpAssignable = VT1::smpAssignable && !evaluateRight };
    //**********************************************************************************************
 
    //**SIMD properties*****************************************************************************

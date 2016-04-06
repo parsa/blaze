@@ -131,7 +131,7 @@ struct TDMatScalarDivExprTrait
  private:
    //**********************************************************************************************
    /*! \cond BLAZE_INTERNAL */
-   enum { condition = And< IsDenseMatrix<MT>, IsColumnMajorMatrix<MT>, IsNumeric<ST> >::value };
+   enum : bool { condition = And< IsDenseMatrix<MT>, IsColumnMajorMatrix<MT>, IsNumeric<ST> >::value };
    /*! \endcond */
    //**********************************************************************************************
 

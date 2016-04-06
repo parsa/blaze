@@ -92,10 +92,10 @@ class DenseVectorProxy : public DenseVector< PT, IsRowVector<VT>::value >
 
    //**Compilation flags***************************************************************************
    //! Compilation flag for SIMD optimization.
-   enum { vectorizable = VT::vectorizable };
+   enum : bool { vectorizable = VT::vectorizable };
 
    //! Compilation flag for SMP assignments.
-   enum { smpAssignable = VT::smpAssignable };
+   enum : bool { smpAssignable = VT::smpAssignable };
    //**********************************************************************************************
 
    //**Data access functions***********************************************************************

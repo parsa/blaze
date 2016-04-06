@@ -128,7 +128,7 @@ struct TDVecScalarMultExprTrait
  private:
    //**********************************************************************************************
    /*! \cond BLAZE_INTERNAL */
-   enum { condition = And< IsDenseVector<VT>, IsRowVector<VT>, IsNumeric<ST> >::value };
+   enum : bool { condition = And< IsDenseVector<VT>, IsRowVector<VT>, IsNumeric<ST> >::value };
    /*! \endcond */
    //**********************************************************************************************
 

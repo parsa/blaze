@@ -134,12 +134,12 @@ class TSMatSMatMultExpr : public SparseMatrix< TSMatSMatMultExpr<MT1,MT2>, true 
 
    //**********************************************************************************************
    //! Compilation switch for the composite type of the left-hand side sparse matrix expression.
-   enum { evaluateLeft = RequiresEvaluation<MT1>::value };
+   enum : bool { evaluateLeft = RequiresEvaluation<MT1>::value };
    //**********************************************************************************************
 
    //**********************************************************************************************
    //! Compilation switch for the composite type of the right-hand side sparse matrix expression.
-   enum { evaluateRight = RequiresEvaluation<MT2>::value };
+   enum : bool { evaluateRight = RequiresEvaluation<MT2>::value };
    //**********************************************************************************************
 
    //**********************************************************************************************
@@ -153,8 +153,8 @@ class TSMatSMatMultExpr : public SparseMatrix< TSMatSMatMultExpr<MT1,MT2>, true 
        the default strategy is chosen. */
    template< typename T1, typename T2, typename T3 >
    struct CanExploitSymmetry {
-      enum { value = ( IsRowMajorMatrix<T1>::value    && IsSymmetric<T2>::value ) ||
-                     ( IsColumnMajorMatrix<T1>::value && IsSymmetric<T3>::value ) };
+      enum : bool { value = ( IsRowMajorMatrix<T1>::value    && IsSymmetric<T2>::value ) ||
+                            ( IsColumnMajorMatrix<T1>::value && IsSymmetric<T3>::value ) };
    };
    /*! \endcond */
    //**********************************************************************************************
@@ -168,8 +168,8 @@ class TSMatSMatMultExpr : public SparseMatrix< TSMatSMatMultExpr<MT1,MT2>, true 
        otherwise it will be 0. */
    template< typename T1, typename T2, typename T3 >
    struct IsEvaluationRequired {
-      enum { value = ( evaluateLeft || evaluateRight ) &&
-                     !CanExploitSymmetry<T1,T2,T2>::value };
+      enum : bool { value = ( evaluateLeft || evaluateRight ) &&
+                            !CanExploitSymmetry<T1,T2,T2>::value };
    };
    /*! \endcond */
    //**********************************************************************************************
@@ -193,8 +193,8 @@ class TSMatSMatMultExpr : public SparseMatrix< TSMatSMatMultExpr<MT1,MT2>, true 
 
    //**Compilation flags***************************************************************************
    //! Compilation switch for the expression template assignment strategy.
-   enum { smpAssignable = !evaluateLeft  && MT1::smpAssignable &&
-                          !evaluateRight && MT2::smpAssignable };
+   enum : bool { smpAssignable = !evaluateLeft  && MT1::smpAssignable &&
+                                 !evaluateRight && MT2::smpAssignable };
    //**********************************************************************************************
 
    //**Constructor*********************************************************************************

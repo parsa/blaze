@@ -128,7 +128,7 @@ struct TSMatScalarMultExprTrait
  private:
    //**********************************************************************************************
    /*! \cond BLAZE_INTERNAL */
-   enum { condition = And< IsSparseMatrix<MT>, IsColumnMajorMatrix<MT>, IsNumeric<ST> >::value };
+   enum : bool { condition = And< IsSparseMatrix<MT>, IsColumnMajorMatrix<MT>, IsNumeric<ST> >::value };
    /*! \endcond */
    //**********************************************************************************************
 

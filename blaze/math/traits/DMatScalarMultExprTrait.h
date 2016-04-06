@@ -128,7 +128,7 @@ struct DMatScalarMultExprTrait
  private:
    //**********************************************************************************************
    /*! \cond BLAZE_INTERNAL */
-   enum { condition = And< IsDenseMatrix<MT>, IsRowMajorMatrix<MT>, IsNumeric<ST> >::value };
+   enum : bool { condition = And< IsDenseMatrix<MT>, IsRowMajorMatrix<MT>, IsNumeric<ST> >::value };
    /*! \endcond */
    //**********************************************************************************************
 

@@ -429,7 +429,7 @@ class SparseSubvector : public SparseVector< SparseSubvector<VT,AF,TF>, TF >
           is const qualified, \a returnConst will be set to 1 and the value member function will
           return a reference to const. Otherwise \a returnConst will be set to 0 and the value
           member function will offer write access to the sparse vector elements. */
-      enum { returnConst = IsConst<VectorType>::value };
+      enum : bool { returnConst = IsConst<VectorType>::value };
       //*******************************************************************************************
 
       //**Type definitions*************************************************************************
@@ -730,7 +730,7 @@ class SparseSubvector : public SparseVector< SparseSubvector<VT,AF,TF>, TF >
 
    //**Compilation flags***************************************************************************
    //! Compilation switch for the expression template assignment strategy.
-   enum { smpAssignable = VT::smpAssignable };
+   enum : bool { smpAssignable = VT::smpAssignable };
    //**********************************************************************************************
 
    //**Constructors********************************************************************************

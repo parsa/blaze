@@ -102,13 +102,13 @@ class DMatTransposer : public DenseMatrix< DMatTransposer<MT,SO>, SO >
    /*! The \a vectorizable compilation flag indicates whether expressions the matrix is involved
        in can be optimized via SIMD operations. In case the dense matrix operand is vectorizable,
        the \a vectorizable compilation flag is set to \a true, otherwise it is set to \a false. */
-   enum { vectorizable = MT::vectorizable };
+   enum : bool { vectorizable = MT::vectorizable };
 
    //! Compilation flag for SMP assignments.
    /*! The \a smpAssignable compilation flag indicates whether the matrix can be used in SMP
        (shared memory parallel) assignments (both on the left-hand and right-hand side of the
        assignment). */
-   enum { smpAssignable = MT::smpAssignable };
+   enum : bool { smpAssignable = MT::smpAssignable };
    //**********************************************************************************************
 
    //**Constructor*********************************************************************************
@@ -1011,13 +1011,13 @@ class DMatTransposer<MT,true> : public DenseMatrix< DMatTransposer<MT,true>, tru
    /*! The \a vectorizable compilation flag indicates whether expressions the matrix is involved
        in can be optimized via SIMD operations. In case the dense matrix operand is vectorizable,
        the \a vectorizable compilation flag is set to \a true, otherwise it is set to \a false. */
-   enum { vectorizable = MT::vectorizable };
+   enum : bool { vectorizable = MT::vectorizable };
 
    //! Compilation flag for SMP assignments.
    /*! The \a smpAssignable compilation flag indicates whether the matrix can be used in SMP
        (shared memory parallel) assignments (both on the left-hand and right-hand side of the
        assignment). */
-   enum { smpAssignable = MT::smpAssignable };
+   enum : bool { smpAssignable = MT::smpAssignable };
    //**********************************************************************************************
 
    //**Constructor*********************************************************************************

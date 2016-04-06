@@ -241,13 +241,13 @@ class StaticMatrix : public DenseMatrix< StaticMatrix<Type,M,N,SO>, SO >
        in can be optimized via SIMD operations. In case the element type of the matrix is a
        vectorizable data type, the \a vectorizable compilation flag is set to \a true, otherwise
        it is set to \a false. */
-   enum { vectorizable = IsVectorizable<Type>::value };
+   enum : bool { vectorizable = IsVectorizable<Type>::value };
 
    //! Compilation flag for SMP assignments.
    /*! The \a smpAssignable compilation flag indicates whether the matrix can be used in SMP
        (shared memory parallel) assignments (both on the left-hand and right-hand side of the
        assignment). */
-   enum { smpAssignable = 0 };
+   enum : bool { smpAssignable = 0 };
    //**********************************************************************************************
 
    //**Constructors********************************************************************************
@@ -354,10 +354,10 @@ class StaticMatrix : public DenseMatrix< StaticMatrix<Type,M,N,SO>, SO >
    //! Helper structure for the explicit application of the SFINAE principle.
    template< typename MT >
    struct VectorizedAssign {
-      enum { value = useOptimizedKernels &&
-                     vectorizable && MT::vectorizable &&
-                     IsSame< Type, ElementType_<MT> >::value &&
-                     IsRowMajorMatrix<MT>::value };
+      enum : bool { value = useOptimizedKernels &&
+                            vectorizable && MT::vectorizable &&
+                            IsSame< Type, ElementType_<MT> >::value &&
+                            IsRowMajorMatrix<MT>::value };
    };
    /*! \endcond */
    //**********************************************************************************************
@@ -367,12 +367,12 @@ class StaticMatrix : public DenseMatrix< StaticMatrix<Type,M,N,SO>, SO >
    //! Helper structure for the explicit application of the SFINAE principle.
    template< typename MT >
    struct VectorizedAddAssign {
-      enum { value = useOptimizedKernels &&
-                     vectorizable && MT::vectorizable &&
-                     IsSame< Type, ElementType_<MT> >::value &&
-                     HasSIMDAdd<Type,Type>::value &&
-                     IsRowMajorMatrix<MT>::value &&
-                     !IsDiagonal<MT>::value };
+      enum : bool { value = useOptimizedKernels &&
+                            vectorizable && MT::vectorizable &&
+                            IsSame< Type, ElementType_<MT> >::value &&
+                            HasSIMDAdd<Type,Type>::value &&
+                            IsRowMajorMatrix<MT>::value &&
+                            !IsDiagonal<MT>::value };
    };
    /*! \endcond */
    //**********************************************************************************************
@@ -382,12 +382,12 @@ class StaticMatrix : public DenseMatrix< StaticMatrix<Type,M,N,SO>, SO >
    //! Helper structure for the explicit application of the SFINAE principle.
    template< typename MT >
    struct VectorizedSubAssign {
-      enum { value = useOptimizedKernels &&
-                     vectorizable && MT::vectorizable &&
-                     IsSame< Type, ElementType_<MT> >::value &&
-                     HasSIMDSub<Type,Type>::value &&
-                     IsRowMajorMatrix<MT>::value &&
-                     !IsDiagonal<MT>::value };
+      enum : bool { value = useOptimizedKernels &&
+                            vectorizable && MT::vectorizable &&
+                            IsSame< Type, ElementType_<MT> >::value &&
+                            HasSIMDSub<Type,Type>::value &&
+                            IsRowMajorMatrix<MT>::value &&
+                            !IsDiagonal<MT>::value };
    };
    /*! \endcond */
    //**********************************************************************************************
@@ -2788,13 +2788,13 @@ class StaticMatrix<Type,M,N,true> : public DenseMatrix< StaticMatrix<Type,M,N,tr
        in can be optimized via SIMD operations. In case the element type of the matrix is a
        vectorizable data type, the \a vectorizable compilation flag is set to \a true, otherwise
        it is set to \a false. */
-   enum { vectorizable = IsVectorizable<Type>::value };
+   enum : bool { vectorizable = IsVectorizable<Type>::value };
 
    //! Compilation flag for SMP assignments.
    /*! The \a smpAssignable compilation flag indicates whether the matrix can be used in SMP
        (shared memory parallel) assignments (both on the left-hand and right-hand side of the
        assignment). */
-   enum { smpAssignable = 0 };
+   enum : bool { smpAssignable = 0 };
    //**********************************************************************************************
 
    //**Constructors********************************************************************************
@@ -2897,10 +2897,10 @@ class StaticMatrix<Type,M,N,true> : public DenseMatrix< StaticMatrix<Type,M,N,tr
    //! Helper structure for the explicit application of the SFINAE principle.
    template< typename MT >
    struct VectorizedAssign {
-      enum { value = useOptimizedKernels &&
-                     vectorizable && MT::vectorizable &&
-                     IsSame< Type, ElementType_<MT> >::value &&
-                     IsColumnMajorMatrix<MT>::value };
+      enum : bool { value = useOptimizedKernels &&
+                            vectorizable && MT::vectorizable &&
+                            IsSame< Type, ElementType_<MT> >::value &&
+                            IsColumnMajorMatrix<MT>::value };
    };
    //**********************************************************************************************
 
@@ -2908,12 +2908,12 @@ class StaticMatrix<Type,M,N,true> : public DenseMatrix< StaticMatrix<Type,M,N,tr
    //! Helper structure for the explicit application of the SFINAE principle.
    template< typename MT >
    struct VectorizedAddAssign {
-      enum { value = useOptimizedKernels &&
-                     vectorizable && MT::vectorizable &&
-                     IsSame< Type, ElementType_<MT> >::value &&
-                     HasSIMDAdd<Type,Type>::value &&
-                     IsColumnMajorMatrix<MT>::value &&
-                     !IsDiagonal<MT>::value };
+      enum : bool { value = useOptimizedKernels &&
+                            vectorizable && MT::vectorizable &&
+                            IsSame< Type, ElementType_<MT> >::value &&
+                            HasSIMDAdd<Type,Type>::value &&
+                            IsColumnMajorMatrix<MT>::value &&
+                            !IsDiagonal<MT>::value };
    };
    //**********************************************************************************************
 
@@ -2921,12 +2921,12 @@ class StaticMatrix<Type,M,N,true> : public DenseMatrix< StaticMatrix<Type,M,N,tr
    //! Helper structure for the explicit application of the SFINAE principle.
    template< typename MT >
    struct VectorizedSubAssign {
-      enum { value = useOptimizedKernels &&
-                     vectorizable && MT::vectorizable &&
-                     IsSame< Type, ElementType_<MT> >::value &&
-                     HasSIMDSub<Type,Type>::value &&
-                     IsColumnMajorMatrix<MT>::value &&
-                     !IsDiagonal<MT>::value };
+      enum : bool { value = useOptimizedKernels &&
+                            vectorizable && MT::vectorizable &&
+                            IsSame< Type, ElementType_<MT> >::value &&
+                            HasSIMDSub<Type,Type>::value &&
+                            IsColumnMajorMatrix<MT>::value &&
+                            !IsDiagonal<MT>::value };
    };
    //**********************************************************************************************
 
