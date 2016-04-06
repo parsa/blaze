@@ -82,18 +82,19 @@ namespace simd {
 // numeric data type \a T. In these tests both aligned and unaligned load/store operations
 // are used.
 */
-template< typename T >  // Data type of the intrinsic test
+template< typename T >  // Data type of the SIMD test
 class OperationTest : private blaze::NonCopyable
 {
  private:
    //**Type definitions****************************************************************************
-   typedef blaze::IntrinsicTrait<T>  IT;             //!< Intrinsic trait for the given numeric type.
-   typedef typename IT::Type         IntrinsicType;  //!< Intrinsic type for the given numeric type.
+   typedef blaze::SIMDTrait<T>  SIMD;      //!< SIMD trait for the given numeric type.
+   typedef typename SIMD::Type  SIMDType;  //!< SIMD type for the given numeric type.
    //**********************************************************************************************
 
    //**********************************************************************************************
-   static const size_t N  = 256;           //!< Number of numeric values to be worked on.
-   static const size_t NN = N + IT::size;  //!< Total number of numeric values in each array.
+   enum : size_t { SIMDSIZE = SIMD::size };  //!< Number of elements in a single SIMD vector.
+   enum : size_t { N = 256UL };              //!< Number of numeric values to be worked on.
+   enum : size_t { NN = N + SIMDSIZE };      //!< Total number of numeric values in each array.
    //**********************************************************************************************
 
  public:
@@ -182,7 +183,7 @@ class OperationTest : private blaze::NonCopyable
 //
 // \exception std::runtime_error Operation error detected.
 */
-template< typename T >  // Data type of the intrinsic test
+template< typename T >  // Data type of the SIMD test
 OperationTest<T>::OperationTest()
    : a_    ( blaze::allocate<T>( NN ) )  // The first aligned array of size NN
    , b_    ( blaze::allocate<T>( NN ) )  // The second aligned array of size NN
@@ -193,7 +194,7 @@ OperationTest<T>::OperationTest()
    testStorea();
    testStream();
 
-   for( size_t offset=0UL; offset<IT::size; ++offset ) {
+   for( size_t offset=0UL; offset<SIMDSIZE; ++offset ) {
       testStoreu( offset );
    }
 
@@ -217,9 +218,9 @@ OperationTest<T>::OperationTest()
 //=================================================================================================
 
 //*************************************************************************************************
-/*!\brief The destructor for the intrinsic operation test.
+/*!\brief The destructor for the SIMD operation test.
 */
-template< typename T >  // Data type of the intrinsic test
+template< typename T >  // Data type of the SIMD test
 OperationTest<T>::~OperationTest()
 {
    blaze::deallocate( a_ );
@@ -247,7 +248,7 @@ OperationTest<T>::~OperationTest()
 // This function tests the aligned store operation by copying one array to another via aligned
 // load and store. In case any error is detected, a \a std::runtime_error exception is thrown.
 */
-template< typename T >  // Data type of the intrinsic test
+template< typename T >  // Data type of the SIMD test
 void OperationTest<T>::testStorea()
 {
    using blaze::loada;
@@ -257,7 +258,7 @@ void OperationTest<T>::testStorea()
 
    initialize();
 
-   for( size_t i=0UL; i<N; i+=IT::size ) {
+   for( size_t i=0UL; i<N; i+=SIMDSIZE ) {
       storea( b_+i, loada( a_+i ) );
    }
 
@@ -276,7 +277,7 @@ void OperationTest<T>::testStorea()
 // via aligned load and non-temporal store. In case any error is detected, a \a std::runtime_error
 // exception is thrown.
 */
-template< typename T >  // Data type of the intrinsic test
+template< typename T >  // Data type of the SIMD test
 void OperationTest<T>::testStream()
 {
    using blaze::loada;
@@ -286,7 +287,7 @@ void OperationTest<T>::testStream()
 
    initialize();
 
-   for( size_t i=0UL; i<N; i+=IT::size ) {
+   for( size_t i=0UL; i<N; i+=SIMDSIZE ) {
       stream( b_+i, loada( a_+i ) );
    }
 
@@ -304,7 +305,7 @@ void OperationTest<T>::testStream()
 // This function tests the unaligned store operation by copying one array to another via unaligned
 // load and store. In case any error is detected, a \a std::runtime_error exception is thrown.
 */
-template< typename T >  // Data type of the intrinsic test
+template< typename T >  // Data type of the SIMD test
 void OperationTest<T>::testStoreu( size_t offset )
 {
    using blaze::loadu;
@@ -314,7 +315,7 @@ void OperationTest<T>::testStoreu( size_t offset )
 
    initialize();
 
-   for( size_t i=0UL; i<N; i+=IT::size ) {
+   for( size_t i=0UL; i<N; i+=SIMDSIZE ) {
       storeu( b_+offset+i, loadu( a_+offset+i ) );
    }
 
@@ -332,7 +333,7 @@ void OperationTest<T>::testStoreu( size_t offset )
 // This function tests the addition operation by comparing the results of a vectorized and a
 // scalar addition. In case any error is detected, a \a std::runtime_error exception is thrown.
 */
-template< typename T >  // Data type of the intrinsic test
+template< typename T >  // Data type of the SIMD test
 void OperationTest<T>::testAddition( blaze::TrueType )
 {
    using blaze::loada;
@@ -346,7 +347,7 @@ void OperationTest<T>::testAddition( blaze::TrueType )
       c_[i] = a_[i] + b_[i];
    }
 
-   for( size_t i=0UL; i<N; i+=IT::size ) {
+   for( size_t i=0UL; i<N; i+=SIMDSIZE ) {
       storea( d_+i, loada( a_+i ) + loada( b_+i ) );
    }
 
@@ -363,7 +364,7 @@ void OperationTest<T>::testAddition( blaze::TrueType )
 // This function is called in case the addition operation is not available for the given data
 // type \a T.
 */
-template< typename T >  // Data type of the intrinsic test
+template< typename T >  // Data type of the SIMD test
 void OperationTest<T>::testAddition( blaze::FalseType )
 {}
 //*************************************************************************************************
@@ -378,7 +379,7 @@ void OperationTest<T>::testAddition( blaze::FalseType )
 // This function tests the subtraction operation by comparing the results of a vectorized and a
 // scalar subtraction. In case any error is detected, a \a std::runtime_error exception is thrown.
 */
-template< typename T >  // Data type of the intrinsic test
+template< typename T >  // Data type of the SIMD test
 void OperationTest<T>::testSubtraction( blaze::TrueType )
 {
    using blaze::loada;
@@ -392,7 +393,7 @@ void OperationTest<T>::testSubtraction( blaze::TrueType )
       c_[i] = a_[i] - b_[i];
    }
 
-   for( size_t i=0UL; i<N; i+=IT::size ) {
+   for( size_t i=0UL; i<N; i+=SIMDSIZE ) {
       storea( d_+i, loada( a_+i ) - loada( b_+i ) );
    }
 
@@ -409,7 +410,7 @@ void OperationTest<T>::testSubtraction( blaze::TrueType )
 // This function is called in case the subtraction operation is not available for the given data
 // type \a T.
 */
-template< typename T >  // Data type of the intrinsic test
+template< typename T >  // Data type of the SIMD test
 void OperationTest<T>::testSubtraction( blaze::FalseType )
 {}
 //*************************************************************************************************
@@ -425,7 +426,7 @@ void OperationTest<T>::testSubtraction( blaze::FalseType )
 // a scalar multiplication. In case any error is detected, a \a std::runtime_error exception is
 // thrown.
 */
-template< typename T >  // Data type of the intrinsic test
+template< typename T >  // Data type of the SIMD test
 void OperationTest<T>::testMultiplication( blaze::TrueType )
 {
    using blaze::loada;
@@ -439,7 +440,7 @@ void OperationTest<T>::testMultiplication( blaze::TrueType )
       c_[i] = a_[i] * b_[i];
    }
 
-   for( size_t i=0UL; i<N; i+=IT::size ) {
+   for( size_t i=0UL; i<N; i+=SIMDSIZE ) {
       storea( d_+i, loada( a_+i ) * loada( b_+i ) );
    }
 
@@ -456,7 +457,7 @@ void OperationTest<T>::testMultiplication( blaze::TrueType )
 // This function is called in case the multiplication operation is not available for the given
 // data type \a T.
 */
-template< typename T >  // Data type of the intrinsic test
+template< typename T >  // Data type of the SIMD test
 void OperationTest<T>::testMultiplication( blaze::FalseType )
 {}
 //*************************************************************************************************
@@ -471,7 +472,7 @@ void OperationTest<T>::testMultiplication( blaze::FalseType )
 // This function tests the division operation by comparing the results of a vectorized and a
 // scalar division. In case any error is detected, a \a std::runtime_error exception is thrown.
 */
-template< typename T >  // Data type of the intrinsic test
+template< typename T >  // Data type of the SIMD test
 void OperationTest<T>::testDivision( blaze::TrueType )
 {
    using blaze::loada;
@@ -485,7 +486,7 @@ void OperationTest<T>::testDivision( blaze::TrueType )
       c_[i] = a_[i] / b_[i];
    }
 
-   for( size_t i=0UL; i<N; i+=IT::size ) {
+   for( size_t i=0UL; i<N; i+=SIMDSIZE ) {
       storea( d_+i, loada( a_+i ) / loada( b_+i ) );
    }
 
@@ -502,7 +503,7 @@ void OperationTest<T>::testDivision( blaze::TrueType )
 // This function is called in case the division operation is not available for the given data
 // type \a T.
 */
-template< typename T >  // Data type of the intrinsic test
+template< typename T >  // Data type of the SIMD test
 void OperationTest<T>::testDivision( blaze::FalseType )
 {}
 //*************************************************************************************************
@@ -518,7 +519,7 @@ void OperationTest<T>::testDivision( blaze::FalseType )
 // a scalar absolute value. In case any error is detected, a \a std::runtime_error exception is
 // thrown.
 */
-template< typename T >  // Data type of the intrinsic test
+template< typename T >  // Data type of the SIMD test
 void OperationTest<T>::testAbsoluteValue( blaze::TrueType )
 {
    using std::abs;
@@ -534,7 +535,7 @@ void OperationTest<T>::testAbsoluteValue( blaze::TrueType )
       c_[i] = abs( a_[i] );
    }
 
-   for( size_t i=0UL; i<N; i+=IT::size ) {
+   for( size_t i=0UL; i<N; i+=SIMDSIZE ) {
       storea( d_+i, abs( loada( a_+i ) ) );
    }
 
@@ -551,7 +552,7 @@ void OperationTest<T>::testAbsoluteValue( blaze::TrueType )
 // This function is called in case the absolute value operation is not available for the given
 // data type \a T.
 */
-template< typename T >  // Data type of the intrinsic test
+template< typename T >  // Data type of the SIMD test
 void OperationTest<T>::testAbsoluteValue( blaze::FalseType )
 {}
 //*************************************************************************************************
@@ -566,7 +567,7 @@ void OperationTest<T>::testAbsoluteValue( blaze::FalseType )
 // This function tests the conjugate operation by comparing the results of a vectorized and a
 // scalar conjugate. In case any error is detected, a \a std::runtime_error exception is thrown.
 */
-template< typename T >  // Data type of the intrinsic test
+template< typename T >  // Data type of the SIMD test
 void OperationTest<T>::testConjugate( blaze::TrueType )
 {
    using blaze::conj;
@@ -581,7 +582,7 @@ void OperationTest<T>::testConjugate( blaze::TrueType )
       c_[i] = conj( a_[i] );
    }
 
-   for( size_t i=0UL; i<N; i+=IT::size ) {
+   for( size_t i=0UL; i<N; i+=SIMDSIZE ) {
       storea( d_+i, conj( loada( a_+i ) ) );
    }
 
@@ -598,7 +599,7 @@ void OperationTest<T>::testConjugate( blaze::TrueType )
 // This function is called in case the conjugate operation is not available for the given data
 // type \a T.
 */
-template< typename T >  // Data type of the intrinsic test
+template< typename T >  // Data type of the SIMD test
 void OperationTest<T>::testConjugate( blaze::FalseType )
 {}
 //*************************************************************************************************
@@ -613,7 +614,7 @@ void OperationTest<T>::testConjugate( blaze::FalseType )
 // This function tests the reduction operation by comparing the results of a vectorized and a
 // scalar reduction. In case any error is detected, a \a std::runtime_error exception is thrown.
 */
-template< typename T >  // Data type of the intrinsic test
+template< typename T >  // Data type of the SIMD test
 void OperationTest<T>::testReduction()
 {
    using blaze::loada;
@@ -624,16 +625,16 @@ void OperationTest<T>::testReduction()
    initialize();
 
    T ssum = T();
-   for( size_t i=0UL; i<N; i+=IT::size ) {
+   for( size_t i=0UL; i<N; i+=SIMDSIZE ) {
       T tmp = T();
-      for( size_t j=0UL; j<IT::size; ++j ) {
+      for( size_t j=0UL; j<SIMDSIZE; ++j ) {
          tmp += a_[i+j];
       }
       ssum += tmp;
    }
 
    T vsum = T();
-   for( size_t i=0UL; i<N; i+=IT::size ) {
+   for( size_t i=0UL; i<N; i+=SIMDSIZE ) {
       vsum += sum( loada( a_+i ) );
    }
 
@@ -670,7 +671,7 @@ void OperationTest<T>::testReduction()
 // This function compares the first 256 elements of the two given arrays. In case any value of
 // the two arrays differs, a \a std::runtime_error exception is thrown.
 */
-template< typename T >  // Data type of the intrinsic test
+template< typename T >  // Data type of the SIMD test
 void OperationTest<T>::compare( const T* expected, const T* actual ) const
 {
    for( size_t i=0UL; i<N; ++i ) {
@@ -705,7 +706,7 @@ void OperationTest<T>::compare( const T* expected, const T* actual ) const
 // This function is called before each single test case to initialize all arrays with random
 // values.
 */
-template< typename T >  // Data type of the intrinsic test
+template< typename T >  // Data type of the SIMD test
 void OperationTest<T>::initialize()
 {
    using blaze::randomize;
@@ -733,7 +734,7 @@ void OperationTest<T>::initialize()
 //
 // \return void
 */
-template< typename T >  // Data type of the intrinsic test
+template< typename T >  // Data type of the SIMD test
 void runTest()
 {
    OperationTest<T>();
