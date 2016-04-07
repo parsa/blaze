@@ -44,7 +44,6 @@
 // Includes
 //*************************************************************************************************
 
-#include <blaze/util/Null.h>
 #include <blaze/util/SystemClock.h>
 
 
@@ -56,7 +55,7 @@ namespace blaze {
 //
 //=================================================================================================
 
-time_t SystemClock::start_( std::time( NULL ) );
+time_t SystemClock::start_( std::time( nullptr ) );
 
 
 
