@@ -76,8 +76,8 @@ struct HasSIMDAbsHelper
 template< typename T >
 struct HasSIMDAbsHelper< T, EnableIf_< And< IsNumeric<T>, IsIntegral<T>, IsSigned<T> > > >
 {
-   static constexpr bool value = ( !BLAZE_MIC_MODE && BLAZE_SSSE3_MODE && sizeof(T) <= 4UL ) ||
-                                 ( !BLAZE_MIC_MODE && BLAZE_AVX2_MODE  && sizeof(T) <= 4UL );
+   static constexpr bool value = ( bool( BLAZE_SSSE3_MODE ) && !bool( BLAZE_MIC_MODE ) && sizeof(T) <= 4UL ) ||
+                                 ( bool( BLAZE_AVX2_MODE  ) && !bool( BLAZE_MIC_MODE ) && sizeof(T) <= 4UL );
 };
 /*! \endcond */
 //*************************************************************************************************

@@ -76,37 +76,37 @@ struct HasSIMDMultHelper
 template< typename T >
 struct HasSIMDMultHelper< T, T, EnableIf_< And< IsNumeric<T>, IsIntegral<T> > > >
 {
-   static constexpr bool value = ( BLAZE_SSE2_MODE && sizeof(T) == 2UL ) ||
-                                 ( BLAZE_SSE4_MODE && sizeof(T) >= 2UL && sizeof(T) <= 4UL ) ||
-                                 ( BLAZE_AVX2_MODE && sizeof(T) >= 2UL && sizeof(T) <= 4UL ) ||
-                                 ( BLAZE_MIC_MODE  && sizeof(T) >= 4UL );
+   static constexpr bool value = ( bool( BLAZE_SSE2_MODE ) && sizeof(T) == 2UL ) ||
+                                 ( bool( BLAZE_SSE4_MODE ) && sizeof(T) >= 2UL && sizeof(T) <= 4UL ) ||
+                                 ( bool( BLAZE_AVX2_MODE ) && sizeof(T) >= 2UL && sizeof(T) <= 4UL ) ||
+                                 ( bool( BLAZE_MIC_MODE  ) && sizeof(T) >= 4UL );
 };
 
 template< typename T >
 struct HasSIMDMultHelper< T, complex<T>, EnableIf_< And< IsNumeric<T>, IsIntegral<T> > > >
 {
-   static constexpr bool value = ( BLAZE_SSE2_MODE && sizeof(T) == 2UL ) ||
-                                 ( BLAZE_SSE4_MODE && sizeof(T) >= 2UL && sizeof(T) <= 4UL ) ||
-                                 ( BLAZE_AVX2_MODE && sizeof(T) >= 2UL && sizeof(T) <= 4UL ) ||
-                                 ( BLAZE_MIC_MODE  && sizeof(T) >= 4UL );
+   static constexpr bool value = ( bool( BLAZE_SSE2_MODE ) && sizeof(T) == 2UL ) ||
+                                 ( bool( BLAZE_SSE4_MODE ) && sizeof(T) >= 2UL && sizeof(T) <= 4UL ) ||
+                                 ( bool( BLAZE_AVX2_MODE ) && sizeof(T) >= 2UL && sizeof(T) <= 4UL ) ||
+                                 ( bool( BLAZE_MIC_MODE  ) && sizeof(T) >= 4UL );
 };
 
 template< typename T >
 struct HasSIMDMultHelper< complex<T>, T, EnableIf_< And< IsNumeric<T>, IsIntegral<T> > > >
 {
-   static constexpr bool value = ( BLAZE_SSE2_MODE && sizeof(T) == 2UL ) ||
-                                 ( BLAZE_SSE4_MODE && sizeof(T) >= 2UL && sizeof(T) <= 4UL ) ||
-                                 ( BLAZE_AVX2_MODE && sizeof(T) >= 2UL && sizeof(T) <= 4UL ) ||
-                                 ( BLAZE_MIC_MODE  && sizeof(T) >= 4UL );
+   static constexpr bool value = ( bool( BLAZE_SSE2_MODE ) && sizeof(T) == 2UL ) ||
+                                 ( bool( BLAZE_SSE4_MODE ) && sizeof(T) >= 2UL && sizeof(T) <= 4UL ) ||
+                                 ( bool( BLAZE_AVX2_MODE ) && sizeof(T) >= 2UL && sizeof(T) <= 4UL ) ||
+                                 ( bool( BLAZE_MIC_MODE  ) && sizeof(T) >= 4UL );
 };
 
 template< typename T >
 struct HasSIMDMultHelper< complex<T>, complex<T>, EnableIf_< And< IsNumeric<T>, IsIntegral<T> > > >
 {
-   static constexpr bool value = ( BLAZE_SSE2_MODE && sizeof(T) == 2UL ) ||
-                                 ( BLAZE_SSE4_MODE && sizeof(T) >= 2UL && sizeof(T) <= 4UL ) ||
-                                 ( BLAZE_AVX2_MODE && sizeof(T) >= 2UL && sizeof(T) <= 4UL ) ||
-                                 ( BLAZE_MIC_MODE  && sizeof(T) == 4UL );
+   static constexpr bool value = ( bool( BLAZE_SSE2_MODE ) && sizeof(T) == 2UL ) ||
+                                 ( bool( BLAZE_SSE4_MODE ) && sizeof(T) >= 2UL && sizeof(T) <= 4UL ) ||
+                                 ( bool( BLAZE_AVX2_MODE ) && sizeof(T) >= 2UL && sizeof(T) <= 4UL ) ||
+                                 ( bool( BLAZE_MIC_MODE  ) && sizeof(T) == 4UL );
 };
 /*! \endcond */
 //*************************************************************************************************
@@ -117,25 +117,32 @@ struct HasSIMDMultHelper< complex<T>, complex<T>, EnableIf_< And< IsNumeric<T>, 
 template<>
 struct HasSIMDMultHelper< float, float >
 {
-   static constexpr bool value = BLAZE_SSE_MODE || BLAZE_AVX_MODE || BLAZE_MIC_MODE;
+   static constexpr bool value = bool( BLAZE_SSE_MODE ) ||
+                                 bool( BLAZE_AVX_MODE ) ||
+                                 bool( BLAZE_MIC_MODE );
 };
 
 template<>
 struct HasSIMDMultHelper< float, complex<float> >
 {
-   static constexpr bool value = BLAZE_SSE_MODE || BLAZE_AVX_MODE || BLAZE_MIC_MODE;
+   static constexpr bool value = bool( BLAZE_SSE_MODE ) ||
+                                 bool( BLAZE_AVX_MODE ) ||
+                                 bool( BLAZE_MIC_MODE );
 };
 
 template<>
 struct HasSIMDMultHelper< complex<float>, float >
 {
-   static constexpr bool value = BLAZE_SSE_MODE || BLAZE_AVX_MODE || BLAZE_MIC_MODE;
+   static constexpr bool value = bool( BLAZE_SSE_MODE ) ||
+                                 bool( BLAZE_AVX_MODE ) ||
+                                 bool( BLAZE_MIC_MODE );
 };
 
 template<>
 struct HasSIMDMultHelper< complex<float>, complex<float> >
 {
-   static constexpr bool value = ( BLAZE_SSE3_MODE || BLAZE_AVX_MODE ) && !BLAZE_MIC_MODE;
+   static constexpr bool value = ( bool( BLAZE_SSE3_MODE ) && !bool( BLAZE_MIC_MODE ) ) ||
+                                 ( bool( BLAZE_AVX_MODE  ) && !bool( BLAZE_MIC_MODE ) );
 };
 /*! \endcond */
 //*************************************************************************************************
@@ -146,25 +153,32 @@ struct HasSIMDMultHelper< complex<float>, complex<float> >
 template<>
 struct HasSIMDMultHelper< double, double >
 {
-   static constexpr bool value = BLAZE_SSE2_MODE || BLAZE_AVX_MODE || BLAZE_MIC_MODE;
+   static constexpr bool value = bool( BLAZE_SSE2_MODE ) ||
+                                 bool( BLAZE_AVX_MODE  ) ||
+                                 bool( BLAZE_MIC_MODE  );
 };
 
 template<>
 struct HasSIMDMultHelper< double, complex<double> >
 {
-   static constexpr bool value = BLAZE_SSE2_MODE || BLAZE_AVX_MODE || BLAZE_MIC_MODE;
+   static constexpr bool value = bool( BLAZE_SSE2_MODE ) ||
+                                 bool( BLAZE_AVX_MODE  ) ||
+                                 bool( BLAZE_MIC_MODE  );
 };
 
 template<>
 struct HasSIMDMultHelper< complex<double>, double >
 {
-   static constexpr bool value = BLAZE_SSE2_MODE || BLAZE_AVX_MODE || BLAZE_MIC_MODE;
+   static constexpr bool value = bool( BLAZE_SSE2_MODE ) ||
+                                 bool( BLAZE_AVX_MODE  ) ||
+                                 bool( BLAZE_MIC_MODE  );
 };
 
 template<>
 struct HasSIMDMultHelper< complex<double>, complex<double> >
 {
-   static constexpr bool value = ( BLAZE_SSE3_MODE || BLAZE_AVX_MODE ) && !BLAZE_MIC_MODE;
+   static constexpr bool value = ( bool( BLAZE_SSE3_MODE ) && !bool( BLAZE_MIC_MODE ) ) ||
+                                 ( bool( BLAZE_AVX_MODE  ) && !bool( BLAZE_MIC_MODE ) );
 };
 /*! \endcond */
 //*************************************************************************************************

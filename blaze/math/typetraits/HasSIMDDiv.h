@@ -76,13 +76,13 @@ struct HasSIMDDivHelper
 template< typename T >
 struct HasSIMDDivHelper< T, T, EnableIf_< And< IsNumeric<T>, IsIntegral<T> > > >
 {
-   static constexpr bool value = BLAZE_MIC_MODE && sizeof(T) >= 4UL;
+   static constexpr bool value = bool( BLAZE_MIC_MODE ) && sizeof(T) >= 4UL;
 };
 
 template< typename T >
 struct HasSIMDDivHelper< complex<T>, T, EnableIf_< And< IsNumeric<T>, IsIntegral<T> > > >
 {
-   static constexpr bool value = BLAZE_MIC_MODE && sizeof(T) >= 4UL;
+   static constexpr bool value = bool( BLAZE_MIC_MODE ) && sizeof(T) >= 4UL;
 };
 /*! \endcond */
 //*************************************************************************************************
@@ -92,13 +92,19 @@ struct HasSIMDDivHelper< complex<T>, T, EnableIf_< And< IsNumeric<T>, IsIntegral
 /*! \cond BLAZE_INTERNAL */
 template<>
 struct HasSIMDDivHelper< float, float >
-   : public BoolConstant< BLAZE_SSE_MODE || BLAZE_AVX_MODE || BLAZE_MIC_MODE >
-{};
+{
+   static constexpr bool value = bool( BLAZE_SSE_MODE ) ||
+                                 bool( BLAZE_AVX_MODE ) ||
+                                 bool( BLAZE_MIC_MODE );
+};
 
 template<>
 struct HasSIMDDivHelper< complex<float>, float >
-   : public BoolConstant< BLAZE_SSE_MODE || BLAZE_AVX_MODE || BLAZE_MIC_MODE >
-{};
+{
+   static constexpr bool value = bool( BLAZE_SSE_MODE ) ||
+                                 bool( BLAZE_AVX_MODE ) ||
+                                 bool( BLAZE_MIC_MODE );
+};
 /*! \endcond */
 //*************************************************************************************************
 
@@ -107,13 +113,19 @@ struct HasSIMDDivHelper< complex<float>, float >
 /*! \cond BLAZE_INTERNAL */
 template<>
 struct HasSIMDDivHelper< double, double >
-   : public BoolConstant< BLAZE_SSE2_MODE || BLAZE_AVX_MODE || BLAZE_MIC_MODE >
-{};
+{
+   static constexpr bool value = bool( BLAZE_SSE2_MODE ) ||
+                                 bool( BLAZE_AVX_MODE  ) ||
+                                 bool( BLAZE_MIC_MODE  );
+};
 
 template<>
 struct HasSIMDDivHelper< complex<double>, double >
-   : public BoolConstant< BLAZE_SSE2_MODE || BLAZE_AVX_MODE || BLAZE_MIC_MODE >
-{};
+{
+   static constexpr bool value = bool( BLAZE_SSE2_MODE ) ||
+                                 bool( BLAZE_AVX_MODE  ) ||
+                                 bool( BLAZE_MIC_MODE  );
+};
 /*! \endcond */
 //*************************************************************************************************
 
