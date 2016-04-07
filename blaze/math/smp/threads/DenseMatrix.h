@@ -106,7 +106,7 @@ void smpAssign_backend( DenseMatrix<MT1,SO>& lhs, const DenseMatrix<MT2,rowMajor
    typedef SubmatrixExprTrait_<MT1,aligned>    AlignedTarget;
    typedef SubmatrixExprTrait_<MT1,unaligned>  UnalignedTarget;
 
-   enum : size_ { SIMDSIZE = SIMDTrait< ElementType_<MT1> >::size; };
+   enum : size_t { SIMDSIZE = SIMDTrait< ElementType_<MT1> >::size };
 
    const bool simdEnabled( MT1::simdEnabled && MT2::simdEnabled && IsSame<ET1,ET2>::value );
    const bool lhsAligned ( (~lhs).isAligned() );
@@ -182,7 +182,7 @@ void smpAssign_backend( DenseMatrix<MT1,SO>& lhs, const DenseMatrix<MT2,columnMa
    typedef SubmatrixExprTrait_<MT1,aligned>    AlignedTarget;
    typedef SubmatrixExprTrait_<MT1,unaligned>  UnalignedTarget;
 
-   enum : size_ { SIMDSIZE = SIMDTrait< ElementType_<MT1> >::size; };
+   enum : size_t { SIMDSIZE = SIMDTrait< ElementType_<MT1> >::size };
 
    const bool simdEnabled( MT1::simdEnabled && MT2::simdEnabled && IsSame<ET1,ET2>::value );
    const bool lhsAligned ( (~lhs).isAligned() );
@@ -455,7 +455,7 @@ void smpAddAssign_backend( DenseMatrix<MT1,SO>& lhs, const DenseMatrix<MT2,rowMa
    typedef SubmatrixExprTrait_<MT1,aligned>    AlignedTarget;
    typedef SubmatrixExprTrait_<MT1,unaligned>  UnalignedTarget;
 
-   enum : size_ { SIMDSIZE = SIMDTrait< ElementType_<MT1> >::size; };
+   enum : size_t { SIMDSIZE = SIMDTrait< ElementType_<MT1> >::size };
 
    const bool simdEnabled( MT1::simdEnabled && MT2::simdEnabled && IsSame<ET1,ET2>::value );
    const bool lhsAligned ( (~lhs).isAligned() );
@@ -531,7 +531,7 @@ void smpAddAssign_backend( DenseMatrix<MT1,SO>& lhs, const DenseMatrix<MT2,colum
    typedef SubmatrixExprTrait_<MT1,aligned>    AlignedTarget;
    typedef SubmatrixExprTrait_<MT1,unaligned>  UnalignedTarget;
 
-   enum : size_ { SIMDSIZE = SIMDTrait< ElementType_<MT1> >::size; };
+   enum : size_t { SIMDSIZE = SIMDTrait< ElementType_<MT1> >::size };
 
    const bool simdEnabled( MT1::simdEnabled && MT2::simdEnabled && IsSame<ET1,ET2>::value );
    const bool lhsAligned ( (~lhs).isAligned() );
@@ -805,7 +805,7 @@ void smpSubAssign_backend( DenseMatrix<MT1,SO>& lhs, const DenseMatrix<MT2,rowMa
    typedef SubmatrixExprTrait_<MT1,aligned>    AlignedTarget;
    typedef SubmatrixExprTrait_<MT1,unaligned>  UnalignedTarget;
 
-   enum : size_ { SIMDSIZE = SIMDTrait< ElementType_<MT1> >::size; };
+   enum : size_t { SIMDSIZE = SIMDTrait< ElementType_<MT1> >::size };
 
    const bool simdEnabled( MT1::simdEnabled && MT2::simdEnabled && IsSame<ET1,ET2>::value );
    const bool lhsAligned ( (~lhs).isAligned() );
@@ -881,7 +881,7 @@ void smpSubAssign_backend( DenseMatrix<MT1,SO>& lhs, const DenseMatrix<MT2,colum
    typedef SubmatrixExprTrait_<MT1,aligned>    AlignedTarget;
    typedef SubmatrixExprTrait_<MT1,unaligned>  UnalignedTarget;
 
-   enum : size_ { SIMDSIZE = SIMDTrait< ElementType_<MT1> >::size; };
+   enum : size_t { SIMDSIZE = SIMDTrait< ElementType_<MT1> >::size };
 
    const bool simdEnabled( MT1::simdEnabled && MT2::simdEnabled && IsSame<ET1,ET2>::value );
    const bool lhsAligned ( (~lhs).isAligned() );
