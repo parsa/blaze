@@ -137,7 +137,7 @@ class AlignedArray
    inline           Reference      operator[]( size_t index ) noexcept;
    inline constexpr ConstReference operator[]( size_t index ) const noexcept;
    inline           Reference      at( size_t index );
-   inline constexpr ConstReference at( size_t index ) const;
+   inline           ConstReference at( size_t index ) const;
    inline           Pointer        data() noexcept;
    inline constexpr ConstPointer   data() const noexcept;
    inline           Iterator       begin () noexcept;
@@ -335,7 +335,7 @@ inline typename AlignedArray<Type,N,Alignment>::Reference
 template< typename Type       // Data type of the elements
         , size_t N            // Number of elements
         , size_t Alignment >  // Array alignment
-inline constexpr typename AlignedArray<Type,N,Alignment>::ConstReference
+inline typename AlignedArray<Type,N,Alignment>::ConstReference
    AlignedArray<Type,N,Alignment>::at( size_t index ) const
 {
    if( index >= N ) {

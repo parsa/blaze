@@ -320,7 +320,7 @@ class SMatSMatMultExpr : public SparseMatrix< SMatSMatMultExpr<MT1,MT2>, false >
    // \param i The index of the row.
    // \return The number of non-zero elements of row \a i.
    */
-   inline constexpr size_t nonZeros( size_t i ) const noexcept {
+   inline size_t nonZeros( size_t i ) const noexcept {
       UNUSED_PARAMETER( i );
       return 0UL;
    }

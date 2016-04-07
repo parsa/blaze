@@ -321,7 +321,7 @@ class HybridMatrix : public DenseMatrix< HybridMatrix<Type,M,N,SO>, SO >
                               inline size_t           columns() const noexcept;
                               inline constexpr size_t spacing() const noexcept;
                               inline constexpr size_t capacity() const noexcept;
-                              inline constexpr size_t capacity( size_t i ) const noexcept;
+                              inline           size_t capacity( size_t i ) const noexcept;
                               inline size_t           nonZeros() const;
                               inline size_t           nonZeros( size_t i ) const;
                               inline void             reset();
@@ -1557,7 +1557,7 @@ template< typename Type  // Data type of the matrix
         , size_t M       // Number of rows
         , size_t N       // Number of columns
         , bool SO >      // Storage order
-inline constexpr size_t HybridMatrix<Type,M,N,SO>::capacity( size_t i ) const noexcept
+inline size_t HybridMatrix<Type,M,N,SO>::capacity( size_t i ) const noexcept
 {
    UNUSED_PARAMETER( i );
 
@@ -3011,7 +3011,7 @@ class HybridMatrix<Type,M,N,true> : public DenseMatrix< HybridMatrix<Type,M,N,tr
                               inline size_t           columns() const noexcept;
                               inline constexpr size_t spacing() const noexcept;
                               inline constexpr size_t capacity() const noexcept;
-                              inline constexpr size_t capacity( size_t j ) const noexcept;
+                              inline           size_t capacity( size_t j ) const noexcept;
                               inline size_t           nonZeros() const;
                               inline size_t           nonZeros( size_t j ) const;
                               inline void             reset();
@@ -4233,7 +4233,7 @@ inline constexpr size_t HybridMatrix<Type,M,N,true>::capacity() const noexcept
 template< typename Type  // Data type of the matrix
         , size_t M       // Number of rows
         , size_t N >     // Number of columns
-inline constexpr size_t HybridMatrix<Type,M,N,true>::capacity( size_t j ) const noexcept
+inline size_t HybridMatrix<Type,M,N,true>::capacity( size_t j ) const noexcept
 {
    UNUSED_PARAMETER( j );
 

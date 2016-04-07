@@ -341,10 +341,10 @@ inline void AlignedAllocator<Type>::destroy( Pointer ptr ) noexcept
 /*!\name AlignedAllocator operators */
 //@{
 template< typename T1, typename T2 >
-inline constexpr bool operator==( const AlignedAllocator<T1>& lhs, const AlignedAllocator<T2>& rhs ) noexcept;
+inline bool operator==( const AlignedAllocator<T1>& lhs, const AlignedAllocator<T2>& rhs ) noexcept;
 
 template< typename T1, typename T2 >
-inline constexpr bool operator!=( const AlignedAllocator<T1>& lhs, const AlignedAllocator<T2>& rhs ) noexcept;
+inline bool operator!=( const AlignedAllocator<T1>& lhs, const AlignedAllocator<T2>& rhs ) noexcept;
 //@}
 //*************************************************************************************************
 
@@ -358,7 +358,7 @@ inline constexpr bool operator!=( const AlignedAllocator<T1>& lhs, const Aligned
 */
 template< typename T1    // Type of the left-hand side aligned allocator
         , typename T2 >  // Type of the right-hand side aligned allocator
-inline constexpr bool operator==( const AlignedAllocator<T1>& lhs, const AlignedAllocator<T2>& rhs ) noexcept
+inline bool operator==( const AlignedAllocator<T1>& lhs, const AlignedAllocator<T2>& rhs ) noexcept
 {
    UNUSED_PARAMETER( lhs, rhs );
    return true;
@@ -375,7 +375,7 @@ inline constexpr bool operator==( const AlignedAllocator<T1>& lhs, const Aligned
 */
 template< typename T1    // Type of the left-hand side aligned allocator
         , typename T2 >  // Type of the right-hand side aligned allocator
-inline constexpr bool operator!=( const AlignedAllocator<T1>& lhs, const AlignedAllocator<T2>& rhs ) noexcept
+inline bool operator!=( const AlignedAllocator<T1>& lhs, const AlignedAllocator<T2>& rhs ) noexcept
 {
    UNUSED_PARAMETER( lhs, rhs );
    return false;
