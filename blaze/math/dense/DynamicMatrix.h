@@ -432,7 +432,7 @@ class DynamicMatrix : public DenseMatrix< DynamicMatrix<Type,SO>, SO >
    //**Utility functions***************************************************************************
    /*!\name Utility functions */
    //@{
-   inline constexpr size_t adjustColumns( size_t minColumns ) const noexcept;
+   inline size_t adjustColumns( size_t minColumns ) const noexcept;
    //@}
    //**********************************************************************************************
 
@@ -1812,7 +1812,7 @@ inline void DynamicMatrix<Type,SO>::swap( DynamicMatrix& m ) noexcept
 */
 template< typename Type  // Data type of the matrix
         , bool SO >      // Storage order
-inline constexpr size_t DynamicMatrix<Type,SO>::adjustColumns( size_t minColumns ) const noexcept
+inline size_t DynamicMatrix<Type,SO>::adjustColumns( size_t minColumns ) const noexcept
 {
    if( usePadding && IsVectorizable<Type>::value )
       return nextMultiple<size_t>( minColumns, SIMDSIZE );
@@ -3011,7 +3011,7 @@ class DynamicMatrix<Type,true> : public DenseMatrix< DynamicMatrix<Type,true>, t
    //**Utility functions***************************************************************************
    /*!\name Utility functions */
    //@{
-   inline constexpr size_t adjustRows( size_t minRows ) const noexcept;
+   inline size_t adjustRows( size_t minRows ) const noexcept;
    //@}
    //**********************************************************************************************
 
@@ -4387,7 +4387,7 @@ inline void DynamicMatrix<Type,true>::swap( DynamicMatrix& m ) noexcept
 // \return The adjusted number of rows.
 */
 template< typename Type >  // Data type of the matrix
-inline constexpr size_t DynamicMatrix<Type,true>::adjustRows( size_t minRows ) const noexcept
+inline size_t DynamicMatrix<Type,true>::adjustRows( size_t minRows ) const noexcept
 {
    if( usePadding && IsVectorizable<Type>::value )
       return nextMultiple<size_t>( minRows, SIMDSIZE );
