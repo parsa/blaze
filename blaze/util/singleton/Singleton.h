@@ -382,7 +382,7 @@ struct HasCyclicDependency<T,TL,true>
 // In case the given data type \a T is not an integral data type, a compilation error is created.
 */
 #define BLAZE_DETECT_CYCLIC_LIFETIME_DEPENDENCY(T) \
-   static_assert( !blaze::HasCyclicDependency<T,blaze::NullType>::value, "Cyclic dependency detected" )
+   static_assert( ( !blaze::HasCyclicDependency<T,blaze::NullType>::value ), "Cyclic dependency detected" )
 //*************************************************************************************************
 
 
