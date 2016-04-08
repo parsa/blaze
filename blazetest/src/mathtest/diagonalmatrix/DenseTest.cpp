@@ -401,6 +401,59 @@ void DenseTest::testConstructors()
 
 
    //=====================================================================================
+   // Row-major list initialization
+   //=====================================================================================
+
+   // Complete initializer list
+   {
+      test_ = "Row-major DiagonalMatrix initializer list constructor (complete list)";
+
+      const DT diag{ { 1, 0, 0 }, { 0, 2, 0 }, { 0, 0, 3 } };
+
+      checkRows    ( diag, 3UL );
+      checkColumns ( diag, 3UL );
+      checkCapacity( diag, 9UL );
+      checkNonZeros( diag, 3UL );
+
+      if( diag(0,0) != 1 || diag(0,1) != 0 || diag(0,2) != 0 ||
+          diag(1,0) != 0 || diag(1,1) != 2 || diag(1,2) != 0 ||
+          diag(2,0) != 0 || diag(2,1) != 0 || diag(2,2) != 3 ) {
+         std::ostringstream oss;
+         oss << " Test: " << test_ << "\n"
+             << " Error: Construction failed\n"
+             << " Details:\n"
+             << "   Result:\n" << diag << "\n"
+             << "   Expected result:\n( 1 0 0 )\n( 0 2 0 )\n( 0 0 3 )\n";
+         throw std::runtime_error( oss.str() );
+      }
+   }
+
+   // Incomplete initializer list
+   {
+      test_ = "Row-major DiagonalMatrix initializer list constructor (incomplete list)";
+
+      const DT diag{ { 1 }, { 0, 2 }, { 0, 0, 3 } };
+
+      checkRows    ( diag, 3UL );
+      checkColumns ( diag, 3UL );
+      checkCapacity( diag, 9UL );
+      checkNonZeros( diag, 3UL );
+
+      if( diag(0,0) != 1 || diag(0,1) != 0 || diag(0,2) != 0 ||
+          diag(1,0) != 0 || diag(1,1) != 2 || diag(1,2) != 0 ||
+          diag(2,0) != 0 || diag(2,1) != 0 || diag(2,2) != 3 ) {
+         std::ostringstream oss;
+         oss << " Test: " << test_ << "\n"
+             << " Error: Construction failed\n"
+             << " Details:\n"
+             << "   Result:\n" << diag << "\n"
+             << "   Expected result:\n( 1 0 0 )\n( 0 2 0 )\n( 0 0 3 )\n";
+         throw std::runtime_error( oss.str() );
+      }
+   }
+
+
+   //=====================================================================================
    // Row-major array initialization
    //=====================================================================================
 
@@ -983,6 +1036,60 @@ void DenseTest::testConstructors()
       }
    }
 
+
+   //=====================================================================================
+   // Column-major list initialization
+   //=====================================================================================
+
+   // Complete initializer list
+   {
+      test_ = "Column-major DiagonalMatrix initializer list constructor (complete list)";
+
+      const ODT diag{ { 1, 0, 0 }, { 0, 2, 0 }, { 0, 0, 3 } };
+
+      checkRows    ( diag, 3UL );
+      checkColumns ( diag, 3UL );
+      checkCapacity( diag, 9UL );
+      checkNonZeros( diag, 3UL );
+
+      if( diag(0,0) != 1 || diag(0,1) != 0 || diag(0,2) != 0 ||
+          diag(1,0) != 0 || diag(1,1) != 2 || diag(1,2) != 0 ||
+          diag(2,0) != 0 || diag(2,1) != 0 || diag(2,2) != 3 ) {
+         std::ostringstream oss;
+         oss << " Test: " << test_ << "\n"
+             << " Error: Construction failed\n"
+             << " Details:\n"
+             << "   Result:\n" << diag << "\n"
+             << "   Expected result:\n( 1 0 0 )\n( 0 2 0 )\n( 0 0 3 )\n";
+         throw std::runtime_error( oss.str() );
+      }
+   }
+
+   // Incomplete initializer list
+   {
+      test_ = "Column-major DiagonalMatrix initializer list constructor (incomplete list)";
+
+      const ODT diag{ { 1 }, { 0, 2 }, { 0, 0, 3 } };
+
+      checkRows    ( diag, 3UL );
+      checkColumns ( diag, 3UL );
+      checkCapacity( diag, 9UL );
+      checkNonZeros( diag, 3UL );
+
+      if( diag(0,0) != 1 || diag(0,1) != 0 || diag(0,2) != 0 ||
+          diag(1,0) != 0 || diag(1,1) != 2 || diag(1,2) != 0 ||
+          diag(2,0) != 0 || diag(2,1) != 0 || diag(2,2) != 3 ) {
+         std::ostringstream oss;
+         oss << " Test: " << test_ << "\n"
+             << " Error: Construction failed\n"
+             << " Details:\n"
+             << "   Result:\n" << diag << "\n"
+             << "   Expected result:\n( 1 0 0 )\n( 0 2 0 )\n( 0 0 3 )\n";
+         throw std::runtime_error( oss.str() );
+      }
+   }
+
+
    //=====================================================================================
    // Row-major array initialization
    //=====================================================================================
@@ -1322,6 +1429,67 @@ void DenseTest::testAssignment()
              << " Details:\n"
              << "   Result:\n" << diag << "\n"
              << "   Expected result:\n( 2 0 0 )\n( 0 2 0 )\n( 0 0 2 )\n";
+         throw std::runtime_error( oss.str() );
+      }
+   }
+
+
+   //=====================================================================================
+   // Row-major list assignment
+   //=====================================================================================
+
+   // Complete initializer list
+   {
+      test_ = "Row-major DiagonalMatrix initializer list assignment (complete list)";
+
+      DT diag;
+      diag = { { 1, 0, 0 }, { 0, 2, 0 }, { 0, 0, 3 } };
+
+      checkRows    ( diag, 3UL );
+      checkColumns ( diag, 3UL );
+      checkCapacity( diag, 9UL );
+      checkNonZeros( diag, 3UL );
+      checkNonZeros( diag, 0UL, 1UL );
+      checkNonZeros( diag, 1UL, 1UL );
+      checkNonZeros( diag, 2UL, 1UL );
+
+      if( diag(0,0) != 1 || diag(0,1) != 0 || diag(0,2) != 0 ||
+          diag(1,0) != 0 || diag(1,1) != 2 || diag(1,2) != 0 ||
+          diag(2,0) != 0 || diag(2,1) != 0 || diag(2,2) != 3 ) {
+         std::ostringstream oss;
+         oss << " Test: " << test_ << "\n"
+             << " Error: Assignment failed\n"
+             << " Details:\n"
+             << "   Result:\n" << diag << "\n"
+             << "   Expected result:\n( 1 0 0 )\n( 0 2 0 )\n( 0 0 3 )\n";
+         throw std::runtime_error( oss.str() );
+      }
+   }
+
+   // Incomplete initializer list
+   {
+      test_ = "Row-major DiagonalMatrix initializer list assignment (incomplete list)";
+
+      DT diag;
+      diag = { { 1 }, { 0, 2 }, { 0, 0, 3 } };
+
+      checkRows    ( diag, 3UL );
+      checkColumns ( diag, 3UL );
+      checkCapacity( diag, 9UL );
+      checkNonZeros( diag, 3UL );
+      checkNonZeros( diag, 0UL, 1UL );
+      checkNonZeros( diag, 1UL, 1UL );
+      checkNonZeros( diag, 2UL, 1UL );
+
+      if( diag(0,0) != 1 || diag(0,1) != 0 || diag(0,2) != 0 ||
+          diag(1,0) != 0 || diag(1,1) != 2 || diag(1,2) != 0 ||
+          diag(2,0) != 0 || diag(2,1) != 0 || diag(2,2) != 3 ) {
+         std::ostringstream oss;
+         oss << " Test: " << test_ << "\n"
+             << " Error: Assignment failed\n"
+             << " Details:\n"
+             << "   Result:\n" << diag << "\n"
+             << "   Expected result:\n( 1 0 0 )\n( 0 2 0 )\n( 0 0 3 )\n";
          throw std::runtime_error( oss.str() );
       }
    }
@@ -1978,6 +2146,67 @@ void DenseTest::testAssignment()
              << " Details:\n"
              << "   Result:\n" << diag << "\n"
              << "   Expected result:\n( 2 0 0 )\n( 0 2 0 )\n( 0 0 2 )\n";
+         throw std::runtime_error( oss.str() );
+      }
+   }
+
+
+   //=====================================================================================
+   // Column-major list assignment
+   //=====================================================================================
+
+   // Complete initializer list
+   {
+      test_ = "Column-major DiagonalMatrix initializer list assignment (complete list)";
+
+      ODT diag;
+      diag = { { 1, 0, 0 }, { 0, 2, 0 }, { 0, 0, 3 } };
+
+      checkRows    ( diag, 3UL );
+      checkColumns ( diag, 3UL );
+      checkCapacity( diag, 9UL );
+      checkNonZeros( diag, 3UL );
+      checkNonZeros( diag, 0UL, 1UL );
+      checkNonZeros( diag, 1UL, 1UL );
+      checkNonZeros( diag, 2UL, 1UL );
+
+      if( diag(0,0) != 1 || diag(0,1) != 0 || diag(0,2) != 0 ||
+          diag(1,0) != 0 || diag(1,1) != 2 || diag(1,2) != 0 ||
+          diag(2,0) != 0 || diag(2,1) != 0 || diag(2,2) != 3 ) {
+         std::ostringstream oss;
+         oss << " Test: " << test_ << "\n"
+             << " Error: Assignment failed\n"
+             << " Details:\n"
+             << "   Result:\n" << diag << "\n"
+             << "   Expected result:\n( 1 0 0 )\n( 0 2 0 )\n( 0 0 3 )\n";
+         throw std::runtime_error( oss.str() );
+      }
+   }
+
+   // Incomplete initializer list
+   {
+      test_ = "Column-major DiagonalMatrix initializer list assignment (incomplete list)";
+
+      ODT diag;
+      diag = { { 1 }, { 0, 2 }, { 0, 0, 3 } };
+
+      checkRows    ( diag, 3UL );
+      checkColumns ( diag, 3UL );
+      checkCapacity( diag, 9UL );
+      checkNonZeros( diag, 3UL );
+      checkNonZeros( diag, 0UL, 1UL );
+      checkNonZeros( diag, 1UL, 1UL );
+      checkNonZeros( diag, 2UL, 1UL );
+
+      if( diag(0,0) != 1 || diag(0,1) != 0 || diag(0,2) != 0 ||
+          diag(1,0) != 0 || diag(1,1) != 2 || diag(1,2) != 0 ||
+          diag(2,0) != 0 || diag(2,1) != 0 || diag(2,2) != 3 ) {
+         std::ostringstream oss;
+         oss << " Test: " << test_ << "\n"
+             << " Error: Assignment failed\n"
+             << " Details:\n"
+             << "   Result:\n" << diag << "\n"
+             << "   Expected result:\n( 1 0 0 )\n( 0 2 0 )\n( 0 0 3 )\n";
          throw std::runtime_error( oss.str() );
       }
    }
