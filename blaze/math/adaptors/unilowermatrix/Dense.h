@@ -40,6 +40,8 @@
 // Includes
 //*************************************************************************************************
 
+#include <initializer_list>
+#include <iterator>
 #include <blaze/math/adaptors/Forward.h>
 #include <blaze/math/adaptors/unilowermatrix/BaseTemplate.h>
 #include <blaze/math/adaptors/unilowermatrix/UniLowerProxy.h>
@@ -586,6 +588,8 @@ class UniLowerMatrix<MT,SO,true>
    template< typename A1 > explicit inline UniLowerMatrix( const A1& a1 );
                            explicit inline UniLowerMatrix( size_t n, const ElementType& init );
 
+   explicit inline UniLowerMatrix( std::initializer_list< std::initializer_list<ElementType> > list );
+
    template< typename Other >
    explicit inline UniLowerMatrix( size_t n, const Other* array );
 
@@ -631,10 +635,12 @@ class UniLowerMatrix<MT,SO,true>
    //**Assignment operators************************************************************************
    /*!\name Assignment operators */
    //@{
+   inline UniLowerMatrix& operator=( const ElementType& rhs );
+   inline UniLowerMatrix& operator=( std::initializer_list< std::initializer_list<ElementType> > list );
+
    template< typename Other, size_t N >
    inline UniLowerMatrix& operator=( const Other (&array)[N][N] );
 
-   inline UniLowerMatrix& operator=( const ElementType& rhs );
    inline UniLowerMatrix& operator=( const UniLowerMatrix& rhs );
    inline UniLowerMatrix& operator=( UniLowerMatrix&& rhs ) noexcept;
 
@@ -839,6 +845,44 @@ inline UniLowerMatrix<MT,SO,true>::UniLowerMatrix( size_t n, const ElementType& 
    }
 
    BLAZE_INTERNAL_ASSERT( isSquare( matrix_ ), "Non-square unilower matrix detected" );
+   BLAZE_INTERNAL_ASSERT( isIntact(), "Broken invariant detected" );
+}
+/*! \endcond */
+//*************************************************************************************************
+
+
+//*************************************************************************************************
+/*! \cond BLAZE_INTERNAL */
+/*!\brief List initialization of all matrix elements.
+//
+// \param list The initializer list.
+// \exception std::invalid_argument Invalid setup of unilower matrix.
+//
+// This constructor provides the option to explicitly initialize the elements of the unilower
+// matrix by means of an initializer list:
+
+   \code
+   using blaze::rowMajor;
+
+   blaze::UniLowerMatrix< blaze::StaticMatrix<int,3,3,rowMajor> > A{ { 1, 0, 0 },
+                                                                     { 2, 1 },
+                                                                     { 4, 5, 1 } };
+   \endcode
+
+// The matrix is sized according to the size of the initializer list and all matrix elements are
+// initialized with the values from the given list. Missing values are initialized with default
+// values. In case the given list does not represent a diagonal matrix, a \a std::invalid_argument
+// exception is thrown.
+*/
+template< typename MT  // Type of the adapted dense matrix
+        , bool SO >    // Storage order of the adapted dense matrix
+inline UniLowerMatrix<MT,SO,true>::UniLowerMatrix( std::initializer_list< std::initializer_list<ElementType> > list )
+   : matrix_( list )  // The adapted dense matrix
+{
+   if( !isUniLower( matrix_ ) ) {
+      BLAZE_THROW_INVALID_ARGUMENT( "Invalid setup of unilower matrix" );
+   }
+
    BLAZE_INTERNAL_ASSERT( isIntact(), "Broken invariant detected" );
 }
 /*! \endcond */
@@ -1446,6 +1490,81 @@ inline typename UniLowerMatrix<MT,SO,true>::ConstIterator
 
 //*************************************************************************************************
 /*! \cond BLAZE_INTERNAL */
+/*!\brief Homogenous assignment to all lower matrix elements.
+//
+// \param rhs Scalar value to be assigned to the lower matrix elements.
+// \return Reference to the assigned matrix.
+*/
+template< typename MT  // Type of the adapted dense matrix
+        , bool SO >    // Storage order of the adapted dense matrix
+inline UniLowerMatrix<MT,SO,true>&
+   UniLowerMatrix<MT,SO,true>::operator=( const ElementType& rhs )
+{
+   if( SO ) {
+      for( size_t j=0UL; j<columns(); ++j )
+         for( size_t i=j+1UL; i<rows(); ++i )
+            matrix_(i,j) = rhs;
+   }
+   else {
+      for( size_t i=1UL; i<rows(); ++i )
+         for( size_t j=0UL; j<i; ++j )
+            matrix_(i,j) = rhs;
+   }
+
+   return *this;
+}
+/*! \endcond */
+//*************************************************************************************************
+
+
+//*************************************************************************************************
+/*! \cond BLAZE_INTERNAL */
+/*!\brief List assignment to all matrix elements.
+//
+// \param list The initializer list.
+// \exception std::invalid_argument Invalid assignment to unilower matrix.
+//
+// This assignment operator offers the option to directly assign to all elements of the unilower
+// matrix by means of an initializer list:
+
+   \code
+   using blaze::rowMajor;
+
+   blaze::UniLowerMatrix< blaze::StaticMatrix<int,3UL,3UL,rowMajor> > A;
+   A = { { 1, 0, 0 },
+         { 2, 1 },
+         { 4, 5, 1 } };
+   \endcode
+
+// The matrix elements are assigned the values from the given initializer list. Missing values
+// are initialized as default (as e.g. the value 6 in the example). Note that in case the size
+// of the top-level initializer list exceeds the number of rows or the size of any nested list
+// exceeds the number of columns, a \a std::invalid_argument exception is thrown.
+*/
+template< typename MT  // Type of the adapted dense matrix
+        , bool SO >    // Storage order of the adapted dense matrix
+inline UniLowerMatrix<MT,SO,true>&
+   UniLowerMatrix<MT,SO,true>::operator=( std::initializer_list< std::initializer_list<ElementType> > list )
+{
+   MT tmp( list );
+
+   if( !isUniLower( tmp ) ) {
+      BLAZE_THROW_INVALID_ARGUMENT( "Invalid assignment to unilower matrix" );
+   }
+
+   matrix_ = std::move( tmp );
+
+   BLAZE_INTERNAL_ASSERT( isSquare( matrix_ ), "Non-square unilower matrix detected" );
+   BLAZE_INTERNAL_ASSERT( isIntact(), "Broken invariant detected" );
+
+   return *this;
+}
+/*! \endcond */
+//*************************************************************************************************
+
+
+//*************************************************************************************************
+/*! \cond BLAZE_INTERNAL */
 /*!\brief Array assignment to all unilower matrix elements.
 //
 // \param array \f$ N \times N \f$ dimensional array for the assignment.
@@ -1485,35 +1604,6 @@ inline UniLowerMatrix<MT,SO,true>&
 
    BLAZE_INTERNAL_ASSERT( isSquare( matrix_ ), "Non-square unilower matrix detected" );
    BLAZE_INTERNAL_ASSERT( isIntact(), "Broken invariant detected" );
-
-   return *this;
-}
-/*! \endcond */
-//*************************************************************************************************
-
-
-//*************************************************************************************************
-/*! \cond BLAZE_INTERNAL */
-/*!\brief Homogenous assignment to all lower matrix elements.
-//
-// \param rhs Scalar value to be assigned to the lower matrix elements.
-// \return Reference to the assigned matrix.
-*/
-template< typename MT  // Type of the adapted dense matrix
-        , bool SO >    // Storage order of the adapted dense matrix
-inline UniLowerMatrix<MT,SO,true>&
-   UniLowerMatrix<MT,SO,true>::operator=( const ElementType& rhs )
-{
-   if( SO ) {
-      for( size_t j=0UL; j<columns(); ++j )
-         for( size_t i=j+1UL; i<rows(); ++i )
-            matrix_(i,j) = rhs;
-   }
-   else {
-      for( size_t i=1UL; i<rows(); ++i )
-         for( size_t j=0UL; j<i; ++j )
-            matrix_(i,j) = rhs;
-   }
 
    return *this;
 }
