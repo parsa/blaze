@@ -384,6 +384,59 @@ void DenseTest::testConstructors()
 
 
    //=====================================================================================
+   // Row-major list initialization
+   //=====================================================================================
+
+   // Complete initializer list
+   {
+      test_ = "Row-major UpperMatrix initializer list constructor (complete list)";
+
+      const UT upper{ { 1, 2, 3 }, { 0, 4, 5 }, { 0, 0, 6 } };
+
+      checkRows    ( upper, 3UL );
+      checkColumns ( upper, 3UL );
+      checkCapacity( upper, 9UL );
+      checkNonZeros( upper, 6UL );
+
+      if( upper(0,0) != 1 || upper(0,1) != 2 || upper(0,2) != 3 ||
+          upper(1,0) != 0 || upper(1,1) != 4 || upper(1,2) != 5 ||
+          upper(2,0) != 0 || upper(2,1) != 0 || upper(2,2) != 6 ) {
+         std::ostringstream oss;
+         oss << " Test: " << test_ << "\n"
+             << " Error: Construction failed\n"
+             << " Details:\n"
+             << "   Result:\n" << upper << "\n"
+             << "   Expected result:\n( 1 2 3 )\n( 0 4 5 )\n( 0 0 6 )\n";
+         throw std::runtime_error( oss.str() );
+      }
+   }
+
+   // Incomplete initializer list
+   {
+      test_ = "Row-major UpperMatrix initializer list constructor (incomplete list)";
+
+      const UT upper{ { 1, 2 }, { 0, 4 }, { 0, 0, 6 } };
+
+      checkRows    ( upper, 3UL );
+      checkColumns ( upper, 3UL );
+      checkCapacity( upper, 9UL );
+      checkNonZeros( upper, 4UL );
+
+      if( upper(0,0) != 1 || upper(0,1) != 2 || upper(0,2) != 0 ||
+          upper(1,0) != 0 || upper(1,1) != 4 || upper(1,2) != 0 ||
+          upper(2,0) != 0 || upper(2,1) != 0 || upper(2,2) != 6 ) {
+         std::ostringstream oss;
+         oss << " Test: " << test_ << "\n"
+             << " Error: Construction failed\n"
+             << " Details:\n"
+             << "   Result:\n" << upper << "\n"
+             << "   Expected result:\n( 1 2 0 )\n( 0 4 0 )\n( 0 0 6 )\n";
+         throw std::runtime_error( oss.str() );
+      }
+   }
+
+
+   //=====================================================================================
    // Row-major array initialization
    //=====================================================================================
 
@@ -955,6 +1008,59 @@ void DenseTest::testConstructors()
 
 
    //=====================================================================================
+   // Column-major list initialization
+   //=====================================================================================
+
+   // Complete initializer list
+   {
+      test_ = "Column-major UpperMatrix initializer list constructor (complete list)";
+
+      const OUT upper{ { 1, 2, 3 }, { 0, 4, 5 }, { 0, 0, 6 } };
+
+      checkRows    ( upper, 3UL );
+      checkColumns ( upper, 3UL );
+      checkCapacity( upper, 9UL );
+      checkNonZeros( upper, 6UL );
+
+      if( upper(0,0) != 1 || upper(0,1) != 2 || upper(0,2) != 3 ||
+          upper(1,0) != 0 || upper(1,1) != 4 || upper(1,2) != 5 ||
+          upper(2,0) != 0 || upper(2,1) != 0 || upper(2,2) != 6 ) {
+         std::ostringstream oss;
+         oss << " Test: " << test_ << "\n"
+             << " Error: Construction failed\n"
+             << " Details:\n"
+             << "   Result:\n" << upper << "\n"
+             << "   Expected result:\n( 1 2 3 )\n( 0 4 5 )\n( 0 0 6 )\n";
+         throw std::runtime_error( oss.str() );
+      }
+   }
+
+   // Incomplete initializer list
+   {
+      test_ = "Column-major UpperMatrix initializer list constructor (incomplete list)";
+
+      const OUT upper{ { 1, 2 }, { 0, 4 }, { 0, 0, 6 } };
+
+      checkRows    ( upper, 3UL );
+      checkColumns ( upper, 3UL );
+      checkCapacity( upper, 9UL );
+      checkNonZeros( upper, 4UL );
+
+      if( upper(0,0) != 1 || upper(0,1) != 2 || upper(0,2) != 0 ||
+          upper(1,0) != 0 || upper(1,1) != 4 || upper(1,2) != 0 ||
+          upper(2,0) != 0 || upper(2,1) != 0 || upper(2,2) != 6 ) {
+         std::ostringstream oss;
+         oss << " Test: " << test_ << "\n"
+             << " Error: Construction failed\n"
+             << " Details:\n"
+             << "   Result:\n" << upper << "\n"
+             << "   Expected result:\n( 1 2 0 )\n( 0 4 0 )\n( 0 0 6 )\n";
+         throw std::runtime_error( oss.str() );
+      }
+   }
+
+
+   //=====================================================================================
    // Column-major array initialization
    //=====================================================================================
 
@@ -1297,6 +1403,67 @@ void DenseTest::testAssignment()
              << " Details:\n"
              << "   Result:\n" << upper << "\n"
              << "   Expected result:\n( 2 2 2 )\n( 0 2 2 )\n( 0 0 2 )\n";
+         throw std::runtime_error( oss.str() );
+      }
+   }
+
+
+   //=====================================================================================
+   // Row-major list assignment
+   //=====================================================================================
+
+   // Complete initializer list
+   {
+      test_ = "Row-major UpperMatrix initializer list assignment (complete list)";
+
+      UT upper;
+      upper = { { 1, 2, 3 }, { 0, 4, 5 }, { 0, 0, 6 } };
+
+      checkRows    ( upper, 3UL );
+      checkColumns ( upper, 3UL );
+      checkCapacity( upper, 9UL );
+      checkNonZeros( upper, 6UL );
+      checkNonZeros( upper, 0UL, 3UL );
+      checkNonZeros( upper, 1UL, 2UL );
+      checkNonZeros( upper, 2UL, 1UL );
+
+      if( upper(0,0) != 1 || upper(0,1) != 2 || upper(0,2) != 3 ||
+          upper(1,0) != 0 || upper(1,1) != 4 || upper(1,2) != 5 ||
+          upper(2,0) != 0 || upper(2,1) != 0 || upper(2,2) != 6 ) {
+         std::ostringstream oss;
+         oss << " Test: " << test_ << "\n"
+             << " Error: Assignment failed\n"
+             << " Details:\n"
+             << "   Result:\n" << upper << "\n"
+             << "   Expected result:\n( 1 2 3 )\n( 0 4 5 )\n( 0 0 6 )\n";
+         throw std::runtime_error( oss.str() );
+      }
+   }
+
+   // Incomplete initializer list
+   {
+      test_ = "Row-major UpperMatrix initializer list assignment (incomplete list)";
+
+      UT upper;
+      upper = { { 1, 2 }, { 0, 4 }, { 0, 0, 6 } };
+
+      checkRows    ( upper, 3UL );
+      checkColumns ( upper, 3UL );
+      checkCapacity( upper, 9UL );
+      checkNonZeros( upper, 4UL );
+      checkNonZeros( upper, 0UL, 2UL );
+      checkNonZeros( upper, 1UL, 1UL );
+      checkNonZeros( upper, 2UL, 1UL );
+
+      if( upper(0,0) != 1 || upper(0,1) != 2 || upper(0,2) != 0 ||
+          upper(1,0) != 0 || upper(1,1) != 4 || upper(1,2) != 0 ||
+          upper(2,0) != 0 || upper(2,1) != 0 || upper(2,2) != 6 ) {
+         std::ostringstream oss;
+         oss << " Test: " << test_ << "\n"
+             << " Error: Assignment failed\n"
+             << " Details:\n"
+             << "   Result:\n" << upper << "\n"
+             << "   Expected result:\n( 1 2 0 )\n( 0 4 0 )\n( 0 0 6 )\n";
          throw std::runtime_error( oss.str() );
       }
    }
@@ -1885,6 +2052,67 @@ void DenseTest::testAssignment()
              << " Details:\n"
              << "   Result:\n" << upper << "\n"
              << "   Expected result:\n( 2 2 2 )\n( 0 2 2 )\n( 0 0 2 )\n";
+         throw std::runtime_error( oss.str() );
+      }
+   }
+
+
+   //=====================================================================================
+   // Column-major list assignment
+   //=====================================================================================
+
+   // Complete initializer list
+   {
+      test_ = "Column-major UpperMatrix initializer list assignment (complete list)";
+
+      OUT upper;
+      upper = { { 1, 2, 3 }, { 0, 4, 5 }, { 0, 0, 6 } };
+
+      checkRows    ( upper, 3UL );
+      checkColumns ( upper, 3UL );
+      checkCapacity( upper, 9UL );
+      checkNonZeros( upper, 6UL );
+      checkNonZeros( upper, 0UL, 1UL );
+      checkNonZeros( upper, 1UL, 2UL );
+      checkNonZeros( upper, 2UL, 3UL );
+
+      if( upper(0,0) != 1 || upper(0,1) != 2 || upper(0,2) != 3 ||
+          upper(1,0) != 0 || upper(1,1) != 4 || upper(1,2) != 5 ||
+          upper(2,0) != 0 || upper(2,1) != 0 || upper(2,2) != 6 ) {
+         std::ostringstream oss;
+         oss << " Test: " << test_ << "\n"
+             << " Error: Assignment failed\n"
+             << " Details:\n"
+             << "   Result:\n" << upper << "\n"
+             << "   Expected result:\n( 1 2 3 )\n( 0 4 5 )\n( 0 0 6 )\n";
+         throw std::runtime_error( oss.str() );
+      }
+   }
+
+   // Incomplete initializer list
+   {
+      test_ = "Column-major UpperMatrix initializer list assignment (incomplete list)";
+
+      OUT upper;
+      upper = { { 1, 2 }, { 0, 4 }, { 0, 0, 6 } };
+
+      checkRows    ( upper, 3UL );
+      checkColumns ( upper, 3UL );
+      checkCapacity( upper, 9UL );
+      checkNonZeros( upper, 4UL );
+      checkNonZeros( upper, 0UL, 1UL );
+      checkNonZeros( upper, 1UL, 2UL );
+      checkNonZeros( upper, 2UL, 1UL );
+
+      if( upper(0,0) != 1 || upper(0,1) != 2 || upper(0,2) != 0 ||
+          upper(1,0) != 0 || upper(1,1) != 4 || upper(1,2) != 0 ||
+          upper(2,0) != 0 || upper(2,1) != 0 || upper(2,2) != 6 ) {
+         std::ostringstream oss;
+         oss << " Test: " << test_ << "\n"
+             << " Error: Assignment failed\n"
+             << " Details:\n"
+             << "   Result:\n" << upper << "\n"
+             << "   Expected result:\n( 1 2 0 )\n( 0 4 0 )\n( 0 0 6 )\n";
          throw std::runtime_error( oss.str() );
       }
    }
