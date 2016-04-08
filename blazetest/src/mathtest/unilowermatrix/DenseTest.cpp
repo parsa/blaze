@@ -405,6 +405,59 @@ void DenseTest::testConstructors()
 
 
    //=====================================================================================
+   // Row-major list initialization
+   //=====================================================================================
+
+   // Complete initializer list
+   {
+      test_ = "Row-major UniLowerMatrix initializer list constructor (complete list)";
+
+      const LT lower{ { 1, 0, 0 }, { 2, 1, 0 }, { 4, 5, 1 } };
+
+      checkRows    ( lower, 3UL );
+      checkColumns ( lower, 3UL );
+      checkCapacity( lower, 9UL );
+      checkNonZeros( lower, 6UL );
+
+      if( lower(0,0) != 1 || lower(0,1) != 0 || lower(0,2) != 0 ||
+          lower(1,0) != 2 || lower(1,1) != 1 || lower(1,2) != 0 ||
+          lower(2,0) != 4 || lower(2,1) != 5 || lower(2,2) != 1 ) {
+         std::ostringstream oss;
+         oss << " Test: " << test_ << "\n"
+             << " Error: Construction failed\n"
+             << " Details:\n"
+             << "   Result:\n" << lower << "\n"
+             << "   Expected result:\n( 1 0 0 )\n( 2 1 0 )\n( 4 5 1 )\n";
+         throw std::runtime_error( oss.str() );
+      }
+   }
+
+   // Incomplete initializer list
+   {
+      test_ = "Row-major UniLowerMatrix initializer list constructor (incomplete list)";
+
+      const LT lower{ { 1 }, { 2, 1 }, { 4, 5, 1 } };
+
+      checkRows    ( lower, 3UL );
+      checkColumns ( lower, 3UL );
+      checkCapacity( lower, 9UL );
+      checkNonZeros( lower, 6UL );
+
+      if( lower(0,0) != 1 || lower(0,1) != 0 || lower(0,2) != 0 ||
+          lower(1,0) != 2 || lower(1,1) != 1 || lower(1,2) != 0 ||
+          lower(2,0) != 4 || lower(2,1) != 5 || lower(2,2) != 1 ) {
+         std::ostringstream oss;
+         oss << " Test: " << test_ << "\n"
+             << " Error: Construction failed\n"
+             << " Details:\n"
+             << "   Result:\n" << lower << "\n"
+             << "   Expected result:\n( 1 0 0 )\n( 2 1 0 )\n( 4 5 1 )\n";
+         throw std::runtime_error( oss.str() );
+      }
+   }
+
+
+   //=====================================================================================
    // Row-major array initialization
    //=====================================================================================
 
@@ -992,6 +1045,59 @@ void DenseTest::testConstructors()
 
 
    //=====================================================================================
+   // Column-major list initialization
+   //=====================================================================================
+
+   // Complete initializer list
+   {
+      test_ = "Column-major UniLowerMatrix initializer list constructor (complete list)";
+
+      const OLT lower{ { 1 }, { 2, 1 }, { 4, 5, 1 } };
+
+      checkRows    ( lower, 3UL );
+      checkColumns ( lower, 3UL );
+      checkCapacity( lower, 9UL );
+      checkNonZeros( lower, 6UL );
+
+      if( lower(0,0) != 1 || lower(0,1) != 0 || lower(0,2) != 0 ||
+          lower(1,0) != 2 || lower(1,1) != 1 || lower(1,2) != 0 ||
+          lower(2,0) != 4 || lower(2,1) != 5 || lower(2,2) != 1 ) {
+         std::ostringstream oss;
+         oss << " Test: " << test_ << "\n"
+             << " Error: Construction failed\n"
+             << " Details:\n"
+             << "   Result:\n" << lower << "\n"
+             << "   Expected result:\n( 1 0 0 )\n( 2 1 0 )\n( 4 5 1 )\n";
+         throw std::runtime_error( oss.str() );
+      }
+   }
+
+   // Incomplete initializer list
+   {
+      test_ = "Column-major UniLowerMatrix initializer list constructor (incomplete list)";
+
+      const OLT lower{ { 1 }, { 2, 1 }, { 4, 5, 1 } };
+
+      checkRows    ( lower, 3UL );
+      checkColumns ( lower, 3UL );
+      checkCapacity( lower, 9UL );
+      checkNonZeros( lower, 6UL );
+
+      if( lower(0,0) != 1 || lower(0,1) != 0 || lower(0,2) != 0 ||
+          lower(1,0) != 2 || lower(1,1) != 1 || lower(1,2) != 0 ||
+          lower(2,0) != 4 || lower(2,1) != 5 || lower(2,2) != 1 ) {
+         std::ostringstream oss;
+         oss << " Test: " << test_ << "\n"
+             << " Error: Construction failed\n"
+             << " Details:\n"
+             << "   Result:\n" << lower << "\n"
+             << "   Expected result:\n( 1 0 0 )\n( 2 1 0 )\n( 4 5 1 )\n";
+         throw std::runtime_error( oss.str() );
+      }
+   }
+
+
+   //=====================================================================================
    // Column-major array initialization
    //=====================================================================================
 
@@ -1328,6 +1434,67 @@ void DenseTest::testAssignment()
              << " Details:\n"
              << "   Result:\n" << lower << "\n"
              << "   Expected result:\n( 1 0 0 )\n( 2 1 0 )\n( 2 2 1 )\n";
+         throw std::runtime_error( oss.str() );
+      }
+   }
+
+
+   //=====================================================================================
+   // Row-major list assignment
+   //=====================================================================================
+
+   // Complete initializer list
+   {
+      test_ = "Row-major UniLowerMatrix initializer list assignment (complete list)";
+
+      LT lower;
+      lower = { { 1, 0, 0 }, { 2, 1, 0 }, { 4, 5, 1 } };
+
+      checkRows    ( lower, 3UL );
+      checkColumns ( lower, 3UL );
+      checkCapacity( lower, 9UL );
+      checkNonZeros( lower, 6UL );
+      checkNonZeros( lower, 0UL, 1UL );
+      checkNonZeros( lower, 1UL, 2UL );
+      checkNonZeros( lower, 2UL, 3UL );
+
+      if( lower(0,0) != 1 || lower(0,1) != 0 || lower(0,2) != 0 ||
+          lower(1,0) != 2 || lower(1,1) != 1 || lower(1,2) != 0 ||
+          lower(2,0) != 4 || lower(2,1) != 5 || lower(2,2) != 1 ) {
+         std::ostringstream oss;
+         oss << " Test: " << test_ << "\n"
+             << " Error: Assignment failed\n"
+             << " Details:\n"
+             << "   Result:\n" << lower << "\n"
+             << "   Expected result:\n( 1 0 0 )\n( 2 1 0 )\n( 4 5 1 )\n";
+         throw std::runtime_error( oss.str() );
+      }
+   }
+
+   // Incomplete initializer list
+   {
+      test_ = "Row-major UniLowerMatrix initializer list assignment (incomplete list)";
+
+      LT lower;
+      lower = { { 1 }, { 2, 1 }, { 4, 5, 1 } };
+
+      checkRows    ( lower, 3UL );
+      checkColumns ( lower, 3UL );
+      checkCapacity( lower, 9UL );
+      checkNonZeros( lower, 6UL );
+      checkNonZeros( lower, 0UL, 1UL );
+      checkNonZeros( lower, 1UL, 2UL );
+      checkNonZeros( lower, 2UL, 3UL );
+
+      if( lower(0,0) != 1 || lower(0,1) != 0 || lower(0,2) != 0 ||
+          lower(1,0) != 2 || lower(1,1) != 1 || lower(1,2) != 0 ||
+          lower(2,0) != 4 || lower(2,1) != 5 || lower(2,2) != 1 ) {
+         std::ostringstream oss;
+         oss << " Test: " << test_ << "\n"
+             << " Error: Assignment failed\n"
+             << " Details:\n"
+             << "   Result:\n" << lower << "\n"
+             << "   Expected result:\n( 1 0 0 )\n( 2 1 0 )\n( 4 5 1 )\n";
          throw std::runtime_error( oss.str() );
       }
    }
@@ -1898,6 +2065,67 @@ void DenseTest::testAssignment()
              << " Details:\n"
              << "   Result:\n" << lower << "\n"
              << "   Expected result:\n( 1 0 0 )\n( 2 1 0 )\n( 2 2 1 )\n";
+         throw std::runtime_error( oss.str() );
+      }
+   }
+
+
+   //=====================================================================================
+   // Column-major list assignment
+   //=====================================================================================
+
+   // Complete initializer list
+   {
+      test_ = "Column-major UniLowerMatrix initializer list assignment (complete list)";
+
+      OLT lower;
+      lower = { { 1, 0, 0 }, { 2, 1, 0 }, { 4, 5, 1 } };
+
+      checkRows    ( lower, 3UL );
+      checkColumns ( lower, 3UL );
+      checkCapacity( lower, 9UL );
+      checkNonZeros( lower, 6UL );
+      checkNonZeros( lower, 0UL, 3UL );
+      checkNonZeros( lower, 1UL, 2UL );
+      checkNonZeros( lower, 2UL, 1UL );
+
+      if( lower(0,0) != 1 || lower(0,1) != 0 || lower(0,2) != 0 ||
+          lower(1,0) != 2 || lower(1,1) != 1 || lower(1,2) != 0 ||
+          lower(2,0) != 4 || lower(2,1) != 5 || lower(2,2) != 1 ) {
+         std::ostringstream oss;
+         oss << " Test: " << test_ << "\n"
+             << " Error: Assignment failed\n"
+             << " Details:\n"
+             << "   Result:\n" << lower << "\n"
+             << "   Expected result:\n( 1 0 0 )\n( 2 1 0 )\n( 4 5 1 )\n";
+         throw std::runtime_error( oss.str() );
+      }
+   }
+
+   // Incomplete initializer list
+   {
+      test_ = "Column-major UniLowerMatrix initializer list assignment (incomplete list)";
+
+      OLT lower;
+      lower = { { 1 }, { 2, 1 }, { 4, 5, 1 } };
+
+      checkRows    ( lower, 3UL );
+      checkColumns ( lower, 3UL );
+      checkCapacity( lower, 9UL );
+      checkNonZeros( lower, 6UL );
+      checkNonZeros( lower, 0UL, 3UL );
+      checkNonZeros( lower, 1UL, 2UL );
+      checkNonZeros( lower, 2UL, 1UL );
+
+      if( lower(0,0) != 1 || lower(0,1) != 0 || lower(0,2) != 0 ||
+          lower(1,0) != 2 || lower(1,1) != 1 || lower(1,2) != 0 ||
+          lower(2,0) != 4 || lower(2,1) != 5 || lower(2,2) != 1 ) {
+         std::ostringstream oss;
+         oss << " Test: " << test_ << "\n"
+             << " Error: Assignment failed\n"
+             << " Details:\n"
+             << "   Result:\n" << lower << "\n"
+             << "   Expected result:\n( 1 0 0 )\n( 2 1 0 )\n( 4 5 1 )\n";
          throw std::runtime_error( oss.str() );
       }
    }
