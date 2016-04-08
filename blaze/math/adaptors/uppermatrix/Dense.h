@@ -40,6 +40,8 @@
 // Includes
 //*************************************************************************************************
 
+#include <initializer_list>
+#include <iterator>
 #include <blaze/math/adaptors/Forward.h>
 #include <blaze/math/adaptors/uppermatrix/BaseTemplate.h>
 #include <blaze/math/adaptors/uppermatrix/UpperProxy.h>
@@ -581,6 +583,8 @@ class UpperMatrix<MT,SO,true>
    template< typename A1 > explicit inline UpperMatrix( const A1& a1 );
                            explicit inline UpperMatrix( size_t n, const ElementType& init );
 
+   explicit inline UpperMatrix( std::initializer_list< std::initializer_list<ElementType> > list );
+
    template< typename Other >
    explicit inline UpperMatrix( size_t n, const Other* array );
 
@@ -626,10 +630,12 @@ class UpperMatrix<MT,SO,true>
    //**Assignment operators************************************************************************
    /*!\name Assignment operators */
    //@{
+   inline UpperMatrix& operator=( const ElementType& rhs );
+   inline UpperMatrix& operator=( std::initializer_list< std::initializer_list<ElementType> > list );
+
    template< typename Other, size_t N >
    inline UpperMatrix& operator=( const Other (&array)[N][N] );
 
-   inline UpperMatrix& operator=( const ElementType& rhs );
    inline UpperMatrix& operator=( const UpperMatrix& rhs );
    inline UpperMatrix& operator=( UpperMatrix&& rhs ) noexcept;
 
@@ -836,6 +842,44 @@ inline UpperMatrix<MT,SO,true>::UpperMatrix( size_t n, const ElementType& init )
    }
 
    BLAZE_INTERNAL_ASSERT( isSquare( matrix_ ), "Non-square upper matrix detected" );
+   BLAZE_INTERNAL_ASSERT( isIntact(), "Broken invariant detected" );
+}
+/*! \endcond */
+//*************************************************************************************************
+
+
+//*************************************************************************************************
+/*! \cond BLAZE_INTERNAL */
+/*!\brief List initialization of all matrix elements.
+//
+// \param list The initializer list.
+// \exception std::invalid_argument Invalid setup of upper matrix.
+//
+// This constructor provides the option to explicitly initialize the elements of the upper
+// matrix by means of an initializer list:
+
+   \code
+   using blaze::rowMajor;
+
+   blaze::UpperMatrix< blaze::StaticMatrix<int,3,3,rowMajor> > A{ { 1, 2, 3 },
+                                                                  { 0, 4 },
+                                                                  { 0, 0, 6 } };
+   \endcode
+
+// The matrix is sized according to the size of the initializer list and all matrix elements are
+// initialized with the values from the given list. Missing values are initialized with default
+// values. In case the given list does not represent a diagonal matrix, a \a std::invalid_argument
+// exception is thrown.
+*/
+template< typename MT  // Type of the adapted dense matrix
+        , bool SO >    // Storage order of the adapted dense matrix
+inline UpperMatrix<MT,SO,true>::UpperMatrix( std::initializer_list< std::initializer_list<ElementType> > list )
+   : matrix_( list )  // The adapted dense matrix
+{
+   if( !isUpper( matrix_ ) ) {
+      BLAZE_THROW_INVALID_ARGUMENT( "Invalid setup of upper matrix" );
+   }
+
    BLAZE_INTERNAL_ASSERT( isIntact(), "Broken invariant detected" );
 }
 /*! \endcond */
@@ -1443,6 +1487,81 @@ inline typename UpperMatrix<MT,SO,true>::ConstIterator
 
 //*************************************************************************************************
 /*! \cond BLAZE_INTERNAL */
+/*!\brief Homogenous assignment to all upper and diagonal matrix elements.
+//
+// \param rhs Scalar value to be assigned to the upper and diagonal matrix elements.
+// \return Reference to the assigned matrix.
+*/
+template< typename MT  // Type of the adapted dense matrix
+        , bool SO >    // Storage order of the adapted dense matrix
+inline UpperMatrix<MT,SO,true>&
+   UpperMatrix<MT,SO,true>::operator=( const ElementType& rhs )
+{
+   if( SO ) {
+      for( size_t j=0UL; j<columns(); ++j )
+         for( size_t i=0UL; i<=j; ++i )
+            matrix_(i,j) = rhs;
+   }
+   else {
+      for( size_t i=0UL; i<rows(); ++i )
+         for( size_t j=i; j<columns(); ++j )
+            matrix_(i,j) = rhs;
+   }
+
+   return *this;
+}
+/*! \endcond */
+//*************************************************************************************************
+
+
+//*************************************************************************************************
+/*! \cond BLAZE_INTERNAL */
+/*!\brief List assignment to all matrix elements.
+//
+// \param list The initializer list.
+// \exception std::invalid_argument Invalid assignment to upper matrix.
+//
+// This assignment operator offers the option to directly assign to all elements of the upper
+// matrix by means of an initializer list:
+
+   \code
+   using blaze::rowMajor;
+
+   blaze::UpperMatrix< blaze::StaticMatrix<int,3UL,3UL,rowMajor> > A;
+   A = { { 1, 2, 3 },
+         { 0, 4 },
+         { 0, 0, 6 } };
+   \endcode
+
+// The matrix elements are assigned the values from the given initializer list. Missing values
+// are initialized as default (as e.g. the value 6 in the example). Note that in case the size
+// of the top-level initializer list exceeds the number of rows or the size of any nested list
+// exceeds the number of columns, a \a std::invalid_argument exception is thrown.
+*/
+template< typename MT  // Type of the adapted dense matrix
+        , bool SO >    // Storage order of the adapted dense matrix
+inline UpperMatrix<MT,SO,true>&
+   UpperMatrix<MT,SO,true>::operator=( std::initializer_list< std::initializer_list<ElementType> > list )
+{
+   MT tmp( list );
+
+   if( !isUpper( tmp ) ) {
+      BLAZE_THROW_INVALID_ARGUMENT( "Invalid assignment to upper matrix" );
+   }
+
+   matrix_ = std::move( tmp );
+
+   BLAZE_INTERNAL_ASSERT( isSquare( matrix_ ), "Non-square upper matrix detected" );
+   BLAZE_INTERNAL_ASSERT( isIntact(), "Broken invariant detected" );
+
+   return *this;
+}
+/*! \endcond */
+//*************************************************************************************************
+
+
+//*************************************************************************************************
+/*! \cond BLAZE_INTERNAL */
 /*!\brief Array assignment to all upper matrix elements.
 //
 // \param array \f$ N \times N \f$ dimensional array for the assignment.
@@ -1482,35 +1601,6 @@ inline UpperMatrix<MT,SO,true>&
 
    BLAZE_INTERNAL_ASSERT( isSquare( matrix_ ), "Non-square upper matrix detected" );
    BLAZE_INTERNAL_ASSERT( isIntact(), "Broken invariant detected" );
-
-   return *this;
-}
-/*! \endcond */
-//*************************************************************************************************
-
-
-//*************************************************************************************************
-/*! \cond BLAZE_INTERNAL */
-/*!\brief Homogenous assignment to all upper and diagonal matrix elements.
-//
-// \param rhs Scalar value to be assigned to the upper and diagonal matrix elements.
-// \return Reference to the assigned matrix.
-*/
-template< typename MT  // Type of the adapted dense matrix
-        , bool SO >    // Storage order of the adapted dense matrix
-inline UpperMatrix<MT,SO,true>&
-   UpperMatrix<MT,SO,true>::operator=( const ElementType& rhs )
-{
-   if( SO ) {
-      for( size_t j=0UL; j<columns(); ++j )
-         for( size_t i=0UL; i<=j; ++i )
-            matrix_(i,j) = rhs;
-   }
-   else {
-      for( size_t i=0UL; i<rows(); ++i )
-         for( size_t j=i; j<columns(); ++j )
-            matrix_(i,j) = rhs;
-   }
 
    return *this;
 }
