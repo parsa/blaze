@@ -40,6 +40,8 @@
 // Includes
 //*************************************************************************************************
 
+#include <initializer_list>
+#include <iterator>
 #include <blaze/math/adaptors/Forward.h>
 #include <blaze/math/adaptors/strictlylowermatrix/BaseTemplate.h>
 #include <blaze/math/adaptors/strictlylowermatrix/StrictlyLowerProxy.h>
@@ -582,6 +584,8 @@ class StrictlyLowerMatrix<MT,SO,true>
    template< typename A1 > explicit inline StrictlyLowerMatrix( const A1& a1 );
                            explicit inline StrictlyLowerMatrix( size_t n, const ElementType& init );
 
+   explicit inline StrictlyLowerMatrix( std::initializer_list< std::initializer_list<ElementType> > list );
+
    template< typename Other >
    explicit inline StrictlyLowerMatrix( size_t n, const Other* array );
 
@@ -627,10 +631,12 @@ class StrictlyLowerMatrix<MT,SO,true>
    //**Assignment operators************************************************************************
    /*!\name Assignment operators */
    //@{
+   inline StrictlyLowerMatrix& operator=( const ElementType& rhs );
+   inline StrictlyLowerMatrix& operator=( std::initializer_list< std::initializer_list<ElementType> > list );
+
    template< typename Other, size_t N >
    inline StrictlyLowerMatrix& operator=( const Other (&array)[N][N] );
 
-   inline StrictlyLowerMatrix& operator=( const ElementType& rhs );
    inline StrictlyLowerMatrix& operator=( const StrictlyLowerMatrix& rhs );
    inline StrictlyLowerMatrix& operator=( StrictlyLowerMatrix&& rhs ) noexcept;
 
@@ -844,6 +850,44 @@ inline StrictlyLowerMatrix<MT,SO,true>::StrictlyLowerMatrix( size_t n, const Ele
    }
 
    BLAZE_INTERNAL_ASSERT( isSquare( matrix_ ), "Non-square strictly lower matrix detected" );
+   BLAZE_INTERNAL_ASSERT( isIntact(), "Broken invariant detected" );
+}
+/*! \endcond */
+//*************************************************************************************************
+
+
+//*************************************************************************************************
+/*! \cond BLAZE_INTERNAL */
+/*!\brief List initialization of all matrix elements.
+//
+// \param list The initializer list.
+// \exception std::invalid_argument Invalid setup of strictly lower matrix.
+//
+// This constructor provides the option to explicitly initialize the elements of the strictly
+// lower matrix by means of an initializer list:
+
+   \code
+   using blaze::rowMajor;
+
+   blaze::StrictlyLowerMatrix< blaze::StaticMatrix<int,3,3,rowMajor> > A{ { },
+                                                                          { 2 },
+                                                                          { 4, 5 } };
+   \endcode
+
+// The matrix is sized according to the size of the initializer list and all matrix elements are
+// initialized with the values from the given list. Missing values are initialized with default
+// values. In case the given list does not represent a diagonal matrix, a \a std::invalid_argument
+// exception is thrown.
+*/
+template< typename MT  // Type of the adapted dense matrix
+        , bool SO >    // Storage order of the adapted dense matrix
+inline StrictlyLowerMatrix<MT,SO,true>::StrictlyLowerMatrix( std::initializer_list< std::initializer_list<ElementType> > list )
+   : matrix_( list )  // The adapted dense matrix
+{
+   if( !isStrictlyLower( matrix_ ) ) {
+      BLAZE_THROW_INVALID_ARGUMENT( "Invalid setup of strictly lower matrix" );
+   }
+
    BLAZE_INTERNAL_ASSERT( isIntact(), "Broken invariant detected" );
 }
 /*! \endcond */
@@ -1452,6 +1496,81 @@ inline typename StrictlyLowerMatrix<MT,SO,true>::ConstIterator
 
 //*************************************************************************************************
 /*! \cond BLAZE_INTERNAL */
+/*!\brief Homogenous assignment to all lower matrix elements.
+//
+// \param rhs Scalar value to be assigned to the lower matrix elements.
+// \return Reference to the assigned matrix.
+*/
+template< typename MT  // Type of the adapted dense matrix
+        , bool SO >    // Storage order of the adapted dense matrix
+inline StrictlyLowerMatrix<MT,SO,true>&
+   StrictlyLowerMatrix<MT,SO,true>::operator=( const ElementType& rhs )
+{
+   if( SO ) {
+      for( size_t j=0UL; j<columns(); ++j )
+         for( size_t i=j+1UL; i<rows(); ++i )
+            matrix_(i,j) = rhs;
+   }
+   else {
+      for( size_t i=1UL; i<rows(); ++i )
+         for( size_t j=0UL; j<i; ++j )
+            matrix_(i,j) = rhs;
+   }
+
+   return *this;
+}
+/*! \endcond */
+//*************************************************************************************************
+
+
+//*************************************************************************************************
+/*! \cond BLAZE_INTERNAL */
+/*!\brief List assignment to all matrix elements.
+//
+// \param list The initializer list.
+// \exception std::invalid_argument Invalid assignment to strictly lower matrix.
+//
+// This assignment operator offers the option to directly assign to all elements of the strictly
+// lower matrix by means of an initializer list:
+
+   \code
+   using blaze::rowMajor;
+
+   blaze::StrictlyLowerMatrix< blaze::StaticMatrix<int,3UL,3UL,rowMajor> > A;
+   A = { { },
+         { 2 },
+         { 4, 5 } };
+   \endcode
+
+// The matrix elements are assigned the values from the given initializer list. Missing values
+// are initialized as default (as e.g. the value 6 in the example). Note that in case the size
+// of the top-level initializer list exceeds the number of rows or the size of any nested list
+// exceeds the number of columns, a \a std::invalid_argument exception is thrown.
+*/
+template< typename MT  // Type of the adapted dense matrix
+        , bool SO >    // Storage order of the adapted dense matrix
+inline StrictlyLowerMatrix<MT,SO,true>&
+   StrictlyLowerMatrix<MT,SO,true>::operator=( std::initializer_list< std::initializer_list<ElementType> > list )
+{
+   MT tmp( list );
+
+   if( !isStrictlyLower( tmp ) ) {
+      BLAZE_THROW_INVALID_ARGUMENT( "Invalid assignment to strictly lower matrix" );
+   }
+
+   matrix_ = std::move( tmp );
+
+   BLAZE_INTERNAL_ASSERT( isSquare( matrix_ ), "Non-square strictly lower matrix detected" );
+   BLAZE_INTERNAL_ASSERT( isIntact(), "Broken invariant detected" );
+
+   return *this;
+}
+/*! \endcond */
+//*************************************************************************************************
+
+
+//*************************************************************************************************
+/*! \cond BLAZE_INTERNAL */
 /*!\brief Array assignment to all strictly lower matrix elements.
 //
 // \param array \f$ N \times N \f$ dimensional array for the assignment.
@@ -1492,35 +1611,6 @@ inline StrictlyLowerMatrix<MT,SO,true>&
 
    BLAZE_INTERNAL_ASSERT( isSquare( matrix_ ), "Non-square strictly lower matrix detected" );
    BLAZE_INTERNAL_ASSERT( isIntact(), "Broken invariant detected" );
-
-   return *this;
-}
-/*! \endcond */
-//*************************************************************************************************
-
-
-//*************************************************************************************************
-/*! \cond BLAZE_INTERNAL */
-/*!\brief Homogenous assignment to all lower matrix elements.
-//
-// \param rhs Scalar value to be assigned to the lower matrix elements.
-// \return Reference to the assigned matrix.
-*/
-template< typename MT  // Type of the adapted dense matrix
-        , bool SO >    // Storage order of the adapted dense matrix
-inline StrictlyLowerMatrix<MT,SO,true>&
-   StrictlyLowerMatrix<MT,SO,true>::operator=( const ElementType& rhs )
-{
-   if( SO ) {
-      for( size_t j=0UL; j<columns(); ++j )
-         for( size_t i=j+1UL; i<rows(); ++i )
-            matrix_(i,j) = rhs;
-   }
-   else {
-      for( size_t i=1UL; i<rows(); ++i )
-         for( size_t j=0UL; j<i; ++j )
-            matrix_(i,j) = rhs;
-   }
 
    return *this;
 }
