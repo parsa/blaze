@@ -41,7 +41,7 @@
 //*************************************************************************************************
 
 #include <algorithm>
-#include <cmath>
+#include <initializer_list>
 #include <blaze/math/Aliases.h>
 #include <blaze/math/AlignmentFlag.h>
 #include <blaze/math/constraints/Diagonal.h>
@@ -256,10 +256,13 @@ class HybridMatrix : public DenseMatrix< HybridMatrix<Type,M,N,SO>, SO >
    //**Constructors********************************************************************************
    /*!\name Constructors */
    //@{
-                              explicit inline HybridMatrix();
-                              explicit inline HybridMatrix( size_t m, size_t n );
-                              explicit inline HybridMatrix( size_t m, size_t n, const Type& init );
-   template< typename Other > explicit inline HybridMatrix( size_t m, size_t n, const Other* array );
+   explicit inline HybridMatrix();
+   explicit inline HybridMatrix( size_t m, size_t n );
+   explicit inline HybridMatrix( size_t m, size_t n, const Type& init );
+   explicit inline HybridMatrix( std::initializer_list< std::initializer_list<Type> > list );
+
+   template< typename Other >
+   explicit inline HybridMatrix( size_t m, size_t n, const Other* array );
 
    template< typename Other, size_t M2, size_t N2 >
    explicit inline HybridMatrix( const Other (&array)[M2][N2] );
@@ -296,10 +299,12 @@ class HybridMatrix : public DenseMatrix< HybridMatrix<Type,M,N,SO>, SO >
    //**Assignment operators************************************************************************
    /*!\name Assignment operators */
    //@{
+   inline HybridMatrix& operator=( const Type& set );
+   inline HybridMatrix& operator=( std::initializer_list< std::initializer_list<Type> > list );
+
    template< typename Other, size_t M2, size_t N2 >
    inline HybridMatrix& operator=( const Other (&array)[M2][N2] );
 
-                                     inline HybridMatrix& operator= ( const Type& set );
                                      inline HybridMatrix& operator= ( const HybridMatrix& rhs );
    template< typename MT, bool SO2 > inline HybridMatrix& operator= ( const Matrix<MT,SO2>& rhs );
    template< typename MT, bool SO2 > inline HybridMatrix& operator+=( const Matrix<MT,SO2>& rhs );
@@ -448,6 +453,12 @@ class HybridMatrix : public DenseMatrix< HybridMatrix<Type,M,N,SO>, SO >
    //**********************************************************************************************
 
  private:
+   //**Utility functions***************************************************************************
+   /*! \cond BLAZE_INTERNAL */
+   inline size_t determineColumns( std::initializer_list< std::initializer_list<Type> > list ) const noexcept;
+   /*! \endcond */
+   //**********************************************************************************************
+
    //**********************************************************************************************
    //! Alignment adjustment.
    enum : size_t { NN = ( usePadding )?( NextMultiple< SizeT<N>, SizeT<SIMDSIZE> >::value ):( N ) };
@@ -610,6 +621,59 @@ inline HybridMatrix<Type,M,N,SO>::HybridMatrix( size_t m, size_t n, const Type& 
 
 
 //*************************************************************************************************
+/*!\brief List initialization of all matrix elements.
+//
+// \param list The initializer list.
+// \exception std::invalid_argument Invalid number of rows for hybrid matrix.
+// \exception std::invalid_argument Invalid number of columns for hybrid matrix.
+//
+// This constructor provides the option to explicitly initialize the elements of the matrix by
+// means of an initializer list:
+
+   \code
+   using blaze::rowMajor;
+
+   blaze::HybridMatrix<int,3,3,rowMajor> A{ { 1, 2, 3 },
+                                            { 4, 5 },
+                                            { 7, 8, 9 } };
+   \endcode
+
+// The matrix is sized according to the size of the initializer list and all its elements are
+// initialized by the values of the given initializer list. Missing values are initialized as
+// default (as e.g. the value 6 in the example). Note that in case the size of the top-level
+// initializer list exceeds the number of rows or the size of any nested list exceeds the
+// number of columns, a \a std::invalid_argument exception is thrown.
+*/
+template< typename Type  // Data type of the matrix
+        , size_t M       // Number of rows
+        , size_t N       // Number of columns
+        , bool SO >      // Storage order
+inline HybridMatrix<Type,M,N,SO>::HybridMatrix( std::initializer_list< std::initializer_list<Type> > list )
+   : v_()                            // The statically allocated matrix elements
+   , m_( list.size() )               // The current number of rows of the matrix
+   , n_( determineColumns( list ) )  // The current number of columns of the matrix
+{
+   BLAZE_STATIC_ASSERT( IsVectorizable<Type>::value || NN == N );
+
+   if( m_ > M ) {
+      BLAZE_THROW_INVALID_ARGUMENT( "Invalid number of rows for hybrid matrix" );
+   }
+
+   if( n_ > N ) {
+      BLAZE_THROW_INVALID_ARGUMENT( "Invalid number of columns for hybrid matrix" );
+   }
+
+   size_t i( 0UL );
+
+   for( const auto& row : list ) {
+      std::fill( std::copy( row.begin(), row.end(), v_+i*NN ), v_+(i+1UL)*NN, Type() );
+      ++i;
+   }
+}
+//*************************************************************************************************
+
+
+//*************************************************************************************************
 /*!\brief Array initialization of all matrix elements.
 //
 // \param m The number of rows of the matrix.
@@ -626,11 +690,11 @@ inline HybridMatrix<Type,M,N,SO>::HybridMatrix( size_t m, size_t n, const Type& 
 
    int* array = new int[20];
    // ... Initialization of the dynamic array
-   blaze::HybridMatrix<int,rowMajor> v( 4UL, 5UL, array );
+   blaze::HybridMatrix<int,4,5,rowMajor> v( 4UL, 5UL, array );
    delete[] array;
    \endcode
 
-// The matrix is sized accoring to the given size of the array and initialized with the values
+// The matrix is sized according to the given size of the array and initialized with the values
 // from the given array. In case \a m is larger than the maximum allowed number of rows (i.e.
 // \a m > M) or \a n is larger than the maximum allowed number of columns a \a std::invalid_argument
 // exception is thrown. Note that it is expected that the given \a array has at least \a m by
@@ -692,7 +756,7 @@ inline HybridMatrix<Type,M,N,SO>::HybridMatrix( size_t m, size_t n, const Other*
    blaze::HybridMatrix<int,3,3,rowMajor> A( init );
    \endcode
 
-// The matrix is sized accoring to the size of the array and initialized with the values from
+// The matrix is sized according to the size of the array and initialized with the values from
 // the given array. Missing values are initialized with default values (as e.g. the value 6 in
 // the example).
 */
@@ -1170,6 +1234,87 @@ inline typename HybridMatrix<Type,M,N,SO>::ConstIterator
 //=================================================================================================
 
 //*************************************************************************************************
+/*!\brief Homogenous assignment to all matrix elements.
+//
+// \param set Scalar value to be assigned to all matrix elements.
+// \return Reference to the assigned matrix.
+*/
+template< typename Type  // Data type of the matrix
+        , size_t M       // Number of rows
+        , size_t N       // Number of columns
+        , bool SO >      // Storage order
+inline HybridMatrix<Type,M,N,SO>& HybridMatrix<Type,M,N,SO>::operator=( const Type& set )
+{
+   BLAZE_INTERNAL_ASSERT( m_ <= M, "Invalid number of rows detected"    );
+   BLAZE_INTERNAL_ASSERT( n_ <= N, "Invalid number of columns detected" );
+
+   for( size_t i=0UL; i<m_; ++i )
+      for( size_t j=0UL; j<n_; ++j )
+         v_[i*NN+j] = set;
+
+   return *this;
+}
+//*************************************************************************************************
+
+
+//*************************************************************************************************
+/*!\brief List assignment to all matrix elements.
+//
+// \param list The initializer list.
+// \exception std::invalid_argument Invalid number of rows for hybrid matrix.
+// \exception std::invalid_argument Invalid number of columns for hybrid matrix.
+//
+// This assignment operator offers the option to directly assign to all elements of the matrix
+// by means of an initializer list:
+
+   \code
+   using blaze::rowMajor;
+
+   blaze::DynamicMatrix<int,rowMajor> A;
+   A = { { 1, 2, 3 },
+         { 4, 5 },
+         { 7, 8, 9 } };
+   \endcode
+
+// The matrix is resized according to the given initializer list and all its elements are
+// assigned the values from the given initializer list. Missing values are initialized as
+// default (as e.g. the value 6 in the example). Note that in case the size of the top-level
+// initializer list exceeds the number of rows or the size of any nested list exceeds the
+// number of columns, a \a std::invalid_argument exception is thrown.
+*/
+template< typename Type  // Data type of the matrix
+        , size_t M       // Number of rows
+        , size_t N       // Number of columns
+        , bool SO >      // Storage order
+inline HybridMatrix<Type,M,N,SO>&
+   HybridMatrix<Type,M,N,SO>::operator=( std::initializer_list< std::initializer_list<Type> > list )
+{
+   const size_t m( list.size() );
+   const size_t n( determineColumns( list ) );
+
+   if( m > M ) {
+      BLAZE_THROW_INVALID_ARGUMENT( "Invalid number of rows for hybrid matrix" );
+   }
+
+   if( n > N ) {
+      BLAZE_THROW_INVALID_ARGUMENT( "Invalid number of columns for hybrid matrix" );
+   }
+
+   resize( m, n, false );
+
+   size_t i( 0UL );
+
+   for( const auto& row : list ) {
+      std::fill( std::copy( row.begin(), row.end(), v_+i*NN ), v_+(i+1UL)*NN, Type() );
+      ++i;
+   }
+
+   return *this;
+}
+//*************************************************************************************************
+
+
+//*************************************************************************************************
 /*!\brief Array assignment to all matrix elements.
 //
 // \param array \f$ M \times N \f$ dimensional array for the assignment.
@@ -1207,30 +1352,6 @@ inline HybridMatrix<Type,M,N,SO>& HybridMatrix<Type,M,N,SO>::operator=( const Ot
    for( size_t i=0UL; i<M2; ++i )
       for( size_t j=0UL; j<N2; ++j )
          v_[i*NN+j] = array[i][j];
-
-   return *this;
-}
-//*************************************************************************************************
-
-
-//*************************************************************************************************
-/*!\brief Homogenous assignment to all matrix elements.
-//
-// \param set Scalar value to be assigned to all matrix elements.
-// \return Reference to the assigned matrix.
-*/
-template< typename Type  // Data type of the matrix
-        , size_t M       // Number of rows
-        , size_t N       // Number of columns
-        , bool SO >      // Storage order
-inline HybridMatrix<Type,M,N,SO>& HybridMatrix<Type,M,N,SO>::operator=( const Type& set )
-{
-   BLAZE_INTERNAL_ASSERT( m_ <= M, "Invalid number of rows detected"    );
-   BLAZE_INTERNAL_ASSERT( n_ <= N, "Invalid number of columns detected" );
-
-   for( size_t i=0UL; i<m_; ++i )
-      for( size_t j=0UL; j<n_; ++j )
-         v_[i*NN+j] = set;
 
    return *this;
 }
@@ -1935,6 +2056,27 @@ inline void HybridMatrix<Type,M,N,SO>::swap( HybridMatrix& m ) noexcept
 
    swap( m_, m.m_ );
    swap( n_, m.n_ );
+}
+//*************************************************************************************************
+
+
+//*************************************************************************************************
+/*!\brief Determine the maximum number of columns specified by the given initializer list.
+//
+// \param list The given initializer list
+// \return The maximum number of columns.
+*/
+template< typename Type  // Data type of the matrix
+        , size_t M       // Number of rows
+        , size_t N       // Number of columns
+        , bool SO >      // Storage order
+inline size_t
+   HybridMatrix<Type,M,N,SO>::determineColumns( std::initializer_list< std::initializer_list<Type> > list ) const noexcept
+{
+   size_t cols( 0UL );
+   for( const auto& row : list )
+      cols = max( cols, row.size() );
+   return cols;
 }
 //*************************************************************************************************
 
@@ -2946,10 +3088,13 @@ class HybridMatrix<Type,M,N,true> : public DenseMatrix< HybridMatrix<Type,M,N,tr
    //**Constructors********************************************************************************
    /*!\name Constructors */
    //@{
-                              explicit inline HybridMatrix();
-                              explicit inline HybridMatrix( size_t m, size_t n );
-                              explicit inline HybridMatrix( size_t m, size_t n, const Type& init );
-   template< typename Other > explicit inline HybridMatrix( size_t m, size_t n, const Other* array );
+   explicit inline HybridMatrix();
+   explicit inline HybridMatrix( size_t m, size_t n );
+   explicit inline HybridMatrix( size_t m, size_t n, const Type& init );
+   explicit inline HybridMatrix( std::initializer_list< std::initializer_list<Type> > list );
+
+   template< typename Other >
+   explicit inline HybridMatrix( size_t m, size_t n, const Other* array );
 
    template< typename Other, size_t M2, size_t N2 >
    explicit inline HybridMatrix( const Other (&array)[M2][N2] );
@@ -2986,10 +3131,12 @@ class HybridMatrix<Type,M,N,true> : public DenseMatrix< HybridMatrix<Type,M,N,tr
    //**Assignment operators************************************************************************
    /*!\name Assignment operators */
    //@{
+   inline HybridMatrix& operator=( const Type& set );
+   inline HybridMatrix& operator=( std::initializer_list< std::initializer_list<Type> > list );
+
    template< typename Other, size_t M2, size_t N2 >
    inline HybridMatrix& operator=( const Other (&array)[M2][N2] );
 
-                                    inline HybridMatrix& operator= ( const Type& set );
                                     inline HybridMatrix& operator= ( const HybridMatrix& rhs );
    template< typename MT, bool SO > inline HybridMatrix& operator= ( const Matrix<MT,SO>& rhs );
    template< typename MT, bool SO > inline HybridMatrix& operator+=( const Matrix<MT,SO>& rhs );
@@ -3132,6 +3279,10 @@ class HybridMatrix<Type,M,N,true> : public DenseMatrix< HybridMatrix<Type,M,N,tr
    //**********************************************************************************************
 
  private:
+   //**Utility functions***************************************************************************
+   inline size_t determineColumns( std::initializer_list< std::initializer_list<Type> > list ) const noexcept;
+   //**********************************************************************************************
+
    //**********************************************************************************************
    //! Alignment adjustment.
    enum : size_t { MM = ( usePadding )?( NextMultiple< SizeT<M>, SizeT<SIMDSIZE> >::value ):( M ) };
@@ -3290,6 +3441,77 @@ inline HybridMatrix<Type,M,N,true>::HybridMatrix( size_t m, size_t n, const Type
 
 //*************************************************************************************************
 /*! \cond BLAZE_INTERNAL */
+/*!\brief List initialization of all matrix elements.
+//
+// \param list The initializer list.
+// \exception std::invalid_argument Invalid number of rows for hybrid matrix.
+// \exception std::invalid_argument Invalid number of columns for hybrid matrix.
+//
+// This constructor provides the option to explicitly initialize the elements of the matrix by
+// means of an initializer list:
+
+   \code
+   using blaze::columnMajor;
+
+   blaze::HybridMatrix<int,3,3,columnMajor> A{ { 1, 2, 3 },
+                                               { 4, 5 },
+                                               { 7, 8, 9 } };
+   \endcode
+
+// The matrix is sized according to the size of the initializer list and all its elements are
+// initialized by the values of the given initializer list. Missing values are initialized as
+// default (as e.g. the value 6 in the example). Note that in case the size of the top-level
+// initializer list exceeds the number of rows or the size of any nested list exceeds the
+// number of columns, a \a std::invalid_argument exception is thrown.
+*/
+template< typename Type  // Data type of the matrix
+        , size_t M       // Number of rows
+        , size_t N >     // Number of columns
+inline HybridMatrix<Type,M,N,true>::HybridMatrix( std::initializer_list< std::initializer_list<Type> > list )
+   : v_()                            // The statically allocated matrix elements
+   , m_( list.size() )               // The current number of rows of the matrix
+   , n_( determineColumns( list ) )  // The current number of columns of the matrix
+{
+   BLAZE_STATIC_ASSERT( IsVectorizable<Type>::value || MM == M );
+
+   if( m_ > M ) {
+      BLAZE_THROW_INVALID_ARGUMENT( "Invalid number of rows for hybrid matrix" );
+   }
+
+   if( n_ > N ) {
+      BLAZE_THROW_INVALID_ARGUMENT( "Invalid number of columns for hybrid matrix" );
+   }
+
+   size_t i( 0UL );
+
+   for( const auto& row : list ) {
+      size_t j( 0UL );
+      for( const auto& element : row ) {
+         v_[i+j*MM] = element;
+         ++j;
+      }
+      for( ; j<n_; ++j ) {
+         v_[i+j*MM] = Type();
+      }
+      ++i;
+   }
+
+   BLAZE_INTERNAL_ASSERT( i == m_, "Invalid number of elements detected" );
+
+   if( IsVectorizable<Type>::value ) {
+      for( ; i<MM; ++i ) {
+         for( size_t j=0UL; j<n_; ++j ) {
+            v_[i+j*MM] = Type();
+         }
+      }
+   }
+}
+/*! \endcond */
+//*************************************************************************************************
+
+
+//*************************************************************************************************
+/*! \cond BLAZE_INTERNAL */
 /*!\brief Array initialization of all matrix elements.
 //
 // \param m The number of rows of the matrix.
@@ -3306,11 +3528,11 @@ inline HybridMatrix<Type,M,N,true>::HybridMatrix( size_t m, size_t n, const Type
 
    int* array = new int[20];
    // ... Initialization of the dynamic array
-   blaze::HybridMatrix<int,columnMajor> v( 4UL, 5UL, array );
+   blaze::HybridMatrix<int,4,5,columnMajor> v( 4UL, 5UL, array );
    delete[] array;
    \endcode
 
-// The matrix is sized accoring to the given size of the array and initialized with the values
+// The matrix is sized according to the given size of the array and initialized with the values
 // from the given array. In case \a m is larger than the maximum allowed number of rows (i.e.
 // \a m > M) or \a n is larger than the maximum allowed number of columns a \a std::invalid_argument
 // exception is thrown. Note that it is expected that the given \a array has at least \a m by
@@ -3373,7 +3595,7 @@ inline HybridMatrix<Type,M,N,true>::HybridMatrix( size_t m, size_t n, const Othe
    blaze::HybridMatrix<int,3,3,columnMajor> A( init );
    \endcode
 
-// The matrix is sized accoring to the size of the array and initialized with the values from
+// The matrix is sized according to the size of the array and initialized with the values from
 // the given array. Missing values are initialized with default values (as e.g. the value 6 in
 // the example).
 */
@@ -3836,6 +4058,97 @@ inline typename HybridMatrix<Type,M,N,true>::ConstIterator
 
 //*************************************************************************************************
 /*! \cond BLAZE_INTERNAL */
+/*!\brief Homogenous assignment to all matrix elements.
+//
+// \param set Scalar value to be assigned to all matrix elements.
+// \return Reference to the assigned matrix.
+*/
+template< typename Type  // Data type of the matrix
+        , size_t M       // Number of rows
+        , size_t N >     // Number of columns
+inline HybridMatrix<Type,M,N,true>&
+   HybridMatrix<Type,M,N,true>::operator=( const Type& set )
+{
+   BLAZE_INTERNAL_ASSERT( m_ <= M, "Invalid number of rows detected"    );
+   BLAZE_INTERNAL_ASSERT( n_ <= N, "Invalid number of columns detected" );
+
+   for( size_t j=0UL; j<n_; ++j )
+      for( size_t i=0UL; i<m_; ++i )
+         v_[i+j*MM] = set;
+
+   return *this;
+}
+/*! \endcond */
+//*************************************************************************************************
+
+
+//*************************************************************************************************
+/*! \cond BLAZE_INTERNAL */
+/*!\brief List assignment to all matrix elements.
+//
+// \param list The initializer list.
+// \exception std::invalid_argument Invalid number of rows for hybrid matrix.
+// \exception std::invalid_argument Invalid number of columns for hybrid matrix.
+//
+// This assignment operator offers the option to directly assign to all elements of the matrix
+// by means of an initializer list:
+
+   \code
+   using blaze::columnMajor;
+
+   blaze::HybridMatrix<int,3,3,columnMajor> A;
+   A = { { 1, 2, 3 },
+         { 4, 5 },
+         { 7, 8, 9 } };
+   \endcode
+
+// The matrix is resized according to the given initializer list and all its elements are
+// assigned the values from the given initializer list. Missing values are initialized as
+// default (as e.g. the value 6 in the example). Note that in case the size of the top-level
+// initializer list exceeds the number of rows or the size of any nested list exceeds the
+// number of columns, a \a std::invalid_argument exception is thrown.
+*/
+template< typename Type  // Data type of the matrix
+        , size_t M       // Number of rows
+        , size_t N >     // Number of columns
+inline HybridMatrix<Type,M,N,true>&
+   HybridMatrix<Type,M,N,true>::operator=( std::initializer_list< std::initializer_list<Type> > list )
+{
+   const size_t m( list.size() );
+   const size_t n( determineColumns( list ) );
+
+   if( m > M ) {
+      BLAZE_THROW_INVALID_ARGUMENT( "Invalid number of rows for hybrid matrix" );
+   }
+
+   if( n > N ) {
+      BLAZE_THROW_INVALID_ARGUMENT( "Invalid number of columns for hybrid matrix" );
+   }
+
+   resize( m, n, false );
+
+   size_t i( 0UL );
+
+   for( const auto& row : list ) {
+      size_t j( 0UL );
+      for( const auto& element : row ) {
+         v_[i+j*MM] = element;
+         ++j;
+      }
+      for( ; j<n_; ++j ) {
+         v_[i+j*MM] = Type();
+      }
+      ++i;
+   }
+
+   return *this;
+}
+/*! \endcond */
+//*************************************************************************************************
+
+
+//*************************************************************************************************
+/*! \cond BLAZE_INTERNAL */
 /*!\brief Array assignment to all matrix elements.
 //
 // \param array \f$ M \times N \f$ dimensional array for the assignment.
@@ -3873,32 +4186,6 @@ inline HybridMatrix<Type,M,N,true>&
    for( size_t j=0UL; j<N2; ++j )
       for( size_t i=0UL; i<M2; ++i )
          v_[i+j*MM] = array[i][j];
-
-   return *this;
-}
-/*! \endcond */
-//*************************************************************************************************
-
-
-//*************************************************************************************************
-/*! \cond BLAZE_INTERNAL */
-/*!\brief Homogenous assignment to all matrix elements.
-//
-// \param set Scalar value to be assigned to all matrix elements.
-// \return Reference to the assigned matrix.
-*/
-template< typename Type  // Data type of the matrix
-        , size_t M       // Number of rows
-        , size_t N >     // Number of columns
-inline HybridMatrix<Type,M,N,true>&
-   HybridMatrix<Type,M,N,true>::operator=( const Type& set )
-{
-   BLAZE_INTERNAL_ASSERT( m_ <= M, "Invalid number of rows detected"    );
-   BLAZE_INTERNAL_ASSERT( n_ <= N, "Invalid number of columns detected" );
-
-   for( size_t j=0UL; j<n_; ++j )
-      for( size_t i=0UL; i<m_; ++i )
-         v_[i+j*MM] = set;
 
    return *this;
 }
@@ -4612,6 +4899,28 @@ inline void HybridMatrix<Type,M,N,true>::swap( HybridMatrix& m ) noexcept
 
    swap( m_, m.m_ );
    swap( n_, m.n_ );
+}
+/*! \endcond */
+//*************************************************************************************************
+
+
+//*************************************************************************************************
+/*! \cond BLAZE_INTERNAL */
+/*!\brief Determine the maximum number of columns specified by the given initializer list.
+//
+// \param list The given initializer list
+// \return The maximum number of columns.
+*/
+template< typename Type  // Data type of the matrix
+        , size_t M       // Number of rows
+        , size_t N >     // Number of columns
+inline size_t
+   HybridMatrix<Type,M,N,true>::determineColumns( std::initializer_list< std::initializer_list<Type> > list ) const noexcept
+{
+   size_t cols( 0UL );
+   for( const auto& row : list )
+      cols = max( cols, row.size() );
+   return cols;
 }
 /*! \endcond */
 //*************************************************************************************************
