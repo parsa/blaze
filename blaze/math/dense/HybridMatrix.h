@@ -2062,6 +2062,7 @@ inline void HybridMatrix<Type,M,N,SO>::swap( HybridMatrix& m ) noexcept
 
 
 //*************************************************************************************************
+/*! \cond BLAZE_INTERNAL */
 /*!\brief Determine the maximum number of columns specified by the given initializer list.
 //
 // \param list The given initializer list
@@ -2079,6 +2080,7 @@ inline size_t
       cols = max( cols, row.size() );
    return cols;
 }
+/*! \endcond */
 //*************************************************************************************************
 
 

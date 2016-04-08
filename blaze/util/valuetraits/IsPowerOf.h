@@ -77,7 +77,7 @@ namespace blaze {
    \endcode
 */
 template< size_t B, size_t N >
-struct IsPowerOf : public IsPowerOf<B,N/B>
+struct IsPowerOf : public BoolConstant< IsPowerOf<B,N/B>::value >
 {};
 //*************************************************************************************************
 
