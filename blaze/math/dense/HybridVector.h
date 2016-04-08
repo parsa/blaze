@@ -32,6 +32,7 @@
 //*************************************************************************************************
 
 #include <algorithm>
+#include <initializer_list>
 #include <blaze/math/Aliases.h>
 #include <blaze/math/AlignmentFlag.h>
 #include <blaze/math/dense/DenseIterator.h>
@@ -219,6 +220,7 @@ class HybridVector : public DenseVector< HybridVector<Type,N,TF>, TF >
    explicit inline HybridVector();
    explicit inline HybridVector( size_t n );
    explicit inline HybridVector( size_t n, const Type& init );
+   explicit inline HybridVector( std::initializer_list<Type> list );
 
    template< typename Other >
    explicit inline HybridVector( size_t n, const Other* array );
@@ -256,11 +258,13 @@ class HybridVector : public DenseVector< HybridVector<Type,N,TF>, TF >
    //**Assignment operators************************************************************************
    /*!\name Assignment operators */
    //@{
+   inline HybridVector& operator=( const Type& rhs );
+   inline HybridVector& operator=( std::initializer_list<Type> list );
+
    template< typename Other, size_t M >
    inline HybridVector& operator=( const Other (&array)[M] );
 
-                           inline HybridVector& operator= ( const Type& rhs );
-                           inline HybridVector& operator= ( const HybridVector& rhs );
+                           inline HybridVector& operator= ( const HybridVector&  rhs );
    template< typename VT > inline HybridVector& operator= ( const Vector<VT,TF>& rhs );
    template< typename VT > inline HybridVector& operator+=( const Vector<VT,TF>& rhs );
    template< typename VT > inline HybridVector& operator-=( const Vector<VT,TF>& rhs );
@@ -543,6 +547,42 @@ inline HybridVector<Type,N,TF>::HybridVector( size_t n, const Type& init )
 
 
 //*************************************************************************************************
+/*!\brief List initialization of all vector elements.
+//
+// \param list The initializer list.
+// \exception std::invalid_argument Invalid setup of hybrid vector.
+//
+// This constructor provides the option to explicitly initialize the elements of the vector by
+// means of an initializer list:
+
+   \code
+   blaze::HybridVector<double,6UL> v1{ 4.2, 6.3, -1.2 };
+   \endcode
+
+// The vector is sized according to the size of the initializer list and all its elements are
+// initialized by the values of the given initializer list. In case the size of the given list
+// exceeds the maximum size of the hybrid vector (i.e. is larger than \a N), a
+// \a std::invalid_argument exception is thrown.
+*/
+template< typename Type  // Data type of the vector
+        , size_t N       // Number of elements
+        , bool TF >      // Transpose flag
+inline HybridVector<Type,N,TF>::HybridVector( std::initializer_list<Type> list )
+   : v_   ()               // The statically allocated vector elements
+   , size_( list.size() )  // The current size/dimension of the vector
+{
+   BLAZE_STATIC_ASSERT( IsVectorizable<Type>::value || NN == N );
+
+   if( size_ > N ) {
+      BLAZE_THROW_INVALID_ARGUMENT( "Invalid setup of hybrid vector" );
+   }
+
+   std::fill( std::copy( list.begin(), list.end(), v_.data() ), v_.data()+NN, Type() );
+}
+//*************************************************************************************************
+
+
+//*************************************************************************************************
 /*!\brief Array initialization of all vector elements.
 //
 // \param n The size of the vector.
@@ -561,7 +601,7 @@ inline HybridVector<Type,N,TF>::HybridVector( size_t n, const Type& init )
 
 // The vector is sized according to the size of the array and initialized with the values from
 // the given array. In case the size of the given array exceeds the maximum size of the hybrid
-// vector (i.e. is larger than N), a \a std::invalid_argument exception is thrown.\n
+// vector (i.e. is larger than \a N), a \a std::invalid_argument exception is thrown.\n
 // Note that it is expected that the given \a array has at least \a n elements. Providing an
 // array with less elements results in undefined behavior!
 */
@@ -665,8 +705,8 @@ inline HybridVector<Type,N,TF>::HybridVector( const HybridVector& v )
 // \exception std::invalid_argument Invalid setup of hybrid vector.
 //
 // This constructor initializes the hybrid vector from the given vector. In case the size of
-// the given vector exceeds the maximum size of the hybrid vector (i.e. is larger than N), a
-// \a std::invalid_argument exception is thrown.
+// the given vector exceeds the maximum size of the hybrid vector (i.e. is larger than \a N),
+// a \a std::invalid_argument exception is thrown.
 */
 template< typename Type  // Data type of the vector
         , size_t N       // Number of elements
@@ -928,6 +968,62 @@ inline typename HybridVector<Type,N,TF>::ConstIterator HybridVector<Type,N,TF>::
 //=================================================================================================
 
 //*************************************************************************************************
+/*!\brief Homogenous assignment to all vector elements.
+//
+// \param rhs Scalar value to be assigned to all vector elements.
+// \return Reference to the assigned vector.
+*/
+template< typename Type  // Data type of the vector
+        , size_t N       // Number of elements
+        , bool TF >      // Transpose flag
+inline HybridVector<Type,N,TF>& HybridVector<Type,N,TF>::operator=( const Type& rhs )
+{
+   BLAZE_INTERNAL_ASSERT( size_ <= N, "Invalid size detected" );
+
+   for( size_t i=0UL; i<size_; ++i )
+      v_[i] = rhs;
+   return *this;
+}
+//*************************************************************************************************
+
+
+//*************************************************************************************************
+/*!\brief List assignment to all vector elements.
+//
+// \param list The initializer list.
+// \exception Invalid assignment to hybrid vector.
+//
+// This assignment operator offers the option to directly assign to all elements of the vector
+// by means of an initializer list:
+
+   \code
+   blaze::HybridVector<double,6UL> v;
+   v = { 4.2, 6.3, -1.2 };
+   \endcode
+
+// The vector is resized according to the size of the initializer list and all its elements are
+// assigned the values from the given initializer list. In case the size of the given list exceeds
+// the maximum size of the hybrid vector (i.e. is larger than \a N), a \a std::invalid_argument
+// exception is thrown.
+*/
+template< typename Type  // Data type of the vector
+        , size_t N       // Number of elements
+        , bool TF >      // Transpose flag
+inline HybridVector<Type,N,TF>& HybridVector<Type,N,TF>::operator=( std::initializer_list<Type> list )
+{
+   if( list.size() > N ) {
+      BLAZE_THROW_INVALID_ARGUMENT( "Invalid assignment to hybrid vector" );
+   }
+
+   resize( list.size(), false );
+   std::copy( list.begin(), list.end(), v_.data() );
+
+   return *this;
+}
+//*************************************************************************************************
+
+
+//*************************************************************************************************
 /*!\brief Array assignment to all vector elements.
 //
 // \param array M-dimensional array for the assignment.
@@ -955,31 +1051,11 @@ inline HybridVector<Type,N,TF>& HybridVector<Type,N,TF>::operator=( const Other 
 {
    BLAZE_STATIC_ASSERT( M <= N );
 
-   resize( M );
+   resize( M, false );
 
    for( size_t i=0UL; i<M; ++i )
       v_[i] = array[i];
 
-   return *this;
-}
-//*************************************************************************************************
-
-
-//*************************************************************************************************
-/*!\brief Homogenous assignment to all vector elements.
-//
-// \param rhs Scalar value to be assigned to all vector elements.
-// \return Reference to the assigned vector.
-*/
-template< typename Type  // Data type of the vector
-        , size_t N       // Number of elements
-        , bool TF >      // Transpose flag
-inline HybridVector<Type,N,TF>& HybridVector<Type,N,TF>::operator=( const Type& rhs )
-{
-   BLAZE_INTERNAL_ASSERT( size_ <= N, "Invalid size detected" );
-
-   for( size_t i=0UL; i<size_; ++i )
-      v_[i] = rhs;
    return *this;
 }
 //*************************************************************************************************
@@ -1018,7 +1094,7 @@ inline HybridVector<Type,N,TF>& HybridVector<Type,N,TF>::operator=( const Hybrid
 // \exception std::invalid_argument Invalid assignment to hybrid vector.
 //
 // This constructor initializes the vector as a copy of the given vector. In case the size
-// of the given vector is larger than N, a \a std::invalid_argument exception is thrown.
+// of the given vector is larger than \a N, a \a std::invalid_argument exception is thrown.
 */
 template< typename Type  // Data type of the vector
         , size_t N       // Number of elements
@@ -1037,7 +1113,7 @@ inline HybridVector<Type,N,TF>& HybridVector<Type,N,TF>::operator=( const Vector
       swap( tmp );
    }
    else {
-      resize( (~rhs).size() );
+      resize( (~rhs).size(), false );
       if( IsSparseVector<VT>::value )
          reset();
       assign( *this, ~rhs );
