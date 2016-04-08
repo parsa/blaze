@@ -40,6 +40,8 @@
 // Includes
 //*************************************************************************************************
 
+#include <initializer_list>
+#include <iterator>
 #include <blaze/math/adaptors/diagonalmatrix/BaseTemplate.h>
 #include <blaze/math/adaptors/diagonalmatrix/DiagonalProxy.h>
 #include <blaze/math/Aliases.h>
@@ -581,6 +583,8 @@ class DiagonalMatrix<MT,SO,true>
    template< typename A1 > explicit inline DiagonalMatrix( const A1& a1 );
                            explicit inline DiagonalMatrix( size_t n, const ElementType& init );
 
+   explicit inline DiagonalMatrix( std::initializer_list< std::initializer_list<ElementType> > list );
+
    template< typename Other >
    explicit inline DiagonalMatrix( size_t n, const Other* array );
 
@@ -626,10 +630,12 @@ class DiagonalMatrix<MT,SO,true>
    //**Assignment operators************************************************************************
    /*!\name Assignment operators */
    //@{
+   inline DiagonalMatrix& operator=( const ElementType& rhs );
+   inline DiagonalMatrix& operator=( std::initializer_list< std::initializer_list<ElementType> > list );
+
    template< typename Other, size_t N >
    inline DiagonalMatrix& operator=( const Other (&array)[N][N] );
 
-   inline DiagonalMatrix& operator=( const ElementType& rhs );
    inline DiagonalMatrix& operator=( const DiagonalMatrix& rhs );
    inline DiagonalMatrix& operator=( DiagonalMatrix&& rhs ) noexcept;
 
@@ -833,6 +839,44 @@ inline DiagonalMatrix<MT,SO,true>::DiagonalMatrix( size_t n, const ElementType& 
 
 //*************************************************************************************************
 /*! \cond BLAZE_INTERNAL */
+/*!\brief List initialization of all matrix elements.
+//
+// \param list The initializer list.
+// \exception std::invalid_argument Invalid setup of diagonal matrix.
+//
+// This constructor provides the option to explicitly initialize the elements of the diagonal
+// matrix by means of an initializer list:
+
+   \code
+   using blaze::rowMajor;
+
+   blaze::DiagonalMatrix< blaze::StaticMatrix<int,3,3,rowMajor> > A{ { 1, 0, 0 },
+                                                                     { 0, 2 },
+                                                                     { 0, 0, 3 } };
+   \endcode
+
+// The matrix is sized according to the size of the initializer list and all matrix elements are
+// initialized with the values from the given list. Missing values are initialized with default
+// values. In case the given list does not represent a diagonal matrix, a \a std::invalid_argument
+// exception is thrown.
+*/
+template< typename MT  // Type of the adapted dense matrix
+        , bool SO >    // Storage order of the adapted dense matrix
+inline DiagonalMatrix<MT,SO,true>::DiagonalMatrix( std::initializer_list< std::initializer_list<ElementType> > list )
+   : matrix_( list )  // The adapted dense matrix
+{
+   if( !isDiagonal( matrix_ ) ) {
+      BLAZE_THROW_INVALID_ARGUMENT( "Invalid setup of diagonal matrix" );
+   }
+
+   BLAZE_INTERNAL_ASSERT( isIntact(), "Broken invariant detected" );
+}
+/*! \endcond */
+//*************************************************************************************************
+
+
+//*************************************************************************************************
+/*! \cond BLAZE_INTERNAL */
 /*!\brief Array initialization of all diagonal matrix elements.
 //
 // \param n The number of rows and columns of the matrix.
@@ -851,7 +895,7 @@ inline DiagonalMatrix<MT,SO,true>::DiagonalMatrix( size_t n, const ElementType& 
    delete[] array;
    \endcode
 
-// The matrix is sized accoring to the given size of the array and initialized with the values
+// The matrix is sized according to the given size of the array and initialized with the values
 // from the given array. Note that it is expected that the given \a array has at least \a m by
 // \a n elements. Providing an array with less elements results in undefined behavior! Also,
 // in case the given array does not represent a diagonal matrix, a \a std::invalid_argument
@@ -1432,6 +1476,79 @@ inline typename DiagonalMatrix<MT,SO,true>::ConstIterator
 
 //*************************************************************************************************
 /*! \cond BLAZE_INTERNAL */
+/*!\brief Homogenous assignment to all diagonal matrix elements.
+//
+// \param rhs Scalar value to be assigned to the diagonal matrix elements.
+// \return Reference to the assigned matrix.
+*/
+template< typename MT  // Type of the adapted dense matrix
+        , bool SO >    // Storage order of the adapted dense matrix
+inline DiagonalMatrix<MT,SO,true>&
+   DiagonalMatrix<MT,SO,true>::operator=( const ElementType& rhs )
+{
+   if( SO ) {
+      for( size_t j=0UL; j<columns(); ++j )
+         matrix_(j,j) = rhs;
+   }
+   else {
+      for( size_t i=0UL; i<rows(); ++i )
+         matrix_(i,i) = rhs;
+   }
+
+   return *this;
+}
+/*! \endcond */
+//*************************************************************************************************
+
+
+//*************************************************************************************************
+/*! \cond BLAZE_INTERNAL */
+/*!\brief List assignment to all matrix elements.
+//
+// \param list The initializer list.
+// \exception std::invalid_argument Invalid assignment to diagonal matrix.
+//
+// This assignment operator offers the option to directly assign to all elements of the diagonal
+// matrix by means of an initializer list:
+
+   \code
+   using blaze::rowMajor;
+
+   blaze::DiagonalMatrix< blaze::StaticMatrix<int,3UL,3UL,rowMajor> > A;
+   A = { { 1, 0, 0 },
+         { 0, 2 },
+         { 0, 0, 3 } };
+   \endcode
+
+// The matrix elements are assigned the values from the given initializer list. Missing values
+// are initialized as default (as e.g. the value 6 in the example). Note that in case the size
+// of the top-level initializer list exceeds the number of rows or the size of any nested list
+// exceeds the number of columns, a \a std::invalid_argument exception is thrown.
+*/
+template< typename MT  // Type of the adapted dense matrix
+        , bool SO >    // Storage order of the adapted dense matrix
+inline DiagonalMatrix<MT,SO,true>&
+   DiagonalMatrix<MT,SO,true>::operator=( std::initializer_list< std::initializer_list<ElementType> > list )
+{
+   MT tmp( list );
+
+   if( !isDiagonal( tmp ) ) {
+      BLAZE_THROW_INVALID_ARGUMENT( "Invalid assignment to diagonal matrix" );
+   }
+
+   matrix_ = std::move( tmp );
+
+   BLAZE_INTERNAL_ASSERT( isSquare( matrix_ ), "Non-square diagonal matrix detected" );
+   BLAZE_INTERNAL_ASSERT( isIntact(), "Broken invariant detected" );
+
+   return *this;
+}
+/*! \endcond */
+//*************************************************************************************************
+
+
+//*************************************************************************************************
+/*! \cond BLAZE_INTERNAL */
 /*!\brief Array assignment to all diagonal matrix elements.
 //
 // \param array \f$ N \times N \f$ dimensional array for the assignment.
@@ -1471,33 +1588,6 @@ inline DiagonalMatrix<MT,SO,true>&
 
    BLAZE_INTERNAL_ASSERT( isSquare( matrix_ ), "Non-square diagonal matrix detected" );
    BLAZE_INTERNAL_ASSERT( isIntact(), "Broken invariant detected" );
-
-   return *this;
-}
-/*! \endcond */
-//*************************************************************************************************
-
-
-//*************************************************************************************************
-/*! \cond BLAZE_INTERNAL */
-/*!\brief Homogenous assignment to all diagonal matrix elements.
-//
-// \param rhs Scalar value to be assigned to the diagonal matrix elements.
-// \return Reference to the assigned matrix.
-*/
-template< typename MT  // Type of the adapted dense matrix
-        , bool SO >    // Storage order of the adapted dense matrix
-inline DiagonalMatrix<MT,SO,true>&
-   DiagonalMatrix<MT,SO,true>::operator=( const ElementType& rhs )
-{
-   if( SO ) {
-      for( size_t j=0UL; j<columns(); ++j )
-         matrix_(j,j) = rhs;
-   }
-   else {
-      for( size_t i=0UL; i<rows(); ++i )
-         matrix_(i,i) = rhs;
-   }
 
    return *this;
 }
