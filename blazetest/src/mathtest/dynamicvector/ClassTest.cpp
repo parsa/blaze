@@ -207,6 +207,31 @@ void ClassTest::testConstructors()
 
 
    //=====================================================================================
+   // List initialization
+   //=====================================================================================
+
+   {
+      test_ = "DynamicVector initializer list constructor (size 4)";
+
+      blaze::DynamicVector<int,blaze::rowVector> vec{ 1, 2, 3, 4 };
+
+      checkSize    ( vec, 4UL );
+      checkCapacity( vec, 4UL );
+      checkNonZeros( vec, 4UL );
+
+      if( vec[0] != 1 || vec[1] != 2 || vec[2] != 3 || vec[3] != 4 ) {
+         std::ostringstream oss;
+         oss << " Test: " << test_ << "\n"
+             << " Error: Construction failed\n"
+             << " Details:\n"
+             << "   Result:\n" << vec << "\n"
+             << "   Expected result:\n( 1 2 3 4 )\n";
+         throw std::runtime_error( oss.str() );
+      }
+   }
+
+
+   //=====================================================================================
    // Array initialization
    //=====================================================================================
 
@@ -274,7 +299,7 @@ void ClassTest::testConstructors()
    {
       test_ = "DynamicVector copy constructor (size 5)";
 
-      blaze::DynamicVector<int,blaze::rowVector> vec1( { 1, 2, 3, 4, 5 } );
+      blaze::DynamicVector<int,blaze::rowVector> vec1{ 1, 2, 3, 4, 5 };
       blaze::DynamicVector<int,blaze::rowVector> vec2( vec1 );
 
       checkSize    ( vec2, 5UL );
@@ -310,7 +335,7 @@ void ClassTest::testConstructors()
    {
       test_ = "DynamicVector move constructor (size 5)";
 
-      blaze::DynamicVector<int,blaze::rowVector> vec1( { 1, 2, 3, 4, 5 } );
+      blaze::DynamicVector<int,blaze::rowVector> vec1{ 1, 2, 3, 4, 5 };
       blaze::DynamicVector<int,blaze::rowVector> vec2( std::move( vec1 ) );
 
       checkSize    ( vec2, 5UL );
@@ -466,6 +491,32 @@ void ClassTest::testAssignment()
 
 
    //=====================================================================================
+   // List assignment
+   //=====================================================================================
+
+   {
+      test_ = "DynamicVector initializer list assignment";
+
+      blaze::DynamicVector<int,blaze::rowVector> vec;
+      vec = { 1, 2, 3, 4 };
+
+      checkSize    ( vec, 4UL );
+      checkCapacity( vec, 4UL );
+      checkNonZeros( vec, 4UL );
+
+      if( vec[0] != 1 || vec[1] != 2 || vec[2] != 3 || vec[3] != 4 ) {
+         std::ostringstream oss;
+         oss << " Test: " << test_ << "\n"
+             << " Error: Assignment failed\n"
+             << " Details:\n"
+             << "   Result:\n" << vec << "\n"
+             << "   Expected result:\n( 1 2 3 4 )\n";
+         throw std::runtime_error( oss.str() );
+      }
+   }
+
+
+   //=====================================================================================
    // Array assignment
    //=====================================================================================
 
@@ -499,7 +550,7 @@ void ClassTest::testAssignment()
    {
       test_ = "DynamicVector copy assignment";
 
-      blaze::DynamicVector<int,blaze::rowVector> vec1( { 1, 2, 3, 4, 5 } );
+      blaze::DynamicVector<int,blaze::rowVector> vec1{ 1, 2, 3, 4, 5 };
       blaze::DynamicVector<int,blaze::rowVector> vec2;
       vec2 = vec1;
 
@@ -554,8 +605,8 @@ void ClassTest::testAssignment()
    {
       test_ = "DynamicVector move assignment";
 
-      blaze::DynamicVector<int,blaze::rowVector> vec1( { 1, 2, 3, 4, 5 } );
-      blaze::DynamicVector<int,blaze::rowVector> vec2( { 11, 12, 13 } );
+      blaze::DynamicVector<int,blaze::rowVector> vec1{ 1, 2, 3, 4, 5 };
+      blaze::DynamicVector<int,blaze::rowVector> vec2{ 11, 12, 13 };
 
       vec2 = std::move( vec1 );
 
@@ -762,7 +813,7 @@ void ClassTest::testAddAssign()
       vec1[2] = -2;
       vec1[3] =  3;
       vec1[4] =  0;
-      blaze::DynamicVector<int,blaze::rowVector> vec2( { 0, 4, 2, -6, 7 } );
+      blaze::DynamicVector<int,blaze::rowVector> vec2{ 0, 4, 2, -6, 7 };
 
       vec2 += vec1;
 
@@ -796,7 +847,7 @@ void ClassTest::testAddAssign()
       vec1[2] = -2;
       vec1[3] =  3;
       vec1[4] =  0;
-      blaze::DynamicVector<int,blaze::rowVector> vec2( { 0, 4, 2, -6, 7 } );
+      blaze::DynamicVector<int,blaze::rowVector> vec2{ 0, 4, 2, -6, 7 };
 
       vec2 += vec1;
 
@@ -827,7 +878,7 @@ void ClassTest::testAddAssign()
       vec1[0] =  1;
       vec1[2] = -2;
       vec1[3] =  3;
-      blaze::DynamicVector<int,blaze::rowVector> vec2( { 0, 4, 2, -6, 7 } );
+      blaze::DynamicVector<int,blaze::rowVector> vec2{ 0, 4, 2, -6, 7 };
 
       vec2 += vec1;
 
@@ -878,7 +929,7 @@ void ClassTest::testSubAssign()
       vec1[2] =  2;
       vec1[3] = -3;
       vec1[4] =  0;
-      blaze::DynamicVector<int,blaze::rowVector> vec2( { 0, 4, 2, -6, 7 } );
+      blaze::DynamicVector<int,blaze::rowVector> vec2{ 0, 4, 2, -6, 7 };
 
       vec2 -= vec1;
 
@@ -912,7 +963,7 @@ void ClassTest::testSubAssign()
       vec1[2] =  2;
       vec1[3] = -3;
       vec1[4] =  0;
-      blaze::DynamicVector<int,blaze::rowVector> vec2( { 0, 4, 2, -6, 7 } );
+      blaze::DynamicVector<int,blaze::rowVector> vec2{ 0, 4, 2, -6, 7 };
 
       vec2 -= vec1;
 
@@ -943,7 +994,7 @@ void ClassTest::testSubAssign()
       vec1[0] = -1;
       vec1[2] =  2;
       vec1[3] = -3;
-      blaze::DynamicVector<int,blaze::rowVector> vec2( { 0, 4, 2, -6, 7 } );
+      blaze::DynamicVector<int,blaze::rowVector> vec2{ 0, 4, 2, -6, 7 };
 
       vec2 -= vec1;
 
@@ -994,7 +1045,7 @@ void ClassTest::testMultAssign()
       vec1[2] = -2;
       vec1[3] =  3;
       vec1[4] =  0;
-      blaze::DynamicVector<int,blaze::rowVector> vec2( { 0, 4, 2, -6, 7 } );
+      blaze::DynamicVector<int,blaze::rowVector> vec2{ 0, 4, 2, -6, 7 };
 
       vec2 *= vec1;
 
@@ -1028,7 +1079,7 @@ void ClassTest::testMultAssign()
       vec1[2] = -2;
       vec1[3] =  3;
       vec1[4] =  0;
-      blaze::DynamicVector<int,blaze::rowVector> vec2( { 0, 4, 2, -6, 7 } );
+      blaze::DynamicVector<int,blaze::rowVector> vec2{ 0, 4, 2, -6, 7 };
 
       vec2 *= vec1;
 
@@ -1059,7 +1110,7 @@ void ClassTest::testMultAssign()
       vec1[0] =  1;
       vec1[2] = -2;
       vec1[3] =  3;
-      blaze::DynamicVector<int,blaze::rowVector> vec2( { 0, 4, 2, -6, 7 } );
+      blaze::DynamicVector<int,blaze::rowVector> vec2{ 0, 4, 2, -6, 7 };
 
       vec2 *= vec1;
 
@@ -1099,7 +1150,7 @@ void ClassTest::testScaling()
    {
       test_ = "DynamicVector self-scaling (v*=s)";
 
-      blaze::DynamicVector<int,blaze::rowVector> vec( { 1, 0, -2, 3, 0 } );
+      blaze::DynamicVector<int,blaze::rowVector> vec{ 1, 0, -2, 3, 0 };
 
       vec *= 2;
 
@@ -1126,7 +1177,7 @@ void ClassTest::testScaling()
    {
       test_ = "DynamicVector self-scaling (v=v*s)";
 
-      blaze::DynamicVector<int,blaze::rowVector> vec( { 1, 0, -2, 3, 0 } );
+      blaze::DynamicVector<int,blaze::rowVector> vec{ 1, 0, -2, 3, 0 };
 
       vec = vec * 2;
 
@@ -1153,7 +1204,7 @@ void ClassTest::testScaling()
    {
       test_ = "DynamicVector self-scaling (v=s*v)";
 
-      blaze::DynamicVector<int,blaze::rowVector> vec( { 1, 0, -2, 3, 0 } );
+      blaze::DynamicVector<int,blaze::rowVector> vec{ 1, 0, -2, 3, 0 };
 
       vec = 2 * vec;
 
@@ -1180,7 +1231,7 @@ void ClassTest::testScaling()
    {
       test_ = "DynamicVector self-scaling (v/=s)";
 
-      blaze::DynamicVector<int,blaze::rowVector> vec( { 2, 0, -4, 6, 0 } );
+      blaze::DynamicVector<int,blaze::rowVector> vec{ 2, 0, -4, 6, 0 };
 
       vec /= 2;
 
@@ -1207,7 +1258,7 @@ void ClassTest::testScaling()
    {
       test_ = "DynamicVector self-scaling (v=v/s)";
 
-      blaze::DynamicVector<int,blaze::rowVector> vec( { 2, 0, -4, 6, 0 } );
+      blaze::DynamicVector<int,blaze::rowVector> vec{ 2, 0, -4, 6, 0 };
 
       vec = vec / 2;
 
@@ -1235,7 +1286,7 @@ void ClassTest::testScaling()
       test_ = "DynamicVector::scale() (int)";
 
       // Initialization check
-      blaze::DynamicVector<int,blaze::rowVector> vec( { 1, 2, 3, 4 } );
+      blaze::DynamicVector<int,blaze::rowVector> vec{ 1, 2, 3, 4 };
 
       checkSize    ( vec, 4UL );
       checkCapacity( vec, 4UL );
@@ -1329,7 +1380,7 @@ void ClassTest::testSubscript()
    test_ = "DynamicVector::operator[]";
 
    // Assignment to the element at index 2
-   blaze::DynamicVector<int,blaze::rowVector> vec( { 0, 0, 1, 0, 0, 0, 0 } );
+   blaze::DynamicVector<int,blaze::rowVector> vec{ 0, 0, 1, 0, 0, 0, 0 };
 
    checkSize    ( vec, 7UL );
    checkCapacity( vec, 7UL );
@@ -1482,7 +1533,7 @@ void ClassTest::testAt()
    test_ = "DynamicVector::at()";
 
    // Assignment to the element at index 2
-   blaze::DynamicVector<int,blaze::rowVector> vec( { 0, 0, 1, 0, 0, 0, 0 } );
+   blaze::DynamicVector<int,blaze::rowVector> vec{ 0, 0, 1, 0, 0, 0, 0 };
 
    checkSize    ( vec, 7UL );
    checkCapacity( vec, 7UL );
@@ -1649,7 +1700,7 @@ void ClassTest::testIterator()
    typedef VectorType::Iterator       Iterator;
    typedef VectorType::ConstIterator  ConstIterator;
 
-   VectorType vec( { 1, 0, -2, -3 } );
+   VectorType vec{ 1, 0, -2, -3 };
 
    // Testing the Iterator default constructor
    {
@@ -1961,7 +2012,7 @@ void ClassTest::testNonZeros()
    }
 
    {
-      blaze::DynamicVector<int,blaze::rowVector> vec( { 1, 2, 0, 3 } );
+      blaze::DynamicVector<int,blaze::rowVector> vec{ 1, 2, 0, 3 };
 
       checkSize    ( vec, 4UL );
       checkCapacity( vec, 4UL );
@@ -1997,7 +2048,7 @@ void ClassTest::testReset()
    test_ = "DynamicVector::reset()";
 
    // Initialization check
-   blaze::DynamicVector<int,blaze::rowVector> vec( { 1, 2, 3, 4 } );
+   blaze::DynamicVector<int,blaze::rowVector> vec{ 1, 2, 3, 4 };
    vec[0] = 1;
    vec[1] = 2;
    vec[2] = 3;
@@ -2070,7 +2121,7 @@ void ClassTest::testClear()
    test_ = "DynamicVector::clear()";
 
    // Initialization check
-   blaze::DynamicVector<int,blaze::rowVector> vec( { 1, 2, 3, 4 } );
+   blaze::DynamicVector<int,blaze::rowVector> vec{ 1, 2, 3, 4 };
 
    checkSize    ( vec, 4UL );
    checkCapacity( vec, 4UL );
@@ -2296,8 +2347,8 @@ void ClassTest::testSwap()
 {
    test_ = "DynamicVector swap";
 
-   blaze::DynamicVector<int,blaze::rowVector> vec1( { 1, 2, 3 } );
-   blaze::DynamicVector<int,blaze::rowVector> vec2( { 4, 3, 2, 1 } );
+   blaze::DynamicVector<int,blaze::rowVector> vec1{ 1, 2, 3 };
+   blaze::DynamicVector<int,blaze::rowVector> vec2{ 4, 3, 2, 1 };
 
    swap( vec1, vec2 );
 
@@ -2363,7 +2414,7 @@ void ClassTest::testIsDefault()
 
    // isDefault with default vector
    {
-      blaze::DynamicVector<int,blaze::rowVector> vec( { 0, 0, 0 } );
+      blaze::DynamicVector<int,blaze::rowVector> vec{ 0, 0, 0 };
 
       if( isDefault( vec[1] ) != true ) {
          std::ostringstream oss;
@@ -2386,7 +2437,7 @@ void ClassTest::testIsDefault()
 
    // isDefault with non-default vector
    {
-      blaze::DynamicVector<int,blaze::rowVector> vec( { 0, 1, 0 } );
+      blaze::DynamicVector<int,blaze::rowVector> vec{ 0, 1, 0 };
 
       if( isDefault( vec[1] ) != false ) {
          std::ostringstream oss;
