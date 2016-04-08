@@ -41,6 +41,7 @@
 //*************************************************************************************************
 
 #include <algorithm>
+#include <initializer_list>
 #include <blaze/math/Aliases.h>
 #include <blaze/math/AlignmentFlag.h>
 #include <blaze/math/dense/DenseIterator.h>
@@ -220,6 +221,7 @@ class DynamicVector : public DenseVector< DynamicVector<Type,TF>, TF >
    explicit inline DynamicVector() noexcept;
    explicit inline DynamicVector( size_t n );
    explicit inline DynamicVector( size_t n, const Type& init );
+   explicit inline DynamicVector( std::initializer_list<Type> list );
 
    template< typename Other >
    explicit inline DynamicVector( size_t n, const Other* array );
@@ -261,10 +263,12 @@ class DynamicVector : public DenseVector< DynamicVector<Type,TF>, TF >
    //**Assignment operators************************************************************************
    /*!\name Assignment operators */
    //@{
+   inline DynamicVector& operator=( const Type& rhs );
+   inline DynamicVector& operator=( std::initializer_list<Type> list );
+
    template< typename Other, size_t N >
    inline DynamicVector& operator=( const Other (&array)[N] );
 
-   inline DynamicVector& operator=( const Type& rhs );
    inline DynamicVector& operator=( const DynamicVector& rhs );
    inline DynamicVector& operator=( DynamicVector&& rhs ) noexcept;
 
@@ -512,6 +516,33 @@ inline DynamicVector<Type,TF>::DynamicVector( size_t n, const Type& init )
 
 
 //*************************************************************************************************
+/*!\brief List initialization of all vector elements.
+//
+// \param list The initializer list.
+//
+// This assignment operator provides the option to explicitly initialize the elements of the
+// vector within a constructor call:
+
+   \code
+   blaze::DynamicVector<double> v1{ 4.2, 6.3, -1.2 };
+   \endcode
+
+// The vector is sized according to the size of the initializer list and all its elements are
+// initialized by the values of the given initializer list.
+*/
+template< typename Type  // Data type of the vector
+        , bool TF >      // Transpose flag
+inline DynamicVector<Type,TF>::DynamicVector( std::initializer_list<Type> list )
+   : size_    ( list.size() )                  // The current size/dimension of the vector
+   , capacity_( adjustCapacity( size_ ) )      // The maximum capacity of the vector
+   , v_       ( allocate<Type>( capacity_ ) )  // The vector elements
+{
+   std::fill( std::copy( list.begin(), list.end(), v_ ), v_+capacity_, Type() );
+}
+//*************************************************************************************************
+
+
+//*************************************************************************************************
 /*!\brief Array initialization of all vector elements.
 //
 // \param n The size of the vector.
@@ -527,7 +558,7 @@ inline DynamicVector<Type,TF>::DynamicVector( size_t n, const Type& init )
    delete[] array;
    \endcode
 
-// The vector is sized accoring to the specified size of the array and initialized with the
+// The vector is sized according to the specified size of the array and initialized with the
 // values from the given array. Note that it is expected that the given \a array has at least
 // \a n elements. Providing an array with less elements results in undefined behavior!
 */
@@ -555,15 +586,15 @@ inline DynamicVector<Type,TF>::DynamicVector( size_t n, const Other* array )
 //
 // \param array N-dimensional array for the initialization.
 //
-// This assignment operator offers the option to directly initialize the elements of the vector
-// with a static array:
+// This constructor offers the option to directly initialize the elements of the vector with a
+// static array:
 
    \code
    const int init[4] = { 1, 2, 3 };
    blaze::DynamicVector<int> v( init );
    \endcode
 
-// The vector is sized accoring to the size of the array and initialized with the values from the
+// The vector is sized according to the size of the array and initialized with the values from the
 // given array. Missing values are initialized with default values (as e.g. the fourth element in
 // the example).
 */
@@ -891,6 +922,51 @@ inline typename DynamicVector<Type,TF>::ConstIterator DynamicVector<Type,TF>::ce
 //=================================================================================================
 
 //*************************************************************************************************
+/*!\brief Homogenous assignment to all vector elements.
+//
+// \param rhs Scalar value to be assigned to all vector elements.
+// \return Reference to the assigned vector.
+*/
+template< typename Type  // Data type of the vector
+        , bool TF >      // Transpose flag
+inline DynamicVector<Type,TF>& DynamicVector<Type,TF>::operator=( const Type& rhs )
+{
+   for( size_t i=0UL; i<size_; ++i )
+      v_[i] = rhs;
+   return *this;
+}
+//*************************************************************************************************
+
+
+//*************************************************************************************************
+/*!\brief List assignment to all vector elements.
+//
+// \param list The initializer list.
+//
+// This assignment operator offers the option to directly assign to all elements of the vector
+// by means of an initializer list:
+
+   \code
+   blaze::DynamicVector<double> v;
+   v = { 4.2, 6.3, -1.2 };
+   \endcode
+
+// The vector is resized according to the size of the initializer list and all its elements are
+// assigned the values from the given initializer list.
+*/
+template< typename Type  // Data type of the vector
+        , bool TF >      // Transpose flag
+inline DynamicVector<Type,TF>& DynamicVector<Type,TF>::operator=( std::initializer_list<Type> list )
+{
+   resize( list.size(), false );
+   std::copy( list.begin(), list.end(), v_ );
+
+   return *this;
+}
+//*************************************************************************************************
+
+
+//*************************************************************************************************
 /*!\brief Array assignment to all vector elements.
 //
 // \param array N-dimensional array for the assignment.
@@ -904,7 +980,7 @@ inline typename DynamicVector<Type,TF>::ConstIterator DynamicVector<Type,TF>::ce
    v = init;
    \endcode
 
-// The vector is resized accoring to the size of the array and assigned the values from the given
+// The vector is resized according to the size of the array and assigned the values from the given
 // array. Missing values are initialized with default values (as e.g. the fourth element in the
 // example).
 */
@@ -919,23 +995,6 @@ inline DynamicVector<Type,TF>& DynamicVector<Type,TF>::operator=( const Other (&
    for( size_t i=0UL; i<N; ++i )
       v_[i] = array[i];
 
-   return *this;
-}
-//*************************************************************************************************
-
-
-//*************************************************************************************************
-/*!\brief Homogenous assignment to all vector elements.
-//
-// \param rhs Scalar value to be assigned to all vector elements.
-// \return Reference to the assigned vector.
-*/
-template< typename Type  // Data type of the vector
-        , bool TF >      // Transpose flag
-inline DynamicVector<Type,TF>& DynamicVector<Type,TF>::operator=( const Type& rhs )
-{
-   for( size_t i=0UL; i<size_; ++i )
-      v_[i] = rhs;
    return *this;
 }
 //*************************************************************************************************
