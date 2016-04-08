@@ -41,6 +41,7 @@
 //*************************************************************************************************
 
 #include <algorithm>
+#include <initializer_list>
 #include <blaze/math/Aliases.h>
 #include <blaze/math/AlignmentFlag.h>
 #include <blaze/math/dense/DenseIterator.h>
@@ -222,6 +223,7 @@ class StaticVector : public DenseVector< StaticVector<Type,N,TF>, TF >
    //@{
    explicit inline StaticVector();
    explicit inline StaticVector( const Type& init );
+   explicit inline StaticVector( std::initializer_list<Type> list );
 
    template< typename Other >
    explicit inline StaticVector( size_t n, const Other* array );
@@ -260,16 +262,19 @@ class StaticVector : public DenseVector< StaticVector<Type,N,TF>, TF >
    //**Assignment operators************************************************************************
    /*!\name Assignment operators */
    //@{
+   inline StaticVector& operator=( const Type& rhs );
+   inline StaticVector& operator=( std::initializer_list<Type> list );
+
    template< typename Other >
    inline StaticVector& operator=( const Other (&array)[N] );
 
-                              inline StaticVector& operator= ( const Type& rhs );
-                              inline StaticVector& operator= ( const StaticVector& rhs );
-   template< typename Other > inline StaticVector& operator= ( const StaticVector<Other,N,TF>& rhs );
-   template< typename VT >    inline StaticVector& operator= ( const Vector<VT,TF>& rhs );
-   template< typename VT >    inline StaticVector& operator+=( const Vector<VT,TF>& rhs );
-   template< typename VT >    inline StaticVector& operator-=( const Vector<VT,TF>& rhs );
-   template< typename VT >    inline StaticVector& operator*=( const Vector<VT,TF>& rhs );
+                              inline StaticVector& operator=( const StaticVector& rhs );
+   template< typename Other > inline StaticVector& operator=( const StaticVector<Other,N,TF>& rhs );
+
+   template< typename VT > inline StaticVector& operator= ( const Vector<VT,TF>& rhs );
+   template< typename VT > inline StaticVector& operator+=( const Vector<VT,TF>& rhs );
+   template< typename VT > inline StaticVector& operator-=( const Vector<VT,TF>& rhs );
+   template< typename VT > inline StaticVector& operator*=( const Vector<VT,TF>& rhs );
 
    template< typename Other >
    inline EnableIf_<IsNumeric<Other>, StaticVector >& operator*=( Other rhs );
@@ -499,13 +504,47 @@ inline StaticVector<Type,N,TF>::StaticVector( const Type& init )
 
 
 //*************************************************************************************************
+/*!\brief List initialization of all vector elements.
+//
+// \param list The initializer list.
+// \exception std::invalid_argument Invalid setup of static vector.
+//
+// This constructor provides the option to explicitly initialize the elements of the vector by
+// means of an initializer list:
+
+   \code
+   blaze::StaticVector<double,3UL> v1{ 4.2, 6.3, -1.2 };
+   \endcode
+
+// The vector elements are initialized by the values of the given initializer list. Missing values
+// are initialized as default. Note that in case the size of the initializer list exceeds the size
+// of the vector, a \a std::invalid_argument exception is thrown.
+*/
+template< typename Type  // Data type of the vector
+        , size_t N       // Number of elements
+        , bool TF >      // Transpose flag
+inline StaticVector<Type,N,TF>::StaticVector( std::initializer_list<Type> list )
+   : v_()  // The statically allocated vector elements
+{
+   BLAZE_STATIC_ASSERT( IsVectorizable<Type>::value || NN == N );
+
+   if( list.size() > N ) {
+      BLAZE_THROW_INVALID_ARGUMENT( "Invalid setup of static vector" );
+   }
+
+   std::fill( std::copy( list.begin(), list.end(), v_.data() ), v_.data()+NN, Type() );
+}
+//*************************************************************************************************
+
+
+//*************************************************************************************************
 /*!\brief Array initialization of all vector elements.
 //
 // \param n The size of the vector.
 // \param array Dynamic array for the initialization.
 //
-// This assignment operator offers the option to directly initialize the elements of the vector
-// with a dynamic array:
+// This constructor offers the option to directly initialize the elements of the vector with a
+// dynamic array:
 
    \code
    const double array* = new double[2];
@@ -887,6 +926,58 @@ inline typename StaticVector<Type,N,TF>::ConstIterator StaticVector<Type,N,TF>::
 //=================================================================================================
 
 //*************************************************************************************************
+/*!\brief Homogenous assignment to all vector elements.
+//
+// \param rhs Scalar value to be assigned to all vector elements.
+// \return Reference to the assigned vector.
+*/
+template< typename Type  // Data type of the vector
+        , size_t N       // Number of elements
+        , bool TF >      // Transpose flag
+inline StaticVector<Type,N,TF>& StaticVector<Type,N,TF>::operator=( const Type& rhs )
+{
+   for( size_t i=0UL; i<N; ++i )
+      v_[i] = rhs;
+   return *this;
+}
+//*************************************************************************************************
+
+
+//*************************************************************************************************
+/*!\brief List assignment to all vector elements.
+//
+// \param list The initializer list.
+// \exception std::invalid_argument Invalid assignment to static vector.
+//
+// This assignment operator offers the option to directly assign to all elements of the vector
+// by means of an initializer list:
+
+   \code
+   blaze::StaticVector<double,3UL> v;
+   v = { 4.2, 6.3, -1.2 };
+   \endcode
+
+// The vector elements are assigned the values from the given initializer list. Missing values
+// are reset to their default state. Note that in case the size of the initializer list exceeds
+// the size of the vector, a \a std::invalid_argument exception is thrown.
+*/
+template< typename Type  // Data type of the vector
+        , size_t N       // Number of elements
+        , bool TF >      // Transpose flag
+inline StaticVector<Type,N,TF>& StaticVector<Type,N,TF>::operator=( std::initializer_list<Type> list )
+{
+   if( list.size() > N ) {
+      BLAZE_THROW_INVALID_ARGUMENT( "Invalid assignment to static vector" );
+   }
+
+   std::fill( std::copy( list.begin(), list.end(), v_.data() ), v_.data()+N, Type() );
+
+   return *this;
+}
+//*************************************************************************************************
+
+
+//*************************************************************************************************
 /*!\brief Array assignment to all vector elements.
 //
 // \param array M-dimensional array for the assignment.
@@ -911,24 +1002,6 @@ inline StaticVector<Type,N,TF>& StaticVector<Type,N,TF>::operator=( const Other 
 {
    for( size_t i=0UL; i<N; ++i )
       v_[i] = array[i];
-   return *this;
-}
-//*************************************************************************************************
-
-
-//*************************************************************************************************
-/*!\brief Homogenous assignment to all vector elements.
-//
-// \param rhs Scalar value to be assigned to all vector elements.
-// \return Reference to the assigned vector.
-*/
-template< typename Type  // Data type of the vector
-        , size_t N       // Number of elements
-        , bool TF >      // Transpose flag
-inline StaticVector<Type,N,TF>& StaticVector<Type,N,TF>::operator=( const Type& rhs )
-{
-   for( size_t i=0UL; i<N; ++i )
-      v_[i] = rhs;
    return *this;
 }
 //*************************************************************************************************
