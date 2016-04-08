@@ -40,9 +40,9 @@
 // Includes
 //*************************************************************************************************
 
-#include <algorithm>
 #include <initializer_list>
 #include <iterator>
+#include <utility>
 #include <blaze/math/adaptors/hermitianmatrix/BaseTemplate.h>
 #include <blaze/math/adaptors/hermitianmatrix/HermitianProxy.h>
 #include <blaze/math/Aliases.h>

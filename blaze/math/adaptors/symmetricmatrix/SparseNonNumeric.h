@@ -40,8 +40,8 @@
 // Includes
 //*************************************************************************************************
 
-#include <algorithm>
 #include <iterator>
+#include <utility>
 #include <vector>
 #include <blaze/math/adaptors/symmetricmatrix/BaseTemplate.h>
 #include <blaze/math/adaptors/symmetricmatrix/NonNumericProxy.h>

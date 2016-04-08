@@ -40,8 +40,8 @@
 // Includes
 //*************************************************************************************************
 
-#include <algorithm>
 #include <iterator>
+#include <utility>
 #include <blaze/math/adaptors/symmetricmatrix/BaseTemplate.h>
 #include <blaze/math/Aliases.h>
 #include <blaze/math/constraints/DenseMatrix.h>

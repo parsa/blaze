@@ -42,6 +42,7 @@
 
 #include <initializer_list>
 #include <iterator>
+#include <utility>
 #include <blaze/math/adaptors/Forward.h>
 #include <blaze/math/adaptors/strictlyuppermatrix/BaseTemplate.h>
 #include <blaze/math/adaptors/strictlyuppermatrix/StrictlyUpperProxy.h>

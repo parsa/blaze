@@ -40,7 +40,7 @@
 // Includes
 //*************************************************************************************************
 
-#include <algorithm>
+#include <utility>
 #include <boost/smart_ptr/shared_array.hpp>
 #include <blaze/math/Aliases.h>
 #include <blaze/math/AlignmentFlag.h>

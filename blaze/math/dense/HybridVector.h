@@ -33,6 +33,7 @@
 
 #include <algorithm>
 #include <initializer_list>
+#include <utility>
 #include <blaze/math/Aliases.h>
 #include <blaze/math/AlignmentFlag.h>
 #include <blaze/math/dense/DenseIterator.h>

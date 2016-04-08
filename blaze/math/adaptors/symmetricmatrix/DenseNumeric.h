@@ -40,9 +40,9 @@
 // Includes
 //*************************************************************************************************
 
-#include <algorithm>
 #include <initializer_list>
 #include <iterator>
+#include <utility>
 #include <blaze/math/adaptors/symmetricmatrix/BaseTemplate.h>
 #include <blaze/math/adaptors/symmetricmatrix/NumericProxy.h>
 #include <blaze/math/Aliases.h>

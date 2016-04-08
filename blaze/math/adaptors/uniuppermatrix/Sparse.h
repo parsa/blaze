@@ -40,7 +40,8 @@
 // Includes
 //*************************************************************************************************
 
-#include <algorithm>
+#include <iterator>
+#include <utility>
 #include <vector>
 #include <blaze/math/adaptors/Forward.h>
 #include <blaze/math/adaptors/uniuppermatrix/BaseTemplate.h>
