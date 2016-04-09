@@ -80,6 +80,7 @@ class Vector
    //**Constructors********************************************************************************
    /*!\name Constructors */
    //@{
+   inline Vector();
    inline Vector( size_t n );
    inline Vector( size_t n, const Type& init );
    inline Vector( const Vector& v );
@@ -150,10 +151,27 @@ class Vector
 /*!\brief The default constructor for Vector.
 */
 template< typename Type >  // Data type of the vector
+inline Vector<Type>::Vector()
+   : n_       ( 0UL )      // The current size/dimension of the vector
+   , capacity_( 0UL )      // The maximum capacity of the vector
+   , v_       ( nullptr )  // The vector elements
+{}
+//*************************************************************************************************
+
+
+//*************************************************************************************************
+/*!\brief Constructor for a vector of size \a n. No element initialization is performed!
+//
+// \param n The size of the vector.
+//
+// \note: This constructor is only responsible to allocate the required dynamic memory. No
+// element initialization is performed!
+*/
+template< typename Type >  // Data type of the vector
 inline Vector<Type>::Vector( size_t n )
-   : n_( n )                    // The current size/dimension of the vector
-   , capacity_( n_ )            // The maximum capacity of the vector
-   , v_( new Type[capacity_] )  // The vector elements
+   : n_       ( n )                    // The current size/dimension of the vector
+   , capacity_( n_ )                   // The maximum capacity of the vector
+   , v_       ( new Type[capacity_] )  // The vector elements
 {}
 //*************************************************************************************************
 
@@ -168,9 +186,9 @@ inline Vector<Type>::Vector( size_t n )
 */
 template< typename Type >  // Data type of the vector
 inline Vector<Type>::Vector( size_t n, const Type& init )
-   : n_( n )                    // The current size/dimension of the vector
-   , capacity_( n_ )            // The maximum capacity of the vector
-   , v_( new Type[capacity_] )  // The vector elements
+   : n_       ( n )                    // The current size/dimension of the vector
+   , capacity_( n_ )                   // The maximum capacity of the vector
+   , v_       ( new Type[capacity_] )  // The vector elements
 {
    for( size_t i=0UL; i<n_; ++i )
       v_[i] = init;
@@ -212,7 +230,7 @@ inline Vector<Type>::Vector( const Vector& v )
 template< typename Type >  // Data type of the vector
 inline Vector<Type>::~Vector()
 {
-   delete [] v_;
+   delete[] v_;
 }
 //*************************************************************************************************
 
@@ -549,7 +567,7 @@ inline const Vector<Type> operator*( const Vector<Type>& lhs, const Vector<Type>
 // Note that this operator only works for scalar values of built-in data type.
 */
 template< typename Type >
-inline const typename ::blaze::EnableIf< ::blaze::IsNumeric<Type>, Vector<Type> >::Type
+inline const ::blaze::EnableIf_< ::blaze::IsNumeric<Type>, Vector<Type> >
    operator*( const Vector<Type>& vec, Type scalar )
 {
    Vector<Type> res( vec.size() );
@@ -587,7 +605,7 @@ inline const typename ::blaze::EnableIf< ::blaze::IsNumeric<Type>, Vector<Type> 
 // Note that this operator only works for scalar values of built-in data type.
 */
 template< typename Type >
-inline const typename ::blaze::EnableIf< ::blaze::IsNumeric<Type>, Vector<Type> >::Type
+inline const ::blaze::EnableIf_< ::blaze::IsNumeric<Type>, Vector<Type> >
    operator*( Type scalar, const Vector<Type>& vec )
 {
    Vector<Type> res( vec.size() );
