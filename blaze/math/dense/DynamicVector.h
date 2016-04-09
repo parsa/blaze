@@ -360,6 +360,13 @@ class DynamicVector : public DenseVector< DynamicVector<Type,TF>, TF >
    //**********************************************************************************************
 
  public:
+   //**Debugging functions*************************************************************************
+   /*!\name Debugging functions */
+   //@{
+   inline bool isIntact() const noexcept;
+   //@}
+   //**********************************************************************************************
+
    //**Expression template evaluation functions****************************************************
    /*!\name Expression template evaluation functions */
    //@{
@@ -1488,6 +1495,42 @@ inline size_t DynamicVector<Type,TF>::adjustCapacity( size_t minCapacity ) const
 
 //=================================================================================================
 //
+//  DEBUGGING FUNCTIONS
+//
+//=================================================================================================
+
+//*************************************************************************************************
+/*!\brief Returns whether the invariants of the dynamic vector are intact.
+//
+// \return \a true in case the dynamic vector's invariants are intact, \a false otherwise.
+//
+// This function checks whether the invariants of the dynamic vector are intact, i.e. if its
+// state is valid. In case the invariants are intact, the function returns \a true, else it
+// will return \a false.
+*/
+template< typename Type  // Data type of the vector
+        , bool TF >      // Transpose flag
+inline bool DynamicVector<Type,TF>::isIntact() const noexcept
+{
+   if( size_ > capacity_ )
+      return false;
+
+   if( IsNumeric<Type>::value ) {
+      for( size_t i=size_; i<capacity_; ++i ) {
+         if( v_[i] != Type() )
+            return false;
+      }
+   }
+
+   return true;
+}
+//*************************************************************************************************
+
+
+
+
+//=================================================================================================
+//
 //  EXPRESSION TEMPLATE EVALUATION FUNCTIONS
 //
 //=================================================================================================
@@ -2302,7 +2345,7 @@ template< typename Type  // Data type of the vector
         , bool TF >      // Transpose flag
 inline bool isIntact( const DynamicVector<Type,TF>& v ) noexcept
 {
-   return ( v.size() <= v.capacity() );
+   return v.isIntact();
 }
 //*************************************************************************************************
 
