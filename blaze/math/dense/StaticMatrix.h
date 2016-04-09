@@ -403,6 +403,13 @@ class StaticMatrix : public DenseMatrix< StaticMatrix<Type,M,N,SO>, SO >
    //**********************************************************************************************
 
  public:
+   //**Debugging functions*************************************************************************
+   /*!\name Debugging functions */
+   //@{
+   inline bool isIntact() const noexcept;
+   //@}
+   //**********************************************************************************************
+
    //**Expression template evaluation functions****************************************************
    /*!\name Expression template evaluation functions */
    //@{
@@ -2092,6 +2099,43 @@ inline void StaticMatrix<Type,M,N,SO>::operator delete[]( void* ptr, const std::
 
 //=================================================================================================
 //
+//  DEBUGGING FUNCTIONS
+//
+//=================================================================================================
+
+//*************************************************************************************************
+/*!\brief Returns whether the invariants of the static matrix are intact.
+//
+// \return \a true in case the static matrix's invariants are intact, \a false otherwise.
+//
+// This function checks whether the invariants of the static matrix are intact, i.e. if its
+// state is valid. In case the invariants are intact, the function returns \a true, else it
+// will return \a false.
+*/
+template< typename Type  // Data type of the matrix
+        , size_t M       // Number of rows
+        , size_t N       // Number of columns
+        , bool SO >      // Storage order
+inline bool StaticMatrix<Type,M,N,SO>::isIntact() const noexcept
+{
+   if( IsNumeric<Type>::value ) {
+      for( size_t i=0UL; i<M; ++i ) {
+         for( size_t j=N; j<NN; ++j ) {
+            if( v_[i*NN+j] != Type() )
+               return false;
+         }
+      }
+   }
+
+   return true;
+}
+//*************************************************************************************************
+
+
+
+
+//=================================================================================================
+//
 //  EXPRESSION TEMPLATE EVALUATION FUNCTIONS
 //
 //=================================================================================================
@@ -3060,6 +3104,13 @@ class StaticMatrix<Type,M,N,true> : public DenseMatrix< StaticMatrix<Type,M,N,tr
    //**********************************************************************************************
 
  public:
+   //**Debugging functions*************************************************************************
+   /*!\name Debugging functions */
+   //@{
+   inline bool isIntact() const noexcept;
+   //@}
+   //**********************************************************************************************
+
    //**Expression template evaluation functions****************************************************
    /*!\name Expression template evaluation functions */
    //@{
@@ -4772,6 +4823,44 @@ inline void StaticMatrix<Type,M,N,true>::operator delete[]( void* ptr, const std
 
 //=================================================================================================
 //
+//  DEBUGGING FUNCTIONS
+//
+//=================================================================================================
+
+//*************************************************************************************************
+/*! \cond BLAZE_INTERNAL */
+/*!\brief Returns whether the invariants of the static matrix are intact.
+//
+// \return \a true in case the static matrix's invariants are intact, \a false otherwise.
+//
+// This function checks whether the invariants of the static matrix are intact, i.e. if its
+// state is valid. In case the invariants are intact, the function returns \a true, else it
+// will return \a false.
+*/
+template< typename Type  // Data type of the matrix
+        , size_t M       // Number of rows
+        , size_t N >     // Number of columns
+inline bool StaticMatrix<Type,M,N,true>::isIntact() const noexcept
+{
+   if( IsNumeric<Type>::value ) {
+      for( size_t j=0UL; j<N; ++j ) {
+         for( size_t i=M; i<MM; ++i ) {
+            if( v_[i+j*MM] != Type() )
+               return false;
+         }
+      }
+   }
+
+   return true;
+}
+/*! \endcond */
+//*************************************************************************************************
+
+
+
+
+//=================================================================================================
+//
 //  EXPRESSION TEMPLATE EVALUATION FUNCTIONS
 //
 //=================================================================================================
@@ -5764,9 +5853,7 @@ template< typename Type  // Data type of the matrix
         , bool SO >      // Storage order
 inline bool isIntact( const StaticMatrix<Type,M,N,SO>& m ) noexcept
 {
-   UNUSED_PARAMETER( m );
-
-   return true;
+   return m.isIntact();
 }
 //*************************************************************************************************
 
