@@ -45,6 +45,7 @@
 #include <blaze/util/typetraits/IsComplex.h>
 #include <blaze/util/typetraits/IsFloat.h>
 #include <blaze/util/typetraits/IsNumeric.h>
+#include <blaze/util/typetraits/RemoveCV.h>
 
 
 namespace blaze {
@@ -80,9 +81,26 @@ struct IsVectorizableHelper
 
  public:
    //**********************************************************************************************
-   enum : bool { value = ( BLAZE_SSE_MODE  && ( IsFloat<T2>::value   ) ) ||
-                         ( BLAZE_SSE2_MODE && ( IsNumeric<T2>::value ) ) ||
-                         ( BLAZE_MIC_MODE  && ( IsNumeric<T2>::value && sizeof(T2) >= 4UL ) ) };
+   enum : bool { value = ( bool( BLAZE_SSE_MODE  ) && IsFloat<T2>::value   ) ||
+                         ( bool( BLAZE_SSE2_MODE ) && IsNumeric<T2>::value ) ||
+                         ( bool( BLAZE_MIC_MODE  ) && IsNumeric<T2>::value && sizeof(T2) >= 4UL ) };
+   //**********************************************************************************************
+};
+/*! \endcond */
+//*************************************************************************************************
+
+
+//*************************************************************************************************
+/*! \cond BLAZE_INTERNAL */
+/*!\brief Specialization of the IsVectorizableHelper class template for 'void'.
+// \ingroup type_traits
+*/
+template<>
+struct IsVectorizableHelper<void>
+{
+ public:
+   //**********************************************************************************************
+   enum : bool { value = false };
    //**********************************************************************************************
 };
 /*! \endcond */
@@ -112,7 +130,7 @@ struct IsVectorizableHelper
    \endcode
 */
 template< typename T >
-struct IsVectorizable : public BoolConstant< IsVectorizableHelper<T>::value >
+struct IsVectorizable : public BoolConstant< IsVectorizableHelper< RemoveCV_<T> >::value >
 {};
 //*************************************************************************************************
 
