@@ -108,7 +108,6 @@
 #include <blaze/util/mpl/If.h>
 #include <blaze/util/mpl/Or.h>
 #include <blaze/util/Types.h>
-#include <blaze/util/typetraits/RemoveReference.h>
 
 
 namespace blaze {
