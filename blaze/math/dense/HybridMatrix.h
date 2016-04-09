@@ -407,6 +407,13 @@ class HybridMatrix : public DenseMatrix< HybridMatrix<Type,M,N,SO>, SO >
    //**********************************************************************************************
 
  public:
+   //**Debugging functions*************************************************************************
+   /*!\name Debugging functions */
+   //@{
+   inline bool isIntact() const noexcept;
+   //@}
+   //**********************************************************************************************
+
    //**Expression template evaluation functions****************************************************
    /*!\name Expression template evaluation functions */
    //@{
@@ -2262,6 +2269,54 @@ inline void HybridMatrix<Type,M,N,SO>::operator delete[]( void* ptr, const std::
 
 //=================================================================================================
 //
+//  DEBUGGING FUNCTIONS
+//
+//=================================================================================================
+
+//*************************************************************************************************
+/*!\brief Returns whether the invariants of the hybrid matrix are intact.
+//
+// \return \a true in case the hybrid matrix's invariants are intact, \a false otherwise.
+//
+// This function checks whether the invariants of the hybrid matrix are intact, i.e. if its
+// state is valid. In case the invariants are intact, the function returns \a true, else it
+// will return \a false.
+*/
+template< typename Type  // Data type of the matrix
+        , size_t M       // Number of rows
+        , size_t N       // Number of columns
+        , bool SO >      // Storage order
+inline bool HybridMatrix<Type,M,N,SO>::isIntact() const noexcept
+{
+   if( m_ > M || n_ > N )
+      return false;
+
+   if( IsNumeric<Type>::value )
+   {
+      for( size_t i=0UL; i<m_; ++i ) {
+         for( size_t j=n_; j<NN; ++j ) {
+            if( v_[i*NN+j] != Type() )
+               return false;
+         }
+      }
+
+      for( size_t i=m_; i<M; ++i ) {
+         for( size_t j=0UL; j<NN; ++j ) {
+            if( v_[i*NN+j] != Type() )
+               return false;
+         }
+      }
+   }
+
+   return true;
+}
+//*************************************************************************************************
+
+
+
+
+//=================================================================================================
+//
 //  EXPRESSION TEMPLATE EVALUATION FUNCTIONS
 //
 //=================================================================================================
@@ -3235,6 +3290,13 @@ class HybridMatrix<Type,M,N,true> : public DenseMatrix< HybridMatrix<Type,M,N,tr
    //**********************************************************************************************
 
  public:
+   //**Debugging functions*************************************************************************
+   /*!\name Debugging functions */
+   //@{
+   inline bool isIntact() const noexcept;
+   //@}
+   //**********************************************************************************************
+
    //**Expression template evaluation functions****************************************************
    /*!\name Expression template evaluation functions */
    //@{
@@ -5115,6 +5177,55 @@ inline void HybridMatrix<Type,M,N,true>::operator delete[]( void* ptr, const std
 
 //=================================================================================================
 //
+//  DEBUGGING FUNCTIONS
+//
+//=================================================================================================
+
+//*************************************************************************************************
+/*! \cond BLAZE_INTERNAL */
+/*!\brief Returns whether the invariants of the hybrid matrix are intact.
+//
+// \return \a true in case the hybrid matrix's invariants are intact, \a false otherwise.
+//
+// This function checks whether the invariants of the hybrid matrix are intact, i.e. if its
+// state is valid. In case the invariants are intact, the function returns \a true, else it
+// will return \a false.
+*/
+template< typename Type  // Data type of the matrix
+        , size_t M       // Number of rows
+        , size_t N >     // Number of columns
+inline bool HybridMatrix<Type,M,N,true>::isIntact() const noexcept
+{
+   if( m_ > M || n_ > N )
+      return false;
+
+   if( IsNumeric<Type>::value )
+   {
+      for( size_t j=0UL; j<n_; ++j ) {
+         for( size_t i=m_; i<MM; ++i ) {
+            if( v_[i+j*MM] != Type() )
+               return false;
+         }
+      }
+
+      for( size_t j=n_; j<N; ++j ) {
+         for( size_t i=0UL; i<MM; ++i ) {
+            if( v_[i+j*MM] != Type() )
+               return false;
+         }
+      }
+   }
+
+   return true;
+}
+/*! \endcond */
+//*************************************************************************************************
+
+
+
+
+//=================================================================================================
+//
 //  EXPRESSION TEMPLATE EVALUATION FUNCTIONS
 //
 //=================================================================================================
@@ -6099,7 +6210,7 @@ template< typename Type  // Data type of the matrix
         , bool SO >      // Storage order
 inline bool isIntact( const HybridMatrix<Type,M,N,SO>& m ) noexcept
 {
-   return ( m.rows() <= M && m.columns() <= N );
+   return m.isIntact();
 }
 //*************************************************************************************************
 
