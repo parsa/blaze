@@ -854,8 +854,8 @@ void OperationTest::testIsEmpty()
 {
    using blaze::IsEmpty;
 
-   class A {};
-   class B { int i; };
+   struct A {};
+   struct B { int i; };
 
    BLAZE_STATIC_ASSERT( IsEmpty<A>::value == true );
    BLAZE_CONSTRAINT_MUST_BE_SAME_TYPE( IsEmpty<A volatile>::Type, blaze::TrueType );
@@ -1066,16 +1066,16 @@ void OperationTest::testIsPod()
 {
    using blaze::IsPod;
 
-   class A {
+   struct A {
       int i_;
       double d_;
    };
 
-   class B {
+   struct B {
       virtual ~B() {}
    };
 
-   class C {
+   struct C {
       std::string s_;
    };
 
