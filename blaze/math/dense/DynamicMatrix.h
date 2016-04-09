@@ -385,6 +385,13 @@ class DynamicMatrix : public DenseMatrix< DynamicMatrix<Type,SO>, SO >
    //**********************************************************************************************
 
  public:
+   //**Debugging functions*************************************************************************
+   /*!\name Debugging functions */
+   //@{
+   inline bool isIntact() const noexcept;
+   //@}
+   //**********************************************************************************************
+
    //**Expression template evaluation functions****************************************************
    /*!\name Expression template evaluation functions */
    //@{
@@ -519,8 +526,9 @@ inline DynamicMatrix<Type,SO>::DynamicMatrix( size_t m, size_t n )
 {
    if( IsVectorizable<Type>::value ) {
       for( size_t i=0UL; i<m_; ++i ) {
-         for( size_t j=n_; j<nn_; ++j )
+         for( size_t j=n_; j<nn_; ++j ) {
             v_[i*nn_+j] = Type();
+         }
       }
    }
 }
@@ -1931,6 +1939,44 @@ inline size_t DynamicMatrix<Type,SO>::adjustColumns( size_t minColumns ) const n
 
 //=================================================================================================
 //
+//  DEBUGGING FUNCTIONS
+//
+//=================================================================================================
+
+//*************************************************************************************************
+/*!\brief Returns whether the invariants of the dynamic matrix are intact.
+//
+// \return \a true in case the dynamic matrix's invariants are intact, \a false otherwise.
+//
+// This function checks whether the invariants of the dynamic matrix are intact, i.e. if its
+// state is valid. In case the invariants are intact, the function returns \a true, else it
+// will return \a false.
+*/
+template< typename Type  // Data type of the matrix
+        , bool SO >      // Storage order
+inline bool DynamicMatrix<Type,SO>::isIntact() const noexcept
+{
+   if( m_ * n_ > capacity_ )
+      return false;
+
+   if( IsVectorizable<Type>::value ) {
+      for( size_t i=0UL; i<m_; ++i ) {
+         for( size_t j=n_; j<nn_; ++j ) {
+            if( v_[i*nn_+j] != Type() )
+               return false;
+         }
+      }
+   }
+
+   return true;
+}
+//*************************************************************************************************
+
+
+
+
+//=================================================================================================
+//
 //  EXPRESSION TEMPLATE EVALUATION FUNCTIONS
 //
 //=================================================================================================
@@ -3067,6 +3113,13 @@ class DynamicMatrix<Type,true> : public DenseMatrix< DynamicMatrix<Type,true>, t
    //**********************************************************************************************
 
  public:
+   //**Debugging functions*************************************************************************
+   /*!\name Debugging functions */
+   //@{
+   inline bool isIntact() const noexcept;
+   //@}
+   //**********************************************************************************************
+
    //**Expression template evaluation functions****************************************************
    /*!\name Expression template evaluation functions */
    //@{
@@ -3193,9 +3246,10 @@ inline DynamicMatrix<Type,true>::DynamicMatrix( size_t m, size_t n )
    , v_       ( allocate<Type>( capacity_ ) )  // The matrix elements
 {
    if( IsVectorizable<Type>::value ) {
-      for( size_t j=0UL; j<n_; ++j )
+      for( size_t j=0UL; j<n_; ++j ) {
          for( size_t i=m_; i<mm_; ++i ) {
             v_[i+j*mm_] = Type();
+         }
       }
    }
 }
@@ -4637,6 +4691,45 @@ inline size_t DynamicMatrix<Type,true>::adjustRows( size_t minRows ) const noexc
 
 //=================================================================================================
 //
+//  DEBUGGING FUNCTIONS
+//
+//=================================================================================================
+
+//*************************************************************************************************
+/*! \cond BLAZE_INTERNAL */
+/*!\brief Returns whether the invariants of the dynamic matrix are intact.
+//
+// \return \a true in case the dynamic matrix's invariants are intact, \a false otherwise.
+//
+// This function checks whether the invariants of the dynamic matrix are intact, i.e. if its
+// state is valid. In case the invariants are intact, the function returns \a true, else it
+// will return \a false.
+*/
+template< typename Type >  // Data type of the matrix
+inline bool DynamicMatrix<Type,true>::isIntact() const noexcept
+{
+   if( m_ * n_ > capacity_ )
+      return false;
+
+   if( IsVectorizable<Type>::value ) {
+      for( size_t j=0UL; j<n_; ++j ) {
+         for( size_t i=m_; i<mm_; ++i ) {
+            if( v_[i+j*mm_] != Type() )
+               return false;
+         }
+      }
+   }
+
+   return true;
+}
+/*! \endcond */
+//*************************************************************************************************
+
+
+
+
+//=================================================================================================
+//
 //  EXPRESSION TEMPLATE EVALUATION FUNCTIONS
 //
 //=================================================================================================
@@ -5729,7 +5822,7 @@ template< typename Type  // Data type of the matrix
         , bool SO >      // Storage order
 inline bool isIntact( const DynamicMatrix<Type,SO>& m ) noexcept
 {
-   return ( m.rows() * m.columns() <= m.capacity() );
+   return m.isIntact();
 }
 //*************************************************************************************************
 
