@@ -370,6 +370,13 @@ class StaticVector : public DenseVector< StaticVector<Type,N,TF>, TF >
    //**********************************************************************************************
 
  public:
+   //**Debugging functions*************************************************************************
+   /*!\name Debugging functions */
+   //@{
+   inline bool isIntact() const noexcept;
+   //@}
+   //**********************************************************************************************
+
    //**Expression template evaluation functions****************************************************
    /*!\name Expression template evaluation functions */
    //@{
@@ -1528,6 +1535,40 @@ inline void StaticVector<Type,N,TF>::operator delete[]( void* ptr, const std::no
 
 //=================================================================================================
 //
+//  DEBUGGING FUNCTIONS
+//
+//=================================================================================================
+
+//*************************************************************************************************
+/*!\brief Returns whether the invariants of the static vector are intact.
+//
+// \return \a true in case the static vector's invariants are intact, \a false otherwise.
+//
+// This function checks whether the invariants of the static vector are intact, i.e. if its
+// state is valid. In case the invariants are intact, the function returns \a true, else it
+// will return \a false.
+*/
+template< typename Type  // Data type of the vector
+        , size_t N       // Number of elements
+        , bool TF >      // Transpose flag
+inline bool StaticVector<Type,N,TF>::isIntact() const noexcept
+{
+   if( IsNumeric<Type>::value ) {
+      for( size_t i=N; i<NN; ++i ) {
+         if( v_[i] != Type() )
+            return false;
+      }
+   }
+
+   return true;
+}
+//*************************************************************************************************
+
+
+
+
+//=================================================================================================
+//
 //  EXPRESSION TEMPLATE EVALUATION FUNCTIONS
 //
 //=================================================================================================
@@ -2321,9 +2362,7 @@ template< typename Type  // Data type of the vector
         , bool TF >      // Transpose flag
 inline bool isIntact( const StaticVector<Type,N,TF>& v ) noexcept
 {
-   UNUSED_PARAMETER( v );
-
-   return true;
+   return v.isIntact();
 }
 //*************************************************************************************************
 
