@@ -144,6 +144,26 @@ struct TSMatScalarMultExprTrait
 };
 //*************************************************************************************************
 
+
+//*************************************************************************************************
+/*!\brief Auxiliary alias declaration for the TSMatScalarMultExprTrait class template.
+// \ingroup math_traits
+//
+// The TSMatScalarMultExprTrait_ alias declaration provides a convenient shortcut to access
+// the nested \a Type of the TSMatScalarMultExprTrait class template. For instance, given the
+// column-major sparse matrix type \a MT and the scalar type \a ST the following two type
+// definitions are identical:
+
+   \code
+   using Type1 = typename TSMatScalarMultExprTrait<MT,ST>::Type;
+   using Type2 = TSMatScalarMultExprTrait_<MT,ST>;
+   \endcode
+*/
+template< typename MT    // Type of the left-hand side sparse matrix
+        , typename ST >  // Type of the right-hand side scalar
+using TSMatScalarMultExprTrait_ = typename TSMatScalarMultExprTrait<MT,ST>::Type;
+//*************************************************************************************************
+
 } // namespace blaze
 
 #endif

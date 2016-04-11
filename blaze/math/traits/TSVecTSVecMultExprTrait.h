@@ -98,6 +98,26 @@ struct TSVecTSVecMultExprTrait
 };
 //*************************************************************************************************
 
+
+//*************************************************************************************************
+/*!\brief Auxiliary alias declaration for the TSVecTSVecMultExprTrait class template.
+// \ingroup math_traits
+//
+// The TSVecTSVecMultExprTrait_ alias declaration provides a convenient shortcut to access
+// the nested \a Type of the TSVecTSVecMultExprTrait class template. For instance, given the
+// transpose sparse vector types \a VT1 and \a VT2 the following two type definitions are
+// identical:
+
+   \code
+   using Type1 = typename TSVecTSVecMultExprTrait<VT1,VT2>::Type;
+   using Type2 = TSVecTSVecMultExprTrait_<VT1,VT2>;
+   \endcode
+*/
+template< typename VT1    // Type of the left-hand side transpose sparse vector
+        , typename VT2 >  // Type of the right-hand side transpose sparse vector
+using TSVecTSVecMultExprTrait_ = typename TSVecTSVecMultExprTrait<VT1,VT2>::Type;
+//*************************************************************************************************
+
 } // namespace blaze
 
 #endif

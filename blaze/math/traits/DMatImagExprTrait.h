@@ -97,6 +97,24 @@ struct DMatImagExprTrait
 };
 //*************************************************************************************************
 
+
+//*************************************************************************************************
+/*!\brief Auxiliary alias declaration for the DMatImagExprTrait class template.
+// \ingroup math_traits
+//
+// The DMatImagExprTrait_ alias declaration provides a convenient shortcut to access the nested
+// \a Type of the DMatImagExprTrait class template. For instance, given the row-major dense matrix
+// type \a MT the following two type definitions are identical:
+
+   \code
+   using Type1 = typename DMatImagExprTrait<MT>::Type;
+   using Type2 = DMatImagExprTrait_<MT>;
+   \endcode
+*/
+template< typename MT >  // Type of the dense matrix
+using DMatImagExprTrait_ = typename DMatImagExprTrait<MT>::Type;
+//*************************************************************************************************
+
 } // namespace blaze
 
 #endif

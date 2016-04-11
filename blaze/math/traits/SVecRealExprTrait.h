@@ -97,6 +97,24 @@ struct SVecRealExprTrait
 };
 //*************************************************************************************************
 
+
+//*************************************************************************************************
+/*!\brief Auxiliary alias declaration for the SVecRealExprTrait class template.
+// \ingroup math_traits
+//
+// The SVecRealExprTrait_ alias declaration provides a convenient shortcut to access the nested
+// \a Type of the SVecRealExprTrait class template. For instance, given the non-transpose sparse
+// vector type \a VT the following two type definitions are identical:
+
+   \code
+   using Type1 = typename SVecRealExprTrait<VT>::Type;
+   using Type2 = SVecRealExprTrait_<VT>;
+   \endcode
+*/
+template< typename VT >  // Type of the sparse vector
+using SVecRealExprTrait_ = typename SVecRealExprTrait<VT>::Type;
+//*************************************************************************************************
+
 } // namespace blaze
 
 #endif

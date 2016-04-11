@@ -98,6 +98,26 @@ struct SVecDVecAddExprTrait
 };
 //*************************************************************************************************
 
+
+//*************************************************************************************************
+/*!\brief Auxiliary alias declaration for the SVecDVecAddExprTrait class template.
+// \ingroup math_traits
+//
+// The SVecDVecAddExprTrait_ alias declaration provides a convenient shortcut to access
+// the nested \a Type of the SVecDVecAddExprTrait class template. For instance, given the
+// non-transpose sparse vector types \a VT1 and the non-transpose dense vector type \a VT2
+// the following two type definitions are identical:
+
+   \code
+   using Type1 = typename SVecDVecAddExprTrait<VT1,VT2>::Type;
+   using Type2 = SVecDVecAddExprTrait_<VT1,VT2>;
+   \endcode
+*/
+template< typename VT1    // Type of the left-hand side non-transpose sparse vector
+        , typename VT2 >  // Type of the right-hand side non-transpose dense vector
+using SVecDVecAddExprTrait_ = typename SVecDVecAddExprTrait<VT1,VT2>::Type;
+//*************************************************************************************************
+
 } // namespace blaze
 
 #endif

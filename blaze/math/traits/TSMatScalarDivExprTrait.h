@@ -147,6 +147,26 @@ struct TSMatScalarDivExprTrait
 };
 //*************************************************************************************************
 
+
+//*************************************************************************************************
+/*!\brief Auxiliary alias declaration for the TSMatScalarDivExprTrait class template.
+// \ingroup math_traits
+//
+// The TSMatScalarDivExprTrait_ alias declaration provides a convenient shortcut to access
+// the nested \a Type of the TSMatScalarDivExprTrait class template. For instance, given the
+// column-major sparse matrix type \a MT and the scalar type \a ST the following two type
+// definitions are identical:
+
+   \code
+   using Type1 = typename TSMatScalarDivExprTrait<MT,ST>::Type;
+   using Type2 = TSMatScalarDivExprTrait_<MT,ST>;
+   \endcode
+*/
+template< typename MT    // Type of the left-hand side sparse matrix
+        , typename ST >  // Type of the right-hand side scalar
+using TSMatScalarDivExprTrait_ = typename TSMatScalarDivExprTrait<MT,ST>::Type;
+//*************************************************************************************************
+
 } // namespace blaze
 
 #endif

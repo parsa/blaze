@@ -93,6 +93,24 @@ struct DVecAbsExprTrait
 };
 //*************************************************************************************************
 
+
+//*************************************************************************************************
+/*!\brief Auxiliary alias declaration for the DVecAbsExprTrait class template.
+// \ingroup math_traits
+//
+// The DVecAbsExprTrait_ alias declaration provides a convenient shortcut to access the nested
+// \a Type of the DVecAbsExprTrait class template. For instance, given the non-transpose dense
+// vector type \a VT the following two type definitions are identical:
+
+   \code
+   using Type1 = typename DVecAbsExprTrait<VT>::Type;
+   using Type2 = DVecAbsExprTrait_<VT>;
+   \endcode
+*/
+template< typename VT >  // Type of the dense vector
+using DVecAbsExprTrait_ = typename DVecAbsExprTrait<VT>::Type;
+//*************************************************************************************************
+
 } // namespace blaze
 
 #endif

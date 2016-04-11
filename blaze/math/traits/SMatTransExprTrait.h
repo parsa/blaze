@@ -93,6 +93,24 @@ struct SMatTransExprTrait
 };
 //*************************************************************************************************
 
+
+//*************************************************************************************************
+/*!\brief Auxiliary alias declaration for the SMatTransExprTrait class template.
+// \ingroup math_traits
+//
+// The SMatTransExprTrait_ alias declaration provides a convenient shortcut to access the nested
+// \a Type of the SMatTransExprTrait class template. For instance, given the row-major sparse
+// matrix type \a MT the following two type definitions are identical:
+
+   \code
+   using Type1 = typename SMatTransExprTrait<MT>::Type;
+   using Type2 = SMatTransExprTrait_<MT>;
+   \endcode
+*/
+template< typename MT >  // Type of the sparse matrix
+using SMatTransExprTrait_ = typename SMatTransExprTrait<MT>::Type;
+//*************************************************************************************************
+
 } // namespace blaze
 
 #endif

@@ -98,6 +98,26 @@ struct DVecSVecCrossExprTrait
 };
 //*************************************************************************************************
 
+
+//*************************************************************************************************
+/*!\brief Auxiliary alias declaration for the DVecSVecCrossExprTrait class template.
+// \ingroup math_traits
+//
+// The DVecSVecCrossExprTrait_ alias declaration provides a convenient shortcut to access
+// the nested \a Type of the DVecSVecCrossExprTrait class template. For instance, given the
+// non-transpose dense vector type \a VT1 and the non-transpose sparse vector type \a VT2
+// the following two type definitions are identical:
+
+   \code
+   using Type1 = typename DVecSVecCrossExprTrait<VT1,VT2>::Type;
+   using Type2 = DVecSVecCrossExprTrait_<VT1,VT2>;
+   \endcode
+*/
+template< typename VT1    // Type of the left-hand side non-transpose dense vector
+        , typename VT2 >  // Type of the right-hand side non-transpose sparse vector
+using DVecSVecCrossExprTrait_ = typename DVecSVecCrossExprTrait<VT1,VT2>::Type;
+//*************************************************************************************************
+
 } // namespace blaze
 
 #endif

@@ -147,6 +147,26 @@ struct TSVecScalarDivExprTrait
 };
 //*************************************************************************************************
 
+
+//*************************************************************************************************
+/*!\brief Auxiliary alias declaration for the TSVecScalarDivExprTrait class template.
+// \ingroup math_traits
+//
+// The TSVecScalarDivExprTrait_ alias declaration provides a convenient shortcut to access
+// the nested \a Type of the TSVecScalarDivExprTrait class template. For instance, given
+// the transpose sparse vector type \a VT and the scalar type \a ST the following two type
+// definitions are identical:
+
+   \code
+   using Type1 = typename TSVecScalarDivExprTrait<VT,ST>::Type;
+   using Type2 = TSVecScalarDivExprTrait_<VT,ST>;
+   \endcode
+*/
+template< typename VT    // Type of the left-hand side sparse vector
+        , typename ST >  // Type of the right-hand side scalar
+using TSVecScalarDivExprTrait_ = typename TSVecScalarDivExprTrait<VT,ST>::Type;
+//*************************************************************************************************
+
 } // namespace blaze
 
 #endif

@@ -68,7 +68,7 @@ namespace blaze {
 //
 // Via this type trait it is possible to evaluate the resulting expression type of a dense
 // vector/sparse vector addition. Given the non-transpose dense vector type \a VT1 and the
-// non-transpose sparse vector type\a VT2, the nested type \a Type corresponds to the resulting
+// non-transpose sparse vector type \a VT2, the nested type \a Type corresponds to the resulting
 // expression type. In case either \a VT1 is not a non-transpose dense vector type or \a VT2 is
 // not a non-transpose sparse vector type, the resulting \a Type is set to \a INVALID_TYPE.
 */
@@ -96,6 +96,26 @@ struct DVecSVecAddExprTrait
    /*! \endcond */
    //**********************************************************************************************
 };
+//*************************************************************************************************
+
+
+//*************************************************************************************************
+/*!\brief Auxiliary alias declaration for the DVecSVecAddExprTrait class template.
+// \ingroup math_traits
+//
+// The DVecSVecAddExprTrait_ alias declaration provides a convenient shortcut to access
+// the nested \a Type of the DVecSVecAddExprTrait class template. For instance, given the
+// non-transpose dense vector type \a VT1 and the non-transpose sparse vector type \a VT2
+// the following two type definitions are identical:
+
+   \code
+   using Type1 = typename DVecSVecAddExprTrait<VT1,VT2>::Type;
+   using Type2 = DVecSVecAddExprTrait_<VT1,VT2>;
+   \endcode
+*/
+template< typename VT1    // Type of the left-hand side non-transpose dense vector
+        , typename VT2 >  // Type of the right-hand side non-transpose sparse vector
+using DVecSVecAddExprTrait_ = typename DVecSVecAddExprTrait<VT1,VT2>::Type;
 //*************************************************************************************************
 
 } // namespace blaze

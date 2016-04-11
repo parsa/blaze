@@ -76,7 +76,7 @@ namespace blaze {
 // not a row-major sparse matrix type, the resulting data type \a Type is set to \a INVALID_TYPE.
 */
 template< typename VT    // Type of the left-hand side transpose dense vector
-        , typename MT >  // Type of the right-hand side row-major dense sparse
+        , typename MT >  // Type of the right-hand side row-major sparse matrix
 struct TDVecSMatMultExprTrait
 {
  private:
@@ -101,6 +101,26 @@ struct TDVecSMatMultExprTrait
    /*! \endcond */
    //**********************************************************************************************
 };
+//*************************************************************************************************
+
+
+//*************************************************************************************************
+/*!\brief Auxiliary alias declaration for the TDVecSMatMultExprTrait class template.
+// \ingroup math_traits
+//
+// The TDVecSMatMultExprTrait_ alias declaration provides a convenient shortcut to access the
+// nested \a Type of the TDVecSMatMultExprTrait class template. For instance, given the transpose
+// dense vector type \a VT and the row-major sparse matrix type \a MT the following two type
+// definitions are identical:
+
+   \code
+   using Type1 = typename TDVecSMatMultExprTrait<VT,MT>::Type;
+   using Type2 = TDVecSMatMultExprTrait_<VT,MT>;
+   \endcode
+*/
+template< typename VT    // Type of the left-hand side transpose dense vector
+        , typename MT >  // Type of the right-hand side row-major sparse matrix
+using TDVecSMatMultExprTrait_ = typename TDVecSMatMultExprTrait<VT,MT>::Type;
 //*************************************************************************************************
 
 } // namespace blaze

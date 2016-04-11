@@ -93,6 +93,24 @@ struct DVecConjExprTrait
 };
 //*************************************************************************************************
 
+
+//*************************************************************************************************
+/*!\brief Auxiliary alias declaration for the DVecConjExprTrait class template.
+// \ingroup math_traits
+//
+// The DVecConjExprTrait_ alias declaration provides a convenient shortcut to access the nested
+// \a Type of the DVecConjExprTrait class template. For instance, given the non-transpose dense
+// vector type \a VT the following two type definitions are identical:
+
+   \code
+   using Type1 = typename DVecConjExprTrait<VT>::Type;
+   using Type2 = DVecConjExprTrait_<VT>;
+   \endcode
+*/
+template< typename VT >  // Type of the dense vector
+using DVecConjExprTrait_ = typename DVecConjExprTrait<VT>::Type;
+//*************************************************************************************************
+
 } // namespace blaze
 
 #endif

@@ -97,6 +97,25 @@ struct DMatDMatMultExprTrait
 };
 //*************************************************************************************************
 
+
+//*************************************************************************************************
+/*!\brief Auxiliary alias declaration for the DMatDMatMultExprTrait class template.
+// \ingroup math_traits
+//
+// The DMatDMatMultExprTrait_ alias declaration provides a convenient shortcut to access the
+// nested \a Type of the DMatDMatMultExprTrait class template. For instance, given the row-major
+// dense matrix types \a MT1 and \a MT2 the following two type definitions are identical:
+
+   \code
+   using Type1 = typename DMatDMatMultExprTrait<MT1,MT2>::Type;
+   using Type2 = DMatDMatMultExprTrait_<MT1,MT2>;
+   \endcode
+*/
+template< typename MT1    // Type of the left-hand side row-major dense matrix
+        , typename MT2 >  // Type of the right-hand side row-major dense matrix
+using DMatDMatMultExprTrait_ = typename DMatDMatMultExprTrait<MT1,MT2>::Type;
+//*************************************************************************************************
+
 } // namespace blaze
 
 #endif

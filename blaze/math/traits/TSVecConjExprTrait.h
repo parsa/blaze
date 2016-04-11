@@ -93,6 +93,24 @@ struct TSVecConjExprTrait
 };
 //*************************************************************************************************
 
+
+//*************************************************************************************************
+/*!\brief Auxiliary alias declaration for the TSVecConjExprTrait class template.
+// \ingroup math_traits
+//
+// The TSVecConjExprTrait_ alias declaration provides a convenient shortcut to access the nested
+// \a Type of the TSVecConjExprTrait class template. For instance, given the transpose sparse
+// vector type \a VT the following two type definitions are identical:
+
+   \code
+   using Type1 = typename TSVecConjExprTrait<VT>::Type;
+   using Type2 = TSVecConjExprTrait_<VT>;
+   \endcode
+*/
+template< typename VT >  // Type of the sparse vector
+using TSVecConjExprTrait_ = typename TSVecConjExprTrait<VT>::Type;
+//*************************************************************************************************
+
 } // namespace blaze
 
 #endif

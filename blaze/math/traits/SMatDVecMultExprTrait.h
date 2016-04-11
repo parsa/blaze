@@ -99,6 +99,26 @@ struct SMatDVecMultExprTrait
 };
 //*************************************************************************************************
 
+
+//*************************************************************************************************
+/*!\brief Auxiliary alias declaration for the SMatDVecMultExprTrait class template.
+// \ingroup math_traits
+//
+// The SMatDVecMultExprTrait_ alias declaration provides a convenient shortcut to access the
+// nested \a Type of the SMatDVecMultExprTrait class template. For instance, given the row-major
+// sparse matrix type \a MT and the non-transpose dense vector type \a VT the following two type
+// definitions are identical:
+
+   \code
+   using Type1 = typename SMatDVecMultExprTrait<MT,VT>::Type;
+   using Type2 = SMatDVecMultExprTrait_<MT,VT>;
+   \endcode
+*/
+template< typename MT    // Type of the left-hand side row-major sparse matrix
+        , typename VT >  // Type of the right-hand side non-transpose dense vector
+using SMatDVecMultExprTrait_ = typename SMatDVecMultExprTrait<MT,VT>::Type;
+//*************************************************************************************************
+
 } // namespace blaze
 
 #endif

@@ -93,6 +93,24 @@ struct TDMatSerialExprTrait
 };
 //*************************************************************************************************
 
+
+//*************************************************************************************************
+/*!\brief Auxiliary alias declaration for the TDMatSerialExprTrait class template.
+// \ingroup math_traits
+//
+// The TDMatSerialExprTrait_ alias declaration provides a convenient shortcut to access the nested
+// \a Type of the TDMatSerialExprTrait class template. For instance, given the column-major dense
+// matrix type \a MT the following two type definitions are identical:
+
+   \code
+   using Type1 = typename TDMatSerialExprTrait<MT>::Type;
+   using Type2 = TDMatSerialExprTrait_<MT>;
+   \endcode
+*/
+template< typename MT >  // Type of the dense matrix
+using TDMatSerialExprTrait_ = typename TDMatSerialExprTrait<MT>::Type;
+//*************************************************************************************************
+
 } // namespace blaze
 
 #endif

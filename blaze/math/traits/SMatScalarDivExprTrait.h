@@ -147,6 +147,26 @@ struct SMatScalarDivExprTrait
 };
 //*************************************************************************************************
 
+
+//*************************************************************************************************
+/*!\brief Auxiliary alias declaration for the SMatScalarDivExprTrait class template.
+// \ingroup math_traits
+//
+// The SMatScalarDivExprTrait_ alias declaration provides a convenient shortcut to access the
+// nested \a Type of the SMatScalarDivExprTrait class template. For instance, given the row-major
+// sparse matrix type \a MT and the scalar type \a ST the following two type definitions are
+// identical:
+
+   \code
+   using Type1 = typename SMatScalarDivExprTrait<MT,ST>::Type;
+   using Type2 = SMatScalarDivExprTrait_<MT,ST>;
+   \endcode
+*/
+template< typename MT    // Type of the left-hand side sparse matrix
+        , typename ST >  // Type of the right-hand side scalar
+using SMatScalarDivExprTrait_ = typename SMatScalarDivExprTrait<MT,ST>::Type;
+//*************************************************************************************************
+
 } // namespace blaze
 
 #endif

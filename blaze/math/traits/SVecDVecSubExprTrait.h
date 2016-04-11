@@ -98,6 +98,26 @@ struct SVecDVecSubExprTrait
 };
 //*************************************************************************************************
 
+
+//*************************************************************************************************
+/*!\brief Auxiliary alias declaration for the SVecDVecSubExprTrait class template.
+// \ingroup math_traits
+//
+// The SVecDVecSubExprTrait_ alias declaration provides a convenient shortcut to access
+// the nested \a Type of the SVecDVecSubExprTrait class template. For instance, given the
+// non-transpose sparse vector types \a VT1 and the non-transpose dense vector type \a VT2
+// the following two type definitions are identical:
+
+   \code
+   using Type1 = typename SVecDVecSubExprTrait<VT1,VT2>::Type;
+   using Type2 = SVecDVecSubExprTrait_<VT1,VT2>;
+   \endcode
+*/
+template< typename VT1    // Type of the left-hand side non-transpose sparse vector
+        , typename VT2 >  // Type of the right-hand side non-transpose dense vector
+using SVecDVecSubExprTrait_ = typename SVecDVecSubExprTrait<VT1,VT2>::Type;
+//*************************************************************************************************
+
 } // namespace blaze
 
 #endif

@@ -97,6 +97,24 @@ struct TSMatImagExprTrait
 };
 //*************************************************************************************************
 
+
+//*************************************************************************************************
+/*!\brief Auxiliary alias declaration for the TSMatImagExprTrait class template.
+// \ingroup math_traits
+//
+// The TSMatImagExprTrait_ alias declaration provides a convenient shortcut to access the nested
+// \a Type of the TSMatImagExprTrait class template. For instance, given the column-major sparse
+// matrix type \a MT the following two type definitions are identical:
+
+   \code
+   using Type1 = typename TSMatImagExprTrait<MT>::Type;
+   using Type2 = TSMatImagExprTrait_<MT>;
+   \endcode
+*/
+template< typename MT >  // Type of the sparse matrix
+using TSMatImagExprTrait_ = typename TSMatImagExprTrait<MT>::Type;
+//*************************************************************************************************
+
 } // namespace blaze
 
 #endif
