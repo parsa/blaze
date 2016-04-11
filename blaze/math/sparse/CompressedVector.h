@@ -2333,74 +2333,74 @@ struct MultTrait< CompressedVector<T1,true>, CompressedVector<T2,false> >
 
 //*************************************************************************************************
 /*! \cond BLAZE_INTERNAL */
-template< typename T1, typename T2 >
-struct CrossTrait< CompressedVector<T1,false>, StaticVector<T2,3UL,false> >
+template< typename T1, bool TF, typename T2 >
+struct CrossTrait< CompressedVector<T1,TF>, StaticVector<T2,3UL,TF> >
 {
  private:
    using T = MultTrait_<T1,T2>;
 
  public:
-   using Type = StaticVector< SubTrait_<T,T>, 3UL, false >;
+   using Type = StaticVector< SubTrait_<T,T>, 3UL, TF >;
 };
 
-template< typename T1, typename T2 >
-struct CrossTrait< StaticVector<T1,3UL,false>, CompressedVector<T2,false> >
+template< typename T1, bool TF, typename T2 >
+struct CrossTrait< StaticVector<T1,3UL,TF>, CompressedVector<T2,TF> >
 {
  private:
    using T = MultTrait_<T1,T2>;
 
  public:
-   using Type = StaticVector< SubTrait_<T,T>, 3UL, false >;
+   using Type = StaticVector< SubTrait_<T,T>, 3UL, TF >;
 };
 
-template< typename T1, typename T2, size_t N >
-struct CrossTrait< CompressedVector<T1,false>, HybridVector<T2,N,false> >
+template< typename T1, bool TF, typename T2, size_t N >
+struct CrossTrait< CompressedVector<T1,TF>, HybridVector<T2,N,TF> >
 {
  private:
    using T = MultTrait_<T1,T2>;
 
  public:
-   using Type = StaticVector< SubTrait_<T,T>, 3UL, false >;
+   using Type = StaticVector< SubTrait_<T,T>, 3UL, TF >;
 };
 
-template< typename T1, size_t N, typename T2 >
-struct CrossTrait< HybridVector<T1,N,false>, CompressedVector<T2,false> >
+template< typename T1, size_t N, bool TF, typename T2 >
+struct CrossTrait< HybridVector<T1,N,TF>, CompressedVector<T2,TF> >
 {
  private:
    using T = MultTrait_<T1,T2>;
 
  public:
-   using Type = StaticVector< SubTrait_<T,T>, 3UL, false >;
+   using Type = StaticVector< SubTrait_<T,T>, 3UL, TF >;
 };
 
-template< typename T1, typename T2 >
-struct CrossTrait< CompressedVector<T1,false>, DynamicVector<T2,false> >
+template< typename T1, bool TF, typename T2 >
+struct CrossTrait< CompressedVector<T1,TF>, DynamicVector<T2,TF> >
 {
  private:
    using T = MultTrait_<T1,T2>;
 
  public:
-   using Type = StaticVector< SubTrait_<T,T>, 3UL, false >;
+   using Type = StaticVector< SubTrait_<T,T>, 3UL, TF >;
 };
 
-template< typename T1, typename T2 >
-struct CrossTrait< DynamicVector<T1,false>, CompressedVector<T2,false> >
+template< typename T1, bool TF, typename T2 >
+struct CrossTrait< DynamicVector<T1,TF>, CompressedVector<T2,TF> >
 {
  private:
    using T = MultTrait_<T1,T2>;
 
  public:
-   using Type = StaticVector< SubTrait_<T,T>, 3UL, false >;
+   using Type = StaticVector< SubTrait_<T,T>, 3UL, TF >;
 };
 
-template< typename T1, typename T2 >
-struct CrossTrait< CompressedVector<T1,false>, CompressedVector<T2,false> >
+template< typename T1, bool TF, typename T2 >
+struct CrossTrait< CompressedVector<T1,TF>, CompressedVector<T2,TF> >
 {
  private:
    using T = MultTrait_<T1,T2>;
 
  public:
-   using Type = StaticVector< SubTrait_<T,T>, 3UL, false >;
+   using Type = StaticVector< SubTrait_<T,T>, 3UL, TF >;
 };
 /*! \endcond */
 //*************************************************************************************************

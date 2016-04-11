@@ -2748,34 +2748,34 @@ struct MultTrait< HybridVector<T1,M,true>, HybridVector<T2,N,false> >
 
 //*************************************************************************************************
 /*! \cond BLAZE_INTERNAL */
-template< typename T1, size_t N, typename T2 >
-struct CrossTrait< HybridVector<T1,N,false>, StaticVector<T2,3UL,false> >
+template< typename T1, size_t N, bool TF, typename T2 >
+struct CrossTrait< HybridVector<T1,N,TF>, StaticVector<T2,3UL,TF> >
 {
  private:
    using T = MultTrait_<T1,T2>;
 
  public:
-   using Type = StaticVector< SubTrait_<T,T>, 3UL, false >;
+   using Type = StaticVector< SubTrait_<T,T>, 3UL, TF >;
 };
 
-template< typename T1, typename T2, size_t N >
-struct CrossTrait< StaticVector<T1,3UL,false>, HybridVector<T2,N,false> >
+template< typename T1, bool TF, typename T2, size_t N >
+struct CrossTrait< StaticVector<T1,3UL,TF>, HybridVector<T2,N,TF> >
 {
  private:
    using T = MultTrait_<T1,T2>;
 
  public:
-   using Type = StaticVector< SubTrait_<T,T>, 3UL, false >;
+   using Type = StaticVector< SubTrait_<T,T>, 3UL, TF >;
 };
 
-template< typename T1, size_t M, typename T2, size_t N >
-struct CrossTrait< HybridVector<T1,M,false>, HybridVector<T2,N,false> >
+template< typename T1, size_t M, bool TF, typename T2, size_t N >
+struct CrossTrait< HybridVector<T1,M,TF>, HybridVector<T2,N,TF> >
 {
  private:
    using T = MultTrait_<T1,T2>;
 
  public:
-   using Type = StaticVector< SubTrait_<T,T>, 3UL, false >;
+   using Type = StaticVector< SubTrait_<T,T>, 3UL, TF >;
 };
 /*! \endcond */
 //*************************************************************************************************

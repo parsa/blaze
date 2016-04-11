@@ -81,9 +81,10 @@ namespace blaze {
 // The DVecSVecCrossExpr class represents the compile time expression for cross products
 // between a dense vector and a sparse vector.
 */
-template< typename VT1    // Type of the left-hand side dense vector
-        , typename VT2 >  // Type of the right-hand side sparse vector
-class DVecSVecCrossExpr : public DenseVector< DVecSVecCrossExpr<VT1,VT2>, false >
+template< typename VT1  // Type of the left-hand side dense vector
+        , typename VT2  // Type of the right-hand side sparse vector
+        , bool TF >     // Transpose flag
+class DVecSVecCrossExpr : public DenseVector< DVecSVecCrossExpr<VT1,VT2,TF>, TF >
                         , private CrossExpr
                         , private Computation
 {
@@ -114,10 +115,10 @@ class DVecSVecCrossExpr : public DenseVector< DVecSVecCrossExpr<VT1,VT2>, false 
 
  public:
    //**Type definitions****************************************************************************
-   typedef DVecSVecCrossExpr<VT1,VT2>  This;           //!< Type of this DVecSVecCrossExpr instance.
-   typedef CrossTrait_<RT1,RT2>        ResultType;     //!< Result type for expression template evaluations.
-   typedef TransposeType_<ResultType>  TransposeType;  //!< Transpose type for expression template evaluations.
-   typedef ElementType_<ResultType>    ElementType;    //!< Resulting element type.
+   typedef DVecSVecCrossExpr<VT1,VT2,TF>  This;           //!< Type of this DVecSVecCrossExpr instance.
+   typedef CrossTrait_<RT1,RT2>           ResultType;     //!< Result type for expression template evaluations.
+   typedef TransposeType_<ResultType>     TransposeType;  //!< Transpose type for expression template evaluations.
+   typedef ElementType_<ResultType>       ElementType;    //!< Resulting element type.
 
    //! Return type for expression template evaluations.
    typedef const IfTrue_< returnExpr, ExprReturnType, ElementType >  ReturnType;
@@ -132,10 +133,10 @@ class DVecSVecCrossExpr : public DenseVector< DVecSVecCrossExpr<VT1,VT2>, false 
    typedef If_< IsExpression<VT2>, const VT2, const VT2& >  RightOperand;
 
    //! Composite type of the left-hand side dense vector expression.
-   typedef If_< IsComputation<VT1>, const StaticVector<ET1,3UL,false>, CT1 >  LT;
+   typedef If_< IsComputation<VT1>, const StaticVector<ET1,3UL,TF>, CT1 >  LT;
 
    //! Composite type of the right-hand side sparse vector expression.
-   typedef const StaticVector<ET2,3UL,false>  RT;
+   typedef const StaticVector<ET2,3UL,TF>  RT;
    //**********************************************************************************************
 
    //**Compilation flags***************************************************************************
@@ -267,7 +268,7 @@ class DVecSVecCrossExpr : public DenseVector< DVecSVecCrossExpr<VT1,VT2>, false 
    // vector cross product expression to a dense vector.
    */
    template< typename VT >  // Type of the target dense vector
-   friend inline void assign( DenseVector<VT,false>& lhs, const DVecSVecCrossExpr& rhs )
+   friend inline void assign( DenseVector<VT,TF>& lhs, const DVecSVecCrossExpr& rhs )
    {
       BLAZE_FUNCTION_TRACE;
 
@@ -297,12 +298,12 @@ class DVecSVecCrossExpr : public DenseVector< DVecSVecCrossExpr<VT1,VT2>, false 
    // vector cross product expression to a sparse vector.
    */
    template< typename VT >  // Type of the target sparse vector
-   friend inline void assign( SparseVector<VT,false>& lhs, const DVecSVecCrossExpr& rhs )
+   friend inline void assign( SparseVector<VT,TF>& lhs, const DVecSVecCrossExpr& rhs )
    {
       BLAZE_FUNCTION_TRACE;
 
       BLAZE_CONSTRAINT_MUST_BE_DENSE_VECTOR_TYPE ( ResultType );
-      BLAZE_CONSTRAINT_MUST_BE_COLUMN_VECTOR_TYPE( ResultType );
+      BLAZE_CONSTRAINT_MUST_BE_VECTOR_WITH_TRANSPOSE_FLAG( ResultType, TF );
       BLAZE_CONSTRAINT_MUST_BE_REFERENCE_TYPE( CompositeType_<ResultType> );
 
       BLAZE_INTERNAL_ASSERT( (~lhs).size() == 3UL, "Invalid vector size" );
@@ -327,7 +328,7 @@ class DVecSVecCrossExpr : public DenseVector< DVecSVecCrossExpr<VT1,VT2>, false 
    // sparse vector cross product expression to a dense vector.
    */
    template< typename VT >  // Type of the target dense vector
-   friend inline void addAssign( DenseVector<VT,false>& lhs, const DVecSVecCrossExpr& rhs )
+   friend inline void addAssign( DenseVector<VT,TF>& lhs, const DVecSVecCrossExpr& rhs )
    {
       BLAZE_FUNCTION_TRACE;
 
@@ -361,7 +362,7 @@ class DVecSVecCrossExpr : public DenseVector< DVecSVecCrossExpr<VT1,VT2>, false 
    // sparse vector cross product expression to a dense vector.
    */
    template< typename VT >  // Type of the target dense vector
-   friend inline void subAssign( DenseVector<VT,false>& lhs, const DVecSVecCrossExpr& rhs )
+   friend inline void subAssign( DenseVector<VT,TF>& lhs, const DVecSVecCrossExpr& rhs )
    {
       BLAZE_FUNCTION_TRACE;
 
@@ -395,7 +396,7 @@ class DVecSVecCrossExpr : public DenseVector< DVecSVecCrossExpr<VT1,VT2>, false 
    // vector-sparse vector cross product expression to a dense vector.
    */
    template< typename VT >  // Type of the target dense vector
-   friend inline void multAssign( DenseVector<VT,false>& lhs, const DVecSVecCrossExpr& rhs )
+   friend inline void multAssign( DenseVector<VT,TF>& lhs, const DVecSVecCrossExpr& rhs )
    {
       BLAZE_FUNCTION_TRACE;
 
@@ -420,8 +421,8 @@ class DVecSVecCrossExpr : public DenseVector< DVecSVecCrossExpr<VT1,VT2>, false 
    /*! \cond BLAZE_INTERNAL */
    BLAZE_CONSTRAINT_MUST_BE_DENSE_VECTOR_TYPE ( VT1 );
    BLAZE_CONSTRAINT_MUST_BE_SPARSE_VECTOR_TYPE( VT2 );
-   BLAZE_CONSTRAINT_MUST_BE_COLUMN_VECTOR_TYPE( VT1 );
-   BLAZE_CONSTRAINT_MUST_BE_COLUMN_VECTOR_TYPE( VT2 );
+   BLAZE_CONSTRAINT_MUST_BE_VECTOR_WITH_TRANSPOSE_FLAG( VT1, TF );
+   BLAZE_CONSTRAINT_MUST_BE_VECTOR_WITH_TRANSPOSE_FLAG( VT2, TF );
    /*! \endcond */
    //**********************************************************************************************
 };
@@ -463,10 +464,11 @@ class DVecSVecCrossExpr : public DenseVector< DVecSVecCrossExpr<VT1,VT2>, false 
 // In case the current sizes of the two given vectors don't match, a \a std::invalid_argument
 // is thrown.
 */
-template< typename T1    // Type of the left-hand side dense vector
-        , typename T2 >  // Type of the right-hand side sparse vector
-inline const DVecSVecCrossExpr<T1,T2>
-   operator%( const DenseVector<T1,false>& lhs, const SparseVector<T2,false>& rhs )
+template< typename T1  // Type of the left-hand side dense vector
+        , typename T2  // Type of the right-hand side sparse vector
+        , bool TF >    // Transpose flag
+inline const DVecSVecCrossExpr<T1,T2,TF>
+   operator%( const DenseVector<T1,TF>& lhs, const SparseVector<T2,TF>& rhs )
 {
    BLAZE_FUNCTION_TRACE;
 
@@ -474,7 +476,7 @@ inline const DVecSVecCrossExpr<T1,T2>
       BLAZE_THROW_INVALID_ARGUMENT( "Invalid vector size for cross product" );
    }
 
-   return DVecSVecCrossExpr<T1,T2>( ~lhs, ~rhs );
+   return DVecSVecCrossExpr<T1,T2,TF>( ~lhs, ~rhs );
 }
 //*************************************************************************************************
 
@@ -489,8 +491,8 @@ inline const DVecSVecCrossExpr<T1,T2>
 
 //*************************************************************************************************
 /*! \cond BLAZE_INTERNAL */
-template< typename VT1, typename VT2 >
-struct Size< DVecSVecCrossExpr<VT1,VT2> > : public SizeT<3UL>
+template< typename VT1, typename VT2, bool TF >
+struct Size< DVecSVecCrossExpr<VT1,VT2,TF> > : public SizeT<3UL>
 {};
 /*! \endcond */
 //*************************************************************************************************

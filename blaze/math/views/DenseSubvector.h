@@ -4398,26 +4398,27 @@ inline void DenseSubvector<VT,aligned,TF>::multAssign( const SparseVector<VT2,TF
 // This specialization of DenseSubvector adapts the class template to the special case of
 // dense vector/dense vector cross products.
 */
-template< typename VT1    // Type of the left-hand side dense vector
-        , typename VT2 >  // Type of the right-hand side dense vector
-class DenseSubvector< DVecDVecCrossExpr<VT1,VT2>, unaligned, false >
-   : public DenseVector< DenseSubvector< DVecDVecCrossExpr<VT1,VT2>, unaligned, false >, false >
+template< typename VT1  // Type of the left-hand side dense vector
+        , typename VT2  // Type of the right-hand side dense vector
+        , bool TF >     // Transpose flag
+class DenseSubvector< DVecDVecCrossExpr<VT1,VT2,TF>, unaligned, TF >
+   : public DenseVector< DenseSubvector< DVecDVecCrossExpr<VT1,VT2,TF>, unaligned, TF >, TF >
    , private Subvector
 {
  private:
    //**Type definitions****************************************************************************
-   typedef DVecDVecCrossExpr<VT1,VT2>  CPE;  //!< Type of the cross product expression.
-   typedef ResultType_<CPE>            RT;   //!< Result type of the cross product expression.
+   typedef DVecDVecCrossExpr<VT1,VT2,TF>  CPE;  //!< Type of the cross product expression.
+   typedef ResultType_<CPE>               RT;   //!< Result type of the cross product expression.
    //**********************************************************************************************
 
  public:
    //**Type definitions****************************************************************************
-   typedef DenseSubvector<CPE,unaligned,false>  This;           //!< Type of this DenseSubvector instance.
-   typedef SubvectorTrait_<RT>                  ResultType;     //!< Result type for expression template evaluations.
-   typedef TransposeType_<ResultType>           TransposeType;  //!< Transpose type for expression template evaluations.
-   typedef ElementType_<CPE>                    ElementType;    //!< Type of the subvector elements.
-   typedef ReturnType_<CPE>                     ReturnType;     //!< Return type for expression template evaluations
-   typedef const ResultType                     CompositeType;  //!< Data type for composite expression templates.
+   typedef DenseSubvector<CPE,unaligned,TF>  This;           //!< Type of this DenseSubvector instance.
+   typedef SubvectorTrait_<RT>               ResultType;     //!< Result type for expression template evaluations.
+   typedef TransposeType_<ResultType>        TransposeType;  //!< Transpose type for expression template evaluations.
+   typedef ElementType_<CPE>                 ElementType;    //!< Type of the subvector elements.
+   typedef ReturnType_<CPE>                  ReturnType;     //!< Return type for expression template evaluations
+   typedef const ResultType                  CompositeType;  //!< Data type for composite expression templates.
    //**********************************************************************************************
 
    //**Compilation flags***************************************************************************
@@ -4514,33 +4515,33 @@ class DenseSubvector< DVecDVecCrossExpr<VT1,VT2>, unaligned, false >
    //**********************************************************************************************
 
    //**Friend declarations*************************************************************************
-   template< bool AF1, typename VT, bool AF2, bool TF >
-   friend const DenseSubvector<VT,AF1,TF>
-      subvector( const DenseSubvector<VT,AF2,TF>& dv, size_t index, size_t size );
+   template< bool AF1, typename VT, bool AF2, bool TF2 >
+   friend const DenseSubvector<VT,AF1,TF2>
+      subvector( const DenseSubvector<VT,AF2,TF2>& dv, size_t index, size_t size );
 
-   template< typename VT3, bool AF, bool TF >
-   friend bool isIntact( const DenseSubvector<VT3,AF,TF>& dv ) noexcept;
+   template< typename VT3, bool AF, bool TF2 >
+   friend bool isIntact( const DenseSubvector<VT3,AF,TF2>& dv ) noexcept;
 
-   template< typename VT3, bool AF, bool TF >
-   friend bool isSame( const DenseSubvector<VT3,AF,TF>& a, const DenseVector<VT3,TF>& b ) noexcept;
+   template< typename VT3, bool AF, bool TF2 >
+   friend bool isSame( const DenseSubvector<VT3,AF,TF2>& a, const DenseVector<VT3,TF2>& b ) noexcept;
 
-   template< typename VT3, bool AF, bool TF >
-   friend bool isSame( const DenseVector<VT3,TF>& a, const DenseSubvector<VT3,AF,TF>& b ) noexcept;
+   template< typename VT3, bool AF, bool TF2 >
+   friend bool isSame( const DenseVector<VT3,TF2>& a, const DenseSubvector<VT3,AF,TF2>& b ) noexcept;
 
-   template< typename VT3, bool AF, bool TF >
-   friend bool isSame( const DenseSubvector<VT3,AF,TF>& a, const DenseSubvector<VT3,AF,TF>& b ) noexcept;
+   template< typename VT3, bool AF, bool TF2 >
+   friend bool isSame( const DenseSubvector<VT3,AF,TF2>& a, const DenseSubvector<VT3,AF,TF2>& b ) noexcept;
 
-   template< typename VT3, bool AF, bool TF, typename VT4 >
-   friend bool tryAssign( const DenseSubvector<VT3,AF,TF>& lhs, const Vector<VT4,TF>& rhs, size_t index );
+   template< typename VT3, bool AF, bool TF2, typename VT4 >
+   friend bool tryAssign( const DenseSubvector<VT3,AF,TF2>& lhs, const Vector<VT4,TF2>& rhs, size_t index );
 
-   template< typename VT3, bool AF, bool TF, typename VT4 >
-   friend bool tryAddAssign( const DenseSubvector<VT2,AF,TF>& lhs, const Vector<VT3,TF>& rhs, size_t index );
+   template< typename VT3, bool AF, bool TF2, typename VT4 >
+   friend bool tryAddAssign( const DenseSubvector<VT2,AF,TF2>& lhs, const Vector<VT3,TF2>& rhs, size_t index );
 
-   template< typename VT3, bool AF, bool TF, typename VT4 >
-   friend bool trySubAssign( const DenseSubvector<VT2,AF,TF>& lhs, const Vector<VT3,TF>& rhs, size_t index );
+   template< typename VT3, bool AF, bool TF2, typename VT4 >
+   friend bool trySubAssign( const DenseSubvector<VT2,AF,TF2>& lhs, const Vector<VT3,TF2>& rhs, size_t index );
 
-   template< typename VT3, bool AF, bool TF, typename VT4 >
-   friend bool tryMultAssign( const DenseSubvector<VT3,AF,TF>& lhs, const Vector<VT4,TF>& rhs, size_t index );
+   template< typename VT3, bool AF, bool TF2, typename VT4 >
+   friend bool tryMultAssign( const DenseSubvector<VT3,AF,TF2>& lhs, const Vector<VT4,TF2>& rhs, size_t index );
    //**********************************************************************************************
 };
 /*! \endcond */
@@ -4567,26 +4568,27 @@ class DenseSubvector< DVecDVecCrossExpr<VT1,VT2>, unaligned, false >
 // This specialization of DenseSubvector adapts the class template to the special case of
 // dense vector/sparse vector cross products.
 */
-template< typename VT1    // Type of the left-hand side dense vector
-        , typename VT2 >  // Type of the right-hand side sparse vector
-class DenseSubvector< DVecSVecCrossExpr<VT1,VT2>, unaligned, false >
-   : public DenseVector< DenseSubvector< DVecSVecCrossExpr<VT1,VT2>, unaligned, false >, false >
+template< typename VT1  // Type of the left-hand side dense vector
+        , typename VT2  // Type of the right-hand side sparse vector
+        , bool TF >     // Transpose flag
+class DenseSubvector< DVecSVecCrossExpr<VT1,VT2,TF>, unaligned, TF >
+   : public DenseVector< DenseSubvector< DVecSVecCrossExpr<VT1,VT2,TF>, unaligned, TF >, TF >
    , private Subvector
 {
  private:
    //**Type definitions****************************************************************************
-   typedef DVecSVecCrossExpr<VT1,VT2>  CPE;  //!< Type of the cross product expression.
-   typedef ResultType_<CPE>            RT;   //!< Result type of the cross product expression.
+   typedef DVecSVecCrossExpr<VT1,VT2,TF>  CPE;  //!< Type of the cross product expression.
+   typedef ResultType_<CPE>               RT;   //!< Result type of the cross product expression.
    //**********************************************************************************************
 
  public:
    //**Type definitions****************************************************************************
-   typedef DenseSubvector<CPE,unaligned,false>  This;           //!< Type of this DenseSubvector instance.
-   typedef SubvectorTrait_<RT>                  ResultType;     //!< Result type for expression template evaluations.
-   typedef TransposeType_<ResultType>           TransposeType;  //!< Transpose type for expression template evaluations.
-   typedef ElementType_<CPE>                    ElementType;    //!< Type of the subvector elements.
-   typedef ReturnType_<CPE>                     ReturnType;     //!< Return type for expression template evaluations
-   typedef const ResultType                     CompositeType;  //!< Data type for composite expression templates.
+   typedef DenseSubvector<CPE,unaligned,TF>  This;           //!< Type of this DenseSubvector instance.
+   typedef SubvectorTrait_<RT>               ResultType;     //!< Result type for expression template evaluations.
+   typedef TransposeType_<ResultType>        TransposeType;  //!< Transpose type for expression template evaluations.
+   typedef ElementType_<CPE>                 ElementType;    //!< Type of the subvector elements.
+   typedef ReturnType_<CPE>                  ReturnType;     //!< Return type for expression template evaluations
+   typedef const ResultType                  CompositeType;  //!< Data type for composite expression templates.
    //**********************************************************************************************
 
    //**Compilation flags***************************************************************************
@@ -4683,33 +4685,33 @@ class DenseSubvector< DVecSVecCrossExpr<VT1,VT2>, unaligned, false >
    //**********************************************************************************************
 
    //**Friend declarations*************************************************************************
-   template< bool AF1, typename VT, bool AF2, bool TF >
-   friend const DenseSubvector<VT,AF1,TF>
-      subvector( const DenseSubvector<VT,AF2,TF>& dv, size_t index, size_t size );
+   template< bool AF1, typename VT, bool AF2, bool TF2 >
+   friend const DenseSubvector<VT,AF1,TF2>
+      subvector( const DenseSubvector<VT,AF2,TF2>& dv, size_t index, size_t size );
 
-   template< typename VT3, bool AF, bool TF >
-   friend bool isIntact( const DenseSubvector<VT3,AF,TF>& dv ) noexcept;
+   template< typename VT3, bool AF, bool TF2 >
+   friend bool isIntact( const DenseSubvector<VT3,AF,TF2>& dv ) noexcept;
 
-   template< typename VT3, bool AF, bool TF >
-   friend bool isSame( const DenseSubvector<VT3,AF,TF>& a, const DenseVector<VT3,TF>& b ) noexcept;
+   template< typename VT3, bool AF, bool TF2 >
+   friend bool isSame( const DenseSubvector<VT3,AF,TF2>& a, const DenseVector<VT3,TF2>& b ) noexcept;
 
-   template< typename VT3, bool AF, bool TF >
-   friend bool isSame( const DenseVector<VT3,TF>& a, const DenseSubvector<VT3,AF,TF>& b ) noexcept;
+   template< typename VT3, bool AF, bool TF2 >
+   friend bool isSame( const DenseVector<VT3,TF2>& a, const DenseSubvector<VT3,AF,TF2>& b ) noexcept;
 
-   template< typename VT3, bool AF, bool TF >
-   friend bool isSame( const DenseSubvector<VT3,AF,TF>& a, const DenseSubvector<VT3,AF,TF>& b ) noexcept;
+   template< typename VT3, bool AF, bool TF2 >
+   friend bool isSame( const DenseSubvector<VT3,AF,TF2>& a, const DenseSubvector<VT3,AF,TF2>& b ) noexcept;
 
-   template< typename VT3, bool AF, bool TF, typename VT4 >
-   friend bool tryAssign( const DenseSubvector<VT3,AF,TF>& lhs, const Vector<VT4,TF>& rhs, size_t index );
+   template< typename VT3, bool AF, bool TF2, typename VT4 >
+   friend bool tryAssign( const DenseSubvector<VT3,AF,TF2>& lhs, const Vector<VT4,TF2>& rhs, size_t index );
 
-   template< typename VT3, bool AF, bool TF, typename VT4 >
-   friend bool tryAddAssign( const DenseSubvector<VT2,AF,TF>& lhs, const Vector<VT3,TF>& rhs, size_t index );
+   template< typename VT3, bool AF, bool TF2, typename VT4 >
+   friend bool tryAddAssign( const DenseSubvector<VT2,AF,TF2>& lhs, const Vector<VT3,TF2>& rhs, size_t index );
 
-   template< typename VT3, bool AF, bool TF, typename VT4 >
-   friend bool trySubAssign( const DenseSubvector<VT2,AF,TF>& lhs, const Vector<VT3,TF>& rhs, size_t index );
+   template< typename VT3, bool AF, bool TF2, typename VT4 >
+   friend bool trySubAssign( const DenseSubvector<VT2,AF,TF2>& lhs, const Vector<VT3,TF2>& rhs, size_t index );
 
-   template< typename VT3, bool AF, bool TF, typename VT4 >
-   friend bool tryMultAssign( const DenseSubvector<VT3,AF,TF>& lhs, const Vector<VT4,TF>& rhs, size_t index );
+   template< typename VT3, bool AF, bool TF2, typename VT4 >
+   friend bool tryMultAssign( const DenseSubvector<VT3,AF,TF2>& lhs, const Vector<VT4,TF2>& rhs, size_t index );
    //**********************************************************************************************
 };
 /*! \endcond */
@@ -4736,26 +4738,27 @@ class DenseSubvector< DVecSVecCrossExpr<VT1,VT2>, unaligned, false >
 // This specialization of DenseSubvector adapts the class template to the special case of
 // sparse vector/dense vector cross products.
 */
-template< typename VT1    // Type of the left-hand side sparse vector
-        , typename VT2 >  // Type of the right-hand side dense vector
-class DenseSubvector< SVecDVecCrossExpr<VT1,VT2>, unaligned, false >
-   : public DenseVector< DenseSubvector< SVecDVecCrossExpr<VT1,VT2>, unaligned, false >, false >
+template< typename VT1  // Type of the left-hand side sparse vector
+        , typename VT2  // Type of the right-hand side dense vector
+        , bool TF >     // Transpose flag
+class DenseSubvector< SVecDVecCrossExpr<VT1,VT2,TF>, unaligned, TF >
+   : public DenseVector< DenseSubvector< SVecDVecCrossExpr<VT1,VT2,TF>, unaligned, TF >, TF >
    , private Subvector
 {
  private:
    //**Type definitions****************************************************************************
-   typedef SVecDVecCrossExpr<VT1,VT2>  CPE;  //!< Type of the cross product expression.
-   typedef ResultType_<CPE>            RT;   //!< Result type of the cross product expression.
+   typedef SVecDVecCrossExpr<VT1,VT2,TF>  CPE;  //!< Type of the cross product expression.
+   typedef ResultType_<CPE>               RT;   //!< Result type of the cross product expression.
    //**********************************************************************************************
 
  public:
    //**Type definitions****************************************************************************
-   typedef DenseSubvector<CPE,unaligned,false>  This;           //!< Type of this DenseSubvector instance.
-   typedef SubvectorTrait_<RT>                  ResultType;     //!< Result type for expression template evaluations.
-   typedef TransposeType_<ResultType>           TransposeType;  //!< Transpose type for expression template evaluations.
-   typedef ElementType_<CPE>                    ElementType;    //!< Type of the subvector elements.
-   typedef ReturnType_<CPE>                     ReturnType;     //!< Return type for expression template evaluations
-   typedef const ResultType                     CompositeType;  //!< Data type for composite expression templates.
+   typedef DenseSubvector<CPE,unaligned,TF>  This;           //!< Type of this DenseSubvector instance.
+   typedef SubvectorTrait_<RT>               ResultType;     //!< Result type for expression template evaluations.
+   typedef TransposeType_<ResultType>        TransposeType;  //!< Transpose type for expression template evaluations.
+   typedef ElementType_<CPE>                 ElementType;    //!< Type of the subvector elements.
+   typedef ReturnType_<CPE>                  ReturnType;     //!< Return type for expression template evaluations
+   typedef const ResultType                  CompositeType;  //!< Data type for composite expression templates.
    //**********************************************************************************************
 
    //**Compilation flags***************************************************************************
@@ -4852,33 +4855,33 @@ class DenseSubvector< SVecDVecCrossExpr<VT1,VT2>, unaligned, false >
    //**********************************************************************************************
 
    //**Friend declarations*************************************************************************
-   template< bool AF1, typename VT, bool AF2, bool TF >
-   friend const DenseSubvector<VT,AF1,TF>
-      subvector( const DenseSubvector<VT,AF2,TF>& dv, size_t index, size_t size );
+   template< bool AF1, typename VT, bool AF2, bool TF2 >
+   friend const DenseSubvector<VT,AF1,TF2>
+      subvector( const DenseSubvector<VT,AF2,TF2>& dv, size_t index, size_t size );
 
-   template< typename VT3, bool AF, bool TF >
-   friend bool isIntact( const DenseSubvector<VT3,AF,TF>& dv ) noexcept;
+   template< typename VT3, bool AF, bool TF2 >
+   friend bool isIntact( const DenseSubvector<VT3,AF,TF2>& dv ) noexcept;
 
-   template< typename VT3, bool AF, bool TF >
-   friend bool isSame( const DenseSubvector<VT3,AF,TF>& a, const DenseVector<VT3,TF>& b ) noexcept;
+   template< typename VT3, bool AF, bool TF2 >
+   friend bool isSame( const DenseSubvector<VT3,AF,TF2>& a, const DenseVector<VT3,TF2>& b ) noexcept;
 
-   template< typename VT3, bool AF, bool TF >
-   friend bool isSame( const DenseVector<VT3,TF>& a, const DenseSubvector<VT3,AF,TF>& b ) noexcept;
+   template< typename VT3, bool AF, bool TF2 >
+   friend bool isSame( const DenseVector<VT3,TF2>& a, const DenseSubvector<VT3,AF,TF2>& b ) noexcept;
 
-   template< typename VT3, bool AF, bool TF >
-   friend bool isSame( const DenseSubvector<VT3,AF,TF>& a, const DenseSubvector<VT3,AF,TF>& b ) noexcept;
+   template< typename VT3, bool AF, bool TF2 >
+   friend bool isSame( const DenseSubvector<VT3,AF,TF2>& a, const DenseSubvector<VT3,AF,TF2>& b ) noexcept;
 
-   template< typename VT3, bool AF, bool TF, typename VT4 >
-   friend bool tryAssign( const DenseSubvector<VT3,AF,TF>& lhs, const Vector<VT4,TF>& rhs, size_t index );
+   template< typename VT3, bool AF, bool TF2, typename VT4 >
+   friend bool tryAssign( const DenseSubvector<VT3,AF,TF2>& lhs, const Vector<VT4,TF2>& rhs, size_t index );
 
-   template< typename VT3, bool AF, bool TF, typename VT4 >
-   friend bool tryAddAssign( const DenseSubvector<VT2,AF,TF>& lhs, const Vector<VT3,TF>& rhs, size_t index );
+   template< typename VT3, bool AF, bool TF2, typename VT4 >
+   friend bool tryAddAssign( const DenseSubvector<VT2,AF,TF2>& lhs, const Vector<VT3,TF2>& rhs, size_t index );
 
-   template< typename VT3, bool AF, bool TF, typename VT4 >
-   friend bool trySubAssign( const DenseSubvector<VT2,AF,TF>& lhs, const Vector<VT3,TF>& rhs, size_t index );
+   template< typename VT3, bool AF, bool TF2, typename VT4 >
+   friend bool trySubAssign( const DenseSubvector<VT2,AF,TF2>& lhs, const Vector<VT3,TF2>& rhs, size_t index );
 
-   template< typename VT3, bool AF, bool TF, typename VT4 >
-   friend bool tryMultAssign( const DenseSubvector<VT3,AF,TF>& lhs, const Vector<VT4,TF>& rhs, size_t index );
+   template< typename VT3, bool AF, bool TF2, typename VT4 >
+   friend bool tryMultAssign( const DenseSubvector<VT3,AF,TF2>& lhs, const Vector<VT4,TF2>& rhs, size_t index );
    //**********************************************************************************************
 };
 /*! \endcond */
@@ -4905,16 +4908,17 @@ class DenseSubvector< SVecDVecCrossExpr<VT1,VT2>, unaligned, false >
 // This specialization of DenseSubvector adapts the class template to the special case of
 // sparse vector/sparse vector cross products.
 */
-template< typename VT1    // Type of the left-hand side sparse vector
-        , typename VT2 >  // Type of the right-hand side sparse vector
-class DenseSubvector< SVecSVecCrossExpr<VT1,VT2>, unaligned, false >
-   : public DenseVector< DenseSubvector< SVecSVecCrossExpr<VT1,VT2>, unaligned, false >, false >
+template< typename VT1  // Type of the left-hand side sparse vector
+        , typename VT2  // Type of the right-hand side sparse vector
+        , bool TF >     // Transpose flag
+class DenseSubvector< SVecSVecCrossExpr<VT1,VT2,TF>, unaligned, TF >
+   : public DenseVector< DenseSubvector< SVecSVecCrossExpr<VT1,VT2,TF>, unaligned, TF >, TF >
    , private Subvector
 {
  private:
    //**Type definitions****************************************************************************
-   typedef SVecSVecCrossExpr<VT1,VT2>  CPE;  //!< Type of the cross product expression.
-   typedef ResultType_<CPE>            RT;   //!< Result type of the cross product expression.
+   typedef SVecSVecCrossExpr<VT1,VT2,TF>  CPE;  //!< Type of the cross product expression.
+   typedef ResultType_<CPE>               RT;   //!< Result type of the cross product expression.
    //**********************************************************************************************
 
  public:
@@ -5021,33 +5025,33 @@ class DenseSubvector< SVecSVecCrossExpr<VT1,VT2>, unaligned, false >
    //**********************************************************************************************
 
    //**Friend declarations*************************************************************************
-   template< bool AF1, typename VT, bool AF2, bool TF >
-   friend const DenseSubvector<VT,AF1,TF>
-      subvector( const DenseSubvector<VT,AF2,TF>& dv, size_t index, size_t size );
+   template< bool AF1, typename VT, bool AF2, bool TF2 >
+   friend const DenseSubvector<VT,AF1,TF2>
+      subvector( const DenseSubvector<VT,AF2,TF2>& dv, size_t index, size_t size );
 
-   template< typename VT3, bool AF, bool TF >
-   friend bool isIntact( const DenseSubvector<VT3,AF,TF>& dv ) noexcept;
+   template< typename VT3, bool AF, bool TF2 >
+   friend bool isIntact( const DenseSubvector<VT3,AF,TF2>& dv ) noexcept;
 
-   template< typename VT3, bool AF, bool TF >
-   friend bool isSame( const DenseSubvector<VT3,AF,TF>& a, const DenseVector<VT3,TF>& b ) noexcept;
+   template< typename VT3, bool AF, bool TF2 >
+   friend bool isSame( const DenseSubvector<VT3,AF,TF2>& a, const DenseVector<VT3,TF2>& b ) noexcept;
 
-   template< typename VT3, bool AF, bool TF >
-   friend bool isSame( const DenseVector<VT3,TF>& a, const DenseSubvector<VT3,AF,TF>& b ) noexcept;
+   template< typename VT3, bool AF, bool TF2 >
+   friend bool isSame( const DenseVector<VT3,TF2>& a, const DenseSubvector<VT3,AF,TF2>& b ) noexcept;
 
-   template< typename VT3, bool AF, bool TF >
-   friend bool isSame( const DenseSubvector<VT3,AF,TF>& a, const DenseSubvector<VT3,AF,TF>& b ) noexcept;
+   template< typename VT3, bool AF, bool TF2 >
+   friend bool isSame( const DenseSubvector<VT3,AF,TF2>& a, const DenseSubvector<VT3,AF,TF2>& b ) noexcept;
 
-   template< typename VT3, bool AF, bool TF, typename VT4 >
-   friend bool tryAssign( const DenseSubvector<VT3,AF,TF>& lhs, const Vector<VT4,TF>& rhs, size_t index );
+   template< typename VT3, bool AF, bool TF2, typename VT4 >
+   friend bool tryAssign( const DenseSubvector<VT3,AF,TF2>& lhs, const Vector<VT4,TF2>& rhs, size_t index );
 
-   template< typename VT3, bool AF, bool TF, typename VT4 >
-   friend bool tryAddAssign( const DenseSubvector<VT2,AF,TF>& lhs, const Vector<VT3,TF>& rhs, size_t index );
+   template< typename VT3, bool AF, bool TF2, typename VT4 >
+   friend bool tryAddAssign( const DenseSubvector<VT2,AF,TF2>& lhs, const Vector<VT3,TF2>& rhs, size_t index );
 
-   template< typename VT3, bool AF, bool TF, typename VT4 >
-   friend bool trySubAssign( const DenseSubvector<VT2,AF,TF>& lhs, const Vector<VT3,TF>& rhs, size_t index );
+   template< typename VT3, bool AF, bool TF2, typename VT4 >
+   friend bool trySubAssign( const DenseSubvector<VT2,AF,TF2>& lhs, const Vector<VT3,TF2>& rhs, size_t index );
 
-   template< typename VT3, bool AF, bool TF, typename VT4 >
-   friend bool tryMultAssign( const DenseSubvector<VT3,AF,TF>& lhs, const Vector<VT4,TF>& rhs, size_t index );
+   template< typename VT3, bool AF, bool TF2, typename VT4 >
+   friend bool tryMultAssign( const DenseSubvector<VT3,AF,TF2>& lhs, const Vector<VT4,TF2>& rhs, size_t index );
    //**********************************************************************************************
 };
 /*! \endcond */
@@ -5729,12 +5733,12 @@ struct SubvectorExprTrait< const volatile DenseSubvector<VT,AF1,TF>, AF2 >
 
 //*************************************************************************************************
 /*! \cond BLAZE_INTERNAL */
-template< typename VT1, typename VT2, bool AF >
-struct SubvectorExprTrait< DVecDVecCrossExpr<VT1,VT2>, AF >
+template< typename VT1, typename VT2, bool TF, bool AF >
+struct SubvectorExprTrait< DVecDVecCrossExpr<VT1,VT2,TF>, AF >
 {
  public:
    //**********************************************************************************************
-   using Type = DenseSubvector< DVecDVecCrossExpr<VT1,VT2>, unaligned, false >;
+   using Type = DenseSubvector< DVecDVecCrossExpr<VT1,VT2,TF>, unaligned, TF >;
    //**********************************************************************************************
 };
 /*! \endcond */
@@ -5743,12 +5747,12 @@ struct SubvectorExprTrait< DVecDVecCrossExpr<VT1,VT2>, AF >
 
 //*************************************************************************************************
 /*! \cond BLAZE_INTERNAL */
-template< typename VT1, typename VT2, bool AF >
-struct SubvectorExprTrait< DVecSVecCrossExpr<VT1,VT2>, AF >
+template< typename VT1, typename VT2, bool TF, bool AF >
+struct SubvectorExprTrait< DVecSVecCrossExpr<VT1,VT2,TF>, AF >
 {
  public:
    //**********************************************************************************************
-   using Type = DenseSubvector< DVecSVecCrossExpr<VT1,VT2>, unaligned, false >;
+   using Type = DenseSubvector< DVecSVecCrossExpr<VT1,VT2,TF>, unaligned, TF >;
    //**********************************************************************************************
 };
 /*! \endcond */
@@ -5757,12 +5761,12 @@ struct SubvectorExprTrait< DVecSVecCrossExpr<VT1,VT2>, AF >
 
 //*************************************************************************************************
 /*! \cond BLAZE_INTERNAL */
-template< typename VT1, typename VT2, bool AF >
-struct SubvectorExprTrait< SVecDVecCrossExpr<VT1,VT2>, AF >
+template< typename VT1, typename VT2, bool TF, bool AF >
+struct SubvectorExprTrait< SVecDVecCrossExpr<VT1,VT2,TF>, AF >
 {
  public:
    //**********************************************************************************************
-   using Type = DenseSubvector< SVecDVecCrossExpr<VT1,VT2>, unaligned, false >;
+   using Type = DenseSubvector< SVecDVecCrossExpr<VT1,VT2,TF>, unaligned, TF >;
    //**********************************************************************************************
 };
 /*! \endcond */
@@ -5771,12 +5775,12 @@ struct SubvectorExprTrait< SVecDVecCrossExpr<VT1,VT2>, AF >
 
 //*************************************************************************************************
 /*! \cond BLAZE_INTERNAL */
-template< typename VT1, typename VT2, bool AF >
-struct SubvectorExprTrait< SVecSVecCrossExpr<VT1,VT2>, AF >
+template< typename VT1, typename VT2, bool TF, bool AF >
+struct SubvectorExprTrait< SVecSVecCrossExpr<VT1,VT2,TF>, AF >
 {
  public:
    //**********************************************************************************************
-   using Type = DenseSubvector< SVecSVecCrossExpr<VT1,VT2>, unaligned, false >;
+   using Type = DenseSubvector< SVecSVecCrossExpr<VT1,VT2,TF>, unaligned, TF >;
    //**********************************************************************************************
 };
 /*! \endcond */

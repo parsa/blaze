@@ -2603,14 +2603,14 @@ struct MultTrait< StaticVector<T1,N,true>, StaticVector<T2,N,false> >
 
 //*************************************************************************************************
 /*! \cond BLAZE_INTERNAL */
-template< typename T1, typename T2 >
-struct CrossTrait< StaticVector<T1,3UL,false>, StaticVector<T2,3UL,false> >
+template< typename T1, typename T2, bool TF >
+struct CrossTrait< StaticVector<T1,3UL,TF>, StaticVector<T2,3UL,TF> >
 {
  private:
    using T = MultTrait_<T1,T2>;
 
  public:
-   using Type = StaticVector< SubTrait_<T,T>, 3UL, false >;
+   using Type = StaticVector< SubTrait_<T,T>, 3UL, TF >;
 };
 /*! \endcond */
 //*************************************************************************************************

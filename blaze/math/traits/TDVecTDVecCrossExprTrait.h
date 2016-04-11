@@ -1,7 +1,7 @@
 //=================================================================================================
 /*!
-//  \file blaze/math/traits/SVecSVecCrossExprTrait.h
-//  \brief Header file for the SVecSVecCrossExprTrait class template
+//  \file blaze/math/traits/TDVecTDVecCrossExprTrait.h
+//  \brief Header file for the TDVecTDVecCrossExprTrait class template
 //
 //  Copyright (C) 2013 Klaus Iglberger - All Rights Reserved
 //
@@ -32,8 +32,8 @@
 */
 //=================================================================================================
 
-#ifndef _BLAZE_MATH_TRAITS_SVECSVECCROSSEXPRTRAIT_H_
-#define _BLAZE_MATH_TRAITS_SVECSVECCROSSEXPRTRAIT_H_
+#ifndef _BLAZE_MATH_TRAITS_TDVECTDVECCROSSEXPRTRAIT_H_
+#define _BLAZE_MATH_TRAITS_TDVECTDVECCROSSEXPRTRAIT_H_
 
 
 //*************************************************************************************************
@@ -41,8 +41,8 @@
 //*************************************************************************************************
 
 #include <blaze/math/expressions/Forward.h>
-#include <blaze/math/typetraits/IsColumnVector.h>
-#include <blaze/math/typetraits/IsSparseVector.h>
+#include <blaze/math/typetraits/IsDenseVector.h>
+#include <blaze/math/typetraits/IsRowVector.h>
 #include <blaze/util/InvalidType.h>
 #include <blaze/util/mpl/And.h>
 #include <blaze/util/mpl/If.h>
@@ -62,25 +62,25 @@ namespace blaze {
 //=================================================================================================
 
 //*************************************************************************************************
-/*!\brief Evaluation of the expression type of a sparse vector/sparse vector cross product.
+/*!\brief Evaluation of the expression type of a dense vector/dense vector cross product.
 // \ingroup math_traits
 //
-// Via this type trait it is possible to evaluate the resulting expression type of a sparse
-// vector/sparse vector cross product. Given the two non-transpose sparse vector types \a VT1
-// and \a VT2, the nested type \a Type corresponds to the resulting expression type. In case
-// either \a VT1 or \a VT2 is not a non-transpose sparse vector type, the resulting \a Type
-// is set to \a INVALID_TYPE.
+// Via this type trait it is possible to evaluate the resulting expression type of a dense
+// vector/dense vector cross product. Given the two transpose dense vector types \a VT1 and
+// \a VT2, the nested type \a Type corresponds to the resulting expression type. In case
+// either \a VT1 or \a VT2 is not a transpose dense vector type, the resulting \a Type is
+// set to \a INVALID_TYPE.
 */
-template< typename VT1    // Type of the left-hand side non-transpose sparse vector
-        , typename VT2 >  // Type of the right-hand side non-transpose sparse vector
-struct SVecSVecCrossExprTrait
+template< typename VT1    // Type of the left-hand side transpose dense vector
+        , typename VT2 >  // Type of the right-hand side transpose dense vector
+struct TDVecTDVecCrossExprTrait
 {
  private:
    //**********************************************************************************************
    /*! \cond BLAZE_INTERNAL */
-   using Tmp = If< And< IsSparseVector<VT1>, IsColumnVector<VT1>
-                      , IsSparseVector<VT2>, IsColumnVector<VT2> >
-                 , SVecSVecCrossExpr<VT1,VT2,false>
+   using Tmp = If< And< IsDenseVector<VT1>, IsRowVector<VT1>
+                      , IsDenseVector<VT2>, IsRowVector<VT2> >
+                 , DVecDVecCrossExpr<VT1,VT2,true>
                  , INVALID_TYPE >;
    /*! \endcond */
    //**********************************************************************************************
@@ -90,7 +90,7 @@ struct SVecSVecCrossExprTrait
    /*! \cond BLAZE_INTERNAL */
    using Type = typename If_< Or< IsConst<VT1>, IsVolatile<VT1>, IsReference<VT1>
                                 , IsConst<VT2>, IsVolatile<VT2>, IsReference<VT2> >
-                            , SVecSVecCrossExprTrait< Decay_<VT1>, Decay_<VT2> >
+                            , TDVecTDVecCrossExprTrait< Decay_<VT1>, Decay_<VT2> >
                             , Tmp >::Type;
    /*! \endcond */
    //**********************************************************************************************
@@ -99,22 +99,22 @@ struct SVecSVecCrossExprTrait
 
 
 //*************************************************************************************************
-/*!\brief Auxiliary alias declaration for the SVecSVecCrossExprTrait class template.
+/*!\brief Auxiliary alias declaration for the TDVecTDVecCrossExprTrait class template.
 // \ingroup math_traits
 //
-// The SVecSVecCrossExprTrait_ alias declaration provides a convenient shortcut to access
-// the nested \a Type of the SVecSVecCrossExprTrait class template. For instance, given the
-// non-transpose sparse vector types \a VT1 and \a VT2 the following two type definitions
-// are identical:
+// The TDVecTDVecCrossExprTrait_ alias declaration provides a convenient shortcut to access
+// the nested \a Type of the TDVecTDVecCrossExprTrait class template. For instance, given the
+// transpose dense vector types \a VT1 and \a VT2 the following two type definitions are
+// identical:
 
    \code
-   using Type1 = typename SVecSVecCrossExprTrait<VT1,VT2>::Type;
-   using Type2 = SVecSVecCrossExprTrait_<VT1,VT2>;
+   using Type1 = typename TDVecTDVecCrossExprTrait<VT1,VT2>::Type;
+   using Type2 = TDVecTDVecCrossExprTrait_<VT1,VT2>;
    \endcode
 */
-template< typename VT1    // Type of the left-hand side non-transpose sparse vector
-        , typename VT2 >  // Type of the right-hand side non-transpose sparse vector
-using SVecSVecCrossExprTrait_ = typename SVecSVecCrossExprTrait<VT1,VT2>::Type;
+template< typename VT1    // Type of the left-hand side transpose dense vector
+        , typename VT2 >  // Type of the right-hand side transpose dense vector
+using TDVecTDVecCrossExprTrait_ = typename TDVecTDVecCrossExprTrait<VT1,VT2>::Type;
 //*************************************************************************************************
 
 } // namespace blaze

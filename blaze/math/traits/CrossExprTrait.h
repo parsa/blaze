@@ -44,7 +44,12 @@
 #include <blaze/math/traits/DVecSVecCrossExprTrait.h>
 #include <blaze/math/traits/SVecDVecCrossExprTrait.h>
 #include <blaze/math/traits/SVecSVecCrossExprTrait.h>
+#include <blaze/math/traits/TDVecTDVecCrossExprTrait.h>
+#include <blaze/math/traits/TDVecTSVecCrossExprTrait.h>
+#include <blaze/math/traits/TSVecTDVecCrossExprTrait.h>
+#include <blaze/math/traits/TSVecTSVecCrossExprTrait.h>
 #include <blaze/math/typetraits/IsColumnVector.h>
+#include <blaze/math/typetraits/IsRowVector.h>
 #include <blaze/math/typetraits/IsVector.h>
 #include <blaze/util/InvalidType.h>
 #include <blaze/util/mpl/If.h>
@@ -99,7 +104,15 @@ struct CrossExprTrait
                                            , SVecDVecCrossExprTrait<T1,T2>
                                            , SVecSVecCrossExprTrait<T1,T2> > >
                                  , Failure >
-                            , Failure >
+                            , If_< IsRowVector<T2>
+                                 , If_< IsDenseVector<T1>
+                                      , If_< IsDenseVector<T2>
+                                           , TDVecTDVecCrossExprTrait<T1,T2>
+                                           , TDVecTSVecCrossExprTrait<T1,T2> >
+                                      , If_< IsDenseVector<T2>
+                                           , TSVecTDVecCrossExprTrait<T1,T2>
+                                           , TSVecTSVecCrossExprTrait<T1,T2> > >
+                                 , Failure > >
                        , Failure >
                   , Failure >;
    /*! \endcond */

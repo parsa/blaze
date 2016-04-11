@@ -82,7 +82,7 @@ struct SVecDVecCrossExprTrait
    /*! \cond BLAZE_INTERNAL */
    using Tmp = If< And< IsSparseVector<VT1>, IsColumnVector<VT1>
                       , IsDenseVector<VT2> , IsColumnVector<VT2> >
-                 , SVecDVecCrossExpr<VT1,VT2>
+                 , SVecDVecCrossExpr<VT1,VT2,false>
                  , INVALID_TYPE >;
    /*! \endcond */
    //**********************************************************************************************
