@@ -111,10 +111,10 @@ class AlignedArray
    //**Constructors********************************************************************************
    /*!\name Constructors */
    //@{
-   inline AlignedArray() noexcept( IsNothrowDefaultConstructible<Type>::value );
+   explicit inline AlignedArray() noexcept( IsNothrowDefaultConstructible<Type>::value );
 
    template< typename... Ts >
-   inline constexpr AlignedArray( const Ts&... args )
+   explicit inline constexpr AlignedArray( const Ts&... args )
       noexcept( IsNothrowCopyConstructible<Type>::value );
    //@}
    //**********************************************************************************************
