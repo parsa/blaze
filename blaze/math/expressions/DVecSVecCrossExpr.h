@@ -481,6 +481,43 @@ inline const DVecSVecCrossExpr<T1,T2,TF>
 //*************************************************************************************************
 
 
+//*************************************************************************************************
+/*!\brief Cross product of a dense vector and a sparse vector (\f$ \vec{a}=\vec{b} \times \vec{c} \f$).
+// \ingroup dense_vector
+//
+// \param lhs The left-hand side dense vector for the cross product.
+// \param rhs The right-hand side sparse vector for the cross product.
+// \return The cross product of the two vectors.
+// \exception std::invalid_argument Invalid vector size for cross product.
+//
+// This function computes the cross product of a dense vector and a sparse vector:
+
+   \code
+   blaze::DynamicVector<double> a( 3UL );
+   blaze::CompressedVector<double> b( 3UL );
+   blaze::StaticVector<double,3UL> c;
+   // ... Resizing and initialization
+   c = a % b;
+   \endcode
+
+// The operator returns an expression representing a dense vector of the higher-order element
+// type of the two involved vector element types \a T1::ElementType and \a T2::ElementType.
+// Both vector types \a T1 and \a T2 as well as the two element types \a T1::ElementType and
+// \a T2::ElementType have to be supported by the CrossTrait class template.\n
+// In case the current sizes of the two given vectors don't match, a \a std::invalid_argument
+// is thrown.
+*/
+template< typename T1  // Type of the left-hand side dense vector
+        , typename T2  // Type of the right-hand side sparse vector
+        , bool TF >    // Transpose flag
+inline const DVecSVecCrossExpr<T1,T2,TF>
+   cross( const DenseVector<T1,TF>& lhs, const SparseVector<T2,TF>& rhs )
+{
+   return lhs % rhs;
+}
+//*************************************************************************************************
+
+
 
 
 //=================================================================================================
