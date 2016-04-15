@@ -102,8 +102,6 @@ class SVecDVecMultExpr : public SparseVector< SVecDVecMultExpr<VT1,VT2,TF>, TF >
    typedef ReturnType_<VT2>     RN2;  //!< Return type of the right-hand side dense vector expression.
    typedef CompositeType_<VT1>  CT1;  //!< Composite type of the left-hand side sparse vector expression.
    typedef CompositeType_<VT2>  CT2;  //!< Composite type of the right-hand side dense vector expression.
-   typedef TransposeType_<VT1>  TT1;  //!< Transpose type of the left-hand side sparse vector expression.
-   typedef TransposeType_<VT2>  TT2;  //!< Transpose type of the right-hand side dense vector expression.
    //**********************************************************************************************
 
    //**Return type evaluation**********************************************************************
