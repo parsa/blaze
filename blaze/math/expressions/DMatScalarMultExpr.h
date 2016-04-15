@@ -97,6 +97,7 @@
 #include <blaze/util/logging/FunctionTrace.h>
 #include <blaze/util/mpl/And.h>
 #include <blaze/util/mpl/If.h>
+#include <blaze/util/mpl/Or.h>
 #include <blaze/util/Types.h>
 #include <blaze/util/typetraits/IsNumeric.h>
 #include <blaze/util/typetraits/IsSame.h>
@@ -1164,7 +1165,7 @@ template< typename MT     // Type of the dense matrix of the left-hand side expr
         , typename ST1    // Type of the scalar of the left-hand side expression
         , bool SO         // Storage order of the dense matrix
         , typename ST2 >  // Type of the right-hand side scalar
-inline const EnableIf_< And< IsNumeric<ST2>, IsInvertible< DivTrait_<ST1,ST2> > >
+inline const EnableIf_< And< IsNumeric<ST2>, Or< IsInvertible<ST1>, IsInvertible<ST2> > >
                       , DivExprTrait_< DMatScalarMultExpr<MT,ST1,SO>, ST2 > >
    operator/( const DMatScalarMultExpr<MT,ST1,SO>& mat, ST2 scalar )
 {

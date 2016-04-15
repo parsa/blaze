@@ -91,6 +91,7 @@
 #include <blaze/util/logging/FunctionTrace.h>
 #include <blaze/util/mpl/And.h>
 #include <blaze/util/mpl/If.h>
+#include <blaze/util/mpl/Or.h>
 #include <blaze/util/Types.h>
 #include <blaze/util/typetraits/IsNumeric.h>
 #include <blaze/util/typetraits/RemoveReference.h>
@@ -998,7 +999,7 @@ template< typename MT     // Type of the sparse matrix
         , typename ST1    // Type of the first scalar
         , bool SO         // Storage order of the sparse matrix
         , typename ST2 >  // Type of the second scalar
-inline const EnableIf_< And< IsNumeric<ST2>, IsInvertible< DivTrait_<ST1,ST2> > >
+inline const EnableIf_< And< IsNumeric<ST2>, Or< IsInvertible<ST1>, IsInvertible<ST2> > >
                       , DivExprTrait_< SMatScalarMultExpr<MT,ST1,SO>, ST2 > >
    operator/( const SMatScalarMultExpr<MT,ST1,SO>& mat, ST2 scalar )
 {

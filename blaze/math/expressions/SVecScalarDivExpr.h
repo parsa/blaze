@@ -77,6 +77,7 @@
 #include <blaze/util/logging/FunctionTrace.h>
 #include <blaze/util/mpl/And.h>
 #include <blaze/util/mpl/If.h>
+#include <blaze/util/mpl/Or.h>
 #include <blaze/util/Types.h>
 #include <blaze/util/typetraits/IsNumeric.h>
 #include <blaze/util/typetraits/RemoveReference.h>
@@ -849,7 +850,7 @@ template< typename VT     // Type of the sparse vector of the left-hand side exp
         , typename ST1    // Type of the scalar of the left-hand side expression
         , bool TF         // Transpose flag of the sparse vector
         , typename ST2 >  // Type of the right-hand side scalar
-inline const EnableIf_< And< IsNumeric<ST2>, IsInvertible< DivTrait_<ST2,ST1> > >
+inline const EnableIf_< And< IsNumeric<ST2>, Or< IsInvertible<ST1>, IsInvertible<ST2> > >
                       , MultExprTrait_< SVecScalarDivExpr<VT,ST1,TF>, ST2 > >
    operator*( const SVecScalarDivExpr<VT,ST1,TF>& vec, ST2 scalar )
 {
@@ -878,7 +879,7 @@ template< typename ST1  // Type of the left-hand side scalar
         , typename VT   // Type of the sparse vector of the right-hand side expression
         , typename ST2  // Type of the scalar of the right-hand side expression
         , bool TF >     // Transpose flag of the sparse vector
-inline const EnableIf_< And< IsNumeric<ST1>, IsInvertible< DivTrait_<ST1,ST2> > >
+inline const EnableIf_< And< IsNumeric<ST1>, Or< IsInvertible<ST1>, IsInvertible<ST2> > >
                       , MultExprTrait_< ST1, SVecScalarDivExpr<VT,ST2,TF> > >
    operator*( ST1 scalar, const SVecScalarDivExpr<VT,ST2,TF>& vec )
 {
