@@ -88,6 +88,7 @@
 #include <blaze/math/typetraits/IsMatTransExpr.h>
 #include <blaze/math/typetraits/IsMatVecMultExpr.h>
 #include <blaze/math/typetraits/IsMultExpr.h>
+#include <blaze/math/typetraits/IsNumericVector.h>
 #include <blaze/math/typetraits/IsPadded.h>
 #include <blaze/math/typetraits/IsProxy.h>
 #include <blaze/math/typetraits/IsRealExpr.h>
@@ -130,6 +131,7 @@
 #include <blaze/math/typetraits/IsVecTransExpr.h>
 #include <blaze/math/typetraits/IsVecTVecMultExpr.h>
 #include <blaze/math/typetraits/IsVecVecAddExpr.h>
+#include <blaze/math/typetraits/IsVecVecDivExpr.h>
 #include <blaze/math/typetraits/IsVecVecMultExpr.h>
 #include <blaze/math/typetraits/IsVecVecSubExpr.h>
 #include <blaze/math/typetraits/IsView.h>

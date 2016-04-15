@@ -83,6 +83,7 @@
 #include <blaze/math/constraints/MatVecMultExpr.h>
 #include <blaze/math/constraints/MultExpr.h>
 #include <blaze/math/constraints/MutableDataAccess.h>
+#include <blaze/math/constraints/NumericVector.h>
 #include <blaze/math/constraints/Padded.h>
 #include <blaze/math/constraints/Proxy.h>
 #include <blaze/math/constraints/RealExpr.h>
@@ -129,6 +130,7 @@
 #include <blaze/math/constraints/VecTransExpr.h>
 #include <blaze/math/constraints/VecTVecMultExpr.h>
 #include <blaze/math/constraints/VecVecAddExpr.h>
+#include <blaze/math/constraints/VecVecDivExpr.h>
 #include <blaze/math/constraints/VecVecMultExpr.h>
 #include <blaze/math/constraints/VecVecSubExpr.h>
 #include <blaze/math/constraints/View.h>
