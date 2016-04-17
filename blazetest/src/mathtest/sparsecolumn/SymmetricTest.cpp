@@ -71,6 +71,7 @@ SymmetricTest::SymmetricTest()
    testAddAssign();
    testSubAssign();
    testMultAssign();
+   testDivAssign();
    testScaling();
    testSubscript();
    testIterator();
@@ -1506,6 +1507,117 @@ void SymmetricTest::testMultAssign()
                                      "(  0  1   0 -2 )\n"
                                      "(  0  0 -12  0 )\n"
                                      "(  0 -2   0  5 )\n";
+         throw std::runtime_error( oss.str() );
+      }
+   }
+}
+//*************************************************************************************************
+
+
+//*************************************************************************************************
+/*!\brief Test of the SparseColumn division assignment operators.
+//
+// \return void
+// \exception std::runtime_error Error detected.
+//
+// This function performs a test of the division assignment operators of the SparseColumn class
+// template. In case an error is detected, a \a std::runtime_error exception is thrown.
+*/
+void SymmetricTest::testDivAssign()
+{
+   //=====================================================================================
+   // Row-major dense vector division assignment
+   //=====================================================================================
+
+   {
+      test_ = "Row-major dense vector division assignment";
+
+      initialize();
+
+      CT col2 = column( mat_, 2UL );
+
+      blaze::DynamicVector<int,blaze::columnVector> vec{ 1, 2, 3, -2 };
+
+      col2 /= vec;
+
+      checkSize    ( col2, 4UL );
+      checkNonZeros( col2, 2UL );
+      checkRows    ( mat_, 4UL );
+      checkColumns ( mat_, 4UL );
+      checkNonZeros( mat_, 7UL );
+
+      if( col2[0] != 0 || col2[1] != 0 || col2[2] != 1 || col2[3] != -2 ) {
+         std::ostringstream oss;
+         oss << " Test: " << test_ << "\n"
+             << " Error: Division assignment failed\n"
+             << " Details:\n"
+             << "   Result:\n" << col2 << "\n"
+             << "   Expected result:\n( 0 0 1 -2 )\n";
+         throw std::runtime_error( oss.str() );
+      }
+
+      if( mat_(0,0) != 0 || mat_(0,1) !=  0 || mat_(0,2) !=  0 || mat_(0,3) !=  0 ||
+          mat_(1,0) != 0 || mat_(1,1) !=  1 || mat_(1,2) !=  0 || mat_(1,3) != -2 ||
+          mat_(2,0) != 0 || mat_(2,1) !=  0 || mat_(2,2) !=  1 || mat_(2,3) != -2 ||
+          mat_(3,0) != 0 || mat_(3,1) != -2 || mat_(3,2) != -2 || mat_(3,3) !=  5 ) {
+         std::ostringstream oss;
+         oss << " Test: " << test_ << "\n"
+             << " Error: Division assignment failed\n"
+             << " Details:\n"
+             << "   Result:\n" << mat_ << "\n"
+             << "   Expected result:\n(  0  0  0  0 )\n"
+                                     "(  0  1  0 -2 )\n"
+                                     "(  0  0  1 -2 )\n"
+                                     "(  0 -2 -2  5 )\n";
+         throw std::runtime_error( oss.str() );
+      }
+   }
+
+
+   //=====================================================================================
+   // Column-major dense vector division assignment
+   //=====================================================================================
+
+   {
+      test_ = "Column-major dense vector division assignment";
+
+      initialize();
+
+      OCT col2 = column( tmat_, 2UL );
+
+      blaze::DynamicVector<int,blaze::columnVector> vec{ 1, 2, 3, -2 };
+
+      col2 /= vec;
+
+      checkSize    ( col2 , 4UL );
+      checkNonZeros( col2 , 2UL );
+      checkRows    ( tmat_, 4UL );
+      checkColumns ( tmat_, 4UL );
+      checkNonZeros( tmat_, 7UL );
+
+      if( col2[0] != 0 || col2[1] != 0 || col2[2] != 1 || col2[3] != -2 ) {
+         std::ostringstream oss;
+         oss << " Test: " << test_ << "\n"
+             << " Error: Division assignment failed\n"
+             << " Details:\n"
+             << "   Result:\n" << col2 << "\n"
+             << "   Expected result:\n( 0 0 1 -2 )\n";
+         throw std::runtime_error( oss.str() );
+      }
+
+      if( tmat_(0,0) != 0 || tmat_(0,1) !=  0 || tmat_(0,2) !=  0 || tmat_(0,3) !=  0 ||
+          tmat_(1,0) != 0 || tmat_(1,1) !=  1 || tmat_(1,2) !=  0 || tmat_(1,3) != -2 ||
+          tmat_(2,0) != 0 || tmat_(2,1) !=  0 || tmat_(2,2) !=  1 || tmat_(2,3) != -2 ||
+          tmat_(3,0) != 0 || tmat_(3,1) != -2 || tmat_(3,2) != -2 || tmat_(3,3) !=  5 ) {
+         std::ostringstream oss;
+         oss << " Test: " << test_ << "\n"
+             << " Error: Division assignment failed\n"
+             << " Details:\n"
+             << "   Result:\n" << tmat_ << "\n"
+             << "   Expected result:\n(  0  0  0  0 )\n"
+                                     "(  0  1  0 -2 )\n"
+                                     "(  0  0  1 -2 )\n"
+                                     "(  0 -2 -2  5 )\n";
          throw std::runtime_error( oss.str() );
       }
    }
