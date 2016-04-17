@@ -59,20 +59,22 @@ namespace blazetest {
 // This specialization of the Creator class template is able to create random N-dimensional
 // vectors.
 */
-template< typename T  // Element type of the N-dimensional vector
-        , bool TF >   // Transpose flag of the N-dimensional vector
-class Creator< blaze::DynamicVector<T,TF> >
+template< typename T     // Element type of the N-dimensional vector
+        , bool TF        // Transpose flag of the N-dimensional vector
+        , typename CP >  // Creation policy
+class Creator< blaze::DynamicVector<T,TF>, CP >
 {
  public:
    //**Type definitions****************************************************************************
-   typedef blaze::DynamicVector<T,TF>  Type;  //!< Type to be created by the Creator.
+   typedef blaze::DynamicVector<T,TF>  Type;    //!< Type to be created by the Creator.
+   typedef CP                          Policy;  //!< Creation policy for the built-in elements.
    //**********************************************************************************************
 
    //**Constructors********************************************************************************
    /*!\name Constructors */
    //@{
-   explicit inline Creator( const Creator<T>& elementCreator = Creator<T>() );
-   explicit inline Creator( size_t size, const Creator<T>& elementCreator = Creator<T>() );
+   explicit inline Creator( const Creator<T,CP>& elementCreator = Creator<T,CP>() );
+   explicit inline Creator( size_t size, const Creator<T,CP>& elementCreator = Creator<T,CP>() );
    // No explicitly declared copy constructor.
    //@}
    //**********************************************************************************************
@@ -93,8 +95,8 @@ class Creator< blaze::DynamicVector<T,TF> >
    //**Member variables****************************************************************************
    /*!\name Member variables */
    //@{
-   size_t size_;    //!< The size for the N-dimensional vector.
-   Creator<T> ec_;  //!< Creator for the elements of the N-dimensional vector.
+   size_t size_;       //!< The size for the N-dimensional vector.
+   Creator<T,CP> ec_;  //!< Creator for the elements of the N-dimensional vector.
    //@}
    //**********************************************************************************************
 };
@@ -114,9 +116,10 @@ class Creator< blaze::DynamicVector<T,TF> >
 //
 // \param elementCreator The creator for the elements of the N-dimensional vector.
 */
-template< typename T  // Element type of the N-dimensional vector
-        , bool TF >   // Transpose flag of the N-dimensional vector
-inline Creator< blaze::DynamicVector<T,TF> >::Creator( const Creator<T>& elementCreator )
+template< typename T     // Element type of the N-dimensional vector
+        , bool TF        // Transpose flag of the N-dimensional vector
+        , typename CP >  // Creation policy
+inline Creator< blaze::DynamicVector<T,TF>, CP >::Creator( const Creator<T,CP>& elementCreator )
    : size_( 3UL )           // The size for the N-dimensional vector
    , ec_( elementCreator )  // Creator for the elements of the N-dimensional vector
 {}
@@ -129,9 +132,10 @@ inline Creator< blaze::DynamicVector<T,TF> >::Creator( const Creator<T>& element
 // \param size The size for the N-dimensional vector.
 // \param elementCreator The creator for the elements of the N-dimensional vector.
 */
-template< typename T  // Element type of the N-dimensional vector
-        , bool TF >   // Transpose flag of the N-dimensional vector
-inline Creator< blaze::DynamicVector<T,TF> >::Creator( size_t size, const Creator<T>& elementCreator )
+template< typename T     // Element type of the N-dimensional vector
+        , bool TF        // Transpose flag of the N-dimensional vector
+        , typename CP >  // Creation policy
+inline Creator< blaze::DynamicVector<T,TF>, CP >::Creator( size_t size, const Creator<T,CP>& elementCreator )
    : size_( size )          // The size for the N-dimensional vector
    , ec_( elementCreator )  // Creator for the elements of the N-dimensional vector
 {}
@@ -151,12 +155,13 @@ inline Creator< blaze::DynamicVector<T,TF> >::Creator( size_t size, const Creato
 //
 // \return The randomly generated N-dimensional vector.
 */
-template< typename T  // Element type of the N-dimensional vector
-        , bool TF >   // Transpose flag of the N-dimensional vector
-inline const blaze::DynamicVector<T,TF> Creator< blaze::DynamicVector<T,TF> >::operator()() const
+template< typename T     // Element type of the N-dimensional vector
+        , bool TF        // Transpose flag of the N-dimensional vector
+        , typename CP >  // Creation policy
+inline const blaze::DynamicVector<T,TF> Creator< blaze::DynamicVector<T,TF>, CP >::operator()() const
 {
    blaze::DynamicVector<T,TF> vector( size_ );
-   for( size_t i=0; i<size_; ++i )
+   for( size_t i=0UL; i<size_; ++i )
       vector[i] = ec_();
    return vector;
 }

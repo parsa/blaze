@@ -45,10 +45,7 @@
 #include <blaze/util/constraints/Const.h>
 #include <blaze/util/constraints/Void.h>
 #include <blaze/util/constraints/Volatile.h>
-#include <blaze/util/Random.h>
 #include <blazetest/mathtest/creator/Default.h>
-#include <blazetest/mathtest/RandomMaximum.h>
-#include <blazetest/mathtest/RandomMinimum.h>
 #include <blazetest/system/Types.h>
 
 
@@ -65,12 +62,14 @@ namespace blazetest {
 //
 // This specialization of the Creator class template is able to create random complex values.
 */
-template< typename T >  // Element type of the complex type
-class Creator< complex<T> >
+template< typename T     // Type to be created
+        , typename CP >  // Creation policy
+class Creator< complex<T>, CP >
 {
  public:
    //**Type definitions****************************************************************************
-   typedef complex<T>  Type;  //!< Type to be created by the Creator.
+   typedef complex<T>  Type;    //!< Type to be created by the Creator.
+   typedef CP          Policy;  //!< Creation policy for the built-in elements.
    //**********************************************************************************************
 
    //**Constructors********************************************************************************
@@ -90,6 +89,13 @@ class Creator< complex<T> >
    //**********************************************************************************************
 
  private:
+   //**Member variables****************************************************************************
+   /*!\name Member variables */
+   //@{
+   CP policy_;  //!< The element creation policy.
+   //@}
+   //**********************************************************************************************
+
    //**Compile time checks*************************************************************************
    /*! \cond BLAZE_INTERNAL */
    BLAZE_CONSTRAINT_MUST_BE_BUILTIN_TYPE    ( T );
@@ -116,10 +122,11 @@ class Creator< complex<T> >
 //
 // \return The randomly generated complex value.
 */
-template< typename T >  // Element type of the complex type
-inline const complex<T> Creator< complex<T> >::operator()() const
+template< typename T     // Type to be created
+        , typename CP >  // Creation policy
+inline const complex<T> Creator< complex<T>, CP >::operator()() const
 {
-   return complex<T>( blaze::rand<T>( T(randmin), T(randmax) ) );
+   return complex<T>( policy_.template create<T>(), policy_.template create<T>() );
 }
 //*************************************************************************************************
 

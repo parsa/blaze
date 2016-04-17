@@ -99,7 +99,8 @@ class OperationTest
    //**Constructors********************************************************************************
    /*!\name Constructors */
    //@{
-   explicit OperationTest( const Creator<VT1>& creator1, const Creator<VT2>& creator2 );
+   template< typename CP1, typename CP2 >
+   explicit OperationTest( const Creator<VT1,CP1>& creator1, const Creator<VT2,CP2>& creator2 );
    // No explicitly declared copy constructor.
    //@}
    //**********************************************************************************************
@@ -188,7 +189,9 @@ class OperationTest
 */
 template< typename VT1    // Type of the left-hand side dense vector
         , typename VT2 >  // Type of the right-hand side sparse vector
-OperationTest<VT1,VT2>::OperationTest( const Creator<VT1>& creator1, const Creator<VT2>& creator2 )
+template< typename CP1    // Creation policy of the left-hand side dense vector
+        , typename CP2 >  // Creation policy of the right-hand side sparse vector
+OperationTest<VT1,VT2>::OperationTest( const Creator<VT1,CP1>& creator1, const Creator<VT2,CP2>& creator2 )
    : lhs_( trans( creator1() ) )  // The left-hand side dense vector
    , rhs_( creator2() )           // The right-hand side sparse vector
    , res_()                       // The result of the inner product
@@ -590,10 +593,12 @@ void OperationTest<VT1,VT2>::convertException( const std::exception& ex )
 // \return void
 */
 template< typename VT1    // Type of the left-hand side dense vector
-        , typename VT2 >  // Type of the right-hand side sparse vector
-void runTest( const Creator<VT1>& creator1, const Creator<VT2>& creator2 )
+        , typename CP1    // Creation policy of the left-hand side dense vector
+        , typename VT2    // Type of the right-hand side sparse vector
+        , typename CP2 >  // Creation policy of the right-hand side sparse vector
+void runTest( const Creator<VT1,CP1>& creator1, const Creator<VT2,CP2>& creator2 )
 {
-   for( size_t rep=0; rep<repetitions; ++rep ) {
+   for( size_t rep=0UL; rep<repetitions; ++rep ) {
       OperationTest<VT1,VT2>( creator1, creator2 );
    }
 }

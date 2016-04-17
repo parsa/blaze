@@ -150,7 +150,8 @@ class OperationTest
    //**Constructors********************************************************************************
    /*!\name Constructors */
    //@{
-   explicit OperationTest( const Creator<MT1>& creator1, const Creator<MT2>& creator2 );
+   template< typename CP1, typename CP2 >
+   explicit OperationTest( const Creator<MT1,CP1>& creator1, const Creator<MT2,CP2>& creator2 );
    // No explicitly declared copy constructor.
    //@}
    //**********************************************************************************************
@@ -322,7 +323,9 @@ class OperationTest
 */
 template< typename MT1    // Type of the left-hand side sparse matrix
         , typename MT2 >  // Type of the right-hand side sparse matrix
-OperationTest<MT1,MT2>::OperationTest( const Creator<MT1>& creator1, const Creator<MT2>& creator2 )
+template< typename CP1    // Creation policy of the left-hand side sparse matrix
+        , typename CP2 >  // Creation policy of the right-hand side sparse matrix
+OperationTest<MT1,MT2>::OperationTest( const Creator<MT1,CP1>& creator1, const Creator<MT2,CP2>& creator2 )
    : lhs_( creator1() )  // The left-hand side sparse matrix
    , rhs_( creator2() )  // The right-hand side sparse matrix
    , olhs_( lhs_ )       // The left-hand side sparse matrix with opposite storage order
@@ -7977,10 +7980,12 @@ void OperationTest<MT1,MT2>::convertException( const std::exception& ex )
 // \return void
 */
 template< typename MT1    // Type of the left-hand side sparse matrix
-        , typename MT2 >  // Type of the right-hand side sparse matrix
-void runTest( const Creator<MT1>& creator1, const Creator<MT2>& creator2 )
+        , typename CP1    // Creation policy of the left-hand side sparse matrix
+        , typename MT2    // Type of the right-hand side sparse matrix
+        , typename CP2 >  // Creation policy of the right-hand side sparse matrix
+void runTest( const Creator<MT1,CP1>& creator1, const Creator<MT2,CP2>& creator2 )
 {
-   for( size_t rep=0; rep<repetitions; ++rep ) {
+   for( size_t rep=0UL; rep<repetitions; ++rep ) {
       OperationTest<MT1,MT2>( creator1, creator2 );
    }
 }

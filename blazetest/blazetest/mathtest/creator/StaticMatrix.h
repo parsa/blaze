@@ -58,21 +58,23 @@ namespace blazetest {
 //
 // This specialization of the Creator class template is able to create random static matrices.
 */
-template< typename T  // Element type of the static matrix
-        , size_t M    // Number of rows of the static matrix
-        , size_t N    // Number of columns of the static matrix
-        , bool SO >   // Storage order of the static matrix
-class Creator< blaze::StaticMatrix<T,M,N,SO> >
+template< typename T     // Element type of the static matrix
+        , size_t M       // Number of rows of the static matrix
+        , size_t N       // Number of columns of the static matrix
+        , bool SO        // Storage order of the static matrix
+        , typename CP >  // Creation policy
+class Creator< blaze::StaticMatrix<T,M,N,SO>, CP >
 {
  public:
    //**Type definitions****************************************************************************
-   typedef blaze::StaticMatrix<T,M,N,SO>  Type;  //!< Type to be created by the Creator.
+   typedef blaze::StaticMatrix<T,M,N,SO>  Type;    //!< Type to be created by the Creator.
+   typedef CP                             Policy;  //!< Creation policy for the built-in elements.
    //**********************************************************************************************
 
    //**Constructors********************************************************************************
    /*!\name Constructors */
    //@{
-   explicit inline Creator( const Creator<T>& elementCreator = Creator<T>() );
+   explicit inline Creator( const Creator<T,CP>& elementCreator = Creator<T,CP>() );
    // No explicitly declared copy constructor.
    //@}
    //**********************************************************************************************
@@ -93,7 +95,7 @@ class Creator< blaze::StaticMatrix<T,M,N,SO> >
    //**Member variables****************************************************************************
    /*!\name Member variables */
    //@{
-   Creator<T> ec_;  //!< Creator for the elements of the static matrix.
+   Creator<T,CP> ec_;  //!< Creator for the elements of the static matrix.
    //@}
    //**********************************************************************************************
 };
@@ -113,11 +115,12 @@ class Creator< blaze::StaticMatrix<T,M,N,SO> >
 //
 // \param elementCreator The creator for the elements of the static matrix.
 */
-template< typename T  // Element type of the static matrix
-        , size_t M    // Number of rows of the static matrix
-        , size_t N    // Number of columns of the static matrix
-        , bool SO >   // Storage order of the static matrix
-inline Creator< blaze::StaticMatrix<T,M,N,SO> >::Creator( const Creator<T>& elementCreator )
+template< typename T     // Element type of the static matrix
+        , size_t M       // Number of rows of the static matrix
+        , size_t N       // Number of columns of the static matrix
+        , bool SO        // Storage order of the static matrix
+        , typename CP >  // Creation policy
+inline Creator< blaze::StaticMatrix<T,M,N,SO>, CP >::Creator( const Creator<T,CP>& elementCreator )
    : ec_( elementCreator )  // Creator for the elements of the static matrix
 {}
 //*************************************************************************************************
@@ -136,11 +139,12 @@ inline Creator< blaze::StaticMatrix<T,M,N,SO> >::Creator( const Creator<T>& elem
 //
 // \return The randomly generated static matrix.
 */
-template< typename T  // Element type of the static matrix
-        , size_t M    // Number of rows of the static matrix
-        , size_t N    // Number of columns of the static matrix
-        , bool SO >   // Storage order of the static matrix
-inline const blaze::StaticMatrix<T,M,N,SO> Creator< blaze::StaticMatrix<T,M,N,SO> >::operator()() const
+template< typename T     // Element type of the static matrix
+        , size_t M       // Number of rows of the static matrix
+        , size_t N       // Number of columns of the static matrix
+        , bool SO        // Storage order of the static matrix
+        , typename CP >  // Creation policy
+inline const blaze::StaticMatrix<T,M,N,SO> Creator< blaze::StaticMatrix<T,M,N,SO>, CP >::operator()() const
 {
    blaze::StaticMatrix<T,M,N,SO> matrix;
 

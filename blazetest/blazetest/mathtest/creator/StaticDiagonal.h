@@ -60,21 +60,25 @@ namespace blazetest {
 // This specialization of the Creator class template is able to create random diagonal static
 // matrices.
 */
-template< typename T  // Element type of the static matrix
-        , size_t N    // Number of rows and columns of the static matrix
-        , bool SO >   // Storage order of the static matrix
-class Creator< blaze::DiagonalMatrix< blaze::StaticMatrix<T,N,N,SO> > >
+template< typename T     // Element type of the static matrix
+        , size_t N       // Number of rows and columns of the static matrix
+        , bool SO        // Storage order of the static matrix
+        , typename CP >  // Creation policy
+class Creator< blaze::DiagonalMatrix< blaze::StaticMatrix<T,N,N,SO> >, CP >
 {
  public:
    //**Type definitions****************************************************************************
    //! Type to be created by the Creator.
    typedef blaze::DiagonalMatrix< blaze::StaticMatrix<T,N,N,SO> >  Type;
+
+   //! Creation policy for the built-in elements.
+   typedef CP  Policy;
    //**********************************************************************************************
 
    //**Constructors********************************************************************************
    /*!\name Constructors */
    //@{
-   explicit inline Creator( const Creator<T>& elementCreator = Creator<T>() );
+   explicit inline Creator( const Creator<T,CP>& elementCreator = Creator<T,CP>() );
    // No explicitly declared copy constructor.
    //@}
    //**********************************************************************************************
@@ -95,7 +99,7 @@ class Creator< blaze::DiagonalMatrix< blaze::StaticMatrix<T,N,N,SO> > >
    //**Member variables****************************************************************************
    /*!\name Member variables */
    //@{
-   Creator<T> ec_;  //!< Creator for the elements of the diagonal static matrix.
+   Creator<T,CP> ec_;  //!< Creator for the elements of the diagonal static matrix.
    //@}
    //**********************************************************************************************
 };
@@ -115,10 +119,11 @@ class Creator< blaze::DiagonalMatrix< blaze::StaticMatrix<T,N,N,SO> > >
 //
 // \param elementCreator The creator for the elements of the diagonal static matrix.
 */
-template< typename T  // Element type of the static matrix
-        , size_t N    // Number of rows and columns of the static matrix
-        , bool SO >   // Storage order of the static matrix
-inline Creator< blaze::DiagonalMatrix< blaze::StaticMatrix<T,N,N,SO> > >::Creator( const Creator<T>& elementCreator )
+template< typename T     // Element type of the static matrix
+        , size_t N       // Number of rows and columns of the static matrix
+        , bool SO        // Storage order of the static matrix
+        , typename CP >  // Creation policy
+inline Creator< blaze::DiagonalMatrix< blaze::StaticMatrix<T,N,N,SO> >, CP >::Creator( const Creator<T,CP>& elementCreator )
    : ec_( elementCreator )  // Creator for the elements of the diagonal static matrix
 {}
 //*************************************************************************************************
@@ -137,11 +142,12 @@ inline Creator< blaze::DiagonalMatrix< blaze::StaticMatrix<T,N,N,SO> > >::Creato
 //
 // \return The randomly generated diagonal static matrix.
 */
-template< typename T  // Element type of the static matrix
-        , size_t N    // Number of rows and columns of the static matrix
-        , bool SO >   // Storage order of the static matrix
+template< typename T     // Element type of the static matrix
+        , size_t N       // Number of rows and columns of the static matrix
+        , bool SO        // Storage order of the static matrix
+        , typename CP >  // Creation policy
 inline const blaze::DiagonalMatrix< blaze::StaticMatrix<T,N,N,SO> >
-   Creator< blaze::DiagonalMatrix< blaze::StaticMatrix<T,N,N,SO> > >::operator()() const
+   Creator< blaze::DiagonalMatrix< blaze::StaticMatrix<T,N,N,SO> >, CP >::operator()() const
 {
    blaze::DiagonalMatrix< blaze::StaticMatrix<T,N,N,SO> > matrix;
 

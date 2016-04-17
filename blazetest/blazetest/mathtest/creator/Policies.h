@@ -1,7 +1,7 @@
 //=================================================================================================
 /*!
-//  \file blazetest/mathtest/creator/Default.h
-//  \brief Header file for the Creator class template
+//  \file blazetest/mathtest/creator/Policies.h
+//  \brief Header file for the element creation policies
 //
 //  Copyright (C) 2013 Klaus Iglberger - All Rights Reserved
 //
@@ -32,8 +32,8 @@
 */
 //=================================================================================================
 
-#ifndef _BLAZETEST_MATHTEST_CREATOR_DEFAULT_H_
-#define _BLAZETEST_MATHTEST_CREATOR_DEFAULT_H_
+#ifndef _BLAZETEST_MATHTEST_CREATOR_POLICIES_H_
+#define _BLAZETEST_MATHTEST_CREATOR_POLICIES_H_
 
 
 //*************************************************************************************************
@@ -45,88 +45,120 @@
 #include <blaze/util/constraints/Const.h>
 #include <blaze/util/constraints/Void.h>
 #include <blaze/util/constraints/Volatile.h>
-#include <blazetest/mathtest/creator/Policies.h>
+#include <blaze/util/Random.h>
+#include <blazetest/mathtest/RandomMaximum.h>
+#include <blazetest/mathtest/RandomMinimum.h>
 
 
 namespace blazetest {
 
 //=================================================================================================
 //
-//  CLASS DEFINITION
+//  DEFAULT POLICY
 //
 //=================================================================================================
 
 //*************************************************************************************************
-/*!\brief Default creator for random built-in data values.
+/*!\brief Default element creation policy for random built-in data values.
 //
-// The Creator class creates random values of the given data type \a T based on the given
-// creation policy \a P.
+// The Default policy creates random values of the specified data type \a T. In case \a T is a
+// floating point data type, a value in the range \f$ [0..1) \f$ is generated, in case \a T is
+// a signed integral data type, the value will be in the range \f$ [-10..10] \f$, and in case
+// \a T is an unsigned integral data type, a value in the range \f$ [0..10] \f$ is generated.
 */
-template< typename T               // Type to be created
-        , typename CP = Default >  // Creation policy
-class Creator
+struct Default
 {
- public:
-   //**Type definitions****************************************************************************
-   typedef T   Type;    //!< Type to be created by the Creator.
-   typedef CP  Policy;  //!< Creation policy for the built-in elements.
-   //**********************************************************************************************
-
-   //**Constructors********************************************************************************
-   // No explicitly declared constructor.
-   //**********************************************************************************************
-
-   //**Destructor**********************************************************************************
-   // No explicitly declared destructor.
-   //**********************************************************************************************
-
-   //**Operators***********************************************************************************
-   /*!\name Operators */
+   //**Utility functions***************************************************************************
+   /*!\name Utility functions */
    //@{
-   // No explicitly declared copy assignment operator.
-   inline T operator()() const;
+   template< typename T >
+   inline T create() const noexcept;
    //@}
-   //**********************************************************************************************
-
- private:
-   //**Member variables****************************************************************************
-   /*!\name Member variables */
-   //@{
-   CP policy_;  //!< The element creation policy.
-   //@}
-   //**********************************************************************************************
-
-   //**Compile time checks*************************************************************************
-   /*! \cond BLAZE_INTERNAL */
-   BLAZE_CONSTRAINT_MUST_BE_BUILTIN_TYPE    ( T );
-   BLAZE_CONSTRAINT_MUST_NOT_BE_CONST       ( T );
-   BLAZE_CONSTRAINT_MUST_NOT_BE_VOLATILE    ( T );
-   BLAZE_CONSTRAINT_MUST_NOT_BE_VOID        ( T );
-   BLAZE_CONSTRAINT_MUST_NOT_BE_BOOLEAN_TYPE( T );
-   /*! \endcond */
    //**********************************************************************************************
 };
 //*************************************************************************************************
 
 
+//*************************************************************************************************
+/*!\brief Returns a randomly created built-in value.
+//
+// \return The randomly generated built-in value.
+//
+// This operator returns a randomly generated built-in value. In case \a T is a floating point
+// data type, a value in the range \f$ [0..1) \f$ is generated, in case \a T is a signed integral
+// data type, the value will be in the range \f$ [-10..10] \f$, and in case \a T is an unsigned
+// integral data type, a value in the range \f$ [0..10] \f$ is generated.
+*/
+template< typename T >
+inline T Default::create() const noexcept
+{
+   BLAZE_CONSTRAINT_MUST_BE_BUILTIN_TYPE    ( T );
+   BLAZE_CONSTRAINT_MUST_NOT_BE_CONST       ( T );
+   BLAZE_CONSTRAINT_MUST_NOT_BE_VOLATILE    ( T );
+   BLAZE_CONSTRAINT_MUST_NOT_BE_VOID        ( T );
+   BLAZE_CONSTRAINT_MUST_NOT_BE_BOOLEAN_TYPE( T );
+
+   return blaze::rand<T>( T(randmin), T(randmax) );
+}
+//*************************************************************************************************
+
+
 
 
 //=================================================================================================
 //
-//  OPERATORS
+//  NOZEROS POLICY
 //
 //=================================================================================================
+
+//*************************************************************************************************
+/*!\brief Default element creation policy for random built-in data values.
+//
+// The Default policy creates random values of the specified data type \a T. In case \a T is a
+// floating point data type, a value in the range \f$ [0..1) \f$ is generated, in case \a T is
+// a signed integral data type, the value will be in the range \f$ [-10..10] \f$, and in case
+// \a T is an unsigned integral data type, a value in the range \f$ [0..10] \f$ is generated.
+*/
+struct NoZeros
+{
+   //**Utility functions***************************************************************************
+   /*!\name Utility functions */
+   //@{
+   template< typename T >
+   inline T create() const noexcept;
+   //@}
+   //**********************************************************************************************
+};
+//*************************************************************************************************
+
 
 //*************************************************************************************************
 /*!\brief Returns a randomly created built-in value.
 //
 // \return The randomly generated built-in value.
+//
+// This operator returns a randomly generated built-in value. In case \a T is a floating point
+// data type, a value in the range \f$ [0..1) \f$ is generated, in case \a T is a signed integral
+// data type, the value will be in the range \f$ [-10..10] \f$, and in case \a T is an unsigned
+// integral data type, a value in the range \f$ [0..10] \f$ is generated.
 */
-template< typename T     // Type to be created
-        , typename CP >  // Creation policy
-inline T Creator<T,CP>::operator()() const
+template< typename T >
+inline T NoZeros::create() const noexcept
 {
-   return policy_.template create<T>();
+   BLAZE_CONSTRAINT_MUST_BE_BUILTIN_TYPE    ( T );
+   BLAZE_CONSTRAINT_MUST_NOT_BE_CONST       ( T );
+   BLAZE_CONSTRAINT_MUST_NOT_BE_VOLATILE    ( T );
+   BLAZE_CONSTRAINT_MUST_NOT_BE_VOID        ( T );
+   BLAZE_CONSTRAINT_MUST_NOT_BE_BOOLEAN_TYPE( T );
+
+   T value;
+
+   do {
+      value = blaze::rand<T>( T(randmin), T(randmax) );
+   }
+   while( value == T(0) );
+
+   return value;
 }
 //*************************************************************************************************
 

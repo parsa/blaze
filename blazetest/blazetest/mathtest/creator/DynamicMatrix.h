@@ -59,20 +59,22 @@ namespace blazetest {
 // This specialization of the Creator class template is able to create random \f$ M \times N \f$
 // matrices.
 */
-template< typename T  // Element type of the dynamic matrix
-        , bool SO >   // Storage order of the dynamic matrix
-class Creator< blaze::DynamicMatrix<T,SO> >
+template< typename T     // Element type of the dynamic matrix
+        , bool SO        // Storage order of the dynamic matrix
+        , typename CP >  // Creation policy
+class Creator< blaze::DynamicMatrix<T,SO>, CP >
 {
  public:
    //**Type definitions****************************************************************************
-   typedef blaze::DynamicMatrix<T,SO>  Type;  //!< Type to be created by the Creator.
+   typedef blaze::DynamicMatrix<T,SO>  Type;    //!< Type to be created by the Creator.
+   typedef CP                          Policy;  //!< Creation policy for the built-in elements.
    //**********************************************************************************************
 
    //**Constructors********************************************************************************
    /*!\name Constructors */
    //@{
-   explicit inline Creator( const Creator<T>& elementCreator = Creator<T>() );
-   explicit inline Creator( size_t m, size_t n, const Creator<T>& elementCreator = Creator<T>() );
+   explicit inline Creator( const Creator<T,CP>& elementCreator = Creator<T,CP>() );
+   explicit inline Creator( size_t m, size_t n, const Creator<T,CP>& elementCreator = Creator<T,CP>() );
    // No explicitly declared copy constructor.
    //@}
    //**********************************************************************************************
@@ -93,9 +95,9 @@ class Creator< blaze::DynamicMatrix<T,SO> >
    //**Member variables****************************************************************************
    /*!\name Member variables */
    //@{
-   size_t m_;       //!< The number of rows of the dynamic matrix.
-   size_t n_;       //!< The number of columns of the dynamic matrix.
-   Creator<T> ec_;  //!< Creator for the elements of the dynamic matrix.
+   size_t m_;          //!< The number of rows of the dynamic matrix.
+   size_t n_;          //!< The number of columns of the dynamic matrix.
+   Creator<T,CP> ec_;  //!< Creator for the elements of the dynamic matrix.
    //@}
    //**********************************************************************************************
 };
@@ -115,9 +117,10 @@ class Creator< blaze::DynamicMatrix<T,SO> >
 //
 // \param elementCreator The creator for the elements of the dynamic matrix.
 */
-template< typename T  // Element type of the dynamic matrix
-        , bool SO >   // Storage order of the dynamic matrix
-inline Creator< blaze::DynamicMatrix<T,SO> >::Creator( const Creator<T>& elementCreator )
+template< typename T     // Element type of the dynamic matrix
+        , bool SO        // Storage order of the dynamic matrix
+        , typename CP >  // Creation policy
+inline Creator< blaze::DynamicMatrix<T,SO>, CP >::Creator( const Creator<T,CP>& elementCreator )
    : m_( 3UL )              // The number of rows of the dynamic matrix
    , n_( 3UL )              // The number of columns of the dynamic matrix
    , ec_( elementCreator )  // Creator for the elements of the dynamic matrix
@@ -132,9 +135,10 @@ inline Creator< blaze::DynamicMatrix<T,SO> >::Creator( const Creator<T>& element
 // \param n The number of columns of the dynamic matrix.
 // \param elementCreator The creator for the elements of the dynamic matrix.
 */
-template< typename T  // Element type of the dynamic matrix
-        , bool SO >   // Storage order of the dynamic matrix
-inline Creator< blaze::DynamicMatrix<T,SO> >::Creator( size_t m, size_t n, const Creator<T>& elementCreator )
+template< typename T     // Element type of the dynamic matrix
+        , bool SO        // Storage order of the dynamic matrix
+        , typename CP >  // Creation policy
+inline Creator< blaze::DynamicMatrix<T,SO>, CP >::Creator( size_t m, size_t n, const Creator<T,CP>& elementCreator )
    : m_( m )                // The number of rows of the dynamic matrix
    , n_( n )                // The number of columns of the dynamic matrix
    , ec_( elementCreator )  // Creator for the elements of the dynamic matrix
@@ -155,9 +159,10 @@ inline Creator< blaze::DynamicMatrix<T,SO> >::Creator( size_t m, size_t n, const
 //
 // \return The randomly generated dynamic matrix.
 */
-template< typename T  // Element type of the dynamic matrix
-        , bool SO >   // Storage order of the dynamic matrix
-inline const blaze::DynamicMatrix<T,SO> Creator< blaze::DynamicMatrix<T,SO> >::operator()() const
+template< typename T     // Element type of the dynamic matrix
+        , bool SO        // Storage order of the dynamic matrix
+        , typename CP >  // Creation policy
+inline const blaze::DynamicMatrix<T,SO> Creator< blaze::DynamicMatrix<T,SO>, CP >::operator()() const
 {
    blaze::DynamicMatrix<T,SO> matrix( m_, n_ );
 

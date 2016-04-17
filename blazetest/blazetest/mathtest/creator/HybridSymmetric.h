@@ -60,23 +60,27 @@ namespace blazetest {
 // This specialization of the Creator class template is able to create random symmetric hybrid
 // matrices.
 */
-template< typename T  // Element type of the hybrid matrix
-        , size_t M    // Number of rows of the hybrid matrix
-        , size_t N    // Number of columns of the hybrid matrix
-        , bool SO >   // Storage order of the hybrid matrix
-class Creator< blaze::SymmetricMatrix< blaze::HybridMatrix<T,M,N,SO> > >
+template< typename T     // Element type of the hybrid matrix
+        , size_t M       // Number of rows of the hybrid matrix
+        , size_t N       // Number of columns of the hybrid matrix
+        , bool SO        // Storage order of the hybrid matrix
+        , typename CP >  // Creation policy
+class Creator< blaze::SymmetricMatrix< blaze::HybridMatrix<T,M,N,SO> >, CP >
 {
  public:
    //**Type definitions****************************************************************************
    //! Type to be created by the Creator.
    typedef blaze::SymmetricMatrix< blaze::HybridMatrix<T,M,N,SO> >  Type;
+
+   //! Creation policy for the built-in elements.
+   typedef CP  Policy;
    //**********************************************************************************************
 
    //**Constructors********************************************************************************
    /*!\name Constructors */
    //@{
-   explicit inline Creator( const Creator<T>& elementCreator = Creator<T>() );
-   explicit inline Creator( size_t n, const Creator<T>& elementCreator = Creator<T>() );
+   explicit inline Creator( const Creator<T,CP>& elementCreator = Creator<T,CP>() );
+   explicit inline Creator( size_t n, const Creator<T,CP>& elementCreator = Creator<T,CP>() );
    // No explicitly declared copy constructor.
    //@}
    //**********************************************************************************************
@@ -97,8 +101,8 @@ class Creator< blaze::SymmetricMatrix< blaze::HybridMatrix<T,M,N,SO> > >
    //**Member variables****************************************************************************
    /*!\name Member variables */
    //@{
-   size_t n_;       //!< The number of rows and columns of the symmetric hybrid matrix.
-   Creator<T> ec_;  //!< Creator for the elements of the symmetric hybrid matrix.
+   size_t n_;          //!< The number of rows and columns of the symmetric hybrid matrix.
+   Creator<T,CP> ec_;  //!< Creator for the elements of the symmetric hybrid matrix.
    //@}
    //**********************************************************************************************
 };
@@ -118,11 +122,12 @@ class Creator< blaze::SymmetricMatrix< blaze::HybridMatrix<T,M,N,SO> > >
 //
 // \param elementCreator The creator for the elements of the symmetric hybrid matrix.
 */
-template< typename T  // Element type of the hybrid matrix
-        , size_t M    // Number of rows of the hybrid matrix
-        , size_t N    // Number of columns of the hybrid matrix
-        , bool SO >   // Storage order of the hybrid matrix
-inline Creator< blaze::SymmetricMatrix< blaze::HybridMatrix<T,M,N,SO> > >::Creator( const Creator<T>& elementCreator )
+template< typename T     // Element type of the hybrid matrix
+        , size_t M       // Number of rows of the hybrid matrix
+        , size_t N       // Number of columns of the hybrid matrix
+        , bool SO        // Storage order of the hybrid matrix
+        , typename CP >  // Creation policy
+inline Creator< blaze::SymmetricMatrix< blaze::HybridMatrix<T,M,N,SO> >, CP >::Creator( const Creator<T,CP>& elementCreator )
    : n_ ( N )               // The number of rows and columns of the symmetric hybrid matrix
    , ec_( elementCreator )  // Creator for the elements of the symmetric hybrid matrix
 {}
@@ -135,11 +140,12 @@ inline Creator< blaze::SymmetricMatrix< blaze::HybridMatrix<T,M,N,SO> > >::Creat
 // \param n The number of rows and columns of the symmetric hybrid matrix.
 // \param elementCreator The creator for the elements of the symmetric hybrid matrix.
 */
-template< typename T  // Element type of the hybrid matrix
-        , size_t M    // Number of rows of the hybrid matrix
-        , size_t N    // Number of columns of the hybrid matrix
-        , bool SO >   // Storage order of the hybrid matrix
-inline Creator< blaze::SymmetricMatrix< blaze::HybridMatrix<T,M,N,SO> > >::Creator( size_t n, const Creator<T>& elementCreator )
+template< typename T     // Element type of the hybrid matrix
+        , size_t M       // Number of rows of the hybrid matrix
+        , size_t N       // Number of columns of the hybrid matrix
+        , bool SO        // Storage order of the hybrid matrix
+        , typename CP >  // Creation policy
+inline Creator< blaze::SymmetricMatrix< blaze::HybridMatrix<T,M,N,SO> >, CP >::Creator( size_t n, const Creator<T,CP>& elementCreator )
    : n_( n )                // The number of columns of the symmetric hybrid matrix
    , ec_( elementCreator )  // Creator for the elements of the symmetric hybrid matrix
 {}
@@ -159,12 +165,13 @@ inline Creator< blaze::SymmetricMatrix< blaze::HybridMatrix<T,M,N,SO> > >::Creat
 //
 // \return The randomly generated symmetric hybrid matrix.
 */
-template< typename T  // Element type of the hybrid matrix
-        , size_t M    // Number of rows of the hybrid matrix
-        , size_t N    // Number of columns of the hybrid matrix
-        , bool SO >   // Storage order of the hybrid matrix
+template< typename T     // Element type of the hybrid matrix
+        , size_t M       // Number of rows of the hybrid matrix
+        , size_t N       // Number of columns of the hybrid matrix
+        , bool SO        // Storage order of the hybrid matrix
+        , typename CP >  // Creation policy
 inline const blaze::SymmetricMatrix< blaze::HybridMatrix<T,M,N,SO> >
-   Creator< blaze::SymmetricMatrix< blaze::HybridMatrix<T,M,N,SO> > >::operator()() const
+   Creator< blaze::SymmetricMatrix< blaze::HybridMatrix<T,M,N,SO> >, CP >::operator()() const
 {
    blaze::SymmetricMatrix< blaze::HybridMatrix<T,M,N,SO> > matrix( n_ );
 

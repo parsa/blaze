@@ -60,21 +60,25 @@ namespace blazetest {
 // This specialization of the Creator class template is able to create random upper dynamic
 // matrices.
 */
-template< typename T  // Element type of the dynamic matrix
-        , bool SO >   // Storage order of the dynamic matrix
-class Creator< blaze::UpperMatrix< blaze::DynamicMatrix<T,SO> > >
+template< typename T     // Element type of the dynamic matrix
+        , bool SO        // Storage order of the dynamic matrix
+        , typename CP >  // Creation policy
+class Creator< blaze::UpperMatrix< blaze::DynamicMatrix<T,SO> >, CP >
 {
  public:
    //**Type definitions****************************************************************************
    //! Type to be created by the Creator.
    typedef blaze::UpperMatrix< blaze::DynamicMatrix<T,SO> >  Type;
+
+   //! Creation policy for the built-in elements.
+   typedef CP  Policy;
    //**********************************************************************************************
 
    //**Constructors********************************************************************************
    /*!\name Constructors */
    //@{
-   explicit inline Creator( const Creator<T>& elementCreator = Creator<T>() );
-   explicit inline Creator( size_t n, const Creator<T>& elementCreator = Creator<T>() );
+   explicit inline Creator( const Creator<T,CP>& elementCreator = Creator<T,CP>() );
+   explicit inline Creator( size_t n, const Creator<T,CP>& elementCreator = Creator<T,CP>() );
    // No explicitly declared copy constructor.
    //@}
    //**********************************************************************************************
@@ -95,8 +99,8 @@ class Creator< blaze::UpperMatrix< blaze::DynamicMatrix<T,SO> > >
    //**Member variables****************************************************************************
    /*!\name Member variables */
    //@{
-   size_t n_;       //!< The number of rows and columns of the upper dynamic matrix.
-   Creator<T> ec_;  //!< Creator for the elements of the upper dynamic matrix.
+   size_t n_;          //!< The number of rows and columns of the upper dynamic matrix.
+   Creator<T,CP> ec_;  //!< Creator for the elements of the upper dynamic matrix.
    //@}
    //**********************************************************************************************
 };
@@ -116,9 +120,10 @@ class Creator< blaze::UpperMatrix< blaze::DynamicMatrix<T,SO> > >
 //
 // \param elementCreator The creator for the elements of the upper dynamic matrix.
 */
-template< typename T  // Element type of the dynamic matrix
-        , bool SO >   // Storage order of the dynamic matrix
-inline Creator< blaze::UpperMatrix< blaze::DynamicMatrix<T,SO> > >::Creator( const Creator<T>& elementCreator )
+template< typename T     // Element type of the dynamic matrix
+        , bool SO        // Storage order of the dynamic matrix
+        , typename CP >  // Creation policy
+inline Creator< blaze::UpperMatrix< blaze::DynamicMatrix<T,SO> >, CP >::Creator( const Creator<T,CP>& elementCreator )
    : n_( 3UL )              // The number of rows and columns of the upper dynamic matrix
    , ec_( elementCreator )  // Creator for the elements of the upper dynamic matrix
 {}
@@ -131,9 +136,10 @@ inline Creator< blaze::UpperMatrix< blaze::DynamicMatrix<T,SO> > >::Creator( con
 // \param n The number of rows and columns of the upper dynamic matrix.
 // \param elementCreator The creator for the elements of the upper dynamic matrix.
 */
-template< typename T  // Element type of the dynamic matrix
-        , bool SO >   // Storage order of the dynamic matrix
-inline Creator< blaze::UpperMatrix< blaze::DynamicMatrix<T,SO> > >::Creator( size_t n, const Creator<T>& elementCreator )
+template< typename T     // Element type of the dynamic matrix
+        , bool SO        // Storage order of the dynamic matrix
+        , typename CP >  // Creation policy
+inline Creator< blaze::UpperMatrix< blaze::DynamicMatrix<T,SO> >, CP >::Creator( size_t n, const Creator<T,CP>& elementCreator )
    : n_( n )                // The number of rows and columns of the upper dynamic matrix
    , ec_( elementCreator )  // Creator for the elements of the upper dynamic matrix
 {}
@@ -153,10 +159,11 @@ inline Creator< blaze::UpperMatrix< blaze::DynamicMatrix<T,SO> > >::Creator( siz
 //
 // \return The randomly generated upper dynamic matrix.
 */
-template< typename T  // Element type of the dynamic matrix
-        , bool SO >   // Storage order of the dynamic matrix
+template< typename T     // Element type of the dynamic matrix
+        , bool SO        // Storage order of the dynamic matrix
+        , typename CP >  // Creation policy
 inline const blaze::UpperMatrix< blaze::DynamicMatrix<T,SO> >
-   Creator< blaze::UpperMatrix< blaze::DynamicMatrix<T,SO> > >::operator()() const
+   Creator< blaze::UpperMatrix< blaze::DynamicMatrix<T,SO> >, CP >::operator()() const
 {
    blaze::UpperMatrix< blaze::DynamicMatrix<T,SO> > matrix( n_ );
 

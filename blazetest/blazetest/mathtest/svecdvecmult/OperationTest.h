@@ -1,7 +1,7 @@
 //=================================================================================================
 /*!
 //  \file blazetest/mathtest/svecdvecmult/OperationTest.h
-//  \brief Header file for the sparse vector/dense vector multiplicationoperation test
+//  \brief Header file for the sparse vector/dense vector multiplication operation test
 //
 //  Copyright (C) 2013 Klaus Iglberger - All Rights Reserved
 //
@@ -82,9 +82,9 @@ namespace svecdvecmult {
 //=================================================================================================
 
 //*************************************************************************************************
-/*!\brief Auxiliary class template for the sparse vector/dense vector multiplicationoperation test.
+/*!\brief Auxiliary class template for the sparse vector/dense vector multiplication operation test.
 //
-// This class template represents one particular vector multiplicationtest between two vectors of
+// This class template represents one particular vector multiplication test between two vectors of
 // a particular type. The two template arguments \a VT1 and \a VT2 represent the types of the
 // left-hand side and right-hand side vector, respectively.
 */
@@ -131,7 +131,8 @@ class OperationTest
    //**Constructors********************************************************************************
    /*!\name Constructors */
    //@{
-   explicit OperationTest( const Creator<VT1>& creator1, const Creator<VT2>& creator2 );
+   template< typename CP1, typename CP2 >
+   explicit OperationTest( const Creator<VT1,CP1>& creator1, const Creator<VT2,CP2>& creator2 );
    // No explicitly declared copy constructor.
    //@}
    //**********************************************************************************************
@@ -265,7 +266,7 @@ class OperationTest
 //=================================================================================================
 
 //*************************************************************************************************
-/*!\brief Constructor for the sparse vector/dense vector multiplicationoperation test.
+/*!\brief Constructor for the sparse vector/dense vector multiplication operation test.
 //
 // \param creator1 The creator for the left-hand side sparse vector of the vector multiplication.
 // \param creator2 The creator for the right-hand side dense vector of the vector multiplication.
@@ -273,7 +274,9 @@ class OperationTest
 */
 template< typename VT1    // Type of the left-hand side sparse vector
         , typename VT2 >  // Type of the right-hand side dense vector
-OperationTest<VT1,VT2>::OperationTest( const Creator<VT1>& creator1, const Creator<VT2>& creator2 )
+template< typename CP1    // Creation policy of the left-hand side sparse vector
+        , typename CP2 >  // Creation policy of the right-hand side dense vector
+OperationTest<VT1,VT2>::OperationTest( const Creator<VT1,CP1>& creator1, const Creator<VT2,CP2>& creator2 )
    : lhs_( creator1() )    // The left-hand side sparse vector
    , rhs_( creator2() )    // The right-hand side dense vector
    , dres_()               // The dense vector for the result of the vector multiplication
@@ -5067,10 +5070,12 @@ void OperationTest<VT1,VT2>::convertException( const std::exception& ex )
 // \return void
 */
 template< typename VT1    // Type of the left-hand side sparse vector
-        , typename VT2 >  // Type of the right-hand side dense vector
-void runTest( const Creator<VT1>& creator1, const Creator<VT2>& creator2 )
+        , typename CP1    // Creation policy of the left-hand side sparse vector
+        , typename VT2    // Type of the right-hand side dense vector
+        , typename CP2 >  // Creation policy of the right-hand side dense vector
+void runTest( const Creator<VT1,CP1>& creator1, const Creator<VT2,CP2>& creator2 )
 {
-   for( size_t rep=0; rep<repetitions; ++rep ) {
+   for( size_t rep=0UL; rep<repetitions; ++rep ) {
       OperationTest<VT1,VT2>( creator1, creator2 );
    }
 }
@@ -5087,7 +5092,7 @@ void runTest( const Creator<VT1>& creator1, const Creator<VT2>& creator2 )
 
 //*************************************************************************************************
 /*! \cond BLAZE_INTERNAL */
-/*!\brief Macro for the definition of a sparse vector/dense vector multiplicationtest case.
+/*!\brief Macro for the definition of a sparse vector/dense vector multiplication test case.
 */
 #define DEFINE_SVECDVECMULT_OPERATION_TEST( VT1, VT2 ) \
    extern template class blazetest::mathtest::svecdvecmult::OperationTest<VT1,VT2>
@@ -5097,7 +5102,7 @@ void runTest( const Creator<VT1>& creator1, const Creator<VT2>& creator2 )
 
 //*************************************************************************************************
 /*! \cond BLAZE_INTERNAL */
-/*!\brief Macro for the execution of a sparse vector/dense vector multiplicationtest case.
+/*!\brief Macro for the execution of a sparse vector/dense vector multiplication test case.
 */
 #define RUN_SVECDVECMULT_OPERATION_TEST( C1, C2 ) \
    blazetest::mathtest::svecdvecmult::runTest( C1, C2 )

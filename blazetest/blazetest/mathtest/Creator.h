@@ -75,6 +75,7 @@
 #include <blazetest/mathtest/creator/HybridUniUpper.h>
 #include <blazetest/mathtest/creator/HybridUpper.h>
 #include <blazetest/mathtest/creator/HybridVector.h>
+#include <blazetest/mathtest/creator/Policies.h>
 #include <blazetest/mathtest/creator/StaticDiagonal.h>
 #include <blazetest/mathtest/creator/StaticHermitian.h>
 #include <blazetest/mathtest/creator/StaticLower.h>

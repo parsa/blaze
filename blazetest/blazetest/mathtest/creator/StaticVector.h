@@ -58,20 +58,22 @@ namespace blazetest {
 //
 // This specialization of the Creator class template is able to create random static vectors.
 */
-template< typename T  // Element type of the static vector
-        , size_t N    // Number of elements of the static vector
-        , bool TF >   // Transpose flag of the static vector
-class Creator< blaze::StaticVector<T,N,TF> >
+template< typename T     // Element type of the static vector
+        , size_t N       // Number of elements of the static vector
+        , bool TF        // Transpose flag of the static vector
+        , typename CP >  // Creation policy
+class Creator< blaze::StaticVector<T,N,TF>, CP >
 {
  public:
    //**Type definitions****************************************************************************
-   typedef blaze::StaticVector<T,N,TF>  Type;  //!< Type to be created by the Creator.
+   typedef blaze::StaticVector<T,N,TF>  Type;    //!< Type to be created by the Creator.
+   typedef CP                           Policy;  //!< Creation policy for the built-in elements.
    //**********************************************************************************************
 
    //**Constructors********************************************************************************
    /*!\name Constructors */
    //@{
-   explicit inline Creator( const Creator<T>& elementCreator = Creator<T>() );
+   explicit inline Creator( const Creator<T,CP>& elementCreator = Creator<T,CP>() );
    // No explicitly declared copy constructor.
    //@}
    //**********************************************************************************************
@@ -92,7 +94,7 @@ class Creator< blaze::StaticVector<T,N,TF> >
    //**Member variables****************************************************************************
    /*!\name Member variables */
    //@{
-   Creator<T> ec_;  //!< Creator for the elements of the static vector.
+   Creator<T,CP> ec_;  //!< Creator for the elements of the static vector.
    //@}
    //**********************************************************************************************
 };
@@ -112,10 +114,11 @@ class Creator< blaze::StaticVector<T,N,TF> >
 //
 // \param elementCreator The creator for the elements of the static vector.
 */
-template< typename T  // Element type of the static vector
-        , size_t N    // Number of elements of the static vector
-        , bool TF >   // Transpose flag of the static vector
-inline Creator< blaze::StaticVector<T,N,TF> >::Creator( const Creator<T>& elementCreator )
+template< typename T     // Element type of the static vector
+        , size_t N       // Number of elements of the static vector
+        , bool TF        // Transpose flag of the static vector
+        , typename CP >  // Creation policy
+inline Creator<blaze::StaticVector<T,N,TF>,CP>::Creator( const Creator<T,CP>& elementCreator )
    : ec_( elementCreator )  // Creator for the elements of the static vector
 {}
 //*************************************************************************************************
@@ -134,13 +137,14 @@ inline Creator< blaze::StaticVector<T,N,TF> >::Creator( const Creator<T>& elemen
 //
 // \return The randomly generated static vector.
 */
-template< typename T  // Element type of the static vector
-        , size_t N    // Number of elements of the static vector
-        , bool TF >   // Transpose flag of the static vector
-inline const blaze::StaticVector<T,N,TF> Creator< blaze::StaticVector<T,N,TF> >::operator()() const
+template< typename T     // Element type of the static vector
+        , size_t N       // Number of elements of the static vector
+        , bool TF        // Transpose flag of the static vector
+        , typename CP >  // Creation policy
+inline const blaze::StaticVector<T,N,TF> Creator<blaze::StaticVector<T,N,TF>,CP>::operator()() const
 {
    blaze::StaticVector<T,N,TF> vector;
-   for( size_t i=0; i<N; ++i )
+   for( size_t i=0UL; i<N; ++i )
       vector[i] = ec_();
    return vector;
 }

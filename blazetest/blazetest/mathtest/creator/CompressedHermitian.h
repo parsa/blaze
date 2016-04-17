@@ -62,22 +62,26 @@ namespace blazetest {
 // This specialization of the Creator class template is able to create random Hermitian compressed
 // matrices.
 */
-template< typename T  // Element type of the compressed matrix
-        , bool SO >   // Storage order of the compressed matrix
-class Creator< blaze::HermitianMatrix< blaze::CompressedMatrix<T,SO> > >
+template< typename T     // Element type of the compressed matrix
+        , bool SO        // Storage order of the compressed matrix
+        , typename CP >  // Creation policy
+class Creator< blaze::HermitianMatrix< blaze::CompressedMatrix<T,SO> >, CP >
 {
  public:
    //**Type definitions****************************************************************************
    //! Type to be created by the Creator.
    typedef blaze::HermitianMatrix< blaze::CompressedMatrix<T,SO> >  Type;
+
+   //! Creation policy for the built-in elements.
+   typedef CP  Policy;
    //**********************************************************************************************
 
    //**Constructors********************************************************************************
    /*!\name Constructors */
    //@{
-   explicit inline Creator( const Creator<T>& elementCreator = Creator<T>() );
+   explicit inline Creator( const Creator<T,CP>& elementCreator = Creator<T,CP>() );
    explicit inline Creator( size_t n, size_t nonzeros,
-                            const Creator<T>& elementCreator = Creator<T>() );
+                            const Creator<T,CP>& elementCreator = Creator<T,CP>() );
    //@}
    //**********************************************************************************************
 
@@ -97,9 +101,9 @@ class Creator< blaze::HermitianMatrix< blaze::CompressedMatrix<T,SO> > >
    //**Member variables****************************************************************************
    /*!\name Member variables */
    //@{
-   size_t n_;         //!< The number of rows and columns of the Hermitian compressed matrix.
-   size_t nonzeros_;  //!< The number of non-zero elements in the Hermitian compressed matrix.
-   Creator<T> ec_;    //!< Creator for the elements of the Hermitian compressed matrix.
+   size_t n_;          //!< The number of rows and columns of the Hermitian compressed matrix.
+   size_t nonzeros_;   //!< The number of non-zero elements in the Hermitian compressed matrix.
+   Creator<T,CP> ec_;  //!< Creator for the elements of the Hermitian compressed matrix.
    //@}
    //**********************************************************************************************
 };
@@ -120,9 +124,10 @@ class Creator< blaze::HermitianMatrix< blaze::CompressedMatrix<T,SO> > >
 // \param elementCreator The creator for the elements of the Hermitian compressed matrix.
 // \exception std::invalid_argument Invalid number of non-zero elements.
 */
-template< typename T  // Element type of the compressed matrix
-        , bool SO >   // Storage order of the compressed matrix
-inline Creator< blaze::HermitianMatrix< blaze::CompressedMatrix<T,SO> > >::Creator( const Creator<T>& elementCreator )
+template< typename T     // Element type of the compressed matrix
+        , bool SO        // Storage order of the compressed matrix
+        , typename CP >  // Creation policy
+inline Creator< blaze::HermitianMatrix< blaze::CompressedMatrix<T,SO> >, CP >::Creator( const Creator<T,CP>& elementCreator )
    : n_( 3UL )              // The number of rows and columns of the Hermitian compressed matrix
    , nonzeros_( 3UL )       // The total number of non-zero elements in the Hermitian compressed matrix
    , ec_( elementCreator )  // Creator for the elements of the Hermitian compressed matrix
@@ -138,10 +143,11 @@ inline Creator< blaze::HermitianMatrix< blaze::CompressedMatrix<T,SO> > >::Creat
 // \param elementCreator The creator for the elements of the compressed matrix.
 // \exception std::invalid_argument Invalid number of non-zero elements.
 */
-template< typename T  // Element type of the compressed matrix
-        , bool SO >   // Storage order of the compressed matrix
-inline Creator< blaze::HermitianMatrix< blaze::CompressedMatrix<T,SO> > >::Creator( size_t n, size_t nonzeros,
-                                                                                    const Creator<T>& elementCreator )
+template< typename T     // Element type of the compressed matrix
+        , bool SO        // Storage order of the compressed matrix
+        , typename CP >  // Creation policy
+inline Creator< blaze::HermitianMatrix< blaze::CompressedMatrix<T,SO> >, CP >::Creator( size_t n, size_t nonzeros,
+                                                                                        const Creator<T,CP>& elementCreator )
    : n_( n )                // The number of rows and columns of the Hermitian compressed matrix
    , nonzeros_( nonzeros )  // The total number of non-zero elements in the Hermitian compressed matrix
    , ec_( elementCreator )  // Creator for the elements of the Hermitian compressed matrix
@@ -165,14 +171,15 @@ inline Creator< blaze::HermitianMatrix< blaze::CompressedMatrix<T,SO> > >::Creat
 //
 // \return The randomly generated Hermitian compressed matrix.
 */
-template< typename T  // Element type of the compressed matrix
-        , bool SO >   // Storage order of the compressed matrix
+template< typename T     // Element type of the compressed matrix
+        , bool SO        // Storage order of the compressed matrix
+        , typename CP >  // Creation policy
 inline const blaze::HermitianMatrix< blaze::CompressedMatrix<T,SO> >
-   Creator< blaze::HermitianMatrix< blaze::CompressedMatrix<T,SO> > >::operator()() const
+   Creator< blaze::HermitianMatrix< blaze::CompressedMatrix<T,SO> >, CP >::operator()() const
 {
    blaze::HermitianMatrix< blaze::CompressedMatrix<T,SO> > matrix( n_, nonzeros_ );
    while( matrix.nonZeros() < nonzeros_ )
-      matrix( blaze::rand<size_t>(0,n_-1), blaze::rand<size_t>(0,n_-1) ) = ec_();
+      matrix( blaze::rand<size_t>(0UL,n_-1UL), blaze::rand<size_t>(0UL,n_-1UL) ) = ec_();
    return matrix;
 }
 //*************************************************************************************************
