@@ -74,6 +74,7 @@ GeneralTest::GeneralTest()
    testAddAssign();
    testSubAssign();
    testMultAssign();
+   testDivAssign();
    testScaling();
    testSubscript();
    testIterator();
@@ -2229,6 +2230,353 @@ void GeneralTest::testMultAssign()
                                      "( -4  0  0  0 )\n"
                                      "(  0  4  5 -6 )\n"
                                      "(  7 -8  9 10 )\n";
+         throw std::runtime_error( oss.str() );
+      }
+   }
+}
+//*************************************************************************************************
+
+
+//*************************************************************************************************
+/*!\brief Test of the DenseRow division assignment operators.
+//
+// \return void
+// \exception std::runtime_error Error detected.
+//
+// This function performs a test of the division assignment operators of the DenseRow class
+// template. In case an error is detected, a \a std::runtime_error exception is thrown.
+*/
+void GeneralTest::testDivAssign()
+{
+   //=====================================================================================
+   // Row-major DenseRow division assignment
+   //=====================================================================================
+
+   {
+      test_ = "Row-major DenseRow division assignment";
+
+      initialize();
+
+      RT row2 = row( mat_, 2UL );
+      row2 /= row( mat_, 4UL );
+
+      checkSize    ( row2, 4UL );
+      checkCapacity( row2, 4UL );
+      checkNonZeros( row2, 0UL );
+      checkRows    ( mat_, 5UL );
+      checkColumns ( mat_, 4UL );
+      checkNonZeros( mat_, 8UL );
+
+      if( row2[0] != 0 || row2[1] != 0 || row2[2] != 0 || row2[3] != 0 ) {
+         std::ostringstream oss;
+         oss << " Test: " << test_ << "\n"
+             << " Error: Division assignment failed\n"
+             << " Details:\n"
+             << "   Result:\n" << row2 << "\n"
+             << "   Expected result:\n( 0 0 0 0 )\n";
+         throw std::runtime_error( oss.str() );
+      }
+
+      if( mat_(0,0) != 0 || mat_(0,1) !=  0 || mat_(0,2) != 0 || mat_(0,3) !=  0 ||
+          mat_(1,0) != 0 || mat_(1,1) !=  1 || mat_(1,2) != 0 || mat_(1,3) !=  0 ||
+          mat_(2,0) != 0 || mat_(2,1) !=  0 || mat_(2,2) != 0 || mat_(2,3) !=  0 ||
+          mat_(3,0) != 0 || mat_(3,1) !=  4 || mat_(3,2) != 5 || mat_(3,3) != -6 ||
+          mat_(4,0) != 7 || mat_(4,1) != -8 || mat_(4,2) != 9 || mat_(4,3) != 10 ) {
+         std::ostringstream oss;
+         oss << " Test: " << test_ << "\n"
+             << " Error: Division assignment failed\n"
+             << " Details:\n"
+             << "   Result:\n" << mat_ << "\n"
+             << "   Expected result:\n(  0  0  0  0 )\n"
+                                     "(  0  1  0  0 )\n"
+                                     "(  0  0  0  0 )\n"
+                                     "(  0  4  5 -6 )\n"
+                                     "(  7 -8  9 10 )\n";
+         throw std::runtime_error( oss.str() );
+      }
+   }
+
+
+   //=====================================================================================
+   // Row-major dense vector division assignment
+   //=====================================================================================
+
+   {
+      test_ = "Row-major dense vector division assignment (aligned/padded)";
+
+      using blaze::aligned;
+      using blaze::padded;
+      using blaze::rowVector;
+
+      initialize();
+
+      RT row2 = row( mat_, 2UL );
+
+      typedef blaze::CustomVector<int,aligned,padded,rowVector>  AlignedPadded;
+      AlignedPadded vec( blaze::allocate<int>( 16UL ), 4UL, 16UL, blaze::Deallocate() );
+      vec[0] = -1;
+      vec[1] =  2;
+      vec[2] =  3;
+      vec[3] =  4;
+
+      row2 /= vec;
+
+      checkSize    ( row2,  4UL );
+      checkCapacity( row2,  4UL );
+      checkNonZeros( row2,  2UL );
+      checkRows    ( mat_,  5UL );
+      checkColumns ( mat_,  4UL );
+      checkNonZeros( mat_, 10UL );
+
+      if( row2[0] != 2 || row2[1] != 0 || row2[2] != -1 || row2[3] != 0 ) {
+         std::ostringstream oss;
+         oss << " Test: " << test_ << "\n"
+             << " Error: Division assignment failed\n"
+             << " Details:\n"
+             << "   Result:\n" << row2 << "\n"
+             << "   Expected result:\n( 2 0 -1 0 )\n";
+         throw std::runtime_error( oss.str() );
+      }
+
+      if( mat_(0,0) != 0 || mat_(0,1) !=  0 || mat_(0,2) !=  0 || mat_(0,3) !=  0 ||
+          mat_(1,0) != 0 || mat_(1,1) !=  1 || mat_(1,2) !=  0 || mat_(1,3) !=  0 ||
+          mat_(2,0) != 2 || mat_(2,1) !=  0 || mat_(2,2) != -1 || mat_(2,3) !=  0 ||
+          mat_(3,0) != 0 || mat_(3,1) !=  4 || mat_(3,2) !=  5 || mat_(3,3) != -6 ||
+          mat_(4,0) != 7 || mat_(4,1) != -8 || mat_(4,2) !=  9 || mat_(4,3) != 10 ) {
+         std::ostringstream oss;
+         oss << " Test: " << test_ << "\n"
+             << " Error: Division assignment failed\n"
+             << " Details:\n"
+             << "   Result:\n" << mat_ << "\n"
+             << "   Expected result:\n( 0  0  0  0 )\n"
+                                     "( 0  1  0  0 )\n"
+                                     "( 2  0 -1  0 )\n"
+                                     "( 0  4  5 -6 )\n"
+                                     "( 7 -8  9 10 )\n";
+         throw std::runtime_error( oss.str() );
+      }
+   }
+
+   {
+      test_ = "Row-major dense vector division assignment (unaligned/unpadded)";
+
+      using blaze::unaligned;
+      using blaze::unpadded;
+      using blaze::rowVector;
+
+      initialize();
+
+      RT row2 = row( mat_, 2UL );
+
+      typedef blaze::CustomVector<int,unaligned,unpadded,rowVector>  UnalignedUnpadded;
+      std::unique_ptr<int[]> array( new int[5] );
+      UnalignedUnpadded vec( array.get()+1UL, 4UL );
+      vec[0] = -1;
+      vec[1] =  2;
+      vec[2] =  3;
+      vec[3] =  4;
+
+      row2 /= vec;
+
+      checkSize    ( row2,  4UL );
+      checkCapacity( row2,  4UL );
+      checkNonZeros( row2,  2UL );
+      checkRows    ( mat_,  5UL );
+      checkColumns ( mat_,  4UL );
+      checkNonZeros( mat_, 10UL );
+
+      if( row2[0] != 2 || row2[1] != 0 || row2[2] != -1 || row2[3] != 0 ) {
+         std::ostringstream oss;
+         oss << " Test: " << test_ << "\n"
+             << " Error: Division assignment failed\n"
+             << " Details:\n"
+             << "   Result:\n" << row2 << "\n"
+             << "   Expected result:\n( 2 0 -1 0 )\n";
+         throw std::runtime_error( oss.str() );
+      }
+
+      if( mat_(0,0) != 0 || mat_(0,1) !=  0 || mat_(0,2) !=  0 || mat_(0,3) !=  0 ||
+          mat_(1,0) != 0 || mat_(1,1) !=  1 || mat_(1,2) !=  0 || mat_(1,3) !=  0 ||
+          mat_(2,0) != 2 || mat_(2,1) !=  0 || mat_(2,2) != -1 || mat_(2,3) !=  0 ||
+          mat_(3,0) != 0 || mat_(3,1) !=  4 || mat_(3,2) !=  5 || mat_(3,3) != -6 ||
+          mat_(4,0) != 7 || mat_(4,1) != -8 || mat_(4,2) !=  9 || mat_(4,3) != 10 ) {
+         std::ostringstream oss;
+         oss << " Test: " << test_ << "\n"
+             << " Error: Division assignment failed\n"
+             << " Details:\n"
+             << "   Result:\n" << mat_ << "\n"
+             << "   Expected result:\n( 0  0  0  0 )\n"
+                                     "( 0  1  0  0 )\n"
+                                     "( 2  0 -1  0 )\n"
+                                     "( 0  4  5 -6 )\n"
+                                     "( 7 -8  9 10 )\n";
+         throw std::runtime_error( oss.str() );
+      }
+   }
+
+
+   //=====================================================================================
+   // Column-major DenseRow division assignment
+   //=====================================================================================
+
+   {
+      test_ = "Column-major DenseRow division assignment";
+
+      initialize();
+
+      ORT row2 = row( tmat_, 2UL );
+      row2 /= row( tmat_, 4UL );
+
+      checkSize    ( row2 , 4UL );
+      checkCapacity( row2 , 4UL );
+      checkNonZeros( row2 , 0UL );
+      checkRows    ( tmat_, 5UL );
+      checkColumns ( tmat_, 4UL );
+      checkNonZeros( tmat_, 8UL );
+
+      if( row2[0] != 0 || row2[1] != 0 || row2[2] != 0 || row2[3] != 0 ) {
+         std::ostringstream oss;
+         oss << " Test: " << test_ << "\n"
+             << " Error: Division assignment failed\n"
+             << " Details:\n"
+             << "   Result:\n" << row2 << "\n"
+             << "   Expected result:\n( 0 0 0 0 )\n";
+         throw std::runtime_error( oss.str() );
+      }
+
+      if( tmat_(0,0) != 0 || tmat_(0,1) !=  0 || tmat_(0,2) != 0 || tmat_(0,3) !=  0 ||
+          tmat_(1,0) != 0 || tmat_(1,1) !=  1 || tmat_(1,2) != 0 || tmat_(1,3) !=  0 ||
+          tmat_(2,0) != 0 || tmat_(2,1) !=  0 || tmat_(2,2) != 0 || tmat_(2,3) !=  0 ||
+          tmat_(3,0) != 0 || tmat_(3,1) !=  4 || tmat_(3,2) != 5 || tmat_(3,3) != -6 ||
+          tmat_(4,0) != 7 || tmat_(4,1) != -8 || tmat_(4,2) != 9 || tmat_(4,3) != 10 ) {
+         std::ostringstream oss;
+         oss << " Test: " << test_ << "\n"
+             << " Error: Division assignment failed\n"
+             << " Details:\n"
+             << "   Result:\n" << tmat_ << "\n"
+             << "   Expected result:\n(  0  0  0  0 )\n"
+                                     "(  0  1  0  0 )\n"
+                                     "(  0  0  0  0 )\n"
+                                     "(  0  4  5 -6 )\n"
+                                     "(  7 -8  9 10 )\n";
+         throw std::runtime_error( oss.str() );
+      }
+   }
+
+
+   //=====================================================================================
+   // Column-major dense vector division assignment
+   //=====================================================================================
+
+   {
+      test_ = "Column-major dense vector division assignment (aligned/padded)";
+
+      using blaze::aligned;
+      using blaze::padded;
+      using blaze::rowVector;
+
+      initialize();
+
+      ORT row2 = row( tmat_, 2UL );
+
+      typedef blaze::CustomVector<int,aligned,padded,rowVector>  AlignedPadded;
+      AlignedPadded vec( blaze::allocate<int>( 16UL ), 4UL, 16UL, blaze::Deallocate() );
+      vec[0] = -1;
+      vec[1] =  2;
+      vec[2] =  3;
+      vec[3] =  4;
+
+      row2 /= vec;
+
+      checkSize    ( row2 ,  4UL );
+      checkCapacity( row2 ,  4UL );
+      checkNonZeros( row2 ,  2UL );
+      checkRows    ( tmat_,  5UL );
+      checkColumns ( tmat_,  4UL );
+      checkNonZeros( tmat_, 10UL );
+
+      if( row2[0] != 2 || row2[1] != 0 || row2[2] != -1 || row2[3] != 0 ) {
+         std::ostringstream oss;
+         oss << " Test: " << test_ << "\n"
+             << " Error: Division assignment failed\n"
+             << " Details:\n"
+             << "   Result:\n" << row2 << "\n"
+             << "   Expected result:\n( 2 0 -1 0 )\n";
+         throw std::runtime_error( oss.str() );
+      }
+
+      if( tmat_(0,0) != 0 || tmat_(0,1) !=  0 || tmat_(0,2) !=  0 || tmat_(0,3) !=  0 ||
+          tmat_(1,0) != 0 || tmat_(1,1) !=  1 || tmat_(1,2) !=  0 || tmat_(1,3) !=  0 ||
+          tmat_(2,0) != 2 || tmat_(2,1) !=  0 || tmat_(2,2) != -1 || tmat_(2,3) !=  0 ||
+          tmat_(3,0) != 0 || tmat_(3,1) !=  4 || tmat_(3,2) !=  5 || tmat_(3,3) != -6 ||
+          tmat_(4,0) != 7 || tmat_(4,1) != -8 || tmat_(4,2) !=  9 || tmat_(4,3) != 10 ) {
+         std::ostringstream oss;
+         oss << " Test: " << test_ << "\n"
+             << " Error: Division assignment failed\n"
+             << " Details:\n"
+             << "   Result:\n" << tmat_ << "\n"
+             << "   Expected result:\n( 0  0  0  0 )\n"
+                                     "( 0  1  0  0 )\n"
+                                     "( 2  0 -1  0 )\n"
+                                     "( 0  4  5 -6 )\n"
+                                     "( 7 -8  9 10 )\n";
+         throw std::runtime_error( oss.str() );
+      }
+   }
+
+   {
+      test_ = "Column-major dense vector division assignment (unaligned/unpadded)";
+
+      using blaze::unaligned;
+      using blaze::unpadded;
+      using blaze::rowVector;
+
+      initialize();
+
+      ORT row2 = row( tmat_, 2UL );
+
+      typedef blaze::CustomVector<int,unaligned,unpadded,rowVector>  UnalignedUnpadded;
+      std::unique_ptr<int[]> array( new int[5] );
+      UnalignedUnpadded vec( array.get()+1UL, 4UL );
+      vec[0] = -1;
+      vec[1] =  2;
+      vec[2] =  3;
+      vec[3] =  4;
+
+      row2 /= vec;
+
+      checkSize    ( row2 ,  4UL );
+      checkCapacity( row2 ,  4UL );
+      checkNonZeros( row2 ,  2UL );
+      checkRows    ( tmat_,  5UL );
+      checkColumns ( tmat_,  4UL );
+      checkNonZeros( tmat_, 10UL );
+
+      if( row2[0] != 2 || row2[1] != 0 || row2[2] != -1 || row2[3] != 0 ) {
+         std::ostringstream oss;
+         oss << " Test: " << test_ << "\n"
+             << " Error: Division assignment failed\n"
+             << " Details:\n"
+             << "   Result:\n" << row2 << "\n"
+             << "   Expected result:\n( 2 0 -1 0 )\n";
+         throw std::runtime_error( oss.str() );
+      }
+
+      if( tmat_(0,0) != 0 || tmat_(0,1) !=  0 || tmat_(0,2) !=  0 || tmat_(0,3) !=  0 ||
+          tmat_(1,0) != 0 || tmat_(1,1) !=  1 || tmat_(1,2) !=  0 || tmat_(1,3) !=  0 ||
+          tmat_(2,0) != 2 || tmat_(2,1) !=  0 || tmat_(2,2) != -1 || tmat_(2,3) !=  0 ||
+          tmat_(3,0) != 0 || tmat_(3,1) !=  4 || tmat_(3,2) !=  5 || tmat_(3,3) != -6 ||
+          tmat_(4,0) != 7 || tmat_(4,1) != -8 || tmat_(4,2) !=  9 || tmat_(4,3) != 10 ) {
+         std::ostringstream oss;
+         oss << " Test: " << test_ << "\n"
+             << " Error: Division assignment failed\n"
+             << " Details:\n"
+             << "   Result:\n" << tmat_ << "\n"
+             << "   Expected result:\n( 0  0  0  0 )\n"
+                                     "( 0  1  0  0 )\n"
+                                     "( 2  0 -1  0 )\n"
+                                     "( 0  4  5 -6 )\n"
+                                     "( 7 -8  9 10 )\n";
          throw std::runtime_error( oss.str() );
       }
    }
