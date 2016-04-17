@@ -82,6 +82,7 @@
 #include <blaze/math/traits/DVecCTransExprTrait.h>
 #include <blaze/math/traits/DVecDVecAddExprTrait.h>
 #include <blaze/math/traits/DVecDVecCrossExprTrait.h>
+#include <blaze/math/traits/DVecDVecDivExprTrait.h>
 #include <blaze/math/traits/DVecDVecMultExprTrait.h>
 #include <blaze/math/traits/DVecDVecSubExprTrait.h>
 #include <blaze/math/traits/DVecEvalExprTrait.h>
