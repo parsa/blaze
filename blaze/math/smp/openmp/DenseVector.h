@@ -944,6 +944,173 @@ inline EnableIf_< And< IsDenseVector<VT1>, IsSMPAssignable<VT1>, IsSMPAssignable
 
 //=================================================================================================
 //
+//  DIVISION ASSIGNMENT
+//
+//=================================================================================================
+
+//*************************************************************************************************
+/*! \cond BLAZE_INTERNAL */
+/*!\brief Backend of the OpenMP-based SMP division assignment of a dense vector to a dense vector.
+// \ingroup smp
+//
+// \param lhs The target left-hand side dense vector.
+// \param rhs The right-hand side dense vector divisor.
+// \return void
+//
+// This function is the backend implementation of the OpenMP-based SMP division assignment of
+// a dense vector to a dense vector.\n
+// This function must \b NOT be called explicitly! It is used internally for the performance
+// optimized evaluation of expression templates. Calling this function explicitly might result
+// in erroneous results and/or in compilation errors. Instead of using this function use the
+// assignment operator.
+*/
+template< typename VT1  // Type of the left-hand side dense vector
+        , bool TF1      // Transpose flag of the left-hand side dense vector
+        , typename VT2  // Type of the right-hand side dense vector
+        , bool TF2 >    // Transpose flag of the right-hand side dense vector
+void smpDivAssign_backend( DenseVector<VT1,TF1>& lhs, const DenseVector<VT2,TF2>& rhs )
+{
+   BLAZE_FUNCTION_TRACE;
+
+   BLAZE_INTERNAL_ASSERT( isParallelSectionActive(), "Invalid call outside a parallel section" );
+
+   typedef ElementType_<VT1>                   ET1;
+   typedef ElementType_<VT2>                   ET2;
+   typedef SubvectorExprTrait_<VT1,aligned>    AlignedTarget;
+   typedef SubvectorExprTrait_<VT1,unaligned>  UnalignedTarget;
+
+   enum : size_t { SIMDSIZE = SIMDTrait< ElementType_<VT1> >::size };
+
+   const bool simdEnabled( VT1::simdEnabled && VT2::simdEnabled && IsSame<ET1,ET2>::value );
+   const bool lhsAligned ( (~lhs).isAligned() );
+   const bool rhsAligned ( (~rhs).isAligned() );
+
+   const int    threads      ( omp_get_num_threads() );
+   const size_t addon        ( ( ( (~lhs).size() % threads ) != 0UL )? 1UL : 0UL );
+   const size_t equalShare   ( (~lhs).size() / threads + addon );
+   const size_t rest         ( equalShare & ( SIMDSIZE - 1UL ) );
+   const size_t sizePerThread( ( simdEnabled && rest )?( equalShare - rest + SIMDSIZE ):( equalShare ) );
+
+#pragma omp for schedule(dynamic,1) nowait
+   for( int i=0UL; i<threads; ++i )
+   {
+      const size_t index( i*sizePerThread );
+
+      if( index >= (~lhs).size() )
+         continue;
+
+      const size_t size( min( sizePerThread, (~lhs).size() - index ) );
+
+      if( simdEnabled && lhsAligned && rhsAligned ) {
+         AlignedTarget target( subvector<aligned>( ~lhs, index, size ) );
+         divAssign( target, subvector<aligned>( ~rhs, index, size ) );
+      }
+      else if( simdEnabled && lhsAligned ) {
+         AlignedTarget target( subvector<aligned>( ~lhs, index, size ) );
+         divAssign( target, subvector<unaligned>( ~rhs, index, size ) );
+      }
+      else if( simdEnabled && rhsAligned ) {
+         UnalignedTarget target( subvector<unaligned>( ~lhs, index, size ) );
+         divAssign( target, subvector<aligned>( ~rhs, index, size ) );
+      }
+      else {
+         UnalignedTarget target( subvector<unaligned>( ~lhs, index, size ) );
+         divAssign( target, subvector<unaligned>( ~rhs, index, size ) );
+      }
+   }
+}
+/*! \endcond */
+//*************************************************************************************************
+
+
+//*************************************************************************************************
+/*! \cond BLAZE_INTERNAL */
+/*!\brief Default implementation of the OpenMP-based SMP division assignment to a dense vector.
+// \ingroup smp
+//
+// \param lhs The target left-hand side dense vector.
+// \param rhs The right-hand side vector divisor.
+// \return void
+//
+// This function implements the default OpenMP-based SMP division assignment to a dense vector.
+// Due to the explicit application of the SFINAE principle, this function can only be selected
+// by the compiler in case both operands are SMP-assignable and the element types of both
+// operands are not SMP-assignable.\n
+// This function must \b NOT be called explicitly! It is used internally for the performance
+// optimized evaluation of expression templates. Calling this function explicitly might result
+// in erroneous results and/or in compilation errors. Instead of using this function use the
+// assignment operator.
+*/
+template< typename VT1  // Type of the left-hand side dense vector
+        , bool TF1      // Transpose flag of the left-hand side dense vector
+        , typename VT2  // Type of the right-hand side vector
+        , bool TF2 >    // Transpose flag of the right-hand side vector
+inline EnableIf_< And< IsDenseVector<VT1>
+                     , Or< Not< IsSMPAssignable<VT1> >
+                         , Not< IsSMPAssignable<VT2> > > > >
+   smpDivAssign( Vector<VT1,TF1>& lhs, const Vector<VT2,TF2>& rhs )
+{
+   BLAZE_FUNCTION_TRACE;
+
+   BLAZE_INTERNAL_ASSERT( (~lhs).size() == (~rhs).size(), "Invalid vector sizes" );
+
+   divAssign( ~lhs, ~rhs );
+}
+/*! \endcond */
+//*************************************************************************************************
+
+
+//*************************************************************************************************
+/*! \cond BLAZE_INTERNAL */
+/*!\brief Implementation of the OpenMP-based SMP division assignment to a dense vector.
+// \ingroup smp
+//
+// \param lhs The target left-hand side dense vector.
+// \param rhs The right-hand side dense vector divisor.
+// \return void
+//
+// This function implements the OpenMP-based SMP division assignment to a dense vector. Due to
+// the explicit application of the SFINAE principle, this function can only be selected by the
+// compiler in case both operands are SMP-assignable and the element types of both operands
+// are not SMP-assignable.\n
+// This function must \b NOT be called explicitly! It is used internally for the performance
+// optimized evaluation of expression templates. Calling this function explicitly might result
+// in erroneous results and/or in compilation errors. Instead of using this function use the
+// assignment operator.
+*/
+template< typename VT1  // Type of the left-hand side dense vector
+        , bool TF1      // Transpose flag of the left-hand side dense vector
+        , typename VT2  // Type of the right-hand side vector
+        , bool TF2 >    // Transpose flag of the right-hand side vector
+inline EnableIf_< And< IsDenseVector<VT1>, IsSMPAssignable<VT1>, IsSMPAssignable<VT2> > >
+   smpDivAssign( Vector<VT1,TF1>& lhs, const Vector<VT2,TF2>& rhs )
+{
+   BLAZE_FUNCTION_TRACE;
+
+   BLAZE_CONSTRAINT_MUST_NOT_BE_SMP_ASSIGNABLE( ElementType_<VT1> );
+   BLAZE_CONSTRAINT_MUST_NOT_BE_SMP_ASSIGNABLE( ElementType_<VT2> );
+
+   BLAZE_INTERNAL_ASSERT( (~lhs).size() == (~rhs).size(), "Invalid vector sizes" );
+
+   BLAZE_PARALLEL_SECTION
+   {
+      if( isSerialSectionActive() || !(~rhs).canSMPAssign() ) {
+         divAssign( ~lhs, ~rhs );
+      }
+      else {
+#pragma omp parallel shared( lhs, rhs )
+         smpDivAssign_backend( ~lhs, ~rhs );
+      }
+   }
+}
+/*! \endcond */
+//*************************************************************************************************
+
+
+
+
+//=================================================================================================
+//
 //  COMPILE TIME CONSTRAINTS
 //
 //=================================================================================================
