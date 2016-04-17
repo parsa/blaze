@@ -42,7 +42,6 @@
 #include <memory>
 #include <blaze/math/CompressedVector.h>
 #include <blaze/math/CustomVector.h>
-#include <blaze/math/DynamicVector.h>
 #include <blaze/math/Views.h>
 #include <blaze/util/policies/Deallocate.h>
 #include <blazetest/mathtest/denserow/GeneralTest.h>

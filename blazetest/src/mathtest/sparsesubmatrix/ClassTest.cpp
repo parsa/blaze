@@ -326,11 +326,8 @@ void ClassTest::testAssignment()
 
       SMT sm = submatrix( mat_, 1UL, 0UL, 2UL, 3UL );
 
-      blaze::DynamicMatrix<int,blaze::rowMajor> mat( 2UL, 3UL, 0 );
-      mat(0,1) = 11;
-      mat(1,0) = 12;
-      mat(1,1) = 13;
-      mat(1,2) = 14;
+      blaze::DynamicMatrix<int,blaze::rowMajor> mat{ {  0, 11,  0 },
+                                                     { 12, 13, 14 } };
 
       sm = mat;
 
@@ -378,11 +375,8 @@ void ClassTest::testAssignment()
 
       SMT sm = submatrix( mat_, 1UL, 0UL, 2UL, 3UL );
 
-      blaze::DynamicMatrix<int,blaze::columnMajor> mat( 2UL, 3UL, 0 );
-      mat(0,1) = 11;
-      mat(1,0) = 12;
-      mat(1,1) = 13;
-      mat(1,2) = 14;
+      blaze::DynamicMatrix<int,blaze::columnMajor> mat{ {  0, 11,  0 },
+                                                        { 12, 13, 14 } };
 
       sm = mat;
 
@@ -645,11 +639,9 @@ void ClassTest::testAssignment()
 
       OSMT sm = submatrix( tmat_, 0UL, 1UL, 3UL, 2UL );
 
-      blaze::DynamicMatrix<int,blaze::rowMajor> mat( 3UL, 2UL, 0 );
-      mat(1,0) = 11;
-      mat(0,1) = 12;
-      mat(1,1) = 13;
-      mat(2,1) = 14;
+      blaze::DynamicMatrix<int,blaze::rowMajor> mat{ {  0, 12 },
+                                                     { 11, 13 },
+                                                     {  0, 14 } };
 
       sm = mat;
 
@@ -696,11 +688,9 @@ void ClassTest::testAssignment()
 
       OSMT sm = submatrix( tmat_, 0UL, 1UL, 3UL, 2UL );
 
-      blaze::DynamicMatrix<int,blaze::columnMajor> mat( 3UL, 2UL, 0 );
-      mat(1,0) = 11;
-      mat(0,1) = 12;
-      mat(1,1) = 13;
-      mat(2,1) = 14;
+      blaze::DynamicMatrix<int,blaze::columnMajor> mat{ {  0, 12 },
+                                                        { 11, 13 },
+                                                        {  0, 14 } };
 
       sm = mat;
 
@@ -975,11 +965,8 @@ void ClassTest::testAddAssign()
 
       SMT sm = submatrix( mat_, 1UL, 0UL, 2UL, 3UL );
 
-      blaze::DynamicMatrix<int,blaze::rowMajor> mat( 2UL, 3UL, 0 );
-      mat(0,1) = 11;
-      mat(1,0) = 12;
-      mat(1,1) = 13;
-      mat(1,2) = 14;
+      blaze::DynamicMatrix<int,blaze::rowMajor> mat{ {  0, 11,  0 },
+                                                     { 12, 13, 14 } };
 
       sm += mat;
 
@@ -1027,11 +1014,8 @@ void ClassTest::testAddAssign()
 
       SMT sm = submatrix( mat_, 1UL, 0UL, 2UL, 3UL );
 
-      blaze::DynamicMatrix<int,blaze::columnMajor> mat( 2UL, 3UL, 0 );
-      mat(0,1) = 11;
-      mat(1,0) = 12;
-      mat(1,1) = 13;
-      mat(1,2) = 14;
+      blaze::DynamicMatrix<int,blaze::columnMajor> mat{ {  0, 11,  0 },
+                                                        { 12, 13, 14 } };
 
       sm += mat;
 
@@ -1294,11 +1278,9 @@ void ClassTest::testAddAssign()
 
       OSMT sm = submatrix( tmat_, 0UL, 1UL, 3UL, 2UL );
 
-      blaze::DynamicMatrix<int,blaze::rowMajor> mat( 3UL, 2UL, 0 );
-      mat(1,0) = 11;
-      mat(0,1) = 12;
-      mat(1,1) = 13;
-      mat(2,1) = 14;
+      blaze::DynamicMatrix<int,blaze::rowMajor> mat{ {  0, 12 },
+                                                     { 11, 13 },
+                                                     {  0, 14 } };
 
       sm += mat;
 
@@ -1345,11 +1327,9 @@ void ClassTest::testAddAssign()
 
       OSMT sm = submatrix( tmat_, 0UL, 1UL, 3UL, 2UL );
 
-      blaze::DynamicMatrix<int,blaze::columnMajor> mat( 3UL, 2UL, 0 );
-      mat(1,0) = 11;
-      mat(0,1) = 12;
-      mat(1,1) = 13;
-      mat(2,1) = 14;
+      blaze::DynamicMatrix<int,blaze::columnMajor> mat{ {  0, 12 },
+                                                        { 11, 13 },
+                                                        {  0, 14 } };;
 
       sm += mat;
 
@@ -1624,11 +1604,8 @@ void ClassTest::testSubAssign()
 
       SMT sm = submatrix( mat_, 1UL, 0UL, 2UL, 3UL );
 
-      blaze::DynamicMatrix<int,blaze::rowMajor> mat( 2UL, 3UL, 0 );
-      mat(0,1) = -11;
-      mat(1,0) = -12;
-      mat(1,1) = -13;
-      mat(1,2) = -14;
+      blaze::DynamicMatrix<int,blaze::rowMajor> mat{ {   0, -11,   0 },
+                                                     { -12, -13, -14 } };
 
       sm -= mat;
 
@@ -1676,11 +1653,8 @@ void ClassTest::testSubAssign()
 
       SMT sm = submatrix( mat_, 1UL, 0UL, 2UL, 3UL );
 
-      blaze::DynamicMatrix<int,blaze::columnMajor> mat( 2UL, 3UL, 0 );
-      mat(0,1) = -11;
-      mat(1,0) = -12;
-      mat(1,1) = -13;
-      mat(1,2) = -14;
+      blaze::DynamicMatrix<int,blaze::columnMajor> mat{ {   0, -11,   0 },
+                                                        { -12, -13, -14 } };
 
       sm -= mat;
 
@@ -1943,11 +1917,9 @@ void ClassTest::testSubAssign()
 
       OSMT sm = submatrix( tmat_, 0UL, 1UL, 3UL, 2UL );
 
-      blaze::DynamicMatrix<int,blaze::rowMajor> mat( 3UL, 2UL, 0 );
-      mat(1,0) = -11;
-      mat(0,1) = -12;
-      mat(1,1) = -13;
-      mat(2,1) = -14;
+      blaze::DynamicMatrix<int,blaze::rowMajor> mat{ {   0, -12 },
+                                                     { -11, -13 },
+                                                     {   0, -14 } };
 
       sm -= mat;
 
@@ -1994,11 +1966,9 @@ void ClassTest::testSubAssign()
 
       OSMT sm = submatrix( tmat_, 0UL, 1UL, 3UL, 2UL );
 
-      blaze::DynamicMatrix<int,blaze::columnMajor> mat( 3UL, 2UL, 0 );
-      mat(1,0) = -11;
-      mat(0,1) = -12;
-      mat(1,1) = -13;
-      mat(2,1) = -14;
+      blaze::DynamicMatrix<int,blaze::columnMajor> mat{ {   0, -12 },
+                                                        { -11, -13 },
+                                                        {   0, -14 } };
 
       sm -= mat;
 
@@ -2274,11 +2244,8 @@ void ClassTest::testMultAssign()
 
       SMT sm = submatrix( mat_, 1UL, 0UL, 2UL, 2UL );
 
-      blaze::DynamicMatrix<int,blaze::rowMajor> mat( 2UL, 2UL, 0 );
-      mat(0,0) = -11;
-      mat(0,1) = -12;
-      mat(1,0) =  13;
-      mat(1,1) =  14;
+      blaze::DynamicMatrix<int,blaze::rowMajor> mat{ { -11, -12 },
+                                                     {  13,  14 } };
 
       sm *= mat;
 
@@ -2326,11 +2293,8 @@ void ClassTest::testMultAssign()
 
       SMT sm = submatrix( mat_, 1UL, 0UL, 2UL, 2UL );
 
-      blaze::DynamicMatrix<int,blaze::columnMajor> mat( 2UL, 2UL, 0 );
-      mat(0,0) = -11;
-      mat(0,1) = -12;
-      mat(1,0) =  13;
-      mat(1,1) =  14;
+      blaze::DynamicMatrix<int,blaze::columnMajor> mat{ { -11, -12 },
+                                                        {  13,  14 } };
 
       sm *= mat;
 
@@ -2592,11 +2556,8 @@ void ClassTest::testMultAssign()
 
       OSMT sm = submatrix( tmat_, 0UL, 1UL, 2UL, 2UL );
 
-      blaze::DynamicMatrix<int,blaze::rowMajor> mat( 2UL, 2UL, 0 );
-      mat(0,0) =  11;
-      mat(0,1) =  12;
-      mat(1,0) = -13;
-      mat(1,1) = -14;
+      blaze::DynamicMatrix<int,blaze::rowMajor> mat{ {  11,  12 },
+                                                     { -13, -14 } };
 
       sm *= mat;
 
@@ -2642,11 +2603,8 @@ void ClassTest::testMultAssign()
 
       OSMT sm = submatrix( tmat_, 0UL, 1UL, 2UL, 2UL );
 
-      blaze::DynamicMatrix<int,blaze::columnMajor> mat( 2UL, 2UL, 0 );
-      mat(0,0) =  11;
-      mat(0,1) =  12;
-      mat(1,0) = -13;
-      mat(1,1) = -14;
+      blaze::DynamicMatrix<int,blaze::columnMajor> mat{ {  11,  12 },
+                                                        { -13, -14 } };
 
       sm *= mat;
 

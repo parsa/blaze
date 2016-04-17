@@ -348,9 +348,7 @@ void SymmetricTest::testAssignment()
 
       CT col1 = column( mat_, 1UL );
 
-      blaze::DynamicVector<int,blaze::columnVector> vec1( 4UL, 0 );
-      vec1[1] = 8;
-      vec1[3] = 9;
+      blaze::DynamicVector<int,blaze::columnVector> vec1{ 0, 8, 0, 9 };
 
       col1 = vec1;
 
@@ -495,9 +493,7 @@ void SymmetricTest::testAssignment()
 
       OCT col1 = column( tmat_, 1UL );
 
-      blaze::DynamicVector<int,blaze::columnVector> vec1( 4UL, 0 );
-      vec1[1] = 8;
-      vec1[3] = 9;
+      blaze::DynamicVector<int,blaze::columnVector> vec1{ 0, 8, 0, 9 };
 
       col1 = vec1;
 
@@ -655,9 +651,7 @@ void SymmetricTest::testAddAssign()
 
       CT col2 = column( mat_, 2UL );
 
-      blaze::DynamicVector<int,blaze::columnVector> vec( 4UL, 0 );
-      vec[0] =  2;
-      vec[1] = -4;
+      blaze::DynamicVector<int,blaze::columnVector> vec{ 2, -4, 0, 0 };
 
       col2 += vec;
 
@@ -803,9 +797,7 @@ void SymmetricTest::testAddAssign()
 
       OCT col2 = column( tmat_, 2UL );
 
-      blaze::DynamicVector<int,blaze::columnVector> vec( 4UL, 0 );
-      vec[0] =  2;
-      vec[1] = -4;
+      blaze::DynamicVector<int,blaze::columnVector> vec{ 2, -4, 0, 0 };
 
       col2 += vec;
 
@@ -964,9 +956,7 @@ void SymmetricTest::testSubAssign()
 
       CT col2 = column( mat_, 2UL );
 
-      blaze::DynamicVector<int,blaze::columnVector> vec( 4UL, 0 );
-      vec[0] =  2;
-      vec[1] = -4;
+      blaze::DynamicVector<int,blaze::columnVector> vec{ 2, -4, 0, 0 };
 
       col2 -= vec;
 
@@ -1112,9 +1102,7 @@ void SymmetricTest::testSubAssign()
 
       OCT col2 = column( tmat_, 2UL );
 
-      blaze::DynamicVector<int,blaze::columnVector> vec( 4UL, 0 );
-      vec[0] =  2;
-      vec[1] = -4;
+      blaze::DynamicVector<int,blaze::columnVector> vec{ 2, -4, 0, 0 };
 
       col2 -= vec;
 
@@ -1273,9 +1261,7 @@ void SymmetricTest::testMultAssign()
 
       CT col2 = column( mat_, 2UL );
 
-      blaze::DynamicVector<int,blaze::columnVector> vec( 4UL, 0 );
-      vec[0] =  2;
-      vec[2] = -4;
+      blaze::DynamicVector<int,blaze::columnVector> vec{ 2, 0, -4, 0 };
 
       col2 *= vec;
 
@@ -1421,9 +1407,7 @@ void SymmetricTest::testMultAssign()
 
       OCT col2 = column( tmat_, 2UL );
 
-      blaze::DynamicVector<int,blaze::columnVector> vec( 4UL, 0 );
-      vec[0] =  2;
-      vec[2] = -4;
+      blaze::DynamicVector<int,blaze::columnVector> vec{ 2, 0, -4, 0 };
 
       col2 *= vec;
 
