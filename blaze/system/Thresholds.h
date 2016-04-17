@@ -329,6 +329,20 @@ constexpr size_t SMP_DVECDVECMULT_DEBUG_THRESHOLD = 32UL;
 
 
 //*************************************************************************************************
+/*!\brief SMP dense vector/dense vector division threshold.
+// \ingroup config
+//
+// This debug value is used instead of the blaze::SMP_DVECDVECDIV_USER_THRESHOLD while the
+// Blaze debug mode is active. It specifies when a dense vector/dense vector division can be
+// executed in parallel. In case the number of elements of the target vector is larger or
+// equal to this threshold, the operation is executed in parallel. If the number of elements
+// is below this threshold the operation is executed single-threaded.
+*/
+constexpr size_t SMP_DVECDVECDIV_DEBUG_THRESHOLD = 32UL;
+//*************************************************************************************************
+
+
+//*************************************************************************************************
 /*!\brief SMP dense vector/scalar multiplication/division threshold.
 // \ingroup config
 //
@@ -900,6 +914,7 @@ constexpr size_t SMP_DVECASSIGN_THRESHOLD     = ( BLAZE_DEBUG_MODE ? SMP_DVECASS
 constexpr size_t SMP_DVECDVECADD_THRESHOLD    = ( BLAZE_DEBUG_MODE ? SMP_DVECDVECADD_DEBUG_THRESHOLD    : SMP_DVECDVECADD_USER_THRESHOLD    );
 constexpr size_t SMP_DVECDVECSUB_THRESHOLD    = ( BLAZE_DEBUG_MODE ? SMP_DVECDVECSUB_DEBUG_THRESHOLD    : SMP_DVECDVECSUB_USER_THRESHOLD    );
 constexpr size_t SMP_DVECDVECMULT_THRESHOLD   = ( BLAZE_DEBUG_MODE ? SMP_DVECDVECMULT_DEBUG_THRESHOLD   : SMP_DVECDVECMULT_USER_THRESHOLD   );
+constexpr size_t SMP_DVECDVECDIV_THRESHOLD    = ( BLAZE_DEBUG_MODE ? SMP_DVECDVECDIV_DEBUG_THRESHOLD    : SMP_DVECDVECDIV_USER_THRESHOLD    );
 constexpr size_t SMP_DVECSCALARMULT_THRESHOLD = ( BLAZE_DEBUG_MODE ? SMP_DVECSCALARMULT_DEBUG_THRESHOLD : SMP_DVECSCALARMULT_USER_THRESHOLD );
 constexpr size_t SMP_DMATDVECMULT_THRESHOLD   = ( BLAZE_DEBUG_MODE ? SMP_DMATDVECMULT_DEBUG_THRESHOLD   : SMP_DMATDVECMULT_USER_THRESHOLD   );
 constexpr size_t SMP_TDMATDVECMULT_THRESHOLD  = ( BLAZE_DEBUG_MODE ? SMP_TDMATDVECMULT_DEBUG_THRESHOLD  : SMP_TDMATDVECMULT_USER_THRESHOLD  );

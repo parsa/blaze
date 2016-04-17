@@ -358,6 +358,29 @@ constexpr size_t SMP_DVECDVECMULT_USER_THRESHOLD = 38000UL;
 
 
 //*************************************************************************************************
+/*!\brief SMP dense vector/dense vector division threshold.
+// \ingroup config
+//
+// This threshold specifies when a dense vector/dense vector division can be executed in
+// parallel. In case the number of elements of the target vector is larger or equal to this
+// threshold, the operation is executed in parallel. If the number of elements is below this
+// threshold the operation is executed single-threaded.
+//
+// Please note that this threshold is highly sensitiv to the used system architecture and the
+// shared memory parallelization technique. Therefore the default value cannot guarantee maximum
+// performance for all possible situations and configurations. It merely provides a reasonable
+// standard for the current generation of CPUs. Also note that the provided default has been
+// determined using the OpenMP parallelization and requires individual adaption for the C++11
+// and Boost thread parallelization.
+//
+// The default setting for this threshold is 38000. In case the threshold is set to 0, the
+// operation is unconditionally executed in parallel.
+*/
+constexpr size_t SMP_DVECDVECDIV_USER_THRESHOLD = 38000UL;
+//*************************************************************************************************
+
+
+//*************************************************************************************************
 /*!\brief SMP dense vector/scalar multiplication/division threshold.
 // \ingroup config
 //
