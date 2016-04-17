@@ -85,7 +85,7 @@ struct TSVecCTransExprTrait
    //**********************************************************************************************
    /*! \cond BLAZE_INTERNAL */
    using Tmp = If_< And< IsSparseVector<VT>, IsRowVector<VT> >
-                  , TSVecTransExprTrait< typename TSVecConjExprTrait<VT>::Type >
+                  , TSVecTransExprTrait< TSVecConjExprTrait_<VT> >
                   , Failure >;
    /*! \endcond */
    //**********************************************************************************************

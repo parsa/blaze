@@ -1291,7 +1291,7 @@ struct DMatScalarMultExprTrait< DMatScalarDivExpr<MT,ST1,false>, ST2 >
    //**********************************************************************************************
    using Type = If_< And< IsDenseMatrix<MT>, IsRowMajorMatrix<MT>, IsNumeric<ST1>, IsNumeric<ST2> >
                    , If_< IsInvertible<ScalarType>
-                        , typename DMatScalarMultExprTrait<MT,ScalarType>::Type
+                        , DMatScalarMultExprTrait_<MT,ScalarType>
                         , DMatScalarMultExpr< DMatScalarDivExpr<MT,ST1,false>, ST2, false > >
                    , INVALID_TYPE >;
    //**********************************************************************************************
@@ -1322,7 +1322,7 @@ struct TDMatScalarMultExprTrait< DMatScalarDivExpr<MT,ST1,true>, ST2 >
    //**********************************************************************************************
    using Type = If_< And< IsDenseMatrix<MT>, IsColumnMajorMatrix<MT>, IsNumeric<ST1>, IsNumeric<ST2> >
                    , If_< IsInvertible<ScalarType>
-                        , typename DMatScalarMultExprTrait<MT,ScalarType>::Type
+                        , DMatScalarMultExprTrait_<MT,ScalarType>
                         , DMatScalarMultExpr< DMatScalarDivExpr<MT,ST1,true>, ST2, true > >
                    , INVALID_TYPE >;
    //**********************************************************************************************

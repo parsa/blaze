@@ -1969,7 +1969,7 @@ struct TDMatDVecMultExprTrait< TSMatDMatMultExpr<MT1,MT2>, VT >
    using Type = If_< And< IsSparseMatrix<MT1>, IsColumnMajorMatrix<MT1>
                         , IsDenseMatrix<MT2>, IsRowMajorMatrix<MT2>
                         , IsDenseVector<VT>, IsColumnVector<VT> >
-                   , typename TSMatDVecMultExprTrait< MT1, typename DMatDVecMultExprTrait<MT2,VT>::Type >::Type
+                   , TSMatDVecMultExprTrait_< MT1, DMatDVecMultExprTrait_<MT2,VT> >
                    , INVALID_TYPE >;
    //**********************************************************************************************
 };
@@ -1987,7 +1987,7 @@ struct TDMatSVecMultExprTrait< TSMatDMatMultExpr<MT1,MT2>, VT >
    using Type = If_< And< IsSparseMatrix<MT1>, IsColumnMajorMatrix<MT1>
                         , IsDenseMatrix<MT2>, IsRowMajorMatrix<MT2>
                         , IsSparseVector<VT>, IsColumnVector<VT> >
-                   , typename TSMatDVecMultExprTrait< MT1, typename DMatSVecMultExprTrait<MT2,VT>::Type >::Type
+                   , TSMatDVecMultExprTrait_< MT1, DMatSVecMultExprTrait_<MT2,VT> >
                    , INVALID_TYPE >;
    //**********************************************************************************************
 };
@@ -2005,7 +2005,7 @@ struct TDVecTDMatMultExprTrait< VT, TSMatDMatMultExpr<MT1,MT2> >
    using Type = If_< And< IsDenseVector<VT>, IsRowVector<VT>
                         , IsSparseMatrix<MT1>, IsColumnMajorMatrix<MT1>
                         , IsDenseMatrix<MT2>, IsRowMajorMatrix<MT2> >
-                   , typename TDVecDMatMultExprTrait< typename TDVecTSMatMultExprTrait<VT,MT1>::Type, MT2 >::Type
+                   , TDVecDMatMultExprTrait_< TDVecTSMatMultExprTrait_<VT,MT1>, MT2 >
                    , INVALID_TYPE >;
    //**********************************************************************************************
 };
@@ -2023,7 +2023,7 @@ struct TSVecTDMatMultExprTrait< VT, TSMatDMatMultExpr<MT1,MT2> >
    using Type = If_< And< IsSparseVector<VT>, IsRowVector<VT>
                         , IsSparseMatrix<MT1>, IsColumnMajorMatrix<MT1>
                         , IsDenseMatrix<MT2>, IsRowMajorMatrix<MT2> >
-                   , typename TDVecDMatMultExprTrait< typename TDVecTSMatMultExprTrait<VT,MT1>::Type, MT2 >::Type
+                   , TDVecDMatMultExprTrait_< TDVecTSMatMultExprTrait_<VT,MT1>, MT2 >
                    , INVALID_TYPE >;
    //**********************************************************************************************
 };

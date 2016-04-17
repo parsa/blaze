@@ -85,7 +85,7 @@ struct DMatSVecMultExprTrait
    using Tmp = If< And< IsDenseMatrix<MT> , IsRowMajorMatrix<MT>
                       , IsSparseVector<VT>, IsColumnVector<VT> >
                  , If_< IsSymmetric<MT>
-                      , TDMatSVecMultExpr< typename DMatTransExprTrait<MT>::Type, VT >
+                      , TDMatSVecMultExpr< DMatTransExprTrait_<MT>, VT >
                       , DMatSVecMultExpr<MT,VT> >
                  , INVALID_TYPE >;
    /*! \endcond */

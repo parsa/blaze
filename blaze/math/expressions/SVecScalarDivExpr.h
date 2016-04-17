@@ -971,7 +971,7 @@ struct SVecScalarMultExprTrait< SVecScalarDivExpr<VT,ST1,false>, ST2 >
    using Type = If_< And< IsSparseVector<VT>, IsColumnVector<VT>
                         , IsNumeric<ST1>, IsNumeric<ST2> >
                    , If_< IsInvertible<ScalarType>
-                        , typename SVecScalarMultExprTrait<VT,ScalarType>::Type
+                        , SVecScalarMultExprTrait_<VT,ScalarType>
                         , SVecScalarMultExpr< SVecScalarDivExpr<VT,ST1,false>, ST2, false > >
                    , INVALID_TYPE >;
    //**********************************************************************************************
@@ -1003,7 +1003,7 @@ struct TSVecScalarMultExprTrait< SVecScalarDivExpr<VT,ST1,true>, ST2 >
    using Type = If_< And< IsSparseVector<VT>, IsRowVector<VT>
                         , IsNumeric<ST1>, IsNumeric<ST2> >
                    , If_< IsInvertible<ScalarType>
-                        , typename SVecScalarMultExprTrait<VT,ScalarType>::Type
+                        , SVecScalarMultExprTrait_<VT,ScalarType>
                         , SVecScalarMultExpr< SVecScalarDivExpr<VT,ST1,true>, ST2, true > >
                    , INVALID_TYPE >;
    //**********************************************************************************************

@@ -736,7 +736,7 @@ struct DVecDVecAddExprTrait< SVecDVecSubExpr<VT1,VT2,false>, VT3 >
    using Type = If_< And< IsSparseVector<VT1>, IsColumnVector<VT1>
                         , IsDenseVector<VT2>, IsColumnVector<VT2>
                         , IsDenseVector<VT3>, IsColumnVector<VT3> >
-                   , typename DVecSVecAddExprTrait< typename DVecDVecSubExprTrait<VT3,VT2>::Type, VT1 >::Type
+                   , DVecSVecAddExprTrait_< DVecDVecSubExprTrait_<VT3,VT2>, VT1 >
                    , INVALID_TYPE >;
    /*! \endcond */
    //**********************************************************************************************
@@ -756,7 +756,7 @@ struct TDVecTDVecAddExprTrait< SVecDVecSubExpr<VT1,VT2,true>, VT3 >
    using Type = If_< And< IsSparseVector<VT1>, IsRowVector<VT1>
                         , IsDenseVector<VT2>, IsRowVector<VT2>
                         , IsDenseVector<VT3>, IsRowVector<VT3> >
-                   , typename TDVecTSVecAddExprTrait< typename TDVecTDVecSubExprTrait<VT3,VT2>::Type, VT1 >::Type
+                   , TDVecTSVecAddExprTrait_< TDVecTDVecSubExprTrait_<VT3,VT2>, VT1 >
                    , INVALID_TYPE >;
    /*! \endcond */
    //**********************************************************************************************
@@ -776,7 +776,7 @@ struct DVecDVecSubExprTrait< SVecDVecSubExpr<VT1,VT2,false>, VT3 >
    using Type = If_< And< IsSparseVector<VT1>, IsColumnVector<VT1>
                         , IsDenseVector<VT2>, IsColumnVector<VT2>
                         , IsDenseVector<VT3>, IsColumnVector<VT3> >
-                   , typename SVecDVecSubExprTrait< VT1, typename DVecDVecAddExprTrait<VT2,VT3>::Type >::Type
+                   , SVecDVecSubExprTrait_< VT1, DVecDVecAddExprTrait_<VT2,VT3> >
                    , INVALID_TYPE >;
    /*! \endcond */
    //**********************************************************************************************
@@ -796,7 +796,7 @@ struct TDVecTDVecSubExprTrait< SVecDVecSubExpr<VT1,VT2,true>, VT3 >
    using Type = If_< And< IsSparseVector<VT1>, IsRowVector<VT1>
                         , IsDenseVector<VT2>, IsRowVector<VT2>
                         , IsDenseVector<VT3>, IsRowVector<VT3> >
-                   , typename TSVecTDVecSubExprTrait< VT1, typename TDVecTDVecAddExprTrait<VT2,VT3>::Type >::Type
+                   , TSVecTDVecSubExprTrait_< VT1, TDVecTDVecAddExprTrait_<VT2,VT3> >
                    , INVALID_TYPE >;
    /*! \endcond */
    //**********************************************************************************************

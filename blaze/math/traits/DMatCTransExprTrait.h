@@ -85,7 +85,7 @@ struct DMatCTransExprTrait
    //**********************************************************************************************
    /*! \cond BLAZE_INTERNAL */
    typedef If_< And< IsDenseMatrix<MT>, IsRowMajorMatrix<MT> >
-              , DMatTransExprTrait< typename DMatConjExprTrait<MT>::Type >
+              , DMatTransExprTrait< DMatConjExprTrait_<MT> >
               , Failure >  Tmp;
    /*! \endcond */
    //**********************************************************************************************

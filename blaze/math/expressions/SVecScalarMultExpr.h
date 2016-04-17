@@ -1495,7 +1495,7 @@ struct SVecScalarMultExprTrait< SVecScalarMultExpr<VT,ST1,false>, ST2 >
    //**********************************************************************************************
    typedef If_< And< IsSparseVector<VT>, IsColumnVector<VT>
                    , IsNumeric<ST1>, IsNumeric<ST2> >
-              , typename SVecScalarMultExprTrait< VT, MultTrait_<ST1,ST2> >::Type
+              , SVecScalarMultExprTrait_< VT, MultTrait_<ST1,ST2> >
               , INVALID_TYPE > Type;
    //**********************************************************************************************
 };
@@ -1520,7 +1520,7 @@ struct TSVecScalarMultExprTrait< SVecScalarMultExpr<VT,ST1,true>, ST2 >
    //**********************************************************************************************
    using Type = If_< And< IsSparseVector<VT>, IsRowVector<VT>
                         , IsNumeric<ST1>, IsNumeric<ST2> >
-                   , typename TSVecScalarMultExprTrait< VT, MultTrait_<ST1,ST2> >::Type
+                   , TSVecScalarMultExprTrait_< VT, MultTrait_<ST1,ST2> >
                    , INVALID_TYPE >;
    //**********************************************************************************************
 };
@@ -1551,8 +1551,8 @@ struct SVecScalarDivExprTrait< SVecScalarMultExpr<VT,ST1,false>, ST2 >
    using Type = If_< And< IsSparseVector<VT>, IsColumnVector<VT>
                         , IsNumeric<ST1>, IsNumeric<ST2> >
                    , If_< IsInvertible<ScalarType>
-                        , typename SVecScalarMultExprTrait<VT,ScalarType>::Type
-                        , typename SVecScalarDivExprTrait<VT,ScalarType>::Type >
+                        , SVecScalarMultExprTrait_<VT,ScalarType>
+                        , SVecScalarDivExprTrait_<VT,ScalarType> >
                    , INVALID_TYPE >;
    //**********************************************************************************************
 };
@@ -1583,8 +1583,8 @@ struct TSVecScalarDivExprTrait< SVecScalarMultExpr<VT,ST1,true>, ST2 >
    using Type = If_< And< IsSparseVector<VT>, IsRowVector<VT>
                         , IsNumeric<ST1>, IsNumeric<ST2> >
                    , If_< IsInvertible<ScalarType>
-                        , typename TSVecScalarMultExprTrait<VT,ScalarType>::Type
-                        , typename TSVecScalarDivExprTrait<VT,ScalarType>::Type >
+                        , TSVecScalarMultExprTrait_<VT,ScalarType>
+                        , TSVecScalarDivExprTrait_<VT,ScalarType> >
                    , INVALID_TYPE >;
    //**********************************************************************************************
 };
@@ -1610,7 +1610,7 @@ struct DVecSVecMultExprTrait< VT1, SVecScalarMultExpr<VT2,ST,false> >
    using Type = If_< And< IsDenseVector<VT1>, IsColumnVector<VT1>
                         , IsSparseVector<VT2>, IsColumnVector<VT2>
                         , IsNumeric<ST> >
-                   , typename SVecScalarMultExprTrait<typename DVecSVecMultExprTrait<VT1,VT2>::Type,ST>::Type
+                   , SVecScalarMultExprTrait_< DVecSVecMultExprTrait_<VT1,VT2>, ST >
                    , INVALID_TYPE >;
    //**********************************************************************************************
 };
@@ -1636,7 +1636,7 @@ struct DVecTSVecMultExprTrait< VT1, SVecScalarMultExpr<VT2,ST,true> >
    using Type = If_< And< IsDenseVector<VT1>, IsColumnVector<VT1>
                         , IsSparseVector<VT2>, IsRowVector<VT2>
                         , IsNumeric<ST> >
-                   , typename SMatScalarMultExprTrait<typename DVecTSVecMultExprTrait<VT1,VT2>::Type,ST>::Type
+                   , SMatScalarMultExprTrait_< DVecTSVecMultExprTrait_<VT1,VT2>, ST >
                    , INVALID_TYPE >;
    //**********************************************************************************************
 };
@@ -1662,7 +1662,7 @@ struct TDVecTSVecMultExprTrait< VT1, SVecScalarMultExpr<VT2,ST,true> >
    using Type = If_< And< IsDenseVector<VT1>, IsRowVector<VT1>
                         , IsSparseVector<VT2>, IsRowVector<VT2>
                         , IsNumeric<ST> >
-                   , typename TSVecScalarMultExprTrait<typename TDVecTSVecMultExprTrait<VT1,VT2>::Type,ST>::Type
+                   , TSVecScalarMultExprTrait_< TDVecTSVecMultExprTrait_<VT1,VT2>, ST >
                    , INVALID_TYPE >;
    //**********************************************************************************************
 };
@@ -1688,7 +1688,7 @@ struct SVecDVecMultExprTrait< SVecScalarMultExpr<VT1,ST,false>, VT2 >
    using Type = If_< And< IsSparseVector<VT1>, IsColumnVector<VT1>
                         , IsDenseVector<VT2>, IsColumnVector<VT2>
                         , IsNumeric<ST> >
-                   , typename SVecScalarMultExprTrait<typename SVecDVecMultExprTrait<VT1,VT2>::Type,ST>::Type
+                   , SVecScalarMultExprTrait_< SVecDVecMultExprTrait_<VT1,VT2>, ST >
                    , INVALID_TYPE >;
    //**********************************************************************************************
 };
@@ -1714,7 +1714,7 @@ struct SVecTDVecMultExprTrait< SVecScalarMultExpr<VT1,ST,false>, VT2 >
    using Type = If_< And< IsSparseVector<VT1>, IsColumnVector<VT1>
                         , IsDenseVector<VT2>, IsRowVector<VT2>
                         , IsNumeric<ST> >
-                   , typename TSMatScalarMultExprTrait<typename SVecTDVecMultExprTrait<VT1,VT2>::Type,ST>::Type
+                   , TSMatScalarMultExprTrait_< SVecTDVecMultExprTrait_<VT1,VT2>, ST >
                    , INVALID_TYPE >;
    //**********************************************************************************************
 };
@@ -1740,7 +1740,7 @@ struct TSVecTDVecMultExprTrait< SVecScalarMultExpr<VT1,ST,true>, VT2 >
    using Type = If_< And< IsSparseVector<VT1>, IsRowVector<VT1>
                         , IsDenseVector<VT2>, IsRowVector<VT2>
                         , IsNumeric<ST> >
-                   , typename TSVecScalarMultExprTrait<typename TSVecTDVecMultExprTrait<VT1,VT2>::Type,ST>::Type
+                   , TSVecScalarMultExprTrait_< TSVecTDVecMultExprTrait_<VT1,VT2>, ST >
                    , INVALID_TYPE >;
    //**********************************************************************************************
 };
@@ -1766,7 +1766,7 @@ struct SVecSVecMultExprTrait< SVecScalarMultExpr<VT1,ST,false>, VT2 >
    using Type = If_< And< IsSparseVector<VT1>, IsColumnVector<VT1>
                         , IsSparseVector<VT2>, IsColumnVector<VT2>
                         , IsNumeric<ST> >
-                   , typename SVecScalarMultExprTrait<typename SVecSVecMultExprTrait<VT1,VT2>::Type,ST>::Type
+                   , SVecScalarMultExprTrait_< SVecSVecMultExprTrait_<VT1,VT2>, ST >
                    , INVALID_TYPE >;
    //**********************************************************************************************
 };
@@ -1784,7 +1784,7 @@ struct SVecSVecMultExprTrait< VT1, SVecScalarMultExpr<VT2,ST,false> >
    using Type = If_< And< IsSparseVector<VT1>, IsColumnVector<VT1>
                         , IsSparseVector<VT2>, IsColumnVector<VT2>
                         , IsNumeric<ST> >
-                   , typename SVecScalarMultExprTrait<typename SVecSVecMultExprTrait<VT1,VT2>::Type,ST>::Type
+                   , SVecScalarMultExprTrait_< SVecSVecMultExprTrait_<VT1,VT2>, ST >
                    , INVALID_TYPE >;
    //**********************************************************************************************
 };
@@ -1802,7 +1802,7 @@ struct SVecSVecMultExprTrait< SVecScalarMultExpr<VT1,ST1,false>, SVecScalarMultE
    using Type = If_< And< IsSparseVector<VT1>, IsColumnVector<VT1>
                         , IsSparseVector<VT2>, IsColumnVector<VT2>
                         , IsNumeric<ST1>, IsNumeric<ST2> >
-                   , typename SVecScalarMultExprTrait< typename SVecSVecMultExprTrait<VT1,VT2>::Type, MultTrait_<ST1,ST2> >::Type
+                   , SVecScalarMultExprTrait_< SVecSVecMultExprTrait_<VT1,VT2>, MultTrait_<ST1,ST2> >
                    , INVALID_TYPE >;
    //**********************************************************************************************
 };
@@ -1828,7 +1828,7 @@ struct SVecTSVecMultExprTrait< SVecScalarMultExpr<VT1,ST,false>, VT2 >
    using Type = If_< And< IsSparseVector<VT1>, IsColumnVector<VT1>
                         , IsSparseVector<VT2>, IsRowVector<VT2>
                         , IsNumeric<ST> >
-                   , typename SMatScalarMultExprTrait<typename SVecTSVecMultExprTrait<VT1,VT2>::Type,ST>::Type
+                   , SMatScalarMultExprTrait_< SVecTSVecMultExprTrait_<VT1,VT2>, ST >
                    , INVALID_TYPE >;
    //**********************************************************************************************
 };
@@ -1846,7 +1846,7 @@ struct SVecTSVecMultExprTrait< VT1, SVecScalarMultExpr<VT2,ST,true> >
    using Type = If_< And< IsSparseVector<VT1>, IsColumnVector<VT1>
                         , IsSparseVector<VT2>, IsRowVector<VT2>
                         , IsNumeric<ST> >
-                   , typename SMatScalarMultExprTrait<typename SVecTSVecMultExprTrait<VT1,VT2>::Type,ST>::Type
+                   , SMatScalarMultExprTrait_< SVecTSVecMultExprTrait_<VT1,VT2>, ST >
                    , INVALID_TYPE >;
    //**********************************************************************************************
 };
@@ -1864,7 +1864,7 @@ struct SVecTSVecMultExprTrait< SVecScalarMultExpr<VT1,ST1,false>, SVecScalarMult
    using Type = If_< And< IsSparseVector<VT1>, IsColumnVector<VT1>
                         , IsSparseVector<VT2>, IsRowVector<VT2>
                         , IsNumeric<ST1>, IsNumeric<ST2> >
-                   , typename SMatScalarMultExprTrait< typename SVecTSVecMultExprTrait<VT1,VT2>::Type, MultTrait_<ST1,ST2> >::Type
+                   , SMatScalarMultExprTrait_< SVecTSVecMultExprTrait_<VT1,VT2>, MultTrait_<ST1,ST2> >
                    , INVALID_TYPE >;
    //**********************************************************************************************
 };
@@ -1890,7 +1890,7 @@ struct TSVecTSVecMultExprTrait< SVecScalarMultExpr<VT1,ST,true>, VT2 >
    using Type = If_< And< IsSparseVector<VT1>, IsRowVector<VT1>
                         , IsSparseVector<VT2>, IsRowVector<VT2>
                         , IsNumeric<ST> >
-                   , typename TSVecScalarMultExprTrait<typename TSVecTSVecMultExprTrait<VT1,VT2>::Type,ST>::Type
+                   , TSVecScalarMultExprTrait_< TSVecTSVecMultExprTrait_<VT1,VT2>, ST >
                    , INVALID_TYPE >;
    //**********************************************************************************************
 };
@@ -1908,7 +1908,7 @@ struct TSVecTSVecMultExprTrait< VT1, SVecScalarMultExpr<VT2,ST,true> >
    using Type = If_< And< IsSparseVector<VT1>, IsRowVector<VT1>
                         , IsSparseVector<VT2>, IsRowVector<VT2>
                         , IsNumeric<ST> >
-                   , typename TSVecScalarMultExprTrait<typename TSVecTSVecMultExprTrait<VT1,VT2>::Type,ST>::Type
+                   , TSVecScalarMultExprTrait_< TSVecTSVecMultExprTrait_<VT1,VT2>, ST >
                    , INVALID_TYPE >;
    //**********************************************************************************************
 };
@@ -1926,7 +1926,7 @@ struct TSVecTSVecMultExprTrait< SVecScalarMultExpr<VT1,ST1,true>, SVecScalarMult
    using Type = If_< And< IsSparseVector<VT1>, IsRowVector<VT1>
                         , IsSparseVector<VT2>, IsRowVector<VT2>
                         , IsNumeric<ST1>, IsNumeric<ST2> >
-                   , typename TSVecScalarMultExprTrait< typename TSVecTSVecMultExprTrait<VT1,VT2>::Type, MultTrait_<ST1,ST2> >::Type
+                   , TSVecScalarMultExprTrait_< TSVecTSVecMultExprTrait_<VT1,VT2>, MultTrait_<ST1,ST2> >
                    , INVALID_TYPE >;
    //**********************************************************************************************
 };
@@ -1952,7 +1952,7 @@ struct DMatSVecMultExprTrait< MT, SVecScalarMultExpr<VT,ST,false> >
    using Type = If_< And< IsDenseMatrix<MT>, IsRowMajorMatrix<MT>
                         , IsSparseVector<VT>, IsColumnVector<VT>
                         , IsNumeric<ST> >
-                   , typename DVecScalarMultExprTrait<typename DMatSVecMultExprTrait<MT,VT>::Type,ST>::Type
+                   , DVecScalarMultExprTrait_< DMatSVecMultExprTrait_<MT,VT>, ST >
                    , INVALID_TYPE >;
    //**********************************************************************************************
 };
@@ -1978,7 +1978,7 @@ struct TDMatSVecMultExprTrait< MT, SVecScalarMultExpr<VT,ST,false> >
    using Type = If_< And< IsDenseMatrix<MT>, IsColumnMajorMatrix<MT>
                         , IsSparseVector<VT>, IsColumnVector<VT>
                         , IsNumeric<ST> >
-                   , typename DVecScalarMultExprTrait<typename TDMatSVecMultExprTrait<MT,VT>::Type,ST>::Type
+                   , DVecScalarMultExprTrait_< TDMatSVecMultExprTrait_<MT,VT>, ST >
                    , INVALID_TYPE >;
    //**********************************************************************************************
 };
@@ -2004,7 +2004,7 @@ struct TSVecDMatMultExprTrait< SVecScalarMultExpr<VT,ST,true>, MT >
    using Type = If_< And< IsSparseVector<VT>, IsRowVector<VT>
                         , IsDenseMatrix<MT>, IsRowMajorMatrix<MT>
                         , IsNumeric<ST> >
-                   , typename TDVecScalarMultExprTrait<typename TSVecDMatMultExprTrait<VT,MT>::Type,ST>::Type
+                   , TDVecScalarMultExprTrait_< TSVecDMatMultExprTrait_<VT,MT>, ST >
                    , INVALID_TYPE >;
    //**********************************************************************************************
 };
@@ -2030,7 +2030,7 @@ struct TSVecTDMatMultExprTrait< SVecScalarMultExpr<VT,ST,true>, MT >
    using Type = If_< And< IsSparseVector<VT>, IsRowVector<VT>
                         , IsDenseMatrix<MT>, IsColumnMajorMatrix<MT>
                         , IsNumeric<ST> >
-                   , typename TDVecScalarMultExprTrait<typename TSVecTDMatMultExprTrait<VT,MT>::Type,ST>::Type
+                   , TDVecScalarMultExprTrait_< TSVecTDMatMultExprTrait_<VT,MT>, ST >
                    , INVALID_TYPE >;
    //**********************************************************************************************
 };
@@ -2056,7 +2056,7 @@ struct SMatSVecMultExprTrait< MT, SVecScalarMultExpr<VT,ST,false> >
    using Type = If_< And< IsSparseMatrix<MT>, IsRowMajorMatrix<MT>
                         , IsSparseVector<VT>, IsColumnVector<VT>
                         , IsNumeric<ST> >
-                   , typename SVecScalarMultExprTrait<typename SMatSVecMultExprTrait<MT,VT>::Type,ST>::Type
+                   , SVecScalarMultExprTrait_< SMatSVecMultExprTrait_<MT,VT>, ST >
                    , INVALID_TYPE >;
    //**********************************************************************************************
 };
@@ -2082,7 +2082,7 @@ struct TSMatSVecMultExprTrait< MT, SVecScalarMultExpr<VT,ST,false> >
    using Type = If_< And< IsSparseMatrix<MT>, IsColumnMajorMatrix<MT>
                         , IsSparseVector<VT>, IsColumnVector<VT>
                         , IsNumeric<ST> >
-                   , typename SVecScalarMultExprTrait<typename TSMatSVecMultExprTrait<MT,VT>::Type,ST>::Type
+                   , SVecScalarMultExprTrait_< TSMatSVecMultExprTrait_<MT,VT>, ST >
                    , INVALID_TYPE >;
    //**********************************************************************************************
 };
@@ -2108,7 +2108,7 @@ struct TSVecSMatMultExprTrait< SVecScalarMultExpr<VT,ST,true>, MT >
    using Type = If_< And< IsSparseVector<VT>, IsRowVector<VT>
                         , IsSparseMatrix<MT>, IsRowMajorMatrix<MT>
                         , IsNumeric<ST> >
-                   , typename TSVecScalarMultExprTrait<typename TSVecSMatMultExprTrait<VT,MT>::Type,ST>::Type
+                   , TSVecScalarMultExprTrait_< TSVecSMatMultExprTrait_<VT,MT>, ST >
                    , INVALID_TYPE >;
    //**********************************************************************************************
 };
@@ -2134,7 +2134,7 @@ struct TSVecTSMatMultExprTrait< SVecScalarMultExpr<VT,ST,true>, MT >
    using Type = If_< And< IsSparseVector<VT>, IsRowVector<VT>
                         , IsSparseMatrix<MT>, IsColumnMajorMatrix<MT>
                         , IsNumeric<ST> >
-                   , typename TSVecScalarMultExprTrait<typename TSVecTSMatMultExprTrait<VT,MT>::Type,ST>::Type
+                   , TSVecScalarMultExprTrait_< TSVecTSMatMultExprTrait_<VT,MT>, ST >
                    , INVALID_TYPE >;
    //**********************************************************************************************
 };

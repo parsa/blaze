@@ -85,7 +85,7 @@ struct SVecCTransExprTrait
    //**********************************************************************************************
    /*! \cond BLAZE_INTERNAL */
    using Tmp = If_< And< IsSparseVector<VT>, IsColumnVector<VT> >
-                  , SVecTransExprTrait< typename SVecConjExprTrait<VT>::Type >
+                  , SVecTransExprTrait< SVecConjExprTrait_<VT> >
                   , Failure >;
    /*! \endcond */
    //**********************************************************************************************

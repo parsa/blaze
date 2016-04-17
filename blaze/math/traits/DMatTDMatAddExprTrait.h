@@ -86,9 +86,9 @@ struct DMatTDMatAddExprTrait
    using Tmp = If< And< IsDenseMatrix<MT1>, IsRowMajorMatrix<MT1>
                       , IsDenseMatrix<MT2>, IsColumnMajorMatrix<MT2> >
                  , If_< IsSymmetric<MT2>
-                      , DMatDMatAddExpr< MT1, typename TDMatTransExprTrait<MT2>::Type, false >
+                      , DMatDMatAddExpr< MT1, TDMatTransExprTrait_<MT2>, false >
                       , If_< IsSymmetric<MT1>
-                           , DMatDMatAddExpr< typename DMatTransExprTrait<MT1>::Type, MT2, true >
+                           , DMatDMatAddExpr< DMatTransExprTrait_<MT1>, MT2, true >
                            , DMatTDMatAddExpr<MT1,MT2> > >
                  , INVALID_TYPE >;
    /*! \endcond */

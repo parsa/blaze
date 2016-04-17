@@ -85,7 +85,7 @@ struct SMatSVecMultExprTrait
    using Tmp = If< And< IsSparseMatrix<MT>, IsRowMajorMatrix<MT>
                       , IsSparseVector<VT>, IsColumnVector<VT> >
                  , If_< IsSymmetric<MT>
-                      , TSMatSVecMultExpr< typename SMatTransExprTrait<MT>::Type, VT >
+                      , TSMatSVecMultExpr< SMatTransExprTrait_<MT>, VT >
                       , SMatSVecMultExpr<MT,VT> >
                  , INVALID_TYPE >;
    /*! \endcond */

@@ -85,7 +85,7 @@ struct SMatCTransExprTrait
    //**********************************************************************************************
    /*! \cond BLAZE_INTERNAL */
    using Tmp = If_< And< IsSparseMatrix<MT>, IsRowMajorMatrix<MT> >
-                  , SMatTransExprTrait< typename SMatConjExprTrait<MT>::Type >
+                  , SMatTransExprTrait< SMatConjExprTrait_<MT> >
                   , Failure >;
    /*! \endcond */
    //**********************************************************************************************
