@@ -77,6 +77,7 @@ AlignedTest::AlignedTest()
    testAddAssign();
    testSubAssign();
    testMultAssign();
+   testDivAssign();
    testScaling();
    testSubscript();
    testIterator();
@@ -906,6 +907,150 @@ void AlignedTest::testMultAssign()
          std::ostringstream oss;
          oss << " Test: " << test_ << "\n"
              << " Error: Multiplication assignment failed\n"
+             << " Details:\n"
+             << "   Result:\n" << sv1 << "\n"
+             << "   Expected result:\n" << sv2 << "\n";
+         throw std::runtime_error( oss.str() );
+      }
+   }
+}
+//*************************************************************************************************
+
+
+//*************************************************************************************************
+/*!\brief Test of the DenseSubvector division assignment operators.
+//
+// \return void
+// \exception std::runtime_error Error detected.
+//
+// This function performs a test of the division assignment operators of the DenseSubvector
+// class template. In case an error is detected, a \a std::runtime_error exception is thrown.
+*/
+void AlignedTest::testDivAssign()
+{
+   using blaze::subvector;
+   using blaze::aligned;
+   using blaze::unaligned;
+   using blaze::padded;
+   using blaze::unpadded;
+   using blaze::rowVector;
+
+
+   //=====================================================================================
+   // DenseSubvector division assignment
+   //=====================================================================================
+
+   {
+      test_ = "DenseSubvector division assignment (no aliasing)";
+
+      initialize();
+
+      VT vec1( 64UL );
+      VT vec2( 64UL );
+      randomize( vec1, 1, int(randmax) );
+      vec2 = vec1;
+
+      ASVT sv1 = subvector<aligned>  ( vec1, 8UL, 16UL );
+      USVT sv2 = subvector<unaligned>( vec2, 8UL, 16UL );
+      sv1 /= subvector<aligned>  ( vec1_, 24UL, 16UL );
+      sv2 /= subvector<unaligned>( vec2_, 24UL, 16UL );
+
+      checkSize( sv1, 16UL );
+      checkSize( sv2, 16UL );
+
+      if( sv1 != sv2 || vec1_ != vec2_ ) {
+         std::ostringstream oss;
+         oss << " Test: " << test_ << "\n"
+             << " Error: Division assignment failed\n"
+             << " Details:\n"
+             << "   Result:\n" << sv1 << "\n"
+             << "   Expected result:\n" << sv2 << "\n";
+         throw std::runtime_error( oss.str() );
+      }
+   }
+
+   {
+      test_ = "DenseSubvector division assignment (aliasing)";
+
+      randomize( vec1_, 1, int(randmax) );
+      vec2_ = vec1_;
+
+      ASVT sv1 = subvector<aligned>  ( vec1_, 8UL, 16UL );
+      USVT sv2 = subvector<unaligned>( vec2_, 8UL, 16UL );
+      sv1 /= subvector<aligned>  ( vec1_, 24UL, 16UL );
+      sv2 /= subvector<unaligned>( vec2_, 24UL, 16UL );
+
+      checkSize( sv1, 16UL );
+      checkSize( sv2, 16UL );
+
+      if( sv1 != sv2 || vec1_ != vec2_ ) {
+         std::ostringstream oss;
+         oss << " Test: " << test_ << "\n"
+             << " Error: Division assignment failed\n"
+             << " Details:\n"
+             << "   Result:\n" << sv1 << "\n"
+             << "   Expected result:\n" << sv2 << "\n";
+         throw std::runtime_error( oss.str() );
+      }
+   }
+
+
+   //=====================================================================================
+   // Dense vector division assignment
+   //=====================================================================================
+
+   {
+      test_ = "DenseSubvector dense vector division assignment (aligned/padded)";
+
+      initialize();
+
+      ASVT sv1 = subvector<aligned>  ( vec1_, 8UL, 16UL );
+      USVT sv2 = subvector<unaligned>( vec2_, 8UL, 16UL );
+
+      typedef blaze::CustomVector<int,aligned,padded,rowVector>  AlignedPadded;
+      AlignedPadded vec( blaze::allocate<int>( 16UL ), 16UL, 16UL, blaze::Deallocate() );
+      randomize( vec, 1, int(randmax) );
+
+      sv1 /= vec;
+      sv2 /= vec;
+
+      checkSize( sv1, 16UL );
+      checkSize( sv2, 16UL );
+
+      if( sv1 != sv2 || vec1_ != vec2_ ) {
+         std::ostringstream oss;
+         oss << " Test: " << test_ << "\n"
+             << " Error: Division assignment failed\n"
+             << " Details:\n"
+             << "   Result:\n" << sv1 << "\n"
+             << "   Expected result:\n" << sv2 << "\n";
+         throw std::runtime_error( oss.str() );
+      }
+   }
+
+   {
+      test_ = "DenseSubvector dense vector division assignment (unaligned/unpadded)";
+
+      initialize();
+
+      ASVT sv1 = subvector<aligned>  ( vec1_, 8UL, 16UL );
+      USVT sv2 = subvector<unaligned>( vec2_, 8UL, 16UL );
+
+      typedef blaze::CustomVector<int,unaligned,unpadded,rowVector>  UnalignedUnpadded;
+      std::unique_ptr<int[]> array( new int[17] );
+      UnalignedUnpadded vec( array.get()+1UL, 16UL );
+      randomize( vec, 1, int(randmax) );
+
+      sv1 /= vec;
+      sv2 /= vec;
+
+      checkSize( sv1, 16UL );
+      checkSize( sv2, 16UL );
+
+      if( sv1 != sv2 || vec1_ != vec2_ ) {
+         std::ostringstream oss;
+         oss << " Test: " << test_ << "\n"
+             << " Error: Division assignment failed\n"
              << " Details:\n"
              << "   Result:\n" << sv1 << "\n"
              << "   Expected result:\n" << sv2 << "\n";
