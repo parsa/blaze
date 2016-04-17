@@ -444,7 +444,8 @@ class SparseColumn : public SparseVector< SparseColumn<MT,SO,SF>, false >
    template< typename VT > inline SparseColumn& operator+=( const SparseVector<VT,false>& rhs );
    template< typename VT > inline SparseColumn& operator-=( const DenseVector<VT,false>&  rhs );
    template< typename VT > inline SparseColumn& operator-=( const SparseVector<VT,false>& rhs );
-   template< typename VT > inline SparseColumn& operator*=( const Vector<VT,false>& rhs );
+   template< typename VT > inline SparseColumn& operator*=( const Vector<VT,false>&       rhs );
+   template< typename VT > inline SparseColumn& operator/=( const DenseVector<VT,false>&  rhs );
 
    template< typename Other >
    inline EnableIf_< IsNumeric<Other>, SparseColumn >& operator*=( Other rhs );
@@ -1230,6 +1231,60 @@ inline SparseColumn<MT,SO,SF>& SparseColumn<MT,SO,SF>::operator*=( const Vector<
    }
 
    const MultType tmp( *this * (~rhs) );
+
+   if( !tryAssign( matrix_, tmp, 0UL, col_ ) ) {
+      BLAZE_THROW_INVALID_ARGUMENT( "Invalid assignment to restricted matrix" );
+   }
+
+   DerestrictTrait_<This> left( derestrict( *this ) );
+
+   left.reset();
+   assign( left, tmp );
+
+   BLAZE_INTERNAL_ASSERT( isIntact( matrix_ ), "Invariant violation detected" );
+
+   return *this;
+}
+//*************************************************************************************************
+
+
+//*************************************************************************************************
+/*!\brief Division assignment operator for the division of a dense vector (\f$ \vec{a}/=\vec{b} \f$).
+//
+// \param rhs The right-hand side dense vector divisor.
+// \return Reference to the sparse column.
+// \exception std::invalid_argument Vector sizes do not match.
+// \exception std::invalid_argument Invalid assignment to restricted matrix.
+//
+// In case the current sizes of the two vectors don't match, a \a std::invalid_argument exception
+// is thrown.
+*/
+template< typename MT    // Type of the sparse matrix
+        , bool SO        // Storage order
+        , bool SF >      // Symmetry flag
+template< typename VT >  // Type of the right-hand side vector
+inline SparseColumn<MT,SO,SF>& SparseColumn<MT,SO,SF>::operator/=( const DenseVector<VT,false>& rhs )
+{
+   using blaze::assign;
+
+   BLAZE_CONSTRAINT_MUST_BE_SPARSE_VECTOR_TYPE ( ResultType );
+   BLAZE_CONSTRAINT_MUST_BE_COLUMN_VECTOR_TYPE ( ResultType );
+   BLAZE_CONSTRAINT_MUST_NOT_REQUIRE_EVALUATION( ResultType );
+   BLAZE_CONSTRAINT_MUST_BE_DENSE_VECTOR_TYPE  ( ResultType_<VT> );
+   BLAZE_CONSTRAINT_MUST_BE_COLUMN_VECTOR_TYPE ( ResultType_<VT> );
+   BLAZE_CONSTRAINT_MUST_NOT_REQUIRE_EVALUATION( ResultType_<VT> );
+
+   typedef DivTrait_< ResultType, ResultType_<VT> >  DivType;
+
+   BLAZE_CONSTRAINT_MUST_BE_SPARSE_VECTOR_TYPE ( DivType );
+   BLAZE_CONSTRAINT_MUST_BE_COLUMN_VECTOR_TYPE ( DivType );
+   BLAZE_CONSTRAINT_MUST_NOT_REQUIRE_EVALUATION( DivType );
+
+   if( size() != (~rhs).size() ) {
+      BLAZE_THROW_INVALID_ARGUMENT( "Vector sizes do not match" );
+   }
+
+   const DivType tmp( *this / (~rhs) );
 
    if( !tryAssign( matrix_, tmp, 0UL, col_ ) ) {
       BLAZE_THROW_INVALID_ARGUMENT( "Invalid assignment to restricted matrix" );
@@ -2421,6 +2476,7 @@ class SparseColumn<MT,false,false> : public SparseVector< SparseColumn<MT,false,
    template< typename VT > inline SparseColumn& operator+=( const Vector<VT,false>& rhs );
    template< typename VT > inline SparseColumn& operator-=( const Vector<VT,false>& rhs );
    template< typename VT > inline SparseColumn& operator*=( const Vector<VT,false>& rhs );
+   template< typename VT > inline SparseColumn& operator/=( const DenseVector<VT,false>& rhs );
 
    template< typename Other >
    inline EnableIf_<IsNumeric<Other>, SparseColumn >& operator*=( Other rhs );
@@ -3006,6 +3062,60 @@ inline SparseColumn<MT,false,false>&
    }
 
    const MultType tmp( *this * (~rhs) );
+
+   if( !tryAssign( matrix_, tmp, 0UL, col_ ) ) {
+      BLAZE_THROW_INVALID_ARGUMENT( "Invalid assignment to restricted matrix" );
+   }
+
+   DerestrictTrait_<This> left( derestrict( *this ) );
+
+   assign( left, tmp );
+
+   BLAZE_INTERNAL_ASSERT( isIntact( matrix_ ), "Invariant violation detected" );
+
+   return *this;
+}
+/*! \endcond */
+//*************************************************************************************************
+
+
+//*************************************************************************************************
+/*! \cond BLAZE_INTERNAL */
+/*!\brief Division assignment operator for the division of a dense vector (\f$ \vec{a}/=\vec{b} \f$).
+//
+// \param rhs The right-hand side dense vector divisor.
+// \return Reference to the sparse column.
+// \exception std::invalid_argument Vector sizes do not match.
+// \exception std::invalid_argument Invalid assignment to restricted matrix.
+//
+// In case the current sizes of the two vectors don't match, a \a std::invalid_argument exception
+// is thrown.
+*/
+template< typename MT >  // Type of the sparse matrix
+template< typename VT >  // Type of the right-hand side vector
+inline SparseColumn<MT,false,false>&
+   SparseColumn<MT,false,false>::operator/=( const DenseVector<VT,false>& rhs )
+{
+   using blaze::assign;
+
+   BLAZE_CONSTRAINT_MUST_BE_SPARSE_VECTOR_TYPE ( ResultType );
+   BLAZE_CONSTRAINT_MUST_BE_COLUMN_VECTOR_TYPE ( ResultType );
+   BLAZE_CONSTRAINT_MUST_NOT_REQUIRE_EVALUATION( ResultType );
+   BLAZE_CONSTRAINT_MUST_BE_DENSE_VECTOR_TYPE  ( ResultType_<VT> );
+   BLAZE_CONSTRAINT_MUST_BE_COLUMN_VECTOR_TYPE ( ResultType_<VT> );
+   BLAZE_CONSTRAINT_MUST_NOT_REQUIRE_EVALUATION( ResultType_<VT> );
+
+   typedef DivTrait_< ResultType, ResultType_<VT> >  DivType;
+
+   BLAZE_CONSTRAINT_MUST_BE_SPARSE_VECTOR_TYPE ( DivType );
+   BLAZE_CONSTRAINT_MUST_BE_COLUMN_VECTOR_TYPE ( DivType );
+   BLAZE_CONSTRAINT_MUST_NOT_REQUIRE_EVALUATION( DivType );
+
+   if( size() != (~rhs).size() ) {
+      BLAZE_THROW_INVALID_ARGUMENT( "Vector sizes do not match" );
+   }
+
+   const DivType tmp( *this / (~rhs) );
 
    if( !tryAssign( matrix_, tmp, 0UL, col_ ) ) {
       BLAZE_THROW_INVALID_ARGUMENT( "Invalid assignment to restricted matrix" );
@@ -3840,7 +3950,8 @@ class SparseColumn<MT,false,true> : public SparseVector< SparseColumn<MT,false,t
    template< typename VT > inline SparseColumn& operator+=( const SparseVector<VT,false>& rhs );
    template< typename VT > inline SparseColumn& operator-=( const DenseVector<VT,false>&  rhs );
    template< typename VT > inline SparseColumn& operator-=( const SparseVector<VT,false>& rhs );
-   template< typename VT > inline SparseColumn& operator*=( const Vector<VT,false>& rhs );
+   template< typename VT > inline SparseColumn& operator*=( const Vector<VT,false>&       rhs );
+   template< typename VT > inline SparseColumn& operator/=( const DenseVector<VT,false>&  rhs );
 
    template< typename Other >
    inline EnableIf_<IsNumeric<Other>, SparseColumn >& operator*=( Other rhs );
@@ -4633,6 +4744,61 @@ inline SparseColumn<MT,false,true>&
    }
 
    const MultType tmp( *this * (~rhs) );
+
+   if( !tryAssign( matrix_, tmp, 0UL, col_ ) ) {
+      BLAZE_THROW_INVALID_ARGUMENT( "Invalid assignment to restricted matrix" );
+   }
+
+   DerestrictTrait_<This> left( derestrict( *this ) );
+
+   left.reset();
+   assign( left, tmp );
+
+   BLAZE_INTERNAL_ASSERT( isIntact( matrix_ ), "Invariant violation detected" );
+
+   return *this;
+}
+/*! \endcond */
+//*************************************************************************************************
+
+
+//*************************************************************************************************
+/*! \cond BLAZE_INTERNAL */
+/*!\brief Division assignment operator for the division of a dense vector (\f$ \vec{a}/=\vec{b} \f$).
+//
+// \param rhs The right-hand side dense vector divisor.
+// \return Reference to the sparse column.
+// \exception std::invalid_argument Vector sizes do not match.
+// \exception std::invalid_argument Invalid assignment to restricted matrix.
+//
+// In case the current sizes of the two vectors don't match, a \a std::invalid_argument exception
+// is thrown.
+*/
+template< typename MT >  // Type of the sparse matrix
+template< typename VT >  // Type of the right-hand side vector
+inline SparseColumn<MT,false,true>&
+   SparseColumn<MT,false,true>::operator/=( const DenseVector<VT,false>& rhs )
+{
+   using blaze::assign;
+
+   BLAZE_CONSTRAINT_MUST_BE_SPARSE_VECTOR_TYPE ( ResultType );
+   BLAZE_CONSTRAINT_MUST_BE_COLUMN_VECTOR_TYPE ( ResultType );
+   BLAZE_CONSTRAINT_MUST_NOT_REQUIRE_EVALUATION( ResultType );
+   BLAZE_CONSTRAINT_MUST_BE_DENSE_VECTOR_TYPE  ( ResultType_<VT> );
+   BLAZE_CONSTRAINT_MUST_BE_COLUMN_VECTOR_TYPE ( ResultType_<VT> );
+   BLAZE_CONSTRAINT_MUST_NOT_REQUIRE_EVALUATION( ResultType_<VT> );
+
+   typedef DivTrait_< ResultType, ResultType_<VT> >  DivType;
+
+   BLAZE_CONSTRAINT_MUST_BE_SPARSE_VECTOR_TYPE ( DivType );
+   BLAZE_CONSTRAINT_MUST_BE_COLUMN_VECTOR_TYPE ( DivType );
+   BLAZE_CONSTRAINT_MUST_NOT_REQUIRE_EVALUATION( DivType );
+
+   if( size() != (~rhs).size() ) {
+      BLAZE_THROW_INVALID_ARGUMENT( "Vector sizes do not match" );
+   }
+
+   const DivType tmp( *this / (~rhs) );
 
    if( !tryAssign( matrix_, tmp, 0UL, col_ ) ) {
       BLAZE_THROW_INVALID_ARGUMENT( "Invalid assignment to restricted matrix" );
