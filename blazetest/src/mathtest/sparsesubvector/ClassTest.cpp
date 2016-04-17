@@ -68,6 +68,7 @@ ClassTest::ClassTest()
    testAddAssign();
    testSubAssign();
    testMultAssign();
+   testDivAssign();
    testScaling();
    testSubscript();
    testIterator();
@@ -239,9 +240,7 @@ void ClassTest::testAssignment()
 
       SVT sv = subvector( vec_, 3UL, 4UL );
 
-      blaze::DynamicVector<int,blaze::rowVector> vec( 4UL, 0 );
-      vec[1] = 8;
-      vec[3] = 9;
+      blaze::DynamicVector<int,blaze::rowVector> vec{ 0, 8, 0, 9 };
 
       sv = vec;
 
@@ -424,9 +423,7 @@ void ClassTest::testAddAssign()
 
       SVT sv = subvector( vec_, 1UL, 3UL );
 
-      blaze::DynamicVector<int,blaze::rowVector> vec( 3UL, 0 );
-      vec[0] =  2;
-      vec[1] = -4;
+      blaze::DynamicVector<int,blaze::rowVector> vec{ 2, -4, 0 };
 
       sv += vec;
 
@@ -608,9 +605,7 @@ void ClassTest::testSubAssign()
 
       SVT sv = subvector( vec_, 1UL, 3UL );
 
-      blaze::DynamicVector<int,blaze::rowVector> vec( 3UL, 0 );
-      vec[0] =  2;
-      vec[1] = -4;
+      blaze::DynamicVector<int,blaze::rowVector> vec{ 2, -4, 0 };
 
       sv -= vec;
 
@@ -792,9 +787,7 @@ void ClassTest::testMultAssign()
 
       SVT sv = subvector( vec_, 1UL, 3UL );
 
-      blaze::DynamicVector<int,blaze::rowVector> vec( 3UL, 0 );
-      vec[0] =  2;
-      vec[1] = -4;
+      blaze::DynamicVector<int,blaze::rowVector> vec{ 2, -4, 0 };
 
       sv *= vec;
 
@@ -866,6 +859,62 @@ void ClassTest::testMultAssign()
              << " Details:\n"
              << "   Result:\n" << vec_ << "\n"
              << "   Expected result:\n( 0 2 0 0 -3 0 4 0 )\n";
+         throw std::runtime_error( oss.str() );
+      }
+   }
+}
+//*************************************************************************************************
+
+
+//*************************************************************************************************
+/*!\brief Test of the SparseSubvector division assignment operators.
+//
+// \return void
+// \exception std::runtime_error Error detected.
+//
+// This function performs a test of the division assignment operators of the SparseSubvector
+// class template. In case an error is detected, a \a std::runtime_error exception is thrown.
+*/
+void ClassTest::testDivAssign()
+{
+   //=====================================================================================
+   // Dense vector division assignment
+   //=====================================================================================
+
+   {
+      test_ = "Dense vector division assignment";
+
+      initialize();
+
+      SVT sv = subvector( vec_, 1UL, 3UL );
+
+      blaze::DynamicVector<int,blaze::rowVector> vec{ 1, -4, 2 };
+
+      sv /= vec;
+
+      checkSize    ( sv  , 3UL );
+      checkNonZeros( sv  , 2UL );
+      checkSize    ( vec_, 8UL );
+      checkNonZeros( vec_, 4UL );
+
+      if( sv[0] != 1 || sv[1] != 0 || sv[2] != -1 ) {
+         std::ostringstream oss;
+         oss << " Test: " << test_ << "\n"
+             << " Error: Division assignment failed\n"
+             << " Details:\n"
+             << "   Result:\n" << sv << "\n"
+             << "   Expected result:\n( 1 0 -1 )\n";
+         throw std::runtime_error( oss.str() );
+      }
+
+      if( vec_[0] !=  0 || vec_[1] != 1 || vec_[2] != 0 || vec_[3] != -1 ||
+          vec_[4] != -3 || vec_[5] != 0 || vec_[6] != 4 || vec_[7] !=  0 ) {
+         std::ostringstream oss;
+         oss << " Test: " << test_ << "\n"
+             << " Error: Division assignment failed\n"
+             << " Details:\n"
+             << "   Result:\n" << vec_ << "\n"
+             << "   Expected result:\n( 0 1 0 -1 -3 0 4 0 )\n";
          throw std::runtime_error( oss.str() );
       }
    }
