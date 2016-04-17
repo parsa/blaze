@@ -306,7 +306,7 @@ void ProxyTest::testAddAssign()
    //=====================================================================================
 
    {
-      test_ = "VectorAccessProxy dense vector assignment";
+      test_ = "VectorAccessProxy dense vector addition assignment";
 
       DV tmp( 3UL );
       tmp[0] = 1;
@@ -344,7 +344,7 @@ void ProxyTest::testAddAssign()
    //=====================================================================================
 
    {
-      test_ = "VectorAccessProxy sparse vector assignment";
+      test_ = "VectorAccessProxy sparse vector addition assignment";
 
       SV tmp( 3UL );
       tmp[1] = 2;
@@ -389,11 +389,11 @@ void ProxyTest::testAddAssign()
 void ProxyTest::testSubAssign()
 {
    //=====================================================================================
-   // Dense vector addition assignment
+   // Dense vector subtraction assignment
    //=====================================================================================
 
    {
-      test_ = "VectorAccessProxy dense vector assignment";
+      test_ = "VectorAccessProxy dense vector subtraction assignment";
 
       DV tmp( 3UL );
       tmp[0] = 1;
@@ -427,11 +427,11 @@ void ProxyTest::testSubAssign()
 
 
    //=====================================================================================
-   // Sparse vector addition assignment
+   // Sparse vector subtraction assignment
    //=====================================================================================
 
    {
-      test_ = "VectorAccessProxy sparse vector assignment";
+      test_ = "VectorAccessProxy sparse vector subtraction assignment";
 
       SV tmp( 3UL );
       tmp[1] = 2;
@@ -476,11 +476,11 @@ void ProxyTest::testSubAssign()
 void ProxyTest::testMultAssign()
 {
    //=====================================================================================
-   // Dense vector addition assignment
+   // Dense vector multiplication assignment
    //=====================================================================================
 
    {
-      test_ = "VectorAccessProxy dense vector assignment";
+      test_ = "VectorAccessProxy dense vector multiplication assignment";
 
       DV tmp( 3UL );
       tmp[0] = 1;
@@ -514,11 +514,11 @@ void ProxyTest::testMultAssign()
 
 
    //=====================================================================================
-   // Sparse vector addition assignment
+   // Sparse vector multiplication assignment
    //=====================================================================================
 
    {
-      test_ = "VectorAccessProxy sparse vector assignment";
+      test_ = "VectorAccessProxy sparse vector multiplication assignment";
 
       SV tmp( 3UL );
       tmp[1] = 2;
@@ -544,6 +544,57 @@ void ProxyTest::testMultAssign()
              << " Details:\n"
              << "   Result:\n" << vec[1] << "\n"
              << "   Expected result:\n( 0 4 0 )\n";
+         throw std::runtime_error( oss.str() );
+      }
+   }
+}
+//*************************************************************************************************
+
+
+//*************************************************************************************************
+/*!\brief Test of the VectorAccessProxy division assignment operators.
+//
+// \return void
+// \exception std::runtime_error Error detected.
+//
+// This function performs a test of the division assignment operators of the VectorAccessProxy
+// class template. In case an error is detected, a \a std::runtime_error exception is thrown.
+*/
+void ProxyTest::testDivAssign()
+{
+   //=====================================================================================
+   // Dense vector division assignment
+   //=====================================================================================
+
+   {
+      test_ = "VectorAccessProxy dense vector division assignment";
+
+      DV tmp( 3UL );
+      tmp[0] = 1;
+      tmp[1] = 2;
+      tmp[2] = 3;
+      DVV vec( 3UL, 1UL );
+      vec[1] =  tmp;
+
+      vec[1] /= tmp;
+
+      checkSize    ( vec, 3UL );
+      checkCapacity( vec, 1UL );
+      checkNonZeros( vec, 1UL );
+
+      checkSize    ( vec[0], 0UL );
+      checkSize    ( vec[1], 3UL );
+      checkCapacity( vec[1], 3UL );
+      checkNonZeros( vec[1], 3UL );
+      checkSize    ( vec[2], 0UL );
+
+      if( vec[1][0] != 1 || vec[1][1] != 1 || vec[1][2] != 1 ) {
+         std::ostringstream oss;
+         oss << " Test: " << test_ << "\n"
+             << " Error: Assignment failed\n"
+             << " Details:\n"
+             << "   Result:\n" << vec[1] << "\n"
+             << "   Expected result:\n( 1 1 1 )\n";
          throw std::runtime_error( oss.str() );
       }
    }

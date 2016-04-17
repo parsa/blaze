@@ -73,6 +73,7 @@ ClassTest::ClassTest()
    testAddAssign();
    testSubAssign();
    testMultAssign();
+   testDivAssign();
    testScaling();
    testSubscript();
    testAt();
@@ -365,7 +366,7 @@ void ClassTest::testAssignment()
    {
       test_ = "CompressedVector dense vector assignment";
 
-      blaze::DynamicVector<int,blaze::rowVector> vec1( { 10, 11, 12, 0, 13 } );
+      blaze::DynamicVector<int,blaze::rowVector> vec1{ 10, 11, 12, 0, 13 };
       blaze::CompressedVector<int,blaze::rowVector> vec2;
       vec2 = vec1;
 
@@ -489,7 +490,7 @@ void ClassTest::testAddAssign()
    {
       test_ = "CompressedVector dense vector addition assignment";
 
-      blaze::DynamicVector<int,blaze::rowVector> vec1( { 10, 11, 12, 0, 13 } );
+      blaze::DynamicVector<int,blaze::rowVector> vec1{ 10, 11, 12, 0, 13 };
       blaze::CompressedVector<int,blaze::rowVector> vec2( 5UL, 3UL );
       vec2[0] = 1;
       vec2[1] = 2;
@@ -564,7 +565,7 @@ void ClassTest::testSubAssign()
    {
       test_ = "CompressedVector dense vector subtraction assignment";
 
-      blaze::DynamicVector<int,blaze::rowVector> vec1( { 10, 11, 12, 0, 13 } );
+      blaze::DynamicVector<int,blaze::rowVector> vec1{ 10, 11, 12, 0, 13 };
       blaze::CompressedVector<int,blaze::rowVector> vec2( 5UL, 3UL );
       vec2[0] = 1;
       vec2[1] = 2;
@@ -639,7 +640,7 @@ void ClassTest::testMultAssign()
    {
       test_ = "CompressedVector dense vector multiplication assignment";
 
-      blaze::DynamicVector<int,blaze::rowVector> vec1( { 10, 11, 12, 0, 13 } );
+      blaze::DynamicVector<int,blaze::rowVector> vec1{ 10, 11, 12, 0, 13 };
       blaze::CompressedVector<int,blaze::rowVector> vec2( 5UL, 3UL );
       vec2[0] = 1;
       vec2[1] = 2;
@@ -689,6 +690,49 @@ void ClassTest::testMultAssign()
              << " Details:\n"
              << "   Result:\n" << vec2 << "\n"
              << "   Expected result:\n( 0 10 0 0 0 )\n";
+         throw std::runtime_error( oss.str() );
+      }
+   }
+}
+//*************************************************************************************************
+
+
+//*************************************************************************************************
+/*!\brief Test of the CompressedVector division assignment operators.
+//
+// \return void
+// \exception std::runtime_error Error detected.
+//
+// This function performs a test of the division assignment operators of the CompressedVector
+// class template. In case an error is detected, a \a std::runtime_error exception is thrown.
+*/
+void ClassTest::testDivAssign()
+{
+   //=====================================================================================
+   // Dense vector division assignment
+   //=====================================================================================
+
+   {
+      test_ = "CompressedVector dense vector division assignment";
+
+      blaze::DynamicVector<int,blaze::rowVector> vec1{ 1, 2, -3, 4, 1 };
+      blaze::CompressedVector<int,blaze::rowVector> vec2( 5UL, 3UL );
+      vec2[0] =  2;
+      vec2[2] = -3;
+      vec2[3] =  8;
+
+      vec2 /= vec1;
+
+      checkSize    ( vec2, 5UL );
+      checkNonZeros( vec2, 3UL );
+
+      if( vec2[0] != 2 || vec2[1] != 0 || vec2[2] != 1 || vec2[3] != 2 || vec2[4] != 0 ) {
+         std::ostringstream oss;
+         oss << " Test: " << test_ << "\n"
+             << " Error: Division assignment failed\n"
+             << " Details:\n"
+             << "   Result:\n" << vec2 << "\n"
+             << "   Expected result:\n( 2 0 1 2 0 )\n";
          throw std::runtime_error( oss.str() );
       }
    }
