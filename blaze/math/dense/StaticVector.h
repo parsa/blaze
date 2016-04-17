@@ -63,6 +63,7 @@
 #include <blaze/math/typetraits/HasConstDataAccess.h>
 #include <blaze/math/typetraits/HasMutableDataAccess.h>
 #include <blaze/math/typetraits/HasSIMDAdd.h>
+#include <blaze/math/typetraits/HasSIMDDiv.h>
 #include <blaze/math/typetraits/HasSIMDMult.h>
 #include <blaze/math/typetraits/HasSIMDSub.h>
 #include <blaze/math/typetraits/IsAligned.h>
@@ -276,6 +277,7 @@ class StaticVector : public DenseVector< StaticVector<Type,N,TF>, TF >
    template< typename VT > inline StaticVector& operator+=( const Vector<VT,TF>& rhs );
    template< typename VT > inline StaticVector& operator-=( const Vector<VT,TF>& rhs );
    template< typename VT > inline StaticVector& operator*=( const Vector<VT,TF>& rhs );
+   template< typename VT > inline StaticVector& operator/=( const DenseVector<VT,TF>& rhs );
 
    template< typename Other >
    inline EnableIf_<IsNumeric<Other>, StaticVector >& operator*=( Other rhs );
@@ -365,6 +367,19 @@ class StaticVector : public DenseVector< StaticVector<Type,N,TF>, TF >
    //**********************************************************************************************
 
    //**********************************************************************************************
+   /*! \cond BLAZE_INTERNAL */
+   //! Helper structure for the explicit application of the SFINAE principle.
+   template< typename VT >
+   struct VectorizedDivAssign {
+      enum : bool { value = useOptimizedKernels &&
+                            simdEnabled && VT::simdEnabled &&
+                            IsSame< Type, ElementType_<VT> >::value &&
+                            HasSIMDDiv<Type,Type>::value };
+   };
+   /*! \endcond */
+   //**********************************************************************************************
+
+   //**********************************************************************************************
    //! The number of elements packed within a single SIMD vector.
    enum : size_t { SIMDSIZE = SIMDTrait<ElementType>::size };
    //**********************************************************************************************
@@ -425,6 +440,12 @@ class StaticVector : public DenseVector< StaticVector<Type,N,TF>, TF >
    inline EnableIf_<VectorizedMultAssign<VT> > multAssign( const DenseVector<VT,TF>& rhs );
 
    template< typename VT > inline void multAssign( const SparseVector<VT,TF>& rhs );
+
+   template< typename VT >
+   inline DisableIf_<VectorizedDivAssign<VT> > divAssign( const DenseVector<VT,TF>& rhs );
+
+   template< typename VT >
+   inline EnableIf_<VectorizedDivAssign<VT> > divAssign( const DenseVector<VT,TF>& rhs );
    //@}
    //**********************************************************************************************
 
@@ -1192,6 +1213,41 @@ inline StaticVector<Type,N,TF>& StaticVector<Type,N,TF>::operator*=( const Vecto
    }
    else {
       multAssign( *this, ~rhs );
+   }
+
+   return *this;
+}
+//*************************************************************************************************
+
+
+//*************************************************************************************************
+/*!\brief Division assignment operator for the division of a dense vector (\f$ \vec{a}/=\vec{b} \f$).
+//
+// \param rhs The right-hand side dense vector divisor.
+// \return Reference to the vector.
+// \exception std::invalid_argument Vector sizes do not match.
+//
+// In case the current sizes of the two vectors don't match, a \a std::invalid_argument exception
+// is thrown.
+*/
+template< typename Type  // Data type of the vector
+        , size_t N       // Number of elements
+        , bool TF >      // Transpose flag
+template< typename VT >  // Type of the right-hand side vector
+inline StaticVector<Type,N,TF>& StaticVector<Type,N,TF>::operator/=( const DenseVector<VT,TF>& rhs )
+{
+   using blaze::divAssign;
+
+   if( (~rhs).size() != N ) {
+      BLAZE_THROW_INVALID_ARGUMENT( "Vector sizes do not match" );
+   }
+
+   if( (~rhs).canAlias( this ) ) {
+      const StaticVector tmp( *this / (~rhs) );
+      this->operator=( tmp );
+   }
+   else {
+      divAssign( *this, ~rhs );
    }
 
    return *this;
@@ -2207,6 +2263,71 @@ inline void StaticVector<Type,N,TF>::multAssign( const SparseVector<VT,TF>& rhs 
 //*************************************************************************************************
 
 
+//*************************************************************************************************
+/*!\brief Default implementation of the division assignment of a dense vector.
+//
+// \param rhs The right-hand side dense vector divisor.
+// \return void
+//
+// This function must \b NOT be called explicitly! It is used internally for the performance
+// optimized evaluation of expression templates. Calling this function explicitly might result
+// in erroneous results and/or in compilation errors. Instead of using this function use the
+// assignment operator.
+*/
+template< typename Type  // Data type of the vector
+        , size_t N       // Number of elements
+        , bool TF >      // Transpose flag
+template< typename VT >  // Type of the right-hand side dense vector
+inline DisableIf_<typename StaticVector<Type,N,TF>::BLAZE_TEMPLATE VectorizedDivAssign<VT> >
+   StaticVector<Type,N,TF>::divAssign( const DenseVector<VT,TF>& rhs )
+{
+   BLAZE_INTERNAL_ASSERT( (~rhs).size() == N, "Invalid vector sizes" );
+
+   for( size_t i=0UL; i<N; ++i )
+      v_[i] /= (~rhs)[i];
+}
+//*************************************************************************************************
+
+
+//*************************************************************************************************
+/*!\brief SIMD optimized implementation of the division assignment of a dense vector.
+//
+// \param rhs The right-hand side dense vector divisor.
+// \return void
+//
+// This function must \b NOT be called explicitly! It is used internally for the performance
+// optimized evaluation of expression templates. Calling this function explicitly might result
+// in erroneous results and/or in compilation errors. Instead of using this function use the
+// assignment operator.
+*/
+template< typename Type  // Data type of the vector
+        , size_t N       // Number of elements
+        , bool TF >      // Transpose flag
+template< typename VT >  // Type of the right-hand side dense vector
+inline EnableIf_<typename StaticVector<Type,N,TF>::BLAZE_TEMPLATE VectorizedDivAssign<VT> >
+   StaticVector<Type,N,TF>::divAssign( const DenseVector<VT,TF>& rhs )
+{
+   BLAZE_CONSTRAINT_MUST_BE_VECTORIZABLE_TYPE( Type );
+
+   BLAZE_INTERNAL_ASSERT( (~rhs).size() == N, "Invalid vector sizes" );
+
+   const bool remainder( !usePadding || !IsPadded<VT>::value );
+
+   const size_t ipos( ( remainder )?( N & size_t(-SIMDSIZE) ):( N ) );
+   BLAZE_INTERNAL_ASSERT( !remainder || ( N - ( N % (SIMDSIZE) ) ) == ipos, "Invalid end calculation" );
+
+   size_t i( 0UL );
+
+   for( ; i<ipos; i+=SIMDSIZE ) {
+      store( i, load(i) / (~rhs).load(i) );
+   }
+   for( ; remainder && i<N; ++i ) {
+      v_[i] /= (~rhs)[i];
+   }
+}
+//*************************************************************************************************
+
+
 
 
 
@@ -2628,6 +2749,12 @@ struct CrossTrait< StaticVector<T1,3UL,TF>, StaticVector<T2,3UL,TF> >
 /*! \cond BLAZE_INTERNAL */
 template< typename T1, size_t N, bool TF, typename T2 >
 struct DivTrait< StaticVector<T1,N,TF>, T2, EnableIf_<IsNumeric<T2> > >
+{
+   using Type = StaticVector< DivTrait_<T1,T2>, N, TF >;
+};
+
+template< typename T1, size_t N, bool TF, typename T2 >
+struct DivTrait< StaticVector<T1,N,TF>, StaticVector<T2,N,TF> >
 {
    using Type = StaticVector< DivTrait_<T1,T2>, N, TF >;
 };
