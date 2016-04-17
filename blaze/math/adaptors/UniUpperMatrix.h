@@ -1767,6 +1767,36 @@ inline bool tryMultAssign( const UniUpperMatrix<MT,SO,DF>& lhs,
 
 //*************************************************************************************************
 /*! \cond BLAZE_INTERNAL */
+/*!\brief Predict invariant violations by the division assignment of a vector to an uniupper matrix.
+// \ingroup uniupper_matrix
+//
+// \param lhs The target left-hand side uniupper matrix.
+// \param rhs The right-hand side vector divisor.
+// \param row The row index of the first element to be modified.
+// \param column The column index of the first element to be modified.
+// \return \a true in case the assignment would be successful, \a false if not.
+//
+// This function must \b NOT be called explicitly! It is used internally for the performance
+// optimized evaluation of expression templates. Calling this function explicitly might result
+// in erroneous results and/or in compilation errors. Instead of using this function use the
+// assignment operator.
+*/
+template< typename MT  // Type of the adapted matrix
+        , bool SO      // Storage order of the adapted matrix
+        , bool DF      // Density flag
+        , typename VT  // Type of the right-hand side vector
+        , bool TF >    // Transpose flag of the right-hand side vector
+inline bool tryDivAssign( const UniUpperMatrix<MT,SO,DF>& lhs,
+                          const Vector<VT,TF>& rhs, size_t row, size_t column )
+{
+   return tryMultAssign( lhs, ~rhs, row, column );
+}
+/*! \endcond */
+//*************************************************************************************************
+
+
+//*************************************************************************************************
+/*! \cond BLAZE_INTERNAL */
 /*!\brief Returns a reference to the instance without the access restrictions to the lower part.
 // \ingroup math_shims
 //
