@@ -95,6 +95,7 @@ class UnalignedUnpaddedTest
    void testAddAssign   ();
    void testSubAssign   ();
    void testMultAssign  ();
+   void testDivAssign   ();
    void testScaling     ();
    void testSubscript   ();
    void testAt          ();

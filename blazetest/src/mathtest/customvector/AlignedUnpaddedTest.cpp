@@ -76,6 +76,7 @@ AlignedUnpaddedTest::AlignedUnpaddedTest()
    testAddAssign();
    testSubAssign();
    testMultAssign();
+   testDivAssign();
    testScaling();
    testSubscript();
    testAt();
@@ -912,8 +913,8 @@ void AlignedUnpaddedTest::testMultAssign()
       vec2 *= vec1;
 
       checkSize    ( vec2, 5UL );
-      //checkCapacity( vec2, 5UL );
-      //checkNonZeros( vec2, 2UL );
+      checkCapacity( vec2, 5UL );
+      checkNonZeros( vec2, 2UL );
 
       if( vec2[0] != 0 || vec2[1] != 0 || vec2[2] != -4 || vec2[3] != -18 || vec2[4] != 0 ) {
          std::ostringstream oss;
@@ -922,6 +923,103 @@ void AlignedUnpaddedTest::testMultAssign()
              << " Details:\n"
              << "   Result:\n" << vec2 << "\n"
              << "   Expected result:\n( 0 0 -4 -18 0 )\n";
+         throw std::runtime_error( oss.str() );
+      }
+   }
+}
+//*************************************************************************************************
+
+
+//*************************************************************************************************
+/*!\brief Test of the CustomVector division assignment operators.
+//
+// \return void
+// \exception std::runtime_error Error detected.
+//
+// This function performs a test of the division assignment operators of the CustomVector
+// class template. In case an error is detected, a \a std::runtime_error exception is thrown.
+*/
+void AlignedUnpaddedTest::testDivAssign()
+{
+   //=====================================================================================
+   // Dense vector division assignment
+   //=====================================================================================
+
+   {
+      test_ = "CustomVector dense vector division assignment (aligned/padded)";
+
+      using blaze::aligned;
+      using blaze::padded;
+      using blaze::rowVector;
+
+      typedef blaze::CustomVector<int,aligned,padded,rowVector>  AlignedPadded;
+      AlignedPadded vec1( blaze::allocate<int>( 16UL ), 5UL, 16UL, blaze::Deallocate() );
+      vec1[0] =  1;
+      vec1[1] =  2;
+      vec1[2] = -3;
+      vec1[3] =  4;
+      vec1[4] =  1;
+
+      VT vec2( blaze::allocate<int>( 5UL ), 5UL, blaze::Deallocate() );
+      vec2[0] =  2;
+      vec2[1] =  0;
+      vec2[2] = -3;
+      vec2[3] =  8;
+      vec2[4] =  0;
+
+      vec2 /= vec1;
+
+      checkSize    ( vec2, 5UL );
+      checkCapacity( vec2, 5UL );
+      checkNonZeros( vec2, 3UL );
+
+      if( vec2[0] != 2 || vec2[1] != 0 || vec2[2] != 1 || vec2[3] != 2 || vec2[4] != 0 ) {
+         std::ostringstream oss;
+         oss << " Test: " << test_ << "\n"
+             << " Error: Division assignment failed\n"
+             << " Details:\n"
+             << "   Result:\n" << vec2 << "\n"
+             << "   Expected result:\n( 2 0 1 2 0 )\n";
+         throw std::runtime_error( oss.str() );
+      }
+   }
+
+   {
+      test_ = "CustomVector dense vector division assignment (unaligned/unpadded)";
+
+      using blaze::unaligned;
+      using blaze::unpadded;
+      using blaze::rowVector;
+
+      typedef blaze::CustomVector<int,unaligned,unpadded,rowVector>  UnalignedUnpadded;
+      std::unique_ptr<int[]> array( new int[6UL] );
+      UnalignedUnpadded vec1( array.get()+1UL, 5UL );
+      vec1[0] =  1;
+      vec1[1] =  2;
+      vec1[2] = -3;
+      vec1[3] =  4;
+      vec1[4] =  1;
+
+      VT vec2( blaze::allocate<int>( 5UL ), 5UL, blaze::Deallocate() );
+      vec2[0] =  2;
+      vec2[1] =  0;
+      vec2[2] = -3;
+      vec2[3] =  8;
+      vec2[4] =  0;
+
+      vec2 /= vec1;
+
+      checkSize    ( vec2, 5UL );
+      checkCapacity( vec2, 5UL );
+      checkNonZeros( vec2, 3UL );
+
+      if( vec2[0] != 2 || vec2[1] != 0 || vec2[2] != 1 || vec2[3] != 2 || vec2[4] != 0 ) {
+         std::ostringstream oss;
+         oss << " Test: " << test_ << "\n"
+             << " Error: Division assignment failed\n"
+             << " Details:\n"
+             << "   Result:\n" << vec2 << "\n"
+             << "   Expected result:\n( 2 0 1 2 0 )\n";
          throw std::runtime_error( oss.str() );
       }
    }
