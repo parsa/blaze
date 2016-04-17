@@ -547,6 +547,36 @@ BLAZE_ALWAYS_INLINE void multAssign( Vector<VT1,TF1>& lhs, const Vector<VT2,TF2>
 
 //*************************************************************************************************
 /*! \cond BLAZE_INTERNAL */
+/*!\brief Default implementation of the division assignment of a vector to a vector.
+// \ingroup vector
+//
+// \param lhs The target left-hand side vector.
+// \param rhs The right-hand side vector divisor.
+// \return void
+//
+// This function implements the default division assignment of a vector to a vector.\n
+// This function must \b NOT be called explicitly! It is used internally for the performance
+// optimized evaluation of expression templates. Calling this function explicitly might result
+// in erroneous results and/or in compilation errors. Instead of using this function use the
+// assignment operator.
+*/
+template< typename VT1  // Type of the left-hand side vector
+        , bool TF1      // Transpose flag of the left-hand side vector
+        , typename VT2  // Type of the right-hand side vector
+        , bool TF2 >    // Transpose flag of the right-hand side vector
+BLAZE_ALWAYS_INLINE void divAssign( Vector<VT1,TF1>& lhs, const Vector<VT2,TF2>& rhs )
+{
+   BLAZE_FUNCTION_TRACE;
+
+   BLAZE_INTERNAL_ASSERT( (~lhs).size() == (~rhs).size(), "Invalid vector sizes" );
+   (~lhs).divAssign( ~rhs );
+}
+/*! \endcond */
+//*************************************************************************************************
+
+
+//*************************************************************************************************
+/*! \cond BLAZE_INTERNAL */
 /*!\brief Predict invariant violations by the assignment of a vector to a vector.
 // \ingroup vector
 //
@@ -661,6 +691,38 @@ template< typename VT1  // Type of the left-hand side vector
         , typename VT2  // Type of the right-hand side vector
         , bool TF2 >    // Transpose flag of the right-hand side vector
 BLAZE_ALWAYS_INLINE bool tryMultAssign( const Vector<VT1,TF1>& lhs, const Vector<VT2,TF2>& rhs, size_t index )
+{
+   BLAZE_INTERNAL_ASSERT( index <= (~lhs).size(), "Invalid vector access index" );
+   BLAZE_INTERNAL_ASSERT( (~rhs).size() <= (~lhs).size() - index, "Invalid vector size" );
+
+   UNUSED_PARAMETER( lhs, rhs, index );
+
+   return true;
+}
+/*! \endcond */
+//*************************************************************************************************
+
+
+//*************************************************************************************************
+/*! \cond BLAZE_INTERNAL */
+/*!\brief Predict invariant violations by the division assignment of a vector to a vector.
+// \ingroup vector
+//
+// \param lhs The target left-hand side vector.
+// \param rhs The right-hand side vector divisor.
+// \param index The index of the first element to be modified.
+// \return \a true in case the assignment would be successful, \a false if not.
+//
+// This function must \b NOT be called explicitly! It is used internally for the performance
+// optimized evaluation of expression templates. Calling this function explicitly might result
+// in erroneous results and/or in compilation errors. Instead of using this function use the
+// assignment operator.
+*/
+template< typename VT1  // Type of the left-hand side vector
+        , bool TF1      // Transpose flag of the left-hand side vector
+        , typename VT2  // Type of the right-hand side vector
+        , bool TF2 >    // Transpose flag of the right-hand side vector
+BLAZE_ALWAYS_INLINE bool tryDivAssign( const Vector<VT1,TF1>& lhs, const Vector<VT2,TF2>& rhs, size_t index )
 {
    BLAZE_INTERNAL_ASSERT( index <= (~lhs).size(), "Invalid vector access index" );
    BLAZE_INTERNAL_ASSERT( (~rhs).size() <= (~lhs).size() - index, "Invalid vector size" );
