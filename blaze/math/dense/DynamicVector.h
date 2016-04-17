@@ -64,6 +64,7 @@
 #include <blaze/math/typetraits/HasConstDataAccess.h>
 #include <blaze/math/typetraits/HasMutableDataAccess.h>
 #include <blaze/math/typetraits/HasSIMDAdd.h>
+#include <blaze/math/typetraits/HasSIMDDiv.h>
 #include <blaze/math/typetraits/HasSIMDMult.h>
 #include <blaze/math/typetraits/HasSIMDSub.h>
 #include <blaze/math/typetraits/IsAligned.h>
@@ -277,6 +278,7 @@ class DynamicVector : public DenseVector< DynamicVector<Type,TF>, TF >
    template< typename VT > inline DynamicVector& operator+=( const Vector<VT,TF>& rhs );
    template< typename VT > inline DynamicVector& operator-=( const Vector<VT,TF>& rhs );
    template< typename VT > inline DynamicVector& operator*=( const Vector<VT,TF>& rhs );
+   template< typename VT > inline DynamicVector& operator/=( const DenseVector<VT,TF>& rhs );
 
    template< typename Other >
    inline EnableIf_<IsNumeric<Other>, DynamicVector >& operator*=( Other rhs );
@@ -355,6 +357,19 @@ class DynamicVector : public DenseVector< DynamicVector<Type,TF>, TF >
    //**********************************************************************************************
 
    //**********************************************************************************************
+   /*! \cond BLAZE_INTERNAL */
+   //! Helper structure for the explicit application of the SFINAE principle.
+   template< typename VT >
+   struct VectorizedDivAssign {
+      enum : bool { value = useOptimizedKernels &&
+                            simdEnabled && VT::simdEnabled &&
+                            IsSame< Type, ElementType_<VT> >::value &&
+                            HasSIMDDiv<Type,Type>::value };
+   };
+   /*! \endcond */
+   //**********************************************************************************************
+
+   //**********************************************************************************************
    //! The number of elements packed within a single SIMD element.
    enum : size_t { SIMDSIZE = SIMDTrait<ElementType>::size };
    //**********************************************************************************************
@@ -416,6 +431,12 @@ class DynamicVector : public DenseVector< DynamicVector<Type,TF>, TF >
    inline EnableIf_<VectorizedMultAssign<VT> > multAssign( const DenseVector<VT,TF>& rhs );
 
    template< typename VT > inline void multAssign( const SparseVector<VT,TF>& rhs );
+
+   template< typename VT >
+   inline DisableIf_<VectorizedDivAssign<VT> > divAssign( const DenseVector<VT,TF>& rhs );
+
+   template< typename VT >
+   inline EnableIf_<VectorizedDivAssign<VT> > divAssign( const DenseVector<VT,TF>& rhs );
    //@}
    //**********************************************************************************************
 
@@ -1176,6 +1197,38 @@ inline DynamicVector<Type,TF>& DynamicVector<Type,TF>::operator*=( const Vector<
    }
    else {
       smpMultAssign( *this, ~rhs );
+   }
+
+   return *this;
+}
+//*************************************************************************************************
+
+
+//*************************************************************************************************
+/*!\brief Division assignment operator for the division of a dense vector (\f$ \vec{a}/=\vec{b} \f$).
+//
+// \param rhs The right-hand side dense vector divisor.
+// \return Reference to the vector.
+// \exception std::invalid_argument Vector sizes do not match.
+//
+// In case the current sizes of the two vectors don't match, a \a std::invalid_argument exception
+// is thrown.
+*/
+template< typename Type  // Data type of the vector
+        , bool TF >      // Transpose flag
+template< typename VT >  // Type of the right-hand side vector
+inline DynamicVector<Type,TF>& DynamicVector<Type,TF>::operator/=( const DenseVector<VT,TF>& rhs )
+{
+   if( (~rhs).size() != size_ ) {
+      BLAZE_THROW_INVALID_ARGUMENT( "Vector sizes do not match" );
+   }
+
+   if( (~rhs).canAlias( this ) ) {
+      DynamicVector<Type,TF> tmp( *this / (~rhs) );
+      swap( tmp );
+   }
+   else {
+      smpDivAssign( *this, ~rhs );
    }
 
    return *this;
@@ -2236,6 +2289,83 @@ inline void DynamicVector<Type,TF>::multAssign( const SparseVector<VT,TF>& rhs )
 //*************************************************************************************************
 
 
+//*************************************************************************************************
+/*!\brief Default implementation of the division assignment of a dense vector.
+//
+// \param rhs The right-hand side dense vector divisior.
+// \return void
+//
+// This function must \b NOT be called explicitly! It is used internally for the performance
+// optimized evaluation of expression templates. Calling this function explicitly might result
+// in erroneous results and/or in compilation errors. Instead of using this function use the
+// assignment operator.
+*/
+template< typename Type  // Data type of the vector
+        , bool TF >      // Transpose flag
+template< typename VT >  // Type of the right-hand side dense vector
+inline DisableIf_<typename DynamicVector<Type,TF>::BLAZE_TEMPLATE VectorizedDivAssign<VT> >
+   DynamicVector<Type,TF>::divAssign( const DenseVector<VT,TF>& rhs )
+{
+   BLAZE_INTERNAL_ASSERT( size_ == (~rhs).size(), "Invalid vector sizes" );
+
+   const size_t ipos( size_ & size_t(-2) );
+   BLAZE_INTERNAL_ASSERT( ( size_ - ( size_ % 2UL ) ) == ipos, "Invalid end calculation" );
+
+   for( size_t i=0UL; i<ipos; i+=2UL ) {
+      v_[i    ] /= (~rhs)[i    ];
+      v_[i+1UL] /= (~rhs)[i+1UL];
+   }
+   if( ipos < (~rhs).size() )
+      v_[ipos] /= (~rhs)[ipos];
+}
+//*************************************************************************************************
+
+
+//*************************************************************************************************
+/*!\brief SIMD optimized implementation of the division assignment of a dense vector.
+//
+// \param rhs The right-hand side dense vector divisor.
+// \return void
+//
+// This function must \b NOT be called explicitly! It is used internally for the performance
+// optimized evaluation of expression templates. Calling this function explicitly might result
+// in erroneous results and/or in compilation errors. Instead of using this function use the
+// assignment operator.
+*/
+template< typename Type  // Data type of the vector
+        , bool TF >      // Transpose flag
+template< typename VT >  // Type of the right-hand side dense vector
+inline EnableIf_<typename DynamicVector<Type,TF>::BLAZE_TEMPLATE VectorizedDivAssign<VT> >
+   DynamicVector<Type,TF>::divAssign( const DenseVector<VT,TF>& rhs )
+{
+   BLAZE_CONSTRAINT_MUST_BE_VECTORIZABLE_TYPE( Type );
+
+   BLAZE_INTERNAL_ASSERT( size_ == (~rhs).size(), "Invalid vector sizes" );
+
+   const bool remainder( !usePadding || !IsPadded<VT>::value );
+
+   const size_t ipos( ( remainder )?( size_ & size_t(-SIMDSIZE) ):( size_ ) );
+   BLAZE_INTERNAL_ASSERT( !remainder || ( size_ - ( size_ % (SIMDSIZE) ) ) == ipos, "Invalid end calculation" );
+
+   size_t i( 0UL );
+   ConstIterator_<VT> it( (~rhs).begin() );
+
+   for( ; (i+SIMDSIZE*3UL) < ipos; i+=SIMDSIZE*4UL ) {
+      store( i             , load(i             ) / it.load() ); it += SIMDSIZE;
+      store( i+SIMDSIZE    , load(i+SIMDSIZE    ) / it.load() ); it += SIMDSIZE;
+      store( i+SIMDSIZE*2UL, load(i+SIMDSIZE*2UL) / it.load() ); it += SIMDSIZE;
+      store( i+SIMDSIZE*3UL, load(i+SIMDSIZE*3UL) / it.load() ); it += SIMDSIZE;
+   }
+   for( ; i<ipos; i+=SIMDSIZE, it+=SIMDSIZE ) {
+      store( i, load(i) / it.load() );
+   }
+   for( ; remainder && i<size_; ++i, ++it ) {
+      v_[i] /= *it;
+   }
+}
+//*************************************************************************************************
+
+
 
 
 //=================================================================================================
@@ -2728,6 +2858,36 @@ struct CrossTrait< DynamicVector<T1,TF>, DynamicVector<T2,TF> >
 /*! \cond BLAZE_INTERNAL */
 template< typename T1, bool TF, typename T2 >
 struct DivTrait< DynamicVector<T1,TF>, T2, EnableIf_<IsNumeric<T2> > >
+{
+   using Type = DynamicVector< DivTrait_<T1,T2>, TF >;
+};
+
+template< typename T1, bool TF, typename T2, size_t N >
+struct DivTrait< DynamicVector<T1,TF>, StaticVector<T2,N,TF> >
+{
+   using Type = StaticVector< DivTrait_<T1,T2>, N, TF >;
+};
+
+template< typename T1, size_t N, bool TF, typename T2 >
+struct DivTrait< StaticVector<T1,N,TF>, DynamicVector<T2,TF> >
+{
+   using Type = StaticVector< DivTrait_<T1,T2>, N, TF >;
+};
+
+template< typename T1, bool TF, typename T2, size_t N >
+struct DivTrait< DynamicVector<T1,TF>, HybridVector<T2,N,TF> >
+{
+   using Type = HybridVector< DivTrait_<T1,T2>, N, TF >;
+};
+
+template< typename T1, size_t N, bool TF, typename T2 >
+struct DivTrait< HybridVector<T1,N,TF>, DynamicVector<T2,TF> >
+{
+   using Type = HybridVector< DivTrait_<T1,T2>, N, TF >;
+};
+
+template< typename T1, bool TF, typename T2 >
+struct DivTrait< DynamicVector<T1,TF>, DynamicVector<T2,TF> >
 {
    using Type = DynamicVector< DivTrait_<T1,T2>, TF >;
 };
