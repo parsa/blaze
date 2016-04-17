@@ -68,6 +68,7 @@
 #include <blaze/math/typetraits/HasConstDataAccess.h>
 #include <blaze/math/typetraits/HasMutableDataAccess.h>
 #include <blaze/math/typetraits/HasSIMDAdd.h>
+#include <blaze/math/typetraits/HasSIMDDiv.h>
 #include <blaze/math/typetraits/HasSIMDMult.h>
 #include <blaze/math/typetraits/HasSIMDSub.h>
 #include <blaze/math/typetraits/IsAligned.h>
@@ -429,6 +430,7 @@ class DenseRow : public DenseVector< DenseRow<MT,SO,SF>, true >
    template< typename VT > inline DenseRow& operator-=( const Vector<VT,true>& rhs );
    template< typename VT > inline DenseRow& operator*=( const DenseVector<VT,true>&  rhs );
    template< typename VT > inline DenseRow& operator*=( const SparseVector<VT,true>& rhs );
+   template< typename VT > inline DenseRow& operator/=( const DenseVector<VT,true>&  rhs );
 
    template< typename Other >
    inline EnableIf_< IsNumeric<Other>, DenseRow >& operator*=( Other rhs );
@@ -501,6 +503,19 @@ class DenseRow : public DenseVector< DenseRow<MT,SO,SF>, true >
    /*! \endcond */
    //**********************************************************************************************
 
+   //**********************************************************************************************
+   /*! \cond BLAZE_INTERNAL */
+   //! Helper structure for the explicit application of the SFINAE principle.
+   template< typename VT >
+   struct VectorizedDivAssign {
+      enum : bool { value = useOptimizedKernels &&
+                            simdEnabled && VT::simdEnabled &&
+                            IsSame< ElementType, ElementType_<VT> >::value &&
+                            HasSIMDDiv< ElementType, ElementType >::value };
+   };
+   /*! \endcond */
+   //**********************************************************************************************
+
    //**SIMD properties*****************************************************************************
    //! The number of elements packed within a single SIMD element.
    enum : size_t { SIMDSIZE = SIMDTrait<ElementType>::size };
@@ -565,6 +580,12 @@ class DenseRow : public DenseVector< DenseRow<MT,SO,SF>, true >
    inline EnableIf_< VectorizedMultAssign<VT> > multAssign( const DenseVector<VT,true>& rhs );
 
    template< typename VT > inline void multAssign( const SparseVector<VT,true>& rhs );
+
+   template< typename VT >
+   inline DisableIf_< VectorizedDivAssign<VT> > divAssign( const DenseVector<VT,true>& rhs );
+
+   template< typename VT >
+   inline EnableIf_< VectorizedDivAssign<VT> > divAssign( const DenseVector<VT,true>& rhs );
    //@}
    //**********************************************************************************************
 
@@ -598,6 +619,9 @@ class DenseRow : public DenseVector< DenseRow<MT,SO,SF>, true >
 
    template< typename MT2, bool SO2, bool SF2, typename VT >
    friend bool tryMultAssign( const DenseRow<MT2,SO2,SF2>& lhs, const Vector<VT,true>& rhs, size_t index );
+
+   template< typename MT2, bool SO2, bool SF2, typename VT >
+   friend bool tryDivAssign( const DenseRow<MT2,SO2,SF2>& lhs, const Vector<VT,true>& rhs, size_t index );
 
    template< typename MT2, bool SO2, bool SF2 >
    friend DerestrictTrait_< DenseRow<MT2,SO2,SF2> > derestrict( DenseRow<MT2,SO2,SF2>& dm );
@@ -1197,6 +1221,54 @@ inline DenseRow<MT,SO,SF>& DenseRow<MT,SO,SF>::operator*=( const SparseVector<VT
    DerestrictTrait_<This> left( derestrict( *this ) );
 
    smpAssign( left, right );
+
+   BLAZE_INTERNAL_ASSERT( isIntact( matrix_ ), "Invariant violation detected" );
+
+   return *this;
+}
+//*************************************************************************************************
+
+
+//*************************************************************************************************
+/*!\brief Division assignment operator for the division of a dense vector (\f$ \vec{a}/=\vec{b} \f$).
+//
+// \param rhs The right-hand side dense vector divisor.
+// \return Reference to the assigned row.
+// \exception std::invalid_argument Vector sizes do not match.
+// \exception std::invalid_argument Invalid assignment to restricted matrix.
+//
+// In case the current sizes of the two vectors don't match, a \a std::invalid_argument exception
+// is thrown.
+*/
+template< typename MT    // Type of the dense matrix
+        , bool SO        // Storage order
+        , bool SF >      // Symmetry flag
+template< typename VT >  // Type of the right-hand side dense vector
+inline DenseRow<MT,SO,SF>& DenseRow<MT,SO,SF>::operator/=( const DenseVector<VT,true>& rhs )
+{
+   BLAZE_CONSTRAINT_MUST_BE_ROW_VECTOR_TYPE    ( ResultType_<VT> );
+   BLAZE_CONSTRAINT_MUST_NOT_REQUIRE_EVALUATION( ResultType_<VT> );
+
+   if( size() != (~rhs).size() ) {
+      BLAZE_THROW_INVALID_ARGUMENT( "Vector sizes do not match" );
+   }
+
+   typedef If_< IsRestricted<MT>, CompositeType_<VT>, const VT& >  Right;
+   Right right( ~rhs );
+
+   if( !tryDivAssign( matrix_, right, row_, 0UL ) ) {
+      BLAZE_THROW_INVALID_ARGUMENT( "Invalid assignment to restricted matrix" );
+   }
+
+   DerestrictTrait_<This> left( derestrict( *this ) );
+
+   if( IsReference<Right>::value && right.canAlias( &matrix_ ) ) {
+      const ResultType_<VT> tmp( right );
+      smpDivAssign( left, tmp );
+   }
+   else {
+      smpDivAssign( left, right );
+   }
 
    BLAZE_INTERNAL_ASSERT( isIntact( matrix_ ), "Invariant violation detected" );
 
@@ -2096,6 +2168,84 @@ inline void DenseRow<MT,SO,SF>::multAssign( const SparseVector<VT,true>& rhs )
 //*************************************************************************************************
 
 
+//*************************************************************************************************
+/*!\brief Default implementation of the division assignment of a dense vector.
+//
+// \param rhs The right-hand side dense vector divisor.
+// \return void
+//
+// This function must \b NOT be called explicitly! It is used internally for the performance
+// optimized evaluation of expression templates. Calling this function explicitly might result
+// in erroneous results and/or in compilation errors. Instead of using this function use the
+// assignment operator.
+*/
+template< typename MT    // Type of the dense matrix
+        , bool SO        // Storage order
+        , bool SF >      // Symmetry flag
+template< typename VT >  // Type of the right-hand side dense vector
+inline DisableIf_< typename DenseRow<MT,SO,SF>::BLAZE_TEMPLATE VectorizedDivAssign<VT> >
+   DenseRow<MT,SO,SF>::divAssign( const DenseVector<VT,true>& rhs )
+{
+   BLAZE_INTERNAL_ASSERT( size() == (~rhs).size(), "Invalid vector sizes" );
+
+   const size_t jpos( (~rhs).size() & size_t(-2) );
+   for( size_t j=0UL; j<jpos; j+=2UL ) {
+      matrix_(row_,j    ) /= (~rhs)[j    ];
+      matrix_(row_,j+1UL) /= (~rhs)[j+1UL];
+   }
+   if( jpos < (~rhs).size() )
+      matrix_(row_,jpos) /= (~rhs)[jpos];
+}
+//*************************************************************************************************
+
+
+//*************************************************************************************************
+/*!\brief SIMD optimized implementation of the division assignment of a dense vector.
+//
+// \param rhs The right-hand side dense vector divisor.
+// \return void
+//
+// This function must \b NOT be called explicitly! It is used internally for the performance
+// optimized evaluation of expression templates. Calling this function explicitly might result
+// in erroneous results and/or in compilation errors. Instead of using this function use the
+// assignment operator.
+*/
+template< typename MT    // Type of the dense matrix
+        , bool SO        // Storage order
+        , bool SF >      // Symmetry flag
+template< typename VT >  // Type of the right-hand side dense vector
+inline EnableIf_< typename DenseRow<MT,SO,SF>::BLAZE_TEMPLATE VectorizedDivAssign<VT> >
+   DenseRow<MT,SO,SF>::divAssign( const DenseVector<VT,true>& rhs )
+{
+   BLAZE_CONSTRAINT_MUST_BE_VECTORIZABLE_TYPE( ElementType );
+
+   BLAZE_INTERNAL_ASSERT( size() == (~rhs).size(), "Invalid vector sizes" );
+
+   const bool remainder( !IsPadded<MT>::value || !IsPadded<VT>::value );
+   const size_t columns( size() );
+
+   const size_t jpos( ( remainder )?( columns & size_t(-SIMDSIZE) ):( columns ) );
+   BLAZE_INTERNAL_ASSERT( !remainder || ( columns - ( columns % (SIMDSIZE) ) ) == jpos, "Invalid end calculation" );
+
+   size_t j( 0UL );
+   ConstIterator_<VT> it( (~rhs).begin() );
+
+   for( ; (j+SIMDSIZE*3UL) < jpos; j+=SIMDSIZE*4UL ) {
+      matrix_.store( row_, j             , matrix_.load(row_,j             ) / it.load() ); it += SIMDSIZE;
+      matrix_.store( row_, j+SIMDSIZE    , matrix_.load(row_,j+SIMDSIZE    ) / it.load() ); it += SIMDSIZE;
+      matrix_.store( row_, j+SIMDSIZE*2UL, matrix_.load(row_,j+SIMDSIZE*2UL) / it.load() ); it += SIMDSIZE;
+      matrix_.store( row_, j+SIMDSIZE*3UL, matrix_.load(row_,j+SIMDSIZE*3UL) / it.load() ); it += SIMDSIZE;
+   }
+   for( ; j<jpos; j+=SIMDSIZE, it+=SIMDSIZE ) {
+      matrix_.store( row_, j, matrix_.load(row_,j) / it.load() );
+   }
+   for( ; remainder && j<columns; ++j, ++it ) {
+      matrix_(row_,j) /= *it;
+   }
+}
+//*************************************************************************************************
+
+
 
 
 
@@ -2500,6 +2650,7 @@ class DenseRow<MT,false,false> : public DenseVector< DenseRow<MT,false,false>, t
    template< typename VT > inline DenseRow& operator-=( const Vector<VT,true>& rhs );
    template< typename VT > inline DenseRow& operator*=( const DenseVector<VT,true>&  rhs );
    template< typename VT > inline DenseRow& operator*=( const SparseVector<VT,true>& rhs );
+   template< typename VT > inline DenseRow& operator/=( const DenseVector<VT,true>&  rhs );
 
    template< typename Other >
    inline EnableIf_< IsNumeric<Other>, DenseRow >& operator*=( Other rhs );
@@ -2547,6 +2698,7 @@ class DenseRow<MT,false,false> : public DenseVector< DenseRow<MT,false,false>, t
    template< typename VT > inline void subAssign ( const SparseVector<VT,true>& rhs );
    template< typename VT > inline void multAssign( const DenseVector <VT,true>& rhs );
    template< typename VT > inline void multAssign( const SparseVector<VT,true>& rhs );
+   template< typename VT > inline void divAssign ( const DenseVector <VT,true>& rhs );
    //@}
    //**********************************************************************************************
 
@@ -2579,6 +2731,9 @@ class DenseRow<MT,false,false> : public DenseVector< DenseRow<MT,false,false>, t
 
    template< typename MT2, bool SO2, bool SF2, typename VT >
    friend bool tryMultAssign( const DenseRow<MT2,SO2,SF2>& lhs, const Vector<VT,true>& rhs, size_t index );
+
+   template< typename MT2, bool SO2, bool SF2, typename VT >
+   friend bool tryDivAssign( const DenseRow<MT2,SO2,SF2>& lhs, const Vector<VT,true>& rhs, size_t index );
 
    template< typename MT2, bool SO2, bool SF2 >
    friend DerestrictTrait_< DenseRow<MT2,SO2,SF2> > derestrict( DenseRow<MT2,SO2,SF2>& dm );
@@ -3191,6 +3346,54 @@ inline DenseRow<MT,false,false>& DenseRow<MT,false,false>::operator*=( const Spa
 
 //*************************************************************************************************
 /*! \cond BLAZE_INTERNAL */
+/*!\brief Division assignment operator for the division of a dense vector (\f$ \vec{a}/=\vec{b} \f$).
+//
+// \param rhs The right-hand side dense vector divisor.
+// \return Reference to the assigned row.
+// \exception std::invalid_argument Vector sizes do not match.
+// \exception std::invalid_argument Invalid assignment to restricted matrix.
+//
+// In case the current sizes of the two vectors don't match, a \a std::invalid_argument exception
+// is thrown.
+*/
+template< typename MT >  // Type of the dense matrix
+template< typename VT >  // Type of the right-hand side dense vector
+inline DenseRow<MT,false,false>& DenseRow<MT,false,false>::operator/=( const DenseVector<VT,true>& rhs )
+{
+   BLAZE_CONSTRAINT_MUST_BE_ROW_VECTOR_TYPE    ( ResultType_<VT> );
+   BLAZE_CONSTRAINT_MUST_NOT_REQUIRE_EVALUATION( ResultType_<VT> );
+
+   if( size() != (~rhs).size() ) {
+      BLAZE_THROW_INVALID_ARGUMENT( "Vector sizes do not match" );
+   }
+
+   typedef If_< IsRestricted<MT>, CompositeType_<VT>, const VT& >  Right;
+   Right right( ~rhs );
+
+   if( !tryDivAssign( matrix_, right, row_, 0UL ) ) {
+      BLAZE_THROW_INVALID_ARGUMENT( "Invalid assignment to restricted matrix" );
+   }
+
+   DerestrictTrait_<This> left( derestrict( *this ) );
+
+   if( IsReference<Right>::value && right.canAlias( &matrix_ ) ) {
+      const ResultType_<VT> tmp( right );
+      smpDivAssign( left, tmp );
+   }
+   else {
+      smpDivAssign( left, right );
+   }
+
+   BLAZE_INTERNAL_ASSERT( isIntact( matrix_ ), "Invariant violation detected" );
+
+   return *this;
+}
+/*! \endcond */
+//*************************************************************************************************
+
+
+//*************************************************************************************************
+/*! \cond BLAZE_INTERNAL */
 /*!\brief Multiplication assignment operator for the multiplication between a dense row and
 //        a scalar value (\f$ \vec{a}*=s \f$).
 //
@@ -3730,6 +3933,36 @@ inline void DenseRow<MT,false,false>::multAssign( const SparseVector<VT,true>& r
 //*************************************************************************************************
 
 
+//*************************************************************************************************
+/*! \cond BLAZE_INTERNAL */
+/*!\brief Default implementation of the division assignment of a dense vector.
+//
+// \param rhs The right-hand side dense vector divisor.
+// \return void
+//
+// This function must \b NOT be called explicitly! It is used internally for the performance
+// optimized evaluation of expression templates. Calling this function explicitly might result
+// in erroneous results and/or in compilation errors. Instead of using this function use the
+// assignment operator.
+*/
+template< typename MT >  // Type of the dense matrix
+template< typename VT >  // Type of the right-hand side dense vector
+inline void DenseRow<MT,false,false>::divAssign( const DenseVector<VT,true>& rhs )
+{
+   BLAZE_INTERNAL_ASSERT( size() == (~rhs).size(), "Invalid vector sizes" );
+
+   const size_t jpos( (~rhs).size() & size_t(-2) );
+   for( size_t j=0UL; j<jpos; j+=2UL ) {
+      matrix_(row_,j    ) /= (~rhs)[j    ];
+      matrix_(row_,j+1UL) /= (~rhs)[j+1UL];
+   }
+   if( jpos < (~rhs).size() )
+      matrix_(row_,jpos) /= (~rhs)[jpos];
+}
+/*! \endcond */
+//*************************************************************************************************
+
+
 
 
 
@@ -3838,6 +4071,7 @@ class DenseRow<MT,false,true> : public DenseVector< DenseRow<MT,false,true>, tru
    template< typename VT > inline DenseRow& operator-=( const Vector<VT,true>& rhs );
    template< typename VT > inline DenseRow& operator*=( const DenseVector<VT,true>&  rhs );
    template< typename VT > inline DenseRow& operator*=( const SparseVector<VT,true>& rhs );
+   template< typename VT > inline DenseRow& operator/=( const DenseVector<VT,true>&  rhs );
 
    template< typename Other >
    inline EnableIf_< IsNumeric<Other>, DenseRow >& operator*=( Other rhs );
@@ -3899,6 +4133,17 @@ class DenseRow<MT,false,true> : public DenseVector< DenseRow<MT,false,true>, tru
                             simdEnabled && VT::simdEnabled &&
                             IsSame< ElementType, ElementType_<VT> >::value &&
                             HasSIMDMult< ElementType, ElementType >::value };
+   };
+   //**********************************************************************************************
+
+   //**********************************************************************************************
+   //! Helper structure for the explicit application of the SFINAE principle.
+   template< typename VT >
+   struct VectorizedDivAssign {
+      enum : bool { value = useOptimizedKernels &&
+                            simdEnabled && VT::simdEnabled &&
+                            IsSame< ElementType, ElementType_<VT> >::value &&
+                            HasSIMDDiv< ElementType, ElementType >::value };
    };
    //**********************************************************************************************
 
@@ -3966,6 +4211,12 @@ class DenseRow<MT,false,true> : public DenseVector< DenseRow<MT,false,true>, tru
    inline EnableIf_< VectorizedMultAssign<VT> > multAssign( const DenseVector<VT,true>& rhs );
 
    template< typename VT > inline void multAssign( const SparseVector<VT,true>& rhs );
+
+   template< typename VT >
+   inline DisableIf_< VectorizedDivAssign<VT> > divAssign( const DenseVector<VT,true>& rhs );
+
+   template< typename VT >
+   inline EnableIf_< VectorizedDivAssign<VT> > divAssign( const DenseVector<VT,true>& rhs );
    //@}
    //**********************************************************************************************
 
@@ -3998,6 +4249,9 @@ class DenseRow<MT,false,true> : public DenseVector< DenseRow<MT,false,true>, tru
 
    template< typename MT2, bool SO2, bool SF2, typename VT >
    friend bool tryMultAssign( const DenseRow<MT2,SO2,SF2>& lhs, const Vector<VT,true>& rhs, size_t index );
+
+   template< typename MT2, bool SO2, bool SF2, typename VT >
+   friend bool tryDivAssign( const DenseRow<MT2,SO2,SF2>& lhs, const Vector<VT,true>& rhs, size_t index );
 
    template< typename MT2, bool SO2, bool SF2 >
    friend DerestrictTrait_< DenseRow<MT2,SO2,SF2> > derestrict( DenseRow<MT2,SO2,SF2>& dm );
@@ -4594,6 +4848,54 @@ inline DenseRow<MT,false,true>& DenseRow<MT,false,true>::operator*=( const Spars
    DerestrictTrait_<This> left( derestrict( *this ) );
 
    smpAssign( left, right );
+
+   BLAZE_INTERNAL_ASSERT( isIntact( matrix_ ), "Invariant violation detected" );
+
+   return *this;
+}
+/*! \endcond */
+//*************************************************************************************************
+
+
+//*************************************************************************************************
+/*! \cond BLAZE_INTERNAL */
+/*!\brief Division assignment operator for the division of a dense vector (\f$ \vec{a}/=\vec{b} \f$).
+//
+// \param rhs The right-hand side dense vector divisor.
+// \return Reference to the assigned row.
+// \exception std::invalid_argument Vector sizes do not match.
+// \exception std::invalid_argument Invalid assignment to restricted matrix.
+//
+// In case the current sizes of the two vectors don't match, a \a std::invalid_argument exception
+// is thrown.
+*/
+template< typename MT >  // Type of the dense matrix
+template< typename VT >  // Type of the right-hand side dense vector
+inline DenseRow<MT,false,true>& DenseRow<MT,false,true>::operator/=( const DenseVector<VT,true>& rhs )
+{
+   BLAZE_CONSTRAINT_MUST_BE_ROW_VECTOR_TYPE    ( ResultType_<VT> );
+   BLAZE_CONSTRAINT_MUST_NOT_REQUIRE_EVALUATION( ResultType_<VT> );
+
+   if( size() != (~rhs).size() ) {
+      BLAZE_THROW_INVALID_ARGUMENT( "Vector sizes do not match" );
+   }
+
+   typedef If_< IsRestricted<MT>, CompositeType_<VT>, const VT& >  Right;
+   Right right( ~rhs );
+
+   if( !tryDivAssign( matrix_, right, row_, 0UL ) ) {
+      BLAZE_THROW_INVALID_ARGUMENT( "Invalid assignment to restricted matrix" );
+   }
+
+   DerestrictTrait_<This> left( derestrict( *this ) );
+
+   if( IsReference<Right>::value && right.canAlias( &matrix_ ) ) {
+      const ResultType_<VT> tmp( right );
+      smpDivAssign( left, tmp );
+   }
+   else {
+      smpDivAssign( left, right );
+   }
 
    BLAZE_INTERNAL_ASSERT( isIntact( matrix_ ), "Invariant violation detected" );
 
@@ -5494,6 +5796,84 @@ inline void DenseRow<MT,false,true>::multAssign( const SparseVector<VT,true>& rh
 //*************************************************************************************************
 
 
+//*************************************************************************************************
+/*! \cond BLAZE_INTERNAL */
+/*!\brief Default implementation of the division assignment of a dense vector.
+//
+// \param rhs The right-hand side dense vector divisor.
+// \return void
+//
+// This function must \b NOT be called explicitly! It is used internally for the performance
+// optimized evaluation of expression templates. Calling this function explicitly might result
+// in erroneous results and/or in compilation errors. Instead of using this function use the
+// assignment operator.
+*/
+template< typename MT >  // Type of the dense matrix
+template< typename VT >  // Type of the right-hand side dense vector
+inline DisableIf_< typename DenseRow<MT,false,true>::BLAZE_TEMPLATE VectorizedDivAssign<VT> >
+   DenseRow<MT,false,true>::divAssign( const DenseVector<VT,true>& rhs )
+{
+   BLAZE_INTERNAL_ASSERT( size() == (~rhs).size(), "Invalid vector sizes" );
+
+   const size_t ipos( (~rhs).size() & size_t(-2) );
+   for( size_t i=0UL; i<ipos; i+=2UL ) {
+      matrix_(i    ,row_) /= (~rhs)[i    ];
+      matrix_(i+1UL,row_) /= (~rhs)[i+1UL];
+   }
+   if( ipos < (~rhs).size() )
+      matrix_(ipos,row_) /= (~rhs)[ipos];
+}
+/*! \endcond */
+//*************************************************************************************************
+
+
+//*************************************************************************************************
+/*! \cond BLAZE_INTERNAL */
+/*!\brief SIMD optimized implementation of the division assignment of a dense vector.
+//
+// \param rhs The right-hand side dense vector divisor.
+// \return void
+//
+// This function must \b NOT be called explicitly! It is used internally for the performance
+// optimized evaluation of expression templates. Calling this function explicitly might result
+// in erroneous results and/or in compilation errors. Instead of using this function use the
+// assignment operator.
+*/
+template< typename MT >  // Type of the dense matrix
+template< typename VT >  // Type of the right-hand side dense vector
+inline EnableIf_< typename DenseRow<MT,false,true>::BLAZE_TEMPLATE VectorizedDivAssign<VT> >
+   DenseRow<MT,false,true>::divAssign( const DenseVector<VT,true>& rhs )
+{
+   BLAZE_CONSTRAINT_MUST_BE_VECTORIZABLE_TYPE( ElementType );
+
+   BLAZE_INTERNAL_ASSERT( size() == (~rhs).size(), "Invalid vector sizes" );
+
+   const bool remainder( !IsPadded<MT>::value || !IsPadded<VT>::value );
+   const size_t rows( size() );
+
+   const size_t ipos( ( remainder )?( rows & size_t(-SIMDSIZE) ):( rows ) );
+   BLAZE_INTERNAL_ASSERT( !remainder || ( rows - ( rows % (SIMDSIZE) ) ) == ipos, "Invalid end calculation" );
+
+   size_t i( 0UL );
+   ConstIterator_<VT> it( (~rhs).begin() );
+
+   for( ; (i+SIMDSIZE*3UL) < ipos; i+=SIMDSIZE*4UL ) {
+      matrix_.store( i             , row_, matrix_.load(i             ,row_) / it.load() ); it += SIMDSIZE;
+      matrix_.store( i+SIMDSIZE    , row_, matrix_.load(i+SIMDSIZE    ,row_) / it.load() ); it += SIMDSIZE;
+      matrix_.store( i+SIMDSIZE*2UL, row_, matrix_.load(i+SIMDSIZE*2UL,row_) / it.load() ); it += SIMDSIZE;
+      matrix_.store( i+SIMDSIZE*3UL, row_, matrix_.load(i+SIMDSIZE*3UL,row_) / it.load() ); it += SIMDSIZE;
+   }
+   for( ; i<ipos; i+=SIMDSIZE, it+=SIMDSIZE ) {
+      matrix_.store( i, row_, matrix_.load(i,row_) / it.load() );
+   }
+   for( ; remainder && i<rows; ++i, ++it ) {
+      matrix_(i,row_) /= *it;
+   }
+}
+/*! \endcond */
+//*************************************************************************************************
+
+
 
 
 
@@ -5758,6 +6138,36 @@ inline bool tryMultAssign( const DenseRow<MT,SO,SF>& lhs, const Vector<VT,true>&
    BLAZE_INTERNAL_ASSERT( (~rhs).size() <= lhs.size() - index, "Invalid vector size" );
 
    return tryMultAssign( lhs.matrix_, ~rhs, lhs.row_, index );
+}
+/*! \endcond */
+//*************************************************************************************************
+
+
+//*************************************************************************************************
+/*! \cond BLAZE_INTERNAL */
+/*!\brief Predict invariant violations by the division assignment of a vector to a dense row.
+// \ingroup dense_row
+//
+// \param lhs The target left-hand side dense row.
+// \param rhs The right-hand side vector divisor.
+// \param index The index of the first element to be modified.
+// \return \a true in case the assignment would be successful, \a false if not.
+//
+// This function must \b NOT be called explicitly! It is used internally for the performance
+// optimized evaluation of expression templates. Calling this function explicitly might result
+// in erroneous results and/or in compilation errors. Instead of using this function use the
+// assignment operator.
+*/
+template< typename MT    // Type of the dense matrix
+        , bool SO        // Storage order
+        , bool SF        // Symmetry flag
+        , typename VT >  // Type of the right-hand side vector
+inline bool tryDivAssign( const DenseRow<MT,SO,SF>& lhs, const Vector<VT,true>& rhs, size_t index )
+{
+   BLAZE_INTERNAL_ASSERT( index <= lhs.size(), "Invalid vector access index" );
+   BLAZE_INTERNAL_ASSERT( (~rhs).size() <= lhs.size() - index, "Invalid vector size" );
+
+   return tryDivAssign( lhs.matrix_, ~rhs, lhs.row_, index );
 }
 /*! \endcond */
 //*************************************************************************************************
