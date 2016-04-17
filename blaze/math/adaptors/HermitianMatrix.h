@@ -1254,6 +1254,36 @@ inline bool tryMultAssign( const HermitianMatrix<MT,SO,DF>& lhs,
 //*************************************************************************************************
 
 
+//*************************************************************************************************
+/*! \cond BLAZE_INTERNAL */
+/*!\brief Predict invariant violations by the division assignment of a vector to a Hermitian matrix.
+// \ingroup hermitian_matrix
+//
+// \param lhs The target left-hand side Hermitian matrix.
+// \param rhs The right-hand side vector divisor.
+// \param row The row index of the first element to be modified.
+// \param column The column index of the first element to be modified.
+// \return \a true in case the assignment would be successful, \a false if not.
+//
+// This function must \b NOT be called explicitly! It is used internally for the performance
+// optimized evaluation of expression templates. Calling this function explicitly might result
+// in erroneous results and/or in compilation errors. Instead of using this function use the
+// assignment operator.
+*/
+template< typename MT  // Type of the adapted matrix
+        , bool SO      // Storage order of the adapted matrix
+        , bool DF      // Density flag
+        , typename VT  // Type of the right-hand side vector
+        , bool TF >    // Transpose flag of the right-hand side vector
+inline bool tryDivAssign( const HermitianMatrix<MT,SO,DF>& lhs,
+                          const Vector<VT,TF>& rhs, size_t row, size_t column )
+{
+   return tryAssign( lhs, ~rhs, row, column );
+}
+/*! \endcond */
+//*************************************************************************************************
+
+
 
 
 //=================================================================================================
