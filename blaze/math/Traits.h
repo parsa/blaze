@@ -198,6 +198,7 @@
 #include <blaze/math/traits/TDVecSVecMultExprTrait.h>
 #include <blaze/math/traits/TDVecTDMatMultExprTrait.h>
 #include <blaze/math/traits/TDVecTDVecAddExprTrait.h>
+#include <blaze/math/traits/TDVecTDVecDivExprTrait.h>
 #include <blaze/math/traits/TDVecTDVecMultExprTrait.h>
 #include <blaze/math/traits/TDVecTDVecSubExprTrait.h>
 #include <blaze/math/traits/TDVecTransExprTrait.h>
