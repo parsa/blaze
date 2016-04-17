@@ -42,13 +42,18 @@
 
 #include <blaze/math/traits/DivTrait.h>
 #include <blaze/math/traits/DMatScalarDivExprTrait.h>
+#include <blaze/math/traits/DVecDVecDivExprTrait.h>
 #include <blaze/math/traits/DVecScalarDivExprTrait.h>
 #include <blaze/math/traits/SMatScalarDivExprTrait.h>
+#include <blaze/math/traits/SVecDVecDivExprTrait.h>
 #include <blaze/math/traits/SVecScalarDivExprTrait.h>
 #include <blaze/math/traits/TDMatScalarDivExprTrait.h>
 #include <blaze/math/traits/TDVecScalarDivExprTrait.h>
+#include <blaze/math/traits/TDVecTDVecDivExprTrait.h>
 #include <blaze/math/traits/TSMatScalarDivExprTrait.h>
 #include <blaze/math/traits/TSVecScalarDivExprTrait.h>
+#include <blaze/math/traits/TSVecTDVecDivExprTrait.h>
+#include <blaze/math/typetraits/IsColumnVector.h>
 #include <blaze/math/typetraits/IsDenseMatrix.h>
 #include <blaze/math/typetraits/IsMatrix.h>
 #include <blaze/math/typetraits/IsRowMajorMatrix.h>
@@ -96,42 +101,66 @@ struct DivExprTrait
    //**********************************************************************************************
    /*! \cond BLAZE_INTERNAL */
    using Tmp = If_< IsMatrix<T1>
-                   , If_< IsDenseMatrix<T1>
-                        , If_< IsRowMajorMatrix<T1>
-                             , If_< IsNumeric<T2>
-                                  , DMatScalarDivExprTrait<T1,T2>
-                                  , Failure >
-                             , If_< IsNumeric<T2>
-                                  , TDMatScalarDivExprTrait<T1,T2>
-                                  , Failure > >
-                        , If_< IsRowMajorMatrix<T1>
-                             , If_< IsNumeric<T2>
-                                  , SMatScalarDivExprTrait<T1,T2>
-                                  , Failure >
-                             , If_< IsNumeric<T2>
-                                  , TSMatScalarDivExprTrait<T1,T2>
-                                  , Failure > > >
-                   , If_< IsVector<T1>
-                        , If_< IsDenseVector<T1>
-                             , If_< IsRowVector<T1>
-                                  , If_< IsNumeric<T2>
-                                       , TDVecScalarDivExprTrait<T1,T2>
-                                       , Failure >
-                                  , If_< IsNumeric<T2>
-                                       , DVecScalarDivExprTrait<T1,T2>
-                                       , Failure > >
-                             , If_< IsRowVector<T1>
-                                  , If_< IsNumeric<T2>
-                                       , TSVecScalarDivExprTrait<T1,T2>
-                                       , Failure >
-                                  , If_< IsNumeric<T2>
-                                       , SVecScalarDivExprTrait<T1,T2>
-                                       , Failure > > >
-                        , If_< IsNumeric<T1>
-                             , If_< IsNumeric<T2>
-                                  , DivTrait<T1,T2>
-                                  , Failure >
-                             , Failure > > >;
+                  , If_< IsDenseMatrix<T1>
+                       , If_< IsRowMajorMatrix<T1>
+                            , If_< IsNumeric<T2>
+                                 , DMatScalarDivExprTrait<T1,T2>
+                                 , Failure >
+                            , If_< IsNumeric<T2>
+                                 , TDMatScalarDivExprTrait<T1,T2>
+                                 , Failure > >
+                       , If_< IsRowMajorMatrix<T1>
+                            , If_< IsNumeric<T2>
+                                 , SMatScalarDivExprTrait<T1,T2>
+                                 , Failure >
+                            , If_< IsNumeric<T2>
+                                 , TSMatScalarDivExprTrait<T1,T2>
+                                 , Failure > > >
+                  , If_< IsVector<T1>
+                       , If_< IsDenseVector<T1>
+                            , If_< IsRowVector<T1>
+                                 , If_< IsVector<T2>
+                                      , If_< IsDenseVector<T2>
+                                           , If_< IsRowVector<T2>
+                                                , TDVecTDVecDivExprTrait<T1,T2>
+                                                , Failure >
+                                           , Failure >
+                                      , If_< IsNumeric<T2>
+                                           , TDVecScalarDivExprTrait<T1,T2>
+                                           , Failure > >
+                                 , If_< IsVector<T2>
+                                      , If_< IsDenseVector<T2>
+                                           , If_< IsColumnVector<T2>
+                                                , DVecDVecDivExprTrait<T1,T2>
+                                                , Failure >
+                                           , Failure >
+                                      , If_< IsNumeric<T2>
+                                           , DVecScalarDivExprTrait<T1,T2>
+                                           , Failure > > >
+                            , If_< IsRowVector<T1>
+                                 , If_< IsVector<T2>
+                                      , If_< IsDenseVector<T2>
+                                           , If_< IsRowVector<T2>
+                                                , TSVecTDVecDivExprTrait<T1,T2>
+                                                , Failure >
+                                           , Failure >
+                                      , If_< IsNumeric<T2>
+                                           , TSVecScalarDivExprTrait<T1,T2>
+                                           , Failure > >
+                                 , If_< IsVector<T2>
+                                      , If_< IsDenseVector<T2>
+                                           , If_< IsColumnVector<T2>
+                                                , SVecDVecDivExprTrait<T1,T2>
+                                                , Failure >
+                                           , Failure >
+                                      , If_< IsNumeric<T2>
+                                           , SVecScalarDivExprTrait<T1,T2>
+                                           , Failure > > > >
+                       , If_< IsNumeric<T1>
+                            , If_< IsNumeric<T2>
+                                 , DivTrait<T1,T2>
+                                 , Failure >
+                            , Failure > > >;
    /*! \endcond */
    //**********************************************************************************************
 
