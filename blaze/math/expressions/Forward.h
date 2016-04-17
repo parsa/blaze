@@ -120,6 +120,7 @@ template< typename, bool > struct SparseVector;
 template< typename, bool > class SVecAbsExpr;
 template< typename, bool > class SVecConjExpr;
 template< typename, typename, bool > class SVecDVecCrossExpr;
+template< typename, typename, bool > class SVecDVecDivExpr;
 template< typename, typename, bool > class SVecDVecMultExpr;
 template< typename, typename, bool > class SVecDVecSubExpr;
 template< typename, bool > class SVecEvalExpr;
