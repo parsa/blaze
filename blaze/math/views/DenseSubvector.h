@@ -69,6 +69,7 @@
 #include <blaze/math/typetraits/HasConstDataAccess.h>
 #include <blaze/math/typetraits/HasMutableDataAccess.h>
 #include <blaze/math/typetraits/HasSIMDAdd.h>
+#include <blaze/math/typetraits/HasSIMDDiv.h>
 #include <blaze/math/typetraits/HasSIMDMult.h>
 #include <blaze/math/typetraits/HasSIMDSub.h>
 #include <blaze/math/typetraits/IsAligned.h>
@@ -812,6 +813,7 @@ class DenseSubvector : public DenseVector< DenseSubvector<VT,AF,TF>, TF >
    template< typename VT2 > inline DenseSubvector& operator-=( const Vector<VT2,TF>& rhs );
    template< typename VT2 > inline DenseSubvector& operator*=( const DenseVector<VT2,TF>&  rhs );
    template< typename VT2 > inline DenseSubvector& operator*=( const SparseVector<VT2,TF>& rhs );
+   template< typename VT2 > inline DenseSubvector& operator/=( const DenseVector<VT2,TF>&  rhs );
 
    template< typename Other >
    inline EnableIf_< IsNumeric<Other>, DenseSubvector >& operator*=( Other rhs );
@@ -884,6 +886,19 @@ class DenseSubvector : public DenseVector< DenseSubvector<VT,AF,TF>, TF >
    /*! \endcond */
    //**********************************************************************************************
 
+   //**********************************************************************************************
+   /*! \cond BLAZE_INTERNAL */
+   //! Helper structure for the explicit application of the SFINAE principle.
+   template< typename VT2 >
+   struct VectorizedDivAssign {
+      enum : bool { value = useOptimizedKernels &&
+                            simdEnabled && VT2::simdEnabled &&
+                            IsSame< ElementType, ElementType_<VT2> >::value &&
+                            HasSIMDDiv< ElementType, ElementType >::value };
+   };
+   /*! \endcond */
+   //**********************************************************************************************
+
    //**SIMD properties*****************************************************************************
    //! The number of elements packed within a single SIMD element.
    enum : size_t { SIMDSIZE = SIMDTrait<ElementType>::size };
@@ -948,6 +963,12 @@ class DenseSubvector : public DenseVector< DenseSubvector<VT,AF,TF>, TF >
    inline EnableIf_< VectorizedMultAssign<VT2> > multAssign( const DenseVector <VT2,TF>& rhs );
 
    template< typename VT2 > inline void multAssign( const SparseVector<VT2,TF>& rhs );
+
+   template< typename VT2 >
+   inline DisableIf_< VectorizedDivAssign<VT2> > divAssign( const DenseVector <VT2,TF>& rhs );
+
+   template< typename VT2 >
+   inline EnableIf_< VectorizedDivAssign<VT2> > divAssign( const DenseVector <VT2,TF>& rhs );
    //@}
    //**********************************************************************************************
 
@@ -1595,6 +1616,55 @@ inline DenseSubvector<VT,AF,TF>&
    DerestrictTrait_<This> left( derestrict( *this ) );
 
    smpAssign( left, tmp );
+
+   BLAZE_INTERNAL_ASSERT( isIntact( vector_ ), "Invariant violation detected" );
+
+   return *this;
+}
+//*************************************************************************************************
+
+
+//*************************************************************************************************
+/*!\brief Division assignment operator for the division of a dense vector (\f$ \vec{a}/=\vec{b} \f$).
+//
+// \param rhs The right-hand side dense vector divisor.
+// \return Reference to the assigned subvector.
+// \exception std::invalid_argument Vector sizes do not match.
+// \exception std::invalid_argument Invalid assignment to restricted vector.
+//
+// In case the current sizes of the two vectors don't match, a \a std::invalid_argument exception
+// is thrown.
+*/
+template< typename VT     // Type of the dense vector
+        , bool AF         // Alignment flag
+        , bool TF >       // Transpose flag
+template< typename VT2 >  // Type of the right-hand side dense vector
+inline DenseSubvector<VT,AF,TF>&
+   DenseSubvector<VT,AF,TF>::operator/=( const DenseVector<VT2,TF>& rhs )
+{
+   BLAZE_CONSTRAINT_MUST_BE_VECTOR_WITH_TRANSPOSE_FLAG( ResultType_<VT2>, TF );
+   BLAZE_CONSTRAINT_MUST_NOT_REQUIRE_EVALUATION( ResultType_<VT2> );
+
+   if( size() != (~rhs).size() ) {
+      BLAZE_THROW_INVALID_ARGUMENT( "Vector sizes do not match" );
+   }
+
+   typedef If_< IsRestricted<VT>, CompositeType_<VT2>, const VT2& >  Right;
+   Right right( ~rhs );
+
+   if( !tryDivAssign( vector_, right, offset_ ) ) {
+      BLAZE_THROW_INVALID_ARGUMENT( "Invalid assignment to restricted vector" );
+   }
+
+   DerestrictTrait_<This> left( derestrict( *this ) );
+
+   if( IsReference<Right>::value && right.canAlias( &vector_ ) ) {
+      const ResultType_<VT2> tmp( right );
+      smpDivAssign( left, tmp );
+   }
+   else {
+      smpDivAssign( left, right );
+   }
 
    BLAZE_INTERNAL_ASSERT( isIntact( vector_ ), "Invariant violation detected" );
 
@@ -2526,6 +2596,82 @@ inline void DenseSubvector<VT,AF,TF>::multAssign( const SparseVector<VT2,TF>& rh
 //*************************************************************************************************
 
 
+//*************************************************************************************************
+/*!\brief Default implementation of the division assignment of a dense vector.
+//
+// \param rhs The right-hand side dense vector divisor.
+// \return void
+//
+// This function must \b NOT be called explicitly! It is used internally for the performance
+// optimized evaluation of expression templates. Calling this function explicitly might result
+// in erroneous results and/or in compilation errors. Instead of using this function use the
+// assignment operator.
+*/
+template< typename VT     // Type of the dense vector
+        , bool AF         // Alignment flag
+        , bool TF >       // Transpose flag
+template< typename VT2 >  // Type of the right-hand side dense vector
+inline DisableIf_< typename DenseSubvector<VT,AF,TF>::BLAZE_TEMPLATE VectorizedDivAssign<VT2> >
+   DenseSubvector<VT,AF,TF>::divAssign( const DenseVector<VT2,TF>& rhs )
+{
+   BLAZE_INTERNAL_ASSERT( size() == (~rhs).size(), "Invalid vector sizes" );
+
+   const size_t ipos( size() & size_t(-2) );
+   for( size_t i=0UL; i<ipos; i+=2UL ) {
+      vector_[offset_+i    ] /= (~rhs)[i    ];
+      vector_[offset_+i+1UL] /= (~rhs)[i+1UL];
+   }
+   if( ipos < size() ) {
+      vector_[offset_+ipos] /= (~rhs)[ipos];
+   }
+}
+//*************************************************************************************************
+
+
+//*************************************************************************************************
+/*!\brief SIMD optimized implementation of the division assignment of a dense vector.
+//
+// \param rhs The right-hand side dense vector divisor.
+// \return void
+//
+// This function must \b NOT be called explicitly! It is used internally for the performance
+// optimized evaluation of expression templates. Calling this function explicitly might result
+// in erroneous results and/or in compilation errors. Instead of using this function use the
+// assignment operator.
+*/
+template< typename VT     // Type of the dense vector
+        , bool AF         // Alignment flag
+        , bool TF >       // Transpose flag
+template< typename VT2 >  // Type of the right-hand side dense vector
+inline EnableIf_< typename DenseSubvector<VT,AF,TF>::BLAZE_TEMPLATE VectorizedDivAssign<VT2> >
+   DenseSubvector<VT,AF,TF>::divAssign( const DenseVector<VT2,TF>& rhs )
+{
+   BLAZE_CONSTRAINT_MUST_BE_VECTORIZABLE_TYPE( ElementType );
+
+   BLAZE_INTERNAL_ASSERT( size() == (~rhs).size(), "Invalid vector sizes" );
+
+   const size_t ipos( size_ & size_t(-SIMDSIZE) );
+   BLAZE_INTERNAL_ASSERT( ( size_ - ( size_ % (SIMDSIZE) ) ) == ipos, "Invalid end calculation" );
+
+   size_t i( 0UL );
+   ConstIterator_<VT2> it( (~rhs).begin() );
+
+   for( ; (i+SIMDSIZE*3UL) < ipos; i+=SIMDSIZE*4UL ) {
+      store( i             , load(i             ) / it.load() ); it += SIMDSIZE;
+      store( i+SIMDSIZE    , load(i+SIMDSIZE    ) / it.load() ); it += SIMDSIZE;
+      store( i+SIMDSIZE*2UL, load(i+SIMDSIZE*2UL) / it.load() ); it += SIMDSIZE;
+      store( i+SIMDSIZE*3UL, load(i+SIMDSIZE*3UL) / it.load() ); it += SIMDSIZE;
+   }
+   for( ; i<ipos; i+=SIMDSIZE, it+=SIMDSIZE ) {
+      store( i, load(i) / it.load() );
+   }
+   for( ; i<size_; ++i, ++it ) {
+      vector_[offset_+i] /= *it;
+   }
+}
+//*************************************************************************************************
+
+
 
 
 
@@ -2634,6 +2780,7 @@ class DenseSubvector<VT,aligned,TF> : public DenseVector< DenseSubvector<VT,alig
    template< typename VT2 > inline DenseSubvector& operator-=( const Vector<VT2,TF>& rhs );
    template< typename VT2 > inline DenseSubvector& operator*=( const DenseVector<VT2,TF>&  rhs );
    template< typename VT2 > inline DenseSubvector& operator*=( const SparseVector<VT2,TF>& rhs );
+   template< typename VT2 > inline DenseSubvector& operator/=( const DenseVector<VT2,TF>&  rhs );
 
    template< typename Other >
    inline EnableIf_< IsNumeric<Other>, DenseSubvector >& operator*=( Other rhs );
@@ -2695,6 +2842,17 @@ class DenseSubvector<VT,aligned,TF> : public DenseVector< DenseSubvector<VT,alig
                             simdEnabled && VT2::simdEnabled &&
                             IsSame< ElementType, ElementType_<VT2> >::value &&
                             HasSIMDMult< ElementType, ElementType >::value };
+   };
+   //**********************************************************************************************
+
+   //**********************************************************************************************
+   //! Helper structure for the explicit application of the SFINAE principle.
+   template< typename VT2 >
+   struct VectorizedDivAssign {
+      enum : bool { value = useOptimizedKernels &&
+                            simdEnabled && VT2::simdEnabled &&
+                            IsSame< ElementType, ElementType_<VT2> >::value &&
+                            HasSIMDDiv< ElementType, ElementType >::value };
    };
    //**********************************************************************************************
 
@@ -2762,6 +2920,12 @@ class DenseSubvector<VT,aligned,TF> : public DenseVector< DenseSubvector<VT,alig
    inline EnableIf_< VectorizedMultAssign<VT2> > multAssign( const DenseVector <VT2,TF>& rhs );
 
    template< typename VT2 > inline void multAssign( const SparseVector<VT2,TF>& rhs );
+
+   template< typename VT2 >
+   inline DisableIf_< VectorizedDivAssign<VT2> > divAssign( const DenseVector <VT2,TF>& rhs );
+
+   template< typename VT2 >
+   inline EnableIf_< VectorizedDivAssign<VT2> > divAssign( const DenseVector <VT2,TF>& rhs );
    //@}
    //**********************************************************************************************
 
@@ -3425,6 +3589,56 @@ inline DenseSubvector<VT,aligned,TF>&
    DerestrictTrait_<This> left( derestrict( *this ) );
 
    smpAssign( left, tmp );
+
+   BLAZE_INTERNAL_ASSERT( isIntact( vector_ ), "Invariant violation detected" );
+
+   return *this;
+}
+/*! \endcond */
+//*************************************************************************************************
+
+
+//*************************************************************************************************
+/*! \cond BLAZE_INTERNAL */
+/*!\brief Division assignment operator for the division of a dense vector (\f$ \vec{a}/=\vec{b} \f$).
+//
+// \param rhs The right-hand side dense vector divisor.
+// \return Reference to the assigned subvector.
+// \exception std::invalid_argument Vector sizes do not match.
+// \exception std::invalid_argument Invalid assignment to restricted vector.
+//
+// In case the current sizes of the two vectors don't match, a \a std::invalid_argument exception
+// is thrown.
+*/
+template< typename VT     // Type of the dense vector
+        , bool TF >       // Transpose flag
+template< typename VT2 >  // Type of the right-hand side dense vector
+inline DenseSubvector<VT,aligned,TF>&
+   DenseSubvector<VT,aligned,TF>::operator/=( const DenseVector<VT2,TF>& rhs )
+{
+   BLAZE_CONSTRAINT_MUST_BE_VECTOR_WITH_TRANSPOSE_FLAG( ResultType_<VT2>, TF );
+   BLAZE_CONSTRAINT_MUST_NOT_REQUIRE_EVALUATION( ResultType_<VT2> );
+
+   if( size() != (~rhs).size() ) {
+      BLAZE_THROW_INVALID_ARGUMENT( "Vector sizes do not match" );
+   }
+
+   typedef If_< IsRestricted<VT>, CompositeType_<VT2>, const VT2& >  Right;
+   Right right( ~rhs );
+
+   if( !tryDivAssign( vector_, right, offset_ ) ) {
+      BLAZE_THROW_INVALID_ARGUMENT( "Invalid assignment to restricted vector" );
+   }
+
+   DerestrictTrait_<This> left( derestrict( *this ) );
+
+   if( IsReference<Right>::value && right.canAlias( &vector_ ) ) {
+      const ResultType_<VT2> tmp( right );
+      smpDivAssign( left, tmp );
+   }
+   else {
+      smpDivAssign( left, right );
+   }
 
    BLAZE_INTERNAL_ASSERT( isIntact( vector_ ), "Invariant violation detected" );
 
@@ -4373,6 +4587,84 @@ inline void DenseSubvector<VT,aligned,TF>::multAssign( const SparseVector<VT2,TF
 
    for( ConstIterator_<VT2> element=(~rhs).begin(); element!=(~rhs).end(); ++element )
       vector_[offset_+element->index()] = tmp[element->index()] * element->value();
+}
+/*! \endcond */
+//*************************************************************************************************
+
+
+//*************************************************************************************************
+/*! \cond BLAZE_INTERNAL */
+/*!\brief Default implementation of the division assignment of a dense vector.
+//
+// \param rhs The right-hand side dense vector divisor.
+// \return void
+//
+// This function must \b NOT be called explicitly! It is used internally for the performance
+// optimized evaluation of expression templates. Calling this function explicitly might result
+// in erroneous results and/or in compilation errors. Instead of using this function use the
+// assignment operator.
+*/
+template< typename VT     // Type of the dense vector
+        , bool TF >       // Transpose flag
+template< typename VT2 >  // Type of the right-hand side dense vector
+inline DisableIf_< typename DenseSubvector<VT,aligned,TF>::BLAZE_TEMPLATE VectorizedDivAssign<VT2> >
+   DenseSubvector<VT,aligned,TF>::divAssign( const DenseVector<VT2,TF>& rhs )
+{
+   BLAZE_INTERNAL_ASSERT( size() == (~rhs).size(), "Invalid vector sizes" );
+
+   const size_t ipos( size() & size_t(-2) );
+   for( size_t i=0UL; i<ipos; i+=2UL ) {
+      vector_[offset_+i    ] /= (~rhs)[i    ];
+      vector_[offset_+i+1UL] /= (~rhs)[i+1UL];
+   }
+   if( ipos < size() ) {
+      vector_[offset_+ipos] /= (~rhs)[ipos];
+   }
+}
+/*! \endcond */
+//*************************************************************************************************
+
+
+//*************************************************************************************************
+/*! \cond BLAZE_INTERNAL */
+/*!\brief SIMD optimized implementation of the division assignment of a dense vector.
+//
+// \param rhs The right-hand side dense vector divisor.
+// \return void
+//
+// This function must \b NOT be called explicitly! It is used internally for the performance
+// optimized evaluation of expression templates. Calling this function explicitly might result
+// in erroneous results and/or in compilation errors. Instead of using this function use the
+// assignment operator.
+*/
+template< typename VT     // Type of the dense vector
+        , bool TF >       // Transpose flag
+template< typename VT2 >  // Type of the right-hand side dense vector
+inline EnableIf_< typename DenseSubvector<VT,aligned,TF>::BLAZE_TEMPLATE VectorizedDivAssign<VT2> >
+   DenseSubvector<VT,aligned,TF>::divAssign( const DenseVector<VT2,TF>& rhs )
+{
+   BLAZE_CONSTRAINT_MUST_BE_VECTORIZABLE_TYPE( ElementType );
+
+   BLAZE_INTERNAL_ASSERT( size() == (~rhs).size(), "Invalid vector sizes" );
+
+   const size_t ipos( size_ & size_t(-SIMDSIZE) );
+   BLAZE_INTERNAL_ASSERT( ( size_ - ( size_ % (SIMDSIZE) ) ) == ipos, "Invalid end calculation" );
+
+   size_t i( 0UL );
+   ConstIterator_<VT2> it( (~rhs).begin() );
+
+   for( ; (i+SIMDSIZE*3UL) < ipos; i+=SIMDSIZE*4UL ) {
+      store( i             , load(i             ) / it.load() ); it += SIMDSIZE;
+      store( i+SIMDSIZE    , load(i+SIMDSIZE    ) / it.load() ); it += SIMDSIZE;
+      store( i+SIMDSIZE*2UL, load(i+SIMDSIZE*2UL) / it.load() ); it += SIMDSIZE;
+      store( i+SIMDSIZE*3UL, load(i+SIMDSIZE*3UL) / it.load() ); it += SIMDSIZE;
+   }
+   for( ; i<ipos; i+=SIMDSIZE, it+=SIMDSIZE ) {
+      store( i, load(i) / it.load() );
+   }
+   for( ; i<size_; ++i, ++it ) {
+      vector_[offset_+i] /= *it;
+   }
 }
 /*! \endcond */
 //*************************************************************************************************
