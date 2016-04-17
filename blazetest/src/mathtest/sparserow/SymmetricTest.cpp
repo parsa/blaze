@@ -71,6 +71,7 @@ SymmetricTest::SymmetricTest()
    testAddAssign();
    testSubAssign();
    testMultAssign();
+   testDivAssign();
    testScaling();
    testSubscript();
    testIterator();
@@ -347,9 +348,7 @@ void SymmetricTest::testAssignment()
 
       RT row1 = row( mat_, 1UL );
 
-      blaze::DynamicVector<int,blaze::rowVector> vec1( 4UL, 0 );
-      vec1[1] = 8;
-      vec1[3] = 9;
+      blaze::DynamicVector<int,blaze::rowVector> vec1{ 0, 8, 0, 9 };
 
       row1 = vec1;
 
@@ -494,9 +493,7 @@ void SymmetricTest::testAssignment()
 
       ORT row1 = row( tmat_, 1UL );
 
-      blaze::DynamicVector<int,blaze::rowVector> vec1( 4UL, 0 );
-      vec1[1] = 8;
-      vec1[3] = 9;
+      blaze::DynamicVector<int,blaze::rowVector> vec1{ 0, 8, 0, 9 };
 
       row1 = vec1;
 
@@ -654,9 +651,7 @@ void SymmetricTest::testAddAssign()
 
       RT row2 = row( mat_, 2UL );
 
-      blaze::DynamicVector<int,blaze::rowVector> vec( 4UL, 0 );
-      vec[0] =  2;
-      vec[1] = -4;
+      blaze::DynamicVector<int,blaze::rowVector> vec{ 2, -4, 0, 0 };
 
       row2 += vec;
 
@@ -802,9 +797,7 @@ void SymmetricTest::testAddAssign()
 
       ORT row2 = row( tmat_, 2UL );
 
-      blaze::DynamicVector<int,blaze::rowVector> vec( 4UL, 0 );
-      vec[0] =  2;
-      vec[1] = -4;
+      blaze::DynamicVector<int,blaze::rowVector> vec{ 2, -4, 0, 0 };
 
       row2 += vec;
 
@@ -963,9 +956,7 @@ void SymmetricTest::testSubAssign()
 
       RT row2 = row( mat_, 2UL );
 
-      blaze::DynamicVector<int,blaze::rowVector> vec( 4UL, 0 );
-      vec[0] =  2;
-      vec[1] = -4;
+      blaze::DynamicVector<int,blaze::rowVector> vec{ 2, -4, 0, 0 };
 
       row2 -= vec;
 
@@ -1111,9 +1102,7 @@ void SymmetricTest::testSubAssign()
 
       ORT row2 = row( tmat_, 2UL );
 
-      blaze::DynamicVector<int,blaze::rowVector> vec( 4UL, 0 );
-      vec[0] =  2;
-      vec[1] = -4;
+      blaze::DynamicVector<int,blaze::rowVector> vec{ 2, -4, 0, 0 };
 
       row2 -= vec;
 
@@ -1272,9 +1261,7 @@ void SymmetricTest::testMultAssign()
 
       RT row2 = row( mat_, 2UL );
 
-      blaze::DynamicVector<int,blaze::rowVector> vec( 4UL, 0 );
-      vec[0] =  2;
-      vec[2] = -4;
+      blaze::DynamicVector<int,blaze::rowVector> vec{ 2, 0, -4, 0 };
 
       row2 *= vec;
 
@@ -1420,9 +1407,7 @@ void SymmetricTest::testMultAssign()
 
       ORT row2 = row( tmat_, 2UL );
 
-      blaze::DynamicVector<int,blaze::rowVector> vec( 4UL, 0 );
-      vec[0] =  2;
-      vec[2] = -4;
+      blaze::DynamicVector<int,blaze::rowVector> vec{ 2, 0, -4, 0 };
 
       row2 *= vec;
 
@@ -1506,6 +1491,117 @@ void SymmetricTest::testMultAssign()
                                      "(  0  1   0 -2 )\n"
                                      "(  0  0 -12  0 )\n"
                                      "(  0 -2   0  5 )\n";
+         throw std::runtime_error( oss.str() );
+      }
+   }
+}
+//*************************************************************************************************
+
+
+//*************************************************************************************************
+/*!\brief Test of the SparseRow division assignment operators.
+//
+// \return void
+// \exception std::runtime_error Error detected.
+//
+// This function performs a test of the division assignment operators of the SparseRow class
+// template. In case an error is detected, a \a std::runtime_error exception is thrown.
+*/
+void SymmetricTest::testDivAssign()
+{
+   //=====================================================================================
+   // Row-major dense vector division assignment
+   //=====================================================================================
+
+   {
+      test_ = "Row-major dense vector division assignment";
+
+      initialize();
+
+      RT row2 = row( mat_, 2UL );
+
+      blaze::DynamicVector<int,blaze::rowVector> vec{ 1, 2, 3, -2 };
+
+      row2 /= vec;
+
+      checkSize    ( row2, 4UL );
+      checkNonZeros( row2, 2UL );
+      checkRows    ( mat_, 4UL );
+      checkColumns ( mat_, 4UL );
+      checkNonZeros( mat_, 7UL );
+
+      if( row2[0] != 0 || row2[1] != 0 || row2[2] != 1 || row2[3] != -2 ) {
+         std::ostringstream oss;
+         oss << " Test: " << test_ << "\n"
+             << " Error: Division assignment failed\n"
+             << " Details:\n"
+             << "   Result:\n" << row2 << "\n"
+             << "   Expected result:\n( 0 0 1 -2 )\n";
+         throw std::runtime_error( oss.str() );
+      }
+
+      if( mat_(0,0) != 0 || mat_(0,1) !=  0 || mat_(0,2) !=  0 || mat_(0,3) !=  0 ||
+          mat_(1,0) != 0 || mat_(1,1) !=  1 || mat_(1,2) !=  0 || mat_(1,3) != -2 ||
+          mat_(2,0) != 0 || mat_(2,1) !=  0 || mat_(2,2) !=  1 || mat_(2,3) != -2 ||
+          mat_(3,0) != 0 || mat_(3,1) != -2 || mat_(3,2) != -2 || mat_(3,3) !=  5 ) {
+         std::ostringstream oss;
+         oss << " Test: " << test_ << "\n"
+             << " Error: Division assignment failed\n"
+             << " Details:\n"
+             << "   Result:\n" << mat_ << "\n"
+             << "   Expected result:\n(  0  0  0  0 )\n"
+                                     "(  0  1  0 -2 )\n"
+                                     "(  0  0  1 -2 )\n"
+                                     "(  0 -2 -2  5 )\n";
+         throw std::runtime_error( oss.str() );
+      }
+   }
+
+
+   //=====================================================================================
+   // Column-major dense vector division assignment
+   //=====================================================================================
+
+   {
+      test_ = "Column-major dense vector division assignment";
+
+      initialize();
+
+      ORT row2 = row( tmat_, 2UL );
+
+      blaze::DynamicVector<int,blaze::rowVector> vec{ 1, 2, 3, -2 };
+
+      row2 /= vec;
+
+      checkSize    ( row2 , 4UL );
+      checkNonZeros( row2 , 2UL );
+      checkRows    ( tmat_, 4UL );
+      checkColumns ( tmat_, 4UL );
+      checkNonZeros( tmat_, 7UL );
+
+      if( row2[0] != 0 || row2[1] != 0 || row2[2] != 1 || row2[3] != -2 ) {
+         std::ostringstream oss;
+         oss << " Test: " << test_ << "\n"
+             << " Error: Division assignment failed\n"
+             << " Details:\n"
+             << "   Result:\n" << row2 << "\n"
+             << "   Expected result:\n( 0 0 1 -2 )\n";
+         throw std::runtime_error( oss.str() );
+      }
+
+      if( tmat_(0,0) != 0 || tmat_(0,1) !=  0 || tmat_(0,2) !=  0 || tmat_(0,3) !=  0 ||
+          tmat_(1,0) != 0 || tmat_(1,1) !=  1 || tmat_(1,2) !=  0 || tmat_(1,3) != -2 ||
+          tmat_(2,0) != 0 || tmat_(2,1) !=  0 || tmat_(2,2) !=  1 || tmat_(2,3) != -2 ||
+          tmat_(3,0) != 0 || tmat_(3,1) != -2 || tmat_(3,2) != -2 || tmat_(3,3) !=  5 ) {
+         std::ostringstream oss;
+         oss << " Test: " << test_ << "\n"
+             << " Error: Division assignment failed\n"
+             << " Details:\n"
+             << "   Result:\n" << tmat_ << "\n"
+             << "   Expected result:\n(  0  0  0  0 )\n"
+                                     "(  0  1  0 -2 )\n"
+                                     "(  0  0  1 -2 )\n"
+                                     "(  0 -2 -2  5 )\n";
          throw std::runtime_error( oss.str() );
       }
    }
