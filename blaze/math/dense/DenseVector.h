@@ -47,6 +47,7 @@
 #include <blaze/math/Functions.h>
 #include <blaze/math/shims/Equal.h>
 #include <blaze/math/shims/IsDefault.h>
+#include <blaze/math/shims/IsDivisor.h>
 #include <blaze/math/shims/IsNaN.h>
 #include <blaze/math/shims/Square.h>
 #include <blaze/math/traits/CMathTrait.h>
@@ -368,6 +369,9 @@ template< typename VT, bool TF >
 bool isnan( const DenseVector<VT,TF>& dv );
 
 template< typename VT, bool TF >
+bool isDivisor( const DenseVector<VT,TF>& dv );
+
+template< typename VT, bool TF >
 bool isUniform( const DenseVector<VT,TF>& dv );
 
 template< typename VT, bool TF >
@@ -409,14 +413,42 @@ template< typename VT  // Type of the dense vector
         , bool TF >    // Transpose flag
 bool isnan( const DenseVector<VT,TF>& dv )
 {
-   typedef CompositeType_<VT>  CT;
-
-   CT a( ~dv );  // Evaluation of the dense vector operand
+   CompositeType_<VT> a( ~dv );  // Evaluation of the dense vector operand
 
    for( size_t i=0UL; i<a.size(); ++i ) {
       if( isnan( a[i] ) ) return true;
    }
    return false;
+}
+//*************************************************************************************************
+
+
+//*************************************************************************************************
+/*!\brief Returns whether the given dense vector is a valid divisor.
+// \ingroup dense_vector
+//
+// \param dv The dense vector to be tested.
+// \return \a true in case the given vector is a valid divisor, \a false otherwise.
+//
+// This function checks if the given dense vector is a valid divisor. If all elements of the
+// vector are valid divisors the function returns \a true, if at least one element of the vector
+// is not a valid divisor, the function returns \a false.
+
+   \code
+   StaticVector<int,3UL> a{ 1, -1, 2 };  // isDivisor( a ) returns true
+   StaticVector<int,3UL> b{ 1, -1, 0 };  // isDivisor( b ) returns false
+   \endcode
+*/
+template< typename VT  // Type of the dense vector
+        , bool TF >    // Transpose flag
+bool isDivisor( const DenseVector<VT,TF>& dv )
+{
+   CompositeType_<VT> a( ~dv );  // Evaluation of the dense vector operand
+
+   for( size_t i=0UL; i<a.size(); ++i ) {
+      if( !isDivisor( a[i] ) ) return false;
+   }
+   return true;
 }
 //*************************************************************************************************
 
