@@ -63,6 +63,7 @@
 #include <blaze/math/typetraits/IsVecSerialExpr.h>
 #include <blaze/math/typetraits/IsVecTransExpr.h>
 #include <blaze/math/typetraits/IsVecVecAddExpr.h>
+#include <blaze/math/typetraits/IsVecVecDivExpr.h>
 #include <blaze/math/typetraits/IsVecVecMultExpr.h>
 #include <blaze/math/typetraits/IsVecVecSubExpr.h>
 #include <blaze/util/DisableIf.h>
@@ -479,13 +480,41 @@ inline EnableIf_< IsVecVecMultExpr<VT>, SubvectorExprTrait_<VT,AF> >
 
 //*************************************************************************************************
 /*! \cond BLAZE_INTERNAL */
+/*!\brief Creating a view on a specific subvector of the given vector/vector division.
+// \ingroup views
+//
+// \param vector The constant vector/vector division.
+// \param index The index of the first element of the subvector.
+// \param size The size of the subvector.
+// \return View on the specified subvector of the division.
+//
+// This function returns an expression representing the specified subvector of the given
+// vector/vector division.
+*/
+template< bool AF      // Alignment flag
+        , typename VT  // Type of the vector
+        , bool TF >    // Transpose flag
+inline EnableIf_< IsVecVecDivExpr<VT>, SubvectorExprTrait_<VT,AF> >
+   subvector( const Vector<VT,TF>& vector, size_t index, size_t size )
+{
+   BLAZE_FUNCTION_TRACE;
+
+   return subvector<AF>( (~vector).leftOperand() , index, size ) /
+          subvector<AF>( (~vector).rightOperand(), index, size );
+}
+/*! \endcond */
+//*************************************************************************************************
+
+
+//*************************************************************************************************
+/*! \cond BLAZE_INTERNAL */
 /*!\brief Creating a view on a specific subvector of the given vector/vector cross product.
 // \ingroup views
 //
 // \param dv The constant vector/vector cross product.
 // \param index The index of the first element of the subvector.
 // \param size The size of the subvector.
-// \return View on the specified subvector of the multiplication.
+// \return View on the specified subvector of the cross product.
 //
 // This function returns an expression representing the specified subvector of the given
 // vector/vector cross product.
