@@ -625,9 +625,14 @@ class DVecDVecDivExpr : public DenseVector< DVecDVecDivExpr<VT1,VT2,TF>, TF >
       if( !IsComputation<VT1>::value && isSame( ~lhs, rhs.lhs_ ) ) {
          divAssign( ~lhs, rhs.rhs_ );
       }
-      else {
+      else if( IsSame<VT,ResultType>::value ||
+               IsSame< ElementType_<VT>, ElementType_<VT1> >::value ) {
          assign   ( ~lhs, rhs.lhs_ );
          divAssign( ~lhs, rhs.rhs_ );
+      }
+      else {
+         const ResultType tmp( serial( rhs ) );
+         assign( ~lhs, tmp );
       }
    }
    /*! \endcond */
@@ -770,35 +775,7 @@ class DVecDVecDivExpr : public DenseVector< DVecDVecDivExpr<VT1,VT2,TF>, TF >
    //**********************************************************************************************
 
    //**Multiplication assignment to sparse vectors*************************************************
-   /*! \cond BLAZE_INTERNAL */
-   /*!\brief Multiplication assignment of a dense vector-dense vector division to a sparse vector.
-   // \ingroup dense_vector
-   //
-   // \param lhs The target left-hand side sparse vector.
-   // \param rhs The right-hand side division expression to be multiplied.
-   // \return void
-   //
-   // This function implements the performance optimized multiplication assignment of a dense
-   // vector-dense vector division expression to a sparse vector. Due to the explicit application
-   // of the SFINAE principle, this function can only be selected by the compiler in case either
-   // of the operands requires an intermediate evaluation.
-   */
-   template< typename VT >  // Type of the target sparse vector
-   friend inline EnableIf_< UseAssign<VT> >
-      multAssign( SparseVector<VT,TF>& lhs, const DVecDVecDivExpr& rhs )
-   {
-      BLAZE_FUNCTION_TRACE;
-
-      BLAZE_CONSTRAINT_MUST_BE_DENSE_VECTOR_TYPE( ResultType );
-      BLAZE_CONSTRAINT_MUST_BE_VECTOR_WITH_TRANSPOSE_FLAG( ResultType, TF );
-      BLAZE_CONSTRAINT_MUST_BE_REFERENCE_TYPE( CompositeType_<ResultType> );
-
-      BLAZE_INTERNAL_ASSERT( (~lhs).size() == rhs.size(), "Invalid vector sizes" );
-
-      const ResultType tmp( serial( rhs ) );
-      multAssign( ~lhs, tmp );
-   }
-   /*! \endcond */
+   // No special implementation for the multiplication assignment to sparse vectors.
    //**********************************************************************************************
 
    //**SMP assignment to dense vectors*************************************************************
@@ -826,9 +803,14 @@ class DVecDVecDivExpr : public DenseVector< DVecDVecDivExpr<VT1,VT2,TF>, TF >
       if( !IsComputation<VT1>::value && isSame( ~lhs, rhs.lhs_ ) ) {
          smpDivAssign( ~lhs, rhs.rhs_ );
       }
-      else {
+      else if( IsSame<VT,ResultType>::value ||
+               IsSame< ElementType_<VT>, ElementType_<VT1> >::value ) {
          smpAssign   ( ~lhs, rhs.lhs_ );
          smpDivAssign( ~lhs, rhs.rhs_ );
+      }
+      else {
+         const ResultType tmp( rhs );
+         smpAssign( ~lhs, tmp );
       }
    }
    /*! \endcond */
@@ -958,40 +940,20 @@ class DVecDVecDivExpr : public DenseVector< DVecDVecDivExpr<VT1,VT2,TF>, TF >
    {
       BLAZE_FUNCTION_TRACE;
 
+      BLAZE_CONSTRAINT_MUST_BE_DENSE_VECTOR_TYPE( ResultType );
+      BLAZE_CONSTRAINT_MUST_BE_VECTOR_WITH_TRANSPOSE_FLAG( ResultType, TF );
+      BLAZE_CONSTRAINT_MUST_BE_REFERENCE_TYPE( CompositeType_<ResultType> );
+
       BLAZE_INTERNAL_ASSERT( (~lhs).size() == rhs.size(), "Invalid vector sizes" );
 
-      smpMultAssign( ~lhs, rhs.lhs_ );
-      smpDivAssign ( ~lhs, rhs.rhs_ );
+      const ResultType tmp( rhs );
+      smpMultAssign( ~lhs, tmp );
    }
    /*! \endcond */
    //**********************************************************************************************
 
    //**SMP multiplication assignment to sparse vectors*********************************************
-   /*! \cond BLAZE_INTERNAL */
-   /*!\brief SMP multiplication assignment of a dense vector-dense vector division to a sparse vector.
-   // \ingroup dense_vector
-   //
-   // \param lhs The target left-hand side sparse vector.
-   // \param rhs The right-hand side division expression to be multiplied.
-   // \return void
-   //
-   // This function implements the performance optimized SMP multiplication assignment of a
-   // dense vector-dense vector division expression to a sparse vector. Due to the explicit
-   // application of the SFINAE principle, this function can only be selected by the compiler
-   // in case the expression specific parallel evaluation strategy is selected.
-   */
-   template< typename VT >  // Type of the target sparse vector
-   friend inline EnableIf_< UseSMPAssign<VT> >
-      smpMultAssign( SparseVector<VT,TF>& lhs, const DVecDVecDivExpr& rhs )
-   {
-      BLAZE_FUNCTION_TRACE;
-
-      BLAZE_INTERNAL_ASSERT( (~lhs).size() == rhs.size(), "Invalid vector sizes" );
-
-      smpMultAssign( ~lhs, rhs.lhs_ );
-      smpDivAssign ( ~lhs, rhs.rhs_ );
-   }
-   /*! \endcond */
+   // No special implementation for the SMP multiplication assignment to sparse vectors.
    //**********************************************************************************************
 
    //**Compile time checks*************************************************************************
