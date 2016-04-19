@@ -1371,9 +1371,9 @@ void OperationTest<VT1,VT2>::testScaledOperation( T scalar )
             sres_   = dres_;
             refres_ = dres_;
 
-            dres_   = dres_   / scalar;
-            sres_   = sres_   / scalar;
-            refres_ = refres_ / scalar;
+            dres_   = dres_   * scalar;
+            sres_   = sres_   * scalar;
+            refres_ = refres_ * scalar;
          }
          catch( std::exception& ex ) {
             std::ostringstream oss;
@@ -1402,9 +1402,9 @@ void OperationTest<VT1,VT2>::testScaledOperation( T scalar )
             sres_   = dres_;
             refres_ = dres_;
 
-            dres_   = scalar / dres_;
-            sres_   = scalar / sres_;
-            refres_ = scalar / refres_;
+            dres_   = scalar * dres_;
+            sres_   = scalar * sres_;
+            refres_ = scalar * refres_;
          }
          catch( std::exception& ex ) {
             std::ostringstream oss;
@@ -1493,9 +1493,9 @@ void OperationTest<VT1,VT2>::testScaledOperation( T scalar )
 
          try {
             initResults();
-            dres_   = scalar / ( lhs_ / rhs_ );
-            sres_   = scalar / ( lhs_ / rhs_ );
-            refres_ = scalar / ( reflhs_ / refrhs_ );
+            dres_   = scalar * ( lhs_ / rhs_ );
+            sres_   = scalar * ( lhs_ / rhs_ );
+            refres_ = scalar * ( reflhs_ / refrhs_ );
          }
          catch( std::exception& ex ) {
              convertException<VT1,VT2>( ex );
@@ -1505,9 +1505,9 @@ void OperationTest<VT1,VT2>::testScaledOperation( T scalar )
 
          try {
             initTransposeResults();
-            tdres_   = scalar / ( tlhs_ / trhs_ );
-            tsres_   = scalar / ( tlhs_ / trhs_ );
-            trefres_ = scalar / ( treflhs_ / trefrhs_ );
+            tdres_   = scalar * ( tlhs_ / trhs_ );
+            tsres_   = scalar * ( tlhs_ / trhs_ );
+            trefres_ = scalar * ( treflhs_ / trefrhs_ );
          }
          catch( std::exception& ex ) {
             convertException<TVT1,TVT2>( ex );
@@ -1523,9 +1523,9 @@ void OperationTest<VT1,VT2>::testScaledOperation( T scalar )
 
          try {
             initResults();
-            dres_   = scalar / ( eval( lhs_ ) / eval( rhs_ ) );
-            sres_   = scalar / ( eval( lhs_ ) / eval( rhs_ ) );
-            refres_ = scalar / ( eval( reflhs_ ) / eval( refrhs_ ) );
+            dres_   = scalar * ( eval( lhs_ ) / eval( rhs_ ) );
+            sres_   = scalar * ( eval( lhs_ ) / eval( rhs_ ) );
+            refres_ = scalar * ( eval( reflhs_ ) / eval( refrhs_ ) );
          }
          catch( std::exception& ex ) {
             convertException<VT1,VT2>( ex );
@@ -1535,9 +1535,9 @@ void OperationTest<VT1,VT2>::testScaledOperation( T scalar )
 
          try {
             initTransposeResults();
-            tdres_   = scalar / ( eval( tlhs_ ) / eval( trhs_ ) );
-            tsres_   = scalar / ( eval( tlhs_ ) / eval( trhs_ ) );
-            trefres_ = scalar / ( eval( treflhs_ ) / eval( trefrhs_ ) );
+            tdres_   = scalar * ( eval( tlhs_ ) / eval( trhs_ ) );
+            tsres_   = scalar * ( eval( tlhs_ ) / eval( trhs_ ) );
+            trefres_ = scalar * ( eval( treflhs_ ) / eval( trefrhs_ ) );
          }
          catch( std::exception& ex ) {
             convertException<TVT1,TVT2>( ex );
@@ -1558,9 +1558,9 @@ void OperationTest<VT1,VT2>::testScaledOperation( T scalar )
 
          try {
             initResults();
-            dres_   = ( lhs_ / rhs_ ) / scalar;
-            sres_   = ( lhs_ / rhs_ ) / scalar;
-            refres_ = ( reflhs_ / refrhs_ ) / scalar;
+            dres_   = ( lhs_ / rhs_ ) * scalar;
+            sres_   = ( lhs_ / rhs_ ) * scalar;
+            refres_ = ( reflhs_ / refrhs_ ) * scalar;
          }
          catch( std::exception& ex ) {
             convertException<VT1,VT2>( ex );
@@ -1570,9 +1570,9 @@ void OperationTest<VT1,VT2>::testScaledOperation( T scalar )
 
          try {
             initTransposeResults();
-            tdres_   = ( tlhs_ / trhs_ ) / scalar;
-            tsres_   = ( tlhs_ / trhs_ ) / scalar;
-            trefres_ = ( treflhs_ / trefrhs_ ) / scalar;
+            tdres_   = ( tlhs_ / trhs_ ) * scalar;
+            tsres_   = ( tlhs_ / trhs_ ) * scalar;
+            trefres_ = ( treflhs_ / trefrhs_ ) * scalar;
          }
          catch( std::exception& ex ) {
             convertException<TVT1,TVT2>( ex );
@@ -1588,9 +1588,9 @@ void OperationTest<VT1,VT2>::testScaledOperation( T scalar )
 
          try {
             initResults();
-            dres_   = ( eval( lhs_ ) / eval( rhs_ ) ) / scalar;
-            sres_   = ( eval( lhs_ ) / eval( rhs_ ) ) / scalar;
-            refres_ = ( eval( reflhs_ ) / eval( refrhs_ ) ) / scalar;
+            dres_   = ( eval( lhs_ ) / eval( rhs_ ) ) * scalar;
+            sres_   = ( eval( lhs_ ) / eval( rhs_ ) ) * scalar;
+            refres_ = ( eval( reflhs_ ) / eval( refrhs_ ) ) * scalar;
          }
          catch( std::exception& ex ) {
             convertException<VT1,VT2>( ex );
@@ -1600,9 +1600,9 @@ void OperationTest<VT1,VT2>::testScaledOperation( T scalar )
 
          try {
             initTransposeResults();
-            tdres_   = ( eval( tlhs_ ) / eval( trhs_ ) ) / scalar;
-            tsres_   = ( eval( tlhs_ ) / eval( trhs_ ) ) / scalar;
-            trefres_ = ( eval( treflhs_ ) / eval( trefrhs_ ) ) / scalar;
+            tdres_   = ( eval( tlhs_ ) / eval( trhs_ ) ) * scalar;
+            tsres_   = ( eval( tlhs_ ) / eval( trhs_ ) ) * scalar;
+            trefres_ = ( eval( treflhs_ ) / eval( trefrhs_ ) ) * scalar;
          }
          catch( std::exception& ex ) {
             convertException<TVT1,TVT2>( ex );
@@ -1688,9 +1688,9 @@ void OperationTest<VT1,VT2>::testScaledOperation( T scalar )
 
          try {
             initResults();
-            dres_   += scalar / ( lhs_ / rhs_ );
-            sres_   += scalar / ( lhs_ / rhs_ );
-            refres_ += scalar / ( reflhs_ / refrhs_ );
+            dres_   += scalar * ( lhs_ / rhs_ );
+            sres_   += scalar * ( lhs_ / rhs_ );
+            refres_ += scalar * ( reflhs_ / refrhs_ );
          }
          catch( std::exception& ex ) {
             convertException<VT1,VT2>( ex );
@@ -1700,9 +1700,9 @@ void OperationTest<VT1,VT2>::testScaledOperation( T scalar )
 
          try {
             initTransposeResults();
-            tdres_   += scalar / ( tlhs_ / trhs_ );
-            tsres_   += scalar / ( tlhs_ / trhs_ );
-            trefres_ += scalar / ( treflhs_ / trefrhs_ );
+            tdres_   += scalar * ( tlhs_ / trhs_ );
+            tsres_   += scalar * ( tlhs_ / trhs_ );
+            trefres_ += scalar * ( treflhs_ / trefrhs_ );
          }
          catch( std::exception& ex ) {
             convertException<TVT1,TVT2>( ex );
@@ -1718,9 +1718,9 @@ void OperationTest<VT1,VT2>::testScaledOperation( T scalar )
 
          try {
             initResults();
-            dres_   += scalar / ( eval( lhs_ ) / eval( rhs_ ) );
-            sres_   += scalar / ( eval( lhs_ ) / eval( rhs_ ) );
-            refres_ += scalar / ( eval( reflhs_ ) / eval( refrhs_ ) );
+            dres_   += scalar * ( eval( lhs_ ) / eval( rhs_ ) );
+            sres_   += scalar * ( eval( lhs_ ) / eval( rhs_ ) );
+            refres_ += scalar * ( eval( reflhs_ ) / eval( refrhs_ ) );
          }
          catch( std::exception& ex ) {
             convertException<VT1,VT2>( ex );
@@ -1730,9 +1730,9 @@ void OperationTest<VT1,VT2>::testScaledOperation( T scalar )
 
          try {
             initTransposeResults();
-            tdres_   += scalar / ( eval( tlhs_ ) / eval( trhs_ ) );
-            tsres_   += scalar / ( eval( tlhs_ ) / eval( trhs_ ) );
-            trefres_ += scalar / ( eval( treflhs_ ) / eval( trefrhs_ ) );
+            tdres_   += scalar * ( eval( tlhs_ ) / eval( trhs_ ) );
+            tsres_   += scalar * ( eval( tlhs_ ) / eval( trhs_ ) );
+            trefres_ += scalar * ( eval( treflhs_ ) / eval( trefrhs_ ) );
          }
          catch( std::exception& ex ) {
             convertException<TVT1,TVT2>( ex );
@@ -1753,9 +1753,9 @@ void OperationTest<VT1,VT2>::testScaledOperation( T scalar )
 
          try {
             initResults();
-            dres_   += ( lhs_ / rhs_ ) / scalar;
-            sres_   += ( lhs_ / rhs_ ) / scalar;
-            refres_ += ( reflhs_ / refrhs_ ) / scalar;
+            dres_   += ( lhs_ / rhs_ ) * scalar;
+            sres_   += ( lhs_ / rhs_ ) * scalar;
+            refres_ += ( reflhs_ / refrhs_ ) * scalar;
          }
          catch( std::exception& ex ) {
             convertException<VT1,VT2>( ex );
@@ -1765,9 +1765,9 @@ void OperationTest<VT1,VT2>::testScaledOperation( T scalar )
 
          try {
             initTransposeResults();
-            tdres_   += ( tlhs_ / trhs_ ) / scalar;
-            tsres_   += ( tlhs_ / trhs_ ) / scalar;
-            trefres_ += ( treflhs_ / trefrhs_ ) / scalar;
+            tdres_   += ( tlhs_ / trhs_ ) * scalar;
+            tsres_   += ( tlhs_ / trhs_ ) * scalar;
+            trefres_ += ( treflhs_ / trefrhs_ ) * scalar;
          }
          catch( std::exception& ex ) {
             convertException<TVT1,TVT2>( ex );
@@ -1783,9 +1783,9 @@ void OperationTest<VT1,VT2>::testScaledOperation( T scalar )
 
          try {
             initResults();
-            dres_   += ( eval( lhs_ ) / eval( rhs_ ) ) / scalar;
-            sres_   += ( eval( lhs_ ) / eval( rhs_ ) ) / scalar;
-            refres_ += ( eval( reflhs_ ) / eval( refrhs_ ) ) / scalar;
+            dres_   += ( eval( lhs_ ) / eval( rhs_ ) ) * scalar;
+            sres_   += ( eval( lhs_ ) / eval( rhs_ ) ) * scalar;
+            refres_ += ( eval( reflhs_ ) / eval( refrhs_ ) ) * scalar;
          }
          catch( std::exception& ex ) {
             convertException<VT1,VT2>( ex );
@@ -1795,9 +1795,9 @@ void OperationTest<VT1,VT2>::testScaledOperation( T scalar )
 
          try {
             initTransposeResults();
-            tdres_   += ( eval( tlhs_ ) / eval( trhs_ ) ) / scalar;
-            tsres_   += ( eval( tlhs_ ) / eval( trhs_ ) ) / scalar;
-            trefres_ += ( eval( treflhs_ ) / eval( trefrhs_ ) ) / scalar;
+            tdres_   += ( eval( tlhs_ ) / eval( trhs_ ) ) * scalar;
+            tsres_   += ( eval( tlhs_ ) / eval( trhs_ ) ) * scalar;
+            trefres_ += ( eval( treflhs_ ) / eval( trefrhs_ ) ) * scalar;
          }
          catch( std::exception& ex ) {
             convertException<TVT1,TVT2>( ex );
@@ -1883,9 +1883,9 @@ void OperationTest<VT1,VT2>::testScaledOperation( T scalar )
 
          try {
             initResults();
-            dres_   -= scalar / ( lhs_ / rhs_ );
-            sres_   -= scalar / ( lhs_ / rhs_ );
-            refres_ -= scalar / ( reflhs_ / refrhs_ );
+            dres_   -= scalar * ( lhs_ / rhs_ );
+            sres_   -= scalar * ( lhs_ / rhs_ );
+            refres_ -= scalar * ( reflhs_ / refrhs_ );
          }
          catch( std::exception& ex ) {
             convertException<VT1,VT2>( ex );
@@ -1895,9 +1895,9 @@ void OperationTest<VT1,VT2>::testScaledOperation( T scalar )
 
          try {
             initTransposeResults();
-            tdres_   -= scalar / ( tlhs_ / trhs_ );
-            tsres_   -= scalar / ( tlhs_ / trhs_ );
-            trefres_ -= scalar / ( treflhs_ / trefrhs_ );
+            tdres_   -= scalar * ( tlhs_ / trhs_ );
+            tsres_   -= scalar * ( tlhs_ / trhs_ );
+            trefres_ -= scalar * ( treflhs_ / trefrhs_ );
          }
          catch( std::exception& ex ) {
             convertException<TVT1,TVT2>( ex );
@@ -1913,9 +1913,9 @@ void OperationTest<VT1,VT2>::testScaledOperation( T scalar )
 
          try {
             initResults();
-            dres_   -= scalar / ( eval( lhs_ ) / eval( rhs_ ) );
-            sres_   -= scalar / ( eval( lhs_ ) / eval( rhs_ ) );
-            refres_ -= scalar / ( eval( reflhs_ ) / eval( refrhs_ ) );
+            dres_   -= scalar * ( eval( lhs_ ) / eval( rhs_ ) );
+            sres_   -= scalar * ( eval( lhs_ ) / eval( rhs_ ) );
+            refres_ -= scalar * ( eval( reflhs_ ) / eval( refrhs_ ) );
          }
          catch( std::exception& ex ) {
             convertException<VT1,VT2>( ex );
@@ -1925,9 +1925,9 @@ void OperationTest<VT1,VT2>::testScaledOperation( T scalar )
 
          try {
             initTransposeResults();
-            tdres_   -= scalar / ( eval( tlhs_ ) / eval( trhs_ ) );
-            tsres_   -= scalar / ( eval( tlhs_ ) / eval( trhs_ ) );
-            trefres_ -= scalar / ( eval( treflhs_ ) / eval( trefrhs_ ) );
+            tdres_   -= scalar * ( eval( tlhs_ ) / eval( trhs_ ) );
+            tsres_   -= scalar * ( eval( tlhs_ ) / eval( trhs_ ) );
+            trefres_ -= scalar * ( eval( treflhs_ ) / eval( trefrhs_ ) );
          }
          catch( std::exception& ex ) {
             convertException<TVT1,TVT2>( ex );
@@ -1948,9 +1948,9 @@ void OperationTest<VT1,VT2>::testScaledOperation( T scalar )
 
          try {
             initResults();
-            dres_   -= ( lhs_ / rhs_ ) / scalar;
-            sres_   -= ( lhs_ / rhs_ ) / scalar;
-            refres_ -= ( reflhs_ / refrhs_ ) / scalar;
+            dres_   -= ( lhs_ / rhs_ ) * scalar;
+            sres_   -= ( lhs_ / rhs_ ) * scalar;
+            refres_ -= ( reflhs_ / refrhs_ ) * scalar;
          }
          catch( std::exception& ex ) {
             convertException<VT1,VT2>( ex );
@@ -1960,9 +1960,9 @@ void OperationTest<VT1,VT2>::testScaledOperation( T scalar )
 
          try {
             initTransposeResults();
-            tdres_   -= ( tlhs_ / trhs_ ) / scalar;
-            tsres_   -= ( tlhs_ / trhs_ ) / scalar;
-            trefres_ -= ( treflhs_ / trefrhs_ ) / scalar;
+            tdres_   -= ( tlhs_ / trhs_ ) * scalar;
+            tsres_   -= ( tlhs_ / trhs_ ) * scalar;
+            trefres_ -= ( treflhs_ / trefrhs_ ) * scalar;
          }
          catch( std::exception& ex ) {
             convertException<TVT1,TVT2>( ex );
@@ -1978,9 +1978,9 @@ void OperationTest<VT1,VT2>::testScaledOperation( T scalar )
 
          try {
             initResults();
-            dres_   -= ( eval( lhs_ ) / eval( rhs_ ) ) / scalar;
-            sres_   -= ( eval( lhs_ ) / eval( rhs_ ) ) / scalar;
-            refres_ -= ( eval( reflhs_ ) / eval( refrhs_ ) ) / scalar;
+            dres_   -= ( eval( lhs_ ) / eval( rhs_ ) ) * scalar;
+            sres_   -= ( eval( lhs_ ) / eval( rhs_ ) ) * scalar;
+            refres_ -= ( eval( reflhs_ ) / eval( refrhs_ ) ) * scalar;
          }
          catch( std::exception& ex ) {
             convertException<VT1,VT2>( ex );
@@ -1990,9 +1990,9 @@ void OperationTest<VT1,VT2>::testScaledOperation( T scalar )
 
          try {
             initTransposeResults();
-            tdres_   -= ( eval( tlhs_ ) / eval( trhs_ ) ) / scalar;
-            tsres_   -= ( eval( tlhs_ ) / eval( trhs_ ) ) / scalar;
-            trefres_ -= ( eval( treflhs_ ) / eval( trefrhs_ ) ) / scalar;
+            tdres_   -= ( eval( tlhs_ ) / eval( trhs_ ) ) * scalar;
+            tsres_   -= ( eval( tlhs_ ) / eval( trhs_ ) ) * scalar;
+            trefres_ -= ( eval( treflhs_ ) / eval( trefrhs_ ) ) * scalar;
          }
          catch( std::exception& ex ) {
             convertException<TVT1,TVT2>( ex );
@@ -2078,9 +2078,9 @@ void OperationTest<VT1,VT2>::testScaledOperation( T scalar )
 
          try {
             initResults();
-            dres_   *= scalar / ( lhs_ / rhs_ );
-            sres_   *= scalar / ( lhs_ / rhs_ );
-            refres_ *= scalar / ( reflhs_ / refrhs_ );
+            dres_   *= scalar * ( lhs_ / rhs_ );
+            sres_   *= scalar * ( lhs_ / rhs_ );
+            refres_ *= scalar * ( reflhs_ / refrhs_ );
          }
          catch( std::exception& ex ) {
             convertException<VT1,VT2>( ex );
@@ -2090,9 +2090,9 @@ void OperationTest<VT1,VT2>::testScaledOperation( T scalar )
 
          try {
             initTransposeResults();
-            tdres_   *= scalar / ( tlhs_ / trhs_ );
-            tsres_   *= scalar / ( tlhs_ / trhs_ );
-            trefres_ *= scalar / ( treflhs_ / trefrhs_ );
+            tdres_   *= scalar * ( tlhs_ / trhs_ );
+            tsres_   *= scalar * ( tlhs_ / trhs_ );
+            trefres_ *= scalar * ( treflhs_ / trefrhs_ );
          }
          catch( std::exception& ex ) {
             convertException<TVT1,TVT2>( ex );
@@ -2108,9 +2108,9 @@ void OperationTest<VT1,VT2>::testScaledOperation( T scalar )
 
          try {
             initResults();
-            dres_   *= scalar / ( eval( lhs_ ) / eval( rhs_ ) );
-            sres_   *= scalar / ( eval( lhs_ ) / eval( rhs_ ) );
-            refres_ *= scalar / ( eval( reflhs_ ) / eval( refrhs_ ) );
+            dres_   *= scalar * ( eval( lhs_ ) / eval( rhs_ ) );
+            sres_   *= scalar * ( eval( lhs_ ) / eval( rhs_ ) );
+            refres_ *= scalar * ( eval( reflhs_ ) / eval( refrhs_ ) );
          }
          catch( std::exception& ex ) {
             convertException<VT1,VT2>( ex );
@@ -2120,9 +2120,9 @@ void OperationTest<VT1,VT2>::testScaledOperation( T scalar )
 
          try {
             initTransposeResults();
-            tdres_   *= scalar / ( eval( tlhs_ ) / eval( trhs_ ) );
-            tsres_   *= scalar / ( eval( tlhs_ ) / eval( trhs_ ) );
-            trefres_ *= scalar / ( eval( treflhs_ ) / eval( trefrhs_ ) );
+            tdres_   *= scalar * ( eval( tlhs_ ) / eval( trhs_ ) );
+            tsres_   *= scalar * ( eval( tlhs_ ) / eval( trhs_ ) );
+            trefres_ *= scalar * ( eval( treflhs_ ) / eval( trefrhs_ ) );
          }
          catch( std::exception& ex ) {
             convertException<TVT1,TVT2>( ex );
@@ -2143,9 +2143,9 @@ void OperationTest<VT1,VT2>::testScaledOperation( T scalar )
 
          try {
             initResults();
-            dres_   *= ( lhs_ / rhs_ ) / scalar;
-            sres_   *= ( lhs_ / rhs_ ) / scalar;
-            refres_ *= ( reflhs_ / refrhs_ ) / scalar;
+            dres_   *= ( lhs_ / rhs_ ) * scalar;
+            sres_   *= ( lhs_ / rhs_ ) * scalar;
+            refres_ *= ( reflhs_ / refrhs_ ) * scalar;
          }
          catch( std::exception& ex ) {
             convertException<VT1,VT2>( ex );
@@ -2155,9 +2155,9 @@ void OperationTest<VT1,VT2>::testScaledOperation( T scalar )
 
          try {
             initTransposeResults();
-            tdres_   *= ( tlhs_ / trhs_ ) / scalar;
-            tsres_   *= ( tlhs_ / trhs_ ) / scalar;
-            trefres_ *= ( treflhs_ / trefrhs_ ) / scalar;
+            tdres_   *= ( tlhs_ / trhs_ ) * scalar;
+            tsres_   *= ( tlhs_ / trhs_ ) * scalar;
+            trefres_ *= ( treflhs_ / trefrhs_ ) * scalar;
          }
          catch( std::exception& ex ) {
             convertException<TVT1,TVT2>( ex );
@@ -2173,9 +2173,9 @@ void OperationTest<VT1,VT2>::testScaledOperation( T scalar )
 
          try {
             initResults();
-            dres_   *= ( eval( lhs_ ) / eval( rhs_ ) ) / scalar;
-            sres_   *= ( eval( lhs_ ) / eval( rhs_ ) ) / scalar;
-            refres_ *= ( eval( reflhs_ ) / eval( refrhs_ ) ) / scalar;
+            dres_   *= ( eval( lhs_ ) / eval( rhs_ ) ) * scalar;
+            sres_   *= ( eval( lhs_ ) / eval( rhs_ ) ) * scalar;
+            refres_ *= ( eval( reflhs_ ) / eval( refrhs_ ) ) * scalar;
          }
          catch( std::exception& ex ) {
             convertException<VT1,VT2>( ex );
@@ -2185,9 +2185,9 @@ void OperationTest<VT1,VT2>::testScaledOperation( T scalar )
 
          try {
             initTransposeResults();
-            tdres_   *= ( eval( tlhs_ ) / eval( trhs_ ) ) / scalar;
-            tsres_   *= ( eval( tlhs_ ) / eval( trhs_ ) ) / scalar;
-            trefres_ *= ( eval( treflhs_ ) / eval( trefrhs_ ) ) / scalar;
+            tdres_   *= ( eval( tlhs_ ) / eval( trhs_ ) ) * scalar;
+            tsres_   *= ( eval( tlhs_ ) / eval( trhs_ ) ) * scalar;
+            trefres_ *= ( eval( treflhs_ ) / eval( trefrhs_ ) ) * scalar;
          }
          catch( std::exception& ex ) {
             convertException<TVT1,TVT2>( ex );
