@@ -998,7 +998,7 @@ class DenseSubvector : public DenseVector< DenseSubvector<VT,AF,TF>, TF >
       subvector( const DenseSubvector<VT2,AF2,TF2>& dv, size_t index, size_t size );
 
    template< typename VT2, bool AF2, bool TF2 >
-   friend bool isIntact( const DenseSubvector<VT2,AF2,TF2>& dv );
+   friend bool isIntact( const DenseSubvector<VT2,AF2,TF2>& dv ) noexcept;
 
    template< typename VT2, bool AF2, bool TF2 >
    friend bool isSame( const DenseSubvector<VT2,AF2,TF2>& a, const DenseVector<VT2,TF2>& b ) noexcept;
