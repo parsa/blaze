@@ -796,9 +796,9 @@ void smpSubAssign_backend( DenseMatrix<MT1,SO>& lhs, const DenseMatrix<MT2,rowMa
 
    enum : size_t { SIMDSIZE = SIMDTrait< ElementType_<MT1> >::size };
 
-   const bool vectorizable( MT1::simdEnabled && MT2::simdEnabled && IsSame<ET1,ET2>::value );
-   const bool lhsAligned  ( (~lhs).isAligned() );
-   const bool rhsAligned  ( (~rhs).isAligned() );
+   const bool simdEnabled( MT1::simdEnabled && MT2::simdEnabled && IsSame<ET1,ET2>::value );
+   const bool lhsAligned ( (~lhs).isAligned() );
+   const bool rhsAligned ( (~rhs).isAligned() );
 
    const int    threads      ( omp_get_num_threads() );
    const size_t addon        ( ( ( (~lhs).rows() % threads ) != 0UL )? 1UL : 0UL );
