@@ -55,6 +55,8 @@
 #include <blaze/math/constraints/TransposeFlag.h>
 #include <blaze/math/constraints/TVecMatMultExpr.h>
 #include <blaze/math/DynamicMatrix.h>
+#include <blaze/math/shims/Equal.h>
+#include <blaze/math/shims/IsDivisor.h>
 #include <blaze/math/StaticMatrix.h>
 #include <blaze/math/traits/MultExprTrait.h>
 #include <blaze/math/traits/MultTrait.h>
@@ -992,6 +994,74 @@ void OperationTest<VT,MT>::testBasicOperation()
 
          checkResults<TMT>();
       }
+
+
+      //=====================================================================================
+      // Multiplication with division assignment
+      //=====================================================================================
+
+      if( blaze::isDivisor( lhs_ * rhs_ ) )
+      {
+         // Multiplication with division assignment with the given vector/matrix
+         {
+            test_  = "Multiplication with division assignment with the given vector/matrix";
+            error_ = "Failed division assignment operation";
+
+            try {
+               initResults();
+               dres_   /= lhs_ * rhs_;
+               sres_   /= lhs_ * rhs_;
+               refres_ /= reflhs_ * refrhs_;
+            }
+            catch( std::exception& ex ) {
+               convertException<MT>( ex );
+            }
+
+            checkResults<MT>();
+
+            try {
+               initResults();
+               dres_   /= lhs_ * orhs_;
+               sres_   /= lhs_ * orhs_;
+               refres_ /= reflhs_ * refrhs_;
+            }
+            catch( std::exception& ex ) {
+               convertException<TMT>( ex );
+            }
+
+            checkResults<TMT>();
+         }
+
+         // Multiplication with division assignment with evaluated vector/matrix
+         {
+            test_  = "Multiplication with division assignment with evaluated vector/matrix";
+            error_ = "Failed division assignment operation";
+
+            try {
+               initResults();
+               dres_   /= eval( lhs_ ) * eval( rhs_ );
+               sres_   /= eval( lhs_ ) * eval( rhs_ );
+               refres_ /= eval( reflhs_ ) * eval( refrhs_ );
+            }
+            catch( std::exception& ex ) {
+               convertException<MT>( ex );
+            }
+
+            checkResults<MT>();
+
+            try {
+               initResults();
+               dres_   /= eval( lhs_ ) * eval( orhs_ );
+               sres_   /= eval( lhs_ ) * eval( orhs_ );
+               refres_ /= eval( reflhs_ ) * eval( refrhs_ );
+            }
+            catch( std::exception& ex ) {
+               convertException<TMT>( ex );
+            }
+
+            checkResults<TMT>();
+         }
+      }
    }
 #endif
 }
@@ -1273,6 +1343,74 @@ void OperationTest<VT,MT>::testNegatedOperation()
          }
 
          checkResults<TMT>();
+      }
+
+
+      //=====================================================================================
+      // Negated multiplication with division assignment
+      //=====================================================================================
+
+      if( blaze::isDivisor( lhs_ * rhs_ ) )
+      {
+         // Negated multiplication with division assignment with the given vector/matrix
+         {
+            test_  = "Negated multiplication with division assignment with the given vector/matrix";
+            error_ = "Failed division assignment operation";
+
+            try {
+               initResults();
+               dres_   /= -( lhs_ * rhs_ );
+               sres_   /= -( lhs_ * rhs_ );
+               refres_ /= -( reflhs_ * refrhs_ );
+            }
+            catch( std::exception& ex ) {
+               convertException<MT>( ex );
+            }
+
+            checkResults<MT>();
+
+            try {
+               initResults();
+               dres_   /= -( lhs_ * orhs_ );
+               sres_   /= -( lhs_ * orhs_ );
+               refres_ /= -( reflhs_ * refrhs_ );
+            }
+            catch( std::exception& ex ) {
+               convertException<TMT>( ex );
+            }
+
+            checkResults<TMT>();
+         }
+
+         // Negated multiplication with division assignment with the given vector/matrix
+         {
+            test_  = "Negated multiplication with division assignment with evaluated vector/matrix";
+            error_ = "Failed division assignment operation";
+
+            try {
+               initResults();
+               dres_   /= -( eval( lhs_ ) * eval( rhs_ ) );
+               sres_   /= -( eval( lhs_ ) * eval( rhs_ ) );
+               refres_ /= -( eval( reflhs_ ) * eval( refrhs_ ) );
+            }
+            catch( std::exception& ex ) {
+               convertException<MT>( ex );
+            }
+
+            checkResults<MT>();
+
+            try {
+               initResults();
+               dres_   /= -( eval( lhs_ ) * eval( orhs_ ) );
+               sres_   /= -( eval( lhs_ ) * eval( orhs_ ) );
+               refres_ /= -( eval( reflhs_ ) * eval( refrhs_ ) );
+            }
+            catch( std::exception& ex ) {
+               convertException<TMT>( ex );
+            }
+
+            checkResults<TMT>();
+         }
       }
    }
 #endif
@@ -2239,6 +2377,210 @@ void OperationTest<VT,MT>::testScaledOperation( T scalar )
 
          checkResults<TMT>();
       }
+
+
+      //=====================================================================================
+      // Scaled multiplication with division assignment (s*OP)
+      //=====================================================================================
+
+      if( blaze::isDivisor( lhs_ * rhs_ ) )
+      {
+         // Scaled multiplication with division assignment with the given vector/matrix
+         {
+            test_  = "Scaled multiplication with division assignment with the given vector/matrix (s*OP)";
+            error_ = "Failed division assignment operation";
+
+            try {
+               initResults();
+               dres_   /= scalar * ( lhs_ * rhs_ );
+               sres_   /= scalar * ( lhs_ * rhs_ );
+               refres_ /= scalar * ( reflhs_ * refrhs_ );
+            }
+            catch( std::exception& ex ) {
+               convertException<MT>( ex );
+            }
+
+            checkResults<MT>();
+
+            try {
+               initResults();
+               dres_   /= scalar * ( lhs_ * orhs_ );
+               sres_   /= scalar * ( lhs_ * orhs_ );
+               refres_ /= scalar * ( reflhs_ * refrhs_ );
+            }
+            catch( std::exception& ex ) {
+               convertException<TMT>( ex );
+            }
+
+            checkResults<TMT>();
+         }
+
+         // Scaled multiplication with division assignment with evaluated vector/matrix
+         {
+            test_  = "Scaled multiplication with division assignment with evaluated vector/matrix (s*OP)";
+            error_ = "Failed division assignment operation";
+
+            try {
+               initResults();
+               dres_   /= scalar * ( eval( lhs_ ) * eval( rhs_ ) );
+               sres_   /= scalar * ( eval( lhs_ ) * eval( rhs_ ) );
+               refres_ /= scalar * ( eval( reflhs_ ) * eval( refrhs_ ) );
+            }
+            catch( std::exception& ex ) {
+               convertException<MT>( ex );
+            }
+
+            checkResults<MT>();
+
+            try {
+               initResults();
+               dres_   /= scalar * ( eval( lhs_ ) * eval( orhs_ ) );
+               sres_   /= scalar * ( eval( lhs_ ) * eval( orhs_ ) );
+               refres_ /= scalar * ( eval( reflhs_ ) * eval( refrhs_ ) );
+            }
+            catch( std::exception& ex ) {
+               convertException<TMT>( ex );
+            }
+
+            checkResults<TMT>();
+         }
+      }
+
+
+      //=====================================================================================
+      // Scaled multiplication with division assignment (OP*s)
+      //=====================================================================================
+
+      if( blaze::isDivisor( lhs_ * rhs_ ) )
+      {
+         // Scaled multiplication with division assignment with the given vector/matrix
+         {
+            test_  = "Scaled multiplication with division assignment with the given vector/matrix (OP*s)";
+            error_ = "Failed division assignment operation";
+
+            try {
+               initResults();
+               dres_   /= ( lhs_ * rhs_ ) * scalar;
+               sres_   /= ( lhs_ * rhs_ ) * scalar;
+               refres_ /= ( reflhs_ * refrhs_ ) * scalar;
+            }
+            catch( std::exception& ex ) {
+               convertException<MT>( ex );
+            }
+
+            checkResults<MT>();
+
+            try {
+               initResults();
+               dres_   /= ( lhs_ * orhs_ ) * scalar;
+               sres_   /= ( lhs_ * orhs_ ) * scalar;
+               refres_ /= ( reflhs_ * refrhs_ ) * scalar;
+            }
+            catch( std::exception& ex ) {
+               convertException<TMT>( ex );
+            }
+
+            checkResults<TMT>();
+         }
+
+         // Scaled multiplication with division assignment with evaluated vector/matrix
+         {
+            test_  = "Scaled multiplication with division assignment with evaluated vector/matrix (OP*s)";
+            error_ = "Failed division assignment operation";
+
+            try {
+               initResults();
+               dres_   /= ( eval( lhs_ ) * eval( rhs_ ) ) * scalar;
+               sres_   /= ( eval( lhs_ ) * eval( rhs_ ) ) * scalar;
+               refres_ /= ( eval( reflhs_ ) * eval( refrhs_ ) ) * scalar;
+            }
+            catch( std::exception& ex ) {
+               convertException<MT>( ex );
+            }
+
+            checkResults<MT>();
+
+            try {
+               initResults();
+               dres_   /= ( eval( lhs_ ) * eval( orhs_ ) ) * scalar;
+               sres_   /= ( eval( lhs_ ) * eval( orhs_ ) ) * scalar;
+               refres_ /= ( eval( reflhs_ ) * eval( refrhs_ ) ) * scalar;
+            }
+            catch( std::exception& ex ) {
+               convertException<TMT>( ex );
+            }
+
+            checkResults<TMT>();
+         }
+      }
+
+
+      //=====================================================================================
+      // Scaled multiplication with division assignment (OP/s)
+      //=====================================================================================
+
+      if( blaze::isDivisor( ( lhs_ * rhs_ ) / scalar ) )
+      {
+         // Scaled multiplication with division assignment with the given vector/matrix
+         {
+            test_  = "Scaled multiplication with division assignment with the given vector/matrix (OP/s)";
+            error_ = "Failed division assignment operation";
+
+            try {
+               initResults();
+               dres_   /= ( lhs_ * rhs_ ) / scalar;
+               sres_   /= ( lhs_ * rhs_ ) / scalar;
+               refres_ /= ( reflhs_ * refrhs_ ) / scalar;
+            }
+            catch( std::exception& ex ) {
+               convertException<MT>( ex );
+            }
+
+            checkResults<MT>();
+
+            try {
+               initResults();
+               dres_   /= ( lhs_ * orhs_ ) / scalar;
+               sres_   /= ( lhs_ * orhs_ ) / scalar;
+               refres_ /= ( reflhs_ * refrhs_ ) / scalar;
+            }
+            catch( std::exception& ex ) {
+               convertException<TMT>( ex );
+            }
+
+            checkResults<TMT>();
+         }
+
+         // Scaled multiplication with division assignment with evaluated vector/matrix
+         {
+            test_  = "Scaled multiplication with division assignment with evaluated vector/matrix (OP/s)";
+            error_ = "Failed division assignment operation";
+
+            try {
+               initResults();
+               dres_   /= ( eval( lhs_ ) * eval( rhs_ ) ) / scalar;
+               sres_   /= ( eval( lhs_ ) * eval( rhs_ ) ) / scalar;
+               refres_ /= ( eval( reflhs_ ) * eval( refrhs_ ) ) / scalar;
+            }
+            catch( std::exception& ex ) {
+               convertException<MT>( ex );
+            }
+
+            checkResults<MT>();
+
+            try {
+               initResults();
+               dres_   /= ( eval( lhs_ ) * eval( orhs_ ) ) / scalar;
+               sres_   /= ( eval( lhs_ ) * eval( orhs_ ) ) / scalar;
+               refres_ /= ( eval( reflhs_ ) * eval( refrhs_ ) ) / scalar;
+            }
+            catch( std::exception& ex ) {
+               convertException<TMT>( ex );
+            }
+
+            checkResults<TMT>();
+         }
+      }
    }
 #endif
 }
@@ -2520,6 +2862,74 @@ void OperationTest<VT,MT>::testTransOperation()
          }
 
          checkTransposeResults<TMT>();
+      }
+
+
+      //=====================================================================================
+      // Transpose multiplication with division assignment
+      //=====================================================================================
+
+      if( blaze::isDivisor( lhs_ * rhs_ ) )
+      {
+         // Transpose multiplication with division assignment with the given vector/matrix
+         {
+            test_  = "Transpose multiplication with division assignment with the given vector/matrix";
+            error_ = "Failed division assignment operation";
+
+            try {
+               initTransposeResults();
+               tdres_   /= trans( lhs_ * rhs_ );
+               tsres_   /= trans( lhs_ * rhs_ );
+               trefres_ /= trans( reflhs_ * refrhs_ );
+            }
+            catch( std::exception& ex ) {
+               convertException<MT>( ex );
+            }
+
+            checkTransposeResults<MT>();
+
+            try {
+               initTransposeResults();
+               tdres_   /= trans( lhs_ * orhs_ );
+               tsres_   /= trans( lhs_ * orhs_ );
+               trefres_ /= trans( reflhs_ * refrhs_ );
+            }
+            catch( std::exception& ex ) {
+               convertException<TMT>( ex );
+            }
+
+            checkTransposeResults<TMT>();
+         }
+
+         // Transpose multiplication with division assignment with evaluated vector/matrix
+         {
+            test_  = "Transpose multiplication with division assignment with evaluated vector/matrix";
+            error_ = "Failed division assignment operation";
+
+            try {
+               initTransposeResults();
+               tdres_   /= trans( eval( lhs_ ) * eval( rhs_ ) );
+               tsres_   /= trans( eval( lhs_ ) * eval( rhs_ ) );
+               trefres_ /= trans( eval( reflhs_ ) * eval( refrhs_ ) );
+            }
+            catch( std::exception& ex ) {
+               convertException<MT>( ex );
+            }
+
+            checkTransposeResults<MT>();
+
+            try {
+               initTransposeResults();
+               tdres_   /= trans( eval( lhs_ ) * eval( orhs_ ) );
+               tsres_   /= trans( eval( lhs_ ) * eval( orhs_ ) );
+               trefres_ /= trans( eval( reflhs_ ) * eval( refrhs_ ) );
+            }
+            catch( std::exception& ex ) {
+               convertException<TMT>( ex );
+            }
+
+            checkTransposeResults<TMT>();
+         }
       }
    }
 #endif
@@ -2803,6 +3213,74 @@ void OperationTest<VT,MT>::testAbsOperation()
 
          checkResults<TMT>();
       }
+
+
+      //=====================================================================================
+      // Abs multiplication with division assignment
+      //=====================================================================================
+
+      if( blaze::isDivisor( lhs_ * rhs_ ) )
+      {
+         // Abs multiplication with division assignment with the given vector/matrix
+         {
+            test_  = "Abs multiplication with division assignment with the given vector/matrix";
+            error_ = "Failed division assignment operation";
+
+            try {
+               initResults();
+               dres_   /= abs( lhs_ * rhs_ );
+               sres_   /= abs( lhs_ * rhs_ );
+               refres_ /= abs( reflhs_ * refrhs_ );
+            }
+            catch( std::exception& ex ) {
+               convertException<MT>( ex );
+            }
+
+            checkResults<MT>();
+
+            try {
+               initResults();
+               dres_   /= abs( lhs_ * orhs_ );
+               sres_   /= abs( lhs_ * orhs_ );
+               refres_ /= abs( reflhs_ * refrhs_ );
+            }
+            catch( std::exception& ex ) {
+               convertException<TMT>( ex );
+            }
+
+            checkResults<TMT>();
+         }
+
+         // Abs multiplication with division assignment with evaluated vector/matrix
+         {
+            test_  = "Abs multiplication with division assignment with evaluated vector/matrix";
+            error_ = "Failed division assignment operation";
+
+            try {
+               initResults();
+               dres_   /= abs( eval( lhs_ ) * eval( rhs_ ) );
+               sres_   /= abs( eval( lhs_ ) * eval( rhs_ ) );
+               refres_ /= abs( eval( reflhs_ ) * eval( refrhs_ ) );
+            }
+            catch( std::exception& ex ) {
+               convertException<MT>( ex );
+            }
+
+            checkResults<MT>();
+
+            try {
+               initResults();
+               dres_   /= abs( eval( lhs_ ) * eval( orhs_ ) );
+               sres_   /= abs( eval( lhs_ ) * eval( orhs_ ) );
+               refres_ /= abs( eval( reflhs_ ) * eval( refrhs_ ) );
+            }
+            catch( std::exception& ex ) {
+               convertException<TMT>( ex );
+            }
+
+            checkResults<TMT>();
+         }
+      }
    }
 #endif
 }
@@ -3084,6 +3562,74 @@ void OperationTest<VT,MT>::testConjOperation()
          }
 
          checkResults<TMT>();
+      }
+
+
+      //=====================================================================================
+      // Conjugate multiplication with division assignment
+      //=====================================================================================
+
+      if( blaze::isDivisor( lhs_ * rhs_ ) )
+      {
+         // Conjugate multiplication with division assignment with the given vector/matrix
+         {
+            test_  = "Conjugate multiplication with division assignment with the given vector/matrix";
+            error_ = "Failed division assignment operation";
+
+            try {
+               initResults();
+               dres_   /= conj( lhs_ * rhs_ );
+               sres_   /= conj( lhs_ * rhs_ );
+               refres_ /= conj( reflhs_ * refrhs_ );
+            }
+            catch( std::exception& ex ) {
+               convertException<MT>( ex );
+            }
+
+            checkResults<MT>();
+
+            try {
+               initResults();
+               dres_   /= conj( lhs_ * orhs_ );
+               sres_   /= conj( lhs_ * orhs_ );
+               refres_ /= conj( reflhs_ * refrhs_ );
+            }
+            catch( std::exception& ex ) {
+               convertException<TMT>( ex );
+            }
+
+            checkResults<TMT>();
+         }
+
+         // Conjugate multiplication with division assignment with evaluated vector/matrix
+         {
+            test_  = "Conjugate multiplication with division assignment with evaluated vector/matrix";
+            error_ = "Failed division assignment operation";
+
+            try {
+               initResults();
+               dres_   /= conj( eval( lhs_ ) * eval( rhs_ ) );
+               sres_   /= conj( eval( lhs_ ) * eval( rhs_ ) );
+               refres_ /= conj( eval( reflhs_ ) * eval( refrhs_ ) );
+            }
+            catch( std::exception& ex ) {
+               convertException<MT>( ex );
+            }
+
+            checkResults<MT>();
+
+            try {
+               initResults();
+               dres_   /= conj( eval( lhs_ ) * eval( orhs_ ) );
+               sres_   /= conj( eval( lhs_ ) * eval( orhs_ ) );
+               refres_ /= conj( eval( reflhs_ ) * eval( refrhs_ ) );
+            }
+            catch( std::exception& ex ) {
+               convertException<TMT>( ex );
+            }
+
+            checkResults<TMT>();
+         }
       }
    }
 #endif
@@ -3367,6 +3913,74 @@ void OperationTest<VT,MT>::testCTransOperation()
 
          checkTransposeResults<TMT>();
       }
+
+
+      //=====================================================================================
+      // Conjugate transpose multiplication with division assignment
+      //=====================================================================================
+
+      if( blaze::isDivisor( lhs_ * rhs_ ) )
+      {
+         // Conjugate transpose multiplication with division assignment with the given vector/matrix
+         {
+            test_  = "Conjugate transpose multiplication with division assignment with the given vector/matrix";
+            error_ = "Failed division assignment operation";
+
+            try {
+               initTransposeResults();
+               tdres_   /= ctrans( lhs_ * rhs_ );
+               tsres_   /= ctrans( lhs_ * rhs_ );
+               trefres_ /= ctrans( reflhs_ * refrhs_ );
+            }
+            catch( std::exception& ex ) {
+               convertException<MT>( ex );
+            }
+
+            checkTransposeResults<MT>();
+
+            try {
+               initTransposeResults();
+               tdres_   /= ctrans( lhs_ * orhs_ );
+               tsres_   /= ctrans( lhs_ * orhs_ );
+               trefres_ /= ctrans( reflhs_ * refrhs_ );
+            }
+            catch( std::exception& ex ) {
+               convertException<TMT>( ex );
+            }
+
+            checkTransposeResults<TMT>();
+         }
+
+         // Conjugate transpose multiplication with division assignment with evaluated vector/matrix
+         {
+            test_  = "Conjugate transpose multiplication with division assignment with evaluated vector/matrix";
+            error_ = "Failed division assignment operation";
+
+            try {
+               initTransposeResults();
+               tdres_   /= ctrans( eval( lhs_ ) * eval( rhs_ ) );
+               tsres_   /= ctrans( eval( lhs_ ) * eval( rhs_ ) );
+               trefres_ /= ctrans( eval( reflhs_ ) * eval( refrhs_ ) );
+            }
+            catch( std::exception& ex ) {
+               convertException<MT>( ex );
+            }
+
+            checkTransposeResults<MT>();
+
+            try {
+               initTransposeResults();
+               tdres_   /= ctrans( eval( lhs_ ) * eval( orhs_ ) );
+               tsres_   /= ctrans( eval( lhs_ ) * eval( orhs_ ) );
+               trefres_ /= ctrans( eval( reflhs_ ) * eval( refrhs_ ) );
+            }
+            catch( std::exception& ex ) {
+               convertException<TMT>( ex );
+            }
+
+            checkTransposeResults<TMT>();
+         }
+      }
    }
 #endif
 }
@@ -3587,67 +4201,70 @@ void OperationTest<VT,MT>::testRealOperation()
 
 
       //=====================================================================================
-      // Real multiplication with multiplication assignment
+      // Real multiplication with division assignment
       //=====================================================================================
 
-      // Real multiplication with multiplication assignment with the given vector/matrix
+      if( blaze::isDivisor( real( lhs_ * rhs_ ) ) )
       {
-         test_  = "Real multiplication with multiplication assignment with the given vector/matrix";
-         error_ = "Failed multiplication assignment operation";
+         // Real multiplication with division assignment with the given vector/matrix
+         {
+            test_  = "Real multiplication with division assignment with the given vector/matrix";
+            error_ = "Failed division assignment operation";
 
-         try {
-            initResults();
-            dres_   *= real( lhs_ * rhs_ );
-            sres_   *= real( lhs_ * rhs_ );
-            refres_ *= real( reflhs_ * refrhs_ );
-         }
-         catch( std::exception& ex ) {
-            convertException<MT>( ex );
-         }
+            try {
+               initResults();
+               dres_   /= real( lhs_ * rhs_ );
+               sres_   /= real( lhs_ * rhs_ );
+               refres_ /= real( reflhs_ * refrhs_ );
+            }
+            catch( std::exception& ex ) {
+               convertException<MT>( ex );
+            }
 
-         checkResults<MT>();
+            checkResults<MT>();
 
-         try {
-            initResults();
-            dres_   *= real( lhs_ * orhs_ );
-            sres_   *= real( lhs_ * orhs_ );
-            refres_ *= real( reflhs_ * refrhs_ );
-         }
-         catch( std::exception& ex ) {
-            convertException<TMT>( ex );
-         }
+            try {
+               initResults();
+               dres_   /= real( lhs_ * orhs_ );
+               sres_   /= real( lhs_ * orhs_ );
+               refres_ /= real( reflhs_ * refrhs_ );
+            }
+            catch( std::exception& ex ) {
+               convertException<TMT>( ex );
+            }
 
-         checkResults<TMT>();
-      }
-
-      // Real multiplication with multiplication assignment with evaluated vector/matrix
-      {
-         test_  = "Real multiplication with multiplication assignment with evaluated vector/matrix";
-         error_ = "Failed multiplication assignment operation";
-
-         try {
-            initResults();
-            dres_   *= real( eval( lhs_ ) * eval( rhs_ ) );
-            sres_   *= real( eval( lhs_ ) * eval( rhs_ ) );
-            refres_ *= real( eval( reflhs_ ) * eval( refrhs_ ) );
-         }
-         catch( std::exception& ex ) {
-            convertException<MT>( ex );
+            checkResults<TMT>();
          }
 
-         checkResults<MT>();
+         // Real multiplication with division assignment with evaluated vector/matrix
+         {
+            test_  = "Real multiplication with division assignment with evaluated vector/matrix";
+            error_ = "Failed division assignment operation";
 
-         try {
-            initResults();
-            dres_   *= real( eval( lhs_ ) * eval( orhs_ ) );
-            sres_   *= real( eval( lhs_ ) * eval( orhs_ ) );
-            refres_ *= real( eval( reflhs_ ) * eval( refrhs_ ) );
-         }
-         catch( std::exception& ex ) {
-            convertException<TMT>( ex );
-         }
+            try {
+               initResults();
+               dres_   /= real( eval( lhs_ ) * eval( rhs_ ) );
+               sres_   /= real( eval( lhs_ ) * eval( rhs_ ) );
+               refres_ /= real( eval( reflhs_ ) * eval( refrhs_ ) );
+            }
+            catch( std::exception& ex ) {
+               convertException<MT>( ex );
+            }
 
-         checkResults<TMT>();
+            checkResults<MT>();
+
+            try {
+               initResults();
+               dres_   /= real( eval( lhs_ ) * eval( orhs_ ) );
+               sres_   /= real( eval( lhs_ ) * eval( orhs_ ) );
+               refres_ /= real( eval( reflhs_ ) * eval( refrhs_ ) );
+            }
+            catch( std::exception& ex ) {
+               convertException<TMT>( ex );
+            }
+
+            checkResults<TMT>();
+         }
       }
    }
 #endif
@@ -3931,6 +4548,74 @@ void OperationTest<VT,MT>::testImagOperation()
 
          checkResults<TMT>();
       }
+
+
+      //=====================================================================================
+      // Imag multiplication with division assignment
+      //=====================================================================================
+
+      if( blaze::isDivisor( imag( lhs_ * rhs_ ) ) )
+      {
+         // Imag multiplication with division assignment with the given vector/matrix
+         {
+            test_  = "Imag multiplication with division assignment with the given vector/matrix";
+            error_ = "Failed division assignment operation";
+
+            try {
+               initResults();
+               dres_   /= imag( lhs_ * rhs_ );
+               sres_   /= imag( lhs_ * rhs_ );
+               refres_ /= imag( reflhs_ * refrhs_ );
+            }
+            catch( std::exception& ex ) {
+               convertException<MT>( ex );
+            }
+
+            checkResults<MT>();
+
+            try {
+               initResults();
+               dres_   /= imag( lhs_ * orhs_ );
+               sres_   /= imag( lhs_ * orhs_ );
+               refres_ /= imag( reflhs_ * refrhs_ );
+            }
+            catch( std::exception& ex ) {
+               convertException<TMT>( ex );
+            }
+
+            checkResults<TMT>();
+         }
+
+         // Imag multiplication with division assignment with evaluated vector/matrix
+         {
+            test_  = "Imag multiplication with division assignment with evaluated vector/matrix";
+            error_ = "Failed division assignment operation";
+
+            try {
+               initResults();
+               dres_   /= imag( eval( lhs_ ) * eval( rhs_ ) );
+               sres_   /= imag( eval( lhs_ ) * eval( rhs_ ) );
+               refres_ /= imag( eval( reflhs_ ) * eval( refrhs_ ) );
+            }
+            catch( std::exception& ex ) {
+               convertException<MT>( ex );
+            }
+
+            checkResults<MT>();
+
+            try {
+               initResults();
+               dres_   /= imag( eval( lhs_ ) * eval( orhs_ ) );
+               sres_   /= imag( eval( lhs_ ) * eval( orhs_ ) );
+               refres_ /= imag( eval( reflhs_ ) * eval( refrhs_ ) );
+            }
+            catch( std::exception& ex ) {
+               convertException<TMT>( ex );
+            }
+
+            checkResults<TMT>();
+         }
+      }
    }
 #endif
 }
@@ -4213,6 +4898,74 @@ void OperationTest<VT,MT>::testEvalOperation()
 
          checkResults<TMT>();
       }
+
+
+      //=====================================================================================
+      // Eval multiplication with division assignment
+      //=====================================================================================
+
+      if( blaze::isDivisor( lhs_ * rhs_ ) )
+      {
+         // Eval multiplication with division assignment with the given vector/matrix
+         {
+            test_  = "Eval multiplication with division assignment with the given vector/matrix";
+            error_ = "Failed division assignment operation";
+
+            try {
+               initResults();
+               dres_   /= eval( lhs_ * rhs_ );
+               sres_   /= eval( lhs_ * rhs_ );
+               refres_ /= eval( reflhs_ * refrhs_ );
+            }
+            catch( std::exception& ex ) {
+               convertException<MT>( ex );
+            }
+
+            checkResults<MT>();
+
+            try {
+               initResults();
+               dres_   /= eval( lhs_ * orhs_ );
+               sres_   /= eval( lhs_ * orhs_ );
+               refres_ /= eval( reflhs_ * refrhs_ );
+            }
+            catch( std::exception& ex ) {
+               convertException<TMT>( ex );
+            }
+
+            checkResults<TMT>();
+         }
+
+         // Eval multiplication with division assignment with evaluated vector/matrix
+         {
+            test_  = "Eval multiplication with division assignment with evaluated vector/matrix";
+            error_ = "Failed division assignment operation";
+
+            try {
+               initResults();
+               dres_   /= eval( eval( lhs_ ) * eval( rhs_ ) );
+               sres_   /= eval( eval( lhs_ ) * eval( rhs_ ) );
+               refres_ /= eval( eval( reflhs_ ) * eval( refrhs_ ) );
+            }
+            catch( std::exception& ex ) {
+               convertException<MT>( ex );
+            }
+
+            checkResults<MT>();
+
+            try {
+               initResults();
+               dres_   /= eval( eval( lhs_ ) * eval( orhs_ ) );
+               sres_   /= eval( eval( lhs_ ) * eval( orhs_ ) );
+               refres_ /= eval( eval( reflhs_ ) * eval( refrhs_ ) );
+            }
+            catch( std::exception& ex ) {
+               convertException<TMT>( ex );
+            }
+
+            checkResults<TMT>();
+         }
+      }
    }
 #endif
 }
@@ -4494,6 +5247,74 @@ void OperationTest<VT,MT>::testSerialOperation()
          }
 
          checkResults<TMT>();
+      }
+
+
+      //=====================================================================================
+      // Serial multiplication with division assignment
+      //=====================================================================================
+
+      if( blaze::isDivisor( lhs_ * rhs_ ) )
+      {
+         // Serial multiplication with division assignment with the given vector/matrix
+         {
+            test_  = "Serial multiplication with division assignment with the given vector/matrix";
+            error_ = "Failed division assignment operation";
+
+            try {
+               initResults();
+               dres_   /= serial( lhs_ * rhs_ );
+               sres_   /= serial( lhs_ * rhs_ );
+               refres_ /= serial( reflhs_ * refrhs_ );
+            }
+            catch( std::exception& ex ) {
+               convertException<MT>( ex );
+            }
+
+            checkResults<MT>();
+
+            try {
+               initResults();
+               dres_   /= serial( lhs_ * orhs_ );
+               sres_   /= serial( lhs_ * orhs_ );
+               refres_ /= serial( reflhs_ * refrhs_ );
+            }
+            catch( std::exception& ex ) {
+               convertException<TMT>( ex );
+            }
+
+            checkResults<TMT>();
+         }
+
+         // Serial multiplication with division assignment with evaluated vector/matrix
+         {
+            test_  = "Serial multiplication with division assignment with evaluated vector/matrix";
+            error_ = "Failed division assignment operation";
+
+            try {
+               initResults();
+               dres_   /= serial( eval( lhs_ ) * eval( rhs_ ) );
+               sres_   /= serial( eval( lhs_ ) * eval( rhs_ ) );
+               refres_ /= serial( eval( reflhs_ ) * eval( refrhs_ ) );
+            }
+            catch( std::exception& ex ) {
+               convertException<MT>( ex );
+            }
+
+            checkResults<MT>();
+
+            try {
+               initResults();
+               dres_   /= serial( eval( lhs_ ) * eval( orhs_ ) );
+               sres_   /= serial( eval( lhs_ ) * eval( orhs_ ) );
+               refres_ /= serial( eval( reflhs_ ) * eval( refrhs_ ) );
+            }
+            catch( std::exception& ex ) {
+               convertException<TMT>( ex );
+            }
+
+            checkResults<TMT>();
+         }
       }
    }
 #endif
@@ -4821,6 +5642,87 @@ void OperationTest<VT,MT>::testSubvectorOperation()
                subvector( dres_  , index, size ) *= subvector( eval( lhs_ ) * eval( orhs_ )     , index, size );
                subvector( sres_  , index, size ) *= subvector( eval( lhs_ ) * eval( orhs_ )     , index, size );
                subvector( refres_, index, size ) *= subvector( eval( reflhs_ ) * eval( refrhs_ ), index, size );
+            }
+         }
+         catch( std::exception& ex ) {
+            convertException<TMT>( ex );
+         }
+
+         checkResults<TMT>();
+      }
+
+
+      //=====================================================================================
+      // Subvector-wise multiplication with division assignment
+      //=====================================================================================
+
+      // Subvector-wise multiplication with division assignment with the given vector/matrix
+      {
+         test_  = "Subvector-wise multiplication with division assignment with the given vector/matrix";
+         error_ = "Failed division assignment operation";
+
+         try {
+            initResults();
+            for( size_t index=0UL, size=0UL; index<rhs_.columns(); index+=size ) {
+               size = blaze::rand<size_t>( 1UL, rhs_.columns() - index );
+               if( !blaze::isDivisor( subvector( lhs_ * rhs_, index, size ) ) ) continue;
+               subvector( dres_  , index, size ) /= subvector( lhs_ * rhs_      , index, size );
+               subvector( sres_  , index, size ) /= subvector( lhs_ * rhs_      , index, size );
+               subvector( refres_, index, size ) /= subvector( reflhs_ * refrhs_, index, size );
+            }
+         }
+         catch( std::exception& ex ) {
+            convertException<MT>( ex );
+         }
+
+         checkResults<MT>();
+
+         try {
+            initResults();
+            for( size_t index=0UL, size=0UL; index<rhs_.columns(); index+=size ) {
+               size = blaze::rand<size_t>( 1UL, rhs_.columns() - index );
+               if( !blaze::isDivisor( subvector( lhs_ * orhs_, index, size ) ) ) continue;
+               subvector( dres_  , index, size ) /= subvector( lhs_ * orhs_     , index, size );
+               subvector( sres_  , index, size ) /= subvector( lhs_ * orhs_     , index, size );
+               subvector( refres_, index, size ) /= subvector( reflhs_ * refrhs_, index, size );
+            }
+         }
+         catch( std::exception& ex ) {
+            convertException<TMT>( ex );
+         }
+
+         checkResults<TMT>();
+      }
+
+      // Subvector-wise multiplication wit division assignment with evaluated vector/matrix
+      {
+         test_  = "Subvector-wise multiplication with division assignment with evaluated vector/matrix";
+         error_ = "Failed division assignment operation";
+
+         try {
+            initResults();
+            for( size_t index=0UL, size=0UL; index<rhs_.columns(); index+=size ) {
+               size = blaze::rand<size_t>( 1UL, rhs_.columns() - index );
+               if( !blaze::isDivisor( subvector( lhs_ * rhs_, index, size ) ) ) continue;
+               subvector( dres_  , index, size ) /= subvector( eval( lhs_ ) * eval( rhs_ )      , index, size );
+               subvector( sres_  , index, size ) /= subvector( eval( lhs_ ) * eval( rhs_ )      , index, size );
+               subvector( refres_, index, size ) /= subvector( eval( reflhs_ ) * eval( refrhs_ ), index, size );
+            }
+         }
+         catch( std::exception& ex ) {
+            convertException<MT>( ex );
+         }
+
+         checkResults<MT>();
+
+         try {
+            initResults();
+            for( size_t index=0UL, size=0UL; index<rhs_.columns(); index+=size ) {
+               size = blaze::rand<size_t>( 1UL, rhs_.columns() - index );
+               if( !blaze::isDivisor( subvector( lhs_ * orhs_, index, size ) ) ) continue;
+               subvector( dres_  , index, size ) /= subvector( eval( lhs_ ) * eval( orhs_ )     , index, size );
+               subvector( sres_  , index, size ) /= subvector( eval( lhs_ ) * eval( orhs_ )     , index, size );
+               subvector( refres_, index, size ) /= subvector( eval( reflhs_ ) * eval( refrhs_ ), index, size );
             }
          }
          catch( std::exception& ex ) {
