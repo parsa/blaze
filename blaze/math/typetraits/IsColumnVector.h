@@ -40,9 +40,7 @@
 // Includes
 //*************************************************************************************************
 
-#include <blaze/math/expressions/DenseVector.h>
-#include <blaze/math/expressions/SparseVector.h>
-#include <blaze/util/mpl/Or.h>
+#include <blaze/math/expressions/Vector.h>
 #include <blaze/util/IntegralConstant.h>
 #include <blaze/util/typetraits/IsBaseOf.h>
 #include <blaze/util/typetraits/RemoveCV.h>
@@ -80,8 +78,7 @@ namespace blaze {
 */
 template< typename T >
 struct IsColumnVector
-   : public BoolConstant< Or< IsBaseOf<DenseVector<RemoveCV_<T>,false>,T>
-                            , IsBaseOf<SparseVector<RemoveCV_<T>,false>,T> >::value >
+   : public BoolConstant< IsBaseOf<Vector<RemoveCV_<T>,false>,T>::value >
 {};
 //*************************************************************************************************
 
