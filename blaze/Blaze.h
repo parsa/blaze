@@ -7394,6 +7394,7 @@ namespace blaze {}
 //          <li> \ref cross_product </li>
 //       </ul>
 //    </li>
+//    <li> \ref vector_vector_division </li>
 //    <li> \ref matrix_vector_multiplication </li>
 //    <li> \ref matrix_matrix_multiplication </li>
 // </ul>
@@ -7692,7 +7693,43 @@ namespace blaze {}
 // Please note that the cross product is restricted to three dimensional (dense and sparse)
 // column vectors.
 //
-// \n Previous: \ref scalar_multiplication &nbsp; &nbsp; Next: \ref matrix_vector_multiplication
+// \n Previous: \ref scalar_multiplication &nbsp; &nbsp; Next: \ref vector_vector_division
+*/
+//*************************************************************************************************
+
+
+//**Vector/Vector Division*************************************************************************
+/*!\page vector_vector_division Vector/Vector Division
+//
+// \n \section componentwise_division Componentwise Division
+// <hr>
+//
+// Dividing a vector by a dense vector with the same transpose flag (i.e. either blaze::columnVector
+// or blaze::rowVector) via the division operator results in a componentwise division:
+
+   \code
+   using blaze::DynamicVector;
+   using blaze::CompressedVector;
+
+   CompressedVector<int,columnVector> v1( 17UL );
+   DynamicVector<int,columnVector>    v2( 17UL );
+
+   StaticVector<double,10UL,rowVector> v3;
+   DynamicVector<double,rowVector>     v4( 10UL );
+
+   // ... Initialization of the vectors
+
+   CompressedVector<int,columnVector> v5( v1 / v2 );  // Componentwise division of a sparse and a
+                                                      // dense column vector. The result is a sparse
+                                                      // column vector.
+   DynamicVector<double,rowVector>    v6( v3 / v4 );  // Componentwise division of two dense row
+                                                      // vectors. The result is a dense row vector.
+   \endcode
+
+// Note that all values of the divisor must be non-zero and that no checks are performed to assert
+// this precondition!
+//
+// \n Previous: \ref vector_vector_multiplication &nbsp; &nbsp; Next: \ref matrix_vector_multiplication
 */
 //*************************************************************************************************
 
@@ -7722,7 +7759,7 @@ namespace blaze {}
 // that the highest performance for a multiplication between a dense matrix and a dense vector can
 // be achieved if both the matrix and the vector have the same scalar element type.
 //
-// \n Previous: \ref vector_vector_multiplication &nbsp; &nbsp; Next: \ref matrix_matrix_multiplication
+// \n Previous: \ref vector_vector_division &nbsp; &nbsp; Next: \ref matrix_matrix_multiplication
 */
 //*************************************************************************************************
 
