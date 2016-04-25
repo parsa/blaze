@@ -7663,8 +7663,8 @@ namespace blaze {}
 // \n \section cross_product Cross Product
 // <hr>
 //
-// Two column vectors can be multiplied via the cross product. The cross product between two
-// vectors \f$ a \f$ and \f$ b \f$ is defined as
+// Two vectors with the same transpose flag can be multiplied via the cross product. The cross
+// product between two vectors \f$ a \f$ and \f$ b \f$ is defined as
 
    \f[
    \left(\begin{array}{*{1}{c}}
@@ -7681,12 +7681,14 @@ namespace blaze {}
    \f]
 
 // Due to the absence of a \f$ \times \f$ operator in the C++ language, the cross product is
-// realized via the modulo operator (i.e. \c operator%):
+// realized via the \c cross() function. Alternatively, the modulo operator (i.e. \c operator%)
+// can be used in case infix notation is required:
 
    \code
    blaze::StaticVector<int,3UL,columnVector> v1{  2, 5, -1 };
    blaze::DynamicVector<int,columnVector>    v2{ -1, 3, -2 };
 
+   blaze::StaticVector<int,3UL,columnVector> v3( cross( v1, v2 ) );
    blaze::StaticVector<int,3UL,columnVector> v3( v1 % v2 );
    \endcode
 
