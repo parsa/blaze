@@ -700,6 +700,38 @@ class DVecTransposer : public DenseVector< DVecTransposer<VT,TF>, TF >
    }
    //**********************************************************************************************
 
+   //**Transpose division assignment of dense vectors**********************************************
+   /*!\brief Implementation of the transpose division assignment of a dense vector.
+   //
+   // \param rhs The right-hand side dense vector divisor.
+   // \return void
+   //
+   // This function must \b NOT be called explicitly! It is used internally for the performance
+   // optimized evaluation of expression templates. Calling this function explicitly might result
+   // in erroneous results and/or in compilation errors. Instead of using this function use the
+   // assignment operator.
+   */
+   template< typename VT2 >  // Type of the right-hand side dense vector
+   inline void divAssign( const DenseVector<VT2,TF>& rhs )
+   {
+      BLAZE_CONSTRAINT_MUST_BE_VECTOR_WITH_TRANSPOSE_FLAG( VT2, TF );
+
+      BLAZE_INTERNAL_ASSERT( dv_.size() == (~rhs).size(), "Invalid vector sizes" );
+
+      const size_t n( size() );
+
+      const size_t ipos( n & size_t(-2) );
+      BLAZE_INTERNAL_ASSERT( ( n - ( n % 2UL ) ) == ipos, "Invalid end calculation" );
+
+      for( size_t i=0UL; i<ipos; i+=2UL ) {
+         dv_[i    ] /= (~rhs)[i    ];
+         dv_[i+1UL] /= (~rhs)[i+1UL];
+      }
+      if( ipos < n )
+         dv_[ipos] /= (~rhs)[ipos];
+   }
+   //**********************************************************************************************
+
  private:
    //**Member variables****************************************************************************
    VT& dv_;  //!< The dense vector operand.
