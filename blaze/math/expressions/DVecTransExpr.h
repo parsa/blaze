@@ -706,6 +706,38 @@ class DVecTransExpr : public DenseVector< DVecTransExpr<VT,TF>, TF >
    // No special implementation for the multiplication assignment to sparse vectors.
    //**********************************************************************************************
 
+   //**Division assignment to dense vectors********************************************************
+   /*! \cond BLAZE_INTERNAL */
+   /*!\brief Division assignment of a dense vector transposition expression to a dense vector.
+   // \ingroup dense_vector
+   //
+   // \param lhs The target left-hand side dense vector.
+   // \param rhs The right-hand side transposition expression divisor.
+   // \return void
+   //
+   // This function implements the performance optimized division assignment of a dense vector
+   // transposition expression to a dense vector. Due to the explicit application of the SFINAE
+   // principle, this function can only be selected by the compiler in case the operand requires
+   // an intermediate evaluation.
+   */
+   template< typename VT2 >  // Type of the target dense vector
+   friend inline EnableIf_< UseAssign<VT2> >
+      divAssign( DenseVector<VT2,TF>& lhs, const DVecTransExpr& rhs )
+   {
+      BLAZE_FUNCTION_TRACE;
+
+      BLAZE_INTERNAL_ASSERT( (~lhs).size() == rhs.size(), "Invalid vector sizes" );
+
+      DVecTransposer<VT2,!TF> tmp( ~lhs );
+      divAssign( tmp, rhs.dv_ );
+   }
+   /*! \endcond */
+   //**********************************************************************************************
+
+   //**Division assignment to sparse vectors*******************************************************
+   // No special implementation for the division assignment to sparse vectors.
+   //**********************************************************************************************
+
    //**SMP assignment to dense vectors*************************************************************
    /*! \cond BLAZE_INTERNAL */
    /*!\brief SMP assignment of a dense vector transposition expression to a dense vector.
@@ -856,6 +888,38 @@ class DVecTransExpr : public DenseVector< DVecTransExpr<VT,TF>, TF >
 
    //**SMP multiplication assignment to sparse vectors*********************************************
    // No special implementation for the SMP multiplication assignment to sparse vectors.
+   //**********************************************************************************************
+
+   //**SMP division assignment to dense vectors****************************************************
+   /*! \cond BLAZE_INTERNAL */
+   /*!\brief SMP division assignment of a dense vector transposition expression to a dense vector.
+   // \ingroup dense_vector
+   //
+   // \param lhs The target left-hand side dense vector.
+   // \param rhs The right-hand side transposition expression divisor.
+   // \return void
+   //
+   // This function implements the performance optimized SMP division assignment of a dense
+   // vector transposition expression to a dense vector. Due to the explicit application of
+   // the SFINAE principle, this function can only be selected by the compiler in case the
+   // expression specific parallel evaluation strategy is selected.
+   */
+   template< typename VT2 >  // Type of the target dense vector
+   friend inline EnableIf_< UseSMPAssign<VT2> >
+      smpDivAssign( DenseVector<VT2,TF>& lhs, const DVecTransExpr& rhs )
+   {
+      BLAZE_FUNCTION_TRACE;
+
+      BLAZE_INTERNAL_ASSERT( (~lhs).size() == rhs.size(), "Invalid vector sizes" );
+
+      DVecTransposer<VT2,!TF> tmp( ~lhs );
+      smpDivAssign( tmp, rhs.dv_ );
+   }
+   /*! \endcond */
+   //**********************************************************************************************
+
+   //**SMP division assignment to sparse vectors***************************************************
+   // No special implementation for the SMP division assignment to sparse vectors.
    //**********************************************************************************************
 
    //**Compile time checks*************************************************************************
