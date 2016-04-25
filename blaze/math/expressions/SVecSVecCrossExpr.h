@@ -416,6 +416,40 @@ class SVecSVecCrossExpr : public DenseVector< SVecSVecCrossExpr<VT1,VT2,TF>, TF 
    // No special implementation for the multiplication assignment to sparse vectors.
    //**********************************************************************************************
 
+   //**Division assignment to dense vectors********************************************************
+   /*! \cond BLAZE_INTERNAL */
+   /*!\brief Division assignment of a sparse vector-sparse vector cross product to a dense vector.
+   // \ingroup dense_vector
+   //
+   // \param lhs The target left-hand side dense vector.
+   // \param rhs The right-hand side cross product expression divisor.
+   // \return void
+   //
+   // This function implements the performance optimized division assignment of a sparse vector-
+   // sparse vector cross product expression to a dense vector.
+   */
+   template< typename VT >  // Type of the target dense vector
+   friend inline void divAssign( DenseVector<VT,TF>& lhs, const SVecSVecCrossExpr& rhs )
+   {
+      BLAZE_FUNCTION_TRACE;
+
+      BLAZE_INTERNAL_ASSERT( (~lhs).size() == 3UL, "Invalid vector size" );
+      BLAZE_INTERNAL_ASSERT( (~rhs).size() == 3UL, "Invalid vector size" );
+
+      LT x( serial( rhs.lhs_ ) );  // Evaluation of the left-hand side sparse vector operand
+      RT y( serial( rhs.rhs_ ) );  // Evaluation of the right-hand side sparse vector operand
+
+      (~lhs)[0] /= x[1UL]*y[2UL] - x[2UL]*y[1UL];
+      (~lhs)[1] /= x[2UL]*y[0UL] - x[0UL]*y[2UL];
+      (~lhs)[2] /= x[0UL]*y[1UL] - x[1UL]*y[0UL];
+   }
+   /*! \endcond */
+   //**********************************************************************************************
+
+   //**Division assignment to sparse vectors*******************************************************
+   // No special implementation for the division assignment to sparse vectors.
+   //**********************************************************************************************
+
    //**Compile time checks*************************************************************************
    /*! \cond BLAZE_INTERNAL */
    BLAZE_CONSTRAINT_MUST_BE_SPARSE_VECTOR_TYPE( VT1 );
