@@ -2406,7 +2406,7 @@ class TDVecTDMatMultExpr : public DenseVector< TDVecTDMatMultExpr<VT,MT>, true >
    // \param rhs The right-hand side multiplication expression to be multiplied.
    // \return void
    //
-   // This function implements the performance optimized subtraction assignment of a transpose
+   // This function implements the performance optimized multiplication assignment of a transpose
    // dense vector-transpose dense matrix multiplication expression to a dense vector.
    */
    template< typename VT1 >  // Type of the target dense vector
@@ -2428,6 +2428,40 @@ class TDVecTDMatMultExpr : public DenseVector< TDVecTDMatMultExpr<VT,MT>, true >
 
    //**Multiplication assignment to sparse vectors*************************************************
    // No special implementation for the multiplication assignment to sparse vectors.
+   //**********************************************************************************************
+
+   //**Division assignment to dense vectors********************************************************
+   /*! \cond BLAZE_INTERNAL */
+   /*!\brief Division assignment of a transpose dense vector-transpose dense matrix multiplication
+   //        to a transpose dense vector (\f$ \vec{y}^T/=\vec{x}^T*A \f$).
+   // \ingroup dense_vector
+   //
+   // \param lhs The target left-hand side dense vector.
+   // \param rhs The right-hand side multiplication expression divisor.
+   // \return void
+   //
+   // This function implements the performance optimized division assignment of a transpose
+   // dense vector-transpose dense matrix multiplication expression to a dense vector.
+   */
+   template< typename VT1 >  // Type of the target dense vector
+   friend inline void divAssign( DenseVector<VT1,true>& lhs, const TDVecTDMatMultExpr& rhs )
+   {
+      BLAZE_FUNCTION_TRACE;
+
+      BLAZE_CONSTRAINT_MUST_BE_DENSE_VECTOR_TYPE( ResultType );
+      BLAZE_CONSTRAINT_MUST_BE_ROW_VECTOR_TYPE  ( ResultType );
+      BLAZE_CONSTRAINT_MUST_BE_REFERENCE_TYPE( CompositeType_<ResultType> );
+
+      BLAZE_INTERNAL_ASSERT( (~lhs).size() == rhs.size(), "Invalid vector sizes" );
+
+      const ResultType tmp( serial( rhs ) );
+      divAssign( ~lhs, tmp );
+   }
+   /*! \endcond */
+   //**********************************************************************************************
+
+   //**Division assignment to sparse vectors*******************************************************
+   // No special implementation for the division assignment to sparse vectors.
    //**********************************************************************************************
 
    //**SMP assignment to dense vectors*************************************************************
@@ -2605,10 +2639,10 @@ class TDVecTDMatMultExpr : public DenseVector< TDVecTDMatMultExpr<VT,MT>, true >
    // \param rhs The right-hand side multiplication expression to be multiplied.
    // \return void
    //
-   // This function implements the performance optimized SMP subtraction assignment of a transpose
-   // dense vector-transpose dense matrix multiplication expression to a dense vector. Due to the
-   // explicit application of the SFINAE principle, this function can only be selected by the
-   // compiler in case the expression specific parallel evaluation strategy is selected.
+   // This function implements the performance optimized SMP multiplication assignment of a
+   // transpose dense vector-transpose dense matrix multiplication expression to a dense vector.
+   // Due to the explicit application of the SFINAE principle, this function can only be selected
+   // by the compiler in case the expression specific parallel evaluation strategy is selected.
    */
    template< typename VT1 >  // Type of the target dense vector
    friend inline EnableIf_< UseSMPAssign<VT1> >
@@ -2630,6 +2664,43 @@ class TDVecTDMatMultExpr : public DenseVector< TDVecTDMatMultExpr<VT,MT>, true >
 
    //**SMP multiplication assignment to sparse vectors*********************************************
    // No special implementation for the SMP multiplication assignment to sparse vectors.
+   //**********************************************************************************************
+
+   //**SMP division assignment to dense vectors****************************************************
+   /*! \cond BLAZE_INTERNAL */
+   /*!\brief SMP division assignment of a transpose dense vector-transpose dense matrix
+   //        multiplication to a transpose dense vector (\f$ \vec{y}^T/=\vec{x}^T*A \f$).
+   // \ingroup dense_vector
+   //
+   // \param lhs The target left-hand side dense vector.
+   // \param rhs The right-hand side multiplication expression divisor.
+   // \return void
+   //
+   // This function implements the performance optimized SMP division assignment of a transpose
+   // dense vector-transpose dense matrix multiplication expression to a dense vector. Due to the
+   // explicit application of the SFINAE principle, this function can only be selected by the
+   // compiler in case the expression specific parallel evaluation strategy is selected.
+   */
+   template< typename VT1 >  // Type of the target dense vector
+   friend inline EnableIf_< UseSMPAssign<VT1> >
+      smpDivAssign( DenseVector<VT1,true>& lhs, const TDVecTDMatMultExpr& rhs )
+   {
+      BLAZE_FUNCTION_TRACE;
+
+      BLAZE_CONSTRAINT_MUST_BE_DENSE_VECTOR_TYPE( ResultType );
+      BLAZE_CONSTRAINT_MUST_BE_ROW_VECTOR_TYPE  ( ResultType );
+      BLAZE_CONSTRAINT_MUST_BE_REFERENCE_TYPE( CompositeType_<ResultType> );
+
+      BLAZE_INTERNAL_ASSERT( (~lhs).size() == rhs.size(), "Invalid vector sizes" );
+
+      const ResultType tmp( rhs );
+      smpDivAssign( ~lhs, tmp );
+   }
+   /*! \endcond */
+   //**********************************************************************************************
+
+   //**SMP division assignment to sparse vectors***************************************************
+   // No special implementation for the SMP division assignment to sparse vectors.
    //**********************************************************************************************
 
    //**Compile time checks*************************************************************************
@@ -4946,7 +5017,7 @@ class DVecScalarMultExpr< TDVecTDMatMultExpr<VT,MT>, ST, true >
    // \param rhs The right-hand side multiplication expression to be multiplied.
    // \return void
    //
-   // This function implements the performance optimized subtraction assignment of a scaled
+   // This function implements the performance optimized multiplication assignment of a scaled
    // transpose dense vector-transpose dense matrix multiplication expression to a dense vector.
    */
    template< typename VT1  // Type of the target dense vector
@@ -4968,6 +5039,39 @@ class DVecScalarMultExpr< TDVecTDMatMultExpr<VT,MT>, ST, true >
 
    //**Multiplication assignment to sparse vectors*************************************************
    // No special implementation for the multiplication assignment to sparse vectors.
+   //**********************************************************************************************
+
+   //**Division assignment to dense vectors********************************************************
+   /*!\brief Division assignment of a scaled transpose dense vector-transpose dense matrix
+   //        multiplication to a transpose dense vector (\f$ \vec{y}^T/=s*\vec{x}^T*A \f$).
+   // \ingroup dense_vector
+   //
+   // \param lhs The target left-hand side dense vector.
+   // \param rhs The right-hand side multiplication expression divisor.
+   // \return void
+   //
+   // This function implements the performance optimized division assignment of a scaled transpose
+   // dense vector-transpose dense matrix multiplication expression to a dense vector.
+   */
+   template< typename VT1  // Type of the target dense vector
+           , bool TF >     // Transpose flag of the target dense vector
+   friend inline void divAssign( DenseVector<VT1,TF>& lhs, const DVecScalarMultExpr& rhs )
+   {
+      BLAZE_FUNCTION_TRACE;
+
+      BLAZE_CONSTRAINT_MUST_BE_DENSE_VECTOR_TYPE( ResultType );
+      BLAZE_CONSTRAINT_MUST_BE_ROW_VECTOR_TYPE  ( ResultType );
+      BLAZE_CONSTRAINT_MUST_BE_REFERENCE_TYPE( CompositeType_<ResultType> );
+
+      BLAZE_INTERNAL_ASSERT( (~lhs).size() == rhs.size(), "Invalid vector sizes" );
+
+      const ResultType tmp( serial( rhs ) );
+      divAssign( ~lhs, tmp );
+   }
+   //**********************************************************************************************
+
+   //**Division assignment to sparse vectors*******************************************************
+   // No special implementation for the division assignment to sparse vectors.
    //**********************************************************************************************
 
    //**SMP assignment to dense vectors*************************************************************
@@ -5149,7 +5253,7 @@ class DVecScalarMultExpr< TDVecTDMatMultExpr<VT,MT>, ST, true >
    // \param rhs The right-hand side multiplication expression to be multiplied.
    // \return void
    //
-   // This function implements the performance optimized SMP subtraction assignment of a scaled
+   // This function implements the performance optimized SMP multiplication assignment of a scaled
    // transpose dense vector-transpose dense matrix multiplication expression to a dense vector.
    // Due to the explicit application of the SFINAE principle, this function can only be selected
    // by the compiler in case the expression specific parallel evaluation strategy is selected.
@@ -5174,6 +5278,42 @@ class DVecScalarMultExpr< TDVecTDMatMultExpr<VT,MT>, ST, true >
 
    //**SMP multiplication assignment to sparse vectors*********************************************
    // No special implementation for the SMP multiplication assignment to sparse vectors.
+   //**********************************************************************************************
+
+   //**SMP division assignment to dense vectors****************************************************
+   /*!\brief SMP division assignment of a scaled transpose dense vector-transpose dense matrix
+   //        multiplication to a transpose dense vector (\f$ \vec{y}^T/=s*\vec{x}^T*A \f$).
+   // \ingroup dense_vector
+   //
+   // \param lhs The target left-hand side dense vector.
+   // \param rhs The right-hand side multiplication expression divisor.
+   // \return void
+   //
+   // This function implements the performance optimized SMP division assignment of a scaled
+   // transpose dense vector-transpose dense matrix multiplication expression to a dense vector.
+   // Due to the explicit application of the SFINAE principle, this function can only be selected
+   // by the compiler in case the expression specific parallel evaluation strategy is selected.
+   */
+   template< typename VT1  // Type of the target dense vector
+           , bool TF >     // Transpose flag of the target dense vector
+   friend inline EnableIf_< UseSMPAssign<VT1> >
+      smpDivAssign( DenseVector<VT1,TF>& lhs, const DVecScalarMultExpr& rhs )
+   {
+      BLAZE_FUNCTION_TRACE;
+
+      BLAZE_CONSTRAINT_MUST_BE_DENSE_VECTOR_TYPE( ResultType );
+      BLAZE_CONSTRAINT_MUST_BE_ROW_VECTOR_TYPE  ( ResultType );
+      BLAZE_CONSTRAINT_MUST_BE_REFERENCE_TYPE( CompositeType_<ResultType> );
+
+      BLAZE_INTERNAL_ASSERT( (~lhs).size() == rhs.size(), "Invalid vector sizes" );
+
+      const ResultType tmp( rhs );
+      smpDivAssign( ~lhs, tmp );
+   }
+   //**********************************************************************************************
+
+   //**SMP division assignment to sparse vectors***************************************************
+   // No special implementation for the SMP division assignment to sparse vectors.
    //**********************************************************************************************
 
    //**Compile time checks*************************************************************************
