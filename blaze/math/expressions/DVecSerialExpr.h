@@ -425,6 +425,54 @@ class DVecSerialExpr : public DenseVector< DVecSerialExpr<VT,TF>, TF >
    /*! \endcond */
    //**********************************************************************************************
 
+   //**Division assignment to dense vectors********************************************************
+   /*! \cond BLAZE_INTERNAL */
+   /*!\brief Division assignment of a dense vector serial evaluation expression to a dense vector.
+   // \ingroup dense_vector
+   //
+   // \param lhs The target left-hand side dense vector.
+   // \param rhs The right-hand side serial evaluation expression divisor.
+   // \return void
+   //
+   // This function implements the performance optimized division assignment of a dense vector
+   // serial evaluation expression to a dense vector.
+   */
+   template< typename VT2 >  // Type of the target dense vector
+   friend inline void divAssign( DenseVector<VT2,TF>& lhs, const DVecSerialExpr& rhs )
+   {
+      BLAZE_FUNCTION_TRACE;
+
+      BLAZE_INTERNAL_ASSERT( (~lhs).size() == rhs.size(), "Invalid vector sizes" );
+
+      divAssign( ~lhs, rhs.dv_ );
+   }
+   /*! \endcond */
+   //**********************************************************************************************
+
+   //**Division assignment to sparse vectors*******************************************************
+   /*! \cond BLAZE_INTERNAL */
+   /*!\brief Division assignment of a dense vector serial evaluation expression to a sparse vector.
+   // \ingroup dense_vector
+   //
+   // \param lhs The target left-hand side sparse vector.
+   // \param rhs The right-hand side serial evaluation expression divisor.
+   // \return void
+   //
+   // This function implements the performance optimized division assignment of a dense vector
+   // serial evaluation expression to a sparse vector.
+   */
+   template< typename VT2 >  // Type of the target sparse vector
+   friend inline void divAssign( SparseVector<VT2,TF>& lhs, const DVecSerialExpr& rhs )
+   {
+      BLAZE_FUNCTION_TRACE;
+
+      BLAZE_INTERNAL_ASSERT( (~lhs).size() == rhs.size(), "Invalid vector sizes" );
+
+      divAssign( ~lhs, rhs.dv_ );
+   }
+   /*! \endcond */
+   //**********************************************************************************************
+
    //**SMP assignment to dense vectors*************************************************************
    /*! \cond BLAZE_INTERNAL */
    /*!\brief SMP assignment of a dense vector serial evaluation expression to a dense vector.
@@ -619,6 +667,56 @@ class DVecSerialExpr : public DenseVector< DVecSerialExpr<VT,TF>, TF >
       BLAZE_INTERNAL_ASSERT( (~lhs).size() == rhs.size(), "Invalid vector sizes" );
 
       multAssign( ~lhs, rhs.dv_ );
+   }
+   /*! \endcond */
+   //**********************************************************************************************
+
+   //**SMP division assignment to dense vectors****************************************************
+   /*! \cond BLAZE_INTERNAL */
+   /*!\brief SMP division assignment of a dense vector serial evaluation expression to a dense
+   //        vector.
+   // \ingroup dense_vector
+   //
+   // \param lhs The target left-hand side dense vector.
+   // \param rhs The right-hand side serial evaluation expression divisor.
+   // \return void
+   //
+   // This function implements the performance optimized SMP division assignment of a dense vector
+   // serial evaluation expression to a dense vector.
+   */
+   template< typename VT2 >  // Type of the target dense vector
+   friend inline void smpDivAssign( DenseVector<VT2,TF>& lhs, const DVecSerialExpr& rhs )
+   {
+      BLAZE_FUNCTION_TRACE;
+
+      BLAZE_INTERNAL_ASSERT( (~lhs).size() == rhs.size(), "Invalid vector sizes" );
+
+      divAssign( ~lhs, rhs.dv_ );
+   }
+   /*! \endcond */
+   //**********************************************************************************************
+
+   //**SMP division assignment to sparse vectors***************************************************
+   /*! \cond BLAZE_INTERNAL */
+   /*!\brief SMP division assignment of a dense vector serial evaluation expression to a sparse
+   //        vector.
+   // \ingroup dense_vector
+   //
+   // \param lhs The target left-hand side sparse vector.
+   // \param rhs The right-hand side serial evaluation expression divisor.
+   // \return void
+   //
+   // This function implements the performance optimized SMP division assignment of a dense vector
+   // serial evaluation expression to a sparse vector.
+   */
+   template< typename VT2 >  // Type of the target sparse vector
+   friend inline void smpDivAssign( SparseVector<VT2,TF>& lhs, const DVecSerialExpr& rhs )
+   {
+      BLAZE_FUNCTION_TRACE;
+
+      BLAZE_INTERNAL_ASSERT( (~lhs).size() == rhs.size(), "Invalid vector sizes" );
+
+      divAssign( ~lhs, rhs.dv_ );
    }
    /*! \endcond */
    //**********************************************************************************************
