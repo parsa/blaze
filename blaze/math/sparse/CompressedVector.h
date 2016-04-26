@@ -346,12 +346,15 @@ class CompressedVector : public SparseVector< CompressedVector<Type,TF>, TF >
 
    inline bool canSMPAssign() const noexcept;
 
-   template< typename VT > inline void assign   ( const DenseVector <VT,TF>& rhs );
-   template< typename VT > inline void assign   ( const SparseVector<VT,TF>& rhs );
-   template< typename VT > inline void addAssign( const DenseVector <VT,TF>& rhs );
-   template< typename VT > inline void addAssign( const SparseVector<VT,TF>& rhs );
-   template< typename VT > inline void subAssign( const DenseVector <VT,TF>& rhs );
-   template< typename VT > inline void subAssign( const SparseVector<VT,TF>& rhs );
+   template< typename VT > inline void assign    ( const DenseVector <VT,TF>& rhs );
+   template< typename VT > inline void assign    ( const SparseVector<VT,TF>& rhs );
+   template< typename VT > inline void addAssign ( const DenseVector <VT,TF>& rhs );
+   template< typename VT > inline void addAssign ( const SparseVector<VT,TF>& rhs );
+   template< typename VT > inline void subAssign ( const DenseVector <VT,TF>& rhs );
+   template< typename VT > inline void subAssign ( const SparseVector<VT,TF>& rhs );
+   template< typename VT > inline void multAssign( const DenseVector <VT,TF>& rhs );
+   template< typename VT > inline void multAssign( const SparseVector<VT,TF>& rhs );
+   template< typename VT > inline void divAssign ( const DenseVector <VT,TF>& rhs );
    //@}
    //**********************************************************************************************
 
@@ -960,12 +963,13 @@ template< typename Type  // Data type of the vector
 template< typename VT >  // Type of the right-hand side vector
 inline CompressedVector<Type,TF>& CompressedVector<Type,TF>::operator*=( const Vector<VT,TF>& rhs )
 {
+   using blaze::multAssign;
+
    if( (~rhs).size() != size_ ) {
       BLAZE_THROW_INVALID_ARGUMENT( "Vector sizes do not match" );
    }
 
-   CompressedVector<Type,TF> tmp( *this * (~rhs) );
-   swap( tmp );
+   multAssign( *this, ~rhs );
 
    return *this;
 }
@@ -987,12 +991,13 @@ template< typename Type  // Data type of the vector
 template< typename VT >  // Type of the right-hand side vector
 inline CompressedVector<Type,TF>& CompressedVector<Type,TF>::operator/=( const DenseVector<VT,TF>& rhs )
 {
+   using blaze::divAssign;
+
    if( (~rhs).size() != size_ ) {
       BLAZE_THROW_INVALID_ARGUMENT( "Vector sizes do not match" );
    }
 
-   CompressedVector<Type,TF> tmp( *this / (~rhs) );
-   swap( tmp );
+   divAssign( *this, ~rhs );
 
    return *this;
 }
@@ -1878,6 +1883,84 @@ inline void CompressedVector<Type,TF>::subAssign( const SparseVector<VT,TF>& rhs
 
    CompressedVector<Type,TF> tmp( serial( *this - (~rhs) ) );
    swap( tmp );
+}
+//*************************************************************************************************
+
+
+//*************************************************************************************************
+/*!\brief Default implementation of the multiplication assignment of a dense vector.
+//
+// \param rhs The right-hand side dense vector to be multiplied.
+// \return void
+//
+// This function must \b NOT be called explicitly! It is used internally for the performance
+// optimized evaluation of expression templates. Calling this function explicitly might result
+// in erroneous results and/or in compilation errors. Instead of using this function use the
+// assignment operator.
+*/
+template< typename Type  // Data type of the vector
+        , bool TF >      // Transpose flag
+template< typename VT >  // Type of the right-hand side dense vector
+inline void CompressedVector<Type,TF>::multAssign( const DenseVector<VT,TF>& rhs )
+{
+   BLAZE_INTERNAL_ASSERT( size_ == (~rhs).size(), "Invalid vector sizes" );
+
+   CompositeType_<VT> tmp( ~rhs );
+
+   for( Iterator element=begin_; element!=end_; ++element ) {
+      element->value_ *= tmp[element->index_];
+   }
+}
+//*************************************************************************************************
+
+
+//*************************************************************************************************
+/*!\brief Default implementation of the multiplication assignment of a sparse vector.
+//
+// \param rhs The right-hand side sparse vector to be multiplied.
+// \return void
+//
+// This function must \b NOT be called explicitly! It is used internally for the performance
+// optimized evaluation of expression templates. Calling this function explicitly might result
+// in erroneous results and/or in compilation errors. Instead of using this function use the
+// assignment operator.
+*/
+template< typename Type  // Data type of the vector
+        , bool TF >      // Transpose flag
+template< typename VT >  // Type of the right-hand side sparse vector
+inline void CompressedVector<Type,TF>::multAssign( const SparseVector<VT,TF>& rhs )
+{
+   BLAZE_INTERNAL_ASSERT( size_ == (~rhs).size(), "Invalid vector sizes" );
+
+   CompressedVector<Type,TF> tmp( serial( *this * (~rhs) ) );
+   swap( tmp );
+}
+//*************************************************************************************************
+
+
+//*************************************************************************************************
+/*!\brief Default implementation of the division assignment of a dense vector.
+//
+// \param rhs The right-hand side dense vector divisor.
+// \return void
+//
+// This function must \b NOT be called explicitly! It is used internally for the performance
+// optimized evaluation of expression templates. Calling this function explicitly might result
+// in erroneous results and/or in compilation errors. Instead of using this function use the
+// assignment operator.
+*/
+template< typename Type  // Data type of the vector
+        , bool TF >      // Transpose flag
+template< typename VT >  // Type of the right-hand side dense vector
+inline void CompressedVector<Type,TF>::divAssign( const DenseVector<VT,TF>& rhs )
+{
+   BLAZE_INTERNAL_ASSERT( size_ == (~rhs).size(), "Invalid vector sizes" );
+
+   CompositeType_<VT> tmp( ~rhs );
+
+   for( Iterator element=begin_; element!=end_; ++element ) {
+      element->value_ /= tmp[element->index_];
+   }
 }
 //*************************************************************************************************
 
