@@ -167,16 +167,16 @@ class DMatDVecMultExpr : public DenseVector< DMatDVecMultExpr<MT,VT>, false >
    template< typename T1, typename T2, typename T3 >
    struct UseBlasKernel {
       enum : bool { value = BLAZE_BLAS_MODE &&
-                     HasMutableDataAccess<T1>::value &&
-                     HasConstDataAccess<T2>::value &&
-                     HasConstDataAccess<T3>::value &&
-                     !IsDiagonal<T2>::value &&
-                     T1::simdEnabled && T2::simdEnabled && T3::simdEnabled &&
-                     IsBlasCompatible< ElementType_<T1> >::value &&
-                     IsBlasCompatible< ElementType_<T2> >::value &&
-                     IsBlasCompatible< ElementType_<T3> >::value &&
-                     IsSame< ElementType_<T1>, ElementType_<T2> >::value &&
-                     IsSame< ElementType_<T1>, ElementType_<T3> >::value };
+                            HasMutableDataAccess<T1>::value &&
+                            HasConstDataAccess<T2>::value &&
+                            HasConstDataAccess<T3>::value &&
+                            !IsDiagonal<T2>::value &&
+                            T1::simdEnabled && T2::simdEnabled && T3::simdEnabled &&
+                            IsBlasCompatible< ElementType_<T1> >::value &&
+                            IsBlasCompatible< ElementType_<T2> >::value &&
+                            IsBlasCompatible< ElementType_<T3> >::value &&
+                            IsSame< ElementType_<T1>, ElementType_<T2> >::value &&
+                            IsSame< ElementType_<T1>, ElementType_<T3> >::value };
    };
    /*! \endcond */
    //**********************************************************************************************
