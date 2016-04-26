@@ -35,7 +35,7 @@
 # Build rules
 default: all
 
-all: functions simd lapack typetraits \
+all: functions simd blas lapack typetraits \
      densevector sparsevector densematrix sparsematrix \
      staticvector hybridvector dynamicvector customvector compressedvector \
      staticmatrix hybridmatrix dynamicmatrix custommatrix compressedmatrix \
@@ -65,7 +65,7 @@ essential: all
 
 single: all
 
-noop: functions simd lapack typetraits \
+noop: functions simd blas lapack typetraits \
       densevector sparsevector densematrix sparsematrix \
       staticvector hybridvector dynamicvector customvector compressedvector \
       staticmatrix hybridmatrix dynamicmatrix custommatrix compressedmatrix \
@@ -90,6 +90,11 @@ simd:
 	@echo
 	@echo "Building the SIMD operation tests..."
 	@$(MAKE) --no-print-directory -C ./simd $(MAKECMDGOALS)
+
+blas:
+	@echo
+	@echo "Building the BLAS operation tests..."
+	@$(MAKE) --no-print-directory -C ./blas $(MAKECMDGOALS)
 
 lapack:
 	@echo
@@ -516,6 +521,7 @@ matrixserializer:
 clean:
 	@$(MAKE) --no-print-directory -C ./functions clean
 	@$(MAKE) --no-print-directory -C ./simd clean
+	@$(MAKE) --no-print-directory -C ./blas clean
 	@$(MAKE) --no-print-directory -C ./lapack clean
 	@$(MAKE) --no-print-directory -C ./typetraits clean
 	@$(MAKE) --no-print-directory -C ./densevector clean
@@ -605,7 +611,7 @@ clean:
 
 # Setting the independent commands
 .PHONY: default all essential single noop clean \
-        functions simd lapack typetraits \
+        functions simd blas lapack typetraits \
         densevector sparsevector densematrix sparsematrix \
         staticvector hybridvector dynamicvector customvector compressedvector \
         staticmatrix hybridmatrix dynamicmatrix custommatrix compressedmatrix \
