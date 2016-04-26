@@ -44,5 +44,6 @@
 #include <blaze/math/blas/gemv.h>
 #include <blaze/math/blas/trmm.h>
 #include <blaze/math/blas/trmv.h>
+#include <blaze/math/blas/trsm.h>
 
 #endif
