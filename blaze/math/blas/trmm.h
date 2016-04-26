@@ -47,7 +47,6 @@
 #include <blaze/math/constraints/MutableDataAccess.h>
 #include <blaze/math/expressions/DenseMatrix.h>
 #include <blaze/math/typetraits/IsRowMajorMatrix.h>
-#include <blaze/math/typetraits/IsSymmetric.h>
 #include <blaze/system/BLAS.h>
 #include <blaze/system/Inline.h>
 #include <blaze/util/Assert.h>
@@ -100,7 +99,7 @@ BLAZE_ALWAYS_INLINE void trmm( DenseMatrix<MT1,SO1>& B, const DenseMatrix<MT2,SO
 //        precision matrices (\f$ B=\alpha*A*B \f$ or \f$ B=\alpha*B*A \f$).
 // \ingroup blas
 //
-// \param order Specifies the storage order of matrix \a A (\a CblasColMajor or \a CblasColMajor).
+// \param order Specifies the storage order of matrix \a A (\a CblasRowMajor or \a CblasColMajor).
 // \param side \a CblasLeft to compute \f$ B=\alpha*A*B \f$, \a CblasRight to compute \f$ B=\alpha*B*A \f$.
 // \param uplo \a CblasLower to use the lower triangle from \a A, \a CblasUpper to use the upper triangle.
 // \param transA Specifies whether to transpose matrix \a A (\a CblasNoTrans or \a CblasTrans).
@@ -133,7 +132,7 @@ BLAZE_ALWAYS_INLINE void trmm( CBLAS_ORDER order, CBLAS_SIDE side, CBLAS_UPLO up
 //        precision matrices (\f$ B=\alpha*A*B \f$ or \f$ B=\alpha*B*A \f$).
 // \ingroup blas
 //
-// \param order Specifies the storage order of matrix \a A (\a CblasColMajor or \a CblasColMajor).
+// \param order Specifies the storage order of matrix \a A (\a CblasRowMajor or \a CblasColMajor).
 // \param side \a CblasLeft to compute \f$ B=\alpha*A*B \f$, \a CblasRight to compute \f$ B=\alpha*B*A \f$.
 // \param uplo \a CblasLower to use the lower triangle from \a A, \a CblasUpper to use the upper triangle.
 // \param transA Specifies whether to transpose matrix \a A (\a CblasNoTrans or \a CblasTrans).
@@ -166,7 +165,7 @@ BLAZE_ALWAYS_INLINE void trmm( CBLAS_ORDER order, CBLAS_SIDE side, CBLAS_UPLO up
 //        precision complex matrices (\f$ B=\alpha*A*B \f$ or \f$ B=\alpha*B*A \f$).
 // \ingroup blas
 //
-// \param order Specifies the storage order of matrix \a A (\a CblasColMajor or \a CblasColMajor).
+// \param order Specifies the storage order of matrix \a A (\a CblasRowMajor or \a CblasColMajor).
 // \param side \a CblasLeft to compute \f$ B=\alpha*A*B \f$, \a CblasRight to compute \f$ B=\alpha*B*A \f$.
 // \param uplo \a CblasLower to use the lower triangle from \a A, \a CblasUpper to use the upper triangle.
 // \param transA Specifies whether to transpose matrix \a A (\a CblasNoTrans or \a CblasTrans).
@@ -200,7 +199,7 @@ BLAZE_ALWAYS_INLINE void trmm( CBLAS_ORDER order, CBLAS_SIDE side, CBLAS_UPLO up
 //        precision complex matrices (\f$ B=\alpha*A*B \f$ or \f$ B=\alpha*B*A \f$).
 // \ingroup blas
 //
-// \param order Specifies the storage order of matrix \a A (\a CblasColMajor or \a CblasColMajor).
+// \param order Specifies the storage order of matrix \a A (\a CblasRowMajor or \a CblasColMajor).
 // \param side \a CblasLeft to compute \f$ B=\alpha*A*B \f$, \a CblasRight to compute \f$ B=\alpha*B*A \f$.
 // \param uplo \a CblasLower to use the lower triangle from \a A, \a CblasUpper to use the upper triangle.
 // \param transA Specifies whether to transpose matrix \a A (\a CblasNoTrans or \a CblasTrans).
@@ -230,8 +229,8 @@ BLAZE_ALWAYS_INLINE void trmm( CBLAS_ORDER order, CBLAS_SIDE side, CBLAS_UPLO up
 
 //*************************************************************************************************
 #if BLAZE_BLAS_MODE
-/*!\brief BLAS kernel for a triangular dense matrix/dense matrix multiplication with single
-//        precision matrices (\f$ B=\alpha*A*B \f$ or \f$ B=\alpha*B*A \f$).
+/*!\brief BLAS kernel for a triangular dense matrix/dense matrix multiplication
+//        (\f$ B=\alpha*A*B \f$ or \f$ B=\alpha*B*A \f$).
 // \ingroup blas
 //
 // \param B The target dense matrix.
@@ -242,15 +241,16 @@ BLAZE_ALWAYS_INLINE void trmm( CBLAS_ORDER order, CBLAS_SIDE side, CBLAS_UPLO up
 // \return void
 //
 // This function performs the scaling and multiplication of a triangular matrix by a matrix
-// based on the cblas_strmm() function. Note that the function only works for matrices with
-// \c float element type. The attempt to call the function with matrices of any other element
-// type results in a compile time error. Also, matrix \a A is expected to be a square matrix.
+// based on the BLAS trmm() functions. Note that the function only works for matrices with
+// \c float, \c double, \c complex<float>, and \c complex<double> element type. The attempt to
+// call the function with matrices of any other element type results in a compile time error.
+// Also note that matrix \a A is expected to be a square matrix.
 */
 template< typename MT1   // Type of the left-hand side target matrix
         , bool SO1       // Storage order of the left-hand side target matrix
         , typename MT2   // Type of the left-hand side matrix operand
         , bool SO2       // Storage order of the left-hand side matrix operand
-        , typename ST >  // Type of the scalar factors
+        , typename ST >  // Type of the scalar factor
 BLAZE_ALWAYS_INLINE void trmm( DenseMatrix<MT1,SO1>& B, const DenseMatrix<MT2,SO2>& A,
                                CBLAS_SIDE side, CBLAS_UPLO uplo, ST alpha )
 {
