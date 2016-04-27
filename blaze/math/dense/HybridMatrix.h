@@ -685,7 +685,7 @@ inline HybridMatrix<Type,M,N,SO>::HybridMatrix( std::initializer_list< std::init
    }
 
    if( IsNumeric<Type>::value ) {
-      for( size_t i=m_; i<M; ++i )
+      for( ; i<M; ++i )
          for( size_t j=0UL; j<NN; ++j )
             v_[i*NN+j] = Type();
    }
