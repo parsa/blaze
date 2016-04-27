@@ -58,7 +58,6 @@
 #include <blaze/math/typetraits/IsAligned.h>
 #include <blaze/math/typetraits/IsComputation.h>
 #include <blaze/math/typetraits/IsExpression.h>
-#include <blaze/math/typetraits/IsPadded.h>
 #include <blaze/math/typetraits/IsTemporary.h>
 #include <blaze/math/typetraits/RequiresEvaluation.h>
 #include <blaze/math/typetraits/Size.h>
@@ -1122,24 +1121,6 @@ struct Size< DVecDVecDivExpr<VT1,VT2,TF> >
 template< typename VT1, typename VT2, bool TF >
 struct IsAligned< DVecDVecDivExpr<VT1,VT2,TF> >
    : public BoolConstant< And< IsAligned<VT1>, IsAligned<VT2> >::value  >
-{};
-/*! \endcond */
-//*************************************************************************************************
-
-
-
-
-//=================================================================================================
-//
-//  ISPADDED SPECIALIZATIONS
-//
-//=================================================================================================
-
-//*************************************************************************************************
-/*! \cond BLAZE_INTERNAL */
-template< typename VT1, typename VT2, bool TF >
-struct IsPadded< DVecDVecDivExpr<VT1,VT2,TF> >
-   : public BoolConstant< And< IsPadded<VT1>, IsPadded<VT2> >::value  >
 {};
 /*! \endcond */
 //*************************************************************************************************

@@ -4871,10 +4871,8 @@ inline EnableIf_<typename CustomVector<Type,AF,padded,TF>::BLAZE_TEMPLATE Vector
 
    BLAZE_INTERNAL_ASSERT( size_ == (~rhs).size(), "Invalid vector sizes" );
 
-   const bool remainder( !IsPadded<VT>::value );
-
-   const size_t ipos( ( remainder )?( size_ & size_t(-SIMDSIZE) ):( size_ ) );
-   BLAZE_INTERNAL_ASSERT( !remainder || ( size_ - ( size_ % SIMDSIZE ) ) == ipos, "Invalid end calculation" );
+   const size_t ipos( size_ & size_t(-SIMDSIZE) );
+   BLAZE_INTERNAL_ASSERT( ( size_ - ( size_ % SIMDSIZE ) ) == ipos, "Invalid end calculation" );
 
    const size_t i4way( size_ & size_t(-SIMDSIZE*4) );
    BLAZE_INTERNAL_ASSERT( ( size_ - ( size_ % (SIMDSIZE*4UL) ) ) == i4way, "Invalid end calculation" );
@@ -4892,7 +4890,7 @@ inline EnableIf_<typename CustomVector<Type,AF,padded,TF>::BLAZE_TEMPLATE Vector
    for( ; i<ipos; i+=SIMDSIZE, it+=SIMDSIZE ) {
       store( i, load(i) / it.load() );
    }
-   for( ; remainder && i<size_; ++i, ++it ) {
+   for( ; i<size_; ++i, ++it ) {
       v_[i] /= *it;
    }
 }

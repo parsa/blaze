@@ -2449,17 +2449,15 @@ inline EnableIf_<typename HybridVector<Type,N,TF>::BLAZE_TEMPLATE VectorizedDivA
 
    BLAZE_INTERNAL_ASSERT( (~rhs).size() == size_, "Invalid vector sizes" );
 
-   const bool remainder( !usePadding || !IsPadded<VT>::value );
-
-   const size_t ipos( ( remainder )?( size_ & size_t(-SIMDSIZE) ):( size_ ) );
-   BLAZE_INTERNAL_ASSERT( !remainder || ( size_ - ( size_ % (SIMDSIZE) ) ) == ipos, "Invalid end calculation" );
+   const size_t ipos( size_ & size_t(-SIMDSIZE) );
+   BLAZE_INTERNAL_ASSERT( ( size_ - ( size_ % (SIMDSIZE) ) ) == ipos, "Invalid end calculation" );
 
    size_t i( 0UL );
 
    for( ; i<ipos; i+=SIMDSIZE ) {
       store( i, load(i) / (~rhs).load(i) );
    }
-   for( ; remainder && i<size_; ++i ) {
+   for( ; i<size_; ++i ) {
       v_[i] /= (~rhs)[i];
    }
 }

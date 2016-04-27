@@ -2342,10 +2342,8 @@ inline EnableIf_<typename DynamicVector<Type,TF>::BLAZE_TEMPLATE VectorizedDivAs
 
    BLAZE_INTERNAL_ASSERT( size_ == (~rhs).size(), "Invalid vector sizes" );
 
-   const bool remainder( !usePadding || !IsPadded<VT>::value );
-
-   const size_t ipos( ( remainder )?( size_ & size_t(-SIMDSIZE) ):( size_ ) );
-   BLAZE_INTERNAL_ASSERT( !remainder || ( size_ - ( size_ % (SIMDSIZE) ) ) == ipos, "Invalid end calculation" );
+   const size_t ipos( size_ & size_t(-SIMDSIZE) );
+   BLAZE_INTERNAL_ASSERT( ( size_ - ( size_ % (SIMDSIZE) ) ) == ipos, "Invalid end calculation" );
 
    size_t i( 0UL );
    ConstIterator_<VT> it( (~rhs).begin() );
@@ -2359,7 +2357,7 @@ inline EnableIf_<typename DynamicVector<Type,TF>::BLAZE_TEMPLATE VectorizedDivAs
    for( ; i<ipos; i+=SIMDSIZE, it+=SIMDSIZE ) {
       store( i, load(i) / it.load() );
    }
-   for( ; remainder && i<size_; ++i, ++it ) {
+   for( ; i<size_; ++i, ++it ) {
       v_[i] /= *it;
    }
 }

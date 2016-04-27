@@ -2221,11 +2221,10 @@ inline EnableIf_< typename DenseRow<MT,SO,SF>::BLAZE_TEMPLATE VectorizedDivAssig
 
    BLAZE_INTERNAL_ASSERT( size() == (~rhs).size(), "Invalid vector sizes" );
 
-   const bool remainder( !IsPadded<MT>::value || !IsPadded<VT>::value );
    const size_t columns( size() );
 
-   const size_t jpos( ( remainder )?( columns & size_t(-SIMDSIZE) ):( columns ) );
-   BLAZE_INTERNAL_ASSERT( !remainder || ( columns - ( columns % (SIMDSIZE) ) ) == jpos, "Invalid end calculation" );
+   const size_t jpos( columns & size_t(-SIMDSIZE) );
+   BLAZE_INTERNAL_ASSERT( ( columns - ( columns % (SIMDSIZE) ) ) == jpos, "Invalid end calculation" );
 
    size_t j( 0UL );
    ConstIterator_<VT> it( (~rhs).begin() );
@@ -2239,7 +2238,7 @@ inline EnableIf_< typename DenseRow<MT,SO,SF>::BLAZE_TEMPLATE VectorizedDivAssig
    for( ; j<jpos; j+=SIMDSIZE, it+=SIMDSIZE ) {
       matrix_.store( row_, j, matrix_.load(row_,j) / it.load() );
    }
-   for( ; remainder && j<columns; ++j, ++it ) {
+   for( ; j<columns; ++j, ++it ) {
       matrix_(row_,j) /= *it;
    }
 }
@@ -5848,11 +5847,10 @@ inline EnableIf_< typename DenseRow<MT,false,true>::BLAZE_TEMPLATE VectorizedDiv
 
    BLAZE_INTERNAL_ASSERT( size() == (~rhs).size(), "Invalid vector sizes" );
 
-   const bool remainder( !IsPadded<MT>::value || !IsPadded<VT>::value );
    const size_t rows( size() );
 
-   const size_t ipos( ( remainder )?( rows & size_t(-SIMDSIZE) ):( rows ) );
-   BLAZE_INTERNAL_ASSERT( !remainder || ( rows - ( rows % (SIMDSIZE) ) ) == ipos, "Invalid end calculation" );
+   const size_t ipos( rows & size_t(-SIMDSIZE) );
+   BLAZE_INTERNAL_ASSERT( ( rows - ( rows % (SIMDSIZE) ) ) == ipos, "Invalid end calculation" );
 
    size_t i( 0UL );
    ConstIterator_<VT> it( (~rhs).begin() );
@@ -5866,7 +5864,7 @@ inline EnableIf_< typename DenseRow<MT,false,true>::BLAZE_TEMPLATE VectorizedDiv
    for( ; i<ipos; i+=SIMDSIZE, it+=SIMDSIZE ) {
       matrix_.store( i, row_, matrix_.load(i,row_) / it.load() );
    }
-   for( ; remainder && i<rows; ++i, ++it ) {
+   for( ; i<rows; ++i, ++it ) {
       matrix_(i,row_) /= *it;
    }
 }
