@@ -505,6 +505,8 @@ inline HybridVector<Type,N,TF>::HybridVector()
       for( size_t i=0UL; i<NN; ++i )
          v_[i] = Type();
    }
+
+   BLAZE_INTERNAL_ASSERT( isIntact(), "Invariant violation detected" );
 }
 //*************************************************************************************************
 
@@ -536,6 +538,8 @@ inline HybridVector<Type,N,TF>::HybridVector( size_t n )
       for( size_t i=0UL; i<NN; ++i )
          v_[i] = Type();
    }
+
+   BLAZE_INTERNAL_ASSERT( isIntact(), "Invariant violation detected" );
 }
 //*************************************************************************************************
 
@@ -571,6 +575,8 @@ inline HybridVector<Type,N,TF>::HybridVector( size_t n, const Type& init )
       for( size_t i=n; i<NN; ++i )
          v_[i] = Type();
    }
+
+   BLAZE_INTERNAL_ASSERT( isIntact(), "Invariant violation detected" );
 }
 //*************************************************************************************************
 
@@ -607,6 +613,8 @@ inline HybridVector<Type,N,TF>::HybridVector( std::initializer_list<Type> list )
    }
 
    std::fill( std::copy( list.begin(), list.end(), v_.data() ), v_.data()+NN, Type() );
+
+   BLAZE_INTERNAL_ASSERT( isIntact(), "Invariant violation detected" );
 }
 //*************************************************************************************************
 
@@ -655,6 +663,8 @@ inline HybridVector<Type,N,TF>::HybridVector( size_t n, const Other* array )
       for( size_t i=n; i<NN; ++i )
          v_[i] = Type();
    }
+
+   BLAZE_INTERNAL_ASSERT( isIntact(), "Invariant violation detected" );
 }
 //*************************************************************************************************
 
@@ -696,6 +706,8 @@ inline HybridVector<Type,N,TF>::HybridVector( const Other (&array)[M] )
       for( size_t i=M; i<NN; ++i )
          v_[i] = Type();
    }
+
+   BLAZE_INTERNAL_ASSERT( isIntact(), "Invariant violation detected" );
 }
 //*************************************************************************************************
 
@@ -723,6 +735,8 @@ inline HybridVector<Type,N,TF>::HybridVector( const HybridVector& v )
       for( size_t i=size_; i<NN; ++i )
          v_[i] = Type();
    }
+
+   BLAZE_INTERNAL_ASSERT( isIntact(), "Invariant violation detected" );
 }
 //*************************************************************************************************
 
@@ -759,6 +773,8 @@ inline HybridVector<Type,N,TF>::HybridVector( const Vector<VT,TF>& v )
    }
 
    assign( *this, ~v );
+
+   BLAZE_INTERNAL_ASSERT( isIntact(), "Invariant violation detected" );
 }
 //*************************************************************************************************
 

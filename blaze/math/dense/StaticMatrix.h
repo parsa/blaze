@@ -529,6 +529,8 @@ inline StaticMatrix<Type,M,N,SO>::StaticMatrix()
       for( size_t i=0UL; i<M*NN; ++i )
          v_[i] = Type();
    }
+
+   BLAZE_INTERNAL_ASSERT( isIntact(), "Invariant violation detected" );
 }
 //*************************************************************************************************
 
@@ -554,6 +556,8 @@ inline StaticMatrix<Type,M,N,SO>::StaticMatrix( const Type& init )
       for( size_t j=N; j<NN; ++j )
          v_[i*NN+j] = Type();
    }
+
+   BLAZE_INTERNAL_ASSERT( isIntact(), "Invariant violation detected" );
 }
 //*************************************************************************************************
 
@@ -599,6 +603,8 @@ inline StaticMatrix<Type,M,N,SO>::StaticMatrix( std::initializer_list< std::init
       std::fill( std::copy( row.begin(), row.end(), v_+i*NN ), v_+(i+1UL)*NN, Type() );
       ++i;
    }
+
+   BLAZE_INTERNAL_ASSERT( isIntact(), "Invariant violation detected" );
 }
 //*************************************************************************************************
 
@@ -659,6 +665,8 @@ inline StaticMatrix<Type,M,N,SO>::StaticMatrix( size_t m, size_t n, const Other*
             v_[i*NN+j] = Type();
       }
    }
+
+   BLAZE_INTERNAL_ASSERT( isIntact(), "Invariant violation detected" );
 }
 //*************************************************************************************************
 
@@ -700,6 +708,8 @@ inline StaticMatrix<Type,M,N,SO>::StaticMatrix( const Other (&array)[M][N] )
       for( size_t j=N; j<NN; ++j )
             v_[i*NN+j] = Type();
    }
+
+   BLAZE_INTERNAL_ASSERT( isIntact(), "Invariant violation detected" );
 }
 //*************************************************************************************************
 
@@ -722,6 +732,8 @@ inline StaticMatrix<Type,M,N,SO>::StaticMatrix( const StaticMatrix& m )
 
    for( size_t i=0UL; i<M*NN; ++i )
       v_[i] = m.v_[i];
+
+   BLAZE_INTERNAL_ASSERT( isIntact(), "Invariant violation detected" );
 }
 //*************************************************************************************************
 
@@ -749,6 +761,8 @@ inline StaticMatrix<Type,M,N,SO>::StaticMatrix( const StaticMatrix<Other,M,N,SO2
       for( size_t j=N; j<NN; ++j )
          v_[i*NN+j] = Type();
    }
+
+   BLAZE_INTERNAL_ASSERT( isIntact(), "Invariant violation detected" );
 }
 //*************************************************************************************************
 
@@ -787,6 +801,8 @@ inline StaticMatrix<Type,M,N,SO>::StaticMatrix( const Matrix<MT,SO2>& m )
    }
 
    assign( *this, ~m );
+
+   BLAZE_INTERNAL_ASSERT( isIntact(), "Invariant violation detected" );
 }
 //*************************************************************************************************
 
@@ -3242,6 +3258,8 @@ inline StaticMatrix<Type,M,N,true>::StaticMatrix()
       for( size_t i=0UL; i<MM*N; ++i )
          v_[i] = Type();
    }
+
+   BLAZE_INTERNAL_ASSERT( isIntact(), "Invariant violation detected" );
 }
 /*! \endcond */
 //*************************************************************************************************
@@ -3268,6 +3286,8 @@ inline StaticMatrix<Type,M,N,true>::StaticMatrix( const Type& init )
       for( size_t i=M; i<MM; ++i )
          v_[i+j*MM] = Type();
    }
+
+   BLAZE_INTERNAL_ASSERT( isIntact(), "Invariant violation detected" );
 }
 /*! \endcond */
 //*************************************************************************************************
@@ -3331,6 +3351,8 @@ inline StaticMatrix<Type,M,N,true>::StaticMatrix( std::initializer_list< std::in
          }
       }
    }
+
+   BLAZE_INTERNAL_ASSERT( isIntact(), "Invariant violation detected" );
 }
 /*! \endcond */
 //*************************************************************************************************
@@ -3392,6 +3414,8 @@ inline StaticMatrix<Type,M,N,true>::StaticMatrix( size_t m, size_t n, const Othe
             v_[i+j*MM] = Type();
       }
    }
+
+   BLAZE_INTERNAL_ASSERT( isIntact(), "Invariant violation detected" );
 }
 /*! \endcond */
 //*************************************************************************************************
@@ -3434,6 +3458,8 @@ inline StaticMatrix<Type,M,N,true>::StaticMatrix( const Other (&array)[M][N] )
       for( size_t i=M; i<MM; ++i )
          v_[i+j*MM] = Type();
    }
+
+   BLAZE_INTERNAL_ASSERT( isIntact(), "Invariant violation detected" );
 }
 /*! \endcond */
 //*************************************************************************************************
@@ -3457,6 +3483,8 @@ inline StaticMatrix<Type,M,N,true>::StaticMatrix( const StaticMatrix& m )
 
    for( size_t i=0UL; i<MM*N; ++i )
       v_[i] = m.v_[i];
+
+   BLAZE_INTERNAL_ASSERT( isIntact(), "Invariant violation detected" );
 }
 /*! \endcond */
 //*************************************************************************************************
@@ -3485,6 +3513,8 @@ inline StaticMatrix<Type,M,N,true>::StaticMatrix( const StaticMatrix<Other,M,N,S
       for( size_t i=M; i<MM; ++i )
          v_[i+j*MM] = Type();
    }
+
+   BLAZE_INTERNAL_ASSERT( isIntact(), "Invariant violation detected" );
 }
 /*! \endcond */
 //*************************************************************************************************
@@ -3524,6 +3554,8 @@ inline StaticMatrix<Type,M,N,true>::StaticMatrix( const Matrix<MT,SO>& m )
    }
 
    assign( *this, ~m );
+
+   BLAZE_INTERNAL_ASSERT( isIntact(), "Invariant violation detected" );
 }
 /*! \endcond */
 //*************************************************************************************************

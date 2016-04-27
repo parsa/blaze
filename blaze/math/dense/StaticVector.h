@@ -506,6 +506,8 @@ inline StaticVector<Type,N,TF>::StaticVector()
       for( size_t i=0UL; i<NN; ++i )
          v_[i] = Type();
    }
+
+   BLAZE_INTERNAL_ASSERT( isIntact(), "Invariant violation detected" );
 }
 //*************************************************************************************************
 
@@ -528,6 +530,8 @@ inline StaticVector<Type,N,TF>::StaticVector( const Type& init )
 
    for( size_t i=N; i<NN; ++i )
       v_[i] = Type();
+
+   BLAZE_INTERNAL_ASSERT( isIntact(), "Invariant violation detected" );
 }
 //*************************************************************************************************
 
@@ -562,6 +566,8 @@ inline StaticVector<Type,N,TF>::StaticVector( std::initializer_list<Type> list )
    }
 
    std::fill( std::copy( list.begin(), list.end(), v_.data() ), v_.data()+NN, Type() );
+
+   BLAZE_INTERNAL_ASSERT( isIntact(), "Invariant violation detected" );
 }
 //*************************************************************************************************
 
@@ -608,6 +614,8 @@ inline StaticVector<Type,N,TF>::StaticVector( size_t n, const Other* array )
       for( size_t i=n; i<NN; ++i )
          v_[i] = Type();
    }
+
+   BLAZE_INTERNAL_ASSERT( isIntact(), "Invariant violation detected" );
 }
 //*************************************************************************************************
 
@@ -642,6 +650,8 @@ inline StaticVector<Type,N,TF>::StaticVector( const Other (&array)[N] )
 
    for( size_t i=N; i<NN; ++i )
       v_[i] = Type();
+
+   BLAZE_INTERNAL_ASSERT( isIntact(), "Invariant violation detected" );
 }
 //*************************************************************************************************
 
@@ -663,6 +673,8 @@ inline StaticVector<Type,N,TF>::StaticVector( const StaticVector& v )
 
    for( size_t i=0UL; i<NN; ++i )
       v_[i] = v.v_[i];
+
+   BLAZE_INTERNAL_ASSERT( isIntact(), "Invariant violation detected" );
 }
 //*************************************************************************************************
 
@@ -686,6 +698,8 @@ inline StaticVector<Type,N,TF>::StaticVector( const StaticVector<Other,N,TF>& v 
 
    for( size_t i=N; i<NN; ++i )
       v_[i] = Type();
+
+   BLAZE_INTERNAL_ASSERT( isIntact(), "Invariant violation detected" );
 }
 //*************************************************************************************************
 
@@ -720,6 +734,8 @@ inline StaticVector<Type,N,TF>::StaticVector( const Vector<VT,TF>& v )
    }
 
    assign( *this, ~v );
+
+   BLAZE_INTERNAL_ASSERT( isIntact(), "Invariant violation detected" );
 }
 //*************************************************************************************************
 

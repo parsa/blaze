@@ -532,6 +532,8 @@ inline HybridMatrix<Type,M,N,SO>::HybridMatrix()
       for( size_t i=0UL; i<M*NN; ++i )
          v_[i] = Type();
    }
+
+   BLAZE_INTERNAL_ASSERT( isIntact(), "Invariant violation detected" );
 }
 //*************************************************************************************************
 
@@ -572,6 +574,8 @@ inline HybridMatrix<Type,M,N,SO>::HybridMatrix( size_t m, size_t n )
       for( size_t i=0UL; i<M*NN; ++i )
          v_[i] = Type();
    }
+
+   BLAZE_INTERNAL_ASSERT( isIntact(), "Invariant violation detected" );
 }
 //*************************************************************************************************
 
@@ -624,6 +628,8 @@ inline HybridMatrix<Type,M,N,SO>::HybridMatrix( size_t m, size_t n, const Type& 
          for( size_t j=0UL; j<NN; ++j )
             v_[i*NN+j] = Type();
    }
+
+   BLAZE_INTERNAL_ASSERT( isIntact(), "Invariant violation detected" );
 }
 //*************************************************************************************************
 
@@ -683,6 +689,8 @@ inline HybridMatrix<Type,M,N,SO>::HybridMatrix( std::initializer_list< std::init
          for( size_t j=0UL; j<NN; ++j )
             v_[i*NN+j] = Type();
    }
+
+   BLAZE_INTERNAL_ASSERT( isIntact(), "Invariant violation detected" );
 }
 //*************************************************************************************************
 
@@ -749,6 +757,8 @@ inline HybridMatrix<Type,M,N,SO>::HybridMatrix( size_t m, size_t n, const Other*
          for( size_t j=0UL; j<NN; ++j )
             v_[i*NN+j] = Type();
    }
+
+   BLAZE_INTERNAL_ASSERT( isIntact(), "Invariant violation detected" );
 }
 //*************************************************************************************************
 
@@ -805,6 +815,8 @@ inline HybridMatrix<Type,M,N,SO>::HybridMatrix( const Other (&array)[M2][N2] )
          for( size_t j=0UL; j<NN; ++j )
             v_[i*NN+j] = Type();
    }
+
+   BLAZE_INTERNAL_ASSERT( isIntact(), "Invariant violation detected" );
 }
 //*************************************************************************************************
 
@@ -843,6 +855,8 @@ inline HybridMatrix<Type,M,N,SO>::HybridMatrix( const HybridMatrix& m )
          for( size_t j=0UL; j<NN; ++j )
             v_[i*NN+j] = Type();
    }
+
+   BLAZE_INTERNAL_ASSERT( isIntact(), "Invariant violation detected" );
 }
 //*************************************************************************************************
 
@@ -887,6 +901,8 @@ inline HybridMatrix<Type,M,N,SO>::HybridMatrix( const Matrix<MT,SO2>& m )
    }
 
    assign( *this, ~m );
+
+   BLAZE_INTERNAL_ASSERT( isIntact(), "Invariant violation detected" );
 }
 //*************************************************************************************************
 
@@ -3435,6 +3451,8 @@ inline HybridMatrix<Type,M,N,true>::HybridMatrix()
       for( size_t i=0UL; i<MM*N; ++i )
          v_[i] = Type();
    }
+
+   BLAZE_INTERNAL_ASSERT( isIntact(), "Invariant violation detected" );
 }
 /*! \endcond */
 //*************************************************************************************************
@@ -3476,6 +3494,8 @@ inline HybridMatrix<Type,M,N,true>::HybridMatrix( size_t m, size_t n )
       for( size_t i=0UL; i<MM*N; ++i )
          v_[i] = Type();
    }
+
+   BLAZE_INTERNAL_ASSERT( isIntact(), "Invariant violation detected" );
 }
 /*! \endcond */
 //*************************************************************************************************
@@ -3529,6 +3549,8 @@ inline HybridMatrix<Type,M,N,true>::HybridMatrix( size_t m, size_t n, const Type
          for( size_t i=0UL; i<MM; ++i )
             v_[i+j*MM] = Type();
    }
+
+   BLAZE_INTERNAL_ASSERT( isIntact(), "Invariant violation detected" );
 }
 /*! \endcond */
 //*************************************************************************************************
@@ -3602,6 +3624,8 @@ inline HybridMatrix<Type,M,N,true>::HybridMatrix( std::initializer_list< std::in
          }
       }
    }
+
+   BLAZE_INTERNAL_ASSERT( isIntact(), "Invariant violation detected" );
 }
 /*! \endcond */
 //*************************************************************************************************
@@ -3669,6 +3693,8 @@ inline HybridMatrix<Type,M,N,true>::HybridMatrix( size_t m, size_t n, const Othe
          for( size_t i=0UL; i<MM; ++i )
             v_[i+j*MM] = Type();
    }
+
+   BLAZE_INTERNAL_ASSERT( isIntact(), "Invariant violation detected" );
 }
 /*! \endcond */
 //*************************************************************************************************
@@ -3726,6 +3752,8 @@ inline HybridMatrix<Type,M,N,true>::HybridMatrix( const Other (&array)[M2][N2] )
          for( size_t i=0UL; i<MM; ++i )
             v_[i+j*MM] = Type();
    }
+
+   BLAZE_INTERNAL_ASSERT( isIntact(), "Invariant violation detected" );
 }
 /*! \endcond */
 //*************************************************************************************************
@@ -3765,6 +3793,8 @@ inline HybridMatrix<Type,M,N,true>::HybridMatrix( const HybridMatrix& m )
          for( size_t i=0UL; i<MM; ++i )
             v_[i+j*MM] = Type();
    }
+
+   BLAZE_INTERNAL_ASSERT( isIntact(), "Invariant violation detected" );
 }
 /*! \endcond */
 //*************************************************************************************************
@@ -3810,6 +3840,8 @@ inline HybridMatrix<Type,M,N,true>::HybridMatrix( const Matrix<MT,SO2>& m )
    }
 
    assign( *this, ~m );
+
+   BLAZE_INTERNAL_ASSERT( isIntact(), "Invariant violation detected" );
 }
 /*! \endcond */
 //*************************************************************************************************

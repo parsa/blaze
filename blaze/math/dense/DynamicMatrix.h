@@ -531,6 +531,8 @@ inline DynamicMatrix<Type,SO>::DynamicMatrix( size_t m, size_t n )
          }
       }
    }
+
+   BLAZE_INTERNAL_ASSERT( isIntact(), "Invariant violation detected" );
 }
 //*************************************************************************************************
 
@@ -562,6 +564,8 @@ inline DynamicMatrix<Type,SO>::DynamicMatrix( size_t m, size_t n, const Type& in
             v_[i*nn_+j] = Type();
       }
    }
+
+   BLAZE_INTERNAL_ASSERT( isIntact(), "Invariant violation detected" );
 }
 //*************************************************************************************************
 
@@ -601,6 +605,8 @@ inline DynamicMatrix<Type,SO>::DynamicMatrix( std::initializer_list< std::initia
       std::fill( std::copy( row.begin(), row.end(), v_+i*nn_ ), v_+(i+1UL)*nn_, Type() );
       ++i;
    }
+
+   BLAZE_INTERNAL_ASSERT( isIntact(), "Invariant violation detected" );
 }
 //*************************************************************************************************
 
@@ -647,6 +653,8 @@ inline DynamicMatrix<Type,SO>::DynamicMatrix( size_t m, size_t n, const Other* a
             v_[i*nn_+j] = Type();
       }
    }
+
+   BLAZE_INTERNAL_ASSERT( isIntact(), "Invariant violation detected" );
 }
 //*************************************************************************************************
 
@@ -693,6 +701,8 @@ inline DynamicMatrix<Type,SO>::DynamicMatrix( const Other (&array)[M][N] )
             v_[i*nn_+j] = Type();
       }
    }
+
+   BLAZE_INTERNAL_ASSERT( isIntact(), "Invariant violation detected" );
 }
 //*************************************************************************************************
 
@@ -718,6 +728,8 @@ inline DynamicMatrix<Type,SO>::DynamicMatrix( const DynamicMatrix& m )
 
    for( size_t i=0UL; i<capacity_; ++i )
       v_[i] = m.v_[i];
+
+   BLAZE_INTERNAL_ASSERT( isIntact(), "Invariant violation detected" );
 }
 //*************************************************************************************************
 
@@ -769,6 +781,8 @@ inline DynamicMatrix<Type,SO>::DynamicMatrix( const Matrix<MT,SO2>& m )
    }
 
    smpAssign( *this, ~m );
+
+   BLAZE_INTERNAL_ASSERT( isIntact(), "Invariant violation detected" );
 }
 //*************************************************************************************************
 
@@ -3266,6 +3280,8 @@ inline DynamicMatrix<Type,true>::DynamicMatrix( size_t m, size_t n )
          }
       }
    }
+
+   BLAZE_INTERNAL_ASSERT( isIntact(), "Invariant violation detected" );
 }
 /*! \endcond */
 //*************************************************************************************************
@@ -3298,6 +3314,8 @@ inline DynamicMatrix<Type,true>::DynamicMatrix( size_t m, size_t n, const Type& 
             v_[i+j*mm_] = Type();
       }
    }
+
+   BLAZE_INTERNAL_ASSERT( isIntact(), "Invariant violation detected" );
 }
 /*! \endcond */
 //*************************************************************************************************
@@ -3355,6 +3373,8 @@ inline DynamicMatrix<Type,true>::DynamicMatrix( std::initializer_list< std::init
          }
       }
    }
+
+   BLAZE_INTERNAL_ASSERT( isIntact(), "Invariant violation detected" );
 }
 /*! \endcond */
 //*************************************************************************************************
@@ -3402,6 +3422,8 @@ inline DynamicMatrix<Type,true>::DynamicMatrix( size_t m, size_t n, const Other*
             v_[i+j*mm_] = Type();
       }
    }
+
+   BLAZE_INTERNAL_ASSERT( isIntact(), "Invariant violation detected" );
 }
 /*! \endcond */
 //*************************************************************************************************
@@ -3449,6 +3471,8 @@ inline DynamicMatrix<Type,true>::DynamicMatrix( const Other (&array)[M][N] )
             v_[i+j*mm_] = Type();
       }
    }
+
+   BLAZE_INTERNAL_ASSERT( isIntact(), "Invariant violation detected" );
 }
 /*! \endcond */
 //*************************************************************************************************
@@ -3475,6 +3499,8 @@ inline DynamicMatrix<Type,true>::DynamicMatrix( const DynamicMatrix& m )
 
    for( size_t i=0UL; i<capacity_; ++i )
       v_[i] = m.v_[i];
+
+   BLAZE_INTERNAL_ASSERT( isIntact(), "Invariant violation detected" );
 }
 /*! \endcond */
 //*************************************************************************************************
@@ -3528,6 +3554,8 @@ inline DynamicMatrix<Type,true>::DynamicMatrix( const Matrix<MT,SO>& m )
    }
 
    smpAssign( *this, ~m );
+
+   BLAZE_INTERNAL_ASSERT( isIntact(), "Invariant violation detected" );
 }
 /*! \endcond */
 //*************************************************************************************************

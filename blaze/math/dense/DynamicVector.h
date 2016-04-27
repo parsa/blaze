@@ -514,6 +514,8 @@ inline DynamicVector<Type,TF>::DynamicVector( size_t n )
       for( size_t i=size_; i<capacity_; ++i )
          v_[i] = Type();
    }
+
+   BLAZE_INTERNAL_ASSERT( isIntact(), "Invariant violation detected" );
 }
 //*************************************************************************************************
 
@@ -540,6 +542,8 @@ inline DynamicVector<Type,TF>::DynamicVector( size_t n, const Type& init )
       for( size_t i=size_; i<capacity_; ++i )
          v_[i] = Type();
    }
+
+   BLAZE_INTERNAL_ASSERT( isIntact(), "Invariant violation detected" );
 }
 //*************************************************************************************************
 
@@ -567,6 +571,8 @@ inline DynamicVector<Type,TF>::DynamicVector( std::initializer_list<Type> list )
    , v_       ( allocate<Type>( capacity_ ) )  // The vector elements
 {
    std::fill( std::copy( list.begin(), list.end(), v_ ), v_+capacity_, Type() );
+
+   BLAZE_INTERNAL_ASSERT( isIntact(), "Invariant violation detected" );
 }
 //*************************************************************************************************
 
@@ -606,6 +612,8 @@ inline DynamicVector<Type,TF>::DynamicVector( size_t n, const Other* array )
       for( size_t i=n; i<capacity_; ++i )
          v_[i] = Type();
    }
+
+   BLAZE_INTERNAL_ASSERT( isIntact(), "Invariant violation detected" );
 }
 //*************************************************************************************************
 
@@ -643,6 +651,8 @@ inline DynamicVector<Type,TF>::DynamicVector( const Other (&array)[N] )
       for( size_t i=N; i<capacity_; ++i )
          v_[i] = Type();
    }
+
+   BLAZE_INTERNAL_ASSERT( isIntact(), "Invariant violation detected" );
 }
 //*************************************************************************************************
 
@@ -666,6 +676,8 @@ inline DynamicVector<Type,TF>::DynamicVector( const DynamicVector& v )
 
    for( size_t i=0UL; i<capacity_; ++i )
       v_[i] = v.v_[i];
+
+   BLAZE_INTERNAL_ASSERT( isIntact(), "Invariant violation detected" );
 }
 //*************************************************************************************************
 
@@ -708,6 +720,8 @@ inline DynamicVector<Type,TF>::DynamicVector( const Vector<VT,TF>& v )
    }
 
    smpAssign( *this, ~v );
+
+   BLAZE_INTERNAL_ASSERT( isIntact(), "Invariant violation detected" );
 }
 //*************************************************************************************************
 
