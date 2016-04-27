@@ -88,6 +88,7 @@ class OperationTest
    //**Test functions******************************************************************************
    /*!\name Test functions */
    //@{
+   template< typename Type > void testDot();
    template< typename Type > void testTrsm();
    //@}
    //**********************************************************************************************
@@ -111,13 +112,57 @@ class OperationTest
 //=================================================================================================
 
 //*************************************************************************************************
-/*!\brief Test of the LU decomposition functions (getrf).
+/*!\brief Test of the dense vector dot product functions (dot).
 //
 // \return void
 // \exception std::runtime_error Error detected.
 //
-// This function performs a test of the LU decomposition functions for various data types. In
-// case an error is detected, a \a std::runtime_error exception is thrown.
+// This function performs a test of the dense vector dot product functions for various data types.
+// In case an error is detected, a \a std::runtime_error exception is thrown.
+*/
+template< typename Type >
+void OperationTest::testDot()
+{
+#if BLAZETEST_MATHTEST_BLAS_MODE
+
+   test_ = "Dot product";
+
+   blaze::StaticVector<Type,7UL,blaze::rowVector> x;
+   randomize( x );
+
+   blaze::StaticVector<Type,7UL,blaze::columnVector> y;
+   randomize( y );
+
+   const Type result1( dot( x, y ) );
+   const Type result2( x * y );
+
+   if( result1 != result2 ) {
+      std::ostringstream oss;
+      oss << " Test: " << test_ << "\n"
+          << " Error: Dot product failed\n"
+          << " Details:\n"
+          << "   Element type:\n"
+          << "     " << typeid( Type ).name() << "\n"
+          << "   Left-hand side operand (x):\n" << x << "\n"
+          << "   Right-hand side operand (y):\n" << y << "\n"
+          << "   dot( x, y ) = " << result1 << "\n"
+          << "   x * y       = " << result2 << "\n";
+      throw std::runtime_error( oss.str() );
+   }
+
+#endif
+}
+//*************************************************************************************************
+
+
+//*************************************************************************************************
+/*!\brief Test of the triangular system solver functions (trsm).
+//
+// \return void
+// \exception std::runtime_error Error detected.
+//
+// This function performs a test of the triangular system solver functions for various data types.
+// In case an error is detected, a \a std::runtime_error exception is thrown.
 */
 template< typename Type >
 void OperationTest::testTrsm()
