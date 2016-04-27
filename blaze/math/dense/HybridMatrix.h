@@ -677,6 +677,12 @@ inline HybridMatrix<Type,M,N,SO>::HybridMatrix( std::initializer_list< std::init
       std::fill( std::copy( row.begin(), row.end(), v_+i*NN ), v_+(i+1UL)*NN, Type() );
       ++i;
    }
+
+   if( IsNumeric<Type>::value ) {
+      for( size_t i=m_; i<M; ++i )
+         for( size_t j=0UL; j<NN; ++j )
+            v_[i*NN+j] = Type();
+   }
 }
 //*************************************************************************************************
 
@@ -1954,9 +1960,11 @@ inline HybridMatrix<Type,M,N,SO>& HybridMatrix<Type,M,N,SO>::transpose()
    }
 
    const size_t maxsize( max( m_, n_ ) );
-   for( size_t i=1UL; i<maxsize; ++i )
-      for( size_t j=0UL; j<i; ++j )
+   for( size_t i=1UL; i<maxsize; ++i ) {
+      for( size_t j=0UL; j<i; ++j ) {
          swap( v_[i*NN+j], v_[j*NN+i] );
+      }
+   }
 
    if( IsVectorizable<Type>::value && m_ < n_ ) {
       for( size_t i=0UL; i<m_; ++i ) {
@@ -1975,6 +1983,8 @@ inline HybridMatrix<Type,M,N,SO>& HybridMatrix<Type,M,N,SO>::transpose()
    }
 
    swap( m_, n_ );
+
+   BLAZE_INTERNAL_ASSERT( isIntact(), "Invariant violation detected" );
 
    return *this;
 }
@@ -2029,6 +2039,8 @@ inline HybridMatrix<Type,M,N,SO>& HybridMatrix<Type,M,N,SO>::ctranspose()
    }
 
    swap( m_, n_ );
+
+   BLAZE_INTERNAL_ASSERT( isIntact(), "Invariant violation detected" );
 
    return *this;
 }
@@ -3573,17 +3585,19 @@ inline HybridMatrix<Type,M,N,true>::HybridMatrix( std::initializer_list< std::in
          v_[i+j*MM] = element;
          ++j;
       }
-      for( ; j<n_; ++j ) {
-         v_[i+j*MM] = Type();
+      if( IsNumeric<Type>::value ) {
+         for( ; j<N; ++j ) {
+            v_[i+j*MM] = Type();
+         }
       }
       ++i;
    }
 
    BLAZE_INTERNAL_ASSERT( i == m_, "Invalid number of elements detected" );
 
-   if( IsVectorizable<Type>::value ) {
+   if( IsNumeric<Type>::value ) {
       for( ; i<MM; ++i ) {
-         for( size_t j=0UL; j<n_; ++j ) {
+         for( size_t j=0UL; j<N; ++j ) {
             v_[i+j*MM] = Type();
          }
       }
@@ -4872,9 +4886,11 @@ inline HybridMatrix<Type,M,N,true>& HybridMatrix<Type,M,N,true>::transpose()
    }
 
    const size_t maxsize( max( m_, n_ ) );
-   for( size_t j=1UL; j<maxsize; ++j )
-      for( size_t i=0UL; i<j; ++i )
+   for( size_t j=1UL; j<maxsize; ++j ) {
+      for( size_t i=0UL; i<j; ++i ) {
          swap( v_[i+j*MM], v_[j+i*MM] );
+      }
+   }
 
    if( IsVectorizable<Type>::value && n_ < m_ ) {
       for( size_t j=0UL; j<n_; ++j ) {
@@ -4885,12 +4901,16 @@ inline HybridMatrix<Type,M,N,true>& HybridMatrix<Type,M,N,true>::transpose()
    }
 
    if( IsVectorizable<Type>::value && n_ > m_ ) {
-      for( size_t j=m_; j<n_; ++j )
-         for( size_t i=0UL; i<m_; ++i )
+      for( size_t j=m_; j<n_; ++j ) {
+         for( size_t i=0UL; i<m_; ++i ) {
             v_[i+j*MM] = Type();
+         }
+      }
    }
 
    swap( m_, n_ );
+
+   BLAZE_INTERNAL_ASSERT( isIntact(), "Invariant violation detected" );
 
    return *this;
 }
@@ -4938,12 +4958,16 @@ inline HybridMatrix<Type,M,N,true>& HybridMatrix<Type,M,N,true>::ctranspose()
    }
 
    if( IsVectorizable<Type>::value && n_ > m_ ) {
-      for( size_t j=m_; j<n_; ++j )
-         for( size_t i=0UL; i<m_; ++i )
+      for( size_t j=m_; j<n_; ++j ) {
+         for( size_t i=0UL; i<m_; ++i ) {
             v_[i+j*MM] = Type();
+         }
+      }
    }
 
    swap( m_, n_ );
+
+   BLAZE_INTERNAL_ASSERT( isIntact(), "Invariant violation detected" );
 
    return *this;
 }
