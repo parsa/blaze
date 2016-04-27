@@ -1268,6 +1268,9 @@ inline StaticMatrix<Type,M,N,SO>& StaticMatrix<Type,M,N,SO>::operator=( const St
    using blaze::assign;
 
    assign( *this, ~rhs );
+
+   BLAZE_INTERNAL_ASSERT( isIntact(), "Invariant violation detected" );
+
    return *this;
 }
 //*************************************************************************************************
@@ -1291,6 +1294,9 @@ inline StaticMatrix<Type,M,N,SO>&
    using blaze::assign;
 
    assign( *this, ~rhs );
+
+   BLAZE_INTERNAL_ASSERT( isIntact(), "Invariant violation detected" );
+
    return *this;
 }
 //*************************************************************************************************
@@ -1340,6 +1346,8 @@ inline StaticMatrix<Type,M,N,SO>& StaticMatrix<Type,M,N,SO>::operator=( const Ma
       assign( *this, ~rhs );
    }
 
+   BLAZE_INTERNAL_ASSERT( isIntact(), "Invariant violation detected" );
+
    return *this;
 }
 //*************************************************************************************************
@@ -1376,6 +1384,8 @@ inline StaticMatrix<Type,M,N,SO>& StaticMatrix<Type,M,N,SO>::operator+=( const M
    else {
       addAssign( *this, ~rhs );
    }
+
+   BLAZE_INTERNAL_ASSERT( isIntact(), "Invariant violation detected" );
 
    return *this;
 }
@@ -1414,6 +1424,8 @@ inline StaticMatrix<Type,M,N,SO>& StaticMatrix<Type,M,N,SO>::operator-=( const M
       subAssign( *this, ~rhs );
    }
 
+   BLAZE_INTERNAL_ASSERT( isIntact(), "Invariant violation detected" );
+
    return *this;
 }
 //*************************************************************************************************
@@ -1442,7 +1454,11 @@ inline StaticMatrix<Type,M,N,SO>& StaticMatrix<Type,M,N,SO>::operator*=( const M
    }
 
    const StaticMatrix tmp( *this * (~rhs) );
-   return this->operator=( tmp );
+   this->operator=( tmp );
+
+   BLAZE_INTERNAL_ASSERT( isIntact(), "Invariant violation detected" );
+
+   return *this;
 }
 //*************************************************************************************************
 
@@ -1465,6 +1481,9 @@ inline EnableIf_<IsNumeric<Other>, StaticMatrix<Type,M,N,SO> >&
    using blaze::assign;
 
    assign( *this, (*this) * rhs );
+
+   BLAZE_INTERNAL_ASSERT( isIntact(), "Invariant violation detected" );
+
    return *this;
 }
 //*************************************************************************************************
@@ -1492,6 +1511,9 @@ inline EnableIf_<IsNumeric<Other>, StaticMatrix<Type,M,N,SO> >&
    BLAZE_USER_ASSERT( rhs != Other(0), "Division by zero detected" );
 
    assign( *this, (*this) / rhs );
+
+   BLAZE_INTERNAL_ASSERT( isIntact(), "Invariant violation detected" );
+
    return *this;
 }
 //*************************************************************************************************
@@ -3979,6 +4001,9 @@ inline StaticMatrix<Type,M,N,true>&
    using blaze::assign;
 
    assign( *this, ~rhs );
+
+   BLAZE_INTERNAL_ASSERT( isIntact(), "Invariant violation detected" );
+
    return *this;
 }
 /*! \endcond */
@@ -4003,6 +4028,9 @@ inline StaticMatrix<Type,M,N,true>&
    using blaze::assign;
 
    assign( *this, ~rhs );
+
+   BLAZE_INTERNAL_ASSERT( isIntact(), "Invariant violation detected" );
+
    return *this;
 }
 /*! \endcond */
@@ -4053,6 +4081,8 @@ inline StaticMatrix<Type,M,N,true>& StaticMatrix<Type,M,N,true>::operator=( cons
       assign( *this, ~rhs );
    }
 
+   BLAZE_INTERNAL_ASSERT( isIntact(), "Invariant violation detected" );
+
    return *this;
 }
 /*! \endcond */
@@ -4090,6 +4120,8 @@ inline StaticMatrix<Type,M,N,true>& StaticMatrix<Type,M,N,true>::operator+=( con
    else {
       addAssign( *this, ~rhs );
    }
+
+   BLAZE_INTERNAL_ASSERT( isIntact(), "Invariant violation detected" );
 
    return *this;
 }
@@ -4129,6 +4161,8 @@ inline StaticMatrix<Type,M,N,true>& StaticMatrix<Type,M,N,true>::operator-=( con
       subAssign( *this, ~rhs );
    }
 
+   BLAZE_INTERNAL_ASSERT( isIntact(), "Invariant violation detected" );
+
    return *this;
 }
 /*! \endcond */
@@ -4158,7 +4192,11 @@ inline StaticMatrix<Type,M,N,true>& StaticMatrix<Type,M,N,true>::operator*=( con
    }
 
    const StaticMatrix tmp( *this * (~rhs) );
-   return this->operator=( tmp );
+   this->operator=( tmp );
+
+   BLAZE_INTERNAL_ASSERT( isIntact(), "Invariant violation detected" );
+
+   return *this;
 }
 /*! \endcond */
 //*************************************************************************************************
@@ -4182,6 +4220,9 @@ inline EnableIf_<IsNumeric<Other>, StaticMatrix<Type,M,N,true> >&
    using blaze::assign;
 
    assign( *this, (*this) * rhs );
+
+   BLAZE_INTERNAL_ASSERT( isIntact(), "Invariant violation detected" );
+
    return *this;
 }
 /*! \endcond */
@@ -4210,6 +4251,9 @@ inline EnableIf_<IsNumeric<Other>, StaticMatrix<Type,M,N,true> >&
    BLAZE_USER_ASSERT( rhs != Other(0), "Division by zero detected" );
 
    assign( *this, (*this) / rhs );
+
+   BLAZE_INTERNAL_ASSERT( isIntact(), "Invariant violation detected" );
+
    return *this;
 }
 /*! \endcond */

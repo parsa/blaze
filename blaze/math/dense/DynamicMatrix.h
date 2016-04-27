@@ -1237,6 +1237,8 @@ inline DynamicMatrix<Type,SO>& DynamicMatrix<Type,SO>::operator=( const DynamicM
    resize( rhs.m_, rhs.n_, false );
    smpAssign( *this, ~rhs );
 
+   BLAZE_INTERNAL_ASSERT( isIntact(), "Invariant violation detected" );
+
    return *this;
 }
 //*************************************************************************************************
@@ -1306,6 +1308,8 @@ inline DynamicMatrix<Type,SO>& DynamicMatrix<Type,SO>::operator=( const Matrix<M
       smpAssign( *this, ~rhs );
    }
 
+   BLAZE_INTERNAL_ASSERT( isIntact(), "Invariant violation detected" );
+
    return *this;
 }
 //*************************************************************************************************
@@ -1339,6 +1343,8 @@ inline DynamicMatrix<Type,SO>& DynamicMatrix<Type,SO>::operator+=( const Matrix<
       smpAddAssign( *this, ~rhs );
    }
 
+   BLAZE_INTERNAL_ASSERT( isIntact(), "Invariant violation detected" );
+
    return *this;
 }
 //*************************************************************************************************
@@ -1371,6 +1377,8 @@ inline DynamicMatrix<Type,SO>& DynamicMatrix<Type,SO>::operator-=( const Matrix<
    else {
       smpSubAssign( *this, ~rhs );
    }
+
+   BLAZE_INTERNAL_ASSERT( isIntact(), "Invariant violation detected" );
 
    return *this;
 }
@@ -1419,6 +1427,9 @@ inline EnableIf_<IsNumeric<Other>, DynamicMatrix<Type,SO> >&
    DynamicMatrix<Type,SO>::operator*=( Other rhs )
 {
    smpAssign( *this, (*this) * rhs );
+
+   BLAZE_INTERNAL_ASSERT( isIntact(), "Invariant violation detected" );
+
    return *this;
 }
 //*************************************************************************************************
@@ -1440,6 +1451,9 @@ inline EnableIf_<IsNumeric<Other>, DynamicMatrix<Type,SO> >&
    BLAZE_USER_ASSERT( rhs != Other(0), "Division by zero detected" );
 
    smpAssign( *this, (*this) / rhs );
+
+   BLAZE_INTERNAL_ASSERT( isIntact(), "Invariant violation detected" );
+
    return *this;
 }
 //*************************************************************************************************
@@ -3976,6 +3990,8 @@ inline DynamicMatrix<Type,true>& DynamicMatrix<Type,true>::operator=( const Dyna
    resize( rhs.m_, rhs.n_, false );
    smpAssign( *this, ~rhs );
 
+   BLAZE_INTERNAL_ASSERT( isIntact(), "Invariant violation detected" );
+
    return *this;
 }
 /*! \endcond */
@@ -4047,6 +4063,8 @@ inline DynamicMatrix<Type,true>& DynamicMatrix<Type,true>::operator=( const Matr
       smpAssign( *this, ~rhs );
    }
 
+   BLAZE_INTERNAL_ASSERT( isIntact(), "Invariant violation detected" );
+
    return *this;
 }
 /*! \endcond */
@@ -4080,6 +4098,8 @@ inline DynamicMatrix<Type,true>& DynamicMatrix<Type,true>::operator+=( const Mat
    else {
       smpAddAssign( *this, ~rhs );
    }
+
+   BLAZE_INTERNAL_ASSERT( isIntact(), "Invariant violation detected" );
 
    return *this;
 }
@@ -4115,6 +4135,8 @@ inline DynamicMatrix<Type,true>& DynamicMatrix<Type,true>::operator-=( const Mat
       smpSubAssign( *this, ~rhs );
    }
 
+   BLAZE_INTERNAL_ASSERT( isIntact(), "Invariant violation detected" );
+
    return *this;
 }
 /*! \endcond */
@@ -4144,6 +4166,8 @@ inline DynamicMatrix<Type,true>& DynamicMatrix<Type,true>::operator*=( const Mat
    DynamicMatrix tmp( *this * (~rhs) );
    swap( tmp );
 
+   BLAZE_INTERNAL_ASSERT( isIntact(), "Invariant violation detected" );
+
    return *this;
 }
 /*! \endcond */
@@ -4164,6 +4188,9 @@ inline EnableIf_<IsNumeric<Other>, DynamicMatrix<Type,true> >&
    DynamicMatrix<Type,true>::operator*=( Other rhs )
 {
    smpAssign( *this, (*this) * rhs );
+
+   BLAZE_INTERNAL_ASSERT( isIntact(), "Invariant violation detected" );
+
    return *this;
 }
 /*! \endcond */
@@ -4186,6 +4213,9 @@ inline EnableIf_<IsNumeric<Other>, DynamicMatrix<Type,true> >&
    BLAZE_USER_ASSERT( rhs != Other(0), "Division by zero detected" );
 
    smpAssign( *this, (*this) / rhs );
+
+   BLAZE_INTERNAL_ASSERT( isIntact(), "Invariant violation detected" );
+
    return *this;
 }
 /*! \endcond */

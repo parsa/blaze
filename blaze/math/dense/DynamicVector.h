@@ -1047,6 +1047,8 @@ inline DynamicVector<Type,TF>& DynamicVector<Type,TF>::operator=( const DynamicV
    resize( rhs.size_, false );
    smpAssign( *this, ~rhs );
 
+   BLAZE_INTERNAL_ASSERT( isIntact(), "Invariant violation detected" );
+
    return *this;
 }
 //*************************************************************************************************
@@ -1101,6 +1103,8 @@ inline DynamicVector<Type,TF>& DynamicVector<Type,TF>::operator=( const Vector<V
       smpAssign( *this, ~rhs );
    }
 
+   BLAZE_INTERNAL_ASSERT( isIntact(), "Invariant violation detected" );
+
    return *this;
 }
 //*************************************************************************************************
@@ -1132,6 +1136,8 @@ inline DynamicVector<Type,TF>& DynamicVector<Type,TF>::operator+=( const Vector<
    else {
       smpAddAssign( *this, ~rhs );
    }
+
+   BLAZE_INTERNAL_ASSERT( isIntact(), "Invariant violation detected" );
 
    return *this;
 }
@@ -1166,6 +1172,8 @@ inline DynamicVector<Type,TF>& DynamicVector<Type,TF>::operator-=( const Vector<
       smpSubAssign( *this, ~rhs );
    }
 
+   BLAZE_INTERNAL_ASSERT( isIntact(), "Invariant violation detected" );
+
    return *this;
 }
 //*************************************************************************************************
@@ -1199,6 +1207,8 @@ inline DynamicVector<Type,TF>& DynamicVector<Type,TF>::operator*=( const Vector<
       smpMultAssign( *this, ~rhs );
    }
 
+   BLAZE_INTERNAL_ASSERT( isIntact(), "Invariant violation detected" );
+
    return *this;
 }
 //*************************************************************************************************
@@ -1231,6 +1241,8 @@ inline DynamicVector<Type,TF>& DynamicVector<Type,TF>::operator/=( const DenseVe
       smpDivAssign( *this, ~rhs );
    }
 
+   BLAZE_INTERNAL_ASSERT( isIntact(), "Invariant violation detected" );
+
    return *this;
 }
 //*************************************************************************************************
@@ -1250,6 +1262,9 @@ inline EnableIf_<IsNumeric<Other>, DynamicVector<Type,TF> >&
    DynamicVector<Type,TF>::operator*=( Other rhs )
 {
    smpAssign( *this, (*this) * rhs );
+
+   BLAZE_INTERNAL_ASSERT( isIntact(), "Invariant violation detected" );
+
    return *this;
 }
 //*************************************************************************************************
@@ -1273,6 +1288,9 @@ inline EnableIf_<IsNumeric<Other>, DynamicVector<Type,TF> >&
    BLAZE_USER_ASSERT( rhs != Other(0), "Division by zero detected" );
 
    smpAssign( *this, (*this) / rhs );
+
+   BLAZE_INTERNAL_ASSERT( isIntact(), "Invariant violation detected" );
+
    return *this;
 }
 //*************************************************************************************************
