@@ -8532,12 +8532,39 @@ namespace blaze {}
 // \tableofcontents
 //
 //
-// For matrix/vector and matrix/matrix multiplications with large dense matrices \b Blaze relies
-// on the efficiency of BLAS libraries. For this purpose, \b Blaze implements several convenient
-// C++ wrapper functions for several BLAS functions. The following sections give a complete
-// overview of all available BLAS level 2 and 3 functions.
+// For vector/vector, matrix/vector and matrix/matrix multiplications with large dense matrices
+// \b Blaze relies on the efficiency of BLAS libraries. For this purpose, \b Blaze implements
+// several convenient C++ wrapper functions for several BLAS functions. The following sections
+// give a complete overview of all available BLAS level 1, 2 and 3 functions.
 //
 //
+// \n \section blas_level_1 BLAS Level 1
+// <hr>
+//
+// \subsection blas_level_1_dot Dot Product (dot)
+//
+// The following wrapper functions provide a generic interface for the BLAS functions for the
+// dot product of two dense vectors (\c sdot(), \c ddot(), \c cdotu_sub(), and \c zdotu_sub()):
+
+   \code
+   namespace blaze {
+
+   float dot( const int n, const float* x, const int incX, const float* y, const int incY );
+
+   double dot( const int n, const double* x, const int incX, const double* y, const int incY );
+
+   complex<float> dot( const int n, const complex<float>* x, const int incX,
+                       const complex<float>* y, const int incY );
+
+   complex<double> dot( const int n, const complex<double>* x, const int incX,
+                        const complex<double>* y, const int incY );
+
+   template< typename VT1, bool TF1, typename VT2, bool TF2 >
+   ElementType_<VT1> dot( const DenseVector<VT1,TF1>& x, const DenseVector<VT2,TF2>& y );
+
+   } // namespace blaze
+   \endcode
+
 // \n \section blas_level_2 BLAS Level 2
 // <hr>
 //
