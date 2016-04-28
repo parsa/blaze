@@ -44,6 +44,7 @@
 #include <utility>
 #include <blaze/math/Aliases.h>
 #include <blaze/math/constraints/DenseVector.h>
+#include <blaze/math/constraints/RequiresEvaluation.h>
 #include <blaze/math/constraints/TransposeFlag.h>
 #include <blaze/math/expressions/DenseVector.h>
 #include <blaze/math/expressions/SparseVector.h>
@@ -284,11 +285,12 @@ class CompressedVector : public SparseVector< CompressedVector<Type,TF>, TF >
    inline CompressedVector& operator=( const CompressedVector& rhs );
    inline CompressedVector& operator=( CompressedVector&& rhs ) noexcept;
 
-   template< typename VT > inline CompressedVector& operator= ( const DenseVector<VT,TF>&  rhs );
+   template< typename VT > inline CompressedVector& operator= ( const DenseVector<VT,TF>& rhs );
    template< typename VT > inline CompressedVector& operator= ( const SparseVector<VT,TF>& rhs );
    template< typename VT > inline CompressedVector& operator+=( const Vector<VT,TF>& rhs );
    template< typename VT > inline CompressedVector& operator-=( const Vector<VT,TF>& rhs );
-   template< typename VT > inline CompressedVector& operator*=( const Vector<VT,TF>& rhs );
+   template< typename VT > inline CompressedVector& operator*=( const DenseVector<VT,TF>& rhs );
+   template< typename VT > inline CompressedVector& operator*=( const SparseVector<VT,TF>& rhs );
    template< typename VT > inline CompressedVector& operator/=( const DenseVector<VT,TF>& rhs );
 
    template< typename Other >
@@ -353,7 +355,6 @@ class CompressedVector : public SparseVector< CompressedVector<Type,TF>, TF >
    template< typename VT > inline void subAssign ( const DenseVector <VT,TF>& rhs );
    template< typename VT > inline void subAssign ( const SparseVector<VT,TF>& rhs );
    template< typename VT > inline void multAssign( const DenseVector <VT,TF>& rhs );
-   template< typename VT > inline void multAssign( const SparseVector<VT,TF>& rhs );
    template< typename VT > inline void divAssign ( const DenseVector <VT,TF>& rhs );
    //@}
    //**********************************************************************************************
@@ -948,10 +949,10 @@ inline CompressedVector<Type,TF>& CompressedVector<Type,TF>::operator-=( const V
 
 
 //*************************************************************************************************
-/*!\brief Multiplication assignment operator for the multiplication of a vector
+/*!\brief Multiplication assignment operator for the multiplication of a dense vector
 //        (\f$ \vec{a}*=\vec{b} \f$).
 //
-// \param rhs The right-hand side vector to be multiplied with the compressed vector.
+// \param rhs The right-hand side dense vector to be multiplied with the compressed vector.
 // \return Reference to the compressed vector.
 // \exception std::invalid_argument Vector sizes do not match.
 //
@@ -961,7 +962,8 @@ inline CompressedVector<Type,TF>& CompressedVector<Type,TF>::operator-=( const V
 template< typename Type  // Data type of the vector
         , bool TF >      // Transpose flag
 template< typename VT >  // Type of the right-hand side vector
-inline CompressedVector<Type,TF>& CompressedVector<Type,TF>::operator*=( const Vector<VT,TF>& rhs )
+inline CompressedVector<Type,TF>&
+   CompressedVector<Type,TF>::operator*=( const DenseVector<VT,TF>& rhs )
 {
    using blaze::multAssign;
 
@@ -969,7 +971,14 @@ inline CompressedVector<Type,TF>& CompressedVector<Type,TF>::operator*=( const V
       BLAZE_THROW_INVALID_ARGUMENT( "Vector sizes do not match" );
    }
 
-   multAssign( *this, ~rhs );
+   if( (~rhs).canAlias( this ) ) {
+      CompressedVector tmp( *this * (~rhs) );
+      swap( tmp );
+   }
+   else {
+      CompositeType_<VT> tmp( ~rhs );
+      multAssign( *this, tmp );
+   }
 
    return *this;
 }
@@ -977,7 +986,36 @@ inline CompressedVector<Type,TF>& CompressedVector<Type,TF>::operator*=( const V
 
 
 //*************************************************************************************************
-/*!\brief Division assignment operator for the division of a dense vector (\f$ \vec{a}*=\vec{b} \f$).
+/*!\brief Multiplication assignment operator for the multiplication of a sparse vector
+//        (\f$ \vec{a}*=\vec{b} \f$).
+//
+// \param rhs The right-hand side sparse vector to be multiplied with the compressed vector.
+// \return Reference to the compressed vector.
+// \exception std::invalid_argument Vector sizes do not match.
+//
+// In case the current sizes of the two vectors don't match, a \a std::invalid_argument exception
+// is thrown.
+*/
+template< typename Type  // Data type of the vector
+        , bool TF >      // Transpose flag
+template< typename VT >  // Type of the right-hand side vector
+inline CompressedVector<Type,TF>&
+   CompressedVector<Type,TF>::operator*=( const SparseVector<VT,TF>& rhs )
+{
+   if( (~rhs).size() != size_ ) {
+      BLAZE_THROW_INVALID_ARGUMENT( "Vector sizes do not match" );
+   }
+
+   CompressedVector tmp( *this * (~rhs) );
+   swap( tmp );
+
+   return *this;
+}
+//*************************************************************************************************
+
+
+//*************************************************************************************************
+/*!\brief Division assignment operator for the division of a dense vector (\f$ \vec{a}/=\vec{b} \f$).
 //
 // \param rhs The right-hand side dense vector divisor.
 // \return Reference to the compressed vector.
@@ -997,7 +1035,14 @@ inline CompressedVector<Type,TF>& CompressedVector<Type,TF>::operator/=( const D
       BLAZE_THROW_INVALID_ARGUMENT( "Vector sizes do not match" );
    }
 
-   divAssign( *this, ~rhs );
+   if( (~rhs).canAlias( this ) ) {
+      CompressedVector tmp( *this / (~rhs) );
+      swap( tmp );
+   }
+   else {
+      CompositeType_<VT> tmp( ~rhs );
+      divAssign( *this, tmp );
+   }
 
    return *this;
 }
@@ -1826,7 +1871,7 @@ inline void CompressedVector<Type,TF>::addAssign( const SparseVector<VT,TF>& rhs
 {
    BLAZE_INTERNAL_ASSERT( size_ == (~rhs).size(), "Invalid vector sizes" );
 
-   CompressedVector<Type,TF> tmp( serial( *this + (~rhs) ) );
+   CompressedVector tmp( serial( *this + (~rhs) ) );
    swap( tmp );
 }
 //*************************************************************************************************
@@ -1881,7 +1926,7 @@ inline void CompressedVector<Type,TF>::subAssign( const SparseVector<VT,TF>& rhs
 {
    BLAZE_INTERNAL_ASSERT( size_ == (~rhs).size(), "Invalid vector sizes" );
 
-   CompressedVector<Type,TF> tmp( serial( *this - (~rhs) ) );
+   CompressedVector tmp( serial( *this - (~rhs) ) );
    swap( tmp );
 }
 //*************************************************************************************************
@@ -1905,35 +1950,11 @@ inline void CompressedVector<Type,TF>::multAssign( const DenseVector<VT,TF>& rhs
 {
    BLAZE_INTERNAL_ASSERT( size_ == (~rhs).size(), "Invalid vector sizes" );
 
-   CompositeType_<VT> tmp( ~rhs );
+   BLAZE_CONSTRAINT_MUST_NOT_REQUIRE_EVALUATION( VT );
 
    for( Iterator element=begin_; element!=end_; ++element ) {
-      element->value_ *= tmp[element->index_];
+      element->value_ *= (~rhs)[element->index_];
    }
-}
-//*************************************************************************************************
-
-
-//*************************************************************************************************
-/*!\brief Default implementation of the multiplication assignment of a sparse vector.
-//
-// \param rhs The right-hand side sparse vector to be multiplied.
-// \return void
-//
-// This function must \b NOT be called explicitly! It is used internally for the performance
-// optimized evaluation of expression templates. Calling this function explicitly might result
-// in erroneous results and/or in compilation errors. Instead of using this function use the
-// assignment operator.
-*/
-template< typename Type  // Data type of the vector
-        , bool TF >      // Transpose flag
-template< typename VT >  // Type of the right-hand side sparse vector
-inline void CompressedVector<Type,TF>::multAssign( const SparseVector<VT,TF>& rhs )
-{
-   BLAZE_INTERNAL_ASSERT( size_ == (~rhs).size(), "Invalid vector sizes" );
-
-   CompressedVector<Type,TF> tmp( serial( *this * (~rhs) ) );
-   swap( tmp );
 }
 //*************************************************************************************************
 
@@ -1956,10 +1977,10 @@ inline void CompressedVector<Type,TF>::divAssign( const DenseVector<VT,TF>& rhs 
 {
    BLAZE_INTERNAL_ASSERT( size_ == (~rhs).size(), "Invalid vector sizes" );
 
-   CompositeType_<VT> tmp( ~rhs );
+   BLAZE_CONSTRAINT_MUST_NOT_REQUIRE_EVALUATION( VT );
 
    for( Iterator element=begin_; element!=end_; ++element ) {
-      element->value_ /= tmp[element->index_];
+      element->value_ /= (~rhs)[element->index_];
    }
 }
 //*************************************************************************************************
