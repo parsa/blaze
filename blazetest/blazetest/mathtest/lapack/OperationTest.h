@@ -5957,7 +5957,7 @@ void OperationTest::testGeqrf()
       blaze::StaticMatrix<Type,2UL,5UL,blaze::rowMajor> A;
       randomize( A );
 
-      blaze::StaticMatrix<Type,5UL,2UL,blaze::columnMajor> B( trans( A ) );
+      blaze::StaticMatrix<Type,2UL,5UL,blaze::columnMajor> B( A );
 
       blaze::StaticVector<Type,2UL,blaze::rowVector> tauA;
       blaze::StaticVector<Type,2UL,blaze::rowVector> tauB;
@@ -5965,7 +5965,7 @@ void OperationTest::testGeqrf()
       blaze::geqrf( A, tauA.data() );
       blaze::geqrf( B, tauB.data() );
 
-      if( A != trans( B ) || tauA != tauB ) {
+      if( A != B || tauA != conj( tauB ) ) {
          std::ostringstream oss;
          oss << " Test: " << test_ << "\n"
              << " Error: QR decomposition failed\n"
@@ -5984,7 +5984,7 @@ void OperationTest::testGeqrf()
       blaze::StaticMatrix<Type,5UL,2UL,blaze::rowMajor> A;
       randomize( A );
 
-      blaze::StaticMatrix<Type,2UL,5UL,blaze::columnMajor> B( trans( A ) );
+      blaze::StaticMatrix<Type,5UL,2UL,blaze::columnMajor> B( A );
 
       blaze::StaticVector<Type,2UL,blaze::rowVector> tauA;
       blaze::StaticVector<Type,2UL,blaze::rowVector> tauB;
@@ -5992,7 +5992,7 @@ void OperationTest::testGeqrf()
       blaze::geqrf( A, tauA.data() );
       blaze::geqrf( B, tauB.data() );
 
-      if( A != trans( B ) || tauA != tauB ) {
+      if( A != B || tauA != conj( tauB ) ) {
          std::ostringstream oss;
          oss << " Test: " << test_ << "\n"
              << " Error: QR decomposition failed\n"
@@ -6032,7 +6032,7 @@ void OperationTest::testOrgqr()
       blaze::StaticMatrix<Type,2UL,5UL,blaze::rowMajor> A;
       randomize( A );
 
-      blaze::StaticMatrix<Type,5UL,2UL,blaze::columnMajor> B( trans( A ) );
+      blaze::StaticMatrix<Type,2UL,5UL,blaze::columnMajor> B( A );
 
       blaze::StaticVector<Type,2UL,blaze::rowVector> tauA;
       blaze::StaticVector<Type,2UL,blaze::rowVector> tauB;
@@ -6043,7 +6043,7 @@ void OperationTest::testOrgqr()
       blaze::orgqr( A, tauA.data() );
       blaze::orgqr( B, tauB.data() );
 
-      if( A != trans( B ) ) {
+      if( A != B ) {
          std::ostringstream oss;
          oss << " Test: " << test_ << "\n"
              << " Error: Q reconstruction failed\n"
@@ -6060,7 +6060,7 @@ void OperationTest::testOrgqr()
       blaze::StaticMatrix<Type,5UL,2UL,blaze::rowMajor> A;
       randomize( A );
 
-      blaze::StaticMatrix<Type,2UL,5UL,blaze::columnMajor> B( trans( A ) );
+      blaze::StaticMatrix<Type,5UL,2UL,blaze::columnMajor> B( A );
 
       blaze::StaticVector<Type,2UL,blaze::rowVector> tauA;
       blaze::StaticVector<Type,2UL,blaze::rowVector> tauB;
@@ -6071,7 +6071,7 @@ void OperationTest::testOrgqr()
       blaze::orgqr( A, tauA.data() );
       blaze::orgqr( B, tauB.data() );
 
-      if( A != trans( B ) ) {
+      if( A != B ) {
          std::ostringstream oss;
          oss << " Test: " << test_ << "\n"
              << " Error: Q reconstruction failed\n"
@@ -6109,7 +6109,7 @@ void OperationTest::testUngqr()
       blaze::StaticMatrix<Type,2UL,5UL,blaze::rowMajor> A;
       randomize( A );
 
-      blaze::StaticMatrix<Type,5UL,2UL,blaze::columnMajor> B( trans( A ) );
+      blaze::StaticMatrix<Type,2UL,5UL,blaze::columnMajor> B( A );
 
       blaze::StaticVector<Type,2UL,blaze::rowVector> tauA;
       blaze::StaticVector<Type,2UL,blaze::rowVector> tauB;
@@ -6120,7 +6120,7 @@ void OperationTest::testUngqr()
       blaze::ungqr( A, tauA.data() );
       blaze::ungqr( B, tauB.data() );
 
-      if( A != trans( B ) ) {
+      if( A != B ) {
          std::ostringstream oss;
          oss << " Test: " << test_ << "\n"
              << " Error: Q reconstruction failed\n"
@@ -6137,7 +6137,7 @@ void OperationTest::testUngqr()
       blaze::StaticMatrix<Type,5UL,2UL,blaze::rowMajor> A;
       randomize( A );
 
-      blaze::StaticMatrix<Type,2UL,5UL,blaze::columnMajor> B( trans( A ) );
+      blaze::StaticMatrix<Type,5UL,2UL,blaze::columnMajor> B( A );
 
       blaze::StaticVector<Type,2UL,blaze::rowVector> tauA;
       blaze::StaticVector<Type,2UL,blaze::rowVector> tauB;
@@ -6148,7 +6148,7 @@ void OperationTest::testUngqr()
       blaze::ungqr( A, tauA.data() );
       blaze::ungqr( B, tauB.data() );
 
-      if( A != trans( B ) ) {
+      if( A != B ) {
          std::ostringstream oss;
          oss << " Test: " << test_ << "\n"
              << " Error: Q reconstruction failed\n"
@@ -6186,7 +6186,7 @@ void OperationTest::testGerqf()
       blaze::StaticMatrix<Type,2UL,5UL,blaze::rowMajor> A;
       randomize( A );
 
-      blaze::StaticMatrix<Type,5UL,2UL,blaze::columnMajor> B( trans( A ) );
+      blaze::StaticMatrix<Type,2UL,5UL,blaze::columnMajor> B( A );
 
       blaze::StaticVector<Type,2UL,blaze::rowVector> tauA;
       blaze::StaticVector<Type,2UL,blaze::rowVector> tauB;
@@ -6194,7 +6194,7 @@ void OperationTest::testGerqf()
       blaze::gerqf( A, tauA.data() );
       blaze::gerqf( B, tauB.data() );
 
-      if( A != trans( B ) || tauA != tauB ) {
+      if( A != B || tauA != conj( tauB ) ) {
          std::ostringstream oss;
          oss << " Test: " << test_ << "\n"
              << " Error: RQ decomposition failed\n"
@@ -6213,7 +6213,7 @@ void OperationTest::testGerqf()
       blaze::StaticMatrix<Type,5UL,2UL,blaze::rowMajor> A;
       randomize( A );
 
-      blaze::StaticMatrix<Type,2UL,5UL,blaze::columnMajor> B( trans( A ) );
+      blaze::StaticMatrix<Type,5UL,2UL,blaze::columnMajor> B( A );
 
       blaze::StaticVector<Type,2UL,blaze::rowVector> tauA;
       blaze::StaticVector<Type,2UL,blaze::rowVector> tauB;
@@ -6221,7 +6221,7 @@ void OperationTest::testGerqf()
       blaze::gerqf( A, tauA.data() );
       blaze::gerqf( B, tauB.data() );
 
-      if( A != trans( B ) || tauA != tauB ) {
+      if( A != B || tauA != conj( tauB ) ) {
          std::ostringstream oss;
          oss << " Test: " << test_ << "\n"
              << " Error: RQ decomposition failed\n"
@@ -6261,7 +6261,7 @@ void OperationTest::testOrgrq()
       blaze::StaticMatrix<Type,2UL,5UL,blaze::rowMajor> A;
       randomize( A );
 
-      blaze::StaticMatrix<Type,5UL,2UL,blaze::columnMajor> B( trans( A ) );
+      blaze::StaticMatrix<Type,2UL,5UL,blaze::columnMajor> B( A );
 
       blaze::StaticVector<Type,2UL,blaze::rowVector> tauA;
       blaze::StaticVector<Type,2UL,blaze::rowVector> tauB;
@@ -6272,7 +6272,7 @@ void OperationTest::testOrgrq()
       blaze::orgrq( A, tauA.data() );
       blaze::orgrq( B, tauB.data() );
 
-      if( A != trans( B ) ) {
+      if( A != B ) {
          std::ostringstream oss;
          oss << " Test: " << test_ << "\n"
              << " Error: Q reconstruction failed\n"
@@ -6289,7 +6289,7 @@ void OperationTest::testOrgrq()
       blaze::StaticMatrix<Type,5UL,2UL,blaze::rowMajor> A;
       randomize( A );
 
-      blaze::StaticMatrix<Type,2UL,5UL,blaze::columnMajor> B( trans( A ) );
+      blaze::StaticMatrix<Type,5UL,2UL,blaze::columnMajor> B( A );
 
       blaze::StaticVector<Type,2UL,blaze::rowVector> tauA;
       blaze::StaticVector<Type,2UL,blaze::rowVector> tauB;
@@ -6300,7 +6300,7 @@ void OperationTest::testOrgrq()
       blaze::orgrq( A, tauA.data() );
       blaze::orgrq( B, tauB.data() );
 
-      if( A != trans( B ) ) {
+      if( A != B ) {
          std::ostringstream oss;
          oss << " Test: " << test_ << "\n"
              << " Error: Q reconstruction failed\n"
@@ -6338,7 +6338,7 @@ void OperationTest::testUngrq()
       blaze::StaticMatrix<Type,2UL,5UL,blaze::rowMajor> A;
       randomize( A );
 
-      blaze::StaticMatrix<Type,5UL,2UL,blaze::columnMajor> B( trans( A ) );
+      blaze::StaticMatrix<Type,2UL,5UL,blaze::columnMajor> B( A );
 
       blaze::StaticVector<Type,2UL,blaze::rowVector> tauA;
       blaze::StaticVector<Type,2UL,blaze::rowVector> tauB;
@@ -6349,7 +6349,7 @@ void OperationTest::testUngrq()
       blaze::ungrq( A, tauA.data() );
       blaze::ungrq( B, tauB.data() );
 
-      if( A != trans( B ) ) {
+      if( A != B ) {
          std::ostringstream oss;
          oss << " Test: " << test_ << "\n"
              << " Error: Q reconstruction failed\n"
@@ -6366,7 +6366,7 @@ void OperationTest::testUngrq()
       blaze::StaticMatrix<Type,5UL,2UL,blaze::rowMajor> A;
       randomize( A );
 
-      blaze::StaticMatrix<Type,2UL,5UL,blaze::columnMajor> B( trans( A ) );
+      blaze::StaticMatrix<Type,5UL,2UL,blaze::columnMajor> B( A );
 
       blaze::StaticVector<Type,2UL,blaze::rowVector> tauA;
       blaze::StaticVector<Type,2UL,blaze::rowVector> tauB;
@@ -6377,7 +6377,7 @@ void OperationTest::testUngrq()
       blaze::ungrq( A, tauA.data() );
       blaze::ungrq( B, tauB.data() );
 
-      if( A != trans( B ) ) {
+      if( A != B ) {
          std::ostringstream oss;
          oss << " Test: " << test_ << "\n"
              << " Error: Q reconstruction failed\n"
@@ -6415,7 +6415,7 @@ void OperationTest::testGeqlf()
       blaze::StaticMatrix<Type,2UL,5UL,blaze::rowMajor> A;
       randomize( A );
 
-      blaze::StaticMatrix<Type,5UL,2UL,blaze::columnMajor> B( trans( A ) );
+      blaze::StaticMatrix<Type,2UL,5UL,blaze::columnMajor> B( A );
 
       blaze::StaticVector<Type,2UL,blaze::rowVector> tauA;
       blaze::StaticVector<Type,2UL,blaze::rowVector> tauB;
@@ -6423,7 +6423,7 @@ void OperationTest::testGeqlf()
       blaze::geqlf( A, tauA.data() );
       blaze::geqlf( B, tauB.data() );
 
-      if( A != trans( B ) || tauA != tauB ) {
+      if( A != B || tauA != conj( tauB ) ) {
          std::ostringstream oss;
          oss << " Test: " << test_ << "\n"
              << " Error: QL decomposition failed\n"
@@ -6442,7 +6442,7 @@ void OperationTest::testGeqlf()
       blaze::StaticMatrix<Type,5UL,2UL,blaze::rowMajor> A;
       randomize( A );
 
-      blaze::StaticMatrix<Type,2UL,5UL,blaze::columnMajor> B( trans( A ) );
+      blaze::StaticMatrix<Type,5UL,2UL,blaze::columnMajor> B( A );
 
       blaze::StaticVector<Type,2UL,blaze::rowVector> tauA;
       blaze::StaticVector<Type,2UL,blaze::rowVector> tauB;
@@ -6450,7 +6450,7 @@ void OperationTest::testGeqlf()
       blaze::geqlf( A, tauA.data() );
       blaze::geqlf( B, tauB.data() );
 
-      if( A != trans( B ) || tauA != tauB ) {
+      if( A != B || tauA != conj( tauB ) ) {
          std::ostringstream oss;
          oss << " Test: " << test_ << "\n"
              << " Error: QL decomposition failed\n"
@@ -6490,7 +6490,7 @@ void OperationTest::testOrgql()
       blaze::StaticMatrix<Type,2UL,5UL,blaze::rowMajor> A;
       randomize( A );
 
-      blaze::StaticMatrix<Type,5UL,2UL,blaze::columnMajor> B( trans( A ) );
+      blaze::StaticMatrix<Type,2UL,5UL,blaze::columnMajor> B( A );
 
       blaze::StaticVector<Type,2UL,blaze::rowVector> tauA;
       blaze::StaticVector<Type,2UL,blaze::rowVector> tauB;
@@ -6501,7 +6501,7 @@ void OperationTest::testOrgql()
       blaze::orgql( A, tauA.data() );
       blaze::orgql( B, tauB.data() );
 
-      if( A != trans( B ) ) {
+      if( A != B ) {
          std::ostringstream oss;
          oss << " Test: " << test_ << "\n"
              << " Error: Q reconstruction failed\n"
@@ -6518,7 +6518,7 @@ void OperationTest::testOrgql()
       blaze::StaticMatrix<Type,5UL,2UL,blaze::rowMajor> A;
       randomize( A );
 
-      blaze::StaticMatrix<Type,2UL,5UL,blaze::columnMajor> B( trans( A ) );
+      blaze::StaticMatrix<Type,5UL,2UL,blaze::columnMajor> B( A );
 
       blaze::StaticVector<Type,2UL,blaze::rowVector> tauA;
       blaze::StaticVector<Type,2UL,blaze::rowVector> tauB;
@@ -6529,7 +6529,7 @@ void OperationTest::testOrgql()
       blaze::orgql( A, tauA.data() );
       blaze::orgql( B, tauB.data() );
 
-      if( A != trans( B ) ) {
+      if( A != B ) {
          std::ostringstream oss;
          oss << " Test: " << test_ << "\n"
              << " Error: Q reconstruction failed\n"
@@ -6567,7 +6567,7 @@ void OperationTest::testUngql()
       blaze::StaticMatrix<Type,2UL,5UL,blaze::rowMajor> A;
       randomize( A );
 
-      blaze::StaticMatrix<Type,5UL,2UL,blaze::columnMajor> B( trans( A ) );
+      blaze::StaticMatrix<Type,2UL,5UL,blaze::columnMajor> B( A );
 
       blaze::StaticVector<Type,2UL,blaze::rowVector> tauA;
       blaze::StaticVector<Type,2UL,blaze::rowVector> tauB;
@@ -6578,7 +6578,7 @@ void OperationTest::testUngql()
       blaze::ungql( A, tauA.data() );
       blaze::ungql( B, tauB.data() );
 
-      if( A != trans( B ) ) {
+      if( A != B ) {
          std::ostringstream oss;
          oss << " Test: " << test_ << "\n"
              << " Error: Q reconstruction failed\n"
@@ -6595,7 +6595,7 @@ void OperationTest::testUngql()
       blaze::StaticMatrix<Type,5UL,2UL,blaze::rowMajor> A;
       randomize( A );
 
-      blaze::StaticMatrix<Type,2UL,5UL,blaze::columnMajor> B( trans( A ) );
+      blaze::StaticMatrix<Type,5UL,2UL,blaze::columnMajor> B( A );
 
       blaze::StaticVector<Type,2UL,blaze::rowVector> tauA;
       blaze::StaticVector<Type,2UL,blaze::rowVector> tauB;
@@ -6606,7 +6606,7 @@ void OperationTest::testUngql()
       blaze::ungql( A, tauA.data() );
       blaze::ungql( B, tauB.data() );
 
-      if( A != trans( B ) ) {
+      if( A != B ) {
          std::ostringstream oss;
          oss << " Test: " << test_ << "\n"
              << " Error: Q reconstruction failed\n"
@@ -6644,7 +6644,7 @@ void OperationTest::testGelqf()
       blaze::StaticMatrix<Type,2UL,5UL,blaze::rowMajor> A;
       randomize( A );
 
-      blaze::StaticMatrix<Type,5UL,2UL,blaze::columnMajor> B( trans( A ) );
+      blaze::StaticMatrix<Type,2UL,5UL,blaze::columnMajor> B( A );
 
       blaze::StaticVector<Type,2UL,blaze::rowVector> tauA;
       blaze::StaticVector<Type,2UL,blaze::rowVector> tauB;
@@ -6652,7 +6652,7 @@ void OperationTest::testGelqf()
       blaze::gelqf( A, tauA.data() );
       blaze::gelqf( B, tauB.data() );
 
-      if( A != trans( B ) || tauA != tauB ) {
+      if( A != B || tauA != conj( tauB ) ) {
          std::ostringstream oss;
          oss << " Test: " << test_ << "\n"
              << " Error: LQ decomposition failed\n"
@@ -6671,7 +6671,7 @@ void OperationTest::testGelqf()
       blaze::StaticMatrix<Type,5UL,2UL,blaze::rowMajor> A;
       randomize( A );
 
-      blaze::StaticMatrix<Type,2UL,5UL,blaze::columnMajor> B( trans( A ) );
+      blaze::StaticMatrix<Type,5UL,2UL,blaze::columnMajor> B( A );
 
       blaze::StaticVector<Type,2UL,blaze::rowVector> tauA;
       blaze::StaticVector<Type,2UL,blaze::rowVector> tauB;
@@ -6679,7 +6679,7 @@ void OperationTest::testGelqf()
       blaze::gelqf( A, tauA.data() );
       blaze::gelqf( B, tauB.data() );
 
-      if( A != trans( B ) || tauA != tauB ) {
+      if( A != B || tauA != conj( tauB ) ) {
          std::ostringstream oss;
          oss << " Test: " << test_ << "\n"
              << " Error: LQ decomposition failed\n"
@@ -6719,7 +6719,7 @@ void OperationTest::testOrglq()
       blaze::StaticMatrix<Type,2UL,5UL,blaze::rowMajor> A;
       randomize( A );
 
-      blaze::StaticMatrix<Type,5UL,2UL,blaze::columnMajor> B( trans( A ) );
+      blaze::StaticMatrix<Type,2UL,5UL,blaze::columnMajor> B( A );
 
       blaze::StaticVector<Type,2UL,blaze::rowVector> tauA;
       blaze::StaticVector<Type,2UL,blaze::rowVector> tauB;
@@ -6730,7 +6730,7 @@ void OperationTest::testOrglq()
       blaze::orglq( A, tauA.data() );
       blaze::orglq( B, tauB.data() );
 
-      if( A != trans( B ) ) {
+      if( A != B ) {
          std::ostringstream oss;
          oss << " Test: " << test_ << "\n"
              << " Error: Q reconstruction failed\n"
@@ -6747,7 +6747,7 @@ void OperationTest::testOrglq()
       blaze::StaticMatrix<Type,5UL,2UL,blaze::rowMajor> A;
       randomize( A );
 
-      blaze::StaticMatrix<Type,2UL,5UL,blaze::columnMajor> B( trans( A ) );
+      blaze::StaticMatrix<Type,5UL,2UL,blaze::columnMajor> B( A );
 
       blaze::StaticVector<Type,2UL,blaze::rowVector> tauA;
       blaze::StaticVector<Type,2UL,blaze::rowVector> tauB;
@@ -6758,7 +6758,7 @@ void OperationTest::testOrglq()
       blaze::orglq( A, tauA.data() );
       blaze::orglq( B, tauB.data() );
 
-      if( A != trans( B ) ) {
+      if( A != B ) {
          std::ostringstream oss;
          oss << " Test: " << test_ << "\n"
              << " Error: Q reconstruction failed\n"
@@ -6796,7 +6796,7 @@ void OperationTest::testUnglq()
       blaze::StaticMatrix<Type,2UL,5UL,blaze::rowMajor> A;
       randomize( A );
 
-      blaze::StaticMatrix<Type,5UL,2UL,blaze::columnMajor> B( trans( A ) );
+      blaze::StaticMatrix<Type,2UL,5UL,blaze::columnMajor> B( A );
 
       blaze::StaticVector<Type,2UL,blaze::rowVector> tauA;
       blaze::StaticVector<Type,2UL,blaze::rowVector> tauB;
@@ -6807,7 +6807,7 @@ void OperationTest::testUnglq()
       blaze::unglq( A, tauA.data() );
       blaze::unglq( B, tauB.data() );
 
-      if( A != trans( B ) ) {
+      if( A != B ) {
          std::ostringstream oss;
          oss << " Test: " << test_ << "\n"
              << " Error: Q reconstruction failed\n"
@@ -6824,7 +6824,7 @@ void OperationTest::testUnglq()
       blaze::StaticMatrix<Type,5UL,2UL,blaze::rowMajor> A;
       randomize( A );
 
-      blaze::StaticMatrix<Type,2UL,5UL,blaze::columnMajor> B( trans( A ) );
+      blaze::StaticMatrix<Type,5UL,2UL,blaze::columnMajor> B( A );
 
       blaze::StaticVector<Type,2UL,blaze::rowVector> tauA;
       blaze::StaticVector<Type,2UL,blaze::rowVector> tauB;
@@ -6835,7 +6835,7 @@ void OperationTest::testUnglq()
       blaze::unglq( A, tauA.data() );
       blaze::unglq( B, tauB.data() );
 
-      if( A != trans( B ) ) {
+      if( A != B ) {
          std::ostringstream oss;
          oss << " Test: " << test_ << "\n"
              << " Error: Q reconstruction failed\n"

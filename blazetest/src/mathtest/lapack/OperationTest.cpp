@@ -88,6 +88,10 @@ OperationTest::OperationTest()
    //testOrgqr< float >();
    //testGerqf< float >();
    //testOrgrq< float >();
+   //testGeqlf< float >();
+   //testOrgql< float >();
+   //testGelqf< float >();
+   //testOrglq< float >();
 
 
    //=====================================================================================
@@ -146,6 +150,10 @@ OperationTest::OperationTest()
    //testUngqr< complex<float> >();
    //testGerqf< complex<float> >();
    //testUngrq< complex<float> >();
+   //testGeqlf< complex<float> >();
+   //testUngql< complex<float> >();
+   //testGelqf< complex<float> >();
+   //testUnglq< complex<float> >();
 
 
    //=====================================================================================
