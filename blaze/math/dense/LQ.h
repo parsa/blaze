@@ -45,8 +45,6 @@
 #include <blaze/math/constraints/Adaptor.h>
 #include <blaze/math/constraints/BlasCompatible.h>
 #include <blaze/math/constraints/Hermitian.h>
-#include <blaze/math/constraints/Lower.h>
-#include <blaze/math/constraints/StorageOrder.h>
 #include <blaze/math/constraints/StrictlyTriangular.h>
 #include <blaze/math/constraints/Symmetric.h>
 #include <blaze/math/constraints/UniTriangular.h>
@@ -58,15 +56,11 @@
 #include <blaze/math/lapack/unglq.h>
 #include <blaze/math/traits/DerestrictTrait.h>
 #include <blaze/math/typetraits/IsResizable.h>
-#include <blaze/math/typetraits/IsRowMajorMatrix.h>
 #include <blaze/math/typetraits/IsSquare.h>
-#include <blaze/math/typetraits/RemoveAdaptor.h>
 #include <blaze/math/views/DenseSubmatrix.h>
 #include <blaze/math/views/Submatrix.h>
-#include <blaze/util/constraints/SameType.h>
 #include <blaze/util/EnableIf.h>
 #include <blaze/util/Exception.h>
-#include <blaze/util/mpl/If.h>
 
 
 namespace blaze {
@@ -102,8 +96,6 @@ template< typename MT1 >  // Type of matrix A
 inline EnableIf_<IsBuiltin< ElementType_<MT1> > >
    lq_backend( MT1& A, const ElementType_<MT1>* tau )
 {
-   BLAZE_CONSTRAINT_MUST_BE_COLUMN_MAJOR_MATRIX_TYPE( MT1 );
-
    orglq( A, tau );
 }
 /*! \endcond */
@@ -126,8 +118,6 @@ template< typename MT1 >  // Type of matrix A
 inline EnableIf_<IsComplex< ElementType_<MT1> > >
    lq_backend( MT1& A, const ElementType_<MT1>* tau )
 {
-   BLAZE_CONSTRAINT_MUST_BE_COLUMN_MAJOR_MATRIX_TYPE( MT1 );
-
    unglq( A, tau );
 }
 /*! \endcond */
@@ -196,18 +186,13 @@ void lq( const DenseMatrix<MT1,SO1>& A, DenseMatrix<MT2,SO2>& L, DenseMatrix<MT3
    BLAZE_CONSTRAINT_MUST_NOT_BE_SYMMETRIC_MATRIX_TYPE( MT2 );
    BLAZE_CONSTRAINT_MUST_NOT_BE_HERMITIAN_MATRIX_TYPE( MT2 );
    BLAZE_CONSTRAINT_MUST_NOT_BE_UNITRIANGULAR_MATRIX_TYPE( MT2 );
-   BLAZE_CONSTRAINT_MUST_NOT_BE_LOWER_MATRIX_TYPE( MT2 );
+   BLAZE_CONSTRAINT_MUST_NOT_BE_UPPER_MATRIX_TYPE( MT2 );
    BLAZE_CONSTRAINT_MUST_BE_BLAS_COMPATIBLE_TYPE( ElementType_<MT2> );
 
    BLAZE_CONSTRAINT_MUST_NOT_BE_ADAPTOR_TYPE( MT3 );
    BLAZE_CONSTRAINT_MUST_BE_BLAS_COMPATIBLE_TYPE( ElementType_<MT3> );
 
-   typedef RemoveAdaptor_<MT1>  UMT1;
-   typedef If_< IsRowMajorMatrix<UMT1>, OppositeType_<UMT1>, UMT1 >  Tmp;
    typedef ElementType_<MT1>  ET1;
-
-   BLAZE_CONSTRAINT_MUST_BE_COLUMN_MAJOR_MATRIX_TYPE( Tmp );
-   BLAZE_CONSTRAINT_MUST_BE_SAME_TYPE( ET1, ElementType_<Tmp> );
 
    const size_t m( (~A).rows() );
    const size_t n( (~A).columns() );
@@ -222,24 +207,38 @@ void lq( const DenseMatrix<MT1,SO1>& A, DenseMatrix<MT2,SO2>& L, DenseMatrix<MT3
       BLAZE_THROW_INVALID_ARGUMENT( "Square matrix cannot be resized to m-by-min(m,n)" );
    }
 
-   Tmp tmp( ~A );
    const std::unique_ptr<ET1[]> tau( new ET1[mindim] );
-
-   gelqf( tmp, tau.get() );
-
    DerestrictTrait_<MT3> l( derestrict( ~L ) );
-   resize( ~L, m, mindim );
-   reset( l );
 
-   for( size_t i=0UL; i<m; ++i ) {
-      for( size_t j=0UL; j<min(i+1UL,n); ++j ) {
-         l(i,j) = tmp(i,j);
+   if( m < n )
+   {
+      (~Q) = A;
+      gelqf( ~Q, tau.get() );
+
+      resize( ~L, m, m );
+      reset( l );
+
+      for( size_t i=0UL; i<m; ++i ) {
+         for( size_t j=0UL; j<min(i+1UL,n); ++j ) {
+            l(i,j) = (~Q)(i,j);
+         }
+      }
+
+      lq_backend( ~Q, tau.get() );
+   }
+   else
+   {
+      l = A;
+      gelqf( l, tau.get() );
+      (~Q) = submatrix( l, 0UL, 0UL, n, n );
+      lq_backend( ~Q, tau.get() );
+
+      for( size_t i=0UL; i<m; ++i ) {
+         for( size_t j=i+1UL; j<n; ++j ) {
+            reset( l(i,j) );
+         }
       }
    }
-
-   lq_backend( tmp, tau.get() );
-
-   (~Q) = submatrix( tmp, 0UL, 0UL, min( m, n ), n );
 }
 //*************************************************************************************************
 
