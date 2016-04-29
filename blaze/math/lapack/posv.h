@@ -48,36 +48,13 @@
 #include <blaze/math/constraints/MutableDataAccess.h>
 #include <blaze/math/expressions/DenseMatrix.h>
 #include <blaze/math/expressions/DenseVector.h>
+#include <blaze/math/lapack/clapack/posv.h>
 #include <blaze/util/Assert.h>
-#include <blaze/util/Complex.h>
 #include <blaze/util/constraints/SameType.h>
 #include <blaze/util/Exception.h>
-#include <blaze/util/StaticAssert.h>
 
 
 namespace blaze {
-
-//=================================================================================================
-//
-//  LAPACK FORWARD DECLARATIONS
-//
-//=================================================================================================
-
-//*************************************************************************************************
-/*! \cond BLAZE_INTERNAL */
-extern "C" {
-
-void sposv_( char* uplo, int* n, int* nrhs, float*  A, int* lda, float*  b, int* ldb, int* info );
-void dposv_( char* uplo, int* n, int* nrhs, double* A, int* lda, double* b, int* ldb, int* info );
-void cposv_( char* uplo, int* n, int* nrhs, float*  A, int* lda, float*  b, int* ldb, int* info );
-void zposv_( char* uplo, int* n, int* nrhs, double* A, int* lda, double* b, int* ldb, int* info );
-
-}
-/*! \endcond */
-//*************************************************************************************************
-
-
-
 
 //=================================================================================================
 //
@@ -88,230 +65,12 @@ void zposv_( char* uplo, int* n, int* nrhs, double* A, int* lda, double* b, int*
 //*************************************************************************************************
 /*!\name LAPACK positive definite linear system functions (posv) */
 //@{
-inline void posv( char uplo, int n, int nrhs, float* A, int lda, float* B, int ldb, int* info );
-
-inline void posv( char uplo, int n, int nrhs, double* A, int lda, double* B, int ldb, int* info );
-
-inline void posv( char uplo, int n, int nrhs, complex<float>* A, int lda, complex<float>* B, int ldb, int* info );
-
-inline void posv( char uplo, int n, int nrhs, complex<double>* A, int lda, complex<double>* B, int ldb, int* info );
-
 template< typename MT, bool SO, typename VT, bool TF >
 inline void posv( DenseMatrix<MT,SO>& A, DenseVector<VT,TF>& b, char uplo );
 
 template< typename MT1, bool SO1, typename MT2, bool SO2 >
 inline void posv( DenseMatrix<MT1,SO1>& A, DenseMatrix<MT2,SO2>& B, char uplo );
 //@}
-//*************************************************************************************************
-
-
-//*************************************************************************************************
-/*!\brief LAPACK kernel for solving a positive definite single precision linear system of equations
-//        (\f$ A*X=B \f$).
-// \ingroup lapack_solver
-//
-// \param uplo \c 'L' to use the lower part of the matrix, \c 'U' to use the upper part.
-// \param n The number of rows/columns of matrix \a A \f$[0..\infty)\f$.
-// \param nrhs The number of right-hand side vectors \f$[0..\infty)\f$.
-// \param A Pointer to the first element of the single precision column-major square matrix.
-// \param lda The total number of elements between two columns of matrix \a A \f$[0..\infty)\f$.
-// \param B Pointer to the first element of the column-major matrix.
-// \param ldb The total number of elements between two columns of matrix \a B \f$[0..\infty)\f$.
-// \param info Return code of the function call.
-// \return void
-//
-// This function uses the LAPACK sposv() function to compute the solution to the positive definite
-// system of linear equations \f$ A*X=B \f$, where \a A is a n-by-n positive definite matrix and
-// \a X and \a B are n-by-nrhs matrices.
-//
-// The Cholesky decomposition is used to factor \a A as
-
-                      \f[ A = U^{T} U \texttt{ (if uplo = 'U'), or }
-                          A = L L^{T} \texttt{ (if uplo = 'L'), } \f]
-
-// where \c U is an upper triangular matrix and \c L is a lower triangular matrix. The resulting
-// decomposition is stored within \a A: In case \a uplo is set to \c 'L' the result is stored in
-// the lower part of the matrix and the upper part remains untouched, in case \a uplo is set to
-// \c 'U' the result is stored in the upper part and the lower part remains untouched. The factored
-// form of \a A is then used to solve the system of equations.
-//
-// The \a info argument provides feedback on the success of the function call:
-//
-//   - = 0: The function finished successfully.
-//   - < 0: If info = -i, the i-th argument had an illegal value.
-//   - > 0: If info = i, the leading minor of order i is not positive definite, so the decomposition
-//          could not be completed and the solution has not been computed.
-//
-// For more information on the sposv() function, see the LAPACK online documentation browser:
-//
-//        http://www.netlib.org/lapack/explore-html/
-//
-// \note This function can only be used if the fitting LAPACK library is available and linked to
-// the executable. Otherwise a call to this function will result in a linker error.
-*/
-inline void posv( char uplo, int n, int nrhs, float* A, int lda, float* B, int ldb, int* info )
-{
-   sposv_( &uplo, &n, &nrhs, A, &lda, B, &ldb, info );
-}
-//*************************************************************************************************
-
-
-//*************************************************************************************************
-/*!\brief LAPACK kernel for solving a positive definite double precision linear system of equations
-//        (\f$ A*X=B \f$).
-// \ingroup lapack_solver
-//
-// \param uplo \c 'L' to use the lower part of the matrix, \c 'U' to use the upper part.
-// \param n The number of rows/columns of matrix \a A \f$[0..\infty)\f$.
-// \param nrhs The number of right-hand side vectors \f$[0..\infty)\f$.
-// \param A Pointer to the first element of the double precision column-major square matrix.
-// \param lda The total number of elements between two columns of matrix \a A \f$[0..\infty)\f$.
-// \param B Pointer to the first element of the column-major matrix.
-// \param ldb The total number of elements between two columns of matrix \a B \f$[0..\infty)\f$.
-// \param info Return code of the function call.
-// \return void
-//
-// This function uses the LAPACK dposv() function to compute the solution to the positive definite
-// system of linear equations \f$ A*X=B \f$, where \a A is a n-by-n positive definite matrix and
-// \a X and \a B are n-by-nrhs matrices.
-//
-// The Cholesky decomposition is used to factor \a A as
-
-                      \f[ A = U^{T} U \texttt{ (if uplo = 'U'), or }
-                          A = L L^{T} \texttt{ (if uplo = 'L'), } \f]
-
-// where \c U is an upper triangular matrix and \c L is a lower triangular matrix. The resulting
-// decomposition is stored within \a A: In case \a uplo is set to \c 'L' the result is stored in
-// the lower part of the matrix and the upper part remains untouched, in case \a uplo is set to
-// \c 'U' the result is stored in the upper part and the lower part remains untouched. The factored
-// form of \a A is then used to solve the system of equations.
-//
-// The \a info argument provides feedback on the success of the function call:
-//
-//   - = 0: The function finished successfully.
-//   - < 0: If info = -i, the i-th argument had an illegal value.
-//   - > 0: If info = i, the leading minor of order i is not positive definite, so the decomposition
-//          could not be completed and the solution has not been computed.
-//
-// For more information on the dposv() function, see the LAPACK online documentation browser:
-//
-//        http://www.netlib.org/lapack/explore-html/
-//
-// \note This function can only be used if the fitting LAPACK library is available and linked to
-// the executable. Otherwise a call to this function will result in a linker error.
-*/
-inline void posv( char uplo, int n, int nrhs, double* A, int lda, double* B, int ldb, int* info )
-{
-   dposv_( &uplo, &n, &nrhs, A, &lda, B, &ldb, info );
-}
-//*************************************************************************************************
-
-
-//*************************************************************************************************
-/*!\brief LAPACK kernel for solving a positive definite single precision complex linear system of
-//        equations (\f$ A*X=B \f$).
-// \ingroup lapack_solver
-//
-// \param uplo \c 'L' to use the lower part of the matrix, \c 'U' to use the upper part.
-// \param n The number of rows/columns of matrix \a A \f$[0..\infty)\f$.
-// \param nrhs The number of right-hand side vectors \f$[0..\infty)\f$.
-// \param A Pointer to the first element of the single precision complex column-major square matrix.
-// \param lda The total number of elements between two columns of matrix \a A \f$[0..\infty)\f$.
-// \param B Pointer to the first element of the column-major matrix.
-// \param ldb The total number of elements between two columns of matrix \a B \f$[0..\infty)\f$.
-// \param info Return code of the function call.
-// \return void
-//
-// This function uses the LAPACK cposv() function to compute the solution to the positive definite
-// system of linear equations \f$ A*X=B \f$, where \a A is a n-by-n positive definite matrix and
-// \a X and \a B are n-by-nrhs matrices.
-//
-// The Cholesky decomposition is used to factor \a A as
-
-                      \f[ A = U^{T} U \texttt{ (if uplo = 'U'), or }
-                          A = L L^{T} \texttt{ (if uplo = 'L'), } \f]
-
-// where \c U is an upper triangular matrix and \c L is a lower triangular matrix. The resulting
-// decomposition is stored within \a A: In case \a uplo is set to \c 'L' the result is stored in
-// the lower part of the matrix and the upper part remains untouched, in case \a uplo is set to
-// \c 'U' the result is stored in the upper part and the lower part remains untouched. The factored
-// form of \a A is then used to solve the system of equations.
-//
-// The \a info argument provides feedback on the success of the function call:
-//
-//   - = 0: The function finished successfully.
-//   - < 0: If info = -i, the i-th argument had an illegal value.
-//   - > 0: If info = i, the leading minor of order i is not positive definite, so the decomposition
-//          could not be completed and the solution has not been computed.
-//
-// For more information on the cposv() function, see the LAPACK online documentation browser:
-//
-//        http://www.netlib.org/lapack/explore-html/
-//
-// \note This function can only be used if the fitting LAPACK library is available and linked to
-// the executable. Otherwise a call to this function will result in a linker error.
-*/
-inline void posv( char uplo, int n, int nrhs, complex<float>* A, int lda, complex<float>* B, int ldb, int* info )
-{
-   BLAZE_STATIC_ASSERT( sizeof( complex<float> ) == 2UL*sizeof( float ) );
-
-   cposv_( &uplo, &n, &nrhs, reinterpret_cast<float*>( A ), &lda,
-           reinterpret_cast<float*>( B ), &ldb, info );
-}
-//*************************************************************************************************
-
-
-//*************************************************************************************************
-/*!\brief LAPACK kernel for solving a positive definite double precision complex linear system of
-//        equations (\f$ A*X=B \f$).
-// \ingroup lapack_solver
-//
-// \param uplo \c 'L' to use the lower part of the matrix, \c 'U' to use the upper part.
-// \param n The number of rows/columns of matrix \a A \f$[0..\infty)\f$.
-// \param nrhs The number of right-hand side vectors \f$[0..\infty)\f$.
-// \param A Pointer to the first element of the double precision complex column-major square matrix.
-// \param lda The total number of elements between two columns of matrix \a A \f$[0..\infty)\f$.
-// \param B Pointer to the first element of the column-major matrix.
-// \param ldb The total number of elements between two columns of matrix \a B \f$[0..\infty)\f$.
-// \param info Return code of the function call.
-// \return void
-//
-// This function uses the LAPACK zposv() function to compute the solution to the positive definite
-// system of linear equations \f$ A*X=B \f$, where \a A is a n-by-n positive definite matrix and
-// \a X and \a B are n-by-nrhs matrices.
-//
-// The Cholesky decomposition is used to factor \a A as
-
-                      \f[ A = U^{T} U \texttt{ (if uplo = 'U'), or }
-                          A = L L^{T} \texttt{ (if uplo = 'L'), } \f]
-
-// where \c U is an upper triangular matrix and \c L is a lower triangular matrix. The resulting
-// decomposition is stored within \a A: In case \a uplo is set to \c 'L' the result is stored in
-// the lower part of the matrix and the upper part remains untouched, in case \a uplo is set to
-// \c 'U' the result is stored in the upper part and the lower part remains untouched. The factored
-// form of \a A is then used to solve the system of equations.
-//
-// The \a info argument provides feedback on the success of the function call:
-//
-//   - = 0: The function finished successfully.
-//   - < 0: If info = -i, the i-th argument had an illegal value.
-//   - > 0: If info = i, the leading minor of order i is not positive definite, so the decomposition
-//          could not be completed and the solution has not been computed.
-//
-// For more information on the zposv() function, see the LAPACK online documentation browser:
-//
-//        http://www.netlib.org/lapack/explore-html/
-//
-// \note This function can only be used if the fitting LAPACK library is available and linked to
-// the executable. Otherwise a call to this function will result in a linker error.
-*/
-inline void posv( char uplo, int n, int nrhs, complex<double>* A, int lda, complex<double>* B, int ldb, int* info )
-{
-   BLAZE_STATIC_ASSERT( sizeof( complex<double> ) == 2UL*sizeof( double ) );
-
-   zposv_( &uplo, &n, &nrhs, reinterpret_cast<double*>( A ), &lda,
-           reinterpret_cast<double*>( B ), &ldb, info );
-}
 //*************************************************************************************************
 
 

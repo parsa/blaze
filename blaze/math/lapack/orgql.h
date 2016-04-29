@@ -48,33 +48,12 @@
 #include <blaze/math/constraints/Computation.h>
 #include <blaze/math/constraints/MutableDataAccess.h>
 #include <blaze/math/expressions/DenseMatrix.h>
+#include <blaze/math/lapack/clapack/orgql.h>
 #include <blaze/util/Assert.h>
-#include <blaze/util/Complex.h>
 #include <blaze/util/constraints/Builtin.h>
-#include <blaze/util/StaticAssert.h>
 
 
 namespace blaze {
-
-//=================================================================================================
-//
-//  LAPACK FORWARD DECLARATIONS
-//
-//=================================================================================================
-
-//*************************************************************************************************
-/*! \cond BLAZE_INTERNAL */
-extern "C" {
-
-void sorgql_( int* m, int* n, int* k, float*  A, int* lda, float*  tau, float*  work, int* lwork, int* info );
-void dorgql_( int* m, int* n, int* k, double* A, int* lda, double* tau, double* work, int* lwork, int* info );
-
-}
-/*! \endcond */
-//*************************************************************************************************
-
-
-
 
 //=================================================================================================
 //
@@ -85,89 +64,9 @@ void dorgql_( int* m, int* n, int* k, double* A, int* lda, double* tau, double* 
 //*************************************************************************************************
 /*!\name LAPACK functions to reconstruct Q from a QL decomposition (orgql) */
 //@{
-inline void orgql( int m, int n, int k, float* A, int lda, const float* tau,
-                   float* work, int lwork, int* info );
-
-inline void orgql( int m, int n, int k, double* A, int lda, const double* tau,
-                   double* work, int lwork, int* info );
-
 template< typename MT, bool SO >
 inline void orgql( DenseMatrix<MT,SO>& A, const ElementType_<MT>* tau );
 //@}
-//*************************************************************************************************
-
-
-//*************************************************************************************************
-/*!\brief LAPACK kernel for the reconstruction of the orthogonal matrix Q from a QL decomposition.
-// \ingroup lapack_decomposition
-//
-// \param m The number of rows of the given matrix \f$[0..\infty)\f$.
-// \param n The number of columns of the given matrix \f$[0..m)\f$.
-// \param k The number of elementary reflectors, whose product defines the matrix \f$[0..n)\f$.
-// \param A Pointer to the first element of the single precision column-major matrix.
-// \param lda The total number of elements between two columns of the matrix \f$[0..\infty)\f$.
-// \param tau Array for the scalar factors of the elementary reflectors; size >= min( \a m, \a n ).
-// \param work Auxiliary array; size >= max( 1, \a lwork ).
-// \param lwork The dimension of the array \a work; size >= max( 1, \a n ).
-// \param info Return code of the function call.
-// \return void
-//
-// This function generates all or part of the orthogonal matrix Q from a QL decomposition based on
-// the LAPACK sorgql() function for single precision column-major matrices that have already been
-// factorized by the sgeqlf() function. The \a info argument provides feedback on the success of
-// the function call:
-//
-//   - = 0: The decomposition finished successfully.
-//   - < 0: The i-th argument had an illegal value.
-//
-// For more information on the sorgql() function, see the LAPACK online documentation browser:
-//
-//        http://www.netlib.org/lapack/explore-html/
-//
-// \note This function can only be used if the fitting LAPACK library is available and linked to
-// the executable. Otherwise a call to this function will result in a linker error.
-*/
-inline void orgql( int m, int n, int k, float* A, int lda, const float* tau, float* work, int lwork, int* info )
-{
-   sorgql_( &m, &n, &k, A, &lda, const_cast<float*>( tau ), work, &lwork, info );
-}
-//*************************************************************************************************
-
-
-//*************************************************************************************************
-/*!\brief LAPACK kernel for the reconstruction of the orthogonal matrix Q from a QL decomposition.
-// \ingroup lapack_decomposition
-//
-// \param m The number of rows of the given matrix \f$[0..\infty)\f$.
-// \param n The number of columns of the given matrix \f$[0..m)\f$.
-// \param k The number of elementary reflectors, whose product defines the matrix \f$[0..n)\f$.
-// \param A Pointer to the first element of the double precision column-major matrix.
-// \param lda The total number of elements between two columns of the matrix \f$[0..\infty)\f$.
-// \param tau Array for the scalar factors of the elementary reflectors; size >= min( \a m, \a n ).
-// \param work Auxiliary array; size >= max( 1, \a lwork ).
-// \param lwork The dimension of the array \a work; size >= max( 1, \a n ).
-// \param info Return code of the function call.
-// \return void
-//
-// This function generates all or part of the orthogonal matrix Q from a QL decomposition based on
-// the LAPACK dorgql() function for double precision column-major matrices that have already been
-// factorized by the dgeqlf() function. The \a info argument provides feedback on the success of
-// the function call:
-//
-//   - = 0: The decomposition finished successfully.
-//   - < 0: The i-th argument had an illegal value.
-//
-// For more information on the dorgql() function, see the LAPACK online documentation browser:
-//
-//        http://www.netlib.org/lapack/explore-html/
-//
-// \note This function can only be used if the fitting LAPACK library is available and linked to
-// the executable. Otherwise a call to this function will result in a linker error.
-*/
-inline void orgql( int m, int n, int k, double* A, int lda, const double* tau, double* work, int lwork, int* info )
-{
-   dorgql_( &m, &n, &k, A, &lda, const_cast<double*>( tau ), work, &lwork, info );
-}
 //*************************************************************************************************
 
 

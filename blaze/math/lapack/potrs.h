@@ -48,37 +48,14 @@
 #include <blaze/math/constraints/MutableDataAccess.h>
 #include <blaze/math/expressions/DenseMatrix.h>
 #include <blaze/math/expressions/DenseVector.h>
+#include <blaze/math/lapack/clapack/potrs.h>
 #include <blaze/math/typetraits/IsRowMajorMatrix.h>
 #include <blaze/util/Assert.h>
-#include <blaze/util/Complex.h>
 #include <blaze/util/constraints/SameType.h>
 #include <blaze/util/Exception.h>
-#include <blaze/util/StaticAssert.h>
 
 
 namespace blaze {
-
-//=================================================================================================
-//
-//  LAPACK FORWARD DECLARATIONS
-//
-//=================================================================================================
-
-//*************************************************************************************************
-/*! \cond BLAZE_INTERNAL */
-extern "C" {
-
-void spotrs_( char* uplo, int* n, int* nrhs, float*  A, int* lda, float*  B, int* ldb, int* info );
-void dpotrs_( char* uplo, int* n, int* nrhs, double* A, int* lda, double* B, int* ldb, int* info );
-void cpotrs_( char* uplo, int* n, int* nrhs, float*  A, int* lda, float*  B, int* ldb, int* info );
-void zpotrs_( char* uplo, int* n, int* nrhs, double* A, int* lda, double* B, int* ldb, int* info );
-
-}
-/*! \endcond */
-//*************************************************************************************************
-
-
-
 
 //=================================================================================================
 //
@@ -89,184 +66,12 @@ void zpotrs_( char* uplo, int* n, int* nrhs, double* A, int* lda, double* B, int
 //*************************************************************************************************
 /*!\name LAPACK LLH-based substitution functions (potrs) */
 //@{
-inline void potrs( char uplo, int n, int nrhs, const float* A, int lda, float* B, int ldb, int* info );
-
-inline void potrs( char uplo, int n, int nrhs, const double* A, int lda, double* B, int ldb, int* info );
-
-inline void potrs( char uplo, int n, int nrhs, const complex<float>* A, int lda, complex<float>* B, int ldb, int* info );
-
-inline void potrs( char uplo, int n, int nrhs, const complex<double>* A, int lda, complex<double>* B, int ldb, int* info );
-
 template< typename MT, bool SO, typename VT, bool TF >
 inline void potrs( const DenseMatrix<MT,SO>& A, DenseVector<VT,TF>& b, char uplo );
 
 template< typename MT1, bool SO1, typename MT2, bool SO2 >
 inline void potrs( const DenseMatrix<MT1,SO1>& A, DenseMatrix<MT2,SO2>& B, char uplo );
 //@}
-//*************************************************************************************************
-
-
-//*************************************************************************************************
-/*!\brief LAPACK kernel for the substitution step of solving a positive definite single precision
-//        linear system of equations (\f$ A*X=B \f$).
-// \ingroup lapack_substitution
-//
-// \param uplo \c 'L' to use the lower part of the matrix, \c 'U' to use the upper part.
-// \param n The number of rows/columns of the column-major matrix \f$[0..\infty)\f$.
-// \param nrhs The number of right-hand side vectors \f$[0..\infty)\f$.
-// \param A Pointer to the first element of the single precision column-major square matrix.
-// \param lda The total number of elements between two columns of matrix \a A \f$[0..\infty)\f$.
-// \param B Pointer to the first element of the single precision column-major matrix.
-// \param ldb The total number of elements between two columns of matrix \a B \f$[0..\infty)\f$.
-// \param info Return code of the function call.
-// \return void
-//
-// This function uses the LAPACK spotrs() function to perform the substitution step to compute
-// the solution to the positive definite system of linear equations \f$ A*X=B \f$, where \a A is
-// a n-by-n matrix that has already been factorized by the spotrf() function and \a X and \a B
-// are column-major n-by-nrhs matrices.
-//
-// The \a info argument provides feedback on the success of the function call:
-//
-//   - = 0: The function finished successfully.
-//   - < 0: If info = -i, the i-th argument had an illegal value.
-//
-// For more information on the spotrs() function, see the LAPACK online documentation browser:
-//
-//        http://www.netlib.org/lapack/explore-html/
-//
-// \note This function can only be used if the fitting LAPACK library is available and linked to
-// the executable. Otherwise a call to this function will result in a linker error.
-*/
-inline void potrs( char uplo, int n, int nrhs, const float* A, int lda, float* B, int ldb, int* info )
-{
-   spotrs_( &uplo, &n, &nrhs, const_cast<float*>( A ), &lda, B, &ldb, info );
-}
-//*************************************************************************************************
-
-
-//*************************************************************************************************
-/*!\brief LAPACK kernel for the substitution step of solving a positive definite double precision
-//        linear system of equations (\f$ A*X=B \f$).
-// \ingroup lapack_substitution
-//
-// \param uplo \c 'L' to use the lower part of the matrix, \c 'U' to use the upper part.
-// \param n The number of rows/columns of the column-major matrix \f$[0..\infty)\f$.
-// \param nrhs The number of right-hand side vectors \f$[0..\infty)\f$.
-// \param A Pointer to the first element of the double precision column-major square matrix.
-// \param lda The total number of elements between two columns of matrix \a A \f$[0..\infty)\f$.
-// \param B Pointer to the first element of the double precision column-major matrix.
-// \param ldb The total number of elements between two columns of matrix \a B \f$[0..\infty)\f$.
-// \param info Return code of the function call.
-// \return void
-//
-// This function uses the LAPACK dpotrs() function to perform the substitution step to compute
-// the solution to the positive definite system of linear equations \f$ A*X=B \f$, where \a A is
-// a n-by-n matrix that has already been factorized by the dpotrf() function and \a X and \a B
-// are column-major n-by-nrhs matrices.
-//
-// The \a info argument provides feedback on the success of the function call:
-//
-//   - = 0: The function finished successfully.
-//   - < 0: If info = -i, the i-th argument had an illegal value.
-//
-// For more information on the dpotrs() function, see the LAPACK online documentation browser:
-//
-//        http://www.netlib.org/lapack/explore-html/
-//
-// \note This function can only be used if the fitting LAPACK library is available and linked to
-// the executable. Otherwise a call to this function will result in a linker error.
-*/
-inline void potrs( char uplo, int n, int nrhs, const double* A, int lda, double* B, int ldb, int* info )
-{
-   dpotrs_( &uplo, &n, &nrhs, const_cast<double*>( A ), &lda, B, &ldb, info );
-}
-//*************************************************************************************************
-
-
-//*************************************************************************************************
-/*!\brief LAPACK kernel for the substitution step of solving a positive definite single precision
-//        complex linear system of equations (\f$ A*X=B \f$).
-// \ingroup lapack_substitution
-//
-// \param uplo \c 'L' to use the lower part of the matrix, \c 'U' to use the upper part.
-// \param n The number of rows/columns of the column-major matrix \f$[0..\infty)\f$.
-// \param nrhs The number of right-hand side vectors \f$[0..\infty)\f$.
-// \param A Pointer to the first element of the single precision complex column-major square matrix.
-// \param lda The total number of elements between two columns of matrix \a A \f$[0..\infty)\f$.
-// \param B Pointer to the first element of the single precision complex column-major matrix.
-// \param ldb The total number of elements between two columns of matrix \a B \f$[0..\infty)\f$.
-// \param info Return code of the function call.
-// \return void
-//
-// This function uses the LAPACK cpotrs() function to perform the substitution step to compute
-// the solution to the positive definite system of linear equations \f$ A*X=B \f$, where \a A is
-// a n-by-n matrix that has already been factorized by the cpotrf() function and \a X and \a B
-// are column-major n-by-nrhs matrices.
-//
-// The \a info argument provides feedback on the success of the function call:
-//
-//   - = 0: The function finished successfully.
-//   - < 0: If info = -i, the i-th argument had an illegal value.
-//
-// For more information on the cpotrs() function, see the LAPACK online documentation browser:
-//
-//        http://www.netlib.org/lapack/explore-html/
-//
-// \note This function can only be used if the fitting LAPACK library is available and linked to
-// the executable. Otherwise a call to this function will result in a linker error.
-*/
-inline void potrs( char uplo, int n, int nrhs, const complex<float>* A,
-                   int lda, complex<float>* B, int ldb, int* info )
-{
-   BLAZE_STATIC_ASSERT( sizeof( complex<float> ) == 2UL*sizeof( float ) );
-
-   cpotrs_( &uplo, &n, &nrhs, const_cast<float*>( reinterpret_cast<const float*>( A ) ),
-            &lda, reinterpret_cast<float*>( B ), &ldb, info );
-}
-//*************************************************************************************************
-
-
-//*************************************************************************************************
-/*!\brief LAPACK kernel for the substitution step of solving a positive definite double precision
-//        complex linear system of equations (\f$ A*X=B \f$).
-// \ingroup lapack_substitution
-//
-// \param uplo \c 'L' to use the lower part of the matrix, \c 'U' to use the upper part.
-// \param n The number of rows/columns of the column-major matrix \f$[0..\infty)\f$.
-// \param nrhs The number of right-hand side vectors \f$[0..\infty)\f$.
-// \param A Pointer to the first element of the double precision complex column-major square matrix.
-// \param lda The total number of elements between two columns of matrix \a A \f$[0..\infty)\f$.
-// \param B Pointer to the first element of the double precision complex column-major matrix.
-// \param ldb The total number of elements between two columns of matrix \a B \f$[0..\infty)\f$.
-// \param info Return code of the function call.
-// \return void
-//
-// This function uses the LAPACK zpotrs() function to perform the substitution step to compute
-// the solution to the positive definite system of linear equations \f$ A*X=B \f$, where \a A is
-// a n-by-n matrix that has already been factorized by the zpotrf() function and \a X and \a B
-// are column-major n-by-nrhs matrices.
-//
-// The \a info argument provides feedback on the success of the function call:
-//
-//   - = 0: The function finished successfully.
-//   - < 0: If info = -i, the i-th argument had an illegal value.
-//
-// For more information on the zpotrs() function, see the LAPACK online documentation browser:
-//
-//        http://www.netlib.org/lapack/explore-html/
-//
-// \note This function can only be used if the fitting LAPACK library is available and linked to
-// the executable. Otherwise a call to this function will result in a linker error.
-*/
-inline void potrs( char uplo, int n, int nrhs, const complex<double>* A,
-                   int lda, complex<double>* B, int ldb, int* info )
-{
-   BLAZE_STATIC_ASSERT( sizeof( complex<double> ) == 2UL*sizeof( double ) );
-
-   zpotrs_( &uplo, &n, &nrhs, const_cast<double*>( reinterpret_cast<const double*>( A ) ),
-            &lda, reinterpret_cast<double*>( B ), &ldb, info );
-}
 //*************************************************************************************************
 
 

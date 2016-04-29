@@ -48,37 +48,14 @@
 #include <blaze/math/constraints/MutableDataAccess.h>
 #include <blaze/math/expressions/DenseMatrix.h>
 #include <blaze/math/expressions/DenseVector.h>
+#include <blaze/math/lapack/clapack/sytrs.h>
 #include <blaze/math/typetraits/IsRowMajorMatrix.h>
 #include <blaze/util/Assert.h>
-#include <blaze/util/Complex.h>
 #include <blaze/util/constraints/SameType.h>
 #include <blaze/util/Exception.h>
-#include <blaze/util/StaticAssert.h>
 
 
 namespace blaze {
-
-//=================================================================================================
-//
-//  LAPACK FORWARD DECLARATIONS
-//
-//=================================================================================================
-
-//*************************************************************************************************
-/*! \cond BLAZE_INTERNAL */
-extern "C" {
-
-void ssytrs_( char* uplo, int* n, int* nrhs, float*  A, int* lda, int* ipiv, float*  B, int* ldb, int* info );
-void dsytrs_( char* uplo, int* n, int* nrhs, double* A, int* lda, int* ipiv, double* B, int* ldb, int* info );
-void csytrs_( char* uplo, int* n, int* nrhs, float*  A, int* lda, int* ipiv, float*  B, int* ldb, int* info );
-void zsytrs_( char* uplo, int* n, int* nrhs, double* A, int* lda, int* ipiv, double* B, int* ldb, int* info );
-
-}
-/*! \endcond */
-//*************************************************************************************************
-
-
-
 
 //=================================================================================================
 //
@@ -89,18 +66,6 @@ void zsytrs_( char* uplo, int* n, int* nrhs, double* A, int* lda, int* ipiv, dou
 //*************************************************************************************************
 /*!\name LAPACK LDLT-based substitution functions (sytrs) */
 //@{
-inline void sytrs( char uplo, int n, int nrhs, const float* A, int lda, const int* ipiv,
-                   float* B, int ldb, int* info );
-
-inline void sytrs( char uplo, int n, int nrhs, const double* A, int lda, const int* ipiv,
-                   double* B, int ldb, int* info );
-
-inline void sytrs( char uplo, int n, int nrhs, const complex<float>* A, int lda, const int* ipiv,
-                   complex<float>* B, int ldb, int* info );
-
-inline void sytrs( char uplo, int n, int nrhs, const complex<double>* A, int lda, const int* ipiv,
-                   complex<double>* B, int ldb, int* info );
-
 template< typename MT, bool SO, typename VT, bool TF >
 inline void sytrs( const DenseMatrix<MT,SO>& A, DenseVector<VT,TF>& b, char uplo, const int* ipiv );
 
@@ -108,178 +73,6 @@ template< typename MT1, bool SO1, typename MT2, bool SO2 >
 inline void sytrs( const DenseMatrix<MT1,SO1>& A, DenseMatrix<MT2,SO2>& B,
                    char uplo, const int* ipiv );
 //@}
-//*************************************************************************************************
-
-
-//*************************************************************************************************
-/*!\brief LAPACK kernel for the substitution step of solving a symmetric indefinite single
-//        precision linear system of equations (\f$ A*X=B \f$).
-// \ingroup lapack_substitution
-//
-// \param uplo \c 'L' to use the lower part of the matrix, \c 'U' to use the upper part.
-// \param n The number of rows/columns of the column-major matrix \f$[0..\infty)\f$.
-// \param nrhs The number of right-hand side vectors \f$[0..\infty)\f$.
-// \param A Pointer to the first element of the single precision column-major square matrix.
-// \param lda The total number of elements between two columns of matrix \a A \f$[0..\infty)\f$.
-// \param ipiv Auxiliary array of size \a n for the pivot indices.
-// \param B Pointer to the first element of the single precision column-major matrix.
-// \param ldb The total number of elements between two columns of matrix \a B \f$[0..\infty)\f$.
-// \param info Return code of the function call.
-// \return void
-//
-// This function uses the LAPACK ssytrs() function to perform the substitution step to compute
-// the solution to the symmetric indefinite system of linear equations \f$ A*X=B \f$, where \a A
-// is a n-by-n matrix that has already been factorized by the ssytrf() function and \a X and \a B
-// are column-major n-by-nrhs matrices.
-//
-// The \a info argument provides feedback on the success of the function call:
-//
-//   - = 0: The function finished successfully.
-//   - < 0: If info = -i, the i-th argument had an illegal value.
-//
-// For more information on the ssytrs() function, see the LAPACK online documentation browser:
-//
-//        http://www.netlib.org/lapack/explore-html/
-//
-// \note This function can only be used if the fitting LAPACK library is available and linked to
-// the executable. Otherwise a call to this function will result in a linker error.
-*/
-inline void sytrs( char uplo, int n, int nrhs, const float* A, int lda, const int* ipiv,
-                   float* B, int ldb, int* info )
-{
-   ssytrs_( &uplo, &n, &nrhs, const_cast<float*>( A ), &lda,
-            const_cast<int*>( ipiv ), B, &ldb, info );
-}
-//*************************************************************************************************
-
-
-//*************************************************************************************************
-/*!\brief LAPACK kernel for the substitution step of solving a symmetric indefinite double
-//        precision linear system of equations (\f$ A*X=B \f$).
-// \ingroup lapack_substitution
-//
-// \param uplo \c 'L' to use the lower part of the matrix, \c 'U' to use the upper part.
-// \param n The number of rows/columns of the column-major matrix \f$[0..\infty)\f$.
-// \param nrhs The number of right-hand side vectors \f$[0..\infty)\f$.
-// \param A Pointer to the first element of the double precision column-major square matrix.
-// \param lda The total number of elements between two columns of matrix \a A \f$[0..\infty)\f$.
-// \param ipiv Auxiliary array of size \a n for the pivot indices.
-// \param B Pointer to the first element of the double precision column-major matrix.
-// \param ldb The total number of elements between two columns of matrix \a B \f$[0..\infty)\f$.
-// \param info Return code of the function call.
-// \return void
-//
-// This function uses the LAPACK dsytrs() function to perform the substitution step to compute
-// the solution to the symmetric indefinite system of linear equations \f$ A*X=B \f$, where \a A
-// is a n-by-n matrix that has already been factorized by the dsytrf() function and \a X and \a B
-// are column-major n-by-nrhs matrices.
-//
-// The \a info argument provides feedback on the success of the function call:
-//
-//   - = 0: The function finished successfully.
-//   - < 0: If info = -i, the i-th argument had an illegal value.
-//
-// For more information on the dsytrs() function, see the LAPACK online documentation browser:
-//
-//        http://www.netlib.org/lapack/explore-html/
-//
-// \note This function can only be used if the fitting LAPACK library is available and linked to
-// the executable. Otherwise a call to this function will result in a linker error.
-*/
-inline void sytrs( char uplo, int n, int nrhs, const double* A, int lda, const int* ipiv,
-                   double* B, int ldb, int* info )
-{
-   dsytrs_( &uplo, &n, &nrhs, const_cast<double*>( A ), &lda,
-            const_cast<int*>( ipiv ), B, &ldb, info );
-}
-//*************************************************************************************************
-
-
-//*************************************************************************************************
-/*!\brief LAPACK kernel for the substitution step of solving a symmetric indefinite single
-//        precision complex linear system of equations (\f$ A*X=B \f$).
-// \ingroup lapack_substitution
-//
-// \param uplo \c 'L' to use the lower part of the matrix, \c 'U' to use the upper part.
-// \param n The number of rows/columns of the column-major matrix \f$[0..\infty)\f$.
-// \param nrhs The number of right-hand side vectors \f$[0..\infty)\f$.
-// \param A Pointer to the first element of the single precision complex column-major square matrix.
-// \param lda The total number of elements between two columns of matrix \a A \f$[0..\infty)\f$.
-// \param ipiv Auxiliary array of size \a n for the pivot indices.
-// \param B Pointer to the first element of the single precision complex column-major matrix.
-// \param ldb The total number of elements between two columns of matrix \a B \f$[0..\infty)\f$.
-// \param info Return code of the function call.
-// \return void
-//
-// This function uses the LAPACK csytrs() function to perform the substitution step to compute
-// the solution to the symmetric indefinite system of linear equations \f$ A*X=B \f$, where \a A
-// is a n-by-n matrix that has already been factorized by the csytrf() function and \a X and \a B
-// are column-major n-by-nrhs matrices.
-//
-// The \a info argument provides feedback on the success of the function call:
-//
-//   - = 0: The function finished successfully.
-//   - < 0: If info = -i, the i-th argument had an illegal value.
-//
-// For more information on the csytrs() function, see the LAPACK online documentation browser:
-//
-//        http://www.netlib.org/lapack/explore-html/
-//
-// \note This function can only be used if the fitting LAPACK library is available and linked to
-// the executable. Otherwise a call to this function will result in a linker error.
-*/
-inline void sytrs( char uplo, int n, int nrhs, const complex<float>* A, int lda,
-                   const int* ipiv, complex<float>* B, int ldb, int* info )
-{
-   BLAZE_STATIC_ASSERT( sizeof( complex<float> ) == 2UL*sizeof( float ) );
-
-   csytrs_( &uplo, &n, &nrhs, const_cast<float*>( reinterpret_cast<const float*>( A ) ),
-            &lda, const_cast<int*>( ipiv ), reinterpret_cast<float*>( B ), &ldb, info );
-}
-//*************************************************************************************************
-
-
-//*************************************************************************************************
-/*!\brief LAPACK kernel for the substitution step of solving a symmetric indefinite double
-//        precision complex linear system of equations (\f$ A*X=B \f$).
-// \ingroup lapack_substitution
-//
-// \param uplo \c 'L' to use the lower part of the matrix, \c 'U' to use the upper part.
-// \param n The number of rows/columns of the column-major matrix \f$[0..\infty)\f$.
-// \param nrhs The number of right-hand side vectors \f$[0..\infty)\f$.
-// \param A Pointer to the first element of the double precision complex column-major square matrix.
-// \param lda The total number of elements between two columns of matrix \a A \f$[0..\infty)\f$.
-// \param ipiv Auxiliary array of size \a n for the pivot indices.
-// \param B Pointer to the first element of the double precision complex column-major matrix.
-// \param ldb The total number of elements between two columns of matrix \a B \f$[0..\infty)\f$.
-// \param info Return code of the function call.
-// \return void
-//
-// This function uses the LAPACK zsytrs() function to perform the substitution step to compute
-// the solution to the symmetric indefinite system of linear equations \f$ A*X=B \f$, where \a A
-// is a n-by-n matrix that has already been factorized by the zsytrf() function and \a X and \a B
-// are column-major n-by-nrhs matrices.
-//
-// The \a info argument provides feedback on the success of the function call:
-//
-//   - = 0: The function finished successfully.
-//   - < 0: If info = -i, the i-th argument had an illegal value.
-//
-// For more information on the zsytrs() function, see the LAPACK online documentation browser:
-//
-//        http://www.netlib.org/lapack/explore-html/
-//
-// \note This function can only be used if the fitting LAPACK library is available and linked to
-// the executable. Otherwise a call to this function will result in a linker error.
-*/
-inline void sytrs( char uplo, int n, int nrhs, const complex<double>* A, int lda,
-                   const int* ipiv, complex<double>* B, int ldb, int* info )
-{
-   BLAZE_STATIC_ASSERT( sizeof( complex<double> ) == 2UL*sizeof( double ) );
-
-   zsytrs_( &uplo, &n, &nrhs, const_cast<double*>( reinterpret_cast<const double*>( A ) ),
-            &lda, const_cast<int*>( ipiv ), reinterpret_cast<double*>( B ), &ldb, info );
-}
 //*************************************************************************************************
 
 

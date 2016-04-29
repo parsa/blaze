@@ -48,33 +48,12 @@
 #include <blaze/math/constraints/Computation.h>
 #include <blaze/math/constraints/MutableDataAccess.h>
 #include <blaze/math/expressions/DenseMatrix.h>
+#include <blaze/math/lapack/clapack/unglq.h>
 #include <blaze/util/Assert.h>
-#include <blaze/util/Complex.h>
 #include <blaze/util/constraints/Complex.h>
-#include <blaze/util/StaticAssert.h>
 
 
 namespace blaze {
-
-//=================================================================================================
-//
-//  LAPACK FORWARD DECLARATIONS
-//
-//=================================================================================================
-
-//*************************************************************************************************
-/*! \cond BLAZE_INTERNAL */
-extern "C" {
-
-void cunglq_( int* m, int* n, int* k, float*  A, int* lda, float*  tau, float*  work, int* lwork, int* info );
-void zunglq_( int* m, int* n, int* k, double* A, int* lda, double* tau, double* work, int* lwork, int* info );
-
-}
-/*! \endcond */
-//*************************************************************************************************
-
-
-
 
 //=================================================================================================
 //
@@ -85,95 +64,9 @@ void zunglq_( int* m, int* n, int* k, double* A, int* lda, double* tau, double* 
 //*************************************************************************************************
 /*!\name LAPACK functions to reconstruct Q from a LQ decomposition (unglq) */
 //@{
-inline void unglq( int m, int n, int k, complex<float>* A, int lda, const complex<float>* tau,
-                   complex<float>* work, int lwork, int* info );
-
-inline void unglq( int m, int n, int k, complex<double>* A, int lda, const complex<double>* tau,
-                   complex<double>* work, int lwork, int* info );
-
 template< typename MT, bool SO >
 inline void unglq( DenseMatrix<MT,SO>& A, const ElementType_<MT>* tau );
 //@}
-//*************************************************************************************************
-
-
-//*************************************************************************************************
-/*!\brief LAPACK kernel for the reconstruction of the orthogonal matrix Q from a LQ decomposition.
-// \ingroup lapack_decomposition
-//
-// \param m The number of rows of the given matrix \f$[0..n)\f$.
-// \param n The number of columns of the given matrix \f$[0..\infty)\f$.
-// \param k The number of elementary reflectors, whose product defines the matrix \f$[0..m)\f$.
-// \param A Pointer to the first element of the single precision complex column-major matrix.
-// \param lda The total number of elements between two columns of the matrix \f$[0..\infty)\f$.
-// \param tau Array for the scalar factors of the elementary reflectors; size >= min( \a m, \a n ).
-// \param work Auxiliary array; size >= max( 1, \a lwork ).
-// \param lwork The dimension of the array \a work; size >= max( 1, \a n ).
-// \param info Return code of the function call.
-// \return void
-//
-// This function generates all or part of the orthogonal matrix Q from a LQ decomposition based on
-// the LAPACK cunglq() function for single precision complex column-major matrices that have already
-// been factorized by the cgelqf() function. The \a info argument provides feedback on the success
-// of the function call:
-//
-//   - = 0: The decomposition finished successfully.
-//   - < 0: The i-th argument had an illegal value.
-//
-// For more information on the cunglq() function, see the LAPACK online documentation browser:
-//
-//        http://www.netlib.org/lapack/explore-html/
-//
-// \note This function can only be used if the fitting LAPACK library is available and linked to
-// the executable. Otherwise a call to this function will result in a linker error.
-*/
-inline void unglq( int m, int n, int k, complex<float>* A, int lda, const complex<float>* tau,
-                   complex<float>* work, int lwork, int* info )
-{
-   cunglq_( &m, &n, &k, reinterpret_cast<float*>( A ), &lda,
-            const_cast<float*>( reinterpret_cast<const float*>( tau ) ),
-            reinterpret_cast<float*>( work ), &lwork, info );
-}
-//*************************************************************************************************
-
-
-//*************************************************************************************************
-/*!\brief LAPACK kernel for the reconstruction of the orthogonal matrix Q from a LQ decomposition.
-// \ingroup lapack_decomposition
-//
-// \param m The number of rows of the given matrix \f$[0..n)\f$.
-// \param n The number of columns of the given matrix \f$[0..\infty)\f$.
-// \param k The number of elementary reflectors, whose product defines the matrix \f$[0..m)\f$.
-// \param A Pointer to the first element of the double precision complex column-major matrix.
-// \param lda The total number of elements between two columns of the matrix \f$[0..\infty)\f$.
-// \param tau Array for the scalar factors of the elementary reflectors; size >= min( \a m, \a n ).
-// \param work Auxiliary array; size >= max( 1, \a lwork ).
-// \param lwork The dimension of the array \a work; size >= max( 1, \a n ).
-// \param info Return code of the function call.
-// \return void
-//
-// This function generates all or part of the orthogonal matrix Q from a LQ decomposition based on
-// the LAPACK zunglq() function for double precision complex column-major matrices that have already
-// been factorized by the zgelqf() function. The \a info argument provides feedback on the success
-// of the function call:
-//
-//   - = 0: The decomposition finished successfully.
-//   - < 0: The i-th argument had an illegal value.
-//
-// For more information on the zunglq() function, see the LAPACK online documentation browser:
-//
-//        http://www.netlib.org/lapack/explore-html/
-//
-// \note This function can only be used if the fitting LAPACK library is available and linked to
-// the executable. Otherwise a call to this function will result in a linker error.
-*/
-inline void unglq( int m, int n, int k, complex<double>* A, int lda, const complex<double>* tau,
-                   complex<double>* work, int lwork, int* info )
-{
-   zunglq_( &m, &n, &k, reinterpret_cast<double*>( A ), &lda,
-            const_cast<double*>( reinterpret_cast<const double*>( tau ) ),
-            reinterpret_cast<double*>( work ), &lwork, info );
-}
 //*************************************************************************************************
 
 
