@@ -49,6 +49,7 @@
 #include <blaze/math/constraints/MutableDataAccess.h>
 #include <blaze/math/expressions/DenseMatrix.h>
 #include <blaze/math/lapack/clapack/orglq.h>
+#include <blaze/math/lapack/clapack/orgqr.h>
 #include <blaze/util/Assert.h>
 #include <blaze/util/constraints/Builtin.h>
 
@@ -84,8 +85,7 @@ inline void orglq( DenseMatrix<MT,SO>& A, const ElementType_<MT>* tau );
 // \c double element type. The attempt to call the function with any adapted matrix or matrices
 // of any other element type results in a compile time error!\n
 //
-// The row-major \a m-by-min(\a m,\a n) or column-major min(\a m,\a n)-by-\a n \a Q matrix is
-// stored in the within the given matrix \a A:
+// The min(\a m,\a n)-by-\a n \a Q matrix is stored within the given matrix \a A:
 
    \code
    using blaze::DynamicMatrix;
@@ -102,23 +102,6 @@ inline void orglq( DenseMatrix<MT,SO>& A, const ElementType_<MT>* tau );
    const int n( A.columns() );
 
    DynamicMatrix<double,columnMajor> Q( submatrix( A, 0UL, 0UL, min(m,n), n ) );
-   \endcode
-
-   \code
-   using blaze::DynamicMatrix;
-   using blaze::rowMajor;
-
-   DynamicMatrix<double,rowMajor> A;
-   DynamicVector<double> tau;
-   // ... Resizing and initialization
-
-   gelqf( A, tau.data() );  // Performing the LQ decomposition
-   orglq( A, tau.data() );  // Reconstructing the Q matrix
-
-   const int m( A.rows() );
-   const int n( A.columns() );
-
-   DynamicMatrix<double,rowMajor> Q( submatrix( A, 0UL, 0UL, m, min(m,n) ) );
    \endcode
 
 // For more information on the orglq() functions (i.e. sorglq() and dorglq()) see the LAPACK
@@ -155,7 +138,12 @@ inline void orglq( DenseMatrix<MT,SO>& A, const ElementType_<MT>* tau )
    int lwork( k*lda );
    const std::unique_ptr<ET[]> work( new ET[lwork] );
 
-   orglq( k, n, k, (~A).data(), lda, tau, work.get(), lwork, &info );
+   if( SO ) {
+      orglq( k, n, k, (~A).data(), lda, tau, work.get(), lwork, &info );
+   }
+   else {
+      orgqr( m, k, k, (~A).data(), lda, tau, work.get(), lwork, &info );
+   }
 
    BLAZE_INTERNAL_ASSERT( info == 0, "Invalid argument for Q reconstruction" );
 }

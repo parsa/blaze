@@ -49,7 +49,7 @@
 #include <blaze/math/constraints/MutableDataAccess.h>
 #include <blaze/math/expressions/DenseMatrix.h>
 #include <blaze/math/lapack/clapack/geqlf.h>
-#include <blaze/math/typetraits/IsRowMajorMatrix.h>
+#include <blaze/math/lapack/clapack/gerqf.h>
 #include <blaze/util/Assert.h>
 
 
@@ -104,10 +104,6 @@ inline void geqlf( DenseMatrix<MT,SO>& A, ElementType_<MT>* tau );
 // trapezoidal matrix \c L; the remaining elements in combination with the array \c tau represent
 // the orthogonal matrix \c Q as a product of min(\a m,\a n) elementary reflectors.
 //
-// In case of a row-major matrix, the resulting decomposition is transposed, i.e. the elementary
-// reflectors are stored in the lower part of the matrix and the elements in the upper part contain
-// the \a n-by-min(\a m,\a n) upper trapezoidal matrix \c L.
-//
 // For more information on the geqlf() functions (i.e. sgeqlf(), dgeqlf(), cgeqlf(), and zgeqlf())
 // see the LAPACK online documentation browser:
 //
@@ -141,7 +137,12 @@ inline void geqlf( DenseMatrix<MT,SO>& A, ElementType_<MT>* tau )
    int lwork( n*lda );
    const std::unique_ptr<ET[]> work( new ET[lwork] );
 
-   geqlf( m, n, (~A).data(), lda, tau, work.get(), lwork, &info );
+   if( SO ) {
+      geqlf( m, n, (~A).data(), lda, tau, work.get(), lwork, &info );
+   }
+   else {
+      gerqf( m, n, (~A).data(), lda, tau, work.get(), lwork, &info );
+   }
 
    BLAZE_INTERNAL_ASSERT( info == 0, "Invalid argument for QL decomposition" );
 }

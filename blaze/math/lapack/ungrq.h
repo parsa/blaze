@@ -84,8 +84,7 @@ inline void ungrq( DenseMatrix<MT,SO>& A, const ElementType_<MT>* tau );
 // \c double element type. The attempt to call the function with any adapted matrix or matrices
 // of any other element type results in a compile time error!\n
 //
-// The row-major \a m-by-min(\a m,\a n) or column-major min(\a m,\a n)-by-\a n \a Q matrix is
-// stored in the within the given matrix \a A:
+// The min(\a m,\a n)-by-\a n \a Q matrix is stored within the given matrix \a A:
 
    \code
    using blaze::DynamicMatrix;
@@ -105,26 +104,6 @@ inline void ungrq( DenseMatrix<MT,SO>& A, const ElementType_<MT>* tau );
 
    const size_t row( m > n ? m - n : 0UL )
    DynamicMatrix<cplx,columnMajor> Q( submatrix( A, row, 0UL, min(m,n), n ) );
-   \endcode
-
-   \code
-   using blaze::DynamicMatrix;
-   using blaze::rowMajor;
-
-   typedef complex<double>  cplx;
-
-   DynamicMatrix<cplx,rowMajor> A;
-   DynamicVector<cplx> tau;
-   // ... Resizing and initialization
-
-   gerqf( A, tau.data() );  // Performing the RQ decomposition
-   ungrq( A, tau.data() );  // Reconstructing the Q matrix
-
-   const int m( A.rows() );
-   const int n( A.columns() );
-
-   const size_t column( m < n ? n - m : 0UL )
-   DynamicMatrix<cplx,rowMajor> Q( submatrix( A, 0UL, column, m, min(m,n) ) );
    \endcode
 
 // For more information on the ungrq() functions (i.e. cungrq() and zungrq()) see the LAPACK
@@ -160,9 +139,15 @@ inline void ungrq( DenseMatrix<MT,SO>& A, const ElementType_<MT>* tau )
 
    int lwork( k*lda );
    const std::unique_ptr<ET[]> work( new ET[lwork] );
-   const size_t offset( ( m > n )?( m - n ):( 0UL ) );
 
-   ungrq( k, n, k, (~A).data()+offset, lda, tau, work.get(), lwork, &info );
+   if( SO ) {
+      const size_t offset( ( m > n )?( m - n ):( 0UL ) );
+      ungrq( k, n, k, (~A).data()+offset, lda, tau, work.get(), lwork, &info );
+   }
+   else {
+      const size_t offset( ( m < n )?( n - m ):( 0UL ) );
+      ungql( m, k, k, (~A).data(offset), lda, tau, work.get(), lwork, &info );
+   }
 
    BLAZE_INTERNAL_ASSERT( info == 0, "Invalid argument for Q reconstruction" );
 }

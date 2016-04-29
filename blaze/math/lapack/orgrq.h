@@ -48,6 +48,7 @@
 #include <blaze/math/constraints/Computation.h>
 #include <blaze/math/constraints/MutableDataAccess.h>
 #include <blaze/math/expressions/DenseMatrix.h>
+#include <blaze/math/lapack/clapack/orgql.h>
 #include <blaze/math/lapack/clapack/orgrq.h>
 #include <blaze/util/Assert.h>
 #include <blaze/util/constraints/Builtin.h>
@@ -84,8 +85,7 @@ inline void orgrq( DenseMatrix<MT,SO>& A, const ElementType_<MT>* tau );
 // \c double element type. The attempt to call the function with any adapted matrix or matrices
 // of any other element type results in a compile time error!\n
 //
-// The row-major \a m-by-min(\a m,\a n) or column-major min(\a m,\a n)-by-\a n \a Q matrix is
-// stored in the within the given matrix \a A:
+// The min(\a m,\a n)-by-\a n \a Q matrix is stored within the given matrix \a A:
 
    \code
    using blaze::DynamicMatrix;
@@ -103,24 +103,6 @@ inline void orgrq( DenseMatrix<MT,SO>& A, const ElementType_<MT>* tau );
 
    const size_t row( m > n ? m - n : 0UL )
    DynamicMatrix<double,columnMajor> Q( submatrix( A, row, 0UL, min(m,n), n ) );
-   \endcode
-
-   \code
-   using blaze::DynamicMatrix;
-   using blaze::rowMajor;
-
-   DynamicMatrix<double,rowMajor> A;
-   DynamicVector<double> tau;
-   // ... Resizing and initialization
-
-   gerqf( A, tau.data() );  // Performing the RQ decomposition
-   orgrq( A, tau.data() );  // Reconstructing the Q matrix
-
-   const int m( A.rows() );
-   const int n( A.columns() );
-
-   const size_t column( m < n ? n - m : 0UL )
-   DynamicMatrix<double,rowMajor> Q( submatrix( A, 0UL, column, m, min(m,n) ) );
    \endcode
 
 // For more information on the orgrq() functions (i.e. sorgrq() and dorgrq()) see the LAPACK
@@ -144,8 +126,8 @@ inline void orgrq( DenseMatrix<MT,SO>& A, const ElementType_<MT>* tau )
 
    typedef ElementType_<MT>  ET;
 
-   int n   ( numeric_cast<int>( SO ? (~A).columns() : (~A).rows() ) );
    int m   ( numeric_cast<int>( SO ? (~A).rows() : (~A).columns() ) );
+   int n   ( numeric_cast<int>( SO ? (~A).columns() : (~A).rows() ) );
    int k   ( min( m, n ) );
    int lda ( numeric_cast<int>( (~A).spacing() ) );
    int info( 0 );
@@ -156,9 +138,15 @@ inline void orgrq( DenseMatrix<MT,SO>& A, const ElementType_<MT>* tau )
 
    int lwork( k*lda );
    const std::unique_ptr<ET[]> work( new ET[lwork] );
-   const size_t offset( ( m > n )?( m - n ):( 0UL ) );
 
-   orgrq( k, n, k, (~A).data()+offset, lda, tau, work.get(), lwork, &info );
+   if( SO ) {
+      const size_t offset( ( m > n )?( m - n ):( 0UL ) );
+      orgrq( k, n, k, (~A).data()+offset, lda, tau, work.get(), lwork, &info );
+   }
+   else {
+      const size_t offset( ( m < n )?( n - m ):( 0UL ) );
+      orgql( m, k, k, (~A).data(offset), lda, tau, work.get(), lwork, &info );
+   }
 
    BLAZE_INTERNAL_ASSERT( info == 0, "Invalid argument for Q reconstruction" );
 }

@@ -48,6 +48,7 @@
 #include <blaze/math/constraints/Computation.h>
 #include <blaze/math/constraints/MutableDataAccess.h>
 #include <blaze/math/expressions/DenseMatrix.h>
+#include <blaze/math/lapack/clapack/orglq.h>
 #include <blaze/math/lapack/clapack/orgqr.h>
 #include <blaze/util/Assert.h>
 #include <blaze/util/constraints/Builtin.h>
@@ -84,8 +85,7 @@ inline void orgqr( DenseMatrix<MT,SO>& A, const ElementType_<MT>* tau );
 // \c double element type. The attempt to call the function with any adapted matrix or matrices
 // of any other element type results in a compile time error!\n
 //
-// The row-major min(\a m,\a n)-by-\a n or column-major \a m-by-min(\a m,\a n) \a Q matrix is
-// stored in the within the given matrix \a A:
+// The \a m-by-min(\a m,\a n) \a Q matrix is stored within the given matrix \a A:
 
    \code
    using blaze::DynamicMatrix;
@@ -102,23 +102,6 @@ inline void orgqr( DenseMatrix<MT,SO>& A, const ElementType_<MT>* tau );
    const int n( A.columns() );
 
    DynamicMatrix<double,columnMajor> Q( submatrix( A, 0UL, 0UL, m, min(m,n) ) );
-   \endcode
-
-   \code
-   using blaze::DynamicMatrix;
-   using blaze::rowMajor;
-
-   DynamicMatrix<double,rowMajor> A;
-   DynamicVector<double> tau;
-   // ... Resizing and initialization
-
-   geqrf( A, tau.data() );  // Performing the QR decomposition
-   orgqr( A, tau.data() );  // Reconstructing the Q matrix
-
-   const int m( A.rows() );
-   const int n( A.columns() );
-
-   DynamicMatrix<double,rowMajor> Q( submatrix( A, 0UL, 0UL, min(m,n), n ) );
    \endcode
 
 // For more information on the orgqr() functions (i.e. sorgqr() and dorgqr()) see the LAPACK
@@ -155,7 +138,12 @@ inline void orgqr( DenseMatrix<MT,SO>& A, const ElementType_<MT>* tau )
    int lwork( k*lda );
    const std::unique_ptr<ET[]> work( new ET[lwork] );
 
-   orgqr( m, k, k, (~A).data(), lda, tau, work.get(), lwork, &info );
+   if( SO ) {
+      orgqr( m, k, k, (~A).data(), lda, tau, work.get(), lwork, &info );
+   }
+   else {
+      orglq( k, n, k, (~A).data(), lda, tau, work.get(), lwork, &info );
+   }
 
    BLAZE_INTERNAL_ASSERT( info == 0, "Invalid argument for Q reconstruction" );
 }
