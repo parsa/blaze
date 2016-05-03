@@ -8979,6 +8979,30 @@ namespace blaze {}
    } // namespace blaze
    \endcode
 
+// The following functions provide an interface for the LAPACK functions \c sormqr(), \c dormqr(),
+// \c cunmqr(), and \c zunmqr(), which can be used to multiply a matrix with the \c Q matrix from
+// a QR decomposition:
+
+   \code
+   namespace blaze {
+
+   void ormqr( char side, char trans, int m, int n, int k, const float* A, int lda, const float* tau, float* C, int ldc, float* work, int lwork, int* info );
+
+   void ormqr( char side, char trans, int m, int n, int k, const double* A, int lda, const double* tau, double* C, int ldc, double* work, int lwork, int* info );
+
+   void unmqr( char side, char trans, int m, int n, int k, const complex<float>* A, int lda, const complex<float>* tau, complex<float>* C, int ldc, complex<float>* work, int lwork, int* info );
+
+   void unmqr( char side, char trans, int m, int n, int k, const complex<double>* A, int lda, const complex<double>* tau, complex<double>* C, int ldc, complex<double>* work, int lwork, int* info );
+
+   template< typename MT1, bool SO1, typename MT2, bool SO2 >
+   void ormqr( DenseMatrix<MT1,SO1>& C, const DenseMatrix<MT2,SO2>& A, char side, char trans, const ElementType_<MT2>* tau );
+
+   template< typename MT1, bool SO, typename MT2 >
+   void unmqr( DenseMatrix<MT1,SO>& C, DenseMatrix<MT2,SO>& A, char side, char trans, ElementType_<MT2>* tau );
+
+   } // namespace blaze
+   \endcode
+
 // \n \subsection lapack_rq_decomposition RQ Decomposition
 //
 // The following functions provide an interface for the LAPACK functions \c sgerqf(), \c dgerqf(),
@@ -9040,6 +9064,30 @@ namespace blaze {}
 
    template< typename MT, bool SO >
    void ungrq( DenseMatrix<MT,SO>& A, const typename MT::ElementType* tau );
+
+   } // namespace blaze
+   \endcode
+
+// The following functions provide an interface for the LAPACK functions \c sormrq(), \c dormrq(),
+// \c cunmrq(), and \c zunmrq(), which can be used to multiply a matrix with the \c Q matrix from
+// a RQ decomposition:
+
+   \code
+   namespace blaze {
+
+   void ormrq( char side, char trans, int m, int n, int k, const float* A, int lda, const float* tau, float* C, int ldc, float* work, int lwork, int* info );
+
+   void ormrq( char side, char trans, int m, int n, int k, const double* A, int lda, const double* tau, double* C, int ldc, double* work, int lwork, int* info );
+
+   void unmrq( char side, char trans, int m, int n, int k, const complex<float>* A, int lda, const complex<float>* tau, complex<float>* C, int ldc, complex<float>* work, int lwork, int* info );
+
+   void unmrq( char side, char trans, int m, int n, int k, const complex<double>* A, int lda, const complex<double>* tau, complex<double>* C, int ldc, complex<double>* work, int lwork, int* info );
+
+   template< typename MT1, bool SO1, typename MT2, bool SO2 >
+   void ormrq( DenseMatrix<MT1,SO1>& C, const DenseMatrix<MT2,SO2>& A, char side, char trans, const ElementType_<MT2>* tau );
+
+   template< typename MT1, bool SO, typename MT2 >
+   void unmrq( DenseMatrix<MT1,SO>& C, DenseMatrix<MT2,SO>& A, char side, char trans, ElementType_<MT2>* tau );
 
    } // namespace blaze
    \endcode
@@ -9109,6 +9157,30 @@ namespace blaze {}
    } // namespace blaze
    \endcode
 
+// The following functions provide an interface for the LAPACK functions \c sormql(), \c dormql(),
+// \c cunmql(), and \c zunmql(), which can be used to multiply a matrix with the \c Q matrix from
+// a QL decomposition:
+
+   \code
+   namespace blaze {
+
+   void ormql( char side, char trans, int m, int n, int k, const float* A, int lda, const float* tau, float* C, int ldc, float* work, int lwork, int* info );
+
+   void ormql( char side, char trans, int m, int n, int k, const double* A, int lda, const double* tau, double* C, int ldc, double* work, int lwork, int* info );
+
+   void unmql( char side, char trans, int m, int n, int k, const complex<float>* A, int lda, const complex<float>* tau, complex<float>* C, int ldc, complex<float>* work, int lwork, int* info );
+
+   void unmql( char side, char trans, int m, int n, int k, const complex<double>* A, int lda, const complex<double>* tau, complex<double>* C, int ldc, complex<double>* work, int lwork, int* info );
+
+   template< typename MT1, bool SO1, typename MT2, bool SO2 >
+   void ormql( DenseMatrix<MT1,SO1>& C, const DenseMatrix<MT2,SO2>& A, char side, char trans, const ElementType_<MT2>* tau );
+
+   template< typename MT1, bool SO, typename MT2 >
+   void unmql( DenseMatrix<MT1,SO>& C, DenseMatrix<MT2,SO>& A, char side, char trans, ElementType_<MT2>* tau );
+
+   } // namespace blaze
+   \endcode
+
 // \n \subsection lapack_lq_decomposition LQ Decomposition
 //
 // The following functions provide an interface for the LAPACK functions \c sgelqf(), \c dgelqf(),
@@ -9169,6 +9241,30 @@ namespace blaze {}
 
    template< typename MT, bool SO >
    void unglq( DenseMatrix<MT,SO>& A, const typename MT::ElementType* tau );
+
+   } // namespace blaze
+   \endcode
+
+// The following functions provide an interface for the LAPACK functions \c sormlq(), \c dormlq(),
+// \c cunmlq(), and \c zunmlq(), which can be used to multiply a matrix with the \c Q matrix from
+// a LQ decomposition:
+
+   \code
+   namespace blaze {
+
+   void ormlq( char side, char trans, int m, int n, int k, const float* A, int lda, const float* tau, float* C, int ldc, float* work, int lwork, int* info );
+
+   void ormlq( char side, char trans, int m, int n, int k, const double* A, int lda, const double* tau, double* C, int ldc, double* work, int lwork, int* info );
+
+   void unmlq( char side, char trans, int m, int n, int k, const complex<float>* A, int lda, const complex<float>* tau, complex<float>* C, int ldc, complex<float>* work, int lwork, int* info );
+
+   void unmlq( char side, char trans, int m, int n, int k, const complex<double>* A, int lda, const complex<double>* tau, complex<double>* C, int ldc, complex<double>* work, int lwork, int* info );
+
+   template< typename MT1, bool SO1, typename MT2, bool SO2 >
+   void ormlq( DenseMatrix<MT1,SO1>& C, const DenseMatrix<MT2,SO2>& A, char side, char trans, const ElementType_<MT2>* tau );
+
+   template< typename MT1, bool SO, typename MT2 >
+   void unmlq( DenseMatrix<MT1,SO>& C, DenseMatrix<MT2,SO>& A, char side, char trans, ElementType_<MT2>* tau );
 
    } // namespace blaze
    \endcode
