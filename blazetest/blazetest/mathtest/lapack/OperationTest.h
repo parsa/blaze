@@ -120,18 +120,26 @@ class OperationTest
    template< typename Type > void testGeqrf();
    template< typename Type > void testOrgqr();
    template< typename Type > void testUngqr();
+   template< typename Type > void testOrmqr();
+   template< typename Type > void testUnmqr();
 
    template< typename Type > void testGerqf();
    template< typename Type > void testOrgrq();
    template< typename Type > void testUngrq();
+   template< typename Type > void testOrmrq();
+   template< typename Type > void testUnmrq();
 
    template< typename Type > void testGeqlf();
    template< typename Type > void testOrgql();
    template< typename Type > void testUngql();
+   template< typename Type > void testOrmql();
+   template< typename Type > void testUnmql();
 
    template< typename Type > void testGelqf();
    template< typename Type > void testOrglq();
    template< typename Type > void testUnglq();
+   template< typename Type > void testOrmlq();
+   template< typename Type > void testUnmlq();
    //@}
    //**********************************************************************************************
 
@@ -6167,6 +6175,350 @@ void OperationTest::testUngqr()
 
 
 //*************************************************************************************************
+/*!\brief Test of the multiplication of Q from a QR decomposition with a matrix (ormqr).
+//
+// \return void
+// \exception std::runtime_error Error detected.
+//
+// This function performs a test of the multiplication of Q from a QR decomposition with a matrix
+// for various data types. In case an error is detected, a \a std::runtime_error exception is
+// thrown.
+*/
+template< typename Type >
+void OperationTest::testOrmqr()
+{
+#if BLAZETEST_MATHTEST_LAPACK_MODE
+
+   {
+      test_ = "Multiplication of Q from a QR decomposition with a matrix ('L', 'N')";
+
+      blaze::StaticMatrix<Type,3UL,5UL,blaze::rowMajor> A;
+      randomize( A );
+
+      blaze::StaticMatrix<Type,3UL,5UL,blaze::columnMajor> B( A );
+
+      blaze::StaticVector<Type,3UL,blaze::rowVector> tauA;
+      blaze::StaticVector<Type,3UL,blaze::rowVector> tauB;
+
+      blaze::StaticMatrix<Type,3UL,5UL,blaze::rowMajor> C1;
+      randomize( C1 );
+
+      blaze::StaticMatrix<Type,3UL,5UL,blaze::rowMajor>    C2( C1 );
+      blaze::StaticMatrix<Type,3UL,5UL,blaze::columnMajor> C3( C1 );
+      blaze::StaticMatrix<Type,3UL,5UL,blaze::columnMajor> C4( C1 );
+
+      blaze::geqrf( A, tauA.data() );
+      blaze::geqrf( B, tauB.data() );
+
+      blaze::ormqr( C1, A, 'L', 'N', tauA.data() );
+      blaze::ormqr( C2, B, 'L', 'N', tauB.data() );
+      blaze::ormqr( C3, A, 'L', 'N', tauA.data() );
+      blaze::ormqr( C4, B, 'L', 'N', tauB.data() );
+
+      if( C1 != C2 || C1 != C3 || C1 != C4 ) {
+         std::ostringstream oss;
+         oss << " Test: " << test_ << "\n"
+             << " Error: Q multiplication failed\n"
+             << " Details:\n"
+             << "   Element type:\n"
+             << "     " << typeid( Type ).name() << "\n"
+             << "   Row-major/row-major multiplication:\n" << C1 << "\n"
+             << "   Row-major/column-major multiplication:\n" << C2 << "\n"
+             << "   Column-major/row-major multiplication:\n" << C3 << "\n"
+             << "   Column-major/column-major multiplication:\n" << C4 << "\n";
+         throw std::runtime_error( oss.str() );
+      }
+   }
+
+   {
+      test_ = "Multiplication of Q from a QR decomposition with a matrix ('L', 'T')";
+
+      blaze::StaticMatrix<Type,3UL,5UL,blaze::rowMajor> A;
+      randomize( A );
+
+      blaze::StaticMatrix<Type,3UL,5UL,blaze::columnMajor> B( A );
+
+      blaze::StaticVector<Type,3UL,blaze::rowVector> tauA;
+      blaze::StaticVector<Type,3UL,blaze::rowVector> tauB;
+
+      blaze::StaticMatrix<Type,3UL,5UL,blaze::rowMajor> C1;
+      randomize( C1 );
+
+      blaze::StaticMatrix<Type,3UL,5UL,blaze::rowMajor>    C2( C1 );
+      blaze::StaticMatrix<Type,3UL,5UL,blaze::columnMajor> C3( C1 );
+      blaze::StaticMatrix<Type,3UL,5UL,blaze::columnMajor> C4( C1 );
+
+      blaze::geqrf( A, tauA.data() );
+      blaze::geqrf( B, tauB.data() );
+
+      blaze::ormqr( C1, A, 'L', 'T', tauA.data() );
+      blaze::ormqr( C2, B, 'L', 'T', tauB.data() );
+      blaze::ormqr( C3, A, 'L', 'T', tauA.data() );
+      blaze::ormqr( C4, B, 'L', 'T', tauB.data() );
+
+      if( C1 != C2 || C1 != C3 || C1 != C4 ) {
+         std::ostringstream oss;
+         oss << " Test: " << test_ << "\n"
+             << " Error: Q multiplication failed\n"
+             << " Details:\n"
+             << "   Element type:\n"
+             << "     " << typeid( Type ).name() << "\n"
+             << "   Row-major/row-major multiplication:\n" << C1 << "\n"
+             << "   Row-major/column-major multiplication:\n" << C2 << "\n"
+             << "   Column-major/row-major multiplication:\n" << C3 << "\n"
+             << "   Column-major/column-major multiplication:\n" << C4 << "\n";
+         throw std::runtime_error( oss.str() );
+      }
+   }
+
+   {
+      test_ = "Multiplication of Q from a QR decomposition with a matrix ('R', 'N')";
+
+      blaze::StaticMatrix<Type,3UL,3UL,blaze::rowMajor> A;
+      randomize( A );
+
+      blaze::StaticMatrix<Type,3UL,3UL,blaze::columnMajor> B( A );
+
+      blaze::StaticVector<Type,3UL,blaze::rowVector> tauA;
+      blaze::StaticVector<Type,3UL,blaze::rowVector> tauB;
+
+      blaze::StaticMatrix<Type,5UL,3UL,blaze::rowMajor> C1;
+      randomize( C1 );
+
+      blaze::StaticMatrix<Type,5UL,3UL,blaze::rowMajor>    C2( C1 );
+      blaze::StaticMatrix<Type,5UL,3UL,blaze::columnMajor> C3( C1 );
+      blaze::StaticMatrix<Type,5UL,3UL,blaze::columnMajor> C4( C1 );
+
+      blaze::geqrf( A, tauA.data() );
+      blaze::geqrf( B, tauB.data() );
+
+      blaze::ormqr( C1, A, 'R', 'N', tauA.data() );
+      blaze::ormqr( C2, B, 'R', 'N', tauB.data() );
+      blaze::ormqr( C3, A, 'R', 'N', tauA.data() );
+      blaze::ormqr( C4, B, 'R', 'N', tauB.data() );
+
+      if( C1 != C2 || C1 != C3 || C1 != C4 ) {
+         std::ostringstream oss;
+         oss << " Test: " << test_ << "\n"
+             << " Error: Q multiplication failed\n"
+             << " Details:\n"
+             << "   Element type:\n"
+             << "     " << typeid( Type ).name() << "\n"
+             << "   Row-major/row-major multiplication:\n" << C1 << "\n"
+             << "   Row-major/column-major multiplication:\n" << C2 << "\n"
+             << "   Column-major/row-major multiplication:\n" << C3 << "\n"
+             << "   Column-major/column-major multiplication:\n" << C4 << "\n";
+         throw std::runtime_error( oss.str() );
+      }
+   }
+
+   {
+      test_ = "Multiplication of Q from a QR decomposition with a matrix ('R', 'T')";
+
+      blaze::StaticMatrix<Type,3UL,3UL,blaze::rowMajor> A;
+      randomize( A );
+
+      blaze::StaticMatrix<Type,3UL,3UL,blaze::columnMajor> B( A );
+
+      blaze::StaticVector<Type,3UL,blaze::rowVector> tauA;
+      blaze::StaticVector<Type,3UL,blaze::rowVector> tauB;
+
+      blaze::StaticMatrix<Type,5UL,3UL,blaze::rowMajor> C1;
+      randomize( C1 );
+
+      blaze::StaticMatrix<Type,5UL,3UL,blaze::rowMajor>    C2( C1 );
+      blaze::StaticMatrix<Type,5UL,3UL,blaze::columnMajor> C3( C1 );
+      blaze::StaticMatrix<Type,5UL,3UL,blaze::columnMajor> C4( C1 );
+
+      blaze::geqrf( A, tauA.data() );
+      blaze::geqrf( B, tauB.data() );
+
+      blaze::ormqr( C1, A, 'R', 'T', tauA.data() );
+      blaze::ormqr( C2, B, 'R', 'T', tauB.data() );
+      blaze::ormqr( C3, A, 'R', 'T', tauA.data() );
+      blaze::ormqr( C4, B, 'R', 'T', tauB.data() );
+
+      if( C1 != C2 || C1 != C3 || C1 != C4 ) {
+         std::ostringstream oss;
+         oss << " Test: " << test_ << "\n"
+             << " Error: Q multiplication failed\n"
+             << " Details:\n"
+             << "   Element type:\n"
+             << "     " << typeid( Type ).name() << "\n"
+             << "   Row-major/row-major multiplication:\n" << C1 << "\n"
+             << "   Row-major/column-major multiplication:\n" << C2 << "\n"
+             << "   Column-major/row-major multiplication:\n" << C3 << "\n"
+             << "   Column-major/column-major multiplication:\n" << C4 << "\n";
+         throw std::runtime_error( oss.str() );
+      }
+   }
+
+#endif
+}
+//*************************************************************************************************
+
+
+//*************************************************************************************************
+/*!\brief Test of the multiplication of Q from a QR decomposition with a matrix (unmqr).
+//
+// \return void
+// \exception std::runtime_error Error detected.
+//
+// This function performs a test of the multiplication of Q from a QR decomposition with a matrix
+// for various data types. In case an error is detected, a \a std::runtime_error exception is
+// thrown.
+*/
+template< typename Type >
+void OperationTest::testUnmqr()
+{
+#if BLAZETEST_MATHTEST_LAPACK_MODE
+
+   {
+      test_ = "Multiplication of Q from a QR decomposition with a matrix ('L', 'N')";
+
+      blaze::StaticMatrix<Type,3UL,5UL,blaze::rowMajor> A;
+      randomize( A );
+
+      blaze::StaticMatrix<Type,3UL,5UL,blaze::columnMajor> B( A );
+
+      blaze::StaticVector<Type,3UL,blaze::rowVector> tauA;
+      blaze::StaticVector<Type,3UL,blaze::rowVector> tauB;
+
+      blaze::StaticMatrix<Type,3UL,5UL,blaze::rowMajor> C1;
+      randomize( C1 );
+
+      blaze::StaticMatrix<Type,3UL,5UL,blaze::columnMajor> C2( C1 );
+
+      blaze::geqrf( A, tauA.data() );
+      blaze::geqrf( B, tauB.data() );
+
+      blaze::unmqr( C1, A, 'L', 'N', tauA.data() );
+      blaze::unmqr( C2, B, 'L', 'N', tauB.data() );
+
+      if( C1 != C2 ) {
+         std::ostringstream oss;
+         oss << " Test: " << test_ << "\n"
+             << " Error: Q multiplication failed\n"
+             << " Details:\n"
+             << "   Element type:\n"
+             << "     " << typeid( Type ).name() << "\n"
+             << "   Row-major multiplication:\n" << C1 << "\n"
+             << "   Column-major multiplication:\n" << C2 << "\n";
+         throw std::runtime_error( oss.str() );
+      }
+   }
+
+   {
+      test_ = "Multiplication of Q from a QR decomposition with a matrix ('L', 'C')";
+
+      blaze::StaticMatrix<Type,3UL,5UL,blaze::rowMajor> A;
+      randomize( A );
+
+      blaze::StaticMatrix<Type,3UL,5UL,blaze::columnMajor> B( A );
+
+      blaze::StaticVector<Type,3UL,blaze::rowVector> tauA;
+      blaze::StaticVector<Type,3UL,blaze::rowVector> tauB;
+
+      blaze::StaticMatrix<Type,3UL,5UL,blaze::rowMajor> C1;
+      randomize( C1 );
+
+      blaze::StaticMatrix<Type,3UL,5UL,blaze::columnMajor> C2( C1 );
+
+      blaze::geqrf( A, tauA.data() );
+      blaze::geqrf( B, tauB.data() );
+
+      blaze::unmqr( C1, A, 'L', 'C', tauA.data() );
+      blaze::unmqr( C2, B, 'L', 'C', tauB.data() );
+
+      if( C1 != C2 ) {
+         std::ostringstream oss;
+         oss << " Test: " << test_ << "\n"
+             << " Error: Q multiplication failed\n"
+             << " Details:\n"
+             << "   Element type:\n"
+             << "     " << typeid( Type ).name() << "\n"
+             << "   Row-major multiplication:\n" << C1 << "\n"
+             << "   Column-major multiplication:\n" << C2 << "\n";
+         throw std::runtime_error( oss.str() );
+      }
+   }
+
+   {
+      test_ = "Multiplication of Q from a QR decomposition with a matrix ('R', 'N')";
+
+      blaze::StaticMatrix<Type,3UL,3UL,blaze::rowMajor> A;
+      randomize( A );
+
+      blaze::StaticMatrix<Type,3UL,3UL,blaze::columnMajor> B( A );
+
+      blaze::StaticVector<Type,3UL,blaze::rowVector> tauA;
+      blaze::StaticVector<Type,3UL,blaze::rowVector> tauB;
+
+      blaze::StaticMatrix<Type,5UL,3UL,blaze::rowMajor> C1;
+      randomize( C1 );
+
+      blaze::StaticMatrix<Type,5UL,3UL,blaze::columnMajor> C2( C1 );
+
+      blaze::geqrf( A, tauA.data() );
+      blaze::geqrf( B, tauB.data() );
+
+      blaze::unmqr( C1, A, 'R', 'N', tauA.data() );
+      blaze::unmqr( C2, B, 'R', 'N', tauB.data() );
+
+      if( C1 != C2 ) {
+         std::ostringstream oss;
+         oss << " Test: " << test_ << "\n"
+             << " Error: Q multiplication failed\n"
+             << " Details:\n"
+             << "   Element type:\n"
+             << "     " << typeid( Type ).name() << "\n"
+             << "   Row-major multiplication:\n" << C1 << "\n"
+             << "   Column-major multiplication:\n" << C2 << "\n";
+         throw std::runtime_error( oss.str() );
+      }
+   }
+
+   {
+      test_ = "Multiplication of Q from a QR decomposition with a matrix ('R', 'C')";
+
+      blaze::StaticMatrix<Type,3UL,3UL,blaze::rowMajor> A;
+      randomize( A );
+
+      blaze::StaticMatrix<Type,3UL,3UL,blaze::columnMajor> B( A );
+
+      blaze::StaticVector<Type,3UL,blaze::rowVector> tauA;
+      blaze::StaticVector<Type,3UL,blaze::rowVector> tauB;
+
+      blaze::StaticMatrix<Type,5UL,3UL,blaze::rowMajor> C1;
+      randomize( C1 );
+
+      blaze::StaticMatrix<Type,5UL,3UL,blaze::columnMajor> C2( C1 );
+
+      blaze::geqrf( A, tauA.data() );
+      blaze::geqrf( B, tauB.data() );
+
+      blaze::unmqr( C1, A, 'R', 'C', tauA.data() );
+      blaze::unmqr( C2, B, 'R', 'C', tauB.data() );
+
+      if( C1 != C2 ) {
+         std::ostringstream oss;
+         oss << " Test: " << test_ << "\n"
+             << " Error: Q multiplication failed\n"
+             << " Details:\n"
+             << "   Element type:\n"
+             << "     " << typeid( Type ).name() << "\n"
+             << "   Row-major multiplication:\n" << C1 << "\n"
+             << "   Column-major multiplication:\n" << C2 << "\n";
+         throw std::runtime_error( oss.str() );
+      }
+   }
+
+#endif
+}
+//*************************************************************************************************
+
+
+//*************************************************************************************************
 /*!\brief Test of the RQ decomposition functions (gerqf).
 //
 // \return void
@@ -6386,6 +6738,350 @@ void OperationTest::testUngrq()
              << "     " << typeid( Type ).name() << "\n"
              << "   Row-major reconstruction:\n" << A << "\n"
              << "   Column-major reconstruction:\n" << B << "\n";
+         throw std::runtime_error( oss.str() );
+      }
+   }
+
+#endif
+}
+//*************************************************************************************************
+
+
+//*************************************************************************************************
+/*!\brief Test of the multiplication of Q from a RQ decomposition with a matrix (ormrq).
+//
+// \return void
+// \exception std::runtime_error Error detected.
+//
+// This function performs a test of the multiplication of Q from a RQ decomposition with a matrix
+// for various data types. In case an error is detected, a \a std::runtime_error exception is
+// thrown.
+*/
+template< typename Type >
+void OperationTest::testOrmrq()
+{
+#if BLAZETEST_MATHTEST_LAPACK_MODE
+
+   {
+      test_ = "Multiplication of Q from a RQ decomposition with a matrix ('L', 'N')";
+
+      blaze::StaticMatrix<Type,5UL,3UL,blaze::rowMajor> A;
+      randomize( A );
+
+      blaze::StaticMatrix<Type,5UL,3UL,blaze::columnMajor> B( A );
+
+      blaze::StaticVector<Type,3UL,blaze::rowVector> tauA;
+      blaze::StaticVector<Type,3UL,blaze::rowVector> tauB;
+
+      blaze::StaticMatrix<Type,3UL,5UL,blaze::rowMajor> C1;
+      randomize( C1 );
+
+      blaze::StaticMatrix<Type,3UL,5UL,blaze::rowMajor>    C2( C1 );
+      blaze::StaticMatrix<Type,3UL,5UL,blaze::columnMajor> C3( C1 );
+      blaze::StaticMatrix<Type,3UL,5UL,blaze::columnMajor> C4( C1 );
+
+      blaze::gerqf( A, tauA.data() );
+      blaze::gerqf( B, tauB.data() );
+
+      blaze::ormrq( C1, A, 'L', 'N', tauA.data() );
+      blaze::ormrq( C2, B, 'L', 'N', tauB.data() );
+      blaze::ormrq( C3, A, 'L', 'N', tauA.data() );
+      blaze::ormrq( C4, B, 'L', 'N', tauB.data() );
+
+      if( C1 != C2 || C1 != C3 || C1 != C4 ) {
+         std::ostringstream oss;
+         oss << " Test: " << test_ << "\n"
+             << " Error: Q multiplication failed\n"
+             << " Details:\n"
+             << "   Element type:\n"
+             << "     " << typeid( Type ).name() << "\n"
+             << "   Row-major/row-major multiplication:\n" << C1 << "\n"
+             << "   Row-major/column-major multiplication:\n" << C2 << "\n"
+             << "   Column-major/row-major multiplication:\n" << C3 << "\n"
+             << "   Column-major/column-major multiplication:\n" << C4 << "\n";
+         throw std::runtime_error( oss.str() );
+      }
+   }
+
+   {
+      test_ = "Multiplication of Q from a RQ decomposition with a matrix ('L', 'T')";
+
+      blaze::StaticMatrix<Type,5UL,3UL,blaze::rowMajor> A;
+      randomize( A );
+
+      blaze::StaticMatrix<Type,5UL,3UL,blaze::columnMajor> B( A );
+
+      blaze::StaticVector<Type,3UL,blaze::rowVector> tauA;
+      blaze::StaticVector<Type,3UL,blaze::rowVector> tauB;
+
+      blaze::StaticMatrix<Type,3UL,5UL,blaze::rowMajor> C1;
+      randomize( C1 );
+
+      blaze::StaticMatrix<Type,3UL,5UL,blaze::rowMajor>    C2( C1 );
+      blaze::StaticMatrix<Type,3UL,5UL,blaze::columnMajor> C3( C1 );
+      blaze::StaticMatrix<Type,3UL,5UL,blaze::columnMajor> C4( C1 );
+
+      blaze::gerqf( A, tauA.data() );
+      blaze::gerqf( B, tauB.data() );
+
+      blaze::ormrq( C1, A, 'L', 'T', tauA.data() );
+      blaze::ormrq( C2, B, 'L', 'T', tauB.data() );
+      blaze::ormrq( C3, A, 'L', 'T', tauA.data() );
+      blaze::ormrq( C4, B, 'L', 'T', tauB.data() );
+
+      if( C1 != C2 || C1 != C3 || C1 != C4 ) {
+         std::ostringstream oss;
+         oss << " Test: " << test_ << "\n"
+             << " Error: Q multiplication failed\n"
+             << " Details:\n"
+             << "   Element type:\n"
+             << "     " << typeid( Type ).name() << "\n"
+             << "   Row-major/row-major multiplication:\n" << C1 << "\n"
+             << "   Row-major/column-major multiplication:\n" << C2 << "\n"
+             << "   Column-major/row-major multiplication:\n" << C3 << "\n"
+             << "   Column-major/column-major multiplication:\n" << C4 << "\n";
+         throw std::runtime_error( oss.str() );
+      }
+   }
+
+   {
+      test_ = "Multiplication of Q from a RQ decomposition with a matrix ('R', 'N')";
+
+      blaze::StaticMatrix<Type,5UL,3UL,blaze::rowMajor> A;
+      randomize( A );
+
+      blaze::StaticMatrix<Type,5UL,3UL,blaze::columnMajor> B( A );
+
+      blaze::StaticVector<Type,3UL,blaze::rowVector> tauA;
+      blaze::StaticVector<Type,3UL,blaze::rowVector> tauB;
+
+      blaze::StaticMatrix<Type,5UL,3UL,blaze::rowMajor> C1;
+      randomize( C1 );
+
+      blaze::StaticMatrix<Type,5UL,3UL,blaze::rowMajor>    C2( C1 );
+      blaze::StaticMatrix<Type,5UL,3UL,blaze::columnMajor> C3( C1 );
+      blaze::StaticMatrix<Type,5UL,3UL,blaze::columnMajor> C4( C1 );
+
+      blaze::gerqf( A, tauA.data() );
+      blaze::gerqf( B, tauB.data() );
+
+      blaze::ormrq( C1, A, 'R', 'N', tauA.data() );
+      blaze::ormrq( C2, B, 'R', 'N', tauB.data() );
+      blaze::ormrq( C3, A, 'R', 'N', tauA.data() );
+      blaze::ormrq( C4, B, 'R', 'N', tauB.data() );
+
+      if( C1 != C2 || C1 != C3 || C1 != C4 ) {
+         std::ostringstream oss;
+         oss << " Test: " << test_ << "\n"
+             << " Error: Q multiplication failed\n"
+             << " Details:\n"
+             << "   Element type:\n"
+             << "     " << typeid( Type ).name() << "\n"
+             << "   Row-major/row-major multiplication:\n" << C1 << "\n"
+             << "   Row-major/column-major multiplication:\n" << C2 << "\n"
+             << "   Column-major/row-major multiplication:\n" << C3 << "\n"
+             << "   Column-major/column-major multiplication:\n" << C4 << "\n";
+         throw std::runtime_error( oss.str() );
+      }
+   }
+
+   {
+      test_ = "Multiplication of Q from a RQ decomposition with a matrix ('R', 'T')";
+
+      blaze::StaticMatrix<Type,5UL,3UL,blaze::rowMajor> A;
+      randomize( A );
+
+      blaze::StaticMatrix<Type,5UL,3UL,blaze::columnMajor> B( A );
+
+      blaze::StaticVector<Type,3UL,blaze::rowVector> tauA;
+      blaze::StaticVector<Type,3UL,blaze::rowVector> tauB;
+
+      blaze::StaticMatrix<Type,5UL,3UL,blaze::rowMajor> C1;
+      randomize( C1 );
+
+      blaze::StaticMatrix<Type,5UL,3UL,blaze::rowMajor>    C2( C1 );
+      blaze::StaticMatrix<Type,5UL,3UL,blaze::columnMajor> C3( C1 );
+      blaze::StaticMatrix<Type,5UL,3UL,blaze::columnMajor> C4( C1 );
+
+      blaze::gerqf( A, tauA.data() );
+      blaze::gerqf( B, tauB.data() );
+
+      blaze::ormrq( C1, A, 'R', 'T', tauA.data() );
+      blaze::ormrq( C2, B, 'R', 'T', tauB.data() );
+      blaze::ormrq( C3, A, 'R', 'T', tauA.data() );
+      blaze::ormrq( C4, B, 'R', 'T', tauB.data() );
+
+      if( C1 != C2 || C1 != C3 || C1 != C4 ) {
+         std::ostringstream oss;
+         oss << " Test: " << test_ << "\n"
+             << " Error: Q multiplication failed\n"
+             << " Details:\n"
+             << "   Element type:\n"
+             << "     " << typeid( Type ).name() << "\n"
+             << "   Row-major/row-major multiplication:\n" << C1 << "\n"
+             << "   Row-major/column-major multiplication:\n" << C2 << "\n"
+             << "   Column-major/row-major multiplication:\n" << C3 << "\n"
+             << "   Column-major/column-major multiplication:\n" << C4 << "\n";
+         throw std::runtime_error( oss.str() );
+      }
+   }
+
+#endif
+}
+//*************************************************************************************************
+
+
+//*************************************************************************************************
+/*!\brief Test of the multiplication of Q from a RQ decomposition with a matrix (unmrq).
+//
+// \return void
+// \exception std::runtime_error Error detected.
+//
+// This function performs a test of the multiplication of Q from a RQ decomposition with a matrix
+// for various data types. In case an error is detected, a \a std::runtime_error exception is
+// thrown.
+*/
+template< typename Type >
+void OperationTest::testUnmrq()
+{
+#if BLAZETEST_MATHTEST_LAPACK_MODE
+
+   {
+      test_ = "Multiplication of Q from a RQ decomposition with a matrix ('L', 'N')";
+
+      blaze::StaticMatrix<Type,5UL,3UL,blaze::rowMajor> A;
+      randomize( A );
+
+      blaze::StaticMatrix<Type,5UL,3UL,blaze::columnMajor> B( A );
+
+      blaze::StaticVector<Type,3UL,blaze::rowVector> tauA;
+      blaze::StaticVector<Type,3UL,blaze::rowVector> tauB;
+
+      blaze::StaticMatrix<Type,3UL,5UL,blaze::rowMajor> C1;
+      randomize( C1 );
+
+      blaze::StaticMatrix<Type,3UL,5UL,blaze::columnMajor> C2( C1 );
+
+      blaze::gerqf( A, tauA.data() );
+      blaze::gerqf( B, tauB.data() );
+
+      blaze::unmrq( C1, A, 'L', 'N', tauA.data() );
+      blaze::unmrq( C2, B, 'L', 'N', tauB.data() );
+
+      if( C1 != C2 ) {
+         std::ostringstream oss;
+         oss << " Test: " << test_ << "\n"
+             << " Error: Q multiplication failed\n"
+             << " Details:\n"
+             << "   Element type:\n"
+             << "     " << typeid( Type ).name() << "\n"
+             << "   Row-major multiplication:\n" << C1 << "\n"
+             << "   Column-major multiplication:\n" << C2 << "\n";
+         throw std::runtime_error( oss.str() );
+      }
+   }
+
+   {
+      test_ = "Multiplication of Q from a RQ decomposition with a matrix ('L', 'C')";
+
+      blaze::StaticMatrix<Type,5UL,3UL,blaze::rowMajor> A;
+      randomize( A );
+
+      blaze::StaticMatrix<Type,5UL,3UL,blaze::columnMajor> B( A );
+
+      blaze::StaticVector<Type,3UL,blaze::rowVector> tauA;
+      blaze::StaticVector<Type,3UL,blaze::rowVector> tauB;
+
+      blaze::StaticMatrix<Type,3UL,5UL,blaze::rowMajor> C1;
+      randomize( C1 );
+
+      blaze::StaticMatrix<Type,3UL,5UL,blaze::columnMajor> C2( C1 );
+
+      blaze::gerqf( A, tauA.data() );
+      blaze::gerqf( B, tauB.data() );
+
+      blaze::unmrq( C1, A, 'L', 'C', tauA.data() );
+      blaze::unmrq( C2, B, 'L', 'C', tauB.data() );
+
+      if( C1 != C2 ) {
+         std::ostringstream oss;
+         oss << " Test: " << test_ << "\n"
+             << " Error: Q multiplication failed\n"
+             << " Details:\n"
+             << "   Element type:\n"
+             << "     " << typeid( Type ).name() << "\n"
+             << "   Row-major multiplication:\n" << C1 << "\n"
+             << "   Column-major multiplication:\n" << C2 << "\n";
+         throw std::runtime_error( oss.str() );
+      }
+   }
+
+   {
+      test_ = "Multiplication of Q from a RQ decomposition with a matrix ('R', 'N')";
+
+      blaze::StaticMatrix<Type,5UL,3UL,blaze::rowMajor> A;
+      randomize( A );
+
+      blaze::StaticMatrix<Type,5UL,3UL,blaze::columnMajor> B( A );
+
+      blaze::StaticVector<Type,3UL,blaze::rowVector> tauA;
+      blaze::StaticVector<Type,3UL,blaze::rowVector> tauB;
+
+      blaze::StaticMatrix<Type,5UL,3UL,blaze::rowMajor> C1;
+      randomize( C1 );
+
+      blaze::StaticMatrix<Type,5UL,3UL,blaze::columnMajor> C2( C1 );
+
+      blaze::gerqf( A, tauA.data() );
+      blaze::gerqf( B, tauB.data() );
+
+      blaze::unmrq( C1, A, 'R', 'N', tauA.data() );
+      blaze::unmrq( C2, B, 'R', 'N', tauB.data() );
+
+      if( C1 != C2 ) {
+         std::ostringstream oss;
+         oss << " Test: " << test_ << "\n"
+             << " Error: Q multiplication failed\n"
+             << " Details:\n"
+             << "   Element type:\n"
+             << "     " << typeid( Type ).name() << "\n"
+             << "   Row-major multiplication:\n" << C1 << "\n"
+             << "   Column-major multiplication:\n" << C2 << "\n";
+         throw std::runtime_error( oss.str() );
+      }
+   }
+
+   {
+      test_ = "Multiplication of Q from a RQ decomposition with a matrix ('R', 'C')";
+
+      blaze::StaticMatrix<Type,5UL,3UL,blaze::rowMajor> A;
+      randomize( A );
+
+      blaze::StaticMatrix<Type,5UL,3UL,blaze::columnMajor> B( A );
+
+      blaze::StaticVector<Type,3UL,blaze::rowVector> tauA;
+      blaze::StaticVector<Type,3UL,blaze::rowVector> tauB;
+
+      blaze::StaticMatrix<Type,5UL,3UL,blaze::rowMajor> C1;
+      randomize( C1 );
+
+      blaze::StaticMatrix<Type,5UL,3UL,blaze::columnMajor> C2( C1 );
+
+      blaze::gerqf( A, tauA.data() );
+      blaze::gerqf( B, tauB.data() );
+
+      blaze::unmrq( C1, A, 'R', 'C', tauA.data() );
+      blaze::unmrq( C2, B, 'R', 'C', tauB.data() );
+
+      if( C1 != C2 ) {
+         std::ostringstream oss;
+         oss << " Test: " << test_ << "\n"
+             << " Error: Q multiplication failed\n"
+             << " Details:\n"
+             << "   Element type:\n"
+             << "     " << typeid( Type ).name() << "\n"
+             << "   Row-major multiplication:\n" << C1 << "\n"
+             << "   Column-major multiplication:\n" << C2 << "\n";
          throw std::runtime_error( oss.str() );
       }
    }
@@ -6625,6 +7321,350 @@ void OperationTest::testUngql()
 
 
 //*************************************************************************************************
+/*!\brief Test of the multiplication of Q from a QL decomposition with a matrix (ormql).
+//
+// \return void
+// \exception std::runtime_error Error detected.
+//
+// This function performs a test of the multiplication of Q from a QL decomposition with a matrix
+// for various data types. In case an error is detected, a \a std::runtime_error exception is
+// thrown.
+*/
+template< typename Type >
+void OperationTest::testOrmql()
+{
+#if BLAZETEST_MATHTEST_LAPACK_MODE
+
+   {
+      test_ = "Multiplication of Q from a QL decomposition with a matrix ('L', 'N')";
+
+      blaze::StaticMatrix<Type,5UL,3UL,blaze::rowMajor> A;
+      randomize( A );
+
+      blaze::StaticMatrix<Type,5UL,3UL,blaze::columnMajor> B( A );
+
+      blaze::StaticVector<Type,3UL,blaze::rowVector> tauA;
+      blaze::StaticVector<Type,3UL,blaze::rowVector> tauB;
+
+      blaze::StaticMatrix<Type,3UL,5UL,blaze::rowMajor> C1;
+      randomize( C1 );
+
+      blaze::StaticMatrix<Type,3UL,5UL,blaze::rowMajor>    C2( C1 );
+      blaze::StaticMatrix<Type,3UL,5UL,blaze::columnMajor> C3( C1 );
+      blaze::StaticMatrix<Type,3UL,5UL,blaze::columnMajor> C4( C1 );
+
+      blaze::geqlf( A, tauA.data() );
+      blaze::geqlf( B, tauB.data() );
+
+      blaze::ormql( C1, A, 'L', 'N', tauA.data() );
+      blaze::ormql( C2, B, 'L', 'N', tauB.data() );
+      blaze::ormql( C3, A, 'L', 'N', tauA.data() );
+      blaze::ormql( C4, B, 'L', 'N', tauB.data() );
+
+      if( C1 != C2 || C1 != C3 || C1 != C4 ) {
+         std::ostringstream oss;
+         oss << " Test: " << test_ << "\n"
+             << " Error: Q multiplication failed\n"
+             << " Details:\n"
+             << "   Element type:\n"
+             << "     " << typeid( Type ).name() << "\n"
+             << "   Row-major/row-major multiplication:\n" << C1 << "\n"
+             << "   Row-major/column-major multiplication:\n" << C2 << "\n"
+             << "   Column-major/row-major multiplication:\n" << C3 << "\n"
+             << "   Column-major/column-major multiplication:\n" << C4 << "\n";
+         throw std::runtime_error( oss.str() );
+      }
+   }
+
+   {
+      test_ = "Multiplication of Q from a QL decomposition with a matrix ('L', 'T')";
+
+      blaze::StaticMatrix<Type,5UL,3UL,blaze::rowMajor> A;
+      randomize( A );
+
+      blaze::StaticMatrix<Type,5UL,3UL,blaze::columnMajor> B( A );
+
+      blaze::StaticVector<Type,3UL,blaze::rowVector> tauA;
+      blaze::StaticVector<Type,3UL,blaze::rowVector> tauB;
+
+      blaze::StaticMatrix<Type,3UL,5UL,blaze::rowMajor> C1;
+      randomize( C1 );
+
+      blaze::StaticMatrix<Type,3UL,5UL,blaze::rowMajor>    C2( C1 );
+      blaze::StaticMatrix<Type,3UL,5UL,blaze::columnMajor> C3( C1 );
+      blaze::StaticMatrix<Type,3UL,5UL,blaze::columnMajor> C4( C1 );
+
+      blaze::geqlf( A, tauA.data() );
+      blaze::geqlf( B, tauB.data() );
+
+      blaze::ormql( C1, A, 'L', 'T', tauA.data() );
+      blaze::ormql( C2, B, 'L', 'T', tauB.data() );
+      blaze::ormql( C3, A, 'L', 'T', tauA.data() );
+      blaze::ormql( C4, B, 'L', 'T', tauB.data() );
+
+      if( C1 != C2 || C1 != C3 || C1 != C4 ) {
+         std::ostringstream oss;
+         oss << " Test: " << test_ << "\n"
+             << " Error: Q multiplication failed\n"
+             << " Details:\n"
+             << "   Element type:\n"
+             << "     " << typeid( Type ).name() << "\n"
+             << "   Row-major/row-major multiplication:\n" << C1 << "\n"
+             << "   Row-major/column-major multiplication:\n" << C2 << "\n"
+             << "   Column-major/row-major multiplication:\n" << C3 << "\n"
+             << "   Column-major/column-major multiplication:\n" << C4 << "\n";
+         throw std::runtime_error( oss.str() );
+      }
+   }
+
+   {
+      test_ = "Multiplication of Q from a QL decomposition with a matrix ('R', 'N')";
+
+      blaze::StaticMatrix<Type,5UL,3UL,blaze::rowMajor> A;
+      randomize( A );
+
+      blaze::StaticMatrix<Type,5UL,3UL,blaze::columnMajor> B( A );
+
+      blaze::StaticVector<Type,3UL,blaze::rowVector> tauA;
+      blaze::StaticVector<Type,3UL,blaze::rowVector> tauB;
+
+      blaze::StaticMatrix<Type,5UL,3UL,blaze::rowMajor> C1;
+      randomize( C1 );
+
+      blaze::StaticMatrix<Type,5UL,3UL,blaze::rowMajor>    C2( C1 );
+      blaze::StaticMatrix<Type,5UL,3UL,blaze::columnMajor> C3( C1 );
+      blaze::StaticMatrix<Type,5UL,3UL,blaze::columnMajor> C4( C1 );
+
+      blaze::geqlf( A, tauA.data() );
+      blaze::geqlf( B, tauB.data() );
+
+      blaze::ormql( C1, A, 'R', 'N', tauA.data() );
+      blaze::ormql( C2, B, 'R', 'N', tauB.data() );
+      blaze::ormql( C3, A, 'R', 'N', tauA.data() );
+      blaze::ormql( C4, B, 'R', 'N', tauB.data() );
+
+      if( C1 != C2 || C1 != C3 || C1 != C4 ) {
+         std::ostringstream oss;
+         oss << " Test: " << test_ << "\n"
+             << " Error: Q multiplication failed\n"
+             << " Details:\n"
+             << "   Element type:\n"
+             << "     " << typeid( Type ).name() << "\n"
+             << "   Row-major/row-major multiplication:\n" << C1 << "\n"
+             << "   Row-major/column-major multiplication:\n" << C2 << "\n"
+             << "   Column-major/row-major multiplication:\n" << C3 << "\n"
+             << "   Column-major/column-major multiplication:\n" << C4 << "\n";
+         throw std::runtime_error( oss.str() );
+      }
+   }
+
+   {
+      test_ = "Multiplication of Q from a QL decomposition with a matrix ('R', 'T')";
+
+      blaze::StaticMatrix<Type,5UL,3UL,blaze::rowMajor> A;
+      randomize( A );
+
+      blaze::StaticMatrix<Type,5UL,3UL,blaze::columnMajor> B( A );
+
+      blaze::StaticVector<Type,3UL,blaze::rowVector> tauA;
+      blaze::StaticVector<Type,3UL,blaze::rowVector> tauB;
+
+      blaze::StaticMatrix<Type,5UL,3UL,blaze::rowMajor> C1;
+      randomize( C1 );
+
+      blaze::StaticMatrix<Type,5UL,3UL,blaze::rowMajor>    C2( C1 );
+      blaze::StaticMatrix<Type,5UL,3UL,blaze::columnMajor> C3( C1 );
+      blaze::StaticMatrix<Type,5UL,3UL,blaze::columnMajor> C4( C1 );
+
+      blaze::geqlf( A, tauA.data() );
+      blaze::geqlf( B, tauB.data() );
+
+      blaze::ormql( C1, A, 'R', 'T', tauA.data() );
+      blaze::ormql( C2, B, 'R', 'T', tauB.data() );
+      blaze::ormql( C3, A, 'R', 'T', tauA.data() );
+      blaze::ormql( C4, B, 'R', 'T', tauB.data() );
+
+      if( C1 != C2 || C1 != C3 || C1 != C4 ) {
+         std::ostringstream oss;
+         oss << " Test: " << test_ << "\n"
+             << " Error: Q multiplication failed\n"
+             << " Details:\n"
+             << "   Element type:\n"
+             << "     " << typeid( Type ).name() << "\n"
+             << "   Row-major/row-major multiplication:\n" << C1 << "\n"
+             << "   Row-major/column-major multiplication:\n" << C2 << "\n"
+             << "   Column-major/row-major multiplication:\n" << C3 << "\n"
+             << "   Column-major/column-major multiplication:\n" << C4 << "\n";
+         throw std::runtime_error( oss.str() );
+      }
+   }
+
+#endif
+}
+//*************************************************************************************************
+
+
+//*************************************************************************************************
+/*!\brief Test of the multiplication of Q from a QL decomposition with a matrix (unmql).
+//
+// \return void
+// \exception std::runtime_error Error detected.
+//
+// This function performs a test of the multiplication of Q from a QL decomposition with a matrix
+// for various data types. In case an error is detected, a \a std::runtime_error exception is
+// thrown.
+*/
+template< typename Type >
+void OperationTest::testUnmql()
+{
+#if BLAZETEST_MATHTEST_LAPACK_MODE
+
+   {
+      test_ = "Multiplication of Q from a QL decomposition with a matrix ('L', 'N')";
+
+      blaze::StaticMatrix<Type,5UL,3UL,blaze::rowMajor> A;
+      randomize( A );
+
+      blaze::StaticMatrix<Type,5UL,3UL,blaze::columnMajor> B( A );
+
+      blaze::StaticVector<Type,3UL,blaze::rowVector> tauA;
+      blaze::StaticVector<Type,3UL,blaze::rowVector> tauB;
+
+      blaze::StaticMatrix<Type,3UL,5UL,blaze::rowMajor> C1;
+      randomize( C1 );
+
+      blaze::StaticMatrix<Type,3UL,5UL,blaze::columnMajor> C2( C1 );
+
+      blaze::geqlf( A, tauA.data() );
+      blaze::geqlf( B, tauB.data() );
+
+      blaze::unmql( C1, A, 'L', 'N', tauA.data() );
+      blaze::unmql( C2, B, 'L', 'N', tauB.data() );
+
+      if( C1 != C2 ) {
+         std::ostringstream oss;
+         oss << " Test: " << test_ << "\n"
+             << " Error: Q multiplication failed\n"
+             << " Details:\n"
+             << "   Element type:\n"
+             << "     " << typeid( Type ).name() << "\n"
+             << "   Row-major multiplication:\n" << C1 << "\n"
+             << "   Column-major multiplication:\n" << C2 << "\n";
+         throw std::runtime_error( oss.str() );
+      }
+   }
+
+   {
+      test_ = "Multiplication of Q from a QL decomposition with a matrix ('L', 'C')";
+
+      blaze::StaticMatrix<Type,5UL,3UL,blaze::rowMajor> A;
+      randomize( A );
+
+      blaze::StaticMatrix<Type,5UL,3UL,blaze::columnMajor> B( A );
+
+      blaze::StaticVector<Type,3UL,blaze::rowVector> tauA;
+      blaze::StaticVector<Type,3UL,blaze::rowVector> tauB;
+
+      blaze::StaticMatrix<Type,3UL,5UL,blaze::rowMajor> C1;
+      randomize( C1 );
+
+      blaze::StaticMatrix<Type,3UL,5UL,blaze::columnMajor> C2( C1 );
+
+      blaze::geqlf( A, tauA.data() );
+      blaze::geqlf( B, tauB.data() );
+
+      blaze::unmql( C1, A, 'L', 'C', tauA.data() );
+      blaze::unmql( C2, B, 'L', 'C', tauB.data() );
+
+      if( C1 != C2 ) {
+         std::ostringstream oss;
+         oss << " Test: " << test_ << "\n"
+             << " Error: Q multiplication failed\n"
+             << " Details:\n"
+             << "   Element type:\n"
+             << "     " << typeid( Type ).name() << "\n"
+             << "   Row-major/row-major multiplication:\n" << C1 << "\n"
+             << "   Column-major/row-major multiplication:\n" << C2 << "\n";
+         throw std::runtime_error( oss.str() );
+      }
+   }
+
+   {
+      test_ = "Multiplication of Q from a QL decomposition with a matrix ('R', 'N')";
+
+      blaze::StaticMatrix<Type,5UL,3UL,blaze::rowMajor> A;
+      randomize( A );
+
+      blaze::StaticMatrix<Type,5UL,3UL,blaze::columnMajor> B( A );
+
+      blaze::StaticVector<Type,3UL,blaze::rowVector> tauA;
+      blaze::StaticVector<Type,3UL,blaze::rowVector> tauB;
+
+      blaze::StaticMatrix<Type,5UL,3UL,blaze::rowMajor> C1;
+      randomize( C1 );
+
+      blaze::StaticMatrix<Type,5UL,3UL,blaze::columnMajor> C2( C1 );
+
+      blaze::geqlf( A, tauA.data() );
+      blaze::geqlf( B, tauB.data() );
+
+      blaze::unmql( C1, A, 'R', 'N', tauA.data() );
+      blaze::unmql( C2, B, 'R', 'N', tauB.data() );
+
+      if( C1 != C2 ) {
+         std::ostringstream oss;
+         oss << " Test: " << test_ << "\n"
+             << " Error: Q multiplication failed\n"
+             << " Details:\n"
+             << "   Element type:\n"
+             << "     " << typeid( Type ).name() << "\n"
+             << "   Row-major multiplication:\n" << C1 << "\n"
+             << "   Column-major multiplication:\n" << C2 << "\n";
+         throw std::runtime_error( oss.str() );
+      }
+   }
+
+   {
+      test_ = "Multiplication of Q from a QL decomposition with a matrix ('R', 'C')";
+
+      blaze::StaticMatrix<Type,5UL,3UL,blaze::rowMajor> A;
+      randomize( A );
+
+      blaze::StaticMatrix<Type,5UL,3UL,blaze::columnMajor> B( A );
+
+      blaze::StaticVector<Type,3UL,blaze::rowVector> tauA;
+      blaze::StaticVector<Type,3UL,blaze::rowVector> tauB;
+
+      blaze::StaticMatrix<Type,5UL,3UL,blaze::rowMajor> C1;
+      randomize( C1 );
+
+      blaze::StaticMatrix<Type,5UL,3UL,blaze::columnMajor> C2( C1 );
+
+      blaze::geqlf( A, tauA.data() );
+      blaze::geqlf( B, tauB.data() );
+
+      blaze::unmql( C1, A, 'R', 'C', tauA.data() );
+      blaze::unmql( C2, B, 'R', 'C', tauB.data() );
+
+      if( C1 != C2 ) {
+         std::ostringstream oss;
+         oss << " Test: " << test_ << "\n"
+             << " Error: Q multiplication failed\n"
+             << " Details:\n"
+             << "   Element type:\n"
+             << "     " << typeid( Type ).name() << "\n"
+             << "   Row-major multiplication:\n" << C1 << "\n"
+             << "   Column-major multiplication:\n" << C2 << "\n";
+         throw std::runtime_error( oss.str() );
+      }
+   }
+
+#endif
+}
+//*************************************************************************************************
+
+
+//*************************************************************************************************
 /*!\brief Test of the LQ decomposition functions (gelqf).
 //
 // \return void
@@ -6844,6 +7884,350 @@ void OperationTest::testUnglq()
              << "     " << typeid( Type ).name() << "\n"
              << "   Row-major reconstruction:\n" << A << "\n"
              << "   Column-major reconstruction:\n" << B << "\n";
+         throw std::runtime_error( oss.str() );
+      }
+   }
+
+#endif
+}
+//*************************************************************************************************
+
+
+//*************************************************************************************************
+/*!\brief Test of the multiplication of Q from a LQ decomposition with a matrix (ormlq).
+//
+// \return void
+// \exception std::runtime_error Error detected.
+//
+// This function performs a test of the multiplication of Q from a LQ decomposition with a matrix
+// for various data types. In case an error is detected, a \a std::runtime_error exception is
+// thrown.
+*/
+template< typename Type >
+void OperationTest::testOrmlq()
+{
+#if BLAZETEST_MATHTEST_LAPACK_MODE
+
+   {
+      test_ = "Multiplication of Q from a LQ decomposition with a matrix ('L', 'N')";
+
+      blaze::StaticMatrix<Type,3UL,5UL,blaze::rowMajor> A;
+      randomize( A );
+
+      blaze::StaticMatrix<Type,3UL,5UL,blaze::columnMajor> B( A );
+
+      blaze::StaticVector<Type,3UL,blaze::rowVector> tauA;
+      blaze::StaticVector<Type,3UL,blaze::rowVector> tauB;
+
+      blaze::StaticMatrix<Type,3UL,5UL,blaze::rowMajor> C1;
+      randomize( C1 );
+
+      blaze::StaticMatrix<Type,3UL,5UL,blaze::rowMajor>    C2( C1 );
+      blaze::StaticMatrix<Type,3UL,5UL,blaze::columnMajor> C3( C1 );
+      blaze::StaticMatrix<Type,3UL,5UL,blaze::columnMajor> C4( C1 );
+
+      blaze::gelqf( A, tauA.data() );
+      blaze::gelqf( B, tauB.data() );
+
+      blaze::ormlq( C1, A, 'L', 'N', tauA.data() );
+      blaze::ormlq( C2, B, 'L', 'N', tauB.data() );
+      blaze::ormlq( C3, A, 'L', 'N', tauA.data() );
+      blaze::ormlq( C4, B, 'L', 'N', tauB.data() );
+
+      if( C1 != C2 || C1 != C3 || C1 != C4 ) {
+         std::ostringstream oss;
+         oss << " Test: " << test_ << "\n"
+             << " Error: Q multiplication failed\n"
+             << " Details:\n"
+             << "   Element type:\n"
+             << "     " << typeid( Type ).name() << "\n"
+             << "   Row-major/row-major multiplication:\n" << C1 << "\n"
+             << "   Row-major/column-major multiplication:\n" << C2 << "\n"
+             << "   Column-major/row-major multiplication:\n" << C3 << "\n"
+             << "   Column-major/column-major multiplication:\n" << C4 << "\n";
+         throw std::runtime_error( oss.str() );
+      }
+   }
+
+   {
+      test_ = "Multiplication of Q from a LQ decomposition with a matrix ('L', 'T')";
+
+      blaze::StaticMatrix<Type,3UL,5UL,blaze::rowMajor> A;
+      randomize( A );
+
+      blaze::StaticMatrix<Type,3UL,5UL,blaze::columnMajor> B( A );
+
+      blaze::StaticVector<Type,3UL,blaze::rowVector> tauA;
+      blaze::StaticVector<Type,3UL,blaze::rowVector> tauB;
+
+      blaze::StaticMatrix<Type,3UL,5UL,blaze::rowMajor> C1;
+      randomize( C1 );
+
+      blaze::StaticMatrix<Type,3UL,5UL,blaze::rowMajor>    C2( C1 );
+      blaze::StaticMatrix<Type,3UL,5UL,blaze::columnMajor> C3( C1 );
+      blaze::StaticMatrix<Type,3UL,5UL,blaze::columnMajor> C4( C1 );
+
+      blaze::gelqf( A, tauA.data() );
+      blaze::gelqf( B, tauB.data() );
+
+      blaze::ormlq( C1, A, 'L', 'T', tauA.data() );
+      blaze::ormlq( C2, B, 'L', 'T', tauB.data() );
+      blaze::ormlq( C3, A, 'L', 'T', tauA.data() );
+      blaze::ormlq( C4, B, 'L', 'T', tauB.data() );
+
+      if( C1 != C2 || C1 != C3 || C1 != C4 ) {
+         std::ostringstream oss;
+         oss << " Test: " << test_ << "\n"
+             << " Error: Q multiplication failed\n"
+             << " Details:\n"
+             << "   Element type:\n"
+             << "     " << typeid( Type ).name() << "\n"
+             << "   Row-major/row-major multiplication:\n" << C1 << "\n"
+             << "   Row-major/column-major multiplication:\n" << C2 << "\n"
+             << "   Column-major/row-major multiplication:\n" << C3 << "\n"
+             << "   Column-major/column-major multiplication:\n" << C4 << "\n";
+         throw std::runtime_error( oss.str() );
+      }
+   }
+
+   {
+      test_ = "Multiplication of Q from a LQ decomposition with a matrix ('R', 'N')";
+
+      blaze::StaticMatrix<Type,3UL,3UL,blaze::rowMajor> A;
+      randomize( A );
+
+      blaze::StaticMatrix<Type,3UL,3UL,blaze::columnMajor> B( A );
+
+      blaze::StaticVector<Type,3UL,blaze::rowVector> tauA;
+      blaze::StaticVector<Type,3UL,blaze::rowVector> tauB;
+
+      blaze::StaticMatrix<Type,5UL,3UL,blaze::rowMajor> C1;
+      randomize( C1 );
+
+      blaze::StaticMatrix<Type,5UL,3UL,blaze::rowMajor>    C2( C1 );
+      blaze::StaticMatrix<Type,5UL,3UL,blaze::columnMajor> C3( C1 );
+      blaze::StaticMatrix<Type,5UL,3UL,blaze::columnMajor> C4( C1 );
+
+      blaze::gelqf( A, tauA.data() );
+      blaze::gelqf( B, tauB.data() );
+
+      blaze::ormlq( C1, A, 'R', 'N', tauA.data() );
+      blaze::ormlq( C2, B, 'R', 'N', tauB.data() );
+      blaze::ormlq( C3, A, 'R', 'N', tauA.data() );
+      blaze::ormlq( C4, B, 'R', 'N', tauB.data() );
+
+      if( C1 != C2 || C1 != C3 || C1 != C4 ) {
+         std::ostringstream oss;
+         oss << " Test: " << test_ << "\n"
+             << " Error: Q multiplication failed\n"
+             << " Details:\n"
+             << "   Element type:\n"
+             << "     " << typeid( Type ).name() << "\n"
+             << "   Row-major/row-major multiplication:\n" << C1 << "\n"
+             << "   Row-major/column-major multiplication:\n" << C2 << "\n"
+             << "   Column-major/row-major multiplication:\n" << C3 << "\n"
+             << "   Column-major/column-major multiplication:\n" << C4 << "\n";
+         throw std::runtime_error( oss.str() );
+      }
+   }
+
+   {
+      test_ = "Multiplication of Q from a LQ decomposition with a matrix ('R', 'T')";
+
+      blaze::StaticMatrix<Type,3UL,3UL,blaze::rowMajor> A;
+      randomize( A );
+
+      blaze::StaticMatrix<Type,3UL,3UL,blaze::columnMajor> B( A );
+
+      blaze::StaticVector<Type,3UL,blaze::rowVector> tauA;
+      blaze::StaticVector<Type,3UL,blaze::rowVector> tauB;
+
+      blaze::StaticMatrix<Type,5UL,3UL,blaze::rowMajor> C1;
+      randomize( C1 );
+
+      blaze::StaticMatrix<Type,5UL,3UL,blaze::rowMajor>    C2( C1 );
+      blaze::StaticMatrix<Type,5UL,3UL,blaze::columnMajor> C3( C1 );
+      blaze::StaticMatrix<Type,5UL,3UL,blaze::columnMajor> C4( C1 );
+
+      blaze::gelqf( A, tauA.data() );
+      blaze::gelqf( B, tauB.data() );
+
+      blaze::ormlq( C1, A, 'R', 'T', tauA.data() );
+      blaze::ormlq( C2, B, 'R', 'T', tauB.data() );
+      blaze::ormlq( C3, A, 'R', 'T', tauA.data() );
+      blaze::ormlq( C4, B, 'R', 'T', tauB.data() );
+
+      if( C1 != C2 || C1 != C3 || C1 != C4 ) {
+         std::ostringstream oss;
+         oss << " Test: " << test_ << "\n"
+             << " Error: Q multiplication failed\n"
+             << " Details:\n"
+             << "   Element type:\n"
+             << "     " << typeid( Type ).name() << "\n"
+             << "   Row-major/row-major multiplication:\n" << C1 << "\n"
+             << "   Row-major/column-major multiplication:\n" << C2 << "\n"
+             << "   Column-major/row-major multiplication:\n" << C3 << "\n"
+             << "   Column-major/column-major multiplication:\n" << C4 << "\n";
+         throw std::runtime_error( oss.str() );
+      }
+   }
+
+#endif
+}
+//*************************************************************************************************
+
+
+//*************************************************************************************************
+/*!\brief Test of the multiplication of Q from a LQ decomposition with a matrix (unmlq).
+//
+// \return void
+// \exception std::runtime_error Error detected.
+//
+// This function performs a test of the multiplication of Q from a LQ decomposition with a matrix
+// for various data types. In case an error is detected, a \a std::runtime_error exception is
+// thrown.
+*/
+template< typename Type >
+void OperationTest::testUnmlq()
+{
+#if BLAZETEST_MATHTEST_LAPACK_MODE
+
+   {
+      test_ = "Multiplication of Q from a LQ decomposition with a matrix ('L', 'N')";
+
+      blaze::StaticMatrix<Type,3UL,5UL,blaze::rowMajor> A;
+      randomize( A );
+
+      blaze::StaticMatrix<Type,3UL,5UL,blaze::columnMajor> B( A );
+
+      blaze::StaticVector<Type,3UL,blaze::rowVector> tauA;
+      blaze::StaticVector<Type,3UL,blaze::rowVector> tauB;
+
+      blaze::StaticMatrix<Type,3UL,5UL,blaze::rowMajor> C1;
+      randomize( C1 );
+
+      blaze::StaticMatrix<Type,3UL,5UL,blaze::columnMajor> C2( C1 );
+
+      blaze::gelqf( A, tauA.data() );
+      blaze::gelqf( B, tauB.data() );
+
+      blaze::unmlq( C1, A, 'L', 'N', tauA.data() );
+      blaze::unmlq( C2, B, 'L', 'N', tauB.data() );
+
+      if( C1 != C2 ) {
+         std::ostringstream oss;
+         oss << " Test: " << test_ << "\n"
+             << " Error: Q multiplication failed\n"
+             << " Details:\n"
+             << "   Element type:\n"
+             << "     " << typeid( Type ).name() << "\n"
+             << "   Row-major multiplication:\n" << C1 << "\n"
+             << "   Column-major multiplication:\n" << C2 << "\n";
+         throw std::runtime_error( oss.str() );
+      }
+   }
+
+   {
+      test_ = "Multiplication of Q from a LQ decomposition with a matrix ('L', 'C')";
+
+      blaze::StaticMatrix<Type,3UL,5UL,blaze::rowMajor> A;
+      randomize( A );
+
+      blaze::StaticMatrix<Type,3UL,5UL,blaze::columnMajor> B( A );
+
+      blaze::StaticVector<Type,3UL,blaze::rowVector> tauA;
+      blaze::StaticVector<Type,3UL,blaze::rowVector> tauB;
+
+      blaze::StaticMatrix<Type,3UL,5UL,blaze::rowMajor> C1;
+      randomize( C1 );
+
+      blaze::StaticMatrix<Type,3UL,5UL,blaze::columnMajor> C2( C1 );
+
+      blaze::gelqf( A, tauA.data() );
+      blaze::gelqf( B, tauB.data() );
+
+      blaze::unmlq( C1, A, 'L', 'C', tauA.data() );
+      blaze::unmlq( C2, B, 'L', 'C', tauB.data() );
+
+      if( C1 != C2 ) {
+         std::ostringstream oss;
+         oss << " Test: " << test_ << "\n"
+             << " Error: Q multiplication failed\n"
+             << " Details:\n"
+             << "   Element type:\n"
+             << "     " << typeid( Type ).name() << "\n"
+             << "   Row-major multiplication:\n" << C1 << "\n"
+             << "   Column-major multiplication:\n" << C2 << "\n";
+         throw std::runtime_error( oss.str() );
+      }
+   }
+
+   {
+      test_ = "Multiplication of Q from a LQ decomposition with a matrix ('R', 'N')";
+
+      blaze::StaticMatrix<Type,3UL,3UL,blaze::rowMajor> A;
+      randomize( A );
+
+      blaze::StaticMatrix<Type,3UL,3UL,blaze::columnMajor> B( A );
+
+      blaze::StaticVector<Type,3UL,blaze::rowVector> tauA;
+      blaze::StaticVector<Type,3UL,blaze::rowVector> tauB;
+
+      blaze::StaticMatrix<Type,5UL,3UL,blaze::rowMajor> C1;
+      randomize( C1 );
+
+      blaze::StaticMatrix<Type,5UL,3UL,blaze::columnMajor> C2( C1 );
+
+      blaze::gelqf( A, tauA.data() );
+      blaze::gelqf( B, tauB.data() );
+
+      blaze::unmlq( C1, A, 'R', 'N', tauA.data() );
+      blaze::unmlq( C2, B, 'R', 'N', tauB.data() );
+
+      if( C1 != C2 ) {
+         std::ostringstream oss;
+         oss << " Test: " << test_ << "\n"
+             << " Error: Q multiplication failed\n"
+             << " Details:\n"
+             << "   Element type:\n"
+             << "     " << typeid( Type ).name() << "\n"
+             << "   Row-major multiplication:\n" << C1 << "\n"
+             << "   Column-major multiplication:\n" << C2 << "\n";
+         throw std::runtime_error( oss.str() );
+      }
+   }
+
+   {
+      test_ = "Multiplication of Q from a LQ decomposition with a matrix ('R', 'C')";
+
+      blaze::StaticMatrix<Type,3UL,3UL,blaze::rowMajor> A;
+      randomize( A );
+
+      blaze::StaticMatrix<Type,3UL,3UL,blaze::columnMajor> B( A );
+
+      blaze::StaticVector<Type,3UL,blaze::rowVector> tauA;
+      blaze::StaticVector<Type,3UL,blaze::rowVector> tauB;
+
+      blaze::StaticMatrix<Type,5UL,3UL,blaze::rowMajor> C1;
+      randomize( C1 );
+
+      blaze::StaticMatrix<Type,5UL,3UL,blaze::columnMajor> C2( C1 );
+
+      blaze::gelqf( A, tauA.data() );
+      blaze::gelqf( B, tauB.data() );
+
+      blaze::unmlq( C1, A, 'R', 'C', tauA.data() );
+      blaze::unmlq( C2, B, 'R', 'C', tauB.data() );
+
+      if( C1 != C2 ) {
+         std::ostringstream oss;
+         oss << " Test: " << test_ << "\n"
+             << " Error: Q multiplication failed\n"
+             << " Details:\n"
+             << "   Element type:\n"
+             << "     " << typeid( Type ).name() << "\n"
+             << "   Row-major multiplication:\n" << C1 << "\n"
+             << "   Column-major multiplication:\n" << C2 << "\n";
          throw std::runtime_error( oss.str() );
       }
    }
