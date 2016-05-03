@@ -279,7 +279,7 @@ inline void invert2x2( HermitianMatrix<MT,SO,true>& m )
    const MT& A( m.matrix_ );
    MT& B( m.matrix_ );
 
-   const ET det( A(0,0)*A(1,1) - A(0,1)*A(1,0) );
+   const ET det( real( A(0,0)*A(1,1) - A(0,1)*A(1,0) ) );
 
    if( isDefault( det ) ) {
       BLAZE_THROW_INVALID_ARGUMENT( "Inversion of singular matrix failed" );
@@ -288,10 +288,10 @@ inline void invert2x2( HermitianMatrix<MT,SO,true>& m )
    const ET idet( ET(1) / det );
    const ET a11( A(0,0) * idet );
 
-   B(0,0) =  A(1,1) * idet;
+   B(0,0) =  ET( A(1,1) * idet );
    B(1,0) = -A(1,0) * idet;
    B(0,1) =  conj( B(1,0) );
-   B(1,1) =  a11;
+   B(1,1) =  ET( a11 );
 
    BLAZE_INTERNAL_ASSERT( isIntact( m ), "Broken invariant detected" );
 }
@@ -329,22 +329,22 @@ inline void invert3x3( HermitianMatrix<MT,SO,true>& m )
    const StaticMatrix<ET,3UL,3UL,SO> A( m.matrix_ );
    MT& B( m.matrix_ );
 
-   B(0,0) = A(1,1)*A(2,2) - A(1,2)*A(2,1);
+   B(0,0) = ET( real( A(1,1)*A(2,2) - A(1,2)*A(2,1) ) );
    B(1,0) = A(1,2)*A(2,0) - A(1,0)*A(2,2);
    B(2,0) = A(1,0)*A(2,1) - A(1,1)*A(2,0);
 
-   const ET det( A(0,0)*B(0,0) + A(0,1)*B(1,0) + A(0,2)*B(2,0) );
+   const ET det( real( A(0,0)*B(0,0) + A(0,1)*B(1,0) + A(0,2)*B(2,0) ) );
 
    if( isDefault( det ) ) {
       BLAZE_THROW_INVALID_ARGUMENT( "Inversion of singular matrix failed" );
    }
 
    B(0,1) = conj( B(1,0) );
-   B(1,1) = A(0,0)*A(2,2) - A(0,2)*A(2,0);
+   B(1,1) = ET( real( A(0,0)*A(2,2) - A(0,2)*A(2,0) ) );
    B(2,1) = A(0,1)*A(2,0) - A(0,0)*A(2,1);
    B(0,2) = conj( B(2,0) );
    B(1,2) = conj( B(2,1) );
-   B(2,2) = A(0,0)*A(1,1) - A(0,1)*A(1,0);
+   B(2,2) = ET( real( A(0,0)*A(1,1) - A(0,1)*A(1,0) ) );
 
    m /= det;
 
@@ -388,13 +388,13 @@ inline void invert4x4( HermitianMatrix<MT,SO,true>& m )
    ET tmp2( A(2,1)*A(3,3) - A(2,3)*A(3,1) );
    ET tmp3( A(2,1)*A(3,2) - A(2,2)*A(3,1) );
 
-   B(0,0) = A(1,1)*tmp1 - A(1,2)*tmp2 + A(1,3)*tmp3;
+   B(0,0) = ET( real( A(1,1)*tmp1 - A(1,2)*tmp2 + A(1,3)*tmp3 ) );
    B(0,1) = A(0,2)*tmp2 - A(0,1)*tmp1 - A(0,3)*tmp3;
 
    ET tmp4( A(2,0)*A(3,3) - A(2,3)*A(3,0) );
    ET tmp5( A(2,0)*A(3,2) - A(2,2)*A(3,0) );
 
-   B(1,1) = A(0,0)*tmp1 - A(0,2)*tmp4 + A(0,3)*tmp5;
+   B(1,1) = ET( real( A(0,0)*tmp1 - A(0,2)*tmp4 + A(0,3)*tmp5 ) );
 
    tmp1 = A(2,0)*A(3,1) - A(2,1)*A(3,0);
 
@@ -409,9 +409,9 @@ inline void invert4x4( HermitianMatrix<MT,SO,true>& m )
    tmp4 = A(0,0)*A(1,2) - A(0,2)*A(1,0);
    tmp5 = A(0,0)*A(1,1) - A(0,1)*A(1,0);
 
-   B(2,2) = A(3,0)*tmp1 - A(3,1)*tmp3 + A(3,3)*tmp5;
+   B(2,2) = ET( real( A(3,0)*tmp1 - A(3,1)*tmp3 + A(3,3)*tmp5 ) );
    B(2,3) = A(2,1)*tmp3 - A(2,0)*tmp1 - A(2,3)*tmp5;
-   B(3,3) = A(2,0)*tmp2 - A(2,1)*tmp4 + A(2,2)*tmp5;
+   B(3,3) = ET( real( A(2,0)*tmp2 - A(2,1)*tmp4 + A(2,2)*tmp5 ) );
 
    B(0,2) = conj( B(2,0) );
    B(0,3) = conj( B(3,0) );
@@ -420,7 +420,7 @@ inline void invert4x4( HermitianMatrix<MT,SO,true>& m )
    B(1,3) = conj( B(3,1) );
    B(3,2) = conj( B(2,3) );
 
-   const ET det( A(0,0)*B(0,0) + A(0,1)*B(1,0) + A(0,2)*B(2,0) + A(0,3)*B(3,0) );
+   const ET det( real( A(0,0)*B(0,0) + A(0,1)*B(1,0) + A(0,2)*B(2,0) + A(0,3)*B(3,0) ) );
 
    if( isDefault( det ) ) {
       BLAZE_THROW_INVALID_ARGUMENT( "Inversion of singular matrix failed" );
@@ -483,9 +483,9 @@ inline void invert5x5( HermitianMatrix<MT,SO,true>& m )
    ET tmp16( A(2,0)*tmp2 - A(2,2)*tmp7 + A(2,4)*tmp9  );
    ET tmp17( A(2,0)*tmp3 - A(2,2)*tmp8 + A(2,3)*tmp9  );
 
-   B(0,0) =   A(1,1)*tmp11 - A(1,2)*tmp12 + A(1,3)*tmp13 - A(1,4)*tmp14;
+   B(0,0) = ET( real( A(1,1)*tmp11 - A(1,2)*tmp12 + A(1,3)*tmp13 - A(1,4)*tmp14 ) );
    B(0,1) = - A(0,1)*tmp11 + A(0,2)*tmp12 - A(0,3)*tmp13 + A(0,4)*tmp14;
-   B(1,1) =   A(0,0)*tmp11 - A(0,2)*tmp15 + A(0,3)*tmp16 - A(0,4)*tmp17;
+   B(1,1) = ET( real( A(0,0)*tmp11 - A(0,2)*tmp15 + A(0,3)*tmp16 - A(0,4)*tmp17 ) );
 
    ET tmp18( A(2,0)*tmp4 - A(2,1)*tmp7 + A(2,4)*tmp10 );
    ET tmp19( A(2,0)*tmp5 - A(2,1)*tmp8 + A(2,3)*tmp10 );
@@ -503,7 +503,7 @@ inline void invert5x5( HermitianMatrix<MT,SO,true>& m )
    tmp13 = A(1,0)*tmp4 - A(1,1)*tmp7 + A(1,4)*tmp10;
    tmp14 = A(1,0)*tmp5 - A(1,1)*tmp8 + A(1,3)*tmp10;
 
-   B(2,2) = A(0,0)*tmp11 - A(0,1)*tmp12 + A(0,3)*tmp13 - A(0,4)*tmp14;
+   B(2,2) = ET( real( A(0,0)*tmp11 - A(0,1)*tmp12 + A(0,3)*tmp13 - A(0,4)*tmp14 ) );
 
    tmp1  = A(0,2)*A(1,3) - A(0,3)*A(1,2);
    tmp2  = A(0,1)*A(1,3) - A(0,3)*A(1,1);
@@ -528,9 +528,9 @@ inline void invert5x5( HermitianMatrix<MT,SO,true>& m )
 
    B(2,3) =   A(4,0)*tmp11 - A(4,1)*tmp14 + A(4,3)*tmp17 - A(4,4)*tmp18;
    B(2,4) = - A(3,0)*tmp11 + A(3,1)*tmp14 - A(3,3)*tmp17 + A(3,4)*tmp18;
-   B(3,3) = - A(4,0)*tmp12 + A(4,1)*tmp15 - A(4,2)*tmp17 + A(4,4)*tmp19;
+   B(3,3) = - ET( real( A(4,0)*tmp12 - A(4,1)*tmp15 + A(4,2)*tmp17 - A(4,4)*tmp19 ) );
    B(3,4) =   A(3,0)*tmp12 - A(3,1)*tmp15 + A(3,2)*tmp17 - A(3,4)*tmp19;
-   B(4,4) = - A(3,0)*tmp13 + A(3,1)*tmp16 - A(3,2)*tmp18 + A(3,3)*tmp19;
+   B(4,4) = - ET( real( A(3,0)*tmp13 - A(3,1)*tmp16 + A(3,2)*tmp18 - A(3,3)*tmp19 ) );
 
    B(0,2) = conj( B(2,0) );
    B(0,3) = conj( B(3,0) );
@@ -543,7 +543,7 @@ inline void invert5x5( HermitianMatrix<MT,SO,true>& m )
    B(4,2) = conj( B(2,4) );
    B(4,3) = conj( B(3,4) );
 
-   const ET det( A(0,0)*B(0,0) + A(0,1)*B(1,0) + A(0,2)*B(2,0) + A(0,3)*B(3,0) + A(0,4)*B(4,0) );
+   const ET det( real( A(0,0)*B(0,0) + A(0,1)*B(1,0) + A(0,2)*B(2,0) + A(0,3)*B(3,0) + A(0,4)*B(4,0) ) );
 
    if( isDefault( det ) ) {
       BLAZE_THROW_INVALID_ARGUMENT( "Inversion of singular matrix failed" );
@@ -634,9 +634,9 @@ inline void invert6x6( HermitianMatrix<MT,SO,true>& m )
    ET tmp43( A(2,0)*tmp18 - A(2,2)*tmp27 + A(2,3)*tmp29 - A(2,5)*tmp31 );
    ET tmp44( A(2,0)*tmp19 - A(2,2)*tmp28 + A(2,3)*tmp30 - A(2,4)*tmp31 );
 
-   B(0,0) =   A(1,1)*tmp36 - A(1,2)*tmp37 + A(1,3)*tmp38 - A(1,4)*tmp39 + A(1,5)*tmp40;
+   B(0,0) = ET( real( A(1,1)*tmp36 - A(1,2)*tmp37 + A(1,3)*tmp38 - A(1,4)*tmp39 + A(1,5)*tmp40 ) );
    B(0,1) = - A(0,1)*tmp36 + A(0,2)*tmp37 - A(0,3)*tmp38 + A(0,4)*tmp39 - A(0,5)*tmp40;
-   B(1,1) =   A(0,0)*tmp36 - A(0,2)*tmp41 + A(0,3)*tmp42 - A(0,4)*tmp43 + A(0,5)*tmp44;
+   B(1,1) = ET( real( A(0,0)*tmp36 - A(0,2)*tmp41 + A(0,3)*tmp42 - A(0,4)*tmp43 + A(0,5)*tmp44 ) );
 
    ET tmp45( A(2,0)*tmp20 - A(2,1)*tmp26 + A(2,4)*tmp32 - A(2,5)*tmp33 );
    ET tmp46( A(2,0)*tmp21 - A(2,1)*tmp27 + A(2,3)*tmp32 - A(2,5)*tmp34 );
@@ -666,7 +666,7 @@ inline void invert6x6( HermitianMatrix<MT,SO,true>& m )
    tmp43 = A(1,0)*tmp23 - A(1,1)*tmp29 + A(1,2)*tmp32 - A(1,5)*tmp35;
    tmp44 = A(1,0)*tmp24 - A(1,1)*tmp30 + A(1,2)*tmp33 - A(1,4)*tmp35;
 
-   B(2,2) =   A(0,0)*tmp36 - A(0,1)*tmp38 + A(0,3)*tmp40 - A(0,4)*tmp41 + A(0,5)*tmp42;
+   B(2,2) = ET( real( A(0,0)*tmp36 - A(0,1)*tmp38 + A(0,3)*tmp40 - A(0,4)*tmp41 + A(0,5)*tmp42 ) );
    B(3,2) = - A(0,0)*tmp37 + A(0,1)*tmp39 - A(0,2)*tmp40 + A(0,4)*tmp43 - A(0,5)*tmp44;
 
    tmp1  = A(0,3)*A(1,4) - A(0,4)*A(1,3);
@@ -727,9 +727,9 @@ inline void invert6x6( HermitianMatrix<MT,SO,true>& m )
    tmp39 = A(3,0)*tmp19 - A(3,2)*tmp28 + A(3,3)*tmp30 - A(3,4)*tmp31;
    tmp40 = A(3,0)*tmp25 - A(3,1)*tmp31 + A(3,2)*tmp34 - A(3,3)*tmp35;
 
-   B(4,4) = - A(5,0)*tmp36 + A(5,1)*tmp38 - A(5,2)*tmp41 + A(5,3)*tmp43 - A(5,5)*tmp40;
+   B(4,4) = - ET( real( A(5,0)*tmp36 - A(5,1)*tmp38 + A(5,2)*tmp41 - A(5,3)*tmp43 + A(5,5)*tmp40 ) );
    B(4,5) =   A(4,0)*tmp36 - A(4,1)*tmp38 + A(4,2)*tmp41 - A(4,3)*tmp43 + A(4,5)*tmp40;
-   B(5,5) = - A(4,0)*tmp37 + A(4,1)*tmp39 - A(4,2)*tmp42 + A(4,3)*tmp44 - A(4,4)*tmp40;
+   B(5,5) = - ET( real( A(4,0)*tmp37 - A(4,1)*tmp39 + A(4,2)*tmp42 - A(4,3)*tmp44 + A(4,4)*tmp40 ) );
 
    tmp36 = A(4,1)*tmp17 - A(4,2)*tmp20 + A(4,4)*tmp23 - A(4,5)*tmp24;
    tmp37 = A(4,0)*tmp17 - A(4,2)*tmp26 + A(4,4)*tmp29 - A(4,5)*tmp30;
@@ -737,7 +737,7 @@ inline void invert6x6( HermitianMatrix<MT,SO,true>& m )
    tmp39 = A(4,0)*tmp23 - A(4,1)*tmp29 + A(4,2)*tmp32 - A(4,5)*tmp35;
    tmp40 = A(4,0)*tmp24 - A(4,1)*tmp30 + A(4,2)*tmp33 - A(4,4)*tmp35;
 
-   B(3,3) = - A(5,0)*tmp36 + A(5,1)*tmp37 - A(5,2)*tmp38 + A(5,4)*tmp39 - A(5,5)*tmp40;
+   B(3,3) = - ET( real( A(5,0)*tmp36 - A(5,1)*tmp37 + A(5,2)*tmp38 - A(5,4)*tmp39 + A(5,5)*tmp40 ) );
 
    B(0,2) = conj( B(2,0) );
    B(0,3) = conj( B(3,0) );
@@ -755,8 +755,8 @@ inline void invert6x6( HermitianMatrix<MT,SO,true>& m )
    B(5,3) = conj( B(3,5) );
    B(5,4) = conj( B(4,5) );
 
-   const ET det( A(0,0)*B(0,0) + A(0,1)*B(1,0) + A(0,2)*B(2,0) +
-                 A(0,3)*B(3,0) + A(0,4)*B(4,0) + A(0,5)*B(5,0) );
+   const ET det( real( A(0,0)*B(0,0) + A(0,1)*B(1,0) + A(0,2)*B(2,0) +
+                       A(0,3)*B(3,0) + A(0,4)*B(4,0) + A(0,5)*B(5,0) ) );
 
    if( isDefault( det ) ) {
       BLAZE_THROW_INVALID_ARGUMENT( "Inversion of singular matrix failed" );
@@ -833,7 +833,7 @@ inline void invertByLU( HermitianMatrix<MT,SO,true>& m )
    BLAZE_CONSTRAINT_MUST_BE_BLAS_COMPATIBLE_TYPE( ElementType_<MT> );
 
    MT tmp( m.matrix_ );
-   invertByLU( tmp );
+   invertByLDLH( tmp );
    m.matrix_ = std::move( tmp );
 
    BLAZE_INTERNAL_ASSERT( isIntact( m ), "Broken invariant detected" );
