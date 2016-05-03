@@ -117,6 +117,8 @@ inline void unglq( int m, int n, int k, complex<double>* A, int lda, const compl
 inline void unglq( int m, int n, int k, complex<float>* A, int lda, const complex<float>* tau,
                    complex<float>* work, int lwork, int* info )
 {
+   BLAZE_STATIC_ASSERT( sizeof( complex<float> ) == 2UL*sizeof( float ) );
+
    cunglq_( &m, &n, &k, reinterpret_cast<float*>( A ), &lda,
             const_cast<float*>( reinterpret_cast<const float*>( tau ) ),
             reinterpret_cast<float*>( work ), &lwork, info );
@@ -157,6 +159,8 @@ inline void unglq( int m, int n, int k, complex<float>* A, int lda, const comple
 inline void unglq( int m, int n, int k, complex<double>* A, int lda, const complex<double>* tau,
                    complex<double>* work, int lwork, int* info )
 {
+   BLAZE_STATIC_ASSERT( sizeof( complex<double> ) == 2UL*sizeof( double ) );
+
    zunglq_( &m, &n, &k, reinterpret_cast<double*>( A ), &lda,
             const_cast<double*>( reinterpret_cast<const double*>( tau ) ),
             reinterpret_cast<double*>( work ), &lwork, info );
