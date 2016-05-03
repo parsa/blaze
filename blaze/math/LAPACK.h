@@ -75,5 +75,6 @@
 #include <blaze/math/lapack/ungql.h>
 #include <blaze/math/lapack/ungqr.h>
 #include <blaze/math/lapack/ungrq.h>
+#include <blaze/math/lapack/unmqr.h>
 
 #endif
