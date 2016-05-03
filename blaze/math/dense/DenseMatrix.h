@@ -52,6 +52,7 @@
 #include <blaze/math/shims/IsNaN.h>
 #include <blaze/math/shims/IsOne.h>
 #include <blaze/math/shims/IsReal.h>
+#include <blaze/math/shims/IsZero.h>
 #include <blaze/math/StorageOrder.h>
 #include <blaze/math/typetraits/IsExpression.h>
 #include <blaze/math/typetraits/IsDiagonal.h>
@@ -1130,7 +1131,7 @@ bool isUniLower( const DenseMatrix<MT,SO>& dm )
          if( !isOne( A(i,i) ) )
             return false;
          for( size_t j=i+1UL; j<A.columns(); ++j ) {
-            if( !isDefault( A(i,j) ) )
+            if( !isZero( A(i,j) ) )
                return false;
          }
       }
@@ -1138,7 +1139,7 @@ bool isUniLower( const DenseMatrix<MT,SO>& dm )
    else {
       for( size_t j=0UL; j<A.columns(); ++j ) {
          for( size_t i=0UL; i<j; ++i ) {
-            if( !isDefault( A(i,j) ) )
+            if( !isZero( A(i,j) ) )
                return false;
          }
          if( !isOne( A(j,j) ) )
@@ -1361,7 +1362,7 @@ bool isUniUpper( const DenseMatrix<MT,SO>& dm )
    if( SO == rowMajor ) {
       for( size_t i=0UL; i<A.rows(); ++i ) {
          for( size_t j=0UL; j<i; ++j ) {
-            if( !isDefault( A(i,j) ) )
+            if( !isZero( A(i,j) ) )
                return false;
          }
          if( !isOne( A(i,i) ) )
@@ -1373,7 +1374,7 @@ bool isUniUpper( const DenseMatrix<MT,SO>& dm )
          if( !isOne( A(j,j) ) )
             return false;
          for( size_t i=j+1UL; i<A.rows(); ++i ) {
-            if( !isDefault( A(i,j) ) )
+            if( !isZero( A(i,j) ) )
                return false;
          }
       }
@@ -1616,7 +1617,7 @@ bool isIdentity( const DenseMatrix<MT,SO>& dm )
       for( size_t i=0UL; i<A.rows(); ++i ) {
          if( !IsUpper<MT>::value ) {
             for( size_t j=0UL; j<i; ++j ) {
-               if( !isDefault( A(i,j) ) )
+               if( !isZero( A(i,j) ) )
                   return false;
             }
          }
@@ -1625,7 +1626,7 @@ bool isIdentity( const DenseMatrix<MT,SO>& dm )
          }
          if( !IsLower<MT>::value ) {
             for( size_t j=i+1UL; j<A.columns(); ++j ) {
-               if( !isDefault( A(i,j) ) )
+               if( !isZero( A(i,j) ) )
                   return false;
             }
          }
@@ -1635,7 +1636,7 @@ bool isIdentity( const DenseMatrix<MT,SO>& dm )
       for( size_t j=0UL; j<A.columns(); ++j ) {
          if( !IsLower<MT>::value ) {
             for( size_t i=0UL; i<j; ++i ) {
-               if( !isDefault( A(i,j) ) )
+               if( !isZero( A(i,j) ) )
                   return false;
             }
          }
@@ -1644,7 +1645,7 @@ bool isIdentity( const DenseMatrix<MT,SO>& dm )
          }
          if( !IsUpper<MT>::value ) {
             for( size_t i=j+1UL; i<A.rows(); ++i ) {
-               if( !isDefault( A(i,j) ) )
+               if( !isZero( A(i,j) ) )
                   return false;
             }
          }
