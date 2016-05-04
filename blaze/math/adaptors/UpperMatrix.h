@@ -57,6 +57,7 @@
 #include <blaze/math/lapack/trtri.h>
 #include <blaze/math/shims/Invert.h>
 #include <blaze/math/shims/IsDefault.h>
+#include <blaze/math/shims/IsDivisor.h>
 #include <blaze/math/traits/AddTrait.h>
 #include <blaze/math/traits/ColumnTrait.h>
 #include <blaze/math/traits/DerestrictTrait.h>
@@ -286,7 +287,7 @@ inline void invert2x2( UpperMatrix<MT,SO,true>& m )
 
    const ET det( A(0,0) * A(1,1) );
 
-   if( isDefault( det ) ) {
+   if( !isDivisor( det ) ) {
       BLAZE_THROW_INVALID_ARGUMENT( "Inversion of singular matrix failed" );
    }
 
@@ -336,7 +337,7 @@ inline void invert3x3( UpperMatrix<MT,SO,true>& m )
    const ET tmp( A(1,1)*A(2,2) );
    const ET det( A(0,0)*tmp );
 
-   if( isDefault( det ) ) {
+   if( !isDivisor( det ) ) {
       BLAZE_THROW_INVALID_ARGUMENT( "Inversion of singular matrix failed" );
    }
 
@@ -392,7 +393,7 @@ inline void invert4x4( UpperMatrix<MT,SO,true>& m )
 
    const ET det( A(0,0)*A(1,1)*tmp1 );
 
-   if( isDefault( det ) ) {
+   if( !isDivisor( det ) ) {
       BLAZE_THROW_INVALID_ARGUMENT( "Inversion of singular matrix failed" );
    }
 
@@ -476,7 +477,7 @@ inline void invert5x5( UpperMatrix<MT,SO,true>& m )
 
    const ET det( A(0,0) * B(0,0) );
 
-   if( isDefault( det ) ) {
+   if( !isDivisor( det ) ) {
       BLAZE_THROW_INVALID_ARGUMENT( "Inversion of singular matrix failed" );
    }
 
@@ -561,7 +562,7 @@ inline void invert6x6( UpperMatrix<MT,SO,true>& m )
 
    const ET det( A(0,0)*B(0,0) );
 
-   if( isDefault( det ) ) {
+   if( !isDivisor( det ) ) {
       BLAZE_THROW_INVALID_ARGUMENT( "Inversion of singular matrix failed" );
    }
 
@@ -741,7 +742,7 @@ inline void invertByLLH( UpperMatrix<MT,SO,true>& m )
 
    for( size_t i=0UL; i<A.rows(); ++i )
    {
-      if( isDefault( A(i,i) ) ) {
+      if( !isDivisor( A(i,i) ) ) {
          BLAZE_THROW_INVALID_ARGUMENT( "Inversion of singular matrix failed" );
       }
 

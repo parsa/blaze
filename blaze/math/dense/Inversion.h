@@ -58,6 +58,7 @@
 #include <blaze/math/lapack/sytrf.h>
 #include <blaze/math/lapack/sytri.h>
 #include <blaze/math/shims/Conjugate.h>
+#include <blaze/math/shims/IsDivisor.h>
 #include <blaze/math/shims/Invert.h>
 #include <blaze/util/Assert.h>
 #include <blaze/util/EnableIf.h>
@@ -120,7 +121,7 @@ inline void invert2x2( DenseMatrix<MT,SO>& dm )
 
    const ET det( A(0,0)*A(1,1) - A(0,1)*A(1,0) );
 
-   if( det == ET(0) ) {
+   if( !isDivisor( det ) ) {
       BLAZE_THROW_INVALID_ARGUMENT( "Inversion of singular matrix failed" );
    }
 
@@ -176,7 +177,7 @@ inline void invert3x3( DenseMatrix<MT,SO>& dm )
 
    const ET det( A(0,0)*B(0,0) + A(0,1)*B(1,0) + A(0,2)*B(2,0) );
 
-   if( det == ET(0) ) {
+   if( !isDivisor( det ) ) {
       BLAZE_THROW_INVALID_ARGUMENT( "Inversion of singular matrix failed" );
    }
 
@@ -269,7 +270,7 @@ inline void invert4x4( DenseMatrix<MT,SO>& dm )
 
    const ET det( A(0,0)*B(0,0) + A(0,1)*B(1,0) + A(0,2)*B(2,0) + A(0,3)*B(3,0) );
 
-   if( det == ET(0) ) {
+   if( !isDivisor( det ) ) {
       BLAZE_THROW_INVALID_ARGUMENT( "Inversion of singular matrix failed" );
    }
 
@@ -411,7 +412,7 @@ inline void invert5x5( DenseMatrix<MT,SO>& dm )
 
    const ET det( A(0,0)*B(0,0) + A(0,1)*B(1,0) + A(0,2)*B(2,0) + A(0,3)*B(3,0) + A(0,4)*B(4,0) );
 
-   if( det == ET(0) ) {
+   if( !isDivisor( det ) ) {
       BLAZE_THROW_INVALID_ARGUMENT( "Inversion of singular matrix failed" );
    }
 
@@ -644,7 +645,7 @@ inline void invert6x6( DenseMatrix<MT,SO>& dm )
    const ET det( A(0,0)*B(0,0) + A(0,1)*B(1,0) + A(0,2)*B(2,0) +
                  A(0,3)*B(3,0) + A(0,4)*B(4,0) + A(0,5)*B(5,0) );
 
-   if( det == ET(0) ) {
+   if( !isDivisor( det ) ) {
       BLAZE_THROW_INVALID_ARGUMENT( "Inversion of singular matrix failed" );
    }
 

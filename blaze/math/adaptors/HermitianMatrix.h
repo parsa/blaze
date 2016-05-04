@@ -51,6 +51,8 @@
 #include <blaze/math/Forward.h>
 #include <blaze/math/Functions.h>
 #include <blaze/math/shims/Conjugate.h>
+#include <blaze/math/shims/IsDefault.h>
+#include <blaze/math/shims/IsDivisor.h>
 #include <blaze/math/shims/IsReal.h>
 #include <blaze/math/traits/AddTrait.h>
 #include <blaze/math/traits/ColumnTrait.h>
@@ -281,7 +283,7 @@ inline void invert2x2( HermitianMatrix<MT,SO,true>& m )
 
    const ET det( real( A(0,0)*A(1,1) - A(0,1)*A(1,0) ) );
 
-   if( isDefault( det ) ) {
+   if( !isDivisor( det ) ) {
       BLAZE_THROW_INVALID_ARGUMENT( "Inversion of singular matrix failed" );
    }
 
@@ -335,7 +337,7 @@ inline void invert3x3( HermitianMatrix<MT,SO,true>& m )
 
    const ET det( real( A(0,0)*B(0,0) + A(0,1)*B(1,0) + A(0,2)*B(2,0) ) );
 
-   if( isDefault( det ) ) {
+   if( !isDivisor( det ) ) {
       BLAZE_THROW_INVALID_ARGUMENT( "Inversion of singular matrix failed" );
    }
 
@@ -422,7 +424,7 @@ inline void invert4x4( HermitianMatrix<MT,SO,true>& m )
 
    const ET det( real( A(0,0)*B(0,0) + A(0,1)*B(1,0) + A(0,2)*B(2,0) + A(0,3)*B(3,0) ) );
 
-   if( isDefault( det ) ) {
+   if( !isDivisor( det ) ) {
       BLAZE_THROW_INVALID_ARGUMENT( "Inversion of singular matrix failed" );
    }
 
@@ -545,7 +547,7 @@ inline void invert5x5( HermitianMatrix<MT,SO,true>& m )
 
    const ET det( real( A(0,0)*B(0,0) + A(0,1)*B(1,0) + A(0,2)*B(2,0) + A(0,3)*B(3,0) + A(0,4)*B(4,0) ) );
 
-   if( isDefault( det ) ) {
+   if( !isDivisor( det ) ) {
       BLAZE_THROW_INVALID_ARGUMENT( "Inversion of singular matrix failed" );
    }
 
@@ -758,7 +760,7 @@ inline void invert6x6( HermitianMatrix<MT,SO,true>& m )
    const ET det( real( A(0,0)*B(0,0) + A(0,1)*B(1,0) + A(0,2)*B(2,0) +
                        A(0,3)*B(3,0) + A(0,4)*B(4,0) + A(0,5)*B(5,0) ) );
 
-   if( isDefault( det ) ) {
+   if( !isDivisor( det ) ) {
       BLAZE_THROW_INVALID_ARGUMENT( "Inversion of singular matrix failed" );
    }
 
