@@ -40,13 +40,10 @@
 // Includes
 //*************************************************************************************************
 
-#include <blaze/math/shims/IsDefault.h>
+#include <blaze/math/shims/IsZero.h>
 #include <blaze/system/Inline.h>
 #include <blaze/util/Complex.h>
-#include <blaze/util/DisableIf.h>
-#include <blaze/util/EnableIf.h>
 #include <blaze/util/typetraits/IsBuiltin.h>
-#include <blaze/util/typetraits/IsNumeric.h>
 #include <blaze/util/Unused.h>
 
 
@@ -102,7 +99,7 @@ BLAZE_ALWAYS_INLINE bool isReal( const Type& v ) noexcept
 template< typename Type >
 BLAZE_ALWAYS_INLINE bool isReal( const complex<Type>& v ) noexcept( IsBuiltin<Type>::value )
 {
-   return IsBuiltin<Type>::value && isDefault( v.imag() );
+   return IsBuiltin<Type>::value && isZero( v.imag() );
 }
 /*! \endcond */
 //*************************************************************************************************
