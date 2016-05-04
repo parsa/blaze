@@ -1,7 +1,7 @@
 //=================================================================================================
 /*!
-//  \file blaze/math/LAPACK.h
-//  \brief Header file for the LAPACK functionality
+//  \file blaze/math/lapack/geqp3.h
+//  \brief Header file for the LAPACK QR decomposition functions (geqp3)
 //
 //  Copyright (C) 2013 Klaus Iglberger - All Rights Reserved
 //
@@ -32,53 +32,14 @@
 */
 //=================================================================================================
 
-#ifndef _BLAZE_MATH_LAPACK_H_
-#define _BLAZE_MATH_LAPACK_H_
+#ifndef _BLAZE_MATH_LAPACK_GEQP3_H_
+#define _BLAZE_MATH_LAPACK_GEQP3_H_
 
 
 //*************************************************************************************************
 // Includes
 //*************************************************************************************************
 
-#include <blaze/math/lapack/gelqf.h>
-#include <blaze/math/lapack/geqlf.h>
-#include <blaze/math/lapack/geqp3.h>
-#include <blaze/math/lapack/geqrf.h>
-#include <blaze/math/lapack/gerqf.h>
-#include <blaze/math/lapack/gesv.h>
-#include <blaze/math/lapack/getrf.h>
-#include <blaze/math/lapack/getri.h>
-#include <blaze/math/lapack/getrs.h>
-#include <blaze/math/lapack/hesv.h>
-#include <blaze/math/lapack/hetrf.h>
-#include <blaze/math/lapack/hetri.h>
-#include <blaze/math/lapack/hetrs.h>
-#include <blaze/math/lapack/orglq.h>
-#include <blaze/math/lapack/orgql.h>
-#include <blaze/math/lapack/orgqr.h>
-#include <blaze/math/lapack/orgrq.h>
-#include <blaze/math/lapack/ormlq.h>
-#include <blaze/math/lapack/ormql.h>
-#include <blaze/math/lapack/ormqr.h>
-#include <blaze/math/lapack/ormrq.h>
-#include <blaze/math/lapack/posv.h>
-#include <blaze/math/lapack/potrf.h>
-#include <blaze/math/lapack/potri.h>
-#include <blaze/math/lapack/potrs.h>
-#include <blaze/math/lapack/sysv.h>
-#include <blaze/math/lapack/sytrf.h>
-#include <blaze/math/lapack/sytri.h>
-#include <blaze/math/lapack/sytrs.h>
-#include <blaze/math/lapack/trsv.h>
-#include <blaze/math/lapack/trtri.h>
-#include <blaze/math/lapack/trtrs.h>
-#include <blaze/math/lapack/unglq.h>
-#include <blaze/math/lapack/ungql.h>
-#include <blaze/math/lapack/ungqr.h>
-#include <blaze/math/lapack/ungrq.h>
-#include <blaze/math/lapack/unmlq.h>
-#include <blaze/math/lapack/unmql.h>
-#include <blaze/math/lapack/unmqr.h>
-#include <blaze/math/lapack/unmrq.h>
+#include <blaze/math/lapack/clapack/geqp3.h>
 
 #endif
