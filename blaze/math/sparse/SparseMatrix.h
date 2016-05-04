@@ -929,7 +929,7 @@ bool isUniLower( const SparseMatrix<MT,SO>& sm )
          ++element;
 
          for( ; element!=A.end(i); ++element ) {
-            if( !isDefault( element->value() ) )
+            if( !isZero( element->value() ) )
                return false;
          }
       }
@@ -948,7 +948,7 @@ bool isUniLower( const SparseMatrix<MT,SO>& sm )
                break;
             }
 
-            if( !isDefault( element->value() ) )
+            if( !isZero( element->value() ) )
                return false;
          }
 
@@ -1196,7 +1196,7 @@ bool isUniUpper( const SparseMatrix<MT,SO>& sm )
                hasDiagonalElement = true;
                break;
             }
-            else if( !isDefault( element->value() ) ) {
+            else if( !isZero( element->value() ) ) {
                return false;
             }
          }
@@ -1217,7 +1217,7 @@ bool isUniUpper( const SparseMatrix<MT,SO>& sm )
          ++element;
 
          for( ; element!=A.end(j); ++element ) {
-            if( !isDefault( element->value() ) )
+            if( !isZero( element->value() ) )
                return false;
          }
       }
@@ -1454,7 +1454,7 @@ bool isIdentity( const SparseMatrix<MT,SO>& sm )
                   return false;
                hasDiagonalElement = true;
             }
-            else if( !isDefault( element->value() ) ) {
+            else if( !isZero( element->value() ) ) {
                return false;
             }
          }
@@ -1476,7 +1476,7 @@ bool isIdentity( const SparseMatrix<MT,SO>& sm )
                   return false;
                hasDiagonalElement = true;
             }
-            else if( !isDefault( element->value() ) ) {
+            else if( !isZero( element->value() ) ) {
                return false;
             }
          }
