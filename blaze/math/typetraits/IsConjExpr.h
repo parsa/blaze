@@ -44,7 +44,7 @@
 #include <blaze/util/IntegralConstant.h>
 #include <blaze/util/mpl/And.h>
 #include <blaze/util/mpl/Not.h>
-#include <blaze/util/typetraits/IsBaseOf.H>
+#include <blaze/util/typetraits/IsBaseOf.h>
 
 
 namespace blaze {
