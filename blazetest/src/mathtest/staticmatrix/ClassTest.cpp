@@ -1118,7 +1118,7 @@ void ClassTest::testAssignment()
    //=====================================================================================
 
    {
-      test_ = "Row-major DynamicMatrix initializer list assignment (complete list)";
+      test_ = "Row-major StaticMatrix initializer list assignment (complete list)";
 
       blaze::StaticMatrix<int,2UL,3UL,blaze::rowMajor> mat;
       mat = { { 1, 2, 3 }, { 4, 5, 6 } };
@@ -1143,7 +1143,7 @@ void ClassTest::testAssignment()
    }
 
    {
-      test_ = "Row-major DynamicMatrix initializer list assignment (incomplete list)";
+      test_ = "Row-major StaticMatrix initializer list assignment (incomplete list)";
 
       blaze::StaticMatrix<int,2UL,3UL,blaze::rowMajor> mat;
       mat = { { 1 }, { 4, 5, 6 } };
@@ -1173,7 +1173,7 @@ void ClassTest::testAssignment()
    //=====================================================================================
 
    {
-      test_ = "Row-major DynamicMatrix array assignment";
+      test_ = "Row-major StaticMatrix array assignment";
 
       const int array[2][3] = { { 1, 2, 3 }, { 4, 5, 6 } };
       blaze::StaticMatrix<int,2UL,3UL,blaze::rowMajor> mat;
@@ -1894,7 +1894,7 @@ void ClassTest::testAssignment()
    //=====================================================================================
 
    {
-      test_ = "Column-major DynamicMatrix initializer list assignment (complete list)";
+      test_ = "Column-major StaticMatrix initializer list assignment (complete list)";
 
       blaze::StaticMatrix<int,2UL,3UL,blaze::columnMajor> mat;
       mat = { { 1, 2, 3 }, { 4, 5, 6 } };
@@ -1920,7 +1920,7 @@ void ClassTest::testAssignment()
    }
 
    {
-      test_ = "Column-major DynamicMatrix initializer list assignment (incomplete list)";
+      test_ = "Column-major StaticMatrix initializer list assignment (incomplete list)";
 
       blaze::StaticMatrix<int,2UL,3UL,blaze::columnMajor> mat;
       mat = { { 1 }, { 4, 5, 6 } };
@@ -1951,7 +1951,7 @@ void ClassTest::testAssignment()
    //=====================================================================================
 
    {
-      test_ = "Column-major DynamicMatrix array assignment";
+      test_ = "Column-major StaticMatrix array assignment";
 
       const int array[2][3] = { { 1, 2, 3 }, { 4, 5, 6 } };
       blaze::StaticMatrix<int,2UL,3UL,blaze::columnMajor> mat;
