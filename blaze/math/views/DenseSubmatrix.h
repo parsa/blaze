@@ -40,6 +40,7 @@
 // Includes
 //*************************************************************************************************
 
+#include <algorithm>
 #include <iterator>
 #include <blaze/math/Aliases.h>
 #include <blaze/math/AlignmentFlag.h>
@@ -57,6 +58,7 @@
 #include <blaze/math/expressions/DenseMatrix.h>
 #include <blaze/math/expressions/Submatrix.h>
 #include <blaze/math/Functions.h>
+#include <blaze/math/InitializerList.h>
 #include <blaze/math/InversionFlag.h>
 #include <blaze/math/shims/Clear.h>
 #include <blaze/math/shims/IsDefault.h>
@@ -894,6 +896,7 @@ class DenseSubmatrix : public DenseMatrix< DenseSubmatrix<MT,AF,SO>, SO >
    /*!\name Assignment operators */
    //@{
    inline DenseSubmatrix& operator=( const ElementType& rhs );
+   inline DenseSubmatrix& operator=( InitializerList2D<ElementType> list );
    inline DenseSubmatrix& operator=( const DenseSubmatrix& rhs );
 
    template< typename MT2, bool SO2 >
@@ -1551,6 +1554,40 @@ inline DenseSubmatrix<MT,AF,SO>& DenseSubmatrix<MT,AF,SO>::operator=( const Elem
 
       for( size_t j=jbegin; j<jend; ++j )
          matrix_(i,j) = rhs;
+   }
+
+   return *this;
+}
+//*************************************************************************************************
+
+
+//*************************************************************************************************
+/*!\brief List assignment to all submatrix elements.
+//
+// \param list The initializer list.
+// \exception std::invalid_argument Invalid assignment to submatrix.
+//
+// This assignment operator offers the option to directly assign to all elements of the submatrix
+// by means of an initializer list. The submatrix elements are assigned the values from the given
+// initializer list. Missing values are initialized as default. Note that in case the size
+// of the top-level initializer list exceeds the number of rows or the size of any nested list
+// exceeds the number of columns, a \a std::invalid_argument exception is thrown.
+*/
+template< typename MT  // Type of the dense matrix
+        , bool AF      // Alignment flag
+        , bool SO >    // Storage order
+inline DenseSubmatrix<MT,AF,SO>&
+   DenseSubmatrix<MT,AF,SO>::operator=( InitializerList2D<ElementType> list )
+{
+   if( list.size() != rows() || determineColumns( list ) > columns() ) {
+      BLAZE_THROW_INVALID_ARGUMENT( "Invalid assignment to submatrix" );
+   }
+
+   size_t i( 0UL );
+
+   for( const auto& row : list ) {
+      std::fill( std::copy( row.begin(), row.end(), begin(i) ), end(i), ElementType() );
+      ++i;
    }
 
    return *this;
@@ -3759,6 +3796,7 @@ class DenseSubmatrix<MT,unaligned,true> : public DenseMatrix< DenseSubmatrix<MT,
    /*!\name Assignment operators */
    //@{
    inline DenseSubmatrix& operator=( const ElementType& rhs );
+   inline DenseSubmatrix& operator=( InitializerList2D<ElementType> list );
    inline DenseSubmatrix& operator=( const DenseSubmatrix& rhs );
 
    template< typename MT2, bool SO >
@@ -4378,6 +4416,47 @@ inline DenseSubmatrix<MT,unaligned,true>&
 
       for( size_t i=ibegin; i<iend; ++i )
          matrix_(i,j) = rhs;
+   }
+
+   return *this;
+}
+/*! \endcond */
+//*************************************************************************************************
+
+
+//*************************************************************************************************
+/*! \cond BLAZE_INTERNAL */
+/*!\brief List assignment to all submatrix elements.
+//
+// \param list The initializer list.
+// \exception std::invalid_argument Invalid assignment to submatrix.
+//
+// This assignment operator offers the option to directly assign to all elements of the submatrix
+// by means of an initializer list. The submatrix elements are assigned the values from the given
+// initializer list. Missing values are initialized as default. Note that in case the size
+// of the top-level initializer list exceeds the number of rows or the size of any nested list
+// exceeds the number of columns, a \a std::invalid_argument exception is thrown.
+*/
+template< typename MT >  // Type of the dense matrix
+inline DenseSubmatrix<MT,unaligned,true>&
+   DenseSubmatrix<MT,unaligned,true>::operator=( InitializerList2D<ElementType> list )
+{
+   if( list.size() != rows() || determineColumns( list ) > columns() ) {
+      BLAZE_THROW_INVALID_ARGUMENT( "Invalid assignment to submatrix" );
+   }
+
+   size_t i( 0UL );
+
+   for( const auto& row : list ) {
+      size_t j( 0UL );
+      for( const auto& element : row ) {
+         matrix_(row_+i,column_+j) = element;
+         ++j;
+      }
+      for( ; j<n_; ++j ) {
+         matrix_(row_+i,column_+j) = ElementType();
+      }
+      ++i;
    }
 
    return *this;
@@ -6234,6 +6313,7 @@ class DenseSubmatrix<MT,aligned,false> : public DenseMatrix< DenseSubmatrix<MT,a
    /*!\name Assignment operators */
    //@{
    inline DenseSubmatrix& operator=( const ElementType& rhs );
+   inline DenseSubmatrix& operator=( InitializerList2D<ElementType> list );
    inline DenseSubmatrix& operator=( const DenseSubmatrix& rhs );
 
    template< typename MT2, bool SO >
@@ -6879,6 +6959,40 @@ inline DenseSubmatrix<MT,aligned,false>&
 
       for( size_t j=jbegin; j<jend; ++j )
          matrix_(i,j) = rhs;
+   }
+
+   return *this;
+}
+/*! \endcond */
+//*************************************************************************************************
+
+
+//*************************************************************************************************
+/*! \cond BLAZE_INTERNAL */
+/*!\brief List assignment to all submatrix elements.
+//
+// \param list The initializer list.
+// \exception std::invalid_argument Invalid assignment to submatrix.
+//
+// This assignment operator offers the option to directly assign to all elements of the submatrix
+// by means of an initializer list. The submatrix elements are assigned the values from the given
+// initializer list. Missing values are initialized as default. Note that in case the size
+// of the top-level initializer list exceeds the number of rows or the size of any nested list
+// exceeds the number of columns, a \a std::invalid_argument exception is thrown.
+*/
+template< typename MT >  // Type of the dense matrix
+inline DenseSubmatrix<MT,aligned,false>&
+   DenseSubmatrix<MT,aligned,false>::operator=( InitializerList2D<ElementType> list )
+{
+   if( list.size() != rows() || determineColumns( list ) > columns() ) {
+      BLAZE_THROW_INVALID_ARGUMENT( "Invalid assignment to submatrix" );
+   }
+
+   size_t i( 0UL );
+
+   for( const auto& row : list ) {
+      std::fill( std::copy( row.begin(), row.end(), begin(i) ), end(i), ElementType() );
+      ++i;
    }
 
    return *this;
@@ -8750,6 +8864,7 @@ class DenseSubmatrix<MT,aligned,true> : public DenseMatrix< DenseSubmatrix<MT,al
    /*!\name Assignment operators */
    //@{
    inline DenseSubmatrix& operator=( const ElementType& rhs );
+   inline DenseSubmatrix& operator=( InitializerList2D<ElementType> list );
    inline DenseSubmatrix& operator=( const DenseSubmatrix& rhs );
 
    template< typename MT2, bool SO >
@@ -9365,6 +9480,47 @@ inline DenseSubmatrix<MT,aligned,true>&
 
       for( size_t i=ibegin; i<iend; ++i )
          matrix_(i,j) = rhs;
+   }
+
+   return *this;
+}
+/*! \endcond */
+//*************************************************************************************************
+
+
+//*************************************************************************************************
+/*! \cond BLAZE_INTERNAL */
+/*!\brief List assignment to all submatrix elements.
+//
+// \param list The initializer list.
+// \exception std::invalid_argument Invalid assignment to submatrix.
+//
+// This assignment operator offers the option to directly assign to all elements of the submatrix
+// by means of an initializer list. The submatrix elements are assigned the values from the given
+// initializer list. Missing values are initialized as default. Note that in case the size
+// of the top-level initializer list exceeds the number of rows or the size of any nested list
+// exceeds the number of columns, a \a std::invalid_argument exception is thrown.
+*/
+template< typename MT >  // Type of the dense matrix
+inline DenseSubmatrix<MT,aligned,true>&
+   DenseSubmatrix<MT,aligned,true>::operator=( InitializerList2D<ElementType> list )
+{
+   if( list.size() != rows() || determineColumns( list ) > columns() ) {
+      BLAZE_THROW_INVALID_ARGUMENT( "Invalid assignment to submatrix" );
+   }
+
+   size_t i( 0UL );
+
+   for( const auto& row : list ) {
+      size_t j( 0UL );
+      for( const auto& element : row ) {
+         matrix_(row_+i,column_+j) = element;
+         ++j;
+      }
+      for( ; j<n_; ++j ) {
+         matrix_(row_+i,column_+j) = ElementType();
+      }
+      ++i;
    }
 
    return *this;
