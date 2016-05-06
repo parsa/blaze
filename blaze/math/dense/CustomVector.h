@@ -40,6 +40,7 @@
 // Includes
 //*************************************************************************************************
 
+#include <algorithm>
 #include <utility>
 #include <boost/smart_ptr/shared_array.hpp>
 #include <blaze/math/Aliases.h>
@@ -51,6 +52,7 @@
 #include <blaze/math/expressions/DenseVector.h>
 #include <blaze/math/expressions/SparseVector.h>
 #include <blaze/math/Forward.h>
+#include <blaze/math/InitializerList.h>
 #include <blaze/math/PaddingFlag.h>
 #include <blaze/math/shims/Clear.h>
 #include <blaze/math/shims/IsDefault.h>
@@ -506,10 +508,12 @@ class CustomVector : public DenseVector< CustomVector<Type,AF,PF,TF>, TF >
    //**Assignment operators************************************************************************
    /*!\name Assignment operators */
    //@{
+   inline CustomVector& operator=( const Type& rhs );
+   inline CustomVector& operator=( InitializerList<Type> list );
+
    template< typename Other, size_t N >
    inline CustomVector& operator=( const Other (&array)[N] );
 
-   inline CustomVector& operator=( const Type& rhs );
    inline CustomVector& operator=( const CustomVector& rhs );
    inline CustomVector& operator=( CustomVector&& rhs ) noexcept;
 
@@ -1175,6 +1179,66 @@ inline typename CustomVector<Type,AF,PF,TF>::ConstIterator
 //=================================================================================================
 
 //*************************************************************************************************
+/*!\brief Homogenous assignment to all vector elements.
+//
+// \param rhs Scalar value to be assigned to all vector elements.
+// \return Reference to the assigned vector.
+*/
+template< typename Type  // Data type of the vector
+        , bool AF        // Alignment flag
+        , bool PF        // Padding flag
+        , bool TF >      // Transpose flag
+inline CustomVector<Type,AF,PF,TF>& CustomVector<Type,AF,PF,TF>::operator=( const Type& rhs )
+{
+   for( size_t i=0UL; i<size_; ++i )
+      v_[i] = rhs;
+   return *this;
+}
+//*************************************************************************************************
+
+
+//*************************************************************************************************
+/*!\brief List assignment to all vector elements.
+//
+// \param list The initializer list.
+// \exception std::invalid_argument Invalid assignment to custom vector.
+//
+// This assignment operator offers the option to directly assign to all elements of the vector
+// by means of an initializer list:
+
+   \code
+   using blaze::CustomVector;
+   using blaze::unaliged;
+   using blaze::unpadded;
+
+   const int array[4] = { 1, 2, 3, 4 };
+
+   CustomVector<double,unaligned,unpadded> v( array, 4UL );
+   v = { 5, 6, 7 };
+   \endcode
+
+// The vector elements are assigned the values from the given initializer list. Missing values
+// are reset to their default state. Note that in case the size of the initializer list exceeds
+// the size of the vector, a \a std::invalid_argument exception is thrown.
+*/
+template< typename Type  // Data type of the vector
+        , bool AF        // Alignment flag
+        , bool PF        // Padding flag
+        , bool TF >      // Transpose flag
+inline CustomVector<Type,AF,PF,TF>& CustomVector<Type,AF,PF,TF>::operator=( InitializerList<Type> list )
+{
+   if( list.size() > size_ ) {
+      BLAZE_THROW_INVALID_ARGUMENT( "Invalid assignment to custom vector" );
+   }
+
+   std::fill( std::copy( list.begin(), list.end(), v_.get() ), v_.get()+size_, Type() );
+
+   return *this;
+}
+//*************************************************************************************************
+
+
+//*************************************************************************************************
 /*!\brief Array assignment to all vector elements.
 //
 // \param array N-dimensional array for the assignment.
@@ -1216,25 +1280,6 @@ inline CustomVector<Type,AF,PF,TF>& CustomVector<Type,AF,PF,TF>::operator=( cons
    for( size_t i=0UL; i<N; ++i )
       v_[i] = array[i];
 
-   return *this;
-}
-//*************************************************************************************************
-
-
-//*************************************************************************************************
-/*!\brief Homogenous assignment to all vector elements.
-//
-// \param rhs Scalar value to be assigned to all vector elements.
-// \return Reference to the assigned vector.
-*/
-template< typename Type  // Data type of the vector
-        , bool AF        // Alignment flag
-        , bool PF        // Padding flag
-        , bool TF >      // Transpose flag
-inline CustomVector<Type,AF,PF,TF>& CustomVector<Type,AF,PF,TF>::operator=( const Type& rhs )
-{
-   for( size_t i=0UL; i<size_; ++i )
-      v_[i] = rhs;
    return *this;
 }
 //*************************************************************************************************
@@ -2784,10 +2829,12 @@ class CustomVector<Type,AF,padded,TF>
    //**Assignment operators************************************************************************
    /*!\name Assignment operators */
    //@{
+   inline CustomVector& operator=( const Type& rhs );
+   inline CustomVector& operator=( InitializerList<Type> list );
+
    template< typename Other, size_t N >
    inline CustomVector& operator=( const Other (&array)[N] );
 
-   inline CustomVector& operator=( const Type& rhs );
    inline CustomVector& operator=( const CustomVector& rhs );
    inline CustomVector& operator=( CustomVector&& rhs ) noexcept;
 
@@ -3408,6 +3455,70 @@ inline typename CustomVector<Type,AF,padded,TF>::ConstIterator
 
 //*************************************************************************************************
 /*! \cond BLAZE_INTERNAL */
+/*!\brief Homogenous assignment to all vector elements.
+//
+// \param rhs Scalar value to be assigned to all vector elements.
+// \return Reference to the assigned vector.
+*/
+template< typename Type  // Data type of the vector
+        , bool AF        // Alignment flag
+        , bool TF >      // Transpose flag
+inline CustomVector<Type,AF,padded,TF>&
+   CustomVector<Type,AF,padded,TF>::operator=( const Type& rhs )
+{
+   for( size_t i=0UL; i<size_; ++i )
+      v_[i] = rhs;
+   return *this;
+}
+/*! \endcond */
+//*************************************************************************************************
+
+
+//*************************************************************************************************
+/*! \cond BLAZE_INTERNAL */
+/*!\brief List assignment to all vector elements.
+//
+// \param list The initializer list.
+// \exception std::invalid_argument Invalid assignment to custom vector.
+//
+// This assignment operator offers the option to directly assign to all elements of the vector
+// by means of an initializer list:
+
+   \code
+   using blaze::CustomVector;
+   using blaze::unaliged;
+   using blaze::padded;
+
+   const int array[4] = { 1, 2, 3, 4 };
+
+   CustomVector<double,unaligned,padded> v( array, 4UL, 8UL );
+   v = { 5, 6, 7 };
+   \endcode
+
+// The vector elements are assigned the values from the given initializer list. Missing values
+// are reset to their default state. Note that in case the size of the initializer list exceeds
+// the size of the vector, a \a std::invalid_argument exception is thrown.
+*/
+template< typename Type  // Data type of the vector
+        , bool AF        // Alignment flag
+        , bool TF >      // Transpose flag
+inline CustomVector<Type,AF,padded,TF>&
+   CustomVector<Type,AF,padded,TF>::operator=( InitializerList<Type> list )
+{
+   if( list.size() > size_ ) {
+      BLAZE_THROW_INVALID_ARGUMENT( "Invalid assignment to custom vector" );
+   }
+
+   std::fill( std::copy( list.begin(), list.end(), v_.get() ), v_.get()+capacity_, Type() );
+
+   return *this;
+}
+/*! \endcond */
+//*************************************************************************************************
+
+
+//*************************************************************************************************
+/*! \cond BLAZE_INTERNAL */
 /*!\brief Array assignment to all vector elements.
 //
 // \param array N-dimensional array for the assignment.
@@ -3449,27 +3560,6 @@ inline CustomVector<Type,AF,padded,TF>&
    for( size_t i=0UL; i<N; ++i )
       v_[i] = array[i];
 
-   return *this;
-}
-/*! \endcond */
-//*************************************************************************************************
-
-
-//*************************************************************************************************
-/*! \cond BLAZE_INTERNAL */
-/*!\brief Homogenous assignment to all vector elements.
-//
-// \param rhs Scalar value to be assigned to all vector elements.
-// \return Reference to the assigned vector.
-*/
-template< typename Type  // Data type of the vector
-        , bool AF        // Alignment flag
-        , bool TF >      // Transpose flag
-inline CustomVector<Type,AF,padded,TF>&
-   CustomVector<Type,AF,padded,TF>::operator=( const Type& rhs )
-{
-   for( size_t i=0UL; i<size_; ++i )
-      v_[i] = rhs;
    return *this;
 }
 /*! \endcond */
