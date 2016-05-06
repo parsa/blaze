@@ -40,7 +40,6 @@
 // Includes
 //*************************************************************************************************
 
-#include <initializer_list>
 #include <iterator>
 #include <utility>
 #include <blaze/math/adaptors/Forward.h>
@@ -57,6 +56,7 @@
 #include <blaze/math/constraints/Upper.h>
 #include <blaze/math/dense/DenseMatrix.h>
 #include <blaze/math/expressions/DenseMatrix.h>
+#include <blaze/math/InitializerList.h>
 #include <blaze/math/shims/Clear.h>
 #include <blaze/math/shims/IsDefault.h>
 #include <blaze/math/typetraits/Columns.h>
@@ -584,7 +584,7 @@ class UpperMatrix<MT,SO,true>
    template< typename A1 > explicit inline UpperMatrix( const A1& a1 );
                            explicit inline UpperMatrix( size_t n, const ElementType& init );
 
-   explicit inline UpperMatrix( std::initializer_list< std::initializer_list<ElementType> > list );
+   explicit inline UpperMatrix( InitializerList2D<ElementType> list );
 
    template< typename Other >
    explicit inline UpperMatrix( size_t n, const Other* array );
@@ -632,7 +632,7 @@ class UpperMatrix<MT,SO,true>
    /*!\name Assignment operators */
    //@{
    inline UpperMatrix& operator=( const ElementType& rhs );
-   inline UpperMatrix& operator=( std::initializer_list< std::initializer_list<ElementType> > list );
+   inline UpperMatrix& operator=( InitializerList2D<ElementType> list );
 
    template< typename Other, size_t N >
    inline UpperMatrix& operator=( const Other (&array)[N][N] );
@@ -874,7 +874,7 @@ inline UpperMatrix<MT,SO,true>::UpperMatrix( size_t n, const ElementType& init )
 */
 template< typename MT  // Type of the adapted dense matrix
         , bool SO >    // Storage order of the adapted dense matrix
-inline UpperMatrix<MT,SO,true>::UpperMatrix( std::initializer_list< std::initializer_list<ElementType> > list )
+inline UpperMatrix<MT,SO,true>::UpperMatrix( InitializerList2D<ElementType> list )
    : matrix_( list )  // The adapted dense matrix
 {
    if( !isUpper( matrix_ ) ) {
@@ -1542,7 +1542,7 @@ inline UpperMatrix<MT,SO,true>&
 template< typename MT  // Type of the adapted dense matrix
         , bool SO >    // Storage order of the adapted dense matrix
 inline UpperMatrix<MT,SO,true>&
-   UpperMatrix<MT,SO,true>::operator=( std::initializer_list< std::initializer_list<ElementType> > list )
+   UpperMatrix<MT,SO,true>::operator=( InitializerList2D<ElementType> list )
 {
    MT tmp( list );
 

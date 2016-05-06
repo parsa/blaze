@@ -41,7 +41,6 @@
 //*************************************************************************************************
 
 #include <algorithm>
-#include <initializer_list>
 #include <utility>
 #include <blaze/math/Aliases.h>
 #include <blaze/math/AlignmentFlag.h>
@@ -51,6 +50,7 @@
 #include <blaze/math/expressions/DenseMatrix.h>
 #include <blaze/math/expressions/SparseMatrix.h>
 #include <blaze/math/Forward.h>
+#include <blaze/math/InitializerList.h>
 #include <blaze/math/shims/Clear.h>
 #include <blaze/math/shims/Conjugate.h>
 #include <blaze/math/shims/IsDefault.h>
@@ -257,7 +257,7 @@ class StaticMatrix : public DenseMatrix< StaticMatrix<Type,M,N,SO>, SO >
    //@{
    explicit inline StaticMatrix();
    explicit inline StaticMatrix( const Type& init );
-   explicit inline StaticMatrix( std::initializer_list< std::initializer_list<Type> > list );
+   explicit inline StaticMatrix( InitializerList2D<Type> list );
 
    template< typename Other >
    explicit inline StaticMatrix( size_t m, size_t n, const Other* array );
@@ -299,7 +299,7 @@ class StaticMatrix : public DenseMatrix< StaticMatrix<Type,M,N,SO>, SO >
    /*!\name Assignment operators */
    //@{
    inline StaticMatrix& operator=( const Type& set );
-   inline StaticMatrix& operator=( std::initializer_list< std::initializer_list<Type> > list );
+   inline StaticMatrix& operator=( InitializerList2D<Type> list );
 
    template< typename Other >
    inline StaticMatrix& operator=( const Other (&array)[M][N] );
@@ -463,8 +463,6 @@ class StaticMatrix : public DenseMatrix< StaticMatrix<Type,M,N,SO>, SO >
    inline void transpose ( FalseType );
    inline void ctranspose( TrueType  );
    inline void ctranspose( FalseType );
-
-   inline size_t determineColumns( std::initializer_list< std::initializer_list<Type> > list ) const noexcept;
    /*! \endcond */
    //**********************************************************************************************
 
@@ -588,7 +586,7 @@ template< typename Type  // Data type of the matrix
         , size_t M       // Number of rows
         , size_t N       // Number of columns
         , bool SO >      // Storage order
-inline StaticMatrix<Type,M,N,SO>::StaticMatrix( std::initializer_list< std::initializer_list<Type> > list )
+inline StaticMatrix<Type,M,N,SO>::StaticMatrix( InitializerList2D<Type> list )
    : v_()  // The statically allocated matrix elements
 {
    BLAZE_STATIC_ASSERT( IsVectorizable<Type>::value || NN == N );
@@ -1212,7 +1210,7 @@ template< typename Type  // Data type of the matrix
         , size_t N       // Number of columns
         , bool SO >      // Storage order
 inline StaticMatrix<Type,M,N,SO>&
-   StaticMatrix<Type,M,N,SO>::operator=( std::initializer_list< std::initializer_list<Type> > list )
+   StaticMatrix<Type,M,N,SO>::operator=( InitializerList2D<Type> list )
 {
    if( list.size() != M || determineColumns( list ) > N ) {
       BLAZE_THROW_INVALID_ARGUMENT( "Invalid assignment to static matrix" );
@@ -1933,29 +1931,6 @@ inline void StaticMatrix<Type,M,N,SO>::swap( StaticMatrix& m ) noexcept
       }
    }
 }
-//*************************************************************************************************
-
-
-//*************************************************************************************************
-/*! \cond BLAZE_INTERNAL */
-/*!\brief Determine the maximum number of columns specified by the given initializer list.
-//
-// \param list The given initializer list
-// \return The maximum number of columns.
-*/
-template< typename Type  // Data type of the matrix
-        , size_t M       // Number of rows
-        , size_t N       // Number of columns
-        , bool SO >      // Storage order
-inline size_t
-   StaticMatrix<Type,M,N,SO>::determineColumns( std::initializer_list< std::initializer_list<Type> > list ) const noexcept
-{
-   size_t cols( 0UL );
-   for( const auto& row : list )
-      cols = max( cols, row.size() );
-   return cols;
-}
-/*! \endcond */
 //*************************************************************************************************
 
 
@@ -3005,7 +2980,7 @@ class StaticMatrix<Type,M,N,true> : public DenseMatrix< StaticMatrix<Type,M,N,tr
    //@{
    explicit inline StaticMatrix();
    explicit inline StaticMatrix( const Type& init );
-   explicit inline StaticMatrix( std::initializer_list< std::initializer_list<Type> > list );
+   explicit inline StaticMatrix( InitializerList2D<Type> list );
 
    template< typename Other > explicit inline StaticMatrix( size_t m, size_t n, const Other* array );
    template< typename Other > explicit inline StaticMatrix( const Other (&array)[M][N] );
@@ -3044,7 +3019,7 @@ class StaticMatrix<Type,M,N,true> : public DenseMatrix< StaticMatrix<Type,M,N,tr
    /*!\name Assignment operators */
    //@{
    inline StaticMatrix& operator=( const Type& set );
-   inline StaticMatrix& operator=( std::initializer_list< std::initializer_list<Type> > list );
+   inline StaticMatrix& operator=( InitializerList2D<Type> list );
 
    template< typename Other >
    inline StaticMatrix& operator=( const Other (&array)[M][N] );
@@ -3201,8 +3176,6 @@ class StaticMatrix<Type,M,N,true> : public DenseMatrix< StaticMatrix<Type,M,N,tr
    inline void transpose ( FalseType );
    inline void ctranspose( TrueType  );
    inline void ctranspose( FalseType );
-
-   inline size_t determineColumns( std::initializer_list< std::initializer_list<Type> > list ) const noexcept;
    //**********************************************************************************************
 
    //**********************************************************************************************
@@ -3319,7 +3292,7 @@ inline StaticMatrix<Type,M,N,true>::StaticMatrix( const Type& init )
 template< typename Type  // Data type of the matrix
         , size_t M       // Number of rows
         , size_t N >     // Number of columns
-inline StaticMatrix<Type,M,N,true>::StaticMatrix( std::initializer_list< std::initializer_list<Type> > list )
+inline StaticMatrix<Type,M,N,true>::StaticMatrix( InitializerList2D<Type> list )
    : v_()  // The statically allocated matrix elements
 {
    BLAZE_STATIC_ASSERT( IsVectorizable<Type>::value || MM == M );
@@ -3950,7 +3923,7 @@ template< typename Type  // Data type of the matrix
         , size_t M       // Number of rows
         , size_t N >     // Number of columns
 inline StaticMatrix<Type,M,N,true>&
-   StaticMatrix<Type,M,N,true>::operator=( std::initializer_list< std::initializer_list<Type> > list )
+   StaticMatrix<Type,M,N,true>::operator=( InitializerList2D<Type> list )
 {
    if( list.size() != M || determineColumns( list ) > N ) {
       BLAZE_THROW_INVALID_ARGUMENT( "Invalid assignment to static matrix" );
@@ -4686,28 +4659,6 @@ inline void StaticMatrix<Type,M,N,true>::swap( StaticMatrix& m ) noexcept
          swap( v_[i+j*MM], m(i,j) );
       }
    }
-}
-/*! \endcond */
-//*************************************************************************************************
-
-
-//*************************************************************************************************
-/*! \cond BLAZE_INTERNAL */
-/*!\brief Determine the maximum number of columns specified by the given initializer list.
-//
-// \param list The given initializer list
-// \return The maximum number of columns.
-*/
-template< typename Type  // Data type of the matrix
-        , size_t M       // Number of rows
-        , size_t N >     // Number of columns
-inline size_t
-   StaticMatrix<Type,M,N,true>::determineColumns( std::initializer_list< std::initializer_list<Type> > list ) const noexcept
-{
-   size_t cols( 0UL );
-   for( const auto& row : list )
-      cols = max( cols, row.size() );
-   return cols;
 }
 /*! \endcond */
 //*************************************************************************************************

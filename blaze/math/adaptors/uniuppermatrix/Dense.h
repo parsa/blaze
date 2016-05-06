@@ -40,7 +40,6 @@
 // Includes
 //*************************************************************************************************
 
-#include <initializer_list>
 #include <iterator>
 #include <utility>
 #include <blaze/math/adaptors/Forward.h>
@@ -57,6 +56,7 @@
 #include <blaze/math/constraints/Upper.h>
 #include <blaze/math/dense/DenseMatrix.h>
 #include <blaze/math/expressions/DenseMatrix.h>
+#include <blaze/math/InitializerList.h>
 #include <blaze/math/shims/Clear.h>
 #include <blaze/math/shims/IsDefault.h>
 #include <blaze/math/typetraits/Columns.h>
@@ -588,7 +588,7 @@ class UniUpperMatrix<MT,SO,true>
    template< typename A1 > explicit inline UniUpperMatrix( const A1& a1 );
                            explicit inline UniUpperMatrix( size_t n, const ElementType& init );
 
-   explicit inline UniUpperMatrix( std::initializer_list< std::initializer_list<ElementType> > list );
+   explicit inline UniUpperMatrix( InitializerList2D<ElementType> list );
 
    template< typename Other >
    explicit inline UniUpperMatrix( size_t n, const Other* array );
@@ -636,7 +636,7 @@ class UniUpperMatrix<MT,SO,true>
    /*!\name Assignment operators */
    //@{
    inline UniUpperMatrix& operator=( const ElementType& rhs );
-   inline UniUpperMatrix& operator=( std::initializer_list< std::initializer_list<ElementType> > list );
+   inline UniUpperMatrix& operator=( InitializerList2D<ElementType> list );
 
    template< typename Other, size_t N >
    inline UniUpperMatrix& operator=( const Other (&array)[N][N] );
@@ -876,7 +876,7 @@ inline UniUpperMatrix<MT,SO,true>::UniUpperMatrix( size_t n, const ElementType& 
 */
 template< typename MT  // Type of the adapted dense matrix
         , bool SO >    // Storage order of the adapted dense matrix
-inline UniUpperMatrix<MT,SO,true>::UniUpperMatrix( std::initializer_list< std::initializer_list<ElementType> > list )
+inline UniUpperMatrix<MT,SO,true>::UniUpperMatrix( InitializerList2D<ElementType> list )
    : matrix_( list )  // The adapted dense matrix
 {
    if( !isUniUpper( matrix_ ) ) {
@@ -1544,7 +1544,7 @@ inline UniUpperMatrix<MT,SO,true>&
 template< typename MT  // Type of the adapted dense matrix
         , bool SO >    // Storage order of the adapted dense matrix
 inline UniUpperMatrix<MT,SO,true>&
-   UniUpperMatrix<MT,SO,true>::operator=( std::initializer_list< std::initializer_list<ElementType> > list )
+   UniUpperMatrix<MT,SO,true>::operator=( InitializerList2D<ElementType> list )
 {
    MT tmp( list );
 

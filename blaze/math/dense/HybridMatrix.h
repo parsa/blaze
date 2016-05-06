@@ -41,7 +41,6 @@
 //*************************************************************************************************
 
 #include <algorithm>
-#include <initializer_list>
 #include <utility>
 #include <blaze/math/Aliases.h>
 #include <blaze/math/AlignmentFlag.h>
@@ -52,6 +51,7 @@
 #include <blaze/math/expressions/SparseMatrix.h>
 #include <blaze/math/Forward.h>
 #include <blaze/math/Functions.h>
+#include <blaze/math/InitializerList.h>
 #include <blaze/math/shims/Clear.h>
 #include <blaze/math/shims/Conjugate.h>
 #include <blaze/math/shims/IsDefault.h>
@@ -260,7 +260,7 @@ class HybridMatrix : public DenseMatrix< HybridMatrix<Type,M,N,SO>, SO >
    explicit inline HybridMatrix();
    explicit inline HybridMatrix( size_t m, size_t n );
    explicit inline HybridMatrix( size_t m, size_t n, const Type& init );
-   explicit inline HybridMatrix( std::initializer_list< std::initializer_list<Type> > list );
+   explicit inline HybridMatrix( InitializerList2D<Type> list );
 
    template< typename Other >
    explicit inline HybridMatrix( size_t m, size_t n, const Other* array );
@@ -301,7 +301,7 @@ class HybridMatrix : public DenseMatrix< HybridMatrix<Type,M,N,SO>, SO >
    /*!\name Assignment operators */
    //@{
    inline HybridMatrix& operator=( const Type& set );
-   inline HybridMatrix& operator=( std::initializer_list< std::initializer_list<Type> > list );
+   inline HybridMatrix& operator=( InitializerList2D<Type> list );
 
    template< typename Other, size_t M2, size_t N2 >
    inline HybridMatrix& operator=( const Other (&array)[M2][N2] );
@@ -461,12 +461,6 @@ class HybridMatrix : public DenseMatrix< HybridMatrix<Type,M,N,SO>, SO >
    //**********************************************************************************************
 
  private:
-   //**Utility functions***************************************************************************
-   /*! \cond BLAZE_INTERNAL */
-   inline size_t determineColumns( std::initializer_list< std::initializer_list<Type> > list ) const noexcept;
-   /*! \endcond */
-   //**********************************************************************************************
-
    //**********************************************************************************************
    //! Alignment adjustment.
    enum : size_t { NN = ( usePadding )?( NextMultiple< SizeT<N>, SizeT<SIMDSIZE> >::value ):( N ) };
@@ -662,7 +656,7 @@ template< typename Type  // Data type of the matrix
         , size_t M       // Number of rows
         , size_t N       // Number of columns
         , bool SO >      // Storage order
-inline HybridMatrix<Type,M,N,SO>::HybridMatrix( std::initializer_list< std::initializer_list<Type> > list )
+inline HybridMatrix<Type,M,N,SO>::HybridMatrix( InitializerList2D<Type> list )
    : v_()                            // The statically allocated matrix elements
    , m_( list.size() )               // The current number of rows of the matrix
    , n_( determineColumns( list ) )  // The current number of columns of the matrix
@@ -1317,7 +1311,7 @@ template< typename Type  // Data type of the matrix
         , size_t N       // Number of columns
         , bool SO >      // Storage order
 inline HybridMatrix<Type,M,N,SO>&
-   HybridMatrix<Type,M,N,SO>::operator=( std::initializer_list< std::initializer_list<Type> > list )
+   HybridMatrix<Type,M,N,SO>::operator=( InitializerList2D<Type> list )
 {
    const size_t m( list.size() );
    const size_t n( determineColumns( list ) );
@@ -2111,29 +2105,6 @@ inline void HybridMatrix<Type,M,N,SO>::swap( HybridMatrix& m ) noexcept
    swap( m_, m.m_ );
    swap( n_, m.n_ );
 }
-//*************************************************************************************************
-
-
-//*************************************************************************************************
-/*! \cond BLAZE_INTERNAL */
-/*!\brief Determine the maximum number of columns specified by the given initializer list.
-//
-// \param list The given initializer list
-// \return The maximum number of columns.
-*/
-template< typename Type  // Data type of the matrix
-        , size_t M       // Number of rows
-        , size_t N       // Number of columns
-        , bool SO >      // Storage order
-inline size_t
-   HybridMatrix<Type,M,N,SO>::determineColumns( std::initializer_list< std::initializer_list<Type> > list ) const noexcept
-{
-   size_t cols( 0UL );
-   for( const auto& row : list )
-      cols = max( cols, row.size() );
-   return cols;
-}
-/*! \endcond */
 //*************************************************************************************************
 
 
@@ -3195,7 +3166,7 @@ class HybridMatrix<Type,M,N,true> : public DenseMatrix< HybridMatrix<Type,M,N,tr
    explicit inline HybridMatrix();
    explicit inline HybridMatrix( size_t m, size_t n );
    explicit inline HybridMatrix( size_t m, size_t n, const Type& init );
-   explicit inline HybridMatrix( std::initializer_list< std::initializer_list<Type> > list );
+   explicit inline HybridMatrix( InitializerList2D<Type> list );
 
    template< typename Other >
    explicit inline HybridMatrix( size_t m, size_t n, const Other* array );
@@ -3236,7 +3207,7 @@ class HybridMatrix<Type,M,N,true> : public DenseMatrix< HybridMatrix<Type,M,N,tr
    /*!\name Assignment operators */
    //@{
    inline HybridMatrix& operator=( const Type& set );
-   inline HybridMatrix& operator=( std::initializer_list< std::initializer_list<Type> > list );
+   inline HybridMatrix& operator=( InitializerList2D<Type> list );
 
    template< typename Other, size_t M2, size_t N2 >
    inline HybridMatrix& operator=( const Other (&array)[M2][N2] );
@@ -3390,10 +3361,6 @@ class HybridMatrix<Type,M,N,true> : public DenseMatrix< HybridMatrix<Type,M,N,tr
    //**********************************************************************************************
 
  private:
-   //**Utility functions***************************************************************************
-   inline size_t determineColumns( std::initializer_list< std::initializer_list<Type> > list ) const noexcept;
-   //**********************************************************************************************
-
    //**********************************************************************************************
    //! Alignment adjustment.
    enum : size_t { MM = ( usePadding )?( NextMultiple< SizeT<M>, SizeT<SIMDSIZE> >::value ):( M ) };
@@ -3584,7 +3551,7 @@ inline HybridMatrix<Type,M,N,true>::HybridMatrix( size_t m, size_t n, const Type
 template< typename Type  // Data type of the matrix
         , size_t M       // Number of rows
         , size_t N >     // Number of columns
-inline HybridMatrix<Type,M,N,true>::HybridMatrix( std::initializer_list< std::initializer_list<Type> > list )
+inline HybridMatrix<Type,M,N,true>::HybridMatrix( InitializerList2D<Type> list )
    : v_()                            // The statically allocated matrix elements
    , m_( list.size() )               // The current number of rows of the matrix
    , n_( determineColumns( list ) )  // The current number of columns of the matrix
@@ -4241,7 +4208,7 @@ template< typename Type  // Data type of the matrix
         , size_t M       // Number of rows
         , size_t N >     // Number of columns
 inline HybridMatrix<Type,M,N,true>&
-   HybridMatrix<Type,M,N,true>::operator=( std::initializer_list< std::initializer_list<Type> > list )
+   HybridMatrix<Type,M,N,true>::operator=( InitializerList2D<Type> list )
 {
    const size_t m( list.size() );
    const size_t n( determineColumns( list ) );
@@ -5056,28 +5023,6 @@ inline void HybridMatrix<Type,M,N,true>::swap( HybridMatrix& m ) noexcept
 
    swap( m_, m.m_ );
    swap( n_, m.n_ );
-}
-/*! \endcond */
-//*************************************************************************************************
-
-
-//*************************************************************************************************
-/*! \cond BLAZE_INTERNAL */
-/*!\brief Determine the maximum number of columns specified by the given initializer list.
-//
-// \param list The given initializer list
-// \return The maximum number of columns.
-*/
-template< typename Type  // Data type of the matrix
-        , size_t M       // Number of rows
-        , size_t N >     // Number of columns
-inline size_t
-   HybridMatrix<Type,M,N,true>::determineColumns( std::initializer_list< std::initializer_list<Type> > list ) const noexcept
-{
-   size_t cols( 0UL );
-   for( const auto& row : list )
-      cols = max( cols, row.size() );
-   return cols;
 }
 /*! \endcond */
 //*************************************************************************************************

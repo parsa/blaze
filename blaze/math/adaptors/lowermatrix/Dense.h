@@ -40,7 +40,6 @@
 // Includes
 //*************************************************************************************************
 
-#include <initializer_list>
 #include <iterator>
 #include <utility>
 #include <blaze/math/adaptors/Forward.h>
@@ -58,6 +57,7 @@
 #include <blaze/math/constraints/Upper.h>
 #include <blaze/math/dense/DenseMatrix.h>
 #include <blaze/math/expressions/DenseMatrix.h>
+#include <blaze/math/InitializerList.h>
 #include <blaze/math/shims/Clear.h>
 #include <blaze/math/shims/IsDefault.h>
 #include <blaze/math/typetraits/Columns.h>
@@ -585,7 +585,7 @@ class LowerMatrix<MT,SO,true>
    template< typename A1 > explicit inline LowerMatrix( const A1& a1 );
                            explicit inline LowerMatrix( size_t n, const ElementType& init );
 
-   explicit inline LowerMatrix( std::initializer_list< std::initializer_list<ElementType> > list );
+   explicit inline LowerMatrix( InitializerList2D<ElementType> list );
 
    template< typename Other >
    explicit inline LowerMatrix( size_t n, const Other* array );
@@ -633,7 +633,7 @@ class LowerMatrix<MT,SO,true>
    /*!\name Assignment operators */
    //@{
    inline LowerMatrix& operator=( const ElementType& rhs );
-   inline LowerMatrix& operator=( std::initializer_list< std::initializer_list<ElementType> > list );
+   inline LowerMatrix& operator=( InitializerList2D<ElementType> list );
 
    template< typename Other, size_t N >
    inline LowerMatrix& operator=( const Other (&array)[N][N] );
@@ -875,7 +875,7 @@ inline LowerMatrix<MT,SO,true>::LowerMatrix( size_t n, const ElementType& init )
 */
 template< typename MT  // Type of the adapted dense matrix
         , bool SO >    // Storage order of the adapted dense matrix
-inline LowerMatrix<MT,SO,true>::LowerMatrix( std::initializer_list< std::initializer_list<ElementType> > list )
+inline LowerMatrix<MT,SO,true>::LowerMatrix( InitializerList2D<ElementType> list )
    : matrix_( list )  // The adapted dense matrix
 {
    if( !isLower( matrix_ ) ) {
@@ -1543,7 +1543,7 @@ inline LowerMatrix<MT,SO,true>&
 template< typename MT  // Type of the adapted dense matrix
         , bool SO >    // Storage order of the adapted dense matrix
 inline LowerMatrix<MT,SO,true>&
-   LowerMatrix<MT,SO,true>::operator=( std::initializer_list< std::initializer_list<ElementType> > list )
+   LowerMatrix<MT,SO,true>::operator=( InitializerList2D<ElementType> list )
 {
    MT tmp( list );
 

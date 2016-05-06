@@ -40,7 +40,6 @@
 // Includes
 //*************************************************************************************************
 
-#include <initializer_list>
 #include <iterator>
 #include <utility>
 #include <blaze/math/adaptors/diagonalmatrix/BaseTemplate.h>
@@ -57,6 +56,7 @@
 #include <blaze/math/constraints/Upper.h>
 #include <blaze/math/dense/DenseMatrix.h>
 #include <blaze/math/expressions/DenseMatrix.h>
+#include <blaze/math/InitializerList.h>
 #include <blaze/math/shims/Clear.h>
 #include <blaze/math/shims/IsDefault.h>
 #include <blaze/math/typetraits/Columns.h>
@@ -584,7 +584,7 @@ class DiagonalMatrix<MT,SO,true>
    template< typename A1 > explicit inline DiagonalMatrix( const A1& a1 );
                            explicit inline DiagonalMatrix( size_t n, const ElementType& init );
 
-   explicit inline DiagonalMatrix( std::initializer_list< std::initializer_list<ElementType> > list );
+   explicit inline DiagonalMatrix( InitializerList2D<ElementType> list );
 
    template< typename Other >
    explicit inline DiagonalMatrix( size_t n, const Other* array );
@@ -632,7 +632,7 @@ class DiagonalMatrix<MT,SO,true>
    /*!\name Assignment operators */
    //@{
    inline DiagonalMatrix& operator=( const ElementType& rhs );
-   inline DiagonalMatrix& operator=( std::initializer_list< std::initializer_list<ElementType> > list );
+   inline DiagonalMatrix& operator=( InitializerList2D<ElementType> list );
 
    template< typename Other, size_t N >
    inline DiagonalMatrix& operator=( const Other (&array)[N][N] );
@@ -863,7 +863,7 @@ inline DiagonalMatrix<MT,SO,true>::DiagonalMatrix( size_t n, const ElementType& 
 */
 template< typename MT  // Type of the adapted dense matrix
         , bool SO >    // Storage order of the adapted dense matrix
-inline DiagonalMatrix<MT,SO,true>::DiagonalMatrix( std::initializer_list< std::initializer_list<ElementType> > list )
+inline DiagonalMatrix<MT,SO,true>::DiagonalMatrix( InitializerList2D<ElementType> list )
    : matrix_( list )  // The adapted dense matrix
 {
    if( !isDiagonal( matrix_ ) ) {
@@ -1529,7 +1529,7 @@ inline DiagonalMatrix<MT,SO,true>&
 template< typename MT  // Type of the adapted dense matrix
         , bool SO >    // Storage order of the adapted dense matrix
 inline DiagonalMatrix<MT,SO,true>&
-   DiagonalMatrix<MT,SO,true>::operator=( std::initializer_list< std::initializer_list<ElementType> > list )
+   DiagonalMatrix<MT,SO,true>::operator=( InitializerList2D<ElementType> list )
 {
    MT tmp( list );
 

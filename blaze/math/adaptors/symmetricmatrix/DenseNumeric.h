@@ -40,7 +40,6 @@
 // Includes
 //*************************************************************************************************
 
-#include <initializer_list>
 #include <iterator>
 #include <utility>
 #include <blaze/math/adaptors/symmetricmatrix/BaseTemplate.h>
@@ -58,6 +57,7 @@
 #include <blaze/math/expressions/DenseMatrix.h>
 #include <blaze/math/expressions/Forward.h>
 #include <blaze/math/Functions.h>
+#include <blaze/math/InitializerList.h>
 #include <blaze/math/shims/Clear.h>
 #include <blaze/math/shims/Conjugate.h>
 #include <blaze/math/SIMD.h>
@@ -587,7 +587,7 @@ class SymmetricMatrix<MT,SO,true,true>
    //@{
    explicit inline SymmetricMatrix();
    explicit inline SymmetricMatrix( size_t n );
-   explicit inline SymmetricMatrix( std::initializer_list< std::initializer_list<ElementType> > list );
+   explicit inline SymmetricMatrix( InitializerList2D<ElementType> list );
 
    template< typename Other >
    explicit inline SymmetricMatrix( size_t n, const Other* array );
@@ -637,7 +637,7 @@ class SymmetricMatrix<MT,SO,true,true>
    //**Assignment operators************************************************************************
    /*!\name Assignment operators */
    //@{
-   inline SymmetricMatrix& operator=( std::initializer_list< std::initializer_list<ElementType> > list );
+   inline SymmetricMatrix& operator=( InitializerList2D<ElementType> list );
 
    template< typename Other, size_t N >
    inline SymmetricMatrix& operator=( const Other (&array)[N][N] );
@@ -868,7 +868,7 @@ inline SymmetricMatrix<MT,SO,true,true>::SymmetricMatrix( size_t n )
 */
 template< typename MT  // Type of the adapted dense matrix
         , bool SO >    // Storage order of the adapted dense matrix
-inline SymmetricMatrix<MT,SO,true,true>::SymmetricMatrix( std::initializer_list< std::initializer_list<ElementType> > list )
+inline SymmetricMatrix<MT,SO,true,true>::SymmetricMatrix( InitializerList2D<ElementType> list )
    : matrix_( list )  // The adapted dense matrix
 {
    if( !isSymmetric( matrix_ ) ) {
@@ -1560,7 +1560,7 @@ inline typename SymmetricMatrix<MT,SO,true,true>::ConstIterator
 template< typename MT  // Type of the adapted dense matrix
         , bool SO >    // Storage order of the adapted dense matrix
 inline SymmetricMatrix<MT,SO,true,true>&
-   SymmetricMatrix<MT,SO,true,true>::operator=( std::initializer_list< std::initializer_list<ElementType> > list )
+   SymmetricMatrix<MT,SO,true,true>::operator=( InitializerList2D<ElementType> list )
 {
    MT tmp( list );
 

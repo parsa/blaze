@@ -40,7 +40,6 @@
 // Includes
 //*************************************************************************************************
 
-#include <initializer_list>
 #include <iterator>
 #include <utility>
 #include <blaze/math/adaptors/Forward.h>
@@ -58,6 +57,7 @@
 #include <blaze/math/constraints/Upper.h>
 #include <blaze/math/dense/DenseMatrix.h>
 #include <blaze/math/expressions/DenseMatrix.h>
+#include <blaze/math/InitializerList.h>
 #include <blaze/math/shims/Clear.h>
 #include <blaze/math/shims/IsDefault.h>
 #include <blaze/math/typetraits/Columns.h>
@@ -585,7 +585,7 @@ class StrictlyLowerMatrix<MT,SO,true>
    template< typename A1 > explicit inline StrictlyLowerMatrix( const A1& a1 );
                            explicit inline StrictlyLowerMatrix( size_t n, const ElementType& init );
 
-   explicit inline StrictlyLowerMatrix( std::initializer_list< std::initializer_list<ElementType> > list );
+   explicit inline StrictlyLowerMatrix( InitializerList2D<ElementType> list );
 
    template< typename Other >
    explicit inline StrictlyLowerMatrix( size_t n, const Other* array );
@@ -633,7 +633,7 @@ class StrictlyLowerMatrix<MT,SO,true>
    /*!\name Assignment operators */
    //@{
    inline StrictlyLowerMatrix& operator=( const ElementType& rhs );
-   inline StrictlyLowerMatrix& operator=( std::initializer_list< std::initializer_list<ElementType> > list );
+   inline StrictlyLowerMatrix& operator=( InitializerList2D<ElementType> list );
 
    template< typename Other, size_t N >
    inline StrictlyLowerMatrix& operator=( const Other (&array)[N][N] );
@@ -882,7 +882,7 @@ inline StrictlyLowerMatrix<MT,SO,true>::StrictlyLowerMatrix( size_t n, const Ele
 */
 template< typename MT  // Type of the adapted dense matrix
         , bool SO >    // Storage order of the adapted dense matrix
-inline StrictlyLowerMatrix<MT,SO,true>::StrictlyLowerMatrix( std::initializer_list< std::initializer_list<ElementType> > list )
+inline StrictlyLowerMatrix<MT,SO,true>::StrictlyLowerMatrix( InitializerList2D<ElementType> list )
    : matrix_( list )  // The adapted dense matrix
 {
    if( !isStrictlyLower( matrix_ ) ) {
@@ -1551,7 +1551,7 @@ inline StrictlyLowerMatrix<MT,SO,true>&
 template< typename MT  // Type of the adapted dense matrix
         , bool SO >    // Storage order of the adapted dense matrix
 inline StrictlyLowerMatrix<MT,SO,true>&
-   StrictlyLowerMatrix<MT,SO,true>::operator=( std::initializer_list< std::initializer_list<ElementType> > list )
+   StrictlyLowerMatrix<MT,SO,true>::operator=( InitializerList2D<ElementType> list )
 {
    MT tmp( list );
 

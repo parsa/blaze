@@ -41,7 +41,6 @@
 //*************************************************************************************************
 
 #include <algorithm>
-#include <initializer_list>
 #include <utility>
 #include <blaze/math/Aliases.h>
 #include <blaze/math/AlignmentFlag.h>
@@ -49,6 +48,7 @@
 #include <blaze/math/expressions/DenseVector.h>
 #include <blaze/math/expressions/SparseVector.h>
 #include <blaze/math/Forward.h>
+#include <blaze/math/InitializerList.h>
 #include <blaze/math/shims/Clear.h>
 #include <blaze/math/shims/IsDefault.h>
 #include <blaze/math/shims/Serial.h>
@@ -225,7 +225,7 @@ class StaticVector : public DenseVector< StaticVector<Type,N,TF>, TF >
    //@{
    explicit inline StaticVector();
    explicit inline StaticVector( const Type& init );
-   explicit inline StaticVector( std::initializer_list<Type> list );
+   explicit inline StaticVector( InitializerList<Type> list );
 
    template< typename Other >
    explicit inline StaticVector( size_t n, const Other* array );
@@ -265,7 +265,7 @@ class StaticVector : public DenseVector< StaticVector<Type,N,TF>, TF >
    /*!\name Assignment operators */
    //@{
    inline StaticVector& operator=( const Type& rhs );
-   inline StaticVector& operator=( std::initializer_list<Type> list );
+   inline StaticVector& operator=( InitializerList<Type> list );
 
    template< typename Other >
    inline StaticVector& operator=( const Other (&array)[N] );
@@ -556,7 +556,7 @@ inline StaticVector<Type,N,TF>::StaticVector( const Type& init )
 template< typename Type  // Data type of the vector
         , size_t N       // Number of elements
         , bool TF >      // Transpose flag
-inline StaticVector<Type,N,TF>::StaticVector( std::initializer_list<Type> list )
+inline StaticVector<Type,N,TF>::StaticVector( InitializerList<Type> list )
    : v_()  // The statically allocated vector elements
 {
    BLAZE_STATIC_ASSERT( IsVectorizable<Type>::value || NN == N );
@@ -1009,7 +1009,7 @@ inline StaticVector<Type,N,TF>& StaticVector<Type,N,TF>::operator=( const Type& 
 template< typename Type  // Data type of the vector
         , size_t N       // Number of elements
         , bool TF >      // Transpose flag
-inline StaticVector<Type,N,TF>& StaticVector<Type,N,TF>::operator=( std::initializer_list<Type> list )
+inline StaticVector<Type,N,TF>& StaticVector<Type,N,TF>::operator=( InitializerList<Type> list )
 {
    if( list.size() > N ) {
       BLAZE_THROW_INVALID_ARGUMENT( "Invalid assignment to static vector" );

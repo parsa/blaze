@@ -41,7 +41,6 @@
 //*************************************************************************************************
 
 #include <algorithm>
-#include <initializer_list>
 #include <utility>
 #include <blaze/math/Aliases.h>
 #include <blaze/math/AlignmentFlag.h>
@@ -52,6 +51,7 @@
 #include <blaze/math/expressions/SparseMatrix.h>
 #include <blaze/math/Forward.h>
 #include <blaze/math/Functions.h>
+#include <blaze/math/InitializerList.h>
 #include <blaze/math/shims/Clear.h>
 #include <blaze/math/shims/Conjugate.h>
 #include <blaze/math/shims/IsDefault.h>
@@ -249,7 +249,7 @@ class DynamicMatrix : public DenseMatrix< DynamicMatrix<Type,SO>, SO >
    explicit inline DynamicMatrix() noexcept;
    explicit inline DynamicMatrix( size_t m, size_t n );
    explicit inline DynamicMatrix( size_t m, size_t n, const Type& init );
-   explicit inline DynamicMatrix( std::initializer_list< std::initializer_list<Type> > list );
+   explicit inline DynamicMatrix( InitializerList2D<Type> list );
 
    template< typename Other >
    explicit inline DynamicMatrix( size_t m, size_t n, const Other* array );
@@ -294,7 +294,7 @@ class DynamicMatrix : public DenseMatrix< DynamicMatrix<Type,SO>, SO >
    /*!\name Assignment operators */
    //@{
    inline DynamicMatrix& operator=( const Type& rhs );
-   inline DynamicMatrix& operator=( std::initializer_list< std::initializer_list<Type> > list );
+   inline DynamicMatrix& operator=( InitializerList2D<Type> list );
 
    template< typename Other, size_t M, size_t N >
    inline DynamicMatrix& operator=( const Other (&array)[M][N] );
@@ -446,7 +446,7 @@ class DynamicMatrix : public DenseMatrix< DynamicMatrix<Type,SO>, SO >
    //**Utility functions***************************************************************************
    /*!\name Utility functions */
    //@{
-   inline size_t determineColumns( std::initializer_list< std::initializer_list<Type> > list ) const noexcept;
+   inline size_t determineColumns( InitializerList2D<Type> list ) const noexcept;
    inline size_t adjustColumns   ( size_t minColumns ) const noexcept;
    //@}
    //**********************************************************************************************
@@ -592,7 +592,7 @@ inline DynamicMatrix<Type,SO>::DynamicMatrix( size_t m, size_t n, const Type& in
 */
 template< typename Type  // Data type of the matrix
         , bool SO >      // Storage order
-inline DynamicMatrix<Type,SO>::DynamicMatrix( std::initializer_list< std::initializer_list<Type> > list )
+inline DynamicMatrix<Type,SO>::DynamicMatrix( InitializerList2D<Type> list )
    : m_       ( list.size() )                  // The current number of rows of the matrix
    , n_       ( determineColumns( list ) )     // The current number of columns of the matrix
    , nn_      ( adjustColumns( n_ ) )          // The alignment adjusted number of columns
@@ -1178,7 +1178,7 @@ inline DynamicMatrix<Type,SO>& DynamicMatrix<Type,SO>::operator=( const Type& rh
 template< typename Type  // Data type of the matrix
         , bool SO >      // Storage order
 inline DynamicMatrix<Type,SO>&
-   DynamicMatrix<Type,SO>::operator=( std::initializer_list< std::initializer_list<Type> > list )
+   DynamicMatrix<Type,SO>::operator=( InitializerList2D<Type> list )
 {
    resize( list.size(), determineColumns( list ), false );
 
@@ -1936,7 +1936,7 @@ inline void DynamicMatrix<Type,SO>::swap( DynamicMatrix& m ) noexcept
 template< typename Type  // Data type of the matrix
         , bool SO >      // Storage order
 inline size_t
-   DynamicMatrix<Type,SO>::determineColumns( std::initializer_list< std::initializer_list<Type> > list ) const noexcept
+   DynamicMatrix<Type,SO>::determineColumns( InitializerList2D<Type> list ) const noexcept
 {
    size_t cols( 0UL );
    for( const auto& row : list )
@@ -3012,7 +3012,7 @@ class DynamicMatrix<Type,true> : public DenseMatrix< DynamicMatrix<Type,true>, t
    explicit inline DynamicMatrix() noexcept;
    explicit inline DynamicMatrix( size_t m, size_t n );
    explicit inline DynamicMatrix( size_t m, size_t n, const Type& init );
-   explicit inline DynamicMatrix( std::initializer_list< std::initializer_list<Type> > list );
+   explicit inline DynamicMatrix( InitializerList2D<Type> list );
 
    template< typename Other > explicit inline DynamicMatrix( size_t m, size_t n, const Other* array );
 
@@ -3056,7 +3056,7 @@ class DynamicMatrix<Type,true> : public DenseMatrix< DynamicMatrix<Type,true>, t
    /*!\name Assignment operators */
    //@{
    inline DynamicMatrix& operator=( const Type& rhs );
-   inline DynamicMatrix& operator=( std::initializer_list< std::initializer_list<Type> > list );
+   inline DynamicMatrix& operator=( InitializerList2D<Type> list );
 
    template< typename Other, size_t M, size_t N >
    inline DynamicMatrix& operator=( const Other (&array)[M][N] );
@@ -3202,7 +3202,7 @@ class DynamicMatrix<Type,true> : public DenseMatrix< DynamicMatrix<Type,true>, t
    //**Utility functions***************************************************************************
    /*!\name Utility functions */
    //@{
-   inline size_t determineColumns( std::initializer_list< std::initializer_list<Type> > list ) const noexcept;
+   inline size_t determineColumns( InitializerList2D<Type> list ) const noexcept;
    inline size_t adjustRows      ( size_t minRows ) const noexcept;
    //@}
    //**********************************************************************************************
@@ -3343,7 +3343,7 @@ inline DynamicMatrix<Type,true>::DynamicMatrix( size_t m, size_t n, const Type& 
 // default (as e.g. the value 6 in the example).
 */
 template< typename Type >  // Data type of the matrix
-inline DynamicMatrix<Type,true>::DynamicMatrix( std::initializer_list< std::initializer_list<Type> > list )
+inline DynamicMatrix<Type,true>::DynamicMatrix( InitializerList2D<Type> list )
    : m_       ( list.size() )                  // The current number of rows of the matrix
    , mm_      ( adjustRows( m_ ) )             // The alignment adjusted number of rows
    , n_       ( determineColumns( list ) )     // The current number of columns of the matrix
@@ -3936,7 +3936,7 @@ inline DynamicMatrix<Type,true>& DynamicMatrix<Type,true>::operator=( const Type
 */
 template< typename Type >  // Data type of the matrix
 inline DynamicMatrix<Type,true>&
-   DynamicMatrix<Type,true>::operator=( std::initializer_list< std::initializer_list<Type> > list )
+   DynamicMatrix<Type,true>::operator=( InitializerList2D<Type> list )
 {
    resize( list.size(), determineColumns( list ), false );
 
@@ -4716,7 +4716,7 @@ inline void DynamicMatrix<Type,true>::swap( DynamicMatrix& m ) noexcept
 */
 template< typename Type >  // Data type of the matrix
 inline size_t
-   DynamicMatrix<Type,true>::determineColumns( std::initializer_list< std::initializer_list<Type> > list ) const noexcept
+   DynamicMatrix<Type,true>::determineColumns( InitializerList2D<Type> list ) const noexcept
 {
    size_t cols( 0UL );
    for( const auto& row : list )
