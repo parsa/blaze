@@ -40,6 +40,7 @@
 // Includes
 //*************************************************************************************************
 
+#include <algorithm>
 #include <utility>
 #include <boost/smart_ptr/shared_array.hpp>
 #include <blaze/math/Aliases.h>
@@ -51,6 +52,7 @@
 #include <blaze/math/expressions/SparseMatrix.h>
 #include <blaze/math/Forward.h>
 #include <blaze/math/Functions.h>
+#include <blaze/math/InitializerList.h>
 #include <blaze/math/PaddingFlag.h>
 #include <blaze/math/shims/Clear.h>
 #include <blaze/math/shims/Conjugate.h>
@@ -518,10 +520,12 @@ class CustomMatrix : public DenseMatrix< CustomMatrix<Type,AF,PF,SO>, SO >
    //**Assignment operators************************************************************************
    /*!\name Assignment operators */
    //@{
+   inline CustomMatrix& operator=( const Type& set );
+   inline CustomMatrix& operator=( InitializerList2D<Type> list );
+
    template< typename Other, size_t M, size_t N >
    inline CustomMatrix& operator=( const Other (&array)[M][N] );
 
-   inline CustomMatrix& operator=( const Type& set );
    inline CustomMatrix& operator=( const CustomMatrix& rhs );
    inline CustomMatrix& operator=( CustomMatrix&& rhs ) noexcept;
 
@@ -1330,6 +1334,79 @@ inline typename CustomMatrix<Type,AF,PF,SO>::ConstIterator
 //=================================================================================================
 
 //*************************************************************************************************
+/*!\brief Homogenous assignment to all matrix elements.
+//
+// \param rhs Scalar value to be assigned to all matrix elements.
+// \return Reference to the assigned matrix.
+*/
+template< typename Type  // Data type of the matrix
+        , bool AF        // Alignment flag
+        , bool PF        // Padding flag
+        , bool SO >      // Storage order
+inline CustomMatrix<Type,AF,PF,SO>& CustomMatrix<Type,AF,PF,SO>::operator=( const Type& rhs )
+{
+   for( size_t i=0UL; i<m_; ++i )
+      for( size_t j=0UL; j<n_; ++j )
+         v_[i*nn_+j] = rhs;
+
+   return *this;
+}
+//*************************************************************************************************
+
+
+//*************************************************************************************************
+/*!\brief List assignment to all matrix elements.
+//
+// \param list The initializer list.
+// \exception std::invalid_argument Invalid assignment to static matrix.
+//
+// This assignment operator offers the option to directly assign to all elements of the matrix
+// by means of an initializer list:
+
+   \code
+   using blaze::unaligned;
+   using blaze::unpadded;
+   using blaze::rowMajor;
+
+   const int array[9] = { 0, 0, 0,
+                          0, 0, 0,
+                          0, 0, 0 };
+   blaze::CustomMatrix<int,unaligned,unpadded,rowMajor> A( array, 3UL, 3UL );
+   A = { { 1, 2, 3 },
+         { 4, 5 },
+         { 7, 8, 9 } };
+   \endcode
+
+// The matrix elements are assigned the values from the given initializer list. Missing values
+// are initialized as default (as e.g. the value 6 in the example). Note that in case the size
+// of the top-level initializer list exceeds the number of rows or the size of any nested list
+// exceeds the number of columns, a \a std::invalid_argument exception is thrown.
+*/
+template< typename Type  // Data type of the matrix
+        , bool AF        // Alignment flag
+        , bool PF        // Padding flag
+        , bool SO >      // Storage order
+inline CustomMatrix<Type,AF,PF,SO>&
+   CustomMatrix<Type,AF,PF,SO>::operator=( InitializerList2D<Type> list )
+{
+   if( list.size() != m_ || determineColumns( list ) > n_ ) {
+      BLAZE_THROW_INVALID_ARGUMENT( "Invalid assignment to custom matrix" );
+   }
+
+   size_t i( 0UL );
+
+   for( const auto& row : list ) {
+      std::fill( std::copy( row.begin(), row.end(), v_.get()+i*nn_ ),
+                 v_.get()+i*nn_+( PF ? nn_ : n_ ), Type() );
+      ++i;
+   }
+
+   return *this;
+}
+//*************************************************************************************************
+
+
+//*************************************************************************************************
 /*!\brief Array assignment to all matrix elements.
 //
 // \param array \f$ M \times N \f$ dimensional array for the assignment.
@@ -1374,27 +1451,6 @@ inline CustomMatrix<Type,AF,PF,SO>& CustomMatrix<Type,AF,PF,SO>::operator=( cons
    for( size_t i=0UL; i<M; ++i )
       for( size_t j=0UL; j<N; ++j )
          v_[i*nn_+j] = array[i][j];
-
-   return *this;
-}
-//*************************************************************************************************
-
-
-//*************************************************************************************************
-/*!\brief Homogenous assignment to all matrix elements.
-//
-// \param rhs Scalar value to be assigned to all matrix elements.
-// \return Reference to the assigned matrix.
-*/
-template< typename Type  // Data type of the matrix
-        , bool AF        // Alignment flag
-        , bool PF        // Padding flag
-        , bool SO >      // Storage order
-inline CustomMatrix<Type,AF,PF,SO>& CustomMatrix<Type,AF,PF,SO>::operator=( const Type& rhs )
-{
-   for( size_t i=0UL; i<m_; ++i )
-      for( size_t j=0UL; j<n_; ++j )
-         v_[i*nn_+j] = rhs;
 
    return *this;
 }
@@ -3222,10 +3278,12 @@ class CustomMatrix<Type,AF,PF,true> : public DenseMatrix< CustomMatrix<Type,AF,P
    //**Assignment operators************************************************************************
    /*!\name Assignment operators */
    //@{
+   inline CustomMatrix& operator=( const Type& set );
+   inline CustomMatrix& operator=( InitializerList2D<Type> list );
+
    template< typename Other, size_t M, size_t N >
    inline CustomMatrix& operator=( const Other (&array)[M][N] );
 
-   inline CustomMatrix& operator=( const Type& set );
    inline CustomMatrix& operator=( const CustomMatrix& rhs );
    inline CustomMatrix& operator=( CustomMatrix&& rhs ) noexcept;
 
@@ -4011,6 +4069,87 @@ inline typename CustomMatrix<Type,AF,PF,true>::ConstIterator
 
 //*************************************************************************************************
 /*! \cond BLAZE_INTERNAL */
+/*!\brief Homogenous assignment to all matrix elements.
+//
+// \param rhs Scalar value to be assigned to all matrix elements.
+// \return Reference to the assigned matrix.
+*/
+template< typename Type  // Data type of the matrix
+        , bool AF        // Alignment flag
+        , bool PF >      // Padding flag
+inline CustomMatrix<Type,AF,PF,true>& CustomMatrix<Type,AF,PF,true>::operator=( const Type& rhs )
+{
+   for( size_t j=0UL; j<n_; ++j )
+      for( size_t i=0UL; i<m_; ++i )
+         v_[i+j*mm_] = rhs;
+
+   return *this;
+}
+/*! \endcond */
+//*************************************************************************************************
+
+
+//*************************************************************************************************
+/*! \cond BLAZE_INTERNAL */
+/*!\brief List assignment to all matrix elements.
+//
+// \param list The initializer list.
+// \exception std::invalid_argument Invalid assignment to static matrix.
+//
+// This assignment operator offers the option to directly assign to all elements of the matrix
+// by means of an initializer list:
+
+   \code
+   using blaze::unaligned;
+   using blaze::unpadded;
+   using blaze::rowMajor;
+
+   const int array[9] = { 0, 0, 0,
+                          0, 0, 0,
+                          0, 0, 0 };
+   blaze::CustomMatrix<int,unaligned,unpadded,rowMajor> A( array, 3UL, 3UL );
+   A = { { 1, 2, 3 },
+         { 4, 5 },
+         { 7, 8, 9 } };
+   \endcode
+
+// The matrix elements are assigned the values from the given initializer list. Missing values
+// are initialized as default (as e.g. the value 6 in the example). Note that in case the size
+// of the top-level initializer list exceeds the number of rows or the size of any nested list
+// exceeds the number of columns, a \a std::invalid_argument exception is thrown.
+*/
+template< typename Type  // Data type of the matrix
+        , bool AF        // Alignment flag
+        , bool PF >      // Padding flag
+inline CustomMatrix<Type,AF,PF,true>&
+   CustomMatrix<Type,AF,PF,true>::operator=( InitializerList2D<Type> list )
+{
+   if( list.size() != m_ || determineColumns( list ) > n_ ) {
+      BLAZE_THROW_INVALID_ARGUMENT( "Invalid assignment to custom matrix" );
+   }
+
+   size_t i( 0UL );
+
+   for( const auto& row : list ) {
+      size_t j( 0UL );
+      for( const auto& element : row ) {
+         v_[i+j*mm_] = element;
+         ++j;
+      }
+      for( ; j<n_; ++j ) {
+         v_[i+j*mm_] = Type();
+      }
+      ++i;
+   }
+
+   return *this;
+}
+/*! \endcond */
+//*************************************************************************************************
+
+
+//*************************************************************************************************
+/*! \cond BLAZE_INTERNAL */
 /*!\brief Array assignment to all matrix elements.
 //
 // \param array \f$ M \times N \f$ dimensional array for the assignment.
@@ -4055,28 +4194,6 @@ inline CustomMatrix<Type,AF,PF,true>&
    for( size_t j=0UL; j<N; ++j )
       for( size_t i=0UL; i<M; ++i )
          v_[i+j*mm_] = array[i][j];
-
-   return *this;
-}
-/*! \endcond */
-//*************************************************************************************************
-
-
-//*************************************************************************************************
-/*! \cond BLAZE_INTERNAL */
-/*!\brief Homogenous assignment to all matrix elements.
-//
-// \param rhs Scalar value to be assigned to all matrix elements.
-// \return Reference to the assigned matrix.
-*/
-template< typename Type  // Data type of the matrix
-        , bool AF        // Alignment flag
-        , bool PF >      // Padding flag
-inline CustomMatrix<Type,AF,PF,true>& CustomMatrix<Type,AF,PF,true>::operator=( const Type& rhs )
-{
-   for( size_t j=0UL; j<n_; ++j )
-      for( size_t i=0UL; i<m_; ++i )
-         v_[i+j*mm_] = rhs;
 
    return *this;
 }
