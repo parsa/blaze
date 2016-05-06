@@ -341,6 +341,103 @@ void SymmetricTest::testAssignment()
 
 
    //=====================================================================================
+   // Row-major list assignment
+   //=====================================================================================
+
+   {
+      test_ = "Row-major initializer list assignment (complete list)";
+
+      using blaze::aligned;
+      using blaze::padded;
+      using blaze::columnVector;
+
+      initialize();
+
+      CT col3 = column( mat_, 3UL );
+      col3 = { 1, 2, 3, 4 };
+
+      checkSize    ( col3, 4UL );
+      checkCapacity( col3, 4UL );
+      checkNonZeros( col3, 4UL );
+      checkRows    ( mat_, 4UL );
+      checkColumns ( mat_, 4UL );
+      checkNonZeros( mat_, 9UL );
+
+      if( col3[0] != 1 || col3[1] != 2 || col3[2] != 3 || col3[3] != 4 ) {
+         std::ostringstream oss;
+         oss << " Test: " << test_ << "\n"
+             << " Error: Assignment failed\n"
+             << " Details:\n"
+             << "   Result:\n" << col3 << "\n"
+             << "   Expected result:\n( 1 2 3 4 )\n";
+         throw std::runtime_error( oss.str() );
+      }
+
+      if( mat_(0,0) != 0 || mat_(0,1) != 0 || mat_(0,2) != 0 || mat_(0,3) != 1 ||
+          mat_(1,0) != 0 || mat_(1,1) != 1 || mat_(1,2) != 0 || mat_(1,3) != 2 ||
+          mat_(2,0) != 0 || mat_(2,1) != 0 || mat_(2,2) != 3 || mat_(2,3) != 3 ||
+          mat_(3,0) != 1 || mat_(3,1) != 2 || mat_(3,2) != 3 || mat_(3,3) != 4 ) {
+         std::ostringstream oss;
+         oss << " Test: " << test_ << "\n"
+             << " Error: Assignment failed\n"
+             << " Details:\n"
+             << "   Result:\n" << mat_ << "\n"
+             << "   Expected result:\n(  0  0  0  1 )\n"
+                                     "(  0  1  0  2 )\n"
+                                     "(  0  0  3  3 )\n"
+                                     "(  1  2  3  4 )\n";
+         throw std::runtime_error( oss.str() );
+      }
+   }
+
+   {
+      test_ = "Row-major initializer list assignment (incomplete list)";
+
+      using blaze::aligned;
+      using blaze::padded;
+      using blaze::columnVector;
+
+      initialize();
+
+      CT col3 = column( mat_, 3UL );
+      col3 = { 1, 2 };
+
+      checkSize    ( col3, 4UL );
+      checkCapacity( col3, 4UL );
+      checkNonZeros( col3, 2UL );
+      checkRows    ( mat_, 4UL );
+      checkColumns ( mat_, 4UL );
+      checkNonZeros( mat_, 6UL );
+
+      if( col3[0] != 1 || col3[1] != 2 || col3[2] != 0 || col3[3] != 0 ) {
+         std::ostringstream oss;
+         oss << " Test: " << test_ << "\n"
+             << " Error: Assignment failed\n"
+             << " Details:\n"
+             << "   Result:\n" << col3 << "\n"
+             << "   Expected result:\n( 1 2 0 0 )\n";
+         throw std::runtime_error( oss.str() );
+      }
+
+      if( mat_(0,0) != 0 || mat_(0,1) != 0 || mat_(0,2) != 0 || mat_(0,3) != 1 ||
+          mat_(1,0) != 0 || mat_(1,1) != 1 || mat_(1,2) != 0 || mat_(1,3) != 2 ||
+          mat_(2,0) != 0 || mat_(2,1) != 0 || mat_(2,2) != 3 || mat_(2,3) != 0 ||
+          mat_(3,0) != 1 || mat_(3,1) != 2 || mat_(3,2) != 0 || mat_(3,3) != 0 ) {
+         std::ostringstream oss;
+         oss << " Test: " << test_ << "\n"
+             << " Error: Assignment failed\n"
+             << " Details:\n"
+             << "   Result:\n" << mat_ << "\n"
+             << "   Expected result:\n(  0  0  0  1 )\n"
+                                     "(  0  1  0  2 )\n"
+                                     "(  0  0  3  0 )\n"
+                                     "(  1  2  0  0 )\n";
+         throw std::runtime_error( oss.str() );
+      }
+   }
+
+
+   //=====================================================================================
    // Row-major copy assignment
    //=====================================================================================
 
@@ -594,6 +691,103 @@ void SymmetricTest::testAssignment()
                                      "(  8  8  8  8 )\n"
                                      "(  0  8  3  4 )\n"
                                      "(  0  8  4  5 )\n";
+         throw std::runtime_error( oss.str() );
+      }
+   }
+
+
+   //=====================================================================================
+   // Column-major list assignment
+   //=====================================================================================
+
+   {
+      test_ = "Column-major initializer list assignment (complete list)";
+
+      using blaze::aligned;
+      using blaze::padded;
+      using blaze::columnVector;
+
+      initialize();
+
+      OCT col3 = column( tmat_, 3UL );
+      col3 = { 1, 2, 3, 4 };
+
+      checkSize    ( col3 , 4UL );
+      checkCapacity( col3 , 4UL );
+      checkNonZeros( col3 , 4UL );
+      checkRows    ( tmat_, 4UL );
+      checkColumns ( tmat_, 4UL );
+      checkNonZeros( tmat_, 9UL );
+
+      if( col3[0] != 1 || col3[1] != 2 || col3[2] != 3 || col3[3] != 4 ) {
+         std::ostringstream oss;
+         oss << " Test: " << test_ << "\n"
+             << " Error: Assignment failed\n"
+             << " Details:\n"
+             << "   Result:\n" << col3 << "\n"
+             << "   Expected result:\n( 1 2 3 4 )\n";
+         throw std::runtime_error( oss.str() );
+      }
+
+      if( tmat_(0,0) != 0 || tmat_(0,1) != 0 || tmat_(0,2) != 0 || tmat_(0,3) != 1 ||
+          tmat_(1,0) != 0 || tmat_(1,1) != 1 || tmat_(1,2) != 0 || tmat_(1,3) != 2 ||
+          tmat_(2,0) != 0 || tmat_(2,1) != 0 || tmat_(2,2) != 3 || tmat_(2,3) != 3 ||
+          tmat_(3,0) != 1 || tmat_(3,1) != 2 || tmat_(3,2) != 3 || tmat_(3,3) != 4 ) {
+         std::ostringstream oss;
+         oss << " Test: " << test_ << "\n"
+             << " Error: Assignment failed\n"
+             << " Details:\n"
+             << "   Result:\n" << tmat_ << "\n"
+             << "   Expected result:\n(  0  0  0  1 )\n"
+                                     "(  0  1  0  2 )\n"
+                                     "(  0  0  3  3 )\n"
+                                     "(  1  2  3  4 )\n";
+         throw std::runtime_error( oss.str() );
+      }
+   }
+
+   {
+      test_ = "Column-major initializer list assignment (incomplete list)";
+
+      using blaze::aligned;
+      using blaze::padded;
+      using blaze::columnVector;
+
+      initialize();
+
+      OCT col3 = column( tmat_, 3UL );
+      col3 = { 1, 2 };
+
+      checkSize    ( col3, 4UL );
+      checkCapacity( col3, 4UL );
+      checkNonZeros( col3, 2UL );
+      checkRows    ( tmat_, 4UL );
+      checkColumns ( tmat_, 4UL );
+      checkNonZeros( tmat_, 6UL );
+
+      if( col3[0] != 1 || col3[1] != 2 || col3[2] != 0 || col3[3] != 0 ) {
+         std::ostringstream oss;
+         oss << " Test: " << test_ << "\n"
+             << " Error: Assignment failed\n"
+             << " Details:\n"
+             << "   Result:\n" << col3 << "\n"
+             << "   Expected result:\n( 1 2 0 0 )\n";
+         throw std::runtime_error( oss.str() );
+      }
+
+      if( tmat_(0,0) != 0 || tmat_(0,1) != 0 || tmat_(0,2) != 0 || tmat_(0,3) != 1 ||
+          tmat_(1,0) != 0 || tmat_(1,1) != 1 || tmat_(1,2) != 0 || tmat_(1,3) != 2 ||
+          tmat_(2,0) != 0 || tmat_(2,1) != 0 || tmat_(2,2) != 3 || tmat_(2,3) != 0 ||
+          tmat_(3,0) != 1 || tmat_(3,1) != 2 || tmat_(3,2) != 0 || tmat_(3,3) != 0 ) {
+         std::ostringstream oss;
+         oss << " Test: " << test_ << "\n"
+             << " Error: Assignment failed\n"
+             << " Details:\n"
+             << "   Result:\n" << tmat_ << "\n"
+             << "   Expected result:\n(  0  0  0  1 )\n"
+                                     "(  0  1  0  2 )\n"
+                                     "(  0  0  3  0 )\n"
+                                     "(  1  2  0  0 )\n";
          throw std::runtime_error( oss.str() );
       }
    }
