@@ -55,6 +55,7 @@
 #include <blaze/math/expressions/DenseVector.h>
 #include <blaze/math/expressions/Forward.h>
 #include <blaze/math/expressions/Subvector.h>
+#include <blaze/math/InitializerList.h>
 #include <blaze/math/shims/Clear.h>
 #include <blaze/math/shims/IsDefault.h>
 #include <blaze/math/SIMD.h>
@@ -807,6 +808,7 @@ class DenseSubvector : public DenseVector< DenseSubvector<VT,AF,TF>, TF >
    /*!\name Assignment operators */
    //@{
                             inline DenseSubvector& operator= ( const ElementType& rhs );
+                            inline DenseSubvector& operator= ( InitializerList<ElementType> list );
                             inline DenseSubvector& operator= ( const DenseSubvector& rhs );
    template< typename VT2 > inline DenseSubvector& operator= ( const Vector<VT2,TF>& rhs );
    template< typename VT2 > inline DenseSubvector& operator+=( const Vector<VT2,TF>& rhs );
@@ -1332,6 +1334,37 @@ inline DenseSubvector<VT,AF,TF>& DenseSubvector<VT,AF,TF>::operator=( const Elem
 
    for( size_t i=offset_; i<iend; ++i )
       vector_[i] = rhs;
+
+   return *this;
+}
+//*************************************************************************************************
+
+
+//*************************************************************************************************
+/*!\brief List assignment to all subvector elements.
+//
+// \param list The initializer list.
+// \exception std::invalid_argument Invalid assignment to subvector.
+//
+// This assignment operator offers the option to directly assign to all elements of the subvector
+// by means of an initializer list. The subvector elements are assigned the values from the given
+// initializer list. Missing values are reset to their default state. Note that in case the size
+// of the initializer list exceeds the size of the subvector, a \a std::invalid_argument exception
+// is thrown.
+*/
+template< typename VT  // Type of the dense vector
+        , bool AF      // Alignment flag
+        , bool TF >    // Transpose flag
+inline DenseSubvector<VT,AF,TF>&
+   DenseSubvector<VT,AF,TF>::operator=( InitializerList<ElementType> list )
+{
+   if( list.size() > size() ) {
+      BLAZE_THROW_INVALID_ARGUMENT( "Invalid assignment to subvector" );
+   }
+
+   std::fill( std::copy( list.begin(), list.end(), begin() ), end(), ElementType() );
+
+   BLAZE_INTERNAL_ASSERT( isIntact( vector_ ), "Invariant violation detected" );
 
    return *this;
 }
@@ -2774,6 +2807,7 @@ class DenseSubvector<VT,aligned,TF> : public DenseVector< DenseSubvector<VT,alig
    /*!\name Assignment operators */
    //@{
                             inline DenseSubvector& operator= ( const ElementType& rhs );
+                            inline DenseSubvector& operator= ( InitializerList<ElementType> list );
                             inline DenseSubvector& operator= ( const DenseSubvector& rhs );
    template< typename VT2 > inline DenseSubvector& operator= ( const Vector<VT2,TF>& rhs );
    template< typename VT2 > inline DenseSubvector& operator+=( const Vector<VT2,TF>& rhs );
@@ -3295,6 +3329,38 @@ inline DenseSubvector<VT,aligned,TF>&
 
    for( size_t i=offset_; i<iend; ++i )
       vector_[i] = rhs;
+
+   return *this;
+}
+/*! \endcond */
+//*************************************************************************************************
+
+
+//*************************************************************************************************
+/*! \cond BLAZE_INTERNAL */
+/*!\brief List assignment to all subvector elements.
+//
+// \param list The initializer list.
+// \exception std::invalid_argument Invalid assignment to subvector.
+//
+// This assignment operator offers the option to directly assign to all elements of the subvector
+// by means of an initializer list. The subvector elements are assigned the values from the given
+// initializer list. Missing values are reset to their default state. Note that in case the size
+// of the initializer list exceeds the size of the subvector, a \a std::invalid_argument exception
+// is thrown.
+*/
+template< typename VT  // Type of the dense vector
+        , bool TF >    // Transpose flag
+inline DenseSubvector<VT,aligned,TF>&
+   DenseSubvector<VT,aligned,TF>::operator=( InitializerList<ElementType> list )
+{
+   if( list.size() > size() ) {
+      BLAZE_THROW_INVALID_ARGUMENT( "Invalid assignment to subvector" );
+   }
+
+   std::fill( std::copy( list.begin(), list.end(), begin() ), end(), ElementType() );
+
+   BLAZE_INTERNAL_ASSERT( isIntact( vector_ ), "Invariant violation detected" );
 
    return *this;
 }
