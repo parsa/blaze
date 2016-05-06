@@ -412,6 +412,85 @@ void AlignedTest::testAssignment()
 
 
    //=====================================================================================
+   // Row-major list assignment
+   //=====================================================================================
+
+   {
+      test_ = "Row-major initializer list assignment (complete list)";
+
+      initialize();
+
+      ASMT sm1 = submatrix<aligned>  ( mat1_, 8UL, 16UL, 8UL, 16UL );
+      USMT sm2 = submatrix<unaligned>( mat2_, 8UL, 16UL, 8UL, 16UL );
+
+      blaze::InitializerList2D<int> list =
+         { { 1,  2,  3,  4,  5,  6,  7,  8,  9, 10, 11, 12,  13,  14,  15,  16 },
+           { 2,  4,  6,  8, 10, 12, 14, 16, 18, 20, 22, 24,  26,  28,  30,  32 },
+           { 3,  6,  9, 12, 15, 18, 21, 24, 27, 30, 33, 36,  39,  42,  45,  48 },
+           { 4,  8, 12, 16, 20, 24, 28, 32, 36, 40, 44, 48,  52,  56,  60,  64 },
+           { 5, 10, 15, 20, 25, 30, 35, 40, 45, 50, 55, 60,  65,  70,  75,  80 },
+           { 6, 12, 18, 24, 30, 36, 42, 48, 54, 60, 66, 72,  78,  86,  92,  98 },
+           { 7, 14, 21, 28, 35, 42, 49, 56, 63, 70, 77, 84,  91,  98, 105, 112 },
+           { 8, 16, 24, 32, 40, 48, 56, 64, 72, 80, 88, 96, 104, 112, 120, 128 } };
+
+      sm1 = list;
+      sm2 = list;
+
+      checkRows   ( sm1,  8UL );
+      checkColumns( sm1, 16UL );
+      checkRows   ( sm2,  8UL );
+      checkColumns( sm2, 16UL );
+
+      if( sm1 != sm2 || mat1_ != mat2_ ) {
+         std::ostringstream oss;
+         oss << " Test: " << test_ << "\n"
+             << " Error: Assignment failed\n"
+             << " Details:\n"
+             << "   Result:\n" << sm1 << "\n"
+             << "   Expected result:\n" << sm2 << "\n";
+         throw std::runtime_error( oss.str() );
+      }
+   }
+
+   {
+      test_ = "Row-major initializer list assignment (incomplete list)";
+
+      initialize();
+
+      ASMT sm1 = submatrix<aligned>  ( mat1_, 8UL, 16UL, 8UL, 16UL );
+      USMT sm2 = submatrix<unaligned>( mat2_, 8UL, 16UL, 8UL, 16UL );
+
+      blaze::InitializerList2D<int> list =
+         { { 1,  2,  3,  4,  5,  6,  7,  8,  9, 10, 11, 12,  13,  14,  15,  16 },
+           { 2,  4,  6,  8, 10, 12, 14, 16, 18, 20, 22, 24,  26,  28 },
+           { 3,  6,  9, 12, 15, 18, 21, 24, 27, 30, 33, 36 },
+           { 4,  8, 12, 16, 20, 24, 28, 32, 36, 40 },
+           { 5, 10, 15, 20, 25, 30, 35, 40 },
+           { 6, 12, 18, 24, 30, 36 },
+           { 7, 14, 21, 28 },
+           { 8, 16 } };
+
+      sm1 = list;
+      sm2 = list;
+
+      checkRows   ( sm1,  8UL );
+      checkColumns( sm1, 16UL );
+      checkRows   ( sm2,  8UL );
+      checkColumns( sm2, 16UL );
+
+      if( sm1 != sm2 || mat1_ != mat2_ ) {
+         std::ostringstream oss;
+         oss << " Test: " << test_ << "\n"
+             << " Error: Assignment failed\n"
+             << " Details:\n"
+             << "   Result:\n" << sm1 << "\n"
+             << "   Expected result:\n" << sm2 << "\n";
+         throw std::runtime_error( oss.str() );
+      }
+   }
+
+
+   //=====================================================================================
    // Row-major copy assignment
    //=====================================================================================
 
@@ -722,6 +801,101 @@ void AlignedTest::testAssignment()
                 << "   Expected result:\n" << sm2 << "\n";
             throw std::runtime_error( oss.str() );
          }
+      }
+   }
+
+
+   //=====================================================================================
+   // Column-major list assignment
+   //=====================================================================================
+
+   {
+      test_ = "Column-major initializer list assignment (complete list)";
+
+      initialize();
+
+      AOSMT sm1 = submatrix<aligned>  ( tmat1_, 16UL, 8UL, 16UL, 8UL );
+      UOSMT sm2 = submatrix<unaligned>( tmat2_, 16UL, 8UL, 16UL, 8UL );
+
+      blaze::InitializerList2D<int> list =
+         { {  1,  2,  3,  4,  5,  6,   7,   8 },
+           {  2,  4,  6,  8, 10, 12,  14,  16 },
+           {  3,  6,  9, 12, 15, 18,  21,  24 },
+           {  4,  8, 12, 16, 20, 24,  28,  32 },
+           {  5, 10, 15, 20, 25, 30,  35,  40 },
+           {  6, 12, 18, 24, 30, 36,  42,  48 },
+           {  7, 14, 21, 28, 35, 42,  49,  56 },
+           {  8, 16, 24, 32, 40, 48,  56,  64 },
+           {  9, 18, 27, 36, 45, 54,  63,  72 },
+           { 10, 20, 30, 40, 50, 60,  70,  80 },
+           { 11, 22, 33, 44, 55, 66,  77,  88 },
+           { 12, 24, 36, 48, 60, 72,  84,  96 },
+           { 13, 26, 39, 52, 65, 78,  91, 104 },
+           { 14, 28, 42, 56, 70, 84,  98, 112 },
+           { 15, 30, 45, 60, 75, 90, 105, 120 },
+           { 16, 32, 48, 64, 80, 96, 112, 128 } };
+
+      sm1 = list;
+      sm2 = list;
+
+      checkRows   ( sm1, 16UL );
+      checkColumns( sm1,  8UL );
+      checkRows   ( sm2, 16UL );
+      checkColumns( sm2,  8UL );
+
+      if( sm1 != sm2 || mat1_ != mat2_ ) {
+         std::ostringstream oss;
+         oss << " Test: " << test_ << "\n"
+             << " Error: Assignment failed\n"
+             << " Details:\n"
+             << "   Result:\n" << sm1 << "\n"
+             << "   Expected result:\n" << sm2 << "\n";
+         throw std::runtime_error( oss.str() );
+      }
+   }
+
+   {
+      test_ = "Column-major initializer list assignment (incomplete list)";
+
+      initialize();
+
+      AOSMT sm1 = submatrix<aligned>  ( tmat1_, 16UL, 8UL, 16UL, 8UL );
+      UOSMT sm2 = submatrix<unaligned>( tmat2_, 16UL, 8UL, 16UL, 8UL );
+
+      blaze::InitializerList2D<int> list =
+         { {  1,  2,  3,  4,  5,  6,   7,   8 },
+           {  2,  4,  6,  8, 10, 12,  14 },
+           {  3,  6,  9, 12, 15, 18 },
+           {  4,  8, 12, 16, 20 },
+           {  5, 10, 15, 20 },
+           {  6, 12, 18 },
+           {  7, 14 },
+           {  8 },
+           {  9, 18, 27, 36, 45, 54,  63,  72 },
+           { 10, 20, 30, 40, 50, 60,  70 },
+           { 11, 22, 33, 44, 55, 66 },
+           { 12, 24, 36, 48, 60 },
+           { 13, 26, 39, 52 },
+           { 14, 28, 42 },
+           { 15, 30 },
+           { 16 } };
+
+      sm1 = list;
+      sm2 = list;
+
+      checkRows   ( sm1, 16UL );
+      checkColumns( sm1,  8UL );
+      checkRows   ( sm2, 16UL );
+      checkColumns( sm2,  8UL );
+
+      if( sm1 != sm2 || mat1_ != mat2_ ) {
+         std::ostringstream oss;
+         oss << " Test: " << test_ << "\n"
+             << " Error: Assignment failed\n"
+             << " Details:\n"
+             << "   Result:\n" << sm1 << "\n"
+             << "   Expected result:\n" << sm2 << "\n";
+         throw std::runtime_error( oss.str() );
       }
    }
 
