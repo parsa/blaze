@@ -40,6 +40,7 @@
 // Includes
 //*************************************************************************************************
 
+#include <algorithm>
 #include <iterator>
 #include <blaze/math/Aliases.h>
 #include <blaze/math/constraints/ColumnMajorMatrix.h>
@@ -54,6 +55,7 @@
 #include <blaze/math/constraints/UniTriangular.h>
 #include <blaze/math/expressions/DenseVector.h>
 #include <blaze/math/expressions/Row.h>
+#include <blaze/math/InitializerList.h>
 #include <blaze/math/shims/Clear.h>
 #include <blaze/math/shims/IsDefault.h>
 #include <blaze/math/SIMD.h>
@@ -423,6 +425,7 @@ class DenseRow : public DenseVector< DenseRow<MT,SO,SF>, true >
    /*!\name Assignment operators */
    //@{
    inline DenseRow& operator=( const ElementType& rhs );
+   inline DenseRow& operator=( InitializerList<ElementType> list );
    inline DenseRow& operator=( const DenseRow& rhs );
 
    template< typename VT > inline DenseRow& operator= ( const Vector<VT,true>& rhs );
@@ -940,6 +943,36 @@ inline DenseRow<MT,SO,SF>& DenseRow<MT,SO,SF>::operator=( const ElementType& rhs
 
    for( size_t j=jbegin; j<jend; ++j )
       matrix_(row_,j) = rhs;
+
+   return *this;
+}
+//*************************************************************************************************
+
+
+//*************************************************************************************************
+/*!\brief List assignment to all row elements.
+//
+// \param list The initializer list.
+// \exception std::invalid_argument Invalid assignment to row.
+//
+// This assignment operator offers the option to directly assign to all elements of the dense
+// row by means of an initializer list. The row elements are assigned the values from the given
+// initializer list. Missing values are reset to their default state. Note that in case the size
+// of the initializer list exceeds the size of the row, a \a std::invalid_argument exception is
+// thrown.
+*/
+template< typename MT  // Type of the dense matrix
+        , bool SO      // Storage order
+        , bool SF >    // Symmetry flag
+inline DenseRow<MT,SO,SF>& DenseRow<MT,SO,SF>::operator=( InitializerList<ElementType> list )
+{
+   if( list.size() > size() ) {
+      BLAZE_THROW_INVALID_ARGUMENT( "Invalid assignment to row" );
+   }
+
+   std::fill( std::copy( list.begin(), list.end(), begin() ), end(), ElementType() );
+
+   BLAZE_INTERNAL_ASSERT( isIntact( matrix_ ), "Invariant violation detected" );
 
    return *this;
 }
@@ -2642,6 +2675,7 @@ class DenseRow<MT,false,false> : public DenseVector< DenseRow<MT,false,false>, t
    /*!\name Assignment operators */
    //@{
    inline DenseRow& operator=( const ElementType& rhs );
+   inline DenseRow& operator=( InitializerList<ElementType> list );
    inline DenseRow& operator=( const DenseRow& rhs );
 
    template< typename VT > inline DenseRow& operator= ( const Vector<VT,true>& rhs );
@@ -3052,6 +3086,37 @@ inline DenseRow<MT,false,false>& DenseRow<MT,false,false>::operator=( const Elem
 
    for( size_t j=jbegin; j<jend; ++j )
       matrix_(row_,j) = rhs;
+
+   return *this;
+}
+/*! \endcond */
+//*************************************************************************************************
+
+
+//*************************************************************************************************
+/*! \cond BLAZE_INTERNAL */
+/*!\brief List assignment to all row elements.
+//
+// \param list The initializer list.
+// \exception std::invalid_argument Invalid assignment to row.
+//
+// This assignment operator offers the option to directly assign to all elements of the dense
+// row by means of an initializer list. The row elements are assigned the values from the given
+// initializer list. Missing values are reset to their default state. Note that in case the size
+// of the initializer list exceeds the size of the row, a \a std::invalid_argument exception is
+// thrown.
+*/
+template< typename MT >  // Type of the dense matrix
+inline DenseRow<MT,false,false>&
+   DenseRow<MT,false,false>::operator=( InitializerList<ElementType> list )
+{
+   if( list.size() > size() ) {
+      BLAZE_THROW_INVALID_ARGUMENT( "Invalid assignment to row" );
+   }
+
+   std::fill( std::copy( list.begin(), list.end(), begin() ), end(), ElementType() );
+
+   BLAZE_INTERNAL_ASSERT( isIntact( matrix_ ), "Invariant violation detected" );
 
    return *this;
 }
@@ -4063,6 +4128,7 @@ class DenseRow<MT,false,true> : public DenseVector< DenseRow<MT,false,true>, tru
    /*!\name Assignment operators */
    //@{
    inline DenseRow& operator=( const ElementType& rhs );
+   inline DenseRow& operator=( InitializerList<ElementType> list );
    inline DenseRow& operator=( const DenseRow& rhs );
 
    template< typename VT > inline DenseRow& operator= ( const Vector<VT,true>& rhs );
@@ -4566,6 +4632,37 @@ inline DenseRow<MT,false,true>& DenseRow<MT,false,true>::operator=( const Elemen
 
    for( size_t i=ibegin; i<iend; ++i )
       matrix_(i,row_) = rhs;
+
+   return *this;
+}
+/*! \endcond */
+//*************************************************************************************************
+
+
+//*************************************************************************************************
+/*! \cond BLAZE_INTERNAL */
+/*!\brief List assignment to all row elements.
+//
+// \param list The initializer list.
+// \exception std::invalid_argument Invalid assignment to row.
+//
+// This assignment operator offers the option to directly assign to all elements of the dense
+// row by means of an initializer list. The row elements are assigned the values from the given
+// initializer list. Missing values are reset to their default state. Note that in case the size
+// of the initializer list exceeds the size of the row, a \a std::invalid_argument exception is
+// thrown.
+*/
+template< typename MT >  // Type of the dense matrix
+inline DenseRow<MT,false,true>&
+   DenseRow<MT,false,true>::operator=( InitializerList<ElementType> list )
+{
+   if( list.size() > size() ) {
+      BLAZE_THROW_INVALID_ARGUMENT( "Invalid assignment to row" );
+   }
+
+   std::fill( std::copy( list.begin(), list.end(), begin() ), end(), ElementType() );
+
+   BLAZE_INTERNAL_ASSERT( isIntact( matrix_ ), "Invariant violation detected" );
 
    return *this;
 }
