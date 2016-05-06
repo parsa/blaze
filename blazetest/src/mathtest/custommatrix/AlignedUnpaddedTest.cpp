@@ -989,6 +989,61 @@ void AlignedUnpaddedTest::testAssignment()
 
 
    //=====================================================================================
+   // Row-major list assignment
+   //=====================================================================================
+
+   {
+      test_ = "Row-major CustomMatrix initializer list assignment (complete list)";
+
+      MT mat( blaze::allocate<int>( 32UL ), 2UL, 3UL, 16UL, blaze::Deallocate() );
+      mat = { { 1, 2, 3 }, { 4, 5, 6 } };
+
+      checkRows    ( mat, 2UL );
+      checkColumns ( mat, 3UL );
+      checkCapacity( mat, 6UL );
+      checkNonZeros( mat, 6UL );
+      checkNonZeros( mat, 0UL, 3UL );
+      checkNonZeros( mat, 1UL, 3UL );
+
+      if( mat(0,0) != 1 || mat(0,1) != 2 || mat(0,2) != 3 ||
+          mat(1,0) != 4 || mat(1,1) != 5 || mat(1,2) != 6 ) {
+         std::ostringstream oss;
+         oss << " Test: " << test_ << "\n"
+             << " Error: Assignment failed\n"
+             << " Details:\n"
+             << "   Result:\n" << mat << "\n"
+             << "   Expected result:\n( 1 2 3 )\n( 4 5 6 )\n";
+         throw std::runtime_error( oss.str() );
+      }
+   }
+
+   {
+      test_ = "Row-major StaticMatrix initializer list assignment (incomplete list)";
+
+      MT mat( blaze::allocate<int>( 32UL ), 2UL, 3UL, 16UL, blaze::Deallocate() );
+      mat = { { 1 }, { 4, 5, 6 } };
+
+      checkRows    ( mat, 2UL );
+      checkColumns ( mat, 3UL );
+      checkCapacity( mat, 6UL );
+      checkNonZeros( mat, 4UL );
+      checkNonZeros( mat, 0UL, 1UL );
+      checkNonZeros( mat, 1UL, 3UL );
+
+      if( mat(0,0) != 1 || mat(0,1) != 0 || mat(0,2) != 0 ||
+          mat(1,0) != 4 || mat(1,1) != 5 || mat(1,2) != 6 ) {
+         std::ostringstream oss;
+         oss << " Test: " << test_ << "\n"
+             << " Error: Assignment failed\n"
+             << " Details:\n"
+             << "   Result:\n" << mat << "\n"
+             << "   Expected result:\n( 1 0 0 )\n( 4 5 6 )\n";
+         throw std::runtime_error( oss.str() );
+      }
+   }
+
+
+   //=====================================================================================
    // Row-major array assignment
    //=====================================================================================
 
@@ -1816,6 +1871,63 @@ void AlignedUnpaddedTest::testAssignment()
              << " Details:\n"
              << "   Result:\n" << mat << "\n"
              << "   Expected result:\n( 2 2 2 2 )\n( 2 2 2 2 )\n( 2 2 2 2 )\n";
+         throw std::runtime_error( oss.str() );
+      }
+   }
+
+
+   //=====================================================================================
+   // Column-major list assignment
+   //=====================================================================================
+
+   {
+      test_ = "Column-major CustomMatrix initializer list assignment (complete list)";
+
+      OMT mat( blaze::allocate<int>( 48UL ), 2UL, 3UL, 16UL, blaze::Deallocate() );
+      mat = { { 1, 2, 3 }, { 4, 5, 6 } };
+
+      checkRows    ( mat, 2UL );
+      checkColumns ( mat, 3UL );
+      checkCapacity( mat, 6UL );
+      checkNonZeros( mat, 6UL );
+      checkNonZeros( mat, 0UL, 2UL );
+      checkNonZeros( mat, 1UL, 2UL );
+      checkNonZeros( mat, 2UL, 2UL );
+
+      if( mat(0,0) != 1 || mat(0,1) != 2 || mat(0,2) != 3 ||
+          mat(1,0) != 4 || mat(1,1) != 5 || mat(1,2) != 6 ) {
+         std::ostringstream oss;
+         oss << " Test: " << test_ << "\n"
+             << " Error: Assignment failed\n"
+             << " Details:\n"
+             << "   Result:\n" << mat << "\n"
+             << "   Expected result:\n( 1 2 3 )\n( 4 5 6 )\n";
+         throw std::runtime_error( oss.str() );
+      }
+   }
+
+   {
+      test_ = "Column-major CustomMatrix initializer list assignment (incomplete list)";
+
+      OMT mat( blaze::allocate<int>( 48UL ), 2UL, 3UL, 16UL, blaze::Deallocate() );
+      mat = { { 1 }, { 4, 5, 6 } };
+
+      checkRows    ( mat, 2UL );
+      checkColumns ( mat, 3UL );
+      checkCapacity( mat, 6UL );
+      checkNonZeros( mat, 4UL );
+      checkNonZeros( mat, 0UL, 2UL );
+      checkNonZeros( mat, 1UL, 1UL );
+      checkNonZeros( mat, 2UL, 1UL );
+
+      if( mat(0,0) != 1 || mat(0,1) != 0 || mat(0,2) != 0 ||
+          mat(1,0) != 4 || mat(1,1) != 5 || mat(1,2) != 6 ) {
+         std::ostringstream oss;
+         oss << " Test: " << test_ << "\n"
+             << " Error: Assignment failed\n"
+             << " Details:\n"
+             << "   Result:\n" << mat << "\n"
+             << "   Expected result:\n( 1 0 0 )\n( 4 5 6 )\n";
          throw std::runtime_error( oss.str() );
       }
    }
