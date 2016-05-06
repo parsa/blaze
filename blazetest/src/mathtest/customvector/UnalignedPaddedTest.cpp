@@ -338,6 +338,53 @@ void UnalignedPaddedTest::testAssignment()
 
 
    //=====================================================================================
+   // List assignment
+   //=====================================================================================
+
+   {
+      test_ = "CustomVector initializer list assignment (complete list)";
+
+      VT vec( new int[16UL], 4UL, 16UL, blaze::ArrayDelete() );
+      vec = { 1, 2, 3, 4 };
+
+      checkSize    ( vec, 4UL );
+      checkCapacity( vec, 4UL );
+      checkNonZeros( vec, 4UL );
+
+      if( vec[0] != 1 || vec[1] != 2 || vec[2] != 3 || vec[3] != 4 ) {
+         std::ostringstream oss;
+         oss << " Test: " << test_ << "\n"
+             << " Error: Assignment failed\n"
+             << " Details:\n"
+             << "   Result:\n" << vec << "\n"
+             << "   Expected result:\n( 1 2 3 4 )\n";
+         throw std::runtime_error( oss.str() );
+      }
+   }
+
+   {
+      test_ = "CustomVector initializer list assignment (incomplete list)";
+
+      VT vec( new int[16UL], 4UL, 16UL, blaze::ArrayDelete() );
+      vec = { 1, 2 };
+
+      checkSize    ( vec, 4UL );
+      checkCapacity( vec, 4UL );
+      checkNonZeros( vec, 2UL );
+
+      if( vec[0] != 1 || vec[1] != 2 || vec[2] != 0 || vec[3] != 0 ) {
+         std::ostringstream oss;
+         oss << " Test: " << test_ << "\n"
+             << " Error: Assignment failed\n"
+             << " Details:\n"
+             << "   Result:\n" << vec << "\n"
+             << "   Expected result:\n( 1 2 0 0 )\n";
+         throw std::runtime_error( oss.str() );
+      }
+   }
+
+
+   //=====================================================================================
    // Array assignment
    //=====================================================================================
 
