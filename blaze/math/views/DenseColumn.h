@@ -40,6 +40,7 @@
 // Includes
 //*************************************************************************************************
 
+#include <algorithm>
 #include <iterator>
 #include <blaze/math/Aliases.h>
 #include <blaze/math/constraints/ColumnMajorMatrix.h>
@@ -54,6 +55,7 @@
 #include <blaze/math/constraints/UniTriangular.h>
 #include <blaze/math/expressions/Column.h>
 #include <blaze/math/expressions/DenseVector.h>
+#include <blaze/math/InitializerList.h>
 #include <blaze/math/shims/Clear.h>
 #include <blaze/math/shims/IsDefault.h>
 #include <blaze/math/SIMD.h>
@@ -423,6 +425,7 @@ class DenseColumn : public DenseVector< DenseColumn<MT,SO,SF>, false >
    /*!\name Assignment operators */
    //@{
    inline DenseColumn& operator=( const ElementType& rhs );
+   inline DenseColumn& operator=( InitializerList<ElementType> list );
    inline DenseColumn& operator=( const DenseColumn& rhs );
 
    template< typename VT > inline DenseColumn& operator= ( const Vector<VT,false>& rhs );
@@ -941,6 +944,36 @@ inline DenseColumn<MT,SO,SF>& DenseColumn<MT,SO,SF>::operator=( const ElementTyp
 
    for( size_t i=ibegin; i<iend; ++i )
       matrix_(i,col_) = rhs;
+
+   return *this;
+}
+//*************************************************************************************************
+
+
+//*************************************************************************************************
+/*!\brief List assignment to all column elements.
+//
+// \param list The initializer list.
+// \exception std::invalid_argument Invalid assignment to column.
+//
+// This assignment operator offers the option to directly assign to all elements of the dense
+// column by means of an initializer list. The column elements are assigned the values from the
+// given initializer list. Missing values are reset to their default state. Note that in case
+// the size of the initializer list exceeds the size of the column, a \a std::invalid_argument
+// exception is thrown.
+*/
+template< typename MT  // Type of the dense matrix
+        , bool SO      // Storage order
+        , bool SF >    // Symmetry flag
+inline DenseColumn<MT,SO,SF>& DenseColumn<MT,SO,SF>::operator=( InitializerList<ElementType> list )
+{
+   if( list.size() > size() ) {
+      BLAZE_THROW_INVALID_ARGUMENT( "Invalid assignment to column" );
+   }
+
+   std::fill( std::copy( list.begin(), list.end(), begin() ), end(), ElementType() );
+
+   BLAZE_INTERNAL_ASSERT( isIntact( matrix_ ), "Invariant violation detected" );
 
    return *this;
 }
@@ -2640,8 +2673,9 @@ class DenseColumn<MT,false,false> : public DenseVector< DenseColumn<MT,false,fal
    //**Assignment operators************************************************************************
    /*!\name Assignment operators */
    //@{
-   inline DenseColumn& operator= ( const ElementType& rhs );
-   inline DenseColumn& operator= ( const DenseColumn& rhs );
+   inline DenseColumn& operator=( const ElementType& rhs );
+   inline DenseColumn& operator=( InitializerList<ElementType> list );
+   inline DenseColumn& operator=( const DenseColumn& rhs );
 
    template< typename VT > inline DenseColumn& operator= ( const Vector<VT,false>& rhs );
    template< typename VT > inline DenseColumn& operator+=( const Vector<VT,false>& rhs );
@@ -3056,6 +3090,37 @@ inline DenseColumn<MT,false,false>&
 
    for( size_t i=ibegin; i<iend; ++i )
       matrix_(i,col_) = rhs;
+
+   return *this;
+}
+/*! \endcond */
+//*************************************************************************************************
+
+
+//*************************************************************************************************
+/*! \cond BLAZE_INTERNAL */
+/*!\brief List assignment to all column elements.
+//
+// \param list The initializer list.
+// \exception std::invalid_argument Invalid assignment to column.
+//
+// This assignment operator offers the option to directly assign to all elements of the dense
+// column by means of an initializer list. The column elements are assigned the values from the
+// given initializer list. Missing values are reset to their default state. Note that in case
+// the size of the initializer list exceeds the size of the column, a \a std::invalid_argument
+// exception is thrown.
+*/
+template< typename MT >  // Type of the dense matrix
+inline DenseColumn<MT,false,false>&
+   DenseColumn<MT,false,false>::operator=( InitializerList<ElementType> list )
+{
+   if( list.size() > size() ) {
+      BLAZE_THROW_INVALID_ARGUMENT( "Invalid assignment to column" );
+   }
+
+   std::fill( std::copy( list.begin(), list.end(), begin() ), end(), ElementType() );
+
+   BLAZE_INTERNAL_ASSERT( isIntact( matrix_ ), "Invariant violation detected" );
 
    return *this;
 }
@@ -4074,6 +4139,7 @@ class DenseColumn<MT,false,true> : public DenseVector< DenseColumn<MT,false,true
    /*!\name Assignment operators */
    //@{
    inline DenseColumn& operator=( const ElementType& rhs );
+   inline DenseColumn& operator=( InitializerList<ElementType> list );
    inline DenseColumn& operator=( const DenseColumn& rhs );
 
    template< typename VT > inline DenseColumn& operator= ( const Vector<VT,false>& rhs );
@@ -4578,6 +4644,37 @@ inline DenseColumn<MT,false,true>& DenseColumn<MT,false,true>::operator=( const 
 
    for( size_t j=jbegin; j<jend; ++j )
       matrix_(col_,j) = rhs;
+
+   return *this;
+}
+/*! \endcond */
+//*************************************************************************************************
+
+
+//*************************************************************************************************
+/*! \cond BLAZE_INTERNAL */
+/*!\brief List assignment to all column elements.
+//
+// \param list The initializer list.
+// \exception std::invalid_argument Invalid assignment to column.
+//
+// This assignment operator offers the option to directly assign to all elements of the dense
+// column by means of an initializer list. The column elements are assigned the values from the
+// given initializer list. Missing values are reset to their default state. Note that in case
+// the size of the initializer list exceeds the size of the column, a \a std::invalid_argument
+// exception is thrown.
+*/
+template< typename MT >  // Type of the dense matrix
+inline DenseColumn<MT,false,true>&
+   DenseColumn<MT,false,true>::operator=( InitializerList<ElementType> list )
+{
+   if( list.size() > size() ) {
+      BLAZE_THROW_INVALID_ARGUMENT( "Invalid assignment to column" );
+   }
+
+   std::fill( std::copy( list.begin(), list.end(), begin() ), end(), ElementType() );
+
+   BLAZE_INTERNAL_ASSERT( isIntact( matrix_ ), "Invariant violation detected" );
 
    return *this;
 }
