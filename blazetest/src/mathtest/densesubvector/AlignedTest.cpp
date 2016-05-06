@@ -72,7 +72,6 @@ AlignedTest::AlignedTest()
    , vec2_( 64UL )
 {
    testConstructors();
-   return;
    testAssignment();
    testAddAssign();
    testSubAssign();
@@ -219,6 +218,55 @@ void AlignedTest::testAssignment()
 
       checkSize( sv1, 16UL );
       checkSize( sv2, 16UL );
+
+      if( sv1 != sv2 || vec1_ != vec2_ ) {
+         std::ostringstream oss;
+         oss << " Test: " << test_ << "\n"
+             << " Error: Assignment failed\n"
+             << " Details:\n"
+             << "   Result:\n" << sv1 << "\n"
+             << "   Expected result:\n" << sv2 << "\n";
+         throw std::runtime_error( oss.str() );
+      }
+   }
+
+
+   //=====================================================================================
+   // List assignment
+   //=====================================================================================
+
+   {
+      test_ = "DenseSubvector initializer list assignment (complete list)";
+
+      initialize();
+
+      ASVT sv1 = subvector<aligned>  ( vec1_, 8UL, 16UL );
+      USVT sv2 = subvector<unaligned>( vec2_, 8UL, 16UL );
+
+      sv1 = { 1, 2, 3, 4, 5, 6, 7, 8 };
+      sv2 = { 1, 2, 3, 4, 5, 6, 7, 8 };
+
+      if( sv1 != sv2 || vec1_ != vec2_ ) {
+         std::ostringstream oss;
+         oss << " Test: " << test_ << "\n"
+             << " Error: Assignment failed\n"
+             << " Details:\n"
+             << "   Result:\n" << sv1 << "\n"
+             << "   Expected result:\n" << sv2 << "\n";
+         throw std::runtime_error( oss.str() );
+      }
+   }
+
+   {
+      test_ = "DenseSubvector initializer list assignment (incomplete list)";
+
+      initialize();
+
+      ASVT sv1 = subvector<aligned>  ( vec1_, 8UL, 16UL );
+      USVT sv2 = subvector<unaligned>( vec2_, 8UL, 16UL );
+
+      sv1 = { 1, 2, 3 };
+      sv2 = { 1, 2, 3 };
 
       if( sv1 != sv2 || vec1_ != vec2_ ) {
          std::ostringstream oss;

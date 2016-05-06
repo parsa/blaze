@@ -217,6 +217,81 @@ void UnalignedTest::testAssignment()
 
 
    //=====================================================================================
+   // List assignment
+   //=====================================================================================
+
+   {
+      test_ = "DenseSubvector initializer list assignment (complete list)";
+
+      initialize();
+
+      SVT sv = subvector( vec_, 2UL, 4UL );
+      sv = { 1, 2, 3, 4 };
+
+      checkSize    ( sv  ,  4UL );
+      checkNonZeros( sv  ,  4UL );
+      checkSize    ( vec_,  8UL );
+      checkNonZeros( vec_,  6UL );
+
+      if( sv[0] != 1 || sv[1] != 2 || sv[2] != 3 || sv[3] != 4 ) {
+         std::ostringstream oss;
+         oss << " Test: " << test_ << "\n"
+             << " Error: Assignment failed\n"
+             << " Details:\n"
+             << "   Result:\n" << sv << "\n"
+             << "   Expected result:\n( 1 2 3 4 )\n";
+         throw std::runtime_error( oss.str() );
+      }
+
+      if( vec_[0] != 0 || vec_[1] != 1 || vec_[2] != 1 || vec_[3] != 2 ||
+          vec_[4] != 3 || vec_[5] != 4 || vec_[6] != 4 || vec_[7] != 0 ) {
+         std::ostringstream oss;
+         oss << " Test: " << test_ << "\n"
+             << " Error: Assignment failed\n"
+             << " Details:\n"
+             << "   Result:\n" << vec_ << "\n"
+             << "   Expected result:\n( 0 1 1 2 3 4 4 0 )\n";
+         throw std::runtime_error( oss.str() );
+      }
+   }
+
+   {
+      test_ = "DenseSubvector initializer list assignment (incomplete list)";
+
+      initialize();
+
+      SVT sv = subvector( vec_, 2UL, 4UL );
+      sv = { 1, 2 };
+
+      checkSize    ( sv  ,  4UL );
+      checkNonZeros( sv  ,  2UL );
+      checkSize    ( vec_,  8UL );
+      checkNonZeros( vec_,  4UL );
+
+      if( sv[0] != 1 || sv[1] != 2 || sv[2] != 0 || sv[3] != 0 ) {
+         std::ostringstream oss;
+         oss << " Test: " << test_ << "\n"
+             << " Error: Assignment failed\n"
+             << " Details:\n"
+             << "   Result:\n" << sv << "\n"
+             << "   Expected result:\n( 1 2 3 4 )\n";
+         throw std::runtime_error( oss.str() );
+      }
+
+      if( vec_[0] != 0 || vec_[1] != 1 || vec_[2] != 1 || vec_[3] != 2 ||
+          vec_[4] != 0 || vec_[5] != 0 || vec_[6] != 4 || vec_[7] != 0 ) {
+         std::ostringstream oss;
+         oss << " Test: " << test_ << "\n"
+             << " Error: Assignment failed\n"
+             << " Details:\n"
+             << "   Result:\n" << vec_ << "\n"
+             << "   Expected result:\n( 0 1 1 2 0 0 4 0 )\n";
+         throw std::runtime_error( oss.str() );
+      }
+   }
+
+
+   //=====================================================================================
    // Copy assignment
    //=====================================================================================
 
