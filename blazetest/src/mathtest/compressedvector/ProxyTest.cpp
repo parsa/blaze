@@ -181,10 +181,13 @@ void ProxyTest::testAssignment()
    {
       test_ = "VectorAccessProxy 2D initializer list assignment";
 
+      using blaze::initializer_list;
+
       DMV vec( 3UL, 1UL );
       vec[1] = DM( 3UL, 3UL, 2 );
 
-      vec[1] = { { 1, -2, 3 }, { -2, 4, -6 }, { 3, -6, 9 } };
+      initializer_list< initializer_list<int> > list = { { 1, -2, 3 }, { -2, 4, -6 }, { 3, -6, 9 } };
+      vec[1] = list;
 
       checkSize    ( vec, 3UL );
       checkCapacity( vec, 1UL );

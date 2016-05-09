@@ -185,10 +185,13 @@ void ProxyTest::testAssignment()
    {
       test_ = "Row-major MatrixAccessProxy 2D initializer list assignment";
 
+      using blaze::initializer_list;
+
       DMM mat( 2UL, 2UL, 1UL );
       mat(0,1) = DM( 3UL, 3UL, 2 );
 
-      mat(0,1) = { { 1, -2, 3 }, { -2, 4, -6 }, { 3, -6, 9 } };
+      initializer_list< initializer_list<int> > list = { { 1, -2, 3 }, { -2, 4, -6 }, { 3, -6, 9 } };
+      mat(0,1) = list;
 
       checkRows    ( mat, 2UL );
       checkColumns ( mat, 2UL );
@@ -445,10 +448,13 @@ void ProxyTest::testAssignment()
    {
       test_ = "Column-major MatrixAccessProxy 2D initializer list assignment";
 
+      using blaze::initializer_list;
+
       ODMM mat( 2UL, 2UL, 1UL );
       mat(0,1) = DM( 3UL, 3UL, 2 );
 
-      mat(0,1) = { { 1, -2, 3 }, { -2, 4, -6 }, { 3, -6, 9 } };
+      initializer_list< initializer_list<int> > list = { { 1, -2, 3 }, { -2, 4, -6 }, { 3, -6, 9 } };
+      mat(0,1) = list;
 
       checkRows    ( mat, 2UL );
       checkColumns ( mat, 2UL );
