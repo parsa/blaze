@@ -504,10 +504,10 @@ void AlignedTest::testAssignment()
       randomize( mat1, int(randmin), int(randmax) );
       mat2 = mat1;
 
-      ASMT sm1 = submatrix<aligned>  ( mat1, 8UL, 16UL, 8UL, 16UL );
-      USMT sm2 = submatrix<unaligned>( mat2, 8UL, 16UL, 8UL, 16UL );
-      sm1 = submatrix<aligned>  ( mat1_, 8UL, 16UL, 8UL, 16UL );
-      sm2 = submatrix<unaligned>( mat2_, 8UL, 16UL, 8UL, 16UL );
+      ASMT sm1 = submatrix<aligned>  ( mat1_, 8UL, 16UL, 8UL, 16UL );
+      USMT sm2 = submatrix<unaligned>( mat2_, 8UL, 16UL, 8UL, 16UL );
+      sm1 = submatrix<aligned>  ( mat1, 8UL, 16UL, 8UL, 16UL );
+      sm2 = submatrix<unaligned>( mat2, 8UL, 16UL, 8UL, 16UL );
 
       checkRows   ( sm1,  8UL );
       checkColumns( sm1, 16UL );
@@ -914,10 +914,10 @@ void AlignedTest::testAssignment()
       randomize( mat1, int(randmin), int(randmax) );
       mat2 = mat1;
 
-      AOSMT sm1 = submatrix<aligned>  ( mat1, 16UL, 8UL, 16UL, 8UL );
-      UOSMT sm2 = submatrix<unaligned>( mat2, 16UL, 8UL, 16UL, 8UL );
-      sm1 = submatrix<aligned>  ( tmat1_, 16UL, 8UL, 16UL, 8UL );
-      sm2 = submatrix<unaligned>( tmat2_, 16UL, 8UL, 16UL, 8UL );
+      AOSMT sm1 = submatrix<aligned>  ( tmat1_, 16UL, 8UL, 16UL, 8UL );
+      UOSMT sm2 = submatrix<unaligned>( tmat2_, 16UL, 8UL, 16UL, 8UL );
+      sm1 = submatrix<aligned>  ( mat1, 16UL, 8UL, 16UL, 8UL );
+      sm2 = submatrix<unaligned>( mat2, 16UL, 8UL, 16UL, 8UL );
 
       checkRows   ( sm1, 16UL );
       checkColumns( sm1,  8UL );
@@ -1194,10 +1194,10 @@ void AlignedTest::testAddAssign()
       randomize( mat1, int(randmin), int(randmax) );
       mat2 = mat1;
 
-      ASMT sm1 = submatrix<aligned>  ( mat1, 8UL, 16UL, 8UL, 16UL );
-      USMT sm2 = submatrix<unaligned>( mat2, 8UL, 16UL, 8UL, 16UL );
-      sm1 += submatrix<aligned>  ( mat1_, 8UL, 16UL, 8UL, 16UL );
-      sm2 += submatrix<unaligned>( mat2_, 8UL, 16UL, 8UL, 16UL );
+      ASMT sm1 = submatrix<aligned>  ( mat1_, 8UL, 16UL, 8UL, 16UL );
+      USMT sm2 = submatrix<unaligned>( mat2_, 8UL, 16UL, 8UL, 16UL );
+      sm1 += submatrix<aligned>  ( mat1, 8UL, 16UL, 8UL, 16UL );
+      sm2 += submatrix<unaligned>( mat2, 8UL, 16UL, 8UL, 16UL );
 
       checkRows   ( sm1,  8UL );
       checkColumns( sm1, 16UL );
@@ -1452,10 +1452,10 @@ void AlignedTest::testAddAssign()
       randomize( mat1, int(randmin), int(randmax) );
       mat2 = mat1;
 
-      AOSMT sm1 = submatrix<aligned>  ( mat1, 16UL, 8UL, 16UL, 8UL );
-      UOSMT sm2 = submatrix<unaligned>( mat2, 16UL, 8UL, 16UL, 8UL );
-      sm1 += submatrix<aligned>  ( tmat1_, 16UL, 8UL, 16UL, 8UL );
-      sm2 += submatrix<unaligned>( tmat2_, 16UL, 8UL, 16UL, 8UL );
+      AOSMT sm1 = submatrix<aligned>  ( tmat1_, 16UL, 8UL, 16UL, 8UL );
+      UOSMT sm2 = submatrix<unaligned>( tmat2_, 16UL, 8UL, 16UL, 8UL );
+      sm1 += submatrix<aligned>  ( mat1, 16UL, 8UL, 16UL, 8UL );
+      sm2 += submatrix<unaligned>( mat2, 16UL, 8UL, 16UL, 8UL );
 
       checkRows   ( sm1, 16UL );
       checkColumns( sm1,  8UL );
@@ -1732,10 +1732,10 @@ void AlignedTest::testSubAssign()
       randomize( mat1, int(randmin), int(randmax) );
       mat2 = mat1;
 
-      ASMT sm1 = submatrix<aligned>  ( mat1, 8UL, 16UL, 8UL, 16UL );
-      USMT sm2 = submatrix<unaligned>( mat2, 8UL, 16UL, 8UL, 16UL );
-      sm1 -= submatrix<aligned>  ( mat1_, 8UL, 16UL, 8UL, 16UL );
-      sm2 -= submatrix<unaligned>( mat2_, 8UL, 16UL, 8UL, 16UL );
+      ASMT sm1 = submatrix<aligned>  ( mat1_, 8UL, 16UL, 8UL, 16UL );
+      USMT sm2 = submatrix<unaligned>( mat2_, 8UL, 16UL, 8UL, 16UL );
+      sm1 -= submatrix<aligned>  ( mat1, 8UL, 16UL, 8UL, 16UL );
+      sm2 -= submatrix<unaligned>( mat2, 8UL, 16UL, 8UL, 16UL );
 
       checkRows   ( sm1,  8UL );
       checkColumns( sm1, 16UL );
@@ -1990,10 +1990,10 @@ void AlignedTest::testSubAssign()
       randomize( mat1, int(randmin), int(randmax) );
       mat2 = mat1;
 
-      AOSMT sm1 = submatrix<aligned>  ( mat1, 16UL, 8UL, 16UL, 8UL );
-      UOSMT sm2 = submatrix<unaligned>( mat2, 16UL, 8UL, 16UL, 8UL );
-      sm1 -= submatrix<aligned>  ( tmat1_, 16UL, 8UL, 16UL, 8UL );
-      sm2 -= submatrix<unaligned>( tmat2_, 16UL, 8UL, 16UL, 8UL );
+      AOSMT sm1 = submatrix<aligned>  ( tmat1_, 16UL, 8UL, 16UL, 8UL );
+      UOSMT sm2 = submatrix<unaligned>( tmat2_, 16UL, 8UL, 16UL, 8UL );
+      sm1 -= submatrix<aligned>  ( mat1, 16UL, 8UL, 16UL, 8UL );
+      sm2 -= submatrix<unaligned>( mat2, 16UL, 8UL, 16UL, 8UL );
 
       checkRows   ( sm1, 16UL );
       checkColumns( sm1,  8UL );
@@ -2270,10 +2270,10 @@ void AlignedTest::testMultAssign()
       randomize( mat1, int(randmin), int(randmax) );
       mat2 = mat1;
 
-      ASMT sm1 = submatrix<aligned>  ( mat1, 16UL, 16UL, 8UL, 8UL );
-      USMT sm2 = submatrix<unaligned>( mat2, 16UL, 16UL, 8UL, 8UL );
-      sm1 *= submatrix<aligned>  ( mat1_, 16UL, 16UL, 8UL, 8UL );
-      sm2 *= submatrix<unaligned>( mat2_, 16UL, 16UL, 8UL, 8UL );
+      ASMT sm1 = submatrix<aligned>  ( mat1_, 16UL, 16UL, 8UL, 8UL );
+      USMT sm2 = submatrix<unaligned>( mat2_, 16UL, 16UL, 8UL, 8UL );
+      sm1 *= submatrix<aligned>  ( mat1, 16UL, 16UL, 8UL, 8UL );
+      sm2 *= submatrix<unaligned>( mat2, 16UL, 16UL, 8UL, 8UL );
 
       checkRows   ( sm1, 8UL );
       checkColumns( sm1, 8UL );
@@ -2528,10 +2528,10 @@ void AlignedTest::testMultAssign()
       randomize( mat1, int(randmin), int(randmax) );
       mat2 = mat1;
 
-      AOSMT sm1 = submatrix<aligned>  ( mat1, 16UL, 16UL, 8UL, 8UL );
-      UOSMT sm2 = submatrix<unaligned>( mat2, 16UL, 16UL, 8UL, 8UL );
-      sm1 *= submatrix<aligned>  ( tmat1_, 16UL, 16UL, 8UL, 8UL );
-      sm2 *= submatrix<unaligned>( tmat2_, 16UL, 16UL, 8UL, 8UL );
+      AOSMT sm1 = submatrix<aligned>  ( tmat1_, 16UL, 16UL, 8UL, 8UL );
+      UOSMT sm2 = submatrix<unaligned>( tmat2_, 16UL, 16UL, 8UL, 8UL );
+      sm1 *= submatrix<aligned>  ( mat1, 16UL, 16UL, 8UL, 8UL );
+      sm2 *= submatrix<unaligned>( mat2, 16UL, 16UL, 8UL, 8UL );
 
       checkRows   ( sm1, 8UL );
       checkColumns( sm1, 8UL );
