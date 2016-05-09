@@ -352,6 +352,7 @@ void AlignedTest::testAssignment()
    using blaze::unpadded;
    using blaze::rowMajor;
    using blaze::columnMajor;
+   using blaze::initializer_list;
 
 
    //=====================================================================================
@@ -423,7 +424,7 @@ void AlignedTest::testAssignment()
       ASMT sm1 = submatrix<aligned>  ( mat1_, 8UL, 16UL, 8UL, 16UL );
       USMT sm2 = submatrix<unaligned>( mat2_, 8UL, 16UL, 8UL, 16UL );
 
-      blaze::InitializerList2D<int> list =
+      initializer_list< initializer_list<int> > list =
          { { 1,  2,  3,  4,  5,  6,  7,  8,  9, 10, 11, 12,  13,  14,  15,  16 },
            { 2,  4,  6,  8, 10, 12, 14, 16, 18, 20, 22, 24,  26,  28,  30,  32 },
            { 3,  6,  9, 12, 15, 18, 21, 24, 27, 30, 33, 36,  39,  42,  45,  48 },
@@ -460,7 +461,7 @@ void AlignedTest::testAssignment()
       ASMT sm1 = submatrix<aligned>  ( mat1_, 8UL, 16UL, 8UL, 16UL );
       USMT sm2 = submatrix<unaligned>( mat2_, 8UL, 16UL, 8UL, 16UL );
 
-      blaze::InitializerList2D<int> list =
+      initializer_list< initializer_list<int> > list =
          { { 1,  2,  3,  4,  5,  6,  7,  8,  9, 10, 11, 12,  13,  14,  15,  16 },
            { 2,  4,  6,  8, 10, 12, 14, 16, 18, 20, 22, 24,  26,  28 },
            { 3,  6,  9, 12, 15, 18, 21, 24, 27, 30, 33, 36 },
@@ -817,7 +818,7 @@ void AlignedTest::testAssignment()
       AOSMT sm1 = submatrix<aligned>  ( tmat1_, 16UL, 8UL, 16UL, 8UL );
       UOSMT sm2 = submatrix<unaligned>( tmat2_, 16UL, 8UL, 16UL, 8UL );
 
-      blaze::InitializerList2D<int> list =
+      initializer_list< initializer_list<int> > list =
          { {  1,  2,  3,  4,  5,  6,   7,   8 },
            {  2,  4,  6,  8, 10, 12,  14,  16 },
            {  3,  6,  9, 12, 15, 18,  21,  24 },
@@ -862,7 +863,7 @@ void AlignedTest::testAssignment()
       AOSMT sm1 = submatrix<aligned>  ( tmat1_, 16UL, 8UL, 16UL, 8UL );
       UOSMT sm2 = submatrix<unaligned>( tmat2_, 16UL, 8UL, 16UL, 8UL );
 
-      blaze::InitializerList2D<int> list =
+      initializer_list< initializer_list<int> > list =
          { {  1,  2,  3,  4,  5,  6,   7,   8 },
            {  2,  4,  6,  8, 10, 12,  14 },
            {  3,  6,  9, 12, 15, 18 },
