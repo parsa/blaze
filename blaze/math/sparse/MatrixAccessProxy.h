@@ -43,6 +43,7 @@
 #include <utility>
 #include <blaze/math/Aliases.h>
 #include <blaze/math/constraints/SparseMatrix.h>
+#include <blaze/math/InitializerList.h>
 #include <blaze/math/proxy/Proxy.h>
 #include <blaze/math/shims/Clear.h>
 #include <blaze/math/shims/Conjugate.h>
@@ -130,7 +131,14 @@ class MatrixAccessProxy : public Proxy< MatrixAccessProxy<MT>, ElementType_<MT> 
    //**Operators***********************************************************************************
    /*!\name Operators */
    //@{
-                          inline const MatrixAccessProxy& operator= ( const MatrixAccessProxy& map ) const;
+   inline const MatrixAccessProxy& operator=( const MatrixAccessProxy& map ) const;
+
+   template< typename T >
+   inline const MatrixAccessProxy& operator=( initializer_list<T> list ) const;
+
+   template< typename T >
+   inline const MatrixAccessProxy& operator=( initializer_list< initializer_list<T> > list ) const;
+
    template< typename T > inline const MatrixAccessProxy& operator= ( const T& value ) const;
    template< typename T > inline const MatrixAccessProxy& operator+=( const T& value ) const;
    template< typename T > inline const MatrixAccessProxy& operator-=( const T& value ) const;
@@ -265,6 +273,40 @@ template< typename MT >  // Type of the sparse matrix
 inline const MatrixAccessProxy<MT>& MatrixAccessProxy<MT>::operator=( const MatrixAccessProxy& map ) const
 {
    get() = map.get();
+   return *this;
+}
+//*************************************************************************************************
+
+
+//*************************************************************************************************
+/*!\brief Initializer list assignment to the accessed sparse matrix element.
+//
+// \param list The list to be assigned to the sparse matrix element.
+// \return Reference to the assigned access proxy.
+*/
+template< typename VT >  // Type of the sparse matrix
+template< typename T >   // Type of the right-hand side elements
+inline const MatrixAccessProxy<VT>&
+   MatrixAccessProxy<VT>::operator=( initializer_list<T> list ) const
+{
+   get() = list;
+   return *this;
+}
+//*************************************************************************************************
+
+
+//*************************************************************************************************
+/*!\brief Initializer list assignment to the accessed sparse matrix element.
+//
+// \param list The list to be assigned to the sparse matrix element.
+// \return Reference to the assigned access proxy.
+*/
+template< typename VT >  // Type of the sparse matrix
+template< typename T >   // Type of the right-hand side elements
+inline const MatrixAccessProxy<VT>&
+   MatrixAccessProxy<VT>::operator=( initializer_list< initializer_list<T> > list ) const
+{
+   get() = list;
    return *this;
 }
 //*************************************************************************************************

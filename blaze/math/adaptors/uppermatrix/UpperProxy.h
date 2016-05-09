@@ -47,6 +47,7 @@
 #include <blaze/math/constraints/Matrix.h>
 #include <blaze/math/constraints/Symmetric.h>
 #include <blaze/math/constraints/Upper.h>
+#include <blaze/math/InitializerList.h>
 #include <blaze/math/proxy/Proxy.h>
 #include <blaze/math/shims/Clear.h>
 #include <blaze/math/shims/Conjugate.h>
@@ -126,7 +127,14 @@ class UpperProxy : public Proxy< UpperProxy<MT>, ElementType_<MT> >
    //**Assignment operators************************************************************************
    /*!\name Assignment operators */
    //@{
-                          inline const UpperProxy& operator= ( const UpperProxy& up ) const;
+   inline const UpperProxy& operator=( const UpperProxy& up ) const;
+
+   template< typename T >
+   inline const UpperProxy& operator=( initializer_list<T> list ) const;
+
+   template< typename T >
+   inline const UpperProxy& operator=( initializer_list< initializer_list<T> > list ) const;
+
    template< typename T > inline const UpperProxy& operator= ( const T& value ) const;
    template< typename T > inline const UpperProxy& operator+=( const T& value ) const;
    template< typename T > inline const UpperProxy& operator-=( const T& value ) const;
@@ -242,6 +250,56 @@ inline const UpperProxy<MT>& UpperProxy<MT>::operator=( const UpperProxy& up ) c
    }
 
    value_ = up.value_;
+
+   return *this;
+}
+//*************************************************************************************************
+
+
+//*************************************************************************************************
+/*!\brief Initializer list assignment to the accessed matrix element.
+//
+// \param list The list to be assigned to the matrix element.
+// \return Reference to the assigned proxy.
+// \exception std::invalid_argument Invalid assignment to lower matrix element.
+//
+// In case the proxy represents an element in the lower matrix, a \a std::invalid_argument
+// exception is thrown.
+*/
+template< typename MT >  // Type of the adapted matrix
+template< typename T >   // Type of the right-hand side value
+inline const UpperProxy<MT>& UpperProxy<MT>::operator=( initializer_list<T> list ) const
+{
+   if( restricted_ ) {
+      BLAZE_THROW_INVALID_ARGUMENT( "Invalid assignment to lower matrix element" );
+   }
+
+   value_ = list;
+
+   return *this;
+}
+//*************************************************************************************************
+
+
+//*************************************************************************************************
+/*!\brief Initializer list assignment to the accessed matrix element.
+//
+// \param list The list to be assigned to the matrix element.
+// \return Reference to the assigned proxy.
+// \exception std::invalid_argument Invalid assignment to lower matrix element.
+//
+// In case the proxy represents an element in the lower matrix, a \a std::invalid_argument
+// exception is thrown.
+*/
+template< typename MT >  // Type of the adapted matrix
+template< typename T >   // Type of the right-hand side value
+inline const UpperProxy<MT>& UpperProxy<MT>::operator=( initializer_list< initializer_list<T> > list ) const
+{
+   if( restricted_ ) {
+      BLAZE_THROW_INVALID_ARGUMENT( "Invalid assignment to lower matrix element" );
+   }
+
+   value_ = list;
 
    return *this;
 }

@@ -47,6 +47,7 @@
 #include <blaze/math/constraints/SparseMatrix.h>
 #include <blaze/math/constraints/Symmetric.h>
 #include <blaze/math/constraints/Upper.h>
+#include <blaze/math/InitializerList.h>
 #include <blaze/math/proxy/Proxy.h>
 #include <blaze/math/shims/Clear.h>
 #include <blaze/math/shims/Conjugate.h>
@@ -139,7 +140,14 @@ class NonNumericProxy : public Proxy< NonNumericProxy<MT>, ValueType_< ElementTy
    //**Operators***********************************************************************************
    /*!\name Operators */
    //@{
-                          inline NonNumericProxy& operator= ( const NonNumericProxy& nnp );
+   inline NonNumericProxy& operator= ( const NonNumericProxy& nnp );
+
+   template< typename T >
+   inline NonNumericProxy& operator=( initializer_list<T> list );
+
+   template< typename T >
+   inline NonNumericProxy& operator=( initializer_list< initializer_list<T> > list );
+
    template< typename T > inline NonNumericProxy& operator= ( const T& value );
    template< typename T > inline NonNumericProxy& operator+=( const T& value );
    template< typename T > inline NonNumericProxy& operator-=( const T& value );
@@ -297,6 +305,40 @@ template< typename MT >  // Type of the adapted matrix
 inline NonNumericProxy<MT>& NonNumericProxy<MT>::operator=( const NonNumericProxy& nnp )
 {
    get() = nnp.get();
+   return *this;
+}
+//*************************************************************************************************
+
+
+//*************************************************************************************************
+/*!\brief Initializer list assignment to the represented matrix element.
+//
+// \param list The list to be assigned to the matrix element.
+// \return Reference to the assigned proxy.
+*/
+template< typename MT >  // Type of the adapted matrix
+template< typename T >   // Type of the right-hand side value
+inline NonNumericProxy<MT>& NonNumericProxy<MT>::operator=( initializer_list<T> list )
+{
+   get() = list;
+
+   return *this;
+}
+//*************************************************************************************************
+
+
+//*************************************************************************************************
+/*!\brief Initializer list assignment to the represented matrix element.
+//
+// \param list The list to be assigned to the matrix element.
+// \return Reference to the assigned proxy.
+*/
+template< typename MT >  // Type of the adapted matrix
+template< typename T >   // Type of the right-hand side value
+inline NonNumericProxy<MT>& NonNumericProxy<MT>::operator=( initializer_list< initializer_list<T> > list )
+{
+   get() = list;
+
    return *this;
 }
 //*************************************************************************************************

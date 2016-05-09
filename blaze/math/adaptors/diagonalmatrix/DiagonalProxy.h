@@ -47,6 +47,7 @@
 #include <blaze/math/constraints/Matrix.h>
 #include <blaze/math/constraints/Symmetric.h>
 #include <blaze/math/constraints/Upper.h>
+#include <blaze/math/InitializerList.h>
 #include <blaze/math/proxy/Proxy.h>
 #include <blaze/math/shims/Clear.h>
 #include <blaze/math/shims/Conjugate.h>
@@ -126,7 +127,14 @@ class DiagonalProxy : public Proxy< DiagonalProxy<MT>, ElementType_<MT> >
    //**Assignment operators************************************************************************
    /*!\name Assignment operators */
    //@{
-                          inline DiagonalProxy& operator= ( const DiagonalProxy& dp );
+   inline DiagonalProxy& operator=( const DiagonalProxy& dp );
+
+   template< typename T >
+   inline DiagonalProxy& operator=( initializer_list<T> list );
+
+   template< typename T >
+   inline DiagonalProxy& operator=( initializer_list< initializer_list<T> > list );
+
    template< typename T > inline DiagonalProxy& operator= ( const T& value );
    template< typename T > inline DiagonalProxy& operator+=( const T& value );
    template< typename T > inline DiagonalProxy& operator-=( const T& value );
@@ -229,9 +237,9 @@ inline DiagonalProxy<MT>::DiagonalProxy( const DiagonalProxy& dp )
 //
 // \param dp Diagonal proxy to be copied.
 // \return Reference to the assigned proxy.
-// \exception std::invalid_argument Invalid assignment to upper matrix element.
+// \exception std::invalid_argument Invalid assignment to non-diagonal matrix element.
 //
-// In case the proxy represents an element in the upper matrix, a \a std::invalid_argument
+// In case the proxy represents a non-diagonal matrix element, a \a std::invalid_argument
 // exception is thrown.
 */
 template< typename MT >  // Type of the adapted matrix
@@ -249,13 +257,63 @@ inline DiagonalProxy<MT>& DiagonalProxy<MT>::operator=( const DiagonalProxy& dp 
 
 
 //*************************************************************************************************
+/*!\brief Initializer list assignment to the accessed matrix element.
+//
+// \param list The list to be assigned to the matrix element.
+// \return Reference to the assigned proxy.
+// \exception std::invalid_argument Invalid assignment to non-diagonal matrix element.
+//
+// In case the proxy represents a non-diagonal matrix element, a \a std::invalid_argument
+// exception is thrown.
+*/
+template< typename MT >  // Type of the adapted matrix
+template< typename T >   // Type of the right-hand side value
+inline DiagonalProxy<MT>& DiagonalProxy<MT>::operator=( initializer_list<T> list )
+{
+   if( restricted_ ) {
+      BLAZE_THROW_INVALID_ARGUMENT( "Invalid assignment to non-diagonal matrix element" );
+   }
+
+   value_ = list;
+
+   return *this;
+}
+//*************************************************************************************************
+
+
+//*************************************************************************************************
+/*!\brief Initializer list assignment to the accessed matrix element.
+//
+// \param list The list to be assigned to the matrix element.
+// \return Reference to the assigned proxy.
+// \exception std::invalid_argument Invalid assignment to non-diagonal matrix element.
+//
+// In case the proxy represents a non-diagonal matrix element, a \a std::invalid_argument
+// exception is thrown.
+*/
+template< typename MT >  // Type of the adapted matrix
+template< typename T >   // Type of the right-hand side value
+inline DiagonalProxy<MT>& DiagonalProxy<MT>::operator=( initializer_list< initializer_list<T> > list )
+{
+   if( restricted_ ) {
+      BLAZE_THROW_INVALID_ARGUMENT( "Invalid assignment to non-diagonal matrix element" );
+   }
+
+   value_ = list;
+
+   return *this;
+}
+//*************************************************************************************************
+
+
+//*************************************************************************************************
 /*!\brief Assignment to the accessed matrix element.
 //
 // \param value The new value of the matrix element.
 // \return Reference to the assigned proxy.
-// \exception std::invalid_argument Invalid assignment to upper matrix element.
+// \exception std::invalid_argument Invalid assignment to non-diagonal matrix element.
 //
-// In case the proxy represents an element in the upper matrix, a \a std::invalid_argument
+// In case the proxy represents a non-diagonal matrix element, a \a std::invalid_argument
 // exception is thrown.
 */
 template< typename MT >  // Type of the adapted matrix
@@ -278,9 +336,9 @@ inline DiagonalProxy<MT>& DiagonalProxy<MT>::operator=( const T& value )
 //
 // \param value The right-hand side value to be added to the matrix element.
 // \return Reference to the assigned proxy.
-// \exception std::invalid_argument Invalid assignment to upper matrix element.
+// \exception std::invalid_argument Invalid assignment to non-diagonal matrix element.
 //
-// In case the proxy represents an element in the upper matrix, a \a std::invalid_argument
+// In case the proxy represents a non-diagonal matrix element, a \a std::invalid_argument
 // exception is thrown.
 */
 template< typename MT >  // Type of the adapted matrix
@@ -303,9 +361,9 @@ inline DiagonalProxy<MT>& DiagonalProxy<MT>::operator+=( const T& value )
 //
 // \param value The right-hand side value to be subtracted from the matrix element.
 // \return Reference to the assigned proxy.
-// \exception std::invalid_argument Invalid assignment to upper matrix element.
+// \exception std::invalid_argument Invalid assignment to non-diagonal matrix element.
 //
-// In case the proxy represents an element in the upper matrix, a \a std::invalid_argument
+// In case the proxy represents a non-diagonal matrix element, a \a std::invalid_argument
 // exception is thrown.
 */
 template< typename MT >  // Type of the adapted matrix
@@ -328,9 +386,9 @@ inline DiagonalProxy<MT>& DiagonalProxy<MT>::operator-=( const T& value )
 //
 // \param value The right-hand side value for the multiplication.
 // \return Reference to the assigned proxy.
-// \exception std::invalid_argument Invalid assignment to upper matrix element.
+// \exception std::invalid_argument Invalid assignment to non-diagonal matrix element.
 //
-// In case the proxy represents an element in the upper matrix, a \a std::invalid_argument
+// In case the proxy represents a non-diagonal matrix element, a \a std::invalid_argument
 // exception is thrown.
 */
 template< typename MT >  // Type of the adapted matrix
@@ -353,9 +411,9 @@ inline DiagonalProxy<MT>& DiagonalProxy<MT>::operator*=( const T& value )
 //
 // \param value The right-hand side value for the division.
 // \return Reference to the assigned proxy.
-// \exception std::invalid_argument Invalid assignment to upper matrix element.
+// \exception std::invalid_argument Invalid assignment to non-diagonal matrix element.
 //
-// In case the proxy represents an element in the upper matrix, a \a std::invalid_argument
+// In case the proxy represents a non-diagonal matrix element, a \a std::invalid_argument
 // exception is thrown.
 */
 template< typename MT >  // Type of the adapted matrix

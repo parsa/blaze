@@ -47,6 +47,7 @@
 #include <blaze/math/constraints/Matrix.h>
 #include <blaze/math/constraints/Symmetric.h>
 #include <blaze/math/constraints/Upper.h>
+#include <blaze/math/InitializerList.h>
 #include <blaze/math/proxy/Proxy.h>
 #include <blaze/math/shims/Clear.h>
 #include <blaze/math/shims/Conjugate.h>
@@ -128,7 +129,14 @@ class StrictlyUpperProxy : public Proxy< StrictlyUpperProxy<MT>, ElementType_<MT
    //**Assignment operators************************************************************************
    /*!\name Assignment operators */
    //@{
-                          inline const StrictlyUpperProxy& operator= ( const StrictlyUpperProxy& uup ) const;
+   inline const StrictlyUpperProxy& operator= ( const StrictlyUpperProxy& uup ) const;
+
+   template< typename T >
+   inline const StrictlyUpperProxy& operator=( initializer_list<T> list ) const;
+
+   template< typename T >
+   inline const StrictlyUpperProxy& operator=( initializer_list< initializer_list<T> > list ) const;
+
    template< typename T > inline const StrictlyUpperProxy& operator= ( const T& value ) const;
    template< typename T > inline const StrictlyUpperProxy& operator+=( const T& value ) const;
    template< typename T > inline const StrictlyUpperProxy& operator-=( const T& value ) const;
@@ -244,6 +252,58 @@ inline const StrictlyUpperProxy<MT>& StrictlyUpperProxy<MT>::operator=( const St
    }
 
    value_ = uup.value_;
+
+   return *this;
+}
+//*************************************************************************************************
+
+
+//*************************************************************************************************
+/*!\brief Initializer list assignment to the accessed matrix element.
+//
+// \param list The list to be assigned to the matrix element.
+// \return Reference to the assigned proxy.
+// \exception std::invalid_argument Invalid assignment to diagonal or lower matrix element.
+//
+// In case the proxy represents an element on the diagonal or in the lower part of the matrix,
+// a \a std::invalid_argument exception is thrown.
+*/
+template< typename MT >  // Type of the adapted matrix
+template< typename T >   // Type of the right-hand side value
+inline const StrictlyUpperProxy<MT>&
+   StrictlyUpperProxy<MT>::operator=( initializer_list<T> list ) const
+{
+   if( restricted_ ) {
+      BLAZE_THROW_INVALID_ARGUMENT( "Invalid assignment to diagonal or lower matrix element" );
+   }
+
+   value_ = list;
+
+   return *this;
+}
+//*************************************************************************************************
+
+
+//*************************************************************************************************
+/*!\brief Initializer list assignment to the accessed matrix element.
+//
+// \param list The list to be assigned to the matrix element.
+// \return Reference to the assigned proxy.
+// \exception std::invalid_argument Invalid assignment to diagonal or lower matrix element.
+//
+// In case the proxy represents an element on the diagonal or in the lower part of the matrix,
+// a \a std::invalid_argument exception is thrown.
+*/
+template< typename MT >  // Type of the adapted matrix
+template< typename T >   // Type of the right-hand side value
+inline const StrictlyUpperProxy<MT>&
+   StrictlyUpperProxy<MT>::operator=( initializer_list< initializer_list<T> > list ) const
+{
+   if( restricted_ ) {
+      BLAZE_THROW_INVALID_ARGUMENT( "Invalid assignment to diagonal or lower matrix element" );
+   }
+
+   value_ = list;
 
    return *this;
 }

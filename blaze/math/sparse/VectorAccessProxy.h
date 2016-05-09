@@ -43,6 +43,7 @@
 #include <utility>
 #include <blaze/math/Aliases.h>
 #include <blaze/math/constraints/SparseVector.h>
+#include <blaze/math/InitializerList.h>
 #include <blaze/math/proxy/Proxy.h>
 #include <blaze/math/shims/Clear.h>
 #include <blaze/math/shims/Conjugate.h>
@@ -124,7 +125,14 @@ class VectorAccessProxy : public Proxy< VectorAccessProxy<VT>, ElementType_<VT> 
    //**Operators***********************************************************************************
    /*!\name Operators */
    //@{
-                          inline const VectorAccessProxy& operator= ( const VectorAccessProxy& vap ) const;
+   inline const VectorAccessProxy& operator=( const VectorAccessProxy& vap ) const;
+
+   template< typename T >
+   inline const VectorAccessProxy& operator=( initializer_list<T> list ) const;
+
+   template< typename T >
+   inline const VectorAccessProxy& operator=( initializer_list< initializer_list<T> > list ) const;
+
    template< typename T > inline const VectorAccessProxy& operator= ( const T& value ) const;
    template< typename T > inline const VectorAccessProxy& operator+=( const T& value ) const;
    template< typename T > inline const VectorAccessProxy& operator-=( const T& value ) const;
@@ -253,6 +261,40 @@ template< typename VT >  // Type of the sparse vector
 inline const VectorAccessProxy<VT>& VectorAccessProxy<VT>::operator=( const VectorAccessProxy& vap ) const
 {
    get() = vap.get();
+   return *this;
+}
+//*************************************************************************************************
+
+
+//*************************************************************************************************
+/*!\brief Initializer list assignment to the accessed sparse vector element.
+//
+// \param list The list to be assigned to the sparse vector element.
+// \return Reference to the assigned access proxy.
+*/
+template< typename VT >  // Type of the sparse vector
+template< typename T >   // Type of the right-hand side elements
+inline const VectorAccessProxy<VT>&
+   VectorAccessProxy<VT>::operator=( initializer_list<T> list ) const
+{
+   get() = list;
+   return *this;
+}
+//*************************************************************************************************
+
+
+//*************************************************************************************************
+/*!\brief Initializer list assignment to the accessed sparse vector element.
+//
+// \param list The list to be assigned to the sparse vector element.
+// \return Reference to the assigned access proxy.
+*/
+template< typename VT >  // Type of the sparse vector
+template< typename T >   // Type of the right-hand side elements
+inline const VectorAccessProxy<VT>&
+   VectorAccessProxy<VT>::operator=( initializer_list< initializer_list<T> > list ) const
+{
+   get() = list;
    return *this;
 }
 //*************************************************************************************************
