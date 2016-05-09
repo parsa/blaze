@@ -148,6 +148,79 @@ void ProxyTest::testAssignment()
 
 
    //=====================================================================================
+   // Row-major list assignment
+   //=====================================================================================
+
+   {
+      test_ = "Row-major MatrixAccessProxy 1D initializer list assignment";
+
+      DVM mat( 2UL, 2UL, 1UL );
+      mat(0,1) = DV( 3UL, 2 );
+
+      mat(0,1) = { 1, -2, 3 };
+
+      checkRows    ( mat, 2UL );
+      checkColumns ( mat, 2UL );
+      checkCapacity( mat, 1UL );
+      checkNonZeros( mat, 1UL );
+
+      checkSize    ( mat(0,0), 0UL );
+      checkSize    ( mat(0,1), 3UL );
+      checkCapacity( mat(0,1), 3UL );
+      checkNonZeros( mat(0,1), 3UL );
+      checkSize    ( mat(1,0), 0UL );
+      checkSize    ( mat(1,1), 0UL );
+
+      if( mat(0,1)[0] != 1 || mat(0,1)[1] != -2 || mat(0,1)[2] != 3 ) {
+         std::ostringstream oss;
+         oss << " Test: " << test_ << "\n"
+             << " Error: Assignment failed\n"
+             << " Details:\n"
+             << "   Result:\n" << mat(0,1) << "\n"
+             << "   Expected result:\n( 1 -2 3 )\n";
+         throw std::runtime_error( oss.str() );
+      }
+   }
+
+   {
+      test_ = "Row-major MatrixAccessProxy 2D initializer list assignment";
+
+      DMM mat( 2UL, 2UL, 1UL );
+      mat(0,1) = DM( 3UL, 3UL, 2 );
+
+      mat(0,1) = { { 1, -2, 3 }, { -2, 4, -6 }, { 3, -6, 9 } };
+
+      checkRows    ( mat, 2UL );
+      checkColumns ( mat, 2UL );
+      checkCapacity( mat, 1UL );
+      checkNonZeros( mat, 1UL );
+
+      checkRows    ( mat(0,0), 0UL );
+      checkColumns ( mat(0,0), 0UL );
+      checkRows    ( mat(0,1), 3UL );
+      checkColumns ( mat(0,1), 3UL );
+      checkCapacity( mat(0,1), 9UL );
+      checkNonZeros( mat(0,1), 9UL );
+      checkRows    ( mat(1,0), 0UL );
+      checkColumns ( mat(1,0), 0UL );
+      checkRows    ( mat(1,1), 0UL );
+      checkColumns ( mat(1,1), 0UL );
+
+      if( mat(0,1)(0,0) !=  1 || mat(0,1)(0,1) != -2 || mat(0,1)(0,2) !=  3 ||
+          mat(0,1)(1,0) != -2 || mat(0,1)(1,1) !=  4 || mat(0,1)(1,2) != -6 ||
+          mat(0,1)(2,0) !=  3 || mat(0,1)(2,1) != -6 || mat(0,1)(2,2) !=  9 ) {
+         std::ostringstream oss;
+         oss << " Test: " << test_ << "\n"
+             << " Error: Assignment failed\n"
+             << " Details:\n"
+             << "   Result:\n" << mat(0,1) << "\n"
+             << "   Expected result:\n(  1 -2  3 )\n( -2  4 -6 )\n(  3 -6  9 )\n";
+         throw std::runtime_error( oss.str() );
+      }
+   }
+
+
+   //=====================================================================================
    // Row-major array assignment
    //=====================================================================================
 
@@ -329,6 +402,79 @@ void ProxyTest::testAssignment()
              << " Details:\n"
              << "   Result:\n" << mat(0,1) << "\n"
              << "   Expected result:\n( 4 4 4 )\n";
+         throw std::runtime_error( oss.str() );
+      }
+   }
+
+
+   //=====================================================================================
+   // Column-major list assignment
+   //=====================================================================================
+
+   {
+      test_ = "Column-major MatrixAccessProxy 1D initializer list assignment";
+
+      ODVM mat( 2UL, 2UL, 1UL );
+      mat(0,1) = DV( 3UL, 2 );
+
+      mat(0,1) = { 1, -2, 3 };
+
+      checkRows    ( mat, 2UL );
+      checkColumns ( mat, 2UL );
+      checkCapacity( mat, 1UL );
+      checkNonZeros( mat, 1UL );
+
+      checkSize    ( mat(0,0), 0UL );
+      checkSize    ( mat(0,1), 3UL );
+      checkCapacity( mat(0,1), 3UL );
+      checkNonZeros( mat(0,1), 3UL );
+      checkSize    ( mat(1,0), 0UL );
+      checkSize    ( mat(1,1), 0UL );
+
+      if( mat(0,1)[0] != 1 || mat(0,1)[1] != -2 || mat(0,1)[2] != 3 ) {
+         std::ostringstream oss;
+         oss << " Test: " << test_ << "\n"
+             << " Error: Assignment failed\n"
+             << " Details:\n"
+             << "   Result:\n" << mat(0,1) << "\n"
+             << "   Expected result:\n( 1 -2 3 )\n";
+         throw std::runtime_error( oss.str() );
+      }
+   }
+
+   {
+      test_ = "Column-major MatrixAccessProxy 2D initializer list assignment";
+
+      ODMM mat( 2UL, 2UL, 1UL );
+      mat(0,1) = DM( 3UL, 3UL, 2 );
+
+      mat(0,1) = { { 1, -2, 3 }, { -2, 4, -6 }, { 3, -6, 9 } };
+
+      checkRows    ( mat, 2UL );
+      checkColumns ( mat, 2UL );
+      checkCapacity( mat, 1UL );
+      checkNonZeros( mat, 1UL );
+
+      checkRows    ( mat(0,0), 0UL );
+      checkColumns ( mat(0,0), 0UL );
+      checkRows    ( mat(0,1), 3UL );
+      checkColumns ( mat(0,1), 3UL );
+      checkCapacity( mat(0,1), 9UL );
+      checkNonZeros( mat(0,1), 9UL );
+      checkRows    ( mat(1,0), 0UL );
+      checkColumns ( mat(1,0), 0UL );
+      checkRows    ( mat(1,1), 0UL );
+      checkColumns ( mat(1,1), 0UL );
+
+      if( mat(0,1)(0,0) !=  1 || mat(0,1)(0,1) != -2 || mat(0,1)(0,2) !=  3 ||
+          mat(0,1)(1,0) != -2 || mat(0,1)(1,1) !=  4 || mat(0,1)(1,2) != -6 ||
+          mat(0,1)(2,0) !=  3 || mat(0,1)(2,1) != -6 || mat(0,1)(2,2) !=  9 ) {
+         std::ostringstream oss;
+         oss << " Test: " << test_ << "\n"
+             << " Error: Assignment failed\n"
+             << " Details:\n"
+             << "   Result:\n" << mat(0,1) << "\n"
+             << "   Expected result:\n(  1 -2  3 )\n( -2  4 -6 )\n(  3 -6  9 )\n";
          throw std::runtime_error( oss.str() );
       }
    }
