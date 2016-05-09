@@ -146,6 +146,74 @@ void ProxyTest::testAssignment()
 
 
    //=====================================================================================
+   // List assignment
+   //=====================================================================================
+
+   {
+      test_ = "VectorAccessProxy 1D initializer list assignment";
+
+      DVV vec( 3UL, 1UL );
+      vec[1] = DV( 3UL, 2 );
+
+      vec[1] = { 1, -2, 3 };
+
+      checkSize    ( vec, 3UL );
+      checkCapacity( vec, 1UL );
+      checkNonZeros( vec, 1UL );
+
+      checkSize    ( vec[0], 0UL );
+      checkSize    ( vec[1], 3UL );
+      checkCapacity( vec[1], 3UL );
+      checkNonZeros( vec[1], 3UL );
+      checkSize    ( vec[2], 0UL );
+
+      if( vec[1][0] != 1 || vec[1][1] != -2 || vec[1][2] != 3 ) {
+         std::ostringstream oss;
+         oss << " Test: " << test_ << "\n"
+             << " Error: Assignment failed\n"
+             << " Details:\n"
+             << "   Result:\n" << vec[1] << "\n"
+             << "   Expected result:\n( 1 -2 3 )\n";
+         throw std::runtime_error( oss.str() );
+      }
+   }
+
+   {
+      test_ = "VectorAccessProxy 2D initializer list assignment";
+
+      DMV vec( 3UL, 1UL );
+      vec[1] = DM( 3UL, 3UL, 2 );
+
+      vec[1] = { { 1, -2, 3 }, { -2, 4, -6 }, { 3, -6, 9 } };
+
+      checkSize    ( vec, 3UL );
+      checkCapacity( vec, 1UL );
+      checkNonZeros( vec, 1UL );
+
+      checkRows    ( vec[0], 0UL );
+      checkColumns ( vec[0], 0UL );
+      checkRows    ( vec[1], 3UL );
+      checkColumns ( vec[1], 3UL );
+      checkCapacity( vec[1], 9UL );
+      checkNonZeros( vec[1], 9UL );
+      checkRows    ( vec[2], 0UL );
+      checkColumns ( vec[2], 0UL );
+
+      if( vec[1](0,0) !=  1 || vec[1](0,1) != -2 || vec[1](0,2) !=  3 ||
+          vec[1](1,0) != -2 || vec[1](1,1) !=  4 || vec[1](1,2) != -6 ||
+          vec[1](2,0) !=  3 || vec[1](2,1) != -6 || vec[1](2,2) !=  9 ) {
+         std::ostringstream oss;
+         oss << " Test: " << test_ << "\n"
+             << " Error: Assignment failed\n"
+             << " Details:\n"
+             << "   Result:\n" << vec[1] << "\n"
+             << "   Expected result:\n(  1 -2  3 )\n( -2  4 -6 )\n(  3 -6  9 )\n";
+         throw std::runtime_error( oss.str() );
+      }
+   }
+
+
+   //=====================================================================================
    // Array assignment
    //=====================================================================================
 
