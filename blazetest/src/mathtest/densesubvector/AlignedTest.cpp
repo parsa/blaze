@@ -294,10 +294,10 @@ void AlignedTest::testAssignment()
       randomize( vec1, int(randmin), int(randmax) );
       vec2 = vec1;
 
-      ASVT sv1 = subvector<aligned>  ( vec1, 8UL, 16UL );
-      USVT sv2 = subvector<unaligned>( vec2, 8UL, 16UL );
-      sv1 = subvector<aligned>  ( vec1_, 8UL, 16UL );
-      sv2 = subvector<unaligned>( vec2_, 8UL, 16UL );
+      ASVT sv1 = subvector<aligned>  ( vec1_, 8UL, 16UL );
+      USVT sv2 = subvector<unaligned>( vec2_, 8UL, 16UL );
+      sv1 = subvector<aligned>  ( vec1, 8UL, 16UL );
+      sv2 = subvector<unaligned>( vec2, 8UL, 16UL );
 
       checkSize( sv1, 16UL );
       checkSize( sv2, 16UL );
@@ -470,10 +470,10 @@ void AlignedTest::testAddAssign()
       randomize( vec1, int(randmin), int(randmax) );
       vec2 = vec1;
 
-      ASVT sv1 = subvector<aligned>  ( vec1, 8UL, 16UL );
-      USVT sv2 = subvector<unaligned>( vec2, 8UL, 16UL );
-      sv1 += subvector<aligned>  ( vec1_, 8UL, 16UL );
-      sv2 += subvector<unaligned>( vec2_, 8UL, 16UL );
+      ASVT sv1 = subvector<aligned>  ( vec1_, 8UL, 16UL );
+      USVT sv2 = subvector<unaligned>( vec2_, 8UL, 16UL );
+      sv1 += subvector<aligned>  ( vec1, 8UL, 16UL );
+      sv2 += subvector<unaligned>( vec2, 8UL, 16UL );
 
       checkSize( sv1, 16UL );
       checkSize( sv2, 16UL );
@@ -646,10 +646,10 @@ void AlignedTest::testSubAssign()
       randomize( vec1, int(randmin), int(randmax) );
       vec2 = vec1;
 
-      ASVT sv1 = subvector<aligned>  ( vec1, 8UL, 16UL );
-      USVT sv2 = subvector<unaligned>( vec2, 8UL, 16UL );
-      sv1 -= subvector<aligned>  ( vec1_, 24UL, 16UL );
-      sv2 -= subvector<unaligned>( vec2_, 24UL, 16UL );
+      ASVT sv1 = subvector<aligned>  ( vec1_, 8UL, 16UL );
+      USVT sv2 = subvector<unaligned>( vec2_, 8UL, 16UL );
+      sv1 -= subvector<aligned>  ( vec1, 24UL, 16UL );
+      sv2 -= subvector<unaligned>( vec2, 24UL, 16UL );
 
       checkSize( sv1, 16UL );
       checkSize( sv2, 16UL );
@@ -822,10 +822,10 @@ void AlignedTest::testMultAssign()
       randomize( vec1, int(randmin), int(randmax) );
       vec2 = vec1;
 
-      ASVT sv1 = subvector<aligned>  ( vec1, 8UL, 16UL );
-      USVT sv2 = subvector<unaligned>( vec2, 8UL, 16UL );
-      sv1 *= subvector<aligned>  ( vec1_, 24UL, 16UL );
-      sv2 *= subvector<unaligned>( vec2_, 24UL, 16UL );
+      ASVT sv1 = subvector<aligned>  ( vec1_, 8UL, 16UL );
+      USVT sv2 = subvector<unaligned>( vec2_, 8UL, 16UL );
+      sv1 *= subvector<aligned>  ( vec1, 24UL, 16UL );
+      sv2 *= subvector<unaligned>( vec2, 24UL, 16UL );
 
       checkSize( sv1, 16UL );
       checkSize( sv2, 16UL );
@@ -998,10 +998,10 @@ void AlignedTest::testDivAssign()
       randomize( vec1, 1, int(randmax) );
       vec2 = vec1;
 
-      ASVT sv1 = subvector<aligned>  ( vec1, 8UL, 16UL );
-      USVT sv2 = subvector<unaligned>( vec2, 8UL, 16UL );
-      sv1 /= subvector<aligned>  ( vec1_, 24UL, 16UL );
-      sv2 /= subvector<unaligned>( vec2_, 24UL, 16UL );
+      ASVT sv1 = subvector<aligned>  ( vec1_, 8UL, 16UL );
+      USVT sv2 = subvector<unaligned>( vec2_, 8UL, 16UL );
+      sv1 /= subvector<aligned>  ( vec1, 24UL, 16UL );
+      sv2 /= subvector<unaligned>( vec2, 24UL, 16UL );
 
       checkSize( sv1, 16UL );
       checkSize( sv2, 16UL );
