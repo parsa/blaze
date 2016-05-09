@@ -172,6 +172,7 @@ BLAZE_ALWAYS_INLINE bool isSame( const Matrix<MT1,SO1>& a, const Matrix<MT2,SO2>
 
 //*************************************************************************************************
 /*!\brief Returns an iterator to the first element of row/column \a i.
+// \ingroup matrix
 //
 // \param matrix The given dense or sparse matrix.
 // \param i The row/column index.
@@ -193,6 +194,7 @@ BLAZE_ALWAYS_INLINE typename MT::Iterator begin( Matrix<MT,SO>& matrix, size_t i
 
 //*************************************************************************************************
 /*!\brief Returns an iterator to the first element of row/column \a i.
+// \ingroup matrix
 //
 // \param matrix The given dense or sparse matrix.
 // \param i The row/column index.
@@ -214,6 +216,7 @@ BLAZE_ALWAYS_INLINE typename MT::ConstIterator begin( const Matrix<MT,SO>& matri
 
 //*************************************************************************************************
 /*!\brief Returns an iterator to the first element of row/column \a i.
+// \ingroup matrix
 //
 // \param matrix The given dense or sparse matrix.
 // \param i The row/column index.
@@ -235,6 +238,7 @@ BLAZE_ALWAYS_INLINE typename MT::ConstIterator cbegin( const Matrix<MT,SO>& matr
 
 //*************************************************************************************************
 /*!\brief Returns an iterator just past the last element of row/column \a i.
+// \ingroup matrix
 //
 // \param matrix The given dense or sparse matrix.
 // \param i The row/column index.
@@ -256,6 +260,7 @@ BLAZE_ALWAYS_INLINE typename MT::Iterator end( Matrix<MT,SO>& matrix, size_t i )
 
 //*************************************************************************************************
 /*!\brief Returns an iterator just past the last element of row/column \a i.
+// \ingroup matrix
 //
 // \param matrix The given dense or sparse matrix.
 // \param i The row/column index.
@@ -277,6 +282,7 @@ BLAZE_ALWAYS_INLINE typename MT::ConstIterator end( const Matrix<MT,SO>& matrix,
 
 //*************************************************************************************************
 /*!\brief Returns an iterator just past the last element of row/column \a i.
+// \ingroup matrix
 //
 // \param matrix The given dense or sparse matrix.
 // \param i The row/column index.

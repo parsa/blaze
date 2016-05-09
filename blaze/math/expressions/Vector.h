@@ -152,6 +152,7 @@ BLAZE_ALWAYS_INLINE bool isSame( const Vector<VT1,TF1>& a, const Vector<VT2,TF2>
 
 //*************************************************************************************************
 /*!\brief Returns an iterator to the first element of the given vector.
+// \ingroup vector
 //
 // \param vector The given dense or sparse vector.
 // \return Iterator to the first element of the given vector.
@@ -167,6 +168,7 @@ BLAZE_ALWAYS_INLINE typename VT::Iterator begin( Vector<VT,TF>& vector )
 
 //*************************************************************************************************
 /*!\brief Returns an iterator to the first element of the given vector.
+// \ingroup vector
 //
 // \param vector The given dense or sparse vector.
 // \return Iterator to the first element of the given vector.
@@ -182,6 +184,7 @@ BLAZE_ALWAYS_INLINE typename VT::ConstIterator begin( const Vector<VT,TF>& vecto
 
 //*************************************************************************************************
 /*!\brief Returns an iterator to the first element of the given vector.
+// \ingroup vector
 //
 // \param vector The given dense or sparse vector.
 // \return Iterator to the first element of the given vector.
@@ -197,6 +200,7 @@ BLAZE_ALWAYS_INLINE typename VT::ConstIterator cbegin( const Vector<VT,TF>& vect
 
 //*************************************************************************************************
 /*!\brief Returns an iterator just past the last element of the given vector.
+// \ingroup vector
 //
 // \param vector The given dense or sparse vector.
 // \return Iterator just past the last element of the given vector.
@@ -212,6 +216,7 @@ BLAZE_ALWAYS_INLINE typename VT::Iterator end( Vector<VT,TF>& vector )
 
 //*************************************************************************************************
 /*!\brief Returns an iterator just past the last element of the given vector.
+// \ingroup vector
 //
 // \param vector The given dense or sparse vector.
 // \return Iterator just past the last element of the given vector.
@@ -227,6 +232,7 @@ BLAZE_ALWAYS_INLINE typename VT::ConstIterator end( const Vector<VT,TF>& vector 
 
 //*************************************************************************************************
 /*!\brief Returns an iterator just past the last element of the given vector.
+// \ingroup vector
 //
 // \param vector The given dense or sparse vector.
 // \return Iterator just past the last element of the given vector.
