@@ -808,7 +808,7 @@ class DenseSubvector : public DenseVector< DenseSubvector<VT,AF,TF>, TF >
    /*!\name Assignment operators */
    //@{
                             inline DenseSubvector& operator= ( const ElementType& rhs );
-                            inline DenseSubvector& operator= ( InitializerList<ElementType> list );
+                            inline DenseSubvector& operator= ( initializer_list<ElementType> list );
                             inline DenseSubvector& operator= ( const DenseSubvector& rhs );
    template< typename VT2 > inline DenseSubvector& operator= ( const Vector<VT2,TF>& rhs );
    template< typename VT2 > inline DenseSubvector& operator+=( const Vector<VT2,TF>& rhs );
@@ -1356,7 +1356,7 @@ template< typename VT  // Type of the dense vector
         , bool AF      // Alignment flag
         , bool TF >    // Transpose flag
 inline DenseSubvector<VT,AF,TF>&
-   DenseSubvector<VT,AF,TF>::operator=( InitializerList<ElementType> list )
+   DenseSubvector<VT,AF,TF>::operator=( initializer_list<ElementType> list )
 {
    if( list.size() > size() ) {
       BLAZE_THROW_INVALID_ARGUMENT( "Invalid assignment to subvector" );
@@ -2807,7 +2807,7 @@ class DenseSubvector<VT,aligned,TF> : public DenseVector< DenseSubvector<VT,alig
    /*!\name Assignment operators */
    //@{
                             inline DenseSubvector& operator= ( const ElementType& rhs );
-                            inline DenseSubvector& operator= ( InitializerList<ElementType> list );
+                            inline DenseSubvector& operator= ( initializer_list<ElementType> list );
                             inline DenseSubvector& operator= ( const DenseSubvector& rhs );
    template< typename VT2 > inline DenseSubvector& operator= ( const Vector<VT2,TF>& rhs );
    template< typename VT2 > inline DenseSubvector& operator+=( const Vector<VT2,TF>& rhs );
@@ -3352,7 +3352,7 @@ inline DenseSubvector<VT,aligned,TF>&
 template< typename VT  // Type of the dense vector
         , bool TF >    // Transpose flag
 inline DenseSubvector<VT,aligned,TF>&
-   DenseSubvector<VT,aligned,TF>::operator=( InitializerList<ElementType> list )
+   DenseSubvector<VT,aligned,TF>::operator=( initializer_list<ElementType> list )
 {
    if( list.size() > size() ) {
       BLAZE_THROW_INVALID_ARGUMENT( "Invalid assignment to subvector" );

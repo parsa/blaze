@@ -257,7 +257,7 @@ class StaticMatrix : public DenseMatrix< StaticMatrix<Type,M,N,SO>, SO >
    //@{
    explicit inline StaticMatrix();
    explicit inline StaticMatrix( const Type& init );
-   explicit inline StaticMatrix( InitializerList2D<Type> list );
+   explicit inline StaticMatrix( initializer_list< initializer_list<Type> > list );
 
    template< typename Other >
    explicit inline StaticMatrix( size_t m, size_t n, const Other* array );
@@ -299,7 +299,7 @@ class StaticMatrix : public DenseMatrix< StaticMatrix<Type,M,N,SO>, SO >
    /*!\name Assignment operators */
    //@{
    inline StaticMatrix& operator=( const Type& set );
-   inline StaticMatrix& operator=( InitializerList2D<Type> list );
+   inline StaticMatrix& operator=( initializer_list< initializer_list<Type> > list );
 
    template< typename Other >
    inline StaticMatrix& operator=( const Other (&array)[M][N] );
@@ -586,7 +586,7 @@ template< typename Type  // Data type of the matrix
         , size_t M       // Number of rows
         , size_t N       // Number of columns
         , bool SO >      // Storage order
-inline StaticMatrix<Type,M,N,SO>::StaticMatrix( InitializerList2D<Type> list )
+inline StaticMatrix<Type,M,N,SO>::StaticMatrix( initializer_list< initializer_list<Type> > list )
    : v_()  // The statically allocated matrix elements
 {
    BLAZE_STATIC_ASSERT( IsVectorizable<Type>::value || NN == N );
@@ -1210,7 +1210,7 @@ template< typename Type  // Data type of the matrix
         , size_t N       // Number of columns
         , bool SO >      // Storage order
 inline StaticMatrix<Type,M,N,SO>&
-   StaticMatrix<Type,M,N,SO>::operator=( InitializerList2D<Type> list )
+   StaticMatrix<Type,M,N,SO>::operator=( initializer_list< initializer_list<Type> > list )
 {
    if( list.size() != M || determineColumns( list ) > N ) {
       BLAZE_THROW_INVALID_ARGUMENT( "Invalid assignment to static matrix" );
@@ -2980,7 +2980,7 @@ class StaticMatrix<Type,M,N,true> : public DenseMatrix< StaticMatrix<Type,M,N,tr
    //@{
    explicit inline StaticMatrix();
    explicit inline StaticMatrix( const Type& init );
-   explicit inline StaticMatrix( InitializerList2D<Type> list );
+   explicit inline StaticMatrix( initializer_list< initializer_list<Type> > list );
 
    template< typename Other > explicit inline StaticMatrix( size_t m, size_t n, const Other* array );
    template< typename Other > explicit inline StaticMatrix( const Other (&array)[M][N] );
@@ -3019,7 +3019,7 @@ class StaticMatrix<Type,M,N,true> : public DenseMatrix< StaticMatrix<Type,M,N,tr
    /*!\name Assignment operators */
    //@{
    inline StaticMatrix& operator=( const Type& set );
-   inline StaticMatrix& operator=( InitializerList2D<Type> list );
+   inline StaticMatrix& operator=( initializer_list< initializer_list<Type> > list );
 
    template< typename Other >
    inline StaticMatrix& operator=( const Other (&array)[M][N] );
@@ -3292,7 +3292,7 @@ inline StaticMatrix<Type,M,N,true>::StaticMatrix( const Type& init )
 template< typename Type  // Data type of the matrix
         , size_t M       // Number of rows
         , size_t N >     // Number of columns
-inline StaticMatrix<Type,M,N,true>::StaticMatrix( InitializerList2D<Type> list )
+inline StaticMatrix<Type,M,N,true>::StaticMatrix( initializer_list< initializer_list<Type> > list )
    : v_()  // The statically allocated matrix elements
 {
    BLAZE_STATIC_ASSERT( IsVectorizable<Type>::value || MM == M );
@@ -3923,7 +3923,7 @@ template< typename Type  // Data type of the matrix
         , size_t M       // Number of rows
         , size_t N >     // Number of columns
 inline StaticMatrix<Type,M,N,true>&
-   StaticMatrix<Type,M,N,true>::operator=( InitializerList2D<Type> list )
+   StaticMatrix<Type,M,N,true>::operator=( initializer_list< initializer_list<Type> > list )
 {
    if( list.size() != M || determineColumns( list ) > N ) {
       BLAZE_THROW_INVALID_ARGUMENT( "Invalid assignment to static matrix" );

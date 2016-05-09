@@ -48,25 +48,16 @@ namespace blaze {
 
 //=================================================================================================
 //
-//  ALIAS DECLARATIONS
+//  TYPE DEFINITIONS
 //
 //=================================================================================================
 
 //*************************************************************************************************
-/*!\brief Alias declaration for a 1D std::initializer_list.
-// \ingroup util
+/*!\class blaze::initializer_list
+// \brief Initializer list type of the Blaze library.
+// \ingroup math
 */
-template< typename Type >
-using InitializerList = std::initializer_list<Type>;
-//*************************************************************************************************
-
-
-//*************************************************************************************************
-/*!\brief Alias declaration for a 2D std::initializer_list.
-// \ingroup util
-*/
-template< typename Type >
-using InitializerList2D = std::initializer_list< std::initializer_list<Type> >;
+using std::initializer_list;
 //*************************************************************************************************
 
 
@@ -80,12 +71,13 @@ using InitializerList2D = std::initializer_list< std::initializer_list<Type> >;
 
 //*************************************************************************************************
 /*!\brief Determine the maximum number of columns specified by the given initializer list.
+// \ingroup math
 //
 // \param list The given initializer list
 // \return The maximum number of columns.
 */
 template< typename Type >
-inline size_t determineColumns( InitializerList2D<Type> list ) noexcept
+inline size_t determineColumns( initializer_list< initializer_list<Type> > list ) noexcept
 {
    size_t cols( 0UL );
    for( const auto& row : list )

@@ -589,7 +589,7 @@ class UniLowerMatrix<MT,SO,true>
    template< typename A1 > explicit inline UniLowerMatrix( const A1& a1 );
                            explicit inline UniLowerMatrix( size_t n, const ElementType& init );
 
-   explicit inline UniLowerMatrix( InitializerList2D<ElementType> list );
+   explicit inline UniLowerMatrix( initializer_list< initializer_list<ElementType> > list );
 
    template< typename Other >
    explicit inline UniLowerMatrix( size_t n, const Other* array );
@@ -637,7 +637,7 @@ class UniLowerMatrix<MT,SO,true>
    /*!\name Assignment operators */
    //@{
    inline UniLowerMatrix& operator=( const ElementType& rhs );
-   inline UniLowerMatrix& operator=( InitializerList2D<ElementType> list );
+   inline UniLowerMatrix& operator=( initializer_list< initializer_list<ElementType> > list );
 
    template< typename Other, size_t N >
    inline UniLowerMatrix& operator=( const Other (&array)[N][N] );
@@ -877,7 +877,7 @@ inline UniLowerMatrix<MT,SO,true>::UniLowerMatrix( size_t n, const ElementType& 
 */
 template< typename MT  // Type of the adapted dense matrix
         , bool SO >    // Storage order of the adapted dense matrix
-inline UniLowerMatrix<MT,SO,true>::UniLowerMatrix( InitializerList2D<ElementType> list )
+inline UniLowerMatrix<MT,SO,true>::UniLowerMatrix( initializer_list< initializer_list<ElementType> > list )
    : matrix_( list )  // The adapted dense matrix
 {
    if( !isUniLower( matrix_ ) ) {
@@ -1545,7 +1545,7 @@ inline UniLowerMatrix<MT,SO,true>&
 template< typename MT  // Type of the adapted dense matrix
         , bool SO >    // Storage order of the adapted dense matrix
 inline UniLowerMatrix<MT,SO,true>&
-   UniLowerMatrix<MT,SO,true>::operator=( InitializerList2D<ElementType> list )
+   UniLowerMatrix<MT,SO,true>::operator=( initializer_list< initializer_list<ElementType> > list )
 {
    MT tmp( list );
 

@@ -509,7 +509,7 @@ class CustomVector : public DenseVector< CustomVector<Type,AF,PF,TF>, TF >
    /*!\name Assignment operators */
    //@{
    inline CustomVector& operator=( const Type& rhs );
-   inline CustomVector& operator=( InitializerList<Type> list );
+   inline CustomVector& operator=( initializer_list<Type> list );
 
    template< typename Other, size_t N >
    inline CustomVector& operator=( const Other (&array)[N] );
@@ -1225,7 +1225,7 @@ template< typename Type  // Data type of the vector
         , bool AF        // Alignment flag
         , bool PF        // Padding flag
         , bool TF >      // Transpose flag
-inline CustomVector<Type,AF,PF,TF>& CustomVector<Type,AF,PF,TF>::operator=( InitializerList<Type> list )
+inline CustomVector<Type,AF,PF,TF>& CustomVector<Type,AF,PF,TF>::operator=( initializer_list<Type> list )
 {
    if( list.size() > size_ ) {
       BLAZE_THROW_INVALID_ARGUMENT( "Invalid assignment to custom vector" );
@@ -2830,7 +2830,7 @@ class CustomVector<Type,AF,padded,TF>
    /*!\name Assignment operators */
    //@{
    inline CustomVector& operator=( const Type& rhs );
-   inline CustomVector& operator=( InitializerList<Type> list );
+   inline CustomVector& operator=( initializer_list<Type> list );
 
    template< typename Other, size_t N >
    inline CustomVector& operator=( const Other (&array)[N] );
@@ -3503,7 +3503,7 @@ template< typename Type  // Data type of the vector
         , bool AF        // Alignment flag
         , bool TF >      // Transpose flag
 inline CustomVector<Type,AF,padded,TF>&
-   CustomVector<Type,AF,padded,TF>::operator=( InitializerList<Type> list )
+   CustomVector<Type,AF,padded,TF>::operator=( initializer_list<Type> list )
 {
    if( list.size() > size_ ) {
       BLAZE_THROW_INVALID_ARGUMENT( "Invalid assignment to custom vector" );

@@ -585,7 +585,7 @@ class StrictlyUpperMatrix<MT,SO,true>
    template< typename A1 > explicit inline StrictlyUpperMatrix( const A1& a1 );
                            explicit inline StrictlyUpperMatrix( size_t n, const ElementType& init );
 
-   explicit inline StrictlyUpperMatrix( InitializerList2D<ElementType> list );
+   explicit inline StrictlyUpperMatrix( initializer_list< initializer_list<ElementType> > list );
 
    template< typename Other >
    explicit inline StrictlyUpperMatrix( size_t n, const Other* array );
@@ -632,7 +632,7 @@ class StrictlyUpperMatrix<MT,SO,true>
    //**Assignment operators************************************************************************
    /*!\name Assignment operators */
    //@{
-   inline StrictlyUpperMatrix& operator=( InitializerList2D<ElementType> list );
+   inline StrictlyUpperMatrix& operator=( initializer_list< initializer_list<ElementType> > list );
 
    template< typename Other, size_t N >
    inline StrictlyUpperMatrix& operator=( const Other (&array)[N][N] );
@@ -882,7 +882,7 @@ inline StrictlyUpperMatrix<MT,SO,true>::StrictlyUpperMatrix( size_t n, const Ele
 */
 template< typename MT  // Type of the adapted dense matrix
         , bool SO >    // Storage order of the adapted dense matrix
-inline StrictlyUpperMatrix<MT,SO,true>::StrictlyUpperMatrix( InitializerList2D<ElementType> list )
+inline StrictlyUpperMatrix<MT,SO,true>::StrictlyUpperMatrix( initializer_list< initializer_list<ElementType> > list )
    : matrix_( list )  // The adapted dense matrix
 {
    if( !isStrictlyUpper( matrix_ ) ) {
@@ -1552,7 +1552,7 @@ inline StrictlyUpperMatrix<MT,SO,true>&
 template< typename MT  // Type of the adapted dense matrix
         , bool SO >    // Storage order of the adapted dense matrix
 inline StrictlyUpperMatrix<MT,SO,true>&
-   StrictlyUpperMatrix<MT,SO,true>::operator=( InitializerList2D<ElementType> list )
+   StrictlyUpperMatrix<MT,SO,true>::operator=( initializer_list< initializer_list<ElementType> > list )
 {
    MT tmp( list );
 

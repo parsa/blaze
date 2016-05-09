@@ -425,7 +425,7 @@ class DenseRow : public DenseVector< DenseRow<MT,SO,SF>, true >
    /*!\name Assignment operators */
    //@{
    inline DenseRow& operator=( const ElementType& rhs );
-   inline DenseRow& operator=( InitializerList<ElementType> list );
+   inline DenseRow& operator=( initializer_list<ElementType> list );
    inline DenseRow& operator=( const DenseRow& rhs );
 
    template< typename VT > inline DenseRow& operator= ( const Vector<VT,true>& rhs );
@@ -964,7 +964,7 @@ inline DenseRow<MT,SO,SF>& DenseRow<MT,SO,SF>::operator=( const ElementType& rhs
 template< typename MT  // Type of the dense matrix
         , bool SO      // Storage order
         , bool SF >    // Symmetry flag
-inline DenseRow<MT,SO,SF>& DenseRow<MT,SO,SF>::operator=( InitializerList<ElementType> list )
+inline DenseRow<MT,SO,SF>& DenseRow<MT,SO,SF>::operator=( initializer_list<ElementType> list )
 {
    if( list.size() > size() ) {
       BLAZE_THROW_INVALID_ARGUMENT( "Invalid assignment to row" );
@@ -2675,7 +2675,7 @@ class DenseRow<MT,false,false> : public DenseVector< DenseRow<MT,false,false>, t
    /*!\name Assignment operators */
    //@{
    inline DenseRow& operator=( const ElementType& rhs );
-   inline DenseRow& operator=( InitializerList<ElementType> list );
+   inline DenseRow& operator=( initializer_list<ElementType> list );
    inline DenseRow& operator=( const DenseRow& rhs );
 
    template< typename VT > inline DenseRow& operator= ( const Vector<VT,true>& rhs );
@@ -3108,7 +3108,7 @@ inline DenseRow<MT,false,false>& DenseRow<MT,false,false>::operator=( const Elem
 */
 template< typename MT >  // Type of the dense matrix
 inline DenseRow<MT,false,false>&
-   DenseRow<MT,false,false>::operator=( InitializerList<ElementType> list )
+   DenseRow<MT,false,false>::operator=( initializer_list<ElementType> list )
 {
    if( list.size() > size() ) {
       BLAZE_THROW_INVALID_ARGUMENT( "Invalid assignment to row" );
@@ -4128,7 +4128,7 @@ class DenseRow<MT,false,true> : public DenseVector< DenseRow<MT,false,true>, tru
    /*!\name Assignment operators */
    //@{
    inline DenseRow& operator=( const ElementType& rhs );
-   inline DenseRow& operator=( InitializerList<ElementType> list );
+   inline DenseRow& operator=( initializer_list<ElementType> list );
    inline DenseRow& operator=( const DenseRow& rhs );
 
    template< typename VT > inline DenseRow& operator= ( const Vector<VT,true>& rhs );
@@ -4654,7 +4654,7 @@ inline DenseRow<MT,false,true>& DenseRow<MT,false,true>::operator=( const Elemen
 */
 template< typename MT >  // Type of the dense matrix
 inline DenseRow<MT,false,true>&
-   DenseRow<MT,false,true>::operator=( InitializerList<ElementType> list )
+   DenseRow<MT,false,true>::operator=( initializer_list<ElementType> list )
 {
    if( list.size() > size() ) {
       BLAZE_THROW_INVALID_ARGUMENT( "Invalid assignment to row" );

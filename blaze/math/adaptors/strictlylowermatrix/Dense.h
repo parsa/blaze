@@ -585,7 +585,7 @@ class StrictlyLowerMatrix<MT,SO,true>
    template< typename A1 > explicit inline StrictlyLowerMatrix( const A1& a1 );
                            explicit inline StrictlyLowerMatrix( size_t n, const ElementType& init );
 
-   explicit inline StrictlyLowerMatrix( InitializerList2D<ElementType> list );
+   explicit inline StrictlyLowerMatrix( initializer_list< initializer_list<ElementType> > list );
 
    template< typename Other >
    explicit inline StrictlyLowerMatrix( size_t n, const Other* array );
@@ -633,7 +633,7 @@ class StrictlyLowerMatrix<MT,SO,true>
    /*!\name Assignment operators */
    //@{
    inline StrictlyLowerMatrix& operator=( const ElementType& rhs );
-   inline StrictlyLowerMatrix& operator=( InitializerList2D<ElementType> list );
+   inline StrictlyLowerMatrix& operator=( initializer_list< initializer_list<ElementType> > list );
 
    template< typename Other, size_t N >
    inline StrictlyLowerMatrix& operator=( const Other (&array)[N][N] );
@@ -882,7 +882,7 @@ inline StrictlyLowerMatrix<MT,SO,true>::StrictlyLowerMatrix( size_t n, const Ele
 */
 template< typename MT  // Type of the adapted dense matrix
         , bool SO >    // Storage order of the adapted dense matrix
-inline StrictlyLowerMatrix<MT,SO,true>::StrictlyLowerMatrix( InitializerList2D<ElementType> list )
+inline StrictlyLowerMatrix<MT,SO,true>::StrictlyLowerMatrix( initializer_list< initializer_list<ElementType> > list )
    : matrix_( list )  // The adapted dense matrix
 {
    if( !isStrictlyLower( matrix_ ) ) {
@@ -1551,7 +1551,7 @@ inline StrictlyLowerMatrix<MT,SO,true>&
 template< typename MT  // Type of the adapted dense matrix
         , bool SO >    // Storage order of the adapted dense matrix
 inline StrictlyLowerMatrix<MT,SO,true>&
-   StrictlyLowerMatrix<MT,SO,true>::operator=( InitializerList2D<ElementType> list )
+   StrictlyLowerMatrix<MT,SO,true>::operator=( initializer_list< initializer_list<ElementType> > list )
 {
    MT tmp( list );
 

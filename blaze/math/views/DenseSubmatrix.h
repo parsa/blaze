@@ -896,7 +896,7 @@ class DenseSubmatrix : public DenseMatrix< DenseSubmatrix<MT,AF,SO>, SO >
    /*!\name Assignment operators */
    //@{
    inline DenseSubmatrix& operator=( const ElementType& rhs );
-   inline DenseSubmatrix& operator=( InitializerList2D<ElementType> list );
+   inline DenseSubmatrix& operator=( initializer_list< initializer_list<ElementType> > list );
    inline DenseSubmatrix& operator=( const DenseSubmatrix& rhs );
 
    template< typename MT2, bool SO2 >
@@ -1577,7 +1577,7 @@ template< typename MT  // Type of the dense matrix
         , bool AF      // Alignment flag
         , bool SO >    // Storage order
 inline DenseSubmatrix<MT,AF,SO>&
-   DenseSubmatrix<MT,AF,SO>::operator=( InitializerList2D<ElementType> list )
+   DenseSubmatrix<MT,AF,SO>::operator=( initializer_list< initializer_list<ElementType> > list )
 {
    if( list.size() != rows() || determineColumns( list ) > columns() ) {
       BLAZE_THROW_INVALID_ARGUMENT( "Invalid assignment to submatrix" );
@@ -3796,7 +3796,7 @@ class DenseSubmatrix<MT,unaligned,true> : public DenseMatrix< DenseSubmatrix<MT,
    /*!\name Assignment operators */
    //@{
    inline DenseSubmatrix& operator=( const ElementType& rhs );
-   inline DenseSubmatrix& operator=( InitializerList2D<ElementType> list );
+   inline DenseSubmatrix& operator=( initializer_list< initializer_list<ElementType> > list );
    inline DenseSubmatrix& operator=( const DenseSubmatrix& rhs );
 
    template< typename MT2, bool SO >
@@ -4439,7 +4439,7 @@ inline DenseSubmatrix<MT,unaligned,true>&
 */
 template< typename MT >  // Type of the dense matrix
 inline DenseSubmatrix<MT,unaligned,true>&
-   DenseSubmatrix<MT,unaligned,true>::operator=( InitializerList2D<ElementType> list )
+   DenseSubmatrix<MT,unaligned,true>::operator=( initializer_list< initializer_list<ElementType> > list )
 {
    if( list.size() != rows() || determineColumns( list ) > columns() ) {
       BLAZE_THROW_INVALID_ARGUMENT( "Invalid assignment to submatrix" );
@@ -6313,7 +6313,7 @@ class DenseSubmatrix<MT,aligned,false> : public DenseMatrix< DenseSubmatrix<MT,a
    /*!\name Assignment operators */
    //@{
    inline DenseSubmatrix& operator=( const ElementType& rhs );
-   inline DenseSubmatrix& operator=( InitializerList2D<ElementType> list );
+   inline DenseSubmatrix& operator=( initializer_list< initializer_list<ElementType> > list );
    inline DenseSubmatrix& operator=( const DenseSubmatrix& rhs );
 
    template< typename MT2, bool SO >
@@ -6982,7 +6982,7 @@ inline DenseSubmatrix<MT,aligned,false>&
 */
 template< typename MT >  // Type of the dense matrix
 inline DenseSubmatrix<MT,aligned,false>&
-   DenseSubmatrix<MT,aligned,false>::operator=( InitializerList2D<ElementType> list )
+   DenseSubmatrix<MT,aligned,false>::operator=( initializer_list< initializer_list<ElementType> > list )
 {
    if( list.size() != rows() || determineColumns( list ) > columns() ) {
       BLAZE_THROW_INVALID_ARGUMENT( "Invalid assignment to submatrix" );
@@ -8864,7 +8864,7 @@ class DenseSubmatrix<MT,aligned,true> : public DenseMatrix< DenseSubmatrix<MT,al
    /*!\name Assignment operators */
    //@{
    inline DenseSubmatrix& operator=( const ElementType& rhs );
-   inline DenseSubmatrix& operator=( InitializerList2D<ElementType> list );
+   inline DenseSubmatrix& operator=( initializer_list< initializer_list<ElementType> > list );
    inline DenseSubmatrix& operator=( const DenseSubmatrix& rhs );
 
    template< typename MT2, bool SO >
@@ -9503,7 +9503,7 @@ inline DenseSubmatrix<MT,aligned,true>&
 */
 template< typename MT >  // Type of the dense matrix
 inline DenseSubmatrix<MT,aligned,true>&
-   DenseSubmatrix<MT,aligned,true>::operator=( InitializerList2D<ElementType> list )
+   DenseSubmatrix<MT,aligned,true>::operator=( initializer_list< initializer_list<ElementType> > list )
 {
    if( list.size() != rows() || determineColumns( list ) > columns() ) {
       BLAZE_THROW_INVALID_ARGUMENT( "Invalid assignment to submatrix" );

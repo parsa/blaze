@@ -425,7 +425,7 @@ class DenseColumn : public DenseVector< DenseColumn<MT,SO,SF>, false >
    /*!\name Assignment operators */
    //@{
    inline DenseColumn& operator=( const ElementType& rhs );
-   inline DenseColumn& operator=( InitializerList<ElementType> list );
+   inline DenseColumn& operator=( initializer_list<ElementType> list );
    inline DenseColumn& operator=( const DenseColumn& rhs );
 
    template< typename VT > inline DenseColumn& operator= ( const Vector<VT,false>& rhs );
@@ -965,7 +965,7 @@ inline DenseColumn<MT,SO,SF>& DenseColumn<MT,SO,SF>::operator=( const ElementTyp
 template< typename MT  // Type of the dense matrix
         , bool SO      // Storage order
         , bool SF >    // Symmetry flag
-inline DenseColumn<MT,SO,SF>& DenseColumn<MT,SO,SF>::operator=( InitializerList<ElementType> list )
+inline DenseColumn<MT,SO,SF>& DenseColumn<MT,SO,SF>::operator=( initializer_list<ElementType> list )
 {
    if( list.size() > size() ) {
       BLAZE_THROW_INVALID_ARGUMENT( "Invalid assignment to column" );
@@ -2674,7 +2674,7 @@ class DenseColumn<MT,false,false> : public DenseVector< DenseColumn<MT,false,fal
    /*!\name Assignment operators */
    //@{
    inline DenseColumn& operator=( const ElementType& rhs );
-   inline DenseColumn& operator=( InitializerList<ElementType> list );
+   inline DenseColumn& operator=( initializer_list<ElementType> list );
    inline DenseColumn& operator=( const DenseColumn& rhs );
 
    template< typename VT > inline DenseColumn& operator= ( const Vector<VT,false>& rhs );
@@ -3112,7 +3112,7 @@ inline DenseColumn<MT,false,false>&
 */
 template< typename MT >  // Type of the dense matrix
 inline DenseColumn<MT,false,false>&
-   DenseColumn<MT,false,false>::operator=( InitializerList<ElementType> list )
+   DenseColumn<MT,false,false>::operator=( initializer_list<ElementType> list )
 {
    if( list.size() > size() ) {
       BLAZE_THROW_INVALID_ARGUMENT( "Invalid assignment to column" );
@@ -4139,7 +4139,7 @@ class DenseColumn<MT,false,true> : public DenseVector< DenseColumn<MT,false,true
    /*!\name Assignment operators */
    //@{
    inline DenseColumn& operator=( const ElementType& rhs );
-   inline DenseColumn& operator=( InitializerList<ElementType> list );
+   inline DenseColumn& operator=( initializer_list<ElementType> list );
    inline DenseColumn& operator=( const DenseColumn& rhs );
 
    template< typename VT > inline DenseColumn& operator= ( const Vector<VT,false>& rhs );
@@ -4666,7 +4666,7 @@ inline DenseColumn<MT,false,true>& DenseColumn<MT,false,true>::operator=( const 
 */
 template< typename MT >  // Type of the dense matrix
 inline DenseColumn<MT,false,true>&
-   DenseColumn<MT,false,true>::operator=( InitializerList<ElementType> list )
+   DenseColumn<MT,false,true>::operator=( initializer_list<ElementType> list )
 {
    if( list.size() > size() ) {
       BLAZE_THROW_INVALID_ARGUMENT( "Invalid assignment to column" );

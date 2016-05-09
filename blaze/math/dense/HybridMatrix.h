@@ -260,7 +260,7 @@ class HybridMatrix : public DenseMatrix< HybridMatrix<Type,M,N,SO>, SO >
    explicit inline HybridMatrix();
    explicit inline HybridMatrix( size_t m, size_t n );
    explicit inline HybridMatrix( size_t m, size_t n, const Type& init );
-   explicit inline HybridMatrix( InitializerList2D<Type> list );
+   explicit inline HybridMatrix( initializer_list< initializer_list<Type> > list );
 
    template< typename Other >
    explicit inline HybridMatrix( size_t m, size_t n, const Other* array );
@@ -301,7 +301,7 @@ class HybridMatrix : public DenseMatrix< HybridMatrix<Type,M,N,SO>, SO >
    /*!\name Assignment operators */
    //@{
    inline HybridMatrix& operator=( const Type& set );
-   inline HybridMatrix& operator=( InitializerList2D<Type> list );
+   inline HybridMatrix& operator=( initializer_list< initializer_list<Type> > list );
 
    template< typename Other, size_t M2, size_t N2 >
    inline HybridMatrix& operator=( const Other (&array)[M2][N2] );
@@ -656,7 +656,7 @@ template< typename Type  // Data type of the matrix
         , size_t M       // Number of rows
         , size_t N       // Number of columns
         , bool SO >      // Storage order
-inline HybridMatrix<Type,M,N,SO>::HybridMatrix( InitializerList2D<Type> list )
+inline HybridMatrix<Type,M,N,SO>::HybridMatrix( initializer_list< initializer_list<Type> > list )
    : v_()                            // The statically allocated matrix elements
    , m_( list.size() )               // The current number of rows of the matrix
    , n_( determineColumns( list ) )  // The current number of columns of the matrix
@@ -1311,7 +1311,7 @@ template< typename Type  // Data type of the matrix
         , size_t N       // Number of columns
         , bool SO >      // Storage order
 inline HybridMatrix<Type,M,N,SO>&
-   HybridMatrix<Type,M,N,SO>::operator=( InitializerList2D<Type> list )
+   HybridMatrix<Type,M,N,SO>::operator=( initializer_list< initializer_list<Type> > list )
 {
    const size_t m( list.size() );
    const size_t n( determineColumns( list ) );
@@ -3166,7 +3166,7 @@ class HybridMatrix<Type,M,N,true> : public DenseMatrix< HybridMatrix<Type,M,N,tr
    explicit inline HybridMatrix();
    explicit inline HybridMatrix( size_t m, size_t n );
    explicit inline HybridMatrix( size_t m, size_t n, const Type& init );
-   explicit inline HybridMatrix( InitializerList2D<Type> list );
+   explicit inline HybridMatrix( initializer_list< initializer_list<Type> > list );
 
    template< typename Other >
    explicit inline HybridMatrix( size_t m, size_t n, const Other* array );
@@ -3207,7 +3207,7 @@ class HybridMatrix<Type,M,N,true> : public DenseMatrix< HybridMatrix<Type,M,N,tr
    /*!\name Assignment operators */
    //@{
    inline HybridMatrix& operator=( const Type& set );
-   inline HybridMatrix& operator=( InitializerList2D<Type> list );
+   inline HybridMatrix& operator=( initializer_list< initializer_list<Type> > list );
 
    template< typename Other, size_t M2, size_t N2 >
    inline HybridMatrix& operator=( const Other (&array)[M2][N2] );
@@ -3551,7 +3551,7 @@ inline HybridMatrix<Type,M,N,true>::HybridMatrix( size_t m, size_t n, const Type
 template< typename Type  // Data type of the matrix
         , size_t M       // Number of rows
         , size_t N >     // Number of columns
-inline HybridMatrix<Type,M,N,true>::HybridMatrix( InitializerList2D<Type> list )
+inline HybridMatrix<Type,M,N,true>::HybridMatrix( initializer_list< initializer_list<Type> > list )
    : v_()                            // The statically allocated matrix elements
    , m_( list.size() )               // The current number of rows of the matrix
    , n_( determineColumns( list ) )  // The current number of columns of the matrix
@@ -4208,7 +4208,7 @@ template< typename Type  // Data type of the matrix
         , size_t M       // Number of rows
         , size_t N >     // Number of columns
 inline HybridMatrix<Type,M,N,true>&
-   HybridMatrix<Type,M,N,true>::operator=( InitializerList2D<Type> list )
+   HybridMatrix<Type,M,N,true>::operator=( initializer_list< initializer_list<Type> > list )
 {
    const size_t m( list.size() );
    const size_t n( determineColumns( list ) );

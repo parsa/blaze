@@ -223,7 +223,7 @@ class DynamicVector : public DenseVector< DynamicVector<Type,TF>, TF >
    explicit inline DynamicVector() noexcept;
    explicit inline DynamicVector( size_t n );
    explicit inline DynamicVector( size_t n, const Type& init );
-   explicit inline DynamicVector( InitializerList<Type> list );
+   explicit inline DynamicVector( initializer_list<Type> list );
 
    template< typename Other >
    explicit inline DynamicVector( size_t n, const Other* array );
@@ -266,7 +266,7 @@ class DynamicVector : public DenseVector< DynamicVector<Type,TF>, TF >
    /*!\name Assignment operators */
    //@{
    inline DynamicVector& operator=( const Type& rhs );
-   inline DynamicVector& operator=( InitializerList<Type> list );
+   inline DynamicVector& operator=( initializer_list<Type> list );
 
    template< typename Other, size_t N >
    inline DynamicVector& operator=( const Other (&array)[N] );
@@ -565,7 +565,7 @@ inline DynamicVector<Type,TF>::DynamicVector( size_t n, const Type& init )
 */
 template< typename Type  // Data type of the vector
         , bool TF >      // Transpose flag
-inline DynamicVector<Type,TF>::DynamicVector( InitializerList<Type> list )
+inline DynamicVector<Type,TF>::DynamicVector( initializer_list<Type> list )
    : size_    ( list.size() )                  // The current size/dimension of the vector
    , capacity_( adjustCapacity( size_ ) )      // The maximum capacity of the vector
    , v_       ( allocate<Type>( capacity_ ) )  // The vector elements
@@ -999,7 +999,7 @@ inline DynamicVector<Type,TF>& DynamicVector<Type,TF>::operator=( const Type& rh
 */
 template< typename Type  // Data type of the vector
         , bool TF >      // Transpose flag
-inline DynamicVector<Type,TF>& DynamicVector<Type,TF>::operator=( InitializerList<Type> list )
+inline DynamicVector<Type,TF>& DynamicVector<Type,TF>::operator=( initializer_list<Type> list )
 {
    resize( list.size(), false );
    std::copy( list.begin(), list.end(), v_ );

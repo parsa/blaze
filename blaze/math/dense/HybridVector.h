@@ -222,7 +222,7 @@ class HybridVector : public DenseVector< HybridVector<Type,N,TF>, TF >
    explicit inline HybridVector();
    explicit inline HybridVector( size_t n );
    explicit inline HybridVector( size_t n, const Type& init );
-   explicit inline HybridVector( InitializerList<Type> list );
+   explicit inline HybridVector( initializer_list<Type> list );
 
    template< typename Other >
    explicit inline HybridVector( size_t n, const Other* array );
@@ -261,7 +261,7 @@ class HybridVector : public DenseVector< HybridVector<Type,N,TF>, TF >
    /*!\name Assignment operators */
    //@{
    inline HybridVector& operator=( const Type& rhs );
-   inline HybridVector& operator=( InitializerList<Type> list );
+   inline HybridVector& operator=( initializer_list<Type> list );
 
    template< typename Other, size_t M >
    inline HybridVector& operator=( const Other (&array)[M] );
@@ -602,7 +602,7 @@ inline HybridVector<Type,N,TF>::HybridVector( size_t n, const Type& init )
 template< typename Type  // Data type of the vector
         , size_t N       // Number of elements
         , bool TF >      // Transpose flag
-inline HybridVector<Type,N,TF>::HybridVector( InitializerList<Type> list )
+inline HybridVector<Type,N,TF>::HybridVector( initializer_list<Type> list )
    : v_   ()               // The statically allocated vector elements
    , size_( list.size() )  // The current size/dimension of the vector
 {
@@ -1054,7 +1054,7 @@ inline HybridVector<Type,N,TF>& HybridVector<Type,N,TF>::operator=( const Type& 
 template< typename Type  // Data type of the vector
         , size_t N       // Number of elements
         , bool TF >      // Transpose flag
-inline HybridVector<Type,N,TF>& HybridVector<Type,N,TF>::operator=( InitializerList<Type> list )
+inline HybridVector<Type,N,TF>& HybridVector<Type,N,TF>::operator=( initializer_list<Type> list )
 {
    if( list.size() > N ) {
       BLAZE_THROW_INVALID_ARGUMENT( "Invalid assignment to hybrid vector" );

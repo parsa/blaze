@@ -521,7 +521,7 @@ class CustomMatrix : public DenseMatrix< CustomMatrix<Type,AF,PF,SO>, SO >
    /*!\name Assignment operators */
    //@{
    inline CustomMatrix& operator=( const Type& set );
-   inline CustomMatrix& operator=( InitializerList2D<Type> list );
+   inline CustomMatrix& operator=( initializer_list< initializer_list<Type> > list );
 
    template< typename Other, size_t M, size_t N >
    inline CustomMatrix& operator=( const Other (&array)[M][N] );
@@ -1387,7 +1387,7 @@ template< typename Type  // Data type of the matrix
         , bool PF        // Padding flag
         , bool SO >      // Storage order
 inline CustomMatrix<Type,AF,PF,SO>&
-   CustomMatrix<Type,AF,PF,SO>::operator=( InitializerList2D<Type> list )
+   CustomMatrix<Type,AF,PF,SO>::operator=( initializer_list< initializer_list<Type> > list )
 {
    if( list.size() != m_ || determineColumns( list ) > n_ ) {
       BLAZE_THROW_INVALID_ARGUMENT( "Invalid assignment to custom matrix" );
@@ -3279,7 +3279,7 @@ class CustomMatrix<Type,AF,PF,true> : public DenseMatrix< CustomMatrix<Type,AF,P
    /*!\name Assignment operators */
    //@{
    inline CustomMatrix& operator=( const Type& set );
-   inline CustomMatrix& operator=( InitializerList2D<Type> list );
+   inline CustomMatrix& operator=( initializer_list< initializer_list<Type> > list );
 
    template< typename Other, size_t M, size_t N >
    inline CustomMatrix& operator=( const Other (&array)[M][N] );
@@ -4122,7 +4122,7 @@ template< typename Type  // Data type of the matrix
         , bool AF        // Alignment flag
         , bool PF >      // Padding flag
 inline CustomMatrix<Type,AF,PF,true>&
-   CustomMatrix<Type,AF,PF,true>::operator=( InitializerList2D<Type> list )
+   CustomMatrix<Type,AF,PF,true>::operator=( initializer_list< initializer_list<Type> > list )
 {
    if( list.size() != m_ || determineColumns( list ) > n_ ) {
       BLAZE_THROW_INVALID_ARGUMENT( "Invalid assignment to custom matrix" );

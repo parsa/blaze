@@ -590,7 +590,7 @@ class HermitianMatrix<MT,SO,true>
    //@{
    explicit inline HermitianMatrix();
    explicit inline HermitianMatrix( size_t n );
-   explicit inline HermitianMatrix( InitializerList2D<ElementType> list );
+   explicit inline HermitianMatrix( initializer_list< initializer_list<ElementType> > list );
 
    template< typename Other >
    explicit inline HermitianMatrix( size_t n, const Other* array );
@@ -640,7 +640,7 @@ class HermitianMatrix<MT,SO,true>
    //**Assignment operators************************************************************************
    /*!\name Assignment operators */
    //@{
-   inline HermitianMatrix& operator=( InitializerList2D<ElementType> list );
+   inline HermitianMatrix& operator=( initializer_list< initializer_list<ElementType> > list );
 
    template< typename Other, size_t N >
    inline HermitianMatrix& operator=( const Other (&array)[N][N] );
@@ -888,7 +888,7 @@ inline HermitianMatrix<MT,SO,true>::HermitianMatrix( size_t n )
 */
 template< typename MT  // Type of the adapted dense matrix
         , bool SO >    // Storage order of the adapted dense matrix
-inline HermitianMatrix<MT,SO,true>::HermitianMatrix( InitializerList2D<ElementType> list )
+inline HermitianMatrix<MT,SO,true>::HermitianMatrix( initializer_list< initializer_list<ElementType> > list )
    : matrix_( list )  // The adapted dense matrix
 {
    if( !isHermitian( matrix_ ) ) {
@@ -1564,7 +1564,7 @@ inline typename HermitianMatrix<MT,SO,true>::ConstIterator
 template< typename MT  // Type of the adapted dense matrix
         , bool SO >    // Storage order of the adapted dense matrix
 inline HermitianMatrix<MT,SO,true>&
-   HermitianMatrix<MT,SO,true>::operator=( InitializerList2D<ElementType> list )
+   HermitianMatrix<MT,SO,true>::operator=( initializer_list< initializer_list<ElementType> > list )
 {
    MT tmp( list );
 
