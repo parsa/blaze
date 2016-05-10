@@ -685,8 +685,11 @@ inline CompressedMatrix<Type,SO>::~CompressedMatrix()
 // \param j Access index for the column. The index has to be in the range \f$[0..N-1]\f$.
 // \return Reference to the accessed value.
 //
-// This function only performs an index check in case BLAZE_USER_ASSERT() is active. In contrast,
-// the at() function is guaranteed to perform a check of the given access indices.
+// This function returns a reference to the accessed value at position (\a i,\a j). In case the
+// compressed matrix does not yet store an element at position (\a i,\a j) , a new element is
+// inserted into the compressed matrix. Note that this function only performs an index check in
+// case BLAZE_USER_ASSERT() is active. In contrast, the at() function is guaranteed to perform a
+// check of the given access indices.
 */
 template< typename Type  // Data type of the sparse matrix
         , bool SO >      // Storage order
@@ -737,8 +740,10 @@ inline typename CompressedMatrix<Type,SO>::ConstReference
 // \return Reference to the accessed value.
 // \exception std::out_of_range Invalid matrix access index.
 //
-// In contrast to the subscript operator this function always performs a check of the given
-// access indices.
+// This function returns a reference to the accessed value at position (\a i,\a j). In case the
+// compressed matrix does not yet store an element at position (\a i,\a j) , a new element is
+// inserted into the compressed matrix. In contrast to the subscript operator this function
+// always performs a check of the given access indices.
 */
 template< typename Type  // Data type of the sparse matrix
         , bool SO >      // Storage order
@@ -3068,6 +3073,12 @@ inline CompressedMatrix<Type,true>::~CompressedMatrix()
 // \param i Access index for the row. The index has to be in the range \f$[0..M-1]\f$.
 // \param j Access index for the column. The index has to be in the range \f$[0..N-1]\f$.
 // \return Reference to the accessed value.
+//
+// This function returns a reference to the accessed value at position (\a i,\a j). In case the
+// compressed matrix does not yet store an element at position (\a i,\a j) , a new element is
+// inserted into the compressed matrix. Note that this function only performs an index check in
+// case BLAZE_USER_ASSERT() is active. In contrast, the at() function is guaranteed to perform a
+// check of the given access indices.
 */
 template< typename Type >  // Data type of the sparse matrix
 inline typename CompressedMatrix<Type,true>::Reference
@@ -3089,6 +3100,9 @@ inline typename CompressedMatrix<Type,true>::Reference
 // \param i Access index for the row. The index has to be in the range \f$[0..M-1]\f$.
 // \param j Access index for the column. The index has to be in the range \f$[0..N-1]\f$.
 // \return Reference to the accessed value.
+//
+// This function only performs an index check in case BLAZE_USER_ASSERT() is active. In contrast,
+// the at() function is guaranteed to perform a check of the given access indices.
 */
 template< typename Type >  // Data type of the sparse matrix
 inline typename CompressedMatrix<Type,true>::ConstReference
@@ -3117,8 +3131,10 @@ inline typename CompressedMatrix<Type,true>::ConstReference
 // \return Reference to the accessed value.
 // \exception std::out_of_range Invalid matrix access index.
 //
-// In contrast to the subscript operator this function always performs a check of the given
-// access indices.
+// This function returns a reference to the accessed value at position (\a i,\a j). In case the
+// compressed matrix does not yet store an element at position (\a i,\a j) , a new element is
+// inserted into the compressed matrix. In contrast to the subscript operator this function
+// always performs a check of the given access indices.
 */
 template< typename Type >  // Data type of the sparse matrix
 inline typename CompressedMatrix<Type,true>::Reference
