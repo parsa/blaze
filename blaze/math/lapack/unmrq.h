@@ -47,12 +47,12 @@
 #include <blaze/math/constraints/BlasCompatible.h>
 #include <blaze/math/constraints/Computation.h>
 #include <blaze/math/constraints/MutableDataAccess.h>
+#include <blaze/math/Exception.h>
 #include <blaze/math/expressions/DenseMatrix.h>
 #include <blaze/math/lapack/clapack/unmql.h>
 #include <blaze/math/lapack/clapack/unmrq.h>
 #include <blaze/util/Assert.h>
 #include <blaze/util/constraints/Complex.h>
-#include <blaze/util/Exception.h>
 
 
 namespace blaze {

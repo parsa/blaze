@@ -46,12 +46,12 @@
 #include <blaze/math/constraints/BlasCompatible.h>
 #include <blaze/math/constraints/Computation.h>
 #include <blaze/math/constraints/MutableDataAccess.h>
+#include <blaze/math/Exception.h>
 #include <blaze/math/expressions/DenseMatrix.h>
 #include <blaze/math/expressions/DenseVector.h>
 #include <blaze/math/lapack/clapack/gesv.h>
 #include <blaze/util/Assert.h>
 #include <blaze/util/constraints/SameType.h>
-#include <blaze/util/Exception.h>
 
 
 namespace blaze {
@@ -83,7 +83,7 @@ inline void gesv( DenseMatrix<MT1,SO1>& A, DenseMatrix<MT2,SO2>& B, int* ipiv );
 // \param ipiv Auxiliary array of size \a n for the pivot indices.
 // \return void
 // \exception std::invalid_argument Invalid non-square matrix provided.
-// \exception std::invalid_argument Inversion of singular matrix failed.
+// \exception std::runtime_error Inversion of singular matrix failed.
 //
 // This function uses the LAPACK gesv() functions to compute the solution to the system of general
 // linear equations:
@@ -112,7 +112,7 @@ inline void gesv( DenseMatrix<MT1,SO1>& A, DenseMatrix<MT2,SO2>& B, int* ipiv );
 //  - ... the given system matrix is not a square matrix;
 //  - ... the given system matrix is singular and not invertible.
 //
-// In all failure cases a \a std::invalid_argument exception is thrown.
+// In all failure cases an exception is thrown.
 //
 // For more information on the gesv() functions (i.e. sgesv(), dgesv(), cgesv(), and zgesv()),
 // see the LAPACK online documentation browser:
@@ -160,7 +160,7 @@ inline void gesv( DenseMatrix<MT,SO>& A, DenseVector<VT,TF>& b, int* ipiv )
    BLAZE_INTERNAL_ASSERT( info >= 0, "Invalid function argument" );
 
    if( info > 0 ) {
-      BLAZE_THROW_INVALID_ARGUMENT( "Inversion of singular matrix failed" );
+      BLAZE_THROW_LAPACK_ERROR( "Inversion of singular matrix failed" );
    }
 }
 //*************************************************************************************************
@@ -176,7 +176,7 @@ inline void gesv( DenseMatrix<MT,SO>& A, DenseVector<VT,TF>& b, int* ipiv )
 // \return void
 // \exception std::invalid_argument Invalid non-square matrix provided.
 // \exception std::invalid_argument Matrix sizes do not match.
-// \exception std::invalid_argument Inversion of singular matrix failed.
+// \exception std::runtime_error Inversion of singular matrix failed.
 //
 // This function uses the LAPACK gesv() functions to compute the solution to the general system of
 // linera equations:
@@ -209,7 +209,7 @@ inline void gesv( DenseMatrix<MT,SO>& A, DenseVector<VT,TF>& b, int* ipiv )
 //  - ... the sizes of the two given matrices do not match;
 //  - ... the given system matrix is singular and not invertible.
 //
-// In all failure cases a \a std::invalid_argument exception is thrown.
+// In all failure cases an exception is thrown.
 //
 // For more information on the gesv() functions (i.e. sgesv(), dgesv(), cgesv(), and zgesv()),
 // see the LAPACK online documentation browser:
@@ -263,7 +263,7 @@ inline void gesv( DenseMatrix<MT1,SO1>& A, DenseMatrix<MT2,SO2>& B, int* ipiv )
    BLAZE_INTERNAL_ASSERT( info >= 0, "Invalid function argument" );
 
    if( info > 0 ) {
-      BLAZE_THROW_INVALID_ARGUMENT( "Inversion of singular matrix failed" );
+      BLAZE_THROW_LAPACK_ERROR( "Inversion of singular matrix failed" );
    }
 }
 //*************************************************************************************************

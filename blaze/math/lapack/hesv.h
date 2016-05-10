@@ -47,11 +47,11 @@
 #include <blaze/math/constraints/BlasCompatible.h>
 #include <blaze/math/constraints/Computation.h>
 #include <blaze/math/constraints/MutableDataAccess.h>
+#include <blaze/math/Exception.h>
 #include <blaze/math/expressions/DenseMatrix.h>
 #include <blaze/math/lapack/clapack/hesv.h>
 #include <blaze/util/Assert.h>
 #include <blaze/util/constraints/SameType.h>
-#include <blaze/util/Exception.h>
 
 
 namespace blaze {
@@ -85,7 +85,7 @@ inline void hesv( DenseMatrix<MT1,SO1>& A, DenseMatrix<MT2,SO2>& B, char uplo, i
 // \return void
 // \exception std::invalid_argument Invalid non-square matrix provided.
 // \exception std::invalid_argument Invalid uplo argument provided.
-// \exception std::invalid_argument Inversion of singular matrix failed.
+// \exception std::runtime_error Inversion of singular matrix failed.
 //
 // This function uses the LAPACK hesv() functions to compute the solution to the Hermitian
 // indefinite system of linear equations;
@@ -119,7 +119,7 @@ inline void hesv( DenseMatrix<MT1,SO1>& A, DenseMatrix<MT2,SO2>& B, char uplo, i
 //  - ... the given \a uplo argument is neither \c 'L' nor \c 'U';
 //  - ... the given system matrix is singular and not invertible.
 //
-// In all failure cases a \a std::invalid_argument exception is thrown.
+// In all failure cases an exception is thrown.
 //
 // For more information on the hesv() functions (i.e. chesv() and zhesv()) see the LAPACK online
 // documentation browser:
@@ -180,7 +180,7 @@ inline void hesv( DenseMatrix<MT,SO>& A, DenseVector<VT,TF>& b, char uplo, int* 
    BLAZE_INTERNAL_ASSERT( info >= 0, "Invalid function argument" );
 
    if( info > 0 ) {
-      BLAZE_THROW_INVALID_ARGUMENT( "Inversion of singular matrix failed" );
+      BLAZE_THROW_LAPACK_ERROR( "Inversion of singular matrix failed" );
    }
 }
 //*************************************************************************************************
@@ -198,7 +198,7 @@ inline void hesv( DenseMatrix<MT,SO>& A, DenseVector<VT,TF>& b, char uplo, int* 
 // \exception std::invalid_argument Invalid non-square matrix provided.
 // \exception std::invalid_argument Invalid uplo argument provided.
 // \exception std::invalid_argument Matrix sizes do not match.
-// \exception std::invalid_argument Inversion of singular matrix failed.
+// \exception std::runtime_error Inversion of singular matrix failed.
 //
 // This function uses the LAPACK hesv() functions to compute the solution to the Hermitian
 // indefinite system of linear equations:
@@ -235,7 +235,7 @@ inline void hesv( DenseMatrix<MT,SO>& A, DenseVector<VT,TF>& b, char uplo, int* 
 //  - ... the sizes of the two given matrices do not match;
 //  - ... the given system matrix is singular and not invertible.
 //
-// In all failure cases a \a std::invalid_argument exception is thrown.
+// In all failure cases an exception is thrown.
 //
 // For more information on the hesv() functions (i.e. chesv() and zhesv()) see the LAPACK online
 // documentation browser:
@@ -303,7 +303,7 @@ inline void hesv( DenseMatrix<MT1,SO1>& A, DenseMatrix<MT2,SO2>& B,
    BLAZE_INTERNAL_ASSERT( info >= 0, "Invalid function argument" );
 
    if( info > 0 ) {
-      BLAZE_THROW_INVALID_ARGUMENT( "Inversion of singular matrix failed" );
+      BLAZE_THROW_LAPACK_ERROR( "Inversion of singular matrix failed" );
    }
 }
 //*************************************************************************************************

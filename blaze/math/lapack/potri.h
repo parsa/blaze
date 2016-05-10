@@ -46,11 +46,11 @@
 #include <blaze/math/constraints/BlasCompatible.h>
 #include <blaze/math/constraints/Computation.h>
 #include <blaze/math/constraints/MutableDataAccess.h>
+#include <blaze/math/Exception.h>
 #include <blaze/math/expressions/DenseMatrix.h>
 #include <blaze/math/lapack/clapack/potri.h>
 #include <blaze/math/typetraits/IsRowMajorMatrix.h>
 #include <blaze/util/Assert.h>
-#include <blaze/util/Exception.h>
 
 
 namespace blaze {
@@ -79,7 +79,7 @@ inline void potri( DenseMatrix<MT,SO>& A, char uplo );
 // \return void
 // \exception std::invalid_argument Invalid non-square matrix provided.
 // \exception std::invalid_argument Invalid uplo argument provided.
-// \exception std::invalid_argument Inversion of singular matrix failed.
+// \exception std::runtime_error Inversion of singular matrix failed.
 //
 // This function performs the dense matrix inversion based on the LAPACK potri() functions for
 // positive-definite matrices that have already been factorized by the potrf() functions. The
@@ -95,7 +95,7 @@ inline void potri( DenseMatrix<MT,SO>& A, char uplo );
 //  - ... the given \a uplo argument is neither \c 'L' nor \c 'U';
 //  - ... the given matrix is singular and not invertible.
 //
-// In all failure cases a \a std::invalid_argument exception is thrown.
+// In all failure cases an exception is thrown.
 //
 // For more information on the potri() functions (i.e. spotri(), dpotri(), cpotri(), and zpotri())
 // see the LAPACK online documentation browser:
@@ -144,7 +144,7 @@ inline void potri( DenseMatrix<MT,SO>& A, char uplo )
    BLAZE_INTERNAL_ASSERT( info >= 0, "Invalid argument for matrix inversion" );
 
    if( info > 0 ) {
-      BLAZE_THROW_INVALID_ARGUMENT( "Inversion of singular matrix failed" );
+      BLAZE_THROW_LAPACK_ERROR( "Inversion of singular matrix failed" );
    }
 }
 //*************************************************************************************************

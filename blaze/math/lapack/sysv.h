@@ -47,12 +47,12 @@
 #include <blaze/math/constraints/BlasCompatible.h>
 #include <blaze/math/constraints/Computation.h>
 #include <blaze/math/constraints/MutableDataAccess.h>
+#include <blaze/math/Exception.h>
 #include <blaze/math/expressions/DenseMatrix.h>
 #include <blaze/math/expressions/DenseVector.h>
 #include <blaze/math/lapack/clapack/sysv.h>
 #include <blaze/util/Assert.h>
 #include <blaze/util/constraints/SameType.h>
-#include <blaze/util/Exception.h>
 
 
 namespace blaze {
@@ -86,7 +86,7 @@ inline void sysv( DenseMatrix<MT1,SO1>& A, DenseMatrix<MT2,SO2>& B, char uplo, i
 // \return void
 // \exception std::invalid_argument Invalid non-square matrix provided.
 // \exception std::invalid_argument Invalid uplo argument provided.
-// \exception std::invalid_argument Inversion of singular matrix failed.
+// \exception std::runtime_error Inversion of singular matrix failed.
 //
 // This function uses the LAPACK sysv() functions to compute the solution to the symmetric
 // indefinite system of linear equations;
@@ -120,7 +120,7 @@ inline void sysv( DenseMatrix<MT1,SO1>& A, DenseMatrix<MT2,SO2>& B, char uplo, i
 //  - ... the given \a uplo argument is neither \c 'L' nor \c 'U';
 //  - ... the given system matrix is singular and not invertible.
 //
-// In all failure cases a \a std::invalid_argument exception is thrown.
+// In all failure cases an exception is thrown.
 //
 // For more information on the sysv() functions (i.e. ssysv(), dsysv(), csysv(), and zsysv()),
 // see the LAPACK online documentation browser:
@@ -181,7 +181,7 @@ inline void sysv( DenseMatrix<MT,SO>& A, DenseVector<VT,TF>& b, char uplo, int* 
    BLAZE_INTERNAL_ASSERT( info >= 0, "Invalid function argument" );
 
    if( info > 0 ) {
-      BLAZE_THROW_INVALID_ARGUMENT( "Inversion of singular matrix failed" );
+      BLAZE_THROW_LAPACK_ERROR( "Inversion of singular matrix failed" );
    }
 }
 //*************************************************************************************************
@@ -199,7 +199,7 @@ inline void sysv( DenseMatrix<MT,SO>& A, DenseVector<VT,TF>& b, char uplo, int* 
 // \exception std::invalid_argument Invalid non-square matrix provided.
 // \exception std::invalid_argument Invalid uplo argument provided.
 // \exception std::invalid_argument Matrix sizes do not match.
-// \exception std::invalid_argument Inversion of singular matrix failed.
+// \exception std::runtime_error Inversion of singular matrix failed.
 //
 // This function uses the LAPACK sysv() functions to compute the solution to the symmetric
 // indefinite system of linear equations:
@@ -236,7 +236,7 @@ inline void sysv( DenseMatrix<MT,SO>& A, DenseVector<VT,TF>& b, char uplo, int* 
 //  - ... the sizes of the two given matrices do not match;
 //  - ... the given system matrix is singular and not invertible.
 //
-// In all failure cases a \a std::invalid_argument exception is thrown.
+// In all failure cases an exception is thrown.
 //
 // For more information on the sysv() functions (i.e. ssysv(), dsysv(), csysv(), and zsysv()),
 // see the LAPACK online documentation browser:
@@ -303,7 +303,7 @@ inline void sysv( DenseMatrix<MT1,SO1>& A, DenseMatrix<MT2,SO2>& B, char uplo, i
    BLAZE_INTERNAL_ASSERT( info >= 0, "Invalid function argument" );
 
    if( info > 0 ) {
-      BLAZE_THROW_INVALID_ARGUMENT( "Inversion of singular matrix failed" );
+      BLAZE_THROW_RUNTIME_ERROR( "Inversion of singular matrix failed" );
    }
 }
 //*************************************************************************************************

@@ -47,6 +47,7 @@
 #include <blaze/math/constraints/BlasCompatible.h>
 #include <blaze/math/constraints/Computation.h>
 #include <blaze/math/constraints/MutableDataAccess.h>
+#include <blaze/math/Exception.h>
 #include <blaze/math/expressions/DenseMatrix.h>
 #include <blaze/math/lapack/clapack/ormql.h>
 #include <blaze/math/lapack/clapack/ormrq.h>
@@ -54,7 +55,6 @@
 #include <blaze/util/Assert.h>
 #include <blaze/util/constraints/FloatingPoint.h>
 #include <blaze/util/mpl/Xor.h>
-#include <blaze/util/Exception.h>
 
 
 namespace blaze {

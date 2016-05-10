@@ -47,10 +47,10 @@
 #include <blaze/math/constraints/BlasCompatible.h>
 #include <blaze/math/constraints/Computation.h>
 #include <blaze/math/constraints/MutableDataAccess.h>
+#include <blaze/math/Exception.h>
 #include <blaze/math/expressions/DenseMatrix.h>
 #include <blaze/math/lapack/clapack/getri.h>
 #include <blaze/util/Assert.h>
-#include <blaze/util/Exception.h>
 
 
 namespace blaze {
@@ -78,7 +78,7 @@ inline void getri( DenseMatrix<MT,SO>& A, const int* ipiv );
 // \param ipiv Auxiliary array for the pivot indices; size >= min( \a m, \a n ).
 // \return void
 // \exception std::invalid_argument Invalid non-square matrix provided.
-// \exception std::invalid_argument Inversion of singular matrix failed.
+// \exception std::runtime_error Inversion of singular matrix failed.
 //
 // This function performs the dense matrix inversion based on the LAPACK getri() functions for
 // matrices that have already been factorized by the getrf() functions. Note that the function
@@ -91,7 +91,7 @@ inline void getri( DenseMatrix<MT,SO>& A, const int* ipiv );
 //  - ... the given matrix is not a square matrix;
 //  - ... the given matrix is singular and not invertible.
 //
-// In all failure cases a \a std::invalid_argument exception is thrown.
+// In all failure cases an exception is thrown.
 //
 // For more information on the getri() functions (i.e. sgetri(), dgetri(), cgetri(), and zgetri())
 // see the LAPACK online documentation browser:
@@ -137,7 +137,7 @@ inline void getri( DenseMatrix<MT,SO>& A, const int* ipiv )
    BLAZE_INTERNAL_ASSERT( info >= 0, "Invalid argument for matrix inversion" );
 
    if( info > 0 ) {
-      BLAZE_THROW_INVALID_ARGUMENT( "Inversion of singular matrix failed" );
+      BLAZE_THROW_LAPACK_ERROR( "Inversion of singular matrix failed" );
    }
 }
 //*************************************************************************************************
