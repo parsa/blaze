@@ -69,140 +69,140 @@ OperationTest::OperationTest()
    // Single precision tests
    //=====================================================================================
 
-   testGetrf< float >();
-   testSytrf< float >();
-   testPotrf< float >();
-   testGetri< float >();
-   testSytri< float >();
-   testPotri< float >();
-   testTrtri< float >();
-   testGetrs< float >();
-   testSytrs< float >();
-   testPotrs< float >();
-   testTrtrs< float >();
-   testGesv < float >();
-   testSysv < float >();
-   testPosv < float >();
-   testTrsv < float >();
-   testGeqrf< float >();
-   testOrgqr< float >();
-   testOrmqr< float >();
-   testGerqf< float >();
-   testOrgrq< float >();
-   testOrmrq< float >();
-   testGeqlf< float >();
-   testOrgql< float >();
-   testOrmql< float >();
-   testGelqf< float >();
-   testOrglq< float >();
-   testOrmlq< float >();
+   //testGetrf< float >();
+   //testSytrf< float >();
+   //testPotrf< float >();
+   //testGetri< float >();
+   //testSytri< float >();
+   //testPotri< float >();
+   //testTrtri< float >();
+   //testGetrs< float >();
+   //testSytrs< float >();
+   //testPotrs< float >();
+   //testTrtrs< float >();
+   //testGesv < float >();
+   //testSysv < float >();
+   //testPosv < float >();
+   //testTrsv < float >();
+   //testGeqrf< float >();
+   //testOrgqr< float >();
+   //testOrmqr< float >();
+   //testGerqf< float >();
+   //testOrgrq< float >();
+   //testOrmrq< float >();
+   //testGeqlf< float >();
+   //testOrgql< float >();
+   //testOrmql< float >();
+   //testGelqf< float >();
+   //testOrglq< float >();
+   //testOrmlq< float >();
 
 
    //=====================================================================================
    // Double precision tests
    //=====================================================================================
 
-   //testGetrf< double >();
-   //testSytrf< double >();
-   //testPotrf< double >();
-   //testGetri< double >();
-   //testSytri< double >();
-   //testPotri< double >();
-   //testTrtri< double >();
-   //testGetrs< double >();
-   //testSytrs< double >();
-   //testPotrs< double >();
-   //testTrtrs< double >();
-   //testGesv < double >();
-   //testSysv < double >();
-   //testPosv < double >();
-   //testTrsv < double >();
-   //testGeqrf< double >();
-   //testOrgqr< double >();
-   //testOrmqr< double >();
-   //testGerqf< double >();
-   //testOrgrq< double >();
-   //testOrmrq< double >();
-   //testGeqlf< double >();
-   //testOrgql< double >();
-   //testOrmql< double >();
-   //testGelqf< double >();
-   //testOrglq< double >();
-   //testOrmlq< double >();
+   testGetrf< double >();
+   testSytrf< double >();
+   testPotrf< double >();
+   testGetri< double >();
+   testSytri< double >();
+   testPotri< double >();
+   testTrtri< double >();
+   testGetrs< double >();
+   testSytrs< double >();
+   testPotrs< double >();
+   testTrtrs< double >();
+   testGesv < double >();
+   testSysv < double >();
+   testPosv < double >();
+   testTrsv < double >();
+   testGeqrf< double >();
+   testOrgqr< double >();
+   testOrmqr< double >();
+   testGerqf< double >();
+   testOrgrq< double >();
+   testOrmrq< double >();
+   testGeqlf< double >();
+   testOrgql< double >();
+   testOrmql< double >();
+   testGelqf< double >();
+   testOrglq< double >();
+   testOrmlq< double >();
 
 
    //=====================================================================================
    // Single precision complex tests
    //=====================================================================================
 
-   testGetrf< complex<float> >();
-   testSytrf< complex<float> >();
-   testHetrf< complex<float> >();
-   testPotrf< complex<float> >();
-   testGetri< complex<float> >();
-   testSytri< complex<float> >();
-   testHetri< complex<float> >();
-   testPotri< complex<float> >();
-   testTrtri< complex<float> >();
-   testGetrs< complex<float> >();
-   testSytrs< complex<float> >();
-   testHetrs< complex<float> >();
-   testPotrs< complex<float> >();
-   testTrtrs< complex<float> >();
-   testGesv < complex<float> >();
-   testSysv < complex<float> >();
-   testHesv < complex<float> >();
-   testPosv < complex<float> >();
-   testTrsv < complex<float> >();
-   testGeqrf< complex<float> >();
-   testUngqr< complex<float> >();
-   testUnmqr< complex<float> >();
-   testGerqf< complex<float> >();
-   testUngrq< complex<float> >();
-   testUnmrq< complex<float> >();
-   testGeqlf< complex<float> >();
-   testUngql< complex<float> >();
-   testUnmql< complex<float> >();
-   testGelqf< complex<float> >();
-   testUnglq< complex<float> >();
-   testUnmlq< complex<float> >();
+   //testGetrf< complex<float> >();
+   //testSytrf< complex<float> >();
+   //testHetrf< complex<float> >();
+   //testPotrf< complex<float> >();
+   //testGetri< complex<float> >();
+   //testSytri< complex<float> >();
+   //testHetri< complex<float> >();
+   //testPotri< complex<float> >();
+   //testTrtri< complex<float> >();
+   //testGetrs< complex<float> >();
+   //testSytrs< complex<float> >();
+   //testHetrs< complex<float> >();
+   //testPotrs< complex<float> >();
+   //testTrtrs< complex<float> >();
+   //testGesv < complex<float> >();
+   //testSysv < complex<float> >();
+   //testHesv < complex<float> >();
+   //testPosv < complex<float> >();
+   //testTrsv < complex<float> >();
+   //testGeqrf< complex<float> >();
+   //testUngqr< complex<float> >();
+   //testUnmqr< complex<float> >();
+   //testGerqf< complex<float> >();
+   //testUngrq< complex<float> >();
+   //testUnmrq< complex<float> >();
+   //testGeqlf< complex<float> >();
+   //testUngql< complex<float> >();
+   //testUnmql< complex<float> >();
+   //testGelqf< complex<float> >();
+   //testUnglq< complex<float> >();
+   //testUnmlq< complex<float> >();
 
 
    //=====================================================================================
    // Double precision complex tests
    //=====================================================================================
 
-   //testGetrf< complex<double> >();
-   //testSytrf< complex<double> >();
-   //testHetrf< complex<double> >();
-   //testPotrf< complex<double> >();
-   //testGetri< complex<double> >();
-   //testSytri< complex<double> >();
-   //testHetri< complex<double> >();
-   //testPotri< complex<double> >();
-   //testTrtri< complex<double> >();
-   //testGetrs< complex<double> >();
-   //testSytrs< complex<double> >();
-   //testHetrs< complex<double> >();
-   //testPotrs< complex<double> >();
-   //testTrtrs< complex<double> >();
-   //testGesv < complex<double> >();
-   //testSysv < complex<double> >();
-   //testHesv < complex<double> >();
-   //testPosv < complex<double> >();
-   //testTrsv < complex<double> >();
-   //testGeqrf< complex<double> >();
-   //testUngqr< complex<double> >();
-   //testUnmqr< complex<double> >();
-   //testGerqf< complex<double> >();
-   //testUngrq< complex<double> >();
-   //testUnmrq< complex<double> >();
-   //testGeqlf< complex<double> >();
-   //testUngql< complex<double> >();
-   //testUnmql< complex<double> >();
-   //testGelqf< complex<double> >();
-   //testUnglq< complex<double> >();
-   //testUnmlq< complex<double> >();
+   testGetrf< complex<double> >();
+   testSytrf< complex<double> >();
+   testHetrf< complex<double> >();
+   testPotrf< complex<double> >();
+   testGetri< complex<double> >();
+   testSytri< complex<double> >();
+   testHetri< complex<double> >();
+   testPotri< complex<double> >();
+   testTrtri< complex<double> >();
+   testGetrs< complex<double> >();
+   testSytrs< complex<double> >();
+   testHetrs< complex<double> >();
+   testPotrs< complex<double> >();
+   testTrtrs< complex<double> >();
+   testGesv < complex<double> >();
+   testSysv < complex<double> >();
+   testHesv < complex<double> >();
+   testPosv < complex<double> >();
+   testTrsv < complex<double> >();
+   testGeqrf< complex<double> >();
+   testUngqr< complex<double> >();
+   testUnmqr< complex<double> >();
+   testGerqf< complex<double> >();
+   testUngrq< complex<double> >();
+   testUnmrq< complex<double> >();
+   testGeqlf< complex<double> >();
+   testUngql< complex<double> >();
+   testUnmql< complex<double> >();
+   testGelqf< complex<double> >();
+   testUnglq< complex<double> >();
+   testUnmlq< complex<double> >();
 }
 //*************************************************************************************************
 
