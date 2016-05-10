@@ -10146,14 +10146,17 @@
    #define BLAZE_THROW_BAD_ALLOC \
       BLAZE_THROW( std::bad_alloc() )
 
+   #define BLAZE_THROW_LOGIC_ERROR( MESSAGE ) \
+      BLAZE_THROW( std::logic_error( MESSAGE ) )
+
    #define BLAZE_THROW_INVALID_ARGUMENT( MESSAGE ) \
       BLAZE_THROW( std::invalid_argument( MESSAGE ) )
 
    #define BLAZE_THROW_LENGTH_ERROR( MESSAGE ) \
       BLAZE_THROW( std::length_error( MESSAGE ) )
 
-   #define BLAZE_THROW_LOGIC_ERROR( MESSAGE ) \
-      BLAZE_THROW( std::logic_error( MESSAGE ) )
+   #define BLAZE_THROW_OUT_OF_RANGE( MESSAGE ) \
+      BLAZE_THROW( std::out_of_range( MESSAGE ) )
 
    #define BLAZE_THROW_RUNTIME_ERROR( MESSAGE ) \
       BLAZE_THROW( std::runtime_error( MESSAGE ) )
@@ -10187,6 +10190,24 @@
 // special conditions and environments. However, the customization of the type of an exception
 // via this macro may have an effect on the library. Thus be advised to use the macro with due
 // care!
+//
+//
+// \n \section error_reporting_special_errors Customization of Special Errors
+//
+// Last but not least it is possible to customize the error reporting for special kinds of errors.
+// This can be achieved by customizing any number of the following macros:
+
+   \code
+   #define BLAZE_THROW_DIVISION_BY_ZERO( MESSAGE ) \
+      BLAZE_THROW_RUNTIME_ERROR( MESSAGE )
+
+   #define BLAZE_THROW_LAPACK_ERROR( MESSAGE ) \
+      BLAZE_THROW_RUNTIME_ERROR( MESSAGE )
+   \endcode
+
+// As explained in the previous sections, in order to customize the handling of special errors
+// the according macro has to be defined prior to including any \b Blaze header file. This will
+// override the \b Blaze default behavior.
 //
 //
 // \n Previous: \ref custom_data_types &nbsp; &nbsp; Next: \ref intra_statement_optimization \n
