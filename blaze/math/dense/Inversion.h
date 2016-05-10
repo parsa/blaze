@@ -46,6 +46,7 @@
 #include <blaze/math/constraints/BlasCompatible.h>
 #include <blaze/math/constraints/StrictlyTriangular.h>
 #include <blaze/math/dense/StaticMatrix.h>
+#include <blaze/math/Exception.h>
 #include <blaze/math/expressions/DenseMatrix.h>
 #include <blaze/math/Functions.h>
 #include <blaze/math/InversionFlag.h>
@@ -62,7 +63,6 @@
 #include <blaze/math/shims/Invert.h>
 #include <blaze/util/Assert.h>
 #include <blaze/util/EnableIf.h>
-#include <blaze/util/Exception.h>
 #include <blaze/util/Types.h>
 #include <blaze/util/typetraits/IsBuiltin.h>
 #include <blaze/util/typetraits/IsComplex.h>
@@ -95,11 +95,11 @@ inline void invert( DenseMatrix<MT,SO>& dm );
 //
 // \param dm The general dense matrix to be inverted.
 // \return void
-// \exception std::invalid_argument Inversion of singular matrix failed.
+// \exception std::runtime_error Inversion of singular matrix failed.
 //
 // This function inverts the given general dense \f$ 2 \times 2 \f$ matrix via the rule of Sarrus.
 // The matrix inversion fails if the given matrix is singular and not invertible. In this case a
-// \a std::invalid_argument exception is thrown.
+// \a std::runtime_error exception is thrown.
 //
 // \note The matrix inversion can only be used for dense matrices with \c float, \c double,
 // \c complex<float> or \c complex<double> element type. The attempt to call the function with
@@ -122,7 +122,7 @@ inline void invert2x2( DenseMatrix<MT,SO>& dm )
    const ET det( A(0,0)*A(1,1) - A(0,1)*A(1,0) );
 
    if( !isDivisor( det ) ) {
-      BLAZE_THROW_INVALID_ARGUMENT( "Inversion of singular matrix failed" );
+      BLAZE_THROW_DIVISION_BY_ZERO( "Inversion of singular matrix failed" );
    }
 
    const ET idet( ET(1) / det );
@@ -146,11 +146,11 @@ inline void invert2x2( DenseMatrix<MT,SO>& dm )
 //
 // \param dm The general dense matrix to be inverted.
 // \return void
-// \exception std::invalid_argument Inversion of singular matrix failed.
+// \exception std::runtime_error Inversion of singular matrix failed.
 //
 // This function inverts the given general dense \f$ 3 \times 3 \f$ matrix via the rule of Sarrus.
 // The matrix inversion fails if the given matrix is singular and not invertible. In this case a
-// \a std::invalid_argument exception is thrown.
+// \a std::runtime_error exception is thrown.
 //
 // \note The matrix inversion can only be used for dense matrices with \c float, \c double,
 // \c complex<float> or \c complex<double> element type. The attempt to call the function with
@@ -178,7 +178,7 @@ inline void invert3x3( DenseMatrix<MT,SO>& dm )
    const ET det( A(0,0)*B(0,0) + A(0,1)*B(1,0) + A(0,2)*B(2,0) );
 
    if( !isDivisor( det ) ) {
-      BLAZE_THROW_INVALID_ARGUMENT( "Inversion of singular matrix failed" );
+      BLAZE_THROW_DIVISION_BY_ZERO( "Inversion of singular matrix failed" );
    }
 
    B(0,1) = A(0,2)*A(2,1) - A(0,1)*A(2,2);
@@ -203,11 +203,11 @@ inline void invert3x3( DenseMatrix<MT,SO>& dm )
 //
 // \param dm The general dense matrix to be inverted.
 // \return void
-// \exception std::invalid_argument Inversion of singular matrix failed.
+// \exception std::runtime_error Inversion of singular matrix failed.
 //
 // This function inverts the given general dense \f$ 4 \times 4 \f$ matrix via the rule of Sarrus.
 // The matrix inversion fails if the given matrix is singular and not invertible. In this case a
-// \a std::invalid_argument exception is thrown.
+// \a std::runtime_error exception is thrown.
 //
 // \note The matrix inversion can only be used for dense matrices with \c float, \c double,
 // \c complex<float> or \c complex<double> element type. The attempt to call the function with
@@ -271,7 +271,7 @@ inline void invert4x4( DenseMatrix<MT,SO>& dm )
    const ET det( A(0,0)*B(0,0) + A(0,1)*B(1,0) + A(0,2)*B(2,0) + A(0,3)*B(3,0) );
 
    if( !isDivisor( det ) ) {
-      BLAZE_THROW_INVALID_ARGUMENT( "Inversion of singular matrix failed" );
+      BLAZE_THROW_DIVISION_BY_ZERO( "Inversion of singular matrix failed" );
    }
 
    B /= det;
@@ -289,11 +289,11 @@ inline void invert4x4( DenseMatrix<MT,SO>& dm )
 //
 // \param dm The general dense matrix to be inverted.
 // \return void
-// \exception std::invalid_argument Inversion of singular matrix failed.
+// \exception std::runtime_error Inversion of singular matrix failed.
 //
 // This function inverts the given general dense \f$ 5 \times 5 \f$ matrix via the rule of Sarrus.
 // The matrix inversion fails if the given matrix is singular and not invertible. In this case a
-// \a std::invalid_argument exception is thrown.
+// \a std::runtime_error exception is thrown.
 //
 // \note The matrix inversion can only be used for dense matrices with \c float, \c double,
 // \c complex<float> or \c complex<double> element type. The attempt to call the function with
@@ -413,7 +413,7 @@ inline void invert5x5( DenseMatrix<MT,SO>& dm )
    const ET det( A(0,0)*B(0,0) + A(0,1)*B(1,0) + A(0,2)*B(2,0) + A(0,3)*B(3,0) + A(0,4)*B(4,0) );
 
    if( !isDivisor( det ) ) {
-      BLAZE_THROW_INVALID_ARGUMENT( "Inversion of singular matrix failed" );
+      BLAZE_THROW_DIVISION_BY_ZERO( "Inversion of singular matrix failed" );
    }
 
    B /= det;
@@ -431,11 +431,11 @@ inline void invert5x5( DenseMatrix<MT,SO>& dm )
 //
 // \param dm The general dense matrix to be inverted.
 // \return void
-// \exception std::invalid_argument Inversion of singular matrix failed.
+// \exception std::runtime_error Inversion of singular matrix failed.
 //
 // This function inverts the given general dense \f$ 6 \times 6 \f$ matrix via the rule of Sarrus.
 // The matrix inversion fails if the given matrix is singular and not invertible. In this case a
-// \a std::invalid_argument exception is thrown.
+// \a std::runtime_error exception is thrown.
 //
 // \note The matrix inversion can only be used for dense matrices with \c float, \c double,
 // \c complex<float> or \c complex<double> element type. The attempt to call the function with
@@ -646,7 +646,7 @@ inline void invert6x6( DenseMatrix<MT,SO>& dm )
                  A(0,3)*B(3,0) + A(0,4)*B(4,0) + A(0,5)*B(5,0) );
 
    if( !isDivisor( det ) ) {
-      BLAZE_THROW_INVALID_ARGUMENT( "Inversion of singular matrix failed" );
+      BLAZE_THROW_DIVISION_BY_ZERO( "Inversion of singular matrix failed" );
    }
 
    B /= det;
@@ -664,8 +664,8 @@ inline void invert6x6( DenseMatrix<MT,SO>& dm )
 //
 // \param dm The dense matrix to be inverted.
 // \return void
-// \exception std::invalid_argument Inversion of singular matrix failed.
 // \exception std::invalid_argument Invalid non-square matrix provided.
+// \exception std::runtime_error Inversion of singular matrix failed.
 //
 // This function inverts the given dense matrix by means of the most suited matrix inversion
 // algorithm. The matrix inversion fails if ...
@@ -673,7 +673,7 @@ inline void invert6x6( DenseMatrix<MT,SO>& dm )
 //  - ... the given matrix is not a square matrix;
 //  - ... the given matrix is singular and not invertible.
 //
-// In all failure cases a \a std::invalid_argument exception is thrown.
+// In all failure cases an exception is thrown.
 //
 // \note The matrix inversion can only be used for dense matrices with \c float, \c double,
 // \c complex<float> or \c complex<double> element type. The attempt to call the function with
@@ -702,8 +702,8 @@ inline void invertByDefault( DenseMatrix<MT,SO>& dm )
 //
 // \param dm The dense matrix to be inverted.
 // \return void
-// \exception std::invalid_argument Inversion of singular matrix failed.
 // \exception std::invalid_argument Invalid non-square matrix provided.
+// \exception std::runtime_error Inversion of singular matrix failed.
 //
 // This function inverts the given dense matrix by means of an LU decomposition. The matrix
 // inversion fails if ...
@@ -711,7 +711,7 @@ inline void invertByDefault( DenseMatrix<MT,SO>& dm )
 //  - ... the given matrix is not a square matrix;
 //  - ... the given matrix is singular and not invertible.
 //
-// In all failure cases a \a std::invalid_argument exception is thrown.
+// In all failure cases an exception is thrown.
 //
 // \note The matrix inversion can only be used for dense matrices with \c float, \c double,
 // \c complex<float> or \c complex<double> element type. The attempt to call the function with
@@ -747,8 +747,8 @@ inline void invertByLU( DenseMatrix<MT,SO>& dm )
 //
 // \param dm The dense matrix to be inverted.
 // \return void
-// \exception std::invalid_argument Inversion of singular matrix failed.
 // \exception std::invalid_argument Invalid non-square matrix provided.
+// \exception std::runtime_error Inversion of singular matrix failed.
 //
 // This function inverts the given symmetric dense matrix by means of a Bunch-Kaufman decomposition.
 // The matrix inversion fails if ...
@@ -756,7 +756,7 @@ inline void invertByLU( DenseMatrix<MT,SO>& dm )
 //  - ... the given matrix is not a square matrix;
 //  - ... the given matrix is singular and not invertible.
 //
-// In all failure cases a \a std::invalid_argument exception is thrown.
+// In all failure cases an exception is thrown.
 //
 // \note The matrix inversion can only be used for dense matrices with \c float, \c double,
 // \c complex<float> or \c complex<double> element type. The attempt to call the function with
@@ -809,8 +809,8 @@ inline void invertByLDLT( DenseMatrix<MT,SO>& dm )
 //
 // \param dm The dense matrix to be inverted.
 // \return void
-// \exception std::invalid_argument Inversion of singular matrix failed.
 // \exception std::invalid_argument Invalid non-square matrix provided.
+// \exception std::runtime_error Inversion of singular matrix failed.
 //
 // This function inverts the given symmetric dense matrix by means of a Bunch-Kaufman decomposition.
 // The matrix inversion fails if ...
@@ -818,7 +818,7 @@ inline void invertByLDLT( DenseMatrix<MT,SO>& dm )
 //  - ... the given matrix is not a square matrix;
 //  - ... the given matrix is singular and not invertible.
 //
-// In all failure cases a \a std::invalid_argument exception is thrown.
+// In all failure cases an exception is thrown.
 //
 // \note The matrix inversion can only be used for dense matrices with \c float, \c double,
 // \c complex<float> or \c complex<double> element type. The attempt to call the function with
@@ -848,8 +848,8 @@ inline EnableIf_<IsBuiltin< ElementType_<MT> > >
 //
 // \param dm The dense matrix to be inverted.
 // \return void
-// \exception std::invalid_argument Inversion of singular matrix failed.
 // \exception std::invalid_argument Invalid non-square matrix provided.
+// \exception std::runtime_error Inversion of singular matrix failed.
 //
 // This function inverts the given Hermitian dense matrix by means of a Bunch-Kaufman decomposition.
 // The matrix inversion fails if ...
@@ -857,7 +857,7 @@ inline EnableIf_<IsBuiltin< ElementType_<MT> > >
 //  - ... the given matrix is not a square matrix;
 //  - ... the given matrix is singular and not invertible.
 //
-// In all failure cases a \a std::invalid_argument exception is thrown.
+// In all failure cases an exception is thrown.
 //
 // \note The matrix inversion can only be used for dense matrices with \c float, \c double,
 // \c complex<float> or \c complex<double> element type. The attempt to call the function with
@@ -911,8 +911,8 @@ inline EnableIf_<IsComplex< ElementType_<MT> > >
 //
 // \param dm The dense matrix to be inverted.
 // \return void
-// \exception std::invalid_argument Inversion of singular matrix failed.
 // \exception std::invalid_argument Invalid non-square matrix provided.
+// \exception std::runtime_error Inversion of singular matrix failed.
 //
 // This function inverts the given dense matrix by means of a Cholesky decomposition. The matrix
 // inversion fails if ...
@@ -920,7 +920,7 @@ inline EnableIf_<IsComplex< ElementType_<MT> > >
 //  - ... the given matrix is not a square matrix;
 //  - ... the given matrix is singular and not invertible.
 //
-// In all failure cases a \a std::invalid_argument exception is thrown.
+// In all failure cases an exception is thrown.
 //
 // \note The matrix inversion can only be used for dense matrices with \c float, \c double,
 // \c complex<float> or \c complex<double> element type. The attempt to call the function with
@@ -972,6 +972,7 @@ inline void invertByLLH( DenseMatrix<MT,SO>& dm )
 //
 // \param dm The dense matrix to be inverted.
 // \return void
+// \exception std::runtime_error Inversion of singular matrix failed.
 //
 // This function inverts the given dense square matrix via the specified matrix inversion
 // algorithm \a IF:
@@ -984,7 +985,7 @@ inline void invertByLLH( DenseMatrix<MT,SO>& dm )
    \endcode
 
 // The matrix inversion fails if the given matrix is singular and not invertible. In this case
-// a \a std::invalid_argument exception is thrown.
+// a \a std::runtime_error exception is thrown.
 //
 // \note The matrix inversion can only be used for dense matrices with \c float, \c double,
 // \c complex<float> or \c complex<double> element type. The attempt to call the function with
@@ -1027,16 +1028,15 @@ inline void invertNxN( DenseMatrix<MT,SO>& dm )
 //
 // \param dm The dense matrix to be inverted.
 // \return void
-// \exception std::invalid_argument Inversion of singular matrix failed.
 // \exception std::invalid_argument Invalid non-square matrix provided.
+// \exception std::runtime_error Inversion of singular matrix failed.
 //
 // This function inverts the given dense square matrix. The matrix inversion fails if ...
 //
 //  - ... the given matrix is not a square matrix;
 //  - ... the given matrix is singular and not invertible.
 //
-// In all failure cases either a compilation error is created if the failure can be predicted at
-// compile time or a \a std::invalid_argument exception is thrown.
+// In all failure cases an exception is thrown.
 //
 // \note The matrix inversion can only be used for dense matrices with \c float, \c double,
 // \c complex<float> or \c complex<double> element type. The attempt to call the function with
@@ -1063,8 +1063,8 @@ inline void invert( DenseMatrix<MT,SO>& dm )
 //
 // \param dm The dense matrix to be inverted.
 // \return void
-// \exception std::invalid_argument Inversion of singular matrix failed.
 // \exception std::invalid_argument Invalid non-square matrix provided.
+// \exception std::runtime_error Inversion of singular matrix failed.
 //
 // This function inverts the given dense matrix by means of the specified matrix inversion
 // algorithm \c IF:
@@ -1082,7 +1082,7 @@ inline void invert( DenseMatrix<MT,SO>& dm )
 //  - ... the given matrix is singular and not invertible.
 //
 // In all failure cases either a compilation error is created if the failure can be predicted at
-// compile time or a \a std::invalid_argument exception is thrown.
+// compile time or an exception is thrown.
 //
 // \note The matrix inversion can only be used for dense matrices with \c float, \c double,
 // \c complex<float> or \c complex<double> element type. The attempt to call the function with

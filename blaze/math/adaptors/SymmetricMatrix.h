@@ -49,6 +49,7 @@
 #include <blaze/math/constraints/BlasCompatible.h>
 #include <blaze/math/constraints/RequiresEvaluation.h>
 #include <blaze/math/dense/StaticMatrix.h>
+#include <blaze/math/Exception.h>
 #include <blaze/math/Forward.h>
 #include <blaze/math/Functions.h>
 #include <blaze/math/shims/IsDefault.h>
@@ -74,7 +75,6 @@
 #include <blaze/math/typetraits/Rows.h>
 #include <blaze/util/Assert.h>
 #include <blaze/util/EnableIf.h>
-#include <blaze/util/Exception.h>
 #include <blaze/util/IntegralConstant.h>
 #include <blaze/util/TrueType.h>
 #include <blaze/util/typetraits/IsBuiltin.h>
@@ -288,7 +288,7 @@ inline void invert2x2( SymmetricMatrix<MT,SO,true,true>& m )
    const ET det( A(0,0)*A(1,1) - A(0,1)*A(1,0) );
 
    if( !isDivisor( det ) ) {
-      BLAZE_THROW_INVALID_ARGUMENT( "Inversion of singular matrix failed" );
+      BLAZE_THROW_DIVISION_BY_ZERO( "Inversion of singular matrix failed" );
    }
 
    const ET idet( ET(1) / det );
@@ -343,7 +343,7 @@ inline void invert3x3( SymmetricMatrix<MT,SO,true,true>& m )
    const ET det( A(0,0)*B(0,0) + A(0,1)*B(1,0) + A(0,2)*B(2,0) );
 
    if( !isDivisor( det ) ) {
-      BLAZE_THROW_INVALID_ARGUMENT( "Inversion of singular matrix failed" );
+      BLAZE_THROW_DIVISION_BY_ZERO( "Inversion of singular matrix failed" );
    }
 
    B(0,1) = B(1,0);
@@ -431,7 +431,7 @@ inline void invert4x4( SymmetricMatrix<MT,SO,true,true>& m )
    const ET det( A(0,0)*B(0,0) + A(0,1)*B(1,0) + A(0,2)*B(2,0) + A(0,3)*B(3,0) );
 
    if( !isDivisor( det ) ) {
-      BLAZE_THROW_INVALID_ARGUMENT( "Inversion of singular matrix failed" );
+      BLAZE_THROW_DIVISION_BY_ZERO( "Inversion of singular matrix failed" );
    }
 
    B /= det;
@@ -555,7 +555,7 @@ inline void invert5x5( SymmetricMatrix<MT,SO,true,true>& m )
    const ET det( A(0,0)*B(0,0) + A(0,1)*B(1,0) + A(0,2)*B(2,0) + A(0,3)*B(3,0) + A(0,4)*B(4,0) );
 
    if( !isDivisor( det ) ) {
-      BLAZE_THROW_INVALID_ARGUMENT( "Inversion of singular matrix failed" );
+      BLAZE_THROW_DIVISION_BY_ZERO( "Inversion of singular matrix failed" );
    }
 
    B /= det;
@@ -769,7 +769,7 @@ inline void invert6x6( SymmetricMatrix<MT,SO,true,true>& m )
                  A(0,3)*B(3,0) + A(0,4)*B(4,0) + A(0,5)*B(5,0) );
 
    if( !isDivisor( det ) ) {
-      BLAZE_THROW_INVALID_ARGUMENT( "Inversion of singular matrix failed" );
+      BLAZE_THROW_DIVISION_BY_ZERO( "Inversion of singular matrix failed" );
    }
 
    B /= det;

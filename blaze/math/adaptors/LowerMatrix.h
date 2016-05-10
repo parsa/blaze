@@ -52,6 +52,7 @@
 #include <blaze/math/constraints/UniTriangular.h>
 #include <blaze/math/constraints/Upper.h>
 #include <blaze/math/dense/StaticMatrix.h>
+#include <blaze/math/Exception.h>
 #include <blaze/math/Forward.h>
 #include <blaze/math/Functions.h>
 #include <blaze/math/lapack/trtri.h>
@@ -80,7 +81,6 @@
 #include <blaze/math/typetraits/Rows.h>
 #include <blaze/util/Assert.h>
 #include <blaze/util/EnableIf.h>
-#include <blaze/util/Exception.h>
 #include <blaze/util/IntegralConstant.h>
 #include <blaze/util/TrueType.h>
 #include <blaze/util/typetraits/IsNumeric.h>
@@ -288,7 +288,7 @@ inline void invert2x2( LowerMatrix<MT,SO,true>& m )
    const ET det( A(0,0) * A(1,1) );
 
    if( !isDivisor( det ) ) {
-      BLAZE_THROW_INVALID_ARGUMENT( "Inversion of singular matrix failed" );
+      BLAZE_THROW_DIVISION_BY_ZERO( "Inversion of singular matrix failed" );
    }
 
    const ET idet( ET(1) / det );
@@ -338,7 +338,7 @@ inline void invert3x3( LowerMatrix<MT,SO,true>& m )
    const ET det( A(0,0)*tmp );
 
    if( !isDivisor( det ) ) {
-      BLAZE_THROW_INVALID_ARGUMENT( "Inversion of singular matrix failed" );
+      BLAZE_THROW_DIVISION_BY_ZERO( "Inversion of singular matrix failed" );
    }
 
    B(0,0) =   tmp;
@@ -394,7 +394,7 @@ inline void invert4x4( LowerMatrix<MT,SO,true>& m )
    const ET det( tmp4 * A(2,2) * A(3,3) );
 
    if( !isDivisor( det ) ) {
-      BLAZE_THROW_INVALID_ARGUMENT( "Inversion of singular matrix failed" );
+      BLAZE_THROW_DIVISION_BY_ZERO( "Inversion of singular matrix failed" );
    }
 
    B(0,0) =   A(1,1)*tmp1;
@@ -477,7 +477,7 @@ inline void invert5x5( LowerMatrix<MT,SO,true>& m )
    const ET det( B(4,4) * A(4,4) );
 
    if( !isDivisor( det ) ) {
-      BLAZE_THROW_INVALID_ARGUMENT( "Inversion of singular matrix failed" );
+      BLAZE_THROW_DIVISION_BY_ZERO( "Inversion of singular matrix failed" );
    }
 
    B /= det;
@@ -562,7 +562,7 @@ inline void invert6x6( LowerMatrix<MT,SO,true>& m )
    const ET det( B(5,5)*A(5,5) );
 
    if( !isDivisor( det ) ) {
-      BLAZE_THROW_INVALID_ARGUMENT( "Inversion of singular matrix failed" );
+      BLAZE_THROW_DIVISION_BY_ZERO( "Inversion of singular matrix failed" );
    }
 
    B /= det;
@@ -744,7 +744,7 @@ inline void invertByLLH( LowerMatrix<MT,SO,true>& m )
    for( size_t i=0UL; i<A.rows(); ++i )
    {
       if( !isDivisor( A(i,i) ) ) {
-         BLAZE_THROW_INVALID_ARGUMENT( "Inversion of singular matrix failed" );
+         BLAZE_THROW_DIVISION_BY_ZERO( "Inversion of singular matrix failed" );
       }
 
       invert( A(i,i) );

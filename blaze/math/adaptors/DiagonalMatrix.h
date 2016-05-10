@@ -55,6 +55,7 @@
 #include <blaze/math/constraints/Symmetric.h>
 #include <blaze/math/constraints/UniTriangular.h>
 #include <blaze/math/constraints/Upper.h>
+#include <blaze/math/Exception.h>
 #include <blaze/math/Forward.h>
 #include <blaze/math/InversionFlag.h>
 #include <blaze/math/shims/Invert.h>
@@ -85,7 +86,6 @@
 #include <blaze/math/typetraits/Rows.h>
 #include <blaze/util/Assert.h>
 #include <blaze/util/EnableIf.h>
-#include <blaze/util/Exception.h>
 #include <blaze/util/IntegralConstant.h>
 #include <blaze/util/TrueType.h>
 #include <blaze/util/typetraits/IsBuiltin.h>
@@ -294,7 +294,7 @@ inline void invert2x2( DiagonalMatrix<MT,SO,true>& m )
    const ET det( A(0,0) * A(1,1) );
 
    if( !isDivisor( det ) ) {
-      BLAZE_THROW_INVALID_ARGUMENT( "Inversion of singular matrix failed" );
+      BLAZE_THROW_DIVISION_BY_ZERO( "Inversion of singular matrix failed" );
    }
 
    const ET idet( ET(1) / det );
@@ -344,7 +344,7 @@ inline void invert3x3( DiagonalMatrix<MT,SO,true>& m )
    const ET det( tmp1*A(2,2) );
 
    if( !isDivisor( det ) ) {
-      BLAZE_THROW_INVALID_ARGUMENT( "Inversion of singular matrix failed" );
+      BLAZE_THROW_DIVISION_BY_ZERO( "Inversion of singular matrix failed" );
    }
 
    const ET idet( ET(1) / det );
@@ -396,7 +396,7 @@ inline void invert4x4( DiagonalMatrix<MT,SO,true>& m )
    const ET det( tmp1 * tmp2 );
 
    if( !isDivisor( det ) ) {
-      BLAZE_THROW_INVALID_ARGUMENT( "Inversion of singular matrix failed" );
+      BLAZE_THROW_DIVISION_BY_ZERO( "Inversion of singular matrix failed" );
    }
 
    const ET idet( ET(1) / det );
@@ -450,7 +450,7 @@ inline void invert5x5( DiagonalMatrix<MT,SO,true>& m )
    const ET det( tmp2*tmp4 );
 
    if( !isDivisor( det ) ) {
-      BLAZE_THROW_INVALID_ARGUMENT( "Inversion of singular matrix failed" );
+      BLAZE_THROW_DIVISION_BY_ZERO( "Inversion of singular matrix failed" );
    }
 
    const ET idet( ET(1) / det );
@@ -506,7 +506,7 @@ inline void invert6x6( DiagonalMatrix<MT,SO,true>& m )
    const ET det( tmp3*tmp4 );
 
    if( !isDivisor( det ) ) {
-      BLAZE_THROW_INVALID_ARGUMENT( "Inversion of singular matrix failed" );
+      BLAZE_THROW_DIVISION_BY_ZERO( "Inversion of singular matrix failed" );
    }
 
    const ET idet( ET(1) / det );
@@ -556,7 +556,7 @@ inline void invertNxN( DiagonalMatrix<MT,SO,true>& m )
    for( size_t i=0UL; i<A.rows(); ++i )
    {
       if( !isDivisor( A(i,i) ) ) {
-         BLAZE_THROW_INVALID_ARGUMENT( "Inversion of singular matrix failed" );
+         BLAZE_THROW_DIVISION_BY_ZERO( "Inversion of singular matrix failed" );
       }
 
       invert( A(i,i) );

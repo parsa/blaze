@@ -48,6 +48,7 @@
 #include <blaze/math/constraints/BlasCompatible.h>
 #include <blaze/math/constraints/RequiresEvaluation.h>
 #include <blaze/math/dense/StaticMatrix.h>
+#include <blaze/math/Exception.h>
 #include <blaze/math/Forward.h>
 #include <blaze/math/Functions.h>
 #include <blaze/math/shims/Conjugate.h>
@@ -76,7 +77,6 @@
 #include <blaze/math/typetraits/Rows.h>
 #include <blaze/util/Assert.h>
 #include <blaze/util/EnableIf.h>
-#include <blaze/util/Exception.h>
 #include <blaze/util/IntegralConstant.h>
 #include <blaze/util/mpl/If.h>
 #include <blaze/util/TrueType.h>
@@ -284,7 +284,7 @@ inline void invert2x2( HermitianMatrix<MT,SO,true>& m )
    const ET det( real( A(0,0)*A(1,1) - A(0,1)*A(1,0) ) );
 
    if( !isDivisor( det ) ) {
-      BLAZE_THROW_INVALID_ARGUMENT( "Inversion of singular matrix failed" );
+      BLAZE_THROW_DIVISION_BY_ZERO( "Inversion of singular matrix failed" );
    }
 
    const ET idet( ET(1) / det );
@@ -338,7 +338,7 @@ inline void invert3x3( HermitianMatrix<MT,SO,true>& m )
    const ET det( real( A(0,0)*B(0,0) + A(0,1)*B(1,0) + A(0,2)*B(2,0) ) );
 
    if( !isDivisor( det ) ) {
-      BLAZE_THROW_INVALID_ARGUMENT( "Inversion of singular matrix failed" );
+      BLAZE_THROW_DIVISION_BY_ZERO( "Inversion of singular matrix failed" );
    }
 
    B(0,1) = conj( B(1,0) );
@@ -425,7 +425,7 @@ inline void invert4x4( HermitianMatrix<MT,SO,true>& m )
    const ET det( real( A(0,0)*B(0,0) + A(0,1)*B(1,0) + A(0,2)*B(2,0) + A(0,3)*B(3,0) ) );
 
    if( !isDivisor( det ) ) {
-      BLAZE_THROW_INVALID_ARGUMENT( "Inversion of singular matrix failed" );
+      BLAZE_THROW_DIVISION_BY_ZERO( "Inversion of singular matrix failed" );
    }
 
    B /= det;
@@ -548,7 +548,7 @@ inline void invert5x5( HermitianMatrix<MT,SO,true>& m )
    const ET det( real( A(0,0)*B(0,0) + A(0,1)*B(1,0) + A(0,2)*B(2,0) + A(0,3)*B(3,0) + A(0,4)*B(4,0) ) );
 
    if( !isDivisor( det ) ) {
-      BLAZE_THROW_INVALID_ARGUMENT( "Inversion of singular matrix failed" );
+      BLAZE_THROW_DIVISION_BY_ZERO( "Inversion of singular matrix failed" );
    }
 
    B /= det;
@@ -761,7 +761,7 @@ inline void invert6x6( HermitianMatrix<MT,SO,true>& m )
                        A(0,3)*B(3,0) + A(0,4)*B(4,0) + A(0,5)*B(5,0) ) );
 
    if( !isDivisor( det ) ) {
-      BLAZE_THROW_INVALID_ARGUMENT( "Inversion of singular matrix failed" );
+      BLAZE_THROW_DIVISION_BY_ZERO( "Inversion of singular matrix failed" );
    }
 
    B /= det;
