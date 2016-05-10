@@ -98,7 +98,7 @@
 
 //*************************************************************************************************
 /*!\def BLAZE_THROW_BAD_ALLOC
-// \brief Macro for the emission of a \a std::bad_alloc exception
+// \brief Macro for the emission of a \a std::bad_alloc exception.
 // \ingroup util
 //
 // This macro encapsulates the default way of \b Blaze to throw a \a std::bad_alloc exception.
@@ -142,8 +142,56 @@
 
 
 //*************************************************************************************************
+/*!\def BLAZE_THROW_LOGIC_ERROR
+// \brief Macro for the emission of a \a std::logic_error exception.
+// \ingroup util
+//
+// This macro encapsulates the default way of \b Blaze to throw a \a std::logic_error exception.
+// Also, since it may be desirable to replace the type of exception by a custom exception type
+// this macro provides an opportunity to customize the behavior.
+//
+// The macro excepts a single argument, which specifies the message of the exception:
+
+   \code
+   #define BLAZE_THROW_LOGIC_ERROR( MESSAGE ) \
+      BLAZE_THROW( std::logic_error( MESSAGE ) )
+   \endcode
+
+// In order to customize the type of exception all that needs to be done is to define the macro
+// prior to including any \a Blaze header file. This will override the \b Blaze default behavior.
+// The following example demonstrates this by replacing \a std::logic_error by a custom exception
+// type:
+
+   \code
+   class LogicError
+   {
+    public:
+      LogicError();
+      explicit LogicError( const std::string& message );
+      // ...
+   };
+
+   #define BLAZE_THROW_LOGIC_ERROR( MESSAGE ) \
+      throw LogicError( MESSAGE )
+
+   #include <blaze/Blaze.h>
+   \endcode
+
+// \note It is recommended to define the macro such that a subsequent semicolon is required!
+//
+// \warning This macro is provided with the intention to assist in adapting \b Blaze to special
+// conditions and environments. However, the customization of the type of exception via this
+// macro may have an effect on the library. Thus be advised to use the macro with due care!
+*/
+#ifndef BLAZE_THROW_LOGIC_ERROR
+#  define BLAZE_THROW_LOGIC_ERROR( MESSAGE ) BLAZE_THROW( std::logic_error( MESSAGE ) )
+#endif
+//*************************************************************************************************
+
+
+//*************************************************************************************************
 /*!\def BLAZE_THROW_INVALID_ARGUMENT
-// \brief Macro for the emission of a \a std::invalid_argument exception
+// \brief Macro for the emission of a \a std::invalid_argument exception.
 // \ingroup util
 //
 // This macro encapsulates the default way of \b Blaze to throw a \a std::invalid_argument
@@ -191,7 +239,7 @@
 
 //*************************************************************************************************
 /*!\def BLAZE_THROW_LENGTH_ERROR
-// \brief Macro for the emission of a \a std::length_error exception
+// \brief Macro for the emission of a \a std::length_error exception.
 // \ingroup util
 //
 // This macro encapsulates the default way of \b Blaze to throw a \a std::length_error exception.
@@ -238,56 +286,8 @@
 
 
 //*************************************************************************************************
-/*!\def BLAZE_THROW_LOGIC_ERROR
-// \brief Macro for the emission of a \a std::logic_error exception
-// \ingroup util
-//
-// This macro encapsulates the default way of \b Blaze to throw a \a std::logic_error exception.
-// Also, since it may be desirable to replace the type of exception by a custom exception type
-// this macro provides an opportunity to customize the behavior.
-//
-// The macro excepts a single argument, which specifies the message of the exception:
-
-   \code
-   #define BLAZE_THROW_LOGIC_ERROR( MESSAGE ) \
-      BLAZE_THROW( std::logic_error( MESSAGE ) )
-   \endcode
-
-// In order to customize the type of exception all that needs to be done is to define the macro
-// prior to including any \a Blaze header file. This will override the \b Blaze default behavior.
-// The following example demonstrates this by replacing \a std::logic_error by a custom exception
-// type:
-
-   \code
-   class LogicError
-   {
-    public:
-      LogicError();
-      explicit LogicError( const std::string& message );
-      // ...
-   };
-
-   #define BLAZE_THROW_LOGIC_ERROR( MESSAGE ) \
-      throw LogicError( MESSAGE )
-
-   #include <blaze/Blaze.h>
-   \endcode
-
-// \note It is recommended to define the macro such that a subsequent semicolon is required!
-//
-// \warning This macro is provided with the intention to assist in adapting \b Blaze to special
-// conditions and environments. However, the customization of the type of exception via this
-// macro may have an effect on the library. Thus be advised to use the macro with due care!
-*/
-#ifndef BLAZE_THROW_LOGIC_ERROR
-#  define BLAZE_THROW_LOGIC_ERROR( MESSAGE ) BLAZE_THROW( std::logic_error( MESSAGE ) )
-#endif
-//*************************************************************************************************
-
-
-//*************************************************************************************************
 /*!\def BLAZE_THROW_OUT_OF_RANGE
-// \brief Macro for the emission of a \a std::out_of_range exception
+// \brief Macro for the emission of a \a std::out_of_range exception.
 // \ingroup util
 //
 // This macro encapsulates the default way of \b Blaze to throw a \a std::out_of_range exception.
@@ -335,7 +335,7 @@
 
 //*************************************************************************************************
 /*!\def BLAZE_THROW_RUNTIME_ERROR
-// \brief Macro for the emission of a \a std::runtime_error exception
+// \brief Macro for the emission of a \a std::runtime_error exception.
 // \ingroup util
 //
 // This macro encapsulates the default way of \b Blaze to throw a \a std::runtime_error exception.
