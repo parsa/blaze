@@ -41,6 +41,7 @@
 //*************************************************************************************************
 
 #include <blaze/math/Aliases.h>
+#include <blaze/math/Exception.h>
 #include <blaze/math/InversionFlag.h>
 #include <blaze/math/proxy/ComplexProxy.h>
 #include <blaze/math/proxy/DefaultProxy.h>
@@ -70,7 +71,6 @@
 #include <blaze/math/typetraits/IsProxy.h>
 #include <blaze/math/typetraits/IsVector.h>
 #include <blaze/util/DisableIf.h>
-#include <blaze/util/Exception.h>
 #include <blaze/util/mpl/If.h>
 #include <blaze/util/typetraits/IsComplex.h>
 

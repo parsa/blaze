@@ -40,10 +40,10 @@
 // Includes
 //*************************************************************************************************
 
+#include <blaze/math/Exception.h>
 #include <blaze/math/shims/Clear.h>
 #include <blaze/math/shims/Reset.h>
 #include <blaze/system/Inline.h>
-#include <blaze/util/Exception.h>
 #include <blaze/util/constraints/Complex.h>
 
 

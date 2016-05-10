@@ -40,10 +40,10 @@
 // Includes
 //*************************************************************************************************
 
+#include <blaze/math/Exception.h>
 #include <blaze/math/smp/threads/ThreadBackend.h>
 #include <blaze/system/Inline.h>
 #include <blaze/system/SMP.h>
-#include <blaze/util/Exception.h>
 #include <blaze/util/StaticAssert.h>
 #include <blaze/util/Types.h>
 

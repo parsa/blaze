@@ -42,6 +42,7 @@
 
 #include <blaze/math/dense/HybridMatrix.h>
 #include <blaze/math/DenseMatrix.h>
+#include <blaze/math/Exception.h>
 #include <blaze/math/HybridVector.h>
 #include <blaze/math/shims/Conjugate.h>
 #include <blaze/math/shims/Real.h>
@@ -50,7 +51,6 @@
 #include <blaze/system/Precision.h>
 #include <blaze/util/Assert.h>
 #include <blaze/util/constraints/Numeric.h>
-#include <blaze/util/Exception.h>
 #include <blaze/util/Random.h>
 
 

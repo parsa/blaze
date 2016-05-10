@@ -44,12 +44,12 @@
 #include <blaze/math/dense/DynamicMatrix.h>
 #include <blaze/math/DenseMatrix.h>
 #include <blaze/math/DynamicVector.h>
+#include <blaze/math/Exception.h>
 #include <blaze/math/shims/Conjugate.h>
 #include <blaze/math/shims/Real.h>
 #include <blaze/math/typetraits/UnderlyingBuiltin.h>
 #include <blaze/util/Assert.h>
 #include <blaze/util/constraints/Numeric.h>
-#include <blaze/util/Exception.h>
 #include <blaze/util/Random.h>
 
 

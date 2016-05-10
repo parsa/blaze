@@ -47,6 +47,7 @@
 #include <blaze/math/constraints/DenseMatrix.h>
 #include <blaze/math/constraints/MutableDataAccess.h>
 #include <blaze/math/constraints/RequiresEvaluation.h>
+#include <blaze/math/Exception.h>
 #include <blaze/math/expressions/DenseMatrix.h>
 #include <blaze/math/lapack/getrf.h>
 #include <blaze/math/typetraits/IsSquare.h>
@@ -55,7 +56,6 @@
 #include <blaze/math/typetraits/IsUniTriangular.h>
 #include <blaze/math/typetraits/RemoveAdaptor.h>
 #include <blaze/util/Assert.h>
-#include <blaze/util/Exception.h>
 #include <blaze/util/Types.h>
 
 
