@@ -97,6 +97,7 @@ class SparseMatrixProxy : public SparseMatrix< PT, IsColumnMajorMatrix<MT>::valu
    /*!\name Data access functions */
    //@{
    inline Reference operator()( size_t i, size_t j ) const;
+   inline Reference at( size_t i, size_t j ) const;
 
    inline Iterator      begin ( size_t i ) const;
    inline ConstIterator cbegin( size_t i ) const;
@@ -169,6 +170,13 @@ class SparseMatrixProxy : public SparseMatrix< PT, IsColumnMajorMatrix<MT>::valu
 // \param i Access index for the row. The index has to be in the range \f$[0..M-1]\f$.
 // \param j Access index for the column. The index has to be in the range \f$[0..N-1]\f$.
 // \return Reference to the accessed value.
+// \exception std::invalid_argument Invalid access to restricted element.
+//
+// This function returns a reference to the accessed value at position (\a i,\a j). In case
+// the sparse matrix does not yet store an element at position (\a i,\a j) , a new element is
+// inserted into the sparse matrix. Note that this function only performs an index check in
+// case BLAZE_USER_ASSERT() is active. In contrast, the at() function is guaranteed to perform
+// a check of the given access indices.
 */
 template< typename PT    // Type of the proxy
         , typename MT >  // Type of the sparse matrix
@@ -180,6 +188,34 @@ inline typename SparseMatrixProxy<PT,MT>::Reference
    }
 
    return (~*this).get()(i,j);
+}
+//*************************************************************************************************
+
+
+//*************************************************************************************************
+/*!\brief Checked access to the matrix elements.
+//
+// \param i Access index for the row. The index has to be in the range \f$[0..M-1]\f$.
+// \param j Access index for the column. The index has to be in the range \f$[0..N-1]\f$.
+// \return Reference to the accessed value.
+// \exception std::invalid_argument Invalid access to restricted element.
+// \exception std::out_of_range Invalid matrix access index.
+//
+// This function returns a reference to the accessed value at position (\a i,\a j). In case
+// the sparse matrix does not yet store an element at position (\a i,\a j) , a new element is
+// inserted into the sparse matrix. In contrast to the subscript operator this function always
+// performs a check of the given access indices.
+*/
+template< typename PT    // Type of the proxy
+        , typename MT >  // Type of the sparse matrix
+inline typename SparseMatrixProxy<PT,MT>::Reference
+   SparseMatrixProxy<PT,MT>::at( size_t i, size_t j ) const
+{
+   if( (~*this).isRestricted() ) {
+      BLAZE_THROW_INVALID_ARGUMENT( "Invalid access to restricted element" );
+   }
+
+   return (~*this).get().at(i,j);
 }
 //*************************************************************************************************
 
@@ -437,6 +473,7 @@ inline void SparseMatrixProxy<PT,MT>::clear() const
 // \param j The column index of the new element. The index has to be in the range \f$[0..N-1]\f$.
 // \param value The value of the element to be set.
 // \return Iterator to the set element.
+// \exception std::invalid_argument Invalid access to restricted element.
 // \exception std::invalid_argument Invalid sparse matrix access index.
 //
 // This function sets the value of an element of the sparse matrix. In case the sparse matrix
@@ -464,6 +501,7 @@ inline typename SparseMatrixProxy<PT,MT>::Iterator
 // \param j The column index of the new element. The index has to be in the range \f$[0..N-1]\f$.
 // \param value The value of the element to be inserted.
 // \return Iterator to the newly inserted element.
+// \exception std::invalid_argument Invalid access to restricted element.
 // \exception std::invalid_argument Invalid sparse matrix access index.
 //
 // This function inserts a new element into the sparse matrix. However, duplicate elements are
@@ -492,6 +530,7 @@ inline typename SparseMatrixProxy<PT,MT>::Iterator
 // \param value The value of the element to be appended.
 // \param check \a true if the new value should be checked for default values, \a false if not.
 // \return void
+// \exception std::invalid_argument Invalid access to restricted element.
 //
 // This function provides a very efficient way to fill a sparse matrix with elements. It appends
 // a new element to the end of the specified row/column without any additional memory allocation.
@@ -528,6 +567,7 @@ inline void SparseMatrixProxy<PT,MT>::append( size_t i, size_t j, const ElementT
 //
 // \param i The index of the row/column to be finalized \f$[0..M-1]\f$.
 // \return void
+// \exception std::invalid_argument Invalid access to restricted element.
 //
 // This function is part of the low-level interface to efficiently fill a matrix with elements.
 // After completion of row/column \a i via the append() function, this function can be called to
@@ -555,6 +595,7 @@ inline void SparseMatrixProxy<PT,MT>::finalize( size_t i ) const
 // \param i The row index of the element to be erased. The index has to be in the range \f$[0..M-1]\f$.
 // \param j The column index of the element to be erased. The index has to be in the range \f$[0..N-1]\f$.
 // \return void
+// \exception std::invalid_argument Invalid access to restricted element.
 //
 // This function erases an element from the sparse matrix.
 */
@@ -577,6 +618,7 @@ inline void SparseMatrixProxy<PT,MT>::erase( size_t i, size_t j ) const
 // \param i The row/column index of the element to be erased. The index has to be in the range \f$[0..M-1]\f$.
 // \param pos Iterator to the element to be erased.
 // \return Iterator to the element after the erased element.
+// \exception std::invalid_argument Invalid access to restricted element.
 //
 // This function erases an element from the sparse matrix. In case the storage order is set to
 // \a rowMajor the function erases an element from row \a i, in case the storage flag is set to
@@ -603,6 +645,7 @@ inline typename SparseMatrixProxy<PT,MT>::Iterator
 // \param first Iterator to first element to be erased.
 // \param last Iterator just past the last element to be erased.
 // \return Iterator to the element after the erased element.
+// \exception std::invalid_argument Invalid access to restricted element.
 //
 // This function erases a range of element from the sparse matrix. In case the storage order is
 // set to \a rowMajor the function erases a range of elements from row \a i, in case the storage
@@ -629,6 +672,7 @@ inline typename SparseMatrixProxy<PT,MT>::Iterator
 // \param n The new number of columns of the matrix.
 // \param preserve \a true if the old values of the matrix should be preserved, \a false if not.
 // \return void
+// \exception std::invalid_argument Invalid access to restricted element.
 //
 // This function resizes the matrix using the given size to \f$ m \times n \f$. Depending on
 // the type of the matrix, during this operation new dynamic memory may be allocated in case
@@ -655,6 +699,7 @@ inline void SparseMatrixProxy<PT,MT>::resize( size_t m, size_t n, bool preserve 
 //
 // \param n The new minimum capacity of the matrix.
 // \return void
+// \exception std::invalid_argument Invalid access to restricted element.
 //
 // This function increases the capacity of the sparse matrix to at least \a nonzeros elements.
 // The current values of the matrix elements and the individual capacities of the matrix rows
@@ -679,6 +724,7 @@ inline void SparseMatrixProxy<PT,MT>::reserve( size_t n ) const
 // \param i The row/column index of the new element \f$[0..M-1]\f$ or \f$[0..N-1]\f$.
 // \param n The new minimum capacity of the specified row/column.
 // \return void
+// \exception std::invalid_argument Invalid access to restricted element.
 //
 // This function increases the capacity of row/column \a i of the sparse matrix to at least
 // \a nonzeros elements. The current values of the sparse matrix and all other individual
@@ -704,6 +750,7 @@ inline void SparseMatrixProxy<PT,MT>::reserve( size_t i, size_t n ) const
 /*!\brief Removing all excessive capacity from all rows/columns.
 //
 // \return void
+// \exception std::invalid_argument Invalid access to restricted element.
 //
 // The trim() function can be used to reverse the effect of all row/column-specific reserve()
 // calls. The function removes all excessive capacity from all rows (in case of a rowMajor
@@ -728,6 +775,7 @@ inline void SparseMatrixProxy<PT,MT>::trim() const
 //
 // \param i The index of the row/column to be trimmed (\f$[0..M-1]\f$ or \f$[0..N-1]\f$).
 // \return void
+// \exception std::invalid_argument Invalid access to restricted element.
 //
 // This function can be used to reverse the effect of a row/column-specific reserve() call.
 // It removes all excessive capacity from the specified row (in case of a rowMajor matrix)
@@ -751,6 +799,7 @@ inline void SparseMatrixProxy<PT,MT>::trim( size_t i ) const
 /*!\brief In-place transpose of the represented matrix.
 //
 // \return Reference to the transposed matrix.
+// \exception std::invalid_argument Invalid access to restricted element.
 */
 template< typename PT    // Type of the proxy
         , typename MT >  // Type of the sparse matrix
@@ -769,6 +818,7 @@ inline void SparseMatrixProxy<PT,MT>::transpose() const
 /*!\brief In-place conjugate transpose of the represented matrix.
 //
 // \return Reference to the transposed matrix.
+// \exception std::invalid_argument Invalid access to restricted element.
 */
 template< typename PT    // Type of the proxy
         , typename MT >  // Type of the sparse matrix
@@ -788,6 +838,7 @@ inline void SparseMatrixProxy<PT,MT>::ctranspose() const
 //
 // \param scalar The scalar value for the matrix scaling.
 // \return void
+// \exception std::invalid_argument Invalid access to restricted element.
 */
 template< typename PT       // Type of the proxy
         , typename MT >     // Type of the sparse matrix
