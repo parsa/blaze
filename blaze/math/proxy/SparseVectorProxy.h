@@ -94,6 +94,7 @@ class SparseVectorProxy : public SparseVector< PT, IsRowVector<VT>::value >
    /*!\name Data access functions */
    //@{
    inline Reference operator[]( size_t index ) const;
+   inline Reference at( size_t index ) const;
 
    inline Iterator      begin () const;
    inline ConstIterator cbegin() const;
@@ -158,6 +159,7 @@ class SparseVectorProxy : public SparseVector< PT, IsRowVector<VT>::value >
 //
 // \param index Access index. The index has to be in the range \f$[0..N-1]\f$.
 // \return Reference to the accessed value.
+// \exception std::invalid_argument Invalid access to restricted element.
 //
 // This function returns a reference to the accessed value at position \a index. In case the
 // sparse vector does not yet store an element for index \a index, a new element is inserted
@@ -174,6 +176,33 @@ inline typename SparseVectorProxy<PT,VT>::Reference
    }
 
    return (~*this).get()[index];
+}
+//*************************************************************************************************
+
+
+//*************************************************************************************************
+/*!\brief Checked access to the vector elements.
+//
+// \param index Access index. The index has to be in the range \f$[0..N-1]\f$.
+// \return Reference to the accessed value.
+// \exception std::invalid_argument Invalid access to restricted element.
+// \exception std::out_of_range Invalid vector access index.
+//
+// This function returns a reference to the accessed value at position \a index. In case the
+// sparse vector does not yet store an element for index \a index, a new element is inserted
+// into the sparse vector. In contrast to the subscript operator this function always performs
+// a check of the given access index.
+*/
+template< typename PT    // Type of the proxy
+        , typename VT >  // Type of the sparse vector
+inline typename SparseVectorProxy<PT,VT>::Reference
+   SparseVectorProxy<PT,VT>::at( size_t index ) const
+{
+   if( (~*this).isRestricted() ) {
+      BLAZE_THROW_INVALID_ARGUMENT( "Invalid access to restricted element" );
+   }
+
+   return (~*this).get().at( index );
 }
 //*************************************************************************************************
 
@@ -329,6 +358,7 @@ inline void SparseVectorProxy<PT,VT>::clear() const
 // \param index The index of the new element. The index has to be in the range \f$[0..N-1]\f$.
 // \param value The value of the element to be set.
 // \return Reference to the set value.
+// \exception std::invalid_argument Invalid access to restricted element.
 // \exception std::invalid_argument Invalid compressed vector access index.
 //
 // This function sets the value of an element of the sparse vector. In case the sparse vector
@@ -355,6 +385,7 @@ inline typename SparseVectorProxy<PT,VT>::Iterator
 // \param index The index of the new element. The index has to be in the range \f$[0..N-1]\f$.
 // \param value The value of the element to be inserted.
 // \return Reference to the inserted value.
+// \exception std::invalid_argument Invalid access to restricted element.
 // \exception std::invalid_argument Invalid compressed vector access index.
 //
 // This function inserts a new element into the sparse vector. However, duplicate elements are
@@ -382,6 +413,7 @@ inline typename SparseVectorProxy<PT,VT>::Iterator
 // \param value The value of the element to be appended.
 // \param check \a true if the new value should be checked for default values, \a false if not.
 // \return void
+// \exception std::invalid_argument Invalid access to restricted element.
 //
 // This function provides a very efficient way to fill a compressed vector with elements. It
 // appends a new element to the end of the compressed vector without any memory allocation.
@@ -417,6 +449,7 @@ inline void SparseVectorProxy<PT,VT>::append( size_t index, const ElementType& v
 //
 // \param index The index of the element to be erased. The index has to be in the range \f$[0..N-1]\f$.
 // \return void
+// \exception std::invalid_argument Invalid access to restricted element.
 //
 // This function erases an element from the sparse vector.
 */
@@ -438,6 +471,7 @@ inline void SparseVectorProxy<PT,VT>::erase( size_t index ) const
 //
 // \param pos Iterator to the element to be erased.
 // \return Iterator to the element after the erased element.
+// \exception std::invalid_argument Invalid access to restricted element.
 //
 // This function erases an element from the sparse vector.
 */
@@ -460,6 +494,7 @@ inline typename SparseVectorProxy<PT,VT>::Iterator SparseVectorProxy<PT,VT>::era
 // \param first Iterator to first element to be erased.
 // \param last Iterator just past the last element to be erased.
 // \return Iterator to the element after the erased element.
+// \exception std::invalid_argument Invalid access to restricted element.
 //
 // This function erases a range of elements from the sparse vector.
 */
@@ -483,6 +518,7 @@ inline typename SparseVectorProxy<PT,VT>::Iterator
 // \param n The new size of the vector.
 // \param preserve \a true if the old values of the vector should be preserved, \a false if not.
 // \return void
+// \exception std::invalid_argument Invalid access to restricted element.
 //
 // This function changes the size of the vector. Depending on the type of the vector, during this
 // operation new dynamic memory may be allocated in case the capacity of the vector is too small.
@@ -509,6 +545,7 @@ inline void SparseVectorProxy<PT,VT>::resize( size_t n, bool preserve ) const
 //
 // \param n The new minimum capacity of the vector.
 // \return void
+// \exception std::invalid_argument Invalid access to restricted element.
 //
 // This function increases the capacity of the compressed vector to at least \a n elements. The
 // current values of the vector elements are preserved.
@@ -531,6 +568,7 @@ inline void SparseVectorProxy<PT,VT>::reserve( size_t n ) const
 //
 // \param scalar The scalar value for the vector scaling.
 // \return void
+// \exception std::invalid_argument Invalid access to restricted element.
 */
 template< typename PT       // Type of the proxy
         , typename VT >     // Type of the sparse vector
