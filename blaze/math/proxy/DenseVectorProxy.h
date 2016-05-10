@@ -102,6 +102,7 @@ class DenseVectorProxy : public DenseVector< PT, IsRowVector<VT>::value >
    /*!\name Data access functions */
    //@{
    inline Reference operator[]( size_t index ) const;
+   inline Reference at( size_t index ) const;
 
    inline Pointer       data  () const;
    inline Iterator      begin () const;
@@ -150,6 +151,7 @@ class DenseVectorProxy : public DenseVector< PT, IsRowVector<VT>::value >
 //
 // \param index Access index. The index has to be in the range \f$[0..N-1]\f$.
 // \return Reference to the accessed value.
+// \exception std::invalid_argument Invalid access to restricted element.
 */
 template< typename PT    // Type of the proxy
         , typename VT >  // Type of the dense vector
@@ -166,9 +168,35 @@ inline typename DenseVectorProxy<PT,VT>::Reference
 
 
 //*************************************************************************************************
+/*!\brief Checked access to the vector elements.
+//
+// \param index Access index. The index has to be in the range \f$[0..N-1]\f$.
+// \return Reference to the accessed value.
+// \exception std::invalid_argument Invalid access to restricted element.
+// \exception std::out_of_range Invalid vector access index.
+//
+// In contrast to the subscript operator this function always performs a check of the given
+// access index.
+*/
+template< typename PT    // Type of the proxy
+        , typename VT >  // Type of the dense vector
+inline typename DenseVectorProxy<PT,VT>::Reference
+   DenseVectorProxy<PT,VT>::at( size_t index ) const
+{
+   if( (~*this).isRestricted() ) {
+      BLAZE_THROW_INVALID_ARGUMENT( "Invalid access to restricted element" );
+   }
+
+   return (~*this).get().at( index );
+}
+//*************************************************************************************************
+
+
+//*************************************************************************************************
 /*!\brief Low-level data access to vector elements.
 //
 // \return Pointer to the internal element storage.
+// \exception std::invalid_argument Invalid access to restricted element.
 //
 // This function returns a pointer to the internal storage of the dynamic vector.
 */
@@ -189,6 +217,7 @@ inline typename DenseVectorProxy<PT,VT>::Pointer DenseVectorProxy<PT,VT>::data()
 /*!\brief Returns an iterator to the first element of the represented vector.
 //
 // \return Iterator to the first element of the vector.
+// \exception std::invalid_argument Invalid access to restricted element.
 */
 template< typename PT    // Type of the proxy
         , typename VT >  // Type of the dense vector
@@ -221,6 +250,7 @@ inline typename DenseVectorProxy<PT,VT>::ConstIterator DenseVectorProxy<PT,VT>::
 /*!\brief Returns an iterator just past the last element of the represented vector.
 //
 // \return Iterator just past the last element of the vector.
+// \exception std::invalid_argument Invalid access to restricted element.
 */
 template< typename PT    // Type of the proxy
         , typename VT >  // Type of the dense vector
@@ -344,6 +374,7 @@ inline void DenseVectorProxy<PT,VT>::clear() const
 // \param n The new size of the vector.
 // \param preserve \a true if the old values of the vector should be preserved, \a false if not.
 // \return void
+// \exception std::invalid_argument Invalid access to restricted element.
 //
 // This function changes the size of the vector. Depending on the type of the vector, during this
 // operation new dynamic memory may be allocated in case the capacity of the vector is too small.
@@ -372,6 +403,7 @@ inline void DenseVectorProxy<PT,VT>::resize( size_t n, bool preserve ) const
 // \param n Number of additional vector elements.
 // \param preserve \a true if the old values of the vector should be preserved, \a false if not.
 // \return void
+// \exception std::invalid_argument Invalid access to restricted element.
 //
 // This function extends the size of the vector. Depending on the type of the vector, during this
 // operation new dynamic memory may be allocated in case the capacity of the vector is too small.
@@ -397,6 +429,7 @@ inline void DenseVectorProxy<PT,VT>::extend( size_t n, bool preserve ) const
 //
 // \param n The new minimum capacity of the vector.
 // \return void
+// \exception std::invalid_argument Invalid access to restricted element.
 //
 // This function increases the capacity of the vector to at least \a n elements. The current
 // values of the vector elements are preserved.
@@ -419,6 +452,7 @@ inline void DenseVectorProxy<PT,VT>::reserve( size_t n ) const
 //
 // \param scalar The scalar value for the vector scaling.
 // \return void
+// \exception std::invalid_argument Invalid access to restricted element.
 */
 template< typename PT       // Type of the proxy
         , typename VT >     // Type of the dense vector
