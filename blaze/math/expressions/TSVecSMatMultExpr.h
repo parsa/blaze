@@ -40,7 +40,6 @@
 // Includes
 //*************************************************************************************************
 
-#include <vector>
 #include <blaze/math/Aliases.h>
 #include <blaze/math/constraints/RowMajorMatrix.h>
 #include <blaze/math/constraints/RowVector.h>
@@ -406,54 +405,8 @@ class TSVecSMatMultExpr : public SparseVector< TSVecSMatMultExpr<VT,MT>, true >
 
       BLAZE_INTERNAL_ASSERT( (~lhs).size() == rhs.size(), "Invalid vector sizes" );
 
-      typedef ConstIterator_< RemoveReference_<LT> >  VectorIterator;
-      typedef ConstIterator_< RemoveReference_<RT> >  MatrixIterator;
-
-      // Evaluation of the left-hand side sparse vector operand
-      LT x( serial( rhs.vec_ ) );
-      if( x.nonZeros() == 0UL ) return;
-
-      // Evaluation of the right-hand side sparse matrix operand
-      RT A( serial( rhs.mat_ ) );
-
-      // Checking the evaluated operands
-      BLAZE_INTERNAL_ASSERT( x.size()    == rhs.vec_.size()   , "Invalid vector size"       );
-      BLAZE_INTERNAL_ASSERT( A.rows()    == rhs.mat_.rows()   , "Invalid number of rows"    );
-      BLAZE_INTERNAL_ASSERT( A.columns() == rhs.mat_.columns(), "Invalid number of columns" );
-      BLAZE_INTERNAL_ASSERT( A.columns() == (~lhs).size()     , "Invalid vector size"       );
-
-      // Performing the sparse vector-sparse matrix multiplication
-      DynamicVector<ElementType> tmp( (~lhs).size() );
-      std::vector<byte_t> indices( (~lhs).size(), 0 );
-      size_t nonzeros( 0UL );
-
-      const VectorIterator vend( x.end() );
-      VectorIterator velem( x.begin() );
-
-      for( ; velem!=vend; ++velem )
-      {
-         const MatrixIterator mend ( A.end  ( velem->index() ) );
-         MatrixIterator       melem( A.begin( velem->index() ) );
-
-         for( ; melem!=mend; ++melem ) {
-            if( !indices[melem->index()] ) {
-               indices[melem->index()] = 1;
-               ++nonzeros;
-               tmp[melem->index()] = velem->value() * melem->value();
-            }
-            else {
-               tmp[melem->index()] += velem->value() * melem->value();
-            }
-         }
-      }
-
-      (~lhs).reserve( nonzeros );
-
-      for( size_t i=0UL; i<(~lhs).size(); ++i ) {
-         if( indices[i] ) {
-            (~lhs).append( i, tmp[i] );
-         }
-      }
+      const DynamicVector<ElementType_<VT1>,true> tmp( serial( rhs ) );
+      assign( ~lhs, tmp );
    }
    /*! \endcond */
    //**********************************************************************************************
