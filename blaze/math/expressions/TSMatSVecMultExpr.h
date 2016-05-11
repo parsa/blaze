@@ -40,7 +40,6 @@
 // Includes
 //*************************************************************************************************
 
-#include <vector>
 #include <blaze/math/Aliases.h>
 #include <blaze/math/constraints/ColumnMajorMatrix.h>
 #include <blaze/math/constraints/ColumnVector.h>
@@ -406,50 +405,8 @@ class TSMatSVecMultExpr : public SparseVector< TSMatSVecMultExpr<MT,VT>, false >
 
       BLAZE_INTERNAL_ASSERT( (~lhs).size() == rhs.size(), "Invalid vector sizes" );
 
-      typedef ConstIterator_< RemoveReference_<LT> >  MatrixIterator;
-      typedef ConstIterator_< RemoveReference_<RT> >  VectorIterator;
-
-      RT x( serial( rhs.vec_ ) );  // Evaluation of the right-hand side sparse vector operand
-      if( x.nonZeros() == 0UL ) return;
-
-      LT A( serial( rhs.mat_ ) );  // Evaluation of the left-hand side sparse matrix operand
-
-      BLAZE_INTERNAL_ASSERT( A.rows()    == rhs.mat_.rows()   , "Invalid number of rows"    );
-      BLAZE_INTERNAL_ASSERT( A.columns() == rhs.mat_.columns(), "Invalid number of columns" );
-      BLAZE_INTERNAL_ASSERT( x.size()    == rhs.vec_.size()   , "Invalid vector size"       );
-      BLAZE_INTERNAL_ASSERT( A.rows()    == (~lhs).size()     , "Invalid vector size"       );
-
-      DynamicVector<ElementType> tmp( (~lhs).size() );
-      std::vector<byte_t> indices( (~lhs).size(), 0 );
-      size_t nonzeros( 0UL );
-
-      const VectorIterator vend ( x.end() );
-      VectorIterator       velem( x.begin() );
-
-      for( ; velem!=vend; ++velem )
-      {
-         const MatrixIterator mend ( A.end  ( velem->index() ) );
-         MatrixIterator       melem( A.begin( velem->index() ) );
-
-         for( ; melem!=mend; ++melem ) {
-            if( !indices[melem->index()] ) {
-               indices[melem->index()] = 1;
-               ++nonzeros;
-               tmp[melem->index()] = melem->value() * velem->value();
-            }
-            else {
-               tmp[melem->index()] += melem->value() * velem->value();
-            }
-         }
-      }
-
-      (~lhs).reserve( nonzeros );
-
-      for( size_t i=0UL; i<(~lhs).size(); ++i ) {
-         if( indices[i] ) {
-            (~lhs).append( i, tmp[i] );
-         }
-      }
+      const DynamicVector<ElementType_<VT1>,false> tmp( serial( rhs ) );
+      assign( ~lhs, tmp );
    }
    /*! \endcond */
    //**********************************************************************************************
