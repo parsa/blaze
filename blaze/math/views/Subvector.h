@@ -40,19 +40,14 @@
 // Includes
 //*************************************************************************************************
 
+#include <blaze/math/Aliases.h>
 #include <blaze/math/AlignmentFlag.h>
 #include <blaze/math/expressions/Vector.h>
 #include <blaze/math/shims/Serial.h>
 #include <blaze/math/traits/SubvectorExprTrait.h>
 #include <blaze/math/typetraits/IsComputation.h>
 #include <blaze/math/typetraits/IsCrossExpr.h>
-#include <blaze/math/typetraits/IsLower.h>
-#include <blaze/math/typetraits/IsMatVecMultExpr.h>
-#include <blaze/math/typetraits/IsStrictlyLower.h>
-#include <blaze/math/typetraits/IsStrictlyUpper.h>
 #include <blaze/math/typetraits/IsTransExpr.h>
-#include <blaze/math/typetraits/IsTVecMatMultExpr.h>
-#include <blaze/math/typetraits/IsUpper.h>
 #include <blaze/math/typetraits/IsVecAbsExpr.h>
 #include <blaze/math/typetraits/IsVecConjExpr.h>
 #include <blaze/math/typetraits/IsVecEvalExpr.h>
@@ -528,92 +523,6 @@ inline EnableIf_< IsCrossExpr<VT>, SubvectorExprTrait_<VT,unaligned> >
    BLAZE_FUNCTION_TRACE;
 
    return SubvectorExprTrait_<VT,unaligned>( ~vector, index, size );
-}
-/*! \endcond */
-//*************************************************************************************************
-
-
-//*************************************************************************************************
-/*! \cond BLAZE_INTERNAL */
-/*!\brief Creating a view on a specific subvector of the given matrix/vector multiplication.
-// \ingroup views
-//
-// \param vector The constant matrix/vector multiplication.
-// \param index The index of the first element of the subvector.
-// \param size The size of the subvector.
-// \return View on the specified subvector of the multiplication.
-//
-// This function returns an expression representing the specified subvector of the given
-// matrix/vector multiplication.
-*/
-template< bool AF      // Alignment flag
-        , typename VT  // Type of the vector
-        , bool TF >    // Transpose flag
-inline EnableIf_< IsMatVecMultExpr<VT>, SubvectorExprTrait_<VT,AF> >
-   subvector( const Vector<VT,TF>& vector, size_t index, size_t size )
-{
-   BLAZE_FUNCTION_TRACE;
-
-   typedef RemoveReference_< LeftOperand_<VT> >  MT;
-
-   LeftOperand_<VT>  left ( (~vector).leftOperand()  );
-   RightOperand_<VT> right( (~vector).rightOperand() );
-
-   const size_t column( ( IsUpper<MT>::value )
-                        ?( ( !AF && IsStrictlyUpper<MT>::value )?( index + 1UL ):( index ) )
-                        :( 0UL ) );
-   const size_t n( ( IsLower<MT>::value )
-                   ?( ( IsUpper<MT>::value )?( size )
-                                            :( ( IsStrictlyLower<MT>::value && size > 0UL )
-                                               ?( index + size - 1UL )
-                                               :( index + size ) ) )
-                   :( ( IsUpper<MT>::value )?( left.columns() - column )
-                                            :( left.columns() ) ) );
-
-   return submatrix<AF>( left, index, column, size, n ) * subvector<AF>( right, column, n );
-}
-/*! \endcond */
-//*************************************************************************************************
-
-
-//*************************************************************************************************
-/*! \cond BLAZE_INTERNAL */
-/*!\brief Creating a view on a specific subvector of the given vector/matrix multiplication.
-// \ingroup views
-//
-// \param vector The constant vector/matrix multiplication.
-// \param index The index of the first element of the subvector.
-// \param size The size of the subvector.
-// \return View on the specified subvector of the multiplication.
-//
-// This function returns an expression representing the specified subvector of the given
-// vector/matrix multiplication.
-*/
-template< bool AF      // Alignment flag
-        , typename VT  // Type of the vector
-        , bool TF >    // Transpose flag
-inline EnableIf_< IsTVecMatMultExpr<VT>, SubvectorExprTrait_<VT,AF> >
-   subvector( const Vector<VT,TF>& vector, size_t index, size_t size )
-{
-   BLAZE_FUNCTION_TRACE;
-
-   typedef RemoveReference_< RightOperand_<VT> >  MT;
-
-   LeftOperand_<VT>  left ( (~vector).leftOperand()  );
-   RightOperand_<VT> right( (~vector).rightOperand() );
-
-   const size_t row( ( IsLower<MT>::value )
-                     ?( ( !AF && IsStrictlyLower<MT>::value )?( index + 1UL ):( index ) )
-                     :( 0UL ) );
-   const size_t m( ( IsUpper<MT>::value )
-                   ?( ( IsLower<MT>::value )?( size )
-                                            :( ( IsStrictlyUpper<MT>::value && size > 0UL )
-                                               ?( index + size - 1UL )
-                                               :( index + size ) ) )
-                   :( ( IsLower<MT>::value )?( right.rows() - row )
-                                            :( right.rows() ) ) );
-
-   return subvector<AF>( left, row, m ) * submatrix<AF>( right, row, index, m, size );
 }
 /*! \endcond */
 //*************************************************************************************************

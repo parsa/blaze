@@ -64,5 +64,7 @@
 #include <blaze/math/smp/SparseVector.h>
 #include <blaze/math/sparse/SparseVector.h>
 #include <blaze/math/Vector.h>
+#include <blaze/math/views/SparseSubvector.h>
+#include <blaze/math/views/Subvector.h>
 
 #endif
