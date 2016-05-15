@@ -118,17 +118,20 @@ inline const MultTrait_< ElementType_<T1>, ElementType_<T2> >
       BLAZE_THROW_INVALID_ARGUMENT( "Vector sizes do not match" );
    }
 
-   if( (~lhs).nonZeros() == 0UL ) return MultType();
-
    Lhs left ( ~lhs );
    Rhs right( ~rhs );
 
    ConstIterator element( left.begin() );
-   MultType sp( element->value() * right[ element->index() ] );
-   ++element;
+   ConstIterator end    ( left.end()   );
 
-   for( ; element!=left.end(); ++element )
-      sp += element->value() * right[ element->index() ];
+   MultType sp = MultType();
+
+   if( element != end ) {
+      sp = element->value() * right[ element->index() ];
+      ++element;
+      for( ; element!=end; ++element )
+         sp += element->value() * right[ element->index() ];
+   }
 
    return sp;
 }
