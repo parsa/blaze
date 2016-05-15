@@ -78,6 +78,7 @@
 #include <blaze/math/typetraits/IsDiagonal.h>
 #include <blaze/math/typetraits/IsExpression.h>
 #include <blaze/math/typetraits/IsLower.h>
+#include <blaze/math/typetraits/IsOpposedView.h>
 #include <blaze/math/typetraits/IsPadded.h>
 #include <blaze/math/typetraits/IsRestricted.h>
 #include <blaze/math/typetraits/IsRowMajorMatrix.h>
@@ -105,6 +106,7 @@
 #include <blaze/util/mpl/Not.h>
 #include <blaze/util/mpl/Or.h>
 #include <blaze/util/Template.h>
+#include <blaze/util/TrueType.h>
 #include <blaze/util/Types.h>
 #include <blaze/util/typetraits/IsConst.h>
 #include <blaze/util/typetraits/IsFloatingPoint.h>
@@ -6398,6 +6400,24 @@ struct IsAligned< DenseRow<MT,SO,SF> >
 template< typename MT, bool SO, bool SF >
 struct IsPadded< DenseRow<MT,SO,SF> >
    : public BoolConstant< And< IsPadded<MT>, Or< IsRowMajorMatrix<MT>, IsSymmetric<MT> > >::value >
+{};
+/*! \endcond */
+//*************************************************************************************************
+
+
+
+
+//=================================================================================================
+//
+//  ISOPPOSEDVIEW SPECIALIZATIONS
+//
+//=================================================================================================
+
+//*************************************************************************************************
+/*! \cond BLAZE_INTERNAL */
+template< typename MT >
+struct IsOpposedView< DenseRow<MT,false,false> >
+   : public TrueType
 {};
 /*! \endcond */
 //*************************************************************************************************
