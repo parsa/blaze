@@ -72,6 +72,7 @@
 #include <blaze/math/typetraits/IsDiagonal.h>
 #include <blaze/math/typetraits/IsExpression.h>
 #include <blaze/math/typetraits/IsLower.h>
+#include <blaze/math/typetraits/IsOpposedView.h>
 #include <blaze/math/typetraits/IsRestricted.h>
 #include <blaze/math/typetraits/IsRowMajorMatrix.h>
 #include <blaze/math/typetraits/IsStrictlyLower.h>
@@ -5874,6 +5875,24 @@ struct DerestrictTrait< SparseRow<MT,SO,SF> >
 {
    using Type = SparseRow< RemoveReference_< DerestrictTrait_<MT> > >;
 };
+/*! \endcond */
+//*************************************************************************************************
+
+
+
+
+//=================================================================================================
+//
+//  ISOPPOSEDVIEW SPECIALIZATIONS
+//
+//=================================================================================================
+
+//*************************************************************************************************
+/*! \cond BLAZE_INTERNAL */
+template< typename MT >
+struct IsOpposedView< SparseRow<MT,false,false> >
+   : public TrueType
+{};
 /*! \endcond */
 //*************************************************************************************************
 
