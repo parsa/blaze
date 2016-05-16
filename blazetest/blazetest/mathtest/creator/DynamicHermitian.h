@@ -42,6 +42,7 @@
 
 #include <blaze/math/DynamicMatrix.h>
 #include <blaze/math/HermitianMatrix.h>
+#include <blaze/math/shims/Real.h>
 #include <blazetest/mathtest/creator/Default.h>
 #include <blazetest/system/Types.h>
 
@@ -165,20 +166,26 @@ template< typename T     // Element type of the dynamic matrix
 inline const blaze::HermitianMatrix< blaze::DynamicMatrix<T,SO> >
    Creator< blaze::HermitianMatrix< blaze::DynamicMatrix<T,SO> >, CP >::operator()() const
 {
+   using blaze::real;
+
    blaze::HermitianMatrix< blaze::DynamicMatrix<T,SO> > matrix( n_ );
 
    // Initialization of a column-major matrix
    if( SO ) {
-      for( size_t j=0UL; j<n_; ++j )
-         for( size_t i=0UL; i<=j; ++i )
+      for( size_t j=0UL; j<n_; ++j ) {
+         for( size_t i=0UL; i<j; ++i )
             matrix(i,j) = ec_();
+         matrix(j,j) = real( ec_() );
+      }
    }
 
    // Initialization of a row-major matrix
    else {
-      for( size_t i=0UL; i<n_; ++i )
-         for( size_t j=0UL; j<=i; ++j )
+      for( size_t i=0UL; i<n_; ++i ) {
+         for( size_t j=0UL; j<i; ++j )
             matrix(i,j) = ec_();
+         matrix(i,i) = real( ec_() );
+      }
    }
 
    return matrix;

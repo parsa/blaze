@@ -43,6 +43,7 @@
 #include <stdexcept>
 #include <blaze/math/CompressedMatrix.h>
 #include <blaze/math/HermitianMatrix.h>
+#include <blaze/math/shims/Real.h>
 #include <blaze/util/Random.h>
 #include <blazetest/mathtest/creator/Default.h>
 #include <blazetest/system/Types.h>
@@ -177,9 +178,21 @@ template< typename T     // Element type of the compressed matrix
 inline const blaze::HermitianMatrix< blaze::CompressedMatrix<T,SO> >
    Creator< blaze::HermitianMatrix< blaze::CompressedMatrix<T,SO> >, CP >::operator()() const
 {
+   using blaze::real;
+
    blaze::HermitianMatrix< blaze::CompressedMatrix<T,SO> > matrix( n_, nonzeros_ );
+
    while( matrix.nonZeros() < nonzeros_ )
-      matrix( blaze::rand<size_t>(0UL,n_-1UL), blaze::rand<size_t>(0UL,n_-1UL) ) = ec_();
+   {
+      const size_t row   ( blaze::rand<size_t>( 0UL, n_-1UL ) );
+      const size_t column( blaze::rand<size_t>( 0UL, n_-1UL ) );
+
+      if( row == column )
+         matrix(row,column) = real( ec_() );
+      else
+         matrix(row,column) = ec_();
+   }
+
    return matrix;
 }
 //*************************************************************************************************
