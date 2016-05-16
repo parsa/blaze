@@ -47,6 +47,7 @@
 #include <blaze/math/Exception.h>
 #include <blaze/math/expressions/SparseVector.h>
 #include <blaze/math/traits/MultTrait.h>
+#include <blaze/math/typetraits/IsOpposedView.h>
 #include <blaze/util/logging/FunctionTrace.h>
 #include <blaze/util/Types.h>
 #include <blaze/util/typetraits/RemoveReference.h>
@@ -114,30 +115,94 @@ inline const MultTrait_< ElementType_<T1>, ElementType_<T2> >
       BLAZE_THROW_INVALID_ARGUMENT( "Vector sizes do not match" );
    }
 
-   if( (~lhs).nonZeros() == 0UL || (~rhs).nonZeros() == 0UL ) return MultType();
+   Lhs left ( ~lhs );  // Evaluation of the left-hand side sparse vector operand
+   Rhs right( ~rhs );  // Evaluation of the right-hand side sparse vector operand
 
-   Lhs left ( ~lhs );
-   Rhs right( ~rhs );
-   const LeftIterator  lend( left.end()  );
-   const RightIterator rend( right.end() );
-   LeftIterator  l( left.begin()  );
-   RightIterator r( right.begin() );
-   MultType sp = MultType();
+   BLAZE_INTERNAL_ASSERT( left.size()  == (~lhs).size(), "Invalid vector size" );
+   BLAZE_INTERNAL_ASSERT( right.size() == (~rhs).size(), "Invalid vector size" );
 
-   for( ; l!=lend && r!=rend; ++l ) {
-      while( r->index() < l->index() && ++r != rend ) {}
-      if( r!=rend && l->index() == r->index() ) {
-         sp = l->value() * r->value();
-         ++r;
-         break;
+   MultType sp{};
+
+   if( IsOpposedView<T1>::value && IsOpposedView<T2>::value )
+   {
+      if( left.size() == 0UL ) return sp;
+
+      sp = left[0UL] * right[0UL];
+      for( size_t i=1UL; i<left.size(); ++i ) {
+         sp += left[i] * right[i];
       }
    }
+   else if( IsOpposedView<T1>::value )
+   {
+      const RightIterator rend( right.end() );
+      RightIterator r( right.begin() );
 
-   for( ; l!=lend && r!=rend; ++l ) {
-      while( r->index() < l->index() && ++r != rend ) {}
-      if( r!=rend && l->index() == r->index() ) {
-         sp += l->value() * r->value();
-         ++r;
+      if( r == rend ) return sp;
+
+      sp = left[r->index()] * r->value();
+      ++r;
+      for( ; r!=rend; ++r ) {
+         sp += left[r->index()] * r->value();
+      }
+   }
+   else if( IsOpposedView<T2>::value )
+   {
+      const LeftIterator lend( left.end()  );
+      LeftIterator l( left.begin()  );
+
+      if( l == lend ) return sp;
+
+      sp = l->value() * right[l->index()];
+      ++l;
+      for( ; l!=lend; ++l ) {
+         sp += l->value() * right[l->index()];
+      }
+   }
+   else
+   {
+      const LeftIterator  lend( left.end()  );
+      const RightIterator rend( right.end() );
+      LeftIterator  l( left.begin()  );
+      RightIterator r( right.begin() );
+
+      if( l == lend || r == rend ) return sp;
+
+      while( true ) {
+         if( l->index() < r->index() ) {
+            ++l;
+            if( l == lend ) break;
+         }
+         else if( r->index() < l->index() ) {
+            ++r;
+            if( r == rend ) break;
+         }
+         else {
+            sp = l->value() * r->value();
+            ++l;
+            ++r;
+            break;
+         }
+      }
+
+      if( l != lend && r != rend )
+      {
+         while( true ) {
+            if( l->index() < r->index() ) {
+               ++l;
+               if( l == lend ) break;
+            }
+            else if( r->index() < l->index() ) {
+               ++r;
+               if( r == rend ) break;
+            }
+            else {
+               sp += l->value() * r->value();
+               ++l;
+               if( l == lend ) break;
+               ++r;
+               if( r == rend ) break;
+            }
+         }
       }
    }
 
