@@ -57,9 +57,14 @@
 #include <blaze/math/shims/Serial.h>
 #include <blaze/math/traits/MultTrait.h>
 #include <blaze/math/typetraits/IsComputation.h>
+#include <blaze/math/typetraits/IsDiagonal.h>
 #include <blaze/math/typetraits/IsExpression.h>
+#include <blaze/math/typetraits/IsLower.h>
 #include <blaze/math/typetraits/IsMatMatMultExpr.h>
 #include <blaze/math/typetraits/IsResizable.h>
+#include <blaze/math/typetraits/IsStrictlyLower.h>
+#include <blaze/math/typetraits/IsStrictlyUpper.h>
+#include <blaze/math/typetraits/IsUpper.h>
 #include <blaze/math/typetraits/RequiresEvaluation.h>
 #include <blaze/math/typetraits/Rows.h>
 #include <blaze/math/typetraits/Size.h>
@@ -179,31 +184,25 @@ class TSMatSVecMultExpr : public SparseVector< TSMatSVecMultExpr<MT,VT>, false >
    inline ReturnType operator[]( size_t index ) const {
       BLAZE_INTERNAL_ASSERT( index < mat_.rows(), "Invalid vector access index" );
 
-      typedef ConstIterator_< RemoveReference_<VCT> >  VectorIterator;
-
-      MCT A( mat_ );  // Evaluation of the left-hand side sparse matrix operand
-      VCT x( vec_ );  // Evaluation of the right-hand side sparse vector operand
-
-      BLAZE_INTERNAL_ASSERT( A.rows()    == mat_.rows()   , "Invalid number of rows"    );
-      BLAZE_INTERNAL_ASSERT( A.columns() == mat_.columns(), "Invalid number of columns" );
-      BLAZE_INTERNAL_ASSERT( x.size()    == vec_.size()   , "Invalid vector size"       );
-
-      ElementType res;
-
-      const VectorIterator vend( x.end() );
-      VectorIterator velem( x.begin() );
-
-      if( vec_.size() > 0UL && velem != vend ) {
-         res = A( index, velem->index() ) * velem->value();
-         ++velem;
-         for( ; velem!=vend; ++velem )
-            res += A( index, velem->index() ) * velem->value();
+      if( IsDiagonal<MT>::value )
+      {
+         return mat_(index,index) * vec_[index];
       }
-      else {
-         reset( res );
+      else if( IsLower<MT>::value )
+      {
+         const size_t n( IsStrictlyLower<MT>::value ? index : index+1UL );
+         return subvector( row( mat_, index ), 0UL, n ) * subvector( vec_, 0UL, n );
       }
-
-      return res;
+      else if( IsUpper<MT>::value )
+      {
+         const size_t begin( IsStrictlyUpper<MT>::value ? index+1UL : index );
+         const size_t n    ( mat_.columns() - begin );
+         return subvector( row( mat_, index ), begin, n ) * subvector( vec_, begin, n );
+      }
+      else
+      {
+         return row( mat_, index ) * vec_;
+      }
    }
    //**********************************************************************************************
 

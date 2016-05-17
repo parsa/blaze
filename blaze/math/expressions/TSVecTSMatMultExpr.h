@@ -177,72 +177,7 @@ class TSVecTSMatMultExpr : public SparseVector< TSVecTSMatMultExpr<VT,MT>, true 
    */
    inline ReturnType operator[]( size_t index ) const {
       BLAZE_INTERNAL_ASSERT( index < mat_.columns(), "Invalid vector access index" );
-
-      typedef ConstIterator_< RemoveReference_<VCT> >  VectorIterator;
-      typedef ConstIterator_< RemoveReference_<MCT> >  MatrixIterator;
-
-      VCT x( vec_ );  // Evaluation of the left-hand side sparse vector operand
-      MCT A( mat_ );  // Evaluation of the right-hand side sparse matrix operand
-
-      BLAZE_INTERNAL_ASSERT( x.size()    == vec_.size()   , "Invalid vector size"       );
-      BLAZE_INTERNAL_ASSERT( A.rows()    == mat_.rows()   , "Invalid number of rows"    );
-      BLAZE_INTERNAL_ASSERT( A.columns() == mat_.columns(), "Invalid number of columns" );
-
-      ElementType res = ElementType();
-
-      VectorIterator velem( x.begin() );
-      const VectorIterator vend( x.end() );
-      if( velem == vend ) {
-         reset( res );
-         return res;
-      }
-
-      MatrixIterator melem( A.begin(index) );
-      const MatrixIterator mend( A.end(index) );
-      if( melem == mend ) {
-         reset( res );
-         return res;
-      }
-
-      while( true ) {
-         if( velem->index() < melem->index() ) {
-            ++velem;
-            if( velem == vend ) break;
-         }
-         else if( melem->index() < velem->index() ) {
-            ++melem;
-            if( melem == mend ) break;
-         }
-         else {
-            res = velem->value() * melem->value();
-            ++velem;
-            ++melem;
-            break;
-         }
-      }
-
-      if( melem != mend && velem != vend )
-      {
-         while( true ) {
-            if( velem->index() < melem->index() ) {
-               ++velem;
-               if( velem == vend ) break;
-            }
-            else if( melem->index() < velem->index() ) {
-               ++melem;
-               if( melem == mend ) break;
-            }
-            else {
-               res += velem->value() * melem->value();
-               ++velem;
-               if( velem == vend ) break;
-               ++melem;
-               if( melem == mend ) break;
-            }
-         }
-      }
-
-      return res;
+      return vec_ * column( mat_, index );
    }
    //**********************************************************************************************
 
