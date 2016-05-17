@@ -291,47 +291,39 @@ class TDMatDMatMultExpr : public DenseMatrix< TDMatDMatMultExpr<MT1,MT2>, true >
       BLAZE_INTERNAL_ASSERT( i < lhs_.rows()   , "Invalid row access index"    );
       BLAZE_INTERNAL_ASSERT( j < rhs_.columns(), "Invalid column access index" );
 
-      const size_t kbegin( ( IsUpper<MT1>::value )
-                           ?( ( IsLower<MT2>::value )
-                              ?( max( ( IsStrictlyUpper<MT1>::value ? i+1UL : i )
-                                    , ( IsStrictlyLower<MT2>::value ? j+1UL : j ) ) )
-                              :( IsStrictlyUpper<MT1>::value ? i+1UL : i ) )
-                           :( ( IsLower<MT2>::value )
-                              ?( IsStrictlyLower<MT2>::value ? j+1UL : j )
-                              :( 0UL ) ) );
-      const size_t kend( ( IsLower<MT1>::value )
-                         ?( ( IsUpper<MT2>::value )
-                            ?( min( ( IsStrictlyLower<MT1>::value ? i : i+1UL )
-                                  , ( IsStrictlyUpper<MT2>::value ? j : j+1UL ) ) )
-                            :( IsStrictlyLower<MT1>::value ? i : i+1UL ) )
-                         :( ( IsUpper<MT2>::value )
-                            ?( IsStrictlyUpper<MT2>::value ? j : j+1UL )
-                            :( lhs_.columns() ) ) );
-
-      if( lhs_.columns() == 0UL ||
-          ( ( IsTriangular<MT1>::value || IsTriangular<MT2>::value ) && kbegin >= kend ) )
-         return ElementType();
-
-      if( IsDiagonal<MT1>::value )
+      if( IsDiagonal<MT1>::value ) {
          return lhs_(i,i) * rhs_(i,j);
-
-      if( IsDiagonal<MT2>::value )
+      }
+      else if( IsDiagonal<MT2>::value ) {
          return lhs_(i,j) * rhs_(j,j);
-
-      const size_t knum( kend - kbegin );
-      const size_t kpos( kbegin + ( ( knum - 1UL ) & size_t(-2) ) + 1UL );
-
-      ElementType tmp( lhs_(i,kbegin) * rhs_(kbegin,j) );
-
-      for( size_t k=kbegin+1UL; k<kpos; k+=2UL ) {
-         tmp += lhs_(i,k    ) * rhs_(k    ,j);
-         tmp += lhs_(i,k+1UL) * rhs_(k+1UL,j);
       }
-      if( kpos < kend ) {
-         tmp += lhs_(i,kpos) * rhs_(kpos,j);
-      }
+      else if( IsTriangular<MT1>::value || IsTriangular<MT2>::value ) {
+         const size_t begin( ( IsUpper<MT1>::value )
+                             ?( ( IsLower<MT2>::value )
+                                ?( max( ( IsStrictlyUpper<MT1>::value ? i+1UL : i )
+                                      , ( IsStrictlyLower<MT2>::value ? j+1UL : j ) ) )
+                                :( IsStrictlyUpper<MT1>::value ? i+1UL : i ) )
+                             :( ( IsLower<MT2>::value )
+                                ?( IsStrictlyLower<MT2>::value ? j+1UL : j )
+                                :( 0UL ) ) );
+         const size_t end( ( IsLower<MT1>::value )
+                           ?( ( IsUpper<MT2>::value )
+                              ?( min( ( IsStrictlyLower<MT1>::value ? i : i+1UL )
+                                    , ( IsStrictlyUpper<MT2>::value ? j : j+1UL ) ) )
+                              :( IsStrictlyLower<MT1>::value ? i : i+1UL ) )
+                           :( ( IsUpper<MT2>::value )
+                              ?( IsStrictlyUpper<MT2>::value ? j : j+1UL )
+                              :( lhs_.columns() ) ) );
 
-      return tmp;
+         if( begin >= end ) return ElementType();
+
+         const size_t n( end - begin );
+
+         return subvector( row( lhs_, i ), begin, n ) * subvector( column( rhs_, j ), begin, n );
+      }
+      else {
+         return row( lhs_, i ) * column( rhs_, j );
+      }
    }
    //**********************************************************************************************
 
