@@ -213,30 +213,25 @@ class TSVecTDMatMultExpr : public DenseVector< TSVecTDMatMultExpr<VT,MT>, true >
    inline ReturnType operator[]( size_t index ) const {
       BLAZE_INTERNAL_ASSERT( index < mat_.columns(), "Invalid vector access index" );
 
-      typedef ConstIterator_< RemoveReference_<VCT> >  ConstIterator;
-
-      VCT x( vec_ );  // Evaluation of the left-hand side sparse vector operand
-
-      BLAZE_INTERNAL_ASSERT( x.size() == vec_.size(), "Invalid vector size" );
-
-      const ConstIterator end( ( IsUpper<MT>::value )
-                               ?( IsStrictlyUpper<MT>::value ? x.lowerBound( index ) : x.upperBound( index ) )
-                               :( x.end() ) );
-      ConstIterator element( ( IsLower<MT>::value )
-                             ?( IsStrictlyLower<MT>::value ? x.upperBound( index ) : x.lowerBound( index ) )
-                             :( x.begin() ) );
-
-      ElementType res = ElementType();
-
-      if( element != end ) {
-         res = element->value() * mat_( element->index(), index );
-         ++element;
-         for( ; element!=end; ++element ) {
-            res += element->value() * mat_( element->index(), index );
-         }
+      if( IsDiagonal<MT>::value )
+      {
+         return vec_[index] * mat_(index,index);
       }
-
-      return res;
+      else if( IsLower<MT>::value )
+      {
+         const size_t begin( IsStrictlyLower<MT>::value ? index+1UL : index );
+         const size_t n    ( mat_.rows() - begin );
+         return subvector( vec_, begin, n ) * subvector( column( mat_, index ), begin, n );
+      }
+      else if( IsUpper<MT>::value )
+      {
+         const size_t n( IsStrictlyUpper<MT>::value ? index : index+1UL );
+         return subvector( vec_, 0UL, n ) * subvector( column( mat_, index ), 0UL, n );
+      }
+      else
+      {
+         return vec_ * column( mat_, index );
+      }
    }
    //**********************************************************************************************
 
