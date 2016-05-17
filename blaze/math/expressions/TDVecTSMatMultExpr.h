@@ -201,31 +201,7 @@ class TDVecTSMatMultExpr : public DenseVector< TDVecTSMatMultExpr<VT,MT>, true >
    */
    inline ReturnType operator[]( size_t index ) const {
       BLAZE_INTERNAL_ASSERT( index < mat_.columns(), "Invalid vector access index" );
-
-      typedef ConstIterator_< RemoveReference_<MCT> >  ConstIterator;
-
-      VCT x( vec_ );  // Evaluation of the left-hand side dense vector operand
-      MCT A( mat_ );  // Evaluation of the right-hand side sparse matrix operand
-
-      BLAZE_INTERNAL_ASSERT( x.size()    == vec_.size()   , "Invalid vector size"       );
-      BLAZE_INTERNAL_ASSERT( A.rows()    == mat_.rows()   , "Invalid number of rows"    );
-      BLAZE_INTERNAL_ASSERT( A.columns() == mat_.columns(), "Invalid number of columns" );
-
-      const ConstIterator end( A.end(index) );
-      ConstIterator element( A.begin(index) );
-      ElementType res;
-
-      if( element != end ) {
-         res = x[element->index()] * element->value();
-         ++element;
-         for( ; element!=end; ++element )
-            res += x[element->index()] * element->value();
-      }
-      else {
-         reset( res );
-      }
-
-      return res;
+      return vec_ * column( mat_, index );
    }
    //**********************************************************************************************
 

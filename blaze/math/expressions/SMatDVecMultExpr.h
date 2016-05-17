@@ -60,6 +60,7 @@
 #include <blaze/math/traits/SubvectorExprTrait.h>
 #include <blaze/math/typetraits/IsAligned.h>
 #include <blaze/math/typetraits/IsComputation.h>
+#include <blaze/math/typetraits/IsDiagonal.h>
 #include <blaze/math/typetraits/IsExpression.h>
 #include <blaze/math/typetraits/IsMatMatMultExpr.h>
 #include <blaze/math/typetraits/RequiresEvaluation.h>
@@ -205,70 +206,7 @@ class SMatDVecMultExpr : public DenseVector< SMatDVecMultExpr<MT,VT>, false >
    */
    inline ReturnType operator[]( size_t index ) const {
       BLAZE_INTERNAL_ASSERT( index < mat_.rows(), "Invalid vector access index" );
-
-      typedef ConstIterator_< RemoveReference_<MCT> >  ConstIterator;
-
-      ElementType tmp = ElementType();
-
-      // Early exit
-      if( mat_.columns() == 0UL )
-         return tmp;
-
-      // Fast computation in case the left-hand side sparse matrix directly provides iterators
-      if( !RequiresEvaluation<MT>::value )
-      {
-         MCT A( mat_ );  // Evaluation of the left-hand side sparse matrix operand
-
-         const ConstIterator end( A.end(index) );
-         ConstIterator element( A.begin(index) );
-
-         // Early exit in case row 'index' is empty
-         if( element == end )
-            return tmp;
-
-         // Calculating element 'index' for numeric data types
-         if( IsNumeric<ElementType>::value )
-         {
-            const size_t ipos( A.nonZeros(index) & size_t(-2) );
-            ElementType tmp2 = ElementType();
-
-            for( size_t i=0UL; i<ipos; i+=2UL )
-            {
-               const ElementType value1( element->value() );
-               const size_t      index1( element->index() );
-               ++element;
-               const ElementType value2( element->value() );
-               const size_t      index2( element->index() );
-               ++element;
-
-               tmp  += value1 * vec_[index1];
-               tmp2 += value2 * vec_[index2];
-            }
-            if( element!=end ) {
-               tmp += element->value() * vec_[element->index()];
-            }
-
-            tmp += tmp2;
-         }
-
-         // Calculating element 'index' for non-numeric data types
-         else {
-            tmp = element->value() * vec_[element->index()];
-            ++element;
-            for( ; element!=end; ++element )
-               tmp += element->value() * vec_[element->index()];
-         }
-      }
-
-      // Default computation in case the left-hand side sparse matrix doesn't provide iterators
-      else {
-         tmp = mat_(index,0UL) * vec_[0UL];
-         for( size_t k=1UL; k<mat_.columns(); ++k ) {
-            tmp += mat_(index,k) * vec_[k];
-         }
-      }
-
-      return tmp;
+      return row( mat_, index ) * vec_;
    }
    //**********************************************************************************************
 
