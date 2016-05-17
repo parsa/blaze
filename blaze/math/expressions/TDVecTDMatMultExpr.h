@@ -263,35 +263,25 @@ class TDVecTDMatMultExpr : public DenseVector< TDVecTDMatMultExpr<VT,MT>, true >
    inline ReturnType operator[]( size_t index ) const {
       BLAZE_INTERNAL_ASSERT( index < mat_.columns(), "Invalid vector access index" );
 
-      if( ( IsStrictlyLower<MT>::value && index == mat_.columns()-1UL ) ||
-          ( IsStrictlyUpper<MT>::value && index == 0UL ) ||
-          mat_.rows() == 0UL )
-         return ElementType();
-
       if( IsDiagonal<MT>::value )
+      {
          return vec_[index] * mat_(index,index);
-
-      const size_t ibegin( ( IsLower<MT>::value )
-                           ?( IsStrictlyLower<MT>::value ? index+1UL : index )
-                           :( 0UL ) );
-      const size_t iend( ( IsUpper<MT>::value )
-                         ?( IsStrictlyUpper<MT>::value ? index : index+1UL )
-                         :( mat_.rows() ) );
-      BLAZE_INTERNAL_ASSERT( ibegin <= iend, "Invalid loop indices detected" );
-
-      const size_t inum( iend - ibegin );
-      const size_t ipos( ibegin + ( ( inum - 1UL ) & size_t(-2) ) + 1UL );
-
-      ElementType res( vec_[ibegin] * mat_(ibegin,index) );
-
-      for( size_t i=ibegin+1UL; i<ipos; i+=2UL ) {
-         res += vec_[i] * mat_(i,index) + vec_[i+1UL] * mat_(i+1UL,index);
       }
-      if( ipos < iend ) {
-         res += vec_[ipos] * mat_(ipos,index);
+      else if( IsLower<MT>::value && ( index > 8UL ) )
+      {
+         const size_t begin( IsStrictlyLower<MT>::value ? index+1UL : index );
+         const size_t n    ( mat_.rows() - begin );
+         return subvector( vec_, begin, n ) * subvector( column( mat_, index ), begin, n );
       }
-
-      return res;
+      else if( IsUpper<MT>::value && ( index + 8UL < mat_.rows() ) )
+      {
+         const size_t n( IsStrictlyUpper<MT>::value ? index : index+1UL );
+         return subvector( vec_, 0UL, n ) * subvector( column( mat_, index ), 0UL, n );
+      }
+      else
+      {
+         return vec_ * column( mat_, index );
+      }
    }
    //**********************************************************************************************
 
