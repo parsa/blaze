@@ -153,9 +153,21 @@ inline DisableIf_< TDVecDVecMultExprHelper<T1,T2>
    Rhs right( ~rhs );
 
    MultType sp( left[0UL] * right[0UL] );
+   size_t i( 1UL );
 
-   for( size_t i=1UL; i<left.size(); ++i )
+   for( ; (i+4UL) <= left.size(); i+=4UL ) {
+      sp += left[i    ] * right[i    ] +
+            left[i+1UL] * right[i+1UL] +
+            left[i+2UL] * right[i+2UL] +
+            left[i+3UL] * right[i+3UL];
+   }
+   for( ; (i+2UL) <= left.size(); i+=2UL ) {
+      sp += left[i    ] * right[i    ] +
+            left[i+1UL] * right[i+1UL];
+   }
+   for( ; i<left.size(); ++i ) {
       sp += left[i] * right[i];
+   }
 
    return sp;
 }
