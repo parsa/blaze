@@ -83,6 +83,7 @@
 #include <blaze/math/typetraits/IsStrictlyLower.h>
 #include <blaze/math/typetraits/IsStrictlyUpper.h>
 #include <blaze/math/typetraits/IsSymmetric.h>
+#include <blaze/math/typetraits/IsTriangular.h>
 #include <blaze/math/typetraits/IsUniLower.h>
 #include <blaze/math/typetraits/IsUniUpper.h>
 #include <blaze/math/typetraits/IsUpper.h>
@@ -221,22 +222,39 @@ class TSMatSMatMultExpr : public SparseMatrix< TSMatSMatMultExpr<MT1,MT2>, true 
       BLAZE_INTERNAL_ASSERT( i < lhs_.rows()   , "Invalid row access index"    );
       BLAZE_INTERNAL_ASSERT( j < rhs_.columns(), "Invalid column access index" );
 
-      ElementType tmp = ElementType();
-
-      if( lhs_.columns() != 0UL )
-      {
-         const size_t kbegin( max( ( IsUpper<MT1>::value )?( i ):( 0UL ),
-                                   ( IsLower<MT2>::value )?( j ):( 0UL ) ) );
-         const size_t kend  ( min( ( IsLower<MT1>::value )?( i+1UL ):( lhs_.columns() ),
-                                   ( IsUpper<MT2>::value )?( j+1UL ):( lhs_.columns() ) ) );
-
-         tmp = lhs_(i,kbegin) * rhs_(kbegin,j);
-         for( size_t k=kbegin+1UL; k<kend; ++k ) {
-            tmp += lhs_(i,k) * rhs_(k,j);
-         }
+      if( IsDiagonal<MT1>::value ) {
+         return lhs_(i,i) * rhs_(i,j);
       }
+      else if( IsDiagonal<MT2>::value ) {
+         return lhs_(i,j) * rhs_(j,j);
+      }
+      else if( IsTriangular<MT1>::value || IsTriangular<MT2>::value ) {
+         const size_t begin( ( IsUpper<MT1>::value )
+                             ?( ( IsLower<MT2>::value )
+                                ?( max( ( IsStrictlyUpper<MT1>::value ? i+1UL : i )
+                                      , ( IsStrictlyLower<MT2>::value ? j+1UL : j ) ) )
+                                :( IsStrictlyUpper<MT1>::value ? i+1UL : i ) )
+                             :( ( IsLower<MT2>::value )
+                                ?( IsStrictlyLower<MT2>::value ? j+1UL : j )
+                                :( 0UL ) ) );
+         const size_t end( ( IsLower<MT1>::value )
+                           ?( ( IsUpper<MT2>::value )
+                              ?( min( ( IsStrictlyLower<MT1>::value ? i : i+1UL )
+                                    , ( IsStrictlyUpper<MT2>::value ? j : j+1UL ) ) )
+                              :( IsStrictlyLower<MT1>::value ? i : i+1UL ) )
+                           :( ( IsUpper<MT2>::value )
+                              ?( IsStrictlyUpper<MT2>::value ? j : j+1UL )
+                              :( lhs_.columns() ) ) );
 
-      return tmp;
+         if( begin >= end ) return ElementType();
+
+         const size_t n( end - begin );
+
+         return subvector( row( lhs_, i ), begin, n ) * subvector( column( rhs_, j ), begin, n );
+      }
+      else {
+         return row( lhs_, i ) * column( rhs_, j );
+      }
    }
    //**********************************************************************************************
 
