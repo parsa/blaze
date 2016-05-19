@@ -977,13 +977,14 @@ void MatrixSerializer::deserializeSparseRowMatrix( Archive& archive, SparseMatri
    for( size_t i=0UL; i<rows_; ++i )
    {
       archive >> number;
-      (~mat).reserve( i, number );
 
       size_t j( 0UL );
       while( ( j != number ) && ( archive >> index >> value ) ) {
          (~mat).append( i, index, value, false );
          ++j;
       }
+
+      (~mat).finalize( i );
    }
 
    if( !archive ) {
@@ -1111,13 +1112,14 @@ void MatrixSerializer::deserializeSparseColumnMatrix( Archive& archive, SparseMa
    for( size_t j=0UL; j<columns_; ++j )
    {
       archive >> number;
-      (~mat).reserve( j, number );
 
       size_t i( 0UL );
       while( ( i != number ) && ( archive >> index >> value ) ) {
          (~mat).append( index, j, value, false );
          ++i;
       }
+
+      (~mat).finalize( j );
    }
 
    if( !archive ) {
