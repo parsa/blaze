@@ -597,8 +597,8 @@ inline StaticMatrix<Type,M,N,SO>::StaticMatrix( initializer_list< initializer_li
 
    size_t i( 0UL );
 
-   for( const auto& row : list ) {
-      std::fill( std::copy( row.begin(), row.end(), v_+i*NN ), v_+(i+1UL)*NN, Type() );
+   for( const auto& rowList : list ) {
+      std::fill( std::copy( rowList.begin(), rowList.end(), v_+i*NN ), v_+(i+1UL)*NN, Type() );
       ++i;
    }
 
@@ -1218,8 +1218,8 @@ inline StaticMatrix<Type,M,N,SO>&
 
    size_t i( 0UL );
 
-   for( const auto& row : list ) {
-      std::fill( std::copy( row.begin(), row.end(), v_+i*NN ), v_+(i+1UL)*NN, Type() );
+   for( const auto& rowList : list ) {
+      std::fill( std::copy( rowList.begin(), rowList.end(), v_+i*NN ), v_+(i+1UL)*NN, Type() );
       ++i;
    }
 
@@ -3303,9 +3303,9 @@ inline StaticMatrix<Type,M,N,true>::StaticMatrix( initializer_list< initializer_
 
    size_t i( 0UL );
 
-   for( const auto& row : list ) {
+   for( const auto& rowList : list ) {
       size_t j( 0UL );
-      for( const auto& element : row ) {
+      for( const auto& element : rowList ) {
          v_[i+j*MM] = element;
          ++j;
       }
@@ -3931,9 +3931,9 @@ inline StaticMatrix<Type,M,N,true>&
 
    size_t i( 0UL );
 
-   for( const auto& row : list ) {
+   for( const auto& rowList : list ) {
       size_t j( 0UL );
-      for( const auto& element : row ) {
+      for( const auto& element : rowList ) {
          v_[i+j*MM] = element;
          ++j;
       }

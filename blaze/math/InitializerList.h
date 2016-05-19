@@ -80,8 +80,8 @@ template< typename Type >
 inline size_t determineColumns( initializer_list< initializer_list<Type> > list ) noexcept
 {
    size_t cols( 0UL );
-   for( const auto& row : list )
-      cols = max( cols, row.size() );
+   for( const auto& rowList : list )
+      cols = max( cols, rowList.size() );
    return cols;
 }
 //*************************************************************************************************

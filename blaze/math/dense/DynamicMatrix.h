@@ -600,8 +600,8 @@ inline DynamicMatrix<Type,SO>::DynamicMatrix( initializer_list< initializer_list
 {
    size_t i( 0UL );
 
-   for( const auto& row : list ) {
-      std::fill( std::copy( row.begin(), row.end(), v_+i*nn_ ), v_+(i+1UL)*nn_, Type() );
+   for( const auto& rowList : list ) {
+      std::fill( std::copy( rowList.begin(), rowList.end(), v_+i*nn_ ), v_+(i+1UL)*nn_, Type() );
       ++i;
    }
 
@@ -1183,8 +1183,8 @@ inline DynamicMatrix<Type,SO>&
 
    size_t i( 0UL );
 
-   for( const auto& row : list ) {
-      std::fill( std::copy( row.begin(), row.end(), v_+i*nn_ ), v_+(i+1UL)*nn_, Type() );
+   for( const auto& rowList : list ) {
+      std::fill( std::copy( rowList.begin(), rowList.end(), v_+i*nn_ ), v_+(i+1UL)*nn_, Type() );
       ++i;
    }
 
@@ -3331,9 +3331,9 @@ inline DynamicMatrix<Type,true>::DynamicMatrix( initializer_list< initializer_li
 {
    size_t i( 0UL );
 
-   for( const auto& row : list ) {
+   for( const auto& rowList : list ) {
       size_t j( 0UL );
-      for( const auto& element : row ) {
+      for( const auto& element : rowList ) {
          v_[i+j*mm_] = element;
          ++j;
       }
@@ -3921,9 +3921,9 @@ inline DynamicMatrix<Type,true>&
 
    size_t i( 0UL );
 
-   for( const auto& row : list ) {
+   for( const auto& rowList : list ) {
       size_t j( 0UL );
-      for( const auto& element : row ) {
+      for( const auto& element : rowList ) {
          v_[i+j*mm_] = element;
          ++j;
       }

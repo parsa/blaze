@@ -1395,8 +1395,8 @@ inline CustomMatrix<Type,AF,PF,SO>&
 
    size_t i( 0UL );
 
-   for( const auto& row : list ) {
-      std::fill( std::copy( row.begin(), row.end(), v_.get()+i*nn_ ),
+   for( const auto& rowList : list ) {
+      std::fill( std::copy( rowList.begin(), rowList.end(), v_.get()+i*nn_ ),
                  v_.get()+i*nn_+( PF ? nn_ : n_ ), Type() );
       ++i;
    }
@@ -4130,9 +4130,9 @@ inline CustomMatrix<Type,AF,PF,true>&
 
    size_t i( 0UL );
 
-   for( const auto& row : list ) {
+   for( const auto& rowList : list ) {
       size_t j( 0UL );
-      for( const auto& element : row ) {
+      for( const auto& element : rowList ) {
          v_[i+j*mm_] = element;
          ++j;
       }

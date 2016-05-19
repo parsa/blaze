@@ -1585,8 +1585,8 @@ inline DenseSubmatrix<MT,AF,SO>&
 
    size_t i( 0UL );
 
-   for( const auto& row : list ) {
-      std::fill( std::copy( row.begin(), row.end(), begin(i) ), end(i), ElementType() );
+   for( const auto& rowList : list ) {
+      std::fill( std::copy( rowList.begin(), rowList.end(), begin(i) ), end(i), ElementType() );
       ++i;
    }
 
@@ -4447,9 +4447,9 @@ inline DenseSubmatrix<MT,unaligned,true>&
 
    size_t i( 0UL );
 
-   for( const auto& row : list ) {
+   for( const auto& rowList : list ) {
       size_t j( 0UL );
-      for( const auto& element : row ) {
+      for( const auto& element : rowList ) {
          matrix_(row_+i,column_+j) = element;
          ++j;
       }
@@ -6990,8 +6990,8 @@ inline DenseSubmatrix<MT,aligned,false>&
 
    size_t i( 0UL );
 
-   for( const auto& row : list ) {
-      std::fill( std::copy( row.begin(), row.end(), begin(i) ), end(i), ElementType() );
+   for( const auto& rowList : list ) {
+      std::fill( std::copy( rowList.begin(), rowList.end(), begin(i) ), end(i), ElementType() );
       ++i;
    }
 
@@ -9511,9 +9511,9 @@ inline DenseSubmatrix<MT,aligned,true>&
 
    size_t i( 0UL );
 
-   for( const auto& row : list ) {
+   for( const auto& rowList : list ) {
       size_t j( 0UL );
-      for( const auto& element : row ) {
+      for( const auto& element : rowList ) {
          matrix_(row_+i,column_+j) = element;
          ++j;
       }
