@@ -45,7 +45,6 @@
 #include <blaze/util/Exception.h>
 #include <blaze/util/StaticAssert.h>
 #include <blaze/util/typetraits/AlignmentOf.h>
-#include <blaze/util/typetraits/IsConstructible.h>
 
 
 namespace blaze {
@@ -111,11 +110,10 @@ class AlignedArray
    //**Constructors********************************************************************************
    /*!\name Constructors */
    //@{
-   explicit inline AlignedArray() noexcept( IsNothrowDefaultConstructible<Type>::value );
+   explicit inline AlignedArray();
 
    template< typename... Ts >
-   explicit inline constexpr AlignedArray( const Ts&... args )
-      noexcept( IsNothrowCopyConstructible<Type>::value );
+   explicit inline constexpr AlignedArray( const Ts&... args );
    //@}
    //**********************************************************************************************
 
@@ -191,7 +189,6 @@ template< typename Type       // Data type of the elements
         , size_t N            // Number of elements
         , size_t Alignment >  // Array alignment
 inline AlignedArray<Type,N,Alignment>::AlignedArray()
-   noexcept( IsNothrowDefaultConstructible<Type>::value )
 {}
 //*************************************************************************************************
 
@@ -206,7 +203,6 @@ template< typename Type       // Data type of the elements
         , size_t Alignment >  // Array alignment
 template< typename... Ts >    // Types of the array initializers
 inline constexpr AlignedArray<Type,N,Alignment>::AlignedArray( const Ts&... args )
-   noexcept( IsNothrowCopyConstructible<Type>::value )
    : v_{ args... }
 {
    BLAZE_STATIC_ASSERT( sizeof...( Ts ) == N );
