@@ -62,7 +62,7 @@ template< typename T         // Type of the operand
         , typename = void >  // Restricting condition
 struct HasSIMDConjHelper
 {
-   static constexpr bool value = IsNumeric<T>::value;
+   enum : bool { value = IsNumeric<T>::value };
 };
 /*! \endcond */
 //*************************************************************************************************
@@ -73,8 +73,8 @@ struct HasSIMDConjHelper
 template< typename T >
 struct HasSIMDConjHelper< complex<T> >
 {
-   static constexpr bool value = IsNumeric<T>::value && HasSIMDMult<T,T>::value &&
-                                 ( IsFloatingPoint<T>::value || sizeof(T) <= 4UL );
+   enum : bool { value = IsNumeric<T>::value && HasSIMDMult<T,T>::value &&
+                         ( IsFloatingPoint<T>::value || sizeof(T) <= 4UL ) };
 };
 /*! \endcond */
 //*************************************************************************************************

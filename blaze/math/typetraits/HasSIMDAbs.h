@@ -65,7 +65,7 @@ template< typename T         // Type of the operand
         , typename = void >  // Restricting condition
 struct HasSIMDAbsHelper
 {
-   static constexpr bool value = false;
+   enum : bool { value = false };
 };
 /*! \endcond */
 //*************************************************************************************************
@@ -76,8 +76,8 @@ struct HasSIMDAbsHelper
 template< typename T >
 struct HasSIMDAbsHelper< T, EnableIf_< And< IsNumeric<T>, IsIntegral<T>, IsSigned<T> > > >
 {
-   static constexpr bool value = ( bool( BLAZE_SSSE3_MODE ) && !bool( BLAZE_MIC_MODE ) && sizeof(T) <= 4UL ) ||
-                                 ( bool( BLAZE_AVX2_MODE  ) && !bool( BLAZE_MIC_MODE ) && sizeof(T) <= 4UL );
+   enum : bool { value = ( bool( BLAZE_SSSE3_MODE ) && !bool( BLAZE_MIC_MODE ) && sizeof(T) <= 4UL ) ||
+                         ( bool( BLAZE_AVX2_MODE  ) && !bool( BLAZE_MIC_MODE ) && sizeof(T) <= 4UL ) };
 };
 /*! \endcond */
 //*************************************************************************************************

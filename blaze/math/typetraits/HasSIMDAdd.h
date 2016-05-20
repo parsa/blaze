@@ -65,7 +65,7 @@ template< typename T1        // Type of the left-hand side operand
         , typename = void >  // Restricting condition
 struct HasSIMDAddHelper
 {
-   static constexpr bool value = false;
+   enum : bool { value = false };
 };
 /*! \endcond */
 //*************************************************************************************************
@@ -76,17 +76,17 @@ struct HasSIMDAddHelper
 template< typename T >
 struct HasSIMDAddHelper< T, T, EnableIf_< And< IsNumeric<T>, IsIntegral<T> > > >
 {
-   static constexpr bool value = ( bool( BLAZE_SSE2_MODE ) ) ||
-                                 ( bool( BLAZE_AVX2_MODE ) ) ||
-                                 ( bool( BLAZE_MIC_MODE  ) && sizeof(T) >= 4UL );
+   enum : bool { value = ( bool( BLAZE_SSE2_MODE ) ) ||
+                         ( bool( BLAZE_AVX2_MODE ) ) ||
+                         ( bool( BLAZE_MIC_MODE  ) && sizeof(T) >= 4UL ) };
 };
 
 template< typename T >
 struct HasSIMDAddHelper< complex<T>, complex<T>, EnableIf_< And< IsNumeric<T>, IsIntegral<T> > > >
 {
-   static constexpr bool value = ( bool( BLAZE_SSE2_MODE ) ) ||
-                                 ( bool( BLAZE_AVX2_MODE ) ) ||
-                                 ( bool( BLAZE_MIC_MODE  ) && sizeof(T) >= 4UL );
+   enum : bool { value = ( bool( BLAZE_SSE2_MODE ) ) ||
+                         ( bool( BLAZE_AVX2_MODE ) ) ||
+                         ( bool( BLAZE_MIC_MODE  ) && sizeof(T) >= 4UL ) };
 };
 /*! \endcond */
 //*************************************************************************************************
@@ -97,17 +97,17 @@ struct HasSIMDAddHelper< complex<T>, complex<T>, EnableIf_< And< IsNumeric<T>, I
 template<>
 struct HasSIMDAddHelper< float, float >
 {
-   static constexpr bool value = bool( BLAZE_SSE_MODE ) ||
-                                 bool( BLAZE_AVX_MODE ) ||
-                                 bool( BLAZE_MIC_MODE );
+   enum : bool { value = bool( BLAZE_SSE_MODE ) ||
+                         bool( BLAZE_AVX_MODE ) ||
+                         bool( BLAZE_MIC_MODE ) };
 };
 
 template<>
 struct HasSIMDAddHelper< complex<float>, complex<float> >
 {
-   static constexpr bool value = bool( BLAZE_SSE_MODE ) ||
-                                 bool( BLAZE_AVX_MODE ) ||
-                                 bool( BLAZE_MIC_MODE );
+   enum : bool { value = bool( BLAZE_SSE_MODE ) ||
+                         bool( BLAZE_AVX_MODE ) ||
+                         bool( BLAZE_MIC_MODE ) };
 };
 /*! \endcond */
 //*************************************************************************************************
@@ -118,17 +118,17 @@ struct HasSIMDAddHelper< complex<float>, complex<float> >
 template<>
 struct HasSIMDAddHelper< double, double >
 {
-   static constexpr bool value = bool( BLAZE_SSE2_MODE ) ||
-                                 bool( BLAZE_AVX_MODE  ) ||
-                                 bool( BLAZE_MIC_MODE  );
+   enum : bool { value = bool( BLAZE_SSE2_MODE ) ||
+                         bool( BLAZE_AVX_MODE  ) ||
+                         bool( BLAZE_MIC_MODE  ) };
 };
 
 template<>
 struct HasSIMDAddHelper< complex<double>, complex<double> >
 {
-   static constexpr bool value = bool( BLAZE_SSE2_MODE ) ||
-                                 bool( BLAZE_AVX_MODE  ) ||
-                                 bool( BLAZE_MIC_MODE  );
+   enum : bool { value = bool( BLAZE_SSE2_MODE ) ||
+                         bool( BLAZE_AVX_MODE  ) ||
+                         bool( BLAZE_MIC_MODE  ) };
 };
 /*! \endcond */
 //*************************************************************************************************
