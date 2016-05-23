@@ -47,6 +47,7 @@
 #include <blaze/math/typetraits/HasSIMDAdd.h>
 #include <blaze/math/typetraits/HasSIMDConj.h>
 #include <blaze/math/typetraits/HasSIMDDiv.h>
+#include <blaze/math/typetraits/HasSIMDInvSqrt.h>
 #include <blaze/math/typetraits/HasSIMDMult.h>
 #include <blaze/math/typetraits/HasSIMDSqrt.h>
 #include <blaze/math/typetraits/HasSIMDSub.h>
