@@ -52,6 +52,7 @@
 #include <blaze/math/simd/Loada.h>
 #include <blaze/math/simd/Loadu.h>
 #include <blaze/math/simd/Multiplication.h>
+#include <blaze/math/simd/Pow.h>
 #include <blaze/math/simd/Reduction.h>
 #include <blaze/math/simd/Set.h>
 #include <blaze/math/simd/Setzero.h>
