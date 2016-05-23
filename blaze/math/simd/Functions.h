@@ -45,6 +45,7 @@
 #include <blaze/math/simd/Cbrt.h>
 #include <blaze/math/simd/Conj.h>
 #include <blaze/math/simd/Division.h>
+#include <blaze/math/simd/Floor.h>
 #include <blaze/math/simd/InvCbrt.h>
 #include <blaze/math/simd/InvSqrt.h>
 #include <blaze/math/simd/Loada.h>
