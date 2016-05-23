@@ -52,6 +52,7 @@
 #include <blaze/math/simd/InvSqrt.h>
 #include <blaze/math/simd/Loada.h>
 #include <blaze/math/simd/Loadu.h>
+#include <blaze/math/simd/Log.h>
 #include <blaze/math/simd/Multiplication.h>
 #include <blaze/math/simd/Pow.h>
 #include <blaze/math/simd/Reduction.h>
