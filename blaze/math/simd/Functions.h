@@ -44,6 +44,7 @@
 #include <blaze/math/simd/Addition.h>
 #include <blaze/math/simd/Conj.h>
 #include <blaze/math/simd/Division.h>
+#include <blaze/math/simd/InvSqrt.h>
 #include <blaze/math/simd/Loada.h>
 #include <blaze/math/simd/Loadu.h>
 #include <blaze/math/simd/Multiplication.h>
