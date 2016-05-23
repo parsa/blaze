@@ -67,6 +67,7 @@
 #include <blaze/math/typetraits/HasSIMDSinh.h>
 #include <blaze/math/typetraits/HasSIMDSqrt.h>
 #include <blaze/math/typetraits/HasSIMDSub.h>
+#include <blaze/math/typetraits/HasSIMDTan.h>
 #include <blaze/math/typetraits/IsAbsExpr.h>
 #include <blaze/math/typetraits/IsAdaptor.h>
 #include <blaze/math/typetraits/IsAddExpr.h>
