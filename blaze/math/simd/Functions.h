@@ -54,6 +54,7 @@
 #include <blaze/math/simd/Cos.h>
 #include <blaze/math/simd/Cosh.h>
 #include <blaze/math/simd/Division.h>
+#include <blaze/math/simd/Erf.h>
 #include <blaze/math/simd/Exp.h>
 #include <blaze/math/simd/Floor.h>
 #include <blaze/math/simd/InvCbrt.h>
