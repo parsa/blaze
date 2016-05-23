@@ -42,6 +42,7 @@
 
 #include <blaze/math/simd/Abs.h>
 #include <blaze/math/simd/Acos.h>
+#include <blaze/math/simd/Acosh.h>
 #include <blaze/math/simd/Addition.h>
 #include <blaze/math/simd/Asin.h>
 #include <blaze/math/simd/Asinh.h>
