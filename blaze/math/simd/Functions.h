@@ -50,6 +50,7 @@
 #include <blaze/math/simd/Reduction.h>
 #include <blaze/math/simd/Set.h>
 #include <blaze/math/simd/Setzero.h>
+#include <blaze/math/simd/Sqrt.h>
 #include <blaze/math/simd/Storea.h>
 #include <blaze/math/simd/Storeu.h>
 #include <blaze/math/simd/Stream.h>
