@@ -50,6 +50,7 @@
 #include <blaze/math/typetraits/HasSIMDCbrt.h>
 #include <blaze/math/typetraits/HasSIMDCeil.h>
 #include <blaze/math/typetraits/HasSIMDConj.h>
+#include <blaze/math/typetraits/HasSIMDCos.h>
 #include <blaze/math/typetraits/HasSIMDDiv.h>
 #include <blaze/math/typetraits/HasSIMDExp.h>
 #include <blaze/math/typetraits/HasSIMDFloor.h>
