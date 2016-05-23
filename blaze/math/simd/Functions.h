@@ -47,6 +47,7 @@
 #include <blaze/math/simd/Cbrt.h>
 #include <blaze/math/simd/Ceil.h>
 #include <blaze/math/simd/Conj.h>
+#include <blaze/math/simd/Cos.h>
 #include <blaze/math/simd/Division.h>
 #include <blaze/math/simd/Exp.h>
 #include <blaze/math/simd/Floor.h>
