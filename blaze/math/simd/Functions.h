@@ -61,6 +61,7 @@
 #include <blaze/math/simd/Set.h>
 #include <blaze/math/simd/Setzero.h>
 #include <blaze/math/simd/Sin.h>
+#include <blaze/math/simd/Sinh.h>
 #include <blaze/math/simd/Sqrt.h>
 #include <blaze/math/simd/Storea.h>
 #include <blaze/math/simd/Storeu.h>
