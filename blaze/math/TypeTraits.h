@@ -45,6 +45,7 @@
 #include <blaze/math/typetraits/HasMutableDataAccess.h>
 #include <blaze/math/typetraits/HasSIMDAbs.h>
 #include <blaze/math/typetraits/HasSIMDAdd.h>
+#include <blaze/math/typetraits/HasSIMDAsin.h>
 #include <blaze/math/typetraits/HasSIMDCbrt.h>
 #include <blaze/math/typetraits/HasSIMDCeil.h>
 #include <blaze/math/typetraits/HasSIMDConj.h>
