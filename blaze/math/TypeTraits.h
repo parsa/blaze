@@ -63,6 +63,7 @@
 #include <blaze/math/typetraits/HasSIMDFloor.h>
 #include <blaze/math/typetraits/HasSIMDInvCbrt.h>
 #include <blaze/math/typetraits/HasSIMDInvErf.h>
+#include <blaze/math/typetraits/HasSIMDInvErfc.h>
 #include <blaze/math/typetraits/HasSIMDInvSqrt.h>
 #include <blaze/math/typetraits/HasSIMDLog.h>
 #include <blaze/math/typetraits/HasSIMDLog10.h>
