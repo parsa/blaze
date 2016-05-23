@@ -60,6 +60,7 @@
 #include <blaze/math/simd/Floor.h>
 #include <blaze/math/simd/InvCbrt.h>
 #include <blaze/math/simd/InvErf.h>
+#include <blaze/math/simd/InvErfc.h>
 #include <blaze/math/simd/InvSqrt.h>
 #include <blaze/math/simd/Loada.h>
 #include <blaze/math/simd/Loadu.h>
