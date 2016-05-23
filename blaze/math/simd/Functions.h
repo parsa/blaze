@@ -42,6 +42,7 @@
 
 #include <blaze/math/simd/Abs.h>
 #include <blaze/math/simd/Addition.h>
+#include <blaze/math/simd/Cbrt.h>
 #include <blaze/math/simd/Conj.h>
 #include <blaze/math/simd/Division.h>
 #include <blaze/math/simd/InvSqrt.h>
