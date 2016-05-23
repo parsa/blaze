@@ -138,13 +138,13 @@ struct HasSIMDSubHelper< complex<double>, complex<double> >
 /*!\brief Availability of a SIMD subtraction for the given data types.
 // \ingroup math_type_traits
 //
-// Depending on the available instruction set (SSE, SSE2, SSE3, SSE4, AVX, AVX2, MIC, ...), this
-// type trait provides the information whether a SIMD subtraction operation exists for the two
-// given data types \a T1 and \a T2 (ignoring the cv-qualifiers). In case the SIMD subtraction
-// is available, the \a value member constant is set to \a true, the nested type definition
-// \a Type is \a TrueType, and the class derives from \a TrueType. Otherwise \a value is set
-// to \a false, \a Type is \a FalseType, and the class derives from \a FalseType. The following
-// example assumes that AVX is available:
+// Depending on the available instruction set (SSE, SSE2, SSE3, SSE4, AVX, AVX2, MIC, ...) and
+// the used compiler, this type trait provides the information whether a SIMD subtraction operation
+// exists for the two given data types \a T1 and \a T2 (ignoring the cv-qualifiers). In case the
+// SIMD subtraction is available, the \a value member constant is set to \a true, the nested type
+// definition \a Type is \a TrueType, and the class derives from \a TrueType. Otherwise \a value
+// is set to \a false, \a Type is \a FalseType, and the class derives from \a FalseType. The
+// following example assumes that AVX is available:
 
    \code
    blaze::HasSIMDSub< int, int >::value     // Evaluates to 1

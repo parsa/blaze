@@ -87,13 +87,13 @@ struct HasSIMDAbsHelper< T, EnableIf_< And< IsNumeric<T>, IsIntegral<T>, IsSigne
 /*!\brief Availability of a SIMD absolute value operation for the given data type.
 // \ingroup math_type_traits
 //
-// Depending on the available instruction set (SSE, SSE2, SSE3, SSE4, AVX, AVX2, MIC, ...), this
-// type trait provides the information whether a SIMD absolute value operation exists for the
-// given data type \a T (ignoring the cv-qualifiers). In case the SIMD operation is available,
-// the \a value member constant is set to \a true, the nested type definition \a Type is
-// \a TrueType, and the class derives from \a TrueType. Otherwise \a value is set to \a false,
-// \a Type is \a FalseType, and the class derives from \a FalseType. The following example
-// assumes that AVX is available:
+// Depending on the available instruction set (SSE, SSE2, SSE3, SSE4, AVX, AVX2, MIC, ...) and
+// the used compiler, this type trait provides the information whether a SIMD absolute value
+// operation exists for the given data type \a T (ignoring the cv-qualifiers). In case the SIMD
+// operation is available, the \a value member constant is set to \a true, the nested type
+// definition \a Type is \a TrueType, and the class derives from \a TrueType. Otherwise \a value
+// is set to \a false, \a Type is \a FalseType, and the class derives from \a FalseType. The
+// following example assumes that AVX is available:
 
    \code
    blaze::HasSIMDAbs< char >::value          // Evaluates to 1
