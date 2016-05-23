@@ -72,5 +72,6 @@
 #include <blaze/math/simd/Storeu.h>
 #include <blaze/math/simd/Stream.h>
 #include <blaze/math/simd/Subtraction.h>
+#include <blaze/math/simd/Tan.h>
 
 #endif
