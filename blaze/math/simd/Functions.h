@@ -74,5 +74,6 @@
 #include <blaze/math/simd/Stream.h>
 #include <blaze/math/simd/Subtraction.h>
 #include <blaze/math/simd/Tan.h>
+#include <blaze/math/simd/Tanh.h>
 
 #endif
