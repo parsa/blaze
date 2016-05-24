@@ -60,6 +60,7 @@
 #include <blaze/math/constraints/DivExpr.h>
 #include <blaze/math/constraints/EvalExpr.h>
 #include <blaze/math/constraints/Expression.h>
+#include <blaze/math/constraints/ForEachExpr.h>
 #include <blaze/math/constraints/General.h>
 #include <blaze/math/constraints/Hermitian.h>
 #include <blaze/math/constraints/Identity.h>

@@ -90,6 +90,7 @@
 #include <blaze/math/typetraits/IsDivExpr.h>
 #include <blaze/math/typetraits/IsEvalExpr.h>
 #include <blaze/math/typetraits/IsExpression.h>
+#include <blaze/math/typetraits/IsForEachExpr.h>
 #include <blaze/math/typetraits/IsGeneral.h>
 #include <blaze/math/typetraits/IsHermitian.h>
 #include <blaze/math/typetraits/IsIdentity.h>
