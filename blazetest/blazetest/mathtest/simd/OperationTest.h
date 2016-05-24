@@ -1740,7 +1740,7 @@ void OperationTest<T>::testAtanh( blaze::TrueType )
 
    test_ = "Inverse hyperbolic tangent operation";
 
-   initialize( T(-1), T(1) );
+   initialize( T(-0.95), T(0.95) );
 
    for( size_t i=0UL; i<N; ++i ) {
       c_[i] = atanh( a_[i] );
