@@ -67,8 +67,6 @@
 #include <blaze/math/typetraits/HasSIMDExp.h>
 #include <blaze/math/typetraits/HasSIMDFloor.h>
 #include <blaze/math/typetraits/HasSIMDInvCbrt.h>
-#include <blaze/math/typetraits/HasSIMDInvErf.h>
-#include <blaze/math/typetraits/HasSIMDInvErfc.h>
 #include <blaze/math/typetraits/HasSIMDInvSqrt.h>
 #include <blaze/math/typetraits/HasSIMDLog.h>
 #include <blaze/math/typetraits/HasSIMDLog10.h>
@@ -210,12 +208,8 @@ class OperationTest : private blaze::NonCopyable
 
    void testErf           ( blaze::TrueType );
    void testErf           ( blaze::FalseType );
-   void testInvErf        ( blaze::TrueType );
-   void testInvErf        ( blaze::FalseType );
    void testErfc          ( blaze::TrueType );
    void testErfc          ( blaze::FalseType );
-   void testInvErfc       ( blaze::TrueType );
-   void testInvErfc       ( blaze::FalseType );
 
    void testReduction     ();
    //@}
@@ -232,6 +226,7 @@ class OperationTest : private blaze::NonCopyable
    /*!\name Utility functions */
    //@{
    void initialize();
+   void initialize( T min, T max );
    //@}
    //**********************************************************************************************
 
@@ -319,9 +314,7 @@ OperationTest<T>::OperationTest()
    testAtanh         ( typename blaze::HasSIMDAtanh  < T >::Type() );
 
    testErf           ( typename blaze::HasSIMDErf    < T >::Type() );
-   testInvErf        ( typename blaze::HasSIMDInvErf < T >::Type() );
    testErfc          ( typename blaze::HasSIMDErfc   < T >::Type() );
-   testInvErfc       ( typename blaze::HasSIMDInvErfc< T >::Type() );
 
    testReduction     ();
 }
@@ -1269,7 +1262,7 @@ void OperationTest<T>::testAsin( blaze::TrueType )
 
    test_ = "Inverse sine operation";
 
-   initialize();
+   initialize( T(-1), T(1) );
 
    for( size_t i=0UL; i<N; ++i ) {
       c_[i] = asin( a_[i] );
@@ -1317,7 +1310,7 @@ void OperationTest<T>::testSinh( blaze::TrueType )
 
    test_ = "Hyperbolic sine operation";
 
-   initialize();
+   initialize( T(-1), T(1) );
 
    for( size_t i=0UL; i<N; ++i ) {
       c_[i] = sinh( a_[i] );
@@ -1365,7 +1358,7 @@ void OperationTest<T>::testAsinh( blaze::TrueType )
 
    test_ = "Inverse hyperbolic sine operation";
 
-   initialize();
+   initialize(  );
 
    for( size_t i=0UL; i<N; ++i ) {
       c_[i] = asinh( a_[i] );
@@ -1460,7 +1453,7 @@ void OperationTest<T>::testAcos( blaze::TrueType )
 
    test_ = "Inverse cosine operation";
 
-   initialize();
+   initialize( T(-1), T(1) );
 
    for( size_t i=0UL; i<N; ++i ) {
       c_[i] = acos( a_[i] );
@@ -1508,7 +1501,7 @@ void OperationTest<T>::testCosh( blaze::TrueType )
 
    test_ = "Hyperbolic cosine operation";
 
-   initialize();
+   initialize( T(-1), T(1) );
 
    for( size_t i=0UL; i<N; ++i ) {
       c_[i] = cosh( a_[i] );
@@ -1556,7 +1549,7 @@ void OperationTest<T>::testAcosh( blaze::TrueType )
 
    test_ = "Inverse hyperbolic cosine operation";
 
-   initialize();
+   initialize( T(1), T(1000) );
 
    for( size_t i=0UL; i<N; ++i ) {
       c_[i] = acosh( a_[i] );
@@ -1699,7 +1692,7 @@ void OperationTest<T>::testTanh( blaze::TrueType )
 
    test_ = "Hyperbolic tangent operation";
 
-   initialize();
+   initialize( T(-1), T(1) );
 
    for( size_t i=0UL; i<N; ++i ) {
       c_[i] = tanh( a_[i] );
@@ -1747,7 +1740,7 @@ void OperationTest<T>::testAtanh( blaze::TrueType )
 
    test_ = "Inverse hyperbolic tangent operation";
 
-   initialize();
+   initialize( T(-1), T(1) );
 
    for( size_t i=0UL; i<N; ++i ) {
       c_[i] = atanh( a_[i] );
@@ -1825,54 +1818,6 @@ void OperationTest<T>::testErf( blaze::FalseType )
 
 
 //*************************************************************************************************
-/*!\brief Testing the inverse error function (\c inverf).
-//
-// \return void
-// \exception std::runtime_error Error in inverse error function computation detected.
-//
-// This function tests the inverse error function (\c inverf) by comparing the results of a
-// vectorized and a scalar error function. In case any error is detected, a \a std::runtime_error
-// exception is thrown.
-*/
-template< typename T >  // Data type of the SIMD test
-void OperationTest<T>::testInvErf( blaze::TrueType )
-{
-   using std::erf;
-   using blaze::loada;
-   using blaze::storea;
-
-   test_ = "Error function";
-
-   initialize();
-
-   for( size_t i=0UL; i<N; ++i ) {
-      c_[i] = T(1) / erf( a_[i] );
-   }
-
-   for( size_t i=0UL; i<N; i+=SIMDSIZE ) {
-      storea( d_+i, inverf( loada( a_+i ) ) );
-   }
-
-   compare( c_, d_ );
-}
-//*************************************************************************************************
-
-
-//*************************************************************************************************
-/*!\brief Skipping the test of the inverse error function (\c inverf).
-//
-// \return void
-//
-// This function is called in case the inverse error function is not available for the given
-// data type \a T.
-*/
-template< typename T >  // Data type of the SIMD test
-void OperationTest<T>::testInvErf( blaze::FalseType )
-{}
-//*************************************************************************************************
-
-
-//*************************************************************************************************
 /*!\brief Testing the complementary error function (\c erfc).
 //
 // \return void
@@ -1916,54 +1861,6 @@ void OperationTest<T>::testErfc( blaze::TrueType )
 */
 template< typename T >  // Data type of the SIMD test
 void OperationTest<T>::testErfc( blaze::FalseType )
-{}
-//*************************************************************************************************
-
-
-//*************************************************************************************************
-/*!\brief Testing the inverse complementary error function (\c inverfc).
-//
-// \return void
-// \exception std::runtime_error Error in inverse complementary error function computation detected.
-//
-// This function tests the inverse complementary error function (\c erfc) by comparing the
-// results of a vectorized and a scalar error function. In case any error is detected, a
-// \a std::runtime_error exception is thrown.
-*/
-template< typename T >  // Data type of the SIMD test
-void OperationTest<T>::testInvErfc( blaze::TrueType )
-{
-   using std::erfc;
-   using blaze::loada;
-   using blaze::storea;
-
-   test_ = "Inverse complementary error function";
-
-   initialize();
-
-   for( size_t i=0UL; i<N; ++i ) {
-      c_[i] = T(1) / erfc( a_[i] );
-   }
-
-   for( size_t i=0UL; i<N; i+=SIMDSIZE ) {
-      storea( d_+i, inverfc( loada( a_+i ) ) );
-   }
-
-   compare( c_, d_ );
-}
-//*************************************************************************************************
-
-
-//*************************************************************************************************
-/*!\brief Skipping the test of the inverse complementary error function (\c inverf).
-//
-// \return void
-//
-// This function is called in case the inverse complementary error function is not available
-// for the given data type \a T.
-*/
-template< typename T >  // Data type of the SIMD test
-void OperationTest<T>::testInvErfc( blaze::FalseType )
 {}
 //*************************************************************************************************
 
@@ -2038,7 +1935,7 @@ template< typename T >  // Data type of the SIMD test
 void OperationTest<T>::compare( const T* expected, const T* actual ) const
 {
    for( size_t i=0UL; i<N; ++i ) {
-      if( expected[i] != actual[i] ) {
+      if( !blaze::equal( expected[i], actual[i] ) ) {
          std::ostringstream oss;
          oss.precision( 20 );
          oss << " Test : " << test_ << "\n"
@@ -2079,6 +1976,31 @@ void OperationTest<T>::initialize()
       randomize( b_[i] );
       randomize( c_[i] );
       randomize( d_[i] );
+   }
+}
+//*************************************************************************************************
+
+
+//*************************************************************************************************
+/*!\brief Initialization of all member arrays.
+//
+// \param min The smallest possible value for a value.
+// \param max The largest possible value for a value.
+// \return void
+//
+// This function is called before each single test case to initialize all arrays with random
+// values in the range \f$ [min,max] \f$.
+*/
+template< typename T >  // Data type of the SIMD test
+void OperationTest<T>::initialize( T min, T max )
+{
+   using blaze::randomize;
+
+   for( size_t i=0UL; i<NN; ++i ) {
+      randomize( a_[i], min, max );
+      randomize( b_[i], min, max );
+      randomize( c_[i], min, max );
+      randomize( d_[i], min, max );
    }
 }
 //*************************************************************************************************
