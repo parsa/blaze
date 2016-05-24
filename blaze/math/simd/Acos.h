@@ -58,7 +58,7 @@ namespace blaze {
 // \brief Inverse cosine of a vector of single precision floating point values.
 // \ingroup simd
 //
-// \param a The vector of single precision floating point values.
+// \param a The vector of single precision floating point values \f$[-1..1]\f$.
 // \return The resulting vector.
 */
 #if defined(__INTEL_COMPILER) || defined(__ICL) || defined(__ICC) || defined(__ECC)
@@ -89,7 +89,7 @@ BLAZE_ALWAYS_INLINE simd_float_t acos( const simd_float_t& a ) noexcept
 // \brief Inverse cosine of a vector of double precision floating point values.
 // \ingroup simd
 //
-// \param a The vector of double precision floating point values.
+// \param a The vector of double precision floating point values \f$[-1..1]\f$.
 // \return The resulting vector.
 */
 #if defined(__INTEL_COMPILER) || defined(__ICL) || defined(__ICC) || defined(__ECC)
