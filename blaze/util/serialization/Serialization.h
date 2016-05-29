@@ -1,7 +1,7 @@
 //=================================================================================================
 /*!
 //  \file blaze/util/serialization/Serialization.h
-//  \brief Type traits module documentation
+//  \brief Serialization module documentation
 //
 //  Copyright (C) 2013 Klaus Iglberger - All Rights Reserved
 //

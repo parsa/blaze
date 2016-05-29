@@ -1,7 +1,7 @@
 //=================================================================================================
 /*!
 //  \file blaze/math/serialization/Serialization.h
-//  \brief Mathematical type traits module documentation
+//  \brief Mathematical serialization module documentation
 //
 //  Copyright (C) 2013 Klaus Iglberger - All Rights Reserved
 //
