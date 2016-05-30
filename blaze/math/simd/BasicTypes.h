@@ -40,9 +40,11 @@
 // Includes
 //*************************************************************************************************
 
+#include <blaze/math/typetraits/IsSIMDType.h>
 #include <blaze/system/Inline.h>
 #include <blaze/system/Vectorization.h>
 #include <blaze/util/Complex.h>
+#include <blaze/util/TrueType.h>
 #include <blaze/util/Types.h>
 
 
@@ -566,6 +568,33 @@ struct simd_cdouble_t {
    enum : size_t { size = 1UL };
 };
 #endif
+/*! \endcond */
+//*************************************************************************************************
+
+
+
+
+//=================================================================================================
+//
+//  ISSIMDTYPE SPECIALIZATIONS
+//
+//=================================================================================================
+
+//*************************************************************************************************
+/*! \cond BLAZE_INTERNAL */
+template<> struct IsSIMDType< simd_int8_t   > : public TrueType {};
+template<> struct IsSIMDType< simd_int16_t  > : public TrueType {};
+template<> struct IsSIMDType< simd_int32_t  > : public TrueType {};
+template<> struct IsSIMDType< simd_int64_t  > : public TrueType {};
+template<> struct IsSIMDType< simd_float_t  > : public TrueType {};
+template<> struct IsSIMDType< simd_double_t > : public TrueType {};
+
+template<> struct IsSIMDType< simd_cint8_t   > : public TrueType {};
+template<> struct IsSIMDType< simd_cint16_t  > : public TrueType {};
+template<> struct IsSIMDType< simd_cint32_t  > : public TrueType {};
+template<> struct IsSIMDType< simd_cint64_t  > : public TrueType {};
+template<> struct IsSIMDType< simd_cfloat_t  > : public TrueType {};
+template<> struct IsSIMDType< simd_cdouble_t > : public TrueType {};
 /*! \endcond */
 //*************************************************************************************************
 
