@@ -805,6 +805,7 @@ class SVecForEachExpr : public SparseVector< SVecForEachExpr<VT,OP,TF>, TF >
 // \ingroup sparse_vector
 //
 // \param sv The input vector.
+// \param op The custom operation.
 // \return The custom operation applied to each single element of \a sv.
 //
 // The \a forEach function evaluates the given custom operation on each element of the input

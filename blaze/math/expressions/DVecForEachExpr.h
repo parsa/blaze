@@ -1073,6 +1073,7 @@ class DVecForEachExpr : public DenseVector< DVecForEachExpr<VT,OP,TF>, TF >
 // \ingroup dense_vector
 //
 // \param dv The input vector.
+// \param op The custom operation.
 // \return The custom operation applied to each single element of \a dv.
 //
 // The \a forEach function evaluates the given custom operation on each element of the input

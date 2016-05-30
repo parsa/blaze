@@ -848,6 +848,7 @@ class SMatForEachExpr : public SparseMatrix< SMatForEachExpr<MT,OP,SO>, SO >
 // \ingroup sparse_matrix
 //
 // \param sm The input matrix.
+// \param op The custom operation.
 // \return The custom operation applied to each single element of \a sm.
 //
 // The \a forEach function evaluates the given custom operation on each element of the input

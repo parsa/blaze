@@ -1001,6 +1001,7 @@ class DMatForEachExpr : public DenseMatrix< DMatForEachExpr<MT,OP,SO>, SO >
 // \ingroup dense_matrix
 //
 // \param dm The input matrix.
+// \param op The custom operation.
 // \return The custom operation applied to each single element of \a dm.
 //
 // The \a forEach function evaluates the given custom operation on each element of the input
