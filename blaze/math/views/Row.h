@@ -46,6 +46,7 @@
 #include <blaze/math/typetraits/IsMatAbsExpr.h>
 #include <blaze/math/typetraits/IsMatConjExpr.h>
 #include <blaze/math/typetraits/IsMatEvalExpr.h>
+#include <blaze/math/typetraits/IsMatEvalExpr.h>
 #include <blaze/math/typetraits/IsMatImagExpr.h>
 #include <blaze/math/typetraits/IsMatMatAddExpr.h>
 #include <blaze/math/typetraits/IsMatMatMultExpr.h>
@@ -404,6 +405,31 @@ inline EnableIf_< IsMatImagExpr<MT>, RowExprTrait_<MT> >
    BLAZE_FUNCTION_TRACE;
 
    return imag( row( (~matrix).operand(), index ) );
+}
+/*! \endcond */
+//*************************************************************************************************
+
+
+//*************************************************************************************************
+/*! \cond BLAZE_INTERNAL */
+/*!\brief Creating a view on a specific row of the given matrix custom operation.
+// \ingroup views
+//
+// \param matrix The constant matrix custom operation.
+// \param index The index of the row.
+// \return View on the specified row of the custom operation.
+//
+// This function returns an expression representing the specified row of the given matrix
+// custom operation.
+*/
+template< typename MT  // Type of the matrix
+        , bool SO >    // Storage order
+inline EnableIf_< IsMatForEachExpr<MT>, RowExprTrait_<MT> >
+   row( const Matrix<MT,SO>& matrix, size_t index )
+{
+   BLAZE_FUNCTION_TRACE;
+
+   return forEach( row( (~matrix).operand(), index ), (~matrix).operation() );
 }
 /*! \endcond */
 //*************************************************************************************************
