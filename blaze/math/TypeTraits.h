@@ -127,6 +127,7 @@
 #include <blaze/math/typetraits/IsRowVector.h>
 #include <blaze/math/typetraits/IsSerialExpr.h>
 #include <blaze/math/typetraits/IsSIMDEnabled.h>
+#include <blaze/math/typetraits/IsSIMDType.h>
 #include <blaze/math/typetraits/IsSMPAssignable.h>
 #include <blaze/math/typetraits/IsSparseElement.h>
 #include <blaze/math/typetraits/IsSparseMatrix.h>
