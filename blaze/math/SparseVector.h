@@ -48,6 +48,7 @@
 #include <blaze/math/expressions/SVecDVecDivExpr.h>
 #include <blaze/math/expressions/SVecDVecMultExpr.h>
 #include <blaze/math/expressions/SVecEvalExpr.h>
+#include <blaze/math/expressions/SVecForEachExpr.h>
 #include <blaze/math/expressions/SVecImagExpr.h>
 #include <blaze/math/expressions/SVecRealExpr.h>
 #include <blaze/math/expressions/SVecScalarDivExpr.h>
