@@ -119,6 +119,7 @@
 #include <blaze/math/traits/SMatDMatSubExprTrait.h>
 #include <blaze/math/traits/SMatDVecMultExprTrait.h>
 #include <blaze/math/traits/SMatEvalExprTrait.h>
+#include <blaze/math/traits/SMatForEachExprTrait.h>
 #include <blaze/math/traits/SMatImagExprTrait.h>
 #include <blaze/math/traits/SMatRealExprTrait.h>
 #include <blaze/math/traits/SMatScalarDivExprTrait.h>
