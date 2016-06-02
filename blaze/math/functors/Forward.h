@@ -46,6 +46,7 @@ namespace blaze {
 
 class Abs;
 class Cbrt;
+class Ceil;
 class Conj;
 class Floor;
 class Imag;
