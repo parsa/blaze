@@ -68,6 +68,7 @@ class Sin;
 class Sinh;
 class Sqrt;
 class Tan;
+class Tanh;
 
 } // namespace blaze
 
