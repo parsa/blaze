@@ -47,6 +47,7 @@ namespace blaze {
 class Abs;
 class Conj;
 class Imag;
+class InvSqrt;
 class Real;
 class Sqrt;
 
