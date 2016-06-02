@@ -48,6 +48,7 @@ class Abs;
 class Cbrt;
 class Ceil;
 class Conj;
+class Exp;
 class Floor;
 class Imag;
 class InvCbrt;
