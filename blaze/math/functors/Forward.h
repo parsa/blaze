@@ -1,7 +1,7 @@
 //=================================================================================================
 /*!
-//  \file blaze/math/Forward.h
-//  \brief Header file for all forward declarations of the math module
+//  \file blaze/math/functors/Forward.h
+//  \brief Header file for all functor forward declarations
 //
 //  Copyright (C) 2013 Klaus Iglberger - All Rights Reserved
 //
@@ -32,18 +32,20 @@
 */
 //=================================================================================================
 
-#ifndef _BLAZE_MATH_FORWARD_H_
-#define _BLAZE_MATH_FORWARD_H_
+#ifndef _BLAZE_MATH_FUNCTORS_FORWARD_H_
+#define _BLAZE_MATH_FUNCTORS_FORWARD_H_
 
 
-//*************************************************************************************************
-// Includes
-//*************************************************************************************************
+namespace blaze {
 
-#include <blaze/math/adaptors/Forward.h>
-#include <blaze/math/dense/Forward.h>
-#include <blaze/math/functors/Forward.h>
-#include <blaze/math/sparse/Forward.h>
-#include <blaze/math/views/Forward.h>
+//=================================================================================================
+//
+//  ::blaze NAMESPACE FORWARD DECLARATIONS
+//
+//=================================================================================================
+
+class Abs;
+
+} // namespace blaze
 
 #endif

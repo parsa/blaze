@@ -55,6 +55,7 @@
 #include <blaze/math/DynamicVector.h>
 #include <blaze/math/Epsilon.h>
 #include <blaze/math/Functions.h>
+#include <blaze/math/Functors.h>
 #include <blaze/math/Infinity.h>
 #include <blaze/math/InversionFlag.h>
 #include <blaze/math/HermitianMatrix.h>
