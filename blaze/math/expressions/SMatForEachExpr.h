@@ -930,6 +930,34 @@ inline const SMatForEachExpr<MT,InvSqrt,SO> invsqrt( const SparseMatrix<MT,SO>& 
 //*************************************************************************************************
 
 
+//*************************************************************************************************
+/*!\brief Computes the cubic root of each single element of the sparse matrix \a sm.
+// \ingroup sparse_matrix
+//
+// \param sm The input matrix.
+// \return The cubic root of each single element of \a sm.
+//
+// The \a cbrt function computes the cubic root of each element of the input matrix \a sm. The
+// function returns an expression representing this operation.\n
+// The following example demonstrates the use of the \a cbrt function:
+
+   \code
+   blaze::CompressedMatrix<double> A, B;
+   // ... Resizing and initialization
+   B = cbrt( A );
+   \endcode
+*/
+template< typename MT  // Type of the sparse matrix
+        , bool SO >    // Storage order
+inline const SMatForEachExpr<MT,Cbrt,SO> cbrt( const SparseMatrix<MT,SO>& dm )
+{
+   BLAZE_FUNCTION_TRACE;
+
+   return SMatForEachExpr<MT,Cbrt,SO>( ~dm, Cbrt() );
+}
+//*************************************************************************************************
+
+
 
 
 //=================================================================================================

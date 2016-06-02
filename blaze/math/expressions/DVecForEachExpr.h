@@ -1171,6 +1171,34 @@ inline const DVecForEachExpr<VT,InvSqrt,TF> invsqrt( const DenseVector<VT,TF>& d
 //*************************************************************************************************
 
 
+//*************************************************************************************************
+/*!\brief Computes the cubic root of each single element of the dense vector \a dv.
+// \ingroup dense_vector
+//
+// \param dv The input vector.
+// \return The cubic root of each single element of \a dv.
+//
+// The \a cbrt function computes the cubic root of each element of the input vector \a dv. The
+// function returns an expression representing this operation.\n
+// The following example demonstrates the use of the \a cbrt function:
+
+   \code
+   blaze::DynamicVector<double> a, b;
+   // ... Resizing and initialization
+   b = cbrt( a );
+   \endcode
+*/
+template< typename VT  // Type of the dense vector
+        , bool TF >    // Transpose flag
+inline const DVecForEachExpr<VT,Cbrt,TF> cbrt( const DenseVector<VT,TF>& dv )
+{
+   BLAZE_FUNCTION_TRACE;
+
+   return DVecForEachExpr<VT,Cbrt,TF>( ~dv, Cbrt() );
+}
+//*************************************************************************************************
+
+
 
 
 //=================================================================================================
