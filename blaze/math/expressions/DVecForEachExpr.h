@@ -1427,6 +1427,34 @@ inline const DVecForEachExpr<VT,Sin,TF> sin( const DenseVector<VT,TF>& dv )
 //*************************************************************************************************
 
 
+//*************************************************************************************************
+/*!\brief Computes the inverse sine for each single element of the dense vector \a dv.
+// \ingroup dense_vector
+//
+// \param dv The input vector.
+// \return The inverse sine of each single element of \a dv.
+//
+// The \a asin() function computes inverse sine for each element of the input vector \a dv. The
+// function returns an expression representing this operation.\n
+// The following example demonstrates the use of the \a asin() function:
+
+   \code
+   blaze::DynamicVector<double> a, b;
+   // ... Resizing and initialization
+   b = asin( a );
+   \endcode
+*/
+template< typename VT  // Type of the dense vector
+        , bool TF >    // Transpose flag
+inline const DVecForEachExpr<VT,Asin,TF> asin( const DenseVector<VT,TF>& dv )
+{
+   BLAZE_FUNCTION_TRACE;
+
+   return DVecForEachExpr<VT,Asin,TF>( ~dv, Asin() );
+}
+//*************************************************************************************************
+
+
 
 
 //=================================================================================================
