@@ -52,6 +52,7 @@ class Cbrt;
 class Ceil;
 class Conj;
 class Cos;
+class Cosh;
 class Exp;
 class Floor;
 class Imag;

@@ -48,6 +48,7 @@
 #include <blaze/math/functors/Ceil.h>
 #include <blaze/math/functors/Conj.h>
 #include <blaze/math/functors/Cos.h>
+#include <blaze/math/functors/Cosh.h>
 #include <blaze/math/functors/Exp.h>
 #include <blaze/math/functors/Floor.h>
 #include <blaze/math/functors/Imag.h>
