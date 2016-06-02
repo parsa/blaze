@@ -1227,6 +1227,34 @@ inline const SVecForEachExpr<VT,Asinh,TF> asinh( const SparseVector<VT,TF>& sv )
 //*************************************************************************************************
 
 
+//*************************************************************************************************
+/*!\brief Computes the cosine of each non-zero element of the sparse vector \a sv.
+// \ingroup sparse_vector
+//
+// \param sv The input vector.
+// \return The cosine of each non-zero element of \a sv.
+//
+// The \a cos() function computes the cosine for each non-zero element of the input vector \a sv.
+// The function returns an expression representing this operation.\n
+// The following example demonstrates the use of the \a cos() function:
+
+   \code
+   blaze::CompressedVector<double> a, b;
+   // ... Resizing and initialization
+   b = cos( a );
+   \endcode
+*/
+template< typename VT  // Type of the sparse vector
+        , bool TF >    // Transpose flag
+inline const SVecForEachExpr<VT,Cos,TF> cos( const SparseVector<VT,TF>& sv )
+{
+   BLAZE_FUNCTION_TRACE;
+
+   return SVecForEachExpr<VT,Cos,TF>( ~sv, Cos() );
+}
+//*************************************************************************************************
+
+
 
 
 //=================================================================================================
