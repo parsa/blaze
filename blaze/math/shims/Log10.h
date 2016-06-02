@@ -1,7 +1,7 @@
 //=================================================================================================
 /*!
-//  \file blaze/math/Shims.h
-//  \brief Header file for the mathematical shims
+//  \file blaze/math/shims/Log10.h
+//  \brief Header file for the log10 shim
 //
 //  Copyright (C) 2013 Klaus Iglberger - All Rights Reserved
 //
@@ -32,39 +32,32 @@
 */
 //=================================================================================================
 
-#ifndef _BLAZE_MATH_SHIMS_H_
-#define _BLAZE_MATH_SHIMS_H_
+#ifndef _BLAZE_MATH_SHIMS_LOG10_H_
+#define _BLAZE_MATH_SHIMS_LOG10_H_
 
 
 //*************************************************************************************************
 // Includes
 //*************************************************************************************************
 
-#include <blaze/math/shims/Abs.h>
-#include <blaze/math/shims/Cbrt.h>
-#include <blaze/math/shims/Ceil.h>
-#include <blaze/math/shims/Clear.h>
-#include <blaze/math/shims/Conjugate.h>
-#include <blaze/math/shims/Equal.h>
-#include <blaze/math/shims/Exp.h>
-#include <blaze/math/shims/Floor.h>
-#include <blaze/math/shims/Imaginary.h>
-#include <blaze/math/shims/InvCbrt.h>
-#include <blaze/math/shims/Invert.h>
-#include <blaze/math/shims/InvSqrt.h>
-#include <blaze/math/shims/IsDefault.h>
-#include <blaze/math/shims/IsDivisor.h>
-#include <blaze/math/shims/IsNaN.h>
-#include <blaze/math/shims/IsOne.h>
-#include <blaze/math/shims/IsReal.h>
-#include <blaze/math/shims/IsZero.h>
-#include <blaze/math/shims/Log.h>
-#include <blaze/math/shims/Log10.h>
-#include <blaze/math/shims/Pow.h>
-#include <blaze/math/shims/Real.h>
-#include <blaze/math/shims/Reset.h>
-#include <blaze/math/shims/Serial.h>
-#include <blaze/math/shims/Sqrt.h>
-#include <blaze/math/shims/Square.h>
+#include <cmath>
+
+
+namespace blaze {
+
+//=================================================================================================
+//
+//  LOG10 SHIM
+//
+//=================================================================================================
+
+//*************************************************************************************************
+/*!\brief Import of the std::log10() function into the Blaze namespace.
+// \ingroup math_shims
+*/
+using std::log10;
+//*************************************************************************************************
+
+} // namespace blaze
 
 #endif
