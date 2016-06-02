@@ -71,6 +71,7 @@
 #include <blaze/util/mpl/And.h>
 #include <blaze/util/mpl/If.h>
 #include <blaze/util/mpl/Not.h>
+#include <blaze/util/Template.h>
 #include <blaze/util/Types.h>
 #include <blaze/util/typetraits/HasMember.h>
 #include <blaze/util/typetraits/IsSame.h>
@@ -100,8 +101,12 @@ class DVecForEachExpr : public DenseVector< DVecForEachExpr<VT,OP,TF>, TF >
 {
  private:
    //**Type definitions****************************************************************************
-   typedef ResultType_<VT>  RT;  //!< Result type of the dense vector expression.
-   typedef ReturnType_<VT>  RN;  //!< Return type of the dense vector expression.
+   typedef ResultType_<VT>   RT;  //!< Result type of the dense vector expression.
+   typedef ElementType_<VT>  ET;  //!< Element type of the dense vector expression.
+   typedef ReturnType_<VT>   RN;  //!< Return type of the dense vector expression.
+
+   //! Definition of the HasSIMDEnabled type trait.
+   BLAZE_CREATE_HAS_DATA_OR_FUNCTION_MEMBER_TYPE_TRAIT( HasSIMDEnabled, simdEnabled );
 
    //! Definition of the HasLoad type trait.
    BLAZE_CREATE_HAS_DATA_OR_FUNCTION_MEMBER_TYPE_TRAIT( HasLoad, load );
@@ -137,6 +142,15 @@ class DVecForEachExpr : public DenseVector< DVecForEachExpr<VT,OP,TF>, TF >
    template< typename VT2 >
    struct UseSMPAssign {
       enum : bool { value = ( !VT2::smpAssignable || !VT::smpAssignable ) && useAssign };
+   };
+   /*! \endcond */
+   //**********************************************************************************************
+
+   //**SIMD support detection**********************************************************************
+   /*! \cond BLAZE_INTERNAL */
+   //! Helper structure for the detection of the SIMD capabilities of the given custom operation.
+   struct UseSIMDEnabledFlag {
+      enum : bool { value = OP::BLAZE_TEMPLATE simdEnabled<ET>() };
    };
    /*! \endcond */
    //**********************************************************************************************
@@ -405,9 +419,11 @@ class DVecForEachExpr : public DenseVector< DVecForEachExpr<VT,OP,TF>, TF >
    };
    //**********************************************************************************************
 
+ public:
    //**Compilation flags***************************************************************************
    //! Compilation switch for the expression template evaluation strategy.
-   enum : bool { simdEnabled = VT::simdEnabled && HasLoad<OP>::value };
+   enum : bool { simdEnabled = VT::simdEnabled &&
+                               If_< HasSIMDEnabled<OP>, UseSIMDEnabledFlag, HasLoad<OP> >::value };
 
    //! Compilation switch for the expression template assignment strategy.
    enum : bool { smpAssignable = VT::smpAssignable };
