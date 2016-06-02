@@ -1115,6 +1115,34 @@ inline const SVecForEachExpr<VT,Log10,TF> log10( const SparseVector<VT,TF>& sv )
 //*************************************************************************************************
 
 
+//*************************************************************************************************
+/*!\brief Computes the sine of each non-zero element of the sparse vector \a sv.
+// \ingroup sparse_vector
+//
+// \param sv The input vector.
+// \return The sine of each non-zero element of \a sv.
+//
+// The \a sin() function computes the sine for each non-zero element of the input vector \a sv.
+// The function returns an expression representing this operation.\n
+// The following example demonstrates the use of the \a sin() function:
+
+   \code
+   blaze::CompressedVector<double> a, b;
+   // ... Resizing and initialization
+   b = sin( a );
+   \endcode
+*/
+template< typename VT  // Type of the sparse vector
+        , bool TF >    // Transpose flag
+inline const SVecForEachExpr<VT,Sin,TF> sin( const SparseVector<VT,TF>& sv )
+{
+   BLAZE_FUNCTION_TRACE;
+
+   return SVecForEachExpr<VT,Sin,TF>( ~sv, Sin() );
+}
+//*************************************************************************************************
+
+
 
 
 //=================================================================================================

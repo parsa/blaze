@@ -1327,6 +1327,34 @@ inline const DMatForEachExpr<MT,Log10,SO> log10( const DenseMatrix<MT,SO>& dm )
 //*************************************************************************************************
 
 
+//*************************************************************************************************
+/*!\brief Computes the sine for each single element of the dense matrix \a dm.
+// \ingroup dense_matrix
+//
+// \param dm The input matrix.
+// \return The sine of each single element of \a dm.
+//
+// The \a sin() function computes sine for each element of the input matrix \a dm. The function
+// returns an expression representing this operation.\n
+// The following example demonstrates the use of the \a sin() function:
+
+   \code
+   blaze::DynamicMatrix<double> A, B;
+   // ... Resizing and initialization
+   B = sin( A );
+   \endcode
+*/
+template< typename MT  // Type of the dense matrix
+        , bool SO >    // Storage order
+inline const DMatForEachExpr<MT,Sin,SO> sin( const DenseMatrix<MT,SO>& dm )
+{
+   BLAZE_FUNCTION_TRACE;
+
+   return DMatForEachExpr<MT,Sin,SO>( ~dm, Sin() );
+}
+//*************************************************************************************************
+
+
 
 
 //=================================================================================================
