@@ -41,6 +41,7 @@
 //*************************************************************************************************
 
 #include <blaze/math/functors/Abs.h>
+#include <blaze/math/functors/Asin.h>
 #include <blaze/math/functors/Cbrt.h>
 #include <blaze/math/functors/Ceil.h>
 #include <blaze/math/functors/Conj.h>
