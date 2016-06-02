@@ -1048,7 +1048,7 @@ inline const SMatForEachExpr<MT,Ceil,SO> ceil( const SparseMatrix<MT,SO>& sm )
 //
 // \param sm The input matrix.
 // \param exp The exponent.
-// \return The exponential value of each single element of \a sm.
+// \return The exponential value of each non-zero element of \a sm.
 //
 // The \a pow() function computes the exponential value for each element of the input matrix \a sm.
 // The function returns an expression representing this operation.\n
@@ -1075,14 +1075,14 @@ inline const SMatForEachExpr<MT,Pow<T>,SO> pow( const SparseMatrix<MT,SO>& sm, T
 
 
 //*************************************************************************************************
-/*!\brief Computes \f$ e^x \f$ for each single element of the sparse matrix \a sm.
+/*!\brief Computes \f$ e^x \f$ for each non-zero element of the sparse matrix \a sm.
 // \ingroup sparse_matrix
 //
 // \param sm The input matrix.
-// \return The exponential value of each single element of \a sm.
+// \return The resulting sparse matrix.
 //
-// The \a exp() function computes \f$ e^x \f$ for each element of the input matrix \a sm. The
-// function returns an expression representing this operation.\n
+// The \a exp() function computes \f$ e^x \f$ for each non-zero element of the input matrix \a sm.
+// The function returns an expression representing this operation.\n
 // The following example demonstrates the use of the \a exp() function:
 
    \code
@@ -1093,11 +1093,39 @@ inline const SMatForEachExpr<MT,Pow<T>,SO> pow( const SparseMatrix<MT,SO>& sm, T
 */
 template< typename MT  // Type of the sparse matrix
         , bool SO >    // Storage order
-inline const SMatForEachExpr<MT,Exp,SO> exp( const SparseMatrix<MT,SO>& dm )
+inline const SMatForEachExpr<MT,Exp,SO> exp( const SparseMatrix<MT,SO>& sm )
 {
    BLAZE_FUNCTION_TRACE;
 
-   return SMatForEachExpr<MT,Exp,SO>( ~dm, Exp() );
+   return SMatForEachExpr<MT,Exp,SO>( ~sm, Exp() );
+}
+//*************************************************************************************************
+
+
+//*************************************************************************************************
+/*!\brief Computes the natural logarithm for each non-zero element of the sparse matrix \a sm.
+// \ingroup sparse_matrix
+//
+// \param sm The input matrix.
+// \return The natural logarithm of each non-zero element of \a sm.
+//
+// The \a log() function computes the natural logarithm for each non-zero element of the input
+// matrix \a sm. The function returns an expression representing this operation.\n
+// The following example demonstrates the use of the \a log() function:
+
+   \code
+   blaze::CompressedMatrix<double> A, B;
+   // ... Resizing and initialization
+   B = log( A );
+   \endcode
+*/
+template< typename MT  // Type of the sparse matrix
+        , bool SO >    // Storage order
+inline const SMatForEachExpr<MT,Log,SO> log( const SparseMatrix<MT,SO>& sm )
+{
+   BLAZE_FUNCTION_TRACE;
+
+   return SMatForEachExpr<MT,Log,SO>( ~sm, Log() );
 }
 //*************************************************************************************************
 
