@@ -1126,6 +1126,34 @@ inline const DMatForEachExpr<MT,Cbrt,SO> cbrt( const DenseMatrix<MT,SO>& dm )
 //*************************************************************************************************
 
 
+//*************************************************************************************************
+/*!\brief Computes the inverse cubic root of each single element of the dense matrix \a dm.
+// \ingroup dense_matrix
+//
+// \param dm The input matrix.
+// \return The inverse cubic root of each single element of \a dm.
+//
+// The \a invcbrt function computes the inverse cubic root of each element of the input matrix
+// \a dm. The function returns an expression representing this operation.\n
+// The following example demonstrates the use of the \a invcbrt function:
+
+   \code
+   blaze::DynamicMatrix<double> A, B;
+   // ... Resizing and initialization
+   B = invcbrt( A );
+   \endcode
+*/
+template< typename MT  // Type of the dense matrix
+        , bool SO >    // Storage order
+inline const DMatForEachExpr<MT,InvCbrt,SO> invcbrt( const DenseMatrix<MT,SO>& dm )
+{
+   BLAZE_FUNCTION_TRACE;
+
+   return DMatForEachExpr<MT,InvCbrt,SO>( ~dm, InvCbrt() );
+}
+//*************************************************************************************************
+
+
 
 
 //=================================================================================================
