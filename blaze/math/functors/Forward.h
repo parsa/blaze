@@ -50,6 +50,7 @@ class Asinh;
 class Cbrt;
 class Ceil;
 class Conj;
+class Cos;
 class Exp;
 class Floor;
 class Imag;
