@@ -54,6 +54,7 @@ class Imag;
 class InvCbrt;
 class InvSqrt;
 class Log;
+class Log10;
 template< typename > class Pow;
 class Real;
 class Sqrt;

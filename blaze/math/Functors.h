@@ -50,6 +50,7 @@
 #include <blaze/math/functors/InvCbrt.h>
 #include <blaze/math/functors/InvSqrt.h>
 #include <blaze/math/functors/Log.h>
+#include <blaze/math/functors/Log10.h>
 #include <blaze/math/functors/Pow.h>
 #include <blaze/math/functors/Real.h>
 #include <blaze/math/functors/Sqrt.h>
