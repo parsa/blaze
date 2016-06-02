@@ -1406,8 +1406,8 @@ inline const DVecForEachExpr<VT,Log10,TF> log10( const DenseVector<VT,TF>& dv )
 // \param dv The input vector.
 // \return The sine of each single element of \a dv.
 //
-// The \a sin() function computes sine for each element of the input vector \a dv. The function
-// returns an expression representing this operation.\n
+// The \a sin() function computes the sine for each element of the input vector \a dv. The
+// function returns an expression representing this operation.\n
 // The following example demonstrates the use of the \a sin() function:
 
    \code
@@ -1434,8 +1434,8 @@ inline const DVecForEachExpr<VT,Sin,TF> sin( const DenseVector<VT,TF>& dv )
 // \param dv The input vector.
 // \return The inverse sine of each single element of \a dv.
 //
-// The \a asin() function computes inverse sine for each element of the input vector \a dv. The
-// function returns an expression representing this operation.\n
+// The \a asin() function computes the inverse sine for each element of the input vector \a dv.
+// The function returns an expression representing this operation.\n
 // The following example demonstrates the use of the \a asin() function:
 
    \code
@@ -1451,6 +1451,34 @@ inline const DVecForEachExpr<VT,Asin,TF> asin( const DenseVector<VT,TF>& dv )
    BLAZE_FUNCTION_TRACE;
 
    return DVecForEachExpr<VT,Asin,TF>( ~dv, Asin() );
+}
+//*************************************************************************************************
+
+
+//*************************************************************************************************
+/*!\brief Computes the hyperbolic sine for each single element of the dense vector \a dv.
+// \ingroup dense_vector
+//
+// \param dv The input vector.
+// \return The hyperbolic sine of each single element of \a dv.
+//
+// The \a sinh() function computes the hyperbolic sine for each element of the input vector \a dv.
+// The function returns an expression representing this operation.\n
+// The following example demonstrates the use of the \a sinh() function:
+
+   \code
+   blaze::DynamicVector<double> a, b;
+   // ... Resizing and initialization
+   b = sinh( a );
+   \endcode
+*/
+template< typename VT  // Type of the dense vector
+        , bool TF >    // Transpose flag
+inline const DVecForEachExpr<VT,Sinh,TF> sinh( const DenseVector<VT,TF>& dv )
+{
+   BLAZE_FUNCTION_TRACE;
+
+   return DVecForEachExpr<VT,Sinh,TF>( ~dv, Sinh() );
 }
 //*************************************************************************************************
 
