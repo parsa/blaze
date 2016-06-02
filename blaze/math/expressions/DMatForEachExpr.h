@@ -1070,6 +1070,34 @@ inline const DMatForEachExpr<MT,Sqrt,SO> sqrt( const DenseMatrix<MT,SO>& dm )
 //*************************************************************************************************
 
 
+//*************************************************************************************************
+/*!\brief Computes the inverse square root of each single element of the dense matrix \a dm.
+// \ingroup dense_matrix
+//
+// \param dm The input matrix.
+// \return The inverse square root of each single element of \a dm.
+//
+// The \a invsqrt function computes the inverse square root of each element of the input matrix
+// \a dm. The function returns an expression representing this operation.\n
+// The following example demonstrates the use of the \a invsqrt function:
+
+   \code
+   blaze::DynamicMatrix<double> A, B;
+   // ... Resizing and initialization
+   B = invsqrt( A );
+   \endcode
+*/
+template< typename MT  // Type of the dense matrix
+        , bool SO >    // Storage order
+inline const DMatForEachExpr<MT,InvSqrt,SO> invsqrt( const DenseMatrix<MT,SO>& dm )
+{
+   BLAZE_FUNCTION_TRACE;
+
+   return DMatForEachExpr<MT,InvSqrt,SO>( ~dm, InvSqrt() );
+}
+//*************************************************************************************************
+
+
 
 
 //=================================================================================================

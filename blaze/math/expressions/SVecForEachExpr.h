@@ -859,6 +859,34 @@ inline const SVecForEachExpr<VT,Sqrt,TF> sqrt( const SparseVector<VT,TF>& sv )
 //*************************************************************************************************
 
 
+//*************************************************************************************************
+/*!\brief Computes the inverse square root of each single element of the sparse vector \a sv.
+// \ingroup sparse_vector
+//
+// \param sv The input vector.
+// \return The inverse square root of each single element of \a sv.
+//
+// The \a invsqrt function computes the inverse square root of each element of the input vector
+// \a sv. The function returns an expression representing this operation.\n
+// The following example demonstrates the use of the \a invsqrt function:
+
+   \code
+   blaze::CompressedVector<double> a, b;
+   // ... Resizing and initialization
+   b = invsqrt( a );
+   \endcode
+*/
+template< typename VT  // Type of the sparse vector
+        , bool TF >    // Transpose flag
+inline const SVecForEachExpr<VT,InvSqrt,TF> invsqrt( const SparseVector<VT,TF>& sv )
+{
+   BLAZE_FUNCTION_TRACE;
+
+   return SVecForEachExpr<VT,InvSqrt,TF>( ~sv, InvSqrt() );
+}
+//*************************************************************************************************
+
+
 
 
 //=================================================================================================

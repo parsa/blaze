@@ -1143,6 +1143,34 @@ inline const DVecForEachExpr<VT,Sqrt,TF> sqrt( const DenseVector<VT,TF>& dv )
 //*************************************************************************************************
 
 
+//*************************************************************************************************
+/*!\brief Computes the inverse square root of each single element of the dense vector \a dv.
+// \ingroup dense_vector
+//
+// \param dv The input vector.
+// \return The inverse square root of each single element of \a dv.
+//
+// The \a invsqrt function computes the inverse square root of each element of the input vector
+// \a dv. The function returns an expression representing this operation.\n
+// The following example demonstrates the use of the \a invsqrt function:
+
+   \code
+   blaze::DynamicVector<double> a, b;
+   // ... Resizing and initialization
+   b = invsqrt( a );
+   \endcode
+*/
+template< typename VT  // Type of the dense vector
+        , bool TF >    // Transpose flag
+inline const DVecForEachExpr<VT,InvSqrt,TF> invsqrt( const DenseVector<VT,TF>& dv )
+{
+   BLAZE_FUNCTION_TRACE;
+
+   return DVecForEachExpr<VT,InvSqrt,TF>( ~dv, InvSqrt() );
+}
+//*************************************************************************************************
+
+
 
 
 //=================================================================================================
