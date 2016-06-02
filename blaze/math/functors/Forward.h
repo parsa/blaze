@@ -52,6 +52,7 @@ class Floor;
 class Imag;
 class InvCbrt;
 class InvSqrt;
+template< typename > class Pow;
 class Real;
 class Sqrt;
 

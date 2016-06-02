@@ -48,6 +48,7 @@
 #include <blaze/math/functors/Imag.h>
 #include <blaze/math/functors/InvCbrt.h>
 #include <blaze/math/functors/InvSqrt.h>
+#include <blaze/math/functors/Pow.h>
 #include <blaze/math/functors/Real.h>
 #include <blaze/math/functors/Sqrt.h>
 
