@@ -46,6 +46,7 @@ namespace blaze {
 
 class Abs;
 class Conj;
+class Real;
 
 } // namespace blaze
 

@@ -1,7 +1,7 @@
 //=================================================================================================
 /*!
-//  \file blaze/math/Functors.h
-//  \brief Header file for all functors
+//  \file blaze/math/functors/Real.h
+//  \brief Header file for the Real functor
 //
 //  Copyright (C) 2013 Klaus Iglberger - All Rights Reserved
 //
@@ -32,16 +32,47 @@
 */
 //=================================================================================================
 
-#ifndef _BLAZE_MATH_FUNCTORS_H_
-#define _BLAZE_MATH_FUNCTORS_H_
+#ifndef _BLAZE_MATH_FUNCTORS_REAL_H_
+#define _BLAZE_MATH_FUNCTORS_REAL_H_
 
 
 //*************************************************************************************************
 // Includes
 //*************************************************************************************************
 
-#include <blaze/math/functors/Abs.h>
-#include <blaze/math/functors/Conj.h>
-#include <blaze/math/functors/Real.h>
+#include <blaze/math/shims/Real.h>
+#include <blaze/system/Inline.h>
+
+
+namespace blaze {
+
+//=================================================================================================
+//
+//  CLASS DEFINITION
+//
+//=================================================================================================
+
+//*************************************************************************************************
+/*!\brief Generic wrapper for the real() function.
+// \ingroup functors
+*/
+struct Real
+{
+   //**********************************************************************************************
+   /*!\brief Returns the result of the real() function for the given object/value.
+   //
+   // \param a The given object/value.
+   // \return The result of the real() function for the given object/value.
+   */
+   template< typename T >
+   BLAZE_ALWAYS_INLINE auto operator()( const T& a ) const -> decltype( real( a ) )
+   {
+      return real( a );
+   }
+   //**********************************************************************************************
+};
+//*************************************************************************************************
+
+} // namespace blaze
 
 #endif
