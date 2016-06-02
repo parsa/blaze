@@ -1495,6 +1495,34 @@ inline const DMatForEachExpr<MT,Acos,SO> acos( const DenseMatrix<MT,SO>& dm )
 //*************************************************************************************************
 
 
+//*************************************************************************************************
+/*!\brief Computes the hyperbolic cosine for each single element of the dense matrix \a dm.
+// \ingroup dense_matrix
+//
+// \param dm The input matrix.
+// \return The hyperbolic cosine of each single element of \a dm.
+//
+// The \a cosh() function computes the hyperbolic cosine for each element of the input matrix \a dm.
+// The function returns an expression representing this operation.\n
+// The following example demonstrates the use of the \a cosh() function:
+
+   \code
+   blaze::DynamicMatrix<double> A, B;
+   // ... Resizing and initialization
+   B = cosh( A );
+   \endcode
+*/
+template< typename MT  // Type of the dense matrix
+        , bool SO >    // Storage order
+inline const DMatForEachExpr<MT,Cosh,SO> cosh( const DenseMatrix<MT,SO>& dm )
+{
+   BLAZE_FUNCTION_TRACE;
+
+   return DMatForEachExpr<MT,Cosh,SO>( ~dm, Cosh() );
+}
+//*************************************************************************************************
+
+
 
 
 //=================================================================================================
