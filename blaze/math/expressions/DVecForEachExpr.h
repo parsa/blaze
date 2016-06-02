@@ -1093,9 +1093,9 @@ class DVecForEachExpr : public DenseVector< DVecForEachExpr<VT,OP,TF>, TF >
 // \param op The custom operation.
 // \return The custom operation applied to each single element of \a dv.
 //
-// The \a forEach function evaluates the given custom operation on each element of the input
+// The \a forEach() function evaluates the given custom operation on each element of the input
 // vector \a dv. The function returns an expression representing this operation.\n
-// The following example demonstrates the use of the \a forEach function:
+// The following example demonstrates the use of the \a forEach() function:
 
    \code
    blaze::DynamicVector<double> a, b;
@@ -1122,9 +1122,9 @@ inline const DVecForEachExpr<VT,OP,TF> forEach( const DenseVector<VT,TF>& dv, OP
 // \param dv The input vector.
 // \return The square root of each single element of \a dv.
 //
-// The \a sqrt function computes the square root of each element of the input vector \a dv. The
+// The \a sqrt() function computes the square root of each element of the input vector \a dv. The
 // function returns an expression representing this operation.\n
-// The following example demonstrates the use of the \a sqrt function:
+// The following example demonstrates the use of the \a sqrt() function:
 
    \code
    blaze::DynamicVector<double> a, b;
@@ -1150,9 +1150,9 @@ inline const DVecForEachExpr<VT,Sqrt,TF> sqrt( const DenseVector<VT,TF>& dv )
 // \param dv The input vector.
 // \return The inverse square root of each single element of \a dv.
 //
-// The \a invsqrt function computes the inverse square root of each element of the input vector
+// The \a invsqrt() function computes the inverse square root of each element of the input vector
 // \a dv. The function returns an expression representing this operation.\n
-// The following example demonstrates the use of the \a invsqrt function:
+// The following example demonstrates the use of the \a invsqrt() function:
 
    \code
    blaze::DynamicVector<double> a, b;
@@ -1178,9 +1178,9 @@ inline const DVecForEachExpr<VT,InvSqrt,TF> invsqrt( const DenseVector<VT,TF>& d
 // \param dv The input vector.
 // \return The cubic root of each single element of \a dv.
 //
-// The \a cbrt function computes the cubic root of each element of the input vector \a dv. The
+// The \a cbrt() function computes the cubic root of each element of the input vector \a dv. The
 // function returns an expression representing this operation.\n
-// The following example demonstrates the use of the \a cbrt function:
+// The following example demonstrates the use of the \a cbrt() function:
 
    \code
    blaze::DynamicVector<double> a, b;
@@ -1206,9 +1206,9 @@ inline const DVecForEachExpr<VT,Cbrt,TF> cbrt( const DenseVector<VT,TF>& dv )
 // \param dv The input vector.
 // \return The inverse cubic root of each single element of \a dv.
 //
-// The \a invcbrt function computes the inverse cubic root of each element of the input vector
+// The \a invcbrt() function computes the inverse cubic root of each element of the input vector
 // \a dv. The function returns an expression representing this operation.\n
-// The following example demonstrates the use of the \a invcbrt function:
+// The following example demonstrates the use of the \a invcbrt() function:
 
    \code
    blaze::DynamicVector<double> a, b;
@@ -1228,15 +1228,15 @@ inline const DVecForEachExpr<VT,InvCbrt,TF> invcbrt( const DenseVector<VT,TF>& d
 
 
 //*************************************************************************************************
-/*!\brief Applies the floor() function to each single element of the dense vector \a dv.
+/*!\brief Applies the \a floor() function to each single element of the dense vector \a dv.
 // \ingroup dense_vector
 //
 // \param dv The input vector.
 // \return The resulting dense vector.
 //
-// The \a floor function applies the floor() function to each element of the input vector \a dv.
-// The function returns an expression representing this operation.\n
-// The following example demonstrates the use of the \a floor function:
+// This function applies the \a floor() function to each element of the input vector \a dv. The
+// function returns an expression representing this operation.\n
+// The following example demonstrates the use of the \a floor() function:
 
    \code
    blaze::DynamicVector<double> a, b;
@@ -1251,6 +1251,34 @@ inline const DVecForEachExpr<VT,Floor,TF> floor( const DenseVector<VT,TF>& dv )
    BLAZE_FUNCTION_TRACE;
 
    return DVecForEachExpr<VT,Floor,TF>( ~dv, Floor() );
+}
+//*************************************************************************************************
+
+
+//*************************************************************************************************
+/*!\brief Applies the \a ceil() function to each single element of the dense vector \a dv.
+// \ingroup dense_vector
+//
+// \param dv The input vector.
+// \return The resulting dense vector.
+//
+// This function applies the \a ceil() function to each element of the input vector \a dv. The
+// function returns an expression representing this operation.\n
+// The following example demonstrates the use of the \a ceil() function:
+
+   \code
+   blaze::DynamicVector<double> a, b;
+   // ... Resizing and initialization
+   b = ceil( a );
+   \endcode
+*/
+template< typename VT  // Type of the dense vector
+        , bool TF >    // Transpose flag
+inline const DVecForEachExpr<VT,Ceil,TF> ceil( const DenseVector<VT,TF>& dv )
+{
+   BLAZE_FUNCTION_TRACE;
+
+   return DVecForEachExpr<VT,Ceil,TF>( ~dv, Ceil() );
 }
 //*************************************************************************************************
 

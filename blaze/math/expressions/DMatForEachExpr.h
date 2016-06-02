@@ -1020,9 +1020,9 @@ class DMatForEachExpr : public DenseMatrix< DMatForEachExpr<MT,OP,SO>, SO >
 // \param op The custom operation.
 // \return The custom operation applied to each single element of \a dm.
 //
-// The \a forEach function evaluates the given custom operation on each element of the input
+// The \a forEach() function evaluates the given custom operation on each element of the input
 // matrix \a dm. The function returns an expression representing this operation.\n
-// The following example demonstrates the use of the \a forEach function:
+// The following example demonstrates the use of the \a forEach() function:
 
    \code
    blaze::DynamicMatrix<double> A, B;
@@ -1049,9 +1049,9 @@ inline const DMatForEachExpr<MT,OP,SO> forEach( const DenseMatrix<MT,SO>& dm, OP
 // \param dm The input matrix.
 // \return The square root of each single element of \a dm.
 //
-// The \a sqrt function computes the square root of each element of the input matrix \a dm. The
+// The \a sqrt() function computes the square root of each element of the input matrix \a dm. The
 // function returns an expression representing this operation.\n
-// The following example demonstrates the use of the \a sqrt function:
+// The following example demonstrates the use of the \a sqrt() function:
 
    \code
    blaze::DynamicMatrix<double> A, B;
@@ -1077,9 +1077,9 @@ inline const DMatForEachExpr<MT,Sqrt,SO> sqrt( const DenseMatrix<MT,SO>& dm )
 // \param dm The input matrix.
 // \return The inverse square root of each single element of \a dm.
 //
-// The \a invsqrt function computes the inverse square root of each element of the input matrix
+// The \a invsqrt() function computes the inverse square root of each element of the input matrix
 // \a dm. The function returns an expression representing this operation.\n
-// The following example demonstrates the use of the \a invsqrt function:
+// The following example demonstrates the use of the \a invsqrt() function:
 
    \code
    blaze::DynamicMatrix<double> A, B;
@@ -1105,9 +1105,9 @@ inline const DMatForEachExpr<MT,InvSqrt,SO> invsqrt( const DenseMatrix<MT,SO>& d
 // \param dm The input matrix.
 // \return The cubic root of each single element of \a dm.
 //
-// The \a cbrt function computes the cubic root of each element of the input matrix \a dm. The
+// The \a cbrt() function computes the cubic root of each element of the input matrix \a dm. The
 // function returns an expression representing this operation.\n
-// The following example demonstrates the use of the \a cbrt function:
+// The following example demonstrates the use of the \a cbrt() function:
 
    \code
    blaze::DynamicMatrix<double> A, B;
@@ -1133,9 +1133,9 @@ inline const DMatForEachExpr<MT,Cbrt,SO> cbrt( const DenseMatrix<MT,SO>& dm )
 // \param dm The input matrix.
 // \return The inverse cubic root of each single element of \a dm.
 //
-// The \a invcbrt function computes the inverse cubic root of each element of the input matrix
+// The \a invcbrt() function computes the inverse cubic root of each element of the input matrix
 // \a dm. The function returns an expression representing this operation.\n
-// The following example demonstrates the use of the \a invcbrt function:
+// The following example demonstrates the use of the \a invcbrt() function:
 
    \code
    blaze::DynamicMatrix<double> A, B;
@@ -1155,15 +1155,15 @@ inline const DMatForEachExpr<MT,InvCbrt,SO> invcbrt( const DenseMatrix<MT,SO>& d
 
 
 //*************************************************************************************************
-/*!\brief Applies the floor() function to each single element of the dense matrix \a dm.
+/*!\brief Applies the \a floor() function to each single element of the dense matrix \a dm.
 // \ingroup dense_matrix
 //
 // \param dm The input matrix.
 // \return The resulting dense matrix.
 //
-// The \a floor function applies the floor() function to each element of the input matrix \a dm.
-// The function returns an expression representing this operation.\n
-// The following example demonstrates the use of the \a floor function:
+// This function applies the \a floor() function to each element of the input matrix \a dm. The
+// function returns an expression representing this operation.\n
+// The following example demonstrates the use of the \a floor() function:
 
    \code
    blaze::DynamicMatrix<double> A, B;
@@ -1178,6 +1178,34 @@ inline const DMatForEachExpr<MT,Floor,SO> floor( const DenseMatrix<MT,SO>& dm )
    BLAZE_FUNCTION_TRACE;
 
    return DMatForEachExpr<MT,Floor,SO>( ~dm, Floor() );
+}
+//*************************************************************************************************
+
+
+//*************************************************************************************************
+/*!\brief Applies the \a ceil() function to each single element of the dense matrix \a dm.
+// \ingroup dense_matrix
+//
+// \param dm The input matrix.
+// \return The resulting dense matrix.
+//
+// This function applies the \a ceil() function to each element of the input matrix \a dm. The
+// function returns an expression representing this operation.\n
+// The following example demonstrates the use of the \a ceil() function:
+
+   \code
+   blaze::DynamicMatrix<double> A, B;
+   // ... Resizing and initialization
+   B = ceil( A );
+   \endcode
+*/
+template< typename MT  // Type of the dense matrix
+        , bool SO >    // Storage order
+inline const DMatForEachExpr<MT,Ceil,SO> ceil( const DenseMatrix<MT,SO>& dm )
+{
+   BLAZE_FUNCTION_TRACE;
+
+   return DMatForEachExpr<MT,Ceil,SO>( ~dm, Ceil() );
 }
 //*************************************************************************************************
 

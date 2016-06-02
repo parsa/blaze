@@ -809,9 +809,9 @@ class SVecForEachExpr : public SparseVector< SVecForEachExpr<VT,OP,TF>, TF >
 // \param op The custom operation.
 // \return The custom operation applied to each single element of \a sv.
 //
-// The \a forEach function evaluates the given custom operation on each element of the input
+// The \a forEach() function evaluates the given custom operation on each element of the input
 // vector \a sv. The function returns an expression representing this operation.\n
-// The following example demonstrates the use of the \a forEach function:
+// The following example demonstrates the use of the \a forEach() function:
 
    \code
    blaze::CompressedVector<double> a, b;
@@ -838,9 +838,9 @@ inline const SVecForEachExpr<VT,OP,TF> forEach( const SparseVector<VT,TF>& sv, O
 // \param sv The input vector.
 // \return The square root of each single element of \a sv.
 //
-// The \a sqrt function computes the square root of each element of the input vector \a sv. The
+// The \a sqrt() function computes the square root of each element of the input vector \a sv. The
 // function returns an expression representing this operation.\n
-// The following example demonstrates the use of the \a sqrt function:
+// The following example demonstrates the use of the \a sqrt() function:
 
    \code
    blaze::CompressedVector<double> a, b;
@@ -866,9 +866,9 @@ inline const SVecForEachExpr<VT,Sqrt,TF> sqrt( const SparseVector<VT,TF>& sv )
 // \param sv The input vector.
 // \return The inverse square root of each single element of \a sv.
 //
-// The \a invsqrt function computes the inverse square root of each element of the input vector
+// The \a invsqrt() function computes the inverse square root of each element of the input vector
 // \a sv. The function returns an expression representing this operation.\n
-// The following example demonstrates the use of the \a invsqrt function:
+// The following example demonstrates the use of the \a invsqrt() function:
 
    \code
    blaze::CompressedVector<double> a, b;
@@ -894,9 +894,9 @@ inline const SVecForEachExpr<VT,InvSqrt,TF> invsqrt( const SparseVector<VT,TF>& 
 // \param sv The input vector.
 // \return The cubic root of each single element of \a sv.
 //
-// The \a cbrt function computes the cubic root of each element of the input vector \a sv. The
+// The \a cbrt() function computes the cubic root of each element of the input vector \a sv. The
 // function returns an expression representing this operation.\n
-// The following example demonstrates the use of the \a cbrt function:
+// The following example demonstrates the use of the \a cbrt() function:
 
    \code
    blaze::CompressedVector<double> a, b;
@@ -922,9 +922,9 @@ inline const SVecForEachExpr<VT,Cbrt,TF> cbrt( const SparseVector<VT,TF>& sv )
 // \param sv The input vector.
 // \return The inverse cubic root of each single element of \a sv.
 //
-// The \a invcbrt function computes the inverse cubic root of each element of the input vector
+// The \a invcbrt() function computes the inverse cubic root of each element of the input vector
 // \a sv. The function returns an expression representing this operation.\n
-// The following example demonstrates the use of the \a invcbrt function:
+// The following example demonstrates the use of the \a invcbrt() function:
 
    \code
    blaze::CompressedVector<double> a, b;
@@ -944,15 +944,15 @@ inline const SVecForEachExpr<VT,InvCbrt,TF> invcbrt( const SparseVector<VT,TF>& 
 
 
 //*************************************************************************************************
-/*!\brief Applies the floor() function to each single element of the sparse vector \a sv.
+/*!\brief Applies the \a floor() function to each single element of the sparse vector \a sv.
 // \ingroup sparse_vector
 //
 // \param sv The input vector.
 // \return The resulting sparse vector.
 //
-// The \a floor function applies the floor() function to each element of the input vector \a sv.
-// The function returns an expression representing this operation.\n
-// The following example demonstrates the use of the \a floor function:
+// This function applies the \a floor() function to each element of the input vector \a sv. The
+// function returns an expression representing this operation.\n
+// The following example demonstrates the use of the \a floor() function:
 
    \code
    blaze::DynamicVector<double> a, b;
@@ -967,6 +967,34 @@ inline const SVecForEachExpr<VT,Floor,TF> floor( const SparseVector<VT,TF>& sv )
    BLAZE_FUNCTION_TRACE;
 
    return SVecForEachExpr<VT,Floor,TF>( ~sv, Floor() );
+}
+//*************************************************************************************************
+
+
+//*************************************************************************************************
+/*!\brief Applies the \a ceil() function to each single element of the sparse vector \a sv.
+// \ingroup sparse_vector
+//
+// \param sv The input vector.
+// \return The resulting sparse vector.
+//
+// This function applies the \a ceil() function to each element of the input vector \a sv. The
+// function returns an expression representing this operation.\n
+// The following example demonstrates the use of the \a ceil() function:
+
+   \code
+   blaze::DynamicVector<double> a, b;
+   // ... Resizing and initialization
+   b = ceil( a );
+   \endcode
+*/
+template< typename VT  // Type of the sparse vector
+        , bool TF >    // Transpose flag
+inline const SVecForEachExpr<VT,Ceil,TF> ceil( const SparseVector<VT,TF>& sv )
+{
+   BLAZE_FUNCTION_TRACE;
+
+   return SVecForEachExpr<VT,Ceil,TF>( ~sv, Ceil() );
 }
 //*************************************************************************************************
 

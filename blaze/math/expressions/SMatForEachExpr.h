@@ -852,9 +852,9 @@ class SMatForEachExpr : public SparseMatrix< SMatForEachExpr<MT,OP,SO>, SO >
 // \param op The custom operation.
 // \return The custom operation applied to each single element of \a sm.
 //
-// The \a forEach function evaluates the given custom operation on each element of the input
+// The \a forEach() function evaluates the given custom operation on each element of the input
 // matrix \a sm. The function returns an expression representing this operation.\n
-// The following example demonstrates the use of the \a forEach function:
+// The following example demonstrates the use of the \a forEach() function:
 
    \code
    blaze::CompressedMatrix<double> A, B;
@@ -881,9 +881,9 @@ inline const SMatForEachExpr<MT,OP,SO> forEach( const SparseMatrix<MT,SO>& sm, O
 // \param sm The input matrix.
 // \return The square root of each single element of \a sm.
 //
-// The \a sqrt function computes the square root of each element of the input matrix \a sm. The
+// The \a sqrt() function computes the square root of each element of the input matrix \a sm. The
 // function returns an expression representing this operation.\n
-// The following example demonstrates the use of the \a sqrt function:
+// The following example demonstrates the use of the \a sqrt() function:
 
    \code
    blaze::CompressedMatrix<double> A, B;
@@ -909,9 +909,9 @@ inline const SMatForEachExpr<MT,Sqrt,SO> sqrt( const SparseMatrix<MT,SO>& dm )
 // \param sm The input matrix.
 // \return The inverse square root of each single element of \a sm.
 //
-// The \a invsqrt function computes the inverse square root of each element of the input matrix
+// The \a invsqrt() function computes the inverse square root of each element of the input matrix
 // \a sm. The function returns an expression representing this operation.\n
-// The following example demonstrates the use of the \a invsqrt function:
+// The following example demonstrates the use of the \a invsqrt() function:
 
    \code
    blaze::CompressedMatrix<double> A, B;
@@ -937,9 +937,9 @@ inline const SMatForEachExpr<MT,InvSqrt,SO> invsqrt( const SparseMatrix<MT,SO>& 
 // \param sm The input matrix.
 // \return The cubic root of each single element of \a sm.
 //
-// The \a cbrt function computes the cubic root of each element of the input matrix \a sm. The
+// The \a cbrt() function computes the cubic root of each element of the input matrix \a sm. The
 // function returns an expression representing this operation.\n
-// The following example demonstrates the use of the \a cbrt function:
+// The following example demonstrates the use of the \a cbrt() function:
 
    \code
    blaze::CompressedMatrix<double> A, B;
@@ -965,9 +965,9 @@ inline const SMatForEachExpr<MT,Cbrt,SO> cbrt( const SparseMatrix<MT,SO>& dm )
 // \param sm The input matrix.
 // \return The inverse cubic root of each single element of \a sm.
 //
-// The \a invcbrt function computes the inverse cubic root of each element of the input matrix
+// The \a invcbrt() function computes the inverse cubic root of each element of the input matrix
 // \a sm. The function returns an expression representing this operation.\n
-// The following example demonstrates the use of the \a invcbrt function:
+// The following example demonstrates the use of the \a invcbrt() function:
 
    \code
    blaze::CompressedMatrix<double> A, B;
@@ -987,15 +987,15 @@ inline const SMatForEachExpr<MT,InvCbrt,SO> invcbrt( const SparseMatrix<MT,SO>& 
 
 
 //*************************************************************************************************
-/*!\brief Applies the floor() function to each single element of the sparse matrix \a sm.
+/*!\brief Applies the \a floor() function to each single element of the sparse matrix \a sm.
 // \ingroup sparse_matrix
 //
 // \param sm The input matrix.
 // \return The resulting sparse matrix.
 //
-// The \a floor function applies the floor() function to each element of the input matrix \a sm.
-// The function returns an expression representing this operation.\n
-// The following example demonstrates the use of the \a floor function:
+// This function applies the floor() function to each element of the input matrix \a sm. The
+// function returns an expression representing this operation.\n
+// The following example demonstrates the use of the \a floor() function:
 
    \code
    blaze::DynamicMatrix<double> A, B;
@@ -1010,6 +1010,34 @@ inline const SMatForEachExpr<MT,Floor,SO> floor( const SparseMatrix<MT,SO>& sm )
    BLAZE_FUNCTION_TRACE;
 
    return SMatForEachExpr<MT,Floor,SO>( ~sm, Floor() );
+}
+//*************************************************************************************************
+
+
+//*************************************************************************************************
+/*!\brief Applies the \a ceil() function to each single element of the sparse matrix \a sm.
+// \ingroup sparse_matrix
+//
+// \param sm The input matrix.
+// \return The resulting sparse matrix.
+//
+// This function applies the ceil() function to each element of the input matrix \a sm. The
+// function returns an expression representing this operation.\n
+// The following example demonstrates the use of the \a ceil() function:
+
+   \code
+   blaze::DynamicMatrix<double> A, B;
+   // ... Resizing and initialization
+   B = ceil( A );
+   \endcode
+*/
+template< typename MT  // Type of the sparse matrix
+        , bool SO >    // Storage order
+inline const SMatForEachExpr<MT,Ceil,SO> ceil( const SparseMatrix<MT,SO>& sm )
+{
+   BLAZE_FUNCTION_TRACE;
+
+   return SMatForEachExpr<MT,Ceil,SO>( ~sm, Ceil() );
 }
 //*************************************************************************************************
 
