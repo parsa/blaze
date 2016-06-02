@@ -1311,6 +1311,34 @@ inline const SVecForEachExpr<VT,Cosh,TF> cosh( const SparseVector<VT,TF>& sv )
 //*************************************************************************************************
 
 
+//*************************************************************************************************
+/*!\brief Computes the inverse hyperbolic cosine of each non-zero element of the sparse vector \a sv.
+// \ingroup sparse_vector
+//
+// \param sv The input vector.
+// \return The inverse hyperbolic cosine of each non-zero element of \a sv.
+//
+// The \a acosh() function computes the inverse hyperbolic cosine for each non-zero element of
+// the input vector \a sv. The function returns an expression representing this operation.\n
+// The following example demonstrates the use of the \a acosh() function:
+
+   \code
+   blaze::CompressedVector<double> a, b;
+   // ... Resizing and initialization
+   b = acosh( a );
+   \endcode
+*/
+template< typename VT  // Type of the sparse vector
+        , bool TF >    // Transpose flag
+inline const SVecForEachExpr<VT,Acosh,TF> acosh( const SparseVector<VT,TF>& sv )
+{
+   BLAZE_FUNCTION_TRACE;
+
+   return SVecForEachExpr<VT,Acosh,TF>( ~sv, Acosh() );
+}
+//*************************************************************************************************
+
+
 
 
 //=================================================================================================
