@@ -45,6 +45,7 @@ namespace blaze {
 //=================================================================================================
 
 class Abs;
+class Cbrt;
 class Conj;
 class Imag;
 class InvSqrt;
