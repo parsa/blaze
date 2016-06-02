@@ -1299,6 +1299,34 @@ inline const DMatForEachExpr<MT,Log,SO> log( const DenseMatrix<MT,SO>& dm )
 //*************************************************************************************************
 
 
+//*************************************************************************************************
+/*!\brief Computes the common logarithm for each single element of the dense matrix \a dm.
+// \ingroup dense_matrix
+//
+// \param dm The input matrix.
+// \return The common logarithm of each single element of \a dm.
+//
+// The \a log10() function computes common logarithm for each element of the input matrix \a dm.
+// The function returns an expression representing this operation.\n
+// The following example demonstrates the use of the \a log10() function:
+
+   \code
+   blaze::DynamicMatrix<double> A, B;
+   // ... Resizing and initialization
+   B = log10( A );
+   \endcode
+*/
+template< typename MT  // Type of the dense matrix
+        , bool SO >    // Storage order
+inline const DMatForEachExpr<MT,Log10,SO> log10( const DenseMatrix<MT,SO>& dm )
+{
+   BLAZE_FUNCTION_TRACE;
+
+   return DMatForEachExpr<MT,Log10,SO>( ~dm, Log10() );
+}
+//*************************************************************************************************
+
+
 
 
 //=================================================================================================

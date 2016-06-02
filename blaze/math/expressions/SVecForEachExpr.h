@@ -1066,8 +1066,8 @@ inline const SVecForEachExpr<VT,Exp,TF> exp( const SparseVector<VT,TF>& sv )
 // \param sv The input vector.
 // \return The natural logaritm of each non-zero element of \a sv.
 //
-// The \a log() function computes \f$ e^x \f$ for each non-zero element of the input vector \a sv.
-// The function returns an expression representing this operation.\n
+// The \a log() function computes the natural logarithm for each non-zero element of the input
+// vector \a sv. The function returns an expression representing this operation.\n
 // The following example demonstrates the use of the \a log() function:
 
    \code
@@ -1083,6 +1083,34 @@ inline const SVecForEachExpr<VT,Log,TF> log( const SparseVector<VT,TF>& sv )
    BLAZE_FUNCTION_TRACE;
 
    return SVecForEachExpr<VT,Log,TF>( ~sv, Log() );
+}
+//*************************************************************************************************
+
+
+//*************************************************************************************************
+/*!\brief Computes the common logarithm of each non-zero element of the sparse vector \a sv.
+// \ingroup sparse_vector
+//
+// \param sv The input vector.
+// \return The common logaritm of each non-zero element of \a sv.
+//
+// The \a log10() function computes the common logarithm for each non-zero element of the input
+// vector \a sv. The function returns an expression representing this operation.\n
+// The following example demonstrates the use of the \a log10() function:
+
+   \code
+   blaze::CompressedVector<double> a, b;
+   // ... Resizing and initialization
+   b = log10( a );
+   \endcode
+*/
+template< typename VT  // Type of the sparse vector
+        , bool TF >    // Transpose flag
+inline const SVecForEachExpr<VT,Log10,TF> log10( const SparseVector<VT,TF>& sv )
+{
+   BLAZE_FUNCTION_TRACE;
+
+   return SVecForEachExpr<VT,Log10,TF>( ~sv, Log10() );
 }
 //*************************************************************************************************
 
