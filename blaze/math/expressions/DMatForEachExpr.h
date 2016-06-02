@@ -1210,6 +1210,34 @@ inline const DMatForEachExpr<MT,Ceil,SO> ceil( const DenseMatrix<MT,SO>& dm )
 //*************************************************************************************************
 
 
+//*************************************************************************************************
+/*!\brief Computes \f$ e^x \f$ for each single element of the dense matrix \a dm.
+// \ingroup dense_matrix
+//
+// \param dm The input matrix.
+// \return The resulting dense matrix.
+//
+// The \a exp() function computes \f$ e^x \f$ for each element of the input matrix \a dm. The
+// function returns an expression representing this operation.\n
+// The following example demonstrates the use of the \a exp() function:
+
+   \code
+   blaze::DynamicMatrix<double> A, B;
+   // ... Resizing and initialization
+   B = exp( A );
+   \endcode
+*/
+template< typename MT  // Type of the dense matrix
+        , bool SO >    // Storage order
+inline const DMatForEachExpr<MT,Exp,SO> exp( const DenseMatrix<MT,SO>& dm )
+{
+   BLAZE_FUNCTION_TRACE;
+
+   return DMatForEachExpr<MT,Exp,SO>( ~dm, Exp() );
+}
+//*************************************************************************************************
+
+
 
 
 //=================================================================================================
