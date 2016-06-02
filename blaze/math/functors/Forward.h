@@ -48,6 +48,7 @@ class Abs;
 class Conj;
 class Imag;
 class Real;
+class Sqrt;
 
 } // namespace blaze
 

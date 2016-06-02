@@ -44,5 +44,6 @@
 #include <blaze/math/functors/Conj.h>
 #include <blaze/math/functors/Imag.h>
 #include <blaze/math/functors/Real.h>
+#include <blaze/math/functors/Sqrt.h>
 
 #endif
