@@ -57,6 +57,7 @@ class Log;
 class Log10;
 template< typename > class Pow;
 class Real;
+class Sin;
 class Sqrt;
 
 } // namespace blaze
