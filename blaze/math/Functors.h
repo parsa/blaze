@@ -55,6 +55,7 @@
 #include <blaze/math/functors/Pow.h>
 #include <blaze/math/functors/Real.h>
 #include <blaze/math/functors/Sin.h>
+#include <blaze/math/functors/Sinh.h>
 #include <blaze/math/functors/Sqrt.h>
 
 #endif
