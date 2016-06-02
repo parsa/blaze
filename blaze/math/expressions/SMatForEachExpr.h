@@ -52,6 +52,7 @@
 #include <blaze/math/expressions/Forward.h>
 #include <blaze/math/expressions/MatForEachExpr.h>
 #include <blaze/math/expressions/SparseMatrix.h>
+#include <blaze/math/Functors.h>
 #include <blaze/math/shims/Serial.h>
 #include <blaze/math/sparse/ValueIndexPair.h>
 #include <blaze/math/traits/ForEachExprTrait.h>
@@ -869,6 +870,34 @@ inline const SMatForEachExpr<MT,OP,SO> forEach( const SparseMatrix<MT,SO>& sm, O
    BLAZE_FUNCTION_TRACE;
 
    return SMatForEachExpr<MT,OP,SO>( ~sm, op );
+}
+//*************************************************************************************************
+
+
+//*************************************************************************************************
+/*!\brief Computes the square root of each single element of the sparse matrix \a sm.
+// \ingroup sparse_matrix
+//
+// \param sm The input matrix.
+// \return The square root of each single element of \a sm.
+//
+// The \a sqrt function computes the square root of each element of the input matrix \a sm. The
+// function returns an expression representing this operation.\n
+// The following example demonstrates the use of the \a sqrt function:
+
+   \code
+   blaze::CompressedMatrix<double> A, B;
+   // ... Resizing and initialization
+   B = sqrt( A );
+   \endcode
+*/
+template< typename MT  // Type of the sparse matrix
+        , bool SO >    // Storage order
+inline const SMatForEachExpr<MT,Sqrt,SO> sqrt( const SparseMatrix<MT,SO>& dm )
+{
+   BLAZE_FUNCTION_TRACE;
+
+   return SMatForEachExpr<MT,Sqrt,SO>( ~dm, Sqrt() );
 }
 //*************************************************************************************************
 

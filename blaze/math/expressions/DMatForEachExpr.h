@@ -50,6 +50,7 @@
 #include <blaze/math/expressions/DenseMatrix.h>
 #include <blaze/math/expressions/Forward.h>
 #include <blaze/math/expressions/MatForEachExpr.h>
+#include <blaze/math/Functors.h>
 #include <blaze/math/shims/Serial.h>
 #include <blaze/math/SIMD.h>
 #include <blaze/math/traits/ColumnExprTrait.h>
@@ -1037,6 +1038,34 @@ inline const DMatForEachExpr<MT,OP,SO> forEach( const DenseMatrix<MT,SO>& dm, OP
    BLAZE_FUNCTION_TRACE;
 
    return DMatForEachExpr<MT,OP,SO>( ~dm, op );
+}
+//*************************************************************************************************
+
+
+//*************************************************************************************************
+/*!\brief Computes the square root of each single element of the dense matrix \a dm.
+// \ingroup dense_matrix
+//
+// \param dm The input matrix.
+// \return The square root of each single element of \a dm.
+//
+// The \a sqrt function computes the square root of each element of the input matrix \a dm. The
+// function returns an expression representing this operation.\n
+// The following example demonstrates the use of the \a sqrt function:
+
+   \code
+   blaze::DynamicMatrix<double> A, B;
+   // ... Resizing and initialization
+   B = sqrt( A );
+   \endcode
+*/
+template< typename MT  // Type of the dense matrix
+        , bool SO >    // Storage order
+inline const DMatForEachExpr<MT,Sqrt,SO> sqrt( const DenseMatrix<MT,SO>& dm )
+{
+   BLAZE_FUNCTION_TRACE;
+
+   return DMatForEachExpr<MT,Sqrt,SO>( ~dm, Sqrt() );
 }
 //*************************************************************************************************
 
