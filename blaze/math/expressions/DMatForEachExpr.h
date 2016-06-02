@@ -68,6 +68,7 @@
 #include <blaze/math/typetraits/UnderlyingNumeric.h>
 #include <blaze/system/Inline.h>
 #include <blaze/util/Assert.h>
+#include <blaze/util/constraints/Numeric.h>
 #include <blaze/util/constraints/Reference.h>
 #include <blaze/util/EnableIf.h>
 #include <blaze/util/IntegralConstant.h>
@@ -1206,6 +1207,38 @@ inline const DMatForEachExpr<MT,Ceil,SO> ceil( const DenseMatrix<MT,SO>& dm )
    BLAZE_FUNCTION_TRACE;
 
    return DMatForEachExpr<MT,Ceil,SO>( ~dm, Ceil() );
+}
+//*************************************************************************************************
+
+
+//*************************************************************************************************
+/*!\brief Computes the exponential value for each single element of the dense matrix \a dm.
+// \ingroup dense_matrix
+//
+// \param dm The input matrix.
+// \param exp The exponent.
+// \return The exponential value of each single element of \a dm.
+//
+// The \a pow() function computes the exponential value for each element of the input matrix \a dm.
+// The function returns an expression representing this operation.\n
+// The following example demonstrates the use of the \a pow() function:
+
+   \code
+   blaze::DynamicMatrix<double> A, B;
+   // ... Resizing and initialization
+   B = pow( A, 4.2 );
+   \endcode
+*/
+template< typename MT   // Type of the dense matrix
+        , bool SO       // Storage order
+        , typename T >  // Type of the exponent
+inline const DMatForEachExpr<MT,Pow<T>,SO> pow( const DenseMatrix<MT,SO>& dm, T exp )
+{
+   BLAZE_FUNCTION_TRACE;
+
+   BLAZE_CONSTRAINT_MUST_BE_NUMERIC_TYPE( T );
+
+   return DMatForEachExpr<MT,Pow<T>,SO>( ~dm, Pow<T>( exp ) );
 }
 //*************************************************************************************************
 

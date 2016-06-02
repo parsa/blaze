@@ -1000,6 +1000,38 @@ inline const SVecForEachExpr<VT,Ceil,TF> ceil( const SparseVector<VT,TF>& sv )
 
 
 //*************************************************************************************************
+/*!\brief Computes the exponential value for each single element of the sparse vector \a sv.
+// \ingroup sparse_vector
+//
+// \param sv The input vector.
+// \param exp The exponent.
+// \return The exponential value of each single element of \a sv.
+//
+// The \a pow() function computes the exponential value for each element of the input vector \a sv.
+// The function returns an expression representing this operation.\n
+// The following example demonstrates the use of the \a pow() function:
+
+   \code
+   blaze::DynamicVector<double> A, B;
+   // ... Resizing and initialization
+   B = pow( A, 4.2 );
+   \endcode
+*/
+template< typename VT   // Type of the sparse vector
+        , bool TF       // Transpose flag
+        , typename T >  // Type of the exponent
+inline const SVecForEachExpr<VT,Pow<T>,TF> pow( const SparseVector<VT,TF>& sv, T exp )
+{
+   BLAZE_FUNCTION_TRACE;
+
+   BLAZE_CONSTRAINT_MUST_BE_NUMERIC_TYPE( T );
+
+   return SVecForEachExpr<VT,Pow<T>,TF>( ~sv, Pow<T>( exp ) );
+}
+//*************************************************************************************************
+
+
+//*************************************************************************************************
 /*!\brief Computes \f$ e^x \f$ of each single element of the sparse vector \a sv.
 // \ingroup sparse_vector
 //

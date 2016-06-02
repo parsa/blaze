@@ -1284,6 +1284,38 @@ inline const DVecForEachExpr<VT,Ceil,TF> ceil( const DenseVector<VT,TF>& dv )
 
 
 //*************************************************************************************************
+/*!\brief Computes the exponential value for each single element of the dense vector \a dv.
+// \ingroup dense_vector
+//
+// \param dv The input vector.
+// \param exp The exponent.
+// \return The exponential value of each single element of \a dv.
+//
+// The \a pow() function computes the exponential value for each element of the input vector \a dv.
+// The function returns an expression representing this operation.\n
+// The following example demonstrates the use of the \a pow() function:
+
+   \code
+   blaze::DynamicVector<double> A, B;
+   // ... Resizing and initialization
+   B = pow( A, 4.2 );
+   \endcode
+*/
+template< typename VT   // Type of the dense vector
+        , bool TF       // Transpose flag
+        , typename T >  // Type of the exponent
+inline const DVecForEachExpr<VT,Pow<T>,TF> pow( const DenseVector<VT,TF>& dv, T exp )
+{
+   BLAZE_FUNCTION_TRACE;
+
+   BLAZE_CONSTRAINT_MUST_BE_NUMERIC_TYPE( T );
+
+   return DVecForEachExpr<VT,Pow<T>,TF>( ~dv, Pow<T>( exp ) );
+}
+//*************************************************************************************************
+
+
+//*************************************************************************************************
 /*!\brief Computes \f$ e^x \f$ for each single element of the dense vector \a dv.
 // \ingroup dense_vector
 //
