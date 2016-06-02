@@ -45,6 +45,7 @@ namespace blaze {
 //=================================================================================================
 
 class Abs;
+class Acos;
 class Asin;
 class Asinh;
 class Cbrt;
