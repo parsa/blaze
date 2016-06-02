@@ -43,6 +43,7 @@
 #include <blaze/math/functors/Abs.h>
 #include <blaze/math/functors/Cbrt.h>
 #include <blaze/math/functors/Conj.h>
+#include <blaze/math/functors/Floor.h>
 #include <blaze/math/functors/Imag.h>
 #include <blaze/math/functors/InvCbrt.h>
 #include <blaze/math/functors/InvSqrt.h>
