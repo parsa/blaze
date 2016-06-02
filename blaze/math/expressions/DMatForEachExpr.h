@@ -1467,6 +1467,34 @@ inline const DMatForEachExpr<MT,Cos,SO> cos( const DenseMatrix<MT,SO>& dm )
 //*************************************************************************************************
 
 
+//*************************************************************************************************
+/*!\brief Computes the inverse cosine for each single element of the dense matrix \a dm.
+// \ingroup dense_matrix
+//
+// \param dm The input matrix.
+// \return The inverse cosine of each single element of \a dm.
+//
+// The \a acos() function computes the inverse cosine for each element of the input matrix \a dm. The
+// function returns an expression representing this operation.\n
+// The following example demonstrates the use of the \a acos() function:
+
+   \code
+   blaze::DynamicMatrix<double> A, B;
+   // ... Resizing and initialization
+   B = acos( A );
+   \endcode
+*/
+template< typename MT  // Type of the dense matrix
+        , bool SO >    // Storage order
+inline const DMatForEachExpr<MT,Acos,SO> acos( const DenseMatrix<MT,SO>& dm )
+{
+   BLAZE_FUNCTION_TRACE;
+
+   return DMatForEachExpr<MT,Acos,SO>( ~dm, Acos() );
+}
+//*************************************************************************************************
+
+
 
 
 //=================================================================================================
