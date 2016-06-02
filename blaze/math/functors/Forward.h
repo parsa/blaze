@@ -57,6 +57,7 @@ class Conj;
 class Cos;
 class Cosh;
 class Erf;
+class Erfc;
 class Exp;
 class Floor;
 class Imag;
