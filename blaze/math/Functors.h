@@ -42,6 +42,7 @@
 
 #include <blaze/math/functors/Abs.h>
 #include <blaze/math/functors/Acos.h>
+#include <blaze/math/functors/Acosh.h>
 #include <blaze/math/functors/Asin.h>
 #include <blaze/math/functors/Asinh.h>
 #include <blaze/math/functors/Cbrt.h>
