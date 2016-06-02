@@ -53,6 +53,7 @@ class Floor;
 class Imag;
 class InvCbrt;
 class InvSqrt;
+class Log;
 template< typename > class Pow;
 class Real;
 class Sqrt;
