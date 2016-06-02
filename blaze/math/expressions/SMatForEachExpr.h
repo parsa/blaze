@@ -986,6 +986,34 @@ inline const SMatForEachExpr<MT,InvCbrt,SO> invcbrt( const SparseMatrix<MT,SO>& 
 //*************************************************************************************************
 
 
+//*************************************************************************************************
+/*!\brief Applies the floor() function to each single element of the sparse matrix \a sm.
+// \ingroup sparse_matrix
+//
+// \param sm The input matrix.
+// \return The resulting sparse matrix.
+//
+// The \a floor function applies the floor() function to each element of the input matrix \a sm.
+// The function returns an expression representing this operation.\n
+// The following example demonstrates the use of the \a floor function:
+
+   \code
+   blaze::DynamicMatrix<double> A, B;
+   // ... Resizing and initialization
+   B = floor( A );
+   \endcode
+*/
+template< typename MT  // Type of the sparse matrix
+        , bool SO >    // Storage order
+inline const SMatForEachExpr<MT,Floor,SO> floor( const SparseMatrix<MT,SO>& sm )
+{
+   BLAZE_FUNCTION_TRACE;
+
+   return SMatForEachExpr<MT,Floor,SO>( ~sm, Floor() );
+}
+//*************************************************************************************************
+
+
 
 
 //=================================================================================================
