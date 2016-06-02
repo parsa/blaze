@@ -42,6 +42,7 @@
 
 #include <blaze/math/functors/Abs.h>
 #include <blaze/math/functors/Conj.h>
+#include <blaze/math/functors/Imag.h>
 #include <blaze/math/functors/Real.h>
 
 #endif
