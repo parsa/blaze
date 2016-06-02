@@ -44,6 +44,7 @@
 #include <blaze/math/functors/Cbrt.h>
 #include <blaze/math/functors/Conj.h>
 #include <blaze/math/functors/Imag.h>
+#include <blaze/math/functors/InvCbrt.h>
 #include <blaze/math/functors/InvSqrt.h>
 #include <blaze/math/functors/Real.h>
 #include <blaze/math/functors/Sqrt.h>

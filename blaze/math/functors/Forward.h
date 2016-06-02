@@ -48,6 +48,7 @@ class Abs;
 class Cbrt;
 class Conj;
 class Imag;
+class InvCbrt;
 class InvSqrt;
 class Real;
 class Sqrt;
