@@ -49,6 +49,7 @@ class Acos;
 class Acosh;
 class Asin;
 class Asinh;
+class Atan;
 class Cbrt;
 class Ceil;
 class Conj;
