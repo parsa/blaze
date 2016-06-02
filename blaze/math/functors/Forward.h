@@ -56,6 +56,7 @@ class Ceil;
 class Conj;
 class Cos;
 class Cosh;
+class Erf;
 class Exp;
 class Floor;
 class Imag;
