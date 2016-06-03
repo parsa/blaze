@@ -1735,6 +1735,34 @@ inline const DVecForEachExpr<VT,Atanh,TF> atanh( const DenseVector<VT,TF>& dv )
 //*************************************************************************************************
 
 
+//*************************************************************************************************
+/*!\brief Computes the error function for each single element of the dense vector \a dv.
+// \ingroup dense_vector
+//
+// \param dv The input vector.
+// \return The error function of each single element of \a dv.
+//
+// The \a erf() function computes the error function for each element of the input vector \a dv.
+// The function returns an expression representing this operation.\n
+// The following example demonstrates the use of the \a erf() function:
+
+   \code
+   blaze::DynamicVector<double> a, b;
+   // ... Resizing and initialization
+   b = erf( a );
+   \endcode
+*/
+template< typename VT  // Type of the dense vector
+        , bool TF >    // Transpose flag
+inline const DVecForEachExpr<VT,Erf,TF> erf( const DenseVector<VT,TF>& dv )
+{
+   BLAZE_FUNCTION_TRACE;
+
+   return DVecForEachExpr<VT,Erf,TF>( ~dv, Erf() );
+}
+//*************************************************************************************************
+
+
 
 
 //=================================================================================================

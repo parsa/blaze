@@ -1663,6 +1663,34 @@ inline const DMatForEachExpr<MT,Atanh,SO> atanh( const DenseMatrix<MT,SO>& dm )
 //*************************************************************************************************
 
 
+//*************************************************************************************************
+/*!\brief Computes the error function for each single element of the dense matrix \a dm.
+// \ingroup dense_matrix
+//
+// \param dm The input matrix.
+// \return The error function of each single element of \a dm.
+//
+// The \a erf() function computes the error function for each element of the input matrix \a dm.
+// The function returns an expression representing this operation.\n
+// The following example demonstrates the use of the \a erf() function:
+
+   \code
+   blaze::DynamicMatrix<double> A, B;
+   // ... Resizing and initialization
+   B = erf( A );
+   \endcode
+*/
+template< typename MT  // Type of the dense matrix
+        , bool SO >    // Storage order
+inline const DMatForEachExpr<MT,Erf,SO> erf( const DenseMatrix<MT,SO>& dm )
+{
+   BLAZE_FUNCTION_TRACE;
+
+   return DMatForEachExpr<MT,Erf,SO>( ~dm, Erf() );
+}
+//*************************************************************************************************
+
+
 
 
 //=================================================================================================
