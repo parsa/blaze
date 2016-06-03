@@ -1763,6 +1763,34 @@ inline const DVecForEachExpr<VT,Erf,TF> erf( const DenseVector<VT,TF>& dv )
 //*************************************************************************************************
 
 
+//*************************************************************************************************
+/*!\brief Computes the complementary error function for each single element of the dense vector \a dv.
+// \ingroup dense_vector
+//
+// \param dv The input vector.
+// \return The complementary error function of each single element of \a dv.
+//
+// The \a erfc() function computes the complementary error function for each element of the input
+// vector \a dv. The function returns an expression representing this operation.\n
+// The following example demonstrates the use of the \a erfc() function:
+
+   \code
+   blaze::DynamicVector<double> a, b;
+   // ... Resizing and initialization
+   b = erfc( a );
+   \endcode
+*/
+template< typename VT  // Type of the dense vector
+        , bool TF >    // Transpose flag
+inline const DVecForEachExpr<VT,Erfc,TF> erfc( const DenseVector<VT,TF>& dv )
+{
+   BLAZE_FUNCTION_TRACE;
+
+   return DVecForEachExpr<VT,Erfc,TF>( ~dv, Erfc() );
+}
+//*************************************************************************************************
+
+
 
 
 //=================================================================================================

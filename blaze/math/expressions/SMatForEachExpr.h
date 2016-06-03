@@ -1522,6 +1522,35 @@ inline const SMatForEachExpr<MT,Erf,SO> erf( const SparseMatrix<MT,SO>& sm )
 //*************************************************************************************************
 
 
+//*************************************************************************************************
+/*!\brief Computes the complementary error function for each non-zero element of the sparse
+//        matrix \a sm.
+// \ingroup sparse_matrix
+//
+// \param sm The input matrix.
+// \return The complementary error function of each non-zero element of \a sm.
+//
+// The \a erfc() function computes the complementary error function for each non-zero element of
+// the input matrix \a sm. The function returns an expression representing this operation.\n
+// The following example demonstrates the use of the \a erfc() function:
+
+   \code
+   blaze::CompressedMatrix<double> A, B;
+   // ... Resizing and initialization
+   B = erfc( A );
+   \endcode
+*/
+template< typename MT  // Type of the sparse matrix
+        , bool SO >    // Storage order
+inline const SMatForEachExpr<MT,Erfc,SO> erfc( const SparseMatrix<MT,SO>& sm )
+{
+   BLAZE_FUNCTION_TRACE;
+
+   return SMatForEachExpr<MT,Erfc,SO>( ~sm, Erfc() );
+}
+//*************************************************************************************************
+
+
 
 
 //=================================================================================================
