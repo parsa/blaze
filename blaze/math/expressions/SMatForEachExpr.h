@@ -1410,6 +1410,34 @@ inline const SMatForEachExpr<MT,Tan,SO> tan( const SparseMatrix<MT,SO>& sm )
 //*************************************************************************************************
 
 
+//*************************************************************************************************
+/*!\brief Computes the inverse tangent for each non-zero element of the sparse matrix \a sm.
+// \ingroup sparse_matrix
+//
+// \param sm The input matrix.
+// \return The inverse tangent of each non-zero element of \a sm.
+//
+// The \a atan() function computes the inverse tangent for each non-zero element of the input
+// matrix \a sm. The function returns an expression representing this operation.\n
+// The following example demonstrates the use of the \a atan() function:
+
+   \code
+   blaze::CompressedMatrix<double> A, B;
+   // ... Resizing and initialization
+   B = atan( A );
+   \endcode
+*/
+template< typename MT  // Type of the sparse matrix
+        , bool SO >    // Storage order
+inline const SMatForEachExpr<MT,Atan,SO> atan( const SparseMatrix<MT,SO>& sm )
+{
+   BLAZE_FUNCTION_TRACE;
+
+   return SMatForEachExpr<MT,Atan,SO>( ~sm, Atan() );
+}
+//*************************************************************************************************
+
+
 
 
 //=================================================================================================

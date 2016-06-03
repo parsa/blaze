@@ -1122,8 +1122,8 @@ inline const DVecForEachExpr<VT,OP,TF> forEach( const DenseVector<VT,TF>& dv, OP
 // \param dv The input vector.
 // \return The square root of each single element of \a dv.
 //
-// The \a sqrt() function computes the square root of each element of the input vector \a dv. The
-// function returns an expression representing this operation.\n
+// The \a sqrt() function computes the square root of each element of the input vector \a dv.
+// The function returns an expression representing this operation.\n
 // The following example demonstrates the use of the \a sqrt() function:
 
    \code
@@ -1291,8 +1291,8 @@ inline const DVecForEachExpr<VT,Ceil,TF> ceil( const DenseVector<VT,TF>& dv )
 // \param exp The exponent.
 // \return The exponential value of each single element of \a dv.
 //
-// The \a pow() function computes the exponential value for each element of the input vector \a dv.
-// The function returns an expression representing this operation.\n
+// The \a pow() function computes the exponential value for each element of the input vector
+// \a dv. The function returns an expression representing this operation.\n
 // The following example demonstrates the use of the \a pow() function:
 
    \code
@@ -1647,6 +1647,34 @@ inline const DVecForEachExpr<VT,Tan,TF> tan( const DenseVector<VT,TF>& dv )
    BLAZE_FUNCTION_TRACE;
 
    return DVecForEachExpr<VT,Tan,TF>( ~dv, Tan() );
+}
+//*************************************************************************************************
+
+
+//*************************************************************************************************
+/*!\brief Computes the inverse tangent for each single element of the dense vector \a dv.
+// \ingroup dense_vector
+//
+// \param dv The input vector.
+// \return The inverse tangent of each single element of \a dv.
+//
+// The \a atan() function computes the inverse tangent for each element of the input vector \a dv.
+// The function returns an expression representing this operation.\n
+// The following example demonstrates the use of the \a atan() function:
+
+   \code
+   blaze::DynamicVector<double> a, b;
+   // ... Resizing and initialization
+   b = atan( a );
+   \endcode
+*/
+template< typename VT  // Type of the dense vector
+        , bool TF >    // Transpose flag
+inline const DVecForEachExpr<VT,Atan,TF> atan( const DenseVector<VT,TF>& dv )
+{
+   BLAZE_FUNCTION_TRACE;
+
+   return DVecForEachExpr<VT,Atan,TF>( ~dv, Atan() );
 }
 //*************************************************************************************************
 

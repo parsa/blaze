@@ -1050,8 +1050,8 @@ inline const DMatForEachExpr<MT,OP,SO> forEach( const DenseMatrix<MT,SO>& dm, OP
 // \param dm The input matrix.
 // \return The square root of each single element of \a dm.
 //
-// The \a sqrt() function computes the square root of each element of the input matrix \a dm. The
-// function returns an expression representing this operation.\n
+// The \a sqrt() function computes the square root of each element of the input matrix \a dm.
+// The function returns an expression representing this operation.\n
 // The following example demonstrates the use of the \a sqrt() function:
 
    \code
@@ -1219,8 +1219,8 @@ inline const DMatForEachExpr<MT,Ceil,SO> ceil( const DenseMatrix<MT,SO>& dm )
 // \param exp The exponent.
 // \return The exponential value of each single element of \a dm.
 //
-// The \a pow() function computes the exponential value for each element of the input matrix \a dm.
-// The function returns an expression representing this operation.\n
+// The \a pow() function computes the exponential value for each element of the input matrix
+// \a dm. The function returns an expression representing this operation.\n
 // The following example demonstrates the use of the \a pow() function:
 
    \code
@@ -1362,8 +1362,8 @@ inline const DMatForEachExpr<MT,Sin,SO> sin( const DenseMatrix<MT,SO>& dm )
 // \param dm The input matrix.
 // \return The inverse sine of each single element of \a dm.
 //
-// The \a asin() function computes the inverse sine for each element of the input matrix \a dm. The
-// function returns an expression representing this operation.\n
+// The \a asin() function computes the inverse sine for each element of the input matrix \a dm.
+// The function returns an expression representing this operation.\n
 // The following example demonstrates the use of the \a asin() function:
 
    \code
@@ -1474,8 +1474,8 @@ inline const DMatForEachExpr<MT,Cos,SO> cos( const DenseMatrix<MT,SO>& dm )
 // \param dm The input matrix.
 // \return The inverse cosine of each single element of \a dm.
 //
-// The \a acos() function computes the inverse cosine for each element of the input matrix \a dm. The
-// function returns an expression representing this operation.\n
+// The \a acos() function computes the inverse cosine for each element of the input matrix \a dm.
+// The function returns an expression representing this operation.\n
 // The following example demonstrates the use of the \a acos() function:
 
    \code
@@ -1502,8 +1502,8 @@ inline const DMatForEachExpr<MT,Acos,SO> acos( const DenseMatrix<MT,SO>& dm )
 // \param dm The input matrix.
 // \return The hyperbolic cosine of each single element of \a dm.
 //
-// The \a cosh() function computes the hyperbolic cosine for each element of the input matrix \a dm.
-// The function returns an expression representing this operation.\n
+// The \a cosh() function computes the hyperbolic cosine for each element of the input matrix
+// \a dm. The function returns an expression representing this operation.\n
 // The following example demonstrates the use of the \a cosh() function:
 
    \code
@@ -1575,6 +1575,34 @@ inline const DMatForEachExpr<MT,Tan,SO> tan( const DenseMatrix<MT,SO>& dm )
    BLAZE_FUNCTION_TRACE;
 
    return DMatForEachExpr<MT,Tan,SO>( ~dm, Tan() );
+}
+//*************************************************************************************************
+
+
+//*************************************************************************************************
+/*!\brief Computes the inverse tangent for each single element of the dense matrix \a dm.
+// \ingroup dense_matrix
+//
+// \param dm The input matrix.
+// \return The inverse tangent of each single element of \a dm.
+//
+// The \a atan() function computes the inverse tangent for each element of the input matrix \a dm.
+// The function returns an expression representing this operation.\n
+// The following example demonstrates the use of the \a atan() function:
+
+   \code
+   blaze::DynamicMatrix<double> A, B;
+   // ... Resizing and initialization
+   B = atan( A );
+   \endcode
+*/
+template< typename MT  // Type of the dense matrix
+        , bool SO >    // Storage order
+inline const DMatForEachExpr<MT,Atan,SO> atan( const DenseMatrix<MT,SO>& dm )
+{
+   BLAZE_FUNCTION_TRACE;
+
+   return DMatForEachExpr<MT,Atan,SO>( ~dm, Atan() );
 }
 //*************************************************************************************************
 
