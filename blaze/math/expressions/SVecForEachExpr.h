@@ -1395,6 +1395,34 @@ inline const SVecForEachExpr<VT,Atan,TF> atan( const SparseVector<VT,TF>& sv )
 //*************************************************************************************************
 
 
+//*************************************************************************************************
+/*!\brief Computes the hyperbolic tangent of each non-zero element of the sparse vector \a sv.
+// \ingroup sparse_vector
+//
+// \param sv The input vector.
+// \return The hyperbolic tangent of each non-zero element of \a sv.
+//
+// The \a tanh() function computes the hyperbolic tangent for each non-zero element of the input
+// vector \a sv. The function returns an expression representing this operation.\n
+// The following example demonstrates the use of the \a tanh() function:
+
+   \code
+   blaze::CompressedVector<double> a, b;
+   // ... Resizing and initialization
+   b = tanh( a );
+   \endcode
+*/
+template< typename VT  // Type of the sparse vector
+        , bool TF >    // Transpose flag
+inline const SVecForEachExpr<VT,Tanh,TF> tanh( const SparseVector<VT,TF>& sv )
+{
+   BLAZE_FUNCTION_TRACE;
+
+   return SVecForEachExpr<VT,Tanh,TF>( ~sv, Tanh() );
+}
+//*************************************************************************************************
+
+
 
 
 //=================================================================================================

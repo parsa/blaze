@@ -1607,6 +1607,34 @@ inline const DMatForEachExpr<MT,Atan,SO> atan( const DenseMatrix<MT,SO>& dm )
 //*************************************************************************************************
 
 
+//*************************************************************************************************
+/*!\brief Computes the hyperbolic tangent for each single element of the dense matrix \a dm.
+// \ingroup dense_matrix
+//
+// \param dm The input matrix.
+// \return The hyperbolic tangent of each single element of \a dm.
+//
+// The \a tanh() function computes the hyperbolic tangent for each element of the input matrix
+// \a dm. The function returns an expression representing this operation.\n
+// The following example demonstrates the use of the \a tanh() function:
+
+   \code
+   blaze::DynamicMatrix<double> A, B;
+   // ... Resizing and initialization
+   B = tanh( A );
+   \endcode
+*/
+template< typename MT  // Type of the dense matrix
+        , bool SO >    // Storage order
+inline const DMatForEachExpr<MT,Tanh,SO> tanh( const DenseMatrix<MT,SO>& dm )
+{
+   BLAZE_FUNCTION_TRACE;
+
+   return DMatForEachExpr<MT,Tanh,SO>( ~dm, Tanh() );
+}
+//*************************************************************************************************
+
+
 
 
 //=================================================================================================
