@@ -800,7 +800,7 @@ class SVecScalarDivExpr : public SparseVector< SVecScalarDivExpr<VT,ST,TF>, TF >
 // types \a T1::ElementType and \a T2. Note that this operator only works for scalar values
 // of built-in data type.
 //
-// \note: A division by zero is only checked by an user assert.
+// \note A division by zero is only checked by an user assert.
 */
 template< typename T1  // Type of the left-hand side sparse vector
         , typename T2  // Type of the right-hand side scalar

@@ -323,7 +323,7 @@ bool isUniform( const SparseVector<VT,TF>& sv )
 //    </tr>
 // </table>
 //
-// \note: This operation is only defined for numeric data types. In case the element type is
+// \note This operation is only defined for numeric data types. In case the element type is
 // not a numeric data type (i.e. a user defined data type or boolean) the attempt to use the
 // length() function results in a compile time error!
 */
@@ -354,7 +354,7 @@ CMathTrait_< ElementType_<VT> > length( const SparseVector<VT,TF>& sv )
 //
 // This function calculates the actual square length of the sparse vector.
 //
-// \note: This operation is only defined for numeric data types. In case the element type is
+// \note This operation is only defined for numeric data types. In case the element type is
 // not a numeric data type (i.e. a user defined data type or boolean) the attempt to use the
 // sqrLength() function results in a compile time error!
 */
@@ -387,7 +387,7 @@ const ElementType_<VT> sqrLength( const SparseVector<VT,TF>& sv )
 // vector currently has a size of 0, the returned value is the default value (e.g. 0 in case
 // of fundamental data types).
 //
-// \note: In case the sparse vector is not completely filled, the zero elements are also
+// \note In case the sparse vector is not completely filled, the zero elements are also
 // taken into account. Example: the following compressed vector has only 2 non-zero elements.
 // However, the minimum of this vector is 0:
 
@@ -444,7 +444,7 @@ const ElementType_<VT> min( const SparseVector<VT,TF>& sv )
 // vector currently has a size of 0, the returned value is the default value (e.g. 0 in case
 // of fundamental data types).
 //
-// \note: In case the compressed vector is not completely filled, the zero elements are also
+// \note In case the compressed vector is not completely filled, the zero elements are also
 // taken into account. Example: the following compressed vector has only 2 non-zero elements.
 // However, the maximum of this vector is 0:
 

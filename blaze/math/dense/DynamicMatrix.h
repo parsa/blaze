@@ -511,7 +511,7 @@ inline DynamicMatrix<Type,SO>::DynamicMatrix() noexcept
 // \param m The number of rows of the matrix.
 // \param n The number of columns of the matrix.
 //
-// \note: This constructor is only responsible to allocate the required dynamic memory. No
+// \note This constructor is only responsible to allocate the required dynamic memory. No
 // element initialization is performed!
 */
 template< typename Type  // Data type of the matrix
@@ -3241,7 +3241,7 @@ inline DynamicMatrix<Type,true>::DynamicMatrix() noexcept
 // \param m The number of rows of the matrix.
 // \param n The number of columns of the matrix.
 //
-// \note: This constructor is only responsible to allocate the required dynamic memory. No
+// \note This constructor is only responsible to allocate the required dynamic memory. No
 // element initialization is performed!
 */
 template< typename Type >  // Data type of the matrix

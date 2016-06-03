@@ -62,7 +62,7 @@ namespace blaze {
 // implicitly converted to the three built-in floating point data types float, double and
 // long double.
 //
-// \note: The NegativeEpsilon class is a helper class for the Epsilon class. It cannot be
+// \note The NegativeEpsilon class is a helper class for the Epsilon class. It cannot be
 // instantiated on its own, but can only be used by the Epsilon class.
 */
 template< typename E >  // Positive epsilon type

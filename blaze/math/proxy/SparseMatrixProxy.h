@@ -546,7 +546,7 @@ inline typename SparseMatrixProxy<PT,MT>::Iterator
 // value is a default value (for instance 0 in case of an integral element type) the value is
 // not appended. Per default the values are not tested.
 //
-// \note: Although append() does not allocate new memory, it still invalidates all iterators
+// \note Although append() does not allocate new memory, it still invalidates all iterators
 // returned by the end() functions!
 */
 template< typename PT    // Type of the proxy
@@ -573,7 +573,7 @@ inline void SparseMatrixProxy<PT,MT>::append( size_t i, size_t j, const ElementT
 // After completion of row/column \a i via the append() function, this function can be called to
 // finalize row/column \a i and prepare the next row/column for insertion process via append().
 //
-// \note: Although finalize() does not allocate new memory, it still invalidates all iterators
+// \note Although finalize() does not allocate new memory, it still invalidates all iterators
 // returned by the end() functions!
 */
 template< typename PT    // Type of the proxy

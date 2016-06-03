@@ -500,7 +500,7 @@ inline DynamicVector<Type,TF>::DynamicVector() noexcept
 //
 // \param n The size of the vector.
 //
-// \note: This constructor is only responsible to allocate the required dynamic memory. No
+// \note This constructor is only responsible to allocate the required dynamic memory. No
 // element initialization is performed!
 */
 template< typename Type  // Data type of the vector
@@ -1291,7 +1291,7 @@ inline EnableIf_<IsNumeric<Other>, DynamicVector<Type,TF> >&
 // \param rhs The right-hand side scalar value for the division.
 // \return Reference to the vector.
 //
-// \note: A division by zero is only checked by an user assert.
+// \note A division by zero is only checked by an user assert.
 */
 template< typename Type     // Data type of the vector
         , bool TF >         // Transpose flag

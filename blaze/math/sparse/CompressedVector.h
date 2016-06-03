@@ -1665,7 +1665,7 @@ inline typename CompressedVector<Type,TF>::ConstIterator
 // value is a default value (for instance 0 in case of an integral element type) the value is
 // not appended. Per default the values are not tested.
 //
-// \note: Although append() does not allocate new memory, it still invalidates all iterators
+// \note Although append() does not allocate new memory, it still invalidates all iterators
 // returned by the end() functions!
 */
 template< typename Type  // Data type of the vector

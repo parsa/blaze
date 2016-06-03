@@ -1043,7 +1043,7 @@ class DVecScalarDivExpr : public DenseVector< DVecScalarDivExpr<VT,ST,TF>, TF >
 // \a T1::ElementType and \a T2 have to be supported by the DivTrait class template.
 // Note that this operator only works for scalar values of built-in data type.
 //
-// \note: A division by zero is only checked by an user assert.
+// \note A division by zero is only checked by an user assert.
 */
 template< typename T1  // Type of the left-hand side dense vector
         , typename T2  // Type of the right-hand side scalar

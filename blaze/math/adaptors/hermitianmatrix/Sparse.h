@@ -2214,7 +2214,7 @@ inline typename HermitianMatrix<MT,SO,false>::ConstIterator
    A.append( 2, 0, cplx( 3.0, 4.0 ) );  // Appending an element at position (2,0) and (0,2)
    \endcode
 
-// \note: Although append() does not allocate new memory, it still invalidates all iterators
+// \note Although append() does not allocate new memory, it still invalidates all iterators
 // returned by the end() functions!
 */
 template< typename MT  // Type of the adapted sparse matrix
@@ -2246,7 +2246,7 @@ inline void HermitianMatrix<MT,SO,false>::append( size_t i, size_t j, const Elem
 // After completion of row/column \a i via the append() function, this function can be called to
 // finalize row/column \a i and prepare the next row/column for insertion process via append().
 //
-// \note: Although finalize() does not allocate new memory, it still invalidates all iterators
+// \note Although finalize() does not allocate new memory, it still invalidates all iterators
 // returned by the end() functions!
 */
 template< typename MT  // Type of the adapted sparse matrix

@@ -273,7 +273,7 @@ class DVecTransposer : public DenseVector< DVecTransposer<VT,TF>, TF >
    // \param rhs The right-hand side scalar value for the division.
    // \return Reference to this DVecTransposer.
    //
-   // \note: A division by zero is only checked by an user assert.
+   // \note A division by zero is only checked by an user assert.
    */
    template< typename Other >  // Data type of the right-hand side scalar
    inline EnableIf_< IsNumeric<Other>, DVecTransposer >& operator/=( Other rhs )

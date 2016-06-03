@@ -2207,7 +2207,7 @@ inline typename CompressedMatrix<Type,SO>::ConstIterator
    A.finalize( 3 );        // Finalizing row 3
    \endcode
 
-// \note: Although append() does not allocate new memory, it still invalidates all iterators
+// \note Although append() does not allocate new memory, it still invalidates all iterators
 // returned by the end() functions!
 */
 template< typename Type  // Data type of the sparse matrix
@@ -2239,7 +2239,7 @@ inline void CompressedMatrix<Type,SO>::append( size_t i, size_t j, const Type& v
 // After completion of row/column \a i via the append() function, this function can be called to
 // finalize row/column \a i and prepare the next row/column for insertion process via append().
 //
-// \note: Although finalize() does not allocate new memory, it still invalidates all iterators
+// \note Although finalize() does not allocate new memory, it still invalidates all iterators
 // returned by the end() functions!
 */
 template< typename Type  // Data type of the sparse matrix
@@ -4581,7 +4581,7 @@ inline typename CompressedMatrix<Type,true>::ConstIterator
    A.finalize( 3 );        // Finalizing column 3
    \endcode
 
-// \note: Although append() does not allocate new memory, it still invalidates all iterators
+// \note Although append() does not allocate new memory, it still invalidates all iterators
 // returned by the end() functions!
 */
 template< typename Type >  // Data type of the sparse matrix
@@ -4614,7 +4614,7 @@ inline void CompressedMatrix<Type,true>::append( size_t i, size_t j, const Type&
 // After completion of column \a j via the append() function, this function can be called to
 // finalize column \a j and prepare the next column for insertion process via append().
 //
-// \note: Although finalize() does not allocate new memory, it still invalidates all iterators
+// \note Although finalize() does not allocate new memory, it still invalidates all iterators
 // returned by the end() functions!
 */
 template< typename Type >  // Data type of the sparse matrix

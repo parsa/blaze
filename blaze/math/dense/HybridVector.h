@@ -1354,7 +1354,7 @@ inline EnableIf_<IsNumeric<Other>, HybridVector<Type,N,TF> >&
 // \param rhs The right-hand side scalar value for the division.
 // \return Reference to the vector.
 //
-// \note: A division by zero is only checked by an user assert.
+// \note A division by zero is only checked by an user assert.
 */
 template< typename Type     // Data type of the vector
         , size_t N          // Number of elements

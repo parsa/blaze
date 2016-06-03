@@ -532,7 +532,7 @@ bool isUniform( const DenseVector<VT,TF>& dv )
 //    </tr>
 // </table>
 //
-// \note: This operation is only defined for numeric data types. In case the element type is
+// \note This operation is only defined for numeric data types. In case the element type is
 // not a numeric data type (i.e. a user defined data type or boolean) the attempt to use the
 // length() function results in a compile time error!
 */
@@ -562,7 +562,7 @@ CMathTrait_< ElementType_<VT> > length( const DenseVector<VT,TF>& dv )
 //
 // This function calculates the actual square length of the dense vector.
 //
-// \note: This operation is only defined for numeric data types. In case the element type is
+// \note This operation is only defined for numeric data types. In case the element type is
 // not a numeric data type (i.e. a user defined data type or boolean) the attempt to use the
 // sqrLength() function results in a compile time error!
 */

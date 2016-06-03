@@ -81,7 +81,7 @@ namespace blaze {
 //    </ul>
 // </ul>
 //
-// \note: The NegativeInfinity class is a helper class for the Infinity class. It cannot be
+// \note The NegativeInfinity class is a helper class for the Infinity class. It cannot be
 // instantiated on its own, but can only be used by the Infinity class.
 */
 template< typename I >  // Positive infinity type

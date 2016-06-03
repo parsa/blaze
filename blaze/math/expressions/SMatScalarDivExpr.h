@@ -794,7 +794,7 @@ class SMatScalarDivExpr : public SparseMatrix< SMatScalarDivExpr<MT,ST,SO>, SO >
 // type of the involved data types \a T1::ElementType and \a T2. Note that this operator only
 // works for scalar values of built-in data type.
 //
-// \note: A division by zero is only checked by a user assert.
+// \note A division by zero is only checked by a user assert.
 */
 template< typename T1    // Type of the left-hand side sparse matrix
         , bool SO        // Storage order of the left-hand side sparse matrix

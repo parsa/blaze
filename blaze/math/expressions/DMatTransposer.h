@@ -325,7 +325,7 @@ class DMatTransposer : public DenseMatrix< DMatTransposer<MT,SO>, SO >
    // \param rhs The right-hand side scalar value for the division.
    // \return Reference to this DMatTransposer.
    //
-   // \note: A division by zero is only checked by an user assert.
+   // \note A division by zero is only checked by an user assert.
    */
    template< typename Other >  // Data type of the right-hand side scalar
    inline EnableIf_< IsNumeric<Other>, DMatTransposer >& operator/=( Other rhs )
@@ -1204,7 +1204,7 @@ class DMatTransposer<MT,true> : public DenseMatrix< DMatTransposer<MT,true>, tru
    // \param rhs The right-hand side scalar value for the division.
    // \return Reference to this DMatTransposer.
    //
-   // \note: A division by zero is only checked by an user assert.
+   // \note A division by zero is only checked by an user assert.
    */
    template< typename Other >  // Data type of the right-hand side scalar
    inline EnableIf_< IsNumeric<Other>, DMatTransposer >& operator/=( Other rhs )

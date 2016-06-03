@@ -1735,7 +1735,7 @@ inline EnableIf_< IsNumeric<Other>, DenseSubvector<VT,AF,TF> >&
 // \param rhs The right-hand side scalar value for the division.
 // \return Reference to the assigned subvector.
 //
-// \note: A division by zero is only checked by an user assert.
+// \note A division by zero is only checked by an user assert.
 */
 template< typename VT       // Type of the dense vector
         , bool AF           // Alignment flag
@@ -3745,7 +3745,7 @@ inline EnableIf_< IsNumeric<Other>, DenseSubvector<VT,aligned,TF> >&
 // \param rhs The right-hand side scalar value for the division.
 // \return Reference to the assigned subvector.
 //
-// \note: A division by zero is only checked by an user assert.
+// \note A division by zero is only checked by an user assert.
 */
 template< typename VT       // Type of the dense vector
         , bool TF >         // Transpose flag

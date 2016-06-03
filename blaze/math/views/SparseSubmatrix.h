@@ -1652,7 +1652,7 @@ inline EnableIf_<IsNumeric<Other>, SparseSubmatrix<MT,AF,SO> >&
 // given floating point data type or the division assignment operator for the given integral
 // data type.
 //
-// \note: A division by zero is only checked by an user assert.
+// \note A division by zero is only checked by an user assert.
 */
 template< typename MT       // Type of the sparse matrix
         , bool AF           // Alignment flag
@@ -2480,7 +2480,7 @@ inline typename SparseSubmatrix<MT,AF,SO>::ConstIterator
    B.finalize( 3 );        // Finalizing row 3
    \endcode
 
-// \note: Although append() does not allocate new memory, it still invalidates all iterators
+// \note Although append() does not allocate new memory, it still invalidates all iterators
 // returned by the end() functions!
 */
 template< typename MT  // Type of the sparse matrix
@@ -2508,7 +2508,7 @@ inline void SparseSubmatrix<MT,AF,SO>::append( size_t i, size_t j, const Element
 // After completion of row/column \a i via the append() function, this function can be called to
 // finalize row/column \a i and prepare the next row/column for insertion process via append().
 //
-// \note: Although finalize() does not allocate new memory, it still invalidates all iterators
+// \note Although finalize() does not allocate new memory, it still invalidates all iterators
 // returned by the end() functions!
 */
 template< typename MT  // Type of the sparse matrix
@@ -4031,7 +4031,7 @@ inline EnableIf_<IsNumeric<Other>, SparseSubmatrix<MT,AF,true> >&
 // given floating point data type or the division assignment operator for the given integral
 // data type.
 //
-// \note: A division by zero is only checked by an user assert.
+// \note A division by zero is only checked by an user assert.
 */
 template< typename MT       // Type of the sparse matrix
         , bool AF >         // Alignment flag
@@ -4863,7 +4863,7 @@ inline typename SparseSubmatrix<MT,AF,true>::ConstIterator
    B.finalize( 3 );        // Finalizing row 3
    \endcode
 
-// \note: Although append() does not allocate new memory, it still invalidates all iterators
+// \note Although append() does not allocate new memory, it still invalidates all iterators
 // returned by the end() functions!
 */
 template< typename MT  // Type of the sparse matrix
@@ -4892,7 +4892,7 @@ inline void SparseSubmatrix<MT,AF,true>::append( size_t i, size_t j, const Eleme
 // After completion of column \a j via the append() function, this function can be called to
 // finalize column \a j and prepare the next column for insertion process via append().
 //
-// \note: Although finalize() does not allocate new memory, it still invalidates all iterators
+// \note Although finalize() does not allocate new memory, it still invalidates all iterators
 // returned by the end() functions!
 */
 template< typename MT  // Type of the sparse matrix

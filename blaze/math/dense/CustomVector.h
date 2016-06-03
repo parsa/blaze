@@ -1556,7 +1556,7 @@ inline EnableIf_<IsNumeric<Other>, CustomVector<Type,AF,PF,TF> >&
 // \param rhs The right-hand side scalar value for the division.
 // \return Reference to the vector.
 //
-// \note: A division by zero is only checked by an user assert.
+// \note A division by zero is only checked by an user assert.
 */
 template< typename Type     // Data type of the vector
         , bool AF           // Alignment flag
@@ -3853,7 +3853,7 @@ inline EnableIf_<IsNumeric<Other>, CustomVector<Type,AF,padded,TF> >&
 // \param rhs The right-hand side scalar value for the division.
 // \return Reference to the vector.
 //
-// \note: A division by zero is only checked by an user assert.
+// \note A division by zero is only checked by an user assert.
 */
 template< typename Type     // Data type of the vector
         , bool AF           // Alignment flag

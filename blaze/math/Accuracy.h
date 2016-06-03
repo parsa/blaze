@@ -62,7 +62,7 @@ namespace blaze {
 // be implicitly converted to the three built-in floating point data types float, double and long
 // double.
 //
-// \note: The NegativeAccuracy class is a helper class for the Accuracy class. It cannot be
+// \note The NegativeAccuracy class is a helper class for the Accuracy class. It cannot be
 // instantiated on its own, but can only be used by the Accuracy class.
 */
 template< typename A >  // Positive accuracy type
