@@ -1339,6 +1339,34 @@ inline const SVecForEachExpr<VT,Acosh,TF> acosh( const SparseVector<VT,TF>& sv )
 //*************************************************************************************************
 
 
+//*************************************************************************************************
+/*!\brief Computes the tangent of each non-zero element of the sparse vector \a sv.
+// \ingroup sparse_vector
+//
+// \param sv The input vector.
+// \return The tangent of each non-zero element of \a sv.
+//
+// The \a tan() function computes the tangent for each non-zero element of the input vector \a sv.
+// The function returns an expression representing this operation.\n
+// The following example demonstrates the use of the \a tan() function:
+
+   \code
+   blaze::CompressedVector<double> a, b;
+   // ... Resizing and initialization
+   b = tan( a );
+   \endcode
+*/
+template< typename VT  // Type of the sparse vector
+        , bool TF >    // Transpose flag
+inline const SVecForEachExpr<VT,Tan,TF> tan( const SparseVector<VT,TF>& sv )
+{
+   BLAZE_FUNCTION_TRACE;
+
+   return SVecForEachExpr<VT,Tan,TF>( ~sv, Tan() );
+}
+//*************************************************************************************************
+
+
 
 
 //=================================================================================================
