@@ -40,9 +40,11 @@
 // Includes
 //*************************************************************************************************
 
+#include <blaze/math/shims/Invert.h>
 #include <blaze/math/shims/Sqrt.h>
 #include <blaze/util/Assert.h>
-#include <blaze/util/typetraits/IsFloatingPoint.h>
+#include <blaze/util/EnableIf.h>
+#include <blaze/util/typetraits/IsNumeric.h>
 
 
 namespace blaze {
@@ -54,23 +56,24 @@ namespace blaze {
 //=================================================================================================
 
 //*************************************************************************************************
-/*!\brief Returns the inverse square root of the given floating point value.
+/*!\brief Returns the inverse square root of the given numeric value.
 // \ingroup math_shims
 //
-// \param a The given floating point value \f$[0..\infty]\f$.
+// \param a The given numeric value \f$[0..\infty)\f$.
 // \return The inverse square root of the given value.
 //
 // The \a invsqrt shim represents an abstract interface for computation of the inverse square
-// root of the given floating point value.
+// root of the given numeric value.
 //
-// \note: The given value must be in the range \f$[0..\infty]\f$. The validity of the value is
+// \note The given value must be in the range \f$[0..\infty)\f$. The validity of the value is
 // only checked by an user assert.
 */
-template< typename T >
-inline EnableIf_< IsFloatingPoint<T>, T > invsqrt( T a ) noexcept
+template< typename T, typename = EnableIf_< IsNumeric<T> > >
+inline auto invsqrt( T a ) noexcept -> decltype( inv( sqrt( a ) ) )
 {
-   BLAZE_USER_ASSERT( a > T(0), "Invalid floating point value detected" );
-   return T(1) / sqrt( a );
+   BLAZE_USER_ASSERT( a > T(0), "Invalid numeric value detected" );
+
+   return inv( sqrt( a ) );
 }
 //*************************************************************************************************
 
