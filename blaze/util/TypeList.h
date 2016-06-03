@@ -427,7 +427,7 @@ struct Length< TypeList<Head,Tail> >
    typedef blaze::TypeAt< Floats, 0 >::Result              Index0;  // Indexing of the type list at index 0
    \endcode
 
-// \note: The access index is zero based!
+// \note The access index is zero based!
 */
 template< typename TList  // Type of the type list
         , size_t Index >  // Type list access index

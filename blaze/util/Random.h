@@ -118,7 +118,7 @@ template< typename > class Rand;
    complex<float> c3 = rand< complex<float> >( 2.0F, 3.0F, 1.0F, 5.0F );
    \endcode
 
-// \note: In order to reproduce certain series of random numbers, the seed of the random number
+// \note In order to reproduce certain series of random numbers, the seed of the random number
 // generator has to be set explicitly via the setSeed() function. Otherwise a random seed is used
 // for the random number generation.
 */

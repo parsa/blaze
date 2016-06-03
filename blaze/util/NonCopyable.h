@@ -52,7 +52,7 @@ namespace blaze {
 // copy constructor and the copy assignment operator are explicitly deleted in order to prohibit
 // copy operations of the derived classes.\n
 //
-// \note: It is not necessary to publicly derive from this class. It is sufficient to derive
+// \note It is not necessary to publicly derive from this class. It is sufficient to derive
 // privately to prevent copy operations on the derived class.
 
    \code

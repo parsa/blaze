@@ -54,7 +54,7 @@ namespace blaze {
 // private and left undefinded in order to prohibit the instantiation of objects of derived
 // classes.\n
 //
-// \note: It is not necessary to publicly derive from this class. It is sufficient to derive
+// \note It is not necessary to publicly derive from this class. It is sufficient to derive
 // privately to prevent the instantiation of the derived class.
 
    \code
