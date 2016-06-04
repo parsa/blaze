@@ -1,7 +1,7 @@
 //=================================================================================================
 /*!
-//  \file blaze/math/functors/Forward.h
-//  \brief Header file for all functor forward declarations
+//  \file blaze/math/functors/Inv.h
+//  \brief Header file for the Inv functor
 //
 //  Copyright (C) 2013 Klaus Iglberger - All Rights Reserved
 //
@@ -32,51 +32,46 @@
 */
 //=================================================================================================
 
-#ifndef _BLAZE_MATH_FUNCTORS_FORWARD_H_
-#define _BLAZE_MATH_FUNCTORS_FORWARD_H_
+#ifndef _BLAZE_MATH_FUNCTORS_INV_H_
+#define _BLAZE_MATH_FUNCTORS_INV_H_
+
+
+//*************************************************************************************************
+// Includes
+//*************************************************************************************************
+
+#include <blaze/math/shims/Invert.h>
+#include <blaze/system/Inline.h>
 
 
 namespace blaze {
 
 //=================================================================================================
 //
-//  ::blaze NAMESPACE FORWARD DECLARATIONS
+//  CLASS DEFINITION
 //
 //=================================================================================================
 
-class Abs;
-class Acos;
-class Acosh;
-class Asin;
-class Asinh;
-class Atan;
-class Atanh;
-class Cbrt;
-class Ceil;
-class Conj;
-class Cos;
-class Cosh;
-class CTrans;
-class Erf;
-class Erfc;
-class Eval;
-class Exp;
-class Floor;
-class Imag;
-class Inv;
-class InvCbrt;
-class InvSqrt;
-class Log;
-class Log10;
-template< typename > class Pow;
-class Real;
-class Serial;
-class Sin;
-class Sinh;
-class Sqrt;
-class Tan;
-class Tanh;
-class Trans;
+//*************************************************************************************************
+/*!\brief Generic wrapper for the inv() function.
+// \ingroup functors
+*/
+struct Inv
+{
+   //**********************************************************************************************
+   /*!\brief Returns the result of the inv() function for the given object/value.
+   //
+   // \param a The given object/value.
+   // \return The result of the inv() function for the given object/value.
+   */
+   template< typename T >
+   BLAZE_ALWAYS_INLINE auto operator()( const T& a ) const -> decltype( inv( a ) )
+   {
+      return inv( a );
+   }
+   //**********************************************************************************************
+};
+//*************************************************************************************************
 
 } // namespace blaze
 

@@ -59,6 +59,7 @@
 #include <blaze/math/functors/Exp.h>
 #include <blaze/math/functors/Floor.h>
 #include <blaze/math/functors/Imag.h>
+#include <blaze/math/functors/Inv.h>
 #include <blaze/math/functors/InvCbrt.h>
 #include <blaze/math/functors/InvSqrt.h>
 #include <blaze/math/functors/Log.h>
