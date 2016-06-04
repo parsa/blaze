@@ -72,7 +72,6 @@
 #include <blaze/util/Random.h>
 #include <blaze/util/Serialization.h>
 #include <blaze/util/Singleton.h>
-#include <blaze/util/SizeTrait.h>
 #include <blaze/util/StaticAssert.h>
 #include <blaze/util/Suffix.h>
 #include <blaze/util/SystemClock.h>
