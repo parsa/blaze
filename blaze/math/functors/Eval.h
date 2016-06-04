@@ -1,7 +1,7 @@
 //=================================================================================================
 /*!
-//  \file blaze/math/functors/Forward.h
-//  \brief Header file for all functor forward declarations
+//  \file blaze/math/functors/Eval.h
+//  \brief Header file for the Eval functor
 //
 //  Copyright (C) 2013 Klaus Iglberger - All Rights Reserved
 //
@@ -32,47 +32,45 @@
 */
 //=================================================================================================
 
-#ifndef _BLAZE_MATH_FUNCTORS_FORWARD_H_
-#define _BLAZE_MATH_FUNCTORS_FORWARD_H_
+#ifndef _BLAZE_MATH_FUNCTORS_EVAL_H_
+#define _BLAZE_MATH_FUNCTORS_EVAL_H_
+
+
+//*************************************************************************************************
+// Includes
+//*************************************************************************************************
+
+#include <blaze/system/Inline.h>
 
 
 namespace blaze {
 
 //=================================================================================================
 //
-//  ::blaze NAMESPACE FORWARD DECLARATIONS
+//  CLASS DEFINITION
 //
 //=================================================================================================
 
-class Abs;
-class Acos;
-class Acosh;
-class Asin;
-class Asinh;
-class Atan;
-class Atanh;
-class Cbrt;
-class Ceil;
-class Conj;
-class Cos;
-class Cosh;
-class Erf;
-class Erfc;
-class Eval;
-class Exp;
-class Floor;
-class Imag;
-class InvCbrt;
-class InvSqrt;
-class Log;
-class Log10;
-template< typename > class Pow;
-class Real;
-class Sin;
-class Sinh;
-class Sqrt;
-class Tan;
-class Tanh;
+//*************************************************************************************************
+/*!\brief Generic wrapper for the eval() function.
+// \ingroup functors
+*/
+struct Eval
+{
+   //**********************************************************************************************
+   /*!\brief Returns the result of the eval() function for the given object/value.
+   //
+   // \param a The given object/value.
+   // \return The result of the eval() function for the given object/value.
+   */
+   template< typename T >
+   BLAZE_ALWAYS_INLINE auto operator()( const T& a ) const -> decltype( eval( a ) )
+   {
+      return eval( a );
+   }
+   //**********************************************************************************************
+};
+//*************************************************************************************************
 
 } // namespace blaze
 
