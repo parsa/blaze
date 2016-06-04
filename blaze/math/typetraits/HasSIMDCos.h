@@ -71,7 +71,7 @@ struct HasSIMDCosHelper
 
 //*************************************************************************************************
 /*! \cond BLAZE_INTERNAL */
-#if defined(__INTEL_COMPILER) || defined(__ICL) || defined(__ICC) || defined(__ECC)
+#if BLAZE_SVML_MODE
 template< typename T >
 struct HasSIMDCosHelper< T, EnableIf_< Or< IsFloat<T>, IsDouble<T> > > >
 {

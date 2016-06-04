@@ -62,25 +62,21 @@ namespace blaze {
 // \param b The vector of single precision floating point exponents.
 // \return The resulting vector.
 */
-#if defined(__INTEL_COMPILER) || defined(__ICL) || defined(__ICC) || defined(__ECC)
-
-#if BLAZE_MIC_MODE
+#if BLAZE_SVML_MODE && BLAZE_MIC_MODE
 BLAZE_ALWAYS_INLINE simd_float_t pow( const simd_float_t& a, const simd_float_t& b ) noexcept
 {
    return _mm512_pow_ps( a.value, b.value );
 }
-#elif BLAZE_AVX_MODE
+#elif BLAZE_SVML_MODE && BLAZE_AVX_MODE
 BLAZE_ALWAYS_INLINE simd_float_t pow( const simd_float_t& a, const simd_float_t& b ) noexcept
 {
    return _mm256_pow_ps( a.value, b.value );
 }
-#elif BLAZE_SSE_MODE
+#elif BLAZE_SVML_MODE && BLAZE_SSE_MODE
 BLAZE_ALWAYS_INLINE simd_float_t pow( const simd_float_t& a, const simd_float_t& b ) noexcept
 {
    return _mm_pow_ps( a.value, b.value );
 }
-#endif
-
 #endif
 //*************************************************************************************************
 
@@ -94,25 +90,21 @@ BLAZE_ALWAYS_INLINE simd_float_t pow( const simd_float_t& a, const simd_float_t&
 // \param b The vector of double precision floating point exponents.
 // \return The resulting vector.
 */
-#if defined(__INTEL_COMPILER) || defined(__ICL) || defined(__ICC) || defined(__ECC)
-
-#if BLAZE_MIC_MODE
+#if BLAZE_SVML_MODE && BLAZE_MIC_MODE
 BLAZE_ALWAYS_INLINE simd_double_t pow( const simd_double_t& a, const simd_double_t& b ) noexcept
 {
    return _mm512_pow_pd( a.value, b.value );
 }
-#elif BLAZE_AVX_MODE
+#elif BLAZE_SVML_MODE && BLAZE_AVX_MODE
 BLAZE_ALWAYS_INLINE simd_double_t pow( const simd_double_t& a, const simd_double_t& b ) noexcept
 {
    return _mm256_pow_pd( a.value, b.value );
 }
-#elif BLAZE_SSE_MODE
+#elif BLAZE_SVML_MODE && BLAZE_SSE_MODE
 BLAZE_ALWAYS_INLINE simd_double_t pow( const simd_double_t& a, const simd_double_t& b ) noexcept
 {
    return _mm_pow_pd( a.value, b.value );
 }
-#endif
-
 #endif
 //*************************************************************************************************
 
