@@ -893,11 +893,11 @@ inline const SMatForEachExpr<MT,OP,SO> forEach( const SparseMatrix<MT,SO>& sm, O
 */
 template< typename MT  // Type of the sparse matrix
         , bool SO >    // Storage order
-inline const SMatForEachExpr<MT,Sqrt,SO> sqrt( const SparseMatrix<MT,SO>& dm )
+inline const SMatForEachExpr<MT,Sqrt,SO> sqrt( const SparseMatrix<MT,SO>& sm )
 {
    BLAZE_FUNCTION_TRACE;
 
-   return SMatForEachExpr<MT,Sqrt,SO>( ~dm, Sqrt() );
+   return SMatForEachExpr<MT,Sqrt,SO>( ~sm, Sqrt() );
 }
 //*************************************************************************************************
 
@@ -921,11 +921,11 @@ inline const SMatForEachExpr<MT,Sqrt,SO> sqrt( const SparseMatrix<MT,SO>& dm )
 */
 template< typename MT  // Type of the sparse matrix
         , bool SO >    // Storage order
-inline const SMatForEachExpr<MT,InvSqrt,SO> invsqrt( const SparseMatrix<MT,SO>& dm )
+inline const SMatForEachExpr<MT,InvSqrt,SO> invsqrt( const SparseMatrix<MT,SO>& sm )
 {
    BLAZE_FUNCTION_TRACE;
 
-   return SMatForEachExpr<MT,InvSqrt,SO>( ~dm, InvSqrt() );
+   return SMatForEachExpr<MT,InvSqrt,SO>( ~sm, InvSqrt() );
 }
 //*************************************************************************************************
 
@@ -949,11 +949,11 @@ inline const SMatForEachExpr<MT,InvSqrt,SO> invsqrt( const SparseMatrix<MT,SO>& 
 */
 template< typename MT  // Type of the sparse matrix
         , bool SO >    // Storage order
-inline const SMatForEachExpr<MT,Cbrt,SO> cbrt( const SparseMatrix<MT,SO>& dm )
+inline const SMatForEachExpr<MT,Cbrt,SO> cbrt( const SparseMatrix<MT,SO>& sm )
 {
    BLAZE_FUNCTION_TRACE;
 
-   return SMatForEachExpr<MT,Cbrt,SO>( ~dm, Cbrt() );
+   return SMatForEachExpr<MT,Cbrt,SO>( ~sm, Cbrt() );
 }
 //*************************************************************************************************
 
@@ -977,11 +977,11 @@ inline const SMatForEachExpr<MT,Cbrt,SO> cbrt( const SparseMatrix<MT,SO>& dm )
 */
 template< typename MT  // Type of the sparse matrix
         , bool SO >    // Storage order
-inline const SMatForEachExpr<MT,InvCbrt,SO> invcbrt( const SparseMatrix<MT,SO>& dm )
+inline const SMatForEachExpr<MT,InvCbrt,SO> invcbrt( const SparseMatrix<MT,SO>& sm )
 {
    BLAZE_FUNCTION_TRACE;
 
-   return SMatForEachExpr<MT,InvCbrt,SO>( ~dm, InvCbrt() );
+   return SMatForEachExpr<MT,InvCbrt,SO>( ~sm, InvCbrt() );
 }
 //*************************************************************************************************
 
