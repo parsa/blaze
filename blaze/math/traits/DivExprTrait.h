@@ -55,6 +55,7 @@
 #include <blaze/math/traits/TSVecTDVecDivExprTrait.h>
 #include <blaze/math/typetraits/IsColumnVector.h>
 #include <blaze/math/typetraits/IsDenseMatrix.h>
+#include <blaze/math/typetraits/IsDenseVector.h>
 #include <blaze/math/typetraits/IsMatrix.h>
 #include <blaze/math/typetraits/IsRowMajorMatrix.h>
 #include <blaze/math/typetraits/IsRowVector.h>

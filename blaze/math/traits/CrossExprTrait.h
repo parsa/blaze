@@ -49,6 +49,7 @@
 #include <blaze/math/traits/TSVecTDVecCrossExprTrait.h>
 #include <blaze/math/traits/TSVecTSVecCrossExprTrait.h>
 #include <blaze/math/typetraits/IsColumnVector.h>
+#include <blaze/math/typetraits/IsDenseVector.h>
 #include <blaze/math/typetraits/IsRowVector.h>
 #include <blaze/math/typetraits/IsVector.h>
 #include <blaze/util/InvalidType.h>

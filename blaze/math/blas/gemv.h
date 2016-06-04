@@ -47,7 +47,6 @@
 #include <blaze/math/constraints/MutableDataAccess.h>
 #include <blaze/math/expressions/DenseMatrix.h>
 #include <blaze/math/expressions/DenseVector.h>
-#include <blaze/math/typetraits/IsRowMajorMatrix.h>
 #include <blaze/system/BLAS.h>
 #include <blaze/system/Inline.h>
 #include <blaze/util/Assert.h>

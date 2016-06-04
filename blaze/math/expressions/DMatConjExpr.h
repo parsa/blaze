@@ -64,7 +64,7 @@
 #include <blaze/math/typetraits/IsAligned.h>
 #include <blaze/math/typetraits/IsColumnMajorMatrix.h>
 #include <blaze/math/typetraits/IsComputation.h>
-#include <blaze/math/typetraits/IsDenseVector.h>
+#include <blaze/math/typetraits/IsDenseMatrix.h>
 #include <blaze/math/typetraits/IsExpression.h>
 #include <blaze/math/typetraits/IsHermitian.h>
 #include <blaze/math/typetraits/IsLower.h>

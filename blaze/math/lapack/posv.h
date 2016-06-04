@@ -50,6 +50,7 @@
 #include <blaze/math/expressions/DenseMatrix.h>
 #include <blaze/math/expressions/DenseVector.h>
 #include <blaze/math/lapack/clapack/posv.h>
+#include <blaze/math/typetraits/IsRowMajorMatrix.h>
 #include <blaze/util/Assert.h>
 #include <blaze/util/constraints/SameType.h>
 

@@ -59,7 +59,6 @@
 #include <blaze/math/shims/IsZero.h>
 #include <blaze/math/shims/Reset.h>
 #include <blaze/math/traits/ConjExprTrait.h>
-#include <blaze/math/typetraits/IsRowMajorMatrix.h>
 #include <blaze/util/constraints/Const.h>
 #include <blaze/util/constraints/Numeric.h>
 #include <blaze/util/constraints/Pointer.h>
