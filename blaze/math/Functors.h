@@ -52,6 +52,7 @@
 #include <blaze/math/functors/Conj.h>
 #include <blaze/math/functors/Cos.h>
 #include <blaze/math/functors/Cosh.h>
+#include <blaze/math/functors/CTrans.h>
 #include <blaze/math/functors/Erf.h>
 #include <blaze/math/functors/Erfc.h>
 #include <blaze/math/functors/Eval.h>
