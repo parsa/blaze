@@ -254,6 +254,31 @@
 
 //=================================================================================================
 //
+//  SVML MODE CONFIGURATION
+//
+//=================================================================================================
+
+//*************************************************************************************************
+/*!\brief Compilation switch for the SVML mode.
+// \ingroup system
+//
+// This compilation switch enables/disables the SVML mode. In case the SVML mode is enabled
+// (i.e. in case an Intel compiler is used) the Blaze library attempts to vectorize several
+// linear algebra operations by SVML intrinsics. In case the SVML mode is disabled, the
+// Blaze library chooses default, non-vectorized functionality for the operations.
+*/
+#if BLAZE_USE_VECTORIZATION && ( defined(__INTEL_COMPILER) || defined(__ICL) || defined(__ICC) || defined(__ECC) )
+#  define BLAZE_SVML_MODE 1
+#else
+#  define BLAZE_SVML_MODE 0
+#endif
+//*************************************************************************************************
+
+
+
+
+//=================================================================================================
+//
 //  COMPILE TIME CONSTRAINTS
 //
 //=================================================================================================
