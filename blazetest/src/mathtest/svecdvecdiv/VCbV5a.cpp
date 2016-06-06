@@ -67,8 +67,8 @@ int main()
       typedef blaze::StaticVector<TypeA,5UL>  V5a;
 
       // Creator type definitions
-      typedef blazetest::Creator<VCb>                     CVCb;
-      typedef blazetest::Creator<V5a,blazetest::NoZeros>  CV5a;
+      typedef blazetest::Creator<VCb>  CVCb;
+      typedef blazetest::Creator<V5a>  CV5a;
 
       // Running the tests
       for( size_t i=0UL; i<=5UL; ++i ) {

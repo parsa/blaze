@@ -44,6 +44,7 @@
 #include <blaze/math/CompressedMatrix.h>
 #include <blaze/util/Random.h>
 #include <blazetest/mathtest/creator/Default.h>
+#include <blazetest/mathtest/creator/Policies.h>
 #include <blazetest/system/Types.h>
 
 
@@ -60,23 +61,21 @@ namespace blazetest {
 //
 // This specialization of the Creator class template is able to create random compressed matrices.
 */
-template< typename T     // Element type of the compressed matrix
-        , bool SO        // Storage order of the compressed matrix
-        , typename CP >  // Creation policy
-class Creator< blaze::CompressedMatrix<T,SO>, CP >
+template< typename T  // Element type of the compressed matrix
+        , bool SO >   // Storage order of the compressed matrix
+class Creator< blaze::CompressedMatrix<T,SO> >
 {
  public:
    //**Type definitions****************************************************************************
-   typedef blaze::CompressedMatrix<T,SO>  Type;    //!< Type to be created by the Creator.
-   typedef CP                             Policy;  //!< Creation policy for the built-in elements.
+   typedef blaze::CompressedMatrix<T,SO>  Type;  //!< Type to be created by the Creator.
    //**********************************************************************************************
 
    //**Constructors********************************************************************************
    /*!\name Constructors */
    //@{
-   explicit inline Creator( const Creator<T,CP>& elementCreator = Creator<T,CP>() );
+   explicit inline Creator( const Creator<T>& elementCreator = Creator<T>() );
    explicit inline Creator( size_t m, size_t n, size_t nonzeros,
-                            const Creator<T,CP>& elementCreator = Creator<T,CP>() );
+                            const Creator<T>& elementCreator = Creator<T>() );
    //@}
    //**********************************************************************************************
 
@@ -88,7 +87,11 @@ class Creator< blaze::CompressedMatrix<T,SO>, CP >
    /*!\name Operators */
    //@{
    // No explicitly declared copy assignment operator.
+
    const blaze::CompressedMatrix<T,SO> operator()() const;
+
+   template< typename CP >
+   const blaze::CompressedMatrix<T,SO> operator()( const CP& policy ) const;
    //@}
    //**********************************************************************************************
 
@@ -96,10 +99,10 @@ class Creator< blaze::CompressedMatrix<T,SO>, CP >
    //**Member variables****************************************************************************
    /*!\name Member variables */
    //@{
-   size_t m_;          //!< The number of rows of the compressed matrix.
-   size_t n_;          //!< The number of columns of the compressed matrix.
-   size_t nonzeros_;   //!< The number of non-zero elements in the compressed matrix.
-   Creator<T,CP> ec_;  //!< Creator for the elements of the compressed matrix.
+   size_t m_;         //!< The number of rows of the compressed matrix.
+   size_t n_;         //!< The number of columns of the compressed matrix.
+   size_t nonzeros_;  //!< The number of non-zero elements in the compressed matrix.
+   Creator<T> ec_;    //!< Creator for the elements of the compressed matrix.
    //@}
    //**********************************************************************************************
 };
@@ -120,10 +123,9 @@ class Creator< blaze::CompressedMatrix<T,SO>, CP >
 // \param elementCreator The creator for the elements of the compressed matrix.
 // \exception std::invalid_argument Invalid number of non-zero elements.
 */
-template< typename T     // Element type of the compressed matrix
-        , bool SO        // Storage order of the compressed matrix
-        , typename CP >  // Creation policy
-inline Creator< blaze::CompressedMatrix<T,SO>, CP >::Creator( const Creator<T,CP>& elementCreator )
+template< typename T  // Element type of the compressed matrix
+        , bool SO >   // Storage order of the compressed matrix
+inline Creator< blaze::CompressedMatrix<T,SO> >::Creator( const Creator<T>& elementCreator )
    : m_( 3UL )              // The number of rows of the compressed matrix
    , n_( 3UL )              // The number of columns of the compressed matrix
    , nonzeros_( 3UL )       // The total number of non-zero elements in the compressed matrix
@@ -144,11 +146,10 @@ inline Creator< blaze::CompressedMatrix<T,SO>, CP >::Creator( const Creator<T,CP
 // \param elementCreator The creator for the elements of the compressed matrix.
 // \exception std::invalid_argument Invalid number of non-zero elements.
 */
-template< typename T     // Element type of the compressed matrix
-        , bool SO        // Storage order of the compressed matrix
-        , typename CP >  // Creation policy
-inline Creator< blaze::CompressedMatrix<T,SO>, CP >::Creator( size_t m, size_t n, size_t nonzeros,
-                                                              const Creator<T,CP>& elementCreator )
+template< typename T  // Element type of the compressed matrix
+        , bool SO >   // Storage order of the compressed matrix
+inline Creator< blaze::CompressedMatrix<T,SO> >::Creator( size_t m, size_t n, size_t nonzeros,
+                                                          const Creator<T>& elementCreator )
    : m_( m )                // The number of rows of the compressed matrix
    , n_( n )                // The number of columns of the compressed matrix
    , nonzeros_( nonzeros )  // The total number of non-zero elements in the compressed matrix
@@ -173,14 +174,31 @@ inline Creator< blaze::CompressedMatrix<T,SO>, CP >::Creator( size_t m, size_t n
 //
 // \return The randomly generated compressed matrix.
 */
+template< typename T  // Element type of the compressed matrix
+        , bool SO >   // Storage order of the compressed matrix
+inline const blaze::CompressedMatrix<T,SO>
+   Creator< blaze::CompressedMatrix<T,SO> >::operator()() const
+{
+   return (*this)( Default() );
+}
+//*************************************************************************************************
+
+
+//*************************************************************************************************
+/*!\brief Returns a randomly created compressed matrix.
+//
+// \param policy The creation policy for the elements of fundamental data type.
+// \return The randomly generated compressed matrix.
+*/
 template< typename T     // Element type of the compressed matrix
-        , bool SO        // Storage order of the compressed matrix
-        , typename CP >  // Creation policy
-inline const blaze::CompressedMatrix<T,SO> Creator< blaze::CompressedMatrix<T,SO>, CP >::operator()() const
+        , bool SO >      // Storage order of the compressed matrix
+template< typename CP >  // Creation policy
+inline const blaze::CompressedMatrix<T,SO>
+   Creator< blaze::CompressedMatrix<T,SO> >::operator()( const CP& policy ) const
 {
    blaze::CompressedMatrix<T,SO> matrix( m_, n_, nonzeros_ );
    while( matrix.nonZeros() < nonzeros_ )
-      matrix( blaze::rand<size_t>(0UL,m_-1UL), blaze::rand<size_t>(0UL,n_-1UL) ) = ec_();
+      matrix( blaze::rand<size_t>(0UL,m_-1UL), blaze::rand<size_t>(0UL,n_-1UL) ) = ec_( policy );
    return matrix;
 }
 //*************************************************************************************************

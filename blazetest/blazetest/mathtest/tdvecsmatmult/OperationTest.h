@@ -135,8 +135,7 @@ class OperationTest
    //**Constructors********************************************************************************
    /*!\name Constructors */
    //@{
-   template< typename VCP, typename MCP >
-   explicit OperationTest( const Creator<VT,VCP>& creator1, const Creator<MT,MCP>& creator2 );
+   explicit OperationTest( const Creator<VT>& creator1, const Creator<MT>& creator2 );
    // No explicitly declared copy constructor.
    //@}
    //**********************************************************************************************
@@ -273,11 +272,9 @@ class OperationTest
 // \param creator2 The creator for the right-hand side sparse matrix of the multiplication.
 // \exception std::runtime_error Operation error detected.
 */
-template< typename VT     // Type of the left-hand side dense vector
-        , typename MT >   // Type of the right-hand side sparse matrix
-template< typename VCP    // Creation policy of the left-hand side dense vector
-        , typename MCP >  // Creation policy of the right-hand side sparse matrix
-OperationTest<VT,MT>::OperationTest( const Creator<VT,VCP>& creator1, const Creator<MT,MCP>& creator2 )
+template< typename VT    // Type of the left-hand side dense vector
+        , typename MT >  // Type of the right-hand side sparse matrix
+OperationTest<VT,MT>::OperationTest( const Creator<VT>& creator1, const Creator<MT>& creator2 )
    : lhs_ ( trans( creator1() ) )  // The left-hand side dense vector
    , rhs_ ( creator2() )           // The right-hand side sparse matrix
    , dres_()                       // The dense result vector
@@ -6016,11 +6013,9 @@ void OperationTest<VT,MT>::convertException( const std::exception& ex )
 // \param creator2 The creator for the right-hand side matrix.
 // \return void
 */
-template< typename VT     // Type of the left-hand side dense vector
-        , typename VCP    // Creation policy of the left-hand side dense vector
-        , typename MT     // Type of the right-hand side sparse matrix
-        , typename MCP >  // Creation policy of the right-hand side sparse matrix
-void runTest( const Creator<VT,VCP>& creator1, const Creator<MT,MCP>& creator2 )
+template< typename VT    // Type of the left-hand side dense vector
+        , typename MT >  // Type of the right-hand side sparse matrix
+void runTest( const Creator<VT>& creator1, const Creator<MT>& creator2 )
 {
    for( size_t rep=0UL; rep<repetitions; ++rep ) {
       OperationTest<VT,MT>( creator1, creator2 );

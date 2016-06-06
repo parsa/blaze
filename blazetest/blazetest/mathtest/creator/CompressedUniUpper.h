@@ -45,6 +45,7 @@
 #include <blaze/math/UniUpperMatrix.h>
 #include <blaze/util/Random.h>
 #include <blazetest/mathtest/creator/Default.h>
+#include <blazetest/mathtest/creator/Policies.h>
 #include <blazetest/system/Types.h>
 
 
@@ -62,26 +63,22 @@ namespace blazetest {
 // This specialization of the Creator class template is able to create random uniupper compressed
 // matrices.
 */
-template< typename T     // Element type of the compressed matrix
-        , bool SO        // Storage order of the compressed matrix
-        , typename CP >  // Creation policy
-class Creator< blaze::UniUpperMatrix< blaze::CompressedMatrix<T,SO> >, CP >
+template< typename T  // Element type of the compressed matrix
+        , bool SO >   // Storage order of the compressed matrix
+class Creator< blaze::UniUpperMatrix< blaze::CompressedMatrix<T,SO> > >
 {
  public:
    //**Type definitions****************************************************************************
    //! Type to be created by the Creator.
    typedef blaze::UniUpperMatrix< blaze::CompressedMatrix<T,SO> >  Type;
-
-   //! Creation policy for the built-in elements.
-   typedef CP  Policy;
    //**********************************************************************************************
 
    //**Constructors********************************************************************************
    /*!\name Constructors */
    //@{
-   explicit inline Creator( const Creator<T,CP>& elementCreator = Creator<T,CP>() );
+   explicit inline Creator( const Creator<T>& elementCreator = Creator<T>() );
    explicit inline Creator( size_t n, size_t nonzeros,
-                            const Creator<T,CP>& elementCreator = Creator<T,CP>() );
+                            const Creator<T>& elementCreator = Creator<T>() );
    //@}
    //**********************************************************************************************
 
@@ -93,7 +90,11 @@ class Creator< blaze::UniUpperMatrix< blaze::CompressedMatrix<T,SO> >, CP >
    /*!\name Operators */
    //@{
    // No explicitly declared copy assignment operator.
+
    const blaze::UniUpperMatrix< blaze::CompressedMatrix<T,SO> > operator()() const;
+
+   template< typename CP >
+   const blaze::UniUpperMatrix< blaze::CompressedMatrix<T,SO> > operator()( const CP& policy ) const;
    //@}
    //**********************************************************************************************
 
@@ -101,9 +102,9 @@ class Creator< blaze::UniUpperMatrix< blaze::CompressedMatrix<T,SO> >, CP >
    //**Member variables****************************************************************************
    /*!\name Member variables */
    //@{
-   size_t n_;          //!< The number of rows and columns of the uniupper compressed matrix.
-   size_t nonzeros_;   //!< The number of non-zero elements in the uniupper compressed matrix.
-   Creator<T,CP> ec_;  //!< Creator for the elements of the uniupper compressed matrix.
+   size_t n_;         //!< The number of rows and columns of the uniupper compressed matrix.
+   size_t nonzeros_;  //!< The number of non-zero elements in the uniupper compressed matrix.
+   Creator<T> ec_;    //!< Creator for the elements of the uniupper compressed matrix.
    //@}
    //**********************************************************************************************
 };
@@ -124,10 +125,9 @@ class Creator< blaze::UniUpperMatrix< blaze::CompressedMatrix<T,SO> >, CP >
 // \param elementCreator The creator for the elements of the uniupper compressed matrix.
 // \exception std::invalid_argument Invalid number of non-zero elements.
 */
-template< typename T     // Element type of the compressed matrix
-        , bool SO        // Storage order of the compressed matrix
-        , typename CP >  // Creation policy
-inline Creator< blaze::UniUpperMatrix< blaze::CompressedMatrix<T,SO> >, CP >::Creator( const Creator<T,CP>& elementCreator )
+template< typename T  // Element type of the compressed matrix
+        , bool SO >   // Storage order of the compressed matrix
+inline Creator< blaze::UniUpperMatrix< blaze::CompressedMatrix<T,SO> > >::Creator( const Creator<T>& elementCreator )
    : n_( 3UL )              // The number of rows and columns of the uniupper compressed matrix
    , nonzeros_( 3UL )       // The total number of non-zero elements in the uniupper compressed matrix
    , ec_( elementCreator )  // Creator for the elements of the uniupper compressed matrix
@@ -143,11 +143,10 @@ inline Creator< blaze::UniUpperMatrix< blaze::CompressedMatrix<T,SO> >, CP >::Cr
 // \param elementCreator The creator for the elements of the uniupper compressed matrix.
 // \exception std::invalid_argument Invalid number of non-zero elements.
 */
-template< typename T     // Element type of the compressed matrix
-        , bool SO        // Storage order of the compressed matrix
-        , typename CP >  // Creation policy
-inline Creator< blaze::UniUpperMatrix< blaze::CompressedMatrix<T,SO> >, CP >::Creator( size_t n, size_t nonzeros,
-                                                                                       const Creator<T,CP>& elementCreator )
+template< typename T  // Element type of the compressed matrix
+        , bool SO >   // Storage order of the compressed matrix
+inline Creator< blaze::UniUpperMatrix< blaze::CompressedMatrix<T,SO> > >::Creator( size_t n, size_t nonzeros,
+                                                                                   const Creator<T>& elementCreator )
    : n_( n )                // The number of rows and columns of the uniupper compressed matrix
    , nonzeros_( nonzeros )  // The total number of non-zero elements in the uniupper compressed matrix
    , ec_( elementCreator )  // Creator for the elements of the uniupper compressed matrix
@@ -173,18 +172,34 @@ inline Creator< blaze::UniUpperMatrix< blaze::CompressedMatrix<T,SO> >, CP >::Cr
 //
 // \return The randomly generated uniupper compressed matrix.
 */
-template< typename T     // Element type of the compressed matrix
-        , bool SO        // Storage order of the compressed matrix
-        , typename CP >  // Creation policy
+template< typename T  // Element type of the compressed matrix
+        , bool SO >   // Storage order of the compressed matrix
 inline const blaze::UniUpperMatrix< blaze::CompressedMatrix<T,SO> >
-   Creator< blaze::UniUpperMatrix< blaze::CompressedMatrix<T,SO> >, CP >::operator()() const
+   Creator< blaze::UniUpperMatrix< blaze::CompressedMatrix<T,SO> > >::operator()() const
+{
+   return (*this)( Default() );
+}
+//*************************************************************************************************
+
+
+//*************************************************************************************************
+/*!\brief Returns a randomly created uniupper compressed matrix.
+//
+// \param policy The creation policy for the elements of fundamental data type.
+// \return The randomly generated uniupper compressed matrix.
+*/
+template< typename T     // Element type of the compressed matrix
+        , bool SO >      // Storage order of the compressed matrix
+template< typename CP >  // Creation policy
+inline const blaze::UniUpperMatrix< blaze::CompressedMatrix<T,SO> >
+   Creator< blaze::UniUpperMatrix< blaze::CompressedMatrix<T,SO> > >::operator()( const CP& policy ) const
 {
    blaze::UniUpperMatrix< blaze::CompressedMatrix<T,SO> > matrix( n_, nonzeros_ );
 
    while( matrix.nonZeros() < nonzeros_ ) {
       const size_t row( blaze::rand<size_t>( 0UL, n_-2UL ) );
       const size_t col( blaze::rand<size_t>( row+1UL, n_-1UL ) );
-      matrix(row,col) = ec_();
+      matrix(row,col) = ec_( policy );
    }
 
    return matrix;

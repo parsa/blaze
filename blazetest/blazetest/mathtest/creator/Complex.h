@@ -62,14 +62,12 @@ namespace blazetest {
 //
 // This specialization of the Creator class template is able to create random complex values.
 */
-template< typename T     // Type to be created
-        , typename CP >  // Creation policy
-class Creator< complex<T>, CP >
+template< typename T >  // Type to be created
+class Creator< complex<T> >
 {
  public:
    //**Type definitions****************************************************************************
-   typedef complex<T>  Type;    //!< Type to be created by the Creator.
-   typedef CP          Policy;  //!< Creation policy for the built-in elements.
+   typedef complex<T>  Type;  //!< Type to be created by the Creator.
    //**********************************************************************************************
 
    //**Constructors********************************************************************************
@@ -85,17 +83,11 @@ class Creator< complex<T>, CP >
    //@{
    // No explicitly declared copy assignment operator.
    const complex<T> operator()() const;
+   template< typename CP > const complex<T> operator()( const CP& policy ) const;
    //@}
    //**********************************************************************************************
 
  private:
-   //**Member variables****************************************************************************
-   /*!\name Member variables */
-   //@{
-   CP policy_;  //!< The element creation policy.
-   //@}
-   //**********************************************************************************************
-
    //**Compile time checks*************************************************************************
    /*! \cond BLAZE_INTERNAL */
    BLAZE_CONSTRAINT_MUST_BE_BUILTIN_TYPE    ( T );
@@ -122,11 +114,25 @@ class Creator< complex<T>, CP >
 //
 // \return The randomly generated complex value.
 */
-template< typename T     // Type to be created
-        , typename CP >  // Creation policy
-inline const complex<T> Creator< complex<T>, CP >::operator()() const
+template< typename T >  // Type to be created
+inline const complex<T> Creator< complex<T> >::operator()() const
 {
-   return complex<T>( policy_.template create<T>(), policy_.template create<T>() );
+   return (*this)( Default() );
+}
+//*************************************************************************************************
+
+
+//*************************************************************************************************
+/*!\brief Returns a randomly created complex value.
+//
+// \param policy The creation policy for the real and imaginary part.
+// \return The randomly generated complex value.
+*/
+template< typename T >   // Type to be created
+template< typename CP >  // Creation policy
+inline const complex<T> Creator< complex<T> >::operator()( const CP& policy ) const
+{
+   return complex<T>( policy.template create<T>(), policy.template create<T>() );
 }
 //*************************************************************************************************
 

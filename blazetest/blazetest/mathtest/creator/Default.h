@@ -62,14 +62,12 @@ namespace blazetest {
 // The Creator class creates random values of the given data type \a T based on the given
 // creation policy \a P.
 */
-template< typename T               // Type to be created
-        , typename CP = Default >  // Creation policy
+template< typename T >  // Type to be created
 class Creator
 {
  public:
    //**Type definitions****************************************************************************
-   typedef T   Type;    //!< Type to be created by the Creator.
-   typedef CP  Policy;  //!< Creation policy for the built-in elements.
+   typedef T  Type;  //!< Type to be created by the Creator.
    //**********************************************************************************************
 
    //**Constructors********************************************************************************
@@ -85,17 +83,11 @@ class Creator
    //@{
    // No explicitly declared copy assignment operator.
    inline T operator()() const;
+   template< typename CP > inline T operator()( const CP& policy ) const;
    //@}
    //**********************************************************************************************
 
  private:
-   //**Member variables****************************************************************************
-   /*!\name Member variables */
-   //@{
-   CP policy_;  //!< The element creation policy.
-   //@}
-   //**********************************************************************************************
-
    //**Compile time checks*************************************************************************
    /*! \cond BLAZE_INTERNAL */
    BLAZE_CONSTRAINT_MUST_BE_BUILTIN_TYPE    ( T );
@@ -122,11 +114,25 @@ class Creator
 //
 // \return The randomly generated built-in value.
 */
-template< typename T     // Type to be created
-        , typename CP >  // Creation policy
-inline T Creator<T,CP>::operator()() const
+template< typename T >  // Type to be created
+inline T Creator<T>::operator()() const
 {
-   return policy_.template create<T>();
+   return (*this)( Default() );
+}
+//*************************************************************************************************
+
+
+//*************************************************************************************************
+/*!\brief Returns a randomly created built-in value.
+//
+// \param policy The creation policy for the built-in value.
+// \return The randomly generated built-in value.
+*/
+template< typename T >   // Type to be created
+template< typename CP >  // Creation policy
+inline T Creator<T>::operator()( const CP& policy ) const
+{
+   return policy.template create<T>();
 }
 //*************************************************************************************************
 

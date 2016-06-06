@@ -44,6 +44,7 @@
 #include <blaze/math/CompressedVector.h>
 #include <blaze/util/Random.h>
 #include <blazetest/mathtest/creator/Default.h>
+#include <blazetest/mathtest/creator/Policies.h>
 #include <blazetest/system/Types.h>
 
 
@@ -61,23 +62,21 @@ namespace blazetest {
 // This specialization of the Creator class template is able to create random N-dimensional
 // compressed vectors.
 */
-template< typename T     // Element type of the N-dimensional compressed vector
-        , bool TF        // Transpose flag of the N-dimensional compressed vector
-        , typename CP >  // Creation policy
-class Creator< blaze::CompressedVector<T,TF>, CP >
+template< typename T  // Element type of the N-dimensional compressed vector
+        , bool TF >   // Transpose flag of the N-dimensional compressed vector
+class Creator< blaze::CompressedVector<T,TF> >
 {
  public:
    //**Type definitions****************************************************************************
-   typedef blaze::CompressedVector<T,TF>  Type;    //!< Type to be created by the Creator.
-   typedef CP                             Policy;  //!< Creation policy for the built-in elements.
+   typedef blaze::CompressedVector<T,TF>  Type;  //!< Type to be created by the Creator.
    //**********************************************************************************************
 
    //**Constructors********************************************************************************
    /*!\name Constructors */
    //@{
-   explicit inline Creator( const Creator<T,CP>& elementCreator = Creator<T,CP>() );
+   explicit inline Creator( const Creator<T>& elementCreator = Creator<T>() );
    explicit inline Creator( size_t size, size_t nonzeros,
-                            const Creator<T,CP>& elementCreator = Creator<T,CP>() );
+                            const Creator<T>& elementCreator = Creator<T>() );
    // No explicitly declared copy constructor.
    //@}
    //**********************************************************************************************
@@ -90,7 +89,11 @@ class Creator< blaze::CompressedVector<T,TF>, CP >
    /*!\name Operators */
    //@{
    // No explicitly declared copy assignment operator.
+
    const blaze::CompressedVector<T,TF> operator()() const;
+
+   template< typename CP >
+   const blaze::CompressedVector<T,TF> operator()( const CP& policy ) const;
    //@}
    //**********************************************************************************************
 
@@ -98,9 +101,9 @@ class Creator< blaze::CompressedVector<T,TF>, CP >
    //**Member variables****************************************************************************
    /*!\name Member variables */
    //@{
-   size_t size_;       //!< The size for the N-dimensional compressed vector.
-   size_t nonzeros_;   //!< The number of non-zero elements in the compressed vector.
-   Creator<T,CP> ec_;  //!< Creator for the elements of the N-dimensional compressed vector.
+   size_t size_;      //!< The size for the N-dimensional compressed vector.
+   size_t nonzeros_;  //!< The number of non-zero elements in the compressed vector.
+   Creator<T> ec_;    //!< Creator for the elements of the N-dimensional compressed vector.
    //@}
    //**********************************************************************************************
 };
@@ -121,10 +124,9 @@ class Creator< blaze::CompressedVector<T,TF>, CP >
 // \param elementCreator The creator for the elements of the N-dimensional compressed vector.
 // \exception std::invalid_argument Invalid number of non-zero elements.
 */
-template< typename T     // Element type of the N-dimensional compressed vector
-        , bool TF        // Transpose flag of the N-dimensional compressed vector
-        , typename CP >  // Creation policy
-inline Creator< blaze::CompressedVector<T,TF>, CP >::Creator( const Creator<T,CP>& elementCreator )
+template< typename T  // Element type of the N-dimensional compressed vector
+        , bool TF >   // Transpose flag of the N-dimensional compressed vector
+inline Creator< blaze::CompressedVector<T,TF> >::Creator( const Creator<T>& elementCreator )
    : size_( 3UL )           // The size for the N-dimensional compressed vector
    , nonzeros_( 1UL )       // The number of non-zero elements in the compressed vector
    , ec_( elementCreator )  // Creator for the elements of the N-dimensional compressed vector
@@ -143,10 +145,9 @@ inline Creator< blaze::CompressedVector<T,TF>, CP >::Creator( const Creator<T,CP
 // \param elementCreator The creator for the elements of the N-dimensional compressed vector.
 // \exception std::invalid_argument Invalid number of non-zero elements.
 */
-template< typename T     // Element type of the N-dimensional compressed vector
-        , bool TF        // Transpose flag of the N-dimensional compressed vector
-        , typename CP >  // Creation policy
-inline Creator< blaze::CompressedVector<T,TF>, CP >::Creator( size_t size, size_t nonzeros, const Creator<T,CP>& elementCreator )
+template< typename T  // Element type of the N-dimensional compressed vector
+        , bool TF >   // Transpose flag of the N-dimensional compressed vector
+inline Creator< blaze::CompressedVector<T,TF> >::Creator( size_t size, size_t nonzeros, const Creator<T>& elementCreator )
    : size_( size )          // The size for the N-dimensional compressed vector
    , nonzeros_( nonzeros )  // The number of non-zero elements in the compressed vector
    , ec_( elementCreator )  // Creator for the elements of the N-dimensional compressed vector
@@ -170,14 +171,30 @@ inline Creator< blaze::CompressedVector<T,TF>, CP >::Creator( size_t size, size_
 //
 // \return The randomly generated N-dimensional compressed vector.
 */
+template< typename T  // Element type of the N-dimensional compressed vector
+        , bool TF >   // Transpose flag of the N-dimensional compressed vector
+inline const blaze::CompressedVector<T,TF> Creator< blaze::CompressedVector<T,TF> >::operator()() const
+{
+   return (*this)( Default() );
+}
+//*************************************************************************************************
+
+
+//*************************************************************************************************
+/*!\brief Returns a randomly created N-dimensional compressed vector.
+//
+// \param policy The creation policy for the elements of fundamental data type.
+// \return The randomly generated N-dimensional compressed vector.
+*/
 template< typename T     // Element type of the N-dimensional compressed vector
-        , bool TF        // Transpose flag of the N-dimensional compressed vector
-        , typename CP >  // Creation policy
-inline const blaze::CompressedVector<T,TF> Creator< blaze::CompressedVector<T,TF>, CP >::operator()() const
+        , bool TF >      // Transpose flag of the N-dimensional compressed vector
+template< typename CP >  // Creation policy
+inline const blaze::CompressedVector<T,TF>
+   Creator< blaze::CompressedVector<T,TF> >::operator()( const CP& policy ) const
 {
    blaze::CompressedVector<T,TF> vector( size_ );
    while( vector.nonZeros() < nonzeros_ )
-      vector[blaze::rand<size_t>(0UL,size_-1UL)] = ec_();
+      vector[blaze::rand<size_t>(0UL,size_-1UL)] = ec_( policy );
    return vector;
 }
 //*************************************************************************************************

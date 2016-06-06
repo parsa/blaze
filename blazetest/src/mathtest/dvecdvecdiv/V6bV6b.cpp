@@ -64,7 +64,7 @@ int main()
       typedef blaze::StaticVector<TypeB,6UL>  V6b;
 
       // Creator type definitions
-      typedef blazetest::Creator<V6b,blazetest::NoZeros>  CV6b;
+      typedef blazetest::Creator<V6b>  CV6b;
 
       // Running the tests
       RUN_DVECDVECDIV_OPERATION_TEST( CV6b(), CV6b() );

@@ -67,8 +67,8 @@ int main()
       typedef blaze::HybridVector<TypeB,128UL>  VHb;
 
       // Creator type definitions
-      typedef blazetest::Creator<VCa>                     CVCa;
-      typedef blazetest::Creator<VHb,blazetest::NoZeros>  CVHb;
+      typedef blazetest::Creator<VCa>  CVCa;
+      typedef blazetest::Creator<VHb>  CVHb;
 
       // Running tests with small vectors
       for( size_t i=0UL; i<=6UL; ++i ) {

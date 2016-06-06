@@ -44,6 +44,7 @@
 #include <blaze/math/HermitianMatrix.h>
 #include <blaze/math/shims/Real.h>
 #include <blazetest/mathtest/creator/Default.h>
+#include <blazetest/mathtest/creator/Policies.h>
 #include <blazetest/system/Types.h>
 
 
@@ -61,25 +62,21 @@ namespace blazetest {
 // This specialization of the Creator class template is able to create random Hermitian static
 // matrices.
 */
-template< typename T     // Element type of the static matrix
-        , size_t N       // Number of rows and columns of the static matrix
-        , bool SO        // Storage order of the static matrix
-        , typename CP >  // Creation policy
-class Creator< blaze::HermitianMatrix< blaze::StaticMatrix<T,N,N,SO> >, CP >
+template< typename T  // Element type of the static matrix
+        , size_t N    // Number of rows and columns of the static matrix
+        , bool SO >   // Storage order of the static matrix
+class Creator< blaze::HermitianMatrix< blaze::StaticMatrix<T,N,N,SO> > >
 {
  public:
    //**Type definitions****************************************************************************
    //! Type to be created by the Creator.
    typedef blaze::HermitianMatrix< blaze::StaticMatrix<T,N,N,SO> >  Type;
-
-   //! Creation policy for the built-in elements.
-   typedef CP  Policy;
    //**********************************************************************************************
 
    //**Constructors********************************************************************************
    /*!\name Constructors */
    //@{
-   explicit inline Creator( const Creator<T,CP>& elementCreator = Creator<T,CP>() );
+   explicit inline Creator( const Creator<T>& elementCreator = Creator<T>() );
    // No explicitly declared copy constructor.
    //@}
    //**********************************************************************************************
@@ -92,7 +89,11 @@ class Creator< blaze::HermitianMatrix< blaze::StaticMatrix<T,N,N,SO> >, CP >
    /*!\name Operators */
    //@{
    // No explicitly declared copy assignment operator.
+
    const blaze::HermitianMatrix< blaze::StaticMatrix<T,N,N,SO> > operator()() const;
+
+   template< typename CP >
+   const blaze::HermitianMatrix< blaze::StaticMatrix<T,N,N,SO> > operator()( const CP& policy ) const;
    //@}
    //**********************************************************************************************
 
@@ -100,7 +101,7 @@ class Creator< blaze::HermitianMatrix< blaze::StaticMatrix<T,N,N,SO> >, CP >
    //**Member variables****************************************************************************
    /*!\name Member variables */
    //@{
-   Creator<T,CP> ec_;  //!< Creator for the elements of the Hermitian static matrix.
+   Creator<T> ec_;  //!< Creator for the elements of the Hermitian static matrix.
    //@}
    //**********************************************************************************************
 };
@@ -120,11 +121,10 @@ class Creator< blaze::HermitianMatrix< blaze::StaticMatrix<T,N,N,SO> >, CP >
 //
 // \param elementCreator The creator for the elements of the Hermitian static matrix.
 */
-template< typename T     // Element type of the static matrix
-        , size_t N       // Number of rows and columns of the static matrix
-        , bool SO        // Storage order of the static matrix
-        , typename CP >  // Creation policy
-inline Creator< blaze::HermitianMatrix< blaze::StaticMatrix<T,N,N,SO> >, CP >::Creator( const Creator<T,CP>& elementCreator )
+template< typename T  // Element type of the static matrix
+        , size_t N    // Number of rows and columns of the static matrix
+        , bool SO >   // Storage order of the static matrix
+inline Creator< blaze::HermitianMatrix< blaze::StaticMatrix<T,N,N,SO> > >::Creator( const Creator<T>& elementCreator )
    : ec_( elementCreator )  // Creator for the elements of the Hermitian static matrix
 {}
 //*************************************************************************************************
@@ -143,12 +143,29 @@ inline Creator< blaze::HermitianMatrix< blaze::StaticMatrix<T,N,N,SO> >, CP >::C
 //
 // \return The randomly generated Hermitian static matrix.
 */
+template< typename T  // Element type of the static matrix
+        , size_t N    // Number of rows and columns of the static matrix
+        , bool SO >   // Storage order of the static matrix
+inline const blaze::HermitianMatrix< blaze::StaticMatrix<T,N,N,SO> >
+   Creator< blaze::HermitianMatrix< blaze::StaticMatrix<T,N,N,SO> > >::operator()() const
+{
+   return (*this)( Default() );
+}
+//*************************************************************************************************
+
+
+//*************************************************************************************************
+/*!\brief Returns a randomly created Hermitian static matrix.
+//
+// \param policy The creation policy for the elements of fundamental data type.
+// \return The randomly generated Hermitian static matrix.
+*/
 template< typename T     // Element type of the static matrix
         , size_t N       // Number of rows and columns of the static matrix
-        , bool SO        // Storage order of the static matrix
-        , typename CP >  // Creation policy
+        , bool SO >      // Storage order of the static matrix
+template< typename CP >  // Creation policy
 inline const blaze::HermitianMatrix< blaze::StaticMatrix<T,N,N,SO> >
-   Creator< blaze::HermitianMatrix< blaze::StaticMatrix<T,N,N,SO> >, CP >::operator()() const
+   Creator< blaze::HermitianMatrix< blaze::StaticMatrix<T,N,N,SO> > >::operator()( const CP& policy ) const
 {
    using blaze::real;
 
@@ -159,7 +176,7 @@ inline const blaze::HermitianMatrix< blaze::StaticMatrix<T,N,N,SO> >
       for( size_t j=0UL; j<N; ++j ) {
          for( size_t i=0UL; i<j; ++i )
             matrix(i,j) = ec_();
-         matrix(j,j) = real( ec_() );
+         matrix(j,j) = real( ec_( policy ) );
       }
    }
 
@@ -168,7 +185,7 @@ inline const blaze::HermitianMatrix< blaze::StaticMatrix<T,N,N,SO> >
       for( size_t i=0UL; i<N; ++i ) {
          for( size_t j=0UL; j<i; ++j )
             matrix(i,j) = ec_();
-         matrix(i,i) = real( ec_() );
+         matrix(i,i) = real( ec_( policy ) );
       }
    }
 

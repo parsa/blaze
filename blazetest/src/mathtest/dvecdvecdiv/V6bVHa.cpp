@@ -67,8 +67,8 @@ int main()
       typedef blaze::HybridVector<TypeA,6UL>  VHa;
 
       // Creator type definitions
-      typedef blazetest::Creator<V6b>                     CV6b;
-      typedef blazetest::Creator<VHa,blazetest::NoZeros>  CVHa;
+      typedef blazetest::Creator<V6b>  CV6b;
+      typedef blazetest::Creator<VHa>  CVHa;
 
       // Running the tests
       RUN_DVECDVECDIV_OPERATION_TEST( CV6b(), CVHa( 6UL ) );

@@ -43,6 +43,7 @@
 #include <blaze/math/HybridMatrix.h>
 #include <blaze/math/UniLowerMatrix.h>
 #include <blazetest/mathtest/creator/Default.h>
+#include <blazetest/mathtest/creator/Policies.h>
 #include <blazetest/system/Types.h>
 
 
@@ -60,27 +61,23 @@ namespace blazetest {
 // This specialization of the Creator class template is able to create random unilower hybrid
 // matrices.
 */
-template< typename T     // Element type of the hybrid matrix
-        , size_t M       // Number of rows of the hybrid matrix
-        , size_t N       // Number of columns of the hybrid matrix
-        , bool SO        // Storage order of the hybrid matrix
-        , typename CP >  // Creation policy
-class Creator< blaze::UniLowerMatrix< blaze::HybridMatrix<T,M,N,SO> >, CP >
+template< typename T  // Element type of the hybrid matrix
+        , size_t M    // Number of rows of the hybrid matrix
+        , size_t N    // Number of columns of the hybrid matrix
+        , bool SO >   // Storage order of the hybrid matrix
+class Creator< blaze::UniLowerMatrix< blaze::HybridMatrix<T,M,N,SO> > >
 {
  public:
    //**Type definitions****************************************************************************
    //! Type to be created by the Creator.
    typedef blaze::UniLowerMatrix< blaze::HybridMatrix<T,M,N,SO> >  Type;
-
-   //! Creation policy for the built-in elements.
-   typedef CP  Policy;
    //**********************************************************************************************
 
    //**Constructors********************************************************************************
    /*!\name Constructors */
    //@{
-   explicit inline Creator( const Creator<T,CP>& elementCreator = Creator<T,CP>() );
-   explicit inline Creator( size_t n, const Creator<T,CP>& elementCreator = Creator<T,CP>() );
+   explicit inline Creator( const Creator<T>& elementCreator = Creator<T>() );
+   explicit inline Creator( size_t n, const Creator<T>& elementCreator = Creator<T>() );
    // No explicitly declared copy constructor.
    //@}
    //**********************************************************************************************
@@ -93,7 +90,11 @@ class Creator< blaze::UniLowerMatrix< blaze::HybridMatrix<T,M,N,SO> >, CP >
    /*!\name Operators */
    //@{
    // No explicitly declared copy assignment operator.
+
    const blaze::UniLowerMatrix< blaze::HybridMatrix<T,M,N,SO> > operator()() const;
+
+   template< typename CP >
+   const blaze::UniLowerMatrix< blaze::HybridMatrix<T,M,N,SO> > operator()( const CP& policy ) const;
    //@}
    //**********************************************************************************************
 
@@ -101,8 +102,8 @@ class Creator< blaze::UniLowerMatrix< blaze::HybridMatrix<T,M,N,SO> >, CP >
    //**Member variables****************************************************************************
    /*!\name Member variables */
    //@{
-   size_t n_;          //!< The number of rows and columns of the unilower hybrid matrix.
-   Creator<T,CP> ec_;  //!< Creator for the elements of the unilower hybrid matrix.
+   size_t n_;       //!< The number of rows and columns of the unilower hybrid matrix.
+   Creator<T> ec_;  //!< Creator for the elements of the unilower hybrid matrix.
    //@}
    //**********************************************************************************************
 };
@@ -122,12 +123,11 @@ class Creator< blaze::UniLowerMatrix< blaze::HybridMatrix<T,M,N,SO> >, CP >
 //
 // \param elementCreator The creator for the elements of the unilower hybrid matrix.
 */
-template< typename T     // Element type of the hybrid matrix
-        , size_t M       // Number of rows of the hybrid matrix
-        , size_t N       // Number of columns of the hybrid matrix
-        , bool SO        // Storage order of the hybrid matrix
-        , typename CP >  // Creation policy
-inline Creator< blaze::UniLowerMatrix< blaze::HybridMatrix<T,M,N,SO> >, CP >::Creator( const Creator<T,CP>& elementCreator )
+template< typename T  // Element type of the hybrid matrix
+        , size_t M    // Number of rows of the hybrid matrix
+        , size_t N    // Number of columns of the hybrid matrix
+        , bool SO >   // Storage order of the hybrid matrix
+inline Creator< blaze::UniLowerMatrix< blaze::HybridMatrix<T,M,N,SO> > >::Creator( const Creator<T>& elementCreator )
    : n_ ( N )               // The number of rows and columns of the unilower hybrid matrix
    , ec_( elementCreator )  // Creator for the elements of the unilower hybrid matrix
 {}
@@ -140,12 +140,11 @@ inline Creator< blaze::UniLowerMatrix< blaze::HybridMatrix<T,M,N,SO> >, CP >::Cr
 // \param n The number of rows and columns of the unilower hybrid matrix.
 // \param elementCreator The creator for the elements of the unilower hybrid matrix.
 */
-template< typename T     // Element type of the hybrid matrix
-        , size_t M       // Number of rows of the hybrid matrix
-        , size_t N       // Number of columns of the hybrid matrix
-        , bool SO        // Storage order of the hybrid matrix
-        , typename CP >  // Creation policy
-inline Creator< blaze::UniLowerMatrix< blaze::HybridMatrix<T,M,N,SO> >, CP >::Creator( size_t n, const Creator<T,CP>& elementCreator )
+template< typename T  // Element type of the hybrid matrix
+        , size_t M    // Number of rows of the hybrid matrix
+        , size_t N    // Number of columns of the hybrid matrix
+        , bool SO >   // Storage order of the hybrid matrix
+inline Creator< blaze::UniLowerMatrix< blaze::HybridMatrix<T,M,N,SO> > >::Creator( size_t n, const Creator<T>& elementCreator )
    : n_( n )                // The number of columns of the unilower hybrid matrix
    , ec_( elementCreator )  // Creator for the elements of the unilower hybrid matrix
 {}
@@ -165,13 +164,31 @@ inline Creator< blaze::UniLowerMatrix< blaze::HybridMatrix<T,M,N,SO> >, CP >::Cr
 //
 // \return The randomly generated unilower hybrid matrix.
 */
+template< typename T  // Element type of the hybrid matrix
+        , size_t M    // Number of rows of the hybrid matrix
+        , size_t N    // Number of columns of the hybrid matrix
+        , bool SO >   // Storage order of the hybrid matrix
+inline const blaze::UniLowerMatrix< blaze::HybridMatrix<T,M,N,SO> >
+   Creator< blaze::UniLowerMatrix< blaze::HybridMatrix<T,M,N,SO> > >::operator()() const
+{
+   return (*this)( Default() );
+}
+//*************************************************************************************************
+
+
+//*************************************************************************************************
+/*!\brief Returns a randomly created unilower hybrid matrix.
+//
+// \param policy The creation policy for the elements of fundamental data type.
+// \return The randomly generated unilower hybrid matrix.
+*/
 template< typename T     // Element type of the hybrid matrix
         , size_t M       // Number of rows of the hybrid matrix
         , size_t N       // Number of columns of the hybrid matrix
-        , bool SO        // Storage order of the hybrid matrix
-        , typename CP >  // Creation policy
+        , bool SO >      // Storage order of the hybrid matrix
+template< typename CP >  // Creation policy
 inline const blaze::UniLowerMatrix< blaze::HybridMatrix<T,M,N,SO> >
-   Creator< blaze::UniLowerMatrix< blaze::HybridMatrix<T,M,N,SO> >, CP >::operator()() const
+   Creator< blaze::UniLowerMatrix< blaze::HybridMatrix<T,M,N,SO> > >::operator()( const CP& policy ) const
 {
    blaze::UniLowerMatrix< blaze::HybridMatrix<T,M,N,SO> > matrix( n_ );
 
@@ -179,14 +196,14 @@ inline const blaze::UniLowerMatrix< blaze::HybridMatrix<T,M,N,SO> >
    if( SO ) {
       for( size_t j=0UL; j<n_; ++j )
          for( size_t i=j+1UL; i<n_; ++i )
-            matrix(i,j) = ec_();
+            matrix(i,j) = ec_( policy );
    }
 
    // Initialization of a row-major matrix
    else {
       for( size_t i=1UL; i<n_; ++i )
          for( size_t j=0UL; j<i; ++j )
-            matrix(i,j) = ec_();
+            matrix(i,j) = ec_( policy );
    }
 
    return matrix;

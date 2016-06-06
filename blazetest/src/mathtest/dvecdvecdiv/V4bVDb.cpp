@@ -66,8 +66,8 @@ int main()
       typedef blaze::DynamicVector<TypeB>     VDb;
 
       // Creator type definitions
-      typedef blazetest::Creator<V4b>                     CV4b;
-      typedef blazetest::Creator<VDb,blazetest::NoZeros>  CVDb;
+      typedef blazetest::Creator<V4b>  CV4b;
+      typedef blazetest::Creator<VDb>  CVDb;
 
       // Running the tests
       RUN_DVECDVECDIV_OPERATION_TEST( CV4b(), CVDb( 4UL ) );

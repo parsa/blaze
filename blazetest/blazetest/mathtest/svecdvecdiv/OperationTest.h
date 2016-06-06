@@ -131,8 +131,7 @@ class OperationTest
    //**Constructors********************************************************************************
    /*!\name Constructors */
    //@{
-   template< typename CP1, typename CP2 >
-   explicit OperationTest( const Creator<VT1,CP1>& creator1, const Creator<VT2,CP2>& creator2 );
+   explicit OperationTest( const Creator<VT1>& creator1, const Creator<VT2>& creator2 );
    // No explicitly declared copy constructor.
    //@}
    //**********************************************************************************************
@@ -274,25 +273,23 @@ class OperationTest
 */
 template< typename VT1    // Type of the left-hand side sparse vector
         , typename VT2 >  // Type of the right-hand side dense vector
-template< typename CP1    // Creation policy of the left-hand side sparse vector
-        , typename CP2 >  // Creation policy of the right-hand side dense vector
-OperationTest<VT1,VT2>::OperationTest( const Creator<VT1,CP1>& creator1, const Creator<VT2,CP2>& creator2 )
-   : lhs_( creator1() )    // The left-hand side sparse vector
-   , rhs_( creator2() )    // The right-hand side dense vector
-   , dres_()               // The dense vector for the result of the vector division
-   , sres_()               // The sparse vector for the result of the vector division
-   , reflhs_( lhs_ )       // The reference left-hand side vector
-   , refrhs_( rhs_ )       // The reference right-hand side vector
-   , refres_()             // The reference result
-   , tlhs_( trans(lhs_) )  // The transpose left-hand side vector
-   , trhs_( trans(rhs_) )  // The transpose right-hand side vector
-   , tdres_()              // The dense vector for the result of the transpose vector division
-   , tsres_()              // The sparse vector for the result of the transpose vector division
-   , treflhs_( tlhs_ )     // The reference left-hand side transpose vector
-   , trefrhs_( trhs_ )     // The reference right-hand side transpose vector
-   , trefres_()            // The transpose reference result
-   , test_()               // Label of the currently performed test
-   , error_()              // Description of the current error type
+OperationTest<VT1,VT2>::OperationTest( const Creator<VT1>& creator1, const Creator<VT2>& creator2 )
+   : lhs_( creator1() )             // The left-hand side sparse vector
+   , rhs_( creator2( NoZeros() ) )  // The right-hand side dense vector
+   , dres_()                        // The dense vector for the result of the vector division
+   , sres_()                        // The sparse vector for the result of the vector division
+   , reflhs_( lhs_ )                // The reference left-hand side vector
+   , refrhs_( rhs_ )                // The reference right-hand side vector
+   , refres_()                      // The reference result
+   , tlhs_( trans(lhs_) )           // The transpose left-hand side vector
+   , trhs_( trans(rhs_) )           // The transpose right-hand side vector
+   , tdres_()                       // The dense vector for the result of the transpose vector division
+   , tsres_()                       // The sparse vector for the result of the transpose vector division
+   , treflhs_( tlhs_ )              // The reference left-hand side transpose vector
+   , trefrhs_( trhs_ )              // The reference right-hand side transpose vector
+   , trefres_()                     // The transpose reference result
+   , test_()                        // Label of the currently performed test
+   , error_()                       // Description of the current error type
 {
    typedef blaze::UnderlyingNumeric_<DET>  Scalar;
 
@@ -5071,10 +5068,8 @@ void OperationTest<VT1,VT2>::convertException( const std::exception& ex )
 // \return void
 */
 template< typename VT1    // Type of the left-hand side sparse vector
-        , typename CP1    // Creation policy of the left-hand side sparse vector
-        , typename VT2    // Type of the right-hand side dense vector
-        , typename CP2 >  // Creation policy of the right-hand side dense vector
-void runTest( const Creator<VT1,CP1>& creator1, const Creator<VT2,CP2>& creator2 )
+        , typename VT2 >  // Type of the right-hand side dense vector
+void runTest( const Creator<VT1>& creator1, const Creator<VT2>& creator2 )
 {
    for( size_t rep=0UL; rep<repetitions; ++rep ) {
       OperationTest<VT1,VT2>( creator1, creator2 );

@@ -43,6 +43,7 @@
 #include <blaze/math/LowerMatrix.h>
 #include <blaze/math/StaticMatrix.h>
 #include <blazetest/mathtest/creator/Default.h>
+#include <blazetest/mathtest/creator/Policies.h>
 #include <blazetest/system/Types.h>
 
 
@@ -60,25 +61,21 @@ namespace blazetest {
 // This specialization of the Creator class template is able to create random lower static
 // matrices.
 */
-template< typename T     // Element type of the static matrix
-        , size_t N       // Number of rows and columns of the static matrix
-        , bool SO        // Storage order of the static matrix
-        , typename CP >  // Creation policy
-class Creator< blaze::LowerMatrix< blaze::StaticMatrix<T,N,N,SO> >, CP >
+template< typename T  // Element type of the static matrix
+        , size_t N    // Number of rows and columns of the static matrix
+        , bool SO >   // Storage order of the static matrix
+class Creator< blaze::LowerMatrix< blaze::StaticMatrix<T,N,N,SO> > >
 {
  public:
    //**Type definitions****************************************************************************
    //! Type to be created by the Creator.
    typedef blaze::LowerMatrix< blaze::StaticMatrix<T,N,N,SO> >  Type;
-
-   //! Creation policy for the built-in elements.
-   typedef CP  Policy;
    //**********************************************************************************************
 
    //**Constructors********************************************************************************
    /*!\name Constructors */
    //@{
-   explicit inline Creator( const Creator<T,CP>& elementCreator = Creator<T,CP>() );
+   explicit inline Creator( const Creator<T>& elementCreator = Creator<T>() );
    // No explicitly declared copy constructor.
    //@}
    //**********************************************************************************************
@@ -91,7 +88,11 @@ class Creator< blaze::LowerMatrix< blaze::StaticMatrix<T,N,N,SO> >, CP >
    /*!\name Operators */
    //@{
    // No explicitly declared copy assignment operator.
+
    const blaze::LowerMatrix< blaze::StaticMatrix<T,N,N,SO> > operator()() const;
+
+   template< typename CP >
+   const blaze::LowerMatrix< blaze::StaticMatrix<T,N,N,SO> > operator()( const CP& policy ) const;
    //@}
    //**********************************************************************************************
 
@@ -99,7 +100,7 @@ class Creator< blaze::LowerMatrix< blaze::StaticMatrix<T,N,N,SO> >, CP >
    //**Member variables****************************************************************************
    /*!\name Member variables */
    //@{
-   Creator<T,CP> ec_;  //!< Creator for the elements of the lower static matrix.
+   Creator<T> ec_;  //!< Creator for the elements of the lower static matrix.
    //@}
    //**********************************************************************************************
 };
@@ -119,11 +120,10 @@ class Creator< blaze::LowerMatrix< blaze::StaticMatrix<T,N,N,SO> >, CP >
 //
 // \param elementCreator The creator for the elements of the lower static matrix.
 */
-template< typename T     // Element type of the static matrix
-        , size_t N       // Number of rows and columns of the static matrix
-        , bool SO        // Storage order of the static matrix
-        , typename CP >  // Creation policy
-inline Creator< blaze::LowerMatrix< blaze::StaticMatrix<T,N,N,SO> >, CP >::Creator( const Creator<T,CP>& elementCreator )
+template< typename T  // Element type of the static matrix
+        , size_t N    // Number of rows and columns of the static matrix
+        , bool SO >   // Storage order of the static matrix
+inline Creator< blaze::LowerMatrix< blaze::StaticMatrix<T,N,N,SO> > >::Creator( const Creator<T>& elementCreator )
    : ec_( elementCreator )  // Creator for the elements of the lower static matrix
 {}
 //*************************************************************************************************
@@ -142,12 +142,29 @@ inline Creator< blaze::LowerMatrix< blaze::StaticMatrix<T,N,N,SO> >, CP >::Creat
 //
 // \return The randomly generated lower static matrix.
 */
+template< typename T  // Element type of the static matrix
+        , size_t N    // Number of rows and columns of the static matrix
+        , bool SO >   // Storage order of the static matrix
+inline const blaze::LowerMatrix< blaze::StaticMatrix<T,N,N,SO> >
+   Creator< blaze::LowerMatrix< blaze::StaticMatrix<T,N,N,SO> > >::operator()() const
+{
+   return (*this)( Default() );
+}
+//*************************************************************************************************
+
+
+//*************************************************************************************************
+/*!\brief Returns a randomly created lower static matrix.
+//
+// \param policy The creation policy for the elements of fundamental data type.
+// \return The randomly generated lower static matrix.
+*/
 template< typename T     // Element type of the static matrix
         , size_t N       // Number of rows and columns of the static matrix
-        , bool SO        // Storage order of the static matrix
-        , typename CP >  // Creation policy
+        , bool SO >      // Storage order of the static matrix
+template< typename CP >  // Creation policy
 inline const blaze::LowerMatrix< blaze::StaticMatrix<T,N,N,SO> >
-   Creator< blaze::LowerMatrix< blaze::StaticMatrix<T,N,N,SO> >, CP >::operator()() const
+   Creator< blaze::LowerMatrix< blaze::StaticMatrix<T,N,N,SO> > >::operator()( const CP& policy ) const
 {
    blaze::LowerMatrix< blaze::StaticMatrix<T,N,N,SO> > matrix;
 
@@ -155,14 +172,14 @@ inline const blaze::LowerMatrix< blaze::StaticMatrix<T,N,N,SO> >
    if( SO ) {
       for( size_t j=0UL; j<N; ++j )
          for( size_t i=j; i<N; ++i )
-            matrix(i,j) = ec_();
+            matrix(i,j) = ec_( policy );
    }
 
    // Initialization of a row-major matrix
    else {
       for( size_t i=0UL; i<N; ++i )
          for( size_t j=0UL; j<=i; ++j )
-            matrix(i,j) = ec_();
+            matrix(i,j) = ec_( policy );
    }
 
    return matrix;

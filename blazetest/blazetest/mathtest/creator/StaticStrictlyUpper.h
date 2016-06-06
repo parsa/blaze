@@ -43,6 +43,7 @@
 #include <blaze/math/StaticMatrix.h>
 #include <blaze/math/StrictlyUpperMatrix.h>
 #include <blazetest/mathtest/creator/Default.h>
+#include <blazetest/mathtest/creator/Policies.h>
 #include <blazetest/system/Types.h>
 
 
@@ -60,25 +61,21 @@ namespace blazetest {
 // This specialization of the Creator class template is able to create random strictly upper
 // static matrices.
 */
-template< typename T     // Element type of the static matrix
-        , size_t N       // Number of rows and columns of the static matrix
-        , bool SO        // Storage order of the static matrix
-        , typename CP >  // Creation policy
-class Creator< blaze::StrictlyUpperMatrix< blaze::StaticMatrix<T,N,N,SO> >, CP >
+template< typename T  // Element type of the static matrix
+        , size_t N    // Number of rows and columns of the static matrix
+        , bool SO >   // Storage order of the static matrix
+class Creator< blaze::StrictlyUpperMatrix< blaze::StaticMatrix<T,N,N,SO> > >
 {
  public:
    //**Type definitions****************************************************************************
    //! Type to be created by the Creator.
    typedef blaze::StrictlyUpperMatrix< blaze::StaticMatrix<T,N,N,SO> >  Type;
-
-   //! Creation policy for the built-in elements.
-   typedef CP  Policy;
    //**********************************************************************************************
 
    //**Constructors********************************************************************************
    /*!\name Constructors */
    //@{
-   explicit inline Creator( const Creator<T,CP>& elementCreator = Creator<T,CP>() );
+   explicit inline Creator( const Creator<T>& elementCreator = Creator<T>() );
    // No explicitly declared copy constructor.
    //@}
    //**********************************************************************************************
@@ -91,7 +88,11 @@ class Creator< blaze::StrictlyUpperMatrix< blaze::StaticMatrix<T,N,N,SO> >, CP >
    /*!\name Operators */
    //@{
    // No explicitly declared copy assignment operator.
+
    const blaze::StrictlyUpperMatrix< blaze::StaticMatrix<T,N,N,SO> > operator()() const;
+
+   template< typename CP >
+   const blaze::StrictlyUpperMatrix< blaze::StaticMatrix<T,N,N,SO> > operator()( const CP& policy ) const;
    //@}
    //**********************************************************************************************
 
@@ -99,7 +100,7 @@ class Creator< blaze::StrictlyUpperMatrix< blaze::StaticMatrix<T,N,N,SO> >, CP >
    //**Member variables****************************************************************************
    /*!\name Member variables */
    //@{
-   Creator<T,CP> ec_;  //!< Creator for the elements of the strictly upper static matrix.
+   Creator<T> ec_;  //!< Creator for the elements of the strictly upper static matrix.
    //@}
    //**********************************************************************************************
 };
@@ -119,11 +120,10 @@ class Creator< blaze::StrictlyUpperMatrix< blaze::StaticMatrix<T,N,N,SO> >, CP >
 //
 // \param elementCreator The creator for the elements of the strictly upper static matrix.
 */
-template< typename T     // Element type of the static matrix
-        , size_t N       // Number of rows and columns of the static matrix
-        , bool SO        // Storage order of the static matrix
-        , typename CP >  // Creation policy
-inline Creator< blaze::StrictlyUpperMatrix< blaze::StaticMatrix<T,N,N,SO> >, CP >::Creator( const Creator<T,CP>& elementCreator )
+template< typename T  // Element type of the static matrix
+        , size_t N    // Number of rows and columns of the static matrix
+        , bool SO >   // Storage order of the static matrix
+inline Creator< blaze::StrictlyUpperMatrix< blaze::StaticMatrix<T,N,N,SO> > >::Creator( const Creator<T>& elementCreator )
    : ec_( elementCreator )  // Creator for the elements of the strictly upper static matrix
 {}
 //*************************************************************************************************
@@ -142,12 +142,29 @@ inline Creator< blaze::StrictlyUpperMatrix< blaze::StaticMatrix<T,N,N,SO> >, CP 
 //
 // \return The randomly generated strictly upper static matrix.
 */
+template< typename T  // Element type of the static matrix
+        , size_t N    // Number of rows and columns of the static matrix
+        , bool SO >   // Storage order of the static matrix
+inline const blaze::StrictlyUpperMatrix< blaze::StaticMatrix<T,N,N,SO> >
+   Creator< blaze::StrictlyUpperMatrix< blaze::StaticMatrix<T,N,N,SO> > >::operator()() const
+{
+   return (*this)( Default() );
+}
+//*************************************************************************************************
+
+
+//*************************************************************************************************
+/*!\brief Returns a randomly created strictly upper static matrix.
+//
+// \param policy The creation policy for the elements of fundamental data type.
+// \return The randomly generated strictly upper static matrix.
+*/
 template< typename T     // Element type of the static matrix
         , size_t N       // Number of rows and columns of the static matrix
-        , bool SO        // Storage order of the static matrix
-        , typename CP >  // Creation policy
+        , bool SO >      // Storage order of the static matrix
+template< typename CP >  // Creation policy
 inline const blaze::StrictlyUpperMatrix< blaze::StaticMatrix<T,N,N,SO> >
-   Creator< blaze::StrictlyUpperMatrix< blaze::StaticMatrix<T,N,N,SO> >, CP >::operator()() const
+   Creator< blaze::StrictlyUpperMatrix< blaze::StaticMatrix<T,N,N,SO> > >::operator()( const CP& policy ) const
 {
    blaze::StrictlyUpperMatrix< blaze::StaticMatrix<T,N,N,SO> > matrix;
 
@@ -155,14 +172,14 @@ inline const blaze::StrictlyUpperMatrix< blaze::StaticMatrix<T,N,N,SO> >
    if( SO ) {
       for( size_t j=1UL; j<N; ++j )
          for( size_t i=0UL; i<j; ++i )
-            matrix(i,j) = ec_();
+            matrix(i,j) = ec_( policy );
    }
 
    // Initialization of a row-major matrix
    else {
       for( size_t i=0UL; i<N; ++i )
          for( size_t j=i+1UL; j<N; ++j )
-            matrix(i,j) = ec_();
+            matrix(i,j) = ec_( policy );
    }
 
    return matrix;

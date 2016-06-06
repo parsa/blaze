@@ -66,8 +66,8 @@ int main()
       typedef blaze::DynamicVector<TypeA>     VDa;
 
       // Creator type definitions
-      typedef blazetest::Creator<V5a>                     CV5a;
-      typedef blazetest::Creator<VDa,blazetest::NoZeros>  CVDa;
+      typedef blazetest::Creator<V5a>  CV5a;
+      typedef blazetest::Creator<VDa>  CVDa;
 
       // Running the tests
       RUN_DVECDVECDIV_OPERATION_TEST( CV5a(), CVDa( 5UL ) );
