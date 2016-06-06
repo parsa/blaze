@@ -46,14 +46,12 @@
 #include <blaze/math/InitializerList.h>
 #include <blaze/math/proxy/Proxy.h>
 #include <blaze/math/shims/Clear.h>
-#include <blaze/math/shims/Conjugate.h>
 #include <blaze/math/shims/IsDefault.h>
 #include <blaze/math/shims/IsNaN.h>
 #include <blaze/math/shims/IsOne.h>
 #include <blaze/math/shims/IsReal.h>
 #include <blaze/math/shims/IsZero.h>
 #include <blaze/math/shims/Reset.h>
-#include <blaze/math/traits/ConjExprTrait.h>
 #include <blaze/math/typetraits/IsRowMajorMatrix.h>
 #include <blaze/util/Assert.h>
 #include <blaze/util/Types.h>
@@ -461,10 +459,6 @@ inline MatrixAccessProxy<MT>::operator RawReference() const noexcept
 /*!\name MatrixAccessProxy global functions */
 //@{
 template< typename MT >
-inline ConjExprTrait_< RepresentedType_< MatrixAccessProxy<MT> > >
-   conj( const MatrixAccessProxy<MT>& proxy );
-
-template< typename MT >
 inline void reset( const MatrixAccessProxy<MT>& proxy );
 
 template< typename MT >
@@ -494,28 +488,6 @@ inline void swap( const MatrixAccessProxy<MT>& a, T& b ) noexcept;
 template< typename T, typename MT >
 inline void swap( T& a, const MatrixAccessProxy<MT>& v ) noexcept;
 //@}
-//*************************************************************************************************
-
-
-//*************************************************************************************************
-/*!\brief Computing the complex conjugate of the represented element.
-// \ingroup sparse_matrix
-//
-// \param proxy The given proxy instance.
-// \return The complex conjugate of the represented element.
-//
-// This function computes the complex conjugate of the element represented by the access proxy.
-// In case the proxy represents a vector- or matrix-like data structure the function returns an
-// expression representing the complex conjugate of the vector/matrix.
-*/
-template< typename MT >
-inline ConjExprTrait_< RepresentedType_< MatrixAccessProxy<MT> > >
-   conj( const MatrixAccessProxy<MT>& proxy )
-{
-   using blaze::conj;
-
-   return conj( (~proxy).get() );
-}
 //*************************************************************************************************
 
 

@@ -58,7 +58,6 @@
 #include <blaze/math/shims/IsReal.h>
 #include <blaze/math/shims/IsZero.h>
 #include <blaze/math/shims/Reset.h>
-#include <blaze/math/traits/ConjExprTrait.h>
 #include <blaze/math/typetraits/IsRowMajorMatrix.h>
 #include <blaze/util/constraints/Const.h>
 #include <blaze/util/constraints/Numeric.h>
@@ -631,10 +630,6 @@ inline void HermitianValue<MT>::imag( ValueType value ) const
 /*!\name HermitianValue global functions */
 //@{
 template< typename MT >
-inline ConjExprTrait_< RepresentedType_< HermitianValue<MT> > >
-   conj( const HermitianValue<MT>& value );
-
-template< typename MT >
 inline void reset( const HermitianValue<MT>& value );
 
 template< typename MT >
@@ -658,28 +653,6 @@ inline bool isOne( const HermitianValue<MT>& value );
 template< typename MT >
 inline bool isnan( const HermitianValue<MT>& value );
 //@}
-//*************************************************************************************************
-
-
-//*************************************************************************************************
-/*!\brief Computing the complex conjugate of the Hermitian value.
-// \ingroup hermitian_matrix
-//
-// \param value The given Hermitian value.
-// \return The complex conjugate of the Hermitian value.
-//
-// This function computes the complex conjugate of the Hermitian value. In case the value
-// represents a vector- or matrix-like data structure the function returns an expression
-// representing the complex conjugate of the vector/matrix.
-*/
-template< typename MT >
-inline ConjExprTrait_< RepresentedType_< HermitianValue<MT> > >
-   conj( const HermitianValue<MT>& value )
-{
-   using blaze::conj;
-
-   return conj( (~value).get() );
-}
 //*************************************************************************************************
 
 

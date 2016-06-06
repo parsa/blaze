@@ -46,14 +46,12 @@
 #include <blaze/math/InitializerList.h>
 #include <blaze/math/proxy/Proxy.h>
 #include <blaze/math/shims/Clear.h>
-#include <blaze/math/shims/Conjugate.h>
 #include <blaze/math/shims/IsDefault.h>
 #include <blaze/math/shims/IsNaN.h>
 #include <blaze/math/shims/IsOne.h>
 #include <blaze/math/shims/IsReal.h>
 #include <blaze/math/shims/IsZero.h>
 #include <blaze/math/shims/Reset.h>
-#include <blaze/math/traits/ConjExprTrait.h>
 #include <blaze/util/Assert.h>
 #include <blaze/util/Types.h>
 
@@ -449,10 +447,6 @@ inline VectorAccessProxy<VT>::operator RawReference() const noexcept
 /*!\name VectorAccessProxy global functions */
 //@{
 template< typename VT >
-inline ConjExprTrait_< RepresentedType_< VectorAccessProxy<VT> > >
-   conj( const VectorAccessProxy<VT>& proxy );
-
-template< typename VT >
 inline void reset( const VectorAccessProxy<VT>& proxy );
 
 template< typename VT >
@@ -482,28 +476,6 @@ inline void swap( const VectorAccessProxy<VT>& a, T& b ) noexcept;
 template< typename T, typename VT >
 inline void swap( T& a, const VectorAccessProxy<VT>& v ) noexcept;
 //@}
-//*************************************************************************************************
-
-
-//*************************************************************************************************
-/*!\brief Computing the complex conjugate of the represented element.
-// \ingroup sparse_vector
-//
-// \param proxy The given proxy instance.
-// \return The complex conjugate of the represented element.
-//
-// This function computes the complex conjugate of the element represented by the access proxy.
-// In case the proxy represents a vector- or matrix-like data structure the function returns an
-// expression representing the complex conjugate of the vector/matrix.
-*/
-template< typename VT >
-inline ConjExprTrait_< RepresentedType_< VectorAccessProxy<VT> > >
-   conj( const VectorAccessProxy<VT>& proxy )
-{
-   using blaze::conj;
-
-   return conj( (~proxy).get() );
-}
 //*************************************************************************************************
 
 

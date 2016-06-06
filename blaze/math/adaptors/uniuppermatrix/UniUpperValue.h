@@ -50,7 +50,6 @@
 #include <blaze/math/Exception.h>
 #include <blaze/math/proxy/Proxy.h>
 #include <blaze/math/shims/Clear.h>
-#include <blaze/math/shims/Conjugate.h>
 #include <blaze/math/shims/Invert.h>
 #include <blaze/math/shims/IsDefault.h>
 #include <blaze/math/shims/IsNaN.h>
@@ -58,7 +57,6 @@
 #include <blaze/math/shims/IsReal.h>
 #include <blaze/math/shims/IsZero.h>
 #include <blaze/math/shims/Reset.h>
-#include <blaze/math/traits/ConjExprTrait.h>
 #include <blaze/util/constraints/Const.h>
 #include <blaze/util/constraints/Numeric.h>
 #include <blaze/util/constraints/Pointer.h>
@@ -574,10 +572,6 @@ inline void UniUpperValue<MT>::imag( ValueType value ) const
 /*!\name UniUpperValue global functions */
 //@{
 template< typename MT >
-inline ConjExprTrait_< RepresentedType_< UniUpperValue<MT> > >
-   conj( const UniUpperValue<MT>& value );
-
-template< typename MT >
 inline void reset( const UniUpperValue<MT>& value );
 
 template< typename MT >
@@ -601,28 +595,6 @@ inline bool isOne( const UniUpperValue<MT>& value );
 template< typename MT >
 inline bool isnan( const UniUpperValue<MT>& value );
 //@}
-//*************************************************************************************************
-
-
-//*************************************************************************************************
-/*!\brief Computing the complex conjugate of the uniupper value.
-// \ingroup uniupper_matrix
-//
-// \param value The given uniupper value.
-// \return The complex conjugate of the uniupper value.
-//
-// This function computes the complex conjugate of the uniupper value. In case the value
-// represents a vector- or matrix-like data structure the function returns an expression
-// representing the complex conjugate of the vector/matrix.
-*/
-template< typename MT >
-inline ConjExprTrait_< RepresentedType_< UniUpperValue<MT> > >
-   conj( const UniUpperValue<MT>& value )
-{
-   using blaze::conj;
-
-   return conj( (~value).get() );
-}
 //*************************************************************************************************
 
 
