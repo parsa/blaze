@@ -62,6 +62,7 @@
 #include <blaze/math/traits/ColumnTrait.h>
 #include <blaze/math/traits/DerestrictTrait.h>
 #include <blaze/math/traits/DivTrait.h>
+#include <blaze/math/traits/ForEachTrait.h>
 #include <blaze/math/traits/MathTrait.h>
 #include <blaze/math/traits/MultTrait.h>
 #include <blaze/math/traits/RowTrait.h>
@@ -2567,6 +2568,25 @@ template< typename MT, bool SO, bool DF, typename T >
 struct DivTrait< UniUpperMatrix<MT,SO,DF>, T, EnableIf_< IsNumeric<T> > >
 {
    using Type = UpperMatrix< DivTrait_<MT,T> >;
+};
+/*! \endcond */
+//*************************************************************************************************
+
+
+
+
+//=================================================================================================
+//
+//  FOREACHTRAIT SPECIALIZATIONS
+//
+//=================================================================================================
+
+//*************************************************************************************************
+/*! \cond BLAZE_INTERNAL */
+template< typename MT, bool SO, bool DF, typename ET >
+struct ForEachTrait< UniUpperMatrix<MT,SO,DF>, Pow<ET> >
+{
+   using Type = UniUpperMatrix< ForEachTrait_< MT, Pow<ET> > >;
 };
 /*! \endcond */
 //*************************************************************************************************
