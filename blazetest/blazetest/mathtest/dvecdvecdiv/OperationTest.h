@@ -52,6 +52,7 @@
 #include <blaze/math/constraints/TransposeFlag.h>
 #include <blaze/math/constraints/VecVecDivExpr.h>
 #include <blaze/math/DynamicVector.h>
+#include <blaze/math/Functors.h>
 #include <blaze/math/shims/Equal.h>
 #include <blaze/math/shims/IsDivisor.h>
 #include <blaze/math/StaticVector.h>
@@ -152,14 +153,16 @@ class OperationTest
                           void testNegatedOperation  ();
    template< typename T > void testScaledOperation   ( T scalar );
                           void testTransOperation    ();
+                          void testCTransOperation   ();
                           void testAbsOperation      ();
                           void testConjOperation     ();
-                          void testCTransOperation   ();
                           void testRealOperation     ();
                           void testImagOperation     ();
                           void testEvalOperation     ();
                           void testSerialOperation   ();
                           void testSubvectorOperation();
+
+   template< typename OP > void testCustomOperation( OP op, const std::string& name );
    //@}
    //**********************************************************************************************
 
@@ -308,9 +311,9 @@ OperationTest<VT1,VT2>::OperationTest( const Creator<VT1>& creator1, const Creat
    testScaledOperation( 2.0 );
    testScaledOperation( Scalar( 2 ) );
    testTransOperation();
+   testCTransOperation();
    testAbsOperation();
    testConjOperation();
-   testCTransOperation();
    testRealOperation();
    testImagOperation();
    testEvalOperation();
@@ -2955,706 +2958,6 @@ void OperationTest<VT1,VT2>::testTransOperation()
 
 
 //*************************************************************************************************
-/*!\brief Testing the abs dense vector/dense vector division.
-//
-// \return void
-// \exception std::runtime_error Division error detected.
-//
-// This function tests the abs vector division with plain assignment, addition assignment,
-// subtraction assignment, and multiplication assignment. In case any error resulting from the
-// division or the subsequent assignment is detected, a \a std::runtime_error exception is
-// thrown.
-*/
-template< typename VT1    // Type of the left-hand side dense vector
-        , typename VT2 >  // Type of the right-hand side dense vector
-void OperationTest<VT1,VT2>::testAbsOperation()
-{
-#if BLAZETEST_MATHTEST_TEST_ABS_OPERATION
-   if( BLAZETEST_MATHTEST_TEST_ABS_OPERATION > 1 )
-   {
-      //=====================================================================================
-      // Abs division
-      //=====================================================================================
-
-      // Abs division with the given vectors
-      {
-         test_  = "Abs division with the given vectors";
-         error_ = "Failed division operation";
-
-         try {
-            initResults();
-            dres_   = abs( lhs_ / rhs_ );
-            sres_   = abs( lhs_ / rhs_ );
-            refres_ = abs( reflhs_ / refrhs_ );
-         }
-         catch( std::exception& ex ) {
-            convertException<VT1,VT2>( ex );
-         }
-
-         checkResults<VT1,VT2>();
-
-         try {
-            initTransposeResults();
-            tdres_   = abs( tlhs_ / trhs_ );
-            tsres_   = abs( tlhs_ / trhs_ );
-            trefres_ = abs( treflhs_ / trefrhs_ );
-         }
-         catch( std::exception& ex ) {
-            convertException<TVT1,TVT2>( ex );
-         }
-
-         checkTransposeResults<TVT1,TVT2>();
-      }
-
-      // Abs division with evaluated vectors
-      {
-         test_  = "Abs division with evaluated vectors";
-         error_ = "Failed division operation";
-
-         try {
-            initResults();
-            dres_   = abs( eval( lhs_ ) / eval( rhs_ ) );
-            sres_   = abs( eval( lhs_ ) / eval( rhs_ ) );
-            refres_ = abs( eval( reflhs_ ) / eval( refrhs_ ) );
-         }
-         catch( std::exception& ex ) {
-            convertException<VT1,VT2>( ex );
-         }
-
-         checkResults<VT1,VT2>();
-
-         try {
-            initTransposeResults();
-            tdres_   = abs( eval( tlhs_ ) / eval( trhs_ ) );
-            tsres_   = abs( eval( tlhs_ ) / eval( trhs_ ) );
-            trefres_ = abs( eval( treflhs_ ) / eval( trefrhs_ ) );
-         }
-         catch( std::exception& ex ) {
-            convertException<TVT1,TVT2>( ex );
-         }
-
-         checkTransposeResults<TVT1,TVT2>();
-      }
-
-
-      //=====================================================================================
-      // Abs division with addition assignment
-      //=====================================================================================
-
-      // Abs division with addition assignment with the given vectors
-      {
-         test_  = "Abs division with addition assignment with the given vectors";
-         error_ = "Failed addition assignment operation";
-
-         try {
-            initResults();
-            dres_   += abs( lhs_ / rhs_ );
-            sres_   += abs( lhs_ / rhs_ );
-            refres_ += abs( reflhs_ / refrhs_ );
-         }
-         catch( std::exception& ex ) {
-            convertException<VT1,VT2>( ex );
-         }
-
-         checkResults<VT1,VT2>();
-
-         try {
-            initTransposeResults();
-            tdres_   += abs( tlhs_ / trhs_ );
-            tsres_   += abs( tlhs_ / trhs_ );
-            trefres_ += abs( treflhs_ / trefrhs_ );
-         }
-         catch( std::exception& ex ) {
-            convertException<TVT1,TVT2>( ex );
-         }
-
-         checkTransposeResults<TVT1,TVT2>();
-      }
-
-      // Abs division with addition assignment with evaluated vectors
-      {
-         test_  = "Abs division with addition assignment with evaluated vectors";
-         error_ = "Failed addition assignment operation";
-
-         try {
-            initResults();
-            dres_   += abs( eval( lhs_ ) / eval( rhs_ ) );
-            sres_   += abs( eval( lhs_ ) / eval( rhs_ ) );
-            refres_ += abs( eval( reflhs_ ) / eval( refrhs_ ) );
-         }
-         catch( std::exception& ex ) {
-            convertException<VT1,VT2>( ex );
-         }
-
-         checkResults<VT1,VT2>();
-
-         try {
-            initTransposeResults();
-            tdres_   += abs( eval( tlhs_ ) / eval( trhs_ ) );
-            tsres_   += abs( eval( tlhs_ ) / eval( trhs_ ) );
-            trefres_ += abs( eval( treflhs_ ) / eval( trefrhs_ ) );
-         }
-         catch( std::exception& ex ) {
-            convertException<TVT1,TVT2>( ex );
-         }
-
-         checkTransposeResults<TVT1,TVT2>();
-      }
-
-
-      //=====================================================================================
-      // Abs division with subtraction assignment
-      //=====================================================================================
-
-      // Abs division with subtraction assignment with the given vectors
-      {
-         test_  = "Abs division with subtraction assignment with the given types";
-         error_ = "Failed subtraction assignment operation";
-
-         try {
-            initResults();
-            dres_   -= abs( lhs_ / rhs_ );
-            sres_   -= abs( lhs_ / rhs_ );
-            refres_ -= abs( reflhs_ / refrhs_ );
-         }
-         catch( std::exception& ex ) {
-            convertException<VT1,VT2>( ex );
-         }
-
-         checkResults<VT1,VT2>();
-
-         try {
-            initTransposeResults();
-            tdres_   -= abs( tlhs_ / trhs_ );
-            tsres_   -= abs( tlhs_ / trhs_ );
-            trefres_ -= abs( treflhs_ / trefrhs_ );
-         }
-         catch( std::exception& ex ) {
-            convertException<TVT1,TVT2>( ex );
-         }
-
-         checkTransposeResults<TVT1,TVT2>();
-      }
-
-      // Abs division with subtraction assignment with evaluated vectors
-      {
-         test_  = "Abs division with subtraction assignment with evaluated vectors";
-         error_ = "Failed subtraction assignment operation";
-
-         try {
-            initResults();
-            dres_   -= abs( eval( lhs_ ) / eval( rhs_ ) );
-            sres_   -= abs( eval( lhs_ ) / eval( rhs_ ) );
-            refres_ -= abs( eval( reflhs_ ) / eval( refrhs_ ) );
-         }
-         catch( std::exception& ex ) {
-            convertException<VT1,VT2>( ex );
-         }
-
-         checkResults<VT1,VT2>();
-
-         try {
-            initTransposeResults();
-            tdres_   -= abs( eval( tlhs_ ) / eval( trhs_ ) );
-            tsres_   -= abs( eval( tlhs_ ) / eval( trhs_ ) );
-            trefres_ -= abs( eval( treflhs_ ) / eval( trefrhs_ ) );
-         }
-         catch( std::exception& ex ) {
-            convertException<TVT1,TVT2>( ex );
-         }
-
-         checkTransposeResults<TVT1,TVT2>();
-      }
-
-
-      //=====================================================================================
-      // Abs division with multiplication assignment
-      //=====================================================================================
-
-      // Abs division with multiplication assignment with the given vectors
-      {
-         test_  = "Abs division with multiplication assignment with the given vectors";
-         error_ = "Failed multiplication assignment operation";
-
-         try {
-            initResults();
-            dres_   *= abs( lhs_ / rhs_ );
-            sres_   *= abs( lhs_ / rhs_ );
-            refres_ *= abs( reflhs_ / refrhs_ );
-         }
-         catch( std::exception& ex ) {
-            convertException<VT1,VT2>( ex );
-         }
-
-         checkResults<VT1,VT2>();
-
-         try {
-            initTransposeResults();
-            tdres_   *= abs( tlhs_ / trhs_ );
-            tsres_   *= abs( tlhs_ / trhs_ );
-            trefres_ *= abs( treflhs_ / trefrhs_ );
-         }
-         catch( std::exception& ex ) {
-            convertException<TVT1,TVT2>( ex );
-         }
-
-         checkTransposeResults<TVT1,TVT2>();
-      }
-
-      // Abs division with multiplication assignment with evaluated vectors
-      {
-         test_  = "Abs division with multiplication assignment with evaluated vectors";
-         error_ = "Failed multiplication assignment operation";
-
-         try {
-            initResults();
-            dres_   *= abs( eval( lhs_ ) / eval( rhs_ ) );
-            sres_   *= abs( eval( lhs_ ) / eval( rhs_ ) );
-            refres_ *= abs( eval( reflhs_ ) / eval( refrhs_ ) );
-         }
-         catch( std::exception& ex ) {
-            convertException<VT1,VT2>( ex );
-         }
-
-         checkResults<VT1,VT2>();
-
-         try {
-            initTransposeResults();
-            tdres_   *= abs( eval( tlhs_ ) / eval( trhs_ ) );
-            tsres_   *= abs( eval( tlhs_ ) / eval( trhs_ ) );
-            trefres_ *= abs( eval( treflhs_ ) / eval( trefrhs_ ) );
-         }
-         catch( std::exception& ex ) {
-            convertException<TVT1,TVT2>( ex );
-         }
-
-         checkTransposeResults<TVT1,TVT2>();
-      }
-
-
-      //=====================================================================================
-      // Abs division with division assignment
-      //=====================================================================================
-
-      if( blaze::isDivisor( lhs_ / rhs_ ) )
-      {
-         // Abs division with division assignment with the given vectors
-         {
-            test_  = "Abs division with division assignment with the given vectors";
-            error_ = "Failed division assignment operation";
-
-            try {
-               initResults();
-               dres_   /= abs( lhs_ / rhs_ );
-               sres_   /= abs( lhs_ / rhs_ );
-               refres_ /= abs( DRE( reflhs_ / refrhs_ ) );
-            }
-            catch( std::exception& ex ) {
-               convertException<VT1,VT2>( ex );
-            }
-
-            checkResults<VT1,VT2>();
-
-            try {
-               initTransposeResults();
-               tdres_   /= abs( tlhs_ / trhs_ );
-               tsres_   /= abs( tlhs_ / trhs_ );
-               trefres_ /= abs( TDRE( treflhs_ / trefrhs_ ) );
-            }
-            catch( std::exception& ex ) {
-               convertException<TVT1,TVT2>( ex );
-            }
-
-            checkTransposeResults<TVT1,TVT2>();
-         }
-
-         // Abs division with division assignment with evaluated vectors
-         {
-            test_  = "Abs division with division assignment with evaluated vectors";
-            error_ = "Failed division assignment operation";
-
-            try {
-               initResults();
-               dres_   /= abs( eval( lhs_ ) / eval( rhs_ ) );
-               sres_   /= abs( eval( lhs_ ) / eval( rhs_ ) );
-               refres_ /= abs( DRE( reflhs_ / refrhs_ ) );
-            }
-            catch( std::exception& ex ) {
-               convertException<VT1,VT2>( ex );
-            }
-
-            checkResults<VT1,VT2>();
-
-            try {
-               initTransposeResults();
-               tdres_   /= abs( eval( tlhs_ ) / eval( trhs_ ) );
-               tsres_   /= abs( eval( tlhs_ ) / eval( trhs_ ) );
-               trefres_ /= abs( TDRE( treflhs_ / trefrhs_ ) );
-            }
-            catch( std::exception& ex ) {
-               convertException<TVT1,TVT2>( ex );
-            }
-
-            checkTransposeResults<TVT1,TVT2>();
-         }
-      }
-   }
-#endif
-}
-//*************************************************************************************************
-
-
-//*************************************************************************************************
-/*!\brief Testing the conjugate dense vector/dense vector division.
-//
-// \return void
-// \exception std::runtime_error Division error detected.
-//
-// This function tests the conjugate vector division with plain assignment, addition assignment,
-// subtraction assignment, and multiplication assignment. In case any error resulting from the
-// division or the subsequent assignment is detected, a \a std::runtime_error exception is
-// thrown.
-*/
-template< typename VT1    // Type of the left-hand side dense vector
-        , typename VT2 >  // Type of the right-hand side dense vector
-void OperationTest<VT1,VT2>::testConjOperation()
-{
-#if BLAZETEST_MATHTEST_TEST_CONJ_OPERATION
-   if( BLAZETEST_MATHTEST_TEST_CONJ_OPERATION > 1 )
-   {
-      //=====================================================================================
-      // Conjugate division
-      //=====================================================================================
-
-      // Conjugate division with the given vectors
-      {
-         test_  = "Conjugate division with the given vectors";
-         error_ = "Failed division operation";
-
-         try {
-            initResults();
-            dres_   = conj( lhs_ / rhs_ );
-            sres_   = conj( lhs_ / rhs_ );
-            refres_ = conj( reflhs_ / refrhs_ );
-         }
-         catch( std::exception& ex ) {
-            convertException<VT1,VT2>( ex );
-         }
-
-         checkResults<VT1,VT2>();
-
-         try {
-            initTransposeResults();
-            tdres_   = conj( tlhs_ / trhs_ );
-            tsres_   = conj( tlhs_ / trhs_ );
-            trefres_ = conj( treflhs_ / trefrhs_ );
-         }
-         catch( std::exception& ex ) {
-            convertException<TVT1,TVT2>( ex );
-         }
-
-         checkTransposeResults<TVT1,TVT2>();
-      }
-
-      // Conjugate division with evaluated vectors
-      {
-         test_  = "Conjugate division with evaluated vectors";
-         error_ = "Failed division operation";
-
-         try {
-            initResults();
-            dres_   = conj( eval( lhs_ ) / eval( rhs_ ) );
-            sres_   = conj( eval( lhs_ ) / eval( rhs_ ) );
-            refres_ = conj( eval( reflhs_ ) / eval( refrhs_ ) );
-         }
-         catch( std::exception& ex ) {
-            convertException<VT1,VT2>( ex );
-         }
-
-         checkResults<VT1,VT2>();
-
-         try {
-            initTransposeResults();
-            tdres_   = conj( eval( tlhs_ ) / eval( trhs_ ) );
-            tsres_   = conj( eval( tlhs_ ) / eval( trhs_ ) );
-            trefres_ = conj( eval( treflhs_ ) / eval( trefrhs_ ) );
-         }
-         catch( std::exception& ex ) {
-            convertException<TVT1,TVT2>( ex );
-         }
-
-         checkTransposeResults<TVT1,TVT2>();
-      }
-
-
-      //=====================================================================================
-      // Conjugate division with addition assignment
-      //=====================================================================================
-
-      // Conjugate division with addition assignment with the given vectors
-      {
-         test_  = "Conjugate division with addition assignment with the given vectors";
-         error_ = "Failed addition assignment operation";
-
-         try {
-            initResults();
-            dres_   += conj( lhs_ / rhs_ );
-            sres_   += conj( lhs_ / rhs_ );
-            refres_ += conj( reflhs_ / refrhs_ );
-         }
-         catch( std::exception& ex ) {
-            convertException<VT1,VT2>( ex );
-         }
-
-         checkResults<VT1,VT2>();
-
-         try {
-            initTransposeResults();
-            tdres_   += conj( tlhs_ / trhs_ );
-            tsres_   += conj( tlhs_ / trhs_ );
-            trefres_ += conj( treflhs_ / trefrhs_ );
-         }
-         catch( std::exception& ex ) {
-            convertException<TVT1,TVT2>( ex );
-         }
-
-         checkTransposeResults<TVT1,TVT2>();
-      }
-
-      // Conjugate division with addition assignment with evaluated vectors
-      {
-         test_  = "Conjugate division with addition assignment with evaluated vectors";
-         error_ = "Failed addition assignment operation";
-
-         try {
-            initResults();
-            dres_   += conj( eval( lhs_ ) / eval( rhs_ ) );
-            sres_   += conj( eval( lhs_ ) / eval( rhs_ ) );
-            refres_ += conj( eval( reflhs_ ) / eval( refrhs_ ) );
-         }
-         catch( std::exception& ex ) {
-            convertException<VT1,VT2>( ex );
-         }
-
-         checkResults<VT1,VT2>();
-
-         try {
-            initTransposeResults();
-            tdres_   += conj( eval( tlhs_ ) / eval( trhs_ ) );
-            tsres_   += conj( eval( tlhs_ ) / eval( trhs_ ) );
-            trefres_ += conj( eval( treflhs_ ) / eval( trefrhs_ ) );
-         }
-         catch( std::exception& ex ) {
-            convertException<TVT1,TVT2>( ex );
-         }
-
-         checkTransposeResults<TVT1,TVT2>();
-      }
-
-
-      //=====================================================================================
-      // Conjugate division with subtraction assignment
-      //=====================================================================================
-
-      // Conjugate division with subtraction assignment with the given vectors
-      {
-         test_  = "Conjugate division with subtraction assignment with the given types";
-         error_ = "Failed subtraction assignment operation";
-
-         try {
-            initResults();
-            dres_   -= conj( lhs_ / rhs_ );
-            sres_   -= conj( lhs_ / rhs_ );
-            refres_ -= conj( reflhs_ / refrhs_ );
-         }
-         catch( std::exception& ex ) {
-            convertException<VT1,VT2>( ex );
-         }
-
-         checkResults<VT1,VT2>();
-
-         try {
-            initTransposeResults();
-            tdres_   -= conj( tlhs_ / trhs_ );
-            tsres_   -= conj( tlhs_ / trhs_ );
-            trefres_ -= conj( treflhs_ / trefrhs_ );
-         }
-         catch( std::exception& ex ) {
-            convertException<TVT1,TVT2>( ex );
-         }
-
-         checkTransposeResults<TVT1,TVT2>();
-      }
-
-      // Conjugate division with subtraction assignment with evaluated vectors
-      {
-         test_  = "Conjugate division with subtraction assignment with evaluated vectors";
-         error_ = "Failed subtraction assignment operation";
-
-         try {
-            initResults();
-            dres_   -= conj( eval( lhs_ ) / eval( rhs_ ) );
-            sres_   -= conj( eval( lhs_ ) / eval( rhs_ ) );
-            refres_ -= conj( eval( reflhs_ ) / eval( refrhs_ ) );
-         }
-         catch( std::exception& ex ) {
-            convertException<VT1,VT2>( ex );
-         }
-
-         checkResults<VT1,VT2>();
-
-         try {
-            initTransposeResults();
-            tdres_   -= conj( eval( tlhs_ ) / eval( trhs_ ) );
-            tsres_   -= conj( eval( tlhs_ ) / eval( trhs_ ) );
-            trefres_ -= conj( eval( treflhs_ ) / eval( trefrhs_ ) );
-         }
-         catch( std::exception& ex ) {
-            convertException<TVT1,TVT2>( ex );
-         }
-
-         checkTransposeResults<TVT1,TVT2>();
-      }
-
-
-      //=====================================================================================
-      // Conjugate division with multiplication assignment
-      //=====================================================================================
-
-      // Conjugate division with multiplication assignment with the given vectors
-      {
-         test_  = "Conjugate division with multiplication assignment with the given vectors";
-         error_ = "Failed multiplication assignment operation";
-
-         try {
-            initResults();
-            dres_   *= conj( lhs_ / rhs_ );
-            sres_   *= conj( lhs_ / rhs_ );
-            refres_ *= conj( reflhs_ / refrhs_ );
-         }
-         catch( std::exception& ex ) {
-            convertException<VT1,VT2>( ex );
-         }
-
-         checkResults<VT1,VT2>();
-
-         try {
-            initTransposeResults();
-            tdres_   *= conj( tlhs_ / trhs_ );
-            tsres_   *= conj( tlhs_ / trhs_ );
-            trefres_ *= conj( treflhs_ / trefrhs_ );
-         }
-         catch( std::exception& ex ) {
-            convertException<TVT1,TVT2>( ex );
-         }
-
-         checkTransposeResults<TVT1,TVT2>();
-      }
-
-      // Conjugate division with multiplication assignment with evaluated vectors
-      {
-         test_  = "Conjugate division with multiplication assignment with evaluated vectors";
-         error_ = "Failed multiplication assignment operation";
-
-         try {
-            initResults();
-            dres_   *= conj( eval( lhs_ ) / eval( rhs_ ) );
-            sres_   *= conj( eval( lhs_ ) / eval( rhs_ ) );
-            refres_ *= conj( eval( reflhs_ ) / eval( refrhs_ ) );
-         }
-         catch( std::exception& ex ) {
-            convertException<VT1,VT2>( ex );
-         }
-
-         checkResults<VT1,VT2>();
-
-         try {
-            initTransposeResults();
-            tdres_   *= conj( eval( tlhs_ ) / eval( trhs_ ) );
-            tsres_   *= conj( eval( tlhs_ ) / eval( trhs_ ) );
-            trefres_ *= conj( eval( treflhs_ ) / eval( trefrhs_ ) );
-         }
-         catch( std::exception& ex ) {
-            convertException<TVT1,TVT2>( ex );
-         }
-
-         checkTransposeResults<TVT1,TVT2>();
-      }
-
-
-      //=====================================================================================
-      // Conjugate division with division assignment
-      //=====================================================================================
-
-      if( blaze::isDivisor( lhs_ / rhs_ ) )
-      {
-         // Conjugate division with division assignment with the given vectors
-         {
-            test_  = "Conjugate division with division assignment with the given vectors";
-            error_ = "Failed division assignment operation";
-
-            try {
-               initResults();
-               dres_   /= conj( lhs_ / rhs_ );
-               sres_   /= conj( lhs_ / rhs_ );
-               refres_ /= conj( DRE( reflhs_ / refrhs_ ) );
-            }
-            catch( std::exception& ex ) {
-               convertException<VT1,VT2>( ex );
-            }
-
-            checkResults<VT1,VT2>();
-
-            try {
-               initTransposeResults();
-               tdres_   /= conj( tlhs_ / trhs_ );
-               tsres_   /= conj( tlhs_ / trhs_ );
-               trefres_ /= conj( TDRE( treflhs_ / trefrhs_ ) );
-            }
-            catch( std::exception& ex ) {
-               convertException<TVT1,TVT2>( ex );
-            }
-
-            checkTransposeResults<TVT1,TVT2>();
-         }
-
-         // Conjugate division with division assignment with evaluated vectors
-         {
-            test_  = "Conjugate division with division assignment with evaluated vectors";
-            error_ = "Failed division assignment operation";
-
-            try {
-               initResults();
-               dres_   /= conj( eval( lhs_ ) / eval( rhs_ ) );
-               sres_   /= conj( eval( lhs_ ) / eval( rhs_ ) );
-               refres_ /= conj( DRE( reflhs_ / refrhs_ ) );
-            }
-            catch( std::exception& ex ) {
-               convertException<VT1,VT2>( ex );
-            }
-
-            checkResults<VT1,VT2>();
-
-            try {
-               initTransposeResults();
-               tdres_   /= conj( eval( tlhs_ ) / eval( trhs_ ) );
-               tsres_   /= conj( eval( tlhs_ ) / eval( trhs_ ) );
-               trefres_ /= conj( TDRE( treflhs_ / trefrhs_ ) );
-            }
-            catch( std::exception& ex ) {
-               convertException<TVT1,TVT2>( ex );
-            }
-
-            checkTransposeResults<TVT1,TVT2>();
-         }
-      }
-   }
-#endif
-}
-//*************************************************************************************************
-
-
-//*************************************************************************************************
 /*!\brief Testing the conjugate transpose dense vector/dense vector division.
 //
 // \return void
@@ -4005,6 +3308,56 @@ void OperationTest<VT1,VT2>::testCTransOperation()
 
 
 //*************************************************************************************************
+/*!\brief Testing the abs dense vector/dense vector division.
+//
+// \return void
+// \exception std::runtime_error Division error detected.
+//
+// This function tests the abs vector division with plain assignment, addition assignment,
+// subtraction assignment, and multiplication assignment. In case any error resulting from the
+// division or the subsequent assignment is detected, a \a std::runtime_error exception is
+// thrown.
+*/
+template< typename VT1    // Type of the left-hand side dense vector
+        , typename VT2 >  // Type of the right-hand side dense vector
+void OperationTest<VT1,VT2>::testAbsOperation()
+{
+#if BLAZETEST_MATHTEST_TEST_ABS_OPERATION
+   if( BLAZETEST_MATHTEST_TEST_ABS_OPERATION > 1 )
+   {
+      testCustomOperation( blaze::Abs(), "abs" );
+   }
+#endif
+}
+//*************************************************************************************************
+
+
+//*************************************************************************************************
+/*!\brief Testing the conjugate dense vector/dense vector division.
+//
+// \return void
+// \exception std::runtime_error Division error detected.
+//
+// This function tests the conjugate vector division with plain assignment, addition assignment,
+// subtraction assignment, and multiplication assignment. In case any error resulting from the
+// division or the subsequent assignment is detected, a \a std::runtime_error exception is
+// thrown.
+*/
+template< typename VT1    // Type of the left-hand side dense vector
+        , typename VT2 >  // Type of the right-hand side dense vector
+void OperationTest<VT1,VT2>::testConjOperation()
+{
+#if BLAZETEST_MATHTEST_TEST_CONJ_OPERATION
+   if( BLAZETEST_MATHTEST_TEST_CONJ_OPERATION > 1 )
+   {
+      testCustomOperation( blaze::Conj(), "conj" );
+   }
+#endif
+}
+//*************************************************************************************************
+
+
+//*************************************************************************************************
 /*!\brief Testing the \a real dense vector/dense vector division.
 //
 // \return void
@@ -4021,332 +3374,7 @@ void OperationTest<VT1,VT2>::testRealOperation()
 #if BLAZETEST_MATHTEST_TEST_REAL_OPERATION
    if( BLAZETEST_MATHTEST_TEST_REAL_OPERATION > 1 )
    {
-      //=====================================================================================
-      // Real division
-      //=====================================================================================
-
-      // Real division with the given vectors
-      {
-         test_  = "Real division with the given vectors";
-         error_ = "Failed division operation";
-
-         try {
-            initResults();
-            dres_   = real( lhs_ / rhs_ );
-            sres_   = real( lhs_ / rhs_ );
-            refres_ = real( reflhs_ / refrhs_ );
-         }
-         catch( std::exception& ex ) {
-            convertException<VT1,VT2>( ex );
-         }
-
-         checkResults<VT1,VT2>();
-
-         try {
-            initTransposeResults();
-            tdres_   = real( tlhs_ / trhs_ );
-            tsres_   = real( tlhs_ / trhs_ );
-            trefres_ = real( treflhs_ / trefrhs_ );
-         }
-         catch( std::exception& ex ) {
-            convertException<TVT1,TVT2>( ex );
-         }
-
-         checkTransposeResults<TVT1,TVT2>();
-      }
-
-      // Real division with evaluated vectors
-      {
-         test_  = "Real division with evaluated vectors";
-         error_ = "Failed division operation";
-
-         try {
-            initResults();
-            dres_   = real( eval( lhs_ ) / eval( rhs_ ) );
-            sres_   = real( eval( lhs_ ) / eval( rhs_ ) );
-            refres_ = real( eval( reflhs_ ) / eval( refrhs_ ) );
-         }
-         catch( std::exception& ex ) {
-            convertException<VT1,VT2>( ex );
-         }
-
-         checkResults<VT1,VT2>();
-
-         try {
-            initTransposeResults();
-            tdres_   = real( eval( tlhs_ ) / eval( trhs_ ) );
-            tsres_   = real( eval( tlhs_ ) / eval( trhs_ ) );
-            trefres_ = real( eval( treflhs_ ) / eval( trefrhs_ ) );
-         }
-         catch( std::exception& ex ) {
-            convertException<TVT1,TVT2>( ex );
-         }
-
-         checkTransposeResults<TVT1,TVT2>();
-      }
-
-
-      //=====================================================================================
-      // Real division with addition assignment
-      //=====================================================================================
-
-      // Real division with addition assignment with the given vectors
-      {
-         test_  = "Real division with addition assignment with the given vectors";
-         error_ = "Failed addition assignment operation";
-
-         try {
-            initResults();
-            dres_   += real( lhs_ / rhs_ );
-            sres_   += real( lhs_ / rhs_ );
-            refres_ += real( reflhs_ / refrhs_ );
-         }
-         catch( std::exception& ex ) {
-            convertException<VT1,VT2>( ex );
-         }
-
-         checkResults<VT1,VT2>();
-
-         try {
-            initTransposeResults();
-            tdres_   += real( tlhs_ / trhs_ );
-            tsres_   += real( tlhs_ / trhs_ );
-            trefres_ += real( treflhs_ / trefrhs_ );
-         }
-         catch( std::exception& ex ) {
-            convertException<TVT1,TVT2>( ex );
-         }
-
-         checkTransposeResults<TVT1,TVT2>();
-      }
-
-      // Real division with addition assignment with evaluated vectors
-      {
-         test_  = "Real division with addition assignment with evaluated vectors";
-         error_ = "Failed addition assignment operation";
-
-         try {
-            initResults();
-            dres_   += real( eval( lhs_ ) / eval( rhs_ ) );
-            sres_   += real( eval( lhs_ ) / eval( rhs_ ) );
-            refres_ += real( eval( reflhs_ ) / eval( refrhs_ ) );
-         }
-         catch( std::exception& ex ) {
-            convertException<VT1,VT2>( ex );
-         }
-
-         checkResults<VT1,VT2>();
-
-         try {
-            initTransposeResults();
-            tdres_   += real( eval( tlhs_ ) / eval( trhs_ ) );
-            tsres_   += real( eval( tlhs_ ) / eval( trhs_ ) );
-            trefres_ += real( eval( treflhs_ ) / eval( trefrhs_ ) );
-         }
-         catch( std::exception& ex ) {
-            convertException<TVT1,TVT2>( ex );
-         }
-
-         checkTransposeResults<TVT1,TVT2>();
-      }
-
-
-      //=====================================================================================
-      // Real division with subtraction assignment
-      //=====================================================================================
-
-      // Real division with subtraction assignment with the given vectors
-      {
-         test_  = "Real division with subtraction assignment with the given types";
-         error_ = "Failed subtraction assignment operation";
-
-         try {
-            initResults();
-            dres_   -= real( lhs_ / rhs_ );
-            sres_   -= real( lhs_ / rhs_ );
-            refres_ -= real( reflhs_ / refrhs_ );
-         }
-         catch( std::exception& ex ) {
-            convertException<VT1,VT2>( ex );
-         }
-
-         checkResults<VT1,VT2>();
-
-         try {
-            initTransposeResults();
-            tdres_   -= real( tlhs_ / trhs_ );
-            tsres_   -= real( tlhs_ / trhs_ );
-            trefres_ -= real( treflhs_ / trefrhs_ );
-         }
-         catch( std::exception& ex ) {
-            convertException<TVT1,TVT2>( ex );
-         }
-
-         checkTransposeResults<TVT1,TVT2>();
-      }
-
-      // Real division with subtraction assignment with evaluated vectors
-      {
-         test_  = "Real division with subtraction assignment with evaluated vectors";
-         error_ = "Failed subtraction assignment operation";
-
-         try {
-            initResults();
-            dres_   -= real( eval( lhs_ ) / eval( rhs_ ) );
-            sres_   -= real( eval( lhs_ ) / eval( rhs_ ) );
-            refres_ -= real( eval( reflhs_ ) / eval( refrhs_ ) );
-         }
-         catch( std::exception& ex ) {
-            convertException<VT1,VT2>( ex );
-         }
-
-         checkResults<VT1,VT2>();
-
-         try {
-            initTransposeResults();
-            tdres_   -= real( eval( tlhs_ ) / eval( trhs_ ) );
-            tsres_   -= real( eval( tlhs_ ) / eval( trhs_ ) );
-            trefres_ -= real( eval( treflhs_ ) / eval( trefrhs_ ) );
-         }
-         catch( std::exception& ex ) {
-            convertException<TVT1,TVT2>( ex );
-         }
-
-         checkTransposeResults<TVT1,TVT2>();
-      }
-
-
-      //=====================================================================================
-      // Real division with multiplication assignment
-      //=====================================================================================
-
-      // Real division with multiplication assignment with the given vectors
-      {
-         test_  = "Real division with multiplication assignment with the given vectors";
-         error_ = "Failed multiplication assignment operation";
-
-         try {
-            initResults();
-            dres_   *= real( lhs_ / rhs_ );
-            sres_   *= real( lhs_ / rhs_ );
-            refres_ *= real( reflhs_ / refrhs_ );
-         }
-         catch( std::exception& ex ) {
-            convertException<VT1,VT2>( ex );
-         }
-
-         checkResults<VT1,VT2>();
-
-         try {
-            initTransposeResults();
-            tdres_   *= real( tlhs_ / trhs_ );
-            tsres_   *= real( tlhs_ / trhs_ );
-            trefres_ *= real( treflhs_ / trefrhs_ );
-         }
-         catch( std::exception& ex ) {
-            convertException<TVT1,TVT2>( ex );
-         }
-
-         checkTransposeResults<TVT1,TVT2>();
-      }
-
-      // Real division with multiplication assignment with evaluated vectors
-      {
-         test_  = "Real division with multiplication assignment with evaluated vectors";
-         error_ = "Failed multiplication assignment operation";
-
-         try {
-            initResults();
-            dres_   *= real( eval( lhs_ ) / eval( rhs_ ) );
-            sres_   *= real( eval( lhs_ ) / eval( rhs_ ) );
-            refres_ *= real( eval( reflhs_ ) / eval( refrhs_ ) );
-         }
-         catch( std::exception& ex ) {
-            convertException<VT1,VT2>( ex );
-         }
-
-         checkResults<VT1,VT2>();
-
-         try {
-            initTransposeResults();
-            tdres_   *= real( eval( tlhs_ ) / eval( trhs_ ) );
-            tsres_   *= real( eval( tlhs_ ) / eval( trhs_ ) );
-            trefres_ *= real( eval( treflhs_ ) / eval( trefrhs_ ) );
-         }
-         catch( std::exception& ex ) {
-            convertException<TVT1,TVT2>( ex );
-         }
-
-         checkTransposeResults<TVT1,TVT2>();
-      }
-
-
-      //=====================================================================================
-      // Real division with division assignment
-      //=====================================================================================
-
-      if( blaze::isDivisor( real( lhs_ / rhs_ ) ) )
-      {
-         // Real division with division assignment with the given vectors
-         {
-            test_  = "Real division with division assignment with the given vectors";
-            error_ = "Failed division assignment operation";
-
-            try {
-               initResults();
-               dres_   /= real( lhs_ / rhs_ );
-               sres_   /= real( lhs_ / rhs_ );
-               refres_ /= real( DRE( reflhs_ / refrhs_ ) );
-            }
-            catch( std::exception& ex ) {
-               convertException<VT1,VT2>( ex );
-            }
-
-            checkResults<VT1,VT2>();
-
-            try {
-               initTransposeResults();
-               tdres_   /= real( tlhs_ / trhs_ );
-               tsres_   /= real( tlhs_ / trhs_ );
-               trefres_ /= real( TDRE( treflhs_ / trefrhs_ ) );
-            }
-            catch( std::exception& ex ) {
-               convertException<TVT1,TVT2>( ex );
-            }
-
-            checkTransposeResults<TVT1,TVT2>();
-         }
-
-         // Real division with division assignment with evaluated vectors
-         {
-            test_  = "Real division with division assignment with evaluated vectors";
-            error_ = "Failed division assignment operation";
-
-            try {
-               initResults();
-               dres_   /= real( eval( lhs_ ) / eval( rhs_ ) );
-               sres_   /= real( eval( lhs_ ) / eval( rhs_ ) );
-               refres_ /= real( DRE( reflhs_ / refrhs_ ) );
-            }
-            catch( std::exception& ex ) {
-               convertException<VT1,VT2>( ex );
-            }
-
-            checkResults<VT1,VT2>();
-
-            try {
-               initTransposeResults();
-               tdres_   /= real( eval( tlhs_ ) / eval( trhs_ ) );
-               tsres_   /= real( eval( tlhs_ ) / eval( trhs_ ) );
-               trefres_ /= real( TDRE( treflhs_ / trefrhs_ ) );
-            }
-            catch( std::exception& ex ) {
-               convertException<TVT1,TVT2>( ex );
-            }
-
-            checkTransposeResults<TVT1,TVT2>();
-         }
-      }
+      testCustomOperation( blaze::Real(), "real" );
    }
 #endif
 }
@@ -4370,332 +3398,7 @@ void OperationTest<VT1,VT2>::testImagOperation()
 #if BLAZETEST_MATHTEST_TEST_IMAG_OPERATION
    if( BLAZETEST_MATHTEST_TEST_IMAG_OPERATION > 1 )
    {
-      //=====================================================================================
-      // Imag division
-      //=====================================================================================
-
-      // Imag division with the given vectors
-      {
-         test_  = "Imag division with the given vectors";
-         error_ = "Failed division operation";
-
-         try {
-            initResults();
-            dres_   = imag( lhs_ / rhs_ );
-            sres_   = imag( lhs_ / rhs_ );
-            refres_ = imag( reflhs_ / refrhs_ );
-         }
-         catch( std::exception& ex ) {
-            convertException<VT1,VT2>( ex );
-         }
-
-         checkResults<VT1,VT2>();
-
-         try {
-            initTransposeResults();
-            tdres_   = imag( tlhs_ / trhs_ );
-            tsres_   = imag( tlhs_ / trhs_ );
-            trefres_ = imag( treflhs_ / trefrhs_ );
-         }
-         catch( std::exception& ex ) {
-            convertException<TVT1,TVT2>( ex );
-         }
-
-         checkTransposeResults<TVT1,TVT2>();
-      }
-
-      // Imag division with evaluated vectors
-      {
-         test_  = "Imag division with evaluated vectors";
-         error_ = "Failed division operation";
-
-         try {
-            initResults();
-            dres_   = imag( eval( lhs_ ) / eval( rhs_ ) );
-            sres_   = imag( eval( lhs_ ) / eval( rhs_ ) );
-            refres_ = imag( eval( reflhs_ ) / eval( refrhs_ ) );
-         }
-         catch( std::exception& ex ) {
-            convertException<VT1,VT2>( ex );
-         }
-
-         checkResults<VT1,VT2>();
-
-         try {
-            initTransposeResults();
-            tdres_   = imag( eval( tlhs_ ) / eval( trhs_ ) );
-            tsres_   = imag( eval( tlhs_ ) / eval( trhs_ ) );
-            trefres_ = imag( eval( treflhs_ ) / eval( trefrhs_ ) );
-         }
-         catch( std::exception& ex ) {
-            convertException<TVT1,TVT2>( ex );
-         }
-
-         checkTransposeResults<TVT1,TVT2>();
-      }
-
-
-      //=====================================================================================
-      // Imag division with addition assignment
-      //=====================================================================================
-
-      // Imag division with addition assignment with the given vectors
-      {
-         test_  = "Imag division with addition assignment with the given vectors";
-         error_ = "Failed addition assignment operation";
-
-         try {
-            initResults();
-            dres_   += imag( lhs_ / rhs_ );
-            sres_   += imag( lhs_ / rhs_ );
-            refres_ += imag( reflhs_ / refrhs_ );
-         }
-         catch( std::exception& ex ) {
-            convertException<VT1,VT2>( ex );
-         }
-
-         checkResults<VT1,VT2>();
-
-         try {
-            initTransposeResults();
-            tdres_   += imag( tlhs_ / trhs_ );
-            tsres_   += imag( tlhs_ / trhs_ );
-            trefres_ += imag( treflhs_ / trefrhs_ );
-         }
-         catch( std::exception& ex ) {
-            convertException<TVT1,TVT2>( ex );
-         }
-
-         checkTransposeResults<TVT1,TVT2>();
-      }
-
-      // Imag division with addition assignment with evaluated vectors
-      {
-         test_  = "Imag division with addition assignment with evaluated vectors";
-         error_ = "Failed addition assignment operation";
-
-         try {
-            initResults();
-            dres_   += imag( eval( lhs_ ) / eval( rhs_ ) );
-            sres_   += imag( eval( lhs_ ) / eval( rhs_ ) );
-            refres_ += imag( eval( reflhs_ ) / eval( refrhs_ ) );
-         }
-         catch( std::exception& ex ) {
-            convertException<VT1,VT2>( ex );
-         }
-
-         checkResults<VT1,VT2>();
-
-         try {
-            initTransposeResults();
-            tdres_   += imag( eval( tlhs_ ) / eval( trhs_ ) );
-            tsres_   += imag( eval( tlhs_ ) / eval( trhs_ ) );
-            trefres_ += imag( eval( treflhs_ ) / eval( trefrhs_ ) );
-         }
-         catch( std::exception& ex ) {
-            convertException<TVT1,TVT2>( ex );
-         }
-
-         checkTransposeResults<TVT1,TVT2>();
-      }
-
-
-      //=====================================================================================
-      // Imag division with subtraction assignment
-      //=====================================================================================
-
-      // Imag division with subtraction assignment with the given vectors
-      {
-         test_  = "Imag division with subtraction assignment with the given types";
-         error_ = "Failed subtraction assignment operation";
-
-         try {
-            initResults();
-            dres_   -= imag( lhs_ / rhs_ );
-            sres_   -= imag( lhs_ / rhs_ );
-            refres_ -= imag( reflhs_ / refrhs_ );
-         }
-         catch( std::exception& ex ) {
-            convertException<VT1,VT2>( ex );
-         }
-
-         checkResults<VT1,VT2>();
-
-         try {
-            initTransposeResults();
-            tdres_   -= imag( tlhs_ / trhs_ );
-            tsres_   -= imag( tlhs_ / trhs_ );
-            trefres_ -= imag( treflhs_ / trefrhs_ );
-         }
-         catch( std::exception& ex ) {
-            convertException<TVT1,TVT2>( ex );
-         }
-
-         checkTransposeResults<TVT1,TVT2>();
-      }
-
-      // Imag division with subtraction assignment with evaluated vectors
-      {
-         test_  = "Imag division with subtraction assignment with evaluated vectors";
-         error_ = "Failed subtraction assignment operation";
-
-         try {
-            initResults();
-            dres_   -= imag( eval( lhs_ ) / eval( rhs_ ) );
-            sres_   -= imag( eval( lhs_ ) / eval( rhs_ ) );
-            refres_ -= imag( eval( reflhs_ ) / eval( refrhs_ ) );
-         }
-         catch( std::exception& ex ) {
-            convertException<VT1,VT2>( ex );
-         }
-
-         checkResults<VT1,VT2>();
-
-         try {
-            initTransposeResults();
-            tdres_   -= imag( eval( tlhs_ ) / eval( trhs_ ) );
-            tsres_   -= imag( eval( tlhs_ ) / eval( trhs_ ) );
-            trefres_ -= imag( eval( treflhs_ ) / eval( trefrhs_ ) );
-         }
-         catch( std::exception& ex ) {
-            convertException<TVT1,TVT2>( ex );
-         }
-
-         checkTransposeResults<TVT1,TVT2>();
-      }
-
-
-      //=====================================================================================
-      // Imag division with multiplication assignment
-      //=====================================================================================
-
-      // Imag division with multiplication assignment with the given vectors
-      {
-         test_  = "Imag division with multiplication assignment with the given vectors";
-         error_ = "Failed multiplication assignment operation";
-
-         try {
-            initResults();
-            dres_   *= imag( lhs_ / rhs_ );
-            sres_   *= imag( lhs_ / rhs_ );
-            refres_ *= imag( reflhs_ / refrhs_ );
-         }
-         catch( std::exception& ex ) {
-            convertException<VT1,VT2>( ex );
-         }
-
-         checkResults<VT1,VT2>();
-
-         try {
-            initTransposeResults();
-            tdres_   *= imag( tlhs_ / trhs_ );
-            tsres_   *= imag( tlhs_ / trhs_ );
-            trefres_ *= imag( treflhs_ / trefrhs_ );
-         }
-         catch( std::exception& ex ) {
-            convertException<TVT1,TVT2>( ex );
-         }
-
-         checkTransposeResults<TVT1,TVT2>();
-      }
-
-      // Imag division with multiplication assignment with evaluated vectors
-      {
-         test_  = "Imag division with multiplication assignment with evaluated vectors";
-         error_ = "Failed multiplication assignment operation";
-
-         try {
-            initResults();
-            dres_   *= imag( eval( lhs_ ) / eval( rhs_ ) );
-            sres_   *= imag( eval( lhs_ ) / eval( rhs_ ) );
-            refres_ *= imag( eval( reflhs_ ) / eval( refrhs_ ) );
-         }
-         catch( std::exception& ex ) {
-            convertException<VT1,VT2>( ex );
-         }
-
-         checkResults<VT1,VT2>();
-
-         try {
-            initTransposeResults();
-            tdres_   *= imag( eval( tlhs_ ) / eval( trhs_ ) );
-            tsres_   *= imag( eval( tlhs_ ) / eval( trhs_ ) );
-            trefres_ *= imag( eval( treflhs_ ) / eval( trefrhs_ ) );
-         }
-         catch( std::exception& ex ) {
-            convertException<TVT1,TVT2>( ex );
-         }
-
-         checkTransposeResults<TVT1,TVT2>();
-      }
-
-
-      //=====================================================================================
-      // Imag division with division assignment
-      //=====================================================================================
-
-      if( blaze::isDivisor( imag( lhs_ / rhs_ ) ) )
-      {
-         // Imag division with division assignment with the given vectors
-         {
-            test_  = "Imag division with division assignment with the given vectors";
-            error_ = "Failed division assignment operation";
-
-            try {
-               initResults();
-               dres_   /= imag( lhs_ / rhs_ );
-               sres_   /= imag( lhs_ / rhs_ );
-               refres_ /= imag( DRE( reflhs_ / refrhs_ ) );
-            }
-            catch( std::exception& ex ) {
-               convertException<VT1,VT2>( ex );
-            }
-
-            checkResults<VT1,VT2>();
-
-            try {
-               initTransposeResults();
-               tdres_   /= imag( tlhs_ / trhs_ );
-               tsres_   /= imag( tlhs_ / trhs_ );
-               trefres_ /= imag( TDRE( treflhs_ / trefrhs_ ) );
-            }
-            catch( std::exception& ex ) {
-               convertException<TVT1,TVT2>( ex );
-            }
-
-            checkTransposeResults<TVT1,TVT2>();
-         }
-
-         // Imag division with division assignment with evaluated vectors
-         {
-            test_  = "Imag division with division assignment with evaluated vectors";
-            error_ = "Failed division assignment operation";
-
-            try {
-               initResults();
-               dres_   /= imag( eval( lhs_ ) / eval( rhs_ ) );
-               sres_   /= imag( eval( lhs_ ) / eval( rhs_ ) );
-               refres_ /= imag( DRE( reflhs_ / refrhs_ ) );
-            }
-            catch( std::exception& ex ) {
-               convertException<VT1,VT2>( ex );
-            }
-
-            checkResults<VT1,VT2>();
-
-            try {
-               initTransposeResults();
-               tdres_   /= imag( eval( tlhs_ ) / eval( trhs_ ) );
-               tsres_   /= imag( eval( tlhs_ ) / eval( trhs_ ) );
-               trefres_ /= imag( TDRE( treflhs_ / trefrhs_ ) );
-            }
-            catch( std::exception& ex ) {
-               convertException<TVT1,TVT2>( ex );
-            }
-
-            checkTransposeResults<TVT1,TVT2>();
-         }
-      }
+      testCustomOperation( blaze::Imag(), "imag" );
    }
 #endif
 }
@@ -4719,332 +3422,7 @@ void OperationTest<VT1,VT2>::testEvalOperation()
 #if BLAZETEST_MATHTEST_TEST_EVAL_OPERATION
    if( BLAZETEST_MATHTEST_TEST_EVAL_OPERATION > 1 )
    {
-      //=====================================================================================
-      // Eval division
-      //=====================================================================================
-
-      // Eval division with the given vectors
-      {
-         test_  = "Eval division with the given vectors";
-         error_ = "Failed division operation";
-
-         try {
-            initResults();
-            dres_   = eval( lhs_ / rhs_ );
-            sres_   = eval( lhs_ / rhs_ );
-            refres_ = eval( reflhs_ / refrhs_ );
-         }
-         catch( std::exception& ex ) {
-            convertException<VT1,VT2>( ex );
-         }
-
-         checkResults<VT1,VT2>();
-
-         try {
-            initTransposeResults();
-            tdres_   = eval( tlhs_ / trhs_ );
-            tsres_   = eval( tlhs_ / trhs_ );
-            trefres_ = eval( treflhs_ / trefrhs_ );
-         }
-         catch( std::exception& ex ) {
-            convertException<TVT1,TVT2>( ex );
-         }
-
-         checkTransposeResults<TVT1,TVT2>();
-      }
-
-      // Eval division with evaluated vectors
-      {
-         test_  = "Eval division with evaluated vectors";
-         error_ = "Failed division operation";
-
-         try {
-            initResults();
-            dres_   = eval( eval( lhs_ ) / eval( rhs_ ) );
-            sres_   = eval( eval( lhs_ ) / eval( rhs_ ) );
-            refres_ = eval( eval( reflhs_ ) / eval( refrhs_ ) );
-         }
-         catch( std::exception& ex ) {
-            convertException<VT1,VT2>( ex );
-         }
-
-         checkResults<VT1,VT2>();
-
-         try {
-            initTransposeResults();
-            tdres_   = eval( eval( tlhs_ ) / eval( trhs_ ) );
-            tsres_   = eval( eval( tlhs_ ) / eval( trhs_ ) );
-            trefres_ = eval( eval( treflhs_ ) / eval( trefrhs_ ) );
-         }
-         catch( std::exception& ex ) {
-            convertException<TVT1,TVT2>( ex );
-         }
-
-         checkTransposeResults<TVT1,TVT2>();
-      }
-
-
-      //=====================================================================================
-      // Eval division with addition assignment
-      //=====================================================================================
-
-      // Eval division with addition assignment with the given vectors
-      {
-         test_  = "Eval division with addition assignment with the given vectors";
-         error_ = "Failed addition assignment operation";
-
-         try {
-            initResults();
-            dres_   += eval( lhs_ / rhs_ );
-            sres_   += eval( lhs_ / rhs_ );
-            refres_ += eval( reflhs_ / refrhs_ );
-         }
-         catch( std::exception& ex ) {
-            convertException<VT1,VT2>( ex );
-         }
-
-         checkResults<VT1,VT2>();
-
-         try {
-            initTransposeResults();
-            tdres_   += eval( tlhs_ / trhs_ );
-            tsres_   += eval( tlhs_ / trhs_ );
-            trefres_ += eval( treflhs_ / trefrhs_ );
-         }
-         catch( std::exception& ex ) {
-            convertException<TVT1,TVT2>( ex );
-         }
-
-         checkTransposeResults<TVT1,TVT2>();
-      }
-
-      // Eval division with addition assignment with evaluated vectors
-      {
-         test_  = "Eval division with addition assignment with evaluated vectors";
-         error_ = "Failed addition assignment operation";
-
-         try {
-            initResults();
-            dres_   += eval( eval( lhs_ ) / eval( rhs_ ) );
-            sres_   += eval( eval( lhs_ ) / eval( rhs_ ) );
-            refres_ += eval( eval( reflhs_ ) / eval( refrhs_ ) );
-         }
-         catch( std::exception& ex ) {
-            convertException<VT1,VT2>( ex );
-         }
-
-         checkResults<VT1,VT2>();
-
-         try {
-            initTransposeResults();
-            tdres_   += eval( eval( tlhs_ ) / eval( trhs_ ) );
-            tsres_   += eval( eval( tlhs_ ) / eval( trhs_ ) );
-            trefres_ += eval( eval( treflhs_ ) / eval( trefrhs_ ) );
-         }
-         catch( std::exception& ex ) {
-            convertException<TVT1,TVT2>( ex );
-         }
-
-         checkTransposeResults<TVT1,TVT2>();
-      }
-
-
-      //=====================================================================================
-      // Eval division with subtraction assignment
-      //=====================================================================================
-
-      // Eval division with subtraction assignment with the given vectors
-      {
-         test_  = "Eval division with subtraction assignment with the given types";
-         error_ = "Failed subtraction assignment operation";
-
-         try {
-            initResults();
-            dres_   -= eval( lhs_ / rhs_ );
-            sres_   -= eval( lhs_ / rhs_ );
-            refres_ -= eval( reflhs_ / refrhs_ );
-         }
-         catch( std::exception& ex ) {
-            convertException<VT1,VT2>( ex );
-         }
-
-         checkResults<VT1,VT2>();
-
-         try {
-            initTransposeResults();
-            tdres_   -= eval( tlhs_ / trhs_ );
-            tsres_   -= eval( tlhs_ / trhs_ );
-            trefres_ -= eval( treflhs_ / trefrhs_ );
-         }
-         catch( std::exception& ex ) {
-            convertException<TVT1,TVT2>( ex );
-         }
-
-         checkTransposeResults<TVT1,TVT2>();
-      }
-
-      // Eval division with subtraction assignment with evaluated vectors
-      {
-         test_  = "Eval division with subtraction assignment with evaluated vectors";
-         error_ = "Failed subtraction assignment operation";
-
-         try {
-            initResults();
-            dres_   -= eval( eval( lhs_ ) / eval( rhs_ ) );
-            sres_   -= eval( eval( lhs_ ) / eval( rhs_ ) );
-            refres_ -= eval( eval( reflhs_ ) / eval( refrhs_ ) );
-         }
-         catch( std::exception& ex ) {
-            convertException<VT1,VT2>( ex );
-         }
-
-         checkResults<VT1,VT2>();
-
-         try {
-            initTransposeResults();
-            tdres_   -= eval( eval( tlhs_ ) / eval( trhs_ ) );
-            tsres_   -= eval( eval( tlhs_ ) / eval( trhs_ ) );
-            trefres_ -= eval( eval( treflhs_ ) / eval( trefrhs_ ) );
-         }
-         catch( std::exception& ex ) {
-            convertException<TVT1,TVT2>( ex );
-         }
-
-         checkTransposeResults<TVT1,TVT2>();
-      }
-
-
-      //=====================================================================================
-      // Eval division with multiplication assignment
-      //=====================================================================================
-
-      // Eval division with multiplication assignment with the given vectors
-      {
-         test_  = "Eval division with multiplication assignment with the given vectors";
-         error_ = "Failed multiplication assignment operation";
-
-         try {
-            initResults();
-            dres_   *= eval( lhs_ / rhs_ );
-            sres_   *= eval( lhs_ / rhs_ );
-            refres_ *= eval( reflhs_ / refrhs_ );
-         }
-         catch( std::exception& ex ) {
-            convertException<VT1,VT2>( ex );
-         }
-
-         checkResults<VT1,VT2>();
-
-         try {
-            initTransposeResults();
-            tdres_   *= eval( tlhs_ / trhs_ );
-            tsres_   *= eval( tlhs_ / trhs_ );
-            trefres_ *= eval( treflhs_ / trefrhs_ );
-         }
-         catch( std::exception& ex ) {
-            convertException<TVT1,TVT2>( ex );
-         }
-
-         checkTransposeResults<TVT1,TVT2>();
-      }
-
-      // Eval division with multiplication assignment with evaluated vectors
-      {
-         test_  = "Eval division with multiplication assignment with evaluated vectors";
-         error_ = "Failed multiplication assignment operation";
-
-         try {
-            initResults();
-            dres_   *= eval( eval( lhs_ ) / eval( rhs_ ) );
-            sres_   *= eval( eval( lhs_ ) / eval( rhs_ ) );
-            refres_ *= eval( eval( reflhs_ ) / eval( refrhs_ ) );
-         }
-         catch( std::exception& ex ) {
-            convertException<VT1,VT2>( ex );
-         }
-
-         checkResults<VT1,VT2>();
-
-         try {
-            initTransposeResults();
-            tdres_   *= eval( eval( tlhs_ ) / eval( trhs_ ) );
-            tsres_   *= eval( eval( tlhs_ ) / eval( trhs_ ) );
-            trefres_ *= eval( eval( treflhs_ ) / eval( trefrhs_ ) );
-         }
-         catch( std::exception& ex ) {
-            convertException<TVT1,TVT2>( ex );
-         }
-
-         checkTransposeResults<TVT1,TVT2>();
-      }
-
-
-      //=====================================================================================
-      // Eval division with division assignment
-      //=====================================================================================
-
-      if( blaze::isDivisor( lhs_ / rhs_ ) )
-      {
-         // Eval division with division assignment with the given vectors
-         {
-            test_  = "Eval division with division assignment with the given vectors";
-            error_ = "Failed division assignment operation";
-
-            try {
-               initResults();
-               dres_   /= eval( lhs_ / rhs_ );
-               sres_   /= eval( lhs_ / rhs_ );
-               refres_ /= eval( DRE( reflhs_ / refrhs_ ) );
-            }
-            catch( std::exception& ex ) {
-               convertException<VT1,VT2>( ex );
-            }
-
-            checkResults<VT1,VT2>();
-
-            try {
-               initTransposeResults();
-               tdres_   /= eval( tlhs_ / trhs_ );
-               tsres_   /= eval( tlhs_ / trhs_ );
-               trefres_ /= eval( TDRE( treflhs_ / trefrhs_ ) );
-            }
-            catch( std::exception& ex ) {
-               convertException<TVT1,TVT2>( ex );
-            }
-
-            checkTransposeResults<TVT1,TVT2>();
-         }
-
-         // Eval division with division assignment with evaluated vectors
-         {
-            test_  = "Eval division with division assignment with evaluated vectors";
-            error_ = "Failed division assignment operation";
-
-            try {
-               initResults();
-               dres_   /= eval( eval( lhs_ ) / eval( rhs_ ) );
-               sres_   /= eval( eval( lhs_ ) / eval( rhs_ ) );
-               refres_ /= eval( DRE( reflhs_ / refrhs_ ) );
-            }
-            catch( std::exception& ex ) {
-               convertException<VT1,VT2>( ex );
-            }
-
-            checkResults<VT1,VT2>();
-
-            try {
-               initTransposeResults();
-               tdres_   /= eval( eval( tlhs_ ) / eval( trhs_ ) );
-               tsres_   /= eval( eval( tlhs_ ) / eval( trhs_ ) );
-               trefres_ /= eval( TDRE( treflhs_ / trefrhs_ ) );
-            }
-            catch( std::exception& ex ) {
-               convertException<TVT1,TVT2>( ex );
-            }
-
-            checkTransposeResults<TVT1,TVT2>();
-         }
-      }
+      testCustomOperation( blaze::Eval(), "eval" );
    }
 #endif
 }
@@ -5068,332 +3446,7 @@ void OperationTest<VT1,VT2>::testSerialOperation()
 #if BLAZETEST_MATHTEST_TEST_SERIAL_OPERATION
    if( BLAZETEST_MATHTEST_TEST_SERIAL_OPERATION > 1 )
    {
-      //=====================================================================================
-      // Serial division
-      //=====================================================================================
-
-      // Serial division with the given vectors
-      {
-         test_  = "Serial division with the given vectors";
-         error_ = "Failed division operation";
-
-         try {
-            initResults();
-            dres_   = serial( lhs_ / rhs_ );
-            sres_   = serial( lhs_ / rhs_ );
-            refres_ = serial( reflhs_ / refrhs_ );
-         }
-         catch( std::exception& ex ) {
-            convertException<VT1,VT2>( ex );
-         }
-
-         checkResults<VT1,VT2>();
-
-         try {
-            initTransposeResults();
-            tdres_   = serial( tlhs_ / trhs_ );
-            tsres_   = serial( tlhs_ / trhs_ );
-            trefres_ = serial( treflhs_ / trefrhs_ );
-         }
-         catch( std::exception& ex ) {
-            convertException<TVT1,TVT2>( ex );
-         }
-
-         checkTransposeResults<TVT1,TVT2>();
-      }
-
-      // Serial division with evaluated vectors
-      {
-         test_  = "Serial division with evaluated vectors";
-         error_ = "Failed division operation";
-
-         try {
-            initResults();
-            dres_   = serial( eval( lhs_ ) / eval( rhs_ ) );
-            sres_   = serial( eval( lhs_ ) / eval( rhs_ ) );
-            refres_ = serial( eval( reflhs_ ) / eval( refrhs_ ) );
-         }
-         catch( std::exception& ex ) {
-            convertException<VT1,VT2>( ex );
-         }
-
-         checkResults<VT1,VT2>();
-
-         try {
-            initTransposeResults();
-            tdres_   = serial( eval( tlhs_ ) / eval( trhs_ ) );
-            tsres_   = serial( eval( tlhs_ ) / eval( trhs_ ) );
-            trefres_ = serial( eval( treflhs_ ) / eval( trefrhs_ ) );
-         }
-         catch( std::exception& ex ) {
-            convertException<TVT1,TVT2>( ex );
-         }
-
-         checkTransposeResults<TVT1,TVT2>();
-      }
-
-
-      //=====================================================================================
-      // Serial division with addition assignment
-      //=====================================================================================
-
-      // Serial division with addition assignment with the given vectors
-      {
-         test_  = "Serial division with addition assignment with the given vectors";
-         error_ = "Failed addition assignment operation";
-
-         try {
-            initResults();
-            dres_   += serial( lhs_ / rhs_ );
-            sres_   += serial( lhs_ / rhs_ );
-            refres_ += serial( reflhs_ / refrhs_ );
-         }
-         catch( std::exception& ex ) {
-            convertException<VT1,VT2>( ex );
-         }
-
-         checkResults<VT1,VT2>();
-
-         try {
-            initTransposeResults();
-            tdres_   += serial( tlhs_ / trhs_ );
-            tsres_   += serial( tlhs_ / trhs_ );
-            trefres_ += serial( treflhs_ / trefrhs_ );
-         }
-         catch( std::exception& ex ) {
-            convertException<TVT1,TVT2>( ex );
-         }
-
-         checkTransposeResults<TVT1,TVT2>();
-      }
-
-      // Serial division with addition assignment with evaluated vectors
-      {
-         test_  = "Serial division with addition assignment with evaluated vectors";
-         error_ = "Failed addition assignment operation";
-
-         try {
-            initResults();
-            dres_   += serial( eval( lhs_ ) / eval( rhs_ ) );
-            sres_   += serial( eval( lhs_ ) / eval( rhs_ ) );
-            refres_ += serial( eval( reflhs_ ) / eval( refrhs_ ) );
-         }
-         catch( std::exception& ex ) {
-            convertException<VT1,VT2>( ex );
-         }
-
-         checkResults<VT1,VT2>();
-
-         try {
-            initTransposeResults();
-            tdres_   += serial( eval( tlhs_ ) / eval( trhs_ ) );
-            tsres_   += serial( eval( tlhs_ ) / eval( trhs_ ) );
-            trefres_ += serial( eval( treflhs_ ) / eval( trefrhs_ ) );
-         }
-         catch( std::exception& ex ) {
-            convertException<TVT1,TVT2>( ex );
-         }
-
-         checkTransposeResults<TVT1,TVT2>();
-      }
-
-
-      //=====================================================================================
-      // Serial division with subtraction assignment
-      //=====================================================================================
-
-      // Serial division with subtraction assignment with the given vectors
-      {
-         test_  = "Serial division with subtraction assignment with the given types";
-         error_ = "Failed subtraction assignment operation";
-
-         try {
-            initResults();
-            dres_   -= serial( lhs_ / rhs_ );
-            sres_   -= serial( lhs_ / rhs_ );
-            refres_ -= serial( reflhs_ / refrhs_ );
-         }
-         catch( std::exception& ex ) {
-            convertException<VT1,VT2>( ex );
-         }
-
-         checkResults<VT1,VT2>();
-
-         try {
-            initTransposeResults();
-            tdres_   -= serial( tlhs_ / trhs_ );
-            tsres_   -= serial( tlhs_ / trhs_ );
-            trefres_ -= serial( treflhs_ / trefrhs_ );
-         }
-         catch( std::exception& ex ) {
-            convertException<TVT1,TVT2>( ex );
-         }
-
-         checkTransposeResults<TVT1,TVT2>();
-      }
-
-      // Serial division with subtraction assignment with evaluated vectors
-      {
-         test_  = "Serial division with subtraction assignment with evaluated vectors";
-         error_ = "Failed subtraction assignment operation";
-
-         try {
-            initResults();
-            dres_   -= serial( eval( lhs_ ) / eval( rhs_ ) );
-            sres_   -= serial( eval( lhs_ ) / eval( rhs_ ) );
-            refres_ -= serial( eval( reflhs_ ) / eval( refrhs_ ) );
-         }
-         catch( std::exception& ex ) {
-            convertException<VT1,VT2>( ex );
-         }
-
-         checkResults<VT1,VT2>();
-
-         try {
-            initTransposeResults();
-            tdres_   -= serial( eval( tlhs_ ) / eval( trhs_ ) );
-            tsres_   -= serial( eval( tlhs_ ) / eval( trhs_ ) );
-            trefres_ -= serial( eval( treflhs_ ) / eval( trefrhs_ ) );
-         }
-         catch( std::exception& ex ) {
-            convertException<TVT1,TVT2>( ex );
-         }
-
-         checkTransposeResults<TVT1,TVT2>();
-      }
-
-
-      //=====================================================================================
-      // Serial division with multiplication assignment
-      //=====================================================================================
-
-      // Serial division with multiplication assignment with the given vectors
-      {
-         test_  = "Serial division with multiplication assignment with the given vectors";
-         error_ = "Failed multiplication assignment operation";
-
-         try {
-            initResults();
-            dres_   *= serial( lhs_ / rhs_ );
-            sres_   *= serial( lhs_ / rhs_ );
-            refres_ *= serial( reflhs_ / refrhs_ );
-         }
-         catch( std::exception& ex ) {
-            convertException<VT1,VT2>( ex );
-         }
-
-         checkResults<VT1,VT2>();
-
-         try {
-            initTransposeResults();
-            tdres_   *= serial( tlhs_ / trhs_ );
-            tsres_   *= serial( tlhs_ / trhs_ );
-            trefres_ *= serial( treflhs_ / trefrhs_ );
-         }
-         catch( std::exception& ex ) {
-            convertException<TVT1,TVT2>( ex );
-         }
-
-         checkTransposeResults<TVT1,TVT2>();
-      }
-
-      // Serial division with multiplication assignment with evaluated vectors
-      {
-         test_  = "Serial division with multiplication assignment with evaluated vectors";
-         error_ = "Failed multiplication assignment operation";
-
-         try {
-            initResults();
-            dres_   *= serial( eval( lhs_ ) / eval( rhs_ ) );
-            sres_   *= serial( eval( lhs_ ) / eval( rhs_ ) );
-            refres_ *= serial( eval( reflhs_ ) / eval( refrhs_ ) );
-         }
-         catch( std::exception& ex ) {
-            convertException<VT1,VT2>( ex );
-         }
-
-         checkResults<VT1,VT2>();
-
-         try {
-            initTransposeResults();
-            tdres_   *= serial( eval( tlhs_ ) / eval( trhs_ ) );
-            tsres_   *= serial( eval( tlhs_ ) / eval( trhs_ ) );
-            trefres_ *= serial( eval( treflhs_ ) / eval( trefrhs_ ) );
-         }
-         catch( std::exception& ex ) {
-            convertException<TVT1,TVT2>( ex );
-         }
-
-         checkTransposeResults<TVT1,TVT2>();
-      }
-
-
-      //=====================================================================================
-      // Serial division with division assignment
-      //=====================================================================================
-
-      if( blaze::isDivisor( lhs_ / rhs_ ) )
-      {
-         // Serial division with division assignment with the given vectors
-         {
-            test_  = "Serial division with division assignment with the given vectors";
-            error_ = "Failed division assignment operation";
-
-            try {
-               initResults();
-               dres_   /= serial( lhs_ / rhs_ );
-               sres_   /= serial( lhs_ / rhs_ );
-               refres_ /= serial( DRE( reflhs_ / refrhs_ ) );
-            }
-            catch( std::exception& ex ) {
-               convertException<VT1,VT2>( ex );
-            }
-
-            checkResults<VT1,VT2>();
-
-            try {
-               initTransposeResults();
-               tdres_   /= serial( tlhs_ / trhs_ );
-               tsres_   /= serial( tlhs_ / trhs_ );
-               trefres_ /= serial( TDRE( treflhs_ / trefrhs_ ) );
-            }
-            catch( std::exception& ex ) {
-               convertException<TVT1,TVT2>( ex );
-            }
-
-            checkTransposeResults<TVT1,TVT2>();
-         }
-
-         // Serial division with division assignment with evaluated vectors
-         {
-            test_  = "Serial division with division assignment with evaluated vectors";
-            error_ = "Failed division assignment operation";
-
-            try {
-               initResults();
-               dres_   /= serial( eval( lhs_ ) / eval( rhs_ ) );
-               sres_   /= serial( eval( lhs_ ) / eval( rhs_ ) );
-               refres_ /= serial( DRE( reflhs_ / refrhs_ ) );
-            }
-            catch( std::exception& ex ) {
-               convertException<VT1,VT2>( ex );
-            }
-
-            checkResults<VT1,VT2>();
-
-            try {
-               initTransposeResults();
-               tdres_   /= serial( eval( tlhs_ ) / eval( trhs_ ) );
-               tsres_   /= serial( eval( tlhs_ ) / eval( trhs_ ) );
-               trefres_ /= serial( TDRE( treflhs_ / trefrhs_ ) );
-            }
-            catch( std::exception& ex ) {
-               convertException<TVT1,TVT2>( ex );
-            }
-
-            checkTransposeResults<TVT1,TVT2>();
-         }
-      }
+      testCustomOperation( blaze::Serial(), "serial" );
    }
 #endif
 }
@@ -5811,6 +3864,354 @@ void OperationTest<VT1,VT2>::testSubvectorOperation()
       }
    }
 #endif
+}
+//*************************************************************************************************
+
+
+//*************************************************************************************************
+/*!\brief Testing the customized dense vector/dense vector division.
+//
+// \param op The custom operation to be tested.
+// \param name The human-readable name of the operation.
+// \return void
+// \exception std::runtime_error Division error detected.
+//
+// This function tests the vector division with plain assignment, addition assignment,
+// subtraction assignment, and multiplication assignment in combination with a custom operation.
+// In case any error resulting from the division or the subsequent assignment is detected, a
+// \a std::runtime_error exception is thrown.
+*/
+template< typename VT1    // Type of the left-hand side dense vector
+        , typename VT2 >  // Type of the right-hand side dense vector
+template< typename OP >   // Type of the custom operation
+void OperationTest<VT1,VT2>::testCustomOperation( OP op, const std::string& name )
+{
+   //=====================================================================================
+   // Customized division
+   //=====================================================================================
+
+   // Customized division with the given vectors
+   {
+      test_  = "Customized division with the given vectors (" + name + ")";
+      error_ = "Failed division operation";
+
+      try {
+         initResults();
+         dres_   = op( lhs_ / rhs_ );
+         sres_   = op( lhs_ / rhs_ );
+         refres_ = op( reflhs_ / refrhs_ );
+      }
+      catch( std::exception& ex ) {
+         convertException<VT1,VT2>( ex );
+      }
+
+      checkResults<VT1,VT2>();
+
+      try {
+         initTransposeResults();
+         tdres_   = op( tlhs_ / trhs_ );
+         tsres_   = op( tlhs_ / trhs_ );
+         trefres_ = op( treflhs_ / trefrhs_ );
+      }
+      catch( std::exception& ex ) {
+         convertException<TVT1,TVT2>( ex );
+      }
+
+      checkTransposeResults<TVT1,TVT2>();
+   }
+
+   // Customized division with evaluated vectors
+   {
+      test_  = "Customized division with evaluated vectors (" + name + ")";
+      error_ = "Failed division operation";
+
+      try {
+         initResults();
+         dres_   = op( eval( lhs_ ) / eval( rhs_ ) );
+         sres_   = op( eval( lhs_ ) / eval( rhs_ ) );
+         refres_ = op( eval( reflhs_ ) / eval( refrhs_ ) );
+      }
+      catch( std::exception& ex ) {
+         convertException<VT1,VT2>( ex );
+      }
+
+      checkResults<VT1,VT2>();
+
+      try {
+         initTransposeResults();
+         tdres_   = op( eval( tlhs_ ) / eval( trhs_ ) );
+         tsres_   = op( eval( tlhs_ ) / eval( trhs_ ) );
+         trefres_ = op( eval( treflhs_ ) / eval( trefrhs_ ) );
+      }
+      catch( std::exception& ex ) {
+         convertException<TVT1,TVT2>( ex );
+      }
+
+      checkTransposeResults<TVT1,TVT2>();
+   }
+
+
+   //=====================================================================================
+   // Customized division with addition assignment
+   //=====================================================================================
+
+   // Customized division with addition assignment with the given vectors
+   {
+      test_  = "Customized division with addition assignment with the given vectors (" + name + ")";
+      error_ = "Failed addition assignment operation";
+
+      try {
+         initResults();
+         dres_   += op( lhs_ / rhs_ );
+         sres_   += op( lhs_ / rhs_ );
+         refres_ += op( reflhs_ / refrhs_ );
+      }
+      catch( std::exception& ex ) {
+         convertException<VT1,VT2>( ex );
+      }
+
+      checkResults<VT1,VT2>();
+
+      try {
+         initTransposeResults();
+         tdres_   += op( tlhs_ / trhs_ );
+         tsres_   += op( tlhs_ / trhs_ );
+         trefres_ += op( treflhs_ / trefrhs_ );
+      }
+      catch( std::exception& ex ) {
+         convertException<TVT1,TVT2>( ex );
+      }
+
+      checkTransposeResults<TVT1,TVT2>();
+   }
+
+   // Customized division with addition assignment with evaluated vectors
+   {
+      test_  = "Customized division with addition assignment with evaluated vectors (" + name + ")";
+      error_ = "Failed addition assignment operation";
+
+      try {
+         initResults();
+         dres_   += op( eval( lhs_ ) / eval( rhs_ ) );
+         sres_   += op( eval( lhs_ ) / eval( rhs_ ) );
+         refres_ += op( eval( reflhs_ ) / eval( refrhs_ ) );
+      }
+      catch( std::exception& ex ) {
+         convertException<VT1,VT2>( ex );
+      }
+
+      checkResults<VT1,VT2>();
+
+      try {
+         initTransposeResults();
+         tdres_   += op( eval( tlhs_ ) / eval( trhs_ ) );
+         tsres_   += op( eval( tlhs_ ) / eval( trhs_ ) );
+         trefres_ += op( eval( treflhs_ ) / eval( trefrhs_ ) );
+      }
+      catch( std::exception& ex ) {
+         convertException<TVT1,TVT2>( ex );
+      }
+
+      checkTransposeResults<TVT1,TVT2>();
+   }
+
+
+   //=====================================================================================
+   // Customized division with subtraction assignment
+   //=====================================================================================
+
+   // Customized division with subtraction assignment with the given vectors
+   {
+      test_  = "Customized division with subtraction assignment with the given vectors (" + name + ")";
+      error_ = "Failed subtraction assignment operation";
+
+      try {
+         initResults();
+         dres_   -= op( lhs_ / rhs_ );
+         sres_   -= op( lhs_ / rhs_ );
+         refres_ -= op( reflhs_ / refrhs_ );
+      }
+      catch( std::exception& ex ) {
+         convertException<VT1,VT2>( ex );
+      }
+
+      checkResults<VT1,VT2>();
+
+      try {
+         initTransposeResults();
+         tdres_   -= op( tlhs_ / trhs_ );
+         tsres_   -= op( tlhs_ / trhs_ );
+         trefres_ -= op( treflhs_ / trefrhs_ );
+      }
+      catch( std::exception& ex ) {
+         convertException<TVT1,TVT2>( ex );
+      }
+
+      checkTransposeResults<TVT1,TVT2>();
+   }
+
+   // Customized division with subtraction assignment with evaluated vectors
+   {
+      test_  = "Customized division with subtraction assignment with evaluated vectors (" + name + ")";
+      error_ = "Failed subtraction assignment operation";
+
+      try {
+         initResults();
+         dres_   -= op( eval( lhs_ ) / eval( rhs_ ) );
+         sres_   -= op( eval( lhs_ ) / eval( rhs_ ) );
+         refres_ -= op( eval( reflhs_ ) / eval( refrhs_ ) );
+      }
+      catch( std::exception& ex ) {
+         convertException<VT1,VT2>( ex );
+      }
+
+      checkResults<VT1,VT2>();
+
+      try {
+         initTransposeResults();
+         tdres_   -= op( eval( tlhs_ ) / eval( trhs_ ) );
+         tsres_   -= op( eval( tlhs_ ) / eval( trhs_ ) );
+         trefres_ -= op( eval( treflhs_ ) / eval( trefrhs_ ) );
+      }
+      catch( std::exception& ex ) {
+         convertException<TVT1,TVT2>( ex );
+      }
+
+      checkTransposeResults<TVT1,TVT2>();
+   }
+
+
+   //=====================================================================================
+   // Customized division with multiplication assignment
+   //=====================================================================================
+
+   // Customized division with multiplication assignment with the given vectors
+   {
+      test_  = "Customized division with multiplication assignment with the given vectors (" + name + ")";
+      error_ = "Failed multiplication assignment operation";
+
+      try {
+         initResults();
+         dres_   *= op( lhs_ / rhs_ );
+         sres_   *= op( lhs_ / rhs_ );
+         refres_ *= op( reflhs_ / refrhs_ );
+      }
+      catch( std::exception& ex ) {
+         convertException<VT1,VT2>( ex );
+      }
+
+      checkResults<VT1,VT2>();
+
+      try {
+         initTransposeResults();
+         tdres_   *= op( tlhs_ / trhs_ );
+         tsres_   *= op( tlhs_ / trhs_ );
+         trefres_ *= op( treflhs_ / trefrhs_ );
+      }
+      catch( std::exception& ex ) {
+         convertException<TVT1,TVT2>( ex );
+      }
+
+      checkTransposeResults<TVT1,TVT2>();
+   }
+
+   // Customized division with multiplication assignment with evaluated vectors
+   {
+      test_  = "Customized division with multiplication assignment with evaluated vectors (" + name + ")";
+      error_ = "Failed multiplication assignment operation";
+
+      try {
+         initResults();
+         dres_   *= op( eval( lhs_ ) / eval( rhs_ ) );
+         sres_   *= op( eval( lhs_ ) / eval( rhs_ ) );
+         refres_ *= op( eval( reflhs_ ) / eval( refrhs_ ) );
+      }
+      catch( std::exception& ex ) {
+         convertException<VT1,VT2>( ex );
+      }
+
+      checkResults<VT1,VT2>();
+
+      try {
+         initTransposeResults();
+         tdres_   *= op( eval( tlhs_ ) / eval( trhs_ ) );
+         tsres_   *= op( eval( tlhs_ ) / eval( trhs_ ) );
+         trefres_ *= op( eval( treflhs_ ) / eval( trefrhs_ ) );
+      }
+      catch( std::exception& ex ) {
+         convertException<TVT1,TVT2>( ex );
+      }
+
+      checkTransposeResults<TVT1,TVT2>();
+   }
+
+
+   //=====================================================================================
+   // Customized division with division assignment
+   //=====================================================================================
+
+   if( blaze::isDivisor( lhs_ / rhs_ ) )
+   {
+      // Customized division with division assignment with the given vectors
+      {
+         test_  = "Customized division with division assignment with the given vectors (" + name + ")";
+         error_ = "Failed division assignment operation";
+
+         try {
+            initResults();
+            dres_   /= op( lhs_ / rhs_ );
+            sres_   /= op( lhs_ / rhs_ );
+            refres_ /= op( DRE( reflhs_ / refrhs_ ) );
+         }
+         catch( std::exception& ex ) {
+            convertException<VT1,VT2>( ex );
+         }
+
+         checkResults<VT1,VT2>();
+
+         try {
+            initTransposeResults();
+            tdres_   /= op( tlhs_ / trhs_ );
+            tsres_   /= op( tlhs_ / trhs_ );
+            trefres_ /= op( TDRE( treflhs_ / trefrhs_ ) );
+         }
+         catch( std::exception& ex ) {
+            convertException<TVT1,TVT2>( ex );
+         }
+
+         checkTransposeResults<TVT1,TVT2>();
+      }
+
+      // Customized division with division assignment with evaluated vectors
+      {
+         test_  = "Customized division with division assignment with evaluated vectors (" + name + ")";
+         error_ = "Failed division assignment operation";
+
+         try {
+            initResults();
+            dres_   /= op( eval( lhs_ ) / eval( rhs_ ) );
+            sres_   /= op( eval( lhs_ ) / eval( rhs_ ) );
+            refres_ /= op( DRE( reflhs_ / refrhs_ ) );
+         }
+         catch( std::exception& ex ) {
+            convertException<VT1,VT2>( ex );
+         }
+
+         checkResults<VT1,VT2>();
+
+         try {
+            initTransposeResults();
+            tdres_   /= op( eval( tlhs_ ) / eval( trhs_ ) );
+            tsres_   /= op( eval( tlhs_ ) / eval( trhs_ ) );
+            trefres_ /= op( TDRE( treflhs_ / trefrhs_ ) );
+         }
+         catch( std::exception& ex ) {
+            convertException<TVT1,TVT2>( ex );
+         }
+
+         checkTransposeResults<TVT1,TVT2>();
+      }
+   }
 }
 //*************************************************************************************************
 

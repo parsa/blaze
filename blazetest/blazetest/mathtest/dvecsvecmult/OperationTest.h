@@ -52,6 +52,7 @@
 #include <blaze/math/constraints/TransposeFlag.h>
 #include <blaze/math/constraints/VecVecMultExpr.h>
 #include <blaze/math/DynamicVector.h>
+#include <blaze/math/Functors.h>
 #include <blaze/math/shims/Equal.h>
 #include <blaze/math/StaticVector.h>
 #include <blaze/math/traits/MultExprTrait.h>
@@ -151,14 +152,16 @@ class OperationTest
                           void testNegatedOperation  ();
    template< typename T > void testScaledOperation   ( T scalar );
                           void testTransOperation    ();
+                          void testCTransOperation   ();
                           void testAbsOperation      ();
                           void testConjOperation     ();
-                          void testCTransOperation   ();
                           void testRealOperation     ();
                           void testImagOperation     ();
                           void testEvalOperation     ();
                           void testSerialOperation   ();
                           void testSubvectorOperation();
+
+   template< typename OP > void testCustomOperation( OP op, const std::string& name );
    //@}
    //**********************************************************************************************
 
@@ -304,9 +307,9 @@ OperationTest<VT1,VT2>::OperationTest( const Creator<VT1>& creator1, const Creat
    testScaledOperation( 2.0 );
    testScaledOperation( Scalar( 2 ) );
    testTransOperation();
+   testCTransOperation();
    testAbsOperation();
    testConjOperation();
-   testCTransOperation();
    testRealOperation();
    testImagOperation();
    testEvalOperation();
@@ -2543,570 +2546,6 @@ void OperationTest<VT1,VT2>::testTransOperation()
 
 
 //*************************************************************************************************
-/*!\brief Testing the abs dense vector/sparse vector multiplication.
-//
-// \return void
-// \exception std::runtime_error Multiplication error detected.
-//
-// This function tests the abs vector multiplication with plain assignment, addition assignment,
-// subtraction assignment, and multiplication assignment. In case any error resulting from the
-// multiplication or the subsequent assignment is detected, a \a std::runtime_error exception
-// is thrown.
-*/
-template< typename VT1    // Type of the left-hand side dense vector
-        , typename VT2 >  // Type of the right-hand side sparse vector
-void OperationTest<VT1,VT2>::testAbsOperation()
-{
-#if BLAZETEST_MATHTEST_TEST_ABS_OPERATION
-   if( BLAZETEST_MATHTEST_TEST_ABS_OPERATION > 1 )
-   {
-      //=====================================================================================
-      // Abs multiplication
-      //=====================================================================================
-
-      // Abs multiplication with the given vectors
-      {
-         test_  = "Abs multiplication with the given vectors";
-         error_ = "Failed multiplication operation";
-
-         try {
-            initResults();
-            dres_   = abs( lhs_ * rhs_ );
-            sres_   = abs( lhs_ * rhs_ );
-            refres_ = abs( reflhs_ * refrhs_ );
-         }
-         catch( std::exception& ex ) {
-            convertException<VT1,VT2>( ex );
-         }
-
-         checkResults<VT1,VT2>();
-
-         try {
-            initTransposeResults();
-            tdres_   = abs( tlhs_ * trhs_ );
-            tsres_   = abs( tlhs_ * trhs_ );
-            trefres_ = abs( treflhs_ * trefrhs_ );
-         }
-         catch( std::exception& ex ) {
-            convertException<TVT1,TVT2>( ex );
-         }
-
-         checkTransposeResults<TVT1,TVT2>();
-      }
-
-      // Abs multiplication with evaluated vectors
-      {
-         test_  = "Abs multiplication with evaluated vectors";
-         error_ = "Failed multiplication operation";
-
-         try {
-            initResults();
-            dres_   = abs( eval( lhs_ ) * eval( rhs_ ) );
-            sres_   = abs( eval( lhs_ ) * eval( rhs_ ) );
-            refres_ = abs( eval( reflhs_ ) * eval( refrhs_ ) );
-         }
-         catch( std::exception& ex ) {
-            convertException<VT1,VT2>( ex );
-         }
-
-         checkResults<VT1,VT2>();
-
-         try {
-            initTransposeResults();
-            tdres_   = abs( eval( tlhs_ ) * eval( trhs_ ) );
-            tsres_   = abs( eval( tlhs_ ) * eval( trhs_ ) );
-            trefres_ = abs( eval( treflhs_ ) * eval( trefrhs_ ) );
-         }
-         catch( std::exception& ex ) {
-            convertException<TVT1,TVT2>( ex );
-         }
-
-         checkTransposeResults<TVT1,TVT2>();
-      }
-
-
-      //=====================================================================================
-      // Abs multiplication with addition assignment
-      //=====================================================================================
-
-      // Abs multiplication with addition assignment with the given vectors
-      {
-         test_  = "Abs multiplication with addition assignment with the given vectors";
-         error_ = "Failed addition assignment operation";
-
-         try {
-            initResults();
-            dres_   += abs( lhs_ * rhs_ );
-            sres_   += abs( lhs_ * rhs_ );
-            refres_ += abs( reflhs_ * refrhs_ );
-         }
-         catch( std::exception& ex ) {
-            convertException<VT1,VT2>( ex );
-         }
-
-         checkResults<VT1,VT2>();
-
-         try {
-            initTransposeResults();
-            tdres_   += abs( tlhs_ * trhs_ );
-            tsres_   += abs( tlhs_ * trhs_ );
-            trefres_ += abs( treflhs_ * trefrhs_ );
-         }
-         catch( std::exception& ex ) {
-            convertException<TVT1,TVT2>( ex );
-         }
-
-         checkTransposeResults<TVT1,TVT2>();
-      }
-
-      // Abs multiplication with addition assignment with evaluated vectors
-      {
-         test_  = "Abs multiplication with addition assignment with evaluated vectors";
-         error_ = "Failed addition assignment operation";
-
-         try {
-            initResults();
-            dres_   += abs( eval( lhs_ ) * eval( rhs_ ) );
-            sres_   += abs( eval( lhs_ ) * eval( rhs_ ) );
-            refres_ += abs( eval( reflhs_ ) * eval( refrhs_ ) );
-         }
-         catch( std::exception& ex ) {
-            convertException<VT1,VT2>( ex );
-         }
-
-         checkResults<VT1,VT2>();
-
-         try {
-            initTransposeResults();
-            tdres_   += abs( eval( tlhs_ ) * eval( trhs_ ) );
-            tsres_   += abs( eval( tlhs_ ) * eval( trhs_ ) );
-            trefres_ += abs( eval( treflhs_ ) * eval( trefrhs_ ) );
-         }
-         catch( std::exception& ex ) {
-            convertException<TVT1,TVT2>( ex );
-         }
-
-         checkTransposeResults<TVT1,TVT2>();
-      }
-
-
-      //=====================================================================================
-      // Abs multiplication with subtraction assignment
-      //=====================================================================================
-
-      // Abs multiplication with subtraction assignment with the given vectors
-      {
-         test_  = "Abs multiplication with subtraction assignment with the given types";
-         error_ = "Failed subtraction assignment operation";
-
-         try {
-            initResults();
-            dres_   -= abs( lhs_ * rhs_ );
-            sres_   -= abs( lhs_ * rhs_ );
-            refres_ -= abs( reflhs_ * refrhs_ );
-         }
-         catch( std::exception& ex ) {
-            convertException<VT1,VT2>( ex );
-         }
-
-         checkResults<VT1,VT2>();
-
-         try {
-            initTransposeResults();
-            tdres_   -= abs( tlhs_ * trhs_ );
-            tsres_   -= abs( tlhs_ * trhs_ );
-            trefres_ -= abs( treflhs_ * trefrhs_ );
-         }
-         catch( std::exception& ex ) {
-            convertException<TVT1,TVT2>( ex );
-         }
-
-         checkTransposeResults<TVT1,TVT2>();
-      }
-
-      // Abs multiplication with subtraction assignment with evaluated vectors
-      {
-         test_  = "Abs multiplication with subtraction assignment with evaluated vectors";
-         error_ = "Failed subtraction assignment operation";
-
-         try {
-            initResults();
-            dres_   -= abs( eval( lhs_ ) * eval( rhs_ ) );
-            sres_   -= abs( eval( lhs_ ) * eval( rhs_ ) );
-            refres_ -= abs( eval( reflhs_ ) * eval( refrhs_ ) );
-         }
-         catch( std::exception& ex ) {
-            convertException<VT1,VT2>( ex );
-         }
-
-         checkResults<VT1,VT2>();
-
-         try {
-            initTransposeResults();
-            tdres_   -= abs( eval( tlhs_ ) * eval( trhs_ ) );
-            tsres_   -= abs( eval( tlhs_ ) * eval( trhs_ ) );
-            trefres_ -= abs( eval( treflhs_ ) * eval( trefrhs_ ) );
-         }
-         catch( std::exception& ex ) {
-            convertException<TVT1,TVT2>( ex );
-         }
-
-         checkTransposeResults<TVT1,TVT2>();
-      }
-
-
-      //=====================================================================================
-      // Abs multiplication with multiplication assignment
-      //=====================================================================================
-
-      // Abs multiplication with multiplication assignment with the given vectors
-      {
-         test_  = "Abs multiplication with multiplication assignment with the given vectors";
-         error_ = "Failed multiplication assignment operation";
-
-         try {
-            initResults();
-            dres_   *= abs( lhs_ * rhs_ );
-            sres_   *= abs( lhs_ * rhs_ );
-            refres_ *= abs( reflhs_ * refrhs_ );
-         }
-         catch( std::exception& ex ) {
-            convertException<VT1,VT2>( ex );
-         }
-
-         checkResults<VT1,VT2>();
-
-         try {
-            initTransposeResults();
-            tdres_   *= abs( tlhs_ * trhs_ );
-            tsres_   *= abs( tlhs_ * trhs_ );
-            trefres_ *= abs( treflhs_ * trefrhs_ );
-         }
-         catch( std::exception& ex ) {
-            convertException<TVT1,TVT2>( ex );
-         }
-
-         checkTransposeResults<TVT1,TVT2>();
-      }
-
-      // Abs multiplication with multiplication assignment with evaluated vectors
-      {
-         test_  = "Abs multiplication with multiplication assignment with evaluated vectors";
-         error_ = "Failed multiplication assignment operation";
-
-         try {
-            initResults();
-            dres_   *= abs( eval( lhs_ ) * eval( rhs_ ) );
-            sres_   *= abs( eval( lhs_ ) * eval( rhs_ ) );
-            refres_ *= abs( eval( reflhs_ ) * eval( refrhs_ ) );
-         }
-         catch( std::exception& ex ) {
-            convertException<VT1,VT2>( ex );
-         }
-
-         checkResults<VT1,VT2>();
-
-         try {
-            initTransposeResults();
-            tdres_   *= abs( eval( tlhs_ ) * eval( trhs_ ) );
-            tsres_   *= abs( eval( tlhs_ ) * eval( trhs_ ) );
-            trefres_ *= abs( eval( treflhs_ ) * eval( trefrhs_ ) );
-         }
-         catch( std::exception& ex ) {
-            convertException<TVT1,TVT2>( ex );
-         }
-
-         checkTransposeResults<TVT1,TVT2>();
-      }
-   }
-#endif
-}
-//*************************************************************************************************
-
-
-//*************************************************************************************************
-/*!\brief Testing the conjugate dense vector/sparse vector multiplication.
-//
-// \return void
-// \exception std::runtime_error Multiplication error detected.
-//
-// This function tests the conjugate vector multiplication with plain assignment, addition
-// assignment, subtraction assignment, and multiplication assignment. In case any error resulting
-// from the multiplication or the subsequent assignment is detected, a \a std::runtime_error
-// exception is thrown.
-*/
-template< typename VT1    // Type of the left-hand side dense vector
-        , typename VT2 >  // Type of the right-hand side sparse vector
-void OperationTest<VT1,VT2>::testConjOperation()
-{
-#if BLAZETEST_MATHTEST_TEST_CONJ_OPERATION
-   if( BLAZETEST_MATHTEST_TEST_CONJ_OPERATION > 1 )
-   {
-      //=====================================================================================
-      // Conjugate multiplication
-      //=====================================================================================
-
-      // Conjugate multiplication with the given vectors
-      {
-         test_  = "Conjugate multiplication with the given vectors";
-         error_ = "Failed multiplication operation";
-
-         try {
-            initResults();
-            dres_   = conj( lhs_ * rhs_ );
-            sres_   = conj( lhs_ * rhs_ );
-            refres_ = conj( reflhs_ * refrhs_ );
-         }
-         catch( std::exception& ex ) {
-            convertException<VT1,VT2>( ex );
-         }
-
-         checkResults<VT1,VT2>();
-
-         try {
-            initTransposeResults();
-            tdres_   = conj( tlhs_ * trhs_ );
-            tsres_   = conj( tlhs_ * trhs_ );
-            trefres_ = conj( treflhs_ * trefrhs_ );
-         }
-         catch( std::exception& ex ) {
-            convertException<TVT1,TVT2>( ex );
-         }
-
-         checkTransposeResults<TVT1,TVT2>();
-      }
-
-      // Conjugate multiplication with evaluated vectors
-      {
-         test_  = "Conjugate multiplication with evaluated vectors";
-         error_ = "Failed multiplication operation";
-
-         try {
-            initResults();
-            dres_   = conj( eval( lhs_ ) * eval( rhs_ ) );
-            sres_   = conj( eval( lhs_ ) * eval( rhs_ ) );
-            refres_ = conj( eval( reflhs_ ) * eval( refrhs_ ) );
-         }
-         catch( std::exception& ex ) {
-            convertException<VT1,VT2>( ex );
-         }
-
-         checkResults<VT1,VT2>();
-
-         try {
-            initTransposeResults();
-            tdres_   = conj( eval( tlhs_ ) * eval( trhs_ ) );
-            tsres_   = conj( eval( tlhs_ ) * eval( trhs_ ) );
-            trefres_ = conj( eval( treflhs_ ) * eval( trefrhs_ ) );
-         }
-         catch( std::exception& ex ) {
-            convertException<TVT1,TVT2>( ex );
-         }
-
-         checkTransposeResults<TVT1,TVT2>();
-      }
-
-
-      //=====================================================================================
-      // Conjugate multiplication with addition assignment
-      //=====================================================================================
-
-      // Conjugate multiplication with addition assignment with the given vectors
-      {
-         test_  = "Conjugate multiplication with addition assignment with the given vectors";
-         error_ = "Failed addition assignment operation";
-
-         try {
-            initResults();
-            dres_   += conj( lhs_ * rhs_ );
-            sres_   += conj( lhs_ * rhs_ );
-            refres_ += conj( reflhs_ * refrhs_ );
-         }
-         catch( std::exception& ex ) {
-            convertException<VT1,VT2>( ex );
-         }
-
-         checkResults<VT1,VT2>();
-
-         try {
-            initTransposeResults();
-            tdres_   += conj( tlhs_ * trhs_ );
-            tsres_   += conj( tlhs_ * trhs_ );
-            trefres_ += conj( treflhs_ * trefrhs_ );
-         }
-         catch( std::exception& ex ) {
-            convertException<TVT1,TVT2>( ex );
-         }
-
-         checkTransposeResults<TVT1,TVT2>();
-      }
-
-      // Conjugate multiplication with addition assignment with evaluated vectors
-      {
-         test_  = "Conjugate multiplication with addition assignment with evaluated vectors";
-         error_ = "Failed addition assignment operation";
-
-         try {
-            initResults();
-            dres_   += conj( eval( lhs_ ) * eval( rhs_ ) );
-            sres_   += conj( eval( lhs_ ) * eval( rhs_ ) );
-            refres_ += conj( eval( reflhs_ ) * eval( refrhs_ ) );
-         }
-         catch( std::exception& ex ) {
-            convertException<VT1,VT2>( ex );
-         }
-
-         checkResults<VT1,VT2>();
-
-         try {
-            initTransposeResults();
-            tdres_   += conj( eval( tlhs_ ) * eval( trhs_ ) );
-            tsres_   += conj( eval( tlhs_ ) * eval( trhs_ ) );
-            trefres_ += conj( eval( treflhs_ ) * eval( trefrhs_ ) );
-         }
-         catch( std::exception& ex ) {
-            convertException<TVT1,TVT2>( ex );
-         }
-
-         checkTransposeResults<TVT1,TVT2>();
-      }
-
-
-      //=====================================================================================
-      // Conjugate multiplication with subtraction assignment
-      //=====================================================================================
-
-      // Conjugate multiplication with subtraction assignment with the given vectors
-      {
-         test_  = "Conjugate multiplication with subtraction assignment with the given types";
-         error_ = "Failed subtraction assignment operation";
-
-         try {
-            initResults();
-            dres_   -= conj( lhs_ * rhs_ );
-            sres_   -= conj( lhs_ * rhs_ );
-            refres_ -= conj( reflhs_ * refrhs_ );
-         }
-         catch( std::exception& ex ) {
-            convertException<VT1,VT2>( ex );
-         }
-
-         checkResults<VT1,VT2>();
-
-         try {
-            initTransposeResults();
-            tdres_   -= conj( tlhs_ * trhs_ );
-            tsres_   -= conj( tlhs_ * trhs_ );
-            trefres_ -= conj( treflhs_ * trefrhs_ );
-         }
-         catch( std::exception& ex ) {
-            convertException<TVT1,TVT2>( ex );
-         }
-
-         checkTransposeResults<TVT1,TVT2>();
-      }
-
-      // Conjugate multiplication with subtraction assignment with evaluated vectors
-      {
-         test_  = "Conjugate multiplication with subtraction assignment with evaluated vectors";
-         error_ = "Failed subtraction assignment operation";
-
-         try {
-            initResults();
-            dres_   -= conj( eval( lhs_ ) * eval( rhs_ ) );
-            sres_   -= conj( eval( lhs_ ) * eval( rhs_ ) );
-            refres_ -= conj( eval( reflhs_ ) * eval( refrhs_ ) );
-         }
-         catch( std::exception& ex ) {
-            convertException<VT1,VT2>( ex );
-         }
-
-         checkResults<VT1,VT2>();
-
-         try {
-            initTransposeResults();
-            tdres_   -= conj( eval( tlhs_ ) * eval( trhs_ ) );
-            tsres_   -= conj( eval( tlhs_ ) * eval( trhs_ ) );
-            trefres_ -= conj( eval( treflhs_ ) * eval( trefrhs_ ) );
-         }
-         catch( std::exception& ex ) {
-            convertException<TVT1,TVT2>( ex );
-         }
-
-         checkTransposeResults<TVT1,TVT2>();
-      }
-
-
-      //=====================================================================================
-      // Conjugate multiplication with multiplication assignment
-      //=====================================================================================
-
-      // Conjugate multiplication with multiplication assignment with the given vectors
-      {
-         test_  = "Conjugate multiplication with multiplication assignment with the given vectors";
-         error_ = "Failed multiplication assignment operation";
-
-         try {
-            initResults();
-            dres_   *= conj( lhs_ * rhs_ );
-            sres_   *= conj( lhs_ * rhs_ );
-            refres_ *= conj( reflhs_ * refrhs_ );
-         }
-         catch( std::exception& ex ) {
-            convertException<VT1,VT2>( ex );
-         }
-
-         checkResults<VT1,VT2>();
-
-         try {
-            initTransposeResults();
-            tdres_   *= conj( tlhs_ * trhs_ );
-            tsres_   *= conj( tlhs_ * trhs_ );
-            trefres_ *= conj( treflhs_ * trefrhs_ );
-         }
-         catch( std::exception& ex ) {
-            convertException<TVT1,TVT2>( ex );
-         }
-
-         checkTransposeResults<TVT1,TVT2>();
-      }
-
-      // Conjugate multiplication with multiplication assignment with evaluated vectors
-      {
-         test_  = "Conjugate multiplication with multiplication assignment with evaluated vectors";
-         error_ = "Failed multiplication assignment operation";
-
-         try {
-            initResults();
-            dres_   *= conj( eval( lhs_ ) * eval( rhs_ ) );
-            sres_   *= conj( eval( lhs_ ) * eval( rhs_ ) );
-            refres_ *= conj( eval( reflhs_ ) * eval( refrhs_ ) );
-         }
-         catch( std::exception& ex ) {
-            convertException<VT1,VT2>( ex );
-         }
-
-         checkResults<VT1,VT2>();
-
-         try {
-            initTransposeResults();
-            tdres_   *= conj( eval( tlhs_ ) * eval( trhs_ ) );
-            tsres_   *= conj( eval( tlhs_ ) * eval( trhs_ ) );
-            trefres_ *= conj( eval( treflhs_ ) * eval( trefrhs_ ) );
-         }
-         catch( std::exception& ex ) {
-            convertException<TVT1,TVT2>( ex );
-         }
-
-         checkTransposeResults<TVT1,TVT2>();
-      }
-   }
-#endif
-}
-//*************************************************************************************************
-
-
-//*************************************************************************************************
 /*!\brief Testing the conjugate transpose dense vector/sparse vector multiplication.
 //
 // \return void
@@ -3389,6 +2828,56 @@ void OperationTest<VT1,VT2>::testCTransOperation()
 
 
 //*************************************************************************************************
+/*!\brief Testing the abs dense vector/sparse vector multiplication.
+//
+// \return void
+// \exception std::runtime_error Multiplication error detected.
+//
+// This function tests the abs vector multiplication with plain assignment, addition assignment,
+// subtraction assignment, and multiplication assignment. In case any error resulting from the
+// multiplication or the subsequent assignment is detected, a \a std::runtime_error exception
+// is thrown.
+*/
+template< typename VT1    // Type of the left-hand side dense vector
+        , typename VT2 >  // Type of the right-hand side sparse vector
+void OperationTest<VT1,VT2>::testAbsOperation()
+{
+#if BLAZETEST_MATHTEST_TEST_ABS_OPERATION
+   if( BLAZETEST_MATHTEST_TEST_ABS_OPERATION > 1 )
+   {
+      testCustomOperation( blaze::Abs(), "abs" );
+   }
+#endif
+}
+//*************************************************************************************************
+
+
+//*************************************************************************************************
+/*!\brief Testing the conjugate dense vector/sparse vector multiplication.
+//
+// \return void
+// \exception std::runtime_error Multiplication error detected.
+//
+// This function tests the conjugate vector multiplication with plain assignment, addition
+// assignment, subtraction assignment, and multiplication assignment. In case any error resulting
+// from the multiplication or the subsequent assignment is detected, a \a std::runtime_error
+// exception is thrown.
+*/
+template< typename VT1    // Type of the left-hand side dense vector
+        , typename VT2 >  // Type of the right-hand side sparse vector
+void OperationTest<VT1,VT2>::testConjOperation()
+{
+#if BLAZETEST_MATHTEST_TEST_CONJ_OPERATION
+   if( BLAZETEST_MATHTEST_TEST_CONJ_OPERATION > 1 )
+   {
+      testCustomOperation( blaze::Conj(), "conj" );
+   }
+#endif
+}
+//*************************************************************************************************
+
+
+//*************************************************************************************************
 /*!\brief Testing the \a real dense vector/sparse vector multiplication.
 //
 // \return void
@@ -3406,264 +2895,7 @@ void OperationTest<VT1,VT2>::testRealOperation()
 #if BLAZETEST_MATHTEST_TEST_REAL_OPERATION
    if( BLAZETEST_MATHTEST_TEST_REAL_OPERATION > 1 )
    {
-      //=====================================================================================
-      // Real multiplication
-      //=====================================================================================
-
-      // Real multiplication with the given vectors
-      {
-         test_  = "Real multiplication with the given vectors";
-         error_ = "Failed multiplication operation";
-
-         try {
-            initResults();
-            dres_   = real( lhs_ * rhs_ );
-            sres_   = real( lhs_ * rhs_ );
-            refres_ = real( reflhs_ * refrhs_ );
-         }
-         catch( std::exception& ex ) {
-            convertException<VT1,VT2>( ex );
-         }
-
-         checkResults<VT1,VT2>();
-
-         try {
-            initTransposeResults();
-            tdres_   = real( tlhs_ * trhs_ );
-            tsres_   = real( tlhs_ * trhs_ );
-            trefres_ = real( treflhs_ * trefrhs_ );
-         }
-         catch( std::exception& ex ) {
-            convertException<TVT1,TVT2>( ex );
-         }
-
-         checkTransposeResults<TVT1,TVT2>();
-      }
-
-      // Real multiplication with evaluated vectors
-      {
-         test_  = "Real multiplication with evaluated vectors";
-         error_ = "Failed multiplication operation";
-
-         try {
-            initResults();
-            dres_   = real( eval( lhs_ ) * eval( rhs_ ) );
-            sres_   = real( eval( lhs_ ) * eval( rhs_ ) );
-            refres_ = real( eval( reflhs_ ) * eval( refrhs_ ) );
-         }
-         catch( std::exception& ex ) {
-            convertException<VT1,VT2>( ex );
-         }
-
-         checkResults<VT1,VT2>();
-
-         try {
-            initTransposeResults();
-            tdres_   = real( eval( tlhs_ ) * eval( trhs_ ) );
-            tsres_   = real( eval( tlhs_ ) * eval( trhs_ ) );
-            trefres_ = real( eval( treflhs_ ) * eval( trefrhs_ ) );
-         }
-         catch( std::exception& ex ) {
-            convertException<TVT1,TVT2>( ex );
-         }
-
-         checkTransposeResults<TVT1,TVT2>();
-      }
-
-
-      //=====================================================================================
-      // Real multiplication with addition assignment
-      //=====================================================================================
-
-      // Real multiplication with addition assignment with the given vectors
-      {
-         test_  = "Real multiplication with addition assignment with the given vectors";
-         error_ = "Failed addition assignment operation";
-
-         try {
-            initResults();
-            dres_   += real( lhs_ * rhs_ );
-            sres_   += real( lhs_ * rhs_ );
-            refres_ += real( reflhs_ * refrhs_ );
-         }
-         catch( std::exception& ex ) {
-            convertException<VT1,VT2>( ex );
-         }
-
-         checkResults<VT1,VT2>();
-
-         try {
-            initTransposeResults();
-            tdres_   += real( tlhs_ * trhs_ );
-            tsres_   += real( tlhs_ * trhs_ );
-            trefres_ += real( treflhs_ * trefrhs_ );
-         }
-         catch( std::exception& ex ) {
-            convertException<TVT1,TVT2>( ex );
-         }
-
-         checkTransposeResults<TVT1,TVT2>();
-      }
-
-      // Real multiplication with addition assignment with evaluated vectors
-      {
-         test_  = "Real multiplication with addition assignment with evaluated vectors";
-         error_ = "Failed addition assignment operation";
-
-         try {
-            initResults();
-            dres_   += real( eval( lhs_ ) * eval( rhs_ ) );
-            sres_   += real( eval( lhs_ ) * eval( rhs_ ) );
-            refres_ += real( eval( reflhs_ ) * eval( refrhs_ ) );
-         }
-         catch( std::exception& ex ) {
-            convertException<VT1,VT2>( ex );
-         }
-
-         checkResults<VT1,VT2>();
-
-         try {
-            initTransposeResults();
-            tdres_   += real( eval( tlhs_ ) * eval( trhs_ ) );
-            tsres_   += real( eval( tlhs_ ) * eval( trhs_ ) );
-            trefres_ += real( eval( treflhs_ ) * eval( trefrhs_ ) );
-         }
-         catch( std::exception& ex ) {
-            convertException<TVT1,TVT2>( ex );
-         }
-
-         checkTransposeResults<TVT1,TVT2>();
-      }
-
-
-      //=====================================================================================
-      // Real multiplication with subtraction assignment
-      //=====================================================================================
-
-      // Real multiplication with subtraction assignment with the given vectors
-      {
-         test_  = "Real multiplication with subtraction assignment with the given types";
-         error_ = "Failed subtraction assignment operation";
-
-         try {
-            initResults();
-            dres_   -= real( lhs_ * rhs_ );
-            sres_   -= real( lhs_ * rhs_ );
-            refres_ -= real( reflhs_ * refrhs_ );
-         }
-         catch( std::exception& ex ) {
-            convertException<VT1,VT2>( ex );
-         }
-
-         checkResults<VT1,VT2>();
-
-         try {
-            initTransposeResults();
-            tdres_   -= real( tlhs_ * trhs_ );
-            tsres_   -= real( tlhs_ * trhs_ );
-            trefres_ -= real( treflhs_ * trefrhs_ );
-         }
-         catch( std::exception& ex ) {
-            convertException<TVT1,TVT2>( ex );
-         }
-
-         checkTransposeResults<TVT1,TVT2>();
-      }
-
-      // Real multiplication with subtraction assignment with evaluated vectors
-      {
-         test_  = "Real multiplication with subtraction assignment with evaluated vectors";
-         error_ = "Failed subtraction assignment operation";
-
-         try {
-            initResults();
-            dres_   -= real( eval( lhs_ ) * eval( rhs_ ) );
-            sres_   -= real( eval( lhs_ ) * eval( rhs_ ) );
-            refres_ -= real( eval( reflhs_ ) * eval( refrhs_ ) );
-         }
-         catch( std::exception& ex ) {
-            convertException<VT1,VT2>( ex );
-         }
-
-         checkResults<VT1,VT2>();
-
-         try {
-            initTransposeResults();
-            tdres_   -= real( eval( tlhs_ ) * eval( trhs_ ) );
-            tsres_   -= real( eval( tlhs_ ) * eval( trhs_ ) );
-            trefres_ -= real( eval( treflhs_ ) * eval( trefrhs_ ) );
-         }
-         catch( std::exception& ex ) {
-            convertException<TVT1,TVT2>( ex );
-         }
-
-         checkTransposeResults<TVT1,TVT2>();
-      }
-
-
-      //=====================================================================================
-      // Real multiplication with multiplication assignment
-      //=====================================================================================
-
-      // Real multiplication with multiplication assignment with the given vectors
-      {
-         test_  = "Real multiplication with multiplication assignment with the given vectors";
-         error_ = "Failed multiplication assignment operation";
-
-         try {
-            initResults();
-            dres_   *= real( lhs_ * rhs_ );
-            sres_   *= real( lhs_ * rhs_ );
-            refres_ *= real( reflhs_ * refrhs_ );
-         }
-         catch( std::exception& ex ) {
-            convertException<VT1,VT2>( ex );
-         }
-
-         checkResults<VT1,VT2>();
-
-         try {
-            initTransposeResults();
-            tdres_   *= real( tlhs_ * trhs_ );
-            tsres_   *= real( tlhs_ * trhs_ );
-            trefres_ *= real( treflhs_ * trefrhs_ );
-         }
-         catch( std::exception& ex ) {
-            convertException<TVT1,TVT2>( ex );
-         }
-
-         checkTransposeResults<TVT1,TVT2>();
-      }
-
-      // Real multiplication with multiplication assignment with evaluated vectors
-      {
-         test_  = "Real multiplication with multiplication assignment with evaluated vectors";
-         error_ = "Failed multiplication assignment operation";
-
-         try {
-            initResults();
-            dres_   *= real( eval( lhs_ ) * eval( rhs_ ) );
-            sres_   *= real( eval( lhs_ ) * eval( rhs_ ) );
-            refres_ *= real( eval( reflhs_ ) * eval( refrhs_ ) );
-         }
-         catch( std::exception& ex ) {
-            convertException<VT1,VT2>( ex );
-         }
-
-         checkResults<VT1,VT2>();
-
-         try {
-            initTransposeResults();
-            tdres_   *= real( eval( tlhs_ ) * eval( trhs_ ) );
-            tsres_   *= real( eval( tlhs_ ) * eval( trhs_ ) );
-            trefres_ *= real( eval( treflhs_ ) * eval( trefrhs_ ) );
-         }
-         catch( std::exception& ex ) {
-            convertException<TVT1,TVT2>( ex );
-         }
-
-         checkTransposeResults<TVT1,TVT2>();
-      }
+      testCustomOperation( blaze::Real(), "real" );
    }
 #endif
 }
@@ -3685,269 +2917,7 @@ template< typename VT1    // Type of the left-hand side dense vector
         , typename VT2 >  // Type of the right-hand side sparse vector
 void OperationTest<VT1,VT2>::testImagOperation()
 {
-#if BLAZETEST_MATHTEST_TEST_IMAG_OPERATION
-   if( BLAZETEST_MATHTEST_TEST_IMAG_OPERATION > 1 )
-   {
-      //=====================================================================================
-      // Imag multiplication
-      //=====================================================================================
-
-      // Imag multiplication with the given vectors
-      {
-         test_  = "Imag multiplication with the given vectors";
-         error_ = "Failed multiplication operation";
-
-         try {
-            initResults();
-            dres_   = imag( lhs_ * rhs_ );
-            sres_   = imag( lhs_ * rhs_ );
-            refres_ = imag( reflhs_ * refrhs_ );
-         }
-         catch( std::exception& ex ) {
-            convertException<VT1,VT2>( ex );
-         }
-
-         checkResults<VT1,VT2>();
-
-         try {
-            initTransposeResults();
-            tdres_   = imag( tlhs_ * trhs_ );
-            tsres_   = imag( tlhs_ * trhs_ );
-            trefres_ = imag( treflhs_ * trefrhs_ );
-         }
-         catch( std::exception& ex ) {
-            convertException<TVT1,TVT2>( ex );
-         }
-
-         checkTransposeResults<TVT1,TVT2>();
-      }
-
-      // Imag multiplication with evaluated vectors
-      {
-         test_  = "Imag multiplication with evaluated vectors";
-         error_ = "Failed multiplication operation";
-
-         try {
-            initResults();
-            dres_   = imag( eval( lhs_ ) * eval( rhs_ ) );
-            sres_   = imag( eval( lhs_ ) * eval( rhs_ ) );
-            refres_ = imag( eval( reflhs_ ) * eval( refrhs_ ) );
-         }
-         catch( std::exception& ex ) {
-            convertException<VT1,VT2>( ex );
-         }
-
-         checkResults<VT1,VT2>();
-
-         try {
-            initTransposeResults();
-            tdres_   = imag( eval( tlhs_ ) * eval( trhs_ ) );
-            tsres_   = imag( eval( tlhs_ ) * eval( trhs_ ) );
-            trefres_ = imag( eval( treflhs_ ) * eval( trefrhs_ ) );
-         }
-         catch( std::exception& ex ) {
-            convertException<TVT1,TVT2>( ex );
-         }
-
-         checkTransposeResults<TVT1,TVT2>();
-      }
-
-
-      //=====================================================================================
-      // Imag multiplication with addition assignment
-      //=====================================================================================
-
-      // Imag multiplication with addition assignment with the given vectors
-      {
-         test_  = "Imag multiplication with addition assignment with the given vectors";
-         error_ = "Failed addition assignment operation";
-
-         try {
-            initResults();
-            dres_   += imag( lhs_ * rhs_ );
-            sres_   += imag( lhs_ * rhs_ );
-            refres_ += imag( reflhs_ * refrhs_ );
-         }
-         catch( std::exception& ex ) {
-            convertException<VT1,VT2>( ex );
-         }
-
-         checkResults<VT1,VT2>();
-
-         try {
-            initTransposeResults();
-            tdres_   += imag( tlhs_ * trhs_ );
-            tsres_   += imag( tlhs_ * trhs_ );
-            trefres_ += imag( treflhs_ * trefrhs_ );
-         }
-         catch( std::exception& ex ) {
-            convertException<TVT1,TVT2>( ex );
-         }
-
-         checkTransposeResults<TVT1,TVT2>();
-      }
-
-      // Imag multiplication with addition assignment with evaluated vectors
-      {
-         test_  = "Imag multiplication with addition assignment with evaluated vectors";
-         error_ = "Failed addition assignment operation";
-
-         try {
-            initResults();
-            dres_   += imag( eval( lhs_ ) * eval( rhs_ ) );
-            sres_   += imag( eval( lhs_ ) * eval( rhs_ ) );
-            refres_ += imag( eval( reflhs_ ) * eval( refrhs_ ) );
-         }
-         catch( std::exception& ex ) {
-            convertException<VT1,VT2>( ex );
-         }
-
-         checkResults<VT1,VT2>();
-
-         try {
-            initTransposeResults();
-            tdres_   += imag( eval( tlhs_ ) * eval( trhs_ ) );
-            tsres_   += imag( eval( tlhs_ ) * eval( trhs_ ) );
-            trefres_ += imag( eval( treflhs_ ) * eval( trefrhs_ ) );
-         }
-         catch( std::exception& ex ) {
-            convertException<TVT1,TVT2>( ex );
-         }
-
-         checkTransposeResults<TVT1,TVT2>();
-      }
-
-
-      //=====================================================================================
-      // Imag multiplication with subtraction assignment
-      //=====================================================================================
-
-      // Imag multiplication with subtraction assignment with the given vectors
-      {
-         test_  = "Imag multiplication with subtraction assignment with the given types";
-         error_ = "Failed subtraction assignment operation";
-
-         try {
-            initResults();
-            dres_   -= imag( lhs_ * rhs_ );
-            sres_   -= imag( lhs_ * rhs_ );
-            refres_ -= imag( reflhs_ * refrhs_ );
-         }
-         catch( std::exception& ex ) {
-            convertException<VT1,VT2>( ex );
-         }
-
-         checkResults<VT1,VT2>();
-
-         try {
-            initTransposeResults();
-            tdres_   -= imag( tlhs_ * trhs_ );
-            tsres_   -= imag( tlhs_ * trhs_ );
-            trefres_ -= imag( treflhs_ * trefrhs_ );
-         }
-         catch( std::exception& ex ) {
-            convertException<TVT1,TVT2>( ex );
-         }
-
-         checkTransposeResults<TVT1,TVT2>();
-      }
-
-      // Imag multiplication with subtraction assignment with evaluated vectors
-      {
-         test_  = "Imag multiplication with subtraction assignment with evaluated vectors";
-         error_ = "Failed subtraction assignment operation";
-
-         try {
-            initResults();
-            dres_   -= imag( eval( lhs_ ) * eval( rhs_ ) );
-            sres_   -= imag( eval( lhs_ ) * eval( rhs_ ) );
-            refres_ -= imag( eval( reflhs_ ) * eval( refrhs_ ) );
-         }
-         catch( std::exception& ex ) {
-            convertException<VT1,VT2>( ex );
-         }
-
-         checkResults<VT1,VT2>();
-
-         try {
-            initTransposeResults();
-            tdres_   -= imag( eval( tlhs_ ) * eval( trhs_ ) );
-            tsres_   -= imag( eval( tlhs_ ) * eval( trhs_ ) );
-            trefres_ -= imag( eval( treflhs_ ) * eval( trefrhs_ ) );
-         }
-         catch( std::exception& ex ) {
-            convertException<TVT1,TVT2>( ex );
-         }
-
-         checkTransposeResults<TVT1,TVT2>();
-      }
-
-
-      //=====================================================================================
-      // Imag multiplication with multiplication assignment
-      //=====================================================================================
-
-      // Imag multiplication with multiplication assignment with the given vectors
-      {
-         test_  = "Imag multiplication with multiplication assignment with the given vectors";
-         error_ = "Failed multiplication assignment operation";
-
-         try {
-            initResults();
-            dres_   *= imag( lhs_ * rhs_ );
-            sres_   *= imag( lhs_ * rhs_ );
-            refres_ *= imag( reflhs_ * refrhs_ );
-         }
-         catch( std::exception& ex ) {
-            convertException<VT1,VT2>( ex );
-         }
-
-         checkResults<VT1,VT2>();
-
-         try {
-            initTransposeResults();
-            tdres_   *= imag( tlhs_ * trhs_ );
-            tsres_   *= imag( tlhs_ * trhs_ );
-            trefres_ *= imag( treflhs_ * trefrhs_ );
-         }
-         catch( std::exception& ex ) {
-            convertException<TVT1,TVT2>( ex );
-         }
-
-         checkTransposeResults<TVT1,TVT2>();
-      }
-
-      // Imag multiplication with multiplication assignment with evaluated vectors
-      {
-         test_  = "Imag multiplication with multiplication assignment with evaluated vectors";
-         error_ = "Failed multiplication assignment operation";
-
-         try {
-            initResults();
-            dres_   *= imag( eval( lhs_ ) * eval( rhs_ ) );
-            sres_   *= imag( eval( lhs_ ) * eval( rhs_ ) );
-            refres_ *= imag( eval( reflhs_ ) * eval( refrhs_ ) );
-         }
-         catch( std::exception& ex ) {
-            convertException<VT1,VT2>( ex );
-         }
-
-         checkResults<VT1,VT2>();
-
-         try {
-            initTransposeResults();
-            tdres_   *= imag( eval( tlhs_ ) * eval( trhs_ ) );
-            tsres_   *= imag( eval( tlhs_ ) * eval( trhs_ ) );
-            trefres_ *= imag( eval( treflhs_ ) * eval( trefrhs_ ) );
-         }
-         catch( std::exception& ex ) {
-            convertException<TVT1,TVT2>( ex );
-         }
-
-         checkTransposeResults<TVT1,TVT2>();
-      }
-   }
-#endif
+   testCustomOperation( blaze::Imag(), "imag" );
 }
 //*************************************************************************************************
 
@@ -3970,264 +2940,7 @@ void OperationTest<VT1,VT2>::testEvalOperation()
 #if BLAZETEST_MATHTEST_TEST_EVAL_OPERATION
    if( BLAZETEST_MATHTEST_TEST_EVAL_OPERATION > 1 )
    {
-      //=====================================================================================
-      // Eval multiplication
-      //=====================================================================================
-
-      // Eval multiplication with the given vectors
-      {
-         test_  = "Eval multiplication with the given vectors";
-         error_ = "Failed multiplication operation";
-
-         try {
-            initResults();
-            dres_   = eval( lhs_ * rhs_ );
-            sres_   = eval( lhs_ * rhs_ );
-            refres_ = eval( reflhs_ * refrhs_ );
-         }
-         catch( std::exception& ex ) {
-            convertException<VT1,VT2>( ex );
-         }
-
-         checkResults<VT1,VT2>();
-
-         try {
-            initTransposeResults();
-            tdres_   = eval( tlhs_ * trhs_ );
-            tsres_   = eval( tlhs_ * trhs_ );
-            trefres_ = eval( treflhs_ * trefrhs_ );
-         }
-         catch( std::exception& ex ) {
-            convertException<TVT1,TVT2>( ex );
-         }
-
-         checkTransposeResults<TVT1,TVT2>();
-      }
-
-      // Eval multiplication with evaluated vectors
-      {
-         test_  = "Eval multiplication with evaluated vectors";
-         error_ = "Failed multiplication operation";
-
-         try {
-            initResults();
-            dres_   = eval( eval( lhs_ ) * eval( rhs_ ) );
-            sres_   = eval( eval( lhs_ ) * eval( rhs_ ) );
-            refres_ = eval( eval( reflhs_ ) * eval( refrhs_ ) );
-         }
-         catch( std::exception& ex ) {
-            convertException<VT1,VT2>( ex );
-         }
-
-         checkResults<VT1,VT2>();
-
-         try {
-            initTransposeResults();
-            tdres_   = eval( eval( tlhs_ ) * eval( trhs_ ) );
-            tsres_   = eval( eval( tlhs_ ) * eval( trhs_ ) );
-            trefres_ = eval( eval( treflhs_ ) * eval( trefrhs_ ) );
-         }
-         catch( std::exception& ex ) {
-            convertException<TVT1,TVT2>( ex );
-         }
-
-         checkTransposeResults<TVT1,TVT2>();
-      }
-
-
-      //=====================================================================================
-      // Eval multiplication with addition assignment
-      //=====================================================================================
-
-      // Eval multiplication with addition assignment with the given vectors
-      {
-         test_  = "Eval multiplication with addition assignment with the given vectors";
-         error_ = "Failed addition assignment operation";
-
-         try {
-            initResults();
-            dres_   += eval( lhs_ * rhs_ );
-            sres_   += eval( lhs_ * rhs_ );
-            refres_ += eval( reflhs_ * refrhs_ );
-         }
-         catch( std::exception& ex ) {
-            convertException<VT1,VT2>( ex );
-         }
-
-         checkResults<VT1,VT2>();
-
-         try {
-            initTransposeResults();
-            tdres_   += eval( tlhs_ * trhs_ );
-            tsres_   += eval( tlhs_ * trhs_ );
-            trefres_ += eval( treflhs_ * trefrhs_ );
-         }
-         catch( std::exception& ex ) {
-            convertException<TVT1,TVT2>( ex );
-         }
-
-         checkTransposeResults<TVT1,TVT2>();
-      }
-
-      // Eval multiplication with addition assignment with evaluated vectors
-      {
-         test_  = "Eval multiplication with addition assignment with evaluated vectors";
-         error_ = "Failed addition assignment operation";
-
-         try {
-            initResults();
-            dres_   += eval( eval( lhs_ ) * eval( rhs_ ) );
-            sres_   += eval( eval( lhs_ ) * eval( rhs_ ) );
-            refres_ += eval( eval( reflhs_ ) * eval( refrhs_ ) );
-         }
-         catch( std::exception& ex ) {
-            convertException<VT1,VT2>( ex );
-         }
-
-         checkResults<VT1,VT2>();
-
-         try {
-            initTransposeResults();
-            tdres_   += eval( eval( tlhs_ ) * eval( trhs_ ) );
-            tsres_   += eval( eval( tlhs_ ) * eval( trhs_ ) );
-            trefres_ += eval( eval( treflhs_ ) * eval( trefrhs_ ) );
-         }
-         catch( std::exception& ex ) {
-            convertException<TVT1,TVT2>( ex );
-         }
-
-         checkTransposeResults<TVT1,TVT2>();
-      }
-
-
-      //=====================================================================================
-      // Eval multiplication with subtraction assignment
-      //=====================================================================================
-
-      // Eval multiplication with subtraction assignment with the given vectors
-      {
-         test_  = "Eval multiplication with subtraction assignment with the given types";
-         error_ = "Failed subtraction assignment operation";
-
-         try {
-            initResults();
-            dres_   -= eval( lhs_ * rhs_ );
-            sres_   -= eval( lhs_ * rhs_ );
-            refres_ -= eval( reflhs_ * refrhs_ );
-         }
-         catch( std::exception& ex ) {
-            convertException<VT1,VT2>( ex );
-         }
-
-         checkResults<VT1,VT2>();
-
-         try {
-            initTransposeResults();
-            tdres_   -= eval( tlhs_ * trhs_ );
-            tsres_   -= eval( tlhs_ * trhs_ );
-            trefres_ -= eval( treflhs_ * trefrhs_ );
-         }
-         catch( std::exception& ex ) {
-            convertException<TVT1,TVT2>( ex );
-         }
-
-         checkTransposeResults<TVT1,TVT2>();
-      }
-
-      // Eval multiplication with subtraction assignment with evaluated vectors
-      {
-         test_  = "Eval multiplication with subtraction assignment with evaluated vectors";
-         error_ = "Failed subtraction assignment operation";
-
-         try {
-            initResults();
-            dres_   -= eval( eval( lhs_ ) * eval( rhs_ ) );
-            sres_   -= eval( eval( lhs_ ) * eval( rhs_ ) );
-            refres_ -= eval( eval( reflhs_ ) * eval( refrhs_ ) );
-         }
-         catch( std::exception& ex ) {
-            convertException<VT1,VT2>( ex );
-         }
-
-         checkResults<VT1,VT2>();
-
-         try {
-            initTransposeResults();
-            tdres_   -= eval( eval( tlhs_ ) * eval( trhs_ ) );
-            tsres_   -= eval( eval( tlhs_ ) * eval( trhs_ ) );
-            trefres_ -= eval( eval( treflhs_ ) * eval( trefrhs_ ) );
-         }
-         catch( std::exception& ex ) {
-            convertException<TVT1,TVT2>( ex );
-         }
-
-         checkTransposeResults<TVT1,TVT2>();
-      }
-
-
-      //=====================================================================================
-      // Eval multiplication with multiplication assignment
-      //=====================================================================================
-
-      // Eval multiplication with multiplication assignment with the given vectors
-      {
-         test_  = "Eval multiplication with multiplication assignment with the given vectors";
-         error_ = "Failed multiplication assignment operation";
-
-         try {
-            initResults();
-            dres_   *= eval( lhs_ * rhs_ );
-            sres_   *= eval( lhs_ * rhs_ );
-            refres_ *= eval( reflhs_ * refrhs_ );
-         }
-         catch( std::exception& ex ) {
-            convertException<VT1,VT2>( ex );
-         }
-
-         checkResults<VT1,VT2>();
-
-         try {
-            initTransposeResults();
-            tdres_   *= eval( tlhs_ * trhs_ );
-            tsres_   *= eval( tlhs_ * trhs_ );
-            trefres_ *= eval( treflhs_ * trefrhs_ );
-         }
-         catch( std::exception& ex ) {
-            convertException<TVT1,TVT2>( ex );
-         }
-
-         checkTransposeResults<TVT1,TVT2>();
-      }
-
-      // Eval multiplication with multiplication assignment with evaluated vectors
-      {
-         test_  = "Eval multiplication with multiplication assignment with evaluated vectors";
-         error_ = "Failed multiplication assignment operation";
-
-         try {
-            initResults();
-            dres_   *= eval( eval( lhs_ ) * eval( rhs_ ) );
-            sres_   *= eval( eval( lhs_ ) * eval( rhs_ ) );
-            refres_ *= eval( eval( reflhs_ ) * eval( refrhs_ ) );
-         }
-         catch( std::exception& ex ) {
-            convertException<VT1,VT2>( ex );
-         }
-
-         checkResults<VT1,VT2>();
-
-         try {
-            initTransposeResults();
-            tdres_   *= eval( eval( tlhs_ ) * eval( trhs_ ) );
-            tsres_   *= eval( eval( tlhs_ ) * eval( trhs_ ) );
-            trefres_ *= eval( eval( treflhs_ ) * eval( trefrhs_ ) );
-         }
-         catch( std::exception& ex ) {
-            convertException<TVT1,TVT2>( ex );
-         }
-
-         checkTransposeResults<TVT1,TVT2>();
-      }
+      testCustomOperation( blaze::Eval(), "eval" );
    }
 #endif
 }
@@ -4252,264 +2965,7 @@ void OperationTest<VT1,VT2>::testSerialOperation()
 #if BLAZETEST_MATHTEST_TEST_SERIAL_OPERATION
    if( BLAZETEST_MATHTEST_TEST_SERIAL_OPERATION > 1 )
    {
-      //=====================================================================================
-      // Serial multiplication
-      //=====================================================================================
-
-      // Serial multiplication with the given vectors
-      {
-         test_  = "Serial multiplication with the given vectors";
-         error_ = "Failed multiplication operation";
-
-         try {
-            initResults();
-            dres_   = serial( lhs_ * rhs_ );
-            sres_   = serial( lhs_ * rhs_ );
-            refres_ = serial( reflhs_ * refrhs_ );
-         }
-         catch( std::exception& ex ) {
-            convertException<VT1,VT2>( ex );
-         }
-
-         checkResults<VT1,VT2>();
-
-         try {
-            initTransposeResults();
-            tdres_   = serial( tlhs_ * trhs_ );
-            tsres_   = serial( tlhs_ * trhs_ );
-            trefres_ = serial( treflhs_ * trefrhs_ );
-         }
-         catch( std::exception& ex ) {
-            convertException<TVT1,TVT2>( ex );
-         }
-
-         checkTransposeResults<TVT1,TVT2>();
-      }
-
-      // Serial multiplication with evaluated vectors
-      {
-         test_  = "Serial multiplication with evaluated vectors";
-         error_ = "Failed multiplication operation";
-
-         try {
-            initResults();
-            dres_   = serial( eval( lhs_ ) * eval( rhs_ ) );
-            sres_   = serial( eval( lhs_ ) * eval( rhs_ ) );
-            refres_ = serial( eval( reflhs_ ) * eval( refrhs_ ) );
-         }
-         catch( std::exception& ex ) {
-            convertException<VT1,VT2>( ex );
-         }
-
-         checkResults<VT1,VT2>();
-
-         try {
-            initTransposeResults();
-            tdres_   = serial( eval( tlhs_ ) * eval( trhs_ ) );
-            tsres_   = serial( eval( tlhs_ ) * eval( trhs_ ) );
-            trefres_ = serial( eval( treflhs_ ) * eval( trefrhs_ ) );
-         }
-         catch( std::exception& ex ) {
-            convertException<TVT1,TVT2>( ex );
-         }
-
-         checkTransposeResults<TVT1,TVT2>();
-      }
-
-
-      //=====================================================================================
-      // Serial multiplication with addition assignment
-      //=====================================================================================
-
-      // Serial multiplication with addition assignment with the given vectors
-      {
-         test_  = "Serial multiplication with addition assignment with the given vectors";
-         error_ = "Failed addition assignment operation";
-
-         try {
-            initResults();
-            dres_   += serial( lhs_ * rhs_ );
-            sres_   += serial( lhs_ * rhs_ );
-            refres_ += serial( reflhs_ * refrhs_ );
-         }
-         catch( std::exception& ex ) {
-            convertException<VT1,VT2>( ex );
-         }
-
-         checkResults<VT1,VT2>();
-
-         try {
-            initTransposeResults();
-            tdres_   += serial( tlhs_ * trhs_ );
-            tsres_   += serial( tlhs_ * trhs_ );
-            trefres_ += serial( treflhs_ * trefrhs_ );
-         }
-         catch( std::exception& ex ) {
-            convertException<TVT1,TVT2>( ex );
-         }
-
-         checkTransposeResults<TVT1,TVT2>();
-      }
-
-      // Serial multiplication with addition assignment with evaluated vectors
-      {
-         test_  = "Serial multiplication with addition assignment with evaluated vectors";
-         error_ = "Failed addition assignment operation";
-
-         try {
-            initResults();
-            dres_   += serial( eval( lhs_ ) * eval( rhs_ ) );
-            sres_   += serial( eval( lhs_ ) * eval( rhs_ ) );
-            refres_ += serial( eval( reflhs_ ) * eval( refrhs_ ) );
-         }
-         catch( std::exception& ex ) {
-            convertException<VT1,VT2>( ex );
-         }
-
-         checkResults<VT1,VT2>();
-
-         try {
-            initTransposeResults();
-            tdres_   += serial( eval( tlhs_ ) * eval( trhs_ ) );
-            tsres_   += serial( eval( tlhs_ ) * eval( trhs_ ) );
-            trefres_ += serial( eval( treflhs_ ) * eval( trefrhs_ ) );
-         }
-         catch( std::exception& ex ) {
-            convertException<TVT1,TVT2>( ex );
-         }
-
-         checkTransposeResults<TVT1,TVT2>();
-      }
-
-
-      //=====================================================================================
-      // Serial multiplication with subtraction assignment
-      //=====================================================================================
-
-      // Serial multiplication with subtraction assignment with the given vectors
-      {
-         test_  = "Serial multiplication with subtraction assignment with the given types";
-         error_ = "Failed subtraction assignment operation";
-
-         try {
-            initResults();
-            dres_   -= serial( lhs_ * rhs_ );
-            sres_   -= serial( lhs_ * rhs_ );
-            refres_ -= serial( reflhs_ * refrhs_ );
-         }
-         catch( std::exception& ex ) {
-            convertException<VT1,VT2>( ex );
-         }
-
-         checkResults<VT1,VT2>();
-
-         try {
-            initTransposeResults();
-            tdres_   -= serial( tlhs_ * trhs_ );
-            tsres_   -= serial( tlhs_ * trhs_ );
-            trefres_ -= serial( treflhs_ * trefrhs_ );
-         }
-         catch( std::exception& ex ) {
-            convertException<TVT1,TVT2>( ex );
-         }
-
-         checkTransposeResults<TVT1,TVT2>();
-      }
-
-      // Serial multiplication with subtraction assignment with evaluated vectors
-      {
-         test_  = "Serial multiplication with subtraction assignment with evaluated vectors";
-         error_ = "Failed subtraction assignment operation";
-
-         try {
-            initResults();
-            dres_   -= serial( eval( lhs_ ) * eval( rhs_ ) );
-            sres_   -= serial( eval( lhs_ ) * eval( rhs_ ) );
-            refres_ -= serial( eval( reflhs_ ) * eval( refrhs_ ) );
-         }
-         catch( std::exception& ex ) {
-            convertException<VT1,VT2>( ex );
-         }
-
-         checkResults<VT1,VT2>();
-
-         try {
-            initTransposeResults();
-            tdres_   -= serial( eval( tlhs_ ) * eval( trhs_ ) );
-            tsres_   -= serial( eval( tlhs_ ) * eval( trhs_ ) );
-            trefres_ -= serial( eval( treflhs_ ) * eval( trefrhs_ ) );
-         }
-         catch( std::exception& ex ) {
-            convertException<TVT1,TVT2>( ex );
-         }
-
-         checkTransposeResults<TVT1,TVT2>();
-      }
-
-
-      //=====================================================================================
-      // Serial multiplication with multiplication assignment
-      //=====================================================================================
-
-      // Serial multiplication with multiplication assignment with the given vectors
-      {
-         test_  = "Serial multiplication with multiplication assignment with the given vectors";
-         error_ = "Failed multiplication assignment operation";
-
-         try {
-            initResults();
-            dres_   *= serial( lhs_ * rhs_ );
-            sres_   *= serial( lhs_ * rhs_ );
-            refres_ *= serial( reflhs_ * refrhs_ );
-         }
-         catch( std::exception& ex ) {
-            convertException<VT1,VT2>( ex );
-         }
-
-         checkResults<VT1,VT2>();
-
-         try {
-            initTransposeResults();
-            tdres_   *= serial( tlhs_ * trhs_ );
-            tsres_   *= serial( tlhs_ * trhs_ );
-            trefres_ *= serial( treflhs_ * trefrhs_ );
-         }
-         catch( std::exception& ex ) {
-            convertException<TVT1,TVT2>( ex );
-         }
-
-         checkTransposeResults<TVT1,TVT2>();
-      }
-
-      // Serial multiplication with multiplication assignment with evaluated vectors
-      {
-         test_  = "Serial multiplication with multiplication assignment with evaluated vectors";
-         error_ = "Failed multiplication assignment operation";
-
-         try {
-            initResults();
-            dres_   *= serial( eval( lhs_ ) * eval( rhs_ ) );
-            sres_   *= serial( eval( lhs_ ) * eval( rhs_ ) );
-            refres_ *= serial( eval( reflhs_ ) * eval( refrhs_ ) );
-         }
-         catch( std::exception& ex ) {
-            convertException<VT1,VT2>( ex );
-         }
-
-         checkResults<VT1,VT2>();
-
-         try {
-            initTransposeResults();
-            tdres_   *= serial( eval( tlhs_ ) * eval( trhs_ ) );
-            tsres_   *= serial( eval( tlhs_ ) * eval( trhs_ ) );
-            trefres_ *= serial( eval( treflhs_ ) * eval( trefrhs_ ) );
-         }
-         catch( std::exception& ex ) {
-            convertException<TVT1,TVT2>( ex );
-         }
-
-         checkTransposeResults<TVT1,TVT2>();
-      }
+      testCustomOperation( blaze::Serial(), "serial" );
    }
 #endif
 }
@@ -4845,6 +3301,286 @@ void OperationTest<VT1,VT2>::testSubvectorOperation()
       }
    }
 #endif
+}
+//*************************************************************************************************
+
+
+//*************************************************************************************************
+/*!\brief Testing the customized dense vector/sparse vector multiplication.
+//
+// \param op The custom operation to be tested.
+// \param name The human-readable name of the operation.
+// \return void
+// \exception std::runtime_error Multiplication error detected.
+//
+// This function tests the vector multiplication with plain assignment, addition assignment,
+// subtraction assignment, and multiplication assignment in combination with a custom operation.
+// In case any error resulting from the multiplication or the subsequent assignment is detected,
+// a \a std::runtime_error exception is thrown.
+*/
+template< typename VT1    // Type of the left-hand side dense vector
+        , typename VT2 >  // Type of the right-hand side sparse vector
+template< typename OP >   // Type of the custom operation
+void OperationTest<VT1,VT2>::testCustomOperation( OP op, const std::string& name )
+{
+   //=====================================================================================
+   // Customized multiplication
+   //=====================================================================================
+
+   // Customized multiplication with the given vectors
+   {
+      test_  = "Customized multiplication with the given vectors (" + name + ")";
+      error_ = "Failed multiplication operation";
+
+      try {
+         initResults();
+         dres_   = op( lhs_ * rhs_ );
+         sres_   = op( lhs_ * rhs_ );
+         refres_ = op( reflhs_ * refrhs_ );
+      }
+      catch( std::exception& ex ) {
+         convertException<VT1,VT2>( ex );
+      }
+
+      checkResults<VT1,VT2>();
+
+      try {
+         initTransposeResults();
+         tdres_   = op( tlhs_ * trhs_ );
+         tsres_   = op( tlhs_ * trhs_ );
+         trefres_ = op( treflhs_ * trefrhs_ );
+      }
+      catch( std::exception& ex ) {
+         convertException<TVT1,TVT2>( ex );
+      }
+
+      checkTransposeResults<TVT1,TVT2>();
+   }
+
+   // Customized multiplication with evaluated vectors
+   {
+      test_  = "Customized multiplication with evaluated vectors (" + name + ")";
+      error_ = "Failed multiplication operation";
+
+      try {
+         initResults();
+         dres_   = op( eval( lhs_ ) * eval( rhs_ ) );
+         sres_   = op( eval( lhs_ ) * eval( rhs_ ) );
+         refres_ = op( eval( reflhs_ ) * eval( refrhs_ ) );
+      }
+      catch( std::exception& ex ) {
+         convertException<VT1,VT2>( ex );
+      }
+
+      checkResults<VT1,VT2>();
+
+      try {
+         initTransposeResults();
+         tdres_   = op( eval( tlhs_ ) * eval( trhs_ ) );
+         tsres_   = op( eval( tlhs_ ) * eval( trhs_ ) );
+         trefres_ = op( eval( treflhs_ ) * eval( trefrhs_ ) );
+      }
+      catch( std::exception& ex ) {
+         convertException<TVT1,TVT2>( ex );
+      }
+
+      checkTransposeResults<TVT1,TVT2>();
+   }
+
+
+   //=====================================================================================
+   // Customized multiplication with addition assignment
+   //=====================================================================================
+
+   // Customized multiplication with addition assignment with the given vectors
+   {
+      test_  = "Customized multiplication with addition assignment with the given vectors (" + name + ")";
+      error_ = "Failed addition assignment operation";
+
+      try {
+         initResults();
+         dres_   += op( lhs_ * rhs_ );
+         sres_   += op( lhs_ * rhs_ );
+         refres_ += op( reflhs_ * refrhs_ );
+      }
+      catch( std::exception& ex ) {
+         convertException<VT1,VT2>( ex );
+      }
+
+      checkResults<VT1,VT2>();
+
+      try {
+         initTransposeResults();
+         tdres_   += op( tlhs_ * trhs_ );
+         tsres_   += op( tlhs_ * trhs_ );
+         trefres_ += op( treflhs_ * trefrhs_ );
+      }
+      catch( std::exception& ex ) {
+         convertException<TVT1,TVT2>( ex );
+      }
+
+      checkTransposeResults<TVT1,TVT2>();
+   }
+
+   // Customized multiplication with addition assignment with evaluated vectors
+   {
+      test_  = "Customized multiplication with addition assignment with evaluated vectors (" + name + ")";
+      error_ = "Failed addition assignment operation";
+
+      try {
+         initResults();
+         dres_   += op( eval( lhs_ ) * eval( rhs_ ) );
+         sres_   += op( eval( lhs_ ) * eval( rhs_ ) );
+         refres_ += op( eval( reflhs_ ) * eval( refrhs_ ) );
+      }
+      catch( std::exception& ex ) {
+         convertException<VT1,VT2>( ex );
+      }
+
+      checkResults<VT1,VT2>();
+
+      try {
+         initTransposeResults();
+         tdres_   += op( eval( tlhs_ ) * eval( trhs_ ) );
+         tsres_   += op( eval( tlhs_ ) * eval( trhs_ ) );
+         trefres_ += op( eval( treflhs_ ) * eval( trefrhs_ ) );
+      }
+      catch( std::exception& ex ) {
+         convertException<TVT1,TVT2>( ex );
+      }
+
+      checkTransposeResults<TVT1,TVT2>();
+   }
+
+
+   //=====================================================================================
+   // Customized multiplication with subtraction assignment
+   //=====================================================================================
+
+   // Customized multiplication with subtraction assignment with the given vectors
+   {
+      test_  = "Customized multiplication with subtraction assignment with the given vectors (" + name + ")";
+      error_ = "Failed subtraction assignment operation";
+
+      try {
+         initResults();
+         dres_   -= op( lhs_ * rhs_ );
+         sres_   -= op( lhs_ * rhs_ );
+         refres_ -= op( reflhs_ * refrhs_ );
+      }
+      catch( std::exception& ex ) {
+         convertException<VT1,VT2>( ex );
+      }
+
+      checkResults<VT1,VT2>();
+
+      try {
+         initTransposeResults();
+         tdres_   -= op( tlhs_ * trhs_ );
+         tsres_   -= op( tlhs_ * trhs_ );
+         trefres_ -= op( treflhs_ * trefrhs_ );
+      }
+      catch( std::exception& ex ) {
+         convertException<TVT1,TVT2>( ex );
+      }
+
+      checkTransposeResults<TVT1,TVT2>();
+   }
+
+   // Customized multiplication with subtraction assignment with evaluated vectors
+   {
+      test_  = "Customized multiplication with subtraction assignment with evaluated vectors (" + name + ")";
+      error_ = "Failed subtraction assignment operation";
+
+      try {
+         initResults();
+         dres_   -= op( eval( lhs_ ) * eval( rhs_ ) );
+         sres_   -= op( eval( lhs_ ) * eval( rhs_ ) );
+         refres_ -= op( eval( reflhs_ ) * eval( refrhs_ ) );
+      }
+      catch( std::exception& ex ) {
+         convertException<VT1,VT2>( ex );
+      }
+
+      checkResults<VT1,VT2>();
+
+      try {
+         initTransposeResults();
+         tdres_   -= op( eval( tlhs_ ) * eval( trhs_ ) );
+         tsres_   -= op( eval( tlhs_ ) * eval( trhs_ ) );
+         trefres_ -= op( eval( treflhs_ ) * eval( trefrhs_ ) );
+      }
+      catch( std::exception& ex ) {
+         convertException<TVT1,TVT2>( ex );
+      }
+
+      checkTransposeResults<TVT1,TVT2>();
+   }
+
+
+   //=====================================================================================
+   // Customized multiplication with multiplication assignment
+   //=====================================================================================
+
+   // Customized multiplication with multiplication assignment with the given vectors
+   {
+      test_  = "Customized multiplication with multiplication assignment with the given vectors (" + name + ")";
+      error_ = "Failed multiplication assignment operation";
+
+      try {
+         initResults();
+         dres_   *= op( lhs_ * rhs_ );
+         sres_   *= op( lhs_ * rhs_ );
+         refres_ *= op( reflhs_ * refrhs_ );
+      }
+      catch( std::exception& ex ) {
+         convertException<VT1,VT2>( ex );
+      }
+
+      checkResults<VT1,VT2>();
+
+      try {
+         initTransposeResults();
+         tdres_   *= op( tlhs_ * trhs_ );
+         tsres_   *= op( tlhs_ * trhs_ );
+         trefres_ *= op( treflhs_ * trefrhs_ );
+      }
+      catch( std::exception& ex ) {
+         convertException<TVT1,TVT2>( ex );
+      }
+
+      checkTransposeResults<TVT1,TVT2>();
+   }
+
+   // Customized multiplication with multiplication assignment with evaluated vectors
+   {
+      test_  = "Customized multiplication with multiplication assignment with evaluated vectors (" + name + ")";
+      error_ = "Failed multiplication assignment operation";
+
+      try {
+         initResults();
+         dres_   *= op( eval( lhs_ ) * eval( rhs_ ) );
+         sres_   *= op( eval( lhs_ ) * eval( rhs_ ) );
+         refres_ *= op( eval( reflhs_ ) * eval( refrhs_ ) );
+      }
+      catch( std::exception& ex ) {
+         convertException<VT1,VT2>( ex );
+      }
+
+      checkResults<VT1,VT2>();
+
+      try {
+         initTransposeResults();
+         tdres_   *= op( eval( tlhs_ ) * eval( trhs_ ) );
+         tsres_   *= op( eval( tlhs_ ) * eval( trhs_ ) );
+         trefres_ *= op( eval( treflhs_ ) * eval( trefrhs_ ) );
+      }
+      catch( std::exception& ex ) {
+         convertException<TVT1,TVT2>( ex );
+      }
+
+      checkTransposeResults<TVT1,TVT2>();
+   }
 }
 //*************************************************************************************************
 

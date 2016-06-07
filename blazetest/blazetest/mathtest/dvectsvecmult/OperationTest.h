@@ -55,6 +55,7 @@
 #include <blaze/math/constraints/TransposeFlag.h>
 #include <blaze/math/constraints/VecTVecMultExpr.h>
 #include <blaze/math/DynamicVector.h>
+#include <blaze/math/Functors.h>
 #include <blaze/math/StaticVector.h>
 #include <blaze/math/traits/MultExprTrait.h>
 #include <blaze/math/traits/MultTrait.h>
@@ -149,9 +150,9 @@ class OperationTest
                           void testNegatedOperation  ();
    template< typename T > void testScaledOperation   ( T scalar );
                           void testTransOperation    ();
+                          void testCTransOperation   ();
                           void testAbsOperation      ();
                           void testConjOperation     ();
-                          void testCTransOperation   ();
                           void testRealOperation     ();
                           void testImagOperation     ();
                           void testEvalOperation     ();
@@ -159,6 +160,8 @@ class OperationTest
                           void testSubmatrixOperation();
                           void testRowOperation      ();
                           void testColumnOperation   ();
+
+   template< typename OP > void testCustomOperation( OP op, const std::string& name );
    //@}
    //**********************************************************************************************
 
@@ -309,9 +312,9 @@ OperationTest<VT1,VT2>::OperationTest( const Creator<VT1>& creator1, const Creat
    testScaledOperation( 2.0 );
    testScaledOperation( Scalar( 2 ) );
    testTransOperation();
+   testCTransOperation();
    testAbsOperation();
    testConjOperation();
-   testCTransOperation();
    testRealOperation();
    testImagOperation();
    testEvalOperation();
@@ -1550,318 +1553,6 @@ void OperationTest<VT1,VT2>::testTransOperation()
 
 
 //*************************************************************************************************
-/*!\brief Testing the abs dense vector/sparse vector outer product.
-//
-// \return void
-// \exception std::runtime_error Outer product error detected.
-//
-// This function tests the abs outer product with plain assignment, addition assignment,
-// and subtraction assignment. In case any error resulting from the outer product or the
-// subsequent assignment is detected, a \a std::runtime_error exception is thrown.
-*/
-template< typename VT1    // Type of the left-hand side dense vector
-        , typename VT2 >  // Type of the right-hand side sparse vector
-void OperationTest<VT1,VT2>::testAbsOperation()
-{
-#if BLAZETEST_MATHTEST_TEST_ABS_OPERATION
-   if( BLAZETEST_MATHTEST_TEST_ABS_OPERATION > 1 )
-   {
-      //=====================================================================================
-      // Abs outer product
-      //=====================================================================================
-
-      // Abs outer product with the given vectors
-      {
-         test_  = "Abs outer product with the given vectors";
-         error_ = "Failed outer product operation";
-
-         try {
-            initResults();
-            dres_   = abs( lhs_ * rhs_ );
-            odres_  = abs( lhs_ * rhs_ );
-            sres_   = abs( lhs_ * rhs_ );
-            osres_  = abs( lhs_ * rhs_ );
-            refres_ = abs( reflhs_ * refrhs_ );
-         }
-         catch( std::exception& ex ) {
-            convertException( ex );
-         }
-
-         checkResults();
-      }
-
-      // Abs outer product with evaluated vectors
-      {
-         test_  = "Abs outer product with evaluated vectors";
-         error_ = "Failed outer product operation";
-
-         try {
-            initResults();
-            dres_   = abs( eval( lhs_ ) * eval( rhs_ ) );
-            odres_  = abs( eval( lhs_ ) * eval( rhs_ ) );
-            sres_   = abs( eval( lhs_ ) * eval( rhs_ ) );
-            osres_  = abs( eval( lhs_ ) * eval( rhs_ ) );
-            refres_ = abs( eval( reflhs_ ) * eval( refrhs_ ) );
-         }
-         catch( std::exception& ex ) {
-            convertException( ex );
-         }
-
-         checkResults();
-      }
-
-
-      //=====================================================================================
-      // Abs outer product with addition assignment
-      //=====================================================================================
-
-      // Abs outer product with addition assignment with the given vectors
-      {
-         test_  = "Abs outer product with addition assignment with the given vectors";
-         error_ = "Failed addition assignment operation";
-
-         try {
-            initResults();
-            dres_   += abs( lhs_ * rhs_ );
-            odres_  += abs( lhs_ * rhs_ );
-            sres_   += abs( lhs_ * rhs_ );
-            osres_  += abs( lhs_ * rhs_ );
-            refres_ += abs( reflhs_ * refrhs_ );
-         }
-         catch( std::exception& ex ) {
-            convertException( ex );
-         }
-
-         checkResults();
-      }
-
-      // Abs outer product with addition assignment with evaluated vectors
-      {
-         test_  = "Abs outer product with addition assignment with evaluated vectors";
-         error_ = "Failed addition assignment operation";
-
-         try {
-            initResults();
-            dres_   += abs( eval( lhs_ ) * eval( rhs_ ) );
-            odres_  += abs( eval( lhs_ ) * eval( rhs_ ) );
-            sres_   += abs( eval( lhs_ ) * eval( rhs_ ) );
-            osres_  += abs( eval( lhs_ ) * eval( rhs_ ) );
-            refres_ += abs( eval( reflhs_ ) * eval( refrhs_ ) );
-         }
-         catch( std::exception& ex ) {
-            convertException( ex );
-         }
-
-         checkResults();
-      }
-
-
-      //=====================================================================================
-      // Abs outer product with subtraction assignment
-      //=====================================================================================
-
-      // Abs outer product with subtraction assignment with the given vectors
-      {
-         test_  = "Abs outer product with subtraction assignment with the given vectors";
-         error_ = "Failed subtraction assignment operation";
-
-         try {
-            initResults();
-            dres_   -= abs( lhs_ * rhs_ );
-            odres_  -= abs( lhs_ * rhs_ );
-            sres_   -= abs( lhs_ * rhs_ );
-            osres_  -= abs( lhs_ * rhs_ );
-            refres_ -= abs( reflhs_ * refrhs_ );
-         }
-         catch( std::exception& ex ) {
-            convertException( ex );
-         }
-
-         checkResults();
-      }
-
-      // Abs outer product with subtraction assignment with evaluated vectors
-      {
-         test_  = "Abs outer product with subtraction assignment with evaluated vectors";
-         error_ = "Failed subtraction assignment operation";
-
-         try {
-            initResults();
-            dres_   -= abs( eval( lhs_ ) * eval( rhs_ ) );
-            odres_  -= abs( eval( lhs_ ) * eval( rhs_ ) );
-            sres_   -= abs( eval( lhs_ ) * eval( rhs_ ) );
-            osres_  -= abs( eval( lhs_ ) * eval( rhs_ ) );
-            refres_ -= abs( eval( reflhs_ ) * eval( refrhs_ ) );
-         }
-         catch( std::exception& ex ) {
-            convertException( ex );
-         }
-
-         checkResults();
-      }
-   }
-#endif
-}
-//*************************************************************************************************
-
-
-//*************************************************************************************************
-/*!\brief Testing the conjugate dense vector/sparse vector outer product.
-//
-// \return void
-// \exception std::runtime_error Outer product error detected.
-//
-// This function tests the conjugate outer product with plain assignment, addition assignment,
-// and subtraction assignment. In case any error resulting from the outer product or the
-// subsequent assignment is detected, a \a std::runtime_error exception is thrown.
-*/
-template< typename VT1    // Type of the left-hand side dense vector
-        , typename VT2 >  // Type of the right-hand side sparse vector
-void OperationTest<VT1,VT2>::testConjOperation()
-{
-#if BLAZETEST_MATHTEST_TEST_CONJ_OPERATION
-   if( BLAZETEST_MATHTEST_TEST_CONJ_OPERATION > 1 )
-   {
-      //=====================================================================================
-      // Conjugate outer product
-      //=====================================================================================
-
-      // Conjugate outer product with the given vectors
-      {
-         test_  = "Conjugate outer product with the given vectors";
-         error_ = "Failed outer product operation";
-
-         try {
-            initResults();
-            dres_   = conj( lhs_ * rhs_ );
-            odres_  = conj( lhs_ * rhs_ );
-            sres_   = conj( lhs_ * rhs_ );
-            osres_  = conj( lhs_ * rhs_ );
-            refres_ = conj( reflhs_ * refrhs_ );
-         }
-         catch( std::exception& ex ) {
-            convertException( ex );
-         }
-
-         checkResults();
-      }
-
-      // Conjugate outer product with evaluated vectors
-      {
-         test_  = "Conjugate outer product with evaluated vectors";
-         error_ = "Failed outer product operation";
-
-         try {
-            initResults();
-            dres_   = conj( eval( lhs_ ) * eval( rhs_ ) );
-            odres_  = conj( eval( lhs_ ) * eval( rhs_ ) );
-            sres_   = conj( eval( lhs_ ) * eval( rhs_ ) );
-            osres_  = conj( eval( lhs_ ) * eval( rhs_ ) );
-            refres_ = conj( eval( reflhs_ ) * eval( refrhs_ ) );
-         }
-         catch( std::exception& ex ) {
-            convertException( ex );
-         }
-
-         checkResults();
-      }
-
-
-      //=====================================================================================
-      // Conjugate outer product with addition assignment
-      //=====================================================================================
-
-      // Conjugate outer product with addition assignment with the given vectors
-      {
-         test_  = "Conjugate outer product with addition assignment with the given vectors";
-         error_ = "Failed addition assignment operation";
-
-         try {
-            initResults();
-            dres_   += conj( lhs_ * rhs_ );
-            odres_  += conj( lhs_ * rhs_ );
-            sres_   += conj( lhs_ * rhs_ );
-            osres_  += conj( lhs_ * rhs_ );
-            refres_ += conj( reflhs_ * refrhs_ );
-         }
-         catch( std::exception& ex ) {
-            convertException( ex );
-         }
-
-         checkResults();
-      }
-
-      // Conjugate outer product with addition assignment with evaluated vectors
-      {
-         test_  = "Conjugate outer product with addition assignment with evaluated vectors";
-         error_ = "Failed addition assignment operation";
-
-         try {
-            initResults();
-            dres_   += conj( eval( lhs_ ) * eval( rhs_ ) );
-            odres_  += conj( eval( lhs_ ) * eval( rhs_ ) );
-            sres_   += conj( eval( lhs_ ) * eval( rhs_ ) );
-            osres_  += conj( eval( lhs_ ) * eval( rhs_ ) );
-            refres_ += conj( eval( reflhs_ ) * eval( refrhs_ ) );
-         }
-         catch( std::exception& ex ) {
-            convertException( ex );
-         }
-
-         checkResults();
-      }
-
-
-      //=====================================================================================
-      // Conjugate outer product with subtraction assignment
-      //=====================================================================================
-
-      // Conjugate outer product with subtraction assignment with the given vectors
-      {
-         test_  = "Conjugate outer product with subtraction assignment with the given vectors";
-         error_ = "Failed subtraction assignment operation";
-
-         try {
-            initResults();
-            dres_   -= conj( lhs_ * rhs_ );
-            odres_  -= conj( lhs_ * rhs_ );
-            sres_   -= conj( lhs_ * rhs_ );
-            osres_  -= conj( lhs_ * rhs_ );
-            refres_ -= conj( reflhs_ * refrhs_ );
-         }
-         catch( std::exception& ex ) {
-            convertException( ex );
-         }
-
-         checkResults();
-      }
-
-      // Conjugate outer product with subtraction assignment with evaluated vectors
-      {
-         test_  = "Conjugate outer product with subtraction assignment with evaluated vectors";
-         error_ = "Failed subtraction assignment operation";
-
-         try {
-            initResults();
-            dres_   -= conj( eval( lhs_ ) * eval( rhs_ ) );
-            odres_  -= conj( eval( lhs_ ) * eval( rhs_ ) );
-            sres_   -= conj( eval( lhs_ ) * eval( rhs_ ) );
-            osres_  -= conj( eval( lhs_ ) * eval( rhs_ ) );
-            refres_ -= conj( eval( reflhs_ ) * eval( refrhs_ ) );
-         }
-         catch( std::exception& ex ) {
-            convertException( ex );
-         }
-
-         checkResults();
-      }
-   }
-#endif
-}
-//*************************************************************************************************
-
-
-//*************************************************************************************************
 /*!\brief Testing the conjugate transpose dense vector/sparse vector outer product.
 //
 // \return void
@@ -1928,6 +1619,54 @@ void OperationTest<VT1,VT2>::testCTransOperation()
 
 
 //*************************************************************************************************
+/*!\brief Testing the abs dense vector/sparse vector outer product.
+//
+// \return void
+// \exception std::runtime_error Outer product error detected.
+//
+// This function tests the abs outer product with plain assignment, addition assignment,
+// and subtraction assignment. In case any error resulting from the outer product or the
+// subsequent assignment is detected, a \a std::runtime_error exception is thrown.
+*/
+template< typename VT1    // Type of the left-hand side dense vector
+        , typename VT2 >  // Type of the right-hand side sparse vector
+void OperationTest<VT1,VT2>::testAbsOperation()
+{
+#if BLAZETEST_MATHTEST_TEST_ABS_OPERATION
+   if( BLAZETEST_MATHTEST_TEST_ABS_OPERATION > 1 )
+   {
+      testCustomOperation( blaze::Abs(), "abs" );
+   }
+#endif
+}
+//*************************************************************************************************
+
+
+//*************************************************************************************************
+/*!\brief Testing the conjugate dense vector/sparse vector outer product.
+//
+// \return void
+// \exception std::runtime_error Outer product error detected.
+//
+// This function tests the conjugate outer product with plain assignment, addition assignment,
+// and subtraction assignment. In case any error resulting from the outer product or the
+// subsequent assignment is detected, a \a std::runtime_error exception is thrown.
+*/
+template< typename VT1    // Type of the left-hand side dense vector
+        , typename VT2 >  // Type of the right-hand side sparse vector
+void OperationTest<VT1,VT2>::testConjOperation()
+{
+#if BLAZETEST_MATHTEST_TEST_CONJ_OPERATION
+   if( BLAZETEST_MATHTEST_TEST_CONJ_OPERATION > 1 )
+   {
+      testCustomOperation( blaze::Conj(), "conj" );
+   }
+#endif
+}
+//*************************************************************************************************
+
+
+//*************************************************************************************************
 /*!\brief Testing the \a real dense vector/sparse vector outer product.
 //
 // \return void
@@ -1944,139 +1683,7 @@ void OperationTest<VT1,VT2>::testRealOperation()
 #if BLAZETEST_MATHTEST_TEST_REAL_OPERATION
    if( BLAZETEST_MATHTEST_TEST_REAL_OPERATION > 1 )
    {
-      //=====================================================================================
-      // Real outer product
-      //=====================================================================================
-
-      // Real outer product with the given vectors
-      {
-         test_  = "Real outer product with the given vectors";
-         error_ = "Failed outer product operation";
-
-         try {
-            initResults();
-            dres_   = real( lhs_ * rhs_ );
-            odres_  = real( lhs_ * rhs_ );
-            sres_   = real( lhs_ * rhs_ );
-            osres_  = real( lhs_ * rhs_ );
-            refres_ = real( reflhs_ * refrhs_ );
-         }
-         catch( std::exception& ex ) {
-            convertException( ex );
-         }
-
-         checkResults();
-      }
-
-      // Real outer product with evaluated vectors
-      {
-         test_  = "Real outer product with evaluated vectors";
-         error_ = "Failed outer product operation";
-
-         try {
-            initResults();
-            dres_   = real( eval( lhs_ ) * eval( rhs_ ) );
-            odres_  = real( eval( lhs_ ) * eval( rhs_ ) );
-            sres_   = real( eval( lhs_ ) * eval( rhs_ ) );
-            osres_  = real( eval( lhs_ ) * eval( rhs_ ) );
-            refres_ = real( eval( reflhs_ ) * eval( refrhs_ ) );
-         }
-         catch( std::exception& ex ) {
-            convertException( ex );
-         }
-
-         checkResults();
-      }
-
-
-      //=====================================================================================
-      // Real outer product with addition assignment
-      //=====================================================================================
-
-      // Real outer product with addition assignment with the given vectors
-      {
-         test_  = "Real outer product with addition assignment with the given vectors";
-         error_ = "Failed addition assignment operation";
-
-         try {
-            initResults();
-            dres_   += real( lhs_ * rhs_ );
-            odres_  += real( lhs_ * rhs_ );
-            sres_   += real( lhs_ * rhs_ );
-            osres_  += real( lhs_ * rhs_ );
-            refres_ += real( reflhs_ * refrhs_ );
-         }
-         catch( std::exception& ex ) {
-            convertException( ex );
-         }
-
-         checkResults();
-      }
-
-      // Real outer product with addition assignment with evaluated vectors
-      {
-         test_  = "Real outer product with addition assignment with evaluated vectors";
-         error_ = "Failed addition assignment operation";
-
-         try {
-            initResults();
-            dres_   += real( eval( lhs_ ) * eval( rhs_ ) );
-            odres_  += real( eval( lhs_ ) * eval( rhs_ ) );
-            sres_   += real( eval( lhs_ ) * eval( rhs_ ) );
-            osres_  += real( eval( lhs_ ) * eval( rhs_ ) );
-            refres_ += real( eval( reflhs_ ) * eval( refrhs_ ) );
-         }
-         catch( std::exception& ex ) {
-            convertException( ex );
-         }
-
-         checkResults();
-      }
-
-
-      //=====================================================================================
-      // Real outer product with subtraction assignment
-      //=====================================================================================
-
-      // Real outer product with subtraction assignment with the given vectors
-      {
-         test_  = "Real outer product with subtraction assignment with the given vectors";
-         error_ = "Failed subtraction assignment operation";
-
-         try {
-            initResults();
-            dres_   -= real( lhs_ * rhs_ );
-            odres_  -= real( lhs_ * rhs_ );
-            sres_   -= real( lhs_ * rhs_ );
-            osres_  -= real( lhs_ * rhs_ );
-            refres_ -= real( reflhs_ * refrhs_ );
-         }
-         catch( std::exception& ex ) {
-            convertException( ex );
-         }
-
-         checkResults();
-      }
-
-      // Real outer product with subtraction assignment with evaluated vectors
-      {
-         test_  = "Real outer product with subtraction assignment with evaluated vectors";
-         error_ = "Failed subtraction assignment operation";
-
-         try {
-            initResults();
-            dres_   -= real( eval( lhs_ ) * eval( rhs_ ) );
-            odres_  -= real( eval( lhs_ ) * eval( rhs_ ) );
-            sres_   -= real( eval( lhs_ ) * eval( rhs_ ) );
-            osres_  -= real( eval( lhs_ ) * eval( rhs_ ) );
-            refres_ -= real( eval( reflhs_ ) * eval( refrhs_ ) );
-         }
-         catch( std::exception& ex ) {
-            convertException( ex );
-         }
-
-         checkResults();
-      }
+      testCustomOperation( blaze::Real(), "real" );
    }
 #endif
 }
@@ -2100,139 +1707,7 @@ void OperationTest<VT1,VT2>::testImagOperation()
 #if BLAZETEST_MATHTEST_TEST_IMAG_OPERATION
    if( BLAZETEST_MATHTEST_TEST_IMAG_OPERATION > 1 )
    {
-      //=====================================================================================
-      // Imag outer product
-      //=====================================================================================
-
-      // Imag outer product with the given vectors
-      {
-         test_  = "Imag outer product with the given vectors";
-         error_ = "Failed outer product operation";
-
-         try {
-            initResults();
-            dres_   = imag( lhs_ * rhs_ );
-            odres_  = imag( lhs_ * rhs_ );
-            sres_   = imag( lhs_ * rhs_ );
-            osres_  = imag( lhs_ * rhs_ );
-            refres_ = imag( reflhs_ * refrhs_ );
-         }
-         catch( std::exception& ex ) {
-            convertException( ex );
-         }
-
-         checkResults();
-      }
-
-      // Imag outer product with evaluated vectors
-      {
-         test_  = "Imag outer product with evaluated vectors";
-         error_ = "Failed outer product operation";
-
-         try {
-            initResults();
-            dres_   = imag( eval( lhs_ ) * eval( rhs_ ) );
-            odres_  = imag( eval( lhs_ ) * eval( rhs_ ) );
-            sres_   = imag( eval( lhs_ ) * eval( rhs_ ) );
-            osres_  = imag( eval( lhs_ ) * eval( rhs_ ) );
-            refres_ = imag( eval( reflhs_ ) * eval( refrhs_ ) );
-         }
-         catch( std::exception& ex ) {
-            convertException( ex );
-         }
-
-         checkResults();
-      }
-
-
-      //=====================================================================================
-      // Imag outer product with addition assignment
-      //=====================================================================================
-
-      // Imag outer product with addition assignment with the given vectors
-      {
-         test_  = "Imag outer product with addition assignment with the given vectors";
-         error_ = "Failed addition assignment operation";
-
-         try {
-            initResults();
-            dres_   += imag( lhs_ * rhs_ );
-            odres_  += imag( lhs_ * rhs_ );
-            sres_   += imag( lhs_ * rhs_ );
-            osres_  += imag( lhs_ * rhs_ );
-            refres_ += imag( reflhs_ * refrhs_ );
-         }
-         catch( std::exception& ex ) {
-            convertException( ex );
-         }
-
-         checkResults();
-      }
-
-      // Imag outer product with addition assignment with evaluated vectors
-      {
-         test_  = "Imag outer product with addition assignment with evaluated vectors";
-         error_ = "Failed addition assignment operation";
-
-         try {
-            initResults();
-            dres_   += imag( eval( lhs_ ) * eval( rhs_ ) );
-            odres_  += imag( eval( lhs_ ) * eval( rhs_ ) );
-            sres_   += imag( eval( lhs_ ) * eval( rhs_ ) );
-            osres_  += imag( eval( lhs_ ) * eval( rhs_ ) );
-            refres_ += imag( eval( reflhs_ ) * eval( refrhs_ ) );
-         }
-         catch( std::exception& ex ) {
-            convertException( ex );
-         }
-
-         checkResults();
-      }
-
-
-      //=====================================================================================
-      // Imag outer product with subtraction assignment
-      //=====================================================================================
-
-      // Imag outer product with subtraction assignment with the given vectors
-      {
-         test_  = "Imag outer product with subtraction assignment with the given vectors";
-         error_ = "Failed subtraction assignment operation";
-
-         try {
-            initResults();
-            dres_   -= imag( lhs_ * rhs_ );
-            odres_  -= imag( lhs_ * rhs_ );
-            sres_   -= imag( lhs_ * rhs_ );
-            osres_  -= imag( lhs_ * rhs_ );
-            refres_ -= imag( reflhs_ * refrhs_ );
-         }
-         catch( std::exception& ex ) {
-            convertException( ex );
-         }
-
-         checkResults();
-      }
-
-      // Imag outer product with subtraction assignment with evaluated vectors
-      {
-         test_  = "Imag outer product with subtraction assignment with evaluated vectors";
-         error_ = "Failed subtraction assignment operation";
-
-         try {
-            initResults();
-            dres_   -= imag( eval( lhs_ ) * eval( rhs_ ) );
-            odres_  -= imag( eval( lhs_ ) * eval( rhs_ ) );
-            sres_   -= imag( eval( lhs_ ) * eval( rhs_ ) );
-            osres_  -= imag( eval( lhs_ ) * eval( rhs_ ) );
-            refres_ -= imag( eval( reflhs_ ) * eval( refrhs_ ) );
-         }
-         catch( std::exception& ex ) {
-            convertException( ex );
-         }
-
-         checkResults();
-      }
+      testCustomOperation( blaze::Imag(), "imag" );
    }
 #endif
 }
@@ -2256,139 +1731,7 @@ void OperationTest<VT1,VT2>::testEvalOperation()
 #if BLAZETEST_MATHTEST_TEST_EVAL_OPERATION
    if( BLAZETEST_MATHTEST_TEST_EVAL_OPERATION > 1 )
    {
-      //=====================================================================================
-      // Eval outer product
-      //=====================================================================================
-
-      // Eval outer product with the given vectors
-      {
-         test_  = "Eval outer product with the given vectors";
-         error_ = "Failed outer product operation";
-
-         try {
-            initResults();
-            dres_   = eval( lhs_ * rhs_ );
-            odres_  = eval( lhs_ * rhs_ );
-            sres_   = eval( lhs_ * rhs_ );
-            osres_  = eval( lhs_ * rhs_ );
-            refres_ = eval( reflhs_ * refrhs_ );
-         }
-         catch( std::exception& ex ) {
-            convertException( ex );
-         }
-
-         checkResults();
-      }
-
-      // Eval outer product with evaluated vectors
-      {
-         test_  = "Eval outer product with evaluated vectors";
-         error_ = "Failed outer product operation";
-
-         try {
-            initResults();
-            dres_   = eval( eval( lhs_ ) * eval( rhs_ ) );
-            odres_  = eval( eval( lhs_ ) * eval( rhs_ ) );
-            sres_   = eval( eval( lhs_ ) * eval( rhs_ ) );
-            osres_  = eval( eval( lhs_ ) * eval( rhs_ ) );
-            refres_ = eval( eval( reflhs_ ) * eval( refrhs_ ) );
-         }
-         catch( std::exception& ex ) {
-            convertException( ex );
-         }
-
-         checkResults();
-      }
-
-
-      //=====================================================================================
-      // Eval outer product with addition assignment
-      //=====================================================================================
-
-      // Eval outer product with addition assignment with the given vectors
-      {
-         test_  = "Eval outer product with addition assignment with the given vectors";
-         error_ = "Failed addition assignment operation";
-
-         try {
-            initResults();
-            dres_   += eval( lhs_ * rhs_ );
-            odres_  += eval( lhs_ * rhs_ );
-            sres_   += eval( lhs_ * rhs_ );
-            osres_  += eval( lhs_ * rhs_ );
-            refres_ += eval( reflhs_ * refrhs_ );
-         }
-         catch( std::exception& ex ) {
-            convertException( ex );
-         }
-
-         checkResults();
-      }
-
-      // Eval outer product with addition assignment with evaluated vectors
-      {
-         test_  = "Eval outer product with addition assignment with evaluated vectors";
-         error_ = "Failed addition assignment operation";
-
-         try {
-            initResults();
-            dres_   += eval( eval( lhs_ ) * eval( rhs_ ) );
-            odres_  += eval( eval( lhs_ ) * eval( rhs_ ) );
-            sres_   += eval( eval( lhs_ ) * eval( rhs_ ) );
-            osres_  += eval( eval( lhs_ ) * eval( rhs_ ) );
-            refres_ += eval( eval( reflhs_ ) * eval( refrhs_ ) );
-         }
-         catch( std::exception& ex ) {
-            convertException( ex );
-         }
-
-         checkResults();
-      }
-
-
-      //=====================================================================================
-      // Eval outer product with subtraction assignment
-      //=====================================================================================
-
-      // Eval outer product with subtraction assignment with the given vectors
-      {
-         test_  = "Eval outer product with subtraction assignment with the given vectors";
-         error_ = "Failed subtraction assignment operation";
-
-         try {
-            initResults();
-            dres_   -= eval( lhs_ * rhs_ );
-            odres_  -= eval( lhs_ * rhs_ );
-            sres_   -= eval( lhs_ * rhs_ );
-            osres_  -= eval( lhs_ * rhs_ );
-            refres_ -= eval( reflhs_ * refrhs_ );
-         }
-         catch( std::exception& ex ) {
-            convertException( ex );
-         }
-
-         checkResults();
-      }
-
-      // Eval outer product with subtraction assignment with evaluated vectors
-      {
-         test_  = "Eval outer product with subtraction assignment with evaluated vectors";
-         error_ = "Failed subtraction assignment operation";
-
-         try {
-            initResults();
-            dres_   -= eval( eval( lhs_ ) * eval( rhs_ ) );
-            odres_  -= eval( eval( lhs_ ) * eval( rhs_ ) );
-            sres_   -= eval( eval( lhs_ ) * eval( rhs_ ) );
-            osres_  -= eval( eval( lhs_ ) * eval( rhs_ ) );
-            refres_ -= eval( eval( reflhs_ ) * eval( refrhs_ ) );
-         }
-         catch( std::exception& ex ) {
-            convertException( ex );
-         }
-
-         checkResults();
-      }
+      testCustomOperation( blaze::Eval(), "eval" );
    }
 #endif
 }
@@ -2412,139 +1755,7 @@ void OperationTest<VT1,VT2>::testSerialOperation()
 #if BLAZETEST_MATHTEST_TEST_SERIAL_OPERATION
    if( BLAZETEST_MATHTEST_TEST_SERIAL_OPERATION > 1 )
    {
-      //=====================================================================================
-      // Eval outer product
-      //=====================================================================================
-
-      // Eval outer product with the given vectors
-      {
-         test_  = "Eval outer product with the given vectors";
-         error_ = "Failed outer product operation";
-
-         try {
-            initResults();
-            dres_   = serial( lhs_ * rhs_ );
-            odres_  = serial( lhs_ * rhs_ );
-            sres_   = serial( lhs_ * rhs_ );
-            osres_  = serial( lhs_ * rhs_ );
-            refres_ = serial( reflhs_ * refrhs_ );
-         }
-         catch( std::exception& ex ) {
-            convertException( ex );
-         }
-
-         checkResults();
-      }
-
-      // Eval outer product with evaluated vectors
-      {
-         test_  = "Eval outer product with evaluated vectors";
-         error_ = "Failed outer product operation";
-
-         try {
-            initResults();
-            dres_   = serial( eval( lhs_ ) * eval( rhs_ ) );
-            odres_  = serial( eval( lhs_ ) * eval( rhs_ ) );
-            sres_   = serial( eval( lhs_ ) * eval( rhs_ ) );
-            osres_  = serial( eval( lhs_ ) * eval( rhs_ ) );
-            refres_ = serial( eval( reflhs_ ) * eval( refrhs_ ) );
-         }
-         catch( std::exception& ex ) {
-            convertException( ex );
-         }
-
-         checkResults();
-      }
-
-
-      //=====================================================================================
-      // Eval outer product with addition assignment
-      //=====================================================================================
-
-      // Eval outer product with addition assignment with the given vectors
-      {
-         test_  = "Eval outer product with addition assignment with the given vectors";
-         error_ = "Failed addition assignment operation";
-
-         try {
-            initResults();
-            dres_   += serial( lhs_ * rhs_ );
-            odres_  += serial( lhs_ * rhs_ );
-            sres_   += serial( lhs_ * rhs_ );
-            osres_  += serial( lhs_ * rhs_ );
-            refres_ += serial( reflhs_ * refrhs_ );
-         }
-         catch( std::exception& ex ) {
-            convertException( ex );
-         }
-
-         checkResults();
-      }
-
-      // Eval outer product with addition assignment with evaluated vectors
-      {
-         test_  = "Eval outer product with addition assignment with evaluated vectors";
-         error_ = "Failed addition assignment operation";
-
-         try {
-            initResults();
-            dres_   += serial( eval( lhs_ ) * eval( rhs_ ) );
-            odres_  += serial( eval( lhs_ ) * eval( rhs_ ) );
-            sres_   += serial( eval( lhs_ ) * eval( rhs_ ) );
-            osres_  += serial( eval( lhs_ ) * eval( rhs_ ) );
-            refres_ += serial( eval( reflhs_ ) * eval( refrhs_ ) );
-         }
-         catch( std::exception& ex ) {
-            convertException( ex );
-         }
-
-         checkResults();
-      }
-
-
-      //=====================================================================================
-      // Eval outer product with subtraction assignment
-      //=====================================================================================
-
-      // Eval outer product with subtraction assignment with the given vectors
-      {
-         test_  = "Eval outer product with subtraction assignment with the given vectors";
-         error_ = "Failed subtraction assignment operation";
-
-         try {
-            initResults();
-            dres_   -= serial( lhs_ * rhs_ );
-            odres_  -= serial( lhs_ * rhs_ );
-            sres_   -= serial( lhs_ * rhs_ );
-            osres_  -= serial( lhs_ * rhs_ );
-            refres_ -= serial( reflhs_ * refrhs_ );
-         }
-         catch( std::exception& ex ) {
-            convertException( ex );
-         }
-
-         checkResults();
-      }
-
-      // Eval outer product with subtraction assignment with evaluated vectors
-      {
-         test_  = "Eval outer product with subtraction assignment with evaluated vectors";
-         error_ = "Failed subtraction assignment operation";
-
-         try {
-            initResults();
-            dres_   -= serial( eval( lhs_ ) * eval( rhs_ ) );
-            odres_  -= serial( eval( lhs_ ) * eval( rhs_ ) );
-            sres_   -= serial( eval( lhs_ ) * eval( rhs_ ) );
-            osres_  -= serial( eval( lhs_ ) * eval( rhs_ ) );
-            refres_ -= serial( eval( reflhs_ ) * eval( refrhs_ ) );
-         }
-         catch( std::exception& ex ) {
-            convertException( ex );
-         }
-
-         checkResults();
-      }
+      testCustomOperation( blaze::Serial(), "serial" );
    }
 #endif
 }
@@ -3079,6 +2290,161 @@ void OperationTest<VT1,VT2>::testColumnOperation()
       }
    }
 #endif
+}
+//*************************************************************************************************
+
+
+//*************************************************************************************************
+/*!\brief Testing the customized dense vector/sparse vector outer product.
+//
+// \param op The custom operation to be tested.
+// \param name The human-readable name of the operation.
+// \return void
+// \exception std::runtime_error Outer product error detected.
+//
+// This function tests the outer product with plain assignment, addition assignment, and
+// subtraction assignment in combination with a custom operation. In case any error resulting
+// from the outer product or the subsequent assignment is detected, a \a std::runtime_error
+// exception is thrown.
+*/
+template< typename VT1    // Type of the left-hand side dense vector
+        , typename VT2 >  // Type of the right-hand side sparse vector
+template< typename OP >   // Type of the custom operation
+void OperationTest<VT1,VT2>::testCustomOperation( OP op, const std::string& name )
+{
+   //=====================================================================================
+   // Customized outer product
+   //=====================================================================================
+
+   // Customized outer product with the given vectors
+   {
+      test_  = "Customized outer product with the given vectors (" + name + ")";
+      error_ = "Failed outer product operation";
+
+      try {
+         initResults();
+         dres_   = op( lhs_ * rhs_ );
+         odres_  = op( lhs_ * rhs_ );
+         sres_   = op( lhs_ * rhs_ );
+         osres_  = op( lhs_ * rhs_ );
+         refres_ = op( reflhs_ * refrhs_ );
+      }
+      catch( std::exception& ex ) {
+         convertException( ex );
+      }
+
+      checkResults();
+   }
+
+   // Customized outer product with evaluated vectors
+   {
+      test_  = "Customized outer product with evaluated vectors (" + name + ")";
+      error_ = "Failed outer product operation";
+
+      try {
+         initResults();
+         dres_   = op( eval( lhs_ ) * eval( rhs_ ) );
+         odres_  = op( eval( lhs_ ) * eval( rhs_ ) );
+         sres_   = op( eval( lhs_ ) * eval( rhs_ ) );
+         osres_  = op( eval( lhs_ ) * eval( rhs_ ) );
+         refres_ = op( eval( reflhs_ ) * eval( refrhs_ ) );
+      }
+      catch( std::exception& ex ) {
+         convertException( ex );
+      }
+
+      checkResults();
+   }
+
+
+   //=====================================================================================
+   // Customized outer product with addition assignment
+   //=====================================================================================
+
+   // Customized outer product with addition assignment with the given vectors
+   {
+      test_  = "Customized outer product with addition assignment with the given vectors (" + name + ")";
+      error_ = "Failed addition assignment operation";
+
+      try {
+         initResults();
+         dres_   += op( lhs_ * rhs_ );
+         odres_  += op( lhs_ * rhs_ );
+         sres_   += op( lhs_ * rhs_ );
+         osres_  += op( lhs_ * rhs_ );
+         refres_ += op( reflhs_ * refrhs_ );
+      }
+      catch( std::exception& ex ) {
+         convertException( ex );
+      }
+
+      checkResults();
+   }
+
+   // Customized outer product with addition assignment with evaluated vectors
+   {
+      test_  = "Customized outer product with addition assignment with evaluated vectors (" + name + ")";
+      error_ = "Failed addition assignment operation";
+
+      try {
+         initResults();
+         dres_   += op( eval( lhs_ ) * eval( rhs_ ) );
+         odres_  += op( eval( lhs_ ) * eval( rhs_ ) );
+         sres_   += op( eval( lhs_ ) * eval( rhs_ ) );
+         osres_  += op( eval( lhs_ ) * eval( rhs_ ) );
+         refres_ += op( eval( reflhs_ ) * eval( refrhs_ ) );
+      }
+      catch( std::exception& ex ) {
+         convertException( ex );
+      }
+
+      checkResults();
+   }
+
+
+   //=====================================================================================
+   // Customized outer product with subtraction assignment
+   //=====================================================================================
+
+   // Customized outer product with subtraction assignment with the given vectors
+   {
+      test_  = "Customized outer product with subtraction assignment with the given vectors (" + name + ")";
+      error_ = "Failed subtraction assignment operation";
+
+      try {
+         initResults();
+         dres_   -= op( lhs_ * rhs_ );
+         odres_  -= op( lhs_ * rhs_ );
+         sres_   -= op( lhs_ * rhs_ );
+         osres_  -= op( lhs_ * rhs_ );
+         refres_ -= op( reflhs_ * refrhs_ );
+      }
+      catch( std::exception& ex ) {
+         convertException( ex );
+      }
+
+      checkResults();
+   }
+
+   // Customized outer product with subtraction assignment with evaluated vectors
+   {
+      test_  = "Customized outer product with subtraction assignment with evaluated vectors (" + name + ")";
+      error_ = "Failed subtraction assignment operation";
+
+      try {
+         initResults();
+         dres_   -= op( eval( lhs_ ) * eval( rhs_ ) );
+         odres_  -= op( eval( lhs_ ) * eval( rhs_ ) );
+         sres_   -= op( eval( lhs_ ) * eval( rhs_ ) );
+         osres_  -= op( eval( lhs_ ) * eval( rhs_ ) );
+         refres_ -= op( eval( reflhs_ ) * eval( refrhs_ ) );
+      }
+      catch( std::exception& ex ) {
+         convertException( ex );
+      }
+
+      checkResults();
+   }
 }
 //*************************************************************************************************
 
