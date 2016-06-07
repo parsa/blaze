@@ -63,6 +63,7 @@
 #include <blaze/math/traits/ColumnTrait.h>
 #include <blaze/math/traits/DerestrictTrait.h>
 #include <blaze/math/traits/DivTrait.h>
+#include <blaze/math/traits/ForEachTrait.h>
 #include <blaze/math/traits/MathTrait.h>
 #include <blaze/math/traits/MultTrait.h>
 #include <blaze/math/traits/RowTrait.h>
@@ -2089,6 +2090,109 @@ template< typename MT, bool SO, bool DF, typename T >
 struct DivTrait< UpperMatrix<MT,SO,DF>, T, EnableIf_< IsNumeric<T> > >
 {
    using Type = UpperMatrix< DivTrait_<MT,T> >;
+};
+/*! \endcond */
+//*************************************************************************************************
+
+
+
+
+//=================================================================================================
+//
+//  FOREACHTRAIT SPECIALIZATIONS
+//
+//=================================================================================================
+
+//*************************************************************************************************
+/*! \cond BLAZE_INTERNAL */
+template< typename MT, bool SO, bool DF >
+struct ForEachTrait< UpperMatrix<MT,SO,DF>, Abs >
+{
+   using Type = UpperMatrix< ForEachTrait_<MT,Abs> >;
+};
+
+template< typename MT, bool SO, bool DF >
+struct ForEachTrait< UpperMatrix<MT,SO,DF>, Floor >
+{
+   using Type = UpperMatrix< ForEachTrait_<MT,Floor> >;
+};
+
+template< typename MT, bool SO, bool DF >
+struct ForEachTrait< UpperMatrix<MT,SO,DF>, Ceil >
+{
+   using Type = UpperMatrix< ForEachTrait_<MT,Ceil> >;
+};
+
+template< typename MT, bool SO, bool DF >
+struct ForEachTrait< UpperMatrix<MT,SO,DF>, Conj >
+{
+   using Type = UpperMatrix< ForEachTrait_<MT,Conj> >;
+};
+
+template< typename MT, bool SO, bool DF >
+struct ForEachTrait< UpperMatrix<MT,SO,DF>, Real >
+{
+   using Type = UpperMatrix< ForEachTrait_<MT,Real> >;
+};
+
+template< typename MT, bool SO, bool DF >
+struct ForEachTrait< UpperMatrix<MT,SO,DF>, Imag >
+{
+   using Type = UpperMatrix< ForEachTrait_<MT,Imag> >;
+};
+
+template< typename MT, bool SO, bool DF >
+struct ForEachTrait< UpperMatrix<MT,SO,DF>, Sin >
+{
+   using Type = UpperMatrix< ForEachTrait_<MT,Sin> >;
+};
+
+template< typename MT, bool SO, bool DF >
+struct ForEachTrait< UpperMatrix<MT,SO,DF>, Asin >
+{
+   using Type = UpperMatrix< ForEachTrait_<MT,Asin> >;
+};
+
+template< typename MT, bool SO, bool DF >
+struct ForEachTrait< UpperMatrix<MT,SO,DF>, Sinh >
+{
+   using Type = UpperMatrix< ForEachTrait_<MT,Sinh> >;
+};
+
+template< typename MT, bool SO, bool DF >
+struct ForEachTrait< UpperMatrix<MT,SO,DF>, Asinh >
+{
+   using Type = UpperMatrix< ForEachTrait_<MT,Asinh> >;
+};
+
+template< typename MT, bool SO, bool DF >
+struct ForEachTrait< UpperMatrix<MT,SO,DF>, Tan >
+{
+   using Type = UpperMatrix< ForEachTrait_<MT,Tan> >;
+};
+
+template< typename MT, bool SO, bool DF >
+struct ForEachTrait< UpperMatrix<MT,SO,DF>, Atan >
+{
+   using Type = UpperMatrix< ForEachTrait_<MT,Atan> >;
+};
+
+template< typename MT, bool SO, bool DF >
+struct ForEachTrait< UpperMatrix<MT,SO,DF>, Tanh >
+{
+   using Type = UpperMatrix< ForEachTrait_<MT,Tanh> >;
+};
+
+template< typename MT, bool SO, bool DF >
+struct ForEachTrait< UpperMatrix<MT,SO,DF>, Atanh >
+{
+   using Type = UpperMatrix< ForEachTrait_<MT,Atanh> >;
+};
+
+template< typename MT, bool SO, bool DF >
+struct ForEachTrait< UpperMatrix<MT,SO,DF>, Erf >
+{
+   using Type = UpperMatrix< ForEachTrait_<MT,Erf> >;
 };
 /*! \endcond */
 //*************************************************************************************************
