@@ -57,6 +57,7 @@
 #include <blaze/math/traits/AddTrait.h>
 #include <blaze/math/traits/ColumnTrait.h>
 #include <blaze/math/traits/DivTrait.h>
+#include <blaze/math/traits/ForEachTrait.h>
 #include <blaze/math/traits/MathTrait.h>
 #include <blaze/math/traits/MultTrait.h>
 #include <blaze/math/traits/RowTrait.h>
@@ -1617,6 +1618,181 @@ template< typename MT, bool SO, bool DF, bool NF, typename T >
 struct DivTrait< SymmetricMatrix<MT,SO,DF,NF>, T, EnableIf_< IsNumeric<T> > >
 {
    using Type = SymmetricMatrix< DivTrait_<MT,T> >;
+};
+/*! \endcond */
+//*************************************************************************************************
+
+
+
+
+//=================================================================================================
+//
+//  FOREACHTRAIT SPECIALIZATIONS
+//
+//=================================================================================================
+
+//*************************************************************************************************
+/*! \cond BLAZE_INTERNAL */
+template< typename MT, bool SO, bool DF, bool NF >
+struct ForEachTrait< SymmetricMatrix<MT,SO,DF,NF>, Abs >
+{
+   using Type = SymmetricMatrix< ForEachTrait_<MT,Abs> >;
+};
+
+template< typename MT, bool SO, bool DF, bool NF >
+struct ForEachTrait< SymmetricMatrix<MT,SO,DF,NF>, Floor >
+{
+   using Type = SymmetricMatrix< ForEachTrait_<MT,Floor> >;
+};
+
+template< typename MT, bool SO, bool DF, bool NF >
+struct ForEachTrait< SymmetricMatrix<MT,SO,DF,NF>, Ceil >
+{
+   using Type = SymmetricMatrix< ForEachTrait_<MT,Ceil> >;
+};
+
+template< typename MT, bool SO, bool DF, bool NF >
+struct ForEachTrait< SymmetricMatrix<MT,SO,DF,NF>, Conj >
+{
+   using Type = SymmetricMatrix< ForEachTrait_<MT,Conj> >;
+};
+
+template< typename MT, bool SO, bool DF, bool NF >
+struct ForEachTrait< SymmetricMatrix<MT,SO,DF,NF>, Real >
+{
+   using Type = SymmetricMatrix< ForEachTrait_<MT,Real> >;
+};
+
+template< typename MT, bool SO, bool DF, bool NF >
+struct ForEachTrait< SymmetricMatrix<MT,SO,DF,NF>, Imag >
+{
+   using Type = SymmetricMatrix< ForEachTrait_<MT,Imag> >;
+};
+
+template< typename MT, bool SO, bool DF, bool NF >
+struct ForEachTrait< SymmetricMatrix<MT,SO,DF,NF>, Sqrt >
+{
+   using Type = SymmetricMatrix< ForEachTrait_<MT,InvSqrt> >;
+};
+
+template< typename MT, bool SO, bool DF, bool NF >
+struct ForEachTrait< SymmetricMatrix<MT,SO,DF,NF>, Cbrt >
+{
+   using Type = SymmetricMatrix< ForEachTrait_<MT,Cbrt> >;
+};
+
+template< typename MT, bool SO, bool DF, bool NF >
+struct ForEachTrait< SymmetricMatrix<MT,SO,DF,NF>, InvCbrt >
+{
+   using Type = SymmetricMatrix< ForEachTrait_<MT,InvCbrt> >;
+};
+
+template< typename MT, bool SO, bool DF, bool NF, typename ET >
+struct ForEachTrait< SymmetricMatrix<MT,SO,DF,NF>, Pow<ET> >
+{
+   using Type = SymmetricMatrix< ForEachTrait_< MT, Pow<ET> > >;
+};
+
+template< typename MT, bool SO, bool DF, bool NF >
+struct ForEachTrait< SymmetricMatrix<MT,SO,DF,NF>, Exp >
+{
+   using Type = SymmetricMatrix< ForEachTrait_<MT,Exp> >;
+};
+
+template< typename MT, bool SO, bool DF, bool NF >
+struct ForEachTrait< SymmetricMatrix<MT,SO,DF,NF>, Log >
+{
+   using Type = SymmetricMatrix< ForEachTrait_<MT,Log> >;
+};
+
+template< typename MT, bool SO, bool DF, bool NF >
+struct ForEachTrait< SymmetricMatrix<MT,SO,DF,NF>, Log10 >
+{
+   using Type = SymmetricMatrix< ForEachTrait_<MT,Log10> >;
+};
+
+template< typename MT, bool SO, bool DF, bool NF >
+struct ForEachTrait< SymmetricMatrix<MT,SO,DF,NF>, Sin >
+{
+   using Type = SymmetricMatrix< ForEachTrait_<MT,Sin> >;
+};
+
+template< typename MT, bool SO, bool DF, bool NF >
+struct ForEachTrait< SymmetricMatrix<MT,SO,DF,NF>, Asin >
+{
+   using Type = SymmetricMatrix< ForEachTrait_<MT,Asin> >;
+};
+
+template< typename MT, bool SO, bool DF, bool NF >
+struct ForEachTrait< SymmetricMatrix<MT,SO,DF,NF>, Sinh >
+{
+   using Type = SymmetricMatrix< ForEachTrait_<MT,Sinh> >;
+};
+
+template< typename MT, bool SO, bool DF, bool NF >
+struct ForEachTrait< SymmetricMatrix<MT,SO,DF,NF>, Asinh >
+{
+   using Type = SymmetricMatrix< ForEachTrait_<MT,Asinh> >;
+};
+
+template< typename MT, bool SO, bool DF, bool NF >
+struct ForEachTrait< SymmetricMatrix<MT,SO,DF,NF>, Cos >
+{
+   using Type = SymmetricMatrix< ForEachTrait_<MT,Cos> >;
+};
+
+template< typename MT, bool SO, bool DF, bool NF >
+struct ForEachTrait< SymmetricMatrix<MT,SO,DF,NF>, Acos >
+{
+   using Type = SymmetricMatrix< ForEachTrait_<MT,Acos> >;
+};
+
+template< typename MT, bool SO, bool DF, bool NF >
+struct ForEachTrait< SymmetricMatrix<MT,SO,DF,NF>, Cosh >
+{
+   using Type = SymmetricMatrix< ForEachTrait_<MT,Cosh> >;
+};
+
+template< typename MT, bool SO, bool DF, bool NF >
+struct ForEachTrait< SymmetricMatrix<MT,SO,DF,NF>, Acosh >
+{
+   using Type = SymmetricMatrix< ForEachTrait_<MT,Acosh> >;
+};
+
+template< typename MT, bool SO, bool DF, bool NF >
+struct ForEachTrait< SymmetricMatrix<MT,SO,DF,NF>, Tan >
+{
+   using Type = SymmetricMatrix< ForEachTrait_<MT,Tan> >;
+};
+
+template< typename MT, bool SO, bool DF, bool NF >
+struct ForEachTrait< SymmetricMatrix<MT,SO,DF,NF>, Atan >
+{
+   using Type = SymmetricMatrix< ForEachTrait_<MT,Atan> >;
+};
+
+template< typename MT, bool SO, bool DF, bool NF >
+struct ForEachTrait< SymmetricMatrix<MT,SO,DF,NF>, Tanh >
+{
+   using Type = SymmetricMatrix< ForEachTrait_<MT,Tanh> >;
+};
+
+template< typename MT, bool SO, bool DF, bool NF >
+struct ForEachTrait< SymmetricMatrix<MT,SO,DF,NF>, Atanh >
+{
+   using Type = SymmetricMatrix< ForEachTrait_<MT,Atanh> >;
+};
+
+template< typename MT, bool SO, bool DF, bool NF >
+struct ForEachTrait< SymmetricMatrix<MT,SO,DF,NF>, Erf >
+{
+   using Type = SymmetricMatrix< ForEachTrait_<MT,Erf> >;
+};
+
+template< typename MT, bool SO, bool DF, bool NF >
+struct ForEachTrait< SymmetricMatrix<MT,SO,DF,NF>, Erfc >
+{
+   using Type = SymmetricMatrix< ForEachTrait_<MT,Erfc> >;
 };
 /*! \endcond */
 //*************************************************************************************************
