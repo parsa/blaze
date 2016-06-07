@@ -62,7 +62,15 @@
 #include <blaze/math/typetraits/IsAligned.h>
 #include <blaze/math/typetraits/IsComputation.h>
 #include <blaze/math/typetraits/IsExpression.h>
+#include <blaze/math/typetraits/IsHermitian.h>
+#include <blaze/math/typetraits/IsLower.h>
 #include <blaze/math/typetraits/IsPadded.h>
+#include <blaze/math/typetraits/IsStrictlyLower.h>
+#include <blaze/math/typetraits/IsStrictlyUpper.h>
+#include <blaze/math/typetraits/IsSymmetric.h>
+#include <blaze/math/typetraits/IsUniLower.h>
+#include <blaze/math/typetraits/IsUniUpper.h>
+#include <blaze/math/typetraits/IsUpper.h>
 #include <blaze/math/typetraits/RequiresEvaluation.h>
 #include <blaze/math/typetraits/Rows.h>
 #include <blaze/math/typetraits/UnderlyingNumeric.h>
@@ -79,6 +87,7 @@
 #include <blaze/util/Template.h>
 #include <blaze/util/Types.h>
 #include <blaze/util/typetraits/HasMember.h>
+#include <blaze/util/typetraits/IsBuiltin.h>
 #include <blaze/util/typetraits/IsSame.h>
 
 
@@ -1817,6 +1826,700 @@ struct IsAligned< DMatForEachExpr<MT,OP,SO> >
 template< typename MT, typename OP, bool SO >
 struct IsPadded< DMatForEachExpr<MT,OP,SO> >
    : public BoolConstant< IsPadded<MT>::value >
+{};
+/*! \endcond */
+//*************************************************************************************************
+
+
+
+
+//=================================================================================================
+//
+//  ISSYMMETRIC SPECIALIZATIONS
+//
+//=================================================================================================
+
+//*************************************************************************************************
+/*! \cond BLAZE_INTERNAL */
+template< typename MT, bool SO >
+struct IsSymmetric< DMatForEachExpr<MT,Abs,SO> >
+   : public BoolConstant< IsSymmetric<MT>::value >
+{};
+
+template< typename MT, bool SO >
+struct IsSymmetric< DMatForEachExpr<MT,Floor,SO> >
+   : public BoolConstant< IsSymmetric<MT>::value >
+{};
+
+template< typename MT, bool SO >
+struct IsSymmetric< DMatForEachExpr<MT,Ceil,SO> >
+   : public BoolConstant< IsSymmetric<MT>::value >
+{};
+
+template< typename MT, bool SO >
+struct IsSymmetric< DMatForEachExpr<MT,Conj,SO> >
+   : public BoolConstant< IsSymmetric<MT>::value >
+{};
+
+template< typename MT, bool SO >
+struct IsSymmetric< DMatForEachExpr<MT,Real,SO> >
+   : public BoolConstant< IsSymmetric<MT>::value >
+{};
+
+template< typename MT, bool SO >
+struct IsSymmetric< DMatForEachExpr<MT,Imag,SO> >
+   : public BoolConstant< IsSymmetric<MT>::value >
+{};
+
+template< typename MT, bool SO >
+struct IsSymmetric< DMatForEachExpr<MT,Sqrt,SO> >
+   : public BoolConstant< IsSymmetric<MT>::value >
+{};
+
+template< typename MT, bool SO >
+struct IsSymmetric< DMatForEachExpr<MT,InvSqrt,SO> >
+   : public BoolConstant< IsSymmetric<MT>::value >
+{};
+
+template< typename MT, bool SO >
+struct IsSymmetric< DMatForEachExpr<MT,Cbrt,SO> >
+   : public BoolConstant< IsSymmetric<MT>::value >
+{};
+
+template< typename MT, bool SO >
+struct IsSymmetric< DMatForEachExpr<MT,InvCbrt,SO> >
+   : public BoolConstant< IsSymmetric<MT>::value >
+{};
+
+template< typename MT, typename ET, bool SO >
+struct IsSymmetric< DMatForEachExpr<MT,Pow<ET>,SO> >
+   : public BoolConstant< IsSymmetric<MT>::value >
+{};
+
+template< typename MT, bool SO >
+struct IsSymmetric< DMatForEachExpr<MT,Exp,SO> >
+   : public BoolConstant< IsSymmetric<MT>::value >
+{};
+
+template< typename MT, bool SO >
+struct IsSymmetric< DMatForEachExpr<MT,Log,SO> >
+   : public BoolConstant< IsSymmetric<MT>::value >
+{};
+
+template< typename MT, bool SO >
+struct IsSymmetric< DMatForEachExpr<MT,Log10,SO> >
+   : public BoolConstant< IsSymmetric<MT>::value >
+{};
+
+template< typename MT, bool SO >
+struct IsSymmetric< DMatForEachExpr<MT,Sin,SO> >
+   : public BoolConstant< IsSymmetric<MT>::value >
+{};
+
+template< typename MT, bool SO >
+struct IsSymmetric< DMatForEachExpr<MT,Asin,SO> >
+   : public BoolConstant< IsSymmetric<MT>::value >
+{};
+
+template< typename MT, bool SO >
+struct IsSymmetric< DMatForEachExpr<MT,Sinh,SO> >
+   : public BoolConstant< IsSymmetric<MT>::value >
+{};
+
+template< typename MT, bool SO >
+struct IsSymmetric< DMatForEachExpr<MT,Asinh,SO> >
+   : public BoolConstant< IsSymmetric<MT>::value >
+{};
+
+template< typename MT, bool SO >
+struct IsSymmetric< DMatForEachExpr<MT,Cos,SO> >
+   : public BoolConstant< IsSymmetric<MT>::value >
+{};
+
+template< typename MT, bool SO >
+struct IsSymmetric< DMatForEachExpr<MT,Acos,SO> >
+   : public BoolConstant< IsSymmetric<MT>::value >
+{};
+
+template< typename MT, bool SO >
+struct IsSymmetric< DMatForEachExpr<MT,Cosh,SO> >
+   : public BoolConstant< IsSymmetric<MT>::value >
+{};
+
+template< typename MT, bool SO >
+struct IsSymmetric< DMatForEachExpr<MT,Acosh,SO> >
+   : public BoolConstant< IsSymmetric<MT>::value >
+{};
+
+template< typename MT, bool SO >
+struct IsSymmetric< DMatForEachExpr<MT,Tan,SO> >
+   : public BoolConstant< IsSymmetric<MT>::value >
+{};
+
+template< typename MT, bool SO >
+struct IsSymmetric< DMatForEachExpr<MT,Atan,SO> >
+   : public BoolConstant< IsSymmetric<MT>::value >
+{};
+
+template< typename MT, bool SO >
+struct IsSymmetric< DMatForEachExpr<MT,Tanh,SO> >
+   : public BoolConstant< IsSymmetric<MT>::value >
+{};
+
+template< typename MT, bool SO >
+struct IsSymmetric< DMatForEachExpr<MT,Atanh,SO> >
+   : public BoolConstant< IsSymmetric<MT>::value >
+{};
+
+template< typename MT, bool SO >
+struct IsSymmetric< DMatForEachExpr<MT,Erf,SO> >
+   : public BoolConstant< IsSymmetric<MT>::value >
+{};
+
+template< typename MT, bool SO >
+struct IsSymmetric< DMatForEachExpr<MT,Erfc,SO> >
+   : public BoolConstant< IsSymmetric<MT>::value >
+{};
+/*! \endcond */
+//*************************************************************************************************
+
+
+
+
+//=================================================================================================
+//
+//  ISHERMITIAN SPECIALIZATIONS
+//
+//=================================================================================================
+
+//*************************************************************************************************
+/*! \cond BLAZE_INTERNAL */
+template< typename MT, bool SO >
+struct IsHermitian< DMatForEachExpr<MT,Abs,SO> >
+   : public BoolConstant< IsHermitian<MT>::value >
+{};
+
+template< typename MT, bool SO >
+struct IsHermitian< DMatForEachExpr<MT,Floor,SO> >
+   : public BoolConstant< IsHermitian<MT>::value >
+{};
+
+template< typename MT, bool SO >
+struct IsHermitian< DMatForEachExpr<MT,Ceil,SO> >
+   : public BoolConstant< IsHermitian<MT>::value >
+{};
+
+template< typename MT, bool SO >
+struct IsHermitian< DMatForEachExpr<MT,Conj,SO> >
+   : public BoolConstant< IsHermitian<MT>::value >
+{};
+
+template< typename MT, bool SO >
+struct IsHermitian< DMatForEachExpr<MT,Real,SO> >
+   : public BoolConstant< IsHermitian<MT>::value >
+{};
+
+template< typename MT, bool SO >
+struct IsHermitian< DMatForEachExpr<MT,Imag,SO> >
+   : public BoolConstant< IsBuiltin< ElementType_<MT> >::value >
+{};
+
+template< typename MT, bool SO >
+struct IsHermitian< DMatForEachExpr<MT,Sqrt,SO> >
+   : public BoolConstant< IsHermitian<MT>::value >
+{};
+
+template< typename MT, bool SO >
+struct IsHermitian< DMatForEachExpr<MT,InvSqrt,SO> >
+   : public BoolConstant< IsHermitian<MT>::value >
+{};
+
+template< typename MT, bool SO >
+struct IsHermitian< DMatForEachExpr<MT,Cbrt,SO> >
+   : public BoolConstant< IsHermitian<MT>::value >
+{};
+
+template< typename MT, bool SO >
+struct IsHermitian< DMatForEachExpr<MT,InvCbrt,SO> >
+   : public BoolConstant< IsHermitian<MT>::value >
+{};
+
+template< typename MT, typename ET, bool SO >
+struct IsHermitian< DMatForEachExpr<MT,Pow<ET>,SO> >
+   : public BoolConstant< IsHermitian<MT>::value >
+{};
+
+template< typename MT, bool SO >
+struct IsHermitian< DMatForEachExpr<MT,Exp,SO> >
+   : public BoolConstant< IsHermitian<MT>::value >
+{};
+
+template< typename MT, bool SO >
+struct IsHermitian< DMatForEachExpr<MT,Log,SO> >
+   : public BoolConstant< IsHermitian<MT>::value >
+{};
+
+template< typename MT, bool SO >
+struct IsHermitian< DMatForEachExpr<MT,Log10,SO> >
+   : public BoolConstant< IsHermitian<MT>::value >
+{};
+
+template< typename MT, bool SO >
+struct IsHermitian< DMatForEachExpr<MT,Sin,SO> >
+   : public BoolConstant< IsHermitian<MT>::value >
+{};
+
+template< typename MT, bool SO >
+struct IsHermitian< DMatForEachExpr<MT,Asin,SO> >
+   : public BoolConstant< IsHermitian<MT>::value >
+{};
+
+template< typename MT, bool SO >
+struct IsHermitian< DMatForEachExpr<MT,Sinh,SO> >
+   : public BoolConstant< IsHermitian<MT>::value >
+{};
+
+template< typename MT, bool SO >
+struct IsHermitian< DMatForEachExpr<MT,Asinh,SO> >
+   : public BoolConstant< IsHermitian<MT>::value >
+{};
+
+template< typename MT, bool SO >
+struct IsHermitian< DMatForEachExpr<MT,Cos,SO> >
+   : public BoolConstant< IsHermitian<MT>::value >
+{};
+
+template< typename MT, bool SO >
+struct IsHermitian< DMatForEachExpr<MT,Acos,SO> >
+   : public BoolConstant< IsHermitian<MT>::value >
+{};
+
+template< typename MT, bool SO >
+struct IsHermitian< DMatForEachExpr<MT,Cosh,SO> >
+   : public BoolConstant< IsHermitian<MT>::value >
+{};
+
+template< typename MT, bool SO >
+struct IsHermitian< DMatForEachExpr<MT,Acosh,SO> >
+   : public BoolConstant< IsHermitian<MT>::value >
+{};
+
+template< typename MT, bool SO >
+struct IsHermitian< DMatForEachExpr<MT,Tan,SO> >
+   : public BoolConstant< IsHermitian<MT>::value >
+{};
+
+template< typename MT, bool SO >
+struct IsHermitian< DMatForEachExpr<MT,Atan,SO> >
+   : public BoolConstant< IsHermitian<MT>::value >
+{};
+
+template< typename MT, bool SO >
+struct IsHermitian< DMatForEachExpr<MT,Tanh,SO> >
+   : public BoolConstant< IsHermitian<MT>::value >
+{};
+
+template< typename MT, bool SO >
+struct IsHermitian< DMatForEachExpr<MT,Atanh,SO> >
+   : public BoolConstant< IsHermitian<MT>::value >
+{};
+
+template< typename MT, bool SO >
+struct IsHermitian< DMatForEachExpr<MT,Erf,SO> >
+   : public BoolConstant< IsHermitian<MT>::value >
+{};
+
+template< typename MT, bool SO >
+struct IsHermitian< DMatForEachExpr<MT,Erfc,SO> >
+   : public BoolConstant< IsHermitian<MT>::value >
+{};
+/*! \endcond */
+//*************************************************************************************************
+
+
+
+
+//=================================================================================================
+//
+//  ISLOWER SPECIALIZATIONS
+//
+//=================================================================================================
+
+//*************************************************************************************************
+/*! \cond BLAZE_INTERNAL */
+template< typename MT, bool SO >
+struct IsLower< DMatForEachExpr<MT,Abs,SO> >
+   : public BoolConstant< IsLower<MT>::value >
+{};
+
+template< typename MT, bool SO >
+struct IsLower< DMatForEachExpr<MT,Floor,SO> >
+   : public BoolConstant< IsLower<MT>::value >
+{};
+
+template< typename MT, bool SO >
+struct IsLower< DMatForEachExpr<MT,Ceil,SO> >
+   : public BoolConstant< IsLower<MT>::value >
+{};
+
+template< typename MT, bool SO >
+struct IsLower< DMatForEachExpr<MT,Conj,SO> >
+   : public BoolConstant< IsLower<MT>::value >
+{};
+
+template< typename MT, bool SO >
+struct IsLower< DMatForEachExpr<MT,Real,SO> >
+   : public BoolConstant< IsLower<MT>::value >
+{};
+
+template< typename MT, bool SO >
+struct IsLower< DMatForEachExpr<MT,Imag,SO> >
+   : public BoolConstant< IsLower<MT>::value >
+{};
+
+template< typename MT, bool SO >
+struct IsLower< DMatForEachExpr<MT,Sin,SO> >
+   : public BoolConstant< IsLower<MT>::value >
+{};
+
+template< typename MT, bool SO >
+struct IsLower< DMatForEachExpr<MT,Asin,SO> >
+   : public BoolConstant< IsLower<MT>::value >
+{};
+
+template< typename MT, bool SO >
+struct IsLower< DMatForEachExpr<MT,Sinh,SO> >
+   : public BoolConstant< IsLower<MT>::value >
+{};
+
+template< typename MT, bool SO >
+struct IsLower< DMatForEachExpr<MT,Asinh,SO> >
+   : public BoolConstant< IsLower<MT>::value >
+{};
+
+template< typename MT, bool SO >
+struct IsLower< DMatForEachExpr<MT,Tan,SO> >
+   : public BoolConstant< IsLower<MT>::value >
+{};
+
+template< typename MT, bool SO >
+struct IsLower< DMatForEachExpr<MT,Atan,SO> >
+   : public BoolConstant< IsLower<MT>::value >
+{};
+
+template< typename MT, bool SO >
+struct IsLower< DMatForEachExpr<MT,Tanh,SO> >
+   : public BoolConstant< IsLower<MT>::value >
+{};
+
+template< typename MT, bool SO >
+struct IsLower< DMatForEachExpr<MT,Atanh,SO> >
+   : public BoolConstant< IsLower<MT>::value >
+{};
+
+template< typename MT, bool SO >
+struct IsLower< DMatForEachExpr<MT,Erf,SO> >
+   : public BoolConstant< IsLower<MT>::value >
+{};
+/*! \endcond */
+//*************************************************************************************************
+
+
+
+
+//=================================================================================================
+//
+//  ISUNILOWER SPECIALIZATIONS
+//
+//=================================================================================================
+
+//*************************************************************************************************
+/*! \cond BLAZE_INTERNAL */
+template< typename MT, typename ET, bool SO >
+struct IsUniLower< DMatForEachExpr<MT,Pow<ET>,SO> >
+   : public BoolConstant< IsUniLower<MT>::value >
+{};
+/*! \endcond */
+//*************************************************************************************************
+
+
+
+
+//=================================================================================================
+//
+//  ISSTRICTLYLOWER SPECIALIZATIONS
+//
+//=================================================================================================
+
+//*************************************************************************************************
+/*! \cond BLAZE_INTERNAL */
+template< typename MT, bool SO >
+struct IsStrictlyLower< DMatForEachExpr<MT,Abs,SO> >
+   : public BoolConstant< IsStrictlyLower<MT>::value >
+{};
+
+template< typename MT, bool SO >
+struct IsStrictlyLower< DMatForEachExpr<MT,Floor,SO> >
+   : public BoolConstant< IsStrictlyLower<MT>::value >
+{};
+
+template< typename MT, bool SO >
+struct IsStrictlyLower< DMatForEachExpr<MT,Ceil,SO> >
+   : public BoolConstant< IsStrictlyLower<MT>::value >
+{};
+
+template< typename MT, bool SO >
+struct IsStrictlyLower< DMatForEachExpr<MT,Conj,SO> >
+   : public BoolConstant< IsStrictlyLower<MT>::value >
+{};
+
+template< typename MT, bool SO >
+struct IsStrictlyLower< DMatForEachExpr<MT,Real,SO> >
+   : public BoolConstant< IsStrictlyLower<MT>::value >
+{};
+
+template< typename MT, bool SO >
+struct IsStrictlyLower< DMatForEachExpr<MT,Imag,SO> >
+   : public BoolConstant< IsStrictlyLower<MT>::value >
+{};
+
+template< typename MT, bool SO >
+struct IsStrictlyLower< DMatForEachExpr<MT,Sin,SO> >
+   : public BoolConstant< IsStrictlyLower<MT>::value >
+{};
+
+template< typename MT, bool SO >
+struct IsStrictlyLower< DMatForEachExpr<MT,Asin,SO> >
+   : public BoolConstant< IsStrictlyLower<MT>::value >
+{};
+
+template< typename MT, bool SO >
+struct IsStrictlyLower< DMatForEachExpr<MT,Sinh,SO> >
+   : public BoolConstant< IsStrictlyLower<MT>::value >
+{};
+
+template< typename MT, bool SO >
+struct IsStrictlyLower< DMatForEachExpr<MT,Asinh,SO> >
+   : public BoolConstant< IsStrictlyLower<MT>::value >
+{};
+
+template< typename MT, bool SO >
+struct IsStrictlyLower< DMatForEachExpr<MT,Tan,SO> >
+   : public BoolConstant< IsStrictlyLower<MT>::value >
+{};
+
+template< typename MT, bool SO >
+struct IsStrictlyLower< DMatForEachExpr<MT,Atan,SO> >
+   : public BoolConstant< IsStrictlyLower<MT>::value >
+{};
+
+template< typename MT, bool SO >
+struct IsStrictlyLower< DMatForEachExpr<MT,Tanh,SO> >
+   : public BoolConstant< IsStrictlyLower<MT>::value >
+{};
+
+template< typename MT, bool SO >
+struct IsStrictlyLower< DMatForEachExpr<MT,Atanh,SO> >
+   : public BoolConstant< IsStrictlyLower<MT>::value >
+{};
+
+template< typename MT, bool SO >
+struct IsStrictlyLower< DMatForEachExpr<MT,Erf,SO> >
+   : public BoolConstant< IsStrictlyLower<MT>::value >
+{};
+/*! \endcond */
+//*************************************************************************************************
+
+
+
+
+//=================================================================================================
+//
+//  ISUPPER SPECIALIZATIONS
+//
+//=================================================================================================
+
+//*************************************************************************************************
+/*! \cond BLAZE_INTERNAL */
+template< typename MT, bool SO >
+struct IsUpper< DMatForEachExpr<MT,Abs,SO> >
+   : public BoolConstant< IsUpper<MT>::value >
+{};
+
+template< typename MT, bool SO >
+struct IsUpper< DMatForEachExpr<MT,Floor,SO> >
+   : public BoolConstant< IsUpper<MT>::value >
+{};
+
+template< typename MT, bool SO >
+struct IsUpper< DMatForEachExpr<MT,Ceil,SO> >
+   : public BoolConstant< IsUpper<MT>::value >
+{};
+
+template< typename MT, bool SO >
+struct IsUpper< DMatForEachExpr<MT,Conj,SO> >
+   : public BoolConstant< IsUpper<MT>::value >
+{};
+
+template< typename MT, bool SO >
+struct IsUpper< DMatForEachExpr<MT,Real,SO> >
+   : public BoolConstant< IsUpper<MT>::value >
+{};
+
+template< typename MT, bool SO >
+struct IsUpper< DMatForEachExpr<MT,Imag,SO> >
+   : public BoolConstant< IsUpper<MT>::value >
+{};
+
+template< typename MT, bool SO >
+struct IsUpper< DMatForEachExpr<MT,Sin,SO> >
+   : public BoolConstant< IsUpper<MT>::value >
+{};
+
+template< typename MT, bool SO >
+struct IsUpper< DMatForEachExpr<MT,Asin,SO> >
+   : public BoolConstant< IsUpper<MT>::value >
+{};
+
+template< typename MT, bool SO >
+struct IsUpper< DMatForEachExpr<MT,Sinh,SO> >
+   : public BoolConstant< IsUpper<MT>::value >
+{};
+
+template< typename MT, bool SO >
+struct IsUpper< DMatForEachExpr<MT,Asinh,SO> >
+   : public BoolConstant< IsUpper<MT>::value >
+{};
+
+template< typename MT, bool SO >
+struct IsUpper< DMatForEachExpr<MT,Tan,SO> >
+   : public BoolConstant< IsUpper<MT>::value >
+{};
+
+template< typename MT, bool SO >
+struct IsUpper< DMatForEachExpr<MT,Atan,SO> >
+   : public BoolConstant< IsUpper<MT>::value >
+{};
+
+template< typename MT, bool SO >
+struct IsUpper< DMatForEachExpr<MT,Tanh,SO> >
+   : public BoolConstant< IsUpper<MT>::value >
+{};
+
+template< typename MT, bool SO >
+struct IsUpper< DMatForEachExpr<MT,Atanh,SO> >
+   : public BoolConstant< IsUpper<MT>::value >
+{};
+
+template< typename MT, bool SO >
+struct IsUpper< DMatForEachExpr<MT,Erf,SO> >
+   : public BoolConstant< IsUpper<MT>::value >
+{};
+/*! \endcond */
+//*************************************************************************************************
+
+
+
+
+//=================================================================================================
+//
+//  ISUNIUPPER SPECIALIZATIONS
+//
+//=================================================================================================
+
+//*************************************************************************************************
+/*! \cond BLAZE_INTERNAL */
+template< typename MT, typename ET, bool SO >
+struct IsUniUpper< DMatForEachExpr<MT,Pow<ET>,SO> >
+   : public BoolConstant< IsUniUpper<MT>::value >
+{};
+/*! \endcond */
+//*************************************************************************************************
+
+
+
+
+//=================================================================================================
+//
+//  ISSTRICTLYUPPER SPECIALIZATIONS
+//
+//=================================================================================================
+
+//*************************************************************************************************
+/*! \cond BLAZE_INTERNAL */
+template< typename MT, bool SO >
+struct IsStrictlyUpper< DMatForEachExpr<MT,Abs,SO> >
+   : public BoolConstant< IsStrictlyUpper<MT>::value >
+{};
+
+template< typename MT, bool SO >
+struct IsStrictlyUpper< DMatForEachExpr<MT,Floor,SO> >
+   : public BoolConstant< IsStrictlyUpper<MT>::value >
+{};
+
+template< typename MT, bool SO >
+struct IsStrictlyUpper< DMatForEachExpr<MT,Ceil,SO> >
+   : public BoolConstant< IsStrictlyUpper<MT>::value >
+{};
+
+template< typename MT, bool SO >
+struct IsStrictlyUpper< DMatForEachExpr<MT,Conj,SO> >
+   : public BoolConstant< IsStrictlyUpper<MT>::value >
+{};
+
+template< typename MT, bool SO >
+struct IsStrictlyUpper< DMatForEachExpr<MT,Real,SO> >
+   : public BoolConstant< IsStrictlyUpper<MT>::value >
+{};
+
+template< typename MT, bool SO >
+struct IsStrictlyUpper< DMatForEachExpr<MT,Imag,SO> >
+   : public BoolConstant< IsStrictlyUpper<MT>::value >
+{};
+
+template< typename MT, bool SO >
+struct IsStrictlyUpper< DMatForEachExpr<MT,Sin,SO> >
+   : public BoolConstant< IsStrictlyUpper<MT>::value >
+{};
+
+template< typename MT, bool SO >
+struct IsStrictlyUpper< DMatForEachExpr<MT,Asin,SO> >
+   : public BoolConstant< IsStrictlyUpper<MT>::value >
+{};
+
+template< typename MT, bool SO >
+struct IsStrictlyUpper< DMatForEachExpr<MT,Sinh,SO> >
+   : public BoolConstant< IsStrictlyUpper<MT>::value >
+{};
+
+template< typename MT, bool SO >
+struct IsStrictlyUpper< DMatForEachExpr<MT,Asinh,SO> >
+   : public BoolConstant< IsStrictlyUpper<MT>::value >
+{};
+
+template< typename MT, bool SO >
+struct IsStrictlyUpper< DMatForEachExpr<MT,Tan,SO> >
+   : public BoolConstant< IsStrictlyUpper<MT>::value >
+{};
+
+template< typename MT, bool SO >
+struct IsStrictlyUpper< DMatForEachExpr<MT,Atan,SO> >
+   : public BoolConstant< IsStrictlyUpper<MT>::value >
+{};
+
+template< typename MT, bool SO >
+struct IsStrictlyUpper< DMatForEachExpr<MT,Tanh,SO> >
+   : public BoolConstant< IsStrictlyUpper<MT>::value >
+{};
+
+template< typename MT, bool SO >
+struct IsStrictlyUpper< DMatForEachExpr<MT,Atanh,SO> >
+   : public BoolConstant< IsStrictlyUpper<MT>::value >
+{};
+
+template< typename MT, bool SO >
+struct IsStrictlyUpper< DMatForEachExpr<MT,Erf,SO> >
+   : public BoolConstant< IsStrictlyUpper<MT>::value >
 {};
 /*! \endcond */
 //*************************************************************************************************
