@@ -845,15 +845,15 @@ class SMatForEachExpr : public SparseMatrix< SMatForEachExpr<MT,OP,SO>, SO >
 //=================================================================================================
 
 //*************************************************************************************************
-/*!\brief Evaluates the given custom operation on each single element of the sparse matrix \a sm.
+/*!\brief Evaluates the given custom operation on each non-zero element of the sparse matrix \a sm.
 // \ingroup sparse_matrix
 //
 // \param sm The input matrix.
 // \param op The custom operation.
 // \return The custom operation applied to each single element of \a sm.
 //
-// The \a forEach() function evaluates the given custom operation on each element of the input
-// matrix \a sm. The function returns an expression representing this operation.\n
+// The \a forEach() function evaluates the given custom operation on each non-zero element of the
+// input matrix \a sm. The function returns an expression representing this operation.\n
 // The following example demonstrates the use of the \a forEach() function:
 
    \code
@@ -875,14 +875,14 @@ inline const SMatForEachExpr<MT,OP,SO> forEach( const SparseMatrix<MT,SO>& sm, O
 
 
 //*************************************************************************************************
-/*!\brief Computes the square root of each single element of the sparse matrix \a sm.
+/*!\brief Computes the square root of each non-zero element of the sparse matrix \a sm.
 // \ingroup sparse_matrix
 //
-// \param sm The input matrix.
+// \param sm The input matrix; all non-zero elements must be in the range \f$[0..\infty)\f$.
 // \return The square root of each single element of \a sm.
 //
-// The \a sqrt() function computes the square root of each element of the input matrix \a sm. The
-// function returns an expression representing this operation.\n
+// The \a sqrt() function computes the square root of each non-zero element of the input matrix
+// \a sm. The function returns an expression representing this operation.\n
 // The following example demonstrates the use of the \a sqrt() function:
 
    \code
@@ -890,6 +890,9 @@ inline const SMatForEachExpr<MT,OP,SO> forEach( const SparseMatrix<MT,SO>& sm, O
    // ... Resizing and initialization
    B = sqrt( A );
    \endcode
+
+// \note All non-zero elements are expected to be in the range \f$[0..\infty)\f$. No runtime
+// checks are performed to assert this precondition!
 */
 template< typename MT  // Type of the sparse matrix
         , bool SO >    // Storage order
@@ -903,14 +906,14 @@ inline const SMatForEachExpr<MT,Sqrt,SO> sqrt( const SparseMatrix<MT,SO>& sm )
 
 
 //*************************************************************************************************
-/*!\brief Computes the inverse square root of each single element of the sparse matrix \a sm.
+/*!\brief Computes the inverse square root of each non-zero element of the sparse matrix \a sm.
 // \ingroup sparse_matrix
 //
-// \param sm The input matrix.
+// \param sm The input matrix; all non-zero elements must be in the range \f$(0..\infty)\f$.
 // \return The inverse square root of each single element of \a sm.
 //
-// The \a invsqrt() function computes the inverse square root of each element of the input matrix
-// \a sm. The function returns an expression representing this operation.\n
+// The \a invsqrt() function computes the inverse square root of each non-zero element of the
+// input matrix \a sm. The function returns an expression representing this operation.\n
 // The following example demonstrates the use of the \a invsqrt() function:
 
    \code
@@ -918,6 +921,9 @@ inline const SMatForEachExpr<MT,Sqrt,SO> sqrt( const SparseMatrix<MT,SO>& sm )
    // ... Resizing and initialization
    B = invsqrt( A );
    \endcode
+
+// \note All non-zero elements are expected to be in the range \f$(0..\infty)\f$. No runtime
+// checks are performed to assert this precondition!
 */
 template< typename MT  // Type of the sparse matrix
         , bool SO >    // Storage order
@@ -931,14 +937,14 @@ inline const SMatForEachExpr<MT,InvSqrt,SO> invsqrt( const SparseMatrix<MT,SO>& 
 
 
 //*************************************************************************************************
-/*!\brief Computes the cubic root of each single element of the sparse matrix \a sm.
+/*!\brief Computes the cubic root of each non-zero element of the sparse matrix \a sm.
 // \ingroup sparse_matrix
 //
-// \param sm The input matrix.
+// \param sm The input matrix; all non-zero elements must be in the range \f$[0..\infty)\f$.
 // \return The cubic root of each single element of \a sm.
 //
-// The \a cbrt() function computes the cubic root of each element of the input matrix \a sm. The
-// function returns an expression representing this operation.\n
+// The \a cbrt() function computes the cubic root of each non-zero element of the input matrix
+// \a sm. The function returns an expression representing this operation.\n
 // The following example demonstrates the use of the \a cbrt() function:
 
    \code
@@ -946,6 +952,9 @@ inline const SMatForEachExpr<MT,InvSqrt,SO> invsqrt( const SparseMatrix<MT,SO>& 
    // ... Resizing and initialization
    B = cbrt( A );
    \endcode
+
+// \note All non-zero elements are expected to be in the range \f$[0..\infty)\f$. No runtime
+// checks are performed to assert this precondition!
 */
 template< typename MT  // Type of the sparse matrix
         , bool SO >    // Storage order
@@ -959,14 +968,14 @@ inline const SMatForEachExpr<MT,Cbrt,SO> cbrt( const SparseMatrix<MT,SO>& sm )
 
 
 //*************************************************************************************************
-/*!\brief Computes the inverse cubic root of each single element of the sparse matrix \a sm.
+/*!\brief Computes the inverse cubic root of each non-zero element of the sparse matrix \a sm.
 // \ingroup sparse_matrix
 //
-// \param sm The input matrix.
+// \param sm The input matrix; all non-zero elements must be in the range \f$(0..\infty)\f$.
 // \return The inverse cubic root of each single element of \a sm.
 //
-// The \a invcbrt() function computes the inverse cubic root of each element of the input matrix
-// \a sm. The function returns an expression representing this operation.\n
+// The \a invcbrt() function computes the inverse cubic root of each non-zero element of the
+// input matrix \a sm. The function returns an expression representing this operation.\n
 // The following example demonstrates the use of the \a invcbrt() function:
 
    \code
@@ -974,6 +983,9 @@ inline const SMatForEachExpr<MT,Cbrt,SO> cbrt( const SparseMatrix<MT,SO>& sm )
    // ... Resizing and initialization
    B = invcbrt( A );
    \endcode
+
+// \note All non-zero elements are expected to be in the range \f$(0..\infty)\f$. No runtime
+// checks are performed to assert this precondition!
 */
 template< typename MT  // Type of the sparse matrix
         , bool SO >    // Storage order
@@ -987,14 +999,14 @@ inline const SMatForEachExpr<MT,InvCbrt,SO> invcbrt( const SparseMatrix<MT,SO>& 
 
 
 //*************************************************************************************************
-/*!\brief Applies the \a floor() function to each single element of the sparse matrix \a sm.
+/*!\brief Applies the \a floor() function to each non-zero element of the sparse matrix \a sm.
 // \ingroup sparse_matrix
 //
 // \param sm The input matrix.
 // \return The resulting sparse matrix.
 //
-// This function applies the floor() function to each element of the input matrix \a sm. The
-// function returns an expression representing this operation.\n
+// This function applies the floor() function to each non-zero element of the input matrix \a sm.
+// The function returns an expression representing this operation.\n
 // The following example demonstrates the use of the \a floor() function:
 
    \code
@@ -1015,14 +1027,14 @@ inline const SMatForEachExpr<MT,Floor,SO> floor( const SparseMatrix<MT,SO>& sm )
 
 
 //*************************************************************************************************
-/*!\brief Applies the \a ceil() function to each single element of the sparse matrix \a sm.
+/*!\brief Applies the \a ceil() function to each non-zero element of the sparse matrix \a sm.
 // \ingroup sparse_matrix
 //
 // \param sm The input matrix.
 // \return The resulting sparse matrix.
 //
-// This function applies the ceil() function to each element of the input matrix \a sm. The
-// function returns an expression representing this operation.\n
+// This function applies the ceil() function to each non-zero element of the input matrix \a sm.
+// The function returns an expression representing this operation.\n
 // The following example demonstrates the use of the \a ceil() function:
 
    \code
@@ -1043,15 +1055,15 @@ inline const SMatForEachExpr<MT,Ceil,SO> ceil( const SparseMatrix<MT,SO>& sm )
 
 
 //*************************************************************************************************
-/*!\brief Computes the exponential value for each single element of the sparse matrix \a sm.
+/*!\brief Computes the exponential value for each non-zero element of the sparse matrix \a sm.
 // \ingroup sparse_matrix
 //
 // \param sm The input matrix.
 // \param exp The exponent.
 // \return The exponential value of each non-zero element of \a sm.
 //
-// The \a pow() function computes the exponential value for each element of the input matrix \a sm.
-// The function returns an expression representing this operation.\n
+// The \a pow() function computes the exponential value for each non-zero element of the input
+// matrix \a sm. The function returns an expression representing this operation.\n
 // The following example demonstrates the use of the \a pow() function:
 
    \code
@@ -1106,7 +1118,7 @@ inline const SMatForEachExpr<MT,Exp,SO> exp( const SparseMatrix<MT,SO>& sm )
 /*!\brief Computes the natural logarithm for each non-zero element of the sparse matrix \a sm.
 // \ingroup sparse_matrix
 //
-// \param sm The input matrix.
+// \param sm The input matrix; all non-zero elements must be in the range \f$[0..\infty)\f$.
 // \return The natural logarithm of each non-zero element of \a sm.
 //
 // The \a log() function computes the natural logarithm for each non-zero element of the input
@@ -1118,6 +1130,9 @@ inline const SMatForEachExpr<MT,Exp,SO> exp( const SparseMatrix<MT,SO>& sm )
    // ... Resizing and initialization
    B = log( A );
    \endcode
+
+// \note All non-zero elements are expected to be in the range \f$[0..\infty)\f$. No runtime
+// checks are performed to assert this precondition!
 */
 template< typename MT  // Type of the sparse matrix
         , bool SO >    // Storage order
@@ -1134,7 +1149,7 @@ inline const SMatForEachExpr<MT,Log,SO> log( const SparseMatrix<MT,SO>& sm )
 /*!\brief Computes the common logarithm for each non-zero element of the sparse matrix \a sm.
 // \ingroup sparse_matrix
 //
-// \param sm The input matrix.
+// \param sm The input matrix; all non-zero elements must be in the range \f$[0..\infty)\f$.
 // \return The common logarithm of each non-zero element of \a sm.
 //
 // The \a log10() function computes the common logarithm for each non-zero element of the input
@@ -1146,6 +1161,9 @@ inline const SMatForEachExpr<MT,Log,SO> log( const SparseMatrix<MT,SO>& sm )
    // ... Resizing and initialization
    B = log10( A );
    \endcode
+
+// \note All non-zero elements are expected to be in the range \f$[0..\infty)\f$. No runtime
+// checks are performed to assert this precondition!
 */
 template< typename MT  // Type of the sparse matrix
         , bool SO >    // Storage order
@@ -1190,7 +1208,7 @@ inline const SMatForEachExpr<MT,Sin,SO> sin( const SparseMatrix<MT,SO>& sm )
 /*!\brief Computes the inverse sine for each non-zero element of the sparse matrix \a sm.
 // \ingroup sparse_matrix
 //
-// \param sm The input matrix.
+// \param sm The input matrix; all non-zero elements must be in the range \f$[-1..1]\f$.
 // \return The inverse sine of each non-zero element of \a sm.
 //
 // The \a asin() function computes the inverse sine for each non-zero element of the input matrix
@@ -1202,6 +1220,9 @@ inline const SMatForEachExpr<MT,Sin,SO> sin( const SparseMatrix<MT,SO>& sm )
    // ... Resizing and initialization
    B = asin( A );
    \endcode
+
+// \note All non-zero elements are expected to be in the range \f$[-1..1]\f$. No runtime checks
+// are performed to assert this precondition!
 */
 template< typename MT  // Type of the sparse matrix
         , bool SO >    // Storage order
@@ -1249,8 +1270,8 @@ inline const SMatForEachExpr<MT,Sinh,SO> sinh( const SparseMatrix<MT,SO>& sm )
 // \param sm The input matrix.
 // \return The inverse hyperbolic sine of each non-zero element of \a sm.
 //
-// The \a asinh() function computes the inverse hyperbolic sine for each non-zero element of the
-// input matrix \a sm. The function returns an expression representing this operation.\n
+// The \a asinh() function computes the inverse hyperbolic sine for each non-zero element of
+// the input matrix \a sm. The function returns an expression representing this operation.\n
 // The following example demonstrates the use of the \a asinh() function:
 
    \code
@@ -1277,8 +1298,8 @@ inline const SMatForEachExpr<MT,Asinh,SO> asinh( const SparseMatrix<MT,SO>& sm )
 // \param sm The input matrix.
 // \return The cosine of each non-zero element of \a sm.
 //
-// The \a cos() function computes the cosine for each non-zero element of the input matrix \a sm.
-// The function returns an expression representing this operation.\n
+// The \a cos() function computes the cosine for each non-zero element of the input matrix
+// \a sm. The function returns an expression representing this operation.\n
 // The following example demonstrates the use of the \a cos() function:
 
    \code
@@ -1302,11 +1323,11 @@ inline const SMatForEachExpr<MT,Cos,SO> cos( const SparseMatrix<MT,SO>& sm )
 /*!\brief Computes the inverse cosine for each non-zero element of the sparse matrix \a sm.
 // \ingroup sparse_matrix
 //
-// \param sm The input matrix.
+// \param sm The input matrix; all non-zero elements must be in the range \f$[-1..1]\f$.
 // \return The inverse cosine of each non-zero element of \a sm.
 //
-// The \a acos() function computes the inverse cosine for each non-zero element of the input matrix
-// \a sm. The function returns an expression representing this operation.\n
+// The \a acos() function computes the inverse cosine for each non-zero element of the input
+// matrix \a sm. The function returns an expression representing this operation.\n
 // The following example demonstrates the use of the \a acos() function:
 
    \code
@@ -1314,6 +1335,9 @@ inline const SMatForEachExpr<MT,Cos,SO> cos( const SparseMatrix<MT,SO>& sm )
    // ... Resizing and initialization
    B = acos( A );
    \endcode
+
+// \note All non-zero elements are expected to be in the range \f$[-1..1]\f$. No runtime checks
+// are performed to assert this precondition!
 */
 template< typename MT  // Type of the sparse matrix
         , bool SO >    // Storage order
@@ -1358,7 +1382,7 @@ inline const SMatForEachExpr<MT,Cosh,SO> cosh( const SparseMatrix<MT,SO>& sm )
 /*!\brief Computes the inverse hyperbolic cosine for each non-zero element of the sparse matrix \a sm.
 // \ingroup sparse_matrix
 //
-// \param sm The input matrix.
+// \param sm The input matrix; all non-zero elements must be in the range \f$[1..\infty)\f$.
 // \return The inverse hyperbolic cosine of each non-zero element of \a sm.
 //
 // The \a acosh() function computes the inverse hyperbolic cosine for each non-zero element of
@@ -1370,6 +1394,9 @@ inline const SMatForEachExpr<MT,Cosh,SO> cosh( const SparseMatrix<MT,SO>& sm )
    // ... Resizing and initialization
    B = acosh( A );
    \endcode
+
+// \note All non-zero elements are expected to be in the range \f$[1..\infty)\f$. No runtime
+// checks are performed to assert this precondition!
 */
 template< typename MT  // Type of the sparse matrix
         , bool SO >    // Storage order
@@ -1442,7 +1469,7 @@ inline const SMatForEachExpr<MT,Atan,SO> atan( const SparseMatrix<MT,SO>& sm )
 /*!\brief Computes the hyperbolic tangent for each non-zero element of the sparse matrix \a sm.
 // \ingroup sparse_matrix
 //
-// \param sm The input matrix.
+// \param sm The input matrix; all non-zero elements must be in the range \f$[-1..1]\f$.
 // \return The hyperbolic tangent of each non-zero element of \a sm.
 //
 // The \a tanh() function computes the hyperbolic tangent for each non-zero element of the input
@@ -1454,6 +1481,9 @@ inline const SMatForEachExpr<MT,Atan,SO> atan( const SparseMatrix<MT,SO>& sm )
    // ... Resizing and initialization
    B = tanh( A );
    \endcode
+
+// \note All non-zero elements are expected to be in the range \f$[-1..1]\f$. No runtime checks
+// are performed to assert this precondition!
 */
 template< typename MT  // Type of the sparse matrix
         , bool SO >    // Storage order
@@ -1470,7 +1500,7 @@ inline const SMatForEachExpr<MT,Tanh,SO> tanh( const SparseMatrix<MT,SO>& sm )
 /*!\brief Computes the inverse hyperbolic tangent for each non-zero element of the sparse matrix \a sm.
 // \ingroup sparse_matrix
 //
-// \param sm The input matrix.
+// \param sm The input matrix; all non-zero elements must be in the range \f$[-1..1]\f$.
 // \return The inverse hyperbolic tangent of each non-zero element of \a sm.
 //
 // The \a atanh() function computes the inverse hyperbolic tangent for each non-zero element of
@@ -1482,6 +1512,9 @@ inline const SMatForEachExpr<MT,Tanh,SO> tanh( const SparseMatrix<MT,SO>& sm )
    // ... Resizing and initialization
    B = atanh( A );
    \endcode
+
+// \note All non-zero elements are expected to be in the range \f$[-1..1]\f$. No runtime checks
+// are performed to assert this precondition!
 */
 template< typename MT  // Type of the sparse matrix
         , bool SO >    // Storage order

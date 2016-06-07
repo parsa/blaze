@@ -802,15 +802,15 @@ class SVecForEachExpr : public SparseVector< SVecForEachExpr<VT,OP,TF>, TF >
 //=================================================================================================
 
 //*************************************************************************************************
-/*!\brief Evaluates the given custom operation on each single element of the sparse vector \a sv.
+/*!\brief Evaluates the given custom operation on each non-zero element of the sparse vector \a sv.
 // \ingroup sparse_vector
 //
 // \param sv The input vector.
 // \param op The custom operation.
 // \return The custom operation applied to each single element of \a sv.
 //
-// The \a forEach() function evaluates the given custom operation on each element of the input
-// vector \a sv. The function returns an expression representing this operation.\n
+// The \a forEach() function evaluates the given custom operation on each non-zero element of the
+// input vector \a sv. The function returns an expression representing this operation.\n
 // The following example demonstrates the use of the \a forEach() function:
 
    \code
@@ -832,14 +832,14 @@ inline const SVecForEachExpr<VT,OP,TF> forEach( const SparseVector<VT,TF>& sv, O
 
 
 //*************************************************************************************************
-/*!\brief Computes the square root of each single element of the sparse vector \a sv.
+/*!\brief Computes the square root of each non-zero element of the sparse vector \a sv.
 // \ingroup sparse_vector
 //
-// \param sv The input vector.
+// \param sv The input vector; all non-zero elements must be in the range \f$[0..\infty)\f$.
 // \return The square root of each single element of \a sv.
 //
-// The \a sqrt() function computes the square root of each element of the input vector \a sv. The
-// function returns an expression representing this operation.\n
+// The \a sqrt() function computes the square root of each non-zero element of the input vector
+// \a sv. The function returns an expression representing this operation.\n
 // The following example demonstrates the use of the \a sqrt() function:
 
    \code
@@ -847,6 +847,9 @@ inline const SVecForEachExpr<VT,OP,TF> forEach( const SparseVector<VT,TF>& sv, O
    // ... Resizing and initialization
    b = sqrt( a );
    \endcode
+
+// \note All non-zero elements are expected to be in the range \f$[0..\infty)\f$. No runtime
+// checks are performed to assert this precondition!
 */
 template< typename VT  // Type of the sparse vector
         , bool TF >    // Transpose flag
@@ -860,14 +863,14 @@ inline const SVecForEachExpr<VT,Sqrt,TF> sqrt( const SparseVector<VT,TF>& sv )
 
 
 //*************************************************************************************************
-/*!\brief Computes the inverse square root of each single element of the sparse vector \a sv.
+/*!\brief Computes the inverse square root of each non-zero element of the sparse vector \a sv.
 // \ingroup sparse_vector
 //
-// \param sv The input vector.
+// \param sv The input vector; all non-zero elements must be in the range \f$(0..\infty)\f$.
 // \return The inverse square root of each single element of \a sv.
 //
-// The \a invsqrt() function computes the inverse square root of each element of the input vector
-// \a sv. The function returns an expression representing this operation.\n
+// The \a invsqrt() function computes the inverse square root of each non-zero element of the
+// input vector \a sv. The function returns an expression representing this operation.\n
 // The following example demonstrates the use of the \a invsqrt() function:
 
    \code
@@ -875,6 +878,9 @@ inline const SVecForEachExpr<VT,Sqrt,TF> sqrt( const SparseVector<VT,TF>& sv )
    // ... Resizing and initialization
    b = invsqrt( a );
    \endcode
+
+// \note All non-zero elements are expected to be in the range \f$(0..\infty)\f$. No runtime
+// checks are performed to assert this precondition!
 */
 template< typename VT  // Type of the sparse vector
         , bool TF >    // Transpose flag
@@ -888,14 +894,14 @@ inline const SVecForEachExpr<VT,InvSqrt,TF> invsqrt( const SparseVector<VT,TF>& 
 
 
 //*************************************************************************************************
-/*!\brief Computes the cubic root of each single element of the sparse vector \a sv.
+/*!\brief Computes the cubic root of each non-zero element of the sparse vector \a sv.
 // \ingroup sparse_vector
 //
-// \param sv The input vector.
+// \param sv The input vector; all non-zero elements must be in the range \f$[0..\infty)\f$.
 // \return The cubic root of each single element of \a sv.
 //
-// The \a cbrt() function computes the cubic root of each element of the input vector \a sv. The
-// function returns an expression representing this operation.\n
+// The \a cbrt() function computes the cubic root of each non-zero element of the input vector
+// \a sv. The function returns an expression representing this operation.\n
 // The following example demonstrates the use of the \a cbrt() function:
 
    \code
@@ -903,6 +909,9 @@ inline const SVecForEachExpr<VT,InvSqrt,TF> invsqrt( const SparseVector<VT,TF>& 
    // ... Resizing and initialization
    b = cbrt( a );
    \endcode
+
+// \note All non-zero elements are expected to be in the range \f$[0..\infty)\f$. No runtime
+// checks are performed to assert this precondition!
 */
 template< typename VT  // Type of the sparse vector
         , bool TF >    // Transpose flag
@@ -916,14 +925,14 @@ inline const SVecForEachExpr<VT,Cbrt,TF> cbrt( const SparseVector<VT,TF>& sv )
 
 
 //*************************************************************************************************
-/*!\brief Computes the inverse cubic root of each single element of the sparse vector \a sv.
+/*!\brief Computes the inverse cubic root of each non-zero element of the sparse vector \a sv.
 // \ingroup sparse_vector
 //
-// \param sv The input vector.
+// \param sv The input vector; all non-zero elements must be in the range \f$(0..\infty)\f$.
 // \return The inverse cubic root of each single element of \a sv.
 //
-// The \a invcbrt() function computes the inverse cubic root of each element of the input vector
-// \a sv. The function returns an expression representing this operation.\n
+// The \a invcbrt() function computes the inverse cubic root of each non-zero element of the
+// input vector \a sv. The function returns an expression representing this operation.\n
 // The following example demonstrates the use of the \a invcbrt() function:
 
    \code
@@ -931,6 +940,9 @@ inline const SVecForEachExpr<VT,Cbrt,TF> cbrt( const SparseVector<VT,TF>& sv )
    // ... Resizing and initialization
    b = invcbrt( a );
    \endcode
+
+// \note All non-zero elements are expected to be in the range \f$(0..\infty)\f$. No runtime
+// checks are performed to assert this precondition!
 */
 template< typename VT  // Type of the sparse vector
         , bool TF >    // Transpose flag
@@ -944,14 +956,14 @@ inline const SVecForEachExpr<VT,InvCbrt,TF> invcbrt( const SparseVector<VT,TF>& 
 
 
 //*************************************************************************************************
-/*!\brief Applies the \a floor() function to each single element of the sparse vector \a sv.
+/*!\brief Applies the \a floor() function to each non-zero element of the sparse vector \a sv.
 // \ingroup sparse_vector
 //
 // \param sv The input vector.
 // \return The resulting sparse vector.
 //
-// This function applies the \a floor() function to each element of the input vector \a sv. The
-// function returns an expression representing this operation.\n
+// This function applies the \a floor() function to each non-zero element of the input vector
+// \a sv. The function returns an expression representing this operation.\n
 // The following example demonstrates the use of the \a floor() function:
 
    \code
@@ -972,14 +984,14 @@ inline const SVecForEachExpr<VT,Floor,TF> floor( const SparseVector<VT,TF>& sv )
 
 
 //*************************************************************************************************
-/*!\brief Applies the \a ceil() function to each single element of the sparse vector \a sv.
+/*!\brief Applies the \a ceil() function to each non-zero element of the sparse vector \a sv.
 // \ingroup sparse_vector
 //
 // \param sv The input vector.
 // \return The resulting sparse vector.
 //
-// This function applies the \a ceil() function to each element of the input vector \a sv. The
-// function returns an expression representing this operation.\n
+// This function applies the \a ceil() function to each non-zero element of the input vector
+// \a sv. The function returns an expression representing this operation.\n
 // The following example demonstrates the use of the \a ceil() function:
 
    \code
@@ -1000,15 +1012,15 @@ inline const SVecForEachExpr<VT,Ceil,TF> ceil( const SparseVector<VT,TF>& sv )
 
 
 //*************************************************************************************************
-/*!\brief Computes the exponential value for each single element of the sparse vector \a sv.
+/*!\brief Computes the exponential value for each non-zero element of the sparse vector \a sv.
 // \ingroup sparse_vector
 //
 // \param sv The input vector.
 // \param exp The exponent.
 // \return The exponential value of each non-zero element of \a sv.
 //
-// The \a pow() function computes the exponential value for each element of the input vector \a sv.
-// The function returns an expression representing this operation.\n
+// The \a pow() function computes the exponential value for each non-zero element of the input
+// vector \a sv. The function returns an expression representing this operation.\n
 // The following example demonstrates the use of the \a pow() function:
 
    \code
@@ -1063,7 +1075,7 @@ inline const SVecForEachExpr<VT,Exp,TF> exp( const SparseVector<VT,TF>& sv )
 /*!\brief Computes the natural logarithm of each non-zero element of the sparse vector \a sv.
 // \ingroup sparse_vector
 //
-// \param sv The input vector.
+// \param sv The input vector; all non-zero elements must be in the range \f$[0..\infty)\f$.
 // \return The natural logaritm of each non-zero element of \a sv.
 //
 // The \a log() function computes the natural logarithm for each non-zero element of the input
@@ -1075,6 +1087,9 @@ inline const SVecForEachExpr<VT,Exp,TF> exp( const SparseVector<VT,TF>& sv )
    // ... Resizing and initialization
    b = log( a );
    \endcode
+
+// \note All non-zero elements are expected to be in the range \f$[0..\infty)\f$. No runtime
+// checks are performed to assert this precondition!
 */
 template< typename VT  // Type of the sparse vector
         , bool TF >    // Transpose flag
@@ -1091,7 +1106,7 @@ inline const SVecForEachExpr<VT,Log,TF> log( const SparseVector<VT,TF>& sv )
 /*!\brief Computes the common logarithm of each non-zero element of the sparse vector \a sv.
 // \ingroup sparse_vector
 //
-// \param sv The input vector.
+// \param sv The input vector; all non-zero elements must be in the range \f$[0..\infty)\f$.
 // \return The common logaritm of each non-zero element of \a sv.
 //
 // The \a log10() function computes the common logarithm for each non-zero element of the input
@@ -1103,6 +1118,9 @@ inline const SVecForEachExpr<VT,Log,TF> log( const SparseVector<VT,TF>& sv )
    // ... Resizing and initialization
    b = log10( a );
    \endcode
+
+// \note All non-zero elements are expected to be in the range \f$[0..\infty)\f$. No runtime
+// checks are performed to assert this precondition!
 */
 template< typename VT  // Type of the sparse vector
         , bool TF >    // Transpose flag
@@ -1147,7 +1165,7 @@ inline const SVecForEachExpr<VT,Sin,TF> sin( const SparseVector<VT,TF>& sv )
 /*!\brief Computes the inverse sine of each non-zero element of the sparse vector \a sv.
 // \ingroup sparse_vector
 //
-// \param sv The input vector.
+// \param sv The input vector; all non-zero elements must be in the range \f$[-1..1]\f$.
 // \return The inverse sine of each non-zero element of \a sv.
 //
 // The \a asin() function computes the inverse sine for each non-zero element of the input vector
@@ -1159,6 +1177,9 @@ inline const SVecForEachExpr<VT,Sin,TF> sin( const SparseVector<VT,TF>& sv )
    // ... Resizing and initialization
    b = asin( a );
    \endcode
+
+// \note All non-zero elements are expected to be in the range \f$[-1..1]\f$. No runtime checks
+// are performed to assert this precondition!
 */
 template< typename VT  // Type of the sparse vector
         , bool TF >    // Transpose flag
@@ -1259,7 +1280,7 @@ inline const SVecForEachExpr<VT,Cos,TF> cos( const SparseVector<VT,TF>& sv )
 /*!\brief Computes the inverse cosine of each non-zero element of the sparse vector \a sv.
 // \ingroup sparse_vector
 //
-// \param sv The input vector.
+// \param sv The input vector; all non-zero elements must be in the range \f$[-1..1]\f$.
 // \return The inverse cosine of each non-zero element of \a sv.
 //
 // The \a acos() function computes the inverse cosine for each non-zero element of the input vector
@@ -1271,6 +1292,9 @@ inline const SVecForEachExpr<VT,Cos,TF> cos( const SparseVector<VT,TF>& sv )
    // ... Resizing and initialization
    b = acos( a );
    \endcode
+
+// \note All non-zero elements are expected to be in the range \f$[-1..1]\f$. No runtime checks
+// are performed to assert this precondition!
 */
 template< typename VT  // Type of the sparse vector
         , bool TF >    // Transpose flag
@@ -1315,7 +1339,7 @@ inline const SVecForEachExpr<VT,Cosh,TF> cosh( const SparseVector<VT,TF>& sv )
 /*!\brief Computes the inverse hyperbolic cosine of each non-zero element of the sparse vector \a sv.
 // \ingroup sparse_vector
 //
-// \param sv The input vector.
+// \param sv The input vector; all non-zero elements must be in the range \f$[1..\infty)\f$.
 // \return The inverse hyperbolic cosine of each non-zero element of \a sv.
 //
 // The \a acosh() function computes the inverse hyperbolic cosine for each non-zero element of
@@ -1327,6 +1351,9 @@ inline const SVecForEachExpr<VT,Cosh,TF> cosh( const SparseVector<VT,TF>& sv )
    // ... Resizing and initialization
    b = acosh( a );
    \endcode
+
+// \note All non-zero elements are expected to be in the range \f$[1..\infty)\f$. No runtime
+// checks are performed to assert this precondition!
 */
 template< typename VT  // Type of the sparse vector
         , bool TF >    // Transpose flag
@@ -1399,7 +1426,7 @@ inline const SVecForEachExpr<VT,Atan,TF> atan( const SparseVector<VT,TF>& sv )
 /*!\brief Computes the hyperbolic tangent of each non-zero element of the sparse vector \a sv.
 // \ingroup sparse_vector
 //
-// \param sv The input vector.
+// \param sv The input vector; all non-zero elements must be in the range \f$[-1..1]\f$.
 // \return The hyperbolic tangent of each non-zero element of \a sv.
 //
 // The \a tanh() function computes the hyperbolic tangent for each non-zero element of the input
@@ -1411,6 +1438,9 @@ inline const SVecForEachExpr<VT,Atan,TF> atan( const SparseVector<VT,TF>& sv )
    // ... Resizing and initialization
    b = tanh( a );
    \endcode
+
+// \note All non-zero elements are expected to be in the range \f$[-1..1]\f$. No runtime checks
+// are performed to assert this precondition!
 */
 template< typename VT  // Type of the sparse vector
         , bool TF >    // Transpose flag
@@ -1427,7 +1457,7 @@ inline const SVecForEachExpr<VT,Tanh,TF> tanh( const SparseVector<VT,TF>& sv )
 /*!\brief Computes the inverse hyperbolic tangent of each non-zero element of the sparse vector \a sv.
 // \ingroup sparse_vector
 //
-// \param sv The input vector.
+// \param sv The input vector; all non-zero elements must be in the range \f$[-1..1]\f$.
 // \return The inverse hyperbolic tangent of each non-zero element of \a sv.
 //
 // The \a atanh() function computes the inverse hyperbolic tangent for each non-zero element of
@@ -1439,6 +1469,9 @@ inline const SVecForEachExpr<VT,Tanh,TF> tanh( const SparseVector<VT,TF>& sv )
    // ... Resizing and initialization
    b = atanh( a );
    \endcode
+
+// \note All non-zero elements are expected to be in the range \f$[-1..1]\f$. No runtime checks
+// are performed to assert this precondition!
 */
 template< typename VT  // Type of the sparse vector
         , bool TF >    // Transpose flag

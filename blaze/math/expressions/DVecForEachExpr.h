@@ -1119,7 +1119,7 @@ inline const DVecForEachExpr<VT,OP,TF> forEach( const DenseVector<VT,TF>& dv, OP
 /*!\brief Computes the square root of each single element of the dense vector \a dv.
 // \ingroup dense_vector
 //
-// \param dv The input vector.
+// \param dv The input vector; all elements must be in the range \f$[0..\infty)\f$.
 // \return The square root of each single element of \a dv.
 //
 // The \a sqrt() function computes the square root of each element of the input vector \a dv.
@@ -1131,6 +1131,9 @@ inline const DVecForEachExpr<VT,OP,TF> forEach( const DenseVector<VT,TF>& dv, OP
    // ... Resizing and initialization
    b = sqrt( a );
    \endcode
+
+// \note All elements are expected to be in the range \f$[0..\infty)\f$. No runtime checks are
+// performed to assert this precondition!
 */
 template< typename VT  // Type of the dense vector
         , bool TF >    // Transpose flag
@@ -1147,7 +1150,7 @@ inline const DVecForEachExpr<VT,Sqrt,TF> sqrt( const DenseVector<VT,TF>& dv )
 /*!\brief Computes the inverse square root of each single element of the dense vector \a dv.
 // \ingroup dense_vector
 //
-// \param dv The input vector.
+// \param dv The input vector; all elements must be in the range \f$(0..\infty)\f$.
 // \return The inverse square root of each single element of \a dv.
 //
 // The \a invsqrt() function computes the inverse square root of each element of the input vector
@@ -1159,6 +1162,9 @@ inline const DVecForEachExpr<VT,Sqrt,TF> sqrt( const DenseVector<VT,TF>& dv )
    // ... Resizing and initialization
    b = invsqrt( a );
    \endcode
+
+// \note All elements are expected to be in the range \f$(0..\infty)\f$. No runtime checks are
+// performed to assert this precondition!
 */
 template< typename VT  // Type of the dense vector
         , bool TF >    // Transpose flag
@@ -1175,7 +1181,7 @@ inline const DVecForEachExpr<VT,InvSqrt,TF> invsqrt( const DenseVector<VT,TF>& d
 /*!\brief Computes the cubic root of each single element of the dense vector \a dv.
 // \ingroup dense_vector
 //
-// \param dv The input vector.
+// \param dv The input vector; all elements must be in the range \f$[0..\infty)\f$.
 // \return The cubic root of each single element of \a dv.
 //
 // The \a cbrt() function computes the cubic root of each element of the input vector \a dv. The
@@ -1187,6 +1193,9 @@ inline const DVecForEachExpr<VT,InvSqrt,TF> invsqrt( const DenseVector<VT,TF>& d
    // ... Resizing and initialization
    b = cbrt( a );
    \endcode
+
+// \note All elements are expected to be in the range \f$[0..\infty)\f$. No runtime checks are
+// performed to assert this precondition!
 */
 template< typename VT  // Type of the dense vector
         , bool TF >    // Transpose flag
@@ -1203,7 +1212,7 @@ inline const DVecForEachExpr<VT,Cbrt,TF> cbrt( const DenseVector<VT,TF>& dv )
 /*!\brief Computes the inverse cubic root of each single element of the dense vector \a dv.
 // \ingroup dense_vector
 //
-// \param dv The input vector.
+// \param dv The input vector; all elements must be in the range \f$(0..\infty)\f$.
 // \return The inverse cubic root of each single element of \a dv.
 //
 // The \a invcbrt() function computes the inverse cubic root of each element of the input vector
@@ -1215,6 +1224,9 @@ inline const DVecForEachExpr<VT,Cbrt,TF> cbrt( const DenseVector<VT,TF>& dv )
    // ... Resizing and initialization
    b = invcbrt( a );
    \endcode
+
+// \note All elements are expected to be in the range \f$(0..\infty)\f$. No runtime checks are
+// performed to assert this precondition!
 */
 template< typename VT  // Type of the dense vector
         , bool TF >    // Transpose flag
@@ -1347,7 +1359,7 @@ inline const DVecForEachExpr<VT,Exp,TF> exp( const DenseVector<VT,TF>& dv )
 /*!\brief Computes the natural logarithm for each single element of the dense vector \a dv.
 // \ingroup dense_vector
 //
-// \param dv The input vector.
+// \param dv The input vector; all elements must be in the range \f$[0..\infty)\f$.
 // \return The natural logarithm of each single element of \a dv.
 //
 // The \a log() function computes natural logarithm for each element of the input vector \a dv.
@@ -1359,6 +1371,9 @@ inline const DVecForEachExpr<VT,Exp,TF> exp( const DenseVector<VT,TF>& dv )
    // ... Resizing and initialization
    b = log( a );
    \endcode
+
+// \note All elements are expected to be in the range \f$[0..\infty)\f$. No runtime checks are
+// performed to assert this precondition!
 */
 template< typename VT  // Type of the dense vector
         , bool TF >    // Transpose flag
@@ -1375,7 +1390,7 @@ inline const DVecForEachExpr<VT,Log,TF> log( const DenseVector<VT,TF>& dv )
 /*!\brief Computes the common logarithm for each single element of the dense vector \a dv.
 // \ingroup dense_vector
 //
-// \param dv The input vector.
+// \param dv The input vector; all elements must be in the range \f$[0..\infty)\f$.
 // \return The common logarithm of each single element of \a dv.
 //
 // The \a log10() function computes common logarithm for each element of the input vector \a dv.
@@ -1387,6 +1402,9 @@ inline const DVecForEachExpr<VT,Log,TF> log( const DenseVector<VT,TF>& dv )
    // ... Resizing and initialization
    b = log10( a );
    \endcode
+
+// \note All elements are expected to be in the range \f$[0..\infty)\f$. No runtime checks are
+// performed to assert this precondition!
 */
 template< typename VT  // Type of the dense vector
         , bool TF >    // Transpose flag
@@ -1431,7 +1449,7 @@ inline const DVecForEachExpr<VT,Sin,TF> sin( const DenseVector<VT,TF>& dv )
 /*!\brief Computes the inverse sine for each single element of the dense vector \a dv.
 // \ingroup dense_vector
 //
-// \param dv The input vector.
+// \param dv The input vector; all elements must be in the range \f$[-1..1]\f$.
 // \return The inverse sine of each single element of \a dv.
 //
 // The \a asin() function computes the inverse sine for each element of the input vector \a dv.
@@ -1443,6 +1461,9 @@ inline const DVecForEachExpr<VT,Sin,TF> sin( const DenseVector<VT,TF>& dv )
    // ... Resizing and initialization
    b = asin( a );
    \endcode
+
+// \note All elements are expected to be in the range \f$[-1..1]\f$. No runtime checks are
+// performed to assert this precondition!
 */
 template< typename VT  // Type of the dense vector
         , bool TF >    // Transpose flag
@@ -1543,7 +1564,7 @@ inline const DVecForEachExpr<VT,Cos,TF> cos( const DenseVector<VT,TF>& dv )
 /*!\brief Computes the inverse cosine for each single element of the dense vector \a dv.
 // \ingroup dense_vector
 //
-// \param dv The input vector.
+// \param dv The input vector; all elements must be in the range \f$[-1..1]\f$.
 // \return The inverse cosine of each single element of \a dv.
 //
 // The \a acos() function computes the inverse cosine for each element of the input vector \a dv.
@@ -1555,6 +1576,9 @@ inline const DVecForEachExpr<VT,Cos,TF> cos( const DenseVector<VT,TF>& dv )
    // ... Resizing and initialization
    b = acos( a );
    \endcode
+
+// \note All elements are expected to be in the range \f$[-1..1]\f$. No runtime checks are
+// performed to assert this precondition!
 */
 template< typename VT  // Type of the dense vector
         , bool TF >    // Transpose flag
@@ -1599,7 +1623,7 @@ inline const DVecForEachExpr<VT,Cosh,TF> cosh( const DenseVector<VT,TF>& dv )
 /*!\brief Computes the inverse hyperbolic cosine for each single element of the dense vector \a dv.
 // \ingroup dense_vector
 //
-// \param dv The input vector.
+// \param dv The input vector; all elements must be in the range \f$[1..\infty)\f$.
 // \return The inverse hyperbolic cosine of each single element of \a dv.
 //
 // The \a acosh() function computes the inverse hyperbolic cosine for each element of the input
@@ -1611,6 +1635,9 @@ inline const DVecForEachExpr<VT,Cosh,TF> cosh( const DenseVector<VT,TF>& dv )
    // ... Resizing and initialization
    b = acosh( a );
    \endcode
+
+// \note All elements are expected to be in the range \f$[1..\infty)\f$. No runtime checks are
+// performed to assert this precondition!
 */
 template< typename VT  // Type of the dense vector
         , bool TF >    // Transpose flag
@@ -1683,7 +1710,7 @@ inline const DVecForEachExpr<VT,Atan,TF> atan( const DenseVector<VT,TF>& dv )
 /*!\brief Computes the hyperbolic tangent for each single element of the dense vector \a dv.
 // \ingroup dense_vector
 //
-// \param dv The input vector.
+// \param dv The input vector; all elements must be in the range \f$[-1..1]\f$.
 // \return The hyperbolic tangent of each single element of \a dv.
 //
 // The \a tanh() function computes the hyperbolic tangent for each element of the input vector
@@ -1695,6 +1722,9 @@ inline const DVecForEachExpr<VT,Atan,TF> atan( const DenseVector<VT,TF>& dv )
    // ... Resizing and initialization
    b = tanh( a );
    \endcode
+
+// \note All elements are expected to be in the range \f$[-1..1]\f$. No runtime checks are
+// performed to assert this precondition!
 */
 template< typename VT  // Type of the dense vector
         , bool TF >    // Transpose flag
@@ -1711,7 +1741,7 @@ inline const DVecForEachExpr<VT,Tanh,TF> tanh( const DenseVector<VT,TF>& dv )
 /*!\brief Computes the inverse hyperbolic tangent for each single element of the dense vector \a dv.
 // \ingroup dense_vector
 //
-// \param dv The input vector.
+// \param dv The input vector; all elements must be in the range \f$[-1..1]\f$.
 // \return The inverse hyperbolic tangent of each single element of \a dv.
 //
 // The \a atanh() function computes the inverse hyperbolic tangent for each element of the input
@@ -1723,6 +1753,9 @@ inline const DVecForEachExpr<VT,Tanh,TF> tanh( const DenseVector<VT,TF>& dv )
    // ... Resizing and initialization
    b = atanh( a );
    \endcode
+
+// \note All elements are expected to be in the range \f$[-1..1]\f$. No runtime checks are
+// performed to assert this precondition!
 */
 template< typename VT  // Type of the dense vector
         , bool TF >    // Transpose flag
