@@ -1241,16 +1241,16 @@ inline const DMatForEachExpr<MT,Ceil,SO> ceil( const DenseMatrix<MT,SO>& dm )
    B = pow( A, 4.2 );
    \endcode
 */
-template< typename MT   // Type of the dense matrix
-        , bool SO       // Storage order
-        , typename T >  // Type of the exponent
-inline const DMatForEachExpr<MT,Pow<T>,SO> pow( const DenseMatrix<MT,SO>& dm, T exp )
+template< typename MT    // Type of the dense matrix
+        , bool SO        // Storage order
+        , typename ET >  // Type of the exponent
+inline const DMatForEachExpr<MT,Pow<ET>,SO> pow( const DenseMatrix<MT,SO>& dm, ET exp )
 {
    BLAZE_FUNCTION_TRACE;
 
-   BLAZE_CONSTRAINT_MUST_BE_NUMERIC_TYPE( T );
+   BLAZE_CONSTRAINT_MUST_BE_NUMERIC_TYPE( ET );
 
-   return DMatForEachExpr<MT,Pow<T>,SO>( ~dm, Pow<T>( exp ) );
+   return DMatForEachExpr<MT,Pow<ET>,SO>( ~dm, Pow<ET>( exp ) );
 }
 //*************************************************************************************************
 

@@ -1029,16 +1029,16 @@ inline const SVecForEachExpr<VT,Ceil,TF> ceil( const SparseVector<VT,TF>& sv )
    B = pow( A, 4.2 );
    \endcode
 */
-template< typename VT   // Type of the sparse vector
-        , bool TF       // Transpose flag
-        , typename T >  // Type of the exponent
-inline const SVecForEachExpr<VT,Pow<T>,TF> pow( const SparseVector<VT,TF>& sv, T exp )
+template< typename VT    // Type of the sparse vector
+        , bool TF        // Transpose flag
+        , typename ET >  // Type of the exponent
+inline const SVecForEachExpr<VT,Pow<ET>,TF> pow( const SparseVector<VT,TF>& sv, ET exp )
 {
    BLAZE_FUNCTION_TRACE;
 
-   BLAZE_CONSTRAINT_MUST_BE_NUMERIC_TYPE( T );
+   BLAZE_CONSTRAINT_MUST_BE_NUMERIC_TYPE( ET );
 
-   return SVecForEachExpr<VT,Pow<T>,TF>( ~sv, Pow<T>( exp ) );
+   return SVecForEachExpr<VT,Pow<ET>,TF>( ~sv, Pow<ET>( exp ) );
 }
 //*************************************************************************************************
 

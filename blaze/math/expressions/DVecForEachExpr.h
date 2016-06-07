@@ -1313,16 +1313,16 @@ inline const DVecForEachExpr<VT,Ceil,TF> ceil( const DenseVector<VT,TF>& dv )
    B = pow( A, 4.2 );
    \endcode
 */
-template< typename VT   // Type of the dense vector
-        , bool TF       // Transpose flag
-        , typename T >  // Type of the exponent
-inline const DVecForEachExpr<VT,Pow<T>,TF> pow( const DenseVector<VT,TF>& dv, T exp )
+template< typename VT    // Type of the dense vector
+        , bool TF        // Transpose flag
+        , typename ET >  // Type of the exponent
+inline const DVecForEachExpr<VT,Pow<ET>,TF> pow( const DenseVector<VT,TF>& dv, ET exp )
 {
    BLAZE_FUNCTION_TRACE;
 
-   BLAZE_CONSTRAINT_MUST_BE_NUMERIC_TYPE( T );
+   BLAZE_CONSTRAINT_MUST_BE_NUMERIC_TYPE( ET );
 
-   return DVecForEachExpr<VT,Pow<T>,TF>( ~dv, Pow<T>( exp ) );
+   return DVecForEachExpr<VT,Pow<ET>,TF>( ~dv, Pow<ET>( exp ) );
 }
 //*************************************************************************************************
 

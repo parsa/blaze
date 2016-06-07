@@ -1072,16 +1072,16 @@ inline const SMatForEachExpr<MT,Ceil,SO> ceil( const SparseMatrix<MT,SO>& sm )
    B = pow( A, 4.2 );
    \endcode
 */
-template< typename MT   // Type of the sparse matrix
-        , bool SO       // Storage order
-        , typename T >  // Type of the exponent
-inline const SMatForEachExpr<MT,Pow<T>,SO> pow( const SparseMatrix<MT,SO>& sm, T exp )
+template< typename MT    // Type of the sparse matrix
+        , bool SO        // Storage order
+        , typename ET >  // Type of the exponent
+inline const SMatForEachExpr<MT,Pow<ET>,SO> pow( const SparseMatrix<MT,SO>& sm, ET exp )
 {
    BLAZE_FUNCTION_TRACE;
 
-   BLAZE_CONSTRAINT_MUST_BE_NUMERIC_TYPE( T );
+   BLAZE_CONSTRAINT_MUST_BE_NUMERIC_TYPE( ET );
 
-   return SMatForEachExpr<MT,Pow<T>,SO>( ~sm, Pow<T>( exp ) );
+   return SMatForEachExpr<MT,Pow<ET>,SO>( ~sm, Pow<ET>( exp ) );
 }
 //*************************************************************************************************
 

@@ -62,21 +62,21 @@ namespace blaze {
 /*!\brief Generic wrapper for the pow() function.
 // \ingroup functors
 */
-template< typename Exponent >  // Type of the exponent
+template< typename ET >  // Type of the exponent
 struct Pow
 {
  public:
    //**Type definitions****************************************************************************
-   typedef SIMDTrait_<Exponent>  SIMDExponent;  //!< The SIMD exponent type.
+   typedef SIMDTrait_<ET>  SIMDET;  //!< The SIMD exponent type.
    //**********************************************************************************************
 
    //**********************************************************************************************
    /*!\brief Constructor of the Pow functor.
    //
-   // \param exponent The exponent.
+   // \param exp The exponent.
    */
-   explicit inline Pow( Exponent exponent )
-      : exp_    ( exponent    )  // The scalar exponent
+   explicit inline Pow( ET exp )
+      : exp_    ( exp )          // The scalar exponent
       , simdExp_( set( exp_ ) )  // The SIMD exponent
    {}
    //**********************************************************************************************
@@ -89,7 +89,7 @@ struct Pow
    */
    template< typename T >
    BLAZE_ALWAYS_INLINE auto operator()( const T& a ) const
-      -> decltype( pow( a, std::declval<Exponent>() ) )
+      -> decltype( pow( a, std::declval<ET>() ) )
    {
       return pow( a, exp_ );
    }
@@ -101,7 +101,7 @@ struct Pow
    // \return \a true in case SIMD is enabled for the data type \a T, \a false if not.
    */
    template< typename T >
-   static constexpr bool simdEnabled() { return IsSame<T,Exponent>::value && HasSIMDPow<T>::value; }
+   static constexpr bool simdEnabled() { return IsSame<T,ET>::value && HasSIMDPow<T>::value; }
    //**********************************************************************************************
 
    //**********************************************************************************************
@@ -112,7 +112,7 @@ struct Pow
    */
    template< typename T >
    BLAZE_ALWAYS_INLINE auto load( const T& a ) const
-      -> decltype( pow( a, std::declval<SIMDExponent>() ) )
+      -> decltype( pow( a, std::declval<SIMDET>() ) )
    {
       return pow( a, simdExp_ );
    }
@@ -120,13 +120,13 @@ struct Pow
 
  private:
    //**Member variables****************************************************************************
-   Exponent     exp_;      //!< The scalar exponent.
-   SIMDExponent simdExp_;  //!< The SIMD exponent.
+   ET     exp_;      //!< The scalar exponent.
+   SIMDET simdExp_;  //!< The SIMD exponent.
    //**********************************************************************************************
 
    //**Compile time checks*************************************************************************
    /*! \cond BLAZE_INTERNAL */
-   BLAZE_CONSTRAINT_MUST_BE_NUMERIC_TYPE( Exponent );
+   BLAZE_CONSTRAINT_MUST_BE_NUMERIC_TYPE( ET );
    /*! \endcond */
    //**********************************************************************************************
 };
