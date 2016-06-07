@@ -58,6 +58,7 @@
 #include <blaze/math/traits/AddTrait.h>
 #include <blaze/math/traits/ColumnTrait.h>
 #include <blaze/math/traits/DivTrait.h>
+#include <blaze/math/traits/ForEachTrait.h>
 #include <blaze/math/traits/MathTrait.h>
 #include <blaze/math/traits/MultTrait.h>
 #include <blaze/math/traits/RowTrait.h>
@@ -1567,16 +1568,16 @@ template< typename MT1, bool SO1, bool DF1, typename MT2, bool SO2, bool DF2, bo
 struct AddTrait< HermitianMatrix<MT1,SO1,DF1>, SymmetricMatrix<MT2,SO2,DF2,NF> >
 {
    using Type = If_< IsSymmetric< HermitianMatrix<MT1,SO1,DF1> >
-              , SymmetricMatrix< AddTrait_<MT1,MT2> >
-              , AddTrait_<MT1,MT2> >;
+                   , SymmetricMatrix< AddTrait_<MT1,MT2> >
+                   , AddTrait_<MT1,MT2> >;
 };
 
 template< typename MT1, bool SO1, bool DF1, typename MT2, bool SO2, bool DF2 >
 struct AddTrait< SymmetricMatrix<MT1,SO1,DF1>, HermitianMatrix<MT2,SO2,DF2> >
 {
    using Type = If_< IsSymmetric< HermitianMatrix<MT2,SO2,DF2> >
-              , SymmetricMatrix< AddTrait_<MT1,MT2> >
-              , AddTrait_<MT1,MT2> >;
+                   , SymmetricMatrix< AddTrait_<MT1,MT2> >
+                   , AddTrait_<MT1,MT2> >;
 };
 
 template< typename MT1, bool SO1, bool DF1, typename MT2, bool SO2, bool DF2 >
@@ -1662,16 +1663,16 @@ template< typename MT1, bool SO1, bool DF1, typename MT2, bool SO2, bool DF2 >
 struct SubTrait< HermitianMatrix<MT1,SO1,DF1>, SymmetricMatrix<MT2,SO2,DF2> >
 {
    using Type = If_< IsSymmetric< HermitianMatrix<MT1,SO1,DF1> >
-              , SymmetricMatrix< SubTrait_<MT1,MT2> >
-              , SubTrait_<MT1,MT2> >;
+                   , SymmetricMatrix< SubTrait_<MT1,MT2> >
+                   , SubTrait_<MT1,MT2> >;
 };
 
 template< typename MT1, bool SO1, bool DF1, typename MT2, bool SO2, bool DF2 >
 struct SubTrait< SymmetricMatrix<MT1,SO1,DF1>, HermitianMatrix<MT2,SO2,DF2> >
 {
    using Type = If_< IsSymmetric< HermitianMatrix<MT2,SO2,DF2> >
-              , SymmetricMatrix< SubTrait_<MT1,MT2> >
-              , SubTrait_<MT1,MT2> >;
+                   , SymmetricMatrix< SubTrait_<MT1,MT2> >
+                   , SubTrait_<MT1,MT2> >;
 };
 
 template< typename MT1, bool SO1, bool DF1, typename MT2, bool SO2, bool DF2 >
@@ -1860,6 +1861,189 @@ template< typename MT, bool SO, bool DF, typename T >
 struct DivTrait< HermitianMatrix<MT,SO,DF>, T, EnableIf_< IsNumeric<T> > >
 {
    using Type = HermitianMatrix< DivTrait_<MT,T> >;
+};
+/*! \endcond */
+//*************************************************************************************************
+
+
+
+
+//=================================================================================================
+//
+//  FOREACHTRAIT SPECIALIZATIONS
+//
+//=================================================================================================
+
+//*************************************************************************************************
+/*! \cond BLAZE_INTERNAL */
+template< typename MT, bool SO, bool DF >
+struct ForEachTrait< HermitianMatrix<MT,SO,DF>, Abs >
+{
+   using Type = HermitianMatrix< ForEachTrait_<MT,Abs> >;
+};
+
+template< typename MT, bool SO, bool DF >
+struct ForEachTrait< HermitianMatrix<MT,SO,DF>, Floor >
+{
+   using Type = HermitianMatrix< ForEachTrait_<MT,Floor> >;
+};
+
+template< typename MT, bool SO, bool DF >
+struct ForEachTrait< HermitianMatrix<MT,SO,DF>, Ceil >
+{
+   using Type = HermitianMatrix< ForEachTrait_<MT,Ceil> >;
+};
+
+template< typename MT, bool SO, bool DF >
+struct ForEachTrait< HermitianMatrix<MT,SO,DF>, Conj >
+{
+   using Type = HermitianMatrix< ForEachTrait_<MT,Conj> >;
+};
+
+template< typename MT, bool SO, bool DF >
+struct ForEachTrait< HermitianMatrix<MT,SO,DF>, Real >
+{
+   using Type = HermitianMatrix< ForEachTrait_<MT,Real> >;
+};
+
+template< typename MT, bool SO, bool DF >
+struct ForEachTrait< HermitianMatrix<MT,SO,DF>, Imag >
+{
+   using Type = If_< IsBuiltin< ElementType_<MT> >
+                   , HermitianMatrix< ForEachTrait_<MT,Imag> >
+                   , ForEachTrait_<MT,Imag> >;
+};
+
+template< typename MT, bool SO, bool DF >
+struct ForEachTrait< HermitianMatrix<MT,SO,DF>, Sqrt >
+{
+   using Type = HermitianMatrix< ForEachTrait_<MT,Sqrt> >;
+};
+
+template< typename MT, bool SO, bool DF >
+struct ForEachTrait< HermitianMatrix<MT,SO,DF>, InvSqrt >
+{
+   using Type = HermitianMatrix< ForEachTrait_<MT,InvSqrt> >;
+};
+
+template< typename MT, bool SO, bool DF >
+struct ForEachTrait< HermitianMatrix<MT,SO,DF>, Cbrt >
+{
+   using Type = HermitianMatrix< ForEachTrait_<MT,Cbrt> >;
+};
+
+template< typename MT, bool SO, bool DF >
+struct ForEachTrait< HermitianMatrix<MT,SO,DF>, InvCbrt >
+{
+   using Type = HermitianMatrix< ForEachTrait_<MT,InvCbrt> >;
+};
+
+template< typename MT, bool SO, bool DF, typename ET >
+struct ForEachTrait< HermitianMatrix<MT,SO,DF>, Pow<ET> >
+{
+   using Type = HermitianMatrix< ForEachTrait_< MT, Pow<ET> > >;
+};
+
+template< typename MT, bool SO, bool DF >
+struct ForEachTrait< HermitianMatrix<MT,SO,DF>, Exp >
+{
+   using Type = HermitianMatrix< ForEachTrait_< MT, Exp > >;
+};
+
+template< typename MT, bool SO, bool DF >
+struct ForEachTrait< HermitianMatrix<MT,SO,DF>, Log >
+{
+   using Type = HermitianMatrix< ForEachTrait_< MT, Log > >;
+};
+
+template< typename MT, bool SO, bool DF >
+struct ForEachTrait< HermitianMatrix<MT,SO,DF>, Log10 >
+{
+   using Type = HermitianMatrix< ForEachTrait_< MT, Log10 > >;
+};
+
+template< typename MT, bool SO, bool DF >
+struct ForEachTrait< HermitianMatrix<MT,SO,DF>, Sin >
+{
+   using Type = HermitianMatrix< ForEachTrait_< MT, Sin > >;
+};
+
+template< typename MT, bool SO, bool DF >
+struct ForEachTrait< HermitianMatrix<MT,SO,DF>, Asin >
+{
+   using Type = HermitianMatrix< ForEachTrait_< MT, Asin > >;
+};
+
+template< typename MT, bool SO, bool DF >
+struct ForEachTrait< HermitianMatrix<MT,SO,DF>, Sinh >
+{
+   using Type = HermitianMatrix< ForEachTrait_< MT, Sinh > >;
+};
+
+template< typename MT, bool SO, bool DF >
+struct ForEachTrait< HermitianMatrix<MT,SO,DF>, Asinh >
+{
+   using Type = HermitianMatrix< ForEachTrait_< MT, Asinh > >;
+};
+
+template< typename MT, bool SO, bool DF >
+struct ForEachTrait< HermitianMatrix<MT,SO,DF>, Cos >
+{
+   using Type = HermitianMatrix< ForEachTrait_< MT, Cos > >;
+};
+
+template< typename MT, bool SO, bool DF >
+struct ForEachTrait< HermitianMatrix<MT,SO,DF>, Acos >
+{
+   using Type = HermitianMatrix< ForEachTrait_< MT, Acos > >;
+};
+
+template< typename MT, bool SO, bool DF >
+struct ForEachTrait< HermitianMatrix<MT,SO,DF>, Cosh >
+{
+   using Type = HermitianMatrix< ForEachTrait_< MT, Cosh > >;
+};
+
+template< typename MT, bool SO, bool DF >
+struct ForEachTrait< HermitianMatrix<MT,SO,DF>, Acosh >
+{
+   using Type = HermitianMatrix< ForEachTrait_< MT, Acosh > >;
+};
+
+template< typename MT, bool SO, bool DF >
+struct ForEachTrait< HermitianMatrix<MT,SO,DF>, Tan >
+{
+   using Type = HermitianMatrix< ForEachTrait_< MT, Tan > >;
+};
+
+template< typename MT, bool SO, bool DF >
+struct ForEachTrait< HermitianMatrix<MT,SO,DF>, Atan >
+{
+   using Type = HermitianMatrix< ForEachTrait_< MT, Atan > >;
+};
+
+template< typename MT, bool SO, bool DF >
+struct ForEachTrait< HermitianMatrix<MT,SO,DF>, Tanh >
+{
+   using Type = HermitianMatrix< ForEachTrait_< MT, Tanh > >;
+};
+
+template< typename MT, bool SO, bool DF >
+struct ForEachTrait< HermitianMatrix<MT,SO,DF>, Atanh >
+{
+   using Type = HermitianMatrix< ForEachTrait_< MT, Atanh > >;
+};
+
+template< typename MT, bool SO, bool DF >
+struct ForEachTrait< HermitianMatrix<MT,SO,DF>, Erf >
+{
+   using Type = HermitianMatrix< ForEachTrait_<MT,Erf> >;
+};
+
+template< typename MT, bool SO, bool DF >
+struct ForEachTrait< HermitianMatrix<MT,SO,DF>, Erfc >
+{
+   using Type = HermitianMatrix< ForEachTrait_<MT,Erfc> >;
 };
 /*! \endcond */
 //*************************************************************************************************
