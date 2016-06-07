@@ -63,6 +63,7 @@
 #include <blaze/math/traits/ColumnTrait.h>
 #include <blaze/math/traits/DerestrictTrait.h>
 #include <blaze/math/traits/DivTrait.h>
+#include <blaze/math/traits/ForEachTrait.h>
 #include <blaze/math/traits/MathTrait.h>
 #include <blaze/math/traits/MultTrait.h>
 #include <blaze/math/traits/RowTrait.h>
@@ -1984,6 +1985,109 @@ template< typename MT, bool SO, bool DF, typename T >
 struct DivTrait< LowerMatrix<MT,SO,DF>, T, EnableIf_< IsNumeric<T> > >
 {
    using Type = LowerMatrix< DivTrait_<MT,T> >;
+};
+/*! \endcond */
+//*************************************************************************************************
+
+
+
+
+//=================================================================================================
+//
+//  FOREACHTRAIT SPECIALIZATIONS
+//
+//=================================================================================================
+
+//*************************************************************************************************
+/*! \cond BLAZE_INTERNAL */
+template< typename MT, bool SO, bool DF >
+struct ForEachTrait< LowerMatrix<MT,SO,DF>, Abs >
+{
+   using Type = LowerMatrix< ForEachTrait_<MT,Abs> >;
+};
+
+template< typename MT, bool SO, bool DF >
+struct ForEachTrait< LowerMatrix<MT,SO,DF>, Floor >
+{
+   using Type = LowerMatrix< ForEachTrait_<MT,Floor> >;
+};
+
+template< typename MT, bool SO, bool DF >
+struct ForEachTrait< LowerMatrix<MT,SO,DF>, Ceil >
+{
+   using Type = LowerMatrix< ForEachTrait_<MT,Ceil> >;
+};
+
+template< typename MT, bool SO, bool DF >
+struct ForEachTrait< LowerMatrix<MT,SO,DF>, Conj >
+{
+   using Type = LowerMatrix< ForEachTrait_<MT,Conj> >;
+};
+
+template< typename MT, bool SO, bool DF >
+struct ForEachTrait< LowerMatrix<MT,SO,DF>, Real >
+{
+   using Type = LowerMatrix< ForEachTrait_<MT,Real> >;
+};
+
+template< typename MT, bool SO, bool DF >
+struct ForEachTrait< LowerMatrix<MT,SO,DF>, Imag >
+{
+   using Type = LowerMatrix< ForEachTrait_<MT,Imag> >;
+};
+
+template< typename MT, bool SO, bool DF >
+struct ForEachTrait< LowerMatrix<MT,SO,DF>, Sin >
+{
+   using Type = LowerMatrix< ForEachTrait_<MT,Sin> >;
+};
+
+template< typename MT, bool SO, bool DF >
+struct ForEachTrait< LowerMatrix<MT,SO,DF>, Asin >
+{
+   using Type = LowerMatrix< ForEachTrait_<MT,Asin> >;
+};
+
+template< typename MT, bool SO, bool DF >
+struct ForEachTrait< LowerMatrix<MT,SO,DF>, Sinh >
+{
+   using Type = LowerMatrix< ForEachTrait_<MT,Sinh> >;
+};
+
+template< typename MT, bool SO, bool DF >
+struct ForEachTrait< LowerMatrix<MT,SO,DF>, Asinh >
+{
+   using Type = LowerMatrix< ForEachTrait_<MT,Asinh> >;
+};
+
+template< typename MT, bool SO, bool DF >
+struct ForEachTrait< LowerMatrix<MT,SO,DF>, Tan >
+{
+   using Type = LowerMatrix< ForEachTrait_<MT,Tan> >;
+};
+
+template< typename MT, bool SO, bool DF >
+struct ForEachTrait< LowerMatrix<MT,SO,DF>, Atan >
+{
+   using Type = LowerMatrix< ForEachTrait_<MT,Atan> >;
+};
+
+template< typename MT, bool SO, bool DF >
+struct ForEachTrait< LowerMatrix<MT,SO,DF>, Tanh >
+{
+   using Type = LowerMatrix< ForEachTrait_<MT,Tanh> >;
+};
+
+template< typename MT, bool SO, bool DF >
+struct ForEachTrait< LowerMatrix<MT,SO,DF>, Atanh >
+{
+   using Type = LowerMatrix< ForEachTrait_<MT,Atanh> >;
+};
+
+template< typename MT, bool SO, bool DF >
+struct ForEachTrait< LowerMatrix<MT,SO,DF>, Erf >
+{
+   using Type = LowerMatrix< ForEachTrait_<MT,Erf> >;
 };
 /*! \endcond */
 //*************************************************************************************************
