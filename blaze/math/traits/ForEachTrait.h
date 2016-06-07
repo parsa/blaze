@@ -43,6 +43,7 @@
 #include <blaze/math/Aliases.h>
 #include <blaze/math/typetraits/IsMatrix.h>
 #include <blaze/math/typetraits/IsVector.h>
+#include <blaze/math/typetraits/RemoveAdaptor.h>
 #include <blaze/util/DisableIf.h>
 #include <blaze/util/EnableIf.h>
 #include <blaze/util/InvalidType.h>
@@ -88,12 +89,13 @@ struct ForEachTrait
       template< typename U >
       static EnableIf_< Or< IsVector<U>, IsMatrix<U> >, ResultType_<U> > test( U&& );
 
-      typedef ResultType_<T>  RT;
-      typedef ReturnType_<T>  RN;
+      using RT = RemoveAdaptor_< ResultType_<T> >;
+      using RN = ReturnType_<T>;
 
-      typedef decltype( std::declval<OP>()( std::declval<RN>() ) )  OT;
-      typedef decltype( test( std::declval<OT>() ) )  ET;
-      typedef typename RT::template Rebind<ET>::Other  Type;
+      using OT = decltype( std::declval<OP>()( std::declval<RN>() ) );
+      using ET = decltype( test( std::declval<OT>() ) );
+
+      using Type = typename RT::template Rebind<ET>::Other;
    };
    /*! \endcond */
    //**********************************************************************************************
