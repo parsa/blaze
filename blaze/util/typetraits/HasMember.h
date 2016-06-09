@@ -101,28 +101,28 @@ template < typename TYPE1230 >                                                  
 class TYPE_TRAIT_NAME##HELPER                                                                \
 {                                                                                            \
  private:                                                                                    \
-   using YES = char[1];                                                                      \
-   using NO  = char[2];                                                                      \
+   using Yes = char[1];                                                                      \
+   using No  = char[2];                                                                      \
                                                                                              \
-   struct BASE {};                                                                           \
+   struct Base {};                                                                           \
                                                                                              \
-   template< typename U, U > struct CHECK;                                                   \
+   template< typename U, U > struct Check;                                                   \
                                                                                              \
-   struct FALLBACK { int MEMBER_NAME; };                                                     \
+   struct Fallback { int MEMBER_NAME; };                                                     \
                                                                                              \
-   struct DERIVED                                                                            \
-      : blaze::If< blaze::IsBuiltin<TYPE1230>, BASE, TYPE1230 >::Type                        \
-      , FALLBACK                                                                             \
+   struct Derived                                                                            \
+      : blaze::If< blaze::IsBuiltin<TYPE1230>, Base, TYPE1230 >::Type                        \
+      , Fallback                                                                             \
    {};                                                                                       \
                                                                                              \
    template < typename U >                                                                   \
-   static NO& TEST( CHECK<int FALLBACK::*, &U::MEMBER_NAME>* );                              \
+   static No& test( Check<int Fallback::*, &U::MEMBER_NAME>* );                              \
                                                                                              \
    template < typename U >                                                                   \
-   static YES& TEST( ... );                                                                  \
+   static Yes& test( ... );                                                                  \
                                                                                              \
  public:                                                                                     \
-   static constexpr bool value = ( sizeof( TEST<DERIVED>( nullptr ) ) == sizeof( YES ) );    \
+   enum : bool { value = ( sizeof( test<Derived>( nullptr ) ) == sizeof( Yes ) ) };          \
 };                                                                                           \
                                                                                              \
 template< typename TYPE1230 >                                                                \
@@ -185,26 +185,26 @@ template < typename TYPE1231 >                                                  
 struct TYPE_TRAIT_NAME##HELPER                                                             \
 {                                                                                          \
  private:                                                                                  \
-   using YES = char[1];                                                                    \
-   using NO  = char[2];                                                                    \
+   using Yes = char[1];                                                                    \
+   using No  = char[2];                                                                    \
                                                                                            \
-   struct BASE {};                                                                         \
+   struct Base {};                                                                         \
                                                                                            \
-   struct FALLBACK { struct MEMBER_NAME { }; };                                            \
+   struct Fallback { struct MEMBER_NAME { }; };                                            \
                                                                                            \
-   struct DERIVED                                                                          \
-      : blaze::If< blaze::IsBuiltin<TYPE1231>, BASE, TYPE1231 >::Type                      \
-      , FALLBACK                                                                           \
+   struct Derived                                                                          \
+      : blaze::If< blaze::IsBuiltin<TYPE1231>, Base, TYPE1231 >::Type                      \
+      , Fallback                                                                           \
    {};                                                                                     \
                                                                                            \
    template < class U >                                                                    \
-   static NO& TEST( typename U::MEMBER_NAME* );                                            \
+   static No& test( typename U::MEMBER_NAME* );                                            \
                                                                                            \
    template < typename U >                                                                 \
-   static YES& TEST( U* );                                                                 \
+   static Yes& test( U* );                                                                 \
                                                                                            \
  public:                                                                                   \
-   static constexpr bool value = ( sizeof( TEST<DERIVED>( nullptr ) ) == sizeof( YES ) );  \
+   enum : bool { value = ( sizeof( test<Derived>( nullptr ) ) == sizeof( Yes ) ) };        \
 };                                                                                         \
                                                                                            \
 template< typename TYPE1231 >                                                              \
