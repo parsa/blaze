@@ -4134,7 +4134,7 @@ void OperationTest<VT,MT>::testCustomOperation( OP op, const std::string& name )
    // Customized multiplication with division assignment
    //=====================================================================================
 
-   if( blaze::isDivisor( lhs_ * rhs_ ) )
+   if( blaze::isDivisor( op( lhs_ * rhs_ ) ) )
    {
       // Customized multiplication with division assignment with the given vector/matrix
       {

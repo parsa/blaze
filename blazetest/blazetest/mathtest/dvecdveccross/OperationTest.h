@@ -3949,7 +3949,7 @@ void OperationTest<VT1,VT2>::testCustomOperation( OP op, const std::string& name
    // Customized cross product with division assignment
    //=====================================================================================
 
-   if( blaze::isDivisor( lhs_ % rhs_ ) )
+   if( blaze::isDivisor( op( lhs_ % rhs_ ) ) )
    {
       // Customized cross product with division assignment with the given vectors
       {
