@@ -49,8 +49,8 @@
 #include <blaze/math/shims/IsDefault.h>
 #include <blaze/math/shims/IsDivisor.h>
 #include <blaze/math/shims/IsNaN.h>
+#include <blaze/math/shims/Sqrt.h>
 #include <blaze/math/shims/Square.h>
-#include <blaze/math/traits/CMathTrait.h>
 #include <blaze/math/TransposeFlag.h>
 #include <blaze/util/Assert.h>
 #include <blaze/util/constraints/Numeric.h>
@@ -375,7 +375,7 @@ template< typename VT, bool TF >
 bool isUniform( const DenseVector<VT,TF>& dv );
 
 template< typename VT, bool TF >
-CMathTrait_< ElementType_<VT> > length( const DenseVector<VT,TF>& dv );
+inline auto length( const DenseVector<VT,TF>& dv ) -> decltype( sqrt( sqrLength( ~dv ) ) );
 
 template< typename VT, bool TF >
 const ElementType_<VT> sqrLength( const DenseVector<VT,TF>& dv );
@@ -510,12 +510,12 @@ bool isUniform( const DenseVector<VT,TF>& dv )
 // \param dv The given dense vector.
 // \return The length of the dense vector.
 //
-// This function calculates the actual length of the dense vector. The return type of the length()
-// function depends on the actual element type of the vector instance:
+// This function calculates the actual length of the dense vector. The return type of the
+// length() function depends on the actual element type of the vector instance:
 //
 // <table border="0" cellspacing="0" cellpadding="1">
 //    <tr>
-//       <td width="250px"> \b ElementType </td>
+//       <td width="250px"> \b Type </td>
 //       <td width="100px"> \b LengthType </td>
 //    </tr>
 //    <tr>
@@ -530,25 +530,21 @@ bool isUniform( const DenseVector<VT,TF>& dv )
 //       <td>long double</td>
 //       <td>long double</td>
 //    </tr>
+//    <tr>
+//       <td>complex<T></td>
+//       <td>complex<T></td>
+//    </tr>
 // </table>
 //
 // \note This operation is only defined for numeric data types. In case the element type is
 // not a numeric data type (i.e. a user defined data type or boolean) the attempt to use the
-// length() function results in a compile time error!
+// sqrLength() function results in a compile time error!
 */
 template< typename VT  // Type of the dense vector
         , bool TF >    // Transpose flag
-CMathTrait_< ElementType_<VT> > length( const DenseVector<VT,TF>& dv )
+inline auto length( const DenseVector<VT,TF>& dv ) -> decltype( sqrt( sqrLength( ~dv ) ) )
 {
-   typedef ElementType_<VT>          ElementType;
-   typedef CMathTrait_<ElementType>  LengthType;
-
-   BLAZE_CONSTRAINT_MUST_BE_NUMERIC_TYPE( ElementType );
-
-   LengthType sum( 0 );
-   for( size_t i=0UL; i<(~dv).size(); ++i )
-      sum += sq( (~dv)[i] );
-   return std::sqrt( sum );
+   return sqrt( sqrLength( ~dv ) );
 }
 //*************************************************************************************************
 

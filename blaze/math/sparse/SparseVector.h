@@ -47,8 +47,8 @@
 #include <blaze/math/shims/Equal.h>
 #include <blaze/math/shims/IsDefault.h>
 #include <blaze/math/shims/IsNaN.h>
+#include <blaze/math/shims/Sqrt.h>
 #include <blaze/math/shims/Square.h>
-#include <blaze/math/traits/CMathTrait.h>
 #include <blaze/math/TransposeFlag.h>
 #include <blaze/util/constraints/Numeric.h>
 #include <blaze/util/Assert.h>
@@ -178,7 +178,7 @@ template< typename VT, bool TF >
 bool isUniform( const SparseVector<VT,TF>& dv );
 
 template< typename VT, bool TF >
-CMathTrait_< ElementType_<VT> > length( const SparseVector<VT,TF>& sv );
+inline auto length( const SparseVector<VT,TF>& sv ) -> decltype( sqrt( sqrLength( ~sv ) ) );
 
 template< typename VT, bool TF >
 const ElementType_<VT> sqrLength( const SparseVector<VT,TF>& sv );
@@ -321,6 +321,10 @@ bool isUniform( const SparseVector<VT,TF>& sv )
 //       <td>long double</td>
 //       <td>long double</td>
 //    </tr>
+//    <tr>
+//       <td>complex<T></td>
+//       <td>complex<T></td>
+//    </tr>
 // </table>
 //
 // \note This operation is only defined for numeric data types. In case the element type is
@@ -329,18 +333,9 @@ bool isUniform( const SparseVector<VT,TF>& sv )
 */
 template< typename VT  // Type of the sparse vector
         , bool TF >    // Transpose flag
-CMathTrait_< ElementType_<VT> > length( const SparseVector<VT,TF>& sv )
+inline auto length( const SparseVector<VT,TF>& sv ) -> decltype( sqrt( sqrLength( ~sv ) ) )
 {
-   typedef ElementType_<VT>          ElementType;
-   typedef ConstIterator_<VT>        ConstIterator;
-   typedef CMathTrait_<ElementType>  LengthType;
-
-   BLAZE_CONSTRAINT_MUST_BE_NUMERIC_TYPE( ElementType );
-
-   LengthType sum( 0 );
-   for( ConstIterator element=(~sv).begin(); element!=(~sv).end(); ++element )
-      sum += sq( element->value() );
-   return std::sqrt( sum );
+   return sqrt( sqrLength( ~sv ) );
 }
 //*************************************************************************************************
 

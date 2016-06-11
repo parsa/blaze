@@ -43,7 +43,6 @@
 #include <blaze/math/traits/AbsExprTrait.h>
 #include <blaze/math/traits/AddExprTrait.h>
 #include <blaze/math/traits/AddTrait.h>
-#include <blaze/math/traits/CMathTrait.h>
 #include <blaze/math/traits/ColumnTrait.h>
 #include <blaze/math/traits/ConjExprTrait.h>
 #include <blaze/math/traits/CrossExprTrait.h>
