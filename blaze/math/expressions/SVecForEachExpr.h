@@ -557,7 +557,7 @@ class SVecForEachExpr : public SparseVector< SVecForEachExpr<VT,OP,TF>, TF >
 
       BLAZE_INTERNAL_ASSERT( (~lhs).size() == rhs.size(), "Invalid vector sizes" );
 
-      const RT tmp( serial( rhs.dv_ ) );
+      const RT tmp( serial( rhs.sv_ ) );
       addAssign( ~lhs, forEach( tmp, rhs.op_ ) );
    }
    /*! \endcond */
@@ -593,7 +593,7 @@ class SVecForEachExpr : public SparseVector< SVecForEachExpr<VT,OP,TF>, TF >
 
       BLAZE_INTERNAL_ASSERT( (~lhs).size() == rhs.size(), "Invalid vector sizes" );
 
-      const RT tmp( serial( rhs.dv_ ) );
+      const RT tmp( serial( rhs.sv_ ) );
       subAssign( ~lhs, forEach( tmp, rhs.op_ ) );
    }
    /*! \endcond */
@@ -629,7 +629,7 @@ class SVecForEachExpr : public SparseVector< SVecForEachExpr<VT,OP,TF>, TF >
 
       BLAZE_INTERNAL_ASSERT( (~lhs).size() == rhs.size(), "Invalid vector sizes" );
 
-      const RT tmp( serial( rhs.dv_ ) );
+      const RT tmp( serial( rhs.sv_ ) );
       multAssign( ~lhs, forEach( tmp, rhs.op_ ) );
    }
    /*! \endcond */
@@ -701,7 +701,7 @@ class SVecForEachExpr : public SparseVector< SVecForEachExpr<VT,OP,TF>, TF >
 
       BLAZE_INTERNAL_ASSERT( (~lhs).size() == rhs.size(), "Invalid vector sizes" );
 
-      const RT tmp( rhs.dv_ );
+      const RT tmp( rhs.sv_ );
       smpAddAssign( ~lhs, forEach( tmp, rhs.op_ ) );
    }
    /*! \endcond */
@@ -737,7 +737,7 @@ class SVecForEachExpr : public SparseVector< SVecForEachExpr<VT,OP,TF>, TF >
 
       BLAZE_INTERNAL_ASSERT( (~lhs).size() == rhs.size(), "Invalid vector sizes" );
 
-      const RT tmp( rhs.dv_ );
+      const RT tmp( rhs.sv_ );
       smpSubAssign( ~lhs, forEach( tmp, rhs.op_ ) );
    }
    /*! \endcond */
@@ -773,7 +773,7 @@ class SVecForEachExpr : public SparseVector< SVecForEachExpr<VT,OP,TF>, TF >
 
       BLAZE_INTERNAL_ASSERT( (~lhs).size() == rhs.size(), "Invalid vector sizes" );
 
-      const RT tmp( rhs.dv_ );
+      const RT tmp( rhs.sv_ );
       smpMultAssign( ~lhs, forEach( tmp, rhs.op_ ) );
    }
    /*! \endcond */
@@ -827,6 +827,90 @@ inline const SVecForEachExpr<VT,OP,TF> forEach( const SparseVector<VT,TF>& sv, O
    BLAZE_FUNCTION_TRACE;
 
    return SVecForEachExpr<VT,OP,TF>( ~sv, op );
+}
+//*************************************************************************************************
+
+
+//*************************************************************************************************
+/*!\brief Applies the \a abs() function to each non-zero element of the sparse vector \a sv.
+// \ingroup sparse_vector
+//
+// \param sv The input vector.
+// \return The resulting sparse vector.
+//
+// This function applies the \a abs() function to each non-zero element of the input vector
+// \a sv. The function returns an expression representing this operation.\n
+// The following example demonstrates the use of the \a abs() function:
+
+   \code
+   blaze::DynamicVector<double> a, b;
+   // ... Resizing and initialization
+   b = abs( a );
+   \endcode
+*/
+template< typename VT  // Type of the sparse vector
+        , bool TF >    // Transpose flag
+inline const SVecForEachExpr<VT,Abs,TF> abs( const SparseVector<VT,TF>& sv )
+{
+   BLAZE_FUNCTION_TRACE;
+
+   return SVecForEachExpr<VT,Abs,TF>( ~sv, Abs() );
+}
+//*************************************************************************************************
+
+
+//*************************************************************************************************
+/*!\brief Applies the \a floor() function to each non-zero element of the sparse vector \a sv.
+// \ingroup sparse_vector
+//
+// \param sv The input vector.
+// \return The resulting sparse vector.
+//
+// This function applies the \a floor() function to each non-zero element of the input vector
+// \a sv. The function returns an expression representing this operation.\n
+// The following example demonstrates the use of the \a floor() function:
+
+   \code
+   blaze::DynamicVector<double> a, b;
+   // ... Resizing and initialization
+   b = floor( a );
+   \endcode
+*/
+template< typename VT  // Type of the sparse vector
+        , bool TF >    // Transpose flag
+inline const SVecForEachExpr<VT,Floor,TF> floor( const SparseVector<VT,TF>& sv )
+{
+   BLAZE_FUNCTION_TRACE;
+
+   return SVecForEachExpr<VT,Floor,TF>( ~sv, Floor() );
+}
+//*************************************************************************************************
+
+
+//*************************************************************************************************
+/*!\brief Applies the \a ceil() function to each non-zero element of the sparse vector \a sv.
+// \ingroup sparse_vector
+//
+// \param sv The input vector.
+// \return The resulting sparse vector.
+//
+// This function applies the \a ceil() function to each non-zero element of the input vector
+// \a sv. The function returns an expression representing this operation.\n
+// The following example demonstrates the use of the \a ceil() function:
+
+   \code
+   blaze::DynamicVector<double> a, b;
+   // ... Resizing and initialization
+   b = ceil( a );
+   \endcode
+*/
+template< typename VT  // Type of the sparse vector
+        , bool TF >    // Transpose flag
+inline const SVecForEachExpr<VT,Ceil,TF> ceil( const SparseVector<VT,TF>& sv )
+{
+   BLAZE_FUNCTION_TRACE;
+
+   return SVecForEachExpr<VT,Ceil,TF>( ~sv, Ceil() );
 }
 //*************************************************************************************************
 
@@ -951,62 +1035,6 @@ inline const SVecForEachExpr<VT,InvCbrt,TF> invcbrt( const SparseVector<VT,TF>& 
    BLAZE_FUNCTION_TRACE;
 
    return SVecForEachExpr<VT,InvCbrt,TF>( ~sv, InvCbrt() );
-}
-//*************************************************************************************************
-
-
-//*************************************************************************************************
-/*!\brief Applies the \a floor() function to each non-zero element of the sparse vector \a sv.
-// \ingroup sparse_vector
-//
-// \param sv The input vector.
-// \return The resulting sparse vector.
-//
-// This function applies the \a floor() function to each non-zero element of the input vector
-// \a sv. The function returns an expression representing this operation.\n
-// The following example demonstrates the use of the \a floor() function:
-
-   \code
-   blaze::DynamicVector<double> a, b;
-   // ... Resizing and initialization
-   b = floor( a );
-   \endcode
-*/
-template< typename VT  // Type of the sparse vector
-        , bool TF >    // Transpose flag
-inline const SVecForEachExpr<VT,Floor,TF> floor( const SparseVector<VT,TF>& sv )
-{
-   BLAZE_FUNCTION_TRACE;
-
-   return SVecForEachExpr<VT,Floor,TF>( ~sv, Floor() );
-}
-//*************************************************************************************************
-
-
-//*************************************************************************************************
-/*!\brief Applies the \a ceil() function to each non-zero element of the sparse vector \a sv.
-// \ingroup sparse_vector
-//
-// \param sv The input vector.
-// \return The resulting sparse vector.
-//
-// This function applies the \a ceil() function to each non-zero element of the input vector
-// \a sv. The function returns an expression representing this operation.\n
-// The following example demonstrates the use of the \a ceil() function:
-
-   \code
-   blaze::DynamicVector<double> a, b;
-   // ... Resizing and initialization
-   b = ceil( a );
-   \endcode
-*/
-template< typename VT  // Type of the sparse vector
-        , bool TF >    // Transpose flag
-inline const SVecForEachExpr<VT,Ceil,TF> ceil( const SparseVector<VT,TF>& sv )
-{
-   BLAZE_FUNCTION_TRACE;
-
-   return SVecForEachExpr<VT,Ceil,TF>( ~sv, Ceil() );
 }
 //*************************************************************************************************
 
@@ -1537,6 +1565,37 @@ inline const SVecForEachExpr<VT,Erfc,TF> erfc( const SparseVector<VT,TF>& sv )
 
    return SVecForEachExpr<VT,Erfc,TF>( ~sv, Erfc() );
 }
+//*************************************************************************************************
+
+
+
+
+//=================================================================================================
+//
+//  GLOBAL RESTRUCTURING FUNCTIONS
+//
+//=================================================================================================
+
+//*************************************************************************************************
+/*! \cond BLAZE_INTERNAL */
+/*!\brief Absolute value function for absolute value sparse vector expressions.
+// \ingroup sparse_vector
+//
+// \param sv The absolute value sparse vector expression.
+// \return The absolute value of each single element of \a sv.
+//
+// This function implements a performance optimized treatment of the absolute value operation
+// on a sparse vector absolute value expression.
+*/
+template< typename VT  // Type of the sparse vector
+        , bool TF >    // Transpose flag
+inline const SVecForEachExpr<VT,Abs,TF>& abs( const SVecForEachExpr<VT,Abs,TF>& sv )
+{
+   BLAZE_FUNCTION_TRACE;
+
+   return sv;
+}
+/*! \endcond */
 //*************************************************************************************************
 
 

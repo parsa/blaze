@@ -40,7 +40,6 @@
 // Includes
 //*************************************************************************************************
 
-#include <blaze/math/constraints/AbsExpr.h>
 #include <blaze/math/constraints/Adaptor.h>
 #include <blaze/math/constraints/AddExpr.h>
 #include <blaze/math/constraints/Aligned.h>
@@ -67,7 +66,6 @@
 #include <blaze/math/constraints/ImagExpr.h>
 #include <blaze/math/constraints/Invertible.h>
 #include <blaze/math/constraints/Lower.h>
-#include <blaze/math/constraints/MatAbsExpr.h>
 #include <blaze/math/constraints/MatConjExpr.h>
 #include <blaze/math/constraints/MatEvalExpr.h>
 #include <blaze/math/constraints/MatForEachExpr.h>
@@ -123,7 +121,6 @@
 #include <blaze/math/constraints/UniTriangular.h>
 #include <blaze/math/constraints/UniUpper.h>
 #include <blaze/math/constraints/Upper.h>
-#include <blaze/math/constraints/VecAbsExpr.h>
 #include <blaze/math/constraints/VecConjExpr.h>
 #include <blaze/math/constraints/VecEvalExpr.h>
 #include <blaze/math/constraints/VecForEachExpr.h>

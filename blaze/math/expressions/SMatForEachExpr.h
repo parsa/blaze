@@ -879,6 +879,90 @@ inline const SMatForEachExpr<MT,OP,SO> forEach( const SparseMatrix<MT,SO>& sm, O
 
 
 //*************************************************************************************************
+/*!\brief Applies the \a abs() function to each non-zero element of the sparse matrix \a sm.
+// \ingroup sparse_matrix
+//
+// \param sm The input matrix.
+// \return The resulting sparse matrix.
+//
+// This function applies the abs() function to each non-zero element of the input matrix \a sm.
+// The function returns an expression representing this operation.\n
+// The following example demonstrates the use of the \a abs() function:
+
+   \code
+   blaze::DynamicMatrix<double> A, B;
+   // ... Resizing and initialization
+   B = abs( A );
+   \endcode
+*/
+template< typename MT  // Type of the sparse matrix
+        , bool SO >    // Storage order
+inline const SMatForEachExpr<MT,Abs,SO> abs( const SparseMatrix<MT,SO>& sm )
+{
+   BLAZE_FUNCTION_TRACE;
+
+   return SMatForEachExpr<MT,Abs,SO>( ~sm, Abs() );
+}
+//*************************************************************************************************
+
+
+//*************************************************************************************************
+/*!\brief Applies the \a floor() function to each non-zero element of the sparse matrix \a sm.
+// \ingroup sparse_matrix
+//
+// \param sm The input matrix.
+// \return The resulting sparse matrix.
+//
+// This function applies the floor() function to each non-zero element of the input matrix \a sm.
+// The function returns an expression representing this operation.\n
+// The following example demonstrates the use of the \a floor() function:
+
+   \code
+   blaze::DynamicMatrix<double> A, B;
+   // ... Resizing and initialization
+   B = floor( A );
+   \endcode
+*/
+template< typename MT  // Type of the sparse matrix
+        , bool SO >    // Storage order
+inline const SMatForEachExpr<MT,Floor,SO> floor( const SparseMatrix<MT,SO>& sm )
+{
+   BLAZE_FUNCTION_TRACE;
+
+   return SMatForEachExpr<MT,Floor,SO>( ~sm, Floor() );
+}
+//*************************************************************************************************
+
+
+//*************************************************************************************************
+/*!\brief Applies the \a ceil() function to each non-zero element of the sparse matrix \a sm.
+// \ingroup sparse_matrix
+//
+// \param sm The input matrix.
+// \return The resulting sparse matrix.
+//
+// This function applies the ceil() function to each non-zero element of the input matrix \a sm.
+// The function returns an expression representing this operation.\n
+// The following example demonstrates the use of the \a ceil() function:
+
+   \code
+   blaze::DynamicMatrix<double> A, B;
+   // ... Resizing and initialization
+   B = ceil( A );
+   \endcode
+*/
+template< typename MT  // Type of the sparse matrix
+        , bool SO >    // Storage order
+inline const SMatForEachExpr<MT,Ceil,SO> ceil( const SparseMatrix<MT,SO>& sm )
+{
+   BLAZE_FUNCTION_TRACE;
+
+   return SMatForEachExpr<MT,Ceil,SO>( ~sm, Ceil() );
+}
+//*************************************************************************************************
+
+
+//*************************************************************************************************
 /*!\brief Computes the square root of each non-zero element of the sparse matrix \a sm.
 // \ingroup sparse_matrix
 //
@@ -998,62 +1082,6 @@ inline const SMatForEachExpr<MT,InvCbrt,SO> invcbrt( const SparseMatrix<MT,SO>& 
    BLAZE_FUNCTION_TRACE;
 
    return SMatForEachExpr<MT,InvCbrt,SO>( ~sm, InvCbrt() );
-}
-//*************************************************************************************************
-
-
-//*************************************************************************************************
-/*!\brief Applies the \a floor() function to each non-zero element of the sparse matrix \a sm.
-// \ingroup sparse_matrix
-//
-// \param sm The input matrix.
-// \return The resulting sparse matrix.
-//
-// This function applies the floor() function to each non-zero element of the input matrix \a sm.
-// The function returns an expression representing this operation.\n
-// The following example demonstrates the use of the \a floor() function:
-
-   \code
-   blaze::DynamicMatrix<double> A, B;
-   // ... Resizing and initialization
-   B = floor( A );
-   \endcode
-*/
-template< typename MT  // Type of the sparse matrix
-        , bool SO >    // Storage order
-inline const SMatForEachExpr<MT,Floor,SO> floor( const SparseMatrix<MT,SO>& sm )
-{
-   BLAZE_FUNCTION_TRACE;
-
-   return SMatForEachExpr<MT,Floor,SO>( ~sm, Floor() );
-}
-//*************************************************************************************************
-
-
-//*************************************************************************************************
-/*!\brief Applies the \a ceil() function to each non-zero element of the sparse matrix \a sm.
-// \ingroup sparse_matrix
-//
-// \param sm The input matrix.
-// \return The resulting sparse matrix.
-//
-// This function applies the ceil() function to each non-zero element of the input matrix \a sm.
-// The function returns an expression representing this operation.\n
-// The following example demonstrates the use of the \a ceil() function:
-
-   \code
-   blaze::DynamicMatrix<double> A, B;
-   // ... Resizing and initialization
-   B = ceil( A );
-   \endcode
-*/
-template< typename MT  // Type of the sparse matrix
-        , bool SO >    // Storage order
-inline const SMatForEachExpr<MT,Ceil,SO> ceil( const SparseMatrix<MT,SO>& sm )
-{
-   BLAZE_FUNCTION_TRACE;
-
-   return SMatForEachExpr<MT,Ceil,SO>( ~sm, Ceil() );
 }
 //*************************************************************************************************
 
@@ -1585,6 +1613,37 @@ inline const SMatForEachExpr<MT,Erfc,SO> erfc( const SparseMatrix<MT,SO>& sm )
 
    return SMatForEachExpr<MT,Erfc,SO>( ~sm, Erfc() );
 }
+//*************************************************************************************************
+
+
+
+
+//=================================================================================================
+//
+//  GLOBAL RESTRUCTURING FUNCTIONS
+//
+//=================================================================================================
+
+//*************************************************************************************************
+/*! \cond BLAZE_INTERNAL */
+/*!\brief Absolute value function for absolute value sparse matrix expressions.
+// \ingroup sparse_matrix
+//
+// \param sm The absolute value sparse matrix expression.
+// \return The absolute value of each single element of \a sm.
+//
+// This function implements a performance optimized treatment of the absolute value operation
+// on a sparse matrix absolute value expression.
+*/
+template< typename MT  // Type of the sparse matrix
+        , bool TF >    // Transpose flag
+inline const SMatForEachExpr<MT,Abs,TF>& abs( const SMatForEachExpr<MT,Abs,TF>& sm )
+{
+   BLAZE_FUNCTION_TRACE;
+
+   return sm;
+}
+/*! \endcond */
 //*************************************************************************************************
 
 

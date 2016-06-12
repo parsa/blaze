@@ -269,7 +269,7 @@ class DMatForEachExpr : public DenseMatrix< DMatForEachExpr<MT,OP,SO>, SO >
       // \return The previous position of the iterator.
       */
       inline const ConstIterator operator++( int ) {
-         return ConstIterator( it_++ );
+         return ConstIterator( it_++, op_ );
       }
       //*******************************************************************************************
 
@@ -290,7 +290,7 @@ class DMatForEachExpr : public DenseMatrix< DMatForEachExpr<MT,OP,SO>, SO >
       // \return The previous position of the iterator.
       */
       inline const ConstIterator operator--( int ) {
-         return ConstIterator( it_-- );
+         return ConstIterator( it_--, op_ );
       }
       //*******************************************************************************************
 
@@ -399,7 +399,7 @@ class DMatForEachExpr : public DenseMatrix< DMatForEachExpr<MT,OP,SO>, SO >
       // \return The incremented iterator.
       */
       friend inline const ConstIterator operator+( const ConstIterator& it, size_t inc ) {
-         return ConstIterator( it.it_ + inc );
+         return ConstIterator( it.it_ + inc, it.op_ );
       }
       //*******************************************************************************************
 
@@ -411,7 +411,7 @@ class DMatForEachExpr : public DenseMatrix< DMatForEachExpr<MT,OP,SO>, SO >
       // \return The incremented iterator.
       */
       friend inline const ConstIterator operator+( size_t inc, const ConstIterator& it ) {
-         return ConstIterator( it.it_ + inc );
+         return ConstIterator( it.it_ + inc, it.op_ );
       }
       //*******************************************************************************************
 
@@ -423,7 +423,7 @@ class DMatForEachExpr : public DenseMatrix< DMatForEachExpr<MT,OP,SO>, SO >
       // \return The decremented iterator.
       */
       friend inline const ConstIterator operator-( const ConstIterator& it, size_t dec ) {
-         return ConstIterator( it.it_ - dec );
+         return ConstIterator( it.it_ - dec, it.op_ );
       }
       //*******************************************************************************************
 
@@ -1053,6 +1053,90 @@ inline const DMatForEachExpr<MT,OP,SO> forEach( const DenseMatrix<MT,SO>& dm, OP
 
 
 //*************************************************************************************************
+/*!\brief Applies the \a abs() function to each single element of the dense matrix \a dm.
+// \ingroup dense_matrix
+//
+// \param dm The input matrix.
+// \return The resulting dense matrix.
+//
+// This function applies the \a abs() function to each element of the input matrix \a dm. The
+// function returns an expression representing this operation.\n
+// The following example demonstrates the use of the \a abs() function:
+
+   \code
+   blaze::DynamicMatrix<double> A, B;
+   // ... Resizing and initialization
+   B = abs( A );
+   \endcode
+*/
+template< typename MT  // Type of the dense matrix
+        , bool SO >    // Storage order
+inline const DMatForEachExpr<MT,Abs,SO> abs( const DenseMatrix<MT,SO>& dm )
+{
+   BLAZE_FUNCTION_TRACE;
+
+   return DMatForEachExpr<MT,Abs,SO>( ~dm, Abs() );
+}
+//*************************************************************************************************
+
+
+//*************************************************************************************************
+/*!\brief Applies the \a floor() function to each single element of the dense matrix \a dm.
+// \ingroup dense_matrix
+//
+// \param dm The input matrix.
+// \return The resulting dense matrix.
+//
+// This function applies the \a floor() function to each element of the input matrix \a dm. The
+// function returns an expression representing this operation.\n
+// The following example demonstrates the use of the \a floor() function:
+
+   \code
+   blaze::DynamicMatrix<double> A, B;
+   // ... Resizing and initialization
+   B = floor( A );
+   \endcode
+*/
+template< typename MT  // Type of the dense matrix
+        , bool SO >    // Storage order
+inline const DMatForEachExpr<MT,Floor,SO> floor( const DenseMatrix<MT,SO>& dm )
+{
+   BLAZE_FUNCTION_TRACE;
+
+   return DMatForEachExpr<MT,Floor,SO>( ~dm, Floor() );
+}
+//*************************************************************************************************
+
+
+//*************************************************************************************************
+/*!\brief Applies the \a ceil() function to each single element of the dense matrix \a dm.
+// \ingroup dense_matrix
+//
+// \param dm The input matrix.
+// \return The resulting dense matrix.
+//
+// This function applies the \a ceil() function to each element of the input matrix \a dm. The
+// function returns an expression representing this operation.\n
+// The following example demonstrates the use of the \a ceil() function:
+
+   \code
+   blaze::DynamicMatrix<double> A, B;
+   // ... Resizing and initialization
+   B = ceil( A );
+   \endcode
+*/
+template< typename MT  // Type of the dense matrix
+        , bool SO >    // Storage order
+inline const DMatForEachExpr<MT,Ceil,SO> ceil( const DenseMatrix<MT,SO>& dm )
+{
+   BLAZE_FUNCTION_TRACE;
+
+   return DMatForEachExpr<MT,Ceil,SO>( ~dm, Ceil() );
+}
+//*************************************************************************************************
+
+
+//*************************************************************************************************
 /*!\brief Computes the square root of each single element of the dense matrix \a dm.
 // \ingroup dense_matrix
 //
@@ -1172,62 +1256,6 @@ inline const DMatForEachExpr<MT,InvCbrt,SO> invcbrt( const DenseMatrix<MT,SO>& d
    BLAZE_FUNCTION_TRACE;
 
    return DMatForEachExpr<MT,InvCbrt,SO>( ~dm, InvCbrt() );
-}
-//*************************************************************************************************
-
-
-//*************************************************************************************************
-/*!\brief Applies the \a floor() function to each single element of the dense matrix \a dm.
-// \ingroup dense_matrix
-//
-// \param dm The input matrix.
-// \return The resulting dense matrix.
-//
-// This function applies the \a floor() function to each element of the input matrix \a dm. The
-// function returns an expression representing this operation.\n
-// The following example demonstrates the use of the \a floor() function:
-
-   \code
-   blaze::DynamicMatrix<double> A, B;
-   // ... Resizing and initialization
-   B = floor( A );
-   \endcode
-*/
-template< typename MT  // Type of the dense matrix
-        , bool SO >    // Storage order
-inline const DMatForEachExpr<MT,Floor,SO> floor( const DenseMatrix<MT,SO>& dm )
-{
-   BLAZE_FUNCTION_TRACE;
-
-   return DMatForEachExpr<MT,Floor,SO>( ~dm, Floor() );
-}
-//*************************************************************************************************
-
-
-//*************************************************************************************************
-/*!\brief Applies the \a ceil() function to each single element of the dense matrix \a dm.
-// \ingroup dense_matrix
-//
-// \param dm The input matrix.
-// \return The resulting dense matrix.
-//
-// This function applies the \a ceil() function to each element of the input matrix \a dm. The
-// function returns an expression representing this operation.\n
-// The following example demonstrates the use of the \a ceil() function:
-
-   \code
-   blaze::DynamicMatrix<double> A, B;
-   // ... Resizing and initialization
-   B = ceil( A );
-   \endcode
-*/
-template< typename MT  // Type of the dense matrix
-        , bool SO >    // Storage order
-inline const DMatForEachExpr<MT,Ceil,SO> ceil( const DenseMatrix<MT,SO>& dm )
-{
-   BLAZE_FUNCTION_TRACE;
-
-   return DMatForEachExpr<MT,Ceil,SO>( ~dm, Ceil() );
 }
 //*************************************************************************************************
 
@@ -1758,6 +1786,37 @@ inline const DMatForEachExpr<MT,Erfc,SO> erfc( const DenseMatrix<MT,SO>& dm )
 
    return DMatForEachExpr<MT,Erfc,SO>( ~dm, Erfc() );
 }
+//*************************************************************************************************
+
+
+
+
+//=================================================================================================
+//
+//  GLOBAL RESTRUCTURING FUNCTIONS
+//
+//=================================================================================================
+
+//*************************************************************************************************
+/*! \cond BLAZE_INTERNAL */
+/*!\brief Absolute value function for absolute value dense matrix expressions.
+// \ingroup dense_matrix
+//
+// \param dm The absolute value dense matrix expression.
+// \return The absolute value of each single element of \a dm.
+//
+// This function implements a performance optimized treatment of the absolute value operation
+// on a dense matrix absolute value expression.
+*/
+template< typename MT  // Type of the dense matrix
+        , bool SO >    // Storage order
+inline const DMatForEachExpr<MT,Abs,SO>& abs( const DMatForEachExpr<MT,Abs,SO>& dm )
+{
+   BLAZE_FUNCTION_TRACE;
+
+   return dm;
+}
+/*! \endcond */
 //*************************************************************************************************
 
 

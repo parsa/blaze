@@ -42,7 +42,6 @@
 
 #include <blaze/math/dense/DenseVector.h>
 #include <blaze/math/expressions/DenseVector.h>
-#include <blaze/math/expressions/DVecAbsExpr.h>
 #include <blaze/math/expressions/DVecConjExpr.h>
 #include <blaze/math/expressions/DVecDVecAddExpr.h>
 #include <blaze/math/expressions/DVecDVecDivExpr.h>

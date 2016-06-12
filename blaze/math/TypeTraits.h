@@ -73,7 +73,6 @@
 #include <blaze/math/typetraits/HasSIMDSub.h>
 #include <blaze/math/typetraits/HasSIMDTan.h>
 #include <blaze/math/typetraits/HasSIMDTanh.h>
-#include <blaze/math/typetraits/IsAbsExpr.h>
 #include <blaze/math/typetraits/IsAdaptor.h>
 #include <blaze/math/typetraits/IsAddExpr.h>
 #include <blaze/math/typetraits/IsAligned.h>
@@ -97,7 +96,6 @@
 #include <blaze/math/typetraits/IsImagExpr.h>
 #include <blaze/math/typetraits/IsInvertible.h>
 #include <blaze/math/typetraits/IsLower.h>
-#include <blaze/math/typetraits/IsMatAbsExpr.h>
 #include <blaze/math/typetraits/IsMatConjExpr.h>
 #include <blaze/math/typetraits/IsMatEvalExpr.h>
 #include <blaze/math/typetraits/IsMatForEachExpr.h>
@@ -148,7 +146,6 @@
 #include <blaze/math/typetraits/IsUniTriangular.h>
 #include <blaze/math/typetraits/IsUniUpper.h>
 #include <blaze/math/typetraits/IsUpper.h>
-#include <blaze/math/typetraits/IsVecAbsExpr.h>
 #include <blaze/math/typetraits/IsVecConjExpr.h>
 #include <blaze/math/typetraits/IsVecEvalExpr.h>
 #include <blaze/math/typetraits/IsVecForEachExpr.h>

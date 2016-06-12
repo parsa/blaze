@@ -48,7 +48,6 @@
 #include <blaze/math/typetraits/IsComputation.h>
 #include <blaze/math/typetraits/IsCrossExpr.h>
 #include <blaze/math/typetraits/IsTransExpr.h>
-#include <blaze/math/typetraits/IsVecAbsExpr.h>
 #include <blaze/math/typetraits/IsVecConjExpr.h>
 #include <blaze/math/typetraits/IsVecEvalExpr.h>
 #include <blaze/math/typetraits/IsVecForEachExpr.h>
@@ -578,33 +577,6 @@ inline EnableIf_< IsVecScalarDivExpr<VT>, SubvectorExprTrait_<VT,AF> >
    BLAZE_FUNCTION_TRACE;
 
    return subvector<AF>( (~vector).leftOperand(), index, size ) / (~vector).rightOperand();
-}
-/*! \endcond */
-//*************************************************************************************************
-
-
-//*************************************************************************************************
-/*! \cond BLAZE_INTERNAL */
-/*!\brief Creating a view on a specific subvector of the given vector \a abs operation.
-// \ingroup views
-//
-// \param vector The constant vector \a abs operation.
-// \param index The index of the first element of the subvector.
-// \param size The size of the subvector.
-// \return View on the specified subvector of the \a abs operation.
-//
-// This function returns an expression representing the specified subvector of the given vector
-// \a abs operation.
-*/
-template< bool AF      // Alignment flag
-        , typename VT  // Type of the vector
-        , bool TF >    // Transpose flag
-inline EnableIf_< IsVecAbsExpr<VT>, SubvectorExprTrait_<VT,AF> >
-   subvector( const Vector<VT,TF>& vector, size_t index, size_t size )
-{
-   BLAZE_FUNCTION_TRACE;
-
-   return abs( subvector<AF>( (~vector).operand(), index, size ) );
 }
 /*! \endcond */
 //*************************************************************************************************

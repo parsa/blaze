@@ -1116,6 +1116,90 @@ inline const DVecForEachExpr<VT,OP,TF> forEach( const DenseVector<VT,TF>& dv, OP
 
 
 //*************************************************************************************************
+/*!\brief Applies the \a abs() function to each single element of the dense vector \a dv.
+// \ingroup dense_vector
+//
+// \param dv The input vector.
+// \return The resulting dense vector.
+//
+// This function applies the \a abs() function to each element of the input vector \a dv. The
+// function returns an expression representing this operation.\n
+// The following example demonstrates the use of the \a abs() function:
+
+   \code
+   blaze::DynamicVector<double> a, b;
+   // ... Resizing and initialization
+   b = abs( a );
+   \endcode
+*/
+template< typename VT  // Type of the dense vector
+        , bool TF >    // Transpose flag
+inline const DVecForEachExpr<VT,Abs,TF> abs( const DenseVector<VT,TF>& dv )
+{
+   BLAZE_FUNCTION_TRACE;
+
+   return DVecForEachExpr<VT,Abs,TF>( ~dv, Abs() );
+}
+//*************************************************************************************************
+
+
+//*************************************************************************************************
+/*!\brief Applies the \a floor() function to each single element of the dense vector \a dv.
+// \ingroup dense_vector
+//
+// \param dv The input vector.
+// \return The resulting dense vector.
+//
+// This function applies the \a floor() function to each element of the input vector \a dv. The
+// function returns an expression representing this operation.\n
+// The following example demonstrates the use of the \a floor() function:
+
+   \code
+   blaze::DynamicVector<double> a, b;
+   // ... Resizing and initialization
+   b = floor( a );
+   \endcode
+*/
+template< typename VT  // Type of the dense vector
+        , bool TF >    // Transpose flag
+inline const DVecForEachExpr<VT,Floor,TF> floor( const DenseVector<VT,TF>& dv )
+{
+   BLAZE_FUNCTION_TRACE;
+
+   return DVecForEachExpr<VT,Floor,TF>( ~dv, Floor() );
+}
+//*************************************************************************************************
+
+
+//*************************************************************************************************
+/*!\brief Applies the \a ceil() function to each single element of the dense vector \a dv.
+// \ingroup dense_vector
+//
+// \param dv The input vector.
+// \return The resulting dense vector.
+//
+// This function applies the \a ceil() function to each element of the input vector \a dv. The
+// function returns an expression representing this operation.\n
+// The following example demonstrates the use of the \a ceil() function:
+
+   \code
+   blaze::DynamicVector<double> a, b;
+   // ... Resizing and initialization
+   b = ceil( a );
+   \endcode
+*/
+template< typename VT  // Type of the dense vector
+        , bool TF >    // Transpose flag
+inline const DVecForEachExpr<VT,Ceil,TF> ceil( const DenseVector<VT,TF>& dv )
+{
+   BLAZE_FUNCTION_TRACE;
+
+   return DVecForEachExpr<VT,Ceil,TF>( ~dv, Ceil() );
+}
+//*************************************************************************************************
+
+
+//*************************************************************************************************
 /*!\brief Computes the square root of each single element of the dense vector \a dv.
 // \ingroup dense_vector
 //
@@ -1235,62 +1319,6 @@ inline const DVecForEachExpr<VT,InvCbrt,TF> invcbrt( const DenseVector<VT,TF>& d
    BLAZE_FUNCTION_TRACE;
 
    return DVecForEachExpr<VT,InvCbrt,TF>( ~dv, InvCbrt() );
-}
-//*************************************************************************************************
-
-
-//*************************************************************************************************
-/*!\brief Applies the \a floor() function to each single element of the dense vector \a dv.
-// \ingroup dense_vector
-//
-// \param dv The input vector.
-// \return The resulting dense vector.
-//
-// This function applies the \a floor() function to each element of the input vector \a dv. The
-// function returns an expression representing this operation.\n
-// The following example demonstrates the use of the \a floor() function:
-
-   \code
-   blaze::DynamicVector<double> a, b;
-   // ... Resizing and initialization
-   b = floor( a );
-   \endcode
-*/
-template< typename VT  // Type of the dense vector
-        , bool TF >    // Transpose flag
-inline const DVecForEachExpr<VT,Floor,TF> floor( const DenseVector<VT,TF>& dv )
-{
-   BLAZE_FUNCTION_TRACE;
-
-   return DVecForEachExpr<VT,Floor,TF>( ~dv, Floor() );
-}
-//*************************************************************************************************
-
-
-//*************************************************************************************************
-/*!\brief Applies the \a ceil() function to each single element of the dense vector \a dv.
-// \ingroup dense_vector
-//
-// \param dv The input vector.
-// \return The resulting dense vector.
-//
-// This function applies the \a ceil() function to each element of the input vector \a dv. The
-// function returns an expression representing this operation.\n
-// The following example demonstrates the use of the \a ceil() function:
-
-   \code
-   blaze::DynamicVector<double> a, b;
-   // ... Resizing and initialization
-   b = ceil( a );
-   \endcode
-*/
-template< typename VT  // Type of the dense vector
-        , bool TF >    // Transpose flag
-inline const DVecForEachExpr<VT,Ceil,TF> ceil( const DenseVector<VT,TF>& dv )
-{
-   BLAZE_FUNCTION_TRACE;
-
-   return DVecForEachExpr<VT,Ceil,TF>( ~dv, Ceil() );
 }
 //*************************************************************************************************
 
@@ -1821,6 +1849,37 @@ inline const DVecForEachExpr<VT,Erfc,TF> erfc( const DenseVector<VT,TF>& dv )
 
    return DVecForEachExpr<VT,Erfc,TF>( ~dv, Erfc() );
 }
+//*************************************************************************************************
+
+
+
+
+//=================================================================================================
+//
+//  GLOBAL RESTRUCTURING FUNCTIONS
+//
+//=================================================================================================
+
+//*************************************************************************************************
+/*! \cond BLAZE_INTERNAL */
+/*!\brief Absolute value function for absolute value dense vector expressions.
+// \ingroup dense_vector
+//
+// \param dv The absolute value dense vector expression.
+// \return The absolute value of each single element of \a dv.
+//
+// This function implements a performance optimized treatment of the absolute value operation
+// on a dense vector absolute value expression.
+*/
+template< typename VT  // Type of the dense vector
+        , bool TF >    // Transpose flag
+inline const DVecForEachExpr<VT,Abs,TF>& abs( const DVecForEachExpr<VT,Abs,TF>& dv )
+{
+   BLAZE_FUNCTION_TRACE;
+
+   return dv;
+}
+/*! \endcond */
 //*************************************************************************************************
 
 
