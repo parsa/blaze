@@ -52,7 +52,6 @@
 #include <blaze/math/typetraits/IsVecEvalExpr.h>
 #include <blaze/math/typetraits/IsVecForEachExpr.h>
 #include <blaze/math/typetraits/IsVecImagExpr.h>
-#include <blaze/math/typetraits/IsVecRealExpr.h>
 #include <blaze/math/typetraits/IsVecScalarDivExpr.h>
 #include <blaze/math/typetraits/IsVecScalarMultExpr.h>
 #include <blaze/math/typetraits/IsVecSerialExpr.h>
@@ -604,33 +603,6 @@ inline EnableIf_< IsVecConjExpr<VT>, SubvectorExprTrait_<VT,AF> >
    BLAZE_FUNCTION_TRACE;
 
    return conj( subvector<AF>( (~vector).operand(), index, size ) );
-}
-/*! \endcond */
-//*************************************************************************************************
-
-
-//*************************************************************************************************
-/*! \cond BLAZE_INTERNAL */
-/*!\brief Creating a view on a specific subvector of the given vector \a real operation.
-// \ingroup views
-//
-// \param vector The constant vector \a real operation.
-// \param index The index of the first element of the subvector.
-// \param size The size of the subvector.
-// \return View on the specified subvector of the \a real operation.
-//
-// This function returns an expression representing the specified subvector of the given vector
-// \a real operation.
-*/
-template< bool AF      // Alignment flag
-        , typename VT  // Type of the vector
-        , bool TF >    // Transpose flag
-inline EnableIf_< IsVecRealExpr<VT>, SubvectorExprTrait_<VT,AF> >
-   subvector( const Vector<VT,TF>& vector, size_t index, size_t size )
-{
-   BLAZE_FUNCTION_TRACE;
-
-   return real( subvector<AF>( (~vector).operand(), index, size ) );
 }
 /*! \endcond */
 //*************************************************************************************************

@@ -59,7 +59,6 @@
 #include <blaze/math/expressions/DMatForEachExpr.h>
 #include <blaze/math/expressions/DMatImagExpr.h>
 #include <blaze/math/expressions/DMatInvExpr.h>
-#include <blaze/math/expressions/DMatRealExpr.h>
 #include <blaze/math/expressions/DMatScalarDivExpr.h>
 #include <blaze/math/expressions/DMatScalarMultExpr.h>
 #include <blaze/math/expressions/DMatSerialExpr.h>

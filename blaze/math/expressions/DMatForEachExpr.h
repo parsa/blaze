@@ -1137,6 +1137,34 @@ inline const DMatForEachExpr<MT,Ceil,SO> ceil( const DenseMatrix<MT,SO>& dm )
 
 
 //*************************************************************************************************
+/*!\brief Returns a matrix containing the real part of each single element of \a dm.
+// \ingroup dense_matrix
+//
+// \param dm The input matrix.
+// \return The real part of each single element of \a dm.
+//
+// The \a real function calculates the real part of each element of the input matrix \a dm.
+// The function returns an expression representing this operation.\n
+// The following example demonstrates the use of the \a real function:
+
+   \code
+   blaze::DynamicMatrix<double> A, B;
+   // ... Resizing and initialization
+   B = real( A );
+   \endcode
+*/
+template< typename MT  // Type of the dense matrix
+        , bool SO >    // Storage order
+inline const DMatForEachExpr<MT,Real,SO> real( const DenseMatrix<MT,SO>& dm )
+{
+   BLAZE_FUNCTION_TRACE;
+
+   return DMatForEachExpr<MT,Real,SO>( ~dm, Real() );
+}
+//*************************************************************************************************
+
+
+//*************************************************************************************************
 /*!\brief Computes the square root of each single element of the dense matrix \a dm.
 // \ingroup dense_matrix
 //
@@ -1811,6 +1839,29 @@ inline const DMatForEachExpr<MT,Erfc,SO> erfc( const DenseMatrix<MT,SO>& dm )
 template< typename MT  // Type of the dense matrix
         , bool SO >    // Storage order
 inline const DMatForEachExpr<MT,Abs,SO>& abs( const DMatForEachExpr<MT,Abs,SO>& dm )
+{
+   BLAZE_FUNCTION_TRACE;
+
+   return dm;
+}
+/*! \endcond */
+//*************************************************************************************************
+
+
+//*************************************************************************************************
+/*! \cond BLAZE_INTERNAL */
+/*!\brief Real part function for real part dense matrix expressions.
+// \ingroup dense_matrix
+//
+// \param dm The real part dense matrix expression.
+// \return The real part of each single element of \a dm.
+//
+// This function implements a performance optimized treatment of the real part operation on
+// a dense matrix real part expression.
+*/
+template< typename MT  // Type of the dense matrix
+        , bool SO >    // Storage order
+inline const DMatForEachExpr<MT,Real,SO>& real( const DMatForEachExpr<MT,Real,SO>& dm )
 {
    BLAZE_FUNCTION_TRACE;
 

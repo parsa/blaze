@@ -1200,6 +1200,34 @@ inline const DVecForEachExpr<VT,Ceil,TF> ceil( const DenseVector<VT,TF>& dv )
 
 
 //*************************************************************************************************
+/*!\brief Returns a vector containing the real part of each single element of \a dv.
+// \ingroup dense_vector
+//
+// \param dv The input vector.
+// \return The real part of each single element of \a dv.
+//
+// The \a real function calculates the real part of each element of the input vector \a dv.
+// The function returns an expression representing this operation.\n
+// The following example demonstrates the use of the \a real function:
+
+   \code
+   blaze::DynamicVector<double> a, b;
+   // ... Resizing and initialization
+   b = real( a );
+   \endcode
+*/
+template< typename VT  // Type of the dense vector
+        , bool TF >    // Transpose flag
+inline const DVecForEachExpr<VT,Real,TF> real( const DenseVector<VT,TF>& dv )
+{
+   BLAZE_FUNCTION_TRACE;
+
+   return DVecForEachExpr<VT,Real,TF>( ~dv, Real() );
+}
+//*************************************************************************************************
+
+
+//*************************************************************************************************
 /*!\brief Computes the square root of each single element of the dense vector \a dv.
 // \ingroup dense_vector
 //
@@ -1874,6 +1902,29 @@ inline const DVecForEachExpr<VT,Erfc,TF> erfc( const DenseVector<VT,TF>& dv )
 template< typename VT  // Type of the dense vector
         , bool TF >    // Transpose flag
 inline const DVecForEachExpr<VT,Abs,TF>& abs( const DVecForEachExpr<VT,Abs,TF>& dv )
+{
+   BLAZE_FUNCTION_TRACE;
+
+   return dv;
+}
+/*! \endcond */
+//*************************************************************************************************
+
+
+//*************************************************************************************************
+/*! \cond BLAZE_INTERNAL */
+/*!\brief Real part function for real part dense vector expressions.
+// \ingroup dense_vector
+//
+// \param dv The real part dense vector expression.
+// \return The real part of each single element of \a dv.
+//
+// This function implements a performance optimized treatment of the real part operation on
+// a dense vector real part expression.
+*/
+template< typename VT  // Type of the dense vector
+        , bool TF >    // Transpose flag
+inline const DVecForEachExpr<VT,Real,TF>& real( const DVecForEachExpr<VT,Real,TF>& dv )
 {
    BLAZE_FUNCTION_TRACE;
 

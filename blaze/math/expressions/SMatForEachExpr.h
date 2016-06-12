@@ -558,10 +558,12 @@ class SMatForEachExpr : public SparseMatrix< SMatForEachExpr<MT,OP,SO>, SO >
    // This function implements the performance optimized assignment of a sparse matrix for-each
    // expression to a row-major sparse matrix. Due to the explicit application of the SFINAE
    // principle, this function can only be selected by the compiler in case the operand requires
-   // an intermediate evaluation.
+   // an intermediate evaluation and the underlying numeric data type of the operand and the
+   // target matrix are identical.
    */
    template< typename MT2 >  // Type of the target sparse matrix
-   friend inline EnableIf_< UseAssign<MT2> >
+   friend inline EnableIf_< And< UseAssign<MT2>
+                               , IsSame< UnderlyingNumeric<MT>, UnderlyingNumeric<MT2> > > >
       assign( SparseMatrix<MT2,false>& lhs, const SMatForEachExpr& rhs )
    {
       BLAZE_FUNCTION_TRACE;
@@ -597,10 +599,12 @@ class SMatForEachExpr : public SparseMatrix< SMatForEachExpr<MT,OP,SO>, SO >
    // This function implements the performance optimized assignment of a sparse matrix for-each
    // expression to a column-major sparse matrix. Due to the explicit application of the SFINAE
    // principle, this function can only be selected by the compiler in case the operand requires
-   // an intermediate evaluation.
+   // an intermediate evaluation and the underlying numeric data type of the operand and the
+   // target matrix are identical.
    */
    template< typename MT2 >  // Type of the target sparse matrix
-   friend inline EnableIf_< UseAssign<MT2> >
+   friend inline EnableIf_< And< UseAssign<MT2>
+                               , IsSame< UnderlyingNumeric<MT>, UnderlyingNumeric<MT2> > > >
       assign( SparseMatrix<MT2,true>& lhs, const SMatForEachExpr& rhs )
    {
       BLAZE_FUNCTION_TRACE;
@@ -620,6 +624,42 @@ class SMatForEachExpr : public SparseMatrix< SMatForEachExpr<MT,OP,SO>, SO >
             element->value() = rhs.op_( element->value() );
          }
       }
+   }
+   /*! \endcond */
+   //**********************************************************************************************
+
+   //**Assignment to sparse matrices***************************************************************
+   /*! \cond BLAZE_INTERNAL */
+   /*!\brief Assignment of a sparse matrix for-each expression to a sparse matrix.
+   // \ingroup sparse_matrix
+   //
+   // \param lhs The target left-hand side sparse matrix.
+   // \param rhs The right-hand side for-each expression to be assigned.
+   // \return void
+   //
+   // This function implements the performance optimized assignment of a sparse matrix for-each
+   // expression to a sparse matrix. Due to the explicit application of the SFINAE principle, this
+   // function can only be selected by the compiler in case the operand requires an intermediate
+   // evaluation and the underlying numeric data type of the operand and the target vector differ.
+   */
+   template< typename MT2  // Type of the target sparse matrix
+           , bool SO2 >    // Storage order of the target sparse matrix
+   friend inline EnableIf_< And< UseAssign<MT2>
+                               , Not< IsSame< UnderlyingNumeric<MT>, UnderlyingNumeric<MT2> > > > >
+      assign( SparseMatrix<MT2,SO2>& lhs, const SMatForEachExpr& rhs )
+   {
+      BLAZE_FUNCTION_TRACE;
+
+      BLAZE_CONSTRAINT_MUST_BE_SPARSE_MATRIX_TYPE( RT );
+      BLAZE_CONSTRAINT_MUST_BE_MATRIX_WITH_STORAGE_ORDER( RT, SO );
+      BLAZE_CONSTRAINT_MUST_BE_REFERENCE_TYPE( CompositeType_<RT> );
+
+      BLAZE_INTERNAL_ASSERT( (~lhs).rows()    == rhs.rows()   , "Invalid number of rows"    );
+      BLAZE_INTERNAL_ASSERT( (~lhs).columns() == rhs.columns(), "Invalid number of columns" );
+
+      const RT tmp( serial( rhs.sm_ ) );
+      (~lhs).reserve( tmp.nonZeros() );
+      assign( ~lhs, forEach( tmp, rhs.op_ ) );
    }
    /*! \endcond */
    //**********************************************************************************************
@@ -958,6 +998,34 @@ inline const SMatForEachExpr<MT,Ceil,SO> ceil( const SparseMatrix<MT,SO>& sm )
    BLAZE_FUNCTION_TRACE;
 
    return SMatForEachExpr<MT,Ceil,SO>( ~sm, Ceil() );
+}
+//*************************************************************************************************
+
+
+//*************************************************************************************************
+/*!\brief Returns a matrix containing the real parts of each single element of \a sm.
+// \ingroup sparse_matrix
+//
+// \param sm The input matrix.
+// \return The real part of each single element of \a sm.
+//
+// The \a real function calculates the real part of each element of the input matrix \a sm.
+// The function returns an expression representing this operation.\n
+// The following example demonstrates the use of the \a real function:
+
+   \code
+   blaze::CompressedMatrix<double> A, B;
+   // ... Resizing and initialization
+   B = real( A );
+   \endcode
+*/
+template< typename MT  // Type of the sparse matrix
+        , bool SO >    // Storage order
+inline const SMatForEachExpr<MT,Real,SO> real( const SparseMatrix<MT,SO>& sm )
+{
+   BLAZE_FUNCTION_TRACE;
+
+   return SMatForEachExpr<MT,Real,SO>( ~sm, Real() );
 }
 //*************************************************************************************************
 
@@ -1638,6 +1706,29 @@ inline const SMatForEachExpr<MT,Erfc,SO> erfc( const SparseMatrix<MT,SO>& sm )
 template< typename MT  // Type of the sparse matrix
         , bool TF >    // Transpose flag
 inline const SMatForEachExpr<MT,Abs,TF>& abs( const SMatForEachExpr<MT,Abs,TF>& sm )
+{
+   BLAZE_FUNCTION_TRACE;
+
+   return sm;
+}
+/*! \endcond */
+//*************************************************************************************************
+
+
+//*************************************************************************************************
+/*! \cond BLAZE_INTERNAL */
+/*!\brief Real part function for real part sparse matrix expressions.
+// \ingroup sparse_matrix
+//
+// \param sm The real part sparse matrix expression.
+// \return The real part of each single element of \a sm.
+//
+// This function implements a performance optimized treatment of the real part operation on
+// a sparse matrix real part expression.
+*/
+template< typename MT  // Type of the sparse matrix
+        , bool TF >    // Transpose flag
+inline const SMatForEachExpr<MT,Real,TF>& real( const SMatForEachExpr<MT,Real,TF>& sm )
 {
    BLAZE_FUNCTION_TRACE;
 

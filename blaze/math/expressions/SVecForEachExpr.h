@@ -61,6 +61,7 @@
 #include <blaze/math/typetraits/IsExpression.h>
 #include <blaze/math/typetraits/RequiresEvaluation.h>
 #include <blaze/math/typetraits/Size.h>
+#include <blaze/math/typetraits/UnderlyingNumeric.h>
 #include <blaze/util/Assert.h>
 #include <blaze/util/constraints/Reference.h>
 #include <blaze/util/EnableIf.h>
@@ -69,6 +70,7 @@
 #include <blaze/util/mpl/If.h>
 #include <blaze/util/mpl/Not.h>
 #include <blaze/util/Types.h>
+#include <blaze/util/typetraits/IsSame.h>
 #include <blaze/util/typetraits/RemoveReference.h>
 
 
@@ -509,10 +511,12 @@ class SVecForEachExpr : public SparseVector< SVecForEachExpr<VT,OP,TF>, TF >
    // This function implements the performance optimized assignment of a sparse vector for-each
    // expression to a sparse vector. Due to the explicit application of the SFINAE principle, this
    // function can only be selected by the compiler in case the operand requires an intermediate
-   // evaluation.
+   // evaluation and the underlying numeric data type of the operand and the target vector are
+   // identical.
    */
    template< typename VT2 >  // Type of the target sparse vector
-   friend inline EnableIf_< UseAssign<VT2> >
+   friend inline EnableIf_< And< UseAssign<VT2>
+                               , IsSame< UnderlyingNumeric<VT>, UnderlyingNumeric<VT2> > > >
       assign( SparseVector<VT2,TF>& lhs, const SVecForEachExpr& rhs )
    {
       BLAZE_FUNCTION_TRACE;
@@ -527,6 +531,40 @@ class SVecForEachExpr : public SparseVector< SVecForEachExpr<VT,OP,TF>, TF >
       for( Iterator element=(~lhs).begin(); element!=end; ++element ) {
          element->value() = rhs.op_( element->value() );
       }
+   }
+   /*! \endcond */
+   //**********************************************************************************************
+
+   //**Assignment to sparse vectors****************************************************************
+   /*! \cond BLAZE_INTERNAL */
+   /*!\brief Assignment of a sparse vector for-each expression to a sparse vector.
+   // \ingroup sparse_vector
+   //
+   // \param lhs The target left-hand side sparse vector.
+   // \param rhs The right-hand side for-each expression to be assigned.
+   // \return void
+   //
+   // This function implements the performance optimized assignment of a sparse vector for-each
+   // expression to a sparse vector. Due to the explicit application of the SFINAE principle, this
+   // function can only be selected by the compiler in case the operand requires an intermediate
+   // evaluation and the underlying numeric data type of the operand and the target vector differ.
+   */
+   template< typename VT2 >  // Type of the target sparse vector
+   friend inline EnableIf_< And< UseAssign<VT2>
+                               , Not< IsSame< UnderlyingNumeric<VT>, UnderlyingNumeric<VT2> > > > >
+      assign( SparseVector<VT2,TF>& lhs, const SVecForEachExpr& rhs )
+   {
+      BLAZE_FUNCTION_TRACE;
+
+      BLAZE_CONSTRAINT_MUST_BE_SPARSE_VECTOR_TYPE( RT );
+      BLAZE_CONSTRAINT_MUST_BE_VECTOR_WITH_TRANSPOSE_FLAG( RT, TF );
+      BLAZE_CONSTRAINT_MUST_BE_REFERENCE_TYPE( CompositeType_<RT> );
+
+      BLAZE_INTERNAL_ASSERT( (~lhs).size() == rhs.size(), "Invalid vector sizes" );
+
+      const RT tmp( serial( rhs.sv_ ) );
+      (~lhs).reserve( tmp.nonZeros() );
+      assign( ~lhs, forEach( tmp, rhs.op_ ) );
    }
    /*! \endcond */
    //**********************************************************************************************
@@ -911,6 +949,34 @@ inline const SVecForEachExpr<VT,Ceil,TF> ceil( const SparseVector<VT,TF>& sv )
    BLAZE_FUNCTION_TRACE;
 
    return SVecForEachExpr<VT,Ceil,TF>( ~sv, Ceil() );
+}
+//*************************************************************************************************
+
+
+//*************************************************************************************************
+/*!\brief Returns a vector containing the real parts of each single element of \a sv.
+// \ingroup sparse_vector
+//
+// \param sv The integral sparse input vector.
+// \return The real part of each single element of \a sv.
+//
+// The \a real function calculates the real part of each element of the sparse input vector
+// \a sv. The function returns an expression representing this operation.\n
+// The following example demonstrates the use of the \a real function:
+
+   \code
+   blaze::CompressedVector<double> a, b;
+   // ... Resizing and initialization
+   b = real( a );
+   \endcode
+*/
+template< typename VT  // Type of the sparse vector
+        , bool TF >    // Transpose flag
+inline const SVecForEachExpr<VT,Real,TF> real( const SparseVector<VT,TF>& sv )
+{
+   BLAZE_FUNCTION_TRACE;
+
+   return SVecForEachExpr<VT,Real,TF>( ~sv, Real() );
 }
 //*************************************************************************************************
 
@@ -1590,6 +1656,29 @@ inline const SVecForEachExpr<VT,Erfc,TF> erfc( const SparseVector<VT,TF>& sv )
 template< typename VT  // Type of the sparse vector
         , bool TF >    // Transpose flag
 inline const SVecForEachExpr<VT,Abs,TF>& abs( const SVecForEachExpr<VT,Abs,TF>& sv )
+{
+   BLAZE_FUNCTION_TRACE;
+
+   return sv;
+}
+/*! \endcond */
+//*************************************************************************************************
+
+
+//*************************************************************************************************
+/*! \cond BLAZE_INTERNAL */
+/*!\brief Real part function for real part sparse vector expressions.
+// \ingroup sparse_vector
+//
+// \param sv The real part sparse vector expression.
+// \return The real part of each single element of \a sv.
+//
+// This function implements a performance optimized treatment of the real part operation on
+// a sparse vector real part expression.
+*/
+template< typename VT  // Type of the sparse vector
+        , bool TF >    // Transpose flag
+inline const SVecForEachExpr<VT,Real,TF>& real( const SVecForEachExpr<VT,Real,TF>& sv )
 {
    BLAZE_FUNCTION_TRACE;
 

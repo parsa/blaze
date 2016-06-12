@@ -50,7 +50,6 @@
 #include <blaze/math/typetraits/IsMatMatAddExpr.h>
 #include <blaze/math/typetraits/IsMatMatMultExpr.h>
 #include <blaze/math/typetraits/IsMatMatSubExpr.h>
-#include <blaze/math/typetraits/IsMatRealExpr.h>
 #include <blaze/math/typetraits/IsMatScalarDivExpr.h>
 #include <blaze/math/typetraits/IsMatScalarMultExpr.h>
 #include <blaze/math/typetraits/IsMatSerialExpr.h>
@@ -330,31 +329,6 @@ inline EnableIf_< IsMatConjExpr<MT>, ColumnExprTrait_<MT> >
    BLAZE_FUNCTION_TRACE;
 
    return conj( column( (~matrix).operand(), index ) );
-}
-/*! \endcond */
-//*************************************************************************************************
-
-
-//*************************************************************************************************
-/*! \cond BLAZE_INTERNAL */
-/*!\brief Creating a view on a specific column of the given matrix \a real operation.
-// \ingroup views
-//
-// \param matrix The constant matrix \a real operation.
-// \param index The index of the column.
-// \return View on the specified column of the \a real operation.
-//
-// This function returns an expression representing the specified column of the given matrix
-// \a real operation.
-*/
-template< typename MT  // Type of the matrix
-        , bool SO >    // Storage order
-inline EnableIf_< IsMatRealExpr<MT>, ColumnExprTrait_<MT> >
-   column( const Matrix<MT,SO>& matrix, size_t index )
-{
-   BLAZE_FUNCTION_TRACE;
-
-   return real( column( (~matrix).operand(), index ) );
 }
 /*! \endcond */
 //*************************************************************************************************
