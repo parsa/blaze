@@ -1228,6 +1228,34 @@ inline const DVecForEachExpr<VT,Real,TF> real( const DenseVector<VT,TF>& dv )
 
 
 //*************************************************************************************************
+/*!\brief Returns a vector containing the imaginary part of each single element of \a dv.
+// \ingroup dense_vector
+//
+// \param dv The input vector.
+// \return The imaginary part of each single element of \a dv.
+//
+// The \a imag function calculates the imaginary part of each element of the input vector \a dv.
+// The function returns an expression representing this operation.\n
+// The following example demonstrates the use of the \a imag function:
+
+   \code
+   blaze::DynamicVector<double> a, b;
+   // ... Resizing and initialization
+   b = imag( a );
+   \endcode
+*/
+template< typename VT  // Type of the dense vector
+        , bool TF >    // Transpose flag
+inline const DVecForEachExpr<VT,Imag,TF> imag( const DenseVector<VT,TF>& dv )
+{
+   BLAZE_FUNCTION_TRACE;
+
+   return DVecForEachExpr<VT,Imag,TF>( ~dv, Imag() );
+}
+//*************************************************************************************************
+
+
+//*************************************************************************************************
 /*!\brief Computes the square root of each single element of the dense vector \a dv.
 // \ingroup dense_vector
 //
@@ -1925,6 +1953,29 @@ inline const DVecForEachExpr<VT,Abs,TF>& abs( const DVecForEachExpr<VT,Abs,TF>& 
 template< typename VT  // Type of the dense vector
         , bool TF >    // Transpose flag
 inline const DVecForEachExpr<VT,Real,TF>& real( const DVecForEachExpr<VT,Real,TF>& dv )
+{
+   BLAZE_FUNCTION_TRACE;
+
+   return dv;
+}
+/*! \endcond */
+//*************************************************************************************************
+
+
+//*************************************************************************************************
+/*! \cond BLAZE_INTERNAL */
+/*!\brief Imaginary part function for imaginary part dense vector expressions.
+// \ingroup dense_vector
+//
+// \param dv The imaginary part dense vector expression.
+// \return The imaginary part of each single element of \a dv.
+//
+// This function implements a performance optimized treatment of the imaginary part operation
+// on a dense vector imaginary part expression.
+*/
+template< typename VT  // Type of the dense vector
+        , bool TF >    // Transpose flag
+inline const DVecForEachExpr<VT,Imag,TF>& imag( const DVecForEachExpr<VT,Imag,TF>& dv )
 {
    BLAZE_FUNCTION_TRACE;
 

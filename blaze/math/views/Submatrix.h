@@ -52,7 +52,6 @@
 #include <blaze/math/typetraits/IsMatConjExpr.h>
 #include <blaze/math/typetraits/IsMatEvalExpr.h>
 #include <blaze/math/typetraits/IsMatForEachExpr.h>
-#include <blaze/math/typetraits/IsMatImagExpr.h>
 #include <blaze/math/typetraits/IsMatMatAddExpr.h>
 #include <blaze/math/typetraits/IsMatMatMultExpr.h>
 #include <blaze/math/typetraits/IsMatMatSubExpr.h>
@@ -717,35 +716,6 @@ inline EnableIf_< IsMatConjExpr<MT>, SubmatrixExprTrait_<MT,AF> >
    BLAZE_FUNCTION_TRACE;
 
    return conj( submatrix<AF>( (~matrix).operand(), row, column, m, n ) );
-}
-/*! \endcond */
-//*************************************************************************************************
-
-
-//*************************************************************************************************
-/*! \cond BLAZE_INTERNAL */
-/*!\brief Creating a view on a specific submatrix of the given matrix \a imag operation.
-// \ingroup views
-//
-// \param matrix The constant matrix \a imag operation.
-// \param row The index of the first row of the submatrix.
-// \param column The index of the first column of the submatrix.
-// \param m The number of rows of the submatrix.
-// \param n The number of columns of the submatrix.
-// \return View on the specified submatrix of the \a imag operation.
-//
-// This function returns an expression representing the specified submatrix of the given matrix
-// \a imag operation.
-*/
-template< bool AF      // Alignment flag
-        , typename MT  // Type of the matrix
-        , bool SO >    // Storage order
-inline EnableIf_< IsMatImagExpr<MT>, SubmatrixExprTrait_<MT,AF> >
-   submatrix( const Matrix<MT,SO>& matrix, size_t row, size_t column, size_t m, size_t n )
-{
-   BLAZE_FUNCTION_TRACE;
-
-   return imag( submatrix<AF>( (~matrix).operand(), row, column, m, n ) );
 }
 /*! \endcond */
 //*************************************************************************************************

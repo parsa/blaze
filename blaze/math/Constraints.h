@@ -63,13 +63,11 @@
 #include <blaze/math/constraints/General.h>
 #include <blaze/math/constraints/Hermitian.h>
 #include <blaze/math/constraints/Identity.h>
-#include <blaze/math/constraints/ImagExpr.h>
 #include <blaze/math/constraints/Invertible.h>
 #include <blaze/math/constraints/Lower.h>
 #include <blaze/math/constraints/MatConjExpr.h>
 #include <blaze/math/constraints/MatEvalExpr.h>
 #include <blaze/math/constraints/MatForEachExpr.h>
-#include <blaze/math/constraints/MatImagExpr.h>
 #include <blaze/math/constraints/MatInvExpr.h>
 #include <blaze/math/constraints/MatMatAddExpr.h>
 #include <blaze/math/constraints/MatMatMultExpr.h>
@@ -122,7 +120,6 @@
 #include <blaze/math/constraints/VecConjExpr.h>
 #include <blaze/math/constraints/VecEvalExpr.h>
 #include <blaze/math/constraints/VecForEachExpr.h>
-#include <blaze/math/constraints/VecImagExpr.h>
 #include <blaze/math/constraints/VecScalarDivExpr.h>
 #include <blaze/math/constraints/VecScalarMultExpr.h>
 #include <blaze/math/constraints/VecSerialExpr.h>

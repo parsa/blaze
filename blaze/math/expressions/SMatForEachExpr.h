@@ -1031,6 +1031,34 @@ inline const SMatForEachExpr<MT,Real,SO> real( const SparseMatrix<MT,SO>& sm )
 
 
 //*************************************************************************************************
+/*!\brief Returns a matrix containing the imaginary parts of each single element of \a sm.
+// \ingroup sparse_matrix
+//
+// \param sm The input matrix.
+// \return The imaginary part of each single element of \a sm.
+//
+// The \a imag function calculates the imaginary part of each element of the input matrix \a sm.
+// The function returns an expression representing this operation.\n
+// The following example demonstrates the use of the \a imag function:
+
+   \code
+   blaze::CompressedMatrix<double> A, B;
+   // ... Resizing and initialization
+   B = imag( A );
+   \endcode
+*/
+template< typename MT  // Type of the sparse matrix
+        , bool SO >    // Storage order
+inline const SMatForEachExpr<MT,Imag,SO> imag( const SparseMatrix<MT,SO>& sm )
+{
+   BLAZE_FUNCTION_TRACE;
+
+   return SMatForEachExpr<MT,Imag,SO>( ~sm, Imag() );
+}
+//*************************************************************************************************
+
+
+//*************************************************************************************************
 /*!\brief Computes the square root of each non-zero element of the sparse matrix \a sm.
 // \ingroup sparse_matrix
 //
@@ -1704,8 +1732,8 @@ inline const SMatForEachExpr<MT,Erfc,SO> erfc( const SparseMatrix<MT,SO>& sm )
 // on a sparse matrix absolute value expression.
 */
 template< typename MT  // Type of the sparse matrix
-        , bool TF >    // Transpose flag
-inline const SMatForEachExpr<MT,Abs,TF>& abs( const SMatForEachExpr<MT,Abs,TF>& sm )
+        , bool SO >    // Storage order
+inline const SMatForEachExpr<MT,Abs,SO>& abs( const SMatForEachExpr<MT,Abs,SO>& sm )
 {
    BLAZE_FUNCTION_TRACE;
 
@@ -1727,8 +1755,31 @@ inline const SMatForEachExpr<MT,Abs,TF>& abs( const SMatForEachExpr<MT,Abs,TF>& 
 // a sparse matrix real part expression.
 */
 template< typename MT  // Type of the sparse matrix
-        , bool TF >    // Transpose flag
-inline const SMatForEachExpr<MT,Real,TF>& real( const SMatForEachExpr<MT,Real,TF>& sm )
+        , bool SO >    // Storage order
+inline const SMatForEachExpr<MT,Real,SO>& real( const SMatForEachExpr<MT,Real,SO>& sm )
+{
+   BLAZE_FUNCTION_TRACE;
+
+   return sm;
+}
+/*! \endcond */
+//*************************************************************************************************
+
+
+//*************************************************************************************************
+/*! \cond BLAZE_INTERNAL */
+/*!\brief Imaginary part function for imaginary part sparse matrix expressions.
+// \ingroup sparse_matrix
+//
+// \param sm The imaginary part sparse matrix expression.
+// \return The imaginary part of each single element of \a sm.
+//
+// This function implements a performance optimized treatment of the imaginary part operation
+// on a sparse matrix imaginary part expression.
+*/
+template< typename MT  // Type of the sparse matrix
+        , bool SO >    // Storage order
+inline const SMatForEachExpr<MT,Imag,SO>& imag( const SMatForEachExpr<MT,Imag,SO>& sm )
 {
    BLAZE_FUNCTION_TRACE;
 

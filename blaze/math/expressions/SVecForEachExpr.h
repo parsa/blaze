@@ -982,6 +982,34 @@ inline const SVecForEachExpr<VT,Real,TF> real( const SparseVector<VT,TF>& sv )
 
 
 //*************************************************************************************************
+/*!\brief Returns a vector containing the imaginary parts of each single element of \a sv.
+// \ingroup sparse_vector
+//
+// \param sv The integral sparse input vector.
+// \return The imaginary part of each single element of \a sv.
+//
+// The \a imag function calculates the imaginary part of each element of the sparse input vector
+// \a sv. The function returns an expression representing this operation.\n
+// The following example demonstrates the use of the \a imag function:
+
+   \code
+   blaze::CompressedVector<double> a, b;
+   // ... Resizing and initialization
+   b = imag( a );
+   \endcode
+*/
+template< typename VT  // Type of the sparse vector
+        , bool TF >    // Transpose flag
+inline const SVecForEachExpr<VT,Imag,TF> imag( const SparseVector<VT,TF>& sv )
+{
+   BLAZE_FUNCTION_TRACE;
+
+   return SVecForEachExpr<VT,Imag,TF>( ~sv, Imag() );
+}
+//*************************************************************************************************
+
+
+//*************************************************************************************************
 /*!\brief Computes the square root of each non-zero element of the sparse vector \a sv.
 // \ingroup sparse_vector
 //
@@ -1679,6 +1707,29 @@ inline const SVecForEachExpr<VT,Abs,TF>& abs( const SVecForEachExpr<VT,Abs,TF>& 
 template< typename VT  // Type of the sparse vector
         , bool TF >    // Transpose flag
 inline const SVecForEachExpr<VT,Real,TF>& real( const SVecForEachExpr<VT,Real,TF>& sv )
+{
+   BLAZE_FUNCTION_TRACE;
+
+   return sv;
+}
+/*! \endcond */
+//*************************************************************************************************
+
+
+//*************************************************************************************************
+/*! \cond BLAZE_INTERNAL */
+/*!\brief Imaginary part function for imaginary part sparse vector expressions.
+// \ingroup sparse_vector
+//
+// \param sv The imaginary part sparse vector expression.
+// \return The imaginary part of each single element of \a sv.
+//
+// This function implements a performance optimized treatment of the imaginary part operation
+// on a sparse vector imaginary part expression.
+*/
+template< typename VT  // Type of the sparse vector
+        , bool TF >    // Transpose flag
+inline const SVecForEachExpr<VT,Imag,TF>& imag( const SVecForEachExpr<VT,Imag,TF>& sv )
 {
    BLAZE_FUNCTION_TRACE;
 
