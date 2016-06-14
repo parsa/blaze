@@ -99,6 +99,7 @@
 //                <li> \ref cross_product </li>
 //             </ul>
 //          </li>
+//          <li> \ref vector_vector_division </li>
 //          <li> \ref matrix_vector_multiplication </li>
 //          <li> \ref matrix_matrix_multiplication </li>
 //       </ul>
@@ -7607,19 +7608,26 @@
    int result = v1 * trans( v2 );  // Also results in the value 15
    \endcode
 
-// Alternatively, the comma operator can used for any combination of vectors (row or column vectors)
-// to perform an inner product:
+// Alternatively, either the \c dot() function or the comma operator can be used for any combination
+// of vectors (row or column vectors) to perform an inner product:
 
    \code
    blaze::StaticVector<int,3UL,rowVector> v1{  2, 5, -1 };
    blaze::StaticVector<int,3UL,rowVector> v2{ -1, 3, -2 };
 
-   int result = (v1,v2);  // Inner product between two row vectors
+   int result = dot( v1, v2 );  // Inner product between two row vectors
    \endcode
 
-// Please note the brackets embracing the inner product expression. Due to the low precedence
-// of the comma operator (lower even than the assignment operator) these brackets are strictly
-// required for a correct evaluation of the inner product.
+   \code
+   blaze::StaticVector<int,3UL,columnVector> v1{  2, 5, -1 };
+   blaze::StaticVector<int,3UL,columnVector> v2{ -1, 3, -2 };
+
+   int result = (v1,v2);  // Inner product between two column vectors
+   \endcode
+
+// When using the comma operator, please note the brackets embracing the inner product expression.
+// Due to the low precedence of the comma operator (lower even than the assignment operator) these
+// brackets are strictly required for a correct evaluation of the inner product.
 //
 //
 // \n \section outer_product Outer Product
@@ -7642,6 +7650,16 @@
    blaze::StaticVector<int,3UL,rowVector> v2{ -1, 3, -2 };
 
    int result = trans( v1 ) * v2;
+   \endcode
+
+// Alternatively, the \c outer() function can be used for any combination of vectors (row or column
+// vectors) to perform an outer product:
+
+   \code
+   blaze::StaticVector<int,3UL,rowVector> v1{  2, 5, -1 };
+   blaze::StaticVector<int,3UL,rowVector> v2{ -1, 3, -2 };
+
+   StaticMatrix<int,3UL,3UL> M1 = outer( v1, v2 );  // Outer product between two row vectors
    \endcode
 
 // \n \section cross_product Cross Product
@@ -7673,7 +7691,7 @@
    blaze::DynamicVector<int,columnVector>    v2{ -1, 3, -2 };
 
    blaze::StaticVector<int,3UL,columnVector> v3( cross( v1, v2 ) );
-   blaze::StaticVector<int,3UL,columnVector> v3( v1 % v2 );
+   blaze::StaticVector<int,3UL,columnVector> v4( v1 % v2 );
    \endcode
 
 // Please note that the cross product is restricted to three dimensional (dense and sparse)
@@ -10088,6 +10106,7 @@
 //
 //
 // \n \section error_reporting_background Background
+// <hr>
 //
 // The default way of \b Blaze to report errors of any kind is to throw a standard exception.
 // However, although in general this approach works well, in certain environments and under
@@ -10099,6 +10118,7 @@
 //
 //
 // \n \section error_reporting_general_customization Customization of the Reporting Mechanism
+// <hr>
 //
 // In some cases it might be necessary to adapt the entire error reporting mechanism and to
 // replace it by some other means to signal failure. The primary macro for this purpose is the
@@ -10137,6 +10157,7 @@
 //
 //
 // \n \section error_reporting_exception_customization Customization of the Type of Exceptions
+// <hr>
 //
 // In addition to the customization of the entire error reporting mechanism it is also possible
 // to customize the type of exceptions being thrown. This can be achieved by customizing any
@@ -10193,6 +10214,7 @@
 //
 //
 // \n \section error_reporting_special_errors Customization of Special Errors
+// <hr>
 //
 // Last but not least it is possible to customize the error reporting for special kinds of errors.
 // This can be achieved by customizing any number of the following macros:
