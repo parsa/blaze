@@ -55,6 +55,7 @@
 #include <blaze/math/Functors.h>
 #include <blaze/math/shims/Serial.h>
 #include <blaze/math/sparse/ValueIndexPair.h>
+#include <blaze/math/traits/CTransExprTrait.h>
 #include <blaze/math/traits/ForEachExprTrait.h>
 #include <blaze/math/traits/ForEachTrait.h>
 #include <blaze/math/traits/ColumnExprTrait.h>
@@ -1799,6 +1800,52 @@ inline const SMatForEachExpr<MT,Erfc,SO> erfc( const SparseMatrix<MT,SO>& sm )
 template< typename MT  // Type of the sparse matrix
         , bool SO >    // Storage order
 inline const SMatForEachExpr<MT,Abs,SO>& abs( const SMatForEachExpr<MT,Abs,SO>& sm )
+{
+   BLAZE_FUNCTION_TRACE;
+
+   return sm;
+}
+/*! \endcond */
+//*************************************************************************************************
+
+
+//*************************************************************************************************
+/*! \cond BLAZE_INTERNAL */
+/*!\brief Applies the \a floor() function to a sparse matrix \a floor() expressions.
+// \ingroup sparse_matrix
+//
+// \param sm The sparse matrix \a floor() expression.
+// \return The resulting sparse matrix.
+//
+// This function implements a performance optimized treatment of the \a floor() operation on
+// a sparse matrix \a floor() expression.
+*/
+template< typename MT  // Type of the sparse matrix
+        , bool SO >    // Storage order
+inline const SMatForEachExpr<MT,Floor,SO>& floor( const SMatForEachExpr<MT,Floor,SO>& sm )
+{
+   BLAZE_FUNCTION_TRACE;
+
+   return sm;
+}
+/*! \endcond */
+//*************************************************************************************************
+
+
+//*************************************************************************************************
+/*! \cond BLAZE_INTERNAL */
+/*!\brief Applies the \a ceil() function to a sparse matrix \a ceil() expressions.
+// \ingroup sparse_matrix
+//
+// \param sm The sparse matrix \a ceil() expression.
+// \return The resulting sparse matrix.
+//
+// This function implements a performance optimized treatment of the \a ceil() operation on
+// a sparse matrix \a ceil() expression.
+*/
+template< typename MT  // Type of the sparse matrix
+        , bool SO >    // Storage order
+inline const SMatForEachExpr<MT,Ceil,SO>& ceil( const SMatForEachExpr<MT,Ceil,SO>& sm )
 {
    BLAZE_FUNCTION_TRACE;
 

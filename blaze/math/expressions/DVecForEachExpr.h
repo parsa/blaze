@@ -2007,6 +2007,52 @@ inline const DVecForEachExpr<VT,Abs,TF>& abs( const DVecForEachExpr<VT,Abs,TF>& 
 
 //*************************************************************************************************
 /*! \cond BLAZE_INTERNAL */
+/*!\brief Applies the \a floor() function to a dense vector \a floor() expressions.
+// \ingroup dense_vector
+//
+// \param dv The dense vector \a floor expression.
+// \return The resulting dense vector.
+//
+// This function implements a performance optimized treatment of the \a floor() operation on
+// a dense vector \a floor() expression.
+*/
+template< typename VT  // Type of the dense vector
+        , bool TF >    // Transpose flag
+inline const DVecForEachExpr<VT,Floor,TF>& floor( const DVecForEachExpr<VT,Floor,TF>& dv )
+{
+   BLAZE_FUNCTION_TRACE;
+
+   return dv;
+}
+/*! \endcond */
+//*************************************************************************************************
+
+
+//*************************************************************************************************
+/*! \cond BLAZE_INTERNAL */
+/*!\brief Applies the \a ceil() function to a dense vector \a ceil() expressions.
+// \ingroup dense_vector
+//
+// \param dv The dense vector \a ceil expression.
+// \return The resulting dense vector.
+//
+// This function implements a performance optimized treatment of the \a ceil() operation on
+// a dense vector \a ceil() expression.
+*/
+template< typename VT  // Type of the dense vector
+        , bool TF >    // Transpose flag
+inline const DVecForEachExpr<VT,Ceil,TF>& ceil( const DVecForEachExpr<VT,Ceil,TF>& dv )
+{
+   BLAZE_FUNCTION_TRACE;
+
+   return dv;
+}
+/*! \endcond */
+//*************************************************************************************************
+
+
+//*************************************************************************************************
+/*! \cond BLAZE_INTERNAL */
 /*!\brief Complex conjugate function for complex conjugate dense vector expressions.
 // \ingroup dense_vector
 //
@@ -2174,6 +2220,70 @@ struct TDVecForEachExprTrait< DVecForEachExpr<VT,Abs,true>, Abs >
    //**********************************************************************************************
    using Type = If_< And< IsDenseVector<VT>, IsRowVector<VT> >
                    , DVecForEachExpr<VT,Abs,true>
+                   , INVALID_TYPE >;
+   //**********************************************************************************************
+};
+/*! \endcond */
+//*************************************************************************************************
+
+
+//*************************************************************************************************
+/*! \cond BLAZE_INTERNAL */
+template< typename VT >
+struct DVecForEachExprTrait< DVecForEachExpr<VT,Floor,false>, Floor >
+{
+ public:
+   //**********************************************************************************************
+   using Type = If_< And< IsDenseVector<VT>, IsColumnVector<VT> >
+                   , DVecForEachExpr<VT,Floor,false>
+                   , INVALID_TYPE >;
+   //**********************************************************************************************
+};
+/*! \endcond */
+//*************************************************************************************************
+
+
+//*************************************************************************************************
+/*! \cond BLAZE_INTERNAL */
+template< typename VT >
+struct TDVecForEachExprTrait< DVecForEachExpr<VT,Floor,true>, Floor >
+{
+ public:
+   //**********************************************************************************************
+   using Type = If_< And< IsDenseVector<VT>, IsRowVector<VT> >
+                   , DVecForEachExpr<VT,Floor,true>
+                   , INVALID_TYPE >;
+   //**********************************************************************************************
+};
+/*! \endcond */
+//*************************************************************************************************
+
+
+//*************************************************************************************************
+/*! \cond BLAZE_INTERNAL */
+template< typename VT >
+struct DVecForEachExprTrait< DVecForEachExpr<VT,Ceil,false>, Ceil >
+{
+ public:
+   //**********************************************************************************************
+   using Type = If_< And< IsDenseVector<VT>, IsColumnVector<VT> >
+                   , DVecForEachExpr<VT,Ceil,false>
+                   , INVALID_TYPE >;
+   //**********************************************************************************************
+};
+/*! \endcond */
+//*************************************************************************************************
+
+
+//*************************************************************************************************
+/*! \cond BLAZE_INTERNAL */
+template< typename VT >
+struct TDVecForEachExprTrait< DVecForEachExpr<VT,Ceil,true>, Ceil >
+{
+ public:
+   //**********************************************************************************************
+   using Type = If_< And< IsDenseVector<VT>, IsRowVector<VT> >
+                   , DVecForEachExpr<VT,Ceil,true>
                    , INVALID_TYPE >;
    //**********************************************************************************************
 };

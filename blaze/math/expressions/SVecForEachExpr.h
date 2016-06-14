@@ -1761,6 +1761,52 @@ inline const SVecForEachExpr<VT,Abs,TF>& abs( const SVecForEachExpr<VT,Abs,TF>& 
 
 //*************************************************************************************************
 /*! \cond BLAZE_INTERNAL */
+/*!\brief Applies the \a floor() function to a sparse vector \a floor() expressions.
+// \ingroup sparse_vector
+//
+// \param sv The sparse vector \a floor expression.
+// \return The resulting sparse vector.
+//
+// This function implements a performance optimized treatment of the \a floor() operation on
+// a sparse vector \a floor() expression.
+*/
+template< typename VT  // Type of the sparse vector
+        , bool TF >    // Transpose flag
+inline const SVecForEachExpr<VT,Floor,TF>& floor( const SVecForEachExpr<VT,Floor,TF>& sv )
+{
+   BLAZE_FUNCTION_TRACE;
+
+   return sv;
+}
+/*! \endcond */
+//*************************************************************************************************
+
+
+//*************************************************************************************************
+/*! \cond BLAZE_INTERNAL */
+/*!\brief Applies the \a ceil() function to a sparse vector \a ceil() expressions.
+// \ingroup sparse_vector
+//
+// \param sv The sparse vector \a ceil expression.
+// \return The resulting sparse vector.
+//
+// This function implements a performance optimized treatment of the \a ceil() operation on
+// a sparse vector \a ceil() expression.
+*/
+template< typename VT  // Type of the sparse vector
+        , bool TF >    // Transpose flag
+inline const SVecForEachExpr<VT,Ceil,TF>& ceil( const SVecForEachExpr<VT,Ceil,TF>& sv )
+{
+   BLAZE_FUNCTION_TRACE;
+
+   return sv;
+}
+/*! \endcond */
+//*************************************************************************************************
+
+
+//*************************************************************************************************
+/*! \cond BLAZE_INTERNAL */
 /*!\brief Complex conjugate function for complex conjugate sparse vector expressions.
 // \ingroup sparse_vector
 //

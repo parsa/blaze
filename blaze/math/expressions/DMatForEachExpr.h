@@ -1944,6 +1944,52 @@ inline const DMatForEachExpr<MT,Abs,SO>& abs( const DMatForEachExpr<MT,Abs,SO>& 
 
 //*************************************************************************************************
 /*! \cond BLAZE_INTERNAL */
+/*!\brief Applies the \a floor() function to a dense matrix \a floor() expressions.
+// \ingroup dense_matrix
+//
+// \param dm The dense matrix \a floor() expression.
+// \return The resulting dense matrix.
+//
+// This function implements a performance optimized treatment of the \a floor() operation on
+// a dense matrix \a floor() expression.
+*/
+template< typename MT  // Type of the dense matrix
+        , bool SO >    // Storage order
+inline const DMatForEachExpr<MT,Floor,SO>& floor( const DMatForEachExpr<MT,Floor,SO>& dm )
+{
+   BLAZE_FUNCTION_TRACE;
+
+   return dm;
+}
+/*! \endcond */
+//*************************************************************************************************
+
+
+//*************************************************************************************************
+/*! \cond BLAZE_INTERNAL */
+/*!\brief Applies the \a ceil() function to a dense matrix \a ceil() expressions.
+// \ingroup dense_matrix
+//
+// \param dm The dense matrix \a ceil() expression.
+// \return The resulting dense matrix.
+//
+// This function implements a performance optimized treatment of the \a ceil() operation on
+// a dense matrix \a ceil() expression.
+*/
+template< typename MT  // Type of the dense matrix
+        , bool SO >    // Storage order
+inline const DMatForEachExpr<MT,Ceil,SO>& ceil( const DMatForEachExpr<MT,Ceil,SO>& dm )
+{
+   BLAZE_FUNCTION_TRACE;
+
+   return dm;
+}
+/*! \endcond */
+//*************************************************************************************************
+
+
+//*************************************************************************************************
+/*! \cond BLAZE_INTERNAL */
 /*!\brief Complex conjugate function for complex conjugate dense matrix expressions.
 // \ingroup dense_matrix
 //
@@ -2822,6 +2868,70 @@ struct TDMatForEachExprTrait< DMatForEachExpr<MT,Abs,true>, Abs >
    //**********************************************************************************************
    using Type = If_< And< IsDenseMatrix<MT>, IsColumnMajorMatrix<MT> >
                    , DMatForEachExpr<MT,Abs,true>
+                   , INVALID_TYPE >;
+   //**********************************************************************************************
+};
+/*! \endcond */
+//*************************************************************************************************
+
+
+//*************************************************************************************************
+/*! \cond BLAZE_INTERNAL */
+template< typename MT >
+struct DMatForEachExprTrait< DMatForEachExpr<MT,Floor,false>, Floor >
+{
+ public:
+   //**********************************************************************************************
+   using Type = If_< And< IsDenseMatrix<MT>, IsRowMajorMatrix<MT> >
+                   , DMatForEachExpr<MT,Floor,false>
+                   , INVALID_TYPE >;
+   //**********************************************************************************************
+};
+/*! \endcond */
+//*************************************************************************************************
+
+
+//*************************************************************************************************
+/*! \cond BLAZE_INTERNAL */
+template< typename MT >
+struct TDMatForEachExprTrait< DMatForEachExpr<MT,Floor,true>, Floor >
+{
+ public:
+   //**********************************************************************************************
+   using Type = If_< And< IsDenseMatrix<MT>, IsColumnMajorMatrix<MT> >
+                   , DMatForEachExpr<MT,Floor,true>
+                   , INVALID_TYPE >;
+   //**********************************************************************************************
+};
+/*! \endcond */
+//*************************************************************************************************
+
+
+//*************************************************************************************************
+/*! \cond BLAZE_INTERNAL */
+template< typename MT >
+struct DMatForEachExprTrait< DMatForEachExpr<MT,Ceil,false>, Ceil >
+{
+ public:
+   //**********************************************************************************************
+   using Type = If_< And< IsDenseMatrix<MT>, IsRowMajorMatrix<MT> >
+                   , DMatForEachExpr<MT,Ceil,false>
+                   , INVALID_TYPE >;
+   //**********************************************************************************************
+};
+/*! \endcond */
+//*************************************************************************************************
+
+
+//*************************************************************************************************
+/*! \cond BLAZE_INTERNAL */
+template< typename MT >
+struct TDMatForEachExprTrait< DMatForEachExpr<MT,Ceil,true>, Ceil >
+{
+ public:
+   //**********************************************************************************************
+   using Type = If_< And< IsDenseMatrix<MT>, IsColumnMajorMatrix<MT> >
+                   , DMatForEachExpr<MT,Ceil,true>
                    , INVALID_TYPE >;
    //**********************************************************************************************
 };
