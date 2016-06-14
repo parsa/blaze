@@ -43,7 +43,6 @@
 #include <blaze/math/expressions/DenseVector.h>
 #include <blaze/math/expressions/DVecSVecMultExpr.h>
 #include <blaze/math/expressions/SparseVector.h>
-#include <blaze/math/expressions/SVecConjExpr.h>
 #include <blaze/math/expressions/SVecDVecDivExpr.h>
 #include <blaze/math/expressions/SVecDVecMultExpr.h>
 #include <blaze/math/expressions/SVecEvalExpr.h>

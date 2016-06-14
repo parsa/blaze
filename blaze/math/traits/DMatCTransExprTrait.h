@@ -41,7 +41,8 @@
 //*************************************************************************************************
 
 #include <blaze/math/expressions/Forward.h>
-#include <blaze/math/traits/DMatConjExprTrait.h>
+#include <blaze/math/functors/Forward.h>
+#include <blaze/math/traits/DMatForEachExprTrait.h>
 #include <blaze/math/traits/DMatTransExprTrait.h>
 #include <blaze/math/typetraits/IsDenseMatrix.h>
 #include <blaze/math/typetraits/IsRowMajorMatrix.h>
@@ -85,7 +86,7 @@ struct DMatCTransExprTrait
    //**********************************************************************************************
    /*! \cond BLAZE_INTERNAL */
    typedef If_< And< IsDenseMatrix<MT>, IsRowMajorMatrix<MT> >
-              , DMatTransExprTrait< DMatConjExprTrait_<MT> >
+              , DMatTransExprTrait< DMatForEachExprTrait_<MT,Conj> >
               , Failure >  Tmp;
    /*! \endcond */
    //**********************************************************************************************

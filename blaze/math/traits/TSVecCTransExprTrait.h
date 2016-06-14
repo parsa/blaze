@@ -41,7 +41,8 @@
 //*************************************************************************************************
 
 #include <blaze/math/expressions/Forward.h>
-#include <blaze/math/traits/TSVecConjExprTrait.h>
+#include <blaze/math/functors/Forward.h>
+#include <blaze/math/traits/TSVecForEachExprTrait.h>
 #include <blaze/math/traits/TSVecTransExprTrait.h>
 #include <blaze/math/typetraits/IsRowVector.h>
 #include <blaze/math/typetraits/IsSparseVector.h>
@@ -85,7 +86,7 @@ struct TSVecCTransExprTrait
    //**********************************************************************************************
    /*! \cond BLAZE_INTERNAL */
    using Tmp = If_< And< IsSparseVector<VT>, IsRowVector<VT> >
-                  , TSVecTransExprTrait< TSVecConjExprTrait_<VT> >
+                  , TSVecTransExprTrait< TSVecForEachExprTrait_<VT,Conj> >
                   , Failure >;
    /*! \endcond */
    //**********************************************************************************************

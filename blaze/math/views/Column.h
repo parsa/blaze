@@ -43,7 +43,6 @@
 #include <blaze/math/expressions/Matrix.h>
 #include <blaze/math/traits/ColumnExprTrait.h>
 #include <blaze/math/typetraits/IsComputation.h>
-#include <blaze/math/typetraits/IsMatConjExpr.h>
 #include <blaze/math/typetraits/IsMatEvalExpr.h>
 #include <blaze/math/typetraits/IsMatForEachExpr.h>
 #include <blaze/math/typetraits/IsMatMatAddExpr.h>
@@ -303,31 +302,6 @@ inline EnableIf_< IsMatScalarDivExpr<MT>, ColumnExprTrait_<MT> >
    BLAZE_FUNCTION_TRACE;
 
    return column( (~matrix).leftOperand(), index ) / (~matrix).rightOperand();
-}
-/*! \endcond */
-//*************************************************************************************************
-
-
-//*************************************************************************************************
-/*! \cond BLAZE_INTERNAL */
-/*!\brief Creating a view on a specific column of the given matrix \a conj operation.
-// \ingroup views
-//
-// \param matrix The constant matrix \a conj operation.
-// \param index The index of the column.
-// \return View on the specified column of the \a conj operation.
-//
-// This function returns an expression representing the specified column of the given matrix
-// \a conj operation.
-*/
-template< typename MT  // Type of the matrix
-        , bool SO >    // Storage order
-inline EnableIf_< IsMatConjExpr<MT>, ColumnExprTrait_<MT> >
-   column( const Matrix<MT,SO>& matrix, size_t index )
-{
-   BLAZE_FUNCTION_TRACE;
-
-   return conj( column( (~matrix).operand(), index ) );
 }
 /*! \endcond */
 //*************************************************************************************************

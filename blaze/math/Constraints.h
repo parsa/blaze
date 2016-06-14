@@ -49,7 +49,6 @@
 #include <blaze/math/constraints/Columns.h>
 #include <blaze/math/constraints/ColumnVector.h>
 #include <blaze/math/constraints/Computation.h>
-#include <blaze/math/constraints/ConjExpr.h>
 #include <blaze/math/constraints/ConstDataAccess.h>
 #include <blaze/math/constraints/CrossExpr.h>
 #include <blaze/math/constraints/Custom.h>
@@ -65,7 +64,6 @@
 #include <blaze/math/constraints/Identity.h>
 #include <blaze/math/constraints/Invertible.h>
 #include <blaze/math/constraints/Lower.h>
-#include <blaze/math/constraints/MatConjExpr.h>
 #include <blaze/math/constraints/MatEvalExpr.h>
 #include <blaze/math/constraints/MatForEachExpr.h>
 #include <blaze/math/constraints/MatInvExpr.h>
@@ -117,7 +115,6 @@
 #include <blaze/math/constraints/UniTriangular.h>
 #include <blaze/math/constraints/UniUpper.h>
 #include <blaze/math/constraints/Upper.h>
-#include <blaze/math/constraints/VecConjExpr.h>
 #include <blaze/math/constraints/VecEvalExpr.h>
 #include <blaze/math/constraints/VecForEachExpr.h>
 #include <blaze/math/constraints/VecScalarDivExpr.h>

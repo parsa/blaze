@@ -80,7 +80,6 @@
 #include <blaze/math/typetraits/IsColumnMajorMatrix.h>
 #include <blaze/math/typetraits/IsColumnVector.h>
 #include <blaze/math/typetraits/IsComputation.h>
-#include <blaze/math/typetraits/IsConjExpr.h>
 #include <blaze/math/typetraits/IsCrossExpr.h>
 #include <blaze/math/typetraits/IsCustom.h>
 #include <blaze/math/typetraits/IsDenseMatrix.h>
@@ -95,7 +94,6 @@
 #include <blaze/math/typetraits/IsIdentity.h>
 #include <blaze/math/typetraits/IsInvertible.h>
 #include <blaze/math/typetraits/IsLower.h>
-#include <blaze/math/typetraits/IsMatConjExpr.h>
 #include <blaze/math/typetraits/IsMatEvalExpr.h>
 #include <blaze/math/typetraits/IsMatForEachExpr.h>
 #include <blaze/math/typetraits/IsMatInvExpr.h>
@@ -142,7 +140,6 @@
 #include <blaze/math/typetraits/IsUniTriangular.h>
 #include <blaze/math/typetraits/IsUniUpper.h>
 #include <blaze/math/typetraits/IsUpper.h>
-#include <blaze/math/typetraits/IsVecConjExpr.h>
 #include <blaze/math/typetraits/IsVecEvalExpr.h>
 #include <blaze/math/typetraits/IsVecForEachExpr.h>
 #include <blaze/math/typetraits/IsVecScalarDivExpr.h>

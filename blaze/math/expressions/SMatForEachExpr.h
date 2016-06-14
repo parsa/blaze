@@ -1003,6 +1003,71 @@ inline const SMatForEachExpr<MT,Ceil,SO> ceil( const SparseMatrix<MT,SO>& sm )
 
 
 //*************************************************************************************************
+/*!\brief Returns a matrix containing the complex conjugate of each single element of \a sm.
+// \ingroup sparse_matrix
+//
+// \param sm The input matrix.
+// \return The complex conjugate of each single element of \a sm.
+//
+// The \a conj function calculates the complex conjugate of each element of the input matrix
+// \a sm. The function returns an expression representing this operation.\n
+// The following example demonstrates the use of the \a conj function:
+
+   \code
+   blaze::CompressedMatrix< complex<double> > A, B;
+   // ... Resizing and initialization
+   B = conj( A );
+   \endcode
+*/
+template< typename MT  // Type of the sparse matrix
+        , bool SO >    // Storage order
+inline const SMatForEachExpr<MT,Conj,SO> conj( const SparseMatrix<MT,SO>& sm )
+{
+   BLAZE_FUNCTION_TRACE;
+
+   return SMatForEachExpr<MT,Conj,SO>( ~sm, Conj() );
+}
+//*************************************************************************************************
+
+
+//*************************************************************************************************
+/*!\brief Returns the conjugate transpose matrix of \a sm.
+// \ingroup sparse_matrix
+//
+// \param sm The input matrix.
+// \return The conjugate transpose of \a sm.
+//
+// The \a ctrans function returns an expression representing the conjugate transpose (also called
+// adjoint matrix, Hermitian conjugate matrix or transjugate matrix) of the given input matrix
+// \a sm.\n
+// The following example demonstrates the use of the \a ctrans function:
+
+   \code
+   blaze::CompressedMatrix< complex<double> > A, B;
+   // ... Resizing and initialization
+   B = ctrans( A );
+   \endcode
+
+// Note that the \a ctrans function has the same effect as manually applying the \a conj and
+// \a trans function in any order:
+
+   \code
+   B = trans( conj( A ) );  // Computing the conjugate transpose matrix
+   B = conj( trans( A ) );  // Computing the conjugate transpose matrix
+   \endcode
+*/
+template< typename MT  // Type of the sparse matrix
+        , bool SO >    // Storage order
+inline const CTransExprTrait_<MT> ctrans( const SparseMatrix<MT,SO>& sm )
+{
+   BLAZE_FUNCTION_TRACE;
+
+   return trans( conj( ~sm ) );
+}
+//*************************************************************************************************
+
+
+//*************************************************************************************************
 /*!\brief Returns a matrix containing the real parts of each single element of \a sm.
 // \ingroup sparse_matrix
 //
@@ -1745,6 +1810,66 @@ inline const SMatForEachExpr<MT,Abs,SO>& abs( const SMatForEachExpr<MT,Abs,SO>& 
 
 //*************************************************************************************************
 /*! \cond BLAZE_INTERNAL */
+/*!\brief Complex conjugate function for complex conjugate sparse matrix expressions.
+// \ingroup sparse_matrix
+//
+// \param sm The complex conjugate sparse matrix expression.
+// \return The original sparse matrix.
+//
+// This function implements a performance optimized treatment of the complex conjugate operation
+// on a sparse matrix complex conjugate expression. It returns an expression representing the
+// original sparse matrix:
+
+   \code
+   blaze::CompressedMatrix< complex<double> > A, B;
+   // ... Resizing and initialization
+   B = conj( conj( A ) );
+   \endcode
+*/
+template< typename MT  // Type of the sparse matrix
+        , bool TF >    // Transpose flag
+inline typename SMatForEachExpr<MT,Conj,TF>::Operand conj( const SMatForEachExpr<MT,Conj,TF>& sm )
+{
+   BLAZE_FUNCTION_TRACE;
+
+   return sm.operand();
+}
+/*! \endcond */
+//*************************************************************************************************
+
+
+//*************************************************************************************************
+/*! \cond BLAZE_INTERNAL */
+/*!\brief Complex conjugate function for conjugate transpose sparse matrix expressions.
+// \ingroup sparse_matrix
+//
+// \param dm The conjugate transpose sparse matrix expression.
+// \return The transpose sparse matrix.
+//
+// This function implements a performance optimized treatment of the complex conjugate operation
+// on a sparse matrix conjugate transpose expression. It returns an expression representing the
+// transpose of the sparse matrix:
+
+   \code
+   blaze::CompressedMatrix< complex<double> > A, B;
+   // ... Resizing and initialization
+   B = conj( ctrans( A ) );
+   \endcode
+*/
+template< typename MT  // Type of the sparse matrix
+        , bool SO >    // Storage order
+inline const SMatTransExpr<MT,!SO> conj( const SMatTransExpr<SMatForEachExpr<MT,Conj,SO>,!SO>& sm )
+{
+   BLAZE_FUNCTION_TRACE;
+
+   return SMatTransExpr<MT,!SO>( sm.operand().operand() );
+}
+/*! \endcond */
+//*************************************************************************************************
+
+
+//*************************************************************************************************
+/*! \cond BLAZE_INTERNAL */
 /*!\brief Real part function for real part sparse matrix expressions.
 // \ingroup sparse_matrix
 //
@@ -2244,6 +2369,134 @@ struct IsStrictlyUpper< SMatForEachExpr<MT,OP,SO> >
 //  EXPRESSION TRAIT SPECIALIZATIONS
 //
 //=================================================================================================
+
+//*************************************************************************************************
+/*! \cond BLAZE_INTERNAL */
+template< typename MT >
+struct SMatForEachExprTrait< SMatForEachExpr<MT,Abs,false>, Abs >
+{
+ public:
+   //**********************************************************************************************
+   using Type = If_< And< IsSparseMatrix<MT>, IsRowMajorMatrix<MT> >
+                   , SMatForEachExpr<MT,Abs,false>
+                   , INVALID_TYPE >;
+   //**********************************************************************************************
+};
+/*! \endcond */
+//*************************************************************************************************
+
+
+//*************************************************************************************************
+/*! \cond BLAZE_INTERNAL */
+template< typename MT >
+struct TSMatForEachExprTrait< SMatForEachExpr<MT,Abs,true>, Abs >
+{
+ public:
+   //**********************************************************************************************
+   using Type = If_< And< IsSparseMatrix<MT>, IsColumnMajorMatrix<MT> >
+                   , SMatForEachExpr<MT,Abs,true>
+                   , INVALID_TYPE >;
+   //**********************************************************************************************
+};
+/*! \endcond */
+//*************************************************************************************************
+
+
+//*************************************************************************************************
+/*! \cond BLAZE_INTERNAL */
+template< typename MT >
+struct SMatForEachExprTrait< SMatForEachExpr<MT,Conj,false>, Conj >
+{
+ public:
+   //**********************************************************************************************
+   using Type = If_< And< IsSparseMatrix<MT>, IsRowMajorMatrix<MT> >
+                   , Operand_< SMatForEachExpr<MT,Conj,false> >
+                   , INVALID_TYPE >;
+   //**********************************************************************************************
+};
+/*! \endcond */
+//*************************************************************************************************
+
+
+//*************************************************************************************************
+/*! \cond BLAZE_INTERNAL */
+template< typename MT >
+struct TSMatForEachExprTrait< SMatForEachExpr<MT,Conj,true>, Conj >
+{
+ public:
+   //**********************************************************************************************
+   using Type = If_< And< IsSparseMatrix<MT>, IsColumnMajorMatrix<MT> >
+                   , Operand_< SMatForEachExpr<MT,Conj,true> >
+                   , INVALID_TYPE >;
+   //**********************************************************************************************
+};
+/*! \endcond */
+//*************************************************************************************************
+
+
+//*************************************************************************************************
+/*! \cond BLAZE_INTERNAL */
+template< typename MT >
+struct SMatForEachExprTrait< SMatTransExpr< SMatForEachExpr<MT,Conj,true>, false >, Conj >
+{
+ public:
+   //**********************************************************************************************
+   using Type = If_< And< IsSparseMatrix<MT>, IsColumnMajorMatrix<MT> >
+                   , SMatTransExpr<MT,false>
+                   , INVALID_TYPE >;
+   //**********************************************************************************************
+};
+/*! \endcond */
+//*************************************************************************************************
+
+
+//*************************************************************************************************
+/*! \cond BLAZE_INTERNAL */
+template< typename MT >
+struct TSMatForEachExprTrait< SMatTransExpr< SMatForEachExpr<MT,Conj,false>, true >, Conj >
+{
+ public:
+   //**********************************************************************************************
+   using Type = If_< And< IsSparseMatrix<MT>, IsRowMajorMatrix<MT> >
+                   , SMatTransExpr<MT,true>
+                   , INVALID_TYPE >;
+   //**********************************************************************************************
+};
+/*! \endcond */
+//*************************************************************************************************
+
+
+//*************************************************************************************************
+/*! \cond BLAZE_INTERNAL */
+template< typename MT >
+struct SMatForEachExprTrait< SMatForEachExpr<MT,Real,false>, Real >
+{
+ public:
+   //**********************************************************************************************
+   using Type = If_< And< IsSparseMatrix<MT>, IsRowMajorMatrix<MT> >
+                   , SMatForEachExpr<MT,Real,false>
+                   , INVALID_TYPE >;
+   //**********************************************************************************************
+};
+/*! \endcond */
+//*************************************************************************************************
+
+
+//*************************************************************************************************
+/*! \cond BLAZE_INTERNAL */
+template< typename MT >
+struct TSMatForEachExprTrait< SMatForEachExpr<MT,Real,true>, Real >
+{
+ public:
+   //**********************************************************************************************
+   using Type = If_< And< IsSparseMatrix<MT>, IsColumnMajorMatrix<MT> >
+                   , SMatForEachExpr<MT,Real,true>
+                   , INVALID_TYPE >;
+   //**********************************************************************************************
+};
+/*! \endcond */
+//*************************************************************************************************
+
 
 //*************************************************************************************************
 /*! \cond BLAZE_INTERNAL */

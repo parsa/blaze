@@ -54,6 +54,7 @@
 #include <blaze/math/shims/Serial.h>
 #include <blaze/math/SIMD.h>
 #include <blaze/math/traits/ColumnExprTrait.h>
+#include <blaze/math/traits/CTransExprTrait.h>
 #include <blaze/math/traits/ForEachExprTrait.h>
 #include <blaze/math/traits/ForEachTrait.h>
 #include <blaze/math/traits/RowExprTrait.h>
@@ -1137,6 +1138,71 @@ inline const DMatForEachExpr<MT,Ceil,SO> ceil( const DenseMatrix<MT,SO>& dm )
 
 
 //*************************************************************************************************
+/*!\brief Returns a matrix containing the complex conjugate of each single element of \a dm.
+// \ingroup dense_matrix
+//
+// \param dm The input matrix.
+// \return The conjugate complex of each single element of \a dm.
+//
+// The \a conj function calculates the complex conjugate of each element of the input matrix
+// \a dm. The function returns an expression representing this operation.\n
+// The following example demonstrates the use of the \a conj function:
+
+   \code
+   blaze::DynamicMatrix< complex<double> > A, B;
+   // ... Resizing and initialization
+   B = conj( A );
+   \endcode
+*/
+template< typename MT  // Type of the dense matrix
+        , bool SO >    // Storage order
+inline const DMatForEachExpr<MT,Conj,SO> conj( const DenseMatrix<MT,SO>& dm )
+{
+   BLAZE_FUNCTION_TRACE;
+
+   return DMatForEachExpr<MT,Conj,SO>( ~dm, Conj() );
+}
+//*************************************************************************************************
+
+
+//*************************************************************************************************
+/*!\brief Returns the conjugate transpose matrix of \a dm.
+// \ingroup dense_matrix
+//
+// \param dm The input matrix.
+// \return The conjugate transpose of \a dm.
+//
+// The \a ctrans function returns an expression representing the conjugate transpose (also called
+// adjoint matrix, Hermitian conjugate matrix or transjugate matrix) of the given input matrix
+// \a dm.\n
+// The following example demonstrates the use of the \a ctrans function:
+
+   \code
+   blaze::DynamicMatrix< complex<double> > A, B;
+   // ... Resizing and initialization
+   B = ctrans( A );
+   \endcode
+
+// Note that the \a ctrans function has the same effect as manually applying the \a conj and
+// \a trans function in any order:
+
+   \code
+   B = trans( conj( A ) );  // Computing the conjugate transpose matrix
+   B = conj( trans( A ) );  // Computing the conjugate transpose matrix
+   \endcode
+*/
+template< typename MT  // Type of the dense matrix
+        , bool SO >    // Storage order
+inline const CTransExprTrait_<MT> ctrans( const DenseMatrix<MT,SO>& dm )
+{
+   BLAZE_FUNCTION_TRACE;
+
+   return trans( conj( ~dm ) );
+}
+//*************************************************************************************************
+
+
+//*************************************************************************************************
 /*!\brief Returns a matrix containing the real part of each single element of \a dm.
 // \ingroup dense_matrix
 //
@@ -1878,6 +1944,66 @@ inline const DMatForEachExpr<MT,Abs,SO>& abs( const DMatForEachExpr<MT,Abs,SO>& 
 
 //*************************************************************************************************
 /*! \cond BLAZE_INTERNAL */
+/*!\brief Complex conjugate function for complex conjugate dense matrix expressions.
+// \ingroup dense_matrix
+//
+// \param dm The complex conjugate dense matrix expression.
+// \return The original dense matrix.
+//
+// This function implements a performance optimized treatment of the complex conjugate operation
+// on a dense matrix complex conjugate expression. It returns an expression representing the
+// original dense matrix:
+
+   \code
+   blaze::DynamicMatrix< complex<double> > A, B;
+   // ... Resizing and initialization
+   B = conj( conj( A ) );
+   \endcode
+*/
+template< typename MT  // Type of the dense matrix
+        , bool SO >    // Storage order
+inline typename DMatForEachExpr<MT,Conj,SO>::Operand conj( const DMatForEachExpr<MT,Conj,SO>& dm )
+{
+   BLAZE_FUNCTION_TRACE;
+
+   return dm.operand();
+}
+/*! \endcond */
+//*************************************************************************************************
+
+
+//*************************************************************************************************
+/*! \cond BLAZE_INTERNAL */
+/*!\brief Complex conjugate function for conjugate transpose dense matrix expressions.
+// \ingroup dense_matrix
+//
+// \param dm The conjugate transpose dense matrix expression.
+// \return The transpose dense matrix.
+//
+// This function implements a performance optimized treatment of the complex conjugate operation
+// on a dense matrix conjugate transpose expression. It returns an expression representing the
+// transpose of the dense matrix:
+
+   \code
+   blaze::DynamicMatrix< complex<double> > A, B;
+   // ... Resizing and initialization
+   B = conj( ctrans( A ) );
+   \endcode
+*/
+template< typename MT  // Type of the dense matrix
+        , bool SO >    // Storage order
+inline const DMatTransExpr<MT,!SO> conj( const DMatTransExpr<DMatForEachExpr<MT,Conj,SO>,!SO>& dm )
+{
+   BLAZE_FUNCTION_TRACE;
+
+   return DMatTransExpr<MT,!SO>( dm.operand().operand() );
+}
+/*! \endcond */
+//*************************************************************************************************
+
+
+//*************************************************************************************************
+/*! \cond BLAZE_INTERNAL */
 /*!\brief Real part function for real part dense matrix expressions.
 // \ingroup dense_matrix
 //
@@ -1890,29 +2016,6 @@ inline const DMatForEachExpr<MT,Abs,SO>& abs( const DMatForEachExpr<MT,Abs,SO>& 
 template< typename MT  // Type of the dense matrix
         , bool SO >    // Storage order
 inline const DMatForEachExpr<MT,Real,SO>& real( const DMatForEachExpr<MT,Real,SO>& dm )
-{
-   BLAZE_FUNCTION_TRACE;
-
-   return dm;
-}
-/*! \endcond */
-//*************************************************************************************************
-
-
-//*************************************************************************************************
-/*! \cond BLAZE_INTERNAL */
-/*!\brief Imaginary part function for imaginary part dense matrix expressions.
-// \ingroup dense_matrix
-//
-// \param dm The imaginary part dense matrix expression.
-// \return The imaginary part of each single element of \a dm.
-//
-// This function implements a performance optimized treatment of the imaginary part operation on
-// a dense matrix imaginary part expression.
-*/
-template< typename MT  // Type of the dense matrix
-        , bool SO >    // Storage order
-inline const DMatForEachExpr<MT,Imag,SO>& imag( const DMatForEachExpr<MT,Imag,SO>& dm )
 {
    BLAZE_FUNCTION_TRACE;
 
@@ -2693,6 +2796,134 @@ struct IsStrictlyUpper< DMatForEachExpr<MT,Erf,SO> >
 //  EXPRESSION TRAIT SPECIALIZATIONS
 //
 //=================================================================================================
+
+//*************************************************************************************************
+/*! \cond BLAZE_INTERNAL */
+template< typename MT >
+struct DMatForEachExprTrait< DMatForEachExpr<MT,Abs,false>, Abs >
+{
+ public:
+   //**********************************************************************************************
+   using Type = If_< And< IsDenseMatrix<MT>, IsRowMajorMatrix<MT> >
+                   , DMatForEachExpr<MT,Abs,false>
+                   , INVALID_TYPE >;
+   //**********************************************************************************************
+};
+/*! \endcond */
+//*************************************************************************************************
+
+
+//*************************************************************************************************
+/*! \cond BLAZE_INTERNAL */
+template< typename MT >
+struct TDMatForEachExprTrait< DMatForEachExpr<MT,Abs,true>, Abs >
+{
+ public:
+   //**********************************************************************************************
+   using Type = If_< And< IsDenseMatrix<MT>, IsColumnMajorMatrix<MT> >
+                   , DMatForEachExpr<MT,Abs,true>
+                   , INVALID_TYPE >;
+   //**********************************************************************************************
+};
+/*! \endcond */
+//*************************************************************************************************
+
+
+//*************************************************************************************************
+/*! \cond BLAZE_INTERNAL */
+template< typename MT >
+struct DMatForEachExprTrait< DMatForEachExpr<MT,Conj,false>, Conj >
+{
+ public:
+   //**********************************************************************************************
+   using Type = If_< And< IsDenseMatrix<MT>, IsRowMajorMatrix<MT> >
+                   , Operand_< DMatForEachExpr<MT,Conj,false> >
+                   , INVALID_TYPE >;
+   //**********************************************************************************************
+};
+/*! \endcond */
+//*************************************************************************************************
+
+
+//*************************************************************************************************
+/*! \cond BLAZE_INTERNAL */
+template< typename MT >
+struct TDMatForEachExprTrait< DMatForEachExpr<MT,Conj,true>, Conj >
+{
+ public:
+   //**********************************************************************************************
+   using Type = If_< And< IsDenseMatrix<MT>, IsColumnMajorMatrix<MT> >
+                   , Operand_< DMatForEachExpr<MT,Conj,true> >
+                   , INVALID_TYPE >;
+   //**********************************************************************************************
+};
+/*! \endcond */
+//*************************************************************************************************
+
+
+//*************************************************************************************************
+/*! \cond BLAZE_INTERNAL */
+template< typename MT >
+struct DMatForEachExprTrait< DMatTransExpr< DMatForEachExpr<MT,Conj,true>, false >, Conj >
+{
+ public:
+   //**********************************************************************************************
+   using Type = If_< And< IsDenseMatrix<MT>, IsColumnMajorMatrix<MT> >
+                   , DMatTransExpr<MT,false>
+                   , INVALID_TYPE >;
+   //**********************************************************************************************
+};
+/*! \endcond */
+//*************************************************************************************************
+
+
+//*************************************************************************************************
+/*! \cond BLAZE_INTERNAL */
+template< typename MT >
+struct TDMatForEachExprTrait< DMatTransExpr< DMatForEachExpr<MT,Conj,false>, true >, Conj >
+{
+ public:
+   //**********************************************************************************************
+   using Type = If_< And< IsDenseMatrix<MT>, IsRowMajorMatrix<MT> >
+                   , DMatTransExpr<MT,true>
+                   , INVALID_TYPE >;
+   //**********************************************************************************************
+};
+/*! \endcond */
+//*************************************************************************************************
+
+
+//*************************************************************************************************
+/*! \cond BLAZE_INTERNAL */
+template< typename MT >
+struct DMatForEachExprTrait< DMatForEachExpr<MT,Real,false>, Real >
+{
+ public:
+   //**********************************************************************************************
+   using Type = If_< And< IsDenseMatrix<MT>, IsRowMajorMatrix<MT> >
+                   , DMatForEachExpr<MT,Real,false>
+                   , INVALID_TYPE >;
+   //**********************************************************************************************
+};
+/*! \endcond */
+//*************************************************************************************************
+
+
+//*************************************************************************************************
+/*! \cond BLAZE_INTERNAL */
+template< typename MT >
+struct TDMatForEachExprTrait< DMatForEachExpr<MT,Real,true>, Real >
+{
+ public:
+   //**********************************************************************************************
+   using Type = If_< And< IsDenseMatrix<MT>, IsColumnMajorMatrix<MT> >
+                   , DMatForEachExpr<MT,Real,true>
+                   , INVALID_TYPE >;
+   //**********************************************************************************************
+};
+/*! \endcond */
+//*************************************************************************************************
+
 
 //*************************************************************************************************
 /*! \cond BLAZE_INTERNAL */

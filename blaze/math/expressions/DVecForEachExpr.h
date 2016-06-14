@@ -53,6 +53,7 @@
 #include <blaze/math/Functors.h>
 #include <blaze/math/shims/Serial.h>
 #include <blaze/math/SIMD.h>
+#include <blaze/math/traits/CTransExprTrait.h>
 #include <blaze/math/traits/ForEachExprTrait.h>
 #include <blaze/math/traits/ForEachTrait.h>
 #include <blaze/math/traits/SubvectorExprTrait.h>
@@ -1200,6 +1201,71 @@ inline const DVecForEachExpr<VT,Ceil,TF> ceil( const DenseVector<VT,TF>& dv )
 
 
 //*************************************************************************************************
+/*!\brief Returns a vector containing the complex conjugate of each single element of \a dv.
+// \ingroup dense_vector
+//
+// \param dv The input vector.
+// \return The complex conjugate of each single element of \a dv.
+//
+// The \a conj function calculates the complex conjugate of each element of the input vector
+// \a dv. The function returns an expression representing this operation.\n
+// The following example demonstrates the use of the \a conj function:
+
+   \code
+   blaze::DynamicVector< complex<double> > a, b;
+   // ... Resizing and initialization
+   b = conj( a );
+   \endcode
+*/
+template< typename VT  // Type of the dense vector
+        , bool TF >    // Transpose flag
+inline const DVecForEachExpr<VT,Conj,TF> conj( const DenseVector<VT,TF>& dv )
+{
+   BLAZE_FUNCTION_TRACE;
+
+   return DVecForEachExpr<VT,Conj,TF>( ~dv, Conj() );
+}
+//*************************************************************************************************
+
+
+//*************************************************************************************************
+/*!\brief Returns the conjugate transpose vector of \a dv.
+// \ingroup dense_vector
+//
+// \param dv The input vector.
+// \return The conjugate transpose of \a dv.
+//
+// The \a ctrans function returns an expression representing the conjugate transpose (also called
+// adjoint matrix, Hermitian conjugate matrix or transjugate matrix) of the given input vector
+// \a dv.\n
+// The following example demonstrates the use of the \a ctrans function:
+
+   \code
+   blaze::DynamicVector< complex<double> > a, b;
+   // ... Resizing and initialization
+   b = ctrans( a );
+   \endcode
+
+// Note that the \a ctrans function has the same effect as manually applying the \a conj and
+// \a trans function in any order:
+
+   \code
+   b = trans( conj( a ) );  // Computing the conjugate transpose vector
+   b = conj( trans( a ) );  // Computing the conjugate transpose vector
+   \endcode
+*/
+template< typename VT  // Type of the dense vector
+        , bool TF >    // Transpose flag
+inline const CTransExprTrait_<VT> ctrans( const DenseVector<VT,TF>& dv )
+{
+   BLAZE_FUNCTION_TRACE;
+
+   return trans( conj( ~dv ) );
+}
+//*************************************************************************************************
+
+
+//*************************************************************************************************
 /*!\brief Returns a vector containing the real part of each single element of \a dv.
 // \ingroup dense_vector
 //
@@ -1941,6 +2007,66 @@ inline const DVecForEachExpr<VT,Abs,TF>& abs( const DVecForEachExpr<VT,Abs,TF>& 
 
 //*************************************************************************************************
 /*! \cond BLAZE_INTERNAL */
+/*!\brief Complex conjugate function for complex conjugate dense vector expressions.
+// \ingroup dense_vector
+//
+// \param dv The complex conjugate dense vector expression.
+// \return The original dense vector.
+//
+// This function implements a performance optimized treatment of the complex conjugate operation
+// on a dense vector complex conjugate expression. It returns an expression representing the
+// original dense vector:
+
+   \code
+   blaze::DynamicVector< complex<double> > a, b;
+   // ... Resizing and initialization
+   b = conj( conj( a ) );
+   \endcode
+*/
+template< typename VT  // Type of the dense vector
+        , bool TF >    // Transpose flag
+inline typename DVecForEachExpr<VT,Conj,TF>::Operand conj( const DVecForEachExpr<VT,Conj,TF>& dv )
+{
+   BLAZE_FUNCTION_TRACE;
+
+   return dv.operand();
+}
+/*! \endcond */
+//*************************************************************************************************
+
+
+//*************************************************************************************************
+/*! \cond BLAZE_INTERNAL */
+/*!\brief Complex conjugate function for conjugate transpose dense vector expressions.
+// \ingroup dense_vector
+//
+// \param dv The conjugate transpose dense vector expression.
+// \return The transpose dense vector.
+//
+// This function implements a performance optimized treatment of the complex conjugate operation
+// on a dense vector conjugate transpose expression. It returns an expression representing the
+// transpose of the dense vector:
+
+   \code
+   blaze::DynamicVector< complex<double> > a, b;
+   // ... Resizing and initialization
+   b = conj( ctrans( a ) );
+   \endcode
+*/
+template< typename VT  // Type of the dense vector
+        , bool TF >    // Transpose flag
+inline const DVecTransExpr<VT,!TF> conj( const DVecTransExpr<DVecForEachExpr<VT,Conj,TF>,!TF>& dv )
+{
+   BLAZE_FUNCTION_TRACE;
+
+   return DVecTransExpr<VT,!TF>( dv.operand().operand() );
+}
+/*! \endcond */
+//*************************************************************************************************
+
+
+//*************************************************************************************************
+/*! \cond BLAZE_INTERNAL */
 /*!\brief Real part function for real part dense vector expressions.
 // \ingroup dense_vector
 //
@@ -1953,29 +2079,6 @@ inline const DVecForEachExpr<VT,Abs,TF>& abs( const DVecForEachExpr<VT,Abs,TF>& 
 template< typename VT  // Type of the dense vector
         , bool TF >    // Transpose flag
 inline const DVecForEachExpr<VT,Real,TF>& real( const DVecForEachExpr<VT,Real,TF>& dv )
-{
-   BLAZE_FUNCTION_TRACE;
-
-   return dv;
-}
-/*! \endcond */
-//*************************************************************************************************
-
-
-//*************************************************************************************************
-/*! \cond BLAZE_INTERNAL */
-/*!\brief Imaginary part function for imaginary part dense vector expressions.
-// \ingroup dense_vector
-//
-// \param dv The imaginary part dense vector expression.
-// \return The imaginary part of each single element of \a dv.
-//
-// This function implements a performance optimized treatment of the imaginary part operation
-// on a dense vector imaginary part expression.
-*/
-template< typename VT  // Type of the dense vector
-        , bool TF >    // Transpose flag
-inline const DVecForEachExpr<VT,Imag,TF>& imag( const DVecForEachExpr<VT,Imag,TF>& dv )
 {
    BLAZE_FUNCTION_TRACE;
 
@@ -2045,6 +2148,134 @@ struct IsPadded< DVecForEachExpr<VT,OP,TF> >
 //  EXPRESSION TRAIT SPECIALIZATIONS
 //
 //=================================================================================================
+
+//*************************************************************************************************
+/*! \cond BLAZE_INTERNAL */
+template< typename VT >
+struct DVecForEachExprTrait< DVecForEachExpr<VT,Abs,false>, Abs >
+{
+ public:
+   //**********************************************************************************************
+   using Type = If_< And< IsDenseVector<VT>, IsColumnVector<VT> >
+                   , DVecForEachExpr<VT,Abs,false>
+                   , INVALID_TYPE >;
+   //**********************************************************************************************
+};
+/*! \endcond */
+//*************************************************************************************************
+
+
+//*************************************************************************************************
+/*! \cond BLAZE_INTERNAL */
+template< typename VT >
+struct TDVecForEachExprTrait< DVecForEachExpr<VT,Abs,true>, Abs >
+{
+ public:
+   //**********************************************************************************************
+   using Type = If_< And< IsDenseVector<VT>, IsRowVector<VT> >
+                   , DVecForEachExpr<VT,Abs,true>
+                   , INVALID_TYPE >;
+   //**********************************************************************************************
+};
+/*! \endcond */
+//*************************************************************************************************
+
+
+//*************************************************************************************************
+/*! \cond BLAZE_INTERNAL */
+template< typename VT >
+struct DVecForEachExprTrait< DVecForEachExpr<VT,Conj,false>, Conj >
+{
+ public:
+   //**********************************************************************************************
+   using Type = If_< And< IsDenseVector<VT>, IsColumnVector<VT> >
+                   , Operand_< DVecForEachExpr<VT,Conj,false> >
+                   , INVALID_TYPE >;
+   //**********************************************************************************************
+};
+/*! \endcond */
+//*************************************************************************************************
+
+
+//*************************************************************************************************
+/*! \cond BLAZE_INTERNAL */
+template< typename VT >
+struct TDVecForEachExprTrait< DVecForEachExpr<VT,Conj,true>, Conj >
+{
+ public:
+   //**********************************************************************************************
+   using Type = If_< And< IsDenseVector<VT>, IsRowVector<VT> >
+                   , Operand_< DVecForEachExpr<VT,Conj,true> >
+                   , INVALID_TYPE >;
+   //**********************************************************************************************
+};
+/*! \endcond */
+//*************************************************************************************************
+
+
+//*************************************************************************************************
+/*! \cond BLAZE_INTERNAL */
+template< typename VT >
+struct DVecForEachExprTrait< DVecTransExpr< DVecForEachExpr<VT,Conj,true>, false >, Conj >
+{
+ public:
+   //**********************************************************************************************
+   using Type = If_< And< IsDenseVector<VT>, IsRowVector<VT> >
+                   , DVecTransExpr<VT,false>
+                   , INVALID_TYPE >;
+   //**********************************************************************************************
+};
+/*! \endcond */
+//*************************************************************************************************
+
+
+//*************************************************************************************************
+/*! \cond BLAZE_INTERNAL */
+template< typename VT >
+struct TDVecForEachExprTrait< DVecTransExpr< DVecForEachExpr<VT,Conj,false>, true >, Conj >
+{
+ public:
+   //**********************************************************************************************
+   using Type = If_< And< IsDenseVector<VT>, IsColumnVector<VT> >
+                   , DVecTransExpr<VT,true>
+                   , INVALID_TYPE >;
+   //**********************************************************************************************
+};
+/*! \endcond */
+//*************************************************************************************************
+
+
+//*************************************************************************************************
+/*! \cond BLAZE_INTERNAL */
+template< typename VT >
+struct DVecForEachExprTrait< DVecForEachExpr<VT,Real,false>, Real >
+{
+ public:
+   //**********************************************************************************************
+   using Type = If_< And< IsDenseVector<VT>, IsColumnVector<VT> >
+                   , DVecForEachExpr<VT,Real,false>
+                   , INVALID_TYPE >;
+   //**********************************************************************************************
+};
+/*! \endcond */
+//*************************************************************************************************
+
+
+//*************************************************************************************************
+/*! \cond BLAZE_INTERNAL */
+template< typename VT >
+struct TDVecForEachExprTrait< DVecForEachExpr<VT,Real,true>, Real >
+{
+ public:
+   //**********************************************************************************************
+   using Type = If_< And< IsDenseVector<VT>, IsRowVector<VT> >
+                   , DVecForEachExpr<VT,Real,true>
+                   , INVALID_TYPE >;
+   //**********************************************************************************************
+};
+/*! \endcond */
+//*************************************************************************************************
+
 
 //*************************************************************************************************
 /*! \cond BLAZE_INTERNAL */

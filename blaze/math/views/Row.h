@@ -43,7 +43,6 @@
 #include <blaze/math/expressions/Matrix.h>
 #include <blaze/math/traits/RowExprTrait.h>
 #include <blaze/math/typetraits/IsComputation.h>
-#include <blaze/math/typetraits/IsMatConjExpr.h>
 #include <blaze/math/typetraits/IsMatEvalExpr.h>
 #include <blaze/math/typetraits/IsMatForEachExpr.h>
 #include <blaze/math/typetraits/IsMatMatAddExpr.h>
@@ -302,31 +301,6 @@ inline EnableIf_< IsMatScalarDivExpr<MT>, RowExprTrait_<MT> >
    BLAZE_FUNCTION_TRACE;
 
    return row( (~matrix).leftOperand(), index ) / (~matrix).rightOperand();
-}
-/*! \endcond */
-//*************************************************************************************************
-
-
-//*************************************************************************************************
-/*! \cond BLAZE_INTERNAL */
-/*!\brief Creating a view on a specific row of the given matrix \a conj operation.
-// \ingroup views
-//
-// \param matrix The constant matrix \a conj operation.
-// \param index The index of the row.
-// \return View on the specified row of the \a conj operation.
-//
-// This function returns an expression representing the specified row of the given matrix
-// \a conj operation.
-*/
-template< typename MT  // Type of the matrix
-        , bool SO >    // Storage order
-inline EnableIf_< IsMatConjExpr<MT>, RowExprTrait_<MT> >
-   row( const Matrix<MT,SO>& matrix, size_t index )
-{
-   BLAZE_FUNCTION_TRACE;
-
-   return conj( row( (~matrix).operand(), index ) );
 }
 /*! \endcond */
 //*************************************************************************************************
