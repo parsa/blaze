@@ -61,6 +61,8 @@ namespace blaze {
 // \param a The left-hand side operand.
 // \param b The right-hand side operand.
 // \return The result of the subtraction.
+//
+// This operation is only available for SSE2 and AVX2.
 */
 #if BLAZE_AVX2_MODE
 BLAZE_ALWAYS_INLINE simd_int8_t operator-( const simd_int8_t& a, const simd_int8_t& b ) noexcept
@@ -72,6 +74,8 @@ BLAZE_ALWAYS_INLINE simd_int8_t operator-( const simd_int8_t& a, const simd_int8
 {
    return _mm_sub_epi8( a.value, b.value );
 }
+#else
+simd_int8_t operator-( const simd_int8_t& a, const simd_int8_t& b ) = delete;
 #endif
 //*************************************************************************************************
 
@@ -84,6 +88,8 @@ BLAZE_ALWAYS_INLINE simd_int8_t operator-( const simd_int8_t& a, const simd_int8
 // \param a The left-hand side operand.
 // \param b The right-hand side operand.
 // \return The result of the subtraction.
+//
+// This operation is only available for SSE2 and AVX2.
 */
 #if BLAZE_AVX2_MODE
 BLAZE_ALWAYS_INLINE simd_int16_t operator-( const simd_int16_t& a, const simd_int16_t& b ) noexcept
@@ -95,6 +101,8 @@ BLAZE_ALWAYS_INLINE simd_int16_t operator-( const simd_int16_t& a, const simd_in
 {
    return _mm_sub_epi16( a.value, b.value );
 }
+#else
+simd_int16_t operator-( const simd_int16_t& a, const simd_int16_t& b ) = delete;
 #endif
 //*************************************************************************************************
 
@@ -107,6 +115,8 @@ BLAZE_ALWAYS_INLINE simd_int16_t operator-( const simd_int16_t& a, const simd_in
 // \param a The left-hand side operand.
 // \param b The right-hand side operand.
 // \return The result of the subtraction.
+//
+// This operation is only available for SSE2, AVX2, and AVX-512.
 */
 #if BLAZE_MIC_MODE
 BLAZE_ALWAYS_INLINE simd_int32_t operator-( const simd_int32_t& a, const simd_int32_t& b ) noexcept
@@ -123,6 +133,8 @@ BLAZE_ALWAYS_INLINE simd_int32_t operator-( const simd_int32_t& a, const simd_in
 {
    return _mm_sub_epi32( a.value, b.value );
 }
+#else
+simd_int32_t operator-( const simd_int32_t& a, const simd_int32_t& b ) = delete;
 #endif
 //*************************************************************************************************
 
@@ -135,6 +147,8 @@ BLAZE_ALWAYS_INLINE simd_int32_t operator-( const simd_int32_t& a, const simd_in
 // \param a The left-hand side operand.
 // \param b The right-hand side operand.
 // \return The result of the subtraction.
+//
+// This operation is only available for SSE2, AVX2, and AVX-512.
 */
 #if BLAZE_MIC_MODE
 BLAZE_ALWAYS_INLINE simd_int64_t operator-( const simd_int64_t& a, const simd_int64_t& b ) noexcept
@@ -151,6 +165,8 @@ BLAZE_ALWAYS_INLINE simd_int64_t operator-( const simd_int64_t& a, const simd_in
 {
    return _mm_sub_epi64( a.value, b.value );
 }
+#else
+simd_int64_t operator-( const simd_int64_t& a, const simd_int64_t& b ) = delete;
 #endif
 //*************************************************************************************************
 
@@ -163,6 +179,8 @@ BLAZE_ALWAYS_INLINE simd_int64_t operator-( const simd_int64_t& a, const simd_in
 // \param a The left-hand side operand.
 // \param b The right-hand side operand.
 // \return The result of the subtraction.
+//
+// This operation is only available for SSE, AVX, and AVX-512.
 */
 #if BLAZE_MIC_MODE
 BLAZE_ALWAYS_INLINE simd_float_t operator-( const simd_float_t& a, const simd_float_t& b ) noexcept
@@ -179,6 +197,8 @@ BLAZE_ALWAYS_INLINE simd_float_t operator-( const simd_float_t& a, const simd_fl
 {
    return _mm_sub_ps( a.value, b.value );
 }
+#else
+simd_float_t operator-( const simd_float_t& a, const simd_float_t& b ) = delete;
 #endif
 //*************************************************************************************************
 
@@ -191,6 +211,8 @@ BLAZE_ALWAYS_INLINE simd_float_t operator-( const simd_float_t& a, const simd_fl
 // \param a The left-hand side operand.
 // \param b The right-hand side operand.
 // \return The result of the subtraction.
+//
+// This operation is only available for SSE2, AVX, and AVX-512.
 */
 #if BLAZE_MIC_MODE
 BLAZE_ALWAYS_INLINE simd_double_t operator-( const simd_double_t& a, const simd_double_t& b ) noexcept
@@ -207,6 +229,8 @@ BLAZE_ALWAYS_INLINE simd_double_t operator-( const simd_double_t& a, const simd_
 {
    return _mm_sub_pd( a.value, b.value );
 }
+#else
+simd_double_t operator-( const simd_double_t& a, const simd_double_t& b ) = delete;
 #endif
 //*************************************************************************************************
 
@@ -219,6 +243,8 @@ BLAZE_ALWAYS_INLINE simd_double_t operator-( const simd_double_t& a, const simd_
 // \param a The left-hand side operand.
 // \param b The right-hand side operand.
 // \return The result of the subtraction.
+//
+// This operation is only available for SSE2 and AVX2.
 */
 #if BLAZE_AVX2_MODE
 BLAZE_ALWAYS_INLINE simd_cint8_t operator-( const simd_cint8_t& a, const simd_cint8_t& b ) noexcept
@@ -230,6 +256,8 @@ BLAZE_ALWAYS_INLINE simd_cint8_t operator-( const simd_cint8_t& a, const simd_ci
 {
    return _mm_sub_epi8( a.value, b.value );
 }
+#else
+simd_cint8_t operator-( const simd_cint8_t& a, const simd_cint8_t& b ) = delete;
 #endif
 //*************************************************************************************************
 
@@ -242,6 +270,8 @@ BLAZE_ALWAYS_INLINE simd_cint8_t operator-( const simd_cint8_t& a, const simd_ci
 // \param a The left-hand side operand.
 // \param b The right-hand side operand.
 // \return The result of the subtraction.
+//
+// This operation is only available for SSE2 and AVX2.
 */
 #if BLAZE_AVX2_MODE
 BLAZE_ALWAYS_INLINE simd_cint16_t operator-( const simd_cint16_t& a, const simd_cint16_t& b ) noexcept
@@ -253,6 +283,8 @@ BLAZE_ALWAYS_INLINE simd_cint16_t operator-( const simd_cint16_t& a, const simd_
 {
    return _mm_sub_epi16( a.value, b.value );
 }
+#else
+simd_cint16_t operator-( const simd_cint16_t& a, const simd_cint16_t& b ) = delete;
 #endif
 //*************************************************************************************************
 
@@ -265,6 +297,8 @@ BLAZE_ALWAYS_INLINE simd_cint16_t operator-( const simd_cint16_t& a, const simd_
 // \param a The left-hand side operand.
 // \param b The right-hand side operand.
 // \return The result of the subtraction.
+//
+// This operation is only available for SSE2, AVX2, and AVX-512.
 */
 #if BLAZE_MIC_MODE
 BLAZE_ALWAYS_INLINE simd_cint32_t operator-( const simd_cint32_t& a, const simd_cint32_t& b ) noexcept
@@ -281,6 +315,8 @@ BLAZE_ALWAYS_INLINE simd_cint32_t operator-( const simd_cint32_t& a, const simd_
 {
    return _mm_sub_epi32( a.value, b.value );
 }
+#else
+simd_cint32_t operator-( const simd_cint32_t& a, const simd_cint32_t& b ) = delete;
 #endif
 //*************************************************************************************************
 
@@ -293,6 +329,8 @@ BLAZE_ALWAYS_INLINE simd_cint32_t operator-( const simd_cint32_t& a, const simd_
 // \param a The left-hand side operand.
 // \param b The right-hand side operand.
 // \return The result of the subtraction.
+//
+// This operation is only available for SSE2, AVX2, and AVX-512.
 */
 #if BLAZE_MIC_MODE
 BLAZE_ALWAYS_INLINE simd_cint64_t operator-( const simd_cint64_t& a, const simd_cint64_t& b ) noexcept
@@ -309,6 +347,8 @@ BLAZE_ALWAYS_INLINE simd_cint64_t operator-( const simd_cint64_t& a, const simd_
 {
    return _mm_sub_epi64( a.value, b.value );
 }
+#else
+simd_cint64_t operator-( const simd_cint64_t& a, const simd_cint64_t& b ) = delete;
 #endif
 //*************************************************************************************************
 
@@ -321,6 +361,8 @@ BLAZE_ALWAYS_INLINE simd_cint64_t operator-( const simd_cint64_t& a, const simd_
 // \param a The left-hand side operand.
 // \param b The right-hand side operand.
 // \return The result of the subtraction.
+//
+// This operation is only available for SSE, AVX, and AVX-512.
 */
 #if BLAZE_MIC_MODE
 BLAZE_ALWAYS_INLINE simd_cfloat_t operator-( const simd_cfloat_t& a, const simd_cfloat_t& b ) noexcept
@@ -337,6 +379,8 @@ BLAZE_ALWAYS_INLINE simd_cfloat_t operator-( const simd_cfloat_t& a, const simd_
 {
    return _mm_sub_ps( a.value, b.value );
 }
+#else
+simd_cfloat_t operator-( const simd_cfloat_t& a, const simd_cfloat_t& b ) = delete;
 #endif
 //*************************************************************************************************
 
@@ -349,6 +393,8 @@ BLAZE_ALWAYS_INLINE simd_cfloat_t operator-( const simd_cfloat_t& a, const simd_
 // \param a The left-hand side operand.
 // \param b The right-hand side operand.
 // \return The result of the subtraction.
+//
+// This operation is only available for SSE2, AVX, and AVX-512.
 */
 #if BLAZE_MIC_MODE
 BLAZE_ALWAYS_INLINE simd_cdouble_t operator-( const simd_cdouble_t& a, const simd_cdouble_t& b ) noexcept
@@ -365,6 +411,8 @@ BLAZE_ALWAYS_INLINE simd_cdouble_t operator-( const simd_cdouble_t& a, const sim
 {
    return _mm_sub_pd( a.value, b.value );
 }
+#else
+simd_cdouble_t operator-( const simd_cdouble_t& a, const simd_cdouble_t& b ) = delete;
 #endif
 //*************************************************************************************************
 

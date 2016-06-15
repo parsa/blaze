@@ -54,13 +54,15 @@ namespace blaze {
 //=================================================================================================
 
 //*************************************************************************************************
-/*!\fn simd_int8_t operator+( simd_int8_t, simd_int8_t )
+/*!\fn simd_int8_t operator+( const simd_int8_t&, const simd_int8_t& )
 // \brief Addition of two vectors of 8-bit integral values.
 // \ingroup simd
 //
 // \param a The left-hand side operand.
 // \param b The right-hand side operand.
 // \return The result of the addition.
+//
+// This operation is only available for SSE2 and AVX2.
 */
 #if BLAZE_AVX2_MODE
 BLAZE_ALWAYS_INLINE simd_int8_t operator+( const simd_int8_t& a, const simd_int8_t& b ) noexcept
@@ -72,18 +74,22 @@ BLAZE_ALWAYS_INLINE simd_int8_t operator+( const simd_int8_t& a, const simd_int8
 {
    return _mm_add_epi8( a.value, b.value );
 }
+#else
+simd_int8_t operator+( const simd_int8_t& a, const simd_int8_t& b ) = delete;
 #endif
 //*************************************************************************************************
 
 
 //*************************************************************************************************
-/*!\fn simd_int16_t operator+( simd_int16_t, simd_int16_t )
+/*!\fn simd_int16_t operator+( const simd_int16_t&, const simd_int16_t& )
 // \brief Addition of two vectors of 16-bit integral values.
 // \ingroup simd
 //
 // \param a The left-hand side operand.
 // \param b The right-hand side operand.
 // \return The result of the addition.
+//
+// This operation is only available for SSE2 and AVX2.
 */
 #if BLAZE_AVX2_MODE
 BLAZE_ALWAYS_INLINE simd_int16_t operator+( const simd_int16_t& a, const simd_int16_t& b ) noexcept
@@ -95,18 +101,22 @@ BLAZE_ALWAYS_INLINE simd_int16_t operator+( const simd_int16_t& a, const simd_in
 {
    return _mm_add_epi16( a.value, b.value );
 }
+#else
+simd_int16_t operator+( const simd_int16_t& a, const simd_int16_t& b ) = delete;
 #endif
 //*************************************************************************************************
 
 
 //*************************************************************************************************
-/*!\fn simd_int32_t operator+( simd_int32_t, simd_int32_t )
+/*!\fn simd_int32_t operator+( const simd_int32_t&, const simd_int32_t& )
 // \brief Addition of two vectors of 32-bit integral values.
 // \ingroup simd
 //
 // \param a The left-hand side operand.
 // \param b The right-hand side operand.
 // \return The result of the addition.
+//
+// This operation is only available for SSE2, AVX2, and AVX-512.
 */
 #if BLAZE_MIC_MODE
 BLAZE_ALWAYS_INLINE simd_int32_t operator+( const simd_int32_t& a, const simd_int32_t& b ) noexcept
@@ -123,18 +133,22 @@ BLAZE_ALWAYS_INLINE simd_int32_t operator+( const simd_int32_t& a, const simd_in
 {
    return _mm_add_epi32( a.value, b.value );
 }
+#else
+simd_int32_t operator+( const simd_int32_t& a, const simd_int32_t& b ) = delete;
 #endif
 //*************************************************************************************************
 
 
 //*************************************************************************************************
-/*!\fn simd_int64_t operator+( simd_int64_t, simd_int64_t )
+/*!\fn simd_int64_t operator+( const simd_int64_t&, const simd_int64_t& )
 // \brief Addition of two vectors of 64-bit integral values.
 // \ingroup simd
 //
 // \param a The left-hand side operand.
 // \param b The right-hand side operand.
 // \return The result of the addition.
+//
+// This operation is only available for SSE2, AVX2, and AVX-512.
 */
 #if BLAZE_MIC_MODE
 BLAZE_ALWAYS_INLINE simd_int64_t operator+( const simd_int64_t& a, const simd_int64_t& b ) noexcept
@@ -151,18 +165,22 @@ BLAZE_ALWAYS_INLINE simd_int64_t operator+( const simd_int64_t& a, const simd_in
 {
    return _mm_add_epi64( a.value, b.value );
 }
+#else
+simd_int64_t operator+( const simd_int64_t& a, const simd_int64_t& b ) = delete;
 #endif
 //*************************************************************************************************
 
 
 //*************************************************************************************************
-/*!\fn simd_float_t operator+( simd_float_t, simd_float_t )
+/*!\fn simd_float_t operator+( const simd_float_t&, const simd_float_t& )
 // \brief Addition of two vectors of single precision floating point values.
 // \ingroup simd
 //
 // \param a The left-hand side operand.
 // \param b The right-hand side operand.
 // \return The result of the addition.
+//
+// This operation is only available for SSE, AVX, and AVX-512.
 */
 #if BLAZE_MIC_MODE
 BLAZE_ALWAYS_INLINE simd_float_t operator+( const simd_float_t& a, const simd_float_t& b ) noexcept
@@ -179,18 +197,22 @@ BLAZE_ALWAYS_INLINE simd_float_t operator+( const simd_float_t& a, const simd_fl
 {
    return _mm_add_ps( a.value, b.value );
 }
+#else
+simd_float_t operator+( const simd_float_t& a, const simd_float_t& b ) = delete;
 #endif
 //*************************************************************************************************
 
 
 //*************************************************************************************************
-/*!\fn simd_double_t operator+( simd_double_t, simd_double_t )
+/*!\fn simd_double_t operator+( const simd_double_t&, const simd_double_t& )
 // \brief Addition of two vectors of double precision floating point values.
 // \ingroup simd
 //
 // \param a The left-hand side operand.
 // \param b The right-hand side operand.
 // \return The result of the addition.
+//
+// This operation is only available for SSE2, AVX, and AVX-512.
 */
 #if BLAZE_MIC_MODE
 BLAZE_ALWAYS_INLINE simd_double_t operator+( const simd_double_t& a, const simd_double_t& b ) noexcept
@@ -207,18 +229,22 @@ BLAZE_ALWAYS_INLINE simd_double_t operator+( const simd_double_t& a, const simd_
 {
    return _mm_add_pd( a.value, b.value );
 }
+#else
+simd_double_t operator+( const simd_double_t& a, const simd_double_t& b ) = delete;
 #endif
 //*************************************************************************************************
 
 
 //*************************************************************************************************
-/*!\fn simd_cint8_t operator+( simd_cint8_t, simd_cint8_t )
+/*!\fn simd_cint8_t operator+( const simd_cint8_t&, const simd_cint8_t& )
 // \brief Addition of two vectors of 8-bit integral complex values.
 // \ingroup simd
 //
 // \param a The left-hand side operand.
 // \param b The right-hand side operand.
 // \return The result of the addition.
+//
+// This operation is only available for SSE2 and AVX2.
 */
 #if BLAZE_AVX2_MODE
 BLAZE_ALWAYS_INLINE simd_cint8_t operator+( const simd_cint8_t& a, const simd_cint8_t& b ) noexcept
@@ -230,18 +256,22 @@ BLAZE_ALWAYS_INLINE simd_cint8_t operator+( const simd_cint8_t& a, const simd_ci
 {
    return _mm_add_epi8( a.value, b.value );
 }
+#else
+simd_cint8_t operator+( const simd_cint8_t& a, const simd_cint8_t& b ) = delete;
 #endif
 //*************************************************************************************************
 
 
 //*************************************************************************************************
-/*!\fn simd_cint16_t operator+( simd_cint16_t, simd_cint16_t )
+/*!\fn simd_cint16_t operator+( const simd_cint16_t&, const simd_cint16_t& )
 // \brief Addition of two vectors of 16-bit integral complex values.
 // \ingroup simd
 //
 // \param a The left-hand side operand.
 // \param b The right-hand side operand.
 // \return The result of the addition.
+//
+// This operation is only available for SSE2 and AVX2.
 */
 #if BLAZE_AVX2_MODE
 BLAZE_ALWAYS_INLINE simd_cint16_t operator+( const simd_cint16_t& a, const simd_cint16_t& b ) noexcept
@@ -253,18 +283,22 @@ BLAZE_ALWAYS_INLINE simd_cint16_t operator+( const simd_cint16_t& a, const simd_
 {
    return _mm_add_epi16( a.value, b.value );
 }
+#else
+simd_cint16_t operator+( const simd_cint16_t& a, const simd_cint16_t& b ) = delete;
 #endif
 //*************************************************************************************************
 
 
 //*************************************************************************************************
-/*!\fn simd_cint32_t operator+( simd_cint32_t, simd_cint32_t )
+/*!\fn simd_cint32_t operator+( const simd_cint32_t&, const simd_cint32_t& )
 // \brief Addition of two vectors of 32-bit integral complex values.
 // \ingroup simd
 //
 // \param a The left-hand side operand.
 // \param b The right-hand side operand.
 // \return The result of the addition.
+//
+// This operation is only available for SSE2, AVX2, and AVX-512.
 */
 #if BLAZE_MIC_MODE
 BLAZE_ALWAYS_INLINE simd_cint32_t operator+( const simd_cint32_t& a, const simd_cint32_t& b ) noexcept
@@ -281,18 +315,22 @@ BLAZE_ALWAYS_INLINE simd_cint32_t operator+( const simd_cint32_t& a, const simd_
 {
    return _mm_add_epi32( a.value, b.value );
 }
+#else
+simd_cint32_t operator+( const simd_cint32_t& a, const simd_cint32_t& b ) = delete;
 #endif
 //*************************************************************************************************
 
 
 //*************************************************************************************************
-/*!\fn simd_cint64_t operator+( simd_cint64_t, simd_cint64_t )
+/*!\fn simd_cint64_t operator+( const simd_cint64_t&, const simd_cint64_t& )
 // \brief Addition of two vectors of 64-bit integral complex values.
 // \ingroup simd
 //
 // \param a The left-hand side operand.
 // \param b The right-hand side operand.
 // \return The result of the addition.
+//
+// This operation is only available for SSE2, AVX2, and AVX-512.
 */
 #if BLAZE_MIC_MODE
 BLAZE_ALWAYS_INLINE simd_cint64_t operator+( const simd_cint64_t& a, const simd_cint64_t& b ) noexcept
@@ -309,18 +347,22 @@ BLAZE_ALWAYS_INLINE simd_cint64_t operator+( const simd_cint64_t& a, const simd_
 {
    return _mm_add_epi64( a.value, b.value );
 }
+#else
+simd_cint64_t operator+( const simd_cint64_t& a, const simd_cint64_t& b ) = delete;
 #endif
 //*************************************************************************************************
 
 
 //*************************************************************************************************
-/*!\fn simd_cfloat_t operator+( simd_cfloat_t, simd_cfloat_t )
+/*!\fn simd_cfloat_t operator+( const simd_cfloat_t&, const simd_cfloat_t& )
 // \brief Addition of two vectors of single precision complex values.
 // \ingroup simd
 //
 // \param a The left-hand side operand.
 // \param b The right-hand side operand.
 // \return The result of the addition.
+//
+// This operation is only available for SSE, AVX, and AVX-512.
 */
 #if BLAZE_MIC_MODE
 BLAZE_ALWAYS_INLINE simd_cfloat_t operator+( const simd_cfloat_t& a, const simd_cfloat_t& b ) noexcept
@@ -337,18 +379,22 @@ BLAZE_ALWAYS_INLINE simd_cfloat_t operator+( const simd_cfloat_t& a, const simd_
 {
    return _mm_add_ps( a.value, b.value );
 }
+#else
+simd_cfloat_t operator+( const simd_cfloat_t& a, const simd_cfloat_t& b ) = delete;
 #endif
 //*************************************************************************************************
 
 
 //*************************************************************************************************
-/*!\fn simd_cdouble_t operator+( simd_cdouble_t, simd_cdouble_t )
+/*!\fn simd_cdouble_t operator+( const simd_cdouble_t&, const simd_cdouble_t& )
 // \brief Addition of two vectors of double precision complex values.
 // \ingroup simd
 //
 // \param a The left-hand side operand.
 // \param b The right-hand side operand.
 // \return The result of the addition.
+//
+// This operation is only available for SSE2, AVX, and AVX-512.
 */
 #if BLAZE_MIC_MODE
 BLAZE_ALWAYS_INLINE simd_cdouble_t operator+( const simd_cdouble_t& a, const simd_cdouble_t& b ) noexcept
@@ -365,6 +411,8 @@ BLAZE_ALWAYS_INLINE simd_cdouble_t operator+( const simd_cdouble_t& a, const sim
 {
    return _mm_add_pd( a.value, b.value );
 }
+#else
+simd_cdouble_t operator+( const simd_cdouble_t& a, const simd_cdouble_t& b ) = delete;
 #endif
 //*************************************************************************************************
 

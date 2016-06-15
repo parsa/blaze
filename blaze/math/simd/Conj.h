@@ -150,6 +150,8 @@ BLAZE_ALWAYS_INLINE simd_double_t conj( const simd_double_t& a ) noexcept
 //
 // \param a The vector of 16-bit integral complex values.
 // \return The complex conjugate values.
+//
+// This operation is only available for SSE2 and AVX2.
 */
 #if BLAZE_AVX2_MODE
 BLAZE_ALWAYS_INLINE simd_cint16_t conj( const simd_cint16_t& a ) noexcept
@@ -162,6 +164,8 @@ BLAZE_ALWAYS_INLINE simd_cint16_t conj( const simd_cint16_t& a ) noexcept
 {
    return _mm_mullo_epi16( a.value, _mm_set_epi16( -1, 1, -1, 1, -1, 1, -1, 1 ) );
 }
+#else
+simd_cint16_t conj( const simd_cint16_t& a ) = delete;
 #endif
 //*************************************************************************************************
 
@@ -173,6 +177,8 @@ BLAZE_ALWAYS_INLINE simd_cint16_t conj( const simd_cint16_t& a ) noexcept
 //
 // \param a The vector of 32-bit integral complex values.
 // \return The complex conjugate values.
+//
+// This operation is only available for SSE4, AVX2, and AVX-512.
 */
 #if BLAZE_MIC_MODE
 BLAZE_ALWAYS_INLINE simd_cint32_t conj( const simd_cint32_t& a ) noexcept
@@ -190,6 +196,8 @@ BLAZE_ALWAYS_INLINE simd_cint32_t conj( const simd_cint32_t& a ) noexcept
 {
    return _mm_mullo_epi32( a.value, _mm_set_epi32( -1, 1, -1, 1 ) );
 }
+#else
+simd_cint32_t conj( const simd_cint32_t& a ) = delete;
 #endif
 //*************************************************************************************************
 
@@ -201,6 +209,8 @@ BLAZE_ALWAYS_INLINE simd_cint32_t conj( const simd_cint32_t& a ) noexcept
 //
 // \param a The vector of single precision complex values.
 // \return The complex conjugate values.
+//
+// This operation is only available for SSE2, AVX, and AVX-512.
 */
 #if BLAZE_MIC_MODE
 BLAZE_ALWAYS_INLINE simd_cfloat_t conj( const simd_cfloat_t& a ) noexcept
@@ -218,6 +228,8 @@ BLAZE_ALWAYS_INLINE simd_cfloat_t conj( const simd_cfloat_t& a ) noexcept
 {
    return _mm_mul_ps( a.value, _mm_set_ps( -1.0F, 1.0F, -1.0F, 1.0F ) );
 }
+#else
+simd_cfloat_t conj( const simd_cfloat_t& a ) = delete;
 #endif
 //*************************************************************************************************
 
@@ -229,6 +241,8 @@ BLAZE_ALWAYS_INLINE simd_cfloat_t conj( const simd_cfloat_t& a ) noexcept
 //
 // \param a The vector of double precision complex values.
 // \return The complex conjugate values.
+//
+// This operation is only available for SSE2, AVX, and AVX-512.
 */
 #if BLAZE_MIC_MODE
 BLAZE_ALWAYS_INLINE simd_cdouble_t conj( const simd_cdouble_t& a ) noexcept
@@ -245,6 +259,8 @@ BLAZE_ALWAYS_INLINE simd_cdouble_t conj( const simd_cdouble_t& a ) noexcept
 {
    return _mm_mul_pd( a.value, _mm_set_pd( -1.0, 1.0 ) );
 }
+#else
+simd_cdouble_t conj( const simd_cdouble_t& a ) = delete;
 #endif
 //*************************************************************************************************
 

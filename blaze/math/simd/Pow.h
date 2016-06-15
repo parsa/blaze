@@ -54,13 +54,15 @@ namespace blaze {
 //=================================================================================================
 
 //*************************************************************************************************
-/*!\fn simd_float_t pow( simd_float_t, simd_float_t )
+/*!\fn simd_float_t pow( const simd_float_t&, const simd_float_t& )
 // \brief Computes the exponential value of a vector of single precision floating point values.
 // \ingroup simd
 //
 // \param a The vector of single precision floating point base values.
 // \param b The vector of single precision floating point exponents.
 // \return The resulting vector.
+//
+// This operation is only available via the SVML for SSE, AVX, and AVX-512.
 */
 #if BLAZE_SVML_MODE && BLAZE_MIC_MODE
 BLAZE_ALWAYS_INLINE simd_float_t pow( const simd_float_t& a, const simd_float_t& b ) noexcept
@@ -77,18 +79,22 @@ BLAZE_ALWAYS_INLINE simd_float_t pow( const simd_float_t& a, const simd_float_t&
 {
    return _mm_pow_ps( a.value, b.value );
 }
+#else
+simd_float_t pow( const simd_float_t& a, const simd_float_t& b ) = delete;
 #endif
 //*************************************************************************************************
 
 
 //*************************************************************************************************
-/*!\fn simd_double_t pow( simd_double_t, simd_double_t )
+/*!\fn simd_double_t pow( const simd_double_t&, const simd_double_t& )
 // \brief Computes the exponential value of a vector of double precision floating point values.
 // \ingroup simd
 //
 // \param a The vector of double precision floating point base values.
 // \param b The vector of double precision floating point exponents.
 // \return The resulting vector.
+//
+// This operation is only available via the SVML for SSE, AVX, and AVX-512.
 */
 #if BLAZE_SVML_MODE && BLAZE_MIC_MODE
 BLAZE_ALWAYS_INLINE simd_double_t pow( const simd_double_t& a, const simd_double_t& b ) noexcept
@@ -105,6 +111,8 @@ BLAZE_ALWAYS_INLINE simd_double_t pow( const simd_double_t& a, const simd_double
 {
    return _mm_pow_pd( a.value, b.value );
 }
+#else
+simd_double_t pow( const simd_double_t& a, const simd_double_t& b ) = delete;
 #endif
 //*************************************************************************************************
 

@@ -54,12 +54,14 @@ namespace blaze {
 //=================================================================================================
 
 //*************************************************************************************************
-/*!\fn simd_float_t acos( simd_float_t )
+/*!\fn simd_float_t acos( const simd_float_t& )
 // \brief Inverse cosine of a vector of single precision floating point values.
 // \ingroup simd
 //
 // \param a The vector of single precision floating point values \f$[-1..1]\f$.
 // \return The resulting vector.
+//
+// This operation is only available via the SVML for SSE, AVX, and AVX-512.
 */
 #if BLAZE_SVML_MODE && BLAZE_MIC_MODE
 BLAZE_ALWAYS_INLINE simd_float_t acos( const simd_float_t& a ) noexcept
@@ -76,17 +78,21 @@ BLAZE_ALWAYS_INLINE simd_float_t acos( const simd_float_t& a ) noexcept
 {
    return _mm_acos_ps( a.value );
 }
+#else
+simd_float_t acos( const simd_float_t& a ) = delete;
 #endif
 //*************************************************************************************************
 
 
 //*************************************************************************************************
-/*!\fn simd_double_t acos( simd_double_t )
+/*!\fn simd_double_t acos( const simd_double_t& )
 // \brief Inverse cosine of a vector of double precision floating point values.
 // \ingroup simd
 //
 // \param a The vector of double precision floating point values \f$[-1..1]\f$.
 // \return The resulting vector.
+//
+// This operation is only available via the SVML for SSE, AVX, and AVX-512.
 */
 #if BLAZE_SVML_MODE && BLAZE_MIC_MODE
 BLAZE_ALWAYS_INLINE simd_double_t acos( const simd_double_t& a ) noexcept
@@ -103,6 +109,8 @@ BLAZE_ALWAYS_INLINE simd_double_t acos( const simd_double_t& a ) noexcept
 {
    return _mm_acos_pd( a.value );
 }
+#else
+simd_double_t acos( const simd_double_t& a ) = delete;
 #endif
 //*************************************************************************************************
 

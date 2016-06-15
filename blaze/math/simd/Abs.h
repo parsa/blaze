@@ -54,12 +54,14 @@ namespace blaze {
 //=================================================================================================
 
 //*************************************************************************************************
-/*!\fn simd_int8_t abs( simd_int8_t )
+/*!\fn simd_int8_t abs( const simd_int8_t& )
 // \brief Absolute value of a vector of 8-bit integral values.
 // \ingroup simd
 //
 // \param a The vector of 8-bit integral values.
 // \return The absolute values.
+//
+// This operation is only available for SSSE3 and AVX2.
 */
 #if BLAZE_AVX2_MODE
 BLAZE_ALWAYS_INLINE simd_int8_t abs( const simd_int8_t& a ) noexcept
@@ -71,17 +73,21 @@ BLAZE_ALWAYS_INLINE simd_int8_t abs( const simd_int8_t& a ) noexcept
 {
    return _mm_abs_epi8( a.value );
 }
+#else
+simd_int8_t abs( const simd_int8_t& a ) = delete;
 #endif
 //*************************************************************************************************
 
 
 //*************************************************************************************************
-/*!\fn simd_int16_t abs( simd_int16_t )
+/*!\fn simd_int16_t abs( const simd_int16_t& )
 // \brief Absolute value of a vector of 16-bit integral values.
 // \ingroup simd
 //
 // \param a The vector of 16-bit integral values.
 // \return The absolute values.
+//
+// This operation is only available for SSSE3 and AVX2.
 */
 #if BLAZE_AVX2_MODE
 BLAZE_ALWAYS_INLINE simd_int16_t abs( const simd_int16_t& a ) noexcept
@@ -93,12 +99,14 @@ BLAZE_ALWAYS_INLINE simd_int16_t abs( const simd_int16_t& a ) noexcept
 {
    return _mm_abs_epi16( a.value );
 }
+#else
+simd_int16_t abs( const simd_int16_t& a ) = delete;
 #endif
 //*************************************************************************************************
 
 
 //*************************************************************************************************
-/*!\fn simd_int32_t abs( simd_int32_t )
+/*!\fn simd_int32_t abs( const simd_int32_t& )
 // \brief Absolute value of a vector of 32-bit integral values.
 // \ingroup simd
 //
@@ -115,6 +123,8 @@ BLAZE_ALWAYS_INLINE simd_int32_t abs( const simd_int32_t& a ) noexcept
 {
    return _mm_abs_epi32( a.value );
 }
+#else
+simd_int32_t abs( const simd_int32_t& a ) = delete;
 #endif
 //*************************************************************************************************
 
