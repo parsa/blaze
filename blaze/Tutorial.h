@@ -1301,7 +1301,7 @@
 // \n \section vector_operations_member_functions Member Functions
 // <hr>
 //
-// \subsection vector_operations_size Size of a Vector
+// \subsection vector_operations_size .size()
 //
 // Via the \c size() member function, the current size of a dense or sparse vector can be queried:
 
@@ -1327,7 +1327,7 @@
    size( A * v2 );  // Returns 15, i.e. the size of the resulting vector
    \endcode
 
-// \n \subsection vector_operations_capacity Capacity of a Vector
+// \n \subsection vector_operations_capacity .capacity()
 //
 // Via the \c capacity() (member) function the internal capacity of a dense or sparse vector
 // can be queried. Note that the capacity of a vector doesn't have to be equal to the size
@@ -1352,7 +1352,7 @@
    capacity( A * v1 );  // Compilation error!
    \endcode
 
-// \n \subsection vector_operations_nonzeros Number of Non-Zero Elements
+// \n \subsection vector_operations_nonzeros .nonZeros()
 //
 // For both dense and sparse vectors the number of non-zero elements can be determined via the
 // \c nonZeros() member function. Sparse vectors directly return their number of non-zero
@@ -1379,7 +1379,7 @@
    nonZeros( A * v1 );  // Estimates the number of non-zero elements in the vector expression
    \endcode
 
-// \n \subsection vector_operations_resize_reserve Resize/Reserve
+// \n \subsection vector_operations_resize_reserve .resize() / .reserve()
 //
 // The size of a \c StaticVector is fixed by the second template parameter and a \c CustomVector
 // cannot be resized. In contrast, the size of \c DynamicVectors, \c HybridVectors as well as
@@ -1435,7 +1435,7 @@
 // \n \section vector_operations_free_functions Free Functions
 // <hr>
 //
-// \subsection vector_operations_reset_clear Reset/Clear
+// \subsection vector_operations_reset_clear reset() / clear()
 //
 // In order to reset all elements of a vector, the \c reset() function can be used:
 
@@ -1464,7 +1464,7 @@
 // of the vectors.
 //
 //
-// \n \subsection vector_operations_isnan isnan
+// \n \subsection vector_operations_isnan isnan()
 //
 // The \c isnan() function provides the means to check a dense or sparse vector for non-a-number
 // elements:
@@ -1487,7 +1487,7 @@
 // a compile time error.
 //
 //
-// \n \subsection vector_operations_isdefault isDefault
+// \n \subsection vector_operations_isdefault isDefault()
 //
 // The \c isDefault() function returns whether the given dense or sparse vector is in default state:
 
@@ -1506,7 +1506,7 @@
 // vector element is not 0.
 //
 //
-// \n \subsection vector_operations_isUniform isUniform
+// \n \subsection vector_operations_isUniform isUniform()
 //
 // In order to check if all vector elements are identical, the \c isUniform function can be used:
 
@@ -1516,28 +1516,10 @@
    if( isUniform( a ) ) { ... }
    \endcode
 
-// Note that in case of a sparse vector also the zero elements are also taken into account!
+// Note that in case of sparse vectors also the zero elements are also taken into account!
 //
 //
-// \n \subsection vector_operators_abs Absolute Values
-//
-// The \c abs() function can be used to compute the absolute values of each element of a vector.
-// For instance, the following computation
-
-   \code
-   blaze::StaticVector<int,3UL,rowVector> a{ -1, 2, -3 };
-   blaze::StaticVector<int,3UL,rowVector> b( abs( a ) );
-   \endcode
-
-// results in the vector
-
-                          \f$ b = \left(\begin{array}{*{1}{c}}
-                          1 \\
-                          2 \\
-                          3 \\
-                          \end{array}\right)\f$
-
-// \n \subsection vector_operations_min_max Minimum/Maximum Values
+// \n \subsection vector_operations_min_max min() / max()
 //
 // The \c min() and the \c max() functions return the smallest and largest element of the given
 // dense or sparse vector, respectively:
@@ -1574,7 +1556,37 @@
    max( a - b - c );  // Returns 11, i.e. the largest value of the resulting vector
    \endcode
 
-// \n \subsection vector_operators_conj Complex Conjugates
+// \n \subsection vector_operators_abs abs()
+//
+// The \c abs() function can be used to compute the absolute values of each element of a vector.
+// For instance, the following computation
+
+   \code
+   blaze::StaticVector<int,3UL,rowVector> a{ -1, 2, -3 };
+   blaze::StaticVector<int,3UL,rowVector> b( abs( a ) );
+   \endcode
+
+// results in the vector
+
+                          \f$ b = \left(\begin{array}{*{1}{c}}
+                          1 \\
+                          2 \\
+                          3 \\
+                          \end{array}\right)\f$
+
+// \n \subsection vector_operators_floor_ceil floor() / ceil()
+//
+// The \c floor() and \c ceil() functions can be used to round down/up each element of a vector,
+// respectively:
+
+   \code
+   blaze::StaticVector<double,3UL,rowVector> a, b;
+
+   b = floor( a );  // Rounding down each element of the vector
+   b = ceil( a );   // Rounding up each element of the vector
+   \endcode
+
+// \n \subsection vector_operators_conj conj()
 //
 // The \c conj() function can be applied on a dense or sparse vector to compute the complex
 // conjugate of each element of the vector:
@@ -1605,7 +1617,7 @@
    c = conj( c );   // Same as above
    \endcode
 
-// \n \subsection vector_operators_real Real Part
+// \n \subsection vector_operators_real real()
 //
 // The \c real() function can be used on a dense or sparse vector to extract the real part of
 // each element of the vector:
@@ -1627,7 +1639,7 @@
    b = real( a );
    \endcode
 
-// \n \subsection vector_operators_imag Imaginary Part
+// \n \subsection vector_operators_imag imag()
 //
 // The \c imag() function can be used on a dense or sparse vector to extract the imaginary part
 // of each element of the vector:
@@ -1649,7 +1661,142 @@
    b = imag( a );
    \endcode
 
-// \n \subsection vector_operations_length Vector Length
+// \n \subsection vector_operations_sqrt sqrt() / invsqrt()
+//
+// Via the \c sqrt() and \c invsqrt() functions the (inverse) square root of each element of a
+// vector can be computed:
+
+   \code
+   blaze::DynamicVector<double> a, b, c;
+
+   b = sqrt( a );     // Computes the square root of each element
+   c = invsqrt( a );  // Computes the inverse square root of each element
+   \endcode
+
+// Note that in case of sparse vectors only the non-zero elements are taken into account!
+//
+//
+// \n \subsection vector_operations_cbrt cbrt() / invcbrt()
+//
+// The \c cbrt() and \c invcbrt() functions can be used to compute the the (inverse) cubic root
+// of each element of a vector:
+
+   \code
+   blaze::HybridVector<double,3UL> a, b, c;
+
+   b = cbrt( a );     // Computes the cubic root of each element
+   c = invcbrt( a );  // Computes the inverse cubic root of each element
+   \endcode
+
+// Note that in case of sparse vectors only the non-zero elements are taken into account!
+//
+//
+// \n \subsection vector_operations_pow pow()
+//
+// The \c pow() function can be used to compute the exponential value of each element of a vector:
+
+   \code
+   blaze::StaticVector<double,3UL> a, b;
+
+   b = pow( a, 1.2 );  // Computes the exponential value of each element
+   \endcode
+
+// \n \subsection vector_operations_exp exp()
+//
+// \c exp() computes the base e exponential of each element of a vector:
+
+   \code
+   blaze::DynamicVector<double> a, b;
+
+   b = exp( a );  // Computes the base e exponential of each element
+   \endcode
+
+// Note that in case of sparse vectors only the non-zero elements are taken into account!
+//
+//
+// \n \subsection vector_operations_log log() / log10()
+//
+// The \c log() and \c log10() functions can be used to compute the natural and common logarithm
+// of each element of a vector:
+
+   \code
+   blaze::StaticVector<double,3UL> a, b;
+
+   b = log( a );    // Computes the natural logarithm of each element
+   b = log10( a );  // Computes the common logarithm of each element
+   \endcode
+
+// \n \subsection vector_operations_trigonometric_functions sin() / cos() / tan() / asin() / acos() / atan()
+//
+// The following trigonometric functions are available for both dense and sparse vectors:
+
+   \code
+   blaze::DynamicVector<double> a, b;
+
+   b = sin( a );  // Computes the sine of each element of the vector
+   b = cos( a );  // Computes the cosine of each element of the vector
+   b = tan( a );  // Computes the tangent of each element of the vector
+
+   b = asin( a );  // Computes the inverse sine of each element of the vector
+   b = acos( a );  // Computes the inverse cosine of each element of the vector
+   b = atan( a );  // Computes the inverse tangent of each element of the vector
+   \endcode
+
+// Note that in case of sparse vectors only the non-zero elements are taken into account!
+//
+//
+// \n \subsection vector_operations_hyperbolic_functions sinh() / cosh() / tanh() / asinh() / acosh() / atanh()
+//
+// The following hyperbolic functions are available for both dense and sparse vectors:
+
+   \code
+   blaze::DynamicVector<double> a, b;
+
+   b = sinh( a );  // Computes the hyperbolic sine of each element of the vector
+   b = cosh( a );  // Computes the hyperbolic cosine of each element of the vector
+   b = tanh( a );  // Computes the hyperbolic tangent of each element of the vector
+
+   b = asinh( a );  // Computes the inverse hyperbolic sine of each element of the vector
+   b = acosh( a );  // Computes the inverse hyperbolic cosine of each element of the vector
+   b = atanh( a );  // Computes the inverse hyperbolic tangent of each element of the vector
+   \endcode
+
+// Note that in case of sparse vectors only the non-zero elements are taken into account!
+//
+//
+// \n \subsection vector_operations_erf erf() / erfc()
+//
+// The \c erf() and \c erfc() functions compute the (complementary) error function of each
+// element of a vector:
+
+   \code
+   blaze::StaticVector<double,3UL,rowVector> a, b;
+
+   b = erf( a );   // Computes the error function of each element
+   b = erfc( a );  // Computes the complementary error function of each element
+   \endcode
+
+// Note that in case of sparse vectors only the non-zero elements are taken into account!
+//
+//
+// \n \subsection vector_operations_foreach forEach()
+//
+// Via the \c forEach() function it is possible to execute custom operations on dense and sparse
+// vectors. For instance, the following example demonstrates a custom square root computation via
+// a lambda:
+
+   \code
+   blaze::DynamicVector<double> a, b;
+
+   b = forEach( a, []( double d ) { return std::sqrt( d ); } );
+   \endcode
+
+// Although the computation can be parallelized it is not vectorized and thus cannot perform at
+// peak performance. However, it is also possible to create vectorized custom operations. See
+// \ref custom_operations for a detailed overview of the possibilities of custom operations.
+//
+//
+// \n \subsection vector_operations_length length() / sqrLength()
 //
 // In order to calculate the length of a vector, both the \c length() and \c sqrLength() function
 // can be used:
@@ -1664,7 +1811,7 @@
 // Note that both functions can only be used for vectors with built-in or complex element type!
 //
 //
-// \n \subsection vector_operations_vector_transpose Vector Transpose
+// \n \subsection vector_operations_vector_transpose trans()
 //
 // As already mentioned, vectors can either be column vectors (blaze::columnVector) or row vectors
 // (blaze::rowVector). A column vector cannot be assigned to a row vector and vice versa. However,
@@ -1681,7 +1828,7 @@
    v1 += trans( v2 );  // OK: Addition assignment of two column vectors
    \endcode
 
-// \n \subsection vector_operations_conjugate_transpose Conjugate Transpose
+// \n \subsection vector_operations_conjugate_transpose ctrans()
 //
 // It is also possible to compute the conjugate transpose of a vector. This operation is available
 // via the \c ctrans() function:
@@ -1701,7 +1848,7 @@
    v1 = conj( trans( v2 ) );  // Computing the conjugate transpose vector
    \endcode
 
-// \n \subsection vector_operations_normalize Normalize
+// \n \subsection vector_operations_normalize normalize()
 //
 // The \c normalize() function can be used to scale any non-zero vector to a length of 1. In
 // case the vector does not contain a single non-zero element (i.e. is a zero vector), the
@@ -1720,7 +1867,7 @@
 // Note that the \c normalize() function only works for floating point vectors. The attempt to
 // use it for an integral vector results in a compile time error.
 //
-// \n \subsection vector_operations_swap Swap
+// \n \subsection vector_operations_swap swap()
 //
 // Via the \c swap() function it is possible to completely swap the contents of two vectors of
 // the same type:
@@ -2650,7 +2797,7 @@
 // \n \section matrix_operations_member_functions Member Functions
 // <hr>
 //
-// \subsection matrix_operations_rows Number of Rows of a Matrix
+// \subsection matrix_operations_rows .rows()
 //
 // The current number of rows of a matrix can be acquired via the \c rows() member function:
 
@@ -2675,7 +2822,7 @@
    rows( M1 * M2 );  // Returns 10, i.e. the number of rows of the resulting matrix
    \endcode
 
-// \n \subsection matrix_operations_columns Number of Columns of a Matrix
+// \n \subsection matrix_operations_columns .columns()
 //
 // The current number of columns of a matrix can be acquired via the \c columns() member function:
 
@@ -2699,7 +2846,7 @@
    columns( M1 * M2 );  // Returns 7, i.e. the number of columns of the resulting matrix
    \endcode
 
-// \n \subsection matrix_operations_capacity Capacity of a Matrix
+// \n \subsection matrix_operations_capacity .capacity()
 //
 // The \c capacity() member function returns the internal capacity of a dense or sparse matrix.
 // Note that the capacity of a matrix doesn't have to be equal to the size of a matrix. In case of
@@ -2724,7 +2871,7 @@
    capacity( M1 * M2 );  // Compilation error!
    \endcode
 
-// \n \subsection matrix_operations_nonzeros Number of Non-Zero Elements
+// \n \subsection matrix_operations_nonzeros .nonZeros()
 //
 // For both dense and sparse matrices the current number of non-zero elements can be queried
 // via the \c nonZeros() member function. In case of matrices there are two flavors of the
@@ -2766,7 +2913,7 @@
    nonZeros( M1 * M2 );  // Estimates the number of non-zero elements in the matrix expression
    \endcode
 
-// \n \subsection matrix_operations_resize_reserve Resize/Reserve
+// \n \subsection matrix_operations_resize_reserve .resize() / .reserve()
 //
 // The dimensions of a \c StaticMatrix are fixed at compile time by the second and third template
 // parameter and a \c CustomMatrix cannot be resized. In contrast, the number or rows and columns
@@ -2824,7 +2971,7 @@
 // \n \section matrix_operations_free_functions Free Functions
 // <hr>
 //
-// \subsection matrix_operations_reset_clear Reset/Clear
+// \subsection matrix_operations_reset_clear .reset() / .clear
 //
 // In order to reset all elements of a dense or sparse matrix, the \c reset() function can be
 // used. The number of rows and columns of the matrix are preserved:
@@ -2863,7 +3010,7 @@
    M1.rows();    // Returns 0: size is reset, but capacity remains unchanged
    \endcode
 
-// \n \subsection matrix_operations_isnan isnan
+// \n \subsection matrix_operations_isnan isnan()
 //
 // The \c isnan() function provides the means to check a dense or sparse matrix for non-a-number
 // elements:
@@ -2886,7 +3033,7 @@
 // a compile time error.
 //
 //
-// \n \subsection matrix_operations_isdefault isDefault
+// \n \subsection matrix_operations_isdefault isDefault()
 //
 // The \c isDefault() function returns whether the given dense or sparse matrix is in default state:
 
@@ -2901,11 +3048,11 @@
 // default state if its size is equal to zero. A non-resizable matrix (\c StaticMatrix and all
 // submatrices) is in default state if all its elements are in default state. For instance, in case
 // the matrix is instantiated for a built-in integral or floating point data type, the function
-// returns \c true in case all matrix elements are 0 and \c false in case any vector element is
+// returns \c true in case all matrix elements are 0 and \c false in case any matrix element is
 // not 0.
 //
 //
-// \n \subsection matrix_operations_isSquare isSquare
+// \n \subsection matrix_operations_isSquare isSquare()
 //
 // Whether a dense or sparse matrix is a square matrix (i.e. if the number of rows is equal to the
 // number of columns) can be checked via the \c isSquare() function:
@@ -2916,7 +3063,7 @@
    if( isSquare( A ) ) { ... }
    \endcode
 
-// \n \subsection matrix_operations_issymmetric isSymmetric
+// \n \subsection matrix_operations_issymmetric isSymmetric()
 //
 // Via the \c isSymmetric() function it is possible to check whether a dense or sparse matrix
 // is symmetric:
@@ -2930,7 +3077,7 @@
 // Note that non-square matrices are never considered to be symmetric!
 //
 //
-// \n \subsection matrix_operations_isUniform isUniform
+// \n \subsection matrix_operations_isUniform isUniform()
 //
 // In order to check if all matrix elements are identical, the \c isUniform function can be used:
 
@@ -2943,7 +3090,7 @@
 // Note that in case of a sparse matrix also the zero elements are also taken into account!
 //
 //
-// \n \subsection matrix_operations_islower isLower
+// \n \subsection matrix_operations_islower isLower()
 //
 // Via the \c isLower() function it is possible to check whether a dense or sparse matrix is
 // lower triangular:
@@ -2957,7 +3104,7 @@
 // Note that non-square matrices are never considered to be lower triangular!
 //
 //
-// \n \subsection matrix_operations_isunilower isUniLower
+// \n \subsection matrix_operations_isunilower isUniLower()
 //
 // Via the \c isUniLower() function it is possible to check whether a dense or sparse matrix is
 // lower unitriangular:
@@ -2971,7 +3118,7 @@
 // Note that non-square matrices are never considered to be lower unitriangular!
 //
 //
-// \n \subsection matrix_operations_isstrictlylower isStrictlyLower
+// \n \subsection matrix_operations_isstrictlylower isStrictlyLower()
 //
 // Via the \c isStrictlyLower() function it is possible to check whether a dense or sparse matrix
 // is strictly lower triangular:
@@ -2985,7 +3132,7 @@
 // Note that non-square matrices are never considered to be strictly lower triangular!
 //
 //
-// \n \subsection matrix_operations_isUpper isUpper
+// \n \subsection matrix_operations_isUpper isUpper()
 //
 // Via the \c isUpper() function it is possible to check whether a dense or sparse matrix is
 // upper triangular:
@@ -2999,7 +3146,7 @@
 // Note that non-square matrices are never considered to be upper triangular!
 //
 //
-// \n \subsection matrix_operations_isuniupper isUniUpper
+// \n \subsection matrix_operations_isuniupper isUniUpper()
 //
 // Via the \c isUniUpper() function it is possible to check whether a dense or sparse matrix is
 // upper unitriangular:
@@ -3013,7 +3160,7 @@
 // Note that non-square matrices are never considered to be upper unitriangular!
 //
 //
-// \n \subsection matrix_operations_isstrictlyupper isStrictlyUpper
+// \n \subsection matrix_operations_isstrictlyupper isStrictlyUpper()
 //
 // Via the \c isStrictlyUpper() function it is possible to check whether a dense or sparse matrix
 // is strictly upper triangular:
@@ -3027,7 +3174,7 @@
 // Note that non-square matrices are never considered to be strictly upper triangular!
 //
 //
-// \n \subsection matrix_operations_isdiagonal isDiagonal
+// \n \subsection matrix_operations_isdiagonal isDiagonal()
 //
 // The \c isDiagonal() function checks if the given dense or sparse matrix is a diagonal matrix,
 // i.e. if it has only elements on its diagonal and if the non-diagonal elements are default
@@ -3042,7 +3189,7 @@
 // Note that non-square matrices are never considered to be diagonal!
 //
 //
-// \n \subsection matrix_operations_isidentity isIdentity
+// \n \subsection matrix_operations_isidentity isIdentity()
 //
 // The \c isIdentity() function checks if the given dense or sparse matrix is an identity matrix,
 // i.e. if all diagonal elements are 1 and all non-diagonal elements are 0:
@@ -3056,25 +3203,7 @@
 // Note that non-square matrices are never considered to be identity matrices!
 //
 //
-// \n \subsection matrix_operators_abs Absolute Values
-//
-// The \c abs() function can be used to compute the absolute values of each element of a matrix.
-// For instance, the following computation
-
-   \code
-   blaze::StaticMatrix<int,2UL,3UL,rowMajor> A{ { -1,  2, -3 },
-                                                {  4, -5,  6 } };
-   blaze::StaticMatrix<int,2UL,3UL,rowMajor> B( abs( A ) );
-   \endcode
-
-// results in the matrix
-
-                          \f$ B = \left(\begin{array}{*{3}{c}}
-                          1 & 2 & 3 \\
-                          4 & 5 & 6 \\
-                          \end{array}\right)\f$
-
-// \n \subsection matrix_operations_min_max Minimum/Maximum Values
+// \n \subsection matrix_operations_min_max min() / max()
 //
 // The \c min() and the \c max() functions return the smallest and largest element of the given
 // dense or sparse matrix, respectively:
@@ -3113,7 +3242,37 @@
    max( A - B - C );  // Returns 11, i.e. the largest value of the resulting matrix
    \endcode
 
-// \n \subsection matrix_operators_conj Complex Conjugates
+// \n \subsection matrix_operators_abs abs()
+//
+// The \c abs() function can be used to compute the absolute values of each element of a matrix.
+// For instance, the following computation
+
+   \code
+   blaze::StaticMatrix<int,2UL,3UL,rowMajor> A{ { -1,  2, -3 },
+                                                {  4, -5,  6 } };
+   blaze::StaticMatrix<int,2UL,3UL,rowMajor> B( abs( A ) );
+   \endcode
+
+// results in the matrix
+
+                          \f$ B = \left(\begin{array}{*{3}{c}}
+                          1 & 2 & 3 \\
+                          4 & 5 & 6 \\
+                          \end{array}\right)\f$
+
+// \n \subsection matrix_operators_floor_ceil floor() / ceil()
+//
+// The \c floor() and \c ceil() functions can be used to round down/up each element of a matrix,
+// respectively:
+
+   \code
+   blaze::StaticMatrix<double,3UL,3UL> A, B;
+
+   B = floor( A );  // Rounding down each element of the matrix
+   B = ceil( A );   // Rounding up each element of the matrix
+   \endcode
+
+// \n \subsection matrix_operators_conj conj()
 //
 // The \c conj() function can be applied on a dense or sparse matrix to compute the complex
 // conjugate of each element of the matrix:
@@ -3145,7 +3304,7 @@
    C = conj( C );   // Same as above
    \endcode
 
-// \n \subsection matrix_operators_real Real Part
+// \n \subsection matrix_operators_real real()
 //
 // The \c real() function can be used on a dense or sparse matrix to extract the real part of
 // each element of the matrix:
@@ -3168,7 +3327,7 @@
    B = real( A );
    \endcode
 
-// \n \subsection matrix_operators_imag Imaginary Part
+// \n \subsection matrix_operators_imag imag()
 //
 // The \c imag() function can be used on a dense or sparse matrix to extract the imaginary part
 // of each element of the matrix:
@@ -3191,7 +3350,139 @@
    B = imag( A );
    \endcode
 
-// \n \subsection matrix_operations_matrix_transpose Matrix Transpose
+// \n \subsection matrix_operators_sqrt sqrt() / invsqrt()
+//
+// Via the \c sqrt() and \c invsqrt() functions the (inverse) square root of each element of a
+// matrix can be computed:
+
+   \code
+   blaze::StaticMatrix<double,3UL,3UL> A, B, C;
+
+   B = sqrt( A );     // Computes the square root of each element
+   C = invsqrt( A );  // Computes the inverse square root of each element
+   \endcode
+
+// Note that in case of sparse matrices only the non-zero elements are taken into account!
+//
+//
+// \n \subsection matrix_operators_cbrt cbrt() / invcbrt()
+//
+// The \c cbrt() and \c invcbrt() functions can be used to compute the the (inverse) cubic root
+// of each element of a matrix:
+
+   \code
+   blaze::DynamicMatrix<double> A, B, C;
+
+   B = cbrt( A );     // Computes the cubic root of each element
+   C = invcbrt( A );  // Computes the inverse cubic root of each element
+   \endcode
+
+// Note that in case of sparse matrices only the non-zero elements are taken into account!
+//
+//
+// \n \subsection matrix_operators_pow pow()
+//
+// The \c pow() function can be used to compute the exponential value of each element of a matrix:
+
+   \code
+   blaze::StaticMatrix<double,3UL,3UL> A, B;
+
+   B = pow( A, 1.2 );  // Computes the exponential value of each element
+   \endcode
+
+// \n \subsection matrix_operators_exp exp()
+//
+// \c exp() computes the base e exponential of each element of a matrix:
+
+   \code
+   blaze::HybridMatrix<double,3UL,3UL> A, B;
+
+   B = exp( A );  // Computes the base e exponential of each element
+   \endcode
+
+// Note that in case of sparse matrices only the non-zero elements are taken into account!
+//
+//
+// \n \subsection matrix_operators_log log() / log10()
+//
+// The \c log() and \c log10() functions can be used to compute the natural and common logarithm
+// of each element of a matrix:
+
+   \code
+   blaze::StaticMatrix<double,3UL,3UL> A, B;
+
+   B = log( A );    // Computes the natural logarithm of each element
+   B = log10( A );  // Computes the common logarithm of each element
+   \endcode
+
+// \n \subsection matrix_operators_trigonometric_functions sin() / cos() / tan() / asin() / acos() / atan()
+//
+// The following trigonometric functions are available for both dense and sparse matrices:
+
+   \code
+   blaze::DynamicMatrix<double> A, B;
+
+   B = sin( A );  // Computes the sine of each element of the matrix
+   B = cos( A );  // Computes the cosine of each element of the matrix
+   B = tan( A );  // Computes the tangent of each element of the matrix
+
+   B = asin( A );  // Computes the inverse sine of each element of the matrix
+   B = acos( A );  // Computes the inverse cosine of each element of the matrix
+   B = atan( A );  // Computes the inverse tangent of each element of the matrix
+   \endcode
+
+// Note that in case of sparse matrices only the non-zero elements are taken into account!
+//
+//
+// \n \subsection matrix_operators_hyperbolic_functions sinh() / cosh() / tanh() / asinh() / acosh() / atanh()
+//
+// The following hyperbolic functions are available for both dense and sparse matrices:
+
+   \code
+   blaze::DynamicMatrix<double> A, B;
+
+   B = sinh( A );  // Computes the hyperbolic sine of each element of the matrix
+   B = cosh( A );  // Computes the hyperbolic cosine of each element of the matrix
+   B = tanh( A );  // Computes the hyperbolic tangent of each element of the matrix
+
+   B = asinh( A );  // Computes the inverse hyperbolic sine of each element of the matrix
+   B = acosh( A );  // Computes the inverse hyperbolic cosine of each element of the matrix
+   B = atanh( A );  // Computes the inverse hyperbolic tangent of each element of the matrix
+   \endcode
+
+// \n \subsection matrix_operators_erf erf() / erfc()
+//
+// The \c erf() and \c erfc() functions compute the (complementary) error function of each
+// element of a matrix:
+
+   \code
+   blaze::StaticMatrix<double,3UL,3UL> A, B;
+
+   B = erf( A );   // Computes the error function of each element
+   B = erfc( A );  // Computes the complementary error function of each element
+   \endcode
+
+// Note that in case of sparse matrices only the non-zero elements are taken into account!
+//
+//
+// \n \subsection matrix_operations_foreach forEach()
+//
+// Via the \c forEach() function it is possible to execute custom operations on dense and sparse
+// matrices. For instance, the following example demonstrates a custom square root computation via
+// a lambda:
+
+   \code
+   blaze::DynamicMatrix<double> A, B;
+
+   B = forEach( A, []( double d ) { return std::sqrt( d ); } );
+   \endcode
+
+// Although the computation can be parallelized it is not vectorized and thus cannot perform at
+// peak performance. However, it is also possible to create vectorized custom operations. See
+// \ref custom_operations for a detailed overview of the possibilities of custom operations.
+//
+//
+// \n \subsection matrix_operations_matrix_transpose trans()
 //
 // Matrices can be transposed via the \c trans() function. Row-major matrices are transposed into
 // a column-major matrix and vice versa:
@@ -3222,7 +3513,7 @@
 //  - ... the given submatrix would cause non-deterministic results in a symmetric/Hermitian matrix.
 //
 //
-// \n \subsection matrix_operations_conjugate_transpose Conjugate Transpose
+// \n \subsection matrix_operations_conjugate_transpose ctrans()
 //
 // The conjugate transpose of a dense or sparse matrix (also called adjoint matrix, Hermitian
 // conjugate, or transjugate) can be computed via the \c ctrans() function:
@@ -3259,7 +3550,7 @@
 //  - ... the given submatrix would cause non-deterministic results in a symmetric/Hermitian matrix.
 //
 //
-// \n \subsection matrix_operations_matrix_determinant Matrix Determinant
+// \n \subsection matrix_operations_matrix_determinant det()
 //
 // The determinant of a square dense matrix can be computed by means of the \c det() function:
 
@@ -3281,7 +3572,7 @@
 // will be created.
 //
 //
-// \n \subsection matrix_operations_swap Swap
+// \n \subsection matrix_operations_swap swap()
 //
 // Via the \c \c swap() function it is possible to completely swap the contents of two matrices
 // of the same type:
@@ -7789,7 +8080,167 @@
 // are possible. Note however that the highest performance for a multiplication between two dense
 // matrices can be expected for two matrices with the same scalar element type.
 //
-// \n Previous: \ref matrix_vector_multiplication &nbsp; &nbsp; Next: \ref shared_memory_parallelization
+// \n Previous: \ref matrix_vector_multiplication &nbsp; &nbsp; Next: \ref custom_operations
+*/
+//*************************************************************************************************
+
+
+//**Custom Operations******************************************************************************
+/*!\page custom_operations Custom Operations
+//
+// In addition to the provided operations on vectors and matrices it is possible to define custom
+// operations. For this purpose, \b Blaze provides the \c forEach() function, which allows to pass
+// the required operation via functor or lambda:
+
+   \code
+   blaze::DynamicMatrix<double> A, B;
+
+   B = forEach( A, []( double d ){ return std::sqrt( d ); } );
+   \endcode
+
+// This example demonstrates the most convenient way of defining a custom operation by passing a
+// lambda to the \c forEach() function. The lambda is executed on each single element of a dense
+// vector or matrix or each non-zero element of a sparse vector or matrix.
+//
+// Alternatively, it is possible to pass a custom functor:
+
+   \code
+   struct Sqrt
+   {
+      double operator()( double a ) const
+      {
+         return std::sqrt( a );
+      }
+   };
+
+   B = forEach( A, Sqrt() );
+   \endcode
+
+// In order for the functor to work in a call to \c forEach() it must define a function call
+// operator, which accepts arguments of the type of the according vector or matrix elements.
+//
+// Although the operation is automatically parallelized depending on the size of the vector or
+// matrix, no automatic vectorization is possible. In order to enable vectorization, a \c load()
+// function can be added to the functor, which handles the vectorized computation. Depending on
+// the data type this function is passed one of the following \b Blaze SIMD data types:
+//
+// <ul>
+//    <li>SIMD data types for fundamental data types
+//       <ul>
+//          <li>\c blaze::simd_int8_t: Packed SIMD type for 8-bit integral data types</li>
+//          <li>\c blaze::simd_int16_t: Packed SIMD type for 16-bit integral data types</li>
+//          <li>\c blaze::simd_int32_t: Packed SIMD type for 32-bit integral data types</li>
+//          <li>\c blaze::simd_int64_t: Packed SIMD type for 64-bit integral data types</li>
+//          <li>\c blaze::simd_float_t: Packed SIMD type for single precision floating point data</li>
+//          <li>\c blaze::simd_double_t: Packed SIMD type for double precision floating point data</li>
+//       </ul>
+//    </li>
+//    <li>SIMD data types for complex data types
+//       <ul>
+//          <li>\c blaze::simd_cint8_t: Packed SIMD type for complex 8-bit integral data types</li>
+//          <li>\c blaze::simd_cint16_t: Packed SIMD type for complex 16-bit integral data types</li>
+//          <li>\c blaze::simd_cint32_t: Packed SIMD type for complex 32-bit integral data types</li>
+//          <li>\c blaze::simd_cint64_t: Packed SIMD type for complex 64-bit integral data types</li>
+//          <li>\c blaze::simd_cfloat_t: Packed SIMD type for complex single precision floating point data</li>
+//          <li>\c blaze::simd_cdouble_t: Packed SIMD type for complex double precision floating point data</li>
+//       </ul>
+//    </li>
+// </ul>
+//
+// All SIMD types provide the \c value data member for a direct access to the underlying intrinsic
+// data element. In the following example, this intrinsic element is passed to the AVX function
+// \c _mm256_sqrt_pd():
+
+   \code
+   struct Sqrt
+   {
+      double operator()( double a ) const
+      {
+         return std::sqrt( a );
+      }
+
+      simd_double_t load( simd_double_t a ) const
+      {
+         return _mm256_sqrt_pd( a.value );
+      }
+   };
+   \endcode
+
+// In this example, whenever vectorization is generally applicable, the \c load() function is
+// called instead of the function call operator for as long as the number of remaining elements
+// is larger-or-equal to the width of the packed SIMD type. In all other cases (which also
+// includes peel-off and remainder loops) the scalar operation is used.
+//
+// Please note that this example has two drawbacks: First, it will only compile in case the
+// intrinsic \c _mm256_sqrt_pd() function is available (i.e. when AVX is active). Second, the
+// availability of AVX is not taken into account. The first drawback can be alleviated by making
+// the \c load() function a function template. The second drawback can be dealt with by adding a
+// \c simdEnabled() function template to the functor:
+
+   \code
+   struct Sqrt
+   {
+      double operator()( double a ) const
+      {
+         return std::sqrt( a );
+      }
+
+      template< typename T >
+      T load( T a ) const
+      {
+         return _mm256_sqrt_pd( a.value );
+      }
+
+      template< typename T >
+      static constexpr bool simdEnabled() {
+#if defined(__AVX__)
+         return true;
+#else
+         return false;
+#endif
+      }
+   };
+   \endcode
+
+// The \c simdEnabled() function must be \c constexpr and must return whether or not vectorization
+// is available for the given data type \c T. In case the function returns \c true, the \c load()
+// function is used for a vectorized evaluation, in case the function returns \c false, \c load()
+// is not called.
+//
+// Note that this is a simplified example that is only working when used for dense vectors and
+// matrices with double precision floating point elements. The following code shows the complete
+// implementation of the according functor that is used within the \b Blaze library. The \b Blaze
+// \c Sqrt functor is working for all data types that are providing a square root operation:
+
+   \code
+   namespace blaze {
+
+   struct Sqrt
+   {
+      template< typename T >
+      BLAZE_ALWAYS_INLINE auto operator()( const T& a ) const -> decltype( sqrt( a ) )
+      {
+         return sqrt( a );
+      }
+
+      template< typename T >
+      static constexpr bool simdEnabled() { return HasSIMDSqrt<T>::value; }
+
+      template< typename T >
+      BLAZE_ALWAYS_INLINE auto load( const T& a ) const -> decltype( sqrt( a ) )
+      {
+         BLAZE_CONSTRAINT_MUST_BE_SIMD_TYPE( T );
+         return sqrt( a );
+      }
+   };
+
+   } // namespace blaze
+   \endcode
+
+// For more information on the available \b Blaze SIMD data types and functions, please see the
+// SIMD module in the complete \b Blaze documentation.
+//
+// \n Previous: \ref matrix_matrix_multiplication &nbsp; &nbsp; Next: \ref shared_memory_parallelization
 */
 //*************************************************************************************************
 
@@ -7812,7 +8263,7 @@
 //
 //  - \ref serial_execution
 //
-// \n Previous: \ref matrix_matrix_multiplication &nbsp; &nbsp; Next: \ref openmp_parallelization
+// \n Previous: \ref custom_operations &nbsp; &nbsp; Next: \ref openmp_parallelization
 */
 //*************************************************************************************************
 
