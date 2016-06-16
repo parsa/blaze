@@ -319,8 +319,6 @@ inline void invert2x2( UniLowerMatrix<MT,SO,true>& m )
    BLAZE_INTERNAL_ASSERT( m.rows()    == 2UL, "Invalid number of rows detected"    );
    BLAZE_INTERNAL_ASSERT( m.columns() == 2UL, "Invalid number of columns detected" );
 
-   typedef ElementType_<MT>  ET;
-
    DerestrictTrait_<MT> A( derestrict( m ) );
 
    A(1,0) = -A(1,0);

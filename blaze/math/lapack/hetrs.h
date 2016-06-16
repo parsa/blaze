@@ -175,9 +175,6 @@ inline void hetrs( const DenseMatrix<MT,SO>& A, DenseVector<VT,TF>& b, char uplo
    BLAZE_CONSTRAINT_MUST_BE_BLAS_COMPATIBLE_TYPE( ElementType_<MT> );
    BLAZE_CONSTRAINT_MUST_BE_SAME_TYPE( ElementType_<MT>, ElementType_<VT> );
 
-   typedef OppositeType_<MT>  OT;
-   typedef ElementType_<MT>   ET;
-
    if( !isSquare( ~A ) ) {
       BLAZE_THROW_INVALID_ARGUMENT( "Invalid non-square matrix provided" );
    }
@@ -307,10 +304,6 @@ inline void hetrs( const DenseMatrix<MT1,SO1>& A, DenseMatrix<MT2,SO2>& B, char 
    BLAZE_CONSTRAINT_MUST_HAVE_MUTABLE_DATA_ACCESS( MT2 );
    BLAZE_CONSTRAINT_MUST_BE_BLAS_COMPATIBLE_TYPE( ElementType_<MT1> );
    BLAZE_CONSTRAINT_MUST_BE_SAME_TYPE( ElementType_<MT1>, ElementType_<MT2> );
-
-   typedef OppositeType_<MT1>  OT1;
-   typedef OppositeType_<MT2>  OT2;
-   typedef ElementType_<MT1>   ET1;
 
    if( !isSquare( ~A ) ) {
       BLAZE_THROW_INVALID_ARGUMENT( "Invalid non-square matrix provided" );

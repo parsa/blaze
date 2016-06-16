@@ -323,8 +323,6 @@ class TDVecTSMatMultExpr : public DenseVector< TDVecTSMatMultExpr<VT,MT>, true >
 
       BLAZE_INTERNAL_ASSERT( (~lhs).size() == rhs.size(), "Invalid vector sizes" );
 
-      typedef ConstIterator_< RemoveReference_<RT> >  ConstIterator;
-
       if( rhs.mat_.rows() == 0UL ) {
          reset( ~lhs );
          return;
@@ -397,8 +395,6 @@ class TDVecTSMatMultExpr : public DenseVector< TDVecTSMatMultExpr<VT,MT>, true >
 
       BLAZE_INTERNAL_ASSERT( (~lhs).size() == rhs.size(), "Invalid vector sizes" );
 
-      typedef ConstIterator_< RemoveReference_<RT> >  ConstIterator;
-
       if( rhs.mat_.rows() == 0UL ) {
          return;
       }
@@ -441,8 +437,6 @@ class TDVecTSMatMultExpr : public DenseVector< TDVecTSMatMultExpr<VT,MT>, true >
       BLAZE_FUNCTION_TRACE;
 
       BLAZE_INTERNAL_ASSERT( (~lhs).size() == rhs.size(), "Invalid vector sizes" );
-
-      typedef ConstIterator_< RemoveReference_<RT> >  ConstIterator;
 
       if( rhs.mat_.rows() == 0UL ) {
          return;
@@ -558,8 +552,6 @@ class TDVecTSMatMultExpr : public DenseVector< TDVecTSMatMultExpr<VT,MT>, true >
 
       BLAZE_INTERNAL_ASSERT( (~lhs).size() == rhs.size(), "Invalid vector sizes" );
 
-      typedef ConstIterator_< RemoveReference_<RT> >  ConstIterator;
-
       if( rhs.mat_.rows() == 0UL ) {
          reset( ~lhs );
          return;
@@ -630,8 +622,6 @@ class TDVecTSMatMultExpr : public DenseVector< TDVecTSMatMultExpr<VT,MT>, true >
 
       BLAZE_INTERNAL_ASSERT( (~lhs).size() == rhs.size(), "Invalid vector sizes" );
 
-      typedef ConstIterator_< RemoveReference_<RT> >  ConstIterator;
-
       if( rhs.mat_.rows() == 0UL ) {
          return;
       }
@@ -673,8 +663,6 @@ class TDVecTSMatMultExpr : public DenseVector< TDVecTSMatMultExpr<VT,MT>, true >
       BLAZE_FUNCTION_TRACE;
 
       BLAZE_INTERNAL_ASSERT( (~lhs).size() == rhs.size(), "Invalid vector sizes" );
-
-      typedef ConstIterator_< RemoveReference_<RT> >  ConstIterator;
 
       if( rhs.mat_.rows() == 0UL ) {
          return;

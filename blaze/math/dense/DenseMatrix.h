@@ -1113,7 +1113,6 @@ template< typename MT  // Type of the dense matrix
 bool isUniLower( const DenseMatrix<MT,SO>& dm )
 {
    typedef ResultType_<MT>     RT;
-   typedef ElementType_<MT>    ET;
    typedef ReturnType_<MT>     RN;
    typedef CompositeType_<MT>  CT;
    typedef If_< IsExpression<RN>, const RT, CT >  Tmp;
@@ -1193,7 +1192,6 @@ template< typename MT  // Type of the dense matrix
 bool isStrictlyLower( const DenseMatrix<MT,SO>& dm )
 {
    typedef ResultType_<MT>     RT;
-   typedef ElementType_<MT>    ET;
    typedef ReturnType_<MT>     RN;
    typedef CompositeType_<MT>  CT;
    typedef If_< IsExpression<RN>, const RT, CT >  Tmp;
@@ -1346,7 +1344,6 @@ template< typename MT  // Type of the dense matrix
 bool isUniUpper( const DenseMatrix<MT,SO>& dm )
 {
    typedef ResultType_<MT>     RT;
-   typedef ElementType_<MT>    ET;
    typedef ReturnType_<MT>     RN;
    typedef CompositeType_<MT>  CT;
    typedef If_< IsExpression<RN>, const RT, CT >  Tmp;
@@ -1426,7 +1423,6 @@ template< typename MT  // Type of the dense matrix
 bool isStrictlyUpper( const DenseMatrix<MT,SO>& dm )
 {
    typedef ResultType_<MT>     RT;
-   typedef ElementType_<MT>    ET;
    typedef ReturnType_<MT>     RN;
    typedef CompositeType_<MT>  CT;
    typedef If_< IsExpression<RN>, const RT, CT >  Tmp;
@@ -1597,7 +1593,6 @@ template< typename MT  // Type of the dense matrix
 bool isIdentity( const DenseMatrix<MT,SO>& dm )
 {
    typedef ResultType_<MT>     RT;
-   typedef ElementType_<MT>    ET;
    typedef ReturnType_<MT>     RN;
    typedef CompositeType_<MT>  CT;
    typedef If_< IsExpression<RN>, const RT, CT >  Tmp;

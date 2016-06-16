@@ -904,7 +904,6 @@ template< typename MT  // Type of the sparse matrix
 bool isUniLower( const SparseMatrix<MT,SO>& sm )
 {
    typedef ResultType_<MT>     RT;
-   typedef ElementType_<MT>    ET;
    typedef ReturnType_<MT>     RN;
    typedef CompositeType_<MT>  CT;
    typedef If_< IsExpression<RN>, const RT, CT >  Tmp;
@@ -1004,7 +1003,6 @@ template< typename MT  // Type of the sparse matrix
 bool isStrictlyLower( const SparseMatrix<MT,SO>& sm )
 {
    typedef ResultType_<MT>     RT;
-   typedef ElementType_<MT>    ET;
    typedef ReturnType_<MT>     RN;
    typedef CompositeType_<MT>  CT;
    typedef If_< IsExpression<RN>, const RT, CT >  Tmp;
@@ -1169,7 +1167,6 @@ template< typename MT  // Type of the sparse matrix
 bool isUniUpper( const SparseMatrix<MT,SO>& sm )
 {
    typedef ResultType_<MT>     RT;
-   typedef ElementType_<MT>    ET;
    typedef ReturnType_<MT>     RN;
    typedef CompositeType_<MT>  CT;
    typedef If_< IsExpression<RN>, const RT, CT >  Tmp;
@@ -1269,7 +1266,6 @@ template< typename MT  // Type of the sparse matrix
 bool isStrictlyUpper( const SparseMatrix<MT,SO>& sm )
 {
    typedef ResultType_<MT>     RT;
-   typedef ElementType_<MT>    ET;
    typedef ReturnType_<MT>     RN;
    typedef CompositeType_<MT>  CT;
    typedef If_< IsExpression<RN>, const RT, CT >  Tmp;
@@ -1428,7 +1424,6 @@ template< typename MT  // Type of the sparse matrix
 bool isIdentity( const SparseMatrix<MT,SO>& sm )
 {
    typedef ResultType_<MT>     RT;
-   typedef ElementType_<MT>    ET;
    typedef ReturnType_<MT>     RN;
    typedef CompositeType_<MT>  CT;
    typedef If_< IsExpression<RN>, const RT, CT >  Tmp;
