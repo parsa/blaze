@@ -40,11 +40,49 @@
 // Includes
 //*************************************************************************************************
 
+#include <iterator>
 #include <blaze/util/constraints/DerivedFrom.h>
 #include <blaze/util/Types.h>
+#include <blaze/util/typetraits/IsAssignable.h>
 
 
 namespace blaze {
+
+//=================================================================================================
+//
+//  TRANSFER
+//
+//=================================================================================================
+
+//*************************************************************************************************
+/*!\brief Transfers the elements from the given source range to the destination range.
+//
+// \param first Iterator to the first element of the source range.
+// \param last Iterator to the element one past the last element of the source range.
+// \param dest Iterator to the first element of the destination range.
+// \return Output iterator to the element one past the last copied element.
+//
+// This function transfers the elements in the range \f$ [first,last) \f$ to the specified
+// destination range. In case the elements provide a no-throw move assignment, the transfer
+// operation is handled via move. Else the elements are copied.
+*/
+template< typename InputIterator
+        , typename OutputIterator >
+OutputIterator transfer( InputIterator first, InputIterator last, OutputIterator dest )
+{
+   using ValueType = typename std::iterator_traits<InputIterator>::value_type;
+
+   if( IsNothrowMoveAssignable<ValueType>::value ) {
+      return std::move( first, last, dest );
+   }
+   else {
+      return std::copy( first, last, dest );
+   }
+}
+//*************************************************************************************************
+
+
+
 
 //=================================================================================================
 //
