@@ -449,14 +449,12 @@ const Type CompressedMatrix<Type,SO>::zero_ = Type();
 template< typename Type  // Data type of the sparse matrix
         , bool SO >      // Storage order
 inline CompressedMatrix<Type,SO>::CompressedMatrix()
-   : m_       ( 0UL )           // The current number of rows of the sparse matrix
-   , n_       ( 0UL )           // The current number of columns of the sparse matrix
-   , capacity_( 0UL )           // The current capacity of the pointer array
-   , begin_( new Iterator[2] )  // Pointers to the first non-zero element of each row
-   , end_  ( begin_+1UL )       // Pointers one past the last non-zero element of each row
-{
-   begin_[0] = end_[0] = nullptr;
-}
+   : m_       ( 0UL )      // The current number of rows of the sparse matrix
+   , n_       ( 0UL )      // The current number of columns of the sparse matrix
+   , capacity_( 0UL )      // The current capacity of the pointer array
+   , begin_   ( nullptr )  // Pointers to the first non-zero element of each row
+   , end_     ( nullptr )  // Pointers one past the last non-zero element of each row
+{}
 //*************************************************************************************************
 
 
@@ -958,12 +956,15 @@ inline CompressedMatrix<Type,SO>&
 
       std::swap( begin_, newBegin );
       end_ = newEnd;
-      deallocate( newBegin[0UL] );
-      delete[] newBegin;
       capacity_ = rhs.m_;
+
+      if( newBegin != nullptr ) {
+         deallocate( newBegin[0UL] );
+         delete[] newBegin;
+      }
    }
    else {
-     for( size_t i=0UL; i<rhs.m_; ++i ) {
+      for( size_t i=0UL; i<rhs.m_; ++i ) {
          begin_[i+1UL] = end_[i] = std::copy( rhs.begin_[i], rhs.end_[i], begin_[i] );
       }
    }
@@ -1271,7 +1272,9 @@ template< typename Type  // Data type of the sparse matrix
         , bool SO >      // Storage order
 inline size_t CompressedMatrix<Type,SO>::capacity() const noexcept
 {
-   return end_[m_] - begin_[0UL];
+   if( begin_ != nullptr )
+      return end_[m_] - begin_[0UL];
+   else return 0UL;
 }
 //*************************************************************************************************
 
@@ -1631,11 +1634,22 @@ template< typename Type  // Data type of the sparse matrix
 void CompressedMatrix<Type,SO>::resize( size_t m, size_t n, bool preserve )
 {
    BLAZE_INTERNAL_ASSERT( end_ >= begin_, "Invalid internal storage detected" );
-   BLAZE_INTERNAL_ASSERT( static_cast<size_t>( end_ - begin_ ) == capacity_ + 1UL, "Invalid storage setting detected" );
+   BLAZE_INTERNAL_ASSERT( begin_ == nullptr || size_t( end_ - begin_ ) == capacity_ + 1UL, "Invalid storage setting detected" );
 
    if( m == m_ && n == n_ ) return;
 
-   if( m > capacity_ )
+   if( begin_ == nullptr )
+   {
+      begin_ = new Iterator[2UL*m+2UL];
+      end_   = begin_+m+1UL;
+
+      for( size_t i=0UL; i<2UL*m+2UL; ++i ) {
+         begin_[i] = nullptr;
+      }
+
+      capacity_ = m;
+   }
+   else if( m > capacity_ )
    {
       Iterator* newBegin( new Iterator[2UL*m+2UL] );
       Iterator* newEnd  ( newBegin+m+1UL );
@@ -1661,7 +1675,6 @@ void CompressedMatrix<Type,SO>::resize( size_t m, size_t n, bool preserve )
 
       std::swap( newBegin, begin_ );
       delete[] newBegin;
-
       end_ = newEnd;
       capacity_ = m;
    }
@@ -1674,8 +1687,9 @@ void CompressedMatrix<Type,SO>::resize( size_t m, size_t n, bool preserve )
             end_[i] = begin_[i];
       }
 
-      for( size_t i=m_; i<m; ++i )
+      for( size_t i=m_; i<m; ++i ) {
          begin_[i+1UL] = end_[i] = begin_[m_];
+      }
    }
    else
    {
@@ -1695,7 +1709,7 @@ void CompressedMatrix<Type,SO>::resize( size_t m, size_t n, bool preserve )
    n_ = n;
 
    BLAZE_INTERNAL_ASSERT( end_ >= begin_, "Invalid internal storage detected" );
-   BLAZE_INTERNAL_ASSERT( static_cast<size_t>( end_ - begin_ ) == capacity_ + 1UL, "Invalid storage setting detected" );
+   BLAZE_INTERNAL_ASSERT( size_t( end_ - begin_ ) == capacity_ + 1UL, "Invalid storage setting detected" );
 }
 //*************************************************************************************************
 
@@ -1979,9 +1993,12 @@ void CompressedMatrix<Type,SO>::reserveElements( size_t nonzeros )
    newEnd[m_] = newBegin[0UL]+nonzeros;
 
    std::swap( newBegin, begin_ );
-   deallocate( newBegin[0UL] );
-   delete[] newBegin;
    end_ = newEnd;
+
+   if( newBegin != nullptr ) {
+      deallocate( newBegin[0UL] );
+      delete[] newBegin;
+   }
 }
 //*************************************************************************************************
 
@@ -2340,6 +2357,9 @@ inline void CompressedMatrix<Type,SO>::assign( const DenseMatrix<MT,SO2>& rhs )
 {
    BLAZE_INTERNAL_ASSERT( m_ == (~rhs).rows()   , "Invalid number of rows"    );
    BLAZE_INTERNAL_ASSERT( n_ == (~rhs).columns(), "Invalid number of columns" );
+
+   if( m_ == 0UL || n_ == 0UL )
+      return;
 
    size_t nonzeros( 0UL );
 
@@ -2829,14 +2849,12 @@ const Type CompressedMatrix<Type,true>::zero_ = Type();
 */
 template< typename Type >  // Data type of the sparse matrix
 inline CompressedMatrix<Type,true>::CompressedMatrix()
-   : m_       ( 0UL )             // The current number of rows of the sparse matrix
-   , n_       ( 0UL )             // The current number of columns of the sparse matrix
-   , capacity_( 0UL )             // The current capacity of the pointer array
-   , begin_( new Iterator[2UL] )  // Pointers to the first non-zero element of each column
-   , end_  ( begin_+1UL )         // Pointers one past the last non-zero element of each column
-{
-   begin_[0UL] = end_[0UL] = nullptr;
-}
+   : m_       ( 0UL )      // The current number of rows of the sparse matrix
+   , n_       ( 0UL )      // The current number of columns of the sparse matrix
+   , capacity_( 0UL )      // The current capacity of the pointer array
+   , begin_   ( nullptr )  // Pointers to the first non-zero element of each column
+   , end_     ( nullptr )  // Pointers one past the last non-zero element of each column
+{}
 /*! \endcond */
 //*************************************************************************************************
 
@@ -3326,12 +3344,15 @@ inline CompressedMatrix<Type,true>&
 
       std::swap( begin_, newBegin );
       end_ = newEnd;
-      deallocate( newBegin[0UL] );
-      delete[] newBegin;
       capacity_ = rhs.n_;
+
+      if( newBegin != nullptr ) {
+         deallocate( newBegin[0UL] );
+         delete[] newBegin;
+      }
    }
    else {
-     for( size_t j=0UL; j<rhs.n_; ++j ) {
+      for( size_t j=0UL; j<rhs.n_; ++j ) {
          begin_[j+1UL] = end_[j] = std::copy( rhs.begin_[j], rhs.end_[j], begin_[j] );
       }
    }
@@ -3356,8 +3377,10 @@ template< typename Type >  // Data type of the sparse matrix
 inline CompressedMatrix<Type,true>&
    CompressedMatrix<Type,true>::operator=( CompressedMatrix&& rhs ) noexcept
 {
-   deallocate( begin_[0UL] );
-   delete[] begin_;
+   if( begin_ != nullptr ) {
+      deallocate( begin_[0UL] );
+      delete[] begin_;
+   }
 
    m_        = rhs.m_;
    n_        = rhs.n_;
@@ -3647,7 +3670,9 @@ inline size_t CompressedMatrix<Type,true>::columns() const noexcept
 template< typename Type >  // Data type of the sparse matrix
 inline size_t CompressedMatrix<Type,true>::capacity() const noexcept
 {
-   return end_[n_] - begin_[0UL];
+   if( begin_ != nullptr )
+      return end_[n_] - begin_[0UL];
+   else return 0UL;
 }
 /*! \endcond */
 //*************************************************************************************************
@@ -4004,11 +4029,22 @@ template< typename Type >  // Data type of the sparse matrix
 void CompressedMatrix<Type,true>::resize( size_t m, size_t n, bool preserve )
 {
    BLAZE_INTERNAL_ASSERT( end_ >= begin_, "Invalid internal storage detected" );
-   BLAZE_INTERNAL_ASSERT( static_cast<size_t>( end_ - begin_ ) == capacity_ + 1UL, "Invalid storage setting detected" );
+   BLAZE_INTERNAL_ASSERT( begin_ == nullptr || size_t( end_ - begin_ ) == capacity_ + 1UL, "Invalid storage setting detected" );
 
    if( m == m_ && n == n_ ) return;
 
-   if( n > capacity_ )
+   if( begin_ == nullptr )
+   {
+      begin_ = new Iterator[2UL*n+2UL];
+      end_   = begin_+n+1UL;
+
+      for( size_t j=0UL; j<2UL*n+2UL; ++j ) {
+         begin_[j] = nullptr;
+      }
+
+      capacity_ = n;
+   }
+   else if( n > capacity_ )
    {
       Iterator* newBegin( new Iterator[2UL*n+2UL] );
       Iterator* newEnd  ( newBegin+n+1UL );
@@ -4034,7 +4070,6 @@ void CompressedMatrix<Type,true>::resize( size_t m, size_t n, bool preserve )
 
       std::swap( newBegin, begin_ );
       delete[] newBegin;
-
       end_ = newEnd;
       capacity_ = n;
    }
@@ -4047,8 +4082,9 @@ void CompressedMatrix<Type,true>::resize( size_t m, size_t n, bool preserve )
             end_[j] = begin_[j];
       }
 
-      for( size_t j=n_; j<n; ++j )
+      for( size_t j=n_; j<n; ++j ) {
          begin_[j+1UL] = end_[j] = begin_[n_];
+      }
    }
    else
    {
@@ -4068,7 +4104,7 @@ void CompressedMatrix<Type,true>::resize( size_t m, size_t n, bool preserve )
    n_ = n;
 
    BLAZE_INTERNAL_ASSERT( end_ >= begin_, "Invalid internal storage detected" );
-   BLAZE_INTERNAL_ASSERT( static_cast<size_t>( end_ - begin_ ) == capacity_ + 1UL, "Invalid storage setting detected" );
+   BLAZE_INTERNAL_ASSERT( size_t( end_ - begin_ ) == capacity_ + 1UL, "Invalid storage setting detected" );
 }
 /*! \endcond */
 //*************************************************************************************************
@@ -4358,9 +4394,12 @@ void CompressedMatrix<Type,true>::reserveElements( size_t nonzeros )
    newEnd[n_] = newBegin[0UL]+nonzeros;
 
    std::swap( newBegin, begin_ );
-   deallocate( newBegin[0UL] );
-   delete[] newBegin;
    end_ = newEnd;
+
+   if( newBegin != nullptr ) {
+      deallocate( newBegin[0UL] );
+      delete[] newBegin;
+   }
 }
 /*! \endcond */
 //*************************************************************************************************
@@ -4718,6 +4757,9 @@ inline void CompressedMatrix<Type,true>::assign( const DenseMatrix<MT,SO>& rhs )
 {
    BLAZE_INTERNAL_ASSERT( m_ == (~rhs).rows()   , "Invalid number of rows"    );
    BLAZE_INTERNAL_ASSERT( n_ == (~rhs).columns(), "Invalid number of columns" );
+
+   if( m_ == 0UL || n_ == 0UL )
+      return;
 
    size_t nonzeros( 0UL );
 
