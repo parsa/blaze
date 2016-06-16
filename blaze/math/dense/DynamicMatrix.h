@@ -88,8 +88,9 @@
 #include <blaze/system/Restrict.h>
 #include <blaze/system/StorageOrder.h>
 #include <blaze/system/Thresholds.h>
-#include <blaze/util/Assert.h>
+#include <blaze/util/Algorithm.h>
 #include <blaze/util/AlignmentCheck.h>
+#include <blaze/util/Assert.h>
 #include <blaze/util/constraints/Const.h>
 #include <blaze/util/constraints/Pointer.h>
 #include <blaze/util/constraints/Reference.h>
@@ -1721,9 +1722,9 @@ void DynamicMatrix<Type,SO>::resize( size_t m, size_t n, bool preserve )
       const size_t min_m( min( m, m_ ) );
       const size_t min_n( min( n, n_ ) );
 
-      for( size_t i=0UL; i<min_m; ++i )
-         for( size_t j=0UL; j<min_n; ++j )
-            v[i*nn+j] = v_[i*nn_+j];
+      for( size_t i=0UL; i<min_m; ++i ) {
+         transfer( v_+i*nn, v_+i*nn+min_n, v+i*nn );
+      }
 
       std::swap( v_, v );
       deallocate( v );
@@ -1791,7 +1792,7 @@ inline void DynamicMatrix<Type,SO>::reserve( size_t elements )
       Type* BLAZE_RESTRICT tmp = allocate<Type>( elements );
 
       // Initializing the new array
-      std::copy( v_, v_+capacity_, tmp );
+      transfer( v_, v_+capacity_, tmp );
 
       if( IsVectorizable<Type>::value ) {
          for( size_t i=capacity_; i<elements; ++i )
@@ -4474,9 +4475,9 @@ void DynamicMatrix<Type,true>::resize( size_t m, size_t n, bool preserve )
       const size_t min_m( min( m, m_ ) );
       const size_t min_n( min( n, n_ ) );
 
-      for( size_t j=0UL; j<min_n; ++j )
-         for( size_t i=0UL; i<min_m; ++i )
-            v[i+j*mm] = v_[i+j*mm_];
+      for( size_t j=0UL; j<min_n; ++j ) {
+         transfer( v_+j*mm, v_+min_m+j*mm, v+j*mm );
+      }
 
       std::swap( v_, v );
       deallocate( v );
@@ -4546,7 +4547,7 @@ inline void DynamicMatrix<Type,true>::reserve( size_t elements )
       Type* BLAZE_RESTRICT tmp = allocate<Type>( elements );
 
       // Initializing the new array
-      std::copy( v_, v_+capacity_, tmp );
+      transfer( v_, v_+capacity_, tmp );
 
       if( IsVectorizable<Type>::value ) {
          for( size_t i=capacity_; i<elements; ++i )

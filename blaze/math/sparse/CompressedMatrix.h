@@ -69,6 +69,7 @@
 #include <blaze/math/typetraits/IsUpper.h>
 #include <blaze/system/StorageOrder.h>
 #include <blaze/system/Thresholds.h>
+#include <blaze/util/Algorithm.h>
 #include <blaze/util/Assert.h>
 #include <blaze/util/constraints/Const.h>
 #include <blaze/util/constraints/Pointer.h>
@@ -1473,7 +1474,7 @@ typename CompressedMatrix<Type,SO>::Iterator
    CompressedMatrix<Type,SO>::insert( Iterator pos, size_t i, size_t j, const Type& value )
 {
    if( begin_[i+1UL] - end_[i] != 0 ) {
-      std::copy_backward( pos, end_[i], end_[i]+1UL );
+      std::move_backward( pos, end_[i], end_[i]+1UL );
       pos->value_ = value;
       pos->index_ = j;
       ++end_[i];
@@ -1481,7 +1482,7 @@ typename CompressedMatrix<Type,SO>::Iterator
       return pos;
    }
    else if( end_[m_] - begin_[m_] != 0 ) {
-      std::copy_backward( pos, end_[m_-1UL], end_[m_-1UL]+1UL );
+      std::move_backward( pos, end_[m_-1UL], end_[m_-1UL]+1UL );
 
       pos->value_ = value;
       pos->index_ = j;
@@ -1518,10 +1519,10 @@ typename CompressedMatrix<Type,SO>::Iterator
 
       newEnd[m_] = newEnd[capacity_] = newBegin[0UL]+newCapacity;
 
-      Iterator tmp = std::copy( begin_[0UL], pos, newBegin[0UL] );
+      Iterator tmp = std::move( begin_[0UL], pos, newBegin[0UL] );
       tmp->value_ = value;
       tmp->index_ = j;
-      std::copy( pos, end_[m_-1UL], tmp+1UL );
+      std::move( pos, end_[m_-1UL], tmp+1UL );
 
       std::swap( newBegin, begin_ );
       end_ = newEnd;
@@ -1552,7 +1553,7 @@ inline void CompressedMatrix<Type,SO>::erase( size_t i, size_t j )
 
    const Iterator pos( find( i, j ) );
    if( pos != end_[i] )
-      end_[i] = std::copy( pos+1, end_[i], pos );
+      end_[i] = std::move( pos+1, end_[i], pos );
 }
 //*************************************************************************************************
 
@@ -1577,7 +1578,7 @@ inline typename CompressedMatrix<Type,SO>::Iterator
    BLAZE_USER_ASSERT( pos >= begin_[i] && pos <= end_[i], "Invalid compressed matrix iterator" );
 
    if( pos != end_[i] )
-      end_[i] = std::copy( pos+1, end_[i], pos );
+      end_[i] = std::move( pos+1, end_[i], pos );
 
    return pos;
 }
@@ -1607,7 +1608,7 @@ inline typename CompressedMatrix<Type,SO>::Iterator
    BLAZE_USER_ASSERT( last  >= begin_[i] && last  <= end_[i], "Invalid compressed matrix iterator" );
 
    if( first != last )
-      end_[i] = std::copy( last, end_[i], first );
+      end_[i] = std::move( last, end_[i], first );
 
    return first;
 }
@@ -1775,13 +1776,13 @@ void CompressedMatrix<Type,SO>::reserve( size_t i, size_t nonzeros )
       newEnd  [m_ ] = newBegin[0UL]+newCapacity;
 
       for( size_t k=0UL; k<i; ++k ) {
-         newEnd  [k    ] = std::copy( begin_[k], end_[k], newBegin[k] );
+         newEnd  [k    ] = transfer( begin_[k], end_[k], newBegin[k] );
          newBegin[k+1UL] = newBegin[k] + capacity(k);
       }
-      newEnd  [i    ] = std::copy( begin_[i], end_[i], newBegin[i] );
+      newEnd  [i    ] = transfer( begin_[i], end_[i], newBegin[i] );
       newBegin[i+1UL] = newBegin[i] + nonzeros;
       for( size_t k=i+1UL; k<m_; ++k ) {
-         newEnd  [k    ] = std::copy( begin_[k], end_[k], newBegin[k] );
+         newEnd  [k    ] = transfer( begin_[k], end_[k], newBegin[k] );
          newBegin[k+1UL] = newBegin[k] + capacity(k);
       }
 
@@ -1797,7 +1798,7 @@ void CompressedMatrix<Type,SO>::reserve( size_t i, size_t nonzeros )
    {
       begin_[m_] += additional;
       for( size_t j=m_-1UL; j>i; --j ) {
-         begin_[j]  = std::copy_backward( begin_[j], end_[j], end_[j]+additional );
+         begin_[j]  = std::move_backward( begin_[j], end_[j], end_[j]+additional );
          end_  [j] += additional;
       }
    }
@@ -1846,7 +1847,7 @@ inline void CompressedMatrix<Type,SO>::trim( size_t i )
    BLAZE_USER_ASSERT( i < rows(), "Invalid row access index" );
 
    if( i < ( m_ - 1UL ) )
-      end_[i+1] = std::copy( begin_[i+1], end_[i+1], end_[i] );
+      end_[i+1] = std::move( begin_[i+1], end_[i+1], end_[i] );
    begin_[i+1] = end_[i];
 }
 //*************************************************************************************************
@@ -1986,7 +1987,7 @@ void CompressedMatrix<Type,SO>::reserveElements( size_t nonzeros )
 
    for( size_t k=0UL; k<m_; ++k ) {
       BLAZE_INTERNAL_ASSERT( begin_[k] <= end_[k], "Invalid row pointers" );
-      newEnd  [k]     = std::copy( begin_[k], end_[k], newBegin[k] );
+      newEnd  [k]     = transfer( begin_[k], end_[k], newBegin[k] );
       newBegin[k+1UL] = newBegin[k] + ( begin_[k+1UL] - begin_[k] );
    }
 
@@ -3868,7 +3869,7 @@ typename CompressedMatrix<Type,true>::Iterator
    CompressedMatrix<Type,true>::insert( Iterator pos, size_t i, size_t j, const Type& value )
 {
    if( begin_[j+1UL] - end_[j] != 0 ) {
-      std::copy_backward( pos, end_[j], end_[j]+1UL );
+      std::move_backward( pos, end_[j], end_[j]+1UL );
       pos->value_ = value;
       pos->index_ = i;
       ++end_[j];
@@ -3876,7 +3877,7 @@ typename CompressedMatrix<Type,true>::Iterator
       return pos;
    }
    else if( end_[n_] - begin_[n_] != 0 ) {
-      std::copy_backward( pos, end_[n_-1UL], end_[n_-1]+1UL );
+      std::move_backward( pos, end_[n_-1UL], end_[n_-1]+1UL );
 
       pos->value_ = value;
       pos->index_ = i;
@@ -3913,10 +3914,10 @@ typename CompressedMatrix<Type,true>::Iterator
 
       newEnd[n_] = newEnd[capacity_] = newBegin[0UL]+newCapacity;
 
-      Iterator tmp = std::copy( begin_[0UL], pos, newBegin[0UL] );
+      Iterator tmp = std::move( begin_[0UL], pos, newBegin[0UL] );
       tmp->value_ = value;
       tmp->index_ = i;
-      std::copy( pos, end_[n_-1UL], tmp+1UL );
+      std::move( pos, end_[n_-1UL], tmp+1UL );
 
       std::swap( newBegin, begin_ );
       end_ = newEnd;
@@ -3948,7 +3949,7 @@ inline void CompressedMatrix<Type,true>::erase( size_t i, size_t j )
 
    const Iterator pos( find( i, j ) );
    if( pos != end_[j] )
-      end_[j] = std::copy( pos+1, end_[j], pos );
+      end_[j] = std::move( pos+1, end_[j], pos );
 }
 /*! \endcond */
 //*************************************************************************************************
@@ -3972,7 +3973,7 @@ inline typename CompressedMatrix<Type,true>::Iterator
    BLAZE_USER_ASSERT( pos >= begin_[j] && pos <= end_[j], "Invalid compressed matrix iterator" );
 
    if( pos != end_[j] )
-      end_[j] = std::copy( pos+1, end_[j], pos );
+      end_[j] = std::move( pos+1, end_[j], pos );
 
    return pos;
 }
@@ -4001,7 +4002,7 @@ inline typename CompressedMatrix<Type,true>::Iterator
    BLAZE_USER_ASSERT( last  >= begin_[j] && last  <= end_[j], "Invalid compressed matrix iterator" );
 
    if( first != last )
-      end_[j] = std::copy( last, end_[j], first );
+      end_[j] = std::move( last, end_[j], first );
 
    return first;
 }
@@ -4169,13 +4170,13 @@ void CompressedMatrix<Type,true>::reserve( size_t j, size_t nonzeros )
       newEnd  [n_ ] = newBegin[0UL]+newCapacity;
 
       for( size_t k=0UL; k<j; ++k ) {
-         newEnd  [k    ] = std::copy( begin_[k], end_[k], newBegin[k] );
+         newEnd  [k    ] = transfer( begin_[k], end_[k], newBegin[k] );
          newBegin[k+1UL] = newBegin[k] + capacity(k);
       }
-      newEnd  [j    ] = std::copy( begin_[j], end_[j], newBegin[j] );
+      newEnd  [j    ] = transfer( begin_[j], end_[j], newBegin[j] );
       newBegin[j+1UL] = newBegin[j] + nonzeros;
       for( size_t k=j+1UL; k<n_; ++k ) {
-         newEnd  [k    ] = std::copy( begin_[k], end_[k], newBegin[k] );
+         newEnd  [k    ] = transfer( begin_[k], end_[k], newBegin[k] );
          newBegin[k+1UL] = newBegin[k] + capacity(k);
       }
 
@@ -4191,7 +4192,7 @@ void CompressedMatrix<Type,true>::reserve( size_t j, size_t nonzeros )
    {
       begin_[n_] += additional;
       for( size_t k=n_-1UL; k>j; --k ) {
-         begin_[k]  = std::copy_backward( begin_[k], end_[k], end_[k]+additional );
+         begin_[k]  = std::move_backward( begin_[k], end_[k], end_[k]+additional );
          end_  [k] += additional;
       }
    }
@@ -4240,7 +4241,7 @@ void CompressedMatrix<Type,true>::trim( size_t j )
    BLAZE_USER_ASSERT( j < columns(), "Invalid column access index" );
 
    if( j < ( n_ - 1UL ) )
-      end_[j+1] = std::copy( begin_[j+1], end_[j+1], end_[j] );
+      end_[j+1] = std::move( begin_[j+1], end_[j+1], end_[j] );
    begin_[j+1] = end_[j];
 }
 /*! \endcond */
@@ -4387,7 +4388,7 @@ void CompressedMatrix<Type,true>::reserveElements( size_t nonzeros )
 
    for( size_t k=0UL; k<n_; ++k ) {
       BLAZE_INTERNAL_ASSERT( begin_[k] <= end_[k], "Invalid column pointers" );
-      newEnd  [k]     = std::copy( begin_[k], end_[k], newBegin[k] );
+      newEnd  [k]     = transfer( begin_[k], end_[k], newBegin[k] );
       newBegin[k+1UL] = newBegin[k] + ( begin_[k+1UL] - begin_[k] );
    }
 

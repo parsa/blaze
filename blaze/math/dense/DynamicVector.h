@@ -79,6 +79,7 @@
 #include <blaze/system/Restrict.h>
 #include <blaze/system/Thresholds.h>
 #include <blaze/system/TransposeFlag.h>
+#include <blaze/util/Algorithm.h>
 #include <blaze/util/AlignmentCheck.h>
 #include <blaze/util/Assert.h>
 #include <blaze/util/constraints/Const.h>
@@ -1443,7 +1444,7 @@ inline void DynamicVector<Type,TF>::resize( size_t n, bool preserve )
 
       // Initializing the new array
       if( preserve ) {
-         std::copy( v_, v_+size_, tmp );
+         transfer( v_, v_+size_, tmp );
       }
 
       if( IsVectorizable<Type>::value ) {
@@ -1508,7 +1509,7 @@ inline void DynamicVector<Type,TF>::reserve( size_t n )
       Type* BLAZE_RESTRICT tmp = allocate<Type>( newCapacity );
 
       // Initializing the new array
-      std::copy( v_, v_+size_, tmp );
+      transfer( v_, v_+size_, tmp );
 
       if( IsVectorizable<Type>::value ) {
          for( size_t i=size_; i<newCapacity; ++i )

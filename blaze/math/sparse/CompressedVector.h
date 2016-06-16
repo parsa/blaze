@@ -66,6 +66,7 @@
 #include <blaze/math/typetraits/IsSMPAssignable.h>
 #include <blaze/system/Thresholds.h>
 #include <blaze/system/TransposeFlag.h>
+#include <blaze/util/Algorithm.h>
 #include <blaze/util/Assert.h>
 #include <blaze/util/constraints/Const.h>
 #include <blaze/util/constraints/Pointer.h>
@@ -1270,7 +1271,7 @@ typename CompressedVector<Type,TF>::Iterator
    CompressedVector<Type,TF>::insert( Iterator pos, size_t index, const Type& value )
 {
     if( nonZeros() != capacity_ ) {
-      std::copy_backward( pos, end_, end_+1 );
+      std::move_backward( pos, end_, end_+1 );
       pos->value_ = value;
       pos->index_ = index;
       ++end_;
@@ -1281,10 +1282,10 @@ typename CompressedVector<Type,TF>::Iterator
       size_t newCapacity( extendCapacity() );
 
       Iterator newBegin = allocate<Element>( newCapacity );
-      Iterator tmp      = std::copy( begin_, pos, newBegin );
+      Iterator tmp      = std::move( begin_, pos, newBegin );
       tmp->value_ = value;
       tmp->index_ = index;
-      end_ = std::copy( pos, end_, tmp+1 );
+      end_ = std::move( pos, end_, tmp+1 );
 
       std::swap( newBegin, begin_ );
       deallocate( newBegin );
@@ -1312,7 +1313,7 @@ inline void CompressedVector<Type,TF>::erase( size_t index )
 
    const Iterator pos( find( index ) );
    if( pos != end_ )
-      end_ = std::copy( pos+1, end_, pos );
+      end_ = std::move( pos+1, end_, pos );
 }
 //*************************************************************************************************
 
@@ -1332,7 +1333,7 @@ inline typename CompressedVector<Type,TF>::Iterator CompressedVector<Type,TF>::e
    BLAZE_USER_ASSERT( pos >= begin_ && pos <= end_, "Invalid compressed vector iterator" );
 
    if( pos != end_ )
-      end_ = std::copy( pos+1, end_, pos );
+      end_ = std::move( pos+1, end_, pos );
    return pos;
 }
 //*************************************************************************************************
@@ -1357,7 +1358,7 @@ inline typename CompressedVector<Type,TF>::Iterator
    BLAZE_USER_ASSERT( last  >= begin_ && last  <= end_, "Invalid compressed vector iterator" );
 
    if( first != last )
-      end_ = std::copy( last, end_, first );
+      end_ = std::move( last, end_, first );
    return first;
 }
 //*************************************************************************************************
@@ -1413,7 +1414,7 @@ void CompressedVector<Type,TF>::reserve( size_t n )
       Iterator newBegin  = allocate<Element>( newCapacity );
 
       // Replacing the old data and index array
-      end_ = std::copy( begin_, end_, newBegin );
+      end_ = transfer( begin_, end_, newBegin );
       std::swap( newBegin, begin_ );
       capacity_ = newCapacity;
       deallocate( newBegin );
