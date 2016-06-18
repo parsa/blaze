@@ -104,6 +104,7 @@
 //          <li> \ref matrix_matrix_multiplication </li>
 //       </ul>
 //    </li>
+//    <li> \ref custom_operations </li>
 //    <li> \ref shared_memory_parallelization
 //       <ul>
 //          <li> \ref openmp_parallelization </li>
@@ -2971,7 +2972,7 @@
 // \n \section matrix_operations_free_functions Free Functions
 // <hr>
 //
-// \subsection matrix_operations_reset_clear .reset() / .clear
+// \subsection matrix_operations_reset_clear reset() / clear
 //
 // In order to reset all elements of a dense or sparse matrix, the \c reset() function can be
 // used. The number of rows and columns of the matrix are preserved:
@@ -8202,10 +8203,10 @@
    };
    \endcode
 
-// The \c simdEnabled() function must be \c constexpr and must return whether or not vectorization
-// is available for the given data type \c T. In case the function returns \c true, the \c load()
-// function is used for a vectorized evaluation, in case the function returns \c false, \c load()
-// is not called.
+// The \c simdEnabled() function must be a \c static, \c constexpr function and must return whether
+// or not vectorization is available for the given data type \c T. In case the function returns
+// \c true, the \c load() function is used for a vectorized evaluation, in case the function
+// returns \c false, \c load() is not called.
 //
 // Note that this is a simplified example that is only working when used for dense vectors and
 // matrices with double precision floating point elements. The following code shows the complete
