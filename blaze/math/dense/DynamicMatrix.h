@@ -1723,7 +1723,7 @@ void DynamicMatrix<Type,SO>::resize( size_t m, size_t n, bool preserve )
       const size_t min_n( min( n, n_ ) );
 
       for( size_t i=0UL; i<min_m; ++i ) {
-         transfer( v_+i*nn, v_+i*nn+min_n, v+i*nn );
+         transfer( v_+i*nn_, v_+i*nn_+min_n, v+i*nn );
       }
 
       std::swap( v_, v );
@@ -4476,7 +4476,7 @@ void DynamicMatrix<Type,true>::resize( size_t m, size_t n, bool preserve )
       const size_t min_n( min( n, n_ ) );
 
       for( size_t j=0UL; j<min_n; ++j ) {
-         transfer( v_+j*mm, v_+min_m+j*mm, v+j*mm );
+         transfer( v_+j*mm_, v_+min_m+j*mm_, v+j*mm );
       }
 
       std::swap( v_, v );
