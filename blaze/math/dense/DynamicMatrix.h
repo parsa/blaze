@@ -2368,12 +2368,14 @@ inline EnableIf_<typename DynamicMatrix<Type,SO>::BLAZE_TEMPLATE VectorizedAssig
       for( size_t i=0UL; i<m_; ++i )
       {
          size_t j( 0UL );
+         Iterator left( begin(i) );
+         ConstIterator_<MT> right( (~rhs).begin(i) );
 
-         for( ; j<jpos; j+=SIMDSIZE ) {
-            stream( i, j, (~rhs).load(i,j) );
+         for( ; j<jpos; j+=SIMDSIZE, left+=SIMDSIZE, right+=SIMDSIZE ) {
+            left.stream( right.load() );
          }
-         for( ; remainder && j<n_; ++j ) {
-            v_[i*nn_+j] = (~rhs)(i,j);
+         for( ; remainder && j<n_; ++j, ++left, ++right ) {
+            *left = *right;
          }
       }
    }
@@ -2382,19 +2384,20 @@ inline EnableIf_<typename DynamicMatrix<Type,SO>::BLAZE_TEMPLATE VectorizedAssig
       for( size_t i=0UL; i<m_; ++i )
       {
          size_t j( 0UL );
-         ConstIterator_<MT> it( (~rhs).begin(i) );
+         Iterator left( begin(i) );
+         ConstIterator_<MT> right( (~rhs).begin(i) );
 
          for( ; (j+SIMDSIZE*3UL) < jpos; j+=SIMDSIZE*4UL ) {
-            store( i, j             , it.load() ); it += SIMDSIZE;
-            store( i, j+SIMDSIZE    , it.load() ); it += SIMDSIZE;
-            store( i, j+SIMDSIZE*2UL, it.load() ); it += SIMDSIZE;
-            store( i, j+SIMDSIZE*3UL, it.load() ); it += SIMDSIZE;
+            left.store( right.load() ); left += SIMDSIZE; right += SIMDSIZE;
+            left.store( right.load() ); left += SIMDSIZE; right += SIMDSIZE;
+            left.store( right.load() ); left += SIMDSIZE; right += SIMDSIZE;
+            left.store( right.load() ); left += SIMDSIZE; right += SIMDSIZE;
          }
-         for( ; j<jpos; j+=SIMDSIZE, it+=SIMDSIZE ) {
-            store( i, j, it.load() );
+         for( ; j<jpos; j+=SIMDSIZE ) {
+            left.store( right.load() ); left+=SIMDSIZE, right+=SIMDSIZE;
          }
-         for( ; remainder && j<n_; ++j, ++it ) {
-            v_[i*nn_+j] = *it;
+         for( ; remainder && j<n_; ++j ) {
+            *left = *right; ++left; ++right;
          }
       }
    }
@@ -2584,19 +2587,20 @@ inline EnableIf_<typename DynamicMatrix<Type,SO>::BLAZE_TEMPLATE VectorizedAddAs
       BLAZE_INTERNAL_ASSERT( !remainder || ( jend - ( jend % (SIMDSIZE) ) ) == jpos, "Invalid end calculation" );
 
       size_t j( jbegin );
-      ConstIterator_<MT> it( (~rhs).begin(i) + jbegin );
+      Iterator left( begin(i) + jbegin );
+      ConstIterator_<MT> right( (~rhs).begin(i) + jbegin );
 
       for( ; (j+SIMDSIZE*3UL) < jpos; j+=SIMDSIZE*4UL ) {
-         store( i, j             , load(i,j             ) + it.load() ); it += SIMDSIZE;
-         store( i, j+SIMDSIZE    , load(i,j+SIMDSIZE    ) + it.load() ); it += SIMDSIZE;
-         store( i, j+SIMDSIZE*2UL, load(i,j+SIMDSIZE*2UL) + it.load() ); it += SIMDSIZE;
-         store( i, j+SIMDSIZE*3UL, load(i,j+SIMDSIZE*3UL) + it.load() ); it += SIMDSIZE;
+         left.store( left.load() + right.load() ); left += SIMDSIZE; right += SIMDSIZE;
+         left.store( left.load() + right.load() ); left += SIMDSIZE; right += SIMDSIZE;
+         left.store( left.load() + right.load() ); left += SIMDSIZE; right += SIMDSIZE;
+         left.store( left.load() + right.load() ); left += SIMDSIZE; right += SIMDSIZE;
       }
-      for( ; j<jpos; j+=SIMDSIZE, it+=SIMDSIZE ) {
-         store( i, j, load(i,j) + it.load() );
+      for( ; j<jpos; j+=SIMDSIZE ) {
+         left.store( left.load() + right.load() ); left += SIMDSIZE; right += SIMDSIZE;
       }
-      for( ; remainder && j<jend; ++j, ++it ) {
-         v_[i*nn_+j] += *it;
+      for( ; remainder && j<jend; ++j ) {
+         *left += *right; ++left; ++right;
       }
    }
 }
@@ -2797,19 +2801,20 @@ inline EnableIf_<typename DynamicMatrix<Type,SO>::BLAZE_TEMPLATE VectorizedSubAs
       BLAZE_INTERNAL_ASSERT( !remainder || ( jend - ( jend % (SIMDSIZE) ) ) == jpos, "Invalid end calculation" );
 
       size_t j( jbegin );
-      ConstIterator_<MT> it( (~rhs).begin(i) + jbegin );
+      Iterator left( begin(i) + jbegin );
+      ConstIterator_<MT> right( (~rhs).begin(i) + jbegin );
 
       for( ; (j+SIMDSIZE*3UL) < jpos; j+=SIMDSIZE*4UL ) {
-         store( i, j             , load(i,j             ) - it.load() ); it += SIMDSIZE;
-         store( i, j+SIMDSIZE    , load(i,j+SIMDSIZE    ) - it.load() ); it += SIMDSIZE;
-         store( i, j+SIMDSIZE*2UL, load(i,j+SIMDSIZE*2UL) - it.load() ); it += SIMDSIZE;
-         store( i, j+SIMDSIZE*3UL, load(i,j+SIMDSIZE*3UL) - it.load() ); it += SIMDSIZE;
+         left.store( left.load() - right.load() ); left += SIMDSIZE; right += SIMDSIZE;
+         left.store( left.load() - right.load() ); left += SIMDSIZE; right += SIMDSIZE;
+         left.store( left.load() - right.load() ); left += SIMDSIZE; right += SIMDSIZE;
+         left.store( left.load() - right.load() ); left += SIMDSIZE; right += SIMDSIZE;
       }
-      for( ; j<jpos; j+=SIMDSIZE, it+=SIMDSIZE ) {
-         store( i, j, load(i,j) - it.load() );
+      for( ; j<jpos; j+=SIMDSIZE ) {
+         left.store( left.load() - right.load() ); left += SIMDSIZE; right += SIMDSIZE;
       }
-      for( ; remainder && j<jend; ++j, ++it ) {
-         v_[i*nn_+j] -= *it;
+      for( ; remainder && j<jend; ++j ) {
+         *left -= *right; ++left; ++right;
       }
    }
 }
@@ -5135,12 +5140,14 @@ inline EnableIf_<typename DynamicMatrix<Type,true>::BLAZE_TEMPLATE VectorizedAss
       for( size_t j=0UL; j<n_; ++j )
       {
          size_t i( 0UL );
+         Iterator left( begin(j) );
+         ConstIterator_<MT> right( (~rhs).begin(j) );
 
          for( ; i<ipos; i+=SIMDSIZE ) {
-            stream( i, j, (~rhs).load(i,j) );
+            left.stream( right.load() ); left += SIMDSIZE; right += SIMDSIZE;
          }
          for( ; remainder && i<m_; ++i ) {
-            v_[i+j*mm_] = (~rhs)(i,j);
+            *left = *right; ++left; ++right;
          }
       }
    }
@@ -5149,19 +5156,20 @@ inline EnableIf_<typename DynamicMatrix<Type,true>::BLAZE_TEMPLATE VectorizedAss
       for( size_t j=0UL; j<n_; ++j )
       {
          size_t i( 0UL );
-         ConstIterator_<MT> it( (~rhs).begin(j) );
+         Iterator left( begin(j) );
+         ConstIterator_<MT> right( (~rhs).begin(j) );
 
          for( ; (i+SIMDSIZE*3UL) < ipos; i+=SIMDSIZE*4UL ) {
-            store( i             , j, it.load() ); it += SIMDSIZE;
-            store( i+SIMDSIZE    , j, it.load() ); it += SIMDSIZE;
-            store( i+SIMDSIZE*2UL, j, it.load() ); it += SIMDSIZE;
-            store( i+SIMDSIZE*3UL, j, it.load() ); it += SIMDSIZE;
+            left.store( right.load() ); left += SIMDSIZE; right += SIMDSIZE;
+            left.store( right.load() ); left += SIMDSIZE; right += SIMDSIZE;
+            left.store( right.load() ); left += SIMDSIZE; right += SIMDSIZE;
+            left.store( right.load() ); left += SIMDSIZE; right += SIMDSIZE;
          }
-         for( ; i<ipos; i+=SIMDSIZE, it+=SIMDSIZE ) {
-            store( i, j, it.load() );
+         for( ; i<ipos; i+=SIMDSIZE ) {
+            left.store( right.load() ); left += SIMDSIZE; right += SIMDSIZE;
          }
-         for( ; remainder && i<m_; ++i, ++it ) {
-            v_[i+j*mm_] = *it;
+         for( ; remainder && i<m_; ++i ) {
+            *left = *right; ++left; ++right;
          }
       }
    }
@@ -5356,19 +5364,20 @@ inline EnableIf_<typename DynamicMatrix<Type,true>::BLAZE_TEMPLATE VectorizedAdd
       BLAZE_INTERNAL_ASSERT( !remainder || ( iend - ( iend % (SIMDSIZE) ) ) == ipos, "Invalid end calculation" );
 
       size_t i( ibegin );
-      ConstIterator_<MT> it( (~rhs).begin(j) + ibegin );
+      Iterator left( begin(j) + ibegin );
+      ConstIterator_<MT> right( (~rhs).begin(j) + ibegin );
 
       for( ; (i+SIMDSIZE*3UL) < ipos; i+=SIMDSIZE*4UL ) {
-         store( i             , j, load(i             ,j) + it.load() ); it += SIMDSIZE;
-         store( i+SIMDSIZE    , j, load(i+SIMDSIZE    ,j) + it.load() ); it += SIMDSIZE;
-         store( i+SIMDSIZE*2UL, j, load(i+SIMDSIZE*2UL,j) + it.load() ); it += SIMDSIZE;
-         store( i+SIMDSIZE*3UL, j, load(i+SIMDSIZE*3UL,j) + it.load() ); it += SIMDSIZE;
+         left.store( left.load() + right.load() ); left += SIMDSIZE; right += SIMDSIZE;
+         left.store( left.load() + right.load() ); left += SIMDSIZE; right += SIMDSIZE;
+         left.store( left.load() + right.load() ); left += SIMDSIZE; right += SIMDSIZE;
+         left.store( left.load() + right.load() ); left += SIMDSIZE; right += SIMDSIZE;
       }
-      for( ; i<ipos; i+=SIMDSIZE, it+=SIMDSIZE ) {
-         store( i, j, load(i,j) + it.load() );
+      for( ; i<ipos; i+=SIMDSIZE ) {
+         left.store( left.load() + right.load() ); left += SIMDSIZE; right += SIMDSIZE;
       }
-      for( ; remainder && i<iend; ++i, ++it ) {
-         v_[i+j*mm_] += *it;
+      for( ; remainder && i<iend; ++i ) {
+         *left += *right; ++left; ++right;
       }
    }
 }
@@ -5574,19 +5583,20 @@ inline EnableIf_<typename DynamicMatrix<Type,true>::BLAZE_TEMPLATE VectorizedSub
       BLAZE_INTERNAL_ASSERT( !remainder || ( iend - ( iend % (SIMDSIZE) ) ) == ipos, "Invalid end calculation" );
 
       size_t i( ibegin );
-      ConstIterator_<MT> it( (~rhs).begin(j) + ibegin );
+      Iterator left( begin(j) + ibegin );
+      ConstIterator_<MT> right( (~rhs).begin(j) + ibegin );
 
       for( ; (i+SIMDSIZE*3UL) < ipos; i+=SIMDSIZE*4UL ) {
-         store( i             , j, load(i             ,j) - it.load() ); it += SIMDSIZE;
-         store( i+SIMDSIZE    , j, load(i+SIMDSIZE    ,j) - it.load() ); it += SIMDSIZE;
-         store( i+SIMDSIZE*2UL, j, load(i+SIMDSIZE*2UL,j) - it.load() ); it += SIMDSIZE;
-         store( i+SIMDSIZE*3UL, j, load(i+SIMDSIZE*3UL,j) - it.load() ); it += SIMDSIZE;
+         left.store( left.load() - right.load() ); left += SIMDSIZE; right += SIMDSIZE;
+         left.store( left.load() - right.load() ); left += SIMDSIZE; right += SIMDSIZE;
+         left.store( left.load() - right.load() ); left += SIMDSIZE; right += SIMDSIZE;
+         left.store( left.load() - right.load() ); left += SIMDSIZE; right += SIMDSIZE;
       }
-      for( ; i<ipos; i+=SIMDSIZE, it+=SIMDSIZE ) {
-         store( i, j, load(i,j) - it.load() );
+      for( ; i<ipos; i+=SIMDSIZE ) {
+         left.store( left.load() - right.load() ); left += SIMDSIZE; right += SIMDSIZE;
       }
-      for( ; remainder && i<iend; ++i, ++it ) {
-         v_[i+j*mm_] -= *it;
+      for( ; remainder && i<iend; ++i ) {
+         *left -= *right; ++left; ++right;
       }
    }
 }
