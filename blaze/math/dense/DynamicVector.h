@@ -1958,33 +1958,32 @@ inline EnableIf_<typename DynamicVector<Type,TF>::BLAZE_TEMPLATE VectorizedAssig
    const size_t ipos( ( remainder )?( size_ & size_t(-SIMDSIZE) ):( size_ ) );
    BLAZE_INTERNAL_ASSERT( !remainder || ( size_ - ( size_ % (SIMDSIZE) ) ) == ipos, "Invalid end calculation" );
 
+   size_t i=0UL;
+   Iterator left( begin() );
+   ConstIterator_<VT> right( (~rhs).begin() );
+
    if( useStreaming && size_ > ( cacheSize/( sizeof(Type) * 3UL ) ) && !(~rhs).isAliased( this ) )
    {
-      size_t i=0UL;
-
       for( ; i<ipos; i+=SIMDSIZE ) {
-         stream( i, (~rhs).load(i) );
+         left.stream( right.load() ); left += SIMDSIZE; right += SIMDSIZE;
       }
       for( ; remainder && i<size_; ++i ) {
-         v_[i] = (~rhs)[i];
+         *left = *right; ++left; ++right;
       }
    }
    else
    {
-      size_t i( 0UL );
-      ConstIterator_<VT> it( (~rhs).begin() );
-
       for( ; (i+SIMDSIZE*3UL) < ipos; i+=SIMDSIZE*4UL ) {
-         store( i             , it.load() ); it += SIMDSIZE;
-         store( i+SIMDSIZE    , it.load() ); it += SIMDSIZE;
-         store( i+SIMDSIZE*2UL, it.load() ); it += SIMDSIZE;
-         store( i+SIMDSIZE*3UL, it.load() ); it += SIMDSIZE;
+         left.store( right.load() ); left += SIMDSIZE; right += SIMDSIZE;
+         left.store( right.load() ); left += SIMDSIZE; right += SIMDSIZE;
+         left.store( right.load() ); left += SIMDSIZE; right += SIMDSIZE;
+         left.store( right.load() ); left += SIMDSIZE; right += SIMDSIZE;
       }
-      for( ; i<ipos; i+=SIMDSIZE, it+=SIMDSIZE ) {
-         store( i, it.load() );
+      for( ; i<ipos; i+=SIMDSIZE ) {
+         left.store( right.load() ); left += SIMDSIZE; right += SIMDSIZE;
       }
-      for( ; remainder && i<size_; ++i, ++it ) {
-         v_[i] = *it;
+      for( ; remainder && i<size_; ++i ) {
+         *left = *right; ++left; ++right;
       }
    }
 }
@@ -2074,19 +2073,20 @@ inline EnableIf_<typename DynamicVector<Type,TF>::BLAZE_TEMPLATE VectorizedAddAs
    BLAZE_INTERNAL_ASSERT( !remainder || ( size_ - ( size_ % (SIMDSIZE) ) ) == ipos, "Invalid end calculation" );
 
    size_t i( 0UL );
-   ConstIterator_<VT> it( (~rhs).begin() );
+   Iterator left( begin() );
+   ConstIterator_<VT> right( (~rhs).begin() );
 
    for( ; (i+SIMDSIZE*3UL) < ipos; i+=SIMDSIZE*4UL ) {
-      store( i             , load(i             ) + it.load() ); it += SIMDSIZE;
-      store( i+SIMDSIZE    , load(i+SIMDSIZE    ) + it.load() ); it += SIMDSIZE;
-      store( i+SIMDSIZE*2UL, load(i+SIMDSIZE*2UL) + it.load() ); it += SIMDSIZE;
-      store( i+SIMDSIZE*3UL, load(i+SIMDSIZE*3UL) + it.load() ); it += SIMDSIZE;
+      left.store( left.load() + right.load() ); left += SIMDSIZE; right += SIMDSIZE;
+      left.store( left.load() + right.load() ); left += SIMDSIZE; right += SIMDSIZE;
+      left.store( left.load() + right.load() ); left += SIMDSIZE; right += SIMDSIZE;
+      left.store( left.load() + right.load() ); left += SIMDSIZE; right += SIMDSIZE;
    }
-   for( ; i<ipos; i+=SIMDSIZE, it+=SIMDSIZE ) {
-      store( i, load(i) + it.load() );
+   for( ; i<ipos; i+=SIMDSIZE ) {
+      left.store( left.load() + right.load() ); left += SIMDSIZE; right += SIMDSIZE;
    }
-   for( ; remainder && i<size_; ++i, ++it ) {
-      v_[i] += *it;
+   for( ; remainder && i<size_; ++i ) {
+      *left += *right; ++left; ++right;
    }
 }
 //*************************************************************************************************
@@ -2175,19 +2175,20 @@ inline EnableIf_<typename DynamicVector<Type,TF>::BLAZE_TEMPLATE VectorizedSubAs
    BLAZE_INTERNAL_ASSERT( !remainder || ( size_ - ( size_ % (SIMDSIZE) ) ) == ipos, "Invalid end calculation" );
 
    size_t i( 0UL );
-   ConstIterator_<VT> it( (~rhs).begin() );
+   Iterator left( begin() );
+   ConstIterator_<VT> right( (~rhs).begin() );
 
    for( ; (i+SIMDSIZE*3UL) < ipos; i+=SIMDSIZE*4UL ) {
-      store( i             , load(i             ) - it.load() ); it += SIMDSIZE;
-      store( i+SIMDSIZE    , load(i+SIMDSIZE    ) - it.load() ); it += SIMDSIZE;
-      store( i+SIMDSIZE*2UL, load(i+SIMDSIZE*2UL) - it.load() ); it += SIMDSIZE;
-      store( i+SIMDSIZE*3UL, load(i+SIMDSIZE*3UL) - it.load() ); it += SIMDSIZE;
+      left.store( left.load() - right.load() ); left += SIMDSIZE; right += SIMDSIZE;
+      left.store( left.load() - right.load() ); left += SIMDSIZE; right += SIMDSIZE;
+      left.store( left.load() - right.load() ); left += SIMDSIZE; right += SIMDSIZE;
+      left.store( left.load() - right.load() ); left += SIMDSIZE; right += SIMDSIZE;
    }
-   for( ; i<ipos; i+=SIMDSIZE, it+=SIMDSIZE ) {
-      store( i, load(i) - it.load() );
+   for( ; i<ipos; i+=SIMDSIZE ) {
+      left.store( left.load() - right.load() ); left += SIMDSIZE; right += SIMDSIZE;
    }
-   for( ; remainder && i<size_; ++i, ++it ) {
-      v_[i] -= *it;
+   for( ; remainder && i<size_; ++i ) {
+      *left -= *right; ++left; ++right;
    }
 }
 //*************************************************************************************************
@@ -2276,19 +2277,20 @@ inline EnableIf_<typename DynamicVector<Type,TF>::BLAZE_TEMPLATE VectorizedMultA
    BLAZE_INTERNAL_ASSERT( !remainder || ( size_ - ( size_ % (SIMDSIZE) ) ) == ipos, "Invalid end calculation" );
 
    size_t i( 0UL );
-   ConstIterator_<VT> it( (~rhs).begin() );
+   Iterator left( begin() );
+   ConstIterator_<VT> right( (~rhs).begin() );
 
    for( ; (i+SIMDSIZE*3UL) < ipos; i+=SIMDSIZE*4UL ) {
-      store( i             , load(i             ) * it.load() ); it += SIMDSIZE;
-      store( i+SIMDSIZE    , load(i+SIMDSIZE    ) * it.load() ); it += SIMDSIZE;
-      store( i+SIMDSIZE*2UL, load(i+SIMDSIZE*2UL) * it.load() ); it += SIMDSIZE;
-      store( i+SIMDSIZE*3UL, load(i+SIMDSIZE*3UL) * it.load() ); it += SIMDSIZE;
+      left.store( left.load() * right.load() ); left += SIMDSIZE; right += SIMDSIZE;
+      left.store( left.load() * right.load() ); left += SIMDSIZE; right += SIMDSIZE;
+      left.store( left.load() * right.load() ); left += SIMDSIZE; right += SIMDSIZE;
+      left.store( left.load() * right.load() ); left += SIMDSIZE; right += SIMDSIZE;
    }
-   for( ; i<ipos; i+=SIMDSIZE, it+=SIMDSIZE ) {
-      store( i, load(i) * it.load() );
+   for( ; i<ipos; i+=SIMDSIZE ) {
+      left.store( left.load() * right.load() ); left += SIMDSIZE; right += SIMDSIZE;
    }
-   for( ; remainder && i<size_; ++i, ++it ) {
-      v_[i] *= *it;
+   for( ; remainder && i<size_; ++i ) {
+      *left *= *right;
    }
 }
 //*************************************************************************************************
@@ -2379,19 +2381,20 @@ inline EnableIf_<typename DynamicVector<Type,TF>::BLAZE_TEMPLATE VectorizedDivAs
    BLAZE_INTERNAL_ASSERT( ( size_ - ( size_ % (SIMDSIZE) ) ) == ipos, "Invalid end calculation" );
 
    size_t i( 0UL );
-   ConstIterator_<VT> it( (~rhs).begin() );
+   Iterator left( begin() );
+   ConstIterator_<VT> right( (~rhs).begin() );
 
    for( ; (i+SIMDSIZE*3UL) < ipos; i+=SIMDSIZE*4UL ) {
-      store( i             , load(i             ) / it.load() ); it += SIMDSIZE;
-      store( i+SIMDSIZE    , load(i+SIMDSIZE    ) / it.load() ); it += SIMDSIZE;
-      store( i+SIMDSIZE*2UL, load(i+SIMDSIZE*2UL) / it.load() ); it += SIMDSIZE;
-      store( i+SIMDSIZE*3UL, load(i+SIMDSIZE*3UL) / it.load() ); it += SIMDSIZE;
+      left.store( left.load() / right.load() ); left += SIMDSIZE; right += SIMDSIZE;
+      left.store( left.load() / right.load() ); left += SIMDSIZE; right += SIMDSIZE;
+      left.store( left.load() / right.load() ); left += SIMDSIZE; right += SIMDSIZE;
+      left.store( left.load() / right.load() ); left += SIMDSIZE; right += SIMDSIZE;
    }
-   for( ; i<ipos; i+=SIMDSIZE, it+=SIMDSIZE ) {
-      store( i, load(i) / it.load() );
+   for( ; i<ipos; i+=SIMDSIZE ) {
+      left.store( left.load() / right.load() ); left += SIMDSIZE; right += SIMDSIZE;
    }
-   for( ; i<size_; ++i, ++it ) {
-      v_[i] /= *it;
+   for( ; i<size_; ++i ) {
+      *left /= *right; ++left; ++right;
    }
 }
 //*************************************************************************************************
