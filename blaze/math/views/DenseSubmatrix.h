@@ -703,6 +703,75 @@ class DenseSubmatrix : public DenseMatrix< DenseSubmatrix<MT,AF,SO>, SO >
       }
       //*******************************************************************************************
 
+      //**Store function***************************************************************************
+      /*!\brief Store of a SIMD element of the dense submatrix.
+      //
+      // \param value The SIMD element to be stored.
+      // \return void
+      //
+      // This function performs a store of the current SIMD element of the submatrix iterator.
+      // This function must \b NOT be called explicitly! It is used internally for the performance
+      // optimized evaluation of expression templates. Calling this function explicitly might
+      // result in erroneous results and/or in compilation errors.
+      */
+      inline void store( const SIMDType& value ) const {
+         storeu( value );
+      }
+      //*******************************************************************************************
+
+      //**Storea function**************************************************************************
+      /*!\brief Aligned store of a SIMD element of the dense submatrix.
+      //
+      // \param value The SIMD element to be stored.
+      // \return void
+      //
+      // This function performs an aligned store of the current SIMD element of the submatrix
+      // iterator. This function must \b NOT be called explicitly! It is used internally for the
+      // performance optimized evaluation of expression templates. Calling this function explicitly
+      // might result in erroneous results and/or in compilation errors.
+      */
+      inline void storea( const SIMDType& value ) const {
+         iterator_.storea( value );
+      }
+      //*******************************************************************************************
+
+      //**Storeu function**************************************************************************
+      /*!\brief Unaligned store of a SIMD element of the dense submatrix.
+      //
+      // \param value The SIMD element to be stored.
+      // \return void
+      //
+      // This function performs an unaligned store of the current SIMD element of the submatrix
+      // iterator. This function must \b NOT be called explicitly! It is used internally for the
+      // performance optimized evaluation of expression templates. Calling this function explicitly
+      // might result in erroneous results and/or in compilation errors.
+      */
+      inline void storeu( const SIMDType& value ) const {
+         if( isAligned_ ) {
+            iterator_.storea( value );
+         }
+         else {
+            iterator_.storeu( value );
+         }
+      }
+      //*******************************************************************************************
+
+      //**Stream function**************************************************************************
+      /*!\brief Aligned, non-temporal store of a SIMD element of the dense submatrix.
+      //
+      // \param value The SIMD element to be stored.
+      // \return void
+      //
+      // This function performs an aligned, non-temporal store of the current SIMD element of the
+      // submatrix iterator. This function must \b NOT be called explicitly! It is used internally
+      // for the performance optimized evaluation of expression templates. Calling this function
+      // explicitly might result in erroneous results and/or in compilation errors.
+      */
+      inline void stream( const SIMDType& value ) const {
+         iterator_.stream( value );
+      }
+      //*******************************************************************************************
+
       //**Equality operator************************************************************************
       /*!\brief Equality comparison between two SubmatrixIterator objects.
       //
@@ -2854,12 +2923,14 @@ inline EnableIf_< typename DenseSubmatrix<MT,AF,SO>::BLAZE_TEMPLATE VectorizedAs
       for( size_t i=0UL; i<m_; ++i )
       {
          size_t j( 0UL );
+         Iterator left( begin(i) );
+         ConstIterator_<MT2> right( (~rhs).begin(i) );
 
          for( ; j<jpos; j+=SIMDSIZE ) {
-            matrix_.stream( row_+i, column_+j, (~rhs).load(i,j) );
+            left.stream( right.load() ); left += SIMDSIZE; right += SIMDSIZE;
          }
          for( ; j<n_; ++j ) {
-            matrix_(row_+i,column_+j) = (~rhs)(i,j);
+            *left = *right;
          }
       }
    }
@@ -2868,19 +2939,20 @@ inline EnableIf_< typename DenseSubmatrix<MT,AF,SO>::BLAZE_TEMPLATE VectorizedAs
       for( size_t i=0UL; i<m_; ++i )
       {
          size_t j( 0UL );
-         ConstIterator_<MT2> it( (~rhs).begin(i) );
+         Iterator left( begin(i) );
+         ConstIterator_<MT2> right( (~rhs).begin(i) );
 
          for( ; (j+SIMDSIZE*3UL) < jpos; j+=SIMDSIZE*4UL ) {
-            store( i, j             , it.load() ); it += SIMDSIZE;
-            store( i, j+SIMDSIZE    , it.load() ); it += SIMDSIZE;
-            store( i, j+SIMDSIZE*2UL, it.load() ); it += SIMDSIZE;
-            store( i, j+SIMDSIZE*3UL, it.load() ); it += SIMDSIZE;
+            left.store( right.load() ); left += SIMDSIZE; right += SIMDSIZE;
+            left.store( right.load() ); left += SIMDSIZE; right += SIMDSIZE;
+            left.store( right.load() ); left += SIMDSIZE; right += SIMDSIZE;
+            left.store( right.load() ); left += SIMDSIZE; right += SIMDSIZE;
          }
-         for( ; j<jpos; j+=SIMDSIZE, it+=SIMDSIZE ) {
-            store( i, j, it.load() );
+         for( ; j<jpos; j+=SIMDSIZE ) {
+            left.store( right.load() ); left += SIMDSIZE; right += SIMDSIZE;
          }
-         for( ; j<n_; ++j, ++it ) {
-            matrix_(row_+i,column_+j) = *it;
+         for( ; j<n_; ++j ) {
+            *left = *right; ++left; ++right;
          }
       }
    }
@@ -3057,19 +3129,20 @@ inline EnableIf_< typename DenseSubmatrix<MT,AF,SO>::BLAZE_TEMPLATE VectorizedAd
       BLAZE_INTERNAL_ASSERT( ( jend - ( jend % (SIMDSIZE) ) ) == jpos, "Invalid end calculation" );
 
       size_t j( jbegin );
-      ConstIterator_<MT2> it( (~rhs).begin(i) );
+      Iterator left( begin(i) + jbegin );
+      ConstIterator_<MT2> right( (~rhs).begin(i) + jbegin );
 
       for( ; (j+SIMDSIZE*3UL) < jpos; j+=SIMDSIZE*4UL ) {
-         store( i, j             , load(i,j             ) + it.load() ); it += SIMDSIZE;
-         store( i, j+SIMDSIZE    , load(i,j+SIMDSIZE    ) + it.load() ); it += SIMDSIZE;
-         store( i, j+SIMDSIZE*2UL, load(i,j+SIMDSIZE*2UL) + it.load() ); it += SIMDSIZE;
-         store( i, j+SIMDSIZE*3UL, load(i,j+SIMDSIZE*3UL) + it.load() ); it += SIMDSIZE;
+         left.store( left.load() + right.load() ); left += SIMDSIZE; right += SIMDSIZE;
+         left.store( left.load() + right.load() ); left += SIMDSIZE; right += SIMDSIZE;
+         left.store( left.load() + right.load() ); left += SIMDSIZE; right += SIMDSIZE;
+         left.store( left.load() + right.load() ); left += SIMDSIZE; right += SIMDSIZE;
       }
-      for( ; j<jpos; j+=SIMDSIZE, it+=SIMDSIZE ) {
-         store( i, j, load(i,j) + it.load() );
+      for( ; j<jpos; j+=SIMDSIZE ) {
+         left.store( left.load() + right.load() ); left += SIMDSIZE; right += SIMDSIZE;
       }
-      for( ; j<jend; ++j, ++it ) {
-         matrix_(row_+i,column_+j) += *it;
+      for( ; j<jend; ++j ) {
+         *left += *right; ++left; ++right;
       }
    }
 }
@@ -3245,19 +3318,20 @@ inline EnableIf_< typename DenseSubmatrix<MT,AF,SO>::BLAZE_TEMPLATE VectorizedSu
       BLAZE_INTERNAL_ASSERT( ( jend - ( jend % (SIMDSIZE) ) ) == jpos, "Invalid end calculation" );
 
       size_t j( jbegin );
-      ConstIterator_<MT2> it( (~rhs).begin(i) );
+      Iterator left( begin(i) + jbegin );
+      ConstIterator_<MT2> right( (~rhs).begin(i) + jbegin );
 
       for( ; (j+SIMDSIZE*3UL) < jpos; j+=SIMDSIZE*4UL ) {
-         store( i, j             , load(i,j             ) - it.load() ); it += SIMDSIZE;
-         store( i, j+SIMDSIZE    , load(i,j+SIMDSIZE    ) - it.load() ); it += SIMDSIZE;
-         store( i, j+SIMDSIZE*2UL, load(i,j+SIMDSIZE*2UL) - it.load() ); it += SIMDSIZE;
-         store( i, j+SIMDSIZE*3UL, load(i,j+SIMDSIZE*3UL) - it.load() ); it += SIMDSIZE;
+         left.store( left.load() - right.load() ); left += SIMDSIZE; right += SIMDSIZE;
+         left.store( left.load() - right.load() ); left += SIMDSIZE; right += SIMDSIZE;
+         left.store( left.load() - right.load() ); left += SIMDSIZE; right += SIMDSIZE;
+         left.store( left.load() - right.load() ); left += SIMDSIZE; right += SIMDSIZE;
       }
-      for( ; j<jpos; j+=SIMDSIZE, it+=SIMDSIZE ) {
-         store( i, j, load(i,j) - it.load() );
+      for( ; j<jpos; j+=SIMDSIZE ) {
+         left.store( left.load() - right.load() ); left += SIMDSIZE; right += SIMDSIZE;
       }
-      for( ; j<jend; ++j, ++it ) {
-         matrix_(row_+i,column_+j) -= *it;
+      for( ; j<jend; ++j ) {
+         *left -= *right; ++left; ++right;
       }
    }
 }
@@ -3600,6 +3674,75 @@ class DenseSubmatrix<MT,unaligned,true> : public DenseMatrix< DenseSubmatrix<MT,
       */
       inline SIMDType loadu() const noexcept {
          return iterator_.loadu();
+      }
+      //*******************************************************************************************
+
+      //**Store function***************************************************************************
+      /*!\brief Store of a SIMD element of the dense submatrix.
+      //
+      // \param value The SIMD element to be stored.
+      // \return void
+      //
+      // This function performs a store of the current SIMD element of the submatrix iterator.
+      // This function must \b NOT be called explicitly! It is used internally for the performance
+      // optimized evaluation of expression templates. Calling this function explicitly might
+      // result in erroneous results and/or in compilation errors.
+      */
+      inline void store( const SIMDType& value ) const {
+         storeu( value );
+      }
+      //*******************************************************************************************
+
+      //**Storea function**************************************************************************
+      /*!\brief Aligned store of a SIMD element of the dense submatrix.
+      //
+      // \param value The SIMD element to be stored.
+      // \return void
+      //
+      // This function performs an aligned store of the current SIMD element of the submatrix
+      // iterator. This function must \b NOT be called explicitly! It is used internally for the
+      // performance optimized evaluation of expression templates. Calling this function explicitly
+      // might result in erroneous results and/or in compilation errors.
+      */
+      inline void storea( const SIMDType& value ) const {
+         iterator_.storea( value );
+      }
+      //*******************************************************************************************
+
+      //**Storeu function**************************************************************************
+      /*!\brief Unaligned store of a SIMD element of the dense submatrix.
+      //
+      // \param value The SIMD element to be stored.
+      // \return void
+      //
+      // This function performs an unaligned store of the current SIMD element of the submatrix
+      // iterator. This function must \b NOT be called explicitly! It is used internally for the
+      // performance optimized evaluation of expression templates. Calling this function explicitly
+      // might result in erroneous results and/or in compilation errors.
+      */
+      inline void storeu( const SIMDType& value ) const {
+         if( isAligned_ ) {
+            iterator_.storea( value );
+         }
+         else {
+            iterator_.storeu( value );
+         }
+      }
+      //*******************************************************************************************
+
+      //**Stream function**************************************************************************
+      /*!\brief Aligned, non-temporal store of a SIMD element of the dense submatrix.
+      //
+      // \param value The SIMD element to be stored.
+      // \return void
+      //
+      // This function performs an aligned, non-temporal store of the current SIMD element of the
+      // submatrix iterator. This function must \b NOT be called explicitly! It is used internally
+      // for the performance optimized evaluation of expression templates. Calling this function
+      // explicitly might result in erroneous results and/or in compilation errors.
+      */
+      inline void stream( const SIMDType& value ) const {
+         iterator_.stream( value );
       }
       //*******************************************************************************************
 
@@ -5703,12 +5846,14 @@ inline EnableIf_< typename DenseSubmatrix<MT,unaligned,true>::BLAZE_TEMPLATE Vec
       for( size_t j=0UL; j<n_; ++j )
       {
          size_t i( 0UL );
+         Iterator left( begin(j) );
+         ConstIterator_<MT2> right( (~rhs).begin(j) );
 
          for( ; i<ipos; i+=SIMDSIZE ) {
-            matrix_.stream( row_+i, column_+j, (~rhs).load(i,j) );
+            left.stream( right.load() ); left += SIMDSIZE; right += SIMDSIZE;
          }
          for( ; i<m_; ++i ) {
-            matrix_(row_+i,column_+j) = (~rhs)(i,j);
+            *left = *right; ++left; ++right;
          }
       }
    }
@@ -5717,19 +5862,20 @@ inline EnableIf_< typename DenseSubmatrix<MT,unaligned,true>::BLAZE_TEMPLATE Vec
       for( size_t j=0UL; j<n_; ++j )
       {
          size_t i( 0UL );
-         ConstIterator_<MT2> it( (~rhs).begin(j) );
+         Iterator left( begin(j) );
+         ConstIterator_<MT2> right( (~rhs).begin(j) );
 
          for( ; (i+SIMDSIZE*3UL) < ipos; i+=SIMDSIZE*4UL ) {
-            store( i             , j, it.load() ); it += SIMDSIZE;
-            store( i+SIMDSIZE    , j, it.load() ); it += SIMDSIZE;
-            store( i+SIMDSIZE*2UL, j, it.load() ); it += SIMDSIZE;
-            store( i+SIMDSIZE*3UL, j, it.load() ); it += SIMDSIZE;
+            left.store( right.load() ); left += SIMDSIZE; right += SIMDSIZE;
+            left.store( right.load() ); left += SIMDSIZE; right += SIMDSIZE;
+            left.store( right.load() ); left += SIMDSIZE; right += SIMDSIZE;
+            left.store( right.load() ); left += SIMDSIZE; right += SIMDSIZE;
          }
-         for( ; i<ipos; i+=SIMDSIZE, it+=SIMDSIZE ) {
-            store( i, j, it.load() );
+         for( ; i<ipos; i+=SIMDSIZE ) {
+            left.store( right.load() ); left += SIMDSIZE; right += SIMDSIZE;
          }
-         for( ; i<m_; ++i, ++it ) {
-            matrix_(row_+i,column_+j) = (~rhs)(i,j);
+         for( ; i<m_; ++i ) {
+            *left = *right; ++left; ++right;
          }
       }
    }
@@ -5906,19 +6052,20 @@ inline EnableIf_< typename DenseSubmatrix<MT,unaligned,true>::BLAZE_TEMPLATE Vec
       BLAZE_INTERNAL_ASSERT( ( iend - ( iend % (SIMDSIZE) ) ) == ipos, "Invalid end calculation" );
 
       size_t i( ibegin );
-      ConstIterator_<MT2> it( (~rhs).begin(j) );
+      Iterator left( begin(j) + ibegin );
+      ConstIterator_<MT2> right( (~rhs).begin(j) + ibegin );
 
       for( ; (i+SIMDSIZE*3UL) < ipos; i+=SIMDSIZE*4UL ) {
-         store( i             , j, load(i             ,j) + it.load() ); it += SIMDSIZE;
-         store( i+SIMDSIZE    , j, load(i+SIMDSIZE    ,j) + it.load() ); it += SIMDSIZE;
-         store( i+SIMDSIZE*2UL, j, load(i+SIMDSIZE*2UL,j) + it.load() ); it += SIMDSIZE;
-         store( i+SIMDSIZE*3UL, j, load(i+SIMDSIZE*3UL,j) + it.load() ); it += SIMDSIZE;
+         left.store( left.load() + right.load() ); left += SIMDSIZE; right += SIMDSIZE;
+         left.store( left.load() + right.load() ); left += SIMDSIZE; right += SIMDSIZE;
+         left.store( left.load() + right.load() ); left += SIMDSIZE; right += SIMDSIZE;
+         left.store( left.load() + right.load() ); left += SIMDSIZE; right += SIMDSIZE;
       }
-      for( ; i<ipos; i+=SIMDSIZE, it+=SIMDSIZE ) {
-         store( i, j, load(i,j) + it.load() );
+      for( ; i<ipos; i+=SIMDSIZE ) {
+         left.store( left.load() + right.load() ); left += SIMDSIZE; right += SIMDSIZE;
       }
-      for( ; i<iend; ++i, ++it ) {
-         matrix_(row_+i,column_+j) += *it;
+      for( ; i<iend; ++i ) {
+         *left += *right; ++left; ++right;
       }
    }
 }
@@ -6094,19 +6241,20 @@ inline EnableIf_< typename DenseSubmatrix<MT,unaligned,true>::BLAZE_TEMPLATE Vec
       BLAZE_INTERNAL_ASSERT( ( iend - ( iend % (SIMDSIZE) ) ) == ipos, "Invalid end calculation" );
 
       size_t i( ibegin );
-      ConstIterator_<MT2> it( (~rhs).begin(j) );
+      Iterator left( begin(j) + ibegin );
+      ConstIterator_<MT2> right( (~rhs).begin(j) + ibegin );
 
       for( ; (i+SIMDSIZE*3UL) < ipos; i+=SIMDSIZE*4UL ) {
-         store( i             , j, load(i             ,j) - it.load() ); it += SIMDSIZE;
-         store( i+SIMDSIZE    , j, load(i+SIMDSIZE    ,j) - it.load() ); it += SIMDSIZE;
-         store( i+SIMDSIZE*2UL, j, load(i+SIMDSIZE*2UL,j) - it.load() ); it += SIMDSIZE;
-         store( i+SIMDSIZE*3UL, j, load(i+SIMDSIZE*3UL,j) - it.load() ); it += SIMDSIZE;
+         left.store( left.load() - right.load() ); left += SIMDSIZE; right += SIMDSIZE;
+         left.store( left.load() - right.load() ); left += SIMDSIZE; right += SIMDSIZE;
+         left.store( left.load() - right.load() ); left += SIMDSIZE; right += SIMDSIZE;
+         left.store( left.load() - right.load() ); left += SIMDSIZE; right += SIMDSIZE;
       }
-      for( ; i<ipos; i+=SIMDSIZE, it+=SIMDSIZE ) {
-         store( i, j, load(i,j) - it.load() );
+      for( ; i<ipos; i+=SIMDSIZE ) {
+         left.store( left.load() - right.load() ); left += SIMDSIZE; right += SIMDSIZE;
       }
-      for( ; i<iend; ++i, ++it ) {
-         matrix_(row_+i,column_+j) -= *it;
+      for( ; i<iend; ++i ) {
+         *left -= *right; ++left; ++right;
       }
    }
 }
@@ -8254,12 +8402,14 @@ inline EnableIf_< typename DenseSubmatrix<MT,aligned,false>::BLAZE_TEMPLATE Vect
       for( size_t i=0UL; i<m_; ++i )
       {
          size_t j( 0UL );
+         Iterator left( begin(i) );
+         ConstIterator_<MT2> right( (~rhs).begin(i) );
 
          for( ; j<jpos; j+=SIMDSIZE ) {
-            stream( i, j, (~rhs).load(i,j) );
+            left.stream( right.load() ); left += SIMDSIZE; right += SIMDSIZE;
          }
          for( ; j<n_; ++j ) {
-            matrix_(row_+i,column_+j) = (~rhs)(i,j);
+            *left = *right; ++left; ++right;
          }
       }
    }
@@ -8268,19 +8418,20 @@ inline EnableIf_< typename DenseSubmatrix<MT,aligned,false>::BLAZE_TEMPLATE Vect
       for( size_t i=0UL; i<m_; ++i )
       {
          size_t j( 0UL );
-         ConstIterator_<MT2> it( (~rhs).begin(i) );
+         Iterator left( begin(i) );
+         ConstIterator_<MT2> right( (~rhs).begin(i) );
 
          for( ; (j+SIMDSIZE*3UL) < jpos; j+=SIMDSIZE*4UL ) {
-            store( i, j             , it.load() ); it += SIMDSIZE;
-            store( i, j+SIMDSIZE    , it.load() ); it += SIMDSIZE;
-            store( i, j+SIMDSIZE*2UL, it.load() ); it += SIMDSIZE;
-            store( i, j+SIMDSIZE*3UL, it.load() ); it += SIMDSIZE;
+            left.store( right.load() ); left += SIMDSIZE; right += SIMDSIZE;
+            left.store( right.load() ); left += SIMDSIZE; right += SIMDSIZE;
+            left.store( right.load() ); left += SIMDSIZE; right += SIMDSIZE;
+            left.store( right.load() ); left += SIMDSIZE; right += SIMDSIZE;
          }
-         for( ; j<jpos; j+=SIMDSIZE, it+=SIMDSIZE ) {
-            store( i, j, it.load() );
+         for( ; j<jpos; j+=SIMDSIZE ) {
+            left.store( right.load() ); left += SIMDSIZE; right += SIMDSIZE;
          }
-         for( ; j<n_; ++j, ++it ) {
-            matrix_(row_+i,column_+j) = *it;
+         for( ; j<n_; ++j ) {
+            *left = *right; ++left; ++right;
          }
       }
    }
@@ -8457,19 +8608,20 @@ inline EnableIf_< typename DenseSubmatrix<MT,aligned,false>::BLAZE_TEMPLATE Vect
       BLAZE_INTERNAL_ASSERT( ( jend - ( jend % (SIMDSIZE) ) ) == jpos, "Invalid end calculation" );
 
       size_t j( jbegin );
-      ConstIterator_<MT2> it( (~rhs).begin(i) );
+      Iterator left( begin(i) + jbegin );
+      ConstIterator_<MT2> right( (~rhs).begin(i) + jbegin );
 
       for( ; (j+SIMDSIZE*3UL) < jpos; j+=SIMDSIZE*4UL ) {
-         store( i, j             , load(i,j             ) + it.load() ); it += SIMDSIZE;
-         store( i, j+SIMDSIZE    , load(i,j+SIMDSIZE    ) + it.load() ); it += SIMDSIZE;
-         store( i, j+SIMDSIZE*2UL, load(i,j+SIMDSIZE*2UL) + it.load() ); it += SIMDSIZE;
-         store( i, j+SIMDSIZE*3UL, load(i,j+SIMDSIZE*3UL) + it.load() ); it += SIMDSIZE;
+         left.store( left.load() + right.load() ); left += SIMDSIZE; right += SIMDSIZE;
+         left.store( left.load() + right.load() ); left += SIMDSIZE; right += SIMDSIZE;
+         left.store( left.load() + right.load() ); left += SIMDSIZE; right += SIMDSIZE;
+         left.store( left.load() + right.load() ); left += SIMDSIZE; right += SIMDSIZE;
       }
-      for( ; j<jpos; j+=SIMDSIZE, it+=SIMDSIZE ) {
-         store( i, j, load(i,j) + it.load() );
+      for( ; j<jpos; j+=SIMDSIZE ) {
+         left.store( left.load() + right.load() ); left += SIMDSIZE; right += SIMDSIZE;
       }
-      for( ; j<jend; ++j, ++it ) {
-         matrix_(row_+i,column_+j) += *it;
+      for( ; j<jend; ++j ) {
+         *left += *right; ++left; ++right;
       }
    }
 }
@@ -8645,19 +8797,20 @@ inline EnableIf_< typename DenseSubmatrix<MT,aligned,false>::BLAZE_TEMPLATE Vect
       BLAZE_INTERNAL_ASSERT( ( jend - ( jend % (SIMDSIZE) ) ) == jpos, "Invalid end calculation" );
 
       size_t j( jbegin );
-      ConstIterator_<MT2> it( (~rhs).begin(i) );
+      Iterator left( begin(i) + jbegin );
+      ConstIterator_<MT2> right( (~rhs).begin(i) + jbegin );
 
       for( ; (j+SIMDSIZE*3UL) < jpos; j+=SIMDSIZE*4UL ) {
-         store( i, j             , load(i,j             ) - it.load() ); it += SIMDSIZE;
-         store( i, j+SIMDSIZE    , load(i,j+SIMDSIZE    ) - it.load() ); it += SIMDSIZE;
-         store( i, j+SIMDSIZE*2UL, load(i,j+SIMDSIZE*2UL) - it.load() ); it += SIMDSIZE;
-         store( i, j+SIMDSIZE*3UL, load(i,j+SIMDSIZE*3UL) - it.load() ); it += SIMDSIZE;
+         left.store( left.load() - right.load() ); left += SIMDSIZE; right += SIMDSIZE;
+         left.store( left.load() - right.load() ); left += SIMDSIZE; right += SIMDSIZE;
+         left.store( left.load() - right.load() ); left += SIMDSIZE; right += SIMDSIZE;
+         left.store( left.load() - right.load() ); left += SIMDSIZE; right += SIMDSIZE;
       }
-      for( ; j<jpos; j+=SIMDSIZE, it+=SIMDSIZE ) {
-         store( i, j, load(i,j) - it.load() );
+      for( ; j<jpos; j+=SIMDSIZE ) {
+         left.store( left.load() - right.load() ); left += SIMDSIZE; right += SIMDSIZE;
       }
-      for( ; j<jend; ++j, ++it ) {
-         matrix_(row_+i,column_+j) -= *it;
+      for( ; j<jend; ++j ) {
+         *left -= *right; ++left; ++right;
       }
    }
 }
@@ -10757,12 +10910,14 @@ inline EnableIf_< typename DenseSubmatrix<MT,aligned,true>::BLAZE_TEMPLATE Vecto
       for( size_t j=0UL; j<n_; ++j )
       {
          size_t i( 0UL );
+         Iterator left( begin(j) );
+         ConstIterator_<MT2> right( (~rhs).begin(j) );
 
          for( ; i<ipos; i+=SIMDSIZE ) {
-            stream( i, j, (~rhs).load(i,j) );
+            left.stream( right.load() ); left += SIMDSIZE; right += SIMDSIZE;
          }
          for( ; i<m_; ++i ) {
-            matrix_(row_+i,column_+j) = (~rhs)(i,j);
+            *left = *right; ++left; ++right;
          }
       }
    }
@@ -10771,19 +10926,20 @@ inline EnableIf_< typename DenseSubmatrix<MT,aligned,true>::BLAZE_TEMPLATE Vecto
       for( size_t j=0UL; j<n_; ++j )
       {
          size_t i( 0UL );
-         ConstIterator_<MT2> it( (~rhs).begin(j) );
+         Iterator left( begin(j) );
+         ConstIterator_<MT2> right( (~rhs).begin(j) );
 
          for( ; (i+SIMDSIZE*3UL) < ipos; i+=SIMDSIZE*4UL ) {
-            store( i             , j, it.load() ); it += SIMDSIZE;
-            store( i+SIMDSIZE    , j, it.load() ); it += SIMDSIZE;
-            store( i+SIMDSIZE*2UL, j, it.load() ); it += SIMDSIZE;
-            store( i+SIMDSIZE*3UL, j, it.load() ); it += SIMDSIZE;
+            left.store( right.load() ); left += SIMDSIZE; right += SIMDSIZE;
+            left.store( right.load() ); left += SIMDSIZE; right += SIMDSIZE;
+            left.store( right.load() ); left += SIMDSIZE; right += SIMDSIZE;
+            left.store( right.load() ); left += SIMDSIZE; right += SIMDSIZE;
          }
-         for( ; i<ipos; i+=SIMDSIZE, it+=SIMDSIZE ) {
-            store( i, j, it.load() );
+         for( ; i<ipos; i+=SIMDSIZE ) {
+            left.store( right.load() ); left += SIMDSIZE; right += SIMDSIZE;
          }
-         for( ; i<m_; ++i, ++it ) {
-            matrix_(row_+i,column_+j) = (~rhs)(i,j);
+         for( ; i<m_; ++i ) {
+            *left = *right; ++left; ++right;
          }
       }
    }
@@ -10960,19 +11116,20 @@ inline EnableIf_< typename DenseSubmatrix<MT,aligned,true>::BLAZE_TEMPLATE Vecto
       BLAZE_INTERNAL_ASSERT( ( iend - ( iend % (SIMDSIZE) ) ) == ipos, "Invalid end calculation" );
 
       size_t i( ibegin );
-      ConstIterator_<MT2> it( (~rhs).begin(j) );
+      Iterator left( begin(j) + ibegin );
+      ConstIterator_<MT2> right( (~rhs).begin(j) + ibegin );
 
       for( ; (i+SIMDSIZE*3UL) < ipos; i+=SIMDSIZE*4UL ) {
-         store( i             , j, load(i             ,j) + it.load() ); it += SIMDSIZE;
-         store( i+SIMDSIZE    , j, load(i+SIMDSIZE    ,j) + it.load() ); it += SIMDSIZE;
-         store( i+SIMDSIZE*2UL, j, load(i+SIMDSIZE*2UL,j) + it.load() ); it += SIMDSIZE;
-         store( i+SIMDSIZE*3UL, j, load(i+SIMDSIZE*3UL,j) + it.load() ); it += SIMDSIZE;
+         left.store( left.load() + right.load() ); left += SIMDSIZE; right += SIMDSIZE;
+         left.store( left.load() + right.load() ); left += SIMDSIZE; right += SIMDSIZE;
+         left.store( left.load() + right.load() ); left += SIMDSIZE; right += SIMDSIZE;
+         left.store( left.load() + right.load() ); left += SIMDSIZE; right += SIMDSIZE;
       }
-      for( ; i<ipos; i+=SIMDSIZE, it+=SIMDSIZE ) {
-         store( i, j, load(i,j) + it.load() );
+      for( ; i<ipos; i+=SIMDSIZE ) {
+         left.store( left.load() + right.load() ); left += SIMDSIZE; right += SIMDSIZE;
       }
-      for( ; i<iend; ++i, ++it ) {
-         matrix_(row_+i,column_+j) += *it;
+      for( ; i<iend; ++i ) {
+         *left += *right; ++left; ++right;
       }
    }
 }
@@ -11148,19 +11305,20 @@ inline EnableIf_< typename DenseSubmatrix<MT,aligned,true>::BLAZE_TEMPLATE Vecto
       BLAZE_INTERNAL_ASSERT( ( iend - ( iend % (SIMDSIZE) ) ) == ipos, "Invalid end calculation" );
 
       size_t i( ibegin );
-      ConstIterator_<MT2> it( (~rhs).begin(j) );
+      Iterator left( begin(j) + ibegin );
+      ConstIterator_<MT2> right( (~rhs).begin(j) + ibegin );
 
       for( ; (i+SIMDSIZE*3UL) < ipos; i+=SIMDSIZE*4UL ) {
-         store( i             , j, load(i             ,j) - it.load() ); it += SIMDSIZE;
-         store( i+SIMDSIZE    , j, load(i+SIMDSIZE    ,j) - it.load() ); it += SIMDSIZE;
-         store( i+SIMDSIZE*2UL, j, load(i+SIMDSIZE*2UL,j) - it.load() ); it += SIMDSIZE;
-         store( i+SIMDSIZE*3UL, j, load(i+SIMDSIZE*3UL,j) - it.load() ); it += SIMDSIZE;
+         left.store( left.load() - right.load() ); left += SIMDSIZE; right += SIMDSIZE;
+         left.store( left.load() - right.load() ); left += SIMDSIZE; right += SIMDSIZE;
+         left.store( left.load() - right.load() ); left += SIMDSIZE; right += SIMDSIZE;
+         left.store( left.load() - right.load() ); left += SIMDSIZE; right += SIMDSIZE;
       }
-      for( ; i<ipos; i+=SIMDSIZE, it+=SIMDSIZE ) {
-         store( i, j, load(i,j) - it.load() );
+      for( ; i<ipos; i+=SIMDSIZE ) {
+         left.store( left.load() - right.load() ); left += SIMDSIZE; right += SIMDSIZE;
       }
-      for( ; i<iend; ++i, ++it ) {
-         matrix_(row_+i,column_+j) -= *it;
+      for( ; i<iend; ++i ) {
+         *left -= *right; ++left; ++right;
       }
    }
 }
