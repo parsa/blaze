@@ -129,9 +129,13 @@ class DenseIterator
    //**Expression template evaluation functions****************************************************
    /*!\name Expression template evaluation functions */
    //@{
-   inline const SIMDType load () const noexcept;
-   inline const SIMDType loada() const noexcept;
-   inline const SIMDType loadu() const noexcept;
+   inline const SIMDType load  () const noexcept;
+   inline const SIMDType loada () const noexcept;
+   inline const SIMDType loadu () const noexcept;
+   inline void           store ( const SIMDType& value ) const noexcept;
+   inline void           storea( const SIMDType& value ) const noexcept;
+   inline void           storeu( const SIMDType& value ) const noexcept;
+   inline void           stream( const SIMDType& value ) const noexcept;
    //@}
    //**********************************************************************************************
 
@@ -384,14 +388,14 @@ inline typename DenseIterator<Type,AF>::PointerType DenseIterator<Type,AF>::base
 //=================================================================================================
 
 //*************************************************************************************************
-/*!\brief Aligned load of the SIMD element at the current iterator position.
+/*!\brief Load of the SIMD element at the current iterator position.
 //
 // \return The loaded SIMD element.
 //
-// This function performs an aligned load of the SIMD element of the current element. This
-// function must \b NOT be called explicitly! It is used internally for the performance optimized
-// evaluation of expression templates. Calling this function explicitly might result in erroneous
-// results and/or in compilation errors.
+// This function performs a load of the SIMD element of the current element. This function must
+// \b NOT be called explicitly! It is used internally for the performance optimized evaluation
+// of expression templates. Calling this function explicitly might result in erroneous results
+// and/or in compilation errors.
 */
 template< typename Type  // Type of the elements
         , bool AF >      // Alignment flag
@@ -444,6 +448,89 @@ inline const typename DenseIterator<Type,AF>::SIMDType
    DenseIterator<Type,AF>::loadu() const noexcept
 {
    return blaze::loadu( ptr_ );
+}
+//*************************************************************************************************
+
+
+//*************************************************************************************************
+/*!\brief Store of the SIMD element at the current iterator position.
+//
+// \param value The SIMD element to be stored.
+// \return void
+//
+// This function performs a store of the SIMD element of the current element. This function must
+// \b NOT be called explicitly! It is used internally for the performance optimized evaluation
+// of expression templates. Calling this function explicitly might result in erroneous results
+// and/or in compilation errors.
+*/
+template< typename Type  // Type of the elements
+        , bool AF >      // Alignment flag
+inline void DenseIterator<Type,AF>::store( const SIMDType& value ) const noexcept
+{
+   if( AF )
+      storea( value );
+   else
+      storeu( value );
+}
+//*************************************************************************************************
+
+
+//*************************************************************************************************
+/*!\brief Aligned store of the SIMD element at the current iterator position.
+//
+// \param value The SIMD element to be stored.
+// \return void
+//
+// This function performs an aligned store of the SIMD element of the current element. This
+// function must \b NOT be called explicitly! It is used internally for the performance optimized
+// evaluation of expression templates. Calling this function explicitly might result in erroneous
+// results and/or in compilation errors.
+*/
+template< typename Type  // Type of the elements
+        , bool AF >      // Alignment flag
+inline void DenseIterator<Type,AF>::storea( const SIMDType& value ) const noexcept
+{
+   blaze::storea( ptr_, value );
+}
+//*************************************************************************************************
+
+
+//*************************************************************************************************
+/*!\brief Unaligned store of the SIMD element at the current iterator position.
+//
+// \param value The SIMD element to be stored.
+// \return void
+//
+// This function performs an unaligned store of the SIMD element of the current element. This
+// function must \b NOT be called explicitly! It is used internally for the performance optimized
+// evaluation of expression templates. Calling this function explicitly might result in erroneous
+// results and/or in compilation errors.
+*/
+template< typename Type  // Type of the elements
+        , bool AF >      // Alignment flag
+inline void DenseIterator<Type,AF>::storeu( const SIMDType& value ) const noexcept
+{
+   blaze::storeu( ptr_, value );
+}
+//*************************************************************************************************
+
+
+//*************************************************************************************************
+/*!\brief Aligned, non-temporal store of the SIMD element at the current iterator position.
+//
+// \param value The SIMD element to be stored.
+// \return void
+//
+// This function performs an aligned, non-temporal store of the SIMD element of the current
+// element. This function must \b NOT be called explicitly! It is used internally for the
+// performance optimized evaluation of expression templates. Calling this function explicitly
+// might result in erroneous results and/or in compilation errors.
+*/
+template< typename Type  // Type of the elements
+        , bool AF >      // Alignment flag
+inline void DenseIterator<Type,AF>::stream( const SIMDType& value ) const noexcept
+{
+   blaze::stream( ptr_, value );
 }
 //*************************************************************************************************
 
