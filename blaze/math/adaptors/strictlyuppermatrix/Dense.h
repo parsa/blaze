@@ -276,6 +276,51 @@ class StrictlyUpperMatrix<MT,SO,true>
       }
       //*******************************************************************************************
 
+      //**Load function****************************************************************************
+      /*!\brief Load of a SIMD element at the current iterator position.
+      //
+      // \return The loaded SIMD element.
+      //
+      // This function performs a load of the current SIMD element at the current iterator
+      // position. This function must \b NOT be called explicitly! It is used internally for
+      // the performance optimized evaluation of expression templates. Calling this function
+      // explicitly might result in erroneous results and/or in compilation errors.
+      */
+      inline SIMDType load() const {
+         return (*matrix_).load(row_,column_);
+      }
+      //*******************************************************************************************
+
+      //**Loada function***************************************************************************
+      /*!\brief Aligned load of a SIMD element at the current iterator position.
+      //
+      // \return The loaded SIMD element.
+      //
+      // This function performs an aligned load of the current SIMD element at the current
+      // iterator position. This function must \b NOT be called explicitly! It is used internally
+      // for the performance optimized evaluation of expression templates. Calling this function
+      // explicitly might result in erroneous results and/or in compilation errors.
+      */
+      inline SIMDType loada() const {
+         return (*matrix_).loada(row_,column_);
+      }
+      //*******************************************************************************************
+
+      //**Loadu function***************************************************************************
+      /*!\brief Unaligned load of a SIMD element at the current iterator position.
+      //
+      // \return The loaded SIMD element.
+      //
+      // This function performs an unaligned load of the current SIMD element at the current
+      // iterator position. This function must \b NOT be called explicitly! It is used internally
+      // for the performance optimized evaluation of expression templates. Calling this function
+      // explicitly might result in erroneous results and/or in compilation errors.
+      */
+      inline SIMDType loadu() const {
+         return (*matrix_).loadu(row_,column_);
+      }
+      //*******************************************************************************************
+
       //**Conversion operator**********************************************************************
       /*!\brief Conversion to an iterator over constant elements.
       //
