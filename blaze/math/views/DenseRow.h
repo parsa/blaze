@@ -1832,33 +1832,32 @@ inline EnableIf_< typename DenseRow<MT,SO,SF>::BLAZE_TEMPLATE VectorizedAssign<V
    const size_t jpos( ( remainder )?( columns & size_t(-SIMDSIZE) ):( columns ) );
    BLAZE_INTERNAL_ASSERT( !remainder || ( columns - ( columns % (SIMDSIZE) ) ) == jpos, "Invalid end calculation" );
 
+   size_t j( 0UL );
+   Iterator left( begin() );
+   ConstIterator_<VT> right( (~rhs).begin() );
+
    if( useStreaming && columns > ( cacheSize/( sizeof(ElementType) * 3UL ) ) && !(~rhs).isAliased( &matrix_ ) )
    {
-      size_t j( 0UL );
-
       for( ; j<jpos; j+=SIMDSIZE ) {
-         matrix_.stream( row_, j, (~rhs).load(j) );
+         left.stream( right.load() ); left += SIMDSIZE; right += SIMDSIZE;
       }
       for( ; remainder && j<columns; ++j ) {
-         matrix_(row_,j) = (~rhs)[j];
+         *left = *right; ++left; ++right;
       }
    }
    else
    {
-      size_t j( 0UL );
-      ConstIterator_<VT> it( (~rhs).begin() );
-
       for( ; (j+SIMDSIZE*3UL) < jpos; j+=SIMDSIZE*4UL ) {
-         matrix_.store( row_, j             , it.load() ); it += SIMDSIZE;
-         matrix_.store( row_, j+SIMDSIZE    , it.load() ); it += SIMDSIZE;
-         matrix_.store( row_, j+SIMDSIZE*2UL, it.load() ); it += SIMDSIZE;
-         matrix_.store( row_, j+SIMDSIZE*3UL, it.load() ); it += SIMDSIZE;
+         left.store( right.load() ); left += SIMDSIZE; right += SIMDSIZE;
+         left.store( right.load() ); left += SIMDSIZE; right += SIMDSIZE;
+         left.store( right.load() ); left += SIMDSIZE; right += SIMDSIZE;
+         left.store( right.load() ); left += SIMDSIZE; right += SIMDSIZE;
       }
-      for( ; j<jpos; j+=SIMDSIZE, it+=SIMDSIZE ) {
-         matrix_.store( row_, j, it.load() );
+      for( ; j<jpos; j+=SIMDSIZE ) {
+         left.store( right.load() ); left += SIMDSIZE; right += SIMDSIZE;
       }
-      for( ; remainder && j<columns; ++j, ++it ) {
-         matrix_(row_,j) = *it;
+      for( ; remainder && j<columns; ++j ) {
+         *left = *right; ++left; ++right;
       }
    }
 }
@@ -1950,19 +1949,20 @@ inline EnableIf_< typename DenseRow<MT,SO,SF>::BLAZE_TEMPLATE VectorizedAddAssig
    BLAZE_INTERNAL_ASSERT( !remainder || ( columns - ( columns % (SIMDSIZE) ) ) == jpos, "Invalid end calculation" );
 
    size_t j( 0UL );
-   ConstIterator_<VT> it( (~rhs).begin() );
+   Iterator left( begin() );
+   ConstIterator_<VT> right( (~rhs).begin() );
 
    for( ; (j+SIMDSIZE*3UL) < jpos; j+=SIMDSIZE*4UL ) {
-      matrix_.store( row_, j             , matrix_.load(row_,j             ) + it.load() ); it += SIMDSIZE;
-      matrix_.store( row_, j+SIMDSIZE    , matrix_.load(row_,j+SIMDSIZE    ) + it.load() ); it += SIMDSIZE;
-      matrix_.store( row_, j+SIMDSIZE*2UL, matrix_.load(row_,j+SIMDSIZE*2UL) + it.load() ); it += SIMDSIZE;
-      matrix_.store( row_, j+SIMDSIZE*3UL, matrix_.load(row_,j+SIMDSIZE*3UL) + it.load() ); it += SIMDSIZE;
+      left.store( left.load() + right.load() ); left += SIMDSIZE; right += SIMDSIZE;
+      left.store( left.load() + right.load() ); left += SIMDSIZE; right += SIMDSIZE;
+      left.store( left.load() + right.load() ); left += SIMDSIZE; right += SIMDSIZE;
+      left.store( left.load() + right.load() ); left += SIMDSIZE; right += SIMDSIZE;
    }
-   for( ; j<jpos; j+=SIMDSIZE, it+=SIMDSIZE ) {
-      matrix_.store( row_, j, matrix_.load(row_,j) + it.load() );
+   for( ; j<jpos; j+=SIMDSIZE ) {
+      left.store( left.load() + right.load() ); left += SIMDSIZE; right += SIMDSIZE;
    }
-   for( ; remainder && j<columns; ++j, ++it ) {
-      matrix_(row_,j) += *it;
+   for( ; remainder && j<columns; ++j ) {
+      *left += *right; ++left; ++right;
    }
 }
 //*************************************************************************************************
@@ -2053,19 +2053,20 @@ inline EnableIf_< typename DenseRow<MT,SO,SF>::BLAZE_TEMPLATE VectorizedSubAssig
    BLAZE_INTERNAL_ASSERT( !remainder || ( columns - ( columns % (SIMDSIZE) ) ) == jpos, "Invalid end calculation" );
 
    size_t j( 0UL );
-   ConstIterator_<VT> it( (~rhs).begin() );
+   Iterator left( begin() );
+   ConstIterator_<VT> right( (~rhs).begin() );
 
    for( ; (j+SIMDSIZE*3UL) < jpos; j+=SIMDSIZE*4UL ) {
-      matrix_.store( row_, j             , matrix_.load(row_,j             ) - it.load() ); it += SIMDSIZE;
-      matrix_.store( row_, j+SIMDSIZE    , matrix_.load(row_,j+SIMDSIZE    ) - it.load() ); it += SIMDSIZE;
-      matrix_.store( row_, j+SIMDSIZE*2UL, matrix_.load(row_,j+SIMDSIZE*2UL) - it.load() ); it += SIMDSIZE;
-      matrix_.store( row_, j+SIMDSIZE*3UL, matrix_.load(row_,j+SIMDSIZE*3UL) - it.load() ); it += SIMDSIZE;
+      left.store( left.load() - right.load() ); left += SIMDSIZE; right += SIMDSIZE;
+      left.store( left.load() - right.load() ); left += SIMDSIZE; right += SIMDSIZE;
+      left.store( left.load() - right.load() ); left += SIMDSIZE; right += SIMDSIZE;
+      left.store( left.load() - right.load() ); left += SIMDSIZE; right += SIMDSIZE;
    }
-   for( ; j<jpos; j+=SIMDSIZE, it+=SIMDSIZE ) {
-      matrix_.store( row_, j, matrix_.load(row_,j) - it.load() );
+   for( ; j<jpos; j+=SIMDSIZE ) {
+      left.store( left.load() - right.load() ); left += SIMDSIZE; right += SIMDSIZE;
    }
-   for( ; remainder && j<columns; ++j, ++it ) {
-      matrix_(row_,j) -= *it;
+   for( ; remainder && j<columns; ++j ) {
+      *left -= *right; ++left; ++right;
    }
 }
 //*************************************************************************************************
@@ -2156,19 +2157,20 @@ inline EnableIf_< typename DenseRow<MT,SO,SF>::BLAZE_TEMPLATE VectorizedMultAssi
    BLAZE_INTERNAL_ASSERT( !remainder || ( columns - ( columns % (SIMDSIZE) ) ) == jpos, "Invalid end calculation" );
 
    size_t j( 0UL );
-   ConstIterator_<VT> it( (~rhs).begin() );
+   Iterator left( begin() );
+   ConstIterator_<VT> right( (~rhs).begin() );
 
    for( ; (j+SIMDSIZE*3UL) < jpos; j+=SIMDSIZE*4UL ) {
-      matrix_.store( row_, j             , matrix_.load(row_,j             ) * it.load() ); it += SIMDSIZE;
-      matrix_.store( row_, j+SIMDSIZE    , matrix_.load(row_,j+SIMDSIZE    ) * it.load() ); it += SIMDSIZE;
-      matrix_.store( row_, j+SIMDSIZE*2UL, matrix_.load(row_,j+SIMDSIZE*2UL) * it.load() ); it += SIMDSIZE;
-      matrix_.store( row_, j+SIMDSIZE*3UL, matrix_.load(row_,j+SIMDSIZE*3UL) * it.load() ); it += SIMDSIZE;
+      left.store( left.load() * right.load() ); left += SIMDSIZE; right += SIMDSIZE;
+      left.store( left.load() * right.load() ); left += SIMDSIZE; right += SIMDSIZE;
+      left.store( left.load() * right.load() ); left += SIMDSIZE; right += SIMDSIZE;
+      left.store( left.load() * right.load() ); left += SIMDSIZE; right += SIMDSIZE;
    }
-   for( ; j<jpos; j+=SIMDSIZE, it+=SIMDSIZE ) {
-      matrix_.store( row_, j, matrix_.load(row_,j) * it.load() );
+   for( ; j<jpos; j+=SIMDSIZE ) {
+      left.store( left.load() * right.load() ); left += SIMDSIZE; right += SIMDSIZE;
    }
-   for( ; remainder && j<columns; ++j, ++it ) {
-      matrix_(row_,j) *= *it;
+   for( ; remainder && j<columns; ++j ) {
+      *left *= *right; ++left; ++right;
    }
 }
 //*************************************************************************************************
@@ -2262,19 +2264,20 @@ inline EnableIf_< typename DenseRow<MT,SO,SF>::BLAZE_TEMPLATE VectorizedDivAssig
    BLAZE_INTERNAL_ASSERT( ( columns - ( columns % (SIMDSIZE) ) ) == jpos, "Invalid end calculation" );
 
    size_t j( 0UL );
-   ConstIterator_<VT> it( (~rhs).begin() );
+   Iterator left( begin() );
+   ConstIterator_<VT> right( (~rhs).begin() );
 
    for( ; (j+SIMDSIZE*3UL) < jpos; j+=SIMDSIZE*4UL ) {
-      matrix_.store( row_, j             , matrix_.load(row_,j             ) / it.load() ); it += SIMDSIZE;
-      matrix_.store( row_, j+SIMDSIZE    , matrix_.load(row_,j+SIMDSIZE    ) / it.load() ); it += SIMDSIZE;
-      matrix_.store( row_, j+SIMDSIZE*2UL, matrix_.load(row_,j+SIMDSIZE*2UL) / it.load() ); it += SIMDSIZE;
-      matrix_.store( row_, j+SIMDSIZE*3UL, matrix_.load(row_,j+SIMDSIZE*3UL) / it.load() ); it += SIMDSIZE;
+      left.store( left.load() / right.load() ); left += SIMDSIZE; right += SIMDSIZE;
+      left.store( left.load() / right.load() ); left += SIMDSIZE; right += SIMDSIZE;
+      left.store( left.load() / right.load() ); left += SIMDSIZE; right += SIMDSIZE;
+      left.store( left.load() / right.load() ); left += SIMDSIZE; right += SIMDSIZE;
    }
-   for( ; j<jpos; j+=SIMDSIZE, it+=SIMDSIZE ) {
-      matrix_.store( row_, j, matrix_.load(row_,j) / it.load() );
+   for( ; j<jpos; j+=SIMDSIZE ) {
+      left.store( left.load() / right.load() ); left += SIMDSIZE; right += SIMDSIZE;
    }
-   for( ; j<columns; ++j, ++it ) {
-      matrix_(row_,j) /= *it;
+   for( ; j<columns; ++j ) {
+      *left /= *right; ++left; ++right;
    }
 }
 //*************************************************************************************************
@@ -5522,33 +5525,32 @@ inline EnableIf_< typename DenseRow<MT,false,true>::BLAZE_TEMPLATE VectorizedAss
    const size_t ipos( ( remainder )?( rows & size_t(-SIMDSIZE) ):( rows ) );
    BLAZE_INTERNAL_ASSERT( !remainder || ( rows - ( rows % (SIMDSIZE) ) ) == ipos, "Invalid end calculation" );
 
+   size_t i( 0UL );
+   Iterator left( begin() );
+   ConstIterator_<VT> right( (~rhs).begin() );
+
    if( useStreaming && rows > ( cacheSize/( sizeof(ElementType) * 3UL ) ) && !(~rhs).isAliased( &matrix_ ) )
    {
-      size_t i( 0UL );
-
       for( ; i<ipos; i+=SIMDSIZE ) {
-         matrix_.stream( i, row_, (~rhs).load(i) );
+         left.stream( right.load() ); left += SIMDSIZE; right += SIMDSIZE;
       }
       for( ; remainder && i<rows; ++i ) {
-         matrix_(i,row_) = (~rhs)[i];
+         *left = *right; ++left; ++right;
       }
    }
    else
    {
-      size_t i( 0UL );
-      ConstIterator_<VT> it( (~rhs).begin() );
-
       for( ; (i+SIMDSIZE*3UL) < ipos; i+=SIMDSIZE*4UL ) {
-         matrix_.store( i             , row_, it.load() ); it += SIMDSIZE;
-         matrix_.store( i+SIMDSIZE    , row_, it.load() ); it += SIMDSIZE;
-         matrix_.store( i+SIMDSIZE*2UL, row_, it.load() ); it += SIMDSIZE;
-         matrix_.store( i+SIMDSIZE*3UL, row_, it.load() ); it += SIMDSIZE;
+         left.store( right.load() ); left += SIMDSIZE; right += SIMDSIZE;
+         left.store( right.load() ); left += SIMDSIZE; right += SIMDSIZE;
+         left.store( right.load() ); left += SIMDSIZE; right += SIMDSIZE;
+         left.store( right.load() ); left += SIMDSIZE; right += SIMDSIZE;
       }
-      for( ; i<ipos; i+=SIMDSIZE, it+=SIMDSIZE ) {
-         matrix_.store( i, row_, it.load() );
+      for( ; i<ipos; i+=SIMDSIZE ) {
+         left.store( right.load() ); left += SIMDSIZE; right += SIMDSIZE;
       }
-      for( ; remainder && i<rows; ++i, ++it ) {
-         matrix_(i,row_) = *it;
+      for( ; remainder && i<rows; ++i ) {
+         *left = *right; ++left; ++right;
       }
    }
 }
@@ -5640,19 +5642,20 @@ inline EnableIf_< typename DenseRow<MT,false,true>::BLAZE_TEMPLATE VectorizedAdd
    BLAZE_INTERNAL_ASSERT( !remainder || ( rows - ( rows % (SIMDSIZE) ) ) == ipos, "Invalid end calculation" );
 
    size_t i( 0UL );
-   ConstIterator_<VT> it( (~rhs).begin() );
+   Iterator left( begin() );
+   ConstIterator_<VT> right( (~rhs).begin() );
 
    for( ; (i+SIMDSIZE*3UL) < ipos; i+=SIMDSIZE*4UL ) {
-      matrix_.store( i             , row_, matrix_.load(i             ,row_) + it.load() ); it += SIMDSIZE;
-      matrix_.store( i+SIMDSIZE    , row_, matrix_.load(i+SIMDSIZE    ,row_) + it.load() ); it += SIMDSIZE;
-      matrix_.store( i+SIMDSIZE*2UL, row_, matrix_.load(i+SIMDSIZE*2UL,row_) + it.load() ); it += SIMDSIZE;
-      matrix_.store( i+SIMDSIZE*3UL, row_, matrix_.load(i+SIMDSIZE*3UL,row_) + it.load() ); it += SIMDSIZE;
+      left.store( left.load() + right.load() ); left += SIMDSIZE; right += SIMDSIZE;
+      left.store( left.load() + right.load() ); left += SIMDSIZE; right += SIMDSIZE;
+      left.store( left.load() + right.load() ); left += SIMDSIZE; right += SIMDSIZE;
+      left.store( left.load() + right.load() ); left += SIMDSIZE; right += SIMDSIZE;
    }
-   for( ; i<ipos; i+=SIMDSIZE, it+=SIMDSIZE ) {
-      matrix_.store( i, row_, matrix_.load(i,row_) + it.load() );
+   for( ; i<ipos; i+=SIMDSIZE ) {
+      left.store( left.load() + right.load() ); left += SIMDSIZE; right += SIMDSIZE;
    }
-   for( ; remainder && i<rows; ++i, ++it ) {
-      matrix_(i,row_) += *it;
+   for( ; remainder && i<rows; ++i ) {
+      *left += *right; ++left; ++right;
    }
 }
 /*! \endcond */
@@ -5743,19 +5746,20 @@ inline EnableIf_< typename DenseRow<MT,false,true>::BLAZE_TEMPLATE VectorizedSub
    BLAZE_INTERNAL_ASSERT( !remainder || ( rows - ( rows % (SIMDSIZE) ) ) == ipos, "Invalid end calculation" );
 
    size_t i( 0UL );
-   ConstIterator_<VT> it( (~rhs).begin() );
+   Iterator left( begin() );
+   ConstIterator_<VT> right( (~rhs).begin() );
 
    for( ; (i+SIMDSIZE*3UL) < ipos; i+=SIMDSIZE*4UL ) {
-      matrix_.store( i             , row_, matrix_.load(i             ,row_) - it.load() ); it += SIMDSIZE;
-      matrix_.store( i+SIMDSIZE    , row_, matrix_.load(i+SIMDSIZE    ,row_) - it.load() ); it += SIMDSIZE;
-      matrix_.store( i+SIMDSIZE*2UL, row_, matrix_.load(i+SIMDSIZE*2UL,row_) - it.load() ); it += SIMDSIZE;
-      matrix_.store( i+SIMDSIZE*3UL, row_, matrix_.load(i+SIMDSIZE*3UL,row_) - it.load() ); it += SIMDSIZE;
+      left.store( left.load() - right.load() ); left += SIMDSIZE; right += SIMDSIZE;
+      left.store( left.load() - right.load() ); left += SIMDSIZE; right += SIMDSIZE;
+      left.store( left.load() - right.load() ); left += SIMDSIZE; right += SIMDSIZE;
+      left.store( left.load() - right.load() ); left += SIMDSIZE; right += SIMDSIZE;
    }
-   for( ; i<ipos; i+=SIMDSIZE, it+=SIMDSIZE ) {
-      matrix_.store( i, row_, matrix_.load(i,row_) - it.load() );
+   for( ; i<ipos; i+=SIMDSIZE ) {
+      left.store( left.load() - right.load() ); left += SIMDSIZE; right += SIMDSIZE;
    }
-   for( ; remainder && i<rows; ++i, ++it ) {
-      matrix_(i,row_) -= *it;
+   for( ; remainder && i<rows; ++i ) {
+      *left -= *right; ++left; ++right;
    }
 }
 /*! \endcond */
@@ -5846,19 +5850,20 @@ inline EnableIf_< typename DenseRow<MT,false,true>::BLAZE_TEMPLATE VectorizedMul
    BLAZE_INTERNAL_ASSERT( !remainder || ( rows - ( rows % (SIMDSIZE) ) ) == ipos, "Invalid end calculation" );
 
    size_t i( 0UL );
-   ConstIterator_<VT> it( (~rhs).begin() );
+   Iterator left( begin() );
+   ConstIterator_<VT> right( (~rhs).begin() );
 
    for( ; (i+SIMDSIZE*3UL) < ipos; i+=SIMDSIZE*4UL ) {
-      matrix_.store( i             , row_, matrix_.load(i             ,row_) * it.load() ); it += SIMDSIZE;
-      matrix_.store( i+SIMDSIZE    , row_, matrix_.load(i+SIMDSIZE    ,row_) * it.load() ); it += SIMDSIZE;
-      matrix_.store( i+SIMDSIZE*2UL, row_, matrix_.load(i+SIMDSIZE*2UL,row_) * it.load() ); it += SIMDSIZE;
-      matrix_.store( i+SIMDSIZE*3UL, row_, matrix_.load(i+SIMDSIZE*3UL,row_) * it.load() ); it += SIMDSIZE;
+      left.store( left.load() * right.load() ); left += SIMDSIZE; right += SIMDSIZE;
+      left.store( left.load() * right.load() ); left += SIMDSIZE; right += SIMDSIZE;
+      left.store( left.load() * right.load() ); left += SIMDSIZE; right += SIMDSIZE;
+      left.store( left.load() * right.load() ); left += SIMDSIZE; right += SIMDSIZE;
    }
-   for( ; i<ipos; i+=SIMDSIZE, it+=SIMDSIZE ) {
-      matrix_.store( i, row_, matrix_.load(i,row_) * it.load() );
+   for( ; i<ipos; i+=SIMDSIZE ) {
+      left.store( left.load() * right.load() ); left += SIMDSIZE; right += SIMDSIZE;
    }
-   for( ; remainder && i<rows; ++i, ++it ) {
-      matrix_(i,row_) *= *it;
+   for( ; remainder && i<rows; ++i ) {
+      *left *= *right; ++left; ++right;
    }
 }
 /*! \endcond */
@@ -5952,19 +5957,20 @@ inline EnableIf_< typename DenseRow<MT,false,true>::BLAZE_TEMPLATE VectorizedDiv
    BLAZE_INTERNAL_ASSERT( ( rows - ( rows % (SIMDSIZE) ) ) == ipos, "Invalid end calculation" );
 
    size_t i( 0UL );
-   ConstIterator_<VT> it( (~rhs).begin() );
+   Iterator left( begin() );
+   ConstIterator_<VT> right( (~rhs).begin() );
 
    for( ; (i+SIMDSIZE*3UL) < ipos; i+=SIMDSIZE*4UL ) {
-      matrix_.store( i             , row_, matrix_.load(i             ,row_) / it.load() ); it += SIMDSIZE;
-      matrix_.store( i+SIMDSIZE    , row_, matrix_.load(i+SIMDSIZE    ,row_) / it.load() ); it += SIMDSIZE;
-      matrix_.store( i+SIMDSIZE*2UL, row_, matrix_.load(i+SIMDSIZE*2UL,row_) / it.load() ); it += SIMDSIZE;
-      matrix_.store( i+SIMDSIZE*3UL, row_, matrix_.load(i+SIMDSIZE*3UL,row_) / it.load() ); it += SIMDSIZE;
+      left.store( left.load() / right.load() ); left += SIMDSIZE; right += SIMDSIZE;
+      left.store( left.load() / right.load() ); left += SIMDSIZE; right += SIMDSIZE;
+      left.store( left.load() / right.load() ); left += SIMDSIZE; right += SIMDSIZE;
+      left.store( left.load() / right.load() ); left += SIMDSIZE; right += SIMDSIZE;
    }
-   for( ; i<ipos; i+=SIMDSIZE, it+=SIMDSIZE ) {
-      matrix_.store( i, row_, matrix_.load(i,row_) / it.load() );
+   for( ; i<ipos; i+=SIMDSIZE ) {
+      left.store( left.load() / right.load() ); left += SIMDSIZE; right += SIMDSIZE;
    }
-   for( ; i<rows; ++i, ++it ) {
-      matrix_(i,row_) /= *it;
+   for( ; i<rows; ++i ) {
+      *left /= *right; ++left; ++right;
    }
 }
 /*! \endcond */
