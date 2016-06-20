@@ -283,6 +283,119 @@ class HermitianMatrix<MT,SO,true>
       }
       //*******************************************************************************************
 
+      //**Load function****************************************************************************
+      /*!\brief Load of a SIMD element at the current iterator position.
+      //
+      // \return The loaded SIMD element.
+      //
+      // This function performs a load of the current SIMD element at the current iterator
+      // position. This function must \b NOT be called explicitly! It is used internally for
+      // the performance optimized evaluation of expression templates. Calling this function
+      // explicitly might result in erroneous results and/or in compilation errors.
+      */
+      inline SIMDType load() const {
+         return (*matrix_).load(row_,column_);
+      }
+      //*******************************************************************************************
+
+      //**Loada function***************************************************************************
+      /*!\brief Aligned load of a SIMD element at the current iterator position.
+      //
+      // \return The loaded SIMD element.
+      //
+      // This function performs an aligned load of the current SIMD element at the current
+      // iterator position. This function must \b NOT be called explicitly! It is used internally
+      // for the performance optimized evaluation of expression templates. Calling this function
+      // explicitly might result in erroneous results and/or in compilation errors.
+      */
+      inline SIMDType loada() const {
+         return (*matrix_).loada(row_,column_);
+      }
+      //*******************************************************************************************
+
+      //**Loadu function***************************************************************************
+      /*!\brief Unaligned load of a SIMD element at the current iterator position.
+      //
+      // \return The loaded SIMD element.
+      //
+      // This function performs an unaligned load of the current SIMD element at the current
+      // iterator position. This function must \b NOT be called explicitly! It is used internally
+      // for the performance optimized evaluation of expression templates. Calling this function
+      // explicitly might result in erroneous results and/or in compilation errors.
+      */
+      inline SIMDType loadu() const {
+         return (*matrix_).loadu(row_,column_);
+      }
+      //*******************************************************************************************
+
+      //**Store function***************************************************************************
+      /*!\brief Store of a SIMD element at the current iterator position.
+      //
+      // \param value The SIMD element to be stored.
+      // \return void
+      //
+      // This function performs a store of the current SIMD element at the current iterator
+      // position. This function must \b NOT be called explicitly! It is used internally for
+      // the performance optimized evaluation of expression templates. Calling this function
+      // explicitly might result in erroneous results and/or in compilation errors.
+      */
+      inline void store( const SIMDType& value ) const {
+         (*matrix_).store( row_, column_, value );
+         sync();
+      }
+      //*******************************************************************************************
+
+      //**Storea function**************************************************************************
+      /*!\brief Aligned store of a SIMD element at the current iterator position.
+      //
+      // \param value The SIMD element to be stored.
+      // \return void
+      //
+      // This function performs an aligned store of the current SIMD element at the current
+      // iterator position. This function must \b NOT be called explicitly! It is used internally
+      // for the performance optimized evaluation of expression templates. Calling this function
+      // explicitly might result in erroneous results and/or in compilation errors.
+      */
+      inline void storea( const SIMDType& value ) const {
+         (*matrix_).storea( row_, column_, value );
+         sync();
+      }
+      //*******************************************************************************************
+
+      //**Storeu function**************************************************************************
+      /*!\brief Unaligned store of a SIMD element at the current iterator position.
+      //
+      // \param value The SIMD element to be stored.
+      // \return void
+      //
+      // This function performs an unaligned store of the current SIMD element at the current
+      // iterator position. This function must \b NOT be called explicitly! It is used internally
+      // for the performance optimized evaluation of expression templates. Calling this function
+      // explicitly might result in erroneous results and/or in compilation errors.
+      */
+      inline void storeu( const SIMDType& value ) const {
+         (*matrix_).storeu( row_, column_, value );
+         sync();
+      }
+      //*******************************************************************************************
+
+      //**Stream function**************************************************************************
+      /*!\brief Aligned, non-temporal store of a SIMD element at the current iterator position.
+      //
+      // \param value The SIMD element to be stored.
+      // \return void
+      //
+      // This function performs an aligned, non-temporal store of the current SIMD element at the
+      // current iterator position. This function must \b NOT be called explicitly! It is used
+      // internally for the performance optimized evaluation of expression templates. Calling
+      // this function explicitly might result in erroneous results and/or in compilation errors.
+      */
+      inline void stream( const SIMDType& value ) const {
+         (*matrix_).stream( row_, column_, value );
+         sync();
+      }
+      //*******************************************************************************************
+
       //**Conversion operator**********************************************************************
       /*!\brief Conversion to an iterator over constant elements.
       //
@@ -569,6 +682,25 @@ class HermitianMatrix<MT,SO,true>
       //*******************************************************************************************
 
     private:
+      //**Sync function****************************************************************************
+      /*!\brief Synchronizes several paired elements after a SIMD assignment.
+      //
+      // \return void
+      */
+      void sync() const {
+         if( SO ) {
+            const size_t kend( min( row_+SIMDSIZE, (*matrix_).rows() ) );
+            for( size_t k=row_; k<kend; ++k )
+               (*matrix_)(column_,k) = conj( (*matrix_)(k,column_) );
+         }
+         else {
+            const size_t kend( min( column_+SIMDSIZE, (*matrix_).columns() ) );
+            for( size_t k=column_; k<kend; ++k )
+               (*matrix_)(k,row_) = conj( (*matrix_)(row_,k) );
+         }
+      }
+      //*******************************************************************************************
+
       //**Member variables*************************************************************************
       MT*    matrix_;  //!< Reference to the adapted dense matrix.
       size_t row_;     //!< The current row index of the iterator.
