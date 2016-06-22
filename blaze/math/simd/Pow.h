@@ -54,8 +54,7 @@ namespace blaze {
 //=================================================================================================
 
 //*************************************************************************************************
-/*!\fn simd_float_t pow( const simd_float_t&, const simd_float_t& )
-// \brief Computes the exponential value of a vector of single precision floating point values.
+/*!\brief Computes the exponential value of a vector of single precision floating point values.
 // \ingroup simd
 //
 // \param a The vector of single precision floating point base values.
@@ -64,30 +63,27 @@ namespace blaze {
 //
 // This operation is only available via the SVML for SSE, AVX, and AVX-512.
 */
-#if BLAZE_SVML_MODE && BLAZE_MIC_MODE
 BLAZE_ALWAYS_INLINE simd_float_t pow( const simd_float_t& a, const simd_float_t& b ) noexcept
+#if BLAZE_SVML_MODE && BLAZE_MIC_MODE
 {
    return _mm512_pow_ps( a.value, b.value );
 }
 #elif BLAZE_SVML_MODE && BLAZE_AVX_MODE
-BLAZE_ALWAYS_INLINE simd_float_t pow( const simd_float_t& a, const simd_float_t& b ) noexcept
 {
    return _mm256_pow_ps( a.value, b.value );
 }
 #elif BLAZE_SVML_MODE && BLAZE_SSE_MODE
-BLAZE_ALWAYS_INLINE simd_float_t pow( const simd_float_t& a, const simd_float_t& b ) noexcept
 {
    return _mm_pow_ps( a.value, b.value );
 }
 #else
-simd_float_t pow( const simd_float_t& a, const simd_float_t& b ) = delete;
+= delete;
 #endif
 //*************************************************************************************************
 
 
 //*************************************************************************************************
-/*!\fn simd_double_t pow( const simd_double_t&, const simd_double_t& )
-// \brief Computes the exponential value of a vector of double precision floating point values.
+/*!\brief Computes the exponential value of a vector of double precision floating point values.
 // \ingroup simd
 //
 // \param a The vector of double precision floating point base values.
@@ -96,23 +92,21 @@ simd_float_t pow( const simd_float_t& a, const simd_float_t& b ) = delete;
 //
 // This operation is only available via the SVML for SSE, AVX, and AVX-512.
 */
-#if BLAZE_SVML_MODE && BLAZE_MIC_MODE
 BLAZE_ALWAYS_INLINE simd_double_t pow( const simd_double_t& a, const simd_double_t& b ) noexcept
+#if BLAZE_SVML_MODE && BLAZE_MIC_MODE
 {
    return _mm512_pow_pd( a.value, b.value );
 }
 #elif BLAZE_SVML_MODE && BLAZE_AVX_MODE
-BLAZE_ALWAYS_INLINE simd_double_t pow( const simd_double_t& a, const simd_double_t& b ) noexcept
 {
    return _mm256_pow_pd( a.value, b.value );
 }
 #elif BLAZE_SVML_MODE && BLAZE_SSE_MODE
-BLAZE_ALWAYS_INLINE simd_double_t pow( const simd_double_t& a, const simd_double_t& b ) noexcept
 {
    return _mm_pow_pd( a.value, b.value );
 }
 #else
-simd_double_t pow( const simd_double_t& a, const simd_double_t& b ) = delete;
+= delete;
 #endif
 //*************************************************************************************************
 

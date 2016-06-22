@@ -41,6 +41,7 @@
 //*************************************************************************************************
 
 #include <blaze/math/simd/BasicTypes.h>
+#include <blaze/math/traits/DivTrait.h>
 #include <blaze/system/Inline.h>
 #include <blaze/system/Vectorization.h>
 
@@ -54,160 +55,133 @@ namespace blaze {
 //=================================================================================================
 
 //*************************************************************************************************
-/*!\fn simd_int32_t operator/( const simd_int32_t&, const simd_int32_t& )
-// \brief Division of two vectors of 32-bit integral values.
+/*!\brief Division of two vectors of 32-bit integral SIMD values.
 // \ingroup simd
 //
-// \param a The left-hand side operand.
-// \param b The right-hand side operand.
+// \param a The left-hand side SIMD operand.
+// \param b The right-hand side SIMD operand.
 // \return The result of the division.
 //
 // This operation is only available for AVX-512.
 */
+template< typename T1    // Type of the left-hand side operand
+        , typename T2 >  // Type of the right-hand side operand
+BLAZE_ALWAYS_INLINE DivTrait<T1,T2>
+   operator/( const simd_i32_t<T1>& a, const simd_i32_t<T2>& b ) noexcept
 #if BLAZE_MIC_MODE
-BLAZE_ALWAYS_INLINE simd_int32_t operator/( const simd_int32_t& a, const simd_int32_t& b ) noexcept
 {
-   return _mm512_div_epi32( a.value, b.value );
+   return _mm512_div_epi32( (~a).value, (~b).value );
 }
 #else
-simd_int32_t operator/( const simd_int32_t& a, const simd_int32_t& b ) = delete;
+= delete;
 #endif
 //*************************************************************************************************
 
 
 //*************************************************************************************************
-/*!\fn simd_int64_t operator/( const simd_int64_t&, const simd_int64_t& )
-// \brief Division of two vectors of 64-bit integral values.
+/*!\brief Scaling of a vector of 32-bit integral complex SIMD values.
 // \ingroup simd
 //
-// \param a The left-hand side operand.
-// \param b The right-hand side operand.
+// \param a The left-hand side complex values to be scaled.
+// \param b The right-hand side scalars.
 // \return The result of the division.
 //
 // This operation is only available for AVX-512.
 */
+template< typename T1    // Type of the left-hand side operand
+        , typename T2 >  // Type of the right-hand side operand
+BLAZE_ALWAYS_INLINE DivTrait<T1,T2>
+   operator/( const simd_ci32_t<T1>& a, const simd_i32_t<T2>& b ) noexcept
 #if BLAZE_MIC_MODE
-BLAZE_ALWAYS_INLINE simd_int64_t operator/( const simd_int64_t& a, const simd_int64_t& b ) noexcept
 {
-   return _mm512_div_epi64( a.value, b.value );
+   return _mm512_div_epi32( (~a).value, (~b).value );
 }
 #else
-simd_int64_t operator/( const simd_int64_t& a, const simd_int64_t& b ) = delete;
+= delete;
 #endif
 //*************************************************************************************************
 
 
 //*************************************************************************************************
-/*!\fn simd_float_t operator/( const simd_float_t&, const simd_float_t& )
-// \brief Division of two vectors of single precision floating point values.
+/*!\brief Division of two vectors of 64-bit integral SIMD values.
 // \ingroup simd
 //
-// \param a The left-hand side operand.
-// \param b The right-hand side operand.
+// \param a The left-hand side SIMD operand.
+// \param b The right-hand side SIMD operand.
+// \return The result of the division.
+//
+// This operation is only available for AVX-512.
+*/
+template< typename T1    // Type of the left-hand side operand
+        , typename T2 >  // Type of the right-hand side operand
+BLAZE_ALWAYS_INLINE DivTrait<T1,T2>
+   operator/( const simd_i64_t<T1>& a, const simd_i64_t<T2>& b ) noexcept
+#if BLAZE_MIC_MODE
+{
+   return _mm512_div_epi64( (~a).value, (~b).value );
+}
+#else
+= delete;
+#endif
+//*************************************************************************************************
+
+
+//*************************************************************************************************
+/*!\brief Scaling of a vector of 64-bit integral complex SIMD values.
+// \ingroup simd
+//
+// \param a The left-hand side complex values to be scaled.
+// \param b The right-hand side scalars.
+// \return The result of the division.
+//
+// This operation is only available for AVX-512.
+*/
+template< typename T1    // Type of the left-hand side operand
+        , typename T2 >  // Type of the right-hand side operand
+BLAZE_ALWAYS_INLINE DivTrait<T1,T2>
+   operator/( const simd_ci64_t<T1>& a, const simd_i64_t<T2>& b ) noexcept
+#if BLAZE_MIC_MODE
+{
+   return _mm512_div_epi64( (~a).value, (~b).value );
+}
+#else
+= delete;
+#endif
+//*************************************************************************************************
+
+
+//*************************************************************************************************
+/*!\brief Division of two vectors of single precision floating point SIMD values.
+// \ingroup simd
+//
+// \param a The left-hand side SIMD operand.
+// \param b The right-hand side SIMD operand.
 // \return The result of the division.
 //
 // This operation is only available for SSE, AVX, and AVX-512.
 */
+BLAZE_ALWAYS_INLINE simd_float_t
+   operator/( const simd_float_t& a, const simd_float_t& b ) noexcept
 #if BLAZE_MIC_MODE
-BLAZE_ALWAYS_INLINE simd_float_t operator/( const simd_float_t& a, const simd_float_t& b ) noexcept
 {
    return _mm512_div_ps( a.value, b.value );
 }
 #elif BLAZE_AVX_MODE
-BLAZE_ALWAYS_INLINE simd_float_t operator/( const simd_float_t& a, const simd_float_t& b ) noexcept
 {
    return _mm256_div_ps( a.value, b.value );
 }
 #elif BLAZE_SSE_MODE
-BLAZE_ALWAYS_INLINE simd_float_t operator/( const simd_float_t& a, const simd_float_t& b ) noexcept
 {
    return _mm_div_ps( a.value, b.value );
 }
 #else
-simd_float_t operator/( const simd_float_t& a, const simd_float_t& b ) = delete;
+= delete;
 #endif
 //*************************************************************************************************
 
 
 //*************************************************************************************************
-/*!\fn simd_double_t operator/( const simd_double_t&, const simd_double_t& )
-// \brief Division of two vectors of double precision floating point values.
-// \ingroup simd
-//
-// \param a The left-hand side operand.
-// \param b The right-hand side operand.
-// \return The result of the division.
-//
-// This operation is only available for SSE, AVX, and AVX-512.
-*/
-#if BLAZE_MIC_MODE
-BLAZE_ALWAYS_INLINE simd_double_t operator/( const simd_double_t& a, const simd_double_t& b ) noexcept
-{
-   return _mm512_div_pd( a.value, b.value );
-}
-#elif BLAZE_AVX_MODE
-BLAZE_ALWAYS_INLINE simd_double_t operator/( const simd_double_t& a, const simd_double_t& b ) noexcept
-{
-   return _mm256_div_pd( a.value, b.value );
-}
-#elif BLAZE_SSE2_MODE
-BLAZE_ALWAYS_INLINE simd_double_t operator/( const simd_double_t& a, const simd_double_t& b ) noexcept
-{
-   return _mm_div_pd( a.value, b.value );
-}
-#else
-simd_double_t operator/( const simd_double_t& a, const simd_double_t& b ) = delete;
-#endif
-//*************************************************************************************************
-
-
-//*************************************************************************************************
-/*!\fn simd_cint32_t operator/( const simd_cint32_t&, const simd_int32_t& )
-// \brief Scaling of a vector of 32-bit integral complex values.
-// \ingroup simd
-//
-// \param a The left-hand side complex values to be scaled.
-// \param b The right-hand side scalars.
-// \return The result of the division.
-//
-// This operation is only available for AVX-512.
-*/
-#if BLAZE_MIC_MODE
-BLAZE_ALWAYS_INLINE simd_cint32_t operator/( const simd_cint32_t& a, const simd_int32_t& b ) noexcept
-{
-   return _mm512_div_epi32( a.value, b.value );
-}
-#else
-simd_cint32_t operator/( const simd_cint32_t& a, const simd_int32_t& b ) = delete;
-#endif
-//*************************************************************************************************
-
-
-//*************************************************************************************************
-/*!\fn simd_cint64_t operator/( const simd_cint64_t&, const simd_int64_t& )
-// \brief Scaling of a vector of 64-bit integral complex values.
-// \ingroup simd
-//
-// \param a The left-hand side complex values to be scaled.
-// \param b The right-hand side scalars.
-// \return The result of the division.
-//
-// This operation is only available for AVX-512.
-*/
-#if BLAZE_MIC_MODE
-BLAZE_ALWAYS_INLINE simd_cint64_t operator/( const simd_cint64_t& a, const simd_int64_t& b ) noexcept
-{
-   return _mm512_div_epi64( a.value, b.value );
-}
-#else
-simd_cint64_t operator/( const simd_cint64_t& a, const simd_int64_t& b ) = delete;
-#endif
-//*************************************************************************************************
-
-
-//*************************************************************************************************
-/*!\fn simd_cfloat_t operator/( const simd_cfloat_t&, const simd_float_t& )
-// \brief Scaling of a vector of single precision floating point values complex values.
+/*!\brief Scaling of a vector of single precision floating point values complex SIMD values.
 // \ingroup simd
 //
 // \param a The left-hand side complex values to be scaled.
@@ -216,30 +190,58 @@ simd_cint64_t operator/( const simd_cint64_t& a, const simd_int64_t& b ) = delet
 //
 // This operation is only available for SSE, AVX, and AVX-512.
 */
+BLAZE_ALWAYS_INLINE simd_cfloat_t
+   operator/( const simd_cfloat_t& a, const simd_float_t& b ) noexcept
 #if BLAZE_MIC_MODE
-BLAZE_ALWAYS_INLINE simd_cfloat_t operator/( const simd_cfloat_t& a, const simd_float_t& b ) noexcept
 {
    return _mm512_div_ps( a.value, b.value );
 }
 #elif BLAZE_AVX_MODE
-BLAZE_ALWAYS_INLINE simd_cfloat_t operator/( const simd_cfloat_t& a, const simd_float_t& b ) noexcept
 {
    return _mm256_div_ps( a.value, b.value );
 }
 #elif BLAZE_SSE_MODE
-BLAZE_ALWAYS_INLINE simd_cfloat_t operator/( const simd_cfloat_t& a, const simd_float_t& b ) noexcept
 {
    return _mm_div_ps( a.value, b.value );
 }
 #else
-simd_cfloat_t operator/( const simd_cfloat_t& a, const simd_float_t& b ) = delete;
+= delete;
 #endif
 //*************************************************************************************************
 
 
 //*************************************************************************************************
-/*!\fn simd_cdouble_t operator/( const simd_cdouble_t&, const simd_double_t& )
-// \brief Scaling of a vector of double precision floating point values complex values.
+/*!\brief Division of two vectors of double precision floating point SIMD values.
+// \ingroup simd
+//
+// \param a The left-hand side SIMD operand.
+// \param b The right-hand side SIMD operand.
+// \return The result of the division.
+//
+// This operation is only available for SSE, AVX, and AVX-512.
+*/
+BLAZE_ALWAYS_INLINE simd_double_t
+   operator/( const simd_double_t& a, const simd_double_t& b ) noexcept
+#if BLAZE_MIC_MODE
+{
+   return _mm512_div_pd( a.value, b.value );
+}
+#elif BLAZE_AVX_MODE
+{
+   return _mm256_div_pd( a.value, b.value );
+}
+#elif BLAZE_SSE2_MODE
+{
+   return _mm_div_pd( a.value, b.value );
+}
+#else
+= delete;
+#endif
+//*************************************************************************************************
+
+
+//*************************************************************************************************
+/*!\brief Scaling of a vector of double precision floating point values complex SIMD values.
 // \ingroup simd
 //
 // \param a The left-hand side complex values to be scaled.
@@ -248,24 +250,62 @@ simd_cfloat_t operator/( const simd_cfloat_t& a, const simd_float_t& b ) = delet
 //
 // This operation is only available for SSE, AVX, and AVX-512.
 */
+BLAZE_ALWAYS_INLINE simd_cdouble_t
+   operator/( const simd_cdouble_t& a, const simd_double_t& b ) noexcept
 #if BLAZE_MIC_MODE
-BLAZE_ALWAYS_INLINE simd_cdouble_t operator/( const simd_cdouble_t& a, const simd_double_t& b ) noexcept
 {
    return _mm512_div_pd( a.value, b.value );
 }
 #elif BLAZE_AVX_MODE
-BLAZE_ALWAYS_INLINE simd_cdouble_t operator/( const simd_cdouble_t& a, const simd_double_t& b ) noexcept
 {
    return _mm256_div_pd( a.value, b.value );
 }
 #elif BLAZE_SSE2_MODE
-BLAZE_ALWAYS_INLINE simd_cdouble_t operator/( const simd_cdouble_t& a, const simd_double_t& b ) noexcept
 {
    return _mm_div_pd( a.value, b.value );
 }
 #else
-simd_cdouble_t operator/( const simd_cdouble_t& a, const simd_double_t& b ) = delete;
+= delete;
 #endif
+//*************************************************************************************************
+
+
+
+
+//=================================================================================================
+//
+//  DIVTRAIT SPECIALIZATIONS
+//
+//=================================================================================================
+
+//*************************************************************************************************
+/*! \cond BLAZE_INTERNAL */
+template<> struct DivTrait< simd_int32_t , simd_int32_t  > { using Type = simd_int32_t;  };
+template<> struct DivTrait< simd_int32_t , simd_uint32_t > { using Type = simd_uint32_t; };
+template<> struct DivTrait< simd_uint32_t, simd_int32_t  > { using Type = simd_uint32_t; };
+template<> struct DivTrait< simd_uint32_t, simd_uint32_t > { using Type = simd_uint32_t; };
+
+template<> struct DivTrait< simd_cint32_t , simd_int32_t  > { using Type = simd_cint32_t;  };
+template<> struct DivTrait< simd_cint32_t , simd_uint32_t > { using Type = simd_cuint32_t; };
+template<> struct DivTrait< simd_cuint32_t, simd_int32_t  > { using Type = simd_cuint32_t; };
+template<> struct DivTrait< simd_cuint32_t, simd_uint32_t > { using Type = simd_cuint32_t; };
+
+template<> struct DivTrait< simd_int64_t , simd_int64_t  > { using Type = simd_int64_t;  };
+template<> struct DivTrait< simd_int64_t , simd_uint64_t > { using Type = simd_uint64_t; };
+template<> struct DivTrait< simd_uint64_t, simd_int64_t  > { using Type = simd_uint64_t; };
+template<> struct DivTrait< simd_uint64_t, simd_uint64_t > { using Type = simd_uint64_t; };
+
+template<> struct DivTrait< simd_cint64_t , simd_int64_t  > { using Type = simd_cint64_t;  };
+template<> struct DivTrait< simd_cint64_t , simd_uint64_t > { using Type = simd_cuint64_t; };
+template<> struct DivTrait< simd_cuint64_t, simd_int64_t  > { using Type = simd_cuint64_t; };
+template<> struct DivTrait< simd_cuint64_t, simd_uint64_t > { using Type = simd_cuint64_t; };
+
+template<> struct DivTrait< simd_float_t , simd_float_t > { using Type = simd_float_t;  };
+template<> struct DivTrait< simd_cfloat_t, simd_float_t > { using Type = simd_cfloat_t; };
+
+template<> struct DivTrait< simd_double_t , simd_double_t > { using Type = simd_double_t;  };
+template<> struct DivTrait< simd_cdouble_t, simd_double_t > { using Type = simd_cdouble_t; };
+/*! \endcond */
 //*************************************************************************************************
 
 } // namespace blaze

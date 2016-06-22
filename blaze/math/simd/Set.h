@@ -47,10 +47,12 @@
 #include <blaze/util/constraints/Integral.h>
 #include <blaze/util/EnableIf.h>
 #include <blaze/util/mpl/And.h>
+#include <blaze/util/mpl/If.h>
 #include <blaze/util/StaticAssert.h>
 #include <blaze/util/Types.h>
 #include <blaze/util/typetraits/HasSize.h>
 #include <blaze/util/typetraits/IsIntegral.h>
+#include <blaze/util/typetraits/IsSigned.h>
 
 
 namespace blaze {
@@ -62,6 +64,63 @@ namespace blaze {
 //=================================================================================================
 
 //*************************************************************************************************
+/*!\brief Sets all values in the vector to the given 1-byte integral value.
+// \ingroup simd
+//
+// \param value The given 1-byte integral value.
+// \return The set vector of 1-byte integral values.
+*/
+template< typename T >  // Type of the integral value
+BLAZE_ALWAYS_INLINE EnableIf_< And< IsIntegral<T>, HasSize<T,1UL> >
+                             , If_< IsSigned<T>, simd_int8_t, simd_uint8_t > >
+   set( T value ) noexcept
+{
+#if BLAZE_AVX2_MODE
+   return _mm256_set1_epi8( value );
+#elif BLAZE_SSE2_MODE
+   return _mm_set1_epi8( value );
+#else
+   return value;
+#endif
+}
+//*************************************************************************************************
+
+
+//*************************************************************************************************
+/*!\brief Sets all values in the vector to the given 1-byte integral complex value.
+// \ingroup simd
+//
+// \param value The given 1-byte integral complex value.
+// \return The set vector of 1-byte integral complex values.
+*/
+template< typename T >  // Type of the integral value
+BLAZE_ALWAYS_INLINE EnableIf_< And< IsIntegral<T>, HasSize<T,1UL> >
+                             , If_< IsSigned<T>, simd_cint8_t, simd_cuint8_t > >
+   set( complex<T> value ) noexcept
+{
+#if BLAZE_AVX2_MODE
+   return _mm256_set_epi8( value.imag(), value.real(), value.imag(), value.real(),
+                           value.imag(), value.real(), value.imag(), value.real(),
+                           value.imag(), value.real(), value.imag(), value.real(),
+                           value.imag(), value.real(), value.imag(), value.real(),
+                           value.imag(), value.real(), value.imag(), value.real(),
+                           value.imag(), value.real(), value.imag(), value.real(),
+                           value.imag(), value.real(), value.imag(), value.real(),
+                           value.imag(), value.real(), value.imag(), value.real() );
+#elif BLAZE_SSE2_MODE
+   return _mm_set_epi8( value.imag(), value.real(), value.imag(), value.real(),
+                        value.imag(), value.real(), value.imag(), value.real(),
+                        value.imag(), value.real(), value.imag(), value.real(),
+                        value.imag(), value.real(), value.imag(), value.real() );
+#else
+   return value;
+#endif
+   BLAZE_STATIC_ASSERT( sizeof( complex<T> ) == 2UL*sizeof( T ) );
+}
+//*************************************************************************************************
+
+
+//*************************************************************************************************
 /*!\brief Sets all values in the vector to the given 2-byte integral value.
 // \ingroup simd
 //
@@ -69,7 +128,8 @@ namespace blaze {
 // \return The set vector of 2-byte integral values.
 */
 template< typename T >  // Type of the integral value
-BLAZE_ALWAYS_INLINE EnableIf_< And< IsIntegral<T>, HasSize<T,2UL> >, simd_int16_t >
+BLAZE_ALWAYS_INLINE EnableIf_< And< IsIntegral<T>, HasSize<T,2UL> >
+                             , If_< IsSigned<T>, simd_int16_t, simd_uint16_t > >
    set( T value ) noexcept
 {
 #if BLAZE_AVX2_MODE
@@ -84,6 +144,34 @@ BLAZE_ALWAYS_INLINE EnableIf_< And< IsIntegral<T>, HasSize<T,2UL> >, simd_int16_
 
 
 //*************************************************************************************************
+/*!\brief Sets all values in the vector to the given 2-byte integral complex value.
+// \ingroup simd
+//
+// \param value The given 2-byte integral complex value.
+// \return The set vector of 2-byte integral complex values.
+*/
+template< typename T >  // Type of the integral value
+BLAZE_ALWAYS_INLINE EnableIf_< And< IsIntegral<T>, HasSize<T,2UL> >
+                             , If_< IsSigned<T>, simd_cint16_t, simd_cuint16_t > >
+   set( complex<T> value ) noexcept
+{
+#if BLAZE_AVX2_MODE
+   return _mm256_set_epi16( value.imag(), value.real(), value.imag(), value.real(),
+                            value.imag(), value.real(), value.imag(), value.real(),
+                            value.imag(), value.real(), value.imag(), value.real(),
+                            value.imag(), value.real(), value.imag(), value.real() );
+#elif BLAZE_SSE2_MODE
+   return _mm_set_epi16( value.imag(), value.real(), value.imag(), value.real(),
+                         value.imag(), value.real(), value.imag(), value.real() );
+#else
+   return value;
+#endif
+   BLAZE_STATIC_ASSERT( sizeof( complex<T> ) == 2UL*sizeof( T ) );
+}
+//*************************************************************************************************
+
+
+//*************************************************************************************************
 /*!\brief Sets all values in the vector to the given 4-byte integral value.
 // \ingroup simd
 //
@@ -91,7 +179,8 @@ BLAZE_ALWAYS_INLINE EnableIf_< And< IsIntegral<T>, HasSize<T,2UL> >, simd_int16_
 // \return The set vector of 4-byte integral values.
 */
 template< typename T >  // Type of the integral value
-BLAZE_ALWAYS_INLINE EnableIf_< And< IsIntegral<T>, HasSize<T,4UL> >, simd_int32_t >
+BLAZE_ALWAYS_INLINE EnableIf_< And< IsIntegral<T>, HasSize<T,4UL> >
+                             , If_< IsSigned<T>, simd_int32_t, simd_uint32_t > >
    set( T value ) noexcept
 {
 #if BLAZE_MIC_MODE
@@ -108,6 +197,36 @@ BLAZE_ALWAYS_INLINE EnableIf_< And< IsIntegral<T>, HasSize<T,4UL> >, simd_int32_
 
 
 //*************************************************************************************************
+/*!\brief Sets all values in the vector to the given 4-byte integral complex value.
+// \ingroup simd
+//
+// \param value The given 4-byte integral complex value.
+// \return The set vector of 4-byte integral complex values.
+*/
+template< typename T >  // Type of the integral value
+BLAZE_ALWAYS_INLINE EnableIf_< And< IsIntegral<T>, HasSize<T,4UL> >
+                             , If_< IsSigned<T>, simd_cint32_t, simd_cuint32_t > >
+   set( complex<T> value ) noexcept
+{
+#if BLAZE_MIC_MODE
+   return _mm512_set_epi32( value.imag(), value.real(), value.imag(), value.real(),
+                            value.imag(), value.real(), value.imag(), value.real(),
+                            value.imag(), value.real(), value.imag(), value.real(),
+                            value.imag(), value.real(), value.imag(), value.real() );
+#elif BLAZE_AVX2_MODE
+   return _mm256_set_epi32( value.imag(), value.real(), value.imag(), value.real(),
+                            value.imag(), value.real(), value.imag(), value.real() );
+#elif BLAZE_SSE2_MODE
+   return _mm_set_epi32( value.imag(), value.real(), value.imag(), value.real() );
+#else
+   return value;
+#endif
+   BLAZE_STATIC_ASSERT( sizeof( complex<T> ) == 2UL*sizeof( T ) );
+}
+//*************************************************************************************************
+
+
+//*************************************************************************************************
 /*!\brief Sets all values in the vector to the given 8-byte integral value.
 // \ingroup simd
 //
@@ -115,7 +234,8 @@ BLAZE_ALWAYS_INLINE EnableIf_< And< IsIntegral<T>, HasSize<T,4UL> >, simd_int32_
 // \return The set vector of 8-byte integral values.
 */
 template< typename T >  // Type of the integral value
-BLAZE_ALWAYS_INLINE EnableIf_< And< IsIntegral<T>, HasSize<T,8UL> >, simd_int64_t >
+BLAZE_ALWAYS_INLINE EnableIf_< And< IsIntegral<T>, HasSize<T,8UL> >
+                             , If_< IsSigned<T>, simd_int64_t, simd_uint64_t > >
    set( T value ) noexcept
 {
 #if BLAZE_MIC_MODE
@@ -127,6 +247,33 @@ BLAZE_ALWAYS_INLINE EnableIf_< And< IsIntegral<T>, HasSize<T,8UL> >, simd_int64_
 #else
    return value;
 #endif
+}
+//*************************************************************************************************
+
+
+//*************************************************************************************************
+/*!\brief Sets all values in the vector to the given 8-byte integral complex value.
+// \ingroup simd
+//
+// \param value The given 8-byte integral complex value.
+// \return The set vector of 8-byte integral complex values.
+*/
+template< typename T >  // Type of the integral value
+BLAZE_ALWAYS_INLINE EnableIf_< And< IsIntegral<T>, HasSize<T,8UL> >
+                             , If_< IsSigned<T>, simd_cint64_t, simd_cuint64_t > >
+   set( complex<T> value ) noexcept
+{
+#if BLAZE_MIC_MODE
+   return _mm512_set_epi64( value.imag(), value.real(), value.imag(), value.real(),
+                            value.imag(), value.real(), value.imag(), value.real() );
+#elif BLAZE_AVX2_MODE
+   return _mm256_set_epi64( value.imag(), value.real(), value.imag(), value.real() );
+#elif BLAZE_SSE2_MODE
+   return _mm_set_epi64( value.imag(), value.real() );
+#else
+   return value;
+#endif
+   BLAZE_STATIC_ASSERT( sizeof( complex<T> ) == 2UL*sizeof( T ) );
 }
 //*************************************************************************************************
 
@@ -154,110 +301,6 @@ BLAZE_ALWAYS_INLINE simd_float_t set( float value ) noexcept
 
 
 //*************************************************************************************************
-/*!\brief Sets all values in the vector to the given 'double' value.
-// \ingroup simd
-//
-// \param value The given 'double' value.
-// \return The set vector of 'double' values.
-*/
-BLAZE_ALWAYS_INLINE simd_double_t set( double value ) noexcept
-{
-#if BLAZE_MIC_MODE
-   return _mm512_set1_pd( value );
-#elif BLAZE_AVX_MODE
-   return _mm256_set1_pd( value );
-#elif BLAZE_SSE2_MODE
-   return _mm_set1_pd( value );
-#else
-   return value;
-#endif
-}
-//*************************************************************************************************
-
-
-//*************************************************************************************************
-/*!\brief Sets all values in the vector to the given 2-byte integral complex value.
-// \ingroup simd
-//
-// \param value The given 2-byte integral complex value.
-// \return The set vector of 2-byte integral complex values.
-*/
-template< typename T >  // Type of the integral value
-BLAZE_ALWAYS_INLINE EnableIf_< And< IsIntegral<T>, HasSize<T,2UL> >, simd_cint16_t >
-   set( complex<T> value ) noexcept
-{
-#if BLAZE_AVX2_MODE
-   return _mm256_set_epi16( value.imag(), value.real(), value.imag(), value.real(),
-                            value.imag(), value.real(), value.imag(), value.real(),
-                            value.imag(), value.real(), value.imag(), value.real(),
-                            value.imag(), value.real(), value.imag(), value.real() );
-#elif BLAZE_SSE2_MODE
-   return _mm_set_epi16( value.imag(), value.real(), value.imag(), value.real(),
-                         value.imag(), value.real(), value.imag(), value.real() );
-#else
-   return value;
-#endif
-   BLAZE_STATIC_ASSERT( sizeof( complex<T> ) == 2UL*sizeof( T ) );
-}
-//*************************************************************************************************
-
-
-//*************************************************************************************************
-/*!\brief Sets all values in the vector to the given 4-byte integral complex value.
-// \ingroup simd
-//
-// \param value The given 4-byte integral complex value.
-// \return The set vector of 4-byte integral complex values.
-*/
-template< typename T >  // Type of the integral value
-BLAZE_ALWAYS_INLINE EnableIf_< And< IsIntegral<T>, HasSize<T,4UL> >, simd_cint32_t >
-   set( complex<T> value ) noexcept
-{
-#if BLAZE_MIC_MODE
-   return _mm512_set_epi32( value.imag(), value.real(), value.imag(), value.real(),
-                            value.imag(), value.real(), value.imag(), value.real(),
-                            value.imag(), value.real(), value.imag(), value.real(),
-                            value.imag(), value.real(), value.imag(), value.real() );
-#elif BLAZE_AVX2_MODE
-   return _mm256_set_epi32( value.imag(), value.real(), value.imag(), value.real(),
-                            value.imag(), value.real(), value.imag(), value.real() );
-#elif BLAZE_SSE2_MODE
-   return _mm_set_epi32( value.imag(), value.real(), value.imag(), value.real() );
-#else
-   return value;
-#endif
-   BLAZE_STATIC_ASSERT( sizeof( complex<T> ) == 2UL*sizeof( T ) );
-}
-//*************************************************************************************************
-
-
-//*************************************************************************************************
-/*!\brief Sets all values in the vector to the given 8-byte integral complex value.
-// \ingroup simd
-//
-// \param value The given 8-byte integral complex value.
-// \return The set vector of 8-byte integral complex values.
-*/
-template< typename T >  // Type of the integral value
-BLAZE_ALWAYS_INLINE EnableIf_< And< IsIntegral<T>, HasSize<T,8UL> >, simd_cint64_t >
-   set( complex<T> value ) noexcept
-{
-#if BLAZE_MIC_MODE
-   return _mm512_set_epi64( value.imag(), value.real(), value.imag(), value.real(),
-                            value.imag(), value.real(), value.imag(), value.real() );
-#elif BLAZE_AVX2_MODE
-   return _mm256_set_epi64( value.imag(), value.real(), value.imag(), value.real() );
-#elif BLAZE_SSE2_MODE
-   return _mm_set_epi64( value.imag(), value.real() );
-#else
-   return value;
-#endif
-   BLAZE_STATIC_ASSERT( sizeof( complex<T> ) == 2UL*sizeof( T ) );
-}
-//*************************************************************************************************
-
-
-//*************************************************************************************************
 /*!\brief Sets all values in the vector to the given 'complex<float>' value.
 // \ingroup simd
 //
@@ -280,6 +323,28 @@ BLAZE_ALWAYS_INLINE simd_cfloat_t set( const complex<float>& value ) noexcept
    return value;
 #endif
    BLAZE_STATIC_ASSERT( sizeof( complex<float> ) == 2UL*sizeof( float ) );
+}
+//*************************************************************************************************
+
+
+//*************************************************************************************************
+/*!\brief Sets all values in the vector to the given 'double' value.
+// \ingroup simd
+//
+// \param value The given 'double' value.
+// \return The set vector of 'double' values.
+*/
+BLAZE_ALWAYS_INLINE simd_double_t set( double value ) noexcept
+{
+#if BLAZE_MIC_MODE
+   return _mm512_set1_pd( value );
+#elif BLAZE_AVX_MODE
+   return _mm256_set1_pd( value );
+#elif BLAZE_SSE2_MODE
+   return _mm_set1_pd( value );
+#else
+   return value;
+#endif
 }
 //*************************************************************************************************
 

@@ -41,6 +41,7 @@
 //*************************************************************************************************
 
 #include <blaze/math/simd/BasicTypes.h>
+#include <blaze/math/traits/MultTrait.h>
 #include <blaze/system/Inline.h>
 #include <blaze/system/Vectorization.h>
 
@@ -54,153 +55,35 @@ namespace blaze {
 //=================================================================================================
 
 //*************************************************************************************************
-/*!\fn simd_int16_t operator*( const simd_int16_t&, const simd_int16_t& )
-// \brief Multiplication of two vectors of 16-bit integral values.
+/*!\brief Multiplication of two vectors of 16-bit integral SIMD values.
 // \ingroup simd
 //
-// \param a The left-hand side operand.
-// \param b The right-hand side operand.
+// \param a The left-hand side SIMD operand.
+// \param b The right-hand side SIMD operand.
 // \return The result of the multiplication.
 //
 // This operation is only available for SSE2 and AVX2.
 */
+template< typename T1    // Type of the left-hand side operand
+        , typename T2 >  // Type of the right-hand side operand
+BLAZE_ALWAYS_INLINE MultTrait_<T1,T2>
+   operator*( const simd_i16_t<T1>& a, const simd_i16_t<T2>& b ) noexcept
 #if BLAZE_AVX2_MODE
-BLAZE_ALWAYS_INLINE simd_int16_t operator*( const simd_int16_t& a, const simd_int16_t& b ) noexcept
 {
-   return _mm256_mullo_epi16( a.value, b.value );
+   return _mm256_mullo_epi16( (~a).value, (~b).value );
 }
 #elif BLAZE_SSE2_MODE
-BLAZE_ALWAYS_INLINE simd_int16_t operator*( const simd_int16_t& a, const simd_int16_t& b ) noexcept
 {
-   return _mm_mullo_epi16( a.value, b.value );
+   return _mm_mullo_epi16( (~a).value, (~b).value );
 }
 #else
-simd_int16_t operator*( const simd_int16_t& a, const simd_int16_t& b ) = delete;
+= delete;
 #endif
 //*************************************************************************************************
 
 
 //*************************************************************************************************
-/*!\fn simd_int32_t operator*( const simd_int32_t&, const simd_int32_t& )
-// \brief Multiplication of two vectors of 32-bit integral values.
-// \ingroup simd
-//
-// \param a The left-hand side operand.
-// \param b The right-hand side operand.
-// \return The result of the multiplication.
-//
-// This operation is only available for SSE4, AVX2, and AVX-512.
-*/
-#if BLAZE_MIC_MODE
-BLAZE_ALWAYS_INLINE simd_int32_t operator*( const simd_int32_t& a, const simd_int32_t& b ) noexcept
-{
-   return _mm512_mullo_epi32( a.value, b.value );
-}
-#elif BLAZE_AVX2_MODE
-BLAZE_ALWAYS_INLINE simd_int32_t operator*( const simd_int32_t& a, const simd_int32_t& b ) noexcept
-{
-   return _mm256_mullo_epi32( a.value, b.value );
-}
-#elif BLAZE_SSE4_MODE
-BLAZE_ALWAYS_INLINE simd_int32_t operator*( const simd_int32_t& a, const simd_int32_t& b ) noexcept
-{
-   return _mm_mullo_epi32( a.value, b.value );
-}
-#else
-simd_int32_t operator*( const simd_int32_t& a, const simd_int32_t& b ) = delete;
-#endif
-//*************************************************************************************************
-
-
-//*************************************************************************************************
-/*!\fn simd_int64_t operator*( const simd_int64_t&, const simd_int64_t& )
-// \brief Multiplication of two vectors of 64-bit integral values.
-// \ingroup simd
-//
-// \param a The left-hand side operand.
-// \param b The right-hand side operand.
-// \return The result of the multiplication.
-//
-// This operation is only available for AVX-512.
-*/
-#if BLAZE_MIC_MODE
-BLAZE_ALWAYS_INLINE simd_int64_t operator*( const simd_int64_t& a, const simd_int64_t& b ) noexcept
-{
-   return _mm512_mullo_epi64( a.value, b.value );
-}
-#else
-simd_int64_t operator*( const simd_int64_t& a, const simd_int64_t& b ) = delete;
-#endif
-//*************************************************************************************************
-
-
-//*************************************************************************************************
-/*!\fn simd_float_t operator*( const simd_float_t&, const simd_float_t& )
-// \brief Multiplication of two vectors of single precision floating point values.
-// \ingroup simd
-//
-// \param a The left-hand side operand.
-// \param b The right-hand side operand.
-// \return The result of the multiplication.
-//
-// This operation is only available for SSE, AVX, and AVX-512.
-*/
-#if BLAZE_MIC_MODE
-BLAZE_ALWAYS_INLINE simd_float_t operator*( const simd_float_t& a, const simd_float_t& b ) noexcept
-{
-   return _mm512_mul_ps( a.value, b.value );
-}
-#elif BLAZE_AVX_MODE
-BLAZE_ALWAYS_INLINE simd_float_t operator*( const simd_float_t& a, const simd_float_t& b ) noexcept
-{
-   return _mm256_mul_ps( a.value, b.value );
-}
-#elif BLAZE_SSE_MODE
-BLAZE_ALWAYS_INLINE simd_float_t operator*( const simd_float_t& a, const simd_float_t& b ) noexcept
-{
-   return _mm_mul_ps( a.value, b.value );
-}
-#else
-simd_float_t operator*( const simd_float_t& a, const simd_float_t& b ) = delete;
-#endif
-//*************************************************************************************************
-
-
-//*************************************************************************************************
-/*!\fn simd_double_t operator*( const simd_double_t&, const simd_double_t& )
-// \brief Multiplication of two vectors of double precision floating point values.
-// \ingroup simd
-//
-// \param a The left-hand side operand.
-// \param b The right-hand side operand.
-// \return The result of the multiplication.
-//
-// This operation is only available for SSE2, AVX, and AVX-512.
-*/
-#if BLAZE_MIC_MODE
-BLAZE_ALWAYS_INLINE simd_double_t operator*( const simd_double_t& a, const simd_double_t& b ) noexcept
-{
-   return _mm512_mul_pd( a.value, b.value );
-}
-#elif BLAZE_AVX_MODE
-BLAZE_ALWAYS_INLINE simd_double_t operator*( const simd_double_t& a, const simd_double_t& b ) noexcept
-{
-   return _mm256_mul_pd( a.value, b.value );
-}
-#elif BLAZE_SSE2_MODE
-BLAZE_ALWAYS_INLINE simd_double_t operator*( const simd_double_t& a, const simd_double_t& b ) noexcept
-{
-   return _mm_mul_pd( a.value, b.value );
-}
-#else
-simd_double_t operator*( const simd_double_t& a, const simd_double_t& b ) = delete;
-#endif
-//*************************************************************************************************
-
-
-//*************************************************************************************************
-/*!\fn simd_cint16_t operator*( const simd_cint16_t&, const simd_int16_t& )
-// \brief Scaling of a vector of 16-bit integral complex values.
+/*!\brief Scaling of a vector of 16-bit integral complex SIMD values.
 // \ingroup simd
 //
 // \param a The left-hand side complex values to be scaled.
@@ -209,25 +92,26 @@ simd_double_t operator*( const simd_double_t& a, const simd_double_t& b ) = dele
 //
 // This operation is only available for SSE2 and AVX2.
 */
+template< typename T1    // Type of the left-hand side operand
+        , typename T2 >  // Type of the right-hand side operand
+BLAZE_ALWAYS_INLINE MultTrait_<T1,T2>
+   operator*( const simd_ci16_t<T1>& a, const simd_i16_t<T2>& b ) noexcept
 #if BLAZE_AVX2_MODE
-BLAZE_ALWAYS_INLINE simd_cint16_t operator*( const simd_cint16_t& a, const simd_int16_t& b ) noexcept
 {
-   return _mm256_mullo_epi16( a.value, b.value );
+   return _mm256_mullo_epi16( (~a).value, (~b).value );
 }
 #elif BLAZE_SSE2_MODE
-BLAZE_ALWAYS_INLINE simd_cint16_t operator*( const simd_cint16_t& a, const simd_int16_t& b ) noexcept
 {
-   return _mm_mullo_epi16( a.value, b.value );
+   return _mm_mullo_epi16( (~a).value, (~b).value );
 }
 #else
-simd_cint16_t operator*( const simd_cint16_t& a, const simd_int16_t& b ) = delete;
+= delete;
 #endif
 //*************************************************************************************************
 
 
 //*************************************************************************************************
-/*!\fn simd_cint16_t operator*( const simd_int16_t&, const simd_cint16_t& )
-// \brief Scaling of a vector of 16-bit integral complex values.
+/*!\brief Scaling of a vector of 16-bit integral complex SIMD values.
 // \ingroup simd
 //
 // \param a The left-hand side scalars.
@@ -236,76 +120,110 @@ simd_cint16_t operator*( const simd_cint16_t& a, const simd_int16_t& b ) = delet
 //
 // This operation is only available for SSE2 and AVX2.
 */
+template< typename T1    // Type of the left-hand side operand
+        , typename T2 >  // Type of the right-hand side operand
+BLAZE_ALWAYS_INLINE MultTrait_<T1,T2>
+   operator*( const simd_i16_t<T1>& a, const simd_ci16_t<T2>& b ) noexcept
 #if BLAZE_AVX2_MODE
-BLAZE_ALWAYS_INLINE simd_cint16_t operator*( const simd_int16_t& a, const simd_cint16_t& b ) noexcept
 {
-   return _mm256_mullo_epi16( a.value, b.value );
+   return _mm256_mullo_epi16( (~a).value, (~b).value );
 }
 #elif BLAZE_SSE2_MODE
-BLAZE_ALWAYS_INLINE simd_cint16_t operator*( const simd_int16_t& a, const simd_cint16_t& b ) noexcept
 {
-   return _mm_mullo_epi16( a.value, b.value );
+   return _mm_mullo_epi16( (~a).value, (~b).value );
 }
 #else
-simd_cint16_t operator*( const simd_int16_t& a, const simd_cint16_t& b ) = delete;
+= delete;
 #endif
 //*************************************************************************************************
 
 
 //*************************************************************************************************
-/*!\fn simd_cint16_t operator*( const simd_cint16_t&, const simd_cint16_t& )
-// \brief Multiplication of two vectors of 16-bit integral complex values.
+/*!\brief Multiplication of two vectors of 16-bit integral complex SIMD values.
 // \ingroup simd
 //
-// \param a The left-hand side operand.
-// \param b The right-hand side operand.
+// \param a The left-hand side SIMD operand.
+// \param b The right-hand side SIMD operand.
 // \return The result of the multiplication.
 //
 // This operation is only available for SSE2 and AVX2.
 */
+template< typename T1    // Type of the left-hand side operand
+        , typename T2 >  // Type of the right-hand side operand
+BLAZE_ALWAYS_INLINE MultTrait_<T1,T2>
+   operator*( const simd_ci16_t<T1>& a, const simd_ci16_t<T2>& b ) noexcept
 #if BLAZE_AVX2_MODE
-BLAZE_ALWAYS_INLINE simd_cint16_t operator*( const simd_cint16_t& a, const simd_cint16_t& b ) noexcept
 {
    __m256i x, y, z;
    const __m256i neg( _mm256_set_epi16( 1, -1, 1, -1, 1, -1, 1, -1, 1, -1, 1, -1, 1, -1, 1, -1 ) );
 
-   x = _mm256_shufflelo_epi16( a.value, 0xA0 );
+   x = _mm256_shufflelo_epi16( (~a).value, 0xA0 );
    x = _mm256_shufflehi_epi16( x, 0xA0 );
-   z = _mm256_mullo_epi16( x, b.value );
-   x = _mm256_shufflelo_epi16( a.value, 0xF5 );
+   z = _mm256_mullo_epi16( x, (~b).value );
+   x = _mm256_shufflelo_epi16( (~a).value, 0xF5 );
    x = _mm256_shufflehi_epi16( x, 0xF5 );
-   y = _mm256_shufflelo_epi16( b.value, 0xB1 );
+   y = _mm256_shufflelo_epi16( (~b).value, 0xB1 );
    y = _mm256_shufflehi_epi16( y, 0xB1 );
    y = _mm256_mullo_epi16( x, y );
    y = _mm256_mullo_epi16( y, neg );
    return _mm256_add_epi16( z, y );
 }
 #elif BLAZE_SSE2_MODE
-BLAZE_ALWAYS_INLINE simd_cint16_t operator*( const simd_cint16_t& a, const simd_cint16_t& b ) noexcept
 {
    __m128i x, y, z;
    const __m128i neg( _mm_set_epi16( 1, -1, 1, -1, 1, -1, 1, -1 ) );
 
-   x = _mm_shufflelo_epi16( a.value, 0xA0 );
+   x = _mm_shufflelo_epi16( (~a).value, 0xA0 );
    x = _mm_shufflehi_epi16( x, 0xA0 );
-   z = _mm_mullo_epi16( x, b.value );
-   x = _mm_shufflelo_epi16( a.value, 0xF5 );
+   z = _mm_mullo_epi16( x, (~b).value );
+   x = _mm_shufflelo_epi16( (~a).value, 0xF5 );
    x = _mm_shufflehi_epi16( x, 0xF5 );
-   y = _mm_shufflelo_epi16( b.value, 0xB1 );
+   y = _mm_shufflelo_epi16( (~b).value, 0xB1 );
    y = _mm_shufflehi_epi16( y, 0xB1 );
    y = _mm_mullo_epi16( x, y );
    y = _mm_mullo_epi16( y, neg );
    return _mm_add_epi16( z, y );
 }
 #else
-simd_cint16_t operator*( const simd_cint16_t& a, const simd_cint16_t& b ) = delete;
+= delete;
 #endif
 //*************************************************************************************************
 
 
 //*************************************************************************************************
-/*!\fn simd_cint32_t operator*( const simd_cint32_t&, const simd_int32_t& )
-// \brief Scaling of a vector of 32-bit integral complex values.
+/*!\brief Multiplication of two vectors of 32-bit integral SIMD values.
+// \ingroup simd
+//
+// \param a The left-hand side SIMD operand.
+// \param b The right-hand side SIMD operand.
+// \return The result of the multiplication.
+//
+// This operation is only available for SSE4, AVX2, and AVX-512.
+*/
+template< typename T1    // Type of the left-hand side operand
+        , typename T2 >  // Type of the right-hand side operand
+BLAZE_ALWAYS_INLINE MultTrait_<T1,T2>
+   operator*( const simd_i32_t<T1>& a, const simd_i32_t<T2>& b ) noexcept
+#if BLAZE_MIC_MODE
+{
+   return _mm512_mullo_epi32( (~a).value, (~b).value );
+}
+#elif BLAZE_AVX2_MODE
+{
+   return _mm256_mullo_epi32( (~a).value, (~b).value );
+}
+#elif BLAZE_SSE4_MODE
+{
+   return _mm_mullo_epi32( (~a).value, (~b).value );
+}
+#else
+= delete;
+#endif
+//*************************************************************************************************
+
+
+//*************************************************************************************************
+/*!\brief Scaling of a vector of 32-bit integral complex SIMD values.
 // \ingroup simd
 //
 // \param a The left-hand side complex values to be scaled.
@@ -314,30 +232,30 @@ simd_cint16_t operator*( const simd_cint16_t& a, const simd_cint16_t& b ) = dele
 //
 // This operation is only available for SSE4, AVX2, and AVX-512.
 */
+template< typename T1    // Type of the left-hand side operand
+        , typename T2 >  // Type of the right-hand side operand
+BLAZE_ALWAYS_INLINE MultTrait_<T1,T2>
+   operator*( const simd_ci32_t<T1>& a, const simd_i32_t<T2>& b ) noexcept
 #if BLAZE_MIC_MODE
-BLAZE_ALWAYS_INLINE simd_cint32_t operator*( const simd_cint32_t& a, const simd_int32_t& b ) noexcept
 {
-   return _mm512_mullo_epi32( a.value, b.value );
+   return _mm512_mullo_epi32( (~a).value, (~b).value );
 }
 #elif BLAZE_AVX2_MODE
-BLAZE_ALWAYS_INLINE simd_cint32_t operator*( const simd_cint32_t& a, const simd_int32_t& b ) noexcept
 {
-   return _mm256_mullo_epi32( a.value, b.value );
+   return _mm256_mullo_epi32( (~a).value, (~b).value );
 }
 #elif BLAZE_SSE4_MODE
-BLAZE_ALWAYS_INLINE simd_cint32_t operator*( const simd_cint32_t& a, const simd_int32_t& b ) noexcept
 {
-   return _mm_mullo_epi32( a.value, b.value );
+   return _mm_mullo_epi32( (~a).value, (~b).value );
 }
 #else
-simd_cint32_t operator*( const simd_cint32_t& a, const simd_int32_t& b ) = delete;
+= delete;
 #endif
 //*************************************************************************************************
 
 
 //*************************************************************************************************
-/*!\fn simd_cint32_t operator*( const simd_int32_t&, const simd_cint32_t& )
-// \brief Scaling of a vector of 32-bit integral complex values.
+/*!\brief Scaling of a vector of 32-bit integral complex SIMD values.
 // \ingroup simd
 //
 // \param a The left-hand side scalars.
@@ -346,89 +264,143 @@ simd_cint32_t operator*( const simd_cint32_t& a, const simd_int32_t& b ) = delet
 //
 // This operation is only available for SSE4, AVX2, and AVX-512.
 */
+template< typename T1    // Type of the left-hand side operand
+        , typename T2 >  // Type of the right-hand side operand
+BLAZE_ALWAYS_INLINE MultTrait_<T1,T2>
+   operator*( const simd_i32_t<T1>& a, const simd_ci32_t<T2>& b ) noexcept
 #if BLAZE_MIC_MODE
-BLAZE_ALWAYS_INLINE simd_cint32_t operator*( const simd_int32_t& a, const simd_cint32_t& b ) noexcept
 {
-   return _mm512_mullo_epi32( a.value, b.value );
+   return _mm512_mullo_epi32( (~a).value, (~b).value );
 }
 #elif BLAZE_AVX2_MODE
-BLAZE_ALWAYS_INLINE simd_cint32_t operator*( const simd_int32_t& a, const simd_cint32_t& b ) noexcept
 {
-   return _mm256_mullo_epi32( a.value, b.value );
+   return _mm256_mullo_epi32( (~a).value, (~b).value );
 }
 #elif BLAZE_SSE4_MODE
-BLAZE_ALWAYS_INLINE simd_cint32_t operator*( const simd_int32_t& a, const simd_cint32_t& b ) noexcept
 {
-   return _mm_mullo_epi32( a.value, b.value );
+   return _mm_mullo_epi32( (~a).value, (~b).value );
 }
 #else
-simd_cint32_t operator*( const simd_int32_t& a, const simd_cint32_t& b ) = delete;
+= delete;
 #endif
 //*************************************************************************************************
 
 
 //*************************************************************************************************
-/*!\fn simd_cint32_t operator*( const simd_cint32_t&, const simd_cint32_t& )
-// \brief Multiplication of two vectors of 32-bit integral complex values.
+/*!\brief Multiplication of two vectors of 32-bit integral complex SIMD values.
 // \ingroup simd
 //
-// \param a The left-hand side operand.
-// \param b The right-hand side operand.
+// \param a The left-hand side SIMD operand.
+// \param b The right-hand side SIMD operand.
 // \return The result of the multiplication.
 //
 // This operation is only available for SSE4, AVX2, and AVX-512.
 */
+template< typename T1    // Type of the left-hand side operand
+        , typename T2 >  // Type of the right-hand side operand
+BLAZE_ALWAYS_INLINE MultTrait_<T1,T2>
+   operator*( const simd_ci32_t<T1>& a, const simd_ci32_t<T2>& b ) noexcept
 #if BLAZE_MIC_MODE
-BLAZE_ALWAYS_INLINE simd_cint32_t operator*( const simd_cint32_t& a, const simd_cint32_t& b ) noexcept
 {
    __m512i x, y, z;
    const __m512i neg( _mm256_set_epi32( 1, -1, 1, -1, 1, -1, 1, -1, 1, -1, 1, -1, 1, -1, 1, -1 ) );
 
-   x = _mm512_shuffle_epi32( a.value, 0xA0 );
-   z = _mm512_mullo_epi32( x, b.value );
-   x = _mm512_shuffle_epi32( a.value, 0xF5 );
-   y = _mm512_shuffle_epi32( b.value, 0xB1 );
+   x = _mm512_shuffle_epi32( (~a).value, 0xA0 );
+   z = _mm512_mullo_epi32( x, (~b).value );
+   x = _mm512_shuffle_epi32( (~a).value, 0xF5 );
+   y = _mm512_shuffle_epi32( (~b).value, 0xB1 );
    y = _mm512_mullo_epi32( x, y );
    y = _mm512_mullo_epi32( y, neg );
    return _mm512_add_epi32( z, y );
 }
 #elif BLAZE_AVX2_MODE
-BLAZE_ALWAYS_INLINE simd_cint32_t operator*( const simd_cint32_t& a, const simd_cint32_t& b ) noexcept
 {
    __m256i x, y, z;
    const __m256i neg( _mm256_set_epi32( 1, -1, 1, -1, 1, -1, 1, -1 ) );
 
-   x = _mm256_shuffle_epi32( a.value, 0xA0 );
-   z = _mm256_mullo_epi32( x, b.value );
-   x = _mm256_shuffle_epi32( a.value, 0xF5 );
-   y = _mm256_shuffle_epi32( b.value, 0xB1 );
+   x = _mm256_shuffle_epi32( (~a).value, 0xA0 );
+   z = _mm256_mullo_epi32( x, (~b).value );
+   x = _mm256_shuffle_epi32( (~a).value, 0xF5 );
+   y = _mm256_shuffle_epi32( (~b).value, 0xB1 );
    y = _mm256_mullo_epi32( x, y );
    y = _mm256_mullo_epi32( y, neg );
    return _mm256_add_epi32( z, y );
 }
 #elif BLAZE_SSE4_MODE
-BLAZE_ALWAYS_INLINE simd_cint32_t operator*( const simd_cint32_t& a, const simd_cint32_t& b ) noexcept
 {
    __m128i x, y, z;
    const __m128i neg( _mm_set_epi32( 1, -1, 1, -1 ) );
 
-   x = _mm_shuffle_epi32( a.value, 0xA0 );
-   z = _mm_mullo_epi32( x, b.value );
-   x = _mm_shuffle_epi32( a.value, 0xF5 );
-   y = _mm_shuffle_epi32( b.value, 0xB1 );
+   x = _mm_shuffle_epi32( (~a).value, 0xA0 );
+   z = _mm_mullo_epi32( x, (~b).value );
+   x = _mm_shuffle_epi32( (~a).value, 0xF5 );
+   y = _mm_shuffle_epi32( (~b).value, 0xB1 );
    y = _mm_mullo_epi32( x, y );
    y = _mm_mullo_epi32( y, neg );
    return _mm_add_epi32( z, y );
 }
 #else
-simd_cint32_t operator*( const simd_cint32_t& a, const simd_cint32_t& b ) = delete;
+= delete;
 #endif
 //*************************************************************************************************
 
 
 //*************************************************************************************************
-/*!\fn simd_cfloat_t operator*( const simd_cfloat_t&, const simd_float_t& )
-// \brief Scaling of a vector of single precision complex values.
+/*!\brief Multiplication of two vectors of 64-bit integral SIMD values.
+// \ingroup simd
+//
+// \param a The left-hand side SIMD operand.
+// \param b The right-hand side SIMD operand.
+// \return The result of the multiplication.
+//
+// This operation is only available for AVX-512.
+*/
+template< typename T1    // Type of the left-hand side operand
+        , typename T2 >  // Type of the right-hand side operand
+BLAZE_ALWAYS_INLINE MultTrait_<T1,T2>
+   operator*( const simd_i64_t<T1>& a, const simd_i64_t<T2>& b ) noexcept
+#if BLAZE_MIC_MODE
+{
+   return _mm512_mullo_epi64( (~a).value, (~b).value );
+}
+#else
+= delete;
+#endif
+//*************************************************************************************************
+
+
+//*************************************************************************************************
+/*!\brief Multiplication of two vectors of single precision floating point SIMD values.
+// \ingroup simd
+//
+// \param a The left-hand side SIMD operand.
+// \param b The right-hand side SIMD operand.
+// \return The result of the multiplication.
+//
+// This operation is only available for SSE, AVX, and AVX-512.
+*/
+BLAZE_ALWAYS_INLINE simd_float_t
+   operator*( const simd_float_t& a, const simd_float_t& b ) noexcept
+#if BLAZE_MIC_MODE
+{
+   return _mm512_mul_ps( a.value, b.value );
+}
+#elif BLAZE_AVX_MODE
+{
+   return _mm256_mul_ps( a.value, b.value );
+}
+#elif BLAZE_SSE_MODE
+{
+   return _mm_mul_ps( a.value, b.value );
+}
+#else
+= delete;
+#endif
+//*************************************************************************************************
+
+
+//*************************************************************************************************
+/*!\brief Scaling of a vector of single precision complex SIMD values.
 // \ingroup simd
 //
 // \param a The left-hand side complex values to be scaled.
@@ -437,30 +409,28 @@ simd_cint32_t operator*( const simd_cint32_t& a, const simd_cint32_t& b ) = dele
 //
 // This operation is only available for SSE, AVX, and AVX-512.
 */
+BLAZE_ALWAYS_INLINE simd_cfloat_t
+   operator*( const simd_cfloat_t& a, const simd_float_t& b ) noexcept
 #if BLAZE_MIC_MODE
-BLAZE_ALWAYS_INLINE simd_cfloat_t operator*( const simd_cfloat_t& a, const simd_float_t& b ) noexcept
 {
    return _mm512_mul_ps( a.value, b.value );
 }
 #elif BLAZE_AVX_MODE
-BLAZE_ALWAYS_INLINE simd_cfloat_t operator*( const simd_cfloat_t& a, const simd_float_t& b ) noexcept
 {
    return _mm256_mul_ps( a.value, b.value );
 }
 #elif BLAZE_SSE_MODE
-BLAZE_ALWAYS_INLINE simd_cfloat_t operator*( const simd_cfloat_t& a, const simd_float_t& b ) noexcept
 {
    return _mm_mul_ps( a.value, b.value );
 }
 #else
-simd_cfloat_t operator*( const simd_cfloat_t& a, const simd_float_t& b ) = delete;
+= delete;
 #endif
 //*************************************************************************************************
 
 
 //*************************************************************************************************
-/*!\fn simd_cfloat_t operator*( const simd_float_t&, const simd_cfloat_t& )
-// \brief Scaling of a vector of single precision complex values.
+/*!\brief Scaling of a vector of single precision complex SIMD values.
 // \ingroup simd
 //
 // \param a The left-hand side scalars.
@@ -469,40 +439,39 @@ simd_cfloat_t operator*( const simd_cfloat_t& a, const simd_float_t& b ) = delet
 //
 // This operation is only available for SSE, AVX, and AVX-512.
 */
+BLAZE_ALWAYS_INLINE simd_cfloat_t
+   operator*( const simd_float_t& a, const simd_cfloat_t& b ) noexcept
 #if BLAZE_MIC_MODE
-BLAZE_ALWAYS_INLINE simd_cfloat_t operator*( const simd_float_t& a, const simd_cfloat_t& b ) noexcept
 {
    return _mm512_mul_ps( a.value, b.value );
 }
 #elif BLAZE_AVX_MODE
-BLAZE_ALWAYS_INLINE simd_cfloat_t operator*( const simd_float_t& a, const simd_cfloat_t& b ) noexcept
 {
    return _mm256_mul_ps( a.value, b.value );
 }
 #elif BLAZE_SSE_MODE
-BLAZE_ALWAYS_INLINE simd_cfloat_t operator*( const simd_float_t& a, const simd_cfloat_t& b ) noexcept
 {
    return _mm_mul_ps( a.value, b.value );
 }
 #else
-simd_cfloat_t operator*( const simd_float_t& a, const simd_cfloat_t& b ) = delete;
+= delete;
 #endif
 //*************************************************************************************************
 
 
 //*************************************************************************************************
-/*!\fn simd_cfloat_t operator*( const simd_cfloat_t&, const simd_cfloat_t& )
-// \brief Multiplication of two vectors of single precision complex values.
+/*!\brief Multiplication of two vectors of single precision complex SIMD values.
 // \ingroup simd
 //
-// \param a The left-hand side operand.
-// \param b The right-hand side operand.
+// \param a The left-hand side SIMD operand.
+// \param b The right-hand side SIMD operand.
 // \return The result of the multiplication.
 //
 // This operation is only available for SSE3 and AVX.
 */
+BLAZE_ALWAYS_INLINE simd_cfloat_t
+   operator*( const simd_cfloat_t& a, const simd_cfloat_t& b ) noexcept
 #if BLAZE_AVX_MODE
-BLAZE_ALWAYS_INLINE simd_cfloat_t operator*( const simd_cfloat_t& a, const simd_cfloat_t& b ) noexcept
 {
    __m256 x, y, z;
 
@@ -514,7 +483,6 @@ BLAZE_ALWAYS_INLINE simd_cfloat_t operator*( const simd_cfloat_t& a, const simd_
    return _mm256_addsub_ps( z, y );
 }
 #elif BLAZE_SSE3_MODE
-BLAZE_ALWAYS_INLINE simd_cfloat_t operator*( const simd_cfloat_t& a, const simd_cfloat_t& b ) noexcept
 {
    __m128 x, y, z;
 
@@ -526,14 +494,43 @@ BLAZE_ALWAYS_INLINE simd_cfloat_t operator*( const simd_cfloat_t& a, const simd_
    return _mm_addsub_ps( z, y );
 }
 #else
-simd_cfloat_t operator*( const simd_cfloat_t& a, const simd_cfloat_t& b ) = delete;
+= delete;
 #endif
 //*************************************************************************************************
 
 
 //*************************************************************************************************
-/*!\fn simd_cdouble_t operator*( const simd_cdouble_t&, const simd_double_t& )
-// \brief Scaling of a vector of double precision complex values.
+/*!\brief Multiplication of two vectors of double precision floating point SIMD values.
+// \ingroup simd
+//
+// \param a The left-hand side SIMD operand.
+// \param b The right-hand side SIMD operand.
+// \return The result of the multiplication.
+//
+// This operation is only available for SSE2, AVX, and AVX-512.
+*/
+BLAZE_ALWAYS_INLINE simd_double_t
+   operator*( const simd_double_t& a, const simd_double_t& b ) noexcept
+#if BLAZE_MIC_MODE
+{
+   return _mm512_mul_pd( a.value, b.value );
+}
+#elif BLAZE_AVX_MODE
+{
+   return _mm256_mul_pd( a.value, b.value );
+}
+#elif BLAZE_SSE2_MODE
+{
+   return _mm_mul_pd( a.value, b.value );
+}
+#else
+= delete;
+#endif
+//*************************************************************************************************
+
+
+//*************************************************************************************************
+/*!\brief Scaling of a vector of double precision complex SIMD values.
 // \ingroup simd
 //
 // \param a The left-hand side complex values to be scaled.
@@ -542,30 +539,28 @@ simd_cfloat_t operator*( const simd_cfloat_t& a, const simd_cfloat_t& b ) = dele
 //
 // This operation is only available for SSE2, AVX, and AVX-512.
 */
+BLAZE_ALWAYS_INLINE simd_cdouble_t
+   operator*( const simd_cdouble_t& a, const simd_double_t& b ) noexcept
 #if BLAZE_MIC_MODE
-BLAZE_ALWAYS_INLINE simd_cdouble_t operator*( const simd_cdouble_t& a, const simd_double_t& b ) noexcept
 {
    return _mm512_mul_pd( a.value, b.value );
 }
 #elif BLAZE_AVX_MODE
-BLAZE_ALWAYS_INLINE simd_cdouble_t operator*( const simd_cdouble_t& a, const simd_double_t& b ) noexcept
 {
    return _mm256_mul_pd( a.value, b.value );
 }
 #elif BLAZE_SSE2_MODE
-BLAZE_ALWAYS_INLINE simd_cdouble_t operator*( const simd_cdouble_t& a, const simd_double_t& b ) noexcept
 {
    return _mm_mul_pd( a.value, b.value );
 }
 #else
-simd_cdouble_t operator*( const simd_cdouble_t& a, const simd_double_t& b ) = delete;
+= delete;
 #endif
 //*************************************************************************************************
 
 
 //*************************************************************************************************
-/*!\fn simd_cdouble_t operator*( const simd_double_t&, const simd_cdouble_t& )
-// \brief Scaling of a vector of double precision complex values.
+/*!\brief Scaling of a vector of double precision complex SIMD values.
 // \ingroup simd
 //
 // \param a The left-hand side scalars.
@@ -574,40 +569,39 @@ simd_cdouble_t operator*( const simd_cdouble_t& a, const simd_double_t& b ) = de
 //
 // This operation is only available for SSE2, AVX, and AVX-512.
 */
+BLAZE_ALWAYS_INLINE simd_cdouble_t
+   operator*( const simd_double_t& a, const simd_cdouble_t& b ) noexcept
 #if BLAZE_MIC_MODE
-BLAZE_ALWAYS_INLINE simd_cdouble_t operator*( const simd_double_t& a, const simd_cdouble_t& b ) noexcept
 {
    return _mm512_mul_pd( a.value, b.value );
 }
 #elif BLAZE_AVX_MODE
-BLAZE_ALWAYS_INLINE simd_cdouble_t operator*( const simd_double_t& a, const simd_cdouble_t& b ) noexcept
 {
    return _mm256_mul_pd( a.value, b.value );
 }
 #elif BLAZE_SSE2_MODE
-BLAZE_ALWAYS_INLINE simd_cdouble_t operator*( const simd_double_t& a, const simd_cdouble_t& b ) noexcept
 {
    return _mm_mul_pd( a.value, b.value );
 }
 #else
-simd_cdouble_t operator*( const simd_double_t& a, const simd_cdouble_t& b ) = delete;
+= delete;
 #endif
 //*************************************************************************************************
 
 
 //*************************************************************************************************
-/*!\fn simd_cdouble_t operator*( const simd_cdouble_t&, const simd_cdouble_t& )
-// \brief Multiplication of two vectors of double precision complex values.
+/*!\brief Multiplication of two vectors of double precision complex SIMD values.
 // \ingroup simd
 //
-// \param a The left-hand side operand.
-// \param b The right-hand side operand.
+// \param a The left-hand side SIMD operand.
+// \param b The right-hand side SIMD operand.
 // \return The result of the multiplication.
 //
 // This operation is only available for SSE3 and AVX.
 */
+BLAZE_ALWAYS_INLINE simd_cdouble_t
+   operator*( const simd_cdouble_t& a, const simd_cdouble_t& b ) noexcept
 #if BLAZE_AVX_MODE
-BLAZE_ALWAYS_INLINE simd_cdouble_t operator*( const simd_cdouble_t& a, const simd_cdouble_t& b ) noexcept
 {
    __m256d x, y, z;
 
@@ -619,7 +613,6 @@ BLAZE_ALWAYS_INLINE simd_cdouble_t operator*( const simd_cdouble_t& a, const sim
    return _mm256_addsub_pd( z, y );
 }
 #elif BLAZE_SSE3_MODE
-BLAZE_ALWAYS_INLINE simd_cdouble_t operator*( const simd_cdouble_t& a, const simd_cdouble_t& b ) noexcept
 {
    __m128d x, y, z;
 
@@ -631,8 +624,72 @@ BLAZE_ALWAYS_INLINE simd_cdouble_t operator*( const simd_cdouble_t& a, const sim
    return _mm_addsub_pd( z, y );
 }
 #else
-simd_cdouble_t operator*( const simd_cdouble_t& a, const simd_cdouble_t& b ) = delete;
+= delete;
 #endif
+//*************************************************************************************************
+
+
+
+
+//=================================================================================================
+//
+//  MULTTRAIT SPECIALIZATIONS
+//
+//=================================================================================================
+
+//*************************************************************************************************
+/*! \cond BLAZE_INTERNAL */
+template<> struct MultTrait< simd_int16_t , simd_int16_t  > { using Type = simd_int16_t;  };
+template<> struct MultTrait< simd_int16_t , simd_uint16_t > { using Type = simd_uint16_t; };
+template<> struct MultTrait< simd_uint16_t, simd_int16_t  > { using Type = simd_uint16_t; };
+template<> struct MultTrait< simd_uint16_t, simd_uint16_t > { using Type = simd_uint16_t; };
+
+template<> struct MultTrait< simd_cint16_t , simd_int16_t  > { using Type = simd_cint16_t;   };
+template<> struct MultTrait< simd_cint16_t , simd_uint16_t > { using Type = simd_cuint16_t;  };
+template<> struct MultTrait< simd_cuint16_t, simd_int16_t  > { using Type = simd_cuint16_t;  };
+template<> struct MultTrait< simd_cuint16_t, simd_uint16_t > { using Type = simd_cuint16_t;  };
+
+template<> struct MultTrait< simd_int16_t , simd_cint16_t  > { using Type = simd_cint16_t;   };
+template<> struct MultTrait< simd_uint16_t, simd_cint16_t  > { using Type = simd_cuint16_t;  };
+template<> struct MultTrait< simd_int16_t , simd_cuint16_t > { using Type = simd_cuint16_t;  };
+template<> struct MultTrait< simd_uint16_t, simd_cuint16_t > { using Type = simd_cuint16_t;  };
+
+template<> struct MultTrait< simd_cint16_t , simd_cint16_t  > { using Type = simd_cint16_t;  };
+template<> struct MultTrait< simd_cint16_t , simd_cuint16_t > { using Type = simd_cuint16_t; };
+template<> struct MultTrait< simd_cuint16_t, simd_cint16_t  > { using Type = simd_cuint16_t; };
+template<> struct MultTrait< simd_cuint16_t, simd_cuint16_t > { using Type = simd_cuint16_t; };
+
+template<> struct MultTrait< simd_int32_t , simd_int32_t  > { using Type = simd_int32_t;  };
+template<> struct MultTrait< simd_int32_t , simd_uint32_t > { using Type = simd_uint32_t; };
+template<> struct MultTrait< simd_uint32_t, simd_int32_t  > { using Type = simd_uint32_t; };
+template<> struct MultTrait< simd_uint32_t, simd_uint32_t > { using Type = simd_uint32_t; };
+
+template<> struct MultTrait< simd_cint32_t , simd_int32_t  > { using Type = simd_cint32_t;   };
+template<> struct MultTrait< simd_cint32_t , simd_uint32_t > { using Type = simd_cuint32_t;  };
+template<> struct MultTrait< simd_cuint32_t, simd_int32_t  > { using Type = simd_cuint32_t;  };
+template<> struct MultTrait< simd_cuint32_t, simd_uint32_t > { using Type = simd_cuint32_t;  };
+
+template<> struct MultTrait< simd_int32_t , simd_cint32_t  > { using Type = simd_cint32_t;   };
+template<> struct MultTrait< simd_uint32_t, simd_cint32_t  > { using Type = simd_cuint32_t;  };
+template<> struct MultTrait< simd_int32_t , simd_cuint32_t > { using Type = simd_cuint32_t;  };
+template<> struct MultTrait< simd_uint32_t, simd_cuint32_t > { using Type = simd_cuint32_t;  };
+
+template<> struct MultTrait< simd_cint32_t , simd_cint32_t  > { using Type = simd_cint32_t;  };
+template<> struct MultTrait< simd_cint32_t , simd_cuint32_t > { using Type = simd_cuint32_t; };
+template<> struct MultTrait< simd_cuint32_t, simd_cint32_t  > { using Type = simd_cuint32_t; };
+template<> struct MultTrait< simd_cuint32_t, simd_cuint32_t > { using Type = simd_cuint32_t; };
+
+template<> struct MultTrait< simd_int64_t , simd_int64_t  > { using Type = simd_int64_t;  };
+template<> struct MultTrait< simd_int64_t , simd_uint64_t > { using Type = simd_uint64_t; };
+template<> struct MultTrait< simd_uint64_t, simd_int64_t  > { using Type = simd_uint64_t; };
+template<> struct MultTrait< simd_uint64_t, simd_uint64_t > { using Type = simd_uint64_t; };
+
+template<> struct MultTrait< simd_float_t , simd_float_t  > { using Type = simd_float_t;  };
+template<> struct MultTrait< simd_cfloat_t, simd_cfloat_t > { using Type = simd_cfloat_t; };
+
+template<> struct MultTrait< simd_double_t , simd_double_t  > { using Type = simd_double_t;  };
+template<> struct MultTrait< simd_cdouble_t, simd_cdouble_t > { using Type = simd_cdouble_t; };
+/*! \endcond */
 //*************************************************************************************************
 
 } // namespace blaze

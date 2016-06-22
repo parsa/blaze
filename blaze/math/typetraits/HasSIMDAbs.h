@@ -49,6 +49,7 @@
 #include <blaze/util/typetraits/IsIntegral.h>
 #include <blaze/util/typetraits/IsNumeric.h>
 #include <blaze/util/typetraits/IsSigned.h>
+#include <blaze/util/typetraits/IsUnsigned.h>
 
 
 namespace blaze {
@@ -76,8 +77,9 @@ struct HasSIMDAbsHelper
 template< typename T >
 struct HasSIMDAbsHelper< T, EnableIf_< And< IsNumeric<T>, IsIntegral<T>, IsSigned<T> > > >
 {
-   enum : bool { value = ( bool( BLAZE_SSSE3_MODE ) && !bool( BLAZE_MIC_MODE ) && sizeof(T) <= 4UL ) ||
-                         ( bool( BLAZE_AVX2_MODE  ) && !bool( BLAZE_MIC_MODE ) && sizeof(T) <= 4UL ) };
+   enum : bool { value = ( bool( BLAZE_SSSE3_MODE ) && sizeof(T) <= 4UL ) ||
+                         ( bool( BLAZE_AVX2_MODE  ) && sizeof(T) <= 4UL ) ||
+                         ( bool( BLAZE_MIC_MODE   ) ) };
 };
 /*! \endcond */
 //*************************************************************************************************

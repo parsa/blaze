@@ -54,8 +54,7 @@ namespace blaze {
 //=================================================================================================
 
 //*************************************************************************************************
-/*!\fn simd_float_t sqrt( const simd_float_t& )
-// \brief Computes the square root for a vector of single precision floating point values.
+/*!\brief Computes the square root for a vector of single precision floating point values.
 // \ingroup simd
 //
 // \param a The vector of single precision floating point values.
@@ -63,30 +62,27 @@ namespace blaze {
 //
 // This operation is only available for SSE, AVX, and AVX-512.
 */
-#if BLAZE_MIC_MODE
 BLAZE_ALWAYS_INLINE simd_float_t sqrt( const simd_float_t& a ) noexcept
+#if BLAZE_MIC_MODE
 {
    return _mm512_sqrt_ps( a.value );
 }
 #elif BLAZE_AVX_MODE
-BLAZE_ALWAYS_INLINE simd_float_t sqrt( const simd_float_t& a ) noexcept
 {
    return _mm256_sqrt_ps( a.value );
 }
 #elif BLAZE_SSE_MODE
-BLAZE_ALWAYS_INLINE simd_float_t sqrt( const simd_float_t& a ) noexcept
 {
    return _mm_sqrt_ps( a.value );
 }
 #else
-simd_float_t sqrt( const simd_float_t& a ) = delete;
+= delete;
 #endif
 //*************************************************************************************************
 
 
 //*************************************************************************************************
-/*!\fn simd_double_t sqrt( const simd_double_t& )
-// \brief Computes the square root for a vector of double precision floating point values.
+/*!\brief Computes the square root for a vector of double precision floating point values.
 // \ingroup simd
 //
 // \param a The vector of double precision floating point values.
@@ -94,23 +90,21 @@ simd_float_t sqrt( const simd_float_t& a ) = delete;
 //
 // This operation is only available for SSE2, AVX, and AVX-512.
 */
-#if BLAZE_MIC_MODE
 BLAZE_ALWAYS_INLINE simd_double_t sqrt( const simd_double_t& a ) noexcept
+#if BLAZE_MIC_MODE
 {
    return _mm512_sqrt_pd( a.value );
 }
 #elif BLAZE_AVX_MODE
-BLAZE_ALWAYS_INLINE simd_double_t sqrt( const simd_double_t& a ) noexcept
 {
    return _mm256_sqrt_pd( a.value );
 }
 #elif BLAZE_SSE2_MODE
-BLAZE_ALWAYS_INLINE simd_double_t sqrt( const simd_double_t& a ) noexcept
 {
    return _mm_sqrt_pd( a.value );
 }
 #else
-simd_double_t sqrt( const simd_double_t& a ) = delete
+= delete;
 #endif
 //*************************************************************************************************
 

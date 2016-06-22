@@ -63,17 +63,17 @@ namespace blaze {
 BLAZE_ALWAYS_INLINE int16_t sum( const simd_int16_t& a ) noexcept
 {
 #if BLAZE_AVX2_MODE
-   const simd_int16_t b( _mm256_hadd_epi16( a.value, a.value ) );
-   const simd_int16_t c( _mm256_hadd_epi16( b.value, b.value ) );
-   const simd_int16_t d( _mm256_hadd_epi16( c.value, c.value ) );
-   const __m128i e = _mm_add_epi16( _mm256_extracti128_si256( d.value, 1 )
-                                  , _mm256_castsi256_si128( d.value ) );
+   const __m256i b( _mm256_hadd_epi16( a.value, a.value ) );
+   const __m256i c( _mm256_hadd_epi16( b, b ) );
+   const __m256i d( _mm256_hadd_epi16( c, c ) );
+   const __m128i e = _mm_add_epi16( _mm256_extracti128_si256( d, 1 )
+                                  , _mm256_castsi256_si128( d ) );
    return _mm_extract_epi16( e, 0 );
 #elif BLAZE_SSSE3_MODE
-   const simd_int16_t b( _mm_hadd_epi16( a.value, a.value ) );
-   const simd_int16_t c( _mm_hadd_epi16( b.value, b.value ) );
-   const simd_int16_t d( _mm_hadd_epi16( c.value, c.value ) );
-   return d[0];
+   const __m128i b( _mm_hadd_epi16( a.value, a.value ) );
+   const __m128i c( _mm_hadd_epi16( b, b ) );
+   const __m128i d( _mm_hadd_epi16( c, c ) );
+   return _mm_extract_epi16( d, 0 );
 #elif BLAZE_SSE2_MODE
    return a[0] + a[1] + a[2] + a[3] + a[4] + a[5] + a[6] + a[7];
 #else
@@ -95,15 +95,15 @@ BLAZE_ALWAYS_INLINE int32_t sum( const simd_int32_t& a ) noexcept
 #if BLAZE_MIC_MODE
    return _mm512_reduce_add_epi32( a.value );
 #elif BLAZE_AVX2_MODE
-   const simd_int32_t b( _mm256_hadd_epi32( a.value, a.value ) );
-   const simd_int32_t c( _mm256_hadd_epi32( b.value, b.value ) );
-   const __m128i d = _mm_add_epi32( _mm256_extracti128_si256( c.value, 1 )
-                                  , _mm256_castsi256_si128( c.value ) );
+   const __m256i b( _mm256_hadd_epi32( a.value, a.value ) );
+   const __m256i c( _mm256_hadd_epi32( b, b ) );
+   const __m128i d = _mm_add_epi32( _mm256_extracti128_si256( c, 1 )
+                                  , _mm256_castsi256_si128( c ) );
    return _mm_extract_epi32( d, 0 );
 #elif BLAZE_SSSE3_MODE
-   const simd_int32_t b( _mm_hadd_epi32( a.value, a.value ) );
-   const simd_int32_t c( _mm_hadd_epi32( b.value, b.value ) );
-   return c[0];
+   const __m128i b( _mm_hadd_epi32( a.value, a.value ) );
+   const __m128i c( _mm_hadd_epi32( b, b ) );
+   return _mm_extract_epi32( c, 0 );
 #elif BLAZE_SSE2_MODE
    return a[0] + a[1] + a[2] + a[3];
 #else
@@ -147,15 +147,14 @@ BLAZE_ALWAYS_INLINE float sum( const simd_float_t& a ) noexcept
 #if BLAZE_MIC_MODE
    return _mm512_reduce_add_ps( a.value );
 #elif BLAZE_AVX_MODE
-   const simd_float_t b( _mm256_hadd_ps( a.value, a.value ) );
-   const simd_float_t c( _mm256_hadd_ps( b.value, b.value ) );
-   const __m128 d = _mm_add_ps( _mm256_extractf128_ps( c.value, 1 )
-                              , _mm256_castps256_ps128( c.value ) );
-   return *reinterpret_cast<const float*>( &d );
+   const __m256 b( _mm256_hadd_ps( a.value, a.value ) );
+   const __m256 c( _mm256_hadd_ps( b, b ) );
+   const __m128 d = _mm_add_ps( _mm256_extractf128_ps( c, 1 ), _mm256_castps256_ps128( c ) );
+   return _mm_cvtss_f32( d );
 #elif BLAZE_SSE3_MODE
-   const simd_float_t b( _mm_hadd_ps( a.value, a.value ) );
-   const simd_float_t c( _mm_hadd_ps( b.value, b.value ) );
-   return c[0];
+   const __m128 b( _mm_hadd_ps( a.value, a.value ) );
+   const __m128 c( _mm_hadd_ps( b, b ) );
+   return _mm_cvtss_f32( c );
 #elif BLAZE_SSE_MODE
    return a[0] + a[1] + a[2] + a[3];
 #else
@@ -177,13 +176,12 @@ BLAZE_ALWAYS_INLINE double sum( const simd_double_t& a ) noexcept
 #if BLAZE_MIC_MODE
    return _mm512_reduce_add_pd( a.value );
 #elif BLAZE_AVX_MODE
-   const simd_double_t b( _mm256_hadd_pd( a.value, a.value ) );
-   const __m128d c = _mm_add_pd( _mm256_extractf128_pd( b.value, 1 )
-                               , _mm256_castpd256_pd128( b.value ) );
-   return *reinterpret_cast<const double*>( &c );
+   const __m256d b( _mm256_hadd_pd( a.value, a.value ) );
+   const __m128d c = _mm_add_pd( _mm256_extractf128_pd( b, 1 ), _mm256_castpd256_pd128( b ) );
+   return _mm_cvtsd_f64( c );
 #elif BLAZE_SSE3_MODE
-   const simd_double_t b( _mm_hadd_pd( a.value, a.value ) );
-   return b[0];
+   const __m128d b( _mm_hadd_pd( a.value, a.value ) );
+   return _mm_cvtsd_f64( b );
 #elif BLAZE_SSE2_MODE
    return a[0] + a[1];
 #else

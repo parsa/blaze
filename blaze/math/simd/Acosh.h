@@ -54,8 +54,7 @@ namespace blaze {
 //=================================================================================================
 
 //*************************************************************************************************
-/*!\fn simd_float_t acosh( const simd_float_t& )
-// \brief Inverse hyperbolic cosine of a vector of single precision floating point values.
+/*!\brief Inverse hyperbolic cosine of a vector of single precision floating point values.
 // \ingroup simd
 //
 // \param a The vector of single precision floating point values \f$[1..\infty)\f$.
@@ -63,30 +62,27 @@ namespace blaze {
 //
 // This operation is only available via the SVML for SSE, AVX, and AVX-512.
 */
-#if BLAZE_SVML_MODE && BLAZE_MIC_MODE
 BLAZE_ALWAYS_INLINE simd_float_t acosh( const simd_float_t& a ) noexcept
+#if BLAZE_SVML_MODE && BLAZE_MIC_MODE
 {
    return _mm512_acosh_ps( a.value );
 }
 #elif BLAZE_SVML_MODE && BLAZE_AVX_MODE
-BLAZE_ALWAYS_INLINE simd_float_t acosh( const simd_float_t& a ) noexcept
 {
    return _mm256_acosh_ps( a.value );
 }
 #elif BLAZE_SVML_MODE && BLAZE_SSE_MODE
-BLAZE_ALWAYS_INLINE simd_float_t acosh( const simd_float_t& a ) noexcept
 {
    return _mm_acosh_ps( a.value );
 }
 #else
-simd_float_t acosh( const simd_float_t& a ) = delete;
+= delete;
 #endif
 //*************************************************************************************************
 
 
 //*************************************************************************************************
-/*!\fn simd_double_t acosh( const simd_double_t& )
-// \brief Inverse hyperbolic cosine of a vector of double precision floating point values.
+/*!\brief Inverse hyperbolic cosine of a vector of double precision floating point values.
 // \ingroup simd
 //
 // \param a The vector of double precision floating point values \f$[1..\infty)\f$.
@@ -94,23 +90,21 @@ simd_float_t acosh( const simd_float_t& a ) = delete;
 //
 // This operation is only available via the SVML for SSE, AVX, and AVX-512.
 */
-#if BLAZE_SVML_MODE && BLAZE_MIC_MODE
 BLAZE_ALWAYS_INLINE simd_double_t acosh( const simd_double_t& a ) noexcept
+#if BLAZE_SVML_MODE && BLAZE_MIC_MODE
 {
    return _mm512_acosh_pd( a.value );
 }
 #elif BLAZE_SVML_MODE && BLAZE_AVX_MODE
-BLAZE_ALWAYS_INLINE simd_double_t acosh( const simd_double_t& a ) noexcept
 {
    return _mm256_acosh_pd( a.value );
 }
 #elif BLAZE_SVML_MODE && BLAZE_SSE_MODE
-BLAZE_ALWAYS_INLINE simd_double_t acosh( const simd_double_t& a ) noexcept
 {
    return _mm_acosh_pd( a.value );
 }
 #else
-simd_double_t acosh( const simd_double_t& a ) = delete;
+= delete;
 #endif
 //*************************************************************************************************
 

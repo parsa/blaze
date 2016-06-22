@@ -54,8 +54,7 @@ namespace blaze {
 //=================================================================================================
 
 //*************************************************************************************************
-/*!\fn simd_float_t ceil( const simd_float_t& )
-// \brief Computes the largest integer value not less than the given value for a vector of single
+/*!\brief Computes the largest integer value not less than the given value for a vector of single
 //        precision floating point values.
 // \ingroup simd
 //
@@ -64,30 +63,27 @@ namespace blaze {
 //
 // This operation is only available via the SVML for SSE, AVX, and AVX-512.
 */
-#if BLAZE_SVML_MODE && BLAZE_MIC_MODE
 BLAZE_ALWAYS_INLINE simd_float_t ceil( const simd_float_t& a ) noexcept
+#if BLAZE_SVML_MODE && BLAZE_MIC_MODE
 {
    return _mm512_ceil_ps( a.value );
 }
 #elif BLAZE_AVX_MODE
-BLAZE_ALWAYS_INLINE simd_float_t ceil( const simd_float_t& a ) noexcept
 {
    return _mm256_ceil_ps( a.value );
 }
 #elif BLAZE_SSE4_MODE
-BLAZE_ALWAYS_INLINE simd_float_t ceil( const simd_float_t& a ) noexcept
 {
    return _mm_ceil_ps( a.value );
 }
 #else
-simd_float_t ceil( const simd_float_t& a ) = delete;
+= delete;
 #endif
 //*************************************************************************************************
 
 
 //*************************************************************************************************
-/*!\fn simd_double_t ceil( const simd_double_t& )
-// \brief Computes the largest integer value not less than the given value for a vector of double
+/*!\brief Computes the largest integer value not less than the given value for a vector of double
 //        precision floating point values.
 // \ingroup simd
 //
@@ -96,23 +92,21 @@ simd_float_t ceil( const simd_float_t& a ) = delete;
 //
 // This operation is only available via the SVML for SSE, AVX, and AVX-512.
 */
-#if BLAZE_SVML_MODE && BLAZE_MIC_MODE
 BLAZE_ALWAYS_INLINE simd_double_t ceil( const simd_double_t& a ) noexcept
+#if BLAZE_SVML_MODE && BLAZE_MIC_MODE
 {
    return _mm512_ceil_pd( a.value );
 }
 #elif BLAZE_AVX_MODE
-BLAZE_ALWAYS_INLINE simd_double_t ceil( const simd_double_t& a ) noexcept
 {
    return _mm256_ceil_pd( a.value );
 }
 #elif BLAZE_SSE4_MODE
-BLAZE_ALWAYS_INLINE simd_double_t ceil( const simd_double_t& a ) noexcept
 {
    return _mm_ceil_pd( a.value );
 }
 #else
-simd_double_t ceil( const simd_double_t& a ) = delete;
+= delete;
 #endif
 //*************************************************************************************************
 

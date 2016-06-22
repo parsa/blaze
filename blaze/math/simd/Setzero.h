@@ -54,91 +54,183 @@ namespace blaze {
 //=================================================================================================
 
 //*************************************************************************************************
-/*!\brief Setting an integral SIMD type with 16 8-bit data values to zero.
+/*!\brief Setting an integral SIMD type with 8-bit data values to zero.
 // \ingroup simd
 //
 // \param value The value to be set to zero.
 // \return void
 */
-BLAZE_ALWAYS_INLINE void setzero( simd_int8_t& value ) noexcept
+template< typename T >  // Type of the SIMD element
+BLAZE_ALWAYS_INLINE void setzero( simd_i8_t<T>& value ) noexcept
 {
 #if BLAZE_AVX2_MODE
-   value.value = _mm256_setzero_si256();
+   (~value).value = _mm256_setzero_si256();
 #elif BLAZE_SSE2_MODE
-   value.value = _mm_setzero_si128();
+   (~value).value = _mm_setzero_si128();
 #else
-   value.value = 0;
+   (~value).value = 0;
 #endif
 }
 //*************************************************************************************************
 
 
 //*************************************************************************************************
-/*!\brief Setting an integral SIMD type with 8 16-bit data values to zero.
+/*!\brief Setting an integral SIMD type with 8-bit complex values to zero.
 // \ingroup simd
 //
 // \param value The value to be set to zero.
 // \return void
 */
-BLAZE_ALWAYS_INLINE void setzero( simd_int16_t& value ) noexcept
+template< typename T >  // Type of the SIMD element
+BLAZE_ALWAYS_INLINE void setzero( simd_ci8_t<T>& value ) noexcept
 {
 #if BLAZE_AVX2_MODE
-   value.value = _mm256_setzero_si256();
+   (~value).value = _mm256_setzero_si256();
 #elif BLAZE_SSE2_MODE
-   value.value = _mm_setzero_si128();
+   (~value).value = _mm_setzero_si128();
 #else
-   value.value = 0;
+   (~value).value = 0;
 #endif
 }
 //*************************************************************************************************
 
 
 //*************************************************************************************************
-/*!\brief Setting an integral SIMD type with 4 32-bit data values to zero.
+/*!\brief Setting an integral SIMD type with 16-bit data values to zero.
 // \ingroup simd
 //
 // \param value The value to be set to zero.
 // \return void
 */
-BLAZE_ALWAYS_INLINE void setzero( simd_int32_t& value ) noexcept
+template< typename T >  // Type of the SIMD element
+BLAZE_ALWAYS_INLINE void setzero( simd_i16_t<T>& value ) noexcept
 {
-#if BLAZE_MIC_MODE
-   value.value = _mm512_setzero_epi32();
-#elif BLAZE_AVX2_MODE
-   value.value = _mm256_setzero_si256();
+#if BLAZE_AVX2_MODE
+   (~value).value = _mm256_setzero_si256();
 #elif BLAZE_SSE2_MODE
-   value.value = _mm_setzero_si128();
+   (~value).value = _mm_setzero_si128();
 #else
-   value.value = 0;
+   (~value).value = 0;
 #endif
 }
 //*************************************************************************************************
 
 
 //*************************************************************************************************
-/*!\brief Setting an integral SIMD type with 2 64-bit data values to zero.
+/*!\brief Setting an integral SIMD type with 16-bit complex values to zero.
 // \ingroup simd
 //
 // \param value The value to be set to zero.
 // \return void
 */
-BLAZE_ALWAYS_INLINE void setzero( simd_int64_t& value ) noexcept
+template< typename T >  // Type of the SIMD element
+BLAZE_ALWAYS_INLINE void setzero( simd_ci16_t<T>& value ) noexcept
 {
-#if BLAZE_MIC_MODE
-   value.value = _mm512_setzero_epi32();
-#elif BLAZE_AVX2_MODE
-   value.value = _mm256_setzero_si256();
+#if BLAZE_AVX2_MODE
+   (~value).value = _mm256_setzero_si256();
 #elif BLAZE_SSE2_MODE
-   value.value = _mm_setzero_si128();
+   (~value).value = _mm_setzero_si128();
 #else
-   value.value = 0;
+   (~value).value = 0;
 #endif
 }
 //*************************************************************************************************
 
 
 //*************************************************************************************************
-/*!\brief Setting a floating point SIMD type with 4 32-bit single precision data values to zero.
+/*!\brief Setting an integral SIMD type with 32-bit data values to zero.
+// \ingroup simd
+//
+// \param value The value to be set to zero.
+// \return void
+*/
+template< typename T >  // Type of the SIMD element
+BLAZE_ALWAYS_INLINE void setzero( simd_i32_t<T>& value ) noexcept
+{
+#if BLAZE_MIC_MODE
+   (~value).value = _mm512_setzero_epi32();
+#elif BLAZE_AVX2_MODE
+   (~value).value = _mm256_setzero_si256();
+#elif BLAZE_SSE2_MODE
+   (~value).value = _mm_setzero_si128();
+#else
+   (~value).value = 0;
+#endif
+}
+//*************************************************************************************************
+
+
+//*************************************************************************************************
+/*!\brief Setting an integral SIMD type with 32-bit complex values to zero.
+// \ingroup simd
+//
+// \param value The value to be set to zero.
+// \return void
+*/
+template< typename T >  // Type of the SIMD element
+BLAZE_ALWAYS_INLINE void setzero( simd_ci32_t<T>& value ) noexcept
+{
+#if BLAZE_MIC_MODE
+   (~value).value = _mm512_setzero_epi32();
+#elif BLAZE_AVX2_MODE
+   (~value).value = _mm256_setzero_si256();
+#elif BLAZE_SSE2_MODE
+   (~value).value = _mm_setzero_si128();
+#else
+   (~value).value = 0;
+#endif
+}
+//*************************************************************************************************
+
+
+//*************************************************************************************************
+/*!\brief Setting an integral SIMD type with 64-bit data values to zero.
+// \ingroup simd
+//
+// \param value The value to be set to zero.
+// \return void
+*/
+template< typename T >  // Type of the SIMD element
+BLAZE_ALWAYS_INLINE void setzero( simd_i64_t<T>& value ) noexcept
+{
+#if BLAZE_MIC_MODE
+   (~value).value = _mm512_setzero_epi32();
+#elif BLAZE_AVX2_MODE
+   (~value).value = _mm256_setzero_si256();
+#elif BLAZE_SSE2_MODE
+   (~value).value = _mm_setzero_si128();
+#else
+   (~value).value = 0;
+#endif
+}
+//*************************************************************************************************
+
+
+//*************************************************************************************************
+/*!\brief Setting an integral SIMD type with 64-bit complex values to zero.
+// \ingroup simd
+//
+// \param value The value to be set to zero.
+// \return void
+*/
+template< typename T >  // Type of the SIMD element
+BLAZE_ALWAYS_INLINE void setzero( simd_ci64_t<T>& value ) noexcept
+{
+#if BLAZE_MIC_MODE
+   (~value).value = _mm512_setzero_epi32();
+#elif BLAZE_AVX2_MODE
+   (~value).value = _mm256_setzero_si256();
+#elif BLAZE_SSE2_MODE
+   (~value).value = _mm_setzero_si128();
+#else
+   (~value).value = 0;
+#endif
+}
+//*************************************************************************************************
+
+
+//*************************************************************************************************
+/*!\brief Setting a floating point SIMD type with 32-bit single precision data values to zero.
 // \ingroup simd
 //
 // \param value The value to be set to zero.
@@ -160,29 +252,7 @@ BLAZE_ALWAYS_INLINE void setzero( simd_float_t& value ) noexcept
 
 
 //*************************************************************************************************
-/*!\brief Setting a floating point SIMD type with 4 32-bit double precision data values to zero.
-// \ingroup simd
-//
-// \param value The value to be set to zero.
-// \return void
-*/
-BLAZE_ALWAYS_INLINE void setzero( simd_double_t& value ) noexcept
-{
-#if BLAZE_MIC_MODE
-   value.value = _mm512_setzero_pd();
-#elif BLAZE_AVX_MODE
-   value.value = _mm256_setzero_pd();
-#elif BLAZE_SSE2_MODE
-   value.value = _mm_setzero_pd();
-#else
-   value.value = 0.0;
-#endif
-}
-//*************************************************************************************************
-
-
-//*************************************************************************************************
-/*!\brief Setting a floating point SIMD type with 4 32-bit single precision complex values to zero.
+/*!\brief Setting a floating point SIMD type with 32-bit single precision complex values to zero.
 // \ingroup simd
 //
 // \param value The value to be set to zero.
@@ -204,7 +274,29 @@ BLAZE_ALWAYS_INLINE void setzero( simd_cfloat_t& value ) noexcept
 
 
 //*************************************************************************************************
-/*!\brief Setting a floating point SIMD type with 4 32-bit double precision complex values to zero.
+/*!\brief Setting a floating point SIMD type with 64-bit double precision data values to zero.
+// \ingroup simd
+//
+// \param value The value to be set to zero.
+// \return void
+*/
+BLAZE_ALWAYS_INLINE void setzero( simd_double_t& value ) noexcept
+{
+#if BLAZE_MIC_MODE
+   value.value = _mm512_setzero_pd();
+#elif BLAZE_AVX_MODE
+   value.value = _mm256_setzero_pd();
+#elif BLAZE_SSE2_MODE
+   value.value = _mm_setzero_pd();
+#else
+   value.value = 0.0;
+#endif
+}
+//*************************************************************************************************
+
+
+//*************************************************************************************************
+/*!\brief Setting a floating point SIMD type with 32-bit double precision complex values to zero.
 // \ingroup simd
 //
 // \param value The value to be set to zero.

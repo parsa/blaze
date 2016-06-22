@@ -46,6 +46,7 @@
 #include <blaze/util/typetraits/Decay.h>
 #include <blaze/util/typetraits/IsFloatingPoint.h>
 #include <blaze/util/typetraits/IsNumeric.h>
+#include <blaze/util/typetraits/IsSigned.h>
 
 
 namespace blaze {
@@ -73,7 +74,7 @@ struct HasSIMDConjHelper
 template< typename T >
 struct HasSIMDConjHelper< complex<T> >
 {
-   enum : bool { value = IsNumeric<T>::value && HasSIMDMult<T,T>::value &&
+   enum : bool { value = IsNumeric<T>::value && IsSigned<T>::value && HasSIMDMult<T,T>::value &&
                          ( IsFloatingPoint<T>::value || sizeof(T) <= 4UL ) };
 };
 /*! \endcond */
