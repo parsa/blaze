@@ -2290,7 +2290,7 @@ inline EnableIf_<typename DynamicVector<Type,TF>::BLAZE_TEMPLATE VectorizedMultA
       left.store( left.load() * right.load() ); left += SIMDSIZE; right += SIMDSIZE;
    }
    for( ; remainder && i<size_; ++i ) {
-      *left *= *right;
+      *left *= *right; ++left; ++right;
    }
 }
 //*************************************************************************************************
