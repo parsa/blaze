@@ -44,39 +44,39 @@ namespace blaze {
 //
 //=================================================================================================
 
-class Abs;
-class Acos;
-class Acosh;
-class Asin;
-class Asinh;
-class Atan;
-class Atanh;
-class Cbrt;
-class Ceil;
-class Conj;
-class Cos;
-class Cosh;
-class CTrans;
-class Erf;
-class Erfc;
-class Eval;
-class Exp;
-class Floor;
-class Imag;
-class Inv;
-class InvCbrt;
-class InvSqrt;
-class Log;
-class Log10;
-template< typename > class Pow;
-class Real;
-class Serial;
-class Sin;
-class Sinh;
-class Sqrt;
-class Tan;
-class Tanh;
-class Trans;
+struct Abs;
+struct Acos;
+struct Acosh;
+struct Asin;
+struct Asinh;
+struct Atan;
+struct Atanh;
+struct Cbrt;
+struct Ceil;
+struct Conj;
+struct Cos;
+struct Cosh;
+struct CTrans;
+struct Erf;
+struct Erfc;
+struct Eval;
+struct Exp;
+struct Floor;
+struct Imag;
+struct Inv;
+struct InvCbrt;
+struct InvSqrt;
+struct Log;
+struct Log10;
+template< typename > struct Pow;
+struct Real;
+struct Serial;
+struct Sin;
+struct Sinh;
+struct Sqrt;
+struct Tan;
+struct Tanh;
+struct Trans;
 
 } // namespace blaze
 
