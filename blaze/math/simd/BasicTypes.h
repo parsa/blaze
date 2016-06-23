@@ -243,31 +243,31 @@ struct simd_cf64_t : public simd_t< T >
 /*! \cond BLAZE_INTERNAL */
 struct simd_int8_t : public simd_i8_t< simd_int8_t >
 {
-   using Type = int8_t;
+   using ValueType = int8_t;
 
 #if BLAZE_MIC_MODE
    BLAZE_ALWAYS_INLINE simd_int8_t() noexcept : value( 0 ) {}
-   BLAZE_ALWAYS_INLINE simd_int8_t( Type v ) noexcept : value( v ) {}
-   BLAZE_ALWAYS_INLINE Type operator[]( size_t /*i*/ ) const noexcept { return value; }
-   Type value;
+   BLAZE_ALWAYS_INLINE simd_int8_t( ValueType v ) noexcept : value( v ) {}
+   BLAZE_ALWAYS_INLINE ValueType operator[]( size_t /*i*/ ) const noexcept { return value; }
+   ValueType value;
    enum : size_t { size = 1UL };
 #elif BLAZE_AVX2_MODE
    BLAZE_ALWAYS_INLINE simd_int8_t() noexcept : value( _mm256_setzero_si256() ) {}
    BLAZE_ALWAYS_INLINE simd_int8_t( __m256i v ) noexcept : value( v ) {}
-   BLAZE_ALWAYS_INLINE Type operator[]( size_t i ) const noexcept { return reinterpret_cast<const Type*>( &value )[i]; }
+   BLAZE_ALWAYS_INLINE ValueType operator[]( size_t i ) const noexcept { return reinterpret_cast<const ValueType*>( &value )[i]; }
    __m256i value;  // Contains 32 8-bit signed integral data values
    enum : size_t { size = 32UL };
 #elif BLAZE_SSE2_MODE
    BLAZE_ALWAYS_INLINE simd_int8_t() noexcept : value( _mm_setzero_si128() ) {}
    BLAZE_ALWAYS_INLINE simd_int8_t( __m128i v ) noexcept : value( v ) {}
-   BLAZE_ALWAYS_INLINE Type operator[]( size_t i ) const noexcept { return reinterpret_cast<const Type*>( &value )[i]; }
+   BLAZE_ALWAYS_INLINE ValueType operator[]( size_t i ) const noexcept { return reinterpret_cast<const ValueType*>( &value )[i]; }
    __m128i value;  // Contains 16 8-bit signed integral data values
    enum : size_t { size = 16UL };
 #else
    BLAZE_ALWAYS_INLINE simd_int8_t() noexcept : value( 0 ) {}
-   BLAZE_ALWAYS_INLINE simd_int8_t( Type v ) noexcept : value( v ) {}
-   BLAZE_ALWAYS_INLINE Type operator[]( size_t /*i*/ ) const noexcept { return value; }
-   Type value;
+   BLAZE_ALWAYS_INLINE simd_int8_t( ValueType v ) noexcept : value( v ) {}
+   BLAZE_ALWAYS_INLINE ValueType operator[]( size_t /*i*/ ) const noexcept { return value; }
+   ValueType value;
    enum : size_t { size = 1UL };
 #endif
 
@@ -289,31 +289,31 @@ struct simd_int8_t : public simd_i8_t< simd_int8_t >
 /*! \cond BLAZE_INTERNAL */
 struct simd_uint8_t : public simd_i8_t< simd_uint8_t >
 {
-   using Type = uint8_t;
+   using ValueType = uint8_t;
 
 #if BLAZE_MIC_MODE
    BLAZE_ALWAYS_INLINE simd_uint8_t() noexcept : value( 0 ) {}
-   BLAZE_ALWAYS_INLINE simd_uint8_t( Type v ) noexcept : value( v ) {}
-   BLAZE_ALWAYS_INLINE Type operator[]( size_t /*i*/ ) const noexcept { return value; }
-   Type value;
+   BLAZE_ALWAYS_INLINE simd_uint8_t( ValueType v ) noexcept : value( v ) {}
+   BLAZE_ALWAYS_INLINE ValueType operator[]( size_t /*i*/ ) const noexcept { return value; }
+   ValueType value;
    enum : size_t { size = 1UL };
 #elif BLAZE_AVX2_MODE
    BLAZE_ALWAYS_INLINE simd_uint8_t() noexcept : value( _mm256_setzero_si256() ) {}
    BLAZE_ALWAYS_INLINE simd_uint8_t( __m256i v ) noexcept : value( v ) {}
-   BLAZE_ALWAYS_INLINE Type operator[]( size_t i ) const noexcept { return reinterpret_cast<const Type*>( &value )[i]; }
+   BLAZE_ALWAYS_INLINE ValueType operator[]( size_t i ) const noexcept { return reinterpret_cast<const ValueType*>( &value )[i]; }
    __m256i value;  // Contains 32 8-bit unsigned integral data values
    enum : size_t { size = 32UL };
 #elif BLAZE_SSE2_MODE
    BLAZE_ALWAYS_INLINE simd_uint8_t() noexcept : value( _mm_setzero_si128() ) {}
    BLAZE_ALWAYS_INLINE simd_uint8_t( __m128i v ) noexcept : value( v ) {}
-   BLAZE_ALWAYS_INLINE Type operator[]( size_t i ) const noexcept { return reinterpret_cast<const Type*>( &value )[i]; }
+   BLAZE_ALWAYS_INLINE ValueType operator[]( size_t i ) const noexcept { return reinterpret_cast<const ValueType*>( &value )[i]; }
    __m128i value;  // Contains 16 8-bit unsigned integral data values
    enum : size_t { size = 16UL };
 #else
    BLAZE_ALWAYS_INLINE simd_uint8_t() noexcept : value( 0 ) {}
-   BLAZE_ALWAYS_INLINE simd_uint8_t( Type v ) noexcept : value( v ) {}
-   BLAZE_ALWAYS_INLINE Type operator[]( size_t /*i*/ ) const noexcept { return value; }
-   Type value;
+   BLAZE_ALWAYS_INLINE simd_uint8_t( ValueType v ) noexcept : value( v ) {}
+   BLAZE_ALWAYS_INLINE ValueType operator[]( size_t /*i*/ ) const noexcept { return value; }
+   ValueType value;
    enum : size_t { size = 1UL };
 #endif
 
@@ -343,31 +343,31 @@ struct simd_uint8_t : public simd_i8_t< simd_uint8_t >
 /*! \cond BLAZE_INTERNAL */
 struct simd_cint8_t : public simd_ci8_t< simd_cint8_t >
 {
-   using Type = complex<int8_t>;
+   using ValueType = complex<int8_t>;
 
 #if BLAZE_MIC_MODE
    BLAZE_ALWAYS_INLINE simd_cint8_t() noexcept : value( 0, 0 ) {}
-   BLAZE_ALWAYS_INLINE simd_cint8_t( Type v ) noexcept : value( v ) {}
-   BLAZE_ALWAYS_INLINE Type operator[]( size_t /*i*/ ) const noexcept { return value; }
-   Type value;
+   BLAZE_ALWAYS_INLINE simd_cint8_t( ValueType v ) noexcept : value( v ) {}
+   BLAZE_ALWAYS_INLINE ValueType operator[]( size_t /*i*/ ) const noexcept { return value; }
+   ValueType value;
    enum : size_t { size = 1UL };
 #elif BLAZE_AVX2_MODE
    BLAZE_ALWAYS_INLINE simd_cint8_t() noexcept : value( _mm256_setzero_si256() ) {}
    BLAZE_ALWAYS_INLINE simd_cint8_t( __m256i v ) noexcept : value( v ) {}
-   BLAZE_ALWAYS_INLINE Type operator[]( size_t i ) const noexcept { return reinterpret_cast<const Type*>( &value )[i]; }
+   BLAZE_ALWAYS_INLINE ValueType operator[]( size_t i ) const noexcept { return reinterpret_cast<const ValueType*>( &value )[i]; }
    __m256i value;  // Contains 16 8-bit signed integral complex values
    enum : size_t { size = 16UL };
 #elif BLAZE_SSE2_MODE
    BLAZE_ALWAYS_INLINE simd_cint8_t() noexcept : value( _mm_setzero_si128() ) {}
    BLAZE_ALWAYS_INLINE simd_cint8_t( __m128i v ) noexcept : value( v ) {}
-   BLAZE_ALWAYS_INLINE Type operator[]( size_t i ) const noexcept { return reinterpret_cast<const Type*>( &value )[i]; }
+   BLAZE_ALWAYS_INLINE ValueType operator[]( size_t i ) const noexcept { return reinterpret_cast<const ValueType*>( &value )[i]; }
    __m128i value;  // Contains 8 8-bit signed integral complex values
    enum : size_t { size = 8UL };
 #else
    BLAZE_ALWAYS_INLINE simd_cint8_t() noexcept : value( 0, 0 ) {}
-   BLAZE_ALWAYS_INLINE simd_cint8_t( Type v ) noexcept : value( v ) {}
-   BLAZE_ALWAYS_INLINE Type operator[]( size_t /*i*/ ) const noexcept { return value; }
-   Type value;
+   BLAZE_ALWAYS_INLINE simd_cint8_t( ValueType v ) noexcept : value( v ) {}
+   BLAZE_ALWAYS_INLINE ValueType operator[]( size_t /*i*/ ) const noexcept { return value; }
+   ValueType value;
    enum : size_t { size = 1UL };
 #endif
 
@@ -389,31 +389,31 @@ struct simd_cint8_t : public simd_ci8_t< simd_cint8_t >
 /*! \cond BLAZE_INTERNAL */
 struct simd_cuint8_t : public simd_ci8_t< simd_cuint8_t >
 {
-   using Type = complex<uint8_t>;
+   using ValueType = complex<uint8_t>;
 
 #if BLAZE_MIC_MODE
    BLAZE_ALWAYS_INLINE simd_cuint8_t() noexcept : value( 0, 0 ) {}
-   BLAZE_ALWAYS_INLINE simd_cuint8_t( Type v ) noexcept : value( v ) {}
-   BLAZE_ALWAYS_INLINE Type operator[]( size_t /*i*/ ) const noexcept { return value; }
-   Type value;
+   BLAZE_ALWAYS_INLINE simd_cuint8_t( ValueType v ) noexcept : value( v ) {}
+   BLAZE_ALWAYS_INLINE ValueType operator[]( size_t /*i*/ ) const noexcept { return value; }
+   ValueType value;
    enum : size_t { size = 1UL };
 #elif BLAZE_AVX2_MODE
    BLAZE_ALWAYS_INLINE simd_cuint8_t() noexcept : value( _mm256_setzero_si256() ) {}
    BLAZE_ALWAYS_INLINE simd_cuint8_t( __m256i v ) noexcept : value( v ) {}
-   BLAZE_ALWAYS_INLINE Type operator[]( size_t i ) const noexcept { return reinterpret_cast<const Type*>( &value )[i]; }
+   BLAZE_ALWAYS_INLINE ValueType operator[]( size_t i ) const noexcept { return reinterpret_cast<const ValueType*>( &value )[i]; }
    __m256i value;  // Contains 16 8-bit unsigned integral complex values
    enum : size_t { size = 16UL };
 #elif BLAZE_SSE2_MODE
    BLAZE_ALWAYS_INLINE simd_cuint8_t() noexcept : value( _mm_setzero_si128() ) {}
    BLAZE_ALWAYS_INLINE simd_cuint8_t( __m128i v ) noexcept : value( v ) {}
-   BLAZE_ALWAYS_INLINE Type operator[]( size_t i ) const noexcept { return reinterpret_cast<const Type*>( &value )[i]; }
+   BLAZE_ALWAYS_INLINE ValueType operator[]( size_t i ) const noexcept { return reinterpret_cast<const ValueType*>( &value )[i]; }
    __m128i value;  // Contains 8 8-bit unsigend integral complex values
    enum : size_t { size = 8UL };
 #else
    BLAZE_ALWAYS_INLINE simd_cuint8_t() noexcept : value( 0, 0 ) {}
-   BLAZE_ALWAYS_INLINE simd_cuint8_t( Type v ) noexcept : value( v ) {}
-   BLAZE_ALWAYS_INLINE Type operator[]( size_t /*i*/ ) const noexcept { return value; }
-   Type value;
+   BLAZE_ALWAYS_INLINE simd_cuint8_t( ValueType v ) noexcept : value( v ) {}
+   BLAZE_ALWAYS_INLINE ValueType operator[]( size_t /*i*/ ) const noexcept { return value; }
+   ValueType value;
    enum : size_t { size = 1UL };
 #endif
 
@@ -443,31 +443,31 @@ struct simd_cuint8_t : public simd_ci8_t< simd_cuint8_t >
 /*! \cond BLAZE_INTERNAL */
 struct simd_int16_t : public simd_i16_t< simd_int16_t >
 {
-   using Type = int16_t;
+   using ValueType = int16_t;
 
 #if BLAZE_MIC_MODE
    BLAZE_ALWAYS_INLINE simd_int16_t() noexcept : value( 0 ) {}
-   BLAZE_ALWAYS_INLINE simd_int16_t( Type v ) noexcept : value( v ) {}
-   BLAZE_ALWAYS_INLINE Type operator[]( size_t /*i*/ ) const noexcept { return value; }
-   Type value;
+   BLAZE_ALWAYS_INLINE simd_int16_t( ValueType v ) noexcept : value( v ) {}
+   BLAZE_ALWAYS_INLINE ValueType operator[]( size_t /*i*/ ) const noexcept { return value; }
+   ValueType value;
    enum : size_t { size = 1UL };
 #elif BLAZE_AVX2_MODE
    BLAZE_ALWAYS_INLINE simd_int16_t() noexcept : value( _mm256_setzero_si256() ) {}
    BLAZE_ALWAYS_INLINE simd_int16_t( __m256i v ) noexcept : value( v ) {}
-   BLAZE_ALWAYS_INLINE Type operator[]( size_t i ) const noexcept { return reinterpret_cast<const Type*>( &value )[i]; }
+   BLAZE_ALWAYS_INLINE ValueType operator[]( size_t i ) const noexcept { return reinterpret_cast<const ValueType*>( &value )[i]; }
    __m256i value;  // Contains 16 16-bit signed integral data values
    enum : size_t { size = 16UL };
 #elif BLAZE_SSE2_MODE
    BLAZE_ALWAYS_INLINE simd_int16_t() noexcept : value( _mm_setzero_si128() ) {}
    BLAZE_ALWAYS_INLINE simd_int16_t( __m128i v ) noexcept : value( v ) {}
-   BLAZE_ALWAYS_INLINE Type operator[]( size_t i ) const noexcept { return reinterpret_cast<const Type*>( &value )[i]; }
+   BLAZE_ALWAYS_INLINE ValueType operator[]( size_t i ) const noexcept { return reinterpret_cast<const ValueType*>( &value )[i]; }
    __m128i value;  // Contains 8 16-bit signed integral data values
    enum : size_t { size = 8UL };
 #else
    BLAZE_ALWAYS_INLINE simd_int16_t() noexcept : value( 0 ) {}
-   BLAZE_ALWAYS_INLINE simd_int16_t( Type v ) noexcept : value( v ) {}
-   BLAZE_ALWAYS_INLINE Type operator[]( size_t /*i*/ ) const noexcept { return value; }
-   Type value;
+   BLAZE_ALWAYS_INLINE simd_int16_t( ValueType v ) noexcept : value( v ) {}
+   BLAZE_ALWAYS_INLINE ValueType operator[]( size_t /*i*/ ) const noexcept { return value; }
+   ValueType value;
    enum : size_t { size = 1UL };
 #endif
 
@@ -489,31 +489,31 @@ struct simd_int16_t : public simd_i16_t< simd_int16_t >
 /*! \cond BLAZE_INTERNAL */
 struct simd_uint16_t : public simd_i16_t< simd_uint16_t >
 {
-   using Type = uint16_t;
+   using ValueType = uint16_t;
 
 #if BLAZE_MIC_MODE
    BLAZE_ALWAYS_INLINE simd_uint16_t() noexcept : value( 0 ) {}
-   BLAZE_ALWAYS_INLINE simd_uint16_t( Type v ) noexcept : value( v ) {}
-   BLAZE_ALWAYS_INLINE Type operator[]( size_t /*i*/ ) const noexcept { return value; }
-   Type value;
+   BLAZE_ALWAYS_INLINE simd_uint16_t( ValueType v ) noexcept : value( v ) {}
+   BLAZE_ALWAYS_INLINE ValueType operator[]( size_t /*i*/ ) const noexcept { return value; }
+   ValueType value;
    enum : size_t { size = 1UL };
 #elif BLAZE_AVX2_MODE
    BLAZE_ALWAYS_INLINE simd_uint16_t() noexcept : value( _mm256_setzero_si256() ) {}
    BLAZE_ALWAYS_INLINE simd_uint16_t( __m256i v ) noexcept : value( v ) {}
-   BLAZE_ALWAYS_INLINE Type operator[]( size_t i ) const noexcept { return reinterpret_cast<const Type*>( &value )[i]; }
+   BLAZE_ALWAYS_INLINE ValueType operator[]( size_t i ) const noexcept { return reinterpret_cast<const ValueType*>( &value )[i]; }
    __m256i value;  // Contains 16 16-bit unsigned integral data values
    enum : size_t { size = 16UL };
 #elif BLAZE_SSE2_MODE
    BLAZE_ALWAYS_INLINE simd_uint16_t() noexcept : value( _mm_setzero_si128() ) {}
    BLAZE_ALWAYS_INLINE simd_uint16_t( __m128i v ) noexcept : value( v ) {}
-   BLAZE_ALWAYS_INLINE Type operator[]( size_t i ) const noexcept { return reinterpret_cast<const Type*>( &value )[i]; }
+   BLAZE_ALWAYS_INLINE ValueType operator[]( size_t i ) const noexcept { return reinterpret_cast<const ValueType*>( &value )[i]; }
    __m128i value;  // Contains 8 16-bit unsigned integral data values
    enum : size_t { size = 8UL };
 #else
    BLAZE_ALWAYS_INLINE simd_uint16_t() noexcept : value( 0 ) {}
-   BLAZE_ALWAYS_INLINE simd_uint16_t( Type v ) noexcept : value( v ) {}
-   BLAZE_ALWAYS_INLINE Type operator[]( size_t /*i*/ ) const noexcept { return value; }
-   Type value;
+   BLAZE_ALWAYS_INLINE simd_uint16_t( ValueType v ) noexcept : value( v ) {}
+   BLAZE_ALWAYS_INLINE ValueType operator[]( size_t /*i*/ ) const noexcept { return value; }
+   ValueType value;
    enum : size_t { size = 1UL };
 #endif
 
@@ -543,31 +543,31 @@ struct simd_uint16_t : public simd_i16_t< simd_uint16_t >
 /*! \cond BLAZE_INTERNAL */
 struct simd_cint16_t : public simd_ci16_t< simd_cint16_t >
 {
-   using Type = complex<int16_t>;
+   using ValueType = complex<int16_t>;
 
 #if BLAZE_MIC_MODE
    BLAZE_ALWAYS_INLINE simd_cint16_t() noexcept : value( 0, 0 ) {}
-   BLAZE_ALWAYS_INLINE simd_cint16_t( Type v ) noexcept : value( v ) {}
-   BLAZE_ALWAYS_INLINE Type operator[]( size_t /*i*/ ) const noexcept { return value; }
-   Type value;
+   BLAZE_ALWAYS_INLINE simd_cint16_t( ValueType v ) noexcept : value( v ) {}
+   BLAZE_ALWAYS_INLINE ValueType operator[]( size_t /*i*/ ) const noexcept { return value; }
+   ValueType value;
    enum : size_t { size = 1UL };
 #elif BLAZE_AVX2_MODE
    BLAZE_ALWAYS_INLINE simd_cint16_t() noexcept : value( _mm256_setzero_si256() ) {}
    BLAZE_ALWAYS_INLINE simd_cint16_t( __m256i v ) noexcept : value( v ) {}
-   BLAZE_ALWAYS_INLINE Type operator[]( size_t i ) const noexcept { return reinterpret_cast<const Type*>( &value )[i]; }
+   BLAZE_ALWAYS_INLINE ValueType operator[]( size_t i ) const noexcept { return reinterpret_cast<const ValueType*>( &value )[i]; }
    __m256i value;  // Contains 8 16-bit signed integral complex values
    enum : size_t { size = 8UL };
 #elif BLAZE_SSE2_MODE
    BLAZE_ALWAYS_INLINE simd_cint16_t() noexcept : value( _mm_setzero_si128() ) {}
    BLAZE_ALWAYS_INLINE simd_cint16_t( __m128i v ) noexcept : value( v ) {}
-   BLAZE_ALWAYS_INLINE Type operator[]( size_t i ) const noexcept { return reinterpret_cast<const Type*>( &value )[i]; }
+   BLAZE_ALWAYS_INLINE ValueType operator[]( size_t i ) const noexcept { return reinterpret_cast<const ValueType*>( &value )[i]; }
    __m128i value;  // Contains 4 16-bit signed integral complex values
    enum : size_t { size = 4UL };
 #else
    BLAZE_ALWAYS_INLINE simd_cint16_t() noexcept : value( 0, 0 ) {}
-   BLAZE_ALWAYS_INLINE simd_cint16_t( Type v ) noexcept : value( v ) {}
-   BLAZE_ALWAYS_INLINE Type operator[]( size_t /*i*/ ) const noexcept { return value; }
-   Type value;
+   BLAZE_ALWAYS_INLINE simd_cint16_t( ValueType v ) noexcept : value( v ) {}
+   BLAZE_ALWAYS_INLINE ValueType operator[]( size_t /*i*/ ) const noexcept { return value; }
+   ValueType value;
    enum : size_t { size = 1UL };
 #endif
 
@@ -589,31 +589,31 @@ struct simd_cint16_t : public simd_ci16_t< simd_cint16_t >
 /*! \cond BLAZE_INTERNAL */
 struct simd_cuint16_t : public simd_ci16_t< simd_cuint16_t >
 {
-   using Type = complex<uint16_t>;
+   using ValueType = complex<uint16_t>;
 
 #if BLAZE_MIC_MODE
    BLAZE_ALWAYS_INLINE simd_cuint16_t() noexcept : value( 0, 0 ) {}
-   BLAZE_ALWAYS_INLINE simd_cuint16_t( Type v ) noexcept : value( v ) {}
-   BLAZE_ALWAYS_INLINE Type operator[]( size_t /*i*/ ) const noexcept { return value; }
-   Type value;
+   BLAZE_ALWAYS_INLINE simd_cuint16_t( ValueType v ) noexcept : value( v ) {}
+   BLAZE_ALWAYS_INLINE ValueType operator[]( size_t /*i*/ ) const noexcept { return value; }
+   ValueType value;
    enum : size_t { size = 1UL };
 #elif BLAZE_AVX2_MODE
    BLAZE_ALWAYS_INLINE simd_cuint16_t() noexcept : value( _mm256_setzero_si256() ) {}
    BLAZE_ALWAYS_INLINE simd_cuint16_t( __m256i v ) noexcept : value( v ) {}
-   BLAZE_ALWAYS_INLINE Type operator[]( size_t i ) const noexcept { return reinterpret_cast<const Type*>( &value )[i]; }
+   BLAZE_ALWAYS_INLINE ValueType operator[]( size_t i ) const noexcept { return reinterpret_cast<const ValueType*>( &value )[i]; }
    __m256i value;  // Contains 8 16-bit unsigned integral complex values
    enum : size_t { size = 8UL };
 #elif BLAZE_SSE2_MODE
    BLAZE_ALWAYS_INLINE simd_cuint16_t() noexcept : value( _mm_setzero_si128() ) {}
    BLAZE_ALWAYS_INLINE simd_cuint16_t( __m128i v ) noexcept : value( v ) {}
-   BLAZE_ALWAYS_INLINE Type operator[]( size_t i ) const noexcept { return reinterpret_cast<const Type*>( &value )[i]; }
+   BLAZE_ALWAYS_INLINE ValueType operator[]( size_t i ) const noexcept { return reinterpret_cast<const ValueType*>( &value )[i]; }
    __m128i value;  // Contains 4 16-bit unsigned integral complex values
    enum : size_t { size = 4UL };
 #else
    BLAZE_ALWAYS_INLINE simd_cuint16_t() noexcept : value( 0, 0 ) {}
-   BLAZE_ALWAYS_INLINE simd_cuint16_t( Type v ) noexcept : value( v ) {}
-   BLAZE_ALWAYS_INLINE Type operator[]( size_t /*i*/ ) const noexcept { return value; }
-   Type value;
+   BLAZE_ALWAYS_INLINE simd_cuint16_t( ValueType v ) noexcept : value( v ) {}
+   BLAZE_ALWAYS_INLINE ValueType operator[]( size_t /*i*/ ) const noexcept { return value; }
+   ValueType value;
    enum : size_t { size = 1UL };
 #endif
 
@@ -643,31 +643,31 @@ struct simd_cuint16_t : public simd_ci16_t< simd_cuint16_t >
 /*! \cond BLAZE_INTERNAL */
 struct simd_int32_t : public simd_i32_t< simd_int32_t >
 {
-   using Type = int32_t;
+   using ValueType = int32_t;
 
 #if BLAZE_MIC_MODE
    BLAZE_ALWAYS_INLINE simd_int32_t() noexcept : value( _mm512_setzero_epi32() ) {}
    BLAZE_ALWAYS_INLINE simd_int32_t( __m512i v ) noexcept : value( v ) {}
-   BLAZE_ALWAYS_INLINE Type operator[]( size_t i ) const noexcept { return reinterpret_cast<const Type*>( &value )[i]; }
+   BLAZE_ALWAYS_INLINE ValueType operator[]( size_t i ) const noexcept { return reinterpret_cast<const ValueType*>( &value )[i]; }
    __m512i value;  // Contains 16 32-bit signed integral data values
    enum : size_t { size = 16UL };
 #elif BLAZE_AVX2_MODE
    BLAZE_ALWAYS_INLINE simd_int32_t() noexcept : value( _mm256_setzero_si256() ) {}
    BLAZE_ALWAYS_INLINE simd_int32_t( __m256i v ) noexcept : value( v ) {}
-   BLAZE_ALWAYS_INLINE Type operator[]( size_t i ) const noexcept { return reinterpret_cast<const Type*>( &value )[i]; }
+   BLAZE_ALWAYS_INLINE ValueType operator[]( size_t i ) const noexcept { return reinterpret_cast<const ValueType*>( &value )[i]; }
    __m256i value;  // Contains 8 32-bit signed integral data values
    enum : size_t { size = 8UL };
 #elif BLAZE_SSE2_MODE
    BLAZE_ALWAYS_INLINE simd_int32_t() noexcept : value( _mm_setzero_si128() ) {}
    BLAZE_ALWAYS_INLINE simd_int32_t( __m128i v ) noexcept : value( v ) {}
-   BLAZE_ALWAYS_INLINE Type operator[]( size_t i ) const noexcept { return reinterpret_cast<const Type*>( &value )[i]; }
+   BLAZE_ALWAYS_INLINE ValueType operator[]( size_t i ) const noexcept { return reinterpret_cast<const ValueType*>( &value )[i]; }
    __m128i value;  // Contains 4 32-bit signed integral data values
    enum : size_t { size = 4UL };
 #else
    BLAZE_ALWAYS_INLINE simd_int32_t() noexcept : value( 0 ) {}
-   BLAZE_ALWAYS_INLINE simd_int32_t( Type v ) noexcept : value( v ) {}
-   BLAZE_ALWAYS_INLINE Type operator[]( size_t /*i*/ ) const noexcept { return value; }
-   Type value;
+   BLAZE_ALWAYS_INLINE simd_int32_t( ValueType v ) noexcept : value( v ) {}
+   BLAZE_ALWAYS_INLINE ValueType operator[]( size_t /*i*/ ) const noexcept { return value; }
+   ValueType value;
    enum : size_t { size = 1UL };
 #endif
 
@@ -689,31 +689,31 @@ struct simd_int32_t : public simd_i32_t< simd_int32_t >
 /*! \cond BLAZE_INTERNAL */
 struct simd_uint32_t : public simd_i32_t< simd_uint32_t >
 {
-   using Type = uint32_t;
+   using ValueType = uint32_t;
 
 #if BLAZE_MIC_MODE
    BLAZE_ALWAYS_INLINE simd_uint32_t() noexcept : value( _mm512_setzero_epi32() ) {}
    BLAZE_ALWAYS_INLINE simd_uint32_t( __m512i v ) noexcept : value( v ) {}
-   BLAZE_ALWAYS_INLINE Type operator[]( size_t i ) const noexcept { return reinterpret_cast<const Type*>( &value )[i]; }
+   BLAZE_ALWAYS_INLINE ValueType operator[]( size_t i ) const noexcept { return reinterpret_cast<const ValueType*>( &value )[i]; }
    __m512i value;  // Contains 16 32-bit unsigned integral data values
    enum : size_t { size = 16UL };
 #elif BLAZE_AVX2_MODE
    BLAZE_ALWAYS_INLINE simd_uint32_t() noexcept : value( _mm256_setzero_si256() ) {}
    BLAZE_ALWAYS_INLINE simd_uint32_t( __m256i v ) noexcept : value( v ) {}
-   BLAZE_ALWAYS_INLINE Type operator[]( size_t i ) const noexcept { return reinterpret_cast<const Type*>( &value )[i]; }
+   BLAZE_ALWAYS_INLINE ValueType operator[]( size_t i ) const noexcept { return reinterpret_cast<const ValueType*>( &value )[i]; }
    __m256i value;  // Contains 8 32-bit unsigned integral data values
    enum : size_t { size = 8UL };
 #elif BLAZE_SSE2_MODE
    BLAZE_ALWAYS_INLINE simd_uint32_t() noexcept : value( _mm_setzero_si128() ) {}
    BLAZE_ALWAYS_INLINE simd_uint32_t( __m128i v ) noexcept : value( v ) {}
-   BLAZE_ALWAYS_INLINE Type operator[]( size_t i ) const noexcept { return reinterpret_cast<const Type*>( &value )[i]; }
+   BLAZE_ALWAYS_INLINE ValueType operator[]( size_t i ) const noexcept { return reinterpret_cast<const ValueType*>( &value )[i]; }
    __m128i value;  // Contains 4 32-bit unsigned integral data values
    enum : size_t { size = 4UL };
 #else
    BLAZE_ALWAYS_INLINE simd_uint32_t() noexcept : value( 0 ) {}
-   BLAZE_ALWAYS_INLINE simd_uint32_t( Type v ) noexcept : value( v ) {}
-   BLAZE_ALWAYS_INLINE Type operator[]( size_t /*i*/ ) const noexcept { return value; }
-   Type value;
+   BLAZE_ALWAYS_INLINE simd_uint32_t( ValueType v ) noexcept : value( v ) {}
+   BLAZE_ALWAYS_INLINE ValueType operator[]( size_t /*i*/ ) const noexcept { return value; }
+   ValueType value;
    enum : size_t { size = 1UL };
 #endif
 
@@ -743,31 +743,31 @@ struct simd_uint32_t : public simd_i32_t< simd_uint32_t >
 /*! \cond BLAZE_INTERNAL */
 struct simd_cint32_t : public simd_ci32_t< simd_cint32_t >
 {
-   using Type = complex<int32_t>;
+   using ValueType = complex<int32_t>;
 
 #if BLAZE_MIC_MODE
    BLAZE_ALWAYS_INLINE simd_cint32_t() noexcept : value( _mm512_setzero_epi32() ) {}
    BLAZE_ALWAYS_INLINE simd_cint32_t( __m512i v ) noexcept : value( v ) {}
-   BLAZE_ALWAYS_INLINE Type operator[]( size_t i ) const noexcept { return reinterpret_cast<const Type*>( &value )[i]; }
+   BLAZE_ALWAYS_INLINE ValueType operator[]( size_t i ) const noexcept { return reinterpret_cast<const ValueType*>( &value )[i]; }
    __m512i value;  // Contains 8 32-bit signed integral complex values
    enum : size_t { size = 8UL };
 #elif BLAZE_AVX2_MODE
    BLAZE_ALWAYS_INLINE simd_cint32_t() noexcept : value( _mm256_setzero_si256() ) {}
    BLAZE_ALWAYS_INLINE simd_cint32_t( __m256i v ) noexcept : value( v ) {}
-   BLAZE_ALWAYS_INLINE Type operator[]( size_t i ) const noexcept { return reinterpret_cast<const Type*>( &value )[i]; }
+   BLAZE_ALWAYS_INLINE ValueType operator[]( size_t i ) const noexcept { return reinterpret_cast<const ValueType*>( &value )[i]; }
    __m256i value;  // Contains 4 32-bit signed integral complex values
    enum : size_t { size = 4UL };
 #elif BLAZE_SSE2_MODE
    BLAZE_ALWAYS_INLINE simd_cint32_t() noexcept : value( _mm_setzero_si128() ) {}
    BLAZE_ALWAYS_INLINE simd_cint32_t( __m128i v ) noexcept : value( v ) {}
-   BLAZE_ALWAYS_INLINE Type operator[]( size_t i ) const noexcept { return reinterpret_cast<const Type*>( &value )[i]; }
+   BLAZE_ALWAYS_INLINE ValueType operator[]( size_t i ) const noexcept { return reinterpret_cast<const ValueType*>( &value )[i]; }
    __m128i value;  // Contains 2 32-bit signed integral complex values
    enum : size_t { size = 2UL };
 #else
    BLAZE_ALWAYS_INLINE simd_cint32_t() noexcept : value( 0, 0 ) {}
-   BLAZE_ALWAYS_INLINE simd_cint32_t( Type v ) noexcept : value( v ) {}
-   BLAZE_ALWAYS_INLINE Type operator[]( size_t /*i*/ ) const noexcept { return value; }
-   Type value;
+   BLAZE_ALWAYS_INLINE simd_cint32_t( ValueType v ) noexcept : value( v ) {}
+   BLAZE_ALWAYS_INLINE ValueType operator[]( size_t /*i*/ ) const noexcept { return value; }
+   ValueType value;
    enum : size_t { size = 1UL };
 #endif
 
@@ -789,31 +789,31 @@ struct simd_cint32_t : public simd_ci32_t< simd_cint32_t >
 /*! \cond BLAZE_INTERNAL */
 struct simd_cuint32_t : public simd_ci32_t< simd_cuint32_t >
 {
-   using Type = complex<uint32_t>;
+   using ValueType = complex<uint32_t>;
 
 #if BLAZE_MIC_MODE
    BLAZE_ALWAYS_INLINE simd_cuint32_t() noexcept : value( _mm512_setzero_epi32() ) {}
    BLAZE_ALWAYS_INLINE simd_cuint32_t( __m512i v ) noexcept : value( v ) {}
-   BLAZE_ALWAYS_INLINE Type operator[]( size_t i ) const noexcept { return reinterpret_cast<const Type*>( &value )[i]; }
+   BLAZE_ALWAYS_INLINE ValueType operator[]( size_t i ) const noexcept { return reinterpret_cast<const ValueType*>( &value )[i]; }
    __m512i value;  // Contains 8 32-bit unsigned integral complex values
    enum : size_t { size = 8UL };
 #elif BLAZE_AVX2_MODE
    BLAZE_ALWAYS_INLINE simd_cuint32_t() noexcept : value( _mm256_setzero_si256() ) {}
    BLAZE_ALWAYS_INLINE simd_cuint32_t( __m256i v ) noexcept : value( v ) {}
-   BLAZE_ALWAYS_INLINE Type operator[]( size_t i ) const noexcept { return reinterpret_cast<const Type*>( &value )[i]; }
+   BLAZE_ALWAYS_INLINE ValueType operator[]( size_t i ) const noexcept { return reinterpret_cast<const ValueType*>( &value )[i]; }
    __m256i value;  // Contains 4 32-bit unsigned integral complex values
    enum : size_t { size = 4UL };
 #elif BLAZE_SSE2_MODE
    BLAZE_ALWAYS_INLINE simd_cuint32_t() noexcept : value( _mm_setzero_si128() ) {}
    BLAZE_ALWAYS_INLINE simd_cuint32_t( __m128i v ) noexcept : value( v ) {}
-   BLAZE_ALWAYS_INLINE Type operator[]( size_t i ) const noexcept { return reinterpret_cast<const Type*>( &value )[i]; }
+   BLAZE_ALWAYS_INLINE ValueType operator[]( size_t i ) const noexcept { return reinterpret_cast<const ValueType*>( &value )[i]; }
    __m128i value;  // Contains 2 32-bit unsigned integral complex values
    enum : size_t { size = 2UL };
 #else
    BLAZE_ALWAYS_INLINE simd_cuint32_t() noexcept : value( 0, 0 ) {}
-   BLAZE_ALWAYS_INLINE simd_cuint32_t( Type v ) noexcept : value( v ) {}
-   BLAZE_ALWAYS_INLINE Type operator[]( size_t /*i*/ ) const noexcept { return value; }
-   Type value;
+   BLAZE_ALWAYS_INLINE simd_cuint32_t( ValueType v ) noexcept : value( v ) {}
+   BLAZE_ALWAYS_INLINE ValueType operator[]( size_t /*i*/ ) const noexcept { return value; }
+   ValueType value;
    enum : size_t { size = 1UL };
 #endif
 
@@ -843,31 +843,31 @@ struct simd_cuint32_t : public simd_ci32_t< simd_cuint32_t >
 /*! \cond BLAZE_INTERNAL */
 struct simd_int64_t : public simd_i64_t< simd_int64_t >
 {
-   using Type = int64_t;
+   using ValueType = int64_t;
 
 #if BLAZE_MIC_MODE
    BLAZE_ALWAYS_INLINE simd_int64_t() noexcept : value( _mm512_setzero_epi32() ) {}
    BLAZE_ALWAYS_INLINE simd_int64_t( __m512i v ) noexcept : value( v ) {}
-   BLAZE_ALWAYS_INLINE Type operator[]( size_t i ) const noexcept { return reinterpret_cast<const Type*>( &value )[i]; }
+   BLAZE_ALWAYS_INLINE ValueType operator[]( size_t i ) const noexcept { return reinterpret_cast<const ValueType*>( &value )[i]; }
    __m512i value;  // Contains 8 64-bit signed integral data values
    enum : size_t { size = 8UL };
 #elif BLAZE_AVX2_MODE
    BLAZE_ALWAYS_INLINE simd_int64_t() noexcept : value( _mm256_setzero_si256() ) {}
    BLAZE_ALWAYS_INLINE simd_int64_t( __m256i v ) noexcept : value( v ) {}
-   BLAZE_ALWAYS_INLINE Type operator[]( size_t i ) const noexcept { return reinterpret_cast<const Type*>( &value )[i]; }
+   BLAZE_ALWAYS_INLINE ValueType operator[]( size_t i ) const noexcept { return reinterpret_cast<const ValueType*>( &value )[i]; }
    __m256i value;  // Contains 4 64-bit signed integral data values
    enum : size_t { size = 4UL };
 #elif BLAZE_SSE2_MODE
    BLAZE_ALWAYS_INLINE simd_int64_t() noexcept : value( _mm_setzero_si128() ) {}
    BLAZE_ALWAYS_INLINE simd_int64_t( __m128i v ) noexcept : value( v ) {}
-   BLAZE_ALWAYS_INLINE Type operator[]( size_t i ) const noexcept { return reinterpret_cast<const Type*>( &value )[i]; }
+   BLAZE_ALWAYS_INLINE ValueType operator[]( size_t i ) const noexcept { return reinterpret_cast<const ValueType*>( &value )[i]; }
    __m128i value;  // Contains 2 64-bit signed integral data values
    enum : size_t { size = 2UL };
 #else
    BLAZE_ALWAYS_INLINE simd_int64_t() noexcept : value( 0L ) {}
-   BLAZE_ALWAYS_INLINE simd_int64_t( Type v ) noexcept : value( v ) {}
-   BLAZE_ALWAYS_INLINE Type operator[]( size_t /*i*/ ) const noexcept { return value; }
-   Type value;
+   BLAZE_ALWAYS_INLINE simd_int64_t( ValueType v ) noexcept : value( v ) {}
+   BLAZE_ALWAYS_INLINE ValueType operator[]( size_t /*i*/ ) const noexcept { return value; }
+   ValueType value;
    enum : size_t { size = 1UL };
 #endif
 
@@ -889,31 +889,31 @@ struct simd_int64_t : public simd_i64_t< simd_int64_t >
 /*! \cond BLAZE_INTERNAL */
 struct simd_uint64_t : public simd_i64_t< simd_uint64_t >
 {
-   using Type = uint64_t;
+   using ValueType = uint64_t;
 
 #if BLAZE_MIC_MODE
    BLAZE_ALWAYS_INLINE simd_uint64_t() noexcept : value( _mm512_setzero_epi32() ) {}
    BLAZE_ALWAYS_INLINE simd_uint64_t( __m512i v ) noexcept : value( v ) {}
-   BLAZE_ALWAYS_INLINE Type operator[]( size_t i ) const noexcept { return reinterpret_cast<const Type*>( &value )[i]; }
+   BLAZE_ALWAYS_INLINE ValueType operator[]( size_t i ) const noexcept { return reinterpret_cast<const ValueType*>( &value )[i]; }
    __m512i value;  // Contains 8 64-bit unsigned integral data values
    enum : size_t { size = 8UL };
 #elif BLAZE_AVX2_MODE
    BLAZE_ALWAYS_INLINE simd_uint64_t() noexcept : value( _mm256_setzero_si256() ) {}
    BLAZE_ALWAYS_INLINE simd_uint64_t( __m256i v ) noexcept : value( v ) {}
-   BLAZE_ALWAYS_INLINE Type operator[]( size_t i ) const noexcept { return reinterpret_cast<const Type*>( &value )[i]; }
+   BLAZE_ALWAYS_INLINE ValueType operator[]( size_t i ) const noexcept { return reinterpret_cast<const ValueType*>( &value )[i]; }
    __m256i value;  // Contains 4 64-bit unsigned integral data values
    enum : size_t { size = 4UL };
 #elif BLAZE_SSE2_MODE
    BLAZE_ALWAYS_INLINE simd_uint64_t() noexcept : value( _mm_setzero_si128() ) {}
    BLAZE_ALWAYS_INLINE simd_uint64_t( __m128i v ) noexcept : value( v ) {}
-   BLAZE_ALWAYS_INLINE Type operator[]( size_t i ) const noexcept { return reinterpret_cast<const Type*>( &value )[i]; }
+   BLAZE_ALWAYS_INLINE ValueType operator[]( size_t i ) const noexcept { return reinterpret_cast<const ValueType*>( &value )[i]; }
    __m128i value;  // Contains 2 64-bit unsigned integral data values
    enum : size_t { size = 2UL };
 #else
    BLAZE_ALWAYS_INLINE simd_uint64_t() noexcept : value( 0L ) {}
-   BLAZE_ALWAYS_INLINE simd_uint64_t( Type v ) noexcept : value( v ) {}
-   BLAZE_ALWAYS_INLINE Type operator[]( size_t /*i*/ ) const noexcept { return value; }
-   Type value;
+   BLAZE_ALWAYS_INLINE simd_uint64_t( ValueType v ) noexcept : value( v ) {}
+   BLAZE_ALWAYS_INLINE ValueType operator[]( size_t /*i*/ ) const noexcept { return value; }
+   ValueType value;
    enum : size_t { size = 1UL };
 #endif
 
@@ -943,31 +943,31 @@ struct simd_uint64_t : public simd_i64_t< simd_uint64_t >
 /*! \cond BLAZE_INTERNAL */
 struct simd_cint64_t : public simd_ci64_t< simd_cint64_t >
 {
-   using Type = complex<int64_t>;
+   using ValueType = complex<int64_t>;
 
 #if BLAZE_MIC_MODE
    BLAZE_ALWAYS_INLINE simd_cint64_t() noexcept : value( _mm512_setzero_epi32() ) {}
    BLAZE_ALWAYS_INLINE simd_cint64_t( __m512i v ) noexcept : value( v ) {}
-   BLAZE_ALWAYS_INLINE Type operator[]( size_t i ) const noexcept { return reinterpret_cast<const Type*>( &value )[i]; }
+   BLAZE_ALWAYS_INLINE ValueType operator[]( size_t i ) const noexcept { return reinterpret_cast<const ValueType*>( &value )[i]; }
    __m512i value;  // Contains 4 64-bit signed integral complex values
    enum : size_t { size = 4UL };
 #elif BLAZE_AVX2_MODE
    BLAZE_ALWAYS_INLINE simd_cint64_t() noexcept : value( _mm256_setzero_si256() ) {}
    BLAZE_ALWAYS_INLINE simd_cint64_t( __m256i v ) noexcept : value( v ) {}
-   BLAZE_ALWAYS_INLINE Type operator[]( size_t i ) const noexcept { return reinterpret_cast<const Type*>( &value )[i]; }
+   BLAZE_ALWAYS_INLINE ValueType operator[]( size_t i ) const noexcept { return reinterpret_cast<const ValueType*>( &value )[i]; }
    __m256i value;  // Contains 2 64-bit signed integral complex values
    enum : size_t { size = 2UL };
 #elif BLAZE_SSE2_MODE
    BLAZE_ALWAYS_INLINE simd_cint64_t() noexcept : value( _mm_setzero_si128() ) {}
    BLAZE_ALWAYS_INLINE simd_cint64_t( __m128i v ) noexcept : value( v ) {}
-   BLAZE_ALWAYS_INLINE Type operator[]( size_t i ) const noexcept { return reinterpret_cast<const Type*>( &value )[i]; }
+   BLAZE_ALWAYS_INLINE ValueType operator[]( size_t i ) const noexcept { return reinterpret_cast<const ValueType*>( &value )[i]; }
    __m128i value;  // Contains 1 64-bit signed integral complex values
    enum : size_t { size = 1UL };
 #else
    BLAZE_ALWAYS_INLINE simd_cint64_t() noexcept : value( 0L, 0L ) {}
-   BLAZE_ALWAYS_INLINE simd_cint64_t( Type v ) noexcept : value( v ) {}
-   BLAZE_ALWAYS_INLINE Type operator[]( size_t /*i*/ ) const noexcept { return value; }
-   Type value;
+   BLAZE_ALWAYS_INLINE simd_cint64_t( ValueType v ) noexcept : value( v ) {}
+   BLAZE_ALWAYS_INLINE ValueType operator[]( size_t /*i*/ ) const noexcept { return value; }
+   ValueType value;
    enum : size_t { size = 1UL };
 #endif
 
@@ -989,31 +989,31 @@ struct simd_cint64_t : public simd_ci64_t< simd_cint64_t >
 /*! \cond BLAZE_INTERNAL */
 struct simd_cuint64_t : public simd_ci64_t< simd_cuint64_t >
 {
-   using Type = complex<uint64_t>;
+   using ValueType = complex<uint64_t>;
 
 #if BLAZE_MIC_MODE
    BLAZE_ALWAYS_INLINE simd_cuint64_t() noexcept : value( _mm512_setzero_epi32() ) {}
    BLAZE_ALWAYS_INLINE simd_cuint64_t( __m512i v ) noexcept : value( v ) {}
-   BLAZE_ALWAYS_INLINE Type operator[]( size_t i ) const noexcept { return reinterpret_cast<const Type*>( &value )[i]; }
+   BLAZE_ALWAYS_INLINE ValueType operator[]( size_t i ) const noexcept { return reinterpret_cast<const ValueType*>( &value )[i]; }
    __m512i value;  // Contains 4 64-bit unsigned integral complex values
    enum : size_t { size = 4UL };
 #elif BLAZE_AVX2_MODE
    BLAZE_ALWAYS_INLINE simd_cuint64_t() noexcept : value( _mm256_setzero_si256() ) {}
    BLAZE_ALWAYS_INLINE simd_cuint64_t( __m256i v ) noexcept : value( v ) {}
-   BLAZE_ALWAYS_INLINE Type operator[]( size_t i ) const noexcept { return reinterpret_cast<const Type*>( &value )[i]; }
+   BLAZE_ALWAYS_INLINE ValueType operator[]( size_t i ) const noexcept { return reinterpret_cast<const ValueType*>( &value )[i]; }
    __m256i value;  // Contains 2 64-bit unsigned integral complex values
    enum : size_t { size = 2UL };
 #elif BLAZE_SSE2_MODE
    BLAZE_ALWAYS_INLINE simd_cuint64_t() noexcept : value( _mm_setzero_si128() ) {}
    BLAZE_ALWAYS_INLINE simd_cuint64_t( __m128i v ) noexcept : value( v ) {}
-   BLAZE_ALWAYS_INLINE Type operator[]( size_t i ) const noexcept { return reinterpret_cast<const Type*>( &value )[i]; }
+   BLAZE_ALWAYS_INLINE ValueType operator[]( size_t i ) const noexcept { return reinterpret_cast<const ValueType*>( &value )[i]; }
    __m128i value;  // Contains 1 64-bit unsigned integral complex values
    enum : size_t { size = 1UL };
 #else
    BLAZE_ALWAYS_INLINE simd_cuint64_t() noexcept : value( 0L, 0L ) {}
-   BLAZE_ALWAYS_INLINE simd_cuint64_t( Type v ) noexcept : value( v ) {}
-   BLAZE_ALWAYS_INLINE Type operator[]( size_t /*i*/ ) const noexcept { return value; }
-   Type value;
+   BLAZE_ALWAYS_INLINE simd_cuint64_t( ValueType v ) noexcept : value( v ) {}
+   BLAZE_ALWAYS_INLINE ValueType operator[]( size_t /*i*/ ) const noexcept { return value; }
+   ValueType value;
    enum : size_t { size = 1UL };
 #endif
 
@@ -1043,31 +1043,31 @@ struct simd_cuint64_t : public simd_ci64_t< simd_cuint64_t >
 /*! \cond BLAZE_INTERNAL */
 struct simd_float_t : public simd_f32_t< simd_float_t >
 {
-   using Type = float;
+   using ValueType = float;
 
 #if BLAZE_MIC_MODE
    BLAZE_ALWAYS_INLINE simd_float_t() noexcept : value( _mm512_setzero_ps() ) {}
    BLAZE_ALWAYS_INLINE simd_float_t( __m512 v ) noexcept : value( v ) {}
-   BLAZE_ALWAYS_INLINE Type operator[]( size_t i ) const noexcept { return reinterpret_cast<const Type*>( &value )[i]; }
+   BLAZE_ALWAYS_INLINE ValueType operator[]( size_t i ) const noexcept { return reinterpret_cast<const ValueType*>( &value )[i]; }
    __m512 value;  // Contains 16 32-bit single precision floating point values
    enum : size_t { size = 16UL };
 #elif BLAZE_AVX_MODE
    BLAZE_ALWAYS_INLINE simd_float_t() noexcept : value( _mm256_setzero_ps() ) {}
    BLAZE_ALWAYS_INLINE simd_float_t( __m256 v ) noexcept : value( v ) {}
-   BLAZE_ALWAYS_INLINE Type operator[]( size_t i ) const noexcept { return reinterpret_cast<const Type*>( &value )[i]; }
+   BLAZE_ALWAYS_INLINE ValueType operator[]( size_t i ) const noexcept { return reinterpret_cast<const ValueType*>( &value )[i]; }
    __m256 value;  // Contains 8 32-bit single precision floating point values
    enum : size_t { size = 8UL };
 #elif BLAZE_SSE_MODE
    BLAZE_ALWAYS_INLINE simd_float_t() noexcept : value( _mm_setzero_ps() ) {}
    BLAZE_ALWAYS_INLINE simd_float_t( __m128 v ) noexcept : value( v ) {}
-   BLAZE_ALWAYS_INLINE Type operator[]( size_t i ) const noexcept { return reinterpret_cast<const Type*>( &value )[i]; }
+   BLAZE_ALWAYS_INLINE ValueType operator[]( size_t i ) const noexcept { return reinterpret_cast<const ValueType*>( &value )[i]; }
    __m128 value;  // Contains 4 32-bit single precision floating point values
    enum : size_t { size = 4UL };
 #else
    BLAZE_ALWAYS_INLINE simd_float_t() noexcept : value( 0.0F ) {}
-   BLAZE_ALWAYS_INLINE simd_float_t( Type v ) noexcept : value( v ) {}
-   BLAZE_ALWAYS_INLINE Type operator[]( size_t /*i*/ ) const noexcept { return value; }
-   Type value;
+   BLAZE_ALWAYS_INLINE simd_float_t( ValueType v ) noexcept : value( v ) {}
+   BLAZE_ALWAYS_INLINE ValueType operator[]( size_t /*i*/ ) const noexcept { return value; }
+   ValueType value;
    enum : size_t { size = 1UL };
 #endif
 
@@ -1097,31 +1097,31 @@ struct simd_float_t : public simd_f32_t< simd_float_t >
 /*! \cond BLAZE_INTERNAL */
 struct simd_cfloat_t : public simd_cf32_t< simd_cfloat_t >
 {
-   using Type = complex<float>;
+   using ValueType = complex<float>;
 
 #if BLAZE_MIC_MODE
    BLAZE_ALWAYS_INLINE simd_cfloat_t() noexcept : value( _mm512_setzero_ps() ) {}
    BLAZE_ALWAYS_INLINE simd_cfloat_t( __m512 v ) noexcept : value( v ) {}
-   BLAZE_ALWAYS_INLINE Type operator[]( size_t i ) const noexcept { return reinterpret_cast<const Type*>( &value )[i]; }
+   BLAZE_ALWAYS_INLINE ValueType operator[]( size_t i ) const noexcept { return reinterpret_cast<const ValueType*>( &value )[i]; }
    __m512 value;  // Contains 8 32-bit single precision complex values
    enum : size_t { size = 8UL };
 #elif BLAZE_AVX_MODE
    BLAZE_ALWAYS_INLINE simd_cfloat_t() noexcept : value( _mm256_setzero_ps() ) {}
    BLAZE_ALWAYS_INLINE simd_cfloat_t( __m256 v ) noexcept : value( v ) {}
-   BLAZE_ALWAYS_INLINE Type operator[]( size_t i ) const noexcept { return reinterpret_cast<const Type*>( &value )[i]; }
+   BLAZE_ALWAYS_INLINE ValueType operator[]( size_t i ) const noexcept { return reinterpret_cast<const ValueType*>( &value )[i]; }
    __m256 value;  // Contains 4 32-bit single precision complex values
    enum : size_t { size = 4UL };
 #elif BLAZE_SSE_MODE
    BLAZE_ALWAYS_INLINE simd_cfloat_t() noexcept : value( _mm_setzero_ps() ) {}
    BLAZE_ALWAYS_INLINE simd_cfloat_t( __m128 v ) noexcept : value( v ) {}
-   BLAZE_ALWAYS_INLINE Type operator[]( size_t i ) const noexcept { return reinterpret_cast<const Type*>( &value )[i]; }
+   BLAZE_ALWAYS_INLINE ValueType operator[]( size_t i ) const noexcept { return reinterpret_cast<const ValueType*>( &value )[i]; }
    __m128 value;  // Contains 2 32-bit single precision complex values
    enum : size_t { size = 2UL };
 #else
    BLAZE_ALWAYS_INLINE simd_cfloat_t() noexcept : value( 0.0F, 0.0F ) {}
-   BLAZE_ALWAYS_INLINE simd_cfloat_t( Type v ) noexcept : value( v ) {}
-   BLAZE_ALWAYS_INLINE Type operator[]( size_t /*i*/ ) const noexcept { return value; }
-   Type value;
+   BLAZE_ALWAYS_INLINE simd_cfloat_t( ValueType v ) noexcept : value( v ) {}
+   BLAZE_ALWAYS_INLINE ValueType operator[]( size_t /*i*/ ) const noexcept { return value; }
+   ValueType value;
    enum : size_t { size = 1UL };
 #endif
 
@@ -1151,31 +1151,31 @@ struct simd_cfloat_t : public simd_cf32_t< simd_cfloat_t >
 /*! \cond BLAZE_INTERNAL */
 struct simd_double_t : public simd_f64_t< simd_double_t >
 {
-   using Type = double;
+   using ValueType = double;
 
 #if BLAZE_MIC_MODE
    BLAZE_ALWAYS_INLINE simd_double_t() noexcept : value( _mm512_setzero_pd() ) {}
    BLAZE_ALWAYS_INLINE simd_double_t( __m512d v ) noexcept : value( v ) {}
-   BLAZE_ALWAYS_INLINE Type operator[]( size_t i ) const noexcept { return reinterpret_cast<const Type*>( &value )[i]; }
+   BLAZE_ALWAYS_INLINE ValueType operator[]( size_t i ) const noexcept { return reinterpret_cast<const ValueType*>( &value )[i]; }
    __m512d value;  // Contains 8 64-bit double precision floating point values
    enum : size_t { size = 8UL };
 #elif BLAZE_AVX_MODE
    BLAZE_ALWAYS_INLINE simd_double_t() noexcept : value( _mm256_setzero_pd() ) {}
    BLAZE_ALWAYS_INLINE simd_double_t( __m256d v ) noexcept : value( v ) {}
-   BLAZE_ALWAYS_INLINE Type operator[]( size_t i ) const noexcept { return reinterpret_cast<const Type*>( &value )[i]; }
+   BLAZE_ALWAYS_INLINE ValueType operator[]( size_t i ) const noexcept { return reinterpret_cast<const ValueType*>( &value )[i]; }
    __m256d value;  // Contains 4 64-bit double precision floating point values
    enum : size_t { size = 4UL };
 #elif BLAZE_SSE2_MODE
    BLAZE_ALWAYS_INLINE simd_double_t() noexcept : value( _mm_setzero_pd() ) {}
    BLAZE_ALWAYS_INLINE simd_double_t( __m128d v ) noexcept : value( v ) {}
-   BLAZE_ALWAYS_INLINE Type operator[]( size_t i ) const noexcept { return reinterpret_cast<const Type*>( &value )[i]; }
+   BLAZE_ALWAYS_INLINE ValueType operator[]( size_t i ) const noexcept { return reinterpret_cast<const ValueType*>( &value )[i]; }
    __m128d value;  // Contains 2 64-bit double precision floating point values
    enum : size_t { size = 2UL };
 #else
    BLAZE_ALWAYS_INLINE simd_double_t() noexcept : value( 0.0 ) {}
-   BLAZE_ALWAYS_INLINE simd_double_t( Type v ) noexcept : value( v ) {}
-   BLAZE_ALWAYS_INLINE Type operator[]( size_t /*i*/ ) const noexcept { return value; }
-   Type value;
+   BLAZE_ALWAYS_INLINE simd_double_t( ValueType v ) noexcept : value( v ) {}
+   BLAZE_ALWAYS_INLINE ValueType operator[]( size_t /*i*/ ) const noexcept { return value; }
+   ValueType value;
    enum : size_t { size = 1UL };
 #endif
 
@@ -1205,31 +1205,31 @@ struct simd_double_t : public simd_f64_t< simd_double_t >
 /*! \cond BLAZE_INTERNAL */
 struct simd_cdouble_t : public simd_cf64_t< simd_cdouble_t >
 {
-   using Type = complex<double>;
+   using ValueType = complex<double>;
 
 #if BLAZE_MIC_MODE
    BLAZE_ALWAYS_INLINE simd_cdouble_t() noexcept : value( _mm512_setzero_pd() ) {}
    BLAZE_ALWAYS_INLINE simd_cdouble_t( __m512d v ) noexcept : value( v ) {}
-   BLAZE_ALWAYS_INLINE Type operator[]( size_t i ) const noexcept { return reinterpret_cast<const Type*>( &value )[i]; }
+   BLAZE_ALWAYS_INLINE ValueType operator[]( size_t i ) const noexcept { return reinterpret_cast<const ValueType*>( &value )[i]; }
    __m512d value;  // Contains 4 64-bit double precision complex value
    enum : size_t { size = 4UL };
 #elif BLAZE_AVX_MODE
    BLAZE_ALWAYS_INLINE simd_cdouble_t() noexcept : value( _mm256_setzero_pd() ) {}
    BLAZE_ALWAYS_INLINE simd_cdouble_t( __m256d v ) noexcept : value( v ) {}
-   BLAZE_ALWAYS_INLINE Type operator[]( size_t i ) const noexcept { return reinterpret_cast<const Type*>( &value )[i]; }
+   BLAZE_ALWAYS_INLINE ValueType operator[]( size_t i ) const noexcept { return reinterpret_cast<const ValueType*>( &value )[i]; }
    __m256d value;  // Contains 2 64-bit double precision complex value
    enum : size_t { size = 2UL };
 #elif BLAZE_SSE2_MODE
    BLAZE_ALWAYS_INLINE simd_cdouble_t() noexcept : value( _mm_setzero_pd() ) {}
    BLAZE_ALWAYS_INLINE simd_cdouble_t( __m128d v ) noexcept : value( v ) {}
-   BLAZE_ALWAYS_INLINE Type operator[]( size_t i ) const noexcept { return reinterpret_cast<const Type*>( &value )[i]; }
+   BLAZE_ALWAYS_INLINE ValueType operator[]( size_t i ) const noexcept { return reinterpret_cast<const ValueType*>( &value )[i]; }
    __m128d value;  // Contains 1 64-bit double precision complex value
    enum : size_t { size = 1UL };
 #else
    BLAZE_ALWAYS_INLINE simd_cdouble_t() noexcept : value( 0.0, 0.0 ) {}
-   BLAZE_ALWAYS_INLINE simd_cdouble_t( Type v ) noexcept : value( v ) {}
-   BLAZE_ALWAYS_INLINE Type operator[]( size_t /*i*/ ) const noexcept { return value; }
-   Type value;
+   BLAZE_ALWAYS_INLINE simd_cdouble_t( ValueType v ) noexcept : value( v ) {}
+   BLAZE_ALWAYS_INLINE ValueType operator[]( size_t /*i*/ ) const noexcept { return value; }
+   ValueType value;
    enum : size_t { size = 1UL };
 #endif
 
