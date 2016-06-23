@@ -1247,6 +1247,86 @@ struct simd_cdouble_t : public simd_cf64_t< simd_cdouble_t >
 
 //=================================================================================================
 //
+//  SIMD OPERATORS
+//
+//=================================================================================================
+
+//*************************************************************************************************
+/*!\brief Addition assignment operator for the addition of two SIMD values.
+// \ingroup simd
+//
+// \param lhs The left-hand side SIMD operand for the addition.
+// \param rhs The right-hand side SIMD operand for the addition.
+// \return Reference to the left-hand side SIMD operand.
+*/
+template< typename T1    // Type of the left-hand side SIMD operand
+        , typename T2 >  // Type of the right-hand side SIMD operand
+BLAZE_ALWAYS_INLINE T1& operator+=( simd_t<T1>& lhs, const simd_t<T2>& rhs )
+{
+   (~lhs) = (~lhs) + (~rhs);
+   return ~lhs;
+}
+//*************************************************************************************************
+
+
+//*************************************************************************************************
+/*!\brief Subtraction assignment operator for the subtraction of two SIMD values.
+// \ingroup simd
+//
+// \param lhs The left-hand side SIMD operand for the subtraction.
+// \param rhs The right-hand side SIMD operand for the subtraction.
+// \return Reference to the left-hand side SIMD operand.
+*/
+template< typename T1    // Type of the left-hand side SIMD operand
+        , typename T2 >  // Type of the right-hand side SIMD operand
+BLAZE_ALWAYS_INLINE T1& operator-=( simd_t<T1>& lhs, const simd_t<T2>& rhs )
+{
+   (~lhs) = (~lhs) - (~rhs);
+   return ~lhs;
+}
+//*************************************************************************************************
+
+
+//*************************************************************************************************
+/*!\brief Multiplication assignment operator for the multiplication of two SIMD values.
+// \ingroup simd
+//
+// \param lhs The left-hand side SIMD operand for the multiplication.
+// \param rhs The right-hand side SIMD operand for the multiplication.
+// \return Reference to the left-hand side SIMD operand.
+*/
+template< typename T1    // Type of the left-hand side SIMD operand
+        , typename T2 >  // Type of the right-hand side SIMD operand
+BLAZE_ALWAYS_INLINE T1& operator*=( simd_t<T1>& lhs, const simd_t<T2>& rhs )
+{
+   (~lhs) = (~lhs) * (~rhs);
+   return ~lhs;
+}
+//*************************************************************************************************
+
+
+//*************************************************************************************************
+/*!\brief Division assignment operator for the division of two SIMD values.
+// \ingroup simd
+//
+// \param lhs The left-hand side SIMD operand for the division.
+// \param rhs The right-hand side SIMD operand for the division.
+// \return Reference to the left-hand side SIMD operand.
+*/
+template< typename T1    // Type of the left-hand side SIMD operand
+        , typename T2 >  // Type of the right-hand side SIMD operand
+BLAZE_ALWAYS_INLINE T1& operator/=( simd_t<T1>& lhs, const simd_t<T2>& rhs )
+{
+   (~lhs) = (~lhs) / (~rhs);
+   return ~lhs;
+}
+//*************************************************************************************************
+
+
+
+
+//=================================================================================================
+//
 //  ISSIMDTYPE SPECIALIZATIONS
 //
 //=================================================================================================
