@@ -82,6 +82,7 @@
 #include <blaze/math/typetraits/IsOpposedView.h>
 #include <blaze/math/typetraits/IsPadded.h>
 #include <blaze/math/typetraits/IsRestricted.h>
+#include <blaze/math/typetraits/IsSimdCompatible.h>
 #include <blaze/math/typetraits/IsSparseVector.h>
 #include <blaze/math/typetraits/IsStrictlyLower.h>
 #include <blaze/math/typetraits/IsStrictlyUpper.h>
@@ -464,7 +465,7 @@ class DenseColumn : public DenseVector< DenseColumn<MT,SO,SF>, false >
    struct VectorizedAssign {
       enum : bool { value = useOptimizedKernels &&
                             simdEnabled && VT::simdEnabled &&
-                            IsSame< ElementType, ElementType_<VT> >::value };
+                            IsSimdCompatible< ElementType, ElementType_<VT> >::value };
    };
    /*! \endcond */
    //**********************************************************************************************
@@ -476,8 +477,8 @@ class DenseColumn : public DenseVector< DenseColumn<MT,SO,SF>, false >
    struct VectorizedAddAssign {
       enum : bool { value = useOptimizedKernels &&
                             simdEnabled && VT::simdEnabled &&
-                            IsSame< ElementType, ElementType_<VT> >::value &&
-                            HasSIMDAdd< ElementType, ElementType >::value };
+                            IsSimdCompatible< ElementType, ElementType_<VT> >::value &&
+                            HasSIMDAdd< ElementType, ElementType_<VT> >::value };
    };
    /*! \endcond */
    //**********************************************************************************************
@@ -489,8 +490,8 @@ class DenseColumn : public DenseVector< DenseColumn<MT,SO,SF>, false >
    struct VectorizedSubAssign {
       enum : bool { value = useOptimizedKernels &&
                             simdEnabled && VT::simdEnabled &&
-                            IsSame< ElementType, ElementType_<VT> >::value &&
-                            HasSIMDSub< ElementType, ElementType >::value };
+                            IsSimdCompatible< ElementType, ElementType_<VT> >::value &&
+                            HasSIMDSub< ElementType, ElementType_<VT> >::value };
    };
    /*! \endcond */
    //**********************************************************************************************
@@ -502,8 +503,8 @@ class DenseColumn : public DenseVector< DenseColumn<MT,SO,SF>, false >
    struct VectorizedMultAssign {
       enum : bool { value = useOptimizedKernels &&
                             simdEnabled && VT::simdEnabled &&
-                            IsSame< ElementType, ElementType_<VT> >::value &&
-                            HasSIMDMult< ElementType, ElementType >::value };
+                            IsSimdCompatible< ElementType, ElementType_<VT> >::value &&
+                            HasSIMDMult< ElementType, ElementType_<VT> >::value };
    };
    /*! \endcond */
    //**********************************************************************************************
@@ -515,8 +516,8 @@ class DenseColumn : public DenseVector< DenseColumn<MT,SO,SF>, false >
    struct VectorizedDivAssign {
       enum : bool { value = useOptimizedKernels &&
                             simdEnabled && VT::simdEnabled &&
-                            IsSame< ElementType, ElementType_<VT> >::value &&
-                            HasSIMDDiv< ElementType, ElementType >::value };
+                            IsSimdCompatible< ElementType, ElementType_<VT> >::value &&
+                            HasSIMDDiv< ElementType, ElementType_<VT> >::value };
    };
    /*! \endcond */
    //**********************************************************************************************
@@ -4180,7 +4181,7 @@ class DenseColumn<MT,false,true> : public DenseVector< DenseColumn<MT,false,true
    struct VectorizedAssign {
       enum : bool { value = useOptimizedKernels &&
                             simdEnabled && VT::simdEnabled &&
-                            IsSame< ElementType, ElementType_<VT> >::value };
+                            IsSimdCompatible< ElementType, ElementType_<VT> >::value };
    };
    //**********************************************************************************************
 
@@ -4190,8 +4191,8 @@ class DenseColumn<MT,false,true> : public DenseVector< DenseColumn<MT,false,true
    struct VectorizedAddAssign {
       enum : bool { value = useOptimizedKernels &&
                             simdEnabled && VT::simdEnabled &&
-                            IsSame< ElementType, ElementType_<VT> >::value &&
-                            HasSIMDAdd< ElementType, ElementType >::value };
+                            IsSimdCompatible< ElementType, ElementType_<VT> >::value &&
+                            HasSIMDAdd< ElementType, ElementType_<VT> >::value };
    };
    //**********************************************************************************************
 
@@ -4201,8 +4202,8 @@ class DenseColumn<MT,false,true> : public DenseVector< DenseColumn<MT,false,true
    struct VectorizedSubAssign {
       enum : bool { value = useOptimizedKernels &&
                             simdEnabled && VT::simdEnabled &&
-                            IsSame< ElementType, ElementType_<VT> >::value &&
-                            HasSIMDSub< ElementType, ElementType >::value };
+                            IsSimdCompatible< ElementType, ElementType_<VT> >::value &&
+                            HasSIMDSub< ElementType, ElementType_<VT> >::value };
    };
    //**********************************************************************************************
 
@@ -4212,8 +4213,8 @@ class DenseColumn<MT,false,true> : public DenseVector< DenseColumn<MT,false,true
    struct VectorizedMultAssign {
       enum : bool { value = useOptimizedKernels &&
                             simdEnabled && VT::simdEnabled &&
-                            IsSame< ElementType, ElementType_<VT> >::value &&
-                            HasSIMDMult< ElementType, ElementType >::value };
+                            IsSimdCompatible< ElementType, ElementType_<VT> >::value &&
+                            HasSIMDMult< ElementType, ElementType_<VT> >::value };
    };
    //**********************************************************************************************
 
@@ -4223,8 +4224,8 @@ class DenseColumn<MT,false,true> : public DenseVector< DenseColumn<MT,false,true
    struct VectorizedDivAssign {
       enum : bool { value = useOptimizedKernels &&
                             simdEnabled && VT::simdEnabled &&
-                            IsSame< ElementType, ElementType_<VT> >::value &&
-                            HasSIMDDiv< ElementType, ElementType >::value };
+                            IsSimdCompatible< ElementType, ElementType_<VT> >::value &&
+                            HasSIMDDiv< ElementType, ElementType_<VT> >::value };
    };
    //**********************************************************************************************
 
