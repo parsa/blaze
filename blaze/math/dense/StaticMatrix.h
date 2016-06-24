@@ -77,6 +77,7 @@
 #include <blaze/math/typetraits/IsColumnMajorMatrix.h>
 #include <blaze/math/typetraits/IsPadded.h>
 #include <blaze/math/typetraits/IsRowMajorMatrix.h>
+#include <blaze/math/typetraits/IsSimdCompatible.h>
 #include <blaze/math/typetraits/IsSparseMatrix.h>
 #include <blaze/math/typetraits/IsSquare.h>
 #include <blaze/math/typetraits/IsStrictlyLower.h>
@@ -361,7 +362,7 @@ class StaticMatrix : public DenseMatrix< StaticMatrix<Type,M,N,SO>, SO >
    struct VectorizedAssign {
       enum : bool { value = useOptimizedKernels &&
                             simdEnabled && MT::simdEnabled &&
-                            IsSame< Type, ElementType_<MT> >::value &&
+                            IsSimdCompatible< Type, ElementType_<MT> >::value &&
                             IsRowMajorMatrix<MT>::value };
    };
    /*! \endcond */
@@ -374,8 +375,8 @@ class StaticMatrix : public DenseMatrix< StaticMatrix<Type,M,N,SO>, SO >
    struct VectorizedAddAssign {
       enum : bool { value = useOptimizedKernels &&
                             simdEnabled && MT::simdEnabled &&
-                            IsSame< Type, ElementType_<MT> >::value &&
-                            HasSIMDAdd<Type,Type>::value &&
+                            IsSimdCompatible< Type, ElementType_<MT> >::value &&
+                            HasSIMDAdd< Type, ElementType_<MT> >::value &&
                             IsRowMajorMatrix<MT>::value &&
                             !IsDiagonal<MT>::value };
    };
@@ -389,8 +390,8 @@ class StaticMatrix : public DenseMatrix< StaticMatrix<Type,M,N,SO>, SO >
    struct VectorizedSubAssign {
       enum : bool { value = useOptimizedKernels &&
                             simdEnabled && MT::simdEnabled &&
-                            IsSame< Type, ElementType_<MT> >::value &&
-                            HasSIMDSub<Type,Type>::value &&
+                            IsSimdCompatible< Type, ElementType_<MT> >::value &&
+                            HasSIMDSub< Type, ElementType_<MT> >::value &&
                             IsRowMajorMatrix<MT>::value &&
                             !IsDiagonal<MT>::value };
    };
@@ -3080,7 +3081,7 @@ class StaticMatrix<Type,M,N,true> : public DenseMatrix< StaticMatrix<Type,M,N,tr
    struct VectorizedAssign {
       enum : bool { value = useOptimizedKernels &&
                             simdEnabled && MT::simdEnabled &&
-                            IsSame< Type, ElementType_<MT> >::value &&
+                            IsSimdCompatible< Type, ElementType_<MT> >::value &&
                             IsColumnMajorMatrix<MT>::value };
    };
    //**********************************************************************************************
@@ -3091,8 +3092,8 @@ class StaticMatrix<Type,M,N,true> : public DenseMatrix< StaticMatrix<Type,M,N,tr
    struct VectorizedAddAssign {
       enum : bool { value = useOptimizedKernels &&
                             simdEnabled && MT::simdEnabled &&
-                            IsSame< Type, ElementType_<MT> >::value &&
-                            HasSIMDAdd<Type,Type>::value &&
+                            IsSimdCompatible< Type, ElementType_<MT> >::value &&
+                            HasSIMDAdd< Type, ElementType_<MT> >::value &&
                             IsColumnMajorMatrix<MT>::value &&
                             !IsDiagonal<MT>::value };
    };
@@ -3104,8 +3105,8 @@ class StaticMatrix<Type,M,N,true> : public DenseMatrix< StaticMatrix<Type,M,N,tr
    struct VectorizedSubAssign {
       enum : bool { value = useOptimizedKernels &&
                             simdEnabled && MT::simdEnabled &&
-                            IsSame< Type, ElementType_<MT> >::value &&
-                            HasSIMDSub<Type,Type>::value &&
+                            IsSimdCompatible< Type, ElementType_<MT> >::value &&
+                            HasSIMDSub< Type, ElementType_<MT> >::value &&
                             IsColumnMajorMatrix<MT>::value &&
                             !IsDiagonal<MT>::value };
    };
