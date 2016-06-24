@@ -96,81 +96,6 @@ struct SIMDTraitBase< T, EnableIf_< And< IsNumeric<T>, IsIntegral<T>, Has1Byte<T
 
 //*************************************************************************************************
 /*! \cond BLAZE_INTERNAL */
-/*!\brief Specialization of the SIMDTraitBase class template for 2-byte integral data types.
-// \ingroup simd
-*/
-template< typename T >
-struct SIMDTraitBase< T, EnableIf_< And< IsNumeric<T>, IsIntegral<T>, Has2Bytes<T> > > >
-{
-   using Type = If_< IsSigned<T>, simd_int16_t, simd_uint16_t >;
-   enum : size_t { size = Type::size };
-};
-/*! \endcond */
-//*************************************************************************************************
-
-
-//*************************************************************************************************
-/*! \cond BLAZE_INTERNAL */
-/*!\brief Specialization of the SIMDTraitBase class template for 4-byte integral data types.
-// \ingroup simd
-*/
-template< typename T >
-struct SIMDTraitBase< T, EnableIf_< And< IsNumeric<T>, IsIntegral<T>, Has4Bytes<T> > > >
-{
-   using Type = If_< IsSigned<T>, simd_int32_t, simd_uint32_t >;
-   enum : size_t { size = Type::size };
-};
-/*! \endcond */
-//*************************************************************************************************
-
-
-//*************************************************************************************************
-/*! \cond BLAZE_INTERNAL */
-/*!\brief Specialization of the SIMDTraitBase class template for 8-byte integral data types.
-// \ingroup simd
-*/
-template< typename T >
-struct SIMDTraitBase< T, EnableIf_< And< IsNumeric<T>, IsIntegral<T>, Has8Bytes<T> > > >
-{
-   using Type = If_< IsSigned<T>, simd_int64_t, simd_uint64_t >;
-   enum : size_t { size = Type::size };
-};
-/*! \endcond */
-//*************************************************************************************************
-
-
-//*************************************************************************************************
-/*! \cond BLAZE_INTERNAL */
-/*!\brief Specialization of the SIMDTraitBase class template for 'float'.
-// \ingroup simd
-*/
-template<>
-struct SIMDTraitBase<float>
-{
-   using Type = simd_float_t;
-   enum : size_t { size = Type::size };
-};
-/*! \endcond */
-//*************************************************************************************************
-
-
-//*************************************************************************************************
-/*! \cond BLAZE_INTERNAL */
-/*!\brief Specialization of the SIMDTraitBase class template for 'double'.
-// \ingroup simd
-*/
-template<>
-struct SIMDTraitBase<double>
-{
-   using Type = simd_double_t;
-   enum : size_t { size = Type::size };
-};
-/*! \endcond */
-//*************************************************************************************************
-
-
-//*************************************************************************************************
-/*! \cond BLAZE_INTERNAL */
 /*!\brief Specialization of the SIMDTraitBase class template for 1-byte integral complex data types.
 // \ingroup simd
 */
@@ -181,6 +106,21 @@ struct SIMDTraitBase< complex<T>, EnableIf_< And< IsNumeric<T>, IsIntegral<T>, H
    enum : size_t { size = Type::size };
 
    BLAZE_STATIC_ASSERT( sizeof( complex<T> ) == 2UL*sizeof( T ) );
+};
+/*! \endcond */
+//*************************************************************************************************
+
+
+//*************************************************************************************************
+/*! \cond BLAZE_INTERNAL */
+/*!\brief Specialization of the SIMDTraitBase class template for 2-byte integral data types.
+// \ingroup simd
+*/
+template< typename T >
+struct SIMDTraitBase< T, EnableIf_< And< IsNumeric<T>, IsIntegral<T>, Has2Bytes<T> > > >
+{
+   using Type = If_< IsSigned<T>, simd_int16_t, simd_uint16_t >;
+   enum : size_t { size = Type::size };
 };
 /*! \endcond */
 //*************************************************************************************************
@@ -205,6 +145,21 @@ struct SIMDTraitBase< complex<T>, EnableIf_< And< IsNumeric<T>, IsIntegral<T>, H
 
 //*************************************************************************************************
 /*! \cond BLAZE_INTERNAL */
+/*!\brief Specialization of the SIMDTraitBase class template for 4-byte integral data types.
+// \ingroup simd
+*/
+template< typename T >
+struct SIMDTraitBase< T, EnableIf_< And< IsNumeric<T>, IsIntegral<T>, Has4Bytes<T> > > >
+{
+   using Type = If_< IsSigned<T>, simd_int32_t, simd_uint32_t >;
+   enum : size_t { size = Type::size };
+};
+/*! \endcond */
+//*************************************************************************************************
+
+
+//*************************************************************************************************
+/*! \cond BLAZE_INTERNAL */
 /*!\brief Specialization of the SIMDTraitBase class template for 4-byte integral complex data types.
 // \ingroup simd
 */
@@ -215,6 +170,21 @@ struct SIMDTraitBase< complex<T>, EnableIf_< And< IsNumeric<T>, IsIntegral<T>, H
    enum : size_t { size = Type::size };
 
    BLAZE_STATIC_ASSERT( sizeof( complex<T> ) == 2UL*sizeof( T ) );
+};
+/*! \endcond */
+//*************************************************************************************************
+
+
+//*************************************************************************************************
+/*! \cond BLAZE_INTERNAL */
+/*!\brief Specialization of the SIMDTraitBase class template for 8-byte integral data types.
+// \ingroup simd
+*/
+template< typename T >
+struct SIMDTraitBase< T, EnableIf_< And< IsNumeric<T>, IsIntegral<T>, Has8Bytes<T> > > >
+{
+   using Type = If_< IsSigned<T>, simd_int64_t, simd_uint64_t >;
+   enum : size_t { size = Type::size };
 };
 /*! \endcond */
 //*************************************************************************************************
@@ -239,6 +209,21 @@ struct SIMDTraitBase< complex<T>, EnableIf_< And< IsNumeric<T>, IsIntegral<T>, H
 
 //*************************************************************************************************
 /*! \cond BLAZE_INTERNAL */
+/*!\brief Specialization of the SIMDTraitBase class template for 'float'.
+// \ingroup simd
+*/
+template<>
+struct SIMDTraitBase<float>
+{
+   using Type = simd_float_t;
+   enum : size_t { size = Type::size };
+};
+/*! \endcond */
+//*************************************************************************************************
+
+
+//*************************************************************************************************
+/*! \cond BLAZE_INTERNAL */
 /*!\brief Specialization of the SIMDTraitBase class template for 'complex<float>'.
 // \ingroup simd
 */
@@ -249,6 +234,21 @@ struct SIMDTraitBase< complex<float> >
    enum : size_t { size = Type::size };
 
    BLAZE_STATIC_ASSERT( sizeof( complex<float> ) == 2UL*sizeof( float ) );
+};
+/*! \endcond */
+//*************************************************************************************************
+
+
+//*************************************************************************************************
+/*! \cond BLAZE_INTERNAL */
+/*!\brief Specialization of the SIMDTraitBase class template for 'double'.
+// \ingroup simd
+*/
+template<>
+struct SIMDTraitBase<double>
+{
+   using Type = simd_double_t;
+   enum : size_t { size = Type::size };
 };
 /*! \endcond */
 //*************************************************************************************************
