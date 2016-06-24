@@ -147,6 +147,30 @@ typedef double  TypeB;
 
 
 //*************************************************************************************************
+/*!\brief Compilation switch for the conjugate transpose tests.
+//
+// This compilation switch triggers the conjugate transpose tests for all test scenarios. In case
+// the conjugate transpose tests are activated, each operation is tested in combination with a
+// conjugate transpose operation. The following example demonstrates this by means of the vector
+// addition:
+
+   \code
+   blaze::DynamicVector< complex<double>, false > a, b;
+   blaze::DynamicVector< complex<double>, true > c;
+   c = ctrans( a + b );  // Conjugate transpose vector addition
+   \endcode
+
+// The following settings are possible:
+//
+//   - 0: The conjugate transpose tests are not included in the compilation process and not executed
+//   - 1: The conjugate transpose tests are included in the compilation process, but not executed
+//   - 2: The conjugate transpose tests are included in the compilation process and executed
+*/
+#define BLAZETEST_MATHTEST_TEST_CTRANS_OPERATION 0
+//*************************************************************************************************
+
+
+//*************************************************************************************************
 /*!\brief Compilation switch for the \a abs tests.
 //
 // This compilation switch triggers the \a abs tests for all test scenarios. In case the \a abs
@@ -188,30 +212,6 @@ typedef double  TypeB;
 //   - 2: The complex conjugate tests are included in the compilation process and executed
 */
 #define BLAZETEST_MATHTEST_TEST_CONJ_OPERATION 0
-//*************************************************************************************************
-
-
-//*************************************************************************************************
-/*!\brief Compilation switch for the conjugate transpose tests.
-//
-// This compilation switch triggers the conjugate transpose tests for all test scenarios. In case
-// the conjugate transpose tests are activated, each operation is tested in combination with a
-// conjugate transpose operation. The following example demonstrates this by means of the vector
-// addition:
-
-   \code
-   blaze::DynamicVector< complex<double>, false > a, b;
-   blaze::DynamicVector< complex<double>, true > c;
-   c = ctrans( a + b );  // Conjugate transpose vector addition
-   \endcode
-
-// The following settings are possible:
-//
-//   - 0: The conjugate transpose tests are not included in the compilation process and not executed
-//   - 1: The conjugate transpose tests are included in the compilation process, but not executed
-//   - 2: The conjugate transpose tests are included in the compilation process and executed
-*/
-#define BLAZETEST_MATHTEST_TEST_CTRANS_OPERATION 0
 //*************************************************************************************************
 
 
