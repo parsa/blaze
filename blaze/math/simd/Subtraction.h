@@ -40,6 +40,7 @@
 // Includes
 //*************************************************************************************************
 
+#include <blaze/math/Aliases.h>
 #include <blaze/math/simd/BasicTypes.h>
 #include <blaze/math/traits/SubTrait.h>
 #include <blaze/system/Inline.h>
@@ -92,10 +93,9 @@ BLAZE_ALWAYS_INLINE SubTrait_<T1,T2>
 //
 // This operation is only available for SSE2 and AVX2.
 */
-template< typename T1    // Type of the left-hand side operand
-        , typename T2 >  // Type of the right-hand side operand
-BLAZE_ALWAYS_INLINE SubTrait_<T1,T2>
-   operator-( const simd_ci8_t<T1>& a, const simd_ci8_t<T2>& b ) noexcept
+template< typename T >  // Type of both operands
+BLAZE_ALWAYS_INLINE T
+   operator-( const simd_ci8_t<T>& a, const simd_ci8_t<T>& b ) noexcept
 #if BLAZE_AVX2_MODE
 {
    return _mm256_sub_epi8( (~a).value, (~b).value );
@@ -148,10 +148,9 @@ BLAZE_ALWAYS_INLINE SubTrait_<T1,T2>
 //
 // This operation is only available for SSE2 and AVX2.
 */
-template< typename T1    // Type of the left-hand side operand
-        , typename T2 >  // Type of the right-hand side operand
-BLAZE_ALWAYS_INLINE SubTrait_<T1,T2>
-   operator-( const simd_ci16_t<T1>& a, const simd_ci16_t<T2>& b ) noexcept
+template< typename T >  // Type of both operands
+BLAZE_ALWAYS_INLINE T
+   operator-( const simd_ci16_t<T>& a, const simd_ci16_t<T>& b ) noexcept
 #if BLAZE_AVX2_MODE
 {
    return _mm256_sub_epi16( (~a).value, (~b).value );
@@ -208,10 +207,9 @@ BLAZE_ALWAYS_INLINE SubTrait_<T1,T2>
 //
 // This operation is only available for SSE2, AVX2, and AVX-512.
 */
-template< typename T1    // Type of the left-hand side operand
-        , typename T2 >  // Type of the right-hand side operand
-BLAZE_ALWAYS_INLINE SubTrait_<T1,T2>
-   operator-( const simd_ci32_t<T1>& a, const simd_ci32_t<T2>& b ) noexcept
+template< typename T >  // Type of both operands
+BLAZE_ALWAYS_INLINE T
+   operator-( const simd_ci32_t<T>& a, const simd_ci32_t<T>& b ) noexcept
 #if BLAZE_MIC_MODE
 {
    return _mm512_sub_epi32( (~a).value, (~b).value );
@@ -272,10 +270,9 @@ BLAZE_ALWAYS_INLINE SubTrait_<T1,T2>
 //
 // This operation is only available for SSE2, AVX2, and AVX-512.
 */
-template< typename T1    // Type of the left-hand side operand
-        , typename T2 >  // Type of the right-hand side operand
-BLAZE_ALWAYS_INLINE SubTrait_<T1,T2>
-   operator-( const simd_ci64_t<T1>& a, const simd_ci64_t<T2>& b ) noexcept
+template< typename T >  // Type of both operands
+BLAZE_ALWAYS_INLINE T
+   operator-( const simd_ci64_t<T>& a, const simd_ci64_t<T>& b ) noexcept
 #if BLAZE_MIC_MODE
 {
    return _mm512_sub_epi64( (~a).value, (~b).value );
@@ -429,46 +426,20 @@ template<> struct SubTrait< simd_int8_t , simd_uint8_t > { using Type = simd_uin
 template<> struct SubTrait< simd_uint8_t, simd_int8_t  > { using Type = simd_uint8_t; };
 template<> struct SubTrait< simd_uint8_t, simd_uint8_t > { using Type = simd_uint8_t; };
 
-template<> struct SubTrait< simd_cint8_t , simd_cint8_t  > { using Type = simd_cint8_t;  };
-template<> struct SubTrait< simd_cint8_t , simd_cuint8_t > { using Type = simd_cuint8_t; };
-template<> struct SubTrait< simd_cuint8_t, simd_cint8_t  > { using Type = simd_cuint8_t; };
-template<> struct SubTrait< simd_cuint8_t, simd_cuint8_t > { using Type = simd_cuint8_t; };
-
 template<> struct SubTrait< simd_int16_t , simd_int16_t  > { using Type = simd_int16_t;  };
 template<> struct SubTrait< simd_int16_t , simd_uint16_t > { using Type = simd_uint16_t; };
 template<> struct SubTrait< simd_uint16_t, simd_int16_t  > { using Type = simd_uint16_t; };
 template<> struct SubTrait< simd_uint16_t, simd_uint16_t > { using Type = simd_uint16_t; };
-
-template<> struct SubTrait< simd_cint16_t , simd_cint16_t  > { using Type = simd_cint16_t;  };
-template<> struct SubTrait< simd_cint16_t , simd_cuint16_t > { using Type = simd_cuint16_t; };
-template<> struct SubTrait< simd_cuint16_t, simd_cint16_t  > { using Type = simd_cuint16_t; };
-template<> struct SubTrait< simd_cuint16_t, simd_cuint16_t > { using Type = simd_cuint16_t; };
 
 template<> struct SubTrait< simd_int32_t , simd_int32_t  > { using Type = simd_int32_t;  };
 template<> struct SubTrait< simd_int32_t , simd_uint32_t > { using Type = simd_uint32_t; };
 template<> struct SubTrait< simd_uint32_t, simd_int32_t  > { using Type = simd_uint32_t; };
 template<> struct SubTrait< simd_uint32_t, simd_uint32_t > { using Type = simd_uint32_t; };
 
-template<> struct SubTrait< simd_cint32_t , simd_cint32_t  > { using Type = simd_cint32_t;  };
-template<> struct SubTrait< simd_cint32_t , simd_cuint32_t > { using Type = simd_cuint32_t; };
-template<> struct SubTrait< simd_cuint32_t, simd_cint32_t  > { using Type = simd_cuint32_t; };
-template<> struct SubTrait< simd_cuint32_t, simd_cuint32_t > { using Type = simd_cuint32_t; };
-
 template<> struct SubTrait< simd_int64_t , simd_int64_t  > { using Type = simd_int64_t;  };
 template<> struct SubTrait< simd_int64_t , simd_uint64_t > { using Type = simd_uint64_t; };
 template<> struct SubTrait< simd_uint64_t, simd_int64_t  > { using Type = simd_uint64_t; };
 template<> struct SubTrait< simd_uint64_t, simd_uint64_t > { using Type = simd_uint64_t; };
-
-template<> struct SubTrait< simd_cint64_t , simd_cint64_t  > { using Type = simd_cint64_t;  };
-template<> struct SubTrait< simd_cint64_t , simd_cuint64_t > { using Type = simd_cuint64_t; };
-template<> struct SubTrait< simd_cuint64_t, simd_cint64_t  > { using Type = simd_cuint64_t; };
-template<> struct SubTrait< simd_cuint64_t, simd_cuint64_t > { using Type = simd_cuint64_t; };
-
-template<> struct SubTrait< simd_float_t , simd_float_t  > { using Type = simd_float_t;  };
-template<> struct SubTrait< simd_cfloat_t, simd_cfloat_t > { using Type = simd_cfloat_t; };
-
-template<> struct SubTrait< simd_double_t , simd_double_t  > { using Type = simd_double_t;  };
-template<> struct SubTrait< simd_cdouble_t, simd_cdouble_t > { using Type = simd_cdouble_t; };
 /*! \endcond */
 //*************************************************************************************************
 
