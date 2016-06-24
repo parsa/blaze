@@ -1,7 +1,7 @@
 //=================================================================================================
 /*!
-//  \file blaze/math/typetraits/IsBlasCompatible.h
-//  \brief Header file for the IsBlasCompatible type trait
+//  \file blaze/math/constraints/BLASCompatible.h
+//  \brief Constraint on the data type
 //
 //  Copyright (C) 2013 Klaus Iglberger - All Rights Reserved
 //
@@ -32,54 +32,54 @@
 */
 //=================================================================================================
 
-#ifndef _BLAZE_MATH_TYPETRAITS_ISBLASCOMPATIBLE_H_
-#define _BLAZE_MATH_TYPETRAITS_ISBLASCOMPATIBLE_H_
+#ifndef _BLAZE_MATH_CONSTRAINTS_BLASCOMPATIBLE_H_
+#define _BLAZE_MATH_CONSTRAINTS_BLASCOMPATIBLE_H_
 
 
 //*************************************************************************************************
 // Includes
 //*************************************************************************************************
 
-#include <blaze/util/IntegralConstant.h>
-#include <blaze/util/mpl/Or.h>
-#include <blaze/util/typetraits/IsComplexDouble.h>
-#include <blaze/util/typetraits/IsComplexFloat.h>
-#include <blaze/util/typetraits/IsDouble.h>
-#include <blaze/util/typetraits/IsFloat.h>
+#include <blaze/math/typetraits/IsBLASCompatible.h>
 
 
 namespace blaze {
 
 //=================================================================================================
 //
-//  CLASS DEFINITION
+//  MUST_BE_BLAS_COMPATIBLE_TYPE CONSTRAINT
 //
 //=================================================================================================
 
 //*************************************************************************************************
-/*!\brief Compile time check for data types.
-// \ingroup math_type_traits
+/*!\brief Constraint on the data type.
+// \ingroup math_constraints
 //
-// This type trait tests whether or not the given template parameter is a data type compatible
-// to the BLAS standard. The BLAS standard supports \c float, \c double, \c complex<float> and
-// \c complex<double> values. If the type is BLAS compatible, the \a value member constant is
-// set to \a true, the nested type definition \a Type is \a TrueType, and the class derives
-// from \a TrueType. Otherwise \a value is set to \a false, \a Type is \a FalseType, and the
-// class derives from \a FalseType.
-
-   \code
-   blaze::IsBlasCompatible< float >::value         // Evaluates to 1
-   blaze::IsBlasCompatible< double >::Type         // Results in TrueType
-   blaze::IsBlasCompatible< complex<float> >       // Is derived from TrueType
-   blaze::IsBlasCompatible< int >::value           // Evaluates to 0
-   blaze::IsBlasCompatible< unsigned long >::Type  // Results in FalseType
-   blaze::IsBlasCompatible< long double >          // Is derived from FalseType
-   \endcode
+// In case the given data type \a T is not a BLAS compatible data type (i.e. float, double,
+// complex<float>, or complex<double>), a compilation error is created.
 */
-template< typename T >
-struct IsBlasCompatible
-   : public BoolConstant< Or< IsFloat<T>, IsDouble<T>, IsComplexFloat<T>, IsComplexDouble<T> >::value >
-{};
+#define BLAZE_CONSTRAINT_MUST_BE_BLAS_COMPATIBLE_TYPE(T) \
+   static_assert( ::blaze::IsBLASCompatible<T>::value, "Non-BLAS compatible type detected" )
+//*************************************************************************************************
+
+
+
+
+//=================================================================================================
+//
+//  MUST_NOT_BE_BLAS_COMPATIBLE_TYPE CONSTRAINT
+//
+//=================================================================================================
+
+//*************************************************************************************************
+/*!\brief Constraint on the data type.
+// \ingroup math_constraints
+//
+// In case the given data type \a T is a BLAS compatible type (i.e. float, double, complex<float>,
+// or complex<double>), a compilation error is created.
+*/
+#define BLAZE_CONSTRAINT_MUST_NOT_BE_BLAS_COMPATIBLE_TYPE(T) \
+   static_assert( !::blaze::IsBLASCompatible<T>::value, "BLAS compatible type detected" )
 //*************************************************************************************************
 
 } // namespace blaze

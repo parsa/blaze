@@ -42,7 +42,7 @@
 
 #include <blaze/math/traits/DMatInvExprTrait.h>
 #include <blaze/math/traits/TDMatInvExprTrait.h>
-#include <blaze/math/typetraits/IsBlasCompatible.h>
+#include <blaze/math/typetraits/IsBLASCompatible.h>
 #include <blaze/math/typetraits/IsDenseMatrix.h>
 #include <blaze/math/typetraits/IsRowMajorMatrix.h>
 #include <blaze/math/typetraits/UnderlyingElement.h>
@@ -94,7 +94,7 @@ struct InvExprTrait
 
    //**********************************************************************************************
    /*! \cond BLAZE_INTERNAL */
-   using Tmp = If_< And< IsDenseMatrix<T>, IsBlasCompatible< UnderlyingElement_<T> > >
+   using Tmp = If_< And< IsDenseMatrix<T>, IsBLASCompatible< UnderlyingElement_<T> > >
                   , If_< IsRowMajorMatrix<T>
                        , DMatInvExprTrait<T>
                        , TDMatInvExprTrait<T> >

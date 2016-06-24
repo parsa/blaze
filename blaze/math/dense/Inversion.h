@@ -43,7 +43,7 @@
 #include <memory>
 #include <blaze/math/Aliases.h>
 #include <blaze/math/constraints/Adaptor.h>
-#include <blaze/math/constraints/BlasCompatible.h>
+#include <blaze/math/constraints/BLASCompatible.h>
 #include <blaze/math/constraints/StrictlyTriangular.h>
 #include <blaze/math/dense/StaticMatrix.h>
 #include <blaze/math/Exception.h>

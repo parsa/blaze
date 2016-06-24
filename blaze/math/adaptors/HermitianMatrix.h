@@ -45,7 +45,7 @@
 #include <blaze/math/adaptors/hermitianmatrix/Dense.h>
 #include <blaze/math/adaptors/hermitianmatrix/Sparse.h>
 #include <blaze/math/adaptors/symmetricmatrix/BaseTemplate.h>
-#include <blaze/math/constraints/BlasCompatible.h>
+#include <blaze/math/constraints/BLASCompatible.h>
 #include <blaze/math/constraints/RequiresEvaluation.h>
 #include <blaze/math/dense/StaticMatrix.h>
 #include <blaze/math/Exception.h>
