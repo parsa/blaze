@@ -67,6 +67,7 @@
 #include <blaze/math/traits/SubmatrixTrait.h>
 #include <blaze/math/traits/SubTrait.h>
 #include <blaze/math/traits/TransExprTrait.h>
+#include <blaze/math/typetraits/AreSIMDCombinable.h>
 #include <blaze/math/typetraits/HasConstDataAccess.h>
 #include <blaze/math/typetraits/HasMutableDataAccess.h>
 #include <blaze/math/typetraits/HasSIMDAdd.h>
@@ -76,7 +77,6 @@
 #include <blaze/math/typetraits/IsLower.h>
 #include <blaze/math/typetraits/IsPadded.h>
 #include <blaze/math/typetraits/IsResizable.h>
-#include <blaze/math/typetraits/IsSimdCompatible.h>
 #include <blaze/math/typetraits/IsSMPAssignable.h>
 #include <blaze/math/typetraits/IsSparseMatrix.h>
 #include <blaze/math/typetraits/IsStrictlyLower.h>
@@ -348,7 +348,7 @@ class DynamicMatrix : public DenseMatrix< DynamicMatrix<Type,SO>, SO >
    struct VectorizedAssign {
       enum : bool { value = useOptimizedKernels &&
                             simdEnabled && MT::simdEnabled &&
-                            IsSimdCompatible< Type, ElementType_<MT> >::value };
+                            AreSIMDCombinable< Type, ElementType_<MT> >::value };
    };
    /*! \endcond */
    //**********************************************************************************************
@@ -360,7 +360,7 @@ class DynamicMatrix : public DenseMatrix< DynamicMatrix<Type,SO>, SO >
    struct VectorizedAddAssign {
       enum : bool { value = useOptimizedKernels &&
                             simdEnabled && MT::simdEnabled &&
-                            IsSimdCompatible< Type, ElementType_<MT> >::value &&
+                            AreSIMDCombinable< Type, ElementType_<MT> >::value &&
                             HasSIMDAdd< Type, ElementType_<MT> >::value &&
                             !IsDiagonal<MT>::value };
    };
@@ -374,7 +374,7 @@ class DynamicMatrix : public DenseMatrix< DynamicMatrix<Type,SO>, SO >
    struct VectorizedSubAssign {
       enum : bool { value = useOptimizedKernels &&
                             simdEnabled && MT::simdEnabled &&
-                            IsSimdCompatible< Type, ElementType_<MT> >::value &&
+                            AreSIMDCombinable< Type, ElementType_<MT> >::value &&
                             HasSIMDSub< Type, ElementType_<MT> >::value &&
                             !IsDiagonal<MT>::value };
    };
@@ -3094,7 +3094,7 @@ class DynamicMatrix<Type,true> : public DenseMatrix< DynamicMatrix<Type,true>, t
    struct VectorizedAssign {
       enum : bool { value = useOptimizedKernels &&
                             simdEnabled && MT::simdEnabled &&
-                            IsSimdCompatible< Type, ElementType_<MT> >::value };
+                            AreSIMDCombinable< Type, ElementType_<MT> >::value };
    };
    //**********************************************************************************************
 
@@ -3104,7 +3104,7 @@ class DynamicMatrix<Type,true> : public DenseMatrix< DynamicMatrix<Type,true>, t
    struct VectorizedAddAssign {
       enum : bool { value = useOptimizedKernels &&
                             simdEnabled && MT::simdEnabled &&
-                            IsSimdCompatible< Type, ElementType_<MT> >::value &&
+                            AreSIMDCombinable< Type, ElementType_<MT> >::value &&
                             HasSIMDAdd< Type, ElementType_<MT> >::value &&
                             !IsDiagonal<MT>::value };
    };
@@ -3116,7 +3116,7 @@ class DynamicMatrix<Type,true> : public DenseMatrix< DynamicMatrix<Type,true>, t
    struct VectorizedSubAssign {
       enum : bool { value = useOptimizedKernels &&
                             simdEnabled && MT::simdEnabled &&
-                            IsSimdCompatible< Type, ElementType_<MT> >::value &&
+                            AreSIMDCombinable< Type, ElementType_<MT> >::value &&
                             HasSIMDSub< Type, ElementType_<MT> >::value &&
                             !IsDiagonal<MT>::value };
    };

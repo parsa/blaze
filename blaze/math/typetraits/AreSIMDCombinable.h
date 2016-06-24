@@ -1,7 +1,7 @@
 //=================================================================================================
 /*!
-//  \file blaze/math/typetraits/IsSimdCompatible.h
-//  \brief Header file for the IsSimdCompatible type trait
+//  \file blaze/math/typetraits/AreSIMDCombinable.h
+//  \brief Header file for the AreSIMDCombinable type trait
 //
 //  Copyright (C) 2013 Klaus Iglberger - All Rights Reserved
 //
@@ -32,8 +32,8 @@
 */
 //=================================================================================================
 
-#ifndef _BLAZE_MATH_TYPETRAITS_ISSIMDCOMPATIBLE_H_
-#define _BLAZE_MATH_TYPETRAITS_ISSIMDCOMPATIBLE_H_
+#ifndef _BLAZE_MATH_TYPETRAITS_ARESIMDCOMBINABLE_H_
+#define _BLAZE_MATH_TYPETRAITS_ARESIMDCOMBINABLE_H_
 
 
 //*************************************************************************************************
@@ -56,16 +56,16 @@ namespace blaze {
 
 //*************************************************************************************************
 /*! \cond BLAZE_INTERNAL */
-/*!\brief Auxiliary helper struct for the IsSimdCompatible type trait.
+/*!\brief Auxiliary helper struct for the AreSIMDCombinable type trait.
 // \ingroup math_type_traits
 */
 template< typename T1
         , typename T2
         , typename... Args >
-struct IsSimdCompatibleHelper
+struct AreSIMDCombinableHelper
 {
-   enum : bool { value = IsSimdCompatibleHelper<T1,T2>::value &&
-                         IsSimdCompatibleHelper<T2,Args...>::value };
+   enum : bool { value = AreSIMDCombinableHelper<T1,T2>::value &&
+                         AreSIMDCombinableHelper<T2,Args...>::value };
 };
 /*! \endcond */
 //*************************************************************************************************
@@ -73,9 +73,9 @@ struct IsSimdCompatibleHelper
 
 //*************************************************************************************************
 /*! \cond BLAZE_INTERNAL */
-//! Specialization of the IsSimdCompatibleHelper class template for two matching types.
+//! Specialization of the AreSIMDCombinableHelper class template for two matching types.
 template< typename T >
-struct IsSimdCompatibleHelper<T,T>
+struct AreSIMDCombinableHelper<T,T>
 {
    enum : bool { value = IsNumeric<T>::value };
 };
@@ -85,9 +85,9 @@ struct IsSimdCompatibleHelper<T,T>
 
 //*************************************************************************************************
 /*! \cond BLAZE_INTERNAL */
-//! Specialization of the IsSimdCompatibleHelper class template for two different types.
+//! Specialization of the AreSIMDCombinableHelper class template for two different types.
 template< typename T1, typename T2 >
-struct IsSimdCompatibleHelper<T1,T2>
+struct AreSIMDCombinableHelper<T1,T2>
 {
    enum : bool { value = IsNumeric<T1>::value && IsIntegral<T1>::value &&
                          IsNumeric<T2>::value && IsIntegral<T2>::value &&
@@ -101,25 +101,25 @@ struct IsSimdCompatibleHelper<T1,T2>
 /*!\brief Compile time check for data types.
 // \ingroup math_type_traits
 //
-// This type trait tests whether or not the given types are compatible to each other in the
-// context of SIMD operations. By default, all numeric data types are considered compatible to
-// themselves. Also, different integral types of the same size are compatible. If the types are
-// SIMD compatible, the \a value member constant is set to \a true, the nested type definition
+// This type trait tests whether or not the given types can be combined in the context of SIMD
+// operations. By default, all numeric data types are considered combinable to themselves. Also,
+// different integral types of the same size can be combined. If the types are determined to be
+// SIMD combinable, the \a value member constant is set to \a true, the nested type definition
 // \a Type is \a TrueType, and the class derives from \a TrueType. Otherwise \a value is set to
 // \a false, \a Type is \a FalseType, and the class derives from \a FalseType.
 
    \code
-   blaze::IsSimdCompatible< int, unsigned int >::value        // Evaluates to 1
-   blaze::IsSimdCompatible< double, double >::Type            // Results in TrueType
-   blaze::IsSimdCompatible< complex<float>, complex<float> >  // Is derived from TrueType
-   blaze::IsSimdCompatible< int, float >::value               // Evaluates to 0
-   blaze::IsSimdCompatible< double, float >::Type             // Results in FalseType
-   blaze::IsSimdCompatible< complex<int>, complex<float> >    // Is derived from FalseType
+   blaze::AreSIMDCombinable< int, unsigned int >::value        // Evaluates to 1
+   blaze::AreSIMDCombinable< double, double >::Type            // Results in TrueType
+   blaze::AreSIMDCombinable< complex<float>, complex<float> >  // Is derived from TrueType
+   blaze::AreSIMDCombinable< int, float >::value               // Evaluates to 0
+   blaze::AreSIMDCombinable< double, float >::Type             // Results in FalseType
+   blaze::AreSIMDCombinable< complex<int>, complex<float> >    // Is derived from FalseType
    \endcode
 */
 template< typename T1, typename T2, typename... Args >
-struct IsSimdCompatible
-   : public BoolConstant< IsSimdCompatibleHelper< T1, T2, Decay_<Args>... >::value >
+struct AreSIMDCombinable
+   : public BoolConstant< AreSIMDCombinableHelper< T1, T2, Decay_<Args>... >::value >
 {};
 //*************************************************************************************************
 

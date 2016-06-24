@@ -74,6 +74,7 @@
 #include <blaze/math/traits/SubmatrixExprTrait.h>
 #include <blaze/math/traits/SubmatrixTrait.h>
 #include <blaze/math/traits/SubTrait.h>
+#include <blaze/math/typetraits/AreSIMDCombinable.h>
 #include <blaze/math/typetraits/HasConstDataAccess.h>
 #include <blaze/math/typetraits/HasMutableDataAccess.h>
 #include <blaze/math/typetraits/HasSIMDAdd.h>
@@ -85,7 +86,6 @@
 #include <blaze/math/typetraits/IsLower.h>
 #include <blaze/math/typetraits/IsPadded.h>
 #include <blaze/math/typetraits/IsRestricted.h>
-#include <blaze/math/typetraits/IsSimdCompatible.h>
 #include <blaze/math/typetraits/IsSparseMatrix.h>
 #include <blaze/math/typetraits/IsStrictlyLower.h>
 #include <blaze/math/typetraits/IsStrictlyUpper.h>
@@ -1025,7 +1025,7 @@ class DenseSubmatrix : public DenseMatrix< DenseSubmatrix<MT,AF,SO>, SO >
    struct VectorizedAssign {
       enum : bool { value = useOptimizedKernels &&
                             simdEnabled && MT2::simdEnabled &&
-                            IsSimdCompatible< ElementType, ElementType_<MT2> >::value };
+                            AreSIMDCombinable< ElementType, ElementType_<MT2> >::value };
    };
    /*! \endcond */
    //**********************************************************************************************
@@ -1037,7 +1037,7 @@ class DenseSubmatrix : public DenseMatrix< DenseSubmatrix<MT,AF,SO>, SO >
    struct VectorizedAddAssign {
       enum : bool { value = useOptimizedKernels &&
                             simdEnabled && MT2::simdEnabled &&
-                            IsSimdCompatible< ElementType, ElementType_<MT2> >::value &&
+                            AreSIMDCombinable< ElementType, ElementType_<MT2> >::value &&
                             HasSIMDAdd< ElementType, ElementType_<MT2> >::value };
    };
    /*! \endcond */
@@ -1050,7 +1050,7 @@ class DenseSubmatrix : public DenseMatrix< DenseSubmatrix<MT,AF,SO>, SO >
    struct VectorizedSubAssign {
       enum : bool { value = useOptimizedKernels &&
                             simdEnabled && MT2::simdEnabled &&
-                            IsSimdCompatible< ElementType, ElementType_<MT2> >::value &&
+                            AreSIMDCombinable< ElementType, ElementType_<MT2> >::value &&
                             HasSIMDSub< ElementType, ElementType_<MT2> >::value };
    };
    /*! \endcond */
@@ -3998,7 +3998,7 @@ class DenseSubmatrix<MT,unaligned,true> : public DenseMatrix< DenseSubmatrix<MT,
    struct VectorizedAssign {
       enum : bool { value = useOptimizedKernels &&
                             simdEnabled && MT2::simdEnabled &&
-                            IsSimdCompatible< ElementType, ElementType_<MT2> >::value };
+                            AreSIMDCombinable< ElementType, ElementType_<MT2> >::value };
    };
    //**********************************************************************************************
 
@@ -4008,7 +4008,7 @@ class DenseSubmatrix<MT,unaligned,true> : public DenseMatrix< DenseSubmatrix<MT,
    struct VectorizedAddAssign {
       enum : bool { value = useOptimizedKernels &&
                             simdEnabled && MT2::simdEnabled &&
-                            IsSimdCompatible< ElementType, ElementType_<MT2> >::value &&
+                            AreSIMDCombinable< ElementType, ElementType_<MT2> >::value &&
                             HasSIMDAdd< ElementType, ElementType_<MT2> >::value };
    };
    //**********************************************************************************************
@@ -4019,7 +4019,7 @@ class DenseSubmatrix<MT,unaligned,true> : public DenseMatrix< DenseSubmatrix<MT,
    struct VectorizedSubAssign {
       enum : bool { value = useOptimizedKernels &&
                             simdEnabled && MT2::simdEnabled &&
-                            IsSimdCompatible< ElementType, ElementType_<MT2> >::value &&
+                            AreSIMDCombinable< ElementType, ElementType_<MT2> >::value &&
                             HasSIMDSub< ElementType, ElementType_<MT2> >::value };
    };
    //**********************************************************************************************
@@ -6520,7 +6520,7 @@ class DenseSubmatrix<MT,aligned,false> : public DenseMatrix< DenseSubmatrix<MT,a
    struct VectorizedAssign {
       enum : bool { value = useOptimizedKernels &&
                             simdEnabled && MT2::simdEnabled &&
-                            IsSimdCompatible< ElementType, ElementType_<MT2> >::value };
+                            AreSIMDCombinable< ElementType, ElementType_<MT2> >::value };
    };
    //**********************************************************************************************
 
@@ -6530,7 +6530,7 @@ class DenseSubmatrix<MT,aligned,false> : public DenseMatrix< DenseSubmatrix<MT,a
    struct VectorizedAddAssign {
       enum : bool { value = useOptimizedKernels &&
                             simdEnabled && MT2::simdEnabled &&
-                            IsSimdCompatible< ElementType, ElementType_<MT2> >::value &&
+                            AreSIMDCombinable< ElementType, ElementType_<MT2> >::value &&
                             HasSIMDAdd< ElementType, ElementType_<MT2> >::value };
    };
    //**********************************************************************************************
@@ -6541,7 +6541,7 @@ class DenseSubmatrix<MT,aligned,false> : public DenseMatrix< DenseSubmatrix<MT,a
    struct VectorizedSubAssign {
       enum : bool { value = useOptimizedKernels &&
                             simdEnabled && MT2::simdEnabled &&
-                            IsSimdCompatible< ElementType, ElementType_<MT2> >::value &&
+                            AreSIMDCombinable< ElementType, ElementType_<MT2> >::value &&
                             HasSIMDSub< ElementType, ElementType_<MT2> >::value };
    };
    //**********************************************************************************************
@@ -9076,7 +9076,7 @@ class DenseSubmatrix<MT,aligned,true> : public DenseMatrix< DenseSubmatrix<MT,al
    struct VectorizedAssign {
       enum : bool { value = useOptimizedKernels &&
                             simdEnabled && MT2::simdEnabled &&
-                            IsSimdCompatible< ElementType, ElementType_<MT2> >::value };
+                            AreSIMDCombinable< ElementType, ElementType_<MT2> >::value };
    };
    //**********************************************************************************************
 
@@ -9086,7 +9086,7 @@ class DenseSubmatrix<MT,aligned,true> : public DenseMatrix< DenseSubmatrix<MT,al
    struct VectorizedAddAssign {
       enum : bool { value = useOptimizedKernels &&
                             simdEnabled && MT2::simdEnabled &&
-                            IsSimdCompatible< ElementType, ElementType_<MT2> >::value &&
+                            AreSIMDCombinable< ElementType, ElementType_<MT2> >::value &&
                             HasSIMDAdd< ElementType, ElementType_<MT2> >::value };
    };
    //**********************************************************************************************
@@ -9097,7 +9097,7 @@ class DenseSubmatrix<MT,aligned,true> : public DenseMatrix< DenseSubmatrix<MT,al
    struct VectorizedSubAssign {
       enum : bool { value = useOptimizedKernels &&
                             simdEnabled && MT2::simdEnabled &&
-                            IsSimdCompatible< ElementType, ElementType_<MT2> >::value &&
+                            AreSIMDCombinable< ElementType, ElementType_<MT2> >::value &&
                             HasSIMDSub< ElementType, ElementType_<MT2> >::value };
    };
    //**********************************************************************************************

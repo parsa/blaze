@@ -68,6 +68,7 @@
 #include <blaze/math/traits/RowTrait.h>
 #include <blaze/math/traits/SubTrait.h>
 #include <blaze/math/traits/SubvectorTrait.h>
+#include <blaze/math/typetraits/AreSIMDCombinable.h>
 #include <blaze/math/typetraits/HasConstDataAccess.h>
 #include <blaze/math/typetraits/HasMutableDataAccess.h>
 #include <blaze/math/typetraits/HasSIMDAdd.h>
@@ -82,7 +83,6 @@
 #include <blaze/math/typetraits/IsPadded.h>
 #include <blaze/math/typetraits/IsRestricted.h>
 #include <blaze/math/typetraits/IsRowMajorMatrix.h>
-#include <blaze/math/typetraits/IsSimdCompatible.h>
 #include <blaze/math/typetraits/IsSparseVector.h>
 #include <blaze/math/typetraits/IsStrictlyLower.h>
 #include <blaze/math/typetraits/IsStrictlyUpper.h>
@@ -464,7 +464,7 @@ class DenseRow : public DenseVector< DenseRow<MT,SO,SF>, true >
    struct VectorizedAssign {
       enum : bool { value = useOptimizedKernels &&
                             simdEnabled && VT::simdEnabled &&
-                            IsSimdCompatible< ElementType, ElementType_<VT> >::value };
+                            AreSIMDCombinable< ElementType, ElementType_<VT> >::value };
    };
    /*! \endcond */
    //**********************************************************************************************
@@ -476,7 +476,7 @@ class DenseRow : public DenseVector< DenseRow<MT,SO,SF>, true >
    struct VectorizedAddAssign {
       enum : bool { value = useOptimizedKernels &&
                             simdEnabled && VT::simdEnabled &&
-                            IsSimdCompatible< ElementType, ElementType_<VT> >::value &&
+                            AreSIMDCombinable< ElementType, ElementType_<VT> >::value &&
                             HasSIMDAdd< ElementType, ElementType_<VT> >::value };
    };
    /*! \endcond */
@@ -489,7 +489,7 @@ class DenseRow : public DenseVector< DenseRow<MT,SO,SF>, true >
    struct VectorizedSubAssign {
       enum : bool { value = useOptimizedKernels &&
                             simdEnabled && VT::simdEnabled &&
-                            IsSimdCompatible< ElementType, ElementType_<VT> >::value &&
+                            AreSIMDCombinable< ElementType, ElementType_<VT> >::value &&
                             HasSIMDSub< ElementType, ElementType_<VT> >::value };
    };
    /*! \endcond */
@@ -502,7 +502,7 @@ class DenseRow : public DenseVector< DenseRow<MT,SO,SF>, true >
    struct VectorizedMultAssign {
       enum : bool { value = useOptimizedKernels &&
                             simdEnabled && VT::simdEnabled &&
-                            IsSimdCompatible< ElementType, ElementType_<VT> >::value &&
+                            AreSIMDCombinable< ElementType, ElementType_<VT> >::value &&
                             HasSIMDMult< ElementType, ElementType_<VT> >::value };
    };
    /*! \endcond */
@@ -515,7 +515,7 @@ class DenseRow : public DenseVector< DenseRow<MT,SO,SF>, true >
    struct VectorizedDivAssign {
       enum : bool { value = useOptimizedKernels &&
                             simdEnabled && VT::simdEnabled &&
-                            IsSimdCompatible< ElementType, ElementType_<VT> >::value &&
+                            AreSIMDCombinable< ElementType, ElementType_<VT> >::value &&
                             HasSIMDDiv< ElementType, ElementType_<VT> >::value };
    };
    /*! \endcond */
@@ -4169,7 +4169,7 @@ class DenseRow<MT,false,true> : public DenseVector< DenseRow<MT,false,true>, tru
    struct VectorizedAssign {
       enum : bool { value = useOptimizedKernels &&
                             simdEnabled && VT::simdEnabled &&
-                            IsSimdCompatible< ElementType, ElementType_<VT> >::value };
+                            AreSIMDCombinable< ElementType, ElementType_<VT> >::value };
    };
    //**********************************************************************************************
 
@@ -4179,7 +4179,7 @@ class DenseRow<MT,false,true> : public DenseVector< DenseRow<MT,false,true>, tru
    struct VectorizedAddAssign {
       enum : bool { value = useOptimizedKernels &&
                             simdEnabled && VT::simdEnabled &&
-                            IsSimdCompatible< ElementType, ElementType_<VT> >::value &&
+                            AreSIMDCombinable< ElementType, ElementType_<VT> >::value &&
                             HasSIMDAdd< ElementType, ElementType_<VT> >::value };
    };
    //**********************************************************************************************
@@ -4190,7 +4190,7 @@ class DenseRow<MT,false,true> : public DenseVector< DenseRow<MT,false,true>, tru
    struct VectorizedSubAssign {
       enum : bool { value = useOptimizedKernels &&
                             simdEnabled && VT::simdEnabled &&
-                            IsSimdCompatible< ElementType, ElementType_<VT> >::value &&
+                            AreSIMDCombinable< ElementType, ElementType_<VT> >::value &&
                             HasSIMDSub< ElementType, ElementType_<VT> >::value };
    };
    //**********************************************************************************************
@@ -4201,7 +4201,7 @@ class DenseRow<MT,false,true> : public DenseVector< DenseRow<MT,false,true>, tru
    struct VectorizedMultAssign {
       enum : bool { value = useOptimizedKernels &&
                             simdEnabled && VT::simdEnabled &&
-                            IsSimdCompatible< ElementType, ElementType_<VT> >::value &&
+                            AreSIMDCombinable< ElementType, ElementType_<VT> >::value &&
                             HasSIMDMult< ElementType, ElementType_<VT> >::value };
    };
    //**********************************************************************************************
@@ -4212,7 +4212,7 @@ class DenseRow<MT,false,true> : public DenseVector< DenseRow<MT,false,true>, tru
    struct VectorizedDivAssign {
       enum : bool { value = useOptimizedKernels &&
                             simdEnabled && VT::simdEnabled &&
-                            IsSimdCompatible< ElementType, ElementType_<VT> >::value &&
+                            AreSIMDCombinable< ElementType, ElementType_<VT> >::value &&
                             HasSIMDDiv< ElementType, ElementType_<VT> >::value };
    };
    //**********************************************************************************************

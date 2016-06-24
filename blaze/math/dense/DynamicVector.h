@@ -62,6 +62,7 @@
 #include <blaze/math/traits/MultTrait.h>
 #include <blaze/math/traits/SubTrait.h>
 #include <blaze/math/traits/SubvectorTrait.h>
+#include <blaze/math/typetraits/AreSIMDCombinable.h>
 #include <blaze/math/typetraits/HasConstDataAccess.h>
 #include <blaze/math/typetraits/HasMutableDataAccess.h>
 #include <blaze/math/typetraits/HasSIMDAdd.h>
@@ -71,7 +72,6 @@
 #include <blaze/math/typetraits/IsAligned.h>
 #include <blaze/math/typetraits/IsPadded.h>
 #include <blaze/math/typetraits/IsResizable.h>
-#include <blaze/math/typetraits/IsSimdCompatible.h>
 #include <blaze/math/typetraits/IsSMPAssignable.h>
 #include <blaze/math/typetraits/IsSparseVector.h>
 #include <blaze/system/CacheSize.h>
@@ -313,7 +313,7 @@ class DynamicVector : public DenseVector< DynamicVector<Type,TF>, TF >
    struct VectorizedAssign {
       enum : bool { value = useOptimizedKernels &&
                             simdEnabled && VT::simdEnabled &&
-                            IsSimdCompatible< Type, ElementType_<VT> >::value };
+                            AreSIMDCombinable< Type, ElementType_<VT> >::value };
    };
    /*! \endcond */
    //**********************************************************************************************
@@ -325,7 +325,7 @@ class DynamicVector : public DenseVector< DynamicVector<Type,TF>, TF >
    struct VectorizedAddAssign {
       enum : bool { value = useOptimizedKernels &&
                             simdEnabled && VT::simdEnabled &&
-                            IsSimdCompatible< Type, ElementType_<VT> >::value &&
+                            AreSIMDCombinable< Type, ElementType_<VT> >::value &&
                             HasSIMDAdd< Type, ElementType_<VT> >::value };
    };
    /*! \endcond */
@@ -338,7 +338,7 @@ class DynamicVector : public DenseVector< DynamicVector<Type,TF>, TF >
    struct VectorizedSubAssign {
       enum : bool { value = useOptimizedKernels &&
                             simdEnabled && VT::simdEnabled &&
-                            IsSimdCompatible< Type, ElementType_<VT> >::value &&
+                            AreSIMDCombinable< Type, ElementType_<VT> >::value &&
                             HasSIMDSub< Type, ElementType_<VT> >::value };
    };
    /*! \endcond */
@@ -351,7 +351,7 @@ class DynamicVector : public DenseVector< DynamicVector<Type,TF>, TF >
    struct VectorizedMultAssign {
       enum : bool { value = useOptimizedKernels &&
                             simdEnabled && VT::simdEnabled &&
-                            IsSimdCompatible< Type, ElementType_<VT> >::value &&
+                            AreSIMDCombinable< Type, ElementType_<VT> >::value &&
                             HasSIMDMult< Type, ElementType_<VT> >::value };
    };
    /*! \endcond */
@@ -364,7 +364,7 @@ class DynamicVector : public DenseVector< DynamicVector<Type,TF>, TF >
    struct VectorizedDivAssign {
       enum : bool { value = useOptimizedKernels &&
                             simdEnabled && VT::simdEnabled &&
-                            IsSimdCompatible< Type, ElementType_<VT> >::value &&
+                            AreSIMDCombinable< Type, ElementType_<VT> >::value &&
                             HasSIMDDiv< Type, ElementType_<VT> >::value };
    };
    /*! \endcond */
