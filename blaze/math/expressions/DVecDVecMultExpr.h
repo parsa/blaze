@@ -74,7 +74,6 @@
 #include <blaze/util/mpl/If.h>
 #include <blaze/util/mpl/Max.h>
 #include <blaze/util/Types.h>
-#include <blaze/util/typetraits/IsSame.h>
 
 
 namespace blaze {
@@ -432,8 +431,7 @@ class DVecDVecMultExpr : public DenseVector< DVecDVecMultExpr<VT1,VT2,TF>, TF >
    //**Compilation flags***************************************************************************
    //! Compilation switch for the expression template evaluation strategy.
    enum : bool { simdEnabled = VT1::simdEnabled && VT2::simdEnabled &&
-                               IsSame<ET1,ET2>::value &&
-                               HasSIMDMult<ET1,ET1>::value };
+                               HasSIMDMult<ET1,ET2>::value };
 
    //! Compilation switch for the expression template assignment strategy.
    enum : bool { smpAssignable = VT1::smpAssignable && VT2::smpAssignable };

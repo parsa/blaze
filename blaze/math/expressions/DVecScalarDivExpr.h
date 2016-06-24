@@ -86,7 +86,6 @@
 #include <blaze/util/mpl/Or.h>
 #include <blaze/util/Types.h>
 #include <blaze/util/typetraits/IsNumeric.h>
-#include <blaze/util/typetraits/IsSame.h>
 
 
 namespace blaze {
@@ -434,9 +433,8 @@ class DVecScalarDivExpr : public DenseVector< DVecScalarDivExpr<VT,ST,TF>, TF >
    //! Compilation switch for the expression template evaluation strategy.
    enum : bool { simdEnabled = VT::simdEnabled &&
                                IsNumeric<ET>::value &&
-                               ( IsSame<ET,RightOperand>::value ||
-                                 IsSame<UnderlyingElement_<ET>,RightOperand>::value ) &&
-                               HasSIMDDiv<ET,RightOperand>::value };
+                               ( HasSIMDDiv<ET,ST>::value ||
+                                 HasSIMDDiv<UnderlyingElement_<ET>,ST>::value ) };
 
    //! Compilation switch for the expression template assignment strategy.
    enum : bool { smpAssignable = VT::smpAssignable };

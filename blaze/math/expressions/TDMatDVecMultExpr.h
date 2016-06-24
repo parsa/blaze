@@ -73,6 +73,7 @@
 #include <blaze/math/typetraits/IsExpression.h>
 #include <blaze/math/typetraits/IsLower.h>
 #include <blaze/math/typetraits/IsMatMatMultExpr.h>
+#include <blaze/math/typetraits/IsSimdCompatible.h>
 #include <blaze/math/typetraits/IsStrictlyLower.h>
 #include <blaze/math/typetraits/IsStrictlyUpper.h>
 #include <blaze/math/typetraits/IsTriangular.h>
@@ -192,10 +193,9 @@ class TDMatDVecMultExpr : public DenseVector< TDMatDVecMultExpr<MT,VT>, false >
       enum : bool { value = useOptimizedKernels &&
                             !IsDiagonal<T2>::value &&
                             T1::simdEnabled && T2::simdEnabled && T3::simdEnabled &&
-                            IsSame< ElementType_<T1>, ElementType_<T2> >::value &&
-                            IsSame< ElementType_<T1>, ElementType_<T3> >::value &&
-                            HasSIMDAdd< ElementType_<T1>, ElementType_<T1> >::value &&
-                            HasSIMDMult< ElementType_<T1>, ElementType_<T1> >::value };
+                            IsSimdCompatible< ElementType_<T1>, ElementType_<T2> >::value &&
+                            HasSIMDAdd< ElementType_<T2>, ElementType_<T3> >::value &&
+                            HasSIMDMult< ElementType_<T2>, ElementType_<T3> >::value };
    };
    /*! \endcond */
    //**********************************************************************************************
@@ -227,9 +227,8 @@ class TDMatDVecMultExpr : public DenseVector< TDMatDVecMultExpr<MT,VT>, false >
    //! Compilation switch for the expression template evaluation strategy.
    enum : bool { simdEnabled = !IsDiagonal<MT>::value &&
                                MT::simdEnabled && VT::simdEnabled &&
-                               IsSame<MET,VET>::value &&
-                               HasSIMDAdd<MET,MET>::value &&
-                               HasSIMDMult<MET,MET>::value };
+                               HasSIMDAdd<MET,VET>::value &&
+                               HasSIMDMult<MET,VET>::value };
 
    //! Compilation switch for the expression template assignment strategy.
    enum : bool { smpAssignable = !evaluateMatrix && MT::smpAssignable &&
@@ -2539,11 +2538,9 @@ class DVecScalarMultExpr< TDMatDVecMultExpr<MT,VT>, ST, false >
       enum : bool { value = useOptimizedKernels &&
                             !IsDiagonal<T2>::value &&
                             T1::simdEnabled && T2::simdEnabled && T3::simdEnabled &&
-                            IsSame< ElementType_<T1>, ElementType_<T2> >::value &&
-                            IsSame< ElementType_<T1>, ElementType_<T3> >::value &&
-                            IsSame< ElementType_<T1>,T4>::value &&
-                            HasSIMDAdd< ElementType_<T1>, ElementType_<T1> >::value &&
-                            HasSIMDMult< ElementType_<T1>, ElementType_<T1> >::value };
+                            IsSimdCompatible< ElementType_<T1>, ElementType_<T2>, T4 >::value &&
+                            HasSIMDAdd< ElementType_<T2>, ElementType_<T3> >::value &&
+                            HasSIMDMult< ElementType_<T2>, ElementType_<T3> >::value };
    };
    //**********************************************************************************************
 
@@ -2574,10 +2571,9 @@ class DVecScalarMultExpr< TDMatDVecMultExpr<MT,VT>, ST, false >
    //! Compilation switch for the expression template evaluation strategy.
    enum : bool { simdEnabled = !IsDiagonal<MT>::value &&
                                MT::simdEnabled && VT::simdEnabled &&
-                               IsSame<MET,VET>::value &&
-                               IsSame<MET,ST>::value &&
-                               HasSIMDAdd<MET,MET>::value &&
-                               HasSIMDMult<MET,MET>::value };
+                               IsSimdCompatible<MET,ST>::value &&
+                               HasSIMDAdd<MET,VET>::value &&
+                               HasSIMDMult<MET,VET>::value };
 
    //! Compilation switch for the expression template assignment strategy.
    enum : bool { smpAssignable = !evaluateMatrix && MT::smpAssignable &&

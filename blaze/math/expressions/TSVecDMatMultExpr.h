@@ -70,6 +70,7 @@
 #include <blaze/math/typetraits/IsLower.h>
 #include <blaze/math/typetraits/IsMatMatMultExpr.h>
 #include <blaze/math/typetraits/IsResizable.h>
+#include <blaze/math/typetraits/IsSimdCompatible.h>
 #include <blaze/math/typetraits/IsStrictlyLower.h>
 #include <blaze/math/typetraits/IsStrictlyUpper.h>
 #include <blaze/math/typetraits/IsUpper.h>
@@ -155,10 +156,9 @@ class TSVecDMatMultExpr : public DenseVector< TSVecDMatMultExpr<VT,MT>, true >
       enum : bool { value = useOptimizedKernels &&
                             !IsDiagonal<T3>::value &&
                             T1::simdEnabled && T3::simdEnabled &&
-                            IsSame< ElementType_<T1>, ElementType_<T2> >::value &&
-                            IsSame< ElementType_<T1>, ElementType_<T3> >::value &&
-                            HasSIMDAdd< ElementType_<T1>, ElementType_<T1> >::value &&
-                            HasSIMDMult< ElementType_<T1>, ElementType_<T1> >::value };
+                            IsSimdCompatible< ElementType_<T1>, ElementType_<T2> >::value &&
+                            HasSIMDAdd< ElementType_<T2>, ElementType_<T3> >::value &&
+                            HasSIMDMult< ElementType_<T2>, ElementType_<T3> >::value };
    };
    /*! \endcond */
    //**********************************************************************************************
@@ -220,9 +220,8 @@ class TSVecDMatMultExpr : public DenseVector< TSVecDMatMultExpr<VT,MT>, true >
    //! Compilation switch for the expression template evaluation strategy.
    enum : bool { simdEnabled = !IsDiagonal<MT>::value &&
                                MT::simdEnabled &&
-                               IsSame<VET,MET>::value &&
-                               HasSIMDAdd<VET,VET>::value &&
-                               HasSIMDMult<VET,VET>::value };
+                               HasSIMDAdd<VET,MET>::value &&
+                               HasSIMDMult<VET,MET>::value };
 
    //! Compilation switch for the expression template assignment strategy.
    enum : bool { smpAssignable = !evaluateVector && VT::smpAssignable &&

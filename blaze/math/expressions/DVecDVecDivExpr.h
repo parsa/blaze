@@ -431,8 +431,7 @@ class DVecDVecDivExpr : public DenseVector< DVecDVecDivExpr<VT1,VT2,TF>, TF >
    //**Compilation flags***************************************************************************
    //! Compilation switch for the expression template evaluation strategy.
    enum : bool { simdEnabled = VT1::simdEnabled && VT2::simdEnabled &&
-                               IsSame<ET1,ET2>::value &&
-                               HasSIMDDiv<ET1,ET1>::value };
+                               HasSIMDDiv<ET1,ET2>::value };
 
    //! Compilation switch for the expression template assignment strategy.
    enum : bool { smpAssignable = VT1::smpAssignable && VT2::smpAssignable };
