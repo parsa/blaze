@@ -40,6 +40,7 @@
 // Includes
 //*************************************************************************************************
 
+#include <blaze/math/Aliases.h>
 #include <blaze/math/simd/BasicTypes.h>
 #include <blaze/math/traits/MultTrait.h>
 #include <blaze/system/Inline.h>
@@ -83,7 +84,7 @@ BLAZE_ALWAYS_INLINE MultTrait_<T1,T2>
 
 
 //*************************************************************************************************
-/*!\brief Scaling of a vector of 16-bit integral complex SIMD values.
+/*!\brief Scaling of a vector of 16-bit signed integral complex SIMD values.
 // \ingroup simd
 //
 // \param a The left-hand side complex values to be scaled.
@@ -92,10 +93,8 @@ BLAZE_ALWAYS_INLINE MultTrait_<T1,T2>
 //
 // This operation is only available for SSE2 and AVX2.
 */
-template< typename T1    // Type of the left-hand side operand
-        , typename T2 >  // Type of the right-hand side operand
-BLAZE_ALWAYS_INLINE MultTrait_<T1,T2>
-   operator*( const simd_ci16_t<T1>& a, const simd_i16_t<T2>& b ) noexcept
+BLAZE_ALWAYS_INLINE simd_cint16_t
+   operator*( const simd_cint16_t& a, const simd_int16_t& b ) noexcept
 #if BLAZE_AVX2_MODE
 {
    return _mm256_mullo_epi16( (~a).value, (~b).value );
@@ -111,7 +110,33 @@ BLAZE_ALWAYS_INLINE MultTrait_<T1,T2>
 
 
 //*************************************************************************************************
-/*!\brief Scaling of a vector of 16-bit integral complex SIMD values.
+/*!\brief Scaling of a vector of 16-bit unsigned integral complex SIMD values.
+// \ingroup simd
+//
+// \param a The left-hand side complex values to be scaled.
+// \param b The right-hand side scalars.
+// \return The result of the scaling operation.
+//
+// This operation is only available for SSE2 and AVX2.
+*/
+BLAZE_ALWAYS_INLINE simd_cuint16_t
+   operator*( const simd_cuint16_t& a, const simd_uint16_t& b ) noexcept
+#if BLAZE_AVX2_MODE
+{
+   return _mm256_mullo_epi16( (~a).value, (~b).value );
+}
+#elif BLAZE_SSE2_MODE
+{
+   return _mm_mullo_epi16( (~a).value, (~b).value );
+}
+#else
+= delete;
+#endif
+//*************************************************************************************************
+
+
+//*************************************************************************************************
+/*!\brief Scaling of a vector of 16-bit signed integral complex SIMD values.
 // \ingroup simd
 //
 // \param a The left-hand side scalars.
@@ -120,10 +145,34 @@ BLAZE_ALWAYS_INLINE MultTrait_<T1,T2>
 //
 // This operation is only available for SSE2 and AVX2.
 */
-template< typename T1    // Type of the left-hand side operand
-        , typename T2 >  // Type of the right-hand side operand
-BLAZE_ALWAYS_INLINE MultTrait_<T1,T2>
-   operator*( const simd_i16_t<T1>& a, const simd_ci16_t<T2>& b ) noexcept
+BLAZE_ALWAYS_INLINE simd_cint16_t
+   operator*( const simd_int16_t& a, const simd_cint16_t& b ) noexcept
+#if BLAZE_AVX2_MODE
+{
+   return _mm256_mullo_epi16( (~a).value, (~b).value );
+}
+#elif BLAZE_SSE2_MODE
+{
+   return _mm_mullo_epi16( (~a).value, (~b).value );
+}
+#else
+= delete;
+#endif
+//*************************************************************************************************
+
+
+//*************************************************************************************************
+/*!\brief Scaling of a vector of 16-bit unsigned integral complex SIMD values.
+// \ingroup simd
+//
+// \param a The left-hand side scalars.
+// \param b The right-hand side complex values to be scaled.
+// \return The result of the scaling operation.
+//
+// This operation is only available for SSE2 and AVX2.
+*/
+BLAZE_ALWAYS_INLINE simd_cuint16_t
+   operator*( const simd_uint16_t& a, const simd_cuint16_t& b ) noexcept
 #if BLAZE_AVX2_MODE
 {
    return _mm256_mullo_epi16( (~a).value, (~b).value );
@@ -148,10 +197,9 @@ BLAZE_ALWAYS_INLINE MultTrait_<T1,T2>
 //
 // This operation is only available for SSE2 and AVX2.
 */
-template< typename T1    // Type of the left-hand side operand
-        , typename T2 >  // Type of the right-hand side operand
-BLAZE_ALWAYS_INLINE MultTrait_<T1,T2>
-   operator*( const simd_ci16_t<T1>& a, const simd_ci16_t<T2>& b ) noexcept
+template< typename T >  // Type of both operands
+BLAZE_ALWAYS_INLINE T
+   operator*( const simd_ci16_t<T>& a, const simd_ci16_t<T>& b ) noexcept
 #if BLAZE_AVX2_MODE
 {
    __m256i x, y, z;
@@ -223,7 +271,7 @@ BLAZE_ALWAYS_INLINE MultTrait_<T1,T2>
 
 
 //*************************************************************************************************
-/*!\brief Scaling of a vector of 32-bit integral complex SIMD values.
+/*!\brief Scaling of a vector of 32-bit signed integral complex SIMD values.
 // \ingroup simd
 //
 // \param a The left-hand side complex values to be scaled.
@@ -232,10 +280,8 @@ BLAZE_ALWAYS_INLINE MultTrait_<T1,T2>
 //
 // This operation is only available for SSE4, AVX2, and AVX-512.
 */
-template< typename T1    // Type of the left-hand side operand
-        , typename T2 >  // Type of the right-hand side operand
-BLAZE_ALWAYS_INLINE MultTrait_<T1,T2>
-   operator*( const simd_ci32_t<T1>& a, const simd_i32_t<T2>& b ) noexcept
+BLAZE_ALWAYS_INLINE simd_cint32_t
+   operator*( const simd_cint32_t& a, const simd_int32_t& b ) noexcept
 #if BLAZE_MIC_MODE
 {
    return _mm512_mullo_epi32( (~a).value, (~b).value );
@@ -255,7 +301,37 @@ BLAZE_ALWAYS_INLINE MultTrait_<T1,T2>
 
 
 //*************************************************************************************************
-/*!\brief Scaling of a vector of 32-bit integral complex SIMD values.
+/*!\brief Scaling of a vector of 32-bit unsigned integral complex SIMD values.
+// \ingroup simd
+//
+// \param a The left-hand side complex values to be scaled.
+// \param b The right-hand side scalars.
+// \return The result of the scaling operation.
+//
+// This operation is only available for SSE4, AVX2, and AVX-512.
+*/
+BLAZE_ALWAYS_INLINE simd_cuint32_t
+   operator*( const simd_cuint32_t& a, const simd_uint32_t& b ) noexcept
+#if BLAZE_MIC_MODE
+{
+   return _mm512_mullo_epi32( (~a).value, (~b).value );
+}
+#elif BLAZE_AVX2_MODE
+{
+   return _mm256_mullo_epi32( (~a).value, (~b).value );
+}
+#elif BLAZE_SSE4_MODE
+{
+   return _mm_mullo_epi32( (~a).value, (~b).value );
+}
+#else
+= delete;
+#endif
+//*************************************************************************************************
+
+
+//*************************************************************************************************
+/*!\brief Scaling of a vector of 32-bit signed integral complex SIMD values.
 // \ingroup simd
 //
 // \param a The left-hand side scalars.
@@ -266,8 +342,40 @@ BLAZE_ALWAYS_INLINE MultTrait_<T1,T2>
 */
 template< typename T1    // Type of the left-hand side operand
         , typename T2 >  // Type of the right-hand side operand
-BLAZE_ALWAYS_INLINE MultTrait_<T1,T2>
-   operator*( const simd_i32_t<T1>& a, const simd_ci32_t<T2>& b ) noexcept
+BLAZE_ALWAYS_INLINE simd_cint32_t
+   operator*( const simd_int32_t& a, const simd_cint32_t& b ) noexcept
+#if BLAZE_MIC_MODE
+{
+   return _mm512_mullo_epi32( (~a).value, (~b).value );
+}
+#elif BLAZE_AVX2_MODE
+{
+   return _mm256_mullo_epi32( (~a).value, (~b).value );
+}
+#elif BLAZE_SSE4_MODE
+{
+   return _mm_mullo_epi32( (~a).value, (~b).value );
+}
+#else
+= delete;
+#endif
+//*************************************************************************************************
+
+
+//*************************************************************************************************
+/*!\brief Scaling of a vector of 32-bit unsigned integral complex SIMD values.
+// \ingroup simd
+//
+// \param a The left-hand side scalars.
+// \param b The right-hand side complex values to be scaled.
+// \return The result of the scaling operation.
+//
+// This operation is only available for SSE4, AVX2, and AVX-512.
+*/
+template< typename T1    // Type of the left-hand side operand
+        , typename T2 >  // Type of the right-hand side operand
+BLAZE_ALWAYS_INLINE simd_cuint32_t
+   operator*( const simd_uint32_t& a, const simd_cuint32_t& b ) noexcept
 #if BLAZE_MIC_MODE
 {
    return _mm512_mullo_epi32( (~a).value, (~b).value );
@@ -296,10 +404,9 @@ BLAZE_ALWAYS_INLINE MultTrait_<T1,T2>
 //
 // This operation is only available for SSE4, AVX2, and AVX-512.
 */
-template< typename T1    // Type of the left-hand side operand
-        , typename T2 >  // Type of the right-hand side operand
-BLAZE_ALWAYS_INLINE MultTrait_<T1,T2>
-   operator*( const simd_ci32_t<T1>& a, const simd_ci32_t<T2>& b ) noexcept
+template< typename T >  // Type of both operands
+BLAZE_ALWAYS_INLINE T
+   operator*( const simd_ci32_t<T>& a, const simd_ci32_t<T>& b ) noexcept
 #if BLAZE_MIC_MODE
 {
    __m512i x, y, z;
@@ -644,51 +751,15 @@ template<> struct MultTrait< simd_int16_t , simd_uint16_t > { using Type = simd_
 template<> struct MultTrait< simd_uint16_t, simd_int16_t  > { using Type = simd_uint16_t; };
 template<> struct MultTrait< simd_uint16_t, simd_uint16_t > { using Type = simd_uint16_t; };
 
-template<> struct MultTrait< simd_cint16_t , simd_int16_t  > { using Type = simd_cint16_t;   };
-template<> struct MultTrait< simd_cint16_t , simd_uint16_t > { using Type = simd_cuint16_t;  };
-template<> struct MultTrait< simd_cuint16_t, simd_int16_t  > { using Type = simd_cuint16_t;  };
-template<> struct MultTrait< simd_cuint16_t, simd_uint16_t > { using Type = simd_cuint16_t;  };
-
-template<> struct MultTrait< simd_int16_t , simd_cint16_t  > { using Type = simd_cint16_t;   };
-template<> struct MultTrait< simd_uint16_t, simd_cint16_t  > { using Type = simd_cuint16_t;  };
-template<> struct MultTrait< simd_int16_t , simd_cuint16_t > { using Type = simd_cuint16_t;  };
-template<> struct MultTrait< simd_uint16_t, simd_cuint16_t > { using Type = simd_cuint16_t;  };
-
-template<> struct MultTrait< simd_cint16_t , simd_cint16_t  > { using Type = simd_cint16_t;  };
-template<> struct MultTrait< simd_cint16_t , simd_cuint16_t > { using Type = simd_cuint16_t; };
-template<> struct MultTrait< simd_cuint16_t, simd_cint16_t  > { using Type = simd_cuint16_t; };
-template<> struct MultTrait< simd_cuint16_t, simd_cuint16_t > { using Type = simd_cuint16_t; };
-
 template<> struct MultTrait< simd_int32_t , simd_int32_t  > { using Type = simd_int32_t;  };
 template<> struct MultTrait< simd_int32_t , simd_uint32_t > { using Type = simd_uint32_t; };
 template<> struct MultTrait< simd_uint32_t, simd_int32_t  > { using Type = simd_uint32_t; };
 template<> struct MultTrait< simd_uint32_t, simd_uint32_t > { using Type = simd_uint32_t; };
 
-template<> struct MultTrait< simd_cint32_t , simd_int32_t  > { using Type = simd_cint32_t;   };
-template<> struct MultTrait< simd_cint32_t , simd_uint32_t > { using Type = simd_cuint32_t;  };
-template<> struct MultTrait< simd_cuint32_t, simd_int32_t  > { using Type = simd_cuint32_t;  };
-template<> struct MultTrait< simd_cuint32_t, simd_uint32_t > { using Type = simd_cuint32_t;  };
-
-template<> struct MultTrait< simd_int32_t , simd_cint32_t  > { using Type = simd_cint32_t;   };
-template<> struct MultTrait< simd_uint32_t, simd_cint32_t  > { using Type = simd_cuint32_t;  };
-template<> struct MultTrait< simd_int32_t , simd_cuint32_t > { using Type = simd_cuint32_t;  };
-template<> struct MultTrait< simd_uint32_t, simd_cuint32_t > { using Type = simd_cuint32_t;  };
-
-template<> struct MultTrait< simd_cint32_t , simd_cint32_t  > { using Type = simd_cint32_t;  };
-template<> struct MultTrait< simd_cint32_t , simd_cuint32_t > { using Type = simd_cuint32_t; };
-template<> struct MultTrait< simd_cuint32_t, simd_cint32_t  > { using Type = simd_cuint32_t; };
-template<> struct MultTrait< simd_cuint32_t, simd_cuint32_t > { using Type = simd_cuint32_t; };
-
 template<> struct MultTrait< simd_int64_t , simd_int64_t  > { using Type = simd_int64_t;  };
 template<> struct MultTrait< simd_int64_t , simd_uint64_t > { using Type = simd_uint64_t; };
 template<> struct MultTrait< simd_uint64_t, simd_int64_t  > { using Type = simd_uint64_t; };
 template<> struct MultTrait< simd_uint64_t, simd_uint64_t > { using Type = simd_uint64_t; };
-
-template<> struct MultTrait< simd_float_t , simd_float_t  > { using Type = simd_float_t;  };
-template<> struct MultTrait< simd_cfloat_t, simd_cfloat_t > { using Type = simd_cfloat_t; };
-
-template<> struct MultTrait< simd_double_t , simd_double_t  > { using Type = simd_double_t;  };
-template<> struct MultTrait< simd_cdouble_t, simd_cdouble_t > { using Type = simd_cdouble_t; };
 /*! \endcond */
 //*************************************************************************************************
 
