@@ -79,6 +79,7 @@
 #include <blaze/math/typetraits/IsPadded.h>
 #include <blaze/math/typetraits/IsRestricted.h>
 #include <blaze/math/typetraits/IsRowVector.h>
+#include <blaze/math/typetraits/IsSimdCompatible.h>
 #include <blaze/math/typetraits/IsSparseVector.h>
 #include <blaze/system/CacheSize.h>
 #include <blaze/system/Inline.h>
@@ -99,7 +100,6 @@
 #include <blaze/util/Types.h>
 #include <blaze/util/typetraits/IsConst.h>
 #include <blaze/util/typetraits/IsNumeric.h>
-#include <blaze/util/typetraits/IsSame.h>
 #include <blaze/util/typetraits/RemoveReference.h>
 
 
@@ -913,7 +913,7 @@ class DenseSubvector : public DenseVector< DenseSubvector<VT,AF,TF>, TF >
    struct VectorizedAssign {
       enum : bool { value = useOptimizedKernels &&
                             simdEnabled && VT2::simdEnabled &&
-                            IsSame< ElementType, ElementType_<VT2> >::value };
+                            IsSimdCompatible< ElementType, ElementType_<VT2> >::value };
    };
    /*! \endcond */
    //**********************************************************************************************
@@ -925,8 +925,8 @@ class DenseSubvector : public DenseVector< DenseSubvector<VT,AF,TF>, TF >
    struct VectorizedAddAssign {
       enum : bool { value = useOptimizedKernels &&
                             simdEnabled && VT2::simdEnabled &&
-                            IsSame< ElementType, ElementType_<VT2> >::value &&
-                            HasSIMDAdd< ElementType, ElementType >::value };
+                            IsSimdCompatible< ElementType, ElementType_<VT2> >::value &&
+                            HasSIMDAdd< ElementType, ElementType_<VT2> >::value };
    };
    /*! \endcond */
    //**********************************************************************************************
@@ -938,8 +938,8 @@ class DenseSubvector : public DenseVector< DenseSubvector<VT,AF,TF>, TF >
    struct VectorizedSubAssign {
       enum : bool { value = useOptimizedKernels &&
                             simdEnabled && VT2::simdEnabled &&
-                            IsSame< ElementType, ElementType_<VT2> >::value &&
-                            HasSIMDSub< ElementType, ElementType >::value };
+                            IsSimdCompatible< ElementType, ElementType_<VT2> >::value &&
+                            HasSIMDSub< ElementType, ElementType_<VT2> >::value };
    };
    /*! \endcond */
    //**********************************************************************************************
@@ -951,8 +951,8 @@ class DenseSubvector : public DenseVector< DenseSubvector<VT,AF,TF>, TF >
    struct VectorizedMultAssign {
       enum : bool { value = useOptimizedKernels &&
                             simdEnabled && VT2::simdEnabled &&
-                            IsSame< ElementType, ElementType_<VT2> >::value &&
-                            HasSIMDMult< ElementType, ElementType >::value };
+                            IsSimdCompatible< ElementType, ElementType_<VT2> >::value &&
+                            HasSIMDMult< ElementType, ElementType_<VT2> >::value };
    };
    /*! \endcond */
    //**********************************************************************************************
@@ -964,8 +964,8 @@ class DenseSubvector : public DenseVector< DenseSubvector<VT,AF,TF>, TF >
    struct VectorizedDivAssign {
       enum : bool { value = useOptimizedKernels &&
                             simdEnabled && VT2::simdEnabled &&
-                            IsSame< ElementType, ElementType_<VT2> >::value &&
-                            HasSIMDDiv< ElementType, ElementType >::value };
+                            IsSimdCompatible< ElementType, ElementType_<VT2> >::value &&
+                            HasSIMDDiv< ElementType, ElementType_<VT2> >::value };
    };
    /*! \endcond */
    //**********************************************************************************************
@@ -2914,7 +2914,7 @@ class DenseSubvector<VT,aligned,TF> : public DenseVector< DenseSubvector<VT,alig
    struct VectorizedAssign {
       enum : bool { value = useOptimizedKernels &&
                             simdEnabled && VT2::simdEnabled &&
-                            IsSame< ElementType, ElementType_<VT2> >::value };
+                            IsSimdCompatible< ElementType, ElementType_<VT2> >::value };
    };
    //**********************************************************************************************
 
@@ -2924,8 +2924,8 @@ class DenseSubvector<VT,aligned,TF> : public DenseVector< DenseSubvector<VT,alig
    struct VectorizedAddAssign {
       enum : bool { value = useOptimizedKernels &&
                             simdEnabled && VT2::simdEnabled &&
-                            IsSame< ElementType, ElementType_<VT2> >::value &&
-                            HasSIMDAdd< ElementType, ElementType >::value };
+                            IsSimdCompatible< ElementType, ElementType_<VT2> >::value &&
+                            HasSIMDAdd< ElementType, ElementType_<VT2> >::value };
    };
    //**********************************************************************************************
 
@@ -2935,8 +2935,8 @@ class DenseSubvector<VT,aligned,TF> : public DenseVector< DenseSubvector<VT,alig
    struct VectorizedSubAssign {
       enum : bool { value = useOptimizedKernels &&
                             simdEnabled && VT2::simdEnabled &&
-                            IsSame< ElementType, ElementType_<VT2> >::value &&
-                            HasSIMDSub< ElementType, ElementType >::value };
+                            IsSimdCompatible< ElementType, ElementType_<VT2> >::value &&
+                            HasSIMDSub< ElementType, ElementType_<VT2> >::value };
    };
    //**********************************************************************************************
 
@@ -2946,8 +2946,8 @@ class DenseSubvector<VT,aligned,TF> : public DenseVector< DenseSubvector<VT,alig
    struct VectorizedMultAssign {
       enum : bool { value = useOptimizedKernels &&
                             simdEnabled && VT2::simdEnabled &&
-                            IsSame< ElementType, ElementType_<VT2> >::value &&
-                            HasSIMDMult< ElementType, ElementType >::value };
+                            IsSimdCompatible< ElementType, ElementType_<VT2> >::value &&
+                            HasSIMDMult< ElementType, ElementType_<VT2> >::value };
    };
    //**********************************************************************************************
 
@@ -2957,8 +2957,8 @@ class DenseSubvector<VT,aligned,TF> : public DenseVector< DenseSubvector<VT,alig
    struct VectorizedDivAssign {
       enum : bool { value = useOptimizedKernels &&
                             simdEnabled && VT2::simdEnabled &&
-                            IsSame< ElementType, ElementType_<VT2> >::value &&
-                            HasSIMDDiv< ElementType, ElementType >::value };
+                            IsSimdCompatible< ElementType, ElementType_<VT2> >::value &&
+                            HasSIMDDiv< ElementType, ElementType_<VT2> >::value };
    };
    //**********************************************************************************************
 
