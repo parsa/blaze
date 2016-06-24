@@ -72,8 +72,8 @@ namespace blaze {
 // function, the given address is not required to be properly aligned.
 */
 template< typename T >  // Type of the integral value
-BLAZE_ALWAYS_INLINE EnableIf_< And< IsIntegral<T>, HasSize<T,1UL> >
-                             , If_< IsSigned<T>, simd_int8_t, simd_uint8_t > >
+BLAZE_ALWAYS_INLINE const EnableIf_< And< IsIntegral<T>, HasSize<T,1UL> >
+                                   , If_< IsSigned<T>, simd_int8_t, simd_uint8_t > >
    loadu( const T* address ) noexcept
 {
 #if BLAZE_AVX2_MODE
@@ -98,8 +98,8 @@ BLAZE_ALWAYS_INLINE EnableIf_< And< IsIntegral<T>, HasSize<T,1UL> >
 // \c loada() function, the given address is not required to be properly aligned.
 */
 template< typename T >  // Type of the integral value
-BLAZE_ALWAYS_INLINE EnableIf_< And< IsIntegral<T>, HasSize<T,1UL> >
-                             , If_< IsSigned<T>, simd_cint8_t, simd_cuint8_t > >
+BLAZE_ALWAYS_INLINE const EnableIf_< And< IsIntegral<T>, HasSize<T,1UL> >
+                                   , If_< IsSigned<T>, simd_cint8_t, simd_cuint8_t > >
    loadu( const complex<T>* address ) noexcept
 {
    BLAZE_STATIC_ASSERT( sizeof( complex<T> ) == 2UL*sizeof( T ) );
@@ -126,8 +126,8 @@ BLAZE_ALWAYS_INLINE EnableIf_< And< IsIntegral<T>, HasSize<T,1UL> >
 // function, the given address is not required to be properly aligned.
 */
 template< typename T >  // Type of the integral value
-BLAZE_ALWAYS_INLINE EnableIf_< And< IsIntegral<T>, HasSize<T,2UL> >
-                             , If_< IsSigned<T>, simd_int16_t, simd_uint16_t > >
+BLAZE_ALWAYS_INLINE const EnableIf_< And< IsIntegral<T>, HasSize<T,2UL> >
+                                   , If_< IsSigned<T>, simd_int16_t, simd_uint16_t > >
    loadu( const T* address ) noexcept
 {
 #if BLAZE_AVX2_MODE
@@ -152,8 +152,8 @@ BLAZE_ALWAYS_INLINE EnableIf_< And< IsIntegral<T>, HasSize<T,2UL> >
 // \c loada() function, the given address is not required to be properly aligned.
 */
 template< typename T >  // Type of the integral value
-BLAZE_ALWAYS_INLINE EnableIf_< And< IsIntegral<T>, HasSize<T,2UL> >
-                             , If_< IsSigned<T>, simd_cint16_t, simd_cuint16_t > >
+BLAZE_ALWAYS_INLINE const EnableIf_< And< IsIntegral<T>, HasSize<T,2UL> >
+                                   , If_< IsSigned<T>, simd_cint16_t, simd_cuint16_t > >
    loadu( const complex<T>* address ) noexcept
 {
    BLAZE_STATIC_ASSERT( sizeof( complex<T> ) == 2UL*sizeof( T ) );
@@ -180,8 +180,8 @@ BLAZE_ALWAYS_INLINE EnableIf_< And< IsIntegral<T>, HasSize<T,2UL> >
 // function, the given address is not required to be properly aligned.
 */
 template< typename T >  // Type of the integral value
-BLAZE_ALWAYS_INLINE EnableIf_< And< IsIntegral<T>, HasSize<T,4UL> >
-                             , If_< IsSigned<T>, simd_int32_t, simd_uint32_t > >
+BLAZE_ALWAYS_INLINE const EnableIf_< And< IsIntegral<T>, HasSize<T,4UL> >
+                                   , If_< IsSigned<T>, simd_int32_t, simd_uint32_t > >
    loadu( const T* address ) noexcept
 {
 #if BLAZE_MIC_MODE
@@ -211,8 +211,8 @@ BLAZE_ALWAYS_INLINE EnableIf_< And< IsIntegral<T>, HasSize<T,4UL> >
 // \c loada() function, the given address is not required to be properly aligned.
 */
 template< typename T >  // Type of the integral value
-BLAZE_ALWAYS_INLINE EnableIf_< And< IsIntegral<T>, HasSize<T,4UL> >
-                             , If_< IsSigned<T>, simd_cint32_t, simd_cuint32_t > >
+BLAZE_ALWAYS_INLINE const EnableIf_< And< IsIntegral<T>, HasSize<T,4UL> >
+                                   , If_< IsSigned<T>, simd_cint32_t, simd_cuint32_t > >
    loadu( const complex<T>* address ) noexcept
 {
    BLAZE_STATIC_ASSERT( sizeof( complex<T> ) == 2UL*sizeof( T ) );
@@ -244,8 +244,8 @@ BLAZE_ALWAYS_INLINE EnableIf_< And< IsIntegral<T>, HasSize<T,4UL> >
 // function, the given address is not required to be properly aligned.
 */
 template< typename T >  // Type of the integral value
-BLAZE_ALWAYS_INLINE EnableIf_< And< IsIntegral<T>, HasSize<T,8UL> >
-                             , If_< IsSigned<T>, simd_int64_t, simd_uint64_t > >
+BLAZE_ALWAYS_INLINE const EnableIf_< And< IsIntegral<T>, HasSize<T,8UL> >
+                                   , If_< IsSigned<T>, simd_int64_t, simd_uint64_t > >
    loadu( const T* address ) noexcept
 {
 #if BLAZE_MIC_MODE
@@ -275,8 +275,8 @@ BLAZE_ALWAYS_INLINE EnableIf_< And< IsIntegral<T>, HasSize<T,8UL> >
 // \c loada() function, the given address is not required to be properly aligned.
 */
 template< typename T >  // Type of the integral value
-BLAZE_ALWAYS_INLINE EnableIf_< And< IsIntegral<T>, HasSize<T,8UL> >
-                             , If_< IsSigned<T>, simd_cint64_t, simd_cuint64_t > >
+BLAZE_ALWAYS_INLINE const EnableIf_< And< IsIntegral<T>, HasSize<T,8UL> >
+                                   , If_< IsSigned<T>, simd_cint64_t, simd_cuint64_t > >
    loadu( const complex<T>* address ) noexcept
 {
    BLAZE_STATIC_ASSERT( sizeof( complex<T> ) == 2UL*sizeof( T ) );
@@ -307,7 +307,7 @@ BLAZE_ALWAYS_INLINE EnableIf_< And< IsIntegral<T>, HasSize<T,8UL> >
 // This function loads a vector of 'float' values. In contrast to the according \c loada()
 // function, the given address is not required to be properly aligned.
 */
-BLAZE_ALWAYS_INLINE simd_float_t loadu( const float* address ) noexcept
+BLAZE_ALWAYS_INLINE const simd_float_t loadu( const float* address ) noexcept
 {
 #if BLAZE_MIC_MODE
    __m512 v1 = _mm512_setzero_ps();
@@ -335,7 +335,7 @@ BLAZE_ALWAYS_INLINE simd_float_t loadu( const float* address ) noexcept
 // This function loads a vector of 'complex<float>' values. In contrast to the according \c loada()
 // function, the given address is not required to be properly aligned.
 */
-BLAZE_ALWAYS_INLINE simd_cfloat_t loadu( const complex<float>* address ) noexcept
+BLAZE_ALWAYS_INLINE const simd_cfloat_t loadu( const complex<float>* address ) noexcept
 {
    BLAZE_STATIC_ASSERT( sizeof( complex<float> ) == 2UL*sizeof( float ) );
 
@@ -365,7 +365,7 @@ BLAZE_ALWAYS_INLINE simd_cfloat_t loadu( const complex<float>* address ) noexcep
 // This function loads a vector of 'double' values. In contrast to the according \c loada()
 // function, the given address is not required to be properly aligned.
 */
-BLAZE_ALWAYS_INLINE simd_double_t loadu( const double* address ) noexcept
+BLAZE_ALWAYS_INLINE const simd_double_t loadu( const double* address ) noexcept
 {
 #if BLAZE_MIC_MODE
    __m512d v1 = _mm512_setzero_pd();
@@ -393,7 +393,7 @@ BLAZE_ALWAYS_INLINE simd_double_t loadu( const double* address ) noexcept
 // This function loads a vector of 'complex<double>' values. In contrast to the according
 // \c loada() function, the given address is not required to be properly aligned.
 */
-BLAZE_ALWAYS_INLINE simd_cdouble_t loadu( const complex<double>* address ) noexcept
+BLAZE_ALWAYS_INLINE const simd_cdouble_t loadu( const complex<double>* address ) noexcept
 {
    BLAZE_STATIC_ASSERT( sizeof( complex<double> ) == 2UL*sizeof( double ) );
 

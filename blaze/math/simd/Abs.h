@@ -62,7 +62,7 @@ namespace blaze {
 //
 // This operation is only available for SSSE3, AVX2, and AVX-512.
 */
-BLAZE_ALWAYS_INLINE simd_uint8_t abs( const simd_int8_t& a ) noexcept
+BLAZE_ALWAYS_INLINE const simd_uint8_t abs( const simd_int8_t& a ) noexcept
 #if BLAZE_MIC_MODE
 {
    return _mm512_abs_epi8( a.value );
@@ -90,7 +90,7 @@ BLAZE_ALWAYS_INLINE simd_uint8_t abs( const simd_int8_t& a ) noexcept
 //
 // This operation is only available for SSSE3, AVX2, and AVX-512.
 */
-BLAZE_ALWAYS_INLINE simd_uint16_t abs( const simd_int16_t& a ) noexcept
+BLAZE_ALWAYS_INLINE const simd_uint16_t abs( const simd_int16_t& a ) noexcept
 #if BLAZE_MIC_MODE
 {
    return _mm512_abs_epi16( a.value );
@@ -118,7 +118,7 @@ BLAZE_ALWAYS_INLINE simd_uint16_t abs( const simd_int16_t& a ) noexcept
 //
 // This operation is only available for SSSE3, AVX2, and AVX-512.
 */
-BLAZE_ALWAYS_INLINE simd_uint32_t abs( const simd_int32_t& a ) noexcept
+BLAZE_ALWAYS_INLINE const simd_uint32_t abs( const simd_int32_t& a ) noexcept
 #if BLAZE_MIC_MODE
 {
    return _mm512_abs_epi32( a.value );
@@ -146,7 +146,7 @@ BLAZE_ALWAYS_INLINE simd_uint32_t abs( const simd_int32_t& a ) noexcept
 //
 // This operation is only available for AVX-512.
 */
-BLAZE_ALWAYS_INLINE simd_uint64_t abs( const simd_int64_t& a ) noexcept
+BLAZE_ALWAYS_INLINE const simd_uint64_t abs( const simd_int64_t& a ) noexcept
 #if BLAZE_MIC_MODE
 {
    return _mm512_abs_epi64( a.value );

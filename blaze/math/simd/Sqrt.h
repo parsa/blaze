@@ -62,7 +62,7 @@ namespace blaze {
 //
 // This operation is only available for SSE, AVX, and AVX-512.
 */
-BLAZE_ALWAYS_INLINE simd_float_t sqrt( const simd_float_t& a ) noexcept
+BLAZE_ALWAYS_INLINE const simd_float_t sqrt( const simd_float_t& a ) noexcept
 #if BLAZE_MIC_MODE
 {
    return _mm512_sqrt_ps( a.value );
@@ -90,7 +90,7 @@ BLAZE_ALWAYS_INLINE simd_float_t sqrt( const simd_float_t& a ) noexcept
 //
 // This operation is only available for SSE2, AVX, and AVX-512.
 */
-BLAZE_ALWAYS_INLINE simd_double_t sqrt( const simd_double_t& a ) noexcept
+BLAZE_ALWAYS_INLINE const simd_double_t sqrt( const simd_double_t& a ) noexcept
 #if BLAZE_MIC_MODE
 {
    return _mm512_sqrt_pd( a.value );

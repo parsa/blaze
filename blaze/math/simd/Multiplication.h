@@ -67,7 +67,7 @@ namespace blaze {
 */
 template< typename T1    // Type of the left-hand side operand
         , typename T2 >  // Type of the right-hand side operand
-BLAZE_ALWAYS_INLINE MultTrait_<T1,T2>
+BLAZE_ALWAYS_INLINE const MultTrait_<T1,T2>
    operator*( const simd_i16_t<T1>& a, const simd_i16_t<T2>& b ) noexcept
 #if BLAZE_AVX2_MODE
 {
@@ -93,7 +93,7 @@ BLAZE_ALWAYS_INLINE MultTrait_<T1,T2>
 //
 // This operation is only available for SSE2 and AVX2.
 */
-BLAZE_ALWAYS_INLINE simd_cint16_t
+BLAZE_ALWAYS_INLINE const simd_cint16_t
    operator*( const simd_cint16_t& a, const simd_int16_t& b ) noexcept
 #if BLAZE_AVX2_MODE
 {
@@ -119,7 +119,7 @@ BLAZE_ALWAYS_INLINE simd_cint16_t
 //
 // This operation is only available for SSE2 and AVX2.
 */
-BLAZE_ALWAYS_INLINE simd_cuint16_t
+BLAZE_ALWAYS_INLINE const simd_cuint16_t
    operator*( const simd_cuint16_t& a, const simd_uint16_t& b ) noexcept
 #if BLAZE_AVX2_MODE
 {
@@ -145,7 +145,7 @@ BLAZE_ALWAYS_INLINE simd_cuint16_t
 //
 // This operation is only available for SSE2 and AVX2.
 */
-BLAZE_ALWAYS_INLINE simd_cint16_t
+BLAZE_ALWAYS_INLINE const simd_cint16_t
    operator*( const simd_int16_t& a, const simd_cint16_t& b ) noexcept
 #if BLAZE_AVX2_MODE
 {
@@ -171,7 +171,7 @@ BLAZE_ALWAYS_INLINE simd_cint16_t
 //
 // This operation is only available for SSE2 and AVX2.
 */
-BLAZE_ALWAYS_INLINE simd_cuint16_t
+BLAZE_ALWAYS_INLINE const simd_cuint16_t
    operator*( const simd_uint16_t& a, const simd_cuint16_t& b ) noexcept
 #if BLAZE_AVX2_MODE
 {
@@ -198,7 +198,7 @@ BLAZE_ALWAYS_INLINE simd_cuint16_t
 // This operation is only available for SSE2 and AVX2.
 */
 template< typename T >  // Type of both operands
-BLAZE_ALWAYS_INLINE T
+BLAZE_ALWAYS_INLINE const T
    operator*( const simd_ci16_t<T>& a, const simd_ci16_t<T>& b ) noexcept
 #if BLAZE_AVX2_MODE
 {
@@ -250,7 +250,7 @@ BLAZE_ALWAYS_INLINE T
 */
 template< typename T1    // Type of the left-hand side operand
         , typename T2 >  // Type of the right-hand side operand
-BLAZE_ALWAYS_INLINE MultTrait_<T1,T2>
+BLAZE_ALWAYS_INLINE const MultTrait_<T1,T2>
    operator*( const simd_i32_t<T1>& a, const simd_i32_t<T2>& b ) noexcept
 #if BLAZE_MIC_MODE
 {
@@ -280,7 +280,7 @@ BLAZE_ALWAYS_INLINE MultTrait_<T1,T2>
 //
 // This operation is only available for SSE4, AVX2, and AVX-512.
 */
-BLAZE_ALWAYS_INLINE simd_cint32_t
+BLAZE_ALWAYS_INLINE const simd_cint32_t
    operator*( const simd_cint32_t& a, const simd_int32_t& b ) noexcept
 #if BLAZE_MIC_MODE
 {
@@ -310,7 +310,7 @@ BLAZE_ALWAYS_INLINE simd_cint32_t
 //
 // This operation is only available for SSE4, AVX2, and AVX-512.
 */
-BLAZE_ALWAYS_INLINE simd_cuint32_t
+BLAZE_ALWAYS_INLINE const simd_cuint32_t
    operator*( const simd_cuint32_t& a, const simd_uint32_t& b ) noexcept
 #if BLAZE_MIC_MODE
 {
@@ -342,7 +342,7 @@ BLAZE_ALWAYS_INLINE simd_cuint32_t
 */
 template< typename T1    // Type of the left-hand side operand
         , typename T2 >  // Type of the right-hand side operand
-BLAZE_ALWAYS_INLINE simd_cint32_t
+BLAZE_ALWAYS_INLINE const simd_cint32_t
    operator*( const simd_int32_t& a, const simd_cint32_t& b ) noexcept
 #if BLAZE_MIC_MODE
 {
@@ -374,7 +374,7 @@ BLAZE_ALWAYS_INLINE simd_cint32_t
 */
 template< typename T1    // Type of the left-hand side operand
         , typename T2 >  // Type of the right-hand side operand
-BLAZE_ALWAYS_INLINE simd_cuint32_t
+BLAZE_ALWAYS_INLINE const simd_cuint32_t
    operator*( const simd_uint32_t& a, const simd_cuint32_t& b ) noexcept
 #if BLAZE_MIC_MODE
 {
@@ -405,7 +405,7 @@ BLAZE_ALWAYS_INLINE simd_cuint32_t
 // This operation is only available for SSE4, AVX2, and AVX-512.
 */
 template< typename T >  // Type of both operands
-BLAZE_ALWAYS_INLINE T
+BLAZE_ALWAYS_INLINE const T
    operator*( const simd_ci32_t<T>& a, const simd_ci32_t<T>& b ) noexcept
 #if BLAZE_MIC_MODE
 {
@@ -464,7 +464,7 @@ BLAZE_ALWAYS_INLINE T
 */
 template< typename T1    // Type of the left-hand side operand
         , typename T2 >  // Type of the right-hand side operand
-BLAZE_ALWAYS_INLINE MultTrait_<T1,T2>
+BLAZE_ALWAYS_INLINE const MultTrait_<T1,T2>
    operator*( const simd_i64_t<T1>& a, const simd_i64_t<T2>& b ) noexcept
 #if BLAZE_MIC_MODE
 {
@@ -486,7 +486,7 @@ BLAZE_ALWAYS_INLINE MultTrait_<T1,T2>
 //
 // This operation is only available for SSE, AVX, and AVX-512.
 */
-BLAZE_ALWAYS_INLINE simd_float_t
+BLAZE_ALWAYS_INLINE const simd_float_t
    operator*( const simd_float_t& a, const simd_float_t& b ) noexcept
 #if BLAZE_MIC_MODE
 {
@@ -516,7 +516,7 @@ BLAZE_ALWAYS_INLINE simd_float_t
 //
 // This operation is only available for SSE, AVX, and AVX-512.
 */
-BLAZE_ALWAYS_INLINE simd_cfloat_t
+BLAZE_ALWAYS_INLINE const simd_cfloat_t
    operator*( const simd_cfloat_t& a, const simd_float_t& b ) noexcept
 #if BLAZE_MIC_MODE
 {
@@ -546,7 +546,7 @@ BLAZE_ALWAYS_INLINE simd_cfloat_t
 //
 // This operation is only available for SSE, AVX, and AVX-512.
 */
-BLAZE_ALWAYS_INLINE simd_cfloat_t
+BLAZE_ALWAYS_INLINE const simd_cfloat_t
    operator*( const simd_float_t& a, const simd_cfloat_t& b ) noexcept
 #if BLAZE_MIC_MODE
 {
@@ -576,7 +576,7 @@ BLAZE_ALWAYS_INLINE simd_cfloat_t
 //
 // This operation is only available for SSE3 and AVX.
 */
-BLAZE_ALWAYS_INLINE simd_cfloat_t
+BLAZE_ALWAYS_INLINE const simd_cfloat_t
    operator*( const simd_cfloat_t& a, const simd_cfloat_t& b ) noexcept
 #if BLAZE_AVX_MODE
 {
@@ -616,7 +616,7 @@ BLAZE_ALWAYS_INLINE simd_cfloat_t
 //
 // This operation is only available for SSE2, AVX, and AVX-512.
 */
-BLAZE_ALWAYS_INLINE simd_double_t
+BLAZE_ALWAYS_INLINE const simd_double_t
    operator*( const simd_double_t& a, const simd_double_t& b ) noexcept
 #if BLAZE_MIC_MODE
 {
@@ -646,7 +646,7 @@ BLAZE_ALWAYS_INLINE simd_double_t
 //
 // This operation is only available for SSE2, AVX, and AVX-512.
 */
-BLAZE_ALWAYS_INLINE simd_cdouble_t
+BLAZE_ALWAYS_INLINE const simd_cdouble_t
    operator*( const simd_cdouble_t& a, const simd_double_t& b ) noexcept
 #if BLAZE_MIC_MODE
 {
@@ -676,7 +676,7 @@ BLAZE_ALWAYS_INLINE simd_cdouble_t
 //
 // This operation is only available for SSE2, AVX, and AVX-512.
 */
-BLAZE_ALWAYS_INLINE simd_cdouble_t
+BLAZE_ALWAYS_INLINE const simd_cdouble_t
    operator*( const simd_double_t& a, const simd_cdouble_t& b ) noexcept
 #if BLAZE_MIC_MODE
 {
@@ -706,7 +706,7 @@ BLAZE_ALWAYS_INLINE simd_cdouble_t
 //
 // This operation is only available for SSE3 and AVX.
 */
-BLAZE_ALWAYS_INLINE simd_cdouble_t
+BLAZE_ALWAYS_INLINE const simd_cdouble_t
    operator*( const simd_cdouble_t& a, const simd_cdouble_t& b ) noexcept
 #if BLAZE_AVX_MODE
 {
