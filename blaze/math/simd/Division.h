@@ -40,6 +40,7 @@
 // Includes
 //*************************************************************************************************
 
+#include <blaze/math/Aliases.h>
 #include <blaze/math/simd/BasicTypes.h>
 #include <blaze/math/traits/DivTrait.h>
 #include <blaze/system/Inline.h>
@@ -66,7 +67,7 @@ namespace blaze {
 */
 template< typename T1    // Type of the left-hand side operand
         , typename T2 >  // Type of the right-hand side operand
-BLAZE_ALWAYS_INLINE DivTrait<T1,T2>
+BLAZE_ALWAYS_INLINE DivTrait_<T1,T2>
    operator/( const simd_i32_t<T1>& a, const simd_i32_t<T2>& b ) noexcept
 #if BLAZE_MIC_MODE
 {
@@ -79,7 +80,7 @@ BLAZE_ALWAYS_INLINE DivTrait<T1,T2>
 
 
 //*************************************************************************************************
-/*!\brief Scaling of a vector of 32-bit integral complex SIMD values.
+/*!\brief Scaling of a vector of 32-bit signed integral complex SIMD values.
 // \ingroup simd
 //
 // \param a The left-hand side complex values to be scaled.
@@ -88,10 +89,30 @@ BLAZE_ALWAYS_INLINE DivTrait<T1,T2>
 //
 // This operation is only available for AVX-512.
 */
-template< typename T1    // Type of the left-hand side operand
-        , typename T2 >  // Type of the right-hand side operand
-BLAZE_ALWAYS_INLINE DivTrait<T1,T2>
-   operator/( const simd_ci32_t<T1>& a, const simd_i32_t<T2>& b ) noexcept
+BLAZE_ALWAYS_INLINE simd_cint32_t
+   operator/( const simd_cint32_t& a, const simd_int32_t& b ) noexcept
+#if BLAZE_MIC_MODE
+{
+   return _mm512_div_epi32( (~a).value, (~b).value );
+}
+#else
+= delete;
+#endif
+//*************************************************************************************************
+
+
+//*************************************************************************************************
+/*!\brief Scaling of a vector of 32-bit unsigned integral complex SIMD values.
+// \ingroup simd
+//
+// \param a The left-hand side complex values to be scaled.
+// \param b The right-hand side scalars.
+// \return The result of the division.
+//
+// This operation is only available for AVX-512.
+*/
+BLAZE_ALWAYS_INLINE simd_cuint32_t
+   operator/( const simd_cuint32_t& a, const simd_uint32_t& b ) noexcept
 #if BLAZE_MIC_MODE
 {
    return _mm512_div_epi32( (~a).value, (~b).value );
@@ -114,7 +135,7 @@ BLAZE_ALWAYS_INLINE DivTrait<T1,T2>
 */
 template< typename T1    // Type of the left-hand side operand
         , typename T2 >  // Type of the right-hand side operand
-BLAZE_ALWAYS_INLINE DivTrait<T1,T2>
+BLAZE_ALWAYS_INLINE DivTrait_<T1,T2>
    operator/( const simd_i64_t<T1>& a, const simd_i64_t<T2>& b ) noexcept
 #if BLAZE_MIC_MODE
 {
@@ -127,7 +148,7 @@ BLAZE_ALWAYS_INLINE DivTrait<T1,T2>
 
 
 //*************************************************************************************************
-/*!\brief Scaling of a vector of 64-bit integral complex SIMD values.
+/*!\brief Scaling of a vector of 64-bit signed integral complex SIMD values.
 // \ingroup simd
 //
 // \param a The left-hand side complex values to be scaled.
@@ -136,10 +157,30 @@ BLAZE_ALWAYS_INLINE DivTrait<T1,T2>
 //
 // This operation is only available for AVX-512.
 */
-template< typename T1    // Type of the left-hand side operand
-        , typename T2 >  // Type of the right-hand side operand
-BLAZE_ALWAYS_INLINE DivTrait<T1,T2>
-   operator/( const simd_ci64_t<T1>& a, const simd_i64_t<T2>& b ) noexcept
+BLAZE_ALWAYS_INLINE simd_cint64_t
+   operator/( const simd_cint64_t& a, const simd_int64_t& b ) noexcept
+#if BLAZE_MIC_MODE
+{
+   return _mm512_div_epi64( (~a).value, (~b).value );
+}
+#else
+= delete;
+#endif
+//*************************************************************************************************
+
+
+//*************************************************************************************************
+/*!\brief Scaling of a vector of 64-bit unsigned integral complex SIMD values.
+// \ingroup simd
+//
+// \param a The left-hand side complex values to be scaled.
+// \param b The right-hand side scalars.
+// \return The result of the division.
+//
+// This operation is only available for AVX-512.
+*/
+BLAZE_ALWAYS_INLINE simd_cuint64_t
+   operator/( const simd_cuint64_t& a, const simd_uint64_t& b ) noexcept
 #if BLAZE_MIC_MODE
 {
    return _mm512_div_epi64( (~a).value, (~b).value );
@@ -285,26 +326,10 @@ template<> struct DivTrait< simd_int32_t , simd_uint32_t > { using Type = simd_u
 template<> struct DivTrait< simd_uint32_t, simd_int32_t  > { using Type = simd_uint32_t; };
 template<> struct DivTrait< simd_uint32_t, simd_uint32_t > { using Type = simd_uint32_t; };
 
-template<> struct DivTrait< simd_cint32_t , simd_int32_t  > { using Type = simd_cint32_t;  };
-template<> struct DivTrait< simd_cint32_t , simd_uint32_t > { using Type = simd_cuint32_t; };
-template<> struct DivTrait< simd_cuint32_t, simd_int32_t  > { using Type = simd_cuint32_t; };
-template<> struct DivTrait< simd_cuint32_t, simd_uint32_t > { using Type = simd_cuint32_t; };
-
 template<> struct DivTrait< simd_int64_t , simd_int64_t  > { using Type = simd_int64_t;  };
 template<> struct DivTrait< simd_int64_t , simd_uint64_t > { using Type = simd_uint64_t; };
 template<> struct DivTrait< simd_uint64_t, simd_int64_t  > { using Type = simd_uint64_t; };
 template<> struct DivTrait< simd_uint64_t, simd_uint64_t > { using Type = simd_uint64_t; };
-
-template<> struct DivTrait< simd_cint64_t , simd_int64_t  > { using Type = simd_cint64_t;  };
-template<> struct DivTrait< simd_cint64_t , simd_uint64_t > { using Type = simd_cuint64_t; };
-template<> struct DivTrait< simd_cuint64_t, simd_int64_t  > { using Type = simd_cuint64_t; };
-template<> struct DivTrait< simd_cuint64_t, simd_uint64_t > { using Type = simd_cuint64_t; };
-
-template<> struct DivTrait< simd_float_t , simd_float_t > { using Type = simd_float_t;  };
-template<> struct DivTrait< simd_cfloat_t, simd_float_t > { using Type = simd_cfloat_t; };
-
-template<> struct DivTrait< simd_double_t , simd_double_t > { using Type = simd_double_t;  };
-template<> struct DivTrait< simd_cdouble_t, simd_double_t > { using Type = simd_cdouble_t; };
 /*! \endcond */
 //*************************************************************************************************
 
