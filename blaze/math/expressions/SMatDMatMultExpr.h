@@ -71,7 +71,6 @@
 #include <blaze/math/typetraits/Columns.h>
 #include <blaze/math/typetraits/HasSIMDAdd.h>
 #include <blaze/math/typetraits/HasSIMDMult.h>
-#include <blaze/math/typetraits/HasSIMDSub.h>
 #include <blaze/math/typetraits/IsAligned.h>
 #include <blaze/math/typetraits/IsColumnVector.h>
 #include <blaze/math/typetraits/IsComputation.h>
@@ -83,6 +82,7 @@
 #include <blaze/math/typetraits/IsRowMajorMatrix.h>
 #include <blaze/math/typetraits/IsResizable.h>
 #include <blaze/math/typetraits/IsRowVector.h>
+#include <blaze/math/typetraits/IsSimdCompatible.h>
 #include <blaze/math/typetraits/IsSparseMatrix.h>
 #include <blaze/math/typetraits/IsSparseVector.h>
 #include <blaze/math/typetraits/IsStrictlyLower.h>
@@ -104,7 +104,6 @@
 #include <blaze/util/mpl/If.h>
 #include <blaze/util/mpl/Or.h>
 #include <blaze/util/Types.h>
-#include <blaze/util/typetraits/IsSame.h>
 #include <blaze/util/typetraits/RemoveReference.h>
 
 
@@ -173,11 +172,9 @@ class SMatDMatMultExpr : public DenseMatrix< SMatDMatMultExpr<MT1,MT2>, false >
                             !IsDiagonal<T3>::value &&
                             T1::simdEnabled && T3::simdEnabled &&
                             IsRowMajorMatrix<T1>::value &&
-                            IsSame< ElementType_<T1>, ElementType_<T2> >::value &&
-                            IsSame< ElementType_<T1>, ElementType_<T3> >::value &&
-                            HasSIMDAdd< ElementType_<T1>, ElementType_<T1> >::value &&
-                            HasSIMDSub< ElementType_<T1>, ElementType_<T1> >::value &&
-                            HasSIMDMult< ElementType_<T1>, ElementType_<T1> >::value };
+                            IsSimdCompatible< ElementType_<T1>, ElementType_<T2> >::value &&
+                            HasSIMDAdd< ElementType_<T2>, ElementType_<T3> >::value &&
+                            HasSIMDMult< ElementType_<T2>, ElementType_<T3> >::value };
    };
    /*! \endcond */
    //**********************************************************************************************
@@ -240,9 +237,8 @@ class SMatDMatMultExpr : public DenseMatrix< SMatDMatMultExpr<MT1,MT2>, false >
    //! Compilation switch for the expression template evaluation strategy.
    enum : bool { simdEnabled = !IsDiagonal<MT2>::value &&
                                MT2::simdEnabled &&
-                               IsSame<ET1,ET2>::value &&
-                               HasSIMDAdd<ET1,ET1>::value &&
-                               HasSIMDMult<ET1,ET1>::value };
+                               HasSIMDAdd<ET1,ET2>::value &&
+                               HasSIMDMult<ET1,ET2>::value };
 
    //! Compilation switch for the expression template assignment strategy.
    enum : bool { smpAssignable = !evaluateLeft  && MT1::smpAssignable &&

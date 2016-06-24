@@ -86,6 +86,7 @@
 #include <blaze/math/typetraits/IsLower.h>
 #include <blaze/math/typetraits/IsRowMajorMatrix.h>
 #include <blaze/math/typetraits/IsRowVector.h>
+#include <blaze/math/typetraits/IsSimdCompatible.h>
 #include <blaze/math/typetraits/IsSparseVector.h>
 #include <blaze/math/typetraits/IsStrictlyLower.h>
 #include <blaze/math/typetraits/IsStrictlyUpper.h>
@@ -211,10 +212,9 @@ class DMatTDMatMultExpr : public DenseMatrix< DMatTDMatMultExpr<MT1,MT2>, false 
       enum : bool { value = useOptimizedKernels &&
                             !IsDiagonal<T2>::value && !IsDiagonal<T3>::value &&
                             T1::simdEnabled && T2::simdEnabled && T3::simdEnabled &&
-                            IsSame< ElementType_<T1>, ElementType_<T2> >::value &&
-                            IsSame< ElementType_<T1>, ElementType_<T3> >::value &&
-                            HasSIMDAdd< ElementType_<T1>, ElementType_<T1> >::value &&
-                            HasSIMDMult< ElementType_<T1>, ElementType_<T1> >::value };
+                            IsSimdCompatible< ElementType_<T1>, ElementType_<T2> >::value &&
+                            HasSIMDAdd< ElementType_<T2>, ElementType_<T3> >::value &&
+                            HasSIMDMult< ElementType_<T2>, ElementType_<T3> >::value };
    };
    /*! \endcond */
    //**********************************************************************************************
@@ -247,9 +247,8 @@ class DMatTDMatMultExpr : public DenseMatrix< DMatTDMatMultExpr<MT1,MT2>, false 
    //! Compilation switch for the expression template evaluation strategy.
    enum : bool { simdEnabled = !IsDiagonal<MT1>::value && !IsDiagonal<MT2>::value &&
                                MT1::simdEnabled && MT2::simdEnabled &&
-                               IsSame<ET1,ET2>::value &&
-                               HasSIMDAdd<ET1,ET1>::value &&
-                               HasSIMDMult<ET1,ET1>::value };
+                               HasSIMDAdd<ET1,ET2>::value &&
+                               HasSIMDMult<ET1,ET2>::value };
 
    //! Compilation switch for the expression template assignment strategy.
    enum : bool { smpAssignable = !evaluateLeft  && MT1::smpAssignable &&
@@ -4182,11 +4181,9 @@ class DMatScalarMultExpr< DMatTDMatMultExpr<MT1,MT2>, ST, false >
       enum : bool { value = useOptimizedKernels &&
                             !IsDiagonal<T2>::value && !IsDiagonal<T3>::value &&
                             T1::simdEnabled && T2::simdEnabled && T3::simdEnabled &&
-                            IsSame< ElementType_<T1>, ElementType_<T2> >::value &&
-                            IsSame< ElementType_<T1>, ElementType_<T3> >::value &&
-                            IsSame< ElementType_<T1>, T4 >::value &&
-                            HasSIMDAdd< ElementType_<T1>, ElementType_<T1> >::value &&
-                            HasSIMDMult< ElementType_<T1>, ElementType_<T1> >::value };
+                            IsSimdCompatible< ElementType_<T1>, ElementType_<T2>, T4 >::value &&
+                            HasSIMDAdd< ElementType_<T2>, ElementType_<T3> >::value &&
+                            HasSIMDMult< ElementType_<T2>, ElementType_<T3> >::value };
    };
    //**********************************************************************************************
 
@@ -4218,10 +4215,9 @@ class DMatScalarMultExpr< DMatTDMatMultExpr<MT1,MT2>, ST, false >
    //! Compilation switch for the expression template evaluation strategy.
    enum : bool { simdEnabled = !IsDiagonal<MT1>::value && !IsDiagonal<MT2>::value &&
                                MT1::simdEnabled && MT2::simdEnabled &&
-                               IsSame<ET1,ET2>::value &&
-                               IsSame<ET1,ST>::value &&
-                               HasSIMDAdd<ET1,ET1>::value &&
-                               HasSIMDMult<ET1,ET1>::value };
+                               IsSimdCompatible<ET1,ST>::value &&
+                               HasSIMDAdd<ET1,ET2>::value &&
+                               HasSIMDMult<ET1,ET2>::value };
 
    //! Compilation switch for the expression template assignment strategy.
    enum : bool { smpAssignable = !evaluateLeft  && MT1::smpAssignable &&

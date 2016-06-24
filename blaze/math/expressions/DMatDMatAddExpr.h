@@ -64,6 +64,7 @@
 #include <blaze/math/typetraits/IsHermitian.h>
 #include <blaze/math/typetraits/IsLower.h>
 #include <blaze/math/typetraits/IsPadded.h>
+#include <blaze/math/typetraits/IsSimdCompatible.h>
 #include <blaze/math/typetraits/IsStrictlyLower.h>
 #include <blaze/math/typetraits/IsStrictlyUpper.h>
 #include <blaze/math/typetraits/IsSymmetric.h>
@@ -85,7 +86,6 @@
 #include <blaze/util/mpl/Max.h>
 #include <blaze/util/mpl/Or.h>
 #include <blaze/util/Types.h>
-#include <blaze/util/typetraits/IsSame.h>
 
 
 namespace blaze {
@@ -444,8 +444,7 @@ class DMatDMatAddExpr : public DenseMatrix< DMatDMatAddExpr<MT1,MT2,SO>, SO >
    //**Compilation flags***************************************************************************
    //! Compilation switch for the expression template evaluation strategy.
    enum : bool { simdEnabled = MT1::simdEnabled && MT2::simdEnabled &&
-                               IsSame<ET1,ET2>::value &&
-                               HasSIMDAdd<ET1,ET1>::value };
+                               HasSIMDAdd<ET1,ET2>::value };
 
    //! Compilation switch for the expression template assignment strategy.
    enum : bool { smpAssignable = MT1::smpAssignable && MT2::smpAssignable };

@@ -100,7 +100,6 @@
 #include <blaze/util/mpl/Or.h>
 #include <blaze/util/Types.h>
 #include <blaze/util/typetraits/IsNumeric.h>
-#include <blaze/util/typetraits/IsSame.h>
 
 
 namespace blaze {
@@ -449,9 +448,8 @@ class DMatScalarMultExpr : public DenseMatrix< DMatScalarMultExpr<MT,ST,SO>, SO 
    //! Compilation switch for the expression template evaluation strategy.
    enum : bool { simdEnabled = MT::simdEnabled &&
                                IsNumeric<ET>::value &&
-                               ( IsSame<ET,RightOperand>::value ||
-                                 IsSame<UnderlyingElement_<ET>,RightOperand>::value ) &&
-                               HasSIMDMult<ET,RightOperand>::value };
+                               ( HasSIMDMult<ET,ST>::value ||
+                                 HasSIMDMult<UnderlyingElement_<ET>,ST>::value ) };
 
    //! Compilation switch for the expression template assignment strategy.
    enum : bool { smpAssignable = MT::smpAssignable };
