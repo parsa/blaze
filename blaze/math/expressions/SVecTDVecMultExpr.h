@@ -80,6 +80,7 @@
 #include <blaze/util/mpl/If.h>
 #include <blaze/util/Types.h>
 #include <blaze/util/typetraits/IsNumeric.h>
+#include <blaze/util/typetraits/IsSame.h>
 #include <blaze/util/typetraits/RemoveReference.h>
 #include <blaze/util/Unused.h>
 

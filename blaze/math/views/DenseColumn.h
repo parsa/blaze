@@ -113,7 +113,6 @@
 #include <blaze/util/typetraits/IsFloatingPoint.h>
 #include <blaze/util/typetraits/IsNumeric.h>
 #include <blaze/util/typetraits/IsReference.h>
-#include <blaze/util/typetraits/IsSame.h>
 #include <blaze/util/typetraits/RemoveReference.h>
 
 
