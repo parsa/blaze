@@ -69,6 +69,7 @@
 #include <blaze/math/typetraits/HasSIMDSub.h>
 #include <blaze/math/typetraits/IsAligned.h>
 #include <blaze/math/typetraits/IsPadded.h>
+#include <blaze/math/typetraits/IsSimdCompatible.h>
 #include <blaze/math/typetraits/IsSparseVector.h>
 #include <blaze/math/typetraits/Size.h>
 #include <blaze/system/Inline.h>
@@ -93,7 +94,6 @@
 #include <blaze/util/TrueType.h>
 #include <blaze/util/Types.h>
 #include <blaze/util/typetraits/IsNumeric.h>
-#include <blaze/util/typetraits/IsSame.h>
 #include <blaze/util/typetraits/IsVectorizable.h>
 #include <blaze/util/Unused.h>
 
@@ -322,7 +322,7 @@ class StaticVector : public DenseVector< StaticVector<Type,N,TF>, TF >
    struct VectorizedAssign {
       enum : bool { value = useOptimizedKernels &&
                             simdEnabled && VT::simdEnabled &&
-                            IsSame< Type, ElementType_<VT> >::value };
+                            IsSimdCompatible< Type, ElementType_<VT> >::value };
    };
    /*! \endcond */
    //**********************************************************************************************
@@ -334,8 +334,8 @@ class StaticVector : public DenseVector< StaticVector<Type,N,TF>, TF >
    struct VectorizedAddAssign {
       enum : bool { value = useOptimizedKernels &&
                             simdEnabled && VT::simdEnabled &&
-                            IsSame< Type, ElementType_<VT> >::value &&
-                            HasSIMDAdd<Type,Type>::value };
+                            IsSimdCompatible< Type, ElementType_<VT> >::value &&
+                            HasSIMDAdd< Type, ElementType_<VT> >::value };
    };
    /*! \endcond */
    //**********************************************************************************************
@@ -347,8 +347,8 @@ class StaticVector : public DenseVector< StaticVector<Type,N,TF>, TF >
    struct VectorizedSubAssign {
       enum : bool { value = useOptimizedKernels &&
                             simdEnabled && VT::simdEnabled &&
-                            IsSame< Type, ElementType_<VT> >::value &&
-                            HasSIMDSub<Type,Type>::value };
+                            IsSimdCompatible< Type, ElementType_<VT> >::value &&
+                            HasSIMDSub< Type, ElementType_<VT> >::value };
    };
    /*! \endcond */
    //**********************************************************************************************
@@ -360,8 +360,8 @@ class StaticVector : public DenseVector< StaticVector<Type,N,TF>, TF >
    struct VectorizedMultAssign {
       enum : bool { value = useOptimizedKernels &&
                             simdEnabled && VT::simdEnabled &&
-                            IsSame< Type, ElementType_<VT> >::value &&
-                            HasSIMDMult<Type,Type>::value };
+                            IsSimdCompatible< Type, ElementType_<VT> >::value &&
+                            HasSIMDMult< Type, ElementType_<VT> >::value };
    };
    /*! \endcond */
    //**********************************************************************************************
@@ -373,8 +373,8 @@ class StaticVector : public DenseVector< StaticVector<Type,N,TF>, TF >
    struct VectorizedDivAssign {
       enum : bool { value = useOptimizedKernels &&
                             simdEnabled && VT::simdEnabled &&
-                            IsSame< Type, ElementType_<VT> >::value &&
-                            HasSIMDDiv<Type,Type>::value };
+                            IsSimdCompatible< Type, ElementType_<VT> >::value &&
+                            HasSIMDDiv< Type, ElementType_<VT> >::value };
    };
    /*! \endcond */
    //**********************************************************************************************
