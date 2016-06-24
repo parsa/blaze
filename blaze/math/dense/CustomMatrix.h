@@ -75,6 +75,7 @@
 #include <blaze/math/typetraits/IsDiagonal.h>
 #include <blaze/math/typetraits/IsLower.h>
 #include <blaze/math/typetraits/IsPadded.h>
+#include <blaze/math/typetraits/IsSimdCompatible.h>
 #include <blaze/math/typetraits/IsSMPAssignable.h>
 #include <blaze/math/typetraits/IsSparseMatrix.h>
 #include <blaze/math/typetraits/IsStrictlyLower.h>
@@ -103,7 +104,6 @@
 #include <blaze/util/typetraits/AlignmentOf.h>
 #include <blaze/util/typetraits/IsClass.h>
 #include <blaze/util/typetraits/IsNumeric.h>
-#include <blaze/util/typetraits/IsSame.h>
 #include <blaze/util/typetraits/IsVectorizable.h>
 #include <blaze/util/Unused.h>
 
@@ -584,7 +584,7 @@ class CustomMatrix : public DenseMatrix< CustomMatrix<Type,AF,PF,SO>, SO >
    struct VectorizedAssign {
       enum : bool { value = useOptimizedKernels &&
                             simdEnabled && MT::simdEnabled &&
-                            IsSame< Type, ElementType_<MT> >::value };
+                            IsSimdCompatible< Type, ElementType_<MT> >::value };
    };
    /*! \endcond */
    //**********************************************************************************************
@@ -596,8 +596,8 @@ class CustomMatrix : public DenseMatrix< CustomMatrix<Type,AF,PF,SO>, SO >
    struct VectorizedAddAssign {
       enum : bool { value = useOptimizedKernels &&
                             simdEnabled && MT::simdEnabled &&
-                            IsSame< Type, ElementType_<MT> >::value &&
-                            HasSIMDAdd<Type,Type>::value &&
+                            IsSimdCompatible< Type, ElementType_<MT> >::value &&
+                            HasSIMDAdd< Type, ElementType_<MT> >::value &&
                             !IsDiagonal<MT>::value };
    };
    /*! \endcond */
@@ -610,8 +610,8 @@ class CustomMatrix : public DenseMatrix< CustomMatrix<Type,AF,PF,SO>, SO >
    struct VectorizedSubAssign {
       enum : bool { value = useOptimizedKernels &&
                             simdEnabled && MT::simdEnabled &&
-                            IsSame< Type, ElementType_<MT> >::value &&
-                            HasSIMDSub<Type,Type>::value &&
+                            IsSimdCompatible< Type, ElementType_<MT> >::value &&
+                            HasSIMDSub< Type, ElementType_<MT> >::value &&
                             !IsDiagonal<MT>::value };
    };
    /*! \endcond */
@@ -3341,7 +3341,7 @@ class CustomMatrix<Type,AF,PF,true> : public DenseMatrix< CustomMatrix<Type,AF,P
    struct VectorizedAssign {
       enum : bool { value = useOptimizedKernels &&
                             simdEnabled && MT::simdEnabled &&
-                            IsSame< Type, ElementType_<MT> >::value };
+                            IsSimdCompatible< Type, ElementType_<MT> >::value };
    };
    //**********************************************************************************************
 
@@ -3351,8 +3351,8 @@ class CustomMatrix<Type,AF,PF,true> : public DenseMatrix< CustomMatrix<Type,AF,P
    struct VectorizedAddAssign {
       enum : bool { value = useOptimizedKernels &&
                             simdEnabled && MT::simdEnabled &&
-                            IsSame< Type, ElementType_<MT> >::value &&
-                            HasSIMDAdd<Type,Type>::value &&
+                            IsSimdCompatible< Type, ElementType_<MT> >::value &&
+                            HasSIMDAdd< Type, ElementType_<MT> >::value &&
                             !IsDiagonal<MT>::value };
    };
    //**********************************************************************************************
@@ -3363,8 +3363,8 @@ class CustomMatrix<Type,AF,PF,true> : public DenseMatrix< CustomMatrix<Type,AF,P
    struct VectorizedSubAssign {
       enum : bool { value = useOptimizedKernels &&
                             simdEnabled && MT::simdEnabled &&
-                            IsSame< Type, ElementType_<MT> >::value &&
-                            HasSIMDSub<Type,Type>::value &&
+                            IsSimdCompatible< Type, ElementType_<MT> >::value &&
+                            HasSIMDSub< Type, ElementType_<MT> >::value &&
                             !IsDiagonal<MT>::value };
    };
    //**********************************************************************************************
