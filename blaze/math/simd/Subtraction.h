@@ -40,9 +40,7 @@
 // Includes
 //*************************************************************************************************
 
-#include <blaze/math/Aliases.h>
 #include <blaze/math/simd/BasicTypes.h>
-#include <blaze/math/traits/SubTrait.h>
 #include <blaze/system/Inline.h>
 #include <blaze/system/Vectorization.h>
 
@@ -56,7 +54,34 @@ namespace blaze {
 //=================================================================================================
 
 //*************************************************************************************************
-/*!\brief Subtraction of two vectors of 8-bit integral SIMD values.
+/*!\brief Subtraction of two vectors of 8-bit integral SIMD values of the same type.
+// \ingroup simd
+//
+// \param a The left-hand side SIMD operand.
+// \param b The right-hand side SIMD operand.
+// \return The result of the subtraction.
+//
+// This operation is only available for SSE2 and AVX2.
+*/
+template< typename T >  // Type of both operands
+BLAZE_ALWAYS_INLINE const T
+   operator-( const simd_i8_t<T>& a, const simd_i8_t<T>& b ) noexcept
+#if BLAZE_AVX2_MODE
+{
+   return _mm256_sub_epi8( (~a).value, (~b).value );
+}
+#elif BLAZE_SSE2_MODE
+{
+   return _mm_sub_epi8( (~a).value, (~b).value );
+}
+#else
+= delete;
+#endif
+//*************************************************************************************************
+
+
+//*************************************************************************************************
+/*!\brief Subtraction of two vectors of 8-bit integral SIMD values of different type.
 // \ingroup simd
 //
 // \param a The left-hand side SIMD operand.
@@ -67,7 +92,7 @@ namespace blaze {
 */
 template< typename T1    // Type of the left-hand side operand
         , typename T2 >  // Type of the right-hand side operand
-BLAZE_ALWAYS_INLINE const SubTrait_<T1,T2>
+BLAZE_ALWAYS_INLINE const simd_uint8_t
    operator-( const simd_i8_t<T1>& a, const simd_i8_t<T2>& b ) noexcept
 #if BLAZE_AVX2_MODE
 {
@@ -111,7 +136,34 @@ BLAZE_ALWAYS_INLINE const T
 
 
 //*************************************************************************************************
-/*!\brief Subtraction of two vectors of 16-bit integral SIMD values.
+/*!\brief Subtraction of two vectors of 16-bit integral SIMD values of the same type.
+// \ingroup simd
+//
+// \param a The left-hand side SIMD operand.
+// \param b The right-hand side SIMD operand.
+// \return The result of the subtraction.
+//
+// This operation is only available for SSE2 and AVX2.
+*/
+template< typename T >  // Type of both operands
+BLAZE_ALWAYS_INLINE const T
+   operator-( const simd_i16_t<T>& a, const simd_i16_t<T>& b ) noexcept
+#if BLAZE_AVX2_MODE
+{
+   return _mm256_sub_epi16( (~a).value, (~b).value );
+}
+#elif BLAZE_SSE2_MODE
+{
+   return _mm_sub_epi16( (~a).value, (~b).value );
+}
+#else
+= delete;
+#endif
+//*************************************************************************************************
+
+
+//*************************************************************************************************
+/*!\brief Subtraction of two vectors of 16-bit integral SIMD values of different type.
 // \ingroup simd
 //
 // \param a The left-hand side SIMD operand.
@@ -122,7 +174,7 @@ BLAZE_ALWAYS_INLINE const T
 */
 template< typename T1    // Type of the left-hand side operand
         , typename T2 >  // Type of the right-hand side operand
-BLAZE_ALWAYS_INLINE const SubTrait_<T1,T2>
+BLAZE_ALWAYS_INLINE const simd_uint16_t
    operator-( const simd_i16_t<T1>& a, const simd_i16_t<T2>& b ) noexcept
 #if BLAZE_AVX2_MODE
 {
@@ -166,7 +218,38 @@ BLAZE_ALWAYS_INLINE const T
 
 
 //*************************************************************************************************
-/*!\brief Subtraction of two vectors of 32-bit integral SIMD values.
+/*!\brief Subtraction of two vectors of 32-bit integral SIMD values of the same type.
+// \ingroup simd
+//
+// \param a The left-hand side SIMD operand.
+// \param b The right-hand side SIMD operand.
+// \return The result of the subtraction.
+//
+// This operation is only available for SSE2, AVX2, and AVX-512.
+*/
+template< typename T >  // Type of both operands
+BLAZE_ALWAYS_INLINE const T
+   operator-( const simd_i32_t<T>& a, const simd_i32_t<T>& b ) noexcept
+#if BLAZE_MIC_MODE
+{
+   return _mm512_sub_epi32( (~a).value, (~b).value );
+}
+#elif BLAZE_AVX2_MODE
+{
+   return _mm256_sub_epi32( (~a).value, (~b).value );
+}
+#elif BLAZE_SSE2_MODE
+{
+   return _mm_sub_epi32( (~a).value, (~b).value );
+}
+#else
+= delete;
+#endif
+//*************************************************************************************************
+
+
+//*************************************************************************************************
+/*!\brief Subtraction of two vectors of 32-bit integral SIMD values of different type.
 // \ingroup simd
 //
 // \param a The left-hand side SIMD operand.
@@ -177,7 +260,7 @@ BLAZE_ALWAYS_INLINE const T
 */
 template< typename T1    // Type of the left-hand side operand
         , typename T2 >  // Type of the right-hand side operand
-BLAZE_ALWAYS_INLINE const SubTrait_<T1,T2>
+BLAZE_ALWAYS_INLINE const simd_uint32_t
    operator-( const simd_i32_t<T1>& a, const simd_i32_t<T2>& b ) noexcept
 #if BLAZE_MIC_MODE
 {
@@ -229,7 +312,38 @@ BLAZE_ALWAYS_INLINE const T
 
 
 //*************************************************************************************************
-/*!\brief Subtraction of two vectors of 64-bit integral SIMD values.
+/*!\brief Subtraction of two vectors of 64-bit integral SIMD values of the same type.
+// \ingroup simd
+//
+// \param a The left-hand side SIMD operand.
+// \param b The right-hand side SIMD operand.
+// \return The result of the subtraction.
+//
+// This operation is only available for SSE2, AVX2, and AVX-512.
+*/
+template< typename T >  // Type of both operands
+BLAZE_ALWAYS_INLINE const T
+   operator-( const simd_i64_t<T>& a, const simd_i64_t<T>& b ) noexcept
+#if BLAZE_MIC_MODE
+{
+   return _mm512_sub_epi64( (~a).value, (~b).value );
+}
+#elif BLAZE_AVX2_MODE
+{
+   return _mm256_sub_epi64( (~a).value, (~b).value );
+}
+#elif BLAZE_SSE2_MODE
+{
+   return _mm_sub_epi64( (~a).value, (~b).value );
+}
+#else
+= delete;
+#endif
+//*************************************************************************************************
+
+
+//*************************************************************************************************
+/*!\brief Subtraction of two vectors of 64-bit integral SIMD values of different type.
 // \ingroup simd
 //
 // \param a The left-hand side SIMD operand.
@@ -240,7 +354,7 @@ BLAZE_ALWAYS_INLINE const T
 */
 template< typename T1    // Type of the left-hand side operand
         , typename T2 >  // Type of the right-hand side operand
-BLAZE_ALWAYS_INLINE const SubTrait_<T1,T2>
+BLAZE_ALWAYS_INLINE const simd_uint64_t
    operator-( const simd_i64_t<T1>& a, const simd_i64_t<T2>& b ) noexcept
 #if BLAZE_MIC_MODE
 {
@@ -408,39 +522,6 @@ BLAZE_ALWAYS_INLINE const simd_cdouble_t
 #else
 = delete;
 #endif
-//*************************************************************************************************
-
-
-
-
-//=================================================================================================
-//
-//  SUBTRAIT SPECIALIZATIONS
-//
-//=================================================================================================
-
-//*************************************************************************************************
-/*! \cond BLAZE_INTERNAL */
-template<> struct SubTrait< simd_int8_t , simd_int8_t  > { using Type = simd_int8_t;  };
-template<> struct SubTrait< simd_int8_t , simd_uint8_t > { using Type = simd_uint8_t; };
-template<> struct SubTrait< simd_uint8_t, simd_int8_t  > { using Type = simd_uint8_t; };
-template<> struct SubTrait< simd_uint8_t, simd_uint8_t > { using Type = simd_uint8_t; };
-
-template<> struct SubTrait< simd_int16_t , simd_int16_t  > { using Type = simd_int16_t;  };
-template<> struct SubTrait< simd_int16_t , simd_uint16_t > { using Type = simd_uint16_t; };
-template<> struct SubTrait< simd_uint16_t, simd_int16_t  > { using Type = simd_uint16_t; };
-template<> struct SubTrait< simd_uint16_t, simd_uint16_t > { using Type = simd_uint16_t; };
-
-template<> struct SubTrait< simd_int32_t , simd_int32_t  > { using Type = simd_int32_t;  };
-template<> struct SubTrait< simd_int32_t , simd_uint32_t > { using Type = simd_uint32_t; };
-template<> struct SubTrait< simd_uint32_t, simd_int32_t  > { using Type = simd_uint32_t; };
-template<> struct SubTrait< simd_uint32_t, simd_uint32_t > { using Type = simd_uint32_t; };
-
-template<> struct SubTrait< simd_int64_t , simd_int64_t  > { using Type = simd_int64_t;  };
-template<> struct SubTrait< simd_int64_t , simd_uint64_t > { using Type = simd_uint64_t; };
-template<> struct SubTrait< simd_uint64_t, simd_int64_t  > { using Type = simd_uint64_t; };
-template<> struct SubTrait< simd_uint64_t, simd_uint64_t > { using Type = simd_uint64_t; };
-/*! \endcond */
 //*************************************************************************************************
 
 } // namespace blaze

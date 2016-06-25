@@ -40,9 +40,7 @@
 // Includes
 //*************************************************************************************************
 
-#include <blaze/math/Aliases.h>
 #include <blaze/math/simd/BasicTypes.h>
-#include <blaze/math/traits/DivTrait.h>
 #include <blaze/system/Inline.h>
 #include <blaze/system/Vectorization.h>
 
@@ -56,7 +54,30 @@ namespace blaze {
 //=================================================================================================
 
 //*************************************************************************************************
-/*!\brief Division of two vectors of 32-bit integral SIMD values.
+/*!\brief Division of two vectors of 32-bit integral SIMD values of the same type.
+// \ingroup simd
+//
+// \param a The left-hand side SIMD operand.
+// \param b The right-hand side SIMD operand.
+// \return The result of the division.
+//
+// This operation is only available for AVX-512.
+*/
+template< typename T >  // Type of the left-hand side operand
+BLAZE_ALWAYS_INLINE const T
+   operator/( const simd_i32_t<T>& a, const simd_i32_t<T>& b ) noexcept
+#if BLAZE_MIC_MODE
+{
+   return _mm512_div_epi32( (~a).value, (~b).value );
+}
+#else
+= delete;
+#endif
+//*************************************************************************************************
+
+
+//*************************************************************************************************
+/*!\brief Division of two vectors of 32-bit integral SIMD values of different type.
 // \ingroup simd
 //
 // \param a The left-hand side SIMD operand.
@@ -67,7 +88,7 @@ namespace blaze {
 */
 template< typename T1    // Type of the left-hand side operand
         , typename T2 >  // Type of the right-hand side operand
-BLAZE_ALWAYS_INLINE const DivTrait_<T1,T2>
+BLAZE_ALWAYS_INLINE const simd_uint32_t
    operator/( const simd_i32_t<T1>& a, const simd_i32_t<T2>& b ) noexcept
 #if BLAZE_MIC_MODE
 {
@@ -124,7 +145,30 @@ BLAZE_ALWAYS_INLINE const simd_cuint32_t
 
 
 //*************************************************************************************************
-/*!\brief Division of two vectors of 64-bit integral SIMD values.
+/*!\brief Division of two vectors of 64-bit integral SIMD values of the same type.
+// \ingroup simd
+//
+// \param a The left-hand side SIMD operand.
+// \param b The right-hand side SIMD operand.
+// \return The result of the division.
+//
+// This operation is only available for AVX-512.
+*/
+template< typename T >  // Type of the left-hand side operand
+BLAZE_ALWAYS_INLINE const T
+   operator/( const simd_i64_t<T>& a, const simd_i64_t<T>& b ) noexcept
+#if BLAZE_MIC_MODE
+{
+   return _mm512_div_epi64( (~a).value, (~b).value );
+}
+#else
+= delete;
+#endif
+//*************************************************************************************************
+
+
+//*************************************************************************************************
+/*!\brief Division of two vectors of 64-bit integral SIMD values of different type.
 // \ingroup simd
 //
 // \param a The left-hand side SIMD operand.
@@ -135,7 +179,7 @@ BLAZE_ALWAYS_INLINE const simd_cuint32_t
 */
 template< typename T1    // Type of the left-hand side operand
         , typename T2 >  // Type of the right-hand side operand
-BLAZE_ALWAYS_INLINE const DivTrait_<T1,T2>
+BLAZE_ALWAYS_INLINE const simd_uint64_t
    operator/( const simd_i64_t<T1>& a, const simd_i64_t<T2>& b ) noexcept
 #if BLAZE_MIC_MODE
 {
@@ -308,29 +352,6 @@ BLAZE_ALWAYS_INLINE const simd_cdouble_t
 #else
 = delete;
 #endif
-//*************************************************************************************************
-
-
-
-
-//=================================================================================================
-//
-//  DIVTRAIT SPECIALIZATIONS
-//
-//=================================================================================================
-
-//*************************************************************************************************
-/*! \cond BLAZE_INTERNAL */
-template<> struct DivTrait< simd_int32_t , simd_int32_t  > { using Type = simd_int32_t;  };
-template<> struct DivTrait< simd_int32_t , simd_uint32_t > { using Type = simd_uint32_t; };
-template<> struct DivTrait< simd_uint32_t, simd_int32_t  > { using Type = simd_uint32_t; };
-template<> struct DivTrait< simd_uint32_t, simd_uint32_t > { using Type = simd_uint32_t; };
-
-template<> struct DivTrait< simd_int64_t , simd_int64_t  > { using Type = simd_int64_t;  };
-template<> struct DivTrait< simd_int64_t , simd_uint64_t > { using Type = simd_uint64_t; };
-template<> struct DivTrait< simd_uint64_t, simd_int64_t  > { using Type = simd_uint64_t; };
-template<> struct DivTrait< simd_uint64_t, simd_uint64_t > { using Type = simd_uint64_t; };
-/*! \endcond */
 //*************************************************************************************************
 
 } // namespace blaze
