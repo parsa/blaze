@@ -144,7 +144,7 @@ BLAZE_ALWAYS_INLINE int32_t sum( const simd_int32_t& a ) noexcept
 #elif BLAZE_SSSE3_MODE
    const __m128i b( _mm_hadd_epi32( a.value, a.value ) );
    const __m128i c( _mm_hadd_epi32( b, b ) );
-   return _mm_extract_epi32( c, 0 );
+   return _mm_cvtsi128_si32( c );
 #elif BLAZE_SSE2_MODE
    return a[0] + a[1] + a[2] + a[3];
 #else
