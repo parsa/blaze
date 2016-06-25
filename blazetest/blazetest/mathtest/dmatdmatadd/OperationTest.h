@@ -53,20 +53,14 @@
 #include <blaze/math/constraints/StorageOrder.h>
 #include <blaze/math/DynamicMatrix.h>
 #include <blaze/math/Functors.h>
-#include <blaze/math/LowerMatrix.h>
 #include <blaze/math/shims/Equal.h>
 #include <blaze/math/shims/IsDefault.h>
-#include <blaze/math/StaticMatrix.h>
-#include <blaze/math/SymmetricMatrix.h>
 #include <blaze/math/traits/AddExprTrait.h>
 #include <blaze/math/traits/AddTrait.h>
-#include <blaze/math/typetraits/IsLower.h>
+#include <blaze/math/typetraits/IsHermitian.h>
 #include <blaze/math/typetraits/IsRowMajorMatrix.h>
-#include <blaze/math/typetraits/IsSymmetric.h>
-#include <blaze/math/typetraits/IsUpper.h>
 #include <blaze/math/typetraits/UnderlyingBuiltin.h>
 #include <blaze/math/typetraits/UnderlyingNumeric.h>
-#include <blaze/math/UpperMatrix.h>
 #include <blaze/math/Views.h>
 #include <blaze/util/constraints/Numeric.h>
 #include <blaze/util/constraints/SameType.h>
@@ -3633,7 +3627,8 @@ template< typename MT1    // Type of the left-hand side dense matrix
 void OperationTest<MT1,MT2>::testImagOperation()
 {
 #if BLAZETEST_MATHTEST_TEST_IMAG_OPERATION
-   if( BLAZETEST_MATHTEST_TEST_IMAG_OPERATION > 1 )
+   if( BLAZETEST_MATHTEST_TEST_IMAG_OPERATION > 1 &&
+       ( !blaze::IsHermitian<DRE>::value || blaze::isSymmetric( imag( lhs_ + rhs_ ) ) ) )
    {
       testCustomOperation( blaze::Imag(), "imag" );
    }
