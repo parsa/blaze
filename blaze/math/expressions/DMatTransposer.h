@@ -81,20 +81,20 @@ class DMatTransposer : public DenseMatrix< DMatTransposer<MT,SO>, SO >
 {
  public:
    //**Type definitions****************************************************************************
-   typedef DMatTransposer<MT,SO>  This;            //!< Type of this DMatTransposer instance.
-   typedef TransposeType_<MT>     ResultType;      //!< Result type for expression template evaluations.
-   typedef OppositeType_<MT>      OppositeType;    //!< Result type with opposite storage order for expression template evaluations.
-   typedef ResultType_<MT>        TransposeType;   //!< Transpose type for expression template evaluations.
-   typedef ElementType_<MT>       ElementType;     //!< Type of the matrix elements.
-   typedef SIMDType_<MT>          SIMDType;        //!< SIMD type of the matrix elements.
-   typedef ReturnType_<MT>        ReturnType;      //!< Return type for expression template evaluations.
-   typedef const This&            CompositeType;   //!< Data type for composite expression templates.
-   typedef Reference_<MT>         Reference;       //!< Reference to a non-constant matrix value.
-   typedef ConstReference_<MT>    ConstReference;  //!< Reference to a constant matrix value.
-   typedef Pointer_<MT>           Pointer;         //!< Pointer to a non-constant matrix value.
-   typedef ConstPointer_<MT>      ConstPointer;    //!< Pointer to a constant matrix value.
-   typedef Iterator_<MT>          Iterator;        //!< Iterator over non-constant elements.
-   typedef ConstIterator_<MT>     ConstIterator;   //!< Iterator over constant elements.
+   typedef DMatTransposer<MT,SO>    This;            //!< Type of this DMatTransposer instance.
+   typedef TransposeType_<MT>       ResultType;      //!< Result type for expression template evaluations.
+   typedef OppositeType_<MT>        OppositeType;    //!< Result type with opposite storage order for expression template evaluations.
+   typedef ResultType_<MT>          TransposeType;   //!< Transpose type for expression template evaluations.
+   typedef ElementType_<MT>         ElementType;     //!< Type of the matrix elements.
+   typedef SIMDTrait_<ElementType>  SIMDType;        //!< SIMD type of the matrix elements.
+   typedef ReturnType_<MT>          ReturnType;      //!< Return type for expression template evaluations.
+   typedef const This&              CompositeType;   //!< Data type for composite expression templates.
+   typedef Reference_<MT>           Reference;       //!< Reference to a non-constant matrix value.
+   typedef ConstReference_<MT>      ConstReference;  //!< Reference to a constant matrix value.
+   typedef Pointer_<MT>             Pointer;         //!< Pointer to a non-constant matrix value.
+   typedef ConstPointer_<MT>        ConstPointer;    //!< Pointer to a constant matrix value.
+   typedef Iterator_<MT>            Iterator;        //!< Iterator over non-constant elements.
+   typedef ConstIterator_<MT>       ConstIterator;   //!< Iterator over constant elements.
    //**********************************************************************************************
 
    //**Compilation flags***************************************************************************
@@ -995,7 +995,7 @@ class DMatTransposer<MT,true> : public DenseMatrix< DMatTransposer<MT,true>, tru
    typedef OppositeType_<MT>        OppositeType;    //!< Result type with opposite storage order for expression template evaluations.
    typedef ResultType_<MT>          TransposeType;   //!< Transpose type for expression template evaluations.
    typedef ElementType_<MT>         ElementType;     //!< Type of the matrix elements.
-   typedef SIMDType_<MT>            SIMDType;        //!< SIMD type of the matrix elements.
+   typedef SIMDTrait_<ElementType>  SIMDType;        //!< SIMD type of the matrix elements.
    typedef ReturnType_<MT>          ReturnType;      //!< Return type for expression template evaluations.
    typedef const This&              CompositeType;   //!< Data type for composite expression templates.
    typedef Reference_<MT>           Reference;       //!< Reference to a non-constant matrix value.

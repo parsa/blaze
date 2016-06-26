@@ -82,7 +82,7 @@ class DVecTransposer : public DenseVector< DVecTransposer<VT,TF>, TF >
    typedef TransposeType_<VT>       ResultType;      //!< Result type for expression template evaluations.
    typedef ResultType_<VT>          TransposeType;   //!< Transpose type for expression template evaluations.
    typedef ElementType_<VT>         ElementType;     //!< Type of the vector elements.
-   typedef SIMDType_<VT>            SIMDType;        //!< SIMD type of the vector elements.
+   typedef SIMDTrait_<ElementType>  SIMDType;        //!< SIMD type of the vector elements.
    typedef ReturnType_<VT>          ReturnType;      //!< Return type for expression template evaluations.
    typedef const This&              CompositeType;   //!< Data type for composite expression templates.
    typedef Reference_<VT>           Reference;       //!< Reference to a non-constant vector value.
