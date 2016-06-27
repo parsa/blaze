@@ -40,7 +40,7 @@
 // Includes
 //*************************************************************************************************
 
-#include <blaze/math/constraints/SIMDType.h>
+#include <blaze/math/constraints/SIMDPack.h>
 #include <blaze/math/shims/Sinh.h>
 #include <blaze/math/simd/Sinh.h>
 #include <blaze/math/typetraits/HasSIMDSinh.h>
@@ -92,7 +92,7 @@ struct Sinh
    template< typename T >
    BLAZE_ALWAYS_INLINE auto load( const T& a ) const -> decltype( sinh( a ) )
    {
-      BLAZE_CONSTRAINT_MUST_BE_SIMD_TYPE( T );
+      BLAZE_CONSTRAINT_MUST_BE_SIMD_PACK( T );
       return sinh( a );
    }
    //**********************************************************************************************

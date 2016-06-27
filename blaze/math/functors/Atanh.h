@@ -40,7 +40,7 @@
 // Includes
 //*************************************************************************************************
 
-#include <blaze/math/constraints/SIMDType.h>
+#include <blaze/math/constraints/SIMDPack.h>
 #include <blaze/math/shims/Atanh.h>
 #include <blaze/math/simd/Atanh.h>
 #include <blaze/math/typetraits/HasSIMDAtanh.h>
@@ -92,7 +92,7 @@ struct Atanh
    template< typename T >
    BLAZE_ALWAYS_INLINE auto load( const T& a ) const -> decltype( atanh( a ) )
    {
-      BLAZE_CONSTRAINT_MUST_BE_SIMD_TYPE( T );
+      BLAZE_CONSTRAINT_MUST_BE_SIMD_PACK( T );
       return atanh( a );
    }
    //**********************************************************************************************

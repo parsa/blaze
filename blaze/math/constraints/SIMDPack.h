@@ -1,6 +1,6 @@
 //=================================================================================================
 /*!
-//  \file blaze/math/constraints/SIMDType.h
+//  \file blaze/math/constraints/SIMDPack.h
 //  \brief Constraint on the data type
 //
 //  Copyright (C) 2013 Klaus Iglberger - All Rights Reserved
@@ -32,22 +32,22 @@
 */
 //=================================================================================================
 
-#ifndef _BLAZE_MATH_CONSTRAINTS_SIMDTYPE_H_
-#define _BLAZE_MATH_CONSTRAINTS_SIMDTYPE_H_
+#ifndef _BLAZE_MATH_CONSTRAINTS_SIMDPACK_H_
+#define _BLAZE_MATH_CONSTRAINTS_SIMDPACK_H_
 
 
 //*************************************************************************************************
 // Includes
 //*************************************************************************************************
 
-#include <blaze/math/typetraits/IsSIMDType.h>
+#include <blaze/math/typetraits/IsSIMDPack.h>
 
 
 namespace blaze {
 
 //=================================================================================================
 //
-//  MUST_BE_SIMD_TYPE CONSTRAINT
+//  MUST_BE_SIMD_PACK CONSTRAINT
 //
 //=================================================================================================
 
@@ -55,10 +55,10 @@ namespace blaze {
 /*!\brief Constraint on the data type.
 // \ingroup math_constraints
 //
-// In case the given data type \a T is not a SIMD data type, a compilation error is created.
+// In case the given data type \a T is not a SIMD pack, a compilation error is created.
 */
-#define BLAZE_CONSTRAINT_MUST_BE_SIMD_TYPE(T) \
-   static_assert( ::blaze::IsSIMDType<T>::value, "Non-SIMD type detected" )
+#define BLAZE_CONSTRAINT_MUST_BE_SIMD_PACK(T) \
+   static_assert( ::blaze::IsSIMDPack<T>::value, "Non-SIMD pack detected" )
 //*************************************************************************************************
 
 
@@ -66,7 +66,7 @@ namespace blaze {
 
 //=================================================================================================
 //
-//  MUST_NOT_BE_SIMD_TYPE CONSTRAINT
+//  MUST_NOT_BE_SIMD_PACK CONSTRAINT
 //
 //=================================================================================================
 
@@ -74,10 +74,10 @@ namespace blaze {
 /*!\brief Constraint on the data type.
 // \ingroup math_constraints
 //
-// In case the given data type \a T is a SIMD data type, a compilation error is created.
+// In case the given data type \a T is a SIMD pack, a compilation error is created.
 */
-#define BLAZE_CONSTRAINT_MUST_NOT_BE_SIMD_TYPE(T) \
-   static_assert( !::blaze::IsSIMDType<T>::value, "SIMD type detected" )
+#define BLAZE_CONSTRAINT_MUST_NOT_BE_SIMD_PACK(T) \
+   static_assert( !::blaze::IsSIMDPack<T>::value, "SIMD pack detected" )
 //*************************************************************************************************
 
 } // namespace blaze

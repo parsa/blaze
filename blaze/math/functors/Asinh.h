@@ -40,7 +40,7 @@
 // Includes
 //*************************************************************************************************
 
-#include <blaze/math/constraints/SIMDType.h>
+#include <blaze/math/constraints/SIMDPack.h>
 #include <blaze/math/shims/Asinh.h>
 #include <blaze/math/simd/Asinh.h>
 #include <blaze/math/typetraits/HasSIMDAsinh.h>
@@ -92,7 +92,7 @@ struct Asinh
    template< typename T >
    BLAZE_ALWAYS_INLINE auto load( const T& a ) const -> decltype( asinh( a ) )
    {
-      BLAZE_CONSTRAINT_MUST_BE_SIMD_TYPE( T );
+      BLAZE_CONSTRAINT_MUST_BE_SIMD_PACK( T );
       return asinh( a );
    }
    //**********************************************************************************************

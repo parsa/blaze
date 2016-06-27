@@ -41,6 +41,7 @@
 //*************************************************************************************************
 
 #include <utility>
+#include <blaze/math/constraints/SIMDPack.h>
 #include <blaze/math/shims/Pow.h>
 #include <blaze/math/simd/Pow.h>
 #include <blaze/math/simd/SIMDTrait.h>
@@ -114,6 +115,7 @@ struct Pow
    BLAZE_ALWAYS_INLINE auto load( const T& a ) const
       -> decltype( pow( a, std::declval<SIMDET>() ) )
    {
+      BLAZE_CONSTRAINT_MUST_BE_SIMD_PACK( T );
       return pow( a, simdExp_ );
    }
    //**********************************************************************************************

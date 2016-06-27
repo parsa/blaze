@@ -40,7 +40,7 @@
 // Includes
 //*************************************************************************************************
 
-#include <blaze/math/constraints/SIMDType.h>
+#include <blaze/math/constraints/SIMDPack.h>
 #include <blaze/math/shims/Abs.h>
 #include <blaze/math/simd/Abs.h>
 #include <blaze/math/typetraits/HasSIMDAbs.h>
@@ -92,7 +92,7 @@ struct Abs
    template< typename T >
    BLAZE_ALWAYS_INLINE auto load( const T& a ) const -> decltype( abs( a ) )
    {
-      BLAZE_CONSTRAINT_MUST_BE_SIMD_TYPE( T );
+      BLAZE_CONSTRAINT_MUST_BE_SIMD_PACK( T );
       return abs( a );
    }
    //**********************************************************************************************

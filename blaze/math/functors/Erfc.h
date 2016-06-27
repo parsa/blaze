@@ -40,7 +40,7 @@
 // Includes
 //*************************************************************************************************
 
-#include <blaze/math/constraints/SIMDType.h>
+#include <blaze/math/constraints/SIMDPack.h>
 #include <blaze/math/shims/Erfc.h>
 #include <blaze/math/simd/Erfc.h>
 #include <blaze/math/typetraits/HasSIMDErfc.h>
@@ -92,7 +92,7 @@ struct Erfc
    template< typename T >
    BLAZE_ALWAYS_INLINE auto load( const T& a ) const -> decltype( erfc( a ) )
    {
-      BLAZE_CONSTRAINT_MUST_BE_SIMD_TYPE( T );
+      BLAZE_CONSTRAINT_MUST_BE_SIMD_PACK( T );
       return erfc( a );
    }
    //**********************************************************************************************

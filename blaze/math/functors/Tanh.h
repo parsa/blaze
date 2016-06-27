@@ -40,7 +40,7 @@
 // Includes
 //*************************************************************************************************
 
-#include <blaze/math/constraints/SIMDType.h>
+#include <blaze/math/constraints/SIMDPack.h>
 #include <blaze/math/shims/Tanh.h>
 #include <blaze/math/simd/Tanh.h>
 #include <blaze/math/typetraits/HasSIMDTanh.h>
@@ -92,7 +92,7 @@ struct Tanh
    template< typename T >
    BLAZE_ALWAYS_INLINE auto load( const T& a ) const -> decltype( tanh( a ) )
    {
-      BLAZE_CONSTRAINT_MUST_BE_SIMD_TYPE( T );
+      BLAZE_CONSTRAINT_MUST_BE_SIMD_PACK( T );
       return tanh( a );
    }
    //**********************************************************************************************

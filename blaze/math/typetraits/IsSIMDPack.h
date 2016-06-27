@@ -1,7 +1,7 @@
 //=================================================================================================
 /*!
-//  \file blaze/math/typetraits/IsSIMDType.h
-//  \brief Header file for the IsSIMDType type trait
+//  \file blaze/math/typetraits/IsSIMDPack.h
+//  \brief Header file for the IsSIMDPack type trait
 //
 //  Copyright (C) 2013 Klaus Iglberger - All Rights Reserved
 //
@@ -32,16 +32,19 @@
 */
 //=================================================================================================
 
-#ifndef _BLAZE_MATH_TYPETRAITS_ISSIMDTYPE_H_
-#define _BLAZE_MATH_TYPETRAITS_ISSIMDTYPE_H_
+#ifndef _BLAZE_MATH_TYPETRAITS_ISSIMDPACK_H_
+#define _BLAZE_MATH_TYPETRAITS_ISSIMDPACK_H_
 
 
 //*************************************************************************************************
 // Includes
 //*************************************************************************************************
 
-#include <blaze/util/FalseType.h>
-#include <blaze/util/TrueType.h>
+#include <blaze/math/simd/SIMDPack.h>
+#include <blaze/util/IntegralConstant.h>
+#include <blaze/util/mpl/Or.h>
+#include <blaze/util/typetraits/IsBaseOf.h>
+#include <blaze/util/typetraits/RemoveCV.h>
 
 
 namespace blaze {
@@ -56,11 +59,11 @@ namespace blaze {
 /*!\brief Compile time check for SIMD data types.
 // \ingroup math_type_traits
 //
-// This type trait tests whether the given data type is a Blaze SIMD data type. The following
-// types are considered valid SIMD data types:
+// This type trait tests whether the given data type is a Blaze SIMD packed data type. The
+// following types are considered valid SIMD packed types:
 //
 // <ul>
-//    <li>Basic SIMD data types:</li>
+//    <li>Basic SIMD packed data types:</li>
 //    <ul>
 //       <li>SIMDint8</li>
 //       <li>SIMDint16</li>
@@ -75,7 +78,7 @@ namespace blaze {
 //       <li>SIMDcfloat</li>
 //       <li>SIMDcdouble</li>
 //    </ul>
-//    <li>Derived SIMD data types:</li>
+//    <li>Derived SIMD packed data types:</li>
 //    <ul>
 //       <li>SIMDshort</li>
 //       <li>SIMDushort</li>
@@ -98,53 +101,19 @@ namespace blaze {
 // \a FalseType. Examples:
 
    \code
-   blaze::IsSIMDType< SIMDint32 >::value        // Evaluates to 1
-   blaze::IsSIMDType< const SIMDdouble >::Type  // Results in TrueType
-   blaze::IsSIMDType< volatile SIMDint >        // Is derived from TrueType
-   blaze::IsSIMDType< int >::value                 // Evaluates to 0
-   blaze::IsSIMDType< const double >::Type         // Results in FalseType
-   blaze::IsSIMDType< volatile complex<double> >   // Is derived from FalseType
+   blaze::IsSIMDPack< SIMDint32 >::value        // Evaluates to 1
+   blaze::IsSIMDPack< const SIMDdouble >::Type  // Results in TrueType
+   blaze::IsSIMDPack< volatile SIMDint >        // Is derived from TrueType
+   blaze::IsSIMDPack< int >::value                 // Evaluates to 0
+   blaze::IsSIMDPack< const double >::Type         // Results in FalseType
+   blaze::IsSIMDPack< volatile complex<double> >   // Is derived from FalseType
    \endcode
 */
 template< typename T >
-struct IsSIMDType : public FalseType
+struct IsSIMDPack
+   : public BoolConstant< Or< IsBaseOf<SIMDPack< RemoveCV_<T> >,T>
+                            , IsBaseOf<SIMDPack< RemoveCV_<T> >,T> >::value >
 {};
-//*************************************************************************************************
-
-
-//*************************************************************************************************
-/*! \cond BLAZE_INTERNAL */
-/*!\brief Specialization of the IsSIMDType type trait for const types.
-// \ingroup math_type_traits
-*/
-template< typename T >
-struct IsSIMDType< const T > : public IsSIMDType<T>
-{};
-/*! \endcond */
-//*************************************************************************************************
-
-
-//*************************************************************************************************
-/*! \cond BLAZE_INTERNAL */
-/*!\brief Specialization of the IsSIMDType type trait for volatile types.
-// \ingroup math_type_traits
-*/
-template< typename T >
-struct IsSIMDType< volatile T > : public IsSIMDType<T>
-{};
-/*! \endcond */
-//*************************************************************************************************
-
-
-//*************************************************************************************************
-/*! \cond BLAZE_INTERNAL */
-/*!\brief Specialization of the IsSIMDType type trait for cv qualified types.
-// \ingroup math_type_traits
-*/
-template< typename T >
-struct IsSIMDType< const volatile T > : public IsSIMDType<T>
-{};
-/*! \endcond */
 //*************************************************************************************************
 
 } // namespace blaze

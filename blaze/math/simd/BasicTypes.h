@@ -41,7 +41,6 @@
 //*************************************************************************************************
 
 #include <blaze/math/simd/SIMDPack.h>
-#include <blaze/math/typetraits/IsSIMDType.h>
 #include <blaze/system/Inline.h>
 #include <blaze/system/Vectorization.h>
 #include <blaze/util/Complex.h>
@@ -1306,45 +1305,6 @@ BLAZE_ALWAYS_INLINE T1& operator/=( SIMDPack<T1>& lhs, const SIMDPack<T2>& rhs )
    (~lhs) = (~lhs) / (~rhs);
    return ~lhs;
 }
-//*************************************************************************************************
-
-
-
-
-//=================================================================================================
-//
-//  ISSIMDTYPE SPECIALIZATIONS
-//
-//=================================================================================================
-
-//*************************************************************************************************
-/*! \cond BLAZE_INTERNAL */
-template<> struct IsSIMDType< SIMDint8    > : public TrueType {};
-template<> struct IsSIMDType< SIMDuint8   > : public TrueType {};
-template<> struct IsSIMDType< SIMDcint8   > : public TrueType {};
-template<> struct IsSIMDType< SIMDcuint8  > : public TrueType {};
-
-template<> struct IsSIMDType< SIMDint16   > : public TrueType {};
-template<> struct IsSIMDType< SIMDuint16  > : public TrueType {};
-template<> struct IsSIMDType< SIMDcint16  > : public TrueType {};
-template<> struct IsSIMDType< SIMDcuint16 > : public TrueType {};
-
-template<> struct IsSIMDType< SIMDint32   > : public TrueType {};
-template<> struct IsSIMDType< SIMDuint32  > : public TrueType {};
-template<> struct IsSIMDType< SIMDcint32  > : public TrueType {};
-template<> struct IsSIMDType< SIMDcuint32 > : public TrueType {};
-
-template<> struct IsSIMDType< SIMDint64   > : public TrueType {};
-template<> struct IsSIMDType< SIMDuint64  > : public TrueType {};
-template<> struct IsSIMDType< SIMDcint64  > : public TrueType {};
-template<> struct IsSIMDType< SIMDcuint64 > : public TrueType {};
-
-template<> struct IsSIMDType< SIMDfloat   > : public TrueType {};
-template<> struct IsSIMDType< SIMDcfloat  > : public TrueType {};
-
-template<> struct IsSIMDType< SIMDdouble  > : public TrueType {};
-template<> struct IsSIMDType< SIMDcdouble > : public TrueType {};
-/*! \endcond */
 //*************************************************************************************************
 
 } // namespace blaze
