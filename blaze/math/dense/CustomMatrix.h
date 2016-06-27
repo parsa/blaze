@@ -61,11 +61,13 @@
 #include <blaze/math/SIMD.h>
 #include <blaze/math/traits/AddTrait.h>
 #include <blaze/math/traits/ColumnTrait.h>
+#include <blaze/math/traits/CTransExprTrait.h>
 #include <blaze/math/traits/DivTrait.h>
 #include <blaze/math/traits/MultTrait.h>
 #include <blaze/math/traits/RowTrait.h>
 #include <blaze/math/traits/SubmatrixTrait.h>
 #include <blaze/math/traits/SubTrait.h>
+#include <blaze/math/traits/TransExprTrait.h>
 #include <blaze/math/typetraits/AreSIMDCombinable.h>
 #include <blaze/math/typetraits/HasConstDataAccess.h>
 #include <blaze/math/typetraits/HasMutableDataAccess.h>
@@ -104,6 +106,7 @@
 #include <blaze/util/typetraits/AlignmentOf.h>
 #include <blaze/util/typetraits/IsClass.h>
 #include <blaze/util/typetraits/IsNumeric.h>
+#include <blaze/util/typetraits/IsSame.h>
 #include <blaze/util/typetraits/IsVectorizable.h>
 #include <blaze/util/Unused.h>
 
@@ -482,7 +485,7 @@ class CustomMatrix : public DenseMatrix< CustomMatrix<Type,AF,PF,SO>, SO >
    explicit inline CustomMatrix( Type* ptr, size_t m, size_t n );
    explicit inline CustomMatrix( Type* ptr, size_t m, size_t n, size_t nn );
 
-   template< typename Deleter, typename = EnableIf_<IsClass<Deleter> > >
+   template< typename Deleter, typename = EnableIf_< IsClass<Deleter> > >
    explicit inline CustomMatrix( Type* ptr, size_t m, size_t n, Deleter D );
 
    template< typename Deleter >
@@ -568,7 +571,7 @@ class CustomMatrix : public DenseMatrix< CustomMatrix<Type,AF,PF,SO>, SO >
    inline void reset( Type* ptr, size_t m, size_t n );
    inline void reset( Type* ptr, size_t m, size_t n, size_t nn );
 
-   template< typename Deleter, typename = EnableIf_<IsClass<Deleter> > >
+   template< typename Deleter, typename = EnableIf_< IsClass<Deleter> > >
    inline void reset( Type* ptr, size_t m, size_t n, Deleter d );
 
    template< typename Deleter >
@@ -1531,11 +1534,20 @@ template< typename MT    // Type of the right-hand side matrix
         , bool SO2 >     // Storage order of the right-hand side matrix
 inline CustomMatrix<Type,AF,PF,SO>& CustomMatrix<Type,AF,PF,SO>::operator=( const Matrix<MT,SO2>& rhs )
 {
+   typedef TransExprTrait_<This>   TT;
+   typedef CTransExprTrait_<This>  CT;
+
    if( (~rhs).rows() != m_ || (~rhs).columns() != n_ ) {
       BLAZE_THROW_INVALID_ARGUMENT( "Matrix sizes do not match" );
    }
 
-   if( (~rhs).canAlias( this ) ) {
+   if( IsSame<MT,TT>::value && (~rhs).isAliased( this ) ) {
+      transpose();
+   }
+   else if( IsSame<MT,CT>::value && (~rhs).isAliased( this ) ) {
+      ctranspose();
+   }
+   else if( (~rhs).canAlias( this ) ) {
       const ResultType_<MT> tmp( ~rhs );
       smpAssign( *this, tmp );
    }
@@ -3240,7 +3252,7 @@ class CustomMatrix<Type,AF,PF,true> : public DenseMatrix< CustomMatrix<Type,AF,P
    explicit inline CustomMatrix( Type* ptr, size_t m, size_t n );
    explicit inline CustomMatrix( Type* ptr, size_t m, size_t n, size_t mm );
 
-   template< typename Deleter, typename = EnableIf_<IsClass<Deleter> > >
+   template< typename Deleter, typename = EnableIf_< IsClass<Deleter> > >
    explicit inline CustomMatrix( Type* ptr, size_t m, size_t n, Deleter d );
 
    template< typename Deleter >
@@ -3326,7 +3338,7 @@ class CustomMatrix<Type,AF,PF,true> : public DenseMatrix< CustomMatrix<Type,AF,P
    inline void reset( Type* ptr, size_t m, size_t n );
    inline void reset( Type* ptr, size_t m, size_t n, size_t mm );
 
-   template< typename Deleter, typename = EnableIf_<IsClass<Deleter> > >
+   template< typename Deleter, typename = EnableIf_< IsClass<Deleter> > >
    inline void reset( Type* ptr, size_t m, size_t n, Deleter d );
 
    template< typename Deleter >
@@ -4279,11 +4291,20 @@ template< typename MT    // Type of the right-hand side matrix
 inline CustomMatrix<Type,AF,PF,true>&
    CustomMatrix<Type,AF,PF,true>::operator=( const Matrix<MT,SO>& rhs )
 {
+   typedef TransExprTrait_<This>   TT;
+   typedef CTransExprTrait_<This>  CT;
+
    if( (~rhs).rows() != m_ || (~rhs).columns() != n_ ) {
       BLAZE_THROW_INVALID_ARGUMENT( "Matrix sizes do not match" );
    }
 
-   if( (~rhs).canAlias( this ) ) {
+   if( IsSame<MT,TT>::value && (~rhs).isAliased( this ) ) {
+      transpose();
+   }
+   else if( IsSame<MT,CT>::value && (~rhs).isAliased( this ) ) {
+      ctranspose();
+   }
+   else if( (~rhs).canAlias( this ) ) {
       const ResultType_<MT> tmp( ~rhs );
       smpAssign( *this, tmp );
    }
