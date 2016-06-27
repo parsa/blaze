@@ -40,6 +40,7 @@
 // Includes
 //*************************************************************************************************
 
+#include <blaze/math/simd/SIMDPack.h>
 #include <blaze/math/typetraits/IsSIMDType.h>
 #include <blaze/system/Inline.h>
 #include <blaze/system/Vectorization.h>
@@ -55,21 +56,6 @@ namespace blaze {
 //  SIMD BASE TYPES
 //
 //=================================================================================================
-
-//*************************************************************************************************
-/*\class blaze::SIMDPack
-// \brief Base class for all SIMD data types.
-// \ingroup simd
-*/
-/*! \cond BLAZE_INTERNAL */
-template< typename T >  // Type of the SIMD pack
-struct SIMDPack {
-   BLAZE_ALWAYS_INLINE T&       operator~() noexcept       { return *static_cast<T*>( this ); }
-   BLAZE_ALWAYS_INLINE const T& operator~() const noexcept { return *static_cast<const T*>( this ); }
-};
-/*! \endcond */
-//*************************************************************************************************
-
 
 //*************************************************************************************************
 /*\class blaze::SIMDi8
