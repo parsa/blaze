@@ -375,10 +375,10 @@ template< typename VT, bool TF >
 bool isUniform( const DenseVector<VT,TF>& dv );
 
 template< typename VT, bool TF >
-inline auto length( const DenseVector<VT,TF>& dv ) -> decltype( sqrt( sqrLength( ~dv ) ) );
+const ElementType_<VT> sqrLength( const DenseVector<VT,TF>& dv );
 
 template< typename VT, bool TF >
-const ElementType_<VT> sqrLength( const DenseVector<VT,TF>& dv );
+inline auto length( const DenseVector<VT,TF>& dv ) -> decltype( sqrt( sqrLength( ~dv ) ) );
 
 template< typename VT, bool TF >
 const ElementType_<VT> min( const DenseVector<VT,TF>& dv );
@@ -504,6 +504,35 @@ bool isUniform( const DenseVector<VT,TF>& dv )
 
 
 //*************************************************************************************************
+/*!\brief Calculation of the dense vector square length \f$|\vec{a}|^2\f$.
+// \ingroup dense_vector
+//
+// \param dv The given dense vector.
+// \return The square length of the dense vector.
+//
+// This function calculates the actual square length of the dense vector.
+//
+// \note This operation is only defined for numeric data types. In case the element type is
+// not a numeric data type (i.e. a user defined data type or boolean) the attempt to use the
+// sqrLength() function results in a compile time error!
+*/
+template< typename VT  // Type of the dense vector
+        , bool TF >    // Transpose flag
+const ElementType_<VT> sqrLength( const DenseVector<VT,TF>& dv )
+{
+   typedef ElementType_<VT>  ElementType;
+
+   BLAZE_CONSTRAINT_MUST_BE_NUMERIC_TYPE( ElementType );
+
+   ElementType sum( 0 );
+   for( size_t i=0UL; i<(~dv).size(); ++i )
+      sum += sq( (~dv)[i] );
+   return sum;
+}
+//*************************************************************************************************
+
+
+//*************************************************************************************************
 /*!\brief Calculation of the dense vector length \f$|\vec{a}|\f$.
 // \ingroup dense_vector
 //
@@ -545,35 +574,6 @@ template< typename VT  // Type of the dense vector
 inline auto length( const DenseVector<VT,TF>& dv ) -> decltype( sqrt( sqrLength( ~dv ) ) )
 {
    return sqrt( sqrLength( ~dv ) );
-}
-//*************************************************************************************************
-
-
-//*************************************************************************************************
-/*!\brief Calculation of the dense vector square length \f$|\vec{a}|^2\f$.
-// \ingroup dense_vector
-//
-// \param dv The given dense vector.
-// \return The square length of the dense vector.
-//
-// This function calculates the actual square length of the dense vector.
-//
-// \note This operation is only defined for numeric data types. In case the element type is
-// not a numeric data type (i.e. a user defined data type or boolean) the attempt to use the
-// sqrLength() function results in a compile time error!
-*/
-template< typename VT  // Type of the dense vector
-        , bool TF >    // Transpose flag
-const ElementType_<VT> sqrLength( const DenseVector<VT,TF>& dv )
-{
-   typedef ElementType_<VT>  ElementType;
-
-   BLAZE_CONSTRAINT_MUST_BE_NUMERIC_TYPE( ElementType );
-
-   ElementType sum( 0 );
-   for( size_t i=0UL; i<(~dv).size(); ++i )
-      sum += sq( (~dv)[i] );
-   return sum;
 }
 //*************************************************************************************************
 

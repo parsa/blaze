@@ -178,10 +178,10 @@ template< typename VT, bool TF >
 bool isUniform( const SparseVector<VT,TF>& dv );
 
 template< typename VT, bool TF >
-inline auto length( const SparseVector<VT,TF>& sv ) -> decltype( sqrt( sqrLength( ~sv ) ) );
+const ElementType_<VT> sqrLength( const SparseVector<VT,TF>& sv );
 
 template< typename VT, bool TF >
-const ElementType_<VT> sqrLength( const SparseVector<VT,TF>& sv );
+inline auto length( const SparseVector<VT,TF>& sv ) -> decltype( sqrt( sqrLength( ~sv ) ) );
 
 template< typename VT, bool TF >
 const ElementType_<VT> min( const SparseVector<VT,TF>& sv );
@@ -295,6 +295,36 @@ bool isUniform( const SparseVector<VT,TF>& sv )
 
 
 //*************************************************************************************************
+/*!\brief Calculation of the sparse vector square length \f$|\vec{a}|^2\f$.
+// \ingroup sparse_vector
+//
+// \param sv The given sparse vector.
+// \return The square length of the vector.
+//
+// This function calculates the actual square length of the sparse vector.
+//
+// \note This operation is only defined for numeric data types. In case the element type is
+// not a numeric data type (i.e. a user defined data type or boolean) the attempt to use the
+// sqrLength() function results in a compile time error!
+*/
+template< typename VT  // Type of the sparse vector
+        , bool TF >    // Transpose flag
+const ElementType_<VT> sqrLength( const SparseVector<VT,TF>& sv )
+{
+   typedef ElementType_<VT>    ElementType;
+   typedef ConstIterator_<VT>  ConstIterator;
+
+   BLAZE_CONSTRAINT_MUST_BE_NUMERIC_TYPE( ElementType );
+
+   ElementType sum( 0 );
+   for( ConstIterator element=(~sv).begin(); element!=(~sv).end(); ++element )
+      sum += sq( element->value() );
+   return sum;
+}
+//*************************************************************************************************
+
+
+//*************************************************************************************************
 /*!\brief Calculation of the sparse vector length \f$|\vec{a}|\f$.
 // \ingroup sparse_vector
 //
@@ -336,36 +366,6 @@ template< typename VT  // Type of the sparse vector
 inline auto length( const SparseVector<VT,TF>& sv ) -> decltype( sqrt( sqrLength( ~sv ) ) )
 {
    return sqrt( sqrLength( ~sv ) );
-}
-//*************************************************************************************************
-
-
-//*************************************************************************************************
-/*!\brief Calculation of the sparse vector square length \f$|\vec{a}|^2\f$.
-// \ingroup sparse_vector
-//
-// \param sv The given sparse vector.
-// \return The square length of the vector.
-//
-// This function calculates the actual square length of the sparse vector.
-//
-// \note This operation is only defined for numeric data types. In case the element type is
-// not a numeric data type (i.e. a user defined data type or boolean) the attempt to use the
-// sqrLength() function results in a compile time error!
-*/
-template< typename VT  // Type of the sparse vector
-        , bool TF >    // Transpose flag
-const ElementType_<VT> sqrLength( const SparseVector<VT,TF>& sv )
-{
-   typedef ElementType_<VT>    ElementType;
-   typedef ConstIterator_<VT>  ConstIterator;
-
-   BLAZE_CONSTRAINT_MUST_BE_NUMERIC_TYPE( ElementType );
-
-   ElementType sum( 0 );
-   for( ConstIterator element=(~sv).begin(); element!=(~sv).end(); ++element )
-      sum += sq( element->value() );
-   return sum;
 }
 //*************************************************************************************************
 
