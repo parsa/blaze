@@ -42,6 +42,7 @@
 
 #include <cmath>
 #include <blaze/math/Accuracy.h>
+#include <blaze/math/Functions.h>
 #include <blaze/util/Complex.h>
 
 
