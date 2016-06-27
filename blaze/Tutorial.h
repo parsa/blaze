@@ -8128,22 +8128,30 @@
 // <ul>
 //    <li>SIMD data types for fundamental data types
 //       <ul>
-//          <li>\c blaze::simd_int8_t: Packed SIMD type for 8-bit integral data types</li>
-//          <li>\c blaze::simd_int16_t: Packed SIMD type for 16-bit integral data types</li>
-//          <li>\c blaze::simd_int32_t: Packed SIMD type for 32-bit integral data types</li>
-//          <li>\c blaze::simd_int64_t: Packed SIMD type for 64-bit integral data types</li>
-//          <li>\c blaze::simd_float_t: Packed SIMD type for single precision floating point data</li>
-//          <li>\c blaze::simd_double_t: Packed SIMD type for double precision floating point data</li>
+//          <li>\c blaze::SIMDint8: Packed SIMD type for 8-bit signed integral data types</li>
+//          <li>\c blaze::SIMDuint8: Packed SIMD type for 8-bit unsigned integral data types</li>
+//          <li>\c blaze::SIMDint16: Packed SIMD type for 16-bit signed integral data types</li>
+//          <li>\c blaze::SIMDuint16: Packed SIMD type for 16-bit unsigned integral data types</li>
+//          <li>\c blaze::SIMDint32: Packed SIMD type for 32-bit signed integral data types</li>
+//          <li>\c blaze::SIMDuint32: Packed SIMD type for 32-bit unsigned integral data types</li>
+//          <li>\c blaze::SIMDint64: Packed SIMD type for 64-bit signed integral data types</li>
+//          <li>\c blaze::SIMDuint64: Packed SIMD type for 64-bit unsigned integral data types</li>
+//          <li>\c blaze::SIMDfloat: Packed SIMD type for single precision floating point data</li>
+//          <li>\c blaze::SIMDdouble: Packed SIMD type for double precision floating point data</li>
 //       </ul>
 //    </li>
 //    <li>SIMD data types for complex data types
 //       <ul>
-//          <li>\c blaze::simd_cint8_t: Packed SIMD type for complex 8-bit integral data types</li>
-//          <li>\c blaze::simd_cint16_t: Packed SIMD type for complex 16-bit integral data types</li>
-//          <li>\c blaze::simd_cint32_t: Packed SIMD type for complex 32-bit integral data types</li>
-//          <li>\c blaze::simd_cint64_t: Packed SIMD type for complex 64-bit integral data types</li>
-//          <li>\c blaze::simd_cfloat_t: Packed SIMD type for complex single precision floating point data</li>
-//          <li>\c blaze::simd_cdouble_t: Packed SIMD type for complex double precision floating point data</li>
+//          <li>\c blaze::cint8: Packed SIMD type for complex 8-bit signed integral data types</li>
+//          <li>\c blaze::cuint8: Packed SIMD type for complex 8-bit unsigned integral data types</li>
+//          <li>\c blaze::cint16: Packed SIMD type for complex 16-bit signed integral data types</li>
+//          <li>\c blaze::cuint16: Packed SIMD type for complex 16-bit unsigned integral data types</li>
+//          <li>\c blaze::cint32: Packed SIMD type for complex 32-bit signed integral data types</li>
+//          <li>\c blaze::cuint32: Packed SIMD type for complex 32-bit unsigned integral data types</li>
+//          <li>\c blaze::cint64: Packed SIMD type for complex 64-bit signed integral data types</li>
+//          <li>\c blaze::cuint64: Packed SIMD type for complex 64-bit unsigned integral data types</li>
+//          <li>\c blaze::cfloat: Packed SIMD type for complex single precision floating point data</li>
+//          <li>\c blaze::cdouble: Packed SIMD type for complex double precision floating point data</li>
 //       </ul>
 //    </li>
 // </ul>
