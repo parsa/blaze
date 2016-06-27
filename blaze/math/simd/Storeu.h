@@ -73,7 +73,7 @@ namespace blaze {
 template< typename T1    // Type of the integral value
         , typename T2 >  // Type of the SIMD data type
 BLAZE_ALWAYS_INLINE EnableIf_< And< IsIntegral<T1>, HasSize<T1,1UL> > >
-   storeu( T1* address, const simd_i8_t<T2>& value ) noexcept
+   storeu( T1* address, const SIMDi8<T2>& value ) noexcept
 {
 #if BLAZE_AVX2_MODE
    _mm256_storeu_si256( reinterpret_cast<__m256i*>( address ), (~value).value );
@@ -100,7 +100,7 @@ BLAZE_ALWAYS_INLINE EnableIf_< And< IsIntegral<T1>, HasSize<T1,1UL> > >
 template< typename T1    // Type of the integral value
         , typename T2 >  // Type of the SIMD data type
 BLAZE_ALWAYS_INLINE EnableIf_< And< IsIntegral<T1>, HasSize<T1,1UL> > >
-   storeu( complex<T1>* address, const simd_ci8_t<T2>& value ) noexcept
+   storeu( complex<T1>* address, const SIMDci8<T2>& value ) noexcept
 {
    BLAZE_STATIC_ASSERT( sizeof( complex<T1> ) == 2UL*sizeof( T1 ) );
 
@@ -129,7 +129,7 @@ BLAZE_ALWAYS_INLINE EnableIf_< And< IsIntegral<T1>, HasSize<T1,1UL> > >
 template< typename T1    // Type of the integral value
         , typename T2 >  // Type of the SIMD data type
 BLAZE_ALWAYS_INLINE EnableIf_< And< IsIntegral<T1>, HasSize<T1,2UL> > >
-   storeu( T1* address, const simd_i16_t<T2>& value ) noexcept
+   storeu( T1* address, const SIMDi16<T2>& value ) noexcept
 {
 #if BLAZE_AVX2_MODE
    _mm256_storeu_si256( reinterpret_cast<__m256i*>( address ), (~value).value );
@@ -156,7 +156,7 @@ BLAZE_ALWAYS_INLINE EnableIf_< And< IsIntegral<T1>, HasSize<T1,2UL> > >
 template< typename T1    // Type of the integral value
         , typename T2 >  // Type of the SIMD data type
 BLAZE_ALWAYS_INLINE EnableIf_< And< IsIntegral<T1>, HasSize<T1,2UL> > >
-   storeu( complex<T1>* address, const simd_ci16_t<T2>& value ) noexcept
+   storeu( complex<T1>* address, const SIMDci16<T2>& value ) noexcept
 {
    BLAZE_STATIC_ASSERT( sizeof( complex<T1> ) == 2UL*sizeof( T1 ) );
 
@@ -185,7 +185,7 @@ BLAZE_ALWAYS_INLINE EnableIf_< And< IsIntegral<T1>, HasSize<T1,2UL> > >
 template< typename T1    // Type of the integral value
         , typename T2 >  // Type of the SIMD data type
 BLAZE_ALWAYS_INLINE EnableIf_< And< IsIntegral<T1>, HasSize<T1,4UL> > >
-   storeu( T1* address, const simd_i32_t<T2>& value ) noexcept
+   storeu( T1* address, const SIMDi32<T2>& value ) noexcept
 {
 #if BLAZE_MIC_MODE
    _mm512_packstorelo_epi32( address, (~value).value );
@@ -215,7 +215,7 @@ BLAZE_ALWAYS_INLINE EnableIf_< And< IsIntegral<T1>, HasSize<T1,4UL> > >
 template< typename T1    // Type of the integral value
         , typename T2 >  // Type of the SIMD data type
 BLAZE_ALWAYS_INLINE EnableIf_< And< IsIntegral<T1>, HasSize<T1,4UL> > >
-   storeu( complex<T1>* address, const simd_ci32_t<T2>& value ) noexcept
+   storeu( complex<T1>* address, const SIMDci32<T2>& value ) noexcept
 {
    BLAZE_STATIC_ASSERT( sizeof( complex<T1> ) == 2UL*sizeof( T1 ) );
 
@@ -247,7 +247,7 @@ BLAZE_ALWAYS_INLINE EnableIf_< And< IsIntegral<T1>, HasSize<T1,4UL> > >
 template< typename T1    // Type of the integral value
         , typename T2 >  // Type of the SIMD data type
 BLAZE_ALWAYS_INLINE EnableIf_< And< IsIntegral<T1>, HasSize<T1,8UL> > >
-   storeu( T1* address, const simd_i64_t<T2>& value ) noexcept
+   storeu( T1* address, const SIMDi64<T2>& value ) noexcept
 {
 #if BLAZE_MIC_MODE
    _mm512_packstorelo_epi64( address, (~value).value );
@@ -277,7 +277,7 @@ BLAZE_ALWAYS_INLINE EnableIf_< And< IsIntegral<T1>, HasSize<T1,8UL> > >
 template< typename T1    // Type of the integral value
         , typename T2 >  // Type of the SIMD data type
 BLAZE_ALWAYS_INLINE EnableIf_< And< IsIntegral<T1>, HasSize<T1,8UL> > >
-   storeu( complex<T1>* address, const simd_ci64_t<T2>& value ) noexcept
+   storeu( complex<T1>* address, const SIMDci64<T2>& value ) noexcept
 {
    BLAZE_STATIC_ASSERT( sizeof( complex<T1> ) == 2UL*sizeof( T1 ) );
 
@@ -306,7 +306,7 @@ BLAZE_ALWAYS_INLINE EnableIf_< And< IsIntegral<T1>, HasSize<T1,8UL> > >
 // This function stores a vector of 'float' values. In contrast to the according \c storea()
 // function, the given address is not required to be properly aligned.
 */
-BLAZE_ALWAYS_INLINE void storeu( float* address, const simd_float_t& value ) noexcept
+BLAZE_ALWAYS_INLINE void storeu( float* address, const SIMDfloat& value ) noexcept
 {
 #if BLAZE_MIC_MODE
    _mm512_packstorelo_ps( address     , value.value );
@@ -333,7 +333,7 @@ BLAZE_ALWAYS_INLINE void storeu( float* address, const simd_float_t& value ) noe
 // This function stores a vector of 'complex<float>' values. In contrast to the according
 // \c storea() function, the given address is not required to be properly aligned.
 */
-BLAZE_ALWAYS_INLINE void storeu( complex<float>* address, const simd_cfloat_t& value ) noexcept
+BLAZE_ALWAYS_INLINE void storeu( complex<float>* address, const SIMDcfloat& value ) noexcept
 {
    BLAZE_STATIC_ASSERT( sizeof( complex<float> ) == 2UL*sizeof( float ) );
 
@@ -362,7 +362,7 @@ BLAZE_ALWAYS_INLINE void storeu( complex<float>* address, const simd_cfloat_t& v
 // This function stores a vector of 'double' values. In contrast to the according \c storea()
 // function, the given address is not required to be properly aligned.
 */
-BLAZE_ALWAYS_INLINE void storeu( double* address, const simd_double_t& value ) noexcept
+BLAZE_ALWAYS_INLINE void storeu( double* address, const SIMDdouble& value ) noexcept
 {
 #if BLAZE_MIC_MODE
    _mm512_packstorelo_pd( address    , value.value );
@@ -389,7 +389,7 @@ BLAZE_ALWAYS_INLINE void storeu( double* address, const simd_double_t& value ) n
 // This function stores a vector of 'complex<double>' values. In contrast to the according
 // \c storea() function, the given address is not required to be properly aligned.
 */
-BLAZE_ALWAYS_INLINE void storeu( complex<double>* address, const simd_cdouble_t& value ) noexcept
+BLAZE_ALWAYS_INLINE void storeu( complex<double>* address, const SIMDcdouble& value ) noexcept
 {
    BLAZE_STATIC_ASSERT( sizeof( complex<double> ) == 2UL*sizeof( double ) );
 

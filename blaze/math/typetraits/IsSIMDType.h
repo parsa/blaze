@@ -62,33 +62,33 @@ namespace blaze {
 // <ul>
 //    <li>Basic SIMD data types:</li>
 //    <ul>
-//       <li>simd_int8_t</li>
-//       <li>simd_int16_t</li>
-//       <li>simd_int32_t</li>
-//       <li>simd_int64_t</li>
-//       <li>simd_float_t</li>
-//       <li>simd_double_t</li>
-//       <li>simd_cint8_t</li>
-//       <li>simd_cint16_t</li>
-//       <li>simd_cint32_t</li>
-//       <li>simd_cint64_t</li>
-//       <li>simd_cfloat_t</li>
-//       <li>simd_cdouble_t</li>
+//       <li>SIMDint8</li>
+//       <li>SIMDint16</li>
+//       <li>SIMDint32</li>
+//       <li>SIMDint64</li>
+//       <li>SIMDfloat</li>
+//       <li>SIMDdouble</li>
+//       <li>SIMDcint8</li>
+//       <li>SIMDcint16</li>
+//       <li>SIMDcint32</li>
+//       <li>SIMDcint64</li>
+//       <li>SIMDcfloat</li>
+//       <li>SIMDcdouble</li>
 //    </ul>
 //    <li>Derived SIMD data types:</li>
 //    <ul>
-//       <li>simd_short_t</li>
-//       <li>simd_ushort_t</li>
-//       <li>simd_int_t</li>
-//       <li>simd_uint_t</li>
-//       <li>simd_long_t</li>
-//       <li>simd_ulong_t</li>
-//       <li>simd_cshort_t</li>
-//       <li>simd_cushort_t</li>
-//       <li>simd_cint_t</li>
-//       <li>simd_cuint_t</li>
-//       <li>simd_clong_t</li>
-//       <li>simd_culong_t</li>
+//       <li>SIMDshort</li>
+//       <li>SIMDushort</li>
+//       <li>SIMDint</li>
+//       <li>SIMDuint</li>
+//       <li>SIMDlong</li>
+//       <li>SIMDulong</li>
+//       <li>SIMDcshort</li>
+//       <li>SIMDcushort</li>
+//       <li>SIMDcint</li>
+//       <li>SIMDcuint</li>
+//       <li>SIMDclong</li>
+//       <li>SIMDculong</li>
 //    </ul>
 // </ul>
 //
@@ -98,9 +98,9 @@ namespace blaze {
 // \a FalseType. Examples:
 
    \code
-   blaze::IsSIMDType< simd_int32_t >::value        // Evaluates to 1
-   blaze::IsSIMDType< const simd_double_t >::Type  // Results in TrueType
-   blaze::IsSIMDType< volatile simd_int_t >        // Is derived from TrueType
+   blaze::IsSIMDType< SIMDint32 >::value        // Evaluates to 1
+   blaze::IsSIMDType< const SIMDdouble >::Type  // Results in TrueType
+   blaze::IsSIMDType< volatile SIMDint >        // Is derived from TrueType
    blaze::IsSIMDType< int >::value                 // Evaluates to 0
    blaze::IsSIMDType< const double >::Type         // Results in FalseType
    blaze::IsSIMDType< volatile complex<double> >   // Is derived from FalseType

@@ -62,7 +62,7 @@ namespace blaze {
 //
 // This operation is only available via the SVML for SSE, AVX, and AVX-512.
 */
-BLAZE_ALWAYS_INLINE const simd_float_t cos( const simd_float_t& a ) noexcept
+BLAZE_ALWAYS_INLINE const SIMDfloat cos( const SIMDfloat& a ) noexcept
 #if BLAZE_SVML_MODE && BLAZE_MIC_MODE
 {
    return _mm512_cos_ps( a.value );
@@ -90,7 +90,7 @@ BLAZE_ALWAYS_INLINE const simd_float_t cos( const simd_float_t& a ) noexcept
 //
 // This operation is only available via the SVML for SSE, AVX, and AVX-512.
 */
-BLAZE_ALWAYS_INLINE const simd_double_t cos( const simd_double_t& a ) noexcept
+BLAZE_ALWAYS_INLINE const SIMDdouble cos( const SIMDdouble& a ) noexcept
 #if BLAZE_SVML_MODE && BLAZE_MIC_MODE
 {
    return _mm512_cos_pd( a.value );

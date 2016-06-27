@@ -72,7 +72,7 @@ namespace blaze {
 template< typename T1    // Type of the integral value
         , typename T2 >  // Type of the SIMD data type
 BLAZE_ALWAYS_INLINE EnableIf_< And< IsIntegral<T1>, HasSize<T1,1UL> > >
-   stream( T1* address, const simd_i8_t<T2>& value ) noexcept
+   stream( T1* address, const SIMDi8<T2>& value ) noexcept
 {
    BLAZE_INTERNAL_ASSERT( checkAlignment( address ), "Invalid alignment detected" );
 
@@ -98,7 +98,7 @@ BLAZE_ALWAYS_INLINE EnableIf_< And< IsIntegral<T1>, HasSize<T1,1UL> > >
 template< typename T1    // Type of the integral value
         , typename T2 >  // Type of the SIMD data type
 BLAZE_ALWAYS_INLINE EnableIf_< And< IsIntegral<T1>, HasSize<T1,1UL> > >
-   stream( complex<T1>* address, const simd_ci8_t<T2>& value ) noexcept
+   stream( complex<T1>* address, const SIMDci8<T2>& value ) noexcept
 {
    BLAZE_STATIC_ASSERT( sizeof( complex<T1> ) == 2UL*sizeof( T1 ) );
    BLAZE_INTERNAL_ASSERT( checkAlignment( address ), "Invalid alignment detected" );
@@ -125,7 +125,7 @@ BLAZE_ALWAYS_INLINE EnableIf_< And< IsIntegral<T1>, HasSize<T1,1UL> > >
 template< typename T1    // Type of the integral value
         , typename T2 >  // Type of the SIMD data type
 BLAZE_ALWAYS_INLINE EnableIf_< And< IsIntegral<T1>, HasSize<T1,2UL> > >
-   stream( T1* address, const simd_i16_t<T2>& value ) noexcept
+   stream( T1* address, const SIMDi16<T2>& value ) noexcept
 {
    BLAZE_INTERNAL_ASSERT( checkAlignment( address ), "Invalid alignment detected" );
 
@@ -151,7 +151,7 @@ BLAZE_ALWAYS_INLINE EnableIf_< And< IsIntegral<T1>, HasSize<T1,2UL> > >
 template< typename T1    // Type of the integral value
         , typename T2 >  // Type of the SIMD data type
 BLAZE_ALWAYS_INLINE EnableIf_< And< IsIntegral<T1>, HasSize<T1,2UL> > >
-   stream( complex<T1>* address, const simd_ci16_t<T2>& value ) noexcept
+   stream( complex<T1>* address, const SIMDci16<T2>& value ) noexcept
 {
    BLAZE_STATIC_ASSERT( sizeof( complex<T1> ) == 2UL*sizeof( T1 ) );
    BLAZE_INTERNAL_ASSERT( checkAlignment( address ), "Invalid alignment detected" );
@@ -178,7 +178,7 @@ BLAZE_ALWAYS_INLINE EnableIf_< And< IsIntegral<T1>, HasSize<T1,2UL> > >
 template< typename T1    // Type of the integral value
         , typename T2 >  // Type of the SIMD data type
 BLAZE_ALWAYS_INLINE EnableIf_< And< IsIntegral<T1>, HasSize<T1,4UL> > >
-   stream( T1* address, const simd_i32_t<T2>& value ) noexcept
+   stream( T1* address, const SIMDi32<T2>& value ) noexcept
 {
    BLAZE_INTERNAL_ASSERT( checkAlignment( address ), "Invalid alignment detected" );
 
@@ -206,7 +206,7 @@ BLAZE_ALWAYS_INLINE EnableIf_< And< IsIntegral<T1>, HasSize<T1,4UL> > >
 template< typename T1    // Type of the integral value
         , typename T2 >  // Type of the SIMD data type
 BLAZE_ALWAYS_INLINE EnableIf_< And< IsIntegral<T1>, HasSize<T1,4UL> > >
-   stream( complex<T1>* address, const simd_ci32_t<T2>& value ) noexcept
+   stream( complex<T1>* address, const SIMDci32<T2>& value ) noexcept
 {
    BLAZE_STATIC_ASSERT( sizeof( complex<T1> ) == 2UL*sizeof( T1 ) );
    BLAZE_INTERNAL_ASSERT( checkAlignment( address ), "Invalid alignment detected" );
@@ -235,7 +235,7 @@ BLAZE_ALWAYS_INLINE EnableIf_< And< IsIntegral<T1>, HasSize<T1,4UL> > >
 template< typename T1    // Type of the integral value
         , typename T2 >  // Type of the SIMD data type
 BLAZE_ALWAYS_INLINE EnableIf_< And< IsIntegral<T1>, HasSize<T1,8UL> > >
-   stream( T1* address, const simd_i64_t<T2>& value ) noexcept
+   stream( T1* address, const SIMDi64<T2>& value ) noexcept
 {
    BLAZE_INTERNAL_ASSERT( checkAlignment( address ), "Invalid alignment detected" );
 
@@ -263,7 +263,7 @@ BLAZE_ALWAYS_INLINE EnableIf_< And< IsIntegral<T1>, HasSize<T1,8UL> > >
 template< typename T1    // Type of the integral value
         , typename T2 >  // Type of the SIMD data type
 BLAZE_ALWAYS_INLINE EnableIf_< And< IsIntegral<T1>, HasSize<T1,8UL> > >
-   stream( complex<T1>* address, const simd_ci64_t<T2>& value ) noexcept
+   stream( complex<T1>* address, const SIMDci64<T2>& value ) noexcept
 {
    BLAZE_STATIC_ASSERT( sizeof( complex<T1> ) == 2UL*sizeof( T1 ) );
    BLAZE_INTERNAL_ASSERT( checkAlignment( address ), "Invalid alignment detected" );
@@ -289,7 +289,7 @@ BLAZE_ALWAYS_INLINE EnableIf_< And< IsIntegral<T1>, HasSize<T1,8UL> > >
 // \param value The 'float' vector to be streamed.
 // \return void
 */
-BLAZE_ALWAYS_INLINE void stream( float* address, const simd_float_t& value ) noexcept
+BLAZE_ALWAYS_INLINE void stream( float* address, const SIMDfloat& value ) noexcept
 {
    BLAZE_INTERNAL_ASSERT( checkAlignment( address ), "Invalid alignment detected" );
 
@@ -314,7 +314,7 @@ BLAZE_ALWAYS_INLINE void stream( float* address, const simd_float_t& value ) noe
 // \param value The 'complex<float>' vector to be streamed.
 // \return void
 */
-BLAZE_ALWAYS_INLINE void stream( complex<float>* address, const simd_cfloat_t& value ) noexcept
+BLAZE_ALWAYS_INLINE void stream( complex<float>* address, const SIMDcfloat& value ) noexcept
 {
    BLAZE_STATIC_ASSERT  ( sizeof( complex<float> ) == 2UL*sizeof( float ) );
    BLAZE_INTERNAL_ASSERT( checkAlignment( address ), "Invalid alignment detected" );
@@ -340,7 +340,7 @@ BLAZE_ALWAYS_INLINE void stream( complex<float>* address, const simd_cfloat_t& v
 // \param value The 'double' vector to be streamed.
 // \return void
 */
-BLAZE_ALWAYS_INLINE void stream( double* address, const simd_double_t& value ) noexcept
+BLAZE_ALWAYS_INLINE void stream( double* address, const SIMDdouble& value ) noexcept
 {
    BLAZE_INTERNAL_ASSERT( checkAlignment( address ), "Invalid alignment detected" );
 
@@ -365,7 +365,7 @@ BLAZE_ALWAYS_INLINE void stream( double* address, const simd_double_t& value ) n
 // \param value The 'complex<double>' vector to be streamed.
 // \return void
 */
-BLAZE_ALWAYS_INLINE void stream( complex<double>* address, const simd_cdouble_t& value ) noexcept
+BLAZE_ALWAYS_INLINE void stream( complex<double>* address, const SIMDcdouble& value ) noexcept
 {
    BLAZE_STATIC_ASSERT  ( sizeof( complex<double> ) == 2UL*sizeof( double ) );
    BLAZE_INTERNAL_ASSERT( checkAlignment( address ), "Invalid alignment detected" );

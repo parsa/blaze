@@ -65,7 +65,7 @@ namespace blaze {
 */
 template< typename T >  // Type of both operands
 BLAZE_ALWAYS_INLINE const T
-   operator+( const simd_i8_t<T>& a, const simd_i8_t<T>& b ) noexcept
+   operator+( const SIMDi8<T>& a, const SIMDi8<T>& b ) noexcept
 #if BLAZE_AVX2_MODE
 {
    return _mm256_add_epi8( (~a).value, (~b).value );
@@ -92,8 +92,8 @@ BLAZE_ALWAYS_INLINE const T
 */
 template< typename T1    // Type of the left-hand side operand
         , typename T2 >  // Type of the right-hand side operand
-BLAZE_ALWAYS_INLINE const simd_uint8_t
-   operator+( const simd_i8_t<T1>& a, const simd_i8_t<T2>& b ) noexcept
+BLAZE_ALWAYS_INLINE const SIMDuint8
+   operator+( const SIMDi8<T1>& a, const SIMDi8<T2>& b ) noexcept
 #if BLAZE_AVX2_MODE
 {
    return _mm256_add_epi8( (~a).value, (~b).value );
@@ -120,7 +120,7 @@ BLAZE_ALWAYS_INLINE const simd_uint8_t
 */
 template< typename T >  // Type of both operands
 BLAZE_ALWAYS_INLINE const T
-   operator+( const simd_ci8_t<T>& a, const simd_ci8_t<T>& b ) noexcept
+   operator+( const SIMDci8<T>& a, const SIMDci8<T>& b ) noexcept
 #if BLAZE_AVX2_MODE
 {
    return _mm256_add_epi8( (~a).value, (~b).value );
@@ -147,7 +147,7 @@ BLAZE_ALWAYS_INLINE const T
 */
 template< typename T >  // Type of both operands
 BLAZE_ALWAYS_INLINE const T
-   operator+( const simd_i16_t<T>& a, const simd_i16_t<T>& b ) noexcept
+   operator+( const SIMDi16<T>& a, const SIMDi16<T>& b ) noexcept
 #if BLAZE_AVX2_MODE
 {
    return _mm256_add_epi16( (~a).value, (~b).value );
@@ -174,8 +174,8 @@ BLAZE_ALWAYS_INLINE const T
 */
 template< typename T1    // Type of the left-hand side operand
         , typename T2 >  // Type of the right-hand side operand
-BLAZE_ALWAYS_INLINE const simd_uint16_t
-   operator+( const simd_i16_t<T1>& a, const simd_i16_t<T2>& b ) noexcept
+BLAZE_ALWAYS_INLINE const SIMDuint16
+   operator+( const SIMDi16<T1>& a, const SIMDi16<T2>& b ) noexcept
 #if BLAZE_AVX2_MODE
 {
    return _mm256_add_epi16( (~a).value, (~b).value );
@@ -202,7 +202,7 @@ BLAZE_ALWAYS_INLINE const simd_uint16_t
 */
 template< typename T >  // Type of both operands
 BLAZE_ALWAYS_INLINE const T
-   operator+( const simd_ci16_t<T>& a, const simd_ci16_t<T>& b ) noexcept
+   operator+( const SIMDci16<T>& a, const SIMDci16<T>& b ) noexcept
 #if BLAZE_AVX2_MODE
 {
    return _mm256_add_epi16( (~a).value, (~b).value );
@@ -229,7 +229,7 @@ BLAZE_ALWAYS_INLINE const T
 */
 template< typename T >  // Type of both operands
 BLAZE_ALWAYS_INLINE const T
-   operator+( const simd_i32_t<T>& a, const simd_i32_t<T>& b ) noexcept
+   operator+( const SIMDi32<T>& a, const SIMDi32<T>& b ) noexcept
 #if BLAZE_MIC_MODE
 {
    return _mm512_add_epi32( (~a).value, (~b).value );
@@ -260,8 +260,8 @@ BLAZE_ALWAYS_INLINE const T
 */
 template< typename T1    // Type of the left-hand side operand
         , typename T2 >  // Type of the right-hand side operand
-BLAZE_ALWAYS_INLINE const simd_uint32_t
-   operator+( const simd_i32_t<T1>& a, const simd_i32_t<T2>& b ) noexcept
+BLAZE_ALWAYS_INLINE const SIMDuint32
+   operator+( const SIMDi32<T1>& a, const SIMDi32<T2>& b ) noexcept
 #if BLAZE_MIC_MODE
 {
    return _mm512_add_epi32( (~a).value, (~b).value );
@@ -292,7 +292,7 @@ BLAZE_ALWAYS_INLINE const simd_uint32_t
 */
 template< typename T >  // Type of both operands
 BLAZE_ALWAYS_INLINE const T
-   operator+( const simd_ci32_t<T>& a, const simd_ci32_t<T>& b ) noexcept
+   operator+( const SIMDci32<T>& a, const SIMDci32<T>& b ) noexcept
 #if BLAZE_MIC_MODE
 {
    return _mm512_add_epi32( (~a).value, (~b).value );
@@ -323,7 +323,7 @@ BLAZE_ALWAYS_INLINE const T
 */
 template< typename T >  // Type of the left-hand side operand
 BLAZE_ALWAYS_INLINE const T
-   operator+( const simd_i64_t<T>& a, const simd_i64_t<T>& b ) noexcept
+   operator+( const SIMDi64<T>& a, const SIMDi64<T>& b ) noexcept
 #if BLAZE_MIC_MODE
 {
    return _mm512_add_epi64( (~a).value, (~b).value );
@@ -354,8 +354,8 @@ BLAZE_ALWAYS_INLINE const T
 */
 template< typename T1    // Type of the left-hand side operand
         , typename T2 >  // Type of the right-hand side operand
-BLAZE_ALWAYS_INLINE const simd_uint64_t
-   operator+( const simd_i64_t<T1>& a, const simd_i64_t<T2>& b ) noexcept
+BLAZE_ALWAYS_INLINE const SIMDuint64
+   operator+( const SIMDi64<T1>& a, const SIMDi64<T2>& b ) noexcept
 #if BLAZE_MIC_MODE
 {
    return _mm512_add_epi64( (~a).value, (~b).value );
@@ -386,7 +386,7 @@ BLAZE_ALWAYS_INLINE const simd_uint64_t
 */
 template< typename T >  // Type of both operands
 BLAZE_ALWAYS_INLINE const T
-   operator+( const simd_ci64_t<T>& a, const simd_ci64_t<T>& b ) noexcept
+   operator+( const SIMDci64<T>& a, const SIMDci64<T>& b ) noexcept
 #if BLAZE_MIC_MODE
 {
    return _mm512_add_epi64( (~a).value, (~b).value );
@@ -415,8 +415,8 @@ BLAZE_ALWAYS_INLINE const T
 //
 // This operation is only available for SSE, AVX, and AVX-512.
 */
-BLAZE_ALWAYS_INLINE const simd_float_t
-   operator+( const simd_float_t& a, const simd_float_t& b ) noexcept
+BLAZE_ALWAYS_INLINE const SIMDfloat
+   operator+( const SIMDfloat& a, const SIMDfloat& b ) noexcept
 #if BLAZE_MIC_MODE
 {
    return _mm512_add_ps( a.value, b.value );
@@ -445,8 +445,8 @@ BLAZE_ALWAYS_INLINE const simd_float_t
 //
 // This operation is only available for SSE, AVX, and AVX-512.
 */
-BLAZE_ALWAYS_INLINE const simd_cfloat_t
-   operator+( const simd_cfloat_t& a, const simd_cfloat_t& b ) noexcept
+BLAZE_ALWAYS_INLINE const SIMDcfloat
+   operator+( const SIMDcfloat& a, const SIMDcfloat& b ) noexcept
 #if BLAZE_MIC_MODE
 {
    return _mm512_add_ps( a.value, b.value );
@@ -475,8 +475,8 @@ BLAZE_ALWAYS_INLINE const simd_cfloat_t
 //
 // This operation is only available for SSE2, AVX, and AVX-512.
 */
-BLAZE_ALWAYS_INLINE const simd_double_t
-   operator+( const simd_double_t& a, const simd_double_t& b ) noexcept
+BLAZE_ALWAYS_INLINE const SIMDdouble
+   operator+( const SIMDdouble& a, const SIMDdouble& b ) noexcept
 #if BLAZE_MIC_MODE
 {
    return _mm512_add_pd( a.value, b.value );
@@ -505,8 +505,8 @@ BLAZE_ALWAYS_INLINE const simd_double_t
 //
 // This operation is only available for SSE2, AVX, and AVX-512.
 */
-BLAZE_ALWAYS_INLINE const simd_cdouble_t
-   operator+( const simd_cdouble_t& a, const simd_cdouble_t& b ) noexcept
+BLAZE_ALWAYS_INLINE const SIMDcdouble
+   operator+( const SIMDcdouble& a, const SIMDcdouble& b ) noexcept
 #if BLAZE_MIC_MODE
 {
    return _mm512_add_pd( a.value, b.value );

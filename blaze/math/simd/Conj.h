@@ -61,7 +61,7 @@ namespace blaze {
 // \return The complex conjugate values.
 */
 template< typename T >  // Type of the operand
-BLAZE_ALWAYS_INLINE const T conj( const simd_i8_t<T>& a ) noexcept
+BLAZE_ALWAYS_INLINE const T conj( const SIMDi8<T>& a ) noexcept
 {
    return a;
 }
@@ -76,7 +76,7 @@ BLAZE_ALWAYS_INLINE const T conj( const simd_i8_t<T>& a ) noexcept
 // \return The complex conjugate values.
 */
 template< typename T >  // Type of the operand
-BLAZE_ALWAYS_INLINE const T conj( const simd_i16_t<T>& a ) noexcept
+BLAZE_ALWAYS_INLINE const T conj( const SIMDi16<T>& a ) noexcept
 {
    return a;
 }
@@ -92,7 +92,7 @@ BLAZE_ALWAYS_INLINE const T conj( const simd_i16_t<T>& a ) noexcept
 //
 // This operation is only available for SSE2 and AVX2.
 */
-BLAZE_ALWAYS_INLINE const simd_cint16_t conj( const simd_cint16_t& a ) noexcept
+BLAZE_ALWAYS_INLINE const SIMDcint16 conj( const SIMDcint16& a ) noexcept
 #if BLAZE_AVX2_MODE
 {
    return _mm256_mullo_epi16( a.value, _mm256_set_epi16( -1, 1, -1, 1, -1, 1, -1, 1,
@@ -116,7 +116,7 @@ BLAZE_ALWAYS_INLINE const simd_cint16_t conj( const simd_cint16_t& a ) noexcept
 // \return The complex conjugate values.
 */
 template< typename T >  // Type of the operand
-BLAZE_ALWAYS_INLINE const T conj( const simd_i32_t<T>& a ) noexcept
+BLAZE_ALWAYS_INLINE const T conj( const SIMDi32<T>& a ) noexcept
 {
    return a;
 }
@@ -132,7 +132,7 @@ BLAZE_ALWAYS_INLINE const T conj( const simd_i32_t<T>& a ) noexcept
 //
 // This operation is only available for SSE4, AVX2, and AVX-512.
 */
-BLAZE_ALWAYS_INLINE const simd_cint32_t conj( const simd_cint32_t& a ) noexcept
+BLAZE_ALWAYS_INLINE const SIMDcint32 conj( const SIMDcint32& a ) noexcept
 #if BLAZE_MIC_MODE
 {
    return _mm512_mullo_epi32( a.value, _mm512_set_epi32( -1, 1, -1, 1, -1, 1, -1, 1,
@@ -160,7 +160,7 @@ BLAZE_ALWAYS_INLINE const simd_cint32_t conj( const simd_cint32_t& a ) noexcept
 // \return The complex conjugate values.
 */
 template< typename T >  // Type of the operand
-BLAZE_ALWAYS_INLINE const T conj( const simd_i64_t<T>& a ) noexcept
+BLAZE_ALWAYS_INLINE const T conj( const SIMDi64<T>& a ) noexcept
 {
    return a;
 }
@@ -174,7 +174,7 @@ BLAZE_ALWAYS_INLINE const T conj( const simd_i64_t<T>& a ) noexcept
 // \param a The vector of single precision floating point values.
 // \return The complex conjugate values.
 */
-BLAZE_ALWAYS_INLINE const simd_float_t conj( const simd_float_t& a ) noexcept
+BLAZE_ALWAYS_INLINE const SIMDfloat conj( const SIMDfloat& a ) noexcept
 {
    return a;
 }
@@ -190,7 +190,7 @@ BLAZE_ALWAYS_INLINE const simd_float_t conj( const simd_float_t& a ) noexcept
 //
 // This operation is only available for SSE2, AVX, and AVX-512.
 */
-BLAZE_ALWAYS_INLINE const simd_cfloat_t conj( const simd_cfloat_t& a ) noexcept
+BLAZE_ALWAYS_INLINE const SIMDcfloat conj( const SIMDcfloat& a ) noexcept
 #if BLAZE_MIC_MODE
 {
    return _mm512_mul_ps( a.value, _mm512_set_ps( -1.0F, 1.0F, -1.0F, 1.0F, -1.0F, 1.0F, -1.0F, 1.0F,
@@ -217,7 +217,7 @@ BLAZE_ALWAYS_INLINE const simd_cfloat_t conj( const simd_cfloat_t& a ) noexcept
 // \param a The vector of double precision floating point values.
 // \return The complex conjugate values.
 */
-BLAZE_ALWAYS_INLINE const simd_double_t conj( const simd_double_t& a ) noexcept
+BLAZE_ALWAYS_INLINE const SIMDdouble conj( const SIMDdouble& a ) noexcept
 {
    return a;
 }
@@ -233,7 +233,7 @@ BLAZE_ALWAYS_INLINE const simd_double_t conj( const simd_double_t& a ) noexcept
 //
 // This operation is only available for SSE2, AVX, and AVX-512.
 */
-BLAZE_ALWAYS_INLINE const simd_cdouble_t conj( const simd_cdouble_t& a ) noexcept
+BLAZE_ALWAYS_INLINE const SIMDcdouble conj( const SIMDcdouble& a ) noexcept
 #if BLAZE_MIC_MODE
 {
    return _mm512_mul_pd( a.value, _mm512_set_pd( -1.0, 1.0, -1.0, 1.0, -1.0, 1.0, -1.0, 1.0 ) );

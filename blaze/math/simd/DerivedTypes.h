@@ -56,7 +56,7 @@ namespace blaze {
 /*!\brief The SIMD data type for 'char'.
 // \ingroup simd
 */
-typedef SIMDTrait<char>::Type  simd_char_t;
+typedef SIMDTrait<char>::Type  SIMDchar;
 //*************************************************************************************************
 
 
@@ -64,7 +64,7 @@ typedef SIMDTrait<char>::Type  simd_char_t;
 /*!\brief The SIMD data type for 'signed char'.
 // \ingroup simd
 */
-typedef SIMDTrait<signed char>::Type  simd_schar_t;
+typedef SIMDTrait<signed char>::Type  SIMDschar;
 //*************************************************************************************************
 
 
@@ -72,7 +72,7 @@ typedef SIMDTrait<signed char>::Type  simd_schar_t;
 /*!\brief The SIMD data type for 'unsigned char'.
 // \ingroup simd
 */
-typedef SIMDTrait<unsigned char>::Type  simd_uchar_t;
+typedef SIMDTrait<unsigned char>::Type  SIMDuchar;
 //*************************************************************************************************
 
 
@@ -80,7 +80,7 @@ typedef SIMDTrait<unsigned char>::Type  simd_uchar_t;
 /*!\brief The SIMD data type for 'wchar_t'.
 // \ingroup simd
 */
-typedef SIMDTrait<wchar_t>::Type  simd_wchar_t;
+typedef SIMDTrait<wchar_t>::Type  SIMDwchar;
 //*************************************************************************************************
 
 
@@ -88,7 +88,7 @@ typedef SIMDTrait<wchar_t>::Type  simd_wchar_t;
 /*!\brief The SIMD data type for 'complex<char>'.
 // \ingroup simd
 */
-typedef SIMDTrait< complex<char> >::Type  simd_cchar_t;
+typedef SIMDTrait< complex<char> >::Type  SIMDcchar;
 //*************************************************************************************************
 
 
@@ -96,7 +96,7 @@ typedef SIMDTrait< complex<char> >::Type  simd_cchar_t;
 /*!\brief The SIMD data type for 'complex<signed char>'.
 // \ingroup simd
 */
-typedef SIMDTrait< complex<signed char> >::Type  simd_cschar_t;
+typedef SIMDTrait< complex<signed char> >::Type  SIMDcschar;
 //*************************************************************************************************
 
 
@@ -104,7 +104,7 @@ typedef SIMDTrait< complex<signed char> >::Type  simd_cschar_t;
 /*!\brief The SIMD data type for 'complex<unsigned char>'.
 // \ingroup simd
 */
-typedef SIMDTrait< complex<unsigned char> >::Type  simd_cuchar_t;
+typedef SIMDTrait< complex<unsigned char> >::Type  SIMDcuchar;
 //*************************************************************************************************
 
 
@@ -112,7 +112,7 @@ typedef SIMDTrait< complex<unsigned char> >::Type  simd_cuchar_t;
 /*!\brief The SIMD data type for 'complex<wchar_t>'.
 // \ingroup simd
 */
-typedef SIMDTrait< complex<wchar_t> >::Type  simd_cwchar_t;
+typedef SIMDTrait< complex<wchar_t> >::Type  SIMDcwchar;
 //*************************************************************************************************
 
 
@@ -120,7 +120,7 @@ typedef SIMDTrait< complex<wchar_t> >::Type  simd_cwchar_t;
 /*!\brief The SIMD data type for 'short'.
 // \ingroup simd
 */
-typedef SIMDTrait<short>::Type  simd_short_t;
+typedef SIMDTrait<short>::Type  SIMDshort;
 //*************************************************************************************************
 
 
@@ -128,7 +128,7 @@ typedef SIMDTrait<short>::Type  simd_short_t;
 /*!\brief The SIMD data type for 'unsigned short'.
 // \ingroup simd
 */
-typedef SIMDTrait<unsigned short>::Type  simd_ushort_t;
+typedef SIMDTrait<unsigned short>::Type  SIMDushort;
 //*************************************************************************************************
 
 
@@ -136,7 +136,7 @@ typedef SIMDTrait<unsigned short>::Type  simd_ushort_t;
 /*!\brief The SIMD data type for 'complex<short>'.
 // \ingroup simd
 */
-typedef SIMDTrait< complex<short> >::Type  simd_cshort_t;
+typedef SIMDTrait< complex<short> >::Type  SIMDcshort;
 //*************************************************************************************************
 
 
@@ -144,7 +144,7 @@ typedef SIMDTrait< complex<short> >::Type  simd_cshort_t;
 /*!\brief The SIMD data type for 'complex<unsigned short>'.
 // \ingroup simd
 */
-typedef SIMDTrait< complex<unsigned short> >::Type  simd_cushort_t;
+typedef SIMDTrait< complex<unsigned short> >::Type  SIMDcushort;
 //*************************************************************************************************
 
 
@@ -152,7 +152,7 @@ typedef SIMDTrait< complex<unsigned short> >::Type  simd_cushort_t;
 /*!\brief The SIMD data type for 'int'.
 // \ingroup simd
 */
-typedef SIMDTrait<int>::Type  simd_int_t;
+typedef SIMDTrait<int>::Type  SIMDint;
 //*************************************************************************************************
 
 
@@ -160,7 +160,7 @@ typedef SIMDTrait<int>::Type  simd_int_t;
 /*!\brief The SIMD data type for 'unsigned int'.
 // \ingroup simd
 */
-typedef SIMDTrait<unsigned int>::Type  simd_uint_t;
+typedef SIMDTrait<unsigned int>::Type  SIMDuint;
 //*************************************************************************************************
 
 
@@ -168,7 +168,7 @@ typedef SIMDTrait<unsigned int>::Type  simd_uint_t;
 /*!\brief The SIMD data type for 'complex<int>'.
 // \ingroup simd
 */
-typedef SIMDTrait< complex<int> >::Type  simd_cint_t;
+typedef SIMDTrait< complex<int> >::Type  SIMDcint;
 //*************************************************************************************************
 
 
@@ -176,7 +176,7 @@ typedef SIMDTrait< complex<int> >::Type  simd_cint_t;
 /*!\brief The SIMD data type for 'complex<unsigned int>'.
 // \ingroup simd
 */
-typedef SIMDTrait< complex<unsigned int> >::Type  simd_cuint_t;
+typedef SIMDTrait< complex<unsigned int> >::Type  SIMDcuint;
 //*************************************************************************************************
 
 
@@ -184,7 +184,7 @@ typedef SIMDTrait< complex<unsigned int> >::Type  simd_cuint_t;
 /*!\brief The SIMD data type for 'long int'.
 // \ingroup simd
 */
-typedef SIMDTrait<long>::Type  simd_long_t;
+typedef SIMDTrait<long>::Type  SIMDlong;
 //*************************************************************************************************
 
 
@@ -192,7 +192,7 @@ typedef SIMDTrait<long>::Type  simd_long_t;
 /*!\brief The SIMD data type for 'unsigned long int'.
 // \ingroup simd
 */
-typedef SIMDTrait<unsigned long>::Type  simd_ulong_t;
+typedef SIMDTrait<unsigned long>::Type  SIMDulong;
 //*************************************************************************************************
 
 
@@ -200,7 +200,7 @@ typedef SIMDTrait<unsigned long>::Type  simd_ulong_t;
 /*!\brief The SIMD data type for 'complex<long int>'.
 // \ingroup simd
 */
-typedef SIMDTrait< complex<long> >::Type  simd_clong_t;
+typedef SIMDTrait< complex<long> >::Type  SIMDclong;
 //*************************************************************************************************
 
 
@@ -208,7 +208,7 @@ typedef SIMDTrait< complex<long> >::Type  simd_clong_t;
 /*!\brief The SIMD data type for 'complex<unsigned long int>'.
 // \ingroup simd
 */
-typedef SIMDTrait< complex<unsigned long> >::Type  simd_culong_t;
+typedef SIMDTrait< complex<unsigned long> >::Type  SIMDculong;
 //*************************************************************************************************
 
 } // namespace blaze

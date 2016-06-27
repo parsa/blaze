@@ -65,7 +65,7 @@ namespace blaze {
 */
 template< typename T >  // Type of the left-hand side operand
 BLAZE_ALWAYS_INLINE const T
-   operator/( const simd_i32_t<T>& a, const simd_i32_t<T>& b ) noexcept
+   operator/( const SIMDi32<T>& a, const SIMDi32<T>& b ) noexcept
 #if BLAZE_MIC_MODE
 {
    return _mm512_div_epi32( (~a).value, (~b).value );
@@ -88,8 +88,8 @@ BLAZE_ALWAYS_INLINE const T
 */
 template< typename T1    // Type of the left-hand side operand
         , typename T2 >  // Type of the right-hand side operand
-BLAZE_ALWAYS_INLINE const simd_uint32_t
-   operator/( const simd_i32_t<T1>& a, const simd_i32_t<T2>& b ) noexcept
+BLAZE_ALWAYS_INLINE const SIMDuint32
+   operator/( const SIMDi32<T1>& a, const SIMDi32<T2>& b ) noexcept
 #if BLAZE_MIC_MODE
 {
    return _mm512_div_epi32( (~a).value, (~b).value );
@@ -110,8 +110,8 @@ BLAZE_ALWAYS_INLINE const simd_uint32_t
 //
 // This operation is only available for AVX-512.
 */
-BLAZE_ALWAYS_INLINE const simd_cint32_t
-   operator/( const simd_cint32_t& a, const simd_int32_t& b ) noexcept
+BLAZE_ALWAYS_INLINE const SIMDcint32
+   operator/( const SIMDcint32& a, const SIMDint32& b ) noexcept
 #if BLAZE_MIC_MODE
 {
    return _mm512_div_epi32( (~a).value, (~b).value );
@@ -132,8 +132,8 @@ BLAZE_ALWAYS_INLINE const simd_cint32_t
 //
 // This operation is only available for AVX-512.
 */
-BLAZE_ALWAYS_INLINE const simd_cuint32_t
-   operator/( const simd_cuint32_t& a, const simd_uint32_t& b ) noexcept
+BLAZE_ALWAYS_INLINE const SIMDcuint32
+   operator/( const SIMDcuint32& a, const SIMDuint32& b ) noexcept
 #if BLAZE_MIC_MODE
 {
    return _mm512_div_epi32( (~a).value, (~b).value );
@@ -156,7 +156,7 @@ BLAZE_ALWAYS_INLINE const simd_cuint32_t
 */
 template< typename T >  // Type of the left-hand side operand
 BLAZE_ALWAYS_INLINE const T
-   operator/( const simd_i64_t<T>& a, const simd_i64_t<T>& b ) noexcept
+   operator/( const SIMDi64<T>& a, const SIMDi64<T>& b ) noexcept
 #if BLAZE_MIC_MODE
 {
    return _mm512_div_epi64( (~a).value, (~b).value );
@@ -179,8 +179,8 @@ BLAZE_ALWAYS_INLINE const T
 */
 template< typename T1    // Type of the left-hand side operand
         , typename T2 >  // Type of the right-hand side operand
-BLAZE_ALWAYS_INLINE const simd_uint64_t
-   operator/( const simd_i64_t<T1>& a, const simd_i64_t<T2>& b ) noexcept
+BLAZE_ALWAYS_INLINE const SIMDuint64
+   operator/( const SIMDi64<T1>& a, const SIMDi64<T2>& b ) noexcept
 #if BLAZE_MIC_MODE
 {
    return _mm512_div_epi64( (~a).value, (~b).value );
@@ -201,8 +201,8 @@ BLAZE_ALWAYS_INLINE const simd_uint64_t
 //
 // This operation is only available for AVX-512.
 */
-BLAZE_ALWAYS_INLINE const simd_cint64_t
-   operator/( const simd_cint64_t& a, const simd_int64_t& b ) noexcept
+BLAZE_ALWAYS_INLINE const SIMDcint64
+   operator/( const SIMDcint64& a, const SIMDint64& b ) noexcept
 #if BLAZE_MIC_MODE
 {
    return _mm512_div_epi64( (~a).value, (~b).value );
@@ -223,8 +223,8 @@ BLAZE_ALWAYS_INLINE const simd_cint64_t
 //
 // This operation is only available for AVX-512.
 */
-BLAZE_ALWAYS_INLINE const simd_cuint64_t
-   operator/( const simd_cuint64_t& a, const simd_uint64_t& b ) noexcept
+BLAZE_ALWAYS_INLINE const SIMDcuint64
+   operator/( const SIMDcuint64& a, const SIMDuint64& b ) noexcept
 #if BLAZE_MIC_MODE
 {
    return _mm512_div_epi64( (~a).value, (~b).value );
@@ -245,8 +245,8 @@ BLAZE_ALWAYS_INLINE const simd_cuint64_t
 //
 // This operation is only available for SSE, AVX, and AVX-512.
 */
-BLAZE_ALWAYS_INLINE const simd_float_t
-   operator/( const simd_float_t& a, const simd_float_t& b ) noexcept
+BLAZE_ALWAYS_INLINE const SIMDfloat
+   operator/( const SIMDfloat& a, const SIMDfloat& b ) noexcept
 #if BLAZE_MIC_MODE
 {
    return _mm512_div_ps( a.value, b.value );
@@ -275,8 +275,8 @@ BLAZE_ALWAYS_INLINE const simd_float_t
 //
 // This operation is only available for SSE, AVX, and AVX-512.
 */
-BLAZE_ALWAYS_INLINE const simd_cfloat_t
-   operator/( const simd_cfloat_t& a, const simd_float_t& b ) noexcept
+BLAZE_ALWAYS_INLINE const SIMDcfloat
+   operator/( const SIMDcfloat& a, const SIMDfloat& b ) noexcept
 #if BLAZE_MIC_MODE
 {
    return _mm512_div_ps( a.value, b.value );
@@ -305,8 +305,8 @@ BLAZE_ALWAYS_INLINE const simd_cfloat_t
 //
 // This operation is only available for SSE, AVX, and AVX-512.
 */
-BLAZE_ALWAYS_INLINE const simd_double_t
-   operator/( const simd_double_t& a, const simd_double_t& b ) noexcept
+BLAZE_ALWAYS_INLINE const SIMDdouble
+   operator/( const SIMDdouble& a, const SIMDdouble& b ) noexcept
 #if BLAZE_MIC_MODE
 {
    return _mm512_div_pd( a.value, b.value );
@@ -335,8 +335,8 @@ BLAZE_ALWAYS_INLINE const simd_double_t
 //
 // This operation is only available for SSE, AVX, and AVX-512.
 */
-BLAZE_ALWAYS_INLINE const simd_cdouble_t
-   operator/( const simd_cdouble_t& a, const simd_double_t& b ) noexcept
+BLAZE_ALWAYS_INLINE const SIMDcdouble
+   operator/( const SIMDcdouble& a, const SIMDdouble& b ) noexcept
 #if BLAZE_MIC_MODE
 {
    return _mm512_div_pd( a.value, b.value );
