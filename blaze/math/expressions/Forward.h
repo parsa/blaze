@@ -177,6 +177,18 @@ inline const DMatSerialExpr<MT,SO> serial( const DenseMatrix<MT,SO>& );
 template< typename MT, bool SO >
 inline const SMatSerialExpr<MT,SO> serial( const SparseMatrix<MT,SO>& );
 
+template< typename VT, bool TF, typename OP >
+inline const DVecForEachExpr<VT,OP,TF> forEach( const DenseVector<VT,TF>&, OP );
+
+template< typename VT, bool TF, typename OP >
+inline const SVecForEachExpr<VT,OP,TF> forEach( const SparseVector<VT,TF>&, OP );
+
+template< typename MT, bool SO, typename OP >
+inline const DMatForEachExpr<MT,OP,SO> forEach( const DenseMatrix<MT,SO>&, OP );
+
+template< typename MT, bool SO, typename OP >
+inline const SMatForEachExpr<MT,OP,SO> forEach( const SparseMatrix<MT,SO>&, OP );
+
 } // namespace blaze
 
 #endif
