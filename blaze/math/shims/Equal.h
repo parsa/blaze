@@ -96,7 +96,8 @@ inline bool equal( const T1& a, const T2& b )
 */
 inline bool equal( float a, float b )
 {
-   return ( std::fabs( a - b ) <= std::fabs( a ) * static_cast<float>( accuracy ) );
+   const float acc( static_cast<float>( accuracy ) );
+   return ( std::fabs( a - b ) <= max( acc, acc * std::fabs( a ) ) );
 }
 /*! \endcond */
 //*************************************************************************************************
@@ -196,7 +197,8 @@ inline bool equal( double a, float b )
 */
 inline bool equal( double a, double b )
 {
-   return ( std::fabs( a - b ) <= std::fabs( a ) * static_cast<double>( accuracy ) );
+   const double acc( static_cast<double>( accuracy ) );
+   return ( std::fabs( a - b ) <= max( acc, acc * std::fabs( a ) ) );
 }
 /*! \endcond */
 //*************************************************************************************************
@@ -300,7 +302,8 @@ inline bool equal( long double a, double b )
 */
 inline bool equal( long double a, long double b )
 {
-   return ( std::fabs( a - b ) <= std::fabs( a ) * static_cast<long double>( accuracy ) );
+   const long double acc( static_cast<long double>( accuracy ) );
+   return ( std::fabs( a - b ) <= max( acc, acc * std::fabs( a ) ) );
 }
 /*! \endcond */
 //*************************************************************************************************
