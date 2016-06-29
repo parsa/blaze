@@ -1,6 +1,6 @@
 #==================================================================================================
 #
-#  Makefile for the sparsesubvector module of the Blaze test suite
+#  Makefile for the subvector module of the Blaze test suite
 #
 #  Copyright (C) 2013 Klaus Iglberger - All Rights Reserved - All Rights Reserved
 #
@@ -54,7 +54,11 @@ noop: $(BIN)
 
 
 # Build rules
-ClassTest: ClassTest.o
+DenseUnalignedTest: DenseUnalignedTest.o
+	@$(CXX) $(CXXFLAGS) -o $@ $< $(LIBRARIES)
+DenseAlignedTest: DenseAlignedTest.o
+	@$(CXX) $(CXXFLAGS) -o $@ $< $(LIBRARIES)
+SparseTest: SparseTest.o
 	@$(CXX) $(CXXFLAGS) -o $@ $< $(LIBRARIES)
 
 

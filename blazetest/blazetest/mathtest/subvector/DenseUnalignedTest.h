@@ -1,7 +1,7 @@
 //=================================================================================================
 /*!
-//  \file blazetest/mathtest/sparsesubvector/ClassTest.h
-//  \brief Header file for the SparseSubvector class test
+//  \file blazetest/mathtest/subvector/DenseUnalignedTest.h
+//  \brief Header file for the Subvector dense unaligned test
 //
 //  Copyright (C) 2013 Klaus Iglberger - All Rights Reserved
 //
@@ -32,8 +32,8 @@
 */
 //=================================================================================================
 
-#ifndef _BLAZETEST_MATHTEST_SPARSESUBVECTOR_CLASSTEST_H_
-#define _BLAZETEST_MATHTEST_SPARSESUBVECTOR_CLASSTEST_H_
+#ifndef _BLAZETEST_MATHTEST_SUBVECTOR_DENSEUNALIGNEDTEST_H_
+#define _BLAZETEST_MATHTEST_SUBVECTOR_DENSEUNALIGNEDTEST_H_
 
 
 //*************************************************************************************************
@@ -43,9 +43,9 @@
 #include <sstream>
 #include <stdexcept>
 #include <string>
-#include <blaze/math/constraints/SparseVector.h>
-#include <blaze/math/CompressedVector.h>
-#include <blaze/math/SparseSubvector.h>
+#include <blaze/math/constraints/DenseVector.h>
+#include <blaze/math/DynamicVector.h>
+#include <blaze/math/Subvector.h>
 #include <blazetest/system/Types.h>
 
 
@@ -53,7 +53,7 @@ namespace blazetest {
 
 namespace mathtest {
 
-namespace sparsesubvector {
+namespace subvector {
 
 //=================================================================================================
 //
@@ -62,18 +62,18 @@ namespace sparsesubvector {
 //=================================================================================================
 
 //*************************************************************************************************
-/*!\brief Auxiliary class for all tests of the SparseSubvector class template.
+/*!\brief Auxiliary class for all tests of the dense unaligned Subvector specialization.
 //
-// This class represents a test suite for the blaze::SparseSubvector class template. It performs
-// a series of both compile time as well as runtime tests.
+// This class represents a test suite for the blaze::Subvector class template specialization for
+// dense unaligned subvectors. It performs a series of both compile time as well as runtime tests.
 */
-class ClassTest
+class DenseUnalignedTest
 {
  public:
    //**Constructors********************************************************************************
    /*!\name Constructors */
    //@{
-   explicit ClassTest();
+   explicit DenseUnalignedTest();
    // No explicitly declared copy constructor.
    //@}
    //**********************************************************************************************
@@ -98,23 +98,12 @@ class ClassTest
    void testNonZeros    ();
    void testReset       ();
    void testClear       ();
-   void testSet         ();
-   void testInsert      ();
-   void testAppend      ();
-   void testErase       ();
-   void testReserve     ();
-   void testFind        ();
-   void testLowerBound  ();
-   void testUpperBound  ();
    void testIsDefault   ();
    void testIsSame      ();
    void testSubvector   ();
 
    template< typename Type >
    void checkSize( const Type& vector, size_t expectedSize ) const;
-
-   template< typename Type >
-   void checkCapacity( const Type& vector, size_t minCapacity ) const;
 
    template< typename Type >
    void checkNonZeros( const Type& vector, size_t expectedNonZeros ) const;
@@ -129,15 +118,15 @@ class ClassTest
    //**********************************************************************************************
 
    //**Type definitions****************************************************************************
-   typedef blaze::CompressedVector<int,blaze::rowVector>  VT;   //!< Compressed row vector type
-   typedef blaze::SparseSubvector<VT>                     SVT;  //!< Subvector type for compressed row vectors.
+   typedef blaze::DynamicVector<int,blaze::rowVector>  VT;   //!< Dynamic row vector type
+   typedef blaze::Subvector<VT>                        SVT;  //!< Subvector type for dynamic row vectors.
    //**********************************************************************************************
 
    //**Member variables****************************************************************************
    /*!\name Member variables */
    //@{
-   VT  vec_;   //!< Compressed column vector.
-               /*!< The 8-dimensional sparse vector is initialized as
+   VT  vec_;   //!< Dynamic column vector.
+               /*!< The 8-dimensional dense vector is initialized as
                     \f[\left(\begin{array}{*{4}{c}}
                     0 & 1 & 0 & -2 & -3 & 0 & 4 & 0 \\
                     \end{array}\right)\f]. */
@@ -148,8 +137,8 @@ class ClassTest
 
    //**Compile time checks*************************************************************************
    /*! \cond BLAZE_INTERNAL */
-   BLAZE_CONSTRAINT_MUST_BE_SPARSE_VECTOR_TYPE( VT  );
-   BLAZE_CONSTRAINT_MUST_BE_SPARSE_VECTOR_TYPE( SVT );
+   BLAZE_CONSTRAINT_MUST_BE_DENSE_VECTOR_TYPE( VT  );
+   BLAZE_CONSTRAINT_MUST_BE_DENSE_VECTOR_TYPE( SVT );
    /*! \endcond */
    //**********************************************************************************************
 };
@@ -165,18 +154,18 @@ class ClassTest
 //=================================================================================================
 
 //*************************************************************************************************
-/*!\brief Checking the size of the given sparse vector.
+/*!\brief Checking the size of the given dense vector.
 //
-// \param vector The sparse vector to be checked.
-// \param expectedSize The expected size of the sparse vector.
+// \param vector The dense vector to be checked.
+// \param expectedSize The expected size of the dense vector.
 // \return void
 // \exception std::runtime_error Error detected.
 //
-// This function checks the size of the given sparse vector. In case the actual size does not
+// This function checks the size of the given dense vector. In case the actual size does not
 // correspond to the given expected size, a \a std::runtime_error exception is thrown.
 */
-template< typename Type >  // Type of the sparse vector
-void ClassTest::checkSize( const Type& vector, size_t expectedSize ) const
+template< typename Type >  // Type of the dense vector
+void DenseUnalignedTest::checkSize( const Type& vector, size_t expectedSize ) const
 {
    if( size( vector ) != expectedSize ) {
       std::ostringstream oss;
@@ -192,46 +181,19 @@ void ClassTest::checkSize( const Type& vector, size_t expectedSize ) const
 
 
 //*************************************************************************************************
-/*!\brief Checking the capacity of the given sparse vector.
+/*!\brief Checking the number of non-zero elements of the given dense vector.
 //
-// \param vector The sparse vector to be checked.
-// \param minCapacity The expected minimum capacity.
-// \return void
-// \exception std::runtime_error Error detected.
-//
-// This function checks the capacity of the given sparse vector. In case the actual capacity is
-// smaller than the given expected minimum capacity, a \a std::runtime_error exception is thrown.
-*/
-template< typename Type >  // Type of the sparse vector
-void ClassTest::checkCapacity( const Type& vector, size_t minCapacity ) const
-{
-   if( capacity( vector ) < minCapacity ) {
-      std::ostringstream oss;
-      oss << " Test: " << test_ << "\n"
-          << " Error: Invalid capacity detected\n"
-          << " Details:\n"
-          << "   Capacity                 : " << capacity( vector ) << "\n"
-          << "   Expected minimum capacity: " << minCapacity << "\n";
-      throw std::runtime_error( oss.str() );
-   }
-}
-//*************************************************************************************************
-
-
-//*************************************************************************************************
-/*!\brief Checking the number of non-zero elements of the given sparse vector.
-//
-// \param object The sparse vector to be checked.
+// \param object The dense vector to be checked.
 // \param expectedNonZeros The expected number of non-zero elements.
 // \return void
 // \exception std::runtime_error Error detected.
 //
-// This function checks the number of non-zero elements of the given sparse vector. In case
+// This function checks the number of non-zero elements of the given dense vector. In case
 // the actual number of non-zero elements does not correspond to the given expected number,
 // a \a std::runtime_error exception is thrown.
 */
-template< typename Type >  // Type of the sparse vector
-void ClassTest::checkNonZeros( const Type& vector, size_t expectedNonZeros ) const
+template< typename Type >  // Type of the dense vector
+void DenseUnalignedTest::checkNonZeros( const Type& vector, size_t expectedNonZeros ) const
 {
    if( nonZeros( vector ) != expectedNonZeros ) {
       std::ostringstream oss;
@@ -265,13 +227,13 @@ void ClassTest::checkNonZeros( const Type& vector, size_t expectedNonZeros ) con
 //=================================================================================================
 
 //*************************************************************************************************
-/*!\brief Testing the functionality of the SparseSubvector class template.
+/*!\brief Testing the functionality of the dense unaligned Subvector specialization.
 //
 // \return void
 */
 void runTest()
 {
-   ClassTest();
+   DenseUnalignedTest();
 }
 //*************************************************************************************************
 
@@ -286,14 +248,14 @@ void runTest()
 
 //*************************************************************************************************
 /*! \cond BLAZE_INTERNAL */
-/*!\brief Macro for the execution of the SparseSubvector class test.
+/*!\brief Macro for the execution of the dense unaligned Subvector test.
 */
-#define RUN_SPARSESUBVECTOR_CLASS_TEST \
-   blazetest::mathtest::sparsesubvector::runTest()
+#define RUN_SUBVECTOR_DENSEUNALIGNED_TEST \
+   blazetest::mathtest::subvector::runTest()
 /*! \endcond */
 //*************************************************************************************************
 
-} // namespace sparsesubvector
+} // namespace subvector
 
 } // namespace mathtest
 

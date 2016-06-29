@@ -1,7 +1,7 @@
 //=================================================================================================
 /*!
-//  \file blazetest/mathtest/densesubvector/AlignedTest.h
-//  \brief Header file for the aligned DenseSubvector class test
+//  \file blazetest/mathtest/subvector/DenseAlignedTest.h
+//  \brief Header file for the Subvector dense aligned test
 //
 //  Copyright (C) 2013 Klaus Iglberger - All Rights Reserved
 //
@@ -32,8 +32,8 @@
 */
 //=================================================================================================
 
-#ifndef _BLAZETEST_MATHTEST_DENSESUBVECTOR_ALIGNEDTEST_H_
-#define _BLAZETEST_MATHTEST_DENSESUBVECTOR_ALIGNEDTEST_H_
+#ifndef _BLAZETEST_MATHTEST_SUBVECTOR_DENSEALIGNEDTEST_H_
+#define _BLAZETEST_MATHTEST_SUBVECTOR_DENSEALIGNEDTEST_H_
 
 
 //*************************************************************************************************
@@ -45,7 +45,7 @@
 #include <string>
 #include <blaze/math/constraints/DenseVector.h>
 #include <blaze/math/DynamicVector.h>
-#include <blaze/math/DenseSubvector.h>
+#include <blaze/math/Subvector.h>
 #include <blazetest/system/Types.h>
 
 
@@ -53,7 +53,7 @@ namespace blazetest {
 
 namespace mathtest {
 
-namespace densesubvector {
+namespace subvector {
 
 //=================================================================================================
 //
@@ -62,18 +62,18 @@ namespace densesubvector {
 //=================================================================================================
 
 //*************************************************************************************************
-/*!\brief Auxiliary class for all tests of the aligned DenseSubvector class template.
+/*!\brief Auxiliary class for all tests of the dense aligned Subvector specialization.
 //
-// This class represents a test suite for the aligned specialization of the blaze::DenseSubvector
-// class template. It performs a series of both compile time as well as runtime tests.
+// This class represents a test suite for the blaze::Subvector class template specialization for
+// dense aligned subvectors. It performs a series of both compile time as well as runtime tests.
 */
-class AlignedTest
+class DenseAlignedTest
 {
  public:
    //**Constructors********************************************************************************
    /*!\name Constructors */
    //@{
-   explicit AlignedTest();
+   explicit DenseAlignedTest();
    // No explicitly declared copy constructor.
    //@}
    //**********************************************************************************************
@@ -119,8 +119,8 @@ class AlignedTest
 
    //**Type definitions****************************************************************************
    typedef blaze::DynamicVector<int,blaze::rowVector>  VT;    //!< Dynamic row vector type
-   typedef blaze::DenseSubvector<VT,blaze::aligned>    ASVT;  //!< Aligned subvector type for dynamic row vectors.
-   typedef blaze::DenseSubvector<VT,blaze::unaligned>  USVT;  //!< Unaligned subvector type for dynamic row vectors.
+   typedef blaze::Subvector<VT,blaze::aligned>         ASVT;  //!< Aligned subvector type for dynamic row vectors.
+   typedef blaze::Subvector<VT,blaze::unaligned>       USVT;  //!< Unaligned subvector type for dynamic row vectors.
    //**********************************************************************************************
 
    //**Member variables****************************************************************************
@@ -166,7 +166,7 @@ class AlignedTest
 // correspond to the given expected size, a \a std::runtime_error exception is thrown.
 */
 template< typename Type >  // Type of the dense vector
-void AlignedTest::checkSize( const Type& vector, size_t expectedSize ) const
+void DenseAlignedTest::checkSize( const Type& vector, size_t expectedSize ) const
 {
    if( size( vector ) != expectedSize ) {
       std::ostringstream oss;
@@ -194,7 +194,7 @@ void AlignedTest::checkSize( const Type& vector, size_t expectedSize ) const
 // a \a std::runtime_error exception is thrown.
 */
 template< typename Type >  // Type of the dense vector
-void AlignedTest::checkNonZeros( const Type& vector, size_t expectedNonZeros ) const
+void DenseAlignedTest::checkNonZeros( const Type& vector, size_t expectedNonZeros ) const
 {
    if( nonZeros( vector ) != expectedNonZeros ) {
       std::ostringstream oss;
@@ -228,13 +228,13 @@ void AlignedTest::checkNonZeros( const Type& vector, size_t expectedNonZeros ) c
 //=================================================================================================
 
 //*************************************************************************************************
-/*!\brief Testing the functionality of the aligned DenseSubvector class template.
+/*!\brief Testing the functionality of the dense aligned Subvector specialization.
 //
 // \return void
 */
 void runTest()
 {
-   AlignedTest();
+   DenseAlignedTest();
 }
 //*************************************************************************************************
 
@@ -249,14 +249,14 @@ void runTest()
 
 //*************************************************************************************************
 /*! \cond BLAZE_INTERNAL */
-/*!\brief Macro for the execution of the aligned DenseSubvector class test.
+/*!\brief Macro for the execution of the dense aligned Subvector test.
 */
-#define RUN_DENSESUBVECTOR_ALIGNED_TEST \
-   blazetest::mathtest::densesubvector::runTest()
+#define RUN_SUBVECTOR_DENSEALIGNED_TEST \
+   blazetest::mathtest::subvector::runTest()
 /*! \endcond */
 //*************************************************************************************************
 
-} // namespace densesubvector
+} // namespace subvector
 
 } // namespace mathtest
 

@@ -1,7 +1,7 @@
 //=================================================================================================
 /*!
-//  \file src/mathtest/densesubvector/AlignedTest.cpp
-//  \brief Source file for the aligned DenseSubvector class test
+//  \file src/mathtest/subvector/DenseAlignedTest.cpp
+//  \brief Source file for the Subvector dense aligned test
 //
 //  Copyright (C) 2013 Klaus Iglberger - All Rights Reserved
 //
@@ -45,7 +45,7 @@
 #include <blaze/util/Memory.h>
 #include <blaze/util/policies/Deallocate.h>
 #include <blaze/util/typetraits/AlignmentOf.h>
-#include <blazetest/mathtest/densesubvector/AlignedTest.h>
+#include <blazetest/mathtest/subvector/DenseAlignedTest.h>
 #include <blazetest/mathtest/RandomMaximum.h>
 #include <blazetest/mathtest/RandomMinimum.h>
 
@@ -54,7 +54,7 @@ namespace blazetest {
 
 namespace mathtest {
 
-namespace densesubvector {
+namespace subvector {
 
 //=================================================================================================
 //
@@ -63,11 +63,11 @@ namespace densesubvector {
 //=================================================================================================
 
 //*************************************************************************************************
-/*!\brief Constructor for the aligned DenseSubvector class test.
+/*!\brief Constructor for the Subvector dense aligned test.
 //
 // \exception std::runtime_error Operation error detected.
 */
-AlignedTest::AlignedTest()
+DenseAlignedTest::DenseAlignedTest()
    : vec1_( 64UL )
    , vec2_( 64UL )
 {
@@ -99,22 +99,22 @@ AlignedTest::AlignedTest()
 //=================================================================================================
 
 //*************************************************************************************************
-/*!\brief Test of the DenseSubvector constructors.
+/*!\brief Test of the Subvector constructors.
 //
 // \return void
 // \exception std::runtime_error Error detected.
 //
-// This function performs a test of all constructors of the DenseSubvector class template.
-// In case an error is detected, a \a std::runtime_error exception is thrown.
+// This function performs a test of all constructors of the Subvector specialization. In case
+// an error is detected, a \a std::runtime_error exception is thrown.
 */
-void AlignedTest::testConstructors()
+void DenseAlignedTest::testConstructors()
 {
    using blaze::subvector;
    using blaze::aligned;
    using blaze::unaligned;
 
 
-   test_ = "DenseSubvector constructor";
+   test_ = "Subvector constructor";
 
    initialize();
 
@@ -184,15 +184,15 @@ void AlignedTest::testConstructors()
 
 
 //*************************************************************************************************
-/*!\brief Test of the DenseSubvector assignment operators.
+/*!\brief Test of the Subvector assignment operators.
 //
 // \return void
 // \exception std::runtime_error Error detected.
 //
-// This function performs a test of all assignment operators of the DenseSubvector class
-// template. In case an error is detected, a \a std::runtime_error exception is thrown.
+// This function performs a test of all assignment operators of the Subvector specialization.
+// In case an error is detected, a \a std::runtime_error exception is thrown.
 */
-void AlignedTest::testAssignment()
+void DenseAlignedTest::testAssignment()
 {
    using blaze::subvector;
    using blaze::aligned;
@@ -207,7 +207,7 @@ void AlignedTest::testAssignment()
    //=====================================================================================
 
    {
-      test_ = "DenseSubvector homogeneous assignment";
+      test_ = "Subvector homogeneous assignment";
 
       initialize();
 
@@ -236,7 +236,7 @@ void AlignedTest::testAssignment()
    //=====================================================================================
 
    {
-      test_ = "DenseSubvector initializer list assignment (complete list)";
+      test_ = "Subvector initializer list assignment (complete list)";
 
       initialize();
 
@@ -258,7 +258,7 @@ void AlignedTest::testAssignment()
    }
 
    {
-      test_ = "DenseSubvector initializer list assignment (incomplete list)";
+      test_ = "Subvector initializer list assignment (incomplete list)";
 
       initialize();
 
@@ -285,7 +285,7 @@ void AlignedTest::testAssignment()
    //=====================================================================================
 
    {
-      test_ = "DenseSubvector copy assignment (no aliasing)";
+      test_ = "Subvector copy assignment (no aliasing)";
 
       initialize();
 
@@ -314,14 +314,14 @@ void AlignedTest::testAssignment()
    }
 
    {
-      test_ = "DenseSubvector copy assignment (aliasing)";
+      test_ = "Subvector copy assignment (aliasing)";
 
       initialize();
 
       ASVT sv1 = subvector<aligned>  ( vec1_, 8UL, 16UL );
       USVT sv2 = subvector<unaligned>( vec2_, 8UL, 16UL );
-      sv1 = subvector( vec1_, 24UL, 16UL );
-      sv2 = subvector( vec2_, 24UL, 16UL );
+      sv1 = blaze::subvector( vec1_, 24UL, 16UL );
+      sv2 = blaze::subvector( vec2_, 24UL, 16UL );
 
       checkSize( sv1, 16UL );
       checkSize( sv2, 16UL );
@@ -343,7 +343,7 @@ void AlignedTest::testAssignment()
    //=====================================================================================
 
    {
-      test_ = "DenseSubvector dense vector assignment (aligned/padded)";
+      test_ = "Subvector dense vector assignment (aligned/padded)";
 
       initialize();
 
@@ -372,7 +372,7 @@ void AlignedTest::testAssignment()
    }
 
    {
-      test_ = "DenseSubvector dense vector assignment (unaligned/unpadded)";
+      test_ = "Subvector dense vector assignment (unaligned/unpadded)";
 
       initialize();
 
@@ -407,7 +407,7 @@ void AlignedTest::testAssignment()
    //=====================================================================================
 
    {
-      test_ = "DenseSubvector sparse vector assignment";
+      test_ = "Subvector sparse vector assignment";
 
       initialize();
 
@@ -438,15 +438,15 @@ void AlignedTest::testAssignment()
 
 
 //*************************************************************************************************
-/*!\brief Test of the DenseSubvector addition assignment operators.
+/*!\brief Test of the Subvector addition assignment operators.
 //
 // \return void
 // \exception std::runtime_error Error detected.
 //
-// This function performs a test of the addition assignment operators of the DenseSubvector
-// class template. In case an error is detected, a \a std::runtime_error exception is thrown.
+// This function performs a test of the addition assignment operators of the Subvector
+// specialization. In case an error is detected, a \a std::runtime_error exception is thrown.
 */
-void AlignedTest::testAddAssign()
+void DenseAlignedTest::testAddAssign()
 {
    using blaze::subvector;
    using blaze::aligned;
@@ -457,11 +457,11 @@ void AlignedTest::testAddAssign()
 
 
    //=====================================================================================
-   // DenseSubvector addition assignment
+   // Subvector addition assignment
    //=====================================================================================
 
    {
-      test_ = "DenseSubvector addition assignment (no aliasing)";
+      test_ = "Subvector addition assignment (no aliasing)";
 
       initialize();
 
@@ -490,7 +490,7 @@ void AlignedTest::testAddAssign()
    }
 
    {
-      test_ = "DenseSubvector addition assignment (aliasing)";
+      test_ = "Subvector addition assignment (aliasing)";
 
       initialize();
 
@@ -519,7 +519,7 @@ void AlignedTest::testAddAssign()
    //=====================================================================================
 
    {
-      test_ = "DenseSubvector dense vector addition assignment (aligned/padded)";
+      test_ = "Subvector dense vector addition assignment (aligned/padded)";
 
       initialize();
 
@@ -548,7 +548,7 @@ void AlignedTest::testAddAssign()
    }
 
    {
-      test_ = "DenseSubvector dense vector addition assignment (unaligned/unpadded)";
+      test_ = "Subvector dense vector addition assignment (unaligned/unpadded)";
 
       initialize();
 
@@ -583,7 +583,7 @@ void AlignedTest::testAddAssign()
    //=====================================================================================
 
    {
-      test_ = "DenseSubvector sparse vector addition assignment";
+      test_ = "Subvector sparse vector addition assignment";
 
       initialize();
 
@@ -614,15 +614,15 @@ void AlignedTest::testAddAssign()
 
 
 //*************************************************************************************************
-/*!\brief Test of the DenseSubvector subtraction assignment operators.
+/*!\brief Test of the Subvector subtraction assignment operators.
 //
 // \return void
 // \exception std::runtime_error Error detected.
 //
-// This function performs a test of the subtraction assignment operators of the DenseSubvector
-// class template. In case an error is detected, a \a std::runtime_error exception is thrown.
+// This function performs a test of the subtraction assignment operators of the Subvector
+// specialization. In case an error is detected, a \a std::runtime_error exception is thrown.
 */
-void AlignedTest::testSubAssign()
+void DenseAlignedTest::testSubAssign()
 {
    using blaze::subvector;
    using blaze::aligned;
@@ -633,11 +633,11 @@ void AlignedTest::testSubAssign()
 
 
    //=====================================================================================
-   // DenseSubvector subtraction assignment
+   // Subvector subtraction assignment
    //=====================================================================================
 
    {
-      test_ = "DenseSubvector subtraction assignment (no aliasing)";
+      test_ = "Subvector subtraction assignment (no aliasing)";
 
       initialize();
 
@@ -666,7 +666,7 @@ void AlignedTest::testSubAssign()
    }
 
    {
-      test_ = "DenseSubvector subtraction assignment (aliasing)";
+      test_ = "Subvector subtraction assignment (aliasing)";
 
       initialize();
 
@@ -695,7 +695,7 @@ void AlignedTest::testSubAssign()
    //=====================================================================================
 
    {
-      test_ = "DenseSubvector dense vector subtraction assignment (aligned/padded)";
+      test_ = "Subvector dense vector subtraction assignment (aligned/padded)";
 
       initialize();
 
@@ -724,7 +724,7 @@ void AlignedTest::testSubAssign()
    }
 
    {
-      test_ = "DenseSubvector dense vector subtraction assignment (unaligned/unpadded)";
+      test_ = "Subvector dense vector subtraction assignment (unaligned/unpadded)";
 
       initialize();
 
@@ -759,7 +759,7 @@ void AlignedTest::testSubAssign()
    //=====================================================================================
 
    {
-      test_ = "DenseSubvector sparse vector subtraction assignment";
+      test_ = "Subvector sparse vector subtraction assignment";
 
       initialize();
 
@@ -790,15 +790,15 @@ void AlignedTest::testSubAssign()
 
 
 //*************************************************************************************************
-/*!\brief Test of the DenseSubvector multiplication assignment operators.
+/*!\brief Test of the Subvector multiplication assignment operators.
 //
 // \return void
 // \exception std::runtime_error Error detected.
 //
-// This function performs a test of the multiplication assignment operators of the DenseSubvector
-// class template. In case an error is detected, a \a std::runtime_error exception is thrown.
+// This function performs a test of the multiplication assignment operators of the Subvector
+// specialization. In case an error is detected, a \a std::runtime_error exception is thrown.
 */
-void AlignedTest::testMultAssign()
+void DenseAlignedTest::testMultAssign()
 {
    using blaze::subvector;
    using blaze::aligned;
@@ -809,11 +809,11 @@ void AlignedTest::testMultAssign()
 
 
    //=====================================================================================
-   // DenseSubvector multiplication assignment
+   // Subvector multiplication assignment
    //=====================================================================================
 
    {
-      test_ = "DenseSubvector multiplication assignment (no aliasing)";
+      test_ = "Subvector multiplication assignment (no aliasing)";
 
       initialize();
 
@@ -842,7 +842,7 @@ void AlignedTest::testMultAssign()
    }
 
    {
-      test_ = "DenseSubvector multiplication assignment (aliasing)";
+      test_ = "Subvector multiplication assignment (aliasing)";
 
       initialize();
 
@@ -871,7 +871,7 @@ void AlignedTest::testMultAssign()
    //=====================================================================================
 
    {
-      test_ = "DenseSubvector dense vector multiplication assignment (aligned/padded)";
+      test_ = "Subvector dense vector multiplication assignment (aligned/padded)";
 
       initialize();
 
@@ -900,7 +900,7 @@ void AlignedTest::testMultAssign()
    }
 
    {
-      test_ = "DenseSubvector dense vector multiplication assignment (unaligned/unpadded)";
+      test_ = "Subvector dense vector multiplication assignment (unaligned/unpadded)";
 
       initialize();
 
@@ -935,7 +935,7 @@ void AlignedTest::testMultAssign()
    //=====================================================================================
 
    {
-      test_ = "DenseSubvector sparse vector multiplication assignment";
+      test_ = "Subvector sparse vector multiplication assignment";
 
       initialize();
 
@@ -966,15 +966,15 @@ void AlignedTest::testMultAssign()
 
 
 //*************************************************************************************************
-/*!\brief Test of the DenseSubvector division assignment operators.
+/*!\brief Test of the Subvector division assignment operators.
 //
 // \return void
 // \exception std::runtime_error Error detected.
 //
-// This function performs a test of the division assignment operators of the DenseSubvector
-// class template. In case an error is detected, a \a std::runtime_error exception is thrown.
+// This function performs a test of the division assignment operators of the Subvector
+// specialization. In case an error is detected, a \a std::runtime_error exception is thrown.
 */
-void AlignedTest::testDivAssign()
+void DenseAlignedTest::testDivAssign()
 {
    using blaze::subvector;
    using blaze::aligned;
@@ -985,11 +985,11 @@ void AlignedTest::testDivAssign()
 
 
    //=====================================================================================
-   // DenseSubvector division assignment
+   // Subvector division assignment
    //=====================================================================================
 
    {
-      test_ = "DenseSubvector division assignment (no aliasing)";
+      test_ = "Subvector division assignment (no aliasing)";
 
       initialize();
 
@@ -1018,7 +1018,7 @@ void AlignedTest::testDivAssign()
    }
 
    {
-      test_ = "DenseSubvector division assignment (aliasing)";
+      test_ = "Subvector division assignment (aliasing)";
 
       randomize( vec1_, 1, int(randmax) );
       vec2_ = vec1_;
@@ -1048,7 +1048,7 @@ void AlignedTest::testDivAssign()
    //=====================================================================================
 
    {
-      test_ = "DenseSubvector dense vector division assignment (aligned/padded)";
+      test_ = "Subvector dense vector division assignment (aligned/padded)";
 
       initialize();
 
@@ -1077,7 +1077,7 @@ void AlignedTest::testDivAssign()
    }
 
    {
-      test_ = "DenseSubvector dense vector division assignment (unaligned/unpadded)";
+      test_ = "Subvector dense vector division assignment (unaligned/unpadded)";
 
       initialize();
 
@@ -1110,15 +1110,15 @@ void AlignedTest::testDivAssign()
 
 
 //*************************************************************************************************
-/*!\brief Test of all DenseSubvector (self-)scaling operations.
+/*!\brief Test of all Subvector (self-)scaling operations.
 //
 // \return void
 // \exception std::runtime_error Error detected.
 //
-// This function performs a test of all available ways to scale an instance of the DenseSubvector
-// class template. In case an error is detected, a \a std::runtime_error exception is thrown.
+// This function performs a test of all available ways to scale an instance of the Subvector
+// specialization. In case an error is detected, a \a std::runtime_error exception is thrown.
 */
-void AlignedTest::testScaling()
+void DenseAlignedTest::testScaling()
 {
    using blaze::subvector;
    using blaze::aligned;
@@ -1130,7 +1130,7 @@ void AlignedTest::testScaling()
    //=====================================================================================
 
    {
-      test_ = "DenseSubvector self-scaling (v*=s)";
+      test_ = "Subvector self-scaling (v*=s)";
 
       initialize();
 
@@ -1160,7 +1160,7 @@ void AlignedTest::testScaling()
    //=====================================================================================
 
    {
-      test_ = "DenseSubvector self-scaling (v=v*s)";
+      test_ = "Subvector self-scaling (v=v*s)";
 
       initialize();
 
@@ -1190,7 +1190,7 @@ void AlignedTest::testScaling()
    //=====================================================================================
 
    {
-      test_ = "DenseSubvector self-scaling (v=s*v)";
+      test_ = "Subvector self-scaling (v=s*v)";
 
       initialize();
 
@@ -1220,7 +1220,7 @@ void AlignedTest::testScaling()
    //=====================================================================================
 
    {
-      test_ = "DenseSubvector self-scaling (v/=s)";
+      test_ = "Subvector self-scaling (v/=s)";
 
       initialize();
 
@@ -1250,7 +1250,7 @@ void AlignedTest::testScaling()
    //=====================================================================================
 
    {
-      test_ = "DenseSubvector self-scaling (v/=s)";
+      test_ = "Subvector self-scaling (v/=s)";
 
       initialize();
 
@@ -1276,11 +1276,11 @@ void AlignedTest::testScaling()
 
 
    //=====================================================================================
-   // DenseSubvector::scale()
+   // Subvector::scale()
    //=====================================================================================
 
    {
-      test_ = "DenseSubvector::scale()";
+      test_ = "Subvector::scale()";
 
       initialize();
 
@@ -1326,23 +1326,23 @@ void AlignedTest::testScaling()
 
 
 //*************************************************************************************************
-/*!\brief Test of the DenseSubvector subscript operator.
+/*!\brief Test of the Subvector subscript operator.
 //
 // \return void
 // \exception std::runtime_error Error detected.
 //
 // This function performs a test of adding and accessing elements via the subscript operator
-// of the DenseSubvector class template. In case an error is detected, a \a std::runtime_error
+// of the Subvector specialization. In case an error is detected, a \a std::runtime_error
 // exception is thrown.
 */
-void AlignedTest::testSubscript()
+void DenseAlignedTest::testSubscript()
 {
    using blaze::subvector;
    using blaze::aligned;
    using blaze::unaligned;
 
 
-   test_ = "DenseSubvector::operator[]";
+   test_ = "Subvector::operator[]";
 
    initialize();
 
@@ -1472,15 +1472,15 @@ void AlignedTest::testSubscript()
 
 
 //*************************************************************************************************
-/*!\brief Test of the DenseSubvector iterator implementation.
+/*!\brief Test of the Subvector iterator implementation.
 //
 // \return void
 // \exception std::runtime_error Error detected.
 //
-// This function performs a test of the iterator implementation of the DenseSubvector class
-// template. In case an error is detected, a \a std::runtime_error exception is thrown.
+// This function performs a test of the iterator implementation of the Subvector specialization.
+// In case an error is detected, a \a std::runtime_error exception is thrown.
 */
-void AlignedTest::testIterator()
+void DenseAlignedTest::testIterator()
 {
    using blaze::subvector;
    using blaze::aligned;
@@ -1807,22 +1807,22 @@ void AlignedTest::testIterator()
 
 
 //*************************************************************************************************
-/*!\brief Test of the \c nonZeros() member function of the DenseSubvector class template.
+/*!\brief Test of the \c nonZeros() member function of the Subvector specialization.
 //
 // \return void
 // \exception std::runtime_error Error detected.
 //
-// This function performs a test of the \c nonZeros() member function of the DenseSubvector
-// class template. In case an error is detected, a \a std::runtime_error exception is thrown.
+// This function performs a test of the \c nonZeros() member function of the Subvector
+// specialization. In case an error is detected, a \a std::runtime_error exception is thrown.
 */
-void AlignedTest::testNonZeros()
+void DenseAlignedTest::testNonZeros()
 {
    using blaze::subvector;
    using blaze::aligned;
    using blaze::unaligned;
 
 
-   test_ = "DenseSubvector::nonZeros()";
+   test_ = "Subvector::nonZeros()";
 
    initialize();
 
@@ -1881,15 +1881,15 @@ void AlignedTest::testNonZeros()
 
 
 //*************************************************************************************************
-/*!\brief Test of the \c reset() member function of the DenseSubvector class template.
+/*!\brief Test of the \c reset() member function of the Subvector specialization.
 //
 // \return void
 // \exception std::runtime_error Error detected.
 //
-// This function performs a test of the \c reset() member function of the DenseSubvector
-// class template. In case an error is detected, a \a std::runtime_error exception is thrown.
+// This function performs a test of the \c reset() member function of the Subvector
+// specialization. In case an error is detected, a \a std::runtime_error exception is thrown.
 */
-void AlignedTest::testReset()
+void DenseAlignedTest::testReset()
 {
    using blaze::subvector;
    using blaze::aligned;
@@ -1897,7 +1897,7 @@ void AlignedTest::testReset()
    using blaze::reset;
 
 
-   test_ = "DenseSubvector::reset()";
+   test_ = "Subvector::reset()";
 
    initialize();
 
@@ -1968,15 +1968,15 @@ void AlignedTest::testReset()
 
 
 //*************************************************************************************************
-/*!\brief Test of the \c clear() function with the DenseSubvector class template.
+/*!\brief Test of the \c clear() function with the Subvector specialization.
 //
 // \return void
 // \exception std::runtime_error Error detected.
 //
-// This function performs a test of the \c clear() function with the DenseSubvector class
-// template. In case an error is detected, a \a std::runtime_error exception is thrown.
+// This function performs a test of the \c clear() function with the Subvector specialization.
+// In case an error is detected, a \a std::runtime_error exception is thrown.
 */
-void AlignedTest::testClear()
+void DenseAlignedTest::testClear()
 {
    using blaze::subvector;
    using blaze::aligned;
@@ -1984,7 +1984,7 @@ void AlignedTest::testClear()
    using blaze::clear;
 
 
-   test_ = "DenseSubvector::clear()";
+   test_ = "Subvector::clear()";
 
    initialize();
 
@@ -2013,15 +2013,15 @@ void AlignedTest::testClear()
 
 
 //*************************************************************************************************
-/*!\brief Test of the \c isDefault() function with the DenseSubvector class template.
+/*!\brief Test of the \c isDefault() function with the Subvector specialization.
 //
 // \return void
 // \exception std::runtime_error Error detected.
 //
-// This function performs a test of the \c isDefault() function with the DenseSubvector class
-// template. In case an error is detected, a \a std::runtime_error exception is thrown.
+// This function performs a test of the \c isDefault() function with the Subvector specialization.
+// In case an error is detected, a \a std::runtime_error exception is thrown.
 */
-void AlignedTest::testIsDefault()
+void DenseAlignedTest::testIsDefault()
 {
    using blaze::subvector;
    using blaze::aligned;
@@ -2074,15 +2074,15 @@ void AlignedTest::testIsDefault()
 
 
 //*************************************************************************************************
-/*!\brief Test of the \c isSame() function with the DenseSubvector class template.
+/*!\brief Test of the \c isSame() function with the Subvector specialization.
 //
 // \return void
 // \exception std::runtime_error Error detected.
 //
-// This function performs a test of the \c isSame() function with the DenseSubvector class
-// template. In case an error is detected, a \a std::runtime_error exception is thrown.
+// This function performs a test of the \c isSame() function with the Subvector specialization.
+// In case an error is detected, a \a std::runtime_error exception is thrown.
 */
-void AlignedTest::testIsSame()
+void DenseAlignedTest::testIsSame()
 {
    using blaze::subvector;
    using blaze::aligned;
@@ -2217,15 +2217,15 @@ void AlignedTest::testIsSame()
 
 
 //*************************************************************************************************
-/*!\brief Test of the \c subvector() function with the DenseSubvector class template.
+/*!\brief Test of the \c subvector() function with the Subvector specialization.
 //
 // \return void
 // \exception std::runtime_error Error detected.
 //
-// This function performs a test of the \c subvector() function used with the DenseSubvector
-// class template. In case an error is detected, a \a std::runtime_error exception is thrown.
+// This function performs a test of the \c subvector() function used with the Subvector
+// specialization. In case an error is detected, a \a std::runtime_error exception is thrown.
 */
-void AlignedTest::testSubvector()
+void DenseAlignedTest::testSubvector()
 {
    using blaze::subvector;
    using blaze::aligned;
@@ -2318,7 +2318,7 @@ void AlignedTest::testSubvector()
 //
 // This function initializes all member vectors to specific predetermined values.
 */
-void AlignedTest::initialize()
+void DenseAlignedTest::initialize()
 {
    // Initializing the dynamic row vectors
    randomize( vec1_, int(randmin), int(randmax) );
@@ -2326,7 +2326,7 @@ void AlignedTest::initialize()
 }
 //*************************************************************************************************
 
-} // namespace densesubvector
+} // namespace subvector
 
 } // namespace mathtest
 
@@ -2344,14 +2344,14 @@ void AlignedTest::initialize()
 //*************************************************************************************************
 int main()
 {
-   std::cout << "   Running aligned DenseSubvector class test..." << std::endl;
+   std::cout << "   Running Subvector dense aligned test..." << std::endl;
 
    try
    {
-      RUN_DENSESUBVECTOR_ALIGNED_TEST;
+      RUN_SUBVECTOR_DENSEALIGNED_TEST;
    }
    catch( std::exception& ex ) {
-      std::cerr << "\n\n ERROR DETECTED during aligned DenseSubvector class test:\n"
+      std::cerr << "\n\n ERROR DETECTED during Subvector dense aligned test:\n"
                 << ex.what() << "\n";
       return EXIT_FAILURE;
    }
