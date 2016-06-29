@@ -6126,54 +6126,28 @@
 // the subvector is not resized or entirely destroyed. The subvector also acts as an alias to the
 // vector elements in the specified range: Changes made to the elements (e.g. modifying values,
 // inserting or erasing elements) are immediately visible in the vector and changes made via the
-// vector are immediately visible in the subvector. \b Blaze provides two subvector types:
-// \ref views_dense_subvector and \ref views_sparse_subvector.
+// vector are immediately visible in the subvector.
 //
 //
-// \n \section views_dense_subvector DenseSubvector
+// \n \section views_subvector_class The Subvector Class Template
 // <hr>
 //
-// The blaze::DenseSubvector template represents a view on a specific subvector of a dense vector
-// primitive. It can be included via the header file
+// The blaze::Subvector class template represents a view on a specific subvector of a dense or
+// sparse vector primitive. It can be included via the header file
 
    \code
-   #include <blaze/math/DenseSubvector.h>
+   #include <blaze/math/Subvector.h>
    \endcode
 
-// The type of the dense vector is specified two template parameters:
+// The type of the vector is specified via two template parameters:
 
    \code
    template< typename VT, bool AF >
-   class DenseSubvector;
+   class Subvector;
    \endcode
 
-//  - \c VT: specifies the type of the dense vector primitive. DenseSubvector can be used with
-//           every dense vector primitive or view, but does not work with any vector expression
-//           type.
-//  - \c AF: the alignment flag specifies whether the subvector is aligned (blaze::aligned) or
-//           unaligned (blaze::unaligned). The default value is blaze::unaligned.
-//
-//
-// \n \section views_sparse_subvector SparseSubvector
-// <hr>
-//
-// The blaze::SparseSubvector template represents a view on a specific subvector of a sparse
-// vector primitive. It can be included via the header file
-
-   \code
-   #include <blaze/math/SparseSubvector.h>
-   \endcode
-
-// The type of the sparse vector is specified via two template parameters:
-
-   \code
-   template< typename VT, bool AF >
-   class SparseSubvector;
-   \endcode
-
-//  - \c VT: specifies the type of the sparse vector primitive. As in case of DenseSubvector, a
-//           SparseSubvector can be used with every sparse vector primitive or view, but does not
-//           work with any vector expression type.
+//  - \c VT: specifies the type of the vector primitive. Subvector can be used with every vector
+//           primitive or view, but does not work with any vector expression type.
 //  - \c AF: the alignment flag specifies whether the subvector is aligned (blaze::aligned) or
 //           unaligned (blaze::unaligned). The default value is blaze::unaligned.
 //
@@ -6187,9 +6161,9 @@
 // vector can be used as any other row vector, a subvector created from a column vector can be
 // used as any other column vector. The view can also be used on both sides of an assignment:
 // The subvector can either be used as an alias to grant write access to a specific subvector
-// of a dense vector primitive on the left-hand side of an assignment or to grant read-access
-// to a specific subvector of a vector primitive or expression on the right-hand side of an
-// assignment. The following example demonstrates this in detail:
+// of a vector primitive on the left-hand side of an assignment or to grant read-access to a
+// specific subvector of a vector primitive or expression on the right-hand side of an assignment.
+// The following example demonstrates this in detail:
 
    \code
    typedef blaze::DynamicVector<double,blaze::rowVector>  DenseVectorType;
@@ -6213,9 +6187,9 @@
    \endcode
 
 // The \c subvector() function can be used on any dense or sparse vector, including expressions,
-// as demonstrated in the example. Note however that a \ref views_dense_subvector or
-// \ref views_sparse_subvector can only be instantiated with a dense or sparse vector primitive,
-// respectively, i.e. with types that can be written, and not with an expression type.
+// as demonstrated in the example. Note however that a blaze::Subvector can only be instantiated
+// with a dense or sparse vector primitive, i.e. with types that can be written, and not with an
+// expression type.
 //
 //
 // \n \section views_subvectors_common_operations Common Operations
