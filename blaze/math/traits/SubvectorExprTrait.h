@@ -41,10 +41,9 @@
 //*************************************************************************************************
 
 #include <blaze/math/typetraits/IsComputation.h>
-#include <blaze/math/typetraits/IsDenseVector.h>
 #include <blaze/math/typetraits/IsRowVector.h>
-#include <blaze/math/typetraits/IsSparseVector.h>
 #include <blaze/math/typetraits/IsTransExpr.h>
+#include <blaze/math/typetraits/IsVector.h>
 #include <blaze/math/views/Forward.h>
 #include <blaze/util/InvalidType.h>
 #include <blaze/util/mpl/If.h>
@@ -85,17 +84,10 @@ struct SubvectorExprTrait
    /*! \endcond */
    //**********************************************************************************************
 
-   //**struct DenseResult**************************************************************************
+   //**struct Result*******************************************************************************
    /*! \cond BLAZE_INTERNAL */
    template< typename T >
-   struct DenseResult { using Type = DenseSubvector<T,AF,IsRowVector<T>::value>; };
-   /*! \endcond */
-   //**********************************************************************************************
-
-   //**struct SparseResult*************************************************************************
-   /*! \cond BLAZE_INTERNAL */
-   template< typename T >
-   struct SparseResult { using Type = SparseSubvector<T,AF,IsRowVector<T>::value>; };
+   struct Result { using Type = Subvector<T,AF,IsRowVector<T>::value,IsDenseVector<T>::value>; };
    /*! \endcond */
    //**********************************************************************************************
 
@@ -112,11 +104,9 @@ struct SubvectorExprTrait
                             , If_< Or< IsConst<Tmp>, IsVolatile<Tmp> >
                                  , SubvectorExprTrait< RemoveCV_<Tmp>, AF >
                                  , Failure >
-                            , If_< IsDenseVector<Tmp>
-                                 , DenseResult<Tmp>
-                                 , If_< IsSparseVector<Tmp>
-                                      , SparseResult<Tmp>
-                                      , Failure > >
+                            , If_< IsVector<Tmp>
+                                 , Result<Tmp>
+                                 , Failure >
                             >::Type;
    /*! \endcond */
    //**********************************************************************************************

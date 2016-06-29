@@ -42,7 +42,6 @@
 
 #include <blaze/math/Aliases.h>
 #include <blaze/math/constraints/SMPAssignable.h>
-#include <blaze/math/DenseSubvector.h>
 #include <blaze/math/expressions/DenseVector.h>
 #include <blaze/math/expressions/SparseVector.h>
 #include <blaze/math/Functions.h>
@@ -50,10 +49,10 @@
 #include <blaze/math/smp/ParallelSection.h>
 #include <blaze/math/smp/SerialSection.h>
 #include <blaze/math/smp/threads/ThreadBackend.h>
-#include <blaze/math/SparseSubvector.h>
 #include <blaze/math/traits/SubvectorExprTrait.h>
 #include <blaze/math/typetraits/IsDenseVector.h>
 #include <blaze/math/typetraits/IsSMPAssignable.h>
+#include <blaze/math/views/Subvector.h>
 #include <blaze/system/SMP.h>
 #include <blaze/util/Assert.h>
 #include <blaze/util/EnableIf.h>

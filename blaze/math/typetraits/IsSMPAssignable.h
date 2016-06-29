@@ -105,7 +105,7 @@ struct IsSMPAssignableHelper
    using blaze::DynamicMatrix;
 
    typedef blaze::DynamicVector<int,columnVector>  VectorType;
-   typedef blaze::DenseSubvector<VectorType>       SubvectorType;
+   typedef blaze::Subvector<VectorType>            SubvectorType;
 
    blaze::IsSMPAssignable< VectorType >::value            // Evaluates to 1
    blaze::IsSMPAssignable< SubvectorType >::Type          // Results in TrueType

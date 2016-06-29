@@ -64,7 +64,6 @@
 #include <blaze/math/smp/DenseVector.h>
 #include <blaze/math/smp/SparseVector.h>
 #include <blaze/math/Vector.h>
-#include <blaze/math/views/DenseSubvector.h>
 #include <blaze/math/views/Subvector.h>
 
 #endif

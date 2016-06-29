@@ -58,7 +58,7 @@ namespace blaze {
    typedef blaze::DynamicVector<int,columnVector>  VectorType;
 
    VectorType v( 100UL );
-   DenseSubvector<VectorType,unaligned> sv = subvector<unaligned>( v, 10UL, 20UL );
+   Subvector<VectorType,unaligned> sv = subvector<unaligned>( v, 10UL, 20UL );
    \endcode
 */
 const bool unaligned = false;
@@ -79,7 +79,7 @@ const bool unaligned = false;
    typedef blaze::DynamicVector<int,columnVector>  VectorType;
 
    VectorType v( 100UL );
-   DenseSubvector<VectorType,aligned> sv = subvector<aligned>( v, 8UL, 32UL );
+   Subvector<VectorType,aligned> sv = subvector<aligned>( v, 8UL, 32UL );
    \endcode
 */
 const bool aligned = true;

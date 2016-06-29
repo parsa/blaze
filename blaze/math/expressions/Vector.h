@@ -401,8 +401,8 @@ BLAZE_ALWAYS_INLINE void resize( Vector<VT,TF>& vector, size_t n, bool preserve 
 // \a false.
 
    \code
-   typedef blaze::DynamicVector<int>          VectorType;
-   typedef blaze::DenseSubvector<VectorType>  SubvectorType;
+   typedef blaze::DynamicVector<int>     VectorType;
+   typedef blaze::Subvector<VectorType>  SubvectorType;
 
    VectorType vec1( 4UL );  // Setup of a 4-dimensional dynamic vector
    VectorType vec2( 4UL );  // Setup of a second 4-dimensional dynamic vector

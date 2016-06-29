@@ -69,7 +69,7 @@ namespace blaze {
    using blaze::columnVector;
 
    typedef blaze::DynamicVector<double,columnVector>  VectorType;
-   typedef blaze::DenseSubvector<VectorType>          SubvectorType;
+   typedef blaze::Subvector<VectorType>               SubvectorType;
 
    typedef blaze::CompressedMatrix<int,rowMajor>  MatrixType;
    typedef blaze::Row<MatrixType>                 RowType;
