@@ -1,7 +1,7 @@
 //=================================================================================================
 /*!
-//  \file blaze/math/SparseSubmatrix.h
-//  \brief Header file for the complete SparseSubmatrix implementation
+//  \file blaze/math/Submatrix.h
+//  \brief Header file for the complete Submatrix implementation
 //
 //  Copyright (C) 2013 Klaus Iglberger - All Rights Reserved
 //
@@ -32,8 +32,8 @@
 */
 //=================================================================================================
 
-#ifndef _BLAZE_MATH_SPARSESUBMATRIX_H_
-#define _BLAZE_MATH_SPARSESUBMATRIX_H_
+#ifndef _BLAZE_MATH_SUBMATRIX_H_
+#define _BLAZE_MATH_SUBMATRIX_H_
 
 
 //*************************************************************************************************
@@ -42,7 +42,8 @@
 
 #include <blaze/math/Aliases.h>
 #include <blaze/math/Exception.h>
-#include <blaze/math/views/SparseSubmatrix.h>
+#include <blaze/math/smp/DenseMatrix.h>
+#include <blaze/math/smp/SparseMatrix.h>
 #include <blaze/math/views/Submatrix.h>
 #include <blaze/math/views/Subvector.h>
 #include <blaze/util/Random.h>
@@ -52,34 +53,139 @@ namespace blaze {
 
 //=================================================================================================
 //
-//  RAND SPECIALIZATION
+//  RAND SPECIALIZATION FOR DENSE SUBMATRICES
 //
 //=================================================================================================
 
 //*************************************************************************************************
 /*! \cond BLAZE_INTERNAL */
-/*!\brief Specialization of the Rand class template for SparseSubmatrix.
+/*!\brief Specialization of the Rand class template for dense submatrices.
 // \ingroup random
 //
-// This specialization of the Rand class randomizes instances of SparseSubmatrix.
+// This specialization of the Rand class randomizes dense submatrices.
 */
-template< typename MT  // Type of the sparse matrix
+template< typename MT  // Type of the dense matrix
         , bool AF      // Alignment flag
         , bool SO >    // Storage order
-class Rand< SparseSubmatrix<MT,AF,SO> >
+class Rand< Submatrix<MT,AF,SO,true> >
 {
  public:
    //**Randomize functions*************************************************************************
    /*!\name Randomize functions */
    //@{
-   inline void randomize( SparseSubmatrix<MT,AF,SO>& submatrix ) const;
-   inline void randomize( SparseSubmatrix<MT,AF,SO>& submatrix, size_t nonzeros ) const;
+   inline void randomize( Submatrix<MT,AF,SO,true>& submatrix ) const;
 
    template< typename Arg >
-   inline void randomize( SparseSubmatrix<MT,AF,SO>& submatrix, const Arg& min, const Arg& max ) const;
+   inline void randomize( Submatrix<MT,AF,SO,true>& submatrix, const Arg& min, const Arg& max ) const;
+   //@}
+   //**********************************************************************************************
+};
+/*! \endcond */
+//*************************************************************************************************
+
+
+//*************************************************************************************************
+/*! \cond BLAZE_INTERNAL */
+/*!\brief Randomization of a dense submatrix.
+//
+// \param submatrix The submatrix to be randomized.
+// \return void
+*/
+template< typename MT  // Type of the dense matrix
+        , bool AF      // Alignment flag
+        , bool SO >    // Storage order
+inline void Rand< Submatrix<MT,AF,SO,true> >::randomize( Submatrix<MT,AF,SO,true>& submatrix ) const
+{
+   using blaze::randomize;
+
+   if( SO == rowMajor ) {
+      for( size_t i=0UL; i<submatrix.rows(); ++i ) {
+         for( size_t j=0UL; j<submatrix.columns(); ++j ) {
+            randomize( submatrix(i,j) );
+         }
+      }
+   }
+   else {
+      for( size_t j=0UL; j<submatrix.columns(); ++j ) {
+         for( size_t i=0UL; i<submatrix.rows(); ++i ) {
+            randomize( submatrix(i,j) );
+         }
+      }
+   }
+}
+/*! \endcond */
+//*************************************************************************************************
+
+
+//*************************************************************************************************
+/*! \cond BLAZE_INTERNAL */
+/*!\brief Randomization of a dense submatrix.
+//
+// \param submatrix The submatrix to be randomized.
+// \param min The smallest possible value for a matrix element.
+// \param max The largest possible value for a matrix element.
+// \return void
+*/
+template< typename MT     // Type of the dense matrix
+        , bool AF         // Alignment flag
+        , bool SO >       // Storage order
+template< typename Arg >  // Min/max argument type
+inline void Rand< Submatrix<MT,AF,SO,true> >::randomize( Submatrix<MT,AF,SO,true>& submatrix,
+                                                         const Arg& min, const Arg& max ) const
+{
+   using blaze::randomize;
+
+   if( SO == rowMajor ) {
+      for( size_t i=0UL; i<submatrix.rows(); ++i ) {
+         for( size_t j=0UL; j<submatrix.columns(); ++j ) {
+            randomize( submatrix(i,j), min, max );
+         }
+      }
+   }
+   else {
+      for( size_t j=0UL; j<submatrix.columns(); ++j ) {
+         for( size_t i=0UL; i<submatrix.rows(); ++i ) {
+            randomize( submatrix(i,j), min, max );
+         }
+      }
+   }
+}
+/*! \endcond */
+//*************************************************************************************************
+
+
+
+
+//=================================================================================================
+//
+//  RAND SPECIALIZATION FOR SPARSE SUBMATRICES
+//
+//=================================================================================================
+
+//*************************************************************************************************
+/*! \cond BLAZE_INTERNAL */
+/*!\brief Specialization of the Rand class template for sparse submatrices.
+// \ingroup random
+//
+// This specialization of the Rand class randomizes sparse submatrices.
+*/
+template< typename MT  // Type of the sparse matrix
+        , bool AF      // Alignment flag
+        , bool SO >    // Storage order
+class Rand< Submatrix<MT,AF,SO,false> >
+{
+ public:
+   //**Randomize functions*************************************************************************
+   /*!\name Randomize functions */
+   //@{
+   inline void randomize( Submatrix<MT,AF,SO,false>& submatrix ) const;
+   inline void randomize( Submatrix<MT,AF,SO,false>& submatrix, size_t nonzeros ) const;
 
    template< typename Arg >
-   inline void randomize( SparseSubmatrix<MT,AF,SO>& submatrix, size_t nonzeros,
+   inline void randomize( Submatrix<MT,AF,SO,false>& submatrix, const Arg& min, const Arg& max ) const;
+
+   template< typename Arg >
+   inline void randomize( Submatrix<MT,AF,SO,false>& submatrix, size_t nonzeros,
                           const Arg& min, const Arg& max ) const;
    //@}
    //**********************************************************************************************
@@ -90,7 +196,7 @@ class Rand< SparseSubmatrix<MT,AF,SO> >
 
 //*************************************************************************************************
 /*! \cond BLAZE_INTERNAL */
-/*!\brief Randomization of a SparseSubmatrix.
+/*!\brief Randomization of a sparse submatrix.
 //
 // \param submatrix The submatrix to be randomized.
 // \return void
@@ -98,9 +204,9 @@ class Rand< SparseSubmatrix<MT,AF,SO> >
 template< typename MT  // Type of the sparse matrix
         , bool AF      // Alignment flag
         , bool SO >    // Storage order
-inline void Rand< SparseSubmatrix<MT,AF,SO> >::randomize( SparseSubmatrix<MT,AF,SO>& submatrix ) const
+inline void Rand< Submatrix<MT,AF,SO,false> >::randomize( Submatrix<MT,AF,SO,false>& submatrix ) const
 {
-   typedef ElementType_< SparseSubmatrix<MT,AF,SO> >  ElementType;
+   typedef ElementType_< Submatrix<MT,AF,SO,false> >  ElementType;
 
    const size_t m( submatrix.rows()    );
    const size_t n( submatrix.columns() );
@@ -122,7 +228,7 @@ inline void Rand< SparseSubmatrix<MT,AF,SO> >::randomize( SparseSubmatrix<MT,AF,
 
 //*************************************************************************************************
 /*! \cond BLAZE_INTERNAL */
-/*!\brief Randomization of a SparseSubmatrix.
+/*!\brief Randomization of a sparse submatrix.
 //
 // \param submatrix The submatrix to be randomized.
 // \param nonzeros The number of non-zero elements of the random submatrix.
@@ -132,9 +238,9 @@ inline void Rand< SparseSubmatrix<MT,AF,SO> >::randomize( SparseSubmatrix<MT,AF,
 template< typename MT  // Type of the sparse matrix
         , bool AF      // Alignment flag
         , bool SO >    // Storage order
-inline void Rand< SparseSubmatrix<MT,AF,SO> >::randomize( SparseSubmatrix<MT,AF,SO>& submatrix, size_t nonzeros ) const
+inline void Rand< Submatrix<MT,AF,SO,false> >::randomize( Submatrix<MT,AF,SO,false>& submatrix, size_t nonzeros ) const
 {
-   typedef ElementType_< SparseSubmatrix<MT,AF,SO> >  ElementType;
+   typedef ElementType_< Submatrix<MT,AF,SO,false> >  ElementType;
 
    const size_t m( submatrix.rows()    );
    const size_t n( submatrix.columns() );
@@ -158,7 +264,7 @@ inline void Rand< SparseSubmatrix<MT,AF,SO> >::randomize( SparseSubmatrix<MT,AF,
 
 //*************************************************************************************************
 /*! \cond BLAZE_INTERNAL */
-/*!\brief Randomization of a SparseSubmatrix.
+/*!\brief Randomization of a sparse submatrix.
 //
 // \param submatrix The submatrix to be randomized.
 // \param min The smallest possible value for a submatrix element.
@@ -169,10 +275,10 @@ template< typename MT     // Type of the sparse matrix
         , bool AF         // Alignment flag
         , bool SO >       // Storage order
 template< typename Arg >  // Min/max argument type
-inline void Rand< SparseSubmatrix<MT,AF,SO> >::randomize( SparseSubmatrix<MT,AF,SO>& submatrix,
+inline void Rand< Submatrix<MT,AF,SO,false> >::randomize( Submatrix<MT,AF,SO,false>& submatrix,
                                                           const Arg& min, const Arg& max ) const
 {
-   typedef ElementType_< SparseSubmatrix<MT,AF,SO> >  ElementType;
+   typedef ElementType_< Submatrix<MT,AF,SO,false> >  ElementType;
 
    const size_t m( submatrix.rows()    );
    const size_t n( submatrix.columns() );
@@ -194,7 +300,7 @@ inline void Rand< SparseSubmatrix<MT,AF,SO> >::randomize( SparseSubmatrix<MT,AF,
 
 //*************************************************************************************************
 /*! \cond BLAZE_INTERNAL */
-/*!\brief Randomization of a SparseSubmatrix.
+/*!\brief Randomization of a sparse submatrix.
 //
 // \param submatrix The submatrix to be randomized.
 // \param nonzeros The number of non-zero elements of the random submatrix.
@@ -207,10 +313,10 @@ template< typename MT     // Type of the sparse matrix
         , bool AF         // Alignment flag
         , bool SO >       // Storage order
 template< typename Arg >  // Min/max argument type
-inline void Rand< SparseSubmatrix<MT,AF,SO> >::randomize( SparseSubmatrix<MT,AF,SO>& submatrix,
+inline void Rand< Submatrix<MT,AF,SO,false> >::randomize( Submatrix<MT,AF,SO,false>& submatrix,
                                                           size_t nonzeros, const Arg& min, const Arg& max ) const
 {
-   typedef ElementType_< SparseSubmatrix<MT,AF,SO> >  ElementType;
+   typedef ElementType_< Submatrix<MT,AF,SO,false> >  ElementType;
 
    const size_t m( submatrix.rows()    );
    const size_t n( submatrix.columns() );

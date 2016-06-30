@@ -42,10 +42,9 @@
 
 #include <blaze/math/DenseColumn.h>
 #include <blaze/math/DenseRow.h>
-#include <blaze/math/DenseSubmatrix.h>
 #include <blaze/math/SparseColumn.h>
 #include <blaze/math/SparseRow.h>
-#include <blaze/math/SparseSubmatrix.h>
+#include <blaze/math/Submatrix.h>
 #include <blaze/math/Subvector.h>
 
 #endif

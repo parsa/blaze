@@ -68,7 +68,6 @@
 #include <blaze/math/typetraits/IsSymmetric.h>
 #include <blaze/math/typetraits/RemoveAdaptor.h>
 #include <blaze/math/typetraits/Rows.h>
-#include <blaze/math/views/DenseSubmatrix.h>
 #include <blaze/math/views/Submatrix.h>
 #include <blaze/util/Assert.h>
 #include <blaze/util/constraints/Const.h>

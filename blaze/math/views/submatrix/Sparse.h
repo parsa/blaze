@@ -1,7 +1,7 @@
 //=================================================================================================
 /*!
-//  \file blaze/math/views/SparseSubmatrix.h
-//  \brief Header file for the SparseSubmatrix class template
+//  \file blaze/math/views/submatrix/Sparse.h
+//  \brief Submatrix specialization for sparse matrices
 //
 //  Copyright (C) 2013 Klaus Iglberger - All Rights Reserved
 //
@@ -32,8 +32,8 @@
 */
 //=================================================================================================
 
-#ifndef _BLAZE_MATH_VIEWS_SPARSESUBMATRIX_H_
-#define _BLAZE_MATH_VIEWS_SPARSESUBMATRIX_H_
+#ifndef _BLAZE_MATH_VIEWS_SUBMATRIX_SPARSE_H_
+#define _BLAZE_MATH_VIEWS_SUBMATRIX_SPARSE_H_
 
 
 //*************************************************************************************************
@@ -57,27 +57,21 @@
 #include <blaze/math/constraints/UniTriangular.h>
 #include <blaze/math/Exception.h>
 #include <blaze/math/expressions/SparseMatrix.h>
-#include <blaze/math/expressions/Submatrix.h>
+#include <blaze/math/expressions/View.h>
 #include <blaze/math/Functions.h>
 #include <blaze/math/shims/IsDefault.h>
 #include <blaze/math/shims/Serial.h>
 #include <blaze/math/StorageOrder.h>
 #include <blaze/math/sparse/SparseElement.h>
 #include <blaze/math/traits/AddTrait.h>
-#include <blaze/math/traits/ColumnTrait.h>
 #include <blaze/math/traits/DerestrictTrait.h>
 #include <blaze/math/traits/DivTrait.h>
 #include <blaze/math/traits/MultTrait.h>
-#include <blaze/math/traits/RowTrait.h>
-#include <blaze/math/traits/SubmatrixExprTrait.h>
 #include <blaze/math/traits/SubmatrixTrait.h>
 #include <blaze/math/traits/SubTrait.h>
-#include <blaze/math/typetraits/IsColumnMajorMatrix.h>
-#include <blaze/math/typetraits/IsDiagonal.h>
 #include <blaze/math/typetraits/IsExpression.h>
 #include <blaze/math/typetraits/IsHermitian.h>
 #include <blaze/math/typetraits/IsLower.h>
-#include <blaze/math/typetraits/IsRestricted.h>
 #include <blaze/math/typetraits/IsStrictlyLower.h>
 #include <blaze/math/typetraits/IsStrictlyUpper.h>
 #include <blaze/math/typetraits/IsSymmetric.h>
@@ -87,10 +81,7 @@
 #include <blaze/util/Assert.h>
 #include <blaze/util/constraints/Pointer.h>
 #include <blaze/util/constraints/Reference.h>
-#include <blaze/util/DisableIf.h>
 #include <blaze/util/EnableIf.h>
-#include <blaze/util/IntegralConstant.h>
-#include <blaze/util/logging/FunctionTrace.h>
 #include <blaze/util/mpl/If.h>
 #include <blaze/util/mpl/Or.h>
 #include <blaze/util/Types.h>
@@ -98,396 +89,45 @@
 #include <blaze/util/typetraits/IsFloatingPoint.h>
 #include <blaze/util/typetraits/IsNumeric.h>
 #include <blaze/util/typetraits/IsReference.h>
-#include <blaze/util/typetraits/RemoveReference.h>
 
 
 namespace blaze {
 
 //=================================================================================================
 //
-//  CLASS DEFINITION
+//  CLASS TEMPLATE SPECIALIZATION FOR ROW-MAJOR SPARSE MATRICES
 //
 //=================================================================================================
 
 //*************************************************************************************************
-/*!\defgroup sparse_submatrix Sparse Submatrix
+/*! \cond BLAZE_INTERNAL */
+/*!\brief Specialization of Submatrix for row-major sparse submatrices.
 // \ingroup views
+//
+// This specialization of Submatrix adapts the class template to the requirements of row-major
+// sparse submatrices.
 */
-/*!\brief View on a specific submatrix of a sparse matrix.
-// \ingroup sparse_submatrix
-//
-// The SparseSubmatrix template represents a view on a specific submatrix of a sparse matrix
-// primitive. The type of the sparse matrix is specified via the first template parameter:
-
-   \code
-   template< typename MT, bool AF, bool SO >
-   class SparseSubmatrix;
-   \endcode
-
-//  - MT: specifies the type of the sparse matrix primitive. SparseSubmatrix can be used with
-//        every sparse matrix primitive, but does not work with any matrix expression type.
-//  - AF: the alignment flag specifies whether the submatrix is aligned (\a blaze::aligned) or
-//        unaligned (\a blaze::unaligned). The default value is \a blaze::unaligned.
-//  - SO: specifies the storage order (blaze::rowMajor, blaze::columnMajor) of the sparse matrix.
-//        This template parameter doesn't have to be explicitly defined, but is automatically
-//        derived from the first template parameter.
-//
-//
-// \n \section sparse_submatrix_setup Setup of Sparse Submatrices
-//
-// A view on a sparse submatrix can be created very conveniently via the \c submatrix() function:
-
-   \code
-   typedef blaze::CompressedMatrix<double,blaze::rowMajor>  SparseMatrixType;
-
-   SparseMatrixType A;
-   // ... Resizing and initialization
-
-   // Creating a sparse submatrix of size 8x16, starting in row 0 and column 4
-   blaze::SparseSubmatrix<SparseMatrixType> sm = submatrix( A, 0UL, 4UL, 8UL, 16UL );
-   \endcode
-
-// This view can be treated as any other sparse matrix, i.e. it can be assigned to, it can be
-// copied from, and it can be used in arithmetic operations. The view can also be used on both
-// sides of an assignment: The submatrix can either be used as an alias to grant write access to
-// a specific submatrix of a sparse matrix primitive on the left-hand side of an assignment or
-// to grant read-access to a specific submatrix of a sparse matrix primitive or expression on
-// the right-hand side of an assignment. The following example demonstrates this in detail:
-
-   \code
-   typedef blaze::CompressedMatrix<double,blaze::rowMajor>  SparseMatrixType;
-   typedef blaze::DynamicMatrix<double,blaze::columnMajor>  DenseMatrixType;
-
-   SparseMatrixType A, B;
-   DenseMatrixType C;
-   // ... Resizing and initialization
-
-   // Creating a sparse submatrix of size 8x4, starting in row 0 and column 2
-   blaze::SparseSubmatrix<SparseMatrixType> sm = submatrix( A, 0UL, 2UL, 8UL, 4UL );
-
-   // Setting the submatrix of A to a 8x4 submatrix of B
-   sm = submatrix( B, 0UL, 0UL, 8UL, 4UL );
-
-   // Copying the dense matrix C into another 8x4 submatrix of A
-   submatrix( A, 8UL, 2UL, 8UL, 4UL ) = C;
-
-   // Assigning part of the result of a matrix addition to the first submatrix
-   sm = submatrix( B + C, 0UL, 0UL, 8UL, 4UL );
-   \endcode
-
-// \n \section sparse_submatrix_element_access Element access
-//
-// A sparse submatrix can be used like any other sparse matrix. For instance, the elements of the
-// sparse submatrix can be directly accessed with the function call operator:
-
-   \code
-   typedef blaze::CompressedMatrix<double,blaze::rowMajor>  MatrixType;
-   MatrixType A;
-   // ... Resizing and initialization
-
-   // Creating a 8x8 submatrix, starting from position (4,4)
-   blaze::SparseSubmatrix<MatrixType> sm = submatrix( A, 4UL, 4UL, 8UL, 8UL );
-
-   // Setting the element (0,0) of the submatrix, which corresponds to
-   // the element at position (4,4) in matrix A
-   sm(0,0) = 2.0;
-   \endcode
-
-// Alternatively, the elements of a submatrix can be traversed via (const) iterators. Just as
-// with matrices, in case of non-const submatrices, \c begin() and \c end() return an Iterator,
-// which allows a manipulation of the non-zero values, in case of constant submatrices a
-// ConstIterator is returned:
-
-   \code
-   typedef blaze::CompressedMatrix<int,blaze::rowMajor>  MatrixType;
-   typedef blaze::SparseSubmatrix<MatrixType>            SubmatrixType;
-
-   MatrixType A( 256UL, 512UL );
-   // ... Resizing and initialization
-
-   // Creating a reference to a specific submatrix of matrix A
-   SubmatrixType sm = submatrix( A, 16UL, 16UL, 64UL, 128UL );
-
-   // Traversing the elements of the 0th row via iterators to non-const elements
-   for( SubmatrixType::Iterator it=sm.begin(0); it!=sm.end(0); ++it ) {
-      it->value() = ...;  // OK: Write access to the value of the non-zero element.
-      ... = it->value();  // OK: Read access to the value of the non-zero element.
-      it->index() = ...;  // Compilation error: The index of a non-zero element cannot be changed.
-      ... = it->index();  // OK: Read access to the index of the sparse element.
-   }
-
-   // Traversing the elements of the 1st row via iterators to const elements
-   for( SubmatrixType::ConstIterator it=sm.begin(1); it!=sm.end(1); ++it ) {
-      it->value() = ...;  // Compilation error: Assignment to the value via a ConstIterator is invalid.
-      ... = it->value();  // OK: Read access to the value of the non-zero element.
-      it->index() = ...;  // Compilation error: The index of a non-zero element cannot be changed.
-      ... = it->index();  // OK: Read access to the index of the sparse element.
-   }
-   \endcode
-
-// \n \section sparse_submatrix_element_insertion Element Insertion
-//
-// Inserting/accessing elements in a sparse submatrix can be done by several alternative functions.
-// The following example demonstrates all options:
-
-   \code
-   typedef blaze::CompressedMatrix<double,blaze::rowMajor>  MatrixType;
-   MatrixType A( 256UL, 512UL );  // Non-initialized matrix of size 256x512
-
-   typedef blaze::SparseSubmatrix<MatrixType>  SubmatrixType;
-   SubmatrixType sm = submatrix( A, 10UL, 10UL, 16UL, 16UL );  // View on a 16x16 submatrix of A
-
-   // The function call operator provides access to all possible elements of the sparse submatrix,
-   // including the zero elements. In case the subscript operator is used to access an element
-   // that is currently not stored in the sparse submatrix, the element is inserted into the
-   // submatrix.
-   sm(2,4) = 2.0;
-
-   // The second operation for inserting elements is the set() function. In case the element is
-   // not contained in the submatrix it is inserted into the submatrix, if it is already contained
-   // in the submatrix its value is modified.
-   sm.set( 2UL, 5UL, -1.2 );
-
-   // An alternative for inserting elements into the submatrix is the \c insert() function. However,
-   // it inserts the element only in case the element is not already contained in the submatrix.
-   sm.insert( 2UL, 6UL, 3.7 );
-
-   // Just as in the case of sparse matrices, elements can also be inserted via the \c append()
-   // function. In case of submatrices, \c append() also requires that the appended element's
-   // index is strictly larger than the currently largest non-zero index in the according row
-   // or column of the submatrix and that the according row's or column's capacity is large enough
-   // to hold the new element. Note however that due to the nature of a submatrix, which may be an
-   // alias to the middle of a sparse matrix, the \c append() function does not work as efficiently
-   // for a submatrix as it does for a matrix.
-   sm.reserve( 2UL, 10UL );
-   sm.append( 2UL, 10UL, -2.1 );
-   \endcode
-
-// \n \section sparse_submatrix_common_operations Common Operations
-//
-// The current size of the matrix, i.e. the number of rows or columns can be obtained via the
-// \c rows() and \c columns() functions, the current total capacity via the \c capacity() function,
-// and the number of non-zero elements via the \c nonZeros() function. However, since submatrices
-// are views on a specific submatrix of a matrix, several operations are not possible on views,
-// such as resizing and swapping:
-
-   \code
-   typedef blaze::CompressedMatrix<int,blaze::rowMajor>  MatrixType;
-   typedef blaze::SparseSubmatrix<MatrixType>            SubmatrixType;
-
-   MatrixType A;
-   // ... Resizing and initialization
-
-   // Creating a view on the a 8x12 submatrix of matrix A
-   SubmatrixType sm = submatrix( A, 0UL, 0UL, 8UL, 12UL );
-
-   sm.rows();      // Returns the number of rows of the submatrix
-   sm.columns();   // Returns the number of columns of the submatrix
-   sm.capacity();  // Returns the capacity of the submatrix
-   sm.nonZeros();  // Returns the number of non-zero elements contained in the submatrix
-
-   sm.resize( 10UL, 8UL );  // Compilation error: Cannot resize a submatrix of a matrix
-
-   SubmatrixType sm2 = submatrix( A, 8UL, 0UL, 12UL, 8UL );
-   swap( sm, sm2 );  // Compilation error: Swap operation not allowed
-   \endcode
-
-// \n \section sparse_submatrix_arithmetic_operations Arithmetic Operations
-//
-// The following example gives an impression of the use of SparseSubmatrix within arithmetic
-// operations. All operations (addition, subtraction, multiplication, scaling, ...) can be
-// performed on all possible combinations of dense and sparse matrices with fitting element
-// types:
-
-   \code
-   typedef blaze::CompressedMatrix<double,blaze::rowMajor>  SparseMatrixType;
-   typedef blaze::DynamicMatrix<double,blaze::rowMajor>     DenseMatrixType;
-   SparseMatrixType S1, S2, S3;
-   DenseMatrixType D1, D2;
-
-   typedef blaze::StaticVector<double,8UL,blaze::columnVector>  DenseVectorType;
-   DenseVectorType a, b;
-
-   // ... Resizing and initialization
-
-   typedef SparseSubmatrix<SparseMatrixType>  SubmatrixType;
-   SubmatrixType sm = submatrix( S1, 0UL, 0UL, 8UL, 8UL );  // View on the 8x8 submatrix of matrix S1
-                                                            // starting from row 0 and column 0
-
-   submatrix( S1, 0UL, 8UL, 8UL, 8UL ) = S2;  // Sparse matrix initialization of the 8x8 submatrix
-                                              // starting in row 0 and column 8
-   sm = D1;                                   // Dense matrix initialization of the second 8x8 submatrix
-
-   S3 = sm + S2;                                    // Sparse matrix/sparse matrix addition
-   D2 = D1  - submatrix( S1, 8UL, 0UL, 8UL, 8UL );  // Dense matrix/sparse matrix subtraction
-   S2 = sm * submatrix( S1, 8UL, 8UL, 8UL, 8UL );   // Sparse matrix/sparse matrix multiplication
-
-   submatrix( S1, 8UL, 0UL, 8UL, 8UL ) *= 2.0;      // In-place scaling of a submatrix of S1
-   S2 = submatrix( S1, 8UL, 8UL, 8UL, 8UL ) * 2.0;  // Scaling of the a submatrix of S1
-   S2 = 2.0 * sm;                                   // Scaling of the a submatrix of S1
-
-   submatrix( S1, 0UL, 8UL, 8UL, 8UL ) += S2;  // Addition assignment
-   submatrix( S1, 8UL, 0UL, 8UL, 8UL ) -= D1;  // Subtraction assignment
-   submatrix( S1, 8UL, 8UL, 8UL, 8UL ) *= sm;  // Multiplication assignment
-
-   a = submatrix( S1, 4UL, 4UL, 8UL, 8UL ) * b;  // Sparse matrix/dense vector multiplication
-   \endcode
-
-// \n \section sparse_submatrix_aligned_submatrix Aligned Submatrices
-//
-// Usually submatrices can be defined anywhere within a matrix. They may start at any position and
-// may have an arbitrary extension (only restricted by the extension of the underlying matrix).
-// However, in contrast to matrices themselves, which are always properly aligned in memory and
-// therefore can provide maximum performance, this means that submatrices in general have to be
-// considered to be unaligned. This can be made explicit by the \a blaze::unaligned flag:
-
-   \code
-   using blaze::unaligned;
-
-   typedef blaze::CompressedMatrix<double,blaze::rowMajor>  SparseMatrixType;
-
-   SparseMatrixType A;
-   // ... Resizing and initialization
-
-   // Identical creations of an unaligned submatrix of size 8x8, starting in row 0 and column 0
-   blaze::SparseSubmatrix<SparseMatrixType>           sm1 = submatrix           ( A, 0UL, 0UL, 8UL, 8UL );
-   blaze::SparseSubmatrix<SparseMatrixType>           sm2 = submatrix<unaligned>( A, 0UL, 0UL, 8UL, 8UL );
-   blaze::SparseSubmatrix<SparseMatrixType,unaligned> sm3 = submatrix           ( A, 0UL, 0UL, 8UL, 8UL );
-   blaze::SparseSubmatrix<SparseMatrixType,unaligned> sm4 = submatrix<unaligned>( A, 0UL, 0UL, 8UL, 8UL );
-   \endcode
-
-// All of these calls to the \c submatrix() function are identical. Whether the alignment flag is
-// explicitly specified or not, it always returns an unaligned submatrix. Whereas this may provide
-// full flexibility in the creation of submatrices, this might result in performance restrictions
-// (even in case the specified submatrix could be aligned). However, it is also possible to create
-// aligned submatrices. Aligned submatrices are identical to unaligned submatrices in all aspects,
-// except that they may pose additional alignment restrictions and therefore have  less flexibility
-// during creation, but don't suffer from performance penalties and provide the same performance
-// as the underlying matrix. Aligned submatrices are created by explicitly specifying the
-// \a blaze::aligned flag:
-
-   \code
-   using blaze::aligned;
-
-   // Creating an aligned submatrix of size 8x8, starting in row 0 and column 0
-   blaze::SparseSubmatrix<SparseMatrixType,aligned> sv = submatrix<aligned>( A, 0UL, 0UL, 8UL, 8UL );
-   \endcode
-
-// In contrast to dense submatrices, which pose several additional alignment restrictions based on
-// the used element type, sparse submatrices at this time don't pose any additional restrictions.
-// Therefore aligned and unaligned sparse submatrices are truly fully identical. Note however that
-// this is not true for dense submatrices (see the DenseSubmatrix class description)!
-//
-// \n \section sparse_submatrix_on_sparse_submatrix Submatrix on Submatrix
-//
-// It is also possible to create a submatrix view on another submatrix. In this context it is
-// important to remember that the type returned by the \c submatrix() function is the same type
-// as the type of the given submatrix, since the view on a submatrix is just another view on the
-// underlying sparse matrix:
-
-   \code
-   typedef blaze::CompressedMatrix<double,blaze::rowMajor>  MatrixType;
-   typedef blaze::SparseSubmatrix<MatrixType>               SubmatrixType;
-
-   MatrixType S1;
-
-   // ... Resizing and initialization
-
-   // Creating a submatrix view on the sparse matrix S1
-   SubmatrixType sm1 = submatrix( S1, 4UL, 4UL, 8UL, 16UL );
-
-   // Creating a submatrix view on the sparse submatrix sm1
-   SubmatrixType sm2 = submatrix( sm1, 1UL, 1UL, 4UL, 8UL );
-   \endcode
-
-// \n \section sparse_submatrix_on_symmetric_matrices Submatrix on Symmetric Matrices
-//
-// Submatrices can also be created on symmetric matrices (see the SymmetricMatrix class template):
-
-   \code
-   using blaze::CompressedMatrix;
-   using blaze::SymmetricMatrix;
-   using blaze::SparseSubmatrix;
-
-   typedef SymmetricMatrix< CompressedMatrix<int> >    SymmetricCompressedType;
-   typedef SparseSubmatrix< SymmetricCompressedType >  SubmatrixType;
-
-   // Setup of a 16x16 symmetric matrix
-   SymmetricCompressedType A( 16UL );
-
-   // Creating a sparse submatrix of size 8x12, starting in row 2 and column 4
-   SubmatrixType sm = submatrix( A, 2UL, 4UL, 8UL, 12UL );
-   \endcode
-
-// It is important to note, however, that (compound) assignments to such submatrices have a
-// special restriction: The symmetry of the underlying symmetric matrix must not be broken!
-// Since the modification of element \f$ a_{ij} \f$ of a symmetric matrix also modifies the
-// element \f$ a_{ji} \f$, the matrix to be assigned must be structured such that the symmetry
-// of the symmetric matrix is preserved. Otherwise a \a std::invalid_argument exception is
-// thrown:
-
-   \code
-   using blaze::CompressedMatrix;
-   using blaze::SymmetricMatrix;
-
-   // Setup of two default 4x4 symmetric matrices
-   SymmetricMatrix< CompressedMatrix<int> > A1( 4 ), A2( 4 );
-
-   // Setup of the 3x2 compressed matrix
-   //
-   //       ( 0 9 )
-   //   B = ( 9 8 )
-   //       ( 0 7 )
-   //
-   CompressedMatrix<int> B( 3UL, 2UL );
-   B(0,0) = 1;
-   B(0,1) = 2;
-   B(1,0) = 3;
-   B(1,1) = 4;
-   B(2,1) = 5;
-   B(2,2) = 6;
-
-   // OK: Assigning B to a submatrix of A1 such that the symmetry can be preserved
-   //
-   //        ( 0 0 1 2 )
-   //   A1 = ( 0 0 3 4 )
-   //        ( 1 3 5 6 )
-   //        ( 2 4 6 0 )
-   //
-   submatrix( A1, 0UL, 2UL, 3UL, 2UL ) = B;  // OK
-
-   // Error: Assigning B to a submatrix of A2 such that the symmetry cannot be preserved!
-   //   The elements marked with X cannot be assigned unambiguously!
-   //
-   //        ( 0 1 2 0 )
-   //   A2 = ( 1 3 X 0 )
-   //        ( 2 X 6 0 )
-   //        ( 0 0 0 0 )
-   //
-   submatrix( A2, 0UL, 1UL, 3UL, 2UL ) = B;  // Assignment throws an exception!
-   \endcode
-*/
-template< typename MT                                 // Type of the sparse matrix
-        , bool AF = unaligned                         // Alignment flag
-        , bool SO = IsColumnMajorMatrix<MT>::value >  // Storage order
-class SparseSubmatrix : public SparseMatrix< SparseSubmatrix<MT,AF,SO>, SO >
-                      , private Submatrix
+template< typename MT  // Type of the sparse matrix
+        , bool AF >    // Alignment flag
+class Submatrix<MT,AF,false,false>
+   : public SparseMatrix< Submatrix<MT,AF,false,false>, false >
+   , private View
 {
  private:
    //**Type definitions****************************************************************************
-   //! Composite data type of the dense matrix expression.
+   //! Composite data type of the sparse matrix expression.
    typedef If_< IsExpression<MT>, MT, MT& >  Operand;
    //**********************************************************************************************
 
  public:
    //**Type definitions****************************************************************************
-   typedef SparseSubmatrix<MT,AF,SO>   This;           //!< Type of this SparseSubmatrix instance.
-   typedef SubmatrixTrait_<MT>         ResultType;     //!< Result type for expression template evaluations.
-   typedef OppositeType_<ResultType>   OppositeType;   //!< Result type with opposite storage order for expression template evaluations.
-   typedef TransposeType_<ResultType>  TransposeType;  //!< Transpose type for expression template evaluations.
-   typedef ElementType_<MT>            ElementType;    //!< Type of the submatrix elements.
-   typedef ReturnType_<MT>             ReturnType;     //!< Return type for expression template evaluations
-   typedef const SparseSubmatrix&      CompositeType;  //!< Data type for composite expression templates.
+   typedef Submatrix<MT,AF,false,false>  This;           //!< Type of this Submatrix instance.
+   typedef SubmatrixTrait_<MT>           ResultType;     //!< Result type for expression template evaluations.
+   typedef OppositeType_<ResultType>     OppositeType;   //!< Result type with opposite storage order for expression template evaluations.
+   typedef TransposeType_<ResultType>    TransposeType;  //!< Transpose type for expression template evaluations.
+   typedef ElementType_<MT>              ElementType;    //!< Type of the submatrix elements.
+   typedef ReturnType_<MT>               ReturnType;     //!< Return type for expression template evaluations
+   typedef const Submatrix&              CompositeType;  //!< Data type for composite expression templates.
 
    //! Reference to a constant submatrix value.
    typedef ConstReference_<MT>  ConstReference;
@@ -818,7 +458,7 @@ class SparseSubmatrix : public SparseMatrix< SparseSubmatrix<MT,AF,SO>, SO >
    //**Constructors********************************************************************************
    /*!\name Constructors */
    //@{
-   explicit inline SparseSubmatrix( Operand matrix, size_t rindex, size_t cindex, size_t m, size_t n );
+   explicit inline Submatrix( Operand matrix, size_t rindex, size_t cindex, size_t m, size_t n );
    // No explicitly declared copy constructor.
    //@}
    //**********************************************************************************************
@@ -846,46 +486,46 @@ class SparseSubmatrix : public SparseMatrix< SparseSubmatrix<MT,AF,SO>, SO >
    //**Assignment operators************************************************************************
    /*!\name Assignment operators */
    //@{
-   inline SparseSubmatrix& operator=( const SparseSubmatrix& rhs );
+   inline Submatrix& operator=( const Submatrix& rhs );
 
-   template< typename MT2, bool SO2 > inline SparseSubmatrix& operator= ( const Matrix<MT2,SO2>& rhs );
-   template< typename MT2, bool SO2 > inline SparseSubmatrix& operator+=( const Matrix<MT2,SO2>& rhs );
-   template< typename MT2, bool SO2 > inline SparseSubmatrix& operator-=( const Matrix<MT2,SO2>& rhs );
-   template< typename MT2, bool SO2 > inline SparseSubmatrix& operator*=( const Matrix<MT2,SO2>& rhs );
-
-   template< typename Other >
-   inline EnableIf_<IsNumeric<Other>, SparseSubmatrix >& operator*=( Other rhs );
+   template< typename MT2, bool SO > inline Submatrix& operator= ( const Matrix<MT2,SO>& rhs );
+   template< typename MT2, bool SO > inline Submatrix& operator+=( const Matrix<MT2,SO>& rhs );
+   template< typename MT2, bool SO > inline Submatrix& operator-=( const Matrix<MT2,SO>& rhs );
+   template< typename MT2, bool SO > inline Submatrix& operator*=( const Matrix<MT2,SO>& rhs );
 
    template< typename Other >
-   inline EnableIf_<IsNumeric<Other>, SparseSubmatrix >& operator/=( Other rhs );
+   inline EnableIf_<IsNumeric<Other>, Submatrix >& operator*=( Other rhs );
+
+   template< typename Other >
+   inline EnableIf_<IsNumeric<Other>, Submatrix >& operator/=( Other rhs );
    //@}
    //**********************************************************************************************
 
    //**Utility functions***************************************************************************
    /*!\name Utility functions */
    //@{
-                              inline size_t           row() const noexcept;
-                              inline size_t           rows() const noexcept;
-                              inline size_t           column() const noexcept;
-                              inline size_t           columns() const noexcept;
-                              inline size_t           capacity() const noexcept;
-                              inline size_t           capacity( size_t i ) const noexcept;
-                              inline size_t           nonZeros() const;
-                              inline size_t           nonZeros( size_t i ) const;
-                              inline void             reset();
-                              inline void             reset( size_t i );
-                              inline Iterator         set( size_t i, size_t j, const ElementType& value );
-                              inline Iterator         insert( size_t i, size_t j, const ElementType& value );
-                              inline void             erase( size_t i, size_t j );
-                              inline Iterator         erase( size_t i, Iterator pos );
-                              inline Iterator         erase( size_t i, Iterator first, Iterator last );
-                              inline void             reserve( size_t nonzeros );
-                                     void             reserve( size_t i, size_t nonzeros );
-                              inline void             trim();
-                              inline void             trim( size_t i );
-                              inline SparseSubmatrix& transpose();
-                              inline SparseSubmatrix& ctranspose();
-   template< typename Other > inline SparseSubmatrix& scale( const Other& scalar );
+                              inline size_t     row() const noexcept;
+                              inline size_t     rows() const noexcept;
+                              inline size_t     column() const noexcept;
+                              inline size_t     columns() const noexcept;
+                              inline size_t     capacity() const noexcept;
+                              inline size_t     capacity( size_t i ) const noexcept;
+                              inline size_t     nonZeros() const;
+                              inline size_t     nonZeros( size_t i ) const;
+                              inline void       reset();
+                              inline void       reset( size_t i );
+                              inline Iterator   set( size_t i, size_t j, const ElementType& value );
+                              inline Iterator   insert( size_t i, size_t j, const ElementType& value );
+                              inline void       erase( size_t i, size_t j );
+                              inline Iterator   erase( size_t i, Iterator pos );
+                              inline Iterator   erase( size_t i, Iterator first, Iterator last );
+                              inline void       reserve( size_t nonzeros );
+                                     void       reserve( size_t i, size_t nonzeros );
+                              inline void       trim();
+                              inline void       trim( size_t i );
+                              inline Submatrix& transpose();
+                              inline Submatrix& ctranspose();
+   template< typename Other > inline Submatrix& scale( const Other& scalar );
    //@}
    //**********************************************************************************************
 
@@ -917,13 +557,13 @@ class SparseSubmatrix : public SparseMatrix< SparseSubmatrix<MT,AF,SO>, SO >
 
    inline bool canSMPAssign() const noexcept;
 
-   template< typename MT2, bool SO2 > inline void assign   ( const DenseMatrix<MT2,SO2>&    rhs );
-   template< typename MT2 >           inline void assign   ( const SparseMatrix<MT2,false>& rhs );
-   template< typename MT2 >           inline void assign   ( const SparseMatrix<MT2,true>&  rhs );
-   template< typename MT2, bool SO2 > inline void addAssign( const DenseMatrix<MT2,SO2>&    rhs );
-   template< typename MT2, bool SO2 > inline void addAssign( const SparseMatrix<MT2,SO2>&   rhs );
-   template< typename MT2, bool SO2 > inline void subAssign( const DenseMatrix<MT2,SO2>&    rhs );
-   template< typename MT2, bool SO2 > inline void subAssign( const SparseMatrix<MT2,SO2>&   rhs );
+   template< typename MT2, bool SO > inline void assign   ( const DenseMatrix<MT2,SO>&    rhs );
+   template< typename MT2 >          inline void assign   ( const SparseMatrix<MT2,false>& rhs );
+   template< typename MT2 >          inline void assign   ( const SparseMatrix<MT2,true>&  rhs );
+   template< typename MT2, bool SO > inline void addAssign( const DenseMatrix<MT2,SO>&    rhs );
+   template< typename MT2, bool SO > inline void addAssign( const SparseMatrix<MT2,SO>&   rhs );
+   template< typename MT2, bool SO > inline void subAssign( const DenseMatrix<MT2,SO>&    rhs );
+   template< typename MT2, bool SO > inline void subAssign( const SparseMatrix<MT2,SO>&   rhs );
    //@}
    //**********************************************************************************************
 
@@ -947,58 +587,55 @@ class SparseSubmatrix : public SparseMatrix< SparseSubmatrix<MT,AF,SO>, SO >
    //**********************************************************************************************
 
    //**Friend declarations*************************************************************************
-   /*! \cond BLAZE_INTERNAL */
-   template< bool AF1, typename MT2, bool AF2, bool SO2 >
-   friend const SparseSubmatrix<MT2,AF1,SO2>
-      submatrix( const SparseSubmatrix<MT2,AF2,SO2>& sm, size_t row, size_t column, size_t m, size_t n );
+   template< bool AF1, typename MT2, bool AF2, bool SO2, bool DF2 >
+   friend const Submatrix<MT2,AF1,SO2,DF2>
+      submatrix( const Submatrix<MT2,AF2,SO2,DF2>& sm, size_t row, size_t column, size_t m, size_t n );
 
-   template< typename MT2, bool AF2, bool SO2 >
-   friend bool isIntact( const SparseSubmatrix<MT2,AF2,SO2>& sm ) noexcept;
+   template< typename MT2, bool AF2, bool SO2, bool DF2 >
+   friend bool isIntact( const Submatrix<MT2,AF2,SO2,DF2>& sm ) noexcept;
 
-   template< typename MT2, bool AF2, bool SO2 >
-   friend bool isSame( const SparseSubmatrix<MT2,AF2,SO2>& a, const SparseMatrix<MT2,SO2>& b ) noexcept;
+   template< typename MT2, bool AF2, bool SO2, bool DF2 >
+   friend bool isSame( const Submatrix<MT2,AF2,SO2,DF2>& a, const Matrix<MT2,SO2>& b ) noexcept;
 
-   template< typename MT2, bool AF2, bool SO2 >
-   friend bool isSame( const SparseMatrix<MT2,SO2>& a, const SparseSubmatrix<MT2,AF2,SO2>& b ) noexcept;
+   template< typename MT2, bool AF2, bool SO2, bool DF2 >
+   friend bool isSame( const Matrix<MT2,SO2>& a, const Submatrix<MT2,AF2,SO2,DF2>& b ) noexcept;
 
-   template< typename MT2, bool AF2, bool SO2 >
-   friend bool isSame( const SparseSubmatrix<MT2,AF2,SO2>& a, const SparseSubmatrix<MT2,AF2,SO2>& b ) noexcept;
+   template< typename MT2, bool AF2, bool SO2, bool DF2 >
+   friend bool isSame( const Submatrix<MT2,AF2,SO2,DF2>& a, const Submatrix<MT2,AF2,SO2,DF2>& b ) noexcept;
 
-   template< typename MT2, bool AF2, bool SO2, typename VT, bool TF >
-   friend bool tryAssign( const SparseSubmatrix<MT2,AF2,SO2>& lhs, const Vector<VT,TF>& rhs,
+   template< typename MT2, bool AF2, bool SO2, bool DF2, typename VT, bool TF >
+   friend bool tryAssign( const Submatrix<MT2,AF2,SO2,DF2>& lhs, const Vector<VT,TF>& rhs,
                           size_t row, size_t column );
 
-   template< typename MT2, bool AF2, bool SO2, typename MT3, bool SO3 >
-   friend bool tryAssign( const SparseSubmatrix<MT2,AF2,SO2>& lhs, const Matrix<MT3,SO3>& rhs,
+   template< typename MT2, bool AF2, bool SO2, bool DF2, typename MT3, bool SO3 >
+   friend bool tryAssign( const Submatrix<MT2,AF2,SO2,DF2>& lhs, const Matrix<MT3,SO3>& rhs,
                           size_t row, size_t column );
 
-   template< typename MT2, bool AF2, bool SO2, typename VT, bool TF >
-   friend bool tryAddAssign( const SparseSubmatrix<MT2,AF2,SO2>& lhs, const Vector<VT,TF>& rhs,
+   template< typename MT2, bool AF2, bool SO2, bool DF2, typename VT, bool TF >
+   friend bool tryAddAssign( const Submatrix<MT2,AF2,SO2,DF2>& lhs, const Vector<VT,TF>& rhs,
                              size_t row, size_t column );
 
-   template< typename MT2, bool AF2, bool SO2, typename MT3, bool SO3 >
-   friend bool tryAddAssign( const SparseSubmatrix<MT2,AF2,SO2>& lhs, const Matrix<MT3,SO3>& rhs,
+   template< typename MT2, bool AF2, bool SO2, bool DF2, typename MT3, bool SO3 >
+   friend bool tryAddAssign( const Submatrix<MT2,AF2,SO2,DF2>& lhs, const Matrix<MT3,SO3>& rhs,
                              size_t row, size_t column );
 
-   template< typename MT2, bool AF2, bool SO2, typename VT, bool TF >
-   friend bool trySubAssign( const SparseSubmatrix<MT2,AF2,SO2>& lhs, const Vector<VT,TF>& rhs,
+   template< typename MT2, bool AF2, bool SO2, bool DF2, typename VT, bool TF >
+   friend bool trySubAssign( const Submatrix<MT2,AF2,SO2,DF2>& lhs, const Vector<VT,TF>& rhs,
                              size_t row, size_t column );
 
-   template< typename MT2, bool AF2, bool SO2, typename MT3, bool SO3 >
-   friend bool trySubAssign( const SparseSubmatrix<MT2,AF2,SO2>& lhs, const Matrix<MT3,SO3>& rhs,
+   template< typename MT2, bool AF2, bool SO2, bool DF2, typename MT3, bool SO3 >
+   friend bool trySubAssign( const Submatrix<MT2,AF2,SO2,DF2>& lhs, const Matrix<MT3,SO3>& rhs,
                              size_t row, size_t column );
 
-   template< typename MT2, bool AF2, bool SO2, typename VT, bool TF >
-   friend bool tryMultAssign( const SparseSubmatrix<MT2,AF2,SO2>& lhs, const Vector<VT,TF>& rhs,
+   template< typename MT2, bool AF2, bool SO2, bool DF2, typename VT, bool TF >
+   friend bool tryMultAssign( const Submatrix<MT2,AF2,SO2,DF2>& lhs, const Vector<VT,TF>& rhs,
                               size_t row, size_t column );
 
-   template< typename MT2, bool AF2, bool SO2 >
-   friend DerestrictTrait_< SparseSubmatrix<MT2,AF2,SO2> > derestrict( SparseSubmatrix<MT2,AF2,SO2>& sm );
-   /*! \endcond */
+   template< typename MT2, bool AF2, bool SO2, bool DF2 >
+   friend DerestrictTrait_< Submatrix<MT2,AF2,SO2,DF2> > derestrict( Submatrix<MT2,AF2,SO2,DF2>& sm );
    //**********************************************************************************************
 
    //**Compile time checks*************************************************************************
-   /*! \cond BLAZE_INTERNAL */
    BLAZE_CONSTRAINT_MUST_BE_SPARSE_MATRIX_TYPE   ( MT );
    BLAZE_CONSTRAINT_MUST_NOT_BE_COMPUTATION_TYPE ( MT );
    BLAZE_CONSTRAINT_MUST_NOT_BE_TRANSEXPR_TYPE   ( MT );
@@ -1006,9 +643,9 @@ class SparseSubmatrix : public SparseMatrix< SparseSubmatrix<MT,AF,SO>, SO >
    BLAZE_CONSTRAINT_MUST_BE_ROW_MAJOR_MATRIX_TYPE( MT );
    BLAZE_CONSTRAINT_MUST_NOT_BE_POINTER_TYPE     ( MT );
    BLAZE_CONSTRAINT_MUST_NOT_BE_REFERENCE_TYPE   ( MT );
-   /*! \endcond */
    //**********************************************************************************************
 };
+/*! \endcond */
 //*************************************************************************************************
 
 
@@ -1021,7 +658,8 @@ class SparseSubmatrix : public SparseMatrix< SparseSubmatrix<MT,AF,SO>, SO >
 //=================================================================================================
 
 //*************************************************************************************************
-/*!\brief The constructor for SparseSubmatrix.
+/*! \cond BLAZE_INTERNAL */
+/*!\brief The constructor for Submatrix.
 //
 // \param matrix The sparse matrix containing the submatrix.
 // \param rindex The index of the first row of the submatrix in the given sparse matrix.
@@ -1034,9 +672,8 @@ class SparseSubmatrix : public SparseMatrix< SparseSubmatrix<MT,AF,SO>, SO >
 // contained in the given sparse matrix) a \a std::invalid_argument exception is thrown.
 */
 template< typename MT  // Type of the sparse matrix
-        , bool AF      // Alignment flag
-        , bool SO >    // Storage order
-inline SparseSubmatrix<MT,AF,SO>::SparseSubmatrix( Operand matrix, size_t rindex, size_t cindex, size_t m, size_t n )
+        , bool AF >    // Alignment flag
+inline Submatrix<MT,AF,false,false>::Submatrix( Operand matrix, size_t rindex, size_t cindex, size_t m, size_t n )
    : matrix_( matrix )  // The sparse matrix containing the submatrix
    , row_   ( rindex )  // The first row of the submatrix
    , column_( cindex )  // The first column of the submatrix
@@ -1047,6 +684,7 @@ inline SparseSubmatrix<MT,AF,SO>::SparseSubmatrix( Operand matrix, size_t rindex
       BLAZE_THROW_INVALID_ARGUMENT( "Invalid submatrix specification" );
    }
 }
+/*! \endcond */
 //*************************************************************************************************
 
 
@@ -1059,6 +697,7 @@ inline SparseSubmatrix<MT,AF,SO>::SparseSubmatrix( Operand matrix, size_t rindex
 //=================================================================================================
 
 //*************************************************************************************************
+/*! \cond BLAZE_INTERNAL */
 /*!\brief 2D-access to the sparse submatrix elements.
 //
 // \param i Access index for the row. The index has to be in the range \f$[0..M-1]\f$.
@@ -1069,20 +708,21 @@ inline SparseSubmatrix<MT,AF,SO>::SparseSubmatrix( Operand matrix, size_t rindex
 // the at() function is guaranteed to perform a check of the given access indices.
 */
 template< typename MT  // Type of the sparse matrix
-        , bool AF      // Alignment flag
-        , bool SO >    // Storage order
-inline typename SparseSubmatrix<MT,AF,SO>::Reference
-   SparseSubmatrix<MT,AF,SO>::operator()( size_t i, size_t j )
+        , bool AF >    // Alignment flag
+inline typename Submatrix<MT,AF,false,false>::Reference
+   Submatrix<MT,AF,false,false>::operator()( size_t i, size_t j )
 {
    BLAZE_USER_ASSERT( i < rows()   , "Invalid row access index"    );
    BLAZE_USER_ASSERT( j < columns(), "Invalid column access index" );
 
    return matrix_(row_+i,column_+j);
 }
+/*! \endcond */
 //*************************************************************************************************
 
 
 //*************************************************************************************************
+/*! \cond BLAZE_INTERNAL */
 /*!\brief 2D-access to the sparse submatrix elements.
 //
 // \param i Access index for the row. The index has to be in the range \f$[0..M-1]\f$.
@@ -1093,20 +733,21 @@ inline typename SparseSubmatrix<MT,AF,SO>::Reference
 // the at() function is guaranteed to perform a check of the given access indices.
 */
 template< typename MT  // Type of the sparse matrix
-        , bool AF      // Alignment flag
-        , bool SO >    // Storage order
-inline typename SparseSubmatrix<MT,AF,SO>::ConstReference
-   SparseSubmatrix<MT,AF,SO>::operator()( size_t i, size_t j ) const
+        , bool AF >     // Alignment flag
+inline typename Submatrix<MT,AF,false,false>::ConstReference
+   Submatrix<MT,AF,false,false>::operator()( size_t i, size_t j ) const
 {
    BLAZE_USER_ASSERT( i < rows()   , "Invalid row access index"    );
    BLAZE_USER_ASSERT( j < columns(), "Invalid column access index" );
 
    return const_cast<const MT&>( matrix_ )(row_+i,column_+j);
 }
+/*! \endcond */
 //*************************************************************************************************
 
 
 //*************************************************************************************************
+/*! \cond BLAZE_INTERNAL */
 /*!\brief Checked access to the submatrix elements.
 //
 // \param i Access index for the row. The index has to be in the range \f$[0..M-1]\f$.
@@ -1118,10 +759,9 @@ inline typename SparseSubmatrix<MT,AF,SO>::ConstReference
 // access indices.
 */
 template< typename MT  // Type of the sparse matrix
-        , bool AF      // Alignment flag
-        , bool SO >    // Storage order
-inline typename SparseSubmatrix<MT,AF,SO>::Reference
-   SparseSubmatrix<MT,AF,SO>::at( size_t i, size_t j )
+        , bool AF >    // Alignment flag
+inline typename Submatrix<MT,AF,false,false>::Reference
+   Submatrix<MT,AF,false,false>::at( size_t i, size_t j )
 {
    if( i >= rows() ) {
       BLAZE_THROW_OUT_OF_RANGE( "Invalid row access index" );
@@ -1131,10 +771,12 @@ inline typename SparseSubmatrix<MT,AF,SO>::Reference
    }
    return (*this)(i,j);
 }
+/*! \endcond */
 //*************************************************************************************************
 
 
 //*************************************************************************************************
+/*! \cond BLAZE_INTERNAL */
 /*!\brief Checked access to the submatrix elements.
 //
 // \param i Access index for the row. The index has to be in the range \f$[0..M-1]\f$.
@@ -1146,10 +788,9 @@ inline typename SparseSubmatrix<MT,AF,SO>::Reference
 // access indices.
 */
 template< typename MT  // Type of the sparse matrix
-        , bool AF      // Alignment flag
-        , bool SO >    // Storage order
-inline typename SparseSubmatrix<MT,AF,SO>::ConstReference
-   SparseSubmatrix<MT,AF,SO>::at( size_t i, size_t j ) const
+        , bool AF >    // Alignment flag
+inline typename Submatrix<MT,AF,false,false>::ConstReference
+   Submatrix<MT,AF,false,false>::at( size_t i, size_t j ) const
 {
    if( i >= rows() ) {
       BLAZE_THROW_OUT_OF_RANGE( "Invalid row access index" );
@@ -1159,10 +800,12 @@ inline typename SparseSubmatrix<MT,AF,SO>::ConstReference
    }
    return (*this)(i,j);
 }
+/*! \endcond */
 //*************************************************************************************************
 
 
 //*************************************************************************************************
+/*! \cond BLAZE_INTERNAL */
 /*!\brief Returns an iterator to the first non-zero element of row/column \a i.
 //
 // \param i The row/column index.
@@ -1174,10 +817,9 @@ inline typename SparseSubmatrix<MT,AF,SO>::ConstReference
 // returns an iterator to the first non-zero element of column \a i.
 */
 template< typename MT  // Type of the sparse matrix
-        , bool AF      // Alignment flag
-        , bool SO >    // Storage order
-inline typename SparseSubmatrix<MT,AF,SO>::Iterator
-   SparseSubmatrix<MT,AF,SO>::begin( size_t i )
+        , bool AF >    // Alignment flag
+inline typename Submatrix<MT,AF,false,false>::Iterator
+   Submatrix<MT,AF,false,false>::begin( size_t i )
 {
    BLAZE_USER_ASSERT( i < rows(), "Invalid sparse submatrix row access index" );
 
@@ -1186,10 +828,12 @@ inline typename SparseSubmatrix<MT,AF,SO>::Iterator
    else
       return Iterator( matrix_.lowerBound( i + row_, column_ ), column_ );
 }
+/*! \endcond */
 //*************************************************************************************************
 
 
 //*************************************************************************************************
+/*! \cond BLAZE_INTERNAL */
 /*!\brief Returns an iterator to the first non-zero element of row/column \a i.
 //
 // \param i The row/column index.
@@ -1201,10 +845,9 @@ inline typename SparseSubmatrix<MT,AF,SO>::Iterator
 // returns an iterator to the first non-zero element of column \a i.
 */
 template< typename MT  // Type of the sparse matrix
-        , bool AF      // Alignment flag
-        , bool SO >    // Storage order
-inline typename SparseSubmatrix<MT,AF,SO>::ConstIterator
-   SparseSubmatrix<MT,AF,SO>::begin( size_t i ) const
+        , bool AF >    // Alignment flag
+inline typename Submatrix<MT,AF,false,false>::ConstIterator
+   Submatrix<MT,AF,false,false>::begin( size_t i ) const
 {
    BLAZE_USER_ASSERT( i < rows(), "Invalid sparse submatrix row access index" );
 
@@ -1213,10 +856,12 @@ inline typename SparseSubmatrix<MT,AF,SO>::ConstIterator
    else
       return ConstIterator( matrix_.lowerBound( i + row_, column_ ), column_ );
 }
+/*! \endcond */
 //*************************************************************************************************
 
 
 //*************************************************************************************************
+/*! \cond BLAZE_INTERNAL */
 /*!\brief Returns an iterator to the first non-zero element of row/column \a i.
 //
 // \param i The row/column index.
@@ -1228,10 +873,9 @@ inline typename SparseSubmatrix<MT,AF,SO>::ConstIterator
 // returns an iterator to the first non-zero element of column \a i.
 */
 template< typename MT  // Type of the sparse matrix
-        , bool AF      // Alignment flag
-        , bool SO >    // Storage order
-inline typename SparseSubmatrix<MT,AF,SO>::ConstIterator
-   SparseSubmatrix<MT,AF,SO>::cbegin( size_t i ) const
+        , bool AF >    // Alignment flag
+inline typename Submatrix<MT,AF,false,false>::ConstIterator
+   Submatrix<MT,AF,false,false>::cbegin( size_t i ) const
 {
    BLAZE_USER_ASSERT( i < rows(), "Invalid sparse submatrix row access index" );
 
@@ -1240,10 +884,12 @@ inline typename SparseSubmatrix<MT,AF,SO>::ConstIterator
    else
       return ConstIterator( matrix_.lowerBound( i + row_, column_ ), column_ );
 }
+/*! \endcond */
 //*************************************************************************************************
 
 
 //*************************************************************************************************
+/*! \cond BLAZE_INTERNAL */
 /*!\brief Returns an iterator just past the last non-zero element of row/column \a i.
 //
 // \param i The row/column index.
@@ -1255,10 +901,9 @@ inline typename SparseSubmatrix<MT,AF,SO>::ConstIterator
 // the function returns an iterator just past the last non-zero element of column \a i.
 */
 template< typename MT  // Type of the sparse matrix
-        , bool AF      // Alignment flag
-        , bool SO >    // Storage order
-inline typename SparseSubmatrix<MT,AF,SO>::Iterator
-   SparseSubmatrix<MT,AF,SO>::end( size_t i )
+        , bool AF >    // Alignment flag
+inline typename Submatrix<MT,AF,false,false>::Iterator
+   Submatrix<MT,AF,false,false>::end( size_t i )
 {
    BLAZE_USER_ASSERT( i < rows(), "Invalid sparse submatrix row access index" );
 
@@ -1267,10 +912,12 @@ inline typename SparseSubmatrix<MT,AF,SO>::Iterator
    else
       return Iterator( matrix_.lowerBound( i + row_, column_ + n_ ), column_ );
 }
+/*! \endcond */
 //*************************************************************************************************
 
 
 //*************************************************************************************************
+/*! \cond BLAZE_INTERNAL */
 /*!\brief Returns an iterator just past the last non-zero element of row/column \a i.
 //
 // \param i The row/column index.
@@ -1282,10 +929,9 @@ inline typename SparseSubmatrix<MT,AF,SO>::Iterator
 // the function returns an iterator just past the last non-zero element of column \a i.
 */
 template< typename MT  // Type of the sparse matrix
-        , bool AF      // Alignment flag
-        , bool SO >    // Storage order
-inline typename SparseSubmatrix<MT,AF,SO>::ConstIterator
-   SparseSubmatrix<MT,AF,SO>::end( size_t i ) const
+        , bool AF >    // Alignment flag
+inline typename Submatrix<MT,AF,false,false>::ConstIterator
+   Submatrix<MT,AF,false,false>::end( size_t i ) const
 {
    BLAZE_USER_ASSERT( i < rows(), "Invalid sparse submatrix row access index" );
 
@@ -1294,10 +940,12 @@ inline typename SparseSubmatrix<MT,AF,SO>::ConstIterator
    else
       return ConstIterator( matrix_.lowerBound( i + row_, column_ + n_ ), column_ );
 }
+/*! \endcond */
 //*************************************************************************************************
 
 
 //*************************************************************************************************
+/*! \cond BLAZE_INTERNAL */
 /*!\brief Returns an iterator just past the last non-zero element of row/column \a i.
 //
 // \param i The row/column index.
@@ -1309,10 +957,9 @@ inline typename SparseSubmatrix<MT,AF,SO>::ConstIterator
 // the function returns an iterator just past the last non-zero element of column \a i.
 */
 template< typename MT  // Type of the sparse matrix
-        , bool AF      // Alignment flag
-        , bool SO >    // Storage order
-inline typename SparseSubmatrix<MT,AF,SO>::ConstIterator
-   SparseSubmatrix<MT,AF,SO>::cend( size_t i ) const
+        , bool AF >    // Alignment flag
+inline typename Submatrix<MT,AF,false,false>::ConstIterator
+   Submatrix<MT,AF,false,false>::cend( size_t i ) const
 {
    BLAZE_USER_ASSERT( i < rows(), "Invalid sparse submatrix row access index" );
 
@@ -1321,6 +968,7 @@ inline typename SparseSubmatrix<MT,AF,SO>::ConstIterator
    else
       return ConstIterator( matrix_.lowerBound( i + row_, column_ + n_ ), column_ );
 }
+/*! \endcond */
 //*************************************************************************************************
 
 
@@ -1333,7 +981,8 @@ inline typename SparseSubmatrix<MT,AF,SO>::ConstIterator
 //=================================================================================================
 
 //*************************************************************************************************
-/*!\brief Copy assignment operator for SparseSubmatrix.
+/*! \cond BLAZE_INTERNAL */
+/*!\brief Copy assignment operator for Submatrix.
 //
 // \param rhs Sparse submatrix to be copied.
 // \return Reference to the assigned submatrix.
@@ -1347,10 +996,9 @@ inline typename SparseSubmatrix<MT,AF,SO>::ConstIterator
 // respectively, a \a std::invalid_argument exception is thrown.
 */
 template< typename MT  // Type of the sparse matrix
-        , bool AF      // Alignment flag
-        , bool SO >    // Storage order
-inline SparseSubmatrix<MT,AF,SO>&
-   SparseSubmatrix<MT,AF,SO>::operator=( const SparseSubmatrix& rhs )
+        , bool AF >    // Alignment flag
+inline Submatrix<MT,AF,false,false>&
+   Submatrix<MT,AF,false,false>::operator=( const Submatrix& rhs )
 {
    using blaze::assign;
 
@@ -1384,10 +1032,12 @@ inline SparseSubmatrix<MT,AF,SO>&
 
    return *this;
 }
+/*! \endcond */
 //*************************************************************************************************
 
 
 //*************************************************************************************************
+/*! \cond BLAZE_INTERNAL */
 /*!\brief Assignment operator for different matrices.
 //
 // \param rhs Matrix to be assigned.
@@ -1402,12 +1052,11 @@ inline SparseSubmatrix<MT,AF,SO>&
 // \a std::invalid_argument exception is thrown.
 */
 template< typename MT   // Type of the sparse matrix
-        , bool AF       // Alignment flag
-        , bool SO >     // Storage order
+        , bool AF >     // Alignment flag
 template< typename MT2  // Type of the right-hand side matrix
-        , bool SO2 >    // Storage order of the right-hand side matrix
-inline SparseSubmatrix<MT,AF,SO>&
-   SparseSubmatrix<MT,AF,SO>::operator=( const Matrix<MT2,SO2>& rhs )
+        , bool SO >     // Storage order of the right-hand side matrix
+inline Submatrix<MT,AF,false,false>&
+   Submatrix<MT,AF,false,false>::operator=( const Matrix<MT2,SO>& rhs )
 {
    using blaze::assign;
 
@@ -1440,10 +1089,12 @@ inline SparseSubmatrix<MT,AF,SO>&
 
    return *this;
 }
+/*! \endcond */
 //*************************************************************************************************
 
 
 //*************************************************************************************************
+/*! \cond BLAZE_INTERNAL */
 /*!\brief Addition assignment operator for the addition of a matrix (\f$ A+=B \f$).
 //
 // \param rhs The right-hand side matrix to be added to the submatrix.
@@ -1457,12 +1108,11 @@ inline SparseSubmatrix<MT,AF,SO>&
 // respectively, a \a std::invalid_argument exception is thrown.
 */
 template< typename MT   // Type of the sparse matrix
-        , bool AF       // Alignment flag
-        , bool SO >     // Storage order
+        , bool AF >     // Alignment flag
 template< typename MT2  // Type of the right-hand side matrix
-        , bool SO2 >    // Storage order of the right-hand side matrix
-inline SparseSubmatrix<MT,AF,SO>&
-   SparseSubmatrix<MT,AF,SO>::operator+=( const Matrix<MT2,SO2>& rhs )
+        , bool SO >     // Storage order of the right-hand side matrix
+inline Submatrix<MT,AF,false,false>&
+   Submatrix<MT,AF,false,false>::operator+=( const Matrix<MT2,SO>& rhs )
 {
    using blaze::assign;
 
@@ -1493,10 +1143,12 @@ inline SparseSubmatrix<MT,AF,SO>&
 
    return *this;
 }
+/*! \endcond */
 //*************************************************************************************************
 
 
 //*************************************************************************************************
+/*! \cond BLAZE_INTERNAL */
 /*!\brief Subtraction assignment operator for the subtraction of a matrix (\f$ A-=B \f$).
 //
 // \param rhs The right-hand side matrix to be subtracted from the submatrix.
@@ -1510,12 +1162,11 @@ inline SparseSubmatrix<MT,AF,SO>&
 // respectively, a \a std::invalid_argument exception is thrown.
 */
 template< typename MT   // Type of the sparse matrix
-        , bool AF       // Alignment flag
-        , bool SO >     // Storage order
+        , bool AF >     // Alignment flag
 template< typename MT2  // Type of the right-hand side matrix
-        , bool SO2 >    // Storage order of the right-hand side matrix
-inline SparseSubmatrix<MT,AF,SO>&
-   SparseSubmatrix<MT,AF,SO>::operator-=( const Matrix<MT2,SO2>& rhs )
+        , bool SO >     // Storage order of the right-hand side matrix
+inline Submatrix<MT,AF,false,false>&
+   Submatrix<MT,AF,false,false>::operator-=( const Matrix<MT2,SO>& rhs )
 {
    using blaze::assign;
 
@@ -1546,10 +1197,12 @@ inline SparseSubmatrix<MT,AF,SO>&
 
    return *this;
 }
+/*! \endcond */
 //*************************************************************************************************
 
 
 //*************************************************************************************************
+/*! \cond BLAZE_INTERNAL */
 /*!\brief Multiplication assignment operator for the multiplication of a matrix (\f$ A*=B \f$).
 //
 // \param rhs The right-hand side matrix for the multiplication.
@@ -1563,12 +1216,11 @@ inline SparseSubmatrix<MT,AF,SO>&
 // respectively, a \a std::invalid_argument exception is thrown.
 */
 template< typename MT   // Type of the sparse matrix
-        , bool AF       // Alignment flag
-        , bool SO >     // Storage order
+        , bool AF >     // Alignment flag
 template< typename MT2  // Type of the right-hand side matrix
-        , bool SO2 >    // Storage order of the right-hand side matrix
-inline SparseSubmatrix<MT,AF,SO>&
-   SparseSubmatrix<MT,AF,SO>::operator*=( const Matrix<MT2,SO2>& rhs )
+        , bool SO >     // Storage order of the right-hand side matrix
+inline Submatrix<MT,AF,false,false>&
+   Submatrix<MT,AF,false,false>::operator*=( const Matrix<MT2,SO>& rhs )
 {
    using blaze::assign;
 
@@ -1600,10 +1252,12 @@ inline SparseSubmatrix<MT,AF,SO>&
 
    return *this;
 }
+/*! \endcond */
 //*************************************************************************************************
 
 
 //*************************************************************************************************
+/*! \cond BLAZE_INTERNAL */
 /*!\brief Multiplication assignment operator for the multiplication between a sparse submatrix
 //        and a scalar value (\f$ A*=s \f$).
 //
@@ -1618,11 +1272,10 @@ inline SparseSubmatrix<MT,AF,SO>&
 // built-in data type.
 */
 template< typename MT       // Type of the sparse matrix
-        , bool AF           // Alignment flag
-        , bool SO >         // Storage order
+        , bool AF >         // Alignment flag
 template< typename Other >  // Data type of the right-hand side scalar
-inline EnableIf_<IsNumeric<Other>, SparseSubmatrix<MT,AF,SO> >&
-   SparseSubmatrix<MT,AF,SO>::operator*=( Other rhs )
+inline EnableIf_<IsNumeric<Other>, Submatrix<MT,AF,false,false> >&
+   Submatrix<MT,AF,false,false>::operator*=( Other rhs )
 {
    BLAZE_CONSTRAINT_MUST_NOT_BE_UNITRIANGULAR_MATRIX_TYPE( MT );
 
@@ -1634,10 +1287,12 @@ inline EnableIf_<IsNumeric<Other>, SparseSubmatrix<MT,AF,SO> >&
 
    return *this;
 }
+/*! \endcond */
 //*************************************************************************************************
 
 
 //*************************************************************************************************
+/*! \cond BLAZE_INTERNAL */
 /*!\brief Division assignment operator for the division of a sparse submatrix by a scalar value
 //        (\f$ A/=s \f$).
 //
@@ -1655,11 +1310,10 @@ inline EnableIf_<IsNumeric<Other>, SparseSubmatrix<MT,AF,SO> >&
 // \note A division by zero is only checked by an user assert.
 */
 template< typename MT       // Type of the sparse matrix
-        , bool AF           // Alignment flag
-        , bool SO >         // Storage order
+        , bool AF >         // Alignment flag
 template< typename Other >  // Data type of the right-hand side scalar
-inline EnableIf_<IsNumeric<Other>, SparseSubmatrix<MT,AF,SO> >&
-   SparseSubmatrix<MT,AF,SO>::operator/=( Other rhs )
+inline EnableIf_<IsNumeric<Other>, Submatrix<MT,AF,false,false> >&
+   Submatrix<MT,AF,false,false>::operator/=( Other rhs )
 {
    BLAZE_CONSTRAINT_MUST_NOT_BE_UNITRIANGULAR_MATRIX_TYPE( MT );
 
@@ -1688,6 +1342,7 @@ inline EnableIf_<IsNumeric<Other>, SparseSubmatrix<MT,AF,SO> >&
 
    return *this;
 }
+/*! \endcond */
 //*************************************************************************************************
 
 
@@ -1700,81 +1355,87 @@ inline EnableIf_<IsNumeric<Other>, SparseSubmatrix<MT,AF,SO> >&
 //=================================================================================================
 
 //*************************************************************************************************
+/*! \cond BLAZE_INTERNAL */
 /*!\brief Returns the index of the first row of the submatrix in the underlying sparse matrix.
 //
 // \return The index of the first row.
 */
 template< typename MT  // Type of the sparse matrix
-        , bool AF      // Alignment flag
-        , bool SO >    // Storage order
-inline size_t SparseSubmatrix<MT,AF,SO>::row() const noexcept
+        , bool AF >    // Alignment flag
+inline size_t Submatrix<MT,AF,false,false>::row() const noexcept
 {
    return row_;
 }
+/*! \endcond */
 //*************************************************************************************************
 
 
 //*************************************************************************************************
+/*! \cond BLAZE_INTERNAL */
 /*!\brief Returns the number of rows of the sparse submatrix.
 //
 // \return The number of rows of the sparse submatrix.
 */
 template< typename MT  // Type of the sparse matrix
-        , bool AF      // Alignment flag
-        , bool SO >    // Storage order
-inline size_t SparseSubmatrix<MT,AF,SO>::rows() const noexcept
+        , bool AF >    // Alignment flag
+inline size_t Submatrix<MT,AF,false,false>::rows() const noexcept
 {
    return m_;
 }
+/*! \endcond */
 //*************************************************************************************************
 
 
 //*************************************************************************************************
+/*! \cond BLAZE_INTERNAL */
 /*!\brief Returns the index of the first column of the submatrix in the underlying sparse matrix.
 //
 // \return The index of the first column.
 */
 template< typename MT  // Type of the sparse matrix
-        , bool AF      // Alignment flag
-        , bool SO >    // Storage order
-inline size_t SparseSubmatrix<MT,AF,SO>::column() const noexcept
+        , bool AF >    // Alignment flag
+inline size_t Submatrix<MT,AF,false,false>::column() const noexcept
 {
    return column_;
 }
+/*! \endcond */
 //*************************************************************************************************
 
 
 //*************************************************************************************************
+/*! \cond BLAZE_INTERNAL */
 /*!\brief Returns the number of columns of the sparse submatrix.
 //
 // \return The number of columns of the sparse submatrix.
 */
 template< typename MT  // Type of the sparse matrix
-        , bool AF      // Alignment flag
-        , bool SO >    // Storage order
-inline size_t SparseSubmatrix<MT,AF,SO>::columns() const noexcept
+        , bool AF >    // Alignment flag
+inline size_t Submatrix<MT,AF,false,false>::columns() const noexcept
 {
    return n_;
 }
+/*! \endcond */
 //*************************************************************************************************
 
 
 //*************************************************************************************************
+/*! \cond BLAZE_INTERNAL */
 /*!\brief Returns the maximum capacity of the sparse submatrix.
 //
 // \return The capacity of the sparse submatrix.
 */
 template< typename MT  // Type of the sparse matrix
-        , bool AF      // Alignment flag
-        , bool SO >    // Storage order
-inline size_t SparseSubmatrix<MT,AF,SO>::capacity() const noexcept
+        , bool AF >    // Alignment flag
+inline size_t Submatrix<MT,AF,false,false>::capacity() const noexcept
 {
    return nonZeros() + matrix_.capacity() - matrix_.nonZeros();
 }
+/*! \endcond */
 //*************************************************************************************************
 
 
 //*************************************************************************************************
+/*! \cond BLAZE_INTERNAL */
 /*!\brief Returns the current capacity of the specified row/column.
 //
 // \param i The index of the row/column.
@@ -1786,25 +1447,25 @@ inline size_t SparseSubmatrix<MT,AF,SO>::capacity() const noexcept
 // of column \a i.
 */
 template< typename MT  // Type of the sparse matrix
-        , bool AF      // Alignment flag
-        , bool SO >    // Storage order
-inline size_t SparseSubmatrix<MT,AF,SO>::capacity( size_t i ) const noexcept
+        , bool AF >    // Alignment flag
+inline size_t Submatrix<MT,AF,false,false>::capacity( size_t i ) const noexcept
 {
    BLAZE_USER_ASSERT( i < rows(), "Invalid row access index" );
    return nonZeros( i ) + matrix_.capacity( row_+i ) - matrix_.nonZeros( row_+i );
 }
+/*! \endcond */
 //*************************************************************************************************
 
 
 //*************************************************************************************************
+/*! \cond BLAZE_INTERNAL */
 /*!\brief Returns the number of non-zero elements in the sparse submatrix
 //
 // \return The number of non-zero elements in the sparse submatrix.
 */
 template< typename MT  // Type of the sparse matrix
-        , bool AF      // Alignment flag
-        , bool SO >    // Storage order
-inline size_t SparseSubmatrix<MT,AF,SO>::nonZeros() const
+        , bool AF >    // Alignment flag
+inline size_t Submatrix<MT,AF,false,false>::nonZeros() const
 {
    size_t nonzeros( 0UL );
 
@@ -1813,10 +1474,12 @@ inline size_t SparseSubmatrix<MT,AF,SO>::nonZeros() const
 
    return nonzeros;
 }
+/*! \endcond */
 //*************************************************************************************************
 
 
 //*************************************************************************************************
+/*! \cond BLAZE_INTERNAL */
 /*!\brief Returns the number of non-zero elements in the specified row/column.
 //
 // \param i The index of the row/column.
@@ -1828,25 +1491,25 @@ inline size_t SparseSubmatrix<MT,AF,SO>::nonZeros() const
 // the number of non-zero elements in column \a i.
 */
 template< typename MT  // Type of the sparse matrix
-        , bool AF      // Alignment flag
-        , bool SO >    // Storage order
-inline size_t SparseSubmatrix<MT,AF,SO>::nonZeros( size_t i ) const
+        , bool AF >    // Alignment flag
+inline size_t Submatrix<MT,AF,false,false>::nonZeros( size_t i ) const
 {
    BLAZE_USER_ASSERT( i < rows(), "Invalid row access index" );
    return end(i) - begin(i);
 }
+/*! \endcond */
 //*************************************************************************************************
 
 
 //*************************************************************************************************
+/*! \cond BLAZE_INTERNAL */
 /*!\brief Reset to the default initial values.
 //
 // \return void
 */
 template< typename MT  // Type of the sparse matrix
-        , bool AF      // Alignment flag
-        , bool SO >    // Storage order
-inline void SparseSubmatrix<MT,AF,SO>::reset()
+        , bool AF >    // Alignment flag
+inline void Submatrix<MT,AF,false,false>::reset()
 {
    for( size_t i=row_; i<row_+m_; ++i )
    {
@@ -1864,10 +1527,12 @@ inline void SparseSubmatrix<MT,AF,SO>::reset()
       matrix_.erase( i, matrix_.lowerBound( i, jbegin ), matrix_.lowerBound( i, jend ) );
    }
 }
+/*! \endcond */
 //*************************************************************************************************
 
 
 //*************************************************************************************************
+/*! \cond BLAZE_INTERNAL */
 /*!\brief Reset the specified row/column to the default initial values.
 //
 // \param i The index of the row/column.
@@ -1879,9 +1544,8 @@ inline void SparseSubmatrix<MT,AF,SO>::reset()
 // Note that the capacity of the row/column remains unchanged.
 */
 template< typename MT  // Type of the sparse matrix
-        , bool AF      // Alignment flag
-        , bool SO >    // Storage order
-inline void SparseSubmatrix<MT,AF,SO>::reset( size_t i )
+        , bool AF >    // Alignment flag
+inline void Submatrix<MT,AF,false,false>::reset( size_t i )
 {
    BLAZE_USER_ASSERT( i < rows(), "Invalid row access index" );
 
@@ -1900,10 +1564,12 @@ inline void SparseSubmatrix<MT,AF,SO>::reset( size_t i )
 
    matrix_.erase( index, matrix_.lowerBound( index, jbegin ), matrix_.lowerBound( index, jend ) );
 }
+/*! \endcond */
 //*************************************************************************************************
 
 
 //*************************************************************************************************
+/*! \cond BLAZE_INTERNAL */
 /*!\brief Setting an element of the sparse submatrix.
 //
 // \param i The row index of the new element. The index has to be in the range \f$[0..M-1]\f$.
@@ -1916,17 +1582,18 @@ inline void SparseSubmatrix<MT,AF,SO>::reset( size_t i )
 // else a new element with the given \a value is inserted.
 */
 template< typename MT  // Type of the sparse matrix
-        , bool AF      // Alignment flag
-        , bool SO >    // Storage order
-inline typename SparseSubmatrix<MT,AF,SO>::Iterator
-   SparseSubmatrix<MT,AF,SO>::set( size_t i, size_t j, const ElementType& value )
+        , bool AF >    // Alignment flag
+inline typename Submatrix<MT,AF,false,false>::Iterator
+   Submatrix<MT,AF,false,false>::set( size_t i, size_t j, const ElementType& value )
 {
    return Iterator( matrix_.set( row_+i, column_+j, value ), column_ );
 }
+/*! \endcond */
 //*************************************************************************************************
 
 
 //*************************************************************************************************
+/*! \cond BLAZE_INTERNAL */
 /*!\brief Inserting an element into the sparse submatrix.
 //
 // \param i The row index of the new element. The index has to be in the range \f$[0..M-1]\f$.
@@ -1940,17 +1607,18 @@ inline typename SparseSubmatrix<MT,AF,SO>::Iterator
 // column index \a j, a \a std::invalid_argument exception is thrown.
 */
 template< typename MT  // Type of the sparse matrix
-        , bool AF      // Alignment flag
-        , bool SO >    // Storage order
-inline typename SparseSubmatrix<MT,AF,SO>::Iterator
-   SparseSubmatrix<MT,AF,SO>::insert( size_t i, size_t j, const ElementType& value )
+        , bool AF >    // Alignment flag
+inline typename Submatrix<MT,AF,false,false>::Iterator
+   Submatrix<MT,AF,false,false>::insert( size_t i, size_t j, const ElementType& value )
 {
    return Iterator( matrix_.insert( row_+i, column_+j, value ), column_ );
 }
+/*! \endcond */
 //*************************************************************************************************
 
 
 //*************************************************************************************************
+/*! \cond BLAZE_INTERNAL */
 /*!\brief Erasing an element from the sparse submatrix.
 //
 // \param i The row index of the element to be erased. The index has to be in the range \f$[0..M-1]\f$.
@@ -1960,19 +1628,20 @@ inline typename SparseSubmatrix<MT,AF,SO>::Iterator
 // This function erases an element from the sparse submatrix.
 */
 template< typename MT  // Type of the sparse matrix
-        , bool AF      // Alignment flag
-        , bool SO >    // Storage order
-inline void SparseSubmatrix<MT,AF,SO>::erase( size_t i, size_t j )
+        , bool AF >    // Alignment flag
+inline void Submatrix<MT,AF,false,false>::erase( size_t i, size_t j )
 {
    BLAZE_USER_ASSERT( i < rows()   , "Invalid row access index"    );
    BLAZE_USER_ASSERT( j < columns(), "Invalid column access index" );
 
    matrix_.erase( row_ + i, column_ + j );
 }
+/*! \endcond */
 //*************************************************************************************************
 
 
 //*************************************************************************************************
+/*! \cond BLAZE_INTERNAL */
 /*!\brief Erasing an element from the sparse submatrix.
 //
 // \param i The row/column index of the element to be erased. The index has to be in the range \f$[0..M-1]\f$.
@@ -1984,18 +1653,19 @@ inline void SparseSubmatrix<MT,AF,SO>::erase( size_t i, size_t j )
 // to \a columnMajor the function erases an element from column \a i.
 */
 template< typename MT  // Type of the sparse matrix
-        , bool AF      // Alignment flag
-        , bool SO >    // Storage order
-inline typename SparseSubmatrix<MT,AF,SO>::Iterator
-   SparseSubmatrix<MT,AF,SO>::erase( size_t i, Iterator pos )
+        , bool AF >    // Alignment flag
+inline typename Submatrix<MT,AF,false,false>::Iterator
+   Submatrix<MT,AF,false,false>::erase( size_t i, Iterator pos )
 {
    BLAZE_USER_ASSERT( i < rows(), "Invalid row access index" );
    return Iterator( matrix_.erase( row_+i, pos.base() ), column_ );
 }
+/*! \endcond */
 //*************************************************************************************************
 
 
 //*************************************************************************************************
+/*! \cond BLAZE_INTERNAL */
 /*!\brief Erasing a range of elements from the sparse submatrix.
 //
 // \param i The row/column index of the element to be erased. The index has to be in the range \f$[0..M-1]\f$.
@@ -2009,18 +1679,19 @@ inline typename SparseSubmatrix<MT,AF,SO>::Iterator
 // \a i.
 */
 template< typename MT  // Type of the sparse matrix
-        , bool AF      // Alignment flag
-        , bool SO >    // Storage order
-inline typename SparseSubmatrix<MT,AF,SO>::Iterator
-   SparseSubmatrix<MT,AF,SO>::erase( size_t i, Iterator first, Iterator last )
+        , bool AF >    // Alignment flag
+inline typename Submatrix<MT,AF,false,false>::Iterator
+   Submatrix<MT,AF,false,false>::erase( size_t i, Iterator first, Iterator last )
 {
    BLAZE_USER_ASSERT( i < rows(), "Invalid row access index" );
    return Iterator( matrix_.erase( row_+i, first.base(), last.base() ), column_ );
 }
+/*! \endcond */
 //*************************************************************************************************
 
 
 //*************************************************************************************************
+/*! \cond BLAZE_INTERNAL */
 /*!\brief Setting the minimum capacity of the sparse submatrix.
 //
 // \param nonzeros The new minimum capacity of the sparse submatrix.
@@ -2031,9 +1702,8 @@ inline typename SparseSubmatrix<MT,AF,SO>::Iterator
 // rows are preserved.
 */
 template< typename MT  // Type of the sparse matrix
-        , bool AF      // Alignment flag
-        , bool SO >    // Storage order
-inline void SparseSubmatrix<MT,AF,SO>::reserve( size_t nonzeros )
+        , bool AF >    // Alignment flag
+inline void Submatrix<MT,AF,false,false>::reserve( size_t nonzeros )
 {
    const size_t current( capacity() );
 
@@ -2041,10 +1711,12 @@ inline void SparseSubmatrix<MT,AF,SO>::reserve( size_t nonzeros )
       matrix_.reserve( matrix_.capacity() + nonzeros - current );
    }
 }
+/*! \endcond */
 //*************************************************************************************************
 
 
 //*************************************************************************************************
+/*! \cond BLAZE_INTERNAL */
 /*!\brief Setting the minimum capacity of a specific row/column of the sparse submatrix.
 //
 // \param i The row/column index of the new element \f$[0..M-1]\f$ or \f$[0..N-1]\f$.
@@ -2060,9 +1732,8 @@ inline void SparseSubmatrix<MT,AF,SO>::reserve( size_t nonzeros )
 // to be in the range \f$[0..N-1]\f$.
 */
 template< typename MT  // Type of the sparse matrix
-        , bool AF      // Alignment flag
-        , bool SO >    // Storage order
-void SparseSubmatrix<MT,AF,SO>::reserve( size_t i, size_t nonzeros )
+        , bool AF >    // Alignment flag
+void Submatrix<MT,AF,false,false>::reserve( size_t i, size_t nonzeros )
 {
    const size_t current( capacity( i ) );
    const size_t index  ( row_ + i );
@@ -2071,10 +1742,12 @@ void SparseSubmatrix<MT,AF,SO>::reserve( size_t i, size_t nonzeros )
       matrix_.reserve( index, matrix_.capacity( index ) + nonzeros - current );
    }
 }
+/*! \endcond */
 //*************************************************************************************************
 
 
 //*************************************************************************************************
+/*! \cond BLAZE_INTERNAL */
 /*!\brief Removing all excessive capacity from all rows/columns.
 //
 // \return void
@@ -2085,17 +1758,18 @@ void SparseSubmatrix<MT,AF,SO>::reserve( size_t i, size_t nonzeros )
 // remove the overall capacity but only reduces the capacity per row/column.
 */
 template< typename MT  // Type of the sparse matrix
-        , bool AF      // Alignment flag
-        , bool SO >    // Storage order
-void SparseSubmatrix<MT,AF,SO>::trim()
+        , bool AF >    // Alignment flag
+void Submatrix<MT,AF,false,false>::trim()
 {
    for( size_t i=0UL; i<rows(); ++i )
       trim( i );
 }
+/*! \endcond */
 //*************************************************************************************************
 
 
 //*************************************************************************************************
+/*! \cond BLAZE_INTERNAL */
 /*!\brief Removing all excessive capacity of a specific row/column of the sparse matrix.
 //
 // \param i The index of the row/column to be trimmed (\f$[0..M-1]\f$ or \f$[0..N-1]\f$).
@@ -2107,17 +1781,18 @@ void SparseSubmatrix<MT,AF,SO>::trim()
 // subsequent row/column.
 */
 template< typename MT  // Type of the sparse matrix
-        , bool AF      // Alignment flag
-        , bool SO >    // Storage order
-void SparseSubmatrix<MT,AF,SO>::trim( size_t i )
+        , bool AF >    // Alignment flag
+void Submatrix<MT,AF,false,false>::trim( size_t i )
 {
    BLAZE_USER_ASSERT( i < rows(), "Invalid row access index" );
    matrix_.trim( row_ + i );
 }
+/*! \endcond */
 //*************************************************************************************************
 
 
 //*************************************************************************************************
+/*! \cond BLAZE_INTERNAL */
 /*!\brief In-place transpose of the submatrix.
 //
 // \return Reference to the transposed submatrix.
@@ -2135,9 +1810,8 @@ void SparseSubmatrix<MT,AF,SO>::trim( size_t i )
 // In all cases, a \a std::logic_error is thrown.
 */
 template< typename MT  // Type of the sparse matrix
-        , bool AF      // Alignment flag
-        , bool SO >    // Storage order
-inline SparseSubmatrix<MT,AF,SO>& SparseSubmatrix<MT,AF,SO>::transpose()
+        , bool AF >    // Alignment flag
+inline Submatrix<MT,AF,false,false>& Submatrix<MT,AF,false,false>::transpose()
 {
    using blaze::assign;
 
@@ -2156,10 +1830,12 @@ inline SparseSubmatrix<MT,AF,SO>& SparseSubmatrix<MT,AF,SO>::transpose()
 
    return *this;
 }
+/*! \endcond */
 //*************************************************************************************************
 
 
 //*************************************************************************************************
+/*! \cond BLAZE_INTERNAL */
 /*!\brief In-place conjugate transpose of the submatrix.
 //
 // \return Reference to the transposed submatrix.
@@ -2177,9 +1853,8 @@ inline SparseSubmatrix<MT,AF,SO>& SparseSubmatrix<MT,AF,SO>::transpose()
 // In all cases, a \a std::logic_error is thrown.
 */
 template< typename MT  // Type of the sparse matrix
-        , bool AF      // Alignment flag
-        , bool SO >    // Storage order
-inline SparseSubmatrix<MT,AF,SO>& SparseSubmatrix<MT,AF,SO>::ctranspose()
+        , bool AF >    // Alignment flag
+inline Submatrix<MT,AF,false,false>& Submatrix<MT,AF,false,false>::ctranspose()
 {
    using blaze::assign;
 
@@ -2198,10 +1873,12 @@ inline SparseSubmatrix<MT,AF,SO>& SparseSubmatrix<MT,AF,SO>::ctranspose()
 
    return *this;
 }
+/*! \endcond */
 //*************************************************************************************************
 
 
 //*************************************************************************************************
+/*! \cond BLAZE_INTERNAL */
 /*!\brief Scaling of the sparse submatrix by the scalar value \a scalar (\f$ A=B*s \f$).
 //
 // \param scalar The scalar value for the submatrix scaling.
@@ -2212,10 +1889,9 @@ inline SparseSubmatrix<MT,AF,SO>& SparseSubmatrix<MT,AF,SO>::ctranspose()
 // The attempt to scale such a submatrix results in a compile time error!
 */
 template< typename MT       // Type of the sparse matrix
-        , bool AF           // Alignment flag
-        , bool SO >         // Storage order
+        , bool AF >         // Alignment flag
 template< typename Other >  // Data type of the scalar value
-inline SparseSubmatrix<MT,AF,SO>& SparseSubmatrix<MT,AF,SO>::scale( const Other& scalar )
+inline Submatrix<MT,AF,false,false>& Submatrix<MT,AF,false,false>::scale( const Other& scalar )
 {
    BLAZE_CONSTRAINT_MUST_NOT_BE_UNITRIANGULAR_MATRIX_TYPE( MT );
 
@@ -2227,10 +1903,12 @@ inline SparseSubmatrix<MT,AF,SO>& SparseSubmatrix<MT,AF,SO>::scale( const Other&
 
    return *this;
 }
+/*! \endcond */
 //*************************************************************************************************
 
 
 //*************************************************************************************************
+/*! \cond BLAZE_INTERNAL */
 /*!\brief Checking whether there exists an overlap in the context of a symmetric matrix.
 //
 // \return \a true in case an overlap exists, \a false if not.
@@ -2240,9 +1918,8 @@ inline SparseSubmatrix<MT,AF,SO>& SparseSubmatrix<MT,AF,SO>::scale( const Other&
 // \a false.
 */
 template< typename MT  // Type of the sparse matrix
-        , bool AF      // Alignment flag
-        , bool SO >    // Storage order
-inline bool SparseSubmatrix<MT,AF,SO>::hasOverlap() const noexcept
+        , bool AF >    // Alignment flag
+inline bool Submatrix<MT,AF,false,false>::hasOverlap() const noexcept
 {
    BLAZE_INTERNAL_ASSERT( IsSymmetric<MT>::value || IsHermitian<MT>::value, "Invalid matrix detected" );
 
@@ -2250,6 +1927,7 @@ inline bool SparseSubmatrix<MT,AF,SO>::hasOverlap() const noexcept
       return false;
    else return true;
 }
+/*! \endcond */
 //*************************************************************************************************
 
 
@@ -2262,6 +1940,7 @@ inline bool SparseSubmatrix<MT,AF,SO>::hasOverlap() const noexcept
 //=================================================================================================
 
 //*************************************************************************************************
+/*! \cond BLAZE_INTERNAL */
 /*!\brief Searches for a specific submatrix element.
 //
 // \param i The row index of the search element. The index has to be in the range \f$[0..M-1]\f$.
@@ -2277,10 +1956,9 @@ inline bool SparseSubmatrix<MT,AF,SO>::hasOverlap() const noexcept
 // the insert() function!
 */
 template< typename MT  // Type of the sparse matrix
-        , bool AF      // Alignment flag
-        , bool SO >    // Storage order
-inline typename SparseSubmatrix<MT,AF,SO>::Iterator
-   SparseSubmatrix<MT,AF,SO>::find( size_t i, size_t j )
+        , bool AF >    // Alignment flag
+inline typename Submatrix<MT,AF,false,false>::Iterator
+   Submatrix<MT,AF,false,false>::find( size_t i, size_t j )
 {
    const Iterator_<MT> pos( matrix_.find( row_ + i, column_ + j ) );
 
@@ -2289,10 +1967,12 @@ inline typename SparseSubmatrix<MT,AF,SO>::Iterator
    else
       return end( i );
 }
+/*! \endcond */
 //*************************************************************************************************
 
 
 //*************************************************************************************************
+/*! \cond BLAZE_INTERNAL */
 /*!\brief Searches for a specific submatrix element.
 //
 // \param i The row index of the search element. The index has to be in the range \f$[0..M-1]\f$.
@@ -2308,10 +1988,9 @@ inline typename SparseSubmatrix<MT,AF,SO>::Iterator
 // the insert() function!
 */
 template< typename MT  // Type of the sparse matrix
-        , bool AF      // Alignment flag
-        , bool SO >    // Storage order
-inline typename SparseSubmatrix<MT,AF,SO>::ConstIterator
-   SparseSubmatrix<MT,AF,SO>::find( size_t i, size_t j ) const
+        , bool AF >    // Alignment flag
+inline typename Submatrix<MT,AF,false,false>::ConstIterator
+   Submatrix<MT,AF,false,false>::find( size_t i, size_t j ) const
 {
    const ConstIterator_<MT> pos( matrix_.find( row_ + i, column_ + j ) );
 
@@ -2320,10 +1999,12 @@ inline typename SparseSubmatrix<MT,AF,SO>::ConstIterator
    else
       return end( i );
 }
+/*! \endcond */
 //*************************************************************************************************
 
 
 //*************************************************************************************************
+/*! \cond BLAZE_INTERNAL */
 /*!\brief Returns an iterator to the first index not less then the given index.
 //
 // \param i The row index of the search element. The index has to be in the range \f$[0..M-1]\f$.
@@ -2339,17 +2020,18 @@ inline typename SparseSubmatrix<MT,AF,SO>::ConstIterator
 // insert() function!
 */
 template< typename MT  // Type of the sparse matrix
-        , bool AF      // Alignment flag
-        , bool SO >    // Storage order
-inline typename SparseSubmatrix<MT,AF,SO>::Iterator
-   SparseSubmatrix<MT,AF,SO>::lowerBound( size_t i, size_t j )
+        , bool AF >    // Alignment flag
+inline typename Submatrix<MT,AF,false,false>::Iterator
+   Submatrix<MT,AF,false,false>::lowerBound( size_t i, size_t j )
 {
    return Iterator( matrix_.lowerBound( row_ + i, column_ + j ), column_ );
 }
+/*! \endcond */
 //*************************************************************************************************
 
 
 //*************************************************************************************************
+/*! \cond BLAZE_INTERNAL */
 /*!\brief Returns an iterator to the first index not less then the given index.
 //
 // \param i The row index of the search element. The index has to be in the range \f$[0..M-1]\f$.
@@ -2365,17 +2047,18 @@ inline typename SparseSubmatrix<MT,AF,SO>::Iterator
 // insert() function!
 */
 template< typename MT  // Type of the sparse matrix
-        , bool AF      // Alignment flag
-        , bool SO >    // Storage order
-inline typename SparseSubmatrix<MT,AF,SO>::ConstIterator
-   SparseSubmatrix<MT,AF,SO>::lowerBound( size_t i, size_t j ) const
+        , bool AF >    // Alignment flag
+inline typename Submatrix<MT,AF,false,false>::ConstIterator
+   Submatrix<MT,AF,false,false>::lowerBound( size_t i, size_t j ) const
 {
    return ConstIterator( matrix_.lowerBound( row_ + i, column_ + j ), column_ );
 }
+/*! \endcond */
 //*************************************************************************************************
 
 
 //*************************************************************************************************
+/*! \cond BLAZE_INTERNAL */
 /*!\brief Returns an iterator to the first index greater then the given index.
 //
 // \param i The row index of the search element. The index has to be in the range \f$[0..M-1]\f$.
@@ -2391,17 +2074,18 @@ inline typename SparseSubmatrix<MT,AF,SO>::ConstIterator
 // insert() function!
 */
 template< typename MT  // Type of the sparse matrix
-        , bool AF      // Alignment flag
-        , bool SO >    // Storage order
-inline typename SparseSubmatrix<MT,AF,SO>::Iterator
-   SparseSubmatrix<MT,AF,SO>::upperBound( size_t i, size_t j )
+        , bool AF >    // Alignment flag
+inline typename Submatrix<MT,AF,false,false>::Iterator
+   Submatrix<MT,AF,false,false>::upperBound( size_t i, size_t j )
 {
    return Iterator( matrix_.upperBound( row_ + i, column_ + j ), column_ );
 }
+/*! \endcond */
 //*************************************************************************************************
 
 
 //*************************************************************************************************
+/*! \cond BLAZE_INTERNAL */
 /*!\brief Returns an iterator to the first index greater then the given index.
 //
 // \param i The row index of the search element. The index has to be in the range \f$[0..M-1]\f$.
@@ -2417,13 +2101,13 @@ inline typename SparseSubmatrix<MT,AF,SO>::Iterator
 // insert() function!
 */
 template< typename MT  // Type of the sparse matrix
-        , bool AF      // Alignment flag
-        , bool SO >    // Storage order
-inline typename SparseSubmatrix<MT,AF,SO>::ConstIterator
-   SparseSubmatrix<MT,AF,SO>::upperBound( size_t i, size_t j ) const
+        , bool AF >    // Alignment flag
+inline typename Submatrix<MT,AF,false,false>::ConstIterator
+   Submatrix<MT,AF,false,false>::upperBound( size_t i, size_t j ) const
 {
    return ConstIterator( matrix_.upperBound( row_ + i, column_ + j ), column_ );
 }
+/*! \endcond */
 //*************************************************************************************************
 
 
@@ -2436,6 +2120,7 @@ inline typename SparseSubmatrix<MT,AF,SO>::ConstIterator
 //=================================================================================================
 
 //*************************************************************************************************
+/*! \cond BLAZE_INTERNAL */
 /*!\brief Appending an element to the specified row/column of the sparse submatrix.
 //
 // \param i The row index of the new element. The index has to be in the range \f$[0..M-1]\f$.
@@ -2465,7 +2150,7 @@ inline typename SparseSubmatrix<MT,AF,SO>::ConstIterator
    using blaze::rowMajor;
 
    typedef blaze::CompressedMatrix<double,rowMajor>  MatrixType;
-   typedef blaze::SparseSubmatrix<MatrixType>        SubmatrixType;
+   typedef blaze::Submatrix<MatrixType>              SubmatrixType;
 
    MatrixType A( 42, 54 );
    SubmatrixType B = submatrix( A, 10, 10, 4, 3 );
@@ -2484,9 +2169,8 @@ inline typename SparseSubmatrix<MT,AF,SO>::ConstIterator
 // returned by the end() functions!
 */
 template< typename MT  // Type of the sparse matrix
-        , bool AF      // Alignment flag
-        , bool SO >    // Storage order
-inline void SparseSubmatrix<MT,AF,SO>::append( size_t i, size_t j, const ElementType& value, bool check )
+        , bool AF >    // Alignment flag
+inline void Submatrix<MT,AF,false,false>::append( size_t i, size_t j, const ElementType& value, bool check )
 {
    if( column_ + n_ == matrix_.columns() ) {
       matrix_.append( row_ + i, column_ + j, value, check );
@@ -2495,10 +2179,12 @@ inline void SparseSubmatrix<MT,AF,SO>::append( size_t i, size_t j, const Element
       matrix_.insert( row_ + i, column_ + j, value );
    }
 }
+/*! \endcond */
 //*************************************************************************************************
 
 
 //*************************************************************************************************
+/*! \cond BLAZE_INTERNAL */
 /*!\brief Finalizing the element insertion of a row/column.
 //
 // \param i The index of the row/column to be finalized \f$[0..M-1]\f$.
@@ -2512,12 +2198,12 @@ inline void SparseSubmatrix<MT,AF,SO>::append( size_t i, size_t j, const Element
 // returned by the end() functions!
 */
 template< typename MT  // Type of the sparse matrix
-        , bool AF      // Alignment flag
-        , bool SO >    // Storage order
-inline void SparseSubmatrix<MT,AF,SO>::finalize( size_t i )
+        , bool AF >    // Alignment flag
+inline void Submatrix<MT,AF,false,false>::finalize( size_t i )
 {
    matrix_.trim( row_ + i );
 }
+/*! \endcond */
 //*************************************************************************************************
 
 
@@ -2530,6 +2216,7 @@ inline void SparseSubmatrix<MT,AF,SO>::finalize( size_t i )
 //=================================================================================================
 
 //*************************************************************************************************
+/*! \cond BLAZE_INTERNAL */
 /*!\brief Returns whether the submatrix can alias with the given address \a alias.
 //
 // \param alias The alias to be checked.
@@ -2540,17 +2227,18 @@ inline void SparseSubmatrix<MT,AF,SO>::finalize( size_t i )
 // optimize the evaluation.
 */
 template< typename MT       // Type of the sparse matrix
-        , bool AF           // Alignment flag
-        , bool SO >         // Storage order
+        , bool AF >         // Alignment flag
 template< typename Other >  // Data type of the foreign expression
-inline bool SparseSubmatrix<MT,AF,SO>::canAlias( const Other* alias ) const noexcept
+inline bool Submatrix<MT,AF,false,false>::canAlias( const Other* alias ) const noexcept
 {
    return matrix_.isAliased( alias );
 }
+/*! \endcond */
 //*************************************************************************************************
 
 
 //*************************************************************************************************
+/*! \cond BLAZE_INTERNAL */
 /*!\brief Returns whether the submatrix is aliased with the given address \a alias.
 //
 // \param alias The alias to be checked.
@@ -2561,17 +2249,18 @@ inline bool SparseSubmatrix<MT,AF,SO>::canAlias( const Other* alias ) const noex
 // optimize the evaluation.
 */
 template< typename MT       // Type of the sparse matrix
-        , bool AF           // Alignment flag
-        , bool SO >         // Storage order
+        , bool AF >         // Alignment flag
 template< typename Other >  // Data type of the foreign expression
-inline bool SparseSubmatrix<MT,AF,SO>::isAliased( const Other* alias ) const noexcept
+inline bool Submatrix<MT,AF,false,false>::isAliased( const Other* alias ) const noexcept
 {
    return matrix_.isAliased( alias );
 }
+/*! \endcond */
 //*************************************************************************************************
 
 
 //*************************************************************************************************
+/*! \cond BLAZE_INTERNAL */
 /*!\brief Returns whether the submatrix can be used in SMP assignments.
 //
 // \return \a true in case the submatrix can be used in SMP assignments, \a false if not.
@@ -2582,16 +2271,17 @@ inline bool SparseSubmatrix<MT,AF,SO>::isAliased( const Other* alias ) const noe
 // rows and/or columns of the matrix).
 */
 template< typename MT  // Type of the sparse matrix
-        , bool AF      // Alignment flag
-        , bool SO >    // Storage order
-inline bool SparseSubmatrix<MT,AF,SO>::canSMPAssign() const noexcept
+        , bool AF >    // Alignment flag
+inline bool Submatrix<MT,AF,false,false>::canSMPAssign() const noexcept
 {
    return false;
 }
+/*! \endcond */
 //*************************************************************************************************
 
 
 //*************************************************************************************************
+/*! \cond BLAZE_INTERNAL */
 /*!\brief Default implementation of the assignment of a dense matrix.
 //
 // \param rhs The right-hand side dense matrix to be assigned.
@@ -2603,11 +2293,10 @@ inline bool SparseSubmatrix<MT,AF,SO>::canSMPAssign() const noexcept
 // assignment operator.
 */
 template< typename MT   // Type of the sparse matrix
-        , bool AF       // Alignment flag
-        , bool SO >     // Storage order
+        , bool AF >     // Alignment flag
 template< typename MT2  // Type of the right-hand side dense matrix
-        , bool SO2 >    // Storage order of the right-hand side dense matrix
-inline void SparseSubmatrix<MT,AF,SO>::assign( const DenseMatrix<MT2,SO2>& rhs )
+        , bool SO >     // Storage order of the right-hand side dense matrix
+inline void Submatrix<MT,AF,false,false>::assign( const DenseMatrix<MT2,SO>& rhs )
 {
    BLAZE_INTERNAL_ASSERT( rows()    == (~rhs).rows()   , "Invalid number of rows"    );
    BLAZE_INTERNAL_ASSERT( columns() == (~rhs).columns(), "Invalid number of columns" );
@@ -2624,10 +2313,12 @@ inline void SparseSubmatrix<MT,AF,SO>::assign( const DenseMatrix<MT2,SO2>& rhs )
       finalize( i );
    }
 }
+/*! \endcond */
 //*************************************************************************************************
 
 
 //*************************************************************************************************
+/*! \cond BLAZE_INTERNAL */
 /*!\brief Default implementation of the assignment of a row-major sparse matrix.
 //
 // \param rhs The right-hand side sparse matrix to be assigned.
@@ -2639,10 +2330,9 @@ inline void SparseSubmatrix<MT,AF,SO>::assign( const DenseMatrix<MT2,SO2>& rhs )
 // assignment operator.
 */
 template< typename MT     // Type of the sparse matrix
-        , bool AF         // Alignment flag
-        , bool SO >       // Storage order
+        , bool AF >       // Alignment flag
 template< typename MT2 >  // Type of the right-hand side sparse matrix
-inline void SparseSubmatrix<MT,AF,SO>::assign( const SparseMatrix<MT2,false>& rhs )
+inline void Submatrix<MT,AF,false,false>::assign( const SparseMatrix<MT2,false>& rhs )
 {
    BLAZE_INTERNAL_ASSERT( rows()    == (~rhs).rows()   , "Invalid number of rows"    );
    BLAZE_INTERNAL_ASSERT( columns() == (~rhs).columns(), "Invalid number of columns" );
@@ -2659,10 +2349,12 @@ inline void SparseSubmatrix<MT,AF,SO>::assign( const SparseMatrix<MT2,false>& rh
       finalize( i );
    }
 }
+/*! \endcond */
 //*************************************************************************************************
 
 
 //*************************************************************************************************
+/*! \cond BLAZE_INTERNAL */
 /*!\brief Default implementation of the assignment of a column-major sparse matrix.
 //
 // \param rhs The right-hand side sparse matrix to be assigned.
@@ -2674,10 +2366,9 @@ inline void SparseSubmatrix<MT,AF,SO>::assign( const SparseMatrix<MT2,false>& rh
 // assignment operator.
 */
 template< typename MT     // Type of the sparse matrix
-        , bool AF         // Alignment flag
-        , bool SO >       // Storage order
+        , bool AF >       // Alignment flag
 template< typename MT2 >  // Type of the right-hand side sparse matrix
-inline void SparseSubmatrix<MT,AF,SO>::assign( const SparseMatrix<MT2,true>& rhs )
+inline void Submatrix<MT,AF,false,false>::assign( const SparseMatrix<MT2,true>& rhs )
 {
    BLAZE_CONSTRAINT_MUST_NOT_BE_SYMMETRIC_MATRIX_TYPE( MT2 );
 
@@ -2707,10 +2398,12 @@ inline void SparseSubmatrix<MT,AF,SO>::assign( const SparseMatrix<MT2,true>& rhs
             append( element->index(), j, element->value(), true );
    }
 }
+/*! \endcond */
 //*************************************************************************************************
 
 
 //*************************************************************************************************
+/*! \cond BLAZE_INTERNAL */
 /*!\brief Default implementation of the addition assignment of a dense matrix.
 //
 // \param rhs The right-hand side dense matrix to be added.
@@ -2722,11 +2415,10 @@ inline void SparseSubmatrix<MT,AF,SO>::assign( const SparseMatrix<MT2,true>& rhs
 // assignment operator.
 */
 template< typename MT   // Type of the sparse matrix
-        , bool AF       // Alignment flag
-        , bool SO >     // Storage order
+        , bool AF >     // Alignment flag
 template< typename MT2  // Type of the right-hand side dense matrix
-        , bool SO2 >    // Storage order of the right-hand side dense matrix
-inline void SparseSubmatrix<MT,AF,SO>::addAssign( const DenseMatrix<MT2,SO2>& rhs )
+        , bool SO >     // Storage order of the right-hand side dense matrix
+inline void Submatrix<MT,AF,false,false>::addAssign( const DenseMatrix<MT2,SO>& rhs )
 {
    typedef AddTrait_< ResultType, ResultType_<MT2> >  AddType;
 
@@ -2740,10 +2432,12 @@ inline void SparseSubmatrix<MT,AF,SO>::addAssign( const DenseMatrix<MT2,SO2>& rh
    reset();
    assign( tmp );
 }
+/*! \endcond */
 //*************************************************************************************************
 
 
 //*************************************************************************************************
+/*! \cond BLAZE_INTERNAL */
 /*!\brief Default implementation of the addition assignment of a sparse matrix.
 //
 // \param rhs The right-hand side sparse matrix to be added.
@@ -2755,11 +2449,10 @@ inline void SparseSubmatrix<MT,AF,SO>::addAssign( const DenseMatrix<MT2,SO2>& rh
 // assignment operator.
 */
 template< typename MT   // Type of the sparse matrix
-        , bool AF       // Alignment flag
-        , bool SO >     // Storage order
+        , bool AF >     // Alignment flag
 template< typename MT2  // Type of the right-hand side sparse matrix
-        , bool SO2 >    // Storage order of the right-hand side sparse matrix
-inline void SparseSubmatrix<MT,AF,SO>::addAssign( const SparseMatrix<MT2,SO2>& rhs )
+        , bool SO >     // Storage order of the right-hand side sparse matrix
+inline void Submatrix<MT,AF,false,false>::addAssign( const SparseMatrix<MT2,SO>& rhs )
 {
    typedef AddTrait_< ResultType, ResultType_<MT2> >  AddType;
 
@@ -2773,10 +2466,12 @@ inline void SparseSubmatrix<MT,AF,SO>::addAssign( const SparseMatrix<MT2,SO2>& r
    reset();
    assign( tmp );
 }
+/*! \endcond */
 //*************************************************************************************************
 
 
 //*************************************************************************************************
+/*! \cond BLAZE_INTERNAL */
 /*!\brief Default implementation of the subtraction assignment of a dense matrix.
 //
 // \param rhs The right-hand side dense matrix to be subtracted.
@@ -2788,11 +2483,10 @@ inline void SparseSubmatrix<MT,AF,SO>::addAssign( const SparseMatrix<MT2,SO2>& r
 // assignment operator.
 */
 template< typename MT   // Type of the sparse matrix
-        , bool AF       // Alignment flag
-        , bool SO >     // Storage order
+        , bool AF >     // Alignment flag
 template< typename MT2  // Type of the right-hand side dense matrix
-        , bool SO2 >    // Storage order of the right-hand side dense matrix
-inline void SparseSubmatrix<MT,AF,SO>::subAssign( const DenseMatrix<MT2,SO2>& rhs )
+        , bool SO >     // Storage order of the right-hand side dense matrix
+inline void Submatrix<MT,AF,false,false>::subAssign( const DenseMatrix<MT2,SO>& rhs )
 {
    typedef SubTrait_< ResultType, ResultType_<MT2> >  SubType;
 
@@ -2806,10 +2500,12 @@ inline void SparseSubmatrix<MT,AF,SO>::subAssign( const DenseMatrix<MT2,SO2>& rh
    reset();
    assign( tmp );
 }
+/*! \endcond */
 //*************************************************************************************************
 
 
 //*************************************************************************************************
+/*! \cond BLAZE_INTERNAL */
 /*!\brief Default implementation of the subtraction assignment of a sparse matrix.
 //
 // \param rhs The right-hand side sparse matrix to be subtracted.
@@ -2821,11 +2517,10 @@ inline void SparseSubmatrix<MT,AF,SO>::subAssign( const DenseMatrix<MT2,SO2>& rh
 // assignment operator.
 */
 template< typename MT   // Type of the sparse matrix
-        , bool AF       // Alignment flag
-        , bool SO >     // Storage order
+        , bool AF >     // Alignment flag
 template< typename MT2  // Type of the right-hand side sparse matrix
-        , bool SO2 >    // Storage order of the right-hand sparse matrix
-inline void SparseSubmatrix<MT,AF,SO>::subAssign( const SparseMatrix<MT2,SO2>& rhs )
+        , bool SO >     // Storage order of the right-hand sparse matrix
+inline void Submatrix<MT,AF,false,false>::subAssign( const SparseMatrix<MT2,SO>& rhs )
 {
    typedef SubTrait_< ResultType, ResultType_<MT2> >  SubType;
 
@@ -2839,6 +2534,7 @@ inline void SparseSubmatrix<MT,AF,SO>::subAssign( const SparseMatrix<MT2,SO2>& r
    reset();
    assign( tmp );
 }
+/*! \endcond */
 //*************************************************************************************************
 
 
@@ -2850,38 +2546,39 @@ inline void SparseSubmatrix<MT,AF,SO>::subAssign( const SparseMatrix<MT2,SO2>& r
 
 //=================================================================================================
 //
-//  CLASS TEMPLATE SPECIALIZATION FOR COLUMN-MAJOR MATRICES
+//  CLASS TEMPLATE SPECIALIZATION FOR COLUMN-MAJOR SPARSE MATRICES
 //
 //=================================================================================================
 
 //*************************************************************************************************
 /*! \cond BLAZE_INTERNAL */
-/*!\brief Specialization of SparseSubmatrix for column-major matrices.
-// \ingroup sparse_submatrix
+/*!\brief Specialization of Submatrix for column-major sparse submatrices.
+// \ingroup views
 //
-// This specialization of SparseSubmatrix adapts the class template to the requirements of
-// column-major matrices.
+// This specialization of Submatrix adapts the class template to the requirements of column-major
+// sparse submatrices.
 */
 template< typename MT  // Type of the sparse matrix
         , bool AF >    // Alignment flag
-class SparseSubmatrix<MT,AF,true> : public SparseMatrix< SparseSubmatrix<MT,AF,true>, true >
-                                  , private Submatrix
+class Submatrix<MT,AF,true,false>
+   : public SparseMatrix< Submatrix<MT,AF,true,false>, true >
+   , private View
 {
  private:
    //**Type definitions****************************************************************************
-   //! Composite data type of the dense matrix expression.
+   //! Composite data type of the sparse matrix expression.
    typedef If_< IsExpression<MT>, MT, MT& >  Operand;
    //**********************************************************************************************
 
  public:
    //**Type definitions****************************************************************************
-   typedef SparseSubmatrix<MT,AF,true>  This;           //!< Type of this SparseSubmatrix instance.
+   typedef Submatrix<MT,AF,true,false>  This;           //!< Type of this Submatrix instance.
    typedef SubmatrixTrait_<MT>          ResultType;     //!< Result type for expression template evaluations.
    typedef OppositeType_<ResultType>    OppositeType;   //!< Result type with opposite storage order for expression template evaluations.
    typedef TransposeType_<ResultType>   TransposeType;  //!< Transpose type for expression template evaluations.
    typedef ElementType_<MT>             ElementType;    //!< Type of the submatrix elements.
    typedef ReturnType_<MT>              ReturnType;     //!< Return type for expression template evaluations
-   typedef const SparseSubmatrix&       CompositeType;  //!< Data type for composite expression templates.
+   typedef const Submatrix&             CompositeType;  //!< Data type for composite expression templates.
 
    //! Reference to a constant submatrix value.
    typedef ConstReference_<MT>  ConstReference;
@@ -3212,7 +2909,7 @@ class SparseSubmatrix<MT,AF,true> : public SparseMatrix< SparseSubmatrix<MT,AF,t
    //**Constructors********************************************************************************
    /*!\name Constructors */
    //@{
-   explicit inline SparseSubmatrix( Operand matrix, size_t rindex, size_t cindex, size_t m, size_t n );
+   explicit inline Submatrix( Operand matrix, size_t rindex, size_t cindex, size_t m, size_t n );
    // No explicitly declared copy constructor.
    //@}
    //**********************************************************************************************
@@ -3240,46 +2937,46 @@ class SparseSubmatrix<MT,AF,true> : public SparseMatrix< SparseSubmatrix<MT,AF,t
    //**Assignment operators************************************************************************
    /*!\name Assignment operators */
    //@{
-   inline SparseSubmatrix& operator=( const SparseSubmatrix& rhs );
+   inline Submatrix& operator=( const Submatrix& rhs );
 
-   template< typename MT2, bool SO > inline SparseSubmatrix& operator= ( const Matrix<MT2,SO>& rhs );
-   template< typename MT2, bool SO > inline SparseSubmatrix& operator+=( const Matrix<MT2,SO>& rhs );
-   template< typename MT2, bool SO > inline SparseSubmatrix& operator-=( const Matrix<MT2,SO>& rhs );
-   template< typename MT2, bool SO > inline SparseSubmatrix& operator*=( const Matrix<MT2,SO>& rhs );
-
-   template< typename Other >
-   inline EnableIf_<IsNumeric<Other>, SparseSubmatrix >& operator*=( Other rhs );
+   template< typename MT2, bool SO > inline Submatrix& operator= ( const Matrix<MT2,SO>& rhs );
+   template< typename MT2, bool SO > inline Submatrix& operator+=( const Matrix<MT2,SO>& rhs );
+   template< typename MT2, bool SO > inline Submatrix& operator-=( const Matrix<MT2,SO>& rhs );
+   template< typename MT2, bool SO > inline Submatrix& operator*=( const Matrix<MT2,SO>& rhs );
 
    template< typename Other >
-   inline EnableIf_<IsNumeric<Other>, SparseSubmatrix >& operator/=( Other rhs );
+   inline EnableIf_<IsNumeric<Other>, Submatrix >& operator*=( Other rhs );
+
+   template< typename Other >
+   inline EnableIf_<IsNumeric<Other>, Submatrix >& operator/=( Other rhs );
    //@}
    //**********************************************************************************************
 
    //**Utility functions***************************************************************************
    /*!\name Utility functions */
    //@{
-                              inline size_t           row() const noexcept;
-                              inline size_t           rows() const noexcept;
-                              inline size_t           column() const noexcept;
-                              inline size_t           columns() const noexcept;
-                              inline size_t           capacity() const noexcept;
-                              inline size_t           capacity( size_t i ) const noexcept;
-                              inline size_t           nonZeros() const;
-                              inline size_t           nonZeros( size_t i ) const;
-                              inline void             reset();
-                              inline void             reset( size_t i );
-                              inline Iterator         set( size_t i, size_t j, const ElementType& value );
-                              inline Iterator         insert( size_t i, size_t j, const ElementType& value );
-                              inline void             erase( size_t i, size_t j );
-                              inline Iterator         erase( size_t i, Iterator pos );
-                              inline Iterator         erase( size_t i, Iterator first, Iterator last );
-                              inline void             reserve( size_t nonzeros );
-                                     void             reserve( size_t i, size_t nonzeros );
-                              inline void             trim();
-                              inline void             trim( size_t j );
-                              inline SparseSubmatrix& transpose();
-                              inline SparseSubmatrix& ctranspose();
-   template< typename Other > inline SparseSubmatrix& scale( const Other& scalar );
+                              inline size_t     row() const noexcept;
+                              inline size_t     rows() const noexcept;
+                              inline size_t     column() const noexcept;
+                              inline size_t     columns() const noexcept;
+                              inline size_t     capacity() const noexcept;
+                              inline size_t     capacity( size_t i ) const noexcept;
+                              inline size_t     nonZeros() const;
+                              inline size_t     nonZeros( size_t i ) const;
+                              inline void       reset();
+                              inline void       reset( size_t i );
+                              inline Iterator   set( size_t i, size_t j, const ElementType& value );
+                              inline Iterator   insert( size_t i, size_t j, const ElementType& value );
+                              inline void       erase( size_t i, size_t j );
+                              inline Iterator   erase( size_t i, Iterator pos );
+                              inline Iterator   erase( size_t i, Iterator first, Iterator last );
+                              inline void       reserve( size_t nonzeros );
+                                     void       reserve( size_t i, size_t nonzeros );
+                              inline void       trim();
+                              inline void       trim( size_t j );
+                              inline Submatrix& transpose();
+                              inline Submatrix& ctranspose();
+   template< typename Other > inline Submatrix& scale( const Other& scalar );
    //@}
    //**********************************************************************************************
 
@@ -3341,52 +3038,52 @@ class SparseSubmatrix<MT,AF,true> : public SparseMatrix< SparseSubmatrix<MT,AF,t
    //**********************************************************************************************
 
    //**Friend declarations*************************************************************************
-   template< bool AF1, typename MT2, bool AF2, bool SO2 >
-   friend const SparseSubmatrix<MT2,AF1,SO2>
-      submatrix( const SparseSubmatrix<MT2,AF2,SO2>& sm, size_t row, size_t column, size_t m, size_t n );
+   template< bool AF1, typename MT2, bool AF2, bool SO2, bool DF2 >
+   friend const Submatrix<MT2,AF1,SO2,DF2>
+      submatrix( const Submatrix<MT2,AF2,SO2,DF2>& sm, size_t row, size_t column, size_t m, size_t n );
 
-   template< typename MT2, bool AF2, bool SO2 >
-   friend bool isIntact( const SparseSubmatrix<MT2,AF2,SO2>& sm ) noexcept;
+   template< typename MT2, bool AF2, bool SO2, bool DF2 >
+   friend bool isIntact( const Submatrix<MT2,AF2,SO2,DF2>& sm ) noexcept;
 
-   template< typename MT2, bool AF2, bool SO2 >
-   friend bool isSame( const SparseSubmatrix<MT2,AF2,SO2>& a, const SparseMatrix<MT2,SO2>& b ) noexcept;
+   template< typename MT2, bool AF2, bool SO2, bool DF2 >
+   friend bool isSame( const Submatrix<MT2,AF2,SO2,DF2>& a, const Matrix<MT2,SO2>& b ) noexcept;
 
-   template< typename MT2, bool AF2, bool SO2 >
-   friend bool isSame( const SparseMatrix<MT2,SO2>& a, const SparseSubmatrix<MT2,AF2,SO2>& b ) noexcept;
+   template< typename MT2, bool AF2, bool SO2, bool DF2 >
+   friend bool isSame( const Matrix<MT2,SO2>& a, const Submatrix<MT2,AF2,SO2,DF2>& b ) noexcept;
 
-   template< typename MT2, bool AF2, bool SO2 >
-   friend bool isSame( const SparseSubmatrix<MT2,AF2,SO2>& a, const SparseSubmatrix<MT2,AF2,SO2>& b ) noexcept;
+   template< typename MT2, bool AF2, bool SO2, bool DF2 >
+   friend bool isSame( const Submatrix<MT2,AF2,SO2,DF2>& a, const Submatrix<MT2,AF2,SO2,DF2>& b ) noexcept;
 
-   template< typename MT2, bool AF2, bool SO2, typename VT, bool TF >
-   friend bool tryAssign( const SparseSubmatrix<MT2,AF2,SO2>& lhs, const Vector<VT,TF>& rhs,
+   template< typename MT2, bool AF2, bool SO2, bool DF2, typename VT, bool TF >
+   friend bool tryAssign( const Submatrix<MT2,AF2,SO2>& lhs, const Vector<VT,TF>& rhs,
                           size_t row, size_t column );
 
-   template< typename MT2, bool AF2, bool SO2, typename MT3, bool SO3 >
-   friend bool tryAssign( const SparseSubmatrix<MT2,AF2,SO2>& lhs, const Matrix<MT3,SO3>& rhs,
+   template< typename MT2, bool AF2, bool SO2, bool DF2, typename MT3, bool SO3 >
+   friend bool tryAssign( const Submatrix<MT2,AF2,SO2,DF2>& lhs, const Matrix<MT3,SO3>& rhs,
                           size_t row, size_t column );
 
-   template< typename MT2, bool AF2, bool SO2, typename VT, bool TF >
-   friend bool tryAddAssign( const SparseSubmatrix<MT2,AF2,SO2>& lhs, const Vector<VT,TF>& rhs,
+   template< typename MT2, bool AF2, bool SO2, bool DF2, typename VT, bool TF >
+   friend bool tryAddAssign( const Submatrix<MT2,AF2,SO2,DF2>& lhs, const Vector<VT,TF>& rhs,
                              size_t row, size_t column );
 
-   template< typename MT2, bool AF2, bool SO2, typename MT3, bool SO3 >
-   friend bool tryAddAssign( const SparseSubmatrix<MT2,AF2,SO2>& lhs, const Matrix<MT3,SO3>& rhs,
+   template< typename MT2, bool AF2, bool SO2, bool DF2, typename MT3, bool SO3 >
+   friend bool tryAddAssign( const Submatrix<MT2,AF2,SO2,DF2>& lhs, const Matrix<MT3,SO3>& rhs,
                              size_t row, size_t column );
 
-   template< typename MT2, bool AF2, bool SO2, typename VT, bool TF >
-   friend bool trySubAssign( const SparseSubmatrix<MT2,AF2,SO2>& lhs, const Vector<VT,TF>& rhs,
+   template< typename MT2, bool AF2, bool SO2, bool DF2, typename VT, bool TF >
+   friend bool trySubAssign( const Submatrix<MT2,AF2,SO2,DF2>& lhs, const Vector<VT,TF>& rhs,
                              size_t row, size_t column );
 
-   template< typename MT2, bool AF2, bool SO2, typename MT3, bool SO3 >
-   friend bool trySubAssign( const SparseSubmatrix<MT2,AF2,SO2>& lhs, const Matrix<MT3,SO3>& rhs,
+   template< typename MT2, bool AF2, bool SO2, bool DF2, typename MT3, bool SO3 >
+   friend bool trySubAssign( const Submatrix<MT2,AF2,SO2,DF2>& lhs, const Matrix<MT3,SO3>& rhs,
                              size_t row, size_t column );
 
-   template< typename MT2, bool AF2, bool SO2, typename VT, bool TF >
-   friend bool tryMultAssign( const SparseSubmatrix<MT2,AF2,SO2>& lhs, const Vector<VT,TF>& rhs,
+   template< typename MT2, bool AF2, bool SO2, bool DF2, typename VT, bool TF >
+   friend bool tryMultAssign( const Submatrix<MT2,AF2,SO2,DF2>& lhs, const Vector<VT,TF>& rhs,
                               size_t row, size_t column );
 
-   template< typename MT2, bool AF2, bool SO2 >
-   friend DerestrictTrait_< SparseSubmatrix<MT2,AF2,SO2> > derestrict( SparseSubmatrix<MT2,AF2,SO2>& sm );
+   template< typename MT2, bool AF2, bool SO2, bool DF2 >
+   friend DerestrictTrait_< Submatrix<MT2,AF2,SO2,DF2> > derestrict( Submatrix<MT2,AF2,SO2,DF2>& sm );
    //**********************************************************************************************
 
    //**Compile time checks*************************************************************************
@@ -3413,7 +3110,7 @@ class SparseSubmatrix<MT,AF,true> : public SparseMatrix< SparseSubmatrix<MT,AF,t
 
 //*************************************************************************************************
 /*! \cond BLAZE_INTERNAL */
-/*!\brief The constructor for SparseSubmatrix.
+/*!\brief The constructor for Submatrix.
 //
 // \param matrix The sparse matrix containing the submatrix.
 // \param rindex The index of the first row of the submatrix in the given sparse matrix.
@@ -3427,7 +3124,7 @@ class SparseSubmatrix<MT,AF,true> : public SparseMatrix< SparseSubmatrix<MT,AF,t
 */
 template< typename MT  // Type of the sparse matrix
         , bool AF >    // Alignment flag
-inline SparseSubmatrix<MT,AF,true>::SparseSubmatrix( Operand matrix, size_t rindex, size_t cindex, size_t m, size_t n )
+inline Submatrix<MT,AF,true,false>::Submatrix( Operand matrix, size_t rindex, size_t cindex, size_t m, size_t n )
    : matrix_( matrix )  // The sparse matrix containing the submatrix
    , row_   ( rindex )  // The first row of the submatrix
    , column_( cindex )  // The first column of the submatrix
@@ -3463,8 +3160,8 @@ inline SparseSubmatrix<MT,AF,true>::SparseSubmatrix( Operand matrix, size_t rind
 */
 template< typename MT  // Type of the sparse matrix
         , bool AF >    // Alignment flag
-inline typename SparseSubmatrix<MT,AF,true>::Reference
-   SparseSubmatrix<MT,AF,true>::operator()( size_t i, size_t j )
+inline typename Submatrix<MT,AF,true,false>::Reference
+   Submatrix<MT,AF,true,false>::operator()( size_t i, size_t j )
 {
    BLAZE_USER_ASSERT( i < rows()   , "Invalid row access index"    );
    BLAZE_USER_ASSERT( j < columns(), "Invalid column access index" );
@@ -3488,8 +3185,8 @@ inline typename SparseSubmatrix<MT,AF,true>::Reference
 */
 template< typename MT  // Type of the sparse matrix
         , bool AF >    // Alignment flag
-inline typename SparseSubmatrix<MT,AF,true>::ConstReference
-   SparseSubmatrix<MT,AF,true>::operator()( size_t i, size_t j ) const
+inline typename Submatrix<MT,AF,true,false>::ConstReference
+   Submatrix<MT,AF,true,false>::operator()( size_t i, size_t j ) const
 {
    BLAZE_USER_ASSERT( i < rows()   , "Invalid row access index"    );
    BLAZE_USER_ASSERT( j < columns(), "Invalid column access index" );
@@ -3514,8 +3211,8 @@ inline typename SparseSubmatrix<MT,AF,true>::ConstReference
 */
 template< typename MT  // Type of the sparse matrix
         , bool AF >    // Alignment flag
-inline typename SparseSubmatrix<MT,AF,true>::Reference
-   SparseSubmatrix<MT,AF,true>::at( size_t i, size_t j )
+inline typename Submatrix<MT,AF,true,false>::Reference
+   Submatrix<MT,AF,true,false>::at( size_t i, size_t j )
 {
    if( i >= rows() ) {
       BLAZE_THROW_OUT_OF_RANGE( "Invalid row access index" );
@@ -3543,8 +3240,8 @@ inline typename SparseSubmatrix<MT,AF,true>::Reference
 */
 template< typename MT  // Type of the sparse matrix
         , bool AF >    // Alignment flag
-inline typename SparseSubmatrix<MT,AF,true>::ConstReference
-   SparseSubmatrix<MT,AF,true>::at( size_t i, size_t j ) const
+inline typename Submatrix<MT,AF,true,false>::ConstReference
+   Submatrix<MT,AF,true,false>::at( size_t i, size_t j ) const
 {
    if( i >= rows() ) {
       BLAZE_THROW_OUT_OF_RANGE( "Invalid row access index" );
@@ -3567,8 +3264,8 @@ inline typename SparseSubmatrix<MT,AF,true>::ConstReference
 */
 template< typename MT  // Type of the sparse matrix
         , bool AF >    // Alignment flag
-inline typename SparseSubmatrix<MT,AF,true>::Iterator
-   SparseSubmatrix<MT,AF,true>::begin( size_t j )
+inline typename Submatrix<MT,AF,true,false>::Iterator
+   Submatrix<MT,AF,true,false>::begin( size_t j )
 {
    BLAZE_USER_ASSERT( j < columns(), "Invalid sparse submatrix column access index" );
 
@@ -3590,8 +3287,8 @@ inline typename SparseSubmatrix<MT,AF,true>::Iterator
 */
 template< typename MT  // Type of the sparse matrix
         , bool AF >    // Alignment flag
-inline typename SparseSubmatrix<MT,AF,true>::ConstIterator
-   SparseSubmatrix<MT,AF,true>::begin( size_t j ) const
+inline typename Submatrix<MT,AF,true,false>::ConstIterator
+   Submatrix<MT,AF,true,false>::begin( size_t j ) const
 {
    BLAZE_USER_ASSERT( j < columns(), "Invalid sparse submatrix column access index" );
 
@@ -3613,8 +3310,8 @@ inline typename SparseSubmatrix<MT,AF,true>::ConstIterator
 */
 template< typename MT  // Type of the sparse matrix
         , bool AF >    // Alignment flag
-inline typename SparseSubmatrix<MT,AF,true>::ConstIterator
-   SparseSubmatrix<MT,AF,true>::cbegin( size_t j ) const
+inline typename Submatrix<MT,AF,true,false>::ConstIterator
+   Submatrix<MT,AF,true,false>::cbegin( size_t j ) const
 {
    BLAZE_USER_ASSERT( j < columns(), "Invalid sparse submatrix column access index" );
 
@@ -3636,8 +3333,8 @@ inline typename SparseSubmatrix<MT,AF,true>::ConstIterator
 */
 template< typename MT  // Type of the sparse matrix
         , bool AF >    // Alignment flag
-inline typename SparseSubmatrix<MT,AF,true>::Iterator
-  SparseSubmatrix<MT,AF,true>::end( size_t j )
+inline typename Submatrix<MT,AF,true,false>::Iterator
+  Submatrix<MT,AF,true,false>::end( size_t j )
 {
    BLAZE_USER_ASSERT( j < columns(), "Invalid sparse submatrix column access index" );
 
@@ -3659,8 +3356,8 @@ inline typename SparseSubmatrix<MT,AF,true>::Iterator
 */
 template< typename MT  // Type of the sparse matrix
         , bool AF >    // Alignment flag
-inline typename SparseSubmatrix<MT,AF,true>::ConstIterator
-   SparseSubmatrix<MT,AF,true>::end( size_t j ) const
+inline typename Submatrix<MT,AF,true,false>::ConstIterator
+   Submatrix<MT,AF,true,false>::end( size_t j ) const
 {
    BLAZE_USER_ASSERT( j < columns(), "Invalid sparse submatrix column access index" );
 
@@ -3682,8 +3379,8 @@ inline typename SparseSubmatrix<MT,AF,true>::ConstIterator
 */
 template< typename MT  // Type of the sparse matrix
         , bool AF >    // Alignment flag
-inline typename SparseSubmatrix<MT,AF,true>::ConstIterator
-   SparseSubmatrix<MT,AF,true>::cend( size_t j ) const
+inline typename Submatrix<MT,AF,true,false>::ConstIterator
+   Submatrix<MT,AF,true,false>::cend( size_t j ) const
 {
    BLAZE_USER_ASSERT( j < columns(), "Invalid sparse submatrix column access index" );
 
@@ -3706,7 +3403,7 @@ inline typename SparseSubmatrix<MT,AF,true>::ConstIterator
 
 //*************************************************************************************************
 /*! \cond BLAZE_INTERNAL */
-/*!\brief Copy assignment operator for SparseSubmatrix.
+/*!\brief Copy assignment operator for Submatrix.
 //
 // \param rhs Sparse submatrix to be copied.
 // \return Reference to the assigned submatrix.
@@ -3721,8 +3418,8 @@ inline typename SparseSubmatrix<MT,AF,true>::ConstIterator
 */
 template< typename MT  // Type of the sparse matrix
         , bool AF >    // Alignment flag
-inline SparseSubmatrix<MT,AF,true>&
-   SparseSubmatrix<MT,AF,true>::operator=( const SparseSubmatrix& rhs )
+inline Submatrix<MT,AF,true,false>&
+   Submatrix<MT,AF,true,false>::operator=( const Submatrix& rhs )
 {
    using blaze::assign;
 
@@ -3779,8 +3476,8 @@ template< typename MT   // Type of the sparse matrix
         , bool AF >     // Alignment flag
 template< typename MT2  // Type of the right-hand side matrix
         , bool SO >     // Storage order of the right-hand side matrix
-inline SparseSubmatrix<MT,AF,true>&
-   SparseSubmatrix<MT,AF,true>::operator=( const Matrix<MT2,SO>& rhs )
+inline Submatrix<MT,AF,true,false>&
+   Submatrix<MT,AF,true,false>::operator=( const Matrix<MT2,SO>& rhs )
 {
    using blaze::assign;
 
@@ -3835,8 +3532,8 @@ template< typename MT   // Type of the sparse matrix
         , bool AF >     // Alignment flag
 template< typename MT2  // Type of the right-hand side matrix
         , bool SO >     // Storage order of the right-hand side matrix
-inline SparseSubmatrix<MT,AF,true>&
-   SparseSubmatrix<MT,AF,true>::operator+=( const Matrix<MT2,SO>& rhs )
+inline Submatrix<MT,AF,true,false>&
+   Submatrix<MT,AF,true,false>::operator+=( const Matrix<MT2,SO>& rhs )
 {
    using blaze::assign;
 
@@ -3889,8 +3586,8 @@ template< typename MT   // Type of the sparse matrix
         , bool AF >     // Alignment flag
 template< typename MT2  // Type of the right-hand side matrix
         , bool SO >     // Storage order of the right-hand side matrix
-inline SparseSubmatrix<MT,AF,true>&
-   SparseSubmatrix<MT,AF,true>::operator-=( const Matrix<MT2,SO>& rhs )
+inline Submatrix<MT,AF,true,false>&
+   Submatrix<MT,AF,true,false>::operator-=( const Matrix<MT2,SO>& rhs )
 {
    using blaze::assign;
 
@@ -3943,8 +3640,8 @@ template< typename MT   // Type of the sparse matrix
         , bool AF >     // Alignment flag
 template< typename MT2  // Type of the right-hand side matrix
         , bool SO >     // Storage order of the right-hand side matrix
-inline SparseSubmatrix<MT,AF,true>&
-   SparseSubmatrix<MT,AF,true>::operator*=( const Matrix<MT2,SO>& rhs )
+inline Submatrix<MT,AF,true,false>&
+   Submatrix<MT,AF,true,false>::operator*=( const Matrix<MT2,SO>& rhs )
 {
    using blaze::assign;
 
@@ -3998,8 +3695,8 @@ inline SparseSubmatrix<MT,AF,true>&
 template< typename MT       // Type of the sparse matrix
         , bool AF >         // Alignment flag
 template< typename Other >  // Data type of the right-hand side scalar
-inline EnableIf_<IsNumeric<Other>, SparseSubmatrix<MT,AF,true> >&
-   SparseSubmatrix<MT,AF,true>::operator*=( Other rhs )
+inline EnableIf_<IsNumeric<Other>, Submatrix<MT,AF,true,false> >&
+   Submatrix<MT,AF,true,false>::operator*=( Other rhs )
 {
    BLAZE_CONSTRAINT_MUST_NOT_BE_UNITRIANGULAR_MATRIX_TYPE( MT );
 
@@ -4036,8 +3733,8 @@ inline EnableIf_<IsNumeric<Other>, SparseSubmatrix<MT,AF,true> >&
 template< typename MT       // Type of the sparse matrix
         , bool AF >         // Alignment flag
 template< typename Other >  // Data type of the right-hand side scalar
-inline EnableIf_<IsNumeric<Other>, SparseSubmatrix<MT,AF,true> >&
-   SparseSubmatrix<MT,AF,true>::operator/=( Other rhs )
+inline EnableIf_<IsNumeric<Other>, Submatrix<MT,AF,true,false> >&
+   Submatrix<MT,AF,true,false>::operator/=( Other rhs )
 {
    BLAZE_CONSTRAINT_MUST_NOT_BE_UNITRIANGULAR_MATRIX_TYPE( MT );
 
@@ -4086,7 +3783,7 @@ inline EnableIf_<IsNumeric<Other>, SparseSubmatrix<MT,AF,true> >&
 */
 template< typename MT  // Type of the sparse matrix
         , bool AF >    // Alignment flag
-inline size_t SparseSubmatrix<MT,AF,true>::row() const noexcept
+inline size_t Submatrix<MT,AF,true,false>::row() const noexcept
 {
    return row_;
 }
@@ -4102,7 +3799,7 @@ inline size_t SparseSubmatrix<MT,AF,true>::row() const noexcept
 */
 template< typename MT  // Type of the sparse matrix
         , bool AF >    // Alignment flag
-inline size_t SparseSubmatrix<MT,AF,true>::rows() const noexcept
+inline size_t Submatrix<MT,AF,true,false>::rows() const noexcept
 {
    return m_;
 }
@@ -4118,7 +3815,7 @@ inline size_t SparseSubmatrix<MT,AF,true>::rows() const noexcept
 */
 template< typename MT  // Type of the sparse matrix
         , bool AF >    // Alignment flag
-inline size_t SparseSubmatrix<MT,AF,true>::column() const noexcept
+inline size_t Submatrix<MT,AF,true,false>::column() const noexcept
 {
    return column_;
 }
@@ -4134,7 +3831,7 @@ inline size_t SparseSubmatrix<MT,AF,true>::column() const noexcept
 */
 template< typename MT  // Type of the sparse matrix
         , bool AF >    // Alignment flag
-inline size_t SparseSubmatrix<MT,AF,true>::columns() const noexcept
+inline size_t Submatrix<MT,AF,true,false>::columns() const noexcept
 {
    return n_;
 }
@@ -4150,7 +3847,7 @@ inline size_t SparseSubmatrix<MT,AF,true>::columns() const noexcept
 */
 template< typename MT  // Type of the sparse matrix
         , bool AF >    // Alignment flag
-inline size_t SparseSubmatrix<MT,AF,true>::capacity() const noexcept
+inline size_t Submatrix<MT,AF,true,false>::capacity() const noexcept
 {
    return nonZeros() + matrix_.capacity() - matrix_.nonZeros();
 }
@@ -4167,7 +3864,7 @@ inline size_t SparseSubmatrix<MT,AF,true>::capacity() const noexcept
 */
 template< typename MT  // Type of the sparse matrix
         , bool AF >    // Alignment flag
-inline size_t SparseSubmatrix<MT,AF,true>::capacity( size_t j ) const noexcept
+inline size_t Submatrix<MT,AF,true,false>::capacity( size_t j ) const noexcept
 {
    BLAZE_USER_ASSERT( j < columns(), "Invalid column access index" );
    return nonZeros( j ) + matrix_.capacity( column_+j ) - matrix_.nonZeros( column_+j );
@@ -4184,7 +3881,7 @@ inline size_t SparseSubmatrix<MT,AF,true>::capacity( size_t j ) const noexcept
 */
 template< typename MT  // Type of the sparse matrix
         , bool AF >    // Alignment flag
-inline size_t SparseSubmatrix<MT,AF,true>::nonZeros() const
+inline size_t Submatrix<MT,AF,true,false>::nonZeros() const
 {
    size_t nonzeros( 0UL );
 
@@ -4206,7 +3903,7 @@ inline size_t SparseSubmatrix<MT,AF,true>::nonZeros() const
 */
 template< typename MT  // Type of the sparse matrix
         , bool AF >    // Alignment flag
-inline size_t SparseSubmatrix<MT,AF,true>::nonZeros( size_t j ) const
+inline size_t Submatrix<MT,AF,true,false>::nonZeros( size_t j ) const
 {
    BLAZE_USER_ASSERT( j < columns(), "Invalid column access index" );
    return end(j) - begin(j);
@@ -4223,7 +3920,7 @@ inline size_t SparseSubmatrix<MT,AF,true>::nonZeros( size_t j ) const
 */
 template< typename MT  // Type of the sparse matrix
         , bool AF >    // Alignment flag
-inline void SparseSubmatrix<MT,AF,true>::reset()
+inline void Submatrix<MT,AF,true,false>::reset()
 {
    for( size_t j=column_; j<column_+n_; ++j )
    {
@@ -4254,7 +3951,7 @@ inline void SparseSubmatrix<MT,AF,true>::reset()
 */
 template< typename MT  // Type of the sparse matrix
         , bool AF >    // Alignment flag
-inline void SparseSubmatrix<MT,AF,true>::reset( size_t j )
+inline void Submatrix<MT,AF,true,false>::reset( size_t j )
 {
    BLAZE_USER_ASSERT( j < columns(), "Invalid column access index" );
 
@@ -4292,8 +3989,8 @@ inline void SparseSubmatrix<MT,AF,true>::reset( size_t j )
 */
 template< typename MT  // Type of the sparse matrix
         , bool AF >    // Alignment flag
-inline typename SparseSubmatrix<MT,AF,true>::Iterator
-   SparseSubmatrix<MT,AF,true>::set( size_t i, size_t j, const ElementType& value )
+inline typename Submatrix<MT,AF,true,false>::Iterator
+   Submatrix<MT,AF,true,false>::set( size_t i, size_t j, const ElementType& value )
 {
    return Iterator( matrix_.set( row_+i, column_+j, value ), row_ );
 }
@@ -4317,8 +4014,8 @@ inline typename SparseSubmatrix<MT,AF,true>::Iterator
 */
 template< typename MT  // Type of the sparse matrix
         , bool AF >    // Alignment flag
-inline typename SparseSubmatrix<MT,AF,true>::Iterator
-   SparseSubmatrix<MT,AF,true>::insert( size_t i, size_t j, const ElementType& value )
+inline typename Submatrix<MT,AF,true,false>::Iterator
+   Submatrix<MT,AF,true,false>::insert( size_t i, size_t j, const ElementType& value )
 {
    return Iterator( matrix_.insert( row_+i, column_+j, value ), row_ );
 }
@@ -4338,7 +4035,7 @@ inline typename SparseSubmatrix<MT,AF,true>::Iterator
 */
 template< typename MT  // Type of the sparse matrix
         , bool AF >    // Alignment flag
-inline void SparseSubmatrix<MT,AF,true>::erase( size_t i, size_t j )
+inline void Submatrix<MT,AF,true,false>::erase( size_t i, size_t j )
 {
    BLAZE_USER_ASSERT( i < rows()   , "Invalid row access index"    );
    BLAZE_USER_ASSERT( j < columns(), "Invalid column access index" );
@@ -4361,8 +4058,8 @@ inline void SparseSubmatrix<MT,AF,true>::erase( size_t i, size_t j )
 */
 template< typename MT  // Type of the sparse matrix
         , bool AF >    // Alignment flag
-inline typename SparseSubmatrix<MT,AF,true>::Iterator
-   SparseSubmatrix<MT,AF,true>::erase( size_t j, Iterator pos )
+inline typename Submatrix<MT,AF,true,false>::Iterator
+   Submatrix<MT,AF,true,false>::erase( size_t j, Iterator pos )
 {
    BLAZE_USER_ASSERT( j < columns(), "Invalid column access index" );
    return Iterator( matrix_.erase( column_+j, pos.base() ), row_ );
@@ -4384,8 +4081,8 @@ inline typename SparseSubmatrix<MT,AF,true>::Iterator
 */
 template< typename MT  // Type of the sparse matrix
         , bool AF >    // Alignment flag
-inline typename SparseSubmatrix<MT,AF,true>::Iterator
-   SparseSubmatrix<MT,AF,true>::erase( size_t j, Iterator first, Iterator last )
+inline typename Submatrix<MT,AF,true,false>::Iterator
+   Submatrix<MT,AF,true,false>::erase( size_t j, Iterator first, Iterator last )
 {
    BLAZE_USER_ASSERT( j < columns(), "Invalid column access index" );
    return Iterator( matrix_.erase( column_+j, first.base(), last.base() ), row_ );
@@ -4407,7 +4104,7 @@ inline typename SparseSubmatrix<MT,AF,true>::Iterator
 */
 template< typename MT  // Type of the sparse matrix
         , bool AF >    // Alignment flag
-inline void SparseSubmatrix<MT,AF,true>::reserve( size_t nonzeros )
+inline void Submatrix<MT,AF,true,false>::reserve( size_t nonzeros )
 {
    const size_t current( capacity() );
 
@@ -4433,7 +4130,7 @@ inline void SparseSubmatrix<MT,AF,true>::reserve( size_t nonzeros )
 */
 template< typename MT  // Type of the sparse matrix
         , bool AF >    // Alignment flag
-void SparseSubmatrix<MT,AF,true>::reserve( size_t j, size_t nonzeros )
+void Submatrix<MT,AF,true,false>::reserve( size_t j, size_t nonzeros )
 {
    const size_t current( capacity( j ) );
    const size_t index  ( column_ + j );
@@ -4458,7 +4155,7 @@ void SparseSubmatrix<MT,AF,true>::reserve( size_t j, size_t nonzeros )
 */
 template< typename MT  // Type of the sparse matrix
         , bool AF >    // Alignment flag
-void SparseSubmatrix<MT,AF,true>::trim()
+void Submatrix<MT,AF,true,false>::trim()
 {
    for( size_t j=0UL; j<columns(); ++j )
       trim( j );
@@ -4480,7 +4177,7 @@ void SparseSubmatrix<MT,AF,true>::trim()
 */
 template< typename MT  // Type of the sparse matrix
         , bool AF >    // Alignment flag
-void SparseSubmatrix<MT,AF,true>::trim( size_t j )
+void Submatrix<MT,AF,true,false>::trim( size_t j )
 {
    BLAZE_USER_ASSERT( j < columns(), "Invalid column access index" );
    matrix_.trim( column_ + j );
@@ -4509,7 +4206,7 @@ void SparseSubmatrix<MT,AF,true>::trim( size_t j )
 */
 template< typename MT  // Type of the sparse matrix
         , bool AF >    // Alignment flag
-inline SparseSubmatrix<MT,AF,true>& SparseSubmatrix<MT,AF,true>::transpose()
+inline Submatrix<MT,AF,true,false>& Submatrix<MT,AF,true,false>::transpose()
 {
    using blaze::assign;
 
@@ -4552,7 +4249,7 @@ inline SparseSubmatrix<MT,AF,true>& SparseSubmatrix<MT,AF,true>::transpose()
 */
 template< typename MT  // Type of the sparse matrix
         , bool AF >    // Alignment flag
-inline SparseSubmatrix<MT,AF,true>& SparseSubmatrix<MT,AF,true>::ctranspose()
+inline Submatrix<MT,AF,true,false>& Submatrix<MT,AF,true,false>::ctranspose()
 {
    using blaze::assign;
 
@@ -4589,7 +4286,7 @@ inline SparseSubmatrix<MT,AF,true>& SparseSubmatrix<MT,AF,true>::ctranspose()
 template< typename MT       // Type of the sparse matrix
         , bool AF >         // Alignment flag
 template< typename Other >  // Data type of the scalar value
-inline SparseSubmatrix<MT,AF,true>& SparseSubmatrix<MT,AF,true>::scale( const Other& scalar )
+inline Submatrix<MT,AF,true,false>& Submatrix<MT,AF,true,false>::scale( const Other& scalar )
 {
    BLAZE_CONSTRAINT_MUST_NOT_BE_UNITRIANGULAR_MATRIX_TYPE( MT );
 
@@ -4617,7 +4314,7 @@ inline SparseSubmatrix<MT,AF,true>& SparseSubmatrix<MT,AF,true>::scale( const Ot
 */
 template< typename MT  // Type of the sparse matrix
         , bool AF >    // Alignment flag
-inline bool SparseSubmatrix<MT,AF,true>::hasOverlap() const noexcept
+inline bool Submatrix<MT,AF,true,false>::hasOverlap() const noexcept
 {
    BLAZE_INTERNAL_ASSERT( IsSymmetric<MT>::value || IsHermitian<MT>::value, "Invalid matrix detected" );
 
@@ -4655,8 +4352,8 @@ inline bool SparseSubmatrix<MT,AF,true>::hasOverlap() const noexcept
 */
 template< typename MT  // Type of the sparse matrix
         , bool AF >    // Alignment flag
-inline typename SparseSubmatrix<MT,AF,true>::Iterator
-   SparseSubmatrix<MT,AF,true>::find( size_t i, size_t j )
+inline typename Submatrix<MT,AF,true,false>::Iterator
+   Submatrix<MT,AF,true,false>::find( size_t i, size_t j )
 {
    const Iterator_<MT> pos( matrix_.find( row_ + i, column_ + j ) );
 
@@ -4687,8 +4384,8 @@ inline typename SparseSubmatrix<MT,AF,true>::Iterator
 */
 template< typename MT  // Type of the sparse matrix
         , bool AF >    // Alignment flag
-inline typename SparseSubmatrix<MT,AF,true>::ConstIterator
-   SparseSubmatrix<MT,AF,true>::find( size_t i, size_t j ) const
+inline typename Submatrix<MT,AF,true,false>::ConstIterator
+   Submatrix<MT,AF,true,false>::find( size_t i, size_t j ) const
 {
    const ConstIterator_<MT> pos( matrix_.find( row_ + i, column_ + j ) );
 
@@ -4719,8 +4416,8 @@ inline typename SparseSubmatrix<MT,AF,true>::ConstIterator
 */
 template< typename MT  // Type of the sparse matrix
         , bool AF >    // Alignment flag
-inline typename SparseSubmatrix<MT,AF,true>::Iterator
-   SparseSubmatrix<MT,AF,true>::lowerBound( size_t i, size_t j )
+inline typename Submatrix<MT,AF,true,false>::Iterator
+   Submatrix<MT,AF,true,false>::lowerBound( size_t i, size_t j )
 {
    return Iterator( matrix_.lowerBound( row_ + i, column_ + j ), row_ );
 }
@@ -4746,8 +4443,8 @@ inline typename SparseSubmatrix<MT,AF,true>::Iterator
 */
 template< typename MT  // Type of the sparse matrix
         , bool AF >    // Alignment flag
-inline typename SparseSubmatrix<MT,AF,true>::ConstIterator
-   SparseSubmatrix<MT,AF,true>::lowerBound( size_t i, size_t j ) const
+inline typename Submatrix<MT,AF,true,false>::ConstIterator
+   Submatrix<MT,AF,true,false>::lowerBound( size_t i, size_t j ) const
 {
    return ConstIterator( matrix_.lowerBound( row_ + i, column_ + j ), row_ );
 }
@@ -4773,8 +4470,8 @@ inline typename SparseSubmatrix<MT,AF,true>::ConstIterator
 */
 template< typename MT  // Type of the sparse matrix
         , bool AF >    // Alignment flag
-inline typename SparseSubmatrix<MT,AF,true>::Iterator
-   SparseSubmatrix<MT,AF,true>::upperBound( size_t i, size_t j )
+inline typename Submatrix<MT,AF,true,false>::Iterator
+   Submatrix<MT,AF,true,false>::upperBound( size_t i, size_t j )
 {
    return Iterator( matrix_.upperBound( row_ + i, column_ + j ), row_ );
 }
@@ -4800,8 +4497,8 @@ inline typename SparseSubmatrix<MT,AF,true>::Iterator
 */
 template< typename MT  // Type of the sparse matrix
         , bool AF >    // Alignment flag
-inline typename SparseSubmatrix<MT,AF,true>::ConstIterator
-   SparseSubmatrix<MT,AF,true>::upperBound( size_t i, size_t j ) const
+inline typename Submatrix<MT,AF,true,false>::ConstIterator
+   Submatrix<MT,AF,true,false>::upperBound( size_t i, size_t j ) const
 {
    return ConstIterator( matrix_.upperBound( row_ + i, column_ + j ), row_ );
 }
@@ -4848,7 +4545,7 @@ inline typename SparseSubmatrix<MT,AF,true>::ConstIterator
    using blaze::rowMajor;
 
    typedef blaze::CompressedMatrix<double,rowMajor>  MatrixType;
-   typedef blaze::SparseSubmatrix<MatrixType>        SubmatrixType;
+   typedef blaze::Submatrix<MatrixType>              SubmatrixType;
 
    MatrixType A( 42, 54 );
    SubmatrixType B = submatrix( A, 10, 10, 4, 3 );
@@ -4868,7 +4565,7 @@ inline typename SparseSubmatrix<MT,AF,true>::ConstIterator
 */
 template< typename MT  // Type of the sparse matrix
         , bool AF >    // Alignment flag
-inline void SparseSubmatrix<MT,AF,true>::append( size_t i, size_t j, const ElementType& value, bool check )
+inline void Submatrix<MT,AF,true,false>::append( size_t i, size_t j, const ElementType& value, bool check )
 {
    if( row_ + m_ == matrix_.rows() ) {
       matrix_.append( row_ + i, column_ + j, value, check );
@@ -4897,7 +4594,7 @@ inline void SparseSubmatrix<MT,AF,true>::append( size_t i, size_t j, const Eleme
 */
 template< typename MT  // Type of the sparse matrix
         , bool AF >    // Alignment flag
-inline void SparseSubmatrix<MT,AF,true>::finalize( size_t j )
+inline void Submatrix<MT,AF,true,false>::finalize( size_t j )
 {
    matrix_.trim( column_ + j );
 }
@@ -4927,7 +4624,7 @@ inline void SparseSubmatrix<MT,AF,true>::finalize( size_t j )
 template< typename MT       // Type of the sparse matrix
         , bool AF >         // Alignment flag
 template< typename Other >  // Data type of the foreign expression
-inline bool SparseSubmatrix<MT,AF,true>::canAlias( const Other* alias ) const noexcept
+inline bool Submatrix<MT,AF,true,false>::canAlias( const Other* alias ) const noexcept
 {
    return matrix_.isAliased( alias );
 }
@@ -4949,7 +4646,7 @@ inline bool SparseSubmatrix<MT,AF,true>::canAlias( const Other* alias ) const no
 template< typename MT       // Type of the sparse matrix
         , bool AF >         // Alignment flag
 template< typename Other >  // Data type of the foreign expression
-inline bool SparseSubmatrix<MT,AF,true>::isAliased( const Other* alias ) const noexcept
+inline bool Submatrix<MT,AF,true,false>::isAliased( const Other* alias ) const noexcept
 {
    return matrix_.isAliased( alias );
 }
@@ -4970,7 +4667,7 @@ inline bool SparseSubmatrix<MT,AF,true>::isAliased( const Other* alias ) const n
 */
 template< typename MT  // Type of the sparse matrix
         , bool AF >    // Alignment flag
-inline bool SparseSubmatrix<MT,AF,true>::canSMPAssign() const noexcept
+inline bool Submatrix<MT,AF,true,false>::canSMPAssign() const noexcept
 {
    return false;
 }
@@ -4994,7 +4691,7 @@ template< typename MT   // Type of the sparse matrix
         , bool AF >     // Alignment flag
 template< typename MT2  // Type of the right-hand side dense matrix
         , bool SO >     // Storage order of the right-hand side dense matrix
-inline void SparseSubmatrix<MT,AF,true>::assign( const DenseMatrix<MT2,SO>& rhs )
+inline void Submatrix<MT,AF,true,false>::assign( const DenseMatrix<MT2,SO>& rhs )
 {
    BLAZE_INTERNAL_ASSERT( rows()    == (~rhs).rows()   , "Invalid number of rows"    );
    BLAZE_INTERNAL_ASSERT( columns() == (~rhs).columns(), "Invalid number of columns" );
@@ -5030,7 +4727,7 @@ inline void SparseSubmatrix<MT,AF,true>::assign( const DenseMatrix<MT2,SO>& rhs 
 template< typename MT     // Type of the sparse matrix
         , bool AF >       // Alignment flag
 template< typename MT2 >  // Type of the right-hand side sparse matrix
-inline void SparseSubmatrix<MT,AF,true>::assign( const SparseMatrix<MT2,true>& rhs )
+inline void Submatrix<MT,AF,true,false>::assign( const SparseMatrix<MT2,true>& rhs )
 {
    BLAZE_INTERNAL_ASSERT( rows()    == (~rhs).rows()   , "Invalid number of rows"    );
    BLAZE_INTERNAL_ASSERT( columns() == (~rhs).columns(), "Invalid number of columns" );
@@ -5066,7 +4763,7 @@ inline void SparseSubmatrix<MT,AF,true>::assign( const SparseMatrix<MT2,true>& r
 template< typename MT     // Type of the sparse matrix
         , bool AF >       // Alignment flag
 template< typename MT2 >  // Type of the right-hand side sparse matrix
-inline void SparseSubmatrix<MT,AF,true>::assign( const SparseMatrix<MT2,false>& rhs )
+inline void Submatrix<MT,AF,true,false>::assign( const SparseMatrix<MT2,false>& rhs )
 {
    BLAZE_CONSTRAINT_MUST_NOT_BE_SYMMETRIC_MATRIX_TYPE( MT2 );
 
@@ -5116,7 +4813,7 @@ template< typename MT   // Type of the sparse matrix
         , bool AF >     // Alignment flag
 template< typename MT2  // Type of the right-hand side dense matrix
         , bool SO >     // Storage order of the right-hand side dense matrix
-inline void SparseSubmatrix<MT,AF,true>::addAssign( const DenseMatrix<MT2,SO>& rhs )
+inline void Submatrix<MT,AF,true,false>::addAssign( const DenseMatrix<MT2,SO>& rhs )
 {
    typedef AddTrait_< ResultType, ResultType_<MT2> >  AddType;
 
@@ -5150,7 +4847,7 @@ template< typename MT   // Type of the sparse matrix
         , bool AF >     // Alignment flag
 template< typename MT2  // Type of the right-hand side sparse matrix
         , bool SO >     // Storage order of the right-hand side sparse matrix
-inline void SparseSubmatrix<MT,AF,true>::addAssign( const SparseMatrix<MT2,SO>& rhs )
+inline void Submatrix<MT,AF,true,false>::addAssign( const SparseMatrix<MT2,SO>& rhs )
 {
    typedef AddTrait_< ResultType, ResultType_<MT2> >  AddType;
 
@@ -5184,7 +4881,7 @@ template< typename MT   // Type of the sparse matrix
         , bool AF >     // Alignment flag
 template< typename MT2  // Type of the right-hand side dense matrix
         , bool SO >     // Storage order of the right-hand side dense matrix
-inline void SparseSubmatrix<MT,AF,true>::subAssign( const DenseMatrix<MT2,SO>& rhs )
+inline void Submatrix<MT,AF,true,false>::subAssign( const DenseMatrix<MT2,SO>& rhs )
 {
    typedef SubTrait_< ResultType, ResultType_<MT2> >  SubType;
 
@@ -5218,7 +4915,7 @@ template< typename MT   // Type of the sparse matrix
         , bool AF >     // Alignment flag
 template< typename MT2  // Type of the right-hand side sparse matrix
         , bool SO >     // Storage order of the right-hand sparse matrix
-inline void SparseSubmatrix<MT,AF,true>::subAssign( const SparseMatrix<MT2,SO>& rhs )
+inline void Submatrix<MT,AF,true,false>::subAssign( const SparseMatrix<MT2,SO>& rhs )
 {
    typedef SubTrait_< ResultType, ResultType_<MT2> >  SubType;
 
@@ -5232,1174 +4929,6 @@ inline void SparseSubmatrix<MT,AF,true>::subAssign( const SparseMatrix<MT2,SO>& 
    reset();
    assign( tmp );
 }
-/*! \endcond */
-//*************************************************************************************************
-
-
-
-
-
-
-
-
-//=================================================================================================
-//
-//  SPARSESUBMATRIX OPERATORS
-//
-//=================================================================================================
-
-//*************************************************************************************************
-/*!\name SparseSubmatrix operators */
-//@{
-template< typename MT, bool AF, bool SO >
-inline void reset( SparseSubmatrix<MT,AF,SO>& sm );
-
-template< typename MT, bool AF, bool SO >
-inline void reset( SparseSubmatrix<MT,AF,SO>& sm, size_t i );
-
-template< typename MT, bool AF, bool SO >
-inline void clear( SparseSubmatrix<MT,AF,SO>& sm );
-
-template< typename MT, bool AF, bool SO >
-inline bool isDefault( const SparseSubmatrix<MT,AF,SO>& sm );
-
-template< typename MT, bool AF, bool SO >
-inline bool isIntact( const SparseSubmatrix<MT,AF,SO>& sm ) noexcept;
-
-template< typename MT, bool AF, bool SO >
-inline bool isSymmetric( const SparseSubmatrix<MT,AF,SO>& sm );
-
-template< typename MT, bool AF, bool SO >
-inline bool isHermitian( const SparseSubmatrix<MT,AF,SO>& sm );
-
-template< typename MT, bool AF, bool SO >
-inline bool isLower( const SparseSubmatrix<MT,AF,SO>& sm );
-
-template< typename MT, bool AF, bool SO >
-inline bool isUniLower( const SparseSubmatrix<MT,AF,SO>& sm );
-
-template< typename MT, bool AF, bool SO >
-inline bool isStrictlyLower( const SparseSubmatrix<MT,AF,SO>& sm );
-
-template< typename MT, bool AF, bool SO >
-inline bool isUpper( const SparseSubmatrix<MT,AF,SO>& sm );
-
-template< typename MT, bool AF, bool SO >
-inline bool isUniUpper( const SparseSubmatrix<MT,AF,SO>& sm );
-
-template< typename MT, bool AF, bool SO >
-inline bool isStrictlyUpper( const SparseSubmatrix<MT,AF,SO>& sm );
-
-template< typename MT, bool AF, bool SO >
-inline bool isSame( const SparseSubmatrix<MT,AF,SO>& a, const SparseMatrix<MT,SO>& b ) noexcept;
-
-template< typename MT, bool AF, bool SO >
-inline bool isSame( const SparseMatrix<MT,SO>& a, const SparseSubmatrix<MT,AF,SO>& b ) noexcept;
-
-template< typename MT, bool AF, bool SO >
-inline bool isSame( const SparseSubmatrix<MT,AF,SO>& a, const SparseSubmatrix<MT,AF,SO>& b ) noexcept;
-//@}
-//*************************************************************************************************
-
-
-//*************************************************************************************************
-/*!\brief Resetting the given sparse submatrix.
-// \ingroup sparse_submatrix
-//
-// \param sm The sparse submatrix to be resetted.
-// \return void
-*/
-template< typename MT  // Type of the sparse matrix
-        , bool AF      // Alignment flag
-        , bool SO >    // Storage order
-inline void reset( SparseSubmatrix<MT,AF,SO>& sm )
-{
-   sm.reset();
-}
-//*************************************************************************************************
-
-
-//*************************************************************************************************
-/*!\brief Reset the specified row/column of the given sparse submatrix.
-// \ingroup sparse_submatrix
-//
-// \param sm The sparse submatrix to be resetted.
-// \param i The index of the row/column to be resetted.
-// \return void
-//
-// This function resets the values in the specified row/column of the given sparse submatrix to
-// their default value. In case the given submatrix is a \a rowMajor matrix the function resets
-// the values in row \a i, if it is a \a columnMajor matrix the function resets the values in
-// column \a i. Note that the capacity of the row/column remains unchanged.
-*/
-template< typename MT  // Type of the sparse matrix
-        , bool AF      // Alignment flag
-        , bool SO >    // Storage order
-inline void reset( SparseSubmatrix<MT,AF,SO>& sm, size_t i )
-{
-   sm.reset( i );
-}
-//*************************************************************************************************
-
-
-//*************************************************************************************************
-/*!\brief Clearing the given sparse matrix.
-// \ingroup sparse_submatrix
-//
-// \param sm The sparse matrix to be cleared.
-// \return void
-//
-// Clearing a sparse submatrix is equivalent to resetting it via the reset() function.
-*/
-template< typename MT  // Type of the sparse matrix
-        , bool AF      // Alignment flag
-        , bool SO >    // Storage order
-inline void clear( SparseSubmatrix<MT,AF,SO>& sm )
-{
-   sm.reset();
-}
-//*************************************************************************************************
-
-
-//*************************************************************************************************
-/*!\brief Returns whether the given sparse submatrix is in default state.
-// \ingroup sparse_submatrix
-//
-// \param sm The sparse submatrix to be tested for its default state.
-// \return \a true in case the given submatrix is component-wise zero, \a false otherwise.
-//
-// This function checks whether the submatrix is in default state. For instance, in
-// case the submatrix is instantiated for a built-in integral or floating point data type, the
-// function returns \a true in case all submatrix elements are 0 and \a false in case any submatrix
-// element is not 0. The following example demonstrates the use of the \a isDefault function:
-
-   \code
-   blaze::CompressedMatrix<double,rowMajor> A;
-   // ... Resizing and initialization
-   if( isDefault( submatrix( A, 12UL, 13UL, 22UL, 33UL ) ) ) { ... }
-   \endcode
-*/
-template< typename MT  // Type of the sparse matrix
-        , bool AF      // Alignment flag
-        , bool SO >    // Storage order
-inline bool isDefault( const SparseSubmatrix<MT,AF,SO>& sm )
-{
-   using blaze::isDefault;
-
-   typedef ConstIterator_< SparseSubmatrix<MT,AF,SO> >  ConstIterator;
-
-   const size_t iend( ( SO == rowMajor)?( sm.rows() ):( sm.columns() ) );
-
-   for( size_t i=0UL; i<iend; ++i ) {
-      for( ConstIterator element=sm.begin(i); element!=sm.end(i); ++element )
-         if( !isDefault( element->value() ) ) return false;
-   }
-
-   return true;
-}
-//*************************************************************************************************
-
-
-//*************************************************************************************************
-/*!\brief Returns whether the invariants of the given sparse submatrix are intact.
-// \ingroup sparse_submatrix
-//
-// \param sm The sparse submatrix to be tested.
-// \return \a true in case the given submatrix's invariants are intact, \a false otherwise.
-//
-// This function checks whether the invariants of the sparse submatrix are intact, i.e. if its
-// state is valid. In case the invariants are intact, the function returns \a true, else it
-// will return \a false. The following example demonstrates the use of the \a isIntact()
-// function:
-
-   \code
-   blaze::CompressedMatrix<double,rowMajor> A;
-   // ... Resizing and initialization
-   if( isIntact( submatrix( A, 12UL, 13UL, 22UL, 33UL ) ) ) { ... }
-   \endcode
-*/
-template< typename MT  // Type of the sparse matrix
-        , bool AF      // Alignment flag
-        , bool SO >    // Storage order
-inline bool isIntact( const SparseSubmatrix<MT,AF,SO>& sm ) noexcept
-{
-   return ( sm.row_ + sm.m_ <= sm.matrix_.rows() &&
-            sm.column_ + sm.n_ <= sm.matrix_.columns() &&
-            isIntact( sm.matrix_ ) );
-}
-//*************************************************************************************************
-
-
-//*************************************************************************************************
-/*!\brief Checks if the given sparse submatrix is symmetric.
-// \ingroup sparse_submatrix
-//
-// \param sm The sparse submatrix to be checked.
-// \return \a true if the submatrix is symmetric, \a false if not.
-//
-// This function checks if the given sparse submatrix is symmetric. The submatrix is considered to
-// be symmetric if it is a square matrix whose transpose is equal to itself (\f$ A = A^T \f$). The
-// following code example demonstrates the use of the function:
-
-   \code
-   typedef blaze::CompressedMatrix<int,blaze::rowMajor>  Matrix;
-
-   Matrix A( 32UL, 16UL );
-   // ... Initialization
-
-   blaze::SparseSubmatrix<Matrix> sm( A, 8UL, 8UL, 16UL, 16UL );
-
-   if( isSymmetric( sm ) ) { ... }
-   \endcode
-*/
-template< typename MT  // Type of the sparse matrix
-        , bool AF      // Alignment flag
-        , bool SO >    // Storage order
-inline bool isSymmetric( const SparseSubmatrix<MT,AF,SO>& sm )
-{
-   typedef SparseMatrix< SparseSubmatrix<MT,AF,SO>, SO >  BaseType;
-
-   if( IsSymmetric<MT>::value && sm.row() == sm.column() && sm.rows() == sm.columns() )
-      return true;
-   else return isSymmetric( static_cast<const BaseType&>( sm ) );
-}
-//*************************************************************************************************
-
-
-//*************************************************************************************************
-/*!\brief Checks if the given sparse submatrix is Hermitian.
-// \ingroup sparse_submatrix
-//
-// \param sm The sparse submatrix to be checked.
-// \return \a true if the submatrix is Hermitian, \a false if not.
-//
-// This function checks if the given sparse submatrix is Hermitian. The submatrix is considered
-// to be Hermitian if it is a square matrix whose transpose is equal to its conjugate transpose
-// (\f$ A = \overline{A^T} \f$). The following code example demonstrates the use of the function:
-
-   \code
-   typedef blaze::CompressedMatrix<int,blaze::rowMajor>  Matrix;
-
-   Matrix A( 32UL, 16UL );
-   // ... Initialization
-
-   blaze::SparseSubmatrix<Matrix> sm( A, 8UL, 8UL, 16UL, 16UL );
-
-   if( isHermitian( sm ) ) { ... }
-   \endcode
-*/
-template< typename MT  // Type of the sparse matrix
-        , bool AF      // Alignment flag
-        , bool SO >    // Storage order
-inline bool isHermitian( const SparseSubmatrix<MT,AF,SO>& sm )
-{
-   typedef SparseMatrix< SparseSubmatrix<MT,AF,SO>, SO >  BaseType;
-
-   if( IsHermitian<MT>::value && sm.row() == sm.column() && sm.rows() == sm.columns() )
-      return true;
-   else return isHermitian( static_cast<const BaseType&>( sm ) );
-}
-//*************************************************************************************************
-
-
-//*************************************************************************************************
-/*!\brief Checks if the given sparse submatrix is a lower triangular matrix.
-// \ingroup sparse_submatrix
-//
-// \param sm The sparse submatrix to be checked.
-// \return \a true if the submatrix is a lower triangular matrix, \a false if not.
-//
-// This function checks if the given sparse submatrix is a lower triangular matrix. The matrix is
-// considered to be lower triangular if it is a square matrix of the form
-
-                        \f[\left(\begin{array}{*{5}{c}}
-                        l_{0,0} & 0       & 0       & \cdots & 0       \\
-                        l_{1,0} & l_{1,1} & 0       & \cdots & 0       \\
-                        l_{2,0} & l_{2,1} & l_{2,2} & \cdots & 0       \\
-                        \vdots  & \vdots  & \vdots  & \ddots & \vdots  \\
-                        l_{N,0} & l_{N,1} & l_{N,2} & \cdots & l_{N,N} \\
-                        \end{array}\right).\f]
-
-// \f$ 0 \times 0 \f$ or \f$ 1 \times 1 \f$ matrices are considered as trivially lower triangular.
-// The following code example demonstrates the use of the function:
-
-   \code
-   typedef blaze::DynamicMatrix<int,blaze::rowMajor>  Matrix;
-
-   Matrix A( 32UL, 16UL );
-   // ... Initialization
-
-   blaze::SparseSubmatrix<Matrix> sm( A, 8UL, 8UL, 16UL, 16UL );
-
-   if( isLower( sm ) ) { ... }
-   \endcode
-*/
-template< typename MT  // Type of the sparse matrix
-        , bool AF      // Alignment flag
-        , bool SO >    // Storage order
-inline bool isLower( const SparseSubmatrix<MT,AF,SO>& sm )
-{
-   typedef SparseMatrix< SparseSubmatrix<MT,AF,SO>, SO >  BaseType;
-
-   if( IsLower<MT>::value && sm.row() == sm.column() && sm.rows() == sm.columns() )
-      return true;
-   else return isLower( static_cast<const BaseType&>( sm ) );
-}
-//*************************************************************************************************
-
-
-//*************************************************************************************************
-/*!\brief Checks if the given sparse submatrix is a lower unitriangular matrix.
-// \ingroup sparse_submatrix
-//
-// \param sm The sparse submatrix to be checked.
-// \return \a true if the submatrix is a lower unitriangular matrix, \a false if not.
-//
-// This function checks if the given sparse submatrix is a lower unitriangular matrix. The matrix
-// is considered to be lower triangular if it is a square matrix of the form
-
-                        \f[\left(\begin{array}{*{5}{c}}
-                        1       & 0       & 0       & \cdots & 0      \\
-                        l_{1,0} & 1       & 0       & \cdots & 0      \\
-                        l_{2,0} & l_{2,1} & 1       & \cdots & 0      \\
-                        \vdots  & \vdots  & \vdots  & \ddots & \vdots \\
-                        l_{N,0} & l_{N,1} & l_{N,2} & \cdots & 1      \\
-                        \end{array}\right).\f]
-
-// The following code example demonstrates the use of the function:
-
-   \code
-   typedef blaze::DynamicMatrix<int,blaze::rowMajor>  Matrix;
-
-   Matrix A( 32UL, 16UL );
-   // ... Initialization
-
-   blaze::SparseSubmatrix<Matrix> sm( A, 8UL, 8UL, 16UL, 16UL );
-
-   if( isUniLower( sm ) ) { ... }
-   \endcode
-*/
-template< typename MT  // Type of the sparse matrix
-        , bool AF      // Alignment flag
-        , bool SO >    // Storage order
-inline bool isUniLower( const SparseSubmatrix<MT,AF,SO>& sm )
-{
-   typedef SparseMatrix< SparseSubmatrix<MT,AF,SO>, SO >  BaseType;
-
-   if( IsUniLower<MT>::value && sm.row() == sm.column() && sm.rows() == sm.columns() )
-      return true;
-   else return isUniLower( static_cast<const BaseType&>( sm ) );
-}
-//*************************************************************************************************
-
-
-//*************************************************************************************************
-/*!\brief Checks if the given sparse submatrix is a strictly lower triangular matrix.
-// \ingroup sparse_submatrix
-//
-// \param sm The sparse submatrix to be checked.
-// \return \a true if the submatrix is a strictly lower triangular matrix, \a false if not.
-//
-// This function checks if the given sparse submatrix is a strictly lower triangular matrix. The
-// matrix is considered to be lower triangular if it is a square matrix of the form
-
-                        \f[\left(\begin{array}{*{5}{c}}
-                        0       & 0       & 0       & \cdots & 0      \\
-                        l_{1,0} & 0       & 0       & \cdots & 0      \\
-                        l_{2,0} & l_{2,1} & 0       & \cdots & 0      \\
-                        \vdots  & \vdots  & \vdots  & \ddots & \vdots \\
-                        l_{N,0} & l_{N,1} & l_{N,2} & \cdots & 0      \\
-                        \end{array}\right).\f]
-
-// The following code example demonstrates the use of the function:
-
-   \code
-   typedef blaze::DynamicMatrix<int,blaze::rowMajor>  Matrix;
-
-   Matrix A( 32UL, 16UL );
-   // ... Initialization
-
-   blaze::SparseSubmatrix<Matrix> sm( A, 8UL, 8UL, 16UL, 16UL );
-
-   if( isStrictlyLower( sm ) ) { ... }
-   \endcode
-*/
-template< typename MT  // Type of the sparse matrix
-        , bool AF      // Alignment flag
-        , bool SO >    // Storage order
-inline bool isStrictlyLower( const SparseSubmatrix<MT,AF,SO>& sm )
-{
-   typedef SparseMatrix< SparseSubmatrix<MT,AF,SO>, SO >  BaseType;
-
-   if( IsStrictlyLower<MT>::value && sm.row() == sm.column() && sm.rows() == sm.columns() )
-      return true;
-   else return isStrictlyLower( static_cast<const BaseType&>( sm ) );
-}
-//*************************************************************************************************
-
-
-//*************************************************************************************************
-/*!\brief Checks if the given sparse submatrix is an upper triangular matrix.
-// \ingroup sparse_submatrix
-//
-// \param sm The sparse submatrix to be checked.
-// \return \a true if the submatrix is an upper triangular matrix, \a false if not.
-//
-// This function checks if the given sparse submatrix is an upper triangular matrix. The matrix
-// is considered to be upper triangular if it is a square matrix of the form
-
-                        \f[\left(\begin{array}{*{5}{c}}
-                        u_{0,0} & u_{0,1} & u_{0,2} & \cdots & u_{0,N} \\
-                        0       & u_{1,1} & u_{1,2} & \cdots & u_{1,N} \\
-                        0       & 0       & u_{2,2} & \cdots & u_{2,N} \\
-                        \vdots  & \vdots  & \vdots  & \ddots & \vdots  \\
-                        0       & 0       & 0       & \cdots & u_{N,N} \\
-                        \end{array}\right).\f]
-
-// \f$ 0 \times 0 \f$ or \f$ 1 \times 1 \f$ matrices are considered as trivially upper triangular.
-// The following code example demonstrates the use of the function:
-
-   \code
-   typedef blaze::DynamicMatrix<int,blaze::rowMajor>  Matrix;
-
-   Matrix A( 32UL, 16UL );
-   // ... Initialization
-
-   blaze::SparseSubmatrix<Matrix> sm( A, 8UL, 8UL, 16UL, 16UL );
-
-   if( isUpper( sm ) ) { ... }
-   \endcode
-*/
-template< typename MT  // Type of the sparse matrix
-        , bool AF      // Alignment flag
-        , bool SO >    // Storage order
-inline bool isUpper( const SparseSubmatrix<MT,AF,SO>& sm )
-{
-   typedef SparseMatrix< SparseSubmatrix<MT,AF,SO>, SO >  BaseType;
-
-   if( IsUpper<MT>::value && sm.row() == sm.column() && sm.rows() == sm.columns() )
-      return true;
-   else return isUpper( static_cast<const BaseType&>( sm ) );
-}
-//*************************************************************************************************
-
-
-//*************************************************************************************************
-/*!\brief Checks if the given sparse submatrix is an upper unitriangular matrix.
-// \ingroup sparse_submatrix
-//
-// \param sm The sparse submatrix to be checked.
-// \return \a true if the submatrix is an upper unitriangular matrix, \a false if not.
-//
-// This function checks if the given sparse submatrix is an upper triangular matrix. The matrix
-// is considered to be upper triangular if it is a square matrix of the form
-
-                        \f[\left(\begin{array}{*{5}{c}}
-                        1      & u_{0,1} & u_{0,2} & \cdots & u_{0,N} \\
-                        0      & 1       & u_{1,2} & \cdots & u_{1,N} \\
-                        0      & 0       & 1       & \cdots & u_{2,N} \\
-                        \vdots & \vdots  & \vdots  & \ddots & \vdots  \\
-                        0      & 0       & 0       & \cdots & 1       \\
-                        \end{array}\right).\f]
-
-// The following code example demonstrates the use of the function:
-
-   \code
-   typedef blaze::DynamicMatrix<int,blaze::rowMajor>  Matrix;
-
-   Matrix A( 32UL, 16UL );
-   // ... Initialization
-
-   blaze::SparseSubmatrix<Matrix> sm( A, 8UL, 8UL, 16UL, 16UL );
-
-   if( isUniUpper( sm ) ) { ... }
-   \endcode
-*/
-template< typename MT  // Type of the sparse matrix
-        , bool AF      // Alignment flag
-        , bool SO >    // Storage order
-inline bool isUniUpper( const SparseSubmatrix<MT,AF,SO>& sm )
-{
-   typedef SparseMatrix< SparseSubmatrix<MT,AF,SO>, SO >  BaseType;
-
-   if( IsUniUpper<MT>::value && sm.row() == sm.column() && sm.rows() == sm.columns() )
-      return true;
-   else return isUniUpper( static_cast<const BaseType&>( sm ) );
-}
-//*************************************************************************************************
-
-
-//*************************************************************************************************
-/*!\brief Checks if the given sparse submatrix is a strictly upper triangular matrix.
-// \ingroup sparse_submatrix
-//
-// \param sm The sparse submatrix to be checked.
-// \return \a true if the submatrix is a strictly upper triangular matrix, \a false if not.
-//
-// This function checks if the given sparse submatrix is a strictly upper triangular matrix. The
-// matrix is considered to be upper triangular if it is a square matrix of the form
-
-                        \f[\left(\begin{array}{*{5}{c}}
-                        0      & u_{0,1} & u_{0,2} & \cdots & u_{0,N} \\
-                        0      & 0       & u_{1,2} & \cdots & u_{1,N} \\
-                        0      & 0       & 0       & \cdots & u_{2,N} \\
-                        \vdots & \vdots  & \vdots  & \ddots & \vdots  \\
-                        0      & 0       & 0       & \cdots & 0       \\
-                        \end{array}\right).\f]
-
-// The following code example demonstrates the use of the function:
-
-   \code
-   typedef blaze::DynamicMatrix<int,blaze::rowMajor>  Matrix;
-
-   Matrix A( 32UL, 16UL );
-   // ... Initialization
-
-   blaze::SparseSubmatrix<Matrix> sm( A, 8UL, 8UL, 16UL, 16UL );
-
-   if( isStrictlyUpper( sm ) ) { ... }
-   \endcode
-*/
-template< typename MT  // Type of the sparse matrix
-        , bool AF      // Alignment flag
-        , bool SO >    // Storage order
-inline bool isStrictlyUpper( const SparseSubmatrix<MT,AF,SO>& sm )
-{
-   typedef SparseMatrix< SparseSubmatrix<MT,AF,SO>, SO >  BaseType;
-
-   if( IsStrictlyUpper<MT>::value && sm.row() == sm.column() && sm.rows() == sm.columns() )
-      return true;
-   else return isStrictlyUpper( static_cast<const BaseType&>( sm ) );
-}
-//*************************************************************************************************
-
-
-//*************************************************************************************************
-/*!\brief Returns whether the given sparse matrix and submatrix represent the same observable state.
-// \ingroup sparse_submatrix
-//
-// \param a The sparse submatrix to be tested for its state.
-// \param b The sparse matrix to be tested for its state.
-// \return \a true in case the sparse submatrix and matrix share a state, \a false otherwise.
-//
-// This overload of the isSame function tests if the given submatrix refers to the full given
-// sparse matrix and by that represents the same observable state. In this case, the function
-// returns \a true, otherwise it returns \a false.
-*/
-template< typename MT  // Type of the sparse matrix
-        , bool AF      // Alignment flag
-        , bool SO >    // Storage order
-inline bool isSame( const SparseSubmatrix<MT,AF,SO>& a, const SparseMatrix<MT,SO>& b ) noexcept
-{
-   return ( isSame( a.matrix_, ~b ) && ( a.rows() == (~b).rows() ) && ( a.columns() == (~b).columns() ) );
-}
-//*************************************************************************************************
-
-
-//*************************************************************************************************
-/*!\brief Returns whether the given sparse matrix and submatrix represent the same observable state.
-// \ingroup sparse_submatrix
-//
-// \param a The sparse matrix to be tested for its state.
-// \param b The sparse submatrix to be tested for its state.
-// \return \a true in case the sparse matrix and submatrix share a state, \a false otherwise.
-//
-// This overload of the isSame function tests if the given submatrix refers to the full given
-// sparse matrix and by that represents the same observable state. In this case, the function
-// returns \a true, otherwise it returns \a false.
-*/
-template< typename MT  // Type of the sparse matrix
-        , bool AF      // Alignment flag
-        , bool SO >    // Storage order
-inline bool isSame( const SparseMatrix<MT,SO>& a, const SparseSubmatrix<MT,AF,SO>& b ) noexcept
-{
-   return ( isSame( ~a, b.matrix_ ) && ( (~a).rows() == b.rows() ) && ( (~a).columns() == b.columns() ) );
-}
-//*************************************************************************************************
-
-
-//*************************************************************************************************
-/*!\brief Returns whether the two given submatrices represent the same observable state.
-// \ingroup sparse_submatrix
-//
-// \param a The first sparse submatrix to be tested for its state.
-// \param b The second sparse submatrix to be tested for its state.
-// \return \a true in case the two submatrices share a state, \a false otherwise.
-//
-// This overload of the isSame function tests if the two given submatrices refer to exactly the
-// same part of the same sparse matrix. In case both submatrices represent the same observable
-// state, the function returns \a true, otherwise it returns \a false.
-*/
-template< typename MT  // Type of the sparse matrix
-        , bool AF      // Alignment flag
-        , bool SO >    // Storage order
-inline bool isSame( const SparseSubmatrix<MT,AF,SO>& a, const SparseSubmatrix<MT,AF,SO>& b ) noexcept
-{
-   return ( isSame( a.matrix_, b.matrix_ ) &&
-            ( a.row_ == b.row_ ) && ( a.column_ == b.column_ ) &&
-            ( a.m_ == b.m_ ) && ( a.n_ == b.n_ ) );
-}
-//*************************************************************************************************
-
-
-//*************************************************************************************************
-/*! \cond BLAZE_INTERNAL */
-/*!\brief Predict invariant violations by the assignment of a vector to a sparse submatrix.
-// \ingroup sparse_submatrix
-//
-// \param lhs The target left-hand side sparse submatrix.
-// \param rhs The right-hand side vector to be assigned.
-// \param row The row index of the first element to be modified.
-// \param column The column index of the first element to be modified.
-// \return \a true in case the assignment would be successful, \a false if not.
-//
-// This function must \b NOT be called explicitly! It is used internally for the performance
-// optimized evaluation of expression templates. Calling this function explicitly might result
-// in erroneous results and/or in compilation errors. Instead of using this function use the
-// assignment operator.
-*/
-template< typename MT  // Type of the sparse matrix
-        , bool AF      // Alignment flag
-        , bool SO      // Storage order
-        , typename VT  // Type of the right-hand side vector
-        , bool TF >    // Transpose flag of the right-hand side vector
-inline bool tryAssign( const SparseSubmatrix<MT,AF,SO>& lhs, const Vector<VT,TF>& rhs,
-                       size_t row, size_t column )
-{
-   BLAZE_INTERNAL_ASSERT( row <= lhs.rows(), "Invalid row access index" );
-   BLAZE_INTERNAL_ASSERT( column <= lhs.columns(), "Invalid column access index" );
-   BLAZE_INTERNAL_ASSERT( TF || ( (~rhs).size() <= lhs.rows() - row ), "Invalid number of rows" );
-   BLAZE_INTERNAL_ASSERT( !TF || ( (~rhs).size() <= lhs.columns() - column ), "Invalid number of columns" );
-
-   return tryAssign( lhs.matrix_, ~rhs, lhs.row_ + row, lhs.column_ + column );
-}
-/*! \endcond */
-//*************************************************************************************************
-
-
-//*************************************************************************************************
-/*! \cond BLAZE_INTERNAL */
-/*!\brief Predict invariant violations by the assignment of a matrix to a sparse submatrix.
-// \ingroup sparse_submatrix
-//
-// \param lhs The target left-hand side sparse submatrix.
-// \param rhs The right-hand side matrix to be assigned.
-// \param row The row index of the first element to be modified.
-// \param column The column index of the first element to be modified.
-// \return \a true in case the assignment would be successful, \a false if not.
-//
-// This function must \b NOT be called explicitly! It is used internally for the performance
-// optimized evaluation of expression templates. Calling this function explicitly might result
-// in erroneous results and/or in compilation errors. Instead of using this function use the
-// assignment operator.
-*/
-template< typename MT1  // Type of the sparse matrix
-        , bool AF       // Alignment flag
-        , bool SO1      // Storage order
-        , typename MT2  // Type of the right-hand side matrix
-        , bool SO2 >    // Storage order of the right-hand side matrix
-inline bool tryAssign( const SparseSubmatrix<MT1,AF,SO1>& lhs, const Matrix<MT2,SO2>& rhs,
-                       size_t row, size_t column )
-{
-   BLAZE_INTERNAL_ASSERT( row <= lhs.rows(), "Invalid row access index" );
-   BLAZE_INTERNAL_ASSERT( column <= lhs.columns(), "Invalid column access index" );
-   BLAZE_INTERNAL_ASSERT( (~rhs).rows() <= lhs.rows() - row, "Invalid number of rows" );
-   BLAZE_INTERNAL_ASSERT( (~rhs).columns() <= lhs.columns() - column, "Invalid number of columns" );
-
-   return tryAssign( lhs.matrix_, ~rhs, lhs.row_ + row, lhs.column_ + column );
-}
-/*! \endcond */
-//*************************************************************************************************
-
-
-//*************************************************************************************************
-/*! \cond BLAZE_INTERNAL */
-/*!\brief Predict invariant violations by the addition assignment of a vector to a sparse submatrix.
-// \ingroup sparse_submatrix
-//
-// \param lhs The target left-hand side sparse submatrix.
-// \param rhs The right-hand side vector to be added.
-// \param row The row index of the first element to be modified.
-// \param column The column index of the first element to be modified.
-// \return \a true in case the assignment would be successful, \a false if not.
-//
-// This function must \b NOT be called explicitly! It is used internally for the performance
-// optimized evaluation of expression templates. Calling this function explicitly might result
-// in erroneous results and/or in compilation errors. Instead of using this function use the
-// assignment operator.
-*/
-template< typename MT  // Type of the sparse matrix
-        , bool AF      // Alignment flag
-        , bool SO      // Storage order
-        , typename VT  // Type of the right-hand side vector
-        , bool TF >    // Transpose flag of the right-hand side vector
-inline bool tryAddAssign( const SparseSubmatrix<MT,AF,SO>& lhs, const Vector<VT,TF>& rhs,
-                          size_t row, size_t column )
-{
-   BLAZE_INTERNAL_ASSERT( row <= lhs.rows(), "Invalid row access index" );
-   BLAZE_INTERNAL_ASSERT( column <= lhs.columns(), "Invalid column access index" );
-   BLAZE_INTERNAL_ASSERT( TF || ( (~rhs).size() <= lhs.rows() - row ), "Invalid number of rows" );
-   BLAZE_INTERNAL_ASSERT( !TF || ( (~rhs).size() <= lhs.columns() - column ), "Invalid number of columns" );
-
-   return tryAddAssign( lhs.matrix_, ~rhs, lhs.row_ + row, lhs.column_ + column );
-}
-/*! \endcond */
-//*************************************************************************************************
-
-
-//*************************************************************************************************
-/*! \cond BLAZE_INTERNAL */
-/*!\brief Predict invariant violations by the addition assignment of a matrix to a sparse submatrix.
-// \ingroup sparse_submatrix
-//
-// \param lhs The target left-hand side sparse submatrix.
-// \param rhs The right-hand side matrix to be added.
-// \param row The row index of the first element to be modified.
-// \param column The column index of the first element to be modified.
-// \return \a true in case the assignment would be successful, \a false if not.
-//
-// This function must \b NOT be called explicitly! It is used internally for the performance
-// optimized evaluation of expression templates. Calling this function explicitly might result
-// in erroneous results and/or in compilation errors. Instead of using this function use the
-// assignment operator.
-*/
-template< typename MT1  // Type of the sparse matrix
-        , bool AF       // Alignment flag
-        , bool SO1      // Storage order
-        , typename MT2  // Type of the right-hand side matrix
-        , bool SO2 >    // Storage order of the right-hand side matrix
-inline bool tryAddAssign( const SparseSubmatrix<MT1,AF,SO1>& lhs, const Matrix<MT2,SO2>& rhs,
-                          size_t row, size_t column )
-{
-   BLAZE_INTERNAL_ASSERT( row <= lhs.rows(), "Invalid row access index" );
-   BLAZE_INTERNAL_ASSERT( column <= lhs.columns(), "Invalid column access index" );
-   BLAZE_INTERNAL_ASSERT( (~rhs).rows() <= lhs.rows() - row, "Invalid number of rows" );
-   BLAZE_INTERNAL_ASSERT( (~rhs).columns() <= lhs.columns() - column, "Invalid number of columns" );
-
-   return tryAddAssign( lhs.matrix_, ~rhs, lhs.row_ + row, lhs.column_ + column );
-}
-/*! \endcond */
-//*************************************************************************************************
-
-
-//*************************************************************************************************
-/*! \cond BLAZE_INTERNAL */
-/*!\brief Predict invariant violations by the subtraction assignment of a vector to a sparse
-//        submatrix.
-// \ingroup sparse_submatrix
-//
-// \param lhs The target left-hand side sparse submatrix.
-// \param rhs The right-hand side vector to be subtracted.
-// \param row The row index of the first element to be modified.
-// \param column The column index of the first element to be modified.
-// \return \a true in case the assignment would be successful, \a false if not.
-//
-// This function must \b NOT be called explicitly! It is used internally for the performance
-// optimized evaluation of expression templates. Calling this function explicitly might result
-// in erroneous results and/or in compilation errors. Instead of using this function use the
-// assignment operator.
-*/
-template< typename MT  // Type of the sparse matrix
-        , bool AF      // Alignment flag
-        , bool SO      // Storage order
-        , typename VT  // Type of the right-hand side vector
-        , bool TF >    // Transpose flag of the right-hand side vector
-inline bool trySubAssign( const SparseSubmatrix<MT,AF,SO>& lhs, const Vector<VT,TF>& rhs,
-                          size_t row, size_t column )
-{
-   BLAZE_INTERNAL_ASSERT( row <= lhs.rows(), "Invalid row access index" );
-   BLAZE_INTERNAL_ASSERT( column <= lhs.columns(), "Invalid column access index" );
-   BLAZE_INTERNAL_ASSERT( TF || ( (~rhs).size() <= lhs.rows() - row ), "Invalid number of rows" );
-   BLAZE_INTERNAL_ASSERT( !TF || ( (~rhs).size() <= lhs.columns() - column ), "Invalid number of columns" );
-
-   return trySubAssign( lhs.matrix_, ~rhs, lhs.row_ + row, lhs.column_ + column );
-}
-/*! \endcond */
-//*************************************************************************************************
-
-
-//*************************************************************************************************
-/*! \cond BLAZE_INTERNAL */
-/*!\brief Predict invariant violations by the subtraction assignment of a matrix to a sparse
-//        submatrix.
-// \ingroup sparse_submatrix
-//
-// \param lhs The target left-hand side sparse submatrix.
-// \param rhs The right-hand side matrix to be subtracted.
-// \param row The row index of the first element to be modified.
-// \param column The column index of the first element to be modified.
-// \return \a true in case the assignment would be successful, \a false if not.
-//
-// This function must \b NOT be called explicitly! It is used internally for the performance
-// optimized evaluation of expression templates. Calling this function explicitly might result
-// in erroneous results and/or in compilation errors. Instead of using this function use the
-// assignment operator.
-*/
-template< typename MT1  // Type of the sparse matrix
-        , bool AF       // Alignment flag
-        , bool SO1      // Storage order
-        , typename MT2  // Type of the right-hand side matrix
-        , bool SO2 >    // Storage order of the right-hand side matrix
-inline bool trySubAssign( const SparseSubmatrix<MT1,AF,SO1>& lhs, const Matrix<MT2,SO2>& rhs,
-                          size_t row, size_t column )
-{
-   BLAZE_INTERNAL_ASSERT( row <= lhs.rows(), "Invalid row access index" );
-   BLAZE_INTERNAL_ASSERT( column <= lhs.columns(), "Invalid column access index" );
-   BLAZE_INTERNAL_ASSERT( (~rhs).rows() <= lhs.rows() - row, "Invalid number of rows" );
-   BLAZE_INTERNAL_ASSERT( (~rhs).columns() <= lhs.columns() - column, "Invalid number of columns" );
-
-   return trySubAssign( lhs.matrix_, ~rhs, lhs.row_ + row, lhs.column_ + column );
-}
-/*! \endcond */
-//*************************************************************************************************
-
-
-//*************************************************************************************************
-/*! \cond BLAZE_INTERNAL */
-/*!\brief Predict invariant violations by the multiplication assignment of a vector to a sparse
-//        submatrix.
-// \ingroup sparse_submatrix
-//
-// \param lhs The target left-hand side sparse submatrix.
-// \param rhs The right-hand side vector to be multiplied.
-// \param row The row index of the first element to be modified.
-// \param column The column index of the first element to be modified.
-// \return \a true in case the assignment would be successful, \a false if not.
-//
-// This function must \b NOT be called explicitly! It is used internally for the performance
-// optimized evaluation of expression templates. Calling this function explicitly might result
-// in erroneous results and/or in compilation errors. Instead of using this function use the
-// assignment operator.
-*/
-template< typename MT  // Type of the sparse matrix
-        , bool AF      // Alignment flag
-        , bool SO      // Storage order
-        , typename VT  // Type of the right-hand side vector
-        , bool TF >    // Transpose flag of the right-hand side vector
-inline bool tryMultAssign( const SparseSubmatrix<MT,AF,SO>& lhs, const Vector<VT,TF>& rhs,
-                           size_t row, size_t column )
-{
-   BLAZE_INTERNAL_ASSERT( row <= lhs.rows(), "Invalid row access index" );
-   BLAZE_INTERNAL_ASSERT( column <= lhs.columns(), "Invalid column access index" );
-   BLAZE_INTERNAL_ASSERT( TF || ( (~rhs).size() <= lhs.rows() - row ), "Invalid number of rows" );
-   BLAZE_INTERNAL_ASSERT( !TF || ( (~rhs).size() <= lhs.columns() - column ), "Invalid number of columns" );
-
-   return tryMultAssign( lhs.matrix_, ~rhs, lhs.row_ + row, lhs.column_ + column );
-}
-/*! \endcond */
-//*************************************************************************************************
-
-
-//*************************************************************************************************
-/*! \cond BLAZE_INTERNAL */
-/*!\brief Removal of all restrictions on the data access to the given sparse submatrix.
-// \ingroup sparse_submatrix
-//
-// \param sm The submatrix to be derestricted.
-// \return Submatrix without access restrictions.
-//
-// This function removes all restrictions on the data access to the given submatrix. It returns a
-// submatrix that does provide the same interface but does not have any restrictions on the data
-// access.\n
-// This function must \b NOT be called explicitly! It is used internally for the performance
-// optimized evaluation of expression templates. Calling this function explicitly might result
-// in the violation of invariants, erroneous results and/or in compilation errors.
-*/
-template< typename MT  // Type of the sparse matrix
-        , bool AF      // Alignment flag
-        , bool SO >    // Storage order
-inline DerestrictTrait_< SparseSubmatrix<MT,AF,SO> > derestrict( SparseSubmatrix<MT,AF,SO>& sm )
-{
-   typedef DerestrictTrait_< SparseSubmatrix<MT,AF,SO> >  ReturnType;
-   return ReturnType( derestrict( sm.matrix_ ), sm.row_, sm.column_, sm.m_, sm.n_ );
-}
-/*! \endcond */
-//*************************************************************************************************
-
-
-
-
-//=================================================================================================
-//
-//  GLOBAL RESTRUCTURING OPERATORS
-//
-//=================================================================================================
-
-//*************************************************************************************************
-/*! \cond BLAZE_INTERNAL */
-/*!\brief Creating a view on a specific submatrix of another sparse submatrix.
-// \ingroup views
-//
-// \param sm The constant sparse submatrix
-// \param row The index of the first row of the submatrix.
-// \param column The index of the first column of the submatrix.
-// \param m The number of rows of the submatrix.
-// \param n The number of columns of the submatrix.
-// \return View on the specified submatrix of the other sparse submatrix.
-//
-// This function returns an expression representing the specified submatrix of the given
-// sparse submatrix.
-*/
-template< bool AF1     // Required alignment flag
-        , typename MT  // Type of the sparse submatrix
-        , bool AF2     // Present alignment flag
-        , bool SO >    // Storage order
-inline const SparseSubmatrix<MT,AF1,SO>
-   submatrix( const SparseSubmatrix<MT,AF2,SO>& sm, size_t row, size_t column, size_t m, size_t n )
-{
-   BLAZE_FUNCTION_TRACE;
-
-   if( ( row + m > sm.rows() ) || ( column + n > sm.columns() ) ) {
-      BLAZE_THROW_INVALID_ARGUMENT( "Invalid submatrix specification" );
-   }
-
-   return SparseSubmatrix<MT,AF1,SO>( sm.matrix_, sm.row_ + row, sm.column_ + column, m, n );
-}
-/*! \endcond */
-//*************************************************************************************************
-
-
-
-
-//=================================================================================================
-//
-//  ISRESTRICTED SPECIALIZATIONS
-//
-//=================================================================================================
-
-//*************************************************************************************************
-/*! \cond BLAZE_INTERNAL */
-template< typename MT, bool AF, bool SO >
-struct IsRestricted< SparseSubmatrix<MT,AF,SO> > : public BoolConstant< IsRestricted<MT>::value >
-{};
-/*! \endcond */
-//*************************************************************************************************
-
-
-
-
-//=================================================================================================
-//
-//  DERESTRICTTRAIT SPECIALIZATIONS
-//
-//=================================================================================================
-
-//*************************************************************************************************
-/*! \cond BLAZE_INTERNAL */
-template< typename MT, bool AF, bool SO >
-struct DerestrictTrait< SparseSubmatrix<MT,AF,SO> >
-{
-   using Type = SparseSubmatrix< RemoveReference_< DerestrictTrait_<MT> >, AF >;
-};
-/*! \endcond */
-//*************************************************************************************************
-
-
-
-
-//=================================================================================================
-//
-//  ADDTRAIT SPECIALIZATIONS
-//
-//=================================================================================================
-
-//*************************************************************************************************
-/*! \cond BLAZE_INTERNAL */
-template< typename MT, bool AF, bool SO, typename T >
-struct AddTrait< SparseSubmatrix<MT,AF,SO>, T >
-{
-   using Type = AddTrait_< SubmatrixTrait_<MT>, T >;
-};
-
-template< typename T, typename MT, bool AF, bool TF >
-struct AddTrait< T, SparseSubmatrix<MT,AF,TF> >
-{
-   using Type = AddTrait_< T, SubmatrixTrait_<MT> >;
-};
-/*! \endcond */
-//*************************************************************************************************
-
-
-
-
-//=================================================================================================
-//
-//  SUBTRAIT SPECIALIZATIONS
-//
-//=================================================================================================
-
-//*************************************************************************************************
-/*! \cond BLAZE_INTERNAL */
-template< typename MT, bool AF, bool SO, typename T >
-struct SubTrait< SparseSubmatrix<MT,AF,SO>, T >
-{
-   using Type = SubTrait_< SubmatrixTrait_<MT>, T >;
-};
-
-template< typename T, typename MT, bool AF, bool TF >
-struct SubTrait< T, SparseSubmatrix<MT,AF,TF> >
-{
-   using Type = SubTrait_< T, SubmatrixTrait_<MT> >;
-};
-/*! \endcond */
-//*************************************************************************************************
-
-
-
-
-//=================================================================================================
-//
-//  MULTTRAIT SPECIALIZATIONS
-//
-//=================================================================================================
-
-//*************************************************************************************************
-/*! \cond BLAZE_INTERNAL */
-template< typename MT, bool AF, bool SO, typename T >
-struct MultTrait< SparseSubmatrix<MT,AF,SO>, T >
-{
-   using Type = MultTrait_< SubmatrixTrait_<MT>, T >;
-};
-
-template< typename T, typename MT, bool AF, bool TF >
-struct MultTrait< T, SparseSubmatrix<MT,AF,TF> >
-{
-   using Type = MultTrait_< T, SubmatrixTrait_<MT> >;
-};
-/*! \endcond */
-//*************************************************************************************************
-
-
-
-
-//=================================================================================================
-//
-//  DIVTRAIT SPECIALIZATIONS
-//
-//=================================================================================================
-
-//*************************************************************************************************
-/*! \cond BLAZE_INTERNAL */
-template< typename MT, bool AF, bool SO, typename T >
-struct DivTrait< SparseSubmatrix<MT,AF,SO>, T >
-{
-   using Type = DivTrait_< SubmatrixTrait_<MT>, T >;
-};
-
-template< typename T, typename MT, bool AF, bool TF >
-struct DivTrait< T, SparseSubmatrix<MT,AF,TF> >
-{
-   using Type = DivTrait_< T, SubmatrixTrait_<MT> >;
-};
-/*! \endcond */
-//*************************************************************************************************
-
-
-
-
-//=================================================================================================
-//
-//  SUBMATRIXTRAIT SPECIALIZATIONS
-//
-//=================================================================================================
-
-//*************************************************************************************************
-/*! \cond BLAZE_INTERNAL */
-template< typename MT, bool AF, bool SO >
-struct SubmatrixTrait< SparseSubmatrix<MT,AF,SO> >
-{
-   using Type = SubmatrixTrait_< ResultType_< SparseSubmatrix<MT,AF,SO> > >;
-};
-/*! \endcond */
-//*************************************************************************************************
-
-
-
-
-//=================================================================================================
-//
-//  SUBMATRIXEXPRTRAIT SPECIALIZATIONS
-//
-//=================================================================================================
-
-//*************************************************************************************************
-/*! \cond BLAZE_INTERNAL */
-template< typename MT, bool AF1, bool SO, bool AF2 >
-struct SubmatrixExprTrait< SparseSubmatrix<MT,AF1,SO>, AF2 >
-{
-   using Type = SparseSubmatrix<MT,AF2,SO>;
-};
-/*! \endcond */
-//*************************************************************************************************
-
-
-//*************************************************************************************************
-/*! \cond BLAZE_INTERNAL */
-template< typename MT, bool AF1, bool SO, bool AF2 >
-struct SubmatrixExprTrait< const SparseSubmatrix<MT,AF1,SO>, AF2 >
-{
-   using Type = SparseSubmatrix<MT,AF2,SO>;
-};
-/*! \endcond */
-//*************************************************************************************************
-
-
-//*************************************************************************************************
-/*! \cond BLAZE_INTERNAL */
-template< typename MT, bool AF1, bool SO, bool AF2 >
-struct SubmatrixExprTrait< volatile SparseSubmatrix<MT,AF1,SO>, AF2 >
-{
-   using Type = SparseSubmatrix<MT,AF2,SO>;
-};
-/*! \endcond */
-//*************************************************************************************************
-
-
-//*************************************************************************************************
-/*! \cond BLAZE_INTERNAL */
-template< typename MT, bool AF1, bool SO, bool AF2 >
-struct SubmatrixExprTrait< const volatile SparseSubmatrix<MT,AF1,SO>, AF2 >
-{
-   using Type = SparseSubmatrix<MT,AF2,SO>;
-};
-/*! \endcond */
-//*************************************************************************************************
-
-
-
-
-//=================================================================================================
-//
-//  ROWTRAIT SPECIALIZATIONS
-//
-//=================================================================================================
-
-//*************************************************************************************************
-/*! \cond BLAZE_INTERNAL */
-template< typename MT, bool AF, bool SO >
-struct RowTrait< SparseSubmatrix<MT,AF,SO> >
-{
-   using Type = RowTrait_< ResultType_< SparseSubmatrix<MT,AF,SO> > >;
-};
-/*! \endcond */
-//*************************************************************************************************
-
-
-
-
-//=================================================================================================
-//
-//  COLUMNTRAIT SPECIALIZATIONS
-//
-//=================================================================================================
-
-//*************************************************************************************************
-/*! \cond BLAZE_INTERNAL */
-template< typename MT, bool AF, bool SO >
-struct ColumnTrait< SparseSubmatrix<MT,AF,SO> >
-{
-   using Type = ColumnTrait_< ResultType_< SparseSubmatrix<MT,AF,SO> > >;
-};
 /*! \endcond */
 //*************************************************************************************************
 

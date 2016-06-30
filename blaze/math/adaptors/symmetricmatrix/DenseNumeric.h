@@ -70,7 +70,6 @@
 #include <blaze/math/views/Column.h>
 #include <blaze/math/views/DenseColumn.h>
 #include <blaze/math/views/DenseRow.h>
-#include <blaze/math/views/DenseSubmatrix.h>
 #include <blaze/math/views/Row.h>
 #include <blaze/math/views/Submatrix.h>
 #include <blaze/system/Inline.h>

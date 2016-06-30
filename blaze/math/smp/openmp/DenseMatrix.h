@@ -43,15 +43,14 @@
 #include <omp.h>
 #include <blaze/math/Aliases.h>
 #include <blaze/math/constraints/SMPAssignable.h>
-#include <blaze/math/DenseSubmatrix.h>
 #include <blaze/math/expressions/DenseMatrix.h>
 #include <blaze/math/expressions/SparseMatrix.h>
 #include <blaze/math/Functions.h>
 #include <blaze/math/simd/SIMDTrait.h>
 #include <blaze/math/smp/ParallelSection.h>
 #include <blaze/math/smp/SerialSection.h>
-#include <blaze/math/SparseSubmatrix.h>
 #include <blaze/math/StorageOrder.h>
+#include <blaze/math/Submatrix.h>
 #include <blaze/math/traits/SubmatrixExprTrait.h>
 #include <blaze/math/typetraits/IsDenseMatrix.h>
 #include <blaze/math/typetraits/IsSMPAssignable.h>

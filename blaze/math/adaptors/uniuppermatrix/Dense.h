@@ -70,7 +70,6 @@
 #include <blaze/math/typetraits/IsUniTriangular.h>
 #include <blaze/math/typetraits/IsUniUpper.h>
 #include <blaze/math/typetraits/Rows.h>
-#include <blaze/math/views/DenseSubmatrix.h>
 #include <blaze/math/views/Submatrix.h>
 #include <blaze/system/Inline.h>
 #include <blaze/util/Assert.h>

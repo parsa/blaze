@@ -58,7 +58,6 @@
 #include <blaze/math/traits/DerestrictTrait.h>
 #include <blaze/math/typetraits/IsResizable.h>
 #include <blaze/math/typetraits/IsSquare.h>
-#include <blaze/math/views/DenseSubmatrix.h>
 #include <blaze/math/views/Submatrix.h>
 #include <blaze/util/EnableIf.h>
 

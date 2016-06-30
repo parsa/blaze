@@ -40,11 +40,11 @@
 // Includes
 //*************************************************************************************************
 
-#include <blaze/math/expressions/Submatrix.h>
-#include <blaze/util/IntegralConstant.h>
+#include <blaze/math/views/Forward.h>
+#include <blaze/util/FalseType.h>
 #include <blaze/util/mpl/And.h>
 #include <blaze/util/mpl/Not.h>
-#include <blaze/util/typetraits/IsBaseOf.h>
+#include <blaze/util/TrueType.h>
 
 
 namespace blaze {
@@ -67,13 +67,13 @@ namespace blaze {
 
    \code
    typedef blaze::DynamicMatrix<double,columnMajor>  DenseMatrixType1;
-   typedef blaze::DenseSubmatrix<DenseMatrixType1>   DenseSubmatrixType1;
+   typedef blaze::Submatrix<DenseMatrixType1>        DenseSubmatrixType1;
 
    typedef blaze::StaticMatrix<float,3UL,4UL,rowMajor>  DenseMatrixType2;
-   typedef blaze::DenseSubmatrix<DenseMatrixType2>      DenseSubmatrixType2;
+   typedef blaze::Submatrix<DenseMatrixType2>           DenseSubmatrixType2;
 
    typedef blaze::CompressedMatrix<int,columnMajor>  SparseMatrixType;
-   typedef blaze::SparseSubmatrix<SparseMatrixType>  SparseSubmatrixType;
+   typedef blaze::Submatrix<SparseMatrixType>        SparseSubmatrixType;
 
    blaze::IsSubmatrix< SparseSubmatrixType >::value       // Evaluates to 1
    blaze::IsSubmatrix< const DenseSubmatrixType1 >::Type  // Results in TrueType
@@ -85,8 +85,56 @@ namespace blaze {
 */
 template< typename T >
 struct IsSubmatrix
-   : public BoolConstant< And< IsBaseOf<Submatrix,T>, Not< IsBaseOf<T,Submatrix> > >::value >
+   : public FalseType
 {};
+//*************************************************************************************************
+
+
+//*************************************************************************************************
+/*! \cond BLAZE_INTERNAL */
+/*!\brief Specialization of the IsSubmatrix type trait for 'Submatrix'.
+// \ingroup math_type_traits
+*/
+template< typename MT, bool AF, bool SO, bool DF >
+struct IsSubmatrix< Submatrix<MT,AF,SO,DF> > : public TrueType
+{};
+/*! \endcond */
+//*************************************************************************************************
+
+
+//*************************************************************************************************
+/*! \cond BLAZE_INTERNAL */
+/*!\brief Specialization of the IsSubmatrix type trait for 'const Submatrix'.
+// \ingroup math_type_traits
+*/
+template< typename MT, bool AF, bool SO, bool DF >
+struct IsSubmatrix< const Submatrix<MT,AF,SO,DF> > : public TrueType
+{};
+/*! \endcond */
+//*************************************************************************************************
+
+
+//*************************************************************************************************
+/*! \cond BLAZE_INTERNAL */
+/*!\brief Specialization of the IsSubmatrix type trait for 'volatile Submatrix'.
+// \ingroup math_type_traits
+*/
+template< typename MT, bool AF, bool SO, bool DF >
+struct IsSubmatrix< volatile Submatrix<MT,AF,SO,DF> > : public TrueType
+{};
+/*! \endcond */
+//*************************************************************************************************
+
+
+//*************************************************************************************************
+/*! \cond BLAZE_INTERNAL */
+/*!\brief Specialization of the IsSubmatrix type trait for 'const volatile Submatrix'.
+// \ingroup math_type_traits
+*/
+template< typename MT, bool AF, bool SO, bool DF >
+struct IsSubmatrix< const volatile Submatrix<MT,AF,SO,DF> > : public TrueType
+{};
+/*! \endcond */
 //*************************************************************************************************
 
 } // namespace blaze

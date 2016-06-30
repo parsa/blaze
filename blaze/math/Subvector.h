@@ -44,8 +44,6 @@
 #include <blaze/math/Exception.h>
 #include <blaze/math/smp/DenseVector.h>
 #include <blaze/math/smp/SparseVector.h>
-#include <blaze/math/views/DenseSubmatrix.h>
-#include <blaze/math/views/SparseSubmatrix.h>
 #include <blaze/math/views/Submatrix.h>
 #include <blaze/math/views/Subvector.h>
 #include <blaze/util/Random.h>
@@ -138,7 +136,7 @@ inline void Rand< Subvector<VT,AF,TF,true> >::randomize( Subvector<VT,AF,TF,true
 
 //=================================================================================================
 //
-//  RAND SPECIALIZATION
+//  RAND SPECIALIZATION FOR SPARSE SUBVECTORS
 //
 //=================================================================================================
 

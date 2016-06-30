@@ -628,8 +628,8 @@ BLAZE_ALWAYS_INLINE bool isSquare( const Matrix<MT,SO>& matrix ) noexcept
 // \a false.
 
    \code
-   typedef blaze::DynamicMatrix<int>          MatrixType;
-   typedef blaze::DenseSubmatrix<MatrixType>  SubmatrixType;
+   typedef blaze::DynamicMatrix<int>     MatrixType;
+   typedef blaze::Submatrix<MatrixType>  SubmatrixType;
 
    MatrixType mat1( 4UL, 5UL );  // Setup of a 4x5 dynamic matrix
    MatrixType mat2( 4UL, 5UL );  // Setup of a second 4x5 dynamic matrix
