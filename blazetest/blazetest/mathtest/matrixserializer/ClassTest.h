@@ -46,10 +46,9 @@
 #include <blaze/math/Aliases.h>
 #include <blaze/math/CompressedMatrix.h>
 #include <blaze/math/constraints/Matrix.h>
-#include <blaze/math/DenseSubmatrix.h>
 #include <blaze/math/DynamicMatrix.h>
-#include <blaze/math/SparseSubmatrix.h>
 #include <blaze/math/StaticMatrix.h>
+#include <blaze/math/Submatrix.h>
 #include <blaze/math/typetraits/IsDenseMatrix.h>
 #include <blaze/util/Random.h>
 #include <blaze/util/serialization/Archive.h>

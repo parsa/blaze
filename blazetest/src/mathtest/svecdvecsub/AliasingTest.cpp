@@ -39,8 +39,7 @@
 
 #include <cstdlib>
 #include <iostream>
-#include <blaze/math/DenseSubvector.h>
-#include <blaze/math/SparseSubvector.h>
+#include <blaze/math/Subvector.h>
 #include <blazetest/mathtest/svecdvecsub/AliasingTest.h>
 
 

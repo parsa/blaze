@@ -1,7 +1,7 @@
 #!/bin/bash
 #==================================================================================================
 #
-#  Run script for the densesubmatrix module of the Blaze test suite
+#  Run script for the submatrix module of the Blaze test suite
 #
 #  Copyright (C) 2013 Klaus Iglberger - All Rights Reserved
 #
@@ -33,9 +33,10 @@
 #==================================================================================================
 
 
-PATH_DENSESUBMATRIX=$( dirname "${BASH_SOURCE[0]}" )
+PATH_SUBMATRIX=$( dirname "${BASH_SOURCE[0]}" )
 
-echo " Running DenseSubmatrix tests..."
+echo " Running Submatrix tests..."
 
-EXE=$PATH_DENSESUBMATRIX/UnalignedTest; if [ -x $EXE ]; then $EXE; if [ $? != 0 ]; then exit 1; fi fi
-EXE=$PATH_DENSESUBMATRIX/AlignedTest;   if [ -x $EXE ]; then $EXE; if [ $? != 0 ]; then exit 1; fi fi
+EXE=$PATH_SUBMATRIX/DenseUnalignedTest; if [ -x $EXE ]; then $EXE; if [ $? != 0 ]; then exit 1; fi fi
+EXE=$PATH_SUBMATRIX/DenseAlignedTest;   if [ -x $EXE ]; then $EXE; if [ $? != 0 ]; then exit 1; fi fi
+EXE=$PATH_SUBMATRIX/SparseTest;         if [ -x $EXE ]; then $EXE; if [ $? != 0 ]; then exit 1; fi fi

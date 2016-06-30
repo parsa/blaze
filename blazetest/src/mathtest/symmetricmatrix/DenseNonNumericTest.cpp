@@ -44,10 +44,10 @@
 #include <blaze/math/CustomMatrix.h>
 #include <blaze/math/DenseColumn.h>
 #include <blaze/math/DenseRow.h>
-#include <blaze/math/DenseSubmatrix.h>
 #include <blaze/math/DynamicMatrix.h>
 #include <blaze/math/HybridMatrix.h>
 #include <blaze/math/StaticMatrix.h>
+#include <blaze/math/Submatrix.h>
 #include <blaze/util/policies/ArrayDelete.h>
 #include <blazetest/mathtest/symmetricmatrix/DenseNonNumericTest.h>
 
@@ -7417,7 +7417,7 @@ void DenseNonNumericTest::testSubmatrix()
    {
       test_ = "Row-major submatrix() function (non-overlapping submatrix)";
 
-      typedef blaze::DenseSubmatrix<ST>  SMT;
+      typedef blaze::Submatrix<ST>  SMT;
 
       ST sym( 3UL );
       sym(0,0) = vec(  1 );
@@ -7514,7 +7514,7 @@ void DenseNonNumericTest::testSubmatrix()
    {
       test_ = "Column-major submatrix() function (non-overlapping submatrix)";
 
-      typedef blaze::DenseSubmatrix<OST>  SMT;
+      typedef blaze::Submatrix<OST>  SMT;
 
       OST sym( 3UL );
       sym(0,0) = vec(  1 );

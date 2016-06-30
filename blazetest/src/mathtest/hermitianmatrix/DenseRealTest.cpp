@@ -44,10 +44,10 @@
 #include <blaze/math/CustomMatrix.h>
 #include <blaze/math/DenseColumn.h>
 #include <blaze/math/DenseRow.h>
-#include <blaze/math/DenseSubmatrix.h>
 #include <blaze/math/HybridMatrix.h>
 #include <blaze/math/StaticMatrix.h>
 #include <blaze/math/StaticVector.h>
+#include <blaze/math/Submatrix.h>
 #include <blaze/util/policies/ArrayDelete.h>
 #include <blazetest/mathtest/hermitianmatrix/DenseRealTest.h>
 
@@ -8125,7 +8125,7 @@ void DenseRealTest::testSubmatrix()
    {
       test_ = "Row-major submatrix() function";
 
-      typedef blaze::DenseSubmatrix<HT>  SMT;
+      typedef blaze::Submatrix<HT>  SMT;
 
       HT herm( 3UL );
       herm(0,0) =  1;
@@ -8217,7 +8217,7 @@ void DenseRealTest::testSubmatrix()
    {
       test_ = "Column-major submatrix() function";
 
-      typedef blaze::DenseSubmatrix<OHT>  SMT;
+      typedef blaze::Submatrix<OHT>  SMT;
 
       OHT herm( 3UL );
       herm(0,0) =  1;

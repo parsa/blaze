@@ -43,8 +43,7 @@ all: functions simd blas lapack typetraits \
      lowermatrix unilowermatrix strictlylowermatrix \
      uppermatrix uniuppermatrix strictlyuppermatrix \
      diagonalmatrix \
-     subvector \
-     densesubmatrix sparsesubmatrix \
+     subvector submatrix \
      denserow densecolumn sparserow sparsecolumn \
      dvecdvecadd dvecsvecadd svecdvecadd svecsvecadd \
      dvecdvecsub dvecsvecsub svecdvecsub svecsvecsub \
@@ -73,8 +72,7 @@ noop: functions simd blas lapack typetraits \
       lowermatrix unilowermatrix strictlylowermatrix \
       uppermatrix uniuppermatrix strictlyuppermatrix \
       diagonalmatrix \
-      subvector \
-      densesubmatrix sparsesubmatrix \
+      subvector submatrix \
       denserow densecolumn sparserow sparsecolumn \
       determinant decomposition inversion \
       vectorserializer matrixserializer
@@ -226,15 +224,10 @@ subvector:
 	@echo "Building the Subvector tests..."
 	@$(MAKE) --no-print-directory -C ./subvector $(MAKECMDGOALS)
 
-densesubmatrix:
+submatrix:
 	@echo
-	@echo "Building the DenseSubmatrix tests..."
-	@$(MAKE) --no-print-directory -C ./densesubmatrix $(MAKECMDGOALS)
-
-sparsesubmatrix:
-	@echo
-	@echo "Building the SparseSubmatrix tests..."
-	@$(MAKE) --no-print-directory -C ./sparsesubmatrix $(MAKECMDGOALS)
+	@echo "Building the Submatrix tests..."
+	@$(MAKE) --no-print-directory -C ./submatrix $(MAKECMDGOALS)
 
 denserow:
 	@echo
@@ -543,8 +536,7 @@ clean:
 	@$(MAKE) --no-print-directory -C ./strictlyuppermatrix clean
 	@$(MAKE) --no-print-directory -C ./diagonalmatrix clean
 	@$(MAKE) --no-print-directory -C ./subvector clean
-	@$(MAKE) --no-print-directory -C ./densesubmatrix clean
-	@$(MAKE) --no-print-directory -C ./sparsesubmatrix clean
+	@$(MAKE) --no-print-directory -C ./submatrix clean
 	@$(MAKE) --no-print-directory -C ./denserow clean
 	@$(MAKE) --no-print-directory -C ./densecolumn clean
 	@$(MAKE) --no-print-directory -C ./sparserow clean
@@ -613,8 +605,7 @@ clean:
         lowermatrix unilowermatrix strictlylowermatrix \
         uppermatrix uniuppermatrix strictlyuppermatrix \
         diagonalmatrix \
-        subvector \
-        densesubmatrix sparsesubmatrix \
+        subvector submatrix \
         denserow densecolumn sparserow sparsecolumn \
         dvecdvecadd dvecsvecadd svecdvecadd svecsvecadd \
         dvecdvecsub dvecsvecsub svecdvecsub svecsvecsub \

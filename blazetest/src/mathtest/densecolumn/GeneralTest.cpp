@@ -5164,7 +5164,7 @@ void GeneralTest::testIsSame()
 
       // isSame with column and matching subvector
       {
-         typedef blaze::DenseSubvector<CT>  SubvectorType;
+         typedef blaze::Subvector<CT>  SubvectorType;
 
          CT col1 = column( mat_, 1UL );
          SubvectorType sv = subvector( col1, 0UL, 4UL );
@@ -5192,7 +5192,7 @@ void GeneralTest::testIsSame()
 
       // isSame with column and non-matching subvector (different size)
       {
-         typedef blaze::DenseSubvector<CT>  SubvectorType;
+         typedef blaze::Subvector<CT>  SubvectorType;
 
          CT col1 = column( mat_, 1UL );
          SubvectorType sv = subvector( col1, 0UL, 3UL );
@@ -5220,7 +5220,7 @@ void GeneralTest::testIsSame()
 
       // isSame with column and non-matching subvector (different offset)
       {
-         typedef blaze::DenseSubvector<CT>  SubvectorType;
+         typedef blaze::Subvector<CT>  SubvectorType;
 
          CT col1 = column( mat_, 1UL );
          SubvectorType sv = subvector( col1, 1UL, 3UL );
@@ -5248,7 +5248,7 @@ void GeneralTest::testIsSame()
 
       // isSame with matching columns on submatrices
       {
-         typedef blaze::DenseSubmatrix<MT>          SubmatrixType;
+         typedef blaze::Submatrix<MT>               SubmatrixType;
          typedef blaze::DenseColumn<SubmatrixType>  ColumnType;
 
          SubmatrixType sm = submatrix( mat_, 1UL, 1UL, 3UL, 2UL );
@@ -5268,7 +5268,7 @@ void GeneralTest::testIsSame()
 
       // isSame with non-matching columns on submatrices
       {
-         typedef blaze::DenseSubmatrix<MT>          SubmatrixType;
+         typedef blaze::Submatrix<MT>               SubmatrixType;
          typedef blaze::DenseColumn<SubmatrixType>  ColumnType;
 
          SubmatrixType sm = submatrix( mat_, 1UL, 1UL, 3UL, 2UL );
@@ -5288,9 +5288,9 @@ void GeneralTest::testIsSame()
 
       // isSame with matching column subvectors on submatrices
       {
-         typedef blaze::DenseSubmatrix<MT>          SubmatrixType;
+         typedef blaze::Submatrix<MT>               SubmatrixType;
          typedef blaze::DenseColumn<SubmatrixType>  ColumnType;
-         typedef blaze::DenseSubvector<ColumnType>  SubvectorType;
+         typedef blaze::Subvector<ColumnType>       SubvectorType;
 
          SubmatrixType sm = submatrix( mat_, 1UL, 1UL, 3UL, 2UL );
          ColumnType col1 = column( sm, 1UL );
@@ -5310,9 +5310,9 @@ void GeneralTest::testIsSame()
 
       // isSame with non-matching column subvectors on submatrices (different size)
       {
-         typedef blaze::DenseSubmatrix<MT>          SubmatrixType;
+         typedef blaze::Submatrix<MT>               SubmatrixType;
          typedef blaze::DenseColumn<SubmatrixType>  ColumnType;
-         typedef blaze::DenseSubvector<ColumnType>  SubvectorType;
+         typedef blaze::Subvector<ColumnType>       SubvectorType;
 
          SubmatrixType sm = submatrix( mat_, 1UL, 1UL, 3UL, 2UL );
          ColumnType col1 = column( sm, 1UL );
@@ -5332,9 +5332,9 @@ void GeneralTest::testIsSame()
 
       // isSame with non-matching column subvectors on submatrices (different offset)
       {
-         typedef blaze::DenseSubmatrix<MT>          SubmatrixType;
+         typedef blaze::Submatrix<MT>               SubmatrixType;
          typedef blaze::DenseColumn<SubmatrixType>  ColumnType;
-         typedef blaze::DenseSubvector<ColumnType>  SubvectorType;
+         typedef blaze::Subvector<ColumnType>       SubvectorType;
 
          SubmatrixType sm = submatrix( mat_, 1UL, 1UL, 3UL, 2UL );
          ColumnType col1 = column( sm, 1UL );
@@ -5395,7 +5395,7 @@ void GeneralTest::testIsSame()
 
       // isSame with column and matching subvector
       {
-         typedef blaze::DenseSubvector<OCT>  SubvectorType;
+         typedef blaze::Subvector<OCT>  SubvectorType;
 
          OCT col1 = column( tmat_, 1UL );
          SubvectorType sv = subvector( col1, 0UL, 4UL );
@@ -5423,7 +5423,7 @@ void GeneralTest::testIsSame()
 
       // isSame with column and non-matching subvector (different size)
       {
-         typedef blaze::DenseSubvector<OCT>  SubvectorType;
+         typedef blaze::Subvector<OCT>  SubvectorType;
 
          OCT col1 = column( tmat_, 1UL );
          SubvectorType sv = subvector( col1, 0UL, 3UL );
@@ -5451,7 +5451,7 @@ void GeneralTest::testIsSame()
 
       // isSame with column and non-matching subvector (different offset)
       {
-         typedef blaze::DenseSubvector<OCT>  SubvectorType;
+         typedef blaze::Subvector<OCT>  SubvectorType;
 
          OCT col1 = column( tmat_, 1UL );
          SubvectorType sv = subvector( col1, 1UL, 3UL );
@@ -5479,7 +5479,7 @@ void GeneralTest::testIsSame()
 
       // isSame with matching columns on submatrices
       {
-         typedef blaze::DenseSubmatrix<OMT>         SubmatrixType;
+         typedef blaze::Submatrix<OMT>              SubmatrixType;
          typedef blaze::DenseColumn<SubmatrixType>  ColumnType;
 
          SubmatrixType sm = submatrix( tmat_, 1UL, 1UL, 3UL, 2UL );
@@ -5499,7 +5499,7 @@ void GeneralTest::testIsSame()
 
       // isSame with non-matching columns on submatrices
       {
-         typedef blaze::DenseSubmatrix<OMT>         SubmatrixType;
+         typedef blaze::Submatrix<OMT>              SubmatrixType;
          typedef blaze::DenseColumn<SubmatrixType>  ColumnType;
 
          SubmatrixType sm = submatrix( tmat_, 1UL, 1UL, 3UL, 2UL );
@@ -5519,9 +5519,9 @@ void GeneralTest::testIsSame()
 
       // isSame with matching column subvectors on submatrices
       {
-         typedef blaze::DenseSubmatrix<OMT>         SubmatrixType;
+         typedef blaze::Submatrix<OMT>              SubmatrixType;
          typedef blaze::DenseColumn<SubmatrixType>  ColumnType;
-         typedef blaze::DenseSubvector<ColumnType>  SubvectorType;
+         typedef blaze::Subvector<ColumnType>       SubvectorType;
 
          SubmatrixType sm = submatrix( tmat_, 1UL, 1UL, 3UL, 2UL );
          ColumnType col1 = column( sm, 1UL );
@@ -5541,9 +5541,9 @@ void GeneralTest::testIsSame()
 
       // isSame with non-matching column subvectors on submatrices (different size)
       {
-         typedef blaze::DenseSubmatrix<OMT>         SubmatrixType;
+         typedef blaze::Submatrix<OMT>              SubmatrixType;
          typedef blaze::DenseColumn<SubmatrixType>  ColumnType;
-         typedef blaze::DenseSubvector<ColumnType>  SubvectorType;
+         typedef blaze::Subvector<ColumnType>       SubvectorType;
 
          SubmatrixType sm = submatrix( tmat_, 1UL, 1UL, 3UL, 2UL );
          ColumnType col1 = column( sm, 1UL );
@@ -5563,9 +5563,9 @@ void GeneralTest::testIsSame()
 
       // isSame with non-matching column subvectors on submatrices (different offset)
       {
-         typedef blaze::DenseSubmatrix<OMT>         SubmatrixType;
+         typedef blaze::Submatrix<OMT>              SubmatrixType;
          typedef blaze::DenseColumn<SubmatrixType>  ColumnType;
-         typedef blaze::DenseSubvector<ColumnType>  SubvectorType;
+         typedef blaze::Subvector<ColumnType>       SubvectorType;
 
          SubmatrixType sm = submatrix( tmat_, 1UL, 1UL, 3UL, 2UL );
          ColumnType col1 = column( sm, 1UL );
@@ -5607,7 +5607,7 @@ void GeneralTest::testSubvector()
 
       initialize();
 
-      typedef blaze::DenseSubvector<CT>  SubvectorType;
+      typedef blaze::Subvector<CT>  SubvectorType;
 
       CT col1 = column( mat_, 1UL );
       SubvectorType sv = subvector( col1, 0UL, 4UL );
@@ -5643,7 +5643,7 @@ void GeneralTest::testSubvector()
 
       initialize();
 
-      typedef blaze::DenseSubvector<OCT>  SubvectorType;
+      typedef blaze::Subvector<OCT>  SubvectorType;
 
       OCT col1 = column( tmat_, 1UL );
       SubvectorType sv = subvector( col1, 0UL, 4UL );

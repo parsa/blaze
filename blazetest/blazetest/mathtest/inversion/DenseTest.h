@@ -46,7 +46,7 @@
 #include <typeinfo>
 #include <blaze/math/Aliases.h>
 #include <blaze/math/DenseMatrix.h>
-#include <blaze/math/DenseSubmatrix.h>
+#include <blaze/math/Submatrix.h>
 #include <blaze/util/Random.h>
 #include <blazetest/system/LAPACK.h>
 #include <blazetest/system/Types.h>

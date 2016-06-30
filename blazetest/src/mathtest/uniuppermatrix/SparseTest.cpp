@@ -41,9 +41,9 @@
 #include <iostream>
 #include <blaze/math/SparseColumn.h>
 #include <blaze/math/SparseRow.h>
-#include <blaze/math/SparseSubmatrix.h>
 #include <blaze/math/StaticMatrix.h>
 #include <blaze/math/StaticVector.h>
+#include <blaze/math/Submatrix.h>
 #include <blaze/util/Complex.h>
 #include <blazetest/mathtest/uniuppermatrix/SparseTest.h>
 
@@ -9049,7 +9049,7 @@ void SparseTest::testSubmatrix()
    {
       test_ = "Row-major submatrix() function";
 
-      typedef blaze::SparseSubmatrix<UT>  SMT;
+      typedef blaze::Submatrix<UT>  SMT;
 
       UT upper( 3UL );
       upper(0,1) = -4;
@@ -9138,7 +9138,7 @@ void SparseTest::testSubmatrix()
    {
       test_ = "Column-major submatrix() function";
 
-      typedef blaze::SparseSubmatrix<OUT>  SMT;
+      typedef blaze::Submatrix<OUT>  SMT;
 
       OUT upper( 3UL );
       upper(0,1) = -4;

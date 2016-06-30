@@ -44,10 +44,9 @@
 #include <stdexcept>
 #include <string>
 #include <blaze/math/CompressedMatrix.h>
-#include <blaze/math/DenseSubmatrix.h>
 #include <blaze/math/DynamicMatrix.h>
 #include <blaze/math/LowerMatrix.h>
-#include <blaze/math/SparseSubmatrix.h>
+#include <blaze/math/Submatrix.h>
 #include <blaze/math/traits/SubmatrixExprTrait.h>
 #include <blaze/math/typetraits/IsRowMajorMatrix.h>
 #include <blazetest/system/Types.h>

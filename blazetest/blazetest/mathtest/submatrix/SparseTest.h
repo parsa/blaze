@@ -1,7 +1,7 @@
 //=================================================================================================
 /*!
-//  \file blazetest/mathtest/densesubmatrix/AlignedTest.h
-//  \brief Header file for the aligned DenseSubmatrix class test
+//  \file blazetest/mathtest/submatrix/SparseTest.h
+//  \brief Header file for the Submatrix sparse test
 //
 //  Copyright (C) 2013 Klaus Iglberger - All Rights Reserved
 //
@@ -32,8 +32,8 @@
 */
 //=================================================================================================
 
-#ifndef _BLAZETEST_MATHTEST_DENSESUBMATRIX_ALIGNEDTEST_H_
-#define _BLAZETEST_MATHTEST_DENSESUBMATRIX_ALIGNEDTEST_H_
+#ifndef _BLAZETEST_MATHTEST_SUBMATRIX_SPARSETEST_H_
+#define _BLAZETEST_MATHTEST_SUBMATRIX_SPARSETEST_H_
 
 
 //*************************************************************************************************
@@ -43,9 +43,9 @@
 #include <sstream>
 #include <stdexcept>
 #include <string>
-#include <blaze/math/constraints/DenseMatrix.h>
-#include <blaze/math/DynamicMatrix.h>
-#include <blaze/math/DenseSubmatrix.h>
+#include <blaze/math/constraints/SparseMatrix.h>
+#include <blaze/math/CompressedMatrix.h>
+#include <blaze/math/Submatrix.h>
 #include <blazetest/system/Types.h>
 
 
@@ -53,7 +53,7 @@ namespace blazetest {
 
 namespace mathtest {
 
-namespace densesubmatrix {
+namespace submatrix {
 
 //=================================================================================================
 //
@@ -62,18 +62,18 @@ namespace densesubmatrix {
 //=================================================================================================
 
 //*************************************************************************************************
-/*!\brief Auxiliary class for all tests of the aligned DenseSubmatrix class template.
+/*!\brief Auxiliary class for all tests of the sparse Submatrix specialization.
 //
-// This class represents a test suite for the blaze::DenseSubmatrix class template. It performs
-// a series of both compile time as well as runtime tests.
+// This class represents a test suite for the blaze::Submatrix class template specialization for
+// sparse submatrices. It performs a series of both compile time as well as runtime tests.
 */
-class AlignedTest
+class SparseTest
 {
  public:
    //**Constructors********************************************************************************
    /*!\name Constructors */
    //@{
-   explicit AlignedTest();
+   explicit SparseTest();
    // No explicitly declared copy constructor.
    //@}
    //**********************************************************************************************
@@ -97,8 +97,17 @@ class AlignedTest
    void testNonZeros    ();
    void testReset       ();
    void testClear       ();
+   void testSet         ();
+   void testInsert      ();
+   void testAppend      ();
+   void testErase       ();
+   void testReserve     ();
+   void testTrim        ();
    void testTranspose   ();
    void testCTranspose  ();
+   void testFind        ();
+   void testLowerBound  ();
+   void testUpperBound  ();
    void testIsDefault   ();
    void testIsSame      ();
    void testSubmatrix   ();
@@ -110,6 +119,12 @@ class AlignedTest
 
    template< typename Type >
    void checkColumns( const Type& matrix, size_t expectedColumns ) const;
+
+   template< typename Type >
+   void checkCapacity( const Type& matrix, size_t minCapacity ) const;
+
+   template< typename Type >
+   void checkCapacity( const Type& matrix, size_t index, size_t minCapacity ) const;
 
    template< typename Type >
    void checkNonZeros( const Type& matrix, size_t expectedNonZeros ) const;
@@ -127,25 +142,32 @@ class AlignedTest
    //**********************************************************************************************
 
    //**Type definitions****************************************************************************
-   typedef blaze::DynamicMatrix<int,blaze::rowMajor>    MT;     //!< Row-major dynamic matrix type
-   typedef MT::OppositeType                             OMT;    //!< Column-major dynamic matrix type
-   typedef blaze::DenseSubmatrix<MT,blaze::aligned>     ASMT;   //!< Aligned dense submatrix type for row-major matrices.
-   typedef blaze::DenseSubmatrix<MT,blaze::unaligned>   USMT;   //!< Unaligned dense submatrix type for row-major matrices.
-   typedef blaze::DenseSubmatrix<OMT,blaze::aligned>    AOSMT;  //!< Aligned dense submatrix type for column-major matrices.
-   typedef blaze::DenseSubmatrix<OMT,blaze::unaligned>  UOSMT;  //!< Unaligned dense submatrix type for column-major matrices.
+   typedef blaze::CompressedMatrix<int,blaze::rowMajor>  MT;    //!< Row-major compressed matrix type
+   typedef MT::OppositeType                              OMT;   //!< Column-major compressed matrix type
+   typedef blaze::Submatrix<MT>                          SMT;   //!< Sparse submatrix type for row-major matrices.
+   typedef blaze::Submatrix<OMT>                         OSMT;  //!< Sparse submatrix type for column-major matrices.
    //**********************************************************************************************
 
    //**Member variables****************************************************************************
    /*!\name Member variables */
    //@{
-   MT  mat1_;   //!< First row-major dynamic matrix.
-                /*!< The \f$ 64 \times 64 \f$ row-major dense matrix is randomly initialized. */
-   MT  mat2_;   //!< Second row-major dynamic matrix.
-                /*!< The \f$ 64 \times 64 \f$ row-major dense matrix is randomly initialized. */
-   OMT tmat1_;  //!< First column-major dynamic matrix.
-                /*!< The \f$ 64 \times 64 \f$ column-major dense matrix is randomly initialized. */
-   OMT tmat2_;  //!< Second column-major dynamic matrix.
-                /*!< The \f$ 64 \times 64 \f$ column-major dense matrix is randomly initialized. */
+   MT  mat_;   //!< Row-major compressed matrix.
+               /*!< The \f$ 5 \times 4 \f$ matrix is initialized as
+                    \f[\left(\begin{array}{*{4}{c}}
+                     0 &  0 &  0 &  0 \\
+                     0 &  1 &  0 &  0 \\
+                    -2 &  0 & -3 &  0 \\
+                     0 &  4 &  5 & -6 \\
+                     7 & -8 &  9 & 10 \\
+                    \end{array}\right)\f]. */
+   OMT tmat_;  //!< Column-major compressed matrix.
+               /*!< The \f$ 4 \times 5 \f$ matrix is initialized as
+                    \f[\left(\begin{array}{*{4}{c}}
+                     0 &  0 & -2 &  0 &  7 \\
+                     0 &  1 &  0 &  4 & -8 \\
+                     0 &  0 & -3 &  5 &  9 \\
+                     0 &  0 &  0 & -6 & 10 \\
+                    \end{array}\right)\f]. */
 
    std::string test_;  //!< Label of the currently performed test.
    //@}
@@ -153,12 +175,10 @@ class AlignedTest
 
    //**Compile time checks*************************************************************************
    /*! \cond BLAZE_INTERNAL */
-   BLAZE_CONSTRAINT_MUST_BE_DENSE_MATRIX_TYPE( MT    );
-   BLAZE_CONSTRAINT_MUST_BE_DENSE_MATRIX_TYPE( OMT   );
-   BLAZE_CONSTRAINT_MUST_BE_DENSE_MATRIX_TYPE( ASMT  );
-   BLAZE_CONSTRAINT_MUST_BE_DENSE_MATRIX_TYPE( USMT  );
-   BLAZE_CONSTRAINT_MUST_BE_DENSE_MATRIX_TYPE( AOSMT );
-   BLAZE_CONSTRAINT_MUST_BE_DENSE_MATRIX_TYPE( UOSMT );
+   BLAZE_CONSTRAINT_MUST_BE_SPARSE_MATRIX_TYPE( MT   );
+   BLAZE_CONSTRAINT_MUST_BE_SPARSE_MATRIX_TYPE( OMT  );
+   BLAZE_CONSTRAINT_MUST_BE_SPARSE_MATRIX_TYPE( SMT  );
+   BLAZE_CONSTRAINT_MUST_BE_SPARSE_MATRIX_TYPE( OSMT );
    /*! \endcond */
    //**********************************************************************************************
 };
@@ -174,19 +194,19 @@ class AlignedTest
 //=================================================================================================
 
 //*************************************************************************************************
-/*!\brief Checking the number of rows of the given dense matrix.
+/*!\brief Checking the number of rows of the given sparse matrix.
 //
-// \param matrix The dense matrix to be checked.
-// \param expectedRows The expected number of rows of the dense matrix.
+// \param matrix The sparse matrix to be checked.
+// \param expectedRows The expected number of rows of the sparse matrix.
 // \return void
 // \exception std::runtime_error Error detected.
 //
-// This function checks the number of rows of the given dense matrix. In case the
+// This function checks the number of rows of the given sparse matrix. In case the
 // actual number of rows does not correspond to the given expected number of rows, a
 // \a std::runtime_error exception is thrown.
 */
-template< typename Type >  // Type of the dense matrix
-void AlignedTest::checkRows( const Type& matrix, size_t expectedRows ) const
+template< typename Type >  // Type of the sparse matrix
+void SparseTest::checkRows( const Type& matrix, size_t expectedRows ) const
 {
    if( rows( matrix ) != expectedRows ) {
       std::ostringstream oss;
@@ -202,19 +222,19 @@ void AlignedTest::checkRows( const Type& matrix, size_t expectedRows ) const
 
 
 //*************************************************************************************************
-/*!\brief Checking the number of columns of the given dense matrix.
+/*!\brief Checking the number of columns of the given sparse matrix.
 //
-// \param matrix The dense matrix to be checked.
-// \param expectedRows The expected number of columns of the dense matrix.
+// \param matrix The sparse matrix to be checked.
+// \param expectedRows The expected number of columns of the sparse matrix.
 // \return void
 // \exception std::runtime_error Error detected.
 //
-// This function checks the number of columns of the given dense matrix. In case the
+// This function checks the number of columns of the given sparse matrix. In case the
 // actual number of columns does not correspond to the given expected number of columns,
 // a \a std::runtime_error exception is thrown.
 */
-template< typename Type >  // Type of the dense matrix
-void AlignedTest::checkColumns( const Type& matrix, size_t expectedColumns ) const
+template< typename Type >  // Type of the sparse matrix
+void SparseTest::checkColumns( const Type& matrix, size_t expectedColumns ) const
 {
    if( columns( matrix ) != expectedColumns ) {
       std::ostringstream oss;
@@ -230,19 +250,77 @@ void AlignedTest::checkColumns( const Type& matrix, size_t expectedColumns ) con
 
 
 //*************************************************************************************************
-/*!\brief Checking the number of non-zero elements of the given dense matrix.
+/*!\brief Checking the capacity of the given sparse matrix.
 //
-// \param matrix The dense matrix to be checked.
-// \param expectedNonZeros The expected number of non-zero elements of the dense matrix.
+// \param matrix The sparse matrix to be checked.
+// \param minCapacity The expected minimum capacity of the sparse matrix.
 // \return void
 // \exception std::runtime_error Error detected.
 //
-// This function checks the number of non-zero elements of the given dense matrix. In
+// This function checks the capacity of the given sparse matrix. In case the actual capacity
+// is smaller than the given expected minimum capacity, a \a std::runtime_error exception is
+// thrown.
+*/
+template< typename Type >  // Type of the sparse matrix
+void SparseTest::checkCapacity( const Type& matrix, size_t minCapacity ) const
+{
+   if( capacity( matrix ) < minCapacity ) {
+      std::ostringstream oss;
+      oss << " Test: " << test_ << "\n"
+          << " Error: Invalid capacity detected\n"
+          << " Details:\n"
+          << "   Capacity                 : " << capacity( matrix ) << "\n"
+          << "   Expected minimum capacity: " << minCapacity << "\n";
+      throw std::runtime_error( oss.str() );
+   }
+}
+//*************************************************************************************************
+
+
+//*************************************************************************************************
+/*!\brief Checking the capacity of a specific row/column of the given sparse matrix.
+//
+// \param matrix The sparse matrix to be checked.
+// \param index The row/column to be checked.
+// \param minCapacity The expected minimum capacity of the specified row/column.
+// \return void
+// \exception std::runtime_error Error detected.
+//
+// This function checks the capacity of a specific row/column of the given sparse matrix.
+// In case the actual capacity is smaller than the given expected minimum capacity, a
+// \a std::runtime_error exception is thrown.
+*/
+template< typename Type >  // Type of the compressed matrix
+void SparseTest::checkCapacity( const Type& matrix, size_t index, size_t minCapacity ) const
+{
+   if( capacity( matrix, index ) < minCapacity ) {
+      std::ostringstream oss;
+      oss << " Test: " << test_ << "\n"
+          << " Error: Invalid capacity detected in "
+          << ( blaze::IsRowMajorMatrix<Type>::value ? "row " : "column " ) << index << "\n"
+          << " Details:\n"
+          << "   Capacity                 : " << capacity( matrix, index ) << "\n"
+          << "   Expected minimum capacity: " << minCapacity << "\n";
+      throw std::runtime_error( oss.str() );
+   }
+}
+//*************************************************************************************************
+
+
+//*************************************************************************************************
+/*!\brief Checking the number of non-zero elements of the given sparse matrix.
+//
+// \param matrix The sparse matrix to be checked.
+// \param expectedNonZeros The expected number of non-zero elements of the sparse matrix.
+// \return void
+// \exception std::runtime_error Error detected.
+//
+// This function checks the number of non-zero elements of the given sparse matrix. In
 // case the actual number of non-zero elements does not correspond to the given expected
 // number, a \a std::runtime_error exception is thrown.
 */
-template< typename Type >  // Type of the dense matrix
-void AlignedTest::checkNonZeros( const Type& matrix, size_t expectedNonZeros ) const
+template< typename Type >  // Type of the sparse matrix
+void SparseTest::checkNonZeros( const Type& matrix, size_t expectedNonZeros ) const
 {
    if( nonZeros( matrix ) != expectedNonZeros ) {
       std::ostringstream oss;
@@ -268,20 +346,20 @@ void AlignedTest::checkNonZeros( const Type& matrix, size_t expectedNonZeros ) c
 
 
 //*************************************************************************************************
-/*!\brief Checking the number of non-zero elements in a specific row/column of the given dense matrix.
+/*!\brief Checking the number of non-zero elements in a specific row/column of the given sparse matrix.
 //
-// \param matrix The dense matrix to be checked.
+// \param matrix The sparse matrix to be checked.
 // \param index The row/column to be checked.
 // \param expectedNonZeros The expected number of non-zero elements in the specified row/column.
 // \return void
 // \exception std::runtime_error Error detected.
 //
 // This function checks the number of non-zero elements in the specified row/column of the
-// given dense matrix. In case the actual number of non-zero elements does not correspond
+// given sparse matrix. In case the actual number of non-zero elements does not correspond
 // to the given expected number, a \a std::runtime_error exception is thrown.
 */
-template< typename Type >  // Type of the dense matrix
-void AlignedTest::checkNonZeros( const Type& matrix, size_t index, size_t expectedNonZeros ) const
+template< typename Type >  // Type of the sparse matrix
+void SparseTest::checkNonZeros( const Type& matrix, size_t index, size_t expectedNonZeros ) const
 {
    if( nonZeros( matrix, index ) != expectedNonZeros ) {
       std::ostringstream oss;
@@ -317,13 +395,13 @@ void AlignedTest::checkNonZeros( const Type& matrix, size_t index, size_t expect
 //=================================================================================================
 
 //*************************************************************************************************
-/*!\brief Testing the functionality of the aligned DenseSubmatrix class template.
+/*!\brief Testing the functionality of the sparse Submatrix specialization.
 //
 // \return void
 */
 void runTest()
 {
-   AlignedTest();
+   SparseTest();
 }
 //*************************************************************************************************
 
@@ -338,14 +416,14 @@ void runTest()
 
 //*************************************************************************************************
 /*! \cond BLAZE_INTERNAL */
-/*!\brief Macro for the execution of the aligned DenseSubmatrix class test.
+/*!\brief Macro for the execution of the sparse Submatrix test.
 */
-#define RUN_DENSESUBMATRIX_ALIGNED_TEST \
-   blazetest::mathtest::densesubmatrix::runTest()
+#define RUN_SUBMATRIX_SPARSE_TEST \
+   blazetest::mathtest::submatrix::runTest()
 /*! \endcond */
 //*************************************************************************************************
 
-} // namespace densesubmatrix
+} // namespace submatrix
 
 } // namespace mathtest
 

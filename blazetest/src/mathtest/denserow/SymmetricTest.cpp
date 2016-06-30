@@ -5032,7 +5032,7 @@ void SymmetricTest::testIsSame()
 
       // isSame with row and matching subvector
       {
-         typedef blaze::DenseSubvector<RT>  SubvectorType;
+         typedef blaze::Subvector<RT>  SubvectorType;
 
          RT row1 = row( mat_, 1UL );
          SubvectorType sv = subvector( row1, 0UL, 4UL );
@@ -5060,7 +5060,7 @@ void SymmetricTest::testIsSame()
 
       // isSame with row and non-matching subvector (different size)
       {
-         typedef blaze::DenseSubvector<RT>  SubvectorType;
+         typedef blaze::Subvector<RT>  SubvectorType;
 
          RT row1 = row( mat_, 1UL );
          SubvectorType sv = subvector( row1, 0UL, 3UL );
@@ -5088,7 +5088,7 @@ void SymmetricTest::testIsSame()
 
       // isSame with row and non-matching subvector (different offset)
       {
-         typedef blaze::DenseSubvector<RT>  SubvectorType;
+         typedef blaze::Subvector<RT>  SubvectorType;
 
          RT row1 = row( mat_, 1UL );
          SubvectorType sv = subvector( row1, 1UL, 3UL );
@@ -5116,7 +5116,7 @@ void SymmetricTest::testIsSame()
 
       // isSame with matching rows on submatrices
       {
-         typedef blaze::DenseSubmatrix<MT>       SubmatrixType;
+         typedef blaze::Submatrix<MT>            SubmatrixType;
          typedef blaze::DenseRow<SubmatrixType>  RowType;
 
          SubmatrixType sm = submatrix( mat_, 1UL, 1UL, 2UL, 3UL );
@@ -5136,7 +5136,7 @@ void SymmetricTest::testIsSame()
 
       // isSame with non-matching rows on submatrices
       {
-         typedef blaze::DenseSubmatrix<MT>       SubmatrixType;
+         typedef blaze::Submatrix<MT>            SubmatrixType;
          typedef blaze::DenseRow<SubmatrixType>  RowType;
 
          SubmatrixType sm = submatrix( mat_, 1UL, 1UL, 2UL, 3UL );
@@ -5156,9 +5156,9 @@ void SymmetricTest::testIsSame()
 
       // isSame with matching row subvectors on submatrices
       {
-         typedef blaze::DenseSubmatrix<MT>       SubmatrixType;
+         typedef blaze::Submatrix<MT>            SubmatrixType;
          typedef blaze::DenseRow<SubmatrixType>  RowType;
-         typedef blaze::DenseSubvector<RowType>  SubvectorType;
+         typedef blaze::Subvector<RowType>       SubvectorType;
 
          SubmatrixType sm = submatrix( mat_, 1UL, 1UL, 2UL, 3UL );
          RowType row1 = row( sm, 1UL );
@@ -5178,9 +5178,9 @@ void SymmetricTest::testIsSame()
 
       // isSame with non-matching row subvectors on submatrices (different size)
       {
-         typedef blaze::DenseSubmatrix<MT>       SubmatrixType;
+         typedef blaze::Submatrix<MT>            SubmatrixType;
          typedef blaze::DenseRow<SubmatrixType>  RowType;
-         typedef blaze::DenseSubvector<RowType>  SubvectorType;
+         typedef blaze::Subvector<RowType>       SubvectorType;
 
          SubmatrixType sm = submatrix( mat_, 1UL, 1UL, 2UL, 3UL );
          RowType row1 = row( sm, 1UL );
@@ -5200,9 +5200,9 @@ void SymmetricTest::testIsSame()
 
       // isSame with non-matching row subvectors on submatrices (different offset)
       {
-         typedef blaze::DenseSubmatrix<MT>       SubmatrixType;
+         typedef blaze::Submatrix<MT>            SubmatrixType;
          typedef blaze::DenseRow<SubmatrixType>  RowType;
-         typedef blaze::DenseSubvector<RowType>  SubvectorType;
+         typedef blaze::Subvector<RowType>       SubvectorType;
 
          SubmatrixType sm = submatrix( mat_, 1UL, 1UL, 2UL, 3UL );
          RowType row1 = row( sm, 1UL );
@@ -5263,7 +5263,7 @@ void SymmetricTest::testIsSame()
 
       // isSame with row and matching subvector
       {
-         typedef blaze::DenseSubvector<ORT>  SubvectorType;
+         typedef blaze::Subvector<ORT>  SubvectorType;
 
          ORT row1 = row( tmat_, 1UL );
          SubvectorType sv = subvector( row1, 0UL, 4UL );
@@ -5291,7 +5291,7 @@ void SymmetricTest::testIsSame()
 
       // isSame with row and non-matching subvector (different size)
       {
-         typedef blaze::DenseSubvector<ORT>  SubvectorType;
+         typedef blaze::Subvector<ORT>  SubvectorType;
 
          ORT row1 = row( tmat_, 1UL );
          SubvectorType sv = subvector( row1, 0UL, 3UL );
@@ -5319,7 +5319,7 @@ void SymmetricTest::testIsSame()
 
       // isSame with row and non-matching subvector (different offset)
       {
-         typedef blaze::DenseSubvector<ORT>  SubvectorType;
+         typedef blaze::Subvector<ORT>  SubvectorType;
 
          ORT row1 = row( tmat_, 1UL );
          SubvectorType sv = subvector( row1, 1UL, 3UL );
@@ -5347,7 +5347,7 @@ void SymmetricTest::testIsSame()
 
       // isSame with matching rows on submatrices
       {
-         typedef blaze::DenseSubmatrix<OMT>      SubmatrixType;
+         typedef blaze::Submatrix<OMT>           SubmatrixType;
          typedef blaze::DenseRow<SubmatrixType>  RowType;
 
          SubmatrixType sm = submatrix( tmat_, 1UL, 1UL, 2UL, 3UL );
@@ -5367,7 +5367,7 @@ void SymmetricTest::testIsSame()
 
       // isSame with non-matching rows on submatrices
       {
-         typedef blaze::DenseSubmatrix<OMT>      SubmatrixType;
+         typedef blaze::Submatrix<OMT>           SubmatrixType;
          typedef blaze::DenseRow<SubmatrixType>  RowType;
 
          SubmatrixType sm = submatrix( tmat_, 1UL, 1UL, 2UL, 3UL );
@@ -5387,9 +5387,9 @@ void SymmetricTest::testIsSame()
 
       // isSame with matching row subvectors on submatrices
       {
-         typedef blaze::DenseSubmatrix<OMT>      SubmatrixType;
+         typedef blaze::Submatrix<OMT>           SubmatrixType;
          typedef blaze::DenseRow<SubmatrixType>  RowType;
-         typedef blaze::DenseSubvector<RowType>  SubvectorType;
+         typedef blaze::Subvector<RowType>       SubvectorType;
 
          SubmatrixType sm = submatrix( tmat_, 1UL, 1UL, 2UL, 3UL );
          RowType row1 = row( sm, 1UL );
@@ -5409,9 +5409,9 @@ void SymmetricTest::testIsSame()
 
       // isSame with non-matching row subvectors on submatrices (different size)
       {
-         typedef blaze::DenseSubmatrix<OMT>      SubmatrixType;
+         typedef blaze::Submatrix<OMT>           SubmatrixType;
          typedef blaze::DenseRow<SubmatrixType>  RowType;
-         typedef blaze::DenseSubvector<RowType>  SubvectorType;
+         typedef blaze::Subvector<RowType>       SubvectorType;
 
          SubmatrixType sm = submatrix( tmat_, 1UL, 1UL, 2UL, 3UL );
          RowType row1 = row( sm, 1UL );
@@ -5431,9 +5431,9 @@ void SymmetricTest::testIsSame()
 
       // isSame with non-matching row subvectors on submatrices (different offset)
       {
-         typedef blaze::DenseSubmatrix<OMT>      SubmatrixType;
+         typedef blaze::Submatrix<OMT>           SubmatrixType;
          typedef blaze::DenseRow<SubmatrixType>  RowType;
-         typedef blaze::DenseSubvector<RowType>  SubvectorType;
+         typedef blaze::Subvector<RowType>       SubvectorType;
 
          SubmatrixType sm = submatrix( tmat_, 1UL, 1UL, 2UL, 3UL );
          RowType row1 = row( sm, 1UL );
@@ -5475,7 +5475,7 @@ void SymmetricTest::testSubvector()
 
       initialize();
 
-      typedef blaze::DenseSubvector<RT>  SubvectorType;
+      typedef blaze::Subvector<RT>  SubvectorType;
 
       RT row1 = row( mat_, 1UL );
       SubvectorType sv = subvector( row1, 0UL, 4UL );
@@ -5511,7 +5511,7 @@ void SymmetricTest::testSubvector()
 
       initialize();
 
-      typedef blaze::DenseSubvector<ORT>  SubvectorType;
+      typedef blaze::Subvector<ORT>  SubvectorType;
 
       ORT row1 = row( tmat_, 1UL );
       SubvectorType sv = subvector( row1, 0UL, 4UL );

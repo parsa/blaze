@@ -1,7 +1,7 @@
 //=================================================================================================
 /*!
-//  \file src/mathtest/densesubmatrix/AlignedTest.cpp
-//  \brief Source file for the aligned DenseSubmatrix class test
+//  \file src/mathtest/submatrix/DenseAlignedTest.cpp
+//  \brief Source file for the Submatrix dense aligned test
 //
 //  Copyright (C) 2013 Klaus Iglberger - All Rights Reserved
 //
@@ -40,13 +40,14 @@
 #include <cstdlib>
 #include <iostream>
 #include <memory>
+#include <blaze/Blaze.h>
 #include <blaze/math/CompressedMatrix.h>
 #include <blaze/math/CustomMatrix.h>
 #include <blaze/math/Views.h>
 #include <blaze/util/Memory.h>
 #include <blaze/util/policies/Deallocate.h>
 #include <blaze/util/typetraits/AlignmentOf.h>
-#include <blazetest/mathtest/densesubmatrix/AlignedTest.h>
+#include <blazetest/mathtest/submatrix/DenseAlignedTest.h>
 #include <blazetest/mathtest/RandomMaximum.h>
 #include <blazetest/mathtest/RandomMinimum.h>
 
@@ -55,7 +56,7 @@ namespace blazetest {
 
 namespace mathtest {
 
-namespace densesubmatrix {
+namespace submatrix {
 
 //=================================================================================================
 //
@@ -64,11 +65,11 @@ namespace densesubmatrix {
 //=================================================================================================
 
 //*************************************************************************************************
-/*!\brief Constructor for the DenseSubmatrix class test.
+/*!\brief Constructor for the Submatrix dense aligned test.
 //
 // \exception std::runtime_error Operation error detected.
 */
-AlignedTest::AlignedTest()
+DenseAlignedTest::DenseAlignedTest()
    : mat1_ ( 64UL, 64UL )
    , mat2_ ( 64UL, 64UL )
    , tmat1_( 64UL, 64UL )
@@ -105,15 +106,15 @@ AlignedTest::AlignedTest()
 //=================================================================================================
 
 //*************************************************************************************************
-/*!\brief Test of the DenseSubmatrix constructors.
+/*!\brief Test of the Submatrix constructors.
 //
 // \return void
 // \exception std::runtime_error Error detected.
 //
-// This function performs a test of all constructors of the DenseSubmatrix class template.
+// This function performs a test of all constructors of the Submatrix specialization.
 // In case an error is detected, a \a std::runtime_error exception is thrown.
 */
-void AlignedTest::testConstructors()
+void DenseAlignedTest::testConstructors()
 {
    using blaze::submatrix;
    using blaze::aligned;
@@ -125,7 +126,7 @@ void AlignedTest::testConstructors()
    //=====================================================================================
 
    {
-      test_ = "Row-major DenseSubmatrix constructor";
+      test_ = "Row-major Submatrix constructor";
 
       initialize();
 
@@ -231,7 +232,7 @@ void AlignedTest::testConstructors()
    //=====================================================================================
 
    {
-      test_ = "Column-major DenseSubmatrix constructor";
+      test_ = "Column-major Submatrix constructor";
 
       initialize();
 
@@ -335,15 +336,15 @@ void AlignedTest::testConstructors()
 
 
 //*************************************************************************************************
-/*!\brief Test of the DenseSubmatrix assignment operators.
+/*!\brief Test of the Submatrix assignment operators.
 //
 // \return void
 // \exception std::runtime_error Error detected.
 //
-// This function performs a test of all assignment operators of the DenseSubmatrix class
-// template. In case an error is detected, a \a std::runtime_error exception is thrown.
+// This function performs a test of all assignment operators of the Submatrix specialization.
+// In case an error is detected, a \a std::runtime_error exception is thrown.
 */
-void AlignedTest::testAssignment()
+void DenseAlignedTest::testAssignment()
 {
    using blaze::submatrix;
    using blaze::aligned;
@@ -360,7 +361,7 @@ void AlignedTest::testAssignment()
    //=====================================================================================
 
    {
-      test_ = "Row-major DenseSubmatrix homogeneous assignment";
+      test_ = "Row-major Submatrix homogeneous assignment";
 
       initialize();
 
@@ -496,7 +497,7 @@ void AlignedTest::testAssignment()
    //=====================================================================================
 
    {
-      test_ = "Row-major DenseSubmatrix copy assignment (no aliasing)";
+      test_ = "Row-major Submatrix copy assignment (no aliasing)";
 
       initialize();
 
@@ -527,7 +528,7 @@ void AlignedTest::testAssignment()
    }
 
    {
-      test_ = "Row-major DenseSubmatrix copy assignment (aliasing)";
+      test_ = "Row-major Submatrix copy assignment (aliasing)";
 
       initialize();
 
@@ -754,7 +755,7 @@ void AlignedTest::testAssignment()
    //=====================================================================================
 
    {
-      test_ = "Column-major DenseSubmatrix homogeneous assignment";
+      test_ = "Column-major Submatrix homogeneous assignment";
 
       initialize();
 
@@ -906,7 +907,7 @@ void AlignedTest::testAssignment()
    //=====================================================================================
 
    {
-      test_ = "Column-major DenseSubmatrix copy assignment (no aliasing)";
+      test_ = "Column-major Submatrix copy assignment (no aliasing)";
 
       initialize();
 
@@ -937,7 +938,7 @@ void AlignedTest::testAssignment()
    }
 
    {
-      test_ = "Column-major DenseSubmatrix copy assignment (aliasing)";
+      test_ = "Column-major Submatrix copy assignment (aliasing)";
 
       initialize();
 
@@ -1162,15 +1163,15 @@ void AlignedTest::testAssignment()
 
 
 //*************************************************************************************************
-/*!\brief Test of the DenseSubmatrix addition assignment operators.
+/*!\brief Test of the Submatrix addition assignment operators.
 //
 // \return void
 // \exception std::runtime_error Error detected.
 //
-// This function performs a test of the addition assignment operators of the DenseSubmatrix
-// class template. In case an error is detected, a \a std::runtime_error exception is thrown.
+// This function performs a test of the addition assignment operators of the Submatrix
+// specialization. In case an error is detected, a \a std::runtime_error exception is thrown.
 */
-void AlignedTest::testAddAssign()
+void DenseAlignedTest::testAddAssign()
 {
    using blaze::submatrix;
    using blaze::aligned;
@@ -1182,11 +1183,11 @@ void AlignedTest::testAddAssign()
 
 
    //=====================================================================================
-   // Row-major DenseSubmatrix addition assignment
+   // Row-major Submatrix addition assignment
    //=====================================================================================
 
    {
-      test_ = "Row-major DenseSubmatrix addition assignment (no aliasing)";
+      test_ = "Row-major Submatrix addition assignment (no aliasing)";
 
       initialize();
 
@@ -1217,7 +1218,7 @@ void AlignedTest::testAddAssign()
    }
 
    {
-      test_ = "Row-major DenseSubmatrix addition assignment (aliasing)";
+      test_ = "Row-major Submatrix addition assignment (aliasing)";
 
       initialize();
 
@@ -1440,11 +1441,11 @@ void AlignedTest::testAddAssign()
 
 
    //=====================================================================================
-   // Column-major DenseSubmatrix addition assignment
+   // Column-major Submatrix addition assignment
    //=====================================================================================
 
    {
-      test_ = "Column-major DenseSubmatrix addition assignment (no aliasing)";
+      test_ = "Column-major Submatrix addition assignment (no aliasing)";
 
       initialize();
 
@@ -1475,7 +1476,7 @@ void AlignedTest::testAddAssign()
    }
 
    {
-      test_ = "Column-major DenseSubmatrix addition assignment (aliasing)";
+      test_ = "Column-major Submatrix addition assignment (aliasing)";
 
       initialize();
 
@@ -1700,15 +1701,15 @@ void AlignedTest::testAddAssign()
 
 
 //*************************************************************************************************
-/*!\brief Test of the DenseSubmatrix subtraction assignment operators.
+/*!\brief Test of the Submatrix subtraction assignment operators.
 //
 // \return void
 // \exception std::runtime_error Error detected.
 //
-// This function performs a test of the subtraction assignment operators of the DenseSubmatrix
-// class template. In case an error is detected, a \a std::runtime_error exception is thrown.
+// This function performs a test of the subtraction assignment operators of the Submatrix
+// specialization. In case an error is detected, a \a std::runtime_error exception is thrown.
 */
-void AlignedTest::testSubAssign()
+void DenseAlignedTest::testSubAssign()
 {
    using blaze::submatrix;
    using blaze::aligned;
@@ -1720,11 +1721,11 @@ void AlignedTest::testSubAssign()
 
 
    //=====================================================================================
-   // Row-major DenseSubmatrix subtraction assignment
+   // Row-major Submatrix subtraction assignment
    //=====================================================================================
 
    {
-      test_ = "Row-major DenseSubmatrix subtraction assignment (no aliasing)";
+      test_ = "Row-major Submatrix subtraction assignment (no aliasing)";
 
       initialize();
 
@@ -1755,7 +1756,7 @@ void AlignedTest::testSubAssign()
    }
 
    {
-      test_ = "Row-major DenseSubmatrix subtraction assignment (aliasing)";
+      test_ = "Row-major Submatrix subtraction assignment (aliasing)";
 
       initialize();
 
@@ -1978,11 +1979,11 @@ void AlignedTest::testSubAssign()
 
 
    //=====================================================================================
-   // Column-major DenseSubmatrix subtraction assignment
+   // Column-major Submatrix subtraction assignment
    //=====================================================================================
 
    {
-      test_ = "Column-major DenseSubmatrix subtraction assignment (no aliasing)";
+      test_ = "Column-major Submatrix subtraction assignment (no aliasing)";
 
       initialize();
 
@@ -2013,7 +2014,7 @@ void AlignedTest::testSubAssign()
    }
 
    {
-      test_ = "Column-major DenseSubmatrix subtraction assignment (aliasing)";
+      test_ = "Column-major Submatrix subtraction assignment (aliasing)";
 
       initialize();
 
@@ -2238,15 +2239,15 @@ void AlignedTest::testSubAssign()
 
 
 //*************************************************************************************************
-/*!\brief Test of the DenseSubmatrix multiplication assignment operators.
+/*!\brief Test of the Submatrix multiplication assignment operators.
 //
 // \return void
 // \exception std::runtime_error Error detected.
 //
-// This function performs a test of the multiplication assignment operators of the DenseSubmatrix
-// class template. In case an error is detected, a \a std::runtime_error exception is thrown.
+// This function performs a test of the multiplication assignment operators of the Submatrix
+// specialization. In case an error is detected, a \a std::runtime_error exception is thrown.
 */
-void AlignedTest::testMultAssign()
+void DenseAlignedTest::testMultAssign()
 {
    using blaze::submatrix;
    using blaze::aligned;
@@ -2258,11 +2259,11 @@ void AlignedTest::testMultAssign()
 
 
    //=====================================================================================
-   // Row-major DenseSubmatrix multiplication assignment
+   // Row-major Submatrix multiplication assignment
    //=====================================================================================
 
    {
-      test_ = "Row-major DenseSubmatrix multiplication assignment (no aliasing)";
+      test_ = "Row-major Submatrix multiplication assignment (no aliasing)";
 
       initialize();
 
@@ -2293,7 +2294,7 @@ void AlignedTest::testMultAssign()
    }
 
    {
-      test_ = "Row-major DenseSubmatrix multiplication assignment (aliasing)";
+      test_ = "Row-major Submatrix multiplication assignment (aliasing)";
 
       initialize();
 
@@ -2516,11 +2517,11 @@ void AlignedTest::testMultAssign()
 
 
    //=====================================================================================
-   // Column-major DenseSubmatrix multiplication assignment
+   // Column-major Submatrix multiplication assignment
    //=====================================================================================
 
    {
-      test_ = "Column-major DenseSubmatrix multiplication assignment (no aliasing)";
+      test_ = "Column-major Submatrix multiplication assignment (no aliasing)";
 
       initialize();
 
@@ -2551,7 +2552,7 @@ void AlignedTest::testMultAssign()
    }
 
    {
-      test_ = "Column-major DenseSubmatrix multiplication assignment (aliasing)";
+      test_ = "Column-major Submatrix multiplication assignment (aliasing)";
 
       initialize();
 
@@ -2776,15 +2777,15 @@ void AlignedTest::testMultAssign()
 
 
 //*************************************************************************************************
-/*!\brief Test of all DenseSubmatrix (self-)scaling operations.
+/*!\brief Test of all Submatrix (self-)scaling operations.
 //
 // \return void
 // \exception std::runtime_error Error detected.
 //
-// This function performs a test of all available ways to scale an instance of the DenseSubmatrix
-// class template. In case an error is detected, a \a std::runtime_error exception is thrown.
+// This function performs a test of all available ways to scale an instance of the Submatrix
+// specialization. In case an error is detected, a \a std::runtime_error exception is thrown.
 */
-void AlignedTest::testScaling()
+void DenseAlignedTest::testScaling()
 {
    using blaze::submatrix;
    using blaze::aligned;
@@ -3087,11 +3088,11 @@ void AlignedTest::testScaling()
 
 
    //=====================================================================================
-   // Row-major DenseSubmatrix::scale()
+   // Row-major Submatrix::scale()
    //=====================================================================================
 
    {
-      test_ = "Row-major DenseSubmatrix::scale()";
+      test_ = "Row-major Submatrix::scale()";
 
       initialize();
 
@@ -3440,11 +3441,11 @@ void AlignedTest::testScaling()
 
 
    //=====================================================================================
-   // Column-major DenseSubmatrix::scale()
+   // Column-major Submatrix::scale()
    //=====================================================================================
 
    {
-      test_ = "Column-major DenseSubmatrix::scale()";
+      test_ = "Column-major Submatrix::scale()";
 
       initialize();
 
@@ -3500,16 +3501,16 @@ void AlignedTest::testScaling()
 
 
 //*************************************************************************************************
-/*!\brief Test of the DenseSubmatrix function call operator.
+/*!\brief Test of the Submatrix function call operator.
 //
 // \return void
 // \exception std::runtime_error Error detected.
 //
 // This function performs a test of adding and accessing elements via the function call operator
-// of the DenseSubmatrix class template. In case an error is detected, a \a std::runtime_error
+// of the Submatrix specialization. In case an error is detected, a \a std::runtime_error
 // exception is thrown.
 */
-void AlignedTest::testFunctionCall()
+void DenseAlignedTest::testFunctionCall()
 {
    using blaze::submatrix;
    using blaze::aligned;
@@ -3521,7 +3522,7 @@ void AlignedTest::testFunctionCall()
    //=====================================================================================
 
    {
-      test_ = "Row-major DenseSubmatrix::operator()";
+      test_ = "Row-major Submatrix::operator()";
 
       initialize();
 
@@ -3682,7 +3683,7 @@ void AlignedTest::testFunctionCall()
    //=====================================================================================
 
    {
-      test_ = "Column-major DenseSubmatrix::operator()";
+      test_ = "Column-major Submatrix::operator()";
 
       initialize();
 
@@ -3841,15 +3842,15 @@ void AlignedTest::testFunctionCall()
 
 
 //*************************************************************************************************
-/*!\brief Test of the DenseSubmatrix iterator implementation.
+/*!\brief Test of the Submatrix iterator implementation.
 //
 // \return void
 // \exception std::runtime_error Error detected.
 //
-// This function performs a test of the iterator implementation of the DenseSubmatrix class
+// This function performs a test of the iterator implementation of the Submatrix class
 // template. In case an error is detected, a \a std::runtime_error exception is thrown.
 */
-void AlignedTest::testIterator()
+void DenseAlignedTest::testIterator()
 {
    using blaze::submatrix;
    using blaze::aligned;
@@ -4505,15 +4506,15 @@ void AlignedTest::testIterator()
 
 
 //*************************************************************************************************
-/*!\brief Test of the \c nonZeros() member function of the DenseSubmatrix class template.
+/*!\brief Test of the \c nonZeros() member function of the Submatrix class template.
 //
 // \return void
 // \exception std::runtime_error Error detected.
 //
-// This function performs a test of the \c nonZeros() member function of the DenseSubmatrix
-// class template. In case an error is detected, a \a std::runtime_error exception is thrown.
+// This function performs a test of the \c nonZeros() member function of the Submatrix
+// specialization. In case an error is detected, a \a std::runtime_error exception is thrown.
 */
-void AlignedTest::testNonZeros()
+void DenseAlignedTest::testNonZeros()
 {
    using blaze::submatrix;
    using blaze::aligned;
@@ -4525,7 +4526,7 @@ void AlignedTest::testNonZeros()
    //=====================================================================================
 
    {
-      test_ = "Row-major DenseSubmatrix::nonZeros()";
+      test_ = "Row-major Submatrix::nonZeros()";
 
       initialize();
 
@@ -4571,7 +4572,7 @@ void AlignedTest::testNonZeros()
    //=====================================================================================
 
    {
-      test_ = "Column-major DenseSubmatrix::nonZeros()";
+      test_ = "Column-major Submatrix::nonZeros()";
 
       initialize();
 
@@ -4615,15 +4616,15 @@ void AlignedTest::testNonZeros()
 
 
 //*************************************************************************************************
-/*!\brief Test of the \c reset() member function of the DenseSubmatrix class template.
+/*!\brief Test of the \c reset() member function of the Submatrix class template.
 //
 // \return void
 // \exception std::runtime_error Error detected.
 //
-// This function performs a test of the \c reset() member function of the DenseSubmatrix class
-// template. In case an error is detected, a \a std::runtime_error exception is thrown.
+// This function performs a test of the \c reset() member function of the Submatrix
+// specialization. In case an error is detected, a \a std::runtime_error exception is thrown.
 */
-void AlignedTest::testReset()
+void DenseAlignedTest::testReset()
 {
    using blaze::submatrix;
    using blaze::aligned;
@@ -4668,7 +4669,7 @@ void AlignedTest::testReset()
    //=====================================================================================
 
    {
-      test_ = "Row-major DenseSubmatrix::reset()";
+      test_ = "Row-major Submatrix::reset()";
 
       initialize();
 
@@ -4700,7 +4701,7 @@ void AlignedTest::testReset()
    //=====================================================================================
 
    {
-      test_ = "Row-major DenseSubmatrix::reset( size_t )";
+      test_ = "Row-major Submatrix::reset( size_t )";
 
       initialize();
 
@@ -4762,7 +4763,7 @@ void AlignedTest::testReset()
    //=====================================================================================
 
    {
-      test_ = "Column-major DenseSubmatrix::reset()";
+      test_ = "Column-major Submatrix::reset()";
 
       initialize();
 
@@ -4794,7 +4795,7 @@ void AlignedTest::testReset()
    //=====================================================================================
 
    {
-      test_ = "Column-major DenseSubmatrix::reset( size_t )";
+      test_ = "Column-major Submatrix::reset( size_t )";
 
       initialize();
 
@@ -4822,15 +4823,15 @@ void AlignedTest::testReset()
 
 
 //*************************************************************************************************
-/*!\brief Test of the \c clear() function with the DenseSubmatrix class template.
+/*!\brief Test of the \c clear() function with the Submatrix specialization.
 //
 // \return void
 // \exception std::runtime_error Error detected.
 //
-// This function performs a test of the \c clear() function with the DenseSubmatrix class
-// template. In case an error is detected, a \a std::runtime_error exception is thrown.
+// This function performs a test of the \c clear() function with the Submatrix specialization.
+// In case an error is detected, a \a std::runtime_error exception is thrown.
 */
-void AlignedTest::testClear()
+void DenseAlignedTest::testClear()
 {
    using blaze::submatrix;
    using blaze::aligned;
@@ -4905,16 +4906,16 @@ void AlignedTest::testClear()
 
 
 //*************************************************************************************************
-/*!\brief Test of the \c transpose() member function of the DenseSubmatrix class template.
+/*!\brief Test of the \c transpose() member function of the Submatrix class template.
 //
 // \return void
 // \exception std::runtime_error Error detected.
 //
-// This function performs a test of the \c transpose() member function of the DenseSubmatrix
-// class template. Additionally, it performs a test of self-transpose via the \c trans()
+// This function performs a test of the \c transpose() member function of the Submatrix
+// specialization. Additionally, it performs a test of self-transpose via the \c trans()
 // function. In case an error is detected, a \a std::runtime_error exception is thrown.
 */
-void AlignedTest::testTranspose()
+void DenseAlignedTest::testTranspose()
 {
    using blaze::submatrix;
    using blaze::aligned;
@@ -5042,16 +5043,16 @@ void AlignedTest::testTranspose()
 
 
 //*************************************************************************************************
-/*!\brief Test of the \c ctranspose() member function of the DenseSubmatrix class template.
+/*!\brief Test of the \c ctranspose() member function of the Submatrix class template.
 //
 // \return void
 // \exception std::runtime_error Error detected.
 //
-// This function performs a test of the \c ctranspose() member function of the DenseSubmatrix
+// This function performs a test of the \c ctranspose() member function of the Submatrix
 // class template. Additionally, it performs a test of self-transpose via the \c ctrans()
 // function. In case an error is detected, a \a std::runtime_error exception is thrown.
 */
-void AlignedTest::testCTranspose()
+void DenseAlignedTest::testCTranspose()
 {
    using blaze::submatrix;
    using blaze::aligned;
@@ -5179,15 +5180,15 @@ void AlignedTest::testCTranspose()
 
 
 //*************************************************************************************************
-/*!\brief Test of the \c isDefault() function with the DenseSubmatrix class template.
+/*!\brief Test of the \c isDefault() function with the Submatrix class template.
 //
 // \return void
 // \exception std::runtime_error Error detected.
 //
-// This function performs a test of the \c isDefault() function with the DenseSubmatrix class
-// template. In case an error is detected, a \a std::runtime_error exception is thrown.
+// This function performs a test of the \c isDefault() function with the Submatrix
+// specialization. In case an error is detected, a \a std::runtime_error exception is thrown.
 */
-void AlignedTest::testIsDefault()
+void DenseAlignedTest::testIsDefault()
 {
    using blaze::submatrix;
    using blaze::aligned;
@@ -5295,15 +5296,15 @@ void AlignedTest::testIsDefault()
 
 
 //*************************************************************************************************
-/*!\brief Test of the \c isSame() function with the DenseSubmatrix class template.
+/*!\brief Test of the \c isSame() function with the Submatrix class template.
 //
 // \return void
 // \exception std::runtime_error Error detected.
 //
-// This function performs a test of the \c isSame() function with the DenseSubmatrix class
-// template. In case an error is detected, a \a std::runtime_error exception is thrown.
+// This function performs a test of the \c isSame() function with the Submatrix specialization.
+// In case an error is detected, a \a std::runtime_error exception is thrown.
 */
-void AlignedTest::testIsSame()
+void DenseAlignedTest::testIsSame()
 {
    using blaze::submatrix;
    using blaze::aligned;
@@ -5740,15 +5741,15 @@ void AlignedTest::testIsSame()
 
 
 //*************************************************************************************************
-/*!\brief Test of the \c submatrix() function with the DenseSubmatrix class template.
+/*!\brief Test of the \c submatrix() function with the Submatrix class template.
 //
 // \return void
 // \exception std::runtime_error Error detected.
 //
-// This function performs a test of the \c submatrix() function with the DenseSubmatrix class
-// template. In case an error is detected, a \a std::runtime_error exception is thrown.
+// This function performs a test of the \c submatrix() function with the Submatrix
+// specialization. In case an error is detected, a \a std::runtime_error exception is thrown.
 */
-void AlignedTest::testSubmatrix()
+void DenseAlignedTest::testSubmatrix()
 {
    using blaze::submatrix;
    using blaze::aligned;
@@ -5958,15 +5959,15 @@ void AlignedTest::testSubmatrix()
 
 
 //*************************************************************************************************
-/*!\brief Test of the \c row() function with the DenseSubmatrix class template.
+/*!\brief Test of the \c row() function with the Submatrix class template.
 //
 // \return void
 // \exception std::runtime_error Error detected.
 //
-// This function performs a test of the \c row() function with the DenseSubmatrix class template.
+// This function performs a test of the \c row() function with the Submatrix specialization.
 // In case an error is detected, a \a std::runtime_error exception is thrown.
 */
-void AlignedTest::testRow()
+void DenseAlignedTest::testRow()
 {
    using blaze::submatrix;
    using blaze::aligned;
@@ -6074,15 +6075,15 @@ void AlignedTest::testRow()
 
 
 //*************************************************************************************************
-/*!\brief Test of the \c column() function with the DenseSubmatrix class template.
+/*!\brief Test of the \c column() function with the Submatrix class template.
 //
 // \return void
 // \exception std::runtime_error Error detected.
 //
-// This function performs a test of the \c column() function with the DenseSubmatrix class
-// template. In case an error is detected, a \a std::runtime_error exception is thrown.
+// This function performs a test of the \c column() function with the Submatrix specialization.
+// In case an error is detected, a \a std::runtime_error exception is thrown.
 */
-void AlignedTest::testColumn()
+void DenseAlignedTest::testColumn()
 {
    using blaze::submatrix;
    using blaze::aligned;
@@ -6205,7 +6206,7 @@ void AlignedTest::testColumn()
 //
 // This function initializes all member matrices to specific predetermined values.
 */
-void AlignedTest::initialize()
+void DenseAlignedTest::initialize()
 {
    // Initializing the row-major dynamic matrices
    randomize( mat1_, int(randmin), int(randmax) );
@@ -6217,7 +6218,7 @@ void AlignedTest::initialize()
 }
 //*************************************************************************************************
 
-} // namespace densesubmatrix
+} // namespace submatrix
 
 } // namespace mathtest
 
@@ -6235,14 +6236,14 @@ void AlignedTest::initialize()
 //*************************************************************************************************
 int main()
 {
-   std::cout << "   Running aligned DenseSubmatrix class test..." << std::endl;
+   std::cout << "   Running Submatrix dense aligned test..." << std::endl;
 
    try
    {
-      RUN_DENSESUBMATRIX_ALIGNED_TEST;
+      RUN_SUBMATRIX_DENSEALIGNED_TEST;
    }
    catch( std::exception& ex ) {
-      std::cerr << "\n\n ERROR DETECTED during aligned DenseSubmatrix class test:\n"
+      std::cerr << "\n\n ERROR DETECTED during Submatrix dense aligned test:\n"
                 << ex.what() << "\n";
       return EXIT_FAILURE;
    }

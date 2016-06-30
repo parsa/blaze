@@ -1,7 +1,7 @@
 //=================================================================================================
 /*!
-//  \file blazetest/mathtest/densesubmatrix/UnalignedTest.h
-//  \brief Header file for the unaligned DenseSubmatrix class test
+//  \file blazetest/mathtest/submatrix/DenseUnalignedTest.h
+//  \brief Header file for the Submatrix dense unaligned test
 //
 //  Copyright (C) 2013 Klaus Iglberger - All Rights Reserved
 //
@@ -32,8 +32,8 @@
 */
 //=================================================================================================
 
-#ifndef _BLAZETEST_MATHTEST_DENSESUBMATRIX_UNALIGNEDTEST_H_
-#define _BLAZETEST_MATHTEST_DENSESUBMATRIX_UNALIGNEDTEST_H_
+#ifndef _BLAZETEST_MATHTEST_SUBMATRIX_DENSEUNALIGNEDTEST_H_
+#define _BLAZETEST_MATHTEST_SUBMATRIX_DENSEUNALIGNEDTEST_H_
 
 
 //*************************************************************************************************
@@ -45,7 +45,7 @@
 #include <string>
 #include <blaze/math/constraints/DenseMatrix.h>
 #include <blaze/math/DynamicMatrix.h>
-#include <blaze/math/DenseSubmatrix.h>
+#include <blaze/math/Submatrix.h>
 #include <blazetest/system/Types.h>
 
 
@@ -53,7 +53,7 @@ namespace blazetest {
 
 namespace mathtest {
 
-namespace densesubmatrix {
+namespace submatrix {
 
 //=================================================================================================
 //
@@ -62,18 +62,18 @@ namespace densesubmatrix {
 //=================================================================================================
 
 //*************************************************************************************************
-/*!\brief Auxiliary class for all tests of the unaligned DenseSubmatrix class template.
+/*!\brief Auxiliary class for all tests of the dense unaligned Submatrix specialization.
 //
-// This class represents a test suite for the blaze::DenseSubmatrix class template. It performs
-// a series of both compile time as well as runtime tests.
+// This class represents a test suite for the blaze::Submatrix class template specialization for
+// dense unaligned submatrices. It performs a series of both compile time as well as runtime tests.
 */
-class UnalignedTest
+class DenseUnalignedTest
 {
  public:
    //**Constructors********************************************************************************
    /*!\name Constructors */
    //@{
-   explicit UnalignedTest();
+   explicit DenseUnalignedTest();
    // No explicitly declared copy constructor.
    //@}
    //**********************************************************************************************
@@ -129,8 +129,8 @@ class UnalignedTest
    //**Type definitions****************************************************************************
    typedef blaze::DynamicMatrix<int,blaze::rowMajor>  MT;    //!< Row-major dynamic matrix type
    typedef MT::OppositeType                           OMT;   //!< Column-major dynamic matrix type
-   typedef blaze::DenseSubmatrix<MT>                  SMT;   //!< Dense submatrix type for row-major matrices.
-   typedef blaze::DenseSubmatrix<OMT>                 OSMT;  //!< Dense submatrix type for column-major matrices.
+   typedef blaze::Submatrix<MT>                       SMT;   //!< Dense submatrix type for row-major matrices.
+   typedef blaze::Submatrix<OMT>                      OSMT;  //!< Dense submatrix type for column-major matrices.
    //**********************************************************************************************
 
    //**Member variables****************************************************************************
@@ -191,7 +191,7 @@ class UnalignedTest
 // \a std::runtime_error exception is thrown.
 */
 template< typename Type >  // Type of the dense matrix
-void UnalignedTest::checkRows( const Type& matrix, size_t expectedRows ) const
+void DenseUnalignedTest::checkRows( const Type& matrix, size_t expectedRows ) const
 {
    if( rows( matrix ) != expectedRows ) {
       std::ostringstream oss;
@@ -219,7 +219,7 @@ void UnalignedTest::checkRows( const Type& matrix, size_t expectedRows ) const
 // a \a std::runtime_error exception is thrown.
 */
 template< typename Type >  // Type of the dense matrix
-void UnalignedTest::checkColumns( const Type& matrix, size_t expectedColumns ) const
+void DenseUnalignedTest::checkColumns( const Type& matrix, size_t expectedColumns ) const
 {
    if( columns( matrix ) != expectedColumns ) {
       std::ostringstream oss;
@@ -247,7 +247,7 @@ void UnalignedTest::checkColumns( const Type& matrix, size_t expectedColumns ) c
 // number, a \a std::runtime_error exception is thrown.
 */
 template< typename Type >  // Type of the dense matrix
-void UnalignedTest::checkNonZeros( const Type& matrix, size_t expectedNonZeros ) const
+void DenseUnalignedTest::checkNonZeros( const Type& matrix, size_t expectedNonZeros ) const
 {
    if( nonZeros( matrix ) != expectedNonZeros ) {
       std::ostringstream oss;
@@ -286,7 +286,7 @@ void UnalignedTest::checkNonZeros( const Type& matrix, size_t expectedNonZeros )
 // to the given expected number, a \a std::runtime_error exception is thrown.
 */
 template< typename Type >  // Type of the dense matrix
-void UnalignedTest::checkNonZeros( const Type& matrix, size_t index, size_t expectedNonZeros ) const
+void DenseUnalignedTest::checkNonZeros( const Type& matrix, size_t index, size_t expectedNonZeros ) const
 {
    if( nonZeros( matrix, index ) != expectedNonZeros ) {
       std::ostringstream oss;
@@ -322,13 +322,13 @@ void UnalignedTest::checkNonZeros( const Type& matrix, size_t index, size_t expe
 //=================================================================================================
 
 //*************************************************************************************************
-/*!\brief Testing the functionality of the unaligned DenseSubmatrix class template.
+/*!\brief Testing the functionality of the dense unaligned Submatrix specialization.
 //
 // \return void
 */
 void runTest()
 {
-   UnalignedTest();
+   DenseUnalignedTest();
 }
 //*************************************************************************************************
 
@@ -343,14 +343,14 @@ void runTest()
 
 //*************************************************************************************************
 /*! \cond BLAZE_INTERNAL */
-/*!\brief Macro for the execution of the unaligned DenseSubmatrix class test.
+/*!\brief Macro for the execution of the dense unaligned Submatrix test.
 */
-#define RUN_DENSESUBMATRIX_UNALIGNED_TEST \
-   blazetest::mathtest::densesubmatrix::runTest()
+#define RUN_SUBMATRIX_DENSEUNALIGNED_TEST \
+   blazetest::mathtest::submatrix::runTest()
 /*! \endcond */
 //*************************************************************************************************
 
-} // namespace densesubmatrix
+} // namespace submatrix
 
 } // namespace mathtest
 
