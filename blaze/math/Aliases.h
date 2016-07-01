@@ -45,6 +45,26 @@ namespace blaze {
 //=================================================================================================
 
 //*************************************************************************************************
+/*!\brief Alias declaration for nested \c BaseType type definitions.
+// \ingroup aliases
+//
+// The BaseType_ alias declaration provides a convenient shortcut to access the nested
+// \a BaseType type definition of the given type \a T. The following code example shows
+// both ways to access the nested type definition:
+
+   \code
+   using Type1 = typename T::BaseType;
+   using Type2 = BaseType_<T>;
+
+   BLAZE_CONSTRAINT_MUST_BE_STRICTLY_SAME_TYPE( Type1, Type2 );
+   \endcode
+*/
+template< typename T >
+using BaseType_ = typename T::BaseType;
+//*************************************************************************************************
+
+
+//*************************************************************************************************
 /*!\brief Alias declaration for nested \c CompositeType type definitions.
 // \ingroup aliases
 //

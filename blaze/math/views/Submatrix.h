@@ -1129,7 +1129,7 @@ template< typename MT  // Type of the matrix
         , bool DF >    // Density flag
 inline bool isSymmetric( const Submatrix<MT,AF,SO,DF>& sm )
 {
-   typedef DenseMatrix< Submatrix<MT,AF,SO,DF>, SO >  BaseType;
+   using BaseType = BaseType_< Submatrix<MT,AF,SO,DF> >;
 
    if( IsSymmetric<MT>::value && sm.row() == sm.column() && sm.rows() == sm.columns() )
       return true;
@@ -1166,7 +1166,7 @@ template< typename MT  // Type of the matrix
         , bool DF >    // Density flag
 inline bool isHermitian( const Submatrix<MT,AF,SO,DF>& sm )
 {
-   typedef DenseMatrix< Submatrix<MT,AF,SO,DF>, SO >  BaseType;
+   using BaseType = BaseType_< Submatrix<MT,AF,SO,DF> >;
 
    if( IsHermitian<MT>::value && sm.row() == sm.column() && sm.rows() == sm.columns() )
       return true;
@@ -1213,7 +1213,7 @@ template< typename MT  // Type of the matrix
         , bool DF >    // Density flag
 inline bool isLower( const Submatrix<MT,AF,SO,DF>& sm )
 {
-   typedef DenseMatrix< Submatrix<MT,AF,SO,DF>, SO >  BaseType;
+   using BaseType = BaseType_< Submatrix<MT,AF,SO,DF> >;
 
    if( IsLower<MT>::value && sm.row() == sm.column() && sm.rows() == sm.columns() )
       return true;
@@ -1259,7 +1259,7 @@ template< typename MT  // Type of the matrix
         , bool DF >    // Density flag
 inline bool isUniLower( const Submatrix<MT,AF,SO,DF>& sm )
 {
-   typedef DenseMatrix< Submatrix<MT,AF,SO,DF>, SO >  BaseType;
+   using BaseType = BaseType_< Submatrix<MT,AF,SO,DF> >;
 
    if( IsUniLower<MT>::value && sm.row() == sm.column() && sm.rows() == sm.columns() )
       return true;
@@ -1305,7 +1305,7 @@ template< typename MT  // Type of the matrix
         , bool DF >    // Density flag
 inline bool isStrictlyLower( const Submatrix<MT,AF,SO,DF>& sm )
 {
-   typedef DenseMatrix< Submatrix<MT,AF,SO,DF>, SO >  BaseType;
+   using BaseType = BaseType_< Submatrix<MT,AF,SO,DF> >;
 
    if( IsStrictlyLower<MT>::value && sm.row() == sm.column() && sm.rows() == sm.columns() )
       return true;
@@ -1352,7 +1352,7 @@ template< typename MT  // Type of the matrix
         , bool DF >    // Density flag
 inline bool isUpper( const Submatrix<MT,AF,SO,DF>& sm )
 {
-   typedef DenseMatrix< Submatrix<MT,AF,SO,DF>, SO >  BaseType;
+   using BaseType = BaseType_< Submatrix<MT,AF,SO,DF> >;
 
    if( IsUpper<MT>::value && sm.row() == sm.column() && sm.rows() == sm.columns() )
       return true;
@@ -1398,7 +1398,7 @@ template< typename MT  // Type of the matrix
         , bool DF >    // Density flag
 inline bool isUniUpper( const Submatrix<MT,AF,SO,DF>& sm )
 {
-   typedef DenseMatrix< Submatrix<MT,AF,SO,DF>, SO >  BaseType;
+   using BaseType = BaseType_< Submatrix<MT,AF,SO,DF> >;
 
    if( IsUniUpper<MT>::value && sm.row() == sm.column() && sm.rows() == sm.columns() )
       return true;
@@ -1444,7 +1444,7 @@ template< typename MT  // Type of the matrix
         , bool DF >    // Density flag
 inline bool isStrictlyUpper( const Submatrix<MT,AF,SO,DF>& sm )
 {
-   typedef DenseMatrix< Submatrix<MT,AF,SO,DF>, SO >  BaseType;
+   using BaseType = BaseType_< Submatrix<MT,AF,SO,DF> >;
 
    if( IsStrictlyUpper<MT>::value && sm.row() == sm.column() && sm.rows() == sm.columns() )
       return true;
