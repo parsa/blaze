@@ -1411,7 +1411,7 @@
 
    \code
    typedef blaze::DynamicVector<int,rowVector>  VectorType;
-   typedef blaze::DenseSubvector<VectorType>    SubvectorType;
+   typedef blaze::Subvector<VectorType>         SubvectorType;
 
    VectorType v1( 10UL );                         // Creating a dynamic vector of size 10
    SubvectorType sv = subvector( v1, 2UL, 5UL );  // Creating a view on the range [2..6]
@@ -6174,10 +6174,10 @@
    // ... Resizing and initialization
 
    // Creating a view on the first ten elements of the dense vector d1
-   blaze::DenseSubvector<DenseVectorType> dsv = subvector( d1, 0UL, 10UL );
+   blaze::Subvector<DenseVectorType> dsv = subvector( d1, 0UL, 10UL );
 
    // Creating a view on the second ten elements of the sparse vector s1
-   blaze::SparseSubvector<SparseVectorType> ssv = subvector( s1, 10UL, 10UL );
+   blaze::Subvector<SparseVectorType> ssv = subvector( s1, 10UL, 10UL );
 
    // Creating a view on the addition of d2 and s2
    dsv = subvector( d2 + s2, 5UL, 10UL );
@@ -6204,7 +6204,7 @@
 
    \code
    typedef blaze::DynamicVector<int,blaze::rowVector>  VectorType;
-   typedef blaze::DenseSubvector<VectorType>           SubvectorType;
+   typedef blaze::Subvector<VectorType>                SubvectorType;
 
    VectorType v( 42UL );
    // ... Resizing and initialization
@@ -6233,7 +6233,7 @@
    // ... Resizing and initialization
 
    // Creating an 8-dimensional subvector, starting from index 4
-   blaze::DenseSubvector<VectorType> sv = subvector( v, 4UL, 8UL );
+   blaze::Subvector<VectorType> sv = subvector( v, 4UL, 8UL );
 
    // Setting the 1st element of the subvector, which corresponds to
    // the element at index 5 in vector v
@@ -6246,7 +6246,7 @@
    // ... Resizing and initialization
 
    // Creating an 8-dimensional subvector, starting from index 4
-   blaze::SparseSubvector<VectorType> sv = subvector( v, 4UL, 8UL );
+   blaze::Subvector<VectorType> sv = subvector( v, 4UL, 8UL );
 
    // Setting the 1st element of the subvector, which corresponds to
    // the element at index 5 in vector v
@@ -6266,7 +6266,7 @@
 
    \code
    typedef blaze::DynamicVector<int,blaze::rowVector>  VectorType;
-   typedef blaze::DenseSubvector<VectorType>           SubvectorType;
+   typedef blaze::Subvector<VectorType>                SubvectorType;
 
    VectorType v( 256UL );
    // ... Resizing and initialization
@@ -6287,7 +6287,7 @@
 
    \code
    typedef blaze::CompressedVector<int,blaze::rowVector>  VectorType;
-   typedef blaze::SparseSubvector<VectorType>             SubvectorType;
+   typedef blaze::Subvector<VectorType>                   SubvectorType;
 
    VectorType v( 256UL );
    // ... Resizing and initialization
@@ -6320,7 +6320,7 @@
    typedef blaze::CompressedVector<double,blaze::rowVector>  VectorType;
    VectorType v( 256UL );  // Non-initialized vector of size 256
 
-   typedef blaze::SparseSubvector<VectorType>  SubvectorType;
+   typedef blaze::Subvector<VectorType>  SubvectorType;
    SubvectorType sv( subvector( v, 10UL, 60UL ) );  // View on the range [10..69] of v
 
    // The subscript operator provides access to all possible elements of the sparse subvector,
@@ -6368,7 +6368,7 @@
    typedef blaze::DynamicMatrix<double,blaze::rowMajor>  DenseMatrixType;
    DenseMatrixType A;
 
-   typedef blaze::DenseSubvector<DenseVectorType>  SubvectorType;
+   typedef blaze::Subvector<DenseVectorType>  SubvectorType;
    SubvectorType dsv( subvector( d1, 0UL, 10UL ) );  // View on the range [0..9] of vector d1
 
    dsv = d2;                          // Dense vector initialization of the range [0..9]
@@ -6409,10 +6409,10 @@
    // ... Resizing and initialization
 
    // Identical creations of an unaligned subvector in the range [8..23]
-   blaze::DenseSubvector<DenseVectorType>           sv1 = subvector           ( x, 8UL, 16UL );
-   blaze::DenseSubvector<DenseVectorType>           sv2 = subvector<unaligned>( x, 8UL, 16UL );
-   blaze::DenseSubvector<DenseVectorType,unaligned> sv3 = subvector           ( x, 8UL, 16UL );
-   blaze::DenseSubvector<DenseVectorType,unaligned> sv4 = subvector<unaligned>( x, 8UL, 16UL );
+   blaze::Subvector<DenseVectorType>           sv1 = subvector           ( x, 8UL, 16UL );
+   blaze::Subvector<DenseVectorType>           sv2 = subvector<unaligned>( x, 8UL, 16UL );
+   blaze::Subvector<DenseVectorType,unaligned> sv3 = subvector           ( x, 8UL, 16UL );
+   blaze::Subvector<DenseVectorType,unaligned> sv4 = subvector<unaligned>( x, 8UL, 16UL );
    \endcode
 
 // All of these calls to the \c subvector() function are identical. Whether the alignment flag is
@@ -6433,7 +6433,7 @@
    using blaze::aligned;
 
    // Creating an aligned dense subvector in the range [8..23]
-   blaze::DenseSubvector<DenseVectorType,aligned> sv = subvector<aligned>( x, 8UL, 16UL );
+   blaze::Subvector<DenseVectorType,aligned> sv = subvector<aligned>( x, 8UL, 16UL );
    \endcode
 
 // The alignment restrictions refer to system dependent address restrictions for the used element
@@ -6447,7 +6447,7 @@
    using blaze::columnVector;
 
    typedef blaze::DynamicVector<double,columnVector>  VectorType;
-   typedef blaze::DenseSubvector<VectorType,aligned>  SubvectorType;
+   typedef blaze::Subvector<VectorType,aligned>  SubvectorType;
 
    VectorType d( 17UL );
    // ... Resizing and initialization
@@ -6479,7 +6479,7 @@
    // ... Resizing and initialization
 
    // Creating an aligned subvector in the range [8..23]
-   blaze::SparseSubvector<SparseVectorType,aligned> sv = subvector<aligned>( x, 8UL, 16UL );
+   blaze::Subvector<SparseVectorType,aligned> sv = subvector<aligned>( x, 8UL, 16UL );
    \endcode
 
 // \n \section views_subvectors_on_subvectors Subvectors on Subvectors
@@ -6492,7 +6492,7 @@
 
    \code
    typedef blaze::DynamicVector<double,blaze::rowVector>  VectorType;
-   typedef blaze::DenseSubvector<VectorType>              SubvectorType;
+   typedef blaze::Subvector<VectorType>                   SubvectorType;
 
    VectorType d1;
 
@@ -6523,54 +6523,30 @@
 // not resized or entirely destroyed. The submatrix also acts as an alias to the matrix elements
 // in the specified block: Changes made to the elements (e.g. modifying values, inserting or
 // erasing elements) are immediately visible in the matrix and changes made via the matrix are
-// immediately visible in the submatrix. \b Blaze provides two submatrix types:
-// \ref views_dense_submatrix and \ref views_sparse_submatrix.
+// immediately visible in the submatrix.
 //
 //
-// \n \section views_dense_submatrix DenseSubmatrix
+// \n \section views_submatrix_class The Submatrix Class Template
 // <hr>
 //
-// The blaze::DenseSubmatrix template represents a view on a specific submatrix of a dense matrix
-// primitive. It can be included via the header file
-
-   \code
-   #include <blaze/math/DenseSubmatrix.h>
-   \endcode
-
-// The type of the dense matrix is specified via two template parameters:
-
-   \code
-   template< typename MT, bool AF >
-   class DenseSubmatrix;
-   \endcode
-
-//  - \c MT: specifies the type of the dense matrix primitive. DenseSubmatrix can be used with
-//           every dense matrix primitive, but does not work with any matrix expression type.
-//  - \c AF: the alignment flag specifies whether the submatrix is aligned (blaze::aligned) or
-//        unaligned (blaze::unaligned). The default value is blaze::unaligned.
-//
-//
-// \n \section views_sparse_submatrix SparseSubmatrix
-// <hr>
-//
-// The blaze::SparseSubmatrix template represents a view on a specific submatrix of a sparse
+// The blaze::Submatrix template represents a view on a specific submatrix of a dense or sparse
 // matrix primitive. It can be included via the header file
 
    \code
-   #include <blaze/math/SparseSubmatrix.h>
+   #include <blaze/math/Submatrix.h>
    \endcode
 
-// The type of the sparse matrix is specified via two template parameters:
+// The type of the matrix is specified via two template parameters:
 
    \code
    template< typename MT, bool AF >
-   class SparseSubmatrix;
+   class Submatrix;
    \endcode
 
-//  - \c MT: specifies the type of the sparse matrix primitive. SparseSubmatrix can be used with
-//           every sparse matrix primitive, but does not work with any matrix expression type.
+//  - \c MT: specifies the type of the matrix primitive. Submatrix can be used with every matrix
+//           primitive, but does not work with any matrix expression type.
 //  - \c AF: the alignment flag specifies whether the submatrix is aligned (blaze::aligned) or
-//           unaligned (blaze::unaligned). The default value is blaze::unaligned.
+//        unaligned (blaze::unaligned). The default value is blaze::unaligned.
 //
 //
 // \n \section views_submatrices_setup Setup of Submatrices
@@ -6582,8 +6558,8 @@
 // matrix will itself be a row-major matrix, a submatrix created from a column-major matrix
 // will be a column-major matrix. The view can also be used on both sides of an assignment:
 // The submatrix can either be used as an alias to grant write access to a specific submatrix
-// of a dense matrix primitive on the left-hand side of an assignment or to grant read-access
-// to a specific submatrix of a matrix primitive or expression on the right-hand side of an
+// of a matrix primitive on the left-hand side of an assignment or to grant read-access to
+// a specific submatrix of a matrix primitive or expression on the right-hand side of an
 // assignment. The following example demonstrates this in detail:
 
    \code
@@ -6595,10 +6571,10 @@
    // ... Resizing and initialization
 
    // Creating a view on the first 8x16 block of the dense matrix D1
-   blaze::DenseSubmatrix<DenseMatrixType> dsm = submatrix( D1, 0UL, 0UL, 8UL, 16UL );
+   blaze::Submatrix<DenseMatrixType> dsm = submatrix( D1, 0UL, 0UL, 8UL, 16UL );
 
    // Creating a view on the second 8x16 block of the sparse matrix S1
-   blaze::SparseSubmatrix<SparseMatrixType> ssm = submatrix( S1, 0UL, 16UL, 8UL, 16UL );
+   blaze::Submatrix<SparseMatrixType> ssm = submatrix( S1, 0UL, 16UL, 8UL, 16UL );
 
    // Creating a view on the addition of D2 and S2
    dsm = submatrix( D2 + S2, 5UL, 10UL, 8UL, 16UL );
@@ -6606,8 +6582,7 @@
    // Creating a view on the multiplication of D2 and S2
    ssm = submatrix( D2 * S2, 7UL, 13UL, 8UL, 16UL );
    \endcode
-//
-//
+
 // \n \section views_submatrices_common_operations Common Operations
 // <hr>
 //
@@ -6619,7 +6594,7 @@
 
    \code
    typedef blaze::DynamicMatrix<int,blaze::rowMajor>  MatrixType;
-   typedef blaze::DenseSubmatrix<MatrixType>          SubmatrixType;
+   typedef blaze::Submatrix<MatrixType>               SubmatrixType;
 
    MatrixType A;
    // ... Resizing and initialization
@@ -6649,7 +6624,7 @@
    // ... Resizing and initialization
 
    // Creating a 8x8 submatrix, starting from position (4,4)
-   blaze::DenseSubmatrix<MatrixType> sm = submatrix( A, 4UL, 4UL, 8UL, 8UL );
+   blaze::Submatrix<MatrixType> sm = submatrix( A, 4UL, 4UL, 8UL, 8UL );
 
    // Setting the element (0,0) of the submatrix, which corresponds to
    // the element at position (4,4) in matrix A
@@ -6662,7 +6637,7 @@
    // ... Resizing and initialization
 
    // Creating a 8x8 submatrix, starting from position (4,4)
-   blaze::SparseSubmatrix<MatrixType> sm = submatrix( A, 4UL, 4UL, 8UL, 8UL );
+   blaze::Submatrix<MatrixType> sm = submatrix( A, 4UL, 4UL, 8UL, 8UL );
 
    // Setting the element (0,0) of the submatrix, which corresponds to
    // the element at position (4,4) in matrix A
@@ -6676,7 +6651,7 @@
 
    \code
    typedef blaze::DynamicMatrix<int,blaze::rowMajor>  MatrixType;
-   typedef blaze::DenseSubmatrix<MatrixType>          SubmatrixType;
+   typedef blaze::Submatrix<MatrixType>               SubmatrixType;
 
    MatrixType A( 256UL, 512UL );
    // ... Resizing and initialization
@@ -6699,7 +6674,7 @@
 
    \code
    typedef blaze::CompressedMatrix<int,blaze::rowMajor>  MatrixType;
-   typedef blaze::SparseSubmatrix<MatrixType>            SubmatrixType;
+   typedef blaze::Submatrix<MatrixType>                  SubmatrixType;
 
    MatrixType A( 256UL, 512UL );
    // ... Resizing and initialization
@@ -6734,7 +6709,7 @@
    typedef blaze::CompressedMatrix<double,blaze::rowMajor>  MatrixType;
    MatrixType A( 256UL, 512UL );  // Non-initialized matrix of size 256x512
 
-   typedef blaze::SparseSubmatrix<MatrixType>  SubmatrixType;
+   typedef blaze::Submatrix<MatrixType>  SubmatrixType;
    SubmatrixType sm = submatrix( A, 10UL, 10UL, 16UL, 16UL );  // View on a 16x16 submatrix of A
 
    // The function call operator provides access to all possible elements of the sparse submatrix,
@@ -6783,7 +6758,7 @@
 
    // ... Resizing and initialization
 
-   typedef DenseSubmatrix<DenseMatrixType>  SubmatrixType;
+   typedef Submatrix<DenseMatrixType>  SubmatrixType;
    SubmatrixType sm = submatrix( D1, 0UL, 0UL, 8UL, 8UL );  // View on the 8x8 submatrix of matrix D1
                                                             // starting from row 0 and column 0
 
@@ -6824,10 +6799,10 @@
    // ... Resizing and initialization
 
    // Identical creations of an unaligned submatrix of size 8x8, starting in row 0 and column 0
-   blaze::DenseSubmatrix<DenseMatrixType>           sm1 = submatrix           ( A, 0UL, 0UL, 8UL, 8UL );
-   blaze::DenseSubmatrix<DenseMatrixType>           sm2 = submatrix<unaligned>( A, 0UL, 0UL, 8UL, 8UL );
-   blaze::DenseSubmatrix<DenseMatrixType,unaligned> sm3 = submatrix           ( A, 0UL, 0UL, 8UL, 8UL );
-   blaze::DenseSubmatrix<DenseMatrixType,unaligned> sm4 = submatrix<unaligned>( A, 0UL, 0UL, 8UL, 8UL );
+   blaze::Submatrix<DenseMatrixType>           sm1 = submatrix           ( A, 0UL, 0UL, 8UL, 8UL );
+   blaze::Submatrix<DenseMatrixType>           sm2 = submatrix<unaligned>( A, 0UL, 0UL, 8UL, 8UL );
+   blaze::Submatrix<DenseMatrixType,unaligned> sm3 = submatrix           ( A, 0UL, 0UL, 8UL, 8UL );
+   blaze::Submatrix<DenseMatrixType,unaligned> sm4 = submatrix<unaligned>( A, 0UL, 0UL, 8UL, 8UL );
    \endcode
 
 // All of these calls to the \c submatrix() function are identical. Whether the alignment flag is
@@ -6848,7 +6823,7 @@
    using blaze::aligned;
 
    // Creating an aligned submatrix of size 8x8, starting in row 0 and column 0
-   blaze::DenseSubmatrix<DenseMatrixType,aligned> sv = submatrix<aligned>( A, 0UL, 0UL, 8UL, 8UL );
+   blaze::Submatrix<DenseMatrixType,aligned> sv = submatrix<aligned>( A, 0UL, 0UL, 8UL, 8UL );
    \endcode
 
 // The alignment restrictions refer to system dependent address restrictions for the used element
@@ -6861,8 +6836,8 @@
    using blaze::aligned;
    using blaze::rowMajor;
 
-   typedef blaze::DynamicMatrix<double,rowMajor>      MatrixType;
-   typedef blaze::DenseSubmatrix<MatrixType,aligned>  SubmatrixType;
+   typedef blaze::DynamicMatrix<double,rowMajor>  MatrixType;
+   typedef blaze::Submatrix<MatrixType,aligned>   SubmatrixType;
 
    MatrixType D( 13UL, 17UL );
    // ... Resizing and initialization
@@ -6894,7 +6869,7 @@
    // ... Resizing and initialization
 
    // Creating an aligned submatrix of size 8x8, starting in row 0 and column 0
-   blaze::SparseSubmatrix<SparseMatrixType,aligned> sv = submatrix<aligned>( A, 0UL, 0UL, 8UL, 8UL );
+   blaze::Submatrix<SparseMatrixType,aligned> sv = submatrix<aligned>( A, 0UL, 0UL, 8UL, 8UL );
    \endcode
 
 // \n \section views_submatrices_on_submatrices Submatrices on Submatrices
@@ -6907,7 +6882,7 @@
 
    \code
    typedef blaze::DynamicMatrix<double,blaze::rowMajor>  MatrixType;
-   typedef blaze::DenseSubmatrix<MatrixType>             SubmatrixType;
+   typedef blaze::Submatrix<MatrixType>                  SubmatrixType;
 
    MatrixType D1;
 
@@ -6927,10 +6902,10 @@
    \code
    using blaze::DynamicMatrix;
    using blaze::SymmetricMatrix;
-   using blaze::DenseSubmatrix;
+   using blaze::Submatrix;
 
-   typedef SymmetricMatrix< DynamicMatrix<int> >   SymmetricDynamicType;
-   typedef DenseSubmatrix< SymmetricDynamicType >  SubmatrixType;
+   typedef SymmetricMatrix< DynamicMatrix<int> >  SymmetricDynamicType;
+   typedef Submatrix< SymmetricDynamicType >      SubmatrixType;
 
    // Setup of a 16x16 symmetric matrix
    SymmetricDynamicType A( 16UL );
