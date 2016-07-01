@@ -204,6 +204,7 @@ class DynamicMatrix : public DenseMatrix< DynamicMatrix<Type,SO>, SO >
  public:
    //**Type definitions****************************************************************************
    typedef DynamicMatrix<Type,SO>   This;           //!< Type of this DynamicMatrix instance.
+   typedef DenseMatrix<This,SO>     BaseType;       //!< Base type of this DynamicMatrix instance.
    typedef This                     ResultType;     //!< Result type for expression template evaluations.
    typedef DynamicMatrix<Type,!SO>  OppositeType;   //!< Result type with opposite storage order for expression template evaluations.
    typedef DynamicMatrix<Type,!SO>  TransposeType;  //!< Transpose type for expression template evaluations.
@@ -2952,6 +2953,7 @@ class DynamicMatrix<Type,true> : public DenseMatrix< DynamicMatrix<Type,true>, t
  public:
    //**Type definitions****************************************************************************
    typedef DynamicMatrix<Type,true>   This;           //!< Type of this DynamicMatrix instance.
+   typedef DenseMatrix<This,true>     BaseType;       //!< Base type of this DynamicMatrix instance.
    typedef This                       ResultType;     //!< Result type for expression template evaluations.
    typedef DynamicMatrix<Type,false>  OppositeType;   //!< Result type with opposite storage order for expression template evaluations.
    typedef DynamicMatrix<Type,false>  TransposeType;  //!< Transpose type for expression template evaluations.

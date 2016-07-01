@@ -234,6 +234,7 @@ class CompressedMatrix : public SparseMatrix< CompressedMatrix<Type,SO>, SO >
  public:
    //**Type definitions****************************************************************************
    typedef CompressedMatrix<Type,SO>   This;            //!< Type of this CompressedMatrix instance.
+   typedef SparseMatrix<This,SO>       BaseType;        //!< Base type of this CompressedMatrix instance.
    typedef This                        ResultType;      //!< Result type for expression template evaluations.
    typedef CompressedMatrix<Type,!SO>  OppositeType;    //!< Result type with opposite storage order for expression template evaluations.
    typedef CompressedMatrix<Type,!SO>  TransposeType;   //!< Transpose type for expression template evaluations.
@@ -2633,6 +2634,7 @@ class CompressedMatrix<Type,true> : public SparseMatrix< CompressedMatrix<Type,t
  public:
    //**Type definitions****************************************************************************
    typedef CompressedMatrix<Type,true>   This;            //!< Type of this CompressedMatrix instance.
+   typedef SparseMatrix<This,true>       BaseType;        //!< Base type of this CompressedMatrix instance.
    typedef This                          ResultType;      //!< Result type for expression template evaluations.
    typedef CompressedMatrix<Type,false>  OppositeType;    //!< Result type with opposite storage order for expression template evaluations.
    typedef CompressedMatrix<Type,false>  TransposeType;   //!< Transpose type for expression template evaluations.

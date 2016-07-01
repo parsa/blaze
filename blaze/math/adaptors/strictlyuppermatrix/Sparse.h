@@ -109,17 +109,18 @@ class StrictlyUpperMatrix<MT,SO,false>
 
  public:
    //**Type definitions****************************************************************************
-   typedef StrictlyUpperMatrix<MT,SO,false>  This;            //!< Type of this StrictlyUpperMatrix instance.
-   typedef This                              ResultType;      //!< Result type for expression template evaluations.
-   typedef StrictlyUpperMatrix<OT,!SO,false> OppositeType;    //!< Result type with opposite storage order for expression template evaluations.
-   typedef StrictlyLowerMatrix<TT,!SO,false> TransposeType;   //!< Transpose type for expression template evaluations.
-   typedef ET                                ElementType;     //!< Type of the matrix elements.
-   typedef ReturnType_<MT>                   ReturnType;      //!< Return type for expression template evaluations.
-   typedef const This&                       CompositeType;   //!< Data type for composite expression templates.
-   typedef StrictlyUpperProxy<MT>            Reference;       //!< Reference to a non-constant matrix value.
-   typedef ConstReference_<MT>               ConstReference;  //!< Reference to a constant matrix value.
-   typedef Iterator_<MT>                     Iterator;        //!< Iterator over non-constant elements.
-   typedef ConstIterator_<MT>                ConstIterator;   //!< Iterator over constant elements.
+   typedef StrictlyUpperMatrix<MT,SO,false>   This;            //!< Type of this StrictlyUpperMatrix instance.
+   typedef SparseMatrix<This,SO>              BaseType;        //!< Base type of this StrictlyUpperMatrix instance.
+   typedef This                               ResultType;      //!< Result type for expression template evaluations.
+   typedef StrictlyUpperMatrix<OT,!SO,false>  OppositeType;    //!< Result type with opposite storage order for expression template evaluations.
+   typedef StrictlyLowerMatrix<TT,!SO,false>  TransposeType;   //!< Transpose type for expression template evaluations.
+   typedef ET                                 ElementType;     //!< Type of the matrix elements.
+   typedef ReturnType_<MT>                    ReturnType;      //!< Return type for expression template evaluations.
+   typedef const This&                        CompositeType;   //!< Data type for composite expression templates.
+   typedef StrictlyUpperProxy<MT>             Reference;       //!< Reference to a non-constant matrix value.
+   typedef ConstReference_<MT>                ConstReference;  //!< Reference to a constant matrix value.
+   typedef Iterator_<MT>                      Iterator;        //!< Iterator over non-constant elements.
+   typedef ConstIterator_<MT>                 ConstIterator;   //!< Iterator over constant elements.
    //**********************************************************************************************
 
    //**Rebind struct definition********************************************************************

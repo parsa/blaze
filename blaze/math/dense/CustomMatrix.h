@@ -437,6 +437,7 @@ class CustomMatrix : public DenseMatrix< CustomMatrix<Type,AF,PF,SO>, SO >
  public:
    //**Type definitions****************************************************************************
    typedef CustomMatrix<Type,AF,PF,SO>  This;           //!< Type of this CustomMatrix instance.
+   typedef DenseMatrix<This,SO>         BaseType;       //!< Base type of this CustomMatrix instance.
    typedef DynamicMatrix<Type,SO>       ResultType;     //!< Result type for expression template evaluations.
    typedef DynamicMatrix<Type,!SO>      OppositeType;   //!< Result type with opposite storage order for expression template evaluations.
    typedef DynamicMatrix<Type,!SO>      TransposeType;  //!< Transpose type for expression template evaluations.
@@ -3204,6 +3205,7 @@ class CustomMatrix<Type,AF,PF,true> : public DenseMatrix< CustomMatrix<Type,AF,P
  public:
    //**Type definitions****************************************************************************
    typedef CustomMatrix<Type,AF,PF,true>  This;           //!< Type of this CustomMatrix instance.
+   typedef DenseMatrix<This,true>         BaseType;       //!< Base type of this CustomMatrix instance.
    typedef DynamicMatrix<Type,true>       ResultType;     //!< Result type for expression template evaluations.
    typedef DynamicMatrix<Type,false>      OppositeType;   //!< Result type with opposite storage order for expression template evaluations.
    typedef DynamicMatrix<Type,false>      TransposeType;  //!< Transpose type for expression template evaluations.

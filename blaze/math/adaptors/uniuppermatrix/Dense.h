@@ -119,6 +119,7 @@ class UniUpperMatrix<MT,SO,true>
  public:
    //**Type definitions****************************************************************************
    typedef UniUpperMatrix<MT,SO,true>   This;            //!< Type of this UniUpperMatrix instance.
+   typedef DenseMatrix<This,SO>         BaseType;        //!< Base type of this UniUpperMatrix instance.
    typedef This                         ResultType;      //!< Result type for expression template evaluations.
    typedef UniUpperMatrix<OT,!SO,true>  OppositeType;    //!< Result type with opposite storage order for expression template evaluations.
    typedef UniLowerMatrix<TT,!SO,true>  TransposeType;   //!< Transpose type for expression template evaluations.

@@ -123,6 +123,7 @@ class HermitianMatrix<MT,SO,true>
  public:
    //**Type definitions****************************************************************************
    typedef HermitianMatrix<MT,SO,true>   This;            //!< Type of this HermitianMatrix instance.
+   typedef DenseMatrix<This,SO>          BaseType;        //!< Base type of this HermitianMatrix instance.
    typedef This                          ResultType;      //!< Result type for expression template evaluations.
    typedef HermitianMatrix<OT,!SO,true>  OppositeType;    //!< Result type with opposite storage order for expression template evaluations.
    typedef HermitianMatrix<TT,!SO,true>  TransposeType;   //!< Transpose type for expression template evaluations.

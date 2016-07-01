@@ -122,6 +122,7 @@ class Submatrix<MT,AF,false,false>
  public:
    //**Type definitions****************************************************************************
    typedef Submatrix<MT,AF,false,false>  This;           //!< Type of this Submatrix instance.
+   typedef SparseMatrix<This,false>      BaseType;       //!< Base type of this Submatrix instance.
    typedef SubmatrixTrait_<MT>           ResultType;     //!< Result type for expression template evaluations.
    typedef OppositeType_<ResultType>     OppositeType;   //!< Result type with opposite storage order for expression template evaluations.
    typedef TransposeType_<ResultType>    TransposeType;  //!< Transpose type for expression template evaluations.
@@ -2573,6 +2574,7 @@ class Submatrix<MT,AF,true,false>
  public:
    //**Type definitions****************************************************************************
    typedef Submatrix<MT,AF,true,false>  This;           //!< Type of this Submatrix instance.
+   typedef SparseMatrix<This,true>      BaseType;       //!< Base type of this Submatrix instance.
    typedef SubmatrixTrait_<MT>          ResultType;     //!< Result type for expression template evaluations.
    typedef OppositeType_<ResultType>    OppositeType;   //!< Result type with opposite storage order for expression template evaluations.
    typedef TransposeType_<ResultType>   TransposeType;  //!< Transpose type for expression template evaluations.

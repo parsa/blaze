@@ -212,6 +212,7 @@ class StaticMatrix : public DenseMatrix< StaticMatrix<Type,M,N,SO>, SO >
  public:
    //**Type definitions****************************************************************************
    typedef StaticMatrix<Type,M,N,SO>   This;           //!< Type of this StaticMatrix instance.
+   typedef DenseMatrix<This,SO>        BaseType;       //!< Base type of this StaticMatrix instance.
    typedef This                        ResultType;     //!< Result type for expression template evaluations.
    typedef StaticMatrix<Type,M,N,!SO>  OppositeType;   //!< Result type with opposite storage order for expression template evaluations.
    typedef StaticMatrix<Type,N,M,!SO>  TransposeType;  //!< Transpose type for expression template evaluations.
@@ -2935,6 +2936,7 @@ class StaticMatrix<Type,M,N,true> : public DenseMatrix< StaticMatrix<Type,M,N,tr
  public:
    //**Type definitions****************************************************************************
    typedef StaticMatrix<Type,M,N,true>   This;           //!< Type of this StaticMatrix instance.
+   typedef DenseMatrix<This,true>        BaseType;       //!< Base type of this StaticMatrix instance.
    typedef This                          ResultType;     //!< Result type for expression template evaluations.
    typedef StaticMatrix<Type,M,N,false>  OppositeType;   //!< Result type with opposite storage order for expression template evaluations.
    typedef StaticMatrix<Type,N,M,false>  TransposeType;  //!< Transpose type for expression template evaluations.

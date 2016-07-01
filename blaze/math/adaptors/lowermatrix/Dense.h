@@ -116,6 +116,7 @@ class LowerMatrix<MT,SO,true>
  public:
    //**Type definitions****************************************************************************
    typedef LowerMatrix<MT,SO,true>   This;            //!< Type of this LowerMatrix instance.
+   typedef DenseMatrix<This,SO>      BaseType;        //!< Base type of this LowerMatrix instance.
    typedef This                      ResultType;      //!< Result type for expression template evaluations.
    typedef LowerMatrix<OT,!SO,true>  OppositeType;    //!< Result type with opposite storage order for expression template evaluations.
    typedef UpperMatrix<TT,!SO,true>  TransposeType;   //!< Transpose type for expression template evaluations.

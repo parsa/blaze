@@ -214,6 +214,7 @@ class HybridMatrix : public DenseMatrix< HybridMatrix<Type,M,N,SO>, SO >
  public:
    //**Type definitions****************************************************************************
    typedef HybridMatrix<Type,M,N,SO>   This;           //!< Type of this HybridMatrix instance.
+   typedef DenseMatrix<This,SO>        BaseType;       //!< Base type of this HybridMatrix instance.
    typedef This                        ResultType;     //!< Result type for expression template evaluations.
    typedef HybridMatrix<Type,M,N,!SO>  OppositeType;   //!< Result type with opposite storage order for expression template evaluations.
    typedef HybridMatrix<Type,N,M,!SO>  TransposeType;  //!< Transpose type for expression template evaluations.
@@ -3120,6 +3121,7 @@ class HybridMatrix<Type,M,N,true> : public DenseMatrix< HybridMatrix<Type,M,N,tr
  public:
    //**Type definitions****************************************************************************
    typedef HybridMatrix<Type,M,N,true>   This;           //!< Type of this HybridMatrix instance.
+   typedef DenseMatrix<This,true>        BaseType;       //!< Base type of this HybridMatrix instance.
    typedef This                          ResultType;     //!< Result type for expression template evaluations.
    typedef HybridMatrix<Type,M,N,false>  OppositeType;   //!< Result type with opposite storage order for expression template evaluations.
    typedef HybridMatrix<Type,N,M,false>  TransposeType;  //!< Transpose type for expression template evaluations.

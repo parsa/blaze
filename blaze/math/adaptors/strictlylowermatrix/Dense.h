@@ -116,6 +116,7 @@ class StrictlyLowerMatrix<MT,SO,true>
  public:
    //**Type definitions****************************************************************************
    typedef StrictlyLowerMatrix<MT,SO,true>   This;            //!< Type of this StrictlyLowerMatrix instance.
+   typedef DenseMatrix<This,SO>              BaseType;        //!< Base type of this StrictlyLowerMatrix instance.
    typedef This                              ResultType;      //!< Result type for expression template evaluations.
    typedef StrictlyLowerMatrix<OT,!SO,true>  OppositeType;    //!< Result type with opposite storage order for expression template evaluations.
    typedef StrictlyUpperMatrix<TT,!SO,true>  TransposeType;   //!< Transpose type for expression template evaluations.

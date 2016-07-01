@@ -136,6 +136,7 @@ class Submatrix<MT,unaligned,false,true>
  public:
    //**Type definitions****************************************************************************
    typedef Submatrix<MT,unaligned,false,true>  This;           //!< Type of this Submatrix instance.
+   typedef DenseMatrix<This,false>             BaseType;       //!< Base type of this Submatrix instance.
    typedef SubmatrixTrait_<MT>                 ResultType;     //!< Result type for expression template evaluations.
    typedef OppositeType_<ResultType>           OppositeType;   //!< Result type with opposite storage order for expression template evaluations.
    typedef TransposeType_<ResultType>          TransposeType;  //!< Transpose type for expression template evaluations.
@@ -3104,6 +3105,7 @@ class Submatrix<MT,unaligned,true,true>
  public:
    //**Type definitions****************************************************************************
    typedef Submatrix<MT,unaligned,true,true>  This;           //!< Type of this Submatrix instance.
+   typedef DenseMatrix<This,true>             BaseType;       //!< Base type of this Submatrix instance.
    typedef SubmatrixTrait_<MT>                ResultType;     //!< Result type for expression template evaluations.
    typedef OppositeType_<ResultType>          OppositeType;   //!< Result type with opposite storage order for expression template evaluations.
    typedef TransposeType_<ResultType>         TransposeType;  //!< Transpose type for expression template evaluations.
@@ -6029,6 +6031,7 @@ class Submatrix<MT,aligned,false,true>
  public:
    //**Type definitions****************************************************************************
    typedef Submatrix<MT,aligned,false,true>  This;           //!< Type of this Submatrix instance.
+   typedef DenseMatrix<This,false>           BaseType;       //!< Base type of this Submatrix instance.
    typedef SubmatrixTrait_<MT>               ResultType;     //!< Result type for expression template evaluations.
    typedef OppositeType_<ResultType>         OppositeType;   //!< Result type with opposite storage order for expression template evaluations.
    typedef TransposeType_<ResultType>        TransposeType;  //!< Transpose type for expression template evaluations.
@@ -8586,6 +8589,7 @@ class Submatrix<MT,aligned,true,true>
  public:
    //**Type definitions****************************************************************************
    typedef Submatrix<MT,aligned,true,true>  This;           //!< Type of this Submatrix instance.
+   typedef DenseMatrix<This,true>           BaseType;       //!< Base type of this Submatrix instance.
    typedef SubmatrixTrait_<MT>              ResultType;     //!< Result type for expression template evaluations.
    typedef OppositeType_<ResultType>        OppositeType;   //!< Result type with opposite storage order for expression template evaluations.
    typedef TransposeType_<ResultType>       TransposeType;  //!< Transpose type for expression template evaluations.

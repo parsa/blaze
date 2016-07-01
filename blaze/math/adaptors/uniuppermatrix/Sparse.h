@@ -116,16 +116,17 @@ class UniUpperMatrix<MT,SO,false>
 
  public:
    //**Type definitions****************************************************************************
-   typedef UniUpperMatrix<MT,SO,false>  This;            //!< Type of this UniUpperMatrix instance.
-   typedef This                         ResultType;      //!< Result type for expression template evaluations.
-   typedef UniUpperMatrix<OT,!SO,false> OppositeType;    //!< Result type with opposite storage order for expression template evaluations.
-   typedef UniLowerMatrix<TT,!SO,false> TransposeType;   //!< Transpose type for expression template evaluations.
-   typedef ET                           ElementType;     //!< Type of the matrix elements.
-   typedef ReturnType_<MT>              ReturnType;      //!< Return type for expression template evaluations.
-   typedef const This&                  CompositeType;   //!< Data type for composite expression templates.
-   typedef UniUpperProxy<MT>            Reference;       //!< Reference to a non-constant matrix value.
-   typedef ConstReference_<MT>          ConstReference;  //!< Reference to a constant matrix value.
-   typedef ConstIterator_<MT>           ConstIterator;   //!< Iterator over constant elements.
+   typedef UniUpperMatrix<MT,SO,false>   This;            //!< Type of this UniUpperMatrix instance.
+   typedef SparseMatrix<This,SO>         BaseType;        //!< Base type of this UniUpperMatrix instance.
+   typedef This                          ResultType;      //!< Result type for expression template evaluations.
+   typedef UniUpperMatrix<OT,!SO,false>  OppositeType;    //!< Result type with opposite storage order for expression template evaluations.
+   typedef UniLowerMatrix<TT,!SO,false>  TransposeType;   //!< Transpose type for expression template evaluations.
+   typedef ET                            ElementType;     //!< Type of the matrix elements.
+   typedef ReturnType_<MT>               ReturnType;      //!< Return type for expression template evaluations.
+   typedef const This&                   CompositeType;   //!< Data type for composite expression templates.
+   typedef UniUpperProxy<MT>             Reference;       //!< Reference to a non-constant matrix value.
+   typedef ConstReference_<MT>           ConstReference;  //!< Reference to a constant matrix value.
+   typedef ConstIterator_<MT>            ConstIterator;   //!< Iterator over constant elements.
    //**********************************************************************************************
 
    //**Rebind struct definition********************************************************************

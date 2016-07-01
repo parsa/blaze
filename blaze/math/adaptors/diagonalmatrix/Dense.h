@@ -115,6 +115,7 @@ class DiagonalMatrix<MT,SO,true>
  public:
    //**Type definitions****************************************************************************
    typedef DiagonalMatrix<MT,SO,true>   This;            //!< Type of this DiagonalMatrix instance.
+   typedef DenseMatrix<This,SO>         BaseType;        //!< Base type of this DiagonalMatrix instance.
    typedef This                         ResultType;      //!< Result type for expression template evaluations.
    typedef DiagonalMatrix<OT,!SO,true>  OppositeType;    //!< Result type with opposite storage order for expression template evaluations.
    typedef DiagonalMatrix<TT,!SO,true>  TransposeType;   //!< Transpose type for expression template evaluations.

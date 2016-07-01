@@ -121,6 +121,7 @@ class SymmetricMatrix<MT,SO,false,false>
  public:
    //**Type definitions****************************************************************************
    typedef SymmetricMatrix<MT,SO,false,false>   This;            //!< Type of this SymmetricMatrix instance.
+   typedef SparseMatrix<This,SO>                BaseType;        //!< Base type of this SymmetricMatrix instance.
    typedef This                                 ResultType;      //!< Result type for expression template evaluations.
    typedef SymmetricMatrix<OT,!SO,false,false>  OppositeType;    //!< Result type with opposite storage order for expression template evaluations.
    typedef SymmetricMatrix<TT,!SO,false,false>  TransposeType;   //!< Transpose type for expression template evaluations.
