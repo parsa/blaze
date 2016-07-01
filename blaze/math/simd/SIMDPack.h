@@ -52,7 +52,7 @@ namespace blaze {
 //=================================================================================================
 
 //*************************************************************************************************
-/*\\brief Base class for all SIMD data types.
+/*!\brief Base class for all SIMD data types.
 // \ingroup simd
 //
 // The SIMDPack class template is a base class for all SIMD data types within the Blaze library.
