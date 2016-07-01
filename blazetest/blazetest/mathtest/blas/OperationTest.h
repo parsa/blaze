@@ -46,6 +46,7 @@
 #include <typeinfo>
 #include <blaze/math/BLAS.h>
 #include <blaze/math/LowerMatrix.h>
+#include <blaze/math/shims/Equal.h>
 #include <blaze/math/StaticMatrix.h>
 #include <blaze/math/StaticVector.h>
 #include <blaze/math/UpperMatrix.h>
@@ -136,7 +137,7 @@ void OperationTest::testDot()
    const Type result1( dot( x, y ) );
    const Type result2( x * y );
 
-   if( result1 != result2 ) {
+   if( !blaze::equal( result1, result2 ) ) {
       std::ostringstream oss;
       oss << " Test: " << test_ << "\n"
           << " Error: Dot product failed\n"
