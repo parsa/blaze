@@ -54,9 +54,9 @@ noop: $(BIN)
 
 
 # Build rules
-DenseUnalignedTest: DenseUnalignedTest.o
-	@$(CXX) $(CXXFLAGS) -o $@ $< $(LIBRARIES)
 DenseAlignedTest: DenseAlignedTest.o
+	@$(CXX) $(CXXFLAGS) -o $@ $< $(LIBRARIES)
+DenseUnalignedTest: DenseUnalignedTest.o
 	@$(CXX) $(CXXFLAGS) -o $@ $< $(LIBRARIES)
 SparseTest: SparseTest.o
 	@$(CXX) $(CXXFLAGS) -o $@ $< $(LIBRARIES)
