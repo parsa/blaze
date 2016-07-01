@@ -41,6 +41,7 @@
 //*************************************************************************************************
 
 #include <blaze/math/typetraits/IsComputation.h>
+#include <blaze/math/typetraits/IsDenseVector.h>
 #include <blaze/math/typetraits/IsRowVector.h>
 #include <blaze/math/typetraits/IsTransExpr.h>
 #include <blaze/math/typetraits/IsVector.h>
