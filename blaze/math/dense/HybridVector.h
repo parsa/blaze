@@ -176,6 +176,7 @@ class HybridVector : public DenseVector< HybridVector<Type,N,TF>, TF >
  public:
    //**Type definitions****************************************************************************
    typedef HybridVector<Type,N,TF>   This;           //!< Type of this HybridVector instance.
+   typedef DenseVector<This,TF>      BaseType;       //!< Base type of this HybridVector instance.
    typedef This                      ResultType;     //!< Result type for expression template evaluations.
    typedef HybridVector<Type,N,!TF>  TransposeType;  //!< Transpose type for expression template evaluations.
    typedef Type                      ElementType;    //!< Type of the vector elements.

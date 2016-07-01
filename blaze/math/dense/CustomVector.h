@@ -425,6 +425,7 @@ class CustomVector : public DenseVector< CustomVector<Type,AF,PF,TF>, TF >
  public:
    //**Type definitions****************************************************************************
    typedef CustomVector<Type,AF,PF,TF>  This;           //!< Type of this CustomVector instance.
+   typedef DenseVector<This,TF>         BaseType;       //!< Base type of this CustomVector instance.
    typedef DynamicVector<Type,TF>       ResultType;     //!< Result type for expression template evaluations.
    typedef DynamicVector<Type,!TF>      TransposeType;  //!< Transpose type for expression template evaluations.
    typedef Type                         ElementType;    //!< Type of the vector elements.

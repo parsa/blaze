@@ -40,6 +40,7 @@
 // Includes
 //*************************************************************************************************
 
+#include <blaze/math/AlignmentFlag.h>
 #include <blaze/math/typetraits/IsDenseVector.h>
 #include <blaze/math/typetraits/IsRowVector.h>
 
@@ -213,7 +214,7 @@ namespace blaze {
    }
    \endcode
 
-// \n \section sparse_subvector_element_insertion Element Insertion
+// \n \section subvector_element_insertion Element Insertion
 //
 // Inserting/accessing elements in a sparse subvector can be done by several alternative functions.
 // The following example demonstrates all options:
@@ -426,7 +427,7 @@ namespace blaze {
    SubvectorType sv2 = subvector( sv1, 1UL, 5UL );
    \endcode
 */
-template< typename VT                           // Type of the dense vector
+template< typename VT                           // Type of the vector
         , bool AF = unaligned                   // Alignment flag
         , bool TF = IsRowVector<VT>::value      // Transpose flag
         , bool DF = IsDenseVector<VT>::value >  // Density flag

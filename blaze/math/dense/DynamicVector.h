@@ -178,6 +178,7 @@ class DynamicVector : public DenseVector< DynamicVector<Type,TF>, TF >
  public:
    //**Type definitions****************************************************************************
    typedef DynamicVector<Type,TF>   This;           //!< Type of this DynamicVector instance.
+   typedef DenseVector<This,TF>     BaseType;       //!< Base type of this DynamicVector instance.
    typedef This                     ResultType;     //!< Result type for expression template evaluations.
    typedef DynamicVector<Type,!TF>  TransposeType;  //!< Transpose type for expression template evaluations.
    typedef Type                     ElementType;    //!< Type of the vector elements.

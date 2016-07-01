@@ -359,6 +359,7 @@ class DenseColumn : public DenseVector< DenseColumn<MT,SO,SF>, false >
  public:
    //**Type definitions****************************************************************************
    typedef DenseColumn<MT,SO,SF>       This;           //!< Type of this DenseColumn instance.
+   typedef DenseVector<This,false>     BaseType;       //!< Base type of this DenseColumn instance.
    typedef ColumnTrait_<MT>            ResultType;     //!< Result type for expression template evaluations.
    typedef TransposeType_<ResultType>  TransposeType;  //!< Transpose type for expression template evaluations.
    typedef ElementType_<MT>            ElementType;    //!< Type of the column elements.
@@ -2314,12 +2315,13 @@ class DenseColumn<MT,false,false> : public DenseVector< DenseColumn<MT,false,fal
 
  public:
    //**Type definitions****************************************************************************
-   typedef DenseColumn<MT,false,false>  This;            //!< Type of this DenseColumn instance.
-   typedef ColumnTrait_<MT>             ResultType;      //!< Result type for expression template evaluations.
-   typedef TransposeType_<ResultType>   TransposeType;   //!< Transpose type for expression template evaluations.
-   typedef ElementType_<MT>             ElementType;     //!< Type of the column elements.
-   typedef ReturnType_<MT>              ReturnType;      //!< Return type for expression template evaluations
-   typedef const DenseColumn&           CompositeType;   //!< Data type for composite expression templates.
+   typedef DenseColumn<MT,false,false>  This;           //!< Type of this DenseColumn instance.
+   typedef DenseVector<This,false>      BaseType;       //!< Base type of this DenseColumn instance.
+   typedef ColumnTrait_<MT>             ResultType;     //!< Result type for expression template evaluations.
+   typedef TransposeType_<ResultType>   TransposeType;  //!< Transpose type for expression template evaluations.
+   typedef ElementType_<MT>             ElementType;    //!< Type of the column elements.
+   typedef ReturnType_<MT>              ReturnType;     //!< Return type for expression template evaluations
+   typedef const DenseColumn&           CompositeType;  //!< Data type for composite expression templates.
 
    //! Reference to a constant column value.
    typedef ConstReference_<MT>  ConstReference;
@@ -4076,6 +4078,7 @@ class DenseColumn<MT,false,true> : public DenseVector< DenseColumn<MT,false,true
  public:
    //**Type definitions****************************************************************************
    typedef DenseColumn<MT,false,true>  This;           //!< Type of this DenseColumn instance.
+   typedef DenseVector<This,false>     BaseType;       //!< Base type of this DenseColumn instance.
    typedef ColumnTrait_<MT>            ResultType;     //!< Result type for expression template evaluations.
    typedef TransposeType_<ResultType>  TransposeType;  //!< Transpose type for expression template evaluations.
    typedef ElementType_<MT>            ElementType;    //!< Type of the column elements.

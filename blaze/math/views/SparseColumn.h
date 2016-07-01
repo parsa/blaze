@@ -383,6 +383,7 @@ class SparseColumn : public SparseVector< SparseColumn<MT,SO,SF>, false >
  public:
    //**Type definitions****************************************************************************
    typedef SparseColumn<MT,SO,SF>      This;           //!< Type of this SparseColumn instance.
+   typedef SparseVector<This,false>    BaseType;       //!< Base type of this SparseColumn instance.
    typedef ColumnTrait_<MT>            ResultType;     //!< Result type for expression template evaluations.
    typedef TransposeType_<ResultType>  TransposeType;  //!< Transpose type for expression template evaluations.
    typedef ElementType_<MT>            ElementType;    //!< Type of the column elements.
@@ -2082,12 +2083,13 @@ class SparseColumn<MT,false,false> : public SparseVector< SparseColumn<MT,false,
 
  public:
    //**Type definitions****************************************************************************
-   typedef SparseColumn<MT,false,false>  This;            //!< Type of this SparseColumn instance.
-   typedef ColumnTrait_<MT>              ResultType;      //!< Result type for expression template evaluations.
-   typedef TransposeType_<ResultType>    TransposeType;   //!< Transpose type for expression template evaluations.
-   typedef ElementType_<MT>              ElementType;     //!< Type of the column elements.
-   typedef ReturnType_<MT>               ReturnType;      //!< Return type for expression template evaluations
-   typedef const SparseColumn&           CompositeType;   //!< Data type for composite expression templates.
+   typedef SparseColumn<MT,false,false>  This;           //!< Type of this SparseColumn instance.
+   typedef SparseVector<This,false>      BaseType;       //!< Base type of this SparseColumn instance.
+   typedef ColumnTrait_<MT>              ResultType;     //!< Result type for expression template evaluations.
+   typedef TransposeType_<ResultType>    TransposeType;  //!< Transpose type for expression template evaluations.
+   typedef ElementType_<MT>              ElementType;    //!< Type of the column elements.
+   typedef ReturnType_<MT>               ReturnType;     //!< Return type for expression template evaluations
+   typedef const SparseColumn&           CompositeType;  //!< Data type for composite expression templates.
 
    //! Reference to a constant column value.
    typedef ConstReference_<MT>  ConstReference;
@@ -3889,6 +3891,7 @@ class SparseColumn<MT,false,true> : public SparseVector< SparseColumn<MT,false,t
  public:
    //**Type definitions****************************************************************************
    typedef SparseColumn<MT,false,true>  This;           //!< Type of this SparseColumn instance.
+   typedef SparseVector<This,false>     BaseType;       //!< Base type of this SparseColumn instance.
    typedef ColumnTrait_<MT>             ResultType;     //!< Result type for expression template evaluations.
    typedef TransposeType_<ResultType>   TransposeType;  //!< Transpose type for expression template evaluations.
    typedef ElementType_<MT>             ElementType;    //!< Type of the column elements.

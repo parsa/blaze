@@ -215,6 +215,7 @@ class CompressedVector : public SparseVector< CompressedVector<Type,TF>, TF >
  public:
    //**Type definitions****************************************************************************
    typedef CompressedVector<Type,TF>   This;            //!< Type of this CompressedVector instance.
+   typedef SparseVector<This,TF>       BaseType;        //!< Base type of this CompressedVector instance.
    typedef This                        ResultType;      //!< Result type for expression template evaluations.
    typedef CompressedVector<Type,!TF>  TransposeType;   //!< Transpose type for expression template evaluations.
    typedef Type                        ElementType;     //!< Type of the compressed vector elements.

@@ -359,6 +359,7 @@ class DenseRow : public DenseVector< DenseRow<MT,SO,SF>, true >
  public:
    //**Type definitions****************************************************************************
    typedef DenseRow<MT,SO,SF>          This;           //!< Type of this DenseRow instance.
+   typedef DenseVector<This,true>      BaseType;       //!< Base type of this DenseRow instance.
    typedef RowTrait_<MT>               ResultType;     //!< Result type for expression template evaluations.
    typedef TransposeType_<ResultType>  TransposeType;  //!< Transpose type for expression template evaluations.
    typedef ElementType_<MT>            ElementType;    //!< Type of the row elements.
@@ -2316,6 +2317,7 @@ class DenseRow<MT,false,false> : public DenseVector< DenseRow<MT,false,false>, t
  public:
    //**Type definitions****************************************************************************
    typedef DenseRow<MT,false,false>    This;           //!< Type of this DenseRow instance.
+   typedef DenseVector<This,true>      BaseType;       //!< Base type of this DenseRow instance.
    typedef RowTrait_<MT>               ResultType;     //!< Result type for expression template evaluations.
    typedef TransposeType_<ResultType>  TransposeType;  //!< Transpose type for expression template evaluations.
    typedef ElementType_<MT>            ElementType;    //!< Type of the row elements.
@@ -4065,6 +4067,7 @@ class DenseRow<MT,false,true> : public DenseVector< DenseRow<MT,false,true>, tru
  public:
    //**Type definitions****************************************************************************
    typedef DenseRow<MT,false,true>     This;           //!< Type of this DenseRow instance.
+   typedef DenseVector<This,true>      BaseType;       //!< Base type of this DenseRow instance.
    typedef RowTrait_<MT>               ResultType;     //!< Result type for expression template evaluations.
    typedef TransposeType_<ResultType>  TransposeType;  //!< Transpose type for expression template evaluations.
    typedef ElementType_<MT>            ElementType;    //!< Type of the row elements.

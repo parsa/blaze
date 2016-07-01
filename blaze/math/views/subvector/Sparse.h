@@ -52,6 +52,7 @@
 #include <blaze/math/constraints/TransposeFlag.h>
 #include <blaze/math/Exception.h>
 #include <blaze/math/expressions/SparseVector.h>
+#include <blaze/math/expressions/View.h>
 #include <blaze/math/shims/IsDefault.h>
 #include <blaze/math/shims/Serial.h>
 #include <blaze/math/sparse/SparseElement.h>
@@ -78,7 +79,7 @@ namespace blaze {
 
 //=================================================================================================
 //
-//  CLASS DEFINITION
+//  CLASS TEMPLATE SPECIALIZATION FOR SPARSE SUBVECTORS
 //
 //=================================================================================================
 
@@ -93,8 +94,9 @@ namespace blaze {
 template< typename VT  // Type of the sparse vector
         , bool AF      // Alignment flag
         , bool TF >    // Transpose flag
-class Subvector<VT,AF,TF,false> : public SparseVector< Subvector<VT,AF,TF,false>, TF >
-                                , private View
+class Subvector<VT,AF,TF,false>
+   : public SparseVector< Subvector<VT,AF,TF,false>, TF >
+   , private View
 {
  private:
    //**Type definitions****************************************************************************
@@ -105,6 +107,7 @@ class Subvector<VT,AF,TF,false> : public SparseVector< Subvector<VT,AF,TF,false>
  public:
    //**Type definitions****************************************************************************
    typedef Subvector<VT,AF,TF,false>   This;           //!< Type of this Subvector instance.
+   typedef SparseVector<This,TF>       BaseType;       //!< Base type of this Subvector instance.
    typedef SubvectorTrait_<VT>         ResultType;     //!< Result type for expression template evaluations.
    typedef TransposeType_<ResultType>  TransposeType;  //!< Transpose type for expression template evaluations.
    typedef ElementType_<VT>            ElementType;    //!< Type of the subvector elements.

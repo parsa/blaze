@@ -180,6 +180,7 @@ class StaticVector : public DenseVector< StaticVector<Type,N,TF>, TF >
  public:
    //**Type definitions****************************************************************************
    typedef StaticVector<Type,N,TF>   This;           //!< Type of this StaticVector instance.
+   typedef DenseVector<This,TF>      BaseType;       //!< Base type of this StaticVector instance.
    typedef This                      ResultType;     //!< Result type for expression template evaluations.
    typedef StaticVector<Type,N,!TF>  TransposeType;  //!< Transpose type for expression template evaluations.
    typedef Type                      ElementType;    //!< Type of the vector elements.
