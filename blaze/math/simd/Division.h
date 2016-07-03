@@ -54,7 +54,7 @@ namespace blaze {
 //=================================================================================================
 
 //*************************************************************************************************
-/*!\brief Division of two vectors of 32-bit integral SIMD values of the same type.
+/*!\brief Division of two vectors of 32-bit signed integral SIMD values.
 // \ingroup simd
 //
 // \param a The left-hand side SIMD operand.
@@ -63,36 +63,11 @@ namespace blaze {
 //
 // This operation is only available for AVX-512.
 */
-template< typename T >  // Type of the left-hand side operand
-BLAZE_ALWAYS_INLINE const T
-   operator/( const SIMDi32<T>& a, const SIMDi32<T>& b ) noexcept
+BLAZE_ALWAYS_INLINE const SIMDint32
+   operator/( const SIMDint32& a, const SIMDint32& b ) noexcept
 #if BLAZE_MIC_MODE
 {
-   return _mm512_div_epi32( (~a).value, (~b).value );
-}
-#else
-= delete;
-#endif
-//*************************************************************************************************
-
-
-//*************************************************************************************************
-/*!\brief Division of two vectors of 32-bit integral SIMD values of different type.
-// \ingroup simd
-//
-// \param a The left-hand side SIMD operand.
-// \param b The right-hand side SIMD operand.
-// \return The result of the division.
-//
-// This operation is only available for AVX-512.
-*/
-template< typename T1    // Type of the left-hand side operand
-        , typename T2 >  // Type of the right-hand side operand
-BLAZE_ALWAYS_INLINE const SIMDuint32
-   operator/( const SIMDi32<T1>& a, const SIMDi32<T2>& b ) noexcept
-#if BLAZE_MIC_MODE
-{
-   return _mm512_div_epi32( (~a).value, (~b).value );
+   return _mm512_div_epi32( a.value, b.value );
 }
 #else
 = delete;
@@ -114,7 +89,7 @@ BLAZE_ALWAYS_INLINE const SIMDcint32
    operator/( const SIMDcint32& a, const SIMDint32& b ) noexcept
 #if BLAZE_MIC_MODE
 {
-   return _mm512_div_epi32( (~a).value, (~b).value );
+   return _mm512_div_epi32( a.value, b.value );
 }
 #else
 = delete;
@@ -123,29 +98,7 @@ BLAZE_ALWAYS_INLINE const SIMDcint32
 
 
 //*************************************************************************************************
-/*!\brief Scaling of a vector of 32-bit unsigned integral complex SIMD values.
-// \ingroup simd
-//
-// \param a The left-hand side complex values to be scaled.
-// \param b The right-hand side scalars.
-// \return The result of the division.
-//
-// This operation is only available for AVX-512.
-*/
-BLAZE_ALWAYS_INLINE const SIMDcuint32
-   operator/( const SIMDcuint32& a, const SIMDuint32& b ) noexcept
-#if BLAZE_MIC_MODE
-{
-   return _mm512_div_epi32( (~a).value, (~b).value );
-}
-#else
-= delete;
-#endif
-//*************************************************************************************************
-
-
-//*************************************************************************************************
-/*!\brief Division of two vectors of 64-bit integral SIMD values of the same type.
+/*!\brief Division of two vectors of 64-bit signed integral SIMD values.
 // \ingroup simd
 //
 // \param a The left-hand side SIMD operand.
@@ -154,36 +107,11 @@ BLAZE_ALWAYS_INLINE const SIMDcuint32
 //
 // This operation is only available for AVX-512.
 */
-template< typename T >  // Type of the left-hand side operand
-BLAZE_ALWAYS_INLINE const T
-   operator/( const SIMDi64<T>& a, const SIMDi64<T>& b ) noexcept
+BLAZE_ALWAYS_INLINE const SIMDint64
+   operator/( const SIMDint64& a, const SIMDint64& b ) noexcept
 #if BLAZE_MIC_MODE
 {
-   return _mm512_div_epi64( (~a).value, (~b).value );
-}
-#else
-= delete;
-#endif
-//*************************************************************************************************
-
-
-//*************************************************************************************************
-/*!\brief Division of two vectors of 64-bit integral SIMD values of different type.
-// \ingroup simd
-//
-// \param a The left-hand side SIMD operand.
-// \param b The right-hand side SIMD operand.
-// \return The result of the division.
-//
-// This operation is only available for AVX-512.
-*/
-template< typename T1    // Type of the left-hand side operand
-        , typename T2 >  // Type of the right-hand side operand
-BLAZE_ALWAYS_INLINE const SIMDuint64
-   operator/( const SIMDi64<T1>& a, const SIMDi64<T2>& b ) noexcept
-#if BLAZE_MIC_MODE
-{
-   return _mm512_div_epi64( (~a).value, (~b).value );
+   return _mm512_div_epi64( a.value, b.value );
 }
 #else
 = delete;
@@ -203,28 +131,6 @@ BLAZE_ALWAYS_INLINE const SIMDuint64
 */
 BLAZE_ALWAYS_INLINE const SIMDcint64
    operator/( const SIMDcint64& a, const SIMDint64& b ) noexcept
-#if BLAZE_MIC_MODE
-{
-   return _mm512_div_epi64( (~a).value, (~b).value );
-}
-#else
-= delete;
-#endif
-//*************************************************************************************************
-
-
-//*************************************************************************************************
-/*!\brief Scaling of a vector of 64-bit unsigned integral complex SIMD values.
-// \ingroup simd
-//
-// \param a The left-hand side complex values to be scaled.
-// \param b The right-hand side scalars.
-// \return The result of the division.
-//
-// This operation is only available for AVX-512.
-*/
-BLAZE_ALWAYS_INLINE const SIMDcuint64
-   operator/( const SIMDcuint64& a, const SIMDuint64& b ) noexcept
 #if BLAZE_MIC_MODE
 {
    return _mm512_div_epi64( (~a).value, (~b).value );

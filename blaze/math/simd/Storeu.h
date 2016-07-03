@@ -188,7 +188,7 @@ BLAZE_ALWAYS_INLINE EnableIf_< And< IsIntegral<T1>, HasSize<T1,4UL> > >
    storeu( T1* address, const SIMDi32<T2>& value ) noexcept
 {
 #if BLAZE_MIC_MODE
-   _mm512_packstorelo_epi32( address, (~value).value );
+   _mm512_packstorelo_epi32( address     , (~value).value );
    _mm512_packstorehi_epi32( address+16UL, (~value).value );
 #elif BLAZE_AVX2_MODE
    _mm256_storeu_si256( reinterpret_cast<__m256i*>( address ), (~value).value );
@@ -220,8 +220,8 @@ BLAZE_ALWAYS_INLINE EnableIf_< And< IsIntegral<T1>, HasSize<T1,4UL> > >
    BLAZE_STATIC_ASSERT( sizeof( complex<T1> ) == 2UL*sizeof( T1 ) );
 
 #if BLAZE_MIC_MODE
-   _mm512_packstorelo_epi32( address, (~value).value );
-   _mm512_packstorehi_epi32( address+16UL, (~value).value );
+   _mm512_packstorelo_epi32( address    , (~value).value );
+   _mm512_packstorehi_epi32( address+8UL, (~value).value );
 #elif BLAZE_AVX2_MODE
    _mm256_storeu_si256( reinterpret_cast<__m256i*>( address ), (~value).value );
 #elif BLAZE_SSE2_MODE
@@ -250,7 +250,7 @@ BLAZE_ALWAYS_INLINE EnableIf_< And< IsIntegral<T1>, HasSize<T1,8UL> > >
    storeu( T1* address, const SIMDi64<T2>& value ) noexcept
 {
 #if BLAZE_MIC_MODE
-   _mm512_packstorelo_epi64( address, (~value).value );
+   _mm512_packstorelo_epi64( address    , (~value).value );
    _mm512_packstorehi_epi64( address+8UL, (~value).value );
 #elif BLAZE_AVX2_MODE
    _mm256_storeu_si256( reinterpret_cast<__m256i*>( address ), (~value).value );
@@ -282,8 +282,8 @@ BLAZE_ALWAYS_INLINE EnableIf_< And< IsIntegral<T1>, HasSize<T1,8UL> > >
    BLAZE_STATIC_ASSERT( sizeof( complex<T1> ) == 2UL*sizeof( T1 ) );
 
 #if BLAZE_MIC_MODE
-   _mm512_packstorelo_epi64( address, (~value).value );
-   _mm512_packstorehi_epi64( address+8UL, (~value).value );
+   _mm512_packstorelo_epi64( address    , (~value).value );
+   _mm512_packstorehi_epi64( address+4UL, (~value).value );
 #elif BLAZE_AVX2_MODE
    _mm256_storeu_si256( reinterpret_cast<__m256i*>( address ), (~value).value );
 #elif BLAZE_SSE2_MODE

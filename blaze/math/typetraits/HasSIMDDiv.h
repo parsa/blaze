@@ -48,6 +48,7 @@
 #include <blaze/util/typetraits/Decay.h>
 #include <blaze/util/typetraits/IsIntegral.h>
 #include <blaze/util/typetraits/IsNumeric.h>
+#include <blaze/util/typetraits/IsSigned.h>
 
 
 namespace blaze {
@@ -74,15 +75,15 @@ struct HasSIMDDivHelper
 //*************************************************************************************************
 /*! \cond BLAZE_INTERNAL */
 template< typename T1, typename T2 >
-struct HasSIMDDivHelper< T1, T2, EnableIf_< And< IsNumeric<T1>, IsIntegral<T1>
-                                               , IsNumeric<T2>, IsIntegral<T2>
+struct HasSIMDDivHelper< T1, T2, EnableIf_< And< IsNumeric<T1>, IsIntegral<T1>, IsSigned<T1>
+                                               , IsNumeric<T2>, IsIntegral<T2>, IsSigned<T2>
                                                , Bool< sizeof(T1) == sizeof(T2) > > > >
 {
    enum : bool { value = bool( BLAZE_MIC_MODE ) && sizeof(T1) >= 4UL };
 };
 
 template< typename T >
-struct HasSIMDDivHelper< complex<T>, T, EnableIf_< And< IsNumeric<T>, IsIntegral<T> > > >
+struct HasSIMDDivHelper< complex<T>, T, EnableIf_< And< IsNumeric<T>, IsIntegral<T>, IsSigned<T> > > >
 {
    enum : bool { value = bool( BLAZE_MIC_MODE ) && sizeof(T) >= 4UL };
 };

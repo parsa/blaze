@@ -463,20 +463,7 @@ BLAZE_ALWAYS_INLINE const SIMDcuint32
 template< typename T >  // Type of both operands
 BLAZE_ALWAYS_INLINE const T
    operator*( const SIMDci32<T>& a, const SIMDci32<T>& b ) noexcept
-#if BLAZE_MIC_MODE
-{
-   __m512i x, y, z;
-   const __m512i neg( _mm256_set_epi32( 1, -1, 1, -1, 1, -1, 1, -1, 1, -1, 1, -1, 1, -1, 1, -1 ) );
-
-   x = _mm512_shuffle_epi32( (~a).value, 0xA0 );
-   z = _mm512_mullo_epi32( x, (~b).value );
-   x = _mm512_shuffle_epi32( (~a).value, 0xF5 );
-   y = _mm512_shuffle_epi32( (~b).value, 0xB1 );
-   y = _mm512_mullo_epi32( x, y );
-   y = _mm512_mullo_epi32( y, neg );
-   return _mm512_add_epi32( z, y );
-}
-#elif BLAZE_AVX2_MODE
+#if BLAZE_AVX2_MODE
 {
    __m256i x, y, z;
    const __m256i neg( _mm256_set_epi32( 1, -1, 1, -1, 1, -1, 1, -1 ) );
@@ -501,53 +488,6 @@ BLAZE_ALWAYS_INLINE const T
    y = _mm_mullo_epi32( x, y );
    y = _mm_mullo_epi32( y, neg );
    return _mm_add_epi32( z, y );
-}
-#else
-= delete;
-#endif
-//*************************************************************************************************
-
-
-//*************************************************************************************************
-/*!\brief Multiplication of two vectors of 64-bit integral SIMD values of the same type.
-// \ingroup simd
-//
-// \param a The left-hand side SIMD operand.
-// \param b The right-hand side SIMD operand.
-// \return The result of the multiplication.
-//
-// This operation is only available for AVX-512.
-*/
-template< typename T >  // Type of the left-hand side operand
-BLAZE_ALWAYS_INLINE const T
-   operator*( const SIMDi64<T>& a, const SIMDi64<T>& b ) noexcept
-#if BLAZE_MIC_MODE
-{
-   return _mm512_mullo_epi64( (~a).value, (~b).value );
-}
-#else
-= delete;
-#endif
-//*************************************************************************************************
-
-
-//*************************************************************************************************
-/*!\brief Multiplication of two vectors of 64-bit integral SIMD values of different type.
-// \ingroup simd
-//
-// \param a The left-hand side SIMD operand.
-// \param b The right-hand side SIMD operand.
-// \return The result of the multiplication.
-//
-// This operation is only available for AVX-512.
-*/
-template< typename T1    // Type of the left-hand side operand
-        , typename T2 >  // Type of the right-hand side operand
-BLAZE_ALWAYS_INLINE const SIMDuint64
-   operator*( const SIMDi64<T1>& a, const SIMDi64<T2>& b ) noexcept
-#if BLAZE_MIC_MODE
-{
-   return _mm512_mullo_epi64( (~a).value, (~b).value );
 }
 #else
 = delete;

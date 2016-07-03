@@ -163,7 +163,9 @@ BLAZE_ALWAYS_INLINE int32_t sum( const SIMDint32& a ) noexcept
 */
 BLAZE_ALWAYS_INLINE const complex<int32_t> sum( const SIMDcint32& a ) noexcept
 {
-#if BLAZE_AVX2_MODE
+#if BLAZE_MIC_MODE
+   return complex<int32_t>( a[0] + a[1] + a[2] + a[3] + a[4] + a[5] + a[6] + a[7] );
+#elif BLAZE_AVX2_MODE
    return complex<int32_t>( a[0] + a[1] + a[2] + a[3] );
 #elif BLAZE_SSE2_MODE
    return complex<int32_t>( a[0] + a[1] );
@@ -205,7 +207,9 @@ BLAZE_ALWAYS_INLINE int64_t sum( const SIMDint64& a ) noexcept
 */
 BLAZE_ALWAYS_INLINE const complex<int64_t> sum( const SIMDcint64& a ) noexcept
 {
-#if BLAZE_AVX2_MODE
+#if BLAZE_MIC_MODE
+   return complex<int64_t>( a[0] + a[1] + a[2] + a[3] );
+#elif BLAZE_AVX2_MODE
    return complex<int64_t>( a[0] + a[1] );
 #elif BLAZE_SSE2_MODE
    return a[0];

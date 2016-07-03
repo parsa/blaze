@@ -79,7 +79,7 @@ struct HasSIMDAbsHelper< T, EnableIf_< And< IsNumeric<T>, IsIntegral<T>, IsSigne
 {
    enum : bool { value = ( bool( BLAZE_SSSE3_MODE ) && sizeof(T) <= 4UL ) ||
                          ( bool( BLAZE_AVX2_MODE  ) && sizeof(T) <= 4UL ) ||
-                         ( bool( BLAZE_MIC_MODE   ) ) };
+                         ( bool( BLAZE_MIC_MODE   ) && sizeof(T) >= 4UL ) };
 };
 /*! \endcond */
 //*************************************************************************************************
