@@ -63,11 +63,7 @@ namespace blaze {
 // This operation is only available for SSSE3, AVX2, and AVX-512.
 */
 BLAZE_ALWAYS_INLINE const SIMDuint8 abs( const SIMDint8& a ) noexcept
-#if BLAZE_MIC_MODE
-{
-   return _mm512_abs_epi8( a.value );
-}
-#elif BLAZE_AVX2_MODE
+#if BLAZE_AVX2_MODE
 {
    return _mm256_abs_epi8( a.value );
 }
@@ -91,11 +87,7 @@ BLAZE_ALWAYS_INLINE const SIMDuint8 abs( const SIMDint8& a ) noexcept
 // This operation is only available for SSSE3, AVX2, and AVX-512.
 */
 BLAZE_ALWAYS_INLINE const SIMDuint16 abs( const SIMDint16& a ) noexcept
-#if BLAZE_MIC_MODE
-{
-   return _mm512_abs_epi16( a.value );
-}
-#elif BLAZE_AVX2_MODE
+#if BLAZE_AVX2_MODE
 {
    return _mm256_abs_epi16( a.value );
 }
